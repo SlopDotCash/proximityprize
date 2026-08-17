@@ -3,7 +3,11 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Algebra.Field.Basic
+import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.Tactic
+
+/-!
 # The reunification bijection: LD agreement sets = lacunary root sets (#444, SEAM A capstone)
 
 This file formalizes the *rigorous core* of the reunification that ties the two grand prize
@@ -32,9 +36,6 @@ content. It does **not** prove the open core (`defect = 0` at prize scale); that
 
 Axiom-clean: field arithmetic only. No `sorry`, no extra axioms.
 -/
-import Mathlib.Algebra.Field.Basic
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Tactic
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

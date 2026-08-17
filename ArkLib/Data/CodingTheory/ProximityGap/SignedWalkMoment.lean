@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyRepBound
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # WF2-C2 scaffold (Issue #389) — the higher additive moment as a sum of squared fibers.
 
@@ -42,6 +39,10 @@ landed energy formula `3n² − 3n`. It explicitly does NOT claim Layers 2–3 (
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #389.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 

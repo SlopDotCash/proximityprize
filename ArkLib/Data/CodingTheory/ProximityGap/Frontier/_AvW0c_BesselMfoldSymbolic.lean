@@ -10,9 +10,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvW0_BesselIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvUC_BesselIdentityFormalized
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvRem_BesselMfold
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # STEP-1 Bessel identity: the `m`-fold decoupling iterated on the ACTUAL energy (#444)
 
@@ -62,6 +59,10 @@ given Lam–Leung), iterated to symbolic `m` on the actual energy — the piece 
 left as "named". It does NOT touch the char-`p` excess `W_r` (the open kernel); the prize wall is
 unchanged. Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no `native_decide`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.NegationClosedWalk

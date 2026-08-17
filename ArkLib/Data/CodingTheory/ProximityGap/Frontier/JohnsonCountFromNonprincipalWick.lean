@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumLadderMarkov
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.NonprincipalWickIsDCWick
 
-set_option linter.style.longLine false
-
 /-!
 # The Johnson-scale frequency COUNT bound, re-grounded on the SATISFIABLE nonprincipal Wick input (#444)
 
@@ -52,6 +50,9 @@ average/count-side anti-concentration now consumes a **prize-satisfiable** input
 DC-contaminated, prize-FALSE full Wick bound. The worst-case single-frequency cancellation
 `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

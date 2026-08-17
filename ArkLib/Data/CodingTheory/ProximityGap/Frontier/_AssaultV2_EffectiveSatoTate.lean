@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 
-set_option autoImplicit false
-
 /-!
 # Effective worst-case vertical Sato–Tate from Katz monodromy — Form B (#464, dossier §6.8 / §7.4 B)
 
@@ -52,6 +50,9 @@ effective discrepancy `≥ 1` is now machine-checked from the monodromy dimensio
 
 Issue #464.
 -/
+
+set_option autoImplicit false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

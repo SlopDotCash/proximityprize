@@ -3,14 +3,15 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.Algebra.Polynomial.Div
+import Mathlib.Tactic
+
+/-!
 Round 14 (own-token brick) — the GS/Sudan ROOT-ORDER step in general form:
 agreement count + weighted-degree bound ⟹ (Y − f) ∣ Q.
 Self-contained, Mathlib-only.
 -/
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Algebra.Polynomial.Div
-import Mathlib.Tactic
 
 open Polynomial
 

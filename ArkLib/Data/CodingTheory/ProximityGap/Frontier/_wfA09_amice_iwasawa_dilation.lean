@@ -8,9 +8,6 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Nat.Log
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # wf-A09 (#444): Amice / Iwasawa `p`-adic interpolation along the dilation tower is a DEAD handle
   — a precise OBSTRUCTION, two independent walls, axiom-clean
@@ -81,6 +78,10 @@ decoupled for `μ_n`, `n` a `2`-power.
 
 **Axiom target:** `[propext, Classical.choice, Quot.sound]` (no `sorryAx`, no custom axiom).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Complex
 

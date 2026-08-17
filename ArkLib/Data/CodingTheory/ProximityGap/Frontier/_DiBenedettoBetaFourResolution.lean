@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option autoImplicit false
-
 /-!
 # Resolving the di Benedetto bound at β = 4 (#444)
 
@@ -27,6 +25,9 @@ claim), and (b) that the validity hypothesis `H > p^{1/4}` is **exactly `β < 4`
 Conventions: `H = n` (our `μ_n`, `n = 2^a`), `p = n^β`, so `H = n`, `p^{1/4} = n^{β/4}`, and the
 di Benedetto exponent is `dbExp = 1 − 31/2880 = 2849/2880`.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.DiBenedettoBetaFour
 

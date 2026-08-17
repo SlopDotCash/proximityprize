@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyBridge
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMoment
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-set_option linter.style.longLine false
-set_option maxHeartbeats 1000000
 
 /-!
 # The sharp two-sided spectral characterization for the prize regime (#389)
@@ -25,6 +23,9 @@ Together these bracket the resonant-frequency count at the `√n` scale to `Θ(q
 a two-sided, in-regime, irrefutable characterization, PROVABLE conditional only on the in-regime
 SidonModNeg property (the resultant-avoidance the prize-regime primes satisfy). Axiom-clean.
 -/
+set_option linter.style.longLine false
+set_option maxHeartbeats 1000000
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

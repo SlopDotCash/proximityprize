@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # Coherence identity — the RIP / compressed-sensing NO-GO (#407/#444)
 
@@ -51,6 +49,9 @@ identifies the Gram entry with that `eta`.
 - [BGK] Bourgain–Glibichuk–Konyagin — the best proven incomplete-character-sum bound (the wall).
 - #407, #444, the exotic-math sweep.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 

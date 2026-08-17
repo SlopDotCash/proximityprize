@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvL2_E7ClosedForm
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvL2_E8ClosedForm
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvL2_E9ClosedForm
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Discharging the char-`0` Lam–Leung ceiling hypothesis at `r ∈ {7,8,9}` (residual census, #444, wf-L6)
 
@@ -58,6 +55,10 @@ the prize depth `r ≈ ln q` (E8 docstring); this discharges the char-`0` bounda
 
 Issue #444, wf-L6.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.WFL6
 

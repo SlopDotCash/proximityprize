@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Lane-2: family sharpened-BGK Shaw-value corridor (#444)
 
@@ -23,6 +20,10 @@ narrower than the conditional BGK `[1/√Lᵢ, 1]` width `√Lᵢ`.  This is nor
 the BGK ceiling remains an explicit hypothesis, and no CORE cancellation or anti-concentration bound is
 proved.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.ShawValueSharpenedBGKCorridorFamily
 

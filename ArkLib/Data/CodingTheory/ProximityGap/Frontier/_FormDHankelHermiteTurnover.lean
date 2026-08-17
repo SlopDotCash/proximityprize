@@ -10,9 +10,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The Hermite-turnover machinery: char-0 recurrence `b_k² = n·k` PROVEN, then the
 # exact Hankel-determinant turnover condition for the wall (#444, Face D-Jacobi)
@@ -61,6 +58,10 @@ condition `Dp stays Wick to depth log p` — it does NOT prove that condition (T
 wraparound wall, Burgess/Paley/BGK).  No CORE / cancellation / completion / anti-concentration /
 capacity claim.  CORE remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.FormDTurnover
 

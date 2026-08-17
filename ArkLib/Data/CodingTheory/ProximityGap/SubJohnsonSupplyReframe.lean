@@ -5,6 +5,13 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonResidualFloor
 
+/-!
+# SubJohnsonSupplyReframe
+
+Module docstring for `SubJohnsonSupplyReframe.lean`.
+-/
+
+
 open Finset Polynomial
 open scoped NNReal ENNReal
 

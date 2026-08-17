@@ -5,6 +5,13 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Lattice2.Spec
 
+/-!
+# MCAResearchLoop
+
+Module docstring for `MCAResearchLoop.lean`.
+-/
+
+
 open scoped BigOperators
 
 namespace ArkLib.CodingTheory.Research

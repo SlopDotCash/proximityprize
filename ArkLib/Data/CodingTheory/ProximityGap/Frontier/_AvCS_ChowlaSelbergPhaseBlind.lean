@@ -8,9 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.SpecialFunctions.Complex.Log
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Av-CS — Chowla-Selberg / CM-period Γ-values are PHASE-BLIND for `M` (#444)
 
@@ -75,6 +72,10 @@ backbone: the product is invariant under a phase rotation summing to zero, while
 so the product cannot serve as a bound on the sum's modulus. This is exactly why every Γ-value /
 CM-period relation REDUCES to (does not evade) the archimedean-phase wall.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvCS
 

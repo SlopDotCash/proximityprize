@@ -7,10 +7,6 @@ import Mathlib.Tactic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.Nat.Factorial.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The **cumulant-additivity convolution engine**: the PROVEN non-tensor source of the `r`-linear saving (#444)
 
@@ -109,6 +105,11 @@ in its correct (static) form.
 
 Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvNTCumulantEngine
 

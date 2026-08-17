@@ -8,9 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80 (#466, 2026-07-10): the ARC MODEL for G78 — chord-arc oscillation estimate +
   exact equally-spaced center cancellation, welded into the rank-one arc-increment
@@ -56,6 +53,10 @@ BGK/Cilleruelo–Garaev anti-concentration frontier). CORE remains OPEN / ON-BGK
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset Complex
 

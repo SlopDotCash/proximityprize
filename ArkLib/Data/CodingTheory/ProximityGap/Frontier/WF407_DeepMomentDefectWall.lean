@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Real.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # WF407 / T389-01-deepmom — the deep-moment wall is the char-`p` ENERGY DEFECT (monotone, one-sided)
 
@@ -61,6 +58,10 @@ and whether `Δ_r = 0` at the saddle `r ≍ log q`) are the OPEN content, delibe
 the last is exactly the BGK/Paley-graph √-cancellation wall. This file proves the *arrow* and the
 *one-sidedness* rigorously and states the gap honestly; it does NOT cross the wall.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.WF407.DeepMomentDefectWall
 

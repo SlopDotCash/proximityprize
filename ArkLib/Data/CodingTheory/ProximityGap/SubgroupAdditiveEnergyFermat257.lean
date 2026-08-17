@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyRepBound
 
-set_option linter.style.longLine false
-
 /-!
 # Round 12 (Issue #232, ABF26) — the PRIZE-REGIME additive energy: F₂₅₇ (Fermat smooth field) and
 # the located char-0 crossover.
@@ -44,6 +42,9 @@ are minimally anti-concentrated, exactly as in characteristic 0. The open prize 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
 -/
+
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.AdditiveEnergyRepBound
 

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Deployment-local certificates do not prove uniform deployment bounds
 
@@ -30,6 +27,10 @@ unbounded scale parameter cannot imply the uniform statement by logic alone.  Th
 This is intentionally not a new delta-star proof.  It is a guardrail for routing deployment-local
 or finite-check evidence: without the cover/propagation input, the evidence remains local.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DeploymentLocalCertificateUniformityGate
 

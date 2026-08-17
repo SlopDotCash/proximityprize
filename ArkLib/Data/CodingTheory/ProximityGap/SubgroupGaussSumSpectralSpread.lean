@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMarkovMuN
 import Mathlib.Algebra.Order.Chebyshev
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Spectral spreading for the thin `2`-power subgroup `μ_n`: a Cauchy–Schwarz support lower bound (#444)
 
@@ -46,6 +43,10 @@ content. No capacity over-claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays **
 See `SubgroupGaussSumFourthMarkovMuN.lean` (the exact `μ_n` fourth moment + the upper-count companion)
 and `SubgroupGaussSumSecondMoment.lean` (the exact second moment).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar Polynomial
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

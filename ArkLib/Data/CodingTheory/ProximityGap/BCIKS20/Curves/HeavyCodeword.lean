@@ -7,6 +7,13 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.AgreementCount
 import ArkLib.Data.CodingTheory.InterleavedCode
 
+/-!
+# HeavyCodeword
+
+Module docstring for `HeavyCodeword.lean`.
+-/
+
+
 open Polynomial Finset BigOperators
 open scoped NNReal
 

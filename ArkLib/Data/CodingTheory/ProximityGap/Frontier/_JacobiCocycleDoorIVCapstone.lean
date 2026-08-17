@@ -8,11 +8,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleAlignmentMec
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleFermatCornerExclusion
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # Door-(iv) Jacobi-cocycle CAPSTONE: the three faces of the localized gap, bundled
 
@@ -38,6 +33,12 @@ A bundling capstone of already-proven facts. It proves NOTHING new toward CORE; 
 `JacobiCocycleDispersion`, untouched. NO CORE / cancellation / completion / anti-concentration /
 moment-saving / capacity claim. Prize CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiCocycleDoorIVCapstone
 

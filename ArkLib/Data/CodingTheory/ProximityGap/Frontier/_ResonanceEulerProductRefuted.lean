@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumWorstCase
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvFloor_ResonatorRatioLowerBound
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # RES_1 — Candidate 2: the COSET-INDEX (Heath–Brown subgroup) resonator for `M` (issue #444)
 
@@ -89,6 +86,10 @@ quadratic-form reduction (pinpointing the failing object `S(k)`), and the Parsev
 
 Issue #444; task `RES_1` (Candidate 2).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

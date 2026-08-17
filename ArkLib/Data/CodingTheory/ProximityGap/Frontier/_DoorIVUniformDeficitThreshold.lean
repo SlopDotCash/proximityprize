@@ -7,9 +7,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDeficitBudget
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-3: the UNIFORM per-level deficit threshold `(2−√2)/2` (axiom-clean, #444)
 
@@ -39,6 +36,10 @@ Lane-3 constraint lemma: prices the route's exact per-level threshold; does NOT 
 No cancellation / moment / completion / anti-concentration / capacity claim.  CORE
 `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVUniformDeficitThreshold
 

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Analysis.Normed.Module.Basic
 import Mathlib.Analysis.Normed.Field.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv): the cross-half phase is trivially real, but its magnitude ratio is unstructured (#444)
 
@@ -54,6 +51,10 @@ This file packages the structural algebra: under the *probed* real-collinear reg
 `‖A+B‖ ≤ c·‖A‖` forces `c ≥ 1+t` — i.e. it must already absorb the full, unbounded, frequency-dependent
 `t`.  No CORE/cancellation/completion/capacity claim — a faithful constraint on a refuted lever.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVCrossHalfPhaseUnstructured
 

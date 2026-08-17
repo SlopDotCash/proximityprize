@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceReframeCircularity
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # CAPSTONE — the variance route as ONE end-to-end consumer: L²-flatness ⟹ off-diagonal second moment (#444)
 
@@ -54,6 +50,11 @@ NO CORE / cancellation / completion / moment-saving / capacity claim: the L²-fl
 NOT proved.  This is the citable end-to-end reduction of the variance route to a single L²-flatness
 statement on the aggregate iterated Jacobi phase.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceVarianceRouteCapstone
 

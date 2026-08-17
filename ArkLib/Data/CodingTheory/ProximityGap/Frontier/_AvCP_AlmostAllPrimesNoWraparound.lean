@@ -9,9 +9,6 @@ import Mathlib.Data.Set.Finite.Basic
 import Mathlib.Data.Finset.Lattice.Fold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NoExcessOnsetThreshold
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # `_AvCP_AlmostAllPrimesNoWraparound` — the ALMOST-ALL-PRIMES char-`p` transfer (#444)
 
@@ -65,6 +62,10 @@ allowed to grow. So this result is genuinely TRUE and proven, but it is *not* pr
 - In-tree: `_NoExcessOnsetThreshold.lean` (`NoWraparound`, `noWraparound_imp_energy_eq`).
 - [ABF26] ePrint 2026/680 (issue #444).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvCPAlmostAllPrimesNoWraparound
 

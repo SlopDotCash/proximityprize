@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CrossStepRungSlackDepletionEight
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvL2_E10ClosedForm
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The rung-slack/depletion-defect bridge at `r = 9` (#444)
 
@@ -20,6 +17,10 @@ Honest scope: this is exact arithmetic on already-landed char-`0` closed forms. 
 the all-`r` cross-step statement, does not transfer to char `p` in the prize regime, and does not
 change CORE.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.ShawDepletionNine
 

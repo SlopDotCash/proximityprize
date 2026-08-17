@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PerLineUnionCountBarrier
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Per-line union bounds with overlap multiplicity
 
@@ -30,6 +27,10 @@ Thus the missing #464 input is exactly a lower bound on per-scalar overlap multi
 automatic case is only `M = 1`; any saving over the raw union bound must be earned by a genuine
 overlap/collapse theorem.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

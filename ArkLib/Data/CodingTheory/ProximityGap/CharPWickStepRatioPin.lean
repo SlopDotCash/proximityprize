@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CharPWickConditionalPin
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The char-`p` step-ratio pin and its domination of the cross-bound pin (#444)
 
@@ -54,6 +51,10 @@ PROBE (`scripts/probes/probe_crossbound_vs_stepratio.py`, exact integer `E_r` ov
 clean rung; the step-ratio RHS `2r·n·E_r` is `<` the cross-bound RHS `2r·n·Wick_r` for every `r ≥ 2`
 (strict domination, growing gap), and `cross_r` satisfies the stronger step-ratio bound WITH margin.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open scoped Nat

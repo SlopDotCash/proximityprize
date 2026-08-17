@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Quadratic Vinogradov bounds control the wrong system unless a transfer theorem is supplied
 
@@ -28,6 +25,10 @@ This file records that logical gate abstractly.  It proves the positive consumer
 transfer hypothesis, and a finite countermodel showing that a bound on the strict system alone can
 hold while the linear count is arbitrarily larger than the target.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.QuadraticVinogradovWrongSystemGate
 

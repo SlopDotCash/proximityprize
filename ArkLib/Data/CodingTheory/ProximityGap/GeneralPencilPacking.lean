@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SinglePencilQIndependence
 
-set_option linter.style.longLine false
-
 /-!
 # Issue #407 — the general-stack packing bound (residual (1) of the bad-scalar q-independence lane).
 
@@ -38,6 +36,9 @@ degree comparison, never the shape of `Q₁`. All `sorry`-free, axiom-clean.
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
 -/
+
+set_option linter.style.longLine false
+
 
 open Polynomial Finset
 

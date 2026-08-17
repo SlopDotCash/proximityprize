@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVQVCauchySchwarzCircular
 
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-3 capstone: NO martingale input cracks the tower drift (#444)
 
@@ -35,6 +33,9 @@ Lane-3 (refuted-lever capstone). Axiom-clean: `propext`, `Classical.choice`, `Qu
 cancellation / completion / moment / anti-concentration / capacity claim. CORE
 `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DoorIVMartingaleInputCeilingCapstone
 

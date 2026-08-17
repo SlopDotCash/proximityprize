@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Full-field noisy-character transfer gate
 
@@ -23,6 +20,10 @@ global-density side is the transfer failure.
 This file proves only that arithmetic gate.  It does not assume any recovery theorem and it does
 not prove any character-sum cancellation.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.FullFieldNoisyCharacterTransferGate
 

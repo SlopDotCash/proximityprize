@@ -7,10 +7,6 @@ import Mathlib.RingTheory.Polynomial.Resultant.Basic
 import Mathlib.RingTheory.PrincipalIdealDomain
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Kurihara discriminant-power is SHIFT-BLIND: a precise vacuity brick for the
   `AddEnergyGcdDegreeBound` resultant target (#444, paper 2605.29312)
@@ -69,6 +65,11 @@ is shift-blind. Does not pin `δ*`. Non-vacuous as algebra, vacuous for the priz
 
 Axiom-clean target: `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Polynomial
 

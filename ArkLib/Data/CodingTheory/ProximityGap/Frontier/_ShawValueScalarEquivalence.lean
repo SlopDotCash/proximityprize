@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Shaw value scalar equivalence for the proximity-prize core (#444, door-(iv) Lane 2)
 
@@ -34,6 +31,10 @@ of normalization ambiguity from the door-(iv) reduction.  The open theorem remai
 anti-concentration / monomial-sum evaluation for the actual worst frequency.  No moment route,
 completion route, capacity claim, or thick-subgroup monotonicity is used.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.ShawValueScalarEquivalence
 

@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option autoImplicit false
-
 /-!
 # The moment-ratio lower-bound floor and its DC-crossover cap (#444)
 
@@ -42,6 +40,9 @@ This file PROVES, axiom-clean and abstractly (parametrized by `q, L_k, n, k`):
 It does NOT prove the log floor (that needs `W_k` large = the wall); it proves EXACTLY how far the
 elementary method reaches and why it stops at `O(√n)`. Honest partial result on the lower value.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.MomentRatioFloorDCCap
 

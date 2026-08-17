@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceSecondMomentEnvelope
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # BRIDGE — sub-ceiling budgets on the named second moment force strict aggregate anti-coherence (#444)
 
@@ -26,6 +22,11 @@ No CORE / cancellation / completion / moment-saving / capacity claim is made.  T
 version of the Door-(iv) obligation: any real sub-trivial second-moment estimate must prove genuine
 aggregate anti-coherence of the phase sum.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceSecondMomentSubCeiling
 

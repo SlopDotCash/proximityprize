@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetSublinearFloor
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-3: the SCATTERED-deficit sum floor — measured `S` directly walls the route (#444)
 
@@ -44,6 +41,10 @@ bound* (the exp-relaxed dilation budget) stays at/above the `√`-scale whenever
 coherence deficit is sub-`(log 2)/2`-per-level on average — which the measurement confirms at
 `a = 5..8`. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVDeficitSumScatteredFloor
 

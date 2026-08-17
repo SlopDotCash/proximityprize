@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupRepCountGcdExact
 import ArkLib.Data.CodingTheory.ProximityGap.AddEnergySumsetSupport
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-set_option linter.unusedFintypeInType false
-
 /-!
 # The gcd-degree is trivial off the sumset (#444, #357)
 
@@ -43,6 +39,11 @@ sum is the open Stepanov input). NON-MOMENT (polynomial-method / gcd-degree, no 
 energy estimate). The `Splits`/separability hypotheses are exactly those of the in-tree exact
 gcd-degree theorem it extends.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+set_option linter.unusedFintypeInType false
+
 
 open Polynomial
 open scoped Pointwise

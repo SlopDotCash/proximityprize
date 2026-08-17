@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Tactic
 import Mathlib.Algebra.Field.GeomSum
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # AVENUE Z — the v₂-ultrametric depth-circulant identity `Tr(D²)` and `λ_max` (#444, R1_v2dirac_circulant)
 
@@ -54,6 +51,10 @@ combinatorial preprocessing; the rational closed forms below are the load-bearin
 `Tr(D²)`:   2     9     73/2    585/4    4681/8
 `λ_max`:    1     5/2   21/4    85/8     341/16
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.AvZ
 

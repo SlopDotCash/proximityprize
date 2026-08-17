@@ -3,7 +3,11 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Algebra.Polynomial.Eval.Degree
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Tactic
+
+/-!
 # Char-0 coset rigidity: lacunary ⟹ binomial ⟹ coset (#444, capstone of the char-0 half)
 
 `Sweep_A44` proved a vanishing-sum subset of `μ_{2^μ}` is negation-closed (`T = −T`). This file
@@ -19,9 +23,6 @@ with `c = ±∏ t ≠ 0` forces `(−1)^{|T|} = 1`, then comparing `X¹` coeffic
 
 Axiom-clean: field + polynomial algebra. No `sorry`.
 -/
-import Mathlib.Algebra.Polynomial.Eval.Degree
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

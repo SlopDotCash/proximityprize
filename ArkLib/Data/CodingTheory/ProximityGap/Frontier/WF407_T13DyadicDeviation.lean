@@ -7,8 +7,6 @@ import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # WF407 / T13-dyadic — the per-level deviation `δ_i` of the 2-adic Gauss-period cocycle
 
@@ -79,6 +77,9 @@ new `O(1/i)`-cocycle mechanism. See `docs/kb/wf407-T13-dyadic-deviation-decay.md
 - memory `arklib-389-deep-moment-wall` (the √(n log) EVT law the floor actually rests on)
 - [ABF26] ePrint 2026/680, Issue #407.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.WF407_T13DyadicDeviation
 

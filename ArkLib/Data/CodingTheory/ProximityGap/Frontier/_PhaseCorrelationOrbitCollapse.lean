@@ -10,6 +10,13 @@ import Mathlib.Tactic
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 import ArkLib.Data.CodingTheory.ProximityGap.EtaPointwiseAutocorr
 
+/-!
+# _PhaseCorrelationOrbitCollapse
+
+Module docstring for `_PhaseCorrelationOrbitCollapse.lean`.
+-/
+
+
 set_option linter.style.longLine false
 set_option autoImplicit false
 

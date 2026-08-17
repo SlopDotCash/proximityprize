@@ -8,9 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # W7 — Skorokhod embedding of the signed ordered walk (#444)
 
@@ -69,6 +66,10 @@ martingale prerequisite fails — the optional bracket `[S]_n = n` is honest but
 bracket `⟨S⟩_n` that would drive concentration does not exist for the deterministic phase walk. The
 mean-drift it omits is exactly the `√n`-cancellation = the BGK/Paley wall. NOT a closure.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.W7Skorokhod
 

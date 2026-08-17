@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.RungBesselEnergy
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Char-0 W3-anti: the Wick step-ratio `R(r)` is antitone (lane B2, #444)
 
@@ -79,6 +76,10 @@ Verified exactly (rationals, `besselCoeff` recomputed): `min_r r·c_r²/((r+1)c_
 strictly, to `n = 1024`, `r = 55` (probe below), and the `r=1` worst case has the exact closed
 form `q_1 = c_1²/c_2 = d²/(d(2d−1)/4) = 4d/(2d−1) = 2 + 2/(2d−1) > 2`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset BigOperators
 

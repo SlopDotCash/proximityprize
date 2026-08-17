@@ -7,10 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # wf-J3 (#444): prismatic / syntomic / q-de-Rham cohomology of the Gauss-sum motive is
   ARCHIMEDEAN-BLIND — the same fence F3, with the one magnitude statement it reaches being F2.
@@ -111,6 +107,11 @@ classification (no Class-B invariant couples to the prize binding).
   `_GrossKoblitzPhaseNoGo.lean` (the `Γ_p` phase decoupling), `_wfA09_amice_iwasawa_dilation.lean`
   (Amice/Iwasawa archimedean-blindness), `docs/kb/Iinf-campaign/28-irreducibility-theorem-rigorous.md`.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Complex
 

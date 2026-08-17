@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceEnvelopeCapstone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceVarianceRouteCapstone
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # BRIDGE — transfer the variance-core envelope+attainment to the NAMED second-moment object (#444)
 
@@ -35,6 +31,11 @@ NO CORE / cancellation / completion / moment-saving / capacity / sub-Poisson-upp
 of the closed envelope and its equality cases onto the named second-moment object.  The open prize
 content (a sub-Poisson UPPER bound on the second moment / on `‖Σ Jphase‖²`) is untouched.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceSecondMomentEnvelope
 

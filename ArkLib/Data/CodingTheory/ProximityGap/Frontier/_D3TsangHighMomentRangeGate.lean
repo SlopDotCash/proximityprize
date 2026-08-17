@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # D3 Tsang/Soundararajan high-moment range gate
 
@@ -23,6 +21,9 @@ constant depth at fixed exponent `beta`, while the Paley/prize transfer needs de
 `log q`.  The missing ingredient is not another diagonal-range mean-value bound; it is uniform
 wraparound control beyond that range.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.D3TsangHighMomentRangeGate
 

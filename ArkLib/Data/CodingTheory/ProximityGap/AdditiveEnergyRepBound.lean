@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Round 9 (Issue #232, ABF26) — additive energy `≤ (1+M)|G|²` from a representation bound (over `F_q`).
 
@@ -32,6 +30,9 @@ pinning the *entire* remaining gap to that one curve-point bound. All `sorry`-fr
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

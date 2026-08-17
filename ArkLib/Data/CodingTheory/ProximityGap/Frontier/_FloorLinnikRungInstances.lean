@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AssaultV2_FloorLocalizationN32
 
-set_option linter.style.longLine false
-
 /-!
 # The two RESOLVED Linnik least-prime rungs `a = 4, 5` (off-BGK floor, #444 / #464)
 
@@ -36,6 +34,9 @@ exponent `< 4` for powerful moduli, still open — GRH gives `2+ε`), and it doe
 "verified `17 < 16^4`, `97 < 32^4`" remarks into in-tree theorems with the EXACT `2^(5a)` search bound
 the closure premise uses. CORE stays OPEN.
 -/
+
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.Frontier.FloorLocalization
 

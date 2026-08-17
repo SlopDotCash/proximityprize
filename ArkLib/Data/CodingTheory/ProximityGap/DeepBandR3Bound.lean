@@ -15,6 +15,8 @@ is identical EXCEPT it imports the real `DeepBandSubsetSumSpectrum` and calls th
 -/
 import Mathlib
 
+/-! ## Inlined Vieta pin (mirror of in-tree witness_pin_eq_neg_sum, Mathlib-only deps). -/
+
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false
 set_option maxHeartbeats 1200000
@@ -24,7 +26,6 @@ namespace ScratchVerify
 
 open Finset Polynomial
 
-/-! ## Inlined Vieta pin (mirror of in-tree witness_pin_eq_neg_sum, Mathlib-only deps). -/
 
 private theorem prodXsubC_dvd_of_roots {F : Type*} [Field F] (P : F[X]) (S : Finset F)
     (hS : ∀ ζ ∈ S, P.eval ζ = 0) : (∏ ζ ∈ S, (X - C ζ)) ∣ P := by

@@ -7,10 +7,6 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Nat.GCD.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # CREATE — the relation-NORM **factorization-clustering statistic** `ClusterRate`, the
 **sub-Poisson factorization ⟹ off-diagonal cancellation** theorem, and the empirical verdict
@@ -104,6 +100,11 @@ cancellation — all axiom-clean.  The PROBE supplies an exact, decisive empiric
 order `r ≈ log p` (here verified exactly to `n=8, r=3`; the all-`μ` version is the residual).  NOT a
 closure.  Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.NormFactorizationClustering
 

@@ -7,10 +7,6 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # A1-break-moment — the SIGNED Hankel functional, and the proof it CANNOT break moment-necessity (#444)
 
@@ -98,6 +94,11 @@ nonnegative energy count `E₂` — so the claim "`D₁` escapes the moment cone
 * `BreakMomentNecessityReducesToLadder` — the named verdict Prop: the signed Hankel functional
   reduces to the nonnegative energy ladder; REDUCES, proven.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 

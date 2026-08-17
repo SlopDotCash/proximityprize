@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.I031MFromPointwise
 import ArkLib.Data.CodingTheory.ProximityGap.ConstantIndexSubGaussianPeriod
 
-set_option linter.style.longLine false
-
 /-!
 # The #407 Constant-Index conjecture discharges the I031 prize-target `M(μ_n)` bound (#444, #407)
 
@@ -44,6 +42,9 @@ touch the open input — `ConstantIndexSubGaussianPeriodBound` IS the BGK/Lamzou
 capstone are now proven to be two consumers of one prize-target M-bound; the interface is fully wired.
 NON-MOMENT, EXTEND-proven. CORE `M(μ_n) ≤ C·√(n·log(p/n))` OPEN.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 

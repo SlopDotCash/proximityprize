@@ -7,10 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # A8-wild — the EXPLICIT-FORMULA / ZERO-DENSITY LEAP for `M = max_{b≠0}|η_b|` (#444)
 
@@ -145,6 +141,11 @@ is a real escape of the *theorems as stated* and an honest non-escape of the *un
 * `WildLeapVerdict` — the verdict Prop: the object escapes both HYPOTHESES but the prize through it
   is equivalent to the named OPEN zero-density estimate; PROMISING, not closure.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset Real
 

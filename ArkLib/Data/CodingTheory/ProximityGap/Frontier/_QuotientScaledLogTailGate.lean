@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientTailSupConsumer
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Scaled-log quotient tail gate
 
@@ -31,6 +28,10 @@ compatible with one bad quotient atom.  This isolates the constant pressure in s
 for `T^2 = C^2 * n * log m` and rate `c*T^2/V`, the scaled-log constant is
 `κ = c*C^2*n/V`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.QuotientScaledLogTailGate
 

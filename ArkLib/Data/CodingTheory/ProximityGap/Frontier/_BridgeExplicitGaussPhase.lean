@@ -8,9 +8,6 @@ import Mathlib.Analysis.RCLike.Basic
 import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # ANGLE U4 — the explicit-Gauss-phase / Galois-module DOF lever (#444)
 
@@ -95,6 +92,10 @@ prize itself — it pins WHY the one exact reduction on Gauss sums (HD) cannot b
   is tautological), memory `issue407-hasse-davenport-dof-n4` (free DOF `= n/4` exactly, `n=8…256`).
 - [ABF26] Arnon–Boneh–Fenzi, *Open Problems in List Decoding and Correlated Agreement*, #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

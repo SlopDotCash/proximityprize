@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.NumberTheory.ArithmeticFunction.Misc
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80N (#466, 2026-07-10): the DIVISOR fourth-power bound `d(y)⁴ ≤ 19680·y` —
   the PURE-Nat input that fires G80O, fully proven (axiom-clean, no named hypotheses).
@@ -33,6 +30,10 @@ no prize claim. CORE remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

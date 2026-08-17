@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteParsevalLower
 import ArkLib.Data.CodingTheory.ProximityGap.IncidenceDeviationCharSum
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedFintypeInType false
-set_option linter.unusedDecidableInType false
-
 /-!
 # The CONCRETE trivial ceiling `M(μ_n) ≤ n` and the citable two-sided prize bracket (#444)
 
@@ -41,6 +36,12 @@ inside that gap. This file supplies the SAFE, citable upper rung of the bracket 
 consolidation over the real `eta`. CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN — no cancellation,
 moment, completion, or capacity claim is made.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedFintypeInType false
+set_option linter.unusedDecidableInType false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

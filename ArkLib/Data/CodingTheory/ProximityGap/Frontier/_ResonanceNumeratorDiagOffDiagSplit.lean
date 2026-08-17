@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceLogLocalizedOffDiagonal
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane 2/3 — the coset resonator numerator splits EXACTLY into
 # (Parseval diagonal) + (named off-diagonal autocorrelation) (#444)
@@ -50,6 +47,10 @@ needs no empirical probing. It makes NO claim about the SIZE of `Off` (that is t
 
 All theorems are axiom-clean: `{propext, Classical.choice, Quot.sound}`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta subgroup_gaussSum_secondMoment)

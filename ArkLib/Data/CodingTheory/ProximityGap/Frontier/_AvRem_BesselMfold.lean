@@ -10,9 +10,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvW0_BesselIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvX_LamLeungTwoPowerAntipodalBalan
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvUC_BesselIdentityFormalized
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The convolution-decoupling of the char-0 Bessel energy (#444, avenue Rem)
 
@@ -70,6 +67,10 @@ a finite bad-prime set.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.NegationClosedWalk

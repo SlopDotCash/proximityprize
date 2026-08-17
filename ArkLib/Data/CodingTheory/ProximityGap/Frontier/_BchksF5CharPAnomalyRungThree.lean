@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.REnergyThreeCharPLowerBound
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The char-`p` additive-energy anomaly at rung `r = 3`: BOTH-SIDED squeeze (#444)
 
@@ -45,6 +41,11 @@ deep-`r` wall, the BGK/Burgess √-cancellation core of #444). This file proves 
 NO CORE/cancellation, NO completion, NO capacity, NO beyond-Johnson/δ* claim. It records the exact
 exponent-0 squeeze at rung 3, with the lower half unconditional. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open ArkLib.ProximityGap.Frontier.REnergyThreeCharPLowerBound
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

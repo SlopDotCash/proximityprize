@@ -7,10 +7,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVXGatedBaseThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVXGatedTelescopeBridge
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Door-(iv) Lane-3: the gate-threshold base correction, on the REAL `levelWorst` character sum (#444)
 
@@ -40,6 +36,11 @@ covers only the `μ − k*` cancelling levels; the `k*` thin base levels are pro
 Lane-3 constraint companion to the XGate reduction, on the concrete character sum.  NO CORE /
 cancellation / completion / moment / anti-concentration / capacity claim.  CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

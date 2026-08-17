@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyCorrection
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvW0_BesselWickAllR
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # DC-subtracted deep moment: the prize bound reduces (conditionally) to `W_K ≤ 0` via the LANDED
   char-0 Bessel-Wick ceiling — but `W_K ≤ 0` is NOT universal (#444, angle DC_SUBTRACTED_DEEP)
@@ -69,6 +66,10 @@ the proven `_AvFrontier_KMomentBarrier`, no finite-order method supplies it, and
 `_AvCP_AAPKernelCountermodel` — but `A_K ≤ Wick_K` survives). The char-0 half (`E_C ≤ Wick`) is
 genuinely landed.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 open ArkLib.ProximityGap.SubgroupGaussSumMoment

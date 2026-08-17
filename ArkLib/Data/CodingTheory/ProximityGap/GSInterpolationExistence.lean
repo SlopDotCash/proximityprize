@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib
+
+/-!
 Round 14, Angle B — Guruswami–Sudan interpolation FRONT END via dimension counting.
 Self-contained over Mathlib only (no ArkLib imports).
 
@@ -24,7 +26,6 @@ the root-extraction step `(Y - f(X)) ∣ Q` for high-agreement codewords, the re
 list-size bound, and any decoding-radius improvement past the Johnson radius. This file is
 exactly the linear-algebra front end of the GS route, verified end to end.
 -/
-import Mathlib
 
 set_option maxHeartbeats 800000
 

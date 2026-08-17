@@ -7,10 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTail
 import Mathlib.Topology.Algebra.Order.Field
 import Mathlib.Order.Filter.AtTopBot.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The Rudnev point-plane STALL at β=4: incidence engines pinch `μ_n` to α=1 (#444, [rudnev-pointplane-stall])
 
@@ -79,6 +75,11 @@ granted, it stalls at `α = 1` by the dilution above. NOT a closure, NOT a refut
 the cleanest machine-checked statement of *why* the Rudnev/MRS/Stevens-de Zeeuw engine is vacuous at
 `β = 4`. The prize gap (`α: 1 → 1/2`) is pure phase cancellation, invisible to magnitude energies.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

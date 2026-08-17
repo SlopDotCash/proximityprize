@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyCorrection
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvW0_BesselWickAllR
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # SOS_CORRECT_OBJECT: the exact DC-rescue ledger for the per-K scalar `d_K := Wick_K − A_K ≥ 0`
   — and the proof that NO marginal SOS/moment certificate can supply it (#444)
@@ -75,6 +71,11 @@ This is a **structural reduction + an SOS-impossibility verdict**, NOT a closure
 marginal SOS certificate supplies `d_K ≥ 0` is grounded in exact integer computation (the free
 relaxation violates), explaining WHY the per-K scalar still needs the whole-spectrum/BGK input.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 open ArkLib.ProximityGap.SubgroupGaussSumMoment

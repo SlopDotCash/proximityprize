@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # A10 OBSTRUCTION (#444): generic chaining over the dilation tower is void —
 the doubling increment is REAL and COHERENT, so the Talagrand/Dudley sub-Gaussian
@@ -93,6 +91,9 @@ obstruction consumes, NOT silently discharged.
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`, no `axiom`,
 no `native_decide`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.WfA10TowerChainingObstruction
 

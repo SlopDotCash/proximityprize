@@ -7,8 +7,6 @@ import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # `_ARX_1`: Stein's method / exchangeable-pair Poisson approximation for the wraparound count
 `W_r` — a non-moment concentration handle. (#444)
@@ -77,6 +75,9 @@ So Stein's method does not bypass the moment fence: it **re-expresses** the open
 to the open Wick bound `A_r ≤ C·(2r−1)‼·n^r`. The residual is named precisely and the no-go is
 machine-checked. `isPrizeClosure` is false. Issue #444.
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.ARX1
 

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
 import ArkLib.Data.CodingTheory.ProximityGap.SidonModNegEnergyEquality
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The `r = 3` rung of the open energy ladder for `μ_n`, conditional on the char-0 census value (#444)
 
@@ -78,6 +75,10 @@ under-det/additive-energy face). EXTEND-proven on `GaussianEnergyBound` +
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444 / #389 / #450.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.GaussPeriodMomentBound
 open ArkLib.ProximityGap.EnergyEqualitySidonModNeg

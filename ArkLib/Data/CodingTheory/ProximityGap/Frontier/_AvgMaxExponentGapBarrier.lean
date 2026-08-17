@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumWorstCaseFromMoment
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The avg-vs-max exponent-gap barrier (#444): the B7 obstruction, wired and exact
 
@@ -73,6 +70,10 @@ locates the wall. It does **not** bound `M` from above (the true `M ≈ n^{0.9}`
 fully axiom-clean and wired to the actual periods via the proven in-tree identities — converting
 "we could not connect" into "here is the exact obstruction, proven." Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

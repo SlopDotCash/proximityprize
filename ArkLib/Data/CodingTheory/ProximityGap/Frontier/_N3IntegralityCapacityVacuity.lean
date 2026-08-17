@@ -7,10 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # N3 — INTEGRALITY-RIGIDITY of `disc(P)` is VACUOUS for the house: the capacity collapse (#444)
 
@@ -74,6 +70,11 @@ does NOT bound the house and does NOT pin `δ*`. `escapesTrichotomy = false` (re
 
 Axiom-clean target: `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.N3IntegralityCapacityVacuity
 

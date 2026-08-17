@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CrossStepRungSlackDepletionSeven
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvL2_E9ClosedForm
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The rung-slack/depletion-defect bridge at `r = 8` (#444)
 
@@ -21,6 +18,10 @@ The bridge is only an exact algebraic reformulation of one finite rung.  It does
 `∀ r` cross-step statement, does not transfer the char-`0` moment ladder to char `p` at prize depth,
 and does not touch CORE.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.ShawDepletionEight
 

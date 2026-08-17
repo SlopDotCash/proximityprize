@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Finite candidate families reduce to their own maximum
 
@@ -24,6 +21,10 @@ whose bad-scalar count is strictly larger than every member of `R` refutes famil
 Thus a finite catalogue of floor/binder obstructions is only useful after proving that its internal
 maximum dominates the whole stack universe.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open scoped NNReal ENNReal ProbabilityTheory

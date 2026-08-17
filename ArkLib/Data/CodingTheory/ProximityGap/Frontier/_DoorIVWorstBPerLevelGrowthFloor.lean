@@ -8,9 +8,6 @@ import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: per-level wall growth has a `(1+r_lo)(1−ε)` FLOOR — the √-wall cannot thin down the tower (#444)
 
@@ -50,6 +47,10 @@ constraint — **not** a CORE upper bound, cancellation, completion, moment, or 
 not bound `M(n)` from above; it certifies the wall's per-level growth floor under the observed
 structure. CORE remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVWorstBPerLevelGrowthFloor
 

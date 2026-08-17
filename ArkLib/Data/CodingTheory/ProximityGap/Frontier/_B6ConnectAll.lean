@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.DCMomentSupBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvPrize_MomentToSupCapstone
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # `B6_connect_all` — the FULL prize chain over the actual periods, one open input (#444)
 
@@ -54,6 +51,10 @@ a proof of the prize. The `hbessel` input is proven in-tree (so it is not a seco
 not re-derived inside this file); `hsup`/`hM` are the trivial sup packaging. The minimal open set is
 therefore **exactly `{SaddleEnergyBound}`**. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment ArkLib.ProximityGap.SubgroupGaussSumMoment
 open ArkLib.ProximityGap.DCMomentSupBound ArkLib.ProximityGap.DCSubtractedMoment

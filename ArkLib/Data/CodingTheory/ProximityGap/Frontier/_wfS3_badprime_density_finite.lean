@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Nat.PrimeFin
 import Mathlib.Data.Nat.Factorization.Basic
 
-set_option linter.style.longLine false
-set_option linter.style.openClassical false
-
 /-!
 # S3: the bad-prime SET is FINITE and explicitly counted (#444, lane wf-S3)
 
@@ -73,6 +70,10 @@ good at depth `r ≈ ln q` (the deep-depth bad count grows `n^{Θ(ln n)}`, the r
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom. Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.style.openClassical false
+
 
 namespace ArkLib.ProximityGap.Frontier.WFS3
 

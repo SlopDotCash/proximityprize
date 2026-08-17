@@ -3,14 +3,15 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib
+
+/-!
   Round 15, Angle D — MCA-side bad-scalar spread for the proximity-gap prize context
   (Ethereum Proximity Prize / ABF26 / ArkLib #232).
 
   Self-contained over Mathlib only.  The mutual-correlated-agreement (MCA) structure is
   restated abstractly below; nothing is imported from ArkLib.
 -/
-import Mathlib
 
 /-!
 # MCA-side lower-bound bridge: bad-scalar spread on a pencil

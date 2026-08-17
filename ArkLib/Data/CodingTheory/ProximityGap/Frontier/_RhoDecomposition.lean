@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+
+/-!
 # The exact ρ-decomposition: prize criterion = wraparound ≤ an explicit, partly-proven slack (#444)
 
 This brick records the exact algebraic structure behind the corrected (DC-subtracted) prize criterion
@@ -30,7 +32,6 @@ names the open half (the wraparound) against an explicit, growing budget.
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
 
 set_option linter.style.longLine false
 set_option linter.unusedVariables false

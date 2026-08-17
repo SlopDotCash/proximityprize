@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodSidonBound
 
-set_option linter.style.longLine false
-
 /-!
 # The Sidon worst-period bound in explicit fourth-root / `√` form (#389/#444)
 
@@ -33,6 +31,9 @@ prize scale `q = n^β` (`β > 2`) this range is met, but the bound `(3q)^{1/4}�
 CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN — this only extends the proven `r = 2` brick to its stated
 sup-norm conclusion.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

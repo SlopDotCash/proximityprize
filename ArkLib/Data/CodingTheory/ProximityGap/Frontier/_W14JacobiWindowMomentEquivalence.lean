@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option autoImplicit false
-set_option maxHeartbeats 1000000
-
 /-!
 # W14 — the Jacobi window is a LOSSLESS RECODING of the low moments:
   depth-`K` window ⟺ moments to order `2K+1` (the Hankel/Lax-pair seam collapse) (#466)
@@ -77,6 +74,10 @@ structure at `k*` adds nothing a moment functional lacks.  The named open input
 (Gram–Schmidt / Hankel-ratio; NOT proven here) and is consumed visibly.  The BGK/Paley wall
 (`M ≤ C√(n log p)`, equivalently `k* = O(log p)`) remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option maxHeartbeats 1000000
+
 
 namespace ArkLib.ProximityGap.Frontier.W14WindowMoment
 

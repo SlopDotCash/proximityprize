@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.WraparoundKToTransferSlack
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ConvergenceHub
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-
 /-!
 # From the explicit wraparound `K^r` envelope to the convergence hub
 
@@ -21,6 +18,10 @@ This file repackages that estimate at the canonical spectral/prize interface.  T
 is the transparent scale comparison that the chosen order `r`, slack `K`, and prize constant `C`
 indeed place `sqrt (2 e K |G| r)` below `C * sqrt (|G| log (q/|G|))`.
 -/
+
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+
 
 open AddChar
 open ArkLib.ProximityGap.DCSubtractedMoment

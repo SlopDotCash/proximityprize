@@ -7,8 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # The char-`p` (true `η`-measure) Jacobi spectral edge is BOUNDED — but only trivially (#444)
 
@@ -54,6 +52,9 @@ anti-concentration/capacity claim. CORE (the upper bound `M ≤ C√(n log p)`) 
 * F3  `topeig(J) ≤ Gershgorin row-sum ≤ max_k (|a_k| + b_k + b_{k-1})`.
 The conjectural `b_k ≤ (1/√2)√(n log p)` is recorded there as a probe note ONLY (it is the wall).
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.JacobiBounded
 

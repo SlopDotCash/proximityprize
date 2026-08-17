@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MomentTailRateGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17TchiMomentIdentities
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option linter.style.longLine false
-
 /-!
 # Round 17: high-moment spike gate for Wick-shaped budgets
 
@@ -32,6 +30,9 @@ beat exactly this finite-atom rate.  It is a bookkeeping guardrail for R17/R18: 
 high-moment closure must show the Markov rate has crossed the one-spike threshold, not merely that
 some fixed shallow moment is Wick-shaped.
 -/
+
+set_option linter.style.longLine false
+
 
 set_option autoImplicit false
 

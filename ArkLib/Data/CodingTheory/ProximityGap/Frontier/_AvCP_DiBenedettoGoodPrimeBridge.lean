@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The di-Benedetto good-prime bridge for the char-`p` transfer (#444)
 
@@ -62,6 +59,10 @@ a clean reduction/bound, not closure. `isPrizeClosure = false`.
 - In-tree: `_NoExcessOnsetThreshold.lean` (`W_r`, energy split), `BGKExponentReduction.lean`
   (`diBenedettoDelta = 31/2880`), `DiBenedettoBetaValidityWindow.lean` (β-window).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.DiBenedettoGoodPrimeBridge
 

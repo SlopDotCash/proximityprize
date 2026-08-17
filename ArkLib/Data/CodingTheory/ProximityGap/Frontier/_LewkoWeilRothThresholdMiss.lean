@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Tactic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # SP-4 (Lewko nonlinear-Roth via one-variable Weil): VACUOUS for `μ_n` at `β = 4` (#444)
 
@@ -77,6 +74,10 @@ tool and is NOT what this file tests.
   density floor and the one-variable-Weil config-count engine.
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement.* #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

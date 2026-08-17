@@ -8,8 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # Form-D exact-sup machinery: the char-0 Hermite recurrence `b_k²=n·k` and the Jacobi
 # Gershgorin edge bound `M ≤ 2·max_k b_k` (#444, BUILD TASK `formD-exact-sup`)
@@ -57,6 +55,9 @@ This file does NOT close the face and does NOT fabricate any cancellation/anti-c
 The `2` vs `√2` in the constant is genuine (Gershgorin is loose by a √2 at the semicircle edge); it is
 NOT the wall — the wall is the depth `k_max`.  CORE remains OPEN.
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.PIN1
 

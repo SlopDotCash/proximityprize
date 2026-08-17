@@ -8,10 +8,6 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fintype.Card
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedDecidableInType false
-
 /-!
 # Door-(iv) constraint: the worst-frequency PHASE-POSITION CURVATURE is GENERIC —
   the discrete-curvature (second-difference) lever is a DEAD lever (#464)
@@ -60,6 +56,11 @@ ASYMPTOTIC-GUARD-COMPLIANT (a *negative* / refutation result: curvature collapse
 no capacity / beyond-Johnson / `δ*` interior claim).  It does NOT bound CORE; it removes one named
 non-energy lever (discrete curvature) from door (iv).  CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedDecidableInType false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVPhaseCurvatureGeneric
 

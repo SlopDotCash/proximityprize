@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleDispersion
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # The Jacobi-cocycle CANCELLATION GAP: how much the cocycle must do off the trivial baseline
 
@@ -46,6 +41,12 @@ made. Prize CORE stays OPEN. The point is to record, kernel-checked, exactly how
 off the trivial baseline the prize demands — so the dispersion target is never mistaken for a small
 perturbation of the trivial character.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiCocycleCancellationGap
 

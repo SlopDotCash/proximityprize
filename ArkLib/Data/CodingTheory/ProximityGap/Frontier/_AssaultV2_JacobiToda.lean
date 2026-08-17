@@ -7,8 +7,6 @@ import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # The discrete-Toda / Lax-pair attack on the Jacobi turnover `k*` ROUTES BACK to the moments
   (#444, form D — `JACOBI_D1_toda`)
@@ -78,6 +76,9 @@ is exactly the data form A already controls (the moments), and the turnover `k*`
 bare BGK/Paley wall `M ≤ C√(n log p)` — equivalently `k* = O(log p)` — remains **OPEN**; this brick
 certifies, axiom-clean, that the discrete-Toda framing supplies no new door to it.
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.AssaultV2JacobiToda
 

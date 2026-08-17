@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.NumberTheory.NumberField.House
 import Mathlib.NumberTheory.NumberField.Norm
 import Mathlib.Analysis.MeanInequalities
-set_option linter.style.longLine false
-set_option autoImplicit false
 
 /-!
 # height-gate POWER-MEAN: the higher-moment generalization of the AM-GM norm bound (#407)
@@ -48,6 +46,9 @@ cancellation.  It does NOT, by itself, beat the intrinsic `n = 64` height-gate c
 (`HeightGateThresholdAnalysis.leverH_ceiling_is_64`) at a *fixed* `r`; its value is as the
 `r`-parametrized substrate for the moment-method tower.
 -/
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset NumberField Module Real
 

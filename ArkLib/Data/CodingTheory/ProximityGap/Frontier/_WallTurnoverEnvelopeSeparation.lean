@@ -8,9 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # WALL-7 — the Toda-resolvent edge bound: an UNCONDITIONAL tridiagonal-edge upper bound on `M`,
 within a factor `√2` of the prize value (#444, wildcard new mechanism)
@@ -79,6 +76,10 @@ names the residual exactly.
 6. `prize_residual_sqrt2` — the exact residual statement: the prize value `√(2 n k*)` and this
    ceiling `2√(n k*)` differ by exactly the factor `√2`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.Wall7
 

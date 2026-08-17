@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Finset.Card
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The off-BGK floor is necessary, not sufficient
 
@@ -24,6 +21,10 @@ using the binder-family floor localization (`epsMCA_ge_far_incidence`, a one-fam
 surface) as if it were the `WorstCaseIncidenceBounded` input required by the delta-star lower pin.
 Closing the binder family removes an obstruction; it does not by itself prove the prize floor.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.FloorNecessaryNotSufficient
 

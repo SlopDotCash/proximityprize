@@ -5,8 +5,6 @@ Authors: ArkLib Contributors (#466)
 -/
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 
-set_option autoImplicit false
-
 /-!
 # G104: three affine scalar blocks already force a syzygy
 
@@ -22,6 +20,9 @@ continuation must bound the multiplicities and intersections of the witness row 
 more structure), rather than merely detect a global syzygy.  This does not bound or construct
 concrete `mcaEvent` witnesses.  Issue #466/#507.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.G104AffineTripleSyzygyNoGo
 

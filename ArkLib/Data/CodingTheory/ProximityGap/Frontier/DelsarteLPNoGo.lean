@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Tactic
+
+/-!
 # The Delsarte / LP method NO-GO for the Gauss-period house (#444)
 
 The $1M open core is the house
@@ -40,8 +43,6 @@ CORE `M(μ_n) ≤ C√(n log(p/n))` UNCHANGED/OPEN.
 
 Axiom-clean: `⊆ {propext, Classical.choice, Quot.sound}`. No `sorry`/`axiom`/`native_decide`.
 -/
-import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Tactic
 
 namespace ArkLib.ProximityGap.DelsarteLPNoGo
 

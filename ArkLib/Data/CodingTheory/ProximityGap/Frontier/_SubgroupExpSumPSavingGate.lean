@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Power-saving exponent gate for subgroup exponential-sum inputs
 
@@ -28,6 +25,10 @@ exponent bookkeeping: the `p^{-nu}` saving reaches the prize scale only when
 At the binding beta-four diagonal this is `nu >= 1/8`.  The file proves only the arithmetic
 contract.  It does not assert any BGK theorem or any value of `nu`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.SubgroupExpSumPSavingGate
 

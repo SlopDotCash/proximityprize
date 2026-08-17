@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvT3a_DiBenedettoBeatAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiBenedettoNearSidonImprovement
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # [A3-assemble-beat] di-Benedetto near-Sidon BEAT at β=4 — assembled, with the all-prime input named (#444, AvJ)
 
@@ -59,6 +56,10 @@ filled. This file states that conditional beat cleanly and pins the SOTA compari
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no `native_decide`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.Frontier.AvT3aDiBenedettoBeat (beatExponent DiBenedettoThm31
   GoodPrimeEnergyTransfer diBenedetto_beat beatExponent_between)

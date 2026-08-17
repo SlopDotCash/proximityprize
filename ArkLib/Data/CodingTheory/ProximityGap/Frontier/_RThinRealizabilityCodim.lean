@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.Algebra.Polynomial.Div
+import Mathlib.Algebra.Polynomial.Monic
+import Mathlib.Tactic
+
+/-!
 Scratch: the codim-`c` realizability constraint for the deployed far-line incidence (#407, B1).
 
 GOAL (b1-realizability-sharp, wave 3).  Extend `_RThinResidueDegree` (excess = residue degree)
@@ -25,10 +30,6 @@ but this bounds the SET, not the bad-`γ` COUNT (the incidence `I` = `#{γ}`); t
 open object (numerics: `I = 9,13,89` for `n=8,12,16`, off the `n+1` line at `n=16` — n-GROWING,
 NOT `k`-governed).  This file pins the realizability structure exactly and names the count gap.
 -/
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Algebra.Polynomial.Div
-import Mathlib.Algebra.Polynomial.Monic
-import Mathlib.Tactic
 
 set_option autoImplicit false
 

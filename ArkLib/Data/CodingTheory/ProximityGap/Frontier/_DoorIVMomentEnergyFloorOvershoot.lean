@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentHierarchyEner
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-3: the moment door overshoots the prize floor — INTERNALLY (#444)
 
@@ -44,6 +41,10 @@ Scope: **constraint capstone** for the tetrachotomy's door-(i) side.  It proves 
 overshoots the prize floor; it gives **no** CORE bound, **no** cancellation, anti-concentration,
 completion, or capacity claim.  CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVMomentEnergyFloorOvershoot
 

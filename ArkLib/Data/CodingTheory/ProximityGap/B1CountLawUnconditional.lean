@@ -9,6 +9,13 @@ import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import ArkLib.Data.CodingTheory.ProximityGap.B1TopDirectionCountLaw
 
+/-!
+# B1CountLawUnconditional
+
+Module docstring for `B1CountLawUnconditional.lean`.
+-/
+
+
 open Finset
 
 namespace SubsetSurj

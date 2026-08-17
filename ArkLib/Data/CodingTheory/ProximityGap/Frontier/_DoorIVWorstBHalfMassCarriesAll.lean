@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVComplexRayCoherence
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: at the worst frequency the coset-half COHERENCE is exactly 1, so the
 period magnitude equals the HALF-MASS and the cross-half coherence contributes NOTHING (#444)
@@ -49,6 +46,10 @@ the descent), NOT a CORE/cancellation/completion/moment/capacity claim: it does 
 sharpens `_DoorIVComplexRayCoherence` (the `ρ = 1 ↔ SameRay` characterization) into the worst-`b`
 saturating instance the probe exhibits.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DoorIVWorstBHalfMassCarriesAll
 

@@ -7,8 +7,6 @@ import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Door IV ("outside the moment hierarchy" fork): the WORST-b internal term geometry is the generic
 # large deviation of n unit vectors — its coherence is a magnitude (L²) object, no non-moment lever
@@ -54,6 +52,9 @@ coherent (aligned, forward) mass `Σ wⱼ` of `|η_b|` is bounded by the L² dat
 magnitude data (`Σ wⱼ²`) — the SAME 2nd-moment object that is the dead Plancherel/EVT wall. There
 is no escape to a phase/anti-concentration object the moment hierarchy doesn't already see.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DoorIVWorstBParticipationGeneric
 

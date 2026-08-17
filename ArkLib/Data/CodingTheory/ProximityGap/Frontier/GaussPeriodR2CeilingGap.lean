@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthTwo
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The `r = 2` completion ceiling, in the prize's native sup-norm units — and its honest
 # POLYNOMIAL-IN-`n` gap to the prize (#444)
@@ -53,6 +50,10 @@ The prize `M(μ_n) ≤ C·√(n·log(p/n))` lives at deep `r ≈ ln q` and stays
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open scoped NNReal
 

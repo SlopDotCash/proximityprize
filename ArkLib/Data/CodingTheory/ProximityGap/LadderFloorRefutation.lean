@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # The monomial ladder is NOT the list-maximal floor (Issue #407, `*_REFUTED`)
 
@@ -47,6 +45,9 @@ was 9 (a sub-count); both strictly exceed `N_fib = 7`.
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #407.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.LadderFloorRefutation
 

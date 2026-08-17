@@ -5,12 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._EtaCosetOrbitMultiplicity
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedFintypeInType false
-
 /-!
 # Worst-frequency orbit lower bound for the door-IV object (#444)
 
@@ -30,6 +24,13 @@ Honesty: this is quotient/multiplicity bookkeeping only.  It proves no upper bou
 no anti-concentration, and no CORE/prize closure.  The missing theorem remains a bound on the shared
 period value on each quotient orbit.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

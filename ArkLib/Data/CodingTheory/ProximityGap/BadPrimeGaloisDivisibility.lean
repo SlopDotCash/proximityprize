@@ -11,9 +11,6 @@ import Mathlib.RingTheory.IntegralClosure.IsIntegralClosure.Basic
 import Mathlib.Algebra.BigOperators.Associated
 import Mathlib.Algebra.Polynomial.AlgebraMap
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Discharging the Galois-divisibility hypothesis of the bad-prime norm bound (#407)
 
@@ -49,6 +46,10 @@ Galois divisibility input now *proven*.  The archimedean size half (`house_aeval
 fully assembled `bad_prime_galois_unconditional` is `p^r ≤ (Σ|coeff f|)^{[K:ℚ]}` with **no
 hypotheses about `N` at all** — the bad-prime soundness bound is now unconditional.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open scoped NumberField
 open NumberField Algebra Module Finset Polynomial

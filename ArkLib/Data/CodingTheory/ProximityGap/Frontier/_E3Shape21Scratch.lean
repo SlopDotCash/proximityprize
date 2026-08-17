@@ -7,14 +7,15 @@ import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._E3StrataCount
 import Mathlib.Tactic
 
+/-! Scratch: the per-P fiber count for shape-(2,1). If this lands, shape-(2,1)=360 follows by
+summing over P. Fiber bijection: c ↦ ({i∈P : c i = x}, {i∈Pᶜ : c i = y}) to a product of
+two `powersetCard`s. -/
+
 open ArkLib.ProximityGap.Frontier.E3StrataCount (twoValue_count)
 
 set_option linter.style.longLine false
 set_option autoImplicit false
 
-/-! Scratch: the per-P fiber count for shape-(2,1). If this lands, shape-(2,1)=360 follows by
-summing over P. Fiber bijection: c ↦ ({i∈P : c i = x}, {i∈Pᶜ : c i = y}) to a product of
-two `powersetCard`s. -/
 
 open Finset
 

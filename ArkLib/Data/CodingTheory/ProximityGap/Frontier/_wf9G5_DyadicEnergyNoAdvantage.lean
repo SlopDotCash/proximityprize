@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AR_MomentOptimizedSupNorm
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # wf-G5 — the dyadic 2-power structure gives NO sum-product / energy advantage (#444)
 
@@ -51,6 +47,11 @@ char-`p` energy-transfer wall for `μ_n` as for any subgroup, not a structure-ex
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #444. Tag: CHAR0-ONLY / REDUCED.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

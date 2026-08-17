@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80YArcEquivalenceConverse
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80X (#466, 2026-07-10): the CERTIFICATE→PRIZE ENDPOINT — formal AM-GM over the
   arc count K: an ε-uniformity certificate yields `‖charSum‖ ≤ 2√(2π·#S·ε) + ε`
@@ -43,6 +40,10 @@ input. CORE remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

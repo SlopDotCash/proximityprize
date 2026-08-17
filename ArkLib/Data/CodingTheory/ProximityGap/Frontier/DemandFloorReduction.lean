@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib
+
+/-!
 # `DemandFloorReduction` — the deep-band prize floor reduced to one orbit-count conjecture (#444)
 
 The demand-side prize floor (CensusDomination) asks that the deep-band distinct-bad-scalar count
@@ -36,7 +38,6 @@ clear is `n · O_P = 2m · O_P ≤ K = 2^r · C(m, r)`. Given `O_P ≤ C(m, r−
 clearance lemma `2·m·r ≤ 2^r·(m − r + 1)` (valid for `r ≥ 4`, `2r ≤ m`, i.e. `n ≥ 4r`) and the
 Pascal identity `r · C(m, r) = (m − r + 1) · C(m, r − 1)`.
 -/
-import Mathlib
 
 namespace ArkLib.ProximityGap.DemandFloorReduction
 

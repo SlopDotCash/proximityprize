@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.NumberTheory.JacobiSum.Basic
 import Mathlib.Algebra.Field.GeomSum
 
-set_option linter.style.longLine false
-
 /-!
 # The subgroup tangent sum is a Jacobi-sum average (Issue #407)
 
@@ -41,6 +39,9 @@ collapse the inner `∑_{i<m} (χ x)^i` by the geometric-sum / orthogonality dic
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #407.
 - Mathlib `Mathlib/NumberTheory/JacobiSum/Basic.lean` (`jacobiSum`).
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open scoped Classical

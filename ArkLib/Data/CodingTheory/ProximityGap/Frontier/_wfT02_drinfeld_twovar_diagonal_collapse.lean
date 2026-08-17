@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # T02 (Drinfeld two-variable partial-Frobenius decoupling) — DIAGONAL COLLAPSE no-go (#444)
 
@@ -78,6 +74,11 @@ scaling law). The diagonal does NOT escape the family; the family inherits the d
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

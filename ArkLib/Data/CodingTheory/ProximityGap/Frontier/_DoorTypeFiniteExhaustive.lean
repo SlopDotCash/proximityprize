@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NoFifthDoorTetrachotomy
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Fintype.Card
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # DoorType finiteness / exhaustiveness capstone — the literal "no fifth door" (#444, Lane 3)
 
@@ -38,6 +35,10 @@ This module closes that gap with real, axiom-clean `Fintype`/cardinality stateme
 capacity claim, and does **not** assert any door is achievable or dead (the *scale* content lives in
 `_NoFifthDoorTetrachotomy`).  It only certifies the shape of the case-split is exactly four-way.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy
 

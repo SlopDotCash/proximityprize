@@ -7,10 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceFlatnessRatio
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTracePlancherelFloorAttained
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceTrivialEnvelope
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # EXTEND — the exact range and both extremes of the dimensionless flatness ratio (#444)
 
@@ -43,6 +39,11 @@ perfect-coherence event — the dimensionless image of the variance-core floor/c
 NO CORE / cancellation / completion / moment-saving / capacity claim: only the range and extreme cases
 of the dimensionless normalization.  The prize content (`ρ_flat ≤ 1 + o(1)`) is untouched.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceFlatnessRatioRange
 

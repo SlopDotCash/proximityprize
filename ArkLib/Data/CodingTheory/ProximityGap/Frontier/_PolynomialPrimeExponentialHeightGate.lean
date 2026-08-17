@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Polynomial prize primes versus exponential height gates
 
@@ -29,6 +26,10 @@ Thus any height/resultant route that only proves a generic `B^(n/2)` ceiling can
 prize-scale primes.  It needs extra arithmetic smoothness/localization of the actual resultant
 prime divisors, not just an archimedean height bound.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.PolynomialPrimeExponentialHeightGate
 

@@ -7,8 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # The isomonodromy / Painlevé backbone is VACUOUS for `M` (#444, W4-isomonodromy-painleve)
 
@@ -62,6 +60,9 @@ the task target by exactly `√2` (so the backbone alone is anti-helpful), and t
 factor needed to reach the empirical `M ≈ √(n·log p)` is the open object.  NO cancellation /
 completion / moment-saving claim.  CORE remains OPEN.
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.PainleveBackboneVacuous
 

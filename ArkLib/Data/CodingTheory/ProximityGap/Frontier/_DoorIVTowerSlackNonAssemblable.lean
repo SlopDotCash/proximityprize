@@ -7,9 +7,6 @@ import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: the dyadic tower's MIN-OVER-COSETS slack count is NON-ASSEMBLABLE —
   it does not lower-bound the achievable damping, so its growth re-opens nothing (#464)
@@ -67,6 +64,10 @@ quantity (`K_min`) is the WRONG object — it is non-assemblable into a period b
 DEAD.  No CORE / cancellation / completion / moment / anti-concentration / capacity claim; `M(μ_n)`
 remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVTowerSlackNonAssemblable
 

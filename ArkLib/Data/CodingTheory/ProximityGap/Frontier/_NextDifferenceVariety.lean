@@ -7,10 +7,6 @@ import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # CREATE — the **difference variety** `V_diff` and the SECOND→FIRST moment reduction (#444)
 
@@ -98,6 +94,11 @@ Honest status: builds the difference variety, proves the second-→first-moment 
 axiom-clean, and re-expresses the open core as a first moment — genuinely-new *structure* (a cleaner
 attack surface), NOT new *closure*.  Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.NextDifferenceVariety
 

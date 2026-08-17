@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.ManyTermResultantBound
 import ArkLib.Data.CodingTheory.ProximityGap.SidonParsevalGeneral
 import ArkLib.Data.CodingTheory.ProximityGap.SidonParsevalNthRoots
 
-set_option linter.style.longLine false
-
 /-!
 # THE SHARP GENERAL-`r` CYCLOTOMIC RESULTANT BOUND — `|Res|² ≤ (4r)^{φ(n)}` (#389/#407)
 
@@ -31,6 +29,9 @@ Consequence: an `r`-fold additive relation among **distinct** `μ_n`-powers over
 bounded `r` for production `q`, consistent with the open core (`r ~ log q`), but the sharpest possible
 single-rung pin. Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Complex Finset Polynomial
 open ArkLib.ProximityGap.AdditiveEnergyRepBound

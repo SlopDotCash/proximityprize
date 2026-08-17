@@ -8,8 +8,6 @@ import Mathlib.RingTheory.PowerBasis
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 import Mathlib.Data.ZMod.Basic
 import ArkLib.Data.CodingTheory.ProximityGap.FpVanishingBridge
-set_option linter.style.longLine false
-set_option autoImplicit false
 
 /-!
 # fp-reduction-hom: the reduction map `𝓞_K → F_p` is CONSTRUCTED, not assumed (#407, LEVER L)
@@ -46,6 +44,9 @@ entirely in the single polynomial-root condition on `ω`.
   hypothesis REMOVED — `F_p`-spurious vanishing of a root-sum (over the constructed reduction)
   forces antipodality, conditional only on the height bound and `ω` being a primitive root mod `p`.
 -/
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset NumberField Polynomial IsPrimitiveRoot
 

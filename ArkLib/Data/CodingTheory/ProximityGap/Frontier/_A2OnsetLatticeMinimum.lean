@@ -7,9 +7,6 @@ import Mathlib.Tactic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Combinatorics.Pigeonhole
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # A2 (relation-lattice-count): the onset of `W_r` is the `ℓ¹`-first-minimum `λ₁(L)`, and the
 two-sided floor on `λ₁` — pinpointing the EXACT step where the lattice/onset route reduces.
@@ -95,6 +92,10 @@ minimum route is therefore a CONSTANT saving, not the exponential saving the sad
 
 Issue #444. Honesty: the open core (`A_r ≤ (q−1)Wick_r` at `r ≈ ln q`) is NOT discharged here.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.A2OnsetLatticeMinimum
 

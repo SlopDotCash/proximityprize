@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Nat.Log
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE OC-TAIL (#466, 2026-07-10): the CROSS-PRIME stacking-census tail ceiling —
   depth-3 stacked violators are FINITE in the tail, with an explicit
@@ -72,6 +69,10 @@ density → 0 for `P ≫ n^6` — matching r370's observation that stacking is e
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

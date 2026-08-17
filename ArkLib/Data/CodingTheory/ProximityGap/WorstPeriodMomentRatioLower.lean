@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Two-sided moment localization: the reverse-Markov lower companion (#389, #371)
 
@@ -38,6 +36,9 @@ now in its most falsifiable, two-sided form. This is honest progress toward — 
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

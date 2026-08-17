@@ -8,8 +8,6 @@ import Mathlib.Tactic.IntervalCases
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.NormNum
 
-set_option linter.style.longLine false
-
 /-!
 # The 2-automatic-sequence (Gowers / odometer) route — archimedean no-go (#444, lens [automatic-seq])
 
@@ -84,6 +82,9 @@ falls short (growing automaton resolution ⇒ no absolute `C`), mirroring `Burge
 
 Axiom target: `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.AutomaticSeqArchimedeanNoGo
 

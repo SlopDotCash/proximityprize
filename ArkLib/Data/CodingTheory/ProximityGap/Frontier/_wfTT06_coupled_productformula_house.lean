@@ -9,9 +9,6 @@ import Mathlib.RingTheory.Norm.Basic
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-T06 — Coupled product-formula House bound (architect G2-1): REFUTED, sign reversed (#444)
 
@@ -82,6 +79,10 @@ BGK divisibility count.  No prize gain.
   ("ZERO archimedean spread information"), `L2MahlerNormBound.lean`, `BadPrimeNormBound.lean`,
   `VanishingRootSumHeightGate.lean`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset NumberField Module Real
 

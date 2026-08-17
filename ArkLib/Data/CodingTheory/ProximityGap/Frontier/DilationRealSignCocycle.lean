@@ -7,12 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumDilationRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumRawMoment
 import ArkLib.Data.CodingTheory.ProximityGap.CosetPeriodOrthogonal
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.unusedFintypeInType false
-set_option linter.unusedDecidableInType false
-
 /-!
 # The dilation recursion is a REAL SIGN cocycle on the 2-power tower (#444)
 
@@ -55,6 +49,13 @@ negation-closure (`-1 ∈ μ_{2^i}`, `i ≥ 1`), the structural input the reform
 See `SubgroupGaussSumDilationRecursion` (the parent recursion) and `SubgroupGaussSumRawMoment`
 (`eta_conj_eq`, the reality lemma).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+set_option linter.unusedFintypeInType false
+set_option linter.unusedDecidableInType false
+
 
 namespace ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 

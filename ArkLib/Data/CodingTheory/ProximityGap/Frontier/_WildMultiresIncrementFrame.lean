@@ -6,10 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Wild — the full dyadic-tower MULTIRESOLUTION INCREMENT FRAME and its simultaneous
   mutual `L²`-orthogonality (#444)
@@ -86,6 +82,11 @@ This file is `sorry`-free and axiom-clean (`propext, Classical.choice, Quot.soun
 frame and its squared norms are EXACT theorems; the chaining/independence remarks above are flagged
 numerics, not claims. It is NOT prize closure.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.WildMultiresIncrementFrame
 

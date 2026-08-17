@@ -5,11 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTailRootSharp
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedFintypeInType false
-set_option linter.unusedDecidableInType false
-
 /-!
 # Comparing the sharp and coarse char-p moment-tail roots
 
@@ -19,6 +14,12 @@ coarse rooted form: once `G` is nonempty, the sharp root is at most the coarse `
 entire improvement is only the harmless factor `|G|^{-1/(2r)}`.  This is no-go bookkeeping for the
 moment route, not a square-root-cancellation or CORE claim.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedFintypeInType false
+set_option linter.unusedDecidableInType false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)
 

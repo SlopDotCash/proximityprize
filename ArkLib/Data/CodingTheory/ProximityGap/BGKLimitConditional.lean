@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic
-set_option autoImplicit false
 
 /-!
 # BGK is the limit: the exact prize value, modulo ONE named irrefutable conjecture (#407)
@@ -34,6 +33,8 @@ Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 
 Issue #407.
 -/
+set_option autoImplicit false
+
 
 open Finset
 

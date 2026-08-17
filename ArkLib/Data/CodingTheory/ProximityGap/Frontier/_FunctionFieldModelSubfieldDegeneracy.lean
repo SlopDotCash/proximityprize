@@ -9,9 +9,6 @@ import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.Algebra.CharP.Lemmas
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The function-field model of the prize law is DEGENERATE (#466, lane W4)
 
@@ -60,6 +57,10 @@ mechanisms** (probe: `scripts/probes/probe_466_function_field.py` /
 * Nothing here touches the open core; `isPrizeClosure := false`. This is a REFUTATION
   artifact (countermodel = WIN per the honesty contract).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace FFModelW4
 

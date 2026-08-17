@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.EnergyCharacterTransport
 
-set_option linter.style.longLine false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedSectionVars false
-
 /-!
 # The high-moment transport `B ≤ (q·E_r)^{1/2r}` and the DEEP-MOMENT WALL (Issue #389, TECHNIQUE 6)
 
@@ -85,6 +81,11 @@ solutions, it does not remove them). So squaring/folding offers no shortcut thro
 - [BGK06] Bourgain, Glibichuk, Konyagin. *Estimates for the number of sums and products …*. 2006.
 - [HBK00] Heath-Brown, Konyagin. *New bounds for Gauss sums derived from k-th powers …*. 2000.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

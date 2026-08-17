@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientTailSupConsumer
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Exponential quotient-tail gate
 
@@ -31,6 +28,10 @@ Conversely, if `rate <= log #Q + log A`, the same exponential budget is still la
 bad quotient atom.  Thus the missing analytic input for the issue #464 floor is not merely a tail
 shape; it must cross this strict quotient-union threshold at the prize value of `T`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.QuotientExponentialTailGate
 

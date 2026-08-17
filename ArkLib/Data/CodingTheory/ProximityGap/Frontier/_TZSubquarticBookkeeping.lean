@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZaman
 import Mathlib.Data.Nat.Totient
 import Mathlib.Tactic.NormNum.Prime
 
-set_option autoImplicit false
-
 /-!
 # [TZ24] Thm 1.1 sub-quartic bookkeeping for dyadic moduli (#466, lane W2)
 
@@ -94,6 +92,9 @@ the prize core stays OPEN.
 * [TZ24] J. Thorner, A. Zaman, arXiv:2108.10878, Thm 1.1, eq. (1.8), §3.1, Cor 3.1.
 * [KKH26] ePrint 2026/782, Lemma 2 (the consumer).  Issues #334/#466.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.TZSubquarticBookkeeping
 

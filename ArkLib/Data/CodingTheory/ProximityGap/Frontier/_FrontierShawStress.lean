@@ -8,10 +8,6 @@ import Mathlib.Data.Int.GCD
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # ADVERSARIAL STRESS of APPROACH N10 — the Shaw invariant `ShawVanishingAtPrizeScale` (#444)
 
@@ -111,6 +107,11 @@ refutations are theorems.
 already self-audited as a narrative scaffold); Conway–Jones / Mann (vanishing sums of `2`-power
 roots); Stickelberger / Gross–Koblitz (cyclotomic norms). Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.FrontierShawStress
 

@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.ShawOperator
-set_option linter.style.longLine false
 
 /-!
 # The Shaw operator's exact closed form: the dual-code character sum (#389, #371)
@@ -19,6 +18,8 @@ replaces `[ψ∈H^⊥]` by the Krawtchouk factor `K_{δn}(ψ)` (Fourier transfor
 open prize core is precisely the prize-regime bound on that Krawtchouk-weighted dual-MDS sum — which
 this exact form isolates with no remaining residual. Axiom-clean.
 -/
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.LineIncidenceSpectral

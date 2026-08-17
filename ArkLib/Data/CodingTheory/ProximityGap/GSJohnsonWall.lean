@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+import Mathlib.Analysis.SpecialFunctions.Sqrt
+
+/-!
 # GS-at-Johnson: the parameter arithmetic of the Guruswami–Sudan system
 
 Round 14 of the proximity-prize grind (ArkLib #232, ABF26): the Guruswami–Sudan (GS)
@@ -57,8 +60,6 @@ PARAMETER SYSTEM of that machine and where it provably stops: the Johnson radius
   not re-proved here; this file is the parameter-optimization half, which is where the
   `√((k-1)n)` barrier lives.
 -/
-import Mathlib.Tactic
-import Mathlib.Analysis.SpecialFunctions.Sqrt
 
 namespace GSJohnson
 

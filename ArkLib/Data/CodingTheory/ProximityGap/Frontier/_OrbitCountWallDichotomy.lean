@@ -5,8 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._A2OnsetLatticeMinimum
 
-set_option linter.style.longLine false
-
 /-!
 # The orbit-count wall, named — the saddle dichotomy `onset-saves ∨ orbit-wall-carries` (#444, Lane 2)
 
@@ -49,6 +47,9 @@ is itself conditional on the worst-prime control = the open wall). No CORE upper
 cancellation, no completion, no anti-concentration, no capacity claim; the orbit-count wall itself
 (`OrbitCountWall` uniform over the worst prime) is exactly the open core and is **not** proved here.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.OrbitCountWallDichotomy
 

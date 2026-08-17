@@ -8,9 +8,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G99ErdosTuranLadderCertif
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80NDivisorFourthPowerBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80OProductDivisorInterval
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G100F (#466, 2026-07-10): the G99 integer-lift mechanism at COUNTING scale — an
   unconditional divisor-structure bound on the G80Q terminal small-difference pair count,
@@ -76,6 +73,10 @@ uniform-main-term strength. CORE remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean; no `sorry`, no new axioms.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

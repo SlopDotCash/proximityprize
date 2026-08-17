@@ -7,10 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MGFToConvergenceHub
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS11_survival_to_mgf
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS11_mgf_rate_monotone
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedFintypeInType false
-
 /-!
 # General-constant MGF bounds into the convergence hub
 
@@ -18,6 +14,11 @@ set_option linter.unusedFintypeInType false
 Survival-tail and cutoff arguments more naturally produce `MGFBound ... A c` with `A ≥ 1`.
 This file records the honest degradation: the S11 slack constant becomes `K = A / c`.
 -/
+
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 
 open AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumMoment

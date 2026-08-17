@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SupplySizeProfile
 
-set_option linter.unusedDecidableInType false
-
 /-!
 # Diagnostic wrappers for the sub-Johnson supply profile
 
@@ -16,6 +14,9 @@ sub-Johnson caps: a bound on exact-minimal agreement sets and a bound on the
 strict-large agreement-set mass together imply a bound on total `t`-subset supply.
 Contrapositively, any supply excess has to occur in one of those two places.
 -/
+
+set_option linter.unusedDecidableInType false
+
 
 open Finset
 

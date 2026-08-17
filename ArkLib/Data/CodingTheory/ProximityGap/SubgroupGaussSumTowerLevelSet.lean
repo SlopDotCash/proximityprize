@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumTowerL2
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Tower-level frequency concentration: the `2^μ`-explicit bad-frequency budget (#444)
 
@@ -41,6 +38,10 @@ open BGK / short-character-sum cancellation wall. No capacity over-claim; CORE
 See `SubgroupGaussSumTowerL2.lean` (the iterated-doubling substrate) and
 `SubgroupGaussSumLevelSet.lean` (the single-level Markov bound).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

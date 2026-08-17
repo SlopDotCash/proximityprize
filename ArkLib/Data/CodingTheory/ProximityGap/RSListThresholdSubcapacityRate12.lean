@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.RSListThresholdStrictRate12
 import ArkLib.Data.CodingTheory.ProximityGap.ListDecodingCapacityOverflow
 
-set_option exponentiation.threshold 4096
-
 /-!
 # A smaller-field subcapacity sharpening at rate `1/2` (#232)
 
@@ -20,6 +18,9 @@ This is not the prize lower-bound breakthrough.  It is a field-window refinement
 known overflow side, and a useful diagnostic for why the universal theorem cannot simply
 move from `127` to `126` under the full `|F| ≤ 2^256` hypothesis.
 -/
+
+set_option exponentiation.threshold 4096
+
 
 namespace ProximityGap
 

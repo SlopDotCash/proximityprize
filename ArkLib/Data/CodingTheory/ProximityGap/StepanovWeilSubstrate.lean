@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # Issue #232 — the Stepanov→Weil construction substrate: multiplicative-character realization,
 # auxiliary existence by dimension count, and the non-vanishing seed.
@@ -57,6 +55,9 @@ All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.
 - Stepanov; Schmidt, *Equations over Finite Fields*; Kopparty, *The Weil bounds* (Rutgers notes);
   Bombieri (1973); Kowalski, *Exponential sums over finite fields, an elementary approach*.
 -/
+
+set_option linter.style.longLine false
+
 
 open Polynomial Module
 

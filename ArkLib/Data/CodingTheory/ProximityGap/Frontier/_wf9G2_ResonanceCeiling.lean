@@ -7,11 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.Complex.ExponentialBounds
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # wf-G2 (#444): the RESONANCE METHOD cannot disprove the BGK wall (Ω-ceiling)
 
@@ -55,6 +50,12 @@ under-shoots `√(n·log(p/n))`; hence resonance cannot disprove the prize. We a
 exact Parseval RMS mean-square bound as `parseval_meanSq_le`, the structural source of the
 ceiling.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.WF9G2
 

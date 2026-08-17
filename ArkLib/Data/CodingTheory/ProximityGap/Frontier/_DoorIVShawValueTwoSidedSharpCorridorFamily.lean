@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Lane-2 CAPSTONE: the two-sided SHARPENED Shaw-value corridor `[c₀/√Lᵢ, 1]` at family granularity (#444)
 
@@ -41,6 +38,10 @@ cancellation theorem, and is asserted at NO instance.  It proves NO prize inequa
 anti-concentration / cancellation estimate.  The open door-(iv) problem (collapse the corridor to an
 absolute constant) is exactly as open as before.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVShawValueTwoSidedSharpCorridorFamily
 

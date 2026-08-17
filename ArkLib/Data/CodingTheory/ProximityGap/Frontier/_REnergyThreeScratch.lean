@@ -7,13 +7,14 @@ import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-! Scratch: the forward tuple-lift for #444's char-0 E₃ = rEnergy identification.
 `count_antipodal_of_sum_eq_zero` (in-tree, multiset form, `[CharZero]`, 2^k-roots) lifted to a
 `Fin m → L` tuple: a zero-sum tuple of 2^k-th roots is fiber-balanced. The forward partner of the
 already-char-free converse `E3NegSymConverse.sum_eq_zero_of_fiber_balanced`. -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 

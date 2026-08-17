@@ -9,10 +9,6 @@ import Mathlib.Data.Real.Sqrt
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.GroupTheory.OrderOfElement
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-set_option maxRecDepth 8000
-
 /-!
 # LANE G90 (#466, 2026-07-10): spacing rigidity / Denjoy–Koksma probe for the G80Z
   non-Fourier arc certificate — the multiplicative dynamics is NOWHERE an isometry
@@ -102,6 +98,11 @@ formal and the fluctuation floor `ε(K) ≳ √(n/K)` empirical. CORE remains OP
 
 Issue #466. Axiom-clean. No sorry, no axiom, no native_decide.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+set_option maxRecDepth 8000
+
 
 namespace ArkLib.ProximityGap.Frontier.G90SpacingRigidityProbe
 

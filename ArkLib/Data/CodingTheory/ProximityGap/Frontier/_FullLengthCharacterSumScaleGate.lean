@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Full-length character-sum scale gate
 
@@ -29,6 +26,10 @@ large-values of mixed/Fekete character sums, maximum short character sums, and h
 Dirichlet character sums: they can inform heuristics, but they do not by themselves produce the
 subgroup-scale worst-period bound.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.FullLengthCharacterSumScaleGate
 

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The field-free negation-symmetric strata count toward `E₃ = 15n³−45n²+40n` (#444, WIP)
 
@@ -25,6 +22,10 @@ identity that the three stratum cardinalities sum to `15n³−45n²+40n`). The r
 build step is the count identity `negSymCount G 6 = (the three stratum cards)` (the multinomial
 enumeration); the converse `sum_eq_zero_of_fiber_balanced` is already axiom-clean.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 

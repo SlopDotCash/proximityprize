@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80WArcPairCountIdentity
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80V (#466, 2026-07-10): the DILATION-COINCIDENCE reduction — the b-averaged same-arc
   pair count factors EXACTLY through n evaluations of the Fourier-free floor object
@@ -50,6 +47,10 @@ ON-BGK. No axioms, no sorry.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

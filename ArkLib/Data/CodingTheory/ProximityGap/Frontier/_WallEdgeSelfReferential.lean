@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option autoImplicit false
-
 /-!
 # The edge/Riemann–Hilbert criterion is SELF-REFERENTIAL — the bound must be arithmetic (#444)
 
@@ -36,6 +34,9 @@ PROVEN (axiom-clean): the mutual-determination identities + the equivalence of t
 This TEMPERS the RH-frontier claim: RH is the right *language*, but circular without the arithmetic
 turnover input. NOT a proof of the bound; a sharp no-go on the purely-spectral route.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.WallEdgeSelfReferential
 

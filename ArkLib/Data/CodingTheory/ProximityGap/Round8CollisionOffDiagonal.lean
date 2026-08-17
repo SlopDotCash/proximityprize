@@ -8,8 +8,6 @@ import Mathlib.Data.Finset.Card
 import Mathlib.Tactic
 import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumSecondMomentCollision
 
-set_option linter.style.longLine false
-
 /-!
 # Round 8 (Issue #232, ABF26) — the OFF-DIAGONAL of `collisionCount` starts at symmetric-difference 3.
 
@@ -44,6 +42,9 @@ All headline results are `sorry`-free and axiom-clean (`[propext, Classical.choi
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
   Tracking issue #232.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # Attack #16 — Twisted Markoff-surface coupling: the transfer FACTORS OUT M (#444)
 
@@ -78,6 +76,9 @@ out. NOT a Paley bound.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option autoImplicit false
+
 
 open scoped BigOperators
 

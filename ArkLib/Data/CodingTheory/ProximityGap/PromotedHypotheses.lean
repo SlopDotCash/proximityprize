@@ -9,6 +9,13 @@ import Mathlib.Tactic
 import ArkLib.Data.CodingTheory.ReedSolomon
 import ArkLib.Data.CodingTheory.ProximityGap.UniqueDecodingListBound
 
+/-!
+# PromotedHypotheses
+
+Module docstring for `PromotedHypotheses.lean`.
+-/
+
+
 open Finset
 open Polynomial
 open scoped NNReal

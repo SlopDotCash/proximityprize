@@ -7,9 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # BGK chain made EXPLICIT: the exact exponent identity and the `o(1)` location (#444)
 
@@ -76,6 +73,10 @@ pins the `o(1)` to the single scalar `κ_r - (β-1)`. The exponent the explicit 
 reaches at `β = 4` with the best PROVEN gain is `α = 1` (κ_r ≤ β-1 at the prize point) — i.e. the
 trivial `‖η_b‖ ≤ n`; any `α < 1` requires `κ_r > 3`, which is open. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.BGKExplicit
 

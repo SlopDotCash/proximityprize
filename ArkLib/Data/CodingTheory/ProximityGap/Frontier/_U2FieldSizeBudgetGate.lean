@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # U2 (ceiling field-size): the eps*-budget vs divisibility-threshold feasibility gate (#334 / #464)
 
@@ -54,6 +51,10 @@ to **pin U2 precisely**: the named obligation is the explicit `Prop`
 `U2FieldSizeFeasible μ r` below, and the result `u2_feasible_iff` shows it is exactly `(FEAS)`,
 exposing that U2's hardness is a budget/divisibility gate, not a Linnik-exponent gate.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.U2FieldSizeBudgetGate
 

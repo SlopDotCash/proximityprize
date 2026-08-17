@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.SubexpMomentToConvergenceHub
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS11_layercake_moment
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedFintypeInType false
-
 /-!
 # From the S11 one-variable MGF residual to the convergence hub
 
@@ -21,6 +17,11 @@ a finite empirical MGF bound `MGFBound s t 1 c` yields the normalized moment env
 `rEnergy G r` is dominated by `|G|^r` times that normalized moment. This file packages the
 composition as the hub-facing S11 route with no explicit `MomentEnvelope` hypothesis.
 -/
+
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 
 open AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumMoment

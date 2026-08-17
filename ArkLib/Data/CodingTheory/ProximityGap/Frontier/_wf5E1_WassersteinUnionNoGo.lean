@@ -7,11 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # The effective-Wasserstein → tail → union-bound route is INSUFFICIENT for the #444 prize
 
@@ -65,6 +60,12 @@ deep-moment route, NOT Wasserstein. Tag: **OPEN-CRUX / REFUTED-as-sufficient-lem
 
 All theorems axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.WassersteinUnionNoGo
 

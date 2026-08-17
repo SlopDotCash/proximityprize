@@ -7,8 +7,6 @@ import Mathlib.Analysis.MeanInequalities
 import Mathlib.RingTheory.Int.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option linter.style.longLine false
-
 /-!
 # wf-S8 — the SHARP (Parseval/AM-GM) house bound: pushing the no-spurious threshold (#444, lane wf-S8)
 
@@ -92,6 +90,9 @@ axiom-clean partial theorem with the best-possible `N0` for the norm-size lane.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.WFS8
 

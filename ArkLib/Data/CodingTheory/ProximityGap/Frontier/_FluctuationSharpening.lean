@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+
+/-!
 # The DC-centered fluctuation sharpening of the prize criterion (#444)
 
 This brick sharpens the corrected (DC-subtracted) prize criterion `ρ_r ≤ 1` of `_RhoDecomposition`
@@ -41,7 +43,6 @@ but it is the cleanest *centered* exact reduction, isolating a nonnegative fluct
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
 
 namespace ProximityGap.FluctuationSharpening
 

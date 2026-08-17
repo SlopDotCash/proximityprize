@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTail
 
-set_option linter.style.longLine false
-set_option linter.unusedDecidableInType false
-
 /-!
 # Sharp rooted Markov form for the char-p deep moment tail
 
@@ -17,6 +14,10 @@ The base file exposes the rooted unconditional moment bound in the deliberately 
 `q^(1/(2r)) · |G|^((2r-1)/(2r))`.  This is useful bookkeeping for no-go comparisons, but it is still
 an unconditional moment-route ceiling and does not approach the prize square-root bound.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedDecidableInType false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)
 

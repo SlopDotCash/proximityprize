@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMomentLadder
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # General-`r` anti-concentration from the moment ladder (#357/#389)
 
@@ -20,6 +18,9 @@ and with the trivial `energyR_le_pow` (`E_r(G) ≤ |G|^{2r-1}`) the no-Johnson t
 `|G|^{2r-1} < q^{r-1}` — which tends to `|G| < q^{1/2}` as `r → ∞`, the strongest count-side
 anti-concentration the moment method yields. Average/count side only; the open core is untouched.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

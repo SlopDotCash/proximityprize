@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option autoImplicit false
-
 /-!
 # GRADED_FILTRATION angle: the wraparound filtration is IRRELEVANT to `A_K ≤ Wick_K` (#444)
 
@@ -58,6 +56,9 @@ This file proves the base case and the reduction skeleton axiom-clean. The `K=1�
 closed-form (`N_2 = 3n^2 − 3n`) and would discharge the first rung; the general-`K` energy-growth
 bound is the open residual.
 -/
+
+set_option autoImplicit false
+
 
 namespace Issue444.GradedFiltration
 

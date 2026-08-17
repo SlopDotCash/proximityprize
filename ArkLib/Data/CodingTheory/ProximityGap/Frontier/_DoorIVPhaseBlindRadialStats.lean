@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Data.Complex.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) phase-blind radial statistics are invariant under unit twists (#444)
 
@@ -23,6 +20,10 @@ constraint lemma, not a CORE bound: it proves no cancellation, no anti-concentra
 saving, no moment saving, and no capacity claim.  It only records that radial `b`-summed summaries are
 phase-blind and therefore cannot by themselves control the worst-frequency phase alignment object.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVPhaseBlindRadialStats
 

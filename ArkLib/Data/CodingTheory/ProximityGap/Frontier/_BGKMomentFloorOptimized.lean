@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 import ArkLib.Data.CodingTheory.ProximityGap.InteriorWorstCaseIncompleteSum
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The optimized DC-subtracted moment floor: `M ≤ min_r (q·E_r − n^{2r})^{1/2r}` (#444)
 
@@ -67,6 +63,11 @@ named `EnergyEnvelope` is the only literature input.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

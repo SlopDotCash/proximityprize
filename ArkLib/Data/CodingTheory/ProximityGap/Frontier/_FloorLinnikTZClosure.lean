@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorLinnikThornerZamanArrow
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AssaultV2_FloorLocalizationN32
 
-set_option linter.style.longLine false
-
 /-!
 # Driving the off-BGK floor closure by the unconditional Thorner–Zaman hypothesis (#444 / #464)
 
@@ -31,6 +29,9 @@ the [TZ24] literature statement, supplied by explicit hypothesis). This file pro
 least-prime premise. It does NOT prove `TZPrimeSupply`, does NOT prove `FloorLocalizationUniform`
 (input (1), still open), and does NOT touch the BGK/Paley sup-norm wall. CORE stays OPEN.
 -/
+
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.KKH26
 open ArkLib.ProximityGap.Frontier.FloorLocalization

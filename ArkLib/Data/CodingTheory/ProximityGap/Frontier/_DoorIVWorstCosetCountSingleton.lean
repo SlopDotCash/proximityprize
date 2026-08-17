@@ -7,9 +7,6 @@ import Mathlib.GroupTheory.GroupAction.Basic
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Set.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-1 constraint: the STRICT worst-frequency peak is a SINGLE coset — Ncos(τ→0)=1 (#444)
 
@@ -54,6 +51,10 @@ statistic whose strict maximum is attained, the **exact argmax set is precisely 
 (when the max is attained on one orbit), so the strictest super-level set collapses to that one orbit.
 No bound on `M(n)`; no cancellation, completion, moment, or capacity claim.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVWorstCosetCountSingleton
 

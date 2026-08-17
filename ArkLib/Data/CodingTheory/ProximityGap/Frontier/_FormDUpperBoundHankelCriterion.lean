@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option autoImplicit false
-
 /-!
 # Form-D UPPER bound criterion: `M ≤ 2√(n·L)` from the Hankel-ratio turnover (#444)
 
@@ -35,6 +33,9 @@ PROVEN (axiom-clean):
 - `turnover_iff_upper`: `M ≤ 2√(nL) ⟺ max_k b_k² ≤ nL` (clean iff, given the exact-sup identity).
 - `HankelRatioTurnover` (NAMED residual) + `upper_of_turnover`: the residual `⟹` the prize-form bound.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.FormDUpperHankel
 

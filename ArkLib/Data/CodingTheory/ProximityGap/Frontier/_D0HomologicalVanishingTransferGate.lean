@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # D0 homological-vanishing transfer gate: topology needs a prime-field comparison
 
@@ -31,6 +29,9 @@ prime-field floor only when it supplies:
 
 Without those inputs, a bounded homological model is compatible with an arbitrary prime spike.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.D0HomologicalVanishingTransferGate
 

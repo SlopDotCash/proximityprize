@@ -8,10 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Data.Nat.Choose.Central
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The motivic HALF-WEIGHT DEFICIT: naming the exact √p the abelian-monodromy route cannot supply (#464)
 
@@ -96,6 +92,11 @@ the Paley/BGK wall. `bypassesPaleyWall = NO_REDUCES_TO_PALEY`. Issues #464, #444
 
 Axiom target: `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.MotivicHalfWeightDeficit
 

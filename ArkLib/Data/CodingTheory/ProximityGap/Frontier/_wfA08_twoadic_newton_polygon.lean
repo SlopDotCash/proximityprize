@@ -7,10 +7,6 @@ import Mathlib.NumberTheory.Padics.PadicVal.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The 2-adic Newton polygon root-count of the period relation (#444, lane wf-A08)
 
@@ -82,6 +78,11 @@ beyond-Johnson, with the exact bound `gain < 2`. Issues #444, #407, #389.
 - in-tree `_wfS9_vp_split_decomposition.lean` (split-`p` valuation), `_SpurEvenValuationTwoSquares.lean`
   (the `p ≡ 3 mod 4` even-valuation cut), `probe_wfS9_oneminuszeta.rs` (the `v_λ` weight-parity law).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.WFA08
 

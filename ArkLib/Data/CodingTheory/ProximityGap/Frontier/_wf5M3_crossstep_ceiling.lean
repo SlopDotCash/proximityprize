@@ -6,11 +6,6 @@ Authors: ArkLib Contributors (wf-M3)
 import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTail
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedFintypeInType false
-set_option autoImplicit false
-
 /-!
 # The additive-depth recursion closure: a per-step cross bound propagates the Lam–Leung ceiling
   (Issue #444, lane wf-M3)
@@ -80,6 +75,12 @@ does NOT close it; it makes the per-step obligation precise and shows it is *suf
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 - Lam, Leung. *On vanishing sums of roots of unity*. (char-0 antipodal structure of `2^μ`-th roots.)
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedFintypeInType false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

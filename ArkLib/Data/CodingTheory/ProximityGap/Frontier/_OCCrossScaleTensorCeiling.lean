@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-set_option linter.style.openClassical false
-
 /-!
 # LANE OC-CROSSSCALE (#466, Opus core, 2026-07-10): the TENSOR CEILING that closes the
   last conceptual non-BGK escape — a cross-scale / super-additive certificate — as a
@@ -61,6 +57,11 @@ wall-pinned, the honest frontier statement stands: δ* CORE is ON-BGK/Paley at t
 subgroup, and neither fixed-cell certificates nor their tensor products escape the wall.
 No axioms, no `sorry`, no `native_decide`.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+set_option linter.style.openClassical false
+
 
 namespace ArkLib.ProximityGap.Frontier.OCCrossScaleTensorCeiling
 

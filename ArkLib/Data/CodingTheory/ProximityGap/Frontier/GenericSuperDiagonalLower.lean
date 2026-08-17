@@ -8,8 +8,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedPairingCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CharZeroWickEnergy
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # The super-diagonal energy LOWER bound from the disjointness engine (#407 lower companion)
 
@@ -41,6 +39,9 @@ exact in `scripts/probes/probe_charzero_persigma_count.py` but not yet Lean-form
 cyclotomic `μ_{2^k}`. Negation-closed combinatorics, NOT thinness-essential, does NOT close CORE.
 Axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #407.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset Nat
 

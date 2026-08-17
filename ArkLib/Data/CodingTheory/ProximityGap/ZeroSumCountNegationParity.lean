@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SignedZeroSumCountEven
 import ArkLib.Data.CodingTheory.ProximityGap.SignedPeriodZeroSumBridge
 
-set_option linter.unusedDecidableInType false
-
 /-!
 # The SIGNED prize object, with the zero-sum-count parity made explicit (#444, #407)
 
@@ -37,6 +35,9 @@ to the `ℂ`-valued signed prize object. NOT a CORE bound — bounding `∑_{ψ�
 
 Issues #444, #407.
 -/
+
+set_option linter.unusedDecidableInType false
+
 
 open scoped BigOperators
 

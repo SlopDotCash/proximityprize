@@ -7,9 +7,6 @@ import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.Finset.Card
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # `_AvLSP_AlmostAllPrimesLargeSieve` — the large sieve OVER PRIMES for the Gauss-period sup-norm (#444)
 
@@ -97,6 +94,10 @@ theory (the second moment `≈ n`) is the named hypothesis; the sieve combinator
   `_AvFrontier_KMomentBarrier`, `_AvCP_AlmostAllPrimesNoWraparound.lean` (almost-all at fixed depth).
 - [BGK] Bourgain–Glibichuk–Konyagin; [ABF26] ePrint 2026/680 (issue #444).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvLSPAlmostAllPrimesLargeSieve
 

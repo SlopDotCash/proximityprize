@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 import Mathlib.Algebra.Order.Chebyshev
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-S2 (#444): the spectral PARTICIPATION floor — a second/fourth-moment spread certificate
 
@@ -50,6 +47,10 @@ Pairing with the existing transport lemmas:
 
 All three are Weil-free `ℝ`-arithmetic on Parseval identities.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta subgroup_gaussSum_secondMoment)

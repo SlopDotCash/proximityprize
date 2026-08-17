@@ -6,10 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Data.Rat.Defs
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The JOINT sum-product lever at EXACT prize thinness `n = p^{0.19}` (#444, U1)
 
@@ -106,6 +102,11 @@ brick QUANTIFIES the SOTA frontier gap. Issue #444.
 * Macourt. *Incidence results and bounds of trilinear and quadrilinear exponential sums*. (2018.)
 * Kerr. *Various estimates for exponential sums over multiplicative subgroups*. (2019–2020.)
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.BridgeJointSumProduct
 

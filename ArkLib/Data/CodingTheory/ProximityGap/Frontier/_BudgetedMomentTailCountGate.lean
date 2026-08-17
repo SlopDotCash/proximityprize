@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MomentTailRateGate
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Budgeted moment tail-count gate
 
@@ -24,6 +21,10 @@ corresponding finite last-mile gate:
 Thus positive-proportion or budgeted-tail relaxations do not remove the rate requirement; they only
 replace the one-atom threshold by a `B + 1` atom threshold.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.Frontier.MomentTailRateGate

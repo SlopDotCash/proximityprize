@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceVarianceRouteCapstone
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # EXTEND — the dimensionless L²-flatness ratio `‖Σ Jphase‖² / #Rel` of the variance route (#444)
 
@@ -47,6 +43,11 @@ NO CORE / cancellation / completion / moment-saving / capacity claim: the flatne
 proved.  This is the dimensionless normalization of the variance-route open core — the prize as
 "aggregate Jacobi-phase L²-mass at the orthonormal floor up to `1+o(1)`".  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceFlatnessRatio
 

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic.NormNum
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # `_AvCP_N32DensityGrows` — the `A_K ≤ E_K^{C}` failure DENSITY grows with `n` (#444)
 
@@ -51,6 +48,10 @@ Together with `_AvCP_AAPKernelCountermodel` this establishes: the open kernel is
 is the bound that survives the `n`-growth, binding at the provable Parseval edge. Proving it worst-case
 at deep `K` as `n → 2^30` remains the open BGK kernel. Does NOT close the prize.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.N32DensityGrows
 

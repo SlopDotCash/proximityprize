@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The weight-2 short-relation norm base case of the char-`p` p-divisibility tower (Issue #444)
 
@@ -65,6 +62,10 @@ where the norms are large and the p-divisibility is the genuine BCHKS-1.12 wall.
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 - KB `direct-supnorm-data-beta4-2026-06-15.md`; lane wf-M1 `_wf5M1_HeightCountRoute.lean`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Polynomial
 

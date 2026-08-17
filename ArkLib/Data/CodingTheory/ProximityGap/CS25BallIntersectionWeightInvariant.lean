@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersection
 
-set_option linter.style.longLine false
-
 /-!
 # CS25 #82, deliverable 2: weight-invariance of the ball-intersection count
 
@@ -34,6 +32,9 @@ bijectively onto `B(0,δ) ∩ B(e',δ)` whenever it carries `e` to `e'`.
 * `jointCoverCount_weight_invariant` — **`I(e)` depends only on `wt(e)`**.
 * `sum_jointCoverCount_weight_fiber` — a fixed-weight fiber of a code contributes `A_d · I_d`.
 -/
+
+set_option linter.style.longLine false
+
 
 open scoped BigOperators ENNReal NNReal
 

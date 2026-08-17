@@ -5,11 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._EtaRealNegClosed
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedFintypeInType false
-set_option linter.unusedDecidableInType false
-
 /-!
 # The sign `s_b` of the real period `η_b` carries NO character structure (#444, N13 sign-law wall)
 
@@ -67,6 +62,12 @@ NON-MOMENT (pure sign/character algebra, not an additive-energy route).
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedFintypeInType false
+set_option linter.unusedDecidableInType false
+
 
 namespace ProximityGap.Frontier.EtaSignNonMultiplicative
 

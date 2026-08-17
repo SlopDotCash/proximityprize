@@ -7,8 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # Resolvent / matrix-perturbation EDGE: the soft-edge no-go (#444, FI_RESOLVENT_EDGE)
 
@@ -76,6 +74,9 @@ statistic and consumes the same per-conjugate sub-Gaussian right-tail input = th
 
 `#print axioms` audited: `propext, Classical.choice, Quot.sound` only.
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.FIResolventEdge
 

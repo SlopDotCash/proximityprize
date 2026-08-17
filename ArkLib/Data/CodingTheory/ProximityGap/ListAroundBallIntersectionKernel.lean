@@ -3,17 +3,18 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
-  List-vs-radius bound from weight structure (ANGLE 2).
-
-  Self-contained, imports only Mathlib.
--/
 import Mathlib.Tactic
 import Mathlib.Data.Nat.Choose.Bounds
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.RingTheory.Polynomial.Basic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.InformationTheory.Hamming
+
+/-!
+  List-vs-radius bound from weight structure (ANGLE 2).
+
+  Self-contained, imports only Mathlib.
+-/
 
 open scoped Classical
 open Finset

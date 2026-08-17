@@ -6,10 +6,6 @@ Authors: ArkLib Contributors (wf-M1)
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The height/Mahler count-route reduction of the char-`p` transfer (#444, lane wf-M1)
 
@@ -94,6 +90,11 @@ genuine open crux; lane wf-M1 reduces the prize to it and proves the surrounding
 - Lam–Leung, *On vanishing sums of roots of unity* (the char-`0` antipodal count).
 - Duke–Garcia, *On the house of Gauss periods* (the period-house study this sharpens).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.WF5M1
 

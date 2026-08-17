@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSecondMomentSharp
+
+/-!
 # Exact deep-strata fibers: stratifying the sharp second moment by overlap level (#389)
 
 GOAL: the HEADLINE residual (deep_pair_rank_eq) is already landed + wired. The
@@ -24,7 +26,6 @@ This file proves the FULLY OVERLAP-STRATIFIED sharp deep-stratum sum:
 an EQUALITY in the fiber per pair (deep_fiber_eq), strictly sharper than the
 uniform floor whenever any deep pair has overlap ≥ k+2.
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSecondMomentSharp
 
 open Finset Polynomial
 open scoped NNReal ENNReal

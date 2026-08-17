@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # General-`r` single-period moment bound and its trivial `r`-energy ceiling (#444)
 
@@ -47,6 +45,9 @@ future genuine `E_r(G) ≤ C_r·|G|^r` (dyadic Sidon-to-depth-`r`) input plugs i
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

@@ -8,9 +8,6 @@ import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 import Mathlib.Algebra.Polynomial.FieldDivision
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The weight-3 spurious char-`p` collision: `Spur_2(3) ≥ 1` (Issue #444)
 
@@ -78,6 +75,10 @@ p-divisibility is the genuine BCHKS-1.12 wall. CORE (`M(μ_n) ≤ C·√(n·log(
 - KB `direct-supnorm-data-beta4-2026-06-15`; `ShortRelationNormBase.lean` (weight-2 base, `a823e4658`).
 - Probe: `scripts/probes/probe_weight4_norm_divis.py`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Polynomial
 

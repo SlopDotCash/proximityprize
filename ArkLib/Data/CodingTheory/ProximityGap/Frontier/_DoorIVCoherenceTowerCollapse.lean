@@ -7,9 +7,6 @@ import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: the worst-frequency dyadic coherence tower COLLAPSES at the top —
   the 2-adic phase-alignment recursion is a DEAD lever (#444)
@@ -47,6 +44,10 @@ is slack-free.  This is a **refutation with mechanism** — a precisely-mapped d
 CORE/cancellation/capacity claim: it does not bound `M(n)`; it shows the dyadic coherence-product shape
 cannot deliver the `√`-saving because the upper tower collapses to full coherence.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVCoherenceTowerCollapse
 

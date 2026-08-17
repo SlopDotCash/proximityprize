@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # MacWilliams floor–ceiling duality REDUCES (self-dual transform is linear; floor is a sup) (#464)
 
@@ -62,6 +59,10 @@ EXACT failing step: MacWilliams supplies the moment ladder verbatim and the open
 Issue #464. Companion to `AvKreinCometric` (self-dual LP), `WfT19DimSpectrumDuality` (count≠sup),
 `W6ThetaDualTransference` (Poisson dual O(1) short vector).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.MacWilliamsFloorCeiling
 

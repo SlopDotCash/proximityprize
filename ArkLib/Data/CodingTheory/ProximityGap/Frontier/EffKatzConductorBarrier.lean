@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The effective-Katz / Wasserstein conductor barrier for the Gauss-period family (#407, route effkatz)
 
@@ -62,6 +59,10 @@ the effective-Katz/Wasserstein conductor route cannot, even in principle, certif
   over finite fields*. arXiv:2505.22059, 2025. (§4.2 eq.(17), Thm 4.4, Thm 4.11, §4.4 remark.)
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #407.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.EffKatzConductorBarrier
 

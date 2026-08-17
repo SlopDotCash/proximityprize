@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Tactic
-set_option linter.unusedSectionVars false
 
 /-!
 # The SIGNED period-power sum IS a zero-sum count (#444, #407)
@@ -41,6 +40,8 @@ cancellation) is the open BGK wall. This brick makes the object the wall is abou
 
 Issues #444, #407.
 -/
+set_option linter.unusedSectionVars false
+
 
 open scoped BigOperators
 

@@ -6,10 +6,6 @@ Authors: ArkLib Contributors (#466)
 import Mathlib.Tactic
 import Mathlib.Data.Nat.Choose.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The char-`0` histogram coefficient for the canonical shape `d = (-3, 1, 0, …)` (#466)
 
@@ -61,6 +57,11 @@ its exact finite-`n` ratio to Wick. This is a precise NO-GO for the `r²/n` supp
 CORE closure: the prize wall is the SIMULTANEOUS control of all sectors at prize depth `r ≈ log q`,
 which this file does not touch. Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.CharZeroHistogramShapeM31
 

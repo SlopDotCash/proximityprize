@@ -8,9 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.RCLike.Basic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-A11 (#444): the Bourgain–Gamburd / superstrong-approximation affine envelope does NOT bound `M(n)` — an abelianness obstruction
 
@@ -61,6 +58,10 @@ apply to the multiplicative dilation action: the natural non-abelian envelope (t
 has an *abelian* linear part `μ_n`, whose gap collapses; and the only quantity it would control is
 `M(n)/n` itself. No new control on `M(n)` is produced.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset Real Complex
 

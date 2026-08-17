@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Tactic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door (iv): the char-0 BASE of the tower-doubling energy recursion `Q_r(N)` (#444)
 
@@ -67,6 +64,10 @@ anti-concentration / moment-saving / capacity claim. The prize CORE stays OPEN.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.TowerEnergyDoublingRatioBase
 

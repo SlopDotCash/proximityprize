@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # Round 9 (Issue #232, ABF26) — the EXACT 2-to-1 HALVING of the quadratic subgroup Gauss sum:
 # the quadratic subgroup character factor is *structurally* twice a LINEAR one at half size.
@@ -57,6 +55,9 @@ of this file and the precise structural off-diagonal reduction of attack target 
   Tracking issue #232.
 - A. Weil, *On some exponential sums*, PNAS 1948 (the per-frequency `√q` bound, NOT used here).
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset Polynomial BigOperators
 

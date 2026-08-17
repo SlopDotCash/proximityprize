@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Order.Field.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Door IV (Lane 1, rule-3 test on the coherence-deficit): the near-worst coset-half coherence
 # DEFICIT `1 − ρ_near(n)` is THICKNESS-INVARIANT in the asymptotic regime, hence DEAD as a CORE lever
@@ -64,6 +62,9 @@ The clean statement: comparability with factor `K < 2` is *exactly equivalent* t
 of a "factor-2 separation" `2 · L thin ≤ L thick`, and symmetrically. This is the kernel-checked form
 of "the deficit is thickness-invariant ⟹ it cannot be the deciding lever."
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DoorIVCoherenceDeficitThicknessInvariant
 

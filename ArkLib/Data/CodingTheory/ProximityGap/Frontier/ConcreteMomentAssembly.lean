@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.I031OrbitCountPartition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProveAssembly
 
-set_option linter.style.longLine false
-
 /-!
 # The CONCRETE moment hypothesis for the prize assembly (#444)
 
@@ -40,6 +38,9 @@ This DISCHARGES the moment pillar concretely; it does NOT touch the open residua
 CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN. Pure consolidation: turns one carried hypothesis of the
 assembly into an in-tree theorem over the real `eta`/`rEnergy`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

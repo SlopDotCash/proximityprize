@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceFlatnessRatioSqrtCancellation
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # EXTEND — the exact range and endpoints of flatness excess (#444)
 
@@ -30,6 +26,11 @@ square-root cancellation:
 No CORE / cancellation / completion / moment-saving / capacity claim is made.  These are normalization
 and endpoint facts only; proving that the excess is `o(1)` is exactly the open Door-(iv) burden.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceFlatnessExcessRange
 

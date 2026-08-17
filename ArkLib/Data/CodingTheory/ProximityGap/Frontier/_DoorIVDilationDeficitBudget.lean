@@ -7,9 +7,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDescentTelescope
 import Mathlib.Analysis.SpecialFunctions.Exp
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-3: the VARIABLE-per-level dilation telescope and its coherence-deficit budget (#444)
 
@@ -50,6 +47,10 @@ elementary `1 − x ≤ e^{−x}`, and `log`/`exp` bookkeeping.  This is a Lane-
 prices the dilation route's exact budget, it does not pay it.  `M(μ_n) ≤ C·√(n·log(p/n))` stays
 exactly as OPEN as before.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVDilationDeficitBudget
 

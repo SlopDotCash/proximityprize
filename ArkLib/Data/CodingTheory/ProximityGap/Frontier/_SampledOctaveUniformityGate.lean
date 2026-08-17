@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Sampled-octave uniformity gate
 
@@ -27,6 +24,10 @@ No analytic estimate is claimed here.  The point is to make the consumer exact:
 * sample bounds + an off-sample tail/envelope imply a uniform bound;
 * without such a tail/envelope, a one-octave spike countermodel preserves the sampled data.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.SampledOctaveUniformityGate
 

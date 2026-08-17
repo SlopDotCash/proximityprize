@@ -7,14 +7,15 @@ import ArkLib.Data.CodingTheory.ProximityGap.InvolutionClosedCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._E3StrataCount
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-! Scratch: the count of negation-closed `2i`-subsets of a negation-closed `G ⊆ F`.
 Direct port of `InvolutionClosedCount.isClosed_card_eq_choose` from `univ` to `G` (whose
 elements are nonzero, so `-·` is fixed-point-free on `G`); the transversal is
 `exists_neg_transversal`. This is the per-stratum subset multiplicity
 `#{neg-closed S ⊆ G : |S| = 2i} = C(|G|/2, i)` feeding the E₃ assembly. -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 

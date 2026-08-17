@@ -5,12 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._EtaCosetOrbitMultiplicity
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedFintypeInType false
-
 /-!
 # Frequency-coset orbit partition bookkeeping for door IV (#444)
 
@@ -28,6 +22,13 @@ same multiplicative `G`-coset changes neither the orbit nor `‖η_b‖`.
 Pure finite coset algebra.  It bounds no period, proves no anti-concentration, and does not close CORE.
 The missing theorem is still an upper bound for the shared `η` value on each coset.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 
 open Finset AddChar
 

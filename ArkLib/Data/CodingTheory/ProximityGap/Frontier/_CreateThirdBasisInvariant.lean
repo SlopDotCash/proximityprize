@@ -7,10 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.MeanInequalities
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # F10 — the THIRD BASIS: the oscillator / fractional-Fourier representation of the period (#444)
 
@@ -116,6 +112,11 @@ PIECE — proving the angle-averaged fractional dispersion of the worst far-cose
 external mathematics; it is NOT discharged.  This is creation of a new object and a new conditional
 theorem, not a closure.  Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset Complex
 

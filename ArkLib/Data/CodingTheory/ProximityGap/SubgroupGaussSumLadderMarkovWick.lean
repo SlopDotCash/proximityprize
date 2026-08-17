@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumLadderMarkov
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
 
-set_option linter.style.longLine false
-
 /-!
 # Wick-sharpened general-`r` no-Johnson threshold: `q^{1/2} -> q^{1-o(1)}` (#444)
 
@@ -53,6 +51,9 @@ bound on `M`). Generalizes `SubgroupGaussSumSixthMarkovWick` (r = 3) to all `r` 
 
 Issue #444. Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

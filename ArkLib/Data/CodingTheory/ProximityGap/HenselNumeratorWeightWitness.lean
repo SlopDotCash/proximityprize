@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicWeightExplicit
+import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicWeightHolds
+
+/-!
 #389 residual `alphagenuine-regular-weightle`.
 
 The residual `AlphaGenuineRegularWeightLe` is FALSE-as-stated (already refuted axiom-clean,
@@ -20,8 +23,6 @@ This converts `weight_holds`'s inlined computation into a general theorem and pi
 remaining obstruction (constructing such a witness = inverting ξ in 𝒪 while controlling the
 representative degree = the Newton-cancellation wall).
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicWeightExplicit
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicWeightHolds
 
 open Polynomial Polynomial.Bivariate BCIKS20AppendixA ProximityPrize.BCIKS20.GammaGenuine
 

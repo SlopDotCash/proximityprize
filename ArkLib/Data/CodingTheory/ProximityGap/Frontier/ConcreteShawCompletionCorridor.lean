@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteCompletionCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteShawValueThinFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ShawValueCapstone
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The normalized SOTA corridor: Shaw value of the worst period under √q-completion (#444)
 
@@ -32,6 +29,10 @@ Pure composition of two existing in-tree facts (the √q ceiling + the Shaw divi
 No analytic content, no saving, no anti-concentration. CORE `Sh(M(μ_n)) = O(1)` stays OPEN; this
 records the concrete normalized starting line.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

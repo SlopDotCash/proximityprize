@@ -3,12 +3,18 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
-Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ArkLib Contributors
--/
-/-
+import Mathlib.Tactic
+import Mathlib.RingTheory.PowerBasis
+import Mathlib.FieldTheory.Minpoly.Field
+import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
+import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
+import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
+import Mathlib.RingTheory.RootsOfUnity.Basic
+import Mathlib.RingTheory.RootsOfUnity.Complex
+import Mathlib.NumberTheory.Cyclotomic.Basic
+import Mathlib.Data.Complex.Basic
+
+/-!
   Round 12 — UNCONDITIONAL Lam–Leung antipodal tightness for GENERAL N = 2^{m-1}.
 
   Context (Ethereum Proximity Prize, ABF26 / ArkLib #232).  Prior rounds proved
@@ -34,16 +40,12 @@ Authors: ArkLib Contributors
 
   Self-contained; imports only Mathlib.  Closes with `#print axioms`.
 -/
-import Mathlib.Tactic
-import Mathlib.RingTheory.PowerBasis
-import Mathlib.FieldTheory.Minpoly.Field
-import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
-import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
-import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
-import Mathlib.RingTheory.RootsOfUnity.Basic
-import Mathlib.RingTheory.RootsOfUnity.Complex
-import Mathlib.NumberTheory.Cyclotomic.Basic
-import Mathlib.Data.Complex.Basic
+
+/-!
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
 
 open Polynomial Finset
 

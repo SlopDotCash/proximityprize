@@ -6,6 +6,13 @@ Authors: ArkLib Contributors
 import Mathlib.LinearAlgebra.Lagrange
 import Mathlib.Tactic
 
+/-!
+# PromotedHypothesesC
+
+Module docstring for `PromotedHypothesesC.lean`.
+-/
+
+
 open Polynomial
 
 variable {F : Type*} [Field F] [DecidableEq F]

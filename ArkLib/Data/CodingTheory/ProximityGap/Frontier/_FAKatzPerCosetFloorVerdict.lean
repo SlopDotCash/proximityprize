@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumWorstCase
 
-set_option autoImplicit false
-
 /-!
 # FA — Effective Deligne–Katz per-coset monodromy: the abelian envelope IS the `√q` floor (#444)
 
@@ -65,6 +63,9 @@ equivalently the per-conjugate sub-Gaussian right-tail of the `f` real periods (
 BGK square-root-cancellation wall, best PROVEN `n^{1−o(1)}`). Abelian monodromy is provably blind to
 it. Issue #444 / #464.
 -/
+
+set_option autoImplicit false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

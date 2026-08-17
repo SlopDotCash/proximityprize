@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # P6 — Reverse-Hölder energy recursion: the telescope CLOSES char-0, the prize gap is wraparound
 
@@ -72,6 +69,10 @@ two-term recursion coefficient.
 
 Issue #444. Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorryAx`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.P6ReverseHolderTelescope
 

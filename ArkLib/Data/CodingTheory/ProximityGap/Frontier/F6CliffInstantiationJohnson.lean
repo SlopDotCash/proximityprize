@@ -6,9 +6,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 -/
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The F6 explicit δ* lower bound, at the GUARD's cliff value `M_cross = n/4`, is JOHNSON-side (#444)
 
@@ -50,6 +47,10 @@ Probe: `scripts/probes/probe_f6_cliff_instantiation_johnson.py` (exact `Fraction
 
 All results `#print axioms ⊆ {propext, Classical.choice, Quot.sound}`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.F6CliffInstantiationJohnson
 

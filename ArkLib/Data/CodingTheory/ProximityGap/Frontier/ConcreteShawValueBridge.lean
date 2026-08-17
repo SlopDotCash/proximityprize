@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteTrivialCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ShawValueCapstone
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Wiring the Shaw-value capstone onto the CONCRETE worst period (#444)
 
@@ -40,6 +37,10 @@ completion, no moment, no capacity claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))`
 `Sh(M(μ_n)) = O(1)` at `L = log(p/n)`) stays OPEN; it lives strictly inside the proven normalized
 `√((q−n)/(q−1)·L⁻¹) .. √(n/L)` corridor supplied here.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NoFifthDoorTetrachotomy
 import Mathlib.Order.Interval.Set.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The door-(iv) target corridor as a genuine `Set.Icc` (#444, Lane 2 capstone packaging)
 
@@ -31,6 +28,10 @@ Contents (all axiom-clean, pure order/`Real.sqrt` bookkeeping — no analytic/CO
 `Set.Icc` interface.  No CORE / cancellation / completion / moment / anti-concentration / capacity
 claim; the corridor *width* `√L` is the door-(iv) obligation and is NOT shaved here.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy
 

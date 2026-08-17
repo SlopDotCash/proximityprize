@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._REnergyThreeScratch
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._E3NegSymConverse
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # The relation energy `rEnergy G 3` equals the count-balanced census in characteristic 0 (#444)
 
@@ -34,6 +32,9 @@ For a negation-closed set `G` of `2^k`-th roots of unity in a characteristic-0 f
   direction is *false at depth* — the BGK/Burgess `√`-cancellation wall, the open core of #444.
   This file does not cross that wall.
 -/
+
+set_option autoImplicit false
+
 
 open scoped Classical
 attribute [local instance] Classical.propDecidable

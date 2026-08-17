@@ -3,7 +3,13 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Data.Nat.Choose.Basic
+import Mathlib.Data.Nat.Choose.Bounds
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Linarith
+
+/-!
 ANGLE A — Explicit, computable, two-sided δ* BRACKET for the Ethereum Proximity Prize.
 
 We formalize the ARITHMETIC CORE of the state-of-the-art provable statement about the
@@ -21,11 +27,6 @@ This file proves, fully axiom-clean over ℕ:
   (B) A concrete NON-VACUITY witness with explicit n, k, t, q, E showing the crossover
       hypotheses are simultaneously satisfiable (so the bracket is nontrivial).
 -/
-import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Data.Nat.Choose.Bounds
-import Mathlib.Tactic.Ring
-import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Linarith
 
 open Nat
 

@@ -7,10 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.MeanInequalities
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # A4-walsh — the WALSH–HADAMARD (dyadic, non-Fourier) basis for `μ_{2^a}` (#444)
 
@@ -129,6 +125,11 @@ shown to be basis-independent.
 * `WalshReducesToSameFloor` — the named verdict Prop: every Walsh sup-control factors through the
   basis-invariant Parseval floor; the prize is unchanged.  REDUCES is a theorem.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset Complex
 

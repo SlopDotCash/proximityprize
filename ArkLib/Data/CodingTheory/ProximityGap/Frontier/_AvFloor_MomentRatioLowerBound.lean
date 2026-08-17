@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 
-set_option autoImplicit false
-
 /-!
 # A moment-ratio LOWER bound on the Paley/BGK maximum `M` (issue #444 — the "floor")
 
@@ -45,6 +43,9 @@ relevant `M = Ω(√(n log p))` lower bound — the log factor is the open Ω-re
 rest on the energy facts `E₂ ≥ 2n²−n` (diagonal) and `E₂ = 3n²−3n` (Stickelberger, `p > n⁴`),
 which are recorded as *evidence*, not theorems in this file.
 -/
+
+set_option autoImplicit false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

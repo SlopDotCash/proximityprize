@@ -7,10 +7,6 @@ import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # Frontier-Wildcard-2 (#444): the o-minimal / Pila–Wilkie point-counting angle on the
   char-`p` energy is DOUBLY VACUOUS — it hits the √p-vacuity in tame-geometry clothing AND is
@@ -95,6 +91,11 @@ Axiom-clean target: `⊆ {propext, Classical.choice, Quot.sound}`. No `sorry`/`a
 This is a METHOD NO-GO (companion to `DelsarteLPNoGo`, the prismatic wf-J3 obstruction, and
 `_NovelEllAdicSheaf`), NOT a closure.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.Wildcard2
 

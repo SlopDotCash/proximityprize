@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumEnergyReduction
 import ArkLib.Data.CodingTheory.ProximityGap.InteriorWorstCaseIncompleteSum
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # ROUTE R4 — the probabilistic / pessimistic-estimator reduction, made an EXACT in-tree theorem (#464)
 
@@ -73,6 +69,11 @@ energy-collapse half is formalized here, where it is exact.
 
 All proofs axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #464, node N15/R4.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

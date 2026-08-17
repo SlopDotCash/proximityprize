@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (Issue #444, IDEA G5 — char-p↔char-0 direct sup
 import Mathlib.Tactic
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # IDEA G5: char-p ↔ char-0 DIRECT SUP COUPLING — the exact anchor and the precise no-go (#444)
 
@@ -38,6 +35,10 @@ deterministic transport + its full-power loss (transport_bound, transport_loses_
 (coupling_reduces_to_excess, excess_split): prize ⟺ bounding char-p excess at √log m scale = wall.
 NOT a closure; a rigorous localization. Issue #444, IDEA G5.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.G5Coupling
 

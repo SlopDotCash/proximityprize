@@ -15,6 +15,13 @@ import ArkLib.Data.Domain.CosetFftDomain.Log
 import ArkLib.Data.MvPolynomial.EvenAndOdd
 import CompPoly.Data.MvPolynomial.Notation
 
+/-!
+# Multilinear
+
+Module docstring for `Multilinear.lean`.
+-/
+
+
 namespace ProximityGap
 
 open NNReal Finset Function

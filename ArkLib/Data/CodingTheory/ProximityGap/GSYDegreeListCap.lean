@@ -3,7 +3,11 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+import Mathlib.FieldTheory.RatFunc.Basic
+import Mathlib.Algebra.Polynomial.Roots
+
+/-!
 Round 14 — Angle A: the Y-DEGREE LIST CAP, the algebraic endgame of the
 Guruswami–Sudan list-decoding argument (ABF26 / ArkLib #232 context).
 
@@ -29,9 +33,6 @@ polynomial Q, does not relate deg_Y Q to the agreement parameter t and the
 weighted degree, and says nothing about pushing past the Johnson radius.  It is
 the reusable algebraic cap only.
 -/
-import Mathlib.Tactic
-import Mathlib.FieldTheory.RatFunc.Basic
-import Mathlib.Algebra.Polynomial.Roots
 
 open Polynomial
 

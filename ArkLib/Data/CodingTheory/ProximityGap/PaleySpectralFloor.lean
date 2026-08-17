@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.GeneralizedPaleyRamanujan
 
-set_option linter.style.longLine false
-
 /-!
 # The Paley spectral floor: the prize target is the EVT floor, NOT Ramanujan (Issue #407)
 
@@ -72,6 +70,9 @@ spectral-gap upper bound is a dead end, and re-points the core at the correct (E
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #407.
 - `docs/references/proximity-gap-paley-spectrum/README.md` — the 20-paper sweep + semiprimitive no-go.
 -/
+
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)
 open ArkLib.ProximityGap.InteriorWorstCaseIncompleteSum (WorstCaseIncompleteSumBound)

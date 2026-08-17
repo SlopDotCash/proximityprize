@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Data.Finset.Prod
+import Mathlib.Data.Finset.Card
+import Mathlib.Algebra.Group.Basic
+import Mathlib.Algebra.Ring.Defs
+
+/-!
   A2-energy-transfer-r2  (char-p additive-energy transfer for μ_n at r=2)
 
   GOAL of this draft: pin, in Lean, the EXACT char-free content of the r=2 energy bound
@@ -25,10 +30,6 @@ Authors: ArkLib Contributors
   upper bound is equivalent to the NON-existence of a genuine quadruple.  The antipodal T3 term
   is left as the hook to the EvenOddAntipodal closure (named, not silently discharged).
 -/
-import Mathlib.Data.Finset.Prod
-import Mathlib.Data.Finset.Card
-import Mathlib.Algebra.Group.Basic
-import Mathlib.Algebra.Ring.Defs
 
 open Finset
 

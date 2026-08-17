@@ -7,6 +7,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Assembly
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2KeystoneReindex
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2FubiniReabsorb
 
+/-!
+# P2ClearedBridge
+
+Module docstring for `P2ClearedBridge.lean`.
+-/
+
+
 namespace BCIKS20.HenselNumerator
 
 open scoped BigOperators

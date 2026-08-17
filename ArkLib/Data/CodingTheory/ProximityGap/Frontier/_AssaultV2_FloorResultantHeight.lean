@@ -9,9 +9,6 @@ import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.Ring
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # FLOOR_A3 — the off-BGK floor's 0-dimensional core: the bad-prime cyclotomic resultant
   and its (exponential) HEIGHT (#464 / §9)
@@ -57,6 +54,10 @@ poly(n) HEIGHT bound is NOT needed — one only needs a SMALL GOOD prime, suppli
 below as the NAMED OPEN Prop `HeightPolyBound`, and `three_is_good` / `floorRoute_bad_set_is_fixed_finite`
 record that the closure mechanism is the small-good-prime existence, not the height bound.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.FloorResultantHeight
 

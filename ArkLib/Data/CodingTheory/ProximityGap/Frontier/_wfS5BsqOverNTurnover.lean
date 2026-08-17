@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS5_theta_count_wick
 
-set_option linter.style.longLine false
-
 /-!
 # wf-S5 — the `B²/n` TURNOVER: the spur multiplier is `(B²/n)^r`, not `K^r` (#444, lane wf-S5)
 
@@ -54,6 +52,9 @@ direct cumulative count bound). EXTEND-proven on top of the axiom-clean shell-la
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

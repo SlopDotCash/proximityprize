@@ -3,6 +3,13 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+
+/-!
+# _AttackR6_RelationVarietyBezoutNoGo
+
+Module docstring for `_AttackR6_RelationVarietyBezoutNoGo.lean`.
+-/
+
 /-
 Atk_R6 : Bezout-on-the-relation-variety conjecture (R6) — structural no-go.
 

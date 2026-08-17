@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMoment
 
-set_option linter.style.longLine false
-
 /-!
 # The fibre-max ≤ collision-energy bridge: Form 2 ⟹ Form 4 (Issue #389)
 
@@ -34,6 +32,9 @@ the recognized open object.
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #389.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumFourthMoment (addEnergy)

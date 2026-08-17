@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.NumberTheory.LSeries.PrimesInAP
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26PolyFieldCeiling
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Dirichlet ⟹ UNCONDITIONAL good prime for KKH26 (no `TZPrimeSupply`) — #334 B3 pivot
 
@@ -43,6 +40,10 @@ This removes the named hypothesis for the *existence* of the good prime / the `�
 the polynomial field-size refinement (that stays the Linnik gap). It does not touch the Paley/BGK
 sup-norm cone. Real, unconditional, Mathlib-backed progress on the B3 thread.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.KKH26
 

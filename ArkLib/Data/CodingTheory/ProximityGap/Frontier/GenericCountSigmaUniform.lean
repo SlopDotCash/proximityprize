@@ -8,8 +8,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.GenericSuperDiagonalLower
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedPairingCount
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # The per-`σ` generic count is UNIFORM across pairings — discharging the `hm` gate (#407 lower)
 
@@ -55,6 +53,9 @@ count for ONE `σ`", removing the family quantifier from the gate. Negation-clos
 NOT thinness-essential, does NOT close CORE. Axiom-clean (`propext, Classical.choice, Quot.sound`).
 Issue #407.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset Nat
 

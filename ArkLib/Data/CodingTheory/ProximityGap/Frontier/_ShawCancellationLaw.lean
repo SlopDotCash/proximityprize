@@ -5,11 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-set_option linter.dupNamespace false
-
 /-!
 # The Shaw Cancellation Law: a named principle for root-number phase cancellation (#444)
 
@@ -66,6 +61,12 @@ cancellation — as a single named `Prop`, then *applies* it: the law `⟹` the 
 All proofs are axiom-clean (`propext, Classical.choice, Quot.sound`). The mathematical content of
 the prize is concentrated into `ShawSubGaussianCancellation`; everything else is unconditional.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+set_option linter.dupNamespace false
+
 
 namespace ArkLib.ProximityGap.Frontier.ShawCancellationLaw
 

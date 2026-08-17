@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Multi-test tail bounds do not amplify without decorrelation
 
@@ -21,6 +18,10 @@ individual tail has mass `1 / #α`, and the common tail also has mass `1 / #α`,
 Thus a multi-test certificate becomes worst-case only at the same one-atom scale as a single test,
 unless additional structure proves the bad sets cannot align.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

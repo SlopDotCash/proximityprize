@@ -87,6 +87,8 @@ the exact kernel at n in {16,32,64,128}.
 -/
 import Mathlib
 
+/-! ## The closed form is well-posed (no nat-subtraction truncation for `g >= 2`). -/
+
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false
 set_option maxHeartbeats 1200000
@@ -111,7 +113,6 @@ def deepBandBadCount4 (g : ℕ) : ℕ := g ^ 4 + 4 * g + 1 - 2 * g ^ 3
 /-- The r=4 budget `K = 2^4 * C(n/2, 4) = 16 * C(2g, 4)`, in terms of `g = n/4`. -/
 def deepBandBudget4 (g : ℕ) : ℕ := 2 ^ 4 * (2 * g).choose 4
 
-/-! ## The closed form is well-posed (no nat-subtraction truncation for `g >= 2`). -/
 
 /-- For `g >= 2`, `g^4 + 4g + 1 >= 2 g^3`, so the closed form is the honest integer
 `g^4 - 2g^3 + 4g + 1`. -/

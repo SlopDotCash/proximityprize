@@ -5,10 +5,6 @@ Authors: ArkLib Contributors (#444 / #389, thread T2-recursion-lean)
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option maxHeartbeats 4000000
-
 /-!
 # T2: the GENUINE balanced-config count as a `Finset.card` (#444 / #389)
 
@@ -68,6 +64,11 @@ one named bijection. The deep BGK/Paley char-`p` wall at depth `r ≈ log m` is 
 
 Issue #444 / #389, thread T2-recursion-lean.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option maxHeartbeats 4000000
+
 
 open Finset
 

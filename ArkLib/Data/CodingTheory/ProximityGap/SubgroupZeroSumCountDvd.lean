@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 import ArkLib.Data.CodingTheory.ProximityGap.OrbitCountCrossingLaw
-set_option linter.unusedSectionVars false
 
 /-!
 # `|S|` divides the zero-sum count of a multiplicative subgroup — at ALL orders, incl. ODD (#444)
@@ -57,6 +56,8 @@ verified directly (0 fixed-point violations of `g ≠ 1` fixing a zero-sum tuple
 
 Issue #444.
 -/
+set_option linter.unusedSectionVars false
+
 
 open scoped BigOperators
 

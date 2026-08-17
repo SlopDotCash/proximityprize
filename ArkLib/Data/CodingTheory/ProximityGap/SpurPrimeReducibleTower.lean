@@ -8,9 +8,6 @@ import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 import Mathlib.Algebra.Polynomial.FieldDivision
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # `Φ_{2^m}` is REDUCIBLE mod `3` for ALL `m ≥ 3` — the uniform-in-`m` candidate-persistence of the
 # spur prime `p = 3` (Issue #444)
@@ -51,6 +48,10 @@ capacity / beyond-Johnson / cliff-at-`n/2` / `δ*→0` claim. `CORE M(μ_n) ≤ 
 
 Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Polynomial
 

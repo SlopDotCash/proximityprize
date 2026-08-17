@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (wf-T07 frontier — adelic capacity / Fekete-Szeg�
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-T07 — Capacity / transfinite-diameter ceiling on the conjugate set of the period (#444)
 
@@ -102,6 +99,10 @@ regime `p ~ n^4`, `m = (p−1)/n ~ 2^{128}`.
   `scripts/probes/_probe_444_periodpoly_disc_cft.py` (14 cases, all `YES`),
   `docs/kb/deltastar-444-frontier-synthesis-NOLARP-2026-06-16.md` (the disc-house-blind row).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.AdelicCapacityHouseCeiling
 

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeShawTetrachotomySynthesis
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Lane-3: the FAMILY prize-constant lower bound `c₀ ≤ K` from a uniform super-diagonal floor (#444)
 
@@ -44,6 +41,10 @@ NO anti-concentration / cancellation estimate, and asserts the super-diagonal fl
 instance (it is a hypothesis, the proven `worstPeriod_ge_const_sqrt` conclusion-shape).  CORE remains
 exactly as open as before.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis
 

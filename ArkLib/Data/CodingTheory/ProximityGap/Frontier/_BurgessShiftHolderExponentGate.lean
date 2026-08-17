@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Burgess shift-Hölder exponent gate at the beta-four wall
 
@@ -31,6 +28,10 @@ This is not an analytic theorem and does not assert Burgess for the subgroup per
 consumer-side arithmetic behind the KB verdict that Burgess shift-Hölder amplification dies at
 `p = H^4`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.BurgessShiftHolderExponentGate
 

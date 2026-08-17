@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Data.Fin.Basic
 import Mathlib.Data.Finset.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: dyadic worst-`b` selectors need a real spike, not Haar noise
 
@@ -32,6 +29,10 @@ Thus the dyadic-selector route must exhibit an actual histogram spike.  The late
 none.  This is a constraint lemma for door (iv), not a cancellation bound, not CORE, and not a capacity
 claim.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVWorstBDyadicSelectorWalled
 

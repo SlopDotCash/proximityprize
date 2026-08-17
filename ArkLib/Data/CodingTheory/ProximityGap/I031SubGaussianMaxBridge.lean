@@ -7,10 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumOrbitReduction
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # I031 Step (b)-(iv): the sub-Gaussian max bridge — `max ≤ √(2C·log m)` (#444 / #389)
 
@@ -59,6 +55,11 @@ reusable conditional brick that consumes exactly that one Prop.
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset AddChar
 

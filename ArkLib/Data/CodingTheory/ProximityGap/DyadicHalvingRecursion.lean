@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 import Mathlib.RingTheory.RootsOfUnity.Basic
 
-set_option linter.style.longLine false
-
 /-!
 # The dyadic halving recursion for 2-power subgroup Gaussian periods (#389)
 
@@ -22,6 +20,9 @@ identity underlying the dyadic square-root-cancellation analysis; with reality (
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

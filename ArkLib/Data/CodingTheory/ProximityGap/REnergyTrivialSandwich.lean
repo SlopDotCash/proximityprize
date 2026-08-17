@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.REnergyDiagonalFloor
 import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTailReindexed
 
-set_option linter.style.longLine false
-set_option linter.unusedFintypeInType false
-
 /-!
 # The trivial sandwich for `rEnergy`
 
@@ -17,6 +14,10 @@ for positive level `r+1`, the diagonal floor gives `|G|^(r+1) ≤ E_{r+1}`, whil
 ceiling gives `E_{r+1} ≤ |G|^(2r+1)`.  The gap between these two elementary bounds is exactly the
 moment-method slack; the file makes no square-root-cancellation, CORE, or capacity claim.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedFintypeInType false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy rEnergy_ge_card_pow)
 

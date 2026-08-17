@@ -5,10 +5,6 @@ Authors: ArkLib Contributors (wf-W7)
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The `(1−ζ_p)`-adic Newton-polygon slope count: the DC slope-0 segment DOMINATES the
   genuine spurious mass, giving the Wick bound with `K = 1` (#444, lane wf-W7)
@@ -92,6 +88,11 @@ removes. The NP segment-count phrasing: the slope-`≥1` segments carry mass `�
   polygon mechanism; cf. in-tree `_ChebotarevValuationModP.lean`).
 - Lam–Leung, *On vanishing sums of roots of unity* (the char-`0` antipodal floor `E_r^{(0)} ≤ Wick`).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.WF7W7
 

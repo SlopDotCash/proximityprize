@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Random-sign typical bounds do not control the deterministic all-ones sign
 
@@ -20,6 +17,10 @@ average bound, is compatible with the distinguished all-ones signing being the u
 random-sign operator-norm theorem supplies the free `sqrt n` scale only after a separate theorem
 controls the deterministic signing or pushes the exceptional budget below one atom.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.RandomSignTypicalNotAllOnesGate
 

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Cardinality tradeoff for stack profiles
 
@@ -23,6 +20,10 @@ Equivalently, any profile compression with `#P * K` below the stack-universe siz
 one fiber larger than `K`.  Thus a small binder/adjacent-pattern/floor profile does not avoid the
 large-fiber problem; it concentrates the hard maximizer theorem inside large fibers.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open ProximityGap Code

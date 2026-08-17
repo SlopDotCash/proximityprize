@@ -74,6 +74,8 @@ itself is [COMPUTED]-calibrated against the exact kernel at n in {16,32,64,128}.
 -/
 import Mathlib
 
+/-! ## The numerator is honest (no nat-subtraction truncation). -/
+
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false
 set_option maxHeartbeats 1200000
@@ -95,7 +97,6 @@ def deepBandFullOrb (g : ℕ) : ℕ := (4 * g ^ 3 + 3 * g ^ 2 + 0 - 10 * g) / 24
 /-- The r=5 budget `K = 2^5 * C(n/2, 5) = 32 * C(2g, 5)`, in terms of `g = n/4`. -/
 def deepBandBudget5 (g : ℕ) : ℕ := 2 ^ 5 * (2 * g).choose 5
 
-/-! ## The numerator is honest (no nat-subtraction truncation). -/
 
 /-- For `g >= 1`, `4 g^4 + 3 g^3 + 12 >= 10 g^2`, so the closed-form numerator is the honest
 integer `4 g^4 + 3 g^3 - 10 g^2 + 12`. -/

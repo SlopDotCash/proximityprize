@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.DeepStratumMovingDirection
 import ArkLib.Data.CodingTheory.ProximityGap.DeepBandCoherence
 
-set_option linter.unusedSectionVars false
-
 /-!
 # The surviving moving-direction coordinate is core-independent (#389, route-2 deep stratum)
 
@@ -17,6 +15,9 @@ the vanishing polynomial `Z_T` is identically zero (`interp_T_vanishPoly_eq_zero
 coefficients vanish.  This packages the two into a single witness: a band coordinate where the moving
 direction survives and the core does not — the coordinate that drives the `m+1` rank gain.
 -/
+
+set_option linter.unusedSectionVars false
+
 
 open Finset Polynomial
 

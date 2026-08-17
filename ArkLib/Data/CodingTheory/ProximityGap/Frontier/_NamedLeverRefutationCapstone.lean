@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CampaignProvenIndex
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NoFifthDoorTetrachotomy
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Named-lever refutation capstone for the no-fifth-door tetrachotomy (#444, Lane 3)
 
@@ -44,6 +41,10 @@ it does **not** by itself discharge the *abstract* `hclassicalOvershoots` quanti
 levers).  What it gives is the kernel-checked **named** content: the concrete levers Shaw enumerated
 are each provably below the prize floor / loose / non-driving, with one citation surface.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.NamedLeverRefutationCapstone
 

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # No-fifth-door tetrachotomy capstone for the proximity prize (#444, Lane 3)
 
@@ -41,6 +38,10 @@ makes "door (iv) is the only live door" a kernel-checked fact rather than prose.
 prove the prize inequality, give any anti-concentration for the monomial phase set, or claim door
 (iv) is achievable — door (iv) being the *only remaining* door is exactly the open problem.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy
 

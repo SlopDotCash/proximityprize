@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodMomentRatioLower
 
-set_option linter.style.longLine false
-
 /-!
 # Floor lower bound ⟸ energy-ratio growth: the wired reduction (#444)
 
@@ -40,6 +38,9 @@ below.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`; no `sorry`).
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.FloorResonanceBridge
 

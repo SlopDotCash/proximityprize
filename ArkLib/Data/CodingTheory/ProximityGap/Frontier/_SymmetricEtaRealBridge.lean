@@ -6,12 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ClosedWalkPowerSum
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedFintypeInType false
-
 /-!
 # `η_b` is REAL on symmetric `G`, bridging the un-conjugated trace to the conjugated moment (#444)
 
@@ -55,6 +49,13 @@ beyond-Johnson content lives in the ODD/signed trace, not the even one. Issue #4
 - `SubgroupGaussSumMoment.subgroup_gaussSum_moment` (`Σ_b‖η_b‖^{2r} = q·E_r`).
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

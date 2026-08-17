@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (wf-L8, #444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CharZeroWickEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wf6P2_charp_lamleung_slack
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The char-`0` Lam–Leung ceiling, discharged UNIFORMLY in `r`, wired into the slack route (#444, wf-L8)
 
@@ -75,6 +72,10 @@ on the real `rEnergy` carrier.  It does NOT bound `Spur_r(p)`; the `(P2-Slack)` 
 GENUINELY OPEN (= the BGK char-`p` wall, the genuine open core).  No `δ*` / capacity / beyond-Johnson
 claim.  `CORE M(μ_n) ≤ C·√(n·log(p/n))` UNCHANGED/OPEN.  Issue #444, wf-L8.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.WFL8
 

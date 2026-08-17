@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (target F4 — the good-prime existence residual vi
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26SumsOfRootsOfUnity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AlmostAllPrimesWick
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Target F4 — the good-prime existence residual (Linnik / effective Chebotarev) for the δ* floor
 
@@ -84,6 +81,10 @@ as B3 / `_AvW2`, independent of coding theory).
 - Thorner, Zaman, *A unified and improved Chebotarev density theorem* (the effective PNT-in-AP
   input; `KKH26ThornerZaman.lean`, `_AvW2_SpurChebotarev.lean`).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 

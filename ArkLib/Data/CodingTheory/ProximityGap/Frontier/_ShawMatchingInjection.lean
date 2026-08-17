@@ -8,8 +8,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedPairingCount
 import ArkLib.Data.CodingTheory.ProximityGap.GaussianEnergyFromPairing
 import ArkLib.Data.CodingTheory.ProximityGap.DyadicEnergyK1
 
-set_option linter.style.longLine false
-
 /-!
 # S2 — the CHAR-`p` matching injection with a bounded wraparound tag (#444, TARGET S2-matchinginjection)
 
@@ -71,6 +69,9 @@ LANDED + REDUCED).
   `PairingResidualFailsAtPrize` + `DCEnergyEssential` (why the naive char-`p` form fails),
   `GaussianEnergyFromPairing` (the energy carrier). Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset Nat
 

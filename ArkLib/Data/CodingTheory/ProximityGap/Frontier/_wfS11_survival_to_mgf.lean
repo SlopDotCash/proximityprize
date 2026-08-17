@@ -5,8 +5,6 @@ Authors: ArkLib Contributors (wf-S11 survival → MGF, the OTHER layer-cake half
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS11_layercake_moment
 
-set_option linter.style.longLine false
-
 /-!
 # S11 layer-cake — the OTHER half: the literal SURVIVAL tail ⟹ the MGF bound (discrete, axiom-clean)
 
@@ -61,6 +59,9 @@ the single remaining open input is the ABSOLUTE survival/MGF constant = BGK.
 Tag: CONCENTRATION-REDUCED (both layer-cake halves carried). Residual = absolute survival constant = BGK.
 `#print axioms` is `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open Real

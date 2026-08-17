@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # The sharpened unconditional LOWER bound on the worst Gauss period (#407)
 
@@ -57,6 +55,9 @@ statement.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.  Issue #407.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

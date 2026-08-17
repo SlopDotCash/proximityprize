@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#464)
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Nat.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: the worst-frequency GAP SEQUENCE has NO LONG MONOTONE RUN —
   the local near-AP gap lever is a DEAD lever (#464)
@@ -45,6 +42,10 @@ ASYMPTOTIC-GUARD-COMPLIANT (a *negative* / refutation result: a long-run local-A
 OUT at `b*`; no capacity / beyond-Johnson / `δ*` claim).  It does NOT bound CORE; it removes the
 final named non-energy gap lever (local long monotone run) from door (iv).  CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVGapNoLongRun
 

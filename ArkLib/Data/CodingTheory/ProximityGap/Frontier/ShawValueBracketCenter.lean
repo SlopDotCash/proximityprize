@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Geometric center of the Shaw-value prize bracket (#444)
 
@@ -28,6 +25,10 @@ Scope: this is Lane-2 normalization infrastructure only, the geometric-center co
 `sqrt n`-width statement.  It hides **no** anti-concentration or cancellation estimate — every
 theorem is reversible arithmetic on the two already-identified bracket endpoints.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.ShawValueBracketCenter
 

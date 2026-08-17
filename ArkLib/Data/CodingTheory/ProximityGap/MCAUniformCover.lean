@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingT421Faithful
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 
-set_option linter.style.longLine false
-
 /-!
 # The clean uniform-weight MCA bound `ε_mca ≤ (n+1)/q` from a δ-close curve cover
 
@@ -41,6 +39,9 @@ weighted/`M > 1` form; see `epsMCA_le_of_forall_gs_curve_cover` for that general
 * `polynomialCurveEval_line` — a 2-row polynomial curve is the affine line `v 0 + γ•(v 1)`.
 * `epsMCA_le_of_forall_relClose_curve_cover` — `ε_mca ≤ (n+1)/q` from the `δᵣ`-phrased cover.
 -/
+
+set_option linter.style.longLine false
+
 
 open scoped BigOperators NNReal ENNReal
 open Finset

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (wf-OT4, #444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CharZeroLamLeungSlackLower
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Discharging the char-`0` Lam–Leung ceiling hypothesis at `r ∈ {2,3}` (OT4 residual census, #444)
 
@@ -50,6 +47,10 @@ Prize-scale guard (`scripts/probes/probe_wf9OT4_ceiling_discharge.py`): the slac
 `Slack_2 = 3n > 0`, `Slack_3 = 45n²−40n > 0` through `n = 2^30`; the ceiling is genuine (strict),
 so the discharge is non-vacuous at prize scale. Issue #444, wf-OT4.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.WF9OT4
 

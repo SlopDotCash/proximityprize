@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleKDefectQuantDeficit
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # The Cauchy–Schwarz deficit floor is VACUOUS in the all-defect regime (Lane 3 constraint lemma)
 
@@ -36,6 +31,12 @@ exploit the ARITHMETIC phase structure of `{b·x^m}` (the open door-(iv) anti-co
 metric Cauchy–Schwarz budget. NO CORE / cancellation / completion / anti-concentration / moment-saving
 / capacity claim. Prize CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiCocycleAllDefectCSVacuous
 

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Cardinality obstruction for stack representative covers
 
@@ -38,6 +35,10 @@ The exact negative lemmas below turn a failed quotient into finite scanner data:
 uncovered by the proposed representatives, or some representative fiber is larger than the claimed
 cap.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open ProximityGap Code

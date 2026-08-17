@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.Algebra.Polynomial.Expand
+import Mathlib.Algebra.Polynomial.Monic
+import Mathlib.Tactic
+
+/-!
 Scratch: R-thin ragged-excess sharpened by the RESIDUE-FACTOR degree (#407, ESCAPE B1).
 
 Goal: replace `ragged_excess_le_degree` (excess <= deg P - core, VACUOUS since deg P ~ n)
@@ -15,10 +20,6 @@ numerics show (excess = k-1, flat in n in {16,32,64}).
 Provable, axiom-clean. Uses only monic-factorization degree splitting (natDegree_mul) +
 the in-tree root-product machinery shape.
 -/
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Algebra.Polynomial.Expand
-import Mathlib.Algebra.Polynomial.Monic
-import Mathlib.Tactic
 
 namespace ProximityGap.Frontier.RThinResidueDegree
 

@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvFloor_SqrtSevenMomentRatio
 
-set_option autoImplicit false
-
 /-!
 # The GENERAL `r` moment-ratio floor ladder `M² · Aᵣ ≥ Aᵣ₊₁` (issue #444 — floor capstone)
 
@@ -44,6 +42,9 @@ conjectured `√(n·log(p/n))`. The individual rungs `r = 2, 3, 4` below the cap
 This is a LOWER bound (the floor). It does NOT close CORE (an UPPER bound): it certifies that the
 honest value `M` is at least `√(2r+1)·√n` for any `r` below the DC cap, but cannot exceed the cap.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvFloorLadder
 

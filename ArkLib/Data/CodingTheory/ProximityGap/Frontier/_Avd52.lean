@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Tactic.NormNum
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Hodge–Newton p-adic suppression of `W_r` is FALSE on the object (#444/#334)
 
@@ -51,6 +48,10 @@ sequence `r ↦ v_17(W_r)` does **not** grow with `r`.
 **Verdict for `d5-2`: REFUTED (premise false).** The additive-energy integers carry `v_p = 0`;
 Newton-above-Hodge is vacuous on the prize object. No `sorry`, no `native_decide`; counts are real.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.Avd52
 

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMoment
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-S2 (#444): EQUIDISTRIBUTION ⟹ `M` bounded — the spread route to the prize, run forwards
 
@@ -55,6 +52,10 @@ energy bound, and the support floor as explicit hypotheses, so no unproven input
 concrete `r = 2` instance built directly on the in-tree fourth moment `∑_b‖η_b‖⁴ = q·E₂`
 (`subgroup_gaussSum_fourthMoment`). All steps are Weil-free `ℝ`-arithmetic on the Parseval moments.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

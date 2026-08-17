@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodOptimizedBound
 
-set_option linter.style.longLine false
-
 /-!
 # S1: the char-`p` energy-transfer dichotomy, formalized (#444, lane wf-S1)
 
@@ -52,6 +50,9 @@ i.e. the prize is provable via the energy route once the uniform bound is establ
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.GaussPeriodOptimizedBound

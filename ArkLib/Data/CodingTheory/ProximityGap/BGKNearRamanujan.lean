@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.GeneralizedPaleyRamanujan
 import ArkLib.Data.CodingTheory.ProximityGap.BGKBridge
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # nearramanujan-formalize: the HONEST prize target (#407), correcting the BGKBridge δ=1/2
 over-identification.
@@ -52,6 +48,11 @@ hypothesis.  No closure asserted.
 
 All proofs axiom-clean (`propext, Classical.choice, Quot.sound`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Real
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

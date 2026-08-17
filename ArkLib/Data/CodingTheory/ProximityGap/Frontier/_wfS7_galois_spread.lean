@@ -8,8 +8,6 @@ import Mathlib.GroupTheory.GroupAction.Quotient
 import Mathlib.Data.Fintype.Card
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # wf-S7 — the char-`p` Mann analogue, RESOLVED into a GALOIS-SPREAD count law (#444)
 
@@ -52,6 +50,9 @@ These give the SHARP form of the S7 lane: the obstruction is a *count of Galois 
 single small relation, and that count is the same spread object S2/S4/S6 isolate. Axiom-clean
 (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.WFS7Galois
 

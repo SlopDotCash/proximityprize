@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Per-line bounds do not give a union-count floor without overlap
 
@@ -24,6 +21,10 @@ To reach a budget of size `S`, one must prove an additional collapse/overlap the
 fiber model shows the obstruction is sharp: many line fibers can each have size `S` while their union
 has size `#lines * S`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # A14 (Terwilliger-algebra operator-norm route) no-go: the module-dimension wall (#444)
 
@@ -108,6 +106,9 @@ Probes: `scripts/probes/rust/probe_wfA14_terwilliger_dim.rs` (full closure: Bose
 Terwilliger dim by exact modular rank, Hamming reference), `probe_wfA14_terw_fast.rs` (incremental
 echelon, `n = 4, 8` rows confirming `dim T = m(p+1)+1`).
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.A14TerwilligerModuleDim
 

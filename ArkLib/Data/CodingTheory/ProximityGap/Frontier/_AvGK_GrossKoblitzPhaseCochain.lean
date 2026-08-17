@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The Gross-Koblitz phase cochain: the exact-phase route reduces to a self-tautology, and
 # Stickelberger pins valuation not the archimedean phase (#444)
@@ -57,6 +54,10 @@ which no digit-equidistribution / Kummer-Mahler argument reaches (those are `π`
 This file formalizes the load-bearing, fully provable kernels: (i) the orthogonality collapse that makes
 the phase sum a self-tautology, and (ii) the unit-modulus / cochain bookkeeping `|J| = √p`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.GrossKoblitzPhaseCochain
 

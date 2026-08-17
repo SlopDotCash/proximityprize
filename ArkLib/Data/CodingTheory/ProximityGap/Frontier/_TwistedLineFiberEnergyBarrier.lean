@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Polynomial.Roots
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.TwistedLineCollisionParseval
 
-set_option linter.style.longLine false
-
 /-!
 # Bounded fibers improve twisted-line energy, but only at the L²/counting level
 
@@ -25,6 +23,9 @@ directions really do buy a better *energy* estimate than the crude `q * |S|²`; 
 still a collision-count/L² statement.  It does not turn the line-period average into the missing
 uniform L∞ bound on a worst offset/frequency.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar Polynomial
 open ArkLib.ProximityGap.TwistedLineCollisionParseval

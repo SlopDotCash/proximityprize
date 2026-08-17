@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.GenericCountTransversal
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Closed form for the class-injective transversal count (#407 lower, completes the `hm` value)
 
@@ -25,6 +23,9 @@ avoiding the `2(r−1)` excluded class-reps `{t k, −t k}`, a UNIFORM count `n 
 `genericAntipodalSet_card_eq_classInjCount`. Negation-closed / no-2-torsion combinatorics, NOT
 thinness-essential, does NOT close CORE. Axiom-clean. Issue #407.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

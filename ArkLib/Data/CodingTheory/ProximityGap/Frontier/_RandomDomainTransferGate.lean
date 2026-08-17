@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Random-domain theorems need a fixed-domain transfer certificate
 
@@ -24,6 +21,10 @@ The statements below are deliberately abstract.  `Ω` is a finite family of cand
 the whole point: one good domain, or even one exceptional domain among many, can still leave the
 designated smooth domain bad.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.RandomDomainTransferGate
 

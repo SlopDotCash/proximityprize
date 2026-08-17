@@ -7,9 +7,6 @@ import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Data.Real.Basic
 import Mathlib.Order.Bounds.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: an argmax-decoupled functional cannot absolutely control `M(n)` (#444)
 
@@ -45,6 +42,10 @@ This is a **refutation with mechanism** (a DEAD lever class, precisely mapped): 
 `M(n)`; it shows that any functional decoupled from `M` at the worst frequency cannot, even up to
 constants, serve as the door-(iv) control.  No CORE / cancellation / completion / moment / capacity claim.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVArgmaxDecouplingNoControl
 

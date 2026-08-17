@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMoment
 
-set_option linter.style.longLine false
-
 /-!
 # Sixth-moment (3-fold-energy) anti-concentration of the subgroup Gauss sum (#357/#389)
 
@@ -30,6 +28,9 @@ regime in which the moment method already gives sub-Johnson behaviour, not a clo
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

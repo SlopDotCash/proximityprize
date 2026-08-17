@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
+import Mathlib.Data.Complex.Basic
+
+/-!
 # Multi-scale char-0 rigidity: the engine of the general (iterated) dyadic rigidity (#444)
 
 `Sweep_A44` proved the *first level* of the char-0 rigidity (a vanishing-sum subset of `μ_{2^μ}` is
@@ -21,8 +24,6 @@ The char-0 input is the irreducibility of the dyadic cyclotomics over `ℚ`; in 
 
 Axiom-clean: cyclotomic + minpoly + coprimality. No `sorry`.
 -/
-import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
-import Mathlib.Data.Complex.Basic
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

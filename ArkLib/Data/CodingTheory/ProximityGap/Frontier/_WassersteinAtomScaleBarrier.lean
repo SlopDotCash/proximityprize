@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Atom-scale barrier for Wasserstein/equidistribution attacks
 
@@ -22,6 +19,10 @@ with the bound.  In the prize regime `N = (p - 1) / n` is the dilation-quotient 
 Wasserstein or discrepancy theorem must reach union-bound scale before it can imply the needed
 worst-case Paley / incidence statement.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

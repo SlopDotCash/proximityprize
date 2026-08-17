@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PhaseLinearFormDecoupling
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Door-IV pair-discrepancy budget for the phase-linear form (#444)
 
@@ -25,6 +22,10 @@ So the pair-discrepancy residual must be at the `O(1/m)` scale to keep the varia
 multiple of the Plancherel/prize floor.  This is a reduction/constraint only: it proves no new
 anti-concentration, no CORE cancellation, and no capacity claim.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.PhasePairEquidistBudget
 

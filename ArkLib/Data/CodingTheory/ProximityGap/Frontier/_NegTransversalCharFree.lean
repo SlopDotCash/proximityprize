@@ -5,14 +5,15 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-! Scratch: a negation transversal of a negation-closed `G ⊆ F` that does NOT need `[Fintype F]`.
 The only real `Fintype F` use in the E₃ strata chain is `exists_neg_transversal`'s order on `F`
 (via `Fintype.equivFin F`). Here we order the finite subtype `↥G` instead (always a `Fintype`),
 pick one representative per antipodal pair there, and map back out by `Subtype.val`. Unlocks the
 char-0 closed form over `ℂ`. -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 

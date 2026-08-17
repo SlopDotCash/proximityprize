@@ -3,7 +3,11 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Algebra.Polynomial.Eval.Degree
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Tactic
+
+/-!
 # Completing the general char-0 dyadic rigidity: telescoping ⟹ periodicity ⟹ coset (#444)
 
 `Sweep_A46.multiscale_dvd` gives `∏_{i=0}^{r} (X^{2^{μ-1-i}}+1) ∣ g` when `g` vanishes at all dyadic
@@ -23,9 +27,6 @@ do not hold when `Φ_{2^μ}` splits mod `p ≡ 1 mod 2^μ`).
 
 Axiom-clean: polynomial algebra. No `sorry`.
 -/
-import Mathlib.Algebra.Polynomial.Eval.Degree
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

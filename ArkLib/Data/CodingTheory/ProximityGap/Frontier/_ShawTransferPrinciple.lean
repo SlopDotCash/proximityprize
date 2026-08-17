@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SpecS3_GaloisReduction
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedPairingCount
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The Shaw Transfer Principle — a char-0 → char-`p` transfer for the energy bound (#444)
 
@@ -86,6 +83,10 @@ precise reduction of the energy bound to it.
 * `zeroSumCount_le_pairings`, `pairings_card_eq_doubleFactorial` (the char-0 matching bound);
   `LamLeungMultisetAntipodal` (the char-0 pairing). Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset Nat
 

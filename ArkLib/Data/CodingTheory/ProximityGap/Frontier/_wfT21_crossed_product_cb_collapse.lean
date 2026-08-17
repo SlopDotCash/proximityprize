@@ -7,9 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.Field.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-T21 (#444): the reduced-crossed-product cb-norm "non-amenable defect" of the affine group
 `F_p ⋊ μ_n` is **identically zero** — REDUCES-TO-WALL F5 (abelian Cayley gap)
@@ -76,6 +73,10 @@ candidate's own formula at the forced constant):
 
 **Verdict: REDUCES-TO-WALL F5.** No new control on `M(n)`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Real
 

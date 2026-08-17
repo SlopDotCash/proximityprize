@@ -7,9 +7,6 @@ import Mathlib.Analysis.MeanInequalities
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-T10 — Mahler/Lehmer lower bound + 1/k_b division UPPER-bounds House (architect G2-5): REFUTED (#444)
 
@@ -98,6 +95,10 @@ landed `L2MahlerNormBound`/`_wfS8` geometric-mean route).  No prize gain.
   `_wfS8_sharp_house_threshold.lean` (`GM(w) ≈ √w` constant), `_wfTT06_*` (the same sign trap,
   product-formula direction), A15 (free cumulants = moment wall), F0 conservation law.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset Real
 

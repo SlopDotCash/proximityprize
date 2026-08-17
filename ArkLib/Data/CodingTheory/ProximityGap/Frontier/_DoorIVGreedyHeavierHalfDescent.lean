@@ -8,9 +8,6 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: the greedy heavier-half descent product is vacuous as a thinning lever (#444/#464)
 
@@ -65,6 +62,10 @@ Neither bounds `M(n)`; together they show the greedy-heavier-half 1-D descent sh
 inert reconstruction at `b*` that transfers the `√`-wall and cannot telescope — a precisely-mapped dead
 lever, NOT a CORE / cancellation / completion / moment / capacity claim.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVGreedyHeavierHalfDescent
 

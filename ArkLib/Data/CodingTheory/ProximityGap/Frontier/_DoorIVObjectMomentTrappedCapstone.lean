@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVCocycleNoRandomEdge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVExcessIsMoment
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Lane-1 → Lane-3 synthesis: the named door-(iv) object is moment-trapped from BOTH sides (#444)
 
@@ -53,6 +50,10 @@ either side that a non-moment, non-extreme-value lever could grip.
 Probes: `scripts/probes/probe_dooriv_jacobi_cocycle_dispersion_magnitude.py`,
 `scripts/probes/probe_dooriv_cocycle_excess_structure.py`. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVObjectMomentTrappedCapstone
 

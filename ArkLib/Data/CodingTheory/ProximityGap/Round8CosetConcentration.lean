@@ -8,8 +8,6 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Powerset
 import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumSecondMomentCollision
 
-set_option linter.style.longLine false
-
 /-!
 # Round 8 (Issue #232, ABF26) — MULTI-coordinate concentration via cosets: the strict
 # generalization of Round 7's negation-symmetric construction.
@@ -66,6 +64,9 @@ All headline results are `sorry`-free and axiom-clean (`[propext, Classical.choi
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
   Tracking issue #232.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset BigOperators
 

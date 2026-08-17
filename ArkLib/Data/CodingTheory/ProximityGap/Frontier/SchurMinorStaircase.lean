@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SchurLagrangeBridge
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The Schur-minor staircase: the `j`-fold minor binder for general agreement radius (#407)
 
@@ -67,6 +64,10 @@ the coset-count / spike-selection (the genuine open core) named as `Prop`s.
 
 All theorems are `sorry`-free; the audit must show only `propext, Classical.choice, Quot.sound`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset Polynomial
 

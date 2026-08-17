@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # The tower-martingale (Azuma) self-improvement is NOT a contraction (#407, cumulant-deep-nonbetti)
 
@@ -70,6 +68,9 @@ its error term is by definition a Betti/Hasse–Weil quantity whose genus grows 
 - [GLT25] Garcia, Lorenz, Todd. *Moments of Gaussian Periods and Modified Fermat Curves*.
   arXiv:2112.13886, 2025. (the moment ↔ Fermat-hypersurface identity, Hasse–Weil bounds).
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.CumulantTowerAzumaWall
 

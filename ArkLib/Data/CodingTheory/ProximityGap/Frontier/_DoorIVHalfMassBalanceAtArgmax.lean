@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: the worst-frequency half-mass is BALANCED — no "drop-a-half" descent (#444)
 
@@ -41,6 +38,10 @@ factor that grows with `n`.  The "drop-a-half" descent is a DEAD door-(iv) lever
 This is a **refutation with mechanism** (a precisely-mapped dead lever), not a CORE/cancellation/capacity
 claim: it does not bound `M(n)`; it shows the dyadic-imbalance descent shape cannot.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVHalfMassBalanceAtArgmax
 

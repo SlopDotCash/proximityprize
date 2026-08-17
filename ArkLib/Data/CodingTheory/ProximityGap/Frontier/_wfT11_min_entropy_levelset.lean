@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # T11 — Spectral min-entropy / level-set count transfer (#444): REDUCES-TO-WALL (F0/F7)
 
@@ -78,6 +74,11 @@ the BGK wall).
 This file is axiom-clean.  Both the forward bridge and the reduction identity are proven; NO new
 mathematics, NO closure, is claimed.  The point is the machine-checked reduction.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 

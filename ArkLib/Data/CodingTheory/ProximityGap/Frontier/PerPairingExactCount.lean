@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # The exact per-pairing antipodal-consistent count (#407 lower companion)
 
@@ -37,6 +35,9 @@ NOT by itself assemble the full `(2r−1)‼` lower bound (that still needs the 
 disjointness on the distinct-class generic locus, the `NOTE` brick of `CharZeroEnergyLowerBound`).
 Axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #407.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

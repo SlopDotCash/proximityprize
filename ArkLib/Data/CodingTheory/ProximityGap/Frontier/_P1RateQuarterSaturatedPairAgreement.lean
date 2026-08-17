@@ -5,6 +5,13 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSaturatedConstruction
 
+/-!
+# _P1RateQuarterSaturatedPairAgreement
+
+Module docstring for `_P1RateQuarterSaturatedPairAgreement.lean`.
+-/
+
+
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
 set_option linter.constructorNameAsVariable false

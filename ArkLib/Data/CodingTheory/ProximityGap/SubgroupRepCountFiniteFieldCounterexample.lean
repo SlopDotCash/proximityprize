@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Round 9 (Issue #232, ABF26) — the char-0 minimal-energy bound DOES NOT transfer to `F_q` (verified).
 
@@ -35,6 +33,9 @@ the kernel `decide`, not `native_decide`).
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

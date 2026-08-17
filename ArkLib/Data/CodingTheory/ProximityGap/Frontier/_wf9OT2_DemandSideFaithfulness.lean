@@ -5,8 +5,6 @@ Authors: ArkLib Contributors (#444, lane OT2)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FarLineProxyBelowJohnson
 
-set_option linter.style.longLine false
-
 /-!
 # wf9-OT2: the demand-side (far-line incidence) is char-`p` FAITHFUL at the binding band (#444)
 
@@ -63,6 +61,9 @@ by the cyclotomic-norm exponent `β_excess(n) = log_n(max prime factor of N(h_{d
 (probe `probe_wf9OT2_excess_prime_n32.py`); `β_excess(16) = 3.249 < 4` ⟹ no prize prime saturates
 the `n = 16` band, but `β_excess` at the deep band for large `n` is the open object.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DemandSideFaithfulness
 

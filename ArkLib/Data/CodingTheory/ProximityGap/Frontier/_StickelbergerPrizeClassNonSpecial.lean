@@ -9,9 +9,6 @@ import Mathlib.Order.Filter.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # STICKELBERGER_PRIZECLASS — the prize-class restriction is NON-SPECIAL (#444)
 
@@ -37,6 +34,10 @@ The net achieved sup-norm exponent is `n^{1-o(1)}` (Burgess), with NO gain from 
 restriction: it is the split-completely class, captures the bulk, and the resultant height
 `w^{n/2}` (exponential) dominates regardless of class.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.StickelbergerPrizeClass
 

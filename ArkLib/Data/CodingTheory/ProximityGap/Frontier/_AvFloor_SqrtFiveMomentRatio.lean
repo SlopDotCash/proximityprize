@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvFloor_MomentRatioLowerBound
 
-set_option autoImplicit false
-
 /-!
 # A sharper `√5·√n` moment-ratio LOWER bound on the Paley/BGK maximum `M` (issue #444 — floor)
 
@@ -71,6 +69,9 @@ This proves `M ≥ c·√n` with `c → √5` (the *floor*), strictly improving 
 axiom-clean; the numeric value `5n` of `A₃/A₂` rests on the energy facts `E₂ = 3n²−3n`,
 `E₃ = 15n³−45n²+40n` (Stickelberger, `p > n⁴`), recorded as *evidence*, not theorems in this file.
 -/
+
+set_option autoImplicit false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

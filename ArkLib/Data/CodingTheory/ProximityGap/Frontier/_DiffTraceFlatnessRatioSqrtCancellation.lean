@@ -5,11 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceFlatnessRatioRange
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option autoImplicit false
-
 /-!
 # CAPSTONE — the exact square-root-cancellation normalization of the flatness ratio (#444)
 
@@ -32,6 +27,12 @@ Shaw-value/flatness normalization, so downstream Door-(iv) reductions can cite t
 threshold directly instead of redoing the algebra.  No CORE / cancellation / completion / moment-saving /
 capacity claim is made.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceFlatnessRatioSqrtCancellation
 

@@ -7,9 +7,6 @@ import Mathlib.RingTheory.Int.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Av-CRT — the split-prime CRT-correlation cancellation is a SINGLE-PRIME collapse (no-go) (#444)
 
@@ -57,6 +54,10 @@ This file PROVES the structural collapse (the `∃`/`∀` gap is real and one-di
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom. Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvCRT
 

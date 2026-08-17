@@ -7,8 +7,6 @@ import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
 import Mathlib.RingTheory.RootsOfUnity.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Frontier (#444) — the subgroup Gauss-sum FIRST MOMENT, exactly, with NO Weil input.
 
@@ -31,6 +29,9 @@ gives the exact mean-zero variance picture: when `0 ∉ G`, `∑_{b≠0} η_b = 
 For `G = nthRootsFinset n 1` (the `2^μ`-th roots of unity), `0 ∉ G` is the standard
 "roots of unity are units" fact (`nthRootsFinset` consists of `IsUnit` elements, hence nonzero).
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 

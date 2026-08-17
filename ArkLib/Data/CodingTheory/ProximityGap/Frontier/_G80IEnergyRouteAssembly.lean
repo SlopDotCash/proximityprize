@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80LEnergyRefinedConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80JDivisorSecondMoment
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80I (#466, 2026-07-10): the ENERGY-ROUTE ASSEMBLY — the unconditional theorem
   `T(W)⁴ ≤ n·W²·(log₂(W²)+1)³` below √p (axiom-clean, zero hypotheses; G80L × G80J joined).
@@ -35,6 +32,10 @@ begins. CORE remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

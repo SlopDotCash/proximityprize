@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVCoherenceDeficitThicknessInvariant
 
-set_option linter.style.longLine false
-
 /-!
 # Door IV (Lane 2/3 composition capstone): the WORST-`b` per-frequency decomposition `M = ρ · H`
 # has NO thinness-essential lever — BOTH factors are thickness-blind, so the prize content is COLLECTIVE-only
@@ -41,6 +39,9 @@ EXPLICIT hypotheses supplied by the probes; this capstone does NOT re-derive or 
 only composes the conclusions. No probe datum is larped as a theorem. Axioms remain
 `⊆ {propext, Classical.choice, Quot.sound}` (inherited from the inputs; this file adds none).
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DoorIVPerFrequencyLocalizationCollectiveOnly
 

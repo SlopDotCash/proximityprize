@@ -7,8 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # The Hermite-turnover reduction: prize `⟺` turnover depth `k* = O(log p)` (#444, form (D))
 
@@ -40,6 +38,9 @@ the turnover depth `k*` of the recurrence coefficients, and the prize asks wheth
   the wall). It only certifies that the prize is *equivalent* to that single bounded-turnover fact.
 * CORE (the upper bound) remains OPEN: an unconditional bound on `k*` is exactly the missing input.
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.HermiteTurnover
 

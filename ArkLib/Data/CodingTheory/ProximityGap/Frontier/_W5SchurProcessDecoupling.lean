@@ -9,9 +9,6 @@ import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Real.Sqrt
 import Mathlib.Tactic.NormNum
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # W5 — Biorthogonal / Schur-process (last-passage) avenue: the energy DECOUPLES into a SUM of
   independent walks (bosonic), NOT a determinantal/Schur correlation — REFUTED with exact structure
@@ -87,6 +84,10 @@ last-passage route therefore **REDUCES** to the open form-(D) off-diagonal-envel
 no determinantal correlation kernel exists to read `B` off.  No CORE / cancellation / completion /
 moment-saving / anti-concentration / capacity claim.  CORE remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.W5SchurDecoupling
 

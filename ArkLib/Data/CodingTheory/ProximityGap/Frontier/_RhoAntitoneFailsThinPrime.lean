@@ -5,8 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OpenCoreRhoMonotone
 
-set_option autoImplicit false
-
 /-!
 # REFUTATION: the ρ-antitone-and-bounded ROUTE is not universally satisfiable (#444)
 
@@ -49,6 +47,9 @@ No cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`/`axiom`/`opaque`/`native_decide`.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.RhoAntitoneFails
 

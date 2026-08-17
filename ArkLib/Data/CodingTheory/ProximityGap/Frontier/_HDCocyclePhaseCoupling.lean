@@ -9,10 +9,6 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # NEW machinery: the Hasse–Davenport phase-coupling cocycle for the Paley half-power (#444)
 
@@ -130,6 +126,11 @@ escape of it, the exact `(SS)` identity, and the telescoping reduction. It does 
 `CocycleContraction` (= the open `θ<1`). This is a NAMED REDUCTION to a genuinely new object, with a
 proven separation from the refuted class — not a closure.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open scoped BigOperators
 open Finset

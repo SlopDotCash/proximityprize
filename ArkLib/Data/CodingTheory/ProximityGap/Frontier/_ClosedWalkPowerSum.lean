@@ -5,11 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-
 /-!
 # The closed-walk power-sum identity `Σ_b η_b^k = q · #{k-walks closing at 0}` (#444)
 
@@ -57,6 +52,12 @@ record as the wall. This is the un-conjugated, odd-`k`-aware companion of the ev
 - `Frontier/_SpectralTraceZeroSignForcing` (`Σ_b η_b = 0`, the `k=1` trace-zero case).
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

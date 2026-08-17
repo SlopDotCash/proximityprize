@@ -7,9 +7,6 @@ import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # F3-15 — Phase-AWARE tail with a NON-circular test vector (Gross–Koblitz weight): DICHOTOMY,
 # both horns hit known death-modes (CIRCULAR / PHASE-BLIND) (#444)
@@ -65,6 +62,10 @@ This file formalizes, axiom-clean:
      real-η / `{0,π}`-phase witness (the alignment is antipodal coincidence; a `±1` sign weight is
      still Parseval).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.CensusF315
 

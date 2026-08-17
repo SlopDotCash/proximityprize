@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # Round 9 (Issue #232, ABF26) — the twisted Gauss pieces: elementary quadratic/Salié magnitudes,
 # and the EXACT reduction of the χ-twisted Salié sum to a quartic Weil sum.
@@ -49,6 +47,9 @@ All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
   Tracking issue #232.
 -/
+
+set_option linter.style.longLine false
+
 
 open scoped BigOperators
 open AddChar MulChar Finset

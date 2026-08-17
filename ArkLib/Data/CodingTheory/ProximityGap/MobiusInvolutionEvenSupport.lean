@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.MobiusPencilEnergy
 import Mathlib.GroupTheory.Perm.Cycle.Type
 
-set_option linter.unusedSectionVars false
-
 /-!
 # Even support of the Möbius involution (#389)
 
@@ -16,6 +14,9 @@ The Möbius pencil involution `σ_b : Equiv.Perm G` (`x ↦ b·x⁻¹`) satisfie
 `Equiv.Perm.two_dvd_card_support`.  The fixed points are the square roots of `b`, so this counts the
 non-square-root elements in pairs — the next structural brick flagged in `MobiusPencilEnergy`.
 -/
+
+set_option linter.unusedSectionVars false
+
 
 namespace ProximityGap.MobiusPencil
 

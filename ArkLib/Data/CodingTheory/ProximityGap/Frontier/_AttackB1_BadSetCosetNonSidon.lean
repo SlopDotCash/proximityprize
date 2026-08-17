@@ -6,6 +6,13 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Group.Basic
 import Mathlib.Data.Set.Basic
 
+/-!
+# _AttackB1_BadSetCosetNonSidon
+
+Module docstring for `_AttackB1_BadSetCosetNonSidon.lean`.
+-/
+
+
 /-
   Attack B1 -- Refutation kernel.
 

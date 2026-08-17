@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceLinearSumReframe
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # CONSTRAINT — the L² reframe does NOT escape the pair sum: re-expanding `‖Σ Jphase‖²` is circular (#444)
 
@@ -52,6 +48,11 @@ NO CORE / cancellation / completion / moment-saving / capacity claim: this is a 
 lemma pinning that the L² reframe does not escape the pair-correlation second-moment wall by
 re-squaring.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceReframeCircularity
 

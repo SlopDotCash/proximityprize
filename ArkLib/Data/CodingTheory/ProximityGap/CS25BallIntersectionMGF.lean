@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionBound
 
-set_option linter.style.longLine false
-set_option linter.unnecessarySeqFocus false
-
 /-!
 # CS25 #82, deliverable 2: the moment generating function (Chernoff) ball-intersection bound
 
@@ -36,6 +33,10 @@ Optimizing `θ` in `[0,1]` recovers the exact CS25 large-deviation exponent for 
 * `mgf_factor` — the coordinate factorization `∑_w θ^{wt w + wt(w−e)} = ∏_i ∑_x …`.
 * `jointCoverCount_mgf_le` — the Chernoff ball-intersection bound, valid for every `θ ∈ [0,1]`.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unnecessarySeqFocus false
+
 
 open scoped BigOperators ENNReal NNReal
 

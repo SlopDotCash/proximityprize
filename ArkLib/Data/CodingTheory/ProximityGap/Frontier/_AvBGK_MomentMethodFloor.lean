@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.PrizeStructuralConstant
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMoment
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The moment-method bridge: BGK as the unconditional δ* floor (#444/#334)
 
@@ -37,6 +34,10 @@ Honest scope: the moment bridge here is **fully proven** (elementary, Parseval).
 `S_k` it consumes is the **cited BGK sum-product theorem** (not re-derived in Lean); composing them
 pins the unconditional δ* *floor*, strictly below the open Paley *ceiling*.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvBGK
 

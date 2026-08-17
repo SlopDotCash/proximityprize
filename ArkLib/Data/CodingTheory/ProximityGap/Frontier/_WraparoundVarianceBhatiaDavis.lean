@@ -13,10 +13,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.ParsevalFloorSqrtN
 import ArkLib.Data.CodingTheory.ProximityGap.REnergyTwoExact
 import ArkLib.Data.CodingTheory.ProximityGap.SidonModNegEnergyEquality
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Face V — the EXACT spectral variance over the frequency index, and the Bhatia–Davis
 second-moment floor (`[wvl-variance-tool]`, #444)
@@ -87,6 +83,11 @@ gives only the *floor* (`M ≥ √3√n`); it does NOT bound the wraparound `W_r
 (that is the variance over the *prime family*, `_CreateWraparoundVariance`'s OPEN
 `OffDiagonalPairCancellation`).  The exact residual is stated in `residual_note`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.SpectralVariance
 

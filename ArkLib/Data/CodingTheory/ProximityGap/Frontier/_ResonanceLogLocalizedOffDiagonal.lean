@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvFloor_ResonatorRatioLowerBound
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # RESONATOR CANDIDATE 1 — the coset-multiplicative resonator: exact diagonal split (#444)
 
@@ -100,6 +97,10 @@ multiplicative structure, or Heath-Brown's mean-value theorem for the cyclic cha
 `{χ^{dj}}`); that input is the open BGK Ω-result, NOT supplied here. **No log is claimed; no QED is
 faked.** The unconditional lower bound delivered remains `M ≥ c·√n` (the Parseval/diagonal floor).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta subgroup_gaussSum_secondMoment)

@@ -7,10 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 import Mathlib.Analysis.Normed.Field.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # H8 — the discriminant/resultant route to the house bound COLLAPSES to a geomean
 
@@ -70,6 +66,11 @@ wall `_T5` already named; H8 reduces THROUGH it, with the exact failing step rec
 
 Axiom-clean target: `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.H8DiscriminantGeomeanCollapse
 

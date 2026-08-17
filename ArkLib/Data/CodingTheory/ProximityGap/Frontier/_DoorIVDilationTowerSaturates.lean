@@ -7,9 +7,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDescentRecursion
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-3: the iterated dilation tower SATURATES the trivial ceiling (#444)
 
@@ -51,6 +48,10 @@ co-ray, `ρ(b*) = 1`, `norm_eta_eq_two_dilate_of_coherent`), so the split inequa
 This is a CONSTRAINT LEMMA only: no CORE bound, no cancellation, completion, moment, anti-concentration,
 or capacity claim.  CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN; door (iv) stays the only live door.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVDilationTowerSaturates
 

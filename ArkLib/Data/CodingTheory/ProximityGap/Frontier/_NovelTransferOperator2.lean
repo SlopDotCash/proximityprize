@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
 import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyEssential
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Approach N4 — a Ruelle transfer operator on the 2-adic odometer (Issue #444) — **REFUTED**
 
@@ -94,6 +91,10 @@ at the raw target it makes the open obligation FALSE (DC term, Break 1); at the 
 the obligation equals the BGK sup-norm bound at the relevant depth (Break 2). `closesCharP = false`.
 The char-0 skeleton is sound but inert for the prize.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 open scoped Nat

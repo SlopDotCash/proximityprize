@@ -6,9 +6,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.DiBenedettoFiniteNSavingBelow
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # di Benedetto near-Sidon saving: the supremum `1/24` IS the limit (#444 , constant-factor lane)
 
@@ -54,6 +51,10 @@ prize-relevance only through the dyadic energy VALUES, supplied by the envelope 
 char-`p` transfer at `p = n⁴` remains a SEPARATE open input (these are the exact char-0 cyclotomic
 energies). ONE sweep, ONE commit. CORE `M(μ_n) ≤ C·√(n·log(p/n))` UNCHANGED / OPEN. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Filter Topology Real
 

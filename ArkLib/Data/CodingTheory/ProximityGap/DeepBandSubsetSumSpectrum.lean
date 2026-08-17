@@ -5,6 +5,16 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
+/-! ## The divided-difference / Vieta pinning identity.
+
+For the deep-band witness `Q₀ = X^{k+1}` and the single-poly direction `Q₁ = X^k`, a
+`(k+1)`-subset `S` of the (zero-excluding) domain `μ` pins the bad scalar to the unique value
+`γ_S = −∑_{ζ∈S} ζ`. The mechanism is pure Vieta: `∏_{ζ∈S}(X − ζ)` is monic of degree `k+1`
+with next-to-leading coefficient `−∑_{ζ∈S} ζ`. The pencil `X^{k+1} + γ·X^k` agrees with a
+degree-`<k` polynomial on `S` iff `∏_S` divides `X^{k+1} + γ·X^k − W` for some `deg W < k`;
+that difference has degree `≤ k+1`, leading coeff `1`, so it equals `∏_S` up to the lower
+part — matching the `X^k` coefficient forces `γ = −∑_{ζ∈S} ζ`. -/
+
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false
 set_option maxHeartbeats 1200000
@@ -32,15 +42,6 @@ private theorem prodXsubC_natDegree (S : Finset F) :
     Finset.sum_congr rfl (fun ζ _ => Polynomial.natDegree_X_sub_C ζ),
     Finset.sum_const, smul_eq_mul, mul_one]
 
-/-! ## The divided-difference / Vieta pinning identity.
-
-For the deep-band witness `Q₀ = X^{k+1}` and the single-poly direction `Q₁ = X^k`, a
-`(k+1)`-subset `S` of the (zero-excluding) domain `μ` pins the bad scalar to the unique value
-`γ_S = −∑_{ζ∈S} ζ`. The mechanism is pure Vieta: `∏_{ζ∈S}(X − ζ)` is monic of degree `k+1`
-with next-to-leading coefficient `−∑_{ζ∈S} ζ`. The pencil `X^{k+1} + γ·X^k` agrees with a
-degree-`<k` polynomial on `S` iff `∏_S` divides `X^{k+1} + γ·X^k − W` for some `deg W < k`;
-that difference has degree `≤ k+1`, leading coeff `1`, so it equals `∏_S` up to the lower
-part — matching the `X^k` coefficient forces `γ = −∑_{ζ∈S} ζ`. -/
 
 /-- **The pinning identity (forward, the hard direction).** If the witness pencil
 `X^{k+1} + γ·X^k` agrees with a degree-`<k` polynomial `W` on a `(k+1)`-subset `S` of `μ`,

@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMoment
 
-set_option linter.style.longLine false
-
 /-!
 # The quantitative character-sum ⟺ additive-energy transport (Issue #389, the unifying brick)
 
@@ -49,6 +47,9 @@ directions are pure `ℝ`-arithmetic on the two moment identities plus the trivi
 - [HBK00] Heath-Brown, Konyagin. *New bounds for Gauss sums derived from kth powers …*. 2000.
 - [BGK06] Bourgain, Glibichuk, Konyagin. *Estimates for the number of sums and products …*. 2006.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

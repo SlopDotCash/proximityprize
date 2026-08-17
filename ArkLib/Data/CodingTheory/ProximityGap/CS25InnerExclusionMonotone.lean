@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CS25BallInterShell
 
-set_option linter.unusedSectionVars false
-
 /-!
 # Monotonicity of the inner-exclusion count (#389, CS25 second-moment lane)
 
@@ -16,6 +14,9 @@ where the inner-exclusion count is `#{x ∈ B(0,r) : dist(x,0)+r < wt(v)}`.  Thi
 as the two centers separate, more of the ball is excluded.  This is the strictly decreasing
 distance dependence the tight second-moment estimate needs, replacing the loose `ballInterCount ≤ V`.
 -/
+
+set_option linter.unusedSectionVars false
+
 
 open scoped BigOperators
 

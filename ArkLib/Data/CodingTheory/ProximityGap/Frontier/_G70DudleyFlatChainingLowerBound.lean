@@ -7,10 +7,6 @@ import Mathlib.Analysis.Complex.Norm
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-set_option linter.style.openClassical false
-
 /-!
 # LANE G70 (#466, Opus formalizer, 2026-07-10): the FLAT-DUDLEY LOWER BOUND — pairing
   OC-CHAIN's 2-D packing UPPER bound with a matching packing / covering-number LOWER bound,
@@ -73,6 +69,11 @@ on a 2-D-Euclidean cloud, not a positive prize step.
 OC-PIECEB = height-norm ceiling; OC-CHAIN = upper packing + non-ultrametric evidence. This lane
 = LOWER packing + Dudley floor. All disjoint.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+set_option linter.style.openClassical false
+
 
 namespace ArkLib.CodingTheory.ProximityGap.Frontier.G70DudleyFlatChainingLowerBound
 

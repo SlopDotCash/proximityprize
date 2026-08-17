@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Floor localization needs a domination theorem to become a prize proof
 
@@ -30,6 +27,10 @@ The important point is negative: floor localization by itself can at most bound 
 equivalent sparse/worst-direction domination theorem).  That domination theorem is the real
 load-bearing content and is expected to be BGK/Paley-hard.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open scoped NNReal ENNReal ProbabilityTheory

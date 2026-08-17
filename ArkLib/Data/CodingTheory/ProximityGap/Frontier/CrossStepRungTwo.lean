@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CrossStepRungOne
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The `r = 2` rung of the open per-step crux `M3CrossStepBound` is a SHARPENED `E_3` ceiling (Issue #444)
 
@@ -88,6 +84,11 @@ and the rungs `r ≥ 3` stay the deep char-`p` wall. CORE (`M(μ_n) ≤ C·√(n
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

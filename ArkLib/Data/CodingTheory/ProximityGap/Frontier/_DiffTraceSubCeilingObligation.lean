@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceEnvelopeCapstone
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # CONSTRAINT — sub-trivial variance budgets are exactly strict aggregate anti-coherence (#444)
 
@@ -31,6 +27,11 @@ No CORE / cancellation / anti-concentration / completion / moment-saving claim i
 reframings of what a successful Door-(iv) sub-ceiling argument would have to prove about the single
 aggregate phase sum.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceSubCeilingObligation
 

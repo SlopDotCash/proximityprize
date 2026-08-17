@@ -7,9 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Lane J (#466 R11): the JOINT tower phase field is GAUGE — the two half-periods are COLLINEAR,
 so the joint `(η_b, η_{ζb})` reduces to magnitude data at EVERY depth `r`, not just `r=2`.
@@ -79,6 +76,10 @@ containment** — that under the measured collinearity the joint reduces to magn
 placement of Lane J inside the dead Meta-Theorem cone, NOT a bound on the wall. This is the correct,
 expected outcome. **Lane J REFUTED; wall OPEN.**
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.LaneJ
 

@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.REnergyGeneralCharPLowerBound
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The diagonal (antipodal-pairing) FLOOR on `negSymCount` and `rEnergy` (#444)
 
@@ -50,6 +46,11 @@ in every case (p-independent, as a char-0 census).
 
 Issue #444. Axiom target `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

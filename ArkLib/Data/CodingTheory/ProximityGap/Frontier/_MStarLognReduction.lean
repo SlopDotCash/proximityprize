@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Nat.Find
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Minimal `m*` crossing-depth substrate (#444)
 
@@ -19,6 +16,10 @@ minimality lemma.
 
 Scope: pure `Nat.find` bookkeeping.  No incidence estimate, no CORE/BGK/capacity claim.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.MStarLognReduction
 

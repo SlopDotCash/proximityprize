@@ -6,7 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
 /-!
 # Door IV ordered-walk maximal excursion majorizes the endpoint (#444)
 
@@ -20,6 +19,8 @@ prefix norms, so the maximal excursion is a genuine majorant of the period endpo
 maximal function therefore bounds `M`, but this theorem supplies no cancellation and makes no CORE
 claim.  It is the citable normalization for any later DIR9 maximal-inequality attempt.
 -/
+
+set_option autoImplicit false
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVOrderedWalkMajorant
 

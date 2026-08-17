@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Tactic
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.DiBenedettoBetaValidityWindow
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The external lever STATEMENT, precisely typed: di Benedetto et al. Theorem 3.1 (#444, AvF2)
 
@@ -63,6 +60,10 @@ vague placeholder.
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444. NOT prize closure:
 `2849/2880 ≫ 1/2`; this names a precise SOTA external lever, it does not cross the BGK wall.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvF2ExternalLeverStatement
 

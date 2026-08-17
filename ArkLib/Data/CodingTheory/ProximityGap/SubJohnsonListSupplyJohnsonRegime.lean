@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonListSupply
 import ArkLib.Data.CodingTheory.ProximityGap.CS25RSListDecoding
 
-set_option linter.style.longLine false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedFintypeInType false
-
 /-!
 # The Johnson-regime discharge of the sub-Johnson list COUNT (#389)
 
@@ -60,6 +56,11 @@ beyond-Johnson / growth-law claim; ASYMPTOTIC GUARD untouched.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 
 open Finset Polynomial
 open scoped NNReal ENNReal

@@ -7,11 +7,6 @@ import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.Algebra.Polynomial.Eval.Degree
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option autoImplicit false
-
 /-!
 # L3c — the additive-character DEGREE barrier: a direct polynomial-surrogate Stepanov attack on the
   sup-norm needs field-scale degree `≥ p − 1` (#444)
@@ -89,6 +84,12 @@ auxiliary-polynomial method on the sup-norm; the surviving even-moment route is 
 - In-tree: `StepanovStructuredVacuous`, `StepanovWeilQVacuous`, `_wf5G2_stepanov_supnorm`
   (the dual multiplicity fences); `_wf7W7_NewtonSlopeDCDominance` (the surviving moment route).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.L3c
 

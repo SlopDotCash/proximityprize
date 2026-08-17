@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Errors
 import ArkLib.Data.CodingTheory.ProximityGap.LineBallIntersection
 import ArkLib.Data.Probability.Instances
 
-set_option linter.style.longLine false
-
 /-!
 # Reducing the MCA grand-challenge conjecture to the line list-decoding count `N_line`
 
@@ -55,6 +53,9 @@ Therefore the proof splits (the proximity-gap dichotomy):
 The **degenerate** case `|supp u₁| ≤ R` (second row `δ`-close to `0`) is also not covered by the
 line-ball lemma and is part of the structured analysis.
 -/
+
+set_option linter.style.longLine false
+
 
 open scoped BigOperators NNReal ENNReal ProbabilityTheory
 open Finset Code

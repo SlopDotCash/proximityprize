@@ -3,7 +3,15 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+
+import Mathlib.Tactic
+import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.Data.ZMod.Basic
+import Mathlib.Combinatorics.Pigeonhole
+import Mathlib.Data.Nat.Choose.Basic
+
+/-!
   Angle 4 — The averaging list LOWER bound as a GENUINE Reed–Solomon theorem.
 
   Ethereum Proximity Prize (ABF26 / ArkLib #232) attack support.
@@ -71,13 +79,6 @@ Authors: ArkLib Contributors
   exhibiting a class of size `≥ C(4,2)/5 = ⌈6/5⌉ = 2` of distinct agreeing
   codewords — a concrete positive bound, all hypotheses satisfied by witnesses.
 -/
-
-import Mathlib.Tactic
-import Mathlib.LinearAlgebra.Lagrange
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Data.ZMod.Basic
-import Mathlib.Combinatorics.Pigeonhole
-import Mathlib.Data.Nat.Choose.Basic
 
 namespace ArkLib.CodingTheory.Round11RSAveraging
 

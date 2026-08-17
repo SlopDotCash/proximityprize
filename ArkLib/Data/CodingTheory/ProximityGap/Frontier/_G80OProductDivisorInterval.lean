@@ -7,9 +7,6 @@ import Mathlib.Data.ZMod.Basic
 import Mathlib.NumberTheory.Divisors
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80O (#466, 2026-07-10): the PRODUCT–DIVISOR interval route — subgroup-interval counts
   obey `T(W)² ≤ D·n` below √p, where `D` is a PURE Nat divisor-count bound: the first
@@ -55,6 +52,10 @@ saddle by G80P regime disjointness. CORE remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

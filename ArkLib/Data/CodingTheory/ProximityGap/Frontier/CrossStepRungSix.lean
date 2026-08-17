@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CrossStepRungFive
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvL2_E7ClosedForm
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The `r = 6` cross-step rung from the exact `E_6`, `E_7` closed forms (#444)
 
@@ -42,6 +38,11 @@ which is nonnegative by elementary coefficient absorption.  The formal closed-fo
 in the faithful sequential-`Nat` subtraction window `n ≥ 32` for `E_7`.  This is a concrete frontier extension only: it does not prove the `∀ r` statement, does
 not transfer the char-`0` closed forms to char `p` at prize depth, and does not touch CORE.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

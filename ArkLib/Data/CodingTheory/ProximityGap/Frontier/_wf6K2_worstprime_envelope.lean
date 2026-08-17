@@ -6,10 +6,6 @@ Authors: ArkLib Contributors (wf-K2)
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Data.Real.Basic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # Worst-case-over-primes envelope for the nonprincipal-moment route (#444, lane wf-K2)
 
@@ -53,6 +49,11 @@ named hypothesis — the project's modularity convention (a named `Prop`, not a 
    which is *weaker* than monotone decay. A bounded fluctuating envelope `C(n) ≤ Cmax` suffices.
    Formalised: a finite sup over the scanned band transfers to the prize-shape bound.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.WF6K2
 

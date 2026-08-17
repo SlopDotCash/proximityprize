@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Lane-2: the FAMILY-LEVEL sharpened Shaw-value floor `c₀/√Lᵢ` (#444)
 
@@ -40,6 +37,10 @@ single-instance sharpened floor (`shawValue_ge_superDiagonal_floor`, `refined_wi
 anti-concentration / cancellation estimate, and does not change the *upper* bracket endpoint
 (still the trivial `√(nᵢ/Lᵢ)`).  The open door-(iv) problem is exactly as open as before.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.ShawValueCapstone
 

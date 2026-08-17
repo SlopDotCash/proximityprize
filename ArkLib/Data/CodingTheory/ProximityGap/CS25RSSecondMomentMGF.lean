@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionMGF
 import ArkLib.Data.CodingTheory.ProximityGap.CS25RSNearBound
 import ArkLib.Data.CodingTheory.ProximityGap.CS25RSMinDistance
 
-set_option linter.style.longLine false
-
 /-!
 # CS25 #82: the unconditional second-moment Chernoff bound for Reed–Solomon codes
 
@@ -35,6 +33,9 @@ optimization over `θ ∈ [0,1]`.
 * `rs_offdiag_weight_bound` — the off-diagonal MDS bound `A_d ≤ C(n,d)q^d/q^{n−deg}` for `d ≥ 1`.
 * `rs_sum_jointCoverCount_mgf_le` — the unconditional RS second-moment Chernoff bound.
 -/
+
+set_option linter.style.longLine false
+
 
 open scoped BigOperators NNReal
 

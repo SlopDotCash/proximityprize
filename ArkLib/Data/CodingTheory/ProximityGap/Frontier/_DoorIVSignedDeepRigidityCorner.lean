@@ -6,8 +6,6 @@ Authors: ArkLib Contributors (#444, #464)
 import ArkLib.Data.CodingTheory.ProximityGap.SignedPeriodZeroSumBridge
 import ArkLib.Data.CodingTheory.ProximityGap.SignedZeroSumCountEven
 
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane 2/3 — the signed deep sum's RIGIDITY CORNER + sign↔count bridge, kernel-checked (#444, #464)
 
@@ -41,6 +39,9 @@ anti-concentration, or capacity claim. `CORE  M(μ_n) ≤ C·√(n·log(q/n))  O
 
 Issues #444, #464.
 -/
+
+set_option linter.style.longLine false
+
 
 open scoped BigOperators
 

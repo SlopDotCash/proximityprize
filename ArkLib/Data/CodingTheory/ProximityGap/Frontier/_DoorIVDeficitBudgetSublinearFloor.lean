@@ -7,9 +7,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDeficitBudget
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-3: a SUB-`(log2)/2` average deficit cannot reach the √-scale via the exp budget (#444)
 
@@ -44,6 +41,10 @@ deficit budget is or is not achievable.  It only states that *this particular bo
 dilation budget) is at/above the `√`-scale whenever the average deficit is sub-`(log 2)/2`.  Lane-3
 constraint lemma; CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVDeficitBudgetSublinearFloor
 

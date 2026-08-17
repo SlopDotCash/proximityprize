@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Order.Basic
+
+/-!
 # E6 — The large-sieve / second-moment count route is VACUOUS at the prize scale
 
 Angle: instead of bounding `M = max_{b≠0} |η_b|` directly, bound the *number* of bad
@@ -36,8 +39,6 @@ exactly the sup-norm bound it was meant to bypass.
 This is a REDUCES-TO-WALL result: the second-moment/large-sieve count is strictly weaker than
 the sup-norm and reduces back to it. No `sorry`, no fabricated axiom.
 -/
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Order.Basic
 
 namespace ProximityGap.Frontier.AvE6
 

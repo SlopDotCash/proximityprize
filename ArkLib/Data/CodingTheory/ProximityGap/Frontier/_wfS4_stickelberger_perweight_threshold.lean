@@ -8,9 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-S4 — the per-weight Stickelberger norm TRANSFER THRESHOLD (and why it is vacuous at prize) (#444)
 
@@ -91,6 +88,10 @@ unproven prize-closing assumption. Measured by `probe_wfS4_collision_threshold.p
   `_wfS4_galois_concentration_obstruction.lean` (spread ⊥ concentration).
 - probe: `scripts/probes/probe_wfS4_collision_threshold.py` (per-weight `w_min` measurement).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.StickelbergerPerWeightThreshold
 

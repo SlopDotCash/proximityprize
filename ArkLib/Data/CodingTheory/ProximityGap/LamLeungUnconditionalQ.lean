@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+import Mathlib.RingTheory.PowerBasis
+import Mathlib.FieldTheory.Minpoly.Field
+import Mathlib.Data.Complex.Basic
+
+/-!
   Round 11 — UNCONDITIONAL Lam–Leung t=1 antipodal tightness.
 
   Context (Ethereum Proximity Prize, ABF26 / ArkLib #232).  In prior rounds the
@@ -31,10 +36,6 @@ Authors: ArkLib Contributors
 
   Self-contained; imports only Mathlib.  Closes with `#print axioms`.
 -/
-import Mathlib.Tactic
-import Mathlib.RingTheory.PowerBasis
-import Mathlib.FieldTheory.Minpoly.Field
-import Mathlib.Data.Complex.Basic
 
 open Polynomial Finset
 

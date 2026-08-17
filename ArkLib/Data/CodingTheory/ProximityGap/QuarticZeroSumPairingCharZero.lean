@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.UnitCircleAddQuadruple
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 
-set_option linter.unusedDecidableInType false
-
 /-!
 # The order-4 zero-sum residual of `μ_n ⊆ ℂ` is ENTIRELY antipodal in char 0 (#444, #407)
 
@@ -50,6 +48,9 @@ ordered `4`-tuple is a union of two antipodal pairs (NON-paired = 0), and
 
 Issues #444, #407.
 -/
+
+set_option linter.unusedDecidableInType false
+
 
 open scoped BigOperators
 

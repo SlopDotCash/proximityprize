@@ -8,9 +8,6 @@ import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 import Mathlib.Algebra.Polynomial.FieldDivision
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The spurious-collision prime `p = 3` PERSISTS up the dyadic tower: bad at `m = 3` AND `m = 4` (#444)
 
@@ -66,6 +63,10 @@ C·√(n·log(p/n))` OPEN.
 
 Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Polynomial
 

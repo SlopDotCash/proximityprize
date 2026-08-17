@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option autoImplicit false
-
 /-!
 # DILATION_MULTIPLICATIVE_ENERGY angle: the exact DC-subtracted step diagonal (#444)
 
@@ -76,6 +74,9 @@ the only structure-respecting estimate (Cauchy–Schwarz, with the `m`-energy al
 a depth-`2K` energy/Wick bound = BGK. The multiplicative structure is exhausted on the diagonal and
 on the `m`-energy; the residual is the off-diagonal cancellation = the wall.
 -/
+
+set_option autoImplicit false
+
 
 namespace Issue444.DilationMultEnergyStep
 

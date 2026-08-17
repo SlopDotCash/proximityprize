@@ -8,8 +8,6 @@ import Mathlib.NumberTheory.NumberField.Norm
 import Mathlib.RingTheory.Norm.Basic
 import Mathlib.FieldTheory.PrimitiveElement
 import ArkLib.Data.CodingTheory.ProximityGap.ConverseLamLeung2Power
-set_option linter.style.longLine false
-set_option autoImplicit false
 
 /-!
 # gate-norm-bound: the spurious-vanishing height gate, PROVED (#407)
@@ -38,6 +36,9 @@ its specialization to a primitive `2^a`-th root group `gate_2power`.  The remain
 here) step is the reduction-mod-`p` LIFT that identifies "vanishes in `F_p`" with "`p ∣ N(Σ)`";
 that is the named bridge, kept explicit.
 -/
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset NumberField Module
 

@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.BoundarySupExactness
 
-set_option maxHeartbeats 2000000
-
 /-!
 # An exact boundary-band MCA value over `F_13` (#389)
 
@@ -22,6 +20,9 @@ sandwich.  Together with the `q=19` instance this exhibits the `n/q` law across 
 and band parameters (`(n,q) = (9,19)` and `(12,13)`); the value is the MCA *equality*, not a witness
 count.  Axiom-clean.
 -/
+
+set_option maxHeartbeats 2000000
+
 
 open scoped NNReal ENNReal
 open ProximityGap Code ProximityGap.CensusLowerBound ProximityGap.SmoothLadderInstance

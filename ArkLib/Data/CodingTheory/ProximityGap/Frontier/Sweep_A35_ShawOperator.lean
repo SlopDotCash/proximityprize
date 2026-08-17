@@ -7,10 +7,6 @@ import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.BigOperators.Fin
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.style.commandStart false
-
 /-!
 # Sweep A35 — the Shaw operator: collapse all moments to one spectral gap (#407)
 
@@ -50,6 +46,11 @@ stronger Ramanujan form `B ≤ √2·√n` is FALSE outside the thin prize regim
 `B/√n = 5.45`), while `B/√(2n log(q/n)) ∈ [0.76, 1.46]` stays bounded — so the floor is the
 `√(n·log(q/n))` form, not `√2·√n`. No fabricated closure.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.style.commandStart false
+
 
 open Finset
 

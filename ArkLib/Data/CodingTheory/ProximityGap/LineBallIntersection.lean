@@ -7,8 +7,6 @@ import Mathlib.InformationTheory.Hamming
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Fintype.BigOperators
 
-set_option linter.style.longLine false
-
 /-!
 # Line–ball intersection: the `1/q` mechanism for the MCA grand challenge
 
@@ -40,6 +38,9 @@ up to `1 − √ρ`, and capacity `1 − ρ` is the open core.
 * `card_close_gamma_le` — the line–ball intersection bound (multiplicative, lossless form).
 * `card_close_gamma_le_div` — its `Nat`-division form `#{close γ} ≤ |supp u₁| / (|supp u₁| − R)`.
 -/
+
+set_option linter.style.longLine false
+
 
 open scoped BigOperators
 open Finset

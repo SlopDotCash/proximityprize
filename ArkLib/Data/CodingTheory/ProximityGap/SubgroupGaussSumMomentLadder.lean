@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # The full subgroup Gauss-sum moment ladder: `∑_b ‖η_b‖^{2r} = q · E_r(G)`
 
@@ -22,6 +20,9 @@ follows by Markov: `#{b : ‖η_b‖² ≥ q} ≤ E_r(G)/q^{r-1} ≤ |G|^{2r-1}/
 anti-concentration the moment method yields. (Average/count side only; the per-frequency worst case
 is the open core.)
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

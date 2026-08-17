@@ -5,8 +5,6 @@ Authors: ArkLib Contributors (#444, lane L1 — close-out)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FarLineProxyBelowJohnson
 
-set_option linter.style.longLine false
-
 /-!
 # wf-L1: SETTLED — OT2 vs wf-LC conflict on R4 demand-side faithfulness at `n = 32` (#444)
 
@@ -75,6 +73,9 @@ This is NOT a prize closure: it pins the COMPUTABLE Johnson-lane far-line MONOMI
 `1 − ρ − Θ(1/log n)` lives strictly above Johnson and needs general/curve witnesses — the open core,
 unchanged (the deep-rung SUPPLY-side energy faithfulness `r ≈ ln q`, the Lam–Leung-mod-`p` wall).
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.OT2vsLCSettled
 

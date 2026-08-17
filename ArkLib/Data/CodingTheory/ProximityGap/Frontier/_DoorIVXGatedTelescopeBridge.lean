@@ -7,10 +7,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BetaGatedRatioGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDescentTelescope
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Door-(iv) Lane-3: what the open `√2`-gate BUYS — telescoping the per-level ratio to the prize (#444)
 
@@ -36,6 +32,11 @@ the single open per-level inequality `LevelRatioBoundNZ … √2`.  It does NOT 
 is OPEN = the prize), makes NO cancellation / completion / moment / anti-concentration / capacity claim,
 and CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

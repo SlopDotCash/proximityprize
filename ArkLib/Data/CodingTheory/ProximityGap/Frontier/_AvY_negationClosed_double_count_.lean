@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Double-counting balance for a negation-closed carrier (#444, AvY)
 
@@ -30,6 +27,10 @@ sum. Reusable plumbing for the Wick-matching argument and the No-Excess ladder.
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Pure plumbing — it does not
 touch the open prize wall.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

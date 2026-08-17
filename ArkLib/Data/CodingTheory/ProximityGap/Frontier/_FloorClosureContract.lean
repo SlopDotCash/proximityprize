@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorLinnikTZClosure
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.style.longFile 1600
-
 /-!
 # The full off-BGK floor closure contract
 
@@ -35,6 +31,11 @@ Only after all three steps does the existing open-core conditional pin apply.  T
 hypotheses are intentionally explicit: they are the missing sparse-domination/classification
 content, not consequences of Linnik or Thorner--Zaman.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.style.longFile 1600
+
 
 open scoped NNReal ENNReal ProbabilityTheory
 open ProximityGap Code

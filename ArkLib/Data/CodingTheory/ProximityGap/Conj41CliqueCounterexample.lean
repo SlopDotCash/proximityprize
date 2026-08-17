@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # A machine-checked counterexample to Conjecture 41 (worst-case form) of ePrint 2026/858
 
@@ -36,6 +34,9 @@ paper's proof map (§1.10) "the mainline uses no result from §7", so the uncond
 (and the in-tree `HalfThresholdCA.lean`) is unaffected, as is the proximity-prize `δ*`. What this corrects:
 the worst-case list size is `≥ w+1` via cliques, not `⌊(2D−1)/c⌋`.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace Conj41CliqueCounterexample
 

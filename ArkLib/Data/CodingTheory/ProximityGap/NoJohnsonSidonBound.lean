@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodSidonBound
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # No Johnson-scale period in the Sidon regime (#389) — a correct, applicable sub-`√q` bound
 
@@ -24,6 +22,9 @@ remains the open part.)
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

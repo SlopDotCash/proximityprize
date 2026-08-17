@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilAutocorrSubgroupExac
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyBridge
 import ArkLib.Data.CodingTheory.ProximityGap.AddEnergyCubeBound
 
-set_option linter.style.longLine false
-
 /-!
 # The sum-product ASYMMETRY of the thin subgroup: `E_×(H) = |H|³` (max) vs `E_+(H) = 3|H|²−3|H|` (min) (#444)
 
@@ -66,6 +64,9 @@ hypothesis is exactly the thinness condition), EXTEND-proven. No capacity / beyo
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`/`axiom`/`native_decide`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

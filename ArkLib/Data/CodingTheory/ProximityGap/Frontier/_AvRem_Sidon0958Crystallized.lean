@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvT3a_DiBenedettoBeatAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.DiBenedettoBetaValidityWindow
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Crystallization of the `0.9583` conditional sup-norm exponent (#444, AvRem)
 
@@ -73,6 +70,10 @@ they are not summed.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.Frontier.AvT3aDiBenedettoBeat (beatExponent DiBenedettoThm31
   GoodPrimeEnergyTransfer diBenedetto_beat diBenedetto_beat_mu beatExponent_between)

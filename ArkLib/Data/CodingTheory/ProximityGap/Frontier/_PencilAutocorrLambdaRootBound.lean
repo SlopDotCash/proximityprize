@@ -8,8 +8,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilAutocorrelation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilCauchySchwarzFisher
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilAutocorrRootBound
 
-set_option linter.style.longLine false
-
 /-!
 # The **general-`M` (λ-design) autocorrelation root bound** (#407/#444)
 
@@ -70,6 +68,9 @@ which a fortiori holds on the same data; re-verified after the codex P2 sharpeni
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

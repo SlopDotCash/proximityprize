@@ -9,10 +9,6 @@ import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The successive-minima POINT-COUNT frame for the spurious count `Spur_r(p)` (#444, lane wf-W6)
 
@@ -98,6 +94,11 @@ bound as an explicit hypothesis (the standard reduced-basis fact), matching how 
 additive split as an interface. NOT thinness-essential in isolation (geometry of numbers on the
 index-`p` cyclotomic sublattice); does NOT close CORE. `CORE M(μ_n) ≤ C·√(n·log(p/n))` stays **OPEN**.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.SpurSuccessiveMinima
 

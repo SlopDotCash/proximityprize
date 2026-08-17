@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvW0c_BesselMfoldSymbolic
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvX_LamLeungTwoPowerAntipodalBalan
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvRem_BesselMfold
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # GEOMETRIC closure of STEP-1: μ_n's antipodal directions ARE a HeadDecoupled negPair family
 
@@ -42,6 +39,10 @@ of unity has, for EVERY value `w`, equally many entries `= w` as `= −w`. From 
 Char-0 ONLY. Does NOT touch the char-`p` excess `W_r` (the open kernel = the prize wall, which a
 finite-order method provably cannot cross). Axiom-clean (`propext, Classical.choice, Quot.sound`).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.NegationClosedWalk (zeroSumCount)

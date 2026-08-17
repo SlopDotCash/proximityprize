@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DyadicJacobiCocycleNonContraction
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # Fermat-corner EXCLUSION: the prize regime is disjoint from the closed-form Gauss-sum corner
 
@@ -40,6 +35,12 @@ The point: the Door-IV cocycle cannot be evaluated in closed form via the Fermat
 genuinely-new dispersion estimate (the open `JacobiCocycleDispersion`) is the only door, as Shaw's
 tetrachotomy demands.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiCocycleFermatCornerExclusion
 

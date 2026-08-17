@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.ManyTermResultantBound
 import ArkLib.Data.CodingTheory.ProximityGap.SidonParsevalGeneral
 import ArkLib.Data.CodingTheory.ProximityGap.SidonParsevalNthRoots
 
-set_option linter.style.longLine false
-
 /-!
 # THE FULLY GENERAL SHARP RESULTANT BOUND — `|Res|² ≤ (2·W)^{φ(n)}`, `W = ∑ mᵢ²` (#389/#407)
 
@@ -38,6 +36,9 @@ the largest `∑mᵢ²` over non-antipodally-pairable signed multiplicity patter
 input; this file supplies the sharp resultant machinery for **every** weighted shape. Axiom-clean
 (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Complex Finset Polynomial
 open ArkLib.ProximityGap.AdditiveEnergyRepBound

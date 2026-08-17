@@ -7,10 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeShawTetrachoto
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVObjectMomentTrappedCapstone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVObjectMomentCorridor
 
-
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Grand capstone: prize ⇔ Sh=O(1), door-(iv)-only, AND the door-(iv) object is moment-trapped (#444)
 
@@ -54,6 +50,11 @@ moment-trapped with no non-moment slack.
 
 Imports the three established capstones unchanged; introduces no axioms.
 -/
+
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone
 

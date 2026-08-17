@@ -9,9 +9,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # wf-T15 (#444): conditional-entropy chain rule along the 2-adic dilation tower — REDUCES-TO-WALL
 
@@ -87,6 +84,10 @@ entropy is `≈` the marginal, so the filtration adds nothing.
 
 Honest tag — OBSTRUCTION / REDUCES-TO-WALL (F0 via F7). NOT a closure. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Real
 

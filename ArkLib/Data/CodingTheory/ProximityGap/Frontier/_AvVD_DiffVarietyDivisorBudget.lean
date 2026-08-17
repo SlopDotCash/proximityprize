@@ -8,10 +8,6 @@ import Mathlib.Data.Nat.Log
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # AvVD — the **difference-variety divisor budget**: an UNCONDITIONAL bound on the cumulative
 wraparound first moment, plus the exact good-prime threshold (#444)
@@ -91,6 +87,11 @@ good-prime threshold (`wrap = 0` past the max norm) and the unconditional cumula
 (axiom-clean), and names the precise equidistribution residual.  Genuine partial result on the most
 credible open path.  NOT a closure.  Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffVarietyDivisorBudget
 

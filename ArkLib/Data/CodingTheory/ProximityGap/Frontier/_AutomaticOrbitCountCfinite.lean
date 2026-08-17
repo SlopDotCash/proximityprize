@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # The orbit-count / union-count sequence is C-FINITE (decidable growth) but PHASE-BLIND (#444)
 
@@ -53,6 +51,9 @@ does NOT bound the actual `M`, and does NOT evade the deep-depth archimedean-pha
 reduces to the same `W_r ≤ slack` core.  This file formalizes the *provable* piece (the C-finite
 recurrence = the decidable-growth signature), and records the phase-blindness verdict in prose.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.AutomaticOrbitCount
 

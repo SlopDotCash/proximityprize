@@ -7,11 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # HL3 — Berkovich / Chambert-Loir COUPLED adelic equidistribution on the period: REDUCES-TO-FENCE
 
@@ -142,6 +137,12 @@ Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 - probe: `scripts/probes/rust/probe_wfH_L3_berkovich_equidist.rs` (exact-int second moment;
   House/bulk factor growing in n).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 open scoped Real
 

@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.SidonDepthFiveNoWrapNonSharp
 
-set_option maxRecDepth 100000
-
 /-!
 # A depth-six no-wrap two-point Sidon witness (#444)
 
@@ -22,6 +20,9 @@ value `C(12,6)=924`, while the universal swap floor is only `2*|G|^6 - |G|^2 = 1
 This is a small Sidon/incidence calibration brick only.  It makes no CORE upper-bound,
 char-`p` transfer, capacity, or growth-law claim.
 -/
+
+set_option maxRecDepth 100000
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy IsSidonSet)

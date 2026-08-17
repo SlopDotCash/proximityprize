@@ -7,10 +7,6 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # L3 — the ANTIPODAL ANTI-CORRELATION that drives F4's contraction: the EXACT cross-level
 covariance of consecutive 2-power tower levels, and the honest parity boundary (#444)
@@ -106,6 +102,11 @@ consumes.  This does NOT close F4: it pins F4's open input to a single named par
 * `OddOrderBridge` / `f4_contraction_from_odd_bridge` — the named missing piece and the implication
   that discharging it yields F4's `γ > 0` at the prize (even) order.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 

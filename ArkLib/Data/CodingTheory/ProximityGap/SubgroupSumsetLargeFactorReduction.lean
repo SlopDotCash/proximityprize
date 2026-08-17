@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupSumsetConjecture
 import Mathlib.GroupTheory.OrderOfElement
 
--- The section below threads the four hypotheses `hp hp2 hq hdvd` uniformly via `include`, so a
--- few purely-combinatorial lemmas (e.g. `mem_signedPowersF_iff`) carry unused ones. Disable the
--- unused-section-variable linter file-locally (keeps call sites uniform; no `warning:` lines).
-set_option linter.unusedSectionVars false
-
 /-!
 # Conjecture 1.12 follows from large prime factors of `2^p − 1` (weaker than Mersenne)
 
@@ -53,6 +48,12 @@ but is genuinely weaker, and the best *unconditional* largest-prime-factor bound
 (Stewart) are far below `2^{p/4}`. Conjecture 1.12 stays an open named `Prop`. All proofs here are
 axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #389 / #334.
 -/
+
+-- The section below threads the four hypotheses `hp hp2 hq hdvd` uniformly via `include`, so a
+-- few purely-combinatorial lemmas (e.g. `mem_signedPowersF_iff`) carry unused ones. Disable the
+-- unused-section-variable linter file-locally (keeps call sites uniform; no `warning:` lines).
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

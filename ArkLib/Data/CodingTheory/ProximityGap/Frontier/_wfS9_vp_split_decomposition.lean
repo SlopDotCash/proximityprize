@@ -8,8 +8,6 @@ import Mathlib.RingTheory.Multiplicity
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # wf-S9 — the `p`-adic valuation decomposition of the spurious mass (split-prime / Stickelberger) (#444)
 
@@ -89,6 +87,9 @@ the `Θ(d)` that a moment-route blowup would need — corroborating the S2 sprea
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.WFS9
 

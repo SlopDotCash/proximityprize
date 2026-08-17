@@ -7,10 +7,6 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # F4 — the TOWER VARIANCE BOOTSTRAP: an antipodal-contractive RG flow on the wraparound
 fluctuation `W_r`, with a contraction factor `ρ < 1` driven by consecutive-level
@@ -126,6 +122,11 @@ closure.
 * `AntipodalAntiCorrelationHypothesis` / `contraction_from_hypothesis` — the named missing piece and
   the implication that discharging it yields the prize.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 

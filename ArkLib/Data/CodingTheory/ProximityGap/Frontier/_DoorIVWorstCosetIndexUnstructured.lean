@@ -7,9 +7,6 @@ import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Int.GCD
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door IV (Lane 1): the worst-`b` COSET-INDEX set is ARITHMETICALLY UNSTRUCTURED — no
 # arithmetic-progression / sublattice class-restriction lever for door-(iv) anti-concentration
@@ -58,6 +55,10 @@ cannot lie inside any proper arithmetic progression `{ r + d·t : t ∈ ℤ }` w
 if every element of a set is `≡ r (mod d)` then `d` divides every pairwise difference, hence divides
 their gcd; so `gcd = 1 ⇒ d = 1`. This is the citable obstruction the probe instantiates.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DoorIVWorstCosetIndex
 

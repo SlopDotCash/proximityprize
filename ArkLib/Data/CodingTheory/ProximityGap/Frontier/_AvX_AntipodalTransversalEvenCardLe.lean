@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Antipodal negation transversal, Fintype-free (#444, AvX)
 
@@ -28,6 +25,10 @@ even cardinality, transversal existence with `|T| = |G|/2`).
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. This is pure plumbing — it does
 not touch the open prize wall.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

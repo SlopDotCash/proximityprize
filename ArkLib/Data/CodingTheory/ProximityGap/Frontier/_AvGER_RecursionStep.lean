@@ -7,8 +7,6 @@ import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Fintype.Pi
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # Gaussian additive-energy recursion: base case, convolution identity, conditional step (#444)
 
@@ -52,6 +50,9 @@ named hypothesis `hOff`, the appended-coordinate off-diagonal bound. **Not** a p
 recursion: the `r`-uniform validity of `hOff` up to `r ~ log p` is the open BGK content, isolated in
 that one hypothesis. This does NOT close the prize.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvGER
 

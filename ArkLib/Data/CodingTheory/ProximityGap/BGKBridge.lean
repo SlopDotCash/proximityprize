@@ -8,10 +8,6 @@ import Mathlib.NumberTheory.NumberField.Norm
 import Mathlib.RingTheory.Norm.Basic
 import ArkLib.Data.CodingTheory.ProximityGap.GeneralizedPaleyRamanujan
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # bgk-bridge: the BGK / generalized-Paley character-sum lane for the prize (#407)
 
@@ -74,6 +70,11 @@ proved bridge to the live consumer, and the proved no-go for the height-product 
 
 All proofs axiom-clean (`propext, Classical.choice, Quot.sound`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset NumberField Module Real
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

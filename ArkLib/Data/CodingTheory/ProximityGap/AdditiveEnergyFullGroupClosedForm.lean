@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyRepBound
 
-set_option linter.style.longLine false
-
 /-!
 # Round 11 (Issue #232, ABF26) — the GENERAL closed form for the additive energy of `F_p^×`.
 
@@ -29,6 +27,9 @@ general `μ_{dm}^d = μ_m` law. *Honest scope:* this is the `|G| ~ q` endpoint; 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
 -/
+
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.AdditiveEnergyRepBound Finset
 

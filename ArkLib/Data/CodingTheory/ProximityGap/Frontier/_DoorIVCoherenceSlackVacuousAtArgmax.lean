@@ -7,9 +7,6 @@ import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Data.Real.Basic
 import Mathlib.Order.Bounds.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: coherence-slack is vacuous at the prize-worst frequency (#444)
 
@@ -33,6 +30,10 @@ does not care about.  This file records that obstruction abstractly and axiom-cl
 This is a **refutation with mechanism** (a DEAD lever, precisely mapped), not a CORE/cancellation
 claim: it does not bound `M(n)`; it shows one specific lever shape cannot.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVCoherenceSlackVacuousAtArgmax
 

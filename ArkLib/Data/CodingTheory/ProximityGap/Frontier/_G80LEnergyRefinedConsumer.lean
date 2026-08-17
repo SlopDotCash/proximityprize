@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80OProductDivisorInterval
 import Mathlib.Algebra.Order.Chebyshev
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80L (#466, 2026-07-10): the ENERGY-REFINED consumer — `T(W)⁴ ≤ n·E×(A)` by
   Cauchy–Schwarz on product-map fibers: interval counts are controlled by the INTEGER
@@ -41,6 +38,10 @@ advances the interval face. CORE remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

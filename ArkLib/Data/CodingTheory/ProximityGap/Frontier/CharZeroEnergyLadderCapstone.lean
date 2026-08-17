@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroEnergySixExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvGER_CharZeroEnergyRecursion
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # AVENUE A capstone: the char-0 additive-energy ladder `E₁…E₆` is EXACTLY the tabulated closed forms
 
@@ -42,6 +39,10 @@ untouched; prize CORE stays OPEN.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444 / #389.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.CharZeroEnergyLadder
 

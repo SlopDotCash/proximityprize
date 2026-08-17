@@ -7,9 +7,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiBenedettoEnergyValueEnvelope
 import Mathlib.Analysis.SpecialFunctions.Log.Base
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # di Benedetto near-Sidon saving: the FINITE-`n` shortfall is STRICT (#444 — constant-factor lane)
 
@@ -53,6 +50,10 @@ past the proven `1/24` ceiling (it shows the ceiling is a strict supremum, not a
 method stays provably `12×` short of the prize cancellation exponent `1/2`. ONE sweep, ONE commit.
 CORE `M(μ_n) ≤ C·√(n·log(p/n))` UNCHANGED / OPEN. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Real
 

@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.InteriorWorstCaseIncompleteSum
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # PIECE B — the BGK / di Benedetto power-saving exponent as a named literature Prop (#407)
 
@@ -67,6 +63,11 @@ below the prize exponent `1/2`, so this is explicitly a NON-prize-closing result
 
 All proofs axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #407.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 open ArkLib.ProximityGap.SubgroupGaussSumFourthMoment

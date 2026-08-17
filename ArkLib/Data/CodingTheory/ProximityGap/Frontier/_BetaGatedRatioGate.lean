@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._TowerSpikeBetaGate
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The per-level sup-norm ratio gate is `x = n/ln m`, NOT `β` (#407)
 
@@ -96,6 +93,10 @@ refutation of `BetaGatedRatio` as stated**:
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
 - substrate: `SubgroupGaussSumDilationRecursion.lean`, `_TowerSpikeBetaGate.lean`.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar
 

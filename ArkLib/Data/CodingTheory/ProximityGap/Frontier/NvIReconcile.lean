@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SchurLagrangeBridge
 import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # N-vs-I reconciliation: the binding root-sum is the codim-1 face of the deployed incidence (#407)
 
@@ -57,6 +54,10 @@ the deployed `δ*` line-incidence; it closes only the binding sub-object.)
 
 All results are `sorry`-free; the axiom audit must show only `propext, Classical.choice, Quot.sound`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset Polynomial
 

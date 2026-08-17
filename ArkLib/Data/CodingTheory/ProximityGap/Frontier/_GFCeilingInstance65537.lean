@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.Real.Pi.Bounds
+
+/-!
 # LANE S4 — the GF-ceiling brick at the generalized-Fermat prime p = 65537
 
 Issue #466 (Ethereum Proximity Prize). Dossier §15 survivor 7 (bankable ceiling tool).
@@ -56,8 +59,6 @@ as `GFCharSumBridge` (a hypothesis, verified numerically in the probe); `eta1_ce
 consumes it to transport the ceiling to the genuine character sum. The analytic content —
 the `≥ 18` bound — is proven unconditionally.
 -/
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
-import Mathlib.Analysis.Real.Pi.Bounds
 
 namespace ArkLib.ProximityGap.Frontier.GFCeiling65537
 

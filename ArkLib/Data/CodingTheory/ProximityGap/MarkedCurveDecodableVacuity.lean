@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.GG25MarkedCurve
 
-set_option linter.unusedSectionVars false
-
 /-!
 # Non-vacuity fence for marked curve decodability (#389, B2 lane)
 
@@ -16,6 +14,9 @@ most `|F|` elements), so `MarkedCurveDecodable C ℓ δ a b` holds vacuously.  T
 exactly `a ≤ |F|`.  Completes the structural grid of the marked variant alongside
 `markedCurveDecodable_mono_marked_set_size`.
 -/
+
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open scoped NNReal

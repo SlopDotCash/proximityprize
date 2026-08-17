@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import ArkLib.Data.CodingTheory.CodeGeometry
+import Mathlib.Tactic
+
+/-!
 Round 14, Angle E — the DERANDOMIZATION frontier of the proximity-prize list-size problem
 (ABF26 / ArkLib #232), formalized HONESTLY over a general finite alphabet.
 
@@ -40,8 +43,6 @@ What is NOT proven here: `DerandomizationCore` itself (whether existence of a go
 evaluation set implies the smooth subgroup domains are good).  That is the open research
 content; it is stated as a `def ... : Prop` only and never claimed.
 -/
-import ArkLib.Data.CodingTheory.CodeGeometry
-import Mathlib.Tactic
 
 set_option autoImplicit false
 set_option maxHeartbeats 1000000

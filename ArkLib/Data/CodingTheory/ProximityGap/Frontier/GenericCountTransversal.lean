@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.AntipodalSigmaUnique
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PerPairingExactCount
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # The per-`σ` generic count reduced to a `σ`-FREE transversal class-injectivity count (#407 lower)
 
@@ -55,6 +53,9 @@ count over the `n/2` antipodal classes, probe-verified exact). Negation-closed /
 combinatorics, NOT thinness-essential, does NOT close CORE. Axiom-clean (`propext, Classical.choice,
 Quot.sound`). Issue #407.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

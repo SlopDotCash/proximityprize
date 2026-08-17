@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.StepanovPointCountEngine
 import Mathlib.Algebra.Polynomial.Taylor
 import Mathlib.Algebra.Polynomial.HasseDeriv
 
-set_option linter.style.longLine false
-
 /-!
 # Issue #232 — the LINEAR (Hasse-derivative) entry point for univariate Stepanov constructions.
 
@@ -52,6 +50,9 @@ All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.
   Tracking issue #232.
 - Stepanov; Schmidt, *Equations over Finite Fields: An Elementary Approach*.
 -/
+
+set_option linter.style.longLine false
+
 
 open Polynomial
 

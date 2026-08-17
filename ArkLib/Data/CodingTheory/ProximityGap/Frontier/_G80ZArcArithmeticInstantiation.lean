@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ArcOscillationWeld
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80Z (#466, 2026-07-10): the ARITHMETIC instantiation of the G80 arc model on
   `ZMod p` — character-sum bias forces an arc-occupancy increment, end-to-end
@@ -51,6 +48,10 @@ contrapositive to bound `‖η_b‖` with no further analytic work. CORE remains
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

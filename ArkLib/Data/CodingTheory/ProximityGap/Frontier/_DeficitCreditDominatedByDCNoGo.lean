@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Tactic
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Deficit absorption is redundant: the char-0 deficit credit is DOMINATED by the DC headroom (#444)
 
@@ -69,6 +66,10 @@ exactly at `r∈{2,3}`: `Slack_2 = 3n`, `Slack_3 = 45n²−40n`, sub-leading `~ 
 shows that, however positive, `p·Δ_r` cannot exceed the DC headroom past `r₀`, so it cannot decide
 the budget. `CORE M(μ_n) ≤ C·√(n·log(p/n))` UNCHANGED/OPEN. Issue #444, Angle 2.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DeficitCreditDominatedByDCNoGo
 

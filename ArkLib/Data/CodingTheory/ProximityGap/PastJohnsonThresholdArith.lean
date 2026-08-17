@@ -8,8 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.SpecialFunctions.Log.Base
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # The past-Johnson threshold arithmetic for the `M → δ*` bridge (#444)
 
@@ -40,6 +38,9 @@ Honest scope: this is the *arithmetic* of the bridge only. The bridge's open inp
 worst-case `M`-bound actually supplies such a budget `B` at the Ramanujan exponent — is the
 recognized open core (BGK/BCHKS 1.12) and is NOT addressed here.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.PastJohnsonThreshold
 

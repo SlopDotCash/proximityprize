@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (Attack 2-06 — Weil II / l-adic cohomology / Katz
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # Attack 2-06 — Weil II purity gives `√q`, not `√n`: the cohomological-weight dichotomy (#464)
 
@@ -87,6 +84,10 @@ cohomological route at the level of weights.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #464.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

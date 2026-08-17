@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G105 (#466): depth-graded ledgers are lossless average-census re-slicings
 
@@ -41,6 +37,11 @@ Honest scope: this closes the depth-grading/per-depth-sign ladder as a route to 
 sup wall.  It does not rule out a genuinely new non-Fourier small-difference counting certificate;
 it says only that re-slicing an average census by depth remains the same average census.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

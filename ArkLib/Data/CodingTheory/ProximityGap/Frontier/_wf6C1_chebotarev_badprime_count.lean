@@ -7,10 +7,6 @@ import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Data.Nat.Log
 import Mathlib.Analysis.MeanInequalities
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # Effective-Chebotarev ceiling on the bad-prize-prime count (#444, lane wf-C1)
 
@@ -82,6 +78,11 @@ density is `0` (not merely small) at all tested depths and scales.
 - Lagarias–Odlyzko, *Effective versions of the Chebotarev density theorem*.
 - Lam–Leung, *On vanishing sums of roots of unity* (the char-`0` antipodal count).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.WF6C1
 

@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvFloor_SqrtSevenMomentRa
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvFloor_MomentRatioLadderGeneral
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteMomentAssembly
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Wiring the `√7` moment-ratio floor onto the CONCRETE worst period (#444 — floor connective)
 
@@ -45,6 +42,10 @@ sharpens the honest-value gap, it does NOT close CORE. CORE `M(μ_n) ≤ C·√(
 bound) stays OPEN. The `→ 7n` value remains asymptotic computational evidence (see the parent file's
 honesty note); the Lean statement is the exact substrate inequality `q·E₄ − n⁸ ≤ M²·(q·E₃ − n⁶)`.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

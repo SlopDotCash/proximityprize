@@ -10,6 +10,13 @@ import ArkLib.Data.CodingTheory.ReedSolomon
 import Mathlib.InformationTheory.Hamming
 import ArkLib.Data.CodingTheory.ProximityGap.MCAGS
 
+/-!
+# JohnsonCommonCenterRefutation
+
+Module docstring for `JohnsonCommonCenterRefutation.lean`.
+-/
+
+
 open scoped NNReal
 
 namespace ArkLib.JohnsonBound

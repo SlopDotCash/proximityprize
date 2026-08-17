@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#464)
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Incidence smoothing must pay its deconvolution norm
 
@@ -26,6 +23,10 @@ is still above target, unless one proves extra structure excluding that componen
 This is the deconvolution analogue of the Door-IV gauge barrier.  It does not prove the prize floor
 or any Paley/BGK cancellation theorem; it only says where a smoothing proof has to spend its norm.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.IncidenceSmoothingDeconvolutionBarrier
 

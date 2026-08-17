@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib
+
+/-!
 # `DeltaStarOP1BindingN16` — the binding `O_P = 1` at `n = 16`, machine-checked (#444)
 
 The far-line MCA binding direction `x^{n/2+1} + γ·x^{n/2-1}` on `μ_n` (the
@@ -41,7 +43,6 @@ additive-energy defect for `e₂ = 0` has its ONSET at `μ_16` (zero defect on `
 char-`p` count 150/118/86/70 at p = 97/193/257/65537 exceeds the char-0 value 70 at small `p`),
 a clean small-scale sighting of the BGK wall. See `docs/kb/deltastar-444-subsetsum-binding.md`.
 -/
-import Mathlib
 
 namespace ArkLib.ProximityGap.DeltaStarOP1BindingN16
 

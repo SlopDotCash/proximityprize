@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.AsymptoticGVBound
 import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionDecaySum
 
-set_option linter.style.longLine false
-
 /-!
 # CS25 #82, deliverable 2: the entropy-rate form of the ball-intersection decay
 
@@ -25,6 +23,9 @@ is re-derived here.
 * `jointCoverCount_le_qEntropy_decay` — the entropy-rate ball-intersection decay
   `I(e) ≤ (m+1)·q^{m·H_q(B'/m)}·q^{wt(e)}`, `m = n−wt(e)`, `B' = ⌊(2r−wt(e))/2⌋`.
 -/
+
+set_option linter.style.longLine false
+
 
 open scoped BigOperators NNReal ENNReal
 

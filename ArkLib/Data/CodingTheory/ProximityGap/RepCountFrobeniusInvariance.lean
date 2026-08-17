@@ -6,6 +6,13 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyRepBound
 import Mathlib.FieldTheory.Perfect
 
+/-!
+# RepCountFrobeniusInvariance
+
+Module docstring for `RepCountFrobeniusInvariance.lean`.
+-/
+
+
 open Finset
 
 namespace ArkLib.ProximityGap.AdditiveEnergyRepBound

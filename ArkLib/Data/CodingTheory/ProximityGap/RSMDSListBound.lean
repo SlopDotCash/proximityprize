@@ -3,7 +3,15 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.RingTheory.Polynomial.Basic
+import Mathlib.Data.Nat.Choose.Bounds
+import Mathlib.Data.Fintype.BigOperators
+import Mathlib.Data.Fintype.Powerset
+import Mathlib.Algebra.Field.ZMod
+import Mathlib.Tactic
+
+/-!
   Asymptotic list-bound kernel for explicit Reed-Solomon (an MDS code):
   the MDS / information-set leading-term weight-enumerator bound.
 
@@ -27,13 +35,6 @@ Authors: ArkLib Contributors
   honest sharpening past the trivial q^w-per-support bound, and is the leading term of
   the exact MDS weight enumerator A_w = C(n,w) sum_j (-1)^j C(w-1,j)(q^{w-k-j}-1).
 -/
-import Mathlib.LinearAlgebra.Lagrange
-import Mathlib.RingTheory.Polynomial.Basic
-import Mathlib.Data.Nat.Choose.Bounds
-import Mathlib.Data.Fintype.BigOperators
-import Mathlib.Data.Fintype.Powerset
-import Mathlib.Algebra.Field.ZMod
-import Mathlib.Tactic
 
 open Polynomial Finset
 

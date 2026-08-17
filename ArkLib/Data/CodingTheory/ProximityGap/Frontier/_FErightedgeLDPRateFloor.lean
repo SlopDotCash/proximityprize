@@ -7,9 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # FE-right-edge-LDP — the right-edge large-deviation rate floor of the `μ_n` period (#444)
 
@@ -68,6 +65,10 @@ union-balance plumbing all axiom-clean.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444 task FE-right-edge-ldp.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.FErightedgeLDPRateFloor
 

@@ -10,10 +10,6 @@ import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.IntervalCases
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # `_WALL_6` — the CONSTRAINED-CONE polynomial-majorant SOS certificate for `Wick_K − A_K ≥ 0`
   (#444, attack `positivity-sos-wraparound`)
@@ -77,6 +73,11 @@ So the genuine new structure is a **two-regime split** of the open kernel:
   certificate is exhibited for the deep regime — not "phase-blind" hand-waving but an explicit
   Positivstellensatz witness with the correct constrained-cone constraints.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.Wall6
 

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Burgess-box cover exponent gate
 
@@ -33,6 +30,10 @@ No Burgess theorem is assumed or proved here.  This is a routing guardrail for t
 box/sublattice estimates need either a saving that pays the cover overhead, or a genuinely
 measure-preserving transfer from the subgroup to eligible boxes.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.BurgessBoxCoverExponentGate
 

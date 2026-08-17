@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Wasserstein outlier amplitude gate
 
@@ -24,6 +21,10 @@ At the opposite scale, a one-outlier model has average transport `H / #atoms` an
 gate is purely finite and makes no claim about Gauss periods; it isolates the extra rate any
 KU/Katz/Wasserstein route would need before it can imply the Paley/far-line worst-case bound.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

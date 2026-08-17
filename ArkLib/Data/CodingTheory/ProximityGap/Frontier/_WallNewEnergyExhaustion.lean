@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#466, lane W2)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BilinearDFTBeat
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The exact-energy exponent axis is exhausted at `8/9` good-prime / `n^{1−o(1)}` unconditional
   (#466, lane W2 — the analytic-wall SOTA frontier)
@@ -66,6 +63,10 @@ exponent axis is CLOSED.
 Issue #466, dossier v3 §3 (SOTA table) / §6 (frontier). Axiom-clean
 (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Real
 

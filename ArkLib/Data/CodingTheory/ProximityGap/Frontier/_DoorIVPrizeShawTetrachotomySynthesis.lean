@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ShawValueCapstone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NoFifthDoorTetrachotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Lane-2 synthesis capstone: the prize is *both* a bounded Shaw value *and* a door-(iv)-only target
 
@@ -44,6 +41,10 @@ reduction; `NoFifthDoorTetrachotomy.prizeScale n = √n` is the prize *floor* us
 exclusion.  The synthesis below references each through its own namespace so no normalization is
 silently conflated.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis
 

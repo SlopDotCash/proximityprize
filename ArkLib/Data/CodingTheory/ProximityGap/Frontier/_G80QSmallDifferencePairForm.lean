@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80SDirectionalStripReduction
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80Q (#466, 2026-07-10): the SMALL-DIFFERENCE PAIR form — the arc certificate in its
   final classical shape: `pairCount(b·H) ≤ |H| + #{(u,z) ∈ (b·H)² : u ≠ z, u − z ∈ Strip}`
@@ -46,6 +43,10 @@ ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

@@ -8,9 +8,6 @@ import Mathlib.Data.Fintype.Pigeonhole
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE OC (#466, Opus core 2026-07-10): the low-height PRIMITIVE annihilator is
   PIGEONHOLE-FORCED and COEFFICIENT-AGNOSTIC — a thinness-essential no-go for the
@@ -66,6 +63,10 @@ multiplicative `√log` separation.
 
 Issue #466, lane OC.  Target axiom set: `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.OcNegacyclicHeightNoGo
 

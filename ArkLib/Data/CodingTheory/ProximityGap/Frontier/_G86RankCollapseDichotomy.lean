@@ -7,9 +7,6 @@ import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 import Mathlib.LinearAlgebra.Dimension.Finite
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # G86: rank-collapse dichotomy — generic planting of bad scalars is formally capped
   at `2(n−k)/(t−k) − 1` (#466 / #507)
@@ -84,6 +81,10 @@ probe's exact reduction, not a Lean theorem.  CORE remains OPEN.
 
 Honesty: no `sorry`, no `axiom`, no `native_decide`; `#print axioms` per theorem.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.G86RankCollapseDichotomy
 

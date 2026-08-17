@@ -4,6 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
+
+/-!
+# _AvE5_ExistsGoodPrimeNonSequitur
+
+Module docstring for `_AvE5_ExistsGoodPrimeNonSequitur.lean`.
+-/
+
 /-
 # AvE5 — The "choose a good prime" escape is a NON-SEQUITUR (quantifier audit)
 

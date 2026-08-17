@@ -7,9 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # D2 — the large-deviation rate function of the `μ_n` Gauss period (#444)
 
@@ -79,6 +76,10 @@ this file does NOT cross (it is the BGK/BCHKS wall).
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444 task D2-largedev.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.D2LargeDeviationRateFunction
 

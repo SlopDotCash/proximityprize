@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.InteriorWorstCaseIncompleteSum
 import ArkLib.Data.CodingTheory.ProximityGap.PrizeStructuralConstant
 
-set_option linter.unusedSectionVars false
-set_option linter.dupNamespace false
-
 /-!
 # The generalized-Paley spectral lane for the proximity-prize per-frequency core (#407)
 
@@ -38,6 +35,10 @@ residual and additive-energy chain. No closure is asserted.
 
 All proofs axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #389.
 -/
+
+set_option linter.unusedSectionVars false
+set_option linter.dupNamespace false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 open ArkLib.ProximityGap.SubgroupGaussSumFourthMoment

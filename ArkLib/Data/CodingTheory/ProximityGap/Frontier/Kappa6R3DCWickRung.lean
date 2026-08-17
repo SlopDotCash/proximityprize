@@ -6,8 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Tactic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-
 /-!
 # The r=3 DC-Wick rung for the 2-power-subgroup Gauss periods: `κ_6 = 40 n` and `κ_6 ≤ 45 n²` (#444)
 
@@ -52,6 +50,9 @@ The DC-subtracted central moments are `μ_{2r} = E_r` (char-0 limit, since `S_{2
 ladder, NOT a new obstruction.  This is ONE rung of the DC-Wick ladder; the prize floor needs the
 full ladder `r ≤ log m`.  CORE of #444 stays OPEN.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.Kappa6R3
 

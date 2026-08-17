@@ -6,9 +6,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationTowerSaturates
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-3: the CONCRETE dilation tower on `worstPeriod` (#444)
 
@@ -30,6 +27,10 @@ which (with the base `G a` of `O(1)` worst period) is the trivial `M ≤ n` ceil
 real object.  Pure Lane-3 constraint lock; no CORE / cancellation / completion / moment /
 anti-concentration / capacity claim.  CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.I031DilationOrbitReduction (nonzeroFreqs mem_nonzeroFreqs)

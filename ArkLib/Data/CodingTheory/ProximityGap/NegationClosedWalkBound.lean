@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMomentLadder
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # K1: the negation-closed `r`-fold walk bound — counting core (#389)
 
@@ -50,6 +48,9 @@ All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.
 * Issue #389; `ConditionalSqrtCancellation.lean` (the K1 scope note),
   `GeneralEnergyBound.lean` (the full-Sidon `r!` analog), `SubgroupGaussSumMomentLadder`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

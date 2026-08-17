@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # P1 multiplicative-chaos route REDUCES: the period field is LOG-DECORRELATED (a random walk),
 not a LOG-CORRELATED chaos, so Harper's "better-than-√" mechanism has no structure to act on (#444)
@@ -81,6 +78,10 @@ These bound NOTHING about `M(n)`; they record (rule-4 cartography) the structura
 multiplicative-chaos lever does not engage. PHASE-AWARE (covariances of the signed/complex period and
 its increments, not an even-moment energy); REDUCES.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.AvMC1
 

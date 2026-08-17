@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # D5 random-operator / generic-chaining transfer gate
 
@@ -21,6 +19,9 @@ This file records that gate.  It does not refute chaining itself; it isolates th
 deterministic sub-Gaussian increments/tails for the actual Gauss-period process at the Paley
 saddle.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.D5RandomOperatorChainingTransferGate
 

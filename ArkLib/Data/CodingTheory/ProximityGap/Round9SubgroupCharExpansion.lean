@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # Round 9 (Issue #232, ABF26) — the MULTIPLICATIVE-character expansion of the subgroup indicator:
 # the subgroup-restricted mixed Gauss sum decomposed into twisted character Gauss sums.
@@ -50,6 +48,9 @@ All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
   Tracking issue #232.
 -/
+
+set_option linter.style.longLine false
+
 
 open scoped BigOperators Classical
 open MulChar QuotientGroup

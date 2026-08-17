@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wf5M3_crossstep_ceiling
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The `r = 1` rung of the open per-step crux `M3CrossStepBound` is the proven `r = 2` energy ceiling (Issue #444)
 
@@ -60,6 +56,11 @@ the recursion's `crossMass` language). CORE (`M(μ_n) ≤ C·√(n·log(p/n))`) 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

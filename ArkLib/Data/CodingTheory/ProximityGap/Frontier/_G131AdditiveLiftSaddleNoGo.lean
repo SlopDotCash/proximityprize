@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option autoImplicit false
-
 /-!
 # G131: additive-lift saddle no-go
 
@@ -26,6 +24,9 @@ Thus the additive-lift crossing of `sqrt(p)` is real, but Capstone A by itself i
 at the saddle. Closing the terminal object needs extra signed/modular cancellation beyond an
 additive-collision bound, not merely `rho << n`.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.G131AdditiveLiftSaddleNoGo
 

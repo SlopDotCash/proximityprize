@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.S5Genuine
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MatchMonic
 
-set_option linter.style.longLine false
-
 /-!
 # BCIKS20 §5.2.6–5.2.7 — Claims 5.8 / 5.8' UNCONDITIONAL for monic `H` (issue #232)
 
@@ -47,6 +45,9 @@ is the field-universal beyond-Johnson core — separate from and beyond this kno
 * `claim58prime_genuine_of_monic` — Claim 5.8': `γ = ↑(trunc k γ)` (`γ` is a polynomial), no residual.
 * `gammaGenuine_isPoly_of_monic` — the packaged "`γ ∈ L[X]` of X-degree `< n+1`" existential form.
 -/
+
+set_option linter.style.longLine false
+
 
 noncomputable section
 

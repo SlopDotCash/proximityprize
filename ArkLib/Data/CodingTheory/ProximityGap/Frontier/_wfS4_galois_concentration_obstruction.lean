@@ -8,9 +8,6 @@ import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Algebra.Group.Fin.Basic
 import Mathlib.Tactic.Linarith
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-S4 — the Galois-spread ⊥ frequency-concentration OBSTRUCTION (#444)
 
@@ -73,6 +70,10 @@ This matches the EXACT measurement (uniform spread holds, yet `M` spikes at the 
 - probe: `scripts/probes/rust/probe_wfS4_galois_concentration.rs` (the Fermat concentration +
   full-order refutation of the Gauss-period prediction).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.GaloisConcentrationObstruction
 

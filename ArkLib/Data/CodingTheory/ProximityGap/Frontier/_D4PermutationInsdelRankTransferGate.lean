@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # D4 permutation/insdel rank-transfer gate
 
@@ -20,6 +18,9 @@ or every actual extremal configuration on that domain, lies inside the generic c
 file records that transfer obligation and the countermodels showing that random/generic control
 alone is compatible with a spike on the designated smooth instance.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.D4PermutationInsdelRankTransferGate
 

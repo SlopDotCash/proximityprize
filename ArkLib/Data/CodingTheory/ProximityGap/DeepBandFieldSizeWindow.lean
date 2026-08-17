@@ -5,6 +5,8 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.DeepBandCeilingWindow
 
+/-! ### Non-vacuity: the F31 in-window instance, now through the field-size route -/
+
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
 
@@ -54,7 +56,6 @@ theorem mcaDeltaStar_le_of_field_size_window (dom : Fin n ↪ F) {k m : ℕ}
   refine mcaDeltaStar_le_of_ceiling_window dom hk hhi εstar hε ?_ hwin
   exact lt_of_le_of_lt (powersetCard_card_le_pow k m) hsize
 
-/-! ### Non-vacuity: the F31 in-window instance, now through the field-size route -/
 
 /-- The F31 instance re-derived through the field-size wrapper.  Here
 `n = 10`, `s = k+m+1 = 4`, `q = 31`, `m+1 = 2`: the field-size hypothesis would

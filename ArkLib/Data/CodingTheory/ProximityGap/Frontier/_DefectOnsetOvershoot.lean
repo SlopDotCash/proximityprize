@@ -7,8 +7,6 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option linter.style.longLine false
-
 /-!
 # The DC-subtracted-energy OVERSHOOT is the BGK wall (Issue #444, route [moment], wfL3)
 
@@ -74,6 +72,9 @@ there is in fact no overshoot at all (DC subtraction keeps `A_r < Wick` monotoni
 
 Axiom target: `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.DefectOnsetOvershoot
 

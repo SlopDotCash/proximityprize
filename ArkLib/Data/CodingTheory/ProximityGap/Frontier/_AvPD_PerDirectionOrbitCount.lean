@@ -6,9 +6,6 @@ wall: bounded orbit SIZE but super-linear orbit COUNT)
 -/
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Av-PD — the per-direction (single far-pencil) bad-scalar count is super-linear (#444)
 
@@ -65,6 +62,10 @@ Honesty: GOOD-PRIME ONLY (`p` chosen `≈ n^4`, `≡ 1 mod n`); the prize is for
 a structural refutation of a route, not a closure.  The orbit-count `O` is the off-BGK
 p-independent combinatorial quantity whose growth law remains the open core.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.AvPD
 

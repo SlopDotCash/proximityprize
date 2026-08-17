@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZaman
 
-set_option linter.style.longLine false
-
 /-!
 # The Thorner–Zaman ⇒ small-prime arrow for the off-BGK floor closure (#444 / #464)
 
@@ -35,6 +33,9 @@ explicit hypothesis exactly as `_ThornerZamanPNTStatement` does). Nothing here p
 itself, and nothing here is the BGK/Paley sup-norm wall. It connects the in-tree TZ packaging to the
 floor closure's least-prime premise at the unconditional exponent `β = 3`. CORE stays OPEN.
 -/
+
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.KKH26
 

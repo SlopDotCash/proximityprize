@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Profile/cap interface for stack classification proofs
 
@@ -32,6 +29,10 @@ There are two honest consumers:
 The counter-lemmas state exactly how to refute a proposed profile scheme: find a stack above its
 assigned cap, or find a used profile whose cap is not realized by any member of the proposed family.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open scoped NNReal ENNReal ProbabilityTheory

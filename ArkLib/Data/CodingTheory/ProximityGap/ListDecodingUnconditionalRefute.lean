@@ -6,6 +6,13 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.ListDecodingConjectureRefutation
 import ArkLib.Data.CodingTheory.ListDecoding.Bounds
 
+/-!
+# ListDecodingUnconditionalRefute
+
+Module docstring for `ListDecodingUnconditionalRefute.lean`.
+-/
+
+
 set_option exponentiation.threshold 2000
 set_option maxRecDepth 2000000
 

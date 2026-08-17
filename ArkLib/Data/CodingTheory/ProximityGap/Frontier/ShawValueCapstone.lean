@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Shaw-value capstone rungs for the proximity-prize normalization (#444)
 
@@ -28,6 +25,10 @@ anti-concentration for the monomial phase set; it makes the “prize ⇔ bounded
 rung explicit and axiom-clean so future door-(iv) work can cite the normalized target without
 re-proving division-by-scale bookkeeping.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.ShawValueCapstone
 

@@ -7,11 +7,6 @@ import Mathlib.Tactic
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.InnerProductSpace.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # Door (iv), Lane 1 → constraint lemma: the canonical-half coherence is QUANTIZED to `{+1, -1}`
 
@@ -63,6 +58,12 @@ a `1-ε` slack certificate could chip at. This file isolates the two transferabl
 This is a CONSTRAINT lemma (an audit gate for coherence-slack proposals), NOT a CORE bound. It does not
 prove cancellation, completion, a moment saving, anti-concentration, or capacity. CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVCanonicalHalfCoherence
 

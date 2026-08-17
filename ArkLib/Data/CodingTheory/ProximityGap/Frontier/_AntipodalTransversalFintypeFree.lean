@@ -3,7 +3,11 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+import Mathlib.Order.WellFounded
+import Mathlib.SetTheory.Ordinal.Basic
+
+/-!
 # Fintype-free antipodal transversal for negation-closed sets (#444, de-Fintype rung)
 
 The strata count `negSymCount G 6 = 15|G|³ − 45|G|² + 40|G|`
@@ -28,9 +32,6 @@ It does NOT yet prove the `negSymCount` closed form `Fintype`-free (the strata-c
 CORE/cancellation/completion/moment-saving/capacity claim. It is a structural de-`Fintype` enabling
 lemma.
 -/
-import Mathlib.Tactic
-import Mathlib.Order.WellFounded
-import Mathlib.SetTheory.Ordinal.Basic
 
 set_option linter.style.longLine false
 set_option linter.style.show false

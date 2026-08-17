@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#464)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourBadPrimeSet
 import Mathlib.NumberTheory.LSeries.PrimesInAP
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # U1, minimized: the canonical good prime needs only a COUNT, not a density (#464)
 
@@ -56,6 +53,10 @@ on the *ceiling* side and independent of the Face-3 floor wall.
 * [TZ24] Thorner–Zaman, *Refinements to the prime number theorem for arithmetic progressions*.
 * [KKH26] Krachun–Kazanin–Haböck, ePrint 2026/782, Lemma 2.  Issue #334 / #464.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.KKH26

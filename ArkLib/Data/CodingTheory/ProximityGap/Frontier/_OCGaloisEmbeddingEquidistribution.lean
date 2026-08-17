@@ -7,9 +7,6 @@ import Mathlib.Data.ZMod.Basic
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE OC-EQUI (#466, 2026-07-10): Galois equidistribution of unweighted embedding incidences
 
@@ -79,6 +76,10 @@ stronger forms still allowed by issue #505. CORE remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

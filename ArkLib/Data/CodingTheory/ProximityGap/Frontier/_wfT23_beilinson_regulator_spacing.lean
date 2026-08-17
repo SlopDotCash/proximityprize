@@ -7,9 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # T23 (G5-3): Beilinson dilogarithm-regulator spacing floor on Gauss periods — REFUTED + REDUCES (F0)
 
@@ -104,6 +101,10 @@ No prize gain.
   UPPER-bound the max), `_wfS8_sharp_house_threshold.lean` (`normSq_eq_pow_of_uniform`: covolume =
   `√n` second-moment ceiling, attained), F0 conservation law.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.BeilinsonRegulatorSpacing
 

@@ -9,11 +9,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 import ArkLib.Data.CodingTheory.ProximityGap.SidonModNegEnergyEquality
 import ArkLib.Data.CodingTheory.ProximityGap.MonomialRowFullSupport
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedSimpArgs false
-
 /-!
 # The char-`p` lower bound `rEnergy G 3 >= 15n^3 - 45n^2 + 40n` (#444)
 
@@ -56,6 +51,12 @@ the landed char-0 strata producer + the char-free converse. NOT a CORE closure: 
 
 Issue #444. Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedSimpArgs false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

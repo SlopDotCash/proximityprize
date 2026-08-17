@@ -12,10 +12,6 @@ import Mathlib.Tactic.Ring
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Linarith
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G180 (#466, 2026-07-11): central-symmetry covering rigidity for dilated smooth orbits
   — a NON-FOURIER, NON-INTEGER-LIFT structural no-go strictly complementing G99 HEADLINE C
@@ -61,6 +57,11 @@ other center at `p/4`. Both are elementary, b-uniform, non-Fourier, non-energy.
   (`probe_g180_central_symmetry.py`, counterexample census).
 * Everything below is axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.G180CentralSymmetryCovering
 

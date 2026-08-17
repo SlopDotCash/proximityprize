@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.MeanInequalities
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-A15 (#444, CRITIC lane): FREE-PROBABILITY of the period family is an OBSTRUCTION, not a gain
 
@@ -74,6 +71,10 @@ All are real `ℝ`-arithmetic; no Weil / char-`p` analytic input. The verdict: *
 probability is not a milder residual; its bulk reproduces the BGK growth (non-vanishing higher free
 cumulants) and its edge under-estimates the true wall.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.FreeCumulantObstruction
 

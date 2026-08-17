@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyCorrection
 
-set_option autoImplicit false
-
 /-!
 # Cross-form bridge: DC-subtracted energy ⟺ signed-deep-cancellation (#464)
 
@@ -49,6 +47,9 @@ it does not move the wall.
 
 Issue #464 (successor of #444 / #334).
 -/
+
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

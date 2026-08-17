@@ -5,8 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CharPTransferDecomposition
 
-set_option autoImplicit false
-
 /-!
 # Discharging the wraparound gap `Q ≥ 0` from wraparound LOG-CONCAVITY (#444)
 
@@ -58,6 +56,9 @@ the `charP_transfer_of_dominance` assembly — the dominance `0 ≤ G₀ + L` �
 `n=32, p=786433, r=3` and `n=64, p=2752513, r=2`). So this char-`p`-transfer ROUTE does NOT close CORE;
 the `Q ≥ 0` lemma here stands as a kernel identity but has no satisfiable partner on this route.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.CharPTransferDecomposition
 

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv): the per-level wall-growth floor ITERATES to a super-`√n` tower lower bound — IF SUSTAINED (#444)
 
@@ -36,6 +33,10 @@ sustained) overshoots it — the open object is the floor's asymptotic behaviour
 
 No CORE, cancellation, completion, moment, anti-concentration, or capacity claim.  CORE remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVTowerGrowthIteration
 

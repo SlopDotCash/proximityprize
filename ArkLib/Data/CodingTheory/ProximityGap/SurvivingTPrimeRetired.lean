@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import ArkLib.Data.CodingTheory.ProximityGap.FarPairRankSupply
+import ArkLib.Data.CodingTheory.ProximityGap.DeepStratumRankUnconditional
+
+/-!
 # Retiring the `SurvivingTPrimeCoord` residual via the exact high-overlap count (#389, route 2)
 
 GOAL: Show that the named residual `SurvivingTPrimeCoord` (and its consumer
@@ -22,8 +25,6 @@ Both `FarPairRankSupply.card_pair_coherent_high_eq` and the `genPoly`-form
 two-band count are imported; `coeffFamily M c` and `genPoly c` are the SAME
 polynomial `∑ j, C (c j) * X^j` (defeq), so the two filters coincide by rfl.
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.FarPairRankSupply
-import ArkLib.Data.CodingTheory.ProximityGap.DeepStratumRankUnconditional
 
 open Finset Polynomial
 open scoped NNReal ENNReal

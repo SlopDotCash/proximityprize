@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # A07 (FKM sheaf / parameter-space cancellation) no-go: the weighted-conductor trade-off (#444)
 
@@ -75,6 +73,9 @@ sup/√(M2·log) ratio is FLAT ≈ 0.9–1.4 across ALL weights, i.e. no weight 
 ratio), `probe_wfA07_krawtchouk_conductor.rs` (the raw Krawtchouk weight is fully spread, `condFloor =
 Θ(n)`).
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.A07FKMSheafConductor
 

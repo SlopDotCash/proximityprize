@@ -5,6 +5,13 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
+/-!
+# _AvN1_MonomialWeylVMVTVacuous
+
+Module docstring for `_AvN1_MonomialWeylVMVTVacuous.lean`.
+-/
+
+
 /-
 # Av N1: The monomial-Weyl / VMVT route to the prize sup-norm bound is VACUOUS at prize degree.
 

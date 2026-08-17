@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiBenedettoNearSidonImprovement
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # di Benedetto near-Sidon improvement: the EXACT-VALUE energy envelope (#444 — constant-factor lane)
 
@@ -58,6 +55,10 @@ consequence; it makes NO capacity / beyond-Johnson / growth-law claim, does NOT 
 `1/24` ceiling, touches NEITHER `δ*` NOR the cliff-at-`n/2` incidence object. The energy method stays
 provably `12×` short of the prize. CORE `M(μ_n) ≤ C·√(n·log(p/n))` UNCHANGED / OPEN. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DiBenedettoNearSidon
 

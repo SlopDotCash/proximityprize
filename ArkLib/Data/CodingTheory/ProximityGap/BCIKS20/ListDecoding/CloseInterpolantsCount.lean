@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.EvalOnZNonzero
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Agreement
 import ArkLib.ToMathlib.BivariateDegreeToolkit
 
-set_option linter.style.longLine false
-
 /-!
 # The per-parameter list-size bound, fully discharged
 
@@ -26,6 +24,9 @@ codewords close to the line is `≤ D_Y Q = poly(n)` — *unconditionally* (no d
 is the per-`z` ingredient of the Guruswami–Sudan curve list size, the small-`L` content of the
 `RSCurveListSizeResidual`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Polynomial Finset
 

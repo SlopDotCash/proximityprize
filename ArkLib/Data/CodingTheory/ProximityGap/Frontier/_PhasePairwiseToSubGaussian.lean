@@ -7,10 +7,6 @@ import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # Pairwise → sub-Gaussian: the `t`-wise-independence → moment-bound framework (#444, A1-pairwise)
 
@@ -88,6 +84,11 @@ same wall (`EnergyIsNAMoment` in `_ShawNegativeDependence`, the char-`p` excess 
 `_CharZeroMGFBesselBound`) under the `t`-wise-independence name. This is a LANDED abstract framework +
 REDUCED bridge, per the project modularity convention. Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 

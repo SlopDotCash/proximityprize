@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Group.AddChar
 import Mathlib.Algebra.BigOperators.Pi
 import Mathlib.Algebra.BigOperators.Ring.Finset
-set_option linter.style.longLine false
 
 /-!
 # Additive characters of a finite product factorize coordinate-wise (#389)
@@ -19,6 +18,8 @@ The structural input for the Fourier→Krawtchouk bridge (the Shaw operator = Kr
 dual-MDS character sum). Built from scratch: the single-coordinate hom + `AddChar` sum→product.
 Axiom-clean.
 -/
+set_option linter.style.longLine false
+
 
 open Finset
 

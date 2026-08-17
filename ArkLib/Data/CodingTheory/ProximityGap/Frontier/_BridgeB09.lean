@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.DyadicTowerRecursion
 
-set_option linter.unusedSectionVars false
-
 /-!
 # Bridge B09 (target E6): the even-only graded recursion via the η-parallelogram
 
@@ -36,6 +34,9 @@ The remaining (un-formalized here) content of E6 is the **counting bijection**
 `#bad_{2n}(k,2m') = #bad_n(k/2,m')` (the subset-folding map), stated precisely in `gap`.
 What is landed is the vanishing-of-odd-part half — the part the η-parallelogram supplies.
 -/
+
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

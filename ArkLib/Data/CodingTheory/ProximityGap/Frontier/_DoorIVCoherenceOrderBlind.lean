@@ -7,8 +7,6 @@ import Mathlib.Algebra.Group.Subgroup.Basic
 import Mathlib.GroupTheory.OrderOfElement
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Door IV coherence is multiplicative-order-blind
 
@@ -42,6 +40,9 @@ obstruction: a function constant on the cosets of a subgroup `H` is equal on any
 — in particular on a pair of same-coset elements with different orders.  This is a constraint lemma,
 not `CORE`, and uses no moment or completion.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DoorIVCoherenceOrderBlind
 

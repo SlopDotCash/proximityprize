@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option autoImplicit false
-
 /-!
 # The geometry-of-numbers obstruction to the wraparound count (#444)
 
@@ -40,6 +38,9 @@ wall arithmetically and refutes the naive "geometry-of-numbers gives the equidis
 NOT a proof of `W_r ≤ Wick` (the thin-box regime is exactly where no effective count exists). Honest
 no-go on the GoN route, sharpening the residual.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.WraparoundGeometryOfNumbers
 

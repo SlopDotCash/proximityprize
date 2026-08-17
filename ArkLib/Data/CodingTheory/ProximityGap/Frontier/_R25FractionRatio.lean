@@ -11,6 +11,13 @@ import Mathlib.RingTheory.Localization.FractionRing
 import Mathlib.RingTheory.UniqueFactorizationDomain.Multiplicity
 import Mathlib.Tactic
 
+/-!
+#  R25FractionRatio
+
+Module docstring for `_R25FractionRatio.lean`.
+-/
+
+
 namespace ArkLib.ProximityGap.Frontier.R25FractionRatio
 
 open Polynomial

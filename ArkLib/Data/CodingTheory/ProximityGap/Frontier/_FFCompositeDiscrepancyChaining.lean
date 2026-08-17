@@ -6,8 +6,6 @@ Authors: ArkLib Contributors (FF composite: per-coset discrepancy -> chaining/LD
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option autoImplicit false
-
 /-!
 # FF composite: does a per-coset effective discrepancy CHAIN to a sub-floor max bound? (#444)
 
@@ -75,6 +73,9 @@ Proven below, axiom-clean and substrate-free:
 
 Issue #444 (FF composite lane: per-coset discrepancy → chaining/LDP).
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.FFCompositeDiscrepancyChaining
 

@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.DyadicOddMomentVanishing
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 
-set_option linter.unusedDecidableInType false
-
 /-!
 # Every ODD-order zero-sum count of `μ_{2^k} ⊆ ℂ` VANISHES in char 0 (#444, #407)
 
@@ -51,6 +49,9 @@ Probe `probe_odd_zerosum_charzero.py`: `zeroSumCount(μ_{2^k}, r) = 0` over ℂ 
 
 Issues #444, #407.
 -/
+
+set_option linter.unusedDecidableInType false
+
 
 open scoped BigOperators
 

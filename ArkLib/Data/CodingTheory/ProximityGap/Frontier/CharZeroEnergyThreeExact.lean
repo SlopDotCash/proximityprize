@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Tactic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # AVENUE A: the exact char-0 depth-3 additive energy `E₃(μ_n) = 15n³ − 45n² + 40n` (#444)
 
@@ -78,6 +75,10 @@ char-`p` ladder wall. The prize CORE (the full `r ≤ log m` char-`p` transfer) 
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444 / #389.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.CharZeroEnergyThree
 
