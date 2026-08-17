@@ -92,8 +92,9 @@ subspace-design (#53); the CZ25 §3.1 upper bounds below are tracked under **#53
   its compatibility wrapper.
 - `linear_C_le_generalized_singleton_st20` (T3.9 [ST20 Thm 1.2]) — the generalized Singleton
   bound.  **The ST20 puncturing/coset pigeonhole core that issue #54 flags as the optional
-  in-tree target is complete**: `exists_representative_center_sum_hammingDist_le` (plurality
-  averaging) + helpers `st20_kernel_extract` / `st20_dist_bound` / `st20_nat_ineq` /
+  in-tree target is complete**: `exists_representative_center_sum_hammingDist_le_generic`
+  (alphabet-generic plurality averaging) + `exists_representative_center_sum_hammingDist_le`
+  (field specialization) + helpers `st20_kernel_extract` / `st20_dist_bound` / `st20_nat_ineq` /
   `st20_ncard_eq` assemble the full proof under the faithful lattice (`hlat`) and
   range (`ha_le`) hypotheses documented at the theorem.
 - `rs_lambda_high_rate_jh01` (T3.14 [JH01 Thm 2]) — high-rate RS list-size separation
