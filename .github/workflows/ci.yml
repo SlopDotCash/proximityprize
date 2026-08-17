@@ -109,10 +109,19 @@ jobs:
       # it is fast: validate.sh = lake build + forbidden_tokens + sorry_census
       # --fail-on-holes + axiom_audit + check-imports + docs-integrity. This
       # compiles every module AND enforces the honesty contract.
+      # LEAN_NUM_THREADS=2 caps per-worker thread parallelism: the heavy
+      # Frontier region repeatedly killed 16 GB hosted runners at full
+      # parallelism (attempts died near job 10.8k/13.6k). The 75-minute
+      # timeout ends the step BEFORE a hard runner death so the cache-save
+      # step below still runs; a timed-out attempt fails, and
+      # `gh run rerun --failed` resumes from its saved snapshot until the
+      # build fits in one window.
       - name: Time validation wrapper
+        env:
+          LEAN_NUM_THREADS: "2"
         run: |
           bash scripts/build_timing_report.sh run test_path "$BUILD_TIMING_RESULTS" -- \
-            bash -eo pipefail -c './scripts/validate.sh'
+            bash -eo pipefail -c 'timeout --signal=INT --kill-after=2m 75m ./scripts/validate.sh'
 
       # A late runner termination still leaves valid completed oleans. Saving
       # that coherent partial cache lets a rerun finish the remaining modules
