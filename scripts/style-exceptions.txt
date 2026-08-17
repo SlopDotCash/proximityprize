@@ -1,8 +1,5 @@
 ArkLib/Data/CodingTheory/ProximityGap/A4CyclotomicGaloisAntipodal.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean : line 1 : ERR_NUM_LIN : 1800 file contains 1626 lines, try to split it up
-ArkLib/Data/CodingTheory/ProximityGap/ActionOrbitGeneralF.lean : line 19 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/AddEnergyGcdDegreeBound.lean : line 12 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/AddEnergyMathlibBridge.lean : line 20 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AddEnergyMulHomogeneous.lean : line 25 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AddEnergyNormalizedBound.lean : line 27 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyBridge.lean : line 14 : ERR_LIN : Line has more than 100 characters
