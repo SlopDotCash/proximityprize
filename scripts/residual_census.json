@@ -455,7 +455,7 @@
      "name": "ProximityGap.strictCoeffPolysResidual_of_commonAgreement",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CoeffExtractionResidual.lean",
-     "line": 59,
+     "line": 66,
      "conditional_on_residuals": [
       "CurveCommonAgreementResidual"
      ],
@@ -549,7 +549,7 @@
      "name": "ProximityGap.strictCoeffPolysResidual_of_shareResidual_base",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShareBaseCase.lean",
-     "line": 37,
+     "line": 38,
      "conditional_on_residuals": [
       "StrictCoeffPolysShareResidual"
      ],
@@ -1128,7 +1128,7 @@
    "name": "CurveCommonAgreementResidual",
    "fq_name": "ProximityGap.CurveCommonAgreementResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CoeffExtractionResidual.lean",
-   "line": 30,
+   "line": 37,
    "providers": [
     {
      "name": "ProximityGap.curveCommonAgreementResidual_of_one_le_mul",
@@ -1421,7 +1421,7 @@
    "name": "RestrictedFaaDiBrunoMatchResidual",
    "fq_name": "BCIKS20.HenselNumerator.RestrictedFaaDiBrunoMatchResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MatchProof.lean",
-   "line": 30,
+   "line": 42,
    "providers": [],
    "status": "open"
   },
@@ -1732,7 +1732,7 @@
    "name": "SteinWickResidual",
    "fq_name": "ProximityGap.Frontier.ARX1.SteinWickResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean",
-   "line": 198,
+   "line": 199,
    "providers": [],
    "status": "open"
   },
@@ -2414,7 +2414,7 @@
      "name": "ProximityGap.PairRank.subJohnsonSupplyResidual_iff_forall",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/SubJohnsonSupplyReframe.lean",
-     "line": 34,
+     "line": 41,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false
@@ -2423,7 +2423,7 @@
      "name": "ProximityGap.PairRank.subJohnsonSupplyResidual_iff_optimal_le",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/SubJohnsonSupplyReframe.lean",
-     "line": 52,
+     "line": 59,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false
@@ -2432,7 +2432,7 @@
      "name": "ProximityGap.PairRank.cappedSupplyOptimal_is_least",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/SubJohnsonSupplyReframe.lean",
-     "line": 138,
+     "line": 145,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false
@@ -4937,7 +4937,7 @@
    "fq_name": "ProximityToRS.ahiv17_affineLine_correlatedAgreement_residual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean",
-   "line": 1486,
+   "line": 1487,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -4945,7 +4945,7 @@
    "fq_name": "ProximityToRS.ahiv17_rowSpan_to_affineLine_dOverQ_residual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean",
-   "line": 1537,
+   "line": 1538,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -4977,7 +4977,7 @@
    "fq_name": "CodingTheory.gkl24_cubeRoot_mca_bound_residual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
-   "line": 51,
+   "line": 56,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -4985,7 +4985,7 @@
    "fq_name": "CodingTheory.bgks20_etaMargin_ca_bound_residual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
-   "line": 60,
+   "line": 65,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -4993,7 +4993,7 @@
    "fq_name": "CodingTheory.bchks25_rs_epsCA_item2_residual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
-   "line": 96,
+   "line": 101,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5001,7 +5001,7 @@
    "fq_name": "CodingTheory.bchks25_rs_epsMCA_johnson_range_residual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
-   "line": 114,
+   "line": 119,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5009,7 +5009,7 @@
    "fq_name": "CodingTheory.bchks25_kk25_rs_epsCA_lower_capacity_residual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
-   "line": 130,
+   "line": 135,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5017,7 +5017,7 @@
    "fq_name": "CodingTheory.cs25_rs_epsCA_breakdown_lower_residual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
-   "line": 143,
+   "line": 148,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5025,7 +5025,7 @@
    "fq_name": "CodingTheory.bchks25_rs_epsCA_johnson_jump_residual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
-   "line": 170,
+   "line": 175,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5033,7 +5033,7 @@
    "fq_name": "CodingTheory.gg25_subspaceDesign_epsMCA_residual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
-   "line": 193,
+   "line": 198,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5217,7 +5217,7 @@
    "fq_name": "ArkLib.ProximityGap.Frontier.PhasePairEquidistBudget.pairResidualCorrection",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhasePairEquidistBudget.lean",
-   "line": 39,
+   "line": 40,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5225,7 +5225,7 @@
    "fq_name": "ArkLib.ProximityGap.Frontier.R19ExplicitCharacterRung.chiSubfamilyResidual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R19ExplicitCharacterRung.lean",
-   "line": 123,
+   "line": 124,
    "reason": "result type is `ℂ`, not `Prop`"
   },
   {
@@ -5233,7 +5233,7 @@
    "fq_name": "ArkLib.ProximityGap.Frontier.R19ExplicitCharacterRung.ChiSubfamilyResidualVanishesOff",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R19ExplicitCharacterRung.lean",
-   "line": 128,
+   "line": 129,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5297,7 +5297,7 @@
    "fq_name": "ArkLib.ProximityGap.Frontier.RudnevPointPlaneStall.stallResidual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RudnevDilutionFixedSavingStall.lean",
-   "line": 211,
+   "line": 212,
    "reason": "result type is `ℝ`, not `Prop`"
   },
   {
