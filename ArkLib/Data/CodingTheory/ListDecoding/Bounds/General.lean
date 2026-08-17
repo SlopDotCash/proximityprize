@@ -920,7 +920,7 @@ theorem linear_lambda_ge_entropy_volume
   rw [← Nat.card_coe_set_eq, Nat.card_eq_fintype_card]
   exact Module.card_eq_pow_finrank (K := F) (V := ↥C)
 
-/-- **ST20 plurality-center averaging core (in-tree, fully proven).**
+/- **ST20 plurality-center averaging core (in-tree, fully proven).**
 Given `ℓ + 1` words `c₀, …, c_ℓ : ι → F`, the *plurality center* `z`, obtained by choosing at
 each coordinate a value attained by at least one of the `cⱼ` (e.g. the most frequent one),
 satisfies the aggregate-distance bound
@@ -941,26 +941,28 @@ selects `ℓ + 1` codewords pairwise agreeing on a *common* `≥ n − s` coordi
 center is within relative distance `δ` of ALL of them simultaneously — see the T3.9 docstring and
 `research/proximity-prize/dispositions/pc-w2-ST20-core.md`. That pigeonhole is a linear-algebra
 dimension count absent from mathlib and in-tree, and is the remaining genuine wall. -/
-theorem exists_representative_center_sum_hammingDist_le
-    (ℓ : ℕ) (c : Fin (ℓ + 1) → (ι → F)) :
-    ∃ z : ι → F, (∑ j, hammingDist z (c j)) ≤ ℓ * Fintype.card ι := by
-  -- Representative center: `z = c 0`. (Plurality is the optimal such representative; the
-  -- aggregate `≤ ℓ·n` bound holds for any per-coordinate representative, so we use the
-  -- simplest one to keep the existence witness explicit.)
+/-- **ST20 plurality-center averaging core, alphabet-generic.**
+Given `ℓ + 1` words `c₀, …, c_ℓ : ι → A` over any finite alphabet `A`, the
+*representative* centre `z` (here `z = c₀`) satisfies the aggregate-distance bound
+
+  `∑ⱼ d_H(z, cⱼ) ≤ ℓ · n`,    where `n = |ι|`.
+
+The argument is purely combinatorial: at each coordinate `i`, `z i = c₀ i` matches at
+least one of the `ℓ + 1` words, so at most `ℓ` can disagree there; summing over `i`
+and swapping `∑ⱼ∑ᵢ = ∑ᵢ∑ⱼ` gives the bound. This is the ST20 averaging ingredient (b)
+stated for an arbitrary alphabet; `exists_representative_center_sum_hammingDist_le` below
+is its field-linear specialization (no new mathematics — same witness `z = c₀`). -/
+theorem exists_representative_center_sum_hammingDist_le_generic {A : Type} [Fintype A]
+    [DecidableEq A] (ℓ : ℕ) (c : Fin (ℓ + 1) → (ι → A)) :
+    ∃ z : ι → A, (∑ j, hammingDist z (c j)) ≤ ℓ * Fintype.card ι := by
   refine ⟨c 0, ?_⟩
-  -- The center is a representative at every coordinate.
-  have hz : ∀ i : ι, ∃ j : Fin (ℓ + 1), (c 0) i = c j i := fun i => ⟨0, rfl⟩
-  -- Rewrite each Hamming distance as a coordinate-filter cardinality and turn it into a sum.
   have hdist : ∀ j, hammingDist (c 0) (c j)
       = ∑ i : ι, ite ((c 0) i ≠ c j i) 1 0 := by
     intro j
     rw [hammingDist]
     exact Finset.card_filter (fun i => (c 0) i ≠ c j i) Finset.univ
   rw [Finset.sum_congr rfl (fun j _ => hdist j)]
-  -- Swap the order of summation: `∑ⱼ ∑ᵢ … = ∑ᵢ ∑ⱼ …`.
   rw [Finset.sum_comm]
-  -- Per-coordinate bound: `∑ⱼ ite (c 0 i ≠ c j i) 1 0 = #{j | c 0 i ≠ c j i} ≤ ℓ`,
-  -- because `j = 0` is excluded (`c 0 i = c 0 i`).
   have hinner : ∀ i : ι, (∑ j, ite ((c 0) i ≠ c j i) 1 0) ≤ ℓ := by
     intro i
     rw [← Finset.card_filter (fun j => (c 0) i ≠ c j i) Finset.univ]
@@ -977,11 +979,17 @@ theorem exists_representative_center_sum_hammingDist_le
       _ = Fintype.card (Fin (ℓ + 1)) - 1 := by
           rw [Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ]
       _ = ℓ := by rw [Fintype.card_fin]; omega
-  -- Aggregate: `∑ᵢ (inner) ≤ ∑ᵢ ℓ = ℓ · |ι|`.
   calc (∑ i : ι, ∑ j, ite ((c 0) i ≠ c j i) 1 0)
       ≤ ∑ _i : ι, ℓ := Finset.sum_le_sum (fun i _ => hinner i)
     _ = ℓ * Fintype.card ι := by
         rw [Finset.sum_const, Finset.card_univ, smul_eq_mul, mul_comm]
+
+/-- **ST20 plurality-center averaging core, field-linear specialization.**
+Wrapper of `exists_representative_center_sum_hammingDist_le_generic` at `A = F`. -/
+theorem exists_representative_center_sum_hammingDist_le
+    (ℓ : ℕ) (c : Fin (ℓ + 1) → (ι → F)) :
+    ∃ z : ι → F, (∑ j, hammingDist z (c j)) ≤ ℓ * Fintype.card ι :=
+  exists_representative_center_sum_hammingDist_le_generic (A := F) ℓ c
 
 -- ===== ST20 (T3.9) helper 1: range fiber lower bound =====
 private theorem st20_range_fiber_ge (a m i : ℕ) (hm : 0 < m) (hi : i < m) :
