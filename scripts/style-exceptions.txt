@@ -35,32 +35,29 @@ ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AlphaWeightAll.lean : line 721 : E
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AlphaWeightDivisibility.lean : line 10 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AlphaWeightResummation.lean : line 35 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ClearedFaaDiBrunoProof.lean : line 25 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean : line 1 : ERR_NUM_LIN : 3100 file contains 2981 lines, try to split it up
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean : line 2826 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean : line 1 : ERR_NUM_LIN : 3100 file contains 2980 lines, try to split it up
+ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean : line 2825 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CoeffExtractionVacuous.lean : line 173 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CorrelatedAgreementSmallField.lean : line 79 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/GoodCoeffs.lean : line 520 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/JointAgreement.lean : line 73 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/GoodCoeffs.lean : line 519 : ERR_LIN : Line has more than 100 characters
+ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/JointAgreement.lean : line 72 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/SudanY2.lean : line 15 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/FaaDiBrunoBijectionPieces.lean : line 47 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Finding14Countermodel.lean : line 126 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HasseEvalConnectives.lean : line 99 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean : line 1 : ERR_NUM_LIN : 3000 file contains 2863 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean : line 908 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Agreement.lean : line 1 : ERR_NUM_LIN : 7800 file contains 7641 lines, try to split it up
+ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Agreement.lean : line 1 : ERR_NUM_LIN : 7800 file contains 7634 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Agreement.lean : line 394 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Agreement.lean : line 4048 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/CloseInterpolantsCount.lean : line 13 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/CurvesBridge.lean : line 1 : ERR_NUM_LIN : 1900 file contains 1733 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/CurvesBridge.lean : line 968 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/DescendedDegreeSum.lean : line 123 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/DescendedRset.lean : line 50 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/EvalOnZNonzero.lean : line 122 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Extraction.lean : line 1 : ERR_NUM_LIN : 1700 file contains 1569 lines, try to split it up
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Extraction.lean : line 355 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Extraction.lean : line 506 : ERR_LIN : Line has more than 100 characters
+ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Extraction.lean : line 1 : ERR_NUM_LIN : 1700 file contains 1567 lines, try to split it up
+ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Extraction.lean : line 505 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/FieldDischarge.lean : line 39 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Guruswami.lean : line 221 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Guruswami.lean : line 1188 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/JointAgreementWiring.lean : line 15 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/MonicFaaDiBrunoMatchAlt.lean : line 17 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P1BetaOneRefutation.lean : line 23 : ERR_LIN : Line has more than 100 characters
@@ -81,7 +78,6 @@ ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2ClearedBridge.lean : line 44 : E
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2ClearedGap.lean : line 139 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2ClearedGapIdeal.lean : line 192 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2FubiniReabsorb.lean : line 17 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2KeystoneReindex.lean : line 248 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2KeystoneReindex.lean : line 51 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MatchMonic.lean : line 79 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MonicOrderZero.lean : line 120 : ERR_LIN : Line has more than 100 characters
@@ -91,11 +87,9 @@ ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MonicWfreeRange.lean : line 265 
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2OrderZeroRefutation.lean : line 499 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2Reabsorb.lean : line 478 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Pigeonhole.lean : line 567 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/RestrictedFaaDiBrunoExtract.lean : line 1046 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/RestrictedFaaDiBrunoExtract.lean : line 782 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/RestrictedFaaDiBrunoExtract.lean : line 1043 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/RestrictedFaaDiBrunoXiTelescope.lean : line 206 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/S5GenuineMonic.lean : line 14 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/SlicedComposition.lean : line 115 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffProducer.lean : line 626 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ThresholdInterface.lean : line 112 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Weight1FromZLinear.lean : line 27 : ERR_LIN : Line has more than 100 characters
@@ -178,7 +172,6 @@ ArkLib/Data/CodingTheory/ProximityGap/CharPWickStepRatioPin.lean : line 13 : ERR
 ArkLib/Data/CodingTheory/ProximityGap/CharSumMomentDeepWall.lean : line 25 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/CharSumTransferNoGo.lean : line 22 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/ChordConverseCore.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/ChordFamilyCount.lean : line 403 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/CircleMethodFreeSetSupport.lean : line 203 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/CircleMethodFreeSetSupport.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/ClassChartBounds.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -197,7 +190,7 @@ ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueKernelStructure.lean : l
 ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueRelationModule.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/ConstantIndexGaussSumBound.lean : line 12 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/ConstantIndexSubGaussianPeriod.lean : line 55 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/CosetCliqueBoundary.lean : line 261 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/CosetCliqueBoundary.lean : line 260 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/CosetPowerSumConcentration.lean : line 222 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/CosetReducedEnergyBound.lean : line 23 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/CosetRepFourthMomentCensus.lean : line 26 : ERR_LIN : Line has more than 100 characters
@@ -234,7 +227,7 @@ ArkLib/Data/CodingTheory/ProximityGap/DCSupNormBound.lean : line 17 : ERR_LIN : 
 ArkLib/Data/CodingTheory/ProximityGap/DCWorstCaseWiring.lean : line 15 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/DG25Sampling.lean : line 54 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/DeBruijnIndicatorDisjointness.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/DeBruijnPrimePower.lean : line 229 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/DeBruijnPrimePower.lean : line 228 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/DeBruijnPrimePower.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/DeBruijnSquarefreePQ.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/DeBruijnTwoPrime.lean : line 1 : ERR_NUM_LIN : 3100 file contains 2948 lines, try to split it up
@@ -281,8 +274,8 @@ ArkLib/Data/CodingTheory/ProximityGap/EnergyInjection.lean : line 9 : ERR_TAC : 
 ArkLib/Data/CodingTheory/ProximityGap/EnergyMinimalF73.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/EnergyRelationAntipodal.lean : line 12 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/EnergyRelationAntipodal.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/EpsMCAInterleavedList.lean : line 198 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/EpsMCAInterleavedUD.lean : line 282 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/EpsMCAInterleavedList.lean : line 197 : ERR_LIN : Line has more than 100 characters
+ArkLib/Data/CodingTheory/ProximityGap/EpsMCAInterleavedUD.lean : line 281 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Errors.lean : line 1 : ERR_NUM_LIN : 2100 file contains 1926 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/EtaAutocorrInvolutionPaired.lean : line 39 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/EtaComplementFlip.lean : line 11 : ERR_LIN : Line has more than 100 characters
@@ -293,15 +286,15 @@ ArkLib/Data/CodingTheory/ProximityGap/EtaPointwiseAutocorr.lean : line 19 : ERR_
 ArkLib/Data/CodingTheory/ProximityGap/EtaShallowTailUncond.lean : line 15 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/EvenOddAntipodalCharFree.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/FarLineIncidenceEquivariance.lean : line 36 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/FarPairRankSupply.lean : line 286 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/FarPairRankSupply.lean : line 285 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/FiberEnergyListBound.lean : line 17 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/FiniteFieldDisproofLoop53.lean : line 10 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/FiniteFieldLiftLoop51.lean : line 10 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/FisherJohnsonCrossover.lean : line 23 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/FisherPastJohnsonCap.lean : line 173 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/FisherPastJohnsonCap.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/FoldedCurveCloseSetBound.lean : line 47 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/Folding.lean : line 29 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/FoldedCurveCloseSetBound.lean : line 46 : ERR_LIN : Line has more than 100 characters
+ArkLib/Data/CodingTheory/ProximityGap/Folding.lean : line 35 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/FoldingTransferNoGo.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/FourthMomentCLT.lean : line 12 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/FpReductionHom.lean : line 103 : ERR_LIN : Line has more than 100 characters
@@ -588,7 +581,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AmbBreakMomentNecessity.lean : l
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AmbHolonomicWZ.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AmbHolonomicWZ.lean : line 82 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AmbInfoTheoretic.lean : line 14 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AmbRGBootstrap.lean : line 250 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AmbRGBootstrap.lean : line 94 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AmbWalshNonFourier.lean : line 70 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AmbWildLeap.lean : line 16 : ERR_LIN : Line has more than 100 characters
@@ -613,7 +605,7 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean : li
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_Conj41Height.lean : line 104 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_CrossFormBridge.lean : line 21 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_EffectiveSatoTate.lean : line 29 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean : line 295 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean : line 295 : ERR_IND : If the theorem/def statement requires multiple lines, indent it correctly (4 spaces or 2 for `|`)
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorResultantHeight.lean : line 54 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_I031Chaining.lean : line 132 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_JacobiToda.lean : line 54 : ERR_LIN : Line has more than 100 characters
@@ -910,8 +902,7 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKLowerMomentOrbitSpikeNoGo.lea
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKModernToolCeiling.lean : line 11 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKMomentFloorOptimized.lean : line 31 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKPeriodProfileArithmeticAudit.lean : line 549 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKSOTAInsufficiency.lean : line 28 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKSOTAInsufficiency.lean : line 93 : ERR_LIN : Line has more than 100 characters
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKSOTAInsufficiency.lean : line 27 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKSupBoundMomentTower.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKTwoSided.lean : line 14 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKTwoSided.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -925,7 +916,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4d_Ruzsa.lean : line 129
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4f_PathCalibrate.lean : line 11 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4g_PerAPrune.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4g_SecondFibre.lean : line 124 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4g_SecondFibre.lean : line 176 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4g_attempt0.lean : line 218 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_L2.lean : line 65 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B_TransferOperatorGauge.lean : line 46 : ERR_LIN : Line has more than 100 characters
@@ -1033,9 +1023,8 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CharZeroRoomDominance.lean : lin
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CharZeroStepRatioMonotone.lean : line 13 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CharZeroStepRatioMonotone.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ChebotarevAlternantClosedForm.lean : line 50 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ChebotarevAlternantFour.lean : line 179 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ChebotarevAlternantFour.lean : line 32 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ChebotarevAlternantThree.lean : line 231 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ChebotarevAlternantThree.lean : line 230 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ChebotarevReductionModP.lean : line 30 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ChebotarevStructuralInputs.lean : line 22 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ChebotarevValuationModP.lean : line 19 : ERR_LIN : Line has more than 100 characters
@@ -1366,7 +1355,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ExpanderMixingBound.lean : line 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FAKatzPerCosetFloorVerdict.lean : line 22 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FCPhaseAwareChainingMetric.lean : line 10 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FErightedgeLDPRateFloor.lean : line 66 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FFCompositeDiscrepancyChaining.lean : line 175 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FIResolventEdgePerturbation.lean : line 140 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FIResolventEdgePerturbation.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FS16SharpResultantEnvelope.lean : line 51 : ERR_LIN : Line has more than 100 characters
@@ -1399,7 +1387,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FluctuationSharpening.lean : lin
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FluctuationSharpening.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldRankNoGo.lean : line 10 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick1.lean : line 153 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick1.lean : line 178 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FormDExactSupHermiteRecurrence.lean : line 18 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FormDExactSupHermiteRecurrence.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FormDGaussOrthoPolyToolkit.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -1495,7 +1482,7 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean : li
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean : line 11 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G297DilationAnchorNoGo.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean : line 128 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean : line 127 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G299PrizeDepthInWindow.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G300WindowSignOscillation.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -1666,7 +1653,7 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterOverla
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterOverlapThreeKFour.lean : line 6 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterOverlapThreeKFourUnequalClosure.lean : line 6 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterOverlapThreeKFourUnequalResidual.lean : line 6 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterPetalSelectionRefuted.lean : line 124 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterPetalSelectionRefuted.lean : line 124 : ERR_IND : If the theorem/def statement requires multiple lines, indent it correctly (4 spaces or 2 for `|`)
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterPetalSelectionRefuted.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterPrimitiveDirection.lean : line 6 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterPrimitiveDirectionConsumer.lean : line 7 : ERR_LIN : Line has more than 100 characters
@@ -1828,7 +1815,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NextAntipodalAntiCorr.lean : lin
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NextAntipodalAntiCorr.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NextDifferenceVariety.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NextNormFactorizationClustering.lean : line 34 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NextNormFactorizationClustering.lean : line 37 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NextNormFactorizationClustering.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean : line 128 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoFifthDoorTetrachotomy.lean : line 29 : ERR_LIN : Line has more than 100 characters
@@ -2102,7 +2088,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R19ChiDecomposition.lean : line 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R19ExplicitCharacterRung.lean : line 1 : ERR_NUM_LIN : 2600 file contains 2493 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R19ExplicitCharacterRung.lean : line 40 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R19JacobiFourierExpansion.lean : line 87 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R19RungRecursion.lean : line 269 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R1SecondMomentSqrtBarrier.lean : line 70 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R200ShiftedQuarterPrizeConsumer.lean : line 121 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R201SmallDirectLargeNormalizedBudgets.lean : line 102 : ERR_LIN : Line has more than 100 characters
@@ -2167,7 +2152,7 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R25FractionRatio.lean : line 12 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R25QuarticAdjoinRoot.lean : line 37 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R25SubfamilyBoundedResidualNoGo.lean : line 54 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R25SubfamilyGate.lean : line 61 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R26D4Mirror.lean : line 807 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R26D4Mirror.lean : line 806 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R26PointwiseTripleConvTarget.lean : line 653 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R26ResidualL2CrossIdentity.lean : line 76 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R279MicroBandFinalSplitSocket.lean : line 63 : ERR_LIN : Line has more than 100 characters
@@ -2405,8 +2390,7 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RhoDecomposition.lean : line 6 :
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RudnevDilutionFixedSavingStall.lean : line 11 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_S2NonSymTower.lean : line 264 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SSTMultiplierAntipode.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ15TLoadedInterfaceRepair.lean : line 133 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ17XDegreeBudget.lean : line 158 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ17XDegreeBudget.lean : line 157 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ20JointRankSuperadditive.lean : line 266 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ23DirectnessStrip.lean : line 112 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ25MDSGeneration.lean : line 35 : ERR_LIN : Line has more than 100 characters
@@ -2541,8 +2525,7 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThreadB_CosetUnionGenFn.lean : l
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThreadD_UnionCountFloor.lean : line 74 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThresholdHalvingCapstone.lean : line 27 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThresholdHalvingCompose.lean : line 134 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThresholdHalvingComposeWired.lean : line 38 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThresholdHalvingComposeWired.lean : line 38 : ERR_LIN : Line has more than 100 characters
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThresholdHalvingComposeWired.lean : line 37 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThresholdHalvingQuerySurvival.lean : line 49 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThresholdHalvingSZ.lean : line 129 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThresholdHalvingWindow.lean : line 110 : ERR_LIN : Line has more than 100 characters
@@ -2626,10 +2609,10 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WraparoundSaddleCreditForced.lea
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WraparoundVarianceBhatiaDavis.lean : line 32 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WraparoundVarianceBhatiaDavis.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZTZBetaFiveLadderExtension.lean : line 31 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZTZBetaFourLadderExtension.lean : line 552 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZTZBetaFourPrizeScaleLadder.lean : line 267 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZTZBetaFourLadderExtension.lean : line 551 : ERR_LIN : Line has more than 100 characters
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZTZBetaFourPrizeScaleLadder.lean : line 266 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZTZBetaThreeFiveCeilingWiring.lean : line 12 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZTZBetaThreeFivePrizeScaleLadder.lean : line 256 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZTZBetaThreeFivePrizeScaleLadder.lean : line 255 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZTZBetaThreeHighLadderExtension.lean : line 11 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZTZBetaThreeLadderExtension.lean : line 201 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZW14IntegrationBridge.lean : line 80 : ERR_LIN : Line has more than 100 characters
@@ -2739,7 +2722,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT12_spectral_rate_function_red
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT13_renyi_flatness_reduces.lean : line 37 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT14_kraft_mdl_witness.lean : line 14 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT15_tower_conditional_entropy.lean : line 10 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT15_tower_conditional_entropy.lean : line 145 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT15_tower_conditional_entropy.lean : line 171 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT16_chang_frobenius_cover.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT18_bilinear_bogolyubov_codim.lean : line 77 : ERR_LIN : Line has more than 100 characters
@@ -2755,7 +2737,7 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfTT06_coupled_productformula_ho
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfTT07_adelic_capacity_house_ceiling.lean : line 86 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfTT08_arakelov_self_intersection.lean : line 4 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfTT10_mahler_lehmer_house_kb.lean : line 11 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/GK16Lemma12.lean : line 173 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/GK16Lemma12.lean : line 172 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/GSExactCountWall.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/GSFullListBound.lean : line 123 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/GSJohnsonWall.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -2767,7 +2749,7 @@ ArkLib/Data/CodingTheory/ProximityGap/GSRootOrderStep.lean : line 81 : ERR_LIN :
 ArkLib/Data/CodingTheory/ProximityGap/GSYDegreeListCap.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/GVTowerLevelDegreeBound.lean : line 11 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/GWFoldedDegreeBound.lean : line 12 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/GWKernelReduction.lean : line 75 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/GWKernelReduction.lean : line 74 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodMomentBound.lean : line 13 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodMomentBoundSlack.lean : line 19 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodParsevalFloor.lean : line 18 : ERR_LIN : Line has more than 100 characters
@@ -2827,7 +2809,6 @@ ArkLib/Data/CodingTheory/ProximityGap/InvolutionClosedCount.lean : line 18 : ERR
 ArkLib/Data/CodingTheory/ProximityGap/InvolutionClosedCount.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Jo26MissingLineBigSeedRefuted.lean : line 256 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/JohnsonBoundRealLower.lean : line 141 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/JohnsonBoundRealLower.lean : line 199 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/JohnsonFourthMomentNoGo.lean : line 95 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/JohnsonPerWord.lean : line 14 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/JohnsonSimplexBound.lean : line 17 : ERR_LIN : Line has more than 100 characters
@@ -2835,8 +2816,7 @@ ArkLib/Data/CodingTheory/ProximityGap/JointT2FiberTightness.lean : line 11 : ERR
 ArkLib/Data/CodingTheory/ProximityGap/JointT2Unconditional.lean : line 13 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/KKH26DeltaStarPinAllWitness.lean : line 228 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/KKH26DeltaStarReduction.lean : line 77 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/KKH26DimGeneralSharpInterleavedPin.lean : line 56 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/KKH26DimGeneralSharpInterleavedPin.lean : line 77 : ERR_LIN : Line has more than 100 characters
+ArkLib/Data/CodingTheory/ProximityGap/KKH26DimGeneralSharpInterleavedPin.lean : line 55 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/KKH26DimGeneralSharpPin.lean : line 177 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/KKH26FoldTransport.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/KambireDeepBandFloor.lean : line 20 : ERR_LIN : Line has more than 100 characters
@@ -2856,7 +2836,7 @@ ArkLib/Data/CodingTheory/ProximityGap/LamLeungTwoPow.lean : line 1 : ERR_NUM_LIN
 ArkLib/Data/CodingTheory/ProximityGap/LamLeungTwoPow.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/LamLeungUnconditionalGeneral.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/LamLeungUnconditionalQ.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Lattice2/ListThreshold.lean : line 180 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/Lattice2/ListThreshold.lean : line 179 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Lattice2/Spec.lean : line 250 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Lattice2/Witnesses.lean : line 216 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/LatticeSpec.lean : line 1340 : ERR_LIN : Line has more than 100 characters
@@ -2929,15 +2909,12 @@ ArkLib/Data/CodingTheory/ProximityGap/MCALowerBound.lean : line 120 : ERR_LIN : 
 ArkLib/Data/CodingTheory/ProximityGap/MCAMonomialEquivariance.lean : line 54 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacityGeneralRate.lean : line 12 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacityLowerBound.lean : line 27 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacityQuadratic.lean : line 216 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacityQuadratic.lean : line 27 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacitySharpSpread.lean : line 11 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacitySharpSpread.lean : line 207 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacitySpreadOptimal.lean : line 11 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/MCASecondMoment.lean : line 158 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/MCASecondMoment.lean : line 311 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/MCAUDR2Bound.lean : line 22 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/MCAUDRBound.lean : line 92 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/MCAUDRBound.lean : line 91 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/MCAUniformCover.lean : line 25 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/MCAUpToCapacityFalse.lean : line 32 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/MCAUpperWitnessSunflower.lean : line 18 : ERR_LIN : Line has more than 100 characters
@@ -3028,7 +3005,7 @@ ArkLib/Data/CodingTheory/ProximityGap/PromotedHypothesesB.lean : line 9 : ERR_TA
 ArkLib/Data/CodingTheory/ProximityGap/PromotedHypothesesC.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/ProximityGapLoop49.lean : line 15 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/ProximityGapLoop49.lean : line 24 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/ProximityGenerators.lean : line 195 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/ProximityGenerators.lean : line 194 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/QRAdditiveEnergyClosedForm.lean : line 66 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/QRFrequencySumEval.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/QRWorstCaseIncompleteSum.lean : line 50 : ERR_LIN : Line has more than 100 characters
@@ -3101,12 +3078,10 @@ ArkLib/Data/CodingTheory/ProximityGap/SecondMomentExact.lean : line 12 : ERR_LIN
 ArkLib/Data/CodingTheory/ProximityGap/SecondMomentLowerBound.lean : line 11 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/SecondMomentReductionLimit.lean : line 20 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/SeparatingCoordinates.lean : line 103 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/SeparatingCoordsCount.lean : line 144 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/SeparatingCoordsCount.lean : line 143 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/SeparationProbability.lean : line 21 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/SeparationSurvivalCount.lean : line 149 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/SeparationSurvivalCount.lean : line 74 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/SharpThresholdDischarge.lean : line 151 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/SharpThresholdDischarge.lean : line 164 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/ShawOperatorDual.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/ShawSecondMoment.lean : line 14 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/ShellFourierKrawtchouk.lean : line 19 : ERR_LIN : Line has more than 100 characters
@@ -3255,14 +3230,14 @@ ArkLib/Data/CodingTheory/ProximityGap/UpToCapacityListDecodingFalse.lean : line 
 ArkLib/Data/CodingTheory/ProximityGap/VandermondeInterpolationSafe.lean : line 27 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/VanishingRootSumHeightGate.lean : line 33 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/VerifiedBricks.lean : line 429 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/WeightedPrimePowerPacket.lean : line 220 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/WeightedPrimePowerPacket.lean : line 219 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/WeightedPrimePowerPacket.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/WeightedSparseCharPLift.lean : line 10 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/WeightedSparseResultant.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/WickStepRatio.lean : line 12 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/WickStepRatio.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/WideRegimeDisjointness.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/WindowReconstructionPencil.lean : line 298 : ERR_CLN : Put : and := before line breaks, not after
+ArkLib/Data/CodingTheory/ProximityGap/WindowReconstructionPencil.lean : line 316 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/WindowedFoldingBelowJohnson.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodLowerBound.lean : line 46 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodLowerBound.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder

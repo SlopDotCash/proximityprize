@@ -155,7 +155,7 @@ lemma foldWordAux_of_k_2
       simp
     · rw [Lagrange.eval_interpolate_at_node _ CosetFftDomain.injOn (by simp), hy]
       conv_lhs => rw [hj']
-      simp?
+      simp only [mul_neg, X_mul_C, eval_add, eval_C, eval_mul, eval_X]
       grind
 
 private lemma roots_of_x_in_domain_eq

@@ -38,13 +38,13 @@ def cancellationCode (p : Finset F × Finset F) :
 theorem left_reconstruct_set (S T : Finset F) :
     (S \ T) ∪ (S ∩ T) = S := by
   ext x
-  simp?
+  simp only [Finset.mem_union, Finset.mem_sdiff, Finset.mem_inter]
   tauto
 
 theorem right_reconstruct_set (S T : Finset F) :
     (T \ S) ∪ (S ∩ T) = T := by
   ext x
-  simp?
+  simp only [Finset.mem_union, Finset.mem_sdiff, Finset.mem_inter]
   tauto
 
 /-- Restoring the common intersection makes cancellation injective. -/

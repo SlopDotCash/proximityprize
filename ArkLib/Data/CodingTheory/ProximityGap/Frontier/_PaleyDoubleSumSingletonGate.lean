@@ -111,7 +111,7 @@ theorem exists_average_bound_counterexample {ι : Type*}
         exact False.elim (hbnot hb)
     exact le_of_eq hsum
   · unfold score
-    simp?
+    simp only [↓reduceIte]
     have hcardR : (1 : ℝ) < (B.card : ℝ) := by exact_mod_cast hcard
     nlinarith
 
