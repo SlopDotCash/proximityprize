@@ -141,7 +141,8 @@ theorem max_concentration_needs_union_bound
     (σ : ℝ) (m : ℕ) (hσ : 0 ≤ σ) (hm : 1 ≤ m) :
     ∃ v : Fin m → ℝ,
       (∑ i, (v i)^2) / m = σ^2          -- average of squares equals σ²
-    ∧ (∃ i, v i = σ * Real.sqrt m)       -- yet the max attains σ·√m ≫ σ·√(log m) := by
+      -- yet the max attains σ·√m ≫ σ·√(log m)
+    ∧ (∃ i, v i = σ * Real.sqrt m) := by
   classical
   haveI : NeZero m := ⟨by omega⟩
   -- single spike at coordinate 0 of height σ√m, zeros elsewhere.
