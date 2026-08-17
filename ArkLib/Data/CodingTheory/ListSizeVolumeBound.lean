@@ -361,14 +361,29 @@ theorem uniqueDecodable_zero {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq
   have h := listDecodable_hammingBallVolume C (0 : ℝ)
   rwa [hammingBallVolume_zero_radius, Nat.cast_one] at h
 
+/-- **List size never exceeds the whole space `|Λ(C,δ)| ≤ q^n`**, generic alphabet form. The `Field` wrapper below is the `A = F` specialization. -/
+theorem Lambda_le_qpow_card_generic {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    [Fintype A] [Nonempty A] [DecidableEq A] (C : Code ι A) (δ : ℝ) :
+    Lambda C δ ≤ ((Fintype.card A ^ Fintype.card ι : ℕ) : ℕ∞) := by
+  refine le_trans (Lambda_le_hammingBallVolume C δ) ?_
+  have hq : 1 ≤ Fintype.card A := Fintype.card_pos
+  exact_mod_cast hammingBallVolume_le_qpow (Fintype.card A) hq δ (Fintype.card ι)
+
 /-- **List size never exceeds the whole space `|Λ(C,δ)| ≤ q^n`**, chaining the maximised Elias bound
 with the whole-space volume ceiling `hammingBallVolume_le_qpow`. -/
 theorem Lambda_le_qpow {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {F : Type} [Fintype F] [Nonempty F] [DecidableEq F] (C : Code ι F) (δ : ℝ) :
-    Lambda C δ ≤ ((Fintype.card F ^ Fintype.card ι : ℕ) : ℕ∞) := by
-  refine le_trans (Lambda_le_hammingBallVolume C δ) ?_
-  have hq : 1 ≤ Fintype.card F := Fintype.card_pos
-  exact_mod_cast hammingBallVolume_le_qpow (Fintype.card F) hq δ (Fintype.card ι)
+    Lambda C δ ≤ ((Fintype.card F ^ Fintype.card ι : ℕ) : ℕ∞) :=
+  Lambda_le_qpow_card_generic (ι := ι) (A := F) C δ
+
+/-- **Two-sided nonempty list-size bracket with the whole ambient word-space bound, generic form.** -/
+theorem one_le_Lambda_and_Lambda_le_qpow_card_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    [Fintype A] [Nonempty A] [DecidableEq A]
+    (C : Code ι A) (hC : C.Nonempty) (δ : ℝ) (hδ : 0 ≤ δ) :
+    (1 : ℕ∞) ≤ Lambda C δ ∧
+      Lambda C δ ≤ ((Fintype.card A ^ Fintype.card ι : ℕ) : ℕ∞) := by
+  exact ⟨one_le_Lambda_of_nonempty (C := C) hC hδ, Lambda_le_qpow_card_generic C δ⟩
 
 /-- **Two-sided nonempty list-size bracket with the whole ambient word-space bound.** -/
 theorem one_le_Lambda_and_Lambda_le_qpow
@@ -376,26 +391,40 @@ theorem one_le_Lambda_and_Lambda_le_qpow
     {F : Type} [Fintype F] [Nonempty F] [DecidableEq F]
     (C : Code ι F) (hC : C.Nonempty) (δ : ℝ) (hδ : 0 ≤ δ) :
     (1 : ℕ∞) ≤ Lambda C δ ∧
-      Lambda C δ ≤ ((Fintype.card F ^ Fintype.card ι : ℕ) : ℕ∞) := by
-  exact ⟨one_le_Lambda_of_nonempty (C := C) hC hδ, Lambda_le_qpow C δ⟩
+      Lambda C δ ≤ ((Fintype.card F ^ Fintype.card ι : ℕ) : ℕ∞) :=
+  one_le_Lambda_and_Lambda_le_qpow_card_generic (ι := ι) (A := F) C hC δ hδ
+
+/-- **Per-word whole-space list-size bound, generic form.**  Every close-codeword list is contained in the
+ambient word space, so its size is at most `q^n`. -/
+theorem closeCodewordsRel_ncard_le_qpow_card_generic {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    [Fintype A] [Nonempty A] [DecidableEq A]
+    (C : Code ι A) (f : ι → A) (δ : ℝ) :
+    (closeCodewordsRel C f δ).ncard ≤ Fintype.card A ^ Fintype.card ι := by
+  refine le_trans (closeCodewordsRel_ncard_le_hammingBallVolume C f δ) ?_
+  have hq : 1 ≤ Fintype.card A := Fintype.card_pos
+  exact hammingBallVolume_le_qpow (Fintype.card A) hq δ (Fintype.card ι)
 
 /-- **Per-word whole-space list-size bound.**  Every close-codeword list is contained in the
 ambient word space, so its size is at most `q^n`. -/
 theorem closeCodewordsRel_ncard_le_qpow {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {F : Type} [Fintype F] [Nonempty F] [DecidableEq F]
     (C : Code ι F) (f : ι → F) (δ : ℝ) :
-    (closeCodewordsRel C f δ).ncard ≤ Fintype.card F ^ Fintype.card ι := by
-  refine le_trans (closeCodewordsRel_ncard_le_hammingBallVolume C f δ) ?_
-  have hq : 1 ≤ Fintype.card F := Fintype.card_pos
-  exact hammingBallVolume_le_qpow (Fintype.card F) hq δ (Fintype.card ι)
+    (closeCodewordsRel C f δ).ncard ≤ Fintype.card F ^ Fintype.card ι :=
+  closeCodewordsRel_ncard_le_qpow_card_generic (ι := ι) (A := F) C f δ
+
+/-- **Every code is `(δ, q^n)`-list-decodable, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+theorem listDecodable_qpow_card_generic {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    [Fintype A] [Nonempty A] [DecidableEq A] (C : Code ι A) (δ : ℝ) :
+    listDecodable C δ ((Fintype.card A ^ Fintype.card ι : ℕ) : ℝ) := by
+  intro y
+  exact_mod_cast closeCodewordsRel_ncard_le_qpow_card_generic C y δ
 
 /-- **Every code is `(δ, q^n)`-list-decodable.**  This is the predicate form of the
 whole-space per-word close-list bound. -/
 theorem listDecodable_qpow {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {F : Type} [Fintype F] [Nonempty F] [DecidableEq F] (C : Code ι F) (δ : ℝ) :
-    listDecodable C δ ((Fintype.card F ^ Fintype.card ι : ℕ) : ℝ) := by
-  intro y
-  exact_mod_cast closeCodewordsRel_ncard_le_qpow C y δ
+    listDecodable C δ ((Fintype.card F ^ Fintype.card ι : ℕ) : ℝ) :=
+  listDecodable_qpow_card_generic (ι := ι) (A := F) C δ
 
 end CodingTheory
 
