@@ -57,6 +57,32 @@ theorem listDecodable_hammingBallVolume
   intro y
   exact_mod_cast closeCodewordsRel_ncard_le_hammingBallVolume C y δ
 
+/-- **Maximised Elias entropy upper bound, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+theorem Lambda_le_qEntropy_card_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
+    (C : Code ι A) (δ : ℝ)
+    (hr : ⌊δ * (Fintype.card ι : ℝ)⌋₊ < Fintype.card ι)
+    (hcap :
+      (⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)
+        ≤ 1 - 1 / (Fintype.card A : ℝ))
+    (hq : 2 ≤ Fintype.card A) :
+    (Lambda C δ : ENNReal) ≤
+      ENNReal.ofReal (((Fintype.card ι : ℝ) + 1) *
+        (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) *
+          qEntropy (Fintype.card A)
+            ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))) := by
+  have hΛ : (Lambda C δ : ENNReal) ≤
+      ((hammingBallVolume (Fintype.card A) δ (Fintype.card ι) : ℕ∞) : ENNReal) :=
+    ENat.toENNReal_mono (Lambda_le_hammingBallVolume C δ)
+  have hcast :
+      ((hammingBallVolume (Fintype.card A) δ (Fintype.card ι) : ℕ∞) : ENNReal) =
+        ENNReal.ofReal ((hammingBallVolume (Fintype.card A) δ (Fintype.card ι) : ℕ) : ℝ) := by
+    rw [ENNReal.ofReal_natCast]
+    simp
+  have hvol := hammingBallVolume_le_qEntropy_card_generic (ι := ι) (A := A) δ hr hcap hq
+  rw [hcast] at hΛ
+  exact le_trans hΛ (ENNReal.ofReal_le_ofReal hvol)
+
 /-- **Maximised Elias entropy upper bound, finite-domain form.**  The exact floor-radius
 Hamming-ball entropy estimate gives a direct real-valued bound on `Λ(C,δ)`. -/
 theorem Lambda_le_qEntropy_card
@@ -71,18 +97,29 @@ theorem Lambda_le_qEntropy_card
       ENNReal.ofReal (((Fintype.card ι : ℝ) + 1) *
         (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
           qEntropy (Fintype.card F)
-            ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))) := by
-  have hΛ : (Lambda C δ : ENNReal) ≤
-      ((hammingBallVolume (Fintype.card F) δ (Fintype.card ι) : ℕ∞) : ENNReal) :=
-    ENat.toENNReal_mono (Lambda_le_hammingBallVolume C δ)
-  have hcast :
-      ((hammingBallVolume (Fintype.card F) δ (Fintype.card ι) : ℕ∞) : ENNReal) =
-        ENNReal.ofReal ((hammingBallVolume (Fintype.card F) δ (Fintype.card ι) : ℕ) : ℝ) := by
-    rw [ENNReal.ofReal_natCast]
-    simp
-  have hvol := hammingBallVolume_le_qEntropy_card (ι := ι) (F := F) δ hr hcap
-  rw [hcast] at hΛ
-  exact le_trans hΛ (ENNReal.ofReal_le_ofReal hvol)
+            ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))) :=
+  Lambda_le_qEntropy_card_generic (ι := ι) (A := F) C δ hr hcap Fintype.one_lt_card
+
+/-- **Per-word Elias entropy upper bound, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+theorem closeCodewordsRel_ncard_le_qEntropy_card_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
+    (C : Code ι A) (f : ι → A) (δ : ℝ)
+    (hr : ⌊δ * (Fintype.card ι : ℝ)⌋₊ < Fintype.card ι)
+    (hcap :
+      (⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)
+        ≤ 1 - 1 / (Fintype.card A : ℝ))
+    (hq : 2 ≤ Fintype.card A) :
+    ((closeCodewordsRel C f δ).ncard : ℝ) ≤
+      ((Fintype.card ι : ℝ) + 1) *
+        (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) *
+          qEntropy (Fintype.card A)
+            ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ))) := by
+  have hcount :
+      (closeCodewordsRel C f δ).ncard ≤
+        hammingBallVolume (Fintype.card A) δ (Fintype.card ι) :=
+    closeCodewordsRel_ncard_le_hammingBallVolume C f δ
+  have hvol := hammingBallVolume_le_qEntropy_card_generic (ι := ι) (A := A) δ hr hcap hq
+  exact le_trans (by exact_mod_cast hcount) hvol
 
 /-- **Per-word Elias entropy upper bound, finite-domain form.** -/
 theorem closeCodewordsRel_ncard_le_qEntropy_card
@@ -97,13 +134,24 @@ theorem closeCodewordsRel_ncard_le_qEntropy_card
       ((Fintype.card ι : ℝ) + 1) *
         (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
           qEntropy (Fintype.card F)
-            ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ))) := by
-  have hcount :
-      (closeCodewordsRel C f δ).ncard ≤
-        hammingBallVolume (Fintype.card F) δ (Fintype.card ι) :=
-    closeCodewordsRel_ncard_le_hammingBallVolume C f δ
-  have hvol := hammingBallVolume_le_qEntropy_card (ι := ι) (F := F) δ hr hcap
-  exact le_trans (by exact_mod_cast hcount) hvol
+            ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ))) :=
+  closeCodewordsRel_ncard_le_qEntropy_card_generic (ι := ι) (A := F) C f δ hr hcap Fintype.one_lt_card
+
+/-- **List-decodability from the finite-domain floor-radius entropy bound, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+theorem listDecodable_qEntropy_card_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
+    (C : Code ι A) (δ : ℝ)
+    (hr : ⌊δ * (Fintype.card ι : ℝ)⌋₊ < Fintype.card ι)
+    (hcap :
+      (⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)
+        ≤ 1 - 1 / (Fintype.card A : ℝ))
+    (hq : 2 ≤ Fintype.card A) :
+    listDecodable C δ (((Fintype.card ι : ℝ) + 1) *
+      (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) *
+        qEntropy (Fintype.card A)
+          ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))) := by
+  intro y
+  exact closeCodewordsRel_ncard_le_qEntropy_card_generic C y δ hr hcap hq
 
 /-- **List-decodability from the finite-domain floor-radius entropy bound.** -/
 theorem listDecodable_qEntropy_card
@@ -117,9 +165,32 @@ theorem listDecodable_qEntropy_card
     listDecodable C δ (((Fintype.card ι : ℝ) + 1) *
       (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
         qEntropy (Fintype.card F)
-          ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))) := by
-  intro y
-  exact closeCodewordsRel_ncard_le_qEntropy_card C y δ hr hcap
+          ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))) :=
+  listDecodable_qEntropy_card_generic (ι := ι) (A := F) C δ hr hcap Fintype.one_lt_card
+
+/-- **Maximised Elias entropy upper bound with the real radius exponent, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+theorem Lambda_le_qEntropy_real_radius_card_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
+    (C : Code ι A) (δ : ℝ)
+    (hδ0 : 0 ≤ δ)
+    (hδ : δ ≤ 1 - 1 / (Fintype.card A : ℝ))
+    (hq : 2 ≤ Fintype.card A) :
+    (Lambda C δ : ENNReal) ≤
+      ENNReal.ofReal (((Fintype.card ι : ℝ) + 1) *
+        (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) *
+          qEntropy (Fintype.card A) δ)) := by
+  have hΛ : (Lambda C δ : ENNReal) ≤
+      ((hammingBallVolume (Fintype.card A) δ (Fintype.card ι) : ℕ∞) : ENNReal) :=
+    ENat.toENNReal_mono (Lambda_le_hammingBallVolume C δ)
+  have hcast :
+      ((hammingBallVolume (Fintype.card A) δ (Fintype.card ι) : ℕ∞) : ENNReal) =
+        ENNReal.ofReal ((hammingBallVolume (Fintype.card A) δ (Fintype.card ι) : ℕ) : ℝ) := by
+    rw [ENNReal.ofReal_natCast]
+    simp
+  have hvol := hammingBallVolume_le_qEntropy_real_radius_card_generic
+    (ι := ι) (A := A) δ hδ0 hδ hq
+  rw [hcast] at hΛ
+  exact le_trans hΛ (ENNReal.ofReal_le_ofReal hvol)
 
 /-- **Maximised Elias entropy upper bound with the real radius exponent.**  Below capacity, the
 finite-domain floor-radius bound can be relaxed to the cleaner exponent `H_q(δ)`. -/
@@ -132,19 +203,27 @@ theorem Lambda_le_qEntropy_real_radius_card
     (Lambda C δ : ENNReal) ≤
       ENNReal.ofReal (((Fintype.card ι : ℝ) + 1) *
         (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
-          qEntropy (Fintype.card F) δ)) := by
-  have hΛ : (Lambda C δ : ENNReal) ≤
-      ((hammingBallVolume (Fintype.card F) δ (Fintype.card ι) : ℕ∞) : ENNReal) :=
-    ENat.toENNReal_mono (Lambda_le_hammingBallVolume C δ)
-  have hcast :
-      ((hammingBallVolume (Fintype.card F) δ (Fintype.card ι) : ℕ∞) : ENNReal) =
-        ENNReal.ofReal ((hammingBallVolume (Fintype.card F) δ (Fintype.card ι) : ℕ) : ℝ) := by
-    rw [ENNReal.ofReal_natCast]
-    simp
-  have hvol := hammingBallVolume_le_qEntropy_real_radius_card
-    (ι := ι) (F := F) δ hδ0 hδ
-  rw [hcast] at hΛ
-  exact le_trans hΛ (ENNReal.ofReal_le_ofReal hvol)
+          qEntropy (Fintype.card F) δ)) :=
+  Lambda_le_qEntropy_real_radius_card_generic (ι := ι) (A := F) C δ hδ0 hδ Fintype.one_lt_card
+
+/-- **Per-word Elias entropy upper bound with the real radius exponent, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+theorem closeCodewordsRel_ncard_le_qEntropy_real_radius_card_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
+    (C : Code ι A) (f : ι → A) (δ : ℝ)
+    (hδ0 : 0 ≤ δ)
+    (hδ : δ ≤ 1 - 1 / (Fintype.card A : ℝ))
+    (hq : 2 ≤ Fintype.card A) :
+    ((closeCodewordsRel C f δ).ncard : ℝ) ≤
+      ((Fintype.card ι : ℝ) + 1) *
+        (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) *
+          qEntropy (Fintype.card A) δ) := by
+  have hcount :
+      (closeCodewordsRel C f δ).ncard ≤
+        hammingBallVolume (Fintype.card A) δ (Fintype.card ι) :=
+    closeCodewordsRel_ncard_le_hammingBallVolume C f δ
+  have hvol := hammingBallVolume_le_qEntropy_real_radius_card_generic
+    (ι := ι) (A := A) δ hδ0 hδ hq
+  exact le_trans (by exact_mod_cast hcount) hvol
 
 /-- **Per-word Elias entropy upper bound with the real radius exponent.** -/
 theorem closeCodewordsRel_ncard_le_qEntropy_real_radius_card
@@ -156,14 +235,21 @@ theorem closeCodewordsRel_ncard_le_qEntropy_real_radius_card
     ((closeCodewordsRel C f δ).ncard : ℝ) ≤
       ((Fintype.card ι : ℝ) + 1) *
         (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
-          qEntropy (Fintype.card F) δ) := by
-  have hcount :
-      (closeCodewordsRel C f δ).ncard ≤
-        hammingBallVolume (Fintype.card F) δ (Fintype.card ι) :=
-    closeCodewordsRel_ncard_le_hammingBallVolume C f δ
-  have hvol := hammingBallVolume_le_qEntropy_real_radius_card
-    (ι := ι) (F := F) δ hδ0 hδ
-  exact le_trans (by exact_mod_cast hcount) hvol
+          qEntropy (Fintype.card F) δ) :=
+  closeCodewordsRel_ncard_le_qEntropy_real_radius_card_generic (ι := ι) (A := F) C f δ hδ0 hδ Fintype.one_lt_card
+
+/-- **List-decodability from the finite-domain real-radius entropy bound, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+theorem listDecodable_qEntropy_real_radius_card_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
+    (C : Code ι A) (δ : ℝ)
+    (hδ0 : 0 ≤ δ)
+    (hδ : δ ≤ 1 - 1 / (Fintype.card A : ℝ))
+    (hq : 2 ≤ Fintype.card A) :
+    listDecodable C δ (((Fintype.card ι : ℝ) + 1) *
+      (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) *
+        qEntropy (Fintype.card A) δ)) := by
+  intro y
+  exact closeCodewordsRel_ncard_le_qEntropy_real_radius_card_generic C y δ hδ0 hδ hq
 
 /-- **List-decodability from the finite-domain real-radius entropy bound.** -/
 theorem listDecodable_qEntropy_real_radius_card
@@ -174,9 +260,8 @@ theorem listDecodable_qEntropy_real_radius_card
     (hδ : δ ≤ 1 - 1 / (Fintype.card F : ℝ)) :
     listDecodable C δ (((Fintype.card ι : ℝ) + 1) *
       (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
-        qEntropy (Fintype.card F) δ)) := by
-  intro y
-  exact closeCodewordsRel_ncard_le_qEntropy_real_radius_card C y δ hδ0 hδ
+        qEntropy (Fintype.card F) δ)) :=
+  listDecodable_qEntropy_real_radius_card_generic (ι := ι) (A := F) C δ hδ0 hδ Fintype.one_lt_card
 
 /-- **List-size lower bound `1 ≤ |Λ(C,δ)|` for a nonempty code and `δ ≥ 0`.** Any codeword is
 `0`-close to itself, so it lies in its own close-codeword list; with `Lambda_le_hammingBallVolume`
@@ -205,6 +290,24 @@ theorem one_le_Lambda_and_Lambda_le_hammingBallVolume
       Lambda C δ ≤ (hammingBallVolume (Fintype.card F) δ (Fintype.card ι) : ℕ∞) := by
   exact ⟨one_le_Lambda_of_nonempty (C := C) hC hδ, Lambda_le_hammingBallVolume C δ⟩
 
+/-- **Two-sided nonempty list-size bracket with the exact floor-radius entropy exponent, generic form.** -/
+theorem one_le_Lambda_and_Lambda_le_qEntropy_card_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
+    (C : Code ι A) (hC : C.Nonempty) (δ : ℝ) (hδ0 : 0 ≤ δ)
+    (hr : ⌊δ * (Fintype.card ι : ℝ)⌋₊ < Fintype.card ι)
+    (hcap :
+      (⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)
+        ≤ 1 - 1 / (Fintype.card A : ℝ))
+    (hq : 2 ≤ Fintype.card A) :
+    (1 : ENNReal) ≤ (Lambda C δ : ENNReal) ∧
+      (Lambda C δ : ENNReal) ≤
+        ENNReal.ofReal (((Fintype.card ι : ℝ) + 1) *
+          (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) *
+            qEntropy (Fintype.card A)
+              ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))) := by
+  refine ⟨?_, Lambda_le_qEntropy_card_generic C δ hr hcap hq⟩
+  simpa using ENat.toENNReal_mono (one_le_Lambda_of_nonempty (C := C) hC hδ0)
+
 /-- **Two-sided nonempty list-size bracket with the exact floor-radius entropy exponent.** -/
 theorem one_le_Lambda_and_Lambda_le_qEntropy_card
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
@@ -219,8 +322,22 @@ theorem one_le_Lambda_and_Lambda_le_qEntropy_card
         ENNReal.ofReal (((Fintype.card ι : ℝ) + 1) *
           (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
             qEntropy (Fintype.card F)
-              ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))) := by
-  refine ⟨?_, Lambda_le_qEntropy_card C δ hr hcap⟩
+              ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))) :=
+  one_le_Lambda_and_Lambda_le_qEntropy_card_generic (ι := ι) (A := F) C hC δ hδ0 hr hcap Fintype.one_lt_card
+
+/-- **Two-sided nonempty list-size bracket with the relaxed real-radius entropy exponent, generic form.** -/
+theorem one_le_Lambda_and_Lambda_le_qEntropy_real_radius_card_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
+    (C : Code ι A) (hC : C.Nonempty) (δ : ℝ)
+    (hδ0 : 0 ≤ δ)
+    (hδ : δ ≤ 1 - 1 / (Fintype.card A : ℝ))
+    (hq : 2 ≤ Fintype.card A) :
+    (1 : ENNReal) ≤ (Lambda C δ : ENNReal) ∧
+      (Lambda C δ : ENNReal) ≤
+        ENNReal.ofReal (((Fintype.card ι : ℝ) + 1) *
+          (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) *
+            qEntropy (Fintype.card A) δ)) := by
+  refine ⟨?_, Lambda_le_qEntropy_real_radius_card_generic C δ hδ0 hδ hq⟩
   simpa using ENat.toENNReal_mono (one_le_Lambda_of_nonempty (C := C) hC hδ0)
 
 /-- **Two-sided nonempty list-size bracket with the relaxed real-radius entropy exponent.** -/
@@ -234,9 +351,8 @@ theorem one_le_Lambda_and_Lambda_le_qEntropy_real_radius_card
       (Lambda C δ : ENNReal) ≤
         ENNReal.ofReal (((Fintype.card ι : ℝ) + 1) *
           (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
-            qEntropy (Fintype.card F) δ)) := by
-  refine ⟨?_, Lambda_le_qEntropy_real_radius_card C δ hδ0 hδ⟩
-  simpa using ENat.toENNReal_mono (one_le_Lambda_of_nonempty (C := C) hC hδ0)
+            qEntropy (Fintype.card F) δ)) :=
+  one_le_Lambda_and_Lambda_le_qEntropy_real_radius_card_generic (ι := ι) (A := F) C hC δ hδ0 hδ Fintype.one_lt_card
 
 /-- **Every code is uniquely decodable at radius 0** — the radius-0 list has at most
 `Vol_q(0,n) = 1` codeword (the Elias bound `listDecodable_hammingBallVolume` at `δ = 0`). -/
