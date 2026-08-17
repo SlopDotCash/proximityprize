@@ -605,7 +605,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean : li
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_Conj41Height.lean : line 104 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_CrossFormBridge.lean : line 21 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_EffectiveSatoTate.lean : line 29 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean : line 295 : ERR_IND : If the theorem/def statement requires multiple lines, indent it correctly (4 spaces or 2 for `|`)
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorResultantHeight.lean : line 54 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_I031Chaining.lean : line 132 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_JacobiToda.lean : line 54 : ERR_LIN : Line has more than 100 characters
@@ -1653,7 +1652,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterOverla
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterOverlapThreeKFour.lean : line 6 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterOverlapThreeKFourUnequalClosure.lean : line 6 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterOverlapThreeKFourUnequalResidual.lean : line 6 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterPetalSelectionRefuted.lean : line 124 : ERR_IND : If the theorem/def statement requires multiple lines, indent it correctly (4 spaces or 2 for `|`)
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterPetalSelectionRefuted.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterPrimitiveDirection.lean : line 6 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterPrimitiveDirectionConsumer.lean : line 7 : ERR_LIN : Line has more than 100 characters

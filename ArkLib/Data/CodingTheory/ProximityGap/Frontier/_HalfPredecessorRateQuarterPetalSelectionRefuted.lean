@@ -121,14 +121,14 @@ theorem core_inter_card_eq_pred {i j : Fin 4} (hne : i ≠ j) :
 /-- Every three distinct cores exactly saturate, but do not violate, the
 `2(k-1)` weighted-overlap bound. -/
 theorem weighted_overlap_eq_two_mul_pred : (((core 0 ∩ core 1) ∪ (core 0 ∩ core 2) ∪
-          (core 1 ∩ core 2)).card +
+    (core 1 ∩ core 2)).card +
         ((core 0 ∩ core 1) ∩ core 2).card) =
       2 * (k - 1) := by
   decide
 
 /-- The two-petal union-growth recurrence is an equality in the sunflower. -/
 theorem two_petal_growth_is_exact : (core 1 \ core 0).card + (core 2 \ core 0).card +
-          (core 0 ∩ core 1).card + (core 0 ∩ core 2).card =
+    (core 0 ∩ core 1).card + (core 0 ∩ core 2).card =
       ((core 1 \ core 0) ∪ (core 2 \ core 0)).card +
         2 * (k - 1) := by
   decide
@@ -136,7 +136,7 @@ theorem two_petal_growth_is_exact : (core 1 \ core 0).card + (core 2 \ core 0).c
 /-- Removing an anchor does not improve the one-companion inequality: it too
 is exactly saturated. -/
 theorem one_companion_increment_is_exact : (core 2 \ core 0).card +
-          (core 0 ∩ core 1).card + (core 0 ∩ core 2).card =
+    (core 0 ∩ core 1).card + (core 0 ∩ core 2).card =
       ((core 2 \ core 0) \ (core 1 \ core 0)).card +
         2 * (k - 1) := by
   decide
@@ -144,7 +144,7 @@ theorem one_companion_increment_is_exact : (core 2 \ core 0).card +
 /-- With all four cores selected, the three-petal recurrence is also an exact
 equality. -/
 theorem three_petal_growth_is_exact : (core 1 \ core 0).card + (core 2 \ core 0).card +
-          (core 3 \ core 0).card +
+    (core 3 \ core 0).card +
         2 * ((core 0 ∩ core 1).card + (core 0 ∩ core 2).card +
           (core 0 ∩ core 3).card) =
       ((core 1 \ core 0) ∪ (core 2 \ core 0) ∪
@@ -154,7 +154,7 @@ theorem three_petal_growth_is_exact : (core 1 \ core 0).card + (core 2 \ core 0)
 
 /-- The anchored two-companion recurrence remains exact as well. -/
 theorem two_companion_increment_is_exact : (core 2 \ core 0).card + (core 3 \ core 0).card +
-        2 * ((core 0 ∩ core 1).card + (core 0 ∩ core 2).card +
+    2 * ((core 0 ∩ core 1).card + (core 0 ∩ core 2).card +
           (core 0 ∩ core 3).card) =
       ((((core 2 \ core 0) ∪ (core 3 \ core 0)) \
           (core 1 \ core 0)).card + 6 * (k - 1)) := by
@@ -163,7 +163,7 @@ theorem two_companion_increment_is_exact : (core 2 \ core 0).card + (core 3 \ co
 /-- Even after selecting all three possible companion petals, six coordinates
 of the source-core complement remain unused. -/
 theorem three_companion_petals_do_not_exhaust : ((core 1 \ core 0) ∪ (core 2 \ core 0) ∪
-        (core 3 \ core 0)).card <
+    (core 3 \ core 0)).card <
       (Finset.univ \ core 0).card := by
   decide
 
