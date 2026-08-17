@@ -209,6 +209,26 @@ sharp dichotomy L_near = 1 ⟺ 2n+k ≤ 3a (parts 1–6 complete). Residuals: B-
 pair + DIST rungs m ≥ 12; P1 `SwarmResidual`; W15 strip sliver / Λ ≤ 2 (empirical) / `hunsafe` /
 `hfarL`. Bracket unchanged; core open.
 
+## Verified standalone additions after dossier v3 (2026-08-16)
+
+- **SYZ70/SYZ71 (PR #5): narrowing/refutation evidence, not closure.** The first arithmetically
+  possible balanced middle slot is `(6,6,6)` at product degree `7`, equivalently a linear-cofactor
+  syzygy. A reproducible `F_41`, `μ_20` probe occupies that on-domain slot. The Lean interface is
+  axiom-clean, while the explicit finite-field witness remains computational evidence. The open
+  gate is the lift to a genuine over-budget MCA stack; `UniformSylvesterInjective`, `ι ≤ 1`, and
+  production δ* remain open.
+- **All-depth cyclic energy floor (PR #7): exact lower bound.**
+  `REnergyCyclicFloorAllDepth.lean` lifts the depth-three cyclic-orbit floor to every depth at least
+  three. It supplies a stronger reusable lower floor, not an upper energy bound, characteristic
+  transfer, capacity theorem, or CORE closure.
+- **G330 spectrum boundary (ported ArkLib PR #541): exact collision certificate.**
+  `_G330SpectrumExactBoundary.lean` proves the order-eight weight-{1,3} spectrum has `40` values at
+  every prime `p ≡ 1 (mod 8)`, `p ≠ 17`; the exceptional collision prime is exactly `17`. The full
+  MCA census profile and its below-ceiling maximum remain per-prime executable evidence, not a
+  field-uniform production theorem.
+
+These additions do not change the production verdict: **OPEN / ON-BGK**.
+
 ## The BGK depth-ladder lane (2026-07-10)
 
 **DC correction (2026-07-11).**  The later raw endpoint

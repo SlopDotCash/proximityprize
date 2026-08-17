@@ -219,6 +219,13 @@ classical wall*. "Named residual = modularity, not closure." Refutations live in
 - [KRZ26] Kumar, Ron-Zewi. *Advances in List Decoding of Polynomial Codes.* arXiv:2603.03841.
 -/
 
+
+/-! ## 2026-08-16 addendum — doc sync (no theorem change)
+- `DISPROOF_LOG.md` synced to canonical `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` (53709 lines, tail G330 spectrum exact boundary).
+- `Frontier/README.md` § Live targets augmented with SYZ70/SYZ71 + REnergyCyclicFloor + G330 (§ Verified standalone additions after dossier v3).
+- No production verdict change: **OPEN / ON-BGK**.
+-/
+
 open scoped Classical BigOperators
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta subgroup_gaussSum_secondMoment)
@@ -508,7 +515,7 @@ Mirrors in-tree `ProximityGap.PrizeEntropy.prizeDeltaStar`. -/
 noncomputable def prizeDeltaStar (ρ B : ℝ) : ℝ :=
   1 - ρ - Real.binEntropy ρ / Real.logb 2 B
 
-/- **State of the structured pin (the definitive frontier, 2026-06-13):**
+/- **State of the structured pin (the definitive frontier, 2026-06-13; docs refreshed 2026-08-16 — no pin change):**
 * **CEILING — PROVEN, unconditional** (`PrizeEntropyDeltaStar.prizeDeltaStar_ceiling`, axiom-clean):
   `δ* ≤ prizeDeltaStar` via the explicit ladder family, under the MILD decidable hypothesis `q > 2^μ`
   ∧ `q ∤ (collision resultants)` — a finite checkable prime spectrum, NOT the `s^{s/2}<q` transfer
