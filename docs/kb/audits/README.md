@@ -13,6 +13,9 @@ The long-term goal is for deep paper audits to live here rather than in ad hoc b
 
 Current audit pages:
 
+- [`deltastar-production-gate-2026-08-16.md`](deltastar-production-gate-2026-08-16.md)
+  - current-main production completion-gate audit: exact parameter surface, conditional pin,
+    BGK-to-incidence blocker, sponsor-formulation caveat, and rerun contract.
 - [`swarm-subagent-dispatch-2026-06-05.md`](swarm-subagent-dispatch-2026-06-05.md)
   - compact dispatch report for concurrent ArkLib verification subagents.
 - [`swarm-goals-report-2026-06-05.md`](swarm-goals-report-2026-06-05.md)
