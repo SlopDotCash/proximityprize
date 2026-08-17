@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6439 files, 71993 declarations
+- `ArkLib` — 6440 files, 72023 declarations
 
-## Same short-name across multiple files (2685 groups)
+## Same short-name across multiple files (2693 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -13346,6 +13346,16 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem DuplexSpongeFS.EagerLazyDS.consistent_inv_hit_pair_mem` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Correspondence.lean:785](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Correspondence.lean#L785) — A consistent inverse hit puts the entry's exact pair in the cache.
 - `theorem DuplexSpongeFS.EagerLazyDS.consistent_inv_hit_pair_mem` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Correspondence.lean:785](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Correspondence.lean#L785) — A consistent inverse hit puts the entry's exact pair in the cache.
 
+### `constant_of_rot1_eq` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.constant_of_rot1_eq` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean:78](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean#L78) — (no docstring)
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.constant_of_rot1_eq` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean:72](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean#L72) — (no docstring)
+
+### `constant_of_rot1_eq_rot2` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.constant_of_rot1_eq_rot2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean:100](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean#L100) — (no docstring)
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.constant_of_rot1_eq_rot2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean:88](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean#L88) — (no docstring)
+
 ### `decodeLT_ne_of_val_ne` (2 declarations, 2 files)
 
 - `lemma OutOfDomSmpl.decodeLT_ne_of_val_ne` [ArkLib/ProofSystem/Stir/OutOfDomSmpl.lean:87](../../../ArkLib/ProofSystem/Stir/OutOfDomSmpl.lean#L87) — Distinct codewords decode to distinct polynomials: the decoded polynomial interpolates the codeword
@@ -14651,6 +14661,26 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.RadicalWire304.rootDecodedRadical_val_monic` [ArkLib/ToMathlib/MinimalSurfaceChain.lean:331](../../../ArkLib/ToMathlib/MinimalSurfaceChain.lean#L331) — The base-point fact at the radical decoded root (monic case): the value is exactly the surface's cen
 - `theorem ArkLib.RadicalWire304.rootDecodedRadical_val_monic` [ArkLib/ToMathlib/RadicalAssembler.lean:350](../../../ArkLib/ToMathlib/RadicalAssembler.lean#L350) — The base-point fact at the radical decoded root (monic case): the value is exactly the surface's cen
 
+### `rot1` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.SubgroupGaussSumMoment.rot1` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean:33](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean#L33) — (no docstring)
+- `def ArkLib.ProximityGap.SubgroupGaussSumMoment.rot1` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean:32](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean#L32) — (no docstring)
+
+### `rot1_mem` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.rot1_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean:57](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean#L57) — (no docstring)
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.rot1_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean:48](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean#L48) — (no docstring)
+
+### `rot2` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.SubgroupGaussSumMoment.rot2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean:36](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean#L36) — (no docstring)
+- `def ArkLib.ProximityGap.SubgroupGaussSumMoment.rot2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean:35](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean#L35) — (no docstring)
+
+### `rot2_mem` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.rot2_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean:64](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean#L64) — (no docstring)
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.rot2_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean#L60) — (no docstring)
+
 ### `sameClass` (2 declarations, 2 files)
 
 - `def DuplexSpongeFS.EagerLazyDS.sameClass` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Correspondence.lean:248](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Correspondence.lean#L248) — Class membership: equal or the swap.
@@ -14875,6 +14905,16 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `lemma DuplexSpongeFS.EagerLazyDS.sum_range_two_mul_add_one` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Flag.lean:481](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Flag.lean#L481) — (no docstring)
 - `lemma DuplexSpongeFS.EagerLazyDS.sum_range_two_mul_add_one` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Flag.lean:481](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Flag.lean#L481) — (no docstring)
+
+### `sum_rot1` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.sum_rot1` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean:42](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean#L42) — (no docstring)
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.sum_rot1` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean#L38) — (no docstring)
+
+### `sum_rot2` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.sum_rot2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyFourCyclicFloor.lean#L47) — (no docstring)
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.sum_rot2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean:43](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergyThreeCyclicFloor.lean#L43) — (no docstring)
 
 ### `supplies` (2 declarations, 2 files)
 
