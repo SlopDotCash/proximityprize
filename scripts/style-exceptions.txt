@@ -9,9 +9,6 @@ ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyBridge.lean : line 14 : ERR_
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyChar0.lean : line 74 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyFullGroupClosedForm.lean : line 17 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyKernel.lean : line 14 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyLowerBound.lean : line 15 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyParity.lean : line 25 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyRepBound.lean : line 10 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyRepBound.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyResultant.lean : line 26 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergySidonModNeg.lean : line 29 : ERR_LIN : Line has more than 100 characters

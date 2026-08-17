@@ -7,7 +7,8 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic
 
 /-!
-# Round 9 (Issue #232, ABF26) — additive energy `≤ (1+M)|G|²` from a representation bound (over `F_q`).
+# Round 9 (Issue #232, ABF26) — additive energy `≤ (1+M)|G|²` from a representation bound (over
+`F_q`).
 
 `RootsOfUnityAdditiveEnergy` proved, in **characteristic 0**, that the roots of unity have minimal
 additive energy `E ≤ 3|G|²`, via the unit-circle fact that a nonzero `s` has `≤ 2` representations
@@ -15,20 +16,26 @@ additive energy `E ≤ 3|G|²`, via the unit-circle fact that a nonzero `s` has 
 isolates the *combinatorial* half — which works over **any** field, in particular `F_q` — as a clean
 residual consumer:
 
-> `additiveEnergy_le_of_repBound`: if every nonzero `t` has at most `M` representations as an ordered
+> `additiveEnergy_le_of_repBound`: if every nonzero `t` has at most `M` representations as an
+ordered
 > sum of two elements of `G` (`#{y∈G : t−y∈G} ≤ M`), then the additive energy is `≤ (1+M)·|G|²`.
 
-So over the Proximity Prize's finite field `F_q`, the additive energy of the `2^k`-subgroup `G` — the
+So over the Proximity Prize's finite field `F_q`, the additive energy of the `2^k`-subgroup `G` —
+the
 single quantity the deep-interior question was reduced to (`SubgroupGaussSumFourthMoment`:
 `∑_b ‖η_b‖⁴ = q·E(G)`) — is `≤ 3|G|²` **the moment one proves the representation bound `r(t) ≤ 2`**.
-That representation bound `r(t) = #{c∈G : c+t∈G} ≤ 2` for the `2^k`-subgroup over `F_q` is *exactly* the
-open Weil-type / sum-product input: `c` and `c+t` both being `2^k`-th roots of unity is a curve-point
-count over `F_q`, which Mathlib's elementary toolkit cannot bound (it holds for "generic" `q` but is a
+That representation bound `r(t) = #{c∈G : c+t∈G} ≤ 2` for the `2^k`-subgroup over `F_q` is
+*exactly* the
+open Weil-type / sum-product input: `c` and `c+t` both being `2^k`-th roots of unity is a
+curve-point
+count over `F_q`, which Mathlib's elementary toolkit cannot bound (it holds for "generic" `q` but
+is a
 genuine RH-for-curves statement). This file makes the reduction `r(t)≤M ⟹ E≤(1+M)|G|²` a theorem,
 pinning the *entire* remaining gap to that one curve-point bound. All `sorry`-free and axiom-clean.
 
 ## References
-- [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
+- [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
+#232.
 -/
 
 set_option linter.style.longLine false
@@ -52,7 +59,8 @@ theorem repCount_zero_le (G : Finset F) : repCount G 0 ≤ G.card :=
 
 /-- **Additive energy from a representation bound (works over any field, e.g. `F_q`).** If every
 nonzero `t` has at most `M` representations as an ordered sum of two elements of `G`, then
-`E(G) ≤ (1 + M)·|G|²`. For `M = 2` (the roots-of-unity / minimal-energy regime) this is `E(G) ≤ 3|G|²`. -/
+`E(G) ≤ (1 + M)·|G|²`. For `M = 2` (the roots-of-unity / minimal-energy regime) this is `E(G) ≤
+3|G|²`. -/
 theorem additiveEnergy_le_of_repBound (G : Finset F) (M : ℕ)
     (hrep : ∀ t : F, t ≠ 0 → repCount G t ≤ M) :
     additiveEnergy G ≤ (1 + M) * G.card ^ 2 := by
@@ -95,8 +103,10 @@ theorem additiveEnergy_le_of_repBound (G : Finset F) (M : ℕ)
     _ = (1 + M) * G.card ^ 2 := by
         rw [Finset.sum_const, smul_eq_mul]; ring
 
-/-- **Specialization: representation bound `2` ⟹ minimal additive energy `E(G) ≤ 3|G|²`.** This is the
-finite-field form of the roots-of-unity minimal-energy statement: it holds over `F_q` *the moment* one
+/-- **Specialization: representation bound `2` ⟹ minimal additive energy `E(G) ≤ 3|G|²`.** This is
+the
+finite-field form of the roots-of-unity minimal-energy statement: it holds over `F_q` *the moment*
+one
 proves `r(t) ≤ 2` for the `2^k`-subgroup (the open curve-point / Weil input). -/
 theorem additiveEnergy_le_three_of_repTwo (G : Finset F)
     (hrep : ∀ t : F, t ≠ 0 → repCount G t ≤ 2) :

@@ -22,7 +22,8 @@ The mechanism is the involution `u ↦ u⁻¹`. The key observations:
   kernel iff `-(1+1) = -2 ∈ μ_n`, i.e. iff `(2:F)^n = 1`.
 
 Since the non-fixed points pair into 2-cycles, `M ≡ #{fixed points} [MOD 2]`, giving
-`odd_bgkCount_iff`. The general counting principle is isolated as `card_filter_fixed_modEq_card_of_involutive`.
+`odd_bgkCount_iff`. The general counting principle is isolated as
+`card_filter_fixed_modEq_card_of_involutive`.
 
 **Consequence (sharpens the prize cartography).** Combined with `AdditiveEnergyChar0` (M = 0 in
 characteristic 0) and `AdditiveEnergyFermat` (over prime characteristic `p`, `(2:F)^n = 1` for

@@ -12,7 +12,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergySidonModNeg
 additive energy *exactly* `3|G|² − 3|G|`.  This file proves the matching **lower bound**: *every*
 negation-closed `G ∌ 0` in characteristic `≠ 2` has `E(G) ≥ 3|G|² − 3|G|` (`additiveEnergy_ge`).
 So the char-0 value `3|G|² − 3|G|` is the **minimum** additive energy over negation-closed sets,
-attained exactly at the Sidon-modulo-negation sets.  The bound is unconditional (no Sidon hypothesis):
+attained exactly at the Sidon-modulo-negation sets.  The bound is unconditional (no Sidon
+hypothesis):
 the trivial coincidences (pair-matches and zero-sums) alone force `≥ 3|G|² − 3|G|`, since each pair
 `{a,b}` always represents `a+b` (`repCount_ge_structured`) and the structural inner sum is
 `3|G| − 3` (`structuredInner_eq`).  Axiom-clean.  Issue #389.
