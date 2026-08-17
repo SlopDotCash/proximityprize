@@ -70,8 +70,13 @@ jobs:
         id: lake-cache
         with:
           path: ./.lake
-          key: ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+          # The primary key is unique per run attempt so the save step below
+          # always fires; restore-keys pick the NEWEST prior snapshot for this
+          # sha (then this manifest), so successive rerun attempts ratchet
+          # forward instead of restarting from the first attempt's snapshot.
+          key: ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
+            ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}-
             ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-
             ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}
             ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}
@@ -111,14 +116,16 @@ jobs:
 
       # A late runner termination still leaves valid completed oleans. Saving
       # that coherent partial cache lets a rerun finish the remaining modules
-      # instead of restarting an 80+ minute cold build. The commit suffix avoids
-      # making an incomplete cache immutable across attempts on future commits.
+      # instead of restarting an 80+ minute cold build. The run-id/attempt
+      # suffix makes the key unique, so every attempt (including failed ones,
+      # via always()) saves its own snapshot and the next attempt resumes from
+      # the newest one rather than the first attempt's stale partial state.
       - name: Save Lean cache
-        if: always() && steps.lake-cache.outputs.cache-hit != 'true'
+        if: always()
         uses: actions/cache/save@v6
         with:
           path: ./.lake
-          key: ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
 
       # Benchmarks are manual-only. They delete the validated build tree and can
       # exceed the hosted-runner budget, so ordinary push/PR correctness runs

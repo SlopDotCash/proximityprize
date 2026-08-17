@@ -35,8 +35,11 @@ jobs:
         uses: actions/cache/restore@v6
         with:
           path: ./.lake
-          key: ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+          # Unique per-attempt primary key + newest-prefix restore so rerun
+          # attempts resume from the latest partial snapshot (see ci.yml).
+          key: ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
+            ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}-
             ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-
             ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}
             ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-
@@ -49,11 +52,11 @@ jobs:
           use-github-cache: false
 
       - name: Save Lean cache
-        if: always() && steps.lake-cache.outputs.cache-hit != 'true'
+        if: always()
         uses: actions/cache/save@v6
         with:
           path: ./.lake
-          key: ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Build project documentation
         run: lake build ArkLib:docs

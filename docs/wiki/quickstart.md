@@ -221,6 +221,10 @@ python3 -m pip install leanblueprint
   runs the timing-enabled main build on PRs and pushes to `main`, measures a
   clean build, a warm rebuild, and the `./scripts/validate.sh` path, then
   uploads timing artifacts and posts a comparison report on same-repo PRs.
+  The `.lake` cache is saved under a key unique to each run attempt (with
+  newest-prefix restore), so when a hosted runner dies mid-build,
+  `gh run rerun <id> --failed` resumes from the latest partial snapshot and
+  successive attempts ratchet forward; `docs.yml` uses the same scheme.
   It also enforces the issue #47 verification gates: a fast precheck rejecting
   `native_decide`/`bv_decide`/custom `axiom` declarations in live source
   (`scripts/forbidden_tokens.py`), a comment-stripped sorry census requiring
