@@ -218,8 +218,7 @@ theorem quartic_generator_not_square_coeff [NeZero (2 : K)] (c x0 x1 x2 x3 : K)
       have hx0 : x0 = 0 := (pow_eq_zero_iff two_ne_zero).mp hx0sq
       subst hx0
       norm_num at h1
-  ·
-    have htarget : c * x3 ^ 4 + x2 ^ 4 = 0 := by
+  · have htarget : c * x3 ^ 4 + x2 ^ 4 = 0 := by
       have hfour : (4 : K) ≠ 0 := by
         rw [show (4 : K) = 2 * 2 by norm_num]
         exact mul_ne_zero two_ne_zero two_ne_zero

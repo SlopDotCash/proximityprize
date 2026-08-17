@@ -7588,8 +7588,7 @@ theorem doorIV_phase_curvature_generic_dead_export
     (ArkLib.ProximityGap.Frontier.DoorIVPhaseCurvatureGeneric.secondDiffSet d).card = Fintype.card ι ∧
       (∀ C : ℕ, C < Fintype.card ι →
         ¬ (ArkLib.ProximityGap.Frontier.DoorIVPhaseCurvatureGeneric.secondDiffSet d).card ≤ C) ∧
-      (∀ t : ℕ, ¬ (t ≤ s bstar ∧ s b0 < t)) :=
-by
+      (∀ t : ℕ, ¬ (t ≤ s bstar ∧ s b0 < t)) := by
   classical
   exact ArkLib.ProximityGap.Frontier.DoorIVPhaseCurvatureGeneric.doorIV_phaseCurvature_dead
     d hinj s bstar b0 hblind
@@ -7638,8 +7637,7 @@ theorem doorIV_worstB_partition_depth_inflation_ratio_strictly_between_export
     (hi₀ : i₀ ∈ s) (hH : ‖Q i₀‖ = H) (hrlo : 0 < rlo) (hHpos : 0 < H) (htwo : 2 ≤ s.card)
     (hlb : ∀ i ∈ s, rlo * H ≤ ‖Q i‖) (hub : ∀ i ∈ s, ‖Q i‖ ≤ H)
     (hi₁ : i₁ ∈ s) (hstrict : ‖Q i₁‖ < H) :
-    1 < ‖∑ i ∈ s, Q i‖ / H ∧ ‖∑ i ∈ s, Q i‖ / H < (s.card : ℝ) :=
-by
+    1 < ‖∑ i ∈ s, Q i‖ / H ∧ ‖∑ i ∈ s, Q i‖ / H < (s.card : ℝ) := by
   classical
   exact ArkLib.ProximityGap.Frontier.DoorIVWorstBPartitionDepthBand.one_lt_norm_div_max_and_norm_div_max_lt_card
     hcoh hi₀ hH hrlo hHpos htwo hlb hub hi₁ hstrict

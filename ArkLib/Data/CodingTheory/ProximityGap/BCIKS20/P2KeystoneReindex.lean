@@ -121,7 +121,7 @@ private theorem taylorCollapse_baseRange (x₀ : F) (R : F[X][X][Y]) (i1 s : ℕ
 /-! ### MAIN: the `Q`-range version. -/
 
 theorem taylorCollapse (x₀ : F) (R : F[X][X][Y]) (i1 s : ℕ) :
-  ∑ i ∈ Finset.range ((Q x₀ R H).natDegree + 1),
+    ∑ i ∈ Finset.range ((Q x₀ R H).natDegree + 1),
     (i.choose s) • (liftToFunctionField (H:=H)
         ((Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 R)).coeff i) * (α₀ H) ^ (i - s))
   = hasseEvalAtRoot H x₀ R i1 s := by
@@ -227,7 +227,7 @@ theorem partitionPowerClear {c : ℕ} (lam : Nat.Partition c) (W xi : 𝕃 H) :
 
 -- ===== antidiag_reindex =====
 theorem antidiag_reindex {M : Type*} [AddCommMonoid M] (t : ℕ) (f : ℕ × ℕ → M) :
-  ∑ ab ∈ Finset.antidiagonal (t + 1), f ab
+    ∑ ab ∈ Finset.antidiagonal (t + 1), f ab
   = ∑ i1 ∈ Finset.range (t + 2), f (i1, t + 1 - i1) := by
   rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
 

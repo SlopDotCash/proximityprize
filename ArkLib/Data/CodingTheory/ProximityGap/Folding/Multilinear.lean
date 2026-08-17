@@ -38,7 +38,7 @@ variable {domain : SmoothCosetFftDomain n F} {f : Word F (Fin (2 ^ n))}
 variable {k : ℕ} {x : F}
 
 lemma foldWord_eq_evalOnPoints_powAlgHom [NeZero n] {α : F}
-  {g : F⦃≤ 1⦄[X (Fin n)]}
+    {g : F⦃≤ 1⦄[X (Fin n)]}
   (hf : f = evalOnPoints domain (powAlgHom g.1)) :
   foldWord domain f 1 α =
     evalOnPoints

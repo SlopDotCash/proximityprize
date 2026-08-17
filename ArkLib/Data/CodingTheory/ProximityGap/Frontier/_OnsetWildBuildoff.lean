@@ -174,7 +174,7 @@ theorem norm_ge_adFloor {Mα Nα : ℝ} {d : ℕ}
 `C_AD^{d₁} ≤ C_AD^{d₂}` — the floor only grows with `d = n/2`, unbounded. (This is the genuine, if
 unusable, strength of the Lehmer angle.) -/
 theorem adFloor_mono {d₁ d₂ : ℕ} (h : d₁ ≤ d₂) :
-     adConst ^ d₁ ≤ adConst ^ d₂ :=
+    adConst ^ d₁ ≤ adConst ^ d₂ :=
   pow_le_pow_right₀ (le_of_lt adConst_gt_one) h
 
 /-! ### The CRUX: the `d`-th-root bridge flattens the exponential floor to a CONSTANT -/

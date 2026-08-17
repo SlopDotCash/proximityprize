@@ -47,8 +47,7 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
 /-- The in-tree Reed–Solomon code at prize scale (`n = 2²⁰`, degree `< 2¹⁹`), as a `Finset` of
 words (the carrier for the `maxList`/`aStar` machinery). -/
-noncomputable def rsCodeF (D : Fin (2 ^ 20) ↪ F) : Finset (Fin (2 ^ 20) → F) :=
-  by
+noncomputable def rsCodeF (D : Fin (2 ^ 20) ↪ F) : Finset (Fin (2 ^ 20) → F) := by
     classical
     exact Finset.univ.filter (· ∈ ReedSolomon.code D (2 ^ 19))
 

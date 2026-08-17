@@ -92,8 +92,7 @@ lemma e_le_dist_over_3_strong
       let f : {r : F // P r} → closePtsOnAffineLine (F := F) (u := u) (v := v)
           (deg := deg) (α := α) (e := e) :=
         fun r ↦
-          ⟨u + r.1 • v,
-            by
+          ⟨u + r.1 • v, by
               refine ⟨?_, r.2⟩
               refine
                 (Affine.mem_affineLineAtOrigin_iff (F := F) (origin := u) (direction := v) _).2 ?_
@@ -545,8 +544,7 @@ lemma dir_close_of_many_close_pts
     let f : {r : F // P r} → closePtsOnAffineLine (F := F) (u := u) (v := v)
         (deg := deg) (α := α) (e := e) :=
       fun r ↦
-        ⟨u + r.1 • v,
-          by
+        ⟨u + r.1 • v, by
             refine ⟨?_, r.2⟩
             refine
               (Affine.mem_affineLineAtOrigin_iff (F := F) (origin := u) (direction := v) _).2 ?_
@@ -1027,8 +1025,7 @@ private lemma all_close_not_few_close_pts
     let g : F → closePtsOnAffineLine (F := F) (u := u) (v := v)
         (deg := deg) (α := α) (e := e) :=
       fun r ↦
-        ⟨u + r • v,
-          by
+        ⟨u + r • v, by
             refine ⟨?_, ?_⟩
             · refine
                 (Affine.mem_affineLineAtOrigin_iff (F := F) (origin := u) (direction := v) _).2 ?_
@@ -1293,8 +1290,7 @@ lemma prob_of_bad_pts
         let f : fiber → closePtsOnAffineLine (F := F) (u := u0) (v := v_star)
             (deg := deg) (α := α) (e := e) :=
           fun w ↦
-            ⟨(w.1 : ι → F),
-              by
+            ⟨(w.1 : ι → F), by
                 refine ⟨?_, ?_⟩
                 · -- membership in the affine line: `w - rep q ∈ V`.
                   have hwq : π w.1 = π (rep q) := by
@@ -1375,8 +1371,7 @@ lemma prob_of_bad_pts
           let g : F → closePtsOnAffineLine (F := F) (u := u0) (v := v_star)
               (deg := deg) (α := α) (e := e) :=
             fun r ↦
-              ⟨u0 + r • v_star,
-                by
+              ⟨u0 + r • v_star, by
                   refine ⟨?_, ?_⟩
                   · refine
                       (Affine.mem_affineLineAtOrigin_iff (F := F) (origin := u0)
@@ -1507,8 +1502,7 @@ theorem ahiv17_epsCA_bound
     {deg : ℕ} {α : ι ↪ F} {δ ε : ℝ≥0}
     (hAHIV : ProximityGap.δ_ε_correlatedAgreementAffineLines
       (F := F) (A := F) (C := RScodeSet α deg) δ ε) :
-    ProximityGap.epsCA (F := F) (A := F) (RScodeSet α deg) δ δ ≤ (ε : ENNReal) :=
-  by
+    ProximityGap.epsCA (F := F) (A := F) (RScodeSet α deg) δ δ ≤ (ε : ENNReal) := by
     classical
     exact (ProximityGap.δ_ε_correlatedAgreementAffineLines_iff_epsCA_le
       (F := F) (A := F) (C := RScodeSet α deg) δ ε).mp hAHIV
@@ -1554,8 +1548,7 @@ theorem ahiv17_epsCA_bound_of_rowSpan_to_affineLine_dOverQ_residual
     (hδ : (⌊δ * (Fintype.card ι : ℝ≥0)⌋₊ : ℚ≥0) < ‖RScodeSet α deg‖₀ / 3)
     (hAHIV : ahiv17_rowSpan_to_affineLine_dOverQ_residual deg α δ hδ) :
     ProximityGap.epsCA (F := F) (A := F) (RScodeSet α deg) δ δ ≤
-      (((‖RScodeSet α deg‖₀ : ℝ≥0) / (Fintype.card F : ℝ≥0)) : ENNReal) :=
-  by
+      (((‖RScodeSet α deg‖₀ : ℝ≥0) / (Fintype.card F : ℝ≥0)) : ENNReal) := by
     have hF_ne : (Fintype.card F : ℝ≥0) ≠ 0 := by
       exact_mod_cast (Fintype.card_ne_zero : Fintype.card F ≠ 0)
     simpa [ENNReal.coe_div hF_ne] using

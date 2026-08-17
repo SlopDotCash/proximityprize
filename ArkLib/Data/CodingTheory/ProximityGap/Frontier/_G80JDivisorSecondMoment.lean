@@ -188,8 +188,7 @@ theorem sum_sq_card_divisors_le (M : ℕ) :
             ((M / (φ ab).1) / (φ ab).2.1) / (φ ab).2.2 :=
           Finset.sum_congr rfl hval
       _ = ∑ t ∈ ((Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M)).image φ,
-            ((M / t.1) / t.2.1) / t.2.2 :=
-          by
+            ((M / t.1) / t.2.1) / t.2.2 := by
             have himg := Finset.sum_image
               (f := fun t : ℕ × (ℕ × ℕ) => ((M / t.1) / t.2.1) / t.2.2)
               (g := φ) (s := (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M)) (by

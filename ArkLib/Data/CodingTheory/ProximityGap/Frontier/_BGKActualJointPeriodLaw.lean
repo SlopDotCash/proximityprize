@@ -326,7 +326,8 @@ theorem nonzero_septic_crossMoment_nonnegative_iff
       eta psi G b ^ 7 * (starRingEnd Complex) (eta psi G ((7 : F) * b))).re ↔
       G.card ^ 8 ≤ Fintype.card F * septicResonanceCount G := by
   rw [sum_nonzero_eta_pow_seven_mul_conj_eta_seven_eq hpsi]
-  simp
+  simp only [Complex.sub_re, Complex.mul_re, Complex.natCast_re, Complex.natCast_im,
+    mul_zero, sub_zero, sub_nonneg]
   norm_cast
 
 /-- Quantitative positivity of the same signed component after taking real parts. -/

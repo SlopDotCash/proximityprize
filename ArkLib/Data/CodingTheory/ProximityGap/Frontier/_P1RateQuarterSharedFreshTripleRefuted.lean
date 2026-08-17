@@ -39,7 +39,6 @@ set_option linter.unusedDecidableInType false
 set_option linter.unusedFintypeInType false
 set_option maxHeartbeats 1000000
 set_option maxRecDepth 500000
-set_option trace.profiler true
 
 open Finset Polynomial
 open _root_.ProximityGap Code

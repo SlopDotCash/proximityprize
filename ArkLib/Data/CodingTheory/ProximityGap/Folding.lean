@@ -155,7 +155,7 @@ lemma foldWordAux_of_k_2
       simp
     · rw [Lagrange.eval_interpolate_at_node _ CosetFftDomain.injOn (by simp), hy]
       conv_lhs => rw [hj']
-      simp
+      simp only [mul_neg, X_mul_C, eval_add, eval_C, eval_mul, eval_X]
       grind
 
 private lemma roots_of_x_in_domain_eq
@@ -309,8 +309,7 @@ private lemma interpolate_eq_folding_poly_eval
   ((Lagrange.interpolate {i | domain i ^ 2 ^ k = x} fun i ↦ domain i)
     f) =
   (Polynomial.map (evalRingHom x)
-    (FoldingPolynomial.foldingPolynomial (Y ^ 2 ^ k) ((Lagrange.interpolate univ ⇑domain) f))) :=
-  by
+    (FoldingPolynomial.foldingPolynomial (Y ^ 2 ^ k) ((Lagrange.interpolate univ ⇑domain) f))) := by
   by_cases hf : f = 0
   · simp [hf]
   · apply eq_of_eval_eq_degree (n := 2 ^ k)

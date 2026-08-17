@@ -108,8 +108,7 @@ theorem mcaGoodRadii_le_of_bad (C : Set (ι → A)) (εstar : ℝ≥0∞) {δbad
     δ ≤ δbad := by
   by_contra hnot
   have hbad_le : δbad ≤ δ := le_of_not_ge hnot
-  have hmono : epsMCA (F := F) (A := A) C δbad ≤ epsMCA (F := F) (A := A) C δ :=
-    by
+  have hmono : epsMCA (F := F) (A := A) C δbad ≤ epsMCA (F := F) (A := A) C δ := by
       classical
       unfold epsMCA
       apply iSup_mono

@@ -302,15 +302,13 @@ def InGoodMarkedDifferenceSupport (G : Finset F) (t : F) : Prop :=
   ∃ z : MarkedPair G, IsGoodMarkedPair G z ∧ markedDifferencePhase G z = t
 
 /-- Number of good marked pairs in one marked-difference fibre. -/
-noncomputable def goodMarkedDifferenceMultiplicity (G : Finset F) (t : F) : Nat :=
-  by
+noncomputable def goodMarkedDifferenceMultiplicity (G : Finset F) (t : F) : Nat := by
     classical
     exact (Finset.univ.filter fun z : MarkedPair G =>
       IsGoodMarkedPair G z ∧ markedDifferencePhase G z = t).card
 
 /-- Total number of good ordered marked pairs. -/
-noncomputable def goodMarkedPairCount (G : Finset F) : Nat :=
-  by
+noncomputable def goodMarkedPairCount (G : Finset F) : Nat := by
     classical
     exact (Finset.univ.filter fun z : MarkedPair G => IsGoodMarkedPair G z).card
 

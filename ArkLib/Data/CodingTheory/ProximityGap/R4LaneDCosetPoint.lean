@@ -80,7 +80,7 @@ theorem offDiag_sum_eq_two_powersetCard_two (S : Finset F) :
     ∑ p ∈ S.offDiag, p.1 * p.2 = 2 * ∑ t ∈ S.powersetCard 2, ∏ x ∈ t, x := by
   induction S using Finset.induction with
   | empty =>
-    simp
+    simp only [offDiag_empty, sum_empty, zero_eq_mul]
     right
     rw [Finset.powersetCard_eq_empty.mpr (by simp)]
     simp

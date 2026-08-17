@@ -1496,8 +1496,7 @@ theorem H_tilde'_dvd_of_embedding_mk_eq_zero
   let β : _root_.BCIKS20AppendixA.𝒪 H :=
     Ideal.Quotient.mk (Ideal.span {_root_.BCIKS20AppendixA.H_tilde' H}) P
   have hcanon :
-      _root_.BCIKS20AppendixA.canonicalRepOf𝒪 hH β = 0 :=
-    by
+      _root_.BCIKS20AppendixA.canonicalRepOf𝒪 hH β = 0 := by
       have hβzero : β = 0 :=
         _root_.BCIKS20AppendixA.embeddingOf𝒪Into𝕃_injective hH (by simpa [β] using hemb)
       rw [hβzero]

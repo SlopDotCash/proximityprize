@@ -102,7 +102,7 @@ theorem primitive_trace_pair_factor {n : ℕ} (_hn : Even n) (t T : F) :
 
 /-- Square-and-subtract recurrence for the paired-trace coefficient. -/
 theorem pairedTraceCoefficient_two_mul (n : ℕ) (t : F) :
-  pairedTraceCoefficient (2 * n) t =
+    pairedTraceCoefficient (2 * n) t =
       (pairedTraceCoefficient n t) ^ 2 - 2 * (t ^ 2 - 4) ^ n := by
   rw [pairedTraceCoefficient, pairedTraceCoefficient]
   have hprod : (t - 2) ^ n * (t + 2) ^ n = (t ^ 2 - 4) ^ n := by
