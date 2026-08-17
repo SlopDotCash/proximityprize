@@ -121,7 +121,7 @@ theorem core_inter_card_eq_pred {i j : Fin 4} (hne : i ≠ j) :
 /-- Every three distinct cores exactly saturate, but do not violate, the
 `2(k-1)` weighted-overlap bound. -/
 theorem weighted_overlap_eq_two_mul_pred : (((core 0 ∩ core 1) ∪ (core 0 ∩ core 2) ∪
-          (core 1 ∩ core 2)).card +
+    (core 1 ∩ core 2)).card +
         ((core 0 ∩ core 1) ∩ core 2).card) =
       2 * (k - 1) := by
   decide

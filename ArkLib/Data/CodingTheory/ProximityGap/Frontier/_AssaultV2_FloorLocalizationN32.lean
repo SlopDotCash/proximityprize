@@ -292,7 +292,7 @@ def LinnikLeastPrimeBelowPrize : Prop :=
 /-- Exact scanner form for failure of the least-prime input: some dyadic rung has its searched least
 split prime at or above prize scale. -/
 theorem not_LinnikLeastPrimeBelowPrize_iff_exists_rung_prize_le : (¬ LinnikLeastPrimeBelowPrize) ↔
-      ∃ a : ℕ, 4 ≤ a ∧ (2 ^ a) ^ 4 ≤ smallestPrime1ModN (2 ^ a) (2 ^ (5 * a)) := by
+    ∃ a : ℕ, 4 ≤ a ∧ (2 ^ a) ^ 4 ≤ smallestPrime1ModN (2 ^ a) (2 ^ (5 * a)) := by
   constructor
   · intro hnot
     by_contra hnone
