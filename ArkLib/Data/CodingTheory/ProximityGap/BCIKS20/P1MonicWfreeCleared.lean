@@ -482,7 +482,8 @@ theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_rangeWfreeMatc
     (RestrictedFaaDiBrunoWfreeMatch.of_rangeWfreeMatch H x₀ R hHyp hrange)
     hα t
 
-theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_rangeWfreeMatch_clearedBaseCases
+theorem
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_rangeWfreeMatch_clearedBaseCases
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -590,7 +591,8 @@ theorem βHensel_weight_bound_all_unlocked_of_normalized_divWeight_cases_of_Wfre
     βHensel_weight_bound_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
       H x₀ R hHyp hH hDH hDRx0 hdR2 hdHR hW hlc hWfree h0 hsucc t
 
-theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
+theorem
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -611,12 +613,15 @@ theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_div
     (t : ℕ) :
     weight_Λ_over_𝒪 hH (βHensel H x₀ R hHyp t) D
       ≤ WithBot.some ((2 * t + 1) * Bivariate.natDegreeY R * D) :=
-  βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_restrictedMatch
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_restri
+    ctedMatch
     H x₀ R hHyp hH hDH hdR2 hdHR hW hRgraded hDRx0
     (RestrictedFaaDiBrunoMatch.of_WfreeMatch H x₀ R hHyp hlc hWfree)
     h0 hsucc t
 
-theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
+theorem
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_Wf
+  reeMatch
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -637,7 +642,8 @@ theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized
     ∀ t, weight_Λ_over_𝒪 hH (βHensel H x₀ R hHyp t) D
       ≤ WithBot.some ((2 * t + 1) * Bivariate.natDegreeY R * D) :=
   fun t =>
-    βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
+    βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_Wfre
+      eMatch
       H x₀ R hHyp hH hDH hdR2 hdHR hW hRgraded hDRx0 hlc hWfree h0 hsucc t
 
 theorem βHenselStructuredWeightInvariant_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
@@ -662,7 +668,8 @@ theorem βHenselStructuredWeightInvariant_unlocked_of_normalized_divWeight_cases
     (RestrictedFaaDiBrunoWfreeMatch.of_rangeWfreeMatch H x₀ R hHyp hrange)
     h0 hsucc k
 
-theorem βHenselStructuredWeightInvariant_all_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
+theorem
+  βHenselStructuredWeightInvariant_all_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -730,7 +737,9 @@ theorem βHensel_weight_bound_all_unlocked_of_normalized_divWeight_cases_of_rang
     βHensel_weight_bound_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
       H x₀ R hHyp hH hDH hDRx0 hdR2 hdHR hW hlc hrange h0 hsucc t
 
-theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
+theorem
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_rangeW
+  freeMatch
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -756,7 +765,9 @@ theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_div
     (RestrictedFaaDiBrunoWfreeMatch.of_rangeWfreeMatch H x₀ R hHyp hrange)
     h0 hsucc t
 
-theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
+theorem
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_ra
+  ngeWfreeMatch
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -777,7 +788,8 @@ theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized
     ∀ t, weight_Λ_over_𝒪 hH (βHensel H x₀ R hHyp t) D
       ≤ WithBot.some ((2 * t + 1) * Bivariate.natDegreeY R * D) :=
   fun t =>
-    βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
+    βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_rang
+      eWfreeMatch
       H x₀ R hHyp hH hDH hdR2 hdHR hW hRgraded hDRx0 hlc hrange h0 hsucc t
 
 theorem βHenselStructuredWeightInvariant_unlocked_of_WfreeMatch_successors_fixed
@@ -975,7 +987,8 @@ theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_rangeWfreeMatc
     (RestrictedFaaDiBrunoWfreeMatch.of_rangeWfreeMatch H x₀ R hHyp hrange)
     hsucc t
 
-theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_rangeWfreeMatch_successors_fixed
+theorem
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_rangeWfreeMatch_successors_fixed
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) (hd : 2 ≤ H.natDegree) {D : ℕ}
     (hD : D ≤ H.natDegree)
@@ -998,10 +1011,16 @@ end BCIKS20.HenselNumerator
 
 -- Axiom audit: these W-free bridge wrappers inherit the existing cleared P1/P2 surface.
 #print axioms BCIKS20.HenselNumerator.alphaWeight_successors_iff_divWeight_successors_of_WfreeMatch
-#print axioms BCIKS20.HenselNumerator.alphaWeight_clearedBaseCases_iff_divWeight_successors_of_WfreeMatch_fixed
-#print axioms BCIKS20.HenselNumerator.divWeight_clearedBaseCases_iff_alphaWeight_successors_of_WfreeMatch_fixed
-#print axioms BCIKS20.HenselNumerator.alphaWeight_clearedBaseCases_iff_divWeight_successors_of_rangeWfreeMatch_fixed
-#print axioms BCIKS20.HenselNumerator.divWeight_clearedBaseCases_iff_alphaWeight_successors_of_rangeWfreeMatch_fixed
+#print axioms
+  BCIKS20.HenselNumerator.alphaWeight_clearedBaseCases_iff_divWeight_successors_of_WfreeMatch_fixed
+#print axioms
+  BCIKS20.HenselNumerator.divWeight_clearedBaseCases_iff_alphaWeight_successors_of_WfreeMatch_fixed
+#print axioms
+  BCIKS20.HenselNumerator.
+  alphaWeight_clearedBaseCases_iff_divWeight_successors_of_rangeWfreeMatch_fixed
+#print axioms
+  BCIKS20.HenselNumerator.
+  divWeight_clearedBaseCases_iff_alphaWeight_successors_of_rangeWfreeMatch_fixed
 #print axioms BCIKS20.HenselNumerator.alphaWeight_iff_normalized_divWeight_cases_of_WfreeMatch
 #print axioms BCIKS20.HenselNumerator.alphaWeight_of_normalized_divWeight_cases_of_WfreeMatch
 #print axioms BCIKS20.HenselNumerator.alphaWeight_iff_normalized_divWeight_cases_of_rangeWfreeMatch
@@ -1018,39 +1037,101 @@ end BCIKS20.HenselNumerator
 #print axioms BCIKS20.HenselNumerator.normalized_divWeight_cases_of_alphaWeight_of_rangeWfreeMatch
 #print axioms BCIKS20.HenselNumerator.normalized_divWeight_zero_of_alphaWeight_of_rangeWfreeMatch
 #print axioms BCIKS20.HenselNumerator.normalized_divWeight_succ_of_alphaWeight_of_rangeWfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_WfreeMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_all_unlocked_of_WfreeMatch_clearedBaseCases
+#print axioms
+  BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_WfreeMatch_clearedBaseCases
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHenselStructuredWeightInvariant_all_unlocked_of_WfreeMatch_clearedBaseCases
 #print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_unlocked_of_WfreeMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_unlocked_of_WfreeMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_WfreeMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_WfreeMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_rangeWfreeMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_all_unlocked_of_rangeWfreeMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_unlocked_of_rangeWfreeMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_unlocked_of_rangeWfreeMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_rangeWfreeMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_rangeWfreeMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_all_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_all_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_WfreeMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_all_unlocked_of_WfreeMatch_successors_fixed
+#print axioms
+  BCIKS20.HenselNumerator.βHensel_weight_bound_all_unlocked_of_WfreeMatch_clearedBaseCases
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_WfreeMatch_clearedBaseCases
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_WfreeMatch_clearedBaseCases
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHenselStructuredWeightInvariant_unlocked_of_rangeWfreeMatch_clearedBaseCases
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHenselStructuredWeightInvariant_all_unlocked_of_rangeWfreeMatch_clearedBaseCases
+#print axioms
+  BCIKS20.HenselNumerator.βHensel_weight_bound_unlocked_of_rangeWfreeMatch_clearedBaseCases
+#print axioms
+  BCIKS20.HenselNumerator.βHensel_weight_bound_all_unlocked_of_rangeWfreeMatch_clearedBaseCases
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_rangeWfreeMatch_clearedBaseCases
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_rangeWfreeMatch_clearedBaseCases
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHenselStructuredWeightInvariant_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHenselStructuredWeightInvariant_all_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
+#print axioms
+  BCIKS20.HenselNumerator.βHensel_weight_bound_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_all_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_WfreeMatch
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_WfreeMa
+  tch
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHenselStructuredWeightInvariant_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHenselStructuredWeightInvariant_all_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_all_unlocked_of_normalized_divWeight_cases_of_rangeWfreeMatch
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_rangeWfreeM
+  atch
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_rangeWf
+  reeMatch
+#print axioms
+  BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_WfreeMatch_successors_fixed
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHenselStructuredWeightInvariant_all_unlocked_of_WfreeMatch_successors_fixed
 #print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_unlocked_of_WfreeMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_unlocked_of_WfreeMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_WfreeMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_WfreeMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_rangeWfreeMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_all_unlocked_of_rangeWfreeMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_unlocked_of_rangeWfreeMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_unlocked_of_rangeWfreeMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_rangeWfreeMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_rangeWfreeMatch_successors_fixed
+#print axioms
+  BCIKS20.HenselNumerator.βHensel_weight_bound_all_unlocked_of_WfreeMatch_successors_fixed
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_WfreeMatch_successors_fixed
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_WfreeMatch_successors_fixed
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHenselStructuredWeightInvariant_unlocked_of_rangeWfreeMatch_successors_fixed
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHenselStructuredWeightInvariant_all_unlocked_of_rangeWfreeMatch_successors_fixed
+#print axioms
+  BCIKS20.HenselNumerator.βHensel_weight_bound_unlocked_of_rangeWfreeMatch_successors_fixed
+#print axioms
+  BCIKS20.HenselNumerator.βHensel_weight_bound_all_unlocked_of_rangeWfreeMatch_successors_fixed
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_rangeWfreeMatch_successors_fixed
+#print axioms
+  BCIKS20.HenselNumerator.
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_rangeWfreeMatch_successors_fixed

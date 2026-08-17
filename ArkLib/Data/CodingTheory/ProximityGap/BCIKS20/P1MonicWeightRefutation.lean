@@ -9,7 +9,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicIntegrality
 # BCIKS20 Appendix A.4 (P1) — the weight bound is FALSE under `ClaimA2.Hypotheses` (#138)
 
 A concrete, axiom-clean refutation of the (P1) weight-1 invariant for monic `H`, on a **valid
-separable** `ClaimA2.Hypotheses` instance.  Integrality of `αGenuine` holds (`alphaGenuine_regular_of_monic`),
+separable** `ClaimA2.Hypotheses` instance.  Integrality of `αGenuine` holds
+  (`alphaGenuine_regular_of_monic`),
 but the **weight** conjunct of `AlphaGenuineRegularWeightLe` / `SuccDivWeightLe_of_monic` fails:
 `ClaimA2.Hypotheses` (`dvd_evalX` + `separable_evalX`) does **not** bound `deg R`, so the lift
 direction injects `X`-degree that division by `ξ` (`Y`-degree 1) shifts onto a `Y`-power, breaking
@@ -22,7 +23,8 @@ direction injects `X`-degree that division by `ξ` (`Y`-degree 1) shifts onto a 
 
 `weight_refuted` is the negation of `SuccDivWeightLe_of_monic`'s `t = 0` case (`ξ^(2·0+1) = ξ`).
 Together with the proven integrality half, this shows the (P1) predicate is **not a theorem** under
-the in-tree hypotheses — the third carved residual found false-as-stated (cf. #139, #140); the fix is
+the in-tree hypotheses — the third carved residual found false-as-stated (cf. #139, #140); the fix
+  is
 to bound `deg R` relative to `D` (BCIKS20's `R` is degree-bounded), as the genuine theorem requires.
 -/
 

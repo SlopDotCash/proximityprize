@@ -48,7 +48,8 @@ private theorem coeffHom_injective_tc (x₀ : F) : Function.Injective (coeffHom 
   have h2 : Function.Injective ⇑(Polynomial.mapRingHom (liftToFunctionField (H := H))) := by
     rw [Polynomial.coe_mapRingHom]
     exact Polynomial.map_injective _ (liftToFunctionField_injective_tc H)
-  have h3 : Function.Injective ⇑(Polynomial.taylorAlgHom (R := F[X]) (Polynomial.C x₀)).toRingHom := by
+  have h3 :
+      Function.Injective ⇑(Polynomial.taylorAlgHom (R := F[X]) (Polynomial.C x₀)).toRingHom := by
     intro a b hab
     apply Polynomial.taylor_injective (Polynomial.C x₀)
     have h : ∀ q : F[X][Y], (Polynomial.taylorAlgHom (R := F[X]) (Polynomial.C x₀)).toRingHom q
@@ -84,7 +85,8 @@ private theorem tcTerm_eq_zero_of_natDegree_lt (x₀ : F) (R : F[X][X][Y]) (i1 s
 /-- Vanishing beyond `M + s` (`M` = natDegree of the `Δ_Y^s`-version): via the Hasse
 commutation `evalX_hasseDeriv_Y_coeff`, the weighted coefficient is a lift of a zero coefficient. -/
 private theorem tcTerm_eq_zero_of_M_lt (x₀ : F) (R : F[X][X][Y]) (i1 s i : ℕ)
-    (hi : (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY s R))).natDegree + s < i) :
+    (hi : (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1
+        (hasseDerivY s R))).natDegree + s < i) :
     tcTerm H x₀ R i1 s i = 0 := by
   rw [tcTerm]
   have hs : s ≤ i := by omega
@@ -121,7 +123,7 @@ private theorem taylorCollapse_baseRange (x₀ : F) (R : F[X][X][Y]) (i1 s : ℕ
 /-! ### MAIN: the `Q`-range version. -/
 
 theorem taylorCollapse (x₀ : F) (R : F[X][X][Y]) (i1 s : ℕ) :
-  ∑ i ∈ Finset.range ((Q x₀ R H).natDegree + 1),
+    ∑ i ∈ Finset.range ((Q x₀ R H).natDegree + 1),
     (i.choose s) • (liftToFunctionField (H:=H)
         ((Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 R)).coeff i) * (α₀ H) ^ (i - s))
   = hasseEvalAtRoot H x₀ R i1 s := by
@@ -227,7 +229,7 @@ theorem partitionPowerClear {c : ℕ} (lam : Nat.Partition c) (W xi : 𝕃 H) :
 
 -- ===== antidiag_reindex =====
 theorem antidiag_reindex {M : Type*} [AddCommMonoid M] (t : ℕ) (f : ℕ × ℕ → M) :
-  ∑ ab ∈ Finset.antidiagonal (t + 1), f ab
+    ∑ ab ∈ Finset.antidiagonal (t + 1), f ab
   = ∑ i1 ∈ Finset.range (t + 2), f (i1, t + 1 - i1) := by
   rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
 
@@ -244,8 +246,7 @@ lemma hasseEvalAtRoot_eq_embedding_cleared_div (x₀ : F) (R : F[X][X][Y]) (i1 m
           (Ideal.Quotient.mk (Ideal.span {H_tilde' H})
             (hasseCoeffRepr𝒪_cleared H x₀ R i1 m
               (Bivariate.natDegreeY
-                (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))))
-            : 𝒪 H)
+                (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))))) : 𝒪 H)
         / liftToFunctionField (H := H) H.leadingCoeff
             ^ Bivariate.natDegreeY
                 (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))) := by
@@ -270,8 +271,8 @@ theorem hasseEvalAtRoot_mul_W_pow_eq_embedding_cleared
         (Ideal.Quotient.mk (Ideal.span {H_tilde' H})
           (hasseCoeffRepr𝒪_cleared H x₀ R i1 m
             (Bivariate.natDegreeY
-                (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))))
-          : 𝒪 H) := by
+                (Bivariate.evalX (Polynomial.C x₀)
+                  (hasseDerivX i1 (hasseDerivY m R))))) : 𝒪 H) := by
   rw [hasseEvalAtRoot_eq_embedding_cleared_div]
   rw [div_mul_cancel₀ _ (pow_ne_zero _ (liftToFunctionField_leadingCoeff_ne_zero (H := H)))]
 

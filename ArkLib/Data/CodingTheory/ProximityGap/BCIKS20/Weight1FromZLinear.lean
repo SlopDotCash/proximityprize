@@ -24,7 +24,8 @@ The proof composes three landed pieces:
   `𝕃 H` IS the embedding of the `{1,Y}`-element `mk(C c₀ + X·C c₁)` over `𝒪 H` — via the ring-hom
   `liftBivariate` and `liftBivariate_C`/`liftBivariate_X`), so the `𝒪`-preimage is explicit;
 * the `{1,Y}` weight computation `weight_Λ_over_𝒪_zLinear_le_one` (`WeightZLinear.lean`);
-* (uniqueness of the `{1,T}` representation, `FunctionFieldZLinear.lean`, is what makes this preimage
+* (uniqueness of the `{1,T}` representation, `FunctionFieldZLinear.lean`, is what makes this
+  preimage
   the genuine one).
 
 Net effect: the *entire* remaining open content of the monic weight-1 invariant (#138) is reduced to
@@ -73,8 +74,10 @@ theorem alphaGenuine_regular_weight_le_one_of_zLinear
 
 /-- **The #138 weight invariant ⟸ Claim 5.9 + an X-degree budget (capstone).**
 For monic-degree `≥ 2` `H`, if every `αGenuine t` is `Z`-linear (`{1, T}` shape, Claim 5.9) with the
-`{1, T}` coefficients satisfying the X-degree budget `deg_X c₀ ≤ 1`, `(D+1−natDegreeY H)+deg_X c₁ ≤ 1`,
-then the full BCIKS20 weight-1 invariant `AlphaGenuineRegularWeightLe` holds. This reduces the entire
+`{1, T}` coefficients satisfying the X-degree budget `deg_X c₀ ≤ 1`, `(D+1−natDegreeY H)+deg_X c₁ ≤
+  1`,
+then the full BCIKS20 weight-1 invariant `AlphaGenuineRegularWeightLe` holds. This reduces the
+  entire
 remaining open content of #138 (monic) to the BCIKS20 §5.2.7 geometric inputs (Claim 5.9 + the GS
 `deg_{Y,Z}` budget); the weight calculus around them is mechanized. -/
 theorem alphaGenuineRegularWeightLe_of_zLinear_of_degree_bounds
@@ -96,5 +99,6 @@ end BCIKS20.HenselNumerator.AlphaWeight
 section AxiomAudit
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.liftToFunctionField_add_T_mul_eq_embed
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.alphaGenuine_regular_weight_le_one_of_zLinear
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.alphaGenuineRegularWeightLe_of_zLinear_of_degree_bounds
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.alphaGenuineRegularWeightLe_of_zLinear_of_degree_bounds
 end AxiomAudit

@@ -118,7 +118,8 @@ end BCIKS20.HenselNumerator
 
 #print axioms BCIKS20.HenselNumerator.restrictedMatchRecursionPartitionWfreeForm
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.restrictedMatchRecursionPartitionForm_eq_WfreeForm_of_leadingCoeff_one
+#print axioms
+  BCIKS20.HenselNumerator.restrictedMatchRecursionPartitionForm_eq_WfreeForm_of_leadingCoeff_one
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.restrictedPartitionMatchAt_iff_WfreeForm_of_leadingCoeff_one
 #print axioms BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.of_WfreeForm

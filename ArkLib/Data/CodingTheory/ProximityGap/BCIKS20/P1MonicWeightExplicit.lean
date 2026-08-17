@@ -22,9 +22,12 @@ divisibility conjunct discharged.
 
 This pins the remaining open content of #138 (monic, the only correct case — `restrictedFaaDiBruno
 Match_of_monic`/§139) to a weight bound on a concrete `𝒪`-element.  That bound is **false without a
-`deg R` bound** (`P1MonicWeightRefutation.weight_refuted` — the `ξ`-division shifts injected `X`-degree
-onto a `Y`-power, breaking `Λ ≤ Λ(Y) = 1`) and **holds with one** (`P1MonicWeightHolds.weight_holds`);
-the genuine BCIKS20 invariant is this weight bound under the paper's degree-bounded `R`.  The general
+`deg R` bound** (`P1MonicWeightRefutation.weight_refuted` — the `ξ`-division shifts injected
+  `X`-degree
+onto a `Y`-power, breaking `Λ ≤ Λ(Y) = 1`) and **holds with one**
+  (`P1MonicWeightHolds.weight_holds`);
+the genuine BCIKS20 invariant is this weight bound under the paper's degree-bounded `R`.  The
+  general
 proof is the Newton-cancellation that absorbs `Λ(ξ⁻¹)` — out of reach of the merely *sub*-additive
 weight calculus (`weight_Λ_over_𝒪_mul_le`), hence the genuine remaining core.  Axiom-clean.
 -/
@@ -57,7 +60,8 @@ For monic `H`, the carved successor predicate `SuccDivWeightLe_of_monic` (the ex
 `∀ t, ∃ a, βHensel (t+1) = a·ξ^{2t+1} ∧ Λ_𝒪(a) ≤ 1`) is **equivalent** to the weight bound on the
 single explicit quotient `henselQuotient t`.  Forward: `ξ^{2t+1}` a unit ⇒ the witness `a` is forced
 equal to `henselQuotient t` (`IsUnit.mul_left_inj`).  Backward: `henselQuotient` clears
-(`henselQuotient_mul_xi`), supplying the existential.  This eliminates the existential and discharges
+(`henselQuotient_mul_xi`), supplying the existential.  This eliminates the existential and
+  discharges
 the divisibility, leaving the weight bound on a concrete `𝒪`-element as the *entire* remaining open
 content of #138 (monic). -/
 theorem succDivWeightLe_iff_henselQuotient_weight (x₀ : F) (R : F[X][X][Y])

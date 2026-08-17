@@ -6,20 +6,21 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.S5Genuine
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MatchMonic
 
-set_option linter.style.longLine false
-
 /-!
 # BCIKS20 §5.2.6–5.2.7 — Claims 5.8 / 5.8' UNCONDITIONAL for monic `H` (issue #232)
 
 The §5 endpoints in `S5Genuine.lean` (`claim58_genuine`, `claim58prime_genuine`) prove the genuine
 BCIKS20 X-degree bound on the Hensel root `γ = gammaGenuine`, but each carries the explicit
-combinatorial Appendix-A.4 hypothesis `FaaDiBrunoSuccSumZeroResidual` (equivalently the lift-identity
+combinatorial Appendix-A.4 hypothesis `FaaDiBrunoSuccSumZeroResidual` (equivalently the
+  lift-identity
 bridge `LiftIdentityAt` / the carved `RestrictedFaaDiBrunoMatch`).
 
 That residual is **PROVEN unconditionally for monic `H`** — `restrictedFaaDiBrunoMatch_of_monic`
 (`P2MatchMonic.lean`) discharges the carved Faà-di-Bruno partition match from the genuine algebra
-(`taylorCollapse`, `partitionProd_coeff_assembled`, the `W = 1` collapse), using `H.leadingCoeff = 1`
-load-bearingly. This file simply **propagates that discharge up to the §5 Claims 5.8 / 5.8'**, so the
+(`taylorCollapse`, `partitionProd_coeff_assembled`, the `W = 1` collapse), using `H.leadingCoeff =
+  1`
+load-bearingly. This file simply **propagates that discharge up to the §5 Claims 5.8 / 5.8'**, so
+  the
 X-degree-bound conclusions hold with the residual hypothesis removed.
 
 Why monic is the right (and only correct) form: the residual is **provably false for non-monic `H`**
@@ -42,11 +43,16 @@ is the field-universal beyond-Johnson core — separate from and beyond this kno
 
 ## Main results (all axiom-clean, all unconditional under `H.leadingCoeff = 1`)
 
-* `claim58_genuine_of_monic` — Claim 5.8: `αGenuine t = 0` from the §5 largeness alone (no residual).
+* `claim58_genuine_of_monic` — Claim 5.8: `αGenuine t = 0` from the §5 largeness alone (no
+  residual).
 * `claim58prime_genuine_tail_of_monic` — the `∀ t ≥ k` tail vanishing (no residual).
-* `claim58prime_genuine_of_monic` — Claim 5.8': `γ = ↑(trunc k γ)` (`γ` is a polynomial), no residual.
+* `claim58prime_genuine_of_monic` — Claim 5.8': `γ = ↑(trunc k γ)` (`γ` is a polynomial), no
+  residual.
 * `gammaGenuine_isPoly_of_monic` — the packaged "`γ ∈ L[X]` of X-degree `< n+1`" existential form.
 -/
+
+set_option linter.style.longLine false
+
 
 noncomputable section
 
@@ -62,7 +68,8 @@ variable (H : F[X][Y]) [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
 
 /-- **Claim 5.8 (genuine), unconditional for monic `H`.**
 `αGenuine t = 0` from the §5 largeness hypothesis alone: the Appendix-A.4 residual is discharged by
-`restrictedFaaDiBrunoMatch_of_monic`. Strictly stronger than `claim58_genuine_via_intree`, which also
+`restrictedFaaDiBrunoMatch_of_monic`. Strictly stronger than `claim58_genuine_via_intree`, which
+  also
 requires `FaaDiBrunoSuccSumZeroResidual`. -/
 theorem claim58_genuine_of_monic {x₀ : F} {R : F[X][X][Y]}
     (hHyp : ClaimA2.Hypotheses x₀ R H) (hlc : H.leadingCoeff = 1)

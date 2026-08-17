@@ -6,7 +6,8 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Reindex
 
 /-!
-# BCIKS20 Appendix A.4 — the value-multiset ↔ (i₁, λ) bijection bricks (toward `RestrictedFaaDiBrunoMatch`)
+# BCIKS20 Appendix A.4 — the value-multiset ↔ (i₁, λ) bijection bricks (toward
+  `RestrictedFaaDiBrunoMatch`)
 
 This file builds the combinatorial bijection underlying `RestrictedFaaDiBrunoMatch` (P2Close.lean)
 brick-by-brick, on top of the proven zero/positive-part reindex (`P2Reindex.lean`).
@@ -37,7 +38,8 @@ theorem prod_map_eq_zero_pow_mul_positivePart {M : Type*} [CommMonoid M]
 the zero/positive split, into the binomial-placement factor times the positive-part partition term:
 
   `countPerms m • (∏_{j∈m} b j)
-     = (C(z+|λ|, z) · countPerms λ) • ((b 0)^z · ∏_{j∈λ} b j)`,  with `λ = positivePart m`, `z = zeroCount m`.
+     = (C(z+|λ|, z) · countPerms λ) • ((b 0)^z · ∏_{j∈λ} b j)`,  with `λ = positivePart m`, `z =
+       zeroCount m`.
 
 Combines `countPerms_eq_choose_zeroCount_mul_positivePart` (scalar) with
 `prod_map_eq_zero_pow_mul_positivePart` (product). -/
@@ -60,7 +62,8 @@ private theorem list_range_map_getD (L : List ℕ) :
 /-- **Value-multiset realizability.**  Every multiset `m` of cardinality `i` and sum `c` arises as
 `valueMultiset (range i) l` for some weak composition `l ∈ finsuppAntidiag (range i) c` — i.e. it
 lies in the index set of the restricted Faà-di-Bruno inner sum.  (Realize `m` by assigning its
-element list to the indices `0..i-1`.)  This is the surjectivity needed for the reindex's inverse. -/
+element list to the indices `0..i-1`.)  This is the surjectivity needed for the reindex's inverse.
+  -/
 theorem mem_image_valueMultiset_of_card_sum {i c : ℕ} (m : Multiset ℕ)
     (hcard : m.card = i) (hsum : m.sum = c) :
     m ∈ (Finset.finsuppAntidiag (Finset.range i) c).image (valueMultiset (Finset.range i)) := by
@@ -122,7 +125,8 @@ theorem innerSum_reindex {M : Type*} [CommSemiring M] (i c T : ℕ) (hT : 0 < T)
           ((i.choose lam.parts.card) * lam.parts.countPerms)
             • ((b 0) ^ (i - lam.parts.card) * (lam.parts.map b).prod) := by
   classical
-  set S := (Finset.finsuppAntidiag (Finset.range i) c).image (valueMultiset (Finset.range i)) with hS
+  set S := (Finset.finsuppAntidiag (Finset.range i) c).image (valueMultiset (Finset.range i)) with
+    hS
   -- guard → filter
   have hguard : (∑ m ∈ S, (if T ∈ m then (0 : M)
         else (m.countPerms) • ((m.map b).prod)))

@@ -9,7 +9,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Vanish
 import ArkLib.ToMathlib.PartitionRecursion
 
 /-!
-# BCIKS20 Appendix A.4 — `restrictedFaaDiBrunoSum` in partition form (toward `RestrictedFaaDiBrunoMatch`)
+# BCIKS20 Appendix A.4 — `restrictedFaaDiBrunoSum` in partition form (toward
+  `RestrictedFaaDiBrunoMatch`)
 
 Applies the proven combinatorial reindex `innerSum_reindex` (`P2Bijection.lean`) to the actual
 `restrictedFaaDiBrunoSum` (`P2Close.lean`): each guarded value-multiset inner sum becomes a sum over
@@ -36,7 +37,8 @@ sum, term by term, into a sum over the Y-degree `i`, the `X`-Taylor split `ab`, 
 
   `restrictedFaaDiBrunoSum t
      = ∑_i ∑_{ab} lift((Δ_X^{ab.1} R)|_{x₀}).coeff i ·
-         ∑_{λ ⊢ ab.2, |λ|≤i, (t+1)∉λ} (C(i,|λ|)·countPerms λ) · (α₀^{i-|λ|} · ∏_{l∈λ} coeff l βHenselAssembled)`,
+         ∑_{λ ⊢ ab.2, |λ|≤i, (t+1)∉λ} (C(i,|λ|)·countPerms λ) · (α₀^{i-|λ|} · ∏_{l∈λ} coeff l
+           βHenselAssembled)`,
 
 where `α₀ = coeff 0 βHenselAssembled`.  Pure application of `innerSum_reindex`. -/
 theorem restrictedFaaDiBrunoSum_eq_partitionForm (x₀ : F) (R : F[X][X][Y])
@@ -58,7 +60,8 @@ theorem restrictedFaaDiBrunoSum_eq_partitionForm (x₀ : F) (R : F[X][X][Y])
     (fun j => PowerSeries.coeff j (βHenselAssembled H x₀ R hHyp))]
 
 /-- **The `βHensel_succ` guard is vacuous on valid `(i₁,λ)`.**  In the `(A.1)` recursion the
-partition product is `partitionProd λ (fun l => if l < t+1 then βHensel l else 0)`.  For `λ ⊢ (t+1−i₁)`
+partition product is `partitionProd λ (fun l => if l < t+1 then βHensel l else 0)`.  For `λ ⊢
+  (t+1−i₁)`
 with `(t+1) ∉ λ`, every part `l` satisfies `l ≤ t+1−i₁` and `l ≠ t+1`, hence `l < t+1`, so the guard
 is always taken and the product equals the plain `partitionProd λ (βHensel …)`. -/
 theorem partitionProd_guard_eq (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
@@ -261,8 +264,10 @@ Taylor binomial via `hasseDerivY_coeff`:
 
   `(evalX(C x₀)(Δ_X^{i₁}(Δ_Y^m R))).coeff i = C(i+m, m) · (evalX(C x₀)(Δ_X^{i₁} R)).coeff (i+m)`.
 
-This is the polynomial heart of the α₀-Taylor identity: it turns the order-`(i+m)` `Y`-coefficient of
-`Δ_X^{i₁} R` (with its Hasse weight) into the order-`i` coefficient of the Hasse-`Y`-shifted object. -/
+This is the polynomial heart of the α₀-Taylor identity: it turns the order-`(i+m)` `Y`-coefficient
+  of
+`Δ_X^{i₁} R` (with its Hasse weight) into the order-`i` coefficient of the Hasse-`Y`-shifted
+  object. -/
 theorem evalX_hasseDeriv_Y_coeff (x₀ : F) (R : F[X][X][Y]) (i1 m i : ℕ) :
     (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))).coeff i
       = (i + m).choose m

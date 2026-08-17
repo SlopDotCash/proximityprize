@@ -14,10 +14,12 @@ This file lands the **monic-`H` reduction** of the BCIKS20 Appendix A.4 weight i
 `restrictedFaaDiBrunoMatch_of_monic` (#139).
 
 For monic `H` (`H.leadingCoeff = 1`, the WLOG case of the minimal-polynomial reduction) three of the
-four inputs to the assembly lemma `AlphaGenuineRegularWeightLe.of_normalized_divWeight_cases_succLift`
+four inputs to the assembly lemma
+  `AlphaGenuineRegularWeightLe.of_normalized_divWeight_cases_succLift`
 are already discharged, **axiom-clean**:
 
-* the successor **lift identity** `hliftSucc` is `(P2_closed_of_leadingCoeff_one …).2` at order `t+1`
+* the successor **lift identity** `hliftSucc` is `(P2_closed_of_leadingCoeff_one …).2` at order
+  `t+1`
   (proven via the monic P2 match);
 * the **base** `h0` (`βHensel 0 = a · W𝒪` with `Λ_𝒪`-weight `≤ 1`) is `βHensel_zero_weight_le_one`
   together with the monic collapse `W𝒪 = 1` (`AlphaWeight.W𝒪_eq_one_of_monic`);
@@ -55,7 +57,8 @@ def SuccDivWeightLe_of_monic (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypothe
 /-- **Monic reduction of the full A.4 weight invariant (#138) to its successor core.**
 For monic `H`, the order-0 invariant, the `W𝒪 = 1` collapse, and the successor lift identity
 (`P2_closed_of_leadingCoeff_one`, axiom-clean) are all discharged, so the full
-`AlphaGenuineRegularWeightLe` follows from *only* `SuccDivWeightLe_of_monic`. This is the P1 analogue
+`AlphaGenuineRegularWeightLe` follows from *only* `SuccDivWeightLe_of_monic`. This is the P1
+  analogue
 of the proven monic P2 match: it reduces the remaining #138 obligation in the monic (WLOG) case to
 exactly the BCIKS20 Newton ξ-order-gain / weight-1 regularity core, with no `axiom`, no `sorry`. -/
 theorem AlphaGenuineRegularWeightLe_of_monic_of_succDivWeight

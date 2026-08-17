@@ -136,12 +136,15 @@ end BCIKS20.HenselNumerator
 
 #print axioms BCIKS20.HenselNumerator.t0_residual_iff_uncleared_emb_eq_cleared_emb
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.zero_of_uncleared_emb_eq_cleared_emb
+#print axioms
+  BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.zero_of_uncleared_emb_eq_cleared_emb
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.uncleared_emb_eq_cleared_emb_of_partitionMatchAt_zero
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.t0_residual_iff_uncleared_emb_eq_cleared_emb_of_hyp
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.zero_of_uncleared_emb_eq_cleared_emb_of_hyp
+#print axioms
+  BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.
+  zero_of_uncleared_emb_eq_cleared_emb_of_hyp
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.uncleared_emb_eq_cleared_emb_of_partitionMatchAt_zero_of_hyp

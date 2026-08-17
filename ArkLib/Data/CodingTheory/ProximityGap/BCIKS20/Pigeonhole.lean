@@ -564,5 +564,6 @@ end GuruswamiSudan.OverRatFunc.Claim57.GenSeam
 #print axioms GuruswamiSudan.OverRatFunc.Claim57.claim57_pigeonhole
 #print axioms GuruswamiSudan.OverRatFunc.Claim57.GenSeam.Pr_uniform_image_of_injective
 #print axioms GuruswamiSudan.OverRatFunc.Claim57.GenSeam.genRSC_genfun_injective
-#print axioms GuruswamiSudan.OverRatFunc.Claim57.GenSeam.hasMutualCorrAgreement_iff_uniform_of_gen_image
+#print axioms
+  GuruswamiSudan.OverRatFunc.Claim57.GenSeam.hasMutualCorrAgreement_iff_uniform_of_gen_image
 #print axioms GuruswamiSudan.OverRatFunc.Claim57.GenSeam.hasMutualCorrAgreement_genRSC_iff_uniform

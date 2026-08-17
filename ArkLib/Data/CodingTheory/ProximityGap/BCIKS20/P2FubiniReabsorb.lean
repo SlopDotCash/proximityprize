@@ -14,9 +14,11 @@ After `partitionSum_drop_card_filter` removes the `i`-dependent `|λ| ≤ i` con
 sums are Fubini-swapped, the inner object — for a *fixed* partition `λ` with `m = |λ|` parts,
 multiplicity `cp = countPerms λ`, and coefficient product `Plam` — is the Y-degree sum
 
-  `∑_{i ∈ range (Q.natDegree+1)} lift((Δ_X^{i₁}R)|_{x₀}).coeff i · ((C(i,m)·cp) • (α₀^{i-m} · Plam))`.
+  `∑_{i ∈ range (Q.natDegree+1)} lift((Δ_X^{i₁}R)|_{x₀}).coeff i · ((C(i,m)·cp) • (α₀^{i-m} ·
+    Plam))`.
 
-`inner_Ydegree_sum_eq_countPerms_hasseEvalAtRoot` collapses this to `cp • (hasseEvalAtRoot i₁ m · Plam)`
+`inner_Ydegree_sum_eq_countPerms_hasseEvalAtRoot` collapses this to `cp • (hasseEvalAtRoot i₁ m ·
+  Plam)`
 using `coeff_zero_βHenselAssembled` (`α₀ = T/W`) and `hasseEvalAtRoot_eq_QDegreeBinomReindex`
 (the Y-degree reabsorption). The remaining manipulation is pure `CommSemiring` `ℕ`-scalar algebra
 (`nsmul_eq_mul` + `ring`), term by term — this is the genuine algebraic content of the Fubini step.
@@ -40,7 +42,8 @@ variable (H : F[X][Y]) [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
 the inner Y-degree sum of the LHS partition form collapses to `cp • (hasseEvalAtRoot i₁ m · Plam)`.
 
 Route: rewrite the base `α₀ = coeff 0 βHenselAssembled` to `T/W` (`coeff_zero_βHenselAssembled`),
-expand `hasseEvalAtRoot i₁ m` over the same `Q`-degree range (`hasseEvalAtRoot_eq_QDegreeBinomReindex`),
+expand `hasseEvalAtRoot i₁ m` over the same `Q`-degree range
+  (`hasseEvalAtRoot_eq_QDegreeBinomReindex`),
 push the `cp •` and `· Plam` through the sum (`Finset.sum_mul`/`Finset.smul_sum`), and close term by
 term with `nsmul_eq_mul` + `ring`. -/
 theorem inner_Ydegree_sum_eq_countPerms_hasseEvalAtRoot
@@ -61,7 +64,8 @@ theorem inner_Ydegree_sum_eq_countPerms_hasseEvalAtRoot
 /-- **Per-`ab` Fubini assembly (PROVEN).**  Combining the two cores: for a fixed `ab` (with X-Taylor
 order `i₁` and Y-composition order `c`), the LHS partition-form block
 
-  `∑_{i} lift((Δ_X^{i₁}R)|_{x₀}).coeff i · ∑_{λ⊢c, |λ|≤i, T∉λ} (C(i,|λ|)·countPerms λ)•(α₀^{i-|λ|}·Pλ)`
+  `∑_{i} lift((Δ_X^{i₁}R)|_{x₀}).coeff i · ∑_{λ⊢c, |λ|≤i, T∉λ} (C(i,|λ|)·countPerms
+    λ)•(α₀^{i-|λ|}·Pλ)`
 
 equals `∑_{λ⊢c, T∉λ} countPerms λ • (hasseEvalAtRoot i₁ |λ| · Pλ)`.  Route: drop the `|λ|≤i` filter
 (`partitionSum_drop_card_filter`), distribute the lift factor (`Finset.mul_sum`), swap the `i`/`λ`

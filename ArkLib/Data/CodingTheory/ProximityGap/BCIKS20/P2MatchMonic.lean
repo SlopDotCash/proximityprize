@@ -9,6 +9,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.FaaDiBrunoBijectionPieces
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2FilterDrop
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MonicOrderZero
 
+/-!
+# P2MatchMonic
+
+Module docstring for `P2MatchMonic.lean`.
+-/
+
+
 noncomputable section
 open scoped BigOperators
 open Finset Polynomial Polynomial.Bivariate ArkLib.PowerSeriesComposition
@@ -69,7 +76,8 @@ theorem lhs_inner_eq_rhs_term (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypoth
               ^ (2 * (t + 1 - i1) - sigmaLambda lam) := by
   classical
   set s := lam.parts.card with hs
-  set P := (lam.parts.map (fun j => PowerSeries.coeff j (βHenselAssembled H x₀ R hHyp))).prod with hP
+  set P := (lam.parts.map (fun j => PowerSeries.coeff j (βHenselAssembled H x₀ R hHyp))).prod with
+    hP
   have h0 : PowerSeries.coeff 0 (βHenselAssembled H x₀ R hHyp) = α₀ H :=
     coeff_zero_βHenselAssembled H x₀ R hHyp
   -- mul-form of taylorCollapse
@@ -96,7 +104,8 @@ theorem lhs_inner_eq_rhs_term (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypoth
   have hPval : P = embeddingOf𝒪Into𝕃 H (partitionProd lam (βHensel H x₀ R hHyp))
       / embeddingOf𝒪Into𝕃 H (ClaimA2.ξ x₀ R H hHyp) ^ (2 * (t + 1 - i1) - sigmaLambda lam) := by
     rw [hP, show (lam.parts.map (fun j => PowerSeries.coeff j (βHenselAssembled H x₀ R hHyp))).prod
-          = partitionProd lam (fun l => PowerSeries.coeff l (βHenselAssembled H x₀ R hHyp)) from rfl,
+          = partitionProd lam (fun l => PowerSeries.coeff l (βHenselAssembled H x₀ R hHyp)) from
+            rfl,
       partitionProd_coeff_assembled, hlc, map_one, one_pow, one_mul, sum_map_two_mul_sub_one]
   rw [hPval, hasseEvalAtRoot_eq_embed_uncleared_of_monic H x₀ R i1 s hlc,
     B_coeff_eq_countPerms_smul, map_nsmul, nsmul_eq_mul]

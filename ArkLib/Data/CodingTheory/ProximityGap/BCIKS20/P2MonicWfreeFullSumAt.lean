@@ -99,6 +99,7 @@ set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.RestrictedFaaDiBrunoMatchAt.of_fullSumZero
 #print axioms BCIKS20.HenselNumerator.fullSumZero_of_restrictedMatchAt
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.faaDiBrunoFullSum_succ_eq_zero_iff_WfreeForm_of_leadingCoeff_one
+#print axioms
+  BCIKS20.HenselNumerator.faaDiBrunoFullSum_succ_eq_zero_iff_WfreeForm_of_leadingCoeff_one
 #print axioms BCIKS20.HenselNumerator.WfreeForm_eq_of_fullSumZero
 #print axioms BCIKS20.HenselNumerator.fullSumZero_of_WfreeForm

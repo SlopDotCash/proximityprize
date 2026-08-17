@@ -189,10 +189,13 @@ set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.uncleared_emb_eq_cleared_emb_of_zeroClearingPolyFull_sub_mem
 #print axioms BCIKS20.HenselNumerator.uncleared_emb_eq_cleared_emb_of_leadingCoeff_one
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.uncleared_emb_eq_cleared_emb_iff_zeroClearingPolyFull_sub_mem_of_hyp
+#print axioms
+  BCIKS20.HenselNumerator.uncleared_emb_eq_cleared_emb_iff_zeroClearingPolyFull_sub_mem_of_hyp
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.zeroClearingPolyFull_sub_mem_of_uncleared_emb_eq_cleared_emb_of_hyp
+#print axioms
+  BCIKS20.HenselNumerator.zeroClearingPolyFull_sub_mem_of_uncleared_emb_eq_cleared_emb_of_hyp
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.uncleared_emb_eq_cleared_emb_of_zeroClearingPolyFull_sub_mem_of_hyp
+#print axioms
+  BCIKS20.HenselNumerator.uncleared_emb_eq_cleared_emb_of_zeroClearingPolyFull_sub_mem_of_hyp
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.uncleared_emb_eq_cleared_emb_of_leadingCoeff_one_of_hyp

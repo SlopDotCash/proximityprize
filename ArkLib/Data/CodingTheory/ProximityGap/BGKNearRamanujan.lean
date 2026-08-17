@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.GeneralizedPaleyRamanujan
 import ArkLib.Data.CodingTheory.ProximityGap.BGKBridge
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # nearramanujan-formalize: the HONEST prize target (#407), correcting the BGKBridge δ=1/2
 over-identification.
@@ -31,11 +27,15 @@ This is the honest prize-regime target.  This file:
 
 2. **`nearRamanujanBound_of_ramanujan`** — strict Ramanujan `‖η_b‖ ≤ 2√n` ⟹ `NearRamanujanBound C`
    *in the slack regime* `4 ≤ C·log(q/n)` (i.e. once `q/n ≥ e^{4/C}`).  So NearRamanujan is the
-   WEAKER target.  At the ENVELOPE level the targets separate: `nearRamanujan_not_implies_ramanujan_envelope`
+   WEAKER target.  At the ENVELOPE level the targets separate:
+     `nearRamanujan_not_implies_ramanujan_envelope`
    exhibits a value strictly between the Ramanujan envelope `4n` and the NearRamanujan envelope
-   `C·n·log(q/n)` — an honest bound-level separation (NOT a constructed Gauss-period field witness, so
-   not a refutation of the implication between the Props themselves).  It shows the NearRamanujan envelope
-   strictly contains the Ramanujan envelope, so the prize needs only the strictly-weaker (still-open)
+   `C·n·log(q/n)` — an honest bound-level separation (NOT a constructed Gauss-period field witness,
+     so
+   not a refutation of the implication between the Props themselves).  It shows the NearRamanujan
+     envelope
+   strictly contains the Ramanujan envelope, so the prize needs only the strictly-weaker
+     (still-open)
    NearRamanujan target.
 
 3. **`bgkBound_half_slack_of_nearRamanujanBound`** / **`nearRamanujanBound_of_bgkBound_half_slack`**
@@ -52,6 +52,11 @@ hypothesis.  No closure asserted.
 
 All proofs axiom-clean (`propext, Classical.choice, Quot.sound`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Real
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
@@ -134,8 +139,10 @@ theorem nearRamanujanBound_of_ramanujan {ψ : AddChar F ℂ} {G : Finset F} {C :
 `C·log(q/n)` strictly above `4` (the genuine prize slack regime), the NearRamanujan envelope
 `C·n·log(q/n)` is STRICTLY larger than the strict-Ramanujan envelope `4n`, so there is a value
 `v` (e.g. the midpoint) with `4n < v < C·n·log(q/n)`.  This is a bound-level separation showing the
-NearRamanujan envelope strictly contains the Ramanujan one — it is NOT a refutation of the implication
-`NearRamanujanBound ⇒ GeneralizedPaleyRamanujan` (no field/Gauss-period instance of squared-modulus `v`
+NearRamanujan envelope strictly contains the Ramanujan one — it is NOT a refutation of the
+  implication
+`NearRamanujanBound ⇒ GeneralizedPaleyRamanujan` (no field/Gauss-period instance of squared-modulus
+  `v`
 is constructed). It witnesses only that the targets differ at the envelope level, so the prize needs
 only the strictly-weaker NearRamanujan. -/
 theorem nearRamanujan_not_implies_ramanujan_envelope
@@ -229,10 +236,12 @@ end ArkLib.ProximityGap.NearRamanujanFormalize
 
 -- Axiom audit: must be `[propext, Classical.choice, Quot.sound]` only.
 #print axioms ArkLib.ProximityGap.NearRamanujanFormalize.nearRamanujanBound_iff
-#print axioms ArkLib.ProximityGap.NearRamanujanFormalize.worstCaseIncompleteSumBound_of_nearRamanujanBound
+#print axioms
+  ArkLib.ProximityGap.NearRamanujanFormalize.worstCaseIncompleteSumBound_of_nearRamanujanBound
 #print axioms ArkLib.ProximityGap.NearRamanujanFormalize.addEnergy_le_of_nearRamanujanBound
 #print axioms ArkLib.ProximityGap.NearRamanujanFormalize.nearRamanujanBound_of_ramanujan
-#print axioms ArkLib.ProximityGap.NearRamanujanFormalize.nearRamanujan_not_implies_ramanujan_envelope
+#print axioms
+  ArkLib.ProximityGap.NearRamanujanFormalize.nearRamanujan_not_implies_ramanujan_envelope
 #print axioms ArkLib.ProximityGap.NearRamanujanFormalize.bgkBound_half_slack_of_nearRamanujanBound
 #print axioms ArkLib.ProximityGap.NearRamanujanFormalize.nearRamanujanBound_of_bgkBound_half_slack
 #print axioms ArkLib.ProximityGap.NearRamanujanFormalize.nearRamanujan_bgk_constant_exceeds_two

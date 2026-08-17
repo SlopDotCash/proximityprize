@@ -262,7 +262,8 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.RestrictedFaaDiBrunoMatchAt.of_rangeWfreeMatchAt
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.faaDiBrunoFullSum_succ_eq_zero_iff_rangeWfreeMatchAt_of_leadingCoeff_one
+#print axioms
+  BCIKS20.HenselNumerator.faaDiBrunoFullSum_succ_eq_zero_iff_rangeWfreeMatchAt_of_leadingCoeff_one
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.RestrictedFaaDiBrunoRangeWfreeMatchAt.of_fullSumZero
 set_option linter.style.longLine false in

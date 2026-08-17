@@ -9,7 +9,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1BetaOneRefutation
 # BCIKS20 Appendix A.4 (P1) — the integrality half of `AlphaGenuineRegularWeightLe`, PROVEN (#138)
 
 This file proves, axiom-clean, the **integrality half** of the BCIKS20 A.4 weight-1 regularity
-predicate (#138): for monic `H`, every genuine Hensel coefficient `αGenuine t` is the embedding of an
+predicate (#138): for monic `H`, every genuine Hensel coefficient `αGenuine t` is the embedding of
+  an
 `𝒪`-element — i.e. `αGenuine t` is *integral* — with **no weight bound assumed**.
 
 This isolates the genuine open content of #138 to the weight bound alone.  It also explains, in
@@ -18,7 +19,8 @@ genuine inputs: separability forces `ξ` to be a unit.
 
 ## Key steps
 
-* `H_tilde'_eq_self_of_monic` — for monic `H`, the integral monicization `H̃' = H` (`W = 1` collapses
+* `H_tilde'_eq_self_of_monic` — for monic `H`, the integral monicization `H̃' = H` (`W = 1`
+  collapses
   the clearing sum).
 * `ξ_pre_eq_of_monic` — for monic `H`, `ξ_pre = ∂_Y R` specialized at `x₀` (`W = 1` removes the
   clearing).
@@ -100,10 +102,12 @@ lemma isUnit_ξ_of_monic (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses 
   exact IsUnit.of_mul_eq_one_right _ hm
 
 /-- **The integrality half of #138 (monic), PROVEN.**  For monic `H`, every genuine Hensel
-coefficient `αGenuine t` is the embedding of an `𝒪`-element — i.e. `αGenuine t` is integral — with no
+coefficient `αGenuine t` is the embedding of an `𝒪`-element — i.e. `αGenuine t` is integral — with
+  no
 weight bound assumed.  `ξ` is a unit (`isUnit_ξ_of_monic`), so the lift identity
 `embed(βHensel t) = αGenuine t · (embed ξ)^{2t−1}` (monic `W = 1`) divides by the unit `ξ^{2t−1}`
-inside `𝒪`.  The *only* remaining open content of #138 is the weight-1 bound `Λ_𝒪(αGenuine t) ≤ 1`. -/
+inside `𝒪`.  The *only* remaining open content of #138 is the weight-1 bound `Λ_𝒪(αGenuine t) ≤ 1`.
+  -/
 theorem alphaGenuine_regular_of_monic (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hzero : FaaDiBrunoSuccSumZeroResidual H x₀ R hHyp)
     (hlc : H.leadingCoeff = 1) (t : ℕ) :
@@ -118,7 +122,8 @@ theorem alphaGenuine_regular_of_monic (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA
 unit (`isUnit_ξ_of_monic`), so `ξ^{2t+1}` divides `βHensel (t+1)` in `𝒪 H` for *every* `t`, with the
 explicit witness `βHensel (t+1) · (ξ⁻¹)^{2t+1}`.  This is the *divisibility* conjunct of
 `SuccDivWeightLe_of_monic` — needing **no lift identity and no degree hypothesis**.  Together with
-`P1MonicWeightRefutation.weight_refuted` it isolates the entire remaining open content of #138 to the
+`P1MonicWeightRefutation.weight_refuted` it isolates the entire remaining open content of #138 to
+  the
 *weight* conjunct alone: the clearing always exists; only `Λ_𝒪(quotient) ≤ 1` can fail (and does,
 without a `deg R` bound). -/
 theorem xi_pow_dvd_βHensel_succ_of_monic (x₀ : F) (R : F[X][X][Y])

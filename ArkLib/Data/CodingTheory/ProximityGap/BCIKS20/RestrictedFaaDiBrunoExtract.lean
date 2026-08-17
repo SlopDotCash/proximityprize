@@ -778,8 +778,7 @@ theorem embeddingCleared_mul_Wpow_eq_Wpow_mul_uncleared_of_wDivTarget
         (Ideal.Quotient.mk (Ideal.span {H_tilde' H})
           (hasseCoeffRepr𝒪_cleared H x₀ R i1 m
             (Bivariate.natDegreeY
-              (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))))
-          : 𝒪 H)
+              (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))))) : 𝒪 H)
       * liftToFunctionField (H := H) H.leadingCoeff ^ e
       =
       liftToFunctionField (H := H) H.leadingCoeff
@@ -803,8 +802,7 @@ theorem embeddingCleared_eq_uncleared_of_wDivTarget_exactDegree
         (Ideal.Quotient.mk (Ideal.span {H_tilde' H})
           (hasseCoeffRepr𝒪_cleared H x₀ R i1 m
             (Bivariate.natDegreeY
-              (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))))
-          : 𝒪 H)
+              (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))))) : 𝒪 H)
       =
       embeddingOf𝒪Into𝕃 H (hasseCoeffRepr𝒪 H x₀ R i1 m) := by
   have hscale :=
@@ -873,8 +871,7 @@ theorem embeddingCleared_eq_Wpow_mul_uncleared_of_target (x₀ : F) (R : F[X][X]
         (Ideal.Quotient.mk (Ideal.span {H_tilde' H})
           (hasseCoeffRepr𝒪_cleared H x₀ R i1 m
             (Bivariate.natDegreeY
-              (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))))
-          : 𝒪 H)
+              (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))))) : 𝒪 H)
       = liftToFunctionField (H := H) H.leadingCoeff
             ^ Bivariate.natDegreeY
                 (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))
@@ -1043,7 +1040,8 @@ membership is, by contrast, GENUINELY FALSE for generic `R` even under the full 
 order-zero numerator depends on `p = evalX (C x₀) (Δ_X^1 R)`, the transverse `X`-Hasse derivative,
 which is unconstrained by either field of `Hypotheses`. Concretely, with `F = ℚ`,
 `H = X·Y² + Y + X` (so `lc = X`, monic-fails), `evalX (C 0) R = H · (Y + X)` (separable, so both
-hypotheses hold) and a generic transverse part, the difference sum is NOT in `⟨H_tilde' H⟩` (verified
+hypotheses hold) and a generic transverse part, the difference sum is NOT in `⟨H_tilde' H⟩`
+  (verified
 by exact division by the monic generator `H_tilde' H`). Hence `RestrictedFaaDiBrunoMatchAt … 0` is
 NOT a theorem from `ClaimA2.Hypotheses` alone in the non-monic regime: the recursively-defined
 `βHenselAssembled` order-1 coefficient (the recursion RHS) does not, in general, agree with the
@@ -1169,13 +1167,17 @@ end BCIKS20.HenselNumerator
 #print axioms BCIKS20.HenselNumerator.coeff_one_βHenselAssembled_eq_of_restrictedMatchAt_zero
 #print axioms BCIKS20.HenselNumerator.restrictedMatchAt_zero_iff_coeff_one_βHenselAssembled_eq
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.neg_ζ_mul_coeff_one_βHenselAssembled_eq_unclearedHasseCoeff_div_W_natDegree
+#print axioms
+  BCIKS20.HenselNumerator.
+  neg_ζ_mul_coeff_one_βHenselAssembled_eq_unclearedHasseCoeff_div_W_natDegree
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.coeff_one_βHenselAssembled_eq_unclearedHasseCoeff_div_W_natDegree_div_ζ
+#print axioms
+  BCIKS20.HenselNumerator.coeff_one_βHenselAssembled_eq_unclearedHasseCoeff_div_W_natDegree_div_ζ
 #print axioms BCIKS20.HenselNumerator.RestrictedMatchAtZeroTaylorWDivTarget
 #print axioms BCIKS20.HenselNumerator.restrictedMatchAt_zero_iff_taylorWDivTarget
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.RestrictedMatchAtZeroTaylorWDivTarget.of_restrictedMatchAt_zero
+#print axioms
+  BCIKS20.HenselNumerator.RestrictedMatchAtZeroTaylorWDivTarget.of_restrictedMatchAt_zero
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.RestrictedFaaDiBrunoMatchAt.zero_of_taylorWDivTarget
 #print axioms BCIKS20.HenselNumerator.RestrictedMatchAtZeroEval₂WDivTarget
@@ -1191,7 +1193,8 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.RestrictedMatchAtZeroEval₂WDivTarget.of_taylorWDivTarget
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.restrictedMatchAtZeroEval₂WDivTarget_iff_unclearedEval₂WDivTarget
+#print axioms
+  BCIKS20.HenselNumerator.restrictedMatchAtZeroEval₂WDivTarget_iff_unclearedEval₂WDivTarget
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.restrictedMatchAtZeroEval₂WDivTarget_iff_unclearedWDivTarget
 set_option linter.style.longLine false in
@@ -1203,7 +1206,8 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.restrictedPartitionMatchAt_zero_iff_unclearedWDivTarget
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.HasseCoeffRepr𝒪UnclearedEval₂WDivTarget.of_restrictedMatchAt_zero
+#print axioms
+  BCIKS20.HenselNumerator.HasseCoeffRepr𝒪UnclearedEval₂WDivTarget.of_restrictedMatchAt_zero
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.HasseCoeffRepr𝒪UnclearedWDivTarget.of_restrictedMatchAt_zero
 set_option linter.style.longLine false in
@@ -1215,7 +1219,8 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.HasseCoeffRepr𝒪UnclearedWDivTarget.of_restrictedMatch
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.HasseCoeffRepr𝒪UnclearedEval₂WDivTarget.of_partitionMatchAt_zero
+#print axioms
+  BCIKS20.HenselNumerator.HasseCoeffRepr𝒪UnclearedEval₂WDivTarget.of_partitionMatchAt_zero
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.HasseCoeffRepr𝒪UnclearedWDivTarget.of_partitionMatchAt_zero
 set_option linter.style.longLine false in
@@ -1223,9 +1228,11 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.HasseCoeffRepr𝒪UnclearedWDivTarget.of_partitionMatch
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.zero_of_unclearedEval₂WDivTarget
+#print axioms
+  BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.zero_of_unclearedEval₂WDivTarget
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.zero_of_unclearedWDivTarget
+#print axioms
+  BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.zero_of_unclearedWDivTarget
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.RestrictedMatchAtZeroTaylorWDivTarget.of_restrictedMatch
 set_option linter.style.longLine false in
@@ -1247,12 +1254,15 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.embeddingCleared_eq_uncleared_of_wDivTarget_exactDegree
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.embeddingCleared_mul_Wpow_eq_Wpow_mul_uncleared_of_restrictedMatchAt_zero
+#print axioms
+  BCIKS20.HenselNumerator.embeddingCleared_mul_Wpow_eq_Wpow_mul_uncleared_of_restrictedMatchAt_zero
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.embeddingCleared_mul_Wpow_eq_Wpow_mul_uncleared_of_partitionMatchAt_zero
+#print axioms
+  BCIKS20.HenselNumerator.embeddingCleared_mul_Wpow_eq_Wpow_mul_uncleared_of_partitionMatchAt_zero
 #print axioms BCIKS20.HenselNumerator.embeddingCleared_eq_Wpow_mul_uncleared_of_target
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.restrictedMatchAtZeroEval₂WDivTarget_iff_zeroClearingPolyFull_lift
+#print axioms
+  BCIKS20.HenselNumerator.restrictedMatchAtZeroEval₂WDivTarget_iff_zeroClearingPolyFull_lift
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.restrictedMatchAt_zero_iff_zeroClearingPolyFull_lift
 set_option linter.style.longLine false in
@@ -1262,15 +1272,21 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.restrictedPartitionMatchAt_zero_iff_zeroClearingPolyFull_lift
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.zero_of_zeroClearingPolyFull_lift
+#print axioms
+  BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.zero_of_zeroClearingPolyFull_lift
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.zeroClearingPolyFull_lift_of_partitionMatchAt_zero
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.zeroClearingPolyFull_lift_of_unclearedHasseCoeff_div_W_natDegree
+#print axioms
+  BCIKS20.HenselNumerator.zeroClearingPolyFull_lift_of_unclearedHasseCoeff_div_W_natDegree
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.hasseEvalAtRoot_eq_unclearedHasseCoeff_div_W_natDegree_of_zeroClearingPolyFull_lift
+#print axioms
+  BCIKS20.HenselNumerator.
+  hasseEvalAtRoot_eq_unclearedHasseCoeff_div_W_natDegree_of_zeroClearingPolyFull_lift
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.hasseEvalAtRoot_eq_unclearedHasseCoeff_div_W_natDegree_iff_zeroClearingPolyFull_lift
+#print axioms
+  BCIKS20.HenselNumerator.
+  hasseEvalAtRoot_eq_unclearedHasseCoeff_div_W_natDegree_iff_zeroClearingPolyFull_lift
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.liftBivariate_eq_zero_iff_mem_span_H_tilde'
 set_option linter.style.longLine false in
@@ -1278,13 +1294,16 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.zeroClearingPolyFull_sub_eq
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.restrictedMatchAtZeroEval₂WDivTarget_iff_zeroClearingPolyFull_sub_mem
+#print axioms
+  BCIKS20.HenselNumerator.restrictedMatchAtZeroEval₂WDivTarget_iff_zeroClearingPolyFull_sub_mem
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.restrictedMatchAt_zero_iff_zeroClearingPolyFull_sub_mem
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.restrictedPartitionMatchAt_zero_iff_zeroClearingPolyFull_sub_mem
+#print axioms
+  BCIKS20.HenselNumerator.restrictedPartitionMatchAt_zero_iff_zeroClearingPolyFull_sub_mem
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.zero_of_zeroClearingPolyFull_sub_mem
+#print axioms
+  BCIKS20.HenselNumerator.RestrictedFaaDiBrunoPartitionMatchAt.zero_of_zeroClearingPolyFull_sub_mem
 set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.zeroClearingPolyFull_sub_mem_of_partitionMatchAt_zero
 set_option linter.style.longLine false in
@@ -1297,4 +1316,5 @@ set_option linter.style.longLine false in
 #print axioms BCIKS20.HenselNumerator.liftToFunctionField_leadingCoeff_eq_one_of_leadingCoeff_one
 #print axioms BCIKS20.HenselNumerator.embed_W𝒪_eq_one_of_leadingCoeff_one
 set_option linter.style.longLine false in
-#print axioms BCIKS20.HenselNumerator.restrictedMatchRecursionPartitionForm_eq_Wfree_of_leadingCoeff_one
+#print axioms
+  BCIKS20.HenselNumerator.restrictedMatchRecursionPartitionForm_eq_Wfree_of_leadingCoeff_one

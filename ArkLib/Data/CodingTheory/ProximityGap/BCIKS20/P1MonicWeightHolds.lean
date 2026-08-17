@@ -85,7 +85,8 @@ private lemma h3KXG : (3 : K[X]) = 0 := by
 
 /-- **The (P1) weight bound HOLDS on the good instance.**  For `RG = Y² − 2 + u` (constant lift
 direction), the unique cleared quotient `a = mk(monomial 1 (−1))` of `β₁ = a·ξ` has `Λ_𝒪`-weight
-`1 ≤ 1`.  Paired with `weight_refuted` (where `R = Y² − 2 + u·s` gives weight `2 > 1`), this pins the
+`1 ≤ 1`.  Paired with `weight_refuted` (where `R = Y² − 2 + u·s` gives weight `2 > 1`), this pins
+  the
 exact boundary: the weight-1 invariant holds iff the lift direction is free of ground-`X` degree —
 i.e. the genuine BCIKS20 invariant is the carved predicate plus a `deg R` bound. -/
 theorem weight_holds (hH : 0 < myH.natDegree) :

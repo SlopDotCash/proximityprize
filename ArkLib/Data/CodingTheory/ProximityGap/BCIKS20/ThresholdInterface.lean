@@ -109,7 +109,8 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 the pinned good set `RS_goodCoeffsCurve u δ` replaced by an arbitrary carrier finset `S`.
 Every per-`z` field is demanded at members of `S` only.  Instantiating
 `S := RS_goodCoeffsCurve u δ` recovers the landed structure exactly
-(`localSeriesDatumOnSub_of_localSeriesDatumOn` / `localSeriesDatumOn_of_localSeriesDatumOnSub_good`);
+(`localSeriesDatumOnSub_of_localSeriesDatumOn` /
+  `localSeriesDatumOn_of_localSeriesDatumOnSub_good`);
 instantiating `S :=` a claim57 incidence cell is the §5 "pass to the most common cell". -/
 structure LocalSeriesDatumOnSub (k : ℕ) (S : Finset F) (P : F → Polynomial F) : Type where
   /-- the expansion centre. -/
@@ -1069,7 +1070,8 @@ end ArkLib
 #print axioms ArkLib.Threshold304.jointAgreement_of_exists_localSeriesDatumOnSub_of_pos
 #print axioms ArkLib.Threshold304.jointAgreement_of_exists_claim57CellDatum_of_pos
 #print axioms ArkLib.Threshold304.jointAgreement_of_pigeonhole_output_of_pos
-#print axioms ArkLib.Threshold304.correlatedAgreement_affine_curves_of_pigeonhole_output_and_boundary
+#print axioms
+  ArkLib.Threshold304.correlatedAgreement_affine_curves_of_pigeonhole_output_and_boundary
 #print axioms ArkLib.Threshold304.correlatedAgreement_affine_curves_of_strict_pigeonhole_output
 #print axioms ArkLib.Threshold304.correlatedAgreement_affine_curves_of_claim57CellDatum_and_boundary
 #print axioms ArkLib.Threshold304.correlatedAgreement_affine_curves_of_strict_claim57CellDatum

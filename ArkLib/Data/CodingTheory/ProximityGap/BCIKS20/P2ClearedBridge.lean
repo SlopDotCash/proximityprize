@@ -1,6 +1,18 @@
+/-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Assembly
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2KeystoneReindex
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2FubiniReabsorb
+
+/-!
+# P2ClearedBridge
+
+Module docstring for `P2ClearedBridge.lean`.
+-/
+
 
 namespace BCIKS20.HenselNumerator
 
@@ -29,7 +41,8 @@ noncomputable def clearedRepresentativeFaaDiBrunoSum (x₀ : F) (R : F[X][X][Y])
                 (fun j => PowerSeries.coeff j (βHenselAssembled H x₀ R hHyp))).prod)
 
 /-- The final bridge theorem that ties the double sum to the non-monic Newton-Hensel root
-    using the global cleared-representative resummation, fully discharging the non-monic obstruction. -/
+    using the global cleared-representative resummation, fully discharging the non-monic
+      obstruction. -/
 def globalClearedRepresentativeResummationMatch (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H) (t : ℕ) : Prop :=
     restrictedFaaDiBrunoSum H x₀ R hHyp t

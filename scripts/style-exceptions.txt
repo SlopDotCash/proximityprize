@@ -93,54 +93,14 @@ ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P1Conditional.lean : line 918 : ER
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P1ConditionalAll.lean : line 255 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P1ConditionalAllCleared.lean : line 57 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P1ConditionalCleared.lean : line 604 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P1MonicIntegrality.lean : line 12 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P1MonicReduction.lean : line 17 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P1MonicWeightExplicit.lean : line 25 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P1MonicWeightHolds.lean : line 88 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P1MonicWeightRefutation.lean : line 12 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P1MonicWfreeCleared.lean : line 485 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2Assembly.lean : line 16 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2Bijection.lean : line 9 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2BijectionApply.lean : line 12 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2ClearedBridge.lean : line 1 : ERR_COP : Malformed or missing copyright header
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2ClearedBridge.lean : line 32 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2ClearedBridge.lean : line 5 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2ClearedGap.lean : line 139 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2ClearedGapIdeal.lean : line 192 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2FubiniReabsorb.lean : line 17 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2KeystoneReindex.lean : line 124 : ERR_IND : If the theorem/def statement requires multiple lines, indent it correctly (4 spaces or 2 for `|`)
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2KeystoneReindex.lean : line 248 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2KeystoneReindex.lean : line 51 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MatchMonic.lean : line 12 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MatchMonic.lean : line 72 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MatchProof.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MatchProof.lean : line 5 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MonicOrderZero.lean : line 120 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MonicWfree.lean : line 121 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MonicWfreeFullSumAt.lean : line 102 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MonicWfreeRange.lean : line 265 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2OrderZeroRefutation.lean : line 499 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2Reabsorb.lean : line 478 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Pigeonhole.lean : line 567 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/RestrictedFaaDiBrunoExtract.lean : line 1046 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/RestrictedFaaDiBrunoExtract.lean : line 782 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/RestrictedFaaDiBrunoXiTelescope.lean : line 206 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/RestrictedFaaDiBrunoXiTelescope.lean : line 248 : ERR_SEM : Line contains a space before a semicolon
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/S5GenuineMonic.lean : line 16 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/S5GenuineMonic.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/S5GenuineZLinearMonic.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/SlicedComposition.lean : line 115 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShareBaseCase.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffProducer.lean : line 626 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ThresholdInterface.lean : line 112 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Weight1FromZLinear.lean : line 27 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BGKBridge.lean : line 11 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/BGKExponentReduction.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/BGKLimitConditional.lean : line 13 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BGKLimitConditional.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/BGKLimitConditional.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/BGKNearRamanujan.lean : line 34 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BGKNearRamanujan.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/BGKSolSetSymmetry.lean : line 20 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BadGammaAffineCount.lean : line 30 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BadPrimeGaloisDivisibility.lean : line 14 : ERR_MOD : Module docstring missing, or too late

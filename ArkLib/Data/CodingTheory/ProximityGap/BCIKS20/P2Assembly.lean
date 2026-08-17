@@ -13,7 +13,8 @@ Both sides of the carved core `RestrictedFaaDiBrunoMatch` are now explicit parti
 proven in `P2BijectionApply`:
 
 * LHS — `restrictedFaaDiBrunoSum_eq_partitionForm`;
-* RHS — `coeff_succ_βHenselAssembled_partitionForm` / `restrictedMatch_rhs_eq_recursionPartitionForm`
+* RHS — `coeff_succ_βHenselAssembled_partitionForm` /
+  `restrictedMatch_rhs_eq_recursionPartitionForm`
   (`-ζ · coeff(t+1)(βHenselAssembled) = ζ · recSum / den`);
 * α₀-Taylor identity — `hasseEvalAtRoot_eq_taylorSum`;
 * Y-Hasse commutation — `evalX_hasseDeriv_Y_coeff`.

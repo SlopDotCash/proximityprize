@@ -203,8 +203,10 @@ per-term LHS-shaped denominator `1/ξ^{2(t+1−i₁)−σλ}`:
     `= ζ · ξ⁻¹ · ∑_{i₁,λ} (⟦B_coeff⟧ · ⟦partitionProd λ βHensel⟧) / ξ^{2(t+1−i₁)−σλ}`.
 
 The global `ξ`-power genuinely collapses to a single `ξ⁻¹`; the surviving per-term denominator
-`ξ^{2(t+1−i₁)−σλ} = ξ^{∑_{l∈λ}(2l−1)}` (`sum_map_two_mul_sub_one`) is *precisely* the `ξ`-denominator
-supplied by the LHS assembled-series coefficients `coeff l (βHenselAssembled)`. Hence the `ξ`-telescope
+`ξ^{2(t+1−i₁)−σλ} = ξ^{∑_{l∈λ}(2l−1)}` (`sum_map_two_mul_sub_one`) is *precisely* the
+  `ξ`-denominator
+supplied by the LHS assembled-series coefficients `coeff l (βHenselAssembled)`. Hence the
+  `ξ`-telescope
 is a joint LHS↔RHS cancellation, after which the monic STEP-8 residual carries only the `W`-free,
 `ξ`-matched combinatorial Faà-di-Bruno data (`B_coeff`/`partitionProd`/binomial/`countPerms`). -/
 theorem restrictedMatchRecursionPartitionForm_eq_ξfree_of_leadingCoeff_one
@@ -245,7 +247,7 @@ theorem restrictedMatchRecursionPartitionForm_eq_ξfree_of_leadingCoeff_one
   set B := embeddingOf𝒪Into𝕃 H (B_coeff H x₀ R i1 lam) with hBdef
   set P := embeddingOf𝒪Into𝕃 H (partitionProd lam (βHensel H x₀ R hHyp)) with hPdef
   set dl := 2 * (t + 1 - i1) - sigmaLambda lam with hdldef
-  -- LHS term: `(ξ^g / ξ^dl) * B * P / ξ^G` ; RHS term: `ξ⁻¹ * (B * P / ξ^dl)`,
+  -- LHS term: `(ξ^g / ξ^dl) * B * P / ξ^G`; RHS term: `ξ⁻¹ * (B * P / ξ^dl)`,
   -- where `g = 2(t+1)-2`, `G = 2(t+1)-1`, and `ξ^g/ξ^G = ξ⁻¹` by `hglob`.
   rw [← hξdef]
   calc
@@ -264,4 +266,5 @@ end BCIKS20.HenselNumerator
 #print axioms BCIKS20.HenselNumerator.xiExp_recNum_add_lhsDen
 #print axioms BCIKS20.HenselNumerator.two_le_two_mul_i1_add_sigmaLambda
 #print axioms BCIKS20.HenselNumerator.xi_pow_recNum_eq_global_div_lhsDen
-#print axioms BCIKS20.HenselNumerator.restrictedMatchRecursionPartitionForm_eq_ξfree_of_leadingCoeff_one
+#print axioms
+  BCIKS20.HenselNumerator.restrictedMatchRecursionPartitionForm_eq_ξfree_of_leadingCoeff_one
