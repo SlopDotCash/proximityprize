@@ -4044,8 +4044,7 @@ lemma approximate_solution_is_exact_solution_coeffs
         (natDegree_H_pos k h_gs)
         (claimA2_hypotheses k h_gs)
         t =
-      (0 : BCIKS20AppendixA.𝕃 (H k δ x₀ h_gs)))
-    : ∀ t ≥ k,
+      (0 : BCIKS20AppendixA.𝕃 (H k δ x₀ h_gs))) : ∀ t ≥ k,
     α'
       x₀
       (R k δ x₀ h_gs)
@@ -4054,8 +4053,7 @@ lemma approximate_solution_is_exact_solution_coeffs
       (claimA2_hypotheses k h_gs)
       t
     =
-    (0 : BCIKS20AppendixA.𝕃 (H k δ x₀ h_gs))
-    := hzero
+    (0 : BCIKS20AppendixA.𝕃 (H k δ x₀ h_gs)) := hzero
 
 open BCIKS20AppendixA.ClaimA2 in
 /-- Side-condition-explicit form of Claim 5.8'.  Once the Appendix-A argument
@@ -4104,8 +4102,7 @@ lemma approximate_solution_is_exact_solution_coeffs'
       PowerSeries.coeff t
         (γ' x₀ (R k δ x₀ h_gs) (irreducible_H k h_gs) (natDegree_H_pos k h_gs)
           (claimA2_hypotheses k h_gs)) =
-        (0 : BCIKS20AppendixA.𝕃 (H k δ x₀ h_gs)))
-    :
+        (0 : BCIKS20AppendixA.𝕃 (H k δ x₀ h_gs))) :
     γ' x₀ (R k δ x₀ h_gs) (irreducible_H k h_gs) (natDegree_H_pos k h_gs)
         (claimA2_hypotheses k h_gs) =
         PowerSeries.mk (fun t =>
@@ -5029,8 +5026,7 @@ lemma matching_set_is_a_sub_of_coeffs_of_close_proximity
 noncomputable def matching_set_at_x
     (δ : ℚ)
     (_h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
-    (x : Fin n)
-    : Finset F := @Set.toFinset _ {z : F | ∃ h : z ∈ coeffs_of_close_proximity k ωs δ u₀ u₁,
+    (x : Fin n) : Finset F := @Set.toFinset _ {z : F | ∃ h : z ∈ coeffs_of_close_proximity k ωs δ u₀ u₁,
     u₀ x + z * u₁ x =
       (Pz h).eval (ωs x)}
       (@Fintype.ofFinite _ Subtype.finite)
@@ -6661,10 +6657,8 @@ lemma solution_gamma_matches_word_if_subset_large
         * (Bivariate.natDegreeY <| R k δ x₀ h_gs)
         * D)
     (h₀ : (Classical.choose hlin).eval (ωs x) = u₀ x)
-      (h₁ : (Classical.choose (Classical.choose_spec hlin)).eval (ωs x) = u₁ x)
-      : (P_of_linear_witness k δ x₀ h_gs hlin).eval (Polynomial.C (ωs x)) =
-        (Polynomial.C <| u₀ x) + u₁ x • Polynomial.X
-      := by
+      (h₁ : (Classical.choose (Classical.choose_spec hlin)).eval (ωs x) = u₁ x) : (P_of_linear_witness k δ x₀ h_gs hlin).eval (Polynomial.C (ωs x)) =
+        (Polynomial.C <| u₀ x) + u₁ x • Polynomial.X := by
     have _hD_used := hD
     have _hx_used := hx
     exact P_eval_eq_word_of_linear_witness_coeff_values
@@ -7621,8 +7615,7 @@ lemma exists_points_with_large_matching_subset
         (2 * k + 1)
           * (Bivariate.natDegreeY <| H k δ x₀ h_gs)
           * (Bivariate.natDegreeY <| R k δ x₀ h_gs)
-          * D < (matching_set_at_x k δ h_gs x).card)).card)
-    :
+          * D < (matching_set_at_x k δ h_gs x).card)).card) :
   ∃ Dtop : Finset (Fin n),
     Dtop.card = k + 1 ∧
     ∀ x ∈ Dtop,

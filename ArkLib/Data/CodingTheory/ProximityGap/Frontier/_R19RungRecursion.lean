@@ -265,8 +265,7 @@ constant) to the single away-sup statement — the recursion's fixed point. -/
 theorem tower_of_awaySupBound (ψ : AddChar F ℂ) (G H D : Finset F) {C : ℝ}
     (hC : 0 ≤ C) (h : AwaySupBound ψ G H D C) :
     ∀ r : ℕ, rungMoment ψ G H D (r + 2)
-      ≤ (C * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ r * rungMoment ψ G H D 2
-  := by
+      ≤ (C * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ r * rungMoment ψ G H D 2 := by
   intro r
   induction r with
   | zero =>

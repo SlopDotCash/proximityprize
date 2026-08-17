@@ -2822,8 +2822,7 @@ private lemma polynomialCurveEval_coord_eq_of_agree {n l : ℕ} {F : Type} [Fiel
       Curve.polynomialCurveEval, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
     exact Finset.sum_congr rfl fun i _ => mul_comm _ _
   have hdeg : ∀ (a : Fin l → Fin n → F),
-      (∑ i : Fin l, Polynomial.C (a i x) * Polynomial.X ^ (i : ℕ)).degree < ((l : ℕ) : WithBot ℕ)
-        := by
+      (∑ i : Fin l, Polynomial.C (a i x) * Polynomial.X ^ (i : ℕ)).degree < ((l : ℕ) : WithBot ℕ) := by
     intro a
     apply lt_of_le_of_lt (Polynomial.degree_sum_le _ _)
     rw [Finset.sup_lt_iff (by exact_mod_cast WithBot.bot_lt_coe l)]

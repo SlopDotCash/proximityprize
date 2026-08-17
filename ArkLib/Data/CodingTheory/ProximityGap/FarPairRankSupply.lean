@@ -282,8 +282,7 @@ theorem card_pair_coherent_high_eq (dom : Fin n ↪ F) {k m : ℕ}
         exact (Lagrange.eq_interpolate hvsS (by
           rw [hScard]
           calc (coreInterp dom (T ∪ T') (coeffFamily M c)).degree
-              ≤ ((coreInterp dom (T ∪ T') (coeffFamily M c)).natDegree
-                  : WithBot ℕ) := Polynomial.degree_le_natDegree
+              ≤ ((coreInterp dom (T ∪ T') (coeffFamily M c)).natDegree : WithBot ℕ) := Polynomial.degree_le_natDegree
             _ < ((k + m + 1 : ℕ) : WithBot ℕ) := by
                 exact_mod_cast (by omega :
                   (coreInterp dom (T ∪ T') (coeffFamily M c)).natDegree

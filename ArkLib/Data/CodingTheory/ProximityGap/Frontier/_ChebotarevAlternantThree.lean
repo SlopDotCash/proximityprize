@@ -227,8 +227,7 @@ theorem alternantModP_three_at_three :
           - (minorExp ri ci 0 1 + minorExp ri ci 1 0 + minorExp ri ci 2 2).choose 3
           + (minorExp ri ci 0 1 + minorExp ri ci 1 2 + minorExp ri ci 2 0).choose 3
           + (minorExp ri ci 0 2 + minorExp ri ci 1 0 + minorExp ri ci 2 1).choose 3
-          - (minorExp ri ci 0 2 + minorExp ri ci 1 1 + minorExp ri ci 2 0).choose 3 : ℤ)
-        : ZMod 3) ≠ 0 := by
+          - (minorExp ri ci 0 2 + minorExp ri ci 1 1 + minorExp ri ci 2 0).choose 3 : ℤ) : ZMod 3) ≠ 0 := by
   decide
 
 /-! ## The headline: the `n = 3` instance of the crux (every prime). -/

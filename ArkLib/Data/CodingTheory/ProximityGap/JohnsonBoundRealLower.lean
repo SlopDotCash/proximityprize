@@ -195,8 +195,7 @@ theorem harith_tight_closed (domain : ι ↪ F) (k m : ℕ) (η δ : ℝ≥0)
         / (2 * (η : ℝ))⌉ : ℝ) 3) :
     (((gs_degree_bound k (Fintype.card ι) m / (k - 1) + 1)
         * max (Fintype.card ι * (constraintIndices m).card
-            * (gs_degree_bound k (Fintype.card ι) m / (k - 1))) (Fintype.card ι) : ℕ)
-      : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)
+            * (gs_degree_bound k (Fintype.card ι) m / (k - 1))) (Fintype.card ι) : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)
       ≤ ENNReal.ofReal
           (CodingTheory.ProximityGap.Hab25Core.Hab25Johnson.johnsonBoundReal domain k η δ) := by
   classical

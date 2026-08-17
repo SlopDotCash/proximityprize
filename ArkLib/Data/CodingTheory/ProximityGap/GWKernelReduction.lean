@@ -71,8 +71,7 @@ design budget caps the total direction mass.  Precisely, the GW proof factors as
 
 The conditional headline:
 
-  `cz25CoordFiberCap_of_interp_and_multiplicity`
-    : `{BRICK-I, BRICK-V}` + the (orchestrator-wired) conclusions of `{BRICK-W, BRICK-L}`
+  `cz25CoordFiberCap_of_interp_and_multiplicity` : `{BRICK-I, BRICK-V}` + the (orchestrator-wired) conclusions of `{BRICK-W, BRICK-L}`
       ⇒ `CZ25CoordFiberCap` (general `|L| > 1`).
 
 The composition discharges **everything except** the two analytic bricks `{I, V}`:

@@ -194,8 +194,7 @@ example (δ : ℝ≥0) :
     epsMCA (F := ZMod 5) (A := ZMod 5)
         (↑({fun _ => (0 : ZMod 5)} : Finset (Fin 3 → ZMod 5)) : Set (Fin 3 → ZMod 5)) δ ≤
       ((1 + (Fintype.card (Fin 3) -
-          (2 * ⌈(1 - δ) * (Fintype.card (Fin 3) : ℝ≥0)⌉₊ - Fintype.card (Fin 3))) * 1 : ℕ)
-          : ℝ≥0∞) / (Fintype.card (ZMod 5) : ℝ≥0∞) := by
+          (2 * ⌈(1 - δ) * (Fintype.card (Fin 3) : ℝ≥0)⌉₊ - Fintype.card (Fin 3))) * 1 : ℕ) : ℝ≥0∞) / (Fintype.card (ZMod 5) : ℝ≥0∞) := by
   refine epsMCA_le_of_interleavedList_card_le_doubledRadius _ pairClosed_zero_code δ 1
     (fun u₀ u₁ => ?_)
   refine le_trans (interleavedList_card_le_sq _ u₀ u₁ _) ?_

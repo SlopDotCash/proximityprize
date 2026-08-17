@@ -25,17 +25,14 @@ import ArkLib.ToMathlib.Polynomial.NatDegreeOfSum
 
 ## Main definitions
 
-* `foldWord`
-  : the folding function that is to be used by the verifier to fold
+* `foldWord` : the folding function that is to be used by the verifier to fold
     purported codeword using a random challenge.
-* `folding_preserves_distance`
-  : lemma 4.9 from [ACFY24]. "Soundness" of the folding operation.
+* `folding_preserves_distance` : lemma 4.9 from [ACFY24]. "Soundness" of the folding operation.
     If a purported codeword `f`
     has distance `δ` to a given RS-code then,
     with high probability over the choice of folding randomness,
     its folding also has distance `δ` to the "k-wise folded" RS-code.
-* `foldWord_codeword`
-  : a bonus theorem not present in [ACFY24]. "Completeness" of the folding operation.
+* `foldWord_codeword` : a bonus theorem not present in [ACFY24]. "Completeness" of the folding operation.
     folding a codeword is the same RS-encoding folding polynomial applied to
     the message.
 
@@ -358,8 +355,7 @@ private lemma interpolate_eq_folding_poly_eval
 theorem foldWord_codeword {d : ℕ}
     {α : F}
   (hk : k ≤ n)
-  {p : ReedSolomon.code (domain : Fin (2 ^ n) ↪ F) d}
-  :
+  {p : ReedSolomon.code (domain : Fin (2 ^ n) ↪ F) d} :
   foldWord domain p k α
     = evalOnPoints (domain.subdomain k)
         (FoldingPolynomial.polyFold (ReedSolomon.codewordToPoly p) (2 ^ k) α) := by

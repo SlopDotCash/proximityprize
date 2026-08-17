@@ -278,8 +278,7 @@ example :
     epsMCA (F := ZMod 5) (A := ZMod 5)
         (↑({fun _ => (0 : ZMod 5)} : Finset (Fin 3 → ZMod 5)) : Set (Fin 3 → ZMod 5)) 0 ≤
       ((1 + (Fintype.card (Fin 3) -
-          (2 * ⌈(1 - (0 : ℝ≥0)) * (Fintype.card (Fin 3) : ℝ≥0)⌉₊ - Fintype.card (Fin 3))) : ℕ)
-          : ℝ≥0∞) / (Fintype.card (ZMod 5) : ℝ≥0∞) := by
+          (2 * ⌈(1 - (0 : ℝ≥0)) * (Fintype.card (Fin 3) : ℝ≥0)⌉₊ - Fintype.card (Fin 3))) : ℕ) : ℝ≥0∞) / (Fintype.card (ZMod 5) : ℝ≥0∞) := by
   refine epsMCA_le_interleavedUD_of_quarter_dist _ pairClosed_zero_code 0 0
     (fun g₁ hg₁ g₂ hg₂ hne => ?_) (by norm_num)
   rw [Finset.mem_singleton] at hg₁ hg₂

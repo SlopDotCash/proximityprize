@@ -129,8 +129,7 @@ theorem gammaGenuine_eq_trunc_of_decoded_sliced_T {x₀ : F} {R : F[X][X][Y]}
         + disc.natDegree < Fintype.card F) :
     ProximityPrize.BCIKS20.GammaGenuine.gammaGenuine x₀ R H hHyp
       = (↑(PowerSeries.trunc k
-            (ProximityPrize.BCIKS20.GammaGenuine.gammaGenuine x₀ R H hHyp))
-          : PowerSeries (𝕃 H)) :=
+            (ProximityPrize.BCIKS20.GammaGenuine.gammaGenuine x₀ R H hHyp)) : PowerSeries (𝕃 H)) :=
   ArkLib.GenuinePpolyConverter.gammaGenuine_eq_trunc_of_graded_disc_corrected H hHyp hD hH
     hmonic hd2 hdHD hD_Rx0 hRgrade hrepT
     (BCIKS20.Claim510SlicedComposition.hvanish_of_decoded_sliced hHyp hξ hmonic.leadingCoeff
@@ -371,8 +370,7 @@ theorem branch_field_gap_at_monic_quadratic (hd2 : H.natDegree = 2)
     {k : ℕ}
     (htrunc : ProximityPrize.BCIKS20.GammaGenuine.gammaGenuine x₀ R H hHyp
       = (↑(PowerSeries.trunc k
-            (ProximityPrize.BCIKS20.GammaGenuine.gammaGenuine x₀ R H hHyp))
-          : PowerSeries (𝕃 H))) :
+            (ProximityPrize.BCIKS20.GammaGenuine.gammaGenuine x₀ R H hHyp)) : PowerSeries (𝕃 H))) :
     (¬ ∃ Ppoly : F[X][Y],
         polyToPowerSeries𝕃 H Ppoly
           = ProximityPrize.BCIKS20.GammaGenuine.gammaGenuine x₀ R H hHyp)

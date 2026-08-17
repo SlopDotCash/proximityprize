@@ -52,8 +52,7 @@ theorem deltaStar_dimFour_interleaved_pin_F4294967377 (t : ℕ) [NeZero t] :
     mcaDeltaStar (F := ZMod 4294967377) (A := Fin t → ZMod 4294967377)
         ((ReedSolomon.code (powDomain (526957872 : ZMod 4294967377)
             ArkLib.ProximityGap.KKH26DimGeneral.orderOf_526957872
-            (ne_zero_of_orderOf_eq ArkLib.ProximityGap.KKH26DimGeneral.orderOf_526957872)) (3 + 1)
-          : Set (Fin 16 → ZMod 4294967377)) ^⋈ (Fin t))
+            (ne_zero_of_orderOf_eq ArkLib.ProximityGap.KKH26DimGeneral.orderOf_526957872)) (3 + 1) : Set (Fin 16 → ZMod 4294967377)) ^⋈ (Fin t))
         ((((16 : ℕ).choose 5 / 5 : ℕ) : ℝ≥0∞) / (4294967377 : ℝ≥0∞))
       = 1 - (5 : ℝ≥0) / ((2 : ℝ≥0) ^ 4) := by
   haveI : NeZero (16 : ℕ) := ⟨by norm_num⟩

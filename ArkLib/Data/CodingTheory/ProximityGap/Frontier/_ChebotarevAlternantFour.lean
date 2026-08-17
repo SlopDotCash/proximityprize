@@ -175,8 +175,7 @@ theorem alternant_four_eq (ri ci : Fin 4 → ZMod p) :
         + (e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 0 + e ri ci 3 2).choose 6
         - (e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 2 + e ri ci 3 0).choose 6
         - (e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 0 + e ri ci 3 1).choose 6
-        + (e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0).choose 6
-      := by
+        + (e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0).choose 6 := by
   rw [alternant, show (4 : ℕ) * (4 - 1) / 2 = 6 from by norm_num]
   have hdp : detPoly ri ci
       =
@@ -203,8 +202,7 @@ theorem alternant_four_eq (ri ci : Fin 4 → ZMod p) :
         + X ^ (e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 0 + e ri ci 3 2)
         - X ^ (e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 2 + e ri ci 3 0)
         - X ^ (e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 0 + e ri ci 3 1)
-        + X ^ (e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0)
-      := by
+        + X ^ (e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0) := by
     rw [detPoly, det_fin_four]
     simp only [Matrix.of_apply, e, ← pow_add]
     ring
@@ -277,8 +275,7 @@ theorem sevenTwenty_alternantModP_eq (ri ci : Fin 4 → ZMod p) :
         + ((((e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 0 + e ri ci 3 2 : ℕ) : ZMod p)) * ((((e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 0 + e ri ci 3 2 : ℕ) : ZMod p)) - 1) * ((((e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 0 + e ri ci 3 2 : ℕ) : ZMod p)) - 2) * ((((e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 0 + e ri ci 3 2 : ℕ) : ZMod p)) - 3) * ((((e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 0 + e ri ci 3 2 : ℕ) : ZMod p)) - 4) * ((((e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 0 + e ri ci 3 2 : ℕ) : ZMod p)) - 5))
         - ((((e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 2 + e ri ci 3 0 : ℕ) : ZMod p)) * ((((e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 2 + e ri ci 3 0 : ℕ) : ZMod p)) - 1) * ((((e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 2 + e ri ci 3 0 : ℕ) : ZMod p)) - 2) * ((((e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 2 + e ri ci 3 0 : ℕ) : ZMod p)) - 3) * ((((e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 2 + e ri ci 3 0 : ℕ) : ZMod p)) - 4) * ((((e ri ci 0 3 + e ri ci 1 1 + e ri ci 2 2 + e ri ci 3 0 : ℕ) : ZMod p)) - 5))
         - ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 0 + e ri ci 3 1 : ℕ) : ZMod p)) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 0 + e ri ci 3 1 : ℕ) : ZMod p)) - 1) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 0 + e ri ci 3 1 : ℕ) : ZMod p)) - 2) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 0 + e ri ci 3 1 : ℕ) : ZMod p)) - 3) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 0 + e ri ci 3 1 : ℕ) : ZMod p)) - 4) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 0 + e ri ci 3 1 : ℕ) : ZMod p)) - 5))
-        + ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0 : ℕ) : ZMod p)) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0 : ℕ) : ZMod p)) - 1) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0 : ℕ) : ZMod p)) - 2) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0 : ℕ) : ZMod p)) - 3) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0 : ℕ) : ZMod p)) - 4) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0 : ℕ) : ZMod p)) - 5))
-      := by
+        + ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0 : ℕ) : ZMod p)) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0 : ℕ) : ZMod p)) - 1) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0 : ℕ) : ZMod p)) - 2) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0 : ℕ) : ZMod p)) - 3) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0 : ℕ) : ZMod p)) - 4) * ((((e ri ci 0 3 + e ri ci 1 2 + e ri ci 2 1 + e ri ci 3 0 : ℕ) : ZMod p)) - 5)) := by
     linear_combination
       key6 (e ri ci 0 0 + e ri ci 1 1 + e ri ci 2 2 + e ri ci 3 3)
       - key6 (e ri ci 0 0 + e ri ci 1 1 + e ri ci 2 3 + e ri ci 3 2)

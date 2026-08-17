@@ -246,8 +246,9 @@ driven entirely by the negative joint cross term (decoupling, dropping the cross
 theorem energy_recursion (mass : ℕ → ℝ) (n p : ℕ) (hn : 0 < n)
     (hrec : mass (2 * n) = 2 * mass n + 2 * (-((n : ℝ) * (n : ℝ))))
     (hp1 : (1 : ℝ) < p)
-    (hEn : mass n = (n : ℝ) * ((p : ℝ) - 1))   -- Parseval-frozen base: E(n)=1 ⇒ mass(n)=n(p−1)
-    : mass (2 * n) / (2 * (n : ℝ) * ((p : ℝ) - 1)) = 1 - (n : ℝ) / ((p : ℝ) - 1) := by
+    (hEn : mass n = (n : ℝ) * ((p : ℝ) - 1)) :
+    -- Parseval-frozen base: E(n)=1 ⇒ mass(n)=n(p−1)
+    mass (2 * n) / (2 * (n : ℝ) * ((p : ℝ) - 1)) = 1 - (n : ℝ) / ((p : ℝ) - 1) := by
   have hp1' : (0 : ℝ) < (p : ℝ) - 1 := by linarith
   have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
   rw [hrec, hEn]

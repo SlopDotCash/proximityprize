@@ -257,8 +257,7 @@ theorem clique_mcaEvent [Nonempty (Fin n)] (hord : orderOf ζ = n) (hb2 : 2 ≤ 
         _ ≤ (n : ℝ≥0) := by exact_mod_cast (by omega : b ≤ n)
     simp only [Fintype.card_fin, ge_iff_le]
     rw [← NNReal.coe_le_coe]
-    push_cast [NNReal.coe_sub hb1n, NNReal.coe_sub (by exact_mod_cast (by omega : 1 ≤ b)
-      : (1 : ℝ≥0) ≤ (b : ℝ≥0))]
+    push_cast [NNReal.coe_sub hb1n, NNReal.coe_sub (by exact_mod_cast (by omega : 1 ≤ b) : (1 : ℝ≥0) ≤ (b : ℝ≥0))]
     have hn0 : (0 : ℝ) < n := by exact_mod_cast hnpos
     rw [sub_mul, one_mul, div_mul_cancel₀ _ (ne_of_gt hn0)]
     have h1 : ((n - b + 1 : ℕ) : ℝ) ≤ (S.card : ℝ) := by exact_mod_cast hScard

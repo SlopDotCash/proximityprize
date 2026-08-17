@@ -122,8 +122,7 @@ theorem hyp_cm : ClaimA2.Hypotheses (0 : F5) Rcm Hcm := by
     exact ⟨Polynomial.X, by rw [Hcm, map_one]; ring⟩
   · rw [evalX_Rcm]
     have hder : Polynomial.derivative
-        (Polynomial.C Polynomial.X * Polynomial.X ^ 2 + Polynomial.X
-          : F5[X][Y])
+        (Polynomial.C Polynomial.X * Polynomial.X ^ 2 + Polynomial.X : F5[X][Y])
         = Polynomial.C Polynomial.X * (2 * Polynomial.X) + 1 := by
       simp [Polynomial.derivative_X_pow]
       ring

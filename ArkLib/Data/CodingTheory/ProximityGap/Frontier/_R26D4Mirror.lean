@@ -803,8 +803,7 @@ theorem shape_decomp (u v w : F)
               · calc ((X - C (-w⁻¹)) ^ 2
                       * ((X - C (-u⁻¹)) * (X - C (-v⁻¹)) * (X - C (-w⁻¹))) : F[X]).natDegree
                     ≤ ((X - C (-w⁻¹) : F[X]) ^ 2).natDegree
-                      + ((X - C (-u⁻¹)) * (X - C (-v⁻¹)) * (X - C (-w⁻¹))
-                          : F[X]).natDegree := natDegree_mul_le
+                      + ((X - C (-u⁻¹)) * (X - C (-v⁻¹)) * (X - C (-w⁻¹)) : F[X]).natDegree := natDegree_mul_le
                   _ ≤ 2 * (X - C (-w⁻¹) : F[X]).natDegree + 3 := by
                       have := natDegree_pow_le (p := (X - C (-w⁻¹) : F[X])) (n := 2)
                       rw [radical_natDegree]

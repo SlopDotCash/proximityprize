@@ -69,8 +69,7 @@ theorem RS_exists_bivariate_AB_of_goodCoeffsCurve_card_gt
                       (fun i => ∑ t : Fin (k + 1), Polynomial.C (u t i) * Polynomial.X ^ (t : ℕ)))
                     (Fin.append a b) = 0 := by
     simpa [e] using
-      (RS_exists_kernelVec_BW_homMatrix_of_goodCoeffsCurve_card_gt (k := k) (deg := deg) (domain
-        := domain)
+      (RS_exists_kernelVec_BW_homMatrix_of_goodCoeffsCurve_card_gt (k := k) (deg := deg) (domain := domain)
         (δ := δ) u hdeg hδ hS)
   rcases hker with ⟨a, b, ha_ne, ha_deg, hb_deg, hMul⟩
   let A0 : F[X][Y] := ∑ t : Fin (e + 1), Polynomial.monomial t.1 (a t)

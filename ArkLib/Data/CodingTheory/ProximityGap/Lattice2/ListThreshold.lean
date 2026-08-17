@@ -176,8 +176,7 @@ theorem listThreshold_unique (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0)
 theorem Lambda_eq_at_latticeIndex (C : Set (ι → F)) (m : ℕ) (δ : ℝ≥0) (hδ : δ ≤ 1) :
     (Lambda (C^⋈ (Fin m)) ((δ : ℝ≥0) : ℝ) : ENNReal) =
       (Lambda (C^⋈ (Fin m))
-        ((mcaLatticePoint (Fintype.card ι) (latticeIndexOf (ι := ι) δ hδ) : ℝ≥0) : ℝ)
-        : ENNReal) := by
+        ((mcaLatticePoint (Fintype.card ι) (latticeIndexOf (ι := ι) δ hδ) : ℝ≥0) : ℝ) : ENNReal) := by
   have hn : 0 < Fintype.card ι := Fintype.card_pos
   congr 1
   refine Lambda_eq_of_floor_eq (C^⋈ (Fin m)) ?_
@@ -221,8 +220,7 @@ theorem listThreshold_lt_ListUpperWitness (C : Set (ι → F)) (m : ℕ) (ε_sta
   have hsat : listSatisfies C m ε_star (latticeIndexOf (ι := ι) w.δ hδ) :=
     listSatisfies_downward_closed C m ε_star h (listThreshold_spec C m ε_star hne)
   have hb : (Lambda (C^⋈ (Fin m))
-      ((mcaLatticePoint (Fintype.card ι) (latticeIndexOf (ι := ι) w.δ hδ) : ℝ≥0) : ℝ)
-      : ENNReal) ≤ ((ε_star : ENNReal) * (Fintype.card F : ENNReal)) := hsat
+      ((mcaLatticePoint (Fintype.card ι) (latticeIndexOf (ι := ι) w.δ hδ) : ℝ≥0) : ℝ) : ENNReal) ≤ ((ε_star : ENNReal) * (Fintype.card F : ENNReal)) := hsat
   rw [← Lambda_eq_at_latticeIndex C m w.δ hδ] at hb
   exact absurd hb (not_le.mpr w.exceeds)
 

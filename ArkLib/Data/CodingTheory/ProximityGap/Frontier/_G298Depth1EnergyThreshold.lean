@@ -124,8 +124,7 @@ theorem A17_lt_zero : centeredCov 17 W17 ind17 < 0 := by rw [A17_neg]; norm_num
 
 /-- `W_G` for `G = ⟨3⟩ ≤ F₄₁^*` (order 8), tabulated over `ZMod 41` by residue. -/
 def W41 : ZMod 41 → ℤ := fun x =>
-  ((([0,3,0,3,2,2,0,2,1,3,1,1,2,0,3,2,2,1,0,2,2,2,2,0,1,2,2,3,0,2,1,1,3,1,2,0,2,2,3,0,3]
-      : List ℤ)).getD x.val 0)
+  ((([0,3,0,3,2,2,0,2,1,3,1,1,2,0,3,2,2,1,0,2,2,2,2,0,1,2,2,3,0,2,1,1,3,1,2,0,2,2,3,0,3] : List ℤ)).getD x.val 0)
 
 /-- The order-8 subgroup `G = ⟨3⟩ = {1,3,9,14,27,32,38,40} ≤ F₄₁^*`. -/
 def G41 : Finset (ZMod 41) := {1, 3, 9, 14, 27, 32, 38, 40}

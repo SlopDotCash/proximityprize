@@ -244,8 +244,7 @@ lemma hasseEvalAtRoot_eq_embedding_cleared_div (x₀ : F) (R : F[X][X][Y]) (i1 m
           (Ideal.Quotient.mk (Ideal.span {H_tilde' H})
             (hasseCoeffRepr𝒪_cleared H x₀ R i1 m
               (Bivariate.natDegreeY
-                (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))))
-            : 𝒪 H)
+                (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))))) : 𝒪 H)
         / liftToFunctionField (H := H) H.leadingCoeff
             ^ Bivariate.natDegreeY
                 (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))) := by
@@ -270,8 +269,7 @@ theorem hasseEvalAtRoot_mul_W_pow_eq_embedding_cleared
         (Ideal.Quotient.mk (Ideal.span {H_tilde' H})
           (hasseCoeffRepr𝒪_cleared H x₀ R i1 m
             (Bivariate.natDegreeY
-                (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))))
-          : 𝒪 H) := by
+                (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))))) : 𝒪 H) := by
   rw [hasseEvalAtRoot_eq_embedding_cleared_div]
   rw [div_mul_cancel₀ _ (pow_ne_zero _ (liftToFunctionField_leadingCoeff_ne_zero (H := H)))]
 

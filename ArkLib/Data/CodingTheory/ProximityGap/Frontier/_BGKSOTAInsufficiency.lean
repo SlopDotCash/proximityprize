@@ -24,8 +24,7 @@ graph `Cay(F_q, μ_n)`), `G = μ_n` the smooth `2`-power subgroup of size `n = 2
 * **The SOTA (named, NOT proved — its deep sum–product proof is not formalizable in-session):**
   the Bourgain–Glibichuk–Konyagin power-saving bound `M(n) ≤ C·n^{1−δ}` for some `δ > 0`
   (`n^{1−o(1)}`), sharpened by **di Benedetto** to the exponent `1 − δ ≈ 0.989` (so `δ ≈ 0.011`,
-  valid for `n ≥ q^{1/4}`-ish, **outside** the prize regime). We name it here as `BGKBound C ψ G δ
-  := ∀ b≠0, ‖η_b‖ ≤ C·n^{1−δ}` (identical in shape to the in-tree `BGKBridge.BGKBound`, kept
+  valid for `n ≥ q^{1/4}`-ish, **outside** the prize regime). We name it here as `BGKBound C ψ G δ := ∀ b≠0, ‖η_b‖ ≤ C·n^{1−δ}` (identical in shape to the in-tree `BGKBridge.BGKBound`, kept
   self-contained to minimize imports). It stays a `def … : Prop`; we never `sorry` or assert it.
 
 * **The prize floor (named, in-tree):** `ConvergenceHub.PrizeFloor ψ G C'`, i.e.

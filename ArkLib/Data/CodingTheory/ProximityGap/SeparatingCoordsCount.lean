@@ -140,8 +140,7 @@ theorem card_separates_ge {s : ℕ} {τ : ℕ → ℝ} {θ : ℝ}
             (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i₀) < H :=
           lt_of_le_of_ne inf_le_left (fun heq => hi₀.2 (heq ▸ inf_le_right))
         have hdrop : Module.finrank F (H ⊓ LinearMap.ker
-            (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i₀)
-            : Submodule F (ι → Fin s → F)) ≤ k := by
+            (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i₀) : Submodule F (ι → Fin s → F)) ≤ k := by
           have := Submodule.finrank_lt_finrank_of_lt hlt; omega
         exact ih _ (le_trans inf_le_left hHC) hdrop
       calc (1 - θ) ^ (k + 1) * (Fintype.card ι : ℝ) ^ (k + 1)

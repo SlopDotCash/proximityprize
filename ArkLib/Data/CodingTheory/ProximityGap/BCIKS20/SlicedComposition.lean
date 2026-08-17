@@ -111,8 +111,7 @@ theorem gammaGenuine_eq_trunc_of_decoded_sliced {x₀ : F} {R : F[X][X][Y]}
         + disc.natDegree < Fintype.card F) :
     ProximityPrize.BCIKS20.GammaGenuine.gammaGenuine x₀ R H hHyp
       = (↑(PowerSeries.trunc k
-            (ProximityPrize.BCIKS20.GammaGenuine.gammaGenuine x₀ R H hHyp))
-          : PowerSeries (𝕃 H)) :=
+            (ProximityPrize.BCIKS20.GammaGenuine.gammaGenuine x₀ R H hHyp)) : PowerSeries (𝕃 H)) :=
   GenuineTruncationFin.gammaGenuine_eq_trunc_of_graded_disc H hHyp hD hH hmonic hd2 hdHD
     hD_Rx0 hRgrade hrepG
     (hvanish_of_decoded_sliced hHyp hξ hmonic.leadingCoeff root hx hdeg hdvd hbase hsepT
