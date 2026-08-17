@@ -46,29 +46,30 @@ Start with [`README.md`](README.md) for project overview.
 - Promote recurring agent learnings into [`docs/wiki/`](docs/wiki/README.md); do not let stable
   guidance live only in ephemeral notes.
 
-## Active Challenge: Proximity Gap Grand Challenge (#334)
+## Active Challenge: Proximity Gap Grand Challenge (#1)
 
-If you are working on the Proximity Prize / proximity-gap formalization (issue #334, successor
-to #232), read the dedicated agent guide **before** touching that cone — it has the build recipe
-you need to avoid clogging the machine:
+If you are working on the Proximity Prize / proximity-gap formalization (standalone issue #1,
+successor to the historical ArkLib campaign), read the dedicated agent guide **before** touching
+that cone — it has the build recipe you need to avoid clogging the machine:
 
 - [`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`](ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md)
   (auto-loaded in that directory; `AGENTS.md` there is a copy): build/concurrency/honesty rules,
-  the #334 ledger, substrate API map, references, and pitfall catalogue.
+  the standalone #1 control plane, historical campaign ledger, substrate API map, references,
+  and pitfall catalogue.
 - **Fast iteration (mandatory):** that cone is ~3,500 files (3,483 `.lean` as of 2026-07-01);
   `lake build` traces a 3000+-job graph
   (~2-3 min even no-op) and takes the build lock (serializes all agents). Instead run
   `scripts/pg-warm.sh` ONCE (pre-builds the substrate oleans), then iterate per-attempt with
   `scripts/pg-iterate.sh <file>` (= `lake env lean`, ~30-75s, **no lock → fully parallel**).
-- **Start here:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/README.md` for lane-file
-  status (as of 2026-07-01: `A5` equivariance pin LANDED; `B3` Thorner-Zaman concrete ladder
-  LANDED through n=32768 with the asymptotic form still a named hypothesis; `B2`
-  curve-decodability OPEN), then the ranked live frontier in
-  `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6 and `PROXIMITY_PRIZE_WORKBENCH.lean` §5.
+- **Start here:** `docs/kb/deltastar-DOSSIER-v4-2026-08-16.md` for the current standalone
+  control plane and post-v3 result ledger, then
+  `ArkLib/Data/CodingTheory/ProximityGap/Frontier/README.md` and
+  `PROXIMITY_PRIZE_WORKBENCH.lean` §5 for the detailed lane history and substrate.
 - **Open-residual map (whole project):**
-  [`docs/wiki/residual-census.md`](docs/wiki/residual-census.md) — 100 strict residuals:
-  55 open / 44 discharged / 1 refuted (regenerated 2026-07-01); the "named residual"
-  convention is modularity, not incompleteness.
+  [`docs/wiki/residual-census.md`](docs/wiki/residual-census.md) — 117 strict residuals:
+  69 open / 47 discharged / 1 refuted (regenerated and audited 2026-08-16); the "named
+  residual" convention is modularity, not incompleteness, and the strict syntactic census is
+  not the production-theorem completion ledger.
 
 ## Deeper Docs
 

@@ -1,4 +1,4 @@
-# Proximity Gap — Frontier scratch lanes (#334 → #444 → #464 → #466)
+# Proximity Gap — Frontier scratch lanes (historical #334 → #444 → #464 → #466; standalone #1)
 
 Drop-in starting points for the actionable open targets. Each file:
 - imports ONLY its minimal substrate (fast `lake env lean`, ~30s, no build lock),
@@ -11,23 +11,28 @@ Drop-in starting points for the actionable open targets. Each file:
 lane state, not throwaway); copy `_TEMPLATE.lean` to start a new lane.
 Read the parent `CLAUDE.md` (build/concurrency/honesty rules) before touching anything.
 
-## Live targets (2026-07-01)
+## Live targets (standalone refresh 2026-08-16)
 
-**The current campaign is #466.**
+**The current campaign is
+[`elizaOS/proximityprize#1`](https://github.com/elizaOS/proximityprize/issues/1).** Historical
+issue #466 names the predecessor campaign and remains useful provenance, but it is not the current
+control plane. Read `docs/kb/deltastar-DOSSIER-v4-2026-08-16.md` first for the standalone status,
+post-v3 evidence ledger, and issue map.
 
 > **PRIMARY ENTRY POINT (rate-1/2 strip route, 2026-07-11):**
 > `docs/kb/deltastar-466-one-question-map-2026-07-11.md` — THE one-question state. The whole SYZ arc
 > has converged: the conditional δ* bracket now depends on exactly **three open Props**
-> (`uniformSylvester` reduced to the Hilbert–Burch gap `δ₂−δ₁ ≤ 1`; `StripSyzygyControlledCeiling`;
-> `hrank`), each a face of the **syzygy structure of the witness-support family `{Sᵢ} ⊂ μ_n`**, which
+> (`uniformSylvester` reduced to near-balance `ι ≤ 1`, with parity-corrected generator gap `≤ 2`
+> for even total degree and `{1,3}` for odd total degree; `StripSyzygyControlledCeiling`; `hrank`),
+> each a face of the **syzygy structure of the witness-support family `{Sᵢ} ⊂ μ_n`**, which
 > SYZ49 identifies with the BGK level set. The entire μ-basis classical column beneath F1 is now
 > proved (SYZ61→SYZ65). Read that map first, then the SYZ54+SYZ67 addenda in
 > `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6.
 
-The ranked live frontier (CORE Paley/BGK line) is
-`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6 (as re-ranked by the §14/§15 round logs) and
-`../PROXIMITY_PRIZE_WORKBENCH.lean` §5 — go there for what to attack; this README only records
-the status of the original #334-era lane files below.
+The detailed historical frontier (CORE Paley/BGK line) is
+`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6 and
+`../PROXIMITY_PRIZE_WORKBENCH.lean` §5. Reconcile those lanes against dossier v4 before attacking
+one; this README mostly records the accumulated historical lane files below.
 
 **2026-07-10/11 state change — read dossier v3 §42 first.** The r=3 B-side rung is now the
 lossless graded ladder `OffDiagQuadrupleBound ⟹ FourthMomentBound ⟹ DistStratumEnergyBound`
@@ -603,7 +608,7 @@ depth-five lane = a 2⁹ sup-bound saving over trivial, i.e. `‖η_b‖ ≤ |G|
 | `CurveDecodability.lean` | [GG25] Def 3.1 curve decodability → [Jo26] half | OPEN, multi-brick (dossier v3 §6 Tier 3; folded-RS capacity pin via `curveDecodable_of_structured_close_set_budget` is the live adjacent lane). **RE-PLAN TARGET (2026-07-10):** GGSW arXiv:2607.08516 (Jul 9) casts curve-decodability directly as a row-span-constrained LCL property with black-box transference from subspace designs — formalize against THAT formulation, not the [Jo26] proxy; see `docs/kb/deltastar-466-litsweep-2026-07-10.md`. ([JLR 2601.10047] is withdrawn, subsumed by GG25 — update stale citations.) |
 | `EquivariancePin.lean` | Lean equivariance pin for the n=12 orbit reduction | LANDED → `../MCAEquivariance.lean` (engine) + `../MCAEigenstackOrbitLaw.lean` (orbit law, counting) |
 
-Historical note: predecessors #334/#357/#444/#464 are CLOSED, each distilled into its
-successor; the `_`-prefixed files in this directory are the accumulated lane record of those
-campaigns plus the live #466 lanes. Check `../DISPROOF_LOG.md` (`466-r*` round tags, still
+Historical note: predecessors #334/#357/#444/#464 are closed, and #466 is the final predecessor
+campaign now migrated to standalone issue #1. The `_`-prefixed files in this directory are the
+accumulated lane record. Check `../DISPROOF_LOG.md` (`466-r*` historical round tags, still
 accumulating) before re-attempting anything.
