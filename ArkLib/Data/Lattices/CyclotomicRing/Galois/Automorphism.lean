@@ -202,7 +202,7 @@ theorem galoisAut_mul (α i : ℕ) (hi : Odd i) (a b : Rq (powTwoCyclotomic (R :
 
 /-! ## Exponent periodicity (`σ_n` depends only on `n mod 2^{α+1}`) -/
 
--- TODO this is not the right place for this.
+
 omit [DecidableEq R] in
 /-- **(C-1)** `X^{2^{α+1}} ≡ 1` in the quotient, since `X^{2d} - 1 = (X^d - 1)(X^d + 1)`. -/
 theorem mk_X_pow_conductor_eq_one (α : ℕ) :
