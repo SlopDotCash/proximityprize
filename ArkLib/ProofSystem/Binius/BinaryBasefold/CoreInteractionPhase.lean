@@ -389,23 +389,23 @@ def nonLastSingleBlockOracleVerifier (bIdx : Fin (ℓ / ϑ - 1)) :=
           (pSpec := pSpecFoldCommit 𝔽q β ⟨↑bIdx * ϑ + (ϑ - 1), h1⟩)
           (h_stmtIn := by
             apply Statement.of_fin_eq
-            simp? [Fin.castSucc, Fin.eta])
+            simp only [Fin.castSucc, Fin.eta])
           (h_stmtOut := by
             apply Statement.of_fin_eq
-            ext; simp? [Fin.val_succ]
+            ext; simp only [Fin.val_succ]
             rw [Nat.add_assoc, Nat.sub_add_cancel (by exact NeZero.one_le),
               Nat.add_mul, Nat.one_mul])
           (h_idxIn := by
             apply OracleStatement.idx_eq
-            simp? [Fin.castSucc, Fin.eta])
+            simp only [Fin.castSucc, Fin.eta])
           (h_idxOut := by
             apply OracleStatement.idx_eq
-            ext; simp? [Fin.val_succ]
+            ext; simp only [Fin.val_succ]
             rw [Nat.add_assoc, Nat.sub_add_cancel (by exact NeZero.one_le),
               Nat.add_mul, Nat.one_mul])
           (h_ostmtIn := by
             apply OracleStatement.heq_of_fin_eq
-            simp? [Fin.castSucc, Fin.eta])
+            simp only [Fin.castSucc, Fin.eta])
           (h_ostmtOut := by
             apply OracleStatement.heq_of_fin_eq
             ext; simp only [Fin.succ_mk]
@@ -472,11 +472,11 @@ def lastBlockOracleVerifier :=
       (pSpec := pSpecLastBlock (L:=L) (ϑ:=ϑ))
       (h_stmtIn := by
         apply Statement.of_fin_eq
-        ext; simp?)
+        ext; simp)
       (h_stmtOut := by
         apply Statement.of_fin_eq
         ext
-        simp? [Fin.val_last]
+        simp only [Fin.val_last]
         have : bIdx * ϑ + ϑ = ℓ := by
           have h_div : ϑ ∣ ℓ := hdiv.out
           have h_mod : ℓ % ϑ = 0 := Nat.mod_eq_zero_of_dvd h_div
@@ -486,11 +486,11 @@ def lastBlockOracleVerifier :=
         simp only [this])
       (h_idxIn := by
         apply OracleStatement.idx_eq
-        ext; simp?)
+        ext; simp)
       (h_idxOut := by
         apply OracleStatement.idx_eq
         ext
-        simp? [Fin.val_last]
+        simp only [Fin.val_last]
         have : bIdx * ϑ + ϑ = ℓ := by
           have h_div : ϑ ∣ ℓ := hdiv.out
           have h_mod : ℓ % ϑ = 0 := Nat.mod_eq_zero_of_dvd h_div
@@ -500,7 +500,7 @@ def lastBlockOracleVerifier :=
         simp only [this])
       (h_ostmtIn := by
         apply OracleStatement.heq_of_fin_eq
-        ext; simp?)
+        ext; simp)
       (h_ostmtOut := by
         apply OracleStatement.heq_of_fin_eq
         ext
