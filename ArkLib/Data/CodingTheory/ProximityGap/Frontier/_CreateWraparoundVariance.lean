@@ -152,7 +152,7 @@ theorem wrapVariance_eq (s : Finset Ω) (W : Ω → ℝ) (hs : s.Nonempty) :
   rw [Finset.sum_const, ← Finset.mul_sum, nsmul_eq_mul]
   -- (Σ W² - 2μ·Σ W + card·μ²)/card = (Σ W²)/card - μ²
   rw [div_eq_iff hc, sub_mul, div_mul_cancel₀ _ hc]
-  -- ΣW² - 2μ·ΣW + card·μ² = ΣW² - μ²·card ; use ΣW = μ·card
+  -- ΣW² - 2μ·ΣW + card·μ² = ΣW² - μ²·card; use ΣW = μ·card
   rw [← hμsum]
   ring
 

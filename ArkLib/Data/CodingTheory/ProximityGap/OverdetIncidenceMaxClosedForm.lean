@@ -15,7 +15,7 @@ makes it matter for the δ* decoupling.
 
 ## Background (the δ* decoupling, char-0 / p-independent)
 
-The far-line incidence `I(a,b ; r = n−s)` counts the `γ` with `x^a + γ x^b` within distance `r`
+The far-line incidence `I(a,b; r = n−s)` counts the `γ` with `x^a + γ x^b` within distance `r`
 of `RS[μ_n, k]`. For `s − k ≥ 2` (over-determined) it is **p-independent** (= its char-0 value,
 proven via `disc(x^{2^μ} − 1) = ± n^n` a power of `2`), so the binding witness size
 `s* = min { s : I(s) ≤ budget }` is computed in pure cyclotomic char-0 data and δ* decouples from

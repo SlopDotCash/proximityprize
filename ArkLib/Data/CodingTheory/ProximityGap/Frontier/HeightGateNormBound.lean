@@ -267,7 +267,7 @@ theorem block_norm_exceeds_prize {k : ℕ} (hk : 11 ≤ k) {ζ : L} (hζ : IsPri
     [IsCyclotomicExtension {2 ^ k} ℚ L] (hirr : Irreducible (cyclotomic (2 ^ k) ℚ)) :
     (prizePrimeLB (2 ^ k) : ℚ) < Algebra.norm ℚ (∑ i ∈ range (2 ^ (k - 1)), ζ ^ i) := by
   rw [block_sum_norm (by omega : 2 ≤ k) hζ hirr]
-  -- prizePrimeLB(2^k) = 2^k · 2^128 = 2^(k+128) ; block norm = 2^(2^{k-1}-1).
+  -- prizePrimeLB(2^k) = 2^k · 2^128 = 2^(k+128); block norm = 2^(2^{k-1}-1).
   -- For k ≥ 11: k+129 ≤ 2^{k-1} (linear_le_two_pow_pred) ⟹ k+128 < 2^{k-1}-1.
   have hstrict : k + 128 < 2 ^ (k - 1) - 1 := by
     have h1 : k + 130 ≤ 2 ^ (k - 1) := linear_le_two_pow_pred hk

@@ -245,7 +245,7 @@ theorem restrictedMatchRecursionPartitionForm_eq_ξfree_of_leadingCoeff_one
   set B := embeddingOf𝒪Into𝕃 H (B_coeff H x₀ R i1 lam) with hBdef
   set P := embeddingOf𝒪Into𝕃 H (partitionProd lam (βHensel H x₀ R hHyp)) with hPdef
   set dl := 2 * (t + 1 - i1) - sigmaLambda lam with hdldef
-  -- LHS term: `(ξ^g / ξ^dl) * B * P / ξ^G` ; RHS term: `ξ⁻¹ * (B * P / ξ^dl)`,
+  -- LHS term: `(ξ^g / ξ^dl) * B * P / ξ^G`; RHS term: `ξ⁻¹ * (B * P / ξ^dl)`,
   -- where `g = 2(t+1)-2`, `G = 2(t+1)-1`, and `ξ^g/ξ^G = ξ⁻¹` by `hglob`.
   rw [← hξdef]
   calc

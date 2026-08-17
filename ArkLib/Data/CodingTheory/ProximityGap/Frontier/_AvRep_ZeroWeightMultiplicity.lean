@@ -94,7 +94,7 @@ lemma factorial_two_mul_split (c : ℕ) :
   | succ k =>
     have h2 : 2 * (k + 1) = (2 * k + 1) + 1 := by ring
     rw [h2, Nat.factorial_eq_mul_doubleFactorial]
-    -- ((2k+1)+1)! = ((2k+1)+1)‼ * (2k+1)‼ ; ((2k+1)+1)‼ = (2(k+1))‼ = 2^{k+1}(k+1)!
+    -- ((2k+1)+1)! = ((2k+1)+1)‼ * (2k+1)‼; ((2k+1)+1)‼ = (2(k+1))‼ = 2^{k+1}(k+1)!
     have e1 : (2 * k + 1 + 1)‼ = (2 * (k + 1))‼ := by congr 1
     have e2 : (2 * k + 1)‼ = (2 * (k + 1) - 1)‼ := by congr 1
     rw [e1, Nat.doubleFactorial_two_mul, e2]

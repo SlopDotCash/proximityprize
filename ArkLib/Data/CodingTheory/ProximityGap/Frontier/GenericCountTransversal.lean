@@ -212,7 +212,7 @@ theorem buildConsistent_slot_injective_iff (t : Fin r → F) :
   · rintro ⟨hci, hnsp⟩
     -- slot-injectivity from class-injectivity: the 2r values {±t k} are pairwise distinct.
     set e := (lowerHalf σ).orderIsoOfFin (card_lowerHalf hσ) with he
-    -- index of a slot's transversal: lower slot e k ↦ k ; upper slot ↦ partner's k.
+    -- index of a slot's transversal: lower slot e k ↦ k; upper slot ↦ partner's k.
     -- We show: c a = c b → a = b by reducing both to transversal indices.
     intro a b hab
     -- classify a

@@ -149,7 +149,7 @@ theorem derivative_gaussOP (k : ℕ) :
           Polynomial.derivative_C, sub_zero]
       push_cast; module
   | more j ih1 ih2 =>
-      -- P j : π_{j+1}' = (j+1)π_j ;  P (j+1) : π_{j+2}' = (j+2)π_{j+1} ;  prove P (j+2).
+      -- P j : π_{j+1}' = (j+1)π_j;  P (j+1) : π_{j+2}' = (j+2)π_{j+1};  prove P (j+2).
       rw [show j + 2 + 1 = (j + 1) + 2 from rfl, gaussOP_succ_succ,
           derivative_sub, derivative_mul, Polynomial.derivative_X, one_mul,
           ih2, derivative_C_mul, ih1]

@@ -296,7 +296,7 @@ theorem hSig_of_regime {χ : MulChar F ℂ} {ψ : AddChar F ℂ} (hψ : ψ.IsPri
     nlinarith [h1, h2, hs0]
   -- n·q ≤ 2·(nq − n² − (m−1)n(n−1)s)  in this regime
   have hSig0 : (0 : ℝ) ≤ ∑ b ∈ Gchi χ, ‖eta ψ G b‖ ^ 2 := by positivity
-  -- (m−1)(n−1)s ≤ mns ≤ (s/4)·s = q/4 ; n ≤ s/(8) ≤ q/4
+  -- (m−1)(n−1)s ≤ mns ≤ (s/4)·s = q/4; n ≤ s/(8) ≤ q/4
   have hterm1 : (m - 1) * (n * (n - 1) * s) ≤ n * q / 4 := by
     -- (m−1)(n−1)s ≤ m·n·s ≤ (s/4)·s = q/4, multiplied by n
     have h1 : (m - 1) * (n - 1) * s ≤ m * n * s := by nlinarith

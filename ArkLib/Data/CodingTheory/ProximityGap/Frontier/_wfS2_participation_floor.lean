@@ -84,7 +84,7 @@ theorem participation_floor_mul (ψ : AddChar F ℂ) (G : Finset F) :
     simp only [hS, spectralSupport, Finset.mem_filter, Finset.mem_univ, true_and, not_not] at hb
     rw [hb, norm_zero]; ring
   rw [hA, hB]
-  -- apply Chebyshev/Cauchy–Schwarz with f b = ‖η_b‖² ; note (‖η_b‖²)² = ‖η_b‖⁴
+  -- apply Chebyshev/Cauchy–Schwarz with f b = ‖η_b‖²; note (‖η_b‖²)² = ‖η_b‖⁴
   have hcs := sq_sum_le_card_mul_sum_sq (s := S) (f := fun b => ‖eta ψ G b‖ ^ 2)
   have hpow : ∀ b : F, (‖eta ψ G b‖ ^ 2) ^ 2 = ‖eta ψ G b‖ ^ 4 := by
     intro b; ring

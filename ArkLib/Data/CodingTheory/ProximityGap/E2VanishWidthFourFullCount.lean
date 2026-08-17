@@ -218,7 +218,7 @@ theorem widthFour_e2zero_count_arith {n : ℕ} (hn : 4 ∣ n) (hn4 : 4 ≤ n) :
   have hsub4 : 4 * (1 + j) - 4 = 4 * j := by omega
   have hsub3 : 4 * (1 + j) - 3 = 4 * j + 1 := by omega
   rw [hsub4, hsub3]
-  -- LHS = 4(1+j)·4j/4 + 4(1+j)/4 ;  RHS = 4(1+j)·(4j+1)/4
+  -- LHS = 4(1+j)·4j/4 + 4(1+j)/4;  RHS = 4(1+j)·(4j+1)/4
   have hA : 4 * (1 + j) * (4 * j) / 4 = (1 + j) * (4 * j) := by
     rw [show 4 * (1 + j) * (4 * j) = 4 * ((1 + j) * (4 * j)) by ring,
         Nat.mul_div_cancel_left _ (by norm_num : 0 < 4)]

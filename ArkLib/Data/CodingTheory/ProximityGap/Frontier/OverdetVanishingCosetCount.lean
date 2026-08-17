@@ -182,7 +182,7 @@ has `j ≥ log₂ r + 1`, i.e. `dyadicBlock r ≤ 2^j`. -/
 theorem dyadicBlock_le (r j : ℕ) (hr : 1 ≤ r) (hj : r < 2 ^ j) : dyadicBlock r ≤ 2 ^ j := by
   unfold dyadicBlock
   apply Nat.pow_le_pow_right (by decide)
-  -- log₂ r + 1 ≤ j  ⟺  log₂ r < j ; from r < 2^j we get log₂ r < j (Nat.log_lt_of_lt_pow')
+  -- log₂ r + 1 ≤ j  ⟺  log₂ r < j; from r < 2^j we get log₂ r < j (Nat.log_lt_of_lt_pow')
   have : Nat.log 2 r < j := by
     rcases Nat.eq_zero_or_pos j with hj0 | hjpos
     · subst hj0; simp at hj; omega

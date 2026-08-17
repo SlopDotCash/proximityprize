@@ -220,7 +220,7 @@ We witness: for a flat profile (`T` ones) the energy is `T`; for a concentrated 
 value `T`) the energy is `T²`. With `T ≥ 2`, `T < T²`, so equal total count is consistent with
 energy `T` AND with energy `T²` — the count/valuation does not determine the energy. -/
 theorem kurihara_is_valuation_not_count (T : ℝ) (hT : 2 ≤ T) :
-    -- flat profile energy = T (total count T, all counts 1) ; concentrated energy = T²
+    -- flat profile energy = T (total count T, all counts 1); concentrated energy = T²
     -- both have total count T, but the energies differ
     T < T ^ 2 := by
   have h1 : (1 : ℝ) < T := by linarith

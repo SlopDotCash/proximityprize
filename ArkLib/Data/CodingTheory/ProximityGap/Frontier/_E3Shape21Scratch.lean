@@ -195,7 +195,7 @@ theorem balanced_valued_count (x y : F)
         -- x-positions = P
         have hxpos : ∀ i, (c i = x ∨ c i = -x) ↔ i ∈ P := by
           intro i; rw [← hpos]; simp [Finset.mem_filter]
-        -- on P, c is ±x ; off P, c is ±y
+        -- on P, c is ±x; off P, c is ±y
         have hP : ∀ i, i ∈ P → (c i = x ∨ c i = -x) := fun i hi => (hxpos i).mpr hi
         have hPc : ∀ i, i ∉ P → (c i = y ∨ c i = -y) := by
           intro i hi

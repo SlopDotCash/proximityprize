@@ -261,7 +261,7 @@ theorem reach_slack_exists (ρ₀ B₀ slack : ℝ) (hρ0 : 0 ≤ ρ₀) (hρ1 :
     ∃ L : ℕ, ρ₀ ^ L * B₀ ≤ slack := by
   obtain ⟨L, hL⟩ := exists_pow_lt_of_lt_one (by positivity : (0:ℝ) < slack / B₀) hρ1
   refine ⟨L, ?_⟩
-  -- hL : ρ₀ ^ L < slack / B₀ ; multiply by B₀ > 0
+  -- hL : ρ₀ ^ L < slack / B₀; multiply by B₀ > 0
   rw [lt_div_iff₀ hB0] at hL
   linarith [hL]
 

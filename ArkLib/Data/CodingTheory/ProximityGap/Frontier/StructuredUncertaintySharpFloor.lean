@@ -176,7 +176,7 @@ theorem poly_root_even {μ e j₀ : ℕ} (he : e ≤ μ - 1) (hμ : 1 ≤ μ) (h
     {ζ : F} (hζ : IsPrimitiveRoot ζ (2 ^ μ)) {j : ℕ}
     (hj : (ζ ^ j) ^ (2 ^ e) = (ζ ^ j₀) ^ (2 ^ e)) : Even j := by
   have hmod : j ≡ j₀ [MOD 2 ^ (μ - e)] := (poly_root_iff_modEq (by omega) hζ j).mp hj
-  -- 2 ∣ 2^{μ-e} since μ-e ≥ 1, so j ≡ j₀ mod 2 ; with j₀ even ⟹ j even.
+  -- 2 ∣ 2^{μ-e} since μ-e ≥ 1, so j ≡ j₀ mod 2; with j₀ even ⟹ j even.
   have h2dvd : (2 : ℕ) ∣ 2 ^ (μ - e) := dvd_pow_self 2 (by omega)
   have hmod2 : j ≡ j₀ [MOD 2] := hmod.of_dvd h2dvd
   have hjm : j % 2 = j₀ % 2 := hmod2

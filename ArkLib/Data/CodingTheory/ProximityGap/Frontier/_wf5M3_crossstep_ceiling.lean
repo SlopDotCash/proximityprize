@@ -119,7 +119,7 @@ def LamLeungCeiling (G : Finset F) (r : ℕ) : Prop :=
 `rEnergy` count over the single empty tuple. -/
 theorem lamLeungCeiling_zero (G : Finset F) : LamLeungCeiling G 0 := by
   unfold LamLeungCeiling
-  -- (2*0-1)‼ = 0‼ = 1 ; n^0 = 1 ; RHS = 1 ; and E_0 = 1 (substrate `rEnergy_zero`)
+  -- (2*0-1)‼ = 0‼ = 1; n^0 = 1; RHS = 1; and E_0 = 1 (substrate `rEnergy_zero`)
   rw [ArkLib.ProximityGap.CharPDeepMomentTail.rEnergy_zero]
   -- goal: 1 ≤ (2*0-1)‼ * G.card^0 = 0‼ * 1 = 1
   have h1 : (2 * 0 - 1 : ℕ) = 0 := by norm_num
@@ -133,7 +133,7 @@ theorem doubleFactorial_step (r : ℕ) :
   cases r with
   | zero => decide
   | succ k =>
-    -- 2*(k+1+1)-1 = 2k+3 = (2k+1)+2 ; (2k+3)‼ = (2k+3)·(2k+1)‼
+    -- 2*(k+1+1)-1 = 2k+3 = (2k+1)+2; (2k+3)‼ = (2k+3)·(2k+1)‼
     have h1 : 2 * (k + 1 + 1) - 1 = (2 * k + 1) + 2 := by omega
     have h2 : 2 * (k + 1) - 1 = 2 * k + 1 := by omega
     rw [h1, h2, Nat.doubleFactorial_add_two]

@@ -353,7 +353,7 @@ theorem variance_le_of_pairEquidist {m : ℕ} (φ : Fin m → B → ℝ) (δ : �
       ≤ 2 * m + 2 * δ * (m * (2 * m - 1)) := by
   obtain ⟨hdiff, hsum, hdbl⟩ := h
   rw [secondMoment_decoupling (fun k b => 2 * Real.cos (φ k b))]
-  -- diagonal ≤ ∑_k (2 + 2δ) = 2m + 2mδ ;  off-diag ≤ ∑_j ∑_{k≠j} (2δ+2δ) = 4δ·m(m−1)
+  -- diagonal ≤ ∑_k (2 + 2δ) = 2m + 2mδ;  off-diag ≤ ∑_j ∑_{k≠j} (2δ+2δ) = 4δ·m(m−1)
   have hdiag : (∑ k : Fin m, avg (fun b => (2 * Real.cos (φ k b)) ^ 2))
       ≤ ∑ _k : Fin m, (2 + 2 * δ) := by
     apply Finset.sum_le_sum; intro k _
@@ -422,7 +422,7 @@ theorem variance_ge_of_pairEquidist {m : ℕ} (φ : Fin m → B → ℝ) (δ : �
       ≤ avg (fun b => (∑ k : Fin m, 2 * Real.cos (φ k b)) ^ 2) := by
   obtain ⟨hdiff, hsum, hdbl⟩ := h
   rw [secondMoment_decoupling (fun k b => 2 * Real.cos (φ k b))]
-  -- diagonal ≥ ∑_k (2 − 2δ) = 2m − 2mδ ;  off-diag ≥ ∑_j ∑_{k≠j} (−2δ−2δ) = −4δ·m(m−1)
+  -- diagonal ≥ ∑_k (2 − 2δ) = 2m − 2mδ;  off-diag ≥ ∑_j ∑_{k≠j} (−2δ−2δ) = −4δ·m(m−1)
   have hdiag : (∑ _k : Fin m, (2 - 2 * δ : ℝ))
       ≤ ∑ k : Fin m, avg (fun b => (2 * Real.cos (φ k b)) ^ 2) := by
     apply Finset.sum_le_sum; intro k _

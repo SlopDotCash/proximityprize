@@ -260,7 +260,7 @@ def septicTargetWeights : Fin 1 -> F := fun _ => 7
 noncomputable def septicResonanceCount (G : Finset F) : Nat :=
   mixedDilationCollisionCount G septicSourceWeights septicTargetWeights
 
-/-- The evident diagonal resonances `(y,...,y ; y)`, one for every `y` in `G`. -/
+/-- The evident diagonal resonances `(y,...,y; y)`, one for every `y` in `G`. -/
 noncomputable def septicDiagonalPairs (G : Finset F) :
     Finset ((Fin 7 -> F) × (Fin 1 -> F)) :=
   G.image fun y => ((fun _ : Fin 7 => y), (fun _ : Fin 1 => y))

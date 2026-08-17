@@ -78,7 +78,7 @@ theorem pow_gcd_of_pow_eq_of_pow_n {x c : F} (hx : x ≠ 0) {d n : ℕ}
   -- compute via zpow on the nonzero x
   have hxz : (x : F) ^ (Nat.gcd d n : ℤ) = c ^ (Nat.gcdA d n) := by
     rw [hbez, zpow_add₀ hx, zpow_mul, zpow_mul]
-    -- x ^ (d : ℤ) = x ^ d = c ;  x ^ (n : ℤ) = x ^ n = 1
+    -- x ^ (d : ℤ) = x ^ d = c;  x ^ (n : ℤ) = x ^ n = 1
     have h1 : (x : F) ^ (d : ℤ) = c := by rw [zpow_natCast, hd]
     have h2 : (x : F) ^ (n : ℤ) = 1 := by rw [zpow_natCast, hn]
     rw [h1, h2, one_zpow, mul_one]

@@ -264,7 +264,7 @@ The direct cyclotomic-energy values `E_r^{char0}(μ_4)` (computed exactly off-li
 `besselE r 2`. We confirm the first nontrivial value `r = 2`: `E_2^{char0}(μ_4) = 36`. -/
 theorem besselIdentity_verification : besselE 2 2 = 36 := by
   unfold besselE
-  -- [x^4] I0^2 = sum_{a+b=2} 1/(a!)^2 (b!)^2 = 1/4 + 1 + 1/4 = 3/2 ; 4! * 3/2 = 36
+  -- [x^4] I0^2 = sum_{a+b=2} 1/(a!)^2 (b!)^2 = 1/4 + 1 + 1/4 = 3/2; 4! * 3/2 = 36
   rw [show (2 * 2 : ℕ) = 4 from rfl]
   rw [pow_two, PowerSeries.coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
   rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,

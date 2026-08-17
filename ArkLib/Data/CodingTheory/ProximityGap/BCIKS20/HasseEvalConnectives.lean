@@ -96,7 +96,7 @@ theorem evalX_hasseDerivX_hasseDerivY_eq
     (hcoeff : ∀ i, Pshift.coeff i = (i + m).choose m • P.coeff (i + m)) :
     Pshift = hasseDeriv m P := by
   ext i
-  -- LHS: `(i+m).choose m • P.coeff (i+m)` ; RHS (`hasseDeriv_coeff`): `↑((i+m).choose m) * P.coeff (i+m)`.
+  -- LHS: `(i+m).choose m • P.coeff (i+m)`; RHS (`hasseDeriv_coeff`): `↑((i+m).choose m) * P.coeff (i+m)`.
   rw [hcoeff i, hasseDeriv_coeff, nsmul_eq_mul]
 
 /-! ## Part 2 — (B2) `hasseEvalAtRoot` as an ordinary `hasseDeriv` evaluation.

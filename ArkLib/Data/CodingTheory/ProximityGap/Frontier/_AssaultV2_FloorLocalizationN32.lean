@@ -325,7 +325,7 @@ theorem floor_closes_by_linnik
   -- but the smallest prime is below n^4 ≤ p, contradiction
   have hsmall : smallestPrime1ModN (2 ^ a) (2 ^ (5 * a)) < (2 ^ a) ^ 4 := hLinnik a ha
   rw [heq] at hprize
-  -- hprize : (2^a)^4 ≤ smallestPrime ; hsmall : smallestPrime < (2^a)^4 — contradiction
+  -- hprize : (2^a)^4 ≤ smallestPrime; hsmall : smallestPrime < (2^a)^4 — contradiction
   exact absurd (lt_of_lt_of_le hsmall hprize) (lt_irrefl _)
 
 /-! ## Capstone export -/

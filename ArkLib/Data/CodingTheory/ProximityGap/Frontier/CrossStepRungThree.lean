@@ -130,7 +130,7 @@ theorem crossStepBound_three_of_exact_moments (G : Finset F) (hn : 8 ≤ G.card)
   -- n·E_3 = n·(15n³−45n²+40n) = 15n⁴ − 45n³ + 40n²  (faithful ℕ subtraction at n ≥ 8)
   have hmul : n * rEnergy G 3 = 15 * n ^ 4 - 45 * n ^ 3 + 40 * n ^ 2 := by
     rw [hE3]
-    -- n·((15n³−45n²)+40n) ; push the multiplication through the ℕ subtraction/addition
+    -- n·((15n³−45n²)+40n); push the multiplication through the ℕ subtraction/addition
     have e1 : 15 * n ^ 3 - 45 * n ^ 2 + 40 * n
             = 15 * n ^ 3 + 40 * n - 45 * n ^ 2 := by
       have : 45 * n ^ 2 ≤ 15 * n ^ 3 := by nlinarith [hc8, sq_nonneg n]

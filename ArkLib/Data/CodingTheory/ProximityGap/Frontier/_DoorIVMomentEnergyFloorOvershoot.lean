@@ -103,7 +103,7 @@ theorem normSq_energyMoment_one_le_normEnergyMoment_two
   set N : ℝ := (s.card : ℝ) with hN
   set a : ℝ := energyMoment f s 1 with ha
   set b : ℝ := energyMoment f s 2 with hb
-  -- h : a^2 ≤ N * b ;  goal : (a / N)^2 ≤ b / N
+  -- h : a^2 ≤ N * b;  goal : (a / N)^2 ≤ b / N
   have hN2 : (0 : ℝ) < N ^ 2 := by positivity
   -- Multiply out: it suffices to show a^2 * N ≤ b * N^2, which follows from a^2 ≤ N*b by * N.
   rw [div_pow, div_le_div_iff₀ hN2 hcard]

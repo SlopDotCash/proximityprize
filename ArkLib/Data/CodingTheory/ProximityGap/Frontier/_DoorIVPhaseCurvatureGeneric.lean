@@ -33,9 +33,9 @@ PROBE (`scripts/probes/probe_dooriv_worstb_phase_curvature.py`; proper `μ_n`, `
 `p ~ n⁴ ≫ n³`, never `n = q-1`; uniform coset-rep sampling to avoid scan-stride artifacts; EXACT
 integer positions in `ℤ_p`; global worst-`b` scan; `n = 16, 32, 64`, 5 structured primes each):
 
-  n=16 : distinctGaps(b*) = 9  (= n/2+1) ;  distinctΔ²(b*) = 16 = n ;  generic-b Δ² = 16
-  n=32 : distinctGaps(b*) = 17 (= n/2+1) ;  distinctΔ²(b*) = 32 = n ;  generic-b Δ² = 32
-  n=64 : distinctGaps(b*) = 33 (= n/2+1) ;  distinctΔ²(b*) = 64 = n ;  generic-b Δ² = 64
+  n=16 : distinctGaps(b*) = 9  (= n/2+1);  distinctΔ²(b*) = 16 = n;  generic-b Δ² = 16
+  n=32 : distinctGaps(b*) = 17 (= n/2+1);  distinctΔ²(b*) = 32 = n;  generic-b Δ² = 32
+  n=64 : distinctGaps(b*) = 33 (= n/2+1);  distinctΔ²(b*) = 64 = n;  generic-b Δ² = 64
 
 So at the worst frequency the cyclic second-difference sequence is **curvature-GENERIC**: it attains
 the *maximal* `n` distinct values (no two of the `n` cyclic second differences coincide), and the

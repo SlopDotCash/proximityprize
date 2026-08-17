@@ -100,7 +100,7 @@ theorem genericAntipodalSet_card_conj {r : ℕ} (G : Finset F)
     {σ τ ρ : Equiv.Perm (Fin (2 * r))} (hconj : ρ * σ * ρ⁻¹ = τ) :
     (genericAntipodalSet G σ).card = (genericAntipodalSet G τ).card := by
   classical
-  -- forward i : c ↦ c ∘ ρ⁻¹  ; inverse j : d ↦ d ∘ ρ
+  -- forward i : c ↦ c ∘ ρ⁻¹; inverse j : d ↦ d ∘ ρ
   refine Finset.card_nbij' (fun c => c ∘ ⇑ρ.symm) (fun d => d ∘ ⇑ρ) ?_ ?_ ?_ ?_
   · -- MapsTo: c ∈ S_σ ⟹ c∘ρ⁻¹ ∈ S_τ
     intro c hc
@@ -127,7 +127,7 @@ theorem genericAntipodalSet_card_conj {r : ℕ} (G : Finset F)
     · intro i; exact hmem _
     · intro i
       simp only [Function.comp]
-      -- (d∘ρ)(σ i) = d(ρ(σ i)) ; want = -(d∘ρ)(i) = -d(ρ i)
+      -- (d∘ρ)(σ i) = d(ρ(σ i)); want = -(d∘ρ)(i) = -d(ρ i)
       -- ρ (σ i) = τ (ρ i) since τ = ρ σ ρ⁻¹ ⟹ τ ρ = ρ σ
       have key : ρ (σ i) = τ (ρ i) := by
         rw [← hconj]; simp [Equiv.Perm.mul_apply, Equiv.Perm.inv_def]

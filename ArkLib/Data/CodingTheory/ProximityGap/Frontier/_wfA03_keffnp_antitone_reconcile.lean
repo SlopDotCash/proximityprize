@@ -113,7 +113,7 @@ exactly the `(2(r+1)-1)‼/(2r-1)‼ · s` factor from `c_{r+1}/c_r`, so `R(r) =
 theorem gStepRatio_eq_ratio_quotient {M : ℕ → ℝ} {s : ℝ} {r : ℕ} (hr : 1 ≤ r)
     (hMr : M r ≠ 0) (hs : s ≠ 0) :
     NormStepRatio M s r = wickRatio M s (r + 1) / wickRatio M s r := by
-  -- c_r = (2r-1)‼ · s^r ;  c_{r+1} = (2r+1)·c_r·s  (double-factorial recurrence) so the
+  -- c_r = (2r-1)‼ · s^r;  c_{r+1} = (2r+1)·c_r·s  (double-factorial recurrence) so the
   -- normalizers cancel down to the (2r+1)·s of NormStepRatio.
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hr      -- r = 1 + k
   have hdf : (Nat.doubleFactorial (2 * (1 + k + 1) - 1) : ℝ)

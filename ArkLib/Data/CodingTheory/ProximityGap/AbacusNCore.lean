@@ -125,7 +125,7 @@ theorem nCoreEmpty_iff_injOn_mod (β : Fin n → ℕ) :
     intro hg r hr
     have hrn : r < n := mem_range.mp hr
     rcases Nat.lt_trichotomy (beadsOnRunner β r) 1 with h0 | h1 | h2
-    · -- 0 beads: r ∈ range n = gravity, so r = r' + t*n with t < beads r' ; forces r'=r,t=0,
+    · -- 0 beads: r ∈ range n = gravity, so r = r' + t*n with t < beads r'; forces r'=r,t=0,
       -- contradicting beads r = 0
       exfalso
       have hb0 : beadsOnRunner β r = 0 := by omega

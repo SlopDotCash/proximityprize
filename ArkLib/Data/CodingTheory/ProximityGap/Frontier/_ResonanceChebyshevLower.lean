@@ -97,7 +97,7 @@ theorem resonanceMoment_succ_ge (u : ZMod m → ℂ) (hu : ∀ l : ZMod m, ‖u 
   have hmpos : (0 : ℝ) < (m : ℝ) := by
     have : (0 : ℕ) < m := Nat.pos_of_ne_zero (NeZero.ne m)
     exact_mod_cast this
-  -- ((m·T r)·(m·(m-1))) = m^2·((m-1)·T r) ; (m·(m·T(r+1))) = m^2·T(r+1)
+  -- ((m·T r)·(m·(m-1))) = m^2·((m-1)·T r); (m·(m·T(r+1))) = m^2·T(r+1)
   have hL : ((m : ℝ) * resonanceMoment u r) * ((m : ℝ) * ((m : ℝ) - 1))
       = (m : ℝ) ^ 2 * (((m : ℝ) - 1) * resonanceMoment u r) := by ring
   have hR : (m : ℝ) * ((m : ℝ) * resonanceMoment u (r + 1))

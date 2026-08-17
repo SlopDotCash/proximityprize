@@ -159,7 +159,7 @@ theorem N0_gap_of_absoluteBound {H : Finset F} {ζ : F} (hζ : ζ ≠ 0)
     push_cast at this ⊢
     linarith [this]
   rw [hcast]
-  -- goal: (2·N0H + crossCell)·q ≤ 2·N0H·q + 2^r·|H|^r ; expand and cancel 2·N0H·q, leaving hb.
+  -- goal: (2·N0H + crossCell)·q ≤ 2·N0H·q + 2^r·|H|^r; expand and cancel 2·N0H·q, leaving hb.
   have hexp : ((2 * N0 H r : ℚ) + (crossCell H ζ r : ℚ)) * (Fintype.card F : ℚ)
       = (2 * N0 H r : ℚ) * (Fintype.card F : ℚ) + (crossCell H ζ r : ℚ) * (Fintype.card F : ℚ) := by
     ring

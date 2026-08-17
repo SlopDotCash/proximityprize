@@ -124,7 +124,7 @@ self-improvement does not close. -/
 theorem azuma_inflates_target (C L : ℝ) (hC : 0 ≤ C) (hL : 0 ≤ L) {a : ℕ} (ha : 1 ≤ a) :
     Real.sqrt L * (C * Real.sqrt (2 ^ a * L))
       ≤ C * L * Real.sqrt 2 * Real.sqrt (2 ^ a - 1) := by
-  -- LHS = C·√L·√(2^a·L) = C·L·√(2^a) ; RHS = C·L·√2·√(2^a − 1) = C·L·√(2·(2^a−1))
+  -- LHS = C·√L·√(2^a·L) = C·L·√(2^a); RHS = C·L·√2·√(2^a − 1) = C·L·√(2·(2^a−1))
   -- so suffices √(2^a) ≤ √(2·(2^a − 1)), i.e. 2^a ≤ 2·2^a − 2, i.e. 2 ≤ 2^a (a ≥ 1).
   have h2a1 : (2 : ℝ) ≤ 2 ^ a := by
     calc (2 : ℝ) = 2 ^ 1 := (pow_one 2).symm

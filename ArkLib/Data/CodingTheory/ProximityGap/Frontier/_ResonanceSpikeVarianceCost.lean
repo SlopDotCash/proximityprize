@@ -78,7 +78,7 @@ theorem spike_cost_le_variance
       ((m : ℝ) - 1) d hd hex
   -- the centered second moment is the proven spectral variance: ∑(w-(m-1))² = m·(T2-(m-1)²)
   have hvar := sum_sq_centered_kernelSpectrum_eq u hu
-  -- hcantelli : d² ≤ ∑_{univ} (w k - (m-1))² ; hvar rewrites that sum
+  -- hcantelli : d² ≤ ∑_{univ} (w k - (m-1))²; hvar rewrites that sum
   rw [hvar] at hcantelli
   exact hcantelli
 

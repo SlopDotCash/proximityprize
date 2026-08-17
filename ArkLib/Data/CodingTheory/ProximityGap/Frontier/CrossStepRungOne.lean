@@ -105,7 +105,7 @@ theorem crossStepBound_one_of_lamLeungTwo (G : Finset F) (h : LamLeungCeiling G 
   unfold LamLeungCeiling at h
   have hdf : Nat.doubleFactorial (2 * 2 - 1) = 3 := by decide
   rw [hdf] at h
-  -- h : E_2 ≤ 3 · |G|² ; and E_2 = |G|² + crossMass G 1
+  -- h : E_2 ≤ 3 · |G|²; and E_2 = |G|² + crossMass G 1
   rw [crossMass_one_add] at h
   -- h : |G|² + crossMass G 1 ≤ 3 · |G|²
   omega
@@ -119,7 +119,7 @@ theorem crossStepBound_one_of_gaussianEnergyTwo (G : Finset F) (h : GaussianEner
   apply crossStepBound_one_of_lamLeungTwo
   unfold GaussianEnergyBound at h
   unfold LamLeungCeiling
-  -- h : (E_2 : ℝ) ≤ (2*2-1)‼ · |G|^2 ; want E_2 ≤ (2*2-1)‼ · |G|^2 in ℕ
+  -- h : (E_2 : ℝ) ≤ (2*2-1)‼ · |G|^2; want E_2 ≤ (2*2-1)‼ · |G|^2 in ℕ
   have hcast : ((rEnergy G 2 : ℕ) : ℝ)
       ≤ ((Nat.doubleFactorial (2 * 2 - 1) * G.card ^ 2 : ℕ) : ℝ) := by
     push_cast

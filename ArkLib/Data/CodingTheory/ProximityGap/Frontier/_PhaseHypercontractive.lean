@@ -79,13 +79,13 @@ theorem doubleFact_eq_prod (r : ℕ) :
   induction r with
   | zero => simp [Nat.doubleFactorial]
   | succ k ih =>
-    -- (2(k+1)−1)‼ = (2k+1)‼ = (2k+1)·(2k−1)‼ ; split the product off its last factor.
+    -- (2(k+1)−1)‼ = (2k+1)‼ = (2k+1)·(2k−1)‼; split the product off its last factor.
     have hstep : Nat.doubleFactorial (2 * (k + 1) - 1)
         = (2 * k + 1) * Nat.doubleFactorial (2 * k - 1) := by
       cases k with
       | zero => decide
       | succ j =>
-        -- LHS index: 2*(j+2)-1 = 2j+3 = (2j+1)+2 ; RHS index: 2*(j+1)-1 = 2j+1
+        -- LHS index: 2*(j+2)-1 = 2j+3 = (2j+1)+2; RHS index: 2*(j+1)-1 = 2j+1
         -- so `(2j+3)‼ = (2j+3)·(2j+1)‼` is `doubleFactorial_add_two` at `n = 2j+1`.
         have hL : 2 * (j + 1 + 1) - 1 = (2 * j + 1) + 2 := by omega
         have hR : 2 * (j + 1) - 1 = 2 * j + 1 := by omega

@@ -153,12 +153,12 @@ theorem sumProduct_ratio_identity_of_sidonModNeg {H : Finset Fˣ}
     3 * (H.card - 1) * multEnergy H = H.card ^ 2 * SubgroupGaussSumFourthMoment.addEnergy K := by
   rw [multEnergy_eq_card_cube_of_subgroup hmul hinv,
       addEnergy_eq_of_sidonModNeg h2 h0 hneg hS, hK]
-  -- LHS = 3(n−1)·n³ ; RHS = n²·(3n² − 3n) = n²·3n·(n−1) = 3(n−1)·n³. Pure `Nat` arithmetic.
+  -- LHS = 3(n−1)·n³; RHS = n²·(3n² − 3n) = n²·3n·(n−1) = 3(n−1)·n³. Pure `Nat` arithmetic.
   generalize H.card = n
   cases n with
   | zero => simp
   | succ k =>
-    -- (k+1−1) = k ; 3(k+1)² − 3(k+1) = 3(k+1)·k. Both sides become `3·k·(k+1)³`.
+    -- (k+1−1) = k; 3(k+1)² − 3(k+1) = 3(k+1)·k. Both sides become `3·k·(k+1)³`.
     have h3 : 3 * (k + 1) ^ 2 - 3 * (k + 1) = 3 * (k + 1) * k := by
       have : 3 * (k + 1) ^ 2 = 3 * (k + 1) * k + 3 * (k + 1) := by ring
       omega

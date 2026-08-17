@@ -180,7 +180,7 @@ theorem rEnergy_two_ge (G : Finset F) :
   have hinj : (G.card) ^ 2 - G.card ≤ (injTuples G 2).card := injTuples_two_ge G
   have hfact : (2 : ℕ).factorial = 2 := rfl
   rw [hfact] at hperm
-  -- (n²−n)·2 ≤ #injTuples · 2 ≤ E_2 ; and (n²−n)·2 = 2n²−2n  (Nat truncated sub, but n ≤ n²)
+  -- (n²−n)·2 ≤ #injTuples · 2 ≤ E_2; and (n²−n)·2 = 2n²−2n  (Nat truncated sub, but n ≤ n²)
   have hle : ((G.card) ^ 2 - G.card) * 2 ≤ rEnergy G 2 :=
     le_trans (Nat.mul_le_mul_right 2 hinj) hperm
   have hnn : G.card ≤ (G.card) ^ 2 := by nlinarith [Nat.zero_le G.card, sq_nonneg G.card]

@@ -107,7 +107,7 @@ theorem tail_sumSq_floor
   have hcard2 : 2 * ks.card ≤ 2 * m := by omega
   have hkey : 3 * (m + m - 1) ≤ (ks.map (· ^ 2)).sum + 2 * m :=
     le_trans hengine (Nat.add_le_add_left hcard2 _)
-  -- 3·(2m-1) = 6m - 3 ≥ 4m - 3 = 2n - 3 ; and 2n = 4m
+  -- 3·(2m-1) = 6m - 3 ≥ 4m - 3 = 2n - 3; and 2n = 4m
   omega
 
 /-- **Depth-2 cross-orbit tail floor consumer (`n²`-scaled, ℕ-safe).**

@@ -99,7 +99,7 @@ theorem twoTerm_ratio_distinguishes
   -- RHS coeffs: `(C s * g).coeff k = s * g.coeff k`
   rw [coeff_C_mul, coeff_twoTerm_left d₁ d₂ hij] at hCi
   rw [coeff_C_mul, coeff_twoTerm_right d₁ d₂ hij] at hCj
-  -- hCi : c₁ = s * d₁ ; hCj : c₂ = s * d₂
+  -- hCi : c₁ = s * d₁; hCj : c₂ = s * d₂
   -- ⟹ c₁ * d₂ = (s*d₁)*d₂ = (s*d₂)*d₁ = c₂ * d₁, contradicting hratio
   apply hratio
   calc c₁ * d₂ = (s * d₁) * d₂ := by rw [hCi]
