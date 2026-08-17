@@ -192,6 +192,10 @@ You can still run the underlying pieces directly when debugging a specific issue
 lake build
 python3 ./scripts/forbidden_tokens.py
 python3 ./scripts/sorry_census.py --fail-on-holes
+# build the flagship modules that sit outside the ProximityGap umbrella
+# (KZG, Merkle, Hensel, SubspacePoly) before auditing them:
+awk '!/^([[:space:]]*(#|$))/ { print $1 }' scripts/flagship_axioms.txt \
+  | LC_ALL=C sort -u | xargs ./scripts/lake-locked.sh build
 python3 ./scripts/axiom_audit.py
 ./scripts/check-imports.sh
 python3 ./scripts/check-docs-integrity.py
@@ -225,7 +229,10 @@ python3 -m pip install leanblueprint
   (`scripts/axiom_audit.py` reading `scripts/flagship_axioms.txt`) that must
   stay within `propext`, `Classical.choice`, `Quot.sound`. Renaming or
   deleting a pinned flagship theorem without updating the list is a hard CI
-  failure. As of issue #111 these same three gates also run from
+  failure. Because some pinned flagship modules (KZG, Merkle tree, Hensel,
+  SubspacePoly) live outside the ProximityGap umbrella that `lake build`
+  targets, `validate.sh` first builds every module named in
+  `scripts/flagship_axioms.txt` explicitly before running the audit. As of issue #111 these same three gates also run from
   `./scripts/validate.sh`, so local validation matches CI.
 - The forbidden-token precheck rejects every custom `axiom` *except* the
   documented, tracked residuals listed in

@@ -71,8 +71,14 @@ echo "# Sorry census (zero live holes)"
 python3 ./scripts/sorry_census.py --fail-on-holes
 
 # CI gate 3: flagship theorems depend only on the standard axioms.
+# Some flagship modules (KZG, Merkle, Hensel, SubspacePoly) sit outside the
+# ProximityGap umbrella that `lake build` targets, so build them explicitly
+# before auditing.
 echo ""
 echo "# Axiom audit (flagship theorems)"
+awk '!/^([[:space:]]*(#|$))/ { print $1 }' scripts/flagship_axioms.txt \
+  | LC_ALL=C sort -u \
+  | xargs ./scripts/lake-locked.sh build
 python3 ./scripts/axiom_audit.py
 
 echo ""
