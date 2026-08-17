@@ -24,6 +24,9 @@ the exponent can be compared directly with analytic quantities elsewhere):
 * `half_lt_momentExponent`: for `1 ≤ r`, `2 ≤ β`, we have `1/2 < θ(r,β)` —
   the pure moment route ALWAYS overshoots the prize exponent `1/2`; the prize
   `θ = 1/2` is only the unattained `r → ∞` limit.
+* `half_lt_momentExponent_iff`: at every positive finite depth, this overshoot
+  is equivalent to the sharp condition `1 < β`; equality with `1/2` is
+  equivalent to `β = 1`.
 * `momentExponent_sub_half`: the excess over the prize exponent is *exactly*
   `(β−1)/(2r)` — the route converges to `1/2` only as `r → ∞`, at rate `1/r`.
 * `momentExponent_lt_one_iff`: for `0 < r`, `θ(r,β) < 1 ↔ β − 1 < r` —
@@ -61,6 +64,27 @@ theorem half_lt_momentExponent {r beta : ℝ} (hr : 1 ≤ r) (hb : 2 ≤ beta) :
   rw [momentExponent, div_lt_div_iff₀ (by norm_num) (by positivity)]
   nlinarith
 
+/-- **Sharp finite-depth half-barrier.** At every positive depth, the pure moment exponent is
+strictly above `1/2` if and only if the aspect exponent is strictly above `1`. -/
+theorem half_lt_momentExponent_iff {r beta : ℝ} (hr : 0 < r) :
+    1 / 2 < momentExponent r beta ↔ 1 < beta := by
+  rw [momentExponent, div_lt_div_iff₀ (by norm_num) (by positivity)]
+  constructor <;> intro h <;> linarith
+
+/-- At positive finite depth, the pure moment exponent equals `1/2` exactly in the degenerate
+aspect regime `β = 1`; increasing depth alone never attains equality when `β > 1`. -/
+theorem momentExponent_eq_half_iff {r beta : ℝ} (hr : 0 < r) :
+    momentExponent r beta = 1 / 2 ↔ beta = 1 := by
+  unfold momentExponent
+  have hden : (2 : ℝ) * r ≠ 0 := by positivity
+  constructor
+  · intro h
+    rw [div_eq_iff hden] at h
+    linarith
+  · rintro rfl
+    rw [div_eq_iff hden]
+    ring
+
 /-- The excess of the moment exponent over the prize exponent `1/2` is *exactly*
 `(β−1)/(2r)`: the route approaches `1/2` at rate `1/r` and never attains it. -/
 theorem momentExponent_sub_half {r beta : ℝ} (hr : 0 < r) :
@@ -73,6 +97,14 @@ theorem momentExponent_sub_half {r beta : ℝ} (hr : 0 < r) :
 theorem momentExponent_lt_one_iff {r beta : ℝ} (hr : 0 < r) :
     momentExponent r beta < 1 ↔ beta - 1 < r := by
   rw [momentExponent, div_lt_one (by positivity)]
+  constructor <;> intro h <;> linarith
+
+/-- The exact boundary between trivial and non-trivial exponents is `r = β - 1`. -/
+theorem momentExponent_eq_one_iff {r beta : ℝ} (hr : 0 < r) :
+    momentExponent r beta = 1 ↔ r = beta - 1 := by
+  unfold momentExponent
+  have hden : (2 : ℝ) * r ≠ 0 := by positivity
+  rw [div_eq_one_iff_eq hden]
   constructor <;> intro h <;> linarith
 
 /-- For fixed `β > 2`, the exponent is strictly decreasing in `r` on `r > 0`. -/
@@ -110,13 +142,21 @@ theorem moment_threshold_beta_four :
 theorem momentExponent_beta4_r89 : momentExponent 89 4 = 46 / 89 := by
   rw [momentExponent]; norm_num
 
+/-- At `β = 4`, `r = 89`, the exact finite-depth miss above the prize is `3/178`. -/
+theorem momentExponent_beta4_r89_gap : momentExponent 89 4 - 1 / 2 = 3 / 178 := by
+  rw [momentExponent]; norm_num
+
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
 #print axioms half_lt_momentExponent
+#print axioms half_lt_momentExponent_iff
+#print axioms momentExponent_eq_half_iff
 #print axioms momentExponent_sub_half
 #print axioms momentExponent_lt_one_iff
+#print axioms momentExponent_eq_one_iff
 #print axioms momentExponent_strictAnti
 #print axioms nontrivial_le_crossover_iff_eq
 #print axioms moment_threshold_beta_four
 #print axioms momentExponent_beta4_r89
+#print axioms momentExponent_beta4_r89_gap
 
 end ProximityGap.MomentExponentThreshold
