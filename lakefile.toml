@@ -25,7 +25,7 @@ rev = "5d3a160ed751b9227af90adb9da41d0eae2e0238"
 [[require]]
 name = "«doc-gen4»"
 git = "https://github.com/leanprover/doc-gen4"
-rev = "v4.29.0"
+rev = "v4.30.0-rc2"
 
 [[require]]
 name = "checkdecls"
