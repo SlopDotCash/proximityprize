@@ -4937,7 +4937,7 @@
    "fq_name": "ProximityToRS.ahiv17_affineLine_correlatedAgreement_residual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean",
-   "line": 1487,
+   "line": 1482,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -4945,7 +4945,7 @@
    "fq_name": "ProximityToRS.ahiv17_rowSpan_to_affineLine_dOverQ_residual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean",
-   "line": 1538,
+   "line": 1532,
    "reason": "name does not end in `Residual`"
   },
   {

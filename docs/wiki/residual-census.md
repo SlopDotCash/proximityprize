@@ -139,8 +139,8 @@ proof debt and naming drift.
 
 - `ProximityGap.GrandChallenges.MCALowerWitness.ofListSizeGCXK25_of_gkl24_firstMoment_residual` — `ArkLib/Data/CodingTheory/Connections/ProximityPrizeConnectiveTissue.lean:242` — `def`; name does not end in `Residual`
 - `ProximityGap.GrandChallenges.MCALowerWitness.ofListSizeGCXK25_of_gkl24_witnessCover_residual` — `ArkLib/Data/CodingTheory/Connections/ProximityPrizeConnectiveTissue.lean:322` — `def`; name does not end in `Residual`
-- `ProximityToRS.ahiv17_affineLine_correlatedAgreement_residual` — `ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean:1487` — `def`; name does not end in `Residual`
-- `ProximityToRS.ahiv17_rowSpan_to_affineLine_dOverQ_residual` — `ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean:1538` — `def`; name does not end in `Residual`
+- `ProximityToRS.ahiv17_affineLine_correlatedAgreement_residual` — `ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean:1482` — `def`; name does not end in `Residual`
+- `ProximityToRS.ahiv17_rowSpan_to_affineLine_dOverQ_residual` — `ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean:1532` — `def`; name does not end in `Residual`
 - `ProximityGap.StrictCoeffPolysShareResidualOr` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShareOr.lean:54` — `def`; name does not end in `Residual`
 - `ArkLib.Issue64Boundary.BoundaryCardLatticeSubResiduals` — `ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardLatticeSlice.lean:131` — `def`; name does not end in `Residual`
 - `ArkLib.BoundaryCardResidual.BoundaryCardQuantizationResiduals` — `ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardResidual.lean:417` — `def`; name does not end in `Residual`
