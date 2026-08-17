@@ -26,13 +26,15 @@ For such a `G` (negation-closed, `0 ∉ G`, char `≠ 2`):
 
 Evaluating that double sum (zero-sum class `|G|·|G|`, diagonal `1·|G|`, rest `2·(|G|²-2|G|)`) gives
 `E(G) = 3|G|² - 3|G| = 3|G|(|G|-1)` — the char-0 minimal value, sharpening the `≤ 3|G|²` bound to an
-equality (off by exactly `3|G|`). The hypothesis `SidonModNeg` is the "no extra additive coincidences"
+equality (off by exactly `3|G|`). The hypothesis `SidonModNeg` is the "no extra additive
+coincidences"
 property that holds for `2^k`-roots in char 0 and over `F_q` once `q` is large
 (`SubgroupAdditiveEnergyFermat65537`); whether it holds for a fixed subgroup is the
 field-arithmetic-dependent (Weil/sum-product) open input. `sorry`-free, axiom-clean.
 
 ## References
-- [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
+- [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated
+Agreement*. 2026. #232.
 -/
 
 set_option linter.style.longLine false
@@ -109,7 +111,8 @@ theorem additiveEnergy_eq_structured_sum {G : Finset F}
 the structured sum: per `a ∈ G` the inner sum over `b` is `|G|` at the zero-sum point `b = -a`, `1`
 at the diagonal `b = a`, and `2` on the remaining `|G| − 2` points, totalling `3|G| − 3`; the outer
 sum over the `|G|` choices of `a` gives `|G|·(3|G| − 3) = 3|G|² − 3|G| = 3|G|(|G|−1)`, the char-0
-minimal value (sharpening `AdditiveEnergyRepBound.additiveEnergy_le_three_of_repTwo`'s `≤ 3|G|²` to an
+minimal value (sharpening
+`AdditiveEnergyRepBound.additiveEnergy_le_three_of_repTwo`'s `≤ 3|G|²` to an
 equality, off by exactly `3|G|`). -/
 theorem additiveEnergy_eq_of_sidonModNeg {G : Finset F}
     (h2 : (2 : F) ≠ 0) (h0 : (0 : F) ∉ G) (hneg : ∀ x ∈ G, -x ∈ G) (hS : SidonModNeg G) :

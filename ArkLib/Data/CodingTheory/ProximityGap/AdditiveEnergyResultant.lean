@@ -23,7 +23,8 @@ COMMON ROOTS of the two explicit polynomials `X^n - 1` and `(X+1)^n - 1` (for ev
   characteristics — pinpointing precisely which fields can break the cell.
 
 So the open prize core at this cell is exactly: *for the deployed smooth fields `F_q` (`2^k ∣ q-1`),
-is `char F_q` a prime dividing the resultant `Res(X^{2^k}-1, (X+1)^{2^k}-1)`?* — a concrete, explicit
+is `char F_q` a prime dividing the resultant `Res(X^{2^k}-1, (X+1)^{2^k}-1)`?* — a concrete,
+explicit
 arithmetic question that is the analytic-number-theory heart of the prize. Axiom-clean.
 -/
 
@@ -54,7 +55,8 @@ theorem mem_bgk_iff_common_root {n : ℕ} (hn : 0 < n) (hne : Even n) {u : F} :
 
 /-- **The open kernel vanishes when the two explicit polynomials are coprime.** If
 `X^n - 1` and `(X+1)^n - 1` are coprime in `F[X]` (equivalently their resultant is nonzero in `F`),
-then `M = bgkCount n = 0`: the additive energy of `μ_n` vanishes and the prize survives at this cell.
+then `M = bgkCount n = 0`: the additive energy of `μ_n` vanishes and the prize survives at
+this cell.
 This reduces the open Bourgain kernel to a concrete polynomial-coprimality / resultant question over
 the deployed field. -/
 theorem bgkCount_eq_zero_of_coprime {n : ℕ} (hn : 0 < n) (hne : Even n)
