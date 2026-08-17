@@ -42,8 +42,10 @@ codes, and "sufficiently large `n`". We capture these uniformly as follows:
 
 ### Lower bounds — general codes (§3.2)
 
-- `linear_lambda_ge_elias_volume_eli57` — ABF26 L3.7 [Eli57]: `|Λ(C, δ)| ≥ Vol_q(δ, n) / q^{n-k}`.
-- `linear_lambda_ge_entropy_volume` — ABF26 C3.8: `|Λ(C, δ)| ≥ q^{n(ρ-1+H_q(δ))} / √(8nδ(1-δ))`.
+- `lambda_ge_elias_volume_eli57` — ABF26 L3.7 [Eli57] for every finite-alphabet code with
+  `|C| = q^k`; `linear_lambda_ge_elias_volume_eli57` is the field-linear specialization.
+- `lambda_ge_entropy_volume` — ABF26 C3.8 for every code over a nontrivial finite alphabet;
+  `linear_lambda_ge_entropy_volume` is the field-linear specialization.
 - `linear_C_le_generalized_singleton_st20` — ABF26 T3.9 [ST20 Thm 1.2]: bound on `|C|`
   when `|Λ(C, δ)| ≤ ℓ`.
 - `large_alphabet_barrier_bdg24_agl23` — ABF26 T3.10: any code attaining the generalized
@@ -83,9 +85,11 @@ subspace-design (#53); the CZ25 §3.1 upper bounds below are tracked under **#53
 
 *PROVEN in-tree* (`theorem`, `sorry`-free, axiom-clean):
 
-- `linear_lambda_ge_elias_volume_eli57` (L3.7 [Eli57]) — Elias volume list-size lower bound.
-- `linear_lambda_ge_entropy_volume` (C3.8) — entropy-volume lower bound (MS77 Hamming-ball
-  volume via Robbins–Stirling, all in-tree).
+- `lambda_ge_elias_volume_eli57` (L3.7 [Eli57]) — alphabet-generic Elias volume list-size lower
+  bound; `linear_lambda_ge_elias_volume_eli57` is its compatibility wrapper.
+- `lambda_ge_entropy_volume` (C3.8) — alphabet-generic entropy-volume lower bound (MS77
+  Hamming-ball volume via Robbins–Stirling, all in-tree); `linear_lambda_ge_entropy_volume` is
+  its compatibility wrapper.
 - `linear_C_le_generalized_singleton_st20` (T3.9 [ST20 Thm 1.2]) — the generalized Singleton
   bound.  **The ST20 puncturing/coset pigeonhole core that issue #54 flags as the optional
   in-tree target is complete**: `exists_representative_center_sum_hammingDist_le` (plurality
