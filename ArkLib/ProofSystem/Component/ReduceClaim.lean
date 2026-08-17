@@ -265,24 +265,6 @@ theorem oracleReduction_completeness --(h : init.neverFails)
     simp [map_pure, support_pure] at hx
     cases hx
     exact ⟨hRel stmtIn oStmtIn witIn hIn, rfl⟩
-  -- -- TODO: clean up this proof
-  -- simp only [OracleReduction.perfectCompleteness, oracleReduction, OracleReduction.toReduction,
-  --   OracleVerifier.toVerifier,
-  --   Reduction.perfectCompleteness_eq_prob_one, ProtocolSpec.ChallengeIdx, StateT.run'_eq,
-  --   OracleComp.probEvent_eq_one_iff, OracleComp.probFailure_eq_zero_iff,
-  --   OracleComp.neverFails_bind_iff, h, OracleComp.neverFails_map_iff, true_and,
-  --   OracleComp.support_bind, OracleComp.support_map, Set.mem_iUnion, Set.mem_image, Prod.exists,
-  --   exists_and_right, exists_eq_right, exists_prop, forall_exists_index, and_imp, Prod.forall,
-  --   Fin.forall_fin_zero_pi, Prod.mk.injEq]
-  -- simp only [Reduction.run, Prover.run, Verifier.run, oracleProver, oracleVerifier]
-  -- simp only [ProtocolSpec.ChallengeIdx, Fin.reduceLast, Nat.reduceAdd, ProtocolSpec.MessageIdx,
-  --   ProtocolSpec.Message, ProtocolSpec.Challenge, Prover.runToRound_zero_of_prover_first,
-  --   Fin.isValue, id_eq, bind_pure_comp, map_pure, OracleComp.simulateQ_pure,
-  --   Function.Embedding.trans_apply, Function.Embedding.inl_apply, eq_mpr_eq_cast,
-  --   OracleComp.liftM_eq_liftComp, OracleComp.liftComp_pure, StateT.run_pure,
-  --   OracleComp.neverFails_pure, implies_true, OracleComp.support_pure, Set.mem_singleton_iff,
-  --   Prod.mk.injEq, and_imp, true_and]
-  -- aesop
 
 variable {mapWitInv : (StmtIn × (∀ i, OStmtIn i)) → WitOut → WitIn}
 
