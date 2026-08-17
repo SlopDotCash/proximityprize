@@ -14,8 +14,10 @@ ending with the full group `E(F₁₇^×) = 3856`. This file proves the **genera
 
 > `additiveEnergy_units_eq`:  `E(F_p^×) = (p−1)² + (p−1)(p−2)²`.
 
-(For `p = 17`: `16² + 16·15² = 256 + 3600 = 3856`, matching the `decide` value.) The mechanism is the
-representation-count `repCount (F_p^×) s = (F_p^× .erase s).card`, which is `p−1` at `s = 0` and `p−2`
+(For `p = 17`: `16² + 16·15² = 256 + 3600 = 3856`, matching the `decide` value.) The mechanism is
+the
+representation-count `repCount (F_p^×) s = (F_p^× .erase s).card`, which is `p−1` at `s = 0` and
+`p−2`
 otherwise; the unique `b = −a` realizing `a + b = 0` carries the `p−1` term and the other `p−2`
 pairs carry `p−2`.
 
@@ -25,7 +27,8 @@ general `μ_{dm}^d = μ_m` law. *Honest scope:* this is the `|G| ~ q` endpoint; 
 `|G| = 2^k ≪ q` is the open Weil/sum-product quantity, untouched here. `sorry`-free, axiom-clean.
 
 ## References
-- [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
+- [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
+#232.
 -/
 
 set_option linter.style.longLine false

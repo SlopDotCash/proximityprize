@@ -6,9 +6,6 @@ ArkLib/Data/CodingTheory/ProximityGap/AddEnergyMathlibBridge.lean : line 20 : ER
 ArkLib/Data/CodingTheory/ProximityGap/AddEnergyMulHomogeneous.lean : line 25 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AddEnergyNormalizedBound.lean : line 27 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyBridge.lean : line 14 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyChar0.lean : line 74 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyFullGroupClosedForm.lean : line 17 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyKernel.lean : line 14 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyLowerBound.lean : line 15 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyParity.lean : line 25 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyRepBound.lean : line 10 : ERR_LIN : Line has more than 100 characters

@@ -71,7 +71,8 @@ theorem no_common_root_complex (k : ℕ) (u : ℂ)
 /-- **Characteristic-0 vanishing of the BGK kernel.** Over `ℂ` the additive-energy intersection
 count `M = bgkCount (2^k)` is `0` for every `k ≥ 1`: there is no `u ∈ μ_{2^k}` with
 `-(1+u) ∈ μ_{2^k}`. So the BGK obstruction to the proximity prize is a *purely
-positive-characteristic* phenomenon — in characteristic 0 the prize cell survives unconditionally. -/
+positive-characteristic* phenomenon — in characteristic 0 the prize cell survives unconditionally.
+-/
 theorem bgkCount_complex_eq_zero (k : ℕ) (hk : 0 < k) :
     bgkCount (F := ℂ) (2 ^ k) = 0 := by
   have hpos : 0 < 2 ^ k := Nat.two_pow_pos k

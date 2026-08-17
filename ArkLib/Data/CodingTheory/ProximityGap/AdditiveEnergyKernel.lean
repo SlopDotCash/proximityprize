@@ -11,7 +11,8 @@ import Mathlib
 `SmoothMomentBridgeOnLattice` pins the interior `(k,t)` grid exactly through `a = t+1` (the coset
 boundary of rigidity). The FIRST genuinely-open cell is `t=1, a=3`: 3-subsets of `μ_n` with
 `∑x = 0` (at `a=t+2=3` the rigidity boundary is crossed — `e_2,e_3` are free). Here we identify its
-count EXACTLY with the **Bourgain–Glibichuk–Konyagin additive-energy quantity** of the multiplicative
+count EXACTLY with the **Bourgain–Glibichuk–Konyagin additive-energy quantity** of the
+multiplicative
 subgroup:
 
   `tripleZero n  =  |μ_n| · M`,   `M = bgkCount n = #{u ∈ μ_n : -(1+u) ∈ μ_n} = |μ_n ∩ -(1+μ_n)|`.
