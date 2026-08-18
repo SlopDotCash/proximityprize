@@ -224,8 +224,9 @@ theorem nthRootsFinset_eq_image_pow {F : Type*} [Field F] [DecidableEq F] {n : �
   rw [hζ.card_nthRootsFinset, Finset.card_image_of_injOn hζ.injOn_pow, Finset.card_range]
 
 open Polynomial in
-/-- **The subset-product surjectivity over `μ_n` (PROVED).**  For a primitive `n`-th root `ζ`
-in a field `F`, with `2 ≤ n` and `1 ≤ k+1 ≤ n-1`, the `(k+1)`-subset products of `nthRootsFinset n 1`
+/-- **The subset-product surjectivity over `μ_n` (PROVED).**  For a primitive
+`n`-th root `ζ` in a field `F`, with `2 ≤ n` and `1 ≤ k+1 ≤ n-1`, the
+`(k+1)`-subset products of `nthRootsFinset n 1`
 realize *all* of `nthRootsFinset n 1`. This discharges `B1CountLaw.SubsetProductSurjectsMu` for
 `nodes = nthRootsFinset n 1`, `v = id`. -/
 theorem subsetProducts_id_eq_nthRoots {F : Type*} [Field F] [DecidableEq F] {n : ℕ} {ζ : F}
@@ -281,7 +282,8 @@ theorem subsetProductSurjectsMu_holds {F : Type*} [Field F] [DecidableEq F] {n :
 open Polynomial in
 /-- **B1 TOP-DIRECTION COUNT LAW, UNCONDITIONAL `= n`.**
 For a field `F` carrying a primitive `n`-th root `ζ` (`2 ≤ n`) and `1 ≤ k ≤ n-2`, the number of
-distinct B1 top-direction divided-difference readouts over `(k+1)`-subsets of `μ_n = nthRootsFinset n 1`
+distinct B1 top-direction divided-difference readouts over
+`(k+1)`-subsets of `μ_n = nthRootsFinset n 1`
 is **exactly `n`** — no residual. This combines the proven `≤ n` collapse with the now-discharged
 subset-product surjectivity `subsetProducts_id_eq_nthRoots`. -/
 theorem topReadouts_card_eq_n_unconditional {F : Type*} [Field F] [DecidableEq F] {n : ℕ} {ζ : F}

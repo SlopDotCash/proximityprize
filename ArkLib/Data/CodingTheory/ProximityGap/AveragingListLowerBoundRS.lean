@@ -261,7 +261,9 @@ theorem averaging_witness :
         (fun S => fun _ : Fin 1 => (Lagrange.nodal S vWit).coeff 1) S = y) ∧
       2 ≤ #𝒮 ∧
       Set.InjOn (pS (X ^ 2) vWit) 𝒮 ∧
-      (∀ S ∈ 𝒮, ∀ i ∈ S, (pS (X ^ 2) vWit S).eval (vWit i) = (X ^ 2 : (ZMod 5)[X]).eval (vWit i)) := by
+      (∀ S ∈ 𝒮, ∀ i ∈ S,
+        (pS (X ^ 2) vWit S).eval (vWit i) =
+          (X ^ 2 : (ZMod 5)[X]).eval (vWit i)) := by
   -- the classifier: the degree-1 coefficient of the nodal polynomial (one
   -- elementary-symmetric coordinate, since `t = 1`), valued in `Fin 1 → ZMod 5`.
   obtain ⟨y, 𝒮, hmem, hcard, hinj, heval⟩ :=
@@ -270,7 +272,9 @@ theorem averaging_witness :
       (cls := fun S => fun _ : Fin 1 => (Lagrange.nodal S vWit).coeff 1)
   refine ⟨y, 𝒮, hmem, ?_, hinj, heval⟩
   -- `C(5,2) / card (Fin 1 → ZMod 5) = 10 / 5 = 2 ≤ #𝒮`.
-  have hcv : Nat.choose (#(Finset.univ : Finset (Fin 5))) 2 / Fintype.card (Fin 1 → ZMod 5) = 2 := by
+  have hcv :
+      Nat.choose (#(Finset.univ : Finset (Fin 5))) 2 /
+        Fintype.card (Fin 1 → ZMod 5) = 2 := by
     simp only [Finset.card_univ, Fintype.card_fin]
     decide
   rw [hcv] at hcard
