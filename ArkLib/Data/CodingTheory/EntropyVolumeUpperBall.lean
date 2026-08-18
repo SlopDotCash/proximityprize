@@ -92,6 +92,23 @@ theorem hammingBallVolume_le_qEntropy (hq : 2 ≤ q) (δ : ℝ) {n : ℕ}
         have hB0 : (0 : ℝ) ≤ B := le_trans zero_le_one hB_ge_one
         nlinarith [hrn, hB0]
 
+/-- Finite-domain generic form of `hammingBallVolume_le_qEntropy` for an arbitrary alphabet `A`.
+The `Field` wrapper below is the `A = F` specialization, following the `S-01`/`S-03` pattern. -/
+theorem hammingBallVolume_le_qEntropy_card_generic
+    {ι A : Type} [Fintype ι] [Fintype A]
+    (δ : ℝ)
+    (hr : ⌊δ * (Fintype.card ι : ℝ)⌋₊ < Fintype.card ι)
+    (hcap :
+      (⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)
+        ≤ 1 - 1 / (Fintype.card A : ℝ))
+    (hq : 2 ≤ Fintype.card A) :
+    (hammingBallVolume (Fintype.card A) δ (Fintype.card ι) : ℝ)
+      ≤ ((Fintype.card ι : ℝ) + 1) *
+        (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) *
+          qEntropy (Fintype.card A)
+            ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ))) :=
+  hammingBallVolume_le_qEntropy (q := Fintype.card A) hq δ hr hcap
+
 /-- Finite-domain specialization of `hammingBallVolume_le_qEntropy`, with alphabet size
 `q = |F|` and block length `n = |ι|`, preserving the exact floor-radius exponent. -/
 theorem hammingBallVolume_le_qEntropy_card
@@ -106,8 +123,7 @@ theorem hammingBallVolume_le_qEntropy_card
         (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
           qEntropy (Fintype.card F)
             ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ))) :=
-  hammingBallVolume_le_qEntropy
-    (q := Fintype.card F) Fintype.one_lt_card δ hr hcap
+  hammingBallVolume_le_qEntropy_card_generic (ι := ι) (A := F) δ hr hcap Fintype.one_lt_card
 
 /-- **q-ary Hamming-ball volume UPPER bound with the real radius exponent.**  Below capacity,
 the floor-radius estimate may be relaxed to the cleaner exponent `H_q(δ)`. -/
@@ -144,6 +160,20 @@ theorem hammingBallVolume_le_qEntropy_real_radius (hq : 2 ≤ q) (δ : ℝ) {n :
     exact mul_le_mul_of_nonneg_left hH hnR.le
   exact le_trans hvol (mul_le_mul_of_nonneg_left hpow (by positivity))
 
+/-- Finite-domain generic form of `hammingBallVolume_le_qEntropy_real_radius` for an arbitrary
+alphabet `A`. The `Field` wrapper below is the `A = F` specialization. -/
+theorem hammingBallVolume_le_qEntropy_real_radius_card_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [Fintype A]
+    (δ : ℝ)
+    (hδ0 : 0 ≤ δ)
+    (hδ : δ ≤ 1 - 1 / (Fintype.card A : ℝ))
+    (hq : 2 ≤ Fintype.card A) :
+    (hammingBallVolume (Fintype.card A) δ (Fintype.card ι) : ℝ)
+      ≤ ((Fintype.card ι : ℝ) + 1) *
+        (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) *
+          qEntropy (Fintype.card A) δ) :=
+  hammingBallVolume_le_qEntropy_real_radius (q := Fintype.card A) hq δ Fintype.card_pos hδ0 hδ
+
 /-- Finite-domain specialization of `hammingBallVolume_le_qEntropy_real_radius`, with alphabet
 size `q = |F|` and block length `n = |ι|`. -/
 theorem hammingBallVolume_le_qEntropy_real_radius_card
@@ -155,8 +185,8 @@ theorem hammingBallVolume_le_qEntropy_real_radius_card
       ≤ ((Fintype.card ι : ℝ) + 1) *
         (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
           qEntropy (Fintype.card F) δ) :=
-  hammingBallVolume_le_qEntropy_real_radius
-    (q := Fintype.card F) Fintype.one_lt_card δ Fintype.card_pos hδ0 hδ
+  hammingBallVolume_le_qEntropy_real_radius_card_generic
+    (ι := ι) (A := F) δ hδ0 hδ Fintype.one_lt_card
 
 end CodingTheory
 
