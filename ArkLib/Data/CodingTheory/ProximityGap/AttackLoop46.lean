@@ -57,7 +57,8 @@ prime fields). It is *plausible* the prize survives — a full subgroup satisfie
 power-sum relations `∑_{g∈G} g^j = 0` (`1 ≤ j < |G|`), which are strong additive constraints that
 should keep `|G^{(+ℓ)}|` far below `2^{|G|}` — but this is **unproven** in either direction.
 
-**Honest status.** This loop is `sorry`-free and axiom-clean. It proves the §7 *parameter* identities
+**Honest status.** This loop is `sorry`-free and axiom-clean. It proves the §7
+*parameter* identities
 and the prize *comparison* arithmetic, and isolates the disproof to a concrete sumset bound. It does
 **not** prove or refute that bound, so the prize remains OPEN. See `DISPROOF_LOG.md` (Loop46/O11).
 -/
@@ -98,7 +99,8 @@ lemma thm71_within_prize {a q num : ℝ} (hq : 0 < q) (h : a ≤ num) :
 /-- **The §7 attack refutes any prize triple whose numerator the bad count exceeds.** If at some
 admissible domain the realized bad count `a` strictly exceeds the prize numerator `num`, the MCA
 contribution `a/q` strictly exceeds the prize RHS `(1/q)·num`: that triple `(c₁,c₂,c₃)` is refuted
-there. (The open question is whether such `a > num` is *realizable* at a smooth subgroup; see O11.) -/
+there. (The open question is whether such `a > num` is *realizable* at a smooth
+subgroup; see O11.) -/
 lemma thm71_refutes_prize {a q num : ℝ} (hq : 0 < q) (h : num < a) :
     1 / q * num < a / q := by
   rw [one_div_mul_eq_div]
@@ -136,7 +138,8 @@ private lemma pow_mul_lt_two_pow_two_pow (c : ℕ) :
     _ ≤ 2 ^ (2 ^ (c + 1)) := Nat.pow_le_pow_right (by norm_num) hB
 
 /-- **No fixed prize exponent absorbs a maximal subgroup sumset (the rigorous disproof branch).**
-For *every* fixed numerator exponent `c₁`, there is a minimal domain `2^m` (take `m = c₁+1`) at which
+For *every* fixed numerator exponent `c₁`, there is a minimal domain `2^m` (take
+`m = c₁+1`) at which
 a maximal §7 sumset `a = 2^{|G|} = 2^{2^m}` strictly exceeds the prize numerator `(2^m)^{c₁}`. So if
 the ℓ-fold subset-sumset of a smooth subgroup can attain its `2^{|G|}` upper bound at fixed gap, the
 prize-as-stated (`2^m = |domain|`, all sizes, one fixed triple) is refuted. This is the precise

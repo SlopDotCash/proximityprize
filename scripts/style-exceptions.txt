@@ -17,10 +17,7 @@ ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyResultant.lean : line 26 : E
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergySidonModNeg.lean : line 29 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyThreeDvd.lean : line 19 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AffinePlaneSharpness.lean : line 13 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/AllRatesJohnsonInstances.lean : line 64 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/AntipodalBalanceBounded.lean : line 11 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AttackLoop46.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/AttackLoop46.lean : line 60 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AveragingListLowerBoundRS.lean : line 264 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AveragingListLowerBoundRS.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/AveragingReachNoGo.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
