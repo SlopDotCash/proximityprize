@@ -30,11 +30,21 @@ prior circular B2 attempt) is to identify the *value-fiber* of the readout map �
 `(k+1)`-subsets sharing one readout value, `≈ C(n,k+1)/n` — with the incidence `I`.  Exhaustive
 enumeration (`probe_farline_incidence_exact`, p-independent) separates all THREE:
 
-| `n,k` | distinct readout VALUES (`= n`, PROVEN) | max value-FIBER (`≈ C(n,k+1)/n`, GROWS) | worst-case far INCIDENCE (the δ* binder, OPEN) |
-|-------|-----------------------------------------|------------------------------------------|------------------------------------------------|
-| 8,2   | 8                                       | 7                                        | 9   (at `r=4`, binder `(a,b)=(5,2)`)            |
-| 12,3  | 12                                      | 43                                       | 13  (at `r=6`, binder `(6,4)`)                  |
-| 16,4  | 16                                      | 273                                      | 89  (at `r=10`, binder `(10,4)`)                |
+* `n = 8`, `k = 2`:
+  * distinct readout VALUES (`= n`, PROVEN): `8`;
+  * max value-FIBER (`≈ C(n,k+1)/n`, GROWS): `7`;
+  * worst-case far INCIDENCE (the δ* binder, OPEN): `9`
+    (at `r=4`, binder `(a,b)=(5,2)`).
+* `n = 12`, `k = 3`:
+  * distinct readout VALUES (`= n`, PROVEN): `12`;
+  * max value-FIBER (`≈ C(n,k+1)/n`, GROWS): `43`;
+  * worst-case far INCIDENCE (the δ* binder, OPEN): `13`
+    (at `r=6`, binder `(6,4)`).
+* `n = 16`, `k = 4`:
+  * distinct readout VALUES (`= n`, PROVEN): `16`;
+  * max value-FIBER (`≈ C(n,k+1)/n`, GROWS): `273`;
+  * worst-case far INCIDENCE (the δ* binder, OPEN): `89`
+    (at `r=10`, binder `(10,4)`).
 
 The value-fiber numbers `7, 43, 273` are the ones the prior attempt mistook for incidence; the
 *actual* incidence binders `9, 13, 89` occur at a DIFFERENT agreement-set size `r` (past Johnson)

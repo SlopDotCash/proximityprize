@@ -18,11 +18,8 @@ ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergySidonModNeg.lean : line 29 :
 ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyThreeDvd.lean : line 19 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AffinePlaneSharpness.lean : line 13 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/AttackLoop46.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/AveragingListLowerBoundRS.lean : line 264 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AveragingListLowerBoundRS.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/AveragingReachNoGo.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/B1CountLawUnconditional.lean : line 228 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/B1IncidenceBridge.lean : line 33 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/B1TopDirectionCountLaw.lean : line 44 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/BWMatrix.lean : line 1 : ERR_NUM_LIN : 2000 file contains 1878 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineSpaces.lean : line 1 : ERR_NUM_LIN : 2600 file contains 2498 lines, try to split it up
