@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6440 files, 72024 declarations
+- `ArkLib` — 6440 files, 72038 declarations
 
 ## Same short-name across multiple files (2693 groups)
 
@@ -10522,7 +10522,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `one_le_Lambda_of_nonempty` (2 declarations, 2 files)
 
-- `theorem CodingTheory.one_le_Lambda_of_nonempty` [ArkLib/Data/CodingTheory/ListSizeVolumeBound.lean:184](../../../ArkLib/Data/CodingTheory/ListSizeVolumeBound.lean#L184) — **List-size lower bound `1 ≤ \|Λ(C,δ)\|` for a nonempty code and `δ ≥ 0`.** Any codeword is `0`-close
+- `theorem CodingTheory.one_le_Lambda_of_nonempty` [ArkLib/Data/CodingTheory/ListSizeVolumeBound.lean:278](../../../ArkLib/Data/CodingTheory/ListSizeVolumeBound.lean#L278) — **List-size lower bound `1 ≤ \|Λ(C,δ)\|` for a nonempty code and `δ ≥ 0`.** Any codeword is `0`-close
 - `lemma InterleavedCode.GGR11.one_le_Lambda_of_nonempty` [ArkLib/ToMathlib/GGR11TreeConstruction.lean:1247](../../../ArkLib/ToMathlib/GGR11TreeConstruction.lean#L1247) — With a nonempty code, a nonnegative radius, and finite lists, the maximised list size is at least on
 
 ### `one_le_bindingDepth` (2 declarations, 2 files)
