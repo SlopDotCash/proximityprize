@@ -57,7 +57,8 @@ theorem listDecodable_hammingBallVolume
   intro y
   exact_mod_cast closeCodewordsRel_ncard_le_hammingBallVolume C y δ
 
-/-- **Maximised Elias entropy upper bound, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+/-- **Maximised Elias entropy upper bound, generic alphabet form.** The `Field` wrapper below is
+the `A = F` specialization. -/
 theorem Lambda_le_qEntropy_card_generic
     {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
     (C : Code ι A) (δ : ℝ)
@@ -100,7 +101,8 @@ theorem Lambda_le_qEntropy_card
             ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))) :=
   Lambda_le_qEntropy_card_generic (ι := ι) (A := F) C δ hr hcap Fintype.one_lt_card
 
-/-- **Per-word Elias entropy upper bound, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+/-- **Per-word Elias entropy upper bound, generic alphabet form.** The `Field` wrapper below is the
+`A = F` specialization. -/
 theorem closeCodewordsRel_ncard_le_qEntropy_card_generic
     {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
     (C : Code ι A) (f : ι → A) (δ : ℝ)
@@ -135,9 +137,11 @@ theorem closeCodewordsRel_ncard_le_qEntropy_card
         (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
           qEntropy (Fintype.card F)
             ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ))) :=
-  closeCodewordsRel_ncard_le_qEntropy_card_generic (ι := ι) (A := F) C f δ hr hcap Fintype.one_lt_card
+  closeCodewordsRel_ncard_le_qEntropy_card_generic
+    (ι := ι) (A := F) C f δ hr hcap Fintype.one_lt_card
 
-/-- **List-decodability from the finite-domain floor-radius entropy bound, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+/-- **List-decodability from the finite-domain floor-radius entropy bound, generic alphabet
+form.** The `Field` wrapper below is the `A = F` specialization. -/
 theorem listDecodable_qEntropy_card_generic
     {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
     (C : Code ι A) (δ : ℝ)
@@ -168,7 +172,8 @@ theorem listDecodable_qEntropy_card
           ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))) :=
   listDecodable_qEntropy_card_generic (ι := ι) (A := F) C δ hr hcap Fintype.one_lt_card
 
-/-- **Maximised Elias entropy upper bound with the real radius exponent, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+/-- **Maximised Elias entropy upper bound with the real radius exponent, generic alphabet form.**
+The `Field` wrapper below is the `A = F` specialization. -/
 theorem Lambda_le_qEntropy_real_radius_card_generic
     {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
     (C : Code ι A) (δ : ℝ)
@@ -206,7 +211,8 @@ theorem Lambda_le_qEntropy_real_radius_card
           qEntropy (Fintype.card F) δ)) :=
   Lambda_le_qEntropy_real_radius_card_generic (ι := ι) (A := F) C δ hδ0 hδ Fintype.one_lt_card
 
-/-- **Per-word Elias entropy upper bound with the real radius exponent, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+/-- **Per-word Elias entropy upper bound with the real radius exponent, generic alphabet form.**
+The `Field` wrapper below is the `A = F` specialization. -/
 theorem closeCodewordsRel_ncard_le_qEntropy_real_radius_card_generic
     {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
     (C : Code ι A) (f : ι → A) (δ : ℝ)
@@ -236,9 +242,11 @@ theorem closeCodewordsRel_ncard_le_qEntropy_real_radius_card
       ((Fintype.card ι : ℝ) + 1) *
         (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
           qEntropy (Fintype.card F) δ) :=
-  closeCodewordsRel_ncard_le_qEntropy_real_radius_card_generic (ι := ι) (A := F) C f δ hδ0 hδ Fintype.one_lt_card
+  closeCodewordsRel_ncard_le_qEntropy_real_radius_card_generic
+    (ι := ι) (A := F) C f δ hδ0 hδ Fintype.one_lt_card
 
-/-- **List-decodability from the finite-domain real-radius entropy bound, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+/-- **List-decodability from the finite-domain real-radius entropy bound, generic alphabet form.**
+The `Field` wrapper below is the `A = F` specialization. -/
 theorem listDecodable_qEntropy_real_radius_card_generic
     {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
     (C : Code ι A) (δ : ℝ)
@@ -261,7 +269,8 @@ theorem listDecodable_qEntropy_real_radius_card
     listDecodable C δ (((Fintype.card ι : ℝ) + 1) *
       (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
         qEntropy (Fintype.card F) δ)) :=
-  listDecodable_qEntropy_real_radius_card_generic (ι := ι) (A := F) C δ hδ0 hδ Fintype.one_lt_card
+  listDecodable_qEntropy_real_radius_card_generic
+    (ι := ι) (A := F) C δ hδ0 hδ Fintype.one_lt_card
 
 /-- **List-size lower bound `1 ≤ |Λ(C,δ)|` for a nonempty code and `δ ≥ 0`.** Any codeword is
 `0`-close to itself, so it lies in its own close-codeword list; with `Lambda_le_hammingBallVolume`
@@ -290,7 +299,8 @@ theorem one_le_Lambda_and_Lambda_le_hammingBallVolume
       Lambda C δ ≤ (hammingBallVolume (Fintype.card F) δ (Fintype.card ι) : ℕ∞) := by
   exact ⟨one_le_Lambda_of_nonempty (C := C) hC hδ, Lambda_le_hammingBallVolume C δ⟩
 
-/-- **Two-sided nonempty list-size bracket with the exact floor-radius entropy exponent, generic form.** -/
+/-- **Two-sided nonempty list-size bracket with the exact floor-radius entropy exponent, generic
+form.** -/
 theorem one_le_Lambda_and_Lambda_le_qEntropy_card_generic
     {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
     (C : Code ι A) (hC : C.Nonempty) (δ : ℝ) (hδ0 : 0 ≤ δ)
@@ -323,9 +333,11 @@ theorem one_le_Lambda_and_Lambda_le_qEntropy_card
           (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
             qEntropy (Fintype.card F)
               ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))) :=
-  one_le_Lambda_and_Lambda_le_qEntropy_card_generic (ι := ι) (A := F) C hC δ hδ0 hr hcap Fintype.one_lt_card
+  one_le_Lambda_and_Lambda_le_qEntropy_card_generic
+    (ι := ι) (A := F) C hC δ hδ0 hr hcap Fintype.one_lt_card
 
-/-- **Two-sided nonempty list-size bracket with the relaxed real-radius entropy exponent, generic form.** -/
+/-- **Two-sided nonempty list-size bracket with the relaxed real-radius entropy exponent, generic
+form.** -/
 theorem one_le_Lambda_and_Lambda_le_qEntropy_real_radius_card_generic
     {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
     (C : Code ι A) (hC : C.Nonempty) (δ : ℝ)
@@ -352,7 +364,8 @@ theorem one_le_Lambda_and_Lambda_le_qEntropy_real_radius_card
         ENNReal.ofReal (((Fintype.card ι : ℝ) + 1) *
           (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) *
             qEntropy (Fintype.card F) δ)) :=
-  one_le_Lambda_and_Lambda_le_qEntropy_real_radius_card_generic (ι := ι) (A := F) C hC δ hδ0 hδ Fintype.one_lt_card
+  one_le_Lambda_and_Lambda_le_qEntropy_real_radius_card_generic
+    (ι := ι) (A := F) C hC δ hδ0 hδ Fintype.one_lt_card
 
 /-- **Every code is uniquely decodable at radius 0** — the radius-0 list has at most
 `Vol_q(0,n) = 1` codeword (the Elias bound `listDecodable_hammingBallVolume` at `δ = 0`). -/
@@ -361,7 +374,8 @@ theorem uniqueDecodable_zero {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq
   have h := listDecodable_hammingBallVolume C (0 : ℝ)
   rwa [hammingBallVolume_zero_radius, Nat.cast_one] at h
 
-/-- **List size never exceeds the whole space `|Λ(C,δ)| ≤ q^n`**, generic alphabet form. The `Field` wrapper below is the `A = F` specialization. -/
+/-- **List size never exceeds the whole space `|Λ(C,δ)| ≤ q^n`**, generic alphabet form. The
+`Field` wrapper below is the `A = F` specialization. -/
 theorem Lambda_le_qpow_card_generic {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     [Fintype A] [Nonempty A] [DecidableEq A] (C : Code ι A) (δ : ℝ) :
     Lambda C δ ≤ ((Fintype.card A ^ Fintype.card ι : ℕ) : ℕ∞) := by
@@ -376,7 +390,8 @@ theorem Lambda_le_qpow {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     Lambda C δ ≤ ((Fintype.card F ^ Fintype.card ι : ℕ) : ℕ∞) :=
   Lambda_le_qpow_card_generic (ι := ι) (A := F) C δ
 
-/-- **Two-sided nonempty list-size bracket with the whole ambient word-space bound, generic form.** -/
+/-- **Two-sided nonempty list-size bracket with the whole ambient word-space bound, generic
+form.** -/
 theorem one_le_Lambda_and_Lambda_le_qpow_card_generic
     {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     [Fintype A] [Nonempty A] [DecidableEq A]
@@ -394,9 +409,10 @@ theorem one_le_Lambda_and_Lambda_le_qpow
       Lambda C δ ≤ ((Fintype.card F ^ Fintype.card ι : ℕ) : ℕ∞) :=
   one_le_Lambda_and_Lambda_le_qpow_card_generic (ι := ι) (A := F) C hC δ hδ
 
-/-- **Per-word whole-space list-size bound, generic form.**  Every close-codeword list is contained in the
-ambient word space, so its size is at most `q^n`. -/
-theorem closeCodewordsRel_ncard_le_qpow_card_generic {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+/-- **Per-word whole-space list-size bound, generic form.** Every close-codeword list is contained
+in the ambient word space, so its size is at most `q^n`. -/
+theorem closeCodewordsRel_ncard_le_qpow_card_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     [Fintype A] [Nonempty A] [DecidableEq A]
     (C : Code ι A) (f : ι → A) (δ : ℝ) :
     (closeCodewordsRel C f δ).ncard ≤ Fintype.card A ^ Fintype.card ι := by
@@ -412,7 +428,8 @@ theorem closeCodewordsRel_ncard_le_qpow {ι : Type} [Fintype ι] [Nonempty ι] [
     (closeCodewordsRel C f δ).ncard ≤ Fintype.card F ^ Fintype.card ι :=
   closeCodewordsRel_ncard_le_qpow_card_generic (ι := ι) (A := F) C f δ
 
-/-- **Every code is `(δ, q^n)`-list-decodable, generic alphabet form.**  The `Field` wrapper below is the `A = F` specialization. -/
+/-- **Every code is `(δ, q^n)`-list-decodable, generic alphabet form.** The `Field` wrapper below
+is the `A = F` specialization. -/
 theorem listDecodable_qpow_card_generic {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     [Fintype A] [Nonempty A] [DecidableEq A] (C : Code ι A) (δ : ℝ) :
     listDecodable C δ ((Fintype.card A ^ Fintype.card ι : ℕ) : ℝ) := by
