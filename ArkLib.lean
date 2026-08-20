@@ -4325,6 +4325,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.MonomialZeroSumIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.MovingDirectionCoordinate
 import ArkLib.Data.CodingTheory.ProximityGap.Mu6ConditionalPin
 import ArkLib.Data.CodingTheory.ProximityGap.Mu6DeepRung
+import ArkLib.Data.CodingTheory.ProximityGap.Mu6Dim8Pin
 import ArkLib.Data.CodingTheory.ProximityGap.Mu6LiteralBands
 import ArkLib.Data.CodingTheory.ProximityGap.Mu8AntipodalProfile
 import ArkLib.Data.CodingTheory.ProximityGap.MuTwoPowDerandRIMRank
