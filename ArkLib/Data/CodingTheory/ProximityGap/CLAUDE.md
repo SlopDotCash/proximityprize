@@ -1,6 +1,6 @@
 # ProximityGap / δ* campaign — agent guide
 
-The canonical repository is `elizaOS/proximityprize`, and its integration branch is `main`.
+The canonical repository is `SlopDotCash/proximityprize`, and its integration branch is `main`.
 The standalone repository contains both the library formalization of the proximity-gap literature
 and the machine-checked δ* research campaign. Historical references to the former
 `lalalune/ArkLib` fork and its `research/proximity-prize` branch are provenance, not current
@@ -139,7 +139,7 @@ Start from:
 - `Frontier/_DeltaStarDefinitive.lean` for the final threshold-facing reduction;
 - `docs/wiki/deltastar-programme.md` and `docs/wiki/residual-census.md` for programme state.
 
-GitHub control plane (`elizaOS/proximityprize`): production/core tracker #1; cleanup and
+GitHub control plane (`SlopDotCash/proximityprize`): production/core tracker #1; cleanup and
 upstream-carveout ledger #2; state/census maintenance #3; completion gate #4. Historical ArkLib
 issues #466/#499/#505–#509 and the former project board are provenance links only.
 

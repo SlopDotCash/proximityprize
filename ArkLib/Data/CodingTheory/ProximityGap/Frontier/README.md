@@ -14,7 +14,7 @@ Read the parent `CLAUDE.md` (build/concurrency/honesty rules) before touching an
 ## Live targets (standalone refresh 2026-08-16)
 
 **The current campaign is
-[`elizaOS/proximityprize#1`](https://github.com/elizaOS/proximityprize/issues/1).** Historical
+[`SlopDotCash/proximityprize#1`](https://github.com/SlopDotCash/proximityprize/issues/1).** Historical
 issue #466 names the predecessor campaign and remains useful provenance, but it is not the current
 control plane. Read `docs/kb/deltastar-DOSSIER-v4-2026-08-16.md` first for the standalone status,
 post-v3 evidence ledger, and issue map.

@@ -1,6 +1,6 @@
 # Delta Star dossier v4 — standalone state and post-v3 evidence
 
-**Snapshot:** `elizaOS/proximityprize` `main` at `b72890393a68745ecc43f6b39470509b630c7192`
+**Snapshot:** `SlopDotCash/proximityprize` `main` at `b72890393a68745ecc43f6b39470509b630c7192`
 (2026-08-16 audit).
 
 This is the current entry point for the standalone repository. It does not replace the detailed
@@ -18,8 +18,8 @@ The repository contains exact finite-instance pins, unconditional lower and uppe
 conditional production brackets, equivalent reductions, reproducible counterexamples, and a
 large machine-checked no-go map. None of those artifacts alone proves the sponsor-equivalent
 production statement. Issue
-[#4](https://github.com/elizaOS/proximityprize/issues/4) remains blocked on the mathematical CORE
-tracked by issue [#1](https://github.com/elizaOS/proximityprize/issues/1).
+[#4](https://github.com/SlopDotCash/proximityprize/issues/4) remains blocked on the mathematical CORE
+tracked by issue [#1](https://github.com/SlopDotCash/proximityprize/issues/1).
 
 The exact production-completion gate remains:
 
@@ -34,16 +34,16 @@ A toy instance, a bracket, an equivalent open `Prop`, or a conditional theorem i
 
 ## 2. Canonical repository and control plane
 
-- Repository: [`elizaOS/proximityprize`](https://github.com/elizaOS/proximityprize).
+- Repository: [`SlopDotCash/proximityprize`](https://github.com/SlopDotCash/proximityprize).
 - Integration branch: `main`; feature work uses focused branches.
 - Mathematical CORE and campaign tracker:
-  [#1](https://github.com/elizaOS/proximityprize/issues/1).
+  [#1](https://github.com/SlopDotCash/proximityprize/issues/1).
 - Cleanup and upstream-carveout ledger:
-  [#2](https://github.com/elizaOS/proximityprize/issues/2).
+  [#2](https://github.com/SlopDotCash/proximityprize/issues/2).
 - Documentation and residual-census maintenance:
-  [#3](https://github.com/elizaOS/proximityprize/issues/3).
+  [#3](https://github.com/SlopDotCash/proximityprize/issues/3).
 - Production assembly and independent audit gate:
-  [#4](https://github.com/elizaOS/proximityprize/issues/4).
+  [#4](https://github.com/SlopDotCash/proximityprize/issues/4).
 
 The historical `lalalune/ArkLib` issues #466/#499/#505–#509, its
 `research/proximity-prize` branch, and the former project board remain provenance only. They are
@@ -114,7 +114,7 @@ claims, and axiom reads.
 
 ### 4.2 SYZ70/SYZ71 — first middle slot and on-domain occupation
 
-Landed by [PR #5](https://github.com/elizaOS/proximityprize/pull/5), merge
+Landed by [PR #5](https://github.com/SlopDotCash/proximityprize/pull/5), merge
 `73c2e17ddb63c374bb62c08297075a9b1aed9a5f`.
 
 **Lean theorems:**
@@ -137,7 +137,7 @@ refutes an emptiness route and narrows F1 to the over-budget-stack lift. It does
 
 ### 4.3 All-depth cyclic energy floor
 
-Landed by [PR #7](https://github.com/elizaOS/proximityprize/pull/7), merge
+Landed by [PR #7](https://github.com/SlopDotCash/proximityprize/pull/7), merge
 `24060188e843d66dc93cfaa87be2ee41686d7c4e`.
 
 `REnergyCyclicFloorAllDepth.lean` proves
