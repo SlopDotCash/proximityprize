@@ -65,7 +65,35 @@ jobs:
             echo "BUILD_TIMING_MERGE_BASE_SHA=$merge_base_sha" >> "$GITHUB_ENV"
           fi
 
+      - name: Determine Lean validation scope
+        id: validation-scope
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          lean_relevant=true
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            lean_relevant=false
+            while IFS= read -r -d '' changed_path; do
+              case "$changed_path" in
+                *.lean|lakefile.toml|lake-manifest.json|lean-toolchain|scripts/*.py|scripts/*.sh)
+                  lean_relevant=true
+                  break
+                  ;;
+              esac
+            done < <(git diff --name-only --diff-filter=ACMR -z "$PR_BASE_SHA"...HEAD)
+          fi
+          echo "lean-relevant=$lean_relevant" >> "$GITHUB_OUTPUT"
+
+      - name: Record documentation-only validation scope
+        if: steps.validation-scope.outputs.lean-relevant != 'true'
+        run: |
+          echo "No Lean source, toolchain, Lake manifest, or validation script changed."
+          echo "The dedicated import, documentation-integrity, and lint workflows remain required."
+
       - name: Restore Lean cache
+        if: steps.validation-scope.outputs.lean-relevant == 'true'
         uses: actions/cache/restore@v6
         id: lake-cache
         with:
@@ -93,6 +121,7 @@ jobs:
         run: python3 scripts/forbidden_tokens.py
 
       - name: Set up Lean environment
+        if: steps.validation-scope.outputs.lean-relevant == 'true'
         uses: leanprover/lean-action@v1.5.0
         with:
           auto-config: false
@@ -103,6 +132,7 @@ jobs:
           use-mathlib-cache: false
 
       - name: Fetch dependency cache
+        if: steps.validation-scope.outputs.lean-relevant == 'true'
         run: lake exe cache get
 
       # THE REAL GATE (merge-blocking), runs FIRST on the warm restored cache so
@@ -117,6 +147,7 @@ jobs:
       # `gh run rerun --failed` resumes from its saved snapshot until the
       # build fits in one window.
       - name: Time validation wrapper
+        if: steps.validation-scope.outputs.lean-relevant == 'true'
         env:
           LEAN_NUM_THREADS: "2"
         run: |
@@ -130,7 +161,7 @@ jobs:
       # via always()) saves its own snapshot and the next attempt resumes from
       # the newest one rather than the first attempt's stale partial state.
       - name: Save Lean cache
-        if: always()
+        if: always() && steps.validation-scope.outputs.lean-relevant == 'true'
         uses: actions/cache/save@v6
         with:
           path: ./.lake
