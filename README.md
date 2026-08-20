@@ -4,7 +4,7 @@ This repository is the standalone, canonical home of the machine-checked
 Reed–Solomon proximity-gap campaign for the
 [Ethereum Foundation Proximity Prize](https://proximityprize.org/). Start with
 the [δ* programme guide](docs/wiki/deltastar-programme.md), the
-[live issues](https://github.com/elizaOS/proximityprize/issues), and the
+[live issues](https://github.com/SlopDotCash/proximityprize/issues), and the
 [Proximity Gap agent guide](ArkLib/Data/CodingTheory/ProximityGap/AGENTS.md).
 
 The campaign retains the broader ArkLib formal-verification substrate it builds

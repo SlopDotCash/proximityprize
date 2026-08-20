@@ -1,9 +1,9 @@
 # Standalone cleanup reassessment — 2026-08-16
 
 This is the current-main reassessment of standalone issue
-[#2](https://github.com/elizaOS/proximityprize/issues/2). The issue body preserves the
+[#2](https://github.com/SlopDotCash/proximityprize/issues/2). The issue body preserves the
 2026-07-09 ArkLib-fork audit, but its proposed branch architecture predates the dedicated
-`elizaOS/proximityprize` repository. The standalone migration deliberately made `main` the home of
+`SlopDotCash/proximityprize` repository. The standalone migration deliberately made `main` the home of
 the Proximity Prize corpus, so moving the campaign back to a retired research branch is no longer
 an active cleanup target.
 

@@ -7,7 +7,7 @@ whole SYZ arc has converged to, names the Lean object for every face, gives thei
 relations, records the classical surrounding theory that is now **proved** (not assumed), the
 empirical status of each face, and the precise sense in which the faces are **one** question.
 
-Everything below is in-tree on canonical `elizaOS/proximityprize` `main`; `f71099aa6` is the
+Everything below is in-tree on canonical `SlopDotCash/proximityprize` `main`; `f71099aa6` is the
 historical SYZ66 snapshot recorded by this map. The
 production δ* conjecture (`mcaDeltaStar` at rate `1/2` equals the strip value ≈ `1/3`) remains
 **OPEN / ON-BGK**. Nothing here is a closure. Read the parent
