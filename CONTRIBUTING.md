@@ -239,3 +239,5 @@ By participating in this project (e.g., contributing code, opening issues, comme
 Like many other Lean projects, ArkLib is licensed under the terms of the Apache License 2.0 license. The full license text can be found in the [LICENSE](LICENSE) file.
 
 By contributing to ArkLib, you agree that your contributions will be licensed under this same license. Ensure you are comfortable with these terms before submitting contributions.
+
+By submitting a pull request, you agree that your contribution is licensed under the repository's Apache License 2.0.
