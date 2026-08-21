@@ -16,7 +16,7 @@ import pytest
 
 def load_module():
     spec = importlib.util.spec_from_file_location(
-        "forbidden_tokens", "/tmp/proximityprize/scripts/forbidden_tokens.py"
+        "forbidden_tokens", str((Path(__file__).resolve().parents[1] / "scripts/forbidden_tokens.py"))
     )
     module = importlib.util.module_from_spec(spec)
     sys.modules["forbidden_tokens"] = module
