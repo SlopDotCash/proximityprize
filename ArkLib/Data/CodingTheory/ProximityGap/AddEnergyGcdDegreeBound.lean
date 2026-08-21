@@ -9,21 +9,24 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupRepresentationRoots
 /-!
 # Additive energy bounded by the sum of squared gcd-degrees (#357)
 
-Assembling the HBK/Stepanov chain. The Mathlib moment identity (`Finset.addEnergy_eq_sum_sq`, via the
-bridge `addEnergy_eq_mathlib`) gives `E(G) = Σ_c r(c)²` where `r(c) = #{(x,y)∈G² : x+y = c}`; the
-representation bound (`SubgroupRepresentationRoots.representationCount_le_gcd_degree`) gives
+Assembling the HBK/Stepanov chain. The Mathlib moment identity (`Finset.addEnergy_eq_sum_sq`,
+via the bridge `addEnergy_eq_mathlib`) gives `E(G) = Σ_c r(c)²` where
+`r(c) = #{(x,y)∈G² : x+y = c}`; the representation bound
+(`SubgroupRepresentationRoots.representationCount_le_gcd_degree`) gives
 `r(c) ≤ deg gcd(Xⁿ−1, (C c−X)ⁿ−1)`. Composing:
 
   `addEnergy_le_sum_gcd_degree_sq` :  `E(G) ≤ Σ_{c∈F} (deg gcd(Xⁿ−1, (C c−X)ⁿ−1))²`.
 
-This reduces the open sum-product estimate `E(G) ≪ |G|^{5/2}` (⟺ `N ≪ |G|^{3/2}`, dossier §27–28) to a
-**resultant count**: bounding `Σ_c (deg gcd_c)²`. Since `gcd(Xⁿ−1, (C c−X)ⁿ−1)` is nontrivial only when
-`c ∈ G+G` (a common root `ω + ω'` exists), and its degree measures the multiplicity of additive
-coincidences, the remaining task is the Stepanov/resultant bound on how the gcd degrees distribute over
-`c` — the genuine open core, now reduced to an explicit polynomial-resultant statement.
+This reduces the open sum-product estimate `E(G) ≪ |G|^{5/2}` (⟺ `N ≪ |G|^{3/2}`, dossier
+§27–28) to a **resultant count**: bounding `Σ_c (deg gcd_c)²`. Since `gcd(Xⁿ−1, (C c−X)ⁿ−1)` is
+nontrivial only when `c ∈ G+G` (a common root `ω + ω'` exists), and its degree measures the
+multiplicity of additive coincidences, the remaining task is the Stepanov/resultant bound on how
+the gcd degrees distribute over `c` — the genuine open core, now reduced to an explicit
+polynomial-resultant statement.
 
-**Honest scope:** an exact assembly; it does NOT bound `Σ_c (deg gcd_c)²` (that is the open Stepanov
-input). It transforms the open estimate into a clean resultant-count target. Does not pin `δ*`.
+**Honest scope:** an exact assembly; it does NOT bound `Σ_c (deg gcd_c)²` (that is the open
+Stepanov input). It transforms the open estimate into a clean resultant-count target. Does not
+pin `δ*`.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/

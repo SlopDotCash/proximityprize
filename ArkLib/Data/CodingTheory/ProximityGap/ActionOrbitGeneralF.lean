@@ -16,7 +16,8 @@ pencil `h_α(z) = z^a + α z^b`: the bad-`α` set is a union of `⟨μ^{b−a}�
   `(z^b)∘(μ·) = μ^b · z^b`   (`monomial_dilation_eigen`),
 
 i.e. the monomial direction `z^b` is an eigenvector of the dilation operator `D_μ : z ↦ μz`, so
-dilating the line `{γ·z^b}` returns *the same line* with `γ` reparametrized — the per-line `γ`-orbit.
+dilating the line `{γ·z^b}` returns *the same line* with `γ` reparametrized — the per-line
+`γ`-orbit.
 
 This file isolates **what survives, and what fails, for a GENERAL direction `f`** (an arbitrary
 polynomial, not a single monomial — the "primitive direction" / gcd-irreducible case that the
@@ -72,8 +73,9 @@ theorem monomial_eval_dilation (μ x : F) (b : ℕ) :
 
 /-- **General-`f` agreement invariance under dilation (POSITIVE, no eigenvector hypothesis).**
 
-For an *arbitrary* base polynomial `g₀` and an *arbitrary* direction polynomial `f` (NOT required
-to be a monomial), and any nonzero `μ` with `D := z ↦ μz` permuting the domain `D` (`hDinv`/`hDmul`),
+For an *arbitrary* base polynomial `g₀` and an *arbitrary* direction polynomial `f` (NOT
+required to be a monomial), and any nonzero `μ` with `D := z ↦ μz` permuting the domain `D`
+(`hDinv`/`hDmul`),
 the agreement count of the affine line `g₀ + γ·f` against a codeword-polynomial `h` is unchanged
 when we dilate the whole line and the codeword by `μ`:
 
@@ -114,13 +116,15 @@ theorem agreement_dilation_general
   · intro x _; simp only []; field_simp
   · intro y _; simp only []; field_simp
 
-/-- **Specialization to a monomial direction recovers the two-monomial action–orbit reparametrization.**
+/-- **Specialization to a monomial direction recovers the two-monomial action–orbit
+reparametrization.**
 
 When the direction is the monomial `f = X^b` (and the base is the monomial `g₀ = X^a`), the dilated
 line's direction `f∘(μ·) = μ^b·X^b` is a scalar multiple of the original direction `X^b`.  Factoring
 out the scalar turns `agreement_dilation_general` into the per-line statement
 `α ↦ α·μ^{b−a}` of `ActionOrbitFRI.agreement_orbit_invariance`: the bad set is a union of
-`⟨μ^{b−a}⟩`-orbits.  The scalar `μ^b ≠ 0` is what lets the reparametrization stay within the line. -/
+`⟨μ^{b−a}⟩`-orbits.  The scalar `μ^b ≠ 0` is what lets the reparametrization stay within the
+line. -/
 theorem monomial_dilation_scalar (μ : F) (hμ : μ ≠ 0) (b : ℕ) :
     ∃ c : F, c ≠ 0 ∧ (X ^ b : F[X]).comp (C μ * X) = C c * X ^ b :=
   ⟨μ ^ b, pow_ne_zero _ hμ, monomial_dilation_eigen μ b⟩
@@ -147,7 +151,8 @@ theorem dilation_eigen_coeff (μ c : F) (f : F[X])
     μ ^ j = c := by
   -- compare coefficient `j` of both sides
   have hcoeff : (f.comp (C μ * X)).coeff j = (C c * f).coeff j := by rw [h]
-  -- LHS coeff: `f.comp (C μ * X) = ∑ i, C (f.coeff i) * (C μ * X)^i`, whose `j`-coeff is `f.coeff j * μ^j`
+  -- LHS coeff: `f.comp (C μ * X) = ∑ i, C (f.coeff i) * (C μ * X)^i`, whose `j`-coeff is
+  -- `f.coeff j * μ^j`
   have hL : (f.comp (C μ * X)).coeff j = f.coeff j * μ ^ j := by
     rw [Polynomial.comp_eq_sum_left, Polynomial.coeff_sum]
     -- only the `i = j` term contributes
