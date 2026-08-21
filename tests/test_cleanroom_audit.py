@@ -14,7 +14,7 @@ import pytest
 
 def load_module():
     spec = importlib.util.spec_from_file_location(
-        "cleanroom_audit", "/tmp/proximityprize/scripts/proximity_prize_cleanroom_audit.py"
+        "cleanroom_audit", str((Path(__file__).resolve().parents[1] / "scripts/proximity_prize_cleanroom_audit.py"))
     )
     module = importlib.util.module_from_spec(spec)
     sys.modules["cleanroom_audit"] = module
