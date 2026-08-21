@@ -16,7 +16,7 @@ import pytest
 
 def load_module():
     spec = importlib.util.spec_from_file_location(
-        "check_warning_log", "/tmp/proximityprize/scripts/check-warning-log.py"
+        "check_warning_log", str((Path(__file__).resolve().parents[1] / "scripts/check-warning-log.py"))
     )
     module = importlib.util.module_from_spec(spec)
     sys.modules["check_warning_log"] = module
