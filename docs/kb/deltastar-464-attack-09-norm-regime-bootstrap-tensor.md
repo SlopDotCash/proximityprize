@@ -48,7 +48,8 @@ worst-case cancellation question.
 
 ## Refutation (the wall, made numerically exact)
 
-The whole lift hinges on whether the two sub-period halves `a = η_{b}^{(μ-1)}` and `bω = η_{bω}^{(μ-1)}`
+The whole lift hinges on whether the two sub-period halves `a = η_{b}^{(μ-1)}` and `bω =
+η_{bω}^{(μ-1)}`
 DECORRELATE in phase, giving `√2` instead of `2`. Probe `probe_attack09` (p=257, computing the exact
 maximizer `b*` at each level):
 
@@ -66,25 +67,29 @@ sub-`2×` per-level factor would require an unconditional statement that the lev
 `b*` and `b*ω` are NOT phase-aligned — which is precisely the worst-case phase-cancellation
 statement BGK/Paley controls and which ~60 prior sessions have shown is the wall.
 
-Note the structural signature at μ=5: `M(32) = 11.86 = 9.229 (= M(16), the prior maximizer) + 2.631`.
+Note the structural signature at μ=5: `M(32) = 11.86 = 9.229 (= M(16), the prior maximizer) +
+2.631`.
 The new level's worst case is built by ALIGNING a fresh half onto the previous level's maximizer.
 The bad frequency persists and accretes; it does not average down. (This matches
 `SpurPrimePersistTower`/`spur prime persistence`.)
 
 ## Why the norm-regime base case cannot be propagated
 
-The base case `eta_quartic_le_uncond` / `μ_n_additiveEnergy_eq = 3n²−3n` is unconditional ONLY in the
+The base case `eta_quartic_le_uncond` / `μ_n_additiveEnergy_eq = 3n²−3n` is unconditional ONLY in
+the
 norm regime `p > 2^n` (no wraparound mod p: the `±1` combinations of roots never collide mod p, so
 the additive energy is the char-0 Wick value). Going UP the tower at FIXED prime p, the wraparound
 re-appears as soon as `2^μ` grows past `log₂ p`. The base case holds at small μ precisely because
-there is no wraparound; the inductive step must CREATE wraparound control at each new level, and that
+there is no wraparound; the inductive step must CREATE wraparound control at each new level, and
+that
 is exactly the open content (`DCEnergyEssential`: the full-energy hypothesis is FALSE past the DC
 crossover). The norm regime and the prize regime are on opposite sides of the wraparound onset; the
 tower walks from one into the other, and the unconditional input expires at the crossing.
 
 ## Lever analysis — what would crack it
 
-The single missing input is: **an unconditional sub-`2×` per-level phase-decorrelation bound** of the
+The single missing input is: **an unconditional sub-`2×` per-level phase-decorrelation bound** of
+the
 form `‖η_{b*}^{(μ-1)} + η_{b*ω}^{(μ-1)}‖ ≤ √2 · max(‖·‖)` at the maximizer. The numerics REFUTE this
 as stated (alignment is exact). The honest equivalent is the worst-case cancellation = BGK/Paley
 spectrum bound itself; the tower gives no independent leverage on it.
@@ -93,7 +98,8 @@ spectrum bound itself; the tower gives no independent leverage on it.
 
 **Reduces to the wall.** The 2-adic tower recursion is exact and axiom-clean, but its only
 unconditional consequence is trivial doubling `M(2^μ) ≤ 2·M(2^{μ-1}) ⟹ M ≤ n`. The lift needs a
-per-level phase-decorrelation factor that the numerics show is exactly tight (no decorrelation at the
+per-level phase-decorrelation factor that the numerics show is exactly tight (no decorrelation at
+the
 maximizer), and that factor IS the worst-case Paley/BGK cancellation. The norm-regime base case
 expires at the wraparound onset, which the tower necessarily crosses. Bricks landed (axiom-clean,
 `[propext, Classical.choice, Quot.sound]`):
