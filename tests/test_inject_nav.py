@@ -15,7 +15,7 @@ import pytest
 
 def load_module():
     spec = importlib.util.spec_from_file_location(
-        "inject_nav", "/tmp/proximityprize/scripts/inject_nav.py"
+        "inject_nav", str((Path(__file__).resolve().parents[1] / "scripts/inject_nav.py"))
     )
     module = importlib.util.module_from_spec(spec)
     sys.modules["inject_nav"] = module
