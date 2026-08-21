@@ -14,7 +14,7 @@ import pytest
 
 def load_module():
     spec = importlib.util.spec_from_file_location(
-        "revert_nav", "/tmp/proximityprize/scripts/revert_nav.py"
+        "revert_nav", str((Path(__file__).resolve().parents[1] / "scripts/revert_nav.py"))
     )
     module = importlib.util.module_from_spec(spec)
     sys.modules["revert_nav"] = module
