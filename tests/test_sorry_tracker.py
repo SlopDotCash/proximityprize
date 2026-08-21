@@ -22,7 +22,7 @@ def load_module():
     sys.modules.setdefault("google", fake_google)
     sys.modules.setdefault("google.generativeai", fake_genai)
     spec = importlib.util.spec_from_file_location(
-        "sorry_tracker", "/tmp/proximityprize/scripts/sorry-tracker.py"
+        "sorry_tracker", str((Path(__file__).resolve().parents[1] / "scripts/sorry-tracker.py"))
     )
     module = importlib.util.module_from_spec(spec)
     sys.modules["sorry_tracker"] = module
