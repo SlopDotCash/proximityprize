@@ -7,7 +7,8 @@
 ETag `a9802432b0136fd3ab47795646a72e8f-ssl`
 **Independent recheck:** 2026-08-22T17:43:34Z returned the same byte count,
 SHA-256, and ETag
-**Status:** candidate for maintainer ratification — not yet ratified
+**Status:** this exact file is ratified only by its merge into `main` under
+policy revision `2026-08-22.1`; a pull-request or fork copy is not authoritative
 
 ## Purpose
 
