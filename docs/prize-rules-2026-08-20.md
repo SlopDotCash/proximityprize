@@ -1,7 +1,12 @@
-# Proximity Prize rules — dated capture of the official page
+# Proximity Prize rules — versioned maintainer transcription
 
-**Capture date:** 2026-08-20
-**Source:** https://proximityprize.org/ (fetched 2026-08-20)
+**Transcription date:** 2026-08-20
+**Source:** https://proximityprize.org/
+**Source response:** 13,891 bytes, SHA-256
+`82618a3f0e407bef82e7e591cc316c89713c7fa2f48cdbc35bc2e6f589b7e5de`,
+ETag `a9802432b0136fd3ab47795646a72e8f-ssl`
+**Independent recheck:** 2026-08-22T17:43:34Z returned the same byte count,
+SHA-256, and ETag
 **Status:** candidate for maintainer ratification — not yet ratified
 
 ## Purpose
@@ -10,15 +15,21 @@ Issue #49 asks the repository maintainers to make the applicable prize rules
 explicit and immutable so Slop can bind contribution receipts to a specific
 versioned terms artifact. The official prize page currently labels its
 conditions "Preliminary version" and reserves the judges' right to change them.
-This file is a dated, immutable capture of the official page at a single point
-in time, offered as the versioned rules artifact for the "ratified dated
-capture" option in issue #49.
+This file is a maintainer-authored, normalized transcription of the substantive
+rules on the official page, offered as the versioned rules artifact for issue
+#49. It is not the raw HTML response. The source-response metadata above lets a
+reviewer distinguish this transcription from the fetched bytes and reproduce
+the source boundary independently.
+
+The official page remains controlling for any condition omitted or transcribed
+incorrectly here. A future source change does not rewrite this file: maintainers
+must review a successor artifact and explicitly update downstream bindings.
 
 This document does **not** claim prize eligibility, ownership, or payment
 authority for this repository. The prize is an external opportunity controlled
 by the Ethereum Foundation and the prize judges.
 
-## Captured conditions (verbatim summary of proximityprize.org, 2026-08-20)
+## Transcribed conditions from proximityprize.org (2026-08-20)
 
 The page is headed "Preliminary version" and states details may still change,
 inviting feedback before the conditions are finalised.
@@ -56,6 +67,10 @@ exceptional cases, or to change the guidelines in the future.
 
 ### FAQ points most relevant to this repository (as captured)
 
+- Submission contents: each submission must include a PDF that clearly states
+  the claimed results, explains how they relate to the prize challenge, and
+  situates them with respect to prior work. Additional material must be clearly
+  labeled and may be included or hosted online and linked from the main PDF.
 - Partial results: encouraged, significant contribution even if partial.
 - AI policy: AI-aided submissions allowed, but must be human-verified and
   edited, using standard language/notation; human authors are solely
@@ -74,7 +89,8 @@ exceptional cases, or to change the guidelines in the future.
 
 Maintainers, please either:
 
-- approve this dated capture as the applicable preliminary version for Slop
+- approve this versioned transcription as the applicable preliminary rules
+  artifact for Slop
   receipt binding, or
 - replace it with a different versioned, immutable rules artifact.
 
