@@ -29,6 +29,22 @@ This document does **not** claim prize eligibility, ownership, or payment
 authority for this repository. The prize is an external opportunity controlled
 by the Ethereum Foundation and the prize judges.
 
+## Repository allocation terms
+
+Contributors retain copyright in their contributions and license them under
+the repository's MIT License. The accepted work is collectively owned by its
+contributors; acceptance does not assign copyright to Slop, the project
+steward, or the prize organizer.
+
+If the external organizer awards prize money for a result produced through
+this repository, 10% of the amount actually received is allocated to Slop Cash
+and the remaining 90% is shared among the contributors to that awarded result.
+The contributor split is based on the project's public, evidence-backed
+contribution-share record and requires final approval from the named authors,
+subject to the organizer's controlling rules. This is a binding allocation of
+an award if received, not a representation that any award is guaranteed. Slop
+does not hold keys, take custody, sign, or broadcast a prize payment.
+
 ## Transcribed conditions from proximityprize.org (2026-08-20)
 
 The page is headed "Preliminary version" and states details may still change,

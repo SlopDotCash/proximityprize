@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
+Released under the MIT license as described in the file LICENSE.
 Authors: ArkLib Contributors (#444 / #389, thread T2-recursion-lean)
 -/
 import Mathlib.Tactic

@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
+Released under the MIT license as described in the file LICENSE.
 Authors: ArkLib Contributors (target F4 — the good-prime existence residual via Linnik/Chebotarev)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26SumsOfRootsOfUnity

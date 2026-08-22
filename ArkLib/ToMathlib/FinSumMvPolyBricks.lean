@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
+Released under the MIT license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 -- dedup-audit(#257): intended consolidation target for finSumFinEquiv_symm_dite; also holds the unique degreeOf_sum_mul_prod_erase_le_card. Do not delete. #257 A4.
