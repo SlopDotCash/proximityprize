@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under the MIT license as described in the file LICENSE.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors (ARX-4 — Sawin–Shusterman short-trace cancellation across the
   Frobenius-twisted Gauss-sum family; the Jacobi-phase autocorrelation residual A(s))
 -/

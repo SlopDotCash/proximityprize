@@ -143,11 +143,11 @@ When translating theorem statements into names, we use standard mappings for sym
 
 * **Line Length**: Keep lines under 100 characters.
 * **Indentation**: Use 2 spaces for indentation.
-* **Headers**: Use standard file headers including copyright, license (MIT), and authors.
+* **Headers**: Use standard file headers including copyright, license (Apache 2.0), and authors.
   ```lean
   /-
   Copyright (c) 2024 Author Name. All rights reserved.
-  Released under the MIT license as described in the file LICENSE.
+  Released under Apache 2.0 license as described in the file LICENSE.
   Authors: Author Name
   -/
   ```
@@ -236,18 +236,8 @@ By participating in this project (e.g., contributing code, opening issues, comme
 
 ## Licensing
 
-ArkLib is licensed under the MIT License. The full license text is in
-[LICENSE](LICENSE).
+Like many other Lean projects, ArkLib is licensed under the terms of the Apache License 2.0 license. The full license text can be found in the [LICENSE](LICENSE) file.
 
-By submitting a pull request, you retain copyright in your contribution and
-license it under the repository's MIT License. The repository is collectively
-owned by its contributors: no contribution is assigned to Slop, the project
-steward, the prize organizer, or another contributor merely by being accepted.
+By contributing to ArkLib, you agree that your contributions will be licensed under this same license. Ensure you are comfortable with these terms before submitting contributions.
 
-If work from this repository receives an external Proximity Prize award, 10%
-of the award is allocated to Slop Cash and the remaining 90% is shared among
-the contributors to the awarded result. The contributor split follows the
-project's public, evidence-backed contribution-share record and requires final
-approval from the named authors, subject to the external organizer's rules.
-This allocation does not guarantee that the organizer will make an award, and
-Slop does not take custody of or sign for prize funds.
+By submitting a pull request, you agree that your contribution is licensed under the repository's Apache License 2.0.

@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2025 ArkLib Contributors. All rights reserved.
-Released under the MIT license vec described in the file LICENSE.
+Released under Apache 2.0 license vec described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 import ArkLib.ToVCVio.Oracle

@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under the MIT license as described in the file LICENSE.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors (wf-S11 survival → MGF, the OTHER layer-cake half)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS11_layercake_moment

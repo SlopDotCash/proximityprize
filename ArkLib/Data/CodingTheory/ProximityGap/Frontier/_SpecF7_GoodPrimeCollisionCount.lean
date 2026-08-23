@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under the MIT license as described in the file LICENSE.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors (target F7 — the combinatorial half of the good-prime Linnik residual,
   framed on the complete-homogeneous forced-bad-scalar values `γ_R = −h_{a−k}(R)/h_{b−k}(R)`)
 -/

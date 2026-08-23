@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under the MIT license as described in the file LICENSE.
+Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors (wf-T07 frontier — adelic capacity / Fekete-Szegő House ceiling)
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
