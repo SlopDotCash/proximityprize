@@ -3943,12 +3943,12 @@ import ArkLib.Data.CodingTheory.ProximityGap.Jo26ObstructionRowCount
 import ArkLib.Data.CodingTheory.ProximityGap.Jo26PowerGeneratorInterleaving
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonBoundRealLower
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonOrdering
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCommonCenterRefutation
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonExactPoint
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonFourthMomentNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonInvariant
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonListBound
+import ArkLib.Data.CodingTheory.ProximityGap.JohnsonOrdering
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonPerWord
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSecondMomentFrontier
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSimplexBound
