@@ -8,7 +8,7 @@ ETag `a9802432b0136fd3ab47795646a72e8f-ssl`
 **Independent recheck:** 2026-08-22T17:43:34Z returned the same byte count,
 SHA-256, and ETag
 **Status:** this exact file is ratified only by its merge into `main` under
-policy revision `2026-08-22.1`; a pull-request or fork copy is not authoritative
+policy revision `2026-08-23.1`; a pull-request or fork copy is not authoritative
 
 ## Purpose
 
@@ -29,6 +29,25 @@ must review a successor artifact and explicitly update downstream bindings.
 This document does **not** claim prize eligibility, ownership, or payment
 authority for this repository. The prize is an external opportunity controlled
 by the Ethereum Foundation and the prize judges.
+
+## Repository allocation terms
+
+Historical work keeps its Apache-2.0 grants and notices. Contributors accepting
+policy revision `2026-08-23.1` retain copyright in their original contributions
+and license them under both MIT and Apache-2.0. Accepted Proximity Prize work
+is contributor-owned in aggregate; acceptance assigns no copyright and does
+not infer joint ownership of another person's contribution.
+
+If the external organizer awards prize money for a result whose included
+contributors accepted that policy, 10% of the amount actually received is
+allocated to Slop Cash and the remaining 90% is shared among the contributors
+to that awarded result. The contributor split is based on the project's public,
+evidence-backed contribution-share record and requires final approval from the
+named authors, subject to the organizer's controlling rules. Historical
+contributors are not bound retroactively and must affirm the policy before
+their work or share is included. This is an allocation of an award if received,
+not a representation that any award is guaranteed. Slop does not hold keys,
+take custody, sign, or broadcast a prize payment.
 
 ## Transcribed conditions from proximityprize.org (2026-08-20)
 

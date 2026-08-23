@@ -143,11 +143,13 @@ When translating theorem statements into names, we use standard mappings for sym
 
 * **Line Length**: Keep lines under 100 characters.
 * **Indentation**: Use 2 spaces for indentation.
-* **Headers**: Use standard file headers including copyright, license (Apache 2.0), and authors.
+* **Headers**: Preserve existing license notices. New original files use the
+  dual MIT and Apache-2.0 notice and name their authors.
   ```lean
   /-
   Copyright (c) 2024 Author Name. All rights reserved.
-  Released under Apache 2.0 license as described in the file LICENSE.
+  Released under the MIT and Apache 2.0 licenses as described in
+  LICENSE-MIT and LICENSE.
   Authors: Author Name
   -/
   ```
@@ -234,10 +236,28 @@ To ensure a welcoming and collaborative environment, ArkLib follows the principl
 
 By participating in this project (e.g., contributing code, opening issues, commenting in discussions), you agree to abide by its terms. Please treat fellow contributors with respect. Unacceptable behavior can be reported to the project maintainers.
 
-## Licensing
+## Licensing, ownership, and external awards
 
-Like many other Lean projects, ArkLib is licensed under the terms of the Apache License 2.0 license. The full license text can be found in the [LICENSE](LICENSE) file.
+Historical ArkLib work remains under Apache-2.0, including every preserved
+source notice; see [LICENSE](LICENSE). This policy does not revoke or rewrite a
+prior contributor's grant.
 
-By contributing to ArkLib, you agree that your contributions will be licensed under this same license. Ensure you are comfortable with these terms before submitting contributions.
+By submitting a pull request after policy revision `2026-08-23.1` becomes
+effective on `main`, you retain copyright in your contribution and license your
+original contribution under both [MIT](LICENSE-MIT) and Apache-2.0. Preserve
+any narrower third-party or historical boundary and identify it in the pull
+request. Accepted Proximity Prize work is contributor-owned in aggregate: no
+copyright is assigned to Slop Cash, the project steward, the prize organizer,
+or an unrelated contributor, and acceptance does not infer joint ownership of
+another person's contribution.
 
-By submitting a pull request, you agree that your contribution is licensed under the repository's Apache License 2.0.
+If an external Proximity Prize award is received for a result whose included
+contributors have accepted this policy, 10% of the amount actually received is
+allocated to Slop Cash and the remaining 90% is shared among the contributors
+to that awarded result. The contributor split follows the public,
+evidence-backed contribution-share record and requires final named-author
+approval, subject to the external organizer's rules. Historical contributors
+are not bound retroactively and must affirm this policy before their work or
+share is included under that allocation. This rule does not guarantee an award,
+transfer intellectual property, or authorize Slop to hold keys, take custody,
+sign, or broadcast a payment.
