@@ -95,13 +95,17 @@ requires the official PolyFun repository transitively. The remaining work is
 API compatibility and validation of each proposed contribution, not introducing
 PolyFun to upstream for the first time. The standalone pins have not changed.
 
-A submitted shared-data contribution is
-[upstream PR #860](https://github.com/Verified-zkEVM/ArkLib/pull/860): four
-heterogeneous tuple equalities replacing `True` placeholders. Its full upstream
-`validate.sh --axioms` run passed at the upstream base above, and its four
-explicit axiom audits report only standard axioms. This validates that bounded
-contribution; it does not validate a migration of the full campaign or the
-remaining protocol security results.
+All project pushes and pull requests target `SlopDotCash/proximityprize`.
+`Verified-zkEVM/ArkLib` is a read-only comparison source, not a submission
+destination. Historical upstream carve-out plans do not authorize publication
+there. The mistakenly submitted upstream PR #860 is closed.
+
+The standalone main revision `6b46efb4dcdd1d111100d103425ae81f5de27326` already
+contains the positional `Fin.castSum`/`Fin.sumCases` API, `Fin.induction_four`
+helpers, the four heterogeneous tuple equalities, and
+`ToMathlib/CyclotomicPatternInjectivity.lean`. Copying those results into another
+repository is not remaining work for issue #2. Their presence does not discharge
+any conditional protocol security result.
 
 ## Shared-data review: Vandermonde
 
