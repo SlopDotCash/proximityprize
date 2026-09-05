@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Stir.BlockCompleteness
 import ArkLib.ProofSystem.Component.SendWitness
-import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeStateFunction
+import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeSoundness
 
 /-!
 # STIR chain first seam: init-block RBR through the append keystone (#301)
