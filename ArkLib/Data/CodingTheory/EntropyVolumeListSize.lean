@@ -33,15 +33,51 @@ open Real ListDecodable
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **Unconditional entropy-volume list-size lower bound (`/(n+1)` form).**
+/-- **Unconditional entropy-volume list-size lower bound (`/(n+1)` form), alphabet-generic.**
+
+For any code `C ⊆ (ι → A)` over an arbitrary alphabet `A` with `|C| = |A|^k`, `2 ≤ |A|`, and
+mode index `⌊δ·n⌋ ∈ (0, n)`:
+
+  `|Λ(C, δ)| ≥ |A|^{n·H_{|A|}(⌊δn⌋/n)} / ((n+1) · |A|^{n − k})`.
+
+This is the alphabet-generic companion to `lambda_ge_entropy_volume` (ABF26 C3.8), chaining
+`lambda_ge_elias_volume_eli57` (L3.7) with `hammingBallVolume_ge_qEntropy` with no `δ·n ∈ ℕ`
+lattice restriction. -/
+theorem lambda_ge_entropy_volume_div_succ_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
+    (C : Set (ι → A)) (k : ℕ) (hcard : C.ncard = Fintype.card A ^ k)
+    (δ : ℝ) (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
+    (hq : 2 ≤ Fintype.card A)
+    (hk0 : 0 < ⌊δ * (Fintype.card ι : ℝ)⌋₊)
+    (hkn : ⌊δ * (Fintype.card ι : ℝ)⌋₊ < Fintype.card ι) :
+    ENNReal.ofReal
+        ((Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ)
+              * qEntropy (Fintype.card A)
+                  ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))
+          / (((Fintype.card ι : ℝ) + 1)
+              * (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) - (k : ℝ))))
+      ≤ (Lambda C δ : ENNReal) := by
+  set q := Fintype.card A with hq_def
+  set n := Fintype.card ι with hn_def
+  have hvol := hammingBallVolume_ge_qEntropy hq δ n hk0 hkn
+  have hL37 := lambda_ge_elias_volume_eli57 C k hcard δ hδ_pos hδ_lt
+  refine le_trans (ENNReal.ofReal_le_ofReal ?_) hL37
+  have hqR : (0 : ℝ) < (q : ℝ) := by
+    have h1 : 1 < q := by omega
+    exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one h1.le
+  have hP : (0 : ℝ) < (q : ℝ) ^ ((n : ℝ) - (k : ℝ)) :=
+    Real.rpow_pos_of_pos hqR _
+  have hn1 : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+  rw [← div_div, div_le_div_iff_of_pos_right hP, div_le_iff₀ hn1]
+  nlinarith [hvol]
+
+/-- **Unconditional entropy-volume list-size lower bound (`/(n+1)` form), linear code.**
 
 For a linear code `C ≤ (ι → F)` with `q = |F| ≥ 2`, `n = |ι|`, mode index `⌊δ·n⌋ ∈ (0, n)`:
 
   `|Λ(C, δ)| ≥ q^{n·H_q(⌊δn⌋/n)} / ((n+1) · q^{n − dim C})`.
 
-The elementary all-`δ` companion to `linear_lambda_ge_entropy_volume` (ABF26 C3.8): chain
-`linear_lambda_ge_elias_volume_eli57` (L3.7, proven) with `hammingBallVolume_ge_qEntropy`
-(the Stirling-free `/(n+1)` Hamming-ball volume bound). No `δ·n ∈ ℕ` side condition. -/
+Specialization of `lambda_ge_entropy_volume_div_succ_generic` with `|C| = |F|^dim(C)`. -/
 theorem linear_lambda_ge_entropy_volume_div_succ
     (C : Submodule F (ι → F)) (δ : ℝ) (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
     (hq : 2 ≤ Fintype.card F)
@@ -54,22 +90,12 @@ theorem linear_lambda_ge_entropy_volume_div_succ
           / (((Fintype.card ι : ℝ) + 1)
               * (Fintype.card F : ℝ) ^ ((Fintype.card ι : ℝ) - Module.finrank F C)))
       ≤ (Lambda ((C : Set (ι → F))) δ : ENNReal) := by
-  set q := Fintype.card F with hq_def
-  set n := Fintype.card ι with hn_def
-  -- The two proven ingredients.
-  have hvol := hammingBallVolume_ge_qEntropy hq δ n hk0 hkn
-  have hL37 := linear_lambda_ge_elias_volume_eli57 C δ hδ_pos hδ_lt
-  refine le_trans (ENNReal.ofReal_le_ofReal ?_) hL37
-  -- Real inequality: `q^{n·H} / ((n+1)·P) ≤ Vol / P` with `P = q^{n−k} > 0`.
-  have hqR : (0 : ℝ) < (q : ℝ) := by
-    have h1 : 1 < q := Fintype.one_lt_card
-    exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one h1.le
-  have hP : (0 : ℝ) < (q : ℝ) ^ ((n : ℝ) - (Module.finrank F C : ℝ)) :=
-    Real.rpow_pos_of_pos hqR _
-  have hn1 : (0 : ℝ) < (n : ℝ) + 1 := by positivity
-  -- `q^{n·H} / ((n+1)·P) = (q^{n·H}/(n+1)) / P ≤ Vol / P  ⟺  q^{n·H}/(n+1) ≤ Vol  ⟺  q^{n·H} ≤ Vol·(n+1)`.
-  rw [← div_div, div_le_div_iff_of_pos_right hP, div_le_iff₀ hn1]
-  nlinarith [hvol]
+  apply lambda_ge_entropy_volume_div_succ_generic (C := (C : Set (ι → F)))
+    (k := Module.finrank F C) (δ := δ) ?_ hδ_pos hδ_lt hq hk0 hkn
+  classical
+  haveI : Fintype (↥C) := Fintype.ofFinite _
+  rw [← Nat.card_coe_set_eq, Nat.card_eq_fintype_card]
+  exact Module.card_eq_pow_finrank (K := F) (V := ↥C)
 
 /-- **Reed–Solomon specialization (RS codewords in a `δ`-ball).**
 
@@ -99,6 +125,43 @@ theorem rs_lambda_ge_entropy_volume_div_succ
   have h := linear_lambda_ge_entropy_volume_div_succ
     (ReedSolomon.code α k) δ hδ_pos hδ_lt hq hk0 hkn
   rwa [hdim] at h
+
+/-- **Capacity-exponent form of the list-size lower bound, alphabet-generic.** -/
+theorem lambda_ge_capacity_exponent_generic
+    {ι A : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A]
+    (C : Set (ι → A)) (k : ℕ) (hcard : C.ncard = Fintype.card A ^ k)
+    (δ : ℝ) (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
+    (hq : 2 ≤ Fintype.card A)
+    (hk0 : 0 < ⌊δ * (Fintype.card ι : ℝ)⌋₊)
+    (hkn : ⌊δ * (Fintype.card ι : ℝ)⌋₊ < Fintype.card ι) :
+    ENNReal.ofReal
+        ((Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ)
+              * qEntropy (Fintype.card A)
+                  ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ))
+            - ((Fintype.card ι : ℝ) - (k : ℝ)))
+          / ((Fintype.card ι : ℝ) + 1))
+      ≤ (Lambda C δ : ENNReal) := by
+  have hq0 : (0 : ℝ) < (Fintype.card A : ℝ) := by
+    have : 0 < Fintype.card A := by omega
+    exact_mod_cast this
+  have heq :
+      (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ)
+            * qEntropy (Fintype.card A)
+                ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ))
+          - ((Fintype.card ι : ℝ) - (k : ℝ)))
+        / ((Fintype.card ι : ℝ) + 1)
+      = (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ)
+            * qEntropy (Fintype.card A)
+                ((⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ) / (Fintype.card ι : ℝ)))
+        / (((Fintype.card ι : ℝ) + 1)
+            * (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) - (k : ℝ))) := by
+    have hpow : (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) - (k : ℝ)) ≠ 0 :=
+      ne_of_gt (Real.rpow_pos_of_pos hq0 _)
+    have hn1 : ((Fintype.card ι : ℝ) + 1) ≠ 0 := by positivity
+    rw [Real.rpow_sub hq0]
+    field_simp
+  rw [heq]
+  exact lambda_ge_entropy_volume_div_succ_generic C k hcard δ hδ_pos hδ_lt hq hk0 hkn
 
 /-- **Capacity-exponent form of the RS list-size lower bound.**
 
@@ -147,6 +210,8 @@ theorem rs_lambda_ge_capacity_exponent
 end CodingTheory
 
 -- Axiom audit: depends on exactly `[propext, Classical.choice, Quot.sound]`.
+#print axioms CodingTheory.lambda_ge_entropy_volume_div_succ_generic
+#print axioms CodingTheory.lambda_ge_capacity_exponent_generic
 #print axioms CodingTheory.linear_lambda_ge_entropy_volume_div_succ
 #print axioms CodingTheory.rs_lambda_ge_entropy_volume_div_succ
 #print axioms CodingTheory.rs_lambda_ge_capacity_exponent
