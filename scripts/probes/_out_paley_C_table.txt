@@ -1,0 +1,17 @@
+Paley constant table: p = least prime = 1 (mod n) with p >= n^4
+    n            p          M        C      C^2
+    8         4129     7.5582   1.0692   1.1432   | published    7.5582  1.0692  1.1432  MATCH   [0s]
+   16        65537    13.8375   1.1995   1.4388   | published   13.8375  1.1995  1.4388  MATCH   [0s]
+   32      1048609    22.9834   1.2600   1.5877   | published   22.9834  1.2600  1.5877  MATCH   [0s]
+   64     16777601    38.5286   1.3635   1.8590   | published   38.5286  1.3635  1.8590  MATCH   [7s]
+  128    268437889    55.0643   1.2757   1.6274   | new   [216s]
+  256   4294968833    86.4298   1.3244   1.7541   | new   [6675s]
+
+Parseval and the E2 = 3n^2-3n fourth-moment law hold at every n above.
+
+Provenance: rows n=8..128 are one default run; the n=256 row is a second,
+separate `probe_paley_C_table.py 256` run (1h51m) spliced in at the same
+column format.  Both blocks are verbatim script output, not hand-edited.
+At n=256 the modulus p exceeds 2^32, so the 16-bit-split reduction is
+load-bearing there; the two asserted invariants are what rule out a silent
+int64 overflow, and both passed.
