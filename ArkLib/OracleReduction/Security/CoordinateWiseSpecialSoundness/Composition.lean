@@ -6,7 +6,7 @@ Authors: Tobias Rothmann
 
 import ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness.Basic
 import ArkLib.OracleReduction.Composition.Sequential.Append
-import ArkLib.OracleReduction.Composition.Sequential.AppendToVerifierKeystone
+import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 
 /-!
   # Composition for Coordinate-Wise Special Soundness

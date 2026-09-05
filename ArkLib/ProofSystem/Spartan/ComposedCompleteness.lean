@@ -9,7 +9,7 @@ import ArkLib.OracleReduction.Composition.Sequential.AppendSeamBridges
 import ArkLib.OracleReduction.Composition.Sequential.AppendSeamBridges2
 import ArkLib.OracleReduction.Composition.Sequential.AppendSoundnessSeamTransfer
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessChallenge
-import ArkLib.OracleReduction.Composition.Sequential.AppendToVerifierKeystone
+import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessEmpty
 import ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype
 import ArkLib.ProofSystem.Sumcheck.Spec.Completeness

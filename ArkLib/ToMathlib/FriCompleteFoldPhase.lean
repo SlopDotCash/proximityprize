@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ToMathlib.FriCompleteFinalRound
 import ArkLib.ProofSystem.Fri.Spec.Completeness
-import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessOracleChallenge
+import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.OracleReduction.Composition.Sequential.SeqComposePerfectCompletenessChallengeThreaded
 
 /-!

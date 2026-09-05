@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.ProofSystem.Logup.Security.LogupCompletenessClose
 import ArkLib.ProofSystem.Logup.Security.SumcheckCompletenessUncond
 import ArkLib.OracleReduction.Composition.Sequential.AppendSeamBridges3
-import ArkLib.OracleReduction.Composition.Sequential.AppendToVerifierKeystone
+import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 
 /-!
 # LogUp Protocol 2 — wiring the proven completeness keystones (issue #13)

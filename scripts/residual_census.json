@@ -2867,8 +2867,8 @@
     {
      "name": "OracleVerifier.appendSoundnessResidual_msg",
      "kind": "theorem",
-     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendSoundnessOracleMsg.lean",
-     "line": 91,
+     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendOracleAdapters.lean",
+     "line": 638,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -2944,8 +2944,8 @@
     {
      "name": "OracleVerifier.appendKnowledgeSoundnessResidual_of_plain",
      "kind": "theorem",
-     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendKnowledgeOracleTransport.lean",
-     "line": 66,
+     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendOracleAdapters.lean",
+     "line": 433,
      "conditional_on_residuals": [
       "appendKnowledgeSoundnessResidual"
      ],
@@ -3068,19 +3068,19 @@
    "line": 67,
    "providers": [
     {
-     "name": "OracleReduction.appendToReductionResidual_iff_verifier",
+     "name": "OracleReduction.appendToReductionResidual_proof",
      "kind": "theorem",
-     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessOracle.lean",
-     "line": 122,
+     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendOracleAdapters.lean",
+     "line": 167,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false
     },
     {
-     "name": "OracleReduction.appendToReductionResidual_proof",
+     "name": "OracleReduction.appendToReductionResidual_iff_verifier",
      "kind": "theorem",
-     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendToVerifierKeystone.lean",
-     "line": 148,
+     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessOracle.lean",
+     "line": 122,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false
