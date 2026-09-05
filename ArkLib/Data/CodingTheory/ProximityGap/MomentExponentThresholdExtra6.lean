@@ -40,26 +40,8 @@ theorem momentExponent_crossover_gap {beta r : ℝ} (hr : 0 < r)
     linarith
   field_simp [hb]
 
-/-- **Monotone depth shrinks the gap.**
-For fixed `β > 1`, `θ(r,β) - 1/2` is strictly decreasing in `r` — the
-gap-to-prize version of `momentExponent_strictAnti_of_one_le`. -/
-theorem momentExponent_gap_strictAnti {beta r₁ r₂ : ℝ} (hb : 1 < beta)
-    (h1 : 0 < r₁) (h12 : r₁ < r₂) :
-    momentExponent r₂ beta - 1 / 2 < momentExponent r₁ beta - 1 / 2 := by
-  have h2 : 0 < r₂ := lt_trans h1 h12
-  rw [momentExponent_sub_half h2, momentExponent_sub_half h1]
-  have hnum : 0 < beta - 1 := by linarith
-  have hden1 : (0 : ℝ) < 2 * r₁ := by positivity
-  have hden2 : (0 : ℝ) < 2 * r₂ := by positivity
-  have hlt : (2 * r₁ : ℝ) < 2 * r₂ := by nlinarith
-  -- (beta-1)/(2*r₂) < (beta-1)/(2*r₁): multiply through by positive
-  -- denominators; the claim reduces to 2*r₁ < 2*r₂.
-  rw [div_lt_div_iff₀ hden2 hden1]
-  nlinarith
-
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
 #print axioms momentExponent_gap_pos_iff
 #print axioms momentExponent_crossover_gap
-#print axioms momentExponent_gap_strictAnti
 
 end ProximityGap.MomentExponentThreshold
