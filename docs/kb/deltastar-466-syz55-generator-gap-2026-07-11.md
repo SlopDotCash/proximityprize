@@ -4,7 +4,8 @@
 **Lane:** codex/syz55-generator-gap (Opus 4.8)
 **File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ55GeneratorGap.lean`
 **Probe:** `scripts/probes/probe_syz55_generator_gap.py`
-**Branch:** `codex/syz55-generator-gap` (off `fork/research/proximity-prize` @ ab7ca81a1; `main` untouched)
+**Branch:** `codex/syz55-generator-gap` (off `fork/research/proximity-prize` @ ab7ca81a1; `main`
+untouched)
 
 ## One-line
 
@@ -85,7 +86,8 @@ worry the route raised: the split is binary and complete on the measured realiza
 §4 coverage census (`decide`, NO axioms): `coverageCensus (n, S, nWit, nMiddle)`;
 `no_middle_gap_witnesses` (nMiddle=0 ∀), `census_nonvacuous` (nWit≥1 ∀).
 
-Axiom audit (in-build `#print axioms`): omega/SYZ53 theorems `{propext, Quot.sound}` (+`Classical.choice`
+Axiom audit (in-build `#print axioms`): omega/SYZ53 theorems `{propext, Quot.sound}`
+(+`Classical.choice`
 via iff-imports); **all six `decide` table theorems depend on NO axioms**. No `sorry`,
 `native_decide`, or vacuous-`True`. Focused locked build: 8321 jobs, exit 0.
 
@@ -109,7 +111,8 @@ witnesses do not.
 
 ## Reuse hooks
 
-- `probe_syz55_generator_gap.py::min_syzygy_degree` — exact minimal syzygy degree `δ₁` of a triple of
+- `probe_syz55_generator_gap.py::min_syzygy_degree` — exact minimal syzygy degree `δ₁` of a triple
+of
   univariate polys over `𝔽_p` by linear algebra (Hilbert–Burch rank-2 module); bucket any witness
   set by generator gap `g = S − 2δ₁`.
 - `forensic_stack` — per-bad-scalar structural/accidental attribution against a core set; reuse to
