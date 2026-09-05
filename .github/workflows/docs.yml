@@ -47,7 +47,7 @@ jobs:
             ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}
 
       - name: Set up Lean environment
-        uses: leanprover/lean-action@v1.5.0
+        uses: leanprover/lean-action@v1.6.0
         with:
           auto-config: false
           build: false
