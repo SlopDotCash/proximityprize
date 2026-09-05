@@ -6,7 +6,7 @@ establish an unconditional protocol security theorem.
 
 | Module | Former implementation files | Lines |
 |---|---|---:|
-| `Soundness.PreTensorMetric` | PreTensorFiber, PreTensorDisagreement, PreTensorHamming, PreTensorUDR, PreTensorClosest, PreTensorCodeDistance, PreTensorDistance, PreTensorWitness | 904 |
+| `Soundness.PreTensorMetric` | PreTensorFiber, PreTensorDisagreement, PreTensorHamming, PreTensorUDR, PreTensorClosest, PreTensorCodeDistance, PreTensorDistance, PreTensorWitness | 899 |
 | `Soundness.PreTensorMaps` | PreTensorSurjectivity, PreTensorInjectivity, PreTensorFar | 865 |
 
 All names in the table are relative to
