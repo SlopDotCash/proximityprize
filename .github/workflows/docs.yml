@@ -3,6 +3,17 @@ name: Build and Deploy Website to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      - "ArkLib/**/*.lean"
+      - "ArkLib.lean"
+      - "blueprint/**"
+      - "home_page/**"
+      - "lakefile.toml"
+      - "lakefile.lean"
+      - "lake-manifest.json"
+      - "lean-toolchain"
+      - "scripts/lake-locked.sh"
+      - ".github/workflows/docs.yml"
   workflow_dispatch:
 
 permissions:
@@ -79,7 +90,7 @@ jobs:
         run: timeout --signal=INT --kill-after=2m 150m ./scripts/lake-locked.sh build ArkLib:docs
         env:
           DISABLE_EQUATIONS: 1
-          LEAN_NUM_THREADS: "1"
+          LEAN_NUM_THREADS: "2"
 
       - name: Save Lean cache (with docs facet)
         if: always() && steps.docs-build.outcome != 'skipped'
