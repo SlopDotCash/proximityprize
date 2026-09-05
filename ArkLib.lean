@@ -3946,6 +3946,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonBoundRealLower
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityMonotonicity
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCommonCenterRefutation
+import ArkLib.Data.CodingTheory.ProximityGap.JohnsonComparisonForms
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonEndpoints
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonExactPoint
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonFourthMomentNoGo
