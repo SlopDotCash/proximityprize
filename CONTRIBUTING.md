@@ -24,6 +24,18 @@ For substantial contributions, such as a new proof system, we strongly encourage
 * **Why a Blueprint?** This helps align the contribution with the project's structure and goals *before* significant coding and proving effort is invested. It facilitates discussion and feedback from maintainers and the community. It also makes it easier to manage large efforts in a distributed way.
 * **Process:** Please open a new discussion or issue to propose your planned contribution and discuss the blueprint before starting implementation.
 
+## Repository destination — never submit to upstream ArkLib
+
+**NEVER push branches or commits to `Verified-zkEVM/ArkLib`, and NEVER open pull
+requests against that repository, including through a personal fork.** All work
+for this project must be pushed to `SlopDotCash/proximityprize`, and all pull
+requests must target `SlopDotCash/proximityprize`.
+
+Check the actual push URL and PR base repository before publishing; do not rely
+on a remote name or GitHub's inferred fork parent. Historical references to
+"upstream", upstream carve-outs, or ArkLib contribution plans do not authorize
+submitting changes there. Upstream sources may be read for comparison only.
+
 ## Pull Request Guidelines
 
 We follow the specific convention for pull request titles and descriptions used by the Lean community.

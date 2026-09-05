@@ -5,6 +5,18 @@ Start with [`README.md`](README.md) for project overview.
 
 `AGENTS.md` is the canonical root guide. `CLAUDE.md` is a symlink to this file.
 
+## Repository destination — never submit to upstream ArkLib
+
+**NEVER push branches or commits to `Verified-zkEVM/ArkLib`, and NEVER open pull
+requests against that repository, including through a personal fork.** All work
+for this project must be pushed to `SlopDotCash/proximityprize`, and all pull
+requests must target `SlopDotCash/proximityprize`.
+
+Check the actual push URL and PR base repository before publishing; do not rely
+on a remote name or GitHub's inferred fork parent. Historical references to
+"upstream", upstream carve-outs, or ArkLib contribution plans do not authorize
+submitting changes there. Upstream sources may be read for comparison only.
+
 ## Fast Start
 
 1. For a convenient routine check, start with `./scripts/validate.sh`.
@@ -21,7 +33,7 @@ Start with [`README.md`](README.md) for project overview.
 - `ArkLib/OracleReduction/` - core IOR abstractions and security theory.
 - `ArkLib/ProofSystem/` - protocol formalizations built on the core.
 - `ArkLib/Commitments/` - commitments and opening arguments.
-- `ArkLib/ToMathlib/` - local extensions intended for upstreaming.
+- `ArkLib/ToMathlib/` - local mathematical extensions; publication follows the repository destination rule above.
 - `blueprint/src/` - deep design docs and bibliography.
 - `scripts/` - repo utilities.
 

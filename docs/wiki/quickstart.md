@@ -1,5 +1,9 @@
 # Quickstart
 
+All pushes and pull requests for this project belong in `SlopDotCash/proximityprize`.
+Never push or submit PRs to `Verified-zkEVM/ArkLib`, including through a personal
+fork. See the [repository destination rule](../../CONTRIBUTING.md#repository-destination--never-submit-to-upstream-arklib).
+
 This page is the recommended agent playbook for commands and validation.
 Use it as the main guide for routine local checks.
 
