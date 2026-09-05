@@ -7,8 +7,7 @@ Authors: Chung Thai Nguyen, Quang Dao
 import ArkLib.ProofSystem.Binius.BinaryBasefold.CoreInteractionPhase
 import ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase
 import ArkLib.OracleReduction.Composition.Sequential.AppendChallengeKeystoneOracle
-import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeFailingDetChallenge
-
+import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 /-!
 ## Full Binary Basefold Protocol
 

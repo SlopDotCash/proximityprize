@@ -6,7 +6,7 @@ Authors: Chung Thai Nguyen, Quang Dao
 
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.BadBlocks
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.FoldDistance
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseFoldedValue
+import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QuerySuffix
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseHelpers
 
 /-!

@@ -6,8 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.ProofSystem.Sumcheck.Spec.General
 import ArkLib.ProofSystem.Sumcheck.Spec.SingleRoundCohWired
 import ArkLib.OracleReduction.Composition.Sequential.SeqComposeRbrKnowledgeProof
-import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeFailingDet
-
+import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 /-!
 # Oracle-level multi-round rbr KNOWLEDGE soundness of the generic sum-check (#114)
 
