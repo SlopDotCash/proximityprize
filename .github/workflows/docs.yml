@@ -3,6 +3,17 @@ name: Build and Deploy Website to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      - "ArkLib/**/*.lean"
+      - "ArkLib.lean"
+      - "blueprint/**"
+      - "home_page/**"
+      - "lakefile.toml"
+      - "lakefile.lean"
+      - "lake-manifest.json"
+      - "lean-toolchain"
+      - "scripts/lake-locked.sh"
+      - ".github/workflows/docs.yml"
   workflow_dispatch:
 
 permissions:

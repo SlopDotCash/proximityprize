@@ -68,8 +68,11 @@ single-digit-KB range mean the inputs did not resolve and the build was vacuous.
 
 ### Deployment configuration
 
-GitHub Pages uses `.github/workflows/docs.yml` on `main`; the repository must
-have Pages enabled with GitHub Actions as its build source. The workflow builds
+GitHub Pages uses `.github/workflows/docs.yml` on `main`; pushes trigger it only
+for Lean sources, blueprint or landing-page files, and build configuration.
+Coordination notes and agent guides do not cancel an in-flight site build.
+Manual dispatch remains available. The repository must have Pages enabled with
+GitHub Actions as its build source. The workflow builds
 the Lean library, API documentation, and blueprint before deploying.
 
 The Cloudflare workflows watch their website directories on `main` and also
