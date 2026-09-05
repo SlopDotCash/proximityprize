@@ -27,3 +27,11 @@ Edit the source of truth, not the output.
   umbrella imports. The script still fails fast if untracked Lean files would be skipped.
 - Generated site and blueprint output are for review and deployment, not authoring.
 - If a path looks derived, confirm its source of truth before editing it.
+
+## Local knowledge-base catalogs
+
+`declarations.json` and `dedup-report.md` are ignored local outputs. On a fresh
+checkout, `python3 scripts/kb/check_generated.py` materializes both from the current
+Lean sources before checking and linting the knowledge base. Tracked bibliography
+and citation exports still require committed updates. If either catalog is tracked
+(on an older branch), the checker continues to reject stale contents.
