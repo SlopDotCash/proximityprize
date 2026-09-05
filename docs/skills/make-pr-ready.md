@@ -50,7 +50,9 @@ Work through these in order. Do not stop until every item is complete.
   - **Syntax and formatting**: lines under 100 chars, 2-space indent, spaces around `:`/`:=`/infix
     operators, `fun x ↦` over `λ`, `where` syntax for instances/structures, `by` at end of line,
     aligned `calc`, no empty lines inside definitions/proofs, prefer `<|`/`|>` over parentheses.
-  - **File headers**: Apache 2.0 copyright/license/authors block at the top of every new file.
+  - **File headers**: preserve existing notices; new original files use the
+    dual MIT and Apache-2.0 copyright/license/authors block from
+    `CONTRIBUTING.md`.
   - **Documentation**: module docstring (`/-! ... -/` with title, summary, notation, references)
     on each file; `/-- ... -/` docstrings on every definition and major theorem; sectioning
     comments where helpful.
