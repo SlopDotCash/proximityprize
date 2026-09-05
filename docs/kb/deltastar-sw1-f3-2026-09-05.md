@@ -165,16 +165,19 @@ carry `#print axioms` for every theorem above (expected: `propext, Classical.cho
   (48, none F3), `StripMasterHypothesis|SuperadditiveUnion|union_card_le|realizabilityCore`
   (0 in `DISPROOF_LOG.md`; KB notes mention the structures but never their vacuity).
 
-## Verification addendum (independent re-check, 2026-09-05 evening)
+## Verification addendum (independent re-check and repair, 2026-09-05 evening)
 
-`scripts/pg-iterate.sh` was re-run on every `Frontier/_SW1_*.lean` file left untracked by
-the SW1 round.  Result: `_SW1_F3_MasterHypothesisVacuous.lean` and
-`_SW1_TRANSV_HeightCeiling.lean` compile axiom-clean; `_SW1_F1_UniformSylvesterRefuted.lean`
-(≈20 elaboration errors, 6 `sorryAx` fallbacks), `_SW1_F3_UnionRankExact.lean` (4 errors at
-lines 223–229, `hrank_false_of_mcaEvent_witness` and `pairJoint_of_hrank` depend on
-`sorryAx`), `_SW1_HD_HasseDavenportCosetLadder.lean` (unknown identifiers
-`FiniteField.primitiveChar_to_Complex*`, `ladder_coset_pair` on `sorryAx`) and
-`_SW1_SPARSE_RootLocusAverage.lean` (2 errors) do **not**.  Any "axiom-clean" claim above
-about those four files is therefore unverified until they are repaired; the master-hypothesis
-vacuity (`not_stripMasterHypothesis*`, `syz46_antecedent_false`) **is** verified.  The four
-broken files are deliberately left uncommitted.
+`scripts/pg-iterate.sh` was re-run on every `Frontier/_SW1_*.lean` file left untracked by the
+SW1 round.  As left, only `_SW1_F3_MasterHypothesisVacuous.lean` and
+`_SW1_TRANSV_HeightCeiling.lean` compiled; `_SW1_F1_UniformSylvesterRefuted.lean` (term-level
+`X` captured by the trivariate `ArkLib.ProximityGap.X`, plus kernel deep recursion on the
+`2^28` production instantiation), `_SW1_F3_UnionRankExact.lean` (a `simp`-shaped iff proof),
+`_SW1_HD_HasseDavenportCosetLadder.lean` (unqualified `AddChar.FiniteField.primitiveChar_to_Complex`)
+and `_SW1_SPARSE_RootLocusAverage.lean` (two tactic-shape failures) did not, and their headline
+theorems fell back to `sorryAx`.  All four were repaired the same evening without changing any
+statement (`Polynomial.X` qualification; a two-step `restrictQ_mkQ_eq_zero_iff`; the `AddChar`
+namespace; `if_pos/if_neg` and `g ≠ 0` from the primitive root; explicit `congrArg` casts for the
+`2^28` numerals).  All six files now compile with axioms `propext, Classical.choice, Quot.sound`
+only, so every "axiom-clean" claim above is verified, including
+`hrank_false_of_mcaEvent_witness`, `pairJoint_of_hrank`, `not_uniformSylvesterInjective`,
+`coset_family_refutes_F1`, `coset_family_production` and `ladder_coset_pair`.

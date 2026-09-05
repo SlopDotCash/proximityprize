@@ -53763,3 +53763,46 @@ meta-claim; this is the concrete BGK-free route and its measured reach — a con
 step beyond Johnson at every prize rate, purchasable only with field-size slack `≳ 2⁹⁰` over the
 seed count.  Production δ* (razor-thin budget) remains OPEN.  Note
 `docs/kb/deltastar-hd1-hidden-derivative-interpolation-2026-09-05.md`.
+
+---
+
+### [1-SW1-strip-route-refuted] the rate-1/2 strip route is dead as formalized: F1 `UniformSylvesterInjective` is false (literally and on the intended coset family), F3 `hrank` is never satisfiable by an `mcaEvent` stack, and the SYZ40/41/42 master hypotheses are contradictory (2026-09-05, verified and repaired the same evening)
+
+The SW1 round (`docs/kb/deltastar-sw1-f3-2026-09-05.md`, `deltastar-sw1-lit-…`,
+`deltastar-sw1-nec-…`) left six Lean files untracked, four of them failing to elaborate; all
+six now compile with axioms `propext, Classical.choice, Quot.sound` only (repair log in the
+notes' verification addenda).  Verified content:
+
+* **F1 (`Frontier/_SW1_F1_UniformSylvesterRefuted.lean`).**  `SYZ40.UniformSylvesterInjective
+  K (2k) k` is false for every field and every `k ≥ 1` (`not_uniformSylvesterInjective`: the
+  Prop has no coprimality clause, so `WAC = WBC` with unit cofactors kills it); hence
+  `SYZ42.StripMasterHypothesis'' K V (2k) k` is uninhabited, in particular at
+  `(ZMod P, 2^30, 2^29)` (`stripMasterHypothesis''_false_production`), and the first conjunct of
+  the SYZ40 strip conclusion is itself false (`strip_conclusion_false`).  The *intended* Prop
+  (pairwise-coprime, separable, `μ_n`-rooted, band-realizable balanced interior triples) is
+  refuted too by the coset family `X^d − c_j`, `c_j^4 = 1` (`coset_family_refutes_F1`, all
+  `d ≥ 4`, every field; `coset_family_production` at `d = 2^28`, `n = 2^30`): the binomial
+  identity `(X^d−c₀)(c₁−c₂) − (X^d−c₁)(c₀−c₂) + (X^d−c₂)(c₀−c₁) = 0` is a constant syzygy, so
+  `ι = ⌊d/2⌋ ≥ 2` (`coset_imbalance_ge_two`) — the near-balance `ι ≤ 1` is false on the
+  balanced band-realizable interior.  Also (pure `ℕ`): `ι ≤ 1` is insufficient for
+  `SylvesterInjective` on the odd boundary; the uniformly sufficient target is gap `≤ 2` in both
+  parities (`gap_le_two_suffices`, `imbalance_le_one_insufficient`).
+* **F3 (`Frontier/_SW1_F3_UnionRankExact.lean`).**  The G87 bridge family of any stack with an
+  `mcaEvent` witness set inside `U` has `finrank (span φ) + 1 ≤ 2(|U| − dim C|_U)`
+  (`localized_span_cap`, `bridge_family_violates_hrank`), so `hrank` fails
+  (`hrank_false_of_mcaEvent_witness`); conversely `hrank` forces joint codeword agreement on
+  `U` (`pairJoint_of_hrank`), and the `∀ φ` form of SYZ43's `hrank` forces `Ucard ≤ k`
+  (`forall_form_forces_Ucard_le_k`).  Exact dimension formula:
+  `finrank (span φ) = 2(|U| − dim C|_U) − dim(Bad_U/(C|_U)²)`; `hrank` is a non-realizability
+  condition, not a spanning condition, and SYZ56's chaining no-go aimed at a certificate that
+  cannot exist.  Probe `scripts/probes/sw1_f3_union_rank.py` (786 exact configurations, PASS).
+* **Container (`Frontier/_SW1_F3_MasterHypothesisVacuous.lean`).**  `SuperadditiveUnion n k n`
+  is empty, so the SYZ40/41/42 master hypotheses (which demand it for every `Ucard ≤ n`) are
+  false (`not_stripMasterHypothesis*`), and the SYZ46 bracket
+  `deltaStar_bracket_of_strip_master_hypothesis` has a false antecedent
+  (`syz46_antecedent_false`).
+
+Classification: refutation/no-go of the strip formalization.  It moves no δ* bracket (the SYZ6
+ceiling half was unconditional and stands); the floor half of the SYZ46 bracket must be
+re-carried with a satisfiable antecedent before any F1/F2/F3 work is worth doing *for that
+theorem*.  Production δ* remains OPEN / ON-BGK.

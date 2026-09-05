@@ -3310,7 +3310,11 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SAC01SignedPunctureSuppor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SP_EnergyFromBSG
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SP_EnergyFromBSG2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SSTMultiplierAntipode
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SW1_F1_UniformSylvesterRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SW1_F3_MasterHypothesisVacuous
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SW1_F3_UnionRankExact
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SW1_HD_HasseDavenportCosetLadder
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SW1_SPARSE_RootLocusAverage
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SW1_TRANSV_HeightCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ10BCIKS57Chunk1
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ11BCIKS57Chunk3
