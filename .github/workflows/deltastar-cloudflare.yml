@@ -1,4 +1,4 @@
-name: Deploy δ* Paper to Cloudflare Pages
+name: Build δ* Paper (Cloudflare deployment optional)
 
 on:
   push:
@@ -7,6 +7,11 @@ on:
       - "website/deltastar-paper/**"
       - ".github/workflows/deltastar-cloudflare.yml"
   workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy from GitHub using configured Cloudflare secrets
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -16,7 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
@@ -49,6 +54,7 @@ jobs:
           grep -q "bootstrap-version:" out/codex.md
 
       - name: Ensure Cloudflare Pages production branch is main
+        if: github.event_name == 'workflow_dispatch' && inputs.deploy
         run: |
           curl -fsS -X PATCH \
             "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/pages/projects/deltastar-paper" \
@@ -64,7 +70,15 @@ jobs:
           }
           JS
 
+      - name: Upload site build
+        uses: actions/upload-artifact@v7
+        with:
+          name: deltastar-paper-site
+          path: website/deltastar-paper/out
+          if-no-files-found: error
+
       - name: Deploy to Cloudflare Pages
+        if: github.event_name == 'workflow_dispatch' && inputs.deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

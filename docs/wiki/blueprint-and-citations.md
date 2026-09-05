@@ -73,6 +73,17 @@ have Pages enabled with GitHub Actions as its build source. The workflow builds
 the Lean library, API documentation, and blueprint before deploying.
 
 The Cloudflare workflows watch their website directories on `main` and also
-accept manual dispatch on `main`. Configure repository secrets
-`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` before deploying. Their push
-filters and deployment guards must use the same branch.
+accept manual dispatch on `main`. Pushes build and upload the static site artifacts.
+Publish locally using an authenticated Wrangler session from the site directory:
+
+```bash
+npm ci
+npm run build
+npx wrangler pages deploy out --project-name=deltastar-paper --branch=main
+# Use --project-name=truthmining from website/truthmining instead.
+```
+
+GitHub-hosted deployment is opt-in through the manual `deploy` input and requires
+repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. A local
+Wrangler OAuth login is not available on GitHub runners. Push filters and
+production deployment guards must use the same branch.
