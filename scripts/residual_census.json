@@ -2488,7 +2488,7 @@
      "name": "Reduction.reductionAppendCompletenessResidual_total_pos",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischargesSeams.lean",
-     "line": 142,
+     "line": 141,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInit",
@@ -2736,7 +2736,7 @@
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_challenge_subsingleton",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischargesSeams.lean",
-     "line": 51,
+     "line": 50,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -2754,7 +2754,7 @@
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_failingDet_subsingleton",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischargesSeams.lean",
-     "line": 80,
+     "line": 79,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -2770,7 +2770,7 @@
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_failingDet_empty",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischargesSeams.lean",
-     "line": 105,
+     "line": 104,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInit",
@@ -3673,7 +3673,7 @@
      "name": "DuplexSpongeFS.KeyLemmaAssembly.keyLemmaEager_of_hybSteps",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaAssembly.lean",
-     "line": 101,
+     "line": 107,
      "conditional_on_residuals": [
       "Hyb01StepResidual",
       "Hyb12StepResidual",
@@ -3692,7 +3692,7 @@
      "name": "DuplexSpongeFS.KeyLemmaAssembly.keyLemmaEager_of_steps_strictSplit",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaAssembly.lean",
-     "line": 135,
+     "line": 141,
      "conditional_on_residuals": [
       "Hyb01StepResidual",
       "Hyb12StepResidual",
