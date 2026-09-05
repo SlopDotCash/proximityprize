@@ -7,14 +7,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
 /-!
 # Johnson radius derivative-free bounds
 
-The Johnson radius `J(δ) = 1 - √(1-δ)` admits elementary (derivative-free)
-bounds useful in the δ* ledger:
-
-* `johnson_le_delta` — `J(δ) ≤ δ` (restated with an explicit witness).
-* `johnson_upper_delta_half` — `J(δ) ≤ δ/2 + δ²/8` for small δ
-  (second-order Taylor bound, valid on `[0, 3/4]`).
-* `johnson_rs_capacity_compare` — the RS capacity `1-ρ` vs Johnson
-  `1-√ρ` comparison at rate endpoints.
+Elementary bounds for the Johnson radius: `J(δ) ≤ δ` on `[0,1]`,
+strict RS capacity comparison on `(0,1)`, and decreasing RS capacity.
+No Taylor estimate is proved here.
 -/
 
 namespace ArkLib.JohnsonCapacity
