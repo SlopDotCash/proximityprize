@@ -1,0 +1,32 @@
+[
+  {
+    "path": "scripts/probes/probe_bgk_repeated_newton_absorption.py",
+    "sha256": "e8c49ea7f2d55d122cccf41e5ed331131ecc62d0fd899d8736dced22d1128fbb",
+    "exit_code": 0,
+    "stdout": "BGK_REPEATED_NEWTON_ABSORPTION\nD7Terms=15; D7CoefficientL1=5040\nrepeatedTerms=88; repeatedCoefficientL1=25401599\nblockCount:termCount:coefficientL1\n13:1:42\n12:2:791\n11:3:8820\n10:5:64743\n9:7:328986\n8:11:1184153\n7:13:3034920\n6:17:5482456\n5:15:6787872\n4:10:5450256\n3:3:2540160\n2:1:518400\nleading=42*p2*p1^12-651*p2^2*p1^10-140*p3*p1^11\ncoarseProductionRatio=0.001282475208142\ncoarseCertificate=<1/779 and not <1/780\nrootUpper=5521/5000; rootUpperPow7=2.001401401781915\nholderCoefficientUpper=137.917813591494536<138\nholderCoefficientActual=137.848833573235035\nholderTangentSlope=0.000488281887096<1/1024\nrepeatedPopulationOverSlack=1386.994346149928560\nexactOneRepeatShare=0.999999984012296\nbeyondOneRepeatSlackInverse=45096.122945693809015\nbarrierSplit=126871+138=127009\n",
+    "stderr": "",
+    "seconds": 0.1,
+    "retained_output": "scripts/probes/_out_bgk_repeated_newton_absorption.txt",
+    "retained_output_exact_match": true
+  },
+  {
+    "path": "scripts/probes/probe_bgk_johnson_phase_grades.py",
+    "sha256": "160845d20d9b96359f078bc5bb64fc8704b10608a8f969d085c69094364ab2f6",
+    "exit_code": 0,
+    "stdout": "JOHNSON_PHASE_GRADE_EXACT\nn=14 k=7 vertices=3432 degree=49\npower_sums_1_through_7=0\neigenvalues=[49, 35, 23, 13, 5, -1, -5, -7]\nadjacency_moments=[3432, -12936, 90552, -386904, 4190088, -930216, 448075992, 5697121416]\ngrade_masses=[0, 1/66, 7/6, 273/11, 637/3, 5005/6, 3003/2, 858]\nlower_grades_1_through_6=2574 top_grade_7=858 ratio=3\nlargest_grade=6 mass=3003/2 share=7/16\nVERDICT=REFUTED: vanishing Newton power sums through depth seven do not remove Johnson grades 1..6; grade 6 is load-bearing\n",
+    "stderr": "",
+    "seconds": 1.895,
+    "retained_output": "scripts/probes/_out_bgk_johnson_phase_grades.txt",
+    "retained_output_exact_match": true
+  },
+  {
+    "path": "scripts/probes/probe_bgk_injective_exterior_cluster.py",
+    "sha256": "cb38ca2a4125c59ac42d0a16626f7c309d1439d6cb697f684164edc8c79ecc47",
+    "exit_code": 0,
+    "stdout": "INJECTIVE_D7_DISTINCT_ROOT_CLUSTER\nn=64 depth=7 normalization=(n)_7=3130929607680\np=65537 normalized_abs_D7=0.999990067476509 analytic_cos_lower=0.999106346604502\np=1000003 normalized_abs_D7=0.999999957338892 analytic_cos_lower=0.999996161124422\np=1000000007 normalized_abs_D7=0.999999999999958 analytic_cos_lower=0.999999999996161\nVERDICT=no universal c<1 bound follows from distinct unit phases or sampling-without-replacement; subgroup mixing is essential\n",
+    "stderr": "",
+    "seconds": 0.036,
+    "retained_output": "scripts/probes/_out_bgk_injective_exterior_cluster.txt",
+    "retained_output_exact_match": true
+  }
+]

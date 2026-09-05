@@ -1,0 +1,56 @@
+[
+  {
+    "path": "_nubs_research/verify_f101_quadric.py",
+    "sha256": "4d99111b1408c028009cc2cf1ac3b2a7df1c59097561132e7959097325caa3bd",
+    "exit_code": 0,
+    "stdout": "raw zeros: 198\ndistinct normalized scalars: 196\nnondegenerate scalar points: 196\nQ(2,33) mod 101 = 0\n(2,33) in distinct normalized scalars: True\nfirst 20 distinct points: [(2, 33), (2, 56), (3, 14), (3, 90), (4, 18), (4, 36), (5, 67), (5, 74), (6, 5), (6, 73), (7, 48), (7, 92), (8, 3), (8, 82), (9, 16), (9, 18), (10, 43), (10, 95), (11, 63), (11, 80)]\n",
+    "stderr": "",
+    "seconds": 0.037
+  },
+  {
+    "path": "scripts/probes/probe_bgk_h8_transition_integrality.py",
+    "sha256": "45b9dbef10042d39718d226a2255f1cda8befdd357fa57cc5a876a34a8ae5af2",
+    "exit_code": 0,
+    "stdout": "H8 normalized deviations: 153/8, 51/14, 561/392, 204/175, 561/392, 51/14, 153/8\nH8 normalized transitions: 32/21, 22/7, 1792/275, 275/28, 224/11, 42\nVERDICT: five of six genuine subgroup ratios are nonintegral;\nstrict Wick bounds do not round down without extra production divisibility.\n",
+    "stderr": "",
+    "seconds": 0.041
+  },
+  {
+    "path": "scripts/probes/probe_bgk_primitive_depth7_counterexample.py",
+    "sha256": "885043d69213916ae26a75019f2de5cc99e64948d35c9852c513c1cba6ffbd9e",
+    "exit_code": 0,
+    "stdout": "PRIMITIVE_DEPTH7_COUNTEREXAMPLE\nn=16 p=97 primitive_depth7_ordered_subset_pairs=0\nn=16 p=193 primitive_depth7_ordered_subset_pairs=0\nn=16 p=337 primitive_depth7_ordered_subset_pairs=48\nwitness_left_exponents=[0, 4, 5, 6, 10, 11, 15]\nwitness_right_exponents=[1, 3, 7, 8, 9, 12, 14]\nVERDICT=REFUTED: a depth-seven wraparound need not have a proper primitive leaf; lower-depth packet recursion leaves a genuine depth-seven primitive sector\n",
+    "stderr": "",
+    "seconds": 5.612
+  },
+  {
+    "path": "scripts/probes/probe_bgk_sampling_without_replacement_budget.py",
+    "arguments": [],
+    "sha256": "3af216a85741db11c5ded77a682c15c9f95aa6fd569872fbf153f77c157d24dd",
+    "exit_code": 0,
+    "stdout": "BGK_SAMPLING_WITHOUT_REPLACEMENT_PRODUCTION_AUDIT\nn=1073741824 depth=7 coefficient=126871\nsampling_error_bits=185 average_energy_budget_bits=227\nsampling_error_sq_over_budget_floor_log2=141 aligned_D7_sq_over_budget_floor_log2=193\nhypothetical_D7_amplitude_ceiling=14448764953860199458063090551701551 coupling_period_ceiling=85047155\npaley_period_ceiling=46341 coupling_to_paley_ratio=1835.246434043\nVERDICT=generic without-replacement coupling misses by >141 energy bits and yields a period ceiling >1835 times Paley; subgroup mixing is load-bearing\n",
+    "stderr": "",
+    "seconds": 0.034
+  },
+  {
+    "path": "scripts/probes/probe_k2_interior_ceiling_prize_scale_crosscheck.py",
+    "arguments": [],
+    "sha256": "172b23d168cb88f4d04f1f23e8e94812ed0a726e8d7b6f4bc14ac5c95ec3b246",
+    "exit_code": 0,
+    "stdout": "crosscheck p = 21 * 2^128 + 1 = 7145929705339707732730866756067132440577\n[1] ceiling (x^3,x^2) t=3 #bad = 40 (expected 40)\n[2] below-ceiling t=4 max #bad = 9 at (a,b) = (4, 3) (expected 9)\n[3] crosscheck agrees with main probe; integers q-independent at prize scale.\nWrote durable output to scripts/probes/_out_k2_interior_prize_scale_crosscheck.txt\nCROSSCHECK PASS.\n",
+    "stderr": "",
+    "seconds": 0.587
+  },
+  {
+    "path": "scripts/probes/verify_g139_phi_collision_witness.py",
+    "arguments": [
+      "--witness-json",
+      "/tmp/proximity-cleanup2/scripts/probes/_out_g139_phi_collision_witnesses.json"
+    ],
+    "sha256": "972464bce346d7b5902616848b5487a31b2853e3c8717bb6b51daebd928cc8a5",
+    "exit_code": 0,
+    "stdout": "[\n  {\n    \"denominator_nonzero\": true,\n    \"exact_order_power2\": true,\n    \"generator\": 9133071,\n    \"label\": \"G173-accident\",\n    \"n\": 64,\n    \"normalized_g139_lawful\": false,\n    \"p\": 17318209,\n    \"phi_collision_holds\": true,\n    \"phi_value\": 11286730,\n    \"prime_modulus_assumed\": true,\n    \"quotient_matches\": true,\n    \"r\": 4,\n    \"relation_exponents\": {\n      \"a\": 4,\n      \"b\": 34,\n      \"c\": 0,\n      \"d\": 45\n    },\n    \"relation_holds\": true,\n    \"relation_values\": {\n      \"a\": 5663213,\n      \"b\": 11893578,\n      \"c\": 1,\n      \"d\": 238581\n    },\n    \"s\": 11,\n    \"sidon_same_branch\": false,\n    \"sidon_swap_branch\": false,\n    \"sidon_zero_branch\": false,\n    \"u\": 11893578,\n    \"u_exponent\": 34,\n    \"u_is_root\": true,\n    \"u_matches_exponent\": true,\n    \"verified\": true,\n    \"window_bounds\": true\n  },\n  {\n    \"denominator_nonzero\": true,\n    \"exact_order_power2\": true,\n    \"generator\": 9133071,\n    \"label\": \"G173-accident\",\n    \"n\": 64,\n    \"normalized_g139_lawful\": false,\n    \"p\": 17318209,\n    \"phi_collision_holds\": true,\n    \"phi_value\": 7847841,\n    \"prime_modulus_assumed\": true,\n    \"quotient_matches\": true,\n    \"r\": 2,\n    \"relation_exponents\": {\n      \"a\": 2,\n      \"b\": 30,\n      \"c\": 0,\n      \"d\": 43\n    },\n    \"relation_holds\": true,\n    \"relation_values\": {\n      \"a\": 5424631,\n      \"b\": 14140135,\n      \"c\": 1,\n      \"d\": 2246556\n    },\n    \"s\": 13,\n    \"sidon_same_branch\": false,\n    \"sidon_swap_branch\": false,\n    \"sidon_zero_branch\": false,\n    \"u\": 14140135,\n    \"u_exponent\": 30,\n    \"u_is_root\": true,\n    \"u_matches_exponent\": true,\n    \"verified\": true,\n    \"window_bounds\": true\n  },\n  {\n    \"denominator_nonzero\": true,\n    \"exact_order_power2\": true,\n    \"generator\": 9133071,\n    \"label\": \"G173-accident\",\n    \"n\": 64,\n    \"normalized_g139_lawful\": false,\n    \"p\": 17318209,\n    \"phi_collision_holds\": true,\n    \"phi_value\": 2644542,\n    \"prime_modulus_assumed\": true,\n    \"quotient_matches\": true,\n    \"r\": 23,\n    \"relation_exponents\": {\n      \"a\": 23,\n      \"b\": 53,\n      \"c\": 0,\n      \"d\": 19\n    },\n    \"relation_holds\": true,\n    \"relation_values\": {\n      \"a\": 1256819,\n      \"b\": 7937154,\n      \"c\": 1,\n      \"d\": 9193972\n    },\n    \"s\": 30,\n    \"sidon_same_branch\": false,\n    \"sidon_swap_branch\": false,\n    \"sidon_zero_branch\": false,\n    \"u\": 7937154,\n    \"u_exponent\": 53,\n    \"u_is_root\": true,\n    \"u_matches_exponent\": true,\n    \"verified\": true,\n    \"window_bounds\": true\n  },\n  {\n    \"denominator_nonzero\": true,\n    \"exact_order_power2\": true,\n    \"generator\": 48322652,\n    \"label\": \"n512-offdiag-accident\",\n    \"n\": 512,\n    \"normalized_g139_lawful\": false,\n    \"p\": 138027521,\n    \"phi_collision_holds\": true,\n    \"phi_value\": 125503081,\n    \"prime_modulus_assumed\": true,\n    \"quotient_matches\": true,\n    \"r\": 216,\n    \"relation_exponents\": {\n      \"a\": 216,\n      \"b\": 275,\n      \"c\": 0,\n      \"d\": 500\n    },\n    \"relation_holds\": true,\n    \"relation_values\": {\n      \"a\": 115650866,\n      \"b\": 3226942,\n      \"c\": 1,\n      \"d\": 118877807\n    },\n    \"s\": 225,\n    \"sidon_same_branch\": false,\n    \"sidon_swap_branch\": false,\n    \"sidon_zero_branch\": false,\n    \"u\": 3226942,\n    \"u_exponent\": 275,\n    \"u_is_root\": true,\n    \"u_matches_exponent\": true,\n    \"verified\": true,\n    \"window_bounds\": true\n  },\n  {\n    \"denominator_nonzero\": true,\n    \"exact_order_power2\": true,\n    \"generator\": 48322652,\n    \"label\": \"n512-offdiag-accident\",\n    \"n\": 512,\n    \"normalized_g139_lawful\": false,\n    \"p\": 138027521,\n    \"phi_collision_holds\": true,\n    \"phi_value\": 35081662,\n    \"prime_modulus_assumed\": true,\n    \"quotient_matches\": true,\n    \"r\": 228,\n    \"relation_exponents\": {\n      \"a\": 228,\n      \"b\": 287,\n      \"c\": 0,\n      \"d\": 12\n    },\n    \"relation_holds\": true,\n    \"relation_values\": {\n      \"a\": 117556726,\n      \"b\": 106007512,\n      \"c\": 1,\n      \"d\": 85536716\n    },\n    \"s\": 237,\n    \"sidon_same_branch\": false,\n    \"sidon_swap_branch\": false,\n    \"sidon_zero_branch\": false,\n    \"u\": 106007512,\n    \"u_exponent\": 287,\n    \"u_is_root\": true,\n    \"u_matches_exponent\": true,\n    \"verified\": true,\n    \"window_bounds\": true\n  },\n  {\n    \"denominator_nonzero\": true,\n    \"exact_order_power2\": true,\n    \"generator\": 48322652,\n    \"label\": \"n512-offdiag-accident\",\n    \"n\": 512,\n    \"normalized_g139_lawful\": false,\n    \"p\": 138027521,\n    \"phi_collision_holds\": true,\n    \"phi_value\": 100736463,\n    \"prime_modulus_assumed\": true,\n    \"quotient_matches\": true,\n    \"r\": 197,\n    \"relation_exponents\": {\n      \"a\": 197,\n      \"b\": 237,\n      \"c\": 0,\n      \"d\": 481\n    },\n    \"relation_holds\": true,\n    \"relation_values\": {\n      \"a\": 35085762,\n      \"b\": 69484782,\n      \"c\": 1,\n      \"d\": 104570543\n    },\n    \"s\": 244,\n    \"sidon_same_branch\": false,\n    \"sidon_swap_branch\": false,\n    \"sidon_zero_branch\": false,\n    \"u\": 69484782,\n    \"u_exponent\": 237,\n    \"u_is_root\": true,\n    \"u_matches_exponent\": true,\n    \"verified\": true,\n    \"window_bounds\": true\n  }\n]\n",
+    "stderr": "",
+    "seconds": 0.115
+  }
+]

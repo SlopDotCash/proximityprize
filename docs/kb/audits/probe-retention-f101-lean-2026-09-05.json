@@ -1,0 +1,10 @@
+{
+  "source": "_nubs_research/F101Band3BoundaryWitness.lean",
+  "source_sha256": "d81993d7ca314dcc6d0e3f408263bbd66d2c0c173e97596dc7a55f2c8c2f7988",
+  "manifest_sha256": "09f5259becd1dfecb58d719b60dae137a95ac790ac20c473ce17b9d3e422818a",
+  "validation_environment_head": "fae76897ba7250a966a06d7e4a5627f38f46398f",
+  "lean_toolchain": "leanprover/lean4:v4.30.0-rc2",
+  "command": "lake env lean _nubs_research/F101Band3BoundaryWitness.lean",
+  "exit_code": 0,
+  "output": "'NubsResearch.F101Band3BoundaryWitness.cert0' depends on axioms: [propext, Classical.choice, Quot.sound]\n'NubsResearch.F101Band3BoundaryWitness.cert1' depends on axioms: [propext, Classical.choice, Quot.sound]\n'NubsResearch.F101Band3BoundaryWitness.cert2' depends on axioms: [propext, Classical.choice, Quot.sound]\n'NubsResearch.F101Band3BoundaryWitness.cert33' depends on axioms: [propext, Classical.choice, Quot.sound]\n'NubsResearch.F101Band3BoundaryWitness.four_bad_scalars' depends on axioms: [propext, Classical.choice, Quot.sound]\n'NubsResearch.F101Band3BoundaryWitness.four_bad_scalars_filter' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n"
+}

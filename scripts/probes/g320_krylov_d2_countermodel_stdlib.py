@@ -10,7 +10,7 @@ rows `(0, 1, 2, 4)`, with determinant `-285768` (nonzero).
 The original G246 probe uses `sympy` for matrix arithmetic. This file ports
 the same computation to **pure Python stdlib** (no `sympy`, no `numpy`, no
 `float` in any load-bearing value), reproducing the `-285768` minor, and
-extends the check to a SECOND cell `(n, p, m) = (10, 2003, 200)` as an
+extends the check to a SECOND cell `(n, p, m) = (10, 2011, 201)` as an
 independent audit. The second cell is a different field and a different
 subgroup, so the SAME structure (degree-2 Krylov does not determine `R_6^c`)
 holding at both is a real two-data-point sanity check.
@@ -19,10 +19,10 @@ HONESTY / SCOPE.
 - The Lean kernel pins a specific 4x4 minor determinant (`-285768`) for the
   `(8, 1009)` cell. This probe reproduces that integer exactly via stdlib
   matrix arithmetic (no `sympy`).
-- The `(10, 2003)` cell is a NEW audit not in the Lean file. The probe
-  computes the 4x4 minor determinant for that cell; if nonzero, the
-  countermodel extends. If zero, the structure does NOT extend and the
-  audit reports a real refutation of the "always fails" pattern.
+- The `(10, 2011)` cell is a NEW audit not in the Lean file. The probe
+  computes exact seed and augmented ranks for that cell. A zero value of
+  one selected minor does not decide the augmented rank; another minor
+  can still witness rank four.
 - Stdlib only. Pure `int` arithmetic. No `float`, no third-party imports.
 
 No field data beyond the two cells above. Reproducible: the matrix toolkit
@@ -54,25 +54,20 @@ def det4(M):
 
 
 def rank_int(M):
-    """Rank of an integer matrix via Gaussian elimination (exact division).
-    Returns the number of nonzero pivots after row reduction."""
+    """Rank over the rationals by fraction-free integer row elimination."""
     A = [row[:] for row in M]
     rows, cols = len(A), len(A[0]) if A else 0
     r = 0
     for c in range(cols):
-        pivot = None
-        for i in range(r, rows):
-            if A[i][c] != 0:
-                pivot = i
-                break
+        pivot = next((i for i in range(r, rows) if A[i][c] != 0), None)
         if pivot is None:
             continue
         A[r], A[pivot] = A[pivot], A[r]
-        for i in range(rows):
-            if i != r and A[i][c] != 0:
-                factor = A[i][c] // A[r][c]  # exact since A[i][c] is a multiple
-                for cc in range(c, cols):
-                    A[i][cc] -= factor * A[r][cc]
+        pivot_value = A[r][c]
+        for i in range(r + 1, rows):
+            factor = A[i][c]
+            if factor:
+                A[i] = [pivot_value * x - factor * y for x, y in zip(A[i], A[r])]
         r += 1
         if r == rows:
             break
@@ -228,6 +223,9 @@ def audit_cell(n: int, p: int, *, label: str, expected_minor_rows=(0, 1, 2, 4),
 
 
 def main() -> None:
+    # Nonintegral elimination ratios must not be truncated: det = -1, rank = 2.
+    assert rank_int([[2, 1], [1, 0]]) == 2
+    assert rank_int([[2, 1], [4, 2]]) == 1
     # ---- Cell 1: G246's published cell (n=8, p=1009). Reproduces the
     #      published minor determinant -285768 from the Lean file.
     cell1 = audit_cell(8, 1009, label="G246-cell (reproduction)",
