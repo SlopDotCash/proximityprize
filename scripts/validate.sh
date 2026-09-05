@@ -16,6 +16,7 @@ usage() {
 Usage: ./scripts/validate.sh [--lint] [--docs] [--site]
 
 Default checks (mirrors the CI gates so local == CI):
+  - python3 ./scripts/tests/test_lake_locked.py     (isolated lock regression)
   - python3 ./scripts/forbidden_tokens.py          (CI gate 1, precheck)
   - lake build
   - python3 ./scripts/sorry_census.py --fail-on-holes  (CI gate 2)
@@ -55,6 +56,9 @@ for arg in "$@"; do
       ;;
   esac
 done
+
+echo "# Checking build-lock serialization"
+python3 ./scripts/tests/test_lake_locked.py
 
 # CI gate 1: fast laundering-token precheck (no Lean toolchain needed), run
 # before the build so a forbidden token / undocumented axiom fails fast.
