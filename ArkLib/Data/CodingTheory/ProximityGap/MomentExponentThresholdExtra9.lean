@@ -35,8 +35,8 @@ theorem momentExponent_beta2_r8 :
   norm_num
 
 /-- **The depth-16 anchor for β = 2.**
-`θ(16,2) = 17/32` — the boundary aspect at depth 16, one ULP-region
-closer to the prize floor. -/
+`θ(16,2) = 17/32` — the boundary aspect at depth 16, with gap `1/32`
+above the prize floor. -/
 theorem momentExponent_beta2_r16 :
     momentExponent 16 2 = 17 / 32 := by
   rw [momentExponent]
