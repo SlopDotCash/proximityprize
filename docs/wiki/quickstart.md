@@ -313,3 +313,12 @@ Hard-won rules for multi-agent sessions where several agents land commits on
   imports, not a tainted proof.** Rebuild the import closure
   (`lake build <each imported module>`) and re-check before debugging the
   proof. Confirmed twice on 2026-06-10/11.
+
+
+### Fast-iteration exit status
+
+`pg-warm.sh` stops when its substrate build fails and prints the ready message
+only on success. `pg-iterate.sh` propagates a nonzero Lean exit status even
+when the process emits no diagnostic text. A successful file with no
+`#print axioms` output is still a successful type check; absence of that
+output does not itself perform an axiom audit.
