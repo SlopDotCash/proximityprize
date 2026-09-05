@@ -149,58 +149,72 @@ private theorem a8Summary_glue (xs : List (Finset (ZMod 16))) (a b : ℕ)
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk0 : a8Chunk 0 = (3, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk1 : a8Chunk 1 = (5, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk2 : a8Chunk 2 = (7, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk3 : a8Chunk 3 = (9, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk4 : a8Chunk 4 = (6, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk5 : a8Chunk 5 = (4, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk6 : a8Chunk 6 = (4, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk7 : a8Chunk 7 = (8, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk8 : a8Chunk 8 = (7, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk9 : a8Chunk 9 = (4, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk10 : a8Chunk 10 = (6, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk11 : a8Chunk 11 = (5, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
 private theorem a8Chunk12 : a8Chunk 12 = (2, true) := by decide +kernel
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction certifies that no subsets remain after the final batch.
 private theorem a8Tail13 : a8Summary (zmod16Subsets8.drop 13312) = (0, true) := by
   decide +kernel
 
