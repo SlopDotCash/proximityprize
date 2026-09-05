@@ -3,8 +3,156 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Composition.Sequential.AppendRunEvalDist
+
+import ArkLib.OracleReduction.Composition.Sequential.Append
+import ArkLib.ToMathlib.OracleCompEvalDistBindComm
 import ArkLib.OracleReduction.Composition.Sequential.EmptyAppend
+
+/-!
+# Sequential append run distributions and verifier routing
+
+Distributional factoring and message/challenge seam proofs for appended provers,
+with the verifier routing identities used by sequential composition.
+-/
+
+section
+
+
+/-!
+# Distributional (`evalDist`-level) run-factoring for the appended prover
+
+The syntactic run-factoring keystone `Prover.append_run` is proven *conditional* on
+`Prover.appendRunRightResidual`, a **syntactic** `OracleComp` equality between the appended run and
+the sequential `P₁.run ≫ P₂.run`. That syntactic residual is **false** when the first `pSpec₂` round
+is a challenge: the appended prover samples the seam `getChallenge` *before* consuming `P₁.output`
+(see `Prover.append_continueFromTo_seam_step_challenge`), whereas the factored form runs `P₁.output`
+*first*. The two are different free-monad trees, hence unequal syntactically — but **equal as
+distributions**, because `getChallenge` (a uniform sample) is independent of `P₁.output` (a
+computation in `oSpec`), and `SPMF` is commutative (`OracleComp.evalDist_bind_comm`).
+
+This section states the residual and the keystone at the `evalDist` level, the form actually consumed
+by completeness/soundness proofs (which only ever compare `evalDist`s). `appendRunRightDistResidual`
+is the distribution-level residual; it is **dischargeable** (unlike its syntactic counterpart) by
+assembling the proven left-block / message-seam / interior pieces together with
+`evalDist_bind_comm` at the challenge seam. `append_run_evalDist` reduces the appended run to the
+sequential composition, conditional on that residual, via the *same* seam-split backbone as the
+syntactic `append_run`.
+
+## Message-seam discharge (unconditional)
+
+When the seam round (`pSpec₂`'s round 0) is a **prover message** (`pSpec₂.dir 0 = .P_to_V`), the
+*syntactic* residual already holds (`Prover.appendRunRightResidual_holds_msg`), so the
+distributional one follows by `congrArg evalDist`. This makes `append_run_evalDist` **unconditional**
+for the message-seam case (`append_run_evalDist_msg`) — exactly the case that arises in LogUp
+Protocol 2, whose embedded sumcheck phase opens with a prover message (the round polynomial). The
+genuinely distributional content (`evalDist_bind_comm`) is needed only for the challenge-seam case.
+-/
+
+open OracleComp OracleSpec ProtocolSpec
+
+namespace Prover
+
+variable {ι : Type} {oSpec : OracleSpec ι} {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
+  {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
+  {P₁ : Prover oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁}
+  {P₂ : Prover oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂}
+
+/-- **Distribution-level right-block residual of `append_run`.** The `evalDist` analogue of
+`appendRunRightResidual`: after the seam-split, the appended run-distribution equals the sequential
+`P₁.run ≫ P₂.run` distribution. Unlike the syntactic residual, this holds even when the seam round
+is a challenge, since the `getChallenge`/`P₁.output` reordering at the seam is a *distributional*
+commutation (`OracleComp.evalDist_bind_comm`), not a syntactic one. -/
+def appendRunRightDistResidual [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
+    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    (stmt : Stmt₁) (wit : Wit₁) : Prop :=
+  evalDist
+      (((do
+          let ⟨transcript, state⟩ ←
+            (Prover.runToRound (⟨m, by omega⟩ : Fin (m + n + 1)) stmt wit (P₁.append P₂)
+              >>= (P₁.append P₂).continueFromTo stmt wit ⟨m, by omega⟩ (Fin.last (m + n)))
+          let output ← @liftM (OracleComp oSpec)
+            (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
+            (instMonadLiftTOfMonadLift (OracleComp oSpec) (OracleComp oSpec)
+              (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)))
+            (Stmt₃ × Wit₃) ((P₁.append P₂).output state)
+          pure (transcript, output)) :
+            OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
+              (FullTranscript (pSpec₁ ++ₚ pSpec₂) × Stmt₃ × Wit₃)))
+    = evalDist
+      ((do
+        let ⟨transcript₁, stmt₂, wit₂⟩ ← liftM (P₁.run stmt wit)
+        let ⟨transcript₂, stmt₃, wit₃⟩ ← liftM (P₂.run stmt₂ wit₂)
+        return ⟨transcript₁ ++ₜ transcript₂, stmt₃, wit₃⟩) :
+          OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
+            (FullTranscript (pSpec₁ ++ₚ pSpec₂) × Stmt₃ × Wit₃))
+
+/-- **Distributional run-factoring keystone.** Running the appended prover `P₁.append P₂` equals, as
+a distribution, running `P₁` then `P₂` sequentially. Proven by the same seam-split backbone as the
+syntactic `append_run` (`run_eq_runToRound_last` then `runToRound_eq_bind_continueFromTo` at the seam
+round `⟨m⟩`), reducing to the distribution-level residual `appendRunRightDistResidual`. This is the
+form the completeness/soundness proofs consume; it sidesteps the syntactic
+`getChallenge`/`P₁.output` non-commutation that blocks the syntactic `appendRunRightResidual`. -/
+theorem append_run_evalDist [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
+    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    (stmt : Stmt₁) (wit : Wit₁)
+    (hRight : appendRunRightDistResidual (P₁ := P₁) (P₂ := P₂) stmt wit) :
+      evalDist ((P₁.append P₂).run stmt wit)
+        = evalDist ((do
+          let ⟨transcript₁, stmt₂, wit₂⟩ ← liftM (P₁.run stmt wit)
+          let ⟨transcript₂, stmt₃, wit₃⟩ ← liftM (P₂.run stmt₂ wit₂)
+          return ⟨transcript₁ ++ₜ transcript₂, stmt₃, wit₃⟩) :
+            OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
+              (FullTranscript (pSpec₁ ++ₚ pSpec₂) × Stmt₃ × Wit₃)) := by
+  rw [run_eq_runToRound_last,
+      runToRound_eq_bind_continueFromTo (P₁.append P₂) stmt wit
+        (⟨m, by omega⟩ : Fin (m + n + 1)) (Fin.last (m + n)) (by
+          simp only [Fin.le_def, Fin.val_last]; omega)]
+  simpa [appendRunRightDistResidual] using hRight
+
+/-- **Message-seam discharge of the distributional residual (unconditional).** When the seam round
+is a prover message, the *syntactic* residual `appendRunRightResidual` already holds
+(`appendRunRightResidual_holds_msg`), so its `evalDist` image — the distributional residual — holds
+by `congrArg evalDist`. No distributional commutation is needed in this case. -/
+theorem appendRunRightDistResidual_holds_msg
+    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
+    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
+    (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
+    (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V) :
+    appendRunRightDistResidual (P₁ := P₁) (P₂ := P₂) stmt wit := by
+  unfold appendRunRightDistResidual
+  exact congrArg evalDist (appendRunRightResidual_holds_msg stmt wit hn hDir hDir₂)
+
+/-- **Sequential-composition run-factoring at `evalDist`, for a message-first `P₂` (UNCONDITIONAL).**
+Combines the conditional `append_run_evalDist` with the message-seam discharge
+`appendRunRightDistResidual_holds_msg`. This is the distribution-level keystone the LogUp
+completeness/soundness composition consumes (LogUp's embedded sumcheck opens with a prover message,
+so its seam is a message seam). No residual hypothesis required. -/
+theorem append_run_evalDist_msg
+    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
+    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
+    (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
+    (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V) :
+      evalDist ((P₁.append P₂).run stmt wit)
+        = evalDist ((do
+          let ⟨transcript₁, stmt₂, wit₂⟩ ← liftM (P₁.run stmt wit)
+          let ⟨transcript₂, stmt₃, wit₃⟩ ← liftM (P₂.run stmt₂ wit₂)
+          return ⟨transcript₁ ++ₜ transcript₂, stmt₃, wit₃⟩) :
+            OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
+              (FullTranscript (pSpec₁ ++ₚ pSpec₂) × Stmt₃ × Wit₃)) :=
+  append_run_evalDist stmt wit (appendRunRightDistResidual_holds_msg stmt wit hn hDir hDir₂)
+
+#print axioms append_run_evalDist
+#print axioms appendRunRightDistResidual_holds_msg
+#print axioms append_run_evalDist_msg
+
+end Prover
+
+end
+
+section
+
 
 /-!
 # Challenge-seam discharge of the distributional run-factoring residual
@@ -17,9 +165,9 @@ trees.  They are, however, equal **as distributions**, because the seam `getChal
 sample independent of the `oSpec` computation `P₁.output`, and `SPMF` is commutative
 (`OracleComp.evalDist_bind_comm`).
 
-This file discharges the *distributional* residual `Prover.appendRunRightDistResidual` for the
+This section discharges the *distributional* residual `Prover.appendRunRightDistResidual` for the
 challenge seam (`pSpec₂.dir 0 = .V_to_P`), the analogue of the message-seam discharge
-`Prover.appendRunRightDistResidual_holds_msg` in `AppendRunEvalDist.lean`.  The single genuinely
+`Prover.appendRunRightDistResidual_holds_msg` above. The single genuinely
 distributional step is one application of `evalDist_bind_comm` swapping the seam `getChallenge` with
 `P₁.output`; everything else reuses the proven syntactic challenge-seam machinery
 (`append_continueFromTo_seam_start_challenge_split`, `append_continueFromTo_right_interior`,
@@ -365,3 +513,142 @@ end Prover
 
 -- Axiom audit (seam-agnostic total): only [propext, Classical.choice, Quot.sound].
 #print axioms Prover.appendRunRightDistResidual_holds
+
+end
+
+section
+
+
+/-!
+# Verifier-fusion building blocks for the sequential-composition keystone
+
+The oracle-level append perfect-completeness keystone reduces (see
+`OracleReduction.verifier_append_eq_iff_verify`) to showing, per input/transcript, that the appended
+oracle-verifier's `toVerifier.verify` — one `simulateQ` over the joint `simOracle2` running
+`OracleVerifier.Append.verify` (a `router₁`/`router₂`-routed two-stage run) — equals the two-stage
+composite `V₂.toVerifier ∘ V₁.toVerifier`. With the universal-fold fusion law
+`simulateQ_simulateQ`, that collapses to two per-router handler equalities
+`(fun q => simulateQ S (routerᵢ q)) = simOracle2 …`.
+
+This section proves the **first** of those (`router₁_handler_eq`) outright, together with the per-query
+routing facts it rests on: simulating the `emitMessageQuery` / `emitOStmtQuery{Inl}` routers through
+`simOracle2` yields the corresponding in-the-clear oracle answer. The message case uses the
+transcript seam-split `ProtocolSpec.messages_inl`.
+-/
+
+open OracleComp OracleSpec ProtocolSpec OracleVerifier.Append
+
+namespace OracleVerifier.Append
+
+variable {ι : Type} {oSpec : OracleSpec ι}
+  {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
+  [Oₘ₁ : ∀ i, OracleInterface (pSpec₁.Message i)]
+  [Oₘ₂ : ∀ i, OracleInterface (pSpec₂.Message i)]
+  {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type} [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)]
+
+/-- Simulating `emitMessageQuery` through `simOracle2` yields the message answer: `subst` the type
+and instance equalities, after which the emitted query is answered directly by `simOracle2`'s
+message half. -/
+lemma simulateQ_emitMessageQuery
+    {T₁ : Type} (O₁ : OracleInterface T₁)
+    (j : (pSpec₁ ++ₚ pSpec₂).MessageIdx)
+    (hMsg : (pSpec₁ ++ₚ pSpec₂).Message j = T₁)
+    (hO : O₁ = cast (congrArg OracleInterface hMsg)
+      (instOracleInterfaceMessageAppend j))
+    (q : O₁.Query)
+    (oStmt : ∀ i, OStmt₁ i) (msgs : ∀ j, (pSpec₁ ++ₚ pSpec₂).Message j) :
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
+        (emitMessageQuery (oSpec := oSpec) (OStmt₁ := OStmt₁) O₁ j hMsg hO q)
+      = (pure (O₁.answer (hMsg ▸ msgs j) q) : OracleComp oSpec _) := by
+  subst hMsg
+  subst hO
+  simp only [emitMessageQuery, simulateQ_spec_query, OracleInterface.simOracle2,
+    OracleInterface.simOracle0, QueryImpl.add, QueryImpl.addLift, QueryImpl.liftTarget,
+    QueryImpl.id]
+  rfl
+
+/-- Simulating `emitOStmtQueryInl` through `simOracle2` yields the `OStmt₁`-answer (the query is
+routed straight into `[OStmt₁]ₒ` at index `k`). -/
+lemma simulateQ_emitOStmtQueryInl
+    {T : Type} (O : OracleInterface T) (k : ιₛ₁) (hSt : OStmt₁ k = T)
+    (hO : O = cast (congrArg OracleInterface hSt) (Oₛ₁ k)) (q : O.Query)
+    (oStmt : ∀ i, OStmt₁ i) (msgs : ∀ j, (pSpec₁ ++ₚ pSpec₂).Message j) :
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
+        (emitOStmtQueryInl (oSpec := oSpec) (pSpec₂ := pSpec₂) O k hSt hO q)
+      = (pure (O.answer (hSt ▸ oStmt k) q) : OracleComp oSpec _) := by
+  subst hSt
+  subst hO
+  simp only [emitOStmtQueryInl, simulateQ_spec_query, OracleInterface.simOracle2,
+    OracleInterface.simOracle0, QueryImpl.add, QueryImpl.addLift, QueryImpl.liftTarget,
+    QueryImpl.id]
+  rfl
+
+/-- **router₁ handler equality.** Routing `V₁`'s queries via `router₁` and answering through the
+joint-transcript `simOracle2` (which knows the appended messages) equals answering directly through
+the first-half `simOracle2`. The `oSpec` and `[OStmt₁]ₒ` cases are passthrough; the message case
+routes to `MessageIdx.inl` and is reconciled by the seam-split `ProtocolSpec.messages_inl`. -/
+theorem router₁_handler_eq (oStmt : ∀ i, OStmt₁ i)
+    (T : FullTranscript (pSpec₁ ++ₚ pSpec₂)) :
+    (fun q => simulateQ (OracleInterface.simOracle2 oSpec oStmt T.messages)
+        (router₁ (oSpec := oSpec) (OStmt₁ := OStmt₁) (pSpec₂ := pSpec₂) q))
+      = OracleInterface.simOracle2 oSpec oStmt T.fst.messages := by
+  funext q
+  rcases q with t | t
+  · simp [router₁, OracleInterface.simOracle2]
+  · rcases t with t | ⟨i, qq⟩
+    · simp [router₁, OracleInterface.simOracle2, QueryImpl.add]
+    · change simulateQ _ (emitMessageInl i qq) = _
+      rw [emitMessageInl, simulateQ_emitMessageQuery]
+      simp only [OracleInterface.simOracle2, OracleInterface.simOracle0, QueryImpl.add,
+        QueryImpl.addLift, QueryImpl.liftTarget, QueryImpl.id]
+      congr 1
+
+end OracleVerifier.Append
+
+end
+
+section
+
+
+/-!
+# Verifier-fusion bedrock: `simulateQ` of the V₂-side oracle-statement router
+
+This section supplies the per-query obligation at the heart of the oracle-level append
+perfect-completeness keystone: simulating the appended verifier's `emitOStmt₂Query` (which routes a
+query to one of `V₁`'s output oracle statements `OStmt₂ i`) under the combined `simOracle2` answers
+exactly from the reconstructed oracle statement `mkVerifierOStmtOut V₁.embed V₁.hEq oStmt tr.fst i`.
+
+The single subtlety is that `emitOStmt₂Query` is *tactic-built* (`by cases h : V₁.embed i …`), so a
+naive `split` does not fire on its elaborated `Sum.casesOn`; the proof must mirror the definition with
+`cases h : V₁.embed i`, then discharge each branch via the proven per-query simulators
+(`emitOStmtQueryInl_simulateQ` / `emitOStmtQueryInr_simulateQ`) and the `mkVerifierOStmtOut`
+characterizations, with the residual dependent casts collapsed by `eq_of_heq` over `eqRec_heq`.
+-/
+
+open OracleComp OracleSpec ProtocolSpec
+
+namespace OracleVerifier.Append
+
+variable {ι : Type} {oSpec : OracleSpec ι}
+  {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
+  [Oₘ₁ : ∀ i, OracleInterface (pSpec₁.Message i)]
+  [Oₘ₂ : ∀ i, OracleInterface (pSpec₂.Message i)]
+  {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type} [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)]
+  {ιₛ₂ : Type} {OStmt₂ : ιₛ₂ → Type} [Oₛ₂ : ∀ i, OracleInterface (OStmt₂ i)]
+  {Stmt₁ Stmt₂ : Type}
+
+/-- **The V₂-side per-query routing simulates to the reconstructed oracle statement.** -/
+theorem simulateQ_emitOStmt₂Query_core
+    (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
+    [coh : AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+    (oStmt : ∀ i, OStmt₁ i) (tr : FullTranscript (pSpec₁ ++ₚ pSpec₂))
+    (i : ιₛ₂) (q : (Oₛ₂ i).Query) :
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages) (emitOStmt₂Query V₁ i q)
+      = pure ((Oₛ₂ i).answer (mkVerifierOStmtOut V₁.embed V₁.hEq oStmt tr.fst i) q) :=
+  -- The `cases h : V₁.embed i` route fails (`generalize` on the tactic-built `Sum.casesOn` motive);
+  -- delegate to the `split`-based proof in `Append.lean`.
+  simulateQ_emitOStmt₂Query V₁ oStmt tr i q
+
+end OracleVerifier.Append
+
+end

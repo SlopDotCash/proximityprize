@@ -1,4 +1,4 @@
-import ArkLib.OracleReduction.Composition.Sequential.AppendRunEvalDist
+import ArkLib.OracleReduction.Composition.Sequential.AppendRun
 import ArkLib.OracleReduction.Completeness
 
 open OracleComp OracleSpec ProtocolSpec
