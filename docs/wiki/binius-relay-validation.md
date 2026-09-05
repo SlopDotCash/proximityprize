@@ -17,7 +17,7 @@ residual.
 A direct Lean check of the repaired Relay file passed on 2026-09-05 using the
 built prerequisites in the adapter-validation checkout. This is focused evidence:
 whole-consumer and full-repository validation are separate requirements. Commit
-step repairs are still pending and must not be inferred complete from Relay.
+step validation is described below and must not be inferred from Relay.
 
 The two `iterated_fold` index-congruence lemmas also omit the unused `β 0 = 1`
 instance. Their proofs only substitute equal indices and close by reflexivity.
@@ -27,3 +27,15 @@ Commit's public completeness statement. The complete candidate Prelude passed
 a direct Lean check. A complete ReductionLogic source check with the generalized
 lemmas inlined also passed; rebuilding the canonical dependency chain remains
 part of full validation.
+
+The Commit repair uses the same canonical empty-challenge instances and support
+conversion, preserves the first oracle through `getFirstOracle_snoc_oracle`, and
+restricts challenges with `Fin.tail`. Its internal knowledge state likewise
+matches `masterKStateCore`. The pre-commit bad branch uses the existing
+`badEventExistsProp_of_lt`: at the old oracle index the last block has not
+completed, so the existing guard makes the branch true. This explicitly retains
+the existing vacuity and proves no probability bound or stronger security claim.
+
+A complete Commit source check with the generalized congruence and completeness
+helpers inlined passed Lean. The canonical dependency rebuild, all consumers,
+and hosted checks remain separate validation gates.

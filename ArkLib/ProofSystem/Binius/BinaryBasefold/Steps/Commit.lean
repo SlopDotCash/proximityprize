@@ -158,8 +158,20 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (mp := mp) i hCR)
       (init := init)
       (impl := impl) := by
+  letI : ∀ j, OracleInterface ((pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).Challenge j) :=
+    ProtocolSpec.challengeOracleInterface
+  letI : ∀ j, Fintype ((pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).Challenge j) := by
+    intro j
+    have h := j.2
+    simp [pSpecCommit, ProtocolSpec.ChallengeIdx] at h
   letI : [(pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).Challenge]ₒ.Fintype :=
     ProtocolSpec.challengeOracle_fintype _
+  letI : ∀ j, Inhabited ((pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).Challenge j) := by
+    intro j
+    have h := j.2
+    simp [pSpecCommit] at h
+  letI : [(pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).Challenge]ₒ.Inhabited :=
+    ProtocolSpec.challengeOracle_inhabited _
   -- Step 1: Unroll the 1-message reduction
   rw [OracleReduction.unroll_1_message_reduction_perfectCompleteness_P_to_V (oSpec := []ₒ)
     (hInit := hInit) (pSpec := pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)
@@ -170,6 +182,9 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
   rw [probEvent_eq_one_iff]
   -- Step 3: Unfold protocol definitions
   dsimp only [commitOracleReduction]
+  classical
+  letI : CharP 𝔽q 2 := charP_of_card_eq_prime hF₂.out
+  letI : CharP L 2 := charP_of_injective_algebraMap (algebraMap 𝔽q L).injective 2
   let step := (commitStepLogic 𝔽q β (ϑ:=ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)
     (mp := mp) i (hCR := hCR))
   let strongly_complete : step.IsStronglyComplete := commitStep_is_logic_complete (L := L)
@@ -218,7 +233,6 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
     simp only [probOutput_eq_zero_iff]
     rw [OptionT.support_run_eq]
     simp only [←probOutput_eq_zero_iff]
-    simp_all only
     change Pr[= none | OptionT.run (m := (OracleComp []ₒ)) (x := (OptionT.bind _ _)) ] = 0
     rw [OptionT.probOutput_none_bind_eq_zero_iff]
     conv =>
@@ -285,8 +299,7 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
       dsimp only [commitOracleProver, commitOracleVerifier, OracleVerifier.toVerifier,
         FullTranscript.mk1]
       dsimp only [liftM, monadLift, MonadLift.monadLift]
-      rw [liftComp_id]
-      rw [support_liftComp]
+      rw [OracleComp.mem_support_liftComp_iff]
       simp only [h_prvFinalState_eq, Fin.val_succ, support_pure, Set.mem_singleton_iff,
         Prod.mk.injEq]
     conv at h_verOut_mem_support =>
@@ -296,15 +309,13 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
         ([OracleStatement 𝔽q β ϑ i.castSucc]ₒ + [pSpecFold.Message]ₒ)))) = pure by rfl]
       simp only [support_pure, Set.mem_singleton_iff]
       dsimp only [liftM, monadLift, MonadLift.monadLift]
-      rw [support_liftComp]
-      dsimp only [Functor.map]
-      erw [support_bind]
-      simp only [support_pure, Set.mem_singleton_iff, Function.comp_apply,
-        Set.iUnion_iUnion_eq_left, OptionT.support_OptionT_pure_run, Option.some.injEq,
-        Prod.mk.injEq]
-      erw [support_pure]
-      simp only [Set.mem_singleton_iff, Option.some.injEq, Prod.mk.injEq]
+      simp [liftComp_eq_liftM, liftM_pure, support_pure, Prod.mk.injEq]
       -- pure equalities now
+    simp only [Functor.map, OptionT.bind, OptionT.pure, pure_bind,
+      Function.comp_apply, OptionT.mk, liftM_pure] at h_verOut_mem_support
+    erw [OptionT.mem_support_mk] at h_verOut_mem_support
+    simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
+      Prod.mk.injEq] at h_verOut_mem_support
     -- Step 2e: Apply the logic completeness lemma
     obtain ⟨h_V_check, h_rel, h_agree⟩ := strongly_complete (stmtIn := stmtIn)
       (witIn := witIn) (h_relIn := h_relIn)
@@ -369,23 +380,21 @@ def commitKStateProp (i : Fin ℓ) (m : Fin (1 + 1))
   : Prop :=
   match m with
   | ⟨0, _⟩ => -- same as relIn
-    masterKStateProp (mp := mp) (𝓑 := 𝓑) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+    masterKStateCore (mp := mp) (𝓑 := 𝓑) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (stmtIdx := i.succ) (oracleIdx := OracleFrontierIndex.mkFromStmtIdxCastSuccOfSucc i)
       (h_le := OracleFrontierIndex.val_le_i i.succ
         (OracleFrontierIndex.mkFromStmtIdxCastSuccOfSucc i))
       (stmt := stmtIn) (wit := witMid) (oStmt := oStmtIn)
-      (localChecks := sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witMid.H)
   | ⟨1, _⟩ => -- implied by relOut: use transcript message as oracle (what verifier sees)
     -- The verifier sees tr.messages ⟨0, rfl⟩ as the new oracle, not witMid.f
     let newOracle := tr.messages ⟨0, rfl⟩
     let oStmtOut := snoc_oracle 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (oStmtIn := oStmtIn) (newOracleFn := newOracle) (h_destIdx := by rfl)
-    masterKStateProp (mp := mp) (𝓑 := 𝓑) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+    masterKStateCore (mp := mp) (𝓑 := 𝓑) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (stmtIdx := i.succ) (oracleIdx := OracleFrontierIndex.mkFromStmtIdx i.succ)
       (h_le := OracleFrontierIndex.val_le_i i.succ
         (OracleFrontierIndex.mkFromStmtIdx i.succ))
       (stmt := stmtIn) (wit := witMid) (oStmt := oStmtOut)
-      (localChecks := sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witMid.H)
 
 /-! Knowledge state function (KState) for single round -/
 def commitKState (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :
@@ -401,9 +410,10 @@ def commitKState (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :
       (i := i) (m := m) (stmtIn := stmtIn) (witMid := witMid) (oStmtIn := oStmtIn)
       (tr := tr) (mp:=mp)
   toFun_empty := fun ⟨stmtIn, oStmtIn⟩ witMid => by
-    -- commitKStateProp 0 = foldStepRelOutProp i (same masterKStateProp)
+    -- commitKStateProp 0 = foldStepRelOutProp i (same masterKStateCore)
     rw [cast_eq]
-    simp only [foldStepRelOut, foldStepRelOutProp, Set.mem_setOf_eq, commitKStateProp]
+    simp [foldStepRelOut, foldStepRelOutProp, Set.mem_setOf_eq, commitKStateProp,
+      masterKStateCore, hCR, OracleFrontierIndex.mkFromStmtIdxCastSuccOfSucc]
   toFun_next := fun m hDir (stmtIn, oStmtIn) tr msg witMid => by
     -- For pSpecCommit, the only P_to_V message is at index 0
     -- So m = 0, m.succ = 1, m.castSucc = 0
@@ -413,23 +423,24 @@ def commitKState (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :
       | succ m' => omega
     subst h_m_eq_0
     intro h_kState_round1
-    unfold commitKStateProp masterKStateProp at h_kState_round1 ⊢
+    unfold commitKStateProp masterKStateCore at h_kState_round1 ⊢
     simp only [Fin.isValue, Fin.succ_zero_eq_one, Nat.reduceAdd, Fin.mk_one,
       Fin.coe_ofNat_eq_mod, Nat.reduceMod] at h_kState_round1
     simp only [Fin.castSucc_zero]
     -- Round-1 state is bad ∨ good under Option B.
     cases h_kState_round1 with
-    | inl hBad =>
+    | inl _hBad =>
       left
-      have hBad_cast :=
-        incrementalBadEventExistsProp_commit_step_backward 𝔽q β
-          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hCR oStmtIn
-          _ _ hBad
-      exact hBad_cast
+      -- The existing core relation measures bad blocks at the oracle index.
+      -- At i.castSucc < ℓ its unfinished last block makes this branch true.
+      -- This preserves that documented semantics; it is not a bound on bad-event probability.
+      exact badEventExistsProp_of_lt 𝔽q β i.castSucc i.castSucc oStmtIn
+        (olderStmtChallenges (by simp only [Fin.val_castSucc, Fin.val_succ]; omega)
+          stmtIn.challenges) i.isLt rfl
     | inr hGood =>
-      have h_sumcheck : sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witMid.H := hGood.1
+      have h_sumcheck : sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witMid.H := hGood.2.1
       have h_struct : witnessStructuralInvariant 𝔽q β (mp := mp)
-          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) stmtIn witMid := hGood.2.1
+          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) stmtIn witMid := hGood.1
       have h_init : firstOracleWitnessConsistencyProp 𝔽q β witMid.t
           (getFirstOracle 𝔽q β
             (snoc_oracle 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_destIdx := rfl)
@@ -440,21 +451,20 @@ def commitKState (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :
           (snoc_oracle 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_destIdx := rfl)
             oStmtIn
             (msg : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-              (domainIdx := ⟨i.val + 1, by omega⟩))) := hGood.2.2.2
+              (domainIdx := ⟨i.val + 1, by omega⟩))) := by
+        simpa only [OracleFrontierIndex.val_mkFromStmtIdx, olderStmtChallenges_self] using hGood.2.2.2
       have h_init_cast : firstOracleWitnessConsistencyProp 𝔽q β witMid.t
           (getFirstOracle 𝔽q β oStmtIn) := by
-        have h_pos : 0 < toOutCodewordsCount ℓ ϑ i.castSucc := by
-          exact Nat.pos_of_neZero (toOutCodewordsCount ℓ ϑ i.castSucc)
-        have h_init' := h_init
-        simp only [getFirstOracle, snoc_oracle, h_pos] at h_init' ⊢
-        exact h_init'
+        simpa only [getFirstOracle_snoc_oracle] using h_init
       have h_fold_cast :
-          oracleFoldingConsistencyProp 𝔽q β (i := i.castSucc) (Fin.init stmtIn.challenges)
+          oracleFoldingConsistencyProp 𝔽q β (i := i.castSucc) (Fin.tail stmtIn.challenges)
             oStmtIn := by
         exact oracleFoldingConsistencyProp_commit_step_backward 𝔽q β
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hCR _ oStmtIn _ h_fold
       right
-      exact ⟨h_sumcheck, h_struct, h_init_cast, h_fold_cast⟩
+      exact ⟨h_struct, h_sumcheck, h_init_cast, by
+        simpa only [OracleFrontierIndex.val_mkFromStmtIdxCastSuccOfSucc,
+          olderStmtChallenges_succ_castSucc] using h_fold_cast⟩
   toFun_full := fun ⟨stmtIn, oStmtIn⟩ tr witOut probEvent_relOut_gt_0 => by
     -- probEvent_relOut_gt_0: the relOut is satisified under oracle verifier's execution
     -- Now we simp the probEvent_relOut_gt_0 to extract equalities for stmtOut, oStmtOut as
@@ -516,8 +526,7 @@ def commitKState (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :
         snoc_oracle_eq_mkVerifierOStmtOut_commitStep 𝔽q β (mp := mp)
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i hCR oStmtIn
           (tr.messages msgIdx0) tr rfl
-      rw [← h_oStmtOut_eq] at h_oStmt_eq'
-      exact h_oStmt_eq'
+      exact h_oStmt_eq'.trans (by simpa only [OracleVerifier.mkVerifierOStmtOut] using h_oStmtOut_eq.symm)
     rw [h_oStmt_eq]
     exact h_relOut
 
