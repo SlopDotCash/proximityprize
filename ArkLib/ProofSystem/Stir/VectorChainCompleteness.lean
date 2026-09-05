@@ -7,7 +7,7 @@ import ArkLib.ProofSystem.Stir.VectorChain
 import ArkLib.ProofSystem.Stir.Round3Completeness
 import ArkLib.OracleReduction.Composition.Sequential.SeqComposeOracleCompleteness
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessOracle
-import ArkLib.OracleReduction.Composition.Sequential.AppendToVerifierKeystone
+import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype
 
 /-!

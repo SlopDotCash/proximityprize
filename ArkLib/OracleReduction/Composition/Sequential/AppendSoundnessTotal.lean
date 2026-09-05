@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.OracleReduction.Composition.Sequential.AppendSoundnessChallengeProof
-import ArkLib.OracleReduction.Composition.Sequential.AppendSoundnessOracleMsg
+import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 
 /-!
 # Seam-agnostic append soundness (issues #62 / #13 / #114 / #362)

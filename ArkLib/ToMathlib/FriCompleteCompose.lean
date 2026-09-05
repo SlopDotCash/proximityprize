@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.ToMathlib.FriComplete
 import ArkLib.OracleReduction.Composition.Sequential.General
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessChallenge
-import ArkLib.OracleReduction.Composition.Sequential.AppendToVerifierKeystone
+import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 
 /-!
 # FRI: Composed-Reduction Perfect Completeness (Brick C/D, issue #117)

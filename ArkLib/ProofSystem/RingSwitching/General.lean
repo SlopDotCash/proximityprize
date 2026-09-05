@@ -9,7 +9,7 @@ import ArkLib.ProofSystem.RingSwitching.BatchingPhase
 import ArkLib.ProofSystem.RingSwitching.SumcheckPhase
 import ArkLib.OracleReduction.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.Append
-import ArkLib.OracleReduction.Composition.Sequential.AppendToVerifierKeystone
+import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.OracleReduction.Composition.Sequential.SeqComposeMsgCompleteness
 import ArkLib.ProofSystem.RingSwitching.SumcheckLoopPC
 

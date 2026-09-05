@@ -1,7 +1,7 @@
 # Issue #2 module consolidation prerequisites
 
-The grouping audit used `a6475f7c0` on 2026-09-05. The bounded AppendRun
-consolidation below follows that audit; the other groups remain proposals. The
+The grouping audit used `a6475f7c0` on 2026-09-05. The bounded AppendRun and oracle-adapter
+consolidations below follow that audit; the other groups remain proposals. The
 baseline inventory covers the 33 modules in
 `ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/` and the 52 `Append*.lean`
 modules in `ArkLib/OracleReduction/Composition/Sequential/`.
@@ -66,6 +66,21 @@ The merged source passes a direct `lake env lean` check. This focused check does
 not by itself certify every consumer's dependency closure or a hosted build.
 The other candidate groups and oversized-file splits above remain outstanding;
 this change does not claim the whole consolidation programme complete.
+
+## Bounded oracle-adapter consolidation
+
+The six original AppendOracleAdapters group members passed a locked baseline
+build (3,741 jobs). Their implementation is consolidated into
+`ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters` (663 lines),
+with each original namespace and proof body preserved inside a separate section.
+The common copyright, license, and authors appear once at the top. Twenty-one
+tracked direct consumers import the new module; the six old paths are retired.
+
+The merged module passes direct Lean elaboration. The import-graph contraction
+is acyclic, and a normalized non-comment source comparison preserves every
+original module body. These checks do not substitute for the dependency-closed
+build of the 21 changed consumers or full repository validation. The broader
+Binius and remaining Append grouping work stays open.
 
 ## Binius health boundary
 
