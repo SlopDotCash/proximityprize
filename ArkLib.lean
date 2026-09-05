@@ -4303,6 +4303,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra
 import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra2
 import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra3
+import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra4
 import ArkLib.Data.CodingTheory.ProximityGap.MomentLogConvex
 import ArkLib.Data.CodingTheory.ProximityGap.MomentSupNormBridge
 import ArkLib.Data.CodingTheory.ProximityGap.MomentSupplyIdentity
