@@ -32,7 +32,7 @@ theorem momentExponent_gap_strictMono {r beta₁ beta₂ : ℝ} (hr : 0 < r)
 
 /-- **The β = 2 boundary gap.**
 At the edge of the half-trivial regime, `θ(r,2) - 1/2 = 1/(2r)` — the
-smallest positive gap attainable while staying at `β ≥ 2`. -/
+smallest gap at that fixed positive depth while staying at `β ≥ 2`. -/
 theorem momentExponent_beta2_gap {r : ℝ} (hr : 0 < r) :
     momentExponent r 2 - 1 / 2 = 1 / (2 * r) := by
   rw [momentExponent_sub_half hr]
