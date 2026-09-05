@@ -4,10 +4,11 @@
 > [`SlopDotCash/proximityprize`](https://github.com/SlopDotCash/proximityprize), with `main` as the
 > integration branch. Develop on a focused feature branch based on `origin/main`; do not route new
 > work to the retired `lalalune/ArkLib` `research/proximity-prize` branch. Current coordination is
-> issue [#1](https://github.com/SlopDotCash/proximityprize/issues/1) for the mathematical CORE,
-> [#2](https://github.com/SlopDotCash/proximityprize/issues/2) for cleanup/upstream carve-out,
-> [#3](https://github.com/SlopDotCash/proximityprize/issues/3) for state and census maintenance, and
-> [#4](https://github.com/SlopDotCash/proximityprize/issues/4) for the completion gate.
+> [#164](https://github.com/SlopDotCash/proximityprize/issues/164) for the mathematical CORE and
+> independent production-completion audit, and
+> [#2](https://github.com/SlopDotCash/proximityprize/issues/2) for cleanup/upstream carve-out.
+> Issues #1 and #4 were consolidated into #164 on 2026-09-05; their administrative closure does
+> not establish the production theorem. Issue #3 is completed historical state/census work.
 
 The mutual-correlated-agreement threshold programme: pin
 `δ*(C, ε*) = sup{δ : ε_mca(C, δ) ≤ ε*}` for explicit smooth-domain Reed–Solomon
