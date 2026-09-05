@@ -87,3 +87,8 @@ GitHub-hosted deployment is opt-in through the manual `deploy` input and require
 repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. A local
 Wrangler OAuth login is not available on GitHub runners. Push filters and
 production deployment guards must use the same branch.
+
+Blueprint figures require `graphicx` in the shared package preamble. Without
+it, plasTeX can finish with an `imageoverride` template warning while emitting
+the image filename as text. Check that figure markup contains an image and that
+the referenced image is included in the generated web directory.
