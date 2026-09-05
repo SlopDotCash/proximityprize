@@ -808,7 +808,7 @@ lemma commitStep_j_is_last (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i)
   conv_rhs at hj => rw [h_count_succ]
   omega
 
-omit [SampleableType L] in
+omit [SampleableType L] h_β₀_eq_1 in
 lemma strictOracleFoldingConsistency_commitStep
     (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i)
     (stmtIn : Statement (L := L) Context i.succ)
@@ -1009,7 +1009,7 @@ lemma strictOracleFoldingConsistency_commitStep
       simp only [Fin.val_succ, zero_add]
     simpa using h_challenges_eq_take
 
-omit [SampleableType L] in
+omit [SampleableType L] h_β₀_eq_1 in
 /-- Commit step logic is strongly complete.
 The key insight is that the commit step just extends the oracle without changing the statement,
 and the verifier always accepts (no verification check). -/
