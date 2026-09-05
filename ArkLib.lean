@@ -1898,6 +1898,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._EtaRealNegClosed
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._EtaSignNonMultiplicative
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ExpanderMixingBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._F1PolytopeMiddleCountermodel
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._F1RegionMiddleCounterexample
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._F1RegionSyzygyInterface
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FAKatzPerCosetFloorVerdict
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FCPhaseAwareChainingMetric
