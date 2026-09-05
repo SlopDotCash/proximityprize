@@ -18,12 +18,12 @@
 # def : Prop / class" remain preferable long-term and are owned by each
 # residual's tracking issue below.
 #
-large_agreement_set_on_curve_implies_correlated_agreement  # #470 upstream-inherited BCIKS20 curve agreement proof debt
-large_agreement_set_on_curve_implies_correlated_agreement'  # #470 upstream-inherited BCIKS20 Johnson-regime curve agreement proof debt
-weighted_correlated_agreement_for_parameterized_curves  # #470 upstream-inherited BCIKS20 weighted curve agreement proof debt
-weighted_correlated_agreement_for_parameterized_curves'  # #470 upstream-inherited BCIKS20 weighted curve agreement proof debt
-weighted_correlated_agreement_over_affine_spaces  # #470 upstream-inherited BCIKS20 weighted affine-space agreement proof debt
-weighted_correlated_agreement_over_affine_spaces'  # #470 upstream-inherited BCIKS20 weighted affine-space agreement proof debt
-no_selfReciprocal_factor  # #470 Hachi subfield root-orbit factor-swap proof debt
-foldKnowledgeStateFunction_toFun_full  # #470 Binius fold RBR toFun_full support-normalization proof debt
-foldOracleVerifier_rbrKnowledgeSoundness  # #470 Binius fold RBR soundness probability-normalization proof debt
+large_agreement_set_on_curve_implies_correlated_agreement  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) upstream-inherited BCIKS20 curve agreement proof debt
+large_agreement_set_on_curve_implies_correlated_agreement'  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) upstream-inherited BCIKS20 Johnson-regime curve agreement proof debt
+weighted_correlated_agreement_for_parameterized_curves  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) upstream-inherited BCIKS20 weighted curve agreement proof debt
+weighted_correlated_agreement_for_parameterized_curves'  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) upstream-inherited BCIKS20 weighted curve agreement proof debt
+weighted_correlated_agreement_over_affine_spaces  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) upstream-inherited BCIKS20 weighted affine-space agreement proof debt
+weighted_correlated_agreement_over_affine_spaces'  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) upstream-inherited BCIKS20 weighted affine-space agreement proof debt
+no_selfReciprocal_factor  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) Hachi subfield root-orbit factor-swap proof debt
+foldKnowledgeStateFunction_toFun_full  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) Binius fold RBR toFun_full support-normalization proof debt
+foldOracleVerifier_rbrKnowledgeSoundness  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) Binius fold RBR soundness probability-normalization proof debt
