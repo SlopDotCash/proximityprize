@@ -65,3 +65,14 @@ empty ~5KB shell (18 `File not found` warnings) — a vacuous gate. Two fixes:
 
 Sanity probe after any blueprint build: `wc -c blueprint/web/chap-*.html` — chapters in the
 single-digit-KB range mean the inputs did not resolve and the build was vacuous.
+
+### Deployment configuration
+
+GitHub Pages uses `.github/workflows/docs.yml` on `main`; the repository must
+have Pages enabled with GitHub Actions as its build source. The workflow builds
+the Lean library, API documentation, and blueprint before deploying.
+
+The Cloudflare workflows watch their website directories on `main` and also
+accept manual dispatch on `main`. Configure repository secrets
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` before deploying. Their push
+filters and deployment guards must use the same branch.
