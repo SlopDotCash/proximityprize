@@ -50,7 +50,10 @@ unreferenced probes as disposable. Neither absence from CI nor a missing filenam
 mention establishes that an experiment's conclusions were distilled elsewhere.
 
 Run `python3 scripts/kb/audit_probe_retention.py --output /tmp/probe-retention.json`
-for a tracked-file inventory with byte counts, SHA-256 fingerprints, and direct
+from a clean snapshot with every tracked file present (use a fresh worktree if
+local deletions are pending). The command reads working-tree contents and fails
+if a tracked file is missing; it does not reconstruct deleted files from Git.
+It produces a tracked-file inventory with byte counts, SHA-256 fingerprints, and direct
 filename-reference pointers from the current tree. It does not run the probes or
 certify their mathematical claims. All entries have an explicit retain disposition;
 manual claim-level review is required before any future deletion. Keep this large

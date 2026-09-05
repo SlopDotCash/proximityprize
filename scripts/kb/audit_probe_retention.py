@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Inventory tracked research evidence and direct references without executing probes."""
+"""Inventory tracked research evidence without executing probes.
+
+Run from a clean snapshot with every tracked file present; working-tree contents
+are read directly, so pending deletions must be resolved or audited in a worktree.
+"""
 
 from __future__ import annotations
 

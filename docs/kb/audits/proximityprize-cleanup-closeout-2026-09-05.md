@@ -22,8 +22,8 @@ campaign eviction plan does not describe this standalone repository.
   historical source extraction; `scratchpad/` contains four orbit-arc probes.
   This change deletes none of them. Their names alone do not establish obsolescence.
 - `mine/` and `home_page/` remain product/site surfaces, outside this evidence
-  cleanup. Remote branch pruning and dependency-closed upstream contributions
-  require separate branch/dependency evidence and are not claimed here.
+  cleanup. Dependency-closed upstream contributions remain a separate review; branch
+  disposition is recorded below.
 
 ## Reproducible review
 
@@ -47,3 +47,22 @@ local catalogs continue to be excluded from the commitment requirement.
   detection of a new KB paper stub, and exclusion of an ignored local catalog.
 
 No Lean proof sources or imports change; no mathematical closure is asserted.
+
+## Historical branch disposition
+
+The following remote refs were deleted using exact-tip leases after checking live
+PR state and local worktrees. None was checked out locally:
+
+| Branch | Deleted tip | Evidence |
+| --- | --- | --- |
+| `codex/migrate-to-slopdotcash-org` | `bbf7f8cd80187e566efc719ba4c63d73a58694ee` | Ancestor of main; PR #50 merged |
+| `slop-project-authority` | `fd1323dd5c4bd293c1d3fb2f4343025e01c8dc51` | Ancestor of main; PR #28 merged |
+| `codex/slop-policy-2026-08-18-1` | `b32d08b557d244ef1c73a832285d5fd463a4f563` | PR #48 merged this exact head; patch-equivalent commit on main |
+| `fix/codex-refresh-kb-after-pr31` | `8c188b97a03b3db6d868c6e1dad348d3b09fefb7` | PR #45 merged this exact head; patch-equivalent commit on main |
+
+`codex/port-arklib-pr-513` remains: seven unique commits and closed, unmerged PR #9
+explicitly preserving the design for possible revival. `codex/port-arklib-pr-537`
+remains: three unique commits and superseded but unmerged PR #8. Closure of a PR
+alone is not merge evidence. The historical `automation/kb-generated-*`,
+`codex/r382-half-radius-mds-line`, and `integrate/goal-2026-07-09` refs were already
+absent. Current work branches were not pruning candidates.
