@@ -12,15 +12,15 @@ namespace ProximityGap.MomentExponentThreshold
 
 /-- **The beta = 5 anchor.**
 At aspect 5 the exponent is `θ(r,5) = (r+4)/(2r)` — the closed form
-above the production aspect 4, deeper into the over-trivial regime. -/
+above the production aspect 4; it exceeds one when `0 < r < 4`. -/
 theorem momentExponent_beta5 {r : ℝ} :
     momentExponent r 5 = (r + 4) / (2 * r) := by
   rw [momentExponent]
   ring
 
 /-- **The beta = 6 anchor.**
-At aspect 6 the exponent is `θ(r,6) = (r+5)/(2r)` — further into the
-over-trivial regime. -/
+At aspect 6 the exponent is `θ(r,6) = (r+5)/(2r)` — it exceeds one when
+`0 < r < 5`. -/
 theorem momentExponent_beta6 {r : ℝ} :
     momentExponent r 6 = (r + 5) / (2 * r) := by
   rw [momentExponent]
