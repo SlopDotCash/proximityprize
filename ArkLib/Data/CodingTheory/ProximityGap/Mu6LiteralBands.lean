@@ -191,6 +191,74 @@ theorem mu6_band_open_r13 : (2 ^ 6).choose 13 / 13 < 2 ^ 13 * (2 ^ 5).choose 13 
 /-- Rung `r = 13`: the pinned radius `1 − 13/64` is beyond Johnson (`169 < 768`). -/
 theorem mu6_beyond_johnson_r13 : 13 * 13 < (13 - 1) * 2 ^ 6 := by norm_num
 
+/-- Rung `r = 14`: the μ = 6 literal-budget band is nonempty. -/
+theorem mu6_band_open_r14 : (2 ^ 6).choose 14 / 14 < 2 ^ 14 * (2 ^ 5).choose 14 := by
+  have h1 : (64 : ℕ).choose 14 = 47855699958816 := by
+    rw [Nat.choose_eq_descFactorial_div_factorial]; decide
+  have h2 : (32 : ℕ).choose 14 = 471435600 := by
+    rw [Nat.choose_eq_descFactorial_div_factorial]; decide
+  show (64 : ℕ).choose 14 / 14 < 2 ^ 14 * (32 : ℕ).choose 14
+  rw [h1, h2]
+  norm_num
+
+/-- Rung `r = 14`: the pinned radius `1 − 14/64` is beyond Johnson. -/
+theorem mu6_beyond_johnson_r14 : 14 * 14 < (14 - 1) * 2 ^ 6 := by norm_num
+
+/-- Rung `r = 15`: the μ = 6 literal-budget band is nonempty. -/
+theorem mu6_band_open_r15 : (2 ^ 6).choose 15 / 15 < 2 ^ 15 * (2 ^ 5).choose 15 := by
+  have h1 : (64 : ℕ).choose 15 = 159518999862720 := by
+    rw [Nat.choose_eq_descFactorial_div_factorial]; decide
+  have h2 : (32 : ℕ).choose 15 = 565722720 := by
+    rw [Nat.choose_eq_descFactorial_div_factorial]; decide
+  show (64 : ℕ).choose 15 / 15 < 2 ^ 15 * (32 : ℕ).choose 15
+  rw [h1, h2]
+  norm_num
+
+/-- Rung `r = 15`: the pinned radius `1 − 15/64` is beyond Johnson. -/
+theorem mu6_beyond_johnson_r15 : 15 * 15 < (15 - 1) * 2 ^ 6 := by norm_num
+
+/-- Rung `r = 16`: the μ = 6 literal-budget band is nonempty. -/
+theorem mu6_band_open_r16 : (2 ^ 6).choose 16 / 16 < 2 ^ 16 * (2 ^ 5).choose 16 := by
+  have h1 : (64 : ℕ).choose 16 = 488526937079580 := by
+    rw [Nat.choose_eq_descFactorial_div_factorial]; decide
+  have h2 : (32 : ℕ).choose 16 = 601080390 := by
+    rw [Nat.choose_eq_descFactorial_div_factorial]; decide
+  show (64 : ℕ).choose 16 / 16 < 2 ^ 16 * (32 : ℕ).choose 16
+  rw [h1, h2]
+  norm_num
+
+/-- Rung `r = 16`: the pinned radius `1 − 16/64` is beyond Johnson. -/
+theorem mu6_beyond_johnson_r16 : 16 * 16 < (16 - 1) * 2 ^ 6 := by norm_num
+
+/-- Rung `r = 17`: the band has *closed* — the high edge `2^17·C(32,17)` has fallen
+strictly below the low edge `⌊C(64,17)/17⌋`.  This is the first rung at which it does. -/
+theorem mu6_band_closed_r17 : 2 ^ 17 * (2 ^ 5).choose 17 < (2 ^ 6).choose 17 / 17 := by
+  have h1 : (64 : ℕ).choose 17 = 1379370175283520 := by
+    rw [Nat.choose_eq_descFactorial_div_factorial]; decide
+  have h2 : (32 : ℕ).choose 17 = 565722720 := by
+    rw [Nat.choose_eq_descFactorial_div_factorial]; decide
+  show 2 ^ 17 * (32 : ℕ).choose 17 < (64 : ℕ).choose 17 / 17
+  rw [h1, h2]
+  norm_num
+
+/-- **The ladder stops at `r = 16`.**  For *every* `r ≥ 17` the μ = 6 literal-budget band
+is empty: the high edge `2^r·C(32,r)` never again rises above the low edge `⌊C(64,r)/r⌋`.
+
+The split is `17 ≤ r ≤ 32` by direct computation, and `r > 32` because `C(32,r) = 0`
+kills the high edge outright.  The relation is stated with `≤` rather than `<` because
+for `r > 64` both edges are `0`, so the band is empty but not strictly so.
+
+Together with `mu6_band_open_r16` this pins `r = 16` as the top rung of the ladder on the
+64-point smooth domain, and hence `rate 15/64` as the highest rate this construction can
+reach at `μ = 6`.  In particular no rung of it attains the Proximity Prize rates `1/4` or
+`1/2`. -/
+theorem mu6_band_closed_of_ge_17 (r : ℕ) (hr : 17 ≤ r) :
+    2 ^ r * (2 ^ 5).choose r ≤ (2 ^ 6).choose r / r := by
+  rcases Nat.lt_or_ge r 33 with h32 | h32
+  · interval_cases r <;> norm_num [Nat.choose_eq_descFactorial_div_factorial]
+  · rw [Nat.choose_eq_zero_of_lt (by norm_num; omega)]
+    simp
+
 end ArkLib.ProximityGap.Mu6LiteralBands
 
 /-! ## Axiom audit — kernel-clean. -/
@@ -206,3 +274,8 @@ end ArkLib.ProximityGap.Mu6LiteralBands
 #print axioms ArkLib.ProximityGap.Mu6LiteralBands.mu6_band_open_r11
 #print axioms ArkLib.ProximityGap.Mu6LiteralBands.mu6_band_open_r12
 #print axioms ArkLib.ProximityGap.Mu6LiteralBands.mu6_band_open_r13
+#print axioms ArkLib.ProximityGap.Mu6LiteralBands.mu6_band_open_r14
+#print axioms ArkLib.ProximityGap.Mu6LiteralBands.mu6_band_open_r15
+#print axioms ArkLib.ProximityGap.Mu6LiteralBands.mu6_band_open_r16
+#print axioms ArkLib.ProximityGap.Mu6LiteralBands.mu6_band_closed_r17
+#print axioms ArkLib.ProximityGap.Mu6LiteralBands.mu6_band_closed_of_ge_17
