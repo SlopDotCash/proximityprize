@@ -92,3 +92,8 @@ Blueprint figures require `graphicx` in the shared package preamble. Without
 it, plasTeX can finish with an `imageoverride` template warning while emitting
 the image filename as text. Check that figure markup contains an image and that
 the referenced image is included in the generated web directory.
+
+Use `\texorpdfstring{mathematical title}{plain-text title}` for mathematical
+section headings. PDF bookmarks need a text equivalent; passing Unicode-math
+commands directly to hyperref can abort the PDF build. Run the PDF build before
+the HTML build so `leanblueprint` copies the generated bibliography to `web.bbl`.
