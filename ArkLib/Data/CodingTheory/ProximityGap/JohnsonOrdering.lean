@@ -7,13 +7,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
 /-!
 # Johnson radius ordering properties
 
-Ordering facts for the Johnson radius `J(δ) = 1 - √(1-δ)`:
-
-* `johnson_pos_interior` — `0 < J(δ)` for `0 < δ ≤ 1`.
-* `johnson_below_capacity_weak` — `J(δ) ≤ δ` for `0 ≤ δ ≤ 1`
-  (restated).
-* `johnson_rs_rate_positive` — the RS-instance Johnson radius is
-  positive for `0 < ρ < 1`.
+The Johnson radius is at most capacity on `[0,1]`. The Reed–Solomon
+Johnson radius `1 - √ρ` is positive for `0 < ρ < 1`.
 -/
 
 namespace ArkLib.JohnsonCapacity
