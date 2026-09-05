@@ -225,6 +225,11 @@ python3 -m pip install leanblueprint
   newest-prefix restore), so when a hosted runner dies mid-build,
   `gh run rerun <id> --failed` resumes from the latest partial snapshot and
   successive attempts ratchet forward; `docs.yml` uses the same scheme.
+  The full validation build uses one Lean worker to limit peak memory:
+  two-worker attempts repeatedly terminated in the heavy Frontier region
+  before saving their caches. A 20-minute checkpoint preserves completed
+  artifacts for the next attempt; a timeout remains a failing check until
+  the entire validation wrapper passes in one attempt.
   It also enforces the issue #47 verification gates: a fast precheck rejecting
   `native_decide`/`bv_decide`/custom `axiom` declarations in live source
   (`scripts/forbidden_tokens.py`), a comment-stripped sorry census requiring

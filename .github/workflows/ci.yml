@@ -139,9 +139,9 @@ jobs:
       # it is fast: validate.sh = lake build + forbidden_tokens + sorry_census
       # --fail-on-holes + axiom_audit + check-imports + docs-integrity. This
       # compiles every module AND enforces the honesty contract.
-      # LEAN_NUM_THREADS=2 caps per-worker thread parallelism: the heavy
-      # Frontier region repeatedly killed 16 GB hosted runners at full
-      # parallelism (attempts died near job 10.8k/13.6k). Hosted runners have
+      # Use one Lean worker to reduce peak memory in the heavy Frontier
+      # region: two-worker attempts repeatedly terminated near job 10.8k
+      # before saving their caches. Hosted runners have
       # also delivered shutdown signals near 30 minutes, skipping every
       # `always()` cleanup step. The 20-minute checkpoint ends the build while
       # the runner is still healthy so the cache-save step below can run; a
@@ -151,7 +151,7 @@ jobs:
       - name: Time validation wrapper
         if: steps.validation-scope.outputs.lean-relevant == 'true'
         env:
-          LEAN_NUM_THREADS: "2"
+          LEAN_NUM_THREADS: "1"
         run: |
           bash scripts/build_timing_report.sh run test_path "$BUILD_TIMING_RESULTS" -- \
             bash -eo pipefail -c 'timeout --signal=INT --kill-after=2m 20m ./scripts/validate.sh'
