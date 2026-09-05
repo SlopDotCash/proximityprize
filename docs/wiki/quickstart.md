@@ -225,6 +225,13 @@ python3 -m pip install leanblueprint
   newest-prefix restore), so when a hosted runner dies mid-build,
   `gh run rerun <id> --failed` resumes from the latest partial snapshot and
   successive attempts ratchet forward; `docs.yml` uses the same scheme.
+  The full validation build uses one Lean worker to limit peak memory:
+  two-worker attempts repeatedly terminated in the heavy Frontier region
+  before saving their caches. A 20-minute checkpoint preserves completed
+  artifacts for the next attempt; a timeout remains a failing check until
+  the entire validation wrapper passes in one attempt.
+  CI logs active Lean workers and memory usage every 30 seconds so an
+  interrupted build can be traced to its in-flight module.
   It also enforces the issue #47 verification gates: a fast precheck rejecting
   `native_decide`/`bv_decide`/custom `axiom` declarations in live source
   (`scripts/forbidden_tokens.py`), a comment-stripped sorry census requiring
@@ -309,7 +316,28 @@ Hard-won rules for multi-agent sessions where several agents land commits on
   `have`; `WithBot` casts → `WithBot.coe_le_coe.mpr`; `smul_eq_mul`
   commutation → `simp [smul_eq_mul]` then `ring`, since `simp [mul_comm]`
   loops).
-- **A surprise `sorryAx` in `#print axioms` for a sorry-free file means stale
-  imports, not a tainted proof.** Rebuild the import closure
-  (`lake build <each imported module>`) and re-check before debugging the
-  proof. Confirmed twice on 2026-06-10/11.
+- **Investigate `sorryAx` before accepting an axiom audit.** Resolve compiler
+  errors first: failed elaboration can insert placeholder proofs even when
+  the source contains no `sorry`. If compilation is clean, rebuild the import closure
+  (`./scripts/lake-locked.sh build <each imported module>`) and re-check before debugging the
+  proof; stale imports have also caused this symptom.
+- **Keep prize-scale counting proofs symbolic.** Prove the counting inequality
+  with a variable dimension before applying it at a large literal dimension.
+  `ScaleThresholdBracket.lean` uses this pattern to avoid expensive checking
+  of the concrete finite-universe proof term. Reaching the end of a tactic
+  script is not enough: wait for the entire module and its axiom audit to pass.
+
+- **Batch expensive finite kernel checks.** A single reduction over a large list
+  can retain excessive memory. Prove small consecutive batch summaries with
+  `decide +kernel`, then combine them using a generic list decomposition lemma.
+  Keep the original public checker and theorem statements unchanged, and verify
+  the complete module and its axiom output after assembling the batches.
+
+
+### Fast-iteration exit status
+
+`pg-warm.sh` stops when its substrate build fails and prints the ready message
+only on success. `pg-iterate.sh` propagates a nonzero Lean exit status even
+when the process emits no diagnostic text. A successful file with no
+`#print axioms` output is still a successful type check; absence of that
+output does not itself perform an axiom audit.

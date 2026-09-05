@@ -53707,3 +53707,12 @@ separate open brick.  No production-scale δ* conclusion follows; the prize rema
 
 Formal payload `Frontier/_G330SpectrumExactBoundary.lean` (all audited declarations depend only on
 `propext`, `Classical.choice`, `Quot.sound`); exact probe `g330_spectrum_exact_boundary.py`.
+
+
+## Region middle exclusion over ZMod 23 (PR #53)
+
+`Frontier/_F1RegionMiddleCounterexample.lean` exhibits a region/syzygy
+configuration with profile `(6,6,6,4,11,7)` and refutes
+`RegionMiddleExclusion (ZMod 23)`. The witness is confined to the region
+interface. It does not construct an over-budget MCA stack or determine
+production delta-star; the lift to that setting remains open.

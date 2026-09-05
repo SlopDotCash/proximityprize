@@ -17,9 +17,9 @@ proves they are equal:
   `addEnergy_eq_mathlib` : `addEnergy G = Finset.addEnergy G G`.
 
 This opens the entire Mathlib additive-combinatorics energy API (`le_addEnergy`, monotonicity, the
-Cauchy–Schwarz `card_sq_le_card_mul_addEnergy`, etc.) to the HBK/Stepanov formalization, and lets the
-local `addEnergy_ge_sq` / `addEnergy_le_cube` / `addEnergy_eq_card_mul_normalizedCount` interoperate
-with the library.
+Cauchy–Schwarz `card_sq_le_card_mul_addEnergy`, etc.) to the HBK/Stepanov formalization, and lets
+the local `addEnergy_ge_sq` / `addEnergy_le_cube` / `addEnergy_eq_card_mul_normalizedCount`
+interoperate with the library.
 
 **Honest scope:** a definitional bridge; it does not bound the energy (the open sum-product input).
 Does not pin `δ*`.
@@ -33,9 +33,9 @@ namespace ArkLib.ProximityGap.SubgroupGaussSumFourthMoment
 
 variable {F : Type*} [Field F] [DecidableEq F]
 
-/-- **The local additive energy equals Mathlib's `Finset.addEnergy`.** Both count quadruples in `G⁴`
-with a matching additive equation; the variable groupings differ by a transposition of the two middle
-coordinates, resolved by `Finset.sum_comm`. -/
+/-- **The local additive energy equals Mathlib's `Finset.addEnergy`.** Both count quadruples in
+`G⁴` with a matching additive equation; the variable groupings differ by a transposition of the two
+middle coordinates, resolved by `Finset.sum_comm`. -/
 theorem addEnergy_eq_mathlib (G : Finset F) :
     addEnergy G = Finset.addEnergy G G := by
   classical

@@ -7,7 +7,7 @@
 # iterate lock-free in parallel via `scripts/pg-iterate.sh`.
 #
 # It builds only the substrate the Frontier lanes consume — NOT the full 808-file cone.
-set -uo pipefail
+set -euo pipefail
 MODS=(
   ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
   ArkLib.Data.CodingTheory.ProximityGap.KKH26WitnessSpread

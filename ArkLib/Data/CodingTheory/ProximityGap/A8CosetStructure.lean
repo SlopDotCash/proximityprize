@@ -110,12 +110,184 @@ def balancedEightCosetCheck16 : Bool :=
   let xs := balancedEightSubsets16
   (xs.length == 70) && xs.all fun A => containsOrderFourCoset16Bool A
 
+-- Summarize consecutive batches without constructing one large reduction proof.
+private def a8Summary (xs : List (Finset (ZMod 16))) : ℕ × Bool :=
+  let bs := xs.filter fun A => balanced16 (pairSums A.val)
+  (bs.length, bs.all containsOrderFourCoset16Bool)
+
+private def a8Combine (a b : ℕ × Bool) : ℕ × Bool :=
+  (a.1 + b.1, a.2 && b.2)
+
+private theorem a8Summary_append (xs ys : List (Finset (ZMod 16))) :
+    a8Summary (xs ++ ys) = a8Combine (a8Summary xs) (a8Summary ys) := by
+  simp [a8Summary, a8Combine, List.filter_append, List.all_append]
+
+private theorem a8Summary_split (xs : List (Finset (ZMod 16))) :
+    a8Summary xs = a8Combine (a8Summary (xs.take 1024)) (a8Summary (xs.drop 1024)) := by
+  rw [← a8Summary_append, List.take_append_drop]
+
+private def a8Chunk (j : ℕ) : ℕ × Bool :=
+  a8Summary ((zmod16Subsets8.drop (j * 1024)).take 1024)
+
+private theorem a8Summary_check (xs : List (Finset (ZMod 16))) (n : ℕ)
+    (h : a8Summary xs = (n, true)) :
+    (let bs := xs.filter fun A => balanced16 (pairSums A.val)
+     (bs.length == n) && bs.all containsOrderFourCoset16Bool) = true := by
+  have hlen : (xs.filter fun A => balanced16 (pairSums A.val)).length = n :=
+    congrArg Prod.fst h
+  have hall : (xs.filter fun A => balanced16 (pairSums A.val)).all
+      containsOrderFourCoset16Bool = true := congrArg Prod.snd h
+  change (((xs.filter fun A => balanced16 (pairSums A.val)).length == n) &&
+    (xs.filter fun A => balanced16 (pairSums A.val)).all containsOrderFourCoset16Bool) = true
+  simp only [hlen, hall, beq_self_eq_true, Bool.true_and]
+
+private theorem a8Summary_glue (xs : List (Finset (ZMod 16))) (a b : ℕ)
+    (ha : a8Summary (xs.take 1024) = (a, true))
+    (hb : a8Summary (xs.drop 1024) = (b, true)) :
+    a8Summary xs = (a + b, true) := by
+  simpa only [ha, hb, a8Combine] using a8Summary_split xs
+
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
--- Exhaustive reduction over the canonical 8-subset list of `ZMod 16`, then over the
--- resulting 70 balanced members.
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk0 : a8Chunk 0 = (3, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk1 : a8Chunk 1 = (5, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk2 : a8Chunk 2 = (7, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk3 : a8Chunk 3 = (9, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk4 : a8Chunk 4 = (6, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk5 : a8Chunk 5 = (4, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk6 : a8Chunk 6 = (4, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk7 : a8Chunk 7 = (8, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk8 : a8Chunk 8 = (7, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk9 : a8Chunk 9 = (4, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk10 : a8Chunk 10 = (6, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk11 : a8Chunk 11 = (5, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction of one consecutive batch of at most 1024 subsets.
+private theorem a8Chunk12 : a8Chunk 12 = (2, true) := by decide +kernel
+
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 2000000 in
+-- Exhaustive kernel reduction certifies that no subsets remain after the final batch.
+private theorem a8Tail13 : a8Summary (zmod16Subsets8.drop 13312) = (0, true) := by
+  decide +kernel
+
+private theorem a8Tail12 : a8Summary (zmod16Subsets8.drop 12288) = (2, true) := by
+  apply a8Summary_glue _ 2 0
+  · exact a8Chunk12
+  · simpa only [List.drop_drop] using a8Tail13
+
+private theorem a8Tail11 : a8Summary (zmod16Subsets8.drop 11264) = (7, true) := by
+  apply a8Summary_glue _ 5 2
+  · exact a8Chunk11
+  · simpa only [List.drop_drop] using a8Tail12
+
+private theorem a8Tail10 : a8Summary (zmod16Subsets8.drop 10240) = (13, true) := by
+  apply a8Summary_glue _ 6 7
+  · exact a8Chunk10
+  · simpa only [List.drop_drop] using a8Tail11
+
+private theorem a8Tail9 : a8Summary (zmod16Subsets8.drop 9216) = (17, true) := by
+  apply a8Summary_glue _ 4 13
+  · exact a8Chunk9
+  · simpa only [List.drop_drop] using a8Tail10
+
+private theorem a8Tail8 : a8Summary (zmod16Subsets8.drop 8192) = (24, true) := by
+  apply a8Summary_glue _ 7 17
+  · exact a8Chunk8
+  · simpa only [List.drop_drop] using a8Tail9
+
+private theorem a8Tail7 : a8Summary (zmod16Subsets8.drop 7168) = (32, true) := by
+  apply a8Summary_glue _ 8 24
+  · exact a8Chunk7
+  · simpa only [List.drop_drop] using a8Tail8
+
+private theorem a8Tail6 : a8Summary (zmod16Subsets8.drop 6144) = (36, true) := by
+  apply a8Summary_glue _ 4 32
+  · exact a8Chunk6
+  · simpa only [List.drop_drop] using a8Tail7
+
+private theorem a8Tail5 : a8Summary (zmod16Subsets8.drop 5120) = (40, true) := by
+  apply a8Summary_glue _ 4 36
+  · exact a8Chunk5
+  · simpa only [List.drop_drop] using a8Tail6
+
+private theorem a8Tail4 : a8Summary (zmod16Subsets8.drop 4096) = (46, true) := by
+  apply a8Summary_glue _ 6 40
+  · exact a8Chunk4
+  · simpa only [List.drop_drop] using a8Tail5
+
+private theorem a8Tail3 : a8Summary (zmod16Subsets8.drop 3072) = (55, true) := by
+  apply a8Summary_glue _ 9 46
+  · exact a8Chunk3
+  · simpa only [List.drop_drop] using a8Tail4
+
+private theorem a8Tail2 : a8Summary (zmod16Subsets8.drop 2048) = (62, true) := by
+  apply a8Summary_glue _ 7 55
+  · exact a8Chunk2
+  · simpa only [List.drop_drop] using a8Tail3
+
+private theorem a8Tail1 : a8Summary (zmod16Subsets8.drop 1024) = (67, true) := by
+  apply a8Summary_glue _ 5 62
+  · exact a8Chunk1
+  · simpa only [List.drop_drop] using a8Tail2
+
+private theorem a8Tail0 : a8Summary (zmod16Subsets8.drop 0) = (70, true) := by
+  apply a8Summary_glue _ 3 67
+  · exact a8Chunk0
+  · simpa only [List.drop_drop] using a8Tail1
+
+-- Each batch is checked separately by the kernel to bound peak reduction memory.
 theorem balancedEightCosetCheck16_eq_true : balancedEightCosetCheck16 = true := by
-  decide
+  have h : a8Summary zmod16Subsets8 = (70, true) := by
+    simpa only [List.drop_zero] using a8Tail0
+  exact a8Summary_check zmod16Subsets8 70 h
 
 /-- The probe's `70` balanced 8-sets are exactly the balanced members of this enumeration. -/
 theorem balancedEightSubsets16_length : balancedEightSubsets16.length = 70 := by
