@@ -7,13 +7,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
 /-!
 # Johnson radius and capacity gap identities
 
-The gap between capacity and the Johnson radius,
-`δ - J(δ) = δ - 1 + √(1-δ)`, has exact values at the reference
-points and algebraic identities used in the δ* ledger.
-
-* `johnson_gap_zero` — the gap is `0` at `δ = 0`.
-* `johnson_gap_one` — the gap is `1` at `δ = 1`.
-* `johnson_gap_identity_rearranged` — `δ - J(δ) = √(1-δ) - (1-δ)`.
+The capacity-minus-Johnson gap is zero at `δ = 0`, equals
+`√(1-δ) - (1-δ)`, and is nonnegative on `[0,1]`.
 -/
 
 namespace ArkLib.JohnsonCapacity
