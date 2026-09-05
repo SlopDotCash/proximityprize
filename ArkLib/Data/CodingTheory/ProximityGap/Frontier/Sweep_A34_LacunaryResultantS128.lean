@@ -216,7 +216,7 @@ theorem s128_rate_quarter_threshold :
 `2^256 ≤ p` divides no collision resultant of distinct order-`r` signed data at `s = 128`,
 `r ≤ 34` — the hypothesis consumed by `kkh26_lemma1_of_not_dvd`, supplied with **no**
 Thorner–Zaman input (a prime in `[2^256, ∞)`, in particular any `p < 2^{257}`, works since the
-resultant is `< 2^256`).  -/
+resultant is `< 2^256`). -/
 theorem collisionResultant_not_dvd_s128_quarter {p : ℕ}
     (hp : (2 : ℕ) ^ 256 ≤ p) {r : ℕ} (hr : r ≤ 34) :
     ∀ d₁ ∈ sigData (2 ^ (7 - 1)) r, ∀ d₂ ∈ sigData (2 ^ (7 - 1)) r,
