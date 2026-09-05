@@ -109,8 +109,11 @@ theorem not_pairJointAgreesOn_of_genuine_fst (dom : Fin n ↪ F) {k w : ℕ}
 open Classical in
 /-- **The repaired named residual** (linear budget): every doubly-WB-solvable stack
 has at most `n` bad scalars.  Replaces the REFUTED `WindowRationalBounded` (`w + 3`):
-the normalizer-pair family attains `(n−2)/2`, the `μ_w`-coset family `n/w`; no known
-family exceeds `n`. -/
+the normalizer-pair family attains `(n−2)/2`, the `μ_w`-coset family `n/w`.
+The retained W15 Python probe computes 13 bad scalars for `F₃₁`, `n = 10`,
+`k = 1`, `w = 7`, `δ = 7/10`, above the unique-decoding radius. This unguarded
+residual must therefore not be treated as an unconditional theorem; the finite
+computation is not itself a Lean proof. See the W15 retention audit in `docs/kb/audits/`. -/
 def WindowRationalLinear (dom : Fin n ↪ F) (k w : ℕ) (δ : ℝ≥0) : Prop :=
   ∀ u₀ u₁ : Fin n → F, WBSolvable dom k w u₀ → WBSolvable dom k w u₁ →
     (Finset.univ.filter (fun γ : F => mcaEvent (F := F)
