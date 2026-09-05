@@ -65,14 +65,43 @@ results depending on them remain conditional on their truth.
 
 ## Upstream carve-out remains separate work
 
-`lakefile.toml` still pins forks of VCV-io and CompPoly, requires fork-only PolyFun,
+`lakefile.toml` still pins forks of VCV-io, CompPoly, and PolyFun,
 and pins doc-gen4 to `v4.30.0-rc2`. Replacing those pins without porting the APIs is
 not a completed migration. A proposed upstream change must establish compatible
 pins, compile the full proposed dependency closure, and exclude campaign workflows
-and research-only changes. No upstream PR or dependency port is claimed here.
+and research-only changes. A repository-wide dependency port is not established
+by this audit.
 
 The remaining mathematical obligations and upstream preparation must remain
 tracked if the historical cleanup ledger is consolidated or closed.
+
+## Current upstream dependency comparison
+
+The upstream manifest at `a527b514e029ecf9da40d66b5531a0707c686edc` was checked
+on 2026-09-05 against the standalone manifest at
+`fae76897ba7250a966a06d7e4a5627f38f46398f`. Upstream uses Lean `v4.33.1`;
+the standalone repository still uses `v4.30.0-rc2`.
+
+| Package | Standalone resolved revision | Upstream resolved revision |
+| --- | --- | --- |
+| VCVio | `lalalune/VCV-io`, `576766ab24a044af560b05c58d2a1229857c7c07` | `Verified-zkEVM/VCVio`, `f9dc47d9dacfc5cb51dae9f92f1e34cb5ce2cc24` |
+| CompPoly | `lalalune/CompPoly`, `d8d6609e179fc26c4c56e1dae7c37032d618ad73` | `Verified-zkEVM/CompPoly`, `a09455a22fea4623a2a1c5b363cf6efc61486a83` |
+| PolyFun | `lalalune/PolyFun`, `5d3a160ed751b9227af90adb9da41d0eae2e0238` | `Verified-zkEVM/PolyFun`, `c0c923693fc827a41d17116579a0c16ed4873b19` |
+| doc-gen4 | `d555f83e82831466ec101c9753450e8b4ec203b4` (`v4.30.0-rc2`) | `e2af49a7b7e5e1a9224008c1f15e7aa4f58a4015` (`v4.33.1`) |
+
+PolyFun is therefore no longer an absent upstream package. The pinned upstream
+[VCVio lakefile](https://github.com/Verified-zkEVM/VCVio/blob/f9dc47d9dacfc5cb51dae9f92f1e34cb5ce2cc24/lakefile.lean)
+requires the official PolyFun repository transitively. The remaining work is
+API compatibility and validation of each proposed contribution, not introducing
+PolyFun to upstream for the first time. The standalone pins have not changed.
+
+A submitted shared-data contribution is
+[upstream PR #860](https://github.com/Verified-zkEVM/ArkLib/pull/860): four
+heterogeneous tuple equalities replacing `True` placeholders. Its full upstream
+`validate.sh --axioms` run passed at the upstream base above, and its four
+explicit axiom audits report only standard axioms. This validates that bounded
+contribution; it does not validate a migration of the full campaign or the
+remaining protocol security results.
 
 ## Validation
 
