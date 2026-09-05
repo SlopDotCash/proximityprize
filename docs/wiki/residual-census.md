@@ -236,7 +236,7 @@ proof debt and naming drift.
 - `ProximityGap.Ownership.SubJohnsonSupplyResidual` — `ArkLib/Data/CodingTheory/ProximityGap/JohnsonSplitSupply.lean:258`
 - `Prover.appendRunRightResidual` — `ArkLib/OracleReduction/Composition/Sequential/Append.lean:3933`
 - `OracleReduction.appendToReductionResidual` — `ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessOracle.lean:67`
-- `Prover.appendRunRightDistResidual` — `ArkLib/OracleReduction/Composition/Sequential/AppendRunEvalDist.lean:53`
+- `Prover.appendRunRightDistResidual` — `ArkLib/OracleReduction/Composition/Sequential/AppendRun.lean:65`
 - `Reduction.fiatShamir_runCollapseResidual` — `ArkLib/OracleReduction/FiatShamir/Basic.lean:303`
 - `Reduction.fiatShamir_soundnessTransferResidual` — `ArkLib/OracleReduction/FiatShamir/Basic.lean:893`
 - `Reduction.fiatShamir_knowledgeSoundnessTransferResidual` — `ArkLib/OracleReduction/FiatShamir/Basic.lean:1002`

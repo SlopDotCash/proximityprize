@@ -1,7 +1,8 @@
 # Issue #2 module consolidation prerequisites
 
-This is a source/import audit of `a6475f7c0` on 2026-09-05, not a completed
-refactor or a Lean build certificate. It covers the 33 modules in
+The grouping audit used `a6475f7c0` on 2026-09-05. The bounded AppendRun
+consolidation below follows that audit; the other groups remain proposals. The
+baseline inventory covers the 33 modules in
 `ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/` and the 52 `Append*.lean`
 modules in `ArkLib/OracleReduction/Composition/Sequential/`.
 
@@ -41,7 +42,7 @@ Four existing files need splitting rather than further merging:
 `Sequential/AppendRbrKnowledgeStateFunction.lean` (1,803). Existing local linter
 exceptions do not make them suitable destinations for these groups.
 
-## AppendRun baseline and next gate
+## Bounded AppendRun consolidation
 
 The bounded baseline command was:
 
@@ -49,19 +50,22 @@ The bounded baseline command was:
 lake env lean ArkLib/OracleReduction/Composition/Sequential/AppendRunEvalDist.lean
 ```
 
-It failed at line 6 before elaboration because the local object file for
-`ArkLib.OracleReduction.Composition.Sequential.Append` did not exist. This is
-missing local build evidence, not a demonstrated source error or a mathematical
-obstruction. No AppendRun source restructuring was performed.
+The first direct attempt lacked `Append.olean`. A subsequent locked prerequisite
+build compiled `Append` successfully (3,700 jobs), followed by a successful locked
+baseline build of all four original members (3,706 jobs). The missing object was
+therefore a cold-cache condition, not a source failure.
 
-First build the four existing targets through `scripts/lake-locked.sh`, then
-record successful focused baseline checks and their axiom output before editing.
-The group's graph has `AppendRunEvalDistChallenge` depending on
-`AppendRunEvalDist`; the two fusion files import `Append` directly. Preserve each
-file's namespace/section boundaries and place the EvalDist declarations before
-the challenge declarations. After consolidation, check the new module and all
-rewritten direct consumers, run the locked build and repository validation,
-and preserve exact-commit hosted evidence before merging.
+The four modules are consolidated into
+`ArkLib.OracleReduction.Composition.Sequential.AppendRun` (654 lines). All
+original declarations retain their public namespaces, statements, and proof
+bodies. Separate sections preserve the original local scopes; a single header
+retains the common copyright, license, and authors. Six tracked consumer imports
+now point to the consolidated module. The old four import paths are retired.
+
+The merged source passes a direct `lake env lean` check. This focused check does
+not by itself certify every consumer's dependency closure or a hosted build.
+The other candidate groups and oversized-file splits above remain outstanding;
+this change does not claim the whole consolidation programme complete.
 
 ## Binius health boundary
 

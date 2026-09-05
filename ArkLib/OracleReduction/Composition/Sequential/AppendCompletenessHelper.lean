@@ -1,4 +1,4 @@
-import ArkLib.OracleReduction.Composition.Sequential.AppendRunEvalDist
+import ArkLib.OracleReduction.Composition.Sequential.AppendRun
 import ArkLib.OracleReduction.Completeness
 
 /-! Reconstruction helper for append-completeness (#113): component prover+verifier supports
