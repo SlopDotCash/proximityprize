@@ -32,12 +32,12 @@ one of the three degenerate cores; present at every prime) vs **accidental** (su
 RS-parity vectors `a₀, a₁` are only coincidentally parallel `mod p`; present with prob `~1/p`):
 
 ```
-p=29      (log2 4.9)  witness#0  δ1=0 gap=12 ι=6   |bad|=4 = 3 structural + 1 accidental   ceiling=12
+p=29 (log2 4.9) witness#0 δ1=0 gap=12 ι=6 |bad|=4 = 3 structural + 1 accidental ceiling=12
     z=5      #subsets=1   STRUCTURAL(core)
     z=11     #subsets=1   STRUCTURAL(core)
     z=13     #subsets=11  STRUCTURAL(core)
     z=15     #subsets=1   ACCIDENTAL          <-- the clause that dies at large p
-p=1000133 (log2 19.9) witness#0  δ1=0 gap=12 ι=6   |bad|=3 = 3 structural + 0 accidental   ceiling=12
+p=1000133 (log2 19.9) witness#0 δ1=0 gap=12 ι=6 |bad|=3 = 3 structural + 0 accidental ceiling=12
     z=158177 #subsets=1   STRUCTURAL(core)
     z=339564 #subsets=1   STRUCTURAL(core)
     z=993909 #subsets=1   STRUCTURAL(core)
@@ -86,7 +86,7 @@ worry the route raised: the split is binary and complete on the measured realiza
 §4 coverage census (`decide`, NO axioms): `coverageCensus (n, S, nWit, nMiddle)`;
 `no_middle_gap_witnesses` (nMiddle=0 ∀), `census_nonvacuous` (nWit≥1 ∀).
 
-Axiom audit (in-build `#print axioms`): omega/SYZ53 theorems `{propext, Quot.sound}`
+Axiom audit (in-build `#print axioms` ): omega/SYZ53 theorems `{propext, Quot.sound}`
 (+`Classical.choice`
 via iff-imports); **all six `decide` table theorems depend on NO axioms**. No `sorry`,
 `native_decide`, or vacuous-`True`. Focused locked build: 8321 jobs, exit 0.
@@ -112,8 +112,8 @@ witnesses do not.
 ## Reuse hooks
 
 - `probe_syz55_generator_gap.py::min_syzygy_degree` — exact minimal syzygy degree `δ₁` of a triple
-of
+  of
   univariate polys over `𝔽_p` by linear algebra (Hilbert–Burch rank-2 module); bucket any witness
   set by generator gap `g = S − 2δ₁`.
 - `forensic_stack` — per-bad-scalar structural/accidental attribution against a core set; reuse to
-  separate generic-floor pencil points from small-field parallelism artifacts on any degenerate stack.
+separate generic-floor pencil points from small-field parallelism artifacts on any degenerate stack.
