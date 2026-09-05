@@ -18,7 +18,7 @@ theorem momentExponent_gap_eq {r beta : ℝ} (hr : 0 < r) :
   rw [momentExponent_sub_half hr]
 
 /-- **The depth-1 gap at aspect β.**
-`θ(1,β) - 1/2 = (β-1)/2` — the maximal gap at unit depth, restated in
+`θ(1,β) - 1/2 = (β-1)/2` — the unit-depth gap, restated in
 gap-first form. -/
 theorem momentExponent_r1_gap_value {beta : ℝ} :
     momentExponent 1 beta - 1 / 2 = (beta - 1) / 2 := by
