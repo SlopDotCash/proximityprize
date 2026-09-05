@@ -22,8 +22,8 @@ theorem momentExponent_gap_pos_of_two_le {r beta : ℝ} (hr : 0 < r)
   exact div_pos hnum hden
 
 /-- **The gap is at most (β-1)/2 at unit depth.**
-`θ(r,β) - 1/2 ≤ (β-1)/2` for `1 ≤ r` — the depth-1 gap is the maximal
-one; deeper depths shrink it. -/
+`θ(r,β) - 1/2 ≤ (β-1)/2` for `1 ≤ r` and `1 ≤ β` — the depth-1 gap is maximal;
+deeper depths do not increase it. -/
 theorem momentExponent_gap_le_unit {r beta : ℝ} (hr : 1 ≤ r) (hb : 1 ≤ beta) :
     momentExponent r beta - 1 / 2 ≤ (beta - 1) / 2 := by
   rw [momentExponent_sub_half (by positivity : (0 : ℝ) < r)]
