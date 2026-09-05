@@ -7,11 +7,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
 /-!
 # Johnson radius sample points
 
-Closed-form values of the Johnson radius `J(δ) = 1 - √(1-δ)` at sample
-points used in the δ* ledger.
-
-* `johnson_half` — `J(1/2) = 1 - 1/√2`.
-* `johnson_three_quarters_val` — `J(3/4) = 1/2`.
+The Johnson radius at `δ = 1/2` and `δ = 1/4` is recorded in square-root
+form. The file also proves its monotonicity for ordered inputs in `[0,1]`.
 -/
 
 namespace ArkLib.JohnsonCapacity

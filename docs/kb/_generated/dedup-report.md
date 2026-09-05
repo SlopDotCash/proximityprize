@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6440 files, 72038 declarations
+- `ArkLib` — 6441 files, 72041 declarations
 
-## Same short-name across multiple files (2693 groups)
+## Same short-name across multiple files (2694 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -9619,6 +9619,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterJointWitnessCharge.johnson_core_to_subtracted` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterJointWitnessCharge.lean:262](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterJointWitnessCharge.lean#L262) — Subtraction-free exact-diagonal Johnson rearranges to the sharp natural-number denominator.
 - `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterLayerCakeBudget.johnson_core_to_subtracted` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterLayerCakeBudget.lean:78](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterLayerCakeBudget.lean#L78) — Subtraction-free exact-diagonal Johnson rearranges to the sharp natural-number denominator (local co
+
+### `johnson_quarter` (2 declarations, 2 files)
+
+- `theorem ProximityGap.DeltaStarPinsConsistent.johnson_quarter` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeltaStarPinsConsistent.lean:109](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeltaStarPinsConsistent.lean#L109) — The full Johnson radius at `ρ = 1/4` is exactly `1/2`.
+- `theorem ArkLib.JohnsonCapacity.johnson_quarter` [ArkLib/Data/CodingTheory/ProximityGap/JohnsonSamplePoints.lean:23](../../../ArkLib/Data/CodingTheory/ProximityGap/JohnsonSamplePoints.lean#L23) — `J(1/4) = 1 - √(3/4)`.  Recorded in sqrt form.
 
 ### `johnson_radius_lt_capacity` (2 declarations, 2 files)
 
