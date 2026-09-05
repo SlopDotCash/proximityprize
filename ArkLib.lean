@@ -3961,6 +3961,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonRSComparisons
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonRSEndpoints
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonRSInstance
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonRateGap
+import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSamplePoints
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSecantForms
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSecondMomentFrontier
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSimplexBound
