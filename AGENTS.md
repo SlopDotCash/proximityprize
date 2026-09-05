@@ -46,15 +46,15 @@ Start with [`README.md`](README.md) for project overview.
 - Promote recurring agent learnings into [`docs/wiki/`](docs/wiki/README.md); do not let stable
   guidance live only in ephemeral notes.
 
-## Active Challenge: Proximity Gap Grand Challenge (#1)
+## Active Challenge: Proximity Gap Grand Challenge (#164)
 
-If you are working on the Proximity Prize / proximity-gap formalization (standalone issue #1,
+If you are working on the Proximity Prize / proximity-gap formalization (standalone issue #164,
 successor to the historical ArkLib campaign), read the dedicated agent guide **before** touching
 that cone — it has the build recipe you need to avoid clogging the machine:
 
 - [`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`](ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md)
   (auto-loaded in that directory; `AGENTS.md` there is a copy): build/concurrency/honesty rules,
-  the standalone #1 control plane, historical campaign ledger, substrate API map, references,
+  the standalone #164 control plane, historical campaign ledger, substrate API map, references,
   and pitfall catalogue.
 - **Fast iteration (mandatory):** that cone is ~3,500 files (3,483 `.lean` as of 2026-07-01);
   `lake build` traces a 3000+-job graph

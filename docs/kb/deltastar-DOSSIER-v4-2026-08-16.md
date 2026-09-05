@@ -10,6 +10,13 @@ campaign dossier through its 2026-07-11 §45 addendum. This document records the
 migration, reconciles the current ledgers, and classifies the verified results that landed after
 the v3 session-final snapshot.
 
+**Coordination update (2026-09-05):** [#164](https://github.com/SlopDotCash/proximityprize/issues/164)
+consolidates the former #1 research tracker and #4 completion gate. Their closure is administrative;
+the production theorem remains open. The sections below retain the dated mathematical snapshot.
+The merged #27 audit requires both the BGK sup-bound and an above-Johnson incidence input, and
+records the attained-maximum versus supremum formulation mismatch. Follow #164 for the full
+current completion contract; a bare BGK bound alone does not discharge it.
+
 ## 1. Current verdict
 
 The production δ* conjecture is **OPEN / ON-BGK**.
@@ -230,4 +237,4 @@ and `scripts/residual_census.json` agree before publication.
    regime.
 3. For F3, seek a span certificate that does not rely on the refuted overlap-chaining route.
 4. For the analytic CORE, supply the missing square-root-scale signed/orbit-class certificate.
-5. Attempt issue #4 only after one of those routes produces an unconditional production input.
+5. Attempt the production-completion gate in issue #164 only after one of those routes produces an unconditional production input.

@@ -62,7 +62,7 @@ functional; no such square-root-scale estimate is currently proved.
 Historical ArkLib issue #505 is closed: G88's orbit-class Parseval makes the DC-centered
 numerator an exact PSD sum over distinct orbit classes with zero cross terms, and with G89 the
 first-incidence formulation is pinned to the wall in two independent coordinate systems. The
-successor CORE is tracked by standalone issue #1: bound the orbit-class mass profile
+successor CORE is tracked by standalone issue #164: bound the orbit-class mass profile
 `(S₀, (S_γ)_γ)`. Equivalent
 current forms of the missing certificate: signed control of `K+1` prefix deviations of `b·μ_n`
 (G97 reduction into the G80Z consumer) = near-uniform small-difference pair statistics of every
@@ -139,8 +139,9 @@ Start from:
 - `Frontier/_DeltaStarDefinitive.lean` for the final threshold-facing reduction;
 - `docs/wiki/deltastar-programme.md` and `docs/wiki/residual-census.md` for programme state.
 
-GitHub control plane (`SlopDotCash/proximityprize`): production/core tracker #1; cleanup and
-upstream-carveout ledger #2; state/census maintenance #3; completion gate #4. Historical ArkLib
+GitHub control plane (`SlopDotCash/proximityprize`): consolidated production/core and completion
+audit tracker #164; cleanup and upstream-carveout ledger #2. Issues #1 and #4 were consolidated
+into #164 on 2026-09-05 without mathematical closure; #3 is completed state/census maintenance. Historical ArkLib
 issues #466/#499/#505–#509 and the former project board are provenance links only.
 
 Naming note (#506): both swarms minted G-numbers concurrently on 2026-07-10 — G89/G90/G91/G94/G95
