@@ -2272,6 +2272,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HBKSpecializationNonzero
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HBKTransversalMomentPartition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HBKTransversalRepProfile
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HBKTransversalTopPrefix
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HD1ContactVanishing
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HD8IdentityWebDimensionLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDCocyclePhaseCoupling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorBadEventRichPointBridge
@@ -3309,6 +3310,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SAC01SignedPunctureSuppor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SP_EnergyFromBSG
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SP_EnergyFromBSG2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SSTMultiplierAntipode
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SW1_F3_MasterHypothesisVacuous
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SW1_TRANSV_HeightCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ10BCIKS57Chunk1
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ11BCIKS57Chunk3
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ12BCIKS57Chunks56

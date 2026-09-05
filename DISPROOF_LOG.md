@@ -53716,3 +53716,49 @@ configuration with profile `(6,6,6,4,11,7)` and refutes
 `RegionMiddleExclusion (ZMod 23)`. The witness is confined to the region
 interface. It does not construct an over-budget MCA stack or determine
 production delta-star; the lift to that setting remains open.
+
+---
+
+### [1-HD1-hidden-derivative-interpolation] the code-theoretic route beyond Johnson is the hidden-derivative contact interpolant; its d=1 reach is exactly δ ≈ 0.310 at rate 1/2 and it needs field-size slack the production shape does not have (2026-09-05)
+
+State of the art refresh: ECCC TR26-164 (2026-09-04) list-decodes plain RS over prime fields on
+any evaluation set up to capacity at low rate by interpolating `Q(X, Y₀, Y₁, …, Y_d)` with
+`Y_j` a *hidden* Hasse derivative; better.codes PR #122 (nasqret, merged 2026-08-27) is the
+`d = 1` affine-line version `Q(X, Y, R, Z)`, Lean-checked at koalaIRS12, 10 positions beyond
+finite Johnson.  This entry quantifies the route exactly (all gates are exact integer or
+`F_p` arithmetic; probes `scripts/probes/hd1_interpolation_threshold.py`,
+`hd_general_rank.py`, `hd_true_rank.py`, `hd1_line_ledger.py`, all PASS).
+
+* **Exact per-node rank.**  For `d = 1` the node constraint matrix is block-diagonal with
+  Pascal blocks, so `rank Φ = Σ_{i,j} min(#rows(i,j), #cols(i,j))` (closed form, verified
+  against brute-force elimination); the PR #122 closed form `localContactRank` equals it at the
+  PR profile (`49960`) and is an upper bound on a 210-point grid, never an under-estimate.
+  For general `d` the rank is computed inside the invariant blocks `(b₀+Σb_j(+l₀), a−Σ j b_j)`.
+* **No hidden slack (negative result).**  The *true* node condition (vanishing for every
+  genuine polynomial through the node, a polynomial identity in the Taylor coefficients) has
+  the same rank as the formal TR26-164 system in all 24 cases tested (`d ≤ 2`, LD and line);
+  the Taylor identity is the only relation the method can exploit.
+* **`d = 1` reach.**  Rate 1/2, `n = 2¹⁸`: least agreement `A/√(n(k−1))` = .99603 (m=12),
+  .98413 (32), .97763 (256), .97620 (512, `s ≈ 0.3m`); `c/m` extrapolation gives
+  `r_∞ ≈ 0.9757`, i.e. `δ_∞ ≈ 0.310` (Johnson .2929, capacity .5).  Other prize rates at
+  `m = 128–256`: 1/4 → δ ≈ .530 (J .500), 1/8 → .680 (J .646), 1/16 → .781 (J .750).  The
+  line/MCA setting converges to the LD threshold as the `Z`-cap `L → ∞` (deficit ≈ `1.6·10⁵/L`
+  positions).  `d = 2` (box caps) is worse than `d = 1` for `m ≤ 16` and better from `m ≈ 24`
+  (m=32: .98212 vs .98387); the hierarchy helps only slowly at rate 1/2.
+* **Prize-scale evaluation under the PR #122 ledger (parametric port).**  With budget `2¹²²`
+  (`|F| ≈ 2²⁵⁰`, `ε* = 2⁻¹²⁸`), `d = 1` certifies δ = .30896 at rate 1/2 for every
+  `n ∈ [2¹⁸, 2³⁶]` (seeds `2^82…2^118`), .30805 at `n = 2⁴⁰`; it reproduces the PR's own
+  optimum (`a = 185354`, `(13,3,169)`) under the koalaIRS12 budget; and it certifies **nothing**
+  at `|F| ≈ n·2¹³⁸` (budget ≈ `n`), the campaign's production shape.  Classification:
+  computational evidence under a ledger whose geometric theorems are machine-checked at a fixed
+  profile in another repository — not a theorem of this repository.
+* **Lean (axiom-clean, Mathlib-only).**  `Frontier/_HD1ContactVanishing.lean`:
+  `contact_vanishing` (TR26-164 Lemma 3.1, `d = 1`) and `contact_vanishing_line` (the PR #122
+  node substitution with the line parameter): the formal contact constraint of order `m` at a
+  node forces `(X − C α)^m ∣ Q(X, P, P'[, γ])` for every `P` through the node.
+
+Consequence for the doctrine: the NEC lane showed the "BGK wall is necessary" claim is a
+meta-claim; this is the concrete BGK-free route and its measured reach — a constant-relative
+step beyond Johnson at every prize rate, purchasable only with field-size slack `≳ 2⁹⁰` over the
+seed count.  Production δ* (razor-thin budget) remains OPEN.  Note
+`docs/kb/deltastar-hd1-hidden-derivative-interpolation-2026-09-05.md`.
