@@ -7,17 +7,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
 /-!
 # Johnson radius fixed-point and zero properties
 
-The Johnson radius `J(δ) = 1 - √(1-δ)` on `[0,1]`:
-
-* has a unique fixed point at `δ = 0`: `J(0) = 0`, and `J(δ) < δ`
-  for `0 < δ` (it never overshoots capacity).
-* has `J(1) = 1` at the top endpoint.
-
-This file records the fixed-point/zero facts.
-
-* `johnson_fixed_zero` — `J(0) = 0`.
-* `johnson_lt_identity` — `J(δ) < δ` for `0 < δ < 1`.
-* `johnson_top` — `J(1) = 1`.
+The Johnson radius `J(δ) = 1 - √(1-δ)` fixes both endpoints of `[0,1]`.
+It lies strictly below the identity on `(0,1)`, so zero and one are its
+only fixed points in this interval.
 -/
 
 namespace ArkLib.JohnsonCapacity
