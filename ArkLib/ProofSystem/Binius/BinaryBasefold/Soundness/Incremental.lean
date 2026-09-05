@@ -9,8 +9,8 @@ import ArkLib.ProofSystem.Binius.BinaryBasefold.Compliance
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.IncrementalCase1
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IncrementalHelpers
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.PreTensorDistance
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.PreTensorFar
+import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.PreTensorMetric
+import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.PreTensorMaps
 import CompPoly.Fields.Binary.Tower.Prelude
 
 /-!

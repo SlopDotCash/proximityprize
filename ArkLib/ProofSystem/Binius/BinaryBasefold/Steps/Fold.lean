@@ -6,7 +6,7 @@ Authors: Chung Thai Nguyen, Quang Dao
 import ArkLib.ProofSystem.Binius.BinaryBasefold.ReductionLogic
 import ArkLib.ProofSystem.Binius.BinaryBasefold.ExtractMLPCorrectness
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidSucc
-import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeFailingDet
+import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 import ArkLib.ToVCVio.Oracle
 import ArkLib.ToVCVio.Simulation
 import ArkLib.OracleReduction.Completeness

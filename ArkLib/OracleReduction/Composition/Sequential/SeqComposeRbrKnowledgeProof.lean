@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.OracleReduction.Composition.Sequential.General
 import ArkLib.OracleReduction.Composition.Sequential.AppendToVerifierKeystone
-import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeFailingDetEmpty
+import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 import ArkLib.OracleReduction.Composition.Sequential.SeqComposeMsgCompleteness
 
 /-!
