@@ -29,18 +29,24 @@ Wiring these together yields:
   Eq. 55 decomposition: Claims 5.21–5.23 plus any strict-split coupling pair summing to
   `claim5_24Bound` imply the eager key lemma.
 
-## Residual census after this campaign round (the honest remaining-work map)
+## Historical assembly hypotheses and subsequent corrections
 
-Open residuals **on the eager key-lemma critical path** (each one consumed by
-`keyLemmaEager_of_hybSteps`):
+The declarations below remain hypotheses of `keyLemmaEager_of_hybSteps`; their
+presence is not an assertion that each is an open, viable proof target.
+`KeyLemmaSalted.lean` records the unsalted endpoint log-shape problem and supplies
+the successor salted residual interfaces for Claims 5.21–5.24. In particular, do
+not treat this historical unsalted assembly as an unconditional security theorem.
 
 1. `KeyLemmaHybrids.Hyb01StepResidual` — CO25 Claim 5.21 (Lemma 5.8 birthday switch,
    `D_DS` permutation → random encoded-challenge functions). Toolkit ready in
    `BirthdayBound` / `BirthdayBoundPaper` (accumulator + collision/landing bounds +
    `lemma5_8Bound_eq_claim5_21Bound`, plus the paper-event honest domination theorem);
-   the active open probability core is `BirthdayBoundPaper.Lemma5_8EagerPaperResidual`
-   (PRP/RF carrier coupling, event decomposition into capacity-segment families, budget
-   recombination).
+   the birthday probability core has a provider
+   `BirthdayBoundPaper.lemma5_8EagerPaperResidual_holds` in `Lemma58Reduction.lean`,
+   under that theorem's finite statement-space and sampling instances. Its proof uses
+   the lazy probability bound and the eager–lazy carrier bridge. This event bound alone
+   does not establish the hybrid total-variation claim; the successor interface is
+   `KeyLemmaSalted.Hyb01StepResidualS`.
 2. `KeyLemmaHybrids.Hyb12StepResidual` — CO25 Claim 5.22 (codec decoding bias, Eq. 53);
    needs `Codec.decode_isBiased` pushed through the simulator. No lane attacked it this
    round.
