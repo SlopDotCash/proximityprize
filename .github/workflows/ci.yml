@@ -141,9 +141,11 @@ jobs:
       # compiles every module AND enforces the honesty contract.
       # LEAN_NUM_THREADS=2 caps per-worker thread parallelism: the heavy
       # Frontier region repeatedly killed 16 GB hosted runners at full
-      # parallelism (attempts died near job 10.8k/13.6k). The 75-minute
-      # timeout ends the step BEFORE a hard runner death so the cache-save
-      # step below still runs; a timed-out attempt fails, and
+      # parallelism (attempts died near job 10.8k/13.6k). Hosted runners have
+      # also delivered shutdown signals near 30 minutes, skipping every
+      # `always()` cleanup step. The 20-minute checkpoint ends the build while
+      # the runner is still healthy so the cache-save step below can run; a
+      # timed-out attempt fails, and
       # `gh run rerun --failed` resumes from its saved snapshot until the
       # build fits in one window.
       - name: Time validation wrapper
@@ -152,7 +154,7 @@ jobs:
           LEAN_NUM_THREADS: "2"
         run: |
           bash scripts/build_timing_report.sh run test_path "$BUILD_TIMING_RESULTS" -- \
-            bash -eo pipefail -c 'timeout --signal=INT --kill-after=2m 75m ./scripts/validate.sh'
+            bash -eo pipefail -c 'timeout --signal=INT --kill-after=2m 20m ./scripts/validate.sh'
 
       # A late runner termination still leaves valid completed oleans. Saving
       # that coherent partial cache lets a rerun finish the remaining modules
