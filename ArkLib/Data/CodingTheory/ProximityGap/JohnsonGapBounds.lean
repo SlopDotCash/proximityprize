@@ -7,11 +7,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
 /-!
 # Johnson gap bounds
 
-The Johnson radius `J(δ) = 1 - √(1-δ)` sits strictly inside
-`[0, δ]` for `0 < δ < 1`.  This file records the interior-gap facts
-that the δ* threshold lives in: `J(δ) < δ`, the distance
-`δ - J(δ) = √(1-δ) + δ - 1` is positive, and the RS-instance gap
-`ρ - √ρ` is positive for `0 < ρ < 1`.
+The Johnson radius `J(δ) = 1 - √(1-δ)` lies strictly between zero and capacity
+for `0 < δ < 1`. The gap is `δ - J(δ) = √(1-δ) + δ - 1 > 0`.
+For Reed–Solomon rate `0 < ρ < 1`, the capacity-minus-Johnson gap is `√ρ - ρ > 0`.
 -/
 
 namespace ArkLib.JohnsonCapacity

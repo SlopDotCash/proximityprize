@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6440 files, 72038 declarations
+- `ArkLib` — 6441 files, 72042 declarations
 
-## Same short-name across multiple files (2693 groups)
+## Same short-name across multiple files (2694 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -9619,6 +9619,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterJointWitnessCharge.johnson_core_to_subtracted` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterJointWitnessCharge.lean:262](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterJointWitnessCharge.lean#L262) — Subtraction-free exact-diagonal Johnson rearranges to the sharp natural-number denominator.
 - `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterLayerCakeBudget.johnson_core_to_subtracted` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterLayerCakeBudget.lean:78](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterLayerCakeBudget.lean#L78) — Subtraction-free exact-diagonal Johnson rearranges to the sharp natural-number denominator (local co
+
+### `johnson_gap_pos` (2 declarations, 2 files)
+
+- `theorem ArkLib.JohnsonCapacity.johnson_gap_pos` [ArkLib/Data/CodingTheory/ProximityGap/JohnsonGapBounds.lean:31](../../../ArkLib/Data/CodingTheory/ProximityGap/JohnsonGapBounds.lean#L31) — The distance from Johnson to capacity is positive: `δ - J(δ) = δ - 1 + √(1-δ) > 0` for `0 < δ < 1`.
+- `theorem ArkLib.ProximityGap.DisproofLoop5.johnson_gap_pos` [ArkLib/Data/CodingTheory/Quarantine/DisproofLoop5.lean:44](../../../ArkLib/Data/CodingTheory/Quarantine/DisproofLoop5.lean#L44) — **The Johnson gap is strictly positive in the open unit interval.** For a rate `0 < ρ < 1`, `√ρ − ρ
 
 ### `johnson_radius_lt_capacity` (2 declarations, 2 files)
 
