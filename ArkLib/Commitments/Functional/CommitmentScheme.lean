@@ -13,7 +13,7 @@ import ArkLib.OracleReduction.Security.Basic
   This file defines ordinary commitment schemes, where committing to a message also returns the
   opening value that the verifier checks directly.
 
-  This differs from `ArkLib.CommitmentScheme.Basic`, which formalizes *functional* commitment
+  This differs from `ArkLib.Commitments.Functional.Basic`, which formalizes *functional* commitment
   schemes with interactive oracle openings for claims of the form "this committed data answers query
   `q` with response `r`".  The structures here are intended for schemes such as Pedersen and Ajtai
   commitments:
