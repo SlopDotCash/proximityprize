@@ -11,9 +11,7 @@ open scoped Real
 namespace ProximityGap.MomentExponentThreshold
 
 /-- **The r = 1 boundary anchor.**
-At the shallowest positive depth, `θ(1,β) = (β+1-1)/(2·1) = β/2`. This is
-the largest exponent attainable at unit depth — the trivial-ward extreme
-of the depth ladder. -/
+At unit depth, `θ(1,β) = (β+1-1)/(2·1) = β/2`. -/
 theorem momentExponent_r1 {beta : ℝ} :
     momentExponent 1 beta = beta / 2 := by
   rw [momentExponent]
@@ -21,7 +19,7 @@ theorem momentExponent_r1 {beta : ℝ} :
 
 /-- **The r = 1 boundary gap.**
 At unit depth, `θ(1,β) - 1/2 = (β-1)/2`, growing linearly in β — the
-maximal gap-to-prize at the shallowest depth. -/
+unit-depth gap to the prize floor. -/
 theorem momentExponent_r1_gap {beta : ℝ} :
     momentExponent 1 beta - 1 / 2 = (beta - 1) / 2 := by
   rw [momentExponent_sub_half (by norm_num : (0 : ℝ) < 1)]
@@ -37,7 +35,7 @@ theorem momentExponent_beta4_r1 :
 
 /-- **The beta = 4 depth-two anchor.**
 `θ(2,4) = 5/4` — still above 1, matching `momentExponent_beta2`-style
-boundary behavior at the first non-trivial depth below the crossover. -/
+boundary behavior at a depth below the crossover. -/
 theorem momentExponent_beta4_r2 :
     momentExponent 2 4 = 5 / 4 := by
   rw [momentExponent]
