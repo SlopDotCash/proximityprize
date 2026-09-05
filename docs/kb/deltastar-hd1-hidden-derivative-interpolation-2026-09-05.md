@@ -178,7 +178,12 @@ stays a bounded fraction of the Johnson→capacity window (7 %, 12 %, 15 %, 16 %
 | 32 | 182374 (10) | 182048 (8,2) |
 
 So `d = 2` overtakes `d = 1` from `m ≈ 24` on, by a few hundred positions at `n = 2¹⁸`
-(`m = 32`: ratio .98212 vs .98387).  The second derivative costs weighted
+(`m = 32`: ratio .98212 vs .98387).  **Cap shape matters more than order:** at `m = 24`,
+`d = 3` with TR26-164's ω-simplex cap `b₂ + 2b₃ ≤ 2` (and `b₁ ≤ 6`) gives `A = 182441`
+(ratio .98424), beating both the `d = 3` box `(6,2,1)` (.99070, a *superset* of monomials) and
+`d = 2` (.98511): dropping the monomials with `b₂ = b₃ = 1` removes more constraints than
+dimension.  The exact-rank `d`-hierarchy therefore does improve at rate 1/2, slowly, and the
+design variable is the derivative-degree region.  The second derivative costs weighted
 degree `w − 2 ≈ w` per power exactly like the first, but its `T²` weight in the node
 substitution removes fewer constraints per added monomial than the dimension it adds, at these
 `m`.  TR26-164's gain from `d` needs `m = d³`, the ω-weighted cap `Σ (j−1)c_j ≤ W ≈ 1.15·dm/log(ed)`,
