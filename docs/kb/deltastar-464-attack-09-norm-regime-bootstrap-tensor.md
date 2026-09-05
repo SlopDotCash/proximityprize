@@ -48,8 +48,8 @@ worst-case cancellation question.
 
 ## Refutation (the wall, made numerically exact)
 
-The whole lift hinges on whether the two sub-period halves `a = η_{b}^{(μ-1)}` and `bω =
-η_{bω}^{(μ-1)}`
+The whole lift hinges on whether the two sub-period halves `a = η_{b}^{(μ-1)}` and
+`bω = η_{bω}^{(μ-1)}`
 DECORRELATE in phase, giving `√2` instead of `2`. Probe `probe_attack09` (p=257, computing the exact
 maximizer `b*` at each level):
 
@@ -67,8 +67,8 @@ sub-`2×` per-level factor would require an unconditional statement that the lev
 `b*` and `b*ω` are NOT phase-aligned — which is precisely the worst-case phase-cancellation
 statement BGK/Paley controls and which ~60 prior sessions have shown is the wall.
 
-Note the structural signature at μ=5: `M(32) = 11.86 = 9.229 (= M(16), the prior maximizer) +
-2.631`.
+Note the structural signature at μ=5: `M(32) = 11.86 = 9.229 (= M(16), the prior maximizer) + 2.631`
+.
 The new level's worst case is built by ALIGNING a fresh half onto the previous level's maximizer.
 The bad frequency persists and accretes; it does not average down. (This matches
 `SpurPrimePersistTower`/`spur prime persistence`.)
