@@ -19,7 +19,7 @@ theorem momentExponent_beta4_r3_anchor :
   norm_num
 
 /-- **The beta = 4 depth-5 anchor.**
-`θ(5,4) = 4/5` — the first depth strictly inside the window below the
+`θ(5,4) = 4/5` — a depth strictly inside the window beyond the
 crossover. -/
 theorem momentExponent_beta4_r5 :
     momentExponent 5 4 = 4 / 5 := by
