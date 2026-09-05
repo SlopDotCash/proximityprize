@@ -14,8 +14,8 @@ namespace ProximityGap.MomentExponentThreshold
 At the production anchor `(r, β) = (89, 4)`, the complementary gap to
 triviality is `1 - θ(89,4) = 43/89`. Combined with
 `momentExponent_beta4_r89` (`θ = 46/89`) this pins the full distance
-picture: `46/89` above the prize floor `1/2`, `43/89` below the trivial
-ceiling `1`. -/
+picture: the exponent is `46/89`, its gap above the prize floor is
+`3/178`, and its gap below the trivial ceiling is `43/89`. -/
 theorem momentExponent_beta4_r89_one_sub :
     1 - momentExponent 89 4 = 43 / 89 := by
   rw [momentExponent]; norm_num
