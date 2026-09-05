@@ -31,8 +31,8 @@ theorem momentExponent_ge_half_of_one_le {r beta : ℝ} (hr : 0 < r) (hb : 1 < b
   nlinarith
 
 /-- The gap to the prize exponent `θ - 1/2 = (β-1)/(2r)` is strictly
-decreasing in `r` and vanishes in the limit — the quantitative form of the
-"unattained limit" statement. -/
+strictly decreasing in positive `r` for `β > 1`. This lemma compares
+finite depths; it does not state a limit theorem. -/
 theorem momentExponent_gap_strictAnti {beta r₁ r₂ : ℝ} (hb : 1 < beta)
     (h1 : 0 < r₁) (h12 : r₁ < r₂) :
     momentExponent r₂ beta - 1 / 2 < momentExponent r₁ beta - 1 / 2 := by
