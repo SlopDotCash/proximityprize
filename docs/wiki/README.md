@@ -12,6 +12,8 @@ For reusable cross-cutting workflows that are not tied to one repo area, see
 - [`shared-checkout-contention.md`](shared-checkout-contention.md) - lake-lock/`lake env` hangs (LEAN_PATH bypass), git contention, and probe-output hygiene under concurrent agents.
 - [`repo-map.md`](repo-map.md) - where to edit and how the main subtrees relate.
 - [`generated-files.md`](generated-files.md) - derived outputs and their sources of truth.
+- [`issue-2-upstream-shortlist.md`](issue-2-upstream-shortlist.md) - proof and dependency
+  boundaries for the historical upstream candidate list.
 - [`optiont-lift-coherence-walls.md`](optiont-lift-coherence-walls.md) - the per-branch-defeq
 - [`deltastar-programme.md`](deltastar-programme.md) - **the δ* programme hub**: where every
   result, refutation, probe, and attack vector lives; the fast build path.
