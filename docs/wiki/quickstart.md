@@ -340,6 +340,11 @@ Hard-won rules for multi-agent sessions where several agents land commits on
   `decide +kernel`, then combine them using a generic list decomposition lemma.
   Keep the original public checker and theorem statements unchanged, and verify
   the complete module and its axiom output after assembling the batches.
+  For function-space boxes, split one coordinate into separate private theorems
+  before combining them by finite cases. `_R394L1KernelCertificate.lean` checks
+  its `13^4` box in 13 slices: the monolithic decision exhausted a hosted
+  runner's 16 GiB RAM and 3 GiB swap. The public certificate and its assumptions
+  remain unchanged.
 
 
 ### Fast-iteration exit status
