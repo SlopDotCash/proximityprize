@@ -7,14 +7,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
 /-!
 # Johnson radius rate-gap relations
 
-In the Reed–Solomon rate parameterization, the Johnson radius
-`J_RS(ρ) = 1 - √ρ` and the capacity `1 - ρ` bracket the prize regime.
-This file records the rate-gap relations:
-
-* `rs_gap_pos_iff` — `0 < √ρ - ρ` iff `0 < ρ < 1`.
-* `rs_gap_at_quarter` — `√(1/4) - 1/4 = 1/4`.
-* `rs_johnson_less_than_capacity_rate` — `J_RS(ρ) < 1 - ρ` iff
-  `0 < ρ < 1`.
+The Reed–Solomon capacity-minus-Johnson gap `√ρ - ρ` is positive on
+`(0,1)` and zero at both endpoints. This file proves these implications
+and endpoint values; it does not state a converse for unrestricted real rates.
 -/
 
 namespace ArkLib.JohnsonCapacity
