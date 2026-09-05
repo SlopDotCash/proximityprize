@@ -19,8 +19,7 @@ theorem momentExponent_beta4_r89_gap_value :
   norm_num
 
 /-- **The beta=4 gap at depth 2.**
-`θ(2,4) - 1/2 = 3/4` — above the crossover, the gap is maximal at
-shallow depth. -/
+`θ(2,4) - 1/2 = 3/4` — at depth two the exponent exceeds the trivial ceiling. -/
 theorem momentExponent_beta4_r2_gap :
     momentExponent 2 4 - 1 / 2 = 3 / 4 := by
   rw [momentExponent]
