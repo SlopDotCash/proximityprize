@@ -114,3 +114,13 @@ directly to the `EsymmFiber.lean` deep-band target (`e_1 = ... = e_(m+1) = 0` fo
 `W=X^(k+m+1)`).  See
 [`docs/kb/deltastar-powerword-zero-sum-law-2026-06-13.md`](../kb/deltastar-powerword-zero-sum-law-2026-06-13.md)
 for the ten-connection research note and next formal targets.
+
+
+### Reproducing the Paley constant table
+
+With NumPy and SymPy installed, run
+`python3 scripts/probes/probe_paley_C_table.py 8 16 32 64 128`.
+The supported sizes are powers of two from 8 through 256. The script rejects
+unsupported sizes and fails if a published prime or numerical row disagrees,
+in addition to checking Parseval and the fourth moment. Large sizes take
+substantially longer because every nonzero frequency is scanned.

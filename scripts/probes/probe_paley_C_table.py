@@ -107,6 +107,8 @@ def scan(p: int, n: int):
 
 
 def run(n: int) -> None:
+    if n < 8 or n > 256 or n & (n - 1):
+        raise ValueError("n must be a power of two from 8 through 256")
     p = rule_prime(n)
     t0 = time.time()
     M, s2, s4 = scan(p, n)
@@ -122,8 +124,10 @@ def run(n: int) -> None:
 
     line = f"{n:>5} {p:>12} {M:>10.4f} {C:>8.4f} {C*C:>8.4f}"
     if n in PUBLISHED:
-        _, mp, cp, c2p = PUBLISHED[n]
+        pp, mp, cp, c2p = PUBLISHED[n]
+        assert p == pp, f"prime mismatch: {p} vs {pp}"
         ok = abs(M - mp) < 5e-3 and abs(C - cp) < 5e-4 and abs(C * C - c2p) < 5e-4
+        assert ok, f"published row mismatch at n={n}: M={M}, C={C}, C^2={C*C}"
         line += f"   | published {mp:>9.4f} {cp:>7.4f} {c2p:>7.4f}  {'MATCH' if ok else 'MISMATCH'}"
     else:
         line += "   | new"
