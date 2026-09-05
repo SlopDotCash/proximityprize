@@ -12,7 +12,7 @@ namespace ProximityGap.MomentExponentThreshold
 
 /-- The gap to triviality: `1 - θ(r,β) = (r - (β-1)) / (2r)`.
 Mirror of `momentExponent_sub_half`; used to state the triviality boundary
-in terms of the remaining gap above the unattained `θ = 1` regime. -/
+in terms of the signed difference from the `θ = 1` ceiling. -/
 theorem momentExponent_one_sub {r beta : ℝ} (hr : 0 < r) :
     1 - momentExponent r beta = (r - (beta - 1)) / (2 * r) := by
   rw [momentExponent]
@@ -30,8 +30,8 @@ theorem momentExponent_strictMono {r beta₁ beta₂ : ℝ} (hr : 0 < r)
   rw [div_lt_div_iff₀ hpos hpos]
   nlinarith
 
-/-- The triviality boundary in gap form: below the crossover the remaining
-gap to `1` is positive; exactly at `r = β-1` the gap is zero. -/
+/-- The triviality boundary in gap form: exactly at
+`r = β-1` the gap to `1` is zero. -/
 theorem momentExponent_one_sub_eq_zero_iff {r beta : ℝ} (hr : 0 < r) :
     1 - momentExponent r beta = 0 ↔ r = beta - 1 := by
   rw [momentExponent_one_sub hr]
