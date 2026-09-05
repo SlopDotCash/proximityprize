@@ -31,7 +31,8 @@
 # Env knobs:
 #   LAKE_LOCKED_SLOTS=N         max machine-wide concurrent builds (default 2)
 #   LAKE_LOCKED_STALE_SECS=N    heartbeat age before a lock is stolen (default 300)
-#   LAKE_LOCKED_TIMEOUT_SECS=N  max seconds to wait for locks (default 7200)
+#   LAKE_LOCKED_HEARTBEAT_SECS=N heartbeat interval (default 30; less than stale age)
+#   LAKE_LOCKED_TIMEOUT_SECS=N  max checkout-lock wait (default 7200)
 #   LAKE_LOCKED_DISABLE=1       bypass entirely (plain `lake "$@"`)
 
 set -euo pipefail
@@ -45,6 +46,7 @@ cd "$REPO_ROOT"
 
 SLOTS="${LAKE_LOCKED_SLOTS:-2}"
 STALE="${LAKE_LOCKED_STALE_SECS:-300}"
+HEARTBEAT_SECS="${LAKE_LOCKED_HEARTBEAT_SECS:-30}"
 TIMEOUT="${LAKE_LOCKED_TIMEOUT_SECS:-7200}"
 SLOT_ROOT="${LAKE_LOCKED_SLOT_DIR:-$HOME/.cache/lake-build-slots}"
 CHECKOUT_LOCK="$REPO_ROOT/.lake/agent-build.lock"
@@ -96,10 +98,13 @@ acquire() {
 }
 
 HELD_LOCKS=()
-HB_PID=""
+HB_PIDS=()
 
 release_all() {
-  [[ -n "$HB_PID" ]] && kill "$HB_PID" 2>/dev/null || true
+  local hb
+  for hb in "${HB_PIDS[@]:-}"; do
+    [[ -n "$hb" ]] && kill "$hb" 2>/dev/null || true
+  done
   local l
   for l in "${HELD_LOCKS[@]:-}"; do
     [[ -n "$l" ]] && rm -rf "$l" 2>/dev/null || true
@@ -107,9 +112,25 @@ release_all() {
 }
 trap release_all EXIT INT TERM
 
+# Each acquired lock needs a heartbeat immediately, including while this process
+# waits for its next lock. A subshell snapshots the array of held locks, so use
+# one worker per lock rather than starting an array-based worker before the slot.
+heartbeat_lock() {
+  local lock="$1"
+  (
+    while :; do
+      { now_s > "$lock/heartbeat.tmp" && mv -f "$lock/heartbeat.tmp" "$lock/heartbeat"; } \
+        2>/dev/null || exit 0
+      sleep "$HEARTBEAT_SECS"
+    done
+  ) &
+  HB_PIDS+=("$!")
+}
+
 # 1. Per-checkout lock: serializes all lake invocations in this checkout.
 acquire "$CHECKOUT_LOCK" "checkout"
 HELD_LOCKS+=("$CHECKOUT_LOCK")
+heartbeat_lock "$CHECKOUT_LOCK"
 
 # 2. Machine-wide slot: caps concurrent builds across all checkouts.
 SLOT_LOCK=""
@@ -130,18 +151,7 @@ while [[ -z "$SLOT_LOCK" ]]; do
   [[ -z "$SLOT_LOCK" ]] && sleep 5
 done
 HELD_LOCKS+=("$SLOT_LOCK")
-
-# Refresh heartbeats on everything we hold while the build runs.
-(
-  while :; do
-    for l in "${HELD_LOCKS[@]}"; do
-      # Atomic via rename so a concurrent reader never sees a truncated file.
-      { now_s > "$l/heartbeat.tmp" && mv -f "$l/heartbeat.tmp" "$l/heartbeat"; } 2>/dev/null || exit 0
-    done
-    sleep 30
-  done
-) &
-HB_PID=$!
+heartbeat_lock "$SLOT_LOCK"
 
 # 3. Mathlib cache guard: never let a build fall back to compiling Mathlib
 #    from source because the olean cache is missing or was clobbered.

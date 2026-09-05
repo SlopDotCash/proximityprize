@@ -25,10 +25,23 @@ LEAN_PATH="$LP" lean <file.lean>
 for downstream imports, add `-o <path>.olean` — a later `lake build` will rebuild it
 properly with traces.)
 
-Locked builds (`scripts/lake-locked.sh`) time out after 7200s of waiting. Before assuming
-the holder is hung, check `.lake/agent-build.lock/owner` and the mtime of
-`.lake/agent-build.lock/heartbeat` — healthy holders running 2–4 h have been observed.
-Never break a lock with a fresh heartbeat.
+Per-checkout lock acquisition in `scripts/lake-locked.sh` times out after 7200s by default;
+the machine-wide slot wait has no timeout. Before assuming the holder is hung, read
+`.lake/agent-build.lock/owner` and verify that process with `ps`, then inspect the heartbeat.
+A stale heartbeat alone does not prove the process has stopped. Healthy holders running
+2–4 h have been observed.
+
+Each acquired lock now gets its own heartbeat worker immediately. In particular, the
+checkout heartbeat continues while all machine-wide slots are occupied. Starting heartbeats
+only after acquiring both locks made a live waiter look stale after five minutes, allowing
+another invocation to steal its checkout lock and defeat serialization. The default heartbeat
+interval is 30s; if overriding `LAKE_LOCKED_HEARTBEAT_SECS`, keep it below
+`LAKE_LOCKED_STALE_SECS`.
+
+`python3 scripts/tests/test_lake_locked.py` exercises this case with two competing invocations,
+a fake Lake executable, and isolated temporary lock directories. It verifies that a wait longer
+than the stale threshold preserves checkout ownership, both invocations run serially, and their
+locks are released. `scripts/validate.sh` runs the regression before invoking Lean.
 
 ## Git under concurrent agents
 
