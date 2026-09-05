@@ -35,3 +35,23 @@ checkout, `python3 scripts/kb/check_generated.py` materializes both from the cur
 Lean sources before checking and linting the knowledge base. Tracked bibliography
 and citation exports still require committed updates. If either catalog is tracked
 (on an older branch), the checker continues to reject stale contents.
+
+The KB workflow checks both tracked changes and newly scaffolded paper/source
+files with `git status --porcelain --untracked-files=all`. A plain `git diff` misses
+new paper stubs and can incorrectly pass after regeneration. Ignored local catalogs
+are intentionally excluded from this commitment check.
+
+## Research evidence retention
+
+The standalone campaign retains `scripts/probes/`, `_nubs_research/`,
+`_research_357/`, `_research_ll/`, and `scratchpad/` as research evidence.
+The pre-migration cleanup proposal in issue #2 is not authorization to treat
+unreferenced probes as disposable. Neither absence from CI nor a missing filename
+mention establishes that an experiment's conclusions were distilled elsewhere.
+
+Run `python3 scripts/kb/audit_probe_retention.py --output /tmp/probe-retention.json`
+for a tracked-file inventory with byte counts, SHA-256 fingerprints, and direct
+filename-reference pointers from the current tree. It does not run the probes or
+certify their mathematical claims. All entries have an explicit retain disposition;
+manual claim-level review is required before any future deletion. Keep this large
+inventory local and regenerate it when reviewing a proposed removal.

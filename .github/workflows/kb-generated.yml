@@ -44,10 +44,11 @@ jobs:
 
       - name: Verify generated files are committed
         run: |
-          if git diff --quiet -- docs/kb/_generated docs/kb/papers docs/kb/sources; then
+          changes="$(git status --porcelain --untracked-files=all -- docs/kb/_generated docs/kb/papers docs/kb/sources)"
+          if [ -z "$changes" ]; then
             echo "KB generated files are current."
             exit 0
           fi
           echo "KB generated files are stale. Run python3 ./scripts/kb/regenerate.py and commit the result."
-          git diff --stat -- docs/kb/_generated docs/kb/papers docs/kb/sources
+          printf '%s\n' "$changes"
           exit 1
