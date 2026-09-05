@@ -103,6 +103,17 @@ explicit axiom audits report only standard axioms. This validates that bounded
 contribution; it does not validate a migration of the full campaign or the
 remaining protocol security results.
 
+## Shared-data review: Vandermonde
+
+`ArkLib/Data/Matrix/Vandermonde.lean` needs no mathematical carve-out at the
+reviewed revisions: upstream `a527b514e029ecf9da40d66b5531a0707c686edc` and
+standalone `6b46efb4dcdd1d111100d103425ae81f5de27326`. Removing comments and import
+lines yields identical token sequences, so all declaration statements and proof
+bodies already occur upstream. The differences are the module documentation and
+an import route (`CodingTheory.Basic.LinearCode` upstream versus
+`MvPolynomial.LinearMvExtension` standalone). This comparison does not propose
+changing either import graph and does not require a duplicate upstream PR.
+
 ## Validation
 
 The renamed BCS source and relocated Fold source both pass `lake env lean`
