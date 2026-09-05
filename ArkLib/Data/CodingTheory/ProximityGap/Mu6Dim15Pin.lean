@@ -1305,7 +1305,7 @@ theorem deltaStar_pin_mu6_dim15_of_cyclotomicLandauSqBound
 
 /-- **Promoted μ = 6 dimension-15 literal pin.**  `δ* = 3/4` at `ε* = 2^-128` for the
 rate-`15/64` code on the 64-point smooth domain, with no remaining named hypothesis.
-This is the top rung of the μ = 6 ladder: `Mu6LiteralBands.mu6_band_closed_r17` shows no
+This is the top rung of the μ = 6 ladder: `Mu6LiteralBands.mu6_band_closed_of_ge_17` shows no
 `r ≥ 17` rung exists. -/
 theorem deltaStar_pin_mu6_dim15 :
     mcaDeltaStar (F := ZMod Q) (A := ZMod Q)
