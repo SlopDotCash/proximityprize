@@ -3950,6 +3950,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonComparisonForms
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCompositionLaws
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonEndpoints
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonExactPoint
+import ArkLib.Data.CodingTheory.ProximityGap.JohnsonFixedPoint
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonFourthMomentNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonGapBounds
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonInvariant
