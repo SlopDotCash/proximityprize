@@ -4,8 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.RingSwitching.SumcheckPhase
-import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeFailingDet
-
+import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 /-!
 # Failing-determinism witnesses for the RingSwitching sumcheck-side verifiers (issue #29)
 

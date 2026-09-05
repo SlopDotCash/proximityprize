@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.SoundnessProposition
+import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Case1
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.SoundnessCase2Probability
 
 /-!

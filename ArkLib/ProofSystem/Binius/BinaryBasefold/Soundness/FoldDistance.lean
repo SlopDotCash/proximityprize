@@ -6,8 +6,7 @@ Authors: Chung Thai Nguyen, Quang Dao
 
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Compliance
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.PreTensorFar
-
+import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.PreTensorMaps
 /-!
 ## Binary Basefold Soundness Fold Distance
 

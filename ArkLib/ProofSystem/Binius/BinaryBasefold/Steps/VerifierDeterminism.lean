@@ -7,8 +7,7 @@ import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Fold
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Relay
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Commit
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeOracleLift
-import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeFailingDet
-
+import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 /-!
 # Determinism witnesses for the Binius Binary Basefold step verifiers (issue #313)
 

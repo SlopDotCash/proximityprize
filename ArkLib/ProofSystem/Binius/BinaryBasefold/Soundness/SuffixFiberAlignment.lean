@@ -4,8 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseSuffix
-
+import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QuerySuffix
 /-!
 # Suffix/fiber alignment compatibility module
 

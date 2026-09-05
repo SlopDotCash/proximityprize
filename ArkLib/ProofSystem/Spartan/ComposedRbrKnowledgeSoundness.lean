@@ -5,8 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeChallengeOracleLift
-import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeFailingDet
-import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeFailingDetEmpty
+import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 import ArkLib.OracleReduction.Composition.Sequential.SeqComposeMsgCompleteness
 import ArkLib.ProofSystem.Spartan.Composition
 
