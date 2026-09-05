@@ -7,11 +7,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
 /-!
 # Johnson capacity comparison forms
 
-The Johnson radius `J(δ) = 1 - √(1-δ)` and capacity `δ` satisfy
-`J(δ) ≤ δ` on `[0,1]` (already in `JohnsonCapacityBound`).  This file
-records the equivalent ordering forms used by downstream assemblies:
-the capacity-minus-Johnson gap expressed in sqrt form, the strict
-version at interior points, and the RS-instance capacity comparison.
+Equivalent square-root forms for Johnson bounds: the capacity gap identity,
+`1 - δ ≤ √(1-δ)` on `[0,1]`, and the square-root upper bounds that imply
+nonnegative Johnson radii.
 -/
 
 namespace ArkLib.JohnsonCapacity
@@ -34,9 +32,7 @@ theorem johnson_sqrt_ge_linear {δ : ℝ} (h0 : 0 ≤ δ) (h1 : δ ≤ 1) :
     nlinarith [sq_nonneg (1 - δ : ℝ)]
   exact Real.le_sqrt_of_sq_le hsq
 
-/-- The RS-instance capacity comparison: `1 - ρ ≤ 1 - √ρ` fails in the
-wrong direction; the correct form is `√ρ ≤ 1` for `ρ ≤ 1`, i.e. the RS
-Johnson radius is nonnegative. -/
+/-- The square root of a rate in `[0,1]` is at most one. -/
 theorem rs_sqrt_le_one {ρ : ℝ} (hρ : ρ ≤ 1) (h0 : 0 ≤ ρ) :
     Real.sqrt ρ ≤ 1 := by
   have hsq : ρ ≤ 1 ^ 2 := by nlinarith
