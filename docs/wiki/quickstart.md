@@ -218,8 +218,9 @@ python3 -m pip install leanblueprint
 ## CI Mapping
 
 - [`../../.github/workflows/ci.yml`](../../.github/workflows/ci.yml)
-  runs the timing-enabled main build on PRs and pushes to `main`, measures a
-  clean build, a warm rebuild, and the `./scripts/validate.sh` path, then
+  runs the timing-enabled `./scripts/validate.sh` path on PRs and pushes to
+  `main`. Additional clean and warm benchmarks require a manual dispatch with
+  the `benchmark` input enabled. It then
   uploads timing artifacts and posts a comparison report on same-repo PRs.
   The `.lake` cache is saved under a key unique to each run attempt (with
   newest-prefix restore), so when a hosted runner dies mid-build,
@@ -227,9 +228,11 @@ python3 -m pip install leanblueprint
   successive attempts ratchet forward; `docs.yml` uses the same scheme.
   The full validation build uses one Lean worker to limit peak memory:
   two-worker attempts repeatedly terminated in the heavy Frontier region
-  before saving their caches. A 20-minute checkpoint preserves completed
-  artifacts for the next attempt; a timeout remains a failing check until
-  the entire validation wrapper passes in one attempt.
+  before saving their caches. Validation has a 240-minute budget within a
+  330-minute job, leaving room to save artifacts. The former 20-minute limit
+  repeatedly interrupted healthy builds. Website compilation and documentation
+  each have 150 minutes, with one Lean worker, within a 330-minute job.
+  A timeout remains a failing check until the entire command passes.
   CI logs active Lean workers and memory usage every 30 seconds so an
   interrupted build can be traced to its in-flight module.
   It also enforces the issue #47 verification gates: a fast precheck rejecting

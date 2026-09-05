@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: ["main"]
   workflow_dispatch:
+    inputs:
+      benchmark:
+        description: Run additional clean and warm build benchmarks
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -14,6 +19,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 330
     permissions:
       actions: read
       contents: read
@@ -77,12 +83,12 @@ jobs:
             lean_relevant=false
             while IFS= read -r -d '' changed_path; do
               case "$changed_path" in
-                *.lean|lakefile.toml|lake-manifest.json|lean-toolchain|scripts/*.py|scripts/*.sh)
+                *.lean|lakefile.toml|lake-manifest.json|lean-toolchain|scripts/*.py|scripts/*.sh|.github/workflows/ci.yml)
                   lean_relevant=true
                   break
                   ;;
               esac
-            done < <(git diff --name-only --diff-filter=ACMR -z "$PR_BASE_SHA"...HEAD)
+            done < <(git diff --name-only -z "$PR_BASE_SHA"...HEAD)
           fi
           echo "lean-relevant=$lean_relevant" >> "$GITHUB_OUTPUT"
 
@@ -133,21 +139,15 @@ jobs:
 
       - name: Fetch dependency cache
         if: steps.validation-scope.outputs.lean-relevant == 'true'
-        run: lake exe cache get
+        run: ./scripts/lake-locked.sh exe cache get
 
       # THE REAL GATE (merge-blocking), runs FIRST on the warm restored cache so
       # it is fast: validate.sh = lake build + forbidden_tokens + sorry_census
       # --fail-on-holes + axiom_audit + check-imports + docs-integrity. This
       # compiles every module AND enforces the honesty contract.
-      # Use one Lean worker to reduce peak memory in the heavy Frontier
-      # region: two-worker attempts repeatedly terminated near job 10.8k
-      # before saving their caches. Hosted runners have
-      # also delivered shutdown signals near 30 minutes, skipping every
-      # `always()` cleanup step. The 20-minute checkpoint ends the build while
-      # the runner is still healthy so the cache-save step below can run; a
-      # timed-out attempt fails, and
-      # `gh run rerun --failed` resumes from its saved snapshot until the
-      # build fits in one window.
+      # Keep one Lean worker for memory-heavy proofs. A cold build needs more
+      # than the former 20-minute window; allow it to finish in a single run.
+      # Leave time before the job deadline to persist partial caches on failure.
       - name: Time validation wrapper
         if: steps.validation-scope.outputs.lean-relevant == 'true'
         env:
@@ -163,7 +163,7 @@ jobs:
           resource_monitor_pid=$!
           trap 'kill "$resource_monitor_pid" 2>/dev/null || true' EXIT
           bash scripts/build_timing_report.sh run test_path "$BUILD_TIMING_RESULTS" -- \
-            bash -eo pipefail -c 'timeout --signal=INT --kill-after=2m 20m ./scripts/validate.sh'
+            bash -eo pipefail -c 'timeout --signal=INT --kill-after=2m 240m ./scripts/validate.sh'
 
       # A late runner termination still leaves valid completed oleans. Saving
       # that coherent partial cache lets a rerun finish the remaining modules
@@ -182,18 +182,18 @@ jobs:
       # exceed the hosted-runner budget, so ordinary push/PR correctness runs
       # must not spend another two full builds on timing data.
       - name: Time clean build (benchmark, non-gating)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && inputs.benchmark
         continue-on-error: true
         run: |
           bash scripts/build_timing_report.sh run clean_build "$BUILD_TIMING_RESULTS" -- \
-            bash -eo pipefail -c 'rm -rf .lake/build && lake build'
+            bash -eo pipefail -c 'rm -rf .lake/build && timeout --signal=INT --kill-after=2m 30m ./scripts/lake-locked.sh build'
 
       - name: Time warm rebuild (benchmark, non-gating)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && inputs.benchmark
         continue-on-error: true
         run: |
           bash scripts/build_timing_report.sh run warm_rebuild "$BUILD_TIMING_RESULTS" -- \
-            bash -eo pipefail -c 'lake build'
+            bash -eo pipefail -c 'timeout --signal=INT --kill-after=2m 15m ./scripts/lake-locked.sh build'
 
       - name: Prepare timing artifact
         if: always()

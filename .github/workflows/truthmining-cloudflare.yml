@@ -1,12 +1,22 @@
-name: Deploy Truth Mining to Cloudflare Pages
+name: Build Truth Mining (Cloudflare deployment optional)
 
 on:
   push:
-    branches: [research/proximity-prize]
+    branches: [main]
+    paths:
+      - "website/truthmining/**"
+      - ".github/workflows/truthmining-cloudflare.yml"
+  pull_request:
+    branches: [main]
     paths:
       - "website/truthmining/**"
       - ".github/workflows/truthmining-cloudflare.yml"
   workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy from GitHub using configured Cloudflare secrets
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -16,8 +26,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    if: github.ref == 'refs/heads/main'
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project
@@ -36,7 +45,15 @@ jobs:
           npm ci
           npm run build
 
+      - name: Upload site build
+        uses: actions/upload-artifact@v7
+        with:
+          name: truthmining-site
+          path: website/truthmining/out
+          if-no-files-found: error
+
       - name: Deploy to Cloudflare Pages
+        if: github.event_name == 'workflow_dispatch' && inputs.deploy && github.ref == 'refs/heads/main'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

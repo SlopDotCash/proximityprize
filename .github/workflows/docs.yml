@@ -17,6 +17,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 330
     steps:
       - name: Checkout project
         uses: actions/checkout@v7
@@ -48,18 +49,23 @@ jobs:
       - name: Set up Lean environment
         uses: leanprover/lean-action@v1.5.0
         with:
+          auto-config: false
           build: false
           test: false
           lint: false
           use-github-cache: false
+          use-mathlib-cache: false
+
+      - name: Fetch dependency cache
+        run: ./scripts/lake-locked.sh exe cache get
 
       # Bounded build so a hosted-runner OOM/death cannot skip the cache save:
       # a timeout fails the step gracefully, the snapshot is saved, and a
       # rerun resumes from it (see ci.yml).
       - name: Build the project
-        run: timeout --signal=INT --kill-after=2m 75m lake build
+        run: timeout --signal=INT --kill-after=2m 150m ./scripts/lake-locked.sh build
         env:
-          LEAN_NUM_THREADS: "2"
+          LEAN_NUM_THREADS: "1"
 
       - name: Save Lean cache
         if: always()
@@ -69,13 +75,14 @@ jobs:
           key: ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Build project documentation
-        run: timeout --signal=INT --kill-after=2m 75m lake build ArkLib:docs
+        id: docs-build
+        run: timeout --signal=INT --kill-after=2m 150m ./scripts/lake-locked.sh build ArkLib:docs
         env:
           DISABLE_EQUATIONS: 1
-          LEAN_NUM_THREADS: "2"
+          LEAN_NUM_THREADS: "1"
 
       - name: Save Lean cache (with docs facet)
-        if: always()
+        if: always() && steps.docs-build.outcome != 'skipped'
         uses: actions/cache/save@v6
         with:
           path: ./.lake
@@ -118,6 +125,7 @@ jobs:
           path: ./_deploy
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
