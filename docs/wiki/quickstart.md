@@ -230,6 +230,8 @@ python3 -m pip install leanblueprint
   before saving their caches. A 20-minute checkpoint preserves completed
   artifacts for the next attempt; a timeout remains a failing check until
   the entire validation wrapper passes in one attempt.
+  CI logs active Lean workers and memory usage every 30 seconds so an
+  interrupted build can be traced to its in-flight module.
   It also enforces the issue #47 verification gates: a fast precheck rejecting
   `native_decide`/`bv_decide`/custom `axiom` declarations in live source
   (`scripts/forbidden_tokens.py`), a comment-stripped sorry census requiring

@@ -153,6 +153,15 @@ jobs:
         env:
           LEAN_NUM_THREADS: "1"
         run: |
+          (
+            while sleep 30; do
+              echo "Lean resource snapshot (PID PPID elapsed RSS-KiB command):"
+              ps -eo pid=,ppid=,etime=,rss=,comm=,args= | awk '$5 == "lean" || $5 == "lake"'
+              free -m
+            done
+          ) &
+          resource_monitor_pid=$!
+          trap 'kill "$resource_monitor_pid" 2>/dev/null || true' EXIT
           bash scripts/build_timing_report.sh run test_path "$BUILD_TIMING_RESULTS" -- \
             bash -eo pipefail -c 'timeout --signal=INT --kill-after=2m 20m ./scripts/validate.sh'
 
