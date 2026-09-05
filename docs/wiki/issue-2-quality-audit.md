@@ -46,8 +46,10 @@ results depending on them remain conditional on their truth.
   `Lemma58Reduction.lean` also supplies `lemma5_8EagerPaperResidual_holds`
   and unconditional honest-birthday/Claim 5.21 bounds, under its finite,
   decidable and sampleable type instances. The checked-in census already marks
-  this residual discharged. The distinct `Hyb01StepResidual` distribution/TV
-  switch does not follow merely from the event-probability bound. A fresh
+  this residual discharged. `KeyLemmaSalted.lean` records the historical unsalted
+  Hyb01/Hyb34 switches as refuted by endpoint log-shape mismatch and introduces
+  the salted successor `Hyb01StepResidualS`. A distribution/TV switch does not
+  follow merely from the event-probability bound. A fresh
   dependency-closed Lean audit is still needed before claiming full Fiat–Shamir
   security or upstream readiness; absence of the 5.8 provider is not a blocker.
 - [Binius Closeout Audit](Binius_Closeout_Audit.md) explicitly records the stale
