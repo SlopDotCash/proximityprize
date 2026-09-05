@@ -189,36 +189,48 @@ theorem ninetyone_mul_q_lt_choose (q : ℕ) (hq : q ≤ 2 ^ 256) :
     _ = 2 ^ 263 := by rw [← pow_add]
     _ < C' := hCbig
 
+-- Keep the dimension symbolic while constructing and checking the counting proof.
+open scoped Classical in
+private theorem choose_le_card_mul_maxList_generic {n k : ℕ} (D : Fin n ↪ F)
+    (hk : 0 < k) (hkn : k ≤ n) (hint : (k + 1) ^ 2 < k * n) :
+    n.choose (k + 1) ≤ Fintype.card F *
+      maxList (Finset.univ.filter (fun v : Fin n → F => v ∈ ReedSolomon.code D k))
+        (k + 1) := by
+  classical
+  obtain ⟨g, _hgdeg, hcount⟩ :=
+    exists_interior_list_ge_unconditional (ι := Fin n) D hk
+      (by simpa only [Fintype.card_fin] using hkn) Fintype.card_pos
+      (by simpa only [Fintype.card_fin] using hint)
+  rw [Fintype.card_fin] at hcount
+  let w : Fin n → F := fun i => g.eval (D i)
+  have hagree (v : Fin n → F) : agree v w = agreeCount v w := by
+    unfold agree agreeCount
+    exact congrArg Finset.card (Finset.filter_congr_decidable _ _ _)
+  have hsame : (Finset.univ.filter (fun v : Fin n → F =>
+      v ∈ ReedSolomon.code D k ∧ k + 1 ≤ agreeCount v w)).card =
+      ((Finset.univ.filter (fun v : Fin n → F => v ∈ ReedSolomon.code D k)).filter
+        (fun v => k + 1 ≤ agree v w)).card := by
+    refine congrArg Finset.card ?_
+    rw [Finset.filter_filter]
+    exact Finset.filter_congr fun v _ => by rw [hagree]
+  rw [hsame] at hcount
+  exact le_trans hcount (Nat.mul_le_mul_left (Fintype.card F)
+    (filter_card_le_maxList _ (k + 1) w))
+
 /-- **Lower side: at agreement `2¹⁹ + 1` the RS worst-case list EXCEEDS 91** (for any prize-scale
 field `q ≤ 2²⁵⁶`): the Round-5 averaging word has `≥ C(2²⁰, 2¹⁹+1)/q > 91` close codewords. -/
 theorem ninetyone_lt_maxList_rs (D : Fin (2 ^ 20) ↪ F)
     (hq : Fintype.card F ≤ 2 ^ 256) :
     91 < maxList (rsCodeF D) (2 ^ 19 + 1) := by
   classical
-  obtain ⟨g, hgdeg, hcount⟩ :=
-    exists_interior_list_ge_unconditional (ι := Fin (2 ^ 20)) D (k := 2 ^ 19)
-      (by norm_num) (by simp) Fintype.card_pos
-      (by rw [Fintype.card_fin]; norm_num)
-  rw [Fintype.card_fin] at hcount
-  set w : Fin (2 ^ 20) → F := fun i => g.eval (D i) with hw
-  clear_value w
-  -- the Round-5 filter IS the rsCodeF filter (merge the two filters; reconcile agreeCount)
-  have hsame : (Finset.univ.filter (fun v : Fin (2 ^ 20) → F =>
-      v ∈ ReedSolomon.code D (2 ^ 19) ∧ 2 ^ 19 + 1 ≤ agreeCount v w)).card
-      = ((rsCodeF D).filter (fun c => 2 ^ 19 + 1 ≤ agree c w)).card := by
-    refine congrArg Finset.card ?_
-    rw [rsCodeF, Finset.filter_filter]
-    exact Finset.filter_congr fun v _ => by rw [agree_eq_agreeCount]
-  rw [hsame] at hcount
-  -- 91·q < C ≤ q·#filter  ⟹  91 < #filter
-  have hgt : 91 < ((rsCodeF D).filter (fun c => 2 ^ 19 + 1 ≤ agree c w)).card := by
-    have hchain : 91 * Fintype.card F
-        < Fintype.card F *
-          ((rsCodeF D).filter (fun c => 2 ^ 19 + 1 ≤ agree c w)).card :=
-      lt_of_lt_of_le (ninetyone_mul_q_lt_choose _ hq) hcount
-    rw [Nat.mul_comm 91 (Fintype.card F)] at hchain
-    exact Nat.lt_of_mul_lt_mul_left hchain
-  exact lt_of_lt_of_le hgt (filter_card_le_maxList _ _ w)
+  have hcount := choose_le_card_mul_maxList_generic (k := 2 ^ 19) D
+    (by norm_num) (by norm_num) (by norm_num)
+  have hchain : Fintype.card F * 91 <
+      Fintype.card F * maxList (rsCodeF D) (2 ^ 19 + 1) := by
+    calc Fintype.card F * 91 = 91 * Fintype.card F := Nat.mul_comm _ _
+      _ < (2 ^ 20).choose (2 ^ 19 + 1) := ninetyone_mul_q_lt_choose _ hq
+      _ ≤ Fintype.card F * maxList (rsCodeF D) (2 ^ 19 + 1) := hcount
+  exact Nat.lt_of_mul_lt_mul_left hchain
 
 /-- **HEADLINE — THE PRIZE THRESHOLD OBJECT, BRACKETED.**  For the in-tree Reed–Solomon code at
 the prize's own configuration (`n = 2²⁰`, rate `1/2`, any field with `|F| ≤ 2²⁵⁶`), the threshold

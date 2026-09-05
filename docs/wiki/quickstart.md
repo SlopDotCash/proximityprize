@@ -316,10 +316,16 @@ Hard-won rules for multi-agent sessions where several agents land commits on
   `have`; `WithBot` casts → `WithBot.coe_le_coe.mpr`; `smul_eq_mul`
   commutation → `simp [smul_eq_mul]` then `ring`, since `simp [mul_comm]`
   loops).
-- **A surprise `sorryAx` in `#print axioms` for a sorry-free file means stale
-  imports, not a tainted proof.** Rebuild the import closure
+- **Investigate `sorryAx` before accepting an axiom audit.** Resolve compiler
+  errors first: failed elaboration can insert placeholder proofs even when
+  the source contains no `sorry`. If compilation is clean, rebuild the import closure
   (`lake build <each imported module>`) and re-check before debugging the
-  proof. Confirmed twice on 2026-06-10/11.
+  proof; stale imports have also caused this symptom.
+- **Keep prize-scale counting proofs symbolic.** Prove the counting inequality
+  with a variable dimension before applying it at a large literal dimension.
+  `ScaleThresholdBracket.lean` uses this pattern to avoid expensive checking
+  of the concrete finite-universe proof term. Reaching the end of a tactic
+  script is not enough: wait for the entire module and its axiom audit to pass.
 
 
 ### Fast-iteration exit status
