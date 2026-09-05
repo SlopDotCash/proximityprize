@@ -1,4 +1,4 @@
-# Rate-quarter predecessor: `SharedFreshTripleFree` refuted at literal P1 — the fixed-witness charge branch is dead
+# Rate-quarter P1: `SharedFreshTripleFree` refuted — fixed-witness charge is dead
 
 ## Status
 
