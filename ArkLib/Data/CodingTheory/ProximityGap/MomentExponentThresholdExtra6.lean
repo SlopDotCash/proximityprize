@@ -10,7 +10,7 @@ open scoped Real
 
 namespace ProximityGap.MomentExponentThreshold
 
-/-- **The gap is positive exactly inside the nontrivial window.**
+/-- **The exponent is above the prize floor exactly when β > 1.**
 `θ(r,β) - 1/2 > 0` iff `β > 1` — the prize-floor comparison in closed
 form. Complements `momentExponent_one_sub_pos` (gap to the trivial
 ceiling). -/
