@@ -3957,6 +3957,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonInvariant
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonListBound
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonPerWord
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonRSComparisons
+import ArkLib.Data.CodingTheory.ProximityGap.JohnsonRSEndpoints
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonRSInstance
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonRateGap
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSecantForms
