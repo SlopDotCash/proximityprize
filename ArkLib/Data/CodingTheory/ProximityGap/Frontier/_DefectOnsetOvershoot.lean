@@ -156,7 +156,7 @@ theorem A_lt_house_pow {p : ℝ} (hp : 0 < p) (s : ι → ℝ) (hs : ∀ i, 0 �
 (`W < A r`), then the house exceeds the `2r`-th root of `W` in the strong sense `W < house^{2r}`.
 Mechanism: `A r < house^{2r}` (upper sandwich, `#ι < p`), so `W < A r < house^{2r}`. **An overshoot
 of *any* threshold `W` by the DC-subtracted energy forces the single largest Gauss period to
-exceed `W^{1/2r}`.** When `W = Wick`, this is precisely "overshoot ⟹ the house beats `Wick^{1/2r}`".-/
+exceed `W^{1/2r}`.** When `W = Wick`, this is precisely "overshoot ⟹ the house beats `Wick^{1/2r}`". -/
 theorem overshoot_imp_house_pow_gt {p : ℝ} (hp : 0 < p) (s : ι → ℝ) (hs : ∀ i, 0 ≤ s i)
     (hcard : (Fintype.card ι : ℝ) < p) (r : ℕ) (hpos : 0 < house s) {W : ℝ}
     (hover : W < A p s r) : W < (house s) ^ (2 * r) :=
