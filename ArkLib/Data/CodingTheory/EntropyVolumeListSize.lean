@@ -57,6 +57,7 @@ theorem lambda_ge_entropy_volume_div_succ_generic
           / (((Fintype.card ι : ℝ) + 1)
               * (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) - (k : ℝ))))
       ≤ (Lambda C δ : ENNReal) := by
+  letI : Nonempty A := Fintype.card_pos_iff.mp (by omega)
   set q := Fintype.card A with hq_def
   set n := Fintype.card ι with hn_def
   have hvol := hammingBallVolume_ge_qEntropy hq δ n hk0 hkn
