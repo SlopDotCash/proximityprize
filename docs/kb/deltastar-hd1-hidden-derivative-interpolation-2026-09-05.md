@@ -176,9 +176,10 @@ stays a bounded fraction of the Johnson→capacity window (7 %, 12 %, 15 %, 16 %
 
 | 24 | 182866 (6) | 182603 (6,1) |
 | 32 | 182374 (10) | 182048 (8,2) |
+| 48 | 181969 (12) | 181470 (12,2) |
 
-So `d = 2` overtakes `d = 1` from `m ≈ 24` on, by a few hundred positions at `n = 2¹⁸`
-(`m = 32`: ratio .98212 vs .98387).  **Cap shape matters more than order:** at `m = 24`,
+So `d = 2` overtakes `d = 1` from `m ≈ 24` on, and the margin grows with `m` (`m = 32`: ratio
+.98212 vs .98387; `m = 48`: .97900 vs .98169).  **Cap shape matters more than order:** at `m = 24`,
 `d = 3` with TR26-164's ω-simplex cap `b₂ + 2b₃ ≤ 2` (and `b₁ ≤ 6`) gives `A = 182441`
 (ratio .98424), beating both the `d = 3` box `(6,2,1)` (.99070, a *superset* of monomials) and
 `d = 2` (.98511): dropping the monomials with `b₂ = b₃ = 1` removes more constraints than
@@ -232,8 +233,15 @@ development (226 modules, local Mathlib ports) at the new profile.
   `propext, Classical.choice, Quot.sound`): `contact_vanishing` is TR26-164 Lemma 3.1 at
   `d = 1` and `contact_vanishing_line` its PR #122 line form — the formal contact constraint
   of order `m` at a node forces `(X − C α)^m ∣ Q(X, P, P'[, γ])` for every `P` through the
-  node.  This is the semantic half of the interpolation step; the counting half (§1) is
-  probe-verified.
+  node.  `Frontier/_HD1InterpolationCore.lean` (same axioms) adds the rest of TR26-164
+  Proposition 3.13 at `d = 1`: `natDegree_specialize_lt` (weighted degree `< D` ⇒
+  `deg Q(X,P,P') < D`), `specialize_eq_zero_of_agreement` (contact at `|T|` nodes with
+  `D ≤ |T|·m` ⇒ `Q(X,P,P') = 0`, via `Finset.prod_dvd_of_coprime` on `(X−α)^m`), `nodeMap`
+  with `nodeMap_eq_zero_iff`, `finrank_le_finrank_iInf_ker_add_sum` (codimension
+  subadditivity), and **`exists_interpolant`**: if `Σ_{α∈S} rank(nodeMap_α|Qs) < dim Qs` and
+  `D ≤ A·m`, some nonzero `Q ∈ Qs` kills every `deg ≤ w` polynomial with `≥ A` agreements.
+  The rank sum is exactly what the probes compute, so theorem + probe = the full
+  interpolation step; only the seed/list count remains outside Lean.
 * Open (ordered by leverage): (i) does the exact-rank `d`-hierarchy with TR26-164-style
   ω-weighted caps beat `d = 1` at rate 1/2 for feasible `m`, and what is the limiting radius as
   `d → ∞`; (ii) a seed-count ledger for `d ≥ 2` (the PR #122 count is specific to

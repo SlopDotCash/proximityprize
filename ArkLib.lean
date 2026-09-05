@@ -2273,6 +2273,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HBKTransversalMomentParti
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HBKTransversalRepProfile
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HBKTransversalTopPrefix
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HD1ContactVanishing
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HD1InterpolationCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HD8IdentityWebDimensionLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDCocyclePhaseCoupling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorBadEventRichPointBridge

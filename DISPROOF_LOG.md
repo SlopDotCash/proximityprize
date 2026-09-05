@@ -53757,6 +53757,10 @@ finite Johnson.  This entry quantifies the route exactly (all gates are exact in
   `contact_vanishing` (TR26-164 Lemma 3.1, `d = 1`) and `contact_vanishing_line` (the PR #122
   node substitution with the line parameter): the formal contact constraint of order `m` at a
   node forces `(X − C α)^m ∣ Q(X, P, P'[, γ])` for every `P` through the node.
+  `Frontier/_HD1InterpolationCore.lean`: `exists_interpolant` — TR26-164 Proposition 3.13 at
+  `d = 1` with the node-rank sum left as an explicit hypothesis (weighted-degree bound,
+  coprime-product vanishing, codimension subadditivity of kernels all proved); the rank sum is
+  the exact quantity the probes compute.
 
 Consequence for the doctrine: the NEC lane showed the "BGK wall is necessary" claim is a
 meta-claim; this is the concrete BGK-free route and its measured reach — a constant-relative
