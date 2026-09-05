@@ -80,13 +80,25 @@ def multinomials(b0, d):
     return out
 
 
+def _cap_iter(d, s):
+    """Yield derivative-degree tuples allowed by the cap `s`: either a tuple of box caps, or
+    a pair (box, pred) where pred(bs) -> bool adds a further (e.g. simplex / omega) cap."""
+    if isinstance(s, tuple) and len(s) == 2 and callable(s[1]):
+        box, pred = s
+        for bs in product(*[range(box[j] + 1) for j in range(d)]):
+            if pred(bs):
+                yield bs
+    else:
+        s = list(s)
+        for bs in product(*[range(s[j] + 1) for j in range(d)]):
+            yield bs
+
+
 def columns(d, m, w, D, s, L=None):
     """Enumerate columns with a < m (others are killed by T^m at the node)."""
     cols = []
-    s = list(s)
-    ranges = [range(s[j] + 1) for j in range(d)]
     for a in range(m):
-        for bs in product(*ranges):
+        for bs in _cap_iter(d, s):
             wt = a + sum((w - 1 - j) * bs[j] for j in range(d))
             if wt >= D:
                 continue
@@ -167,10 +179,8 @@ def node_rank(d, m, w, D, s, L=None, y1_nonzero=True, return_blocks=False):
 
 def dim_space(d, w, D, s, L=None):
     """Exact dimension of the interpolation space (all a >= 0)."""
-    s = list(s)
-    ranges = [range(s[j] + 1) for j in range(d)]
     tot = 0
-    for bs in product(*ranges):
+    for bs in _cap_iter(d, s):
         wt = sum((w - 1 - j) * bs[j] for j in range(d))
         rem = D - wt
         if rem <= 0:

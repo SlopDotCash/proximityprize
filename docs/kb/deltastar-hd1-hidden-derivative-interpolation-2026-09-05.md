@@ -36,7 +36,7 @@ Probes (all PASS, exact integer / modular arithmetic, no floating point in any g
    Taylor identity is the only relation the method can exploit.
 3. **`d = 1` clears Johnson by a constant fraction, and only that.**  At rate 1/2 the exact
    least-agreement threshold converges, as the multiplicity `m → ∞` with derivative cap
-   `s ≈ m/4`, to `A* ≈ 0.9767·√(n(k−1))`, i.e. **δ ≈ 0.309** against Johnson `0.2929`
+   `s ≈ 0.31m`, to `A* = 0.97566·√(n(k−1))` (exact continuum limit), i.e. **δ = 0.3101** against Johnson `0.2929`
    (capacity `0.5`).  At the other prize rates the gain is larger (§3).  The line/MCA setting
    converges to the same threshold as the `Z`-degree cap `L → ∞` (deficit `≈ 1.6·10⁵/L`
    positions at `n = 2¹⁸`).
@@ -145,6 +145,20 @@ Other prize rates (`n = 2¹⁸`, LD, best `s` with `s ≤ 2m` allowed):
 | 1/4 | .50000 | .52734 | .52909 | .52997 | .75 |
 | 1/8 | .64645 | .67773 | .67918 | .67991 | .875 |
 | 1/16 | .75001 | .77945 | .78064 | — | .9375 |
+
+**Exact limit (`scripts/probes/hd1_continuum_limit.py`).**  Passing the block-rank formula and
+the dimension count to scaled variables gives the `m → ∞` threshold as the root of
+`ρ·∫₀^β min(y,σ)(β−y)dy = ∫₀¹dx∫₀^{min(β,x+σ)} min(min(1−x,y), min(x,y)−max(0,y−σ)) dy`,
+minimised over `σ = s/m`:
+
+| rate | σ* | `A/√(nw)` | δ_∞ | Johnson | capacity |
+|---|---|---|---|---|---|
+| 1/2 | 0.310 | 0.97566 | **0.3101** | 0.2929 | 0.5 |
+| 1/4 | 0.455 | 0.93759 | **0.5312** | 0.5000 | 0.75 |
+| 1/8 | 0.553 | 0.90244 | **0.6809** | 0.6464 | 0.875 |
+| 1/16 | 0.661 | 0.87243 | **0.7819** | 0.7500 | 0.9375 |
+
+These agree with the discrete scans (`0.976205` at `m = 512`, `c/m`-extrapolated `0.9757`).
 
 The optimal derivative cap is `s ≈ m/4` at rate 1/2 and `s ≈ m/2 … 0.6m` at rates ≤ 1/8; the
 gain over Johnson grows with decreasing rate, as TR26-164's low-rate framing predicts, but

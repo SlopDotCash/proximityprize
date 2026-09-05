@@ -53740,8 +53740,9 @@ finite Johnson.  This entry quantifies the route exactly (all gates are exact in
   the Taylor identity is the only relation the method can exploit.
 * **`d = 1` reach.**  Rate 1/2, `n = 2¹⁸`: least agreement `A/√(n(k−1))` = .99603 (m=12),
   .98413 (32), .97763 (256), .97620 (512, `s ≈ 0.3m`); `c/m` extrapolation gives
-  `r_∞ ≈ 0.9757`, i.e. `δ_∞ ≈ 0.310` (Johnson .2929, capacity .5).  Other prize rates at
-  `m = 128–256`: 1/4 → δ ≈ .530 (J .500), 1/8 → .680 (J .646), 1/16 → .781 (J .750).  The
+  `r_∞ ≈ 0.9757`; the exact continuum limit (`hd1_continuum_limit.py`) is `0.97566`, i.e.
+  `δ_∞ = 0.3101` (Johnson .2929, capacity .5).  Exact limits at the other prize rates:
+  1/4 → δ = .5312 (J .500), 1/8 → .6809 (J .646), 1/16 → .7819 (J .750).  The
   line/MCA setting converges to the LD threshold as the `Z`-cap `L → ∞` (deficit ≈ `1.6·10⁵/L`
   positions).  `d = 2` (box caps) is worse than `d = 1` for `m ≤ 16` and better from `m ≈ 24`
   (m=32: .98212 vs .98387); the hierarchy helps only slowly at rate 1/2.
