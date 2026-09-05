@@ -7,16 +7,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
 /-!
 # RS-instance Johnson relations
 
-For the Reed–Solomon rate `ρ ∈ [0,1]`, the Johnson radius is
-`J_RS(ρ) = 1 - √ρ` and capacity is `1 - ρ`.  This file records the
-RS-instance relations: `J_RS` stays below capacity (`1 - √ρ ≤ 1 - ρ`),
-the gap `√ρ - ρ` is monotone, and the endpoint/ordering facts used in
-the δ* ledger.
-
-* `rs_gap_mono` — `√ρ - ρ` is increasing in `ρ` on `[0, 1/4]`.
-* `rs_johnson_le_one` — `J_RS(ρ) ≤ 1` for `ρ ≥ 0`.
-* `rs_capacity_lt_one` — `1 - ρ < 1` for `0 < ρ`.
-* `rs_johnson_lt_capacity_strict` — `J_RS(ρ) < 1 - ρ` for `0 < ρ < 1`.
+For Reed–Solomon rate `ρ`, this file proves that `1 - √ρ ≤ 1`, that
+`1 - ρ < 1` for positive rates, and that Johnson is strictly below capacity
+for `0 < ρ < 1`.
 -/
 
 namespace ArkLib.JohnsonCapacity
