@@ -121,3 +121,14 @@ home_page/            site assets and assembled website root
   `ProofSystem/Sumcheck/Structured*` and `ProofSystem/Sumcheck/Domain.lean`.
 - Before assuming a file is authoritative, check whether it is source or derived output. See
   [`generated-files.md`](generated-files.md).
+
+## Retired import paths
+
+The unused `ArkLib.CommitmentScheme` compatibility modules have been retired.
+Use `ArkLib.Commitments.Functional.Basic`, `.Transparent`, `.MerkleTree.Extraction`,
+and `.Fold` instead. The folding module remains an import surface, not a proved
+shared folding-commitment construction. BCS error-accounting declarations live in
+`BCS.ErrorAccounting`; the former `ArkLibScratch.Issue62` namespace has no in-tree consumers.
+
+See [the issue #2 quality audit](issue-2-quality-audit.md) for the remaining proof
+and upstream preparation boundaries.

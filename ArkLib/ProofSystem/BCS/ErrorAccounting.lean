@@ -9,7 +9,7 @@ import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 /-!
-# BCS compiler soundness error accounting (issue #62)
+# BCS compiler soundness error accounting
 
 The total-error monotonicity + bcs_union_bound (IOP-soundness + Merkle-binding + FS error union)
 + two-phase accounting. The full compiler construction is separate.
@@ -18,7 +18,7 @@ The total-error monotonicity + bcs_union_bound (IOP-soundness + Merkle-binding +
 open scoped NNReal
 open scoped BigOperators
 
-namespace ArkLibScratch.Issue62
+namespace BCS.ErrorAccounting
 
 /-! ## 1. The BCS total error: ε_interaction + Σ ε_open
 
@@ -1115,4 +1115,4 @@ example (εInteraction : ℝ≥0) (εOpen : Fin 3 → ℝ≥0) :
 #print axioms bcs_two_phase_total_eq
 #print axioms maxUnionBoundPr
 
-end ArkLibScratch.Issue62
+end BCS.ErrorAccounting

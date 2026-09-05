@@ -32,7 +32,7 @@ This file provides:
   `r₁ ≠ r₂` would therefore force `r₁ = answer cm q = r₂`, a contradiction, so the scheme is
   perfectly evaluation-binding.
 
-The correctness proof follows the structure of `ArkLib.CommitmentScheme.KZG.Correctness`.
+The correctness proof follows the structure of `ArkLib.Commitments.Functional.KZG.Correctness`.
 -/
 
 open OracleSpec OracleComp SubSpec ProtocolSpec Commitment
