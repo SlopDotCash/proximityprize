@@ -68,8 +68,11 @@ single-digit-KB range mean the inputs did not resolve and the build was vacuous.
 
 ### Deployment configuration
 
-GitHub Pages uses `.github/workflows/docs.yml` on `main`; the repository must
-have Pages enabled with GitHub Actions as its build source. The workflow builds
+GitHub Pages uses `.github/workflows/docs.yml` on `main`; pushes trigger it only
+for Lean sources, blueprint or landing-page files, and build configuration.
+Coordination notes and agent guides do not cancel an in-flight site build.
+Manual dispatch remains available. The repository must have Pages enabled with
+GitHub Actions as its build source. The workflow builds
 the Lean library, API documentation, and blueprint before deploying.
 
 The Cloudflare workflows watch their website directories on `main` and also
@@ -87,3 +90,13 @@ GitHub-hosted deployment is opt-in through the manual `deploy` input and require
 repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. A local
 Wrangler OAuth login is not available on GitHub runners. Push filters and
 production deployment guards must use the same branch.
+
+Blueprint figures require `graphicx` in the shared package preamble. Without
+it, plasTeX can finish with an `imageoverride` template warning while emitting
+the image filename as text. Check that figure markup contains an image and that
+the referenced image is included in the generated web directory.
+
+Use `\texorpdfstring{mathematical title}{plain-text title}` for mathematical
+section headings. PDF bookmarks need a text equivalent; passing Unicode-math
+commands directly to hyperref can abort the PDF build. Run the PDF build before
+the HTML build so `leanblueprint` copies the generated bibliography to `web.bbl`.

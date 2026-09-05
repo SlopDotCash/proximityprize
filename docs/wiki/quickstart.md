@@ -231,7 +231,8 @@ python3 -m pip install leanblueprint
   before saving their caches. Validation has a 240-minute budget within a
   330-minute job, leaving room to save artifacts. The former 20-minute limit
   repeatedly interrupted healthy builds. Website compilation and documentation
-  each have 150 minutes, with one Lean worker, within a 330-minute job.
+  each have 150 minutes within a 330-minute job. Compilation uses one worker;
+  documentation generation uses two after the compiled library is available.
   A timeout remains a failing check until the entire command passes.
   CI logs active Lean workers and memory usage every 30 seconds so an
   interrupted build can be traced to its in-flight module.
