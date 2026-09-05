@@ -15,13 +15,13 @@ This probe certifies an explicit countermodel INSIDE that consumer range but ABO
 the unique-decoding radius:
 
   F = F₃₁, n = 10, k = 1, w = 7, δ = 7/10  (2w+k = 15 > 10 = n),
-  #bad ≥ 12 > 10 = n.
+  #bad = 13 > 10 = n.
 
 Geometry (k = 1, codewords = constants): a scalar γ is mca-bad iff some value class
 of the line u₀ + γ·u₁ has ≥ (1-δ)·n = 3 indices on which u₁ is non-constant, i.e.
 iff the point multiset P_i = (u₁ᵢ, u₀ᵢ) ∈ F² has a ≥3-rich line of slope −γ with ≥ 2
 distinct abscissae.  Two double points ("fat points") P0, P1 plus steered singles
-produce 12 distinct such directions on 10 indices.
+produce 13 distinct such directions on 10 indices.
 
 WBSolvable is certified explicitly: each row takes one value on ≥ 3 indices, hence
 agrees with a constant polynomial (deg < k = 1) off an error set of size 7 = w
@@ -32,7 +32,7 @@ The script verifies EVERYTHING faithfully against the Lean semantics:
     joint clause ⟺ u₁ constant on S given S inside one class),
   * the NNReal threshold (1 - 7/10)*10 = 3,
   * WB certificates for both rows,
-  * distinctness of the 12 γ's,
+  * distinctness of the 13 γ's,
 and prints the Lean-ready data.  Exits nonzero on any failure.
 """
 
