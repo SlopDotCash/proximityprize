@@ -1,5 +1,10 @@
 # Proximity Prize Formalization
 
+New original contributions accepted under policy revision `2026-08-23.1` are
+MIT and Apache-2.0 dual-licensed and remain owned by their contributors.
+Historical ArkLib work and notices remain Apache-2.0; see [LICENSE](LICENSE),
+[LICENSE-MIT](LICENSE-MIT), and [CONTRIBUTING.md](CONTRIBUTING.md).
+
 This repository is the standalone, canonical home of the machine-checked
 Reed–Solomon proximity-gap campaign for the
 [Ethereum Foundation Proximity Prize](https://proximityprize.org/). Start with
