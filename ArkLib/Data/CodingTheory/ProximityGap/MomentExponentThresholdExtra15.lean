@@ -12,7 +12,7 @@ namespace ProximityGap.MomentExponentThreshold
 
 /-- **The beta = 4 depth-128 anchor.**
 `θ(128,4) = 131/256` — the production aspect at depth 128, gap `3/256`
-(seven halvings beyond depth 2). -/
+(six halvings beyond depth 2). -/
 theorem momentExponent_beta4_r128 :
     momentExponent 128 4 = 131 / 256 := by
   rw [momentExponent]
@@ -20,7 +20,7 @@ theorem momentExponent_beta4_r128 :
 
 /-- **The beta = 4 depth-256 anchor.**
 `θ(256,4) = 259/512` — the production aspect at depth 256, gap `3/512`
-(eight halvings beyond depth 2). -/
+(seven halvings beyond depth 2). -/
 theorem momentExponent_beta4_r256 :
     momentExponent 256 4 = 259 / 512 := by
   rw [momentExponent]
