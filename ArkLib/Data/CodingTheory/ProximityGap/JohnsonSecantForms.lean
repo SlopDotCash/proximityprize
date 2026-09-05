@@ -7,12 +7,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
 /-!
 # Johnson radius secant forms
 
-The Johnson radius `J(δ) = 1 - √(1-δ)` has simple secant/rearrangement
-identities used in slope-comparison arguments.
-
-* `johnson_secant_form` — `J(δ) - 1 = -√(1-δ)`.
-* `johnson_derivative_witness` — the algebraic witness for the slope:
-  `(J(δ₂) - J(δ₁))/(δ₂ - δ₁)` rearranged for `δ₁ < δ₂`.
+Algebraic rearrangements of `J(δ) = 1 - √(1-δ)`: its offset from one,
+the difference of its values at two points, and nonnegativity of that
+difference for ordered inputs.
 -/
 
 namespace ArkLib.JohnsonCapacity
@@ -30,10 +27,7 @@ theorem johnson_diff_sqrt {δ₁ δ₂ : ℝ} :
       Real.sqrt (1 - δ₁) - Real.sqrt (1 - δ₂) := by
   ring
 
-/-- The slope of Johnson between two points is the negative of the
-average sqrt slope: `J(δ₂) - J(δ₁) ≤ 0` when `δ₁ ≤ δ₂` (J is
-increasing, so the difference is nonnegative — this records the
-ordering in sqrt form). -/
+/-- The Johnson difference is nonnegative when `δ₁ ≤ δ₂ ≤ 1`. -/
 theorem johnson_increasing_sqrt {δ₁ δ₂ : ℝ} (h : δ₁ ≤ δ₂)
     (h2 : δ₂ ≤ 1) :
     0 ≤ (1 - Real.sqrt (1 - δ₂)) - (1 - Real.sqrt (1 - δ₁)) := by
