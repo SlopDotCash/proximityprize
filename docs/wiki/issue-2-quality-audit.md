@@ -42,11 +42,14 @@ results depending on them remain conditional on their truth.
   one refuted. A refuted statement must not be treated as a theorem to prove.
 - DuplexSponge has genuine progress beyond the historical blanket description:
   `ConsistencyPaperCascade.lean` supplies the 5.12 and 5.16 honest-paper providers,
-  and `Lemma514PaperFork.lean` supplies the 5.14 provider. However
-  `BirthdayBoundPaper.honestBad_birthday_of_paperResidual` still explicitly takes
-  `Lemma5_8EagerPaperResidual`. Those statements alone do not establish a complete
-  unconditional Fiat–Shamir security result. A fresh dependency-closed Lean audit
-  and proof of the remaining hypotheses are required before upstreaming.
+  and `Lemma514PaperFork.lean` supplies the 5.14 provider.
+  `Lemma58Reduction.lean` also supplies `lemma5_8EagerPaperResidual_holds`
+  and unconditional honest-birthday/Claim 5.21 bounds, under its finite,
+  decidable and sampleable type instances. The checked-in census already marks
+  this residual discharged. The distinct `Hyb01StepResidual` distribution/TV
+  switch does not follow merely from the event-probability bound. A fresh
+  dependency-closed Lean audit is still needed before claiming full Fiat–Shamir
+  security or upstream readiness; absence of the 5.8 provider is not a blocker.
 - [Binius Closeout Audit](Binius_Closeout_Audit.md) explicitly records the stale
   Relations/ReductionLogic/QueryPhase/Soundness/reconstruction strata and external
   composition hypotheses. Its buildable front doors are lightweight import
