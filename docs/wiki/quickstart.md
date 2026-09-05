@@ -319,13 +319,19 @@ Hard-won rules for multi-agent sessions where several agents land commits on
 - **Investigate `sorryAx` before accepting an axiom audit.** Resolve compiler
   errors first: failed elaboration can insert placeholder proofs even when
   the source contains no `sorry`. If compilation is clean, rebuild the import closure
-  (`lake build <each imported module>`) and re-check before debugging the
+  (`./scripts/lake-locked.sh build <each imported module>`) and re-check before debugging the
   proof; stale imports have also caused this symptom.
 - **Keep prize-scale counting proofs symbolic.** Prove the counting inequality
   with a variable dimension before applying it at a large literal dimension.
   `ScaleThresholdBracket.lean` uses this pattern to avoid expensive checking
   of the concrete finite-universe proof term. Reaching the end of a tactic
   script is not enough: wait for the entire module and its axiom audit to pass.
+
+- **Batch expensive finite kernel checks.** A single reduction over a large list
+  can retain excessive memory. Prove small consecutive batch summaries with
+  `decide +kernel`, then combine them using a generic list decomposition lemma.
+  Keep the original public checker and theorem statements unchanged, and verify
+  the complete module and its axiom output after assembling the batches.
 
 
 ### Fast-iteration exit status
