@@ -3201,14 +3201,14 @@
   {
    "name": "appendRunRightDistResidual",
    "fq_name": "Prover.appendRunRightDistResidual",
-   "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRunEvalDist.lean",
-   "line": 53,
+   "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRun.lean",
+   "line": 65,
    "providers": [
     {
      "name": "Prover.appendRunRightDistResidual_holds_msg",
      "kind": "theorem",
-     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRunEvalDist.lean",
-     "line": 104,
+     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRun.lean",
+     "line": 116,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -3220,8 +3220,8 @@
     {
      "name": "Prover.appendRunRightDistResidual_holds_challenge",
      "kind": "theorem",
-     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRunEvalDistChallenge.lean",
-     "line": 266,
+     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRun.lean",
+     "line": 414,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -3233,8 +3233,8 @@
     {
      "name": "Prover.appendRunRightDistResidual_holds",
      "kind": "theorem",
-     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRunEvalDistChallenge.lean",
-     "line": 347,
+     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRun.lean",
+     "line": 495,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false
