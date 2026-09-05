@@ -128,7 +128,7 @@ jobs:
 
       - name: Set up Lean environment
         if: steps.validation-scope.outputs.lean-relevant == 'true'
-        uses: leanprover/lean-action@v1.5.0
+        uses: leanprover/lean-action@v1.6.0
         with:
           auto-config: false
           build: false
