@@ -3959,6 +3959,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSecondMomentFrontier
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSimplexBound
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSplitSupply
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSplitSupplyClosure
+import ArkLib.Data.CodingTheory.ProximityGap.JohnsonTaylorBounds
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonTightnessRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonTouchingCorner
 import ArkLib.Data.CodingTheory.ProximityGap.JointT2FiberTightness
