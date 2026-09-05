@@ -7,14 +7,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
 /-!
 # Johnson radius composition laws
 
-The Johnson radius `J(δ) = 1 - √(1-δ)` satisfies composition laws
-that appear in iterated-decoding arguments:
-
-* `johnson_idempotent_bound` — `J(J(δ)) ≤ J(δ)` on `[0,1]`
-  (Johnson applied twice never overshoots once).
-* `johnson_rs_rate_form` — in terms of the rate `ρ = 1-δ`,
-  `J(1-ρ) = 1 - √ρ`, the RS-instance identification.
-* `johnson_gap_ident` — `J(δ) = δ·(1 - (√(1-δ))/(δ))` for `0 < δ`.
+The rate substitution `J(1-ρ) = 1 - √ρ`, the identity
+`δ - J(δ) = √(1-δ) + δ - 1`, and nonnegativity of the RS gap on `[0,1]`.
 -/
 
 namespace ArkLib.JohnsonCapacity
@@ -26,18 +20,12 @@ theorem johnson_rs_rate_form {ρ : ℝ} :
     1 - Real.sqrt (1 - (1 - ρ)) = 1 - Real.sqrt ρ := by
   ring_nf
 
-/-- The gap identity: for `0 < δ`, `J(δ) = δ - (1 - √(1-δ) + δ - 1)`,
-restated as `δ - J(δ) = √(1-δ) + δ - 1`. -/
+/-- The capacity-minus-Johnson gap in square-root form. -/
 theorem johnson_gap_ident {δ : ℝ} :
     δ - (1 - Real.sqrt (1 - δ)) = Real.sqrt (1 - δ) + δ - 1 := by
   ring
 
-/-- Johnson is bounded by the identity on `[0,1]` in rate form:
-`1 - √ρ ≤ ρ` fails, but `1 - √ρ ≤ 1 - ρ + (√ρ - ρ)²` holds trivially
-as an identity rearrangement.  The clean bound is
-`1 - √ρ ≤ 1 - ρ/2` for `0 ≤ ρ ≤ 1/4` (from `√ρ ≥ ρ/2 + ...`); here we
-record the simple `√ρ ≥ ρ` for `0 ≤ ρ ≤ 1`, i.e. the RS gap is
-nonnegative. -/
+/-- The square root dominates the rate on `[0,1]`. -/
 theorem rs_sqrt_ge_rate {ρ : ℝ} (h0 : 0 ≤ ρ) (h1 : ρ ≤ 1) :
     ρ ≤ Real.sqrt ρ := by
   have hsq : ρ ^ 2 ≤ ρ := by
