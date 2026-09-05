@@ -22,7 +22,7 @@ the unique empty trailing transcript.
 
 This is the completeness-side keystone (`Prover.append_run`) for any sequential composition whose
 trailing phase performs no message/challenge rounds — e.g. a transparent (local-check) opening phase
-in the BCS compiler, see `ArkLib.CommitmentScheme.Transparent`.
+in the BCS compiler, see `ArkLib.Commitments.Functional.Transparent`.
 -/
 
 open OracleSpec OracleComp ProtocolSpec
