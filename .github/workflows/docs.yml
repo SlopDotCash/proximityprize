@@ -74,7 +74,18 @@ jobs:
       # a timeout fails the step gracefully, the snapshot is saved, and a
       # rerun resumes from it (see ci.yml).
       - name: Build the project
-        run: timeout --signal=INT --kill-after=2m 150m ./scripts/lake-locked.sh build
+        run: |
+          (
+            while sleep 30; do
+              echo "Lean resource snapshot (PID PPID elapsed RSS-KiB command):"
+              ps -eo pid=,ppid=,etime=,rss=,comm=,args= | awk '$5 == "lean" || $5 == "lake"'
+              free -m
+              df -h /
+            done
+          ) &
+          resource_monitor_pid=$!
+          trap 'kill "$resource_monitor_pid" 2>/dev/null || true' EXIT
+          timeout --signal=INT --kill-after=2m 150m ./scripts/lake-locked.sh build
         env:
           LEAN_NUM_THREADS: "1"
 
