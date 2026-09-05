@@ -1,0 +1,126 @@
+{
+  "replay": {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/tmp/proximity-cleanup2/scripts/probes/probe_syz30_partition_blockcount.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 42.1135425419925,
+    "stdout": "=== SYZ30 lemma 3: D>=4 over-budget partition block-count / slack ===\nn=16 D=4 over-budget tested= 3387  argmin-block-count={1: 3387}  min-slack-by-m={1: 0, 2: 0, 3: 2, 4: 4}\nn=16 D=5 over-budget tested= 3807  argmin-block-count={1: 3807}  min-slack-by-m={1: 0, 2: 1, 3: 2, 4: 5, 5: 7}\nn=20 D=4 over-budget tested= 3410  argmin-block-count={1: 3410}  min-slack-by-m={1: 0, 2: 1, 3: 3, 4: 6}\nn=20 D=5 over-budget tested= 3818  argmin-block-count={1: 3818}  min-slack-by-m={1: 0, 2: 2, 3: 4, 4: 7, 5: 10}\nn=24 D=4 over-budget tested= 3145  argmin-block-count={1: 3145}  min-slack-by-m={1: 0, 2: 0, 3: 2, 4: 4}\nn=24 D=5 over-budget tested= 3703  argmin-block-count={1: 3703}  min-slack-by-m={1: 0, 2: 1, 3: 4, 4: 6, 5: 8}\n",
+    "stderr": "",
+    "sources": {
+      "scripts/probes/probe_syz30_partition_blockcount.py": "c52f0e3acdcc242a50d43443561ecfc2ee1a36bf1405b5b1d499519a690f26ec",
+      "scripts/probes/probe_syz29_d4_defect_formula.py": "90e44e67f7ace3ceb123423fdd958febc764ab6fcd6506fec7de8da49303cc4a",
+      "scripts/probes/probe_syz28_d3_coplanar_crack.py": "8ebd493ff266be29454a63f504f14902ba8fba8d751fa348b8f08c08a2e9bd52"
+    }
+  },
+  "boundary_check": {
+    "n": 24,
+    "k": 12,
+    "D": 4,
+    "cores": [
+      [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ]
+    ],
+    "partition": [
+      [
+        0,
+        1
+      ],
+      [
+        2
+      ],
+      [
+        3
+      ]
+    ],
+    "block_union_sizes": [
+      17,
+      16,
+      16
+    ],
+    "envelope": 13,
+    "slack": 1,
+    "sum_excess": 16,
+    "boundary_size": 16,
+    "strict_interior": false
+  },
+  "original_inventory_member": {
+    "path": "scripts/probes/probe_syz30_partition_blockcount.py",
+    "bytes": 2731,
+    "sha256": "c52f0e3acdcc242a50d43443561ecfc2ee1a36bf1405b5b1d499519a690f26ec",
+    "references": [],
+    "disposition": "retain"
+  },
+  "scope": "Seeded finite set-partition sampling; no universal theorem or field-rank claim."
+}
