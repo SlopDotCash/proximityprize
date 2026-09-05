@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 
 from common import (
@@ -59,6 +60,21 @@ def compare_payload(name: str, expected: dict[str, object], actual_path: Path) -
     ]
 
 
+def refresh_untracked_catalog(path: Path, content: str) -> None:
+    """Materialize a local catalog only when it is intentionally untracked."""
+
+    tracked = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", "--", str(path.relative_to(REPO_ROOT))],
+        cwd=REPO_ROOT, capture_output=True, check=False,
+    )
+    if tracked.returncode == 0:
+        return
+    if tracked.returncode != 1:
+        raise RuntimeError(tracked.stderr.decode())
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+
 def main() -> int:
     """Entry point."""
 
@@ -74,6 +90,10 @@ def main() -> int:
         )
     )
     expected_declarations = extract_declarations([DEFAULT_LEAN_ROOT])
+    refresh_untracked_catalog(
+        DEFAULT_DECLARATIONS_JSON, json.dumps(expected_declarations, indent=2) + "\n"
+    )
+    refresh_untracked_catalog(DEFAULT_DEDUP_REPORT, build_report(expected_declarations) + "\n")
     errors.extend(
         compare_payload(
             "extract_declarations.py",
