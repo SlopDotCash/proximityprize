@@ -255,6 +255,8 @@ python3 -m pip install leanblueprint
   targets, `validate.sh` first builds every module named in
   `scripts/flagship_axioms.txt` explicitly before running the audit. As of issue #111 these same three gates also run from
   `./scripts/validate.sh`, so local validation matches CI.
+- The declaration scanner restricts leading indentation to the current line, so
+  large masked block comments do not cause repeated scans of all following blank lines.
 - The forbidden-token precheck rejects every custom `axiom` *except* the
   documented, tracked residuals listed in
   [`../../scripts/residual_axioms.txt`](../../scripts/residual_axioms.txt) (route (a)

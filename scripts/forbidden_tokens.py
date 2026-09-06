@@ -43,7 +43,9 @@ AXIOM_RE = re.compile(
     r"([A-Za-z_][A-Za-z0-9_'.]*)"
 )
 DECL_RE = re.compile(
-    r"^\s*(?:@\[[^\]]*\]\s*)?"
+    # Keep leading indentation on one line: masked block comments can contain
+    # thousands of whitespace-only lines, making ^\s* retry their whole suffix.
+    r"^[ \t]*(?:@\[[^\]]*\]\s*)?"
     r"(?:protected\s+|private\s+|scoped\s+|noncomputable\s+)*"
     r"(axiom|theorem|lemma|def|abbrev|opaque|constant)\s+([A-Za-z_][A-Za-z0-9_'.]*)",
     re.MULTILINE,
