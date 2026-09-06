@@ -1,0 +1,392 @@
+{
+  "source_sha256": {
+    "scripts/probes/probe_rate_quarter_common_factor_trade.py": "066ee171459b11762603972b65ff86346ea1dce6e16f568ce304a4f978335547",
+    "scripts/probes/probe_rate_quarter_five_clique_rank_counterexample.py": "7dd59208a0ea29512ffd30fcb129f00ae3406b2be35d8019b978fb4279a1be49"
+  },
+  "helper_sha256": {
+    "scripts/probes/probe_rate_quarter_prize_p1_isolated_counterexample.py": "0bbc3790a314f9e699152dd989da369da3f8187c1e58b744bc889c0c7e86928c",
+    "scripts/probes/probe_w4_clique_pencil_structure.py": "ecbb7ab0be8505490b1be9320a1ea297d76fb5f1d916289801492eaab5ec3248"
+  },
+  "common_factor_default_d1": {
+    "P": 365375409332725729550921208179070755120141565953,
+    "n": 1073741824,
+    "k": 268435456,
+    "m": 67108864,
+    "d": 1,
+    "max_d": 33554431,
+    "max_holes": 33554432,
+    "general_avoidance_bound": 3523215361,
+    "field_exceeds_general_avoidance_bound": true,
+    "scaled_row_base_alpha": 1,
+    "scaled_row_base_beta": 2,
+    "scaled_row_coset_constants": [
+      182687704666362864775460604089535377560070782976,
+      298187650492982251514051561464409169503357575630,
+      163666833025787997478869914264350754475332111189
+    ],
+    "saturated_agreement_threshold": 592794965,
+    "saturated_radius_numerator": 480946859,
+    "saturated_common_root_residues": [
+      4,
+      11
+    ],
+    "saturated_hole_residue": 13,
+    "saturated_hole_base_alpha": 1,
+    "saturated_hole_base_beta": 2,
+    "saturated_hole_coset_constants": [
+      182687704666362864775460604089535377560070782976,
+      357427157257065199771064609774836810806559371356,
+      48131014922838568432685688908340148811467554291
+    ],
+    "residual_hole_labels": [
+      6162192081532802104937335359598173687286008540,
+      9655518326270621634009805720518617792258942059,
+      3986420444995056940459978208494615568471906826
+    ],
+    "saturated_cross_fibre_ratio_mth_powers": [
+      18943363311336672863882327061011457227257409586,
+      276134508085765684930640240071179695943857084761,
+      26563832265510248644583851090486185364094572763,
+      221305569873776369316858768259531458876811382752,
+      96699715734034971040007401276595698411948855969,
+      144631528323711531894361366864798289682197638439,
+      145026427115167437553113327313765914046815165167,
+      249638447574170366329730137206664647324268572216,
+      227495248961243251232428005678545907495656991329
+    ],
+    "common_factor_degree": 2,
+    "line_intercept_degree_bound": 201326595,
+    "holes": 2,
+    "triple_core": 2,
+    "proper_pair_each": 201326592,
+    "singleton_each": 156587348,
+    "core_size": 559240534,
+    "agreement_threshold": 559240535,
+    "radius_numerator": 514501289,
+    "nondead_owned_labels": 1073741820,
+    "isolated_labels": 6,
+    "total_labels": 1073741826,
+    "excess_over_n": 2,
+    "hole_certificates": [
+      {
+        "x": 290598967416242378873281877958601200117561938464,
+        "common_locator_value": 227984891301169500079393700557388401641348537527,
+        "factor_values": [
+          0,
+          147650397886928560151698650264189402828533823337,
+          190006731744092789484346636573732368879488364352
+        ],
+        "base_alpha": 1,
+        "base_beta": 2,
+        "alpha": 227984891301169500079393700557388401641348537527,
+        "beta": 90594373269613270607866192935706048162555509101,
+        "gammas": [
+          220075925624604540114280269199770155061360596721,
+          342534897880755251869415672391848569947687012357,
+          56278528699667155166873835978034992654436499298
+        ],
+        "gamma_nth_powers": [
+          7986291865003624317201019809901084299556488723,
+          242173896481798862111170373497604623252005555325,
+          84491512928048331096111258163458777935713370618
+        ]
+      },
+      {
+        "x": 353051025169660125341046537459874407745569548873,
+        "common_locator_value": 240254725932274301230171715864411799946781182945,
+        "factor_values": [
+          0,
+          206870184689561242396282639812161571369777983303,
+          28260753734218156248646962973229790302535729919
+        ],
+        "base_alpha": 1,
+        "base_beta": 2,
+        "alpha": 240254725932274301230171715864411799946781182945,
+        "beta": 115134042531822872909422223549752844773420799937,
+        "gammas": [
+          6162192081532802104937335359598173687286008540,
+          9655518326270621634009805720518617792258942059,
+          3986420444995056940459978208494615568471906826
+        ],
+        "gamma_nth_powers": [
+          7986291865003624317201019809901084299556488723,
+          242173896481798862111170373497604623252005555325,
+          84491512928048331096111258163458777935713370618
+        ]
+      }
+    ]
+  },
+  "five_clique": {
+    "agreement_threshold": 18,
+    "constraint_count": 26,
+    "field": 10007,
+    "general_position_sample_found": false,
+    "incidence": {
+      "maximum_triple_codegree": 7,
+      "minimum_pair_codegree": 8,
+      "pair_codegrees": {
+        "(0, 1)": 10,
+        "(0, 2)": 9,
+        "(0, 3)": 8,
+        "(0, 4)": 8,
+        "(1, 2)": 11,
+        "(1, 3)": 8,
+        "(1, 4)": 8,
+        "(2, 3)": 11,
+        "(2, 4)": 11,
+        "(3, 4)": 13
+      },
+      "triple_codegrees": {
+        "(0, 1, 2)": 3,
+        "(0, 1, 3)": 4,
+        "(0, 1, 4)": 4,
+        "(0, 2, 3)": 6,
+        "(0, 2, 4)": 6,
+        "(0, 3, 4)": 7,
+        "(1, 2, 3)": 7,
+        "(1, 2, 4)": 7,
+        "(1, 3, 4)": 4,
+        "(2, 3, 4)": 7
+      },
+      "vertex_degrees": [
+        18,
+        18,
+        18,
+        18,
+        18
+      ]
+    },
+    "k": 8,
+    "kernel_dimension": 17,
+    "labels": [
+      3,
+      9,
+      15,
+      21,
+      27
+    ],
+    "n": 32,
+    "nonpencil_certificate": {
+      "polynomial_coefficients": [
+        [
+          8750,
+          5160,
+          4573,
+          8093,
+          7139,
+          401,
+          8627,
+          5179
+        ],
+        [
+          7323,
+          4405,
+          3182,
+          8350,
+          4098,
+          9037,
+          6498,
+          5584
+        ],
+        [
+          9663,
+          3397,
+          8323,
+          1046,
+          72,
+          922,
+          6381,
+          351
+        ],
+        [
+          1996,
+          2389,
+          3457,
+          3749,
+          6053,
+          2814,
+          6264,
+          5125
+        ],
+        [
+          4336,
+          1381,
+          8598,
+          6452,
+          2027,
+          4706,
+          6147,
+          9899
+        ]
+      ],
+      "received_u0": [
+        2613,
+        7274,
+        9256,
+        3839,
+        4853,
+        1241,
+        8924,
+        7010,
+        5875,
+        1362,
+        8808,
+        5724,
+        2719,
+        5465,
+        3450,
+        7561,
+        487,
+        1325,
+        1925,
+        833,
+        5181,
+        6342,
+        6074,
+        3591,
+        9529,
+        5851,
+        62,
+        4726,
+        4405,
+        828,
+        176,
+        3680
+      ],
+      "received_u1": [
+        5096,
+        296,
+        7643,
+        9252,
+        4713,
+        8555,
+        4874,
+        5281,
+        8913,
+        8364,
+        6672,
+        1719,
+        474,
+        7970,
+        9191,
+        2578,
+        5346,
+        7700,
+        8716,
+        7939,
+        7227,
+        9631,
+        2711,
+        7239,
+        1200,
+        6363,
+        9768,
+        4031,
+        1196,
+        1217,
+        4539,
+        7267
+      ]
+    },
+    "nonpencil_realized": {
+      "collinear_triples": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          4
+        ],
+        [
+          1,
+          3,
+          4
+        ],
+        [
+          2,
+          3,
+          4
+        ]
+      ],
+      "core_identity_ok": true,
+      "distinct_ok": true,
+      "edge_overlaps_ok": true,
+      "is_valid_clique": true,
+      "m": 5,
+      "matches_expectation": true,
+      "no3collinear": false,
+      "no_joint_ok": true,
+      "tag": "rank23_mixed_support_nonpencil",
+      "vertex_threshold_ok": true
+    },
+    "nonpencil_sample_found": true,
+    "pencil_locus_dimension": 16,
+    "rank": 23,
+    "realized": null,
+    "realized_clique_valid": false,
+    "realized_no3collinear": false,
+    "scope": "ratio-faithful n=32 Reed--Solomon clique falsifier; not a prize-scale bad-count counterexample"
+  },
+  "independent_five_clique_check": {
+    "prime_checked_by_trial_division": 10007,
+    "agreement_sizes": [
+      18,
+      27,
+      24,
+      22,
+      22
+    ],
+    "minimum_actual_pair_overlap": 8,
+    "augmented_row_ranks": [
+      [
+        9,
+        9
+      ],
+      [
+        9,
+        9
+      ],
+      [
+        9,
+        9
+      ],
+      [
+        9,
+        9
+      ],
+      [
+        9,
+        9
+      ]
+    ],
+    "collinear_triples": [
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        1,
+        2,
+        4
+      ],
+      [
+        1,
+        3,
+        4
+      ],
+      [
+        2,
+        3,
+        4
+      ]
+    ],
+    "not_all_five_collinear": true,
+    "scope": "Independent exact certificate check; finite arbitrary 32-point domain, not the smooth production domain. No absence claim follows from failed general-position sampling."
+  },
+  "reviewed_original_unreferenced": 48,
+  "remaining_original_unreferenced": 44
+}
