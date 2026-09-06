@@ -1,0 +1,36 @@
+{
+  "validation": "Eight full modules compiled sequentially with autoImplicit=false; four split-boundary theorem axiom audits passed.",
+  "module_sha256": {
+    "ArkLib.ToMathlib.RestrictedSumsetGeneral": "46acde00a89f8b4b91470acabadeac93651780a92a5f5eb889b4d7641a9361d8",
+    "Research.ProximityPrize.CapacityBounds": "2088bb3273134571e50c907dcef6ca330c574deee8c7b6b74f1dd96780169486",
+    "Research.ProximityPrize.GrandChallenges": "e48b93997a20e6e14b316723870b6d163c001e2c745189d2c0861b5facac4cbe",
+    "Research.ProximityPrize.Collapse": "e7c44eaac66bc9b12c407f95d82367149cf3ce275446cf4bc0694e2555b4b58e",
+    "Research.ProximityPrize.RadiusOne": "c4000a28da43a89ed0fa4d319deea497c14115e4203c1002aec20c4fff856d2d",
+    "Research.ProximityPrize.RadiusOneExact": "8a67e7c2294bf48cc28bbab99dc2bf6348e806d2a10f1907711ac6b79eb13657",
+    "Research.ProximityPrize.SubsetSumRadiusOne": "797378a979fb4475bd2b78edc2144e18cf14fbe4d05fcf47f87362703a10803c",
+    "Research.ProximityPrize.Connections.RestrictedSumsetMCA": "04d0e5f7029f4615bc476a244033a4a619fea9b55632fc9940a15afeb4c26f04"
+  },
+  "axioms": {
+    "MvPolynomial.erdos_heilbronn": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "ProximityGap.restrictedSumset_subset_subsetSumsKplus1": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "ProximityGap.card_image_domain'": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "ProximityGap.epsMCA_one_ge_erdos_heilbronn_general": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "scope": "Focused split and its research dependency chain, not full-library or hosted acceptance. Existing conditional hypotheses are unchanged."
+}
