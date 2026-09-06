@@ -283,7 +283,7 @@ BGK/Paley conjugate-norm wall (F11). **No `#334`/`#444` closure; no crack.**
 - 24 axiom-clean `Frontier/_wfT*.lean` files (`#print axioms ⊆ {propext, Classical.choice, Quot.sound}`,
   no `sorryAx`), each recording its reduction/refutation as machine-checked lemmas.
 - `ArkLib.lean` umbrella regenerated to import all 24 (plus merged sibling-lane files; +258 / +1 imports, 0 lost).
-- DISPROOF_LOG.md: consolidated `[T01-T25 ANT fence-threading sweep]` entry appended (union-merge).
+- Research/ProximityPrize/DISPROOF_LOG.md: consolidated `[T01-T25 ANT fence-threading sweep]` entry appended (union-merge).
 - No claim of a proven `M(n) ≤ C√(n log)` at `n=2^30`. The char-0 case remains PROVEN; the char-`p` transfer
   remains OPEN.
 

@@ -43,7 +43,7 @@ list is provably `q`-independent (Johnson/BCIKS); in the band `(1−√ρ, 1−�
 list-size lower bounds either need radius `≥` capacity or pathological fields whose status at a
 *fixed positive* gap is open. The verified `ε_mca` lower bounds in-tree are only `poly/q` (within the
 permitted bound), so they do not refute. O6 sharpens the target to a list-decoding lower bound but
-does not disprove. See `DISPROOF_LOG.md` (O6).
+does not disprove. See `Research/ProximityPrize/DISPROOF_LOG.md` (O6).
 -/
 
 namespace ArkLib.ProximityGap.DisproofLoop8

@@ -22,7 +22,7 @@ float precision, residuals ≤ 2·10⁻⁹ at p = 65537).
 
 ## 0. Prior-kill compliance (what this lane must not re-derive, and doesn't)
 
-Checked against `DISPROOF_LOG.md` + dossier v3 §8 before writing:
+Checked against `Research/ProximityPrize/DISPROOF_LOG.md` + dossier v3 §8 before writing:
 
 - **WEILINDEX-FIBER (2026-06-17, REFUTED):** the "metaplectic fiber identity"
   `η_b = γ_p(b)·√2·η'_{φ(b)}` is FALSE (off by 25%; no completing-the-square for LINEAR phases).

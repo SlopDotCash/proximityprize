@@ -27,7 +27,7 @@ to this checkout. Never run concurrent unserialized Lake builds: they can corrup
   declaration explicitly formalizes a cited external theorem as an assumption.
 - No new `sorry`, `sorryAx`, `axiom` laundering, asserted named residual, or conditional theorem may
   be reported as closure.
-- Put refuted approaches and their reusable obstruction lemmas in `DISPROOF_LOG.md`.
+- Put refuted approaches and their reusable obstruction lemmas in `Research/ProximityPrize/DISPROOF_LOG.md`.
 - Distinguish an exact production pin from toy-instance pins, brackets, reductions, and no-go maps.
 
 ## Current verified frontier (2026-08-16)
@@ -131,7 +131,7 @@ Start from:
   completion ledger, and the verified post-v3 results;
 - `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` for the consolidated theorem and no-go map
   through the 2026-07-11 session-final addenda;
-- `DISPROOF_LOG.md` (tail first) for results after the dossier snapshot;
+- `Research/ProximityPrize/DISPROOF_LOG.md` (tail first) for results after the dossier snapshot;
 - `docs/kb/deltastar-466-tool-shape-doctrine-v2-2026-07-10.md` for the positive specification
   of any CORE closure (the single missing non-Fourier certificate);
 - `Frontier/_G81DeepRungDCRecovery.lean`, `Frontier/_S2PuncturedJohnsonDischarge.lean`, and

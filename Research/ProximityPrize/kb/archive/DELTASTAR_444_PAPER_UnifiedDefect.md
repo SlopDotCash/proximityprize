@@ -96,7 +96,7 @@ yields only `(X − ζ) ∣ g`. The pairing is no longer forced, and non-coset l
 ## 5. Why every route reaches exactly this (refutation ledger)
 
 The campaign (120+ routes, two prior 50-conjecture sweeps, this session's additions) eliminates the
-entire ranked attack surface, each with a rigorous reason (full detail in `DISPROOF_LOG.md`):
+entire ranked attack surface, each with a rigorous reason (full detail in `Research/ProximityPrize/DISPROOF_LOG.md`):
 
 - **Packing / second-order descent → Johnson.** Distinct mixed members overlap in `≤ 2k` points; the
   double-counting bound reaches only `τ > √ρ + ρ/2` (Johnson + ε), outside the window.

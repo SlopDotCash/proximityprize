@@ -69,7 +69,7 @@ export function Method() {
       </h3>
       <p>
         A countermodel that kills a candidate route is recorded in{" "}
-        <code className="inline">DISPROOF_LOG.md</code> and, where it sharpens a
+        <code className="inline">Research/ProximityPrize/DISPROOF_LOG.md</code> and, where it sharpens a
         constraint, formalized as a refutation theorem (the impossibility
         results of Section&nbsp;6). This discipline is what kept the effort from
         drifting into wishful closure. We record one instance in

@@ -51,7 +51,7 @@ All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.
 
 ## References
 
-- Issue #357 (the take-over probe and mechanism); `DISPROOF_LOG.md` entry of same date.
+- Issue #357 (the take-over probe and mechanism); `Research/ProximityPrize/DISPROOF_LOG.md` entry of same date.
 -/
 
 set_option linter.unusedSectionVars false

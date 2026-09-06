@@ -33,7 +33,7 @@ discharges that heart, sorry-free and axiom-clean, decomposing the old black box
 
 What remains genuinely external is *only* the distance/genericity input (the line is far from the
 code except at the bridge points) — the defining content of a proximity-gap counterexample — not the
-algebra, which is now machine-checked. See `DISPROOF_LOG.md` (Loop48).
+algebra, which is now machine-checked. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop48).
 -/
 
 open Finset Polynomial

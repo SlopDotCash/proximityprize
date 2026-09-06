@@ -17,7 +17,7 @@ on that multiplicity: when the ratio is a genuine *rational function* `P/Q` of b
 the case for Reed–Solomon / generalized-RS error lines, whose coordinates are low-degree
 polynomials evaluated on the domain — every value is attained at most `max(deg P, deg Q)` times.
 
-This is the structure side of the H-EXT inverse direction (see `DISPROOF_LOG.md` O159): a value
+This is the structure side of the H-EXT inverse direction (see `Research/ProximityPrize/DISPROOF_LOG.md` O159): a value
 attained with anomalously high multiplicity forces the level set `{x : P(x) = c·Q(x)}` to be large,
 which a nonzero polynomial of bounded degree cannot allow — so high-multiplicity ratios are
 *algebraically structured* (the numerator/denominator must collude, `P − c·Q ≡ 0`).

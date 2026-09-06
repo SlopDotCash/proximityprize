@@ -8,7 +8,7 @@ import Mathlib.Tactic
 /-!
 # The pointwise-autocorrelation self-consistency ceiling is linear (#444)
 
-This file formalizes the constraint lemma from `DISPROOF_LOG.md`: if the pointwise autocorrelation
+This file formalizes the constraint lemma from `Research/ProximityPrize/DISPROOF_LOG.md`: if the pointwise autocorrelation
 identity is closed by the term-by-term triangle inequality, the resulting quadratic self-consistency
 bound is only the trivial linear ceiling.
 

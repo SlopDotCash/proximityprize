@@ -9,7 +9,7 @@ prize reduces to**.
 > reports exactly `[propext, Classical.choice, Quot.sound]`, zero `sorryAx`. Every numerical
 > claim is from a committed `scripts/probes/probe_*.py` run in the **proper-`μ_n` regime**
 > (`p` PRIME, `n = 2^μ`, `n | p−1`, `p ≫ n³`, NEVER `n = p−1`). Refutations are recorded in
-> `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md`. This is an EXPLORATION document
+> `Research/ProximityPrize/DISPROOF_LOG.md`. This is an EXPLORATION document
 > (honesty contract §6A): it states conjectures, some likely false, with honest feasibility.
 > The only thing asserted PROVEN is what builds axiom-clean.
 
@@ -275,5 +275,5 @@ sub-Wick `(★)`-input via the proven DC-Wick spine — that is where the `C=√
 | Front-runner spine (DC-Wick ⟹ floor) | `Frontier/DCWickMGFFromTermwise.lean : DCWickBound, dcMGF_le_of_termwise_dcWick, prizeFloor_of_dcWick` |
 | `(★)` from Ramanujan / from moments | `GeneralizedPaleyRamanujan.lean`, `GaussPeriodMomentBound.lean` |
 | Energy `→` window (M as subleading const) | `InteriorWorstCaseIncompleteSum.lean`, `WindowIsOneOverLog` |
-| Refutations (E04/E27/E30/E12/E02) | `DISPROOF_LOG.md` (2026-06-15 entries) |
+| Refutations (E04/E27/E30/E12/E02) | `Research/ProximityPrize/DISPROOF_LOG.md` (2026-06-15 entries) |
 | Probes (proper μ_n) | `scripts/probes/probe_e02_corrected_moment_vs_cumulant.py`, `probe_e09_*`, `probe_e04_*`, `probe_E12_quartic_avg_not_max.py`, `probe_e30_dibenedetto_johnson_payoff.py` |

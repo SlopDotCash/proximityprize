@@ -65,7 +65,7 @@ obtained from the action-orbit mechanism; it requires a genuine (open) bound on 
 dense bad-orbit count.
 
 Axiom-clean. This is a REDUCTION/LOCALIZATION brick (it does not close Q2; it pins why Q2 is
-not a corollary of the action-orbit mechanism). See `DISPROOF_LOG.md` (Lane B / Q2).
+not a corollary of the action-orbit mechanism). See `Research/ProximityPrize/DISPROOF_LOG.md` (Lane B / Q2).
 -/
 
 open Polynomial

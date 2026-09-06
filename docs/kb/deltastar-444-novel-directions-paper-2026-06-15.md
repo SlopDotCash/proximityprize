@@ -4,7 +4,7 @@
 > encouraged, including false ones). Nothing here is claimed *proven*. Every "closed-form"
 > below is a **conjecture with its open input named**. The companion §6 (Self-shred) attacks
 > this paper; §7 (Survivors) is the honest residue; §8 dispatches agents on the residue.
-> No closure of the open core is asserted. Refutations route to `DISPROOF_LOG.md`.
+> No closure of the open core is asserted. Refutations route to `Research/ProximityPrize/DISPROOF_LOG.md`.
 
 ---
 

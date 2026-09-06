@@ -5,7 +5,7 @@
 > map: which sub-problems are genuinely attackable, which are dead, and which carry the most
 > under-pursued insight. It is cross-checked against the current in-tree state
 > (`docs/kb/deltastar-SESSION-MASTER-MAP-2026-06-13.md`, `RESEARCH_SYNTHESIS_407.md`,
-> `DISPROOF_LOG.md`, `docs/kb/deltastar-100-routes.md`, `residual-census.md`, the `Frontier/` dir).
+> `Research/ProximityPrize/DISPROOF_LOG.md`, `docs/kb/deltastar-100-routes.md`, `residual-census.md`, the `Frontier/` dir).
 >
 > **Honesty contract (absolute):** never fabricate a closure. Threads are marked
 > `closed-proven / refuted / partial / open`. A "landed brick" is distinguished from "open math".
@@ -253,7 +253,7 @@ Regime: `yes` (prize regime) · `partial` · `re-aimable` · `no` (wrong regime)
 ## (c) DEAD / DO-NOT-REDO appendix (closed, refuted, or proven-vacuous)
 
 Do not spend cycles re-attempting these. Each has a machine-checked countermodel, a proven no-go,
-or a decisive regime/method exclusion. Citations to `DISPROOF_LOG.md` / KB notes / threads.
+or a decisive regime/method exclusion. Citations to `Research/ProximityPrize/DISPROOF_LOG.md` / KB notes / threads.
 
 ### Refuted shortcuts / mechanisms
 - **Additive-energy route as a δ*-floor** (389-T08, W2): `list ≥ √(n·E) ≥ n^{3/2} > n` *always*
@@ -390,4 +390,4 @@ Ranked by "genuinely new + actionable + not yet executed." These are where a fre
 
 *End of census. For the ranked actionable attack list, see the StructuredOutput returned by the synthesis
 agent. Cross-references: `docs/kb/deltastar-SESSION-MASTER-MAP-2026-06-13.md`,
-`RESEARCH_SYNTHESIS_407.md`, `DISPROOF_LOG.md`, `docs/kb/deltastar-100-routes.md`, `Frontier/README.md`.*
+`RESEARCH_SYNTHESIS_407.md`, `Research/ProximityPrize/DISPROOF_LOG.md`, `docs/kb/deltastar-100-routes.md`, `Frontier/README.md`.*

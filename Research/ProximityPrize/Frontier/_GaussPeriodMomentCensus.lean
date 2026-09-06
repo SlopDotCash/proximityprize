@@ -31,7 +31,7 @@ Probes (`probe_407_odd_moment_thinness.py`, `probe_407_oddmom_scaling.py`, `prob
 * For odd `r` **to the Sidon depth** (where `W_r = 0`), `A_r = −n^r` is RIGID and `p`-independent —
   so the apparent "signed sqrt-cancellation" `A_r/(p·M^r) → 0` is a NORMALIZATION ARTIFACT, NOT a
   proof handle for `M = max_{b≠0}‖η_b‖`. (Refutes odd-moment-as-lever; cf. the rigid-equation NC3
-  no-go in `DISPROOF_LOG.md`.)
+  no-go in `Research/ProximityPrize/DISPROOF_LOG.md`.)
 * The genuine thinness invariant is the **onset depth** `d_odd(n,p)` (first odd `r` with `W_r > 0`),
   which GROWS strictly with thinness `β = log_n p` (n=16: `r=7 → 9 → 11 → none` as `β: 2.45 → 4.6`).
   `probe_407_depth_vs_M.py` then showed this depth does NOT control the normalized sup

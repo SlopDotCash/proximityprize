@@ -282,7 +282,7 @@ bash scripts/build_timing_report.sh render /tmp/build-timing.jsonl
 Hard-won rules for multi-agent sessions where several agents land commits on
 `main` concurrently (distilled from the 2026-06-10 #232 frontier sessions):
 
-- **An announced brick is not a brick.** Commit messages and `DISPROOF_LOG.md`
+- **An announced brick is not a brick.** Commit messages and `Research/ProximityPrize/DISPROOF_LOG.md`
   entries can name theorems that never landed (found once: a theorem announced
   in a commit message existed nowhere in history). Before citing or building on
   a named lemma, `grep` the tree — not the log — and prefer
@@ -304,7 +304,7 @@ Hard-won rules for multi-agent sessions where several agents land commits on
   (`lake build <Module1> <Module2> …`) and compile a scratch file importing
   all of them together.
 - **Rebase before every push; new files only.** Concurrent agents editing
-  shared files (especially `ArkLib.lean`, `DISPROOF_LOG.md`) is the main
+  shared files (especially `ArkLib.lean`, `Research/ProximityPrize/DISPROOF_LOG.md`) is the main
   collision source. One designated writer appends to shared logs; everyone
   else ships new modules and lets `./scripts/update-lib.sh` regenerate the
   import index at commit time.

@@ -64,8 +64,8 @@ If you are working on the Proximity Prize / proximity-gap formalization (standal
 successor to the historical ArkLib campaign), read the dedicated agent guide **before** touching
 that cone — it has the build recipe you need to avoid clogging the machine:
 
-- [`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`](ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md)
-  (auto-loaded in that directory; `AGENTS.md` there is a copy): build/concurrency/honesty rules,
+- [`Research/ProximityPrize/CLAUDE.md`](Research/ProximityPrize/CLAUDE.md)
+  (`CLAUDE.md` there is a symlink to `AGENTS.md`): build/concurrency/honesty rules,
   the standalone #164 control plane, historical campaign ledger, substrate API map, references,
   and pitfall catalogue.
 - **Fast iteration (mandatory):** that cone is ~3,500 files (3,483 `.lean` as of 2026-07-01);

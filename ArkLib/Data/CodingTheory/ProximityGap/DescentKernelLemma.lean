@@ -11,7 +11,7 @@ import Mathlib.Tactic
 # Issue #232 — the Descent Kernel Lemma (Lemma K) and pattern rigidity, machine-checked
 
 This file formalizes the **queued Lean bricks of the O13″/O14 descent program**
-(see `DISPROOF_LOG.md`, entries O13–O14′): the converse-FRI even/odd descent writes a
+(see `Research/ProximityPrize/DISPROOF_LOG.md`, entries O13–O14′): the converse-FRI even/odd descent writes a
 degree-`< 2κ` candidate list element as `c(d) = e(d²) + d·f(d²)` with `deg e, deg f < κ`,
 and its agreement pattern with a received word `w` on a `±`-paired smooth domain splits
 per level-1 point `z = d²` into

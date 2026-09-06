@@ -46,7 +46,7 @@ All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.
 
 ## References
 
-- Issue #357 (the δ* campaign, hypothesis S2(b)); `DISPROOF_LOG.md` entry of the same date.
+- Issue #357 (the δ* campaign, hypothesis S2(b)); `Research/ProximityPrize/DISPROOF_LOG.md` entry of the same date.
 - `Jo26ObstructionCount.lean` (the `MissingLine`/`ObstructionBound` targets).
 -/
 

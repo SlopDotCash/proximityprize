@@ -11,7 +11,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.WBPencilRationalReduction
 The WB programme's original conditional capstone used `WindowRationalBounded`, the
 claim that every doubly-WB-solvable stack has bad-scalar count ≤ `w + 3`.  That
 residual is now **refuted** by the normalizer-pair family at high rate (see
-`DISPROOF_LOG.md` and `probe_normalizer_pair_family.py`).  We keep the old
+`Research/ProximityPrize/DISPROOF_LOG.md` and `probe_normalizer_pair_family.py`).  We keep the old
 conditional theorem below as a historical consumer of the false residual.
 
 **`epsMCA_le_below_udr`** — under the Prop, for every radius `δ ≤ w/n` with

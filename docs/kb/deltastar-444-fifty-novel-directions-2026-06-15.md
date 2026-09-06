@@ -11,7 +11,7 @@ conjecture** (a self-contained inequality about an explicitly-defined object —
 > **Honesty contract.** Everything below is **exploration**, in the bold-conjecture sense the
 > programme permits: these are *proposals to attack*, many likely false. None is claimed proven.
 > The value is a falsifiable map of mathematics the campaign has **not** touched (verified by
-> grep, counts cited). Refutations belong in `DISPROOF_LOG.md`; a closed conjecture shown false
+> grep, counts cited). Refutations belong in `Research/ProximityPrize/DISPROOF_LOG.md`; a closed conjecture shown false
 > with a countermodel is a *successful* iteration.
 
 ---
@@ -423,7 +423,7 @@ about it — there is no hidden "and also solve [open problem X]." That makes ev
 in-tree harness:
 
 1. **Numeric pre-screen** (`scripts/probes/`, vectorized): compute the conjectured quantity at `n ∈ {16,32,64}`, multiple
-   primes, and check the inequality holds with the claimed constant. A single clean violation → `DISPROOF_LOG.md`, done.
+   primes, and check the inequality holds with the claimed constant. A single clean violation → `Research/ProximityPrize/DISPROOF_LOG.md`, done.
 2. **Collapse audit** (the non-collapse tag): verify the proposed proof genuinely consumes its `[Φ]/[P]/[π]/[H]`
    information and is not a disguised second moment. If the only working step is Cauchy–Schwarz/Parseval/energy, it
    collapses to Johnson and is refuted-by-meta-theorem — log it.

@@ -34,8 +34,8 @@ curl -fsSL https://deltastar.computer/codex.md -o AGENTS.md
   reproduced integer is not a verified inference — claim only the regime you computed; the
   wall is the worst-case sup-norm, not a fixed-`n` count.
 - **Orient:** find the *current* issue from the repo (don't trust a hardcoded number): read
-  `ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md` + `DISPROOF_LOG.md`
-  (`grep -oE '#[0-9]{3}' DISPROOF_LOG.md | sort | uniq -c | sort -rn | head`). Map:
+  `Research/ProximityPrize/CLAUDE.md` + `Research/ProximityPrize/DISPROOF_LOG.md`
+  (`grep -oE '#[0-9]{3}' Research/ProximityPrize/DISPROOF_LOG.md | sort | uniq -c | sort -rn | head`). Map:
   https://deltastar.computer/.
 - **Get the repo, no fork for probes:** `git clone https://github.com/lalalune/ArkLib`.
 - **Default brick = exact-arithmetic probe** (no Lean): reproduce one published integer from

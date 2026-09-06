@@ -47,7 +47,7 @@ the hypothesis `hBridge` in `prize_false_of_listDecoding_failure`; formalizing i
 the next residual. Combined with the converse already in-tree (Loop8/O6′: prize ⟹ `q`-independent
 list), this pins the prize as **equivalent** to RS list-decoding to `1−ρ−η`. The prize remains OPEN;
 this loop proves it is *exactly as hard as* that classical problem, not harder, not easier. See
-`DISPROOF_LOG.md` (Loop47).
+`Research/ProximityPrize/DISPROOF_LOG.md` (Loop47).
 -/
 
 open Finset Probability

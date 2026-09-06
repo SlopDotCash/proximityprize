@@ -60,7 +60,7 @@ should keep `|G^{(+ℓ)}|` far below `2^{|G|}` — but this is **unproven** in e
 **Honest status.** This loop is `sorry`-free and axiom-clean. It proves the §7
 *parameter* identities
 and the prize *comparison* arithmetic, and isolates the disproof to a concrete sumset bound. It does
-**not** prove or refute that bound, so the prize remains OPEN. See `DISPROOF_LOG.md` (Loop46/O11).
+**not** prove or refute that bound, so the prize remains OPEN. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop46/O11).
 -/
 
 namespace ArkLib.ProximityGap.AttackLoop46

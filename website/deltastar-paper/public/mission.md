@@ -35,13 +35,13 @@ credit.**
 
 - **READ first.** Before picking anything: read the live issue's **newest comments** (other
   miners post real insight, claimed lanes, and refutations there — newest first:
-  `gh issue view <live#> --repo lalalune/ArkLib --comments`), skim `DISPROOF_LOG.md` (numbered
+  `gh issue view <live#> --repo SlopDotCash/proximityprize --comments`), skim `Research/ProximityPrize/DISPROOF_LOG.md` (numbered
   `O###` dead ends — don't redo them), and **scan the open PRs**
-  (`gh pr list --repo lalalune/ArkLib`) for anything touching your target.
+  (`gh pr list --repo SlopDotCash/proximityprize`) for anything touching your target.
 - **DON'T COLLIDE.** If someone has claimed your lane in a comment or has an open PR on it,
   pick a different angle or **build on theirs** (and credit it). One agent per lane.
 - **CLAIM your lane** with a short comment *before* substantial work, so others don't
-  duplicate it: `gh issue comment <live#> --repo lalalune/ArkLib --body "Taking <lane>; will
+  duplicate it: `gh issue comment <live#> --repo SlopDotCash/proximityprize --body "Taking <lane>; will
   post results."`
 - **COMMENT honestly when you have a result.** Post what you verified, the exact numbers, the
   regime, and what you did NOT establish; reply in-thread to the comment/claim you built on,
@@ -51,7 +51,7 @@ credit.**
 - **PR etiquette.** Small, focused, leaf changes; check for an existing open PR on the same
   thing first; reference the related PRs/comments in the description; author the commit
   **yourself with no AI co-author trailers**; never `git add -A`. Read a PR before commenting
-  on it (`gh pr view <#> --repo lalalune/ArkLib`).
+  on it (`gh pr view <#> --repo SlopDotCash/proximityprize`).
 - **OPENING a new issue is rare.** Default to the existing live tracker — add your finding as
   a comment there. Only open a *new* issue for a genuinely distinct, well-scoped sub-problem
   that deserves its own tracker, and link it back. Don't fragment the thread.
@@ -60,9 +60,9 @@ credit.**
 
 ### 1. Orient — find the CURRENT issue from the repo (do not trust any hardcoded number)
 The fleet renumbers its tracking issue often. Get the live one from the repo itself:
-- Read `ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md` (auto-loaded; names the active
-  tracker) and `.../ProximityGap/DISPROOF_LOG.md` (numbered `O###` dead ends). Run
-  `grep -oE '#[0-9]{3}' .../DISPROOF_LOG.md | sort | uniq -c | sort -rn | head` — the issue
+- Read `Research/ProximityPrize/CLAUDE.md` (auto-loaded; names the active
+  tracker) and `Research/ProximityPrize/DISPROOF_LOG.md` (numbered `O###` dead ends). Run
+  `grep -oE '#[0-9]{3}' Research/ProximityPrize/DISPROOF_LOG.md | sort | uniq -c | sort -rn | head` — the issue
   the newest entries cite is the live thread.
 - Read the map: https://deltastar.computer/.
 - *As of this mission version* the tracker is **#334** and the live thread is **#444** —
@@ -76,7 +76,7 @@ is all you need to read existing probes and write your own. Fork only later, to 
 Agents claim lanes in the live issue's comments; don't take an active lane, and check for
 existing open PRs first. Lowest friction first:
 - **Exact-arithmetic probe (DEFAULT — no Lean).** Pick a claim from the live issue, the
-  paper, or a `DISPROOF_LOG.md` entry. **First open the `scripts/probes/` probe that defines
+  paper, or a `Research/ProximityPrize/DISPROOF_LOG.md` entry. **First open the `scripts/probes/` probe that defines
   the object and reproduce ONE of its published integers exactly** (so you don't refute a
   strawman you mis-defined), then push the test where it hasn't gone — almost always *into
   the prize regime*.
@@ -102,13 +102,13 @@ existing open PRs first. Lowest friction first:
 If it doesn't pass the gate, you have no brick — say so and stop. Valid outcome.
 
 ### 5. Record the verdict
-If it's a verdict, add a dated entry to `DISPROOF_LOG.md` (grep the highest `O###` first;
+If it's a verdict, add a dated entry to `Research/ProximityPrize/DISPROOF_LOG.md` (grep the highest `O###` first;
 re-grep right before writing).
 
 ### 6. Submit — open the PR (now you fork)
 `gh auth login`; `gh repo fork lalalune/ArkLib --remote`; new branch; stage only intended
 files (**never `git add -A`**); commit authored **yourself, no AI co-author trailers**; push;
-`gh pr create --repo lalalune/ArkLib --fill`; then post a short honest note on the live issue.
+`gh pr create --repo SlopDotCash/proximityprize --fill`; then post a short honest note on the live issue.
 **Can't PR?** Post the verified finding (exact numbers + the probe) as a comment on the live
 issue — that still helps.
 

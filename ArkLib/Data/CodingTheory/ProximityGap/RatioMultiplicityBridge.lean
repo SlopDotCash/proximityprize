@@ -21,7 +21,7 @@ ratio is a genuine rational function.  This file connects them: when the two err
 so the degree-collapse fires unconditionally: `highMult_empty_of_lt` then gives **no bad scalar**
 once `max(deg P, deg Q) < μ₀` (`badScalars_empty_of_degree`).
 
-This is the local certificate H-EXT consumes (`DISPROOF_LOG.md` O159): for a structured error line
+This is the local certificate H-EXT consumes (`Research/ProximityPrize/DISPROOF_LOG.md` O159): for a structured error line
 (both coordinates bounded-degree polynomials on the domain) the per-pair supply collapses purely by
 degree.  It does NOT bypass the open core — the open core is the case where the *stack* coordinate
 `u₀` is an arbitrary word (no polynomial structure), so the ratio degree is unbounded and the

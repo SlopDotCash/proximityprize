@@ -11,7 +11,7 @@ files, and the searched PDF library.
 Local documents and code surfaces checked:
 
 - `docs/kb/deltastar-DOSSIER-v2-2026-06-22.md`, including the late §16 correction.
-- `ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`.
+- `Research/ProximityPrize/CLAUDE.md`.
 - `Research/ProximityPrize/LegacyWorkbench.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/OpenCoreConditionalPin.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/FarCosetExplosion.lean`.

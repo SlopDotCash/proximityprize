@@ -36,7 +36,7 @@ time of writing; the abstract advertises a "five-line proof above Johnson", a cl
 scrutiny before trust). `Q2` is itself an **unproven conjecture**, exactly the open core.
 Two independent conditional paths now land the prize — BGM-for-smooth (Loop 39) and sparse-dominance
 `Q2` (this file) — which strengthens the "leans TRUE" position without closing it. Do **not** treat
-the prize as resolved. See `DISPROOF_LOG.md` (Loop40, and the updated LITERATURE FRONTIER).
+the prize as resolved. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop40, and the updated LITERATURE FRONTIER).
 -/
 
 namespace ArkLib.ProximityGap.ProofLoop40

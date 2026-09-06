@@ -44,7 +44,7 @@ the mechanism: across `n=16,32,64`, `β=2.0..4.0`, PROPER thin subgroups (`p ≫
     `√n` worse than the prize `M ≤ C√(n log(p/n))`.
 This is the magnitude-only recursion the N13 census flags as dropping the phase: the genuine
 saving (`gap 9–38%`) lives only at NON-binding frequencies, so it does not help the max. The
-recursion is therefore MAPPED as a wall and logged to `DISPROOF_LOG.md`. The phase law `θ_b` that
+recursion is therefore MAPPED as a wall and logged to `Research/ProximityPrize/DISPROOF_LOG.md`. The phase law `θ_b` that
 would make the recursion contractive at the worst frequency (the N13 transfer operator) is the open
 object this lever cannot supply.
 

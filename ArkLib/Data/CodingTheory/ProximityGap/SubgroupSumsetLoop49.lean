@@ -44,7 +44,7 @@ minimal-domain prize**, consistent with `thm71_no_fixed_exponent` (Loop46), and 
 statement-fidelity question (is the prize claimed at small `n`, or only asymptotically?).
 
 We verify the two structural facts (1) and (2) here; the Lam–Leung distinctness (3) is the next
-residual. See `DISPROOF_LOG.md` (O14/Loop49).
+residual. See `Research/ProximityPrize/DISPROOF_LOG.md` (O14/Loop49).
 -/
 
 namespace ArkLib.ProximityGap.SubgroupSumsetLoop49

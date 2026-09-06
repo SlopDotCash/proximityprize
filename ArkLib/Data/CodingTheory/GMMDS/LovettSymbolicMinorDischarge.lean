@@ -21,7 +21,7 @@ AGL24 reduced intersection matrix `RIM F e` has a square `(Fin t × Fin k)` subm
 * The **WPC shortcut** (`symbolicMinor_of_symbolicFullRank`) routes through
   `WeaklyPartitionConnected k univ e`.  But **`GZPCondition e δ k` does NOT imply
   `WeaklyPartitionConnected k univ e`** (the 11th machine-checked false-residual of the #389
-  GM-MDS cone; see `DISPROOF_LOG.md`).  So that consumer cannot be fed from a bare GZP.
+  GM-MDS cone; see `Research/ProximityPrize/DISPROOF_LOG.md`).  So that consumer cannot be fed from a bare GZP.
 
 * The **`symbolicFullRank_of_classical_imports` route is CIRCULAR**: it discharges
   `SymbolicFullRankResidual` by routing through `GMMDSResidual`, which is itself the AGL24

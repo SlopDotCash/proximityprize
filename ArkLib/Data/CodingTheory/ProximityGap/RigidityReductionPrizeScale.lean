@@ -43,7 +43,7 @@ triangle/product bound (`BadPrimeNormBound`). If `B < p^r`, no such `N` exists, 
 
 * For a **single low-`r` readout** (`r = 1`) the requirement degrades to `(2k)^{2k} < p`, which is
   astronomically larger than the prize field and is **NOT** met. This is not a defect of the proof:
-  it is the *exact* boundary recorded in `DISPROOF_LOG.md` (2026-06-14) — at `n = 32` the single
+  it is the *exact* boundary recorded in `Research/ProximityPrize/DISPROOF_LOG.md` (2026-06-14) — at `n = 32` the single
   `deg-3` readout `h_3` has a genuine char-`p` excess prime `p = 206889121 = n^{5.525}` (prize-scale,
   `≡ 1 mod 32`), so single-condition char-faithfulness is **REFUTED** at the prize point. The
   dichotomy `r = k/2` (rigid → closes) vs `r = 1` (floppy → wall) is therefore *honestly* the scope
@@ -76,7 +76,7 @@ exactly the project's modularity convention.
 - [KKH26] ePrint 2026/782 (the bad-line ceiling; rigidity-rank dichotomy).
 - in-tree: `BadPrimeNormBound.lean` (size bound), `RootSumNormBound.lean` (norm half),
   `OrbitCountCrossingLaw.lean`, `MCAThresholdLedger.lean` (governing law),
-  `DISPROOF_LOG.md` 2026-06-14 (the n=32 single-readout excess prime; r=1 vs r=k/2 dichotomy).
+  `Research/ProximityPrize/DISPROOF_LOG.md` 2026-06-14 (the n=32 single-readout excess prime; r=1 vs r=k/2 dichotomy).
 -/
 
 set_option linter.style.longLine false
@@ -197,7 +197,7 @@ theorem incidence_charIndependent_fullSystem {p : ℕ} (hp : (2 ^ 30) * 2 ^ 128 
 1`, so the char-`p`-excess-free size gap degrades to `(2k)^{2k} < p`. At the prize point `k = 2^29`,
 the threshold `(2k)^{2k} = (2^30)^{2^30}` is astronomically larger than the prize field `q = 2^158`,
 so the gap is **NOT** met: the reduction provides *no* char-independence for single readouts. This is
-not a weakness of the argument — it is the exact boundary recorded in `DISPROOF_LOG.md` (2026-06-14):
+not a weakness of the argument — it is the exact boundary recorded in `Research/ProximityPrize/DISPROOF_LOG.md` (2026-06-14):
 at `n = 32` the single deg-3 readout `h_3` has a genuine prize-scale char-`p` excess prime
 `p = 206889121 = n^{5.525}`. The rigid (`r = k/2`) vs floppy (`r = 1`) dichotomy is real. -/
 theorem single_readout_threshold_not_prize :

@@ -37,7 +37,7 @@ constrains 3AP-free sets *from being large*. Two exact facts kill its use here:
 `km_vacuous_below_ceiling` below records the logical core: if a set's density is already `≤` the
 KM ceiling, the KM implication `(3AP-free → density ≤ ceiling)` provides **no** new information —
 it cannot be triggered to force a 3AP and cannot contradict 3AP-freeness. (This is the same
-density-vacuity already logged for the additive Bloom–Sisask/Sanders route in `DISPROOF_LOG.md`,
+density-vacuity already logged for the additive Bloom–Sisask/Sanders route in `Research/ProximityPrize/DISPROOF_LOG.md`,
 now isolated as the precise reason KM/PFR — the *post-2023* upgrade — does not change the verdict:
 the improvement is in the *exponent of the ceiling*, but at `α = 2⁻¹²⁸` the route never reached
 the ceiling to begin with.)
