@@ -19,8 +19,9 @@
 // takes one nontrivial value on seven further subgroup points.  The program
 // exhausts every such A for each seeded C.  It then rejects identities that
 // do not survive at the same exponent sets over F_193 and F_257; this filters
-// characteristic-specific coincidences.  A surviving hit would lift to pair
-// cores of size 7n/32, improving the known mu_16 construction.
+// some characteristic-specific coincidences. A surviving hit is evidence in
+// these three fields only. Lifting it to pair cores of size 7n/32 in another
+// field requires a separate identity and construction argument.
 
 namespace {
 

@@ -1,0 +1,5 @@
+{
+  "command": "python scripts/probes/probe_rate_quarter_noeight_source7_signatures_milp.py --signatures 3",
+  "exit_code": 0,
+  "output": "{'variables': 116, 'constraints': 242}\n{'status': 0, 'message': 'Optimization terminated successfully. (HiGHS Status 7: Optimal)', 'signatures': 3, 'maximum': 2, 'regular_only': False, 'regular_balance_only': False}\n{'cardinality_histogram': {(2, 2): 2, (1, 1): 1}, 'balanced_triples': 1, 'max_balanced_witnesses_on_pair': 1, 'rich_pairs': {(0, 1): (2,), (0, 2): (1,), (1, 2): (0,)}}\n{'signature': 0, 'root': (0, 1), 'missed': (0, 1)}\n{'signature': 1, 'root': (6,), 'missed': (0,)}\n{'signature': 2, 'root': (3, 5), 'missed': (1, 2)}\n"
+}

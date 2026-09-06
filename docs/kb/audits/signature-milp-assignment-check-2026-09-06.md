@@ -1,0 +1,7 @@
+# Binary signature MILP assignment checking
+
+Before decoding a HiGHS result, the probe now rejects missing dimensions, nonfinite numbers and values farther than 1e-6 from a binary value, then checks every model row on the rounded binary assignment. Current model coefficients and finite bounds are integers, so these post-rounding constraint evaluations are exact. A rounded candidate violating even an auxiliary-variable constraint is rejected before signature reporting.
+
+The solver-independent regression accepts a slightly perturbed valid binary assignment and rejects violated equalities, fractional values, NaN, infinity, out-of-range integers and wrong dimensions. This tests the checker directly; a full solver run remains outstanding. The module description now distinguishes floating-point MILP infeasibility from an independently checked UNSAT certificate. No retention-completion count is advanced by this checker change.
+
+A real solver run with `--signatures 3` exited 0 under NumPy 2.5.3, SciPy 1.18.1 and Z3 5.1.0.0. HiGHS returned a feasible binary assignment that passed every model row and the separate signature verifier. Its signature cardinalities are two (2,2) and one (1,1), with one balanced triple. The default thirteen-signature run remains active; the small case is not evidence for its feasibility or infeasibility. Full small-case output is preserved in `signature-milp-three-2026-09-06.json`.
