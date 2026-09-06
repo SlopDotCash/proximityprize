@@ -153,10 +153,10 @@ slowly-growing fraction of the Johnson→capacity window at every prize rate —
 
 | rate | Johnson | face (best) | capacity | window fraction |
 |---|---|---|---|---|
-| 1/2 | 0.29289 | 0.34321 (d=24, m=128, interim) | 0.5 | 24 % |
+| 1/2 | 0.29289 | **0.34321** (d=24, m=128; bignum-verified, tight) | 0.5 | 24 % |
 | 1/4 | 0.5 | 0.56742+ (d=8, m=128, interim) | 0.75 | 27 % |
-| 1/8 | 0.64645 | 0.72008 (d=8, m=96) | 0.875 | 32 % |
-| 1/16 | 0.75 | 0.82105 (d=8, m=512) | 0.9375 | 38 % |
+| 1/8 | 0.64645 | **0.72106** (d=8, m=128 refined; wedge 0.72004 verified) | 0.875 | 33 % |
+| 1/16 | 0.75 | **0.82105** (d=8, m=512; bignum-verified, tight) | 0.9375 | 38 % |
 
 The padding composition is strictly dominated by the direct face at all measured parameters
 (§ above), so this law is currently the quantitative frontier of the entire hidden-derivative

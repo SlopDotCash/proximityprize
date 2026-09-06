@@ -53887,3 +53887,11 @@ and the T5.1 transfer cannot carry any of this beyond Johnson on the MCA side (�
 §4.5).  Classification: computational certificate + Lean-verified mathematical core +
 one cited external theorem; the certificate is reproducible via
 `python3 -c "...verify_exact_int(12, 2**18, 2**17, 128, trunc_wedge(12,102,205), 173563)"`.
+
+Addendum (same day): the certificate registry `scripts/probes/hdd_certificates.py` now holds
+five bignum-verified threshold-tight records — rate 1/2: δ = 0.33791 (d=12, m=128; list
+exponent 4d+6 = 54) and δ = 0.34321 (d=24, m=128; list exponent 102); rate 1/8: δ = 0.72004
+(d=8, m=128); rate 1/16: δ = 0.80826 (d=6, m=128) and δ = 0.82105 (d=8, m=512).  All PASS.
+The window-fraction law and the death of the `m = d³` hypothesis at prize rates are recorded
+in the KB note §3.6; TR26-164's capacity regime is confined by its own constraint (26) to
+rates ≲ 10⁻⁴³.
