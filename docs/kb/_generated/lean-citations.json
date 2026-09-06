@@ -882,16 +882,16 @@
     "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/BadBlocks.lean": [
       "DP24"
     ],
-    "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/FoldDistance.lean": [
+    "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/Case1.lean": [
       "DP24"
     ],
-    "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhasePrelims.lean": [
+    "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/FoldDistance.lean": [
       "DP24"
     ],
     "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseSoundness.lean": [
       "DP24"
     ],
-    "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/SoundnessProposition.lean": [
+    "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QuerySuffix.lean": [
       "DP24"
     ],
     "ArkLib/ProofSystem/Binius/FRIBinius/General.lean": [
@@ -1829,10 +1829,10 @@
     "DP24": [
       "ArkLib/ProofSystem/Binius/BinaryBasefold/General.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/BadBlocks.lean",
+      "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/Case1.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/FoldDistance.lean",
-      "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhasePrelims.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseSoundness.lean",
-      "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/SoundnessProposition.lean",
+      "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QuerySuffix.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness.lean",
       "ArkLib/ProofSystem/Binius/FRIBinius/General.lean",
       "ArkLib/ProofSystem/RingSwitching/General.lean",
