@@ -199,8 +199,12 @@ class Census:
         return [trim(cj, p) for cj in c]
 
     def y_roots(self, c):
-        """All q, deg<k, with Q(X,q(X)) == 0 mod X^k (superset of exact roots),
-        by Roth-Ruckenstein."""
+        """Generate degree<k candidates containing every exact polynomial root.
+
+        Roth-Ruckenstein strips powers of X along each branch. Consequently
+        this need not return every root of the original Q modulo X^k.
+        Candidates are filtered by direct agreement in gamma_report.
+        """
         p, k = self.p, self.k
         results = []
 

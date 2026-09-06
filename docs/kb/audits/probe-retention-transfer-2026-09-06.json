@@ -1,0 +1,93 @@
+{
+  "exit_code": 0,
+  "command": "python3 -u scripts/probes/probe_466r10_transfer_skeptic.py",
+  "sources": [
+    {
+      "path": "scripts/probes/probe_466r10_transfer_skeptic.py",
+      "sha256": "f74faeafd1e96f1037dd8043f41c926572f578b94bb442de0950d5d84cc6064d"
+    },
+    {
+      "path": "scripts/probes/_out_466r10_transfer_skeptic.txt",
+      "sha256": "5ac89a879791ab56bb0ed7c574c75b9c145c246a134f574d925dcd195a8269d2"
+    }
+  ],
+  "output": "==============================================================================\n(A) Does ANY pair of primes at n=32 share (E2,E3)? (worker grouping vacuity)\n==============================================================================\n  14 primes, 14 distinct (E2,E3) keys, 0 keys with >1 prime.\n  => worker's within-(E2,E3) 'M varies / corr(M,E4)' analysis ran on 0 groups.\n  *** VACUOUS: the printed 'Reading' is boilerplate, not supported by any grouped data.\n\n==============================================================================\n(B) Adjacent-coset diagnostic: C=<|eta_b|^2 |eta_gb|^2>\n==============================================================================\n  Compare across primes: does the JOINT cross-coset 2nd moment carry info beyond the\n  marginal |eta| moment ladder? We report C_norm = C / (mean|eta|^2)^2 (=1 if independent).\n           p  v2         E2/n     meanA2              C  C/(meanA2)^2\n     1048609   5     97487869    31.9991      1023.0010      0.999083\n     1048897   6     97514653    31.9991      1023.0013      0.999084\n     1049057   5     97529533    31.9991      1023.0014      0.999084\n     1049089   9     97532509    31.9991      1023.0015      0.999084\n     1049281   6     97550365    31.9991      1023.0016      0.999084\n     1049473   7     97568221    31.9991      1023.0018      0.999084\n     1049537   6     97574173    31.9991      1023.0019      0.999084\n     1049569   5     97577149    31.9991      1023.0019      0.999084\n\n      READ: this computes the primitive-generator shift i -> i+1, not the dyadic tower step.\n      When m=(p-1)/n is even, mu_(2n) is mu_n union g^(m/2)*mu_n, so the tower uses\n      shift i -> i+m/2. When m is odd, mu_(2n) does not exist in this field.\n      C/(meanA2)^2=1 is one mixed-moment equality, not a test of independence or proof\n      that the joint distribution is determined by the marginals. These rows alone\n      establish neither a gauge reduction nor an obstruction to one.\n    \n==============================================================================\n(C) Independent reproduction of transient ratio at deep prime (n up to 128)\n==============================================================================\n  p=268437889, v2=7, m_top=2097171\n  j=1 n=   2 M=    2.0000 M/sqrt(n)=  1.4142 ratio=     nan /sqrt2=     nan\n  j=2 n=   4 M=    4.0000 M/sqrt(n)=  2.0000 ratio=  2.0000 /sqrt2=  1.4142\n  j=3 n=   8 M=    7.9980 M/sqrt(n)=  2.8277 ratio=  1.9995 /sqrt2=  1.4139\n  j=4 n=  16 M=   15.6666 M/sqrt(n)=  3.9167 ratio=  1.9588 /sqrt2=  1.3851\n  j=5 n=  32 M=   27.3846 M/sqrt(n)=  4.8410 ratio=  1.7480 /sqrt2=  1.2360\n  j=6 n=  64 M=   39.2200 M/sqrt(n)=  4.9025 ratio=  1.4322 /sqrt2=  1.0127\n  j=7 n= 128 M=   55.0643 M/sqrt(n)=  4.8670 ratio=  1.4040 /sqrt2=  0.9928\n",
+  "archive_numeric_rows_matched": 15,
+  "archive_encoding": "cp1252",
+  "exact_moment_checks": [
+    {
+      "p": 1048609,
+      "E2": 3119611808,
+      "E3": 467360870656
+    },
+    {
+      "p": 1048897,
+      "E2": 3120468896,
+      "E3": 467489526016
+    },
+    {
+      "p": 1049057,
+      "E2": 3120945056,
+      "E3": 467561001216
+    },
+    {
+      "p": 1049089,
+      "E2": 3121040288,
+      "E3": 467575296256
+    },
+    {
+      "p": 1049281,
+      "E2": 3121611680,
+      "E3": 467661066496
+    },
+    {
+      "p": 1049473,
+      "E2": 3122183072,
+      "E3": 467746836736
+    },
+    {
+      "p": 1049537,
+      "E2": 3122373536,
+      "E3": 467775426816
+    },
+    {
+      "p": 1049569,
+      "E2": 3122468768,
+      "E3": 467789721856
+    },
+    {
+      "p": 1049857,
+      "E2": 3123325856,
+      "E3": 467918377216
+    },
+    {
+      "p": 1049953,
+      "E2": 3123611552,
+      "E3": 467961262336
+    },
+    {
+      "p": 1050241,
+      "E2": 3124468640,
+      "E3": 468089917696
+    },
+    {
+      "p": 1050337,
+      "E2": 3124754336,
+      "E3": 468132802816
+    },
+    {
+      "p": 1050593,
+      "E2": 3125516192,
+      "E3": 468247163136
+    },
+    {
+      "p": 1050817,
+      "E2": 3126182816,
+      "E3": 468347228416
+    }
+  ],
+  "deep_prime_trial_division": 268437889,
+  "completed_original_unreferenced": 63,
+  "remaining_original_unreferenced": 29,
+  "baseline": "probe-retention-original-baseline-2026-09-06.json"
+}
