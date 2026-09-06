@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/copy-mine.mjs",
+    "predev": "node scripts/copy-mine.mjs && python3 scripts/prepare-research.py",
     "dev": "next dev",
-    "prebuild": "node scripts/copy-mine.mjs",
+    "prebuild": "node scripts/copy-mine.mjs && python3 scripts/prepare-research.py",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "postbuild": "node scripts/verify-export.mjs",
+    "check": "node scripts/verify-export.mjs"
   },
   "dependencies": {
     "katex": "^0.17.0",

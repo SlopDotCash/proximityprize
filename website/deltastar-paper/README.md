@@ -1,41 +1,27 @@
-# δ* campaign paper site
+# Proximity Prize website
 
-A research-paper-style website presenting the results of the ArkLib δ*
-campaign: the first exact machine-checked MCA thresholds for any code, the
-universal staircase law, the Welch–Berlekamp pencil programme, 28
-machine-checked refutations, and a precise statement of the open core. The
-prize problem itself remains open; the site is the map, and says so.
+Live site: https://proximityprize.pages.dev
 
-Live preview: https://deltastar.computer
-
-## Stack
-
-- Next.js 15 (app router), static export (`output: "export"`)
-- Tailwind CSS v4
-- Server-side KaTeX (no client math runtime)
-- `rough-notation` for the hand-drawn marginalia (scroll-into-view scribbles)
-- Typography: STIX Two Text (serif body), IBM Plex Mono (Lean artifacts)
-
-## Develop
+A concise research summary with links to the source evidence. Built with Next.js
+as a static export. The source directory keeps its historical name so existing
+GitHub Pages builds continue to work.
 
 ```sh
-npm install
+npm ci
 npm run dev
+npm run build
 ```
 
-## Build
+Python 3 is required. Before development and build, the site copies the canonical
+onboarding files from `mine/` and reads the certificate registry into ignored
+`data/research.json`. Update the research prose in `app/page.tsx`; edit certificate
+records in `scripts/probes/hdd_certificates.py` at the repository root. The table
+selects the best registered certificate for each rate. It does not run the
+mathematical certificate verifier or certify a new research result.
 
-```sh
-npm run build   # static export to out/
-```
+`npm run build` validates the export and writes a deployment manifest.
+`PAGES_BASE_PATH=/deltastar` supports the existing GitHub Pages export; leave it
+unset for Cloudflare. Onboarding links respect the same base path.
 
-The site is fully static. `PAGES_BASE_PATH` controls Next's `basePath`:
-unset for root-hosted deploys (Cloudflare Pages, local dev), set to
-`/deltastar` by the GitHub Pages workflow so the export works under
-`<pages-url>/deltastar/`.
-
-## Easter egg
-
-There is a "degen mode" toggle that renders an ELI5 translation panel above
-each section. Both registers state the same facts; neither claims the prize
-problem is solved.
+For publishing, credentials, verification, and rollback, see
+[`docs/wiki/research-site.md`](../../docs/wiki/research-site.md).

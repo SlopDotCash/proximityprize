@@ -8,6 +8,8 @@ For reusable cross-cutting workflows that are not tied to one repo area, see
 
 ## Start Here
 
+- [`research-site.md`](research-site.md) - research website sources, CI, deployment, and readback.
+
 - [`quickstart.md`](quickstart.md) - canonical agent command and validation playbook.
 - [`shared-checkout-contention.md`](shared-checkout-contention.md) - lake-lock/`lake env` hangs (LEAN_PATH bypass), git contention, and probe-output hygiene under concurrent agents.
 - [`repo-map.md`](repo-map.md) - where to edit and how the main subtrees relate.
