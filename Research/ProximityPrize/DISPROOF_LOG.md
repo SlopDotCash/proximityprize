@@ -53716,3 +53716,182 @@ configuration with profile `(6,6,6,4,11,7)` and refutes
 `RegionMiddleExclusion (ZMod 23)`. The witness is confined to the region
 interface. It does not construct an over-budget MCA stack or determine
 production delta-star; the lift to that setting remains open.
+
+---
+
+### [1-HD1-hidden-derivative-interpolation] the code-theoretic route beyond Johnson is the hidden-derivative contact interpolant; its d=1 reach is exactly δ ≈ 0.310 at rate 1/2 and it needs field-size slack the production shape does not have (2026-09-05)
+
+State of the art refresh: ECCC TR26-164 (2026-09-04) list-decodes plain RS over prime fields on
+any evaluation set up to capacity at low rate by interpolating `Q(X, Y₀, Y₁, …, Y_d)` with
+`Y_j` a *hidden* Hasse derivative; better.codes PR #122 (nasqret, merged 2026-08-27) is the
+`d = 1` affine-line version `Q(X, Y, R, Z)`, Lean-checked at koalaIRS12, 10 positions beyond
+finite Johnson.  This entry quantifies the route exactly (all gates are exact integer or
+`F_p` arithmetic; probes `scripts/probes/hd1_interpolation_threshold.py`,
+`hd_general_rank.py`, `hd_true_rank.py`, `hd1_line_ledger.py`, all PASS).
+
+* **Exact per-node rank.**  For `d = 1` the node constraint matrix is block-diagonal with
+  Pascal blocks, so `rank Φ = Σ_{i,j} min(#rows(i,j), #cols(i,j))` (closed form, verified
+  against brute-force elimination); the PR #122 closed form `localContactRank` equals it at the
+  PR profile (`49960`) and is an upper bound on a 210-point grid, never an under-estimate.
+  For general `d` the rank is computed inside the invariant blocks `(b₀+Σb_j(+l₀), a−Σ j b_j)`.
+* **No hidden slack (negative result).**  The *true* node condition (vanishing for every
+  genuine polynomial through the node, a polynomial identity in the Taylor coefficients) has
+  the same rank as the formal TR26-164 system in all 24 cases tested (`d ≤ 2`, LD and line);
+  the Taylor identity is the only relation the method can exploit.
+* **`d = 1` reach.**  Rate 1/2, `n = 2¹⁸`: least agreement `A/√(n(k−1))` = .99603 (m=12),
+  .98413 (32), .97763 (256), .97620 (512, `s ≈ 0.3m`); `c/m` extrapolation gives
+  `r_∞ ≈ 0.9757`; the exact continuum limit (`hd1_continuum_limit.py`) is `0.97566`, i.e.
+  `δ_∞ = 0.3101` (Johnson .2929, capacity .5).  Exact limits at the other prize rates:
+  1/4 → δ = .5312 (J .500), 1/8 → .6809 (J .646), 1/16 → .7819 (J .750).  The
+  line/MCA setting converges to the LD threshold as the `Z`-cap `L → ∞` (deficit ≈ `1.6·10⁵/L`
+  positions).  `d = 2` (box caps) is worse than `d = 1` for `m ≤ 16` and better from `m ≈ 24`
+  (m=32: .98212 vs .98387); the hierarchy helps only slowly at rate 1/2.
+* **Prize-scale evaluation under the PR #122 ledger (parametric port).**  With budget `2¹²²`
+  (`|F| ≈ 2²⁵⁰`, `ε* = 2⁻¹²⁸`), `d = 1` certifies δ = .30896 at rate 1/2 for every
+  `n ∈ [2¹⁸, 2³⁶]` (seeds `2^82…2^118`), .30805 at `n = 2⁴⁰`; it reproduces the PR's own
+  optimum (`a = 185354`, `(13,3,169)`) under the koalaIRS12 budget; and it certifies **nothing**
+  at `|F| ≈ n·2¹³⁸` (budget ≈ `n`), the campaign's production shape.  Classification:
+  computational evidence under a ledger whose geometric theorems are machine-checked at a fixed
+  profile in another repository — not a theorem of this repository.
+* **Lean (axiom-clean, Mathlib-only).**  `Frontier/_HD1ContactVanishing.lean`:
+  `contact_vanishing` (TR26-164 Lemma 3.1, `d = 1`) and `contact_vanishing_line` (the PR #122
+  node substitution with the line parameter): the formal contact constraint of order `m` at a
+  node forces `(X − C α)^m ∣ Q(X, P, P'[, γ])` for every `P` through the node.
+  `Frontier/_HD1InterpolationCore.lean`: `exists_interpolant` — TR26-164 Proposition 3.13 at
+  `d = 1` with the node-rank sum left as an explicit hypothesis (weighted-degree bound,
+  coprime-product vanishing, codimension subadditivity of kernels all proved); the rank sum is
+  the exact quantity the probes compute.
+
+Consequence for the doctrine: the NEC lane showed the "BGK wall is necessary" claim is a
+meta-claim; this is the concrete BGK-free route and its measured reach — a constant-relative
+step beyond Johnson at every prize rate, purchasable only with field-size slack `≳ 2⁹⁰` over the
+seed count.  Production δ* (razor-thin budget) remains OPEN.  Note
+`docs/kb/deltastar-hd1-hidden-derivative-interpolation-2026-09-05.md`.
+
+---
+
+### [1-SW1-strip-route-refuted] the rate-1/2 strip route is dead as formalized: F1 `UniformSylvesterInjective` is false (literally and on the intended coset family), F3 `hrank` is never satisfiable by an `mcaEvent` stack, and the SYZ40/41/42 master hypotheses are contradictory (2026-09-05, verified and repaired the same evening)
+
+The SW1 round (`docs/kb/deltastar-sw1-f3-2026-09-05.md`, `deltastar-sw1-lit-…`,
+`deltastar-sw1-nec-…`) left six Lean files untracked, four of them failing to elaborate; all
+six now compile with axioms `propext, Classical.choice, Quot.sound` only (repair log in the
+notes' verification addenda).  Verified content:
+
+* **F1 (`Frontier/_SW1_F1_UniformSylvesterRefuted.lean`).**  `SYZ40.UniformSylvesterInjective
+  K (2k) k` is false for every field and every `k ≥ 1` (`not_uniformSylvesterInjective`: the
+  Prop has no coprimality clause, so `WAC = WBC` with unit cofactors kills it); hence
+  `SYZ42.StripMasterHypothesis'' K V (2k) k` is uninhabited, in particular at
+  `(ZMod P, 2^30, 2^29)` (`stripMasterHypothesis''_false_production`), and the first conjunct of
+  the SYZ40 strip conclusion is itself false (`strip_conclusion_false`).  The *intended* Prop
+  (pairwise-coprime, separable, `μ_n`-rooted, band-realizable balanced interior triples) is
+  refuted too by the coset family `X^d − c_j`, `c_j^4 = 1` (`coset_family_refutes_F1`, all
+  `d ≥ 4`, every field; `coset_family_production` at `d = 2^28`, `n = 2^30`): the binomial
+  identity `(X^d−c₀)(c₁−c₂) − (X^d−c₁)(c₀−c₂) + (X^d−c₂)(c₀−c₁) = 0` is a constant syzygy, so
+  `ι = ⌊d/2⌋ ≥ 2` (`coset_imbalance_ge_two`) — the near-balance `ι ≤ 1` is false on the
+  balanced band-realizable interior.  Also (pure `ℕ`): `ι ≤ 1` is insufficient for
+  `SylvesterInjective` on the odd boundary; the uniformly sufficient target is gap `≤ 2` in both
+  parities (`gap_le_two_suffices`, `imbalance_le_one_insufficient`).
+* **F3 (`Frontier/_SW1_F3_UnionRankExact.lean`).**  The G87 bridge family of any stack with an
+  `mcaEvent` witness set inside `U` has `finrank (span φ) + 1 ≤ 2(|U| − dim C|_U)`
+  (`localized_span_cap`, `bridge_family_violates_hrank`), so `hrank` fails
+  (`hrank_false_of_mcaEvent_witness`); conversely `hrank` forces joint codeword agreement on
+  `U` (`pairJoint_of_hrank`), and the `∀ φ` form of SYZ43's `hrank` forces `Ucard ≤ k`
+  (`forall_form_forces_Ucard_le_k`).  Exact dimension formula:
+  `finrank (span φ) = 2(|U| − dim C|_U) − dim(Bad_U/(C|_U)²)`; `hrank` is a non-realizability
+  condition, not a spanning condition, and SYZ56's chaining no-go aimed at a certificate that
+  cannot exist.  Probe `scripts/probes/sw1_f3_union_rank.py` (786 exact configurations, PASS).
+* **Container (`Frontier/_SW1_F3_MasterHypothesisVacuous.lean`).**  `SuperadditiveUnion n k n`
+  is empty, so the SYZ40/41/42 master hypotheses (which demand it for every `Ucard ≤ n`) are
+  false (`not_stripMasterHypothesis*`), and the SYZ46 bracket
+  `deltaStar_bracket_of_strip_master_hypothesis` has a false antecedent
+  (`syz46_antecedent_false`).
+
+Classification: refutation/no-go of the strip formalization.  It moves no δ* bracket (the SYZ6
+ceiling half was unconditional and stands); the floor half of the SYZ46 bracket must be
+re-carried with a satisfiable antecedent before any F1/F2/F3 work is worth doing *for that
+theorem*.  Production δ* remains OPEN / ON-BGK.
+
+---
+
+### [1-HDd-order-uniform-core-and-cap-design] the interpolation core is order-uniform in Lean; free cap shapes beat every tried family; the continuum cap-design LP and its false-feasibility mode; TR26-164 rev. 1 quantified (2026-09-06)
+
+Code-theoretic lane, BGK-free, standalone issue #1.  Full note:
+`docs/kb/deltastar-hdd-cap-design-2026-09-06.md`.  Production δ* unchanged: **OPEN**.
+
+* **Lean (axiom-clean, Mathlib-only).**  `Frontier/_HDdContactVanishing.lean`
+  (`contact_vanishing_d` = TR26-164 Lemma 3.1 at every derivative order, via a
+  coefficientwise truncated Möbius inversion) and `Frontier/_HDdInterpolationCore.lean`
+  (`exists_interpolant_d` = Proposition 3.13 at every order, node-rank sum explicit).
+  At every `d`, theorem + rank probe = the full interpolation step.
+* **Instruments (selftested).**  `hdinf_cap_search.py` (O(|cap|+grid) counting-bound
+  evaluator + downset search), `hdinf_continuum_lp.py` (exact m→∞ 2-D occupancy LP over
+  `(S,J)`, cost linear in `d`, Richardson-validated to 4e-5 against the d=1 limit),
+  `hdspec_search.py` (exact-integer spectral caps at any `d`).
+* **Measurements (counting bound = sound interpolation certificates, rate 1/2, n=2^18).**
+  Free downsets/spectral caps beat boxes, simplices and ω-caps at every (d,m) tested:
+  d=6 m=32 spectral `A=178525` (δ=0.31898, matches the continuum d=6 value 0.32834 minus
+  the c/m finite-size penalty); continuum face `δ_∞(d)` = .31010/.31815/.32301/.32577/.32834
+  at d=1..6, increments decaying toward ≈1/3 (target, not established).
+* **Failure mode (documented, fixed, cross-checked).**  The unconstrained occupancy LP
+  faked `β < 1` via boundary-leaked rank cost (mass ~1e-28, margin ~1e-33); masked windows
+  + margin tolerance restore sanity; exact single-group discrete caps confirm no runaway.
+  Interpolation-step thresholds are a NECESSARY face only; prize-budget (`ε* = 2^-128`)
+  list/seed ledgers remain the open second constraint for d ≥ 2.
+* **Literature (exact quantification).**  TR26-164 rev. 1 (2026-09-05) adds Corollary
+  1.2/5.1 (Alrabiah–Goyal–Guruswami PADDING: capacity at all constant rates, prime `q ≥
+  C(R,δ)n`, arbitrary evaluation sets).  Through the paper's own constants the first
+  Johnson-beating radius at rate 1/2 costs `q ≳ n·2^655` — over the campaign production
+  shape by ~2^500 (sharpens LIT §5 item 1 with numbers).  Kopparty side conditions
+  (`q ≥ k > d`, degrees < q, list ≤ q^{4d+6}) are mild, so the measured certificates give
+  plain-LD-beyond-Johnson at ANY prime `q ≥ k` at rate 1/2 — far outside the paper's
+  constant regime — but the Grand-LD `2^-128·q` list budget is NOT met by `q^{4d+6}`.
+
+Classification: exact reductions (Lean), sound computational certificates (probes),
+narrowing evidence + a documented no-go on reading the unconstrained face as a decoding
+radius.  No bracket moves.
+
+---
+
+### [1-HDd-composed-LD-instance] composed theorem-instance: plain-RS list decoding at δ = 0.33791 > Johnson at rate 1/2, every prime q ≥ n, arbitrary evaluation sets (2026-09-06)
+
+The strongest bignum-verified point of the interpolation face composes into the following
+CLAIM (dependency list below; not a Lean end-to-end theorem yet):
+
+> Let `n = 2^18`, `k = 2^17`, `q ≥ n` prime, `α_1..α_n ∈ F_q` distinct, `y ∈ F_q^n`.  Then
+> `#{P ∈ F_q[X]_{<k} : agreement(P, y) ≥ 173563} ≤ q^{54}`, i.e. RS_{n,k} is combinatorially
+> `(δ, q^{54})`-list-decodable at `δ = 0.33791` (Johnson: `0.29289`), and the list is
+> computable in `q^{O(13)}` time.
+
+Dependencies, in order:
+1. **Integer certificate** (`hdspec_search.verify_exact_int`, Python bignums, no floats):
+   at `d = 12, m = 128`, `Ω = {(S,J) : S ≤ 102, S ≤ J ≤ min(12S, 205)}`, `A = 173563`:
+   `dim = 173575795916105963870 > n·Σ_blocks min(rows, cols) = 173574747307010686976`
+   (and infeasible at `A − 1`; threshold exact).  Field-uniform: pure counting.
+2. **rank ≤ Σ min(rows, cols)** per node: `finrank_span_range_le_sum_min`
+   (`_HDdCountingBound.lean`, axiom-clean) + the `(g₁,g₂)` block structure
+   (`contactSubstD_translate`, `weightedDegree_of_mem_support_contactSubstD`,
+   `_HDdNodeTranslation.lean` / `_HDdOriginGrading.lean`, axiom-clean); the remaining
+   finite-reindexing assembly is bookkeeping (rows over-counted by the composition superset
+   only helps soundness).
+3. **`exists_interpolant_d`** (`_HDdInterpolationCore.lean`, axiom-clean): the certificate
+   inequality forces a nonzero interpolant `Q` killing every `A`-agreeing `P`
+   (`Q(X, P, P^{[1]}, …, P^{[12]}) = 0`), with `deg_{Y_i} Q ≤ 205 < q` and
+   `(1, k−1, …, k−13)`-weighted degree `< mA = 2^{24.4} < q²`.
+4. **[Kop15] Theorem 4.3** (external, published): all such `P` are found in `q^{O(d+1)}`
+   time; at most `q^{4d+6} = q^{54}` of them.
+
+Context: TR26-164 rev. 1 (Cor. 5.1, AGG padding) reaches radius `0.33791` at rate 1/2 only
+for `q ≳ n·2^{600}` through its stated constants; this instance needs any prime `q ≥ 2^18`.
+NOT prize movement: the Grand-LD box is `m`-interleaved with budget `Λ ≤ 2^{−128} q ≪ q^{54}`,
+and the T5.1 transfer cannot carry any of this beyond Johnson on the MCA side (√-wall, KB
+§4.5).  Classification: computational certificate + Lean-verified mathematical core +
+one cited external theorem; the certificate is reproducible via
+`python3 -c "...verify_exact_int(12, 2**18, 2**17, 128, trunc_wedge(12,102,205), 173563)"`.
+
+Addendum (same day): the certificate registry `scripts/probes/hdd_certificates.py` now holds
+five bignum-verified threshold-tight records — rate 1/2: δ = 0.33791 (d=12, m=128; list
+exponent 4d+6 = 54) and δ = 0.34321 (d=24, m=128; list exponent 102); rate 1/8: δ = 0.72004
+(d=8, m=128); rate 1/16: δ = 0.80826 (d=6, m=128) and δ = 0.82105 (d=8, m=512).  All PASS.
+The window-fraction law and the death of the `m = d³` hypothesis at prize rates are recorded
+in the KB note §3.6; TR26-164's capacity regime is confined by its own constraint (26) to
+rates ≲ 10⁻⁴³.
