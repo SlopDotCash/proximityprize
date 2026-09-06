@@ -1,0 +1,29 @@
+{
+  "exit_code": 0,
+  "command": "python3 -u scripts/probes/probe_466_g87v_census_rank.py",
+  "output": "# G87V census-rank probe \u2014 is the fence hypothesis (full rank) attainable?\ncell (n=16, p=97): #census per nontrivial root: min=5376 max=160160; ranks (q1,q2,mod p): [(14, 14, 14), (15, 15, 15), (16, 16, 15)]; full-census common coverage per root: [1, 2]\n   -> full rank n=16 attainable at 12/15 roots (fence threshold s* = (n/2)*log6/log p = 3.13)\ncell (n=16, p=193): #census per nontrivial root: min=2624 max=160160; ranks (q1,q2,mod p): [(12, 12, 12), (14, 14, 14), (15, 15, 15), (16, 16, 15)]; full-census common coverage per root: [1, 2, 4]\n   -> full rank n=16 attainable at 8/15 roots (fence threshold s* = (n/2)*log6/log p = 2.72)\ncell (n=16, p=257): #census per nontrivial root: min=1664 max=160160; ranks (q1,q2,mod p): [(12, 12, 12), (14, 14, 14), (15, 15, 15), (16, 16, 15)]; full-census common coverage per root: [1, 2, 4]\n   -> full rank n=16 attainable at 8/15 roots (fence threshold s* = (n/2)*log6/log p = 2.58)\ncell (n=32, p=641): #census per nontrivial root: min=101120 max=18123840; ranks (q1,q2,mod p): [(28, 28, 28), (30, 30, 30), (31, 31, 31), (32, 32, 31)]; full-census common coverage per root: [1, 2, 4]\n   -> full rank n=32 attainable at 24/31 roots (fence threshold s* = (n/2)*log6/log p = 4.44)\ncell (n=32, p=769): #census per nontrivial root: min=76800 max=18123840; ranks (q1,q2,mod p): [(28, 28, 28), (30, 30, 30), (31, 31, 31), (32, 32, 31)]; full-census common coverage per root: [1, 2, 4]\n   -> full rank n=32 attainable at 24/31 roots (fence threshold s* = (n/2)*log6/log p = 4.31)\ncell (n=32, p=1153): #census per nontrivial root: min=54784 max=18123840; ranks (q1,q2,mod p): [(28, 28, 28), (30, 30, 30), (31, 31, 31), (32, 32, 31)]; full-census common coverage per root: [1, 2, 4]\n   -> full rank n=32 attainable at 24/31 roots (fence threshold s* = (n/2)*log6/log p = 4.07)\nREAD: full modular rank certifies full rational rank and makes the fence applicable.\nDeficient modular ranks do not by themselves rule out full rational rank.\nCoverage refers to the full census, not a separately selected independent subfamily.\n",
+  "archive_comparison": "all six census summary rows and all six full-rank counts match; corrected thresholds and interpretation intentionally differ",
+  "independent_primality_checks": [
+    97,
+    193,
+    257,
+    641,
+    769,
+    1153,
+    1000003,
+    999983
+  ],
+  "order_two_census_count_n32": 18123840,
+  "sources": [
+    {
+      "path": "scripts/probes/probe_466_g87v_census_rank.py",
+      "sha256": "d03fa722de55e82f3061642dcfe298b6db06e6deaf59d9e3187da7917598ae26"
+    },
+    {
+      "path": "scripts/probes/_out_466_g87v_census_rank_full.txt",
+      "sha256": "fe6d9be96373f1e33a042c34b9c2b96ffd8390c7774e3a03fb8743086ef0f7f9"
+    }
+  ],
+  "completed_original_unreferenced": 71,
+  "remaining_original_unreferenced": 21
+}
