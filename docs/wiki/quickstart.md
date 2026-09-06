@@ -229,7 +229,13 @@ python3 -m pip install leanblueprint
   The `.lake` cache is saved under a key unique to each run attempt (with
   newest-prefix restore), so when a hosted runner dies mid-build,
   `gh run rerun <id> --failed` resumes from the latest partial snapshot and
-  successive attempts ratchet forward; `docs.yml` uses the same scheme.
+  successive main-branch attempts ratchet forward; `docs.yml` uses the same scheme.
+  Only main publishes cache snapshots. PRs and manual branch runs restore main
+  snapshots but do not save branch-scoped copies: each snapshot is roughly 3 GB,
+  and PR copies previously evicted the shared compilation and documentation
+  progress from the repository cache. Once main has a complete warm snapshot,
+  PRs rebuild their changed modules against it. A failed branch run does not
+  retain partial progress; land prerequisite build repairs separately when needed.
   The full validation build uses one Lean worker to limit peak memory:
   two-worker attempts repeatedly terminated in the heavy Frontier region
   before saving their caches. Validation has a 270-minute budget within a
