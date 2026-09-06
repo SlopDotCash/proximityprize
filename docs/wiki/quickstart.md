@@ -256,6 +256,10 @@ python3 -m pip install leanblueprint
   repeatedly interrupted healthy builds. Website compilation and documentation
   each have 150 minutes within a 330-minute job. Compilation uses one worker;
   documentation generation uses two after the compiled library is available.
+  Before caching, `scripts/ci-stop-lean.sh` stops leftover Lake and Lean workers
+  on disposable GitHub-hosted Linux runners. Cancelled steps can otherwise leave
+  writers running and make the archive fail with "file changed as we read it".
+  The helper refuses to run locally or on shared self-hosted runners.
   Main CI and Pages builds finish before the latest queued main run starts,
   so incoming merges do not repeatedly interrupt compilation or cache saves.
   Superseded non-main runs may still be cancelled.
