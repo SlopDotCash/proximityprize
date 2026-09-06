@@ -163,7 +163,7 @@ jobs:
           resource_monitor_pid=$!
           trap 'kill "$resource_monitor_pid" 2>/dev/null || true' EXIT
           bash scripts/build_timing_report.sh run test_path "$BUILD_TIMING_RESULTS" -- \
-            bash -eo pipefail -c 'timeout --signal=INT --kill-after=2m 240m ./scripts/validate.sh'
+            bash -eo pipefail -c 'timeout --signal=INT --kill-after=2m 270m ./scripts/validate.sh'
 
       # A late runner termination still leaves valid completed oleans. Saving
       # that coherent partial cache lets a rerun finish the remaining modules
