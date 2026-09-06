@@ -12,6 +12,13 @@ theorem.  The output says whether porting the geometry is worth it, nothing more
 Interpolation gate: EXACT (hd_general_rank.node_rank at d = 2, line setting), so the radius
 side of every row is sound; only the seed side is heuristic.
 
+GRID WARNING (measured 2026-09-06): the ledger's slack at n = 2^18 is ~2^40, so the
+budget-optimal (m, L) sit in the hundreds (the m <= 16 grid below only fits the razor-thin
+regime); at n = 2^30 the slack is ~2^16 and m ~ tens-to-hundreds remain feasible
+(yCap*s1*L <= 2^30).  A successor should scan m in {24..192}, L ~ 13m, and expect the
+projected 2^250-scale witness in delta ~ 0.311-0.318 (family extrapolation in the KB note);
+each exact d=2 line-rank evaluation at that scale takes minutes — budget hours.
+
 Usage: python3 hd2_ledger_projection.py
 """
 import math
