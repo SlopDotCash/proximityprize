@@ -344,3 +344,5 @@ only on success. `pg-iterate.sh` propagates a nonzero Lean exit status even
 when the process emits no diagnostic text. A successful file with no
 `#print axioms` output is still a successful type check; absence of that
 output does not itself perform an axiom audit.
+
+Stale build-lock reclamation also checks the recorded local owner PID with `kill -0`. A live or paused owner keeps its checkout lock and machine slot even when its heartbeat is delayed. The timeout still bounds checkout-lock waiting. PID reuse can conservatively delay reclamation; inspect the recorded owner before manual cleanup. The isolated lock regression pauses an owner beyond the stale threshold and checks that another build cannot enter.

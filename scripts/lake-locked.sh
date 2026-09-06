@@ -25,8 +25,8 @@
 #
 # Locks are directories (mkdir is atomic everywhere, incl. Git Bash on
 # Windows) with a heartbeat file refreshed every 30s. A lock whose heartbeat
-# is older than LAKE_LOCKED_STALE_SECS (default 300) is presumed dead (its
-# holder was killed) and is stolen.
+# is older than LAKE_LOCKED_STALE_SECS (default 300) is reclaimed only if
+# its recorded local owner PID is no longer alive.
 #
 # Env knobs:
 #   LAKE_LOCKED_SLOTS=N         max machine-wide concurrent builds (default 2)
@@ -67,6 +67,13 @@ lock_age() {
   echo $(( $(now_s) - hb ))
 }
 
+# A delayed heartbeat is not evidence that its local owner has exited.
+owner_alive() {
+  local owner_pid
+  owner_pid="$(awk 'NR == 1 { print $1 }' "$1/owner" 2>/dev/null || true)"
+  [[ "$owner_pid" =~ ^[0-9]+$ ]] && (( owner_pid > 0 )) && kill -0 "$owner_pid" 2>/dev/null
+}
+
 # acquire <lockdir> <label> — blocks until the lock is held.
 acquire() {
   local lock="$1" label="$2" started waited age
@@ -80,7 +87,7 @@ acquire() {
     # Holder may have released between our mkdir and now — retry immediately.
     [[ -d "$lock" ]] || continue
     age="$(lock_age "$lock")"
-    if (( age > STALE )); then
+    if (( age > STALE )) && ! owner_alive "$lock"; then
       echo "lake-locked: stealing stale $label lock (heartbeat ${age}s old)" >&2
       rm -rf "$lock" 2>/dev/null || true
       continue
@@ -143,7 +150,7 @@ while [[ -z "$SLOT_LOCK" ]]; do
       SLOT_LOCK="$slot"
       break
     fi
-    if [[ -d "$slot" ]] && (( $(lock_age "$slot") > STALE )); then
+    if [[ -d "$slot" ]] && (( $(lock_age "$slot") > STALE )) && ! owner_alive "$slot"; then
       echo "lake-locked: stealing stale build slot $slot" >&2
       rm -rf "$slot" 2>/dev/null || true
     fi

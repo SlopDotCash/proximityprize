@@ -100,11 +100,12 @@ active.rmdir()
                 first = launch("first")
                 eventually(lambda: (lock / "owner").exists())
                 self.assertEqual(int((lock / "owner").read_text().split()[0]), first.pid)
+                initial_heartbeat = int((lock / "heartbeat").read_text())
                 # Wait longer than the stale threshold while every machine slot is occupied.
                 time.sleep(4)
                 self.assertIsNone(first.poll())
                 self.assertFalse((root / "first.started").exists())
-                self.assertLessEqual(int(time.time()) - int((lock / "heartbeat").read_text()), 2)
+                eventually(lambda: int((lock / "heartbeat").read_text()) > initial_heartbeat)
                 second = launch("second")
                 time.sleep(1)
                 self.assertEqual(int((lock / "owner").read_text().split()[0]), first.pid)
@@ -113,8 +114,12 @@ active.rmdir()
                 for slot in occupied:
                     shutil.rmtree(slot)
                 eventually(lambda: (root / "first.started").exists())
-                time.sleep(3)
+                # Pause the owner and its heartbeat beyond both stale and poll periods.
+                os.killpg(first.pid, signal.SIGSTOP)
+                time.sleep(7)
                 self.assertFalse((root / "second.started").exists())
+                self.assertEqual(int((lock / "owner").read_text().split()[0]), first.pid)
+                os.killpg(first.pid, signal.SIGCONT)
                 (root / "first.release").touch()
                 self.assertEqual(first.wait(timeout=15), 0)
                 eventually(lambda: (root / "second.started").exists())
@@ -127,7 +132,10 @@ active.rmdir()
                 stop_holder.set()
                 holder.join()
                 for process in processes:
+                    if process.poll() is not None:
+                        continue
                     try:
+                        os.killpg(process.pid, signal.SIGCONT)
                         os.killpg(process.pid, signal.SIGTERM)
                     except ProcessLookupError:
                         pass
