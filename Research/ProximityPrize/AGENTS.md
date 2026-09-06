@@ -127,9 +127,9 @@ These additions do not change the production verdict: **OPEN / ON-BGK**.
 
 Start from:
 
-- `docs/kb/deltastar-DOSSIER-v4-2026-08-16.md` for the standalone control plane, the current
+- `Research/ProximityPrize/DOSSIER.md` for the standalone control plane, the current
   completion ledger, and the verified post-v3 results;
-- `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` for the consolidated theorem and no-go map
+- `Research/ProximityPrize/DOSSIER.md` for the consolidated theorem and no-go map
   through the 2026-07-11 session-final addenda;
 - `Research/ProximityPrize/DISPROOF_LOG.md` (tail first) for results after the dossier snapshot;
 - `docs/kb/deltastar-466-tool-shape-doctrine-v2-2026-07-10.md` for the positive specification

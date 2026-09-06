@@ -134,7 +134,7 @@ ways; the inner layer is one-directional named glue whose reverse is exactly Pro
 ON-BGK. No fabricated closure.**
 
 <sub>🤖 #466, 2026-07-04, consolidated after 14 rounds (Fable rounds 1, 10–14; the parallel session's
-rounds 2–9). The single dossier is `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` (§0–§24); the Lean
+rounds 2–9). The single dossier is `Research/ProximityPrize/DOSSIER.md` (§0–§24); the Lean
 capstones are `Frontier/_WallCapstone.lean`, `_TwoSidedCapstone.lean`, `_MomentOptimizedSupNorm.lean`,
 `_R13HyperplaneSecondMoment.lean`, `_R14SupNormWeakerThanWall.lean`.</sub>
 

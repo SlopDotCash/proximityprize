@@ -19,8 +19,8 @@ codes ([ABF26] Definition 4.3), with matching machine-checked bounds.
 | What | Where |
 |---|---|
 | Agent guide (build recipe, honesty rules, pitfalls, state of knowledge) | [`Research/ProximityPrize/CLAUDE.md`](../../Research/ProximityPrize/CLAUDE.md) |
-| Current standalone completion ledger and post-v3 results | [`docs/kb/deltastar-DOSSIER-v4-2026-08-16.md`](../kb/deltastar-DOSSIER-v4-2026-08-16.md) |
-| Historical full campaign dossier through 2026-07-11 | [`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`](../kb/deltastar-DOSSIER-v3-2026-07-01.md) |
+| Current standalone completion ledger and post-v3 results | [`Research/ProximityPrize/DOSSIER.md`](../../Research/ProximityPrize/DOSSIER.md#standalone-snapshot-2026-08-16) |
+| Historical full campaign dossier through 2026-07-11 | [`Research/ProximityPrize/DOSSIER.md`](../../Research/ProximityPrize/DOSSIER.md#campaign-dossier-through-2026-07-11) |
 | Compiled campaign knowledge (#357, by theme) | [`docs/kb/deltastar-357-compiled-knowledge.md`](../kb/deltastar-357-compiled-knowledge.md) |
 | Research map (papers + adjacent math + ranked attack vectors) | [`docs/kb/deltastar-research-map.md`](../kb/deltastar-research-map.md) |
 | #444 no-larp companion map (25 directions/status tags) | [`Research/ProximityPrize/kb/archive/deltastar-444-complete-map-25x25-2026-06-17.md`](../../Research/ProximityPrize/kb/archive/deltastar-444-complete-map-25x25-2026-06-17.md) |

@@ -73,7 +73,7 @@ that cone — it has the build recipe you need to avoid clogging the machine:
   (~2-3 min even no-op) and takes the build lock (serializes all agents). Instead run
   `scripts/pg-warm.sh` ONCE (pre-builds the substrate oleans), then iterate per-attempt with
   `scripts/pg-iterate.sh <file>` (= `lake env lean`, ~30-75s, **no lock → fully parallel**).
-- **Start here:** `docs/kb/deltastar-DOSSIER-v4-2026-08-16.md` for the current standalone
+- **Start here:** `Research/ProximityPrize/DOSSIER.md` for the current standalone
   control plane and post-v3 result ledger, then
   `Research/ProximityPrize/Frontier/README.md` and
   `Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean` §5 for the detailed lane history and substrate.

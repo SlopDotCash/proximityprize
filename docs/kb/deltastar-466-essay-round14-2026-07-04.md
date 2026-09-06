@@ -1,6 +1,6 @@
 # δ\* — Round 14 essay: the relationship of the two open inputs, and the two-sided iff certificate
 
-> Issue #466 · dossier v3. Round-14 companion to `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`
+> Issue #466 · dossier v3. Round-14 companion to `Research/ProximityPrize/DOSSIER.md`
 > (§0, §2, §13, §22–23) and to the round-13 record (`_R13HyperplaneSecondMoment.lean`,
 > `_WallCapstone.lean`, `_MomentOptimizedSupNorm.lean`).
 >

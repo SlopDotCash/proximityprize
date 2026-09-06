@@ -16,7 +16,7 @@ Read the parent `CLAUDE.md` (build/concurrency/honesty rules) before touching an
 **The current campaign is
 [`SlopDotCash/proximityprize#1`](https://github.com/SlopDotCash/proximityprize/issues/1).** Historical
 issue #466 names the predecessor campaign and remains useful provenance, but it is not the current
-control plane. Read `docs/kb/deltastar-DOSSIER-v4-2026-08-16.md` first for the standalone status,
+control plane. Read `Research/ProximityPrize/DOSSIER.md` first for the standalone status,
 post-v3 evidence ledger, and issue map.
 
 > **PRIMARY ENTRY POINT (rate-1/2 strip route, 2026-07-11):**
@@ -27,10 +27,10 @@ post-v3 evidence ledger, and issue map.
 > each a face of the **syzygy structure of the witness-support family `{Sᵢ} ⊂ μ_n`**, which
 > SYZ49 identifies with the BGK level set. The entire μ-basis classical column beneath F1 is now
 > proved (SYZ61→SYZ65). Read that map first, then the SYZ54+SYZ67 addenda in
-> `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6.
+> `Research/ProximityPrize/DOSSIER.md` §6.
 
 The detailed historical frontier (CORE Paley/BGK line) is
-`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6 and
+`Research/ProximityPrize/DOSSIER.md` §6 and
 `../Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean` §5. Reconcile those lanes against dossier v4 before attacking
 one; this README mostly records the accumulated historical lane files below.
 
@@ -42,7 +42,7 @@ the P1 rate-quarter predecessor D-charge cone is COMPLETE with pin =
 two-cover window REALIZED); W15 safe branch closed at UD-plus (window
 `LargeZeroSafeLineListBudgeted` open). Machine-checked convergence: both cones terminate at the
 same beyond-Johnson wall. Bracket unchanged; core open. Full record:
-`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §42.
+`Research/ProximityPrize/DOSSIER.md` §42.
 
 **2026-07-11 follow-up — dossier v3 §43.** `SmallPoolClosure` DISCHARGED; P1 counting branch
 reduced to the single Prop `SwarmResidual` (via `stallResidual_of_swarmResidual` +
