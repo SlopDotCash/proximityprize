@@ -1,53 +1,17 @@
 #!/usr/bin/env python3
-"""
-probe_w13_wavekernel_trace.py -- W13: does arXiv 2606.27075 (wave kernels / trace identities
-on regular graphs) add ANY lever beyond the killed non-backtracking relabeling?
-==============================================================================================
-THREAD wall:probe-batch (#466).  Context: workbench sec 5(7) lists "non-backtracking
-Ihara-Bass (2606.27075)" among probes-never-run.  That list is STALE: round-1 P2
-(`probe_466_nonbacktracking.py`, DISPROOF_LOG `466-r1-nonbacktracking-relabeling`, brick
-`_NonBacktrackingRelabelingNoGo.lean`) already killed the NB SPECTRAL RADIUS as a monotone
-relabel of M on Cay(F_p, mu_n).
+"""W13: finite Hashimoto, non-backtracking, and polynomial trace diagnostics.
 
-WHAT THIS PROBE ADDS (the residual sliver, checked here):
-arXiv 2606.27075 (Basic-Smajlovic-Sabanac, "Discrete Space-Time Wave Kernels and Trace
-Identities on Regular Graphs") is NOT a spectral-radius paper: its new machinery is
-  (i)  explicit discrete WAVE KERNELS on (q+1)-regular graphs (forward time-difference
-       scheme), expressed via discrete modified Bessel functions AND non-backtracking walk
-       counts;
-  (ii) a NEW TRACE-TYPE FORMULA for the affine Laplace-type operator, yielding closed-form
-       evaluations of additive-character-twisted trigonometric sums.
-Could the trace formula (an IDENTITY, not a radius) provide a new arithmetic INPUT for the
-wall M(mu_n) <= C*sqrt(n*log(p/n))?  This probe decides that by verifying the structural
-facts the no-go needs, numerically and exactly:
+The historical probe attributed K_0=I, K_1=A, K_(t+1)=A*K_t-q*K_(t-1)
+to arXiv:2606.27075. That attribution is incorrect. The paper's forward
+wave equation uses W_(t+2)=2*W_(t+1)-(I+Delta^(a,b))*W_t and W_0=W_1=I.
+The implemented K recurrence is retained as a polynomial diagnostic only.
+See docs/kb/audits/w13-paper-recurrence-correction-2026-09-06.md.
 
-  (F1) [dictionary is exact]   On Cay(F_p, mu_n): the NB-walk trace ladder tr(N_m), the
-       Hashimoto moments tr(B^m) (computed DIRECTLY from the Hashimoto matrix, integer
-       arithmetic), and the wave-kernel traces tr(K_t) of the forward-difference wave
-       recursion  K_{t+1} = A K_t - q K_{t-1}  (the recursion whose solution IS the
-       Bessel/NB-walk kernel of the paper) are ALL reconstructed to machine precision from
-       the adjacency power sums P_j = sum_lambda lambda^j alone (eta computed by FFT,
-       independent of the graph walk computation).
-  (F2) [coefficients are instance-blind]  The reconstruction coefficients (the
-       Chebyshev-like triangle c_{m,j} with s_m = lambda*s_{m-1} - q*s_{m-2}) are EXACT
-       RATIONALS depending only on (m, q = n-1) -- verified bitwise identical across
-       different primes p at the same n.  Hence every identity the paper's trace formula
-       can produce on Cay(F_p, mu_n) is an identity WITHIN the moment ladder {P_j}
-       (the E_r wall vocabulary): it constrains nothing the power sums do not already
-       determine, and carries ZERO p-arithmetic beyond them.
-  (F3) [finite numerical comparison] Compare eight normalized moments for
-       n=16 at p=65617 and p=65633 with the non-principal spectral maximum.
-       A tolerance-based comparison does not establish equal moments, failure
-       to distinguish the instances, or a lower bound on the required depth.
-
-The combined return value records the implemented numerical checks only. It
-is not a proof that the cited paper cannot contribute an independent estimate.
-
-REGIME NOTE: F1/F2 verify DETERMINISTIC ALGEBRAIC IDENTITIES -- regime discipline is
-irrelevant there (small p exact cases, matching `probe_466_nonbacktracking.py` part A).
-The regime-proper statement is F3 (n=16, p ~ n^4, p = 1 mod n, mu_n proper, m=(p-1)/n > 1).
-
-Testbed sums: S(n,p) eta_b = sum_{x in mu_n} exp(2*pi*i*b*x/p), M = max_{b!=0} |eta_b|.
+F1 compares graph-matrix traces with floating-point FFT moment reconstruction.
+F2 checks exact rational polynomial coefficients at fixed degree across primes.
+F3 compares normalized moments numerically; it does not establish equality,
+indistinguishability, a required depth, or an impossibility theorem.
+These checks neither implement nor exclude all uses of the paper's trace formula.
 """
 
 import sys
@@ -144,9 +108,8 @@ def cheb_triangle(q: int, mmax: int):
 
 
 def wave_triangle(q: int, tmax: int):
-    """Wave-kernel polynomial w_t: K_t = w_t(A); K_0=I, K_1=A, K_{t+1}=A K_t - q K_{t-1}.
-    (The forward-difference scheme whose closed form is the discrete-Bessel/NB-walk kernel
-    of arXiv 2606.27075.)  Same universal-triangle structure, different seed."""
+    """Polynomial diagnostic: K_0=I, K_1=A, K_{t+1}=A K_t-q K_{t-1}.
+    This is not the forward wave kernel of arXiv:2606.27075."""
     w = [{0: Fraction(1)}, {1: Fraction(1)}]
     for _ in range(2, tmax + 1):
         prev, prev2 = w[-1], w[-2]
@@ -195,7 +158,7 @@ def _exact_int_trace(mat: np.ndarray) -> int:
 def hashimoto_traces(p: int, mu, mmax: int):
     """tr(B^m), m=1..mmax, by DIRECT matrix powers of the Hashimoto operator of
     Cay(F_p, mu) (float64 BLAS, exact-integer range asserted). Also returns tr(A^j) and
-    NB-walk-count / wave-kernel traces computed by the matrix recursion on A, all
+    NB-walk-count / polynomial K traces computed by the matrix recursion on A, all
     INDEPENDENT of any spectral formula."""
     n = len(mu)
     q = n - 1
@@ -245,7 +208,7 @@ def hashimoto_traces(p: int, mu, mmax: int):
         Nm = A @ Nm1 - q * Nm2
         nb_traces.append(_exact_int_trace(Nm))
         Nm2, Nm1 = Nm1, Nm
-    # wave kernel traces by the recursion (direct)
+    # polynomial K traces by the recursion (direct)
     K1 = A.copy()
     wave_traces = [p, _exact_int_trace(K1)]
     Km1, Km2 = K1, Ieye
@@ -259,7 +222,7 @@ def hashimoto_traces(p: int, mu, mmax: int):
 # ============================================================== F1 + F2
 def part_F1_F2():
     log("=" * 78)
-    log("F1: exact dictionary -- Hashimoto / NB-walk / wave-kernel traces from power sums")
+    log("F1: exact dictionary -- Hashimoto / NB-walk / polynomial K traces from power sums")
     log("=" * 78)
     mmax = 10
     ok_all = True
@@ -314,7 +277,7 @@ def part_F1_F2():
             same = base[1:] == other[1:]
             ok_blind &= same
             log(f"  n={n:3d}: triangle(p={base[0]}) == triangle(p={other[0]}) "
-                f"(Chebyshev+wave+NB, exact rationals): {same}")
+                f"(Chebyshev+K+NB, exact rationals): {same}")
     return ok_all, ok_blind
 
 
@@ -361,7 +324,7 @@ def part_F3():
 
 
 def main():
-    log("probe_w13_wavekernel_trace.py -- arXiv 2606.27075 wave-kernel trace identities vs")
+    log("probe_w13_wavekernel_trace.py -- arXiv 2606.27075 polynomial trace diagnostics vs")
     log("the wall M(mu_n) <= C sqrt(n log(p/n)).  THREAD wall:probe-batch, prefix w13.")
     log()
     ok_dict, ok_blindcoef = part_F1_F2()
