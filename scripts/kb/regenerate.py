@@ -10,7 +10,7 @@ from common import (
     DEFAULT_CITATIONS_JSON,
     DEFAULT_DECLARATIONS_JSON,
     DEFAULT_DEDUP_REPORT,
-    DEFAULT_LEAN_ROOT,
+    DEFAULT_LEAN_ROOTS,
     DEFAULT_REFERENCES_JSON,
     REPO_ROOT,
     write_json,
@@ -71,11 +71,11 @@ def main() -> int:
     write_json(DEFAULT_REFERENCES_JSON, references)
 
     keys = sorted(references["entries"])
-    citations = extract_citations(DEFAULT_LEAN_ROOT, keys)
+    citations = extract_citations(DEFAULT_LEAN_ROOTS, keys)
     citations["reference_source"] = str(DEFAULT_REFERENCES_JSON.relative_to(REPO_ROOT))
     write_json(DEFAULT_CITATIONS_JSON, citations)
 
-    declarations = extract_declarations([DEFAULT_LEAN_ROOT])
+    declarations = extract_declarations(DEFAULT_LEAN_ROOTS)
     write_json(DEFAULT_DECLARATIONS_JSON, declarations)
 
     DEFAULT_DEDUP_REPORT.parent.mkdir(parents=True, exist_ok=True)

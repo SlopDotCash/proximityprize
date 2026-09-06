@@ -35,6 +35,9 @@ For substantial contributions, discuss the blueprint-first workflow described in
 - `docs/kb/papers/KEY.md` is the preferred repository-local landing page for a cited paper key.
 - `docs/kb/sources/KEY/metadata.yml` records source provenance and optional local artifacts.
 - `docs/kb/_generated/lean-citations.json` is the generated map from Lean files to cited keys.
+  `python3 scripts/kb/regenerate.py` scans both `ArkLib/` and `Research/`, using
+  the same roots as `check_generated.py`. Changes under either tree trigger
+  the KB freshness workflow.
 
 ## Build And Publish Checks
 
