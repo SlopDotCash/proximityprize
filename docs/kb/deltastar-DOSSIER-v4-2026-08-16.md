@@ -91,7 +91,7 @@ the parity correction changes the public description without silently changing a
 The entries below are classified by what the checked artifact actually establishes. Migration and
 Lean-4.30 repair commits preserve or restore existing results and are not counted as new
 mathematical closures. The grouped ledger is the routing layer; theorem-by-theorem details remain
-in [`DISPROOF_LOG.md`](../../DISPROOF_LOG.md), the frontier module docstrings, and the exact probes
+in [`Research/ProximityPrize/DISPROOF_LOG.md`](../../Research/ProximityPrize/DISPROOF_LOG.md), the frontier module docstrings, and the exact probes
 under `scripts/probes/`.
 
 ### 4.1 Post-v3 grouped ledger

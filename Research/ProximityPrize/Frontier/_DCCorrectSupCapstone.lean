@@ -12,7 +12,7 @@ import Research.ProximityPrize.Frontier._ProveAssemblyConcreteDC
 /-!
 # The DC-CORRECT prize floor at the worst-`b` SUP level (#444 / #407)
 
-The adversarial audit (`DISPROOF_LOG.md`, 2026-06-19) found that the sup-level capstones
+The adversarial audit (`Research/ProximityPrize/DISPROOF_LOG.md`, 2026-06-19) found that the sup-level capstones
 (`_SupBoundCapstone`, `_ThesisCapstone.subPoisson_variance_implies_prizeFloor`) route through the
 **raw, DC-included** energy `E_r ≤ (2r·|G|)^r`, which
 `DCEnergyEssential.not_gaussianEnergyBound_of_deep` proves is **FALSE at prize depth**

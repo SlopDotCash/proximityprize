@@ -22,7 +22,7 @@ cyclotomic fields — CDPR (recover short generators via the log-unit lattice, [
 Peikert–Regev EUROCRYPT'16]), Biasse–Song (quantum poly-time mildly-short vectors, factor
 `exp(Õ(√deg))`, [JACM 2021]), and the 2026 power-of-two bound `λ₁ ≤ (2·d²·p)^{1/4}`
 ([arXiv 2601.07511]) — gives a sharp handle on this count. The closest prior in-tree contact is
-`DISPROOF_LOG.md` O39 (collisions ARE box-short generators of `(1−ζ)^j·𝔭`, CDPR regime; retired
+`Research/ProximityPrize/DISPROOF_LOG.md` O39 (collisions ARE box-short generators of `(1−ζ)^j·𝔭`, CDPR regime; retired
 for the lower half) and `_CyclotomicLatticeWrapOnset.lean` (the Minkowski-`ℓ¹` onset).
 
 ## The verdict: a THREE-fold mismatch (restatement, not a handle). HONEST: re-collapses to BGK.

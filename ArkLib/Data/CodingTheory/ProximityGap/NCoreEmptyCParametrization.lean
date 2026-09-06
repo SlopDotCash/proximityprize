@@ -45,7 +45,7 @@ This is exactly the in-tree core-vs-list split
 `n`-core enumeration counts the `C(A, k+m+1)` **supports**, which this file shows is super-poly,
 *not* the codeword list `L`. The cyclic-sieving lever therefore gives **no list boost** over a
 random domain; the route REDUCES to the same named open core (`SubJohnsonListBound`'s `L`).
-**No closure, no refutation — a precise reduction.** See `DISPROOF_LOG.md`.
+**No closure, no refutation — a precise reduction.** See `Research/ProximityPrize/DISPROOF_LOG.md`.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); finite/elementary.
 -/

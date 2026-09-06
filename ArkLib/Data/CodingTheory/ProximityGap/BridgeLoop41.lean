@@ -42,7 +42,7 @@ This file proves, sorry-free and axiom-clean:
 
 Together these are a faithful verified rendering of the unconditional mechanism of Theorem 2.1. The
 remaining steps (i),(ii),(v) are standard (permutation-invariance of Hamming distance, linearity of
-`RSₖ`) and enter as the hypothesis `hinv`. See `DISPROOF_LOG.md` (Loop41).
+`RSₖ`) and enter as the hypothesis `hinv`. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop41).
 -/
 
 namespace ArkLib.ProximityGap.BridgeLoop41

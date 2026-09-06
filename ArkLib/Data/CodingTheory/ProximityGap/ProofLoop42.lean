@@ -39,7 +39,7 @@ BGM-for-smooth or `Q2`); this one routes through unique decoding and is uncondit
 threshold and `2×` query cost — it does **not** bound `ε_mca` itself at radius `δ`. So the literal
 MCA prize statement (a bound on `ε_mca` at radius `δ ≤ 1−ρ−η`) is *sidestepped*, not proven; but
 the practical above-Johnson FRI soundness the prize was motivated by is now unconditionally in
-prize shape. See `DISPROOF_LOG.md` (Loop42).
+prize shape. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop42).
 -/
 
 namespace ArkLib.ProximityGap.ProofLoop42

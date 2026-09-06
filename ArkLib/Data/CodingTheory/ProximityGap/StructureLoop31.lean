@@ -19,7 +19,7 @@ version. For arbitrary nonnegative level exponents `e_j`,
 So multiplicative branching is prize-safe whenever the total exponent is `O(m)`, and it can beat a
 fixed final-domain polynomial only when the total exponent beats `m*d`. This shoots down attempted
 disproofs based on uneven or adaptive level factors unless they prove a **superlinear cumulative
-exponent** inside the actual GS/proximity mechanism. See `DISPROOF_LOG.md` (Loop31).
+exponent** inside the actual GS/proximity mechanism. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop31).
 -/
 
 namespace ArkLib.ProximityGap.StructureLoop31

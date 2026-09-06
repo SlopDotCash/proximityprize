@@ -40,7 +40,7 @@ Loop49's "both ends super-poly" lean was therefore imprecise for the prime-field
 gap is a *lifting* statement: the `C(2^{m-1}, ℓ)` distinct algebraic-integer sums in `ℤ[ζ]` have
 bounded norm, so for a large prime `p ≡ 1 (mod 2^m)` (Dirichlet) a degree-1 prime `𝔭 ∣ p` keeps them
 distinct mod `𝔭`, witnessing a finite field with super-poly bad count. The combinatorial core is now
-proven; the number-theoretic lifting is the next residual. See `DISPROOF_LOG.md` (O15/Loop50).
+proven; the number-theoretic lifting is the next residual. See `Research/ProximityPrize/DISPROOF_LOG.md` (O15/Loop50).
 -/
 
 open Finset

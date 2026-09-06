@@ -22,7 +22,7 @@ So an additive disproof cannot be based on one uneven or large-looking round. It
 **cumulative sum** of additive fold costs beat every polynomial in the smooth-domain size `2^m`.
 If that sum is polynomially bounded, the prize numerator absorbs it.
 
-Sorry-free and axiom-clean. See `DISPROOF_LOG.md` (Loop29).
+Sorry-free and axiom-clean. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop29).
 -/
 
 namespace ArkLib.ProximityGap.StructureLoop29

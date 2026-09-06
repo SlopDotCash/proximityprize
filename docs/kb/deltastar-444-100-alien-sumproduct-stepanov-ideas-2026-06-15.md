@@ -120,7 +120,7 @@ Lenses touched: `expander-near-ramanujan`, `compressed-sensing-coherence`, `step
   fed additive **sumsets** `{x₁+x₂+x₃}` and a **difference** set `{z₁−z₂}`, NOT multiplicative tori
   (measured fraction inside `μ_n`: `8.3%/2.3%`, `0%/0%`). The `p^{1/4}` is a field-size term, not a
   collinear-triple count.
-- **Verdict: REFUTED** (logged to `DISPROOF_LOG.md`, committed `c8f0af3e3`). Mult-closure makes any
+- **Verdict: REFUTED** (logged to `Research/ProximityPrize/DISPROOF_LOG.md`, committed `c8f0af3e3`). Mult-closure makes any
   all-subgroup product-form collapse to `n²·η` (circular).
 
 ### I025 — Levenshtein weighted higher-moment bound on the cyclotomic correlation family (sequence-correlation) — **NO-GAIN**
@@ -451,4 +451,4 @@ direction not yet collapsed.
 `probe_i001_ore_moore_frobenius_stepanov.py`, `probe_i006_qdifference_stepanov.py`,
 `probe_i008_walsh_dyadic_stepanov.py`, `probe_i012_subgroup_trilinear.py` (`c8f0af3e3`),
 `probe_levenshtein_*_I025*.py`, `probe_papr_merit_*_I027*.py`. Refutations logged in
-`ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md`.
+`Research/ProximityPrize/DISPROOF_LOG.md`.

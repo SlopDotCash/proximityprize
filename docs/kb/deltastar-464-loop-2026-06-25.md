@@ -39,7 +39,7 @@ longer overclaims ordinary Linnik or prize closure.
 Local artifacts:
 
 - `docs/kb/deltastar-DOSSIER-v2-2026-06-22.md`
-- `ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`
+- `Research/ProximityPrize/CLAUDE.md`
 - `docs/wiki/residual-census.md`
 - `docs/references/proximity-gap-paley-spectrum/README.md`
 - `Research/ProximityPrize/LegacyWorkbench.lean`

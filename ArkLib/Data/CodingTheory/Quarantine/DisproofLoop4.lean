@@ -31,7 +31,7 @@ so there are **zero** free polynomials, not exponentially many. The explosion th
 rely on only exists at or above capacity (`δ ≥ 1 − ρ`), which the gap `η > 0` forbids.
 
 This file proves that wall as a sorry-free, axiom-clean real-arithmetic lemma. It does **not**
-prove the conjecture — it refutes the refutations. See `DISPROOF_LOG.md`.
+prove the conjecture — it refutes the refutations. See `Research/ProximityPrize/DISPROOF_LOG.md`.
 -/
 
 namespace ArkLib.ProximityGap.DisproofLoop4

@@ -10,7 +10,7 @@ Reed–Solomon proximity-gap campaign for the
 [Ethereum Foundation Proximity Prize](https://proximityprize.org/). Start with
 the [δ* programme guide](docs/wiki/deltastar-programme.md), the
 [live issues](https://github.com/SlopDotCash/proximityprize/issues), and the
-[Proximity Gap agent guide](ArkLib/Data/CodingTheory/ProximityGap/AGENTS.md).
+[Proximity Gap agent guide](Research/ProximityPrize/AGENTS.md).
 
 The campaign retains the broader ArkLib formal-verification substrate it builds
 on, including the original library overview below. Lean module and package names

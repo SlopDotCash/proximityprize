@@ -9,7 +9,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyEssential
 /-!
 # The char-0-slack `ρ ≤ 1` premise is the RAW energy bound — vacuous at prize depth (#444 / #407)
 
-The adversarial audit (`DISPROOF_LOG.md`, 2026-06-19) flagged a NEW vacuity: the sub-theorem
+The adversarial audit (`Research/ProximityPrize/DISPROOF_LOG.md`, 2026-06-19) flagged a NEW vacuity: the sub-theorem
 `_RhoDecomposition.wraparound_within_char0_slack_suffices` derives the prize criterion `ρ_r
 ≤ 1` from
 the premise `hwrap : W ≤ Wick − E0`. Under the file's own wraparound encoding `W = E_r − E0` (the

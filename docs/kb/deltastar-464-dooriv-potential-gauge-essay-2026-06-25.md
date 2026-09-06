@@ -11,7 +11,7 @@ propose -> attack -> refute loop against the current #464 frontier.
   corrections and the late Door-IV comments.
 - `docs/kb/deltastar-DOSSIER-v2-2026-06-22.md`, including the §16 correction that the
   off-BGK floor is necessary but not sufficient.
-- `ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md` and
+- `Research/ProximityPrize/CLAUDE.md` and
   `Research/ProximityPrize/LegacyWorkbench.lean`.
 - The local Paley/BGK reference map:
   `docs/references/proximity-gap-paley-spectrum/README.md` and

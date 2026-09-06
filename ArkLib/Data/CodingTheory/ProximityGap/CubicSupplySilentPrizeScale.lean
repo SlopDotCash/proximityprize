@@ -8,7 +8,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.SmoothCubicCapstone
 /-!
 # The cubic/energy supply is SILENT at prize scale (#389, O163)
 
-`DISPROOF_LOG.md` O163 states (in PROSE) that the unconditional GV/Stepanov additive-energy
+`Research/ProximityPrize/DISPROOF_LOG.md` O163 states (in PROSE) that the unconditional GV/Stepanov additive-energy
 bound `E(μ_n) ≲ n^{8/3}` makes the energy/cubic supply *silent* at prize parameters: the
 sub-Johnson cubic-word supply cannot reach the breach threshold `ε*·q = 2^128`
 (`n ≤ 2^40`, `q < 2^256`, `ε* = 2^-128`).  This file turns that prose into ONE checked

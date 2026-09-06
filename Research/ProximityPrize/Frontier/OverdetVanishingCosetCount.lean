@@ -75,7 +75,7 @@ supply is coset-union-dominated and grows like `2^{n/2^{⌊log₂ r⌋+1}}`.
   depth `1 ≤ r ≤ L` (in particular the prize binding depth `r ≈ log₂ n`) the supply exponent strictly
   exceeds the budget exponent `L`, so `V_r(n) > 2^L = q·ε*` — the coset-union vanishing supply is
   super-exponentially LOOSE at prize depth and is **not the binding constraint** (crossover to the
-  budget only at `r* ≈ n/(2 log₂ n)`; logged to `DISPROOF_LOG.md`).
+  budget only at `r* ≈ n/(2 log₂ n)`; logged to `Research/ProximityPrize/DISPROOF_LOG.md`).
 - **PROBE-CARRIED (not formalized; honest)** — the identification `vanishing ⟺ coset-union` over
   `ℤ[ζ_n]` and the equality of the vanishing count with the coset-union count.  That cyclotomic
   identity is exactly Lam–Leung char-0 / the antipodal–coset law (in-tree elsewhere); here we carry

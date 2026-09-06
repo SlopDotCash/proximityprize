@@ -36,7 +36,7 @@ genuine GM-MDS construction actually supplies.
 So `GZPCondition` alone is *too weak* to force the RIM kernel to be trivial: a degenerate edge
 family satisfies the hypothesis but leaves the matrix with fewer rows than columns (rank
 deficient).  This is exactly the in-tree fact that **`GZPCondition` does NOT imply
-`WeaklyPartitionConnected`** (the 11th false-residual, `DISPROOF_LOG.md`), now sharpened to a
+`WeaklyPartitionConnected`** (the 11th false-residual, `Research/ProximityPrize/DISPROOF_LOG.md`), now sharpened to a
 full refutation of the kernel-triviality conclusion itself, not merely of the WPC bridge.
 
 ## The corrected residual (`RIMKernelTrivialFromLovettWPC`)

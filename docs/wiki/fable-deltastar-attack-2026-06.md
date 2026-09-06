@@ -19,7 +19,7 @@
 
 
 > Working research log. The honesty contract of #357 applies: open core stays a named
-> surface, every attempt lands in `DISPROOF_LOG.md` with a constraint lemma, probes precede
+> surface, every attempt lands in `Research/ProximityPrize/DISPROOF_LOG.md` with a constraint lemma, probes precede
 > Lean. This file is the *intellectual* plan (the 9 hypotheses + 3 connections + ranking);
 > the bricks land in `ProximityGap/` and `Frontier/`.
 
@@ -171,7 +171,7 @@ N1 · N3 · (unification-bet) · S1 · R1 · S3 · R2 · S2 · R3 · N2 · A5.
 3. **In parallel, cheap kills:** **R3** (interpolation — quick IVT check) and **S2** (menu-law
    census — probe past s=64).
 
-Every refutation is a constraint lemma in `DISPROOF_LOG.md`. Survivors get red-teamed and promoted.
+Every refutation is a constraint lemma in `Research/ProximityPrize/DISPROOF_LOG.md`. Survivors get red-teamed and promoted.
 If all 9 die, regenerate 3+3+3 and continue. **Start: the M3 reduction + A5 exact point.**
 
 ## 7. Results log (proven / refuted, brick by brick)
@@ -1430,7 +1430,7 @@ bound, NOT the HBK *energy* bound. That correction stands and is valuable.
 
 **BUT the pin is REFUTED by Gap C — a proven in-tree no-go I had not connected.** The chain from the
 energy `E(G)` to the worst-case `δ*` quantity `epsMCA` does NOT exist as a proven lemma — the only file
-linking `epsMCA` to energy is `DISPROOF_LOG.md` (recorded dead ends). The precise obstruction is
+linking `epsMCA` to energy is `Research/ProximityPrize/DISPROOF_LOG.md` (recorded dead ends). The precise obstruction is
 `JohnsonFourthMomentNoGo.lean`:
 - `squaredJohnson_le_fourthChain`: `(n·S₂)² ≤ n³·S₄` **ALWAYS** (two chained Cauchy–Schwarz steps).
 - `fourth_moment_cannot_beat_johnson_from_S4` (**proven no-go**): any `Q ≥ S₄` with `n³·Q < (n·S₂)²`

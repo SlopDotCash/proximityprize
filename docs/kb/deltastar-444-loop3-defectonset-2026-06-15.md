@@ -140,7 +140,7 @@ core. **Reduces-to-wall. No closure.**
 
 - Lean: `Research/ProximityPrize/Frontier/_DefectOnsetOvershoot.lean`
 - Probe: `scripts/probes/probe_wfL3_defect_onset.py`
-- DISPROOF_LOG iter-3 entry: `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` (§ "iter 3 — the
+- DISPROOF_LOG iter-3 entry: `Research/ProximityPrize/DISPROOF_LOG.md` (§ "iter 3 — the
   DC-subtracted-energy OVERSHOOT direction also reduces to the wall")
 - Prior: `MomentMethodPrizeDepthNoGo.lean`, `HeightGateNormBound.lean` (iter-1 height-route no-go);
   `docs/kb/deltastar-444-loop2-synthesis-2026-06-15.md` (iter-2 scoping caveat + MGF/disc doors).

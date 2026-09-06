@@ -1,6 +1,6 @@
 # CANDIDATE char-0 closed form: delta* = (1-rho) - log2(n)/n  (constant rate, #407)
 
-> **⚠️ REFUTED 2026-06-14 (#444 A2; see `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md`).**
+> **⚠️ REFUTED 2026-06-14 (#444 A2; see `Research/ProximityPrize/DISPROOF_LOG.md`).**
 > The `w_cross - k = log2(n)` form is **FALSE**. Recomputed q-stably with the SAME (k+1)-subset
 > method under the STANDARD crossing rule (smallest w with worst I_0 <= n AND previous band > n),
 > w_cross - k is **{2,3}, NOT log2(n)**, at every tested point (n=8,16; rho=1/8,1/4,1/2,3/4), under

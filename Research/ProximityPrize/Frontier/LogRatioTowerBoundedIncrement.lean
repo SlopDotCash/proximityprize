@@ -64,7 +64,7 @@ concentration cannot supply. So the Azuma/Freedman lever is MAPPED: the prerequi
 file), but the open object is the per-level MEAN drift `E[Δ_i] − ½log 2` (the binding-frequency
 phase law `θ_b`, the N13 transfer operator), which this magnitude-only recursion cannot reach. This
 is the same wall as the Liu-Zhou magnitude recursion, viewed on the log-tower. CORE `M(μ_n) ≤
-C·√(n·log(p/n))` stays OPEN; logged to `DISPROOF_LOG.md` [LRTBI].
+C·√(n·log(p/n))` stays OPEN; logged to `Research/ProximityPrize/DISPROOF_LOG.md` [LRTBI].
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issue #444.
 -/

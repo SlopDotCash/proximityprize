@@ -58,11 +58,11 @@ In-tree structural facts (axiom-clean, this session + campaign):
 
 - **E_r random-likeness: SETTLED YES** (workflow Q1, 2 reps, exact to r≈log q): `E_r−n^{2r}/p ≤ C^r r! n^r`,
   C≈1–1.6 bounded in n and r, c_r decreasing in r. The E_3-spike debate = prime resonance.
-- **Refuted shortcuts** (`DISPROOF_LOG.md` 2026-06-14): universal √2 house constant; moment-arrow
+- **Refuted shortcuts** (`Research/ProximityPrize/DISPROOF_LOG.md` 2026-06-14): universal √2 house constant; moment-arrow
   closure at constant index; ladder-only floor; flat-plateau constant; v2(m)-dependence of the constant
   (the p=65537 spike is the near-threshold #400 Fermat trap, not 2-adic). Methodology: weak search
   gives false negatives — use ladder-neighborhood perturbation.
-- **Height obstruction** (`DISPROOF_LOG.md`): every char-0 algebraic floor-certificate (energy, BGM
+- **Height obstruction** (`Research/ProximityPrize/DISPROOF_LOG.md`): every char-0 algebraic floor-certificate (energy, BGM
   higher-order-MDS det, esymm) has norm-height `≥2^{φ(n)} ≫ p`, so it can vanish mod p — the floor has
   no char-0-transferable certificate at prize scale; proof requires analysis (the Paley wall). Covers
   the BGM/higher-order-MDS route the prize community most hopes for.

@@ -11,7 +11,7 @@ Everything below is in-tree on canonical `SlopDotCash/proximityprize` `main`; `f
 historical SYZ66 snapshot recorded by this map. The
 production δ* conjecture (`mcaDeltaStar` at rate `1/2` equals the strip value ≈ `1/3`) remains
 **OPEN / ON-BGK**. Nothing here is a closure. Read the parent
-[`CLAUDE.md`](../../ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md) build/honesty rules and
+[`CLAUDE.md`](../../Research/ProximityPrize/CLAUDE.md) build/honesty rules and
 `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6 (SYZ54 + SYZ67 addenda) before touching the cone.
 
 ---
@@ -237,7 +237,7 @@ half, the SYZ49 BGK identification, the SYZ58 rate-`1/4` curve-event scope barri
   pencil yield dissolves the SYZ5 integer-`D` floor only for the object the prize does **not**
   consume. Barrier, not a pin.
 - **`hrank` via cross-witness chaining** — SYZ56 NO-GO (arithmetically obstructed in the strip).
-- **The full dead ledger** — DISPROOF_LOG.md + `deltastar-DOSSIER-v3` §8.
+- **The full dead ledger** — Research/ProximityPrize/DISPROOF_LOG.md + `deltastar-DOSSIER-v3` §8.
 
 ---
 

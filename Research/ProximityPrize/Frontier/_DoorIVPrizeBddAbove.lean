@@ -16,7 +16,7 @@ using a bespoke existential predicate
 i.e. "the normalized prize ratios `M i / scale i` are bounded above by some constant".
 
 That existential is, definitionally, Mathlib's canonical `BddAbove (Set.range fun i => M i / scale i)`.
-The two worst-b probes logged in `DISPROOF_LOG.md`
+The two worst-b probes logged in `Research/ProximityPrize/DISPROOF_LOG.md`
 (`[doorIV-worstb-coherence-constant-prime-stable]`, `[doorIV-worstb-coherence-constant-n-drift-saturates]`)
 measure *exactly* this object: whether the family `C(n) = ρ²(b*)·n/log(p/n)` of normalized ratios is
 bounded above (the prize) or drifts to `∞` (the wall). This file welds the bespoke door-(iv) predicate

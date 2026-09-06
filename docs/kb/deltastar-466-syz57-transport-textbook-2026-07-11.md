@@ -115,4 +115,4 @@ closed** — the counting dictionary (bridge + attribution) is the genuine remai
 
 No δ* pin, no unconditional degree-sum law, no closed transport. Both SYZ57 files are axiom-clean
 partials that discharge the Mathlib-reachable slice and name the two genuinely-open textbook /
-attribution residues precisely. Nothing here belongs in `DISPROOF_LOG.md`.
+attribution residues precisely. Nothing here belongs in `Research/ProximityPrize/DISPROOF_LOG.md`.

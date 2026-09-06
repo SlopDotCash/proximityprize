@@ -17,7 +17,7 @@ polynomial. The logarithmic depth is absorbed by one extra domain power:
 
 So an additive per-fold disproof cannot merely exhibit polynomially many new close codewords per
 round. It must force a super-polynomial additive contribution, or else show genuinely multiplicative
-branching whose cumulative product is super-polynomial. See `DISPROOF_LOG.md` (Loop27).
+branching whose cumulative product is super-polynomial. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop27).
 -/
 
 namespace ArkLib.ProximityGap.StructureLoop27

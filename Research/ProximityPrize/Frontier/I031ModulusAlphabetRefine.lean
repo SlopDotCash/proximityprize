@@ -48,7 +48,7 @@ not capture that the modulus alphabet can drop below the value alphabet).
   the I031 union bound spends is the alphabet log `= log((q−1)/n)` exactly — there is no sub-`(q−1)/n`
   collapse to harvest (the only shrink is an `O(1)` conjugate merge in the modulus alphabet, which does
   not move `log`). The thinness signal must live in the *magnitudes* of the `(q−1)/n` distinct periods
-  (the open sup-vs-`√n`-floor gap), not in their *count*. Logged to `DISPROOF_LOG.md`.
+  (the open sup-vs-`√n`-floor gap), not in their *count*. Logged to `Research/ProximityPrize/DISPROOF_LOG.md`.
 * NON-MOMENT (pure image-cardinality / composite-map fact), EXTEND-proven (sits directly on
   `card_distinct_etaNorm_le_orbitCount` + `card_distinct_eta_le_orbitCount`). ONE sweep, ONE commit.
   Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. CORE

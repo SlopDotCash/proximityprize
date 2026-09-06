@@ -48,7 +48,7 @@ though empirically true, needs a non-moment, thinness-essential argument.
 - `Research/ProximityPrize/Frontier/BlockSumNormNoGo.lean` (axiom-clean)
 - `scripts/probes/probe_heightgate_nogo_407.py`
 - `scripts/probes/probe_short_excess_relation_407.py`
-- `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` (two new entries, 2026-06-14)
+- `Research/ProximityPrize/DISPROOF_LOG.md` (two new entries, 2026-06-14)
 - issue comment: lalalune/ArkLib#407 (2026-06-14 burn-down)
 
 **Bottom line.** The prize remains OPEN. Every comment finding now has a verdict; the one

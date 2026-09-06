@@ -38,7 +38,7 @@ This loop is `sorry`-free and axiom-clean. It proves the negation-symmetry skele
 half of O11. The poly-vs-exponential resolution — the part that would actually settle whether the §7
 attack disproves the prize at the minimal domain — remains **OPEN**, and is deep additive
 combinatorics about subset-sums of multiplicative subgroups (cf. BCHKS §7 / Conj. 1.12). No claim is
-made to have resolved it. See `DISPROOF_LOG.md` (O11).
+made to have resolved it. See `Research/ProximityPrize/DISPROOF_LOG.md` (O11).
 -/
 
 open Finset

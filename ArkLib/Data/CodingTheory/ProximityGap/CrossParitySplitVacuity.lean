@@ -44,7 +44,7 @@ file proves the exact reason, abstractly and axiom-clean:
   the empirically-observed `g = 1` is a **tautology** (always true), hence cannot be a nontrivial
   structural constraint.
 
-## Consequence for the lane (gap localization, recorded in `DISPROOF_LOG.md`)
+## Consequence for the lane (gap localization, recorded in `Research/ProximityPrize/DISPROOF_LOG.md`)
 
 The literal `96–100%` "leak" is `g = 1`, i.e. `A = -B`, i.e. a restatement of `e₁ = 0`. The
 *nontrivial* variants probed (a fixed `g` linking **different power-levels**, e.g.

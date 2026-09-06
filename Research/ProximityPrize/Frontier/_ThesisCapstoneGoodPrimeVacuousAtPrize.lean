@@ -10,7 +10,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyEssential
 # The thesis-capstone good-prime premises force the RAW energy bound — vacuous at prize
 (#444 / #407)
 
-The adversarial audit (`DISPROOF_LOG.md`, 2026-06-19) confirmed
+The adversarial audit (`Research/ProximityPrize/DISPROOF_LOG.md`, 2026-06-19) confirmed
 `_ThesisCapstone.subPoisson_variance_
 implies_prizeFloor` is vacuous-at-prize: its STEP-2 energy bridge derives
 `hEbound : E_r ≤ (2r·|G|)^r` (the **raw, DC-included** energy bound = `GaussPeriodMomentBound.

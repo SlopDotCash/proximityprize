@@ -239,5 +239,5 @@ Probes (numerical evidence; regime `p ≡ 1 mod n`, `p ≥ n^4`, ≥2 primes, `X
 Docs:
 
 - `docs/kb/deltastar-466-essay-round13-2026-07-04.md` — this essay.
-- `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` entry `[466-r13-two-distinct-inputs]` — the WORLD II
+- `Research/ProximityPrize/DISPROOF_LOG.md` entry `[466-r13-two-distinct-inputs]` — the WORLD II
   verdict log.

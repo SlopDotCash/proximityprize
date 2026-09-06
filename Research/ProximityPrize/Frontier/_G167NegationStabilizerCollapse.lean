@@ -35,7 +35,7 @@ characteristic `≠ 2`:
   S ≠ ∅, 0 ∉ S, S = -S, and S is a minimal zero-sum support  ⟹  S.card = 2.
 ```
 
-Consequences for the census (see `DISPROOF_LOG.md`):
+Consequences for the census (see `Research/ProximityPrize/DISPROOF_LOG.md`):
 
 * the accident sector of the primitive residue is **exactly** the size-two supports;
 * for every support size `s ≠ 2` the `2`-Sylow `H` acts *freely*, so `2^k ∣ N_s`;

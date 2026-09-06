@@ -119,7 +119,7 @@ theorem level_le_of_cocycleProductBudget {M : ℕ → ℝ} {N0 L : ℕ} {P : ℝ
 **Refutation hook.**  A measured top level above `M N0 · P` refutes the product
 budget.  If a probe ever exhibits a frequency whose path sustains ratio near `2`
 (so the product exceeds the `√2`-geometric-mean budget), this fires and the
-candidate large-deviation law is falsified into `DISPROOF_LOG.md`.
+candidate large-deviation law is falsified into `Research/ProximityPrize/DISPROOF_LOG.md`.
 -/
 theorem not_cocycleProductBudget_of_level_gt {M : ℕ → ℝ} {N0 L : ℕ} {P : ℝ}
     (hstart : 0 ≤ M N0)

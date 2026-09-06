@@ -29,7 +29,7 @@ distinct sums. Distinctness survives reduction because each difference is a nonz
 of nonzero norm (`Algebra.norm_ne_zero_iff`), divisible by only finitely many primes, which Dirichlet
 lets us avoid. Formalizing *that existence* needs the cyclotomic ring of integers + norm + Dirichlet
 assembly; it is the named residual. Everything *downstream* of it — the entire disproof skeleton — is
-now machine-checked here. See `DISPROOF_LOG.md` (O16/Loop51).
+now machine-checked here. See `Research/ProximityPrize/DISPROOF_LOG.md` (O16/Loop51).
 -/
 
 open Finset

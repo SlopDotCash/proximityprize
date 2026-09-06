@@ -34,7 +34,7 @@ proximity event is bounded by the *generic* BGM capacity budget. In the Johnson 
 BCIKS 2025/2055 theorem (so the prize is unconditional there); in the small-gap band it is the
 genuine open core. This brick is conditional and does **not** close the prize — it certifies that
 the open core is reduced to exactly one hypothesis, and that hypothesis lands the prize. See
-`DISPROOF_LOG.md` (Loop39).
+`Research/ProximityPrize/DISPROOF_LOG.md` (Loop39).
 -/
 
 namespace ArkLib.ProximityGap.ProofLoop39

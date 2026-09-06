@@ -28,7 +28,7 @@ cut by the number of directions `= chooseCH s r` (the grounded `Sym` cardinality
 
 ⚠️ **The injection is exactly where `poly = 1` can FAIL.** The distinct-`h`-VALUE count over
 `(k+1)`-subsets is empirically NOT bounded by `chooseCH n r` at small `r` (`poly = 1` FALSE,
-`poly = n` verified — F1 `poly(n)=n` fix; constraint lemma in `DISPROOF_LOG.md` O237). So this file
+`poly = n` verified — F1 `poly(n)=n` fix; constraint lemma in `Research/ProximityPrize/DISPROOF_LOG.md` O237). So this file
 supplies the leading-order mechanism (`poly = 1` GIVEN injectivity) while the empirical `poly = n`
 excess lives precisely in the non-injective small-`r` value-collision region (the genuine open
 core).

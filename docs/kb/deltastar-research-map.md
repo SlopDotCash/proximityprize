@@ -17,7 +17,7 @@ promising never-tried attack vectors.
 Companion ledgers: `docs/wiki/deltastar-357-nine-hypotheses-2026-06-11.md` (hypothesis queue),
 `docs/wiki/open-math-hypotheses-334-deltastar-2026-06.md` (K/A wave),
 `docs/wiki/residual-census.md` (whole-project residual map),
-`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md` (build and honesty rules).
+`Research/ProximityPrize/CLAUDE.md` (build and honesty rules).
 
 > **2026-06-13 literature sweep — see [`deltastar-literature-findings-2026-06-13.md`](deltastar-literature-findings-2026-06-13.md).**
 > A fresh six-topic sweep past this map. Net: (1) one **unconditional in-tree win** — the #389
@@ -359,7 +359,7 @@ the frontier files.
 ## 5. Method notes
 
 - All five vectors follow the program discipline: probes precede formalization; refutations
-  land as sorry-free lemmas in `DISPROOF_LOG.md`; open cores stay named Props; δ* claims must
+  land as sorry-free lemmas in `Research/ProximityPrize/DISPROOF_LOG.md`; open cores stay named Props; δ* claims must
   arrive as bracket pairs (`le_mcaDeltaStar_of_good` / `mcaDeltaStar_le_of_bad`) that meet.
 - Web-survey sources beyond those hyperlinked above: BGK original (C. R. Acad. Sci. 342,
   2006), [Chang–Shparlinski double sums](https://arxiv.org/pdf/1401.6611),

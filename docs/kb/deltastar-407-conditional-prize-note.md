@@ -2,7 +2,7 @@
 
 > **Status: NOT a closure.** This note consolidates what is *proven* (axiom-clean, in-tree), what is
 > *unconditional* in the literature, and the *single named open conjecture* on which the exact prize
-> value rests. Per the §6 honesty contract (`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`): the
+> value rests. Per the §6 honesty contract (`Research/ProximityPrize/CLAUDE.md`): the
 > exact scale of the prize quantity is pinned **two-sided modulo one named `Prop`**
 > (`WickEnergyBracket`). The conjecture is supported by exhaustive exact-numerical evidence but is the
 > recognized-open BGK / Paley-graph / BCHKS-1.12 problem. **No claim of unconditional closure is made.**

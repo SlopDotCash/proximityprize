@@ -42,7 +42,7 @@ All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.
 
 ## References
 
-- Issue #357 (O138/O139/O140; the census-conditional pin arc); `DISPROOF_LOG.md` entry.
+- Issue #357 (O138/O139/O140; the census-conditional pin arc); `Research/ProximityPrize/DISPROOF_LOG.md` entry.
 -/
 
 set_option linter.unusedSectionVars false

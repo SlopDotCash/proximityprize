@@ -45,7 +45,7 @@ disjoint core families, hence:
   satisfies `(r² + r)·C(r, 2+m+1) ≤ B`.**
 
 Consequences for the issue (logged as the addendum to the 2026-06-13 Frobenius entry
-in `DISPROOF_LOG.md`):
+in `Research/ProximityPrize/DISPROOF_LOG.md`):
 * at band `m` the floor is `(r²+r)·C(r, 2+m+1) ≈ n^{(m+3)/2}` — superpolynomial in
   `n` at every fixed band depth, against every landed `O(n)`-shaped target;
 * the word satisfies every hypothesis used by the landed combinatorial routes

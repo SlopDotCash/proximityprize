@@ -41,7 +41,7 @@ What this brick proves (sorry-free, axiom-clean):
 The honest open residual is unchanged: that the per-round event probability *stays* one-shot
 (`≤ B(ρ,η)/q` with `B` depending only on `ρ,η`) throughout the small-gap band `δ ≤ 1−ρ−η` is exactly
 the open BGM-for-smooth fact (Loop 17). In the Johnson range it is a theorem (BCIKS 2025/2055), and
-there the union-bound structure here makes the prize hold outright. See `DISPROOF_LOG.md` (Loop38).
+there the union-bound structure here makes the prize hold outright. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop38).
 -/
 
 namespace ArkLib.ProximityGap.StructureLoop38

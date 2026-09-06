@@ -58,7 +58,7 @@ The open input is therefore `E_r ≤ (2r−1)‼·n^r` to `r ≈ log m` = `Gauss
 - In-tree: `SalemZygmundChaining.lean` (`SubGaussianMGF`, `chernoff_max_re_le`),
   `GaussPeriodMomentBound.lean` (the energy-method counterpart / `GaussianEnergyBound`),
   `WF407_T232_08_EVTGap.lean` (the EVT bulk-vs-tail companion wall),
-  `DISPROOF_LOG.md` C070 (the AVERAGE tangent-sum Hasse–Davenport route, refuted).
+  `Research/ProximityPrize/DISPROOF_LOG.md` C070 (the AVERAGE tangent-sum Hasse–Davenport route, refuted).
 - [RL22] Rojas-León, *Independence of Gauss sums*, arXiv:2207.12439 (qualitative, not effective).
 -/
 

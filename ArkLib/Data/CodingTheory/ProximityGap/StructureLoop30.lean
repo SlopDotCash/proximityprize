@@ -19,7 +19,7 @@ factor `(2^j)^c`, then the cumulative product is
 That exponent can beat any fixed final-domain polynomial exponent `m*d` once the summed local
 exponents are large enough. This is a real counterexample *shape*, but only a conditional arithmetic
 one: it does not prove that actual faithful GS proximity lists branch multiplicatively by such local
-polynomial factors at each fold. See `DISPROOF_LOG.md` (Loop30).
+polynomial factors at each fold. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop30).
 -/
 
 namespace ArkLib.ProximityGap.StructureLoop30

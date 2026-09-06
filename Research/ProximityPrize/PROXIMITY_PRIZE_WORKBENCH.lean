@@ -209,7 +209,7 @@ The prize is a **recognized open problem**. This file does **not** claim to clos
 `theorem` is axiom-clean Lean (`propext, Classical.choice, Quot.sound`); the open core is isolated
 as the named `Prop`s `WorstCaseIncidenceBound` / `ShawFlatnessConjecture`, *labelled as the
 classical wall*. "Named residual = modularity, not closure." Refutations live in
-`ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` and the §9 ledger below.
+`Research/ProximityPrize/DISPROOF_LOG.md` and the §9 ledger below.
 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement.* 2026.
@@ -222,7 +222,7 @@ classical wall*. "Named residual = modularity, not closure." Refutations live in
 
 
 /-! ## 2026-08-16 addendum — doc sync (no theorem change)
-- `DISPROOF_LOG.md` synced to canonical `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` (53709 lines, tail G330 spectrum exact boundary).
+- `Research/ProximityPrize/DISPROOF_LOG.md` synced to canonical `Research/ProximityPrize/DISPROOF_LOG.md` (53709 lines, tail G330 spectrum exact boundary).
 - `Frontier/README.md` § Live targets augmented with SYZ70/SYZ71 + REnergyCyclicFloor + G330 (§ Verified standalone additions after dossier v3).
 - No production verdict change: **OPEN / ON-BGK**.
 -/

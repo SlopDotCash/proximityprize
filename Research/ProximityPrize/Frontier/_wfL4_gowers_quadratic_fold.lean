@@ -26,7 +26,7 @@ at the prize regime `n = 2^30`, `p = n^β`, `β = 4`, `p ≡ 1 (mod n)`.
   `f = 1_{μ_n}`, `f̂(b) = η_b / p`, so `‖1_{μ_n}‖_{U²}^4 = (1/p³)·Σ_b |η_b|⁴ = E₂(μ_n)/p³` is
   **exactly the additive energy**. The U² *inverse theorem* returns the linear phase `e_p(bx)` —
   i.e. it hands back the `η_b` themselves. So `U²` carries **no information beyond** the `η_b` /
-  the second moment. (Recorded in-tree, `DISPROOF_LOG.md`: "U² Gowers = E₂ = Johnson".) This is
+  the second moment. (Recorded in-tree, `Research/ProximityPrize/DISPROOF_LOG.md`: "U² Gowers = E₂ = Johnson".) This is
   fence **F1/F7** (energy/cumulant = conjugate to the wall; entropy Rényi-2 = additive energy).
 
 * **Higher `U^k` give WEAKER upper bounds on `M`, never sharper.** Gowers norms are monotone,

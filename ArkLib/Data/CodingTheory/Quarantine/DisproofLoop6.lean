@@ -37,7 +37,7 @@ link is *realizability*: exhibiting a Frobenius-stable `(u₀,u₁)` with a **hi
 constrains the bad set to be either ≤ a small bound or essentially all of `F`; a lone high-degree
 Frobenius orbit sitting in the gap is exactly the unestablished beyond-Johnson case. So O3 yields a
 hard **necessary structural condition** the conjecture must satisfy — *all bad scalars live in a
-bounded-degree subfield* — but not a disproof. See `DISPROOF_LOG.md` (O3).
+bounded-degree subfield* — but not a disproof. See `Research/ProximityPrize/DISPROOF_LOG.md` (O3).
 -/
 
 namespace ArkLib.ProximityGap.DisproofLoop6

@@ -16,7 +16,7 @@ and, if not, whether **one fold strictly shrinks the bad-event family**, yieldin
 K1 is **mutually-falsifying with K4 (zero-slack):** if the ceiling has per-fold slack, K4 is
 wrong; if the ceiling is geometrically fold-stable, K1's strong form dies.
 
-`DISPROOF_LOG.md` (lines 27–55) had killed only the **cheap form** at the **even cofactor**
+`Research/ProximityPrize/DISPROOF_LOG.md` (lines 27–55) had killed only the **cheap form** at the **even cofactor**
 (an `m`-step: `m` even ⟹ `(e+c)/2` with `c=0` halves `m`, invariant), and explicitly left
 open: *"R2 survives only in a narrower form: a bottom-level odd-cofactor statement, or a fold
 transport that changes the KKH split parameter `s` rather than merely halving `m`."* This

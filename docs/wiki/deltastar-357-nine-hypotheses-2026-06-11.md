@@ -9,7 +9,7 @@ between things already in this repository), each preceded by the honest expositi
 per-hypothesis discipline demands, then ranked on two axes and attacked in score order.
 
 Everything below respects the #357 conventions: probes precede formalization, refutations land in
-`DISPROOF_LOG.md` as sorry-free lemmas, open cores stay named Props, and any δ* claim must arrive
+`Research/ProximityPrize/DISPROOF_LOG.md` as sorry-free lemmas, open cores stay named Props, and any δ* claim must arrive
 as two `mcaDeltaStar` bracket instantiations (`le_mcaDeltaStar_of_good` /
 `mcaDeltaStar_le_of_bad`) that **meet**.
 
@@ -372,6 +372,6 @@ is its scaling engine; together they produce the campaign's first unconditional 
 then alternating ceiling work (R2, S1) with the wall attacks (N3, N2), and the two
 open-research conjectures (S2, N1) carried probe-first throughout.
 
-Per the discipline: every refutation lands in `DISPROOF_LOG.md` with a sorry-free constraint
+Per the discipline: every refutation lands in `Research/ProximityPrize/DISPROOF_LOG.md` with a sorry-free constraint
 lemma; anything proven that cannot be refuted gets promoted into the bracket ledger; if the
 whole slate dies, the next slate is generated from what the refutations taught.

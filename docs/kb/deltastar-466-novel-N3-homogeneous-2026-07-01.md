@@ -439,7 +439,7 @@ seed's original avoidance form dies even earlier, at S3 (Parseval-false for r �
 ### 9.6 Bookkeeping debts (recorded, not fixed here; no commits in judge session)
 
 1. The round-2 DISPROOF tags (`466-r2-*`) live in kb notes and the essay addendum; no standalone
-   `DISPROOF_LOG.md` exists yet (judge-verified by search). §9.5 is written fold-ready.
+   `Research/ProximityPrize/DISPROOF_LOG.md` exists yet (judge-verified by search). §9.5 is written fold-ready.
 2. Probe part (1)'s dual-integrality check is logically identical to its ker-membership check
    (⟨c_S/p, a⟩ ∈ Z ⟺ a·c_S ≡ 0 mod p) — a smoke test, not independent evidence; harmless, since
    Prop 1 is a two-line proof (Refuter-B's observation, confirmed).

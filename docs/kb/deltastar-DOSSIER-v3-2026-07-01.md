@@ -5,7 +5,7 @@
 > workspace is [`Research/ProximityPrize/LegacyWorkbench.lean`](../../Research/ProximityPrize/LegacyWorkbench.lean).
 > Consolidated 2026-07-01 from: proximityprize.org + ABF26 (ePrint 2026/680); the FULL #464 thread
 > (dossier v2 + all 179 comments, independently re-digested); the #444 record; the in-tree substrate
-> (~1,611 `Frontier/` files, 59-entry `DISPROOF_LOG.md`, ~150 `deltastar-464-*` KB notes); and the
+> (~1,611 `Frontier/` files, 59-entry `Research/ProximityPrize/DISPROOF_LOG.md`, ~150 `deltastar-464-*` KB notes); and the
 > recovered unpushed #444 workstation branch (see §12 — the "phantom bricks" are resolved).
 >
 > **Mission.** Pin **δ\*** — the mutual-correlated-agreement (= list-decoding) threshold — for
@@ -848,7 +848,7 @@ point of **total convergence** the SYZ arc reached after SYZ54.
 
 ## 8. Dead / refuted ledger — do NOT re-attempt
 
-> Full catalogue: `DISPROOF_LOG.md` (1.66MB, 59 tagged entries, current through 2026-06-27) +
+> Full catalogue: `Research/ProximityPrize/DISPROOF_LOG.md` (1.66MB, 59 tagged entries, current through 2026-06-27) +
 > `docs/kb/deltastar-464-*.md` (~150 notes). Check both before trying anything.
 
 **⛔ Reduces to the wall (proven):** line-decoding/collinearity; BCHKS-1.12-as-budget (vacuous);
@@ -941,9 +941,9 @@ WraparoundVariance abstract-ring restatement; N9 codim-2; toy `deltaStar_pin_mu6
 2. **`Research/ProximityPrize/LegacyWorkbench.lean`** — the compiling
    single-file Lean workspace: exact target, regime, `#check`-verified substrate, walls, closure
    contract, `▼ YOUR CONJECTURE HERE ▼` slot, and the 2026-07-01 state-of-play section.
-3. **`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`** (auto-loaded; `AGENTS.md` is a copy) —
+3. **`Research/ProximityPrize/CLAUDE.md`** (auto-loaded; `AGENTS.md` is a copy) —
    build recipe, ledger, pitfalls.
-4. **`DISPROOF_LOG.md`** + `docs/kb/deltastar-464-*.md` — check before re-trying ANYTHING.
+4. **`Research/ProximityPrize/DISPROOF_LOG.md`** + `docs/kb/deltastar-464-*.md` — check before re-trying ANYTHING.
 5. `docs/wiki/residual-census.md` — named-residual conventions.
 
 ### 11.2 Build (mandatory — or you clog the 16-core box)

@@ -33,7 +33,7 @@ Together: for coprime `g, h` over `ℚ`, `Res_ℤ(g,h)` is a *fixed nonzero inte
 mod `p` happens for only finitely many `p` (those dividing it). With Dirichlet (infinitely many
 `p ≡ 1 mod 2^m`) this yields a collision-free prime — the existence the Loop51 residual needs. That
 final assembly (Dirichlet + primitive-root existence in `ZMod p` + the union over difference pairs) is
-the remaining residual; this loop proves its load-bearing arithmetic. See `DISPROOF_LOG.md`
+the remaining residual; this loop proves its load-bearing arithmetic. See `Research/ProximityPrize/DISPROOF_LOG.md`
 (O16/Loop52).
 -/
 

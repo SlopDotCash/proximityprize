@@ -18,7 +18,7 @@ blocked product is still bounded by the final-domain polynomial `((2^m)^c)`, whe
 
 Thus a spiky or blocked multiplicative disproof still has to produce block exponents whose **total
 density** exceeds every constant. Repackaging bounded-density work into blocks does not create a
-counterexample. See `DISPROOF_LOG.md` (Loop32).
+counterexample. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop32).
 -/
 
 namespace ArkLib.ProximityGap.StructureLoop32

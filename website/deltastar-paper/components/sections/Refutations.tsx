@@ -24,8 +24,8 @@ export function Refutations() {
         verification discipline each disposal is itself a theorem: the failed
         idea is reduced to a <code>sorry</code>-free constraint lemma and
         recorded in the standing disproof log (
-        <a href={`${REPO}/DISPROOF_LOG.md`}>
-          <code>DISPROOF_LOG.md</code>
+        <a href="https://github.com/SlopDotCash/proximityprize/blob/main/Research/ProximityPrize/DISPROOF_LOG.md">
+          <code>Research/ProximityPrize/DISPROOF_LOG.md</code>
         </a>
         ), so that it cannot be re-proposed and the boundary of the possible is
         itself machine-checked. We present a selection below, not as failures

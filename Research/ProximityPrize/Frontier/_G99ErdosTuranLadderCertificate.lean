@@ -11,7 +11,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 
 ## The question this lane answers
 
-`DISPROOF_LOG.md` `[door-iv-phaseset-smallball]` poses, verbatim: *"Any Littlewood-Offord /
+`Research/ProximityPrize/DISPROOF_LOG.md` `[door-iv-phaseset-smallball]` poses, verbatim: *"Any Littlewood-Offord /
 Halász small-ball bound that does NOT route through multiplicative energy?"*. This file gives
 the exact quantitative content of the Fourier-side (Esseen/Erdős–Turán) answer, and an
 elementary POSITIVE answer at containment scale on the non-Fourier side.

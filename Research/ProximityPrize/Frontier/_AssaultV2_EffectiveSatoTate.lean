@@ -43,7 +43,7 @@ beat the per-coordinate `√q` cancellation **jointly**, which is the recognized
 square-root cancellation itself. Effective Katz is therefore **not a separate open input**: it
 reduces to the wall (its sole quantitative content past trivial is the BGK bound).
 
-Sibling to the refuted C13 (`DISPROOF_LOG.md` 2026-06-15 "Vertical Sato–Tate Sup-Control") and the
+Sibling to the refuted C13 (`Research/ProximityPrize/DISPROOF_LOG.md` 2026-06-15 "Vertical Sato–Tate Sup-Control") and the
 named-open `MonodromyConductorScaffold.{DeligneEffectiveEquidistribution, ConductorGeometricBound}`.
 This brick upgrades that record from a refuted *conjecture* to a **proven vacuity theorem**: the
 effective discrepancy `≥ 1` is now machine-checked from the monodromy dimension, not asserted.

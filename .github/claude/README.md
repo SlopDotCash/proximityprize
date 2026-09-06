@@ -33,7 +33,7 @@ reopened, updated, or ready-for-review pull request (and on demand via
 - The prompts treat PR title/body/diff as untrusted; verdicts are parsed
   from strict JSON, and a missing/invalid verdict fails safe to
   `needs-human-review`.
-- Changes under `.github/`, `DISPROOF_LOG.md`, `CLAUDE.md`, `AGENTS.md`,
+- Changes under `.github/`, `Research/ProximityPrize/DISPROOF_LOG.md`, `CLAUDE.md`, `AGENTS.md`,
   `lean-toolchain`, `lakefile*`, or `.gitmodules` are never auto-merged,
   enforced by a bash gate independent of the model.
 - Merges go through GitHub's auto-merge / branch-protection machinery, so

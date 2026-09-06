@@ -64,7 +64,7 @@ This file records that split as named statements:
 
 Provenance: axiom-clean (`[propext, Classical.choice, Quot.sound]`), zero `sorry`.
 References: [ABF26] Def 4.3 / Grand Challenge 1; O74/O78/O84/O85 in
-`ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md`; the probe
+`Research/ProximityPrize/DISPROOF_LOG.md`; the probe
 `scripts/probes/probe_counting_gap.py`.
 -/
 

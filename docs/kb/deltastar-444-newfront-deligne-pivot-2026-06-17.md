@@ -230,8 +230,8 @@ Probes (exact, proper μ_n, never full group, `p ≫ n^3`):
 - `scripts/probes/probe_s3_maxnorm_growth.py`, `probe_s5_shell_base.py`
 
 Prior KB notes (companion):
-- `ArkLib/Data/CodingTheory/ProximityGap/docs/kb/deltastar-444-s6-betti-deligne-nogo.md`
-- `ArkLib/Data/CodingTheory/ProximityGap/docs/kb/deltastar-444-keff-robustness-beta-governed-wall.md`
+- `Research/ProximityPrize/kb/archive/deltastar-444-s6-betti-deligne-nogo.md`
+- `Research/ProximityPrize/kb/archive/deltastar-444-keff-robustness-beta-governed-wall.md`
 
 **Honesty contract intact:** no fabricated closure; every proven claim is axiom-clean Lean
 (axioms ⊆ `[propext, Classical.choice, Quot.sound]`, 0 `sorryAx`); every open input is a named
