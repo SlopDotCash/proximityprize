@@ -344,3 +344,7 @@ only on success. `pg-iterate.sh` propagates a nonzero Lean exit status even
 when the process emits no diagnostic text. A successful file with no
 `#print axioms` output is still a successful type check; absence of that
 output does not itself perform an axiom audit.
+
+## Retained probe dependencies
+
+Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
