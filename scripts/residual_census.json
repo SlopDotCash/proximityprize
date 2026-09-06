@@ -3115,8 +3115,8 @@
   {
    "name": "appendRbrKnowledgeSoundnessPerRoundResidual",
    "fq_name": "Verifier.appendRbrKnowledgeSoundnessPerRoundResidual",
-   "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeStateFunction.lean",
-   "line": 944,
+   "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeSoundness.lean",
+   "line": 54,
    "providers": [
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessPerRoundResidual_msg_subsingleton",
@@ -3139,8 +3139,8 @@
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessPerRound",
      "kind": "theorem",
-     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeStateFunction.lean",
-     "line": 1282,
+     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeSoundness.lean",
+     "line": 392,
      "conditional_on_residuals": [
       "appendRbrKnowledgeSoundnessPhase2Residual"
      ],
@@ -3158,8 +3158,8 @@
   {
    "name": "appendRbrKnowledgeSoundnessPhase2Residual",
    "fq_name": "Verifier.appendRbrKnowledgeSoundnessPhase2Residual",
-   "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeStateFunction.lean",
-   "line": 1226,
+   "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeSoundness.lean",
+   "line": 336,
    "providers": [
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessPhase2_subsingleton_challenge",
@@ -3181,8 +3181,8 @@
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessPhase2_subsingleton",
      "kind": "theorem",
-     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeStateFunction.lean",
-     "line": 1524,
+     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeSoundness.lean",
+     "line": 634,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hBound₂",
