@@ -15,6 +15,16 @@ import math
 from probe_r305_complete_census import build_n3
 
 
+def validate_field(n: int, p: int) -> None:
+    """Check the dyadic prime-field hypotheses before allocating census data."""
+    if n <= 1 or n & (n - 1):
+        raise ValueError("n must be a power of two greater than one")
+    if p < 2 or any(p % d == 0 for d in range(2, math.isqrt(p) + 1)):
+        raise ValueError("p must be prime")
+    if (p - 1) % n:
+        raise ValueError("n must divide p-1")
+
+
 def order_n_element(p, n):
     """Find an element of exact 2-power order n in the prime field."""
     for x in range(2, p):
@@ -35,8 +45,10 @@ def main() -> int:
     args = ap.parse_args()
 
     n, p = args.n, args.p
-    assert n > 1 and n & (n - 1) == 0, "n must be a power of two"
-    assert (p - 1) % n == 0
+    try:
+        validate_field(n, p)
+    except ValueError as error:
+        ap.error(str(error))
     keys, cnts = build_n3(n)
     g = order_n_element(p, n)
     half = n // 2
