@@ -113,6 +113,14 @@ All values: counting bound ⇒ sound interpolation certificates, field-uniform, 
 | 1/8 | 0.64645 | **0.72008** | (8, 96) | 0.875 | refined Ω (saved) |
 | 1/16 | 0.75 | **0.80927** | (6, 128) | 0.9375 | wedge value `A = 50264` (δ = 0.80826) bignum-verified; refined 49998 |
 
+Calibration: on OPTIMIZED caps the counting bound is nearly exact — `d=2, m=32` downset
+winner: counting `A = 180770` vs exact-rank `A = 180738` (gap 0.018%; boxes showed 2.4%),
+and `d=6, m=8` truncated wedge: 0.12%.  The certified face is essentially the true
+exact-rank face on the searched family.  Padding vacuity (measured): the rate-1/16 face
+(ratio 0.763; capacity regime would be 0.25) is far from the `A ≈ k` regime, so the AGG
+padding composition is strictly worse than the direct face at every measured parameter —
+padding becomes relevant only if a low-rate face ever approaches capacity.
+
 `(d, m)`-matrix at rate 1/2 (δ, refined): d=6: .31921/.32410/.32663/.32939/.33064 at
 m=32/48/64/96/128; d=8: .32603/.32888/.33241/.33417 at m=48/64/96/128; d=12:
 .33196/.33624/.33791+ at m=64/96/128.  Monotone in both parameters; `c/m` fits give
