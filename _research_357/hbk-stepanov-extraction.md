@@ -13,11 +13,16 @@ BGK06 JLMS is paywalled — never cite its internal lemma numbers unverified.
 **CP Lemma 2.3** (= KS99 Lemma 3.2 corrected): a,b,d,s positive integers, s ≤ n,
 `s·a·d + s·d(d−1)/2 < a·b²`, `a·b ≤ t`, `t·b < p` ⟹ Σ_{j≤s} N_j ≤ (a − 1 + 2t(b−1))/d.
 **CP Lemma 2.4 (s=1)**: b := ⌊(4t)^{1/3}⌋+1, a := ⌊t/b⌋, d := 2a; under `t·b < p`:
-N(λ) = #{(x,y) ∈ G² : x+y = λ} ≤ b². (b² ≥ t ⟹ trivial since N ≤ t; no |G| lower bound needed.)
+For λ ≠ 0, N(λ) = #{(x,y) ∈ G² : x+y = λ} ≤ b². (b² ≥ t ⟹ trivial since N ≤ t; no |G| lower bound needed.)
 Best constant known: Mattarei 3·2^{−2/3}|G|^{2/3} (different proof, Stöhr–Voloch route).
 
+The nonzero-shift hypothesis is essential: at p=769 and |G|=64, b=7 and
+|G|b=448<p, but N(0)=64>49=b² because −1 belongs to G. An exact enumeration
+of the 64 roots of X^64−1 modulo 769 verifies this exception. This correction
+does not certify the remaining source extraction or complete its retention review.
+
 ## Proof skeleton (single shift)
-Normalization: x ↦ z = x/(λ−x) bijects {x ∈ G : λ−x ∈ G} ↔ {z ∈ G : z+1 ∈ λG}; invariants on
+For λ ≠ 0, normalization: x ↦ z = x/(λ−x) bijects {x ∈ G : λ−x ∈ G} ↔ {z ∈ G : z+1 ∈ λG}; invariants on
 R_j = {x ∈ G : x−1 ∈ G_j}: x^t = 1, (x−1)^t = a_j (a_j = y^t const on coset), x ∉ {0,1}.
 Direct (λ−x)-form also fine: Ψ(X, X^t, (λ−X)^t), multiplier X(λ−X), roots ∉ {0,λ}, monomial
 lemma mod (X−λ)^t.
