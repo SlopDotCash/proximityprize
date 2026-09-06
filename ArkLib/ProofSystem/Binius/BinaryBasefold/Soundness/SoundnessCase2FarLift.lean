@@ -5,8 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.SoundnessCase2Assembly
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.SoundnessCase1Discharge
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.SoundnessCase1Bridge
+import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Case1
 import ArkLib.Data.Probability.TensorSchwartzZippel
 
 /-!

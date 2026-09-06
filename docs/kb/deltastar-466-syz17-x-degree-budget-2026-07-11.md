@@ -1,7 +1,7 @@
 # δ* / #466 — SYZ17: the #138 X-degree budget, proven in the form the recursion supports
 
 Date: 2026-07-11
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ17XDegreeBudget.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ17XDegreeBudget.lean`
 Status: LANDED, axiom-clean `[propext, Classical.choice, Quot.sound]`, no `sorry`.
 
 ## The object

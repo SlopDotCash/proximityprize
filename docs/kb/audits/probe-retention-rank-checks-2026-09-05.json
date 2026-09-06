@@ -1,0 +1,140 @@
+{
+  "before_fix": {
+    "original_sha256": "66c016de114cfd403fdceb63f88a9665d230437bc031a2777f30eedb6ff317d6",
+    "exit_code": 0,
+    "stdout": "G320 stdlib port of G246: rank structure CHECKED at both cells.\n  cell n=8 p=1009 m=126  [G246-cell (reproduction)]\n    rank_seed=3  rank_aug=4\n    pinned minor rows=(0, 1, 2, 4)  det=-285768\n    VERDICT: countermodel HOLDS (rank_aug > rank_seed: R_6^c not in degree-2 Krylov span)\n    (and the G246-pinned 4x4 minor is nonzero at this cell, as expected)\n    A5=20632\n    A6=-1792\n  cell n=10 p=2011 m=201  [G320-new-cell (extension)]\n    rank_seed=3  rank_aug=4\n    pinned minor rows=(0, 1, 2, 4)  det=0\n    VERDICT: countermodel HOLDS (rank_aug > rank_seed: R_6^c not in degree-2 Krylov span)\n    (and the G246-pinned 4x4 minor is 0 at this cell, but the rank check still holds;\n     a different 4-row subset would give a nonzero minor)\n    A5=95460\n    A6=79550\n",
+    "stderr": "",
+    "counterexample": {
+      "matrix": [
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "old_rank": 1,
+      "correct_rank": 2,
+      "determinant": -1
+    }
+  },
+  "after_fix": {
+    "sha256": "f8aaddeac5295857e69a27dfd4ee7b03afa9ac8fc4d508c1819710c5bc4303d2",
+    "exit_code": 0,
+    "stdout": "G320 stdlib port of G246: rank structure CHECKED at both cells.\n  cell n=8 p=1009 m=126  [G246-cell (reproduction)]\n    rank_seed=3  rank_aug=4\n    pinned minor rows=(0, 1, 2, 4)  det=-285768\n    VERDICT: countermodel HOLDS (rank_aug > rank_seed: R_6^c not in degree-2 Krylov span)\n    (and the G246-pinned 4x4 minor is nonzero at this cell, as expected)\n    A5=20632\n    A6=-1792\n  cell n=10 p=2011 m=201  [G320-new-cell (extension)]\n    rank_seed=3  rank_aug=4\n    pinned minor rows=(0, 1, 2, 4)  det=0\n    VERDICT: countermodel HOLDS (rank_aug > rank_seed: R_6^c not in degree-2 Krylov span)\n    (and the G246-pinned 4x4 minor is 0 at this cell, but the rank check still holds;\n     a different 4-row subset would give a nonzero minor)\n    A5=95460\n    A6=79550\n",
+    "stderr": "",
+    "archived_output_equal": true
+  },
+  "independent_rank_certificates": [
+    {
+      "n": 8,
+      "p": 1009,
+      "rational_seed_rank": 3,
+      "rational_augmented_rank": 4,
+      "independent_minor_rows": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "minor": [
+        [
+          125,
+          118,
+          944,
+          -3
+        ],
+        [
+          -1,
+          -8,
+          -64,
+          -3
+        ],
+        [
+          -1,
+          118,
+          188,
+          -3
+        ],
+        [
+          -1,
+          -7,
+          -56,
+          -3
+        ]
+      ],
+      "leibniz_determinant": -285768
+    },
+    {
+      "n": 10,
+      "p": 2011,
+      "rational_seed_rank": 3,
+      "rational_augmented_rank": 4,
+      "independent_minor_rows": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "minor": [
+        [
+          200,
+          191,
+          1910,
+          181
+        ],
+        [
+          -1,
+          191,
+          101,
+          -20
+        ],
+        [
+          -1,
+          -10,
+          -100,
+          -20
+        ],
+        [
+          -1,
+          -10,
+          302,
+          -20
+        ]
+      ],
+      "leibniz_determinant": 308582838
+    }
+  ],
+  "reflection_replay": {
+    "source_sha256": "3290b4c440140d448be5eec3a9242b8b5bc2ceee6950b322d7b3fbeb447af98d",
+    "exit_code": 0,
+    "stdout": "(1) even-n mechanism + palindrome A_r=A_(n+1-r) verified on (n=12, p=13) OK; |G|=12 sum(G) mod p = 0\n(2) late-Newton rank pin A_5 = A_8 = -12 (n+1-5 = 8) verified on (n=12, p=13) OK\n(3) ZMod 13 Lean witness: W13 = [12, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11]\n    R5  = [30156, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157]\n    R8  = [30156, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157]\n    R8(x) = R5(-x)  \u2713\n    A_5 = A_8 = -12 \u2713\n(4) G295 (n=8, p=17) reproduction: A_3 = A_6 = -1344 \u2713 (algorithm matches)\n\nALL PASS: G321 (n=12, p=13) cell \u2014 palindrome A_r = A_{n+1-r}, late-Newton pin A_5 = A_8 = -12, G295 algorithm matches.\n",
+    "stderr": "",
+    "archived_output_sha256": "3c334bc1fed9e8049e10c3a5c74a202c3c68d0e3de2cd89c76f5a866bbd6cb54",
+    "archived_output_equal": true,
+    "primes_verified": [
+      13,
+      17,
+      1009,
+      2011
+    ]
+  },
+  "original_inventory_outputs": [
+    {
+      "path": "scripts/probes/_out_320_krylov_d2_countermodel_stdlib.txt",
+      "bytes": 765,
+      "sha256": "7c1711e87d51a73570d5090648ddb7a79717d146964364e582d1f97d1511e9c4",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_321_rank_reflection_n12_p13.txt",
+      "bytes": 719,
+      "sha256": "3c334bc1fed9e8049e10c3a5c74a202c3c68d0e3de2cd89c76f5a866bbd6cb54",
+      "references": [],
+      "disposition": "retain"
+    }
+  ]
+}

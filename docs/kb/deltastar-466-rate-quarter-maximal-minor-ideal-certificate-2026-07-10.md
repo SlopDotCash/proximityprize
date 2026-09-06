@@ -10,8 +10,8 @@ assignments but three adjacent minors have no common zero in one finite label sw
 Formal kernel:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MaximalMinorIdealCertificate.lean
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SupportDividedDifferenceMaximalMinorBridge.lean
+Research/ProximityPrize/Frontier/_MaximalMinorIdealCertificate.lean
+Research/ProximityPrize/Frontier/_SupportDividedDifferenceMaximalMinorBridge.lean
 ```
 
 This is a reduction, not an exact delta-star pin.  To use it, the remaining producer task is to
@@ -151,7 +151,7 @@ elements, or return to the multi-minor ideal certificate.
 
 ```text
 scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MaximalMinorIdealCertificate.lean
+  Research/ProximityPrize/Frontier/_MaximalMinorIdealCertificate.lean
 ```
 
 passes; all seven audited declarations depend only on the standard axiom-clean set.

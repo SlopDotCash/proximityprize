@@ -24,7 +24,7 @@ floor-good at |F|
 The new Lean file is:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackFloorBridge.lean
+Research/ProximityPrize/Frontier/_ProfileFiberSlackFloorBridge.lean
 ```
 
 ## New Sockets

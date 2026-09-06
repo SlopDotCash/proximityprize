@@ -90,6 +90,6 @@ ON-BGK.
 
 ## Files
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G271OrbitConstantCenteredMass.lean`
+- `Research/ProximityPrize/Frontier/_G271OrbitConstantCenteredMass.lean`
 - `scripts/probes/g271_orbit_constant_centered_mass.py`
 - DISPROOF entry `[466-G271-orbit-constant-centered-mass]`

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.OracleReduction.Composition.Sequential.AppendChallengeSeam
-import ArkLib.OracleReduction.Composition.Sequential.AppendRunEvalDistChallenge
+import ArkLib.OracleReduction.Composition.Sequential.AppendRun
 import ArkLib.OracleReduction.Composition.Sequential.SeamDecompositionRun
 
 /-!

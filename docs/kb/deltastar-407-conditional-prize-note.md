@@ -2,7 +2,7 @@
 
 > **Status: NOT a closure.** This note consolidates what is *proven* (axiom-clean, in-tree), what is
 > *unconditional* in the literature, and the *single named open conjecture* on which the exact prize
-> value rests. Per the §6 honesty contract (`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`): the
+> value rests. Per the §6 honesty contract (`Research/ProximityPrize/CLAUDE.md`): the
 > exact scale of the prize quantity is pinned **two-sided modulo one named `Prop`**
 > (`WickEnergyBracket`). The conjecture is supported by exhaustive exact-numerical evidence but is the
 > recognized-open BGK / Paley-graph / BCHKS-1.12 problem. **No claim of unconditional closure is made.**
@@ -533,15 +533,15 @@ unconditional bounds.
 * `ArkLib/Data/CodingTheory/ProximityGap/KKH26WitnessSpread.lean` — `kkh26_mcaDeltaStar_le` (the proven
   ceiling / upper bracket).
 * `ArkLib/Data/CodingTheory/ProximityGap/FactorizationRigidity.lean` — coset-saturation rigidity.
-* `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKExponentReduction.lean` — `BGKCharSumBound`,
+* `Research/ProximityPrize/Frontier/_BGKExponentReduction.lean` — `BGKCharSumBound`,
   `diBenedettoDelta := 31/2880` (line 101), `diBenedettoDelta_lt_prizeDelta` (line 109).
-* `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKSOTAInsufficiency.lean` —
+* `Research/ProximityPrize/Frontier/_BGKSOTAInsufficiency.lean` —
   `prize_requires_exponent_beyond_sota`.
-* `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MetaTheoremSecondOrderFloor.lean` — the spike no-go.
-* `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_VietaScopeGapNoGo.lean` — B1 SET→SUMSET no-go.
-* `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CharZeroWickEnergy.lean` — `gaussianEnergyBound_dyadic`
+* `Research/ProximityPrize/Frontier/_MetaTheoremSecondOrderFloor.lean` — the spike no-go.
+* `Research/ProximityPrize/Frontier/_VietaScopeGapNoGo.lean` — B1 SET→SUMSET no-go.
+* `Research/ProximityPrize/Frontier/_CharZeroWickEnergy.lean` — `gaussianEnergyBound_dyadic`
   (the char-0 face discharged for 2-power groups).
-* `ArkLib/Data/CodingTheory/ProximityGap/Frontier/{_NoTighterBoundCapstone,_EVTFloorRoute,_GaussPeriodFirstMoment,_CoshMGFSaddle}.lean`.
+* `Research/ProximityPrize/Frontier/{_NoTighterBoundCapstone,_EVTFloorRoute,_GaussPeriodFirstMoment,_CoshMGFSaddle}.lean`.
 
 **Probes (exact, no sampling; reproduced this session unless noted):**
 * `scripts/probes/probe_407_bgk_lower_bound_saturates.py` — the `B ≥ 1.85√n` lower bound (§3.1).

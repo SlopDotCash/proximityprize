@@ -22,7 +22,7 @@ whole affine recurrence is still absorbed by one extra final-domain power.
 
 Thus the remaining dangerous case is not merely "additive terms are later amplified"; it requires
 unbounded multiplicative exponent density or unbounded additive injections inside the actual
-smooth-domain GS/proximity mechanism. See `DISPROOF_LOG.md` (Loop36).
+smooth-domain GS/proximity mechanism. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop36).
 -/
 
 namespace ArkLib.ProximityGap.StructureLoop36

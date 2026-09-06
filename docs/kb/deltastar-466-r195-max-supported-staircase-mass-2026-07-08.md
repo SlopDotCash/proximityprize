@@ -15,7 +15,7 @@ StaircaseMass Θ δ ≤ M
 ## Lean artifact
 
 File:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R195MaxSupportedStaircaseMass.lean`.
+`Research/ProximityPrize/Frontier/_R195MaxSupportedStaircaseMass.lean`.
 
 New predicate:
 
@@ -36,7 +36,7 @@ StaircaseMass Θ δ ≤ M
 ## Verification
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R195MaxSupportedStaircaseMass.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R195MaxSupportedStaircaseMass.lean
 ```
 
 R195 passed the fast Lean check in 6 seconds.

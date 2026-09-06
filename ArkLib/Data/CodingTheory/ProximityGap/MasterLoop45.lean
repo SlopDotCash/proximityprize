@@ -37,7 +37,7 @@ Status of `PolyOrbitCount`:
 `PolyOrbitCount`. Candidate for other agents: prove `PolyOrbitCount` in the small-gap band (closes
 the literal prize), or refute it (a super-polynomial deterministic-smooth orbit count below
 capacity at fixed rate — which would also resolve a long-standing list-decoding question). See
-`DISPROOF_LOG.md` (Loop45).
+`Research/ProximityPrize/DISPROOF_LOG.md` (Loop45).
 -/
 
 namespace ArkLib.ProximityGap.MasterLoop45

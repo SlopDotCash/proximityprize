@@ -20,8 +20,8 @@ This is the same correction as R220/R223, now applied to the half-band route.
 Artifacts:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R225HalfBandScaledSpikeConsumer.lean
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R225HalfBandQuotientTailConsumer.lean
+Research/ProximityPrize/Frontier/_R225HalfBandScaledSpikeConsumer.lean
+Research/ProximityPrize/Frontier/_R225HalfBandQuotientTailConsumer.lean
 ```
 
 Main declarations:
@@ -48,8 +48,8 @@ raw-to-quotient counting lift, feeds this raw endpoint.
 ## Check
 
 ```text
-scripts/pg-iterate.sh -q ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R225HalfBandScaledSpikeConsumer.lean
-scripts/pg-iterate.sh -q ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R225HalfBandQuotientTailConsumer.lean
+scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R225HalfBandScaledSpikeConsumer.lean
+scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R225HalfBandQuotientTailConsumer.lean
 ```
 
 Both pass.

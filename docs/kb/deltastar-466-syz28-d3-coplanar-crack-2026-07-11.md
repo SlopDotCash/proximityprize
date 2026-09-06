@@ -1,7 +1,7 @@
 # δ\* / #466 — SYZ28: the D=3 over-budget coplanar crack, settled
 
 Date: 2026-07-11
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ28D3CoplanarCrack.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ28D3CoplanarCrack.lean`
 Probes: `scripts/probes/probe_syz28_d3_coplanar_crack.py` (enumeration),
 `probe_syz28_verify_classification.py` (exact classification + first lift test),
 `probe_syz28_part3.py` (mismatch analysis + mca-filtered lift test)

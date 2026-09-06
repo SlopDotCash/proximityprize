@@ -36,7 +36,7 @@ Johnson radius `δ < 1 − √ρ`. Combined with Loop 5 (`η > √ρ − ρ ⟹ 
 threshold `√ρ−ρ`; the threshold region and the whole sub-Johnson band remain the open beyond-UDR
 core. So this is a genuine *partial* proof, exactly complementary to the partial disproof side.
 
-All results sorry-free and axiom-clean. See `DISPROOF_LOG.md` (P1).
+All results sorry-free and axiom-clean. See `Research/ProximityPrize/DISPROOF_LOG.md` (P1).
 -/
 
 namespace ArkLib.ProximityGap.ProofLoop9

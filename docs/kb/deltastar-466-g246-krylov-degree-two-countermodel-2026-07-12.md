@@ -35,7 +35,7 @@ with determinant `-285768 != 0`. Thus `R6^c` is linearly independent from the fi
 
 ## Files
 
-- Lean certificate: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G246KrylovDegreeTwoCountermodel.lean`
+- Lean certificate: `Research/ProximityPrize/Frontier/_G246KrylovDegreeTwoCountermodel.lean`
 - Probe: `scripts/probes/g246_krylov_degree_two_countermodel.py`
 - Probe output: `/tmp/arklib-reports/g246_krylov_degree_two_countermodel.out`
 

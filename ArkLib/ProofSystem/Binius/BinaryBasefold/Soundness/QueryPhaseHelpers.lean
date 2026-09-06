@@ -4,8 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhasePrelims
-
+import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QuerySuffix
 /-!
 ## Binary Basefold Query-Phase Helper Lemmas
 

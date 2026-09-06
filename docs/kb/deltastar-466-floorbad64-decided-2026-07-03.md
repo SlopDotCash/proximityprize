@@ -7,7 +7,7 @@ round-8 inconclusive anneal (`466-r8-floor-successor-norm-partial`).
 
 - Probe: `scripts/probes/probe_466_floorbad64_decide.py`
   (output `scripts/probes/_out_466_floorbad64_decide.txt`).
-- Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorComplementReform.lean`
+- Lean: `Research/ProximityPrize/Frontier/_FloorComplementReform.lean`
   (`floorReform_dvd`, `floorReform_congr`; axiom-clean `[propext, Classical.choice, Quot.sound]`).
 - Scanner of record (definition): `scripts/probes/floor_scan_exact.c`.  No C compiler on this box;
   every engine here is cross-validated against that rank predicate before any n=64 claim.

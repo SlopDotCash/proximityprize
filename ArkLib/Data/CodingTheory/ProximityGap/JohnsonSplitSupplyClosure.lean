@@ -50,7 +50,7 @@ Status of the parameter range covered:
   finite above the Johnson line (the sibling `rsCode_agreement_list_card_le`).
 * **Open** — a subexponential supply BELOW the Johnson radius with NO agreement
   cap is the classical sub-Johnson RS list-size wall (the 25-year-open core,
-  `DISPROOF_LOG.md`); this file does not and cannot close it.
+  `Research/ProximityPrize/DISPROOF_LOG.md`); this file does not and cannot close it.
 -/
 
 open Finset Polynomial

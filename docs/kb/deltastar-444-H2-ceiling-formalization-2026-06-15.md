@@ -7,7 +7,7 @@ cited. Prior in-tree work (`KKH26EntropyForm.lean`, `KKH26AsymptoticCeiling.lean
 weaker dyadic line family with native rate `Φ(ρ) = ρ + ½H₂(2ρ)`; the **binding** (larger) family is
 KKH26 (ePrint 2026/782) Appendix-A's **list-center** family, with per-symbol exponent `H₂(ρ)`.
 
-**Deliverable file:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/ListCenterEntropyCeiling.lean`
+**Deliverable file:** `Research/ProximityPrize/Frontier/ListCenterEntropyCeiling.lean`
 (namespace `ArkLib.ProximityGap.KKH26`). Validated axiom-clean via `scripts/pg-iterate.sh`
 (`✅ OK (32s)`, audit = `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, no warnings).
 

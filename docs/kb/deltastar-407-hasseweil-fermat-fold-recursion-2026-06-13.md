@@ -40,7 +40,7 @@ a published curve-point-count theorem. (Garcia Thm 2/3 give `d=3,4` exact via th
 
 ## 2. NEW axiom-clean Lean brick: the analytic FOLDING recursion
 
-File `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf407_tower.lean` (Mathlib-only standalone,
+File `Research/ProximityPrize/Frontier/_wf407_tower.lean` (Mathlib-only standalone,
 `pg-iterate` ✅ OK, axioms = `[propext, Classical.choice, Quot.sound]`). The dyadic-tower analytic
 recursion, machine-verified exact (`_wf407_tower_recursion.py`, error `1e-14`):
 

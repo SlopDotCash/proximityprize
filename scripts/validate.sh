@@ -16,6 +16,7 @@ usage() {
 Usage: ./scripts/validate.sh [--lint] [--docs] [--site]
 
 Default checks (mirrors the CI gates so local == CI):
+  - python3 -m unittest discover -s scripts/tests (Python regressions)
   - python3 ./scripts/forbidden_tokens.py          (CI gate 1, precheck)
   - lake build
   - python3 ./scripts/sorry_census.py --fail-on-holes  (CI gate 2)
@@ -56,6 +57,9 @@ for arg in "$@"; do
   esac
 done
 
+echo "# Checking Python regressions"
+python3 -m unittest discover -s scripts/tests
+
 # CI gate 1: fast laundering-token precheck (no Lean toolchain needed), run
 # before the build so a forbidden token / undocumented axiom fails fast.
 echo "# Forbidden-token precheck (native_decide / bv_decide / undocumented axiom)"
@@ -65,7 +69,7 @@ echo ""
 echo "# Building project"
 ./scripts/lake-locked.sh build
 
-# CI gate 2: zero live sorry/admit holes in ArkLib source.
+# CI gate 2: zero live sorry/admit holes in both library and research source.
 echo ""
 echo "# Sorry census (zero live holes)"
 python3 ./scripts/sorry_census.py --fail-on-holes

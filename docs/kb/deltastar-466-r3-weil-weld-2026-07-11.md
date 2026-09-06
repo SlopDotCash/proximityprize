@@ -60,7 +60,7 @@ at r=2.
 
 ## 4. Formal kernel and probe
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R308FourthMomentWeilWeld.lean`
+`Research/ProximityPrize/Frontier/_R308FourthMomentWeilWeld.lean`
 — axiom-clean (`[propext, Classical.choice, Quot.sound]`, manual reads on all
 seven, no sorryAx), pg-iterate 6s.  Theorems: `iterConv_one_eq_sfun`,
 `iterConv_succ_eq_conv2`, `hatF_iterConv`, `evenMoment_eq_iterConv_energy`,

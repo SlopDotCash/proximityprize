@@ -63,7 +63,7 @@ cardinality bound.
 
 ```text
 ./scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R330ZeroModeDominatesShadowRelations.lean
+  Research/ProximityPrize/Frontier/_R330ZeroModeDominatesShadowRelations.lean
 ```
 
 passed on 2026-07-09 with no `sorryAx` in the exported theorem audits.

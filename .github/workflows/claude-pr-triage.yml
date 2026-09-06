@@ -18,7 +18,7 @@
 #
 # Hard guardrails enforced OUTSIDE the model:
 #   - PR head code is never checked out, built, or run.
-#   - Auto-merge is refused for changes under .github/, DISPROOF_LOG.md,
+#   - Auto-merge is refused for changes under .github/, Research/ProximityPrize/DISPROOF_LOG.md,
 #     CLAUDE.md, AGENTS.md, lean-toolchain, lakefile*, or .gitmodules.
 #   - Merges go through GitHub's auto-merge queue / branch checks, so red CI
 #     can never be merged by this workflow.

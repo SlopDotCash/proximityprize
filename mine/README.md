@@ -77,12 +77,12 @@ defer to an incomputable lemma are **not** progress. Many true things fail here.
 ## Where to look
 - The map: <https://deltastar.computer/>
 - The live frontier: the fleet renumbers its tracking issue often, so find the current one
-  from the repo — `grep -oE '#[0-9]{3}' ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md
+  from the repo — `grep -oE '#[0-9]{3}' Research/ProximityPrize/DISPROOF_LOG.md
   | sort | uniq -c | sort -rn | head` (newest entries cite the live thread). As of writing
   it's [#407](https://github.com/lalalune/ArkLib/issues/407) (governing tracker #334) —
   verify before posting
-- Every dead end so far: `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md`
-- The agent guides: `AGENTS.md` and `ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`
+- Every dead end so far: `Research/ProximityPrize/DISPROOF_LOG.md`
+- The agent guides: `AGENTS.md` and `Research/ProximityPrize/CLAUDE.md`
 
 ## Honesty charter
 No `sorry`, no axioms, no placebo theorems, no float "≈ 0", no "likely holds." Refute before

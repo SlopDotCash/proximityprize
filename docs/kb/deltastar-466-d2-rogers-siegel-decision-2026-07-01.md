@@ -95,8 +95,8 @@ component at either n. Therefore:
 
 - probe: `scripts/probes/probe_466_rogers_siegel_tail.py`
 - output: `scripts/probes/_out_466_rogers_siegel_tail.txt`
-- gate brick (axiom-clean, compiled via `pg-iterate`): 
-  `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_D2LowerTailConcentrationGate.lean`
+- gate brick (axiom-clean, compiled via `pg-iterate`):
+  `Research/ProximityPrize/Frontier/_D2LowerTailConcentrationGate.lean`
 - prior gates it composes with: `_D2RogersSiegelVarianceGate.lean` (coupling),
   `_D2LargeDeviationRateFunction.lean` (rate function / floor identity).
 

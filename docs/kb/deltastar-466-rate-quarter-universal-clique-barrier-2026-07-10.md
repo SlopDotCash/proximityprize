@@ -131,7 +131,7 @@ For positive integer `m`, this implies `6z < 53m`, strictly below the
 three-line saturated threshold.
 
 The kernel-cheap arithmetic endpoints are axiom-clean in
-[`_RateQuarterManyLineOwnershipBarrier.lean`](../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RateQuarterManyLineOwnershipBarrier.lean):
+[`_RateQuarterManyLineOwnershipBarrier.lean`](../../Research/ProximityPrize/Frontier/_RateQuarterManyLineOwnershipBarrier.lean):
 
 - `maxComponentMass_le_thirtyNine_of_aggregate`;
 - `fiveLine_twenty_mul_core_le_171_mul`;

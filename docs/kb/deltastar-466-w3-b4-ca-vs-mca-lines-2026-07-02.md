@@ -5,7 +5,7 @@ ABF26 §5): *"correlated agreement ⇒ mutual correlated agreement, unknown even
 
 **Deliverables**
 - Lean brick (axiom-clean, `[propext, Classical.choice, Quot.sound]`, 0 `sorry`):
-  `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CAtoMCALineLocalization.lean`
+  `Research/ProximityPrize/Frontier/CAtoMCALineLocalization.lean`
 - Probe (exact per-scalar enumeration, brute-force cross-validated):
   `scripts/probes/probe_466_ca_vs_mca.py` → `scripts/probes/_out_466_ca_vs_mca.txt`
 

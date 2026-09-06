@@ -2,7 +2,7 @@
 
 ## What landed
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R300OrbitTransversalDeficit.lean`
+`Research/ProximityPrize/Frontier/_R300OrbitTransversalDeficit.lean`
 (real locked build 3344 jobs, all 3 theorems axiom-clean
 `[propext, Classical.choice, Quot.sound]`).
 

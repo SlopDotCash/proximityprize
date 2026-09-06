@@ -1,0 +1,14 @@
+{
+  "source": "scripts/probes/probe_g139_production_accident_census.py",
+  "source_sha256": "08df4f45e967674deaf782023afe8816c9701a856710674f179a35afb028a8a7",
+  "archive": "scripts/probes/_out_g139_production_accident_census.txt",
+  "archive_sha256": "c86cb26137cea2e6dcb24dac261b51ce9c0624d05b21abf9b82a04773f75359f",
+  "command": "python3 scripts/probes/probe_g139_production_accident_census.py",
+  "exit_code": 0,
+  "stdout_matches_archive": true,
+  "stdout": "G173 cross-check: n=64 p=17318209 total_solutions=213 accidents=24 witness=(5663213, 17079628, 5424631)\nproduction-like cells:\nn,p,log_p_base_n,v2(p-1),total,lawful,accidents,4|accidents\n16,2196401,5.266677511,4,45,45,0,True\n32,84551969,5.266667003,5,93,93,0,True\n64,3254976577,5.266666669,6,189,189,0,True\n128,125306187649,5.266666672,7,381,381,0,True\n256,4823887276289,5.266666667,8,765,765,0,True\n",
+  "additional_helper_fix": "scripts/probes/probe_w16_tz_prize_scale.py",
+  "additional_helper_sha256": "506e0b70abb9d4b24db55814bff6814ca3ab7785b6a320e64d9dbc017a3e74ca",
+  "w16_full_main_replayed": false,
+  "regression_tests_passed": 3
+}

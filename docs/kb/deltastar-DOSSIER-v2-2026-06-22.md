@@ -262,7 +262,7 @@ The four equivalent forms: **(A)** Wick moment bound at log depth; **(B)** squar
 
 ## 8. Dead / refuted ledger — do NOT re-attempt (grouped by *where* it failed)
 
-> Full catalogue: `DISPROOF_LOG.md` (~1.6MB, technique clusters H1–L5 → fences F0–F12, conjecture corpus C05–C51, O### entries). Check it before re-trying anything.
+> Full catalogue: `Research/ProximityPrize/DISPROOF_LOG.md` (~1.6MB, technique clusters H1–L5 → fences F0–F12, conjecture corpus C05–C51, O### entries). Check it before re-trying anything.
 
 **⛔ Reduces to the BGK/Paley sup-norm wall (real machinery, NOT a bypass):** Line-decoding / collinearity (ABF26 Thm 4.21) — same far-line incidence; BCHKS-1.12 `|Σ_r|≤budget` as the prize object (`|Σ_r|` grows ≫ budget, vacuous); crossCell dyadic-tower iteration (floors at `log₂M ~ log₂n` ⟹ trivial); even-moment/additive-energy face (thin `A_r` = neg-closed-random `A_r` exactly; thin LARGER); restriction/extension (Mockenhaupt–Tao); Gross–Koblitz / p-adic Γ_p / Newton-polygon (b-invariant unit phases); theta/AFE + de Finetti; circle method (minor arcs → L²); Elekes–Szabó / sum-product (√-lossy); polynomial method / slice-rank (`n^{0.92}`); hyper-Kloosterman/FKM (conductor `~n` too large); HOMDS/Schur-at-roots; random-RS capacity transfer (Schwartz–Zippel unavailable for explicit points); cosh-MGF/Bessel-saddle (caps `~1.03×` floor); per-coset descent (`−1∈μ_n` forces real = a SIGN not a phase); bilinear/cube/free-prob/RMT; tropical/BKK/Croot–Sisask/Rankin–Selberg; Carlitz/FF-RH/quantum-group; LP/SDP "third route"; **50-/72-/100-/140-/250-conjecture sweeps (0 survivors)**; theta/ideal-lattice (rank `φ(n)=n/2` ⟹ `exp(Θ(n/2))` weight count = the √n-deficit in lattice clothing); Delsarte/LP/Beurling–Selberg (`delsartelpnogo`, phase-blind ⟹ trivial); Stepanov **fully closed** (`61187fbe0`: `μ_n` is 0-dim univariate, Frobenius fixes `μ_n`, multiplicity saturates at `n`; Weil `√q ≥ n` at β≥2); even/odd & antipodal-tower descent (saving-neutral, telescopes to `μ_2`); completion-sum `Σ_j G_j` (= the open BGK content, phase-blind); OSV short-Weil (`p^{3/7} ≫ p^{1/4}`); band dichotomy (consecutive lacunary is *benign*, the witness must be GAPPED); 10 "new-math" relocations (Terwilliger op-norm `=M`, Bourgain–Gamburd amenable, Amice/Iwasawa b-independent, Kelley–Meka/PFR wrong direction, chaining metric-blind, …) ⟹ **`M(μ_n)` is INTRINSIC (framing-independent).**
 
@@ -317,8 +317,8 @@ Non-monotonic, mean ≈ 1.285, **no upward drift across eight octaves**, hugging
 ## 11. The substrate and how to continue (everything a fresh agent needs)
 
 ### 11.1 Start here
-- **`PROXIMITY_PRIZE_WORKBENCH.lean`** — the single self-contained "write your solution here" file: the exact non-degenerate target, the prize regime, the imported+`#check`-verified proven substrate, the proven walls, the closure contract, and a `▼ YOUR CONJECTURE HERE ▼` slot.
-- **`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`** (auto-loaded in that cone; `AGENTS.md` is a copy) — the build recipe, the #334 ledger, the four faces, references, the honesty contract, pitfalls.
+- **`Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean`** — the single self-contained "write your solution here" file: the exact non-degenerate target, the prize regime, the imported+`#check`-verified proven substrate, the proven walls, the closure contract, and a `▼ YOUR CONJECTURE HERE ▼` slot.
+- **`Research/ProximityPrize/CLAUDE.md`** (auto-loaded in that cone; `AGENTS.md` is a copy) — the build recipe, the #334 ledger, the four faces, references, the honesty contract, pitfalls.
 - **`docs/wiki/residual-census.md`** — the named-residual census (read before treating any `*Residual` as proof debt; the `(P2-Slack)` residual is the genuine BGK char-p wall).
 
 ### 11.2 Build (mandatory — or you clog the 16-core box)

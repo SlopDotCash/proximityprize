@@ -18,7 +18,7 @@ Regression search:
 
 ```sh
 rg -n 'BCGM25|BSGM25|polynomial-generator|IsMCAGenerator|IsPolynomialGenerator|subspaceDesign_epsCA_curves_polynomial_generators_bcgm25|epsCA_curves' \
-  ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean \
+  Research/ProximityPrize/CapacityBounds.lean \
   ArkLib/Data/CodingTheory/ProximityGap/ProximityGenerators.lean \
   ArkLib/Data/CodingTheory/ProximityGap/MCAGenerator.lean \
   docs/kb/audits/open-problems-list-decoding-and-correlated-agreement.md \

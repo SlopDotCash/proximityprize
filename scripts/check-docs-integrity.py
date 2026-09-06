@@ -3,7 +3,8 @@
 
 Checks:
 1. `CLAUDE.md` exists and is a symlink to `AGENTS.md`
-2. Local markdown links in tracked `.md` files resolve
+2. Local markdown links in maintained documentation and Research resolve
+3. No Markdown files remain under ArkLib
 
 Exit code 0 if all checks pass, 1 otherwise.
 """
@@ -33,6 +34,7 @@ def tracked_markdown_files() -> list[Path]:
         AGENTS_PATH,
         REPO_ROOT / "scripts" / "README.md",
         *docs_md,
+        *sorted((REPO_ROOT / "Research").rglob("*.md")),
     ]
 
 
@@ -86,11 +88,19 @@ def check_markdown_links() -> list[str]:
     return errors
 
 
+def check_lean_tree_markdown() -> list[str]:
+    return [f"Markdown belongs outside ArkLib: {p.relative_to(REPO_ROOT)}"
+            for p in sorted((REPO_ROOT / "ArkLib").rglob("*.md"))]
+
+
 def main() -> int:
     all_errors: list[str] = []
 
     print("Checking CLAUDE.md symlink...")
     all_errors.extend(check_claude_symlink())
+
+    print("Checking the Lean-tree documentation boundary...")
+    all_errors.extend(check_lean_tree_markdown())
 
     print("Checking tracked markdown links...")
     all_errors.extend(check_markdown_links())

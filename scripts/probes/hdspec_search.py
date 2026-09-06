@@ -1,0 +1,665 @@
+#!/usr/bin/env python3
+"""
+hdspec_search.py — exact-integer discrete thresholds for SPECTRAL caps of the order-d
+hidden-derivative interpolant, and 2D local search over them.
+
+A spectral cap is a set Omega of integer pairs (S, J); the monomial cap is
+    cap(Omega) = { bs in N^d : (sum_j bs_j, sum_j j*bs_j) in Omega }.
+Every functional of the counting rank bound depends on bs only through (S, J)
+(W = w*S - J exactly), so the evaluation needs only the multiplicity
+    N_d(S, J) = #{ bs in N^d : sum bs = S, sum j*bs = J }        (unbounded knapsack DP)
+and runs in O(|Omega| + grid) per candidate at any derivative order d:
+
+  * cols(g1, g2) = sum over (S,J) in Omega with S <= g1 - 0 (b0 = g1 - S >= 0),
+      a = g2 + J in [0, m), weight a + w*b0 + (w*S - J) <= m*A - 1, of N_d(S, J)
+    — accumulated as two rectangles per Omega-cell in (g1, g2) via a difference array;
+  * rows(g1, g2) = #{(e, nE) in N^{d+1} : sum e + nE = g1,
+      0 <= g2 + sum j*e_j + (d+1)*nE < m}  (cap-independent DP, prefix sums);
+  * rank_bound = sum over blocks min(rows, cols)  — SOUND upper bound on the exact
+    per-node constraint rank (block-diagonal invariants, rank <= #rows, #cols);
+  * dim = sum over (S,J) in Omega of N_d(S,J) * sum_{b0} (D - w*b0 - (w*S - J)).
+
+dim > n * rank_bound certifies a nonzero interpolant at agreement A (the Lean theorem
+`exists_interpolant_d` consumes exactly this rank sum).  The search space is genuinely
+2-dimensional at every d — the curse of dimension is gone.
+
+Validated against hd_general_rank.node_rank / hd_fast_bound.rank_bound on box caps
+converted to spectral form (box caps are unions of (S,J) cells with the box multiplicity,
+NOT N_d, so the cross-check uses full wedges Omega = {(S,J): J <= dS, S <= smax} whose
+cap(Omega) is the simplex {sum bs <= smax}).
+
+Usage:
+  python3 hdspec_search.py selftest
+  python3 hdspec_search.py scan --rate 2 --d 6 --m 64
+  python3 hdspec_search.py trend --rate 2 --d 6 --ms 32,48,64,96,128
+"""
+import argparse
+import math
+import os
+import sys
+from functools import lru_cache
+
+import numpy as np
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+
+@lru_cache(maxsize=None)
+def multiplicity_table(d, smax, jmax):
+    """N[S, J] = #{bs in N^d : sum = S, sum j*bs = J}, S <= smax, J <= jmax (int64;
+    values are exact until they exceed 2^63 — callers should keep smax*d moderate)."""
+    N = np.zeros((smax + 1, jmax + 1), dtype=np.object_)
+    N[0, 0] = 1
+    for j in range(1, d + 1):
+        for s in range(1, smax + 1):
+            N[s, j:] = N[s, j:] + N[s - 1, : jmax + 1 - j]
+    return N
+
+
+@lru_cache(maxsize=None)
+def rows_table(d, m, g1max, jmax):
+    """rows(g1, g2) for g2 in [-jmax, m): #{(e, nE): sum = g1,
+    0 <= g2 + sum j e_j + (d+1) nE <= m-1}.  Returned as an integer-valued float array
+    (row counts can be huge; only min(rows, cols) enters, so float64 is fine)."""
+    sigmax = m - 1 + jmax
+    T = np.zeros((g1max + 1, sigmax + 1), dtype=np.float64)
+    T[0, 0] = 1.0
+    for j in list(range(1, d + 1)) + [d + 1]:
+        for g in range(1, g1max + 1):
+            if j <= sigmax:
+                T[g, j:] += T[g - 1, : sigmax + 1 - j]
+    P = np.cumsum(T, axis=1)
+    n2 = m + jmax
+    R = np.zeros((g1max + 1, n2), dtype=np.float64)
+    for idx in range(n2):
+        g2 = idx - jmax
+        hi = min(m - 1 - g2, sigmax)
+        lo = -g2 - 1
+        if hi < 0:
+            continue
+        col = P[:, hi].copy()
+        if lo >= 0:
+            col -= P[:, min(lo, sigmax)]
+        R[:, idx] = col
+    return R
+
+
+class SpectralEvaluator:
+    def __init__(self, d, n, k, m, smax=None, jmax=None):
+        self.d, self.n, self.k, self.m = d, n, k, m
+        self.w = k - 1
+        assert m <= self.w
+        self.smax = smax or 2 * m
+        self.jmax = jmax or min(d, 24) * self.smax
+        self.mult = multiplicity_table(d, self.smax, self.jmax)
+
+    def threshold(self, omega, lo=None, hi=None):
+        """omega: iterable of (S, J) integer pairs.  Least A with dim > n*rank_bound."""
+        d, n, k, m, w = self.d, self.n, self.k, self.m, self.w
+        cells = [(S, J, int(self.mult[S, J])) for (S, J) in omega
+                 if S <= self.smax and J <= self.jmax and self.mult[S, J] > 0]
+        if not cells:
+            return None
+        lo = lo or k
+        hi = hi or n
+        if not self.feasible(cells, hi):
+            return None
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if self.feasible(cells, mid):
+                hi = mid
+            else:
+                lo = mid + 1
+        return lo
+
+    def feasible(self, cells, A):
+        d, n, m, w = self.d, self.n, self.m, self.w
+        D = m * A
+        jmax = max(J for (S, J, N) in cells)
+        smax_c = max(S for (S, J, N) in cells)
+        g1max = smax_c + (D - 1) // w + 1
+        ROWS = rows_table(d, m, g1max, jmax)
+        n2 = m + jmax
+        diff = np.zeros((g1max + 2, n2 + 1), dtype=np.float64)
+        dim = 0
+        for (S, J, N) in cells:
+            W = w * S - J
+            top = D - 1 - W
+            if top < 0:
+                continue
+            # dimension: sum_{b0 <= (D-W-1)//w} (D - W - w b0)
+            R0 = D - W
+            b0m = (R0 - 1) // w
+            dim += N * ((b0m + 1) * R0 - w * (b0m * (b0m + 1)) // 2)
+            q, r = divmod(top, w)
+            ahi = min(m - 1, top)
+            a1 = min(r, ahi)
+            gl, gh = S, S + q
+            c0, c1 = jmax + (0 - J), jmax + (a1 - J)
+            diff[gl, c0] += N
+            diff[gh + 1, c0] -= N
+            diff[gl, c1 + 1] -= N
+            diff[gh + 1, c1 + 1] += N
+            if a1 < ahi and q >= 1:
+                c2, c3 = jmax + (a1 + 1 - J), jmax + (ahi - J)
+                diff[gl, c2] += N
+                diff[gh, c2] -= N
+                diff[gl, c3 + 1] -= N
+                diff[gh, c3 + 1] += N
+        cols = np.cumsum(np.cumsum(diff, axis=0), axis=1)[: g1max + 1, : n2]
+        rb = np.minimum(ROWS, cols).sum()
+        return dim > n * rb
+
+
+class GatedEvaluator(SpectralEvaluator):
+    """Tighter SOUND row bound: a row key (i, nE, e) of block (g1, g2) is realizable only if
+    e decomposes as ns + bs with bs in cap(Omega) and the witness column's a = g2 + J(bs)
+    lies in [0, m).  Necessary conditions in (S,J)-space: some Omega-cell (S_b, J_b) with
+    J_b <= J_e and d*S_b - J_b <= d*S_e - J_e (2-D dominance) and J_b in the a-window.
+    Gating the multiplicity N_d(S_e, J_e) by this dominance is a superset of the realized
+    keys and a subset of the free composition count — sound and tighter, with the gap
+    growing at large d (where the free count degrades the bound).
+    Cost: O((m + Jmax) * grid) per feasibility check — use to evaluate/refine winners,
+    not for wide scans."""
+
+    def feasible(self, cells, A):
+        d, n, m, w = self.d, self.n, self.m, self.w
+        D = m * A
+        jmaxc = max(J for (S, J, N) in cells)
+        smax_c = max(S for (S, J, N) in cells)
+        g1max = smax_c + (D - 1) // w + 1
+        semax = g1max
+        jemax = min(d * semax, self.jmax + d * ((D - 1) // w + 1))
+        # dense multiplicity array on the (S_e, J_e) grid (float64: only min() uses it)
+        NM = np.zeros((semax + 1, jemax + 1), dtype=np.float64)
+        mt = multiplicity_table(d, semax, jemax)
+        for S in range(semax + 1):
+            for J in range(S, min(d * S, jemax) + 1):
+                v = mt[S, J]
+                NM[S, J] = float(v)
+        # dimension and cols rectangles as in the base class
+        n2 = m + jmaxc
+        diff = np.zeros((g1max + 2, n2 + 1), dtype=np.float64)
+        dim = 0
+        omega_by_J = {}
+        for (S, J, N) in cells:
+            W = w * S - J
+            top = D - 1 - W
+            if top < 0:
+                continue
+            R0 = D - W
+            b0m = (R0 - 1) // w
+            dim += N * ((b0m + 1) * R0 - w * (b0m * (b0m + 1)) // 2)
+            omega_by_J.setdefault(J, []).append(d * S - J)
+            q, r = divmod(top, w)
+            ahi = min(m - 1, top)
+            a1 = min(r, ahi)
+            gl, gh = S, S + q
+            c0, c1 = jmaxc + (0 - J), jmaxc + (a1 - J)
+            diff[gl, c0] += N
+            diff[gh + 1, c0] -= N
+            diff[gl, c1 + 1] -= N
+            diff[gh + 1, c1 + 1] += N
+            if a1 < ahi and q >= 1:
+                c2, c3 = jmaxc + (a1 + 1 - J), jmaxc + (ahi - J)
+                diff[gl, c2] += N
+                diff[gh, c2] -= N
+                diff[gl, c3 + 1] -= N
+                diff[gh, c3 + 1] += N
+        cols = np.cumsum(np.cumsum(diff, axis=0), axis=1)[: g1max + 1, : n2]
+        # gated rows, block-column by block-column
+        Js = sorted(omega_by_J)
+        minu_at_J = {J: min(omega_by_J[J]) for J in Js}
+        total = 0.0
+        Jarr = np.arange(jemax + 1)
+        Sarr = np.arange(semax + 1)
+        U = d * Sarr[:, None] - Jarr[None, :]  # u_e = d*S_e - J_e
+        for idx in range(n2):
+            g2 = idx - jmaxc
+            # a-window: J_b in [-g2, m-1-g2]
+            lo, hi = -g2, m - 1 - g2
+            minu = np.full(jemax + 2, np.inf)
+            cur = np.inf
+            for J in range(jemax + 1):
+                if lo <= J <= hi and J in minu_at_J:
+                    cur = min(cur, minu_at_J[J])
+                minu[J] = cur
+            gate = U >= minu[None, Jarr]
+            M = NM * gate
+            P = np.cumsum(M, axis=1)  # prefix over J_e
+            # rows[g1] = sum_nE (gated multiplicity mass at S_e = g1 - nE over the i-window)
+            rows_g = np.zeros(g1max + 1)
+            for nE in range(0, g1max + 1):
+                jlo = -g2 - (d + 1) * nE
+                jhi = m - 1 - g2 - (d + 1) * nE
+                if jhi < 0:
+                    break
+                jlo = max(jlo, 0)
+                if jlo > jemax:
+                    continue
+                se_hi = g1max - nE
+                seg = P[: se_hi + 1, min(jhi, jemax)].copy()
+                if jlo >= 1:
+                    seg -= P[: se_hi + 1, jlo - 1]
+                rows_g[nE:] += seg
+            total += np.minimum(rows_g, cols[:, idx]).sum()
+        return dim > n * total
+
+
+def verify_exact_int(d, n, k, m, omega, A):
+    """All-integer re-verification of a certificate: dim > n * sum_blocks min(rows, cols)
+    with Python bignums throughout (no float64 anywhere).  Returns (ok, dim, n*rank_bound).
+    This is the auditable form of a counting certificate at (d, n, k, m, Omega, A)."""
+    w = k - 1
+    assert m <= w
+    D = m * A
+    cells = []
+    smax = max(S for (S, J) in omega)
+    jmaxc = max(J for (S, J) in omega)
+    mult = multiplicity_table(d, smax, jmaxc)
+    for (S, J) in omega:
+        N = int(mult[S, J])
+        if N > 0:
+            cells.append((S, J, N))
+    g1max = smax + (D - 1) // w + 1
+    # exact rows via dict-DP: T[g1][sigma] over items 1..d, d+1
+    sigmax = m - 1 + jmaxc
+    T = [[0] * (sigmax + 1) for _ in range(g1max + 1)]
+    T[0][0] = 1
+    for j in list(range(1, d + 1)) + [d + 1]:
+        for g in range(1, g1max + 1):
+            row, prev = T[g], T[g - 1]
+            for s in range(j, sigmax + 1):
+                row[s] += prev[s - j]
+    # prefix sums over sigma
+    P = [[0] * (sigmax + 2) for _ in range(g1max + 1)]
+    for g in range(g1max + 1):
+        acc = 0
+        Tg = T[g]
+        Pg = P[g]
+        for s in range(sigmax + 1):
+            acc += Tg[s]
+            Pg[s + 1] = acc
+    def rows(g1, g2):
+        hi = min(m - 1 - g2, sigmax)
+        lo = max(-g2, 0)
+        if hi < lo:
+            return 0
+        return P[g1][hi + 1] - P[g1][lo]
+    # cols per block via exact-integer difference arrays, and dim
+    n2 = m + jmaxc  # g2 index = g2 + jmaxc in [0, n2)
+    diff = [[0] * (n2 + 1) for _ in range(g1max + 2)]
+    dim = 0
+    for (S, J, N) in cells:
+        W = w * S - J
+        top = D - 1 - W
+        if top < 0:
+            continue
+        R0 = D - W
+        b0m = (R0 - 1) // w
+        dim += N * ((b0m + 1) * R0 - w * (b0m * (b0m + 1)) // 2)
+        q, r = divmod(top, w)
+        ahi = min(m - 1, top)
+        a1 = min(r, ahi)
+        for (gl, gh, alo, ahi2) in (((S, S + q, 0, a1),) +
+                                    (((S, S + q - 1, a1 + 1, ahi),)
+                                     if (a1 < ahi and q >= 1) else ())):
+            c0, c1 = jmaxc + (alo - J), jmaxc + (ahi2 - J)
+            diff[gl][c0] += N
+            diff[gh + 1][c0] -= N
+            diff[gl][c1 + 1] -= N
+            diff[gh + 1][c1 + 1] += N
+    rb = 0
+    run = [0] * (n2 + 1)
+    for g1 in range(g1max + 1):
+        dg = diff[g1]
+        acc = 0
+        for idx in range(n2):
+            run[idx] += dg[idx]
+            acc += run[idx]
+            if acc > 0:
+                rb += min(rows(g1, idx - jmaxc), acc)
+    return dim > n * rb, dim, n * rb
+
+
+def line_feasible_int(d, n, k, m, omega, A, L):
+    """Exact-integer counting-bound feasibility for the LINE setting (PR #122 shape):
+    monomials (a, b0, bs, l0) with b0 + l0 <= L, weighted degree a + w*b0 + sum (w-1-j) bs
+    < m*A; node rows keyed (i, nE, e, l) with l free of T-degree.  Blocks
+    (g1, g2) = (b0 + sum bs + l0, a - sum (j+1) bs).  Sound: rank <= sum min(rows, cols).
+    rows_line(g1, g2) = sum_{g1' <= g1} rows_LD(g1', g2); cols gain the l0-multiplicity
+    [g1 - S <= L] * (min(b0max(a), g1 - S) + 1).  All Python bignums."""
+    w = k - 1
+    assert m <= w
+    D = m * A
+    smax = max(S for (S, J) in omega)
+    jmaxc = max(J for (S, J) in omega)
+    mult = multiplicity_table(d, smax, jmaxc)
+    cells = [(S, J, int(mult[S, J])) for (S, J) in omega if mult[S, J] > 0]
+    g1max = smax + (D - 1) // w + L + 1
+    sigmax = m - 1 + jmaxc
+    # LD row DP then prefix over g1
+    T = [[0] * (sigmax + 1) for _ in range(g1max + 1)]
+    T[0][0] = 1
+    for j in list(range(1, d + 1)) + [d + 1]:
+        for g in range(1, g1max + 1):
+            row, prev = T[g], T[g - 1]
+            for s in range(j, sigmax + 1):
+                row[s] += prev[s - j]
+    P = [[0] * (sigmax + 2) for _ in range(g1max + 1)]
+    for g in range(g1max + 1):
+        acc = 0
+        Tg, Pg = T[g], P[g]
+        for s in range(sigmax + 1):
+            acc += Tg[s]
+            Pg[s + 1] = acc
+
+    def rows_ld(g1, g2):
+        hi = min(m - 1 - g2, sigmax)
+        lo = max(-g2, 0)
+        if hi < lo:
+            return 0
+        return P[g1][hi + 1] - P[g1][lo]
+    # cols per block with the l0 ramp, via per-(S,J,a) loops on b0 ranges (kept exact and
+    # simple: complexity |cells| * m, with the b0/l0 structure folded in closed form per g1)
+    n2 = m + jmaxc
+    colgrid = [dict() for _ in range(n2)]  # index g2+jmaxc -> {g1: count}
+    dim = 0
+    for (S, J, N) in cells:
+        W = w * S - J
+        top = D - 1 - W
+        if top < 0:
+            continue
+        R0 = D - W
+        b0m_dim = min((R0 - 1) // w, L)
+        # dim: sum_{b0} (R0 - w b0) * (L - b0 + 1)
+        dsum = 0
+        for b0 in range(b0m_dim + 1):
+            dsum += (R0 - w * b0) * (L - b0 + 1)
+        dim += N * dsum
+        ahi = min(m - 1, top)
+        for a in range(ahi + 1):
+            bmax = min((top - a) // w, L)
+            if bmax < 0:
+                continue
+            g2i = (a - J) + jmaxc
+            cg = colgrid[g2i]
+            # for g1 = S + b0 + l0: count over pairs = [g1-S <= L]*(min(bmax, g1-S)+1)
+            # accumulate for g1 - S = u in [0, L]: cnt = min(bmax, u) + 1
+            for u in range(0, L + 1):
+                g1 = S + u
+                if g1 > g1max:
+                    break
+                cg[g1] = cg.get(g1, 0) + N * (min(bmax, u) + 1)
+    rb = 0
+    for g2i in range(n2):
+        g2 = g2i - jmaxc
+        cg = colgrid[g2i]
+        if not cg:
+            continue
+        # rows_line(g1) = sum_{l=0}^{min(g1, L)} rows_ld(g1 - l)  (l = nZ + l0 <= L)
+        g1s = sorted(cg)
+        gmax = g1s[-1]
+        ld = [rows_ld(gg, g2) for gg in range(gmax + 1)]
+        pref = [0] * (gmax + 2)
+        for gg in range(gmax + 1):
+            pref[gg + 1] = pref[gg] + ld[gg]
+        for g1 in g1s:
+            lo = max(0, g1 - L)
+            rows_line = pref[g1 + 1] - pref[lo]
+            rb += min(rows_line, cg[g1])
+    return dim > n * rb, dim, n * rb
+
+
+def wedge(d, smax, srange=None):
+    """Full wedge {(S,J): 0 <= S <= smax, S <= J <= d*S} = the simplex cap sum bs <= smax."""
+    out = []
+    for S in range(smax + 1):
+        for J in range(S, d * S + 1):
+            out.append((S, J))
+    return out
+
+
+def selftest():
+    from hd_general_rank import node_rank, dim_space
+    from hd_fast_bound import rank_bound
+    n, k = 1 << 18, 1 << 17
+    w = k - 1
+    fails = 0
+    print("== spectral wedge == simplex cap: dim and counting threshold cross-check")
+    for (d, m, smax) in [(2, 8, 3), (3, 12, 4), (2, 12, 5)]:
+        ev = SpectralEvaluator(d, n, k, m, smax=smax, jmax=d * smax)
+        om = wedge(d, smax)
+        simplex = ((smax,) * d, lambda bs, s=smax: sum(bs) <= s)
+        A1 = ev.threshold(om, lo=170000)
+        # reference: bisection on hd_fast_bound with the simplex cap
+        def ok(A):
+            return dim_space(d, w, m * A, simplex) > n * rank_bound(
+                d, m, w, m * A, simplex, exact_rows=False)
+        lo, hi = 170000, n
+        if not ok(hi):
+            ref = None
+        else:
+            while lo < hi:
+                mid = (lo + hi) // 2
+                if ok(mid):
+                    hi = mid
+                else:
+                    lo = mid + 1
+            ref = lo
+        exact_thr = None
+        okx = (A1 == ref)
+        fails += 0 if okx else 1
+        print(f"  d={d} m={m} simplex smax={smax}: spectral={A1} ref={ref} "
+              f"{'OK' if okx else 'MISMATCH'}")
+    print("SELFTEST", "PASS" if fails == 0 else "FAIL")
+    return fails
+
+
+def neighbors(omega_set, d, smax, jmax):
+    adds, removes = set(), []
+    for (S, J) in omega_set:
+        removes.append((S, J))
+        for (dS, dJ) in ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, d)):
+            c = (S + dS, J + dJ)
+            if c not in omega_set and 0 <= c[0] <= smax and c[0] <= c[1] <= d * c[0] \
+                    and c[1] <= jmax:
+                adds.add(c)
+    return list(adds), removes
+
+
+def local_search(ev, omega0, rounds=400, seed=0, verbose=True):
+    import random
+    rng = random.Random(seed)
+    omega = set(omega0)
+    best = ev.threshold(omega)
+    if best is None:
+        return omega, None
+    for it in range(rounds):
+        adds, removes = neighbors(omega, ev.d, ev.smax, ev.jmax)
+        moves = [("+", c) for c in adds] + [("-", c) for c in removes]
+        rng.shuffle(moves)
+        improved = False
+        for kind, c in moves:
+            cand = set(omega)
+            (cand.add if kind == "+" else cand.discard)(c)
+            if not cand:
+                continue
+            cells = [(S, J, int(ev.mult[S, J])) for (S, J) in cand if ev.mult[S, J] > 0]
+            if not cells:
+                continue
+            if ev.feasible(cells, best - 1):
+                A2 = ev.threshold(cand, hi=best - 1)
+                if A2 is not None and A2 < best:
+                    omega, best = cand, A2
+                    improved = True
+                    if verbose:
+                        print(f"    it{it} {kind}{c} -> A={best} |omega|={len(omega)}",
+                              flush=True)
+                    break
+        if not improved:
+            break
+    return omega, best
+
+
+def scan(rate_denom, d, m, nexp=18, rounds=400, seed=0):
+    n = 1 << nexp
+    k = n // rate_denom
+    ev = SpectralEvaluator(d, n, k, m)
+    AJ = math.ceil(math.sqrt(n * (k - 1)))
+    print(f"SPECTRAL d={d} m={m} rate=1/{rate_denom} n=2^{nexp} Johnson A={AJ}",
+          flush=True)
+    results = []
+    starts = []
+    # S-cap wedges at several sizes (the d=1-style caps)
+    for f in (0.20, 0.31, 0.45):
+        s0 = max(1, round(f * m))
+        starts.append((f"wedge{s0}", wedge(d, s0)))
+    for name, om0 in starts:
+        A0 = ev.threshold(om0)
+        if A0 is None:
+            print(f"  start={name}: infeasible", flush=True)
+            continue
+        om, A = local_search(ev, om0, rounds=rounds, seed=seed, verbose=False)
+        r = A / math.sqrt(n * (k - 1))
+        print(f"  start={name:<10} A0={A0} -> A={A} ratio={r:.6f} "
+              f"delta={1 - A / n:.5f} |omega|={len(om)}", flush=True)
+        results.append((A, om, name))
+    results.sort(key=lambda t: t[0])
+    A, om, name = results[0]
+    Ss = sorted(set(S for (S, J) in om))
+    print(f"  BEST A={A} ({name}); S-range {Ss[0]}..{Ss[-1]}; "
+          f"J/S envelope: " + " ".join(
+              f"{S}:{min(J for (s2, J) in om if s2 == S)}-"
+              f"{max(J for (s2, J) in om if s2 == S)}"
+              for S in Ss[:8]), flush=True)
+    return A, om
+
+
+def trunc_wedge(d, smax, jcap):
+    """Omega(Smax, Jcap) = {(S,J): S <= Smax, S <= J <= min(d*S, Jcap)}."""
+    out = []
+    for S in range(smax + 1):
+        for J in range(S, min(d * S, jcap) + 1):
+            out.append((S, J))
+    return out
+
+
+def affine_wedge(d, smax, j0, j1, jcap):
+    """Omega = {(S,J): S <= smax, S <= J <= min(d*S, j0 + j1*S, jcap)} (continuum-optimal
+    shape at d=6: rising affine J-ceiling with a hard cap)."""
+    out = []
+    for S in range(smax + 1):
+        top = min(d * S, j0 + (j1 * S) // 4, jcap)  # j1 in quarter units
+        for J in range(S, top + 1):
+            out.append((S, J))
+    return out
+
+
+def paramscan2(rate_denom, d, m, nexp=18, verbose=True, base=None):
+    """Scan the affine family around a base (smax, jcap) result."""
+    n = 1 << nexp
+    k = n // rate_denom
+    ev = SpectralEvaluator(d, n, k, m)
+    s = math.sqrt(n * (k - 1))
+    best = (None,) * 5
+    smax0, jcap0 = base if base else (round(0.8 * m), round(1.2 * m))
+    for smax in {smax0, round(smax0 * 1.15), round(smax0 * 0.85)}:
+        for j0 in {round(0.4 * m), round(0.55 * m), round(0.7 * m)}:
+            for j1 in (1, 2, 3):  # quarter-slopes 0.25, 0.5, 0.75
+                for jcap in {round(0.8 * m), round(0.95 * m), round(1.1 * m),
+                             round(1.3 * m)}:
+                    om = affine_wedge(d, smax, j0, j1, jcap)
+                    A = ev.threshold(om, hi=(best[0] or n))
+                    if A is not None and (best[0] is None or A < best[0]):
+                        best = (A, smax, j0, j1, jcap)
+                        if verbose:
+                            print(f"    affine smax={smax} j0={j0} j1={j1/4} jcap={jcap}: "
+                                  f"A={A} ({A / s:.5f})", flush=True)
+    A, smax, j0, j1, jcap = best
+    print(f"  PARAM2 d={d} m={m}: A={A} ratio={A / s:.6f} delta={1 - A / n:.5f} "
+          f"(smax={smax} j0={j0} j1={j1/4 if j1 else j1} jcap={jcap})", flush=True)
+    return best
+
+
+def paramscan(rate_denom, d, m, nexp=18, refine=True, verbose=True):
+    """Deterministic scan over the truncated-wedge family, then optional local search."""
+    n = 1 << nexp
+    k = n // rate_denom
+    ev = SpectralEvaluator(d, n, k, m)
+    s = math.sqrt(n * (k - 1))
+    best = (None, None, None)
+    smax_grid = sorted(set(max(1, round(m * f)) for f in
+                           (0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.65, 0.8, 1.0, 1.25)))
+    jcap_grid = sorted(set(max(1, round(m * f)) for f in
+                           (0.25, 0.4, 0.55, 0.7, 0.9, 1.2, 1.6, 2.2, 3.0, 4.0)))
+    for smax in smax_grid:
+        for jcap in jcap_grid:
+            om = trunc_wedge(d, smax, jcap)
+            A = ev.threshold(om, hi=(best[0] or n))
+            if A is not None and (best[0] is None or A < best[0]):
+                best = (A, smax, jcap)
+                if verbose:
+                    print(f"    smax={smax} jcap={jcap}: A={A} ({A / s:.5f})", flush=True)
+    A, smax, jcap = best
+    om = set(trunc_wedge(d, smax, jcap))
+    if refine and A is not None:
+        om, A2 = local_search(ev, om, rounds=200, verbose=False)
+        if A2 is not None and A2 < A:
+            A = A2
+    print(f"  PARAM d={d} m={m}: A={A} ratio={A / s:.6f} delta={1 - A / n:.5f} "
+          f"(smax={smax} jcap={jcap}, refined |omega|={len(om)})", flush=True)
+    try:
+        import json
+        os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                 "hdinf_results"), exist_ok=True)
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "hdinf_results",
+                               f"omega_r{rate_denom}_d{d}_m{m}_n{nexp}.json"), "w") as fh:
+            json.dump({"A": A, "smax": smax, "jcap": jcap,
+                       "omega": sorted(map(list, om))}, fh)
+    except Exception as e:
+        print(f"    (save failed: {e})", flush=True)
+    return A, om
+
+
+def trend(rate_denom, d, ms, nexp=18, rounds=300):
+    n = 1 << nexp
+    k = n // rate_denom
+    s = math.sqrt(n * (k - 1))
+    out = []
+    for m in ms:
+        A, om = scan(rate_denom, d, m, nexp=nexp, rounds=rounds)
+        out.append((m, A))
+        print(f"  TREND d={d} m={m}: A={A} ratio={A / s:.6f}", flush=True)
+    print("== trend " + "  ".join(f"m{m}:{A}({A / s:.5f})" for m, A in out), flush=True)
+
+
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("cmd", choices=["selftest", "scan", "trend", "paramtrend", "param2"])
+    ap.add_argument("--rate", type=int, default=2)
+    ap.add_argument("--d", type=int, default=6)
+    ap.add_argument("--m", type=int, default=64)
+    ap.add_argument("--ms", type=str, default="32,48,64,96")
+    ap.add_argument("--nexp", type=int, default=18)
+    ap.add_argument("--rounds", type=int, default=400)
+    args = ap.parse_args()
+    if args.cmd == "selftest":
+        sys.exit(1 if selftest() else 0)
+    elif args.cmd == "scan":
+        scan(args.rate, args.d, args.m, nexp=args.nexp, rounds=args.rounds)
+    elif args.cmd == "param2":
+        paramscan2(args.rate, args.d, args.m, nexp=args.nexp)
+    elif args.cmd == "paramtrend":
+        n = 1 << args.nexp
+        k = n // args.rate
+        s = math.sqrt(n * (k - 1))
+        out = []
+        for m in [int(x) for x in args.ms.split(",")]:
+            A, _ = paramscan(args.rate, args.d, m, nexp=args.nexp)
+            out.append((m, A))
+        print("== paramtrend d=%d " % args.d + "  ".join(
+            f"m{m}:{A}({A / s:.5f})" for m, A in out), flush=True)
+    else:
+        trend(args.rate, args.d, [int(x) for x in args.ms.split(",")],
+              nexp=args.nexp, rounds=args.rounds)

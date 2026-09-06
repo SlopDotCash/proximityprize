@@ -7,7 +7,7 @@ import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessPr
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessEmpty
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessChallenge
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessOracle
-import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessOracleChallenge
+import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.OracleReduction.Composition.Sequential.AppendSeamBridges3
 
 /-!

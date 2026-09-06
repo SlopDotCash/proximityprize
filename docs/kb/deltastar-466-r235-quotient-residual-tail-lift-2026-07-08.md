@@ -20,7 +20,7 @@ should cover raw residual survivors with multiplicity at most `|G|`.
 New file:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean
+Research/ProximityPrize/Frontier/_R235QuotientResidualTailLift.lean
 ```
 
 It introduces:

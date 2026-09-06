@@ -84,6 +84,6 @@ Jacobi/cyclotomic covariance at each rank. CORE OPEN / ON-BGK.
 
 ## Artifacts
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean`
+- `Research/ProximityPrize/Frontier/_G265CoordinateReparametrizationNoGo.lean`
 - `scripts/probes/g265_coordinate_reparametrization_nogo.py`
 - DISPROOF entry `[466-G265-coordinate-reparametrization-nogo]`

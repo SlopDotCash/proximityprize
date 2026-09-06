@@ -1,6 +1,6 @@
 # δ*/#466 — SYZ40: final assembly of the rate-`1/2` strip theorem (arc closing document)
 
-Date: 2026-07-11.  File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ40FinalAssembly.lean`
+Date: 2026-07-11.  File: `Research/ProximityPrize/Frontier/_SYZ40FinalAssembly.lean`
 (11 declarations, all axiom-clean: `propext / Classical.choice / Quot.sound` only; no `sorry`, no
 `native_decide`).  Branch: `codex/syz40-final-assembly` off fork `research/proximity-prize`
 tip `4ececa37e`.
@@ -145,7 +145,7 @@ unconditional.
 
 ```bash
 scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ40FinalAssembly.lean   # ✅ axiom-clean, 11 thms
+  Research/ProximityPrize/Frontier/_SYZ40FinalAssembly.lean   # ✅ axiom-clean, 11 thms
 ```
 
 Dependencies (`_SYZ39…`, `_SYZ33…` and their transitive cone) prebuilt once via

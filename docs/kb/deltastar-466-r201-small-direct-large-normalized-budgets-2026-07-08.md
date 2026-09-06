@@ -10,7 +10,7 @@ R201 combines two landed interfaces:
 The Lean file is:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R201SmallDirectLargeNormalizedBudgets.lean
+Research/ProximityPrize/Frontier/_R201SmallDirectLargeNormalizedBudgets.lean
 ```
 
 For the live R189 constants, the final theorem says:

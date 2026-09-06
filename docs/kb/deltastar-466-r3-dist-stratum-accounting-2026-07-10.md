@@ -57,7 +57,7 @@ weakened surrogate would launder the gap. The honest Lean-side open object stays
 
 ## Formal kernel
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R300DistStratumAccounting.lean` — axiom-clean
+`Research/ProximityPrize/Frontier/_R300DistStratumAccounting.lean` — axiom-clean
 (`[propext, Classical.choice, Quot.sound]`, no sorryAx), pg-iterate 45s. Theorems:
 `tripleConv_eq_dist_add_nonDist`, `nonDist_inner_subset`, `card_double_fiber_le_card_kernel`,
 `card_nonDist_inner_le`, `norm_nonDistStratum_le`, `nonDistStratum_energy_le`

@@ -6,7 +6,7 @@ Date: 2026-07-08
 
 Added a raw-frequency-safe endpoint for the current nonzero survival-grid route:
 
-- `ArkLib.Data.CodingTheory.ProximityGap.Frontier._R222NonzeroScaledSpikeToPrizeEndpoint`
+- `Research.ProximityPrize.Frontier._R222NonzeroScaledSpikeToPrizeEndpoint`
 - theorem:
   `prize_sq_of_nonzero_normalizedSq_threeFifths_plus_scaledTwo_tail`
 
@@ -37,13 +37,13 @@ must feed.
 Focused dependency refresh:
 
 ```bash
-./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.Frontier._R219NonzeroBulkSpikesToPrizeEndpoint
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R219NonzeroBulkSpikesToPrizeEndpoint
 ```
 
 Focused Lean check:
 
 ```bash
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R222NonzeroScaledSpikeToPrizeEndpoint.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R222NonzeroScaledSpikeToPrizeEndpoint.lean
 ```
 
 Result:

@@ -73,7 +73,7 @@ Jacobi angle family, measured Gaussian-or-better to m = 1200 / q = 36000.
 
 ## 5. Formal kernel and probe
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R309TowerRungFour.lean`
+`Research/ProximityPrize/Frontier/_R309TowerRungFour.lean`
 — axiom-clean (`[propext, Classical.choice, Quot.sound]`, manual reads on
 all six, no sorryAx), pg-iterate 6s.  Theorems: `hatF_autocorr`,
 `fourthMoment_eq_lag_energy`, `norm_autocorr_zero_le`,

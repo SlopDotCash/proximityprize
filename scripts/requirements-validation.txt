@@ -1,0 +1,2 @@
+# Dependencies of scripts/tests, including exact finite-field probe regressions.
+numpy==2.4.4

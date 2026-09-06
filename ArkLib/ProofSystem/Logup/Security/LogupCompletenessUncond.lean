@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.ProofSystem.Logup.Security.LogupCompletenessClose
 import ArkLib.ProofSystem.Logup.Security.SumcheckLensProjComplete
 import ArkLib.ProofSystem.Logup.Security.BridgeAndAppendResiduals
-import ArkLib.OracleReduction.Composition.Sequential.AppendToVerifierKeystone
+import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 
 /-!
 # LogUp Protocol 2 — most-unconditional completeness (issue #13, keystone K-compFull)

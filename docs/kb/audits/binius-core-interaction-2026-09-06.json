@@ -1,0 +1,274 @@
+{
+  "source": "ArkLib/ProofSystem/Binius/BinaryBasefold/CoreInteractionPhase.lean",
+  "source_sha256": "e529cae13718060925c2e436600e3cc0925226d29e2111ff01e9403e8f4a83de",
+  "lean_version": "4.30.0-rc2",
+  "full_source_exit_code": 0,
+  "compiled_artifact_exit_code": 0,
+  "axiom_audit_exit_code": 0,
+  "declarations": {
+    "Binius.BinaryBasefold.CoreInteraction.fin_zero_mul_eq": [
+      "propext"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.Statement.of_fin_eq": [],
+    "Binius.BinaryBasefold.CoreInteraction.OracleStatement.idx_eq": [],
+    "Binius.BinaryBasefold.CoreInteraction.OracleStatement.heq_of_fin_eq": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.Witness.of_fin_eq": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.strictRoundRelation.of_fin_eq": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.roundRelation.of_fin_eq": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instOracleStatementBinaryBasefold_heq_of_fin_eq": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instFoldOracleVerifierAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instFoldOracleReductionAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instRelayOracleVerifierAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instRelayOracleReductionAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instFoldRelayOracleVerifierAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instFoldRelayOracleReductionAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.foldRelayOracleReduction_perfectCompleteness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.foldRelayKnowledgeError_eq": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.foldRelayOracleVerifier_rbrKnowledgeSoundness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instCommitOracleVerifierAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instCommitOracleReductionAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instFoldCommitOracleVerifierAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.foldCommitOracleReduction_perfectCompleteness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.foldCommitKnowledgeError_eq": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.foldCommitOracleVerifier_rbrKnowledgeSoundness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instFoldCommitOracleReductionAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instNonLastSingleBlockOracleVerifierAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instNonLastBlocksOracleVerifierAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instLastBlockOracleVerifierAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instSumcheckFoldOracleVerifierAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instNonLastSingleBlockOracleReductionAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instNonLastBlocksOracleReductionAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instLastBlockOracleReductionAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.instSumcheckFoldOracleReductionAppendCoherent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.nonLastSingleBlockOracleReduction_perfectCompleteness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.lastBlockOracleReduction_perfectCompleteness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.sumcheckFoldOracleReduction_perfectCompleteness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.lastBlockOracleVerifier_rbrKnowledgeSoundness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.nonLastSingleBlockOracleVerifier_rbrKnowledgeSoundness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.nonLastBlocksOracleVerifier_rbrKnowledgeSoundness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.sumcheckFoldOracleVerifier_rbrKnowledgeSoundness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.coreInteractionOracleReduction_perfectCompleteness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.coreInteractionOracleVerifier_rbrKnowledgeSoundness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.challengeIdx_pSpecFinalSumcheckStep_isEmpty": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.finalSumcheckKnowledgeError_sum_eq_zero": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.x_lt_two_pow": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.sum_powers": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.sum_Icc_one_pred_sub_reindex": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.sum_range_pred_eq_sum_Icc": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.sum_fin_eq_sum_Icc_pred": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.sum_range_eq_Icc_add_zero": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.innerPowSum_add_two_pow_eq_mul_sum_range": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.foldBadEventCardSum_le_two_pow": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.foldBadEventCardSum_eq_displaySums": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.sumcheckFoldKnowledgeError_displayMass_le": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Binius.BinaryBasefold.CoreInteraction.sumcheckFoldKnowledgeError_le": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "limits": [
+    "Role-named completeness and security hypotheses remain in theorem types.",
+    "QueryPhase and full repository acceptance remain incomplete."
+  ]
+}

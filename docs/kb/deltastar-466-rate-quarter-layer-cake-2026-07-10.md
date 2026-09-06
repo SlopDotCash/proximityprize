@@ -11,7 +11,7 @@ Formal kernel (pg-iterate ✅ OK 21s, 8 audited theorems axiom-clean —
 `three_heavy_twoCover_window` even depends on `[propext]` alone):
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterLayerCakeBudget.lean
+Research/ProximityPrize/Frontier/_P1RateQuarterLayerCakeBudget.lean
 ```
 
 Probe: `scripts/probes/probe_rate_quarter_p1_layer_cake.py` (exact integer

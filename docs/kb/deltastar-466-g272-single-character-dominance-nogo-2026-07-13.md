@@ -62,7 +62,7 @@ Only the genuine single order-2 Plancherel term is the candidate weaker object, 
 
 ## Lean payload (axiom-clean)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G272SingleCharacterDominanceNoGo.lean`, namespace
+`Research/ProximityPrize/Frontier/_G272SingleCharacterDominanceNoGo.lean`, namespace
 `ArkLib.ProximityGap.Frontier.G272SingleCharacterDominanceNoGo`, imports `Mathlib.Tactic` only:
 
 - `charTwo f` : the order-2 character functional `Σ_j f(j)(−1)^j` of a quotient profile; applied to

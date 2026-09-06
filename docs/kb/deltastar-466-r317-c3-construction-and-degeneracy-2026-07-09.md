@@ -2,7 +2,7 @@
 
 ## What landed
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R317C3LargeFiberConstruction.lean`
+`Research/ProximityPrize/Frontier/_R317C3LargeFiberConstruction.lean`
 proves the field-theoretic identities behind two observed `c = 3` web
 families.  If
 
@@ -58,7 +58,7 @@ classification and multiplicity calculation under a sharp nondegeneracy guard.
 ## Validation
 
 ```text
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R317C3LargeFiberConstruction.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R317C3LargeFiberConstruction.lean
 ```
 
 Result: `OK`, with no `sorryAx` in the printed theorem audits.

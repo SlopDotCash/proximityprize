@@ -12,7 +12,7 @@ core to exactly w = z0 elements; intersections only shrink):
 so m <= N*(w - lam) / (w^2 - N*lam).
 
 Companion Lean file:
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FSMA_SecondMomentPairPartition.lean
+Research/ProximityPrize/Frontier/_FSMA_SecondMomentPairPartition.lean
 """
 from fractions import Fraction
 import math
@@ -57,14 +57,14 @@ for bound in [10, 9, 8, 7, 6, 5, 4, 3, 2]:
     print(f"smallest z0 with cap < {bound:>2}: z0 = {z0} ({rel}, T-2-z0 = {T-2-z0})")
 print()
 
-# Exact Lean-instance inequalities: m sets of size >= t impossible iff
-# N*(t-lam) < m*(t^2 - N*lam); sharpness = flip at t-1.
+# Scalar Plotkin exclusions: m sets of size >= t are ruled out when
+# N*(t-lam) < m*(t^2 - N*lam); threshold sharpness is the scalar flip at t-1.
 print("Lean norm_num instances (impossible=True at t, False at t-1):")
 for (m, t) in [(6, 587673607), (6, T-2), (5, 599424501), (4, 618146628),
                (3, 652432610), (2, 733379304)]:
     ok = N*(t-lam) < m*(t*t - NKm1)
     sharp = not (N*(t-1-lam) < m*((t-1)*(t-1) - NKm1))
-    print(f"  m={m} t={t}: impossible={ok}, sharp(t-1 satisfiable)={sharp}")
+    print(f"  m={m} t={t}: impossible={ok}, scalar_threshold_flips_at_t_minus_1={sharp}")
 print()
 
 # Fresh-fibre packing: L*(T-z) + z <= N (for z < T) forces z >= (L*T-N)/(L-1).
@@ -122,12 +122,12 @@ print("ladder-constrained sorted max line sizes (first 12 ranks):", ranks[:12])
 print("number of ranks with >= 10 points allowed:", len(ranks))
 print("max pair mass on lines with >= 10 points  :", tot)
 print("required pair mass (N+1)*N                :", need)
-print("big-line channel alone sufficient?", tot >= need, " ratio:", tot/need)
+print("rank-wise upper bound reaches required mass?", tot >= need, " ratio:", tot/need)
 print()
-print("BARRIER NOTE: lines with <= 9 points can carry unbounded pair mass")
-print("(the identity is self-satisfiable by 2-point lines), so pair-mass")
-print("counting alone can never contradict |G| > N; the ladder only pins the")
-print("geometry of the >= 10-point lines.")
+print("BARRIER NOTE: this >= 10-point ladder does not bound the number of smaller lines.")
+print("Pair-mass accounting alone permits abstract 2-point-line assignments;")
+print("the computation does not establish geometric realizability of those assignments")
+print("or of the rank-wise maxima.")
 
 # High-core collapse vacuity at P1: 3T + 2z > 2N + 4(K-1) needs z >= ...
 zz = 2*N + 4*(K-1) - 3*T

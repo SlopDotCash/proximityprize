@@ -55,7 +55,7 @@ envelope — strictly between the trivial `m²`-loss baseline and the lossless
 
 ## 5. Formal kernel and probe
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R303FourthMomentInterpolation.lean`
+`Research/ProximityPrize/Frontier/_R303FourthMomentInterpolation.lean`
 — axiom-clean (`[propext, Classical.choice, Quot.sound]`, no sorryAx),
 pg-iterate 16s.  Theorems: `hatF_conv2`, `fourthMoment_eq_selfConv_energy`,
 `FourthMomentBound` (named input), `fourthMomentBound_of_fullDFTFlat`,

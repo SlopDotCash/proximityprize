@@ -148,5 +148,5 @@ to ArkLib's current formal scope, it should be documented as such rather than hi
 ## Related indexes
 
 * `docs/kb/audits/proximity-prize/CURRENT-RESIDUALIZED-TREE-2026-06-06.md`
-* `ArkLib/Data/CodingTheory/ProximityGap/PermanentlyBlocked.lean`
-* `ArkLib/Data/CodingTheory/ProximityGap/ExternalDebt.lean`
+* `Research/ProximityPrize/PermanentlyBlocked.lean`
+* `Research/ProximityPrize/ExternalDebt.lean`

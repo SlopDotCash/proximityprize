@@ -5,6 +5,7 @@ Authors: Quang Dao, Chung Thai Nguyen
 -/
 
 import ArkLib.OracleReduction.Cast
+import ArkLib.OracleReduction.Composition.Sequential.Append
 
 /-!
   # Statement-level casts for oracle reductions and oracle verifiers
@@ -419,3 +420,58 @@ end OracleVerifier
 #print axioms OracleReduction.castOutSimple_completeness
 #print axioms OracleVerifier.castInOut_rbrKnowledgeSoundness
 #print axioms OracleVerifier.castOutSimple_rbrKnowledgeSoundness
+
+/-- Casting preserves append coherence when both oracle interfaces agree. -/
+theorem OracleVerifier.castInOut_appendCoherent
+    {ι : Type} {oSpec : OracleSpec ι} {n : ℕ} {pSpec : ProtocolSpec n}
+    [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
+    {StmtIn₁ StmtIn₂ StmtOut₁ StmtOut₂ : Type}
+    {ιₛᵢ₁ ιₛᵢ₂ ιₛₒ₁ ιₛₒ₂ : Type}
+    {OStmtIn₁ : ιₛᵢ₁ → Type} {OStmtIn₂ : ιₛᵢ₂ → Type}
+    {OStmtOut₁ : ιₛₒ₁ → Type} {OStmtOut₂ : ιₛₒ₂ → Type}
+    [Oₛᵢ₁ : ∀ i, OracleInterface (OStmtIn₁ i)]
+    [Oₛᵢ₂ : ∀ i, OracleInterface (OStmtIn₂ i)]
+    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)]
+    [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
+    (V : OracleVerifier oSpec StmtIn₁ OStmtIn₁ StmtOut₁ OStmtOut₁ pSpec)
+    [Append.AppendCoherent V]
+    (h_stmtIn : StmtIn₁ = StmtIn₂) (h_stmtOut : StmtOut₁ = StmtOut₂)
+    (h_idxIn : ιₛᵢ₁ = ιₛᵢ₂) (h_idxOut : ιₛₒ₁ = ιₛₒ₂)
+    (h_ostmtIn : HEq OStmtIn₁ OStmtIn₂) (h_ostmtOut : HEq OStmtOut₁ OStmtOut₂)
+    (h_Oₛᵢ : HEq Oₛᵢ₁ Oₛᵢ₂) (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂) :
+    Append.AppendCoherent
+      (V.castInOut h_stmtIn h_stmtOut h_idxIn h_idxOut h_ostmtIn h_ostmtOut h_Oₛᵢ) := by
+  subst h_idxIn h_idxOut
+  simp only [heq_iff_eq] at h_ostmtIn h_ostmtOut
+  subst h_stmtIn h_stmtOut h_ostmtIn h_ostmtOut
+  simp only [heq_iff_eq] at h_Oₛᵢ h_Oₛₒ
+  subst Oₛᵢ₂ Oₛₒ₂
+  simpa only [castInOut_id] using (inferInstance : Append.AppendCoherent V)
+
+/-- Casting preserves append coherence when both oracle interfaces agree. -/
+theorem OracleReduction.castInOut_verifier_appendCoherent
+    {ι : Type} {oSpec : OracleSpec ι} {n : ℕ} {pSpec : ProtocolSpec n}
+    [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
+    {StmtIn₁ StmtIn₂ StmtOut₁ StmtOut₂ WitIn₁ WitIn₂ WitOut₁ WitOut₂ : Type}
+    {ιₛᵢ₁ ιₛᵢ₂ ιₛₒ₁ ιₛₒ₂ : Type}
+    {OStmtIn₁ : ιₛᵢ₁ → Type} {OStmtIn₂ : ιₛᵢ₂ → Type}
+    {OStmtOut₁ : ιₛₒ₁ → Type} {OStmtOut₂ : ιₛₒ₂ → Type}
+    [Oₛᵢ₁ : ∀ i, OracleInterface (OStmtIn₁ i)]
+    [Oₛᵢ₂ : ∀ i, OracleInterface (OStmtIn₂ i)]
+    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)]
+    [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
+    (R : OracleReduction oSpec StmtIn₁ OStmtIn₁ WitIn₁ StmtOut₁ OStmtOut₁ WitOut₁ pSpec)
+    [OracleVerifier.Append.AppendCoherent R.verifier]
+    (h_stmtIn : StmtIn₁ = StmtIn₂) (h_stmtOut : StmtOut₁ = StmtOut₂)
+    (h_witIn : WitIn₁ = WitIn₂) (h_witOut : WitOut₁ = WitOut₂)
+    (h_idxIn : ιₛᵢ₁ = ιₛᵢ₂) (h_idxOut : ιₛₒ₁ = ιₛₒ₂)
+    (h_ostmtIn : HEq OStmtIn₁ OStmtIn₂) (h_ostmtOut : HEq OStmtOut₁ OStmtOut₂)
+    (h_Oₛᵢ : HEq Oₛᵢ₁ Oₛᵢ₂) (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂) :
+    OracleVerifier.Append.AppendCoherent
+      (R.castInOut h_stmtIn h_stmtOut h_witIn h_witOut h_idxIn h_idxOut h_ostmtIn h_ostmtOut h_Oₛᵢ).verifier := by
+  subst h_idxIn h_idxOut
+  simp only [heq_iff_eq] at h_ostmtIn h_ostmtOut
+  subst h_stmtIn h_stmtOut h_ostmtIn h_ostmtOut h_witIn h_witOut
+  simp only [heq_iff_eq] at h_Oₛᵢ h_Oₛₒ
+  subst Oₛᵢ₂ Oₛₒ₂
+  simpa only [castInOut_id] using (inferInstance : OracleVerifier.Append.AppendCoherent R.verifier)

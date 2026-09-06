@@ -2,7 +2,7 @@
 
 **Issue:** #466 (Proximity Prize / δ*). **Branch:** `codex/syz64-window-bookkeeping`
 (off `fork/research/proximity-prize` tip `6074262f8`).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ64WindowBookkeeping.lean`.
+**File:** `Research/ProximityPrize/Frontier/_SYZ64WindowBookkeeping.lean`.
 
 ## Headline
 

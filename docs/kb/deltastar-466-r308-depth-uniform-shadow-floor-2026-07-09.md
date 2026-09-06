@@ -36,5 +36,5 @@ collision mass from distinct integer shadows collapsing in the field.
 Passed:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R308DepthUniformShadowFloor.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R308DepthUniformShadowFloor.lean
 ```

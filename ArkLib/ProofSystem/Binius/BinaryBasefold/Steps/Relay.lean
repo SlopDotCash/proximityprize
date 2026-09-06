@@ -141,7 +141,16 @@ lemma strictRoundRelation_relay_preserved (i : Fin ℓ)
       intro (j : Fin (toOutCodewordsCount ℓ ϑ i.succ))
       have h_toOutCodewordsCount_eq : toOutCodewordsCount ℓ ϑ i.succ =
         toOutCodewordsCount ℓ ϑ i.castSucc := (h_oracle_size_eq_relay i hNCR).symm
-      exact h_relIn.2.2 (Fin.cast h_toOutCodewordsCount_eq j)
+      have hbound : j.val * ϑ ≤ i.val := by
+        have hle := toCodewordsCount_mul_ϑ_le_i ℓ ϑ i.castSucc
+          (Fin.cast h_toOutCodewordsCount_eq j)
+        simpa only [Fin.val_cast, Fin.val_castSucc, i.isLt, ↓reduceIte] using hle
+      have hchal := getFoldingChallenges_tail_castSucc_eq_of_le
+        (r := r) (𝓡 := 𝓡) (ϑ := j.val * ϑ) i stmtIn.challenges 0
+        (by simpa using hbound) (by simp only [zero_add, Fin.val_succ]; omega)
+      simpa only [Fin.val_cast, olderStmtChallenges_succ_castSucc,
+        olderStmtChallenges_self, hchal]
+        using h_relIn.2.2 (Fin.cast h_toOutCodewordsCount_eq j)
 
 omit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] h_β₀_eq_1 in
 theorem relayOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : Fin ℓ)
@@ -156,7 +165,16 @@ theorem relayOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : F
         i hNCR)
       (init := init)
       (impl := impl) := by
+  letI : ∀ j, OracleInterface (pSpecRelay.Challenge j) :=
+    ProtocolSpec.challengeOracleInterface
+  letI : ∀ j, Fintype (pSpecRelay.Challenge j) := by
+    intro j
+    exact j.1.elim0
   letI : [pSpecRelay.Challenge]ₒ.Fintype := ProtocolSpec.challengeOracle_fintype _
+  letI : ∀ j, Inhabited (pSpecRelay.Challenge j) := by
+    intro j
+    exact j.1.elim0
+  letI : [pSpecRelay.Challenge]ₒ.Inhabited := ProtocolSpec.challengeOracle_inhabited _
   -- must use `ProtocolSpec.challengeOracleInterface`
   rw [OracleReduction.unroll_0_message_reduction_perfectCompleteness (oSpec := []ₒ)
     (pSpec := pSpecRelay) (init := init) (impl := impl) (hInit := hInit)
@@ -234,13 +252,17 @@ theorem relayOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : F
     -- Step 2c: Simplify the verifier computation
     conv at h_verOut_mem_support =>
       dsimp only [liftM, monadLift, MonadLift.monadLift]
-      rw [support_liftComp]
       erw [simulateQ_pure]
-      -- dsimp only [Functor.map]
-      erw [support_bind]
-      simp only [support_pure, Set.mem_singleton_iff, Function.comp_apply,
-        Set.iUnion_iUnion_eq_left, OptionT.support_OptionT_pure_run, Option.some.injEq,
-        Prod.mk.injEq]
+      simp [liftComp_eq_liftM, liftM_pure, support_pure]
+    simp only [Functor.map, bind_pure, liftM_pure, support_pure,
+      Set.mem_singleton_iff, Prod.mk.injEq] at h_verOut_mem_support
+    simp only [OptionT.bind, OptionT.pure, pure_bind, Function.comp_apply]
+      at h_verOut_mem_support
+    simp only [OptionT.mk, liftM_pure, support_pure, Set.mem_singleton_iff,
+      Option.some.injEq, Prod.mk.injEq] at h_verOut_mem_support
+    erw [OptionT.mem_support_mk] at h_verOut_mem_support
+    simp only [OptionT.run, support_pure, Set.mem_singleton_iff,
+      Option.some.injEq, Prod.mk.injEq] at h_verOut_mem_support
     rcases h_verOut_mem_support with ⟨verStmtOut_eq, verOStmtOut_eq⟩
     obtain ⟨⟨prvStmtOut_eq, prvOStmtOut_eq⟩, prvWitOut_eq⟩ := h_prvOut_mem_support
     constructor
@@ -275,16 +297,14 @@ def relayKStateProp (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ ϑ i)
   (witMid : Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ)
   (oStmtIn : (∀ j, OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.castSucc j))
   : Prop :=
-  -- Relay step inherits sumcheckConsistency from foldStepRelOut (relIn) and preserves it
-  let sumCheckConsistency: Prop := sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witMid.H
-  masterKStateProp (mp := mp) (𝓑 := 𝓑) (ϑ := ϑ) 𝔽q β
+  -- The zero-round state is the output relation pulled back along the oracle relabeling.
+  masterKStateCore (mp := mp) (𝓑 := 𝓑) (ϑ := ϑ) 𝔽q β
     (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
     (stmtIdx := i.succ) (oracleIdx := OracleFrontierIndex.mkFromStmtIdx i.succ)
     (h_le := OracleFrontierIndex.val_le_i i.succ
       (OracleFrontierIndex.mkFromStmtIdx i.succ))
     (stmt := stmtIn) (wit := witMid) (oStmt := mapOStmtOutRelayStep
       𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR oStmtIn)
-    (localChecks := sumCheckConsistency)
 
 /-! The relay step oracle transformation equals mkVerifierOStmtOut.
 This shows that mapOStmtOutRelayStep is exactly what the verifier produces. -/
@@ -298,8 +318,8 @@ lemma mapOStmtOut_eq_mkVerifierOStmtOut_relayStep
     OracleVerifier.mkVerifierOStmtOut v.embed v.hEq oStmtIn transcript := by
   intro v
   funext j
-  simp only [mapOStmtOutRelayStep, OracleVerifier.mkVerifierOStmtOut, relayOracleVerifier, v]
-  simp [relayOracleVerifier_embed]
+  simp [mapOStmtOutRelayStep, OracleVerifier.mkVerifierOStmtOut,
+    relayOracleVerifier, relayOracleVerifier_embed, v]
 
 omit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] hF₂ h_β₀_eq_1 [NeZero 𝓡] in
 lemma getFirstOracle_mapOStmtOutRelayStep_eq (i : Fin ℓ)
@@ -325,52 +345,13 @@ def relayKnowledgeStateFunction (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ �
       i hNCR stmtIn witMid oStmtIn
   toFun_empty := fun ⟨stmtIn, oStmtIn⟩ witIn => by
     rw [cast_eq]
-    simp only [foldStepRelOut, foldStepRelOutProp, Set.mem_setOf_eq, relayKStateProp]
-    unfold masterKStateProp
-    simp only [Fin.val_succ]
-    constructor <;> intro h
-    · -- Forward: castSuccOfSucc/original oStmt -> mkFromStmtIdx/mapped oStmt
-      cases h with
-      | inl hBad =>
-        left
-        exact (incrementalBadEventExistsProp_relay_preserved 𝔽q β
-          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR oStmtIn stmtIn.challenges).1 hBad
-      | inr hGood =>
-        right
-        refine ⟨hGood.1, hGood.2.1, ?_, ?_⟩
-        · rw [getFirstOracle_mapOStmtOutRelayStep_eq (i := i) (hNCR := hNCR)
-            (oStmtIn := oStmtIn)]
-          exact hGood.2.2.1
-        · have hFold' :
-            oracleFoldingConsistencyProp 𝔽q β (i := i.castSucc)
-              (Fin.init stmtIn.challenges) oStmtIn := by
-            exact hGood.2.2.2
-          have hFold_map :=
-            (oracleFoldingConsistencyProp_relay_preserved 𝔽q β
-              (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR stmtIn.challenges oStmtIn).1 hFold'
-          exact hFold_map
-    · -- Backward: mkFromStmtIdx/mapped oStmt -> castSuccOfSucc/original oStmt
-      cases h with
-      | inl hBad =>
-        left
-        exact (incrementalBadEventExistsProp_relay_preserved 𝔽q β
-          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR oStmtIn stmtIn.challenges).2 hBad
-      | inr hGood =>
-        right
-        refine ⟨hGood.1, hGood.2.1, ?_, ?_⟩
-        · have hFirst := hGood.2.2.1
-          rw [getFirstOracle_mapOStmtOutRelayStep_eq (i := i) (hNCR := hNCR)
-            (oStmtIn := oStmtIn)] at hFirst
-          exact hFirst
-        · have hFold' :
-            oracleFoldingConsistencyProp 𝔽q β (i := i.succ)
-              stmtIn.challenges
-              (mapOStmtOutRelayStep 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR oStmtIn) := by
-            exact hGood.2.2.2
-          have hFold_cast :=
-            (oracleFoldingConsistencyProp_relay_preserved 𝔽q β
-              (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR stmtIn.challenges oStmtIn).2 hFold'
-          exact hFold_cast
+    simp only [foldStepRelOut, foldStepRelOutProp, Set.mem_setOf_eq, relayKStateProp,
+      masterKStateCore, hNCR, if_false, OracleFrontierIndex.mkFromStmtIdx,
+      olderStmtChallenges]
+    rw [badEventExistsProp_relay_preserved 𝔽q β i hNCR stmtIn.challenges oStmtIn,
+      oracleWitnessConsistency_relay_preserved 𝔽q β i hNCR stmtIn witIn oStmtIn]
+    simp only [olderStmtChallenges_self]
+    rfl
   toFun_next := fun m hDir (stmtIn, oStmtIn) tr msg witMid => Fin.elim0 m
   toFun_full := by
     intro stmtOStmtIn tr witOut probEvent_relOut_gt_0
@@ -419,10 +400,10 @@ def relayKnowledgeStateFunction (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ �
     -- Now h_relOut : ((stmtIn, oStmtOut), witOut) ∈ roundRelation 𝔽q β i.succ
     -- where oStmtOut = OracleVerifier.mkVerifierOStmtOut ...
     simp only [roundRelation, roundRelationProp, Set.mem_setOf_eq] at h_relOut
-    unfold masterKStateProp at h_relOut
-    -- The goal is relayKStateProp, which expands to masterKStateProp with sumcheckConsistency
+    unfold masterKStateCore at h_relOut
+    -- The state and output relation use the same core after oracle relabeling.
     simp only [relayKStateProp]
-    unfold masterKStateProp
+    unfold masterKStateCore
     -- relayRbrExtractor.extractOut is identity
     rw [h_stmtOut_eq] at h_relOut
     -- Rewrite verifier-produced oracle statement to the relay map and conclude directly.

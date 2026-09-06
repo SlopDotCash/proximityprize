@@ -38,7 +38,7 @@ output — the analytic regime begins there).
 
 ## Formal kernel
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R301CubicCyclotomyM9.lean` — axiom-clean
+`Research/ProximityPrize/Frontier/_R301CubicCyclotomyM9.lean` — axiom-clean
 (`[propext, Classical.choice, Quot.sound]`, no sorryAx), pg-iterate 43s. No new named Props:
 everything landed is proven outright (the finite parts by `decide`).
 

@@ -38,7 +38,7 @@ At the deployed index `m = 2^128`, that is `2^64` versus about `88.7`.
 The new file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSDPPrizeGap.lean
+Research/ProximityPrize/Frontier/_AvSDPPrizeGap.lean
 ```
 
 proves the exact arithmetic obstruction.
@@ -97,7 +97,7 @@ Three possible shapes remain:
 ## Verification
 
 ```bash
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSDPPrizeGap.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_AvSDPPrizeGap.lean
 ```
 
 Result: `OK (18s)`, with the expected small axiom audit and no `sorryAx`.

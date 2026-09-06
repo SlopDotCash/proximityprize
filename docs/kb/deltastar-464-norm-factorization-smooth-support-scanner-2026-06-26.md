@@ -11,7 +11,7 @@ norms should not share large prime factors in a way that creates clustered bad-p
 existing file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NextNormFactorizationClustering.lean
+Research/ProximityPrize/Frontier/_NextNormFactorizationClustering.lean
 ```
 
 already defines the relation support map `Fac`, the shared-prime `ClusterRate`, and the Poisson

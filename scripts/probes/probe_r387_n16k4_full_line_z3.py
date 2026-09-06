@@ -170,7 +170,7 @@ def run(free_pivot=False, timeout_ms=0):
         else:
             outcomes.append((pivot, "unknown", False))
     print({"outcomes": outcomes}, flush=True)
-    return True
+    return True if all(status == "unsat" for _, status, _ in outcomes) else None
 
 
 if __name__ == "__main__":
@@ -178,4 +178,6 @@ if __name__ == "__main__":
     parser.add_argument("--free-pivot", action="store_true")
     parser.add_argument("--timeout-ms", type=int, default=0)
     args = parser.parse_args()
-    raise SystemExit(0 if run(args.free_pivot, args.timeout_ms) else 1)
+    outcome = run(args.free_pivot, args.timeout_ms)
+    # 0: all branches unsat; 1: checked counterexample; 2: unresolved.
+    raise SystemExit(0 if outcome is True else 1 if outcome is False else 2)

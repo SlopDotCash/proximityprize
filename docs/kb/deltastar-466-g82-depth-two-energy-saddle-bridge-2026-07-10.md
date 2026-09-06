@@ -2,7 +2,7 @@
 
 Date: 2026-07-10
 Issue: #466
-Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G82DepthTwoEnergySaddleBridge.lean`
+Lean: `Research/ProximityPrize/Frontier/_G82DepthTwoEnergySaddleBridge.lean`
 
 ## Result
 

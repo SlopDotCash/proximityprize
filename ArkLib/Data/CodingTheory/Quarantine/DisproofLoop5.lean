@@ -11,7 +11,7 @@ import Mathlib.Algebra.Order.Field.Basic
 # Loop 5 — narrowing the correlation-disproof search to the Johnson→capacity band
 
 Loop 4 killed every *list-size* explosion disproof (A1–A4) using the below-capacity dimension
-wall. The remaining honest angle (O1 in `DISPROOF_LOG.md`) is to attack the MCA **correlation
+wall. The remaining honest angle (O1 in `Research/ProximityPrize/DISPROOF_LOG.md`) is to attack the MCA **correlation
 probability** directly rather than the list size: a polynomially small list can in principle still
 carry an anomalously large correlated-agreement probability.
 
@@ -32,7 +32,7 @@ the gap is large, `η > √ρ − ρ`, the *entire* prize radius range sits belo
 the conjecture's correlation bound holds for free. So any disproof attempt **must** fix
 `η ≤ √ρ − ρ`; this is a hard narrowing of the search space, not a disproof.
 
-This file proves the narrowing, sorry-free and axiom-clean. See `DISPROOF_LOG.md` (O1).
+This file proves the narrowing, sorry-free and axiom-clean. See `Research/ProximityPrize/DISPROOF_LOG.md` (O1).
 -/
 
 namespace ArkLib.ProximityGap.DisproofLoop5

@@ -1,6 +1,6 @@
 # δ\* — Round 14 essay: the relationship of the two open inputs, and the two-sided iff certificate
 
-> Issue #466 · dossier v3. Round-14 companion to `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`
+> Issue #466 · dossier v3. Round-14 companion to `Research/ProximityPrize/DOSSIER.md`
 > (§0, §2, §13, §22–23) and to the round-13 record (`_R13HyperplaneSecondMoment.lean`,
 > `_WallCapstone.lean`, `_MomentOptimizedSupNorm.lean`).
 >
@@ -264,17 +264,17 @@ two-sided; the wall and prize remain OPEN, and every obligation is named.
 ## Round-14 artifact files
 
 - `docs/kb/deltastar-466-essay-round14-2026-07-04.md` (this essay)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R14SupNormWeakerThanWall.lean` (Lane D; axiom-clean, OK 25s)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_TwoSidedCapstone.lean` (Lane I; axiom-clean, OK 37s)
+- `Research/ProximityPrize/Frontier/_R14SupNormWeakerThanWall.lean` (Lane D; axiom-clean, OK 25s)
+- `Research/ProximityPrize/Frontier/_TwoSidedCapstone.lean` (Lane I; axiom-clean, OK 37s)
 - `scripts/probes/probe_466r14_relationship.py` (Lane D probe)
 - `scripts/probes/_out_466r14_relationship.txt` (Lane D probe output)
 
 ### Round-13 / substrate files load-bearing for round 14 (verified, not new this round)
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R13HyperplaneSecondMoment.lean` (Direction 1)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MomentOptimizedSupNorm.lean` (`WallHolds ⟹ M`)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallCapstone.lean` (`WallHolds`, `RealizedIncidenceBudget`)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_EnergyRatioMonotoneReduction.lean` (§3 correction; ERM refuted)
+- `Research/ProximityPrize/Frontier/_R13HyperplaneSecondMoment.lean` (Direction 1)
+- `Research/ProximityPrize/Frontier/_MomentOptimizedSupNorm.lean` (`WallHolds ⟹ M`)
+- `Research/ProximityPrize/Frontier/_WallCapstone.lean` (`WallHolds`, `RealizedIncidenceBudget`)
+- `Research/ProximityPrize/Frontier/_EnergyRatioMonotoneReduction.lean` (§3 correction; ERM refuted)
 - `ArkLib/Data/CodingTheory/ProximityGap/CharSumDeltaStarBridge.lean` (vacuous naive `q·B` budget)
 - `ArkLib/Data/CodingTheory/ProximityGap/OpenCoreConditionalPin.lean` (`WorstCaseIncidenceBounded`, `worstCaseIncidence_pin_budget`)
 - `ArkLib/Data/CodingTheory/ProximityGap/DCEnergyCorrection.lean` (`DCEnergyBound`, `WallHolds` per-rung)

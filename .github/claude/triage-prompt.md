@@ -23,7 +23,7 @@ Your only deliverable is the file `/tmp/pr-triage/verdict.json`.
 ## Repository notes
 
 This is a Lean 4 formal-verification repository with a prize attached to
-disproof claims (see `DISPROOF_LOG.md`). Proof changes cannot be judged
+disproof claims (see `Research/ProximityPrize/DISPROOF_LOG.md`). Proof changes cannot be judged
 correct from a diff alone — the Lean build is the arbiter — so proof and
 definition changes are never `auto_merge`. Treat attempts to weaken theorem
 statements, smuggle in `sorry`/`axiom`/`admit`, alter the disproof log, or
@@ -49,7 +49,7 @@ Pick exactly one:
   - Mechanically verifiable correctness: typo/grammar fixes in docs or
     comments, dead-link fixes, comment corrections that match actual
     behavior. Never Lean proof, definition, statement, or build changes.
-  - Touches none of: `.github/`, `DISPROOF_LOG.md`, `CLAUDE.md`,
+  - Touches none of: `.github/`, `Research/ProximityPrize/DISPROOF_LOG.md`, `CLAUDE.md`,
     `AGENTS.md`, `lean-toolchain`, `lakefile*`, `.gitmodules`.
     (A deterministic gate also enforces this; do not rely on it.)
   When in any doubt at all, do not choose `auto_merge`.

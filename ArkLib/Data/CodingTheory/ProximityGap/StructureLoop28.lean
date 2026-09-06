@@ -21,7 +21,7 @@ then telescoping gives
 Therefore any variable-factor analysis whose total product is bounded by `(2^m)^c` is still
 polynomial in the smooth-domain size and is absorbed by the prize numerator. A multiplicative
 disproof must make the cumulative product beat every polynomial in `2^m`; isolated large folds, or
-polynomially bounded products, do not suffice. See `DISPROOF_LOG.md` (Loop28).
+polynomially bounded products, do not suffice. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop28).
 -/
 
 namespace ArkLib.ProximityGap.StructureLoop28

@@ -9,7 +9,7 @@ Status: **distributional-to-sup guardrail**, not a delta-star proof.
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_VerticalTailSupConsumer.lean
+Research/ProximityPrize/Frontier/_VerticalTailSupConsumer.lean
 ```
 
 formalizes the finite consumer for any vertical tail estimate.

@@ -2,7 +2,7 @@
 # G271: the centered coordinate mass P(x) is constant on multiplicative quotient orbits.
 #
 # Companion probe for
-#   ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G271OrbitConstantCenteredMass.lean
+#   Research/ProximityPrize/Frontier/_G271OrbitConstantCenteredMass.lean
 #
 # Self-contained, exact integer arithmetic only (no numpy, no floats, no FFT).
 #

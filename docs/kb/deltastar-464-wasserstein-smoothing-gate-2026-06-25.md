@@ -35,7 +35,7 @@ That entire quantity must still beat one atom.
 I added:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WassersteinSmoothingAtomGate.lean
+Research/ProximityPrize/Frontier/_WassersteinSmoothingAtomGate.lean
 ```
 
 The file defines:
@@ -83,7 +83,7 @@ B < 1 / #alpha.
 Validation:
 
 ```text
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WassersteinSmoothingAtomGate.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_WassersteinSmoothingAtomGate.lean
 ```
 
 passed in 28 seconds.

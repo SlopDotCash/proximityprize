@@ -22,7 +22,7 @@ input.
 New Frontier file:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PerLineOverlapMultiplicityConsumer.lean
+Research/ProximityPrize/Frontier/_PerLineOverlapMultiplicityConsumer.lean
 ```
 
 Definitions:

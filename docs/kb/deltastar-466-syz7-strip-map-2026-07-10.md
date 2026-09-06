@@ -27,7 +27,7 @@ So the open region splits at Johnson into two conceptually different sub-strips:
 In-tree source of each endpoint:
 - Floor `178956971/2^30 = ⌊(2^29)/3⌋+1)/2^30`: `PrizeShapeRateHalfBracket.firstPrime_rateHalf_ladder_floor`,
   via `ProductionRegimeBracket.production_good_ladder_reach` (file
-  `ArkLib/Data/CodingTheory/ProximityGap/ProductionRegimeBracket.lean`).
+  `Research/ProximityPrize/ProductionRegimeBracket.lean`).
 - Ceiling `358612991/2^30`: `Frontier/_SYZ6FinerGradingCeiling.lean`
   (`firstPrime_rateHalf_mcaDeltaStar_le_exact`), sharpening SYZ4 `369098751/2^30 = 11/32 − 2^-30`.
 

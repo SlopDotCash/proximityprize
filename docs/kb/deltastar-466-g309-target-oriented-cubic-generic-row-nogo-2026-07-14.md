@@ -87,6 +87,6 @@ remains open / on-BGK.
 
 ## Artifacts
 
-- Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G309TargetOrientedCubicGenericRowNoGo.lean`
+- Lean: `Research/ProximityPrize/Frontier/_G309TargetOrientedCubicGenericRowNoGo.lean`
 - Probe: `scripts/probes/g309_target_oriented_cubic_generic_row_nogo.py`
 - Ledger: `[466-G309-target-oriented-cubic-generic-row-nogo]`

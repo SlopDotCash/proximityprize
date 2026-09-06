@@ -9,7 +9,7 @@ Status: **height-route obstruction**, not a delta-star proof.
 The file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PolynomialPrimeExponentialHeightGate.lean
+Research/ProximityPrize/Frontier/_PolynomialPrimeExponentialHeightGate.lean
 ```
 
 formalizes a recurring quantitative failure mode in the Arakelov / resultant / cyclotomic-height

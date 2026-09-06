@@ -1,0 +1,9 @@
+# R386 weighted incidence census retention audit
+
+Retain `scripts/probes/probe_r386_unique_root_strata.py` as a finite weighted relation diagnostic. Its required `build_n3` helper is restored, and its prime-field inputs now reject composite moduli. Three complete n=8 runs at primes 17, 41 and 4129 pass. They contain 96 characteristic-zero shadow keys and 416 sign-canonical difference vectors each. Vanishing-vector counts are 112, 32 and zero; weighted incidences are 41760, 12480 and zero.
+
+An independent residue-tuple energy calculation and exact cyclotomic-coordinate calculation give characteristic-zero energy 5120 and finite-field energies 15560, 8240, 5120. Four primitive generators multiply each wrap count by four, exactly matching the producer's sum of weight times root multiplicity. Total off-diagonal mass also equals 8^6-5120=257024. This verifies aggregate incidence weights through a different calculation; it does not independently verify every support/height bin.
+
+Source review confirms that every unordered pair of distinct shadow keys contributes twice its multiplicity product, with signs canonicalized because z and -z have identical root sets. Odd exponents exhaust primitive generators for dyadic n. Integer coordinates are bounded by three in the imported helper and differences by six, within its int8 representation. Density ratios printed by the probe remain floating point. The tests do not establish results at larger n, optimality, or a production bound.
+
+Replay each with `python3 scripts/probes/probe_r386_unique_root_strata.py --n 8 --p PRIME --top 5`. The companion JSON records outputs and source/helper hashes. This completes one original unreferenced artifact review: 58/92 reviewed, 34 remaining. Three recovered runtime helpers are additional to the original inventory; 420 original artifacts remain after its one earlier removal.

@@ -1,7 +1,7 @@
 # G94: arbitrary core embeddings factor through canonical slots
 
 Lean artifact:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G94CanonicalCoreSlotFactorization.lean`.
+`Research/ProximityPrize/Frontier/_G94CanonicalCoreSlotFactorization.lean`.
 
 After the G83 orbit-quotient retraction, G84's honest saving comes from canonical increasing core
 positions, not from quotienting endpoint scale. G94 proves the key transport statement:

@@ -23,10 +23,12 @@ forces the *additive* side to expand,
 
   `#(H + H) ≥ c · #H ^ (1 + δ)`,
 
-and via the Cauchy–Schwarz energy bound `#H ^ 4 ≤ #(H + H) · E[H]` this turns into the
-**additive-energy upper bound** BGK needs:
+The **additive-energy upper bound** used by the BGK interface is a separate input here:
 
   `E[H] ≤ c⁻¹ · #H ^ (3 - δ)`.
+
+Cauchy–Schwarz gives the lower bound `E[H] ≥ #H ^ 4 / #(H + H)`, not this upper bound.
+In particular, sumset expansion alone does not discharge `SubgroupEnergyCore`.
 
 ## What is proven here (axiom-clean)
 

@@ -77,7 +77,7 @@ For all prize rates, **`(1−ρ)/2 < Johnson = 1−√ρ`** (e.g. ρ=1/2: 0.250 
 
 ## Lean brick (axiom-clean)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_C1ThinStripLowerBracket.lean` (`lake env lean`
+`Research/ProximityPrize/Frontier/WF407_C1ThinStripLowerBracket.lean` (`lake env lean`
 EXIT 0, **axiom-clean** — audit `[propext, Classical.choice, Quot.sound]`, two theorems even drop
 `Classical.choice`):
 * `sup_mul_sum_ge_sum_sq` — the PZ max engine rung 1: `(univ.sup f)·(Σ f) ≥ Σ (f i)²`.
@@ -103,4 +103,4 @@ lower-bracket side too.
 
 **Artifacts:** `scripts/probes/wf407_C1-thinstrip_chebyshev_lower.py`,
 `scripts/probes/wf407_C1-thinstrip_m3.py`,
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_C1ThinStripLowerBracket.lean`.
+`Research/ProximityPrize/Frontier/WF407_C1ThinStripLowerBracket.lean`.

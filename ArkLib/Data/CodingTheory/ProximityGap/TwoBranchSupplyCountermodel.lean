@@ -382,7 +382,7 @@ The prime-field restriction is NOT cosmetic: over `q = p²` with subfield
 domain `D = F_p ⊂ F_{p²}`, the same two-branch construction runs entirely
 inside the subfield plane and carries `~ n²/64` cores while the mean term
 `C(n,4)/q²` collapses to `O(1)` — the general-field form of this law is
-FALSE (self-refutation, recorded in `DISPROOF_LOG.md`; char-2/extension-field
+FALSE (self-refutation, recorded in `Research/ProximityPrize/DISPROOF_LOG.md`; char-2/extension-field
 production settings need a subfield-structure hypothesis).
 
 **The Solymosi–Stojaković asymptotic red-team (free domains).**  [SS13]

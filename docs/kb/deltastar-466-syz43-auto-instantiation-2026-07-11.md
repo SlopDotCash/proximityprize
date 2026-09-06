@@ -1,7 +1,7 @@
 # δ* / #466 — SYZ43: is `RealizabilityCore` auto-instantiated by an actual over-budget stack?
 
 Date: 2026-07-11
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ43AutoInstantiation.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ43AutoInstantiation.lean`
 Branch: `codex/syz43-auto-instantiation` (off `fork/research/proximity-prize` tip `b84138c42`)
 Axiom audit: all three theorems `[propext, Classical.choice, Quot.sound]`. No `sorry`, no
 `native_decide`, no new `axiom`.

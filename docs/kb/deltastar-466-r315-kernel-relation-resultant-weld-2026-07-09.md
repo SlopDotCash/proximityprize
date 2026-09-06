@@ -53,7 +53,7 @@ specified splitting prime.
 
 ```text
 ./scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R315KernelRelationResultantWeld.lean
+  Research/ProximityPrize/Frontier/_R315KernelRelationResultantWeld.lean
 ```
 
 passed on 2026-07-09 with no `sorryAx`.

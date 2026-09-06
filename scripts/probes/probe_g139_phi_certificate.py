@@ -17,7 +17,7 @@ This is a finite exact-arithmetic probe, not a production n=2^30 closure and
 not a proof that the first prime after round(n^(158/30)) always works.
 
 The first three diagonal cells are found by exact first-prime search below
-3317044064679887385961981, where Miller-Rabin with bases 2,3,5,...,37 is
+3317044064679887385961981, where Miller-Rabin with bases 2,3,5,...,41 is
 deterministic.  The larger cells are explicit diagonal-scale primes whose
 primality is checked by Pocklington from the included factorization of p-1.
 """
@@ -30,8 +30,10 @@ import json
 
 BETA_NUM = 158
 BETA_DEN = 30
+# Sorenson and Webster, arXiv:1509.00864: this is the first-13-prime-base
+# threshold. The first 12 bases alone admit a smaller composite.
 DETERMINISTIC_MR_LIMIT = 3317044064679887385961981
-MR_BASES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
+MR_BASES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41)
 CERTIFIED_DIAGONAL_CELLS: tuple[tuple[int, int, tuple[int, ...]], ...] = (
     (
         65536,
@@ -102,10 +104,13 @@ def rounded_rational_power(n: int, num: int, den: int) -> int:
     """Return round(n^(num/den)) using exact integer comparisons."""
     base = n**num
     root = floor_nth_root(base, den)
-    lower_gap = base - root**den
-    upper_gap = (root + 1) ** den - base
-    if upper_gap < lower_gap:
+    # Compare the root against root + 1/2, not distances between powers.
+    twice_scaled = (1 << den) * base
+    midpoint_power = (2 * root + 1) ** den
+    if twice_scaled > midpoint_power:
         return root + 1
+    if twice_scaled == midpoint_power:
+        return root + (root % 2)  # round-to-even, matching round().
     return root
 
 

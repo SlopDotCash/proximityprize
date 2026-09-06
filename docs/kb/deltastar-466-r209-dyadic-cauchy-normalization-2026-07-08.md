@@ -23,7 +23,7 @@ parent^2 / (2 σ^2) <= left^2 / σ^2 + right^2 / σ^2.
 The Lean file is:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R209DyadicCauchyNormalization.lean
+Research/ProximityPrize/Frontier/_R209DyadicCauchyNormalization.lean
 ```
 
 This is not an analytic estimate; it is the deterministic Cauchy step that

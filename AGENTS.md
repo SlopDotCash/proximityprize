@@ -39,6 +39,11 @@ submitting changes there. Upstream sources may be read for comparison only.
 
 ## Guardrails
 
+- **NEVER push branches, tags, or commits to `Verified-zkEVM/ArkLib`, or open pull requests
+  against that upstream repository.** The only authorized push and pull request destination
+  for this project is `SlopDotCash/proximityprize`. Verify the actual remote URL before every
+  push and explicitly use `--repo SlopDotCash/proximityprize` when creating PRs with `gh`;
+  never rely on GitHub's fork/upstream default. This rule applies to all sub-agents too.
 - Never run bare `lake build` / `lake exe cache get` when other agents may be building on the
   same machine: use `./scripts/lake-locked.sh build <targets>` (and
   `./scripts/lake-locked.sh exe cache get`). It serializes builds per checkout, caps
@@ -64,8 +69,8 @@ If you are working on the Proximity Prize / proximity-gap formalization (standal
 successor to the historical ArkLib campaign), read the dedicated agent guide **before** touching
 that cone — it has the build recipe you need to avoid clogging the machine:
 
-- [`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`](ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md)
-  (auto-loaded in that directory; `AGENTS.md` there is a copy): build/concurrency/honesty rules,
+- [`Research/ProximityPrize/CLAUDE.md`](Research/ProximityPrize/CLAUDE.md)
+  (`CLAUDE.md` there is a symlink to `AGENTS.md`): build/concurrency/honesty rules,
   the standalone #164 control plane, historical campaign ledger, substrate API map, references,
   and pitfall catalogue.
 - **Fast iteration (mandatory):** that cone is ~3,500 files (3,483 `.lean` as of 2026-07-01);
@@ -73,10 +78,10 @@ that cone — it has the build recipe you need to avoid clogging the machine:
   (~2-3 min even no-op) and takes the build lock (serializes all agents). Instead run
   `scripts/pg-warm.sh` ONCE (pre-builds the substrate oleans), then iterate per-attempt with
   `scripts/pg-iterate.sh <file>` (= `lake env lean`, ~30-75s, **no lock → fully parallel**).
-- **Start here:** `docs/kb/deltastar-DOSSIER-v4-2026-08-16.md` for the current standalone
+- **Start here:** `Research/ProximityPrize/DOSSIER.md` for the current standalone
   control plane and post-v3 result ledger, then
-  `ArkLib/Data/CodingTheory/ProximityGap/Frontier/README.md` and
-  `PROXIMITY_PRIZE_WORKBENCH.lean` §5 for the detailed lane history and substrate.
+  `Research/ProximityPrize/Frontier/README.md` and
+  `Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean` §5 for the detailed lane history and substrate.
 - **Open-residual map (whole project):**
   [`docs/wiki/residual-census.md`](docs/wiki/residual-census.md) — 117 strict residuals:
   69 open / 47 discharged / 1 refuted (regenerated and audited 2026-08-16); the "named

@@ -70,7 +70,7 @@ name a sheaf-theoretic surrogate Prop — the honest Lean-side open objects are
 
 ## 4. Formal kernel
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R302TraceFormulaPointCount.lean`
+`Research/ProximityPrize/Frontier/_R302TraceFormulaPointCount.lean`
 — axiom-clean (`[propext, Classical.choice, Quot.sound]`, no sorryAx),
 pg-iterate 17s.  Theorems: `hatF_conv3`, `hatF_parseval` (self-contained DFT +
 Parseval over ZMod N via `AddChar.sum_mulShift`), `exists_primitive_addChar`,

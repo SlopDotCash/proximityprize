@@ -11,7 +11,7 @@ import ArkLib.ToMathlib.DiscriminantSeparable
 # Hab25 §3 Step S5 — discriminant non-vanishing for the GS interpolant over `K = F(Z)`
 
 This file discharges the tractable core of **Step S5** of the Haböck §3 endgame
-(`ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean`):
+(`Research/ProximityPrize/Hab25Johnson.lean`):
 
 > *S5 (Discriminant non-vanishing).* `deg_X disc_Y(Q) < ℓ²·ρn`, so for `|F| > ℓ²ρn` there is
 > `x₀ ∈ D` with `disc_Y R_{i,j}(x₀,·) ≠ 0` for all `i,j`. Starting point of the Hensel lift.

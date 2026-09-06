@@ -26,7 +26,7 @@ cap(p) = StackBadCount(rep p) + slack(p).
 
 ## Lean Additions
 
-In `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean`:
+In `Research/ProximityPrize/Frontier/_ProfileFiberSlackDominance.lean`:
 
 ```lean
 slackCap
@@ -91,7 +91,7 @@ former target and prevents the slack vocabulary from hiding the same open conten
 Direct iteration passed:
 
 ```text
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_ProfileFiberSlackDominance.lean
 ```
 
 The new axiom audits report only the expected Lean foundations and no `sorryAx`.

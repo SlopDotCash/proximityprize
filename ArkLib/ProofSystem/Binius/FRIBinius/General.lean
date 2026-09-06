@@ -9,9 +9,8 @@ import ArkLib.ProofSystem.Binius.FRIBinius.CoreInteractionPhase
 import ArkLib.ProofSystem.RingSwitching.BatchingPhase
 import ArkLib.OracleReduction.Security.Basic
 import ArkLib.OracleReduction.Security.Implications
-import ArkLib.OracleReduction.Composition.Sequential.AppendChallengeKeystoneOracle
-import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeFailingDetChallenge
-
+import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
+import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 /-!
 # FRI-Binius IOPCS
 

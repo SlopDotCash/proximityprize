@@ -25,7 +25,7 @@ the existing moment bridge, imply the same R168/S11 squared prize bound.
 Verified command:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R214DirectChildMGFLaw.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R214DirectChildMGFLaw.lean
 ```
 
 Output:
@@ -33,7 +33,7 @@ Output:
 ```text
 'ArkLib.ProximityGap.Frontier.R214DirectChildMGFLaw.childQuarterMGF_of_largeIndexChildQuarterMGFLaw' depends on axioms: [propext,
 'ArkLib.ProximityGap.Frontier.R214DirectChildMGFLaw.prize_sq_of_raw_dyadic_prizeTower_child_quarterMGF' depends on axioms: [propext,
-OK (32s) — ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R214DirectChildMGFLaw.lean
+OK (32s) — Research/ProximityPrize/Frontier/_R214DirectChildMGFLaw.lean
 ```
 
 Readout: the open analytic target can now be attacked directly as the

@@ -41,7 +41,7 @@ touch scripts/style-exceptions.txt
 # context, but are outside the default build and style-baseline target.
 {
 	printf '%s\n' ArkLib/Data/CodingTheory/ProximityGap.lean
-	git ls-files 'ArkLib/Data/CodingTheory/ProximityGap/*.lean'
+	git ls-files 'ArkLib/Data/CodingTheory/ProximityGap/*.lean' 'Research/ProximityPrize/*.lean'
 } | sort -u | xargs ./scripts/lint-style.py "$@"
 # git ls-files 'Examples/*.lean' | xargs ./scripts/lint-style.py "$@"
 

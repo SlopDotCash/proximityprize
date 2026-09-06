@@ -61,7 +61,7 @@ N_{\rm strat}(s,s/2+1)
 
 ## Lean artifact
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26StratifiedExactRateHalf.lean`
+`Research/ProximityPrize/Frontier/_KKH26StratifiedExactRateHalf.lean`
 contains:
 
 - `kkh26_stratified_subceiling_epsMCA_lower_bound`: combines the full stratified

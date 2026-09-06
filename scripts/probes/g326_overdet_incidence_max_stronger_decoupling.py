@@ -10,11 +10,11 @@ Adds three new tight-inequality rungs to the existing G322
 
 Together with the original `overdetIncidenceMax_gt_budget` (`> 4m` for
 `m >= 2`) and the G322 `overdetIncidenceMax_gt_double_budget` (`> 8m` for
-`m >= 3`), this forms a chain of TIGHT inequalities (margin exactly 1 at
-the boundary `m = m_lo`):
+`m >= 3`), these form four tight inequalities and one separate double-budget bound.
+The tight inequalities have margin exactly 1 at `m = m_lo`:
 
   > 4m   for m >= 2
-  > 8m   for m >= 3   (G322)
+  > 8m   for m >= 3   (G322; non-tight, margin 13)
   > 12m  for m >= 3   (G326 #1)
   > 24m  for m >= 4   (G326 #2)
   > 40m  for m >= 5   (G326 #3)
@@ -23,7 +23,7 @@ In general `I_max(m) > 2d(d+1) * m` for `m >= d+1` (any `d >= 1`).
 The arithmetic: `2m^3 - 2m^2 + 1 - 2d(d+1)*m = 2m*(m-d-1)*(m+d) + 1 > 0`
 for `m >= d+1` (each factor nonneg; the `+1` on the LHS makes it strict).
 
-Two independent implementations agree at every cell:
+Two algebraically equivalent implementations are compared at every sampled cell:
 
   (A) direct cubic form:       2 * m^3 - 2 * m^2 + 1
   (B) bulk-plus-one form:      2 * m^2 * (m - 1) + 1
@@ -50,7 +50,7 @@ import sys
 
 
 # ---------------------------------------------------------------------------
-# Two independent implementations
+# Two equivalent arithmetic implementations
 # ---------------------------------------------------------------------------
 
 def I_max_direct(m: int) -> int:
@@ -106,7 +106,7 @@ def margin_closed_form(m: int, d: int) -> int:
     `2m*(m - d - 1)*(m + d) + 1`.
 
     For `m = d+1`, this gives `2(d+1)*0*(2d+1) + 1 = 1` (margin 1 at the
-    boundary). For `m > d+1`, grows quadratically.
+    boundary). For `m > d+1`, grows cubically.
 
     Derivation:
       I_max(m) = 2m^3 - 2m^2 + 1
@@ -223,7 +223,7 @@ def main() -> int:
     margin_db = I_max_direct(db_m_lo) - db_c * db_m_lo
     print(f"  [INFO] boundary m={db_m_lo}: I_max={I_max_direct(db_m_lo)}, {db_c}*{db_m_lo}={db_c*db_m_lo}, margin = {margin_db} (not 1; the tight rung at m={db_m_lo} is the 12m one above)")
 
-    # --- (3) margin growth check: margin grows quadratically from boundary
+    # --- (3) margin growth check: margin grows cubically from boundary
     print()
     print("[6] margin growth from boundary (margin at m = m_lo+k for k=0..5):")
     for name, c, m_lo, d in TIGHT_CHAIN:
@@ -256,7 +256,7 @@ def main() -> int:
         print("    > 40m for m >= 5   (G326 #3, NEW)")
         print("  Double-budget rung (NOT on the tight chain):")
         print("    > 8m  for m >= 3   (G322 `overdetIncidenceMax_gt_double_budget`, margin 13 at m=3)")
-        print("All rungs pass. The tight-chain margins grow quadratically from the boundary.")
+        print("All rungs pass. The tight-chain margins grow cubically from the boundary.")
     else:
         print("G326 SUMMARY: one or more checks FAILED -- see FAIL lines above.")
     print("=" * 70)

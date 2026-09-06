@@ -46,8 +46,8 @@ needs the network anyway (clone, PR), so prefer to get back online.
   "likely holds." A reproduced integer is not a verified inference — claim only the regime you
   computed; the wall is the worst-case sup-norm, not a fixed-`n` count.
 - **Orient:** find the *current* tracking issue from the repo (don't trust a hardcoded
-  number): read `ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md` + `DISPROOF_LOG.md`
-  (`grep -oE '#[0-9]{3}' DISPROOF_LOG.md | sort | uniq -c | sort -rn | head`). The paper map
+  number): read `Research/ProximityPrize/CLAUDE.md` + `Research/ProximityPrize/DISPROOF_LOG.md`
+  (`grep -oE '#[0-9]{3}' Research/ProximityPrize/DISPROOF_LOG.md | sort | uniq -c | sort -rn | head`). The paper map
   is https://deltastar.computer/.
 - **Get the repo, no fork needed for probes:** `git clone https://github.com/lalalune/ArkLib`.
 - **Default brick = exact-arithmetic probe** (no Lean): reproduce one published integer from

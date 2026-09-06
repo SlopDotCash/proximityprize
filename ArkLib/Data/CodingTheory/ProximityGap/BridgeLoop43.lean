@@ -38,7 +38,7 @@ So the literal prize closes **iff the bad-orbit count `N` is bounded by a consta
 
 This brick therefore pins the entire remaining open content of the literal prize to a single,
 sharply stated quantity: an `n`-uniform bound on the number of bad challenge-orbits. See
-`DISPROOF_LOG.md` (Loop43).
+`Research/ProximityPrize/DISPROOF_LOG.md` (Loop43).
 -/
 
 namespace ArkLib.ProximityGap.BridgeLoop43

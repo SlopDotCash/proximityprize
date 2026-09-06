@@ -20,7 +20,7 @@ still bounded by the final-domain polynomial of degree `c + K*h`.
 
 So a constant number of full-depth spike levels does not refute the prize. A spike-based
 counterexample must make either the number of spikes or their height-density unbounded in the actual
-GS/proximity mechanism. See `DISPROOF_LOG.md` (Loop34).
+GS/proximity mechanism. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop34).
 -/
 
 namespace ArkLib.ProximityGap.StructureLoop34

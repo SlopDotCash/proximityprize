@@ -1,0 +1,4 @@
+import Research.ProximityPrize.Frontier._BGKSevenSubsetOverlapDecomposition
+#check Finset.sum_fiberwise_of_maps_to
+#check Finset.sum_fiberwise_eq_sum_filter
+#check AddChar.sum_apply_eq_ite

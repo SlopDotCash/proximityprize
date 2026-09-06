@@ -71,7 +71,7 @@ spectral gap (rate − √2) → 0 ⇒ WALL TRUE but METHOD MUTE.** No super-rat
 - `scripts/probes/probe_466r10_transfer.py`, `_out_466r10_transfer.txt` (tasks 1–4, validated).
 - `scripts/probes/probe_466r10_transfer_gauge.py`, `_out_466r10_transfer_gauge.txt` (sharpened
   gauge + deep-tower transient).
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B_TransferOperatorGauge.lean` — axiom-clean
+- `Research/ProximityPrize/Frontier/_B_TransferOperatorGauge.lean` — axiom-clean
   (`{propext, Classical.choice, Quot.sound}`, no `sorryAx`): `momentPow_eq_ofMultiset`,
   `powerSum_eq_of_multiset_eq`, `transfer_functional_perm_invariant`, `transfer_gauge`.
 - Builds on existing `_AvW16_CosetTowerRecursion.lean` (the exact linear recursion).

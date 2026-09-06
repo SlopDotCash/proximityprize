@@ -52,6 +52,6 @@ git ls-files | wc -l
 git ls-files 'scripts/probes/**' | wc -l
 git ls-files -z 'scripts/probes/**' | xargs -0 du -ch | tail -n 1
 git ls-files 'ArkLib/Data/CodingTheory/ProximityGap/**' | wc -l
-git ls-files 'ArkLib/Data/CodingTheory/ProximityGap/Frontier/**' | wc -l
+git ls-files 'Research/ProximityPrize/Frontier/**' | wc -l
 git ls-files 'docs/kb/**' | wc -l
 ```

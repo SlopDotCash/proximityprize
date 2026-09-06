@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Stir.BlocksCompleteness
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessOracle
-import ArkLib.OracleReduction.Composition.Sequential.AppendToVerifierKeystone
+import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype
 
 /-!

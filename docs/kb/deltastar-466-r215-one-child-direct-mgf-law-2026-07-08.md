@@ -23,7 +23,7 @@ squared prize bound.
 Verified command:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R215OneChildDirectMGFLaw.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R215OneChildDirectMGFLaw.lean
 ```
 
 Output:
@@ -31,7 +31,7 @@ Output:
 ```text
 'ArkLib.ProximityGap.Frontier.R215OneChildDirectMGFLaw.largeIndexChildQuarterMGF_of_perm' depends on axioms: [propext,
 'ArkLib.ProximityGap.Frontier.R215OneChildDirectMGFLaw.prize_sq_of_raw_dyadic_prizeTower_one_child_quarterMGF' depends on axioms: [propext,
-OK (16s) — ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R215OneChildDirectMGFLaw.lean
+OK (16s) — Research/ProximityPrize/Frontier/_R215OneChildDirectMGFLaw.lean
 ```
 
 Readout: the dyadic-MGF route now has two sharp residuals:

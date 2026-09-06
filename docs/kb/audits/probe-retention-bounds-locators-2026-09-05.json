@@ -1,0 +1,52 @@
+{
+  "source_snapshot": "d5d2645f6e206ab068ac780f399332d47cf35059",
+  "locator_parameter_checks": {
+    "modulus": 97,
+    "prime_by_trial_division": true,
+    "generator": 5,
+    "distinct_generator_powers": 96,
+    "domain_orders": [
+      16,
+      32
+    ]
+  },
+  "runs": [
+    {
+      "path": "scripts/probes/probe_fsme_bivariate_johnson_error_floor.py",
+      "sha256": "2191f415c3bdf5d82306d0e6ec1b3c73a5d37556745674e50410f69d814d1470",
+      "exit_code": 0,
+      "stdout": "== 1. branch location ==\ndelta = 240473429/536870912 = 0.4479166660\nUDR (1-rho)/2 = 3/8 = 0.375\nJohnson 1-sqrt(rho) = 1/2\ndelta strictly inside Johnson branch: OK\novershoot above UDR: 0.072917 (absolute)\n\n== 2. Johnson-branch error value ==\n1 - sqrt(rho) - delta = 27962027/536870912 = 0.05208333\nsqrt(rho)/20 = 1/40 = 0.025\neps * q = deg^2 / (2m)^7 = 92233720368547758080000000 = 2^63*10^7 = 2^86.2535\ntarget N = 1073741824 = 2^30\ngap factor = 85899345920000000 = 2^33*10^7 = 2^56.2535\n\n== 3. non-vacuity at P1 prime ==\nP = 365375409332725729550921208179070755120141565953 ~ 2^158.00\neps = budget/P = 2.524e-22 < 1: OK\nPr at pin scale (N+1)/P = 2.939e-39 << eps: hypothesis Pr > eps unreachable at pin scale: True\n\n== 4. direct bivariate interpolation feasibility ==\nneed (D+2) <= (N-K)/(N-T) = 1.674419\nD=0: guaranteed joint core = 111848108 < K = 268435456 FAIL (deficit 156587348)\nD=1: guaranteed joint core = -369098750 < K = 268435456 FAIL (deficit 637534206)\nD=2: guaranteed joint core = -850045608 < K = 268435456 FAIL (deficit 1118481064)\n=> every Y-degree D >= 0 fails; naive bivariate fitting is infeasible; only pigeonhole-refined pair extraction survives.\n\n== 5. six-set pigeonhole threshold ==\n5 sets: guaranteed max pair overlap >= 260891535.0 (< K; K = 268435456)\n6 sets: guaranteed max pair overlap >= 274167672.2 (>= K; K = 268435456)\n=> 6 is exactly the forcing threshold (matches landed _P1RateQuarterForcedSecantMatching six-set lemma).\n\nALL ASSERTIONS PASSED\n",
+      "stderr": ""
+    },
+    {
+      "path": "scripts/probes/probe_pair_locator_torus_fibers.py",
+      "sha256": "690f945a9d0845d1592954cc4698853650e67f727f043c961f103635aed39130",
+      "args": [
+        "97",
+        "16",
+        "5",
+        "--trials",
+        "1000"
+      ],
+      "exit_code": 0,
+      "stdout": "trial=0 best=1 n=16 k=4 target4k=16 anchors=[9, 8, 14] left=[10, 13, 12, 5, 15] right=[2, 4, 0, 11, 7] d=(1, 62, 72)\ntrial=13 best=2 n=16 k=4 target4k=16 anchors=[0, 2, 6] left=[13, 4, 15, 1, 5] right=[7, 12, 9, 11, 10] d=(1, 92, 59)\nfinal_best=2 witness=[((18, 79), (12, 89)), ((22, 85), (75, 89))]\n",
+      "stderr": "",
+      "timeout_seconds": 45
+    },
+    {
+      "path": "scripts/probes/probe_subset_locator_projective_lines.py",
+      "sha256": "007e86ef963a397a4b2eb3f42210962cb0b4c81baed77ac3c61b3b37338df32d",
+      "args": [
+        "97",
+        "32",
+        "5",
+        "--trials",
+        "10"
+      ],
+      "exit_code": 0,
+      "stdout": "trial=0 best_line=32 distinct_points=1620 max_point_multiplicity=2 n=32 k=8 target4k=32 anchors=[9, 24, 14] petal=[18, 15, 4, 6, 23, 10, 29, 13, 27, 20, 16, 8, 11] line=(1, 80, 44)\ntrial=3 best_line=34 distinct_points=1647 max_point_multiplicity=2 n=32 k=8 target4k=32 anchors=[31, 1, 6] petal=[19, 23, 30, 17, 4, 2, 22, 7, 13, 0, 9, 24, 12] line=(1, 16, 5)\nfinal_best_line=34\n",
+      "stderr": "",
+      "timeout_seconds": 180
+    }
+  ]
+}

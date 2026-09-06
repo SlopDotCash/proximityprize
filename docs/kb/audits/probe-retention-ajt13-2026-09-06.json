@@ -1,0 +1,34 @@
+{
+  "source": "scripts/probes/probe_ajt13_centered_tensor.py",
+  "source_sha256": "9067eef0e82021e38aad3f04af25e1a4f4bddc66b7bf5501d3365a459e50d5be",
+  "full_replay_exit_code": 0,
+  "exact_normalized_ratios": [
+    "11461219588405674654209295221276371014961/82731260635485162298710047550597248",
+    "138017478104432446594360604916566098155947/440286779589858351212111354676527104"
+  ],
+  "numerical_lines_unchanged": true,
+  "reporting_diff": [
+    "--- ",
+    "+++ ",
+    "@@ -23,12 +23,12 @@",
+    " n=4 m=370 q=1481 beta=5.266177962644 S13overM7=704.914298545978 relativeToWick=0.005216371026 maxA=38.303760483",
+    " n=8 m=7130 q=57041 beta=5.266570551267 S13overM7=8065.617365826278 relativeToWick=0.059685628193 maxA=235.363448398",
+    " n=16 m=137268 q=2196289 beta=5.266659118512 S13overM7=33671.585317607845 relativeToWick=0.249169980520 maxA=1397.786983734",
+    "-verdict: m^7 is the observed Wick scaling; its coefficient drifts toward 13!! as n grows",
+    "+verdict: the normalized coefficient increases across these four samples; no asymptotic limit is established",
+    " ",
+    " CRT_PHASE_TENSOR_MINORS",
+    " q=13 n=2 m=6=2x3 labels=[4, 2, 1, 5] maxMinor=1.921537845661 crossRatio=-0.846153846154+0.532938710021i",
+    " q=97 n=8 m=12=4x3 labels=[9, 1, 3, 7] maxMinor=1.827623097241 crossRatio=-0.670103092784+0.742268041237i",
+    " q=241 n=8 m=30=5x6 labels=[25, 15, 7, 27] maxMinor=1.999260317683 crossRatio=-0.998520908930-0.054369057647i",
+    " q=337 n=8 m=42=6x7 labels=[26, 20, 40, 34] maxMinor=1.999837734965 crossRatio=-0.999675483094+0.025474075060i",
+    "-q13CrossRatioExact=(-11+4*sqrt(3)*i)/13; minorMagnitude=sqrt(48/13)",
+    "-verdict: CRT splits character labels but the additive Gauss phases are not rank-one tensors",
+    "+q13CrossRatioCandidate=(-11+4*sqrt(3)*i)/13; floating agreement within 1e-12; no symbolic proof",
+    "+verdict: the computed CRT minors give numerical evidence against rank-one Gauss phase tensors"
+  ],
+  "stdout": "AJT13_CENTERED_TENSOR_AUDIT\nproductionM=340282366920938463463374607431768211648\nproductionFactors=[64, 343, 26407, 279991, 4533259, 462478642316479903]\nwick14=135135; publicConstant=262144; slack=127009\n\nEXACT_SMALL_PRIME_CELLS\nn=32 m=98 q=3137 beta=2.323033962769\nS13overM7=11461219588405674654209295221276371014961/82731260635485162298710047550597248\nS13overM7Decimal=138535.536632324918\nrelativeToWick=1.025163996243\nrelativeToPublic=0.528471132783\nZ14=381147823539435264\nn=256 m=52 q=13313 beta=1.712568511200\nS13overM7=138017478104432446594360604916566098155947/440286779589858351212111354676527104\nS13overM7Decimal=313471.774539767648\nrelativeToWick=2.319693451288\nrelativeToPublic=1.195799921187\nZ14=390017062859571490445015114240\nverdict: 13!! and even 2^18 are not universal constants without the production thinness\n\nPRODUCTION_BETA_ANALOGUES\nn=2 m=18 q=37 beta=5.209453365629 S13overM7=20.176770392090 relativeToWick=0.000149308250 maxA=5.997632259\nn=4 m=370 q=1481 beta=5.266177962644 S13overM7=704.914298545978 relativeToWick=0.005216371026 maxA=38.303760483\nn=8 m=7130 q=57041 beta=5.266570551267 S13overM7=8065.617365826278 relativeToWick=0.059685628193 maxA=235.363448398\nn=16 m=137268 q=2196289 beta=5.266659118512 S13overM7=33671.585317607845 relativeToWick=0.249169980520 maxA=1397.786983734\nverdict: the normalized coefficient increases across these four samples; no asymptotic limit is established\n\nCRT_PHASE_TENSOR_MINORS\nq=13 n=2 m=6=2x3 labels=[4, 2, 1, 5] maxMinor=1.921537845661 crossRatio=-0.846153846154+0.532938710021i\nq=97 n=8 m=12=4x3 labels=[9, 1, 3, 7] maxMinor=1.827623097241 crossRatio=-0.670103092784+0.742268041237i\nq=241 n=8 m=30=5x6 labels=[25, 15, 7, 27] maxMinor=1.999260317683 crossRatio=-0.998520908930-0.054369057647i\nq=337 n=8 m=42=6x7 labels=[26, 20, 40, 34] maxMinor=1.999837734965 crossRatio=-0.999675483094+0.025474075060i\nq13CrossRatioCandidate=(-11+4*sqrt(3)*i)/13; floating agreement within 1e-12; no symbolic proof\nverdict: the computed CRT minors give numerical evidence against rank-one Gauss phase tensors\n",
+  "scope": "Exact rational finite moment calculations; exponent analogues and CRT minors are uncertified floating-point evidence, not a production or symbolic theorem.",
+  "reviewed_original_unreferenced": 49,
+  "remaining_original_unreferenced": 43
+}

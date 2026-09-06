@@ -68,7 +68,7 @@ top), as expected; excluded from the verdict.
 
 ## Lean brick (axiom-clean)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T13DyadicDeviation.lean`
+`Research/ProximityPrize/Frontier/WF407_T13DyadicDeviation.lean`
 (`[propext, Classical.choice, Quot.sound]`):
 
 - `doublingRatio_eq` — exact `‖A+B‖² = (‖A‖²+‖B‖²) + 2·Re(A·conj B)`.
@@ -99,4 +99,4 @@ which is the Paley/BGK √-cancellation wall.
 ## Artifacts
 - `scripts/probes/wf407_T13-dyadic_deviation_decay.py`
 - `scripts/probes/wf407_T13-dyadic_cocycle_cos_persistence.py`
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T13DyadicDeviation.lean`
+- `Research/ProximityPrize/Frontier/WF407_T13DyadicDeviation.lean`

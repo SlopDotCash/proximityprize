@@ -80,7 +80,7 @@ where `log m` is large = thin.
 
 ## Lean brick (axiom-clean)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T18Thinness.lean`:
+`Research/ProximityPrize/Frontier/WF407_T18Thinness.lean`:
 - `ThicknessMonotoneTarget n p Bsq := Bsq ≤ 2·n·log p` (the named target).
 - `thicknessMonotone_refuted_at_witness`: with `B² ≥ 1903` (enumeration) and `log 65537 < 11.0905`,
   `¬ ThicknessMonotoneTarget 64 65537 B²` — machine-checked refutation.

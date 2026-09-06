@@ -4,13 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.GuruswamiSudan.GSOverRatFunc
-import ArkLib.Data.CodingTheory.ProximityGap.GSFactorExtract
+import ArkLib.Data.CodingTheory.GuruswamiSudan.FactorExtraction
 
 /-!
 # Guruswami–Sudan list-size / `Y`-degree bound over `K = F(Z)` (Hab25 §3 Step S3)
 
 This file discharges **Step S3** of the Haböck §3 endgame
-(`ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean`): the bound `D_Y < ℓ` on the
+(`Research/ProximityPrize/Hab25Johnson.lean`): the bound `D_Y < ℓ` on the
 `Y`-degree of the Guruswami–Sudan interpolant over `K = F(Z)`, which controls the **number of
 irreducible factors** (and hence the list size) the factorisation step S4 may produce.
 

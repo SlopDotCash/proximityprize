@@ -9,7 +9,7 @@ import ArkLib.Data.CodingTheory.GuruswamiSudan.GSFactorDegreeOverRatFunc
 # Hab25 §3 — decoded-list separation at a good point (the residual-free S5 → S6 bridge)
 
 The Hensel step S6 of the Haböck §3 endgame
-(`ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean`) tracks the decoded codewords of the
+(`Research/ProximityPrize/Hab25Johnson.lean`) tracks the decoded codewords of the
 generic fold as *branches* above a good base point `x₀ ∈ D`: it is essential that **distinct
 decoded polynomials stay distinct after the specialization `X ↦ x₀`** — otherwise two branches
 collide at the base point and the per-factor "unique affine pair" bookkeeping breaks.

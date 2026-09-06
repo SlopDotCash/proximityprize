@@ -18,7 +18,7 @@ finite-field §7 disproof needs, with **no abstract hypothesis left**:
 > elements — **super-exponential in the domain `2^m`**.
 
 With `thm71_no_fixed_exponent` (Loop46) this **disproves the §7 minimal-domain prize over a genuine
-finite field**. See `DISPROOF_LOG.md` (O16/Loop53).
+finite field**. See `Research/ProximityPrize/DISPROOF_LOG.md` (O16/Loop53).
 -/
 
 open Finset Polynomial

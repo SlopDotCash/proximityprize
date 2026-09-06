@@ -111,7 +111,7 @@ the open analytic wall.
 
 - `scripts/probes/sweep_A23_cross_parity.py` — threshold-law verification (11/11 exact) + leak
   fraction at genuine onset + coset-concentration / leak-to-bound feasibility.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A23_CrossParityThreshold.lean` — axiom-clean
+- `Research/ProximityPrize/Frontier/Sweep_A23_CrossParityThreshold.lean` — axiom-clean
   (`[propext, Classical.choice, Quot.sound]`): `threshold_law` (`2·r* = λ₁^{L1,even}`),
   `threshold_law_div`, `sInf_two_mul_image`, `l1WeightSet_even`, `genuine_defect_escapes_leak`,
   `genuine_defect_escapes_leak_depth`, and the named OPEN `DefectCountLinear`.

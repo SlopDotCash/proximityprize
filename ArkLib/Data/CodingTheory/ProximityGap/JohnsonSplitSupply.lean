@@ -40,7 +40,7 @@ agreement line** `(k+m+1)² = n(k−1)` and closes the upper side:
     `B = (n²/((k+m+1)² − n(k−1))) · C(2k+m+1, k+m+1)` — polynomial list
     factor times a binomial in the BAND parameters only (no `C(n,·)`);
   - below the line, a subexponential `B` is the recognized open list-decoding
-    wall (`DISPROOF_LOG.md`, 2026-06-12 entry).
+    wall (`Research/ProximityPrize/DISPROOF_LOG.md`, 2026-06-12 entry).
 * `deep_band_witness_mass_offcode` — the witness-mass law with the generating
   stack certified OFF-code at every shear (`Q₀ + γXᵏ` is never a code
   polynomial), at the cost of a factor `2`.

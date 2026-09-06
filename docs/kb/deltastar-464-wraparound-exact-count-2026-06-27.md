@@ -5,7 +5,7 @@ wraparound surplus `W_r = p(E_r − V_{2r})`, connect the land-exhaust finite-ba
 enumeration to `W_r`, and decide whether `W_r ≤ p(Wick − V_{2r}) + n^{2r}` is provable for GOOD
 primes by a clean argument leaving only "prize prime is good".
 
-**Lean brick:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WraparoundExactCount.lean`
+**Lean brick:** `Research/ProximityPrize/Frontier/WraparoundExactCount.lean`
 (axiom-clean: `propext, Classical.choice, Quot.sound`; real `lake build`, 3297 jobs, passes
 `autoImplicit=false`).
 

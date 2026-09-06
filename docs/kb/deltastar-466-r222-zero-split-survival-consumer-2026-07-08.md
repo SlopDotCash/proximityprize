@@ -4,7 +4,7 @@ Date: 2026-07-08
 
 Artifact:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R222ZeroSplitSurvivalConsumer.lean`
+- `Research/ProximityPrize/Frontier/_R222ZeroSplitSurvivalConsumer.lean`
 
 ## Result
 
@@ -83,7 +83,7 @@ separate finite/direct branch already indicated by R217.
 Fast lane:
 
 ```bash
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R222ZeroSplitSurvivalConsumer.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R222ZeroSplitSurvivalConsumer.lean
 ```
 
 Status: passed.

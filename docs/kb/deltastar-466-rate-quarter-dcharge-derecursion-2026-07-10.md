@@ -12,7 +12,7 @@ Formal kernel (pg-iterate ✅ OK 20s, 9 audited theorems, all on
 `[propext, Classical.choice, Quot.sound]`, no `sorry`/`axiom`):
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterDChargeDerecursion.lean
+Research/ProximityPrize/Frontier/_P1RateQuarterDChargeDerecursion.lean
 ```
 
 Probe: `scripts/probes/probe_rate_quarter_p1_dcharge_derecursion.py` (exact

@@ -17,8 +17,8 @@ certificate (Mathlib `lucas_primality`) then needs only three modular exponentia
     g^(p-1) = 1,  g^((p-1)/2) != 1,  g^((p-1)/c) != 1
 and one norm_num primality check on the <= 21-bit cofactor c.
 
-Verification is fully deterministic: Miller-Rabin with the 12-base set
-{2,3,5,7,11,13,17,19,23,29,31,37} is a proven deterministic primality test below
+Verification is fully deterministic: Miller-Rabin with the 13-base set
+{2,3,5,7,11,13,17,19,23,29,31,37,41} is a proven deterministic primality test below
 3.3 * 10^24 > 2^64 > all numbers used here; sympy.isprime cross-checks.
 
 Output: per-rung witness tables + generated Lean code blocks (stdout + scratch files).
@@ -26,7 +26,7 @@ Output: per-rung witness tables + generated Lean code blocks (stdout + scratch f
 
 import sys
 
-MR_BASES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37]
+MR_BASES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
 DET_LIMIT = 3317044064679887385961981  # deterministic MR limit for these bases
 
 

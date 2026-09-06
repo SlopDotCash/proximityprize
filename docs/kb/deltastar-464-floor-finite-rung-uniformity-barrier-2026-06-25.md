@@ -36,7 +36,7 @@ for every a >= 4, floor-bad(2^a) = {least prime p == 1 mod 2^a}.
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorFiniteRungUniformityBarrier.lean
+Research/ProximityPrize/Frontier/FloorFiniteRungUniformityBarrier.lean
 ```
 
 records the logical gap in the remaining off-BGK floor-localization lane.
@@ -125,7 +125,7 @@ therefore never has to re-audit earlier rungs to explain a failed uniform theore
 Validation:
 
 ```text
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorFiniteRungUniformityBarrier.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/FloorFiniteRungUniformityBarrier.lean
 ```
 
 passed.

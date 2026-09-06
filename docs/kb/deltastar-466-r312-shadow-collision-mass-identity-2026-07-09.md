@@ -50,7 +50,7 @@ available DC-subtracted Wick headroom.  A relation classifier can now be consume
 
 ```text
 ./scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R312ShadowCollisionMassIdentity.lean
+  Research/ProximityPrize/Frontier/_R312ShadowCollisionMassIdentity.lean
 ```
 
 passed on 2026-07-09 with no `sorryAx`; audited axioms are contained in

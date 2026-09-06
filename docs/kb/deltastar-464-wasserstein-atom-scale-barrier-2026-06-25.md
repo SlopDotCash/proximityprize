@@ -31,7 +31,7 @@ by the conditional delta-star pin.
 I added:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WassersteinAtomScaleBarrier.lean
+Research/ProximityPrize/Frontier/_WassersteinAtomScaleBarrier.lean
 ```
 
 For a finite empirical space `α`, the file defines:
@@ -62,7 +62,7 @@ The supporting theorems prove both sides explicitly:
 Validation:
 
 ```text
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WassersteinAtomScaleBarrier.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_WassersteinAtomScaleBarrier.lean
 ```
 
 passed.  The axiom audit shows only the expected Lean foundations (`propext`, `Classical.choice`,

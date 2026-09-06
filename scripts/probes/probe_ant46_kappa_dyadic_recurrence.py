@@ -42,7 +42,7 @@ This probe does five independent exact checks:
 * reconstructs J_{2n} from the odd-root power sums;
 * verifies the dyadic factorization and the resultant formula through K_32;
 * falsifies the square-only and recycled-K scalar recurrences at K_8, K_16, K_32;
-* verifies that Disc(K_n)*K_n(2^n) detects exactly the bad primes <= 500000 for
+* verifies that Disc(K_n)*K_n(2^n) detects exactly the bad primes p <= 500000 with p = 1 mod n for
   n=8,16,32 by an independent finite-field signature computation.
 
 At production n=2^30 the trace/A circuits have 28 doubling steps, but the last primitive

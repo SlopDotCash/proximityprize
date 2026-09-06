@@ -991,6 +991,7 @@ lemma iterated_fold_congr_source_index
   subst h
   simp only [cast_eq]
 
+omit h_β₀_eq_1 in
 /-- **Congruence in the destination index** of `iterated_fold`: transporting the destination index
 `destIdx = destIdx'` across the (equal-`.val`) domain re-casts the evaluation point accordingly. -/
 lemma iterated_fold_congr_dest_index
@@ -1008,6 +1009,7 @@ lemma iterated_fold_congr_dest_index
       f r_challenges (cast (h := by rw [h_destIdx_eq_destIdx']) y) := by
   subst h_destIdx_eq_destIdx'; rfl
 
+omit h_β₀_eq_1 in
 /-- **Congruence in the step count** of `iterated_fold`: transporting an equal step count
 `steps = steps'` re-indexes the challenge function accordingly. -/
 lemma iterated_fold_congr_steps_index

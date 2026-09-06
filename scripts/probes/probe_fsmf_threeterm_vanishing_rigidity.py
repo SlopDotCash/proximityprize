@@ -1,24 +1,20 @@
 #!/usr/bin/env python3
-"""Randomized rigidity check for the three-core coexistence identity (m=4).
+"""Sample the domain-zero count of a sum of two degree-15 polynomials.
 
-Three joint cores of size t-1 = 35 for pairwise-distinct pencils over the
-64-point smooth domain in F_193 require polynomials A_12, A_23 of degree
-<= k-1 = 15 such that A_12, A_23 AND A_13 = A_12 + A_23 each vanish on ~14
-domain points (pairwise core overlaps), with the same zero sets carried by
-non-proportional slope differences R_ij.
+Over the 64-point multiplicative domain in F_193, sample disjoint 14-subsets
+S and T, independent s,u in F_193, and nonzero lambda. Construct
+A12 = Z_S(X)(X-s), A23 = lambda Z_T(X)(X-u), and count domain zeros of
+A12 + A23. The 200,000 trials use random.Random(31337).
 
-The mu_16 fibre ansatz (cubic potentials) realizes Sum_p - t0 = 40, one short
-of the 41 needed for three 35-cores at m=4 (probe_fsmf_p1_onefresh_capacity).
-This probe samples random deficiency-one candidates
-  A_12 = Z_S(x) * (x - s),  A_23 = lambda * Z_T(x) * (x - u)
-(S, T random disjoint 14-subsets of the domain) and counts the domain zeros
-of A_13 = A_12 + A_23.  If unstructured triples with >= 13 domain zeros were
-common, the coverage wall would be soft; the expected count for a generic
-degree-15 polynomial is 15 * 64/193 ~ 5 total roots, of which a domain zero
-set of size >= 13 is astronomically unlikely.  Reported: histogram of
-|zeros(A_13) cap domain| over trials.
+This tests the specified sampling distribution, not all triples or the
+geometric realizability of large joint cores. The historical threshold and
+fibre comparison in the output are context, not conclusions of this probe.
+For each fixed domain point the zero probability is 1/193, so the expected
+number of domain zeros per trial is 64/193; degree times domain density is
+not the expected root count of a random polynomial.
 
-Deterministic seed; pure python + numpy.
+Pure Python plus NumPy. See the retained-evidence audit for the calculation
+and the limits of the archived histogram.
 """
 
 from __future__ import annotations

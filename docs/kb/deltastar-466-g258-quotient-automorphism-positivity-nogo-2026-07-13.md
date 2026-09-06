@@ -153,6 +153,6 @@ BGK/Paley wall.
 
 ## Artifacts
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean`
+- `Research/ProximityPrize/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean`
 - `scripts/probes/g258_quotient_automorphism_positivity_nogo.py`
 - DISPROOF entry `[466-G258-quotient-automorphism-positivity-nogo]`

@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 Lane: direct Opus 4.8 CORE (cron)
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G170GeneralEnvelopeCharacterization.lean`
+File: `Research/ProximityPrize/Frontier/_G170GeneralEnvelopeCharacterization.lean`
 Probes: `scripts/probes/probe_466_g170_envelope_partition.py` (exact general-D characterization),
 `scripts/probes/probe_466_g170_incremental_prefix_nogo.py` (incremental-prefix no-go)
 Branch: `research/proximity-prize`

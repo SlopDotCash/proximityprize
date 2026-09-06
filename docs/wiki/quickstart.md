@@ -9,6 +9,13 @@ Use it as the main guide for routine local checks.
 
 ## Recommended Validation
 
+Install the Python regression dependencies in your active virtual environment first:
+
+```bash
+python3 -m pip install -r scripts/requirements-validation.txt
+```
+
+CI installs the same pinned dependencies before running the validation wrapper.
 For a convenient routine check, run:
 
 ```bash
@@ -99,7 +106,7 @@ git -C .lake/packages/mathlib checkout -f <manifest-pinned-rev>
 lake exe cache get
 
 # 4. Verify a real build completes.
-lake build ArkLib.Data.CodingTheory.ProximityGap.Collapse
+lake build Research.ProximityPrize.Collapse
 ```
 
 Prevention: never run `lake update` for cache repair (see above); let a single coordinator do
@@ -226,6 +233,10 @@ python3 -m pip install leanblueprint
   `main`. Additional clean and warm benchmarks require a manual dispatch with
   the `benchmark` input enabled. It then
   uploads timing artifacts and posts a comparison report on same-repo PRs.
+  Before fetching dependency artifacts, CI runs `scripts/repair-lake-cache.py`
+  to quarantine cached Git packages whose own checkout or HEAD cannot be resolved.
+  Lake then re-fetches those packages from the existing manifest; valid packages
+  and their compiled artifacts are preserved.
   The `.lake` cache is saved under a key unique to each run attempt (with
   newest-prefix restore), so when a hosted runner dies mid-build,
   `gh run rerun <id> --failed` resumes from the latest partial snapshot and
@@ -251,10 +262,12 @@ python3 -m pip install leanblueprint
   stay within `propext`, `Classical.choice`, `Quot.sound`. Renaming or
   deleting a pinned flagship theorem without updating the list is a hard CI
   failure. Because some pinned flagship modules (KZG, Merkle tree, Hensel,
-  SubspacePoly) live outside the ProximityGap umbrella that `lake build`
+  SubspacePoly, sequential composition, and Binius) live outside the ProximityGap umbrella that `lake build`
   targets, `validate.sh` first builds every module named in
   `scripts/flagship_axioms.txt` explicitly before running the audit. As of issue #111 these same three gates also run from
   `./scripts/validate.sh`, so local validation matches CI.
+- The declaration scanner restricts leading indentation to the current line, so
+  large masked block comments do not cause repeated scans of all following blank lines.
 - The forbidden-token precheck rejects every custom `axiom` *except* the
   documented, tracked residuals listed in
   [`../../scripts/residual_axioms.txt`](../../scripts/residual_axioms.txt) (route (a)
@@ -284,7 +297,7 @@ bash scripts/build_timing_report.sh render /tmp/build-timing.jsonl
 Hard-won rules for multi-agent sessions where several agents land commits on
 `main` concurrently (distilled from the 2026-06-10 #232 frontier sessions):
 
-- **An announced brick is not a brick.** Commit messages and `DISPROOF_LOG.md`
+- **An announced brick is not a brick.** Commit messages and `Research/ProximityPrize/DISPROOF_LOG.md`
   entries can name theorems that never landed (found once: a theorem announced
   in a commit message existed nowhere in history). Before citing or building on
   a named lemma, `grep` the tree — not the log — and prefer
@@ -306,7 +319,7 @@ Hard-won rules for multi-agent sessions where several agents land commits on
   (`lake build <Module1> <Module2> …`) and compile a scratch file importing
   all of them together.
 - **Rebase before every push; new files only.** Concurrent agents editing
-  shared files (especially `ArkLib.lean`, `DISPROOF_LOG.md`) is the main
+  shared files (especially `ArkLib.lean`, `Research/ProximityPrize/DISPROOF_LOG.md`) is the main
   collision source. One designated writer appends to shared logs; everyone
   else ships new modules and lets `./scripts/update-lib.sh` regenerate the
   import index at commit time.
@@ -358,3 +371,15 @@ only on success. `pg-iterate.sh` propagates a nonzero Lean exit status even
 when the process emits no diagnostic text. A successful file with no
 `#print axioms` output is still a successful type check; absence of that
 output does not itself perform an axiom audit.
+
+## Retained probe dependencies
+
+Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
+
+The R387 Z3 probe uses exit 0 only for all searched branches returning unsat, exit 1 for a checked MCA counterexample, and exit 2 for unresolved results (including timeout). An unresolved exit is not a proof of either outcome.
+
+The R387 MILP probe uses the same unresolved exit 2. Exit 0 means the numerical solver reported every requested branch infeasible; it is not an independently verified infeasibility certificate, and a subset of pivots does not cover all directions. Exit 1 indicates a checked MCA witness.
+
+G87V’s default census uses batches of at most 4,096 rows and retains one modular row basis per field instead of the full census matrix. It still enumerates every support/sign pattern. Run `python3 -m unittest discover -s scripts/tests -p test_g87v_streaming.py` to compare streamed summaries with materialized small cases. This storage change does not remove the combinatorial runtime cost.
+
+The transfer skeptic probe scans its stage C maximum in batches of at most 32,768 coset representatives, also capping phase matrices at four million entries. Stages A/B retain their full arrays. The calculation remains floating point and still visits every coset. Run `python3 -m unittest discover -s scripts/tests -p test_transfer_streaming.py` for comparisons with materialized sums on small fields.

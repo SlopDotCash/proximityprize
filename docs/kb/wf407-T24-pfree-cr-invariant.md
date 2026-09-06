@@ -57,7 +57,7 @@ statement is possible.**
 
 ## Lean brick (axiom-clean)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T24_PFreeDefectGate.lean` — five theorems,
+`Research/ProximityPrize/Frontier/WF407_T24_PFreeDefectGate.lean` — five theorems,
 audit `[propext, Classical.choice, Quot.sound]` only (pg-iterate EXIT 0, 162s):
 - `moment_with_defect`: the honest arrow `B^{2r} ≤ q·E_r^∞ + q·D_r` (the defect made explicit).
 - `pfree_bound_valid_of_no_defect`: `D_r = 0 ⟹ B^{2r} ≤ q·E_r^∞` (the lever fires only in the clean
@@ -82,4 +82,4 @@ condition `p | N(α)` that walls Cheng-house and large-sieve walls this too.
 - `scripts/probes/wf407_T24-pfree_bridge.py` (Part 2/3: defect re-entry + bridge test)
 - `scripts/probes/wf407_T24-pfree_defect_structured.py` (Part 4: arithmetic non-monotonicity + norm mechanism)
 - `scripts/probes/wf407_T24-pfree_prize_regime.py` (Part 5: ideal bound reaches target; defect on at prize depth)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T24_PFreeDefectGate.lean` (axiom-clean brick)
+- `Research/ProximityPrize/Frontier/WF407_T24_PFreeDefectGate.lean` (axiom-clean brick)

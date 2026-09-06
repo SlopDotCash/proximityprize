@@ -9,7 +9,7 @@ import Mathlib
 /-!
 # Concrete four-rate numeric certificate for the ABF26 §1 MCA prize (issue #120)
 
-The apex `mcaPrize` deliverable (`ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean`)
+The apex `mcaPrize` deliverable (`Research/ProximityPrize/GrandChallenges.lean`)
 asks to resolve the Grand MCA Challenge at every prize rate `ρ ∈ {1/2, 1/4, 1/8, 1/16}` with
 `ε* = 2^(-128)`.  The packaged route `mcaPrize_of_large_field` /
 `mcaPrize_resolutions_of_large_field` reduces this, at a fixed evaluation-domain size `|L| = n`,

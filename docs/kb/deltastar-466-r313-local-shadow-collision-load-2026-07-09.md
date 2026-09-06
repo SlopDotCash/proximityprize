@@ -55,7 +55,7 @@ DC-subtracted Wick headroom by `n^r`.  Establishing that local cap remains open.
 
 ```text
 ./scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R313LocalShadowCollisionLoad.lean
+  Research/ProximityPrize/Frontier/_R313LocalShadowCollisionLoad.lean
 ```
 
 passed on 2026-07-09.  The axiom audit contains no `sorryAx`.

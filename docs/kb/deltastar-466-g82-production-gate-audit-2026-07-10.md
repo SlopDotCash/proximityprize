@@ -10,7 +10,7 @@ audit of where every link lives, re-verified from tip `a42fe9e40`
 
 ## The gate, verbatim location
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapeRateHalfBracket.lean`
+`Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.lean`
 
 * Production parameters: `n = 2^30`, RS dimension `k = 2^29` (exact rate `1/2`, code
   `evalCode g (2^30) (2^29 - 1)` on the certified smooth power domain), field

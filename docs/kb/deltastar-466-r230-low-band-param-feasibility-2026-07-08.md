@@ -116,7 +116,7 @@ structure.
 
 ## Lean status
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R230ParamLowBandQuotientMGFEndpoint.lean`
+`Research/ProximityPrize/Frontier/_R230ParamLowBandQuotientMGFEndpoint.lean`
 was drafted as a parameterized socket, but was not verified in this run because
 the local mathlib cache is missing oleans such as:
 

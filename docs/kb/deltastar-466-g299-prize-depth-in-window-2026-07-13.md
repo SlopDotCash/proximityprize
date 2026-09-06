@@ -54,7 +54,7 @@ Independently flagged as false by the Fable referee (2026-07-14 03:15 UTC) and t
 
 ## Formal payload
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G299PrizeDepthInWindow.lean` (reuses G296's
+`Research/ProximityPrize/Frontier/_G299PrizeDepthInWindow.lean` (reuses G296's
 `window` and `sigma`):
 
 - `prizeDepth_lt_order` : `89 < 2^30` (negation of the escape premise `r > n`).

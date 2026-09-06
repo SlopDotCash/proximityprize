@@ -5,7 +5,7 @@
 This note records the current strongest closed-form conjectural route for issue #407 after reading:
 
 - GitHub issue #407 and comments through `4700438400`.
-- `ArkLib/Data/CodingTheory/ProximityGap/AGENTS.md`.
+- `Research/ProximityPrize/AGENTS.md`.
 - `docs/kb/deltastar-357-compiled-knowledge.md`.
 - `docs/kb/prize-core-distilled.md`.
 - The local frontier files `_DyadicCocycleLargeDeviation.lean`,

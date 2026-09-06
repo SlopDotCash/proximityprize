@@ -4,7 +4,7 @@
 `deltastar-466-rate-quarter-stepanov-weld-2026-07-11.md` (which refuted
 `StallResidual` on adversarial domains via `n = 7·2²⁵`-coset triples).
 **Probe:** `scripts/probes/probe_rate_quarter_p1_dyadic_domain_escape.py` (exact).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterDyadicDomainEscape.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterDyadicDomainEscape.lean`
 (pg-iterate OK 12s; 7 theorems; full axiom lists read manually via `lake env lean`:
 5 exactly `[propext, Classical.choice, Quot.sound]`, 2 `[propext]`; no sorryAx).
 

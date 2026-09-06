@@ -26,7 +26,7 @@ carrier elements.
 Verified command:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R219NonzeroBulkSpikesToPrizeEndpoint.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R219NonzeroBulkSpikesToPrizeEndpoint.lean
 ```
 
 Output:
@@ -34,7 +34,7 @@ Output:
 ```text
 'ArkLib.ProximityGap.Frontier.R219NonzeroBulkSpikesToPrizeEndpoint.prize_sq_of_nonzero_normalizedSq_halfRate_bulkPlusSpikes_tail' depends on axioms: [propext,
 'ArkLib.ProximityGap.Frontier.R219NonzeroBulkSpikesToPrizeEndpoint.prize_sq_of_nonzero_normalizedSq_threeFifths_plus_two_tail' depends on axioms: [propext,
-OK (31s) — ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R219NonzeroBulkSpikesToPrizeEndpoint.lean
+OK (31s) — Research/ProximityPrize/Frontier/_R219NonzeroBulkSpikesToPrizeEndpoint.lean
 ```
 
 Readout: the dyadic concentration route is now reduced to proving the actual

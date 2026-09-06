@@ -1,0 +1,44 @@
+{
+  "destination": "Research/ProximityPrize/DOSSIER.md",
+  "base_commit": "4999165d96d394c8e7302a116ca2d16d1cba8e57",
+  "preservation": "Both complete source texts retained, with only relative Markdown links rebased inside their retained blocks. New current-coordination preface is separate.",
+  "sources": {
+    "docs/kb/deltastar-DOSSIER-v3-2026-07-01.md": {
+      "sha256": "5f0d28442a1484f0dbff79d418da09b045d4475cf2098979bf8c7cbe4d893281",
+      "bytes": 193079,
+      "retained_rebased_sha256": "fe2c75a9c6dbbc4d96abd3272b76452bc811c20d4d24dc02fac4f5bb38283882"
+    },
+    "docs/kb/deltastar-DOSSIER-v4-2026-08-16.md": {
+      "sha256": "a04190c664f1c30e936032f1a8b6a0351d4b21e19d283b16ee14db10937c66b3",
+      "bytes": 16013,
+      "retained_rebased_sha256": "7e472346d6c09af5e12edd937c7e50179a3bb9b89d347ff0a6aeac5bcc090975"
+    }
+  },
+  "path_consumers_updated": [
+    "AGENTS.md",
+    "Research/ProximityPrize/AGENTS.md",
+    "Research/ProximityPrize/Frontier/README.md",
+    "Research/ProximityPrize/LegacyWorkbench.lean",
+    "docs/kb/deltastar-466-essay-round14-2026-07-04.md",
+    "docs/kb/deltastar-466-expert-statement-v2-2026-07-07.md",
+    "docs/kb/deltastar-466-one-question-map-2026-07-11.md",
+    "docs/kb/deltastar-466-two-open-problems-expert-statement-2026-07-04.md",
+    "docs/wiki/deltastar-programme.md"
+  ],
+  "remaining": "v2 and session-note semantic distillation remain unaudited; production proof remains open.",
+  "source_scope_correction": {
+    "finding": "Historical all-scale unconditional binder-floor claim exceeds the explicit hypotheses of the current closure theorem.",
+    "sources": {
+      "Research/ProximityPrize/Frontier/_FloorLinnikTZClosure.lean": "1ef63e9344a65cc543524a3d9351a3b38e432d2d9e0a6e6be11012c971f3d597",
+      "Research/ProximityPrize/Frontier/_FloorSuccessorTZBridge.lean": "a67aaeee95bc80e2122fcb1f03e9fb46f3e06d223522aac7198a0db11ff1b728",
+      "Research/ProximityPrize/Frontier/_FloorSuccessorNorm.lean": "42ecc3b846dad25020a11fef3900db57196ac309be30e1a67aea924ad35dcff3"
+    },
+    "validation": "Source signatures and explicit scope statements inspected; no new Lean compilation or analytic-literature verification claimed."
+  },
+  "deployment_scope_correction": {
+    "source": "docs/kb/deltastar-466-deployment-certificates.md",
+    "sha256": "3829166642c6d0883f044b26bbacf04a52d2b29441931061b581a83e8c1769c1",
+    "finding": "Exact integer trace checks do not certify the floating/refined eigenvalues; source section 6 leaves interval root isolation unfinished.",
+    "validation": "Source review only; no computation rerun or checkpoint certification."
+  }
+}

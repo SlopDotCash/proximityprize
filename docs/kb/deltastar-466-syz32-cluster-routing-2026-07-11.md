@@ -1,7 +1,7 @@
 # δ\* / #466 — SYZ32: cluster routing — the SYZ31 crack is matroid-real but stack-vacuous
 
 Date: 2026-07-11
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ32ClusterRouting.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ32ClusterRouting.lean`
 Probe: `scripts/probes/probe_syz32_cluster_routing.py`
 Branch: `codex/syz32-cluster-routing` (off `fork/research/proximity-prize` @ f5881e0b3)
 Predecessors: `deltastar-466-syz31-set-geometry-2026-07-11.md`,

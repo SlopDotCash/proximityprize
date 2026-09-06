@@ -74,7 +74,7 @@ the coset-union (= subgroup-sumset / BGK) family, exactly where #407 already loc
 
 ## Lean artifact (axiom-clean)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A33_Realizability.lean`:
+`Research/ProximityPrize/Frontier/Sweep_A33_Realizability.lean`:
 
 - `deg_lt_agree_eq` / `deg_lt_distinct_agree_lt` — the **realizability backbone**, PROVEN
   axiom-clean over any field: two degree-`<k` polynomials agreeing on `≥ k` points are equal

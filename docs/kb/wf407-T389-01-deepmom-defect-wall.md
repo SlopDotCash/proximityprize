@@ -62,7 +62,7 @@ at a=32, absolute ratio ≈7.9. The `a/2` claim in `CharSumMomentDeepWall` is co
 
 ## The Lean brick (axiom-clean: exactly `[propext, Classical.choice, Quot.sound]`)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_DeepMomentDefectWall.lean` — the wall is
+`Research/ProximityPrize/Frontier/WF407_DeepMomentDefectWall.lean` — the wall is
 **monotone and one-sided**, `momentBound q E r := (q·E)^{1/(2r)}`:
 - `momentBound_mono_in_energy` — bigger energy ⟹ worse bound.
 - `defect_only_worsens` — `E_p = E_0 + Δ`, `Δ ≥ 0` ⟹ `momentBound q E_0 r ≤ momentBound q (E_0+Δ) r`.

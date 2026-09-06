@@ -1,7 +1,7 @@
 # SYZ41 — the `d = syzdim` bridge, proven concretely (2026-07-11)
 
 Issue #466 (proximity strip, rate-`1/2`). File:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ41SyzdimBridge.lean`.
+`Research/ProximityPrize/Frontier/_SYZ41SyzdimBridge.lean`.
 
 ## What this removes
 

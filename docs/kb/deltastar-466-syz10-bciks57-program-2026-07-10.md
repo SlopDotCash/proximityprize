@@ -51,7 +51,7 @@ CellPackageSupplyDiscLocus domain k δ T`, then wired through
 
 ## Chunk 1 — LANDED (axiom-clean)
 
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ10BCIKS57Chunk1.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ10BCIKS57Chunk1.lean`
 (namespace `BCIKS20.CellPencilJohnson.SYZ10`).
 
 Verbatim statements:
@@ -103,7 +103,7 @@ wired into the residual's cell quantifier.
 
 ## Files
 
-* New: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ10BCIKS57Chunk1.lean`
+* New: `Research/ProximityPrize/Frontier/_SYZ10BCIKS57Chunk1.lean`
 * Consumes: `GuruswamiSudan/GuruswamiSudan.lean` (`gs_existence`, `Conditions`),
   `GuruswamiSudan/Basic.lean` (`gs_degree_bound`).
 * Target (later chunks): `Frontier/_SYZ8CellPackageSupply.lean`

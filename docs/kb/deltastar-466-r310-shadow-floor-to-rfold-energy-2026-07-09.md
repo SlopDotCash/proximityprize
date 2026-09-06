@@ -2,7 +2,7 @@
 
 ## Status
 
-Added `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R310ShadowFloorToRFoldEnergy.lean`.
+Added `Research/ProximityPrize/Frontier/_R310ShadowFloorToRFoldEnergy.lean`.
 
 ## Result
 
@@ -68,7 +68,7 @@ i.e. control of genuine bounded-height cyclotomic collisions.
 Validated:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R310ShadowFloorToRFoldEnergy.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R310ShadowFloorToRFoldEnergy.lean
 ```
 
 Result: `OK` in 18 seconds. The first attempt reached a missing R308 `.olean`; once that
@@ -77,7 +77,7 @@ dependency artifact appeared from the locked build queue, the direct R310 check 
 Follow-up validation after adding the concrete power-root representation bridge:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R310ShadowFloorToRFoldEnergy.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R310ShadowFloorToRFoldEnergy.lean
 ```
 
 Result: `OK` in 34 seconds.
@@ -85,7 +85,7 @@ Result: `OK` in 34 seconds.
 Follow-up validation after adding exact-order injectivity consumers:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R310ShadowFloorToRFoldEnergy.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R310ShadowFloorToRFoldEnergy.lean
 ```
 
 Result: `OK` in 29 seconds.

@@ -5,7 +5,7 @@ conditional production pin identified in the G82 audit
 (`docs/kb/deltastar-466-g82-production-gate-audit-2026-07-10.md`):
 
 `firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count`
-(`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapeRateHalfBracket.lean`).
+(`Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.lean`).
 
 Probe: `scripts/probes/probe_rate_half_predecessor_count_small_scale.py`
 (deterministic seeds, exact modular arithmetic; ~15 min single-core).

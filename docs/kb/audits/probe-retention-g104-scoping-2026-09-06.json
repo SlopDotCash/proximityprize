@@ -1,0 +1,14 @@
+{
+  "removed_source": "scripts/probes/probe_466_g104_primitive_concentration_ladder.py",
+  "removed_source_sha256": "eae642af1986e8121b9fde839b95713edb894f7ab6080f93518757afdb3e4498",
+  "archive": "scripts/probes/_out_466_g104_ladder_scoping.txt",
+  "archive_sha256": "f03476f9ca445cf95b949ceaba6bfd55a312b2436a7dd4d0904b5cfe504036ea",
+  "preservation": "Entire script output equals retained archive after CRLF normalization; AST is only docstring plus print(__doc__).",
+  "countercertificate_source": "scripts/probes/probe_466_g104_primitive_concentration_factorial_no_go.py",
+  "countercertificate_sha256": "c5dbaf2ce5a91ce9b8ef620b830cd900cd53841206db60469a45382f616bca62",
+  "countercertificate_stdout": "G104 primitive-concentration factorial no-go: PASS\nP=365375409332725729550921208179070755120141565953\nn=1073741824, g=303645430271030343624574566109998498685964493478, order check g^n mod P=1\npowers used=0..10\ndistinct subset sums=2048=2^11; zero occurs only for empty subset\ncommon tuple sum=51051139747149256550568390474513031573459175026\nprimitive ordered-fiber lower bound=11!=39916800\nG104 actual s=13 threshold=14207588\nfactorial/actual=2.809540929819\nG104 uniform 4*n^(2/3) threshold=4194304\nfactorial/uniform=9.516906738281\nwitness powers:\n  g^0 = 1\n  g^1 = 303645430271030343624574566109998498685964493478\n  g^2 = 150511170710686227668285224632168169670168191116\n  g^3 = 358345004963112463875032914901734539581539491050\n  g^4 = 172348220477476586026003615828340194978752191219\n  g^5 = 512837610384174436395569865881630712758603361\n  g^6 = 239507655130851067408727943199025128553710189958\n  g^7 = 112606367152671310346293096619947130484609567530\n  g^8 = 124180433206967124430995050926198841562706863147\n  g^9 = 65304707510797602806512923091833412393711096547\n  g^10 = 350966359376801003682353526194739260550246317384\n",
+  "reviewed_original_unreferenced": 51,
+  "remaining_original_unreferenced": 41,
+  "original_inventory_retained": 420,
+  "original_inventory_removed": 1
+}

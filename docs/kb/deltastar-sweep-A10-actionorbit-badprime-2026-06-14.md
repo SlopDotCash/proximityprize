@@ -47,7 +47,7 @@ the original 407-T06 brick — they are taken as the two cited named-fact hypoth
 
 ## Artifacts
 
-- **Lean:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A10_ActionOrbitBadPrime.lean`
+- **Lean:** `Research/ProximityPrize/Frontier/Sweep_A10_ActionOrbitBadPrime.lean`
   — axiom-clean `[propext, Classical.choice, Quot.sound]`, no `sorry`.
   - `prod_le_mean_pow` — AM-GM product form `∏ aᵢ ≤ ((Σ aᵢ)/|s|)^|s|` via
     `Real.geom_mean_le_arith_mean` (all weights `1`).

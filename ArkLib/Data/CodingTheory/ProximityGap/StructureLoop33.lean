@@ -20,7 +20,7 @@ most `m*h`; hence the full product is bounded by the final-domain polynomial of 
 
 So bounded spikes do not refute the prize. A spike-based counterexample must make the spike heights,
 or their average density, grow without bound in the actual GS/proximity process. See
-`DISPROOF_LOG.md` (Loop33).
+`Research/ProximityPrize/DISPROOF_LOG.md` (Loop33).
 -/
 
 namespace ArkLib.ProximityGap.StructureLoop33

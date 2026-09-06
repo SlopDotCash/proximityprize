@@ -4,7 +4,7 @@
 → dimension deficit → this).
 **Probe:** `scripts/probes/probe_rate_quarter_p1_stepanov_weld.py` (exact; 158-bit
 arithmetic over F_P + end-to-end synthetic census).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterStepanovWeld.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterStepanovWeld.lean`
 (pg-iterate OK 14s; 9 theorems; full axiom lists read manually via `lake env lean`:
 8 exactly `[propext, Classical.choice, Quot.sound]`, 1 `[propext]`; no sorryAx).
 Build note: `_P1RateQuarterDimensionDeficit` olean built once via lake-locked.

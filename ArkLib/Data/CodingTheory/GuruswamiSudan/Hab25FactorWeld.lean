@@ -9,7 +9,7 @@ import ArkLib.Data.CodingTheory.GuruswamiSudan.GSFactorAssignment
 # Hab25 §3 — the S6→S8 factor weld: per-good-`z` uniqueness and affine pinning
 
 The remaining deep node of the Haböck §3 endgame
-(`ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean`,
+(`Research/ProximityPrize/Hab25Johnson.lean`,
 `Hab25AffineCapture.lean`) is the **capture kernel**: every per-`z` decoded polynomial of a
 scalar fold must arise as the `Z := z` specialization `a + z·b` of one of the `≤ ℓ` affine
 pairs carried by the `K = F(Z)`-level decoded list. The in-tree S10 bridge already places

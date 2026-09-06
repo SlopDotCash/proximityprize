@@ -72,7 +72,7 @@ theorem single_readout_threshold_not_prize : ((2^30)*2^128 : ℕ) < (2*(2^30/2))
 ### B. Bracket + spectral bridge — two-sided δ* frame
 
 **PrizeConditionalPinCapstone** — the honest assembly point: δ* pinned to an explicit closed value, resting on ONE open hypothesis. *(fork BRANCHES only — NOT fork/main.)*
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/PrizeConditionalPinCapstone.lean` on `fork/claude-cliff-confinement` (commit `1ae3ae2e4`), also `fork/claude-cube-reframing`, `fork/claude-sqrtcancel-session` · namespace `ArkLib.ProximityGap.KKH26`
+`Research/ProximityPrize/Frontier/PrizeConditionalPinCapstone.lean` on `fork/claude-cliff-confinement` (commit `1ae3ae2e4`), also `fork/claude-cube-reframing`, `fork/claude-sqrtcancel-session` · namespace `ArkLib.ProximityGap.KKH26`
 ```lean
 noncomputable def prizeEdge (n m r : ℕ) (C L : ℝ≥0) : ℝ≥0 :=
   (1 - ((r-2:ℕ)*m + 1 : ℕ)/(n:ℝ≥0)) - 1/(C*L)
@@ -85,8 +85,8 @@ theorem prize_deltaStar_eq_edge {p n} [Fact p.Prime] [NeZero n] {μ m r} (hμ : 
   mcaDeltaStar (evalCode g n ((r-2)*m)) εstar = prizeEdge n m r C L
 ```
 *Proves:* pins δ* = `prizeEdge = (1−ρ) − 1/(C·L)` (one window rung below capacity) for the concrete smooth-domain RS code `evalCode g n ((r−2)·m)` at prize scale, via `le_antisymm`: CEILING proven (Kambiré/KKH26 bad-line family, needs only Thorner–Zaman supply); FLOOR = the SINGLE open input `hfloor`. HONEST correction documented in-file: `hfloor` is STRICTLY FINER than BGK/Paley M(n) ≤ C√(n log m) — the only M→epsMCA route is vacuous at q·ε* ≈ n (overshoots by √m). So the prize is pinned modulo realized-incidence, NOT modulo M.
-*Consume:* obtain via `git show fork/claude-cliff-confinement:ArkLib/Data/CodingTheory/ProximityGap/Frontier/PrizeConditionalPinCapstone.lean` or check out a carrying branch (its dep `KKH26AsymptoticCeiling` IS on fork/main). Supply the regime hypotheses + the single open `hfloor`, then `prize_deltaStar_eq_edge … hfloor` yields the exact δ*. Ceiling auto-discharged by `kkh26_mcaDeltaStar_le_capacity_sub_log` (fork/main `KKH26AsymptoticCeiling.lean:118`). Do NOT attempt `hfloor` from an M(n) char-sum bound — that route is documented vacuous.
-*Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/PrizeConditionalPinCapstone.lean` (warm: `scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.KKH26AsymptoticCeiling`), ~56s.
+*Consume:* obtain via `git show fork/claude-cliff-confinement:Research/ProximityPrize/Frontier/PrizeConditionalPinCapstone.lean` or check out a carrying branch (its dep `KKH26AsymptoticCeiling` IS on fork/main). Supply the regime hypotheses + the single open `hfloor`, then `prize_deltaStar_eq_edge … hfloor` yields the exact δ*. Ceiling auto-discharged by `kkh26_mcaDeltaStar_le_capacity_sub_log` (fork/main `KKH26AsymptoticCeiling.lean:118`). Do NOT attempt `hfloor` from an M(n) char-sum bound — that route is documented vacuous.
+*Reproduce:* `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/PrizeConditionalPinCapstone.lean` (warm: `scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.KKH26AsymptoticCeiling`), ~56s.
 
 **DeltaStarPinchBracketD3** — two-sided bracket on δ* for thin n=2^μ; REFUTES a pinch (constant ≈1/8 gap).
 `ArkLib/Data/CodingTheory/ProximityGap/DeltaStarPinchBracketD3.lean` (fork/main) · namespace `ArkLib.ProximityGap.KKH26`
@@ -239,7 +239,7 @@ theorem eta_le_rpow {ψ} (hψ) (G) (r) (hr : 1 ≤ r) (b) :
 *Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/CharPDeepMomentTail.lean`.
 
 **CoshMGFIdentity** — root-free, max-free MGF restatement of the prize core; floor-reaching is empirical (probe).
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/CoshMGFIdentity.lean` (fork/main) · namespace `ProximityGap.Frontier.CoshMGFIdentity`
+`Research/ProximityPrize/Frontier/CoshMGFIdentity.lean` (fork/main) · namespace `ProximityGap.Frontier.CoshMGFIdentity`
 ```lean
 theorem coshMGF_eq_evenMoment_tsum {ψ} (hψ) (G) (y : ℝ) :
   (∑ b, Real.cosh (‖eta ψ G b‖*y)) = ∑' r, ((Fintype.card F)*rEnergy G r)*y^(2*r)/((2*r).factorial)
@@ -248,8 +248,8 @@ theorem cosh_period_le_evenMoment_tsum {ψ} (hψ) (G) (y) (b₀) :
   Real.cosh (‖eta ψ G b₀‖*y) ≤ ∑' r, ((Fintype.card F)*rEnergy G r)*y^(2*r)/((2*r).factorial)
 ```
 *Proves:* exact ∑_b cosh(‖η_b‖y) = ∑_r (q·E_r/(2r)!)·y^{2r}, so ‖η_{b₀}‖ ≤ arcosh(RHS(y))/y, optimisable in y. Floor-reaching (min_y arcosh(p·I₀(2y)^{n/2})/y beats √(2n log m) at n=8) is the EMPIRICAL probe claim — turning it into the prize constant needs the open saddle asymptotics of I₀(2y)^{n/2}.
-*Consume:* `import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CoshMGFIdentity`. `cosh_period_le_evenMoment_tsum hψ G y b₀` bounds a single period without √ or max. The y-optimisation/saddle asymptotics is the OPEN consumer.
-*Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/CoshMGFIdentity.lean`. Floor-reaching: `python3 scripts/probes/probe_cosh_identity_mgf.py`.
+*Consume:* `import Research.ProximityPrize.Frontier.CoshMGFIdentity`. `cosh_period_le_evenMoment_tsum hψ G y b₀` bounds a single period without √ or max. The y-optimisation/saddle asymptotics is the OPEN consumer.
+*Reproduce:* `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/CoshMGFIdentity.lean`. Floor-reaching: `python3 scripts/probes/probe_cosh_identity_mgf.py`.
 
 ---
 
@@ -268,7 +268,7 @@ theorem overdetIncidenceMax_gt_budget {m} (hm : 2 ≤ m) : overdetIncidenceMax m
 *Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/OverdetIncidenceMaxClosedForm.lean`. Data: `scripts/rust-pg` `pg <n> 2`.
 
 **OverdetIncidenceUnionCount** — union-of-per-witness-singletons counting bridge ⟹ p-independent count (D2).
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/OverdetIncidenceUnionCount.lean` (fork/main) · namespace `ProximityGap.Frontier.OverdetIncidenceUnionCount`
+`Research/ProximityPrize/Frontier/OverdetIncidenceUnionCount.lean` (fork/main) · namespace `ProximityGap.Frontier.OverdetIncidenceUnionCount`
 ```lean
 theorem card_filter_exists_subsingleton_le {F}[Fintype F][DecidableEq F]{σ}[DecidableEq σ]
   (T : Finset σ) (Q : σ → F → Prop) [...] (hsub : ∀ S ∈ T, {γ | Q S γ}.Subsingleton) :
@@ -280,8 +280,8 @@ theorem farIncidence_shape_le_bigWitnesses … (hcover) (hpin : …) :
   (incidence filter).card ≤ (univ.filter big).card        -- matches B1IncidenceBridge.farIncidence verbatim
 ```
 *Proves:* the far-incidence count is the union of per-witness γ-sets; each far-witness set is a subsingleton (≤1 γ, from `_wf2NH`), so incidence ≤ #witnesses uniformly in F (no p-dependence). `farIncidence_shape_le_bigWitnesses` matches the deployed `B1IncidenceBridge.farIncidence`, reducing the open `WorstCaseFarIncidenceBounded` to the p-independent big-witness count.
-*Consume:* `import ArkLib.Data.CodingTheory.ProximityGap.Frontier.OverdetIncidenceUnionCount`. Apply `farIncidence_affine_le_witnesses` with `hfar : ∀ S∈T, b S ∉ W S` to bound incidence by the witness count. For the deployed filter, discharge `hpin` via `_wf2NH.incidence_subsingleton_of_not_mem`. Does NOT close CORE (decay-vs-budget threshold separate).
-*Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/OverdetIncidenceUnionCount.lean`.
+*Consume:* `import Research.ProximityPrize.Frontier.OverdetIncidenceUnionCount`. Apply `farIncidence_affine_le_witnesses` with `hfar : ∀ S∈T, b S ∉ W S` to bound incidence by the witness count. For the deployed filter, discharge `hpin` via `_wf2NH.incidence_subsingleton_of_not_mem`. Does NOT close CORE (decay-vs-budget threshold separate).
+*Reproduce:* `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/OverdetIncidenceUnionCount.lean`.
 
 **ConverseLamLeung2Power** — vanishing 2^a-root sums = antipodal (char-0) (D5).
 `ArkLib/Data/CodingTheory/ProximityGap/ConverseLamLeung2Power.lean` (fork/main; deps `LamLeungTwoPow.lean`, `VanishingRootSumHeightGate.lean`) · namespace `ArkLib.ProximityGap.RouVanishingCount`
@@ -299,7 +299,7 @@ theorem noSpuriousVanishing_charZero_twoPower {m} {ζ} (hζ : IsPrimitiveRoot ζ
 *Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/ConverseLamLeung2Power.lean`.
 
 **wf3D4 monomial-worst orbit asymmetry** — only a monomial direction is a dilation eigenvector (n-uniform structural skeleton).
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf3D4_monomial_worst_orbit.lean` (fork/main; ArkLib.lean:1070) · namespace `ProximityGap.Frontier.wf3D4`
+`Research/ProximityPrize/Frontier/_wf3D4_monomial_worst_orbit.lean` (fork/main; ArkLib.lean:1070) · namespace `ProximityGap.Frontier.wf3D4`
 ```lean
 theorem monomial_dilated_line (μ) (b) (a : F[X]) (γ) : (a + C γ*X^b).comp (C μ*X) = a.comp (C μ*X) + C (γ*μ^b)*X^b
 theorem eigen_coeff (μ c) (f) (h : f.comp (C μ*X) = C c*f) (j) (hj : f.coeff j ≠ 0) : μ^j = c
@@ -312,11 +312,11 @@ def MonomialIsWorstFarDirection (I) (IsFar IsMonomialDir) : Prop      -- named o
 def TwoTermNotBetterThanMonomial (I) (IsFar IsMonomialDir) : Prop     -- named open 2-term comparison
 ```
 *Proves:* only a monomial f=X^b is a dilation eigenvector, so only its bad-γ set carries the ⟨μ^{b−a}⟩-orbit alignment; multi-term dirs lose it AND pay the subsingleton over-det bound. Anchor (exact, p-indep): n=16,k=4,r=10 worst monomial a=10,b=4 has I=89 orbit-closed; every 2-term dir I≤89, no nontrivial orbit. Residual I(2-term)≤I(monomial) left as named open Props.
-*Consume:* `import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wf3D4_monomial_worst_orbit`. `multiterm_not_eigen` discharges "no scalar c with f∘D_μ=c·f"; `badSet_subsingleton_far hb` bounds a far witness's γ-set by ≤1; `badSet_closed_under_reparam` (r = ·*μ^{b−a}) asserts monomial orbit-closure. The two open Props are the obligations a δ* worst-direction proof must discharge.
-*Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf3D4_monomial_worst_orbit.lean`. Anchor: `probe_wf3D4_orbit_asymmetry.py`.
+*Consume:* `import Research.ProximityPrize.Frontier._wf3D4_monomial_worst_orbit`. `multiterm_not_eigen` discharges "no scalar c with f∘D_μ=c·f"; `badSet_subsingleton_far hb` bounds a far witness's γ-set by ≤1; `badSet_closed_under_reparam` (r = ·*μ^{b−a}) asserts monomial orbit-closure. The two open Props are the obligations a δ* worst-direction proof must discharge.
+*Reproduce:* `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_wf3D4_monomial_worst_orbit.lean`. Anchor: `probe_wf3D4_orbit_asymmetry.py`.
 
 **wf3D5 Lam-Leung cyclotomic orbit backbone** — I(n) = 1 + (n/2)·O(n) free-action divisibility atom.
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf3D5_lamleung_orbit_backbone.lean` (fork/main; ArkLib.lean:1071) · namespace `ProximityGap.Frontier.wf3D5`
+`Research/ProximityPrize/Frontier/_wf3D5_lamleung_orbit_backbone.lean` (fork/main; ArkLib.lean:1071) · namespace `ProximityGap.Frontier.wf3D5`
 ```lean
 theorem smul_eq_self_iff_one (g : H) (u : H) : g * u = u ↔ g = 1
 theorem orbit_card_eq_card (G : Subgroup H) [Fintype G] (u) [Fintype (orbit G u)] : card (orbit G u) = card G
@@ -324,11 +324,11 @@ theorem card_dvd_of_free_orbits (G : Subgroup H) [Fintype G] {β} [MulAction G �
   (hfree : ∀ ω : orbitRel.Quotient G β, card ω.orbit = card G) : card G ∣ card β
 ```
 *Proves:* the nonzero bad-γ set is a union of full ⟨ζ^{a−b}⟩=μ_{n/2}-orbits (size n/2), so (n/2) ∣ (I(n)−1) STRUCTURALLY and p-independently. Exact: I(16)=89=1+8·11, I(24)=217=1+12·18, I(32)=529=1+16·33 (identical across primes). Residual open: closed form for O(n).
-*Consume:* `import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wf3D5_lamleung_orbit_backbone`. Instantiate `card_dvd_of_free_orbits` with G=μ_{n/2}, β=nonzero-bad-scalar set, discharge `hfree` via `orbit_card_eq_card`, get (n/2) ∣ #bad. Feeds wf3D6. `smul_eq_self_iff_one`/`orbit_card_eq_card` are reusable free-action lemmas (Mathlib lacks the packaged form).
-*Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf3D5_lamleung_orbit_backbone.lean`. Anchor: `scripts/probes/probe_farline_incidence_exact.py`.
+*Consume:* `import Research.ProximityPrize.Frontier._wf3D5_lamleung_orbit_backbone`. Instantiate `card_dvd_of_free_orbits` with G=μ_{n/2}, β=nonzero-bad-scalar set, discharge `hfree` via `orbit_card_eq_card`, get (n/2) ∣ #bad. Feeds wf3D6. `smul_eq_self_iff_one`/`orbit_card_eq_card` are reusable free-action lemmas (Mathlib lacks the packaged form).
+*Reproduce:* `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_wf3D5_lamleung_orbit_backbone.lean`. Anchor: `scripts/probes/probe_farline_incidence_exact.py`.
 
 **wf3D6 over-det Johnson-lock orbit-budget arithmetic** — crossing I≤n governed by O≤2 (companion to D4/D5).
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf3D6_overdet_johnson_lock.lean` (fork/main; ArkLib.lean:1072) · namespace `ProximityGap.Frontier.wf3D6`
+`Research/ProximityPrize/Frontier/_wf3D6_overdet_johnson_lock.lean` (fork/main; ArkLib.lean:1072) · namespace `ProximityGap.Frontier.wf3D6`
 ```lean
 theorem incidence_le_budget_iff_orbits_le_two (n half O z) (hn : n = 2*half) (hz : z ≤ 1) (hpos : 1 ≤ half) :
   z + half*O ≤ n ↔ (half*O ≤ n - z)
@@ -336,11 +336,11 @@ theorem one_orbit_within_budget (n half O z) (hn) (hz) (hpos) (hO : O ≤ 1) : z
 theorem three_orbits_overflow (n half O z) (hn) (hpos) (hO : 3 ≤ O) : n < z + half*O
 ```
 *Proves:* with I = z + (n/2)·O (z∈{0,1}) and budget n, the crossing I≤n ⟺ O≤2; ≤2 orbits within budget, ≥3 overflow. Since O(c)=RS list size collapses to ≤2 at Johnson, pins c*=k−1, s*=n/2−1, δ*=1/2+1/n → 1/2 (Johnson) with NO climb — over-det far-line is Johnson-locked, no second horn.
-*Consume:* `import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wf3D6_overdet_johnson_lock`. Pure-ℕ; feed half=n/2, O = wf3D5 orbit count, z = γ=0 flag. `three_orbits_overflow`/`one_orbit_within_budget` give the two regimes; `incidence_le_budget_iff_orbits_le_two` is the exact iff. The O(c)=list-size collapse at Johnson is the documented non-Lean structural input.
-*Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf3D6_overdet_johnson_lock.lean` (axioms: propext only, pure-ℕ omega). Data: `scripts/rust-pg/src/main.rs` (n≤28) + `src/bin/crossdeep.rs` (n=32).
+*Consume:* `import Research.ProximityPrize.Frontier._wf3D6_overdet_johnson_lock`. Pure-ℕ; feed half=n/2, O = wf3D5 orbit count, z = γ=0 flag. `three_orbits_overflow`/`one_orbit_within_budget` give the two regimes; `incidence_le_budget_iff_orbits_le_two` is the exact iff. The O(c)=list-size collapse at Johnson is the documented non-Lean structural input.
+*Reproduce:* `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_wf3D6_overdet_johnson_lock.lean` (axioms: propext only, pure-ℕ omega). Data: `scripts/rust-pg/src/main.rs` (n≤28) + `src/bin/crossdeep.rs` (n=32).
 
 **DecouplingCrossingDepthRateConstant** — corrects §6 2nd-horn: crossing depth c* is CONSTANT in rate k, not Θ(n).
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/DecouplingCrossingDepthRateConstant.lean` (fork/main; *NOT in working tree — `git show fork/main:<path>`*) · namespace `ArkLib.ProximityGap.DecouplingCrossingDepthRateConstant`
+`Research/ProximityPrize/Frontier/DecouplingCrossingDepthRateConstant.lean` (fork/main; *NOT in working tree — `git show fork/main:<path>`*) · namespace `ArkLib.ProximityGap.DecouplingCrossingDepthRateConstant`
 ```lean
 def bindingWitnessSize (k c : ℕ) : ℕ := k + c
 def crossingDepth (k c : ℕ) : ℕ := bindingWitnessSize k c - k
@@ -354,11 +354,11 @@ theorem crossingDepth_no_collapse (k c) : crossingDepth (k+1) c = crossingDepth 
 theorem prior_rate_law_refuted_at_n20_k9 : (10-1:ℕ)-9 = 0 ∧ crossingDepth 9 4 = 4 ∧ crossingDepth 9 4 ≠ (10-1:ℕ)-9
 ```
 *Proves:* the prior Θ(n) rate-law is REFUTED — s*(n,k)=k+c*(n), so c* = s*−k is CONSTANT in k (n=20: c*=4 ∀k∈{5..9}). Formalizes the capacity-defect law δ* = (1−ρ) − c/n (fixed Θ(1/n) below KKH26 edge at every rate), bounded-positive c* never collapsing to 0. The far-line/numeric face is strictly OFF the BGK wall at every accessible rate; no second horn. NOT a CORE closure.
-*Consume:* `import ArkLib.Data.CodingTheory.ProximityGap.Frontier.DecouplingCrossingDepthRateConstant` (minimal-import, pure-ℕ/omega). `crossingDepth_rate_constant`/`_rate_flat` for rate-flatness; `crossingDistanceNumer_eq` then `capacity_defect_eq` for the δ*=(1−ρ)−c/n form; `crossingDepth_pos_all_rates` (hc : 1 ≤ c) for "no BGK re-coupling at any rate"; `prior_rate_law_refuted_at_n20_k9` is the citable refutation. s* values come from the rust probe, not re-derived in Lean.
+*Consume:* `import Research.ProximityPrize.Frontier.DecouplingCrossingDepthRateConstant` (minimal-import, pure-ℕ/omega). `crossingDepth_rate_constant`/`_rate_flat` for rate-flatness; `crossingDistanceNumer_eq` then `capacity_defect_eq` for the δ*=(1−ρ)−c/n form; `crossingDepth_pos_all_rates` (hc : 1 ≤ c) for "no BGK re-coupling at any rate"; `prior_rate_law_refuted_at_n20_k9` is the citable refutation. s* values come from the rust probe, not re-derived in Lean.
 *Reproduce:* `scripts/pg-iterate.sh` (after `git show fork/main:<path>` to obtain it). Engine: `scripts/rust-pg/src/bin/secondhorn.rs`, `cargo run --release --manifest-path scripts/rust-pg/Cargo.toml --bin secondhorn -- <n> <k> [mult=4]`. Python: `scripts/probes/probe_407_decoupling_secondhorn_boundary.py`.
 
 **UncertaintyTwoPowerSparseFloor** — dyadic 2^s sparse-zero floor (2^s−1)·n/2^s; floor RISES with sparsity.
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/UncertaintyTwoPowerSparseFloor.lean` (fork/main; ArkLib.lean:977, commit `f6ef429c3`) · namespace `ProximityGap.UncertaintyTwoPowerSparseFloor`
+`Research/ProximityPrize/Frontier/UncertaintyTwoPowerSparseFloor.lean` (fork/main; ArkLib.lean:977, commit `f6ef429c3`) · namespace `ProximityGap.UncertaintyTwoPowerSparseFloor`
 ```lean
 theorem card_filter_dvd_range_pow (μ s) (hsμ : s ≤ μ) : ((range (2^μ)).filter (fun j => 2^s ∣ j)).card = 2^(μ-s)
 theorem primRoot_pow_eq_one_iff_dvd {μ s} (hsμ) {ζ} (hζ : IsPrimitiveRoot ζ (2^μ)) (j) : (ζ^j)^(2^μ/2^s) = 1 ↔ 2^s ∣ j
@@ -367,8 +367,8 @@ theorem sparse_floor_closed_form {μ s} (hsμ) {ζ} (hζ) : (…).card = (2^s - 
 theorem sparse_floor_strict_mono {μ s s'} (hss' : s < s') (hs'μ : s' ≤ μ) : (2^s-1)*2^(μ-s) < (2^s'-1)*2^(μ-s')
 ```
 *Proves:* for each order 1≤s<μ the sparse witness has t=2^s nonzero terms and exactly (2^s−1)·n/2^s roots in μ_n; subsumes the binomial n/2 (s=1) and trinomial floors. The floor RISES toward n as t grows, so NO uncertainty/sparse-poly route gives a sub-(1−1/t)·n upper bound on s* for n=2^μ. Localizes the open core AWAY from s* (the prize is the LIST size, not s*).
-*Consume:* `import ArkLib.Data.CodingTheory.ProximityGap.Frontier.UncertaintyTwoPowerSparseFloor`. `sparse_floor_closed_form` for the exact root count; `primRoot_pow_eq_one_iff_dvd` is the reusable order-2^s factor-through; `sparse_floor_strict_mono` refutes any candidate sub-(1−1/t)n single-witness bound.
-*Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/UncertaintyTwoPowerSparseFloor.lean`.
+*Consume:* `import Research.ProximityPrize.Frontier.UncertaintyTwoPowerSparseFloor`. `sparse_floor_closed_form` for the exact root count; `primRoot_pow_eq_one_iff_dvd` is the reusable order-2^s factor-through; `sparse_floor_strict_mono` refutes any candidate sub-(1−1/t)n single-witness bound.
+*Reproduce:* `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/UncertaintyTwoPowerSparseFloor.lean`.
 
 **CrossCellShkredovBound** — exact crossCell = N₀(G,r)−2·N₀(H,r), char-0 crossCell(n,4)=3n²/2, BCHKS-1.12-as-written FALSE at prize depth.
 `ArkLib/Data/CodingTheory/ProximityGap/CrossCellShkredovBound.lean` (fork/main; ArkLib.lean:726, commits `eef47ce41`/`235dac66d`/`5a8d7fd42`) · namespace `ArkLib.ProximityGap.CrossCellShkredovBound`
@@ -431,14 +431,14 @@ theorem epsMCA_le_of_worstCaseFarIncidence … (hB : WorstCaseFarIncidenceBounde
 *Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/MCADeltaStarListReduction.lean` (after `scripts/pg-warm.sh`). In-file `#print axioms`. NOTE: files on fork/main, not claude-iid-push (`git show fork/main:<path>`).
 
 **AUDIT-GUARD co-import integrity (MCAGSUniversalReduction)** — restores whole-library build; standing audit harness.
-`ArkLib/Data/CodingTheory/ProximityGap/MCAGSUniversalReduction.lean` (fork/main) + `scripts/proximity_prize_cleanroom_audit.py` + `scripts/proximity_prize_cleanroom_targets.txt` · namespace `ProximityGap.MCAGS`
+`Research/ProximityPrize/MCAGSUniversalReduction.lean` (fork/main) + `scripts/proximity_prize_cleanroom_audit.py` + `scripts/proximity_prize_cleanroom_targets.txt` · namespace `ProximityGap.MCAGS`
 ```lean
 abbrev CapacityListCoveringBound (m : ℕ) : Prop := UniversalGSListMassBound m   -- now an ALIAS (was a duplicate decl)
 theorem epsMCAgsPrizeUniversal_of_capacityListCovering (m) (h : CapacityListCoveringBound m) :
   epsMCAgsPrizeUniversalConjecture m := epsMCAgsPrizeUniversalConjecture_of_UniversalGSListMassBound m h
 ```
 *Proves:* removes a duplicate `epsMCAgsPrizeUniversalConjecture` decl that made two modules un-co-importable and broke `lake build ArkLib`; `CapacityListCoveringBound` is now a definitional alias of the canonical `UniversalGSListMassBound`, delegating to the canonical proof. The audit script (ALLOWED_AXIOMS = {propext, Classical.choice, Quot.sound}) co-imports all prize-apex targets and FAILS on a duplicate decl, forbidden axiom, or residual/goal-equivalent hypothesis. Reduction is axiom-clean, open input named explicitly.
-*Consume:* `import ArkLib.Data.CodingTheory.ProximityGap.MCAGSUniversalReduction`, supply `h : CapacityListCoveringBound m` (= `UniversalGSListMassBound m`, the open research input), apply `epsMCAgsPrizeUniversal_of_capacityListCovering m h` for the field-universal prize conjecture. Add new prize producers to `proximity_prize_cleanroom_targets.txt` (status `active`/`pending`) to keep them guarded.
+*Consume:* `import Research.ProximityPrize.MCAGSUniversalReduction`, supply `h : CapacityListCoveringBound m` (= `UniversalGSListMassBound m`, the open research input), apply `epsMCAgsPrizeUniversal_of_capacityListCovering m h` for the field-universal prize conjecture. Add new prize producers to `proximity_prize_cleanroom_targets.txt` (status `active`/`pending`) to keep them guarded.
 *Reproduce:* `python3 scripts/proximity_prize_cleanroom_audit.py` (post-build, oleans built first via `scripts/pg-warm.sh`).
 
 ---

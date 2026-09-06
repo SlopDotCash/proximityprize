@@ -1,6 +1,6 @@
 # δ* #466 — SYZ66: the BadCountCeiling bridge (G87 syndrome dichotomy ∘ strip radius)
 
-_2026-07-11. File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ66BadCountBridge.lean`.
+_2026-07-11. File: `Research/ProximityPrize/Frontier/_SYZ66BadCountBridge.lean`.
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`) across all 8 theorems._
 
 ## Goal

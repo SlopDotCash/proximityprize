@@ -74,7 +74,7 @@ the most optimistic reading (bound the count by a fixed g-set) returns the W2 ad
 - `scripts/probes/wf407w2_D2-gspec_genuine_g_spectrum.py` — reproduction + orbit structure n≤64
 - `scripts/probes/wf407w2_D2-gspec_growth_and_lever.py` — growth to n=256, per-g incidence = n
 - `scripts/probes/wf407w2_D2-gspec_linear_law.py` — |G|=Θ(n) fit + lever=|G|·n identity
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407W2_D2gspec.lean` — axiom-clean core
+- `Research/ProximityPrize/Frontier/WF407W2_D2gspec.lean` — axiom-clean core
 
 Cross-refs: `wf407-T09-leak-crossparity-antipodal-verdict.md` (the parent walled verdict),
 `WF407_T09Leak.lean` (reflection engine), EnergyDilationReduction (`E = card·incidence`),

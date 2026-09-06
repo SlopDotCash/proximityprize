@@ -54,7 +54,7 @@ half-sum from `HalfSumNormClosedForm.lean` to the full run family.
 It does **not** resolve the full Half-Sum Lemma: general *non-run* antipodal-free subsets `U`
 can have norms with genuine odd-prime factors `p ≡ 1 mod n` (the open candidates — e.g. the
 weight-3 antipodal-free sums of `μ₁₆` realize `p = 17`, those of `μ₃₂` realize `p = 97`;
-see `DISPROOF_LOG.md`). The open residual is the structure of those non-run subsets, which is
+see `Research/ProximityPrize/DISPROOF_LOG.md`). The open residual is the structure of those non-run subsets, which is
 the BGK / Lam–Leung char-`p` wall. This file is a pure cyclotomic-arithmetic identity, uniform
 in `n`, with no analytic input.
 

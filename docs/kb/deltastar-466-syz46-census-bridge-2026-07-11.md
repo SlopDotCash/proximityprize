@@ -4,7 +4,7 @@ Issue #466 (Proximity Prize / proximity-gap). Rate `1/2`, `n = 2³⁰`, `k = 2²
 `ε* = 2⁻¹²⁸`, first certified prize field `P = PrizeShapePrimeP30.P`,
 smooth-domain code `evalCode g (2³⁰) (2²⁹ − 1)`.
 
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ46CensusBridge.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ46CensusBridge.lean`
 (axiom-clean: `[propext, Classical.choice, Quot.sound]`; no `sorry`, no `native_decide`).
 
 ## RETRACTION of the first draft (commit `1f12870b6`) — credit: the SYZ3 witness

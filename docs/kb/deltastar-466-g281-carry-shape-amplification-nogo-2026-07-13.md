@@ -62,7 +62,7 @@ the gate and would not imply the exact floor undershoots.)
 
 ## Formal payload
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G281CarryShapeAmplificationNoGo.lean`
+`Research/ProximityPrize/Frontier/_G281CarryShapeAmplificationNoGo.lean`
 (namespace `ArkLib.ProximityGap.Frontier.G281`, only `Mathlib.Tactic`):
 
 - `amplified_floor_lt_gate` — abstract engine (genuine theorem): from `L·p·den < B·num`,

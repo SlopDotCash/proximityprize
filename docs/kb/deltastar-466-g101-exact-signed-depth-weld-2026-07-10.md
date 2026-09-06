@@ -1,7 +1,7 @@
 # G101: exact signed-depth weld to DCEnergyBound
 
 Lean artifact:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G101ExactSignedDepthWeld.lean`.
+`Research/ProximityPrize/Frontier/_G101ExactSignedDepthWeld.lean`.
 
 G96 decomposes the prize moment by maximal-cancellation depth and provides a sufficient consumer
 using nonnegative depth caps. G100 proves those caps can lose cancellation between depths. G101

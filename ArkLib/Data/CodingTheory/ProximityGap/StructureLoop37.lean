@@ -42,7 +42,7 @@ realize a cumulative exponent that grows **either** in the depth `m` **or** in t
 `1/η` faster than a single field-independent constant — and it must do so as a genuine *per-round*
 multiplier of the actual smooth-domain GS/proximity process, not as a one-shot list/error budget.
 A one-shot capacity budget (the only thing BGM/Johnson actually supply) lands in `G`, not in `c₁`,
-and is therefore prize-safe. See `DISPROOF_LOG.md` (Loop37).
+and is therefore prize-safe. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop37).
 -/
 
 namespace ArkLib.ProximityGap.StructureLoop37

@@ -2,7 +2,7 @@
 
 **Lane:** P1 rate-quarter — eleventh and final round of the 2026-07-11 session.
 **Probe:** `scripts/probes/probe_rate_quarter_p1_junk_slice.py` (exact).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterJunkSliceLedger.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterJunkSliceLedger.lean`
 (pg-iterate OK 10s; 5 theorems; full axiom lists read manually via `lake env lean`:
 all exactly `[propext, Classical.choice, Quot.sound]`; no sorryAx, no warnings).
 Build note: `_P1RateQuarterFiberChebyshevRefinement` olean built once via lake-locked.

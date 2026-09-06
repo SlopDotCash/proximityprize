@@ -20,7 +20,7 @@ multiplicative disproof must force exponent density `D` beyond every fixed prize
 actual smooth-domain GS/proximity mechanism.
 
 This is still not a disproof of the prize: it is the arithmetic criterion a real disproof would have
-to realize. See `DISPROOF_LOG.md` (Loop35).
+to realize. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop35).
 -/
 
 namespace ArkLib.ProximityGap.StructureLoop35

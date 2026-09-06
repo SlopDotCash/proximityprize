@@ -16,7 +16,7 @@ concrete Gauss-period dilation recursion
 The new Lean file is:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R210GaussPeriodNormalizedCauchy.lean
+Research/ProximityPrize/Frontier/_R210GaussPeriodNormalizedCauchy.lean
 ```
 
 It exposes both the one-step dilation statement and the valid-tower step form:

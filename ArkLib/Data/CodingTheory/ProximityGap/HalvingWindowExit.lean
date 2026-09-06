@@ -31,7 +31,7 @@ inside the window.)
 
 Verdict for the campaign ledger: **N3 REFUTED at kill-check** — recorded here as the
 constraint lemma `halving_exits_window`, per the standing disprove-then-keep-the-lemma
-discipline (`DISPROOF_LOG.md`).
+discipline (`Research/ProximityPrize/DISPROOF_LOG.md`).
 -/
 
 namespace ProximityGap.Issue357

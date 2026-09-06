@@ -1,22 +1,16 @@
-"""G97 probe (v2): pin the EXACT census->sup inflation mechanism.
+"""Numerical census-to-maximum ratios for six finite subgroup spectra.
 
-Objects (Fable G74/G96 convention):
-  eta_b = sum_{x in mu_n} e_p(b x),  b in F_p.
-  |eta_0| = n (DC term).
-  M = max_{b != 0} |eta_b|          (the single-embedding 'wall').
-  Depth-r census  p*E_r = sum_{b} |eta_b|^{2r}  (sum over ALL b incl 0).
+For eta_b = sum_{x in mu_n} exp(2*pi*i*b*x/p), the exact triangle inequality
+gives |eta_b| <= n and the zero-frequency term is eta_0 = n. If an exact
+nonzero maximum M occurs at K frequencies, then the nonzero 2r-moment is at
+least K*M**(2r). Its unnormalized root therefore exceeds M when K>1 and M>0.
+This finite-r gap does not rule out useful upper bounds above M, nor convergence
+to M as r increases for a fixed finite spectrum.
 
-Two distinct inflation sources when extracting M from the census:
-  (A) DC term: p*E_r >= |eta_0|^{2r} = n^{2r}, and n >= M (often n > M),
-      so (p*E_r)^{1/2r} >= n >= M -- already >= the wall from DC alone.
-  (B) Even the DC-SUBTRACTED census  p*E_r - n^{2r} = sum_{b!=0}|eta_b|^{2r}
-      is a sum over the Frobenius M-orbit (size K = #{b!=0 : |eta_b|=M}) PLUS
-      lower terms, so it is >= K * M^{2r}, giving
-      (p*E_r - n^{2r})^{1/2r} >= K^{1/2r} * M > M  when K >= 2.
-
-Confirm: (i) n >= M at every adversarial cell (DC dominates the wall);
-         (ii) the DC-subtracted census still overshoots M by K^{1/2r} > 1
-              at every finite rung r, i.e. census CANNOT reach the sup.
+This script computes complex floating-point sums for six (n,p) pairs and
+r=1,...,6. K is a tolerance count within 1e-6 of the computed maximum, not an
+exact multiplicity or certified orbit size. No exact census identities or
+universal proximity-gap theorem are checked by this numerical replay.
 """
 import cmath
 import math
@@ -58,7 +52,7 @@ def v2(m):
 
 
 cells = [(8, 257), (16, 257), (16, 65537), (32, 257), (32, 193), (32, 577)]
-print("  n      p  v2    n      M   n>=M?  K(M-orbit)  |  "
+print("  n      p  v2    n      M   n>=M?  K(tol)  |  "
       "DC-subtracted (p*E_r - n^2r)^(1/2r)/M, r=1..6")
 for n, p in cells:
     etas = spectrum(n, p)

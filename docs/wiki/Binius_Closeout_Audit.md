@@ -35,3 +35,23 @@ Focused validation command:
 ```bash
 ./scripts/lake-locked.sh build ArkLib.ProofSystem.Binius.BinaryBasefold.General ArkLib.ProofSystem.Binius.FRIBinius.General ArkLib.ProofSystem.Binius.BBFSmallFieldIOPCS
 ```
+
+## Issue #2 composition API repair (2026-09-06)
+
+The current `BinaryBasefold/CoreInteractionPhase.lean` compiles against the
+repaired step and cast APIs. Explicit append-coherence instances cover fold,
+relay, commit, block sequences, and the sumcheck-fold wrappers. Cast transport
+requires agreement of both input and output oracle interfaces. The repair also
+normalizes block protocol types and fixes finite-index and sum-reindexing proofs.
+
+This compilation preserves the role-named completeness and knowledge-soundness
+hypotheses described above. It does not discharge them, finish QueryPhase, or
+establish full Binius security. Full downstream and repository checks remain
+separate acceptance requirements.
+
+The compiled artifact and a separate import-based audit of all 54 top-level
+lemmas, theorems, and named instances passed. Each declaration uses only
+`propext`, `Classical.choice`, and/or `Quot.sound` (some use no axioms).
+The source hash and declaration-by-declaration results are recorded in
+[`binius-core-interaction-2026-09-06.json`](../kb/audits/binius-core-interaction-2026-09-06.json).
+These axiom results do not remove explicit hypotheses from theorem statements.

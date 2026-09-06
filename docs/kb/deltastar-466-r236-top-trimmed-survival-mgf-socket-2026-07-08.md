@@ -35,7 +35,7 @@ This is the abstract formal endpoint needed for the top-five quotient route.
 Draft file exists locally but is not staged:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R236TopTrimmedSurvivalMGF.lean
+Research/ProximityPrize/Frontier/_R236TopTrimmedSurvivalMGF.lean
 ```
 
 Main intended declarations:
@@ -52,7 +52,7 @@ two_mgfBound_of_topTrimmed_survival_count_ceiling
 Attempted:
 
 ```bash
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R236TopTrimmedSurvivalMGF.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R236TopTrimmedSurvivalMGF.lean
 ```
 
 Blocked before elaborating the file:
@@ -64,7 +64,7 @@ missing Mathlib.NumberTheory.Cyclotomic.PrimitiveRoots.olean
 Attempted repair:
 
 ```bash
-./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS11_survival_to_mgf
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._wfS11_survival_to_mgf
 ```
 
 but the checkout build lock was held for over a minute, so the queued build was

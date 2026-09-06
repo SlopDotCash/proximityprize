@@ -1,6 +1,6 @@
 # The open core as a "Mann's theorem mod P" for 2-power roots of unity (#407)
 
-> **⚠️ REFUTED 2026-06-14 (20-agent army, all 19 angles concur; see `DISPROOF_LOG.md`).** The minimum-weight
+> **⚠️ REFUTED 2026-06-14 (20-agent army, all 19 angles concur; see `Research/ProximityPrize/DISPROOF_LOG.md`).** The minimum-weight
 > form proposed below — `W(n,p) ≥ 2⌈log m⌉` — is **FALSE**. Rigorous pigeonhole theorem: `W(n,p) ≤ 2·w₁`,
 > `w₁ = min{w : C(n/2,w) > p}`, which is `O(1)` (`→ 5·2`) in the prize regime `p~n^4` — short excess
 > relations of CONSTANT weight always exist (machine-verified weight-6 witnesses at n=64,128,256,4096). So

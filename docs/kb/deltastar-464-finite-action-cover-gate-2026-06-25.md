@@ -22,7 +22,7 @@ The invariance part is now real.  The coverage part is not automatic.
 The file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackRepresentativeCoverCardinality.lean
+Research/ProximityPrize/Frontier/_StackRepresentativeCoverCardinality.lean
 ```
 
 now contains the finite-action obstruction:

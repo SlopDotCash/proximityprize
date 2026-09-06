@@ -31,7 +31,7 @@ assuming the standard moment bridge.
 Verified command:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R217NonzeroDilationOneChildSqMGFEndpoint.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R217NonzeroDilationOneChildSqMGFEndpoint.lean
 ```
 
 Output:
@@ -40,7 +40,7 @@ Output:
 'ArkLib.ProximityGap.Frontier.R217NonzeroDilationOneChildSqMGFEndpoint.mulLeftPerm_mem_nonzeroFreqs' depends on axioms: [propext,
 'ArkLib.ProximityGap.Frontier.R217NonzeroDilationOneChildSqMGFEndpoint.largeIndexChildQuarterMGF_of_nonzeroNormalizedSqResidual' depends on axioms: [propext,
 'ArkLib.ProximityGap.Frontier.R217NonzeroDilationOneChildSqMGFEndpoint.prize_sq_of_nonzero_dilation_one_child_sqMGFResidual' depends on axioms: [propext,
-OK (25s) — ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R217NonzeroDilationOneChildSqMGFEndpoint.lean
+OK (25s) — Research/ProximityPrize/Frontier/_R217NonzeroDilationOneChildSqMGFEndpoint.lean
 ```
 
 Readout: the structural residual from R215 is discharged on the correct

@@ -1,7 +1,7 @@
 # δ\* / #466 — SYZ29: the pencil-yield law (honest accounting) + the D≥4 gluing formula
 
 Date: 2026-07-11
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ29YieldLawD4Gluing.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ29YieldLawD4Gluing.lean`
 Probes: `scripts/probes/probe_syz29_d4_defect_formula.py` (part ii, exact defect formula),
 `scripts/probes/probe_syz29_yield_law_accounting.py` (part i, honest global accounting)
 Branch: `codex/syz29-yield-law-d4-gluing` (off `fork/research/proximity-prize` @ 5cd0d2d52)

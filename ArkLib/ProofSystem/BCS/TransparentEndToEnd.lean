@@ -13,7 +13,7 @@ import ArkLib.Commitments.Functional.Transparent
 
 This file constructs **one** concrete nontrivial protocol compiled end-to-end through the BCS API
 (`ArkLib.OracleReduction.BCS`) with a concrete commitment/opening scheme (the transparent commitment
-scheme of `ArkLib.CommitmentScheme.Transparent`), and instantiates **both** BCS keystones on it:
+scheme of `ArkLib.Commitments.Functional.Transparent`), and instantiates **both** BCS keystones on it:
 
 * perfect completeness, via `OracleReduction.BCSTransform_perfectCompleteness`, and
 * (plain) soundness, via `OracleReduction.BCSCompiledPhases.toReduction_soundness_of_append_msg`.

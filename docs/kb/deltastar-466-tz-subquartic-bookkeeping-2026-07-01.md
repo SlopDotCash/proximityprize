@@ -1,6 +1,6 @@
 # δ\* #466 lane W2 — ThornerZamanPNT discharge status: the formalizable piece LANDED
 
-**Date:** 2026-07-01. **File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_TZSubquarticBookkeeping.lean`
+**Date:** 2026-07-01. **File:** `Research/ProximityPrize/Frontier/_TZSubquarticBookkeeping.lean`
 (compile-verified, axiom audit `[propext, Classical.choice, Quot.sound]`, no `sorryAx`).
 **Probe:** `scripts/probes/probe_466_tz_ladder_rungs.py` → `_out_466_tz_ladder_rungs.txt`
 (all 44 witness primes verified: primality, `≡ 1 (mod n)`, window membership).

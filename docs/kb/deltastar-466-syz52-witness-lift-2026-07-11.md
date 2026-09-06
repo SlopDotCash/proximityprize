@@ -2,7 +2,7 @@
 
 **Issue #466 · rate-1/2 proximity-gap δ\* · CORE OPEN / ON-BGK**
 
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ52WitnessLift.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ52WitnessLift.lean`
 Probe: `scripts/probes/probe_syz52_witness_lift.py`
 Branch: `codex/syz52-witness-lift` (off `fork/research/proximity-prize` @ 73240c621)
 Predecessors: `deltastar-466-syz50-witness-realizability-2026-07-11.md`,

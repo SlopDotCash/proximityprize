@@ -1,0 +1,22 @@
+{
+  "command": "python3 -u scripts/probes/probe_g101f_monomial_baseline.py --stage s3",
+  "exit_code": 0,
+  "output": "[SELF-TEST] engine vs brute, n=8 k=2 q=4129: 20 random + 4 chains\n[SELF-TEST] PASS (counts and bad-lists)\n==============================================================================\n[STAGE 3] EXACT worstBad at n=8 k=2 q=17 a=4 (a^2 = nk boundary), coset-exhaustive\n  x^2: EXACT worstBad = 9  (reps 1419857, 6s; argmax brute-verified)\n  x^3: EXACT worstBad = 9  (reps 1419857, 6s; argmax brute-verified)\n  x^4: NOT 4-far (agreemax 4) -- skip\n  x^5: NOT 4-far (agreemax 4) -- skip\n  x^6: EXACT worstBad = 9  (reps 1419857, 6s; argmax brute-verified)\n  x^7: EXACT worstBad = 9  (reps 1419857, 6s; argmax brute-verified)\n  exact mono values: {2: 9, 3: 9, 6: 9, 7: 9}; monoBaseline(exact,far-j-only) = 9\n  pencil-cert at this cell: 3 (j=2, d=0)\n  x^2+x^3: EXACT worstBad = 12  (reps 1419857, 6s; argmax brute-verified)\n  x^2+x^4: EXACT worstBad = 11  (reps 1419857, 6s; argmax brute-verified)\n  x^2+x^5: EXACT worstBad = 10  (reps 1419857, 6s; argmax brute-verified)\n  x^2+x^6: NOT 4-far (agreemax 4) -- skip\n  x^2+x^7: EXACT worstBad = 12  (reps 1419857, 6s; argmax brute-verified)\n  x^3+x^4: EXACT worstBad = 10  (reps 1419857, 6s; argmax brute-verified)\n  x^3+x^5: EXACT worstBad = 12  (reps 1419857, 6s; argmax brute-verified)\n  x^3+x^6: EXACT worstBad = 12  (reps 1419857, 6s; argmax brute-verified)\n  x^3+x^7: NOT 4-far (agreemax 4) -- skip\n  x^4+x^5: NOT 4-far (agreemax 5) -- skip\n  x^4+x^6: EXACT worstBad = 12  (reps 1419857, 6s; argmax brute-verified)\n  x^4+x^7: EXACT worstBad = 10  (reps 1419857, 6s; argmax brute-verified)\n  x^5+x^6: EXACT worstBad = 10  (reps 1419857, 6s; argmax brute-verified)\n  x^5+x^7: EXACT worstBad = 11  (reps 1419857, 6s; argmax brute-verified)\n  x^6+x^7: EXACT worstBad = 12  (reps 1419857, 6s; argmax brute-verified)\n  exact spread max (c=1 class) = 12; EXACT ratio at this boundary cell = 12/9 = 1.333\n\n[G101F total 99s]\n",
+  "archive_match": "exact after newline and duration normalization",
+  "sources": [
+    {
+      "path": "scripts/probes/probe_g101f_monomial_baseline.py",
+      "sha256": "c76dbab032c1ae78dd25942fb3507637199d6f58a7a0c7031e18e4d46ed17fef"
+    },
+    {
+      "path": "scripts/probes/probe_g92_spread_excess_c3.py",
+      "sha256": "b2d315e159938922964ed3f6edcf4b0cac44adfcdd583f164fc08045827e146e"
+    },
+    {
+      "path": "scripts/probes/_out_g101f_s3.txt",
+      "sha256": "c301736866e6a606473ca95f1eb9076606140c5583a309f45230b4b1b1fb1244"
+    }
+  ],
+  "completed_original_unreferenced": 64,
+  "remaining_original_unreferenced": 28
+}

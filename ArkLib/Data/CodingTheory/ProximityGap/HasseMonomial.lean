@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.BivariateVanishing
+import ArkLib.Data.CodingTheory.GuruswamiSudan.BivariateVanishing
 
 /-! Single-monomial bivariate Hasse coefficient — the crux of the coefficient-vector ↔
 bivariate-polynomial dictionary. By linearity this extends to `toPoly c` and matches

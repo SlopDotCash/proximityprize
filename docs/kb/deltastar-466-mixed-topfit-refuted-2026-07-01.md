@@ -69,7 +69,7 @@ the endpoint alone; but the endpoint form is what round-#464 contracted to, and 
   - `μ = 30` Stirling: violation ≈ **0.36–1.07 ×10⁹ bits** (`lg S_high ≈ n·H(a/n)` vs
     `lg B ≤ 30`), at all four rates and all three `a` anchors.
 - **Lean brick (axiom-clean, `[propext, Classical.choice, Quot.sound]`):**
-  `ArkLib/Data/CodingTheory/ProximityGap/Frontier/MixedTopFitBudgetIncompatibility.lean`
+  `Research/ProximityPrize/Frontier/MixedTopFitBudgetIncompatibility.lean`
   - `directionZeroSet_step_card` / `directionSupportSet_step_card` — the step-direction
     countermodel geometry;
   - `mcoarse_le_budget_of_uniformFiberFits` — the fiber cap `Mcoarse(t₀) ≤ B`;

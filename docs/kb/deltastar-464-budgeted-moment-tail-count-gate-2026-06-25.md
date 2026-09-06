@@ -38,7 +38,7 @@ The `B = 0` case recovers the earlier atom-zero moment gate.
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BudgetedMomentTailCountGate.lean
+Research/ProximityPrize/Frontier/_BudgetedMomentTailCountGate.lean
 ```
 
 defines the weak upper-tail count

@@ -10,14 +10,18 @@ Reed–Solomon proximity-gap campaign for the
 [Ethereum Foundation Proximity Prize](https://proximityprize.org/). Start with
 the [δ* programme guide](docs/wiki/deltastar-programme.md), the
 [live issues](https://github.com/SlopDotCash/proximityprize/issues), and the
-[Proximity Gap agent guide](ArkLib/Data/CodingTheory/ProximityGap/AGENTS.md).
+[Proximity Gap agent guide](Research/ProximityPrize/AGENTS.md).
 
 The campaign retains the broader ArkLib formal-verification substrate it builds
 on, including the original library overview below. Lean module and package names
 remain `ArkLib` for compatibility with the existing checked proof graph.
-The generated `ArkLib.lean` target imports the Proximity Gap campaign and compiles
-its transitive substrate; unrelated proof-system experiments remain available in
-the tree but are intentionally outside this standalone repository's default build.
+The default build includes both the `ArkLib` and `ResearchProximityPrize` libraries.
+The research root imports `Research.ProximityPrize.PROXIMITY_PRIZE_WORKBENCH`,
+which includes the generated research module index. `ArkLib.lean` is the separate
+generated library index. Research may import ArkLib; ArkLib must not import Research.
+Campaign migration is still in progress, so the library index still includes
+Proximity Gap modules awaiting classification. Neither index covers every unrelated
+proof-system experiment in the repository.
 
 ## Formal verification library foundation
 

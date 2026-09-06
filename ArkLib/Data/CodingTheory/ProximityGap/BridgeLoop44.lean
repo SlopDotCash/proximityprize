@@ -31,7 +31,7 @@ open residual is *only* the small-gap band `0 < η ≤ η₀`, and even there th
 861's constant `K_ρ` — a polynomial `N ≤ (2^m)^d` is enough. This separates two difficulties the
 literature conflates: 861's deployment-grade `O(1)/|F|` (needs Q2) versus the #232 prize's
 `poly(2^m)/|F|` (needs only poly `N`). The prize closes on a weaker hypothesis. See
-`DISPROOF_LOG.md` (Loop44).
+`Research/ProximityPrize/DISPROOF_LOG.md` (Loop44).
 -/
 
 namespace ArkLib.ProximityGap.BridgeLoop44

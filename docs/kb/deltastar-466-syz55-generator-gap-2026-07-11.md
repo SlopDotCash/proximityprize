@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-11
 **Lane:** codex/syz55-generator-gap (Opus 4.8)
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ55GeneratorGap.lean`
+**File:** `Research/ProximityPrize/Frontier/_SYZ55GeneratorGap.lean`
 **Probe:** `scripts/probes/probe_syz55_generator_gap.py`
 **Branch:** `codex/syz55-generator-gap` (off `fork/research/proximity-prize` @ ab7ca81a1; `main`
 untouched)

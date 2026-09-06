@@ -10,7 +10,7 @@ import Mathlib.FieldTheory.RatFunc.AsPolynomial
 # Guruswami–Sudan interpolation over the rational-function field `K = F(Z)`
 
 This file discharges **Step S2** of the Haböck §3 endgame
-(`ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean`), which was previously recorded as a
+(`Research/ProximityPrize/Hab25Johnson.lean`), which was previously recorded as a
 genuinely-deep residual with the note *"no algebraic-function-field interpolation API in tree"*.
 
 The observation is that the in-tree single-function existence theorem

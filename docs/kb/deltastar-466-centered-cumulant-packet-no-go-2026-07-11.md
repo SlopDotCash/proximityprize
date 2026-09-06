@@ -48,7 +48,7 @@ not that object.
 
 Lean kernel:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G146CenteredCumulantPacketNoGo.lean`
+- `Research/ProximityPrize/Frontier/_G146CenteredCumulantPacketNoGo.lean`
 - Main theorem: `mu8_F41_centered_connectedK4_negative`
 - Counter-shape theorem: `not_forall_centered_connectedK4_nonnegative`
 

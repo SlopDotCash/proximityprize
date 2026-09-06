@@ -43,5 +43,5 @@ strata are proved as stated, the c=3 web is too large for the depth-3 headroom.
 Passed:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R309C3RelationWebFormula.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R309C3RelationWebFormula.lean
 ```

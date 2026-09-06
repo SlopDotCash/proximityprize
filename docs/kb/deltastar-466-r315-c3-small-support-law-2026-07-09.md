@@ -27,7 +27,7 @@ next hard theorem as a support classification plus a sign-lift classification.
 - Probe: `scripts/probes/probe_r315_c3_small_support_law.py`
 - Output: `scripts/probes/_out_466_r315_c3_small_support_law.txt`
 - Lean socket:
-  `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R315C3SmallSupportToTemplateCount.lean`
+  `Research/ProximityPrize/Frontier/_R315C3SmallSupportToTemplateCount.lean`
 
 ## Checked Samples
 

@@ -330,8 +330,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapePrimeP30
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RankOneTensorProjectiveInjection
+import Research.ProximityPrize.Frontier._PrizeShapePrimeP30
+import Research.ProximityPrize.Frontier._RankOneTensorProjectiveInjection
 
 /-!
 # W7 seal: the 186 scalar evaluation facts of the rate-half three-core base certificate

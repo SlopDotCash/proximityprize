@@ -8,7 +8,7 @@ import ArkLib.Data.CodingTheory.GuruswamiSudan.MultiplicityInterpolation
 import ArkLib.Data.CodingTheory.GuruswamiSudan.DictionaryHasse
 import ArkLib.Data.CodingTheory.GuruswamiSudan.ToPolyDegree
 import ArkLib.Data.CodingTheory.GuruswamiSudan.Basic
-import ArkLib.Data.CodingTheory.ProximityGap.BivariateVanishing
+import ArkLib.Data.CodingTheory.GuruswamiSudan.BivariateVanishing
 
 /-!
 # Trivariate Guruswami–Sudan factorization & curve list-size ([BCIKS20] §5, second half)

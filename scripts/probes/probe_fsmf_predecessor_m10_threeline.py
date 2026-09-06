@@ -17,17 +17,19 @@ Construction (mirrors the m=4 three-line probe, scaled):
   roots = 38 = k-2; triple overlap = 8.  Cores 88/88/88, free coords: 2,
   used to prescribe two fresh gammas each (lines 1 and 2).
 
-Predicted count: every coordinate outside the triple overlap contributes the
-single gamma phi(x) = -g(x)/h(x) (a Moebius map after cancelling the shared
-roots, hence injective), plus 4 prescribed free gammas:
-  (158 covered - 8 triple) + 2*2 = 154 = n - 6 < n = 160.
+Witness count: covered coordinates supply 150 distinct labels. The four
+prescribed free labels are 2, 4, 5, 7. Line three also contributes label 32
+at free coordinate 157; its label 438 at coordinate 158 is already covered.
+Thus this construction witnesses 155 bad scalars, not the earlier prediction
+of 154. A witness count alone is not an upper bound for all explanations.
 
 Census: witness-level census over all 641 scalars is exact FOR THE THREE
-PENCILS; completeness against arbitrary explanations is checked by the same
-multiplicity-2 GS + Roth-Ruckenstein engine as the m=4 probe on
+PENCILS. The default mode uses the same multiplicity-2 GS + Roth-Ruckenstein
+engine as the m=4 probe to check only
   (a) every witnessed bad gamma (must be re-found: lower-bound consistency),
   (b) a deterministic sample of non-witness gammas (must be empty).
-Pass --full for the complete 641-gamma GS census (slower).
+Only --full performs the complete 641-gamma GS census (slower). Sampled
+mode reports a verified lower bound and leaves total count/bound status null.
 
 Deterministic; numpy required.
 """
@@ -153,7 +155,7 @@ def main():
     xs, u0, u1, lines, cores = build()
     wit, _ = witness_census(P, xs, T, lines, cores, u0, u1)
     print(f"[m10] witness-level badCount = {len(wit)} "
-          f"(predicted 154 = n - 6; budget n = {N}; holds = {len(wit) <= N})")
+          f"(lower bound only; budget n = {N})")
     eng = Census(P, N, K, T, xs)
     if full:
         bad, _ = eng.full_census(u0, u1, "m10:three one-fresh pencils FULL")
@@ -184,8 +186,10 @@ def main():
         result = len(wit) + len(dirty)
     print(json.dumps({
         "m": 10, "n": N, "k": K, "z": Z_CORE, "t": T, "field": P,
-        "three_one_fresh_pencils_badCount": result,
-        "budget_n": N, "holds": result <= N,
+        "three_one_fresh_pencils_badCount": result if full else None,
+        "checked_bad_scalar_lower_bound": result,
+        "complete_census": full,
+        "budget_n": N, "holds": (result <= N) if full else None,
     }, indent=2))
 
 

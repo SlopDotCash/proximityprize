@@ -87,7 +87,7 @@ is carried as a named `Prop`, never discharged.
 
 ## Artifacts
 - `scripts/probes/sweep_A06_pfree.py` (p-freeness to prize scale + exact `c_r` table + defect onset)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A06_PFreeInvariantBridge.lean` (axiom-clean)
+- `Research/ProximityPrize/Frontier/Sweep_A06_PFreeInvariantBridge.lean` (axiom-clean)
 - this note
 
 ## Cross-refs

@@ -69,7 +69,7 @@ so a unit-weight sparse Jacobi family needs `K ≥ 2^96` at P1 and `K ≥ 2^97` 
 
 ## Artifacts
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G233JacobiL2MassFloorNoGo.lean` — kernel-checked abstract mass-floor theorem + sparse specialization + exact sponsor `2^96 / 2^97` floors. Axioms: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
+- `Research/ProximityPrize/Frontier/_G233JacobiL2MassFloorNoGo.lean` — kernel-checked abstract mass-floor theorem + sparse specialization + exact sponsor `2^96 / 2^97` floors. Axioms: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
 - `scripts/probes/oc_g233_l2_massfloor_no_go.py` — verifies `λ_max(VᴴV) ≤ n²`, `‖S‖² ≥ n(m−n)`, the identity `S = V·1` (recon err ~1e-12), and the exact `2^96 / 2^97` sponsor floors. All checks pass.
 - `/tmp/arklib-reports/oc_g233_l2_massfloor_no_go.out` — probe output.
 

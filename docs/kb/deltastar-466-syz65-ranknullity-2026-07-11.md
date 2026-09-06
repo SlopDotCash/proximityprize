@@ -1,6 +1,6 @@
 # δ* #466 — SYZ65: degree-controlled Bézout surjectivity ⇒ `RankNullity` unconditional (2026-07-11)
 
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ65RankNullity.lean`
+**File:** `Research/ProximityPrize/Frontier/_SYZ65RankNullity.lean`
 **Status:** axiom-clean (`propext, Classical.choice, Quot.sound` only; no `sorry`, no `native_decide`).
 **Branch:** `codex/syz65-ranknullity` off `fork/research/proximity-prize` (`d401c974e`).
 
