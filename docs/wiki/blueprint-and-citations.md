@@ -38,6 +38,10 @@ For substantial contributions, discuss the blueprint-first workflow described in
 
 ## Build And Publish Checks
 
+The Pages workflow prints active Lean processes, memory usage, and free disk space every
+30 seconds during the project build. If a runner terminates without a Lean error, inspect
+the final resource snapshots in the downloaded job log before retrying or changing proofs.
+
 ```bash
 DISABLE_EQUATIONS=1 lake build ArkLib:docs
 ./scripts/build-web.sh
