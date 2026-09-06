@@ -82,6 +82,46 @@ theorem contactSubstD_origin_X_homogeneous (d : ℕ) (i : Fin (d + 2)) :
     simp only [contactSubstD, aeval_X, Fin.cons_succ, wIn]
     exact isWeightedHomogeneous_X F (wOut d) j.succ.succ
 
+/-- Pair degree of an exponent vector under a pair weighting. -/
+noncomputable def pairDeg (w : Fin (d + 2) → ℤ × ℤ) (μ : Fin (d + 2) →₀ ℕ) : ℤ × ℤ :=
+  μ.sum fun i k => k • w i
+
+/-- **Monomial images are bigraded.**  The origin substitution maps a monomial with input
+pair degree `c` to a polynomial that is weighted homogeneous of pair degree `c` for the
+output weights. -/
+theorem contactSubstD_origin_monomial_homogeneous (d : ℕ) (μ : Fin (d + 2) →₀ ℕ) (c : F) :
+    IsWeightedHomogeneous (wOut d)
+      (contactSubstD d (0 : F) 0 (monomial μ c)) (pairDeg (wIn d) μ) := by
+  classical
+  have hmono : (monomial μ c : MvPolynomial (Fin (d + 2)) F) =
+      C c * μ.prod fun i k => X i ^ k := by
+    rw [monomial_eq]
+  rw [hmono, map_mul]
+  have hC : IsWeightedHomogeneous (wOut d)
+      (contactSubstD d (0 : F) 0 (C c)) 0 := by
+    rw [show (contactSubstD d (0 : F) 0) (C c) = C c from by
+      simp [contactSubstD, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq]]
+    exact isWeightedHomogeneous_C _ _
+  have hprod : IsWeightedHomogeneous (wOut d)
+      (contactSubstD d (0 : F) 0 (μ.prod fun i k => X i ^ k)) (pairDeg (wIn d) μ) := by
+    rw [Finsupp.prod, map_prod]
+    unfold pairDeg
+    rw [Finsupp.sum]
+    exact IsWeightedHomogeneous.prod _ _ _ fun i _ => by
+      rw [map_pow]
+      exact (contactSubstD_origin_X_homogeneous d i).pow _
+  simpa using hC.mul hprod
+
+/-- **Support invariance.**  Every exponent vector in the support of the origin substitution
+of a monomial carries the same output pair degree as the monomial's input pair degree —
+the `(g₁, g₂)` block structure of the node maps. -/
+theorem weightedDegree_of_mem_support_contactSubstD (d : ℕ) (μin : Fin (d + 2) →₀ ℕ) (c : F)
+    (μout : Fin (d + 2) →₀ ℕ)
+    (h : μout ∈ (contactSubstD d (0 : F) 0 (monomial μin c)).support) :
+    Finsupp.weight (wOut d) μout = pairDeg (wIn d) μin :=
+  contactSubstD_origin_monomial_homogeneous d μin c (mem_support_iff.mp h)
+
 end ArkLib.ProximityGap.Frontier.HD1Contact
 
 #print axioms ArkLib.ProximityGap.Frontier.HD1Contact.contactSubstD_origin_X_homogeneous
+#print axioms ArkLib.ProximityGap.Frontier.HD1Contact.weightedDegree_of_mem_support_contactSubstD
