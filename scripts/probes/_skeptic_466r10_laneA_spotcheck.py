@@ -11,8 +11,7 @@ Checks, from scratch (NOT reusing the worker's enumerate/level engine):
   (5) DILATION non-closure claim (worker's 'not b-blind in naive sense' surprise).
 
 Regime discipline: proper subgroup (m>1), p==1 mod n, >=2 primes distinct v2(p-1).
-We test the WRAPAROUND-BEARING regime (small beta) exactly as the worker did, since at
-beta=4 W_r=0 (nothing to test). We also independently CONFIRM W_r=0 at beta=4.
+We test the WRAPAROUND-BEARING regime (small beta) exactly as the worker did, and check W_r=0 at two sampled beta=4 primes for n=8 and r in {2,3}.
 """
 import math
 from collections import Counter
@@ -51,26 +50,21 @@ def prim_root_of_unity(p, n):
             return b
     raise RuntimeError("no root")
 
+def cyclotomic_sum(tup, n):
+    """Exact coordinates modulo Phi_n(X)=X^(n/2)+1 for dyadic n >= 2."""
+    if n < 2 or n & (n - 1):
+        raise ValueError("exact cyclotomic coordinates require a power of two >= 2")
+    half = n // 2
+    coordinates = [0] * half
+    for k in tup:
+        coordinates[k % half] += 1 if k < half else -1
+    return tuple(coordinates)
+
+
 def char0_energy(n, r):
-    """Independent char-0 count: number of ordered (k_1..k_2r) in (Z/n)^2r with
-    sum_{i<=r} w^{k_i} = sum_{i>r} w^{k_i} as an identity of n-th roots of unity OVER Z
-    (w a FORMAL primitive n-th root, i.e. the relation holds in Z[x]/(Phi... ) -- but
-    the standard convention used by the campaign is: holds over Z in the group ring
-    Z[Z/n], i.e. multiset of exponents on the left minus right sums to a multiple of the
-    all-ones (since only relation among ALL n-th roots is sum of full coset = 0).
-    Simplest independent char-0 model: relation holds over the COMPLEX n-th roots exactly.
-    We compute it by brute force over a HIGH prime P >> everything so no wraparound: the
-    char-0 count = count mod a huge prime P with P==1 mod n and P enormous."""
-    # Use a large prime P == 1 mod n, P > n^(2r) * n so no accidental wraparound in the
-    # relevant magnitude range -- char-0 count is stable for all sufficiently large P.
-    P = None
-    start = n * 10**7 + 1
-    cand = start - (start % n) + 1
-    while True:
-        if cand % n == 1 and is_prime(cand):
-            P = cand; break
-        cand += 1
-    return brute_Er(n, P, r)
+    """Count equal sums exactly in Z[X]/(Phi_n), without a finite-prime proxy."""
+    counts = Counter(cyclotomic_sum(tup, n) for tup in product(range(n), repeat=r))
+    return sum(c * c for c in counts.values())
 
 def brute_Er(n, p, r):
     """Fully independent brute force of E_r^{(p)} = #ordered (k_1..k_2r) in (Z/n)^2r with
@@ -89,24 +83,13 @@ def enumerate_wrap(n, p, r):
     """Independent enumeration of the wrap solution tuples (holds mod p, NOT over Z)."""
     w = prim_root_of_unity(p, n)
     pw = [pow(w, k, p) for k in range(n)]
-    # char-0 residues via huge prime
-    P = None
-    start = n * 10**7 + 1
-    cand = start - (start % n) + 1
-    while True:
-        if cand % n == 1 and is_prime(cand):
-            P = cand; break
-        cand += 1
-    W = prim_root_of_unity(P, n)
-    pwP = [pow(W, k, P) for k in range(n)]
     wrap = []
     for tup in product(range(n), repeat=2*r):
         sp = (sum(pw[k] for k in tup[:r]) - sum(pw[k] for k in tup[r:])) % p
         if sp != 0:
             continue
-        # is it char-0? check over huge prime P
-        sP = (sum(pwP[k] for k in tup[:r]) - sum(pwP[k] for k in tup[r:])) % P
-        if sP != 0:
+        # Equality in the cyclotomic quotient is equality in characteristic zero.
+        if cyclotomic_sum(tup[:r], n) != cyclotomic_sum(tup[r:], n):
             wrap.append(tup)
     return wrap, w, pw
 
@@ -214,10 +197,10 @@ def main():
     wrap, w, pw = enumerate_wrap(n, p, r)
     mx, mn, s = b_blind_check(wrap, w, pw, p, r, n)
     print(f"    max|eta_b|={mx:.3f}  min nonzero|eta_b|={mn:.3f}  sum|eta_b|^2={s:.1f} (=n*p={n*p}?)")
-    print("    per-frequency |eta_b| DOES vary; but wrap COUNT = sum_b |eta_b|^{2r}/p (b-summed).")
+    print("    per-frequency |eta_b| DOES vary; but total energy E_r = sum_b |eta_b|^{2r}/p; wrap count = E_r - E_infinity.")
     print("    The skeptic question: the wrap SET is the SAME set for every b (weight 1 on it),")
-    print("    so no per-b statistic of the SET exists -- b-structure lives in |eta_b|, and the")
-    print("    wrap count only sees the sum. This is the genuine b-blindness. CONFIRMED trivially.")
+    print("    so these additive-character weights on the wrap set are constant in b.")
+    print("    This does not exclude other b-dependent statistics or prove a spectral bound.")
 
 if __name__ == "__main__":
     main()
