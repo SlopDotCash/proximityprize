@@ -20,9 +20,9 @@ So the closed form is the UNIVERSAL
 
     depth-4 floor = 8m - 7        (for all m >= 2)
 
-This is strictly above G316's depth-3 floor (6m-5 main / 6m-3 r=0) at every
-m >= 2 (gap = 2m - 2 or 2m - 4), and strictly above G215's depth-2 floor
-4m-3 (gap = 4m - 4).
+This equals G316's depth-3 floor at m = 2 and is strictly above it for
+m >= 3 (gap = 2m - 2, or 2m - 4 when m mod 3 == 2). It is strictly above
+G215's depth-2 floor 4m-3 for m >= 2 (gap = 4m - 4).
 
 The pattern across depths:
 
@@ -50,10 +50,10 @@ KERNEL SCOPE. The Lean side pins the closed form at specific m values via
 `decide` (a kernel-blessed tactic for `ℕ`/`ℤ` literal equality -- NOT
 `native_decide`/`bv_decide`, which the campaign's
 `scripts/forbidden_tokens.py` precheck rejects as kernel-bypassing). The
-general statement (closed form holds for all m) is proven computationally
-in this probe (brute force + closed form, 198 m values, no `float`,
-stdlib only). A general Lean theorem that the closed form holds for all
-m is a one-line `omega` once the right tactic chain is settled.
+closed form is checked here only for 198 values, m = 2 through 199, using
+exact integer enumeration. This finite replay is not a proof for all m.
+The formula derivation above and any universal Lean proof require separate
+justification; no universal kernel verification is claimed by this probe.
 """
 from __future__ import annotations
 
@@ -66,8 +66,8 @@ def brute_force_depth4(m: int) -> tuple[int, tuple[int, int, int, int]]:
     (a is uniquely determined by the sum constraint; no a loop needed).
     Uses the per-d c_max bound (target - 4*d) // 3 and per-(c,d) b_max
     bound (m - c - d) AND (target - 3c - 4d) // 2 (intersection of the
-    count and sum constraints). Keeps the enumeration fast (O(m^2)
-    instead of O(m^4)). Returns (max_value, witness).
+    count and sum constraints). Uses three nested bounded loops (O(m^3) worst-case
+    instead of the four-loop O(m^4) enumeration). Returns (max_value, witness).
     """
     n = 2 * m
     target = n - 1
@@ -141,8 +141,8 @@ def main() -> int:
 
     if rc == 0:
         print("G324 depth-4 dyadic wall floor (naive cap): PASS for n=2m, m in [2, 199].")
-        print("  depth-4 floor = 8m - 7   (UNIVERSAL, for all m >= 2)")
-        print("  strictly above G316's depth-3 floor of 6m-5 (or 6m-3) at every m >= 2.")
+        print("  depth-4 floor = 8m - 7   (checked for m in [2, 199])")
+        print("  equal to G316's depth-3 floor at m=2; strictly above it for checked m >= 3.")
         print("  strictly above G215's depth-2 floor of 4m-3 at every m >= 2.")
         print()
         print(f"  {'n':>4} {'m':>4} {'m%4':>4} {'m%3':>4} {'depth2':>7} {'depth3':>7} "

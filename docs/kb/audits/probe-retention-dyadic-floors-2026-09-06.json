@@ -1,0 +1,46 @@
+{
+  "records": [
+    {
+      "source": "scripts/probes/g316_dyadic_wall_floor_depth3.py",
+      "source_sha256": "31fa26433de2b0dad40833832810ec55f84aa4763c3f482fb24e484c19db74c4",
+      "archive": "scripts/probes/_out_316_dyadic_wall_floor_depth3.txt",
+      "archive_sha256": "6216d3c5c9dc4362eb629df7722594bc059a1d6f4e81d1f50fddfa05021ce2f6",
+      "exit_code": 0,
+      "checked_m": [
+        2,
+        199
+      ],
+      "byte_identical": true,
+      "archive_diff": [],
+      "stdout": "G316 depth-3 dyadic wall floor (naive cap): PASS for n=2m, m in [2,199].\n  depth-3 floor = 6m - 5         if m mod 3 in {0, 1}\n                = 6m - 3         if m mod 3 == 2\n  strictly above G215's depth-2 floor of 4m-3 at every m >= 2.\n\n     n    m  m%3   depth2   depth3    brute    gap  witness (a,b,c)\n     4    2    2        5        9        9      4  (0, 0, 1)\n     6    3    0        9       13       13      4  (0, 1, 1)\n     8    4    1       13       19       19      6  (1, 0, 2)\n    10    5    2       17       27       27     10  (0, 0, 3)\n    12    6    0       21       31       31     10  (0, 1, 3)\n    16    8    2       29       45       45     16  (0, 0, 5)\n    20   10    1       37       55       55     18  (1, 0, 6)\n    24   12    0       45       67       67     22  (0, 1, 7)\n    28   14    2       53       81       81     28  (0, 0, 9)\n    32   16    1       61       91       91     30  (1, 0, 10)\n    48   24    0       93      139      139     46  (0, 1, 15)\n    64   32    2      125      189      189     64  (0, 0, 21)\n    96   48    0      189      283      283     94  (0, 1, 31)\n   128   64    1      253      379      379    126  (1, 0, 42)\n   192   96    0      381      571      571    190  (0, 1, 63)\n   256  128    2      509      765      765    256  (0, 0, 85)\n   320  160    1      637      955      955    318  (1, 0, 106)\n   384  192    0      765     1147     1147    382  (0, 1, 127)\n   398  199    1      793     1189     1189    396  (1, 0, 132)\n"
+    },
+    {
+      "source": "scripts/probes/g324_dyadic_wall_floor_depth4.py",
+      "source_sha256": "6b7af3e022d2eb875c90eab7ab03e4b39477b345892fb5385dcec01df0ce06fa",
+      "archive": "scripts/probes/_out_324_dyadic_wall_floor_depth4.txt",
+      "archive_sha256": "3273ddf4fb48740bbe6bb0188825387dd9d101dc7e14d97755453e773248f355",
+      "exit_code": 0,
+      "checked_m": [
+        2,
+        199
+      ],
+      "byte_identical": false,
+      "archive_diff": [
+        "--- ",
+        "+++ ",
+        "@@ -1,6 +1,6 @@",
+        " G324 depth-4 dyadic wall floor (naive cap): PASS for n=2m, m in [2, 199].",
+        "-  depth-4 floor = 8m - 7   (UNIVERSAL, for all m >= 2)",
+        "-  strictly above G316's depth-3 floor of 6m-5 (or 6m-3) at every m >= 2.",
+        "+  depth-4 floor = 8m - 7   (checked for m in [2, 199])",
+        "+  equal to G316's depth-3 floor at m=2; strictly above it for checked m >= 3.",
+        "   strictly above G215's depth-2 floor of 4m-3 at every m >= 2.",
+        " ",
+        "      n    m  m%4  m%3  depth2  depth3  depth4   brute  gap_d2  gap_d3  witness (a,b,c,d)"
+      ],
+      "stdout": "G324 depth-4 dyadic wall floor (naive cap): PASS for n=2m, m in [2, 199].\n  depth-4 floor = 8m - 7   (checked for m in [2, 199])\n  equal to G316's depth-3 floor at m=2; strictly above it for checked m >= 3.\n  strictly above G215's depth-2 floor of 4m-3 at every m >= 2.\n\n     n    m  m%4  m%3  depth2  depth3  depth4   brute  gap_d2  gap_d3  witness (a,b,c,d)\n     4    2    2    2       5       9       9       9       4       0  (0, 0, 1, 0)\n     6    3    3    0       9      13      17      17       8       4  (1, 0, 0, 1)\n     8    4    0    1      13      19      25      25      12       6  (0, 0, 1, 1)\n    10    5    1    2      17      27      33      33      16       6  (1, 0, 0, 2)\n    12    6    2    0      21      31      41      41      20      10  (0, 0, 1, 2)\n    16    8    0    2      29      45      57      57      28      12  (0, 0, 1, 3)\n    20   10    2    1      37      55      73      73      36      18  (0, 0, 1, 4)\n    24   12    0    0      45      67      89      89      44      22  (0, 0, 1, 5)\n    28   14    2    2      53      81     105     105      52      24  (0, 0, 1, 6)\n    32   16    0    1      61      91     121     121      60      30  (0, 0, 1, 7)\n    48   24    0    0      93     139     185     185      92      46  (0, 0, 1, 11)\n    64   32    0    2     125     189     249     249     124      60  (0, 0, 1, 15)\n    96   48    0    0     189     283     377     377     188      94  (0, 0, 1, 23)\n   128   64    0    1     253     379     505     505     252     126  (0, 0, 1, 31)\n   192   96    0    0     381     571     761     761     380     190  (0, 0, 1, 47)\n   256  128    0    2     509     765    1017    1017     508     252  (0, 0, 1, 63)\n   320  160    0    1     637     955    1273    1273     636     318  (0, 0, 1, 79)\n   384  192    0    0     765    1147    1529    1529     764     382  (0, 0, 1, 95)\n   398  199    3    1     793    1189    1585    1585     792     396  (1, 0, 0, 99)\n"
+    }
+  ],
+  "reviewed_original_unreferenced": 46,
+  "remaining_original_unreferenced": 46
+}
