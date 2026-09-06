@@ -1,0 +1,8 @@
+{
+  "command": "python3 scripts/probes/probe_fsmf_p1_onefresh_capacity.py",
+  "exit_code": 0,
+  "source_sha256": "09ed83691f03f8555cd10fb51ff442cbc664b92bc4f1108daf71ebe974a4ec93",
+  "archived_output": "scripts/probes/_out_fsmf_capacity.txt",
+  "archived_output_matches": true,
+  "stdout": "m=4: n=64 t=36 (T-1 core = 35)\n   ell=2: feasible=True maxCount=58\n   ell=3: feasible=False maxCount=None\n   ell=4: feasible=False maxCount=None\n   ell=5: feasible=False maxCount=None\n   => ansatz max = 58 via ell=2; budget n = 64; margin = 6\nm=10: n=160 t=89 (T-1 core = 88)\n   ell=2: feasible=True maxCount=144\n   ell=3: feasible=True maxCount=156\n   ell=4: feasible=False maxCount=None\n   ell=5: feasible=False maxCount=None\n   => ansatz max = 156 via ell=3; budget n = 160; margin = 4\nm=16: n=256 t=142 (T-1 core = 141)\n   ell=2: feasible=True maxCount=230\n   ell=3: feasible=True maxCount=252\n   ell=4: feasible=False maxCount=None\n   ell=5: feasible=False maxCount=None\n   => ansatz max = 252 via ell=3; budget n = 256; margin = 4\nm=22: n=352 t=195 (T-1 core = 194)\n   ell=2: feasible=True maxCount=316\n   ell=3: feasible=True maxCount=348\n   ell=4: feasible=False maxCount=None\n   ell=5: feasible=False maxCount=None\n   => ansatz max = 348 via ell=3; budget n = 352; margin = 4\nm=67108864: n=1073741824 t=592794966 (T-1 core = 592794965)\n   ell=2: feasible=True maxCount=961893718\n   ell=3: feasible=True maxCount=1073741820\n   ell=4: feasible=False maxCount=None\n   ell=5: feasible=False maxCount=None\n   => ansatz max = 1073741820 via ell=3; budget n = 1073741824; margin = 4\nall ansatz maxima within budget\n"
+}
