@@ -2276,6 +2276,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HD1ContactVanishing
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HD1InterpolationCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HD8IdentityWebDimensionLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDCocyclePhaseCoupling
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDdContactVanishing
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDdCountingBound
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDdInterpolationCore
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDdNodeRankAssembly
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDdNodeTranslation
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDdOriginGrading
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDdTranslateStability
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorBadEventRichPointBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorCoreFreshDecode
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorIncidenceAssembly
