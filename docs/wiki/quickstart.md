@@ -256,6 +256,9 @@ python3 -m pip install leanblueprint
   repeatedly interrupted healthy builds. Website compilation and documentation
   each have 150 minutes within a 330-minute job. Compilation uses one worker;
   documentation generation uses two after the compiled library is available.
+  Main CI and Pages builds finish before the latest queued main run starts,
+  so incoming merges do not repeatedly interrupt compilation or cache saves.
+  Superseded non-main runs may still be cancelled.
   A timeout remains a failing check until the entire command passes.
   CI logs active Lean workers and memory usage every 30 seconds so an
   interrupted build can be traced to its in-flight module.
