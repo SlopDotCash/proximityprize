@@ -1,0 +1,45 @@
+{
+  "source": "scripts/probes/probe_466_g97_census_sup_inflation.py",
+  "source_sha256": "f007515a9123254846c61de2260829edfcc9e60baf72e9a06cbe1df19ce80dbf",
+  "command": "python3 scripts/probes/probe_466_g97_census_sup_inflation.py",
+  "baseline_exit_code": 0,
+  "corrected_exit_code": 0,
+  "only_stdout_label_changed": true,
+  "tolerance": 1e-06,
+  "cells": [
+    [
+      8,
+      257
+    ],
+    [
+      16,
+      257
+    ],
+    [
+      16,
+      65537
+    ],
+    [
+      32,
+      257
+    ],
+    [
+      32,
+      193
+    ],
+    [
+      32,
+      577
+    ]
+  ],
+  "moment_depths": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "precision": "cmath floating point; multiplicities not exact-certified",
+  "stdout": "  n      p  v2    n      M   n>=M?  K(tol)  |  DC-subtracted (p*E_r - n^2r)^(1/2r)/M, r=1..6\n  8    257   8   8.0   6.101    True        8      |  7.3155 2.3046 1.6534 1.4251 1.3124 1.2459\n 16    257   8  16.0   9.229    True       16      |  6.7283 2.1964 1.6267 1.4253 1.3232 1.2613\n 16  65537  16  16.0  13.838    True       16      |  73.9931 5.9875 2.7880 1.9666 1.6237 1.4442\n 32    257   8  32.0  11.860    True       32      |  7.1543 2.4415 1.7897 1.5436 1.4145 1.3349\n 32    193   6  32.0   7.898    True       32      |  9.0879 2.7343 1.8867 1.5846 1.4340 1.3449\n 32    577   6  32.0  14.276    True       32      |  9.2504 2.7037 1.8763 1.5815 1.4334 1.3450\n"
+}
