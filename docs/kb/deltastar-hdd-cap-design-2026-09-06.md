@@ -102,6 +102,27 @@ probes below compute (exactly) or soundly bound that rank sum.
   `q^{4d+6}`; prize-budget lists need PR #122-style tight ledgers (open for `d ≥ 2`, = open
   item (ii) of the 09-05 note).
 
+## 3.5 Certified thresholds (spectral paramscan + refinement; bignum-verified records)
+
+All values: counting bound ⇒ sound interpolation certificates, field-uniform, `n = 2¹⁸`;
+`verify_exact_int` re-checks the records with Python bignums end-to-end (no floats).
+
+| rate | Johnson δ | best certified δ | at (d, m) | capacity | record verification |
+|---|---|---|---|---|---|
+| 1/2 | 0.29289 | **0.33791** (wedge) / 0.338+ refining | (12, 128) | 0.5 | `dim = 173575795916105963870 > n·rb = 173574747307010686976` at `A = 173563`, infeasible at `A−1` |
+| 1/8 | 0.64645 | **0.72008** | (8, 96) | 0.875 | refined Ω (saved) |
+| 1/16 | 0.75 | **0.80927** | (6, 128) | 0.9375 | wedge value `A = 50264` (δ = 0.80826) bignum-verified; refined 49998 |
+
+`(d, m)`-matrix at rate 1/2 (δ, refined): d=6: .31921/.32410/.32663/.32939/.33064 at
+m=32/48/64/96/128; d=8: .32603/.32888/.33241/.33417 at m=48/64/96/128; d=12:
+.33196/.33624/.33791+ at m=64/96/128.  Monotone in both parameters; `c/m` fits give
+`δ_∞(d) ≈ 0.3344 (d=6), 0.3395 (d=8), 0.3429 (d=12)`, still rising in `d` with a
+decelerating tail suggesting a counting-face limit ≈ 0.345–0.35 at rate 1/2 — but the
+counting-vs-exact gap also grows with `d` (composition-superset rows), so the TRUE
+exact-rank face sits above the counting face at large `d`.  Granularity warning: the
+continuum solver needs `m ≫ d` (cap entries `~ m/d` must be large); at `d ≥ 12` trust the
+discrete spectral instrument only.
+
 ## 4.5 The T5.1 √-wall: the LD face cannot reach beyond-Johnson MCA through the known transfer
 
 The in-tree LD⇒MCA chain (`RSLambdaSubJohnsonMCA.lean`, consumer
