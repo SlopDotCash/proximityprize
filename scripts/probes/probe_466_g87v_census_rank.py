@@ -71,6 +71,61 @@ def census_rows(n, p, t):
             rows.append(w)
     return np.array(rows, dtype=np.int64) if rows else np.zeros((0, n), dtype=np.int64)
 
+def census_batches(n, p, t, batch_size=4096):
+    """Enumerate the complete census with bounded retained row storage."""
+    if batch_size < 1:
+        raise ValueError("batch_size must be positive")
+    powers = np.array([pow(t, j, p) for j in range(n)], dtype=np.int64)
+    signs = np.array(list(itertools.product((1, -1), repeat=6)), dtype=np.int64)
+    pending = []
+    for support in itertools.combinations(range(n), 6):
+        for sign in signs[(signs @ powers[list(support)]) % p == 0]:
+            row = np.zeros(n, dtype=np.int64)
+            row[list(support)] = sign
+            pending.append(row)
+            if len(pending) == batch_size:
+                yield np.asarray(pending)
+                pending = []
+    if pending:
+        yield np.asarray(pending)
+
+
+def row_basis_mod(matrix, q):
+    """A modular row basis; replacing prior rows by this basis preserves rank."""
+    A = (matrix % q).astype(np.int64).copy()
+    r = 0
+    for c in range(A.shape[1]):
+        candidates = np.flatnonzero(A[r:, c])
+        if not len(candidates):
+            continue
+        pivot = r + int(candidates[0])
+        A[[r, pivot]] = A[[pivot, r]]
+        A[r] = A[r] * pow(int(A[r, c]), q - 2, q) % q
+        if r + 1 < len(A):
+            A[r+1:] = (A[r+1:] - np.outer(A[r+1:, c], A[r])) % q
+        r += 1
+        if r == len(A):
+            break
+    return A[:r].copy()
+
+
+def census_summary(n, p, t, roots, batch_size=4096):
+    """Complete size, three modular ranks and coverage, without storing all rows."""
+    moduli = (Q_AUX, Q_AUX2, p)
+    bases = [np.zeros((0, n), dtype=np.int64) for _ in moduli]
+    powers = np.array([[pow(root, j, p) for root in roots] for j in range(n)],
+                      dtype=np.int64)
+    covered = np.ones(len(roots), dtype=bool)
+    size = 0
+    for rows in census_batches(n, p, t, batch_size):
+        size += len(rows)
+        covered &= np.all((rows @ powers) % p == 0, axis=0)
+        for i, q in enumerate(moduli):
+            if len(bases[i]) < n:
+                bases[i] = row_basis_mod(np.concatenate((bases[i], rows)), q)
+    return size, tuple(len(basis) for basis in bases), int(covered.sum())
+
+
 def rank_mod(M, q):
     """rank of integer matrix M mod prime q (Gaussian elimination)"""
     A = (M % q).astype(np.int64).copy()
@@ -118,13 +173,8 @@ def main():
         for t in roots:
             if t == 1:  # trivial embedding: Σ w_j = 0 — different structure, keep separate
                 continue
-            M = census_rows(n, p, t)
-            if M.shape[0] == 0:
-                sizes.append(0); ranks.append((0, 0, 0)); covs.append(len(roots)); continue
-            r1 = rank_mod(M, Q_AUX); r2 = rank_mod(M, Q_AUX2)
-            rp = rank_mod(M, p)
-            sizes.append(M.shape[0]); ranks.append((r1, r2, rp))
-            covs.append(common_coverage(M, roots, p, n))
+            size, rank, coverage = census_summary(n, p, t, roots)
+            sizes.append(size); ranks.append(rank); covs.append(coverage)
         uniq_r = sorted(set(ranks))
         print(f"cell (n={n}, p={p}): #census per nontrivial root: "
               f"min={min(sizes)} max={max(sizes)}; ranks (q1,q2,mod p): {uniq_r}; "
