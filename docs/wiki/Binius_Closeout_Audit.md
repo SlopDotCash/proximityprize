@@ -48,3 +48,10 @@ This compilation preserves the role-named completeness and knowledge-soundness
 hypotheses described above. It does not discharge them, finish QueryPhase, or
 establish full Binius security. Full downstream and repository checks remain
 separate acceptance requirements.
+
+The compiled artifact and a separate import-based audit of all 54 top-level
+lemmas, theorems, and named instances passed. Each declaration uses only
+`propext`, `Classical.choice`, and/or `Quot.sound` (some use no axioms).
+The source hash and declaration-by-declaration results are recorded in
+[`binius-core-interaction-2026-09-06.json`](../kb/audits/binius-core-interaction-2026-09-06.json).
+These axiom results do not remove explicit hypotheses from theorem statements.
