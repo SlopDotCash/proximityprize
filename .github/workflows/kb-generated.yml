@@ -5,6 +5,7 @@ on:
     branches: ["main"]
     paths:
       - "ArkLib/**/*.lean"
+      - "Research/**/*.lean"
       - "blueprint/src/references.bib"
       - "docs/kb/papers/**"
       - "docs/kb/sources/**"
