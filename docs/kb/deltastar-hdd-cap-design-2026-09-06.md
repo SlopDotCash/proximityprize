@@ -201,6 +201,13 @@ re-attempts this composition.
    this campaign): a SPARSE-elimination ledger — BKK/mixed-volume bounds see the cap's Newton
    polytope, exponentially below the box product for wedge caps; reworking the ledger's
    resultant construction sparsely is the gateway to prize-budget `d ≥ 2` claims.
+   Measured sparse-vs-box slack on the record caps: `2^25.2 (d=12)`, `2^65.1 (d=24)`,
+   `2^105.9 (d=32, m=256)` — but the ledger's `w^{d+1}` degree factor is NOT improvable by
+   cap sparsity (each hidden-derivative variable carries weight ~`w` in the elimination),
+   and at production scale (`w = 2^29`) it alone exceeds the `2^122` budget from `d = 4` on.
+   So the prize-budget MCA lane through this route is confined to `d ≤ 3`; the honest BKK
+   target is pushing the `d = 1` certified `δ ≈ 0.3090` (at `|F| ≈ 2^250`) toward
+   `≈ 0.31–0.32` with sparse `d = 2, 3` caps — real but bounded.
 4. Exact-rank spot checks of the found downsets at `d ∈ {2,3}, m ≤ 48` (counting-vs-exact gap
    on OPTIMIZED caps, not just boxes).
 5. Lean: formalize the counting bound itself (`rank ≤ Σ_blocks min(rows, cols)` via the
