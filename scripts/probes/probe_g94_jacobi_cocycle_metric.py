@@ -26,9 +26,11 @@ Tests per metric:
     We measure dom := max_pairs |Delta eta| / d  (dom = inf over rescalings; sub-G at scale
     s means dom/s <= sqrt(ln2)). Hard failure: d ~ 0 with Delta eta != 0.
   * gamma_2 via greedy admissible nets (sizes 1,2,4,16,256,65536 capped at m), value
-    gamma2 = max_b sum_k 2^{k/2} dist(b, T_k). Normalized certificate scale:
-    gamma2_norm = gamma2 * dom / sqrt(ln 2)  (the smallest gamma2 achievable while the
-    deterministic sub-Gaussian tail condition holds). Compare vs M, sqrt(n ln p), spread.
+    greedy_cost = max_b sum_k 2^{k/2} dist(b, T_k), an upper bound for the
+    infimum over admissible nets, not a computation of that infimum.
+    The reported gamma2_norm = greedy_cost * dom / sqrt(ln 2) uses the least
+    legal rescaling for this fixed metric and chosen nets. It does not minimize
+    over nets or metrics. Compare vs M, sqrt(n ln p), spread.
   * moment-ratio: z = |Delta eta|/d over pairs; report quantiles/max (Gaussian-like tail
     needs bounded z; det reading needs z <= sqrt(ln 2) after rescale by dom... i.e. z/dom).
   * lone-spike countermodel: field with one atom at s = sqrt(2 n ln m), rest 0.
@@ -298,8 +300,8 @@ def lone_spike_test(n=16, m=445):
 
 def main():
     print("G94 Jacobi-cocycle metric probe. det-sub-G legality threshold: after rescale to "
-          "dom=sqrt(ln 2)=0.8326, gamma2_norm (g2n) is the smallest chaining gauge value "
-          "consistent with the deterministic tail condition. Collapse theorem predicts "
+          "dom=sqrt(ln 2)=0.8326, gamma2_norm (g2n) is the cost of the chosen greedy nets "
+          "at the least legal metric rescaling, not the infimum over nets. The stated collapse bound predicts "
           "g2n >= spread/(2 sqrt(ln2)) = 0.60*spread for EVERY metric.")
     inst = []
     for n, lo, hi, cnt, incl in [(8, 700, 4000, 3, ()),
