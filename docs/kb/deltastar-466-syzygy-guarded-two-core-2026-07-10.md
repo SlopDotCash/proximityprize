@@ -223,7 +223,7 @@ topologies.  Relevant primary sources:
 
 ```bash
 scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZGuardedKernelTwoCore.lean
+  Research/ProximityPrize/Frontier/_SYZGuardedKernelTwoCore.lean
 ```
 
 passes.  All eight audited declarations use only `propext` in the printed output (hence are within

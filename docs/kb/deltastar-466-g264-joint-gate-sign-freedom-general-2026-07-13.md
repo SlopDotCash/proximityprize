@@ -74,6 +74,6 @@ CORE OPEN / ON-BGK.
 
 ## Artifacts
 
-Formal payload: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G264JointGateSignFreedomGeneral.lean`;
+Formal payload: `Research/ProximityPrize/Frontier/_G264JointGateSignFreedomGeneral.lean`;
 probe: `scripts/probes/g264_joint_gate_sign_freedom_general_probe.py`; DISPROOF entry:
 `[466-G264-joint-gate-sign-freedom-general]`.

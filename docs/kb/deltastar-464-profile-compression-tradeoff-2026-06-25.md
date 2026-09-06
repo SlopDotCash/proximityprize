@@ -9,7 +9,7 @@ Status: **counting guardrail**, not a delta-star proof.
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileCompressionTradeoff.lean
+Research/ProximityPrize/Frontier/_StackProfileCompressionTradeoff.lean
 ```
 
 records the cardinality pressure behind any finite stack profile.

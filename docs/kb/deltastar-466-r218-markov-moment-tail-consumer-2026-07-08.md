@@ -65,7 +65,7 @@ thresholds require genuine distributional input, not only moment ceilings.
 ## Lean check
 
 ```text
-scripts/pg-iterate.sh -q ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R218MarkovMomentTailConsumer.lean
+scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R218MarkovMomentTailConsumer.lean
 ```
 
 Result:

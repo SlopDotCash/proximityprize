@@ -92,7 +92,7 @@ convention.  Nothing here touches the Paley/BGK sup-norm wall.
 
 ```bash
 scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ34StripInteriorGeneration.lean
+  Research/ProximityPrize/Frontier/_SYZ34StripInteriorGeneration.lean
 python3 scripts/probes/probe_syz34.py      # random band triples
 python3 scripts/probes/probe_syz34b.py     # constructed, 3 fields, to n=32
 python3 scripts/probes/probe_syz34c.py     # fiber-product identity

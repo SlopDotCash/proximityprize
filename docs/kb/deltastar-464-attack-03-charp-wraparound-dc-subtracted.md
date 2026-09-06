@@ -4,7 +4,7 @@ Issue #464. Angle: prove (or refute) the DC-subtracted Wick bound
 `A_r := (1/q)∑_{b≠0}‖η_b‖^{2r} ≤ (2r−1)‼·n^r` at prize depth `r ≈ ln q`, which via the moment
 method gives `M(n) ≤ √(2n ln q)` — the prize sup-bound.
 
-Brick: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Attack03DepthGatedWraparound.lean`
+Brick: `Research/ProximityPrize/Frontier/_Attack03DepthGatedWraparound.lean`
 (axiom-clean: `propext, Classical.choice, Quot.sound`; no `sorryAx`).
 
 ## 1. The target theorem (what closing this angle would prove)

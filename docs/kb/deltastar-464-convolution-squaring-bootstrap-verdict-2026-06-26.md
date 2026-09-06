@@ -31,7 +31,7 @@ produce that input for `1_{μ_n}/n`.
 
 ## Lean Surface
 
-New in `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_D1ConvolutionSquaringReduction.lean`:
+New in `Research/ProximityPrize/Frontier/_D1ConvolutionSquaringReduction.lean`:
 
 ```lean
 squaredConcentration

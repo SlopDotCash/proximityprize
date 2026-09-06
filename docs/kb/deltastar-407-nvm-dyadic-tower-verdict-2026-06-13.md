@@ -51,7 +51,7 @@ Probe data (`scripts/probes/_407_nvm_dyadic_tower.py`):
 
 ## In-tree (axiom-clean, strict `lake build` EXIT 0)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/NVMDyadicTowerObstruction.lean`
+`Research/ProximityPrize/Frontier/NVMDyadicTowerObstruction.lean`
 (`[propext, Classical.choice, Quot.sound]`):
 - `cftMat_apply`, `cftMat_apply_eq_houseVec` — entries = `T_{a+b}` (1×1 ⟺ house).
 - `cft_det_eq`, `cft_top_minor_ne_zero` — full minor `= (det F)² ∏ G_i / m^m ≠ 0`.

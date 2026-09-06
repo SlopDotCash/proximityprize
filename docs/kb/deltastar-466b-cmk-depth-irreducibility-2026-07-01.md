@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-01 · **Lane:** round-2 CMK (round-1 outcomes §E survivor ⑥)
 **Artifacts:** `scripts/probes/probe_466b_cmk_countermeasure.py` (+ `_out_466b_cmk_countermeasure.txt`),
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R2B_CMKDepthIrreducibility.lean` (axiom-clean,
+`Research/ProximityPrize/Frontier/_R2B_CMKDepthIrreducibility.lean` (axiom-clean,
 5 gate theorems, pg-iterate ✅ 197s), this note.
 
 ## 1. The target

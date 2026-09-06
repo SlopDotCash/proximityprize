@@ -1,7 +1,7 @@
 # δ* #466 — W15 part 5: the multi-block ladder — L_near = 2 is not universal; campaign shape capped at 2 (2026-07-10)
 
 Lane: `ll:low-profile-fiber` (final rung before consolidation). File:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15MultiBlockRefuter.lean`
+`Research/ProximityPrize/Frontier/_W15MultiBlockRefuter.lean`
 (axiom-clean, 7/7 audits `[propext, Classical.choice, Quot.sound]`, no `sorryAx`,
 `pg-iterate` 41s). Probe: `scripts/probes/probe_466_w15_active_scalar_ceiling.py`
 (deterministic, exit 0). Companions: parts 1–4 (kb notes

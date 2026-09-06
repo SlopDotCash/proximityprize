@@ -2,7 +2,7 @@
 
 ## What landed
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R308DepthUniformShadowFloor.lean`
+`Research/ProximityPrize/Frontier/_R308DepthUniformShadowFloor.lean`
 (axiom-clean). Generalizes r306/r307 from triples to `r`-tuples uniformly:
 
 - `gsumR_eq_evalVec_tupleVec`: the field-level `r`-sum factors through the exact `ℤ[ζ]`

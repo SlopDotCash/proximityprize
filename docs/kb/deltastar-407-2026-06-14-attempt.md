@@ -39,7 +39,7 @@ Scores:
 - Proximity to prize regime: 9/10
 - Feasibility: 6/10
 
-Verdict: keep as a survivor and formal interface, not a claimed prize solution. The deterministic threshold plumbing is in `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Issue407SaturatedIncidence.lean`.
+Verdict: keep as a survivor and formal interface, not a claimed prize solution. The deterministic threshold plumbing is in `Research/ProximityPrize/Frontier/Issue407SaturatedIncidence.lean`.
 The file also records the radius bridge
 
 `agreementRadius n w = 1 - w/n`

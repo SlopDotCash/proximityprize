@@ -101,7 +101,7 @@ commit-phase soundness)" misidentifies the prize object.
 
 - **The in-tree canonical prize is unambiguous:** `mcaConjecture` / operational `mcaDeltaStar`
   = `epsMCA`, the MCA correlated-agreement threshold via max-far-line incidence
-  (`PROXIMITY_PRIZE_WORKBENCH.lean` §1–2: `mcaDeltaStar C ε* = sup{δ : max-far-line-incidence(δ)
+  (`Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean` §1–2: `mcaDeltaStar C ε* = sup{δ : max-far-line-incidence(δ)
   ≤ q·ε*}`, with `le_mcaDeltaStar_of_good` / `mcaDeltaStar_le_of_bad`). This is a **single-round,
   per-radius, list-non-uniqueness** quantity.
 
@@ -212,13 +212,13 @@ no current technique (Deligne top-term, Burgess/large-sieve out-of-regime, actio
 ## Artifacts (absolute paths, all verified to exist this session)
 
 Lean (axiom-clean):
-- `C:/Users/Administrator/arklib/ArkLib/Data/CodingTheory/ProximityGap/Frontier/_S6BettiDeligne.lean`
-- `C:/Users/Administrator/arklib/ArkLib/Data/CodingTheory/ProximityGap/Frontier/_S3S5Partials.lean`
+- `C:/Users/Administrator/arklib/Research/ProximityPrize/Frontier/_S6BettiDeligne.lean`
+- `C:/Users/Administrator/arklib/Research/ProximityPrize/Frontier/_S3S5Partials.lean`
 - `C:/Users/Administrator/arklib/ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodMomentBound.lean`
   (the **real** conditional bridge ⇐ open `GaussianEnergyBound`)
 - `C:/Users/Administrator/arklib/ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergySidonModNeg.lean`
   (real char-0 anchor)
-- `C:/Users/Administrator/arklib/ArkLib/Data/CodingTheory/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean`
+- `C:/Users/Administrator/arklib/Research/ProximityPrize/LegacyWorkbench.lean`
   (canonical prize = `mcaConjecture` / `mcaDeltaStar` / `epsMCA`)
 - In-tree wall substrate: `CharSumMomentDeepWall.lean`, `Frontier/MomentMethodPrizeDepthNoGo.lean`,
   `Frontier/_DigitStepanovNoGo.lean`, `EnergyExcessStructure.lean`, `HasseWeilBoundInstances.lean`

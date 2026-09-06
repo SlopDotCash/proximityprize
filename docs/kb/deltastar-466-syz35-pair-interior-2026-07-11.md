@@ -83,8 +83,8 @@ Nothing here touches the Paley/BGK sup-norm wall.
 ## Validation
 
 ```bash
-scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ34StripInteriorGeneration
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ35PairInteriorLaw.lean
+scripts/lake-locked.sh build Research.ProximityPrize.Frontier._SYZ34StripInteriorGeneration
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_SYZ35PairInteriorLaw.lean
 python3 scripts/probes/probe_syz35_generation_equiv.py   # 3 fields, n≤30, ~14k triples, 0 violations
 ```
 

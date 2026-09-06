@@ -9,7 +9,7 @@ Status: **guardrail**, not a delta-star proof.
 The file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean
+Research/ProximityPrize/Frontier/_StackProfileFiberMax.lean
 ```
 
 now records both ends of the profile-classification spectrum:

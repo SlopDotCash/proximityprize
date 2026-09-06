@@ -12,7 +12,7 @@ Formal kernel (compiles clean, 15 audited theorems all
 `[propext, Classical.choice, Quot.sound]`, no `sorry`, no `axiom`):
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPencilCountCharge.lean
+Research/ProximityPrize/Frontier/_P1RateQuarterPencilCountCharge.lean
 ```
 
 Probe: `scripts/probes/probe_rate_quarter_p1_pencil_count_charge.py`.
@@ -96,7 +96,7 @@ crudest sufficient version.
 Formal kernel:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCrossPencilVoteReuse.lean
+Research/ProximityPrize/Frontier/_P1RateQuarterCrossPencilVoteReuse.lean
 ```
 
 The local vote partitions cannot simply be summed: distinct pencils may

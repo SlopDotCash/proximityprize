@@ -49,7 +49,7 @@ This is the **algebraic explanation** of the previously only-numerically-refuted
 and the DFT live on coprime-order sides. The H–D fold *is* active in the non-prize near-Fermat case
 (`m` even, the #400 trap with `C > √2`) and *inactive* in every prize-valid prime.
 
-**Lean brick:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GaussPhaseFlatnessAlgebra.lean`
+**Lean brick:** `Research/ProximityPrize/Frontier/_GaussPhaseFlatnessAlgebra.lean`
 (axiom-clean `[propext, Classical.choice, Quot.sound]`, `lake env lean` RC=0):
 - `prizeIndex_odd` : `padicValNat 2 (p−1) = a ⟹ Odd ((p−1)/2^a)`.
 - `doubling_bijective_of_odd` : `Odd |G| ⟹ Bijective (x ↦ x+x)` on a finite add-group.

@@ -5,7 +5,7 @@ Goal: solve the grand MCA challenge **and** the grand list-decoding challenge si
 Reed–Solomon MCA threshold `δ*`. This file records the 2026-06-13 literature sweep (six parallel
 deep digests), the ground-truth prize statement, the four routes the sweep **kills** for the prize
 regime, the two decisive positive connections, and the resulting maximally-sharpened reduction. The
-formal content lands in [`PROXIMITY_PRIZE_WORKBENCH.lean`](../../../../PROXIMITY_PRIZE_WORKBENCH.lean).
+formal content lands in [`Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean`](../../../../Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean).
 **The complete closed-form conjecture (both challenges) is in
 [`PROXIMITY_PRIZE_CONJECTURE.lean`](../../../../PROXIMITY_PRIZE_CONJECTURE.lean)** — verified
 axiom-clean: the closed-form crossover `listValue_at_deltaStar` and the budget reduction

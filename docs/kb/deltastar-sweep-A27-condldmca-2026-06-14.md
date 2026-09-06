@@ -17,7 +17,7 @@ with explicit `O(1)` loss (ABF26 §5 "list-form" face of the prize):
 
 ## What was actually landed
 
-**Artifact:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A27_CondLDtoMCA.lean`
+**Artifact:** `Research/ProximityPrize/Frontier/Sweep_A27_CondLDtoMCA.lean`
 (axiom-clean `[propext, Classical.choice, Quot.sound]`, no `sorryAx`).
 
 The **one missing arithmetic step** (everything else was already proven in-tree) is the

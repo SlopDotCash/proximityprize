@@ -1,7 +1,7 @@
 # G100: nonnegative per-depth caps lose cross-depth cancellation
 
 Lean artifact:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G100PerDepthCenteringCancellation.lean`.
+`Research/ProximityPrize/Frontier/_G100PerDepthCenteringCancellation.lean`.
 
 G96 correctly proves that centered bounds at every maximal-cancellation depth imply
 `DCEnergyBound`. G100 red-teams the stronger description of that interface as “exact.”

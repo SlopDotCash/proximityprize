@@ -27,14 +27,14 @@ This composes:
 Verified command:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R218NonzeroSurvivalToPrizeEndpoint.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R218NonzeroSurvivalToPrizeEndpoint.lean
 ```
 
 Output:
 
 ```text
 'ArkLib.ProximityGap.Frontier.R218NonzeroSurvivalToPrizeEndpoint.prize_sq_of_nonzero_normalizedSq_survival_count_ceiling' depends on axioms: [propext,
-OK (19s) — ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R218NonzeroSurvivalToPrizeEndpoint.lean
+OK (19s) — Research/ProximityPrize/Frontier/_R218NonzeroSurvivalToPrizeEndpoint.lean
 ```
 
 Readout: the remaining analytic wall can now be attacked as a literal finite

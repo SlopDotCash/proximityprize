@@ -29,7 +29,7 @@ residual.
 Verification:
 
 ```text
-scripts/pg-iterate.sh -q ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R216NonzeroNormalizedSqSurvivalConsumer.lean
+scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R216NonzeroNormalizedSqSurvivalConsumer.lean
 ```
 
 Result:

@@ -44,7 +44,7 @@ unconditional way the floor lane gets a sub-quartic least-prime input without GR
 I added:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PowerfulTZThetaGate.lean
+Research/ProximityPrize/Frontier/_PowerfulTZThetaGate.lean
 ```
 
 The file proves only exponent algebra.  If `x = n^beta`, modulus `q = n = 2^a`, and
@@ -74,7 +74,7 @@ Machine-checked consequences:
 Validation:
 
 ```text
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PowerfulTZThetaGate.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_PowerfulTZThetaGate.lean
 ```
 
 passed in 20 seconds.

@@ -32,7 +32,7 @@ without first choosing a separate scanner subset `U`.
 
 ## Lean Surface
 
-In `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean`:
+In `Research/ProximityPrize/Frontier/_ProfileFiberSlackDominance.lean`:
 
 ```lean
 BadCountInjectiveOn

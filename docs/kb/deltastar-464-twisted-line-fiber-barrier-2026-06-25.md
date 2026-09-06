@@ -24,7 +24,7 @@ fibers, so perhaps the twisted line can beat the original BGK/Paley wall and for
 The new frontier brick
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_TwistedLineFiberEnergyBarrier.lean
+Research/ProximityPrize/Frontier/_TwistedLineFiberEnergyBarrier.lean
 ```
 
 proves the precise bounded-fiber consequence and its monomial-graph specialization.

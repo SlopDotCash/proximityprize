@@ -8,7 +8,7 @@
   - probe `scripts/probes/sweep_A20_third_moment.py` (exact full-`u` moments + triple-coincidence
     distribution + scaling ladder; all exact cross-checks pass).
   - Lean brick
-    `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A20_ThirdMomentDerandGap.lean`
+    `Research/ProximityPrize/Frontier/Sweep_A20_ThirdMomentDerandGap.lean`
     (axiom-clean: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`).
 
 ## The route, precisely

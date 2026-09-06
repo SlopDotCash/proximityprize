@@ -98,6 +98,6 @@ inequality, with its provable half (clean-range Gaussianity, all `r`, via Lam–
 The prize remains open: the residual is genuine analytic NT (high-`r` equidistribution of the
 root-of-unity sumset mod `𝔭`), the recognised Bourgain regime. Not fabricated; honestly open.
 
-Cross-refs: `ShawFlatnessRefuted.lean`, `SidonSubgroupClosed.lean`, `PROXIMITY_PRIZE_WORKBENCH.lean`
+Cross-refs: `ShawFlatnessRefuted.lean`, `SidonSubgroupClosed.lean`, `Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean`
 §R.3, `SubsetSumHaloEnergy.lean`, reading-list O4 (Demirci Akarsu–Marklof value distribution),
 O7 (Kalmynin additive irreducibility of `μ_d`).

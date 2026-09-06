@@ -82,6 +82,6 @@ shape lives on the boundary it excludes. Unconditional δ\* status untouched.
 
 Axiom-clean (`propext`/`Classical.choice`/`Quot.sound`); no `sorry`, no `native_decide`.
 ```
-files: ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ26LiftingTest.lean
+files: Research/ProximityPrize/Frontier/_SYZ26LiftingTest.lean
        scripts/probes/probe_syz26_lifting_test.py
 ```

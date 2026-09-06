@@ -42,7 +42,7 @@ pure `ℕ`.) The SYZ45 refuter `(1,1,6)` violates `6≤1+1` — exactly why it i
    **`ι ≤ 1` when `max(a,b,c) ≥ ⌊(a+b+c)/2⌋ − 1`** (`imbalance_le_one_of_max_near_edge`).
 
 All axiom-clean (`propext, Classical.choice, Quot.sound`; no `sorryAx`). File
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ47GeometricBalance.lean`.
+`Research/ProximityPrize/Frontier/_SYZ47GeometricBalance.lean`.
 
 ## Probe evidence (`scripts/probes/probe_syz47_geometric_balance.py`)
 

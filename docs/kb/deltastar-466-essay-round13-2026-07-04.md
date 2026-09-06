@@ -213,14 +213,14 @@ the entire remaining analytic burden between them and `δ*` is now machine-certi
 
 Lean (all axiom-clean, `[propext, Classical.choice, Quot.sound]`, verified this round via `pg-iterate.sh`):
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MomentOptimizedSupNorm.lean` — Lane M: `WallHolds ⟹ M ≤
+- `Research/ProximityPrize/Frontier/_MomentOptimizedSupNorm.lean` — Lane M: `WallHolds ⟹ M ≤
   √(2e·n·(ln q+1))` (moment-order optimization discharged from the wall; caveat (a) removed).
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MomentWallWiringCheck.lean` — Lane M wiring:
+- `Research/ProximityPrize/Frontier/_MomentWallWiringCheck.lean` — Lane M wiring:
   `wall_capstone_moment_closed`, the capstone with `B` supplied by the wall itself.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R13HyperplaneSecondMoment.lean` — Lane R:
+- `Research/ProximityPrize/Frontier/_R13HyperplaneSecondMoment.lean` — Lane R:
   `incidenceSum_sq_sum_offsets` (second-moment identity) + `incidenceSum_sq_sum_le_of_supBound` (the World-II
   certificate: `M` controls the average, not the worst case).
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallCapstone.lean` — the round-12 capstone (unchanged this
+- `Research/ProximityPrize/Frontier/_WallCapstone.lean` — the round-12 capstone (unchanged this
   round; re-verified as the composition target).
 
 Probes (numerical evidence; regime `p ≡ 1 mod n`, `p ≥ n^4`, ≥2 primes, `X^{n/2} ≠ ±1` excluded):

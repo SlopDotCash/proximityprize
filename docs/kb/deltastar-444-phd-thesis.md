@@ -683,7 +683,7 @@ made it the *only* remaining work, and to have built the tools that make it conc
 
 ---
 
-*Formal artifacts: ~28 axiom-clean Lean bricks under `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Create*`,
+*Formal artifacts: ~28 axiom-clean Lean bricks under `Research/ProximityPrize/Frontier/_Create*`,
 `_Next*`, `_Jacobi*`, `_Onset*`, `_Bridge*`, `_ProveAssembly*`; the state-of-the-prize map
 `docs/kb/deltastar-444-state-of-the-prize-2026-06-19.md`; the empirical probes
 `scripts/probes/probe_{onset_growth_law,wraparound_correction,jacobi_*}.py`; the exhaustive-search ledger

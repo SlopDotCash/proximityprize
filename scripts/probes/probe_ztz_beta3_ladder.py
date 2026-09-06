@@ -6,7 +6,7 @@ Find explicit two-factor Lucas certificate data for primes p in the Thorner-Zama
 window [n^3, 2*n^3] with p ≡ 1 (mod n), for n = 2^k beyond the current concrete
 ladder maximum (n = 256).  These feed the axiom-clean Lean theorems
 `tzPrimeSupply_{512,1024,2048,4096}_three` in
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZTZBetaThreeLadderExtension.lean`.
+`Research/ProximityPrize/Frontier/_ZTZBetaThreeLadderExtension.lean`.
 
 For each target n = 2^k it prints, per selected window prime p:
     p = 2^a * c + 1,   c an odd prime,   g a Lucas witness

@@ -3,7 +3,7 @@
 Date: 2026-07-10
 
 Lean file:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G83DeterminantCoverageFence.lean`.
+`Research/ProximityPrize/Frontier/_G83DeterminantCoverageFence.lean`.
 
 G82 reduced the surviving CRT/transversality route to common coverage at distinct degree-one
 prime ideals. G83 makes the arithmetic interface behind its documented determinant threshold

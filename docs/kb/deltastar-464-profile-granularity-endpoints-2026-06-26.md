@@ -19,7 +19,7 @@ an injective profile has profile space at least as large as the stack universe, 
 profile must merge many stacks into large fibers.
 
 This pass adds the proof-theoretic endpoint inside
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean`.
+`Research/ProximityPrize/Frontier/_ProfileFiberSlackDominance.lean`.
 
 ## Lean Additions
 

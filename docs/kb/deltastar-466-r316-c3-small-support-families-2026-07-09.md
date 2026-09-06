@@ -27,7 +27,7 @@ This is precisely the support count consumed by R315.
 - Probe: `scripts/probes/probe_r316_c3_small_support_families.py`
 - Output: `scripts/probes/_out_466_r316_c3_small_support_families.txt`
 - Lean socket:
-  `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R316C3SmallFamiliesToSupportCount.lean`
+  `Research/ProximityPrize/Frontier/_R316C3SmallFamiliesToSupportCount.lean`
 
 ## Checked Samples
 

@@ -15,7 +15,7 @@ moment control.
 
 ## 1. Deliverable 1 (formalization): `WallHolds ⟹ M ≤ √(2e·n·(ln q + 1))`, axiom-clean
 
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MomentOptimizedSupNorm.lean` (pg-iterate ✅,
+File: `Research/ProximityPrize/Frontier/_MomentOptimizedSupNorm.lean` (pg-iterate ✅,
 all 7 theorems `#print axioms = {propext, Classical.choice, Quot.sound}`, 0 `sorryAx`).
 
 The chain, routed through the **DC-subtracted** wall (non-vacuous at the prize), NOT the DC-included
@@ -98,6 +98,6 @@ exist: `WallHolds` is *necessary but not sufficient*; the phase-correlation inpu
   is a crude order-correct constant, the sharp `1.43` a probe numeric.
 
 **Files:**
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MomentOptimizedSupNorm.lean` (brick, ✅ axiom-clean)
+- `Research/ProximityPrize/Frontier/_MomentOptimizedSupNorm.lean` (brick, ✅ axiom-clean)
 - `scripts/probes/probe_466r13_moment.py` + `_out_466r13_moment.txt` (optimization validation)
 - `scripts/probes/probe_466r13_twoinput.py` + `_out_466r13_twoinput.txt` (two-input decision)

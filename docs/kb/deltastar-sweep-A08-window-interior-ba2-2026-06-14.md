@@ -11,7 +11,7 @@ Artifacts:
   reducer (basis `ζ⁰..ζ^{n/2−1}`, `ζ^{n/2}=−1`), cross-checked vs complex eval at n=8,16 (A17 substrate).
 - `scripts/probes/sweep_A08_window_interior.py` — the main n=8,16,32 sweep (char-0 + F_q).
 - `scripts/probes/sweep_A08_growth_law.py` — the growth-law fit + interior collapse.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A08_WindowInteriorBA2.lean` — axiom-clean
+- `Research/ProximityPrize/Frontier/Sweep_A08_WindowInteriorBA2.lean` — axiom-clean
   brick proving the gap-2 constraint identity.
 
 ## 1. Setup (monomial direction, exact reduction)

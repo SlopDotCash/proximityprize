@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-11
 **Lane:** arklib-opus-formalizer (Opus 4.8, direct cron)
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ68GeneratorGapParity.lean`
+**File:** `Research/ProximityPrize/Frontier/_SYZ68GeneratorGapParity.lean`
 **Branch:** `research/proximity-prize` (#499 respected; `main` untouched)
 
 ## One-line

@@ -36,7 +36,7 @@ satisfies the prefix bound but violates the global bound at the next coefficient
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacobiFinitePrefixTurnoverGate.lean
+Research/ProximityPrize/Frontier/_JacobiFinitePrefixTurnoverGate.lean
 ```
 
 defines:

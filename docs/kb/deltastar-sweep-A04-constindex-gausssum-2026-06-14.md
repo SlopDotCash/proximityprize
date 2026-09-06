@@ -12,7 +12,7 @@ squared scale `≥ q/4` for all `m ≥ 2`, vacuous at the prize index `m = 2^128
 
 ## What landed
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A04_ConstantIndexGaussSumBound.lean`
+`Research/ProximityPrize/Frontier/Sweep_A04_ConstantIndexGaussSumBound.lean`
 — **axiom-clean** (`[propext, Classical.choice, Quot.sound]`, no `sorryAx`), real
 `lake build` green under `autoImplicit=false`.
 

@@ -120,7 +120,7 @@ ahead of the milestone PR-4.
 
 ## PR-5 — the discrete arcsine moment / central-binomial cosine power sum (READY; drafted in tree, 2026-07-08)
 
-- **Draft file (copy source):** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R25DiscreteArcsineMoment.lean`
+- **Draft file (copy source):** `Research/ProximityPrize/Frontier/_R25DiscreteArcsineMoment.lean`
   (namespace `ArkLib.…R25DiscreteArcsineMoment`; rename to `Mathlib` on copy). All axiom-clean
   (`propext, Classical.choice, Quot.sound`), real-build 2960 jobs.
 - **Mathlib targets:** `Mathlib/Analysis/SpecialFunctions/Trigonometric/` or

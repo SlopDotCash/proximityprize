@@ -59,7 +59,7 @@ HOUSE over the `~m/2` independent periods = the Paley Graph Conjecture / BGK wal
 - `scripts/probes/wf407_T16-pgl2_charface.py` — full period vector + 4-map normalizer action.
 - `scripts/probes/wf407_T16-pgl2_orbitlaw.py` — `inv=x↦−x` on `ℤ/m`, orbit law `~m/2`.
 - `scripts/probes/wf407_T16-pgl2_concentration.py` — GM<B + domain-inversion trivial reindex.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T16PGL2CharFace.lean` — axiom-clean
+- `Research/ProximityPrize/Frontier/WF407_T16PGL2CharFace.lean` — axiom-clean
   brick (`eta_image_inv_invariant`, `image_inv_self_of_invClosed`, `eta_dominv_eq`): the L2 fact
   that domain-inversion leaves `η` invariant = *why* inversion adds nothing on the char-sum face.
 

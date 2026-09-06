@@ -209,11 +209,11 @@ object, on the ON-BGK (char-p, under-determined) face.**
 
 ## Artifacts (absolute paths)
 
-- `C:/Users/Administrator/arklib/ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DstarGrowthLaw.lean`
-- `C:/Users/Administrator/arklib/ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OPSingleOrbit.lean`
-- `C:/Users/Administrator/arklib/ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorResonanceLowerBound.lean`
-- `C:/Users/Administrator/arklib/ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorResonanceEnergyBridge.lean`
-- `C:/Users/Administrator/arklib/ArkLib/Data/CodingTheory/ProximityGap/Frontier/PrizeEquivalencePin.lean`
+- `C:/Users/Administrator/arklib/Research/ProximityPrize/Frontier/_DstarGrowthLaw.lean`
+- `C:/Users/Administrator/arklib/Research/ProximityPrize/Frontier/_OPSingleOrbit.lean`
+- `C:/Users/Administrator/arklib/Research/ProximityPrize/Frontier/FloorResonanceLowerBound.lean`
+- `C:/Users/Administrator/arklib/Research/ProximityPrize/Frontier/FloorResonanceEnergyBridge.lean`
+- `C:/Users/Administrator/arklib/Research/ProximityPrize/Frontier/PrizeEquivalencePin.lean`
 - In-tree anchors: `LadderSchurReduction.boundary_slice_ladder_badSet_card_eq`,
   `WorstPeriodMomentRatioLower.exists_period_sq_ge_moment_ratio`,
   `DeepBandR3Bound.deepBandBadCount`, `WorstPeriodLowerBound.exists_period_sq_ge`,

@@ -2,7 +2,7 @@
 
 **Status:** consolidation note for the ten-lane arc program landed 2026-07-10 (Fable session
 `013QaNxgRNS8yvBSCn6934As`, with concurrent-session integrations). CORE OPEN / ON-BGK.
-All Lean files in `ArkLib/Data/CodingTheory/ProximityGap/Frontier/`, all theorems exactly
+All Lean files in `Research/ProximityPrize/Frontier/`, all theorems exactly
 `[propext, Classical.choice, Quot.sound]`, all real locked builds.
 
 ## 1. The endpoint (what a next agent should know first)

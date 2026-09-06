@@ -4,7 +4,7 @@
 
 The exact relationship between the operational threshold and the faithful lattice threshold is
 now formalized in
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26InteriorCeilingLatticeBridge.lean`.
+`Research/ProximityPrize/Frontier/_KKH26InteriorCeilingLatticeBridge.lean`.
 
 Suppose `0 < s <= n`, every real radius `delta < s/n` is good
 (`epsMCA C delta <= epsilon*`), and the boundary `s/n` is bad
@@ -127,7 +127,7 @@ degree-decoupled stratified wrapper is the remaining packaging opportunity for t
 
 ```text
 scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26InteriorCeilingLatticeBridge.lean
+  Research/ProximityPrize/Frontier/_KKH26InteriorCeilingLatticeBridge.lean
 ```
 
 passed on 2026-07-09.  In `_KKH26ExactRateCeiling.lean`, the degree-window, witness-spread,

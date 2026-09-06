@@ -108,7 +108,7 @@ This is the most promising "crazy idea" if the goal is to bypass analytic cancel
 new selector in
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/FiniteObstructionGoodPrime.lean
+Research/ProximityPrize/Frontier/FiniteObstructionGoodPrime.lean
 ```
 
 proves the reusable finite step:

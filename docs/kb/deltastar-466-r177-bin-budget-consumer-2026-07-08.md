@@ -11,7 +11,7 @@ that compensation strategy into Lean.
 Updated:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R168DyadicTailEnvelopeConsumer.lean
+Research/ProximityPrize/Frontier/_R168DyadicTailEnvelopeConsumer.lean
 ```
 
 New theorem:
@@ -39,5 +39,5 @@ exponential budget remains below `2 |s|`.
 Verified:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R168DyadicTailEnvelopeConsumer.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R168DyadicTailEnvelopeConsumer.lean
 ```

@@ -1,7 +1,7 @@
 # SYZ9: the degenerate-channel rank wall — DONE (2026-07-10)
 
 Status: **LANDED, axiom-clean.** Formalizes item (2) of the SYZ7 strip map §6 (the ceiling-side
-barrier). File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ9ChannelRankWall.lean`.
+barrier). File: `Research/ProximityPrize/Frontier/_SYZ9ChannelRankWall.lean`.
 Issue #466 / #507. Tag SYZ9.
 
 ## What is proved

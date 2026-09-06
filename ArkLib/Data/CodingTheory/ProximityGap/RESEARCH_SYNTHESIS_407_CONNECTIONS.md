@@ -149,8 +149,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C001 — n-core nonemptiness = NVM minor vanishing = list-decoding-beyond-Johnson shape: F17 / F4 / F15 collapse onto one arithmetic condition n∤a   [total 27 | insight 9 research 9 relevance 9 | multiform yes]
 
-**Forms:** F17, F4, F15  
-**Walls:** W-genericity, W-subspace  
+**Forms:** F17, F4, F15<br>
+**Walls:** W-genericity, W-subspace<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/HOMDSSmoothObstruction.lean`, `ArkLib/Data/CodingTheory/ProximityGap/RectNCore.lean`, `ArkLib/Data/CodingTheory/ProximityGap/RootsOfUnityVandermonde.lean`
 
 **Connection:** homds_det_ne_zero_iff_nCoreEmpty: the generalized-Vandermonde HOMDS certificate det(ζ^(β_j·i)) (the NVM minor for the β-numbers of a partition λ) is nonzero IFF the abacus n-core of λ is empty. rectBeta_nCoreEmpty_iff: for a rectangle λ=a^h (h codewords agreeing to a common shape), the n-core is empty IFF n∣a. The list-decoding obstruction shapes (F4) are exactly these interior rectangles with n∤a, which have NONEMPTY core ⟹ vanishing minor ⟹ the algebraic certificate is silent. So 'NVM fails' (F17), 'list size large' (F4), and 'h_{b-k}(x_S)=0 Schur-vanishing' (F15) coincide on the single arithmetic divisibility n∤a.
@@ -163,8 +163,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C002 — The all-witness ownership floor IS a direct combinatorial upper bound on F3 incidence I(δ) — the δ* object of F1, with NO character-sum input   [total 27 | insight 9 research 9 relevance 9 | multiform yes]
 
-**Forms:** F1, F3, F4  
-**Walls:** W-Johnson, W-BGK  
+**Forms:** F1, F3, F4<br>
+**Walls:** W-Johnson, W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/AllWitnessOwnershipFloor.lean`, `ArkLib/Data/CodingTheory/ProximityGap/AllWitnessFloorGeneric.lean`
 
 **Connection:** allWitness_badScalars_card_mul_le proves #bad·C(w₀,d+1) ≤ C(n,d+2) axiom-clean, where #bad = #{γ : u₀+γu₁ δ-close} is EXACTLY F3's far-line incidence I(δ), and δ* = sup{δ : I(δ) ≤ q·ε*} is F1. So this brick directly upper-bounds I(δ) by C(n,d+2)/C(w₀,d+1) — a purely combinatorial divided-difference argument (Pascal + the divided-difference fit transport fit_insert_iff_divDiff), with zero character-sum/energy/Weil content. It is the missing reverse bound on face-1 that SuperCodeListBridge lacks, derived from set-system geometry. d+2 here is k+1, so it is the F4 super-code (RS[k+1]) list object too.
@@ -177,8 +177,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C003 — The lacunary variety is a coset-UNION, so I(δ) is an EXACT binomial C(n/2^L, (k+t)/2^L) — not the exponential tower budget   [total 27 | insight 9 research 9 relevance 9 | multiform yes]
 
-**Forms:** F3, F10, F15  
-**Walls:** (none)  
+**Forms:** F3, F10, F15<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean`, `ArkLib/Data/CodingTheory/ProximityGap/TopDirectionLineCount.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CosetExactCount.lean`
 
 **Connection:** DyadicLacunaryFloor bounds #vanishingVariety μ_n (k+t) t = {S⊆μ_n : |S|=k+t, e_1=…=e_{t-1}=0}. By full_tower (LamLeungTwoPow) any such S is μ_{2^L}-closed, L=⌈log₂ t⌉, a UNION of 2^L-cosets. By loc_coset_union/coset_union_esymm_zero (TopDirectionLineCount) a union of m distinct cosets of μ_{2^L} automatically has e_j=0 for all j not divisible by 2^L. So these subsets are EXACTLY unions of (k+t)/2^L cosets chosen from the n/2^L available, giving I(δ)=C(n/2^L,(k+t)/2^L) EXACTLY — NOT the loose 2^{n/2^s} tower_count. The floor #lacBad≤C·n becomes the decidable q-independent inequality C(n/2^L,(k+t)/2^L)≤C·n.
@@ -191,8 +191,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C004 — δ* count = n·K: the budget q·ε*≈n is exactly ONE μ_n-orbit; eigenstack/monomial-spectrum/lacunary quantization collapse F1=F3=F10=F9 into one counting identity   [total 26 | insight 9 research 8 relevance 9 | multiform yes]
 
-**Forms:** F1, F3, F9, F10, F15  
-**Walls:** (none)  
+**Forms:** F1, F3, F9, F10, F15<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/MCAEigenstackOrbitLaw.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MonomialGammaFibration.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MonomialSpectrumEquivariance.lean`, `ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean`
 
 **Connection:** adjacent_card_eq_n_mul_add_zero gives #bad = n·K + [0∈badSet]; orderOf_dvd_badScalarSet_card_of_eigenstack generalizes it to any σ-eigenstack (#bad = ε + (#orbits)·ord(a⁻¹c)); monomial_badSet_mul_invariant specializes to the monomial pencil where the eigenratio is g (order n) so n∣#bad; DyadicLacunaryDeltaStar quantizes #lacBad in units n/gcd(t,n). All are the SAME ⟨g^t⟩-coset action. The far-line incidence I(δ) for the ladder/monomial directions is n·K(δ)+ε with K = number of free dilation orbits = (via Schur reduction boundary_slice_ladder_badSet_card_eq) the dilation-orbits of e-symm-vanishing (k+1)-subset-sum VALUES. The prize budget I(δ)≤n reads K(δ)≤1+o(1): δ* is EXACTLY the radius where K crosses from O(1) to ≥2. This identifies Chai-Fan's orbit count K with the Schur subset-sum fiber.
@@ -205,9 +205,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C005 — The 1×1 NVM minors ARE the Gauss-period house F2; index-m NVM vanishing = the exact char-sum sup-norm wall   [total 26 | insight 9 research 8 relevance 9 | multiform yes]
 
-**Forms:** F17, F2, F7, F16  
-**Walls:** W-BGK, W-largesieve  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/NVMDyadicTowerObstruction.lean`, `ArkLib/Data/CodingTheory/ProximityGap/RootsOfUnityVandermonde.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodMomentBound.lean`
+**Forms:** F17, F2, F7, F16<br>
+**Walls:** W-BGK, W-largesieve<br>
+**Code:** `Research/ProximityPrize/Frontier/NVMDyadicTowerObstruction.lean`, `ArkLib/Data/CodingTheory/ProximityGap/RootsOfUnityVandermonde.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodMomentBound.lean`
 
 **Connection:** The compressed-Fourier matrix factors M = (1/m)·F·D·Fᵀ with F the m×m Vandermonde of ζ_m and D = diag(G_0..G_{m-1}) the Gauss sums (M_factor/cft_det_eq). The 1×1 minors are M_{a,b}=T_{a+b}, T_j=(1/m)Σ_i ω^{ij}G_i — and T_j is EXACTLY η_b, the prize Gauss-period (cft_one_by_one_minor docstring, up to √q/m). So F17's k=1 NVM conditions (T_j≠0) and F2/F7's sup-norm target M(n)≤C√(n log(p/n)) are the SAME object: nonvanishing is the qualitative shadow, sup-norm the quantitative one, both on the DFT of the unimodular Gauss-phase vector a_i=G_i/√q. Machine-checked identity, not analogy.
 
@@ -219,9 +219,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C006 — The Johnson-vs-capacity gap is an EXTREME-VALUE gap: in-tree code supplies BOTH endpoints [√n proven, √(n log m) conditional on one MGF]   [total 26 | insight 9 research 8 relevance 9 | multiform yes]
 
-**Forms:** F2, F7, F5  
-**Walls:** W-Johnson, W-BGK  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodLowerBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Frontier/SalemZygmundChaining.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSecondMoment.lean`
+**Forms:** F2, F7, F5<br>
+**Walls:** W-Johnson, W-BGK<br>
+**Code:** `ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodLowerBound.lean`, `Research/ProximityPrize/Frontier/SalemZygmundChaining.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSecondMoment.lean`
 
 **Connection:** WorstPeriodLowerBound.exists_period_sq_ge proves (q·E−|G|⁴)≤max_{b≠0}‖η_b‖²·(q·|G|−|G|²), i.e. worst period Ω(√n) UNCONDITIONALLY (axiom-clean, no Weil). The conjectured √(n log m) is strictly above by the log m factor. SalemZygmundChaining.chernoff_max_re_le proves the matching UPPER side max_c X_c≤√(2σ² log M) from a single MGF — the max-of-M-sub-Gaussians scaling with M=m=(p−1)/n. So the in-tree code brackets the worst period in [√n, √(2n log m)] and the ENTIRE gap is the log m=log(p/n) extreme-value enhancement of taking a max over m periods. Johnson radius = √n endpoint; capacity−H/(βlog n) = √(n log m) endpoint.
 
@@ -233,8 +233,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C007 — The prize wall is EXACTLY where the binomial budget-vs-supply inequality C(2N,r)<r·2^r·C(N,r) flips — a self-contained crossover at r*≈0.3n, no open analysis in its statement   [total 26 | insight 9 research 9 relevance 8 | multiform yes]
 
-**Forms:** F1, F3, F4  
-**Walls:** W-Johnson, W-BGK, W-subspace  
+**Forms:** F1, F3, F4<br>
+**Walls:** W-Johnson, W-BGK, W-subspace<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/KKH26DeltaStarPinAllWitness.lean`, `ArkLib/Data/CodingTheory/ProximityGap/AllWitnessOwnershipFloor.lean`
 
 **Connection:** kkh26_deltaStar_pin_lowdegree pins δ*=1−r/2^μ UNCONDITIONALLY (no CensusDomination, no BGK) whenever choose_bulk holds: C(2N,r)<r·2^r·C(N,r) (proven by falling-factorial induction for r²≤2N+1, i.e. r≤√n). Numerically the all-witness budget vs the KKH26 antipodal supply (2^r·C(n/2,r)) flips from PIN to WALL at r*≈0.27–0.34·n (r=11 at n=32, 17 at 64, 27 at 128, 41 at 256, 93 at 1024) and stays WALL with growing gap through r=n/2. That crossover band sits inside the beyond-Johnson window. So the open core, on the combinatorial face, is literally a binomial inequality C(n,(r−2)m+2)/C(rm,(r−2)m+1)<2^r·C(2^{μ−1},r) failing in a specific r-band.
@@ -247,8 +247,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C008 — Threshold-free per-instance e2=0 criterion: bad α at a=k+2 ⟺ p divides one explicit cyclotomic resultant Res(e2Fold,Φ_{2^m}) — no size threshold, decidable per scale, no BGK   [total 25 | insight 8 research 8 relevance 9 | multiform yes]
 
-**Forms:** F12, F3, F2  
-**Walls:** W-BGK  
+**Forms:** F12, F3, F2<br>
+**Walls:** W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/PairSumRigidityModP.lean`, `ArkLib/Data/CodingTheory/ProximityGap/WindowTwoLayerThreshold.lean`
 
 **Connection:** PairSumRigidityModP.pair_sum_collision_dvd_resultant / pair_sums_ne_of_not_dvd_resultant replace the crude (n²+n)^{n/2} threshold by an EXACT per-instance test valid at every p>4: a mod-p collision not forced in char 0 forces p|Res(foldedRelation,Φ_{2^k}) with Res≠0. Lifting from the 4-term pair-sum to the e2 relation R_U=(∑X^i)²−∑X^{2i} (e2Fold of WindowTwoLayerThreshold), bad-scalar existence at a=k+2 is exactly: p divides the single integer Res(e2Fold m A,Φ_{2^m}). Pins the entire F3 incidence by a finite divisor set, showing the e2 face has NO BGK wall: the obstruction is a fixed finite arithmetic object, not thin-subgroup cancellation — sharp contrast to F2's M(n).
@@ -261,8 +261,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C009 — The Hab25 K4 cell budget (≤ n) is the EXACT governing-law budget q·ε*≈n — capture cone and δ* law meet at the same n   [total 25 | insight 8 research 8 relevance 9 | multiform yes]
 
-**Forms:** F1, F3, F4  
-**Walls:** (none)  
+**Forms:** F1, F3, F4<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/Hab25K4AffinePinningCardBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Hab25CaptureKernel.lean`
 
 **Connection:** K4_cell_card_le_of_affine_pinning_family proves a cell whose bad scalars are decoded by a single affine pencil (v₀,v₁) has |Ecell|≤Fintype.card ι₀=n, via factorImprove_card_le_n (|improving scalars|≤|disagreeSet|≤n). The governing law is δ*=sup{δ:I(δ)≤q·ε*≈n}. So Hab25's affine-pinned cell bound n is the SAME n as the prize budget. The whole open question 'does I(δ)≤n in the window interior' becomes 'can the bad scalars be partitioned into O(1) affine pencils each contributing ≤n', and Hab25 already proves each pencil gives ≤n. The gap is the NUMBER of cells (GS factors) times n vs budget n.
@@ -275,8 +275,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C010 — GLT (Garcia-Lorenz-Todd) identity makes the anomaly defect LITERALLY the Hasse-Weil Betti error — W-anomaly = W-Betti by an exact equation, proven at r=2   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F5, F12, F13  
-**Walls:** W-anomaly, W-Betti  
+**Forms:** F5, F12, F13<br>
+**Walls:** W-anomaly, W-Betti<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean`, `ArkLib/Data/CodingTheory/ProximityGap/HasseWeilBoundInstances.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Fermat257EnergyCrossover.lean`
 
 **Connection:** The GLT identity Σ_s η_s^{2r} = p^{2r−1} + ((p−1)/(pm))·Σ_s(1+mη_s)^{2r} ⟺ #{x_1^m+...+x_{2r}^m≡0 mod p} makes E_r EXACTLY a degree-m hypersurface point count in 2r variables. The char-p anomaly defect E_r−E_r^ℂ IS the Hasse-Weil error term of that variety — equal, not analogous. At r=2 proven exactly in-tree (V_4=3p(n−1)−n^3, zero error = genus-(m−1)(m−2)/2 Fermat CURVE count; Fermat257EnergyCrossover pins E(μ_8)=168=3·64−24 and the failure at μ_16). For r≥3 the hypersurface Betti ~m^{2r−1} forces the Weil error 2ν√p to overtake the diagonal (2r−1)‼ n^r m at the crossover. So W-anomaly and W-Betti are two readings of genus·√p > diagonal.
@@ -289,8 +289,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C011 — All three deep-moment walls share ONE root crossover depth r*≈β=log_n q; the deficit is exactly the half-tower height a/2   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F2, F5, F16  
-**Walls:** W-anomaly, W-Betti, W-largesieve  
+**Forms:** F2, F5, F16<br>
+**Walls:** W-anomaly, W-Betti, W-largesieve<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/CharSumMomentDeepWall.lean`, `ArkLib/Data/CodingTheory/ProximityGap/ManyTermResultantBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/KowalskiUntrauBarrier.lean`
 
 **Connection:** (i) W-anomaly: CharSumMomentDeepWall gives char-0 validity only for r≤r_max=2 log_n p−3, while the moment optimum needs r_opt≈log q=a·log_n p, so r_opt/r_max=(log n)/2=a/2. (ii) W-largesieve: ManyTermResultantBound proves char-0 energy valid exactly when q>(2r)^{φ(n)}=(2r)^{n/2}; logs give r-validity cap at r≍log q/(n log r) — the SAME r≈β=log_n q at the production index. (iii) Kowalski–Untrau decay q^{−1/(d−1)} non-vacuous only for d−1<log q/(12+2 log d), i.e. d≲log q/log log q — the SAME log q ceiling, with d(=n) in the exponent denominator. The three 'deficits' are one number: needed-depth log q vs reliable-depth log_n q, ratio a/2.
@@ -303,8 +303,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C012 — Hasse-Davenport collapses T_h to the autocorrelation of ONE shifted Gauss-sum sequence (GL(1) monodromy), so the m-fold largesieve dimension wall is mis-applied to the tangent face   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F6, F19, F16, F2  
-**Walls:** W-largesieve, W-BGK  
+**Forms:** F6, F19, F16, F2<br>
+**Walls:** W-largesieve, W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean`
 
 **Connection:** In-tree I4 (tangentSum_mul_orderOf_eq_sum_jacobiSum) writes T_h=(1/m)Σ_{i<m}J(χ^i,χ^h). Mathlib jacobiSum_mul_nontrivial gives J(χ^i,χ^h)=τ(χ^i)τ(χ^h)/τ(χ^{i+h}) when χ^{i+h}≠1. Substituting, T_h=(τ_h/(mp))·Σ_i τ_i·conj(τ_{i+h}), recovering I3 from pure Mathlib. KEY: Hasse-Davenport makes the m summands NOT m independent Frobenius eigenvalues but ratios τ_i/τ_{i+h} of ONE Gauss-sum sequence shifted by h — so the relevant geometric monodromy is GL(1) of a single Kummer sheaf L_{χ^h} on G_m, conductor O(1) in i, NOT the f=(q-1)/n-dimensional family that W-largesieve obstructs. The house carried by T_h is the autocorrelation-at-lag-h of a SINGLE sequence, governed by one effective Sato-Tate, not m of them.
@@ -317,9 +317,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C013 — ONE resultant Res(Φ_n,g)=N(α) is simultaneously the char-p defect threshold (F12), the ideal-SVP / cross-parity norm (F11), and the ZERO-detector of an additive-energy collision (F5/F13) — a single-integer Rosetta stone   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F5, F11, F12, F13, F15  
-**Walls:** W-idealSVP, W-anomaly, W-LamLeung  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyResultant.lean`
+**Forms:** F5, F11, F12, F13, F15<br>
+**Walls:** W-idealSVP, W-anomaly, W-LamLeung<br>
+**Code:** `Research/ProximityPrize/Frontier/CyclotomicNormDefectThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyResultant.lean`
 
 **Connection:** CyclotomicNormDefectThreshold proves axiom-clean: for g=signed sum of ≤2r roots of unity, R:=Res(Φ_n,g)=N(α), α=g(ζ_n)∈ℤ[ζ_n], |R|≤(2r)^{φ(n)} (archimedean), p|R iff a primitive root ζ∈ZMod p roots g (mod-p collision), R≠0 iff α≠0 (char-0). The SAME R is: (a) R=0 ⟺ genuine char-0 additive-energy collision (F5/F13, α the signed-unit-vector); (b) p|R but R≠0 ⟺ char-p anomaly collision (F12, W-anomaly defect); (c) α∈ℤ[ζ_n] with small N(α), 𝔭|α IS a short vector of (α,𝔭) — when N(𝔮)=q (fully split, prize) this is the Pan-Xu open fully-split ideal-SVP (F11/W-idealSVP). The Schur/h_{b−k}=0 vanishing (F15) is the resultant of Φ_n with the symmetric-function polynomial. So F5/F11/F12/F15 are readings of divisibility of one resultant; |R|≤(2r)^{φ(n)} crossing p is exactly the onset of ideal-SVP shortness.
 
@@ -331,8 +331,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C014 — The missing reverse bound is the witness-spread realizer of the super-code list; two in-tree lemmas already isolate its full content   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F4, F3, F1  
-**Walls:** (none)  
+**Forms:** F4, F3, F1<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/MonomialLineListBridge.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MCAWitnessSpread.lean`, `ArkLib/Data/CodingTheory/ProximityGap/InterleavedListMCACollapse.lean`
 
 **Connection:** The forward bridge badScalars_monomial_card_le_listSize builds an injection bad-γ ↦ lifted RS[k+1]-codeword (distinct because X^k-coeff=−γ, eval injective in degree<k+1), so I(δ)≤|list(RS[k+1],δ)|. The REVERSE (I(δ)≥poly·|list|) is missing, and MCAWitnessSpread.unique_bad_gamma_common_witness + common_witness_badGamma_set_card_le_one pin its exact content: distinct bad scalars FORCE distinct witness sets S_γ (a common S gives ≤1 bad scalar). So the reverse bound is 'the δ-list of RS[k+1] around u₀ is realized by a SPREAD of distinct (1−δ)n-agreement sets, one per leading coefficient.' The map bad-γ↦(c_γ=p−γ·X^k, agreement set S_γ) is a section of the list whose image must avoid the common-witness collapse.
@@ -345,8 +345,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C015 — degenerate_stack_no_mcaEvent is the exact countermodel to every list-LB→incidence-LB, pinning the reverse bound to OFF-DIAGONAL stacks   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F4, F3  
-**Walls:** (none)  
+**Forms:** F4, F3<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/ListMCAWiringNoGo.lean`, `ArkLib/Data/CodingTheory/ProximityGap/AveragingListLowerBoundRS.lean`
 
 **Connection:** AveragingListLowerBoundRS.averaging_list_lower_bound is a genuine axiom-clean REVERSE bound: |{codewords agreeing with g on k+t points}|≥C(n,k+t)/q^t — a super-linear list LB for the super-code at radius 1−(k+t)/n. ListMCAWiringNoGo wires it to the line-witness count of the DEGENERATE stack (w,0), then proves degenerate_stack_no_mcaEvent: that stack fires ZERO bad scalars (every line point=w jointly matchable). So the only in-tree reverse bound on the F4 list lands on a stack contributing 0 to F3. The reverse-bound gap is precisely: replace (w,0) by a NON-degenerate (u₀,u₁) realizing the same C(n,k+t)/q^t list but with non-matchable rows.
@@ -359,9 +359,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C016 — The exact genericity gap is the degree-collapse map d↦d mod n; LovettUnionDegreesInjective is stated at the WRONG quotient for μ_n   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F17, F4, F15  
-**Walls:** W-genericity  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf407_nvm.lean`, `ArkLib/Data/CodingTheory/GMMDS/LovettPrimitiveDistinctDegree.lean`, `ArkLib/Data/CodingTheory/ProximityGap/RootsOfUnityVandermonde.lean`
+**Forms:** F17, F4, F15<br>
+**Walls:** W-genericity<br>
+**Code:** `Research/ProximityPrize/Frontier/_wf407_nvm.lean`, `ArkLib/Data/CodingTheory/GMMDS/LovettPrimitiveDistinctDegree.lean`, `ArkLib/Data/CodingTheory/ProximityGap/RootsOfUnityVandermonde.lean`
 
 **Connection:** The in-tree GM-MDS primitive step closes UNCONDITIONALLY in the distinct-degree case (linearIndependent_of_injOn_natDegree) and reduces the rest to LovettUnionDegreesInjective: '|Vᵢ|+e pairwise distinct'. Over μ_n the relevant equality is degree MOD n, because genVandermonde_rootsOfUnity_det_ne_zero_iff says the minor is nonzero iff exponents are distinct mod n. _wf407_nvm exhibits the exact failure: SubgroupNVMProperty is FALSE at μ₈ because x⁴=1 collapses degree-4 onto degree-0 (col4_eq_col0, Mbad_det_eq_zero). So the genericity gap is precisely the difference between 'distinct as naturals' (Lovett's residual, generic-true) and 'distinct mod n' (the μ_n-faithful condition) — the d↦d%n collapse map.
 
@@ -373,8 +373,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C017 — Krawtchouk diagonalizes the Shaw operator: the worst far-line incidence is a Krawtchouk-weighted Gauss period (F3 = F2 ⊗ F4-ball)   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F2, F3, F4  
-**Walls:** W-Johnson  
+**Forms:** F2, F3, F4<br>
+**Walls:** W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/ShawOperator.lean`, `ArkLib/Data/CodingTheory/ProximityGap/ShawOperatorDual.lean`, `ArkLib/Data/CodingTheory/ProximityGap/ShellFourierKrawtchouk.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LineIncidenceSpectral.lean`
 
 **Connection:** Three landed exact identities chain into one closed formula for I(δ). incidence_eq_average_add_shaw: incidence·|V|=|F|·(|S|+𝒮), 𝒮 the off-trivial spectral error on s1^perp. shawError_subgroup_eq: 𝒮=|H|·Σ_{ψ∈H^perp∩s1^perp,ψ≠0}ψ(s0) for a LINEAR agreement set. The Hamming δ-ball S is a UNION of shells, and shell_fourier proves each shell's Fourier coefficient Σ_{wt(e)=k}ψ(e) is EXACTLY the Krawtchouk value K_k(charWeight ψ). So 1̂_S(ψ)=Σ_{k≤δn}K_k(wt ψ) and 𝒮(S;s0,s1)=Σ_{ψ⊥s1,ψ≠0}(Σ_{k≤δn}K_k(wt ψ))ψ(s0). The far-line restriction s1=monomial makes the surviving ψ⊥s1 exactly the Gauss-period frequencies b·μ_n (F2). Hence I(δ) is a Krawtchouk-weighted Gauss period sum.
@@ -387,8 +387,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C018 — I_∞(δ) is the q-independent stratified census ∑_j 2^{r-2j}C(2^{μ-1},r-2j); δ*=I_∞^{-1}(n) is a single cyclotomic function — but ONLY above the resultant threshold (prize is below it)   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F1, F3, F10, F13  
-**Walls:** W-LamLeung  
+**Forms:** F1, F3, F10, F13<br>
+**Walls:** W-LamLeung<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/KKH26CensusExact.lean`, `ArkLib/Data/CodingTheory/ProximityGap/KKH26CharZeroCollisionLaw.lean`
 
 **Connection:** census_card_eq_stratified: above p>(2^μ)^{2^{μ-1}}, the exact bad-scalar count for the KKH26 fiber class equals I_∞(1−r/2^μ)=∑_{j∈feas}2^{r-2j}·C(2^{μ-1},r-2j) — a function of (μ,r) ONLY, q-independent. sum_eq_iff_freePart_eq pins the mechanism: two subgroup subsets collide iff antipodal-free parts agree, so I_∞ counts antipodal-free configs (F10 half-sum, F13 signed-unit-vector). So δ*(n)=sup{δ:I_∞(δ)≤n} IS a single q/n-independent inverse-cyclotomic function — but ONLY above the resultant threshold. CRITICAL CAVEAT (honest): the prize p≈n^β (β≈4-5) is FAR BELOW (2^μ)^{2^{μ-1}}, so census exactness FAILS there (DISPROOF_LOG O139: in-window census field-dependent; extra mod-p collisions). I_∞ is the char-0/large-p envelope; the prize gap is 'how far below I_∞ the char-p count rises'.
@@ -401,9 +401,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C019 — The Bessel coefficient bound IS the Salem-Zygmund sub-Gaussian MGF — char-0 closes the chaining input, leaving only the char-p defect   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F2, F5, F13, F16  
-**Walls:** W-anomaly, W-BGK  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/RungBesselEnergy.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Frontier/SalemZygmundChaining.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CharSumMomentDeepWall.lean`
+**Forms:** F2, F5, F13, F16<br>
+**Walls:** W-anomaly, W-BGK<br>
+**Code:** `ArkLib/Data/CodingTheory/ProximityGap/RungBesselEnergy.lean`, `Research/ProximityPrize/Frontier/SalemZygmundChaining.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CharSumMomentDeepWall.lean`
 
 **Connection:** RungBesselEnergy.bessel_energy_le_gaussian proves coefficientwise [x^{2r}]I₀(2x)^{n/2}≤[x^{2r}]e^{(n/2)x²}=n^r/r! (E_r^∞(μ_n)≤(2r-1)‼·n^r). Generating-function-wise this is I₀(2x)^{n/2}⪯e^{(n/2)x²}, EXACTLY the per-period real-Gaussian MGF E_diag[e^{λη_b/√n}]≤e^{λ²/2} with proxy σ²=n — i.e. it discharges SalemZygmundChaining.SubGaussianMGF (the named open input) in characteristic 0. Feeding into the proven chernoff_max_re_le gives B≤√(2n log m) over m=(p−1)/n cosets, the prize floor. The two files were built as moment-method (F5) and exponential-MGF (F16) routes but the SAME Bessel inequality powers both. Only residual: char-p defect E_r−E_r^{(0)}>0 at r≈β (W-anomaly).
 
@@ -415,8 +415,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C020 — CS25 Fourier pair-identity = the LineIncidence spectral identity = the Gauss-period sup-norm M(n), via the SAME dual-code Parseval — cross-cone identification of F2/F3/F16/F18   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F2, F3, F16, F18  
-**Walls:** W-BGK, W-largesieve  
+**Forms:** F2, F3, F16, F18<br>
+**Walls:** W-BGK, W-largesieve<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/CS25FourierIdentity.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LineIncidenceSpectral.lean`
 
 **Connection:** CS25 fourier_pair_identity: |G|·#{(w,f)∈B²:w−f∈C}=∑_{ψ:Ĝ}Ŝ(ψ)Ŝ(−ψ), G=Fⁿ/C, Ŝ(ψ)=∑_{w∈B}ψ(⟦w⟧). ψ=0 term is |B|²; off-diagonal q^{k−n}∑_{ψ≠0}‖Ŝ(ψ)‖² is a DUAL-CODE character sum. This equals LineIncidenceSpectral.lineIncidence_spectral: #{γ:s₀+γs₁∈S}·|V|=|F|·∑_{ψ⊥s₁}∑_{s∈S}ψ(s₀−s) (only s₁^⊥ survives the γ-average). Choosing B=syndrome ball, C^⊥ generated by the line direction, the surviving dual frequencies' worst Fourier coefficient is EXACTLY M(n)=max_b|∑_{x∈μ_n}e_p(bx)| (F2). So CS25's second-moment Parseval and the prize's incomplete-character-sum sup-norm are the SAME Parseval mass, B²-pair-counted (CS25, L²) vs worst-frequency (prize, L^∞).
@@ -429,8 +429,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C021 — Autocorrelation r(h)=|μ_n∩(μ_n+h)| IS the Fourier square of η_b: F18 flatness ⟺ F2 sup-norm by Parseval, with the diagonal cap already proven   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F2, F18, F5, F16  
-**Walls:** W-BGK  
+**Forms:** F2, F18, F5, F16<br>
+**Walls:** W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/AutocorrelationMax.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LineIncidenceSpectral.lean`, `ArkLib/Data/CodingTheory/ProximityGap/PrizeSpectralLevelSetSharp.lean`
 
 **Connection:** For G=μ_n, r(h)=#{(x,y)∈G²:x−y=h}=Σ_x 1_G(x)1_G(x−h) has Fourier transform r̂(b)=|η_b|² EXACTLY (η_b=FT of 1_G). So F18 ('max Fourier coeff of r(h)≤n·log(p/n)') is LITERALLY max_b|η_b|²≤n·log(p/n)=F2 squared. autocorr_le_autocorr_zero proves the elementary diagonal cap r(h)≤r(0)=n on the SPATIAL side; the open content is the FREQUENCY-side flatness of the SAME r(h). card_resonant_ge (Paley-Zygmund) gives the matching level-set lower bound, bracketing the spectrum at √n typically. The honest content of F18 fails for the proven nonneg-weight brick because the prize signed autocorrelation r(h)=Σ_j τ_j conj(τ_{j+h}) is NOT nonnegative — the exact gap between autocorr_le_autocorr_zero (nonneg, gives the floor) and the signed case is precisely the Gauss-sum-phase cancellation = BGK.
@@ -443,8 +443,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C022 — The dyadic prize domain is single-prime-power, so the BCH-window/dual-RS code is the COMPLETE & SHARP char-0 case; the prize wall is the char-0→char-p transfer of ONE proven theorem   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F14, F3, F10, F15  
-**Walls:** W-LamLeung, W-anomaly, W-Mersenne  
+**Forms:** F14, F3, F10, F15<br>
+**Walls:** W-LamLeung, W-anomaly, W-Mersenne<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/PrimePowerMultisetWindow.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubsetSumEsymmVanishing.lean`, `ArkLib/Data/CodingTheory/ProximityGap/TwoPrimeWindowLaw.lean`
 
 **Connection:** The BCH-window/dual-RS code is C_t={w:Σ_e w_e ζ^{je}=0, 1≤j≤t} on μ_n. The #232/#389 thread handles n with one or two primes. The PRIZE n=2^μ is a SINGLE prime power, the easiest case, and weighted_windowed_prime_pow PROVES the window law UNCONDITIONALLY there: a window-t-vanishing weight is exactly an ℕ-combination of μ_d-coset indicators with d∣n, d>t, so min nonzero weight (designed/true min distance of the dual-RS code) is the least divisor of 2^μ exceeding t, i.e. 2^{⌈log2(t+1)⌉}, sharp and BCH-beating. BUT every such theorem is [CharZero L] load-bearing (explicit char-p failure ζ=2 over F_17). The prize is precisely the char-p version (q≡1 mod n, μ_n⊂F_q) of this single-prime-power window law — the char-p antipodal-coincidence / Lam–Leung-in-char-p wall, the SAME object as F10's DyadicLacunaryFloor and the deep-moment anomaly.
@@ -457,8 +457,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C023 — Two distinct group-actions quantize the SAME law: dilation ⟨g^t⟩ on bad-scalars (F3) vs coset μ_n on frequencies (F2); gcd(t,n) via the t-power map is the missing dictionary entry   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F1, F2, F3, F10  
-**Walls:** W-BGK  
+**Forms:** F1, F2, F3, F10<br>
+**Walls:** W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean`, `ArkLib/Data/CodingTheory/ProximityGap/FarLineIncidenceEquivariance.lean`
 
 **Connection:** Two proven coset-quantizations on opposite sides of δ*=sup{δ:I(δ)≤q·ε*}, NOT the same group. FREQUENCY side: eta_image_card_mul_le proves η_b invariant under b↦b·x for x∈μ_n, so (q−1)/n periods (F2), log((q−1)/n) scale. BAD-SCALAR side: lacBad_smul_closed proves lacBad(μ_n,a,t) invariant under γ↦g^t·γ, a union of cosets of ⟨g^t⟩=μ_{n/gcd(t,n)}, so #bad is a multiple of n/gcd(t,n) (F3). DUAL actions of the same Z/n on two objects (frequencies via b↦b·g, witness-sums via g↦g^t). The dictionary is gcd(t,n): coprime-t gives FULL μ_n-orbits (n units, matching per-frequency); t even shrinks the orbit to n/2 — exactly when the t-power map collapses μ_n onto μ_{n/2}.
@@ -471,8 +471,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C024 — Negation symmetry −1=ζ^{n/2} is load-bearing in OPPOSITE directions: it pins/eases the count faces (F2 real, F5 odd-moment, F13) but IS the wall on the GM-MDS genericity face   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F2, F5, F13  
-**Walls:** W-genericity, W-subspace  
+**Forms:** F2, F5, F13<br>
+**Walls:** W-genericity, W-subspace<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/KKH26CharZeroCollisionLaw.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MuTwoPowDerandRefutation.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LamLeungMultisetAntipodal.lean`
 
 **Connection:** The single symmetry −1=ζ^{n/2}∈μ_n appears with OPPOSITE sign on the two faces. Count/moment face HELPS: sum_eq_iff_freePart_eq/sum_injOn_antipodalFree show the antipodal-free part is a complete invariant of subset-sums, collapsing the char-0 collision count, making periods real (F2), forcing odd-moments to −n^{2k} (F5/F13) — comment 66 confirmed even order has FEWER distinct subset-sums than odd. GENERICITY face HURTS: MuTwoPowDerandRefutation.not_kwpc_rigidity/rimMatrix_det_eq_zero use EXACTLY −1=ω^{n/2} (even polynomials agree on ±x) to build an explicit RIM with vanishing determinant, killing the GM-MDS derandomization that would give capacity. Same involution, opposite valence.
@@ -485,8 +485,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C025 — The parity obstruction is an enumeration-free q-independent KILL of the char-0 e2=0 layer exactly on prize production dimensions k≡0 (mod 4)   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F12, F3, F15  
-**Walls:** (none)  
+**Forms:** F12, F3, F15<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/WindowTwoLayerThreshold.lean`
 
 **Connection:** e2Folded_ne_zero_of_odd_pairs proves that if the pair count C(|A|,2) is odd then the folded e2 polynomial CANNOT vanish in char 0 (coefficient-sum ≡ pair count mod 2). Composed with the threshold theorem: e2_ne_zero_of_production_dim — for |A|≡2 (mod 4) i.e. agreement a=k+2 with k≡0 (mod 4), covering EVERY production dimension k=2^j (j≥2), there is NO qualifying subset (e2=0) at any prime above the resultant threshold, with NO enumeration and uniformly in n=2^m. Via comment-40's reduction (bad α at agreement k+2 ⟺ ∃(k+2)-subset S with e2(S)=0, e1(S)≠0, α=−1/e1(S)), the entire depth-1 bad-scalar set at a=k+2 is EMPTY at production dimensions: an F3 incidence statement from an F12 algebraic-rigidity certificate, no character sum.
@@ -499,9 +499,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C026 — The cyclotomic norm-defect threshold is ONE engine for both e2=0 rigidity (F12) and the additive-energy clean range (F5/F13): the FINITE-degree escape from F5 vacuity   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F12, F5, F13  
-**Walls:** W-Johnson, W-largesieve, W-anomaly  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/WindowTwoLayerThreshold.lean`
+**Forms:** F12, F5, F13<br>
+**Walls:** W-Johnson, W-largesieve, W-anomaly<br>
+**Code:** `Research/ProximityPrize/Frontier/CyclotomicNormDefectThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/WindowTwoLayerThreshold.lean`
 
 **Connection:** CyclotomicNormDefectThreshold (prime_le_of_cyclotomic_signed_sum, no_spurious_tuple_of_lt_prime) proves the additive-energy clean range: any signed sum of ≤2r roots vanishing mod p forces p≤(2r)^{φ(n)} via |Res(Φ_n,g)|=|Norm(α)|≤M^{φ(n)}. WindowTwoLayerThreshold.qualifying_implies_char0_vanishing is the SAME mechanism specialized to the degree-2-in-the-set polynomial R_U with M=|A|² (ℓ¹ mass ≤2^{m-1}|A|²). So F12 (e2=0) is the r-fixed structured instance of the F5/F13 deep-moment clean range with the signed sum being the e2 relation. The crucial difference: e2's relation has BOUNDED EXPLICIT degree and ℓ¹ mass independent of r, so its threshold is genuinely finite and beats the W-Johnson L² ceiling, whereas the generic F5 threshold is VACUOUS at prize r≈log p because φ(n)=n/2 makes (2r)^{n/2}≫p.
 
@@ -513,8 +513,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C027 — The covering number from the far-count IS the subgroup distinct r-fold subset-sum |G^{(+r)}|, with a PROVEN two-sided base-{2,3} bracket [2^{n/2},3^{n/2}] capped by p   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F3, F4, F10, F14  
-**Walls:** W-Mersenne, W-largesieve, W-idealSVP  
+**Forms:** F3, F4, F10, F14<br>
+**Walls:** W-Mersenne, W-largesieve, W-idealSVP<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/SubsetSumLowerLoop50.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupSumsetThreePowUpper.lean`, `ArkLib/Data/CodingTheory/ProximityGap/TwoPowerSubsetSumSpectrum.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CoveringTransfer.lean`
 
 **Connection:** The §7/BCHKS far-line construction makes the bad-scalar count a=|E^{(+ℓ)}| (distinct ℓ-fold subset-sum), the close-set cardinality of the curve-decodability route. For dyadic μ_n the antipodal collapse (antipodal_pow, subsetSum_closed_form) factors every subset sum through the signed cube {−1,0,1}^{n/2}, giving the EXACT spectrum law N(μ,r)=∑_a 2^a C(n/2,a) (subsetSumSpectrum_card) and the proven two-sided bracket 2^{n/2}≤|G^{(+)}|≤3^{n/2} (card_subsetSumset_isPrimitiveRoot_two_pow_ge / subsetSumset_full_le_three_pow), then field-capped to min(3^{n/2},p) (subsetSumset_full_le_min). So the F3 covering count is pinned BEFORE the field cap; only the cap p (≤2^256) keeps the prize alive. Explicit F3↔F10↔F14 unification: the covering number = a BCH-type distinct-sumset = signed-cube image.
@@ -527,8 +527,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C028 — The KKH26 resultant threshold p>s^{s/2} is the SINGLE shared injectivity boundary controlling both the covering count (F4) and the Half-Sum lacunary vanishing (F10), read in opposite directions   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F10, F4, F15  
-**Walls:** W-LamLeung  
+**Forms:** F10, F4, F15<br>
+**Walls:** W-LamLeung<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/KKH26SumsOfRootsOfUnity.lean`, `ArkLib/Data/CodingTheory/ProximityGap/TwoPowerSubsetSumSpectrum.lean`, `ArkLib/Data/CodingTheory/ProximityGap/FiniteFieldDisproofLoop53.lean`
 
 **Connection:** kkh26_lemma1 proves the covering count 2^r·C(n/2,r) is REALIZED in F_p precisely when p>s^{s/2} (s=n), via natAbs_resultant_cyclotomic_le (|Res(R,Φ_{2^μ})|≤‖R‖₁^{n/2}≤(2r)^{n/2}) and not_isRoot_of_l1On_pow_lt. The SAME object — a short ±1,0 lacunary polynomial R of degree <n/2 not vanishing at g mod p — is exactly the DyadicLacunaryFloor object F10. Curve/covering realization (F4 list explodes ⟺ p large) and Half-Sum cleanliness (F10 floor holds ⟺ short relations vanish) are the SAME resultant-nonvanishing inequality with the inequality flipped: list explosion needs sums DISTINCT (R(g)≠0), floor cleanliness needs bad relations to VANISH (R(g)=0). Exact complements gated by p⋛s^{s/2}.
@@ -541,8 +541,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C029 — The char-p energy SURPLUS E_p−E_∞ is the only open quantity, and it is a Stepanov point-count — not a Weil/moment one (three proven bricks isolate it)   [total 25 | insight 9 research 8 relevance 8 | multiform yes]
 
-**Forms:** F5, F2, F13, F12  
-**Walls:** W-anomaly, W-Johnson, W-BGK  
+**Forms:** F5, F2, F13, F12<br>
+**Walls:** W-anomaly, W-Johnson, W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/RepCountCharZeroBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/RepCountCharZeroEnergy.lean`, `ArkLib/Data/CodingTheory/ProximityGap/RungBesselEnergy.lean`, `ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean`, `ArkLib/Data/CodingTheory/ProximityGap/RepCountStepanovOrderTwo.lean`
 
 **Connection:** Three theorems chain: (1) repCount_le_two proves r(c)=#{y∈μ_n:c−y∈μ_n}≤2 over ℂ, so additiveEnergy_charZero_le gives E_∞(μ_n)≤3n². (2) bessel_energy_le_gaussian proves the char-0 deep energy E_r^∞≤(2r−1)!!n^r term-by-term (a THEOREM). (3) E_r^{F_p}=E_r^∞+surplus S_r, S_r=#{2r-tuples summing to 0 mod p but NOT over ℤ[ζ_n]}. The char-0 part is fully governed; via sidon_order_of_sqrt_charSum E_2 of Sidon order ⟺ B≤C√n ⟺ δ* pinned in n²≤q (the prize). So the entire open core is the surplus S_r — by definition a count of F_p-rational solutions to Σx=Σy on μ_n^{2r} that are not ℤ-solutions, a point-count on an affine variety, the home turf of Stepanov, NOT a Gauss-sum sup-norm.
@@ -555,8 +555,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C030 — The δ* gap H(ρ)/(β log n) IS the entropy-rate of the census numerator: ceiling distance to capacity = (log₂ I_∞)/(β log₂ n) via method-of-types   [total 24 | insight 8 research 8 relevance 8 | multiform yes]
 
-**Forms:** F1, F3  
-**Walls:** W-Johnson  
+**Forms:** F1, F3<br>
+**Walls:** W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/KKH26EntropyForm.lean`, `ArkLib/Data/CodingTheory/ProximityGap/KKH26AsymptoticCeiling.lean`, `ArkLib/Data/CodingTheory/ProximityGap/EntropyGateDeltaStar.lean`
 
 **Connection:** The conjectured pin δ*=1−ρ−H(ρ)/(β log₂ n) is reconstructed from the census: kkh26_gap_identity proves the march ceiling sits EXACTLY (2m−1)/n=Θ(1/2^μ) below capacity; kkh26_count_poly_in_n + choose_ge_two_rpow_entropy_div prove the census numerator C(2^μ,r)≥2^{2^μ·H(r/2^μ)}/(2^μ+1), i.e. log₂ I_∞≈2^μ·H(ρ). The pin fires (F1) when I_∞=q·ε*≈n, i.e. 2^μ·H(ρ)≈log₂ n+(gap)·(β log₂ n); solving gives gap=H(ρ)/(β log n). EntropyGateDeltaStar.mcaDeltaStar_le_of_entropy_gate makes this a THEOREM mod two binomial-tail walls (lower a!·2q^m≤(n+1−a)^a; upper n^a<a!·q^{m+1}).
@@ -569,8 +569,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C031 — CS25 second moment IS the additive energy E_2; its diagonal/off-diagonal split is the n^{1/2} energy-deficit wall made explicit and machine-checked   [total 24 | insight 8 research 8 relevance 8 | multiform yes]
 
-**Forms:** F5, F3, F1  
-**Walls:** W-Johnson  
+**Forms:** F5, F3, F1<br>
+**Walls:** W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/CS25SecondMomentPairCount.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CS25BallIntersectionGlobal.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CS25BallIntersectionMGF.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CS25SecondMomentReduction.lean`
 
 **Connection:** sum_closeCount_sq_eq_card_mul_sum_ballInterCount_of_add_sub_closed proves E[N²]=|C|·∑_{v∈C}ballInterCount(v): the CS25 second moment IS the additive-energy-style sum of two-ball intersections over codeword differences. sum_jointCoverCount_eq_volume_sq gives the GLOBAL normalizer ∑_all-v I(v)=V². sum_jointCoverCount_mgf_mds_le/weightEnum_mds_le ALGEBRAICALLY separate the diagonal A_0·(1+(q−1)θ²)^n (=I(0)=V) from the off-diagonal (q·X+Y)^n/q^{n−k}. This is the in-tree machine-checked realization of 'E(μ_n)≥n² always (diagonal), so list≤√(n·E)≥n^{3/2}': the diagonal A_0=1 term is the +V (n-scale) floor no L² method removes, and the MGF file PROVES it must be separated (uniform A_d over all d is unsatisfiable because A_0=1 > MDS-predicted q^{-(n-k)}).
@@ -583,9 +583,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C032 — The proven r=2 Sidon anchor (smallSubgroup_sidonModNeg) IS fully-split ideal-SVP NON-EXISTENCE at the shortest length — extending past r=2 = proving short ideal-lattice vectors don't exist mod 𝔮   [total 24 | insight 8 research 8 relevance 8 | multiform yes]
 
-**Forms:** F11, F5, F12  
-**Walls:** W-idealSVP  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/SmallSubgroupSidonModNeg.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean`
+**Forms:** F11, F5, F12<br>
+**Walls:** W-idealSVP<br>
+**Code:** `ArkLib/Data/CodingTheory/ProximityGap/SmallSubgroupSidonModNeg.lean`, `Research/ProximityPrize/Frontier/CyclotomicNormDefectThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean`
 
 **Connection:** smallSubgroup_sidonModNeg proves: if 4^{φ(n)}<p then μ_n has no nontrivial additive parallelogram mod p (the r=2 case). Through the ideal-lattice lens, a parallelogram x₁+x₂−x₃−x₄≡0 mod 𝔮 with four distinct roots is EXACTLY a short (house≤4) nonzero vector of the ideal 𝔮⊂ℤ[ζ_n] that is a signed sum of ≤4 roots of unity. So smallSubgroup_sidonModNeg = 'the fully-split ideal 𝔮 has no sparse-support vector of house≤4 below norm 4^{φ(n)}', a fully-split ideal-SVP non-existence at length 4. The general F11 open core (defect onset at r≈ln q) is the SAME statement at house≤2r. The proven Sidon brick AND CyclotomicNormDefectThreshold are partial ideal-SVP results; the gap to the prize is extending house-4/length-4 to house-2r/length-2r.
 
@@ -597,8 +597,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C033 — The char-p transfer of #lacBad is gated by the SAME ±1-relation height as the BGK energy — one threshold s* governs both faces   [total 24 | insight 8 research 8 relevance 8 | multiform yes]
 
-**Forms:** F5, F10, F12  
-**Walls:** W-LamLeung, W-anomaly, W-largesieve  
+**Forms:** F5, F10, F12<br>
+**Walls:** W-LamLeung, W-anomaly, W-largesieve<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LamLeungAntipodalTightness.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MinimalVanishingReduction.lean`
 
 **Connection:** DyadicLacunaryDeltaStar's relation-free criterion (char-0 e_t values stay distinct mod q) is verified at s*=2·log₂(qε*)/H(ρ). LamLeungAntipodalTightness.antipodal_invariant_of_vanishing_sum proves, CONDITIONAL on hindep (no nonzero {-1,0,1}-combination of {1,ζ,…,ζ^{N-1}} vanishes), every char-p vanishing subset is antipodal. MinimalVanishingReduction reduces Lam-Leung to minimal {-1,0,1}-vanishing sums. So the char-p transfer of the COUNT (does a non-antipodal subset appear mod q?) is governed by the SAME short ±1-relation supply as the char-p transfer of the ENERGY E_r (does a non-Wick collision appear mod q?). Both: 'do 2^μ-th roots satisfy a short {-1,0,1} relation mod the prize prime q?'. One cyclotomic-height question, threshold s*=2log(qε*)/H(ρ).
@@ -611,8 +611,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C034 — L must straddle k: the lacunary floor is automatically TRUE when 2^L∤(k+t) (variety EMPTY), FALSE-risk only at the 2-adic carry resonance 2^L|(k+t)   [total 24 | insight 8 research 8 relevance 8 | multiform yes]
 
-**Forms:** F3, F10, F15  
-**Walls:** W-genericity  
+**Forms:** F3, F10, F15<br>
+**Walls:** W-genericity<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/CosetVanishingDichotomy.lean`, `ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean`
 
 **Connection:** card_le_gcd_of_esymm_zero proves a vanishing-statistic h-subset injects into the gcd(h,n)-th roots, so |S|≤gcd(h,n); not_exists_esymm_zero_of_not_dvd makes the variety EMPTY unless the constraint count divides into n. Applied to lacunary L=⌈log₂ t⌉: vanishingVariety μ_n (k+t) t is NONEMPTY iff 2^L|(k+t). So the floor is trivially satisfied (count 0) for every gap t with 2^L∤(k+t) — only arithmetic-resonant gaps contribute, and there count = C(n/2^L,(k+t)/2^L). The window-interior gap t≈H(ρ)n/log n is large, so 2^L≈t≈n/log n, n/2^L≈log n: the binomial is C(log n,k/2^L+1)=poly(n) — the floor holds for structural reasons.
@@ -625,8 +625,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C035 — Two-sided reverse-Markov moment-ratio bracket pins F2 to F5's E_r/E_{r−1} growth: the prize is the single law E_r/E_{r−1}≤C·n·log-correction at r≈log m   [total 24 | insight 8 research 8 relevance 8 | multiform yes]
 
-**Forms:** F2, F5, F7  
-**Walls:** W-anomaly, W-BGK, W-Johnson  
+**Forms:** F2, F5, F7<br>
+**Walls:** W-anomaly, W-BGK, W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodMomentRatioLower.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodMomentBound.lean`
 
 **Connection:** exists_period_sq_ge_moment_ratio proves, for EVERY r, max_{b≠0}‖η_b‖²≥(q·E_r−|G|^{2r})/(q·E_{r−1}−|G|^{2(r−1)}) — a reverse-Markov LOWER companion to GaussPeriodMomentBound.eta_pow_le_of_energyBound's upper max²≤(qE_r)^{1/r}. Together they bracket the worst period by the consecutive additive-energy ratio E_r/E_{r−1}. For a TRUE max of m sub-Gaussians of variance n, E_r=(2r−1)‼·n^r so E_r/E_{r−1}=(2r−1)·n, giving max²≳(2r−1)·n; optimizing the upper feeder at r*≈log m gives max≲√(2n log m). The match at r≈log m is the max-of-m scaling — the log m is the optimizing-r artifact, NOT extra energy. Converts the open core from an upper-only sup-norm into a falsifiable two-sided energy-ratio law; the char-p anomaly is the breakdown of E_r/E_{r−1}≈n once q·E_r^{char0}<n^{2r}.
@@ -639,8 +639,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C036 — Vieta-pin makes the COUNT face a power-sum-Newton image: I(δ)=#{e_t on {p_1=...=p_{t-1}=0}}, literally the deep additive-energy variety F5/F13 (a char-sum-free F3↔F5 bridge)   [total 24 | insight 8 research 8 relevance 8 | multiform yes]
 
-**Forms:** F3, F5, F10, F13, F15  
-**Walls:** W-LamLeung  
+**Forms:** F3, F5, F10, F13, F15<br>
+**Walls:** W-LamLeung<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean`, `ArkLib/Data/CodingTheory/ProximityGap/EnergyRelationAntipodal.lean`
 
 **Connection:** DyadicLacunaryDeltaStar pins I(δ) for direction (a,b) as #lacBad=#{e_t(S):S⊆μ_n,|S|=a,e_1(S)=...=e_{t-1}(S)=0}, t=a−b. By Newton's identities e_1=...=e_{t-1}=0 ⟺ power sums p_1(S)=...=p_{t-1}(S)=0 (with these vanishing, p_t=(−1)^{t-1}t·e_t). So the bad-scalar count is exactly a count of a-subsets of μ_n whose first t−1 power sums vanish — p_j(S)=Σ_{x∈S}x^j is precisely the additive-relation/energy object governing F5/F13 (the antipodal vanishing-power-sum structure in EnergyRelationAntipodal). This identifies the COMBINATORIAL count face (F3/F10) with the ANALYTIC moment/energy face (F5/F13) NOT through char sums but through the symmetric-function/power-sum dictionary: e_t=(−1)^{t-1}p_t/t on the vanishing variety. The same Lam–Leung antipodal rigidity bounding E_r bounds #lacBad cosets.
@@ -653,8 +653,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C037 — The granularity ladder (δ*=e/n, Λ linear) and the KKH26 march (δ*=1−r/2^μ, Λ super-poly) are the SAME I(δ) curve below vs above its super-polynomial knee; the prize is the unmapped knee   [total 24 | insight 8 research 8 relevance 8 | multiform yes]
 
-**Forms:** F1, F3, F4  
-**Walls:** W-Johnson  
+**Forms:** F1, F3, F4<br>
+**Walls:** W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/GranularityLadderRS.lean`, `ArkLib/Data/CodingTheory/ProximityGap/StaircaseBandTheorem.lean`, `ArkLib/Data/CodingTheory/ProximityGap/KKH26CeilingMarch.lean`
 
 **Connection:** Two in-tree staircases pin δ* on disjoint regions of the SAME monotone I(δ). (i) Granularity ladder (mcaDeltaStar_rs_eq_granularity): for δ<(n−k)/3 the count is LINEAR Λ(e)=e, δ*=e/n on ε*·q∈[e,e+1) — sub-saturation BELOW Johnson, valid only e≲(n−k)/3. (ii) KKH26 march (kkh26_march_deltaStar_pin): near capacity δ=1−r/2^μ the count is SUPER-POLYNOMIAL. The same I(δ) rises from linear (low δ) to super-poly (high δ); δ*=I^{-1}(n) sits where it crosses the budget n. The ladder reaches I=e≈(n−k)/3<n (δ*<1−√ρ, below Johnson — a proof artifact); the march starts where I is already exponential. The PRIZE WINDOW is the unmapped knee region (1−√ρ,1−r/2^μ) where I(δ) transitions from O(n) to super-poly.
@@ -667,8 +667,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C038 — Folding buys an additive-energy reduction: the (d+1)-orbit fold is the multiplicative analogue of the 2-adic energy descent (W-subspace and W-BGK may share one deflation mechanism)   [total 24 | insight 9 research 8 relevance 7 | multiform yes]
 
-**Forms:** F4, F5, F8  
-**Walls:** W-subspace, W-BGK  
+**Forms:** F4, F5, F8<br>
+**Walls:** W-subspace, W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/FoldingTransferNoGo.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubspaceDesignFullVanish.lean`
 
 **Connection:** The proven foldedAgree_mul_le_plainAgree: (d+1)·foldedAgree≤plainAgree — a fold over orbits of size d+1 deflates the agreement count by the orbit size. Structurally the SAME factor-of-2 deflation as the proven 2-adic char-sum descent M(n)²≤2M(n/2)² (F8): folding μ_n by x↦x² maps μ_n→μ_{n/2}, energy/agreement halves per level. The subspace-design fullVanish bound (SubspaceDesignFullVanish) gives WHY folding helps the LIST face: a dim-r subspace is forced nonzero on (1−τ(r))n coordinates, folding raises s, lowering τ. So the design route's 'folding necessity' (W-subspace) and the char-sum route's '2-adic descent' (W-BGK→F8) may be the SAME deflation on two faces — list-energy on the design side, char-sum-energy on the analytic side, both ÷(orbit size) per fold.
@@ -681,9 +681,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C039 — The constant-index torsion bound IS the F20 lane with the index t=(q−1)/d as the exact divisor that kills the √-saving   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F2, F20, F19, F7  
-**Walls:** W-BGK, W-largesieve  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumWorstCase.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Frontier/BurgessIndexOvershoot.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean`
+**Forms:** F2, F20, F19, F7<br>
+**Walls:** W-BGK, W-largesieve<br>
+**Code:** `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumWorstCase.lean`, `Research/ProximityPrize/Frontier/BurgessIndexOvershoot.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean`
 
 **Connection:** mul_norm_eta_torsion_le says t·‖η_b‖≤(t−1)√q+1, t=(q−1)/d the cofactor. As F20: ‖η_b‖≤((t−1)√q+1)/t=√q·(1−1/t)+1/t. The ENTIRE F20 √-cancellation lives in the single +1 (trivial-character term contributing 1 not √q): the saving over √q is exactly (√q−1)/t, governed by the cofactor t. For μ_n, t=m=(q−1)/n≈2^128, so saving (√q−1)/t≈n^{β/2}/2^128 is negligible and the bound collapses to bare √q. eta_image_card_mul_le shows the same m=(q−1)/n is the period count (F7)=Paley eigenvalue multiplicity, tying F20's index to the W-BGK Paley spectrum size. The constant-index lane is proven precisely when t is small (QR has the small subgroup as the OTHER factor); at the prize d=n and t=m both ≥n, so neither completion is constant-index.
 
@@ -695,8 +695,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C040 — The cumulant IS the char-p energy DEFECT and the defect is NEGATIVE: the open core is an UPPER bound free in char 0 that must only not OVER-correct in char p   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F5, F2, F16  
-**Walls:** W-anomaly, W-BGK  
+**Forms:** F5, F2, F16<br>
+**Walls:** W-anomaly, W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodMomentBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CharSumMomentDeepWall.lean`
 
 **Connection:** The machine-verified identity n·Σ_i η_i^{2r}=q·E_r−n^{2r} makes B a CUMULANT (the b=0 raw term n^{2r} cancels), and the measured char-p defect E_r−E_r^ℂ is NEGATIVE in-regime (n=16,r=5: E_5=5.17e8<E_5^ℂ=9.91e8). This flips the wall framing: W-anomaly is usually 'char-p energy OVERTAKES char-0 once qE^{char0}<n^{2r}, blowing up the bound'. But the off-diagonal cumulant Σ_{b≠0}η_b^{2r}=qE_r−n^{2r} subtracts exactly the diverging n^{2r}, and what remains is measured SMALLER than the Bessel baseline. CharSumMomentDeepWall's 'E_r≤(2r−1)!!n^r FALSE past r≈8' is about the RAW E_r, not the cumulant; the cumulant κ_r≤1 holds WITH MARGIN.
@@ -709,8 +709,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C041 — The Möbius/inversion + rotation + monomial-twist generate the full PGL₂-normalizer; the worst-case δ* stack is a SINGLE orbit (reduces the sup to ONE representative)   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F3, F9  
-**Walls:** (none)  
+**Forms:** F3, F9<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/MCAEquivariance.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MCAMonomialEquivariance.lean`, `ArkLib/Data/CodingTheory/ProximityGap/WBPencilSymmetry.lean`
 
 **Connection:** mcaEvent_rs_rotate (x↦g·x, the torus) and the inversion x↦-1/x (via the reversal-twist (T u)(i)=(dom i)^{k-1}u(σi)) supply the two PGL₂(F_q) generators on the smooth RS domain; with affine reparametrizations and the diagonal MCAMonomialEquivariance twist they generate the full monomial normalizer of the GRS automorphism group. WBPencilSymmetry.mcaEvent_swap_inv acts as γ↦γ⁻¹ (the F2↔F3 self-duality). The decisive probe (MCAMonomialEquivariance docstring): at the first exact pin RS[F5,(1,2,4,3),2] the 100,000 worst-case stacks are TWO free orbits under affine+rotation but ONE single orbit of size 100,000 once the twisted inversion is added. So the entire ε_mca worst-case sup (already reduced to orbit transversals by epsMCA_eq_iSup_subtype_of_reps) collapses to a SINGLE PGL₂-normalizer orbit. The δ* extremizer is canonical.
@@ -723,8 +723,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C042 — The cross-parity defect A≡−g·B and Conj 1.12's anti-spreading complement are DUAL halves of one fully-split subset-sum image S₀, linking W-Mersenne to W-idealSVP through one set   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F11, F3, F1  
-**Walls:** W-Mersenne, W-idealSVP, W-largesieve  
+**Forms:** F11, F3, F1<br>
+**Walls:** W-Mersenne, W-idealSVP, W-largesieve<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/SubgroupSumsetLargeFactorReduction.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupSumsetConjecture.lean`
 
 **Connection:** RESULTS §17: #cross-parity-defects=|S₀∩(−g)·S₀| where S₀=(μ_{n/2}-subset-sum image)⊂F_q. Conj 1.12 (SubgroupSumsetConjecture) is the LOWER bound |sumsetDistinct G (b/2)|≥q/10 (image BIG/spreading). The defect count is the SELF-INTERSECTION of that same image under a multiplicative dilate. Two faces of one set: the prize FLOOR needs S₀ additively spread yet thin under multiplicative dilation (small |S₀∩(−g)S₀|), while Conj 1.12 needs S₀ to nearly fill F_q. The Mersenne reduction (BigOrderTwoPrimeFactorHyp) is the structured case S₀=ALL of F_q (the ⟨−2⟩ signed-binary covering): there S₀∩(−g)S₀=F_q, the WORST defect. A Mersenne-type prime maximizes the cross-parity defect.
@@ -737,8 +737,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C043 — The KU-barrier exponent 1/(d-1) and the moment crossover r*≈β+1 are the SAME conductor-in-the-denominator obstruction on dual faces (L^∞ vs L^{2r})   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F5, F6, F19  
-**Walls:** W-largesieve, W-anomaly, W-BGK  
+**Forms:** F5, F6, F19<br>
+**Walls:** W-largesieve, W-anomaly, W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/KowalskiUntrauBarrier.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumMoment.lean`
 
 **Connection:** KU Lemma 3.9's Wasserstein decay q^{-1/(d-1)} is vacuous because d sits in the exponent's DENOMINATOR. The moment face (subgroup_gaussSum_moment: Σ_b‖η_b‖^{2r}=q·E_r) has the char-p anomaly forced once q·E_r^{char0}<n^{2r}, crossover r*≈β+1. Dual: equidistribution needs decay ≪ε* over the support (rate ∝1/size), the moment face needs validity to depth r∝log of the norm budget (2r)^{n/2}<q (n in the exponent). Both place subgroup-size n in an exponent that q=n^β (β=O(1)) cannot beat: β·log n on the right vs n on the left. The tangent/Jacobi face (T_h at q=nm, m≈2^128) inherits the SAME structure.
@@ -751,8 +751,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C044 — e_t=(−1)^t·(product of coset values): on coset-unions the bad scalar γ is a PRODUCT in μ_{n/gcd}, collapsing #lacBad ≤ n by a constructive char-p-stable certificate   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F3, F10, F12  
-**Walls:** (none)  
+**Forms:** F3, F10, F12<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CosetExactCount.lean`, `ArkLib/Data/CodingTheory/ProximityGap/TopDirectionLineCount.lean`
 
 **Connection:** lacBad = image of e_t over vanishingVariety. On a μ_{2^L}-coset-union S=⋃_i x_i·μ_{2^L}, loc(S)=∏_i(X^{2^L}−x_i^{2^L}) (loc_coset_union), so e_{2^L·j}(S)=±e_j of {x_i^{2^L}} and the lacunary slot e_t with t=2^L (smallest live gap) gives γ=±∏_i x_i^{2^L}·(unit) — a PRODUCT of the coset-reps' 2^L-powers. By esymmF_image_mul (lacBad_smul_closed) this image is a union of ⟨g^t⟩-cosets, and the product structure means distinct γ ↔ distinct multisets of 2^L-power class values, landing in μ_{n/gcd(t,n)}. Hence #lacBad ≤ n/gcd(t,n) ≤ n. Explains the measured #bad=Θ(n) AND that it never exceeds n: γ ranges over a single subgroup of order ≤n.
@@ -765,8 +765,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C045 — Var=n is literally the Johnson ceiling: the SAME flat-profile equality saturates both Cauchy-Schwarz steps (F7 period variance = W-Johnson tightness)   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F2, F7, F5  
-**Walls:** W-Johnson, W-BGK  
+**Forms:** F2, F7, F5<br>
+**Walls:** W-Johnson, W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSecondMoment.lean`, `ArkLib/Data/CodingTheory/ProximityGap/JohnsonSecondMomentFrontier.lean`
 
 **Connection:** Two in-tree exact identities are one object on two faces. (1) subgroup_gaussSum_secondMoment: Σ_b‖η_b‖²=q·|G|, average ‖η_b‖²=|G|=n (period variance). (2) JohnsonSecondMomentFrontier.cauchySchwarz_eq_iff_flat: (∑S)²=n·∑S² iff the per-coordinate profile S_j is FLAT. Applying Parseval to the period family, max_b‖η_b‖²≤Σ_b‖η_b‖²=q·n gives only √q per word (the Johnson √n deficit), with equality exactly the flat spectrum. So 'using only Var(η)=n' IS 'using only the marginal 2nd moment' IS the flat-profile CS-tight case — the Johnson ceiling and the L²-period ceiling are the same equality, not merely analogous.
@@ -779,9 +779,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C046 — Fourth-moment-can't-beat-Johnson and the period 4th moment are the SAME no-go: any finite L^p moment chain returns the variance, so the escape must be L^∞ (max), the MGF/Chernoff kernel   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F5, F4, F7  
-**Walls:** W-Johnson, W-BGK  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/JohnsonFourthMomentNoGo.lean`, `ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodLowerBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Frontier/SalemZygmundChaining.lean`
+**Forms:** F5, F4, F7<br>
+**Walls:** W-Johnson, W-BGK<br>
+**Code:** `ArkLib/Data/CodingTheory/ProximityGap/JohnsonFourthMomentNoGo.lean`, `ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodLowerBound.lean`, `Research/ProximityPrize/Frontier/SalemZygmundChaining.lean`
 
 **Connection:** JohnsonFourthMomentNoGo.squaredJohnson_le_fourthChain proves (n·S₂)²≤n³·S₄ ALWAYS, so the 4th moment of the matchCount profile can never beat the squared Johnson cap from S₄ alone. Dual: WorstPeriodLowerBound.exists_period_sq_ge uses the 4th period moment Σ‖η_b‖⁴=q·E(G) and gets only max≳√n. Same phenomenon: Σ‖η‖⁴/Σ‖η‖²=E/|G|, and S₂²≤n·S₄ is the period kurtosis being ≥Gaussian-flat. The proven Johnson 4th-moment no-go IS the statement that the period family's L⁴/L² ratio cannot localize the max — the capacity gap requires L^∞ (a maximal inequality), which is exactly why SalemZygmundChaining's MGF route (one exponential moment) is the right tool, not any finite L^p.
 
@@ -793,8 +793,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C047 — Why NO union/Chernoff bridges average→worst on the line family: MDS first moment ≪n, so the floor is a measure-zero outlier (witness spread exponentially rare)   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F3, F1, F4  
-**Walls:** W-Johnson, W-genericity  
+**Forms:** F3, F1, F4<br>
+**Walls:** W-Johnson, W-genericity<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/LineFirstMomentBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacityLowerBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacitySharpSpread.lean`
 
 **Connection:** LineFirstMomentBound.line_first_moment_bound proves (∑_γ|Λ(γ,a)|)·a≤|C|·n: per-line first moment is tiny (field-size-independent ~poly(n)/a). MCANearCapacityLowerBound.epsMCA_constCode_ge and MCANearCapacitySharpSpread.epsMCA_sharp_ge realize EXPLICIT spreads of n−1 (resp. (k+1)(n−k−1)+1=Θ(n²)) DISTINCT witness sets — the most the single-line method gives. The floor needs I(δ)≈q·ε*≈n bad scalars in the window, but the explicit constructions cap at Θ(n²)/q≪ε* AND the MDS first moment E_line[I]=q^{k+1}V_{δn}/q^n is astronomically below n. So the worst far-line incidence is a measure-zero outlier against an average exponentially smaller — a Chernoff/union bound on the n²-monomial-line family cannot bridge it because the tail to order log n IS the deep-moment input.
@@ -807,8 +807,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C048 — The super-code C⁺=C⊕⟨u₁⟩ collapses worst-case I(δ) into a single rank-(k+1) list-decoding radius, and the cyclic lever forces C⁺=RS[k+1] up to dilation   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F4, F3  
-**Walls:** W-genericity  
+**Forms:** F4, F3<br>
+**Walls:** W-genericity<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/SuperCodeListBridge.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MonomialLineListBridge.lean`
 
 **Connection:** explainableScalars_card_le_superList proves for ANY far u₁∉C, I(u₀,u₁;δ)≤|list(C⊕⟨u₁⟩,δn)| via the injection γ↦c_γ−γ·u₁ (injective since u₁∉C makes the sum direct). So worst-case I(δ)≤max over (dim+1)-super-codes of their δ-list. The cyclic lever (FarLineIncidenceEquivariance: Z/n-dilation makes monomials X^a extremal) collapses the max to the SINGLE super-code RS[k]⊕⟨X^k⟩=RS[k+1] — MonomialLineListBridge makes this exact. So the worst (dim+1)-super-code is forced (up to dilation) to be RS[k+1], NOT an adversarial generic one. The structural reason the two grand challenges are literally one: the super-code is not a free parameter.
@@ -821,8 +821,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C049 — The radius-doubling 2δ in the interleaved collapse is the quantitative form of the 'needs Λ(C)≤O(1)' circularity, and exactly why the MDS-incidence bound is window-vacuous   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F4, F3, F1  
-**Walls:** W-subspace  
+**Forms:** F4, F3, F1<br>
+**Walls:** W-subspace<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/InterleavedListMCACollapse.lean`, `ArkLib/Data/CodingTheory/ProximityGap/InterleavedListMDSBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/ListRecoveryInterleavedGap.lean`
 
 **Connection:** mcaBad_card_le_interleavedList bounds #mcaBad(δ) by the interleaved C^{≡2} list at the DOUBLED radius 2δ (joint-agreement floor 2t−n), the same-radius version proven FALSE by exhaustive counterexample. interleavedList_card_le gives |interleavedList(a)|·C(a,k)≤C(n,k), non-vacuous only for a=2t−n≥k, i.e. δ≤(1−ρ)/2 — strictly BELOW the prize window. So the radius doubling (necessary, not artifact) pushes the only unconditional list bound out of the window. With Lambda_interleaved_sandwich (Λ(C)≤Λ(C^{≡m})≤Λ(C)^m) and deltaStar_collapse_backward, the interleaved view provably cannot beat the single-code list at radius δ — 'B4 circular, needs Λ(C)≤O(1)' is exactly the statement that the 2δ→δ gap costs a factor that vanishes only if the base list is already O(1).
@@ -835,8 +835,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C050 — Schur-ladder identity makes e_t the EXACT transducer from the algebraic bad set to a subset-sum set: badSet=−{(k+1)-subset sums}, descending one dyadic level via the squaring fold   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F15, F3, F12  
-**Walls:** (none)  
+**Forms:** F15, F3, F12<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubsetSumE2PairingInflate.lean`
 
 **Connection:** LadderSchurReduction.residual_ladder_schur proves e_t(x^{k+1})=(∑points)·e_t(x^k) at the ladder stack, so badSet=−{subset sums of (k+1)-subsets of the domain} (F15 realized as the residual ratio), the t=1 analogue of the e2=0/α=−1/e1 reduction at t=2. SubsetSumE2PairingInflate.esymm2_inflate gives the EXACT engine controlling how e2 moves: doubling a zero-sum ±pair fixes e1 and shifts e2 by exactly −∑g_i² (all cross terms cancel). Chaining: the depth-t bad set is a level-(t) symmetric-function image, and the inflate identity reduces the t=2 joint (e1,e2) count to a subset-sum count on the SQUARES {g_i²}∈μ_{n/2} — i.e. F12 rigidity descends one dyadic level via squaring, the same FRI fold. Wires F15 (Schur) → F3 (incidence as subset sum) → F12 (e2 control by squares one level down).
@@ -849,8 +849,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C051 — Curve-decodability ⟹ MCA is char-sum-FREE root counting, so the entire open content is displaced into the close-set cardinality a = the incidence I(δ) (the wall is conserved, not escaped)   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F4, F3, F2  
-**Walls:** W-BGK  
+**Forms:** F4, F3, F2<br>
+**Walls:** W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/GG25NonCovering.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GG25SpreadBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GG25MCAFromCurveDecodability.lean`
 
 **Connection:** The GG25/Jo26 chain eq_zero_of_curve_agree_many (degree-ℓ vector polynomial killed by dual separation + Polynomial.card_roots') → disagree_spread_bound ((t−ℓ)|T|≤t·D) → all_seeds_close_of_curveDecodable turns curve-decodability into MCA using ONLY root counting of an F-polynomial of degree ≤ℓ — no Gauss sum M(n) (F2), no energy E_r (F5). The catch the in-tree files make explicit: the substantive hypothesis is the close-set threshold a≤#curveCloseSet. So the reduction is exact and char-sum-free, but does NOT remove the wall: it relocates it entirely into proving the close-set cardinality (= the bad/incidence count I(δ), F3) is ≤ budget. The map F4→F3 is an IDENTITY-level reduction (no analytic slack lost).
@@ -863,8 +863,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C052 — Imprimitive heavy lines are a self-similar orbit shrink: gcd(d,n)>1 ⟹ eigenratio order n/gcd ⟹ residence in a μ_{n/gcd} sub-tower (F3↔F8 descent, in-code)   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F3, F8, F10, F9  
-**Walls:** (none)  
+**Forms:** F3, F8, F10, F9<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/MonomialSpectrumEquivariance.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MCAEigenstackOrbitLaw.lean`, `ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean`
 
 **Connection:** Comment-1 numerics show imprimitive monomial directions X^{2a'} are 'heavy' (up to full-q incidence) while primitive ones concentrate, but offer only a self-similar pull-back heuristic. The eigenstack law gives the EXACT mechanism: for direction (x^a,x^b) gap d=a−b the eigenratio under domain rotation g is g^d of order n/gcd(d,n) (DyadicLacunary line 44). gcd>1 directions have SMALLER eigenratio order — but the per-coset multiplicity grows: the bad set tiles into cosets of the SMALLER group μ_{n/gcd}, exactly the 2-adic descent F8 (passing μ_n→μ_{n/2^j}). The heavy-line overflow is the orbit-quantization seen one tower level down, captured by composing rotation + scaling equivariances.
@@ -877,8 +877,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C053 — The Gauss-sum DFT identity η_b=(√q/m)Σ_χ χ̄(b)u_χ makes M(n) an extreme value of an exponential sum with PERFECTLY FLAT amplitudes — N₀ is a pure moment of UNIT phases u_χ, isolating the open core to phase-only   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F2, F6, F7, F16, F19  
-**Walls:** W-BGK, W-Betti  
+**Forms:** F2, F6, F7, F16, F19<br>
+**Walls:** W-BGK, W-Betti<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumMoment.lean`
 
 **Connection:** Combine: (i) η_b=(1/m)Σ_{χ∈μ_n^⊥}χ̄(b)τ(χ), |τ(χ)|=√q (Weil, Mathlib gaussSum norm), so η_b=(√q/m)Σ_χ χ̄(b)u_χ with u_χ:=τ(χ)/√q ON THE UNIT CIRCLE; (ii) the raw-moment identity Σ_b η_b^r=q·N₀(G,r) (F16=SubgroupGaussSumMoment specialization); (iii) the tangent identity A_h=m conj(τ_h)T_h (Gauss factor flat). Substituting (i) into (ii): q·N₀(G,r)=q·(√q/m)^r·Σ_{χ_1···χ_r=1}u_{χ_1}...u_{χ_r}. So N₀ — a COUNT — equals (up to explicit prefactor) a moment of the unimodular Gauss-phase family u_χ over its OWN additive-relation set {χ_1···χ_r=1}. The amplitude √q drops out entirely. The whole prize is whether {u_χ} is 'incoherent enough' = effective Katz/Rojas-León equidistribution (F19), and the only relations among the χ_i are Hasse-Davenport (the W-Betti structure).
@@ -891,8 +891,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C054 — The √|V| second-moment gap is the q^{n/2} 'union tax' that forces an L^∞ argument (W-Johnson relocated to base-point space via Plancherel duality)   [total 23 | insight 8 research 7 relevance 8 | multiform yes]
 
-**Forms:** F3, F2, F5  
-**Walls:** W-Johnson  
+**Forms:** F3, F2, F5<br>
+**Walls:** W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/ShawSecondMoment.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LineIncidenceSpectral.lean`
 
 **Connection:** shawError_sq_le_second_moment (max‖𝒮‖²≤|V|·M) and exists_shawError_sq_ge (some s0 has ‖𝒮‖²≥M) BRACKET the worst Shaw error in [√M,√(|V|·M)] — a multiplicative gap of EXACTLY √|V|=q^{n/2}. This is the same √n energy-deficit of W-Johnson but RELOCATED from frequency space to BASE-POINT (s0) space: the union bound over the |V|=q^{n-k} base points is the obstruction, NOT the frequency average. The average side (shawError_second_moment: Σ_{s0}‖𝒮‖²=|V|·Σ_{ψ⊥s1}‖1̂_S(ψ)‖²) is proven sharp; the open core is purely the worst-s0 excess. So W-Johnson's '(p·E_r)^{1/2r}≥n always' is the FREQUENCY-side shadow of a BASE-POINT-side √|V| union tax — the same wall through Plancherel duality.
@@ -905,8 +905,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C055 — The proven τ-lower bound IS the s=1 vacuity wall: τ(r)≥ρ−1/n meets the off-range τ=1 collapse — BCDZ25 vacuity is two proven theorems whose ranges fail to overlap   [total 23 | insight 8 research 7 relevance 8 | multiform no]
 
-**Forms:** F4  
-**Walls:** W-subspace, W-genericity  
+**Forms:** F4<br>
+**Walls:** W-subspace, W-genericity<br>
 **Code:** `ArkLib/Data/CodingTheory/SubspaceDesign.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubspaceDesignListSize.lean`
 
 **Connection:** subspaceDesign_tau_lower (SubspaceDesign.lean) derives from minimum distance + the block-alphabet Singleton bound that ANY τ-subspace-design of rate ρ over F^s satisfies τ(r)≥ρ−1/n on r∈[s]. frs_is_subspaceDesign_gk16 gives τ(r)=(k−1)/n on [s] and τ(r)=1 for r∉[s]. The consumer subspaceDesign_list_card_le needs τ(r)·n+r·n<(r+1)·a, forcing τ(r)<1 at the working rank r. For plain RS the alphabet is F^1 (s=1), [s]={1}; for every r≥2 the design is OFF-range, τ(r)=1, and the hypothesis is unsatisfiable. So BCDZ25 'vacuous at s=1' is the exact collision between the proven Singleton-tight lower bound τ≥ρ−1/n and the proven off-[s] ceiling τ=1.
@@ -919,8 +919,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C056 — Schur vanishing h_{b−k}(x_S)=0 ⟺ esymm-fiber membership, with the dilation acting as h_j(g·x_S)=g^j h_j: the orbit-law multiplier c=g^{b−a} is the homogeneity degree of the controlling complete-homogeneous polynomial   [total 23 | insight 9 research 7 relevance 7 | multiform yes]
 
-**Forms:** F15, F9, F3  
-**Walls:** (none)  
+**Forms:** F15, F9, F3<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/EsymmFiber.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MonomialGammaFibration.lean`
 
 **Connection:** F15: 'bad ⟺ ∃(k+1)-subset with h_{b−k}(x_S)=0'. The in-tree Schur reduction (residual_ladder_schur) realizes b=k+1: residual ratio=−e₁(x_S)=−h₁(x_S). For general monomial gap (a,b), the residual ratio is h_{b−a}(x_S) reduced mod ∏(X−x_i) (Jacobi-Trudi cofactor), bad-locus = γ with ratio=−γ. The dilation x_S↦g·x_S scales h_j homogeneously: h_j(g·x_S)=g^j·h_j(x_S). Therefore the orbit-law multiplier c=g^{b−a} (MonomialGammaFibration) is EXACTLY the homogeneity weight of the controlling complete-homogeneous polynomial h_{b−a}, and the orbit size n/gcd(b−a,n) is forced by the period of g^{b−a}. Explains the orbit-size arithmetic (currently proven but unexplained) as the homogeneity degree of the Schur cofactor.
@@ -933,8 +933,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C057 — Power-sum window = all-ones-error syndrome: e_1..e_{t-1}=0 IS the F2 char-sum incomplete identity at frequency=indicator (Newton bridge F10→F2/F5)   [total 23 | insight 8 research 8 relevance 7 | multiform yes]
 
-**Forms:** F2, F5, F10, F18  
-**Walls:** W-anomaly  
+**Forms:** F2, F5, F10, F18<br>
+**Walls:** W-anomaly<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/LamLeungTwoPow.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubsetSumEsymmVanishing.lean`, `ArkLib/Data/CodingTheory/ProximityGap/EnergyRelationAntipodal.lean`
 
 **Connection:** Newton's identities make e_1=…=e_{t-1}=0 ⟺ p_1=…=p_{t-1}=0 over char 0 (DISPROOF_LOG O60), p_j(S)=∑_{x∈S}x^j = the all-ones-error syndrome on support S. The full Gauss-period η_b=∑_{x∈μ_n}e_p(bx) expands via e_p(bx)=∑_j(bx)^j, so the LOW power sums p_j(μ_n)=0 (subgroup vanishing, SubsetSumEsymmVanishing) are exactly the low-order Taylor coefficients of η. The lacunary floor (vanishing window on a SUBSET S) is the same object as the F2 sup-norm with the indicator 1_S replacing 1_{μ_n}, and the same antipodal balance (EnergyRelationAntipodal.energy_relation_count_antipodal) that bounds E_r governs both. The bridge shows the count face inherits the SAME deep-moment content past the char-p crossover r*≈β+1.
@@ -947,8 +947,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C058 — Action-orbit (F9) and lacunary-coset (F10) quantization are the SAME ⟨g^{b-a}⟩-coset action — Chai-Fan's K literally equals #lacBad/(coset size), routing the orbit lane into the Schur/esymm-vanishing framework   [total 23 | insight 8 research 8 relevance 7 | multiform yes]
 
-**Forms:** F3, F9, F10, F15  
-**Walls:** W-BGK, W-LamLeung  
+**Forms:** F3, F9, F10, F15<br>
+**Walls:** W-BGK, W-LamLeung<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean`, `ArkLib/Data/CodingTheory/ProximityGap/OrbitSpectrumBound.lean`
 
 **Connection:** Chai-Fan (F9): bad-α set is a union of ⟨g^{b-a}⟩-orbits because h_α(μz)=μ^a h_{αμ^{b-a}}(z). DyadicLacunary's lacBad_smul_closed (F10): bad-scalar set closed under γ↦g^t·γ, t=a−b, a union of cosets of ⟨g^t⟩=μ_{n/gcd(t,n)}. IDENTICAL action (g^{b-a}=g^{-t}, same cyclic subgroup). So #lacBad=K·(orbit size)=K·n/gcd(t,n) — the two count faces are one quantity at two granularities. Via the Vieta pin #lacBad is an e_t-image of a vanishing-symmetric-function variety (F15), so K=(#vanishing-esymm subsets)/(n/gcd): Chai-Fan's number-theoretic norm-non-vanishing Q1 becomes a SCHUR/elementary-symmetric vanishing count (F15) — the missing bridge between the non-BGK orbit lane and the cyclotomic-rigidity lane.
@@ -961,9 +961,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C059 — Autocorrelation-at-origin (proven L^∞ brick) × resultant-threshold point-count bounds the char-p energy ANOMALY — fusing the proven caps to localize the open Bourgain-Shkredov factor   [total 23 | insight 8 research 8 relevance 7 | multiform yes]
 
-**Forms:** F5, F12, F16, F18  
-**Walls:** W-anomaly, W-Betti  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/AutocorrelationMax.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean`
+**Forms:** F5, F12, F16, F18<br>
+**Walls:** W-anomaly, W-Betti<br>
+**Code:** `ArkLib/Data/CodingTheory/ProximityGap/AutocorrelationMax.lean`, `Research/ProximityPrize/Frontier/CyclotomicNormDefectThreshold.lean`
 
 **Connection:** AutocorrelationMax.autocorr_le_autocorr_zero proves R_r(z)≤R_r(0) for the r-fold representation function R_r=r_r⋆r_r — a per-lattice-point CAP on the spurious (z≠0, 𝔭|z) collision mass producing the char-p energy anomaly (F12/W-anomaly): E_r^{Fp}−E_r^{char0}=Σ_{z≠0,p|z}R_r(z)≤(#{z≠0:p|z in the 2r-box})·R_r(0). The count of such z is governed by CyclotomicNormDefectThreshold (only z with |N(z)|≥p contribute, |N|≤(2r)^{φ(n)}). So the deep-moment anomaly is BOUNDED by [proven autocorr cap R_r(0)]×[proven resultant-threshold count]: fuses the COUNT face F16 (N₀=R_r), the proven L^∞ autocorr brick (F18), the energy anomaly F5/F12, and the resultant threshold. The ONLY open input is the NUMBER of contributing sublattice points (Bourgain-Shkredov equidistribution of μ_n in the 2r-box) — the autocorr brick provides the per-point cap.
 
@@ -975,8 +975,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C060 — The Paley-Zygmund lower bound forbids spectral concentration: F2 can hold only by sign-cancellation, never magnitude redistribution — the open core is phase-only   [total 23 | insight 8 research 8 relevance 7 | multiform yes]
 
-**Forms:** F2, F7, F16  
-**Walls:** W-BGK  
+**Forms:** F2, F7, F16<br>
+**Walls:** W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/PrizeSpectralLevelSetSharp.lean`, `ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodLowerBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumAntiConc.lean`
 
 **Connection:** card_resonant_ge proves (q·n−λ²q)²≤#{b:λ≤‖η_b‖}·q·(3n²−3n): a Paley-Zygmund lower bound forcing Ω(q) frequencies at the √n scale. card_johnson_scale_frequencies_le_min caps #{‖η_b‖²≥q}≤min(|G|,E/q). Together: the spectrum {‖η_b‖} is RIGIDLY spread — positive density sit at √n, only ≤min(n,E/q) reach √q. The prize cannot be won by 'magnitude redistribution' (concentrating mass into few small periods); magnitudes are pinned by E_2=3n²−3n (F5) and Parseval (F7's variance n). The ONLY remaining freedom is the SIGN/phase of the worst η_b: M(n)≤C√(n log m) requires the m Gauss-period phases χ̄(b)τ(χ) (F16) to be flat enough (Salem-Zygmund), with magnitude already determined. F2 decoupled into a PROVEN magnitude part (F5/F7) and an OPEN phase part (F16).
@@ -989,8 +989,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C061 — List-dimension confinement (dim≤r−1) is the missing reverse bound for the n²-monomial-line concentration — design supplies the rank cap the Poisson floor lacks   [total 23 | insight 8 research 8 relevance 7 | multiform yes]
 
-**Forms:** F3, F4  
-**Walls:** W-subspace, W-Johnson  
+**Forms:** F3, F4<br>
+**Walls:** W-subspace, W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/SubspaceDesignListDim.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubspaceDesignListSize.lean`
 
 **Connection:** Comment 1 reframes δ* as the first-moment (Poisson) threshold over the n²-monomial-line family and notes the MISSING reverse bound is 'list-concentration over a poly-size family' — a cap on how many close codewords pile onto one line. The proven subspaceDesign_list_dim_bound gives EXACTLY such a cap by a non-analytic linear-algebraic mechanism: r+1 close codewords with independent differences cannot jointly agree on >τ(r)·n coordinates, so the close list spans dimension <r, |L|≤|F|^{r−1} (SubspaceDesignListSize). The F3 incidence I(δ) is precisely the count this confines. The design route's list-dim confinement is the structural form of the concentration bound Comment 1 wants, and the gap to plain RS is exactly that confinement needs τ(r)<1 (folding), whereas the monomial-line Poisson argument needs sub-Poisson concentration — the SAME missing ingredient (a rank/incidence cap below capacity) combinatorially vs analytically.
@@ -1003,8 +1003,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C062 — Stepanov gives a FIXED-r theorem the Weil/AG route cannot (Betti wall): the order-2 auxiliary already beats r(c)≤2 universally over any field — push the vanishing order, not the moment depth   [total 23 | insight 8 research 8 relevance 7 | multiform yes]
 
-**Forms:** F5, F13  
-**Walls:** W-Betti, W-anomaly, W-LamLeung  
+**Forms:** F5, F13<br>
+**Walls:** W-Betti, W-anomaly, W-LamLeung<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/RepCountStepanovOrderTwo.lean`, `ArkLib/Data/CodingTheory/ProximityGap/RepCountStepanovEvenSharp.lean`, `ArkLib/Data/CodingTheory/ProximityGap/StepanovContradictionEngine.lean`, `ArkLib/Data/CodingTheory/ProximityGap/StepanovGenericInsufficiency.lean`
 
 **Connection:** The two routes to the deep moments are OPPOSITE on the depth parameter. The AG/GLT modified-Fermat route (W-Betti) computes E_r as a point-count whose Betti B_prim=((d−1)^{2r}+(d−1))/d grows EXPONENTIALLY in r, capping at r=2. The Stepanov route does the opposite: it bounds the SAME object at FIXED low order by raising the auxiliary's VANISHING multiplicity M, paying only deg≈n per unit of M (stepanov_card_mul_M_le_natDegree: |V|·M≤deg Ψ). The explicit Q=(c−X)^{n+1}+X^{n+1}−c (repCount_two_mul_le_of_pow_ne_one) ALREADY gives r(c)≤(n+1)/2 over any field incl. the split prize; repCount_two_mul_le_of_even sharpens to r(c)≤n/2 on even-n NTT — char-p theorems with no Betti/conductor dependence. generic_stepanov_degree_ge proves the leverage must come from the A=μ_n∩(c+μ_n) degeneracy where BOTH x^n=1 and (x−c)^n=1, exactly what Q exploits.
@@ -1017,9 +1017,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C063 — Sidon-at-r=2 gives sub-√q but tops out at q^{1/4}√n: the q^{1/4} surplus over √(n log m) quantifies exactly the marginal-vs-extreme-value (max-of-m) deficit   [total 22 | insight 7 research 7 relevance 8 | multiform yes]
 
-**Forms:** F5, F2, F7  
-**Walls:** W-Johnson  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodSidonBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Frontier/SalemZygmundChaining.lean`
+**Forms:** F5, F2, F7<br>
+**Walls:** W-Johnson<br>
+**Code:** `ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodSidonBound.lean`, `Research/ProximityPrize/Frontier/SalemZygmundChaining.lean`
 
 **Connection:** WorstPeriodSidonBound.worst_period_sidon_le proves ‖η_b‖⁴≤3q|G|², i.e. max_b‖η_b‖≤(3q)^{1/4}√n — sub-√q but carrying q^{1/4} because it bounds EVERY single period by the GLOBAL 4th moment (a per-period/marginal argument). The target √(n·log m) has NO q-power. The gap (3q)^{1/4}√n vs √(n log m) is exactly q^{1/4}/√(log m) — the price of a per-period bound vs the max-over-m extreme-value decorrelation. The m periods sharing the L² budget √(qn) must be spread, not concentrated. The fix is the max-of-m maximal inequality chernoff_max_re_le, converting q^{1/4} into √(log m).
 
@@ -1031,8 +1031,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C064 — The line-incidence spectral collapse + coset-period count give an EXACT identity: per-line incidence error is an n-weighted average of the m periods, so the worst far line equals the worst PERIOD not the worst frequency   [total 22 | insight 7 research 7 relevance 8 | multiform yes]
 
-**Forms:** F2, F3, F7, F18  
-**Walls:** W-largesieve, W-BGK  
+**Forms:** F2, F3, F7, F18<br>
+**Walls:** W-largesieve, W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/LineIncidenceSpectral.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean`
 
 **Connection:** lineIncidence_spectral gives #{γ:s₀+γs₁∈S}·|V|=|F|·Σ_{ψ⊥s₁}Σ_{s∈S}ψ(s₀−s). For a MONOMIAL far direction the surviving ψ⊥s₁ are indexed by μ_n and Σ_{s∈S}ψ(s₀−s) factors through η_b. With eta_image_card_mul_le (η constant on the (p−1)/n cosets), the spectral error is NOT a sum over q frequencies but over exactly m=(p−1)/n distinct period values, each with multiplicity n. So the per-line incidence error is an n-weighted average of m periods — the WORST far-line incidence is governed by the worst PERIOD (F7), and the autocorrelation flatness F18 is the variance of that n-weighted period average. A count(F3)=char-sum(F2)=period-spectrum(F7) triple identity with the multiplicity-n quantization explicit.
@@ -1045,9 +1045,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C065 — The cyclotomic norm-defect threshold (2r)^{φ(n)}=p is the EXACT crossover where N₀, E_r, AND the tangent sum T_h all leave their char-0/Jacobi value   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F5, F12, F16, F6  
-**Walls:** W-anomaly, W-LamLeung  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CharSumMomentDeepWall.lean`
+**Forms:** F5, F12, F16, F6<br>
+**Walls:** W-anomaly, W-LamLeung<br>
+**Code:** `Research/ProximityPrize/Frontier/CyclotomicNormDefectThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CharSumMomentDeepWall.lean`
 
 **Connection:** no_spurious_tuple_of_lt_prime proves: if (2r)^{φ(n)}<p, no signed sum of ≤2r n-th roots vanishes mod p, hence E_r(μ_n)=E_r^{(0)} exactly. This is the r-threshold below which N₀ (F16) equals its char-0 value and the moment ladder B^{2r}≤q·E_r is reliable. Via tangent I3 + tangentSum_mul_orderOf_eq_sum_jacobiSum, the SAME char-p coincidence makes the autocorrelation weight T_h=(1/m)Σ_i J(χ^i,χ^h) (F6) depart from its archimedean Jacobi-equidistributed value: a vanishing signed root-of-unity sum mod p IS a spurious Jacobi coincidence. So F12 (resultant threshold), F5 (deep-moment validity), F16 (N₀ defect), F6 (tangent flatness) all cross at (2r)^{φ(n)}=p.
 
@@ -1059,9 +1059,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C066 — Kowalski-Untrau vacuity localizes the missing tool to an EFFECTIVE Jacobi-average MGF, not a Wasserstein bound — re-pointing F6/F7 onto the monodromy surface (F19)   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F6, F7, F2, F19  
-**Walls:** W-largesieve, W-BGK  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/KowalskiUntrauBarrier.lean`, `ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Frontier/SalemZygmundChaining.lean`
+**Forms:** F6, F7, F2, F19<br>
+**Walls:** W-largesieve, W-BGK<br>
+**Code:** `ArkLib/Data/CodingTheory/ProximityGap/KowalskiUntrauBarrier.lean`, `ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean`, `Research/ProximityPrize/Frontier/SalemZygmundChaining.lean`
 
 **Connection:** ku_bound_vacuous_at_prize proves the SOTA growing-subgroup equidistribution (KU25 W₁≤2^12 d² q^{−1/(d−1)}) is vacuous by ~2^30 at prize scale because d=|H| sits in the exponent DENOMINATOR. But the SalemZygmundChaining route does NOT need full equidistribution — only ONE exponential moment (the MGF) of the directional projection. Via tangentSum_mul_orderOf_eq_sum_jacobiSum, that projection's fluctuation is governed by T_h=(1/m)Σ_i J(χ^i,χ^h). So the genuinely missing input is an EFFECTIVE upper-tail/MGF bound for the Jacobi-sum average over the m index-m characters — strictly weaker than KU's Wasserstein metric, on the Deligne-Katz monodromy surface (F19), not the BGK surface. The barrier certifies an overkill tool.
 
@@ -1073,9 +1073,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C067 — The cyclotomic norm c^{φ(n)} is a HARD FLOOR on defect onset: it forces the box-vs-sublattice crossover to r*=½p^{1/φ(n)}, identical to CleanRange and the forced-anomaly crossover r*≈β+1   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F11, F5, F12, F13  
-**Walls:** W-idealSVP, W-anomaly  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SmallSubgroupSidonModNeg.lean`
+**Forms:** F11, F5, F12, F13<br>
+**Walls:** W-idealSVP, W-anomaly<br>
+**Code:** `Research/ProximityPrize/Frontier/CyclotomicNormDefectThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SmallSubgroupSidonModNeg.lean`
 
 **Connection:** Comments 24/26 measured N_max(2r)=(2r)^{φ(n)} TIGHT, achieved by α=c·ζ^e with c=2r. prime_le_of_balanced_tuple PROVES p≤(2r)^{φ(n)} for any spurious balanced 2r-tuple; the contrapositive no_spurious_tuple_of_lt_prime is the clean range. The EXTREMAL α (maximal-norm relation) and the FIRST defect-carrying α (minimal r with (2r)^{φ(n)}≥p) are governed by the SAME norm functional N(α)=Res(Φ_n,g). Solving (2r)^{φ(n)}=p gives r*=½p^{1/φ(n)}=½n^{β/(n/2)}→½ in the prize regime — precisely the forced-anomaly crossover r*≈β+1 (comment 25) once 2-adic root multiplicity is accounted. So the proven archimedean norm bound is not just a clean-range certificate; it analytically pins WHERE the moment method must break.
 
@@ -1087,9 +1087,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C068 — Smoothness↔split-prime is a provable RING-THEORETIC dichotomy (q≡1 mod 2^μ ⟺ μ_{2^μ} exists ⟺ 𝔮 fully splits) — the structural ROOT of why every face hits W-idealSVP   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F11, F2, F19  
-**Walls:** W-idealSVP, W-BGK, W-LamLeung  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean`
+**Forms:** F11, F2, F19<br>
+**Walls:** W-idealSVP, W-BGK, W-LamLeung<br>
+**Code:** `Research/ProximityPrize/Frontier/CyclotomicNormDefectThreshold.lean`
 
 **Connection:** q≡1 mod 8 ⟺ has FFT subgroup μ_n ⟺ ℚ(ζ_{2^μ}) fully split at q (N(𝔮)=q, the OPEN Pan-Xu case); q≡3,5,7 mod 8 ⟹ 8∤q−1 ⟹ no order-2^μ subgroup ⟹ non-split (Pan-Xu tractable) but cannot host a smooth RS code. This is a THEOREM of cyclotomic splitting: a prime q splits completely in ℚ(ζ_m) iff q≡1 mod m, and μ_m⊂F_q* iff m|q−1 iff q≡1 mod m. So 'smoothness forces the open ideal-SVP class' is the same congruence q≡1 mod 2^μ controlling BOTH the existence of the FFT domain AND full splitting. This explains why F2/F19 and F11 are 'shadows of the same prime'.
 
@@ -1101,9 +1101,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C069 — The TWO cocycles coincide: the additive tower factor a^{2^k}−b^{2^k}=∏(a^{2^j}+b^{2^j}) IS the Galois norm N(α)=∏_ω g(ω) bounding the char-p energy defect   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F5, F8, F12, F13  
-**Walls:** W-anomaly, W-LamLeung  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/TwoPowerTowerFactorization.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GVObjectTowerDecomposition.lean`
+**Forms:** F5, F8, F12, F13<br>
+**Walls:** W-anomaly, W-LamLeung<br>
+**Code:** `ArkLib/Data/CodingTheory/ProximityGap/TwoPowerTowerFactorization.lean`, `Research/ProximityPrize/Frontier/CyclotomicNormDefectThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GVObjectTowerDecomposition.lean`
 
 **Connection:** TwoPowerTowerFactorization.pow_two_pow_sub_eq decomposes the GV/energy collision object (1+w)^n=c^n into ∏_{j<k}((1+w)^{2^j}+c^{2^j}) — a product of k=μ quadratic-extension factors. CyclotomicNormDefectThreshold proves the char-p defect exists only if p∣N(α), N(α)=Res(Φ_n,g)=∏_{ω prim}g(ω), |N(α)|≤(2r)^{φ(n)} — also a product, over the φ(n)=n/2 Galois embeddings. SAME multiplicative cocycle two ways: the tower factorization is the 2-adic refinement (factor per level j) of the Galois norm (factor per embedding ω), since the Frobenius/2-power structure groups the φ(n) embeddings into μ tower levels of sizes 2^j. The anomaly wall (defect forced once (2r)^{n/2}≥p) is literally the product cocycle dropping below p; the tower gives a level-by-level handle on WHICH embeddings make it small.
 
@@ -1115,8 +1115,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C070 — The Azuma √(2 ln m) inflation = the additive-vs-multiplicative gap: replace the additive level-sum cocycle by the multiplicative Jacobi-sum cocycle (Hasse–Davenport tower) with NO bulk-vs-tail loss   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F6, F8, F19  
-**Walls:** W-anomaly, W-BGK  
+**Forms:** F6, F8, F19<br>
+**Walls:** W-anomaly, W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean`, `ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean`, `docs/kb/deltastar-407-dyadic-2adic-gauss-tower-verdict-2026-06-13.md`
 
 **Connection:** CumulantTowerAzumaWall pins the failure: Azuma must use the L∞ increment bound B_{k-1}, √(ln m) larger than its L² size √(2^{k-1}), paying the bulk-vs-tail gap once per level → total √(2 ln m). The dyadic verdict KB shows the 2-adic ADDITIVE structure is inert (governs O(1) phases; cancellation is among odd-order chars). TangentSumJacobiAverage gives the multiplicative reframing: the house concentration is carried by T(φ)=(1/m)Σ_{i<m}J(χ^i,φ), an AVERAGE of m Jacobi sums (each |J|≤√q). The Jacobi-sum family carries a MULTIPLICATIVE cocycle (Hasse–Davenport: J=−g(χ)g(φ)/g(χφ); lifting to F_{q^t} multiplies Gauss sums), so the tower descent on T multiplies Jacobi sums rather than summing periods — no L∞-vs-L² penalty since each factor is uniformly |·|=√q-controlled by Weil. The √(2 ln m) loss is an artifact of doing the cocycle additively.
@@ -1129,8 +1129,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C071 — The full_tower coset-closure budget 2^{n/2^s} and the tower house cocycle are one s-indexed squaring recursion: s=μ (count F4) vs s=1 (house F2), window length t=2^s−1 as the dial   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F4, F2, F8, F10  
-**Walls:** W-Mersenne, W-BGK  
+**Forms:** F4, F2, F8, F10<br>
+**Walls:** W-Mersenne, W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/LamLeungTwoPow.lean`, `ArkLib/Data/CodingTheory/ProximityGap/DyadicHalvingRecursion.lean`
 
 **Connection:** LamLeungTwoPow.full_tower + tower_count: a window-vanishing word S (p_j=0 for 1≤j<2^s) is a union of μ_{2^s}-cosets, count ≤2^{n/2^s} (COUNT side F4). The house-side halving (DyadicHalvingRecursion) is the SAME squaring-tower fold (x→x^2 collapsing μ_{2k}→μ_k) applied to the character sum. Two readings of one recursion indexed by s: at s=1 the house parallelogram η(μ_{2k})=η(μ_k)+η(μ_kζ); at s=μ the all-μ_n-closure count 2. The δ* budget needs incidence ≤q·ε*≈n at window t=⌊δn⌋=Θ(n) i.e. s=Θ(μ); the house needs L∞ at s=1. The open core is the SAME tower recursion at different window depths s, with the 2^{n/2^s} branching (where Mersenne/sumset growth enters via the number of 2^s-power classes) interpolating.
@@ -1143,8 +1143,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C072 — Reality from −1=ζ^{n/2} makes the dyadic parallelogram a REAL 2D rotation whose only fixed point is the coherent worst case; ‖A−B‖ (the χ-twisted odd-half period) breaks coherence, tying the gap to Lam–Leung antipodal rigidity   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F8, F18, F10  
-**Walls:** W-BGK  
+**Forms:** F8, F18, F10<br>
+**Walls:** W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/DyadicHalvingRecursion.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LamLeungTwoPow.lean`
 
 **Connection:** DyadicHalvingRecursion.conj_eta proves η_b REAL for μ_{2k} (negation closure). In η_b(μ_{2k})=A+B (A=η_b(μ_k), B=η_{bζ}(μ_k)), A+B is real for every b; for the dyadic tower all levels are negation-closed so A,B are real too. The parallelogram ‖A+B‖²+‖A−B‖²=2(‖A‖²+‖B‖²) becomes a REAL identity, ‖A−B‖²=η_b(μ_{2k}^{−})² the χ-twisted period. Worst case ‖A+B‖ max ⟺ ‖A−B‖ min ⟺ A,B aligned (refuted coherence). ‖A−B‖≥0 gives ‖A+B‖²≤2(‖A‖²+‖B‖²); the descent question is whether ‖A‖²+‖B‖²≤M(k)²(1+o(1)). LamLeungTwoPow shows char-0 the only vanishing relations are antipodal, so A−B (odd-half period) cannot be anomalously large without a char-p relation, bounding the gap.
@@ -1157,8 +1157,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C073 — The eigenstack orbit law generalizes the dilation: ANY σ-eigenstack reparametrizes badSet by affine T(γ)=a⁻¹b+γ·a⁻¹c — Schur fibers of NON-monomial stacks inherit ord(a⁻¹c)-quantization   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F9, F15, F3  
-**Walls:** (none)  
+**Forms:** F9, F15, F3<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/MCAEigenstackOrbitLaw.lean`, `ArkLib/Data/CodingTheory/ProximityGap/EsymmFiber.lean`
 
 **Connection:** mcaEvent_eigenstack_iff proves the orbit law for the GENERAL σ-eigenstack (u₀∘σ=a·u₀+b·u₁, u₁∘σ=c·u₁): #bad=ε+(#orbits)·ord(a⁻¹c) — strictly more general than monomial c=g^{b−a}. The EsymmFiber identity (e_j(dom T)=(−1)^j W_{t−j}/W_t) characterizes explainable cores of ANY degree-t word as the esymm-fiber over forced top-coefficient values. A domain symmetry σ scaling a degree-t word W by a σ-eigenvalue acts on the esymm-fiber by a Z/ord-action on the subsets T, so the esymm-fiber count (F15, the sub-Johnson list F3/F4) is ord(a⁻¹c)-quantized for EVERY eigenstack, not just the monomial ladder. For μ_n with σ=dilation it recovers n-quantization, but also applies to twisted/coset eigenstacks (the KKH26 near-capacity bad line, eigenratio g^{−m} order s).
@@ -1171,9 +1171,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C074 — Additive subset-SUM spectrum (F15, open) vs multiplicative subset-PRODUCT spectrum (proven ≤n): SAME μ_n, opposite collapse — the dilation orbit bridges them   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F15, F9, F3  
-**Walls:** W-Mersenne  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/SubsetProductSpectrum.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Frontier/SubsetProductSpectrumSubgroup.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean`
+**Forms:** F15, F9, F3<br>
+**Walls:** W-Mersenne<br>
+**Code:** `Research/ProximityPrize/Frontier/SubsetProductSpectrum.lean`, `Research/ProximityPrize/Frontier/SubsetProductSpectrumSubgroup.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean`
 
 **Connection:** For μ_n=⟨g⟩, the multiplicative t-subset PRODUCT spectrum is PROVEN ≤n (subsetProduct_spectrum_card_le_subgroup: ∏x∈H lands in H). The additive t-subset SUM spectrum (=ladder badSet, F15) is OPEN. Bridge: g·(−) maps a subset SUM ∑_{i∈S}g^{a_i} to ∑_{i∈S}g^{a_i+1} (cyclic shift of exponents), so the additive sum spectrum carries a free Z/n action (F9 orbit), while the product spectrum carries the Z/n action by EXPONENT-sum mod n (∏=g^{Σa_i}, exactly n values). The δ* question is whether the additive spectrum is as collapsed as the multiplicative one (≤poly·n, prize survives) or super-exponential (false). Product collapse to n is 'maximal collapse'; sum spectrum bounded below by the orbit law (≥n if any nonzero bad scalar) and above by C(n,k+1).
 
@@ -1185,8 +1185,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C075 — The cumulant κ_r is platykurtic (kurtosis→3 from BELOW): a one-sided Markov-Krein with the WRONG-SIGN constraint the SOS no-go ignored   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F5, F13, F7  
-**Walls:** W-Johnson  
+**Forms:** F5, F13, F7<br>
+**Walls:** W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumFourthMoment.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSixthMoment.lean`
 
 **Connection:** The measured normalized period distribution X=η/√n has κ_2≈0.94, μ_4=E_2/n²=3−3/n<3 (proven in-tree via E_2=3n²−3n), kurtosis approaching Gaussian 3 from BELOW (platykurtic), κ_r≤1 monotone DECREASING. The in-tree 4th/6th-moment identities prove μ_4<3 and μ_6<Gaussian-15 EXACTLY for every n (E_3=15n³−45n²+40n gives μ_6=15−45/n+40/n²<15). The Markov-Krein/SOS no-go computes the sharp far-out atom from moments WITHOUT the platykurtic sign constraint — it treats the measure as kurtosis-exactly-3. But a measure with μ_4 strictly BELOW 3 and bounded support |X|≤√n is sub-Gaussian (Marcinkiewicz), and the largest atom for a negatively-kurtotic compactly-supported symmetric measure is provably smaller. The no-go rests on 'kurtosis 3 admits a far atom' — but the proven kurtosis is <3.
@@ -1199,8 +1199,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C076 — Odd-moment NEGATIVITY Σηᵢ^{2k+1}=−n^{2k} is an exact all-r left-skew the even-moment-only Bessel/Markov-Krein machinery throws away   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F13, F5, F16  
-**Walls:** W-Johnson, W-anomaly  
+**Forms:** F13, F5, F16<br>
+**Walls:** W-Johnson, W-anomaly<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean`
 
 **Connection:** The in-tree odd-moment law (PR #415, char-0) Σ_i η_i^{2k+1}=−n^{2k} holds for ALL k, stating the period distribution {η_i} over the m cosets is systematically left-skewed by exactly n^{2k} at every odd order. Every moment/cumulant/Bessel route bounds B via EVEN moments Σηᵢ^{2r} only. But B=max|η_i| is bounded by BOTH tails, and the odd moments pin the asymmetry exactly: the b=0/full-group atom at η_0=n forces a deterministic negative skew across the off-diagonal spectrum, so the mass cannot be arranged to maximize the positive tail freely. The even-moment-only extremal LP is feasible over a strictly larger set than the one also constrained by the proven odd moments.
@@ -1213,8 +1213,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C077 — E_r/n^{2r}→0 makes the cumulant a TRUE connected correlation: the prize is a free-cumulant (planar) spectral-edge bound, and platykurtosis says the period law is sub-semicircular   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F5, F7, F13  
-**Walls:** W-Johnson, W-BGK  
+**Forms:** F5, F7, F13<br>
+**Walls:** W-Johnson, W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumFourthMoment.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean`, `ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean`
 
 **Connection:** B=max_i|η_i| is the operator-norm/edge of the m-atom real spectrum {η_i}=eigenvalues of the generalized Paley graph Cay(F_q,μ_n) (CLAUDE.md face 3). The spectral edge of a measure is governed by its FREE cumulants (the R-transform), not the classical ones, and the proven μ_2=1, μ_4=3−3/n<3 give classical κ_4=μ_4−3μ_2²=−3/n<0 but free κ_4^{free}=μ_4−2μ_2²=1−3/n>0. The edge of a measure with positive bounded free cumulants and compact support [−2√n,2√n] is at most ~2√n·(1+free-cumulant correction). Connecting the proven low-order free cumulants to the spectral edge via the R-transform is the natural eigenvalue-edge tool, never applied here despite B being literally the second eigenvalue.
@@ -1227,8 +1227,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C078 — Cross-face reverse-bound matching: the F4 list-LB (n^{(k+1)/2}) and the F2/F5 4th-moment period-LB (√n) are the SAME tower-word floor — a reverse bound the upper bounds lack   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F4, F5, F2, F3  
-**Walls:** W-Johnson  
+**Forms:** F4, F5, F2, F3<br>
+**Walls:** W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/SupplyForcingLowerBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodLowerBound.lean`
 
 **Connection:** SupplyForcingLowerBound.evenSupply_ge_choose forces super-code supply B≥C(|R|,j)=Θ(n^j) at rate 2j−1 via antipodal tower words x^{k+1} (zero-sum (k+1)-subsets). WorstPeriodLowerBound.exists_period_sq_ge forces max_{b≠0}‖η_b‖²≳|G|=n, since E(G)≥|G|² (diagonal energy). Both are REVERSE (lower) bounds, both proven from the SAME diagonal/antipodal structure of μ_n (negation symmetry), both landing at the Johnson floor: the list LB n^{(k+1)/2} is the F4 image of the E≥n² energy forcing ‖η_b‖²≳n on F2. They certify the floor is genuinely Ω(√n) per face — but neither reaches the budget n.
@@ -1241,8 +1241,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C079 — The Plancherel collision identity and the Gauss-sum second moment are ONE Parseval at two group levels — making N₀=Σ_b η_b^{2r}/q a literal subset-collision count   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F2, F3, F5, F16  
-**Walls:** (none)  
+**Forms:** F2, F3, F5, F16<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionSpectral.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSecondMoment.lean`, `ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean`
 
 **Connection:** MomentCollisionSpectral.plancherel_collision: collision·|A|=Σ_ψ‖Σ_S ψ(stat S)‖² for a finite-abelian-valued statistic. With A=F, stat=sum over an r-subset of μ_n, the Fourier coefficient is an elementary symmetric character sum whose r-fold version is the r-th additive-energy generator; the |η_b|^{2r} identity Σ_b‖η_b‖^{2r}=q·E_r (subgroup_gaussSum_secondMoment r=1, EnergyCharacterTransport r=2, same Parseval all r) is the SAME Plancherel specialized to the single-element statistic. So N₀(μ_n,r):=Σ_b η_b^r/q (F16) is literally MomentCollisionSpectral.collision, and the proven main-term split collision·|A|=C(n,a)²+Σ_{ψ≠0}‖Tψ‖² is the same b=0 split in EnergyCharacterTransport.addEnergy_le_of_charSum_bound. F2/F3/F5/F16 are four readings of one Parseval at two nested group levels.
@@ -1255,8 +1255,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C080 — The proven coset count m=(q−1)/n forces log m not log q — the structural pin making the EVT floor √(n log m) ≠ Ramanujan 2√n   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F2, F7, F16  
-**Walls:** W-BGK  
+**Forms:** F2, F7, F16<br>
+**Walls:** W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean`, `ArkLib/Data/CodingTheory/ProximityGap/PaleySpectralFloor.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSecondMoment.lean`
 
 **Connection:** eta_image_card_mul_le proves rigorously #{distinct η-values over F^×}·|G|≤q−1, so B = max over at most m=(q−1)/n Gauss periods. Combined with the EXACT per-period variance (subgroup_gaussSum_secondMoment: (1/(q−1))Σ_{b≠0}‖η_b‖²=n), the worst case is the maximum of m mean-zero variance-n quasi-Gaussians, EVT-pinned at √(2n·log m), log m=log((q−1)/n). PaleySpectralFloor.ramanujan_implies_paleyFloor proves machine-checked that Ramanujan (B≤2√n) implies the floor only when L=log m≥4/C², certifying the correct target is √(n log m) and the Alon-Boppana/Ramanujan cap is FALSE in regime. The number of DISTINCT eigenvalues (the proven coset count) is the structural reason the prize target carries a logarithm — the count of i.i.d.-like samples in the EVT max.
@@ -1269,8 +1269,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C081 — The bad locus {e2=0, e1≠0} is provably DISJOINT from all negation/coset structure (e1=0), so the e2 face must use orbit/quadric methods, NOT Lam–Leung antipodal machinery   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F12, F13, F10  
-**Walls:** W-LamLeung  
+**Forms:** F12, F13, F10<br>
+**Walls:** W-LamLeung<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/NegationClosedSumZero.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubsetSumEsymmVanishing.lean`
 
 **Connection:** e1_eq_zero_of_neg_closed: negation-closed S ⟹ e1(S)=∑s=0 (char≠2 involution), so the entire F13/Lam–Leung antipodal/Bessel-law world (NegationClosedSumZero.antipodalConsistent_sum_zero; SubsetSumEsymmVanishing's e1(μ_n)=0) lives on the e1=0 locus. But the bad-scalar locus is {e2=0, e1≠0} — its defining feature e1≠0 PROVABLY forbids negation/coset structure. So F12's hard object is the EXACT COMPLEMENT of the F5/F13 antipodal regime: the deep-moment/energy methods (antipodal-pairing counts) are structurally blind to the bad set. W-LamLeung's char-p collapse is irrelevant to e2 badness because the bad set never touches the e1=0 locus where Lam–Leung operates.
@@ -1283,8 +1283,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C082 — Complement-quadric duality: e2=0 on an a-subset ⟺ its (n−a)-complement satisfies S²=−Q, turning top rows into explicit c-variable quadric point counts where Weil/Deligne is the RIGHT tool   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F12, F10, F3  
-**Walls:** W-genericity  
+**Forms:** F12, F10, F3<br>
+**Walls:** W-genericity<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/ComplementQuadric.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubsetSumEsymmVanishing.lean`
 
 **Connection:** ComplementQuadric.e2Folded_eq_zero_iff_complement_quadric proves (above threshold) e2(A)=0 ⟺ (∑_{i∈T}g^i)²=−∑_{i∈T}g^{2i}, T=complement of A, using that the full domain has vanishing first AND second power sums (sum_pow_range_eq_zero, sum_pow_sq_range_eq_zero — themselves the F15 identity from SubsetSumEsymmVanishing). For top rows a=n−c (small c), the bad-scalar count at agreement a is the F_q-rational point count of an EXPLICIT c-variable quadric S²+Q=0 on c-subsets — a genuine AG object, not a character sum. Bridges F12 (e2 rigidity) to F10 (half-sum) and F3 (incidence) and exposes the count as a quadric point count where Weil/Deligne IS right (small fixed dimension, dodging W-largesieve's dimension obstruction).
@@ -1297,8 +1297,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C083 — Group-action divisibility (S3 ⟹ 6|M, parity ⟹ even-pair-count, dilation ⟹ ord|#bad) is a shared 'symmetry kills the count' principle linking e2=0 (F12) to the energy kernel (F5) with NO magnitude bound   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F12, F5, F9  
-**Walls:** W-BGK  
+**Forms:** F12, F5, F9<br>
+**Walls:** W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyThreeDvd.lean`, `ArkLib/Data/CodingTheory/ProximityGap/WindowTwoLayerThreshold.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MCAEigenstackOrbitLaw.lean`
 
 **Connection:** AdditiveEnergyThreeDvd derives 6|M for the BGK energy kernel M=#{u∈μ_n:−(1+u)∈μ_n} purely from a fixed-point-free S3 action (ι:u↦u⁻¹, σ:u↦−(1+u), τ=ι∘σ order 3) — NO magnitude control. WindowTwoLayerThreshold.e2Folded_ne_zero_of_odd_pairs is the SAME species on the e2 face (mod-2 quotient of the bad set). MCAEigenstackOrbitLaw.orderOf_dvd_badScalarSet_card_of_eigenstack shows the bad-scalar count is ε+(#orbits)·ord under the dilation action (F9). All three are 'count = invariant of a finite group action'. The e2=0 face and the F5 energy kernel share an action-theoretic skeleton: the open magnitude question is what survives AFTER quotienting by the proven symmetries.
@@ -1311,8 +1311,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C084 — Two-Gauss-sum hybrid split: the worst-case bound is sharp only because (m−1) of the m completion phases are wasted at √q; the QR closed form is the J=1 effective-phase collapse   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F2, F20, F16, F6  
-**Walls:** W-BGK  
+**Forms:** F2, F20, F16, F6<br>
+**Walls:** W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumWorstCase.lean`, `ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean`
 
 **Connection:** In the completion t·η_b=Σ_{j<t}τ(χ^{dj},ψ_b), the worst-case proof bounds ALL t−1 nontrivial terms by √q and sums (triangle ineq). Hybrid: split the index sum into a CONSTANT head {0≤j<J} (J=O(1) or polylog) where χ^{dj}(b) phases are pinned, plus a residual tail. The head gives genuine constant-index √-cancellation (the proven QR/index-2 lane is J=1 effective phase, eta_QR_eq: η_b=(χ(b)τ−1)/2); the tail is open. TangentSumJacobiAverage's I4 m·T(φ)=Σ_{i<m}J(χ^i,φ) shows this m-term average is ALSO the tangent sum's Jacobi decomposition (F6), so the head/tail split of the completion is simultaneously a head/tail split of the Jacobi-sum average, where Deligne/Katz (F19) governs the tail.
@@ -1325,9 +1325,9 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C085 — The index is ODD at the prize, so the constant-index lane can never recurse via a 2-power head: F8 and F20 live on coprime-order sides of F_q*≅μ_n×ℤ/m   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F20, F8, F2  
-**Walls:** W-BGK, W-LamLeung  
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GaussPhaseFlatnessAlgebra.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumWorstCase.lean`
+**Forms:** F20, F8, F2<br>
+**Walls:** W-BGK, W-LamLeung<br>
+**Code:** `Research/ProximityPrize/Frontier/_GaussPhaseFlatnessAlgebra.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumWorstCase.lean`
 
 **Connection:** prizeIndex_odd proves m=(q−1)/n is ODD when n=2^a is the full 2-part of q−1. The completion sum runs over t=m phases indexed by ℤ/m. A natural way to extract a constant head with cancellation is a 2-adic/parallelogram fold (F8: M(n)²≤2M(n/2)²) ON THE INDEX side — but doubling_bijective_of_odd shows x↦2x permutes ℤ/m (m odd), so Hasse–Davenport order-2 duplication gives NO 2-to-1 fold of the phase sequence. The dyadic descent F8 (which works on the SUBGROUP μ_n) is structurally unavailable on the INDEX group ℤ/m where the completion sum lives. F8 and F20 cannot be combined.
 
@@ -1339,8 +1339,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C086 — The proven r=2 Sidon/energy floor E(G)=3n²−3n and its hypothesis are the SAME char-p coincidence wall that gates the all-witness count AND the Gauss-period house   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F5, F2, F12  
-**Walls:** W-LamLeung, W-BGK, W-anomaly  
+**Forms:** F5, F2, F12<br>
+**Walls:** W-LamLeung, W-BGK, W-anomaly<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergySidonModNeg.lean`, `ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean`
 
 **Connection:** additiveEnergy_eq_of_sidonModNeg proves E(G)=3n²−3n EXACTLY for a Sidon-modulo-negation set (only trivial or zero-sum additive coincidences). Via the transport chain (sidon_order_of_sqrt_charSum), E at floor 3n² ⟺ the F2 bound ‖η_b‖≤C√n with C²≈2 ⟺ Sidon order. The HYPOTHESIS SidonModNeg — 'no extra additive coincidences mod p' — is verbatim the char-p coincidence wall of (a) the all-witness fit/unfit dichotomy (whether a divided-difference fit exists mod p), (b) the F12 e₂=0 algebraic rigidity (char-p resultant threshold c≈n³), (c) the deep-moment anomaly W-anomaly (#collisions mod p but not over ℤ[ζ_n]≤n^{2r}/p). All four ask: do short ±1-relations of 2^μ-th roots vanish mod the prize prime?
@@ -1353,8 +1353,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C087 — explainableCoreSupply_iff_moment makes the named open residual a binomial MOMENT of the agreement spectrum — directly identifying F4 supply with F5 deep moments E_r   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F4, F5  
-**Walls:** W-anomaly, W-Johnson  
+**Forms:** F4, F5<br>
+**Walls:** W-anomaly, W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/MomentSupplyIdentity.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SupplyForcingLowerBound.lean`
 
 **Connection:** explainableCoreSupply_iff_moment proves the #389 residual ExplainableCoreSupply dom k m B EQUIVALENT to the uniform (k+m+1)-th binomial moment ∀w, Σ_c C(|A_c|,k+m+1)≤B. The agreement-spectrum binomial moment Σ_c C(a_c,t) is the combinatorial analogue of the additive deep moment E_r=Σ_b η_b^{2r}/q (F5): both are t-th moments of a concentration object, both have a FROZEN base (moment_identity_base: Σ_c C(a_c,k)=C(n,k) identically, mirroring Σ‖η_b‖²=q|H|), both become coupled only above the base. supply_ge_towerZeroSum forces B≥ the tower-word zero-sum count = the F13 vanishing-roots-of-unity count, the same Lam–Leung object controlling E_r in char 0.
@@ -1367,8 +1367,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C088 — The covering-transfer hom (surjective + injective-on-G) carries the dyadic obstruction down to every prime quotient AND forward across curve interleaving — one injectivity hypothesis unifies F4, F10, F11   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F4, F10, F11  
-**Walls:** W-Mersenne, W-idealSVP  
+**Forms:** F4, F10, F11<br>
+**Walls:** W-Mersenne, W-idealSVP<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/CoveringTransfer.lean`, `ArkLib/Data/CodingTheory/ProximityGap/PrimitiveFactorCovering.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GG25ExactPreservation.lean`
 
 **Connection:** sumsetDistinct_image_eq_univ proves the r-fold distinct-sumset covering transfers under any surjective additive hom injective on G. SAME structural move as Jo26 Theorem 5.7 (GG25ExactPreservation, curve-decodability transfers exactly under interleaving when C(a,b)≤q): both are 'a covering of the small object covers the big object via a hom preserving distinctness'. The covering-transfer pushes the ⟨−2⟩ Mersenne covering to every primitive factor q∣2^m−1 (PrimitiveFactorCovering); the curve interleaving is the code-side analogue. The cyclotomic reduction ℤ[ζ_{2^μ}]↠F_p (degree-1 prime 𝔭|p, the F11 fully-split case) is precisely a covering-transfer hom whose injectivity-on-G is the resultant non-divisibility p∤Res — i.e. the F10 lacunary cleanliness AND the curve-list distinctness are ONE injectivity hypothesis on ONE hom.
@@ -1381,8 +1381,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C089 — Dual pencil law: collinear (e,m) pair-points are the antipodal/equal-product orbit relations, fusing F3 incidence with the F15 vanishing-Schur face; the open slanted Dickson family is the residual   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F3, F15, F12  
-**Walls:** (none)  
+**Forms:** F3, F15, F12<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/MCADualPencilLaw.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MCAIncidenceCensus.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MCASecondMoment.lean`
 
 **Connection:** MCADualPencilLaw.dependent_iff_collinear proves a wide matroid circuit of Lagrange dual vectors λ^S (λ^S_i=1/∏_{j∈S∖i}(x_i−x_j)) exists iff the three pair-points (e,m)=(sum,product) are collinear. MCAIncidenceCensus shows over μ_n the dependent triangles split into equal-product 'horizontal', equal-sum 'vertical' (antipodal e=0), plus the open 'slanted' Dickson-curve sections. The λ^S are exactly the (k+1)-subset collision functionals c_T whose distinct VALUES are the bad scalars (MCASecondMoment's c_T, F15 Schur/h_{b-k} vanishing). So the dual-pencil collinearity is the EXACT algebraic relation governing when two functionals collide. The orbit-quantization must be CONSISTENT with this census: orbits ↔ collinear-(e,m) families, the e₂=0 rigidity (F12) is the antipodal vertical family.
@@ -1395,8 +1395,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C090 — The negative-energy-defect = bounded-support TRUNCATION is the SAME mechanism as the supply LOWER bound B≥Ω(n^{(k+1)/2}): defect sign pins the two-sided bracket via compact support   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F5, F4, F13  
-**Walls:** W-Johnson  
+**Forms:** F5, F4, F13<br>
+**Walls:** W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyNegClosedLower.lean`, `ArkLib/Data/CodingTheory/ProximityGap/EnergyExcessCore.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean`
 
 **Connection:** Two energy facts point opposite and reconcile. (1) AdditiveEnergyNegClosedLower proves the UNCONDITIONAL char-0 LOWER bound E(μ_n)≥3n²−3n (negation-forced quadruples), EnergyExcessCore reduces the wall to energyExcess=E−(3n²−3n)≥0. (2) The cumulant-deep-nonbetti measurement finds the char-p HIGH-order energy BELOW char-0 (negative defect). So in char p, the LOW-order energy excess is ≥0 (above Sidon) while the HIGH-order defect is ≤0 (below Bessel): the char-p truncation |X|≤√n ADDS low-order quadruples (the sum-product excess, W-Johnson source) and REMOVES high-order tail solutions (kurtosis<3). SAME bounded-support phenomenon at two scales: the support cap [−√n,√n] forces energyExcess≥0 at r=2 (clustering near the cap) and κ_r decreasing at large r (cap truncates the tail).
@@ -1409,8 +1409,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C091 — Collision Plancherel = Shaw second-moment: the moment-collision scalar (F5/F15) and the line-incidence Shaw error (F3) are the SAME spectral energy on a different group   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F3, F5, F15  
-**Walls:** W-Johnson, W-Betti  
+**Forms:** F3, F5, F15<br>
+**Walls:** W-Johnson, W-Betti<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionSpectral.lean`, `ArkLib/Data/CodingTheory/ProximityGap/ShawSecondMoment.lean`
 
 **Connection:** plancherel_collision: collision·|A|=Σ_ψ‖Tψ‖² (Tψ=Σ_S ψ(stat S)). shawError_second_moment: Σ_{s0}‖𝒮‖²=|V|·Σ_{ψ⊥s1,ψ≠0}‖1̂_S(ψ)‖². The SAME Plancherel identity (energy=Σ squared Fourier coefficients) on two groups: A=(stat-target) for the moment-collision/list-supply face (F5/F15), V=(word space) for the line-incidence face (F3). plancherel_collision_main_term isolates (C(n,a))² exactly as incidence_eq_average_add_shaw isolates |S|. So the 'list supply' deep-moment object (F5: E_r as a collision count, F15: h_{b-k} vanishing) and the Shaw line-incidence object (F3) are ONE Plancherel energy — the off-diagonal Σ_{ψ≠0}‖Tψ‖² in MomentCollisionSpectral IS the Shaw operator's L² mass. Both bottom out in the same partial subgroup character sum.
@@ -1423,8 +1423,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C092 — The energy chain q·E(H)=Σ‖η_b‖⁴ + dilation reduction E=|H|·T(H) wires F5↔F2↔F18 into one normalized curve-incidence T(H)=#{(b,c)∈H²:1+b−c∈H}   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F2, F5, F18  
-**Walls:** W-Johnson, W-largesieve, W-BGK  
+**Forms:** F2, F5, F18<br>
+**Walls:** W-Johnson, W-largesieve, W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/EnergyDilationReduction.lean`, `ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean`, `ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumFourthMoment.lean`
 
 **Connection:** Three axiom-clean #389 bricks compose: (1) subgroup_gaussSum_fourthMoment: q·E(H)=Σ_b‖η_b‖⁴ (F5↔F2 Parseval, no Weil); (2) addEnergy_eq_card_mul_incidence: E(H)=|H|·T(H), T(H)=#{(b,c)∈H²:1+b−c∈H} (dilation-invariance collapses the 4-variable energy to a curve point-count — this T is the F18 autocorrelation r(h) summed); (3) sidon_order_of_sqrt_charSum: in n≤√q, ‖η_b‖≤C√n ⟹ E≤(1+C²)n². So F2 (√n cancellation), F5 (energy/deep moments), F18 (autocorrelation flatness) are the SAME scalar B(μ_n) up to explicit constants, routing through the single incidence T(H)=(1+o(1))n²/q. card_dvd_addEnergy (|H|∣E) is the structural fingerprint distinguishing subgroups from generic sets.
@@ -1437,8 +1437,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C093 — Effective Jacobi equidistribution at CONSTANT index is the Rojas-León homothety lever read backwards: the prize's large automorphism is the multiplicative h-shift, giving √q per-h but only m statistics   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F6, F19, F20  
-**Walls:** W-largesieve, W-LamLeung  
+**Forms:** F6, F19, F20<br>
+**Walls:** W-largesieve, W-LamLeung<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/EffectiveTransfer.lean`, `ArkLib/Data/CodingTheory/ProximityGap/QuadraticGaussSumNorm.lean`
 
 **Connection:** Rojas-León 1010.0120 gives a √q gain from a large automorphism (homothety by a big subgroup), but the in-tree verdict (issue §5) is it needs n≥√p (window empty at prize). The tangent face reveals the prize's available automorphism differently: the index-m=⟨χ⟩ Galois action χ↦χ^a permutes {J(χ^i,χ^h)}_i AND Hasse-Davenport makes T_h for different h a SHIFT family. The proven gaussSum_normSq (‖τ‖²=p, F20 index-2 case) and EffectiveTransfer (char-0→F_p above C(w,j)^{φ(n)}) give: each individual τ_i is √p exactly, so per-h the tangent sum has trivial bound n and the open question is purely the m-statistic AVERAGE — exactly constant-index (m=2^128 fixed) effective equidistribution. The homothety lever applies to the h-shift (multiplicative, m values) not the x-sum, sidestepping the n≥√p emptiness: the relevant family is m-dimensional (huge), effectivity needs conductor uniform in p at FIXED index m.
@@ -1451,8 +1451,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C094 — The Gauss-quotient identity routes the tangent house through gaussSum recursion to a PROVABLE per-h positivity restatement: unit_h·T_h IS an autocorrelation, so its b-DFT is a power spectrum (no L1 bound is tight)   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F6, F2, F16  
-**Walls:** W-BGK  
+**Forms:** F6, F2, F16<br>
+**Walls:** W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean`, `ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean`
 
 **Connection:** Mathlib JacobiSum/Basic has a recursion jacobiSum χ (χ^n)·gaussSum(χ^{n+1}). With in-tree I4 and eta_image_card_mul_le (proven m=(q-1)/n count), the house B²=n+(√p/m)max_b|Σ_h unit_h·T_h·χ^h(b)| (407-TANGENT §3) becomes a DFT in b of (conj(τ_h)/√p·T_h). The refuted L1 route dropped the h-cancellation (gives √n·m^{1/4}). But the Gauss-quotient form T_h=(conj(τ_h)/(mp))·Σ_i τ_i conj(τ_{i+h}) means (unit_h·T_h)_h is itself a normalized autocorrelation of (τ_i), whose DFT in b is by Wiener-Khinchin EXACTLY |Σ_i τ_i χ^{-i}(b)|²/(mp)=|η_b·(something)|. Closing the loop re-derives |η_b|² as a manifestly-nonnegative spectral density — a Parseval-exact (not lossy) restatement.
@@ -1465,8 +1465,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C095 — The tangent set {1-w:w∈μ_n} carries a forced sign-involution w↦w⁻¹ putting T_h on a curve of degree n/2 (Betti reduction by factor 2 on the multiplicative tangent face)   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F6, F12, F19  
-**Walls:** W-Betti, W-anomaly  
+**Forms:** F6, F12, F19<br>
+**Walls:** W-Betti, W-anomaly<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean`
 
 **Connection:** 407-TANGENT §5b proves an EXACT forced involution w↦w⁻¹: 1−w⁻¹=−w⁻¹(1−w), and −w⁻¹∈μ_n (n even ⟹ −1∈μ_n). So s=1−w↦s' is an n-action with −1 acting, giving #Sol=2n−3 floor. The Betti wall (B_prim for the Fermat point-count, caps moment at r=2) is computed for the FULL Fermat curve x^n+y^n=z^n. But the involution means T_h's underlying exponential sum Σ_w χ^h(1−w) over μ_n factors through the quotient μ_n/⟨w↦−w⟩ (the squares of the tangent values), HALVING the relevant curve degree from n to n/2 in the cohomological count. The multiplicative-tangent shadow of the negation symmetry that elsewhere only appears additively (S_b real).
@@ -1479,8 +1479,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C096 — The twisted-inversion GRS-duality monomial automorphism γ↦γ⁻¹ (x·u(1/x)) is a code automorphism the dilation group misses — folds the worst-line search mod an involution, the F2↔F3 swap   [total 22 | insight 8 research 7 relevance 7 | multiform yes]
 
-**Forms:** F1, F2, F3  
-**Walls:** (none)  
+**Forms:** F1, F2, F3<br>
+**Walls:** (none)<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/MCAMonomialEquivariance.lean`, `ArkLib/Data/CodingTheory/ProximityGap/WBPencilSymmetry.lean`, `ArkLib/Data/CodingTheory/ProximityGap/FarLineIncidenceEquivariance.lean`
 
 **Connection:** There is a code automorphism of RS[μ_n] beyond Z/n dilations: the twisted inversion M:u↦x^{k-1}·u(1/x) (mcaEvent_monomial), the permutation x↦x⁻¹ (fixes μ_n since inversion-closed) composed with the diagonal d(x)=x. It is a genuine GRS-duality move stabilizing RS while the untwisted u↦u(1/x) does not (probe-verified: fuses the F5-exact-pin extremal set into ONE orbit). On the bad-scalar set it acts as the γ-inversion of mcaEvent_swap_inv (WBPencilSymmetry): mcaEvent(u₀,u₁,γ)⟺mcaEvent(u₁,u₀,γ⁻¹). Combined with FarLineIncidenceEquivariance dilation, the worst-line search over n² monomial directions (X^a,X^b) is equivariant under BOTH Z/n dilation AND the involution (a,b)↦(−a,−b) — halving the fundamental domain, making the monomial direction self-dual under (a,b)↔(k−b,k−a)-type reflection.
@@ -1493,8 +1493,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C097 — Per-character Weil energy ‖Tψ‖²≤B SUFFICES (Plancherel bridge built); the missing input is a single Stepanov point-count on the subgroup-restricted curve, not the full BGK sup-norm   [total 22 | insight 7 research 8 relevance 7 | multiform yes]
 
-**Forms:** F2, F18, F19  
-**Walls:** W-largesieve, W-Johnson  
+**Forms:** F2, F18, F19<br>
+**Walls:** W-largesieve, W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionWeilConditional.lean`, `ArkLib/Data/CodingTheory/ProximityGap/StepanovWeilEngine.lean`, `ArkLib/Data/CodingTheory/ProximityGap/StepanovFrobeniusReduction.lean`
 
 **Connection:** collision_le_of_relative_bound (axiom-clean) proves the M2 anti-concentration the prize needs follows from a UNIFORM per-character bound ‖Tψ‖²≤ε·C² for every ψ≠0 — the Plancherel arithmetic is fully discharged, the open input is ONE named hypothesis hB. The per-character sum Tψ=Σ_{x∈μ_n}ψ(stat) is a Weil-on-curves count. Critically this is a PER-ψ bound (autocorrelation-flatness F18, not a sup over a growing family), exactly the shape Stepanov delivers — stepanov_point_bound_via_reduceFrob bounds the point count of ONE curve at a time. So the bridge + Stepanov engine reduce the M2 part of the prize to: produce, for each fixed ψ, a Frobenius-reduced auxiliary of degree <q and order M≈√q on the relevant point set. Non-vanishing is FREE (obstruction_forces_trivial, no genus). Only the explicit auxiliary with √q-strength degree accounting remains.
@@ -1507,8 +1507,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C098 — Lyapunov (geometric-mean) bound on ∏r_j escapes the refuted strict-per-level descent: needs only average log r_j ≤ ½log(2 log)+o, WEAKER than the falsified r_j≤√2 at every j   [total 21 | insight 7 research 7 relevance 7 | multiform no]
 
-**Forms:** F8, F2  
-**Walls:** W-BGK  
+**Forms:** F8, F2<br>
+**Walls:** W-BGK<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean`, `ArkLib/Data/CodingTheory/ProximityGap/DyadicHalvingRecursion.lean`
 
 **Connection:** DISPROOF_LOG kills the STRICT per-level M(n)²≤2M(n/2)² (ratios spike to 2.68, mean 2.1). But the telescoped target needs only the Lyapunov average: M(n)²=M(1)²·∏_{j=1}^{μ}r_j², r_j=M(2^j)/M(2^{j-1}), and the floor M(n)~√(n log(q/n)) corresponds to (1/μ)Σlog r_j²→log 2. An individual r_j can exceed √2 (refuting strict descent) while the geometric mean still tends to √2 — exactly the soft (2+o(1)) form. A genuine logical gap between the refuted ∀j r_j≤√2 and the live limsup of the running geometric mean ≤√2. Azuma fails (bounds each increment in L∞ and sums); Lyapunov multiplies per-level RATIOS, controlled on average, absorbing spikes.
@@ -1521,8 +1521,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C099 — Frobenius n|p+1 gives r(t)≤2 UNCONDITIONALLY — the count face is CLOSED on the inert-prime family, isolating the wall to the split family n|p−1   [total 21 | insight 7 research 7 relevance 7 | multiform yes]
 
-**Forms:** F3, F5, F10  
-**Walls:** W-BGK, W-LamLeung  
+**Forms:** F3, F5, F10<br>
+**Walls:** W-BGK, W-LamLeung<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/GVDvdSuccClosure.lean`, `ArkLib/Data/CodingTheory/ProximityGap/RepCountDiagonalVanish.lean`
 
 **Connection:** gvRepBound_of_dvd_succ proves: when n|p+1 (Frobenius acts as inversion on μ_n⊂F_{p²}, the finite-field unit-circle bound), the representation count r(t)=#{y∈μ_n:t−y∈μ_n}≤2 unconditionally, closing the energy/supply wall with M=2. RepCountDiagonalVanish shows the diagonal coset r=0 over ℂ. The prize regime is n|p−1 (split, μ_n⊂F_p, Frobenius trivial). So the count face — the SAME additive-energy object underlying I(δ) and #lacBad — is provably O(1) on the inert family and the entire difficulty is the Θ(n⁴/p) char-p surplus that appears ONLY for split q. Pins the wall to precisely the split-prime arithmetic the prize fixes, and gives a proven anchor bracketing the open split case.
@@ -1535,8 +1535,8 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 ### C100 — Bessel I₀ tail gives a sub-exponential MGF for the period law — a Bennett/Freedman bound the Azuma route could not reach (it used only L^∞ increments)   [total 21 | insight 7 research 7 relevance 7 | multiform yes]
 
-**Forms:** F13, F7, F8  
-**Walls:** W-Johnson  
+**Forms:** F13, F7, F8<br>
+**Walls:** W-Johnson<br>
 **Code:** `ArkLib/Data/CodingTheory/ProximityGap/RungBesselEnergy.lean`, `ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean`
 
 **Connection:** The proven Bessel even-moment law E_r=(2r)![x^r]I₀(2√x)^{n/2} and the in-tree coefficientwise I₀(2x)≤e^{x²} (bessel_energy_le_gaussian) give the EXACT MGF of the squared period, sub-Gaussian in the bulk but with I₀'s genuine asymptotic I₀(z)~e^z/√(2πz). The Azuma wall inflates by √(2 ln m) precisely because Azuma uses the L^∞ increment bound B_{k−1}, paying the bulk-vs-tail gap √(ln m) per level. The Bessel MGF gives the BULK (L²-scale) increment distribution directly: the per-level increment Δ_k=η^{(2^{k−1})} has the Bessel I₀ law of a level-(k−1) period, MGF controlled by the SAME I₀ bound. A Bennett/Freedman bound uses the predictable-variance ⟨S⟩≍n (proven via Parseval orthogonality, corr≈0) PLUS the MGF — not the crude L^∞ — and the Bessel MGF is exactly the missing conditional-MGF input.

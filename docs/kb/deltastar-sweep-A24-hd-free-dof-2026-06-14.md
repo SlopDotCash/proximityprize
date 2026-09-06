@@ -63,7 +63,7 @@ now *proven* (the explicit reduction), not merely asserted — a strict improvem
 
 ## Lean artifact (axiom-clean)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A24_HDFreeDOF.lean` — real `lake build`
+`Research/ProximityPrize/Frontier/Sweep_A24_HDFreeDOF.lean` — real `lake build`
 (1255 jobs, `autoImplicit=false`), axiom audit `[propext, Classical.choice, Quot.sound]` on every
 theorem (several at `[propext, Quot.sound]`), no `sorry`/`admit`/`native_decide`.
 
@@ -103,6 +103,6 @@ prove any `B(μ_n)` bound or any `δ*` pin. The open core is unchanged: the ener
 input `E_r(μ_n)/(r!n^r)` at `r ~ log_n p` (same wall as every other face). No fabricated closure.
 
 ## Artifacts
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A24_HDFreeDOF.lean` (axiom-clean)
+- `Research/ProximityPrize/Frontier/Sweep_A24_HDFreeDOF.lean` (axiom-clean)
 - `scripts/probes/sweep_A24_hd_dof.py` (exact ℚ-rank, μ = 2..8; 10-reduction sweep)
 - `scripts/probes/_sweep_A24_debug_quartic.py` (proves quartic-HD = 3·quadratic-HD)

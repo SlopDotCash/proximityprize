@@ -42,7 +42,7 @@ stratum and gives the rung a strictly smaller normal form), not a mass reduction
 
 ## Formal kernel
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R298MixedDepthCorrelation.lean` —
+`Research/ProximityPrize/Frontier/_R298MixedDepthCorrelation.lean` —
 axiom-clean (`[propext, Classical.choice, Quot.sound]`, no sorryAx), pg-iterate 48s:
 - `tripleFiber`, `cosetDiag`, `offCosetRemainder` + definitional split
   `tripleConv_eq_cosetDiag_add_offCosetRemainder`;

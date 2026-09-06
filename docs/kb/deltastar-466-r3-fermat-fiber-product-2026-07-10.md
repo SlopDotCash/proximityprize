@@ -65,7 +65,7 @@ statement about the Jacobi angle family — the geometry is exhausted.
 
 ## 4. Formal kernel and probe
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R304FermatFiberProduct.lean`
+`Research/ProximityPrize/Frontier/_R304FermatFiberProduct.lean`
 — axiom-clean (`[propext, Classical.choice, Quot.sound]`, no sorryAx),
 pg-iterate 10s.  Theorems: `quadTotalC_eq_energy`, `sum_sq_le`,
 `sum_pow4_le_sq`, `diagR_nonneg`, `diagR_le`,

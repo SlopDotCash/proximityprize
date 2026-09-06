@@ -6,7 +6,7 @@ Status: abstract transfer guardrail; not a prize proof.
 
 ## Artifact
 
-- Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_QuadraticVinogradovWrongSystemGate.lean`
+- Lean: `Research/ProximityPrize/Frontier/_QuadraticVinogradovWrongSystemGate.lean`
 
 ## Point
 

@@ -11,7 +11,7 @@ AM-GM.
 Updated:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R168DyadicTailEnvelopeConsumer.lean
+Research/ProximityPrize/Frontier/_R168DyadicTailEnvelopeConsumer.lean
 ```
 
 New theorem:
@@ -51,5 +51,5 @@ residual for the parent.
 Verified:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R168DyadicTailEnvelopeConsumer.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R168DyadicTailEnvelopeConsumer.lean
 ```

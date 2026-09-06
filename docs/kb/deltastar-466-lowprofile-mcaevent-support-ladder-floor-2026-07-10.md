@@ -1,7 +1,7 @@
 # δ* #466 — W15: the support-ladder floor for the mcaEvent-vocabulary safe large-zero branch (2026-07-10)
 
 Lane: `ll:low-profile-fiber` (successor of W9). File:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15LargeZeroMcaEventFloor.lean`
+`Research/ProximityPrize/Frontier/_W15LargeZeroMcaEventFloor.lean`
 (axiom-clean, 11/11 `#print axioms` = `[propext, Classical.choice, Quot.sound]`, no `sorryAx`,
 `pg-iterate` 7s).
 

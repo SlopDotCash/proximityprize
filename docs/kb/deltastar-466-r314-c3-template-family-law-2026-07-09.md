@@ -19,7 +19,7 @@ single nontrivial small-family multiplicity law.
 - Probe: `scripts/probes/probe_r314_c3_template_family_law.py`
 - Output: `scripts/probes/_out_466_r314_c3_template_family_law.txt`
 - Lean socket:
-  `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R314C3TemplateFamilyToMass.lean`
+  `Research/ProximityPrize/Frontier/_R314C3TemplateFamilyToMass.lean`
 
 ## Verified Samples
 

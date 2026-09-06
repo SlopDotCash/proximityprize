@@ -9,7 +9,7 @@ Status: **decorrelation guardrail**, not a delta-star proof.
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MultiTestNoAmplification.lean
+Research/ProximityPrize/Frontier/_MultiTestNoAmplification.lean
 ```
 
 formalizes a common failure mode in distributional attacks on the #464 floor.

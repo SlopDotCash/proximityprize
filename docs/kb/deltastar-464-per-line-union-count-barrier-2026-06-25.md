@@ -31,7 +31,7 @@ quantity is the realized bad-scalar union for a stack, not a single fixed line.
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PerLineUnionCountBarrier.lean
+Research/ProximityPrize/Frontier/_PerLineUnionCountBarrier.lean
 ```
 
 defines

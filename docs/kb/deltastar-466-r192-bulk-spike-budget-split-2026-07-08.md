@@ -14,7 +14,7 @@ The infinite half-grid bulk constant for the R189 constants is about
 ## Lean artifact
 
 File:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R192BulkSpikeBudgetSplit.lean`.
+`Research/ProximityPrize/Frontier/_R192BulkSpikeBudgetSplit.lean`.
 
 New definitions:
 
@@ -40,8 +40,8 @@ There is also a specialization to the R189 constants `(3/5)` and `2`.
 ## Verification
 
 ```text
-./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.Frontier._R190BulkPlusSpikesQuarterMGF
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R192BulkSpikeBudgetSplit.lean
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R190BulkPlusSpikesQuarterMGF
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R192BulkSpikeBudgetSplit.lean
 ```
 
 R192 passed the fast Lean check in 6 seconds.

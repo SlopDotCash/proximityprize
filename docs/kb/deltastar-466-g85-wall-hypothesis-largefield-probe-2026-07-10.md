@@ -4,7 +4,7 @@ Follow-up (issues #466/#507) to the G84 small-scale red-team probe
 (`docs/kb/deltastar-466-g84-wall-hypothesis-smallscale-probe-2026-07-10.md`), which refuted
 every small-field ANALOGUE of the wall hypothesis of
 `firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count`
-(`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapeRateHalfBracket.lean`) and
+(`Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.lean`) and
 predicted the refutations are small-field artifacts that collapse once
 `p >> C(n,t)^{1/(t-k)}`. This probe tests that prediction at G84's stated faithful next cell:
 `n = 64, k = 32, t = 34` (`t-k = 2`; both G84 translations coincide, `64 | n`), with sampled

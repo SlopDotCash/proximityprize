@@ -206,10 +206,10 @@ The empirical picture is consistent with the conjecture being **true** (worst-ca
 
 ### Files (axiom-clean, `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}, no sorryAx)
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvMRS_PhaseBlindEnergyFloor.lean` — the floor theorem (§2.1)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvGK_GrossKoblitzPhaseCochain.lean` — GK1/GK2/GK3 (§3.1)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseCorrelationOrbitCollapse.lean` — orbit-collapse identity (§3.2)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvGalois_StickelbergerPhaseDescent.lean` — Galois RMS descent + Stickelberger character-constancy (§3.3)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntiConcKurtosisRefuted.lean` — sub-Gaussian-at-every-order (§4.1)
+- `Research/ProximityPrize/Frontier/_AvMRS_PhaseBlindEnergyFloor.lean` — the floor theorem (§2.1)
+- `Research/ProximityPrize/Frontier/_AvGK_GrossKoblitzPhaseCochain.lean` — GK1/GK2/GK3 (§3.1)
+- `Research/ProximityPrize/Frontier/_PhaseCorrelationOrbitCollapse.lean` — orbit-collapse identity (§3.2)
+- `Research/ProximityPrize/Frontier/_AvGalois_StickelbergerPhaseDescent.lean` — Galois RMS descent + Stickelberger character-constancy (§3.3)
+- `Research/ProximityPrize/Frontier/_AntiConcKurtosisRefuted.lean` — sub-Gaussian-at-every-order (§4.1)
 
 Verification scripts (reproduced for this essay): GK1 tautology $|\Sigma/m-\eta| = 2.9\times10^{-14}$; $E_2 = 3n^2-3n$ and $\kappa = 3-3/n$ exact; orbit-rep multiplicity $\sum r(d_0) = n-1$ exact; $C^2 = 1.14, 1.44, 1.59, 1.86$ rising at $n=8,16,32,64$.

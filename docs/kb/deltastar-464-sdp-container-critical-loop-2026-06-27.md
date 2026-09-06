@@ -38,7 +38,7 @@ The two Lean sockets below answer those questions.
 File checked:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSDP_AutocorrPowerSaving.lean
+Research/ProximityPrize/Frontier/_AvSDP_AutocorrPowerSaving.lean
 ```
 
 The idea is to rewrite the Gaussian periods as a DFT of the normalized Gauss-sum phase sequence.
@@ -72,7 +72,7 @@ obligation `E_r <= Wick` at `r ~= log p`.
 File checked:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RadicalContainerCodegreeOne.lean
+Research/ProximityPrize/Frontier/_RadicalContainerCodegreeOne.lean
 ```
 
 The radical hope was to stop analyzing `mu_n` directly and put containers on the hypergraph whose
@@ -130,8 +130,8 @@ So this loop does not prove the floor. It narrows the shape of any future proof:
 ## Verification
 
 ```bash
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSDP_AutocorrPowerSaving.lean
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RadicalContainerCodegreeOne.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_AvSDP_AutocorrPowerSaving.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_RadicalContainerCodegreeOne.lean
 ```
 
 Both passed. The axiom audit reported only the expected classical/proof-irrelevance axioms and no

@@ -12,7 +12,7 @@ propose -> attack -> refute loop against the current #464 frontier.
 - `docs/kb/deltastar-DOSSIER-v2-2026-06-22.md`, including the §16 correction that the
   off-BGK floor is necessary but not sufficient.
 - `ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md` and
-  `ArkLib/Data/CodingTheory/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean`.
+  `Research/ProximityPrize/LegacyWorkbench.lean`.
 - The local Paley/BGK reference map:
   `docs/references/proximity-gap-paley-spectrum/README.md` and
   `docs/references/proximity-gap-paley-spectrum/BRIDGE-house-and-randomwalk.md`.
@@ -74,7 +74,7 @@ the same wall.
 I added a self-contained frontier lemma:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPotentialGaugeBarrier.lean
+Research/ProximityPrize/Frontier/_DoorIVPotentialGaugeBarrier.lean
 ```
 
 Main theorem:
@@ -119,7 +119,7 @@ hi / lo >= c / K.
 Validation:
 
 ```text
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPotentialGaugeBarrier.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_DoorIVPotentialGaugeBarrier.lean
 ```
 
 passed in 16 seconds; the file is axiom-clean under the usual frontier audit and has no `sorry`.

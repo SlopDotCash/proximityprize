@@ -56,7 +56,7 @@ exactly by the probe.
 
 ## The Lean brick
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A22_PoissonPinN128.lean`
+`Research/ProximityPrize/Frontier/Sweep_A22_PoissonPinN128.lean`
 (namespace `ArkLib.ProximityGap.PoissonCeilingFloor.SweepA22`), built on `PoissonCeilingFloor`:
 
 - `choose_128_4 : Nat.choose 128 4 = 10668000`  (`decide`)
@@ -97,6 +97,6 @@ classically — so the instance is real, not vacuous.
 
 ## Artifacts
 
-- Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A22_PoissonPinN128.lean`
+- Lean: `Research/ProximityPrize/Frontier/Sweep_A22_PoissonPinN128.lean`
 - Probe: `scripts/probes/sweep_A22_poisson_pin_n128.py`
 - This note.

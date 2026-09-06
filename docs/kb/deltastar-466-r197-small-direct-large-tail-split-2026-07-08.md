@@ -10,7 +10,7 @@ bulk-plus-spikes tail envelope.
 ## Lean artifact
 
 File:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R197SmallDirectLargeTailSplit.lean`.
+`Research/ProximityPrize/Frontier/_R197SmallDirectLargeTailSplit.lean`.
 
 Main theorem:
 
@@ -26,7 +26,7 @@ The live specialization sets `N = 32`, matching the R196 cutoff.
 ## Verification
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R197SmallDirectLargeTailSplit.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R197SmallDirectLargeTailSplit.lean
 ```
 
 R197 passed the fast Lean check in 5 seconds.

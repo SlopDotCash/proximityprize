@@ -4,9 +4,9 @@
 is now formalized. Two Lean files, every `#print axioms` a subset of
 `[propext, Classical.choice, Quot.sound]`, 0 `sorryAx`, verified with `scripts/pg-iterate.sh`:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AdditiveDomainDissolution.lean`
+- `Research/ProximityPrize/Frontier/_AdditiveDomainDissolution.lean`
   (fixed-character dichotomy, coset blindness, `E(S) = |S|³`; ✅ OK 163s)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AdditiveDomainDissolutionDual.lean`
+- `Research/ProximityPrize/Frontier/_AdditiveDomainDissolutionDual.lean`
   (full dilated spectrum `{η_b}_b`, exact spike localization on `S^⊥`; ✅ OK 153s)
 
 This is a **bankable off-core win** (no wall contact): it proves the analytic core of the
@@ -91,9 +91,9 @@ Lean development pins where:
 ## 4. Verification record
 
 ```
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AdditiveDomainDissolution.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_AdditiveDomainDissolution.lean
   ✅ OK — all 12 #print axioms ⊆ [propext, Classical.choice, Quot.sound], 0 sorryAx
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AdditiveDomainDissolutionDual.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_AdditiveDomainDissolutionDual.lean
   ✅ OK — all 7 #print axioms ⊆ [propext, Classical.choice, Quot.sound], 0 sorryAx
 ```
 

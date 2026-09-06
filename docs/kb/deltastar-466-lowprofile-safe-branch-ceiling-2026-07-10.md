@@ -1,7 +1,7 @@
 # δ* #466 — W15 part 2: the safe-branch ceiling `Λ·|supp|`, the near-code list residual, and sub-Johnson q-saturation (2026-07-10)
 
 Lane: `ll:low-profile-fiber`. Files:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15SafeBranchLinearCeiling.lean`
+`Research/ProximityPrize/Frontier/_W15SafeBranchLinearCeiling.lean`
 (axiom-clean, 6/6 audits `[propext, Classical.choice, Quot.sound]`, no `sorryAx`,
 `pg-iterate` 40s) and probe `scripts/probes/probe_466_w15_multibase_ladder.py`
 (deterministic, exit 0). Companion to

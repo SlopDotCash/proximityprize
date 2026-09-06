@@ -6,7 +6,7 @@ Both files axiom-clean (`propext, Classical.choice, Quot.sound` only); no `sorry
 
 ## Task A — CountingDictionary collapses to a single scalar ceiling
 
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ60Dictionary.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ60Dictionary.lean`
 (namespace `ArkLib.ProximityGap.Frontier.SYZ60Dictionary`).
 
 SYZ57 had reduced wire (iv) to `SYZ57Transport.CountingDictionary`:
@@ -42,7 +42,7 @@ G87 syndrome→pencil identification feeding SYZ29's `#B ≤ 2³⁰`.
 
 ## Task B — TwoRamp windowed count proved; μ-basis existence named
 
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ60TwoRamp.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ60TwoRamp.lean`
 (namespace `ArkLib.ProximityGap.SYZ60`).
 
 SYZ44 carried `SYZ44.TwoRamp hilb δ₁ δ₂ := ∀ D, hilb D = (D+1−δ₁)+(D+1−δ₂)` as a named hypothesis.

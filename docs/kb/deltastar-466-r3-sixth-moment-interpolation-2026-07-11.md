@@ -62,7 +62,7 @@ fixed prize modulus the `(1+log m)` factor is a concrete number
 
 ## 5. Formal kernel and probe
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R306SixthMomentInterpolation.lean`
+`Research/ProximityPrize/Frontier/_R306SixthMomentInterpolation.lean`
 — axiom-clean (`[propext, Classical.choice, Quot.sound]`, manual reads on all
 four, no sorryAx), pg-iterate 7s.  Theorems: `sixthMoment_eq_tripleConv_energy`,
 `SixthMomentBound` (interface), `sixthMomentBound_of_flatSq_and_fourth`,

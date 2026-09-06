@@ -77,7 +77,7 @@ ON-BGK.**
 
 ## Files
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FrontalConjugateGateCollapse.lean` (axiom-clean)
+- `Research/ProximityPrize/Frontier/_FrontalConjugateGateCollapse.lean` (axiom-clean)
 - `scripts/probes/probe_466r12_frontal.py` → `_out_466r12_frontal.txt`
 - `scripts/probes/probe_466r12_gate.py` → `_out_466r12_gate.txt`
 - DISPROOF tag `466-r12-frontal-conjugate-gate-collapse`

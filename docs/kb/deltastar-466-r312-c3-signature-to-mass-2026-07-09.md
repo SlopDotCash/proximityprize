@@ -5,7 +5,7 @@
 New file:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R312C3SignatureToMass.lean
+Research/ProximityPrize/Frontier/_R312C3SignatureToMass.lean
 ```
 
 R311 reduced the `c=3` relation-web target to three collision-fiber count signatures:
@@ -38,7 +38,7 @@ It also proves this signature mass beats exact-Wick headroom `45n² - 40n` for e
 Passed:
 
 ```bash
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R312C3SignatureToMass.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R312C3SignatureToMass.lean
 ```
 
 No `sorryAx`; axiom audit is within the usual Lean foundations.

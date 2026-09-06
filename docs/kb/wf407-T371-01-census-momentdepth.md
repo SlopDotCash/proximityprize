@@ -72,7 +72,7 @@ viewed on the census face.
 
 ## Lean brick (axiom-clean)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T371_01_CensusMomentDepth.lean`:
+`Research/ProximityPrize/Frontier/WF407_T371_01_CensusMomentDepth.lean`:
 
 - `band_eq_agreement_radius` — the band order `a = r` equals `(1−δ*)·n` (`m=1`); the
   census order is the deep agreement radius.

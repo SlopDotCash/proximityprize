@@ -9,7 +9,7 @@ Status: **classification target sharpened**, not a delta-star proof.
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean
+Research/ProximityPrize/Frontier/_StackProfileFiberMax.lean
 ```
 
 adds the missing internal max layer for profile-based attacks.

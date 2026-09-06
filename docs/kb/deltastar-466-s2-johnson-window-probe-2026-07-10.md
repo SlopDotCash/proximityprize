@@ -6,7 +6,7 @@ Numeric quantification (exact rational arithmetic, stdlib-only, deterministic)
 of the parameter region discharged by the S2 theorem
 `lineAppearingCodewords_card_le_of_punctured_johnson` /
 `puncturedListBudget_of_johnson`
-(`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_S2PuncturedJohnsonDischarge.lean`).
+(`Research/ProximityPrize/Frontier/_S2PuncturedJohnsonDischarge.lean`).
 
 Probe: `scripts/probes/probe_s2_punctured_johnson_window.py`.
 

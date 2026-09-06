@@ -107,7 +107,7 @@ M=262164 cutoff=27.584 budget=1.83807 slack=0.16193
 Lean consumer:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R226OneBandTwelveSpikeQuotientConsumer.lean
+Research/ProximityPrize/Frontier/_R226OneBandTwelveSpikeQuotientConsumer.lean
 ```
 
 It proves that the one-band/twelve-quotient-spike tail, plus the raw lift and

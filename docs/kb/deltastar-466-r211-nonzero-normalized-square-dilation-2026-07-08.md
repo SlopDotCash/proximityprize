@@ -4,7 +4,7 @@ Date: 2026-07-08
 
 ## What landed
 
-Added `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R211NonzeroNormalizedSqDilationConsumer.lean`.
+Added `Research/ProximityPrize/Frontier/_R211NonzeroNormalizedSqDilationConsumer.lean`.
 
 The file corrects the live dyadic MGF bridge to the variance-normalized squared
 Gauss-period statistic used by the probes:
@@ -45,7 +45,7 @@ Fast cone check:
 
 ```bash
 scripts/pg-iterate.sh -q \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R211NonzeroNormalizedSqDilationConsumer.lean
+  Research/ProximityPrize/Frontier/_R211NonzeroNormalizedSqDilationConsumer.lean
 ```
 
 Result:

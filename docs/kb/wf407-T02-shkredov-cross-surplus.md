@@ -63,7 +63,7 @@ points the wrong way and the `√n` loss is irreducible (W2).
 
 ## Lean artifact (axiom-clean)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T02Shkredov.lean` — the elementary
+`Research/ProximityPrize/Frontier/WF407_T02Shkredov.lean` — the elementary
 regime-vacuity kernel, audited `[propext, Classical.choice, Quot.sound]`:
 - `shkredov_density_gate`: `n > p^{1/4} ⟺ log n > 128·log2/3` (`a > 128/3 ≈ 42.67`).
 - `prize_below_quarter_power`: for `a ≤ 40`, `¬(2^a > p^{1/4})` — the Shkredov/HBK density

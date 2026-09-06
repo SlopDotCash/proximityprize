@@ -57,7 +57,7 @@ divides a nonzero integer resultant with an explicit height bound.
 
 ```text
 ./scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R314KernelRelationMassDecomposition.lean
+  Research/ProximityPrize/Frontier/_R314KernelRelationMassDecomposition.lean
 ```
 
 passed on 2026-07-09 with no `sorryAx`.

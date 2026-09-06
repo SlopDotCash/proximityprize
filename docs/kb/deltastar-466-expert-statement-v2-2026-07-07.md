@@ -6,7 +6,7 @@ spike), the corrected off-diagonal form acquired an unconditional partial theore
 bookkeeping, a two-sided tower⟺sup equivalence at depth, and a machine-checked reduction of its
 r=2 rung to one classical formalization gap (Hasse for elliptic curves). Every claim below has
 been re-verified against the Lean source (theorem names greppable in
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/`); discrepancies found during verification are
+`Research/ProximityPrize/Frontier/`); discrepancies found during verification are
 flagged inline and collected in §5.
 
 Notation throughout: `F = F_q` (`q = p` prime at the prize instance), `μ_n ⊊ F_p^×` the order-`n`

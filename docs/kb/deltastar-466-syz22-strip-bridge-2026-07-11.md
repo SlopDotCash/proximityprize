@@ -1,6 +1,6 @@
 # δ\* #466 — SYZ22: the reduced strip bridge (identification + pair-doubling), 2026-07-11
 
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ22StripBridge.lean`
+**File:** `Research/ProximityPrize/Frontier/_SYZ22StripBridge.lean`
 (axiom-clean: `propext`, `Classical.choice`, `Quot.sound` only; no `sorry`, no `axiom`, no
 `native_decide`).
 

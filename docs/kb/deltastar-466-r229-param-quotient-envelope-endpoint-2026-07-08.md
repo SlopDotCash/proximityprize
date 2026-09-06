@@ -27,7 +27,7 @@ and then feeds the existing generic R219 prize endpoint.
 File:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R229ParamQuotientEnvelopePrizeEndpoint.lean
+Research/ProximityPrize/Frontier/_R229ParamQuotientEnvelopePrizeEndpoint.lean
 ```
 
 Main definitions/theorems:
@@ -43,7 +43,7 @@ prize_sq_of_natural_quotient_param_tail
 Verification:
 
 ```bash
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R229ParamQuotientEnvelopePrizeEndpoint.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R229ParamQuotientEnvelopePrizeEndpoint.lean
 ```
 
 Result:

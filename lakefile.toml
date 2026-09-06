@@ -1,6 +1,6 @@
 name = "Arklib"
 lintDriver = "batteries/runLinter"
-defaultTargets = ["ArkLib"]
+defaultTargets = ["ArkLib", "ResearchProximityPrize"]
 
 [leanOptions]
 pp.unicode.fun = true
@@ -39,3 +39,7 @@ rev = "d8d6609e179fc26c4c56e1dae7c37032d618ad73"
 
 [[lean_lib]]
 name = "ArkLib"
+
+[[lean_lib]]
+name = "ResearchProximityPrize"
+roots = ["Research.ProximityPrize"]

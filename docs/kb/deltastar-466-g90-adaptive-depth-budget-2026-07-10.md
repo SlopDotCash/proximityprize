@@ -1,7 +1,7 @@
 # G90: adaptive depth budgets remove the artificial 111-fold loss
 
 Lean artifact:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90AdaptiveDepthBudgetAssembly.lean`.
+`Research/ProximityPrize/Frontier/_G90AdaptiveDepthBudgetAssembly.lean`.
 
 G89's even split is a clean sufficient assembly rule, but it is not a necessary production
 condition. Requiring every one of the 111 depths to fit one 111th of Wick artificially multiplies

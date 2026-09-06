@@ -74,7 +74,7 @@ phase-histogram control therefore cannot lower-bound the fixed-row weighted cova
 
 ## Formal payload — the freedom invariant
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G252JointPhaseRowFreedom.lean`.
+`Research/ProximityPrize/Frontier/_G252JointPhaseRowFreedom.lean`.
 
 A "global phase discrepancy budget" is, at its strongest, control of the phase *histogram*; the
 sharpest such control is a balanced sign vector (equal `+1`/`−1` counts, histogram-sum `0`). For the

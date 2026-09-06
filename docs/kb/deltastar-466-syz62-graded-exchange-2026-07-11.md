@@ -1,6 +1,6 @@
 # δ* / #466 — SYZ62: the product-degree grading and the leading-vector exchange (2026-07-11)
 
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ62GradedExchange.lean`
+**File:** `Research/ProximityPrize/Frontier/_SYZ62GradedExchange.lean`
 **Status:** axiom-clean (`propext, Classical.choice, Quot.sound` only); no `sorry`, no `native_decide`.
 **Branch:** `codex/syz62-graded-exchange` (off `fork/research/proximity-prize` @ `9cca95f2a`).
 

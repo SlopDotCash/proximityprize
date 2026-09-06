@@ -1,7 +1,7 @@
 # SYZ23 — directness of the anchored-annihilator sum (rate-1/2 decisive strip)
 
 **Issue:** #466 / #507  **Date:** 2026-07-11
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ23DirectnessStrip.lean`
+**File:** `Research/ProximityPrize/Frontier/_SYZ23DirectnessStrip.lean`
 **Probe:** `scripts/probes/probe_syz23_directness_support_leak.py`
 **Status:** axiom-clean (propext / Classical.choice / Quot.sound only), no `sorry`, no `native_decide`.
 

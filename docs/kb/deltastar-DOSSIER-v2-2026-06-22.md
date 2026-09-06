@@ -317,7 +317,7 @@ Non-monotonic, mean ≈ 1.285, **no upward drift across eight octaves**, hugging
 ## 11. The substrate and how to continue (everything a fresh agent needs)
 
 ### 11.1 Start here
-- **`PROXIMITY_PRIZE_WORKBENCH.lean`** — the single self-contained "write your solution here" file: the exact non-degenerate target, the prize regime, the imported+`#check`-verified proven substrate, the proven walls, the closure contract, and a `▼ YOUR CONJECTURE HERE ▼` slot.
+- **`Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean`** — the single self-contained "write your solution here" file: the exact non-degenerate target, the prize regime, the imported+`#check`-verified proven substrate, the proven walls, the closure contract, and a `▼ YOUR CONJECTURE HERE ▼` slot.
 - **`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`** (auto-loaded in that cone; `AGENTS.md` is a copy) — the build recipe, the #334 ledger, the four faces, references, the honesty contract, pitfalls.
 - **`docs/wiki/residual-census.md`** — the named-residual census (read before treating any `*Residual` as proof debt; the `(P2-Slack)` residual is the genuine BGK char-p wall).
 

@@ -89,7 +89,7 @@ and the self-contained `multinomialSum_le_wick`.
 
 ## Continuation: DC-moment certificate
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/PrizeRegimeDCEnergyBridge.lean` now packages the
+`Research/ProximityPrize/Frontier/PrizeRegimeDCEnergyBridge.lean` now packages the
 prize-regime spectral branch as one explicit certificate:
 
 ```lean

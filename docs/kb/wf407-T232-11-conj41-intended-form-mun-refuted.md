@@ -72,7 +72,7 @@ a usable poly list bound; the correct list quantity *is* the recognized open wal
 
 ## 3. The machine-checked countermodel (axiom-clean Lean brick)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_Conj41IntendedFormMunRefuted.lean`
+`Research/ProximityPrize/Frontier/WF407_Conj41IntendedFormMunRefuted.lean`
 (axiom audit `[propext, Classical.choice, Quot.sound]`, kernel-`decide`-verified, no sorry):
 
 - `mu36 : Finset (ZMod 73)` — the **proper** smooth subgroup `μ₃₆ ⊂ F₇₃^×` (`36 ∣ 72`, `36 < 72`).
@@ -107,7 +107,7 @@ field-independent across two primes), not sampled.
 - `scripts/probes/wf407_T232-11-conj41_witness_audit.py` (n=24/28/32 genuine-codeword audit)
 - `scripts/probes/wf407_T232-11-conj41_coset_law.py` (`⌊n/4⌋−1` law + structure decode + field-indep)
 - `scripts/probes/wf407_T232-11-conj41_zerofiber_witness.py` (small-prime decide-able witness search)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_Conj41IntendedFormMunRefuted.lean` (the brick)
+- `Research/ProximityPrize/Frontier/WF407_Conj41IntendedFormMunRefuted.lean` (the brick)
 
 **In-tree substrate consumed:** `TopDirectionLineCount.lean`
 (`point_compat_iff_esymm_zero`, `zero_fiber_filter_eq`, `unitVec`, `CompatC`, `loc_coeff_esymm`).

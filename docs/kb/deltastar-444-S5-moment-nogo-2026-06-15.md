@@ -1,7 +1,7 @@
 # δ* #444 — the moment / second-order method NO-GO (prize-depth obstruction)
 
 **Date:** 2026-06-15
-**File landed:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/MomentMethodPrizeDepthNoGo.lean`
+**File landed:** `Research/ProximityPrize/Frontier/MomentMethodPrizeDepthNoGo.lean`
 **Status:** CLOSED, axiom-clean (`[propext, Classical.choice, Quot.sound]`, zero `sorryAx`), takes
 **no open input** — it reduces entirely to arithmetic. This is a genuine deliverable: a wall that
 tells every future wave *not to re-try the moment method on the prize core*.

@@ -108,6 +108,6 @@ The sole live CORE face remains the direct, row-labelled sponsor-prime Jacobi/cy
 
 ## Artifacts
 
-- Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G262SponsorRankCrossover.lean`
+- Lean: `Research/ProximityPrize/Frontier/_G262SponsorRankCrossover.lean`
 - Probe: `scripts/probes/g262_sponsor_rank_crossover_probe.py`
 - Inputs: G63, G64, G261, FS15-FS18, both certified prize-prime modules

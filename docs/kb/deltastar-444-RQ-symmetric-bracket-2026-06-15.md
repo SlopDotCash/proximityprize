@@ -128,7 +128,7 @@ tightening of the open `δ*` window.
 ## 5. Files / artifacts
 
 - **Lean (axiom-clean, 6 theorems, `[propext, Classical.choice, Quot.sound]`, 0 sorryAx):**
-  `ArkLib/Data/CodingTheory/ProximityGap/Frontier/SymmetricTowerBracket.lean`
+  `Research/ProximityPrize/Frontier/SymmetricTowerBracket.lean`
   - §1 `symmetric_agreement_eq_two_double`, `even_word_double_eq_level1_agreement`,
     `symmetric_agreement_transport`
   - §2 `base_case_agreement_eq_two_freq`

@@ -10,7 +10,7 @@ R168 MGF route.  R182 wires that shape into Lean.
 Updated:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R168DyadicTailEnvelopeConsumer.lean
+Research/ProximityPrize/Frontier/_R168DyadicTailEnvelopeConsumer.lean
 ```
 
 New theorem:
@@ -49,5 +49,5 @@ R168 threshold.
 Verified:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R168DyadicTailEnvelopeConsumer.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R168DyadicTailEnvelopeConsumer.lean
 ```

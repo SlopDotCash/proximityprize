@@ -2,7 +2,7 @@
 
 > **🔁 This dossier supersedes v2 (issue #464, 179 comments) and #444 (1,190 comments).**
 > Canonical in-tree copy: `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`. The Lean-side single-file
-> workspace is [`ArkLib/Data/CodingTheory/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean`](../../ArkLib/Data/CodingTheory/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean).
+> workspace is [`Research/ProximityPrize/LegacyWorkbench.lean`](../../Research/ProximityPrize/LegacyWorkbench.lean).
 > Consolidated 2026-07-01 from: proximityprize.org + ABF26 (ePrint 2026/680); the FULL #464 thread
 > (dossier v2 + all 179 comments, independently re-digested); the #444 record; the in-tree substrate
 > (~1,611 `Frontier/` files, 59-entry `DISPROOF_LOG.md`, ~150 `deltastar-464-*` KB notes); and the
@@ -938,7 +938,7 @@ WraparoundVariance abstract-ring restatement; N9 codim-2; toy `deltaStar_pin_mu6
 
 ### 11.1 Start here (in order)
 1. **This dossier** (`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`).
-2. **`ArkLib/Data/CodingTheory/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean`** — the compiling
+2. **`Research/ProximityPrize/LegacyWorkbench.lean`** — the compiling
    single-file Lean workspace: exact target, regime, `#check`-verified substrate, walls, closure
    contract, `▼ YOUR CONJECTURE HERE ▼` slot, and the 2026-07-01 state-of-play section.
 3. **`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`** (auto-loaded; `AGENTS.md` is a copy) —

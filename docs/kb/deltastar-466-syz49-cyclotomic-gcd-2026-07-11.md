@@ -83,6 +83,6 @@ the campaign has produced — the μ-basis imbalance residual and the BGK charac
 
 ## Artifacts
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ49CyclotomicGcd.lean` (6 theorems, axiom-clean)
+- `Research/ProximityPrize/Frontier/_SYZ49CyclotomicGcd.lean` (6 theorems, axiom-clean)
 - `scripts/probes/probe_syz49_cyclotomic_gcd.py` (experiments A/A'/B/C/C'/D)
 - Branch `codex/syz49-cyclotomic-gcd` off `fork/research/proximity-prize` @ 123dd54f2.

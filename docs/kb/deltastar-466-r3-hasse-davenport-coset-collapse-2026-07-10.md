@@ -43,7 +43,7 @@ The angle rigidity is exactly the coset structure; it does not leak.
 
 ## Formal kernel
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R297HasseDavenportCosetTriple.lean` —
+`Research/ProximityPrize/Frontier/_R297HasseDavenportCosetTriple.lean` —
 axiom-clean (`[propext, Classical.choice, Quot.sound]`, no sorryAx), pg-iterate 7s:
 - `HDCosetTripleCollapse` — the named exact input (the Gauss-sum product relation is classical
   but absent from Mathlib; the Prop is pinned to the classical instantiation, probe-verified);

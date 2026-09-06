@@ -21,7 +21,7 @@ cp scripts/style-exceptions.txt "$backup"
 set +e
 {
   printf '%s\n' ArkLib/Data/CodingTheory/ProximityGap.lean
-  git ls-files 'ArkLib/Data/CodingTheory/ProximityGap/*.lean'
+  git ls-files 'ArkLib/Data/CodingTheory/ProximityGap/*.lean' 'Research/ProximityPrize/*.lean'
 } | sort -u | xargs ./scripts/lint-style.py > "$raw"
 lint_status=$?
 set -e

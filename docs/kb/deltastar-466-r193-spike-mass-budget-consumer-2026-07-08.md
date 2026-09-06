@@ -22,7 +22,7 @@ controlled by `exp(max(X)/4) / M`.
 ## Lean artifact
 
 File:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R193SpikeMassBudgetConsumer.lean`.
+`Research/ProximityPrize/Frontier/_R193SpikeMassBudgetConsumer.lean`.
 
 Main theorem:
 
@@ -47,8 +47,8 @@ for the `(3/5)` bulk and two-spike constants.
 ## Verification
 
 ```text
-./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.Frontier._R192BulkSpikeBudgetSplit
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R193SpikeMassBudgetConsumer.lean
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R192BulkSpikeBudgetSplit
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R193SpikeMassBudgetConsumer.lean
 ```
 
 R193 passed the fast Lean check in 6 seconds.

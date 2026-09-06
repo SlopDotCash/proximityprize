@@ -100,7 +100,7 @@ genuine-vs-antipodal split numerically and rigorously.
 - `scripts/probes/wf407_T09-leak_genuine_at_onset.py` — genuine defects: 0 % reflection
 - `scripts/probes/wf407_T09-leak_conjugate.py` — genuine product-unit `g` ∈ small set, not fixed
 - `scripts/probes/wf407_T09-leak_count_identity.py` — leak count `= E₂^{(p)} − E₂^{(0)}` (exact)
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T09Leak.lean` — axiom-clean reflection engine
+- `Research/ProximityPrize/Frontier/WF407_T09Leak.lean` — axiom-clean reflection engine
 
 Cross-refs: `deltastar-407-cumulant-deep-nonbetti-verdict-2026-06-13.md` (sub-route A),
 `deltastar-407-sparse-support-ideal-svp-verdict-2026-06-13.md`,

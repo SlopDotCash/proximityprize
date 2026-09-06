@@ -38,7 +38,7 @@ which is the combinatorial shadow of the Lam–Leung classification.
 
 ## What is PROVEN (axiom-clean Lean) vs OPEN
 
-Artifact: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A16_OrbitCountW4.lean`
+Artifact: `Research/ProximityPrize/Frontier/Sweep_A16_OrbitCountW4.lean`
 (`#print axioms` = `[propext, Classical.choice, Quot.sound]`, no `sorryAx`).
 
 PROVEN, fully general in `M = n/4`:

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Deterministic sorry/admit census for the ArkLib source tree.
+"""Deterministic sorry/admit census for the library and research source trees.
 
 Produces a per-declaration inventory of every `sorry`/`admit` token under
-ArkLib/, distinguishing real proof holes from docstring/comment mentions.
+ArkLib/ and Research/, distinguishing real proof holes from docstring/comment mentions.
 With --fail-on-holes (the CI gate), exits non-zero if any live hole exists.
 
 Usage:
@@ -62,7 +62,7 @@ def strip_comments_map(text: str) -> list[bool]:
 
 def census(root: Path) -> list[dict]:
     rows: list[dict] = []
-    for f in sorted((root / "ArkLib").rglob("*.lean")):
+    for f in sorted(f for name in ("ArkLib", "Research") for f in (root / name).rglob("*.lean")):
         text = f.read_text(encoding="utf-8", errors="replace")
         mask = strip_comments_map(text)
         lines = text.splitlines()

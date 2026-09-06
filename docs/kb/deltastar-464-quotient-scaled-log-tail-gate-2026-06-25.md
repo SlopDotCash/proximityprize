@@ -9,7 +9,7 @@ Status: **constant-form tail consumer**, not a delta-star proof.
 The file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_QuotientScaledLogTailGate.lean
+Research/ProximityPrize/Frontier/_QuotientScaledLogTailGate.lean
 ```
 
 packages the quotient exponential tail gate in the constant form used at the prize threshold.

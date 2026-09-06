@@ -10,7 +10,7 @@ affine-stack consistency.
 Formal kernel:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/
+Research/ProximityPrize/Frontier/
   _SupportDividedDifferenceLocalRigidity.lean
 ```
 
@@ -64,7 +64,7 @@ remains open; no exact delta-star pin is claimed here.
 The companion file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/
+Research/ProximityPrize/Frontier/
   _SupportDividedDifferencePencilPropagation.lean
 ```
 
@@ -110,7 +110,7 @@ closure route.
 
 ```text
 scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SupportDividedDifferenceLocalRigidity.lean
+  Research/ProximityPrize/Frontier/_SupportDividedDifferenceLocalRigidity.lean
 ```
 
 passes, and all five audited declarations depend only on the standard

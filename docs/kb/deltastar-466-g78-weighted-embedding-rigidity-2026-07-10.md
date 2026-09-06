@@ -44,6 +44,6 @@ This complements (does not overlap) G77's first-incidence/excess-multiplicity de
 
 ## Artifacts
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G78WeightedRelationEmbeddingRigidity.lean`
+- `Research/ProximityPrize/Frontier/_G78WeightedRelationEmbeddingRigidity.lean`
   (imports R366 + R367 only; axiom audit `[propext, Classical.choice, Quot.sound]`, no
   `sorryAx`; checked with `scripts/pg-iterate.sh`).

@@ -13,7 +13,7 @@ Formal kernel (compiles clean, 11 audited theorems all
 `[propext, Classical.choice, Quot.sound]`, no `sorry`, no `axiom`):
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSharedFreshTripleP1Refuted.lean
+Research/ProximityPrize/Frontier/_P1RateQuarterSharedFreshTripleP1Refuted.lean
 ```
 
 Headline theorems: `sharedFreshTripleFree_refuted` (every order-`2^30` power

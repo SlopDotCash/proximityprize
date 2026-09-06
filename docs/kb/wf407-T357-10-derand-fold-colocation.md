@@ -84,7 +84,7 @@ random stacks (so it is not a smoothness deficiency, it is intrinsic to the radi
 ## Artifacts
 
 - `scripts/probes/wf407_T357-10-derand_colocation.py` — the never-run co-location probe (NEW).
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T357_10_FoldTransportColocation.lean` —
+- `Research/ProximityPrize/Frontier/WF407_T357_10_FoldTransportColocation.lean` —
   fold-transport arithmetic (`Lstar_eq`, `Lstar_lt_two`, co-location threshold, route-dead) (NEW).
 - `scripts/probes/sweep_A20_third_moment.py`, `Frontier/Sweep_A20_ThirdMomentDerandGap.lean`
   (in-tree, the moment face — reconfirmed).

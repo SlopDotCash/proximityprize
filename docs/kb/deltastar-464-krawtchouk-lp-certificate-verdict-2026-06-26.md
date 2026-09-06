@@ -25,7 +25,7 @@ that extra input is the Paley/BGK object.
 
 ## Lean Surface
 
-New in `ArkLib/Data/CodingTheory/ProximityGap/Frontier/DelsarteLPNoGo.lean`:
+New in `Research/ProximityPrize/Frontier/DelsarteLPNoGo.lean`:
 
 ```lean
 domainBlind_bound_transfers

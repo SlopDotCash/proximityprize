@@ -3,9 +3,9 @@
 **Status: LANDED, axiom-clean.** Two new Lean files, every `#print axioms` a subset of
 `[propext, Classical.choice, Quot.sound]`, 0 `sorryAx`, verified with `scripts/pg-iterate.sh`:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ57TextbookFacts.lean` — Task A, the Bézout
+- `Research/ProximityPrize/Frontier/_SYZ57TextbookFacts.lean` — Task A, the Bézout
   seed behind SYZ44's `RankNullity` (✅ OK 5s, axioms `[propext, Quot.sound]`).
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ57TransportWire.lean` — Task B, the wire (iv)
+- `Research/ProximityPrize/Frontier/_SYZ57TransportWire.lean` — Task B, the wire (iv)
   transport reduced to a named counting dictionary (✅ OK 13s, axioms
   `[propext, Classical.choice, Quot.sound]`).
 

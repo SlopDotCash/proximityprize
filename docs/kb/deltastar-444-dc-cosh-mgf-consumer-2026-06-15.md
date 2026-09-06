@@ -2,7 +2,7 @@
 
 ## Result
 
-Landed `ArkLib/Data/CodingTheory/ProximityGap/Frontier/DCSubtractedCoshMGF.lean`.
+Landed `Research/ProximityPrize/Frontier/DCSubtractedCoshMGF.lean`.
 
 The raw cosh-MGF identity is not the prize object at the saddle because the `b = 0` term contributes
 `|G|^(2r)`.  The live #444 mandatory form is DC-subtracted.  The new Lean brick proves the exact
@@ -28,7 +28,7 @@ with the DC-subtracted `A_r <= Wick` core instead of the false raw `E_r <= Wick`
 Validation:
 
 ```text
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/DCSubtractedCoshMGF.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/DCSubtractedCoshMGF.lean
 ```
 
 passed axiom-clean modulo the standard foundation axioms reported by Lean (`propext`, etc.).

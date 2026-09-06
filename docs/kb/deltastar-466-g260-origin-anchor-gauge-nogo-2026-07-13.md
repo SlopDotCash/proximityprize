@@ -81,6 +81,6 @@ origin-marker shortcut. CORE remains OPEN / ON-BGK.
 
 ## Artifacts
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean`
+- `Research/ProximityPrize/Frontier/_G260OriginAnchorGaugeNoGo.lean`
 - `scripts/probes/g260_origin_anchor_gauge_nogo.py`
 - DISPROOF entry `[466-G260-origin-anchor-gauge-nogo]`

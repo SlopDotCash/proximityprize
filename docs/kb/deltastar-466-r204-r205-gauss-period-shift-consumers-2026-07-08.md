@@ -4,19 +4,19 @@ Status: landed as checked full-frequency shift consumers.
 
 Artifacts:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R204GaussPeriodShiftQuarterSum.lean`
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R205GaussPeriodShiftPrizeConsumer.lean`
+- `Research/ProximityPrize/Frontier/_R204GaussPeriodShiftQuarterSum.lean`
+- `Research/ProximityPrize/Frontier/_R205GaussPeriodShiftPrizeConsumer.lean`
 
 Checks:
 
 ```text
-scripts/pg-iterate.sh -q ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R204GaussPeriodShiftQuarterSum.lean
+scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R204GaussPeriodShiftQuarterSum.lean
 ✅ OK (6s)
 
-scripts/pg-iterate.sh -q ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R205GaussPeriodShiftPrizeConsumer.lean
+scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R205GaussPeriodShiftPrizeConsumer.lean
 ✅ OK (6s)
 
-./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.Frontier._R205GaussPeriodShiftPrizeConsumer
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R205GaussPeriodShiftPrizeConsumer
 Build completed successfully
 ```
 

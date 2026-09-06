@@ -51,7 +51,7 @@ period over the order-`n` multiplicative subgroup `μ_n`, `n = 2^a` (`a ≤ 40` 
 - `scripts/probes/wf407_anchors-import_regime.py` — exact regime check, all four anchors
   (OSV degree gate, KSV `t ≤ 12p^{3/4}` + `t^{2/3}` over `a∈[25,40]`, Myerson house `n^{n/2} > p`,
   CZ/MV subsumption).
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_AnchorsImport.lean` — 4 axiom-clean
+- `Research/ProximityPrize/Frontier/WF407_AnchorsImport.lean` — 4 axiom-clean
   elementary theorems (`osv_degree_excludes_linear_prize_object`, `ksv_upper_range_satisfied`,
   `ksv_count_exponent_lt_one`, `myerson_house_exponent_eq_half`).
 - `PAPERS_NEEDED.md` — added KSV/CZ/MV/OSV rows (precise statements).
