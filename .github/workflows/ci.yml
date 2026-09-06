@@ -120,6 +120,10 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install Python validation dependencies
+        if: steps.validation-scope.outputs.lean-relevant == 'true'
+        run: python3 -m pip install -r scripts/requirements-validation.txt
+
       # ── Issue #47 gate 1: fast precheck (no Lean needed) ───────────
       # validate.sh repeats this gate so the local wrapper mirrors CI; this
       # dedicated step keeps laundering failures fast before Lean setup.

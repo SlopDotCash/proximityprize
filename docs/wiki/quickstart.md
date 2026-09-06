@@ -9,6 +9,13 @@ Use it as the main guide for routine local checks.
 
 ## Recommended Validation
 
+Install the Python regression dependencies in your active virtual environment first:
+
+```bash
+python3 -m pip install -r scripts/requirements-validation.txt
+```
+
+CI installs the same pinned dependencies before running the validation wrapper.
 For a convenient routine check, run:
 
 ```bash
