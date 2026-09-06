@@ -1,0 +1,7 @@
+# Lam–Leung source retention and scope audit
+
+Retain `_research_ll/lamleung.txt` as a historical searchable extraction. Its title, authors, arXiv identifier and main-theorem scope agree with the [primary arXiv record](https://arxiv.org/abs/math/9511209v1), checked 2026-09-06. It concerns vanishing sums of complex roots of unity with repetitions allowed. The extraction has damaged mathematical glyphs and is not an authoritative formula transcription; consult the linked source for formulas. This audit verifies provenance and scope, not every line or proof in the extraction.
+
+The source is relevant to characteristic-zero moment calculations. It does not establish a characteristic-p analogue. A direct counterexample to the campaign note's field-uniform no-triples claim is p=97, n=32: 1, 18, 78 are distinct, each has 32nd power 1 modulo 97, and their sum is zero modulo 97. Trial division verifies 97 is prime; the roots lie in a proper subgroup since 32<96. This example is outside a p>=n^4 regime and does not refute a bound with that extra hypothesis.
+
+The campaign attacks index now carries a correction before its historical proposals. No other proposal in that index is certified by this audit. The companion JSON records the untouched extraction hash and exact counterexample. This completes one original unreferenced artifact review: 56 of 92 reviewed, 36 remaining; 420 original artifacts remain after the earlier G104 printer removal.
