@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eliza
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.GSFactorExtract
+import ArkLib.Data.CodingTheory.GuruswamiSudan.FactorExtraction
 import ArkLib.Data.CodingTheory.GuruswamiSudan.Basic
 import ArkLib.Data.CodingTheory.GuruswamiSudan.MultiplicityInterpolation
 import Mathlib.Tactic.Positivity

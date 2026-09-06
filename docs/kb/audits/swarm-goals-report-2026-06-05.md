@@ -37,7 +37,7 @@ All requested validation checks passed.
 ```
 
 The validation repair path was: shorten the single Data warning in
-`ArkLib/Data/CodingTheory/ProximityGap/BivariateVanishing.lean`, regenerate `ArkLib.lean`, regenerate
+`ArkLib/Data/CodingTheory/GuruswamiSudan/BivariateVanishing.lean`, regenerate `ArkLib.lean`, regenerate
 the KB artifacts with `extract_lean_citations.py`, `extract_declarations.py`, and
 `find_dedup_candidates.py`, then confirm `check_generated.py` and `./scripts/validate.sh`.
 

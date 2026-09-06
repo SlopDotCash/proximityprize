@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.Polynomial.Trivariate
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
-import ArkLib.Data.CodingTheory.ProximityGap.GSFactorExtract
+import ArkLib.Data.CodingTheory.GuruswamiSudan.FactorExtraction
 import ArkLib.ToMathlib.BivariateDegreeToolkit
 
 /-!

@@ -237,7 +237,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.BestProvableBracket
 import ArkLib.Data.CodingTheory.ProximityGap.BetaSetSize
 import ArkLib.Data.CodingTheory.ProximityGap.BetaSetYoungDiagram
 import ArkLib.Data.CodingTheory.ProximityGap.BinomialMatrixDet
-import ArkLib.Data.CodingTheory.ProximityGap.BivariateVanishing
 import ArkLib.Data.CodingTheory.ProximityGap.BorderStrip
 import ArkLib.Data.CodingTheory.ProximityGap.BoundaryCardLatticeSlice
 import ArkLib.Data.CodingTheory.ProximityGap.BoundaryCardResidual
@@ -678,7 +677,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.GK16RootCounting
 import ArkLib.Data.CodingTheory.ProximityGap.GK16Wronskian
 import ArkLib.Data.CodingTheory.ProximityGap.GSCounting
 import ArkLib.Data.CodingTheory.ProximityGap.GSExactCountWall
-import ArkLib.Data.CodingTheory.ProximityGap.GSFactorExtract
 import ArkLib.Data.CodingTheory.ProximityGap.GSFullListBound
 import ArkLib.Data.CodingTheory.ProximityGap.GSHasseMultiplicity
 import ArkLib.Data.CodingTheory.ProximityGap.GSInterpolationExistence

@@ -8,7 +8,7 @@ import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Eval.Degree
 import Mathlib.Data.Multiset.Bind
 import Mathlib.Tactic.Ring
-import ArkLib.Data.CodingTheory.ProximityGap.BivariateVanishing
+import ArkLib.Data.CodingTheory.GuruswamiSudan.BivariateVanishing
 
 /-! # Guruswami–Sudan factor extraction (Track A3)
 

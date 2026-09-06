@@ -6,7 +6,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCKHS25.CollinearProximates
 import ArkLib.Data.CodingTheory.ProximityGap.BCKHS25.Interpolation
 import ArkLib.Data.CodingTheory.ProximityGap.Basic
 import ArkLib.Data.CodingTheory.ProximityGap.BoundaryCardResidualRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.BivariateVanishing
+import ArkLib.Data.CodingTheory.GuruswamiSudan.BivariateVanishing
 import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds
 import ArkLib.Data.CodingTheory.ProximityGap.DG25
 import ArkLib.Data.CodingTheory.ProximityGap.Errors
@@ -18,7 +18,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.GK16Lemma12
 import ArkLib.Data.CodingTheory.ProximityGap.GK16RootCounting
 import ArkLib.Data.CodingTheory.ProximityGap.GK16Wronskian
 import ArkLib.Data.CodingTheory.ProximityGap.GSCounting
-import ArkLib.Data.CodingTheory.ProximityGap.GSFactorExtract
+import ArkLib.Data.CodingTheory.GuruswamiSudan.FactorExtraction
 import ArkLib.Data.CodingTheory.ProximityGap.GSKernelAffineDescent
 import ArkLib.Data.CodingTheory.ProximityGap.Collapse
 import ArkLib.Data.CodingTheory.ProximityGap.LDThreshold
