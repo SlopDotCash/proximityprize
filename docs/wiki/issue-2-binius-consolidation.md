@@ -52,3 +52,9 @@ are separate acceptance gates; this preparation is not a completed build claim.
 The other Binius grouping candidates and the oversized `Incremental` and
 `QueryPhaseSoundness` files remain separate work. Registered external assumptions
 and conditional soundness hypotheses remain unchanged.
+
+After grouping citation-bearing modules, regenerate the Lean citation map with
+`python3 scripts/kb/extract_lean_citations.py` and verify it with
+`python3 scripts/kb/check_generated.py`. The DP24 references formerly attached
+to `QueryPhasePrelims` and `SoundnessProposition` now belong to `QuerySuffix`
+and `Case1` respectively; the citation keys are preserved.
