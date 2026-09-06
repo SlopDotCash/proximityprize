@@ -1,0 +1,23 @@
+{
+  "artifacts": [
+    {
+      "path": "scripts/probes/probe_w11_c3_kill.py",
+      "sha256": "fc3bf28ebd38fa5255cfb316f1605a8cff7ae4dcba5aff29b7781be55f5a617c"
+    },
+    {
+      "path": "scripts/probes/probe_466_windowed_extremal.py",
+      "sha256": "261fc95b2acd19c77c39e84e166a8da5d6ba4241c0d40484d49a65d5ed538161"
+    },
+    {
+      "path": "scripts/probes/_out_w11_c3_kill_n16.txt",
+      "sha256": "f43a109883a92b42748de78fb73d5b6c7fbebced4844950565b56bf9795c2cef"
+    }
+  ],
+  "command": "OPENBLAS_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 OMP_NUM_THREADS=1 python3 -u scripts/probes/probe_w11_c3_kill.py --stage n16",
+  "exit_code": 0,
+  "archive_count_rows_matched_ignoring_elapsed_time": 44,
+  "output": "\n##############################################################################\nSTAGE n=16 k=4 a=7 (window: k+2=6<=a, a^2=49<=nk=64)\n\n== q=65617 v2=4 omega=53618 C(n,k)=1820\n  [x4+x14] agreemax=6 (7-far), elevated pencils: 7\n    lock m=7 (dim=6): new best exact count 16 [2s]\n    lock m=5 (dim=8): new best exact count 22 [23s]\n    lock m=4 (dim=10): new best exact count 28 [36s]\n    lock m=4 (dim=8): new best exact count 34 [38s]\n  [x4+x14] FINAL certified worstBad >= 34 (every gamma certificate-verified) [86s]\n  [x4+12303x14] agreemax=6 (7-far), elevated pencils: 7\n    lock m=7 (dim=6): new best exact count 16 [2s]\n    lock m=5 (dim=8): new best exact count 38 [42s]\n  [x4+12303x14] FINAL certified worstBad >= 38 (every gamma certificate-verified) [132s]\n  [x6-12303x4] agreemax=6 (7-far), elevated pencils: 3\n    lock m=3 (dim=10): new best exact count 30 [4s]\n  [x6-12303x4] FINAL certified worstBad >= 30 (every gamma certificate-verified) [71s]\n\n-- monomial baseline q=65617:\n    mono j=4: agreemax=4 worst=9\n    mono j=5: agreemax=4 worst=9\n    mono j=6: agreemax=4 worst=9\n    mono j=7: agreemax=4 worst=9\n    mono j=12: agreemax=4 worst=9\n    mono j=13: agreemax=4 worst=9\n    mono j=14: agreemax=4 worst=9\n    mono j=15: agreemax=4 worst=9\n  monomial baseline (certified search max) = 9  far-monos=[(4, 9), (5, 9), (6, 9), (7, 9), (12, 9), (13, 9), (14, 9), (15, 9)]\n\n>>> n=16 q=65617: best spread (certified) = 38 [x4+12303x14], mono baseline = 9, RATIO = 4.222 -> spread exceeds 3x searched baseline; C=3 unresolved\n\n== q=65633 v2=5 omega=5013 C(n,k)=1820\n  [x4+x14] agreemax=6 (7-far), elevated pencils: 7\n    lock m=7 (dim=6): new best exact count 16 [4s]\n    lock m=5 (dim=8): new best exact count 24 [25s]\n    lock m=4 (dim=8): new best exact count 34 [37s]\n  [x4+x14] FINAL certified worstBad >= 34 (every gamma certificate-verified) [182s]\n  [x4+5173x14] agreemax=6 (7-far), elevated pencils: 7\n    lock m=7 (dim=6): new best exact count 16 [6s]\n    lock m=5 (dim=8): new best exact count 24 [47s]\n    lock m=4 (dim=8): new best exact count 34 [77s]\n  [x4+5173x14] FINAL certified worstBad >= 34 (every gamma certificate-verified) [223s]\n  [x6-5173x4] agreemax=6 (7-far), elevated pencils: 3\n    lock m=3 (dim=10): new best exact count 30 [5s]\n  [x6-5173x4] FINAL certified worstBad >= 30 (every gamma certificate-verified) [79s]\n\n-- monomial baseline q=65633:\n    mono j=4: agreemax=4 worst=9\n    mono j=5: agreemax=4 worst=9\n    mono j=6: agreemax=4 worst=9\n    mono j=7: agreemax=4 worst=9\n    mono j=12: agreemax=4 worst=9\n    mono j=13: agreemax=4 worst=9\n    mono j=14: agreemax=4 worst=9\n    mono j=15: agreemax=4 worst=9\n  monomial baseline (certified search max) = 9  far-monos=[(4, 9), (5, 9), (6, 9), (7, 9), (12, 9), (13, 9), (14, 9), (15, 9)]\n\n>>> n=16 q=65633: best spread (certified) = 34 [x4+x14], mono baseline = 9, RATIO = 3.778 -> spread exceeds 3x searched baseline; C=3 unresolved\n\n==============================================================================\nW11 SEARCH SUMMARY (C=3 unresolved) (spread counts certificate-verified; baseline = hardest-pushed search plateau, honest lower bound):\n  n16 q=65617: spread=38 [x4+12303x14] baseline=9 ratio=4.222222222222222\n  n16 q=65633: spread=34 [x4+x14] baseline=9 ratio=3.7777777777777777\n",
+  "scope": "full n16 stage; n32 stage not replayed; monomial maximum unproved",
+  "completed_original_unreferenced": 59,
+  "remaining_original_unreferenced": 33
+}
