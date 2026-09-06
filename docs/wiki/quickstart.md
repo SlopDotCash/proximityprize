@@ -251,7 +251,7 @@ python3 -m pip install leanblueprint
   stay within `propext`, `Classical.choice`, `Quot.sound`. Renaming or
   deleting a pinned flagship theorem without updating the list is a hard CI
   failure. Because some pinned flagship modules (KZG, Merkle tree, Hensel,
-  SubspacePoly) live outside the ProximityGap umbrella that `lake build`
+  SubspacePoly, sequential composition, and Binius) live outside the ProximityGap umbrella that `lake build`
   targets, `validate.sh` first builds every module named in
   `scripts/flagship_axioms.txt` explicitly before running the audit. As of issue #111 these same three gates also run from
   `./scripts/validate.sh`, so local validation matches CI.
