@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Multi-core ladder optimization for the exact-rate-half prize bracket (thread rh:multicore-optimize).
+"""Multicore ladder arithmetic and finite modular construction checks at rate one-half.
 
-After the three-core radix counterexample killed the 31/64 pin, this probe derives and
-certifies the OPTIMIZED c-core construction at general agreement threshold.
+This probe optimizes the stated integer feasibility model, searches for base
+construction data, and checks a small lifted example. Large-modulus lift checks
+sample identities; they are not exhaustive lifted-domain or Lean validation.
 
 Arithmetic frame (quotient size s, fibers of size m, n = s*m, base code RS_{s/2} on mu_s):
   * c cores, each a fiber subset of size a = s/2 + g  (g >= 1 excess),
