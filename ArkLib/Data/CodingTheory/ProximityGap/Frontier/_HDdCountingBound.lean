@@ -129,6 +129,61 @@ theorem finrank_span_range_le_sum_min (Φ : ι → ρ → F) (β : ι → B) (β
 
 end Main
 
+section Restriction
+
+variable {ι ρ' : Type*} [Fintype ι]
+
+/-- Functions `ρ' → F` vanishing off a finset (no finiteness of `ρ'` required). -/
+def supportedOn' (s : Finset ρ') : Submodule F (ρ' → F) where
+  carrier := {f | ∀ r, r ∉ s → f r = 0}
+  add_mem' hf hg r hr := by simp [hf r hr, hg r hr]
+  zero_mem' r _ := rfl
+  smul_mem' c f hf r hr := by simp [hf r hr]
+
+/-- **Restriction preserves rank.**  A family of vectors supported on a finite row set `R`
+has the same span rank as its restriction to `R`; this reduces the (infinite-index) node
+maps to the finite-row setting of `finrank_span_range_le_sum_min`. -/
+theorem finrank_span_range_eq_restrict [DecidableEq ρ'] (Φ : ι → ρ' → F) (R : Finset ρ')
+    (hsupp : ∀ i, ∀ r, r ∉ R → Φ i r = 0)
+    [FiniteDimensional F (Submodule.span F (Set.range Φ))] :
+    finrank F (span F (Set.range Φ)) =
+      finrank F (span F (Set.range fun i => fun r : {x // x ∈ R} => Φ i (r : ρ'))) := by
+  classical
+  set res : (ρ' → F) →ₗ[F] ({x // x ∈ R} → F) :=
+    LinearMap.funLeft F F (Subtype.val : {x // x ∈ R} → ρ')
+  have hmap : (span F (Set.range Φ)).map res =
+      span F (Set.range fun i => fun r : {x // x ∈ R} => Φ i (r : ρ')) := by
+    rw [Submodule.map_span, ← Set.range_comp]
+    rfl
+  have hker : ∀ f ∈ span F (Set.range Φ), res f = 0 → f = 0 := by
+    intro f hf hres
+    have hsub : f ∈ supportedOn' (F := F) R := by
+      have : span F (Set.range Φ) ≤ supportedOn' (F := F) R := by
+        rw [span_le]
+        rintro _ ⟨i, rfl⟩
+        exact fun r hr => hsupp i r hr
+      exact this hf
+    ext r
+    by_cases hr : r ∈ R
+    · exact congrFun hres ⟨r, hr⟩
+    · exact hsub r hr
+  have hinj : Function.Injective (res.domRestrict (span F (Set.range Φ))) := by
+    intro f g hfg
+    have h0 : res ((f : ρ' → F) - g) = 0 := by
+      have h1 : res (f : ρ' → F) = res (g : ρ' → F) := by
+        simpa [LinearMap.domRestrict_apply] using hfg
+      simp [map_sub, h1]
+    have hmem : ((f : ρ' → F) - g) ∈ span F (Set.range Φ) :=
+      Submodule.sub_mem _ f.2 g.2
+    exact Subtype.ext (sub_eq_zero.mp (hker _ hmem h0))
+  have hrn := LinearMap.finrank_range_add_finrank_ker
+    (res.domRestrict (span F (Set.range Φ)))
+  rw [LinearMap.ker_eq_bot.mpr hinj, finrank_bot, add_zero,
+    LinearMap.range_domRestrict, hmap] at hrn
+  exact hrn.symm
+
+end Restriction
+
 end ArkLib.ProximityGap.Frontier.HD1Contact
 
 #print axioms ArkLib.ProximityGap.Frontier.HD1Contact.finrank_span_range_le_sum_min
