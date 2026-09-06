@@ -189,7 +189,7 @@ def run(pivots, time_limit=None, monomial=None):
         else:
             summary.append((pivot, status, False))
     print({"summary": summary}, flush=True)
-    return True
+    return True if summary and all(status == "infeasible" for _, status, _ in summary) else None
 
 
 if __name__ == "__main__":
@@ -202,4 +202,6 @@ if __name__ == "__main__":
         [None] if args.monomial is not None else list(range(K, N)))
     if any(pivot is not None and (pivot < K or pivot >= N) for pivot in pivots):
         parser.error(f"pivot must lie in [{K},{N - 1}]")
-    raise SystemExit(0 if run(pivots, args.time_limit, args.monomial) else 1)
+    outcome = run(pivots, args.time_limit, args.monomial)
+    # 0: solver reports all requested branches infeasible; 1: checked witness; 2: unresolved.
+    raise SystemExit(0 if outcome is True else 1 if outcome is False else 2)
