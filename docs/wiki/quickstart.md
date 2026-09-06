@@ -345,6 +345,8 @@ Hard-won rules for multi-agent sessions where several agents land commits on
   its `13^4` box in 13 slices: the monolithic decision exhausted a hosted
   runner's 16 GiB RAM and 3 GiB swap. The public certificate and its assumptions
   remain unchanged.
+  Reuse that checked box certificate for weaker predicates: R395's nonzero-head
+  condition follows directly from R394, avoiding another full enumeration.
 
 
 ### Fast-iteration exit status

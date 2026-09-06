@@ -24,8 +24,8 @@ symmetry cashed out as proof-search savings:
 * **`evalVec_iterate_rotZ`** :  `evalVec (rotZ^[k] z) = g^k · evalVec z` — kernel-stable;
 * **`ShortKernelFreeL1Head`** (decidable) + **`relationCount_zero_of_head_certificate`** :
   the head-slice check implies `RealizedRelationCountBound g n m r 0`;
-* **`n8_r3_p1409_head_certificate`** :  the r394 instance re-certified through the
-  compressed route (kernel `decide`).
+* **`n8_r3_p1409_head_certificate`** :  the r394 instance passed through the
+  compressed route, reusing its kernel-checked box certificate.
 
 Issue #466, round 395, LANE B2.  Axiom-clean.
 -/
@@ -198,11 +198,13 @@ theorem relationCount_zero_of_head_certificate (g : F) (n m r : ℕ) (hm : 0 < m
   · rw [hzc]
     exact hwker
 
-/-- The r394 instance, re-certified through the orbit-compressed route. -/
+/-- The r394 instance through the orbit-compressed route, reusing its box certificate. -/
 theorem n8_r3_p1409_head_certificate :
     RealizedRelationCountBound (72 : ZMod 1409) 8 4 3 0 :=
   relationCount_zero_of_head_certificate (72 : ZMod 1409) 8 4 3 (by norm_num)
-    (by decide) (by decide) (by decide)
+    (by decide) (by decide) (by
+      intro c hl1 hhead hker
+      exact hhead (n8_r3_p1409_shortKernelFree c hl1 hker 0))
 
 end ArkLib.ProximityGap.Frontier.R395OrbitCompressedCertificate
 
