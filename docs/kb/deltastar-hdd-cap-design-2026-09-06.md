@@ -30,6 +30,18 @@ quantification**.  Production δ* remains **OPEN**; nothing here touches the cha
 Consequence: at EVERY `d`, theorem + a rank computation = the full interpolation step.  The
 probes below compute (exactly) or soundly bound that rank sum.
 
+Late-session completions (same day, all axiom-clean): `_HDdCountingBound.lean`
+(`finrank_span_range_le_sum_min`, `finrank_span_range_eq_restrict`),
+`_HDdNodeTranslation.lean` (`contactSubstD_translate`), `_HDdOriginGrading.lean` (the
+`(g₁,g₂)` bigrading through `weightedDegree_of_mem_support_contactSubstD`),
+`_HDdNodeRankAssembly.lean` (`originNodeFamily_rank_le_blockCount`), and
+`_HDdTranslateStability.lean` (`support_translateD_monomial`,
+`translateD_monomial_mem_span` — downward-closed monomial spans are translation-stable,
+reducing every node to the origin block count).  Eleven theorems total; the chain from an
+audited integer certificate to `exists_interpolant_d`'s hypothesis is formal at every named
+step, with only per-instance finite bookkeeping (kernel-infeasible at scale, audited by
+`hdd_certificates.py`) remaining.
+
 ## 2. Instruments (all selftested against the existing exact probes)
 
 1. **`hdinf_cap_search.py`** — the counting rank bound `Σ_blocks min(#rows, #cols)` evaluated
