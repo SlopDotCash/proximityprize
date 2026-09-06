@@ -5,6 +5,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'probes'))
 import probe_g139_phi_certificate as probe
+import probe_g139_production_accident_census as census
+import probe_w16_tz_prize_scale as w16
 
 
 class G139Arithmetic(unittest.TestCase):
@@ -12,6 +14,7 @@ class G139Arithmetic(unittest.TestCase):
         composite = 318665857834031151167461
         self.assertEqual(399165290221 * 798330580441, composite)
         self.assertFalse(probe.is_prime(composite))
+        self.assertFalse(w16.is_prime(composite))
 
     def test_strict_certified_limit(self):
         with self.assertRaises(ValueError):
@@ -25,6 +28,7 @@ class G139Arithmetic(unittest.TestCase):
         ]:
             with self.subTest(n=n, numerator=numerator, denominator=denominator):
                 self.assertEqual(probe.rounded_rational_power(n, numerator, denominator), expected)
+                self.assertEqual(census.rounded_rational_power(n, numerator, denominator), expected)
 
 
 if __name__ == '__main__':

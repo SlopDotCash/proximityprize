@@ -61,10 +61,13 @@ def rounded_rational_power(n: int, num: int, den: int) -> int:
     """Return round(n^(num/den)) using exact integer comparisons."""
     base = n**num
     root = floor_nth_root(base, den)
-    lower_gap = base - root**den
-    upper_gap = (root + 1) ** den - base
-    if upper_gap < lower_gap:
+    # Compare the root against root + 1/2, not distances between powers.
+    twice_scaled = (1 << den) * base
+    midpoint_power = (2 * root + 1) ** den
+    if twice_scaled > midpoint_power:
         return root + 1
+    if twice_scaled == midpoint_power:
+        return root + (root % 2)  # round-to-even, matching round().
     return root
 
 
