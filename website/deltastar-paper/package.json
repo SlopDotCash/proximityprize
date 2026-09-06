@@ -5,11 +5,12 @@
   "scripts": {
     "predev": "node scripts/copy-mine.mjs && python3 scripts/prepare-research.py",
     "dev": "next dev",
-    "prebuild": "node scripts/copy-mine.mjs && python3 scripts/prepare-research.py",
+    "prebuild": "node scripts/copy-mine.mjs && python3 scripts/prepare-research.py && npm test",
     "build": "next build",
     "start": "next start",
     "postbuild": "node scripts/verify-export.mjs",
-    "check": "node scripts/verify-export.mjs"
+    "check": "node scripts/verify-export.mjs",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs"
   },
   "dependencies": {
     "katex": "^0.17.0",

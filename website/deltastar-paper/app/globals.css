@@ -35,3 +35,33 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 16px;
 @media (max-width: 480px) { main { padding: 36px 20px 24px; } body { font-size: 16px; } th, td { padding-right: 12px; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 @media (prefers-color-scheme: dark) { :root { --paper: #191d1a; --ink: #e5e9e1; --muted: #a9b2a6; --line: #3c443b; --accent: #a8d0b5; } }
+
+/* Exact codeword example and research benchmarks. */
+.problem-visual, .threshold-visual { margin: 28px 0; padding: 24px; border: 1px solid var(--line); border-radius: 6px; }
+figcaption { font-weight: 600; margin-bottom: 24px; line-height: 1.4; }
+.visual-step { margin-bottom: 24px; }
+.visual-step p, .visual-step label { display: block; margin-bottom: 12px; }
+.visual-step b { font-size: 0.95rem; }
+.visual-step p > span, .visual-step label > span { display: block; color: var(--muted); font-size: 0.85rem; }
+.encoding { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.symbols { display: flex; gap: 4px; }
+.symbol { position: relative; width: 35px; height: 38px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 3px; font: 500 0.875rem/1 ui-monospace, monospace; background: color-mix(in srgb, var(--accent) 8%, var(--paper)); }
+.changed { border-color: #b46328; background: color-mix(in srgb, #b46328 12%, var(--paper)); }
+.symbol small { position: absolute; top: -6px; right: -2px; background: var(--paper); padding: 0 1px; color: var(--ink); }
+input[type=range] { display: block; width: 100%; max-width: 320px; margin: 16px 0 24px; accent-color: var(--accent); cursor: pointer; }
+.visual-key, .visual-note { font-size: 0.8rem; line-height: 1.55; color: var(--muted); margin-top: 12px; }
+.candidate-count { font-size: 1rem; }
+.candidate-count strong { font-size: 2.3rem; font-weight: 600; color: var(--accent); margin-right: 8px; }
+.threshold-labels, .threshold-legend { display: flex; justify-content: space-between; gap: 12px; font-size: 0.8rem; }
+.threshold-track { display: flex; min-height: 64px; margin: 8px 0; border: 1px solid var(--line); }
+.threshold-track > div { padding: 12px 10px; display: flex; align-items: center; font-size: 0.8rem; line-height: 1.4; }
+.johnson-zone { width: 58.57864376%; background: color-mix(in srgb, var(--accent) 15%, var(--paper)); border-right: 2px solid var(--accent); }
+.research-zone { flex: 1; background: repeating-linear-gradient(135deg, transparent, transparent 7px, color-mix(in srgb, var(--muted) 9%, transparent) 7px, color-mix(in srgb, var(--muted) 9%, transparent) 8px); }
+.threshold-legend b { display: block; }
+.evidence { display: block; margin-top: 8px; font-size: 0.75rem; font-weight: 500; letter-spacing: 0; color: var(--accent); }
+.conditional { color: var(--muted); }
+details { font-size: 0.9rem; margin: 16px 0; }
+summary { cursor: pointer; color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+details p { margin-top: 14px; }
+@media (max-width: 480px) { .problem-visual, .threshold-visual { padding: 16px; } .symbol { width: 28px; height: 34px; font-size: 0.75rem; } .symbols { gap: 3px; } }
+@media (max-width: 360px) { .symbol { width: 25px; } .problem-visual { padding: 12px; } }
