@@ -1,0 +1,61 @@
+{
+  "module": "ArkLib/ProofSystem/Whir/ProtocolSoundness.lean",
+  "source_sha256": "f42dc16a6f2532bcb554a4330a0079272e0220282e950e4eba9530f9f5e9b220",
+  "lean_options": [
+    "autoImplicit=false"
+  ],
+  "full_module_exit_code": 0,
+  "axioms": {
+    "ProximityGap.keystone_curves_bound_of_remainingCore": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "ProximityGap.keystone_curves_bound_of_rawGSCargoLarge": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "WhirIOP.whirVectorIOP_rbrKnowledgeSoundness_dummy": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "WhirIOP.whirVectorIOP_rbrKnowledgeSoundness_indicator": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "WhirIOP.whirVectorIOP_rbrKnowledgeSoundness_dummy_holds": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "WhirIOP.whirVectorIOP_isSecureWithGap_dummy_of_rbr": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "WhirIOP.whirVectorIOP_isSecureWithGap_indicator": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "WhirIOP.whirVectorIOP_isSecureWithGap_dummy": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "WhirIOP.whirCheckedVectorIOP_rbrKnowledgeSoundness": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "WhirIOP.whirCheckedVectorIOP_isSecureWithGap_of_rbr": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "scope": "Focused module check after replacing the campaign import with LocalSeriesProducer. Explicit knowledge-soundness hypotheses remain; no full-library acceptance is claimed."
+}
