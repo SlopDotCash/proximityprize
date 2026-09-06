@@ -1,0 +1,111 @@
+{
+  "source_sha256": {
+    "scripts/probes/probe_rate_quarter_next_lattice_perturbations.py": "66afb9990206c2f32b7fe38fe10aa54eda6eb056452adf5e84c673f1dfddc775",
+    "scripts/probes/probe_rate_quarter_smooth_next_lattice_gs.py": "80ad9a1d05c2824394df2d4555b08fa2e79fa5fb44ff60194e69bf93c28c25d7"
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "sympy": "1.14.0",
+    "mpmath": "1.3.0"
+  },
+  "exit_code": 0,
+  "results": {
+    "agreement_threshold": 18,
+    "cases": [
+      {
+        "case": "original",
+        "mca_bad_count": 0,
+        "scalars_with_nonempty_list": 0,
+        "maximum_list_size": 0,
+        "length_bound_holds": true
+      },
+      {
+        "case": "u0[0]+=1",
+        "mca_bad_count": 0,
+        "scalars_with_nonempty_list": 0,
+        "maximum_list_size": 0,
+        "length_bound_holds": true
+      },
+      {
+        "case": "u1[0]+=1",
+        "mca_bad_count": 0,
+        "scalars_with_nonempty_list": 0,
+        "maximum_list_size": 0,
+        "length_bound_holds": true
+      },
+      {
+        "case": "u0[2]+=1",
+        "mca_bad_count": 0,
+        "scalars_with_nonempty_list": 0,
+        "maximum_list_size": 0,
+        "length_bound_holds": true
+      },
+      {
+        "case": "u1[2]+=1",
+        "mca_bad_count": 1,
+        "scalars_with_nonempty_list": 1,
+        "maximum_list_size": 1,
+        "length_bound_holds": true
+      },
+      {
+        "case": "u0[9]+=1",
+        "mca_bad_count": 0,
+        "scalars_with_nonempty_list": 0,
+        "maximum_list_size": 0,
+        "length_bound_holds": true
+      },
+      {
+        "case": "u1[9]+=1",
+        "mca_bad_count": 0,
+        "scalars_with_nonempty_list": 0,
+        "maximum_list_size": 0,
+        "length_bound_holds": true
+      },
+      {
+        "case": "u0[10]+=1",
+        "mca_bad_count": 0,
+        "scalars_with_nonempty_list": 0,
+        "maximum_list_size": 0,
+        "length_bound_holds": true
+      },
+      {
+        "case": "u1[10]+=1",
+        "mca_bad_count": 0,
+        "scalars_with_nonempty_list": 0,
+        "maximum_list_size": 0,
+        "length_bound_holds": true
+      },
+      {
+        "case": "u0[12]+=1",
+        "mca_bad_count": 1,
+        "scalars_with_nonempty_list": 1,
+        "maximum_list_size": 1,
+        "length_bound_holds": true
+      },
+      {
+        "case": "u1[12]+=1",
+        "mca_bad_count": 0,
+        "scalars_with_nonempty_list": 0,
+        "maximum_list_size": 0,
+        "length_bound_holds": true
+      },
+      {
+        "case": "u0[16]+=1",
+        "mca_bad_count": 1,
+        "scalars_with_nonempty_list": 1,
+        "maximum_list_size": 1,
+        "length_bound_holds": true
+      },
+      {
+        "case": "u1[16]+=1",
+        "mca_bad_count": 0,
+        "scalars_with_nonempty_list": 0,
+        "maximum_list_size": 0,
+        "length_bound_holds": true
+      }
+    ]
+  },
+  "scope": "13 fixed received stacks over F97, smooth 32-point domain, k8, threshold18; not all stacks or production parameters.",
+  "reviewed_original_unreferenced": 50,
+  "remaining_original_unreferenced": 42
+}
