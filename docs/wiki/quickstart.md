@@ -348,3 +348,5 @@ output does not itself perform an axiom audit.
 ## Retained probe dependencies
 
 Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
+
+The R387 Z3 probe uses exit 0 only for all searched branches returning unsat, exit 1 for a checked MCA counterexample, and exit 2 for unresolved results (including timeout). An unresolved exit is not a proof of either outcome.
