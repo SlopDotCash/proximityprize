@@ -6,9 +6,9 @@ prime ever FULL RANK (the hypothesis censusFence_of_vanishing_rows needs)?
 For each accessible cell (n, p) with p ≡ 1 mod n:
   - pick each root t of x^n − 1 mod p (each degree-one prime 𝔭_t above p),
   - census C(t) = { w ∈ {−1,0,1}^n : exactly-6 support, Σ_j w_j t^j ≡ 0 mod p },
-  - measure |C(t)|, rank of C(t) over ℚ (via rank mod a large auxiliary prime q ∤ everything,
-    plus rank mod p for contrast), and the common coverage of a maximal-rank subfamily
-    (# roots t' where ALL rows of the subfamily vanish).
+  - measure |C(t)|, modular ranks at two auxiliary primes (lower bounds on rational
+    rank), plus rank mod p, and common coverage of the full census. A modular rank
+    equal to n certifies full rational rank; deficient ranks need a separate upper bound.
 
 Fence theorem (kernel-checked, _G87CoverageDivisibility.lean): a full-rank d×d support-six
 family vanishing at s distinct roots forces s·log p ≤ (d/2)·log 6. The forcing direction of
@@ -17,11 +17,9 @@ measured per-relation coverage ≡ 1; here we measure whether full rank is even 
 
 VERDICT semantics:
   - rank == n     : fence hypothesis attainable; forcing direction alive at this cell.
-  - rank == n − 1 : census spans exactly the hyperplane "eval at t = 0" ∩ lattice — the
-                    natural maximum (every census row satisfies ONE linear relation over ℚ
-                    only if eval_t is rational... it is NOT — eval at t is mod-p only, so
-                    over ℚ full rank n is a priori possible).
-  - rank << n     : census is degenerate; the forcing route is vacuous at this cell.
+  - rank < n      : the modular calculation does not settle full rational rank.
+                    Matching ranks at two primes is not an upper-bound certificate.
+
 """
 import itertools, sys
 import numpy as np
@@ -122,7 +120,7 @@ def main():
                 continue
             M = census_rows(n, p, t)
             if M.shape[0] == 0:
-                sizes.append(0); ranks.append(0); covs.append(0); continue
+                sizes.append(0); ranks.append((0, 0, 0)); covs.append(len(roots)); continue
             r1 = rank_mod(M, Q_AUX); r2 = rank_mod(M, Q_AUX2)
             rp = rank_mod(M, p)
             sizes.append(M.shape[0]); ranks.append((r1, r2, rp))
@@ -134,12 +132,11 @@ def main():
         d_needed = n  # square d x d family in the Lean fence with d = n columns
         attain = [r for r in ranks if isinstance(r, tuple) and r[0] >= d_needed]
         print(f"   -> full rank n={n} attainable at {len(attain)}/{len(ranks)} roots "
-              f"(fence threshold s* = (n/2)*log6/(2*log p) = "
-              f"{(n/2)*np.log(6)/(2*np.log(p)):.2f})")
-    print("READ: rank == n at some root => forcing direction has a live hypothesis (then the")
-    print("fence caps its coverage); rank << n everywhere => piece-(3) forcing VACUOUS at")
-    print("accessible cells; rank == n-1 with rank mod p == n-1 => census sits exactly on")
-    print("the eval-at-t hyperplane mod p but spans it — the sharp intermediate case.")
+              f"(fence threshold s* = (n/2)*log6/log p = "
+              f"{(n/2)*np.log(6)/np.log(p):.2f})")
+    print("READ: full modular rank certifies full rational rank and makes the fence applicable.")
+    print("Deficient modular ranks do not by themselves rule out full rational rank.")
+    print("Coverage refers to the full census, not a separately selected independent subfamily.")
 
 if __name__ == "__main__":
     main()
