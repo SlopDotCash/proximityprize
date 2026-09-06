@@ -53810,3 +53810,42 @@ Classification: refutation/no-go of the strip formalization.  It moves no δ* br
 ceiling half was unconditional and stands); the floor half of the SYZ46 bracket must be
 re-carried with a satisfiable antecedent before any F1/F2/F3 work is worth doing *for that
 theorem*.  Production δ* remains OPEN / ON-BGK.
+
+---
+
+### [1-HDd-order-uniform-core-and-cap-design] the interpolation core is order-uniform in Lean; free cap shapes beat every tried family; the continuum cap-design LP and its false-feasibility mode; TR26-164 rev. 1 quantified (2026-09-06)
+
+Code-theoretic lane, BGK-free, standalone issue #1.  Full note:
+`docs/kb/deltastar-hdd-cap-design-2026-09-06.md`.  Production δ* unchanged: **OPEN**.
+
+* **Lean (axiom-clean, Mathlib-only).**  `Frontier/_HDdContactVanishing.lean`
+  (`contact_vanishing_d` = TR26-164 Lemma 3.1 at every derivative order, via a
+  coefficientwise truncated Möbius inversion) and `Frontier/_HDdInterpolationCore.lean`
+  (`exists_interpolant_d` = Proposition 3.13 at every order, node-rank sum explicit).
+  At every `d`, theorem + rank probe = the full interpolation step.
+* **Instruments (selftested).**  `hdinf_cap_search.py` (O(|cap|+grid) counting-bound
+  evaluator + downset search), `hdinf_continuum_lp.py` (exact m→∞ 2-D occupancy LP over
+  `(S,J)`, cost linear in `d`, Richardson-validated to 4e-5 against the d=1 limit),
+  `hdspec_search.py` (exact-integer spectral caps at any `d`).
+* **Measurements (counting bound = sound interpolation certificates, rate 1/2, n=2^18).**
+  Free downsets/spectral caps beat boxes, simplices and ω-caps at every (d,m) tested:
+  d=6 m=32 spectral `A=178525` (δ=0.31898, matches the continuum d=6 value 0.32834 minus
+  the c/m finite-size penalty); continuum face `δ_∞(d)` = .31010/.31815/.32301/.32577/.32834
+  at d=1..6, increments decaying toward ≈1/3 (target, not established).
+* **Failure mode (documented, fixed, cross-checked).**  The unconstrained occupancy LP
+  faked `β < 1` via boundary-leaked rank cost (mass ~1e-28, margin ~1e-33); masked windows
+  + margin tolerance restore sanity; exact single-group discrete caps confirm no runaway.
+  Interpolation-step thresholds are a NECESSARY face only; prize-budget (`ε* = 2^-128`)
+  list/seed ledgers remain the open second constraint for d ≥ 2.
+* **Literature (exact quantification).**  TR26-164 rev. 1 (2026-09-05) adds Corollary
+  1.2/5.1 (Alrabiah–Goyal–Guruswami PADDING: capacity at all constant rates, prime `q ≥
+  C(R,δ)n`, arbitrary evaluation sets).  Through the paper's own constants the first
+  Johnson-beating radius at rate 1/2 costs `q ≳ n·2^655` — over the campaign production
+  shape by ~2^500 (sharpens LIT §5 item 1 with numbers).  Kopparty side conditions
+  (`q ≥ k > d`, degrees < q, list ≤ q^{4d+6}) are mild, so the measured certificates give
+  plain-LD-beyond-Johnson at ANY prime `q ≥ k` at rate 1/2 — far outside the paper's
+  constant regime — but the Grand-LD `2^-128·q` list budget is NOT met by `q^{4d+6}`.
+
+Classification: exact reductions (Lean), sound computational certificates (probes),
+narrowing evidence + a documented no-go on reading the unconstrained face as a decoding
+radius.  No bracket moves.

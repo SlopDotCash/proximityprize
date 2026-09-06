@@ -276,6 +276,45 @@ def scan(rate_denom, d, m, nexp=18, rounds=400, seed=0):
     return A, om
 
 
+def trunc_wedge(d, smax, jcap):
+    """Omega(Smax, Jcap) = {(S,J): S <= Smax, S <= J <= min(d*S, Jcap)}."""
+    out = []
+    for S in range(smax + 1):
+        for J in range(S, min(d * S, jcap) + 1):
+            out.append((S, J))
+    return out
+
+
+def paramscan(rate_denom, d, m, nexp=18, refine=True, verbose=True):
+    """Deterministic scan over the truncated-wedge family, then optional local search."""
+    n = 1 << nexp
+    k = n // rate_denom
+    ev = SpectralEvaluator(d, n, k, m)
+    s = math.sqrt(n * (k - 1))
+    best = (None, None, None)
+    smax_grid = sorted(set(max(1, round(m * f)) for f in
+                           (0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.65, 0.8)))
+    jcap_grid = sorted(set(max(1, round(m * f)) for f in
+                           (0.25, 0.4, 0.55, 0.7, 0.9, 1.2, 1.6, 2.2, 3.0)))
+    for smax in smax_grid:
+        for jcap in jcap_grid:
+            om = trunc_wedge(d, smax, jcap)
+            A = ev.threshold(om, hi=(best[0] or n))
+            if A is not None and (best[0] is None or A < best[0]):
+                best = (A, smax, jcap)
+                if verbose:
+                    print(f"    smax={smax} jcap={jcap}: A={A} ({A / s:.5f})", flush=True)
+    A, smax, jcap = best
+    om = set(trunc_wedge(d, smax, jcap))
+    if refine and A is not None:
+        om, A2 = local_search(ev, om, rounds=200, verbose=False)
+        if A2 is not None and A2 < A:
+            A = A2
+    print(f"  PARAM d={d} m={m}: A={A} ratio={A / s:.6f} delta={1 - A / n:.5f} "
+          f"(smax={smax} jcap={jcap}, refined |omega|={len(om)})", flush=True)
+    return A, om
+
+
 def trend(rate_denom, d, ms, nexp=18, rounds=300):
     n = 1 << nexp
     k = n // rate_denom
@@ -290,7 +329,7 @@ def trend(rate_denom, d, ms, nexp=18, rounds=300):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["selftest", "scan", "trend"])
+    ap.add_argument("cmd", choices=["selftest", "scan", "trend", "paramtrend"])
     ap.add_argument("--rate", type=int, default=2)
     ap.add_argument("--d", type=int, default=6)
     ap.add_argument("--m", type=int, default=64)
@@ -302,6 +341,16 @@ if __name__ == "__main__":
         sys.exit(1 if selftest() else 0)
     elif args.cmd == "scan":
         scan(args.rate, args.d, args.m, nexp=args.nexp, rounds=args.rounds)
+    elif args.cmd == "paramtrend":
+        n = 1 << args.nexp
+        k = n // args.rate
+        s = math.sqrt(n * (k - 1))
+        out = []
+        for m in [int(x) for x in args.ms.split(",")]:
+            A, _ = paramscan(args.rate, args.d, m, nexp=args.nexp)
+            out.append((m, A))
+        print("== paramtrend d=%d " % args.d + "  ".join(
+            f"m{m}:{A}({A / s:.5f})" for m, A in out), flush=True)
     else:
         trend(args.rate, args.d, [int(x) for x in args.ms.split(",")],
               nexp=args.nexp, rounds=args.rounds)
