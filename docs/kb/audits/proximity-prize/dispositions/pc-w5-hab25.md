@@ -1,4 +1,4 @@
-STATUS: PARTIAL — Hab25 Lemma 1 (the [AHIV17/BKS18] collinearity→correlated-agreement counting bound) PORTED & PROVEN (kernel-clean, axioms = [propext, Classical.choice, Quot.sound]); main theorem (MCA up to 1−√ρ) decomposed with the GS-bivariate nodes classified DEEP/NEEDS-INFRA. New file: ArkLib/Data/CodingTheory/ProximityGap/Hab25Core.lean.
+STATUS: PARTIAL — Hab25 Lemma 1 (the [AHIV17/BKS18] collinearity→correlated-agreement counting bound) PORTED & PROVEN (kernel-clean, axioms = [propext, Classical.choice, Quot.sound]); main theorem (MCA up to 1−√ρ) decomposed with the GS-bivariate nodes classified DEEP/NEEDS-INFRA. New file: Research/ProximityPrize/Hab25Core.lean.
 
 # Hab25 port — scout + first core lemma
 
@@ -8,7 +8,7 @@ Worktree: /home/shaw/arklib-prize (branch proximity-prize-l217). Compile: single
 
 ## In-tree discharge targets (unchanged; statements left as-is, no sorry faked)
 - mca_johnson_bound_CONJECTURE — ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean:263 (BStar=√ρ).
-- rs_epsMCA_johnson_range_bchks25 — ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean:273
+- rs_epsMCA_johnson_range_bchks25 — Research/ProximityPrize/CapacityBounds.lean:273
   (ABF26 Thm 4.12; the note there already records "ABF26 cites [Hab25] alongside [BCHKS25]" — Hab25 IS the
   cleaner Johnson-radius proof of this exact bound).
 
@@ -61,7 +61,7 @@ So Hab25's Lemma 1 is the shared elementary bedrock both traditions reuse; the G
 above are the real content that the in-tree `sorry` (LineDecoding.lean:235, CapacityBounds.lean:289)
 is blocked on. My port closes the bedrock node honestly and pins the DEEP nodes precisely.
 
-## PHASE B — What was proven (ArkLib/Data/CodingTheory/ProximityGap/Hab25Core.lean)
+## PHASE B — What was proven (Research/ProximityPrize/Hab25Core.lean)
 
 All compile single-file (lake env lean, lean4 v4.29.0), zero warnings, no sorry/admit/native_decide/bv_decide/axiom.
 In-file `#print axioms` (run, then removed per protocol) on ALL THREE:

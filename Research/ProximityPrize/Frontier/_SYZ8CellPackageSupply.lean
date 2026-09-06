@@ -3,8 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.CellPackageSupplyShrink
-import ArkLib.Data.CodingTheory.ProximityGap.ProductionRegimeBracket
+import Research.ProximityPrize.CellPackageSupplyShrink
+import Research.ProximityPrize.ProductionRegimeBracket
 
 /-!
 # SYZ8: the disc-locus supply reduction of the Johnson-lane residual `CellPackageSupply`

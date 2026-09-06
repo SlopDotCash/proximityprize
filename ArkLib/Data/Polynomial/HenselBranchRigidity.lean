@@ -15,7 +15,7 @@ import Mathlib.Algebra.CharP.Algebra
 # Hensel branch rigidity: a fiber point determines the polynomial branch
 
 This is the first **Step S6** brick of the Haböck §3 endgame
-(`ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean`): at a good base point `x₀` (the
+(`Research/ProximityPrize/Hab25Johnson.lean`): at a good base point `x₀` (the
 S5 output: the factor's specialization is *separable*), a polynomial factor admits **at most
 one polynomial branch through each fiber point**. This is the uniqueness half of the Hensel
 lift, transported from the in-tree power-series engine

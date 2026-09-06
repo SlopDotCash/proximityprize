@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._P1RateQuarterCommonFactorArithmetic
-import ArkLib.Data.CodingTheory.ProximityGap.Hab25CaptureKernelUD
+import Research.ProximityPrize.Hab25CaptureKernelUD
 
 /-!
 # The three-scalar shared-fresh-coordinate configuration at the P1 predecessor

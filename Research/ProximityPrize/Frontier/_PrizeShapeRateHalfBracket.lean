@@ -8,7 +8,7 @@ import Research.ProximityPrize.Frontier._GenericQuotientInterpolationSpread
 import Research.ProximityPrize.Frontier._SecondMomentUniformFieldWindow
 import Research.ProximityPrize.Frontier._PrizeShapePrimeP30
 import Research.ProximityPrize.Frontier._PrizeShapePrimeP30Second
-import ArkLib.Data.CodingTheory.ProximityGap.ProductionRegimeBracket
+import Research.ProximityPrize.ProductionRegimeBracket
 
 /-!
 # A concrete prize-shaped bracket at exact rate one half

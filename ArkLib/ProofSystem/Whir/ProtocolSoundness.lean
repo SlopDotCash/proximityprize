@@ -9,7 +9,6 @@ import ArkLib.ProofSystem.Whir.ProtocolCompleteness
 import ArkLib.ProofSystem.Whir.ThresholdKSF
 import ArkLib.ProofSystem.Whir.CheckedVerifier
 import ArkLib.ProofSystem.Whir.WhirVectorIOPProof
-import ArkLib.ProofSystem.Whir.MCAJohnsonBound
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.RemainingCore
 import ArkLib.Data.CodingTheory.ProximityGap.Errors
 
@@ -18,8 +17,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Errors
 
 This file records the issue-facing wiring for Issue #302.  It relates the
 `mca_johnson_bound_CONJECTURE` / WHIR keystone surfaces to the BCIKS20 core producers, re-exports
-the proved indicator-budget RBR package for the current WHIR skeleton, exposes the graded K4
-Johnson capstone from `MCAJohnsonBound.lean`, and records the checked verifier's genuine RBR
+the proved indicator-budget RBR package for the current WHIR skeleton, and records the checked verifier's genuine RBR
 obligation without fabricating it.
 
 The concrete Vector IOP in `Protocol.lean` currently uses a dummy verifier (`pure true`).

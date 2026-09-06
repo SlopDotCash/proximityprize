@@ -431,14 +431,14 @@ theorem epsMCA_le_of_worstCaseFarIncidence … (hB : WorstCaseFarIncidenceBounde
 *Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/MCADeltaStarListReduction.lean` (after `scripts/pg-warm.sh`). In-file `#print axioms`. NOTE: files on fork/main, not claude-iid-push (`git show fork/main:<path>`).
 
 **AUDIT-GUARD co-import integrity (MCAGSUniversalReduction)** — restores whole-library build; standing audit harness.
-`ArkLib/Data/CodingTheory/ProximityGap/MCAGSUniversalReduction.lean` (fork/main) + `scripts/proximity_prize_cleanroom_audit.py` + `scripts/proximity_prize_cleanroom_targets.txt` · namespace `ProximityGap.MCAGS`
+`Research/ProximityPrize/MCAGSUniversalReduction.lean` (fork/main) + `scripts/proximity_prize_cleanroom_audit.py` + `scripts/proximity_prize_cleanroom_targets.txt` · namespace `ProximityGap.MCAGS`
 ```lean
 abbrev CapacityListCoveringBound (m : ℕ) : Prop := UniversalGSListMassBound m   -- now an ALIAS (was a duplicate decl)
 theorem epsMCAgsPrizeUniversal_of_capacityListCovering (m) (h : CapacityListCoveringBound m) :
   epsMCAgsPrizeUniversalConjecture m := epsMCAgsPrizeUniversalConjecture_of_UniversalGSListMassBound m h
 ```
 *Proves:* removes a duplicate `epsMCAgsPrizeUniversalConjecture` decl that made two modules un-co-importable and broke `lake build ArkLib`; `CapacityListCoveringBound` is now a definitional alias of the canonical `UniversalGSListMassBound`, delegating to the canonical proof. The audit script (ALLOWED_AXIOMS = {propext, Classical.choice, Quot.sound}) co-imports all prize-apex targets and FAILS on a duplicate decl, forbidden axiom, or residual/goal-equivalent hypothesis. Reduction is axiom-clean, open input named explicitly.
-*Consume:* `import ArkLib.Data.CodingTheory.ProximityGap.MCAGSUniversalReduction`, supply `h : CapacityListCoveringBound m` (= `UniversalGSListMassBound m`, the open research input), apply `epsMCAgsPrizeUniversal_of_capacityListCovering m h` for the field-universal prize conjecture. Add new prize producers to `proximity_prize_cleanroom_targets.txt` (status `active`/`pending`) to keep them guarded.
+*Consume:* `import Research.ProximityPrize.MCAGSUniversalReduction`, supply `h : CapacityListCoveringBound m` (= `UniversalGSListMassBound m`, the open research input), apply `epsMCAgsPrizeUniversal_of_capacityListCovering m h` for the field-universal prize conjecture. Add new prize producers to `proximity_prize_cleanroom_targets.txt` (status `active`/`pending`) to keep them guarded.
 *Reproduce:* `python3 scripts/proximity_prize_cleanroom_audit.py` (post-build, oleans built first via `scripts/pg-warm.sh`).
 
 ---

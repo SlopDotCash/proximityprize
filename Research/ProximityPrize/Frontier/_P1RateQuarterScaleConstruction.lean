@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._HalfPredecessorCoreFreshDecode
 import Research.ProximityPrize.Frontier._P1RateQuarterScaleArithmetic
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26RegimeSplit
+import Research.ProximityPrize.KKH26RegimeSplit
 
 /-!
 # The maximally enlarged smooth rate-quarter construction over P1

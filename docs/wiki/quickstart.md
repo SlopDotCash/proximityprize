@@ -99,7 +99,7 @@ git -C .lake/packages/mathlib checkout -f <manifest-pinned-rev>
 lake exe cache get
 
 # 4. Verify a real build completes.
-lake build ArkLib.Data.CodingTheory.ProximityGap.Collapse
+lake build Research.ProximityPrize.Collapse
 ```
 
 Prevention: never run `lake update` for cache repair (see above); let a single coordinator do

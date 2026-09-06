@@ -1,0 +1,1270 @@
+{
+  "base_commit": "8b4582342bd498471b6a787d903dc742fb540ce4",
+  "moved_modules": [
+    {
+      "from": "ArkLib/Data/CodingTheory/Connections/ProximityPrizeConnectiveTissue.lean",
+      "to": "Research/ProximityPrize/Connections/ProximityPrizeConnectiveTissue.lean",
+      "original_sha256": "03f8eab2344f9e29219faf89b9c7cf3eda9599f7c1a13d9f401add3f6187bcde",
+      "moved_sha256": "81e97e8143642fab9e0fea17659037c6735a51aa620b818753d7e3e0ccf1308c"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/Connections/ReedSolomonMCAFloor.lean",
+      "to": "Research/ProximityPrize/Connections/ReedSolomonMCAFloor.lean",
+      "original_sha256": "7aa9b34d683460232dbd96b45db6e6a3ba2323898dd4a4bf2b3e890d04be3669",
+      "moved_sha256": "e72b164e3770fa0918e1cb18d2c6d7f52d70450c26f7200764ebf0ce63bdbd33"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/Connections/SmoothDomainMCAWitness.lean",
+      "to": "Research/ProximityPrize/Connections/SmoothDomainMCAWitness.lean",
+      "original_sha256": "88ee85f3fd9c63e3eea4491cf6b3d71322b5a373b3e5f6368b0e1b139ed70640",
+      "moved_sha256": "99967c3c5219c51bc96c635edae39c7f804c133d817b04a4f9e5145ec3bd58dc"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/GuruswamiSudan/GSCellProduction.lean",
+      "to": "Research/ProximityPrize/GuruswamiSudan/GSCellProduction.lean",
+      "original_sha256": "09ab5829eea310bdf76ab9b4a3556bc72b1e89b8fdee233aae8b1311c91e573e",
+      "moved_sha256": "30bc2e12433e0379abab06639e66dd67c350b64a13502ce4d0735070bf881dcc"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Arith.lean",
+      "to": "Research/ProximityPrize/BCIKS20/Arith.lean",
+      "original_sha256": "0bcc208ede1904dc761810fc36ff6016623e8979d560462c7c0d8361b6ce5322",
+      "moved_sha256": "332ccdaa95e7d225fa7290aa46683510107ac01961343107270feccc8c82eec3"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Bundle.lean",
+      "to": "Research/ProximityPrize/BCIKS20/Bundle.lean",
+      "original_sha256": "de652183af4c87f2c474efacc791214ff21aadfdba13602f8aef5f4fcd886ab9",
+      "moved_sha256": "93561fcf868ee779e563e7296a072ffa5279c5555baf04479f357a6fdc74f8b9"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Capture.lean",
+      "to": "Research/ProximityPrize/BCIKS20/Capture.lean",
+      "original_sha256": "8b6a40aa2d63cf55f9fe4353f4412db0a5e72e067a91a64749490aa8685490cb",
+      "moved_sha256": "8dfdca88bfac5acab7fc59e3bbbc4a5fcd218b18abb87ac4903eb788f586fee6"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Improve.lean",
+      "to": "Research/ProximityPrize/BCIKS20/Improve.lean",
+      "original_sha256": "83159821fa37bf2f18c2c99ae7d7b4e3ed08a95bcbb24aad71a95ed2fde246d6",
+      "moved_sha256": "053507396bee5980d8c83acb8530d34e68e713b6dc859c370b33995a66c5e9d0"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/SlicedCompositionWip.lean",
+      "to": "Research/ProximityPrize/BCIKS20/SlicedCompositionWip.lean",
+      "original_sha256": "b3fff1dc6c13b8dfea7e0fe2bfb063a11ad5bead681ea1c62b2211c84b1183b3",
+      "moved_sha256": "5fca92ee5ac42be4f9c043fc5fd84e6fb48ad0a982522d1204255ffbbbc8a402"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShare.lean",
+      "to": "Research/ProximityPrize/BCIKS20/StrictCoeffPolysShare.lean",
+      "original_sha256": "d66a8329cf9c8431887eda6fb074cd3090f0b2d6b557ee1fc45f32c728f4fa38",
+      "moved_sha256": "f5097fb4ce2ed0ccfb3056fca9594dc31cc356f24aa07f75f20e93b95997ff23"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShareBaseCase.lean",
+      "to": "Research/ProximityPrize/BCIKS20/StrictCoeffPolysShareBaseCase.lean",
+      "original_sha256": "d98e86037559a10378d6f395f51ac3a1eb6723a9fab7901187b694f7f200b5bf",
+      "moved_sha256": "947ba2a45b0e81ade35917fea95f242411558c347ac72a0fdb3c606391fdc02f"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShareOr.lean",
+      "to": "Research/ProximityPrize/BCIKS20/StrictCoeffPolysShareOr.lean",
+      "original_sha256": "bebc53b77c76b206d5909b3b06515728a5e00bcb40c10023bac0b5e73ada671c",
+      "moved_sha256": "75401a7bb51d969f406b0ba1755dcf0db1eacdd07d2089bb812338480f63eacb"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ThresholdInterface.lean",
+      "to": "Research/ProximityPrize/BCIKS20/ThresholdInterface.lean",
+      "original_sha256": "08bd693a42cb304101a58a259e3124415c16f4f87575bde4462ad0db3c5cdbae",
+      "moved_sha256": "838114fba8033e99ac47459fe3db4f04e0e6f6b6e90f5a99501201e4ff14e5b9"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BandExactness.lean",
+      "to": "Research/ProximityPrize/BandExactness.lean",
+      "original_sha256": "1e933c7902c392550d23b24e2197b54ae3b34225472b22e32b3f292753541975",
+      "moved_sha256": "b21c5efcc2c90c3b9deb5542d1da80b29994bf1d9e56aa04b36dd762a1cca139"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BandFloor.lean",
+      "to": "Research/ProximityPrize/BandFloor.lean",
+      "original_sha256": "220b024c3adb4dcaaf1217153a507201eb3479fb208ee7c8bd470de6f64eea4b",
+      "moved_sha256": "fac23934ae299a2ed2e589973c60d6838162a2941e53575bb343d3c919a4e3d8"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BruteForce.lean",
+      "to": "Research/ProximityPrize/BruteForce.lean",
+      "original_sha256": "05c05800020497cf3f9ca5e835f19d64244a57471bb6604c1321a08722049150",
+      "moved_sha256": "77d6eb694bb83935326e90d11b75dd2d784f37e6e9559d1cee356d6efffdd40b"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BruteForceRefutations.lean",
+      "to": "Research/ProximityPrize/BruteForceRefutations.lean",
+      "original_sha256": "f620d8cda565ba679c028e7c3c21ffcb1bdd1e3a71e07e05acb21f8dbe5d281c",
+      "moved_sha256": "298a347ccdf468edbdbf02bfc18cf6f81aa46e76a2327a5ee58fdfeeaaec6a5c"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/BruteForceSearch.lean",
+      "to": "Research/ProximityPrize/BruteForceSearch.lean",
+      "original_sha256": "ee35918a55833de3d6251d7fd12977d7b92b3e824575598883ff97720f8c0958",
+      "moved_sha256": "a49b6b7d4fbac98d4daac6cd8411f02df1060993091979b557c7d63a76afb761"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/CS25BCHKSBridges.lean",
+      "to": "Research/ProximityPrize/CS25BCHKSBridges.lean",
+      "original_sha256": "c174d7018510f93ea7fdcccc6a87e9ebc6ecd7c00b8c086335e81a893e037397",
+      "moved_sha256": "60f3c036e4af87c6920342c1f16c217f151410384746e9c4bdc4865214f51fa3"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/CS25BreakdownFarCount.lean",
+      "to": "Research/ProximityPrize/CS25BreakdownFarCount.lean",
+      "original_sha256": "4483237c66394ebb1f352f3f4220419a68c927f2b8962444ac6ce7bee20be6df",
+      "moved_sha256": "5bee0d7883c99ce0e2a4d6290f3ae4dc74978613ca9ea8db5b13a73498449eef"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/CS25SecondMomentAssembly.lean",
+      "to": "Research/ProximityPrize/CS25SecondMomentAssembly.lean",
+      "original_sha256": "cacc5c4ff2edc8a24784e728a9034508e37dc846a5b87ec63321677b051f44cd",
+      "moved_sha256": "0e6ccadb09177635f96cd5b0b62edc591ed25c19f06af914e919244eb30c5062"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/CS25SecondMomentIsolation.lean",
+      "to": "Research/ProximityPrize/CS25SecondMomentIsolation.lean",
+      "original_sha256": "d6beb8bccb2a91226458de59a74ee8515220c69c4d57c4fcab168594b746bb23",
+      "moved_sha256": "5185dafefc5840ed1c957c4a5c8f1de7eefe6a3f16b62c75afc1f9151ac49aa7"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/CS25SecondMomentListSizeRS.lean",
+      "to": "Research/ProximityPrize/CS25SecondMomentListSizeRS.lean",
+      "original_sha256": "3760347f40047194f0c0c563f5bd9c55243a5600aa21fc7b4b7b4c530df3a8ca",
+      "moved_sha256": "a72395a4da93c0aa387e761d53b814f5bfc72268486caa0cd7084d5f90be3c4e"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean",
+      "to": "Research/ProximityPrize/CapacityBounds.lean",
+      "original_sha256": "2088bb3273134571e50c907dcef6ca330c574deee8c7b6b74f1dd96780169486",
+      "moved_sha256": "2088bb3273134571e50c907dcef6ca330c574deee8c7b6b74f1dd96780169486"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsAdmissible.lean",
+      "to": "Research/ProximityPrize/CapacityBoundsAdmissible.lean",
+      "original_sha256": "39ed8750bd6a789d6283911d24b420bf63ee43d4d4af4125a12c46ebcb897698",
+      "moved_sha256": "08df667376c660ad46e35ea23f3d36f94e7c4f4c8628379fb16fb90248bf67af"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
+      "to": "Research/ProximityPrize/CapacityBoundsProofs.lean",
+      "original_sha256": "6908448d508b9fb1a80f5a0a67f8391cdabee6c2525624bb4487ce2fe3d8edb4",
+      "moved_sha256": "70493e7fee0bff37119226891874bae109c8adeaa038a5034bb2308e3a2603c3"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/CellPackageSupplyShrink.lean",
+      "to": "Research/ProximityPrize/CellPackageSupplyShrink.lean",
+      "original_sha256": "260b7fe6c0f65023772e7f143d1ad943ab5c4d18515b3cd2984c9a168615a5da",
+      "moved_sha256": "50f96254f3161e513c2e5cf85968d4019c65a844a4584c42752ad8f1fad79cba"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Collapse.lean",
+      "to": "Research/ProximityPrize/Collapse.lean",
+      "original_sha256": "a434190f4fc9e919db7dc5c48b7b242c1b0178608b9bc8891adf52ec9ba380ae",
+      "moved_sha256": "e7c44eaac66bc9b12c407f95d82367149cf3ce275446cf4bc0694e2555b4b58e"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/CommonCenterJohnsonRefutation.lean",
+      "to": "Research/ProximityPrize/CommonCenterJohnsonRefutation.lean",
+      "original_sha256": "63a899c0c20e436dafa104c390366145bc348aafefbd75f8628f79e6d4ad5094",
+      "moved_sha256": "ed077c83a56374122076ddb7a18b54cd7cbf1e1c4f5a1e973c62a16dce370461"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/CurveUDRBound.lean",
+      "to": "Research/ProximityPrize/CurveUDRBound.lean",
+      "original_sha256": "dff364cbfc58378df71ad70fd546e0dcb41bd713a7a52037dc0d689e83d8e132",
+      "moved_sha256": "d6fe8e42166c2780e94a79c74cfad221f396dc5b548f49d863c646583c56a7bb"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/DG25Sampling.lean",
+      "to": "Research/ProximityPrize/DG25Sampling.lean",
+      "original_sha256": "3aee81499bbe744f85475f2aa4fc13eb0c51c29d61beb84c1a25109fdaed146b",
+      "moved_sha256": "909ef25c2c5c1f2010ce053087f4af27fcccb3aa5510e48cc4dccbd1e31e850c"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Decision.lean",
+      "to": "Research/ProximityPrize/Decision.lean",
+      "original_sha256": "1d47b422de87a71d5ebd31c3ed55373c7779110e46fe73608119a5b62886e453",
+      "moved_sha256": "df547fa8e398265690e3f10a369a3850f53ab90eec183f02c52edecb8bc684c6"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/ExternalDebt.lean",
+      "to": "Research/ProximityPrize/ExternalDebt.lean",
+      "original_sha256": "2cb5da24eaee51c2cecbeccb0cf3c4a52553527a36f68b5ff269424474042b21",
+      "moved_sha256": "cd43451ee2b5e374df6d7bf1c180d8c09ebac715d6022b3fa8ca765c431d540a"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/GeneralSpikeLowerBound.lean",
+      "to": "Research/ProximityPrize/GeneralSpikeLowerBound.lean",
+      "original_sha256": "9a98ee1d82a2860710b8ac3912ecd13a21684c2e0bda7c8870f3cbc641af99ab",
+      "moved_sha256": "58db8f0bc7ccf845b701f991048feb77fea6592b55e3c8faa95083d15956ccb0"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean",
+      "to": "Research/ProximityPrize/GrandChallenges.lean",
+      "original_sha256": "7443e704092d3a844b6ee31afcbc6e9452cfde4fbb31c4f6e65111a448c0154e",
+      "moved_sha256": "e48b93997a20e6e14b316723870b6d163c001e2c745189d2c0861b5facac4cbe"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25AffineCapture.lean",
+      "to": "Research/ProximityPrize/Hab25AffineCapture.lean",
+      "original_sha256": "4bc922a5e79509358aa4d7dba73655679b31d59a494b71255f920c2ce904e58b",
+      "moved_sha256": "ae714e48d8f51a69844680587800583432b1c7738f970bf0372c46d8a5ba2051"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25AlgebraicBridge.lean",
+      "to": "Research/ProximityPrize/Hab25AlgebraicBridge.lean",
+      "original_sha256": "99647b11786a46aeb69cf052ce24ad9e7f9056a91adf5263431be46457af0b17",
+      "moved_sha256": "9c60eb7a5d734fee6d01d0bf23e06a2ebff122f5cd189f88efbdceb5a27ea0fe"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25BranchDichotomy.lean",
+      "to": "Research/ProximityPrize/Hab25BranchDichotomy.lean",
+      "original_sha256": "73285b2009f3bf075f7eb3c889dcb5b77e2aba32ebad06749d05b2e21f1f1ef4",
+      "moved_sha256": "7457e6a46f2d6152671c05c479162cccdb68ffba37656c91d4346f943b2f2bfd"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25BranchPinning.lean",
+      "to": "Research/ProximityPrize/Hab25BranchPinning.lean",
+      "original_sha256": "4f6fda95df6164ef486cafd96d5744780ad893e012fa574722a1e6d2f8fe21b0",
+      "moved_sha256": "469d03702c407691a3a8bebc31d4f3af12e7c61f79942a158d5ee43b3d58273c"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25BranchToBCIKS20.lean",
+      "to": "Research/ProximityPrize/Hab25BranchToBCIKS20.lean",
+      "original_sha256": "58fc2c1b9ddf8347b6ae5ba7b955fd169dfd18102493eebe2bdcdfe047d66934",
+      "moved_sha256": "fb0feb74b5ff68108ea4eb4f25df12e2d3265042f2f525f1ad3fed6fbeedbd6e"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CaptureKernel.lean",
+      "to": "Research/ProximityPrize/Hab25CaptureKernel.lean",
+      "original_sha256": "3858329e728fa85fe8c92992ed1541389e12e8c53eec179850b52a1ec8c0d715",
+      "moved_sha256": "fce801c804119194b3f1fea3d6d587a9c8b1c05e4d42a8d4db31b1384318bf77"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CaptureKernelUD.lean",
+      "to": "Research/ProximityPrize/Hab25CaptureKernelUD.lean",
+      "original_sha256": "0a3982732cb36984e6e8d65a77ad0e68facd2880f3dbfd497701c456a8a94498",
+      "moved_sha256": "652ae56bc5df6de98238e0303b6bc4e78277f68f0360a43cc8ace61dd5430369"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CaptureReconcile.lean",
+      "to": "Research/ProximityPrize/Hab25CaptureReconcile.lean",
+      "original_sha256": "73d574bd355373c41e87a84b7597eb1f13fc1414f68f85958770c1e3d6d31e15",
+      "moved_sha256": "8acfeaefb013f0b52bf0763181151efde90baa28ed888a12c0f5045465d20e9d"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CaptureWire.lean",
+      "to": "Research/ProximityPrize/Hab25CaptureWire.lean",
+      "original_sha256": "a14bc8cd0219e42e7d1bcf31388102edea79fb2a682eae946a998d926e71b1a0",
+      "moved_sha256": "47a46f5ac167e121b3f4c116c47d8327786902626eef7a7b82aa5d998375d4d0"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CellDichotomyWiring.lean",
+      "to": "Research/ProximityPrize/Hab25CellDichotomyWiring.lean",
+      "original_sha256": "b9c15d4449f3b7485e5e624379c8acbe4419bb56cb0164973921a08a7bd57f59",
+      "moved_sha256": "6a85a1b29dd0eea4b4e34cdd9a897d4cce5a13e3cb0f9402343acc531bc94ee5"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CellPackageAssembly.lean",
+      "to": "Research/ProximityPrize/Hab25CellPackageAssembly.lean",
+      "original_sha256": "2aeac60e5c4dc36b7f49361ba58ff3eb7b988925948038ca3d7c1c5906089c99",
+      "moved_sha256": "a34d9944044d96edc5d3dcbb1cfa76da016eb5891ec5ba1d9836e6ae9ad1c1eb"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CellPencilJohnson.lean",
+      "to": "Research/ProximityPrize/Hab25CellPencilJohnson.lean",
+      "original_sha256": "8c10209a1cdeb2bd27ba715e21a854dc6a4a9d24b1b22c9dac20ac89b74b8f56",
+      "moved_sha256": "004cc78d743be0c5d464efb4f428a0d5f2509b0bde904562d956b39cf2822708"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CellSelectionFree.lean",
+      "to": "Research/ProximityPrize/Hab25CellSelectionFree.lean",
+      "original_sha256": "464c6f2bef921a046bc7d44f4d5e291fff54531aa8c4ed8d1b0a8f541aaee649",
+      "moved_sha256": "ec57a9a335e28acd21f28e0f6dbfba2952cb81961ecb2a36a873750866dd085b"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CellTailFree.lean",
+      "to": "Research/ProximityPrize/Hab25CellTailFree.lean",
+      "original_sha256": "96d5b3385fcfe3d922f23071ff334c5115d0c77e12f20672186b2fe0df53e878",
+      "moved_sha256": "706e9c8fca1842e611cfbb85b1966d49b28fe2ce00812229d403bdde4060af0c"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CellWiring.lean",
+      "to": "Research/ProximityPrize/Hab25CellWiring.lean",
+      "original_sha256": "17a19f4dd8c63c4cbbbd7176ed2e6fb25187ae04942ec923e939f222a4633b03",
+      "moved_sha256": "de9488c5577467a21dd878a9853ad6a656355cf2c90e63b8d95fdf013cdf0eb9"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25Claim1.lean",
+      "to": "Research/ProximityPrize/Hab25Claim1.lean",
+      "original_sha256": "cae9b99e03aef344337220128d53ccb1c80b00026d9fe44f1115d5210b7112c4",
+      "moved_sha256": "e9c28dea72ce286b68d70622cb15d09e9bf44cf524a77af94af110e3cb57d3a3"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25ConjectureGlue.lean",
+      "to": "Research/ProximityPrize/Hab25ConjectureGlue.lean",
+      "original_sha256": "4ffe0b18c7144b6ead29d53fdeaacf677f66d4581ed831000499cfa38382cb17",
+      "moved_sha256": "a2729babe6ad74e033b0428f5f956d42c55429b731837f9441d452ab13a729d7"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CoordinateUpgradeWeld.lean",
+      "to": "Research/ProximityPrize/Hab25CoordinateUpgradeWeld.lean",
+      "original_sha256": "80ac187f27232080132d5e0f69d3cb04b572b10651f76c2079d14507f7a34c59",
+      "moved_sha256": "ec523594f9c56cb91b19865459dd758e8608df447e9c8206dd9398fa0fd51f2b"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25Core.lean",
+      "to": "Research/ProximityPrize/Hab25Core.lean",
+      "original_sha256": "96129980cd33a4ea9b5a8c51f7ec913697ebbb363e0aaa422cce224d38784885",
+      "moved_sha256": "8ce7c258305daf9cf62db404734d8413f0ee86a78e7ed6acc397d1b13422657f"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CurveBudgetDischarge.lean",
+      "to": "Research/ProximityPrize/Hab25CurveBudgetDischarge.lean",
+      "original_sha256": "de857b00dd27fe41b774b63ddb183574564cfa634311aed1464cfb83c459ed97",
+      "moved_sha256": "0b24a2416833b3fac48f1bfa19b02de4d3ab6c23404cb2090ce411e82a5846ee"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CurveCapture.lean",
+      "to": "Research/ProximityPrize/Hab25CurveCapture.lean",
+      "original_sha256": "8075565c6557dea52c563d31bc4872b655b09a0ce7771a3dc7ad538289e39fa9",
+      "moved_sha256": "67a45033eb77414450fba6312b4ddbcb65f8feb36d29334cb7569ceaadef00cf"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CurveCaptureUD.lean",
+      "to": "Research/ProximityPrize/Hab25CurveCaptureUD.lean",
+      "original_sha256": "20f559d172fffb64d7935687bafd2bdc6f4bb667fe39c8985847d14fc086a657",
+      "moved_sha256": "bb2806ffdb7da38c70d1d9693c26d560082f22a2a06d3a6cd101da1f901bcc94"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CurveCellBudgeted.lean",
+      "to": "Research/ProximityPrize/Hab25CurveCellBudgeted.lean",
+      "original_sha256": "a94ae386656440a1c5c003ce7f6b9a6f17c37865fa163deca9f6ed6ccc3e14c5",
+      "moved_sha256": "4504b65386fc018e200be59d9ebf1faf67bd6823026d2c8c208aa6c6d8aead0d"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CurveCellGivenFamily.lean",
+      "to": "Research/ProximityPrize/Hab25CurveCellGivenFamily.lean",
+      "original_sha256": "ba8834f162d4f89e1ff6400645a15635c59587821838a7326fb2ff10d2688f5a",
+      "moved_sha256": "3f2ad750ea39735cf42c60825d91b4b335ad08f52b68870007e31227b7ac9811"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CurveCellProduction.lean",
+      "to": "Research/ProximityPrize/Hab25CurveCellProduction.lean",
+      "original_sha256": "f8475621e6ef289e03e5de176d2603b0d7de45521c401493fa884eed1a058652",
+      "moved_sha256": "3834ba2d112242255b7ce4aed8c8dc389bd1f5c4e6c8331f16662ab7bd5eb68c"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CurveCellStrictExtraction.lean",
+      "to": "Research/ProximityPrize/Hab25CurveCellStrictExtraction.lean",
+      "original_sha256": "d897c1926bd534af652cc4d90866dc2befbb72959ce581211cf230b53150fb70",
+      "moved_sha256": "1485ba97fbf48e0703b3afe49d9020c998b0b72e01246ed696f1d801249af128"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25CurveNumericCount.lean",
+      "to": "Research/ProximityPrize/Hab25CurveNumericCount.lean",
+      "original_sha256": "6d9a314fc07de0ea519b57566a63829f12ccd99057009a7a3d9425d40835bf5f",
+      "moved_sha256": "905097723bb86a2bea665ca025dacfad72af83d6f60c8a81aeddf92130a8f485"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25FactorBudgetSupply.lean",
+      "to": "Research/ProximityPrize/Hab25FactorBudgetSupply.lean",
+      "original_sha256": "ff216d7761d1cb527b78ea539e04366ea3155f83a27bb977fcb0999fee597fce",
+      "moved_sha256": "299c0cb42b040b18183bc4bafea2b2751363ca1081c69d996530f82198923d89"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25FiberSupply.lean",
+      "to": "Research/ProximityPrize/Hab25FiberSupply.lean",
+      "original_sha256": "43d414cee3a434de2e47639c876ba219527e44367364a6fe7a7d3aa6c3581ad5",
+      "moved_sha256": "e45fae9a958a4c0d2e1df3ca2fd2c6ba9c734a00b8cc9bfe64874284db9f41b3"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25FoldFiberCapture.lean",
+      "to": "Research/ProximityPrize/Hab25FoldFiberCapture.lean",
+      "original_sha256": "92e9e4631dd33a9b51628dc38f8aba7b762c4178a679c5f1b2fcfc6024eaa7b4",
+      "moved_sha256": "55a65ba9104655253d2b1e5b9e0a830109af8bf127615ae6a413f3cbf3ae5fe1"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25GradedNumericEdge.lean",
+      "to": "Research/ProximityPrize/Hab25GradedNumericEdge.lean",
+      "original_sha256": "106e5e935227b15501a4eaa1c32585f3a7a62451ed7d535b428a155aa31e1f89",
+      "moved_sha256": "0249dff1edb12dc807f33033fd2a4befccb62cd3aa941146e36632f847e0cb50"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean",
+      "to": "Research/ProximityPrize/Hab25Johnson.lean",
+      "original_sha256": "dabbfb48348ca5198dc0ac20568fc492fca5cda21371069dff6d4e40baa14302",
+      "moved_sha256": "143ddc5d19bf7520d76d5342e2ba5fb5db4823ff2089f5bf7b32260cec700b5d"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25JohnsonArith.lean",
+      "to": "Research/ProximityPrize/Hab25JohnsonArith.lean",
+      "original_sha256": "a1f7ff137083b4a789c9a2ed35fdc07a3ea47a34fa961bc6a96d9725fe5b192a",
+      "moved_sha256": "ac4ef8db0004a7dde01adf2bc728bb83fae7ccec88d07818cdc322d049ce4bf9"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25JohnsonArithmetic.lean",
+      "to": "Research/ProximityPrize/Hab25JohnsonArithmetic.lean",
+      "original_sha256": "409c90b0f73a71a7a9b4414675356a390ef16c830383dd3cf6a413341f035d77",
+      "moved_sha256": "010fe227fe62687022133bcc1a2f380816bb6ad68cbd879b13e1e59af16b2bd1"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25JohnsonCountWiring.lean",
+      "to": "Research/ProximityPrize/Hab25JohnsonCountWiring.lean",
+      "original_sha256": "f53d23f6986b5f9641dc3bac81262b5727e2dbf421fdd94f08370c807c00cede",
+      "moved_sha256": "ef8c28f16f3224f7a475a40c6c45d482c39dbd60c4fe5de7999df6d879ea5afc"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25JohnsonDichotomy.lean",
+      "to": "Research/ProximityPrize/Hab25JohnsonDichotomy.lean",
+      "original_sha256": "6964b7fb811df8f39bd36641abfd30ba9a847bc604c2426ce730b798fa2e266c",
+      "moved_sha256": "4d9042389472ded162e0a166035eebc906ba73702f9c9a99058aca76ee4331ef"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25JohnsonDischarge.lean",
+      "to": "Research/ProximityPrize/Hab25JohnsonDischarge.lean",
+      "original_sha256": "b0b126d0089cf253a37c7847fe8b504005fb3e0fbf23fa0420a3bcd38c15c765",
+      "moved_sha256": "31fba8bb77d2c300e0bd8c2ef04780d4be4f380a2824b13cc7df869c2059c166"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25JohnsonEllBudget.lean",
+      "to": "Research/ProximityPrize/Hab25JohnsonEllBudget.lean",
+      "original_sha256": "9aa1cdb8b07aa2db4c1261c786efc9fd747ed17f81ac84d6690692e1ce0f1e67",
+      "moved_sha256": "fe1fdab3fe04f792ecb541817dd4c061078366fd06d99f35d852b1497d41bcc4"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25JohnsonNumericBridge.lean",
+      "to": "Research/ProximityPrize/Hab25JohnsonNumericBridge.lean",
+      "original_sha256": "725077b4580eba5b036e674f782cdec6e8c6e1bfbf10942e5fc01051a0324c4d",
+      "moved_sha256": "59de33e4dbf7cd7756d92ca9b747ec56059dc670afb6ac09ebe4f0be931a6c65"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25JohnsonPackageSupply.lean",
+      "to": "Research/ProximityPrize/Hab25JohnsonPackageSupply.lean",
+      "original_sha256": "ca1ba8d7e672d2d8abc2224a712a067583856061fb8ab0c0bb3a84225e2d2585",
+      "moved_sha256": "df80260c97203a0aee65ac9c221ae496c7666bbe5ce08db5e7443626f679e68c"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25K4AffinePinningCardBound.lean",
+      "to": "Research/ProximityPrize/Hab25K4AffinePinningCardBound.lean",
+      "original_sha256": "c485f63928cccc6f392192702b05a254e64094dff4eab28efc268c6709a1bd83",
+      "moved_sha256": "9d3f031ad9c6bb13de4f68d206a4b0bf24648715fa7c17f9bca605e27bc75233"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25K4FiberReduction.lean",
+      "to": "Research/ProximityPrize/Hab25K4FiberReduction.lean",
+      "original_sha256": "6d616c6c400431cb979de780c558eddce68da904e6de9890ff3f3774a74c031e",
+      "moved_sha256": "5a34bf3e1ae2f9da211fea42b176b6d2fe4180685d259ac191ec54f283366fd4"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25K4Seam.lean",
+      "to": "Research/ProximityPrize/Hab25K4Seam.lean",
+      "original_sha256": "e4c3f881a6631fa3aee614246758052e4001a84ce6886717c6b06830107b024d",
+      "moved_sha256": "6cf1ef87fda63fa05e7c24080bbafb87d1d4cc324cc882a66801e467481cf461"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25LaneBridge.lean",
+      "to": "Research/ProximityPrize/Hab25LaneBridge.lean",
+      "original_sha256": "c692b929fa8c231da868a25c36ae6819439a71b99b5452b55f216dc2764fd045",
+      "moved_sha256": "5c7143060d5e6e3867eac709bf44cc95720893867715c124c044eb149b05c7df"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25LinearFactorCapture.lean",
+      "to": "Research/ProximityPrize/Hab25LinearFactorCapture.lean",
+      "original_sha256": "8967b579b17cf5f000ca82329cdbf5da256a042c5161526fd6d79c638b6ae39b",
+      "moved_sha256": "55bcbd0e3f81171e3c97029905560d943f6b00fdeba47d32e8a593b922f7adae"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25MatchingSetSupply.lean",
+      "to": "Research/ProximityPrize/Hab25MatchingSetSupply.lean",
+      "original_sha256": "e973a045633e69831293b93527d04f53bf71ba95d6ac961d887b57cd4b9a2ee4",
+      "moved_sha256": "f7023f4b336043c5768f647d601782e062c5f5f1d83b0ef61273dc832e664d67"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25MultiplicityBridge.lean",
+      "to": "Research/ProximityPrize/Hab25MultiplicityBridge.lean",
+      "original_sha256": "d42418f0b2dd0a812a92c3c2530b6c0e3bcdfb15b8b0ad01768c14077a0f298f",
+      "moved_sha256": "54aff9acc859c0851297a9400cc10776dd5a07b1544c4e96b743a644a86f3dac"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25Production.lean",
+      "to": "Research/ProximityPrize/Hab25Production.lean",
+      "original_sha256": "d66a295aa96e51de9184ca45f7b9c31a590b4b9ac12cf55b055f6ed10899248e",
+      "moved_sha256": "35eaf48d764aa46f28e0271f84b96a526960136262db5e916ab3bd980970f8c5"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25RichCoordinateGate.lean",
+      "to": "Research/ProximityPrize/Hab25RichCoordinateGate.lean",
+      "original_sha256": "449d05289c7d0b45b3b4bf580e9bbcd82ceda63ce8a55bf6c0fadaa62a75cfdb",
+      "moved_sha256": "a2e71013f603acc343550ba515b535c05610d387a320dba87ddca462003f0ea3"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25ShareGoodSetWeld.lean",
+      "to": "Research/ProximityPrize/Hab25ShareGoodSetWeld.lean",
+      "original_sha256": "49225f1b548fa8c29f62bfb98cee771ab65490c4abfa7c655fe874bbb72296a7",
+      "moved_sha256": "524aa85865c23a6fac68bdcd1229382f13a8dee99ce29a74674618a5dd45886d"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25SlackWeld.lean",
+      "to": "Research/ProximityPrize/Hab25SlackWeld.lean",
+      "original_sha256": "cd9e3e1dc7e3ea147d83ab6ec923ad561dc90a62d6fe6fdbc22eabbec3ac2164",
+      "moved_sha256": "9880e09a8cd8885e5488cb0181371abdc1ef28b013a1e38f74df3048e873abf1"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25SlackWeldFence.lean",
+      "to": "Research/ProximityPrize/Hab25SlackWeldFence.lean",
+      "original_sha256": "7c553323d803216e01f5354407fe5b3c7f16c40842c3cdb1202a4e45111ae7fc",
+      "moved_sha256": "be2ba782fa4f9cef3f7549b60e65bcb93ec67ceef8cfe42afd08ae95cfe6885d"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25SurfaceSupplyResidual.lean",
+      "to": "Research/ProximityPrize/Hab25SurfaceSupplyResidual.lean",
+      "original_sha256": "e235be803876aff29ff2538c1457439b91ff38fe736d9f251070df1039786fe1",
+      "moved_sha256": "45699a16bb6c8fb3f9dc94558f79445479b1bb69f1c8881cd932c76dbd17fa17"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25UniformShareBudget.lean",
+      "to": "Research/ProximityPrize/Hab25UniformShareBudget.lean",
+      "original_sha256": "eb48784031a3a4ec4fea38eb5972077fa3aea867c26bfb4e35d49da12f45c895",
+      "moved_sha256": "802895a93751702eff349312df263cf13759940803e0e1fee336899437b63bae"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25UniqueRichFactor.lean",
+      "to": "Research/ProximityPrize/Hab25UniqueRichFactor.lean",
+      "original_sha256": "38eb80049fbce9e5960396db61dc64d48613db1180acad9d15d61a8dc5f245f2",
+      "moved_sha256": "743cc26c6bb3e0642d2ba03dba9edcbd3fe58e2e1e285ce72661637d7b836258"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25WindowCount.lean",
+      "to": "Research/ProximityPrize/Hab25WindowCount.lean",
+      "original_sha256": "26806c25372d621dc21df3d8e4b7c46af0202cda4d72ff3ab75928c94a464633",
+      "moved_sha256": "4954a3d3da4d31ef91732b1dfa1bca3c1e9eae4d6a5b1c5fc5cb7c88a27074f5"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Hab25WitnessMassWiring.lean",
+      "to": "Research/ProximityPrize/Hab25WitnessMassWiring.lean",
+      "original_sha256": "9f65c4ce43c1777f37733a5559270a2a0212bbcee53e0b6e47bf574a4ba6ff1f",
+      "moved_sha256": "11be9e66b53aede604b560c324718a1810481e6fe0e3357dc8b7221e4096f545"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/InteriorGeneral.lean",
+      "to": "Research/ProximityPrize/InteriorGeneral.lean",
+      "original_sha256": "0c1fb9989bb823b55d6850bcb6ab4f245dfcd0470b56409233344040716b97ef",
+      "moved_sha256": "e26a631e4ad85b6ba3060dbb98e58992fc656de9de371638ffd99440237fa56f"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/InteriorJ1.lean",
+      "to": "Research/ProximityPrize/InteriorJ1.lean",
+      "original_sha256": "631f825caca7e3352148410aae4f0515500f22630069e98cf0dbe622674b31f5",
+      "moved_sha256": "37455cc78057e35f09297e6a1acfec64125c2f1216d6fad6292b5867afe74020"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/InteriorThresholdBracket.lean",
+      "to": "Research/ProximityPrize/InteriorThresholdBracket.lean",
+      "original_sha256": "1967f097f0823ab5d39204222e90358309ed5ca1715c364c1f4b505c357bebae",
+      "moved_sha256": "976be05d9ab99f1814e46d5eaac6e84de9863523f971b77cf22aad8836960982"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/J1Cap.lean",
+      "to": "Research/ProximityPrize/J1Cap.lean",
+      "original_sha256": "18960a2596553e57d94caf4f993d3c680b37f64290c6f553ed139364c28da51d",
+      "moved_sha256": "a15f6067cec3792eabe9a812cd744a418f331cfa103bdacfcc510e380593fc5a"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/JohnsonBoundRealLower.lean",
+      "to": "Research/ProximityPrize/JohnsonBoundRealLower.lean",
+      "original_sha256": "cd69f21a9cbf0089bb7a2fc7333c66806ec0430628fa654d27c6cea1c5d558ce",
+      "moved_sha256": "ba8102aeb452fc69ae889858b18e48978ecdcfc2b8aa5e2befc412543d1c9a0a"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/JohnsonCommonCenterRefutation.lean",
+      "to": "Research/ProximityPrize/JohnsonCommonCenterRefutation.lean",
+      "original_sha256": "d5e78bc34c7210c76de78f4d80da2caec155adc1296b2a90d5090b58b19c8ca3",
+      "moved_sha256": "df14a337a923b58c4e819fb7a00ba0d25c43be3f86d969b13dea4044334d42d8"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/JohnsonInvariant.lean",
+      "to": "Research/ProximityPrize/JohnsonInvariant.lean",
+      "original_sha256": "b2fda999947373556bb2b1cf1d08405e9eb9de6c0b4adaed267d7193c919fd55",
+      "moved_sha256": "afa8fd8f3a0a8efc8914f4f8103372fe881988ce7f2111d1f81e889d59330ee3"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/KKH26DimGeneralSharpInterleavedPin.lean",
+      "to": "Research/ProximityPrize/KKH26DimGeneralSharpInterleavedPin.lean",
+      "original_sha256": "216d5391fdfcbf60673100e5d9d1add5e9acd9f18e3975ab11e1a0be5f4b5ced",
+      "moved_sha256": "236795ba35c43252aaa83f008e851bb5c229e08dcbcb0b9f24c1abd589ac7cfc"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/KKH26RegimeSplit.lean",
+      "to": "Research/ProximityPrize/KKH26RegimeSplit.lean",
+      "original_sha256": "9f7899c57c760684e06f85a2e5043b79bb0d359f955b146caab453c6de7359c2",
+      "moved_sha256": "5327170c674b1855b91888229e0943dad5c841e9a608c037e69f5041992be4de"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LDAttainment.lean",
+      "to": "Research/ProximityPrize/LDAttainment.lean",
+      "original_sha256": "7d8fe3f75721772001d8aea33c581adebeb89b1d14a4dfa977ecf59caed174e7",
+      "moved_sha256": "4e79ea5291b222421e9fbd9d11c9830a25b22b28997c80a7e15b2bb3ef7b8f1d"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LDEliasCertificate.lean",
+      "to": "Research/ProximityPrize/LDEliasCertificate.lean",
+      "original_sha256": "8689110207bafb715a9318ac95f567bbd1678f8c5082f917febadf52413b03f1",
+      "moved_sha256": "439607fde12367a91dc63dbc37880104fd53ef5eaa956e662ae38115c7dcb955"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LDFourRate.lean",
+      "to": "Research/ProximityPrize/LDFourRate.lean",
+      "original_sha256": "12f93f74df56522c0e63b7d8bc362dfcb221bd6fdc539ebf8eaedeed4605b1b7",
+      "moved_sha256": "7e1fd4e7eb7141a120bbed75834c323b51535510fef1349dd40a875d907a69cf"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LDThreshold.lean",
+      "to": "Research/ProximityPrize/LDThreshold.lean",
+      "original_sha256": "c92520b448a7a8f43ca1ed8b2470cf42bdc2642df509539c0771400735e2f395",
+      "moved_sha256": "b03afcb2adf70b9cc7d2c42693edad5f5fb84a4a4a94499ab8d3b9c9a35e8cf5"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LDThresholdElias.lean",
+      "to": "Research/ProximityPrize/LDThresholdElias.lean",
+      "original_sha256": "637d204c448f682e46737dc7814ed98f9455f70fabc8fd1ac4a58900d667a629",
+      "moved_sha256": "0e1306dc92461fce1fc3f45940a3e780cae40071478383fa7fe3afff113983b0"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LDThresholdHalfDist.lean",
+      "to": "Research/ProximityPrize/LDThresholdHalfDist.lean",
+      "original_sha256": "d7c89086395aa6b9ca847526014da2bce4ddb20b83454dda596ad026f465608d",
+      "moved_sha256": "7c80d99d49a6ec21928aff12d811eddfc833d516df64c0358ed52e3c22e389e7"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LDThresholdJohnsonSq.lean",
+      "to": "Research/ProximityPrize/LDThresholdJohnsonSq.lean",
+      "original_sha256": "2e659bbf327a47c4a23835bb5acea613b1a1b3716d8089f1b90e41c2d3c4b5f3",
+      "moved_sha256": "0b6c1b8dbe737e98e32e771870b650260e85019bd17976b5d77f85e70b8f4ec1"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Lattice.lean",
+      "to": "Research/ProximityPrize/Lattice.lean",
+      "original_sha256": "d487acc6667aa68615c5a1a6afeb94a22ee7f012e7d5ea8327dd75ef0b5e5e43",
+      "moved_sha256": "7f01ffbc387401bca827df4436e81ff4f3819a02551c7bd762931911d71e0fe8"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Lattice2.lean",
+      "to": "Research/ProximityPrize/Lattice2.lean",
+      "original_sha256": "a0125629ce968c08423f2b1651c8a3f64cd6bcc800894a3a594be9066f4b35a6",
+      "moved_sha256": "7218653ad702dcbbbd1b2c8137b71e7be0309a345f56f6344fd1cceab2aa8a59"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Lattice2/Core.lean",
+      "to": "Research/ProximityPrize/Lattice2/Core.lean",
+      "original_sha256": "e8ff4f038d6fdcb675fdc89280a8898ef68c46f38884f233787c60fc8abfe080",
+      "moved_sha256": "d3677d769a3a2560c6f4bbfbf62a94bb701d8eeeedcefb37056cd55b4803eacc"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Lattice2/ListThreshold.lean",
+      "to": "Research/ProximityPrize/Lattice2/ListThreshold.lean",
+      "original_sha256": "925928b9a5c471978eaced30630a54d16e6571e754688d16fcea308c5af299a2",
+      "moved_sha256": "38ff0d1231114714441f906ddb52a3354d2c27414fab0373cf8b0aa6c6b746e9"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Lattice2/Spec.lean",
+      "to": "Research/ProximityPrize/Lattice2/Spec.lean",
+      "original_sha256": "cde19bedcedc94080f6f94f06498d654579d28cb4d77bc7ec2e8a38c6cb7411a",
+      "moved_sha256": "06f864dc396b9620c539d947bb35fe8bf3fe172404dcddf728d709b7ab641cc4"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Lattice2/Witnesses.lean",
+      "to": "Research/ProximityPrize/Lattice2/Witnesses.lean",
+      "original_sha256": "3c475f4a62a9ff20c3b266c5e63c19a662c93305282139eb32610f79ce937923",
+      "moved_sha256": "8128191e295220e12bd125f9c3f8896cc130d122b9521677b3ae2124878a0a12"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LatticeSpec.lean",
+      "to": "Research/ProximityPrize/LatticeSpec.lean",
+      "original_sha256": "637996ff120d696e37aef679e25556f1813a8573f985f6401cc2972ba1753a6a",
+      "moved_sha256": "49028bb9c7c2038f387fd26aad0daff9919e33b65d4726b4f225ce8636580b21"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LineDecoding2.lean",
+      "to": "Research/ProximityPrize/LineDecoding2.lean",
+      "original_sha256": "b1dc3d79cab925885a94cc8f68067d573381551dd95a6cd694deba23f210fa91",
+      "moved_sha256": "0f0b08af4ad5f7d61733450a4dcc9832043b9c89ef4f9d347c7e52f012cde445"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LineDecoding3.lean",
+      "to": "Research/ProximityPrize/LineDecoding3.lean",
+      "original_sha256": "508fe1e303cb073c6b483cdf0d2bb9d013111a08ed1c873303a02df4291925d8",
+      "moved_sha256": "f237640fbe3c20d9abdb27f498940863cc97f6c060acf61fda5f5e817158026e"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LineDecodingResolvedSpec.lean",
+      "to": "Research/ProximityPrize/LineDecodingResolvedSpec.lean",
+      "original_sha256": "24b12105cb6a083799e0951ab8195f706b9b245c533a0aaa5114c1fd12646850",
+      "moved_sha256": "a96ebf1882718c8f822a4c290e9906f7b798d4f067fc9c5db24be9123c3cd4f7"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LineDecodingSpec.lean",
+      "to": "Research/ProximityPrize/LineDecodingSpec.lean",
+      "original_sha256": "69121f729b8ece0e5aa2baa68379eb29f8ff01c9c17f5235fb9aec8764e2d19b",
+      "moved_sha256": "55ae093350554b0b92a4eb1d79f595872e5dbd8711f5fd3d9bdf2026e68566a1"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LineDecodingSpecLowOutput.lean",
+      "to": "Research/ProximityPrize/LineDecodingSpecLowOutput.lean",
+      "original_sha256": "989049d5aad42f73ef6d6126a7dc2b90b5f6ad4464209ddd7a73571f937bdafd",
+      "moved_sha256": "adaa22546d96bf50b2c7177393db58083a1b2a677806f6dc3c5c874426cf3031"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/LineDecodingT421Faithful.lean",
+      "to": "Research/ProximityPrize/LineDecodingT421Faithful.lean",
+      "original_sha256": "23031b535333639d174a94cd950f827ea9211dc456fd3943e514328b31c74bd1",
+      "moved_sha256": "88389eb09d3f81742e8984435016b6a59a21b43b1e7f5d67b51af516bb74242a"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/ListClosedForm.lean",
+      "to": "Research/ProximityPrize/ListClosedForm.lean",
+      "original_sha256": "bff69a274bbb177d9e1cda96426faba1a791c2fbeecc111fae3d4d4bb3e672d8",
+      "moved_sha256": "7945b8d2e0e5a05a6d8f8cad877b8197d94dc9bc39bd6d0c29df1d98bf7adc1a"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/ListDecodingConjectureRefutation.lean",
+      "to": "Research/ProximityPrize/ListDecodingConjectureRefutation.lean",
+      "original_sha256": "fcdbcd72a49917634f801154dffe59c1b4c107719d97f74a228b60ee39049af2",
+      "moved_sha256": "1b0bfc35d67e4653627cfea32ae8f09021a95769f8256ad5d15ebff2e6bd8e75"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/ListDecodingUnconditionalRefute.lean",
+      "to": "Research/ProximityPrize/ListDecodingUnconditionalRefute.lean",
+      "original_sha256": "b6a6db692530a7768e07487edb9175b44118fe6f70e010b999638b97bd91e9d2",
+      "moved_sha256": "870087baafa49e8ea2d7b33724fe9c1793706a8194b50173886427f9edfda2f0"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCABadCount2.lean",
+      "to": "Research/ProximityPrize/MCABadCount2.lean",
+      "original_sha256": "0f25c48a3fb4bbd14ee38b23e87ffa49df69e40aa512ed5995bf6190b1c875b0",
+      "moved_sha256": "4b16b5bde50e5666a6b717ea4576936e188cef9301cdd2490844625ad0ffba57"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCABadCountRatio.lean",
+      "to": "Research/ProximityPrize/MCABadCountRatio.lean",
+      "original_sha256": "5c0e08a2d08c3d04599e9c1e20d57381ac110109d09e8af295fe33502d92ebd0",
+      "moved_sha256": "59e6235491b58f4801031448d4db99adcc7137b39f1f2f76c1be4383cdc225a0"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCABracket.lean",
+      "to": "Research/ProximityPrize/MCABracket.lean",
+      "original_sha256": "d1ee0ca4009f80412c153717cb61ecb72e79a93c41312d6fde019fa17e184b7b",
+      "moved_sha256": "79471a51220f3e7877293f8936ed2fa28337f1e6bf9021604a2e8796e5e0cfae"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAConjectureProgress.lean",
+      "to": "Research/ProximityPrize/MCAConjectureProgress.lean",
+      "original_sha256": "be302be7e8505b9aa5b1cedb90085a10307d484b6442521fdd4891a2ac94bdf8",
+      "moved_sha256": "fca87d20ebe976ad1e187b02fbebba2133a2fe9ae96dafa82228b6044c0ff6d6"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAConjectureRefutation.lean",
+      "to": "Research/ProximityPrize/MCAConjectureRefutation.lean",
+      "original_sha256": "2e50365259ce3346287598f5be8de6349004aa73458234da91a63025f52bf4eb",
+      "moved_sha256": "57dcd569f3cda8675bb34fd2b9e091d904ec410afa81e1f403eb5dc3d37e80e5"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCADeltaStarBracket.lean",
+      "to": "Research/ProximityPrize/MCADeltaStarBracket.lean",
+      "original_sha256": "63928b17526595fbd1d48acb49b9b188f18a24bf15d4952270d3262ddc6f3974",
+      "moved_sha256": "01431bd0f74417bb70756deaaf06cfc5d91f3254b53bd81719b6bcd93330d896"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAEndpointLower.lean",
+      "to": "Research/ProximityPrize/MCAEndpointLower.lean",
+      "original_sha256": "e5c1a812a7c1c4238165d9b2b207475d62994d81c7caf09b366cd2b587e45145",
+      "moved_sha256": "7f1944a04f696c0348691d91084c1f9811128a27cb6cfed71966c07c3c3df7d8"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAEndpointUpper.lean",
+      "to": "Research/ProximityPrize/MCAEndpointUpper.lean",
+      "original_sha256": "afec213ba6615f2be20324206517f9ffa730abc807dc882af97e42a331cdf344",
+      "moved_sha256": "d4bec978f6992d85bb774bb2f2f3ee34b5e4ea580b38bf128c4bb6aea73b8745"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAExactProfile.lean",
+      "to": "Research/ProximityPrize/MCAExactProfile.lean",
+      "original_sha256": "ece433a064ebbfeb396af2bbdc3e4945827d1a262de4763ca5cb1b2876beef3c",
+      "moved_sha256": "ae39d924fcdd39a7770d13211d186eed7ed4bf057faa499a22d20c99cc6d75d5"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGS.lean",
+      "to": "Research/ProximityPrize/MCAGS.lean",
+      "original_sha256": "9ceb5abfa8e821de41c32bae3b3c7156994f586d75ba1f6dabd33ea669c794d5",
+      "moved_sha256": "491f98d6f0241d3298525f0428a9931e24eabafb4125a2c86eefcc52db8f7120"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGSBounds.lean",
+      "to": "Research/ProximityPrize/MCAGSBounds.lean",
+      "original_sha256": "fec7054ad39a47d3229663e0563db8c50b7bf55aa6b12a0d8ef9943ba879b8a3",
+      "moved_sha256": "551ee8da3c49f8806cab825c19c35ce1979fed4f748ff4a2fc015c63a2237b70"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGSFieldUniversal.lean",
+      "to": "Research/ProximityPrize/MCAGSFieldUniversal.lean",
+      "original_sha256": "62d35ec90a54e88537924719f79ecd2f98677b0f9df31e1b3dd45321eb31841b",
+      "moved_sha256": "0101ea834d3515343fdb1652aac1973ce712e95f49ad249e7e296ca810437538"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGSFixedFieldVacuity.lean",
+      "to": "Research/ProximityPrize/MCAGSFixedFieldVacuity.lean",
+      "original_sha256": "4f2a4a7dff6a67c581f23d4e466ea8a568e1cf03c141d1c55410307fcb2b0d5d",
+      "moved_sha256": "a4f57169622945478f0545bc366fc67848b0e86ae3e814344e4cdcb561d50d45"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGSKernels.lean",
+      "to": "Research/ProximityPrize/MCAGSKernels.lean",
+      "original_sha256": "fe006c84f5ecb9f914ded51db0b35b7efd656c8826b1c392ccb40dbf9cbdc53b",
+      "moved_sha256": "9a487ae427c9adfc5bde2588cbe8463d7ca3dce1255f13648dcd5dd48625563c"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGSLatticeResolvedSpec.lean",
+      "to": "Research/ProximityPrize/MCAGSLatticeResolvedSpec.lean",
+      "original_sha256": "9f3fc668456a85abce979f53feab0632207a74131a4ba1d5ffbe16de83542042",
+      "moved_sha256": "e1df1836156b871f6a9128a5864fd41a582772c0c47d6fe4b6a223df7c7a8c52"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGSLatticeSpec.lean",
+      "to": "Research/ProximityPrize/MCAGSLatticeSpec.lean",
+      "original_sha256": "9809c8ba86ac864fcf4a2399aa3929b799628a00bf91d95f928690f6feb3aaaa",
+      "moved_sha256": "a185c8513a72d5528d4f02ed30ceb3f569c6c951887d2764fd86d34e59dfede0"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGSRefutation.lean",
+      "to": "Research/ProximityPrize/MCAGSRefutation.lean",
+      "original_sha256": "32f92b82e98b62dfd544ce7f40b3dac5bb84623f6462cf542d0a94efbba9b3e1",
+      "moved_sha256": "885d84ec6f5215cef71fc8436e31e14c7b3525a752566798fa41e5870673d054"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGSRefutationCore.lean",
+      "to": "Research/ProximityPrize/MCAGSRefutationCore.lean",
+      "original_sha256": "b8eb485a4040544ed0b06eb4da4c6fea6dd13d03fedea2087446d19eb6578085",
+      "moved_sha256": "cbe3746abffa95b9cfef8c2b242461b5600a2f7464d95e72c043a7b975f2e3ad"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGSUniqueDecodingGap.lean",
+      "to": "Research/ProximityPrize/MCAGSUniqueDecodingGap.lean",
+      "original_sha256": "5422450764087000ee27c8385aaa28d814f38b7136e0bfb1c00ea87890b31aee",
+      "moved_sha256": "872313fc425c4c0eb25bf5cc34fe2ea2609e3b147031c6f4ec31b51343199f18"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGSUniversalReduction.lean",
+      "to": "Research/ProximityPrize/MCAGSUniversalReduction.lean",
+      "original_sha256": "0c62c85874053015ec23c9aca60a61a265117f0ea04680b3705145c30848203b",
+      "moved_sha256": "1677654b30c069a05309c7c231d6424fff2a8a80d9e1b1c14f7c1b1802363953"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGSVacuity.lean",
+      "to": "Research/ProximityPrize/MCAGSVacuity.lean",
+      "original_sha256": "5ae4598192d9326bf2666c269e063c238831afade1e4857a62b774422785f76d",
+      "moved_sha256": "4429d132b5b2355ae97a0a7b8673399990e19228e1a96a507f5f41a3d6f78e27"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAGSWitness.lean",
+      "to": "Research/ProximityPrize/MCAGSWitness.lean",
+      "original_sha256": "24314a3a38be02e224855005757ada299d242e23c6fbe0789e2ef32c2c122eec",
+      "moved_sha256": "b39d833f19690d87faa8ecbd198d52d861e62753ea33959cc689ded15d314e84"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAJohnsonAssembly.lean",
+      "to": "Research/ProximityPrize/MCAJohnsonAssembly.lean",
+      "original_sha256": "794d6d1a42fe885e57d0ccbdd81d9bc77365bb1fc0714782fe5d887d3d312096",
+      "moved_sha256": "84dd8d500d9c6cbfc3b162222c19a850f9ba0aabf5807621584a4a818f20d1f9"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAJohnsonClustering.lean",
+      "to": "Research/ProximityPrize/MCAJohnsonClustering.lean",
+      "original_sha256": "9347a99f2d866f0e368dafcad110ba78fc1a984697122b15ca96516576228505",
+      "moved_sha256": "4aeccdb3c240ccf6f5682795e15d698f526f5d50691e25942f26eec4632b7fe3"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAJohnsonCount.lean",
+      "to": "Research/ProximityPrize/MCAJohnsonCount.lean",
+      "original_sha256": "501c115a97ae73549550eb5eea50ac89757a30d9a1f215e7e595d282db69275d",
+      "moved_sha256": "cb397d3360da33fca00a6b56fcdb10b5a2ca7c24ba615c656a7493b66a3704b2"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAJohnsonDegreeOne.lean",
+      "to": "Research/ProximityPrize/MCAJohnsonDegreeOne.lean",
+      "original_sha256": "c94f0fd4c5f8c603b968f392d341e016f4e74c49555f5fe233ca9af51bede9ce",
+      "moved_sha256": "f7dcb24dd2821e3f3cbf447a519b35fc3040b138c6dc36e5cb0960d3ab9ffbc9"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCALatticeExact.lean",
+      "to": "Research/ProximityPrize/MCALatticeExact.lean",
+      "original_sha256": "b98ad11ca8cbf4c5bc994633db66392bfa38eca63f00dc5413aa7e10b4267a2b",
+      "moved_sha256": "49b5ad00f5165617ce71e2f6e6e44f3cc768eb74727372beaa104fe06d05431c"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCALatticeOverflowSharp.lean",
+      "to": "Research/ProximityPrize/MCALatticeOverflowSharp.lean",
+      "original_sha256": "fabad528a3a4fc784591d8182f5982f0649f798c2505b432fef1eada7b4faad8",
+      "moved_sha256": "e5e811b53424147f83ea610db9303c3774b3cdcd4f593641678c686cece21785"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAMiddleBand.lean",
+      "to": "Research/ProximityPrize/MCAMiddleBand.lean",
+      "original_sha256": "494e3a1bc80d42b4139602fa0ffbc34f034beb0f48174f6c0b6ff4d7aed14fd6",
+      "moved_sha256": "5d50c5da8a78b2710ebe8b3a33eb5a4962adc042d52de4d1bce241056e1d98cc"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAPlateauWindow.lean",
+      "to": "Research/ProximityPrize/MCAPlateauWindow.lean",
+      "original_sha256": "f8074afdcede38a54eb2e183d054a52f1e3282891a3127b1777f9671cc8be182",
+      "moved_sha256": "8ebff8e2cb354cf5910ee108a36477ccb59de72b9bee266ff8bb7925e60169ad"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAResearchLoop.lean",
+      "to": "Research/ProximityPrize/MCAResearchLoop.lean",
+      "original_sha256": "98364a86e6256f8072b2bfde2c19fcd48d25d7b15eb8bb58b655260250e46475",
+      "moved_sha256": "9e089638892b9ee50f571e021a715afe9719b8ddce000da7ced7138fa868325e"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCASecondMoment.lean",
+      "to": "Research/ProximityPrize/MCASecondMoment.lean",
+      "original_sha256": "848fa9ed2df8ab7c30a9b3cdf60773549026809ef0e5a43f2096444f6bb303ea",
+      "moved_sha256": "445103b54004e51c7c247ed372a5b1890a1afb132f747e6f3f06de38a770448c"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAStaircaseCollapse.lean",
+      "to": "Research/ProximityPrize/MCAStaircaseCollapse.lean",
+      "original_sha256": "331c0d4aa866f8028c85444c2da89b3bf846359edc3a468e4388e64a5fa1ba8c",
+      "moved_sha256": "95b2d9c3aa46c677ab4b8da941676a8a986187aa587ba0007a25f073d21c6269"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAUDR2Bound.lean",
+      "to": "Research/ProximityPrize/MCAUDR2Bound.lean",
+      "original_sha256": "4ab063d73b2a7f9540d3bc6d00f893889f1f47ac2886f1b0baa10361223bff27",
+      "moved_sha256": "6baaf524478734102564970371f7d21a71aea388b964b9ff21e125c44f9c363e"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAUDRBound.lean",
+      "to": "Research/ProximityPrize/MCAUDRBound.lean",
+      "original_sha256": "4f45a7546ea6b069bba8d73c7d8b6c35a284d4b2c163e38db7397751275787a4",
+      "moved_sha256": "a1e0fcaa8d86abde019e54ffd9547384c5b62c65e8815ff2f232f2484f94e9be"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAUniformCover.lean",
+      "to": "Research/ProximityPrize/MCAUniformCover.lean",
+      "original_sha256": "844b800682506ea876a8ac64749c92d4e8b009dde8dcdd47b8bec3c3d43474cd",
+      "moved_sha256": "98074f96be51031af2d6c916b08acd9dbb2f83a6c936b0b4d482345f06630024"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAUpperWitnessSunflower.lean",
+      "to": "Research/ProximityPrize/MCAUpperWitnessSunflower.lean",
+      "original_sha256": "cea2140c027a7fc66f53562f802b8e07bf722bee5a4406dc86301fd77fc0d81d",
+      "moved_sha256": "f045afcbf2ea2b78ce2a3dca00a36cce99d9028fa443e56759c2e901c0bab652"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAValueBracket.lean",
+      "to": "Research/ProximityPrize/MCAValueBracket.lean",
+      "original_sha256": "09542abb0093180d4e89286f6d649a66b4a3c53709bdbf9465f5c80c4cd449df",
+      "moved_sha256": "29e2bbd63930e3ffa5b0fc2d1be371e3c1c75a49b6d0c9e1bd56a0c1f688fe22"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAZeroCodeGuardrail.lean",
+      "to": "Research/ProximityPrize/MCAZeroCodeGuardrail.lean",
+      "original_sha256": "32fe61b3b017f861cdb0de48ce2ce093727f2c1d1cbef57a2279877af2ae91d5",
+      "moved_sha256": "5a6345c5719a36c5467b3c2c3269eaf5f30be5db7313f6dfc3597dcff6d9bff5"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MCAZeroUpperBound.lean",
+      "to": "Research/ProximityPrize/MCAZeroUpperBound.lean",
+      "original_sha256": "6cbf66362a777f844c702d52a3a7e1b9549c60ab07fc436c69fcca424b40e8c8",
+      "moved_sha256": "356948c31ce613e809a03799351a5fbd62ba20785248d4c72b5c97f16c2216ab"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MDSMaxAgreement.lean",
+      "to": "Research/ProximityPrize/MDSMaxAgreement.lean",
+      "original_sha256": "e148199c158736e8ff1008cfedec14a44c8ec0b1a475fd0177e1cbd6aa7865ca",
+      "moved_sha256": "a62424be12e351bc0077373392b00c788f58a5373e037ab3cdee63180664caaf"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/MonomialGammaFibration.lean",
+      "to": "Research/ProximityPrize/MonomialGammaFibration.lean",
+      "original_sha256": "aa7841cf7f4ba1fade7abc5935a8e066afdb042537b7260665452ef3cc85820e",
+      "moved_sha256": "b0c63701b814fd820e6e32d11c38a968aed4b1599c572c8fba35e8438c532296"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Overreach.lean",
+      "to": "Research/ProximityPrize/Overreach.lean",
+      "original_sha256": "eb0bd336916dbba0a44e3b42a02b324bff7ddbca3fbd38ef7f7af00d43431722",
+      "moved_sha256": "c63d3eed17d62ef3d20e93c3b65ae9d54102ef22ba7115ea90e7e7bc77d2ca0e"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/PermanentlyBlocked.lean",
+      "to": "Research/ProximityPrize/PermanentlyBlocked.lean",
+      "original_sha256": "fd5ff009640374de888b4fa4ebc9192cfc0146032307c3eea4e427564b196c99",
+      "moved_sha256": "dc6f6a695a3c160ca3fccb9b0811ce363acfd0e7c830febb4f400bbf572fa22b"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/ProductionJohnsonBudget.lean",
+      "to": "Research/ProximityPrize/ProductionJohnsonBudget.lean",
+      "original_sha256": "1e14afda192d051f2112f09b6b1968bc7accb46d52dc99c7ebcfdb5ace008b6b",
+      "moved_sha256": "86a44c76fc6ce20092f0e8967036c5867cd055a6933ef2de83e9a4dfa1ed7a1b"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/ProductionRegimeBracket.lean",
+      "to": "Research/ProximityPrize/ProductionRegimeBracket.lean",
+      "original_sha256": "3b98bf409acb848d909271386697ffb73a74603a6a89d4468aecc14d282d07f7",
+      "moved_sha256": "0fd4154f72aece78147d7a53f21abf5ccad6c1900c3b6246d1d275333df1507d"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RSListThresholdConditionalPin.lean",
+      "to": "Research/ProximityPrize/RSListThresholdConditionalPin.lean",
+      "original_sha256": "ebba7a89a4986cb32656ce26bd2ba2111a2a601def0fc8a4a7204090495868cd",
+      "moved_sha256": "2282f8d0e35b6fc97caa3fc91611db98b027897e470a92b7d3664d94f98a9eed"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RSListThresholdGapBracket.lean",
+      "to": "Research/ProximityPrize/RSListThresholdGapBracket.lean",
+      "original_sha256": "f5870eda8740e26626764e2df23da947c9821f33fa42657f2f277efec24f9781",
+      "moved_sha256": "e21e764fd4475f4270943740314623d943c7413522ed381311197d08df305058"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RSListThresholdJohnsonGeneral.lean",
+      "to": "Research/ProximityPrize/RSListThresholdJohnsonGeneral.lean",
+      "original_sha256": "f42a9ffc7a860a60a4175ca140176da3a008c26c032ee18ec3c1074f8c4157ba",
+      "moved_sha256": "d3bc6f8ab55fddb71413a892e604eaba13818c21baba144775a61eff3f789d38"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RSListThresholdJohnsonPin.lean",
+      "to": "Research/ProximityPrize/RSListThresholdJohnsonPin.lean",
+      "original_sha256": "4d91cb90a373c2294b03af67eb33792cd4c1f790b218f3218d2b3adc61cefee5",
+      "moved_sha256": "60873da7a7ac8600a5284b7a2c3b2572887665d13da86566d2aae6404e9f2613"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RSListThresholdOverflowSharp.lean",
+      "to": "Research/ProximityPrize/RSListThresholdOverflowSharp.lean",
+      "original_sha256": "e4704d635a055d4d234f24c82ce599b926211c461a7e85bd2ad45f50a4ee7640",
+      "moved_sha256": "918e7de71c4d7c96352e7912cb4a4efefa08b051b7a33fa6a99dcdbb6351d641"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RSListThresholdOverflowSharpGen.lean",
+      "to": "Research/ProximityPrize/RSListThresholdOverflowSharpGen.lean",
+      "original_sha256": "b0ca0c8eac8b4951ff4495a844c5bf66e01b579681d783ed3d2137659c67a609",
+      "moved_sha256": "2faf396d1b39f838c009912199639363ba2bd82ecd4c063c42fb7355c8703a6b"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RSListThresholdPin.lean",
+      "to": "Research/ProximityPrize/RSListThresholdPin.lean",
+      "original_sha256": "743657c14a22977697ca145a0eb695c45c25dce34e47d764c94525bbd03998be",
+      "moved_sha256": "7a6df395e528d99622a165250becb193012f10c07cca2ae5cd991e2869d58226"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RSListThresholdPinGeneral.lean",
+      "to": "Research/ProximityPrize/RSListThresholdPinGeneral.lean",
+      "original_sha256": "5e40589071eb22c464467abda3233083bea6acd5c5e0bdad7c5fa25e25633781",
+      "moved_sha256": "272a3d0d9f972950faf5ebc0a1dded72f2669dd324c6cdb8227ce013e112d290"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RSListThresholdPinRate12.lean",
+      "to": "Research/ProximityPrize/RSListThresholdPinRate12.lean",
+      "original_sha256": "43d7e56fbd4539faab76ce92fa9527bf60e1d9da4215d941d77bc02086094f48",
+      "moved_sha256": "baa7601792b51b316be1f74a7d43ec33543ad57aeaf898eaf364f47f3f9ff6be"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RSListThresholdStrictRate12.lean",
+      "to": "Research/ProximityPrize/RSListThresholdStrictRate12.lean",
+      "original_sha256": "9961f8c25e64f55cf626e3fe878c3ecb47493529d09fcbde464d5b18f37372b4",
+      "moved_sha256": "0bccaba31701484fb1d764d0e0e79fe020f91ef00a87684fda9a5cd637e2721f"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RSListThresholdSubcapacityRate12.lean",
+      "to": "Research/ProximityPrize/RSListThresholdSubcapacityRate12.lean",
+      "original_sha256": "d0e78a0ccf4fd2958d3e3576264819ae30f7207e8d098803f85af0e03b86df17",
+      "moved_sha256": "3c082d2527df4dfc80a9f0c4753c5aa2e909603f791b58afe67a5132ce7b87ae"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RSListThresholdTrappedRate12.lean",
+      "to": "Research/ProximityPrize/RSListThresholdTrappedRate12.lean",
+      "original_sha256": "7000a98d6f27a15f168de5ba55023a8a7fac1eb30cebd7c736b28e8155119aad",
+      "moved_sha256": "4bf87270cec1d654afbfd6846229863803d15ce9f21f0c3547efd7ba80edb4b6"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RadiusOne.lean",
+      "to": "Research/ProximityPrize/RadiusOne.lean",
+      "original_sha256": "5fb7f65114450c35dc17667bc7f3bacc2ecf48bc6e2fc755f9e0950ab1beeeff",
+      "moved_sha256": "c4000a28da43a89ed0fa4d319deea497c14115e4203c1002aec20c4fff856d2d"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RadiusOneExact.lean",
+      "to": "Research/ProximityPrize/RadiusOneExact.lean",
+      "original_sha256": "e800d68bcc8fc3f0fe953d523aac4849c4975b913ecdd8dee687c32a29ccd8a5",
+      "moved_sha256": "8a67e7c2294bf48cc28bbab99dc2bf6348e806d2a10f1907711ac6b79eb13657"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RefutationProofs.lean",
+      "to": "Research/ProximityPrize/RefutationProofs.lean",
+      "original_sha256": "5a0a5d5f50f8cfbc8931d729906f20fda9b619f7cfa70f074267fc0076d5bbfd",
+      "moved_sha256": "32b9ef6dc1cab966dce74994f98784b31fcb5fd0f5d028f464b711cdde8edd15"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/RegimeIIBridge.lean",
+      "to": "Research/ProximityPrize/RegimeIIBridge.lean",
+      "original_sha256": "e40186d5639d1c4423b520b32f5bd2f5477f1ff18fbf072ca7ac5f991b8ca0c2",
+      "moved_sha256": "360263b2f6c46699c9eef9056a46564a1ddf89d510165e2bab082f160fa663fd"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/Resolution.lean",
+      "to": "Research/ProximityPrize/Resolution.lean",
+      "original_sha256": "0920c8f884f0b0fec04adf3692a78bebbf908b376585c460234b9fa97f6d1f95",
+      "moved_sha256": "ad1eaba31878303a4a58d97274d78e61055561b56f30609a040d4accb31ac47d"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/ResolutionWitness.lean",
+      "to": "Research/ProximityPrize/ResolutionWitness.lean",
+      "original_sha256": "1fcfc3b0c490760661cea78edb967c391cf46edc18433d94076bae60684ceb84",
+      "moved_sha256": "ea89db4b97b3c1a6a8a00585395fe03f10528d38a9dbfa3b3217c8a6a742c260"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/SolutionDisproof.lean",
+      "to": "Research/ProximityPrize/SolutionDisproof.lean",
+      "original_sha256": "512b624fc163fabe503a715192d40012f17867372b87e11557979d98f68fb345",
+      "moved_sha256": "a3791f851c75dfb501a86be6d764ddc1d5fb0875ec4cb137f64b11bce861e80c"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/SubsetSumErdosHeilbronn.lean",
+      "to": "Research/ProximityPrize/SubsetSumErdosHeilbronn.lean",
+      "original_sha256": "15654e9666241fb048a0483a91be137deaaadaedb0632ee19b358f663862d6e1",
+      "moved_sha256": "55634835aef9706c6efa4d885081dc159f5fcd1de5911b3d9984ffeeb2f2930d"
+    },
+    {
+      "from": "ArkLib/Data/CodingTheory/ProximityGap/SubsetSumRadiusOne.lean",
+      "to": "Research/ProximityPrize/SubsetSumRadiusOne.lean",
+      "original_sha256": "707337ba597ebdfab2f49e9de3bb174774471dad97089e2397484fb9ce50dce9",
+      "moved_sha256": "797378a979fb4475bd2b78edc2144e18cf14fbe4d05fcf47f87362703a10803c"
+    },
+    {
+      "from": "ArkLib/ProofSystem/Stir/WindowCAFeed.lean",
+      "to": "Research/ProximityPrize/Protocols/Stir/WindowCAFeed.lean",
+      "original_sha256": "f586db0cb7cde4566a8f540d2fb3fc31ea6a19a53b8a99bffeb5b02a25a7b23f",
+      "moved_sha256": "00df2786834856f0391195c6b12ee548877804a8198ef8c6320a1dd903a3b733"
+    },
+    {
+      "from": "ArkLib/ProofSystem/Whir/FoldingGenMutualCorrParamsUDR.lean",
+      "to": "Research/ProximityPrize/Protocols/Whir/FoldingGenMutualCorrParamsUDR.lean",
+      "original_sha256": "680005ce777183cefe04182ee9ed3954c1e3e4b685723eeafaa494cacbd02236",
+      "moved_sha256": "da14969673d61b3804ae3cf5ac934b922f9ccfc4830a8545e7decb3c6dbccb71"
+    },
+    {
+      "from": "ArkLib/ProofSystem/Whir/GenMutualCorrParamsUDR.lean",
+      "to": "Research/ProximityPrize/Protocols/Whir/GenMutualCorrParamsUDR.lean",
+      "original_sha256": "aa9b63168c04682f05cf6f6833ee2228e142418dab9dbfea5eb7fb3421ca7667",
+      "moved_sha256": "aabdd16c92c218d11e05ac1ad8aa75beaf970881ce93806d001b39558712e881"
+    },
+    {
+      "from": "ArkLib/ProofSystem/Whir/Hab25WhirBridge.lean",
+      "to": "Research/ProximityPrize/Protocols/Whir/Hab25WhirBridge.lean",
+      "original_sha256": "b2ee3e5bbc532019f8d2cadce5f0987bc36779de481d65db22ab1705f67dd441",
+      "moved_sha256": "5a406a20c40c63c6f78095127cb50cafb8d0c14d4ef23e97096c0eb1ea6decb4"
+    },
+    {
+      "from": "ArkLib/ProofSystem/Whir/Hab25WindowMCA.lean",
+      "to": "Research/ProximityPrize/Protocols/Whir/Hab25WindowMCA.lean",
+      "original_sha256": "8875cfcfab70c3437cd946b7043c22a9f85451b208745827e1d863ccfd069afc",
+      "moved_sha256": "daba4f7769ef54fa42d9dbe1982cd5df0033f8be2b8ee54321f54694310814c3"
+    },
+    {
+      "from": "ArkLib/ProofSystem/Whir/MCAConjectureEllaryReduction.lean",
+      "to": "Research/ProximityPrize/Protocols/Whir/MCAConjectureEllaryReduction.lean",
+      "original_sha256": "9acbe5477ad7d16186aa42ef7abcccfb3439c7aa8cf4678d97febae20825f396",
+      "moved_sha256": "d8be29a268112c2ad567bd424960be3458f043c0756085cdb3f52cfefd46adc9"
+    },
+    {
+      "from": "ArkLib/ProofSystem/Whir/MCAConjecturePairReduction.lean",
+      "to": "Research/ProximityPrize/Protocols/Whir/MCAConjecturePairReduction.lean",
+      "original_sha256": "9b2a0e8f34db29d6ab90e64efe68b6775687d2cfbae11d7a76a7d9d0314d77db",
+      "moved_sha256": "8476009e34a62d3e94ef284ae5f97b29ac7144afa4b2c4fdcf6536888db36454"
+    },
+    {
+      "from": "ArkLib/ProofSystem/Whir/MCAJohnsonBound.lean",
+      "to": "Research/ProximityPrize/Protocols/Whir/MCAJohnsonBound.lean",
+      "original_sha256": "a74934670574ec8a0f80bd769d7960c0545c3f34e745e7cae0cbadf028a716c0",
+      "moved_sha256": "554204fbfb2c8e8750cef423d3bd1ba130390c231e2c7dbb51e8c925f01e056b"
+    },
+    {
+      "from": "ArkLib/ProofSystem/Whir/MCAJohnsonReduction.lean",
+      "to": "Research/ProximityPrize/Protocols/Whir/MCAJohnsonReduction.lean",
+      "original_sha256": "d41956c84f4dd28e643da78e68fba94d35caf8de9b858a8b1fe7540553c46d68",
+      "moved_sha256": "24452e8b1d7387b16081d2fb3d6f1e455cf19a7c4d45e1279c5cdfe4fd2fb66f"
+    },
+    {
+      "from": "ArkLib/ProofSystem/Whir/MCAPairUDRUnconditional.lean",
+      "to": "Research/ProximityPrize/Protocols/Whir/MCAPairUDRUnconditional.lean",
+      "original_sha256": "c1784308f3b4865c23e680fdde0583ea70d16245a8a36dccb6ab9764760a9fc4",
+      "moved_sha256": "6f1541673273b2f7491300aeabe8b8453a3b04d9213e4cab86b3651acb9d278f"
+    },
+    {
+      "from": "ArkLib/ProofSystem/Whir/MCARscCurveUDR.lean",
+      "to": "Research/ProximityPrize/Protocols/Whir/MCARscCurveUDR.lean",
+      "original_sha256": "55bfe75695c06c7932fc0ec321418d2986d4aa7e6b8d785e2a6b85e4963abc2b",
+      "moved_sha256": "731a9e591f49551d994354f338756985c740772ae0345104bf83801cb9f44ad3"
+    },
+    {
+      "from": "ArkLib/ProofSystem/Whir/MCARscPairUDR.lean",
+      "to": "Research/ProximityPrize/Protocols/Whir/MCARscPairUDR.lean",
+      "original_sha256": "2ea3613f591deaa1da56a902a026aba52ac533f6a59dad81cf79edeebedfe1de",
+      "moved_sha256": "37f5be279d82bfb5479fcc1b9d2a97249eec7c2b51635da67955aee825318ff4"
+    },
+    {
+      "from": "ArkLib/ToMathlib/AxiomSweep.lean",
+      "to": "Research/ProximityPrize/Support/AxiomSweep.lean",
+      "original_sha256": "0a3cfec172432cce0a014fad33f648251c584d27344ffa9c64388a3c7fadc6e3",
+      "moved_sha256": "616d33ed5da4f3dcd2a1c5018c15fde6a64edcb4985773bc850a98493ceb6b45"
+    },
+    {
+      "from": "ArkLib/ToMathlib/BCGM25MCAPreservation.lean",
+      "to": "Research/ProximityPrize/Support/BCGM25MCAPreservation.lean",
+      "original_sha256": "fa87c6f29c2b6385f69a8cd561ec36dd01459260c06a92bafdab4bdb4d2986ec",
+      "moved_sha256": "bb2bfecd51e683a216a978cecb37e1a619f1faa5fc2edef7d8ed03219eb2494e"
+    },
+    {
+      "from": "ArkLib/ToMathlib/EliasVolumeCertificates.lean",
+      "to": "Research/ProximityPrize/Support/EliasVolumeCertificates.lean",
+      "original_sha256": "8ae1b35f3bc4924632fdbe12a2fc55fa3182dd680a02f3b477d6730232e89ff9",
+      "moved_sha256": "5602acbe89dc7a10b04b2abd1be7f983f89798ff47df017819035abe879f7d36"
+    },
+    {
+      "from": "ArkLib/ToMathlib/GG25RandomRSMCAProof.lean",
+      "to": "Research/ProximityPrize/Support/GG25RandomRSMCAProof.lean",
+      "original_sha256": "884ab330e1b1000f38d2199615c26c99332352f8cf80286489d913a4c3db560a",
+      "moved_sha256": "491478d1a5b0e65b33e478b894541a9f2d44ae225837cd0db588790f432ebde1"
+    },
+    {
+      "from": "ArkLib/ToMathlib/KK25NearCapacityProof.lean",
+      "to": "Research/ProximityPrize/Support/KK25NearCapacityProof.lean",
+      "original_sha256": "68cda3c7b7c30b050ece17846677234666a553297cc225a46df32d9543326036",
+      "moved_sha256": "8b61bf2d3c14ea828fee9f559b1f342c2758d200a1f221dce1f49c99c38ea463"
+    },
+    {
+      "from": "ArkLib/ToMathlib/RateEliasCapacity.lean",
+      "to": "Research/ProximityPrize/Support/RateEliasCapacity.lean",
+      "original_sha256": "df3e6f4d817b1a05afc7995ae4e8a9ce40657f4ba798572653fea1691c6a42f5",
+      "moved_sha256": "8ec99f5daa61593a4fdd178f496c43a1595bde173cc6dc6aa325739ffbd84991"
+    },
+    {
+      "from": "ArkLib/ToMathlib/UnifiedProducerWindowGlue.lean",
+      "to": "Research/ProximityPrize/Support/UnifiedProducerWindowGlue.lean",
+      "original_sha256": "c3f058fa62189566183e7e067c6b2202a5e0816a419d37dae791b2711825bdf9",
+      "moved_sha256": "3451825ab32eac63ee0983643b86ef19e420a29c3ab4e7446ab7c84d8761bd49"
+    }
+  ],
+  "additional_split_module": "Research/ProximityPrize/Connections/RestrictedSumsetMCA.lean",
+  "preservation_check": "Each moved source equals its original after recorded module/path substitutions; MCAPlateauWindow also imports the extracted corollaries.",
+  "arklib_imports": 1711,
+  "research_imports": 3295,
+  "full_lean_validation_complete": false
+}

@@ -10,7 +10,7 @@ Authors: ArkLib Contributors
 This module is a repository-level audit index for coding-theory obligations whose remaining
 content is a cited paper theorem, a substantial missing formalization stack, or a deliberately
 named residual interface.  It complements the proximity-prize-specific index in
-`ArkLib.Data.CodingTheory.ProximityGap.ExternalDebt`.
+`Research.ProximityPrize.ExternalDebt`.
 
 The goal is triage clarity: future issues should distinguish small Lean proof gaps from external
 formalization work.  A closeable in-tree task should either prove one of the named residuals from
@@ -60,7 +60,7 @@ still the named external frontier.
 ## ProximityGap and bridge modules
 
 The proximity-prize residuals are indexed separately in
-`ArkLib.Data.CodingTheory.ProximityGap.ExternalDebt`.  In particular, the ABF26 section-5
+`Research.ProximityPrize.ExternalDebt`.  In particular, the ABF26 section-5
 list-decoding / correlated-agreement bridge should stay split into named residuals such as
 `hPerStack`, `hBadLine`, `hMain`, and `hLoss` rather than being treated as anonymous admits.
 

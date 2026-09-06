@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Research.ProximityPrize.Frontier._SupportDividedDifferenceOperator
 import Research.ProximityPrize.Frontier._SupportDividedDifferenceUnrestrictedKernelRefuted
 import Research.ProximityPrize.Frontier._P1RateQuarterSmallSubsetRankLocalization
-import ArkLib.Data.CodingTheory.ProximityGap.MCAEndpointUpper
+import Research.ProximityPrize.MCAEndpointUpper
 
 /-!
 # P1 received-word witnesses to the divided-difference rank operator

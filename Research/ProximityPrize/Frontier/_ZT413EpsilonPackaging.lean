@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import Research.ProximityPrize.Frontier._ZJLR26CapacityPinAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.MCABadCount
-import ArkLib.Data.CodingTheory.ProximityGap.CapacityBoundsProofs
+import Research.ProximityPrize.CapacityBoundsProofs
 
 /-!
 # ZT413: the T4.13 ε-packaging weld — `ε_mca ≤ m·n/q` from a degree-1 curve cover (#334/#466)

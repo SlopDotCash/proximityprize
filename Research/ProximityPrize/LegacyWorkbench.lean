@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.GrandChallenges
+import Research.ProximityPrize.GrandChallenges
 import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26CeilingMarch
 import ArkLib.Data.CodingTheory.ProximityGap.GranularityLadderRS

@@ -22,7 +22,7 @@ of an `(m+n) × (m+n)` matrix of such entries — has `X`-degree `≤ (m+n)·B`:
   i.e. the classical `deg_X disc_Y(f) ≤ (2·deg_Y f − 1)·deg_X f`.
 
 This is the degree half of **Step S5** of the Haböck §3 endgame
-(`ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean`): the `X`-degree of the
+(`Research/ProximityPrize/Hab25Johnson.lean`): the `X`-degree of the
 `Y`-discriminant of the Guruswami–Sudan interpolant over `K = F(Z)` is polynomially bounded
 (paper: `deg_X disc_Y(Q) < ℓ²·ρn`), which feeds the common-nonvanishing-point argument in
 `ArkLib/Data/CodingTheory/GuruswamiSudan/GSDiscriminantOverRatFunc.lean`.

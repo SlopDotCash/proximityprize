@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Research.ProximityPrize.Frontier._SeventeenThirtyTwoFullWiring
 import Research.ProximityPrize.Frontier._GenericQuotientInterpolationSpread
 import Research.ProximityPrize.Frontier._PrizeShapePrimeP30Second
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26RegimeSplit
+import Research.ProximityPrize.KKH26RegimeSplit
 import ArkLib.Data.CodingTheory.ProximityGap.MCALowerBound
 import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
 

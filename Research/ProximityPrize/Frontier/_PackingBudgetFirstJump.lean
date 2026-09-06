@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.PackingEnvelope
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26RegimeSplit
-import ArkLib.Data.CodingTheory.ProximityGap.MCAUDR2Bound
+import Research.ProximityPrize.KKH26RegimeSplit
+import Research.ProximityPrize.MCAUDR2Bound
 import ArkLib.Data.CodingTheory.ProximityGap.MCAListBracketInterpolation
-import ArkLib.Data.CodingTheory.ProximityGap.MCALatticeExact
+import Research.ProximityPrize.MCALatticeExact
 
 /-!
 # The first overlap-packing jump at a field-normalized budget
