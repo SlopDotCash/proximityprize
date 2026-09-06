@@ -232,8 +232,10 @@ python3 -m pip install leanblueprint
   successive attempts ratchet forward; `docs.yml` uses the same scheme.
   The full validation build uses one Lean worker to limit peak memory:
   two-worker attempts repeatedly terminated in the heavy Frontier region
-  before saving their caches. Validation has a 240-minute budget within a
-  330-minute job, leaving room to save artifacts. The former 20-minute limit
+  before saving their caches. Validation has a 270-minute budget within a
+  330-minute job, leaving room to save artifacts. A cold full-library build
+  can take nearly four hours before the additional flagship targets compile;
+  the validation budget covers both stages. The former 20-minute limit
   repeatedly interrupted healthy builds. Website compilation and documentation
   each have 150 minutes within a 330-minute job. Compilation uses one worker;
   documentation generation uses two after the compiled library is available.
