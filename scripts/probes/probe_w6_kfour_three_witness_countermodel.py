@@ -147,7 +147,10 @@ def step1_random_search(pop_target=13, tries=200000, seed=0):
             if nbal == 0:
                 print(f"  attempt {attempt}: ZERO balanced triples found")
                 return sigs
-    print(f"  best over random tries: balanced={best[0]} maxw={best[1]}")
+    if best is None:
+        print(f"  no pair-law-admissible family found in {tries} random trials; unresolved")
+    else:
+        print(f"  best over random tries: balanced={best[0]} maxw={best[1]}")
     return None
 
 

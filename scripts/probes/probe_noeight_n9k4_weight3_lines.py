@@ -200,11 +200,11 @@ def source_root_coupling_audit(witnesses, domain):
     requires the resulting decoded polynomial to equal a nonzero scalar times
     one of the 35 cubic locators supported on the seven source points.
 
-    Enumerating the 560 possibilities at gamma=0 and gamma=1 is exhaustive for
+    Enumerating the 560 possibilities at two distinct witnessed scalars is exhaustive for
     a simultaneous lift of all thirteen certified points.
     """
     full_domain = [pow(3, i, P) for i in range(P - 1)]
-    source = full_domain[N:]
+    source = [x for x in full_domain if x not in set(domain)]
     assert set(domain).isdisjoint(source) and len(source) == 7
 
     weights = []
@@ -221,9 +221,10 @@ def source_root_coupling_audit(witnesses, domain):
         for index, coefficient in zip(witness["support"], witness["coefficients"]):
             error[index] = coefficient * inverse(weights[index]) % P
         errors[witness["gamma"]] = error
-    assert 0 in errors and 1 in errors
-    row0 = errors[0]
-    row1 = (errors[1] - errors[0]) % P
+    assert len(errors) >= 2
+    anchor0, anchor1 = sorted(errors)[:2]
+    row1 = (errors[anchor1] - errors[anchor0]) * inverse(anchor1 - anchor0) % P
+    row0 = (errors[anchor0] - anchor0 * row1) % P
 
     decoded = {}
     for gamma, error in errors.items():
@@ -250,12 +251,12 @@ def source_root_coupling_audit(witnesses, domain):
         assert len(set(map(int, encoded))) == len(vectors)
         allowed[gamma] = encoded
 
-    shifts0 = np.asarray([decode(int(value))[:K] for value in allowed[0]], dtype=np.int64)
-    shifts1 = np.asarray([decode(int(value))[:K] for value in allowed[1]], dtype=np.int64)
+    shifts0 = np.asarray([decode(int(value))[:K] for value in allowed[anchor0]], dtype=np.int64)
+    shifts1 = np.asarray([decode(int(value))[:K] for value in allowed[anchor1]], dtype=np.int64)
     flat0 = np.repeat(shifts0, len(shifts1), axis=0)
     flat1 = np.tile(shifts1, (len(shifts0), 1))
-    f1 = (flat1 - flat0) % P
-    f0 = flat0
+    f1 = (flat1 - flat0) * inverse(anchor1 - anchor0) % P
+    f0 = (flat0 - anchor0 * f1) % P
     scores = np.zeros(len(f0), dtype=np.int16)
     for gamma in sorted(decoded):
         shifts = (f0 + gamma * f1) % P
@@ -275,7 +276,8 @@ def source_root_coupling_audit(witnesses, domain):
         "dual_weights": tuple(weights),
         "decoded_polynomials": decoded,
         "candidate_lifts_checked": len(scores),
-        "best_count_including_gamma_0_1": best_score,
+        "anchor_gammas": (anchor0, anchor1),
+        "best_count_including_anchors": best_score,
         "best_f0": best_f0,
         "best_f1": best_f1,
         "best_root_scalar_matches": matches,
@@ -324,6 +326,12 @@ def certificate(base, direction, columns, supports, low, high):
 
 
 def run(samples, batch_size, seed, domain_indices):
+    if samples <= 0 or batch_size <= 0:
+        raise ValueError("samples and batch_size must be positive")
+    if len(domain_indices) != N or len(set(domain_indices)) != N or any(
+        i < 0 or i >= P - 1 for i in domain_indices
+    ):
+        raise ValueError("domain_indices must be nine distinct exponents in 0..15")
     domain, columns, supports, low, high = setup(domain_indices)
     rng = np.random.default_rng(seed)
     best_score = -1

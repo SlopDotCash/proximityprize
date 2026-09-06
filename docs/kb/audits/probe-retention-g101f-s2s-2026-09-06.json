@@ -1,0 +1,24 @@
+{
+  "exit_code": 0,
+  "command": "python3 -u scripts/probes/probe_g101f_monomial_baseline.py --stage s2s",
+  "output": "[SELF-TEST] engine vs brute, n=8 k=2 q=4129: 20 random + 4 chains\n[SELF-TEST] PASS (counts and bad-lists)\n==============================================================================\n[STAGE 2s] spread re-search at n=32 k=4 a=11 (target >= 25)\n  x^8+x^10 (agreemax 10): 22\n  x^8+x^26 (agreemax 10): 22\n  x^9+x^11 (agreemax 10): 22\n  x^10+x^24 (agreemax 10): 22\n  [spread re-search] best = 22 at (8, 10) (3*8 = 24 is the new bar; floor = 22)\n\n[G101F total 547s]\n",
+  "archive_match": "exact after newline and elapsed-time normalization",
+  "field_prime": 1048609,
+  "prime_verified_by_trial_division": true,
+  "sources": [
+    {
+      "path": "scripts/probes/probe_g101f_monomial_baseline.py",
+      "sha256": "c76dbab032c1ae78dd25942fb3507637199d6f58a7a0c7031e18e4d46ed17fef"
+    },
+    {
+      "path": "scripts/probes/probe_g92_spread_excess_c3.py",
+      "sha256": "b2d315e159938922964ed3f6edcf4b0cac44adfcdd583f164fc08045827e146e"
+    },
+    {
+      "path": "scripts/probes/_out_g101f_s2s.txt",
+      "sha256": "7500406e3472d2a87c0b46af6312958b5a9de68a98d773fa0d074ac85680b8cf"
+    }
+  ],
+  "completed_original_unreferenced": 70,
+  "remaining_original_unreferenced": 22
+}

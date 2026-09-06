@@ -100,6 +100,13 @@ def optimize(record):
         constraints.append(sum(core_terms[i]) >= z)
 
     optimum, solution = lpmax(z, constraints)
+    variables = set().union(*(c.free_symbols for c in constraints), z.free_symbols)
+    assignment = {v: solution.get(v, 0) for v in variables}
+    for index, constraint in enumerate(constraints):
+        if not bool(constraint.subs(assignment)):
+            raise RuntimeError(f"LP solution violates constraint {index}: {constraint}")
+    if z.subs(assignment) != optimum:
+        raise RuntimeError("LP objective does not match the returned assignment")
     return optimum, solution, {
         "holes": sum(solution.get(v, 0) for v in holes),
         "common_factor_roots": sum(solution.get(v, 0) for v in common),

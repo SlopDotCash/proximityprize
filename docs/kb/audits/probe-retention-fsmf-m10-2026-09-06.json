@@ -1,0 +1,25 @@
+{
+  "command": "python3 -u scripts/probes/probe_fsmf_predecessor_m10_threeline.py --full",
+  "exit_code": 0,
+  "output": "[m10] cubic potentials: q12 roots (1, 16, 625), q23 roots (40, 601, 640), beta=323, q13 roots (318, 385, 487)\n[m10] witness-level badCount = 155 (lower bound only; budget n = 160)\n[m10:three one-fresh pencils FULL] badCount = 155  (budget n = 160; holds = True)\n[m10] FULL census: badCount = 155, non-witness extras = []\n{\n  \"m\": 10,\n  \"n\": 160,\n  \"k\": 40,\n  \"z\": 87,\n  \"t\": 89,\n  \"field\": 641,\n  \"three_one_fresh_pencils_badCount\": 155,\n  \"checked_bad_scalar_lower_bound\": 155,\n  \"complete_census\": true,\n  \"budget_n\": 160,\n  \"holds\": true\n}\n",
+  "checked_scalars": 641,
+  "interpolation_monomials": 500,
+  "interpolation_constraints": 480,
+  "weighted_degree": 177,
+  "sources": [
+    {
+      "path": "scripts/probes/probe_fsmf_predecessor_m10_threeline.py",
+      "sha256": "09cd0fae4b1e9ec7d0231fc9ca3c4ed29a640243c7d253b2349a12fe463f56fa"
+    },
+    {
+      "path": "scripts/probes/probe_fsmf_predecessor_miniature_census.py",
+      "sha256": "bf4c9aae663fdc0c0fa1a182d4d3e8eaa6662ab7a94443b2a0115b4da1f2301e"
+    },
+    {
+      "path": "scripts/probes/_out_fsmf_m10_threeline.txt",
+      "sha256": "188a9e46aa787a6e9b14149d87f75f4e9c5be3605ff166ad289a43b0884f319e"
+    }
+  ],
+  "completed_original_unreferenced": 68,
+  "remaining_original_unreferenced": 24
+}

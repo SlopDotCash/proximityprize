@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Multi-core ladder optimization for the exact-rate-half prize bracket (thread rh:multicore-optimize).
+"""Multicore ladder arithmetic and finite modular construction checks at rate one-half.
 
-After the three-core radix counterexample killed the 31/64 pin, this probe derives and
-certifies the OPTIMIZED c-core construction at general agreement threshold.
+This probe optimizes the stated integer feasibility model, searches for base
+construction data, and checks a small lifted example. Large-modulus lift checks
+sample identities; they are not exhaustive lifted-domain or Lean validation.
 
 Arithmetic frame (quotient size s, fibers of size m, n = s*m, base code RS_{s/2} on mu_s):
   * c cores, each a fiber subset of size a = s/2 + g  (g >= 1 excess),
@@ -98,6 +99,16 @@ def kernel_basis(rows, p, width):
 # ---------------------------------------------------------------- part 1: ladder scan
 def feasible(s, c, g, budget_mult):
     return g >= 1 and c * g + 2 <= s // 2 and c * (s // 2 - g) >= budget_mult * s + 1
+
+
+
+def largest_feasible_g(s, c, budget_mult):
+    """Largest positive g satisfying the two integer upper bounds, or None."""
+    if c <= 0:
+        raise ValueError("core count must be positive")
+    bound = min((s // 2 - 2) // c,
+                (c * (s // 2) - budget_mult * s - 1) // c)
+    return bound if bound >= 1 else None
 
 
 def part1():
@@ -438,11 +449,7 @@ def part4():
     for t in range(3, 30):
         s = 2 ** t
         m = N // s
-        best = None
-        for g in range(s // 2 - 2, 0, -1):
-            if feasible(s, 3, g, 1):
-                best = g
-                break
+        best = largest_feasible_g(s, 3, 1)
         if best is None:
             continue
         e = (s // 2 - best) * m - 1
@@ -469,7 +476,7 @@ def part4():
                     assert 3 * h >= s + 2, (s, c, g)
     print("  general floor 3h >= s+2 verified for all feasible (s<=1024, c<40): PASS")
     print("  => the c-core mechanism cannot certify any bad radius below "
-          f"{357913941}/2^30 ~ 0.33333333240; candidate interior pin ~ 1/3.")
+          f"{e_m1}/2^30 ~ {e_m1/N:.11f}; candidate interior pin ~ 1/3.")
     print()
 
 
