@@ -137,6 +137,10 @@ jobs:
           use-github-cache: false
           use-mathlib-cache: false
 
+      - name: Repair broken restored package checkouts
+        if: steps.validation-scope.outputs.lean-relevant == 'true'
+        run: python3 scripts/repair-lake-cache.py
+
       - name: Fetch dependency cache
         if: steps.validation-scope.outputs.lean-relevant == 'true'
         run: ./scripts/lake-locked.sh exe cache get

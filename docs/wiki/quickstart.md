@@ -226,6 +226,10 @@ python3 -m pip install leanblueprint
   `main`. Additional clean and warm benchmarks require a manual dispatch with
   the `benchmark` input enabled. It then
   uploads timing artifacts and posts a comparison report on same-repo PRs.
+  Before fetching dependency artifacts, CI runs `scripts/repair-lake-cache.py`
+  to quarantine cached Git packages whose own checkout or HEAD cannot be resolved.
+  Lake then re-fetches those packages from the existing manifest; valid packages
+  and their compiled artifacts are preserved.
   The `.lake` cache is saved under a key unique to each run attempt (with
   newest-prefix restore), so when a hosted runner dies mid-build,
   `gh run rerun <id> --failed` resumes from the latest partial snapshot and
