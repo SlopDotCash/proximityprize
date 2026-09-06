@@ -447,4 +447,3 @@ theorem OracleVerifier.castInOut_appendCoherent
   simp only [heq_iff_eq] at h_Oₛᵢ h_Oₛₒ
   subst Oₛᵢ₂ Oₛₒ₂
   simpa only [castInOut_id] using (inferInstance : Append.AppendCoherent V)
-
