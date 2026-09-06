@@ -198,11 +198,14 @@ theorem relationCount_zero_of_head_certificate (g : F) (n m r : ℕ) (hm : 0 < m
   · rw [hzc]
     exact hwker
 
-/-- The r394 instance, re-certified through the orbit-compressed route. -/
+/-- The R394 instance transported through the orbit-compressed route.
+The head-slice premise follows from the checked full-box certificate, avoiding a second enumeration. -/
 theorem n8_r3_p1409_head_certificate :
     RealizedRelationCountBound (72 : ZMod 1409) 8 4 3 0 :=
   relationCount_zero_of_head_certificate (72 : ZMod 1409) 8 4 3 (by norm_num)
-    (by decide) (by decide) (by decide)
+    (by decide) (by decide) (by
+      intro c hl1 hhead heval
+      exact hhead (R394L1KernelCertificate.n8_r3_p1409_shortKernelFree c hl1 heval ⟨0, by decide⟩))
 
 end ArkLib.ProximityGap.Frontier.R395OrbitCompressedCertificate
 

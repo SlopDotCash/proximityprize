@@ -207,7 +207,35 @@ instance primeFact_R394L1KernelCertificate_1 : Fact (Nat.Prime 1409) := ⟨by no
 theorem n8_p1409_g72_pow : (72 : ZMod 1409) ^ 4 = -1 := by decide
 
 theorem n8_r3_p1409_shortKernelFree :
-    ShortKernelFreeL1 (72 : ZMod 1409) 4 6 := by decide
+    ShortKernelFreeL1 (72 : ZMod 1409) 4 6 := by
+  intro c hl1 heval j
+  have hidx : (Fin.succ (2 : Fin 3)) = (3 : Fin 4) := by decide
+  have hv : (((((c 0 : ℕ) : ℤ) - 6) + 72 * (((c 1 : ℕ) : ℤ) - 6) +
+      5184 * (((c 2 : ℕ) : ℤ) - 6) + 373248 * (((c 3 : ℕ) : ℤ) - 6) : ℤ) : ZMod 1409) = 0 := by
+    push_cast
+    norm_num [evalVec, Fin.sum_univ_succ, zsmul_eq_mul] at heval ⊢
+    rw [hidx] at heval
+    linear_combination heval
+  have hd := (ZMod.intCast_zmod_eq_zero_iff_dvd _ 1409).mp hv
+  have hm := Int.emod_eq_zero_of_dvd hd
+  norm_num [Fin.sum_univ_succ] at hl1
+  rw [hidx] at hl1
+  change |((c 0 : ℕ) : ℤ) - 6| + (|((c 1 : ℕ) : ℤ) - 6| +
+    (|((c 2 : ℕ) : ℤ) - 6| + |((c 3 : ℕ) : ℤ) - 6|)) ≤ 6 at hl1
+  -- Enumerate bounded integer coefficients after transporting the field equation.
+  -- This avoids repeating ZMod evaluation throughout the finite certificate.
+  have cert : ∀ a b c d : Fin 13,
+      |(a : ℤ) - 6| + (|(b : ℤ) - 6| + (|(c : ℤ) - 6| + |(d : ℤ) - 6|)) ≤ 6 →
+      ((a : ℤ) - 6 + 72 * ((b : ℤ) - 6) + 5184 * ((c : ℤ) - 6) +
+        373248 * ((d : ℤ) - 6)) % 1409 = 0 →
+      (a : ℤ) = 6 ∧ (b : ℤ) = 6 ∧ (c : ℤ) = 6 ∧ (d : ℤ) = 6 := by decide +kernel
+  have hc := cert (c 0) (c 1) (c 2) (c 3) hl1 hm
+  fin_cases j
+  · exact hc.1
+  · exact hc.2.1
+  · exact hc.2.2.1
+  · exact hc.2.2.2
+
 
 /-- **The first concrete machine-checked `K = 0` certificate**: at `p = 1409`, `n = 8`,
 depth `r = 3`, there are NO realized vanishing relations — by kernel decision procedure,
