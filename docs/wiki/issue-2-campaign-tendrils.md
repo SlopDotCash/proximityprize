@@ -31,8 +31,10 @@ has been regenerated for the moved paths, and the final generated-record check
 passes. The full strict-token scan passes with the nine documented residual
 axioms. The complete WHIR ProtocolSoundness module passes with the direct library
 import; its ten printed theorem audits use only standard Lean axioms. See the
-[WHIR audit](../kb/audits/whir-library-boundary-2026-09-06.json). Full Lean validation,
-the restricted-sumset split check, and hosted acceptance remain pending.
+[WHIR audit](../kb/audits/whir-library-boundary-2026-09-06.json). The restricted-sumset split and its eight-module dependency chain also pass;
+the general theorem and three moved corollaries use only standard Lean axioms
+([audit](../kb/audits/restricted-sumset-boundary-2026-09-06.json)). Full-library Lean
+validation and hosted acceptance remain pending.
 
 The hypotheses and obstruction surfaces move with the code; none are discharged
 by relocation. This work does not close issue #2 or the proof gate in #164.
