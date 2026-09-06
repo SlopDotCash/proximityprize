@@ -14,6 +14,7 @@ ArkLib/
   ToMathlib/          local additions not upstreamed to Mathlib
   ToCompPoly/         local additions not upstreamed to CompPoly
   ToVCVio/            local additions not upstreamed to VCV-io
+Research/ProximityPrize/  campaign Lean modules, workbench, dossier, and research records
 blueprint/src/        blueprint sources and references.bib
 docs/kb/             persistent paper, concept, audit, and query knowledge base
 scripts/              repo utilities
@@ -42,6 +43,16 @@ home_page/            site assets and assembled website root
   `ArkLib/ToCompPoly/`, or `ArkLib/ToVCVio/`, depending on the upstream project.
 - Updating theory docs, references, or long-form exposition: start in `blueprint/src/`.
 - Updating repository-local paper summaries, audits, or reference context: start in `docs/kb/`.
+
+## Build Surfaces
+
+`lakefile.toml` names both `ArkLib` and `ResearchProximityPrize` as default targets.
+The latter uses `Research.ProximityPrize` as its root, which imports the workbench
+and its generated `Research.ProximityPrize.All` index. `ArkLib.lean` is generated
+separately. The import boundary permits Research to use ArkLib and rejects imports
+in the reverse direction; `scripts/check-imports.sh` checks this boundary and both
+indexes. Remaining campaign modules in ArkLib still require classification.
+Use `scripts/lake-locked.sh` for builds as described in [quickstart](quickstart.md).
 
 ## Navigation Notes
 
