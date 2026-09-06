@@ -58,9 +58,16 @@ LARGE_Q_FACTOR_POCKLINGTON_WITNESSES = {
 
 
 def is_prime_u64(n: int) -> bool:
-    """Deterministic Miller-Rabin for n < 2^64."""
+    """Deterministic Miller-Rabin for n < 2^64.
+
+    The first twelve prime bases suffice below this limit: Sorenson--Webster,
+    Theorem 1.1, https://arxiv.org/abs/1509.00864, gives the first composite
+    passing all twelve as 318665857834031151167461 > 2^64.
+    """
     if n < 2:
         return False
+    if n >= 1 << 64:
+        raise ValueError("is_prime_u64 requires n < 2^64")
     small_primes = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
     for p in small_primes:
         if n == p:
@@ -74,7 +81,7 @@ def is_prime_u64(n: int) -> bool:
         s += 1
         d //= 2
 
-    for a in (2, 3, 5, 7, 11, 13, 17):
+    for a in small_primes:
         x = pow(a, d, n)
         if x in (1, n - 1):
             continue
