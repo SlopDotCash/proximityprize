@@ -35,17 +35,13 @@ facts the no-go needs, numerically and exactly:
        can produce on Cay(F_p, mu_n) is an identity WITHIN the moment ladder {P_j}
        (the E_r wall vocabulary): it constrains nothing the power sums do not already
        determine, and carries ZERO p-arithmetic beyond them.
-  (F3) [bounded-depth moment data cannot pin M]  The known countermodel pair
-       n=16, p=65617 vs p=65633 (DISPROOF_LOG `466-r1-hankel-bounded-window-refuted`):
-       low-depth normalized moments nearly identical while M differs by ~4-5%.  So a
-       trace-formula identity at bounded depth (any fixed collection of wave-kernel/NB
-       trace identities) CANNOT distinguish instances whose M differ -- the L-infinity
-       target needs depth r ~ log p, which IS the wall (tool-shape principle).
+  (F3) [finite numerical comparison] Compare eight normalized moments for
+       n=16 at p=65617 and p=65633 with the non-principal spectral maximum.
+       A tolerance-based comparison does not establish equal moments, failure
+       to distinguish the instances, or a lower bound on the required depth.
 
-DECISION RULE (pre-registered): if F1+F2+F3 all hold, verdict = DEAD (the paper's trace
-identities are an exact, instance-blind repackaging of the same moment ladder the wall is
-made of; no independent lever).  If any wave-kernel trace on the testbed carries information
-beyond {P_j} (F1/F2 failure) or bounded-depth moments separate the F3 pair, verdict = LIVE.
+The combined return value records the implemented numerical checks only. It
+is not a proof that the cited paper cannot contribute an independent estimate.
 
 REGIME NOTE: F1/F2 verify DETERMINISTIC ALGEBRAIC IDENTITIES -- regime discipline is
 irrelevant there (small p exact cases, matching `probe_466_nonbacktracking.py` part A).
@@ -326,7 +322,7 @@ def part_F1_F2():
 def part_F3():
     log()
     log("=" * 78)
-    log("F3: bounded-depth moment blindness at regime scale (n=16, beta~4)")
+    log("F3: finite normalized-moment comparison at regime scale (n=16, beta~4)")
     log("    pair from 466-r1-hankel-bounded-window-refuted: p=65617 vs p=65633")
     log("=" * 78)
     n = 16
@@ -357,9 +353,10 @@ def part_F3():
             max_lowdepth_diff = max(max_lowdepth_diff, rd)
         log(f"   {j} | {a:12.6f}  {b:12.6f}  {rd:.2e}")
     blind = max_lowdepth_diff < 0.05 and dM > 0.02
+    log("  Exact first normalized moment is -sqrt(n)/p = -4/p: these primes are distinguishable.")
     log(f"  low-depth (j<=6) max rel moment diff {max_lowdepth_diff:.2e} "
         f"vs M diff {dM:.2e} -> bounded-depth trace identities "
-        f"{'CANNOT separate the pair (blind)' if blind else 'CAN separate (unexpected!)'}")
+        f"{'meet the chosen proximity thresholds' if blind else 'do not meet the chosen proximity thresholds'}")
     return blind, dM, max_lowdepth_diff
 
 
@@ -374,19 +371,13 @@ def main():
     log("VERDICT")
     log("=" * 78)
     if ok_dict and ok_blindcoef and blind:
-        log("DEAD (repackaging).  (F1) wave-kernel traces, NB-walk traces and Hashimoto")
-        log("moments on Cay(F_p, mu_n) are reconstructed EXACTLY from adjacency power sums")
-        log("{P_j} -- the E_r wall vocabulary; (F2) the reconstruction coefficients are")
-        log("exact rationals in (m, q=n-1) only, bitwise identical across primes: the")
-        log("2606.27075 trace formula can produce only instance-blind identities WITHIN the")
-        log("moment ladder, zero new p-arithmetic; (F3) at regime scale the known pair")
-        log(f"(65617, 65633) has identical low-depth moments (max rel diff {dmom:.1e}, j<=6)")
-        log(f"yet M differs {dM * 100:.1f}% -- bounded-depth trace identities cannot pin M.")
-        log("Composes with 466-r1-nonbacktracking-relabeling (radius side) to close the")
-        log("paper on BOTH faces: radius = monotone relabel of M; identities = moment")
-        log("repackaging.  The L-infinity target still requires depth r ~ log p = the wall.")
+        log("Implemented trace comparisons and coefficient checks pass.")
+        log(f"The sampled pair has low-depth moment relative difference {dmom:.1e}")
+        log(f"and spectral-maximum relative difference {dM:.1e}.")
+        log("These tolerances do not prove equal moments or indistinguishability.")
+        log("No general impossibility result or required moment depth is established.")
         return 0
-    log("LIVE or UNEXPECTED -- some check failed; inspect above.")
+    log("Some implemented numerical check failed; inspect above.")
     return 1
 
 
