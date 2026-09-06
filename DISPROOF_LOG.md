@@ -53849,3 +53849,41 @@ Code-theoretic lane, BGK-free, standalone issue #1.  Full note:
 Classification: exact reductions (Lean), sound computational certificates (probes),
 narrowing evidence + a documented no-go on reading the unconstrained face as a decoding
 radius.  No bracket moves.
+
+---
+
+### [1-HDd-composed-LD-instance] composed theorem-instance: plain-RS list decoding at δ = 0.33791 > Johnson at rate 1/2, every prime q ≥ n, arbitrary evaluation sets (2026-09-06)
+
+The strongest bignum-verified point of the interpolation face composes into the following
+CLAIM (dependency list below; not a Lean end-to-end theorem yet):
+
+> Let `n = 2^18`, `k = 2^17`, `q ≥ n` prime, `α_1..α_n ∈ F_q` distinct, `y ∈ F_q^n`.  Then
+> `#{P ∈ F_q[X]_{<k} : agreement(P, y) ≥ 173563} ≤ q^{54}`, i.e. RS_{n,k} is combinatorially
+> `(δ, q^{54})`-list-decodable at `δ = 0.33791` (Johnson: `0.29289`), and the list is
+> computable in `q^{O(13)}` time.
+
+Dependencies, in order:
+1. **Integer certificate** (`hdspec_search.verify_exact_int`, Python bignums, no floats):
+   at `d = 12, m = 128`, `Ω = {(S,J) : S ≤ 102, S ≤ J ≤ min(12S, 205)}`, `A = 173563`:
+   `dim = 173575795916105963870 > n·Σ_blocks min(rows, cols) = 173574747307010686976`
+   (and infeasible at `A − 1`; threshold exact).  Field-uniform: pure counting.
+2. **rank ≤ Σ min(rows, cols)** per node: `finrank_span_range_le_sum_min`
+   (`_HDdCountingBound.lean`, axiom-clean) + the `(g₁,g₂)` block structure
+   (`contactSubstD_translate`, `weightedDegree_of_mem_support_contactSubstD`,
+   `_HDdNodeTranslation.lean` / `_HDdOriginGrading.lean`, axiom-clean); the remaining
+   finite-reindexing assembly is bookkeeping (rows over-counted by the composition superset
+   only helps soundness).
+3. **`exists_interpolant_d`** (`_HDdInterpolationCore.lean`, axiom-clean): the certificate
+   inequality forces a nonzero interpolant `Q` killing every `A`-agreeing `P`
+   (`Q(X, P, P^{[1]}, …, P^{[12]}) = 0`), with `deg_{Y_i} Q ≤ 205 < q` and
+   `(1, k−1, …, k−13)`-weighted degree `< mA = 2^{24.4} < q²`.
+4. **[Kop15] Theorem 4.3** (external, published): all such `P` are found in `q^{O(d+1)}`
+   time; at most `q^{4d+6} = q^{54}` of them.
+
+Context: TR26-164 rev. 1 (Cor. 5.1, AGG padding) reaches radius `0.33791` at rate 1/2 only
+for `q ≳ n·2^{600}` through its stated constants; this instance needs any prime `q ≥ 2^18`.
+NOT prize movement: the Grand-LD box is `m`-interleaved with budget `Λ ≤ 2^{−128} q ≪ q^{54}`,
+and the T5.1 transfer cannot carry any of this beyond Johnson on the MCA side (√-wall, KB
+§4.5).  Classification: computational certificate + Lean-verified mathematical core +
+one cited external theorem; the certificate is reproducible via
+`python3 -c "...verify_exact_int(12, 2**18, 2**17, 128, trunc_wedge(12,102,205), 173563)"`.
