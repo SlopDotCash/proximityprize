@@ -102,6 +102,19 @@ probes below compute (exactly) or soundly bound that rank sum.
   `q^{4d+6}`; prize-budget lists need PR #122-style tight ledgers (open for `d ≥ 2`, = open
   item (ii) of the 09-05 note).
 
+## 4.5 The T5.1 √-wall: the LD face cannot reach beyond-Johnson MCA through the known transfer
+
+The in-tree LD⇒MCA chain (`RSLambdaSubJohnsonMCA.lean`, consumer
+`linear_listSize_to_epsMCA_gcxk25_of_gkl24_maxCorr_witnessCover_hypothesis` = ABF26 T5.1 shape)
+converts a list bound at radius `δ` into `ε_mca` at radius `1 − √(1−δ+η)`.  The loss is
+structural: LD AT CAPACITY (`δ = 1−ρ`) transfers to MCA radius exactly `1 − √ρ` = Johnson, for
+every rate.  Hence NO strength of the interpolation face can cross to beyond-Johnson MCA via
+this transfer — with `η → 0` the map `δ ↦ 1 − √(1−δ)` sends `[0, 1−ρ]` into `[0, 1−√ρ]`.
+Beyond-Johnson MCA remains exactly the CORE wall; the face measured here is progress on the
+GRAND LD box's territory (plain-RS layer; the box itself is `m`-interleaved with budget
+`Λ ≤ 2^{−128} q`, which also rules out Kopparty-scale lists).  Recorded so no future lane
+re-attempts this composition.
+
 ## 5. Open, ordered by leverage
 
 1. Finish the seeded continuum `d`-sweep at rate 1/2 (and low-rate sweeps `ρ′ ≤ 1/16` for the
