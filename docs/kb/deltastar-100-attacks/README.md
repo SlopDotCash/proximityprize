@@ -1,6 +1,6 @@
 # 100 attacks on the unified BGK = Johnson = Gauss = max|P| = K(n) quantity (#407)
 
-> Correction (2026-09-06): the Lam–Leung theorem cited in L10.3 and other characteristic-zero arguments below does not imply absence of odd-weight vanishing sums in finite fields. In F97, the distinct elements 1, 18, 78 each satisfy x^32=1 and sum to 97=0. Thus the claimed field-uniform zero triple count and resulting “no characteristic-p correction” conclusion are false. Historical proposal text below is retained for traceability, not ratified as proof. See the Lam–Leung provenance audit in `../audits/lam-leung-source-2026-09-06.md`.
+> Correction (2026-09-06): the Lam–Leung theorem cited in L10.4 and other characteristic-zero arguments below does not imply absence of odd-weight vanishing sums in finite fields. In F97, the distinct elements 1, 18, 78 each satisfy x^32=1 and sum to 97=0. Thus the claimed field-uniform zero triple count and resulting “no characteristic-p correction” conclusion are false. Historical proposal text below is retained for traceability, not ratified as proof. See the Lam–Leung provenance audit in `../audits/lam-leung-source-2026-09-06.md`.
 
 
 Generated 2026-06-14 (workflow w12t371i2, 17 mathematical-domain lenses). Target: pin the EXACT value of
