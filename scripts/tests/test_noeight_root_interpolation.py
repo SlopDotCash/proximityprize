@@ -1,5 +1,6 @@
 """Compare source-coupled interpolation against known polynomial evaluations."""
 import importlib.util
+from itertools import product
 from pathlib import Path
 import unittest
 import numpy as np
@@ -33,3 +34,19 @@ class Interpolation(unittest.TestCase):
         full1 = np.concatenate([row1, np.zeros(7, dtype=np.int64)])
         joint = (self.data['vandermonde'] @ a % 17 == full0) & (self.data['vandermonde'] @ b % 17 == full1)
         self.assertEqual(int(joint.sum()), maximum)
+
+    def test_classifier_matches_exhaustive_polynomial_census(self):
+        row0 = np.asarray([14, 15, 7, 6, 0, 7, 12, 12, 11])
+        row1 = np.asarray([4, 7, 10, 8, 2, 16, 1, 2, 4])
+        # Enumerate every nonzero degree-below-four polynomial independently
+        # of the anchor interpolation algorithm being tested.
+        coefficients = np.asarray(list(product(range(17), repeat=4)), dtype=np.int64)[1:]
+        values_v = coefficients @ self.data['vand_v'].T % 17
+        roots_d = np.sum(coefficients @ self.data['vand_d'].T % 17 == 0, axis=1)
+        expected = []
+        for gamma in range(17):
+            point = (row0 + gamma * row1) % 17
+            fresh = np.sum(values_v == point, axis=1)
+            expected.append(bool(np.any((fresh >= 6) & (fresh + roots_d >= 9))))
+        actual = probe.classify_batch(row0[None, :], row1[None, :], self.data)[5][0]
+        np.testing.assert_array_equal(actual, expected)
