@@ -151,6 +151,177 @@ class SpectralEvaluator:
         return dim > n * rb
 
 
+class GatedEvaluator(SpectralEvaluator):
+    """Tighter SOUND row bound: a row key (i, nE, e) of block (g1, g2) is realizable only if
+    e decomposes as ns + bs with bs in cap(Omega) and the witness column's a = g2 + J(bs)
+    lies in [0, m).  Necessary conditions in (S,J)-space: some Omega-cell (S_b, J_b) with
+    J_b <= J_e and d*S_b - J_b <= d*S_e - J_e (2-D dominance) and J_b in the a-window.
+    Gating the multiplicity N_d(S_e, J_e) by this dominance is a superset of the realized
+    keys and a subset of the free composition count — sound and tighter, with the gap
+    growing at large d (where the free count degrades the bound).
+    Cost: O((m + Jmax) * grid) per feasibility check — use to evaluate/refine winners,
+    not for wide scans."""
+
+    def feasible(self, cells, A):
+        d, n, m, w = self.d, self.n, self.m, self.w
+        D = m * A
+        jmaxc = max(J for (S, J, N) in cells)
+        smax_c = max(S for (S, J, N) in cells)
+        g1max = smax_c + (D - 1) // w + 1
+        semax = g1max
+        jemax = min(d * semax, self.jmax + d * ((D - 1) // w + 1))
+        # dense multiplicity array on the (S_e, J_e) grid (float64: only min() uses it)
+        NM = np.zeros((semax + 1, jemax + 1), dtype=np.float64)
+        mt = multiplicity_table(d, semax, jemax)
+        for S in range(semax + 1):
+            for J in range(S, min(d * S, jemax) + 1):
+                v = mt[S, J]
+                NM[S, J] = float(v)
+        # dimension and cols rectangles as in the base class
+        n2 = m + jmaxc
+        diff = np.zeros((g1max + 2, n2 + 1), dtype=np.float64)
+        dim = 0
+        omega_by_J = {}
+        for (S, J, N) in cells:
+            W = w * S - J
+            top = D - 1 - W
+            if top < 0:
+                continue
+            R0 = D - W
+            b0m = (R0 - 1) // w
+            dim += N * ((b0m + 1) * R0 - w * (b0m * (b0m + 1)) // 2)
+            omega_by_J.setdefault(J, []).append(d * S - J)
+            q, r = divmod(top, w)
+            ahi = min(m - 1, top)
+            a1 = min(r, ahi)
+            gl, gh = S, S + q
+            c0, c1 = jmaxc + (0 - J), jmaxc + (a1 - J)
+            diff[gl, c0] += N
+            diff[gh + 1, c0] -= N
+            diff[gl, c1 + 1] -= N
+            diff[gh + 1, c1 + 1] += N
+            if a1 < ahi and q >= 1:
+                c2, c3 = jmaxc + (a1 + 1 - J), jmaxc + (ahi - J)
+                diff[gl, c2] += N
+                diff[gh, c2] -= N
+                diff[gl, c3 + 1] -= N
+                diff[gh, c3 + 1] += N
+        cols = np.cumsum(np.cumsum(diff, axis=0), axis=1)[: g1max + 1, : n2]
+        # gated rows, block-column by block-column
+        Js = sorted(omega_by_J)
+        minu_at_J = {J: min(omega_by_J[J]) for J in Js}
+        total = 0.0
+        Jarr = np.arange(jemax + 1)
+        Sarr = np.arange(semax + 1)
+        U = d * Sarr[:, None] - Jarr[None, :]  # u_e = d*S_e - J_e
+        for idx in range(n2):
+            g2 = idx - jmaxc
+            # a-window: J_b in [-g2, m-1-g2]
+            lo, hi = -g2, m - 1 - g2
+            minu = np.full(jemax + 2, np.inf)
+            cur = np.inf
+            for J in range(jemax + 1):
+                if lo <= J <= hi and J in minu_at_J:
+                    cur = min(cur, minu_at_J[J])
+                minu[J] = cur
+            gate = U >= minu[None, Jarr]
+            M = NM * gate
+            P = np.cumsum(M, axis=1)  # prefix over J_e
+            # rows[g1] = sum_nE (gated multiplicity mass at S_e = g1 - nE over the i-window)
+            rows_g = np.zeros(g1max + 1)
+            for nE in range(0, g1max + 1):
+                jlo = -g2 - (d + 1) * nE
+                jhi = m - 1 - g2 - (d + 1) * nE
+                if jhi < 0:
+                    break
+                jlo = max(jlo, 0)
+                if jlo > jemax:
+                    continue
+                se_hi = g1max - nE
+                seg = P[: se_hi + 1, min(jhi, jemax)].copy()
+                if jlo >= 1:
+                    seg -= P[: se_hi + 1, jlo - 1]
+                rows_g[nE:] += seg
+            total += np.minimum(rows_g, cols[:, idx]).sum()
+        return dim > n * total
+
+
+def verify_exact_int(d, n, k, m, omega, A):
+    """All-integer re-verification of a certificate: dim > n * sum_blocks min(rows, cols)
+    with Python bignums throughout (no float64 anywhere).  Returns (ok, dim, n*rank_bound).
+    This is the auditable form of a counting certificate at (d, n, k, m, Omega, A)."""
+    w = k - 1
+    assert m <= w
+    D = m * A
+    cells = []
+    smax = max(S for (S, J) in omega)
+    jmaxc = max(J for (S, J) in omega)
+    mult = multiplicity_table(d, smax, jmaxc)
+    for (S, J) in omega:
+        N = int(mult[S, J])
+        if N > 0:
+            cells.append((S, J, N))
+    g1max = smax + (D - 1) // w + 1
+    # exact rows via dict-DP: T[g1][sigma] over items 1..d, d+1
+    sigmax = m - 1 + jmaxc
+    T = [[0] * (sigmax + 1) for _ in range(g1max + 1)]
+    T[0][0] = 1
+    for j in list(range(1, d + 1)) + [d + 1]:
+        for g in range(1, g1max + 1):
+            row, prev = T[g], T[g - 1]
+            for s in range(j, sigmax + 1):
+                row[s] += prev[s - j]
+    # prefix sums over sigma
+    P = [[0] * (sigmax + 2) for _ in range(g1max + 1)]
+    for g in range(g1max + 1):
+        acc = 0
+        Tg = T[g]
+        Pg = P[g]
+        for s in range(sigmax + 1):
+            acc += Tg[s]
+            Pg[s + 1] = acc
+    def rows(g1, g2):
+        hi = min(m - 1 - g2, sigmax)
+        lo = max(-g2, 0)
+        if hi < lo:
+            return 0
+        return P[g1][hi + 1] - P[g1][lo]
+    # cols per block via exact-integer difference arrays, and dim
+    n2 = m + jmaxc  # g2 index = g2 + jmaxc in [0, n2)
+    diff = [[0] * (n2 + 1) for _ in range(g1max + 2)]
+    dim = 0
+    for (S, J, N) in cells:
+        W = w * S - J
+        top = D - 1 - W
+        if top < 0:
+            continue
+        R0 = D - W
+        b0m = (R0 - 1) // w
+        dim += N * ((b0m + 1) * R0 - w * (b0m * (b0m + 1)) // 2)
+        q, r = divmod(top, w)
+        ahi = min(m - 1, top)
+        a1 = min(r, ahi)
+        for (gl, gh, alo, ahi2) in (((S, S + q, 0, a1),) +
+                                    (((S, S + q - 1, a1 + 1, ahi),)
+                                     if (a1 < ahi and q >= 1) else ())):
+            c0, c1 = jmaxc + (alo - J), jmaxc + (ahi2 - J)
+            diff[gl][c0] += N
+            diff[gh + 1][c0] -= N
+            diff[gl][c1 + 1] -= N
+            diff[gh + 1][c1 + 1] += N
+    rb = 0
+    run = [0] * (n2 + 1)
+    for g1 in range(g1max + 1):
+        dg = diff[g1]
+        acc = 0
+        for idx in range(n2):
+            run[idx] += dg[idx]
+            acc += run[idx]
+            if acc > 0:
+                rb += min(rows(g1, idx - jmaxc), acc)
+    return dim > n * rb, dim, n * rb
+
+
 def wedge(d, smax, srange=None):
     """Full wedge {(S,J): 0 <= S <= smax, S <= J <= d*S} = the simplex cap sum bs <= smax."""
     out = []
