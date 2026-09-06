@@ -1,0 +1,660 @@
+{
+  "scope": [
+    "scripts/probes/",
+    "_nubs_research/",
+    "_research_357/",
+    "_research_ll/",
+    "scratchpad/"
+  ],
+  "policy": "Retain all evidence; direct filename mentions are review pointers only. Unreferenced does not mean obsolete. This inventory does not execute or validate claims.",
+  "files": 421,
+  "bytes": 2950303,
+  "files_with_direct_references": 329,
+  "source_commit": "58cc1f0e6f3645e2e78e9e4b15c16729dcd17753",
+  "unreferenced_records": [
+    {
+      "path": "_nubs_research/F101Band3BoundaryWitness.lean",
+      "bytes": 13326,
+      "sha256": "d81993d7ca314dcc6d0e3f408263bbd66d2c0c173e97596dc7a55f2c8c2f7988",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "_nubs_research/verify_f101_quadric.py",
+      "bytes": 1324,
+      "sha256": "4d99111b1408c028009cc2cf1ac3b2a7df1c59097561132e7959097325caa3bd",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "_research_357/hbk-stepanov-extraction.md",
+      "bytes": 5607,
+      "sha256": "ecff849a8405f2ee5a146a1be582ca026fc92d62ee101c8ad6f4412d562ddb6e",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "_research_ll/lamleung.txt",
+      "bytes": 40904,
+      "sha256": "bfd7fd156eab70aeab208c149af0e4dae81622b6f8960598fcb01d429d5c4ff8",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scratchpad/probe_466_ocarcpeak_anomalous_b.py",
+      "bytes": 3537,
+      "sha256": "ff81391add31fdde61b3ca1f57b09431466e28fc9c4a27ddd8069d3ae1859960",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scratchpad/probe_466_ocarcpeak_concentration.py",
+      "bytes": 3029,
+      "sha256": "2db513ef146e68512b6119b263f0de3bc3d34db90ca42b5c8df0e90012bc7187",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scratchpad/probe_466_ocarcpeak_maxmean_orbit.py",
+      "bytes": 4720,
+      "sha256": "1e83b562563ee4cf171a7de432f9ef85b2fad6a1796739fc082488f4d05c2657",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_ckpt_466_deploy/c_BabyBear.npy",
+      "bytes": 248,
+      "sha256": "6301677b85741e228b4d15d9e4503f89420f9064c4511319a5e7b775b5dcbaeb",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_ckpt_466_deploy/c_ctrl27_c17.npy",
+      "bytes": 264,
+      "sha256": "15e342bc3be67a5efcee8b8e553d9788d857a47f54d24e0d3c5a50039b1cdc0a",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_ckpt_466_rs_tail_n32.csv",
+      "bytes": 165972,
+      "sha256": "1b4ea5eaf810200a09db2106c472b8fdc1ad2fa0ea4290483da2f3393c563248",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_316_dyadic_wall_floor_depth3.txt",
+      "bytes": 1499,
+      "sha256": "6216d3c5c9dc4362eb629df7722594bc059a1d6f4e81d1f50fddfa05021ce2f6",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_320_krylov_d2_countermodel_stdlib.txt",
+      "bytes": 765,
+      "sha256": "7c1711e87d51a73570d5090648ddb7a79717d146964364e582d1f97d1511e9c4",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_321_rank_reflection_n12_p13.txt",
+      "bytes": 719,
+      "sha256": "3c334bc1fed9e8049e10c3a5c74a202c3c68d0e3de2cd89c76f5a866bbd6cb54",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_322_overdet_incidence_max_extended.txt",
+      "bytes": 7768,
+      "sha256": "34c4fa2edd897ae01ffb4a2cf66adbe108ef2188203a9c03ddb8a4aafb1d76f2",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_324_dyadic_wall_floor_depth4.txt",
+      "bytes": 1960,
+      "sha256": "3273ddf4fb48740bbe6bb0188825387dd9d101dc7e14d97755453e773248f355",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_325_overdet_incidence_max_m26_50.txt",
+      "bytes": 5689,
+      "sha256": "45efafbc14319f0a63cab3a0f5d30bd207bfc08a87601e1aac34ca6696fbc927",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_326_overdet_incidence_max_stronger_decoupling.txt",
+      "bytes": 3662,
+      "sha256": "35f212ffd26b749f967d62c5a63b20af314b7b8c759ada973796461b13024d49",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_466_g104_ladder_scoping.txt",
+      "bytes": 1301,
+      "sha256": "f03476f9ca445cf95b949ceaba6bfd55a312b2436a7dd4d0904b5cfe504036ea",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_466_g87v_census_rank_full.txt",
+      "bytes": 2168,
+      "sha256": "fe6d9be96373f1e33a042c34b9c2b96ffd8390c7774e3a03fb8743086ef0f7f9",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_466r10_transfer_skeptic.txt",
+      "bytes": 2791,
+      "sha256": "5ac89a879791ab56bb0ed7c574c75b9c145c246a134f574d925dcd195a8269d2",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_ant46_signature_quotient.txt",
+      "bytes": 2915,
+      "sha256": "d3d39261b2a79a9c1143d53d265f96269f0d4d0a4bd1d21ac84998365b64dd2e",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_bgk_c12_alignment.txt",
+      "bytes": 7122,
+      "sha256": "61d5579b7e6093d6328ec978d5d60bdead59d35bee1f29cd41ed93ed43dd02e1",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_bgk_ctr_pd_no_go.txt",
+      "bytes": 872,
+      "sha256": "96cb48d9ab7c5770c160f10ec88080ddb138d7ec0eab131f59bc877e97a75405",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_bgk_injective_exterior_cluster.txt",
+      "bytes": 459,
+      "sha256": "24a78ab8c9be1a97cb554739cc8c29ffdbbe3ccff4194485c21904a26d3b1c64",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_bgk_johnson_phase_grades.txt",
+      "bytes": 499,
+      "sha256": "784b414183dd064e0ed6301981ef6307c454739c2dd305de0da2f2e33b00e363",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_bgk_late_newton_covariance.txt",
+      "bytes": 4287,
+      "sha256": "02cca71d5f6609fc84013f8b0fa6e4864978dd9159b8049693836d7eea8f6933",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_bgk_primitive_depth7_counterexample.txt",
+      "bytes": 437,
+      "sha256": "9ba395427b2c8552b635888f6fa73ed0853e9c6bc8e0bd0aa775b199e58bc6bc",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_bgk_repeated_newton_absorption.txt",
+      "bytes": 769,
+      "sha256": "7b61490e0e84651bf70ecc2a03478613b4ee12540447d0faa3e98fef3e32b3a1",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_bgk_sampling_without_replacement_budget.txt",
+      "bytes": 551,
+      "sha256": "c690fa9aeab36b9e1e6458bbbb2292af9f8591e9bef3f6536580e461813fd6c3",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_fsmf_capacity.txt",
+      "bytes": 1317,
+      "sha256": "83828563a8726410ca3c1b0c834171c806def39d73c295624811c578a2594bf6",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_fsmf_m10_threeline.txt",
+      "bytes": 464,
+      "sha256": "188a9e46aa787a6e9b14149d87f75f4e9c5be3605ff166ad289a43b0884f319e",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_fsmf_miniature_census.txt",
+      "bytes": 1734,
+      "sha256": "8264ec051416d945ecb118f3bccea660b1c80ed918448294a501da30251382c9",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_fsmf_rigidity.txt",
+      "bytes": 202,
+      "sha256": "94f8b470496144132e57fd6ce102daab9733ee66eab50706c9384e63c6f78f6b",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_g101f_s1.txt",
+      "bytes": 7373,
+      "sha256": "fbc41ddd50719c988f81e3f44ad69fa37ac9e9b6ed8f8cbe6491e1fe92a156ff",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_g101f_s2.txt",
+      "bytes": 15221,
+      "sha256": "525618c814bd982a6ae6870513aff37c46e6d4ef80ff267838dd942b2f100ab3",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_g101f_s2s.txt",
+      "bytes": 462,
+      "sha256": "7500406e3472d2a87c0b46af6312958b5a9de68a98d773fa0d074ac85680b8cf",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_g101f_s3.txt",
+      "bytes": 1874,
+      "sha256": "c301736866e6a606473ca95f1eb9076606140c5583a309f45230b4b1b1fb1244",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_g139_n2e30_arithmetic_contract.txt",
+      "bytes": 1171,
+      "sha256": "718c192b25ec19ff826e716073404dc688a52f8d3bf2674c588912023ab0c15f",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_g139_phi_certificate.txt",
+      "bytes": 1886,
+      "sha256": "60d4a5274bd9e9c838e4eb7504a9c1e042cd24251270a7ded9cb204a7a4d63aa",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_g139_phi_collision_witness_verification.json",
+      "bytes": 4958,
+      "sha256": "7b47d5703a07c4c2ead20be977dd08414ab8b3f446a622187a470ef5b731e28f",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_g139_production_accident_census.txt",
+      "bytes": 400,
+      "sha256": "c86cb26137cea2e6dcb24dac261b51ce9c0624d05b21abf9b82a04773f75359f",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_g94_jacobi_cocycle_metric.txt",
+      "bytes": 16991,
+      "sha256": "43c1b21aa4cf078e93c3e35bca0c6e41adc38b63db713a94544513a41128bdd3",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_g94_jacobi_cocycle_metric_supplement.txt",
+      "bytes": 1558,
+      "sha256": "ed4dcf82cb7d3546ad352777fa832aeb2f6106a542b80b006642d64db97a0474",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_w11_c3_kill_n16.txt",
+      "bytes": 3217,
+      "sha256": "f43a109883a92b42748de78fb73d5b6c7fbebced4844950565b56bf9795c2cef",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_out_w13_wavekernel_trace.txt",
+      "bytes": 3191,
+      "sha256": "9b9fc35e6ffe7416a4233fba1ba9e950df9b622aa8ad864237a456526b86c083",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/_skeptic_466r10_laneA_spotcheck.py",
+      "bytes": 9540,
+      "sha256": "2f485892e4775b8825d60229be324bb2d3db685bb56412745770f4d108d8d34f",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/g326_overdet_incidence_max_stronger_decoupling.py",
+      "bytes": 11047,
+      "sha256": "6a15516d355c194c9e4ad48e2fd8988794ef30062932943e3f7503f131e777f7",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_466_g75_relation_anomaly.py",
+      "bytes": 3344,
+      "sha256": "0911d6cafc325a2e19c303e8e59e05442d7982d618017241e983419f3299613c",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_466_g97_census_sup_inflation.py",
+      "bytes": 2513,
+      "sha256": "0bbb05aad54d22eea8d6de2ffd87069a813919666997490a84201c6e848de613",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_466r10_transfer_skeptic.py",
+      "bytes": 5588,
+      "sha256": "c14b7336f30898034e84f64a9e5a07aac3fcf53f706b8b80f93370bbd3616068",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_ajt13_centered_tensor.py",
+      "bytes": 8129,
+      "sha256": "18e0a274a9cd15c08a41ddcbc7fc97c0c4d5bab95cf5cfe34c9f0340843fb09e",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_ant46_kappa_dyadic_recurrence.py",
+      "bytes": 16228,
+      "sha256": "ebdad50f3ef4aae3c5ac762696a75ce52574650519e330c9a001f3db10b70604",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_ant46_signature_quotient.py",
+      "bytes": 9169,
+      "sha256": "96292b813e3930a1cf7b2472de79d19b1eb5f6e88f679bf5d02018b382a567ae",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_bgk_h8_transition_integrality.py",
+      "bytes": 1880,
+      "sha256": "45b9dbef10042d39718d226a2255f1cda8befdd357fa57cc5a876a34a8ae5af2",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_bgk_injective_exterior_cluster.py",
+      "bytes": 3017,
+      "sha256": "cb38ca2a4125c59ac42d0a16626f7c309d1439d6cb697f684164edc8c79ecc47",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_bgk_johnson_phase_grades.py",
+      "bytes": 5284,
+      "sha256": "160845d20d9b96359f078bc5bb64fc8704b10608a8f969d085c69094364ab2f6",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_bgk_primitive_depth7_counterexample.py",
+      "bytes": 4113,
+      "sha256": "885043d69213916ae26a75019f2de5cc99e64948d35c9852c513c1cba6ffbd9e",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_bgk_repeated_newton_absorption.py",
+      "bytes": 7495,
+      "sha256": "e8c49ea7f2d55d122cccf41e5ed331131ecc62d0fd899d8736dced22d1128fbb",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_bgk_sampling_without_replacement_budget.py",
+      "bytes": 2838,
+      "sha256": "3af216a85741db11c5ded77a682c15c9f95aa6fd569872fbf153f77c157d24dd",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_fsma_second_moment_pair_partition.py",
+      "bytes": 4898,
+      "sha256": "76eeeb95495ae2acf02a029d825bfba52e658fcd4b05fd958008c8a4c7ced43a",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_fsme_bivariate_johnson_error_floor.py",
+      "bytes": 4029,
+      "sha256": "2191f415c3bdf5d82306d0e6ec1b3c73a5d37556745674e50410f69d814d1470",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_fsmf_p1_onefresh_capacity.py",
+      "bytes": 5265,
+      "sha256": "efeec15321b705954b4222ead0cf5b2a0107779a8e72341ea460d66b2258fcea",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_fsmf_predecessor_m10_threeline.py",
+      "bytes": 7599,
+      "sha256": "471838f25538642e1c30c00050f838528634a6a6e3513ae1ef542e317cda37ad",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_fsmf_predecessor_miniature_census.py",
+      "bytes": 23736,
+      "sha256": "15a8ab19d14b07cee8654562a155b4d6970482a5859d8dacb97454c5ff1c653c",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_fsmf_threeterm_vanishing_rigidity.py",
+      "bytes": 2584,
+      "sha256": "0456ca5f76af73ec07709688863b5a49a3baf921f98ce37e923761856b6a9d2d",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_g139_phi_certificate.py",
+      "bytes": 7402,
+      "sha256": "62d75d9da89881906d5576bdc71e46ac44d409dff56c350fdae8512066b5b3aa",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_g139_production_accident_census.py",
+      "bytes": 6137,
+      "sha256": "2d6cea07793ca7ffc5463eab23a4941e89391b3e49308593890289135169314a",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_g94_jacobi_cocycle_metric_supplement.py",
+      "bytes": 2353,
+      "sha256": "2b641c95e579b1778334873e56decba3398a1353d17ece88e0bca0e4da4ef3d8",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_k2_interior_ceiling_prize_scale_crosscheck.py",
+      "bytes": 5561,
+      "sha256": "172b23d168cb88f4d04f1f23e8e94812ed0a726e8d7b6f4bc14ac5c95ec3b246",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_noeight_n9k4_weight3_lines.py",
+      "bytes": 14758,
+      "sha256": "4498f1d9ab2f9fbcb725be3cc7b37412376994e399a6d7ee0aec6f4313cbe3ac",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_noeight_source7_root_coupled_lines.py",
+      "bytes": 12099,
+      "sha256": "fa5af2799f643107bcf7b8a3dc8f7a669cee03eb16118bf723cefe71fc49829f",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_pair_locator_torus_fibers.py",
+      "bytes": 2619,
+      "sha256": "690f945a9d0845d1592954cc4698853650e67f727f043c961f103635aed39130",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_r386_unique_root_strata.py",
+      "bytes": 4183,
+      "sha256": "17a99c801378cc0087317a9f614165e7115b245d06fb6cb9fa181ec2b3c415dc",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_r387_n16k4_full_line_milp.py",
+      "bytes": 8375,
+      "sha256": "9a7a3d29c28c8f7730cb6e230d60b728faa9896da0cf1d08cd6a1ae279063789",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_rate_quarter_common_factor_trade.py",
+      "bytes": 9949,
+      "sha256": "066ee171459b11762603972b65ff86346ea1dce6e16f568ce304a4f978335547",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_rate_quarter_exact_jump_multiline.cpp",
+      "bytes": 19552,
+      "sha256": "8678c80c6739230620c496ece15f0e50678e6af43fb69db7738c427f491508ba",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_rate_quarter_five_clique_rank_counterexample.py",
+      "bytes": 6463,
+      "sha256": "7dd59208a0ea29512ffd30fcb129f00ae3406b2be35d8019b978fb4279a1be49",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_rate_quarter_mu16_four_line_amplifier_lp.py",
+      "bytes": 4309,
+      "sha256": "3f9430cdcc313e0375c853c8d7f2ce50b81e2bc590c110f47122eb469522c880",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_rate_quarter_mu16_universal_four_extensions.py",
+      "bytes": 2753,
+      "sha256": "2e8c93f7669be689d740aaf4bb022d78be73765b39aff7bc4f78f6b40721baa0",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_rate_quarter_mu32_locator_triples.cpp",
+      "bytes": 7127,
+      "sha256": "4d446f752b204b618a6e0cd89e7c4dbf9b832ee9c3a54494c8d4679f3030eb32",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_rate_quarter_next_lattice_perturbations.py",
+      "bytes": 3037,
+      "sha256": "66afb9990206c2f32b7fe38fe10aa54eda6eb056452adf5e84c673f1dfddc775",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_rate_quarter_noeight_source7_signatures_boolector.py",
+      "bytes": 5900,
+      "sha256": "93d728799286448e1a91d2ed03aa9333a34a0a290bfd28c94b6886930d531a3d",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_rate_quarter_noeight_source7_signatures_milp.py",
+      "bytes": 9284,
+      "sha256": "8efcb33eb0628314d8d25baefd40b8cd9f318861e19d3cb6ed9e6fd6d8480ddc",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_rate_quarter_p1_common_factor_amplifier.py",
+      "bytes": 6501,
+      "sha256": "23ed1c4e2cbf32790732fb42aecc2be9cb66a9786372db9173729f035a67e48e",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_subset_locator_projective_lines.py",
+      "bytes": 2781,
+      "sha256": "007e86ef963a397a4b2eb3f42210962cb0b4c81baed77ac3c61b3b37338df32d",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_syz30_partition_blockcount.py",
+      "bytes": 2731,
+      "sha256": "c52f0e3acdcc242a50d43443561ecfc2ee1a36bf1405b5b1d499519a690f26ec",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_w15_window_rational_linear_refute.py",
+      "bytes": 6899,
+      "sha256": "3cb0657fba3b85e838b941823ef9af55b968aa6b3b09ca271b180142bc061d20",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_w6_kfour_collinear_cpsat.py",
+      "bytes": 8450,
+      "sha256": "ddad127c9b15ed9b8e0eb22abff46fd19ede19c0b33eeb496ecfaf597a676b32",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_w6_kfour_mixture_cpsat.py",
+      "bytes": 9334,
+      "sha256": "3548bc07d2b51b57e06ff5a826c3aaad05999c26ff0cd1689dff35f9be62f6a8",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_w6_kfour_three_witness_countermodel.py",
+      "bytes": 8512,
+      "sha256": "d7790bfdd088606b265ef2a30e6e450b4a6c9c8d85117cf852fc2cd683d6310f",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/probe_w8_multicore_ladder.py",
+      "bytes": 20277,
+      "sha256": "15a521654fbd2c7aff71517de5ddfbad7b231e16d302d3282f9938b82c18726f",
+      "references": [],
+      "disposition": "retain"
+    },
+    {
+      "path": "scripts/probes/verify_g139_phi_collision_witness.py",
+      "bytes": 7995,
+      "sha256": "972464bce346d7b5902616848b5487a31b2853e3c8717bb6b51daebd928cc8a5",
+      "references": [],
+      "disposition": "retain"
+    }
+  ]
+}
