@@ -214,6 +214,15 @@ re-attempts this composition.
    So the prize-budget MCA lane through this route is confined to `d ≤ 3`; the honest BKK
    target is pushing the `d = 1` certified `δ ≈ 0.3090` (at `|F| ≈ 2^250`) toward
    `≈ 0.31–0.32` with sparse `d = 2, 3` caps — real but bounded.
+   MEASURED (exact ranks): the `s₂ ≤ 1` sparse `d = 2` family
+   `{(b₁ ≤ s₁, 0)} ∪ {(b₁ ≤ s₁′, 1)}` beats `d = 1` at every ledger-feasible `m`:
+   `m = 13`: `A = 183560` vs `184365` (Δratio −0.44 %); `m = 16`: `182941` vs `183734`;
+   `m = 20`: `182474` vs `183243`.  Its ledger surcharge is a single `w`-factor (`s₂max = 1`),
+   inside the `2^250` budget slack.  Porting the PR #122 geometric ledger to `d = 2`
+   (one extra derivative variable) is therefore the single concrete step standing between
+   the campaign and an improved prize-scale lower witness `δ ≈ 0.312–0.314` at `|F| ≈ 2^250`.
+   In contrast the BOX `d = 2` family only overtakes `d = 1` from `m ≈ 24` (over budget):
+   the box scans said `s₂ = 0` at `m ≤ 16`, and only sparsity rescues `d = 2` in-budget.
 4. Exact-rank spot checks of the found downsets at `d ∈ {2,3}, m ≤ 48` (counting-vs-exact gap
    on OPTIMIZED caps, not just boxes).
 5. Lean: formalize the counting bound itself (`rank ≤ Σ_blocks min(rows, cols)` via the

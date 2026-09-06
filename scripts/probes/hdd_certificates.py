@@ -39,6 +39,12 @@ RECORDS = [
     (2, 64, 128, 173, 538, 170867, None, None),
 ]
 
+# Records where the scan's float bisection stopped above the true threshold: feasibility is
+# the certificate; tightness is not asserted.
+RECORDS_LOOSE = [
+    (16, 32, 256, 640, 1664, 40956),
+]
+
 
 def main():
     n = 1 << NEXP
@@ -55,6 +61,14 @@ def main():
         print(f"rate 1/{rd} d={d} m={m} wedge({smax},{jcap}) A={A}: "
               f"feasible={ok} tight={not ok_below} dim={dim} n*rb={nrb} "
               f"delta={1 - A / n:.5f} {'OK' if good else 'FAIL'}", flush=True)
+    for (rd, d, m, smax, jcap, A) in RECORDS_LOOSE:
+        k = n // rd
+        om = trunc_wedge(d, smax, jcap)
+        ok, dim, nrb = verify_exact_int(d, n, k, m, om, A)
+        fails += 0 if ok else 1
+        print(f"rate 1/{rd} d={d} m={m} wedge({smax},{jcap}) A={A}: feasible={ok} "
+              f"(tightness not asserted) delta={1 - A / n:.5f} {'OK' if ok else 'FAIL'}",
+              flush=True)
     print("CERTIFICATES", "PASS" if fails == 0 else "FAIL")
     return fails
 
