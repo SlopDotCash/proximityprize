@@ -13,8 +13,9 @@ orthogonality gives the exact positive-moment identity
 
 For the two highlighted cells the script evaluates this rational number exactly,
 without floating-point roots of unity, from zero-sum counts in H.  It also checks
-production-exponent analogues and falsifies a naive CRT tensor factorization of
-the normalized Gauss phase array.
+production-exponent analogues and numerically tests a naive CRT tensor
+factorization of the normalized Gauss phase array. Those complex evaluations
+have no certified error bounds and are separate from the exact rational cells.
 """
 
 from __future__ import annotations
@@ -214,7 +215,7 @@ def main() -> None:
             f"n={n} m={m} q={q} beta={log(q,n):.12f} "
             f"S13overM7={ratio:.12f} relativeToWick={ratio/WICK_14:.12f} maxA={max_a:.9f}"
         )
-    print("verdict: m^7 is the observed Wick scaling; its coefficient drifts toward 13!! as n grows")
+    print("verdict: the normalized coefficient increases across these four samples; no asymptotic limit is established")
     print()
 
     print("CRT_PHASE_TENSOR_MINORS")
@@ -224,11 +225,11 @@ def main() -> None:
             f"q={q} n={n} m={m}={a}x{b} labels={labels} "
             f"maxMinor={magnitude:.12f} crossRatio={ratio.real:.12f}{ratio.imag:+.12f}i"
         )
-    exact_q13_ratio = complex(-11 / 13, 4 * sqrt(3) / 13)
+    candidate_q13_ratio = complex(-11 / 13, 4 * sqrt(3) / 13)
     _, _, measured_q13_ratio = max_punctured_crt_minor(13, 6, 2, 3)
-    assert abs(measured_q13_ratio - exact_q13_ratio) < 1e-12
-    print("q13CrossRatioExact=(-11+4*sqrt(3)*i)/13; minorMagnitude=sqrt(48/13)")
-    print("verdict: CRT splits character labels but the additive Gauss phases are not rank-one tensors")
+    assert abs(measured_q13_ratio - candidate_q13_ratio) < 1e-12
+    print("q13CrossRatioCandidate=(-11+4*sqrt(3)*i)/13; floating agreement within 1e-12; no symbolic proof")
+    print("verdict: the computed CRT minors give numerical evidence against rank-one Gauss phase tensors")
 
 
 if __name__ == "__main__":
