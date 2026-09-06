@@ -14,6 +14,11 @@ on:
     branches: [main]
     paths: *site-paths
   workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy using configured GitHub Cloudflare credentials
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -54,7 +59,7 @@ jobs:
   deploy:
     name: Publish proximityprize.pages.dev
     needs: build
-    if: github.repository == 'SlopDotCash/proximityprize' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.repository == 'SlopDotCash/proximityprize' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.deploy
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:

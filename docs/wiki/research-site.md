@@ -24,16 +24,28 @@ rows, onboarding equality, and obsolete destinations. It writes
 `out/deployment.json` with the source SHA and public-file hashes. Generated
 `out/`, `.next/`, and `data/research.json` must not be committed.
 
-## Continuous deployment
+## Publishing with Wrangler
 
-`.github/workflows/deltastar-cloudflare.yml` builds pull requests without deployment
-secrets. Changes to the site, canonical onboarding, research, research notes, or
-probes trigger it. Main pushes build and upload one artifact, then a separate job
-publishes those exact files to `proximityprize.pages.dev`. Manual runs deploy only
-when the selected branch is `main`. Production deployments are serialized and
-are not cancelled halfway through an upload.
+The default publishing path uses a local authenticated Wrangler session:
 
-Configure in `SlopDotCash/proximityprize`:
+```sh
+cd website/deltastar-paper
+npm ci && npm run build
+npx wrangler@4.129.0 pages deploy out --project-name=proximityprize --branch=main
+node scripts/verify-live.mjs
+```
+
+`.github/workflows/deltastar-cloudflare.yml` builds and validates pull requests
+and main pushes, then uploads the export as an artifact. Changes to the site,
+canonical onboarding, research, research notes, or probes trigger it. These
+routine builds do not require Cloudflare credentials.
+
+For optional hosted deployment, manually dispatch the workflow on `main` with
+`deploy` enabled. Its default is false. Production deployments are serialized
+and are not cancelled halfway through an upload. The deployment job publishes
+the exact validated build artifact and verifies production content.
+
+Only when enabling hosted deployment, configure in `SlopDotCash/proximityprize`:
 
 - Actions secret `PROXIMITYPRIZE_CLOUDFLARE_API_TOKEN`: a Cloudflare API token with
   Account / Cloudflare Pages / Edit, limited to the deployment account.
@@ -47,7 +59,7 @@ files against the built hashes. A green build alone does not prove publication.
 See [Cloudflare's CI guide](https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/).
 
 For rollback, revert the site change on a feature branch and merge the reviewed
-revert to main. The same build, deployment, and readback checks apply.
+revert to main. Rebuild and publish the reverted source with Wrangler, then run the readback check.
 
 The old `deltastar-paper.pages.dev` project is separate. Its redirects can only be
 changed through the account that owns it; this workflow never deploys to it.
