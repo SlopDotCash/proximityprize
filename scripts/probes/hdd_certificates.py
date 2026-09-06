@@ -37,6 +37,9 @@ RECORDS = [
     (2, 32, 128, 173, 384, 171430, None, None),
     (2, 32, 256, 346, 1075, 169934, None, None),
     (2, 64, 128, 173, 538, 170867, None, None),
+    (2, 32, 384, 461, 1344, 169088, None, None),
+    (4, 8, 192, 240, 307, 112356,
+     142242651426680324254, 142241963456135954432),
 ]
 
 # Records where the scan's float bisection stopped above the true threshold: feasibility is

@@ -175,8 +175,8 @@ slowly-growing fraction of the Johnson→capacity window at every prize rate —
 
 | rate | Johnson | face (best) | capacity | window fraction (lower bound) |
 |---|---|---|---|---|
-| 1/2 | 0.29289 | **0.35175** (d=32, m=256; bignum-verified, tight) | 0.5 | 28 % (near-converged; limit ≈ 31 %) |
-| 1/4 | 0.5 | **0.56741** (d=8, m=96; bignum-verified, tight) | 0.75 | 27 % (unconverged in (d,m)) |
+| 1/2 | 0.29289 | **0.35498** (d=32, m=384; bignum-verified, tight) | 0.5 | 30 % (near-converged; limit ≈ 31–32 %) |
+| 1/4 | 0.5 | **0.57140** (d=8, m=192; bignum-verified, tight) | 0.75 | 29 % (unconverged in (d,m)) |
 | 1/8 | 0.64645 | **0.72106** (d=8, m=128 refined; wedge 0.72004 verified) | 0.875 | 33 % (unconverged) |
 | 1/16 | 0.75 | **0.84377** (d=32, m=256; bignum-verified, tight) | 0.9375 | 50 % (still growing) |
 
