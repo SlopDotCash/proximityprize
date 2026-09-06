@@ -148,13 +148,23 @@ Two clean negative findings pin the method's practical shape:
    prize rate.  At the four prize rates the method's TRUE quantitative content is exactly
    what the instruments measure.
 
+**The `d`-hierarchy SATURATES (answer to the 09-05 note's open item (i)).**  At `m = 128`,
+rate 1/2: `δ(d) = 0.33417 (8), 0.33791 (12), 0.34321 (24), 0.34605 (32), 0.34819 (64),
+0.34827 (96), 0.34822 (127)` — the face converges at `d ≈ 64` (the winning wedge
+`(smax, jcap) = (173, 538)` is IDENTICAL for `d = 64, 96, 127`: derivative orders beyond
+the `J`-budget are simply unused).  The remaining axis is `m`: at `d = 32`,
+`m = 128 → 256` gains `0.34605 → 0.35175` (bignum-verified, tight).  Extrapolating the
+`m`-doublings, the full `(d, m) → ∞` counting face at rate 1/2 is
+**`δ_∞ ≈ 0.357 ± 0.004`** — 22 % beyond Johnson in absolute radius, ~31 % of the
+Johnson→capacity window, and decisively NOT capacity.
+
 **Window-fraction law (measured, `n = 2¹⁸`, best certified):** the face crosses a bounded,
 slowly-growing fraction of the Johnson→capacity window at every prize rate —
 
 | rate | Johnson | face (best) | capacity | window fraction |
 |---|---|---|---|---|
-| 1/2 | 0.29289 | **0.34321** (d=24, m=128; bignum-verified, tight) | 0.5 | 24 % |
-| 1/4 | 0.5 | 0.56742+ (d=8, m=128, interim) | 0.75 | 27 % |
+| 1/2 | 0.29289 | **0.35175** (d=32, m=256; bignum-verified, tight) | 0.5 | 28 % |
+| 1/4 | 0.5 | **0.56741** (d=8, m=96; bignum-verified, tight) | 0.75 | 27 % |
 | 1/8 | 0.64645 | **0.72106** (d=8, m=128 refined; wedge 0.72004 verified) | 0.875 | 33 % |
 | 1/16 | 0.75 | **0.82105** (d=8, m=512; bignum-verified, tight) | 0.9375 | 38 % |
 
