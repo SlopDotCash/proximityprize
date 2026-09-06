@@ -8,3 +8,5 @@ node_modules/
 # the deploy's build command. To refresh after editing /mine: `npm run build` (or
 # `node scripts/copy-mine.mjs`) regenerates them — commit the result.
 /out/
+
+/data/research.json

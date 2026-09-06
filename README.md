@@ -71,12 +71,10 @@ threshold `δ*` for smooth-domain Reed–Solomon codes — exact machine-checked
 thresholds, the production-regime bracket, and the isolated open core. Start at
 [`docs/wiki/deltastar-programme.md`](docs/wiki/deltastar-programme.md).
 
-The campaign's results are also presented as a paper-style website: the first
-exact MCA thresholds computed for any code, 28 machine-checked refutations, and
-an honest map of the open core (the prize problem itself remains open). It is
-currently served at <https://deltastar-paper.pages.dev>, and will be available
-under `/deltastar/` on this repository's GitHub Pages once Pages is enabled;
-source lives in [`website/deltastar-paper/`](website/deltastar-paper/).
+The research website at <https://proximityprize.pages.dev> summarizes current
+results, their limitations, and the remaining proof obligations. Source lives in
+[`website/deltastar-paper/`](website/deltastar-paper/); publishing is documented in
+[`docs/wiki/research-site.md`](docs/wiki/research-site.md).
 
 ## Roadmap & Contributing
 

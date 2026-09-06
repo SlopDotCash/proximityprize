@@ -4,8 +4,7 @@ import { useState } from "react";
 
 /**
  * A shell command rendered as a click-to-copy block. Keeps the site static
- * (no runtime deps) — the only client interactivity on the page besides the
- * degen toggle. The displayed text and the copied text are the same string.
+ * (no runtime deps). The displayed text and the copied text are the same string.
  */
 export function CopyCommand({ command }: { command: string }) {
   const [copied, setCopied] = useState(false);
@@ -24,9 +23,9 @@ export function CopyCommand({ command }: { command: string }) {
       ta.setAttribute("readonly", "");
       document.body.appendChild(ta);
       ta.select();
-      document.execCommand("copy");
+      const success = document.execCommand("copy");
       document.body.removeChild(ta);
-      flash();
+      if (success) flash();
     } catch {
       /* clipboard unavailable — the command stays selectable for manual copy */
     }
