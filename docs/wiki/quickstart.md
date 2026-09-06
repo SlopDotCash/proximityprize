@@ -364,3 +364,13 @@ only on success. `pg-iterate.sh` propagates a nonzero Lean exit status even
 when the process emits no diagnostic text. A successful file with no
 `#print axioms` output is still a successful type check; absence of that
 output does not itself perform an axiom audit.
+
+## Retained probe dependencies
+
+Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
+
+The R387 Z3 probe uses exit 0 only for all searched branches returning unsat, exit 1 for a checked MCA counterexample, and exit 2 for unresolved results (including timeout). An unresolved exit is not a proof of either outcome.
+
+The R387 MILP probe uses the same unresolved exit 2. Exit 0 means the numerical solver reported every requested branch infeasible; it is not an independently verified infeasibility certificate, and a subset of pivots does not cover all directions. Exit 1 indicates a checked MCA witness.
+
+G87V’s default census uses batches of at most 4,096 rows and retains one modular row basis per field instead of the full census matrix. It still enumerates every support/sign pattern. Run `python3 -m unittest discover -s scripts/tests -p test_g87v_streaming.py` to compare streamed summaries with materialized small cases. This storage change does not remove the combinatorial runtime cost.
