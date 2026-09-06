@@ -131,6 +131,37 @@ exact-rank face sits above the counting face at large `d`.  Granularity warning:
 continuum solver needs `m ≫ d` (cap entries `~ m/d` must be large); at `d ≥ 12` trust the
 discrete spectral instrument only.
 
+## 3.6 The window-fraction law, and the death of two scaling hypotheses
+
+Two clean negative findings pin the method's practical shape:
+
+1. **`m = d³` does NOT unlock capacity at prize rates.**  At rate 1/2, `(d, m) = (8, 512 = d³)`
+   gives `δ = 0.33675` — barely above `(8, 128)` (0.33417) and BELOW `(24, 128)` (0.34321,
+   scan continuing); at rate 1/16, `(8, 512)` gives `δ = 0.82105` vs capacity 0.9375.  The
+   `m`-direction saturates fast (beyond `m ≈ 16d` gains are ~0.003 per doubling); the
+   `d`-direction grows the face only ~0.005 per doubling at `m = 128`.  Within the whole
+   parameter space reachable at `n = 2¹⁸` (`d ≤ m ≤ w`), the counting face at rate 1/2
+   cannot exceed ≈ 0.40, and realistically plateaus ≈ 0.35.
+2. **TR26-164's capacity regime is purely asymptotic.**  Constraint (26) caps the usable
+   radius parameter at `ε < (θ³(1−θ)^{1−θ}/768)^{(5+θ)/θ} ≲ 10⁻⁴³` even at `θ = 1/2` — the
+   paper's capacity phenomenon lives at rates below `~10⁻⁴³`, twenty-plus orders below any
+   prize rate.  At the four prize rates the method's TRUE quantitative content is exactly
+   what the instruments measure.
+
+**Window-fraction law (measured, `n = 2¹⁸`, best certified):** the face crosses a bounded,
+slowly-growing fraction of the Johnson→capacity window at every prize rate —
+
+| rate | Johnson | face (best) | capacity | window fraction |
+|---|---|---|---|---|
+| 1/2 | 0.29289 | 0.34321 (d=24, m=128, interim) | 0.5 | 24 % |
+| 1/4 | 0.5 | 0.56742+ (d=8, m=128, interim) | 0.75 | 27 % |
+| 1/8 | 0.64645 | 0.72008 (d=8, m=96) | 0.875 | 32 % |
+| 1/16 | 0.75 | 0.82105 (d=8, m=512) | 0.9375 | 38 % |
+
+The padding composition is strictly dominated by the direct face at all measured parameters
+(§ above), so this law is currently the quantitative frontier of the entire hidden-derivative
+approach at prize shape.
+
 ## 4.5 The T5.1 √-wall: the LD face cannot reach beyond-Johnson MCA through the known transfer
 
 The in-tree LD⇒MCA chain (`RSLambdaSubJohnsonMCA.lean`, consumer
