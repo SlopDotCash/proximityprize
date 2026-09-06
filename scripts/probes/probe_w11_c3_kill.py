@@ -21,15 +21,16 @@ MECHANISM (this probe's new weapon -- the MULTI-PENCIL LOCK):
     * n=32: u1 = x^4 + c*x^30, c in mu_16: pencils <-> 3-subsets Y of mu_16
       with e3(Y) = -c: ~35 pencils, s = 6 = a-1 at a = 7.
     * n=32: u1 = x^6 - z*x^4, z in mu_16: pencils <-> {s,-s,z}: 7 pencils.
-  agreemax = 6 is EXACT and provable (u1 - codeword is a monic sextic: <= 6
-  roots on an injective domain), so these directions are 7-FAR unconditionally.
+  The degree-six argument applies to the x^6-z*x^4 family with k=4.
+  Higher-degree families require their separately computed agreement census;
+  they are not covered by a sextic root bound.
 
-KILL CONDITIONS:
-  (K1) certified spread bad-count > 3 * (hardest-pushed monomial baseline) at a
-       single (n,k,a,q) -> C=3 refuted in evidence (same standard as the C=2
-       kill: spread side is certificate-verified, baseline is a search plateau).
-  (K2) spread/mono ratio grows n=16 -> n=32 -> the law dies at EVERY constant C
-       (the floor sum_i (n-s) grows ~ m*n vs baseline ~ n/(a-k-1)).
+SEARCH SIGNALS (not theorem-refutation criteria):
+  (K1) certified spread count > 3 * searched monomial baseline identifies a
+       candidate separation. The baseline is only a lower bound on its maximum;
+       refuting C=3 requires a valid upper bound on that maximum.
+  (K2) ratios at n=16 and n=32 are finite observations. Growth at two sizes does
+       not refute every constant C or establish an asymptotic lower bound.
 
 All spread counts are EXACT per candidate (interpolation-trick engine) and the
 decision witnesses are re-verified through per-gamma certificates (an explicit
@@ -414,7 +415,7 @@ def stage_n16(rng):
         print(f'\n-- monomial baseline q={q}:', flush=True)
         bl, _ = mono_baseline(st, a, rng, mb_bud)
         ratio = best[0] / bl if bl else float('inf')
-        verdict = 'C=3 KILLED (in evidence)' if best[0] > 3 * bl else 'C=3 SURVIVES here'
+        verdict = 'spread exceeds 3x searched baseline; C=3 unresolved' if best[0] > 3 * bl else 'no 3x separation found; C=3 unresolved'
         print(f'\n>>> n={n} q={q}: best spread (certified) = {best[0]} '
               f'[{best[1]["label"]}], mono baseline = {bl}, RATIO = {ratio:.3f} '
               f'-> {verdict}', flush=True)
@@ -459,8 +460,8 @@ def stage_n32(rng, heavy_baseline=True):
         else:
             bl = None
         ratio = best[0] / bl if bl else float('nan')
-        verdict = ('C=3 KILLED (in evidence)' if bl and best[0] > 3 * bl
-                   else 'C=3 SURVIVES here' if bl else 'no baseline run')
+        verdict = ('spread exceeds 3x searched baseline; C=3 unresolved' if bl and best[0] > 3 * bl
+                   else 'no 3x separation found; C=3 unresolved' if bl else 'no baseline run')
         print(f'\n>>> n={n} q={q}: best spread (certified) = {best[0]} '
               f'[{best[1]["label"]}], mono baseline = {bl}, RATIO = {ratio} '
               f'-> {verdict}', flush=True)
@@ -482,7 +483,7 @@ def main():
     if args.stage in ('n32', 'all'):
         res['n32'] = stage_n32(rng)
     print('\n' + '=' * 78)
-    print('W11 C=3 KILL SUMMARY (spread counts certificate-verified; baseline = '
+    print('W11 SEARCH SUMMARY (C=3 unresolved) (spread counts certificate-verified; baseline = '
           'hardest-pushed search plateau, honest lower bound):', flush=True)
     for stage, d in res.items():
         for q, v in d.items():
