@@ -15,8 +15,9 @@ that the remaining ProximityGap modules have all been classified as library math
 Three boundaries need different treatment:
 
 - The ProximityGap umbrella stays in ArkLib and drops the moved imports.
-- `Whir/ProtocolSoundness.lean` stays in ArkLib and drops its unused
-  `MCAJohnsonBound` import. Its theorem declarations and proofs remain intact.
+- `Whir/ProtocolSoundness.lean` stays in ArkLib and replaces its campaign
+  `MCAJohnsonBound` import with the direct library dependency
+  `BCIKS20.LocalSeriesProducer`. Its theorem declarations and proofs remain intact.
 - `ToMathlib/RestrictedSumsetGeneral.lean` retains the general restricted-sumset
   theorem. Its three MCA-specific corollaries move to
   `Research/ProximityPrize/Connections/RestrictedSumsetMCA.lean`, consumed by the
@@ -27,8 +28,9 @@ imports. The Research-to-ArkLib direction gate passes after the move. Source
 comparison confirms that all 210 moved files match their original contents
 under the recorded path changes. Documentation, whitespace, and zero-hole checks also pass. The citation map
 has been regenerated for the moved paths, and the final generated-record check
-passes. The full strict-token scan, Lean validation, split-boundary checks, and
-hosted acceptance remain pending.
+passes. The full strict-token scan passes with the nine documented residual
+axioms. Full Lean validation, split-boundary checks, and hosted acceptance remain
+pending.
 
 The hypotheses and obstruction surfaces move with the code; none are discharged
 by relocation. This work does not close issue #2 or the proof gate in #164.
