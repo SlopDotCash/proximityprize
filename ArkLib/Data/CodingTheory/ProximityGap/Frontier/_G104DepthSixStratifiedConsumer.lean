@@ -39,7 +39,7 @@ The probes measure the primitive quadruple concentration of real `μ_n` at `4!·
 (O(1)-ish; `2^{19}` headroom) and the threshold band `n^{0.73..0.87}` stable across ALL
 depths 5..110 — the uniform PrimitiveConcentration family is the pinned input interface of
 the whole padded-collision lane.  Probes:
-`scripts/probes/probe_466_g104_primitive_concentration_ladder.py`,
+`scripts/probes/_out_466_g104_ladder_scoping.txt`,
 `scripts/probes/probe_466_g103_centered_triple_concentration.py`.  Issue #466/#505.
 -/
 
