@@ -13,6 +13,18 @@ registered agreement threshold at each rate, and writes ignored
 values. Registry extraction does not rerun the mathematical verification; new
 records must be checked by the research workflow before publication.
 
+The interactive explanation is `components/ProblemVisual.tsx`. Its arithmetic
+is in `lib/rs-example.ts`: it enumerates all degree-below-four polynomials over
+F17 on the order-eight subgroup. `npm test` checks the independently reproduced
+candidate counts for every slider position and runs automatically before a build.
+This demonstration illustrates ordinary list decoding, not the MCA guarantee.
+
+Keep research claims tied to named theorems and their parameter ranges. The
+[September 2026 claim audit](../kb/audits/research-site-claims-2026-09-06.md)
+records the exact pins, collision bound, interpolation scope, and conditional
+di Benedetto comparison used on the page. Do not turn conditional estimates or
+best registered certificates into an unconditional state-of-the-art claim.
+
 The canonical onboarding files are `mine/MISSION.md`,
 `mine/claude/proximity-prize/SKILL.md`, and `mine/codex/AGENTS.md`. The prebuild
 copies them into the site's committed `public/` files. Commit regenerated copies
