@@ -146,7 +146,12 @@ re-attempts this composition.
 3. The CONSTRAINED design problem: add the seed/list budget (PR #122 ledger functional,
    heuristically `seeds ≈ n²w^{d+1}·Π caps/gap²`) as a second constraint in the occupancy LP —
    the prize-relevant frontier is the Pareto curve (radius vs budget), not the unconstrained
-   face.
+   face.  Quantified: the box-product shape charges the `d=12` wedge winner ~`2^62` in cap
+   product alone (`Π_j min(Smax, Jcap/j)`), putting high-`d` caps hopelessly over any
+   `|F| < 2^256` budget under the PR #122 counting SHAPE.  Identified novel tool (untried in
+   this campaign): a SPARSE-elimination ledger — BKK/mixed-volume bounds see the cap's Newton
+   polytope, exponentially below the box product for wedge caps; reworking the ledger's
+   resultant construction sparsely is the gateway to prize-budget `d ≥ 2` claims.
 4. Exact-rank spot checks of the found downsets at `d ∈ {2,3}, m ≤ 48` (counting-vs-exact gap
    on OPTIMIZED caps, not just boxes).
 5. Lean: formalize the counting bound itself (`rank ≤ Σ_blocks min(rows, cols)` via the
