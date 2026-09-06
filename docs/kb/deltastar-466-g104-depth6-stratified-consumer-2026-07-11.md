@@ -36,7 +36,7 @@ partition `quadCount = prim + zt + antip`.
 - G104 (this): depth-6 consumer; probe measures primitive `M₄` of real `μ_n` at
   `4!·{1,1,1,1,3,7}` — O(1)-ish, `2^{19}` headroom below the hypothesis level.
 - Threshold band `n^{0.73..0.87}` stable across all depths 5..110
-  (`probe_466_g104_primitive_concentration_ladder.py`): the uniform PrimitiveConcentration
+  (`_out_466_g104_ladder_scoping.txt`): the uniform PrimitiveConcentration
   family is the pinned input interface of the whole lane.  With G87W's Stepanov discharge of
   the depth-4 pair hypothesis (concurrent, `4b4011f48`), producing Stepanov analogs for the
   primitive k-sum concentrations (k ≥ 3, target `n^{3/4}`-level) is the natural next
