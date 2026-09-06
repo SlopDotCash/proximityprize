@@ -12,7 +12,7 @@ historical SYZ66 snapshot recorded by this map. The
 production δ* conjecture (`mcaDeltaStar` at rate `1/2` equals the strip value ≈ `1/3`) remains
 **OPEN / ON-BGK**. Nothing here is a closure. Read the parent
 [`CLAUDE.md`](../../Research/ProximityPrize/CLAUDE.md) build/honesty rules and
-`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6 (SYZ54 + SYZ67 addenda) before touching the cone.
+`Research/ProximityPrize/DOSSIER.md` §6 (SYZ54 + SYZ67 addenda) before touching the cone.
 
 ---
 

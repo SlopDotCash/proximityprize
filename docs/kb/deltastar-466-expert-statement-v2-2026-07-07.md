@@ -274,5 +274,5 @@ classical mathematics with pinned formalization gaps — closing them closes the
 **CORE OPEN, ON-BGK. No fabricated closure.**
 
 <sub>🤖 #466 round 21 consolidation lane, 2026-07-07. Supersedes the 2026-07-04 v1 statement.
-Dossier: `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §25–§30; DISPROOF tags `466-r15-*` …
+Dossier: `Research/ProximityPrize/DOSSIER.md` §25–§30; DISPROOF tags `466-r15-*` …
 `466-r20-*`.</sub>

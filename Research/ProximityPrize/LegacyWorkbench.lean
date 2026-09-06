@@ -177,7 +177,7 @@ Produce a *novel, complete, closed* theorem (no further open math, no incomputab
 decoding challenges are distinct fixed-code thresholds.  Known implications between them change
 the radius, the code, or the constants; they do not identify the two exact `δ*` values for free.
 
-⚡ **READ FIRST — the current dossier is `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`** (v3,
+⚡ **READ FIRST — the current dossier is `Research/ProximityPrize/DOSSIER.md`** (v3,
 supersedes the v2/#464 dossier): the complete map of what is proven, refuted, and open as of
 2026-07-01. The freshest state-of-play summary is **§5 below** (added 2026-07-01); the sections
 §1.5/§R.* below it are the historical layers of the campaign (kept because each pivot is itself
@@ -443,7 +443,7 @@ all-fields/all-domains quantifiers have really been discharged; then use the app
 ## §5.  STATE OF PLAY 2026-07-01 — the #464 campaign outcome (read this, then attack)
 ────────────────────────────────────────────────────────────────────────────────
 The #464 campaign (dossier v2 + 179 comments, 2026-06-22 → 06-27) is consolidated in
-`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`. What changed since the sections below were written:
+`Research/ProximityPrize/DOSSIER.md`. What changed since the sections below were written:
 
 **(1) The target is now an exact rational.** `δ* = (1−ρ) − m*/n`, `m* ∈ [m_floor, m_KKH26]`,
 ceiling `m_KKH26 = Θ(n/log n)` PROVEN (`kkh26_mcaDeltaStar_le_of_TZ`). `m* = m_KKH26 ⟺` the wall
@@ -556,7 +556,7 @@ beat the lone-spike countermodel, DISPROOF `466-r2-cmk-lonespike-refuted`). All 
 ONE open inequality `M(μ_n) ≤ C·√(n·log(p/n))` — dossier v3 §2 forms (A)–(D).
 
 **⇒ UPDATE 2026-07-10/11 (session `466` r=3 ladder + P1 D-charge cone + W15 close-out).** Full
-state change recorded in dossier v3 **§42** (`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`) —
+state change recorded in dossier v3 **§42** (`Research/ProximityPrize/DOSSIER.md`) —
 read it before attacking. One-paragraph summary: (A) the B-side r=3 rung is normal-formed
 (R297→R304) to the lossless graded ladder `OffDiagQuadrupleBound` (O(1)) ⟹ `FourthMomentBound`
 ⟹ `DistStratumEnergyBound` within √m, lossless form `FullDFTFlat` (one pointwise quadratic
