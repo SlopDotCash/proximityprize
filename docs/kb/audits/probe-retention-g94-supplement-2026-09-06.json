@@ -1,0 +1,28 @@
+{
+  "source": "scripts/probes/probe_g94_jacobi_cocycle_metric_supplement.py",
+  "source_sha256": "d52a497633f47d71a2ffc701fefe4bb419426a3b6f1755594cc3a57d9e418cc9",
+  "helper": "scripts/probes/probe_g94_jacobi_cocycle_metric.py",
+  "helper_sha256": "9c6fc14e007ba434190b540ccc61ece1f9cb6f917482e1fd8335b565402d399b",
+  "archived_output": "scripts/probes/_out_g94_jacobi_cocycle_metric_supplement.txt",
+  "archived_output_sha256": "ed4dcf82cb7d3546ad352777fa832aeb2f6106a542b80b006642d64db97a0474",
+  "command": "cd scripts/probes && python3 probe_g94_jacobi_cocycle_metric_supplement.py",
+  "exit_code": 0,
+  "baseline_matches_archive": true,
+  "corrected_stdout_differs_only_in_labels": true,
+  "fields": [
+    {
+      "p": 761,
+      "n": 8,
+      "cosets": 95,
+      "near_equal_pairs": 0
+    },
+    {
+      "p": 6529,
+      "n": 16,
+      "cosets": 408,
+      "near_equal_pairs": 0
+    }
+  ],
+  "precision": "NumPy floating point; no exact or interval certificate",
+  "corrected_stdout": "n=8 p=761: pairs with |Deta|<1e-8: 0, max d_tm on those: nan (empty qualifying set reports nan)\n   min spacing of eta values: 2.314e-03 (floating-point spacing; no exact-equality or injectivity conclusion)\n   top domination-forcing pairs for d_tm (Deta, d_tm, eta_i, eta_j):\n     Deta=  5.4398 d_tm=     0.189 eta=(  3.8504, -1.5894) ratio=     28.8\n     Deta=  5.4375 d_tm=    0.1905 eta=(  3.8481, -1.5894) ratio=     28.5\n     Deta=  5.4221 d_tm=    0.2026 eta=(  3.8327, -1.5894) ratio=     26.8\n     Deta=  5.5521 d_tm=    0.2329 eta=(  3.8327, -1.7194) ratio=     23.8\n     Deta=  5.5674 d_tm=    0.2381 eta=(  3.8481, -1.7194) ratio=     23.4\n   sup coset eta=-6.9443 vs bulk eta=-0.0429: Deta=6.9013, d_tm=4.319, d_val=6.9013\nn=16 p=6529: pairs with |Deta|<1e-8: 0, max d_tm on those: nan (empty qualifying set reports nan)\n   min spacing of eta values: 2.573e-04 (floating-point spacing; no exact-equality or injectivity conclusion)\n   top domination-forcing pairs for d_tm (Deta, d_tm, eta_i, eta_j):\n     Deta=  6.6501 d_tm=    0.1648 eta=(  1.3897, -5.2604) ratio=     40.3\n     Deta=  6.6629 d_tm=    0.1661 eta=(  1.4025, -5.2604) ratio=     40.1\n     Deta=  6.6663 d_tm=    0.1665 eta=(  1.4060, -5.2604) ratio=       40\n     Deta=  6.6710 d_tm=    0.1672 eta=(  1.4107, -5.2604) ratio=     39.9\n     Deta=  6.5123 d_tm=    0.1688 eta=( -5.4269,  1.0855) ratio=     38.6\n   sup coset eta=-11.2789 vs bulk eta=0.2400: Deta=11.5189, d_tm=8.742, d_val=11.5189\n"
+}
