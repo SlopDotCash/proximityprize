@@ -34,5 +34,11 @@
       "Research/ProximityPrize/Frontier/_FloorSuccessorNorm.lean": "42ecc3b846dad25020a11fef3900db57196ac309be30e1a67aea924ad35dcff3"
     },
     "validation": "Source signatures and explicit scope statements inspected; no new Lean compilation or analytic-literature verification claimed."
+  },
+  "deployment_scope_correction": {
+    "source": "docs/kb/deltastar-466-deployment-certificates.md",
+    "sha256": "3829166642c6d0883f044b26bbacf04a52d2b29441931061b581a83e8c1769c1",
+    "finding": "Exact integer trace checks do not certify the floating/refined eigenvalues; source section 6 leaves interval root isolation unfinished.",
+    "validation": "Source review only; no computation rerun or checkpoint certification."
   }
 }

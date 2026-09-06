@@ -42,6 +42,26 @@ it is not a new compilation or an independent verification of the cited analytic
 literature. The historical text below is retained for provenance. Neither its
 old wording nor the conditional floor route closes the production threshold.
 
+## Source correction: deployment measurements are not certified root bounds
+
+The retained deployment paragraph describes an “exact-integer period-matrix
+certificate.” The [underlying deployment note](../../docs/kb/deltastar-466-deployment-certificates.md)
+distinguishes exact integer matrix/trace checks from eigenvalues obtained by
+floating-point eigensolvers and high-precision Rayleigh refinement. Its §6
+explicitly leaves interval root isolation unfinished. The recorded procedure
+therefore does not establish certified intervals or a guaranteed number of
+correct digits for the spectral maximum.
+
+The same note records a roughly 60.3 discrepancy between a floating third moment
+and its integer reference despite a tiny second-moment residual. A small Parseval
+residual alone is not an error bound for every period or the maximum. Its §6 also
+places these deployment fields outside the production thin regime, so their
+normalized values do not by themselves establish the production estimate.
+
+This is a correction to the strength of the documented evidence, based on the
+note's own method and caveats. The original computation has not been rerun here;
+the retained checkpoint arrays have not been independently certified.
+
 ## Standalone snapshot 2026-08-16
 
 <!-- BEGIN retained v4 dossier -->
