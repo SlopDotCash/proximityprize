@@ -206,8 +206,81 @@ instance primeFact_R394L1KernelCertificate_1 : Fact (Nat.Prime 1409) := ⟨by no
 
 theorem n8_p1409_g72_pow : (72 : ZMod 1409) ^ 4 = -1 := by decide
 
+-- Split the 13^4 box into 13 independent kernel certificates. A single `decide`
+-- retains enough reduction data to exhaust a 16 GiB CI runner.
+private def kernelSlice (a : Fin 13) : Prop :=
+  ∀ b c d : Fin 13,
+    let v : Fin 4 → Fin 13 := ![a, b, c, d]
+    (∑ j : Fin 4, |((v j : ℕ) : ℤ) - 6|) ≤ (6 : ℤ) →
+    evalVec (72 : ZMod 1409) 4 (fun j => ((v j : ℕ) : ℤ) - 6) = 0 →
+    ∀ j : Fin 4, ((v j : ℕ) : ℤ) = 6
+
+private theorem kernelSlice_0 : kernelSlice 0 := by
+  unfold kernelSlice
+  decide
+private theorem kernelSlice_1 : kernelSlice 1 := by
+  unfold kernelSlice
+  decide
+private theorem kernelSlice_2 : kernelSlice 2 := by
+  unfold kernelSlice
+  decide
+private theorem kernelSlice_3 : kernelSlice 3 := by
+  unfold kernelSlice
+  decide
+private theorem kernelSlice_4 : kernelSlice 4 := by
+  unfold kernelSlice
+  decide
+private theorem kernelSlice_5 : kernelSlice 5 := by
+  unfold kernelSlice
+  decide
+private theorem kernelSlice_6 : kernelSlice 6 := by
+  unfold kernelSlice
+  decide
+private theorem kernelSlice_7 : kernelSlice 7 := by
+  unfold kernelSlice
+  decide
+private theorem kernelSlice_8 : kernelSlice 8 := by
+  unfold kernelSlice
+  decide
+private theorem kernelSlice_9 : kernelSlice 9 := by
+  unfold kernelSlice
+  decide
+private theorem kernelSlice_10 : kernelSlice 10 := by
+  unfold kernelSlice
+  decide
+private theorem kernelSlice_11 : kernelSlice 11 := by
+  unfold kernelSlice
+  decide
+private theorem kernelSlice_12 : kernelSlice 12 := by
+  unfold kernelSlice
+  decide
+
+private theorem kernelSlice_all (a : Fin 13) : kernelSlice a := by
+  fin_cases a
+  · exact kernelSlice_0
+  · exact kernelSlice_1
+  · exact kernelSlice_2
+  · exact kernelSlice_3
+  · exact kernelSlice_4
+  · exact kernelSlice_5
+  · exact kernelSlice_6
+  · exact kernelSlice_7
+  · exact kernelSlice_8
+  · exact kernelSlice_9
+  · exact kernelSlice_10
+  · exact kernelSlice_11
+  · exact kernelSlice_12
+
 theorem n8_r3_p1409_shortKernelFree :
-    ShortKernelFreeL1 (72 : ZMod 1409) 4 6 := by decide
+    ShortKernelFreeL1 (72 : ZMod 1409) 4 6 := by
+  intro c
+  have hvec : (![c 0, c 1, c 2, c 3] : Fin 4 → Fin 13) = c := by
+    ext j
+    fin_cases j <;> rfl
+  have h := kernelSlice_all (c 0) (c 1) (c 2) (c 3)
+  change (let v : Fin 4 → Fin 13 := ![c 0, c 1, c 2, c 3]; _) at h
+  dsimp only at h
+  simpa only [hvec] using h
 
 /-- **The first concrete machine-checked `K = 0` certificate**: at `p = 1409`, `n = 8`,
 depth `r = 3`, there are NO realized vanishing relations — by kernel decision procedure,
