@@ -241,6 +241,16 @@ re-attempts this composition.
    block-diagonal invariants) so a certificate becomes a checked theorem end-to-end at a fixed
    instance.
 
+## 5.4 Instrument limitation: the LINE counting bound is structurally loose
+
+`hdspec_search.line_feasible_int` (sound, exact-integer, `l ≤ L` row cap) is ~2× loose in
+THRESHOLD at `d = 2`-sparse shapes (e.g. `m = 16`, `s₂ ≤ 1`: line-bound `δ ≈ 0.153` vs
+exact-LD `0.302`), unlike the LD counting bound (near-tight on optimized caps).  Mechanism:
+the `Z`-expansion's binomial structure makes line blocks heavily rank-deficient — precisely
+why PR #122 needed its exact `localContactRank` closed form.  Line-lane design scans must
+use exact ranks (`hd_general_rank.node_rank` with `L`) or a ported closed form; counting
+scans of the line system are only useful as sanity ceilings.
+
 ## 5.5 Started: the d = 2 ledger port
 
 `scripts/probes/hd2_ledger_projection.py` — a HEURISTIC arithmetic extension of the PR #122

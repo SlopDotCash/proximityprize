@@ -397,15 +397,17 @@ def line_feasible_int(d, n, k, m, omega, A, L):
         cg = colgrid[g2i]
         if not cg:
             continue
-        # rows_line(g1) = prefix over g1 of rows_ld
+        # rows_line(g1) = sum_{l=0}^{min(g1, L)} rows_ld(g1 - l)  (l = nZ + l0 <= L)
         g1s = sorted(cg)
-        pref = 0
-        last = -1
+        gmax = g1s[-1]
+        ld = [rows_ld(gg, g2) for gg in range(gmax + 1)]
+        pref = [0] * (gmax + 2)
+        for gg in range(gmax + 1):
+            pref[gg + 1] = pref[gg] + ld[gg]
         for g1 in g1s:
-            for gg in range(last + 1, g1 + 1):
-                pref += rows_ld(gg, g2)
-            last = g1
-            rb += min(pref, cg[g1])
+            lo = max(0, g1 - L)
+            rows_line = pref[g1 + 1] - pref[lo]
+            rb += min(rows_line, cg[g1])
     return dim > n * rb, dim, n * rb
 
 
