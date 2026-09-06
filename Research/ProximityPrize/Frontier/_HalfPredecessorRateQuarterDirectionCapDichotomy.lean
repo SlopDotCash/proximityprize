@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._HalfPredecessorRateQuarterObtuse
-import ArkLib.Data.CodingTheory.ProximityGap.Hab25CaptureKernelUD
+import Research.ProximityPrize.Hab25CaptureKernelUD
 
 /-!
 # Rate-quarter direction cap: exact dichotomy and a finite countermodel

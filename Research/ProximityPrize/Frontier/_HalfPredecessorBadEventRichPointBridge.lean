@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._HalfPredecessorLineCoreGeometry
-import ArkLib.Data.CodingTheory.ProximityGap.Hab25CaptureKernel
+import Research.ProximityPrize.Hab25CaptureKernel
 
 /-!
 # Bad MCA events as rich lifted Reed--Solomon points

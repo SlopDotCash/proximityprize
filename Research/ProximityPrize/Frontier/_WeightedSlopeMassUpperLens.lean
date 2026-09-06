@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._DesignMatrixAffineCluster
 import ArkLib.Data.CodingTheory.ProximityGap.CoveragePigeonhole
-import ArkLib.Data.CodingTheory.ProximityGap.MCASecondMoment
+import Research.ProximityPrize.MCASecondMoment
 import ArkLib.Data.CodingTheory.ProximityGap.MCAWitnessSpread
 
 /-!

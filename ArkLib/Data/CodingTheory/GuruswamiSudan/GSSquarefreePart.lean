@@ -11,7 +11,7 @@ import Mathlib.RingTheory.Radical.Basic
 /-!
 # Hab25 §3 Step S5, global form — squarefree-part extraction of the GS interpolant
 
-The paper statement of S5 (`ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean`) is a
+The paper statement of S5 (`Research/ProximityPrize/Hab25Johnson.lean`) is a
 *global* discriminant non-vanishing: replace the GS interpolant `Q` by its squarefree part
 `Q̃` and show `disc_Y(Q̃) ≠ 0`. The in-tree S5 development
 (`GSDiscriminantOverRatFunc` / `GSSeparabilityCharZero` / `GSSeparableCoreDescent`) went

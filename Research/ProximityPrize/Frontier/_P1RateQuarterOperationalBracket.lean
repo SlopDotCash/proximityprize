@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._P1RateQuarterScaleFinalConsumer
-import ArkLib.Data.CodingTheory.ProximityGap.MCAUDRBound
+import Research.ProximityPrize.MCAUDRBound
 
 /-!
 # A two-sided operational bracket for the first-prime rate-quarter code

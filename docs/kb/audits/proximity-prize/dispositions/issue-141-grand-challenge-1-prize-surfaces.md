@@ -10,17 +10,17 @@ Two ABF26 Grand Challenge 1 conjecture surfaces are tracked here. They are the r
 formalization debt:
 
 - `ProximityGap.GrandChallenges.mcaConjecture`
-  ([GrandChallenges.lean](../../../../../ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean)) —
+  ([GrandChallenges.lean](../../../../../Research/ProximityPrize/GrandChallenges.lean)) —
   abstract `ε_mca` uniform bound, ABF26 §4.5 (`conj:mca-conjecture`); constants quantified
   *before* the `∀` over codes (the genuine uniform form).
 - `ProximityGap.MCAGS.epsMCAgs_prizeBound_conjecture`
-  ([MCAGS.lean](../../../../../ArkLib/Data/CodingTheory/ProximityGap/MCAGS.lean)) — GS-exposed form,
+  ([MCAGS.lean](../../../../../Research/ProximityPrize/MCAGS.lean)) — GS-exposed form,
   stated against the real GS-exposed definitions (`epsMCAgs`, `gsListBound`).
 
 ## What was proved (Issue #141 math)
 
 New module
-[MCAGSBounds.lean](../../../../../ArkLib/Data/CodingTheory/ProximityGap/MCAGSBounds.lean),
+[MCAGSBounds.lean](../../../../../Research/ProximityPrize/MCAGSBounds.lean),
 all declarations axiom-clean `[propext, Classical.choice, Quot.sound]`, sorry-free:
 
 - `epsMCAgs_le_one`, `epsMCA_le_one` — both prize errors are suprema of probabilities, hence `≤ 1`.
@@ -64,11 +64,11 @@ genuinely-provable surrounding mathematics.
 
 ```sh
 rg -n 'mcaConjecture|epsMCAgs_prizeBound_conjecture|epsMCAgsPrizeUniformConjecture|#141' \
-  ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean \
-  ArkLib/Data/CodingTheory/ProximityGap/Lattice2.lean \
-  ArkLib/Data/CodingTheory/ProximityGap/MCAGS.lean \
-  ArkLib/Data/CodingTheory/ProximityGap/MCAGSWitness.lean \
-  ArkLib/Data/CodingTheory/ProximityGap/MCAGSBounds.lean \
+  Research/ProximityPrize/GrandChallenges.lean \
+  Research/ProximityPrize/Lattice2.lean \
+  Research/ProximityPrize/MCAGS.lean \
+  Research/ProximityPrize/MCAGSWitness.lean \
+  Research/ProximityPrize/MCAGSBounds.lean \
   docs/kb/audits/proximity-prize
 ```
 

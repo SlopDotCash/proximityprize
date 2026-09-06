@@ -10,7 +10,7 @@ import Mathlib.RingTheory.Polynomial.UniqueFactorization
 # Hab25 §3 Step S4 — factorization of the GS interpolant over `K = F(Z)` (index structure)
 
 This file proves the tractable core of **Step S4** of the Haböck §3 endgame
-(`ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean`), building directly on the
+(`Research/ProximityPrize/Hab25Johnson.lean`), building directly on the
 discharged S2 (`gs_existence_over_ratfunc`, `gs_divisibility_over_ratfunc`) and S3
 (`genericInterpolant_yDegree_le`) steps:
 

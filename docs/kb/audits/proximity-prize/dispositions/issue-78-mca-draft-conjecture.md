@@ -20,7 +20,7 @@ Regression search:
 
 ```sh
 rg -n 'mcaConjecture|conj:mca-conjecture|ignore|draft|§4\.5' \
-  ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean \
+  Research/ProximityPrize/GrandChallenges.lean \
   ArkLib/Data/CodingTheory/ProximityGap/GrandChallengesLattice.lean \
   docs/kb/audits/open-problems-list-decoding-and-correlated-agreement.md \
   docs/kb/audits/proximity-prize

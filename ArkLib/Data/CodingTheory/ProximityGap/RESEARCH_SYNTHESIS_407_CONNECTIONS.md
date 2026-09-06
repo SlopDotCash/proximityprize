@@ -193,7 +193,7 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 **Forms:** F1, F3, F9, F10, F15<br>
 **Walls:** (none)<br>
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/MCAEigenstackOrbitLaw.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MonomialGammaFibration.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MonomialSpectrumEquivariance.lean`, `ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean`
+**Code:** `ArkLib/Data/CodingTheory/ProximityGap/MCAEigenstackOrbitLaw.lean`, `Research/ProximityPrize/MonomialGammaFibration.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MonomialSpectrumEquivariance.lean`, `ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean`
 
 **Connection:** adjacent_card_eq_n_mul_add_zero gives #bad = n·K + [0∈badSet]; orderOf_dvd_badScalarSet_card_of_eigenstack generalizes it to any σ-eigenstack (#bad = ε + (#orbits)·ord(a⁻¹c)); monomial_badSet_mul_invariant specializes to the monomial pencil where the eigenratio is g (order n) so n∣#bad; DyadicLacunaryDeltaStar quantizes #lacBad in units n/gcd(t,n). All are the SAME ⟨g^t⟩-coset action. The far-line incidence I(δ) for the ladder/monomial directions is n·K(δ)+ε with K = number of free dilation orbits = (via Schur reduction boundary_slice_ladder_badSet_card_eq) the dilation-orbits of e-symm-vanishing (k+1)-subset-sum VALUES. The prize budget I(δ)≤n reads K(δ)≤1+o(1): δ* is EXACTLY the radius where K crosses from O(1) to ≥2. This identifies Chai-Fan's orbit count K with the Schur subset-sum fiber.
 
@@ -263,7 +263,7 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 **Forms:** F1, F3, F4<br>
 **Walls:** (none)<br>
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/Hab25K4AffinePinningCardBound.lean`, `ArkLib/Data/CodingTheory/ProximityGap/Hab25CaptureKernel.lean`
+**Code:** `Research/ProximityPrize/Hab25K4AffinePinningCardBound.lean`, `Research/ProximityPrize/Hab25CaptureKernel.lean`
 
 **Connection:** K4_cell_card_le_of_affine_pinning_family proves a cell whose bad scalars are decoded by a single affine pencil (v₀,v₁) has |Ecell|≤Fintype.card ι₀=n, via factorImprove_card_le_n (|improving scalars|≤|disagreeSet|≤n). The governing law is δ*=sup{δ:I(δ)≤q·ε*≈n}. So Hab25's affine-pinned cell bound n is the SAME n as the prize budget. The whole open question 'does I(δ)≤n in the window interior' becomes 'can the bad scalars be partitioned into O(1) affine pencils each contributing ≤n', and Hab25 already proves each pencil gives ≤n. The gap is the NUMBER of cells (GS factors) times n vs budget n.
 
@@ -921,7 +921,7 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 **Forms:** F15, F9, F3<br>
 **Walls:** (none)<br>
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/EsymmFiber.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MonomialGammaFibration.lean`
+**Code:** `ArkLib/Data/CodingTheory/ProximityGap/EsymmFiber.lean`, `ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean`, `Research/ProximityPrize/MonomialGammaFibration.lean`
 
 **Connection:** F15: 'bad ⟺ ∃(k+1)-subset with h_{b−k}(x_S)=0'. The in-tree Schur reduction (residual_ladder_schur) realizes b=k+1: residual ratio=−e₁(x_S)=−h₁(x_S). For general monomial gap (a,b), the residual ratio is h_{b−a}(x_S) reduced mod ∏(X−x_i) (Jacobi-Trudi cofactor), bad-locus = γ with ratio=−γ. The dilation x_S↦g·x_S scales h_j homogeneously: h_j(g·x_S)=g^j·h_j(x_S). Therefore the orbit-law multiplier c=g^{b−a} (MonomialGammaFibration) is EXACTLY the homogeneity weight of the controlling complete-homogeneous polynomial h_{b−a}, and the orbit size n/gcd(b−a,n) is forced by the period of g^{b−a}. Explains the orbit-size arithmetic (currently proven but unexplained) as the homogeneity degree of the Schur cofactor.
 
@@ -1383,7 +1383,7 @@ This is the master synthesis of **insightful cross-form connections** for the Ar
 
 **Forms:** F3, F15, F12<br>
 **Walls:** (none)<br>
-**Code:** `ArkLib/Data/CodingTheory/ProximityGap/MCADualPencilLaw.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MCAIncidenceCensus.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MCASecondMoment.lean`
+**Code:** `ArkLib/Data/CodingTheory/ProximityGap/MCADualPencilLaw.lean`, `ArkLib/Data/CodingTheory/ProximityGap/MCAIncidenceCensus.lean`, `Research/ProximityPrize/MCASecondMoment.lean`
 
 **Connection:** MCADualPencilLaw.dependent_iff_collinear proves a wide matroid circuit of Lagrange dual vectors λ^S (λ^S_i=1/∏_{j∈S∖i}(x_i−x_j)) exists iff the three pair-points (e,m)=(sum,product) are collinear. MCAIncidenceCensus shows over μ_n the dependent triangles split into equal-product 'horizontal', equal-sum 'vertical' (antipodal e=0), plus the open 'slanted' Dickson-curve sections. The λ^S are exactly the (k+1)-subset collision functionals c_T whose distinct VALUES are the bad scalars (MCASecondMoment's c_T, F15 Schur/h_{b-k} vanishing). So the dual-pencil collinearity is the EXACT algebraic relation governing when two functionals collide. The orbit-quantization must be CONSISTENT with this census: orbits ↔ collinear-(e,m) families, the e₂=0 rigidity (F12) is the antipodal vertical family.
 

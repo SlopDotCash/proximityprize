@@ -6,7 +6,7 @@ Tracking issue: lalalune/ArkLib#41
 Files:
 * `ArkLib/Data/CodingTheory/ProximityGap/MuTwoPowDerandRefutation.lean`
 * `ArkLib/Data/CodingTheory/ProximityGap/MuTwoPowDerandRIMRank.lean`
-* `ArkLib/Data/CodingTheory/ProximityGap/PermanentlyBlocked.lean` (dead-route index)
+* `Research/ProximityPrize/PermanentlyBlocked.lean` (dead-route index)
 * `ArkLib/Data/CodingTheory/ProximityGap/GrandChallengeLDThreshold.lean` (Grand LD link)
 
 ## Finding

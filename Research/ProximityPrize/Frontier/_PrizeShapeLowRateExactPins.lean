@@ -9,7 +9,7 @@ import Research.ProximityPrize.Frontier._HalfPredecessorRateSixteenthFullWiring
 import Research.ProximityPrize.Frontier._SeventeenThirtyTwoFullWiring
 import Research.ProximityPrize.Frontier._PrizeShapePrimeP30
 import Research.ProximityPrize.Frontier._PrizeShapePrimeP30Second
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26RegimeSplit
+import Research.ProximityPrize.KKH26RegimeSplit
 import ArkLib.Data.CodingTheory.ProximityGap.MCALowerBound
 
 /-!

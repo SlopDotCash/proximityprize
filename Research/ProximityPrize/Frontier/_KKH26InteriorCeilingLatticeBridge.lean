@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarReduction
-import ArkLib.Data.CodingTheory.ProximityGap.Lattice2.Spec
+import Research.ProximityPrize.Lattice2.Spec
 import ArkLib.Data.CodingTheory.ProximityGap.MCAListBracketInterpolation
 
 /-!

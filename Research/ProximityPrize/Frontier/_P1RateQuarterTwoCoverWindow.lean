@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._P1RateQuarterPencilCountCharge
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26RegimeSplit
+import Research.ProximityPrize.KKH26RegimeSplit
 
 /-!
 # The two-cover window is REALIZED at the literal P1 predecessor: three dense pencils exist

@@ -25,7 +25,7 @@ delta-star statement for plain RS.  The plain-RS subspace-design bypass is struc
 
 ## Lean Surface
 
-New in `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsAdmissible.lean`:
+New in `Research/ProximityPrize/CapacityBoundsAdmissible.lean`:
 
 ```lean
 frs_epsMCA_capacity_gg25_frontier_of_orderOf_ge_of_inter_eta

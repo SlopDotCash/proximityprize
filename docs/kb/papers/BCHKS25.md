@@ -8,9 +8,9 @@ canonical_url: https://eprint.iacr.org/2025/2055
 source_metadata: ../sources/BCHKS25/metadata.yml
 status: seeded
 related_modules:
-  - ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean
+  - Research/ProximityPrize/CapacityBounds.lean
   - ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA.lean
-  - ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean
+  - Research/ProximityPrize/GrandChallenges.lean
   - ArkLib/ToMathlib/Bridge2BCHKS25.lean
 ---
 
@@ -36,11 +36,11 @@ and beyond Johnson, and ties stronger proximity gaps to stronger list-decoding b
 
 ## Main ArkLib Touchpoints
 
-- [`ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean`](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean)
+- [`Research/ProximityPrize/CapacityBounds.lean`](../../../Research/ProximityPrize/CapacityBounds.lean)
   names the external RS proximity-gap and capacity-bound statements.
 - [`ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA.lean`](../../../ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA.lean)
   carries the proximity-gap-to-list-decoding bridge shape.
-- [`ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean`](../../../ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean)
+- [`Research/ProximityPrize/GrandChallenges.lean`](../../../Research/ProximityPrize/GrandChallenges.lean)
   adapts BCHKS-style bounds into `mcaDeltaStar` witnesses.
 - [`ArkLib/ToMathlib/Bridge2BCHKS25.lean`](../../../ArkLib/ToMathlib/Bridge2BCHKS25.lean)
   contains the bad-line witness interface used by downstream consumers.

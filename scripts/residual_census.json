@@ -548,7 +548,7 @@
     {
      "name": "ProximityGap.strictCoeffPolysResidual_of_shareResidual_base",
      "kind": "theorem",
-     "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShareBaseCase.lean",
+     "file": "Research/ProximityPrize/BCIKS20/StrictCoeffPolysShareBaseCase.lean",
      "line": 38,
      "conditional_on_residuals": [
       "StrictCoeffPolysShareResidual"
@@ -691,7 +691,7 @@
     {
      "name": "ArkLib.UnifiedProducerWindowGlue.strictCoeffPolysResidual_of_window",
      "kind": "theorem",
-     "file": "ArkLib/ToMathlib/UnifiedProducerWindowGlue.lean",
+     "file": "Research/ProximityPrize/Support/UnifiedProducerWindowGlue.lean",
      "line": 335,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
@@ -1491,7 +1491,7 @@
     {
      "name": "ArkLib.UnifiedProducerWindowGlue.strictCoeffPolysLargeResidual_of_window",
      "kind": "theorem",
-     "file": "ArkLib/ToMathlib/UnifiedProducerWindowGlue.lean",
+     "file": "Research/ProximityPrize/Support/UnifiedProducerWindowGlue.lean",
      "line": 325,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
@@ -1542,13 +1542,13 @@
   {
    "name": "StrictCoeffPolysShareResidual",
    "fq_name": "ProximityGap.StrictCoeffPolysShareResidual",
-   "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShare.lean",
+   "file": "Research/ProximityPrize/BCIKS20/StrictCoeffPolysShare.lean",
    "line": 76,
    "providers": [
     {
      "name": "ProximityGap.strictCoeffPolysShareResidual_of_cell_decomposition",
      "kind": "theorem",
-     "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShare.lean",
+     "file": "Research/ProximityPrize/BCIKS20/StrictCoeffPolysShare.lean",
      "line": 102,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
@@ -1559,7 +1559,7 @@
     {
      "name": "ProximityGap.strictCoeffPolysShareResidual_of_strictCoeffPolysResidual",
      "kind": "theorem",
-     "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShare.lean",
+     "file": "Research/ProximityPrize/BCIKS20/StrictCoeffPolysShare.lean",
      "line": 180,
      "conditional_on_residuals": [
       "StrictCoeffPolysResidual"
@@ -1573,7 +1573,7 @@
     {
      "name": "ProximityGap.strictCoeffPolysShareResidual_of_exc",
      "kind": "theorem",
-     "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShare.lean",
+     "file": "Research/ProximityPrize/BCIKS20/StrictCoeffPolysShare.lean",
      "line": 195,
      "conditional_on_residuals": [
       "StrictCoeffPolysExcResidual"
@@ -4533,7 +4533,7 @@
     {
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_window",
      "kind": "theorem",
-     "file": "ArkLib/ProofSystem/Stir/WindowCAFeed.lean",
+     "file": "Research/ProximityPrize/Protocols/Stir/WindowCAFeed.lean",
      "line": 75,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
@@ -4592,13 +4592,13 @@
   {
    "name": "K4GradedFactorCellResidual",
    "fq_name": "MutualCorrAgreement.K4GradedFactorCellResidual",
-   "file": "ArkLib/ProofSystem/Whir/MCAJohnsonBound.lean",
+   "file": "Research/ProximityPrize/Protocols/Whir/MCAJohnsonBound.lean",
    "line": 46,
    "providers": [
     {
      "name": "MutualCorrAgreement.K4GradedFactorCellResidual_of_component",
      "kind": "theorem",
-     "file": "ArkLib/ProofSystem/Whir/MCAJohnsonBound.lean",
+     "file": "Research/ProximityPrize/Protocols/Whir/MCAJohnsonBound.lean",
      "line": 87,
      "conditional_on_residuals": [
       "K4ComponentResidual"
@@ -4614,7 +4614,7 @@
   {
    "name": "K4ComponentResidual",
    "fq_name": "MutualCorrAgreement.K4ComponentResidual",
-   "file": "ArkLib/ProofSystem/Whir/MCAJohnsonBound.lean",
+   "file": "Research/ProximityPrize/Protocols/Whir/MCAJohnsonBound.lean",
    "line": 64,
    "providers": [],
    "status": "open"
@@ -4920,7 +4920,7 @@
    "name": "ofListSizeGCXK25_of_gkl24_firstMoment_residual",
    "fq_name": "ProximityGap.GrandChallenges.MCALowerWitness.ofListSizeGCXK25_of_gkl24_firstMoment_residual",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/Connections/ProximityPrizeConnectiveTissue.lean",
+   "file": "Research/ProximityPrize/Connections/ProximityPrizeConnectiveTissue.lean",
    "line": 242,
    "reason": "name does not end in `Residual`"
   },
@@ -4928,7 +4928,7 @@
    "name": "ofListSizeGCXK25_of_gkl24_witnessCover_residual",
    "fq_name": "ProximityGap.GrandChallenges.MCALowerWitness.ofListSizeGCXK25_of_gkl24_witnessCover_residual",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/Connections/ProximityPrizeConnectiveTissue.lean",
+   "file": "Research/ProximityPrize/Connections/ProximityPrizeConnectiveTissue.lean",
    "line": 322,
    "reason": "name does not end in `Residual`"
   },
@@ -4952,7 +4952,7 @@
    "name": "StrictCoeffPolysShareResidualOr",
    "fq_name": "ProximityGap.StrictCoeffPolysShareResidualOr",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShareOr.lean",
+   "file": "Research/ProximityPrize/BCIKS20/StrictCoeffPolysShareOr.lean",
    "line": 54,
    "reason": "name does not end in `Residual`"
   },
@@ -4976,7 +4976,7 @@
    "name": "gkl24_cubeRoot_mca_bound_residual",
    "fq_name": "CodingTheory.gkl24_cubeRoot_mca_bound_residual",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
+   "file": "Research/ProximityPrize/CapacityBoundsProofs.lean",
    "line": 56,
    "reason": "name does not end in `Residual`"
   },
@@ -4984,7 +4984,7 @@
    "name": "bgks20_etaMargin_ca_bound_residual",
    "fq_name": "CodingTheory.bgks20_etaMargin_ca_bound_residual",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
+   "file": "Research/ProximityPrize/CapacityBoundsProofs.lean",
    "line": 65,
    "reason": "name does not end in `Residual`"
   },
@@ -4992,7 +4992,7 @@
    "name": "bchks25_rs_epsCA_item2_residual",
    "fq_name": "CodingTheory.bchks25_rs_epsCA_item2_residual",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
+   "file": "Research/ProximityPrize/CapacityBoundsProofs.lean",
    "line": 101,
    "reason": "name does not end in `Residual`"
   },
@@ -5000,7 +5000,7 @@
    "name": "bchks25_rs_epsMCA_johnson_range_residual",
    "fq_name": "CodingTheory.bchks25_rs_epsMCA_johnson_range_residual",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
+   "file": "Research/ProximityPrize/CapacityBoundsProofs.lean",
    "line": 119,
    "reason": "name does not end in `Residual`"
   },
@@ -5008,7 +5008,7 @@
    "name": "bchks25_kk25_rs_epsCA_lower_capacity_residual",
    "fq_name": "CodingTheory.bchks25_kk25_rs_epsCA_lower_capacity_residual",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
+   "file": "Research/ProximityPrize/CapacityBoundsProofs.lean",
    "line": 135,
    "reason": "name does not end in `Residual`"
   },
@@ -5016,7 +5016,7 @@
    "name": "cs25_rs_epsCA_breakdown_lower_residual",
    "fq_name": "CodingTheory.cs25_rs_epsCA_breakdown_lower_residual",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
+   "file": "Research/ProximityPrize/CapacityBoundsProofs.lean",
    "line": 148,
    "reason": "name does not end in `Residual`"
   },
@@ -5024,7 +5024,7 @@
    "name": "bchks25_rs_epsCA_johnson_jump_residual",
    "fq_name": "CodingTheory.bchks25_rs_epsCA_johnson_jump_residual",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
+   "file": "Research/ProximityPrize/CapacityBoundsProofs.lean",
    "line": 175,
    "reason": "name does not end in `Residual`"
   },
@@ -5032,7 +5032,7 @@
    "name": "gg25_subspaceDesign_epsMCA_residual",
    "fq_name": "CodingTheory.gg25_subspaceDesign_epsMCA_residual",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
+   "file": "Research/ProximityPrize/CapacityBoundsProofs.lean",
    "line": 198,
    "reason": "name does not end in `Residual`"
   },
@@ -5312,7 +5312,7 @@
    "name": "mcaLowerWitness_of_residuals",
    "fq_name": "CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.mcaLowerWitness_of_residuals",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean",
+   "file": "Research/ProximityPrize/Hab25Johnson.lean",
    "line": 429,
    "reason": "name does not end in `Residual`"
   },
@@ -5320,7 +5320,7 @@
    "name": "CS25BreakdownLowerResidualUniversal",
    "fq_name": "ProximityGap.GrandChallenges.CS25BreakdownLowerResidualUniversal",
    "kind": "def",
-   "file": "ArkLib/Data/CodingTheory/ProximityGap/MCAConjectureRefutation.lean",
+   "file": "Research/ProximityPrize/MCAConjectureRefutation.lean",
    "line": 120,
    "reason": "name does not end in `Residual`"
   },

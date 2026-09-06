@@ -74,7 +74,7 @@ always check this census before treating a `*Residual` name as open proof debt.
 - `BCIKS20.HenselNumerator.RestrictedFaaDiBrunoMatchResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MatchProof.lean:42`
 - `ProximityGap.StrictCoeffPolysLargeResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffLargeReduction.lean:96` — conditional providers only (residual deps: `StrictCoeffPolysResidual`; extra assumptions: `hInput`, `hRes`, `hdeg`, `hprod`, `hwin`)
 - `ProximityGap.StrictCoeffPolysExcResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysExceptional.lean:157` — conditional providers only (residual deps: `StrictCoeffPolysExcResidual`, `StrictCoeffPolysResidual`; extra assumptions: `h`, `hbb`)
-- `ProximityGap.StrictCoeffPolysShareResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShare.lean:76` — conditional providers only (residual deps: `StrictCoeffPolysExcResidual`, `StrictCoeffPolysResidual`; extra assumptions: `h`, `hInput`, `hℓ`)
+- `ProximityGap.StrictCoeffPolysShareResidual` — `Research/ProximityPrize/BCIKS20/StrictCoeffPolysShare.lean:76` — conditional providers only (residual deps: `StrictCoeffPolysExcResidual`, `StrictCoeffPolysResidual`; extra assumptions: `h`, `hInput`, `hℓ`)
 - `ArkLib.BoundaryLatticeThresholdLeaf.BoundaryCardLatticeThresholdResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BoundaryLatticeThresholdLeaf.lean:196` — conditional providers only (extra assumptions: `hCanon`, `hExt`, `hProd`)
 - `ArkLib.ProximityGap.AutocorrelationRecursion.CrossBandResidual` — `Research/ProximityPrize/Frontier/Sweep_A02_AutocorrelationRecursion.lean:355`
 - `ProximityGap.Frontier.AntipodalEvenOddDescent.IsolatedCountResidual` — `Research/ProximityPrize/Frontier/_AntipodalEvenOddDescent.lean:165`
@@ -127,8 +127,8 @@ always check this census before treating a `*Residual` name as open proof debt.
 - `Logup.OuterCompletenessResidual` — `ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean:163` — conditional providers only (extra assumptions: `hInit`)
 - `Logup.SumcheckCompletenessResidual` — `ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean:169` — conditional providers only (extra assumptions: `hImplSupp`, `hInit`, `hInner`, `hPerRound`, `hProj`)
 - `Logup.AppendCompletenessResidual` — `ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean:183` — conditional providers only (residual deps: `OuterCompletenessResidual`, `SumcheckCompletenessResidual`, `appendToReductionResidual`; extra assumptions: `hBridge`, `hDir`, `hDir₂`, `hImplSupp`, `hInit`, `himplNF`, `himplSP`, `himplVB`, `hn`)
-- `MutualCorrAgreement.K4GradedFactorCellResidual` — `ArkLib/ProofSystem/Whir/MCAJohnsonBound.lean:46` — conditional providers only (residual deps: `K4ComponentResidual`; extra assumptions: `hcomponent`)
-- `MutualCorrAgreement.K4ComponentResidual` — `ArkLib/ProofSystem/Whir/MCAJohnsonBound.lean:64`
+- `MutualCorrAgreement.K4GradedFactorCellResidual` — `Research/ProximityPrize/Protocols/Whir/MCAJohnsonBound.lean:46` — conditional providers only (residual deps: `K4ComponentResidual`; extra assumptions: `hcomponent`)
+- `MutualCorrAgreement.K4ComponentResidual` — `Research/ProximityPrize/Protocols/Whir/MCAJohnsonBound.lean:64`
 
 ## Residual-Like Near Misses
 
@@ -137,21 +137,21 @@ strict `def ...Residual ... : Prop` census convention. They are not counted in t
 strict open/discharged/refuted totals, but they are still audit surfaces for hidden
 proof debt and naming drift.
 
-- `ProximityGap.GrandChallenges.MCALowerWitness.ofListSizeGCXK25_of_gkl24_firstMoment_residual` — `ArkLib/Data/CodingTheory/Connections/ProximityPrizeConnectiveTissue.lean:242` — `def`; name does not end in `Residual`
-- `ProximityGap.GrandChallenges.MCALowerWitness.ofListSizeGCXK25_of_gkl24_witnessCover_residual` — `ArkLib/Data/CodingTheory/Connections/ProximityPrizeConnectiveTissue.lean:322` — `def`; name does not end in `Residual`
+- `ProximityGap.GrandChallenges.MCALowerWitness.ofListSizeGCXK25_of_gkl24_firstMoment_residual` — `Research/ProximityPrize/Connections/ProximityPrizeConnectiveTissue.lean:242` — `def`; name does not end in `Residual`
+- `ProximityGap.GrandChallenges.MCALowerWitness.ofListSizeGCXK25_of_gkl24_witnessCover_residual` — `Research/ProximityPrize/Connections/ProximityPrizeConnectiveTissue.lean:322` — `def`; name does not end in `Residual`
 - `ProximityToRS.ahiv17_affineLine_correlatedAgreement_residual` — `ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean:1482` — `def`; name does not end in `Residual`
 - `ProximityToRS.ahiv17_rowSpan_to_affineLine_dOverQ_residual` — `ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean:1532` — `def`; name does not end in `Residual`
-- `ProximityGap.StrictCoeffPolysShareResidualOr` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShareOr.lean:54` — `def`; name does not end in `Residual`
+- `ProximityGap.StrictCoeffPolysShareResidualOr` — `Research/ProximityPrize/BCIKS20/StrictCoeffPolysShareOr.lean:54` — `def`; name does not end in `Residual`
 - `ArkLib.Issue64Boundary.BoundaryCardLatticeSubResiduals` — `ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardLatticeSlice.lean:131` — `def`; name does not end in `Residual`
 - `ArkLib.BoundaryCardResidual.BoundaryCardQuantizationResiduals` — `ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardResidual.lean:417` — `def`; name does not end in `Residual`
-- `CodingTheory.gkl24_cubeRoot_mca_bound_residual` — `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean:56` — `def`; name does not end in `Residual`
-- `CodingTheory.bgks20_etaMargin_ca_bound_residual` — `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean:65` — `def`; name does not end in `Residual`
-- `CodingTheory.bchks25_rs_epsCA_item2_residual` — `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean:101` — `def`; name does not end in `Residual`
-- `CodingTheory.bchks25_rs_epsMCA_johnson_range_residual` — `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean:119` — `def`; name does not end in `Residual`
-- `CodingTheory.bchks25_kk25_rs_epsCA_lower_capacity_residual` — `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean:135` — `def`; name does not end in `Residual`
-- `CodingTheory.cs25_rs_epsCA_breakdown_lower_residual` — `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean:148` — `def`; name does not end in `Residual`
-- `CodingTheory.bchks25_rs_epsCA_johnson_jump_residual` — `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean:175` — `def`; name does not end in `Residual`
-- `CodingTheory.gg25_subspaceDesign_epsMCA_residual` — `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean:198` — `def`; name does not end in `Residual`
+- `CodingTheory.gkl24_cubeRoot_mca_bound_residual` — `Research/ProximityPrize/CapacityBoundsProofs.lean:56` — `def`; name does not end in `Residual`
+- `CodingTheory.bgks20_etaMargin_ca_bound_residual` — `Research/ProximityPrize/CapacityBoundsProofs.lean:65` — `def`; name does not end in `Residual`
+- `CodingTheory.bchks25_rs_epsCA_item2_residual` — `Research/ProximityPrize/CapacityBoundsProofs.lean:101` — `def`; name does not end in `Residual`
+- `CodingTheory.bchks25_rs_epsMCA_johnson_range_residual` — `Research/ProximityPrize/CapacityBoundsProofs.lean:119` — `def`; name does not end in `Residual`
+- `CodingTheory.bchks25_kk25_rs_epsCA_lower_capacity_residual` — `Research/ProximityPrize/CapacityBoundsProofs.lean:135` — `def`; name does not end in `Residual`
+- `CodingTheory.cs25_rs_epsCA_breakdown_lower_residual` — `Research/ProximityPrize/CapacityBoundsProofs.lean:148` — `def`; name does not end in `Residual`
+- `CodingTheory.bchks25_rs_epsCA_johnson_jump_residual` — `Research/ProximityPrize/CapacityBoundsProofs.lean:175` — `def`; name does not end in `Residual`
+- `CodingTheory.gg25_subspaceDesign_epsMCA_residual` — `Research/ProximityPrize/CapacityBoundsProofs.lean:198` — `def`; name does not end in `Residual`
 - `ProximityGap.diffStackMCAResidualBelowUDR` — `ArkLib/Data/CodingTheory/ProximityGap/Errors.lean:1597` — `def`; name does not end in `Residual`
 - `ProximityGap.Ownership.residualRatio` — `Research/ProximityPrize/Frontier/PinnedScalarRatioImage.lean:70` — `def`; name does not end in `Residual`
 - `ArkLib.ProximityGap.Frontier.BGKSevenSubsetOverlapDecomposition.residualPair` — `Research/ProximityPrize/Frontier/_BGKSevenSubsetOverlapDecomposition.lean:58` — `def`; name does not end in `Residual`
@@ -186,8 +186,8 @@ proof debt and naming drift.
 - `ArkLib.ProximityGap.Frontier.R393FourFiberPrimitiveDecomposition.swapResidual` — `Research/ProximityPrize/Frontier/_R393FourFiberPrimitiveDecomposition.lean:40` — `def`; result type is `Equiv.Perm (Fin 4)`, not `Prop`
 - `ArkLib.ProximityGap.Frontier.RudnevPointPlaneStall.stallResidual` — `Research/ProximityPrize/Frontier/_RudnevDilutionFixedSavingStall.lean:212` — `def`; result type is `ℝ`, not `Prop`
 - `ArkLib.ProximityGap.Frontier.SYZ33.DisjointResidualSupports` — `Research/ProximityPrize/Frontier/_SYZ33FinalTwoLemmas.lean:130` — `def`; name does not end in `Residual`
-- `CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.mcaLowerWitness_of_residuals` — `ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean:429` — `def`; name does not end in `Residual`
-- `ProximityGap.GrandChallenges.CS25BreakdownLowerResidualUniversal` — `ArkLib/Data/CodingTheory/ProximityGap/MCAConjectureRefutation.lean:120` — `def`; name does not end in `Residual`
+- `CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.mcaLowerWitness_of_residuals` — `Research/ProximityPrize/Hab25Johnson.lean:429` — `def`; name does not end in `Residual`
+- `ProximityGap.GrandChallenges.CS25BreakdownLowerResidualUniversal` — `Research/ProximityPrize/MCAConjectureRefutation.lean:120` — `def`; name does not end in `Residual`
 - `ProximityGap.Ownership.residual` — `ArkLib/Data/CodingTheory/ProximityGap/OwnershipBound.lean:48` — `def`; name does not end in `Residual`
 - `ProximityGap.WBPencil.w2Residual` — `ArkLib/Data/CodingTheory/ProximityGap/W2WindowHalfCount.lean:43` — `def`; result type is `F[X]`, not `Prop`
 - `DuplexSpongeFS.Sponge316.Lemma5_12HonestResidualPaper` — `ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/HonestConsistencyPaper.lean:658` — `def`; name does not end in `Residual`

@@ -154,7 +154,7 @@ Fenzi-Sanso ceiling can be discharged from the concrete KoalaBear cardinality re
 
 The X side improves whenever `ε_mca` or the list size `|Λ|` shrinks. The Phase-1
 framework in
-[`ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean`](../../ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean)
+[`Research/ProximityPrize/GrandChallenges.lean`](../../Research/ProximityPrize/GrandChallenges.lean)
 captures exactly this: a tighter `MCALowerWitness` (a verified `ε_mca(C,δ) ≤ ε*`)
 shrinks the `ε_mca` term inside `toySoundnessError`, which raises the provable
 lower bound `X` and so narrows `securityGap`. Resolving the Grand MCA / List

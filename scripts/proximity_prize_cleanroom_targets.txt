@@ -13,8 +13,8 @@
 # `(h : mcaPrize domain) -> mcaPrize domain`.
 
 # Smoke tests for the current resolution-to-challenge adapters.
-active ArkLib.Data.CodingTheory.ProximityGap.GrandChallenges ProximityGap.GrandChallenges.grandMCAChallenge_of_resolution grandMCAChallenge
-active ArkLib.Data.CodingTheory.ProximityGap.GrandChallenges ProximityGap.GrandChallenges.grandListDecodingChallenge_of_resolution grandListDecodingChallenge
+active Research.ProximityPrize.GrandChallenges ProximityGap.GrandChallenges.grandMCAChallenge_of_resolution grandMCAChallenge
+active Research.ProximityPrize.GrandChallenges ProximityGap.GrandChallenges.grandListDecodingChallenge_of_resolution grandListDecodingChallenge
 
 # Future #120 prize-apex producers. These become active once the theorem names land.
 active ArkLib.Data.CodingTheory.ProximityGap.GrandChallengePrizeResolution ProximityGap.prizeResolution_mca_M521 mcaPrize
