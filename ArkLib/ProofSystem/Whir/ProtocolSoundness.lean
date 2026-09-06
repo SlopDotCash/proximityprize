@@ -10,6 +10,7 @@ import ArkLib.ProofSystem.Whir.ThresholdKSF
 import ArkLib.ProofSystem.Whir.CheckedVerifier
 import ArkLib.ProofSystem.Whir.WhirVectorIOPProof
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.RemainingCore
+import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.LocalSeriesProducer
 import ArkLib.Data.CodingTheory.ProximityGap.Errors
 
 /-!
