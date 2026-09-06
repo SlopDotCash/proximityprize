@@ -24,7 +24,7 @@ R168/S11 prize-square bound
 Verified:
 
 ```text
-scripts/pg-iterate.sh -q ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R200ShiftedQuarterPrizeConsumer.lean
+scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R200ShiftedQuarterPrizeConsumer.lean
 ✅ OK
 ```
 

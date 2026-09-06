@@ -3,7 +3,7 @@
 **Issue #466 · rate-1/2 proximity-gap δ\* · CORE OPEN / ON-BGK · conjecture δ\*=1/3 SURVIVES**
 
 Probe: `scripts/probes/probe_syz53_p_scaling.py`
-Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ53PScaling.lean`
+Lean: `Research/ProximityPrize/Frontier/_SYZ53PScaling.lean`
 Branch: `codex/syz53-p-scaling` (off `fork/research/proximity-prize` @ e2d316597)
 Predecessor: `deltastar-466-syz52-witness-lift-2026-07-11.md` (the anomaly),
 `deltastar-466-g84-*` / `deltastar-466-g85-*` (the small-field-collapse methodology).

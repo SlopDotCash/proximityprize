@@ -4,7 +4,7 @@ Date: 2026-07-08
 
 Artifact:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R221NonzeroCarrierPrizeEndpoint.lean`
+- `Research/ProximityPrize/Frontier/_R221NonzeroCarrierPrizeEndpoint.lean`
 
 ## Result
 
@@ -39,7 +39,7 @@ endpoint.
 Fast lane:
 
 ```bash
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R221NonzeroCarrierPrizeEndpoint.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R221NonzeroCarrierPrizeEndpoint.lean
 ```
 
 Status: passed.

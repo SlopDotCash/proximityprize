@@ -2,7 +2,7 @@
 
 ## Artifact
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeploymentLocalCertificateUniformityGate.lean`
+- `Research/ProximityPrize/Frontier/_DeploymentLocalCertificateUniformityGate.lean`
 
 ## Point
 

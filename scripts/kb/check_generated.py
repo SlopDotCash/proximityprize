@@ -12,7 +12,7 @@ from common import (
     DEFAULT_CITATIONS_JSON,
     DEFAULT_DECLARATIONS_JSON,
     DEFAULT_DEDUP_REPORT,
-    DEFAULT_LEAN_ROOT,
+    DEFAULT_LEAN_ROOTS,
     DEFAULT_REFERENCES_JSON,
     REPO_ROOT,
 )
@@ -43,7 +43,7 @@ def compare_text(name: str, expected: str, actual_path: Path) -> list[str]:
 def expected_citations(keys: list[str]) -> dict[str, object]:
     """Build the expected Lean citation payload."""
 
-    payload = extract_citations(DEFAULT_LEAN_ROOT, keys)
+    payload = extract_citations(DEFAULT_LEAN_ROOTS, keys)
     payload["reference_source"] = str(DEFAULT_REFERENCES_JSON.relative_to(REPO_ROOT))
     return payload
 
@@ -89,7 +89,7 @@ def main() -> int:
             DEFAULT_CITATIONS_JSON,
         )
     )
-    expected_declarations = extract_declarations([DEFAULT_LEAN_ROOT])
+    expected_declarations = extract_declarations(DEFAULT_LEAN_ROOTS)
     refresh_untracked_catalog(
         DEFAULT_DECLARATIONS_JSON, json.dumps(expected_declarations, indent=2) + "\n"
     )

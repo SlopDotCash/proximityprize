@@ -15,7 +15,7 @@ theorems all `[propext, Classical.choice, Quot.sound]`, no `sorry`, no
 `axiom`):
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterThirdPencilExclusion.lean
+Research/ProximityPrize/Frontier/_P1RateQuarterThirdPencilExclusion.lean
 ```
 
 Probe: `scripts/probes/probe_rate_quarter_p1_third_pencil.py` (full

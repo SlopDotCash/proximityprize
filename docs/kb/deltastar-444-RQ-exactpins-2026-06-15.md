@@ -3,7 +3,7 @@
 **Type:** closed related-quantity increment (exact δ* table). **Status:** LANDED, axiom-clean
 (`propext, Classical.choice, Quot.sound`; real `lake build` EXIT 0, 3063 jobs).
 
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/DeltaStarTableN16Fermat.lean`
+**File:** `Research/ProximityPrize/Frontier/DeltaStarTableN16Fermat.lean`
 
 ## What was banked
 

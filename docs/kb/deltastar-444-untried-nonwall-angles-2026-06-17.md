@@ -50,13 +50,13 @@ self-reported 8s do not survive verification.
 | Claim | File | Verified |
 |---|---|---|
 | Large-field combinatorial sufficiency is real, axiom-clean | `ArkLib/Data/CodingTheory/ProximityGap/RSDeltaStarLargeField.lean` | 0 sorry ✓ |
-| Deployed census-weld budget is INFEASIBLE at deep central band | `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CensusBudgetInfeasibleDeepBand.lean` | `not_censusDomination_of_budget_lt_centralBinom`; needs K ≥ centralBinom(m−1) = 2^Θ(m) ✓ |
+| Deployed census-weld budget is INFEASIBLE at deep central band | `Research/ProximityPrize/Frontier/CensusBudgetInfeasibleDeepBand.lean` | `not_censusDomination_of_budget_lt_centralBinom`; needs K ≥ centralBinom(m−1) = 2^Θ(m) ✓ |
 | Field-size lever names census/list bound `K` as the open core | `ArkLib/Data/CodingTheory/ProximityGap/FieldSizeThresholdReduction.lean` | `censusDomination_pin_largeField`; "open core is the census/list bound K" ✓ |
-| Spur two-square cut is VACUOUS on smooth primes | `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SpurEvenValuationTwoSquares.lean` | 0 sorry; vacuous (shows existing p≡3 mod 4 cut empty, not a positive certificate) ✓ |
-| Ideal-lattice/Minkowski floor is dimension-vacuous; sharpening IS BCHKS 1.12 | `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_IdealLatticeMinkowskiCorrected.lean` | own verdict: "reduces R1 to itself"; λ₁ collapses to ~1 at d=2²⁹ ✓ |
-| Energy/Spur prize-regime transfer's deep-r content = the wall | `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfS6_prize_regime_transfer.lean` | self-states "standing open core (the cyclotomic-norm / BGK wall)" ✓ |
-| OP single-orbit persistence reduces to named-open `OPDescentStep` | `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OffBGK_OPSingleOrbitPersistence.lean` | 1 sorry; "the ONE precise descent obligation that remains open" ✓ |
-| deg(#bad_r) < r is MACHINE-REFUTED for raw count; open = `OrbitDegreeBelowFold` | `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OffBGK_DegBadRGrowingSlack.lean` | 1 sorry; "deg(#bad_r) = r EXACTLY at r=3,4" ✓ |
+| Spur two-square cut is VACUOUS on smooth primes | `Research/ProximityPrize/Frontier/_SpurEvenValuationTwoSquares.lean` | 0 sorry; vacuous (shows existing p≡3 mod 4 cut empty, not a positive certificate) ✓ |
+| Ideal-lattice/Minkowski floor is dimension-vacuous; sharpening IS BCHKS 1.12 | `Research/ProximityPrize/Frontier/_IdealLatticeMinkowskiCorrected.lean` | own verdict: "reduces R1 to itself"; λ₁ collapses to ~1 at d=2²⁹ ✓ |
+| Energy/Spur prize-regime transfer's deep-r content = the wall | `Research/ProximityPrize/Frontier/_wfS6_prize_regime_transfer.lean` | self-states "standing open core (the cyclotomic-norm / BGK wall)" ✓ |
+| OP single-orbit persistence reduces to named-open `OPDescentStep` | `Research/ProximityPrize/Frontier/_OffBGK_OPSingleOrbitPersistence.lean` | 1 sorry; "the ONE precise descent obligation that remains open" ✓ |
+| deg(#bad_r) < r is MACHINE-REFUTED for raw count; open = `OrbitDegreeBelowFold` | `Research/ProximityPrize/Frontier/_OffBGK_DegBadRGrowingSlack.lean` | 1 sorry; "deg(#bad_r) = r EXACTLY at r=3,4" ✓ |
 | FRI rbr residual = interior polynomial orbit-count, poly(n) only in Johnson range | `ArkLib/Data/CodingTheory/ProximityGap/BridgeLoop44.lean` | interior case is the open core ✓ |
 
 ---

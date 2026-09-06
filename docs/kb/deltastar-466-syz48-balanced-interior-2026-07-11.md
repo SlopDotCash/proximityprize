@@ -81,6 +81,6 @@ combination roots escape μ_n.
 
 ## Artifacts
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ48BalancedInterior.lean` (10 theorems, axiom-clean)
+- `Research/ProximityPrize/Frontier/_SYZ48BalancedInterior.lean` (10 theorems, axiom-clean)
 - `scripts/probes/probe_syz48_balanced_interior.py`
 - Branch `codex/syz48-balanced-interior` off `fork/research/proximity-prize` @ 658659b0b.

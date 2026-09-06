@@ -770,7 +770,7 @@ characterization of the bad-prime set as a fixed cyclotomic-resultant / height o
 wall, `_AvD2_LinnikWindowCountRequired`) nor touches CORE. No CORE / cancellation / completion /
 moment / capacity claim; CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorBadDefectTowerInvariant.lean`,
+Formal kernel: `Research/ProximityPrize/Frontier/_FloorBadDefectTowerInvariant.lean`,
 theorem `defect_ramification_tower_invariant` (with `R32_eq_S_dilate`, `S_const_term_unit`,
 `oddRamification_tower_invariant`), indexed
 `CampaignProvenIndex.floorBad_defect_ramification_tower_invariant_export`. Axioms ⊆ {propext,
@@ -864,7 +864,7 @@ side of the Door-IV worst-frequency max. It cannot by itself upper-bound the adv
 missing input must still control the max, not just an average. Refuted-lever constraint only: no
 CORE/cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGeomMeanBelowMax.lean`, new
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVGeomMeanBelowMax.lean`, new
 theorems `sum_le_card_mul_max` and `arithMean_le_max`; exported as
 `doorIV_arithMean_le_max_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
@@ -876,7 +876,7 @@ Lens: Lane 3 constraint lemma extending `_DoorIVHalfMassBalanceAtArgmax`. Prior 
 
 VERDICT: the worst-b balance-enriched regime does not hide a shrinking descent gain. A one-half dyadic descent is saturated at the constant factor two when the two coherent halves are equally large, so the missing square-root cancellation cannot come from discarding one half. No CORE/cancellation/moment/completion/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVHalfMassBalanceAtArgmax.lean`, axiom-clean. New theorem `descent_loss_eq_two_of_coherent_balanced`; permanent exports in `CampaignProvenIndex`: `doorIV_halfMassBalance_single_half_pays_floor_export`, `doorIV_halfMassBalance_descent_loss_eq_two_export`, `doorIV_halfMassBalance_descent_loss_le_two_export`. Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVHalfMassBalanceAtArgmax.lean`, axiom-clean. New theorem `descent_loss_eq_two_of_coherent_balanced`; permanent exports in `CampaignProvenIndex`: `doorIV_halfMassBalance_single_half_pays_floor_export`, `doorIV_halfMassBalance_descent_loss_eq_two_export`, `doorIV_halfMassBalance_descent_loss_le_two_export`. Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [nofifthdoor-extremevalue-classical-closure] door-(iii) concrete closure named explicitly (2026-06-19, g55)
 
@@ -886,7 +886,7 @@ FIX: added `extremeValue_mechanism_overshootsBGK_eventually` and `classicalSide_
 
 VERDICT: the citable classical-side closure now names doors (i), (ii), and (iii) separately. This is bookkeeping for the no-fifth-door reduction only; it proves no CORE, cancellation, anti-concentration, completion-saving, or capacity estimate.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoFifthDoorTetrachotomy.lean`, kernel-clean. New theorems: `extremeValue_mechanism_overshootsBGK_eventually`, `classicalSide_closed_all`. Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_NoFifthDoorTetrachotomy.lean`, kernel-clean. New theorems: `extremeValue_mechanism_overshootsBGK_eventually`, `classicalSide_closed_all`. Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [nofifthdoor-pointwise-regime-fix] fixed-q forall premise removed from the no-fifth-door discharge (2026-06-19, g55)
 
@@ -896,7 +896,7 @@ FIX: added the audit guard theorem `not_forall_linear_le_fixed_field` and thread
 
 VERDICT: the no-fifth-door quantifier discharge is now non-vacuous with respect to field size. It remains exactly a Lane-2/3 reduction/backbone statement: classical ceiling-respecting mechanisms at a single admissible thin instance are forced out of prize-scale certification, so any such certificate must be door (iv). No CORE, cancellation, completion-saving, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoFifthDoorTetrachotomy.lean`, with prose repair in `_ShawValueBGKBracket.lean`; kernel-clean. New/updated theorems: `not_forall_linear_le_fixed_field`, `ceilingRespecting_classical_overshoots`, `forces_doorIV_ceilingRespecting`. Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_NoFifthDoorTetrachotomy.lean`, with prose repair in `_ShawValueBGKBracket.lean`; kernel-clean. New/updated theorems: `not_forall_linear_le_fixed_field`, `ceilingRespecting_classical_overshoots`, `forces_doorIV_ceilingRespecting`. Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## 2026-06-17 — SYNTHESIS CAP: DEEP/EXOTIC DIRECT-SUP-NORM SWEEP (18 techniques H1–L5, energy route DEAD) — 0 NEW-DIRECT-HANDLE, 17 REDUCES-TO-FENCE, 1 VACUOUS-AT-PRIZE
 
@@ -13242,7 +13242,7 @@ counterexample needed; the audit is of the in-tree CZ25 / Guruswami–Wang chain
 1. `CZ25CoordFiberCap` is a `def … : Prop` (a named hypothesis), the affine-flat coordinate-fiber
    cap `∑_i #{c∈L : c_i=f_i} ≤ ((|L|−1)·τ(r₀)+1)·n`
    (`ListDecoding/CZ25SpanBoundBridge.lean:92`). The workbench
-   (`PROXIMITY_PRIZE_WORKBENCH.lean:142`) lists it verbatim as the **R2 GAP**.
+   (`Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean:142`) lists it verbatim as the **R2 GAP**.
 2. The ONLY unconditional, axiom-clean discharge of `CZ25CoordFiberCap` in-tree is
    `cz25CoordFiberCap_of_ncard_le_one` (`ListDecoding/CZ25UniqueDecodingSlice.lean:80`), whose
    hypothesis `hle` is "every candidate list has ≤ 1 codeword" = the **unique-decoding /
@@ -14464,7 +14464,7 @@ structure theory is in the wrong universe (additive vs multiplicative; density 2
 window; energy already minimal). The KM/Chang spectral-boosting lineage bounds the *count/dimension*
 of large frequencies but never the single max (the same L∞/L² √n gap already named at faces 3↔4).
 
-IN-TREE: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A9KelleyMekaPFRNoGo.lean` (axiom-clean:
+IN-TREE: `Research/ProximityPrize/Frontier/_A9KelleyMekaPFRNoGo.lean` (axiom-clean:
 propext, Classical.choice, Quot.sound) — `km_vacuous_below_ceiling`, `km_trigger_dead_prizescale`,
 `energy_floor`, `moment_route_ge_card`. `result_type = reduces-to-wall(energy/moment)+km-density-vacuous+pfr-wrong-coset-type`.
 
@@ -14502,7 +14502,7 @@ the catalogue's route-88 verdict ("association-scheme eigenvalue = Krawtchouk = 
 *subcode* sum. Does NOT touch Johnson; falls on the **Cayley-gap/Paley wall horn** (`= W4`).
 
 **IN-TREE (axiom-clean: propext, Classical.choice, Quot.sound):**
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_a5_terwilliger_collapse.lean` — `terwilliger_reduces_to_wall`
+`Research/ProximityPrize/Frontier/_a5_terwilliger_collapse.lean` — `terwilliger_reduces_to_wall`
 (`TerwilligerDiagonalizes ⟹ (operator bound ⟺ wall bound)`), `terwilliger_no_independent_gain`.
 Probes: `scripts/probes/probe_a5_terwilliger{,_collapse,_norm,_decomp,_exact}.py`.
 `result_type = reduces-to-wall(Delsarte-diagonalization = Krawtchouk eigenvalue = incomplete-Gauss-period = W4)`.
@@ -14531,7 +14531,7 @@ however many witness subsets). These functionals differ; the distinct-γ count i
 pinning which IS the open under-det/BGK wall. No free Johnson-side lower bound exists at `δbind`.
 
 **IN-TREE (axiom-clean: propext, Classical.choice, Quot.sound; fast-path audit green):**
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf4OFG_overdet_floor_bridge.lean`:
+`Research/ProximityPrize/Frontier/_wf4OFG_overdet_floor_bridge.lean`:
 - `epsMCA_le_of_perStackBudget` / `OverDetFloorGood_of_perStackBudget` — the EXACT reduction of
   the D3 lower side to ONE counting Prop `PerStackBadScalarBudget C δ B` (uniform per-stack
   distinct-γ count ≤ B with B/q ≤ ε*). UNCONDITIONAL bridge.
@@ -18291,7 +18291,7 @@ n=2^30 = BGK/Paley wall). Density-form vs edge/moment-form is a Legendre-dual re
 the SAME open input. Same funnel as T11 (min-entropy level set), T12 (rate function), A01 (S2 equidist).
 
 **Lean (axiom-clean, real `lake build` OK, `[propext,Classical.choice,Quot.sound]`, 0 sorryAx):**
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT24_affine_koopman_density_reduces.lean` —
+`Research/ProximityPrize/Frontier/_wfT24_affine_koopman_density_reduces.lean` —
 `levelSet_le_moment` (Markov/Parseval level-set inequality = the F1 handle),
 `density_le_normalized_energy` (the count's only spectral bound = normalized energy moment),
 `sharp_density_iff_gaussian_energy` (sharp form `e^{−c t²}≤e^{−t²} ⟺ c≥1` = the sub-Gaussian energy
@@ -18334,7 +18334,7 @@ char-p energy transfer (A01/A15/F1). Probe `K_eff=(E_r/Wick)^{1/r}` FLAT near tr
 cells. Same funnel as T24 (affine Koopman density), T11/T12 (level set / rate function), A01.
 
 **Lean (axiom-clean, `lake env lean` OK, `[propext,Classical.choice,Quot.sound]`, 0 sorryAx):**
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT25_rajchman_density_pure_point.lean` —
+`Research/ProximityPrize/Frontier/_wfT25_rajchman_density_pure_point.lean` —
 `koopmanFourierCoeff_eq_one` (`μ̂_V≡1` on `H_η` ⟹ `δ_1`), `finite_koopman_spectral_mass_is_atomic`
 (total mass exhausted by atoms), `acDensity_does_not_bound_M` (a.c. mass forced `=0` ⟹ `ρ_max` empty),
 `density_surrogate_is_energy` (Wiener `|μ̂|²` mass `= p·E_r − n^{2r}`), `T25_refuted_and_reduces` (synthesis).
@@ -18379,7 +18379,7 @@ is *designed* to give sup-style control, so it had to be settled separately. **S
    2nd-difference gauge: `t²` gives `2≠0`; the `μ_n` exponent progression gives `0` (flat).
 
 **Lean (axiom-clean, real `lake build` OK, `[propext,Classical.choice,Quot.sound]`, 0 sorryAx):**
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfH1_restriction_supgap.lean` —
+`Research/ProximityPrize/Frontier/_wfH1_restriction_supgap.lean` —
 `spatial_value_le_total_mass` + `spatial_value_at_aligned` + `prize_spatial_sup_eq_card` (spatial
 sup = total mass = `n`, kill 1); `restriction_energy_bound_ge_card` + `restriction_energy_above_cs_floor`
 (`L^{2r}` energy input `≥ n`, kill 2 = F1/F12); `restriction_route_dead` (synthesis).
@@ -19391,7 +19391,7 @@ mass proportional to the desired slack. Subdividing into more real pieces does n
 slack is exactly paid for by the minority-sign mass budget. No CORE, cancellation, completion,
 anti-concentration, moment-saving, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMultiPieceSignCoherence.lean`,
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVMultiPieceSignCoherence.lean`,
 new theorem `two_mul_minMass_ge_of_multiPieceCoherence_le`, axiom-clean with axioms contained in
 `{propext, Classical.choice, Quot.sound}`.
 
@@ -19407,7 +19407,7 @@ scale, and for unbounded index it strictly carries the normalized constant upwar
 door-(iv) argument removes the factor. No CORE, cancellation, completion, anti-concentration, moment-saving,
 or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVIndexFactorOvershoot.lean`, new
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVIndexFactorOvershoot.lean`, new
 theorems `prizeScale_le_naiveIncidenceScale_of_one_le_m` and
 `constant_le_scaled_constant_of_one_le_m`, axiom-clean with axioms contained in
 `{propext, Classical.choice, Quot.sound}`.
@@ -19571,7 +19571,7 @@ VERDICT: the reduction target is exact in unnormalized as well as normalized uni
 variance certificate from this lane is equivalent to proving the genuinely arithmetic residual
 `δ=O(1/m)`; no cancellation, anti-concentration, completion saving, or CORE bound is proved here.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhasePairEquidistBudget.lean`,
+Formal kernel: `Research/ProximityPrize/Frontier/_PhasePairEquidistBudget.lean`,
 axiom-clean. New theorems: `prizeProxy_mul_one_sub_le_variance_of_pairResidual` and
 `abs_variance_sub_prizeProxy_le_prizeProxy_mul_of_pairResidual`. Axioms are contained in
 `{propext, Classical.choice, Quot.sound}`.
@@ -19585,7 +19585,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVArgmaxDecouplingNoContro
 
 VERDICT: a growing finite-probe ratio witness is already a finite-support obstruction. It does not need ambient/unmeasured frequency assumptions, full-support candidate positivity, or an argmax coincidence. This is a lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVArgmaxDecouplingNoControl.lean`, new theorems `not_uniformControlOn_of_point_ratio_gt_on` and `no_absolute_constantOn_of_unbounded_point_ratio`, exported from `CampaignProvenIndex` as `doorIV_argmaxDecoupled_point_ratio_gt_no_controlOn_export` and `doorIV_argmaxDecoupled_no_absolute_constOn_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVArgmaxDecouplingNoControl.lean`, new theorems `not_uniformControlOn_of_point_ratio_gt_on` and `no_absolute_constantOn_of_unbounded_point_ratio`, exported from `CampaignProvenIndex` as `doorIV_argmaxDecoupled_point_ratio_gt_no_controlOn_export` and `doorIV_argmaxDecoupled_no_absolute_constOn_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-argmax-decoupled-finite-control-positive] finite measured nontrivial control forces `C > 0` (2026-06-21, g55)
 
@@ -19593,7 +19593,7 @@ Lane: door-(iv) Lane 3 sign-hygiene refinement of `_DoorIVArgmaxDecouplingNoCont
 
 VERDICT: in finite support probes, the positive-constant hypotheses used by finite support-inclusion obstructions are forced by any successful nontrivial control at one positive measured point. This is sign hygiene for lever refutations only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVArgmaxDecouplingNoControl.lean`, new theorem `controlOn_constant_pos_of_positive_target_and_candidate`, exported from `CampaignProvenIndex` as `doorIV_argmaxDecoupled_controlOn_constant_pos_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVArgmaxDecouplingNoControl.lean`, new theorem `controlOn_constant_pos_of_positive_target_and_candidate`, exported from `CampaignProvenIndex` as `doorIV_argmaxDecoupled_controlOn_constant_pos_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-argmax-decoupled-finite-support-monotone] finite obstructions propagate to larger supports (2026-06-21, g55)
 
@@ -19604,7 +19604,7 @@ Lane: door-(iv) Lane 3 finite-support hygiene in `_DoorIVArgmaxDecouplingNoContr
 
 VERDICT: finite ratio/support/endpoint witnesses found on a measured subset cannot be repaired by adding more ambient frequencies. This is a finite-probe lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVArgmaxDecouplingNoControl.lean`, new theorems `uniformControlOn_of_subset` and `not_uniformControlOn_of_subset_not_control`, exported from `CampaignProvenIndex` as `doorIV_argmaxDecoupled_uniformControlOn_of_subset_export` and `doorIV_argmaxDecoupled_no_controlOn_superset_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVArgmaxDecouplingNoControl.lean`, new theorems `uniformControlOn_of_subset` and `not_uniformControlOn_of_subset_not_control`, exported from `CampaignProvenIndex` as `doorIV_argmaxDecoupled_uniformControlOn_of_subset_export` and `doorIV_argmaxDecoupled_no_controlOn_superset_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-multipiece-minority-mass-floor] epsilon coherence saving requires an epsilon/2 minority mass share (2026-06-21, g55)
 
@@ -19612,7 +19612,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVMultiPieceSignCoherence`
 
 VERDICT: a real multi-piece sign refinement does not generate slack by subdivision count. Every claimed epsilon coherence saving must be paid linearly by actual aggregate minority-sign mass at the adversarial frequency. This is a lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMultiPieceSignCoherence.lean`, new theorems `minMass_ge_half_eps_total_of_multiPieceCoherence_le_one_sub_eps` and `not_multiPieceCoherence_le_one_sub_eps_of_minMass_lt_half_eps_total`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVMultiPieceSignCoherence.lean`, new theorems `minMass_ge_half_eps_total_of_multiPieceCoherence_le_one_sub_eps` and `not_multiPieceCoherence_le_one_sub_eps_of_minMass_lt_half_eps_total`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-tower-fixed-width-escape-routes] below-floor tower damping forces width growth or bottom-floor break (2026-06-21, g55)
 
@@ -19622,7 +19622,7 @@ This sweep packages the probe-facing contrapositive: any below-floor target must
 
 VERDICT: the dyadic tower route has only the two escape routes named in Shaw's door-(iv) analysis, width growth or floor decay. The upper coherent tower contributes exactly no damping. This is a lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVCoherenceTowerCollapse.lean`, new theorems `fixed_width_target_forces_bottom_floor_break` and `below_floor_target_forces_width_or_floor_break`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVCoherenceTowerCollapse.lean`, new theorems `fixed_width_target_forces_bottom_floor_break` and `below_floor_target_forces_width_or_floor_break`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-worstb-halfmass-deficit-budget] cross-half loss is exactly coherence deficit times half-mass (2026-06-21, g55)
 
@@ -19632,7 +19632,7 @@ This sweep adds the exact budget identity `M = ρ·H` and therefore `H - M = (1 
 
 VERDICT: the index-2 cross-half lever is fully budgeted. At worst `b`, probes/previous kernel give `ρ = 1`, so the cross-half loss budget is zero and all possible saving must move into the self-similar half-mass recursion. This is a lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVWorstBHalfMassCarriesAll.lean`, new theorems `magnitude_eq_coherence_mul_halfMass` and `halfMass_sub_magnitude_eq_one_sub_coherence_mul_halfMass`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVWorstBHalfMassCarriesAll.lean`, new theorems `magnitude_eq_coherence_mul_halfMass` and `halfMass_sub_magnitude_eq_one_sub_coherence_mul_halfMass`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-worstb-epsilon-deficit-budget] epsilon coherence saving is exactly paid by strict-triangle deficit (2026-06-21, g55)
 
@@ -19642,7 +19642,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVWorstBHalfMassCarriesAll
 
 VERDICT: an advertised epsilon saving in the worst-b cross-half route must be paid linearly by measured deficit mass. Since the worst-b probe/previous kernel gives zero deficit on the canonical split, this route cannot produce any positive epsilon saving there. This is a lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVWorstBHalfMassCarriesAll.lean`, new theorem `coherence_le_one_sub_eps_iff_eps_halfMass_le_deficit`, exported from `CampaignProvenIndex` as `doorIV_worstB_eps_halfMass_deficit_iff_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVWorstBHalfMassCarriesAll.lean`, new theorem `coherence_le_one_sub_eps_iff_eps_halfMass_le_deficit`, exported from `CampaignProvenIndex` as `doorIV_worstB_eps_halfMass_deficit_iff_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 
 ## [doorIV-coherence-saturation-halfmass-excess] measured over-budget half-mass refutes prize under saturation (2026-06-21, g55)
@@ -19651,7 +19651,7 @@ Lane: door-(iv) Lane 1 / Lane 3 constraint refinement of `_DoorIVCoherenceSatura
 
 VERDICT: saturation turns every finite half-mass excess witness into a direct no-go for that proposed prize constant. This is a constraint lemma only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVCoherenceSaturationInsufficient.lean`, new theorem `not_prizeBound_of_saturation_and_halfMass_gt`, exported from `CampaignProvenIndex` as `doorIV_coherenceSaturation_halfMass_excess_refutes_prize_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVCoherenceSaturationInsufficient.lean`, new theorem `not_prizeBound_of_saturation_and_halfMass_gt`, exported from `CampaignProvenIndex` as `doorIV_coherenceSaturation_halfMass_excess_refutes_prize_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-weighted-average-below-max] weighted density / truncation averages still lie below worst-case max (2026-06-21, g55)
 
@@ -19659,7 +19659,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVGeomMeanBelowMax`. The p
 
 VERDICT: changing the averaging measure does not create a worst-case max bound. If `lam i ≤ M` entrywise and `w_i ≥ 0` has total mass `1`, then `Σ w_i lam_i ≤ M`; if the total mass is only `≤ 1` and `0 ≤ M`, the same bound holds. Thus weighted murmuration densities, sampled conjugacy-class averages, and truncated averaging windows remain lower-resolution average-side objects. They cannot by themselves control the adversarial worst frequency `M = max_b |η_b|`. Refuted-lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorems `weightedMean_le_max` and `weightedSubmean_le_max`; exported from `CampaignProvenIndex` as `doorIV_weightedMean_le_max_export` and `doorIV_weightedSubmean_le_max_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorems `weightedMean_le_max` and `weightedSubmean_le_max`; exported from `CampaignProvenIndex` as `doorIV_weightedMean_le_max_export` and `doorIV_weightedSubmean_le_max_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-phaseblind-radial-stats] radial b-summed statistics are invariant under pointwise unit twists (2026-06-21, g55)
 
@@ -19667,7 +19667,7 @@ Lane: door-(iv) Lane 3 constraint lemma backing Shaw's fresh `probe_bsummation_p
 
 VERDICT: the radial side is now kernel-anchored. Any finite statistic that sees a complex period only through `Complex.normSq` is invariant under arbitrary pointwise unit-phase twists, so it cannot distinguish two spectra with the same magnitudes and different phases. Thus radial / moment / `|.|^2` summaries cannot by themselves control the Door-IV worst-frequency phase alignment object. This is a phase-blindness constraint only: no CORE upper bound, no cancellation, no completion saving, no moment saving, no anti-concentration, and no capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPhaseBlindRadialStats.lean`, new theorems `normSq_mul_eq_of_unit`, `radialObservable_eq_of_unit`, `radialSum_invariant_under_unit_twist`, `radialEntry_eq_under_unit_twist`; exported from `CampaignProvenIndex` as `doorIV_radialSum_invariant_under_unit_twist_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVPhaseBlindRadialStats.lean`, new theorems `normSq_mul_eq_of_unit`, `radialObservable_eq_of_unit`, `radialSum_invariant_under_unit_twist`, `radialEntry_eq_under_unit_twist`; exported from `CampaignProvenIndex` as `doorIV_radialSum_invariant_under_unit_twist_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-stepanov-at-bstar-export] per-b* Stepanov saving is exactly MajorArcDegenerate (2026-06-21, g55)
 
@@ -19675,7 +19675,7 @@ Lane: door-(iv) Lane 3 permanent-export rung for Shaw's `_StepanovAtBstar` kerne
 
 VERDICT: the only per-`b*` Stepanov escape route is genuine major-arc algebraic degeneracy beyond the measured full-rank wall. The CampaignProvenIndex now exposes the two citable endpoints: `doorIV_stepanov_bstar_bound_export` and `doorIV_bstar_saving_iff_degenerate_export`. This is a refuted-lever/reduction constraint only: no CORE upper bound, no cancellation, no completion saving, no moment saving, no anti-concentration, and no capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StepanovAtBstar.lean`; permanent exports in `CampaignProvenIndex`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_StepanovAtBstar.lean`; permanent exports in `CampaignProvenIndex`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## door-(iv) ordered-walk/Doob majorant is an exact reformulation target (2026-06-21)
 
@@ -19690,7 +19690,7 @@ VERDICT: DIR9 is a real formulation, not a normalization shortcut. A Doob/vdC pr
 would have to prove a bound as strong as the original Paley/BGK wall because the majorant transfer is
 constant-preserving. No CORE/cancellation/completion/moment/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVOrderedWalkDoobMajorant.lean`,
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVOrderedWalkDoobMajorant.lean`,
 axiom-clean. New theorems: `corePrizeBoundOn_endpoint_of_orderedWalkMajorant`,
 `shawOOne_endpoint_of_orderedWalkMajorant`, and `not_corePrizeBoundOn_radius_of_endpoint_not_core`.
 Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
@@ -19717,7 +19717,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVGeomMeanBelowMax`. The p
 
 VERDICT: murmuration/density/truncated-average evidence cannot hide or manufacture adversarial worst-case upper control. An average above a threshold is only a lower witness for the max, not a mechanism bounding the worst frequency from above. Refuted-lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorems `exists_gt_of_lt_weightedMean` and `exists_gt_of_lt_weightedSubmean`; exported from `CampaignProvenIndex` as `doorIV_weightedMean_gt_forces_point_gt_export` and `doorIV_weightedSubmean_gt_forces_point_gt_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorems `exists_gt_of_lt_weightedMean` and `exists_gt_of_lt_weightedSubmean`; exported from `CampaignProvenIndex` as `doorIV_weightedMean_gt_forces_point_gt_export` and `doorIV_weightedSubmean_gt_forces_point_gt_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-geometric-average-excess-exposes-point] Mahler excess is a lower max witness, not an upper control (2026-06-21, g55)
 
@@ -19725,7 +19725,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVGeomMeanBelowMax`. After
 
 VERDICT: a Mahler-measure/log-average excess cannot hide an upper bound on the adversarial worst conjugate. It only witnesses that the max is at least as large as the excess threshold. This locks the geometric-average side of the average-not-max obstruction: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorem `exists_gt_of_lt_geomMean`; exported from `CampaignProvenIndex` as `doorIV_geomMean_gt_forces_point_gt_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorem `exists_gt_of_lt_geomMean`; exported from `CampaignProvenIndex` as `doorIV_geomMean_gt_forces_point_gt_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-arithmetic-average-excess-exposes-point] uniform density excess is a lower max witness, not an upper control (2026-06-21, g55)
 
@@ -19733,7 +19733,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVGeomMeanBelowMax`. Compl
 
 VERDICT: uniform density excess is only a lower witness for the adversarial max. It cannot certify a worst-case upper bound for Door-IV periods, and it cannot bypass the worst-b coherence problem. No CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorem `exists_gt_of_lt_arithMean`; exported from `CampaignProvenIndex` as `doorIV_arithMean_gt_forces_point_gt_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorem `exists_gt_of_lt_arithMean`; exported from `CampaignProvenIndex` as `doorIV_arithMean_gt_forces_point_gt_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-every-angle-failure-step-index-exports] permanent exports for SOS/depth/monodromy failure-step certificates (2026-06-21, g55)
 
@@ -19741,7 +19741,7 @@ Lane: door-(iv) Lane 3 constraint consolidation. The latest every-angle failure-
 
 VERDICT: these are refuted-lever constraints only. The SOS route lacks a positive-measure Hankel/SOS extension, the sum-product cluster is confined to vacuous depth two at beta four, and the monodromy escape remains abelian lattice-count bookkeeping with no non-abelian `sqrt(q)` term. No CORE upper bound, cancellation, completion, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_A1SOS_hankel_minor2_negative_export`, `doorIV_A1SOS_window_export`, `doorIV_A3_depth_order_mismatch_export`, and `doorIV_A5_monodromy_abelian_all_orders_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_A1SOS_hankel_minor2_negative_export`, `doorIV_A1SOS_window_export`, `doorIV_A3_depth_order_mismatch_export`, and `doorIV_A5_monodromy_abelian_all_orders_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-jacobi-bounded-edge-index-exports] permanent exports for char-p Jacobi bounded-edge relocation (2026-06-21, g55)
 
@@ -19749,7 +19749,7 @@ Lane: door-(iv) Lane 2 capstone/constraint consolidation. The new char-p Jacobi 
 
 VERDICT: the Jacobi tool genuinely relocates the half-power from an exploding char-0 Wick edge to a bounded char-p recurrence object, but the unconditional support-bound ceiling is only `M <= 3S`, hence support-trivial. Prize-scale improvement still requires fine arithmetic control of the recurrence coefficients. No CORE upper bound, cancellation, completion, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_jacobi_edge_le_three_S_export`, `doorIV_jacobi_M_le_three_S_export`, and `doorIV_jacobi_three_S_strictly_above_support_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_jacobi_edge_le_three_S_export`, `doorIV_jacobi_M_le_three_S_export`, and `doorIV_jacobi_three_S_strictly_above_support_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-hermite-turnover-reduction-index-exports] permanent exports for Jacobi form-D early-turnover reduction (2026-06-21, g55)
 
@@ -19757,7 +19757,7 @@ Lane: door-(iv) Lane 2 conditional reduction/capstone consolidation. The Hermite
 
 VERDICT: under the explicit measured edge-turnover model, the prize is exactly early turnover `kstar = O(log p)`. The support-bound/Gershgorin input only proves an `O(n)` turnover ceiling, so it cannot close the prize-scale gap. Conditional reduction/constraint only: the edge-turnover model and early-turnover theorem are not asserted. No CORE upper bound, cancellation, completion, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_hermite_prize_iff_turnover_le_export`, `doorIV_hermite_prize_iff_turnover_le_logp_export`, `doorIV_hermite_turnover_le_free_ceiling_export`, and `doorIV_hermite_free_ceiling_insufficient_for_prize_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_hermite_prize_iff_turnover_le_export`, `doorIV_hermite_prize_iff_turnover_le_logp_export`, `doorIV_hermite_turnover_le_free_ceiling_export`, and `doorIV_hermite_free_ceiling_insufficient_for_prize_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-two-dilate-no-joint-extreme-indexed] permanent exports for structureless half-period dilation coupling (2026-06-21, g55)
 
@@ -19765,7 +19765,7 @@ Lane: door-(iv) Lane 1/3 constraint consolidation for `_DoorIVTwoDilateNoJointEx
 
 VERDICT: the dilation coupling is pinned between the marginal sub-period envelope and a structureless surrogate. It cannot provide either a recursive co-peak transfer or a new anti-concentration saving below the marginal `Smax`; the burden returns to the marginal Gauss-period wall. No CORE upper bound, cancellation, completion, moment-saving, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_twoDilate_le_two_mul_max_export`, `doorIV_twoDilate_no_copeak_recursion_export`, `doorIV_dilate_le_surrogate_le_two_max_export`, and `doorIV_dilate_pinned_between_marginal_and_surrogate_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_twoDilate_le_two_mul_max_export`, `doorIV_twoDilate_no_copeak_recursion_export`, `doorIV_dilate_le_surrogate_le_two_max_export`, and `doorIV_dilate_pinned_between_marginal_and_surrogate_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-coherence-tower-collapse-indexed] permanent exports for fixed-width bottom slack obstruction (2026-06-21, g55)
 
@@ -19773,7 +19773,7 @@ Lane: door-(iv) Lane 1/3 constraint consolidation for `_DoorIVCoherenceTowerColl
 
 VERDICT: fully coherent upper levels contribute product factor exactly `1`; the whole coherence product collapses to the bottom segment. If that bottom segment has fixed width `K` and factors bounded below by `c`, the full product is bounded below by `c^K`, independent of tower height. Therefore any below-floor/logarithmic damping target must prove either a growing number of noncoherent levels or shrinking bottom factors. No CORE upper bound, cancellation, completion, moment-saving, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_tower_product_collapses_to_bottom_export`, `doorIV_tower_product_ge_bottom_floor_export`, `doorIV_tower_product_ge_fixed_width_floor_export`, and `doorIV_below_floor_target_forces_width_or_floor_break_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_tower_product_collapses_to_bottom_export`, `doorIV_tower_product_ge_bottom_floor_export`, `doorIV_tower_product_ge_fixed_width_floor_export`, and `doorIV_below_floor_target_forces_width_or_floor_break_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-dilation-descent-telescope-indexed] permanent exports for saving-free dyadic descent (2026-06-21, g55)
 
@@ -19781,7 +19781,7 @@ Lane: door-(iv) Lane 3 constraint consolidation for `_DoorIVDilationDescentTeles
 
 VERDICT: pure dyadic descent has no hidden sqrt-cancellation. A nontrivial prize-scale descent must prove a genuine per-level factor below the doubling ceiling and then pay the `a`-fold product; the factor-2 recursion alone leaves the whole gap untouched. No CORE upper bound, cancellation, completion, moment-saving, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_dilation_telescope_le_two_pow_mul_export`, `doorIV_dilation_telescope_le_two_pow_of_base_one_export`, and `doorIV_dilation_telescope_per_level_factor_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_dilation_telescope_le_two_pow_mul_export`, `doorIV_dilation_telescope_le_two_pow_of_base_one_export`, and `doorIV_dilation_telescope_per_level_factor_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-cocycle-no-random-edge-indexed] Jacobi-cocycle dispersion has no random-phase edge (2026-06-22, g55)
 
@@ -26037,7 +26037,7 @@ characterization of the bad-prime set as a fixed cyclotomic-resultant / height o
 wall, `_AvD2_LinnikWindowCountRequired`) nor touches CORE. No CORE / cancellation / completion /
 moment / capacity claim; CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorBadDefectTowerInvariant.lean`,
+Formal kernel: `Research/ProximityPrize/Frontier/_FloorBadDefectTowerInvariant.lean`,
 theorem `defect_ramification_tower_invariant` (with `R32_eq_S_dilate`, `S_const_term_unit`,
 `oddRamification_tower_invariant`), indexed
 `CampaignProvenIndex.floorBad_defect_ramification_tower_invariant_export`. Axioms ⊆ {propext,
@@ -26131,7 +26131,7 @@ side of the Door-IV worst-frequency max. It cannot by itself upper-bound the adv
 missing input must still control the max, not just an average. Refuted-lever constraint only: no
 CORE/cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGeomMeanBelowMax.lean`, new
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVGeomMeanBelowMax.lean`, new
 theorems `sum_le_card_mul_max` and `arithMean_le_max`; exported as
 `doorIV_arithMean_le_max_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
@@ -26143,7 +26143,7 @@ Lens: Lane 3 constraint lemma extending `_DoorIVHalfMassBalanceAtArgmax`. Prior 
 
 VERDICT: the worst-b balance-enriched regime does not hide a shrinking descent gain. A one-half dyadic descent is saturated at the constant factor two when the two coherent halves are equally large, so the missing square-root cancellation cannot come from discarding one half. No CORE/cancellation/moment/completion/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVHalfMassBalanceAtArgmax.lean`, axiom-clean. New theorem `descent_loss_eq_two_of_coherent_balanced`; permanent exports in `CampaignProvenIndex`: `doorIV_halfMassBalance_single_half_pays_floor_export`, `doorIV_halfMassBalance_descent_loss_eq_two_export`, `doorIV_halfMassBalance_descent_loss_le_two_export`. Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVHalfMassBalanceAtArgmax.lean`, axiom-clean. New theorem `descent_loss_eq_two_of_coherent_balanced`; permanent exports in `CampaignProvenIndex`: `doorIV_halfMassBalance_single_half_pays_floor_export`, `doorIV_halfMassBalance_descent_loss_eq_two_export`, `doorIV_halfMassBalance_descent_loss_le_two_export`. Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [nofifthdoor-extremevalue-classical-closure] door-(iii) concrete closure named explicitly (2026-06-19, g55)
 
@@ -26153,7 +26153,7 @@ FIX: added `extremeValue_mechanism_overshootsBGK_eventually` and `classicalSide_
 
 VERDICT: the citable classical-side closure now names doors (i), (ii), and (iii) separately. This is bookkeeping for the no-fifth-door reduction only; it proves no CORE, cancellation, anti-concentration, completion-saving, or capacity estimate.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoFifthDoorTetrachotomy.lean`, kernel-clean. New theorems: `extremeValue_mechanism_overshootsBGK_eventually`, `classicalSide_closed_all`. Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_NoFifthDoorTetrachotomy.lean`, kernel-clean. New theorems: `extremeValue_mechanism_overshootsBGK_eventually`, `classicalSide_closed_all`. Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [nofifthdoor-pointwise-regime-fix] fixed-q forall premise removed from the no-fifth-door discharge (2026-06-19, g55)
 
@@ -26163,7 +26163,7 @@ FIX: added the audit guard theorem `not_forall_linear_le_fixed_field` and thread
 
 VERDICT: the no-fifth-door quantifier discharge is now non-vacuous with respect to field size. It remains exactly a Lane-2/3 reduction/backbone statement: classical ceiling-respecting mechanisms at a single admissible thin instance are forced out of prize-scale certification, so any such certificate must be door (iv). No CORE, cancellation, completion-saving, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoFifthDoorTetrachotomy.lean`, with prose repair in `_ShawValueBGKBracket.lean`; kernel-clean. New/updated theorems: `not_forall_linear_le_fixed_field`, `ceilingRespecting_classical_overshoots`, `forces_doorIV_ceilingRespecting`. Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_NoFifthDoorTetrachotomy.lean`, with prose repair in `_ShawValueBGKBracket.lean`; kernel-clean. New/updated theorems: `not_forall_linear_le_fixed_field`, `ceilingRespecting_classical_overshoots`, `forces_doorIV_ceilingRespecting`. Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## 2026-06-17 — SYNTHESIS CAP: DEEP/EXOTIC DIRECT-SUP-NORM SWEEP (18 techniques H1–L5, energy route DEAD) — 0 NEW-DIRECT-HANDLE, 17 REDUCES-TO-FENCE, 1 VACUOUS-AT-PRIZE
 
@@ -38509,7 +38509,7 @@ counterexample needed; the audit is of the in-tree CZ25 / Guruswami–Wang chain
 1. `CZ25CoordFiberCap` is a `def … : Prop` (a named hypothesis), the affine-flat coordinate-fiber
    cap `∑_i #{c∈L : c_i=f_i} ≤ ((|L|−1)·τ(r₀)+1)·n`
    (`ListDecoding/CZ25SpanBoundBridge.lean:92`). The workbench
-   (`PROXIMITY_PRIZE_WORKBENCH.lean:142`) lists it verbatim as the **R2 GAP**.
+   (`Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean:142`) lists it verbatim as the **R2 GAP**.
 2. The ONLY unconditional, axiom-clean discharge of `CZ25CoordFiberCap` in-tree is
    `cz25CoordFiberCap_of_ncard_le_one` (`ListDecoding/CZ25UniqueDecodingSlice.lean:80`), whose
    hypothesis `hle` is "every candidate list has ≤ 1 codeword" = the **unique-decoding /
@@ -39731,7 +39731,7 @@ structure theory is in the wrong universe (additive vs multiplicative; density 2
 window; energy already minimal). The KM/Chang spectral-boosting lineage bounds the *count/dimension*
 of large frequencies but never the single max (the same L∞/L² √n gap already named at faces 3↔4).
 
-IN-TREE: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A9KelleyMekaPFRNoGo.lean` (axiom-clean:
+IN-TREE: `Research/ProximityPrize/Frontier/_A9KelleyMekaPFRNoGo.lean` (axiom-clean:
 propext, Classical.choice, Quot.sound) — `km_vacuous_below_ceiling`, `km_trigger_dead_prizescale`,
 `energy_floor`, `moment_route_ge_card`. `result_type = reduces-to-wall(energy/moment)+km-density-vacuous+pfr-wrong-coset-type`.
 
@@ -39769,7 +39769,7 @@ the catalogue's route-88 verdict ("association-scheme eigenvalue = Krawtchouk = 
 *subcode* sum. Does NOT touch Johnson; falls on the **Cayley-gap/Paley wall horn** (`= W4`).
 
 **IN-TREE (axiom-clean: propext, Classical.choice, Quot.sound):**
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_a5_terwilliger_collapse.lean` — `terwilliger_reduces_to_wall`
+`Research/ProximityPrize/Frontier/_a5_terwilliger_collapse.lean` — `terwilliger_reduces_to_wall`
 (`TerwilligerDiagonalizes ⟹ (operator bound ⟺ wall bound)`), `terwilliger_no_independent_gain`.
 Probes: `scripts/probes/probe_a5_terwilliger{,_collapse,_norm,_decomp,_exact}.py`.
 `result_type = reduces-to-wall(Delsarte-diagonalization = Krawtchouk eigenvalue = incomplete-Gauss-period = W4)`.
@@ -39798,7 +39798,7 @@ however many witness subsets). These functionals differ; the distinct-γ count i
 pinning which IS the open under-det/BGK wall. No free Johnson-side lower bound exists at `δbind`.
 
 **IN-TREE (axiom-clean: propext, Classical.choice, Quot.sound; fast-path audit green):**
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf4OFG_overdet_floor_bridge.lean`:
+`Research/ProximityPrize/Frontier/_wf4OFG_overdet_floor_bridge.lean`:
 - `epsMCA_le_of_perStackBudget` / `OverDetFloorGood_of_perStackBudget` — the EXACT reduction of
   the D3 lower side to ONE counting Prop `PerStackBadScalarBudget C δ B` (uniform per-stack
   distinct-γ count ≤ B with B/q ≤ ε*). UNCONDITIONAL bridge.
@@ -43558,7 +43558,7 @@ n=2^30 = BGK/Paley wall). Density-form vs edge/moment-form is a Legendre-dual re
 the SAME open input. Same funnel as T11 (min-entropy level set), T12 (rate function), A01 (S2 equidist).
 
 **Lean (axiom-clean, real `lake build` OK, `[propext,Classical.choice,Quot.sound]`, 0 sorryAx):**
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT24_affine_koopman_density_reduces.lean` —
+`Research/ProximityPrize/Frontier/_wfT24_affine_koopman_density_reduces.lean` —
 `levelSet_le_moment` (Markov/Parseval level-set inequality = the F1 handle),
 `density_le_normalized_energy` (the count's only spectral bound = normalized energy moment),
 `sharp_density_iff_gaussian_energy` (sharp form `e^{−c t²}≤e^{−t²} ⟺ c≥1` = the sub-Gaussian energy
@@ -43601,7 +43601,7 @@ char-p energy transfer (A01/A15/F1). Probe `K_eff=(E_r/Wick)^{1/r}` FLAT near tr
 cells. Same funnel as T24 (affine Koopman density), T11/T12 (level set / rate function), A01.
 
 **Lean (axiom-clean, `lake env lean` OK, `[propext,Classical.choice,Quot.sound]`, 0 sorryAx):**
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT25_rajchman_density_pure_point.lean` —
+`Research/ProximityPrize/Frontier/_wfT25_rajchman_density_pure_point.lean` —
 `koopmanFourierCoeff_eq_one` (`μ̂_V≡1` on `H_η` ⟹ `δ_1`), `finite_koopman_spectral_mass_is_atomic`
 (total mass exhausted by atoms), `acDensity_does_not_bound_M` (a.c. mass forced `=0` ⟹ `ρ_max` empty),
 `density_surrogate_is_energy` (Wiener `|μ̂|²` mass `= p·E_r − n^{2r}`), `T25_refuted_and_reduces` (synthesis).
@@ -43646,7 +43646,7 @@ is *designed* to give sup-style control, so it had to be settled separately. **S
    2nd-difference gauge: `t²` gives `2≠0`; the `μ_n` exponent progression gives `0` (flat).
 
 **Lean (axiom-clean, real `lake build` OK, `[propext,Classical.choice,Quot.sound]`, 0 sorryAx):**
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfH1_restriction_supgap.lean` —
+`Research/ProximityPrize/Frontier/_wfH1_restriction_supgap.lean` —
 `spatial_value_le_total_mass` + `spatial_value_at_aligned` + `prize_spatial_sup_eq_card` (spatial
 sup = total mass = `n`, kill 1); `restriction_energy_bound_ge_card` + `restriction_energy_above_cs_floor`
 (`L^{2r}` energy input `≥ n`, kill 2 = F1/F12); `restriction_route_dead` (synthesis).
@@ -44658,7 +44658,7 @@ mass proportional to the desired slack. Subdividing into more real pieces does n
 slack is exactly paid for by the minority-sign mass budget. No CORE, cancellation, completion,
 anti-concentration, moment-saving, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMultiPieceSignCoherence.lean`,
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVMultiPieceSignCoherence.lean`,
 new theorem `two_mul_minMass_ge_of_multiPieceCoherence_le`, axiom-clean with axioms contained in
 `{propext, Classical.choice, Quot.sound}`.
 
@@ -44674,7 +44674,7 @@ scale, and for unbounded index it strictly carries the normalized constant upwar
 door-(iv) argument removes the factor. No CORE, cancellation, completion, anti-concentration, moment-saving,
 or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVIndexFactorOvershoot.lean`, new
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVIndexFactorOvershoot.lean`, new
 theorems `prizeScale_le_naiveIncidenceScale_of_one_le_m` and
 `constant_le_scaled_constant_of_one_le_m`, axiom-clean with axioms contained in
 `{propext, Classical.choice, Quot.sound}`.
@@ -44838,7 +44838,7 @@ VERDICT: the reduction target is exact in unnormalized as well as normalized uni
 variance certificate from this lane is equivalent to proving the genuinely arithmetic residual
 `δ=O(1/m)`; no cancellation, anti-concentration, completion saving, or CORE bound is proved here.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhasePairEquidistBudget.lean`,
+Formal kernel: `Research/ProximityPrize/Frontier/_PhasePairEquidistBudget.lean`,
 axiom-clean. New theorems: `prizeProxy_mul_one_sub_le_variance_of_pairResidual` and
 `abs_variance_sub_prizeProxy_le_prizeProxy_mul_of_pairResidual`. Axioms are contained in
 `{propext, Classical.choice, Quot.sound}`.
@@ -44852,7 +44852,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVArgmaxDecouplingNoContro
 
 VERDICT: a growing finite-probe ratio witness is already a finite-support obstruction. It does not need ambient/unmeasured frequency assumptions, full-support candidate positivity, or an argmax coincidence. This is a lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVArgmaxDecouplingNoControl.lean`, new theorems `not_uniformControlOn_of_point_ratio_gt_on` and `no_absolute_constantOn_of_unbounded_point_ratio`, exported from `CampaignProvenIndex` as `doorIV_argmaxDecoupled_point_ratio_gt_no_controlOn_export` and `doorIV_argmaxDecoupled_no_absolute_constOn_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVArgmaxDecouplingNoControl.lean`, new theorems `not_uniformControlOn_of_point_ratio_gt_on` and `no_absolute_constantOn_of_unbounded_point_ratio`, exported from `CampaignProvenIndex` as `doorIV_argmaxDecoupled_point_ratio_gt_no_controlOn_export` and `doorIV_argmaxDecoupled_no_absolute_constOn_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-argmax-decoupled-finite-control-positive] finite measured nontrivial control forces `C > 0` (2026-06-21, g55)
 
@@ -44860,7 +44860,7 @@ Lane: door-(iv) Lane 3 sign-hygiene refinement of `_DoorIVArgmaxDecouplingNoCont
 
 VERDICT: in finite support probes, the positive-constant hypotheses used by finite support-inclusion obstructions are forced by any successful nontrivial control at one positive measured point. This is sign hygiene for lever refutations only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVArgmaxDecouplingNoControl.lean`, new theorem `controlOn_constant_pos_of_positive_target_and_candidate`, exported from `CampaignProvenIndex` as `doorIV_argmaxDecoupled_controlOn_constant_pos_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVArgmaxDecouplingNoControl.lean`, new theorem `controlOn_constant_pos_of_positive_target_and_candidate`, exported from `CampaignProvenIndex` as `doorIV_argmaxDecoupled_controlOn_constant_pos_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-argmax-decoupled-finite-support-monotone] finite obstructions propagate to larger supports (2026-06-21, g55)
 
@@ -44871,7 +44871,7 @@ Lane: door-(iv) Lane 3 finite-support hygiene in `_DoorIVArgmaxDecouplingNoContr
 
 VERDICT: finite ratio/support/endpoint witnesses found on a measured subset cannot be repaired by adding more ambient frequencies. This is a finite-probe lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVArgmaxDecouplingNoControl.lean`, new theorems `uniformControlOn_of_subset` and `not_uniformControlOn_of_subset_not_control`, exported from `CampaignProvenIndex` as `doorIV_argmaxDecoupled_uniformControlOn_of_subset_export` and `doorIV_argmaxDecoupled_no_controlOn_superset_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVArgmaxDecouplingNoControl.lean`, new theorems `uniformControlOn_of_subset` and `not_uniformControlOn_of_subset_not_control`, exported from `CampaignProvenIndex` as `doorIV_argmaxDecoupled_uniformControlOn_of_subset_export` and `doorIV_argmaxDecoupled_no_controlOn_superset_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-multipiece-minority-mass-floor] epsilon coherence saving requires an epsilon/2 minority mass share (2026-06-21, g55)
 
@@ -44879,7 +44879,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVMultiPieceSignCoherence`
 
 VERDICT: a real multi-piece sign refinement does not generate slack by subdivision count. Every claimed epsilon coherence saving must be paid linearly by actual aggregate minority-sign mass at the adversarial frequency. This is a lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMultiPieceSignCoherence.lean`, new theorems `minMass_ge_half_eps_total_of_multiPieceCoherence_le_one_sub_eps` and `not_multiPieceCoherence_le_one_sub_eps_of_minMass_lt_half_eps_total`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVMultiPieceSignCoherence.lean`, new theorems `minMass_ge_half_eps_total_of_multiPieceCoherence_le_one_sub_eps` and `not_multiPieceCoherence_le_one_sub_eps_of_minMass_lt_half_eps_total`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-tower-fixed-width-escape-routes] below-floor tower damping forces width growth or bottom-floor break (2026-06-21, g55)
 
@@ -44889,7 +44889,7 @@ This sweep packages the probe-facing contrapositive: any below-floor target must
 
 VERDICT: the dyadic tower route has only the two escape routes named in Shaw's door-(iv) analysis, width growth or floor decay. The upper coherent tower contributes exactly no damping. This is a lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVCoherenceTowerCollapse.lean`, new theorems `fixed_width_target_forces_bottom_floor_break` and `below_floor_target_forces_width_or_floor_break`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVCoherenceTowerCollapse.lean`, new theorems `fixed_width_target_forces_bottom_floor_break` and `below_floor_target_forces_width_or_floor_break`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-worstb-halfmass-deficit-budget] cross-half loss is exactly coherence deficit times half-mass (2026-06-21, g55)
 
@@ -44899,7 +44899,7 @@ This sweep adds the exact budget identity `M = ρ·H` and therefore `H - M = (1 
 
 VERDICT: the index-2 cross-half lever is fully budgeted. At worst `b`, probes/previous kernel give `ρ = 1`, so the cross-half loss budget is zero and all possible saving must move into the self-similar half-mass recursion. This is a lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVWorstBHalfMassCarriesAll.lean`, new theorems `magnitude_eq_coherence_mul_halfMass` and `halfMass_sub_magnitude_eq_one_sub_coherence_mul_halfMass`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVWorstBHalfMassCarriesAll.lean`, new theorems `magnitude_eq_coherence_mul_halfMass` and `halfMass_sub_magnitude_eq_one_sub_coherence_mul_halfMass`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-worstb-epsilon-deficit-budget] epsilon coherence saving is exactly paid by strict-triangle deficit (2026-06-21, g55)
 
@@ -44909,7 +44909,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVWorstBHalfMassCarriesAll
 
 VERDICT: an advertised epsilon saving in the worst-b cross-half route must be paid linearly by measured deficit mass. Since the worst-b probe/previous kernel gives zero deficit on the canonical split, this route cannot produce any positive epsilon saving there. This is a lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVWorstBHalfMassCarriesAll.lean`, new theorem `coherence_le_one_sub_eps_iff_eps_halfMass_le_deficit`, exported from `CampaignProvenIndex` as `doorIV_worstB_eps_halfMass_deficit_iff_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVWorstBHalfMassCarriesAll.lean`, new theorem `coherence_le_one_sub_eps_iff_eps_halfMass_le_deficit`, exported from `CampaignProvenIndex` as `doorIV_worstB_eps_halfMass_deficit_iff_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 
 ## [doorIV-coherence-saturation-halfmass-excess] measured over-budget half-mass refutes prize under saturation (2026-06-21, g55)
@@ -44918,7 +44918,7 @@ Lane: door-(iv) Lane 1 / Lane 3 constraint refinement of `_DoorIVCoherenceSatura
 
 VERDICT: saturation turns every finite half-mass excess witness into a direct no-go for that proposed prize constant. This is a constraint lemma only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVCoherenceSaturationInsufficient.lean`, new theorem `not_prizeBound_of_saturation_and_halfMass_gt`, exported from `CampaignProvenIndex` as `doorIV_coherenceSaturation_halfMass_excess_refutes_prize_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVCoherenceSaturationInsufficient.lean`, new theorem `not_prizeBound_of_saturation_and_halfMass_gt`, exported from `CampaignProvenIndex` as `doorIV_coherenceSaturation_halfMass_excess_refutes_prize_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-weighted-average-below-max] weighted density / truncation averages still lie below worst-case max (2026-06-21, g55)
 
@@ -44926,7 +44926,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVGeomMeanBelowMax`. The p
 
 VERDICT: changing the averaging measure does not create a worst-case max bound. If `lam i ≤ M` entrywise and `w_i ≥ 0` has total mass `1`, then `Σ w_i lam_i ≤ M`; if the total mass is only `≤ 1` and `0 ≤ M`, the same bound holds. Thus weighted murmuration densities, sampled conjugacy-class averages, and truncated averaging windows remain lower-resolution average-side objects. They cannot by themselves control the adversarial worst frequency `M = max_b |η_b|`. Refuted-lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorems `weightedMean_le_max` and `weightedSubmean_le_max`; exported from `CampaignProvenIndex` as `doorIV_weightedMean_le_max_export` and `doorIV_weightedSubmean_le_max_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorems `weightedMean_le_max` and `weightedSubmean_le_max`; exported from `CampaignProvenIndex` as `doorIV_weightedMean_le_max_export` and `doorIV_weightedSubmean_le_max_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-phaseblind-radial-stats] radial b-summed statistics are invariant under pointwise unit twists (2026-06-21, g55)
 
@@ -44934,7 +44934,7 @@ Lane: door-(iv) Lane 3 constraint lemma backing Shaw's fresh `probe_bsummation_p
 
 VERDICT: the radial side is now kernel-anchored. Any finite statistic that sees a complex period only through `Complex.normSq` is invariant under arbitrary pointwise unit-phase twists, so it cannot distinguish two spectra with the same magnitudes and different phases. Thus radial / moment / `|.|^2` summaries cannot by themselves control the Door-IV worst-frequency phase alignment object. This is a phase-blindness constraint only: no CORE upper bound, no cancellation, no completion saving, no moment saving, no anti-concentration, and no capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPhaseBlindRadialStats.lean`, new theorems `normSq_mul_eq_of_unit`, `radialObservable_eq_of_unit`, `radialSum_invariant_under_unit_twist`, `radialEntry_eq_under_unit_twist`; exported from `CampaignProvenIndex` as `doorIV_radialSum_invariant_under_unit_twist_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVPhaseBlindRadialStats.lean`, new theorems `normSq_mul_eq_of_unit`, `radialObservable_eq_of_unit`, `radialSum_invariant_under_unit_twist`, `radialEntry_eq_under_unit_twist`; exported from `CampaignProvenIndex` as `doorIV_radialSum_invariant_under_unit_twist_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-stepanov-at-bstar-export] per-b* Stepanov saving is exactly MajorArcDegenerate (2026-06-21, g55)
 
@@ -44942,7 +44942,7 @@ Lane: door-(iv) Lane 3 permanent-export rung for Shaw's `_StepanovAtBstar` kerne
 
 VERDICT: the only per-`b*` Stepanov escape route is genuine major-arc algebraic degeneracy beyond the measured full-rank wall. The CampaignProvenIndex now exposes the two citable endpoints: `doorIV_stepanov_bstar_bound_export` and `doorIV_bstar_saving_iff_degenerate_export`. This is a refuted-lever/reduction constraint only: no CORE upper bound, no cancellation, no completion saving, no moment saving, no anti-concentration, and no capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StepanovAtBstar.lean`; permanent exports in `CampaignProvenIndex`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_StepanovAtBstar.lean`; permanent exports in `CampaignProvenIndex`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## door-(iv) ordered-walk/Doob majorant is an exact reformulation target (2026-06-21)
 
@@ -44957,7 +44957,7 @@ VERDICT: DIR9 is a real formulation, not a normalization shortcut. A Doob/vdC pr
 would have to prove a bound as strong as the original Paley/BGK wall because the majorant transfer is
 constant-preserving. No CORE/cancellation/completion/moment/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVOrderedWalkDoobMajorant.lean`,
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVOrderedWalkDoobMajorant.lean`,
 axiom-clean. New theorems: `corePrizeBoundOn_endpoint_of_orderedWalkMajorant`,
 `shawOOne_endpoint_of_orderedWalkMajorant`, and `not_corePrizeBoundOn_radius_of_endpoint_not_core`.
 Axioms are contained in `{propext, Classical.choice, Quot.sound}`.
@@ -44984,7 +44984,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVGeomMeanBelowMax`. The p
 
 VERDICT: murmuration/density/truncated-average evidence cannot hide or manufacture adversarial worst-case upper control. An average above a threshold is only a lower witness for the max, not a mechanism bounding the worst frequency from above. Refuted-lever constraint only: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorems `exists_gt_of_lt_weightedMean` and `exists_gt_of_lt_weightedSubmean`; exported from `CampaignProvenIndex` as `doorIV_weightedMean_gt_forces_point_gt_export` and `doorIV_weightedSubmean_gt_forces_point_gt_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorems `exists_gt_of_lt_weightedMean` and `exists_gt_of_lt_weightedSubmean`; exported from `CampaignProvenIndex` as `doorIV_weightedMean_gt_forces_point_gt_export` and `doorIV_weightedSubmean_gt_forces_point_gt_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-geometric-average-excess-exposes-point] Mahler excess is a lower max witness, not an upper control (2026-06-21, g55)
 
@@ -44992,7 +44992,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVGeomMeanBelowMax`. After
 
 VERDICT: a Mahler-measure/log-average excess cannot hide an upper bound on the adversarial worst conjugate. It only witnesses that the max is at least as large as the excess threshold. This locks the geometric-average side of the average-not-max obstruction: no CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorem `exists_gt_of_lt_geomMean`; exported from `CampaignProvenIndex` as `doorIV_geomMean_gt_forces_point_gt_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorem `exists_gt_of_lt_geomMean`; exported from `CampaignProvenIndex` as `doorIV_geomMean_gt_forces_point_gt_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-arithmetic-average-excess-exposes-point] uniform density excess is a lower max witness, not an upper control (2026-06-21, g55)
 
@@ -45000,7 +45000,7 @@ Lane: door-(iv) Lane 3 constraint refinement of `_DoorIVGeomMeanBelowMax`. Compl
 
 VERDICT: uniform density excess is only a lower witness for the adversarial max. It cannot certify a worst-case upper bound for Door-IV periods, and it cannot bypass the worst-b coherence problem. No CORE upper bound, no cancellation/completion/moment-saving/anti-concentration/capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorem `exists_gt_of_lt_arithMean`; exported from `CampaignProvenIndex` as `doorIV_arithMean_gt_forces_point_gt_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/_DoorIVGeomMeanBelowMax.lean`, new theorem `exists_gt_of_lt_arithMean`; exported from `CampaignProvenIndex` as `doorIV_arithMean_gt_forces_point_gt_export`. Axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-every-angle-failure-step-index-exports] permanent exports for SOS/depth/monodromy failure-step certificates (2026-06-21, g55)
 
@@ -45008,7 +45008,7 @@ Lane: door-(iv) Lane 3 constraint consolidation. The latest every-angle failure-
 
 VERDICT: these are refuted-lever constraints only. The SOS route lacks a positive-measure Hankel/SOS extension, the sum-product cluster is confined to vacuous depth two at beta four, and the monodromy escape remains abelian lattice-count bookkeeping with no non-abelian `sqrt(q)` term. No CORE upper bound, cancellation, completion, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_A1SOS_hankel_minor2_negative_export`, `doorIV_A1SOS_window_export`, `doorIV_A3_depth_order_mismatch_export`, and `doorIV_A5_monodromy_abelian_all_orders_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_A1SOS_hankel_minor2_negative_export`, `doorIV_A1SOS_window_export`, `doorIV_A3_depth_order_mismatch_export`, and `doorIV_A5_monodromy_abelian_all_orders_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-jacobi-bounded-edge-index-exports] permanent exports for char-p Jacobi bounded-edge relocation (2026-06-21, g55)
 
@@ -45016,7 +45016,7 @@ Lane: door-(iv) Lane 2 capstone/constraint consolidation. The new char-p Jacobi 
 
 VERDICT: the Jacobi tool genuinely relocates the half-power from an exploding char-0 Wick edge to a bounded char-p recurrence object, but the unconditional support-bound ceiling is only `M <= 3S`, hence support-trivial. Prize-scale improvement still requires fine arithmetic control of the recurrence coefficients. No CORE upper bound, cancellation, completion, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_jacobi_edge_le_three_S_export`, `doorIV_jacobi_M_le_three_S_export`, and `doorIV_jacobi_three_S_strictly_above_support_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_jacobi_edge_le_three_S_export`, `doorIV_jacobi_M_le_three_S_export`, and `doorIV_jacobi_three_S_strictly_above_support_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-hermite-turnover-reduction-index-exports] permanent exports for Jacobi form-D early-turnover reduction (2026-06-21, g55)
 
@@ -45024,7 +45024,7 @@ Lane: door-(iv) Lane 2 conditional reduction/capstone consolidation. The Hermite
 
 VERDICT: under the explicit measured edge-turnover model, the prize is exactly early turnover `kstar = O(log p)`. The support-bound/Gershgorin input only proves an `O(n)` turnover ceiling, so it cannot close the prize-scale gap. Conditional reduction/constraint only: the edge-turnover model and early-turnover theorem are not asserted. No CORE upper bound, cancellation, completion, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_hermite_prize_iff_turnover_le_export`, `doorIV_hermite_prize_iff_turnover_le_logp_export`, `doorIV_hermite_turnover_le_free_ceiling_export`, and `doorIV_hermite_free_ceiling_insufficient_for_prize_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_hermite_prize_iff_turnover_le_export`, `doorIV_hermite_prize_iff_turnover_le_logp_export`, `doorIV_hermite_turnover_le_free_ceiling_export`, and `doorIV_hermite_free_ceiling_insufficient_for_prize_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-two-dilate-no-joint-extreme-indexed] permanent exports for structureless half-period dilation coupling (2026-06-21, g55)
 
@@ -45032,7 +45032,7 @@ Lane: door-(iv) Lane 1/3 constraint consolidation for `_DoorIVTwoDilateNoJointEx
 
 VERDICT: the dilation coupling is pinned between the marginal sub-period envelope and a structureless surrogate. It cannot provide either a recursive co-peak transfer or a new anti-concentration saving below the marginal `Smax`; the burden returns to the marginal Gauss-period wall. No CORE upper bound, cancellation, completion, moment-saving, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_twoDilate_le_two_mul_max_export`, `doorIV_twoDilate_no_copeak_recursion_export`, `doorIV_dilate_le_surrogate_le_two_max_export`, and `doorIV_dilate_pinned_between_marginal_and_surrogate_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_twoDilate_le_two_mul_max_export`, `doorIV_twoDilate_no_copeak_recursion_export`, `doorIV_dilate_le_surrogate_le_two_max_export`, and `doorIV_dilate_pinned_between_marginal_and_surrogate_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-coherence-tower-collapse-indexed] permanent exports for fixed-width bottom slack obstruction (2026-06-21, g55)
 
@@ -45040,7 +45040,7 @@ Lane: door-(iv) Lane 1/3 constraint consolidation for `_DoorIVCoherenceTowerColl
 
 VERDICT: fully coherent upper levels contribute product factor exactly `1`; the whole coherence product collapses to the bottom segment. If that bottom segment has fixed width `K` and factors bounded below by `c`, the full product is bounded below by `c^K`, independent of tower height. Therefore any below-floor/logarithmic damping target must prove either a growing number of noncoherent levels or shrinking bottom factors. No CORE upper bound, cancellation, completion, moment-saving, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_tower_product_collapses_to_bottom_export`, `doorIV_tower_product_ge_bottom_floor_export`, `doorIV_tower_product_ge_fixed_width_floor_export`, and `doorIV_below_floor_target_forces_width_or_floor_break_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_tower_product_collapses_to_bottom_export`, `doorIV_tower_product_ge_bottom_floor_export`, `doorIV_tower_product_ge_fixed_width_floor_export`, and `doorIV_below_floor_target_forces_width_or_floor_break_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-dilation-descent-telescope-indexed] permanent exports for saving-free dyadic descent (2026-06-21, g55)
 
@@ -45048,7 +45048,7 @@ Lane: door-(iv) Lane 3 constraint consolidation for `_DoorIVDilationDescentTeles
 
 VERDICT: pure dyadic descent has no hidden sqrt-cancellation. A nontrivial prize-scale descent must prove a genuine per-level factor below the doubling ceiling and then pay the `a`-fold product; the factor-2 recursion alone leaves the whole gap untouched. No CORE upper bound, cancellation, completion, moment-saving, anti-concentration, or capacity claim.
 
-Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_dilation_telescope_le_two_pow_mul_export`, `doorIV_dilation_telescope_le_two_pow_of_base_one_export`, and `doorIV_dilation_telescope_per_level_factor_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
+Formal kernel: `Research/ProximityPrize/Frontier/CampaignProvenIndex.lean`, new exports `doorIV_dilation_telescope_le_two_pow_mul_export`, `doorIV_dilation_telescope_le_two_pow_of_base_one_export`, and `doorIV_dilation_telescope_per_level_factor_export`, axiom-clean with axioms contained in `{propext, Classical.choice, Quot.sound}`.
 
 ## [doorIV-cocycle-no-random-edge-indexed] Jacobi-cocycle dispersion has no random-phase edge (2026-06-22, g55)
 
@@ -51057,7 +51057,7 @@ bound" is CLOSED at production thickness. `no_stepanov_B_at_index_three_producti
 ## [466-G87P-G87W-g86-deferral] Build repair: the depth-four sharp-envelope weld was landed against a nonexistent `_G86SharpReconstructionIdentity` module, breaking the umbrella build; the two G86-dependent consumer theorems are deferred, all self-contained convolution/Stepanov content retained (2026-07-11)
 
 Branch-level defect found and repaired. G87P (`0d63e61c5`) and G87W (`4b4011f48`) both
-`import`/`open` `ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86SharpReconstructionIdentity`,
+`import`/`open` `Research.ProximityPrize.Frontier._G86SharpReconstructionIdentity`,
 which was NEVER committed on `research/proximity-prize`. Once `ArkLib.lean` imports G87P/G87W
 (it does, at remote HEAD), the umbrella `ArkLib` build fails for every lane:
 `object file '..._G86SharpReconstructionIdentity.olean' does not exist`. The prior G87W/G87B

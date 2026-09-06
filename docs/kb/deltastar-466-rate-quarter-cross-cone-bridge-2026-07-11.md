@@ -4,7 +4,7 @@
 2026-07-11 session.  First formal bridge attempt between the campaign's two cones.
 **Probe:** `scripts/probes/probe_rate_quarter_p1_cross_cone_bridge.py` (identities
 exact at `M = 257`, calibration exact at prize constants).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCrossConeBridge.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterCrossConeBridge.lean`
 (pg-iterate OK 11s; 6 theorems; full axiom lists read manually via `lake env lean`:
 all exactly `[propext, Classical.choice, Quot.sound]`; no sorryAx, no warnings).
 Build note: `_R309TowerRungFour` olean built once via lake-locked — **the first file

@@ -28,7 +28,7 @@ true bound on a smoothed profile, the final recovery step has to pay its inverse
 I added:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_IncidenceSmoothingDeconvolutionBarrier.lean
+Research/ProximityPrize/Frontier/_IncidenceSmoothingDeconvolutionBarrier.lean
 ```
 
 The main bookkeeping theorem is:
@@ -70,7 +70,7 @@ The target-facing corollaries are:
 Validation:
 
 ```text
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_IncidenceSmoothingDeconvolutionBarrier.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IncidenceSmoothingDeconvolutionBarrier.lean
 ```
 
 passed in 12 seconds.  The audit prints show only the expected `propext` footprint.

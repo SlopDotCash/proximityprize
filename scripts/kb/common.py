@@ -16,6 +16,7 @@ DEFAULT_CITATIONS_JSON = REPO_ROOT / "docs" / "kb" / "_generated" / "lean-citati
 DEFAULT_DECLARATIONS_JSON = REPO_ROOT / "docs" / "kb" / "_generated" / "declarations.json"
 DEFAULT_DEDUP_REPORT = REPO_ROOT / "docs" / "kb" / "_generated" / "dedup-report.md"
 DEFAULT_LEAN_ROOT = REPO_ROOT / "ArkLib"
+DEFAULT_LEAN_ROOTS = [DEFAULT_LEAN_ROOT, REPO_ROOT / "Research"]
 
 
 @dataclass(frozen=True)

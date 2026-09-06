@@ -1,7 +1,7 @@
 # δ* / #466 — SYZ59: the empty middle, with the SYZ55⇄SYZ47 convention reconciled
 
 Date: 2026-07-11
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ59EmptyMiddle.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ59EmptyMiddle.lean`
 Probe: `scripts/probes/probe_syz59_empty_middle.py`
 Status: axiom-clean (propext / Classical.choice / Quot.sound only; no `sorryAx`). CORE OPEN / ON-BGK.
 

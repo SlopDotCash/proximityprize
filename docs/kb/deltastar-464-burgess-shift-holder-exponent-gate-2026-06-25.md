@@ -6,7 +6,7 @@ Status: abstract exponent bookkeeping; not a prize proof.
 
 ## Artifact
 
-- Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BurgessShiftHolderExponentGate.lean`
+- Lean: `Research/ProximityPrize/Frontier/_BurgessShiftHolderExponentGate.lean`
 
 ## Point
 

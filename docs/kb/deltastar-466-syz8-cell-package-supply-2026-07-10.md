@@ -40,7 +40,7 @@ discriminant non-vanishing locus, discharges the cover leg (`Finset.mem_filter`)
 the four redundant base/separability legs (`hbaseA/hsepA/hbase₀/hsep₀`) to a single certificate
 over the disc locus. SYZ8 **lifts that gain from the constructor to the supply Prop itself**.
 
-New file: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ8CellPackageSupply.lean`
+New file: `Research/ProximityPrize/Frontier/_SYZ8CellPackageSupply.lean`
 (namespace `BCIKS20.CellPencilJohnson`, then `ProximityGap.ProductionRegime`). Verbatim
 statements:
 
@@ -97,7 +97,7 @@ surface production) is unchanged; the *interface* an implementor must satisfy is
 
 ## Files
 
-* New: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ8CellPackageSupply.lean`
+* New: `Research/ProximityPrize/Frontier/_SYZ8CellPackageSupply.lean`
 * Consumed: `CellPackageSupplyShrink.lean` (`ofSurfaceRootDiscLocus`, `discLocus_card_ge`),
   `Hab25JohnsonPackageSupply.lean` (`CellPackage`, `CellPackageSupply`,
   `johnsonDischargeStatement_of_packageSupply`), `ProductionRegimeBracket.lean`

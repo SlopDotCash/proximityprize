@@ -51,7 +51,7 @@ generic-pattern angle triples, now a sharply delimited target — not further ex
 
 ## Formal kernel
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R299PatternStratification.lean` — axiom-clean
+`Research/ProximityPrize/Frontier/_R299PatternStratification.lean` — axiom-clean
 (`[propext, Classical.choice, Quot.sound]`, no sorryAx), pg-iterate 33s:
 - `HDPairCollapse` — named (I2) input (classical HD, probe-verified);
 - `pairTwistStratum`, `mixedConv` — the stratum and its depth-(1,1) shadow;

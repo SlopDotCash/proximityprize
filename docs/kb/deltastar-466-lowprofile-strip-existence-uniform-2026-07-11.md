@@ -1,7 +1,7 @@
 # δ* #466 — W15 part 7: the uniform strip existence lemma — a PTE pair, not a counting argument (2026-07-11)
 
 Lane: `ll:low-profile-fiber` (finishing round). File:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15StripExistenceUniform.lean`
+`Research/ProximityPrize/Frontier/_W15StripExistenceUniform.lean`
 (axiom-clean; FULL manual audit: all 8 theorems exactly
 `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, no `ofReduceBool`;
 `pg-iterate` 8s). Probe: `scripts/probes/probe_466_w15_strip_uniform_pte.py`

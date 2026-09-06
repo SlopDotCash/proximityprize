@@ -3,7 +3,7 @@
 **Lane:** P1 rate-quarter — executes the "formalize the dimension count" round on top
 of `deltastar-466-rate-quarter-pencil-harvest-cap-2026-07-11.md`.
 **Probe:** `scripts/probes/probe_rate_quarter_p1_dimension_deficit.py` (exact).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterDimensionDeficit.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterDimensionDeficit.lean`
 (pg-iterate OK 14s; 7 theorems; full axiom lists read manually via `lake env lean`:
 6 exactly `[propext, Classical.choice, Quot.sound]`, 1 `[propext]`; no sorryAx).
 Build note: `_P1RateQuarterPencilHarvestCap` olean built once via

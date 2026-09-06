@@ -7,7 +7,7 @@
 `GradedExchange` — the single named residual SYZ62 left behind — is now **proved
 unconditionally and axiom-clean**, for *every* rank-2 submodule of `K[X]³` and every weight
 vector `d`. Landed in
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ63ExchangeStep.lean`.
+`Research/ProximityPrize/Frontier/_SYZ63ExchangeStep.lean`.
 
 Axiom audit (all five public results): `[propext, Classical.choice, Quot.sound]` only — no
 `sorryAx`, no `native_decide`.

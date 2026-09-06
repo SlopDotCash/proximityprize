@@ -87,7 +87,7 @@ weaken, that wall.
 
 ## Artifacts
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A02_AutocorrelationRecursion.lean`
+- `Research/ProximityPrize/Frontier/Sweep_A02_AutocorrelationRecursion.lean`
   (axiom-clean: `energy_succ_eq`, `crossTerm_le`, `energy_succ_le_sq`, `free_deep_tail`,
    `free_tail_n8/n16/n8_below`, `CrossBandResidual`, `residual_band_nonempty_n8`).
 - `scripts/probes/sweep_A02_autocorr.py` (exact recursion + autocorr-cap + crude-vs-DM at

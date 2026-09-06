@@ -2,7 +2,7 @@
 
 **Lane:** P1 rate-quarter — eighth round of the 2026-07-11 arc, following the
 pair-cloud second moment (clusters confined to sizes 3–5).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterClusterConfinement.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterClusterConfinement.lean`
 (pg-iterate OK 10s; 11 theorems; full axiom lists read manually via `lake env lean`:
 9 exactly `[propext, Classical.choice, Quot.sound]`, 2 `[propext]`; no sorryAx, no
 warnings).  Constants Python-verified exactly before formalization.

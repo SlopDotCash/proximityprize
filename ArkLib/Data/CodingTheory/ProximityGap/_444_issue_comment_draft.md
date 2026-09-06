@@ -36,6 +36,6 @@ Bombieri–Pila determinant method (wrong category: lattice-points-in-`𝔭`-mod
 ```
 python3 -u scripts/probes/probe_444_monomial_descent.py     # descent identity 200/200; monomial constancy
 python3 -u scripts/probes/probe_444_worstword_exponent.py    # worst weight-2 word, saturation
-bash scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A40_EvenOddDescentIdentity.lean
+bash scripts/pg-iterate.sh Research/ProximityPrize/Frontier/Sweep_A40_EvenOddDescentIdentity.lean
 ```
 Docs: `docs/kb/deltastar-444-evenodd-descent.md`. Honesty contract held — every claim tagged verified/formalized/open; no fabricated closure.

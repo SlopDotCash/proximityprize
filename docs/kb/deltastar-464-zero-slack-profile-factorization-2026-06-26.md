@@ -42,7 +42,7 @@ without changing their bad-scalar count.
 
 ## Lean Additions
 
-In `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean`:
+In `Research/ProximityPrize/Frontier/_ProfileFiberSlackDominance.lean`:
 
 ```lean
 ProfileBadCountRepresented

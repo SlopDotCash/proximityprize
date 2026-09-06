@@ -23,7 +23,7 @@ parallel worktree). So this is a genuinely new, non-duplicate brick.
 
 ## What landed (axiom-clean, `sorry`-free)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A35_ShawOperator.lean`, namespace
+`Research/ProximityPrize/Frontier/Sweep_A35_ShawOperator.lean`, namespace
 `ArkLib.ProximityGap.Frontier.ShawOperatorA35`, over an abstract finite additive group `G`
 (the `F_q^+` model), `D : Finset G` (the `μ_n` model):
 

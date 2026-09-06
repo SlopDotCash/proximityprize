@@ -1,7 +1,7 @@
 # G102: depth zero is the deterministic positive anomaly floor
 
 Lean artifact:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G102DepthZeroAnomalyFloor.lean`.
+`Research/ProximityPrize/Frontier/_G102DepthZeroAnomalyFloor.lean`.
 
 G101 expresses `DCEnergyBound` as a signed sum over maximal-cancellation depths. G102 pins the
 fully cancelled term.

@@ -17,7 +17,7 @@ Using R210's normalized Cauchy step, the parent spectrum satisfies
 The new Lean file is:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R211NonzeroNormalizedSqDilationConsumer.lean
+Research/ProximityPrize/Frontier/_R211NonzeroNormalizedSqDilationConsumer.lean
 ```
 
 It also proves that the normalized-square quarter-MGF sum is invariant under

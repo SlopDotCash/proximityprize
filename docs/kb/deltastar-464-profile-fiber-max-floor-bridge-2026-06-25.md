@@ -9,7 +9,7 @@ Status: **composition bridge**, not a delta-star proof.
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberMaxFloorBridge.lean
+Research/ProximityPrize/Frontier/_ProfileFiberMaxFloorBridge.lean
 ```
 
 connects two existing guardrails:

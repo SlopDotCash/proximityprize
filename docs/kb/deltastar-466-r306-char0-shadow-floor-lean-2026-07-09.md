@@ -1,6 +1,6 @@
 # #466 R306 — the char-0 shadow floor, machine-checked (r305 classification formalized in Lean)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R306Depth3CharZeroFloor.lean`
+`Research/ProximityPrize/Frontier/_R306Depth3CharZeroFloor.lean`
 (real locked build, all 4 theorems axiom-clean [propext, Classical.choice, Quot.sound]).
 
 For `n = 2m` and any `g : F` with `g^m = −1` (the Φ_n = x^m + 1 relation, F any field):

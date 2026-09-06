@@ -7,10 +7,10 @@ Status: end-to-end axiom-clean Lean proof; exact first-field pin and strict two-
 Companion files:
 
 * `docs/kb/deltastar-466-half-predecessor-rate-sixteenth-2026-07-09.md`
-* `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateSixteenthFullWiring.lean`
-* `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SeventeenThirtyTwoFullWiring.lean`
-* `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapeLowRateExactPins.lean`
-* `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapePrimeP30Second.lean`
+* `Research/ProximityPrize/Frontier/_HalfPredecessorRateSixteenthFullWiring.lean`
+* `Research/ProximityPrize/Frontier/_SeventeenThirtyTwoFullWiring.lean`
+* `Research/ProximityPrize/Frontier/_PrizeShapeLowRateExactPins.lean`
+* `Research/ProximityPrize/Frontier/_PrizeShapePrimeP30Second.lean`
 
 ## 1. Headline
 

@@ -75,7 +75,7 @@ supplies no additional sign-forcing structure. CORE OPEN / ON-BGK.
 
 ## Formal payload
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean`:
+- `Research/ProximityPrize/Frontier/_G263JointRankSignFreedom.lean`:
   `centeredCov`, `centeredFunctional`, `centeredCov_eq_dot` (the covariance is the pairing against
   the centered functional), `sum_centeredFunctional_eq_zero` (centering), `centeredCov_add_const`
   (constant-offset invariance — total-mass carries zero gate information),

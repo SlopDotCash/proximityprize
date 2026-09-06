@@ -6,7 +6,7 @@ fact it obeys a sharper pin-multiplicity inequality).  The missing step is a bou
 of clusters, and the first-interior saturation example exhibits many interpolation-pencil
 clusters.  This is the existing line-list / higher-order-MDS wall in coefficient-space language.
 
-Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DesignMatrixAffineCluster.lean`.
+Lean: `Research/ProximityPrize/Frontier/_DesignMatrixAffineCluster.lean`.
 
 ## 1. Exact coefficient-space incidence system
 

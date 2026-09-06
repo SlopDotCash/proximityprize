@@ -38,7 +38,7 @@ trap cleanup EXIT
 
 # Tracked experimental lanes whose direct elaboration exceeds the normal CI
 # budget.  They remain available for explicit `pg-iterate.sh` checks.
-readonly UMBRELLA_IMPORT_EXCLUDES_RE='^(ArkLib/ToMathlib/GHSZ02LargeNProof\.lean|ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FSMA_SecondMomentPairPartition\.lean|ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FSMC_ForcedCoreSpread\.lean|ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSharedFreshTripleRefuted\.lean|ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConcreteLocatorAttempt\.lean)$'
+readonly UMBRELLA_IMPORT_EXCLUDES_RE='^(ArkLib/ToMathlib/GHSZ02LargeNProof\.lean|Research/ProximityPrize/Frontier/_FSMA_SecondMomentPairPartition\.lean|Research/ProximityPrize/Frontier/_FSMC_ForcedCoreSpread\.lean|Research/ProximityPrize/Frontier/_P1RateQuarterSharedFreshTripleRefuted\.lean|Research/ProximityPrize/Frontier/_P1RateQuarterCommonFactorConcreteLocatorAttempt\.lean)$'
 
 {
   git ls-files -- 'ArkLib/Data/CodingTheory/ProximityGap.lean'

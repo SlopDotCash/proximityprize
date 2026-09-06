@@ -2,7 +2,7 @@
 """G84 red-team probe: small-scale instantiation of the ONE wall hypothesis of the
 conditional rate-half production pin
 `firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count`
-(ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapeRateHalfBracket.lean).
+(Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.lean).
 
 Production hypothesis (exact Lean shape)
 ----------------------------------------

@@ -56,5 +56,5 @@ localized to:
 The file passed:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R294CollisionBudgetToPrizeSocket.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R294CollisionBudgetToPrizeSocket.lean
 ```

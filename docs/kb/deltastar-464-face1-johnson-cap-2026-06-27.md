@@ -9,7 +9,7 @@ Johnson regime; it does not give an outright deployed `delta*` pin.
 ## Result
 
 The new frontier brick
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/Face1JohnsonRadiusCap.lean` proves, in pure real
+`Research/ProximityPrize/Frontier/Face1JohnsonRadiusCap.lean` proves, in pure real
 arithmetic, that the Guruswami-Sudan / BCIKS20 radius
 
 ```text
@@ -44,7 +44,7 @@ This separates two facts that were easy to conflate:
 ## Verification
 
 ```bash
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/Face1JohnsonRadiusCap.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/Face1JohnsonRadiusCap.lean
 ```
 
 Result: `OK (86s)`, axiom audit only reported the expected proof-irrelevance/classical axioms.

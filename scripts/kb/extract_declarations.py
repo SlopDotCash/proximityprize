@@ -41,7 +41,7 @@ import argparse
 from pathlib import Path
 import subprocess
 
-from common import DEFAULT_DECLARATIONS_JSON, DEFAULT_LEAN_ROOT, REPO_ROOT, write_json
+from common import DEFAULT_DECLARATIONS_JSON, DEFAULT_LEAN_ROOTS, REPO_ROOT, write_json
 
 import re
 
@@ -283,8 +283,8 @@ def parse_args() -> argparse.Namespace:
 
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument(
-        "--root", nargs="+", type=Path, default=[DEFAULT_LEAN_ROOT],
-        help="One or more directories to scan (default: the whole ArkLib tree).",
+        "--root", nargs="+", type=Path, default=DEFAULT_LEAN_ROOTS,
+        help="One or more directories to scan (default: the ArkLib and Research trees).",
     )
     parser.add_argument(
         "--out", type=Path, default=DEFAULT_DECLARATIONS_JSON,

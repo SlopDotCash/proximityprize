@@ -75,8 +75,8 @@ that cone — it has the build recipe you need to avoid clogging the machine:
   `scripts/pg-iterate.sh <file>` (= `lake env lean`, ~30-75s, **no lock → fully parallel**).
 - **Start here:** `docs/kb/deltastar-DOSSIER-v4-2026-08-16.md` for the current standalone
   control plane and post-v3 result ledger, then
-  `ArkLib/Data/CodingTheory/ProximityGap/Frontier/README.md` and
-  `PROXIMITY_PRIZE_WORKBENCH.lean` §5 for the detailed lane history and substrate.
+  `Research/ProximityPrize/Frontier/README.md` and
+  `Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean` §5 for the detailed lane history and substrate.
 - **Open-residual map (whole project):**
   [`docs/wiki/residual-census.md`](docs/wiki/residual-census.md) — 117 strict residuals:
   69 open / 47 discharged / 1 refuted (regenerated and audited 2026-08-16); the "named

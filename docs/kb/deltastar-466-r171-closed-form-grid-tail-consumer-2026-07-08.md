@@ -16,7 +16,7 @@ consumer.
 Updated:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R168DyadicTailEnvelopeConsumer.lean
+Research/ProximityPrize/Frontier/_R168DyadicTailEnvelopeConsumer.lean
 ```
 
 New pieces:
@@ -43,5 +43,5 @@ The route is now factored cleanly:
 Verified:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R168DyadicTailEnvelopeConsumer.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R168DyadicTailEnvelopeConsumer.lean
 ```

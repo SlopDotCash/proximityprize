@@ -2,7 +2,7 @@
 
 ## What landed
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R303GeneralROrbitChebyshev.lean`
+`Research/ProximityPrize/Frontier/_R303GeneralROrbitChebyshev.lean`
 (real locked build 3324 jobs, all 5 theorems axiom-clean
 `[propext, Classical.choice, Quot.sound]`).
 

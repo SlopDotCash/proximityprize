@@ -6,7 +6,7 @@ The concrete `n = 128` height refutation is proof-engineering heavy because it m
 prime and a finite-field collision.  The logical consumer is now factored into:
 
 ```lean
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CanonicalHeightNoGoAbstract.lean
+Research/ProximityPrize/Frontier/_CanonicalHeightNoGoAbstract.lean
 ```
 
 The checked predicate is:

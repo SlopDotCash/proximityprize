@@ -11,7 +11,7 @@ import re
 from common import (
     DEFAULT_BIB_PATH,
     DEFAULT_CITATIONS_JSON,
-    DEFAULT_LEAN_ROOT,
+    DEFAULT_LEAN_ROOTS,
     DEFAULT_REFERENCES_JSON,
     REPO_ROOT,
     load_bib_entries,
@@ -36,19 +36,21 @@ def build_pattern(keys: list[str]) -> re.Pattern[str]:
     return re.compile(r"\[(" + "|".join(escaped_keys) + r")\]")
 
 
-def extract_citations(lean_root: Path, keys: list[str]) -> dict[str, object]:
+def extract_citations(lean_roots: Path | list[Path], keys: list[str]) -> dict[str, object]:
     """Scan Lean files and build file-to-key and key-to-file maps."""
 
+    roots = [lean_roots] if isinstance(lean_roots, Path) else lean_roots
     pattern = build_pattern(keys)
     file_map: dict[str, list[str]] = {}
     key_map: dict[str, list[str]] = {key: [] for key in keys}
 
-    for lean_file in sorted(lean_root.rglob("*.lean")):
+    files = sorted((lean_file, root.parent) for root in roots for lean_file in root.rglob("*.lean"))
+    for lean_file, base in files:
         text = lean_file.read_text(encoding="utf-8")
         citations = sorted(set(match.group(1) for match in pattern.finditer(text)))
         if not citations:
             continue
-        rel_path = str(lean_file.relative_to(lean_root.parents[0]))
+        rel_path = str(lean_file.relative_to(base))
         file_map[rel_path] = citations
         for key in citations:
             key_map[key].append(rel_path)
@@ -63,7 +65,7 @@ def extract_citations(lean_root: Path, keys: list[str]) -> dict[str, object]:
         "counts": counts,
         "files": file_map,
         "keys": used_key_map,
-        "lean_root": str(lean_root.relative_to(lean_root.parents[0])),
+        "lean_roots": [root.name for root in roots],
     }
 
 
@@ -74,8 +76,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--lean-root",
         type=Path,
-        default=DEFAULT_LEAN_ROOT,
-        help="Root directory to scan for .lean files",
+        nargs="+",
+        default=DEFAULT_LEAN_ROOTS,
+        help="Root directories to scan for .lean files (default: ArkLib and Research)",
     )
     parser.add_argument(
         "--references-json",
@@ -102,11 +105,11 @@ def main() -> int:
     """Entry point."""
 
     args = parse_args()
-    lean_root = args.lean_root.resolve()
+    lean_roots = [root.resolve() for root in args.lean_root]
     references_json = args.references_json.resolve()
     bib_path = args.bib.resolve()
     keys = load_reference_keys(references_json, bib_path)
-    payload = extract_citations(lean_root, keys)
+    payload = extract_citations(lean_roots, keys)
     payload["reference_source"] = (
         str(references_json.relative_to(REPO_ROOT))
         if references_json.exists()

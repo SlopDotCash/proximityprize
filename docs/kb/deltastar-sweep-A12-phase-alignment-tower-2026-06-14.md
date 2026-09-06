@@ -20,7 +20,7 @@ subgroup, `z` a generator, split `μ_n = μ_{n/2} ⊔ z·μ_{n/2}` and put
 ```
 
 All four are PROVEN axiom-clean in
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A12_PhaseAlignmentTower.lean`
+`Research/ProximityPrize/Frontier/Sweep_A12_PhaseAlignmentTower.lean`
 (`eta_split_coset`, `etaTwist`/`eta_twist_split`, `gaussPeriod_tower_parallelogram`,
 `untwisted_ge_twisted_iff_align`, plus `eta_untwisted_norm_ge_twist_of_align`).
 Axiom audit: `[propext, Classical.choice, Quot.sound]` only — no `sorryAx`.
@@ -73,6 +73,6 @@ method (capped at Johnson, `_MomentMethodNoGo.lean`) provably cannot resolve. Th
 
 ## Files
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A12_PhaseAlignmentTower.lean` (axiom-clean)
+- `Research/ProximityPrize/Frontier/Sweep_A12_PhaseAlignmentTower.lean` (axiom-clean)
 - `scripts/probes/sweep_A12_phase_align.py`
 - in-tree predecessor (coset count): `GaussPeriodCosetReduction.lean` (the `(q−1)/n`-period count)

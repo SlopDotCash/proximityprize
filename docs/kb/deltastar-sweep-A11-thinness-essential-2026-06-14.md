@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-14 · **Actionable:** A11 (merged 407-T18) · **Status:** PARTIAL (axiom-clean brick)
 **Artifacts:**
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A11_ThinnessEssential.lean` (axiom-clean)
+- `Research/ProximityPrize/Frontier/Sweep_A11_ThinnessEssential.lean` (axiom-clean)
 - `scripts/probes/sweep_A11_thinness.py` (exact FFT witness data)
 
 ## The fact

@@ -50,7 +50,7 @@ certificate is compatible with exactly the kind of worst-case spike the floor mu
 I added:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MomentTailRateGate.lean
+Research/ProximityPrize/Frontier/_MomentTailRateGate.lean
 ```
 
 The file defines:
@@ -110,7 +110,7 @@ It states the consumer and the one-spike obstruction side by side.
 Validation:
 
 ```text
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MomentTailRateGate.lean
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_MomentTailRateGate.lean
 ```
 
 passed.  The axiom audit shows the expected Lean foundations and no `sorryAx`.

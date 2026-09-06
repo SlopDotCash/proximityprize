@@ -1,7 +1,7 @@
 # δ\* / #466 — SYZ31: the two strip set-geometry facts — one REFUTED, one reduced
 
 Date: 2026-07-11
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ31SetGeometryFacts.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ31SetGeometryFacts.lean`
 Probe: `scripts/probes/probe_syz31_two_block_floor_refutation.py`
 Branch: `codex/syz31-set-geometry-facts` (off `fork/research/proximity-prize` @ 17df32dde)
 Predecessors: `deltastar-466-syz30-lemmas-2026-07-11.md`, `deltastar-466-syz28-d3-coplanar-crack-2026-07-11.md`

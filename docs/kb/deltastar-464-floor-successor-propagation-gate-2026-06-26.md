@@ -29,7 +29,7 @@ This pass makes the positive and negative sides of that target explicit.
 
 ## Lean Additions
 
-In `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean`:
+In `Research/ProximityPrize/Frontier/_FloorClosureContract.lean`:
 
 ```lean
 not_candidateListExactSmallestFamily_iff_exists_rung_not_exact
@@ -51,7 +51,7 @@ Together, these say that a base rung plus a real successor theorem gives the uni
 floor-localization input consumed by the Linnik and Thorner-Zaman floor contracts.
 
 The promoted bridge module
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorClosureSuccessorScanner.lean` now connects the
+`Research/ProximityPrize/Frontier/FloorClosureSuccessorScanner.lean` now connects the
 generic finite-rung scanner from `FloorFiniteRungUniformityBarrier.lean` back to this concrete
 floor-closure predicate:
 
@@ -86,7 +86,7 @@ The cutoff-refined scanner variants additionally show that, once a prefix throug
 verified, the adjacent exact-then-failing pair can be placed at some `a >= cutoff`.
 
 The public consumer bridge
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorClosurePrefixConsumer.lean` composes this
+`Research/ProximityPrize/Frontier/FloorClosurePrefixConsumer.lean` composes this
 prefix-plus-successor input with the sharp Linnik/TZ budgeted-global-max contracts:
 
 ```lean

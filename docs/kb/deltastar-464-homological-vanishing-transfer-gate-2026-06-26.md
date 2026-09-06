@@ -81,7 +81,7 @@ certificate.
 New file:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_D0HomologicalVanishingTransferGate.lean
+Research/ProximityPrize/Frontier/_D0HomologicalVanishingTransferGate.lean
 ```
 
 New declarations:

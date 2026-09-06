@@ -3,7 +3,7 @@
 ## Result
 
 The new frontier file
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WeightedPunctureBadScalarRecurrence.lean`
+`Research/ProximityPrize/Frontier/_WeightedPunctureBadScalarRecurrence.lean`
 keeps a multiplicity which the existing `BelowUDRPuncture` induction discarded.
 
 For a dimension-`k+1` RS code on `m+1` points at exact error radius `w/(m+1)`, write

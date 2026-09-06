@@ -6,7 +6,7 @@ Date: 2026-07-08
 
 Added:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R226GaussQuotientTailPrizeEndpoint.lean`
+- `Research/ProximityPrize/Frontier/_R226GaussQuotientTailPrizeEndpoint.lean`
 
 Main theorem:
 
@@ -53,13 +53,13 @@ This is the clean target suggested by the R220 quotient-vs-raw probe.
 Dependency build:
 
 ```bash
-./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.Frontier._R225GaussOrbitTailLift
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R225GaussOrbitTailLift
 ```
 
 Focused check:
 
 ```bash
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R226GaussQuotientTailPrizeEndpoint.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R226GaussQuotientTailPrizeEndpoint.lean
 ```
 
 Result:

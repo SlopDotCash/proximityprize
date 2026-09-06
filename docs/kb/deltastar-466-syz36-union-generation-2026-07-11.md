@@ -130,6 +130,6 @@ Vandermonde-specific resultant-nonvanishing statement, open beyond the saturated
 
 ```bash
 scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ36UnionGeneration.lean   # ✅ axiom-clean
+  Research/ProximityPrize/Frontier/_SYZ36UnionGeneration.lean   # ✅ axiom-clean
 python3 scripts/probes/probe_syz36_union_generation.py                        # d==syzdim, 0 mismatches
 ```

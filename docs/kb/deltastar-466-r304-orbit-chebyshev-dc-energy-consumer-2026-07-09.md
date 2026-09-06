@@ -43,5 +43,5 @@ moment-optimal ceiling depth.
 Passed:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R304OrbitChebyshevDCEnergyConsumer.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R304OrbitChebyshevDCEnergyConsumer.lean
 ```

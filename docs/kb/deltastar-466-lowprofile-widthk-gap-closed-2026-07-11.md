@@ -1,7 +1,7 @@
 # δ* #466 — W15 part 6: the width-k gap closed — the secant-pair strip refuter (2026-07-11)
 
 Lane: `ll:low-profile-fiber`. File:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15WidthKGapClosed.lean`
+`Research/ProximityPrize/Frontier/_W15WidthKGapClosed.lean`
 (axiom-clean; FULL manual audit: all 10 theorems exactly
 `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, no `ofReduceBool`;
 `pg-iterate` 5s). Probe: `scripts/probes/probe_466_w15_widthk_gap.py` (deterministic,

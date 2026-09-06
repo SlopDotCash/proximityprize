@@ -64,7 +64,7 @@ structure-aware bound (Landau ℓ², not Desnanot–Jacobi).
 
 ## Artifacts
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T01NormLandauCeiling.lean` — axiom-clean
+- `Research/ProximityPrize/Frontier/WF407_T01NormLandauCeiling.lean` — axiom-clean
   (`[propext, Classical.choice, Quot.sound]`): `landau_gate_fires_64` (the extension, decidable),
   `house_gate_NOT_fires_64` (house dies one doubling earlier), `landau_gate_NOT_fires_128`,
   `landau_no_go_ge_128` (asymptotic no-go, `a ≥ 7`), `landau_gate_boundary`, and the named Prop

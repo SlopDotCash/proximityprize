@@ -25,14 +25,14 @@ implies the R168/S11 squared prize bound for the concrete dilation parent
 Verified command:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R216GaussPeriodDilationOneChildSqMGF.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R216GaussPeriodDilationOneChildSqMGF.lean
 ```
 
 Output:
 
 ```text
 'ArkLib.ProximityGap.Frontier.R216GaussPeriodDilationOneChildSqMGF.prize_sq_of_gaussPeriod_dilation_one_child_sqMGF' depends on axioms: [propext,
-OK (12s) — ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R216GaussPeriodDilationOneChildSqMGF.lean
+OK (12s) — Research/ProximityPrize/Frontier/_R216GaussPeriodDilationOneChildSqMGF.lean
 ```
 
 Readout: the structural half of the R215 residual is discharged for the full

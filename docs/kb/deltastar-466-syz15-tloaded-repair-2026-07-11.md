@@ -1,7 +1,7 @@
 # δ* / #466 — SYZ15: the T-loaded interface repair (BCIKS20 §5 branch handoff)
 
 Date: 2026-07-11
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ15TLoadedInterfaceRepair.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ15TLoadedInterfaceRepair.lean`
 Status: LANDED, axiom-clean `[propext, Classical.choice, Quot.sound]`, no `sorry`.
 
 ## The problem (recap)

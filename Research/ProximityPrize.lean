@@ -1,0 +1,1 @@
+import Research.ProximityPrize.PROXIMITY_PRIZE_WORKBENCH

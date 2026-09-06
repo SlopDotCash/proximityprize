@@ -46,7 +46,7 @@ instance carries a spike.
 ## Lean Surface
 
 New in
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_D5RandomOperatorChainingTransferGate.lean`:
+`Research/ProximityPrize/Frontier/_D5RandomOperatorChainingTransferGate.lean`:
 
 ```lean
 deterministic_bound_of_pointwise_domination

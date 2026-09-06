@@ -9,7 +9,7 @@ Status: **rate consumer**, not a delta-star proof.
 The file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_QuotientTailSupConsumer.lean
+Research/ProximityPrize/Frontier/_QuotientTailSupConsumer.lean
 ```
 
 now includes the rate form of the quotient-tail gate:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Reject axiom-laundering tokens in live ArkLib source.
+"""Reject axiom-laundering tokens in live library and research source.
 
-By default, scans every .lean file under ArkLib/. If one or more paths are
+By default, scans every .lean file under ArkLib/ and Research/. If one or more paths are
 provided, scans only those Lean files/directories. Fails if live
 (non-comment) code contains:
   - `native_decide` / `bv_decide` (kernel-bypassing decision procedures), or
@@ -88,7 +88,7 @@ def load_allowlist(path: Path) -> set[str]:
 def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
     """Return files to scan, whether this is a full-ArkLib scan, and path errors."""
     if not args:
-        return sorted(Path("ArkLib").rglob("*.lean")), True, []
+        return sorted(f for name in ("ArkLib", "Research") for f in Path(name).rglob("*.lean")), True, []
 
     files: set[Path] = set()
     full_arklib_scan = False
@@ -110,6 +110,7 @@ def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
         nested_arklib = path / "ArkLib"
         if nested_arklib.is_dir():
             files.update(nested_arklib.rglob("*.lean"))
+            files.update((path / "Research").rglob("*.lean"))
             full_arklib_scan = True
         else:
             files.update(path.rglob("*.lean"))

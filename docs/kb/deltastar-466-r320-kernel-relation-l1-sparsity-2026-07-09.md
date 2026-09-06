@@ -48,7 +48,7 @@ polynomials, weighted by `shadowRelationMass`.
 
 ```text
 ./scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R320KernelRelationL1Sparsity.lean
+  Research/ProximityPrize/Frontier/_R320KernelRelationL1Sparsity.lean
 ```
 
 passed on 2026-07-09 with no `sorryAx`.

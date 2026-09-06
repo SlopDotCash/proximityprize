@@ -13,7 +13,7 @@ Artifacts (EXACT enumeration, no sampling):
 - `scripts/probes/wf407_T400-05-defect_norm_spectrum.py` — carrier-norm spectrum + carrier-prime
   density/finiteness + worst-case-q amplification + norm growth.
 - `scripts/probes/wf407_T400-05-defect_saturation.py` — the saturation-vs-genuine-structure pivot.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T400_05_defect.lean` — axiom-clean
+- `Research/ProximityPrize/Frontier/WF407_T400_05_defect.lean` — axiom-clean
   carrier-prime finiteness (`carrierPrimes_finite`, `carrierPrimes_subset_Icc`).
 
 ## 1. Reproduced: the q-spread IS the mod-q defect (the actionable's premise)

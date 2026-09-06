@@ -28,7 +28,7 @@ rate `1/4`: evaluate the exponential moment at half the survival rate.
 File:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R168DyadicTailEnvelopeConsumer.lean
+Research/ProximityPrize/Frontier/_R168DyadicTailEnvelopeConsumer.lean
 ```
 
 Theorems:
@@ -97,5 +97,5 @@ constant `2`, using the pointwise AM-GM inequality `uv ≤ (u²+v²)/2`.
 Verified:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R168DyadicTailEnvelopeConsumer.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R168DyadicTailEnvelopeConsumer.lean
 ```

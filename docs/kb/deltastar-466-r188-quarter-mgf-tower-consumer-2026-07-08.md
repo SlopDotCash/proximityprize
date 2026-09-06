@@ -14,7 +14,7 @@ product budget for the dyadic tower.
 ## Lean artifact
 
 File:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R188QuarterMGFTowerConsumer.lean`.
+`Research/ProximityPrize/Frontier/_R188QuarterMGFTowerConsumer.lean`.
 
 New named residual:
 
@@ -40,8 +40,8 @@ reusing the audited R168/S11 bridge.
 ## Verification
 
 ```text
-./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.Frontier._R168DyadicTailEnvelopeConsumer
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R188QuarterMGFTowerConsumer.lean
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R168DyadicTailEnvelopeConsumer
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R188QuarterMGFTowerConsumer.lean
 ```
 
 The R188 check passed in 6 seconds and printed only the standard axiom audit

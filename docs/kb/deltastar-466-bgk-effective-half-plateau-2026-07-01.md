@@ -2,7 +2,7 @@
 
 Date: 2026-07-01. Lane: dossier v3 §6 Tier-1 item 5 ("di Benedetto sum-product pushed to an
 effective 1/2 exponent at β=4 — announced 2026-06-27, never run"). Brick:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKEffectiveHalfPlateau.lean` (compiles
+`Research/ProximityPrize/Frontier/_BGKEffectiveHalfPlateau.lean` (compiles
 axiom-clean, `pg-iterate` 51s). Parallel session note: this session ran Tier-1 items 5 and 3
 while the concurrent #466 session ran lanes L1/L2/P1–P3 (its round-1 plan); the two file sets
 are disjoint.

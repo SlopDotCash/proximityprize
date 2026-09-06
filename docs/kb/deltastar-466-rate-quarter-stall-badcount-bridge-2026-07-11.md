@@ -3,7 +3,7 @@
 **Lane:** P1 rate-quarter predecessor pin, charge arc — referee follow-up to
 `deltastar-466-rate-quarter-dcharge-referee-2026-07-11.md` (which flagged the
 mcaEvent ↔ BadFamilyData vocabulary gap as the audit's only real finding).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterStallBadCountBridge.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterStallBadCountBridge.lean`
 (pg-iterate OK 16s; full axiom lists ALSO read manually via `lake env lean` given the
 known pg-iterate first-line truncation: all 5 theorems exactly
 `[propext, Classical.choice, Quot.sound]`, no sorryAx).

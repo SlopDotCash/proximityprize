@@ -1,34 +1,26 @@
 #!/usr/bin/env bash
-
-# Check whether ArkLib.lean matches the tracked Proximity Prize module set.
-
+# Check the library/research boundary and both generated module umbrellas.
 set -euo pipefail
-
-REPO_ROOT="$(git rev-parse --show-toplevel)"
-cd "$REPO_ROOT"
-
-echo "Checking if all imports are up to date..."
-
-backup_file="$(mktemp "${TMPDIR:-/tmp}/ArkLib.lean.backup.XXXXXX")"
-cp ArkLib.lean "$backup_file"
-
+cd "$(git rev-parse --show-toplevel)"
+python3 scripts/check-research-boundary.py
+backup_dir="$(mktemp -d "${TMPDIR:-/tmp}/proximity-imports.XXXXXX")"
+cp ArkLib.lean "$backup_dir/ArkLib.lean"
+cp Research/ProximityPrize/All.lean "$backup_dir/Research-All.lean"
 restore_original() {
-  if [[ -f "$backup_file" ]]; then
-    mv "$backup_file" ArkLib.lean
-  fi
+  cp "$backup_dir/ArkLib.lean" ArkLib.lean
+  cp "$backup_dir/Research-All.lean" Research/ProximityPrize/All.lean
+  rm -rf "$backup_dir"
 }
 trap restore_original EXIT
-
 ./scripts/update-lib.sh
-
-if git diff --quiet -- ArkLib.lean; then
-  echo "✓ All imports are up to date!"
-  exit 0
+python3 scripts/update-research-lib.py
+status=0
+if ! cmp -s "$backup_dir/ArkLib.lean" ArkLib.lean; then
+  echo 'ArkLib.lean is out of date; run scripts/update-lib.sh.'
+  status=1
 fi
-
-echo "❌ Import file is out of date!"
-echo "Differences found:"
-git diff -- ArkLib.lean
-echo ""
-echo "To fix this, run: ./scripts/update-lib.sh"
-exit 1
+if ! cmp -s "$backup_dir/Research-All.lean" Research/ProximityPrize/All.lean; then
+  echo 'Research All.lean is out of date; run scripts/update-research-lib.py.'
+  status=1
+fi
+exit "$status"

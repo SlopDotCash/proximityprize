@@ -10,7 +10,7 @@ turns the off-BGK floor-localization lane into the existing prize-facing API.
 The file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorDominationInterface.lean
+Research/ProximityPrize/Frontier/_FloorDominationInterface.lean
 ```
 
 imports the real conditional pin from `OpenCoreConditionalPin` and repackages its incidence

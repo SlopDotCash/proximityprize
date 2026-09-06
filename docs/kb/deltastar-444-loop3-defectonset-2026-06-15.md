@@ -86,7 +86,7 @@ same depth** — neither is easier. **Clean negative: the overshoot direction re
 
 ## (c) Axiom-clean increment landed
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DefectOnsetOvershoot.lean` — **9 theorems, all
+`Research/ProximityPrize/Frontier/_DefectOnsetOvershoot.lean` — **9 theorems, all
 axiom-clean** `[propext, Classical.choice, Quot.sound]`, **no `sorryAx`** (verified this loop via
 `pg-iterate.sh`, exit 0, 17s; campaign also reports a real `lake build` green, 1971 jobs).
 
@@ -138,7 +138,7 @@ core. **Reduces-to-wall. No closure.**
 
 ## Pointers
 
-- Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DefectOnsetOvershoot.lean`
+- Lean: `Research/ProximityPrize/Frontier/_DefectOnsetOvershoot.lean`
 - Probe: `scripts/probes/probe_wfL3_defect_onset.py`
 - DISPROOF_LOG iter-3 entry: `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` (§ "iter 3 — the
   DC-subtracted-energy OVERSHOOT direction also reduces to the wall")

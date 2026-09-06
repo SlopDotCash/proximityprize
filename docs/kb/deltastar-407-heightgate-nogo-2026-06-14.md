@@ -45,7 +45,7 @@ prize-regime structured primes. The moment-certificate route stays REFUTED; `δ*
 though empirically true, needs a non-moment, thinness-essential argument.
 
 ## Files / repro
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/BlockSumNormNoGo.lean` (axiom-clean)
+- `Research/ProximityPrize/Frontier/BlockSumNormNoGo.lean` (axiom-clean)
 - `scripts/probes/probe_heightgate_nogo_407.py`
 - `scripts/probes/probe_short_excess_relation_407.py`
 - `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` (two new entries, 2026-06-14)

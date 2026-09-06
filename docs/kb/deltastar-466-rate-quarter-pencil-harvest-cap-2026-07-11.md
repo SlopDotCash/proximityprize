@@ -6,7 +6,7 @@
 pencils inside the slack `2T−N−2 = 111848106 ≈ 0.104·N`).
 **Probe:** `scripts/probes/probe_rate_quarter_p1_pencil_harvest_cap.py` (exact
 integer linear algebra mod `q`, deterministic).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPencilHarvestCap.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterPencilHarvestCap.lean`
 (pg-iterate OK 15s; 11 theorems; full axiom lists read manually via `lake env lean`:
 all exactly `[propext, Classical.choice, Quot.sound]`; no sorryAx, no new axioms).
 

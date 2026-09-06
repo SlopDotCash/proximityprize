@@ -65,7 +65,7 @@ keeps the large-index branch separate from finite direct handling.
 Artifact:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R223LowBandSurvivalConsumer.lean
+Research/ProximityPrize/Frontier/_R223LowBandSurvivalConsumer.lean
 ```
 
 Main declarations:

@@ -4,15 +4,15 @@ Status: landed as a checked specialization of R190 to the nonprincipal Gauss-per
 
 Artifact:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R210NonzeroBulkPlusSpikesMGFConsumer.lean`
+- `Research/ProximityPrize/Frontier/_R210NonzeroBulkPlusSpikesMGFConsumer.lean`
 
 Checks:
 
 ```text
-scripts/pg-iterate.sh -q ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R210NonzeroBulkPlusSpikesMGFConsumer.lean
+scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R210NonzeroBulkPlusSpikesMGFConsumer.lean
 ✅ OK (10s)
 
-./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.Frontier._R210NonzeroBulkPlusSpikesMGFConsumer
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R210NonzeroBulkPlusSpikesMGFConsumer
 Build completed successfully
 ```
 

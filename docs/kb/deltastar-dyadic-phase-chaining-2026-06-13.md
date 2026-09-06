@@ -26,7 +26,7 @@ Latest issue evidence:
 - #400's `O(n)` `e_2=0` coset-rigidity conjecture is now refuted over both
   proper finite-field subgroups and complex roots of unity, so the surviving
   route should not use that value-set collapse.
-- Local hazard: `PROXIMITY_PRIZE_WORKBENCH.lean` still contains the older R4
+- Local hazard: `Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean` still contains the older R4
   symmetric-function/coset-rigidity language.  Treat that section as stale until
   it is patched against #400/#407.
 
@@ -155,7 +155,7 @@ instantiated against dyadic Gaussian periods.
 
 Initial formal brick:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DyadicPhaseChaining.lean`
+- `Research/ProximityPrize/Frontier/_DyadicPhaseChaining.lean`
   defines `PhaseChainingBudget`, `PhaseIncrementLaw`, and the deterministic
   consumer `level_le_of_phaseIncrementLaw`, plus a falsification form.  It now
   also defines `MultiplicativeChainingBudget`, `SquareDescentLaw`, and the
@@ -178,7 +178,7 @@ Initial formal brick:
   target: represent the next worst aligned value as `x + y` and prove
   `x^2 + y^2 <= M(i)^2`; the factor `2` then follows with no analytic loss.
 - There is also an existing untracked
-  `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseAlignmentGate.lean`
+  `Research/ProximityPrize/Frontier/_PhaseAlignmentGate.lean`
   square-increment gate.  Its additive certificate is complementary: it consumes
   direct per-level square increments, while `_DyadicPhaseChaining.lean` consumes
   multiplicative one-level losses `Q(i+1) <= step(i) * Q(i)`.

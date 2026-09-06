@@ -3,7 +3,7 @@
 **Lane:** P1 rate-quarter — tenth round of the 2026-07-11 session, executing the
 cross-cone round's bonus finding.
 **Probe:** `scripts/probes/probe_rate_quarter_p1_fiber_chebyshev.py` (exact).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterFiberChebyshevRefinement.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterFiberChebyshevRefinement.lean`
 (pg-iterate OK 10s; 8 theorems; full axiom lists read manually via `lake env lean`:
 all exactly `[propext, Classical.choice, Quot.sound]`; no sorryAx, no warnings).
 

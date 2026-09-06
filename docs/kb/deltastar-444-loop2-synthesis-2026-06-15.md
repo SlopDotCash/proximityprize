@@ -18,7 +18,7 @@ Two BANK items, both verified `axioms ⊆ [propext, Classical.choice, Quot.sound
 **Neither tightens the window-interior bracket** — both are orthogonal sub-Johnson / sanity-anchor data.
 
 ### 1. `SymmetricTowerBracket.lean` (verified, was pre-staged & complete)
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/SymmetricTowerBracket.lean`
+File: `Research/ProximityPrize/Frontier/SymmetricTowerBracket.lean`
 Theorems (all audit clean):
 - `symmetric_agreement_eq_two_double`
 - `even_word_double_eq_level1_agreement`
@@ -42,7 +42,7 @@ pg-iterate + real lake build (3495 jobs) both pass; cosmetic `omit [Fintype A] i
 Probes reproduce (even==tower? True n=8,16 all 4 rates; base-case L=0 at every window radius).
 
 ### 2. `DeltaStarTableN16Fermat.lean` (landed, real LOCKED lake build EXIT 0, 3063 jobs)
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/DeltaStarTableN16Fermat.lean`
+File: `Research/ProximityPrize/Frontier/DeltaStarTableN16Fermat.lean`
 Theorems (all print `[propext, Classical.choice, Quot.sound]`, no sorryAx):
 - `ProximityGap.DeltaStarTableN16Fermat.deltaStar_rho_half`        (ρ=1/2 → δ*=3/16)
 - `ProximityGap.DeltaStarTableN16Fermat.deltaStar_rho_quarter`     (ρ=1/4 → δ*=5/16)

@@ -33,7 +33,7 @@ Everything is then verified literally: threshold witnesses, line agreements,
 row-unexplainability certificates (deg-<8 interpolant + mismatch), the joint
 set J, the shared fresh coordinate, non-absorption, and non-collinearity.
 The printed certificate is transcribed into
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterNonCollinearTriple.lean`.
+`Research/ProximityPrize/Frontier/_P1RateQuarterNonCollinearTriple.lean`.
 
 Deterministic, dependency-free, runtime a few seconds.
 """

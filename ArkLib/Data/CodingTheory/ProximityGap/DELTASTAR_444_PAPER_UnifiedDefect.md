@@ -43,7 +43,7 @@ structural claim, here proven (§3), is:
 > the energy bound `E_r(μ_n) ≤ (2r−1)‼·nʳ` at depth `r ≈ log q`).
 
 So a *single* closed-form conjecture, if proven, solves **both** challenges. This is exactly the unified
-statement the prize asks for. (`PROXIMITY_PRIZE_WORKBENCH.lean` slot; bridges in-tree.)
+statement the prize asks for. (`Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean` slot; bridges in-tree.)
 
 ## 3. What is proven (machine-checked, axiom-clean)
 

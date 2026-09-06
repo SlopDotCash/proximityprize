@@ -122,7 +122,7 @@ consistent with the ~1.33 plateau being inflated, but offering no closed form.
 
 ## 4. Lean formalization — what is axiom-clean, what is the isolated open Prop
 
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean`
+**File:** `Research/ProximityPrize/Frontier/CyclotomicNormDefectThreshold.lean`
 **Status: PROVEN axiom-clean** (exactly `[propext, Classical.choice, Quot.sound]` on all 8 theorems;
 no `sorry`, no `native_decide`; forbidden-axiom grep = 0). **Verified to exist in tree.**
 

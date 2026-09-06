@@ -12,7 +12,7 @@ question is how such a domination theorem could be produced without guessing the
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean
+Research/ProximityPrize/Frontier/_StackProfileDominationInterface.lean
 ```
 
 formalizes a profile/cap route:

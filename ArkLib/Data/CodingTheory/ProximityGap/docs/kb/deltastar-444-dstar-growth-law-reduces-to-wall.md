@@ -65,7 +65,7 @@ super-budget growth law, isolating the under-determined char sum as the binding 
 
 ## Pointers
 
-- Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DstarGrowthLaw.lean` (this result);
+- Lean: `Research/ProximityPrize/Frontier/_DstarGrowthLaw.lean` (this result);
   `…/DeepBandR3Bound.lean` (the `r=3` closed form it wires to);
   `…/Frontier/DemandFloorReduction.lean` (the `O_P ≤ C(n/2,r−1)` reduction it sits beside).
 - Probes: `scripts/probes/_probe_444_dstar_growth.py` (orbit identity + `O_P` census, full line sweep,

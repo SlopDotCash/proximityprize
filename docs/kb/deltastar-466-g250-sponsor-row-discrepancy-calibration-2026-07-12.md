@@ -10,7 +10,7 @@ the stronger idealized budget `2^-15`, the budget is still far above the row thr
 - P1 quotient size `m = 2^128 + 192`: a `2^-15` Cartesian budget contains more than `2^113` complete row-lengths.
 - P2 quotient size `m = 2^129 + 13`: a `2^-15` Cartesian budget contains more than `2^114` complete row-lengths.
 
-Lean file: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G250SponsorRowDiscrepancyCalibration.lean`.
+Lean file: `Research/ProximityPrize/Frontier/_G250SponsorRowDiscrepancyCalibration.lean`.
 Theorems include `p1_two_pow_neg15_budget_allows_gt_2pow113_rows`,
 `p2_two_pow_neg15_budget_allows_gt_2pow114_rows`, and the P1/P2 instantiations of the G249 one-row
 counterexample cardinality.  Axiom audit: arithmetic/cardinality certificates use only the standard

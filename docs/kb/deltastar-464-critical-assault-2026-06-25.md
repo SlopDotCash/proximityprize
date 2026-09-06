@@ -12,17 +12,17 @@ Local documents and code surfaces checked:
 
 - `docs/kb/deltastar-DOSSIER-v2-2026-06-22.md`, including the late §16 correction.
 - `ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`.
-- `ArkLib/Data/CodingTheory/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean`.
+- `Research/ProximityPrize/LegacyWorkbench.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/OpenCoreConditionalPin.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/FarCosetExplosion.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorLinnikThornerZamanArrow.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF317.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVOrderedWalkDoobMajorant.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P2ZqIrreducibilityNoGo.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvDIR9OrderedWalkMajorant.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorDominationInterface.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_IncidenceSmoothingDeconvolutionBarrier.lean`.
+- `Research/ProximityPrize/Frontier/_AssaultV2_FloorLocalizationN32.lean`.
+- `Research/ProximityPrize/Frontier/_FloorLinnikThornerZamanArrow.lean`.
+- `Research/ProximityPrize/Frontier/_AvCensusF317.lean`.
+- `Research/ProximityPrize/Frontier/_DoorIVOrderedWalkDoobMajorant.lean`.
+- `Research/ProximityPrize/Frontier/_P2ZqIrreducibilityNoGo.lean`.
+- `Research/ProximityPrize/Frontier/_AvDIR9OrderedWalkMajorant.lean`.
+- `Research/ProximityPrize/Frontier/_FloorDominationInterface.lean`.
+- `Research/ProximityPrize/Frontier/_IncidenceSmoothingDeconvolutionBarrier.lean`.
 - `docs/references/proximity-gap-paley-spectrum/README.md`.
 - `docs/wiki/residual-census.md`.
 

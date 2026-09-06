@@ -65,7 +65,7 @@ sense of "bulk Gaussianity ≠ tail (the gap IS the wall)" from the 407-T17 row.
 
 ## Formalization (axiom-clean Lean brick)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T232_08_EVTGap.lean`
+`Research/ProximityPrize/Frontier/WF407_T232_08_EVTGap.lean`
 (`pg-iterate.sh` ✅ OK; all theorems audit `[propext, Classical.choice, Quot.sound]`):
 
 - `emp_offdiag_sum` — Fact 1: off-diag centered-product sum `= −Σ(Yᵢ−μ)²` for every sample
@@ -95,4 +95,4 @@ exactly the named open input `SubGaussianMGF` in `SalemZygmundChaining.lean`.
 - `scripts/probes/wf407_T232-08-evt_periods.py`
 - `scripts/probes/wf407_T232-08-evt_mgf_tail.py`
 - `scripts/probes/wf407_T232-08-evt_definetti_gap.py`
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T232_08_EVTGap.lean`
+- `Research/ProximityPrize/Frontier/WF407_T232_08_EVTGap.lean`

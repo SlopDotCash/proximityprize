@@ -2,7 +2,7 @@
 
 ## Artifact
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SampledOctaveUniformityGate.lean`
+- `Research/ProximityPrize/Frontier/_SampledOctaveUniformityGate.lean`
 
 ## Point
 

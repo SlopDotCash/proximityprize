@@ -3,7 +3,7 @@
 **Lane:** P1 rate-quarter — residual (c) round (cover-by-few-pencils), sixth round
 of the 2026-07-11 arc.
 **Probe:** `scripts/probes/probe_rate_quarter_p1_pencil_cover.py` (exact).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPencilCoverTheorem.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterPencilCoverTheorem.lean`
 (pg-iterate OK 12s; 6 theorems; full axiom lists read manually via `lake env lean`:
 5 exactly `[propext, Classical.choice, Quot.sound]`, 1 `[propext]`; no sorryAx, no
 warnings).

@@ -9,7 +9,7 @@ Status: **rate consumer**, not a delta-star proof.
 The file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_QuotientExponentialTailGate.lean
+Research/ProximityPrize/Frontier/_QuotientExponentialTailGate.lean
 ```
 
 packages the quotient tail consumer in exponential and subgaussian forms.

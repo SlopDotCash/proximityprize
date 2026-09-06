@@ -2,7 +2,7 @@
 
 **Lane:** P1 rate-quarter predecessor pin, charge arc (successor of
 `deltastar-466-rate-quarter-small-pool-assembly-2026-07-10.md`).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSmallPoolClosureDischarged.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterSmallPoolClosureDischarged.lean`
 (pg-iterate OK 17s; 9 theorems audited, all `[propext, Classical.choice, Quot.sound]`;
 no sorry, no new axioms, no new hypotheses).
 

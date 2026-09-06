@@ -6,7 +6,7 @@ Date: 2026-07-08
 
 Added:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R224OrbitTailLiftToQuotientTail.lean`
+- `Research/ProximityPrize/Frontier/_R224OrbitTailLiftToQuotientTail.lean`
 
 The new theorem is:
 
@@ -43,7 +43,7 @@ obligation to:
 ## Verification
 
 ```bash
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R224OrbitTailLiftToQuotientTail.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R224OrbitTailLiftToQuotientTail.lean
 ```
 
 Result:

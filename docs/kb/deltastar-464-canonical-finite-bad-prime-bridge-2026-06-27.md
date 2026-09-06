@@ -20,7 +20,7 @@ canonicalRatioResultant n =
 ```
 
 The new Frontier file
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourBadPrimeSet.lean`
+`Research/ProximityPrize/Frontier/CanonicalWidthFourBadPrimeSet.lean`
 defines
 
 ```text

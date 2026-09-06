@@ -44,7 +44,7 @@ over one margin.
 ## Lean Surface
 
 New in
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_D4MacMahonMarginEncodingGate.lean`:
+`Research/ProximityPrize/Frontier/_D4MacMahonMarginEncodingGate.lean`:
 
 ```lean
 EncodesByMargins

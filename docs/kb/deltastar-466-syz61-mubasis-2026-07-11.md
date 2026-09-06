@@ -4,7 +4,7 @@ Issue #466, rate-1/2 `SylvesterInjective` residual chain (SYZ38 → G172 → SYZ
 
 ## What landed
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ61MuBasisExistence.lean`, axiom-clean
+`Research/ProximityPrize/Frontier/_SYZ61MuBasisExistence.lean`, axiom-clean
 (`propext, Classical.choice, Quot.sound` only; no `sorry`, no `native_decide`).
 
 Fix a field `K` and the syzygy evaluation map of a triple `(f,g,h) : K[X]³`:

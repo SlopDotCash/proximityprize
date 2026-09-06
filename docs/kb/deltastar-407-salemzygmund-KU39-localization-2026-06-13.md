@@ -75,7 +75,7 @@ which is the Paley-graph/Bourgain–Gamburd–Konyagin barrier in disguise, NOT 
 
 ## The Lean deliverable (axiom-clean)
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/SalemZygmundChaining.lean`
+`Research/ProximityPrize/Frontier/SalemZygmundChaining.lean`
 (`lake env lean` EXIT 0; `#print axioms` = `[propext, Classical.choice, Quot.sound]`, NO `sorryAx`):
 - `SubGaussianMGF η σ²` — the **single open input** as a named `Prop` (= KU 3.9's conclusion at prize `n`).
 - `chernoff_single` — the Chernoff input `X_c ≤ logM/λ + σ²λ/2`.

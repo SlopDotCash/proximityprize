@@ -3,7 +3,7 @@
 **Lane:** P1 rate-quarter — pair-cloud round following
 `deltastar-466-rate-quarter-pencil-cover-theorem-2026-07-11.md` (seventh round of
 the 2026-07-11 arc).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPairCloudSecondMoment.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterPairCloudSecondMoment.lean`
 (pg-iterate OK 10s; 7 theorems; full axiom lists read manually via `lake env lean`:
 6 exactly `[propext, Classical.choice, Quot.sound]`, 1 `[propext, Quot.sound]`;
 no sorryAx, no warnings).

@@ -4,7 +4,7 @@ Issue: #466. Date: 2026-07-08.
 
 ## What landed
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R228NaturalQuotientTailLawEndpoint.lean`
+`Research/ProximityPrize/Frontier/_R228NaturalQuotientTailLawEndpoint.lean`
 names the exact all-threshold natural quotient-orbit tail law:
 
 ```text
@@ -42,8 +42,8 @@ itself, not another raw-frequency counting lift.
 ## Verification
 
 ```text
-./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.Frontier._R227NaturalQuotientEnvelopePrizeEndpoint
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R228NaturalQuotientTailLawEndpoint.lean
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R227NaturalQuotientEnvelopePrizeEndpoint
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R228NaturalQuotientTailLawEndpoint.lean
 ```
 
 R227 built successfully. R228 passed `pg-iterate`.

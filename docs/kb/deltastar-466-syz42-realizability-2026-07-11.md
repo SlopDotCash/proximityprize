@@ -1,7 +1,7 @@
 # SYZ42 — realizability: is the SYZ22 production-ledger join redundant after SYZ41?
 
 **Issue:** #466 / #507 · **Date:** 2026-07-11 · **File:**
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ42Realizability.lean` · **Axiom-clean**
+`Research/ProximityPrize/Frontier/_SYZ42Realizability.lean` · **Axiom-clean**
 (`propext, Classical.choice, Quot.sound` only; no `sorry`, no `native_decide`).
 
 ## The question

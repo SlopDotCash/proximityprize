@@ -1,7 +1,7 @@
 # SYZ14 — BCIKS 5.7 program, Chunk C2 (`PlaceCurveSupply`) + program scoreboard — 2026-07-11
 
 **Issue #466 · lane: BCIKS20 Claim 5.7 per-cell disc-locus package (SYZ10 chunk plan) · file:**
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ14BCIKS57Chunk2.lean`
+`Research/ProximityPrize/Frontier/_SYZ14BCIKS57Chunk2.lean`
 (namespace `BCIKS20.CellPencilJohnson.SYZ14`, axiom-clean).
 
 ## Verdict

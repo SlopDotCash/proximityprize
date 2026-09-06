@@ -23,7 +23,7 @@ conditional exact-pin theorem does not pass the gate.
 ## Audited production surface
 
 The exact-rate-one-half consumer is
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapeRateHalfBracket.lean` (source blob
+`Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.lean` (source blob
 `c04342693fa913e6ffff21249defe24362a2f7d2`). It uses:
 
 - block length `n = 2^30`;
@@ -112,7 +112,7 @@ The audit first ran the mandated focused command:
 
 ```text
 $ scripts/pg-iterate.sh \
-    ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapeRateHalfBracket.lean
+    Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.lean
 error: .../_GenericQuotientInterpolationSpread.olean ... does not exist
 ```
 
@@ -130,11 +130,11 @@ evidence that the target declarations fail. A closure PR must rerun, at minimum:
 ```text
 scripts/pg-warm.sh
 scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapeRateHalfBracket.lean
+  Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.lean
 scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeltaStarDefinitive.lean
+  Research/ProximityPrize/Frontier/_DeltaStarDefinitive.lean
 ./scripts/lake-locked.sh build \
-  ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapeRateHalfBracket
+  Research.ProximityPrize.Frontier._PrizeShapeRateHalfBracket
 ./scripts/validate.sh
 ```
 

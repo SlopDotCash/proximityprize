@@ -7,7 +7,7 @@ prize proof.
 
 ## Artifact
 
-- Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RandomSignTypicalNotAllOnesGate.lean`
+- Lean: `Research/ProximityPrize/Frontier/_RandomSignTypicalNotAllOnesGate.lean`
 
 ## Local PDFs Checked
 

@@ -1,7 +1,7 @@
 # δ* #466 — W15 part 3: the near-code Johnson budget via the offset collapse (2026-07-10)
 
 Lane: `ll:low-profile-fiber`. File:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15NearCodeJohnsonBudget.lean`
+`Research/ProximityPrize/Frontier/_W15NearCodeJohnsonBudget.lean`
 (axiom-clean, 7/7 audits `[propext, Classical.choice, Quot.sound]`, no `sorryAx`,
 `pg-iterate` ~40s). Companions: part 1 (floor `n − a`,
 `deltastar-466-lowprofile-mcaevent-support-ladder-floor-2026-07-10.md`), part 2 (ceiling

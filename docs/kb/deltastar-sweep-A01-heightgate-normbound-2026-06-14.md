@@ -9,7 +9,7 @@ worst case** (the prize regime), two independent ways.
 
 ## Artifacts
 
-- Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/HeightGateNormBound.lean`
+- Lean: `Research/ProximityPrize/Frontier/HeightGateNormBound.lean`
   (axiom-clean `[propext, Classical.choice, Quot.sound]`, 0 `sorryAx`).
 - Probe: `scripts/probes/sweep_A01_normwitness.py`.
 

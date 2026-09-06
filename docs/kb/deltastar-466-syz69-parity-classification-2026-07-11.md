@@ -1,6 +1,6 @@
 # δ* / #466 — SYZ69: the parity-corrected two-class classification of the μ-basis generator gap (2026-07-11)
 
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ69ParityClassification.lean`
+**File:** `Research/ProximityPrize/Frontier/_SYZ69ParityClassification.lean`
 **Branch:** `research/proximity-prize` (via `codex/syz69-parity-classification`, off fork tip `6b585d850`)
 **Status:** axiom-clean (`propext, Classical.choice, Quot.sound`; no `sorry`, no `native_decide`).
 **Depends on:** SYZ44 (degree-sum, now unconditional via SYZ61→SYZ65), SYZ45 (imbalance),

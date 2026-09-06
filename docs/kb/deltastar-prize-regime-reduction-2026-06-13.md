@@ -1,6 +1,6 @@
 # δ* in the PRIZE REGIME — exact reduction, regime pin, and the new geometric face (2026-06-13)
 
-Worked out directly against `PROXIMITY_PRIZE_WORKBENCH.lean` and the exact `CensusDomination`
+Worked out directly against `Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean` and the exact `CensusDomination`
 definition, while the IACR-blocked papers are fetched manually. This is the regime-pinned
 dissection the workbench §0 demands: it throws out everything that lives outside the prize regime
 and names exactly what is left.

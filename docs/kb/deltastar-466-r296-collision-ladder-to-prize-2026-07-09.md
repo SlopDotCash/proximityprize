@@ -62,6 +62,6 @@ This is still not the prize proof.  The adapter leaves the real work explicit:
 The relevant checks passed:
 
 ```text
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R295MixedCollisionLadderSocket.lean
-./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R296CollisionLadderToPrizeSocket.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R295MixedCollisionLadderSocket.lean
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R296CollisionLadderToPrizeSocket.lean
 ```

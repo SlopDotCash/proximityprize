@@ -9,7 +9,7 @@ Status: **closure-interface progress**, not a delta-star proof.
 I added:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean
+Research/ProximityPrize/Frontier/_FloorClosureContract.lean
 ```
 
 This file connects three pieces that were previously documented separately:

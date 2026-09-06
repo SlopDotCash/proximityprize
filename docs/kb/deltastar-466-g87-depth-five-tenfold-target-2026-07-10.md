@@ -1,7 +1,7 @@
 # G87: the depth-five residual is exactly tenfold
 
 Lean artifact:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G87DepthFiveTenfoldTarget.lean`.
+`Research/ProximityPrize/Frontier/_G87DepthFiveTenfoldTarget.lean`.
 
 The corrected-padding/free-orbit chain leaves the crude depth-five production universe
 

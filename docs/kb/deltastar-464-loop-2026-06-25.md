@@ -42,15 +42,15 @@ Local artifacts:
 - `ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`
 - `docs/wiki/residual-census.md`
 - `docs/references/proximity-gap-paley-spectrum/README.md`
-- `ArkLib/Data/CodingTheory/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean`
+- `Research/ProximityPrize/LegacyWorkbench.lean`
 - `ArkLib/Data/CodingTheory/ProximityGap/KKH26ThornerZaman.lean`
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean`
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorLinnikRungInstances.lean`
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorLinnikThornerZamanArrow.lean`
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorLinnikTZClosure.lean`
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvD2_LinnikWindowCountRequired.lean`
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorBadRamificationDisjoint.lean`
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorBadDefectTowerInvariant.lean`
+- `Research/ProximityPrize/Frontier/_AssaultV2_FloorLocalizationN32.lean`
+- `Research/ProximityPrize/Frontier/_FloorLinnikRungInstances.lean`
+- `Research/ProximityPrize/Frontier/_FloorLinnikThornerZamanArrow.lean`
+- `Research/ProximityPrize/Frontier/_FloorLinnikTZClosure.lean`
+- `Research/ProximityPrize/Frontier/_AvD2_LinnikWindowCountRequired.lean`
+- `Research/ProximityPrize/Frontier/_FloorBadRamificationDisjoint.lean`
+- `Research/ProximityPrize/Frontier/_FloorBadDefectTowerInvariant.lean`
 - `scripts/probes/probe_444_floorbad_ramif.py`
 - `scripts/probes/probe_444_floorbad_defect_tower_invariant.py`
 

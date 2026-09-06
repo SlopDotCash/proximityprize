@@ -4,15 +4,15 @@ Status: landed as a checked nonprincipal-frequency correction of the concrete di
 
 Artifact:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R207NonzeroGaussPeriodDilationConsumer.lean`
+- `Research/ProximityPrize/Frontier/_R207NonzeroGaussPeriodDilationConsumer.lean`
 
 Checks:
 
 ```text
-scripts/pg-iterate.sh -q ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R207NonzeroGaussPeriodDilationConsumer.lean
+scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R207NonzeroGaussPeriodDilationConsumer.lean
 ✅ OK (15s)
 
-./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.Frontier._R207NonzeroGaussPeriodDilationConsumer
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R207NonzeroGaussPeriodDilationConsumer
 Build completed successfully
 ```
 

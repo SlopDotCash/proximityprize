@@ -44,7 +44,7 @@ Local surfaces:
 
 - `docs/kb/prize-407-faithful-problem-map-from-abf26.md`.
 - `ArkLib/Data/CodingTheory/ProximityGap/OpenCoreConditionalPin.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean`.
+- `Research/ProximityPrize/Frontier/_StackCandidateFamilyMax.lean`.
 
 Verdict: ABF26 tells us what the prize-facing consumer is. It does not lower the BGK/Paley wall.
 
@@ -59,7 +59,7 @@ Local surfaces:
 
 - `docs/kb/deltastar-DOSSIER-v2-2026-06-22.md`.
 - `ArkLib/Data/CodingTheory/ProximityGap/KambireDeepBandFloor.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean`.
+- `Research/ProximityPrize/Frontier/_AssaultV2_FloorLocalizationN32.lean`.
 - `docs/kb/deltastar-464-floor-necessary-not-sufficient-critique-2026-06-25.md`.
 
 Verdict: Kambire is a ceiling source. It cannot be inverted into the floor without a universal
@@ -75,11 +75,11 @@ sparse family.
 
 Local surfaces:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ChaiFanBasePanelGate.lean`.
+- `Research/ProximityPrize/Frontier/_ChaiFanBasePanelGate.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/C71SparseOrbitGap.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/C71BinomialIncidence.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/C71SparseStrataWindow.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean`.
+- `Research/ProximityPrize/Frontier/_StackCandidateFamilyMax.lean`.
 
 Verdict: the open theorem is not "use orbits"; it is sparse dominance/classification for the
 unrestricted stack maximum. Without that, action-orbit remains a conditional route.
@@ -94,10 +94,10 @@ record that this bridge is not formalized by the GG25 theorem itself.
 
 Local surfaces:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25CurveDecodabilityOpener.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25CurveDecodNextBrick.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25LineToAffine.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25AffineFactorInstance.lean`.
+- `Research/ProximityPrize/Frontier/_GG25CurveDecodabilityOpener.lean`.
+- `Research/ProximityPrize/Frontier/_GG25CurveDecodNextBrick.lean`.
+- `Research/ProximityPrize/Frontier/_GG25LineToAffine.lean`.
+- `Research/ProximityPrize/Frontier/_GG25AffineFactorInstance.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/DerandomizationFrontier.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/FoldingTransferNoGo.lean`.
 
@@ -144,10 +144,10 @@ character sum.
 
 Local surfaces:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfS7_oddpart_transfer.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PolynomialPrimeExponentialHeightGate.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_IdealLatticeMinkowskiCorrected.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OnsetWildBuildoff.lean`.
+- `Research/ProximityPrize/Frontier/_wfS7_oddpart_transfer.lean`.
+- `Research/ProximityPrize/Frontier/_PolynomialPrimeExponentialHeightGate.lean`.
+- `Research/ProximityPrize/Frontier/_IdealLatticeMinkowskiCorrected.lean`.
+- `Research/ProximityPrize/Frontier/_OnsetWildBuildoff.lean`.
 
 Verdict: char-0 and height tools are useful only after their char-p loss is below the prize scale.
 Generic exponential height/resultant bounds are too large.
@@ -160,10 +160,10 @@ prize primes. It is necessary obstruction removal, not a universal stack upper b
 
 Local surfaces:
 
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorLinnikTZClosure.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PowerfulTZThetaGate.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorLevelDepthPrimeScaleGate.lean`.
+- `Research/ProximityPrize/Frontier/_AssaultV2_FloorLocalizationN32.lean`.
+- `Research/ProximityPrize/Frontier/_FloorLinnikTZClosure.lean`.
+- `Research/ProximityPrize/Frontier/_PowerfulTZThetaGate.lean`.
+- `Research/ProximityPrize/Frontier/FloorLevelDepthPrimeScaleGate.lean`.
 
 Verdict: a sub-4 dyadic least-prime theorem would close a useful obstruction-removal lane, not the
 delta-star prize.

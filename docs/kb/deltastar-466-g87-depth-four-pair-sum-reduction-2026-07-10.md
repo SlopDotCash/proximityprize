@@ -2,7 +2,7 @@
 
 Date: 2026-07-10
 Issue: #466
-Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G87DepthFourPairSumReduction.lean`
+Lean: `Research/ProximityPrize/Frontier/_G87DepthFourPairSumReduction.lean`
 Probe: `scripts/probes/probe_466_g87_depth_four_feasibility.py`
 
 ## Result

@@ -146,7 +146,7 @@ Any survivor must be specified before evaluating the gate and must prove both
 
 ## 5. Artifacts
 
-- Lean: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G302CommonOrderSevenNormalNoGo.lean`
+- Lean: `Research/ProximityPrize/Frontier/_G302CommonOrderSevenNormalNoGo.lean`
 - Probe: `scripts/probes/g302_common_order7_normal_nogo.py`
 - Ledger: `[466-G302-common-order-seven-normal-nogo]`
 

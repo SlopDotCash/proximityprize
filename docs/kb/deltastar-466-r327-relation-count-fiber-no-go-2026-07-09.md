@@ -132,7 +132,7 @@ one.
 
 ```text
 scripts/pg-iterate.sh \
-  ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R327RelationCountFiberLowerBound.lean
+  Research/ProximityPrize/Frontier/_R327RelationCountFiberLowerBound.lean
 
 python3 scripts/probes/probe_r327_relation_count_fiber_lower_bound.py
 ```

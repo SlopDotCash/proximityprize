@@ -1,7 +1,7 @@
 # δ\* / #466 — SYZ27: local-to-global gluing in the rate-1/2 interior band 1/4 < δ < 1/3
 
 Date: 2026-07-11
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ27InteriorGluing.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ27InteriorGluing.lean`
 Probe: `scripts/probes/probe_syz27_interior_gluing.py`
 Branch: `codex/syz27-interior-gluing` (off `fork/research/proximity-prize` @ 389072c14)
 

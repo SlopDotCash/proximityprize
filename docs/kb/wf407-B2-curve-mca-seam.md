@@ -71,6 +71,6 @@ This lane does not touch that core; it makes the *definitional* connection preci
 
 ## Artifacts
 
-* `ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_B2-curve.lean` (6 axiom-clean thms)
+* `Research/ProximityPrize/Frontier/WF407_B2-curve.lean` (6 axiom-clean thms)
 * `scripts/probes/wf407_B2-curve_bridge.py`, `scripts/probes/wf407_B2-curve_epsmca.py`
-* `ArkLib/Data/CodingTheory/ProximityGap/Frontier/CurveDecodability.lean` (stub → pointer map)
+* `Research/ProximityPrize/Frontier/CurveDecodability.lean` (stub → pointer map)

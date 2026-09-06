@@ -1,7 +1,7 @@
 # δ* #466 — SYZ33: the final two strip lemmas (lemma 1 closed, lemma 2 isolated, strip assembled)
 
 Date: 2026-07-11
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ33FinalTwoLemmas.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ33FinalTwoLemmas.lean`
 Branch: `codex/syz33-final-two-lemmas` (off fork `research/proximity-prize` tip `b747c6b1f`)
 
 ## Context — the scoreboard SYZ33 inherits

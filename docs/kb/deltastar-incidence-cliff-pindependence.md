@@ -62,7 +62,7 @@ square-root-cancellation wall.
 
 ## Lean substrate now landed for the affine gate
 
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BindingRadiusAffineFiber.lean` formalizes the finite-field
+`Research/ProximityPrize/Frontier/_BindingRadiusAffineFiber.lean` formalizes the finite-field
 counting shell used by the cliff route:
 
 - `affineConstraint_eq_neg_div`: a non-heavy affine slot pins the scalar `γ = -A/B`;

@@ -9,7 +9,7 @@ Status: **quotient union-bound guardrail**, not a delta-star proof.
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_QuotientTailSupConsumer.lean
+Research/ProximityPrize/Frontier/_QuotientTailSupConsumer.lean
 ```
 
 records the quotient version of the atom-scale tail consumer.

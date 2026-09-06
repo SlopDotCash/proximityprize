@@ -17,7 +17,7 @@ Status: **off-BGK arithmetic guardrail**, not a delta-star proof.
 The file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorLevelDepthPrimeScaleGate.lean
+Research/ProximityPrize/Frontier/FloorLevelDepthPrimeScaleGate.lean
 ```
 
 formalizes the scale condition for using least-prime-in-AP input at deeper 2-power levels.

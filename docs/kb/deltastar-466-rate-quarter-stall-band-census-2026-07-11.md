@@ -6,7 +6,7 @@ bad families all of whose base scalars carry pools `F ∈ [75018134, 480946858]`
 **Probe:** `scripts/probes/probe_rate_quarter_p1_stall_band_census.py` (deterministic,
 exact integer arithmetic; scaled shapes with the exact P1 ratios
 `T = ⌈N·592794966/2^30⌉`, `k = N/4`).
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterStallBandCensus.lean`
+**File:** `Research/ProximityPrize/Frontier/_P1RateQuarterStallBandCensus.lean`
 (pg-iterate OK 14s; 16 theorems; full axiom lists ALSO read manually via
 `lake env lean`: 15 exactly `[propext, Classical.choice, Quot.sound]`, 1 `[propext]`;
 no sorryAx, no new axioms/hypotheses).

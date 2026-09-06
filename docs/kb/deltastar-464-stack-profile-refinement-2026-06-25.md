@@ -9,7 +9,7 @@ Status: **classification bookkeeping**, not a delta-star proof.
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean
+Research/ProximityPrize/Frontier/_StackProfileRefinement.lean
 ```
 
 records how to refine a coarse stack profile into a finer one.

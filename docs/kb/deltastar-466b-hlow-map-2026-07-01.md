@@ -1,7 +1,7 @@
 # #466 round 2, lane HLOW: the weld's `hlow` residual — exact dependency map + the witness-split shave
 
 Date: 2026-07-01.  Status: **map + one landed axiom-clean brick**
-(`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R2B_LargeZeroWitnessSplit.lean`,
+(`Research/ProximityPrize/Frontier/_R2B_LargeZeroWitnessSplit.lean`,
 namespace `ProximityGap.LargeZeroWitnessSplit`).  Nothing here closes the open core.
 
 ## 0. Object of study
@@ -226,5 +226,5 @@ band interpolating) is this lane's main map contribution.
 
 ## 7. Verification line
 
-`scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R2B_LargeZeroWitnessSplit.lean`
+`scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R2B_LargeZeroWitnessSplit.lean`
 → ✅ OK, all 8 `#print axioms` = `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.

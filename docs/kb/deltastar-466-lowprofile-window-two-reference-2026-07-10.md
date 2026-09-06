@@ -1,7 +1,7 @@
 # δ* #466 — W15 part 4: the window is two-sided — L_near = 1 refuted by two-block lines; the secant dichotomy (2026-07-10)
 
 Lane: `ll:low-profile-fiber`. File:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15WindowTwoReference.lean`
+`Research/ProximityPrize/Frontier/_W15WindowTwoReference.lean`
 (axiom-clean, 9/9 audits `[propext, Classical.choice, Quot.sound]`, no `sorryAx`,
 `pg-iterate` 35s). Probe: `scripts/probes/probe_466_w15_window_two_reference.py`
 (deterministic, exit 0). Companions: parts 1–3

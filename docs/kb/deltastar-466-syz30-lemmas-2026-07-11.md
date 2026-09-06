@@ -1,7 +1,7 @@
 # δ\* / #466 — SYZ30: strip-scoreboard lemmas 3 and 1 (the tractable pair)
 
 Date: 2026-07-11
-File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ30LemmasOneThree.lean`
+File: `Research/ProximityPrize/Frontier/_SYZ30LemmasOneThree.lean`
 Branch: `codex/syz30-lemmas-one-three` (off `fork/research/proximity-prize` @ 94e3b2fb5)
 Predecessor: `docs/kb/deltastar-466-syz29-yield-d4-2026-07-11.md` (the 3-lemma scoreboard)
 

@@ -1,6 +1,6 @@
 # δ* #466 — SYZ6 finer-grading degenerate-channel ceiling (2026-07-10)
 
-**File:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ6FinerGradingCeiling.lean`
+**File:** `Research/ProximityPrize/Frontier/_SYZ6FinerGradingCeiling.lean`
 (axiom-clean: `propext, Classical.choice, Quot.sound`; no `sorry`).
 
 ## Result
