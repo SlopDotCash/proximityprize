@@ -10,9 +10,8 @@ import ArkLib.ToMathlib.IngredientCBridge
 /-!
 # Keystone capstone — the `hcoeffPoly` witness for the Johnson list-decoding branch
 
-This file is the **top of the bottom-up grind** of the BCIKS20 §5 proximity-gap keystone.  It
-assembles, as a finite composition of the verified `ArkLib/ToMathlib/` bricks, the standalone
-witness `hcoeffPoly` consumed by the list-decoding front door
+This file assembles the BCIKS20 §5 coefficient-polynomial witness from the supporting
+function-field lemmas. The witness `hcoeffPoly` is consumed by the list-decoding theorem
 
   `ProximityGap.RS_jointAgreement_of_prob_gt_and_errorBound_lower_bounds`  (Curves.lean:1199)
 

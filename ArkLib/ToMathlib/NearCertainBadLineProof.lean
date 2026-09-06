@@ -10,9 +10,9 @@ import Mathlib.Algebra.Field.ZMod
 /-!
 # BGKS20 T5.4 — Construction of a `NearCertainBadLine`
 
-This module **constructs** a `CodingTheory.Bridge.NearCertainBadLine` witness (issue #104),
-the geometric residual left open by `ArkLib/ToMathlib/Bridge2BGKS20.lean`, and feeds it through
-the already-proven separation bridge `epsCA_separation_bridge_of_residual` to land the
+This module constructs a `CodingTheory.Bridge.NearCertainBadLine` witness for the
+geometric hypothesis in `ArkLib/ToMathlib/Bridge2BGKS20.lean`. Applying
+`epsCA_separation_bridge_of_residual` gives the
 correlated-agreement error lower bound
 $$\varepsilon_{\mathrm{ca}}(C, \delta_{\mathrm{fld}}, \delta_{\mathrm{int}}) \ge 1 - 1/|F|.$$
 
