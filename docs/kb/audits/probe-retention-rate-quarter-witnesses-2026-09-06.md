@@ -21,3 +21,6 @@ and independent-check results. No Lean recompilation is claimed.
 
 Both sources belonged to the original unreferenced cohort. This advances
 that cohort to 48 of 92 reviewed, leaving 44. All artifacts remain retained.
+
+Reproduce the independent check with
+`python3 docs/kb/audits/verify_rate_quarter_clique.py`.
