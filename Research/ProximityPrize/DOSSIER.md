@@ -21,6 +21,27 @@ The [disproof log](DISPROOF_LOG.md) preserves the detailed anti-repeat record.
 - [Standalone snapshot, 2026-08-16](#standalone-snapshot-2026-08-16)
 - [Campaign dossier through 2026-07-11](#campaign-dossier-through-2026-07-11)
 
+## Source correction: the binder-floor route remains conditional
+
+The retained campaign §9 says the binder obstruction is gone “at every scale” and
+“unconditionally.” That is not established by the current Lean closure interface.
+[`floor_closes_by_tzSupplyFamily`](Frontier/_FloorLinnikTZClosure.lean) explicitly
+requires `FloorLocalizationUniform FloorBad` and a uniform `TZPrimeSupply` family.
+The later [floor-successor bridge](Frontier/_FloorSuccessorTZBridge.lean) also
+retains the localization hypothesis and a named analytic input. These are theorem
+arguments, not newly discharged facts.
+
+The [finite obstruction-norm module](Frontier/_FloorSuccessorNorm.lean) proves
+prime-divisor identification for the constants `2312` and `602176`. Its own scope
+statement leaves the resultant identities and the floor-bad-to-divisibility
+connection outside that Lean proof. Those finite arithmetic lemmas therefore do
+not establish the uniform floor localization theorem.
+
+This correction follows the checked-in theorem signatures and scope statements;
+it is not a new compilation or an independent verification of the cited analytic
+literature. The historical text below is retained for provenance. Neither its
+old wording nor the conditional floor route closes the production threshold.
+
 ## Standalone snapshot 2026-08-16
 
 <!-- BEGIN retained v4 dossier -->

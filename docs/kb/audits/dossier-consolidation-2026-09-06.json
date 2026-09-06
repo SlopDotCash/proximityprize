@@ -25,5 +25,14 @@
     "docs/kb/deltastar-466-two-open-problems-expert-statement-2026-07-04.md",
     "docs/wiki/deltastar-programme.md"
   ],
-  "remaining": "v2 and session-note semantic distillation remain unaudited; production proof remains open."
+  "remaining": "v2 and session-note semantic distillation remain unaudited; production proof remains open.",
+  "source_scope_correction": {
+    "finding": "Historical all-scale unconditional binder-floor claim exceeds the explicit hypotheses of the current closure theorem.",
+    "sources": {
+      "Research/ProximityPrize/Frontier/_FloorLinnikTZClosure.lean": "1ef63e9344a65cc543524a3d9351a3b38e432d2d9e0a6e6be11012c971f3d597",
+      "Research/ProximityPrize/Frontier/_FloorSuccessorTZBridge.lean": "a67aaeee95bc80e2122fcb1f03e9fb46f3e06d223522aac7198a0db11ff1b728",
+      "Research/ProximityPrize/Frontier/_FloorSuccessorNorm.lean": "42ecc3b846dad25020a11fef3900db57196ac309be30e1a67aea924ad35dcff3"
+    },
+    "validation": "Source signatures and explicit scope statements inspected; no new Lean compilation or analytic-literature verification claimed."
+  }
 }
