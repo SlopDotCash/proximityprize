@@ -1,0 +1,23 @@
+{
+  "exit_code": 0,
+  "command": "python3 scripts/probes/probe_bgk_ctr_pd_no_go.py",
+  "output": "BGK centered-translate positive-definite no-go certificate\np=13313\nn=256\nprimitive_root=3\nsubgroup_generator=9968\nsubgroup_step=52\nsubgroup_order=256\nsubgroup_weighted_checksum=226172480\nsum_f6=281474976710656\nsum_f7=72057594037927936\nE7=390017062859571490445015114240\nC6_zero=5951195976778139164813824\nD_zero=109524583029107622488576\nrestriction_correlation=1523504151795201134550840290\nrestriction_D=1169197842280328085494754\ncentered_numerator=299314647623763989886657024\nnormalizing_denominator=959302749426934611968\nreduced_coefficient=584598921140164042747377/1873638182474481664\ncoefficient_decimal=312012.706940085045\ntarget_coefficient=262144\npositive_margin=47839187677989642966917632\nglobal_mean_D=0\nfourier_nonnegative=centered_autocorrelation_identity\nmultiplicative_G_invariant=verified_on_all_3408128_pairs\nstatus=COUNTEREXAMPLE_TO_2^18_N7_STRUCTURAL_BOUND\n",
+  "archive_comparison": "exact after newline normalization",
+  "sources": [
+    {
+      "path": "scripts/probes/probe_bgk_ctr_pd_no_go.py",
+      "sha256": "8de29e6484dee815cf1737686176658c21d3e5c63010294af5134fd9c1771bb6"
+    },
+    {
+      "path": "scripts/probes/_out_bgk_ctr_pd_no_go.txt",
+      "sha256": "96cb48d9ab7c5770c160f10ec88080ddb138d7ec0eab131f59bc877e97a75405"
+    }
+  ],
+  "independent_checks": [
+    "trial division primality",
+    "exact dyadic subgroup order",
+    "Fraction coefficient and positive margin"
+  ],
+  "completed_original_unreferenced": 64,
+  "remaining_original_unreferenced": 28
+}
