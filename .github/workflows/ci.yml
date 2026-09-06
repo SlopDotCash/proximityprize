@@ -179,8 +179,10 @@ jobs:
       # suffix makes the key unique, so every attempt (including failed ones,
       # via always()) saves its own snapshot and the next attempt resumes from
       # the newest one rather than the first attempt's stale partial state.
+      # PR-scoped snapshots cannot be restored on main and evict shared caches.
+      # PRs restore main snapshots but only main publishes new snapshots.
       - name: Save Lean cache
-        if: always() && steps.validation-scope.outputs.lean-relevant == 'true'
+        if: always() && github.ref == 'refs/heads/main' && steps.validation-scope.outputs.lean-relevant == 'true'
         uses: actions/cache/save@v6
         with:
           path: ./.lake

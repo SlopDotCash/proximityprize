@@ -90,7 +90,7 @@ jobs:
           LEAN_NUM_THREADS: "1"
 
       - name: Save Lean cache
-        if: always()
+        if: always() && github.ref == 'refs/heads/main'
         uses: actions/cache/save@v6
         with:
           path: ./.lake
@@ -104,7 +104,7 @@ jobs:
           LEAN_NUM_THREADS: "2"
 
       - name: Save Lean cache (with docs facet)
-        if: always() && steps.docs-build.outcome != 'skipped'
+        if: always() && github.ref == 'refs/heads/main' && steps.docs-build.outcome != 'skipped'
         uses: actions/cache/save@v6
         with:
           path: ./.lake
