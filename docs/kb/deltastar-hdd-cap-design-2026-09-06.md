@@ -229,6 +229,14 @@ re-attempts this composition.
    block-diagonal invariants) so a certificate becomes a checked theorem end-to-end at a fixed
    instance.
 
+## 5.5 Started: the d = 2 ledger port
+
+`scripts/probes/hd2_ledger_projection.py` — a HEURISTIC arithmetic extension of the PR #122
+ledger to the sparse `s₂ ≤ 1` family (each branch gains one agreement-vector slot; shape
+assumption explicit in the docstring), with the radius side EXACT (`node_rank`, `d = 2`,
+line setting).  Its output sizes the payoff of the real geometric port (the actual next
+step); nothing from it may be reported as a certified witness.
+
 ## 6. Reproduction
 
     python3 scripts/probes/hdinf_cap_search.py selftest      # rectangles vs references
