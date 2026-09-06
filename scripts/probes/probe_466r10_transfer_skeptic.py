@@ -6,13 +6,10 @@ Three targeted checks the worker's probes did NOT decisively make:
  (A) Vacuity of the (E2,E3)-grouping analysis: at n=32 do ANY two primes share (E2,E3)?
      If not, the worker's "M varies within a group / corr(M,E4)" reading printed on ZERO data.
 
- (B) The REAL gauge question for a TRANSFER OPERATOR: the tower step needs the JOINT
-     distribution of (eta_b, eta_{gb}) (worker's Task 1 admits this). Is that joint object
-     a function of the marginal magnitude multiset {|eta_b|} (=> gauge, worker right), or does
-     it carry phase/correlation info the moment ladder does NOT see? We test: build two primes
-     with (nearly) matching |eta| multiset-moments and compare the JOINT second moment
-     C := (1/m) sum_b |eta_b|^2 |eta_{gb}|^2  (the operator's leading L2->L2 kernel entry).
-     If C is a function of the marginals alone it is gauge; if it varies independently, CRACK.
+ (B) Adjacent-coset correlation for the primitive-generator shift b -> gb.
+     This is not the dyadic subgroup tower shift: for index m=(p-1)/n even,
+     that shift is b -> g^(m/2)b. An adjacent correlation alone does not determine
+     whether the joint distribution follows from the marginal moment ladder.
 
  (C) Sanity: reproduce the transient ratios at n=128 for one deep prime, independent code path.
 Regime: proper subgroup mu_n < F_p^*, p>=n^4, p==1 mod n, multiple primes, exclude X^{n/2}=+-1 dirs.
@@ -97,7 +94,7 @@ print(f"  => worker's within-(E2,E3) 'M varies / corr(M,E4)' analysis ran on {nd
 if ndup==0:
     print("  *** VACUOUS: the printed 'Reading' is boilerplate, not supported by any grouped data.")
 
-print("\n"+"="*78);print("(B) TRANSFER gauge: is joint C=<|eta_b|^2 |eta_gb|^2> a fn of marginals?");print("="*78)
+print("\n"+"="*78);print("(B) Adjacent-coset diagnostic: C=<|eta_b|^2 |eta_gb|^2>");print("="*78)
 print("  Compare across primes: does the JOINT cross-coset 2nd moment carry info beyond the")
 print("  marginal |eta| moment ladder? We report C_norm = C / (mean|eta|^2)^2 (=1 if independent).")
 print(f"  {'p':>10} {'v2':>3} {'E2/n':>12} {'meanA2':>10} {'C':>14} {'C/(meanA2)^2':>13}")
@@ -112,11 +109,12 @@ for (p,E2,E3,E4,M) in rows[:8]:
     meanA2=float(np.mean(A2))
     print(f"  {p:>10} {v2(p-1):>3} {E2//n:>12} {meanA2:>10.4f} {C:>14.4f} {C/meanA2**2:>13.6f}")
 print("""
-  READ: eta_{gb} where gb=g^{i+1} — but note b -> gb is the coset SHIFT, and the correlation
-  between adjacent cosets is what the TOWER STEP eta_b(2N)=eta_b(N)+eta_gb(N) actually uses.
-  If C/(meanA2)^2 == 1 (adjacent cosets uncorrelated) across all primes AND equals the marginal
-  prediction, the joint is gauge. If it deviates and VARIES beyond what marginals fix, that is the
-  surviving crack the worker's marginal-multiset argument misses.
+  READ: this computes the primitive-generator shift i -> i+1, not the dyadic tower step.
+  When m=(p-1)/n is even, mu_(2n) is mu_n union g^(m/2)*mu_n, so the tower uses
+  shift i -> i+m/2. When m is odd, mu_(2n) does not exist in this field.
+  C/(meanA2)^2=1 is one mixed-moment equality, not a test of independence or proof
+  that the joint distribution is determined by the marginals. These rows alone
+  establish neither a gauge reduction nor an obstruction to one.
 """)
 
 print("="*78);print("(C) Independent reproduction of transient ratio at deep prime (n up to 128)");print("="*78)

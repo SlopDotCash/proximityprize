@@ -1,0 +1,23 @@
+{
+  "artifact": "_research_ll/lamleung.txt",
+  "sha256": "bfd7fd156eab70aeab208c149af0e4dae81622b6f8960598fcb01d429d5c4ff8",
+  "bytes": 40904,
+  "source": "https://arxiv.org/abs/math/9511209v1",
+  "disposition": "retain historical text extraction; consult source for formulas",
+  "counterexample": {
+    "p": 97,
+    "n": 32,
+    "roots": [
+      1,
+      18,
+      78
+    ],
+    "powers": [
+      1,
+      1,
+      1
+    ],
+    "sum_mod_p": 0
+  },
+  "scope": "bibliographic and main-theorem scope verified; no line-by-line transcription certification"
+}
