@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.GuruswamiSudan.Basic
-import ArkLib.Data.CodingTheory.ProximityGap.GSFactorExtract
+import ArkLib.Data.CodingTheory.GuruswamiSudan.FactorExtraction
 
 /-!
 # The `MatchingExtractor` residual of Proposition 5.5 — the GS matching-polynomial extraction

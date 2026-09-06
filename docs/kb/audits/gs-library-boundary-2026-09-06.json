@@ -1,0 +1,162 @@
+{
+  "lean_version": "4.30.0-rc2",
+  "compiled_modules": [
+    "ArkLib/Data/CodingTheory/GuruswamiSudan/BivariateVanishing.lean",
+    "ArkLib/Data/CodingTheory/GuruswamiSudan/FactorExtraction.lean",
+    "ArkLib/Data/CodingTheory/GuruswamiSudan/ListSizeBound.lean"
+  ],
+  "source_sha256": {
+    "ArkLib/Data/CodingTheory/GuruswamiSudan/BivariateVanishing.lean": "96bfb9a17aba70ea1e7799bc7db4a01e4349e16aba30c7e7dc85588245296325",
+    "ArkLib/Data/CodingTheory/GuruswamiSudan/FactorExtraction.lean": "434a9c7768e7582484dbfeb6d88e4167deec6a0469908f256109640b99f26453",
+    "ArkLib/Data/CodingTheory/GuruswamiSudan/ListSizeBound.lean": "3d9107ca83be872f4358ccc44e86b645a4f030a493e017a7d7ee69f47e4ba7e9"
+  },
+  "compile_exit_code": 0,
+  "axiom_audit_exit_code": 0,
+  "declarations": {
+    "ArkLib.GS.hasseCoeff_isLinear": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "ArkLib.GS.hasseCoeff_eq_innerTaylorCoeff_taylor": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "ArkLib.GS.taylor_X_sub_C": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "ArkLib.GS.X_sub_C_pow_dvd_iff_X_pow_dvd_taylor": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "ArkLib.GS.dvd_innerTaylorCoeff_iff": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "ArkLib.GS.vanishesToOrder_iff_hasseCoeff": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "ArkLib.GS.eval_eq_eval_taylor": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "ArkLib.GS.vanishesToOrder.dvd_eval": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "ArkLib.GS.vanishesToOrder.le_rootMultiplicity_eval": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.multiplicity_sum_le_natDegree": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.eq_zero_of_natDegree_lt_multiplicity_sum": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.curveRestrict_def": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.monic_Y_sub_Cp": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.Y_sub_Cp_dvd_iff_curveRestrict_eq_zero": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.curve_factor_extraction": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.curve_factor_extraction_of_rootMultiplicity": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.curve_factor_extraction_of_vanishesToOrder": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.card_distinct_linear_factors_le_natDegree": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.gs_list_size_le": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.gs_factor_extraction_list_size": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.gs_factor_extraction_list_size_of_rootMultiplicity": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSFactorExtract.gs_factor_extraction_list_size_of_vanishesToOrder": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSListSizeBound.gs_dvd_of_agreement": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSListSizeBound.gs_list_size_bound": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSListSizeBound.gs_list_size_bound_div": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSListSizeBound.agreement_window": [
+      "propext",
+      "Quot.sound"
+    ],
+    "GSListSizeBound.gs_list_size_window": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSListSizeBound.gs_list_size_window_div": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "GSListSizeBound.interpolation_feasible_window": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "full_consumer_graph_validated": false
+}

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.GuruswamiSudan.GSOverRatFunc
-import ArkLib.Data.CodingTheory.ProximityGap.GSFactorExtract
+import ArkLib.Data.CodingTheory.GuruswamiSudan.FactorExtraction
 
 /-!
 # Guruswami–Sudan list-size / `Y`-degree bound over `K = F(Z)` (Hab25 §3 Step S3)
