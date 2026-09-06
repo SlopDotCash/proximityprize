@@ -1,0 +1,31 @@
+{
+  "source": "scripts/probes/probe_fsmf_threeterm_vanishing_rigidity.py",
+  "source_sha256": "8156016f16c753419e58960fd762ebdc7c2ece88b3de8e04a4dbfdf0ca9edbc0",
+  "archived_output": "scripts/probes/_out_fsmf_rigidity.txt",
+  "archived_output_sha256": "94f8b470496144132e57fd6ce102daab9733ee66eab50706c9384e63c6f78f6b",
+  "command": "python3 scripts/probes/probe_fsmf_threeterm_vanishing_rigidity.py",
+  "exit_code": 0,
+  "archived_output_matches": true,
+  "executable_ast_unchanged": true,
+  "trials": 200000,
+  "seed": 31337,
+  "field_prime": 193,
+  "domain_size": 64,
+  "histogram": {
+    "0": 142662,
+    "1": 49113,
+    "2": 7502,
+    "3": 686,
+    "4": 36,
+    "5": 1
+  },
+  "observed_root_count_total": 66324,
+  "observed_mean": 0.33162,
+  "expected_mean_exact": "64/193",
+  "limitations": [
+    "Sampling distribution only; not exhaustive enumeration.",
+    "Historical threshold and fibre comparison in stdout were not independently validated.",
+    "No universal rigidity or production proximity-gap theorem is proved."
+  ],
+  "stdout": "trials = 200000\nhistogram |zeros(A12+A23) cap domain|: {0: 142662, 1: 49113, 2: 7502, 3: 686, 4: 36, 5: 1}\nmax observed = 5 (need >= 13 for a third large core; fibre ansatz achieves 14 by construction)\n"
+}

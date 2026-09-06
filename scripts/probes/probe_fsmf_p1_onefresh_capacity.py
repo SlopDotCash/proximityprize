@@ -7,8 +7,8 @@ induces at most ONE gamma per pencil (linear equation in gamma).  Pencils with
 core T-1 ("one-fresh") are the count-maximizing shape: per-line cap n - t + 1.
 
 This probe computes, in exact integers for the miniature ladder m = 4, 10, 16,
-22 and for P1 itself (m = 2^26), the maximum badCount achievable by ell-line
-one-fresh packings realizable through the mu_16 fibre ansatz
+22 and for P1 itself (m = 2^26), the maximum count in the encoded ell-line
+one-fresh capacity model motivated by the mu_16 fibre ansatz
   A_ij = q_ij(x^{n/16}) * g(x),  R_ij = q_ij(x^{n/16}) * h(x),
 (q_ij cubic potentials splitting over mu_16, g/h sharing s domain roots),
 which the m=4/m=10 census probes exhibit concretely.  Structural facts used
@@ -23,8 +23,11 @@ argued in the docstrings there):
     (16 elements), a root shared by a b-subset consumes C(b,2) slots, and at
     least one fibre must stay unused to host the s shared g/h roots.
 
-Output: for each m and ell in {2,3,4,5}: feasibility and max count, then the
-global max versus the budget n.
+Output: for each m and ell in {2,3,4,5}: model feasibility and maximum count,
+then the model maximum versus budget n. Feasibility here means satisfaction of
+the enumerated integer constraints, not a constructed polynomial packing. The
+model enumerates n2/n3/n4 fibre slots and does not enumerate five-way slots.
+Its structural premises and applicability to all packings are not proved here.
 """
 
 from __future__ import annotations

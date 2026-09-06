@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
-"""G94 supplement: (a) verify value-factoring exactly (cocycle metrics constant on pairs with
-equal eta up to fp error); (b) anatomy of the domination-forcing pairs for cocycle metrics
-(are they lone-spike shaped: large |Delta eta| at tiny cocycle distance?); (c) exact-value
-degeneracy check (distinct cosets, equal eta)."""
+"""Floating-point diagnostics for Jacobi-cocycle distances at two finite fields.
+
+Report near-equal Gauss-period pairs, small numerical spacings, and the largest
+value-difference/distance ratios for (p,n)=(761,8) and (6529,16). The features
+are constructed as functions of the period value; this is not an exact-value
+degeneracy test. An empty near-equal-pair set gives nan, not evidence that the
+distance vanishes on such pairs. Numerical spacings do not prove equal values,
+noninjectivity, or a universal obstruction.
+
+Run from scripts/probes so the sibling helper module can be loaded.
+"""
 import numpy as np, math
 import importlib.util
 spec = importlib.util.spec_from_file_location("probe", "probe_g94_jacobi_cocycle_metric.py")
@@ -23,12 +30,12 @@ for (p, n) in [(761, 8), (6529, 16)]:
     close = Dval[iu] < 1e-8
     print(f"n={n} p={p}: pairs with |Deta|<1e-8: {int(close.sum())}, "
           f"max d_tm on those: {Dtm[iu][close].max() if close.any() else float('nan'):.3g} "
-          f"(value-factoring: should be ~0)")
+          f"(empty qualifying set reports nan)")
     # near-duplicate eta values (spectrum degeneracy across cosets)
     se = np.sort(eta)
     mind = np.min(np.diff(se))
-    print(f"   min spacing of eta values: {mind:.3e} (near-degenerate pairs are where any "
-          f"injective-in-b metric hope dies: cocycle data identical, frequencies distinct)")
+    print(f"   min spacing of eta values: {mind:.3e} "
+          f"(floating-point spacing; no exact-equality or injectivity conclusion)")
     # (b) anatomy: top-5 pairs by Deta/dtm ratio
     r = Dval[iu]/np.maximum(Dtm[iu], 1e-300)
     top = np.argsort(r)[-5:][::-1]
