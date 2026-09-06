@@ -26,6 +26,13 @@ For substantial contributions, such as a new proof system, we strongly encourage
 
 ## Pull Request Guidelines
 
+**NEVER push branches, tags, or commits to `Verified-zkEVM/ArkLib`, or open pull requests
+against that upstream repository.** All contributions from this project must be pushed and
+submitted to `SlopDotCash/proximityprize` only. Verify the actual remote URL before every
+push and explicitly use `--repo SlopDotCash/proximityprize` when creating PRs with `gh`;
+never rely on GitHub's fork/upstream default. This rule also applies to automated agents
+and their sub-agents.
+
 We follow the specific convention for pull request titles and descriptions used by the Lean community.
 
 ### Title Format

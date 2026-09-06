@@ -456,6 +456,43 @@ def trunc_wedge(d, smax, jcap):
     return out
 
 
+def affine_wedge(d, smax, j0, j1, jcap):
+    """Omega = {(S,J): S <= smax, S <= J <= min(d*S, j0 + j1*S, jcap)} (continuum-optimal
+    shape at d=6: rising affine J-ceiling with a hard cap)."""
+    out = []
+    for S in range(smax + 1):
+        top = min(d * S, j0 + (j1 * S) // 4, jcap)  # j1 in quarter units
+        for J in range(S, top + 1):
+            out.append((S, J))
+    return out
+
+
+def paramscan2(rate_denom, d, m, nexp=18, verbose=True, base=None):
+    """Scan the affine family around a base (smax, jcap) result."""
+    n = 1 << nexp
+    k = n // rate_denom
+    ev = SpectralEvaluator(d, n, k, m)
+    s = math.sqrt(n * (k - 1))
+    best = (None,) * 5
+    smax0, jcap0 = base if base else (round(0.8 * m), round(1.2 * m))
+    for smax in {smax0, round(smax0 * 1.15), round(smax0 * 0.85)}:
+        for j0 in {round(0.4 * m), round(0.55 * m), round(0.7 * m)}:
+            for j1 in (1, 2, 3):  # quarter-slopes 0.25, 0.5, 0.75
+                for jcap in {round(0.8 * m), round(0.95 * m), round(1.1 * m),
+                             round(1.3 * m)}:
+                    om = affine_wedge(d, smax, j0, j1, jcap)
+                    A = ev.threshold(om, hi=(best[0] or n))
+                    if A is not None and (best[0] is None or A < best[0]):
+                        best = (A, smax, j0, j1, jcap)
+                        if verbose:
+                            print(f"    affine smax={smax} j0={j0} j1={j1/4} jcap={jcap}: "
+                                  f"A={A} ({A / s:.5f})", flush=True)
+    A, smax, j0, j1, jcap = best
+    print(f"  PARAM2 d={d} m={m}: A={A} ratio={A / s:.6f} delta={1 - A / n:.5f} "
+          f"(smax={smax} j0={j0} j1={j1/4 if j1 else j1} jcap={jcap})", flush=True)
+    return best
+
+
 def paramscan(rate_denom, d, m, nexp=18, refine=True, verbose=True):
     """Deterministic scan over the truncated-wedge family, then optional local search."""
     n = 1 << nexp
@@ -464,9 +501,9 @@ def paramscan(rate_denom, d, m, nexp=18, refine=True, verbose=True):
     s = math.sqrt(n * (k - 1))
     best = (None, None, None)
     smax_grid = sorted(set(max(1, round(m * f)) for f in
-                           (0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.65, 0.8)))
+                           (0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.65, 0.8, 1.0, 1.25)))
     jcap_grid = sorted(set(max(1, round(m * f)) for f in
-                           (0.25, 0.4, 0.55, 0.7, 0.9, 1.2, 1.6, 2.2, 3.0)))
+                           (0.25, 0.4, 0.55, 0.7, 0.9, 1.2, 1.6, 2.2, 3.0, 4.0)))
     for smax in smax_grid:
         for jcap in jcap_grid:
             om = trunc_wedge(d, smax, jcap)
@@ -483,6 +520,16 @@ def paramscan(rate_denom, d, m, nexp=18, refine=True, verbose=True):
             A = A2
     print(f"  PARAM d={d} m={m}: A={A} ratio={A / s:.6f} delta={1 - A / n:.5f} "
           f"(smax={smax} jcap={jcap}, refined |omega|={len(om)})", flush=True)
+    try:
+        import json
+        os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                 "hdinf_results"), exist_ok=True)
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "hdinf_results",
+                               f"omega_r{rate_denom}_d{d}_m{m}_n{nexp}.json"), "w") as fh:
+            json.dump({"A": A, "smax": smax, "jcap": jcap,
+                       "omega": sorted(map(list, om))}, fh)
+    except Exception as e:
+        print(f"    (save failed: {e})", flush=True)
     return A, om
 
 
@@ -500,7 +547,7 @@ def trend(rate_denom, d, ms, nexp=18, rounds=300):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["selftest", "scan", "trend", "paramtrend"])
+    ap.add_argument("cmd", choices=["selftest", "scan", "trend", "paramtrend", "param2"])
     ap.add_argument("--rate", type=int, default=2)
     ap.add_argument("--d", type=int, default=6)
     ap.add_argument("--m", type=int, default=64)
@@ -512,6 +559,8 @@ if __name__ == "__main__":
         sys.exit(1 if selftest() else 0)
     elif args.cmd == "scan":
         scan(args.rate, args.d, args.m, nexp=args.nexp, rounds=args.rounds)
+    elif args.cmd == "param2":
+        paramscan2(args.rate, args.d, args.m, nexp=args.nexp)
     elif args.cmd == "paramtrend":
         n = 1 << args.nexp
         k = n // args.rate

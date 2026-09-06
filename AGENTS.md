@@ -27,6 +27,11 @@ Start with [`README.md`](README.md) for project overview.
 
 ## Guardrails
 
+- **NEVER push branches, tags, or commits to `Verified-zkEVM/ArkLib`, or open pull requests
+  against that upstream repository.** The only authorized push and pull request destination
+  for this project is `SlopDotCash/proximityprize`. Verify the actual remote URL before every
+  push and explicitly use `--repo SlopDotCash/proximityprize` when creating PRs with `gh`;
+  never rely on GitHub's fork/upstream default. This rule applies to all sub-agents too.
 - Never run bare `lake build` / `lake exe cache get` when other agents may be building on the
   same machine: use `./scripts/lake-locked.sh build <targets>` (and
   `./scripts/lake-locked.sh exe cache get`). It serializes builds per checkout, caps
