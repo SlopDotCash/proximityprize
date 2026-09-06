@@ -322,6 +322,93 @@ def verify_exact_int(d, n, k, m, omega, A):
     return dim > n * rb, dim, n * rb
 
 
+def line_feasible_int(d, n, k, m, omega, A, L):
+    """Exact-integer counting-bound feasibility for the LINE setting (PR #122 shape):
+    monomials (a, b0, bs, l0) with b0 + l0 <= L, weighted degree a + w*b0 + sum (w-1-j) bs
+    < m*A; node rows keyed (i, nE, e, l) with l free of T-degree.  Blocks
+    (g1, g2) = (b0 + sum bs + l0, a - sum (j+1) bs).  Sound: rank <= sum min(rows, cols).
+    rows_line(g1, g2) = sum_{g1' <= g1} rows_LD(g1', g2); cols gain the l0-multiplicity
+    [g1 - S <= L] * (min(b0max(a), g1 - S) + 1).  All Python bignums."""
+    w = k - 1
+    assert m <= w
+    D = m * A
+    smax = max(S for (S, J) in omega)
+    jmaxc = max(J for (S, J) in omega)
+    mult = multiplicity_table(d, smax, jmaxc)
+    cells = [(S, J, int(mult[S, J])) for (S, J) in omega if mult[S, J] > 0]
+    g1max = smax + (D - 1) // w + L + 1
+    sigmax = m - 1 + jmaxc
+    # LD row DP then prefix over g1
+    T = [[0] * (sigmax + 1) for _ in range(g1max + 1)]
+    T[0][0] = 1
+    for j in list(range(1, d + 1)) + [d + 1]:
+        for g in range(1, g1max + 1):
+            row, prev = T[g], T[g - 1]
+            for s in range(j, sigmax + 1):
+                row[s] += prev[s - j]
+    P = [[0] * (sigmax + 2) for _ in range(g1max + 1)]
+    for g in range(g1max + 1):
+        acc = 0
+        Tg, Pg = T[g], P[g]
+        for s in range(sigmax + 1):
+            acc += Tg[s]
+            Pg[s + 1] = acc
+
+    def rows_ld(g1, g2):
+        hi = min(m - 1 - g2, sigmax)
+        lo = max(-g2, 0)
+        if hi < lo:
+            return 0
+        return P[g1][hi + 1] - P[g1][lo]
+    # cols per block with the l0 ramp, via per-(S,J,a) loops on b0 ranges (kept exact and
+    # simple: complexity |cells| * m, with the b0/l0 structure folded in closed form per g1)
+    n2 = m + jmaxc
+    colgrid = [dict() for _ in range(n2)]  # index g2+jmaxc -> {g1: count}
+    dim = 0
+    for (S, J, N) in cells:
+        W = w * S - J
+        top = D - 1 - W
+        if top < 0:
+            continue
+        R0 = D - W
+        b0m_dim = min((R0 - 1) // w, L)
+        # dim: sum_{b0} (R0 - w b0) * (L - b0 + 1)
+        dsum = 0
+        for b0 in range(b0m_dim + 1):
+            dsum += (R0 - w * b0) * (L - b0 + 1)
+        dim += N * dsum
+        ahi = min(m - 1, top)
+        for a in range(ahi + 1):
+            bmax = min((top - a) // w, L)
+            if bmax < 0:
+                continue
+            g2i = (a - J) + jmaxc
+            cg = colgrid[g2i]
+            # for g1 = S + b0 + l0: count over pairs = [g1-S <= L]*(min(bmax, g1-S)+1)
+            # accumulate for g1 - S = u in [0, L]: cnt = min(bmax, u) + 1
+            for u in range(0, L + 1):
+                g1 = S + u
+                if g1 > g1max:
+                    break
+                cg[g1] = cg.get(g1, 0) + N * (min(bmax, u) + 1)
+    rb = 0
+    for g2i in range(n2):
+        g2 = g2i - jmaxc
+        cg = colgrid[g2i]
+        if not cg:
+            continue
+        # rows_line(g1) = prefix over g1 of rows_ld
+        g1s = sorted(cg)
+        pref = 0
+        last = -1
+        for g1 in g1s:
+            for gg in range(last + 1, g1 + 1):
+                pref += rows_ld(gg, g2)
+            last = g1
+            rb += min(pref, cg[g1])
+    return dim > n * rb, dim, n * rb
+
+
 def wedge(d, smax, srange=None):
     """Full wedge {(S,J): 0 <= S <= smax, S <= J <= d*S} = the simplex cap sum bs <= smax."""
     out = []
