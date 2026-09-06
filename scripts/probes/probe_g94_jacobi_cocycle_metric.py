@@ -25,7 +25,7 @@ Tests per metric:
     P(|eta_b - eta_b'| > t) <= 2 exp(-t^2/d^2) forces |eta_b - eta_b'| <= sqrt(ln 2) * d.
     We measure dom := max_pairs |Delta eta| / d  (dom = inf over rescalings; sub-G at scale
     s means dom/s <= sqrt(ln2)). Hard failure: d ~ 0 with Delta eta != 0.
-  * gamma_2 via greedy admissible nets (sizes 1,2,4,16,256,65536 capped at m), value
+  * gamma_2 via greedy admissible nets (sizes 1,4,16,256,65536 capped at m), value
     greedy_cost = max_b sum_k 2^{k/2} dist(b, T_k), an upper bound for the
     infimum over admissible nets, not a computation of that infimum.
     The reported gamma2_norm = greedy_cost * dom / sqrt(ln 2) uses the least
@@ -149,7 +149,7 @@ def pdist_from_features(F):
     return np.sqrt(D2)
 
 def greedy_gamma2(D):
-    """Greedy admissible nets: sizes 1,2,4,16,256,65536 (capped). Returns gamma2 upper est."""
+    """Greedy admissible nets: sizes 1,4,16,256,65536 (capped). Returns gamma2 upper est."""
     mv = D.shape[0]
     sizes = [1]
     k = 1
