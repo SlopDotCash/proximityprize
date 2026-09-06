@@ -164,7 +164,13 @@ def build(pop, timeout_s):
 
 def verify(sigs):
     n = len(sigs)
+    for t, e in sigs:
+        assert len(t) == len(set(t)) == 3, "root set must have three distinct coordinates"
+        assert len(e) == len(set(e)) == 3, "missed set must have three distinct coordinates"
+        assert set(t) <= set(range(7)), "root coordinate outside source"
+        assert set(e) <= set(range(9)), "missed coordinate outside complement"
     fs = [(frozenset(t), frozenset(e)) for t, e in sigs]
+    assert len(set(fs)) == n, "duplicate signatures"
     for i, j in itertools.combinations(range(n), 2):
         assert len(fs[i][0] & fs[j][0]) + len(fs[i][1] & fs[j][1]) <= 4
     from collections import Counter
