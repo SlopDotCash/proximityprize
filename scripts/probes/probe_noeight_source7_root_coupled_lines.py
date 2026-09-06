@@ -129,7 +129,7 @@ def classify_batch(row0, row1, data):
     # polynomial with six V-agreements appears from many of these anchors.
     values = points[:, :, data["anchors_v"]]
     coefficients = np.einsum(
-        "bgsi,sij->bgsj", values, data["inverses_v"], optimize=True
+        "bgsi,sji->bgsj", values, data["inverses_v"], optimize=True
     ) % P
     evaluations_v = np.einsum(
         "bgsj,vj->bgsv", coefficients, data["vand_v"], optimize=True
@@ -154,10 +154,10 @@ def global_core_max(row0, row1, data):
     full1 = np.concatenate([row1, np.zeros(SOURCE_SIZE, dtype=np.int64)])
     anchors = data["anchors_full"]
     coefficients0 = np.einsum(
-        "si,sij->sj", full0[anchors], data["inverses_full"], optimize=True
+        "si,sji->sj", full0[anchors], data["inverses_full"], optimize=True
     ) % P
     coefficients1 = np.einsum(
-        "si,sij->sj", full1[anchors], data["inverses_full"], optimize=True
+        "si,sji->sj", full1[anchors], data["inverses_full"], optimize=True
     ) % P
     evaluations0 = coefficients0 @ data["vandermonde"].T % P
     evaluations1 = coefficients1 @ data["vandermonde"].T % P
@@ -203,6 +203,8 @@ def certificate(row0, row1, data):
 
 
 def run(samples, batch_size, seed):
+    if samples <= 0 or batch_size <= 0:
+        raise ValueError("samples and batch_size must be positive")
     data = setup()
     rng = np.random.default_rng(seed)
     best_raw = (-1, None)
