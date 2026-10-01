@@ -80,7 +80,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.PROXIMITYPRIZE_CLOUDFLARE_ACCOUNT_ID }}
         run: node website/deltastar-paper/scripts/check-cloudflare.mjs
       - name: Deploy validated artifact
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.PROXIMITYPRIZE_CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.PROXIMITYPRIZE_CLOUDFLARE_ACCOUNT_ID }}
