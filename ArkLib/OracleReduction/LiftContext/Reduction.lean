@@ -610,7 +610,7 @@ where
           (outerLangIn := outerLangIn) (outerLangOut := outerLangOut)
           (innerLangIn := innerLangIn) (innerLangOut := innerLangOut)
           (init := init) (impl := impl) outerStmtIn defaultTr
-      refine le_antisymm ?_ (zero_le _)
+      refine le_antisymm ?_ (zero_le)
       exact le_trans hLift (by
         rw [hInnerFull])
     · have hInnerNot : ¬ stF (.last n) (lens.proj outerStmtIn) transcript := by
@@ -623,7 +623,7 @@ where
           (outerLangIn := outerLangIn) (outerLangOut := outerLangOut)
           (innerLangIn := innerLangIn) (innerLangOut := innerLangOut)
           (init := init) (impl := impl) outerStmtIn transcript
-      refine le_antisymm ?_ (zero_le _)
+      refine le_antisymm ?_ (zero_le)
       exact le_trans hLift (by
         rw [hInnerFull])
 

@@ -413,7 +413,7 @@ lemma r4_10_floor_collapse_of_no_boundary_crossing
     -- (was a single-step `calc … := by …`, which the v4.30 calc-step parser swallows the
     -- following tactic lines into; stated directly instead)
     gcongr
-    exact le_add_of_nonneg_right (zero_le _)
+    exact le_add_of_nonneg_right (zero_le)
   have hfloor_le :
       Nat.floor (δ_fld * n) ≤ Nat.floor ((δ_fld + γ / n) * n) :=
     Nat.floor_le_floor hle_arg
@@ -421,7 +421,7 @@ lemma r4_10_floor_collapse_of_no_boundary_crossing
     rw [add_mul, div_mul_cancel₀ _ (ne_of_gt hnpos)]
   have hfloor_lt :
       Nat.floor ((δ_fld + γ / n) * n) < Nat.floor (δ_fld * n) + 1 := by
-    rw [Nat.floor_lt (zero_le _)]
+    rw [Nat.floor_lt (zero_le)]
     rw [hmul]
     exact_mod_cast hcross
   have hfloor_le' :
@@ -722,7 +722,7 @@ theorem rs_epsCA_breakdown_cs25_of_lower_bound
   by_cases hjp :
       Code.jointProximity (C := ((ReedSolomon.code domain k : Set (ι → F)))) (u := u) δ
   · rw [if_pos hjp]
-    exact zero_le _
+    exact zero_le
   · rw [if_neg hjp]
     rw [prob_tsum_form_singleton]
     exact le_trans (ENNReal.tsum_le_tsum fun γ => by

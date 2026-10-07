@@ -164,7 +164,7 @@ theorem rbrKnowledgeFlipProb_le_of_flipImpossible
             return (transcript, challenge, proveQueryLog))).run' (← init)] ≤ rbrError i := by
   rw [rbrKnowledgeFlipProb_eq_zero_of_flipImpossible kSF hFlipImp PWitIn PWitOut stmtIn witIn'
     prover i]
-  exact zero_le _
+  exact zero_le
 
 end Sumcheck.Spec.SingleRound.KnowFlip
 

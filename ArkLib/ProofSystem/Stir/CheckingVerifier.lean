@@ -433,7 +433,7 @@ theorem mem_of_relDistFromCode_le_zero {f : ι → F} {C : Set (ι → F)}
   haveI : Nonempty C := hne.to_subtype
   obtain ⟨v, hv, hdist⟩ := Code.exists_relClosest_codeword_of_Nonempty_Code C f
   have h0 : (Code.relHammingDist f v : ENNReal) = 0 :=
-    hdist.trans (le_antisymm h (zero_le _))
+    hdist.trans (le_antisymm h (zero_le))
   have h1 : Code.relHammingDist f v = 0 := by
     rw [NNRat.cast, NNRatCast.nnratCast, ENNReal.instNNRatCast] at h0
     simp only [ENNReal.coe_eq_zero] at h0
@@ -1145,7 +1145,7 @@ theorem stirCheckingRbrSoundness_of_one_le_first
   by_cases h0 : (i.1 : ℕ) = 0
   · refine le_trans probEvent_le_one ?_
     exact_mod_cast h1 i h0
-  · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
     rintro ⟨tr, chal, lg⟩ _ hp
     obtain ⟨w, hno, -⟩ := hp
     exact hno fun hc => absurd (by simpa using hc) h0

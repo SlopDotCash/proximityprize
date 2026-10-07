@@ -120,7 +120,7 @@ theorem challenge_hStage2Bridge_perfect
       | gameOf init impl R₂ a.2 a.1.2.2] = 0 :=
     le_antisymm
       (bad_le_of_optionT_mk_ge (gameOf init impl R₂ a.2 a.1.2.2) (goodOf n pSpec₂ rel₃) 0
-        (by simpa using h₂ a.2 a.1.2.2 hrel₂)) (zero_le _)
+        (by simpa using h₂ a.2 a.1.2.2 hrel₂)) (zero_le)
   rw [hg, nonpos_iff_eq_zero]
   have hg2 : (∑' s, Pr[= s | init] *
         Pr[fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)

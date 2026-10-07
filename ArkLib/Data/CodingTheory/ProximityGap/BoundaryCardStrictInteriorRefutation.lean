@@ -162,7 +162,7 @@ theorem boundary_floor_eq_one :
     rw [tsub_mul, one_mul]
   have hcard4 : (Fintype.card I : ℝ≥0) = 4 := by norm_num [I]
   rw [hdistrib, sqrtRate_mul_card_eq_sqrt_eight, hcard4,
-    Nat.floor_eq_iff (zero_le _)]
+    Nat.floor_eq_iff (zero_le)]
   constructor
   · rw [le_tsub_iff_right sqrt_eight_le_four]
     have h : ((1 : ℕ) : ℝ≥0) + NNReal.sqrt 8 < 1 + 3 := by

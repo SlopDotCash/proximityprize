@@ -98,7 +98,7 @@ theorem mcaDeltaStar_eq_inverse_binomial (C : Submodule F (ι → A))
     simp [hn, Fintype.card_ne_zero]
   set δbad : ℝ≥0 := ((n - tstar + 1 : ℕ) : ℝ≥0) / (n : ℝ≥0) with hδbad
   have hδb1 : δbad ≤ 1 := by
-    rw [hδbad, div_le_one (lt_of_le_of_ne (zero_le _) (Ne.symm hn0))]
+    rw [hδbad, div_le_one (lt_of_le_of_ne (zero_le) (Ne.symm hn0))]
     exact_mod_cast (by omega : n - tstar + 1 ≤ n)
   -- the boundary radius arithmetic: (1 − δbad)·n = t* − 1
   have hbound : (1 - δbad) * (n : ℝ≥0) = ((tstar - 1 : ℕ) : ℝ≥0) := by
@@ -126,7 +126,7 @@ theorem mcaDeltaStar_eq_inverse_binomial (C : Submodule F (ι → A))
         have h1 : (1 : ℝ≥0) - δbad < 1 - c := by
           exact tsub_lt_tsub_left_of_le hδb1 hcb
         have hn0' : (0 : ℝ≥0) < (n : ℝ≥0) :=
-          lt_of_le_of_ne (zero_le _) (Ne.symm hn0)
+          lt_of_le_of_ne (zero_le) (Ne.symm hn0)
         calc (1 - δbad) * (n : ℝ≥0) < (1 - c) * (n : ℝ≥0) := by gcongr
           _ = _ := rfl
       have := Nat.lt_ceil.mpr hlt
@@ -140,7 +140,7 @@ theorem mcaDeltaStar_eq_inverse_binomial (C : Submodule F (ι → A))
     set δhat : ℝ≥0 := ((n - tc : ℕ) : ℝ≥0) / (n : ℝ≥0) with hδhat
     have hhatbound : (1 - δhat) * (n : ℝ≥0) = (tc : ℝ≥0) := by
       have h1 : δhat ≤ 1 := by
-        rw [hδhat, div_le_one (lt_of_le_of_ne (zero_le _) (Ne.symm hn0))]
+        rw [hδhat, div_le_one (lt_of_le_of_ne (zero_le) (Ne.symm hn0))]
         exact_mod_cast (by omega : n - tc ≤ n)
       rw [tsub_mul, one_mul, hδhat, div_mul_cancel₀ _ hn0, ← Nat.cast_tsub]
       congr 1

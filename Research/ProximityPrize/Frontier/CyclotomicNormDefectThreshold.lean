@@ -83,7 +83,7 @@ theorem nnnorm_multiset_prod_le_ring {α : Type*} [NormedCommRing α] [NormOneCl
   | empty => simp
   | cons a s ih =>
     rw [Multiset.prod_cons, Multiset.map_cons, Multiset.prod_cons]
-    exact le_trans (nnnorm_mul_le _ _) (mul_le_mul_of_nonneg_left ih (zero_le _))
+    exact le_trans (nnnorm_mul_le _ _) (mul_le_mul_of_nonneg_left ih (zero_le))
 
 /-- **The archimedean keystone (general bound).** For a polynomial `g : ℂ[X]` whose evaluations at
 all `n`-th roots of unity have norm `≤ M` (e.g. a signed sum of at most `M` roots of unity), the

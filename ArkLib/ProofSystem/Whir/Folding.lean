@@ -752,9 +752,9 @@ theorem Pr_le_finset_sum_of_implies {α : Type} (D : PMF.{0} α) {β : Type} [De
               rw [if_pos hQi₀, mul_one]
       _ ≤ ∑ i ∈ s, D r * (if Q i r then (1 : ENNReal) else 0) :=
             Finset.single_le_sum (f := fun i => D r * (if Q i r then (1 : ENNReal) else 0))
-              (fun i _ => zero_le _) hi₀s
+              (fun i _ => zero_le) hi₀s
   · simp only [hP, if_false, MulZeroClass.mul_zero]
-    exact zero_le _
+    exact zero_le
 
 /-- If `A x` is always a subset of `B x`, then the event that the two sets differ is contained
 in the event that the reverse inclusion fails. -/

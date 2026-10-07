@@ -72,7 +72,7 @@ theorem mcaDeltaStar_eq_succ_mcaThreshold
   have his : i < s := by
     rw [Fin.lt_iff_val_lt_val]
     rw [show i.val = Nat.floor (δ * (Fintype.card ι : ℝ≥0)) from rfl]
-    exact (Nat.floor_lt (zero_le _)).mpr hδmul
+    exact (Nat.floor_lt (zero_le)).mpr hδmul
   have hit : i ≤ t := by
     exact Fin.le_iff_val_le_val.mpr (by
       have := Fin.lt_iff_val_lt_val.mp his

@@ -228,3 +228,38 @@ now use the split lawful-SPMF interfaces. Direct/source-composed checks pass; al
 output. Their ordinary native module builds remain to be completed. The two new
 coset reconstruction roots also pass the complete axiom whitelist check and are
 registered in the persistent flagship gate.
+
+### Corrected Johnson radius and alphabet generality
+
+Upstream main's Johnson foundation removes the field assumption from the absolute
+Johnson bound, using coordinatewise alphabet equivalences for recentering. Its
+`Expectations`, `Lemmas`, and `Basic` changes are adapted natively while retaining
+our additional Plotkin lemmas and the existing `J'` spelling. A composed-source
+Lean 4.34 check passes; the two Johnson bound roots and our retained Plotkin
+average-distance root have only standard axioms.
+
+`ArkLib.Data.CodingTheory.JohnsonBound.CorrectedFamily` imports upstream's
+list-budget correction under `JohnsonBound.Corrected.Jqℓ`: the factor is
+`(ℓ - 1) / ℓ`. The older native `JohnsonBound.Jqℓ` uses the reciprocal factor;
+its documented refutation remains valid and its meaning is preserved. The new
+`CodingTheory.Corrected.johnson_bound_lambda_le_ell` covers arbitrary finite
+alphabets and every natural list budget at least one, with the negative-radicand
+case proved through Plotkin. It uses the native `ListDecodable.Lambda`, including
+its natural-cardinality representation. Its composed-source check and full axiom
+report pass. Ordinary native module builds are still queued.
+
+This is also a dependency for PR #792's Johnson witness constructor. Its other
+generic witness wrappers overlap our existing Research constructors. The unique-
+decoding/interleaving lemmas and adapted witness constructors remain to be
+integrated; upstream's whole grand-challenge module must not replace our distinct
+Research resolution definitions merely because some declaration names coincide.
+
+The mechanical migration also removes the obsolete explicit placeholder from
+`zero_le _` across 96 remaining library/Research files (150 applications/comments),
+matching Mathlib's now-implicit argument. This is a proof-API edit; the statements
+and existing conditional premises are unchanged. Whole-tree validation remains
+pending. Additional direct checks pass for the ball-intersection translation,
+Lam–Leung independence, combinatorial probability, chord census, root-height,
+Gauss-sum norm, and subgroup-sumset repairs. The Gauss-sum file now reuses Mathlib's
+conjugation lemma, and an unusable hypothesis-dependent instance is exposed as an
+explicit theorem.

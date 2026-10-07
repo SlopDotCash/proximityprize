@@ -127,7 +127,7 @@ theorem agreeOf_grid {n a : ℕ} (hn : n ≠ 0) (ha : a ≤ n) :
   unfold agreeOf
   have hn' : ((n : ℝ≥0)) ≠ 0 := by exact_mod_cast hn
   have hle : (a : ℝ≥0) / (n : ℝ≥0) ≤ 1 := by
-    rw [div_le_one (lt_of_le_of_ne (zero_le _) (Ne.symm hn'))]
+    rw [div_le_one (lt_of_le_of_ne (zero_le) (Ne.symm hn'))]
     exact_mod_cast ha
   rw [tsub_tsub_cancel_of_le hle, div_mul_cancel₀ _ hn']
   exact Nat.ceil_natCast a

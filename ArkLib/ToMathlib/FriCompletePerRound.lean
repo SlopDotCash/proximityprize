@@ -86,7 +86,7 @@ lemma relDistFromCode_le_of_mem {m : ℕ} {f : Fin (2 ^ m) → F}
     δᵣ(f, C) ≤ (δ : ENNReal) := by
   haveI : Nonempty (Fin (2 ^ m)) := Fin.pos_iff_nonempty.mp (Nat.two_pow_pos _)
   refine le_trans (Code.relDistFromCode_le_relDist_to_mem f f hf) ?_
-  refine le_trans (le_of_eq ?_) (zero_le _)
+  refine le_trans (le_of_eq ?_) (zero_le)
   rw [Code.relHammingDist, hammingDist_self]
   simp only [Nat.cast_zero, zero_div]
   rw [← ENNReal.coe_nnratCast]

@@ -113,7 +113,7 @@ theorem errorBound_ge_e7 {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
   have hm_le : m ≤ Real.sqrt (r : ℝ) / 20 := by simp [hm]
   have hm_nonneg : 0 ≤ m := by
     have h1 : (0 : ℝ) ≤ (↑(1 - sqrt r - δ) : ℝ) := by
-      exact_mod_cast (show (0 : ℝ≥0) ≤ (1 - sqrt r - δ) from zero_le _)
+      exact_mod_cast (show (0 : ℝ≥0) ≤ (1 - sqrt r - δ) from zero_le)
     have h2 : (0 : ℝ) ≤ Real.sqrt (r : ℝ) / 20 := by positivity
     simpa [hm] using le_min h1 h2
   have hr_le_one : r ≤ 1 := by

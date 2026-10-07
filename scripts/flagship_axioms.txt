@@ -118,3 +118,9 @@ ArkLib.Data.Probability.ProductMarginalBound probEvent_uniform_vector_bind_le_po
 ArkLib.OracleReduction.ProbOneBindCompose OracleComp.probEvent_bind_eq_one
 ArkLib.Data.Domain.CosetFftDomain.Defs Domain.CosetFftDomainClass.toCosetFftDomain_apply
 ArkLib.Data.Domain.CosetFftDomain.Defs Domain.CosetFftDomainClass.toCosetFftDomain_of_CosetFftDomain
+
+# Alphabet-general Johnson bounds and the corrected list-budget factor
+ArkLib.Data.CodingTheory.JohnsonBound.Basic JohnsonBound.johnson_bound
+ArkLib.Data.CodingTheory.JohnsonBound.Lemmas JohnsonBound.plotkin_avg_distance
+ArkLib.Data.CodingTheory.JohnsonBound.CorrectedFamily CodingTheory.Corrected.johnson_bound_lambda_le_ell
+ArkLib.Data.CodingTheory.JohnsonBound.FamilyRefutationComplete JohnsonBound.JqlRefutation.johnson_bound_lambda_le_ell_false

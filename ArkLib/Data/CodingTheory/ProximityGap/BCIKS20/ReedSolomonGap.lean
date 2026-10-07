@@ -140,7 +140,7 @@ theorem proximity_gap_RSCodes {k t : ℕ} [NeZero k] [NeZero t] {deg : ℕ} {dom
           rw [this, Finset.card_empty, Nat.cast_zero]
           simp
         rw [hPr_eq] at hcase
-        exact absurd hcase (not_lt.mpr (zero_le _))
+        exact absurd hcase (not_lt.mpr (zero_le))
       -- Construct jointAgreement from the close codeword witness.
       obtain ⟨v₀, hv₀_mem, hv₀_dist⟩ :=
         (Code.relCloseToCode_iff_relCloseToCodeword_of_minDist (C i 0) δ).mp hCi0_close

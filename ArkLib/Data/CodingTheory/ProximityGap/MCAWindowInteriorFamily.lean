@@ -101,7 +101,7 @@ theorem epsMCA_good_below_family {t : ℕ}
   have hceil_le : ⌈((1 : ℝ≥0) - δ) * (n : ℝ≥0)⌉₊ ≤ n := by
     refine Nat.ceil_le.mpr ?_
     calc ((1 : ℝ≥0) - δ) * (n : ℝ≥0) ≤ 1 * (n : ℝ≥0) :=
-          mul_le_mul_of_nonneg_right tsub_le_self (zero_le _)
+          mul_le_mul_of_nonneg_right tsub_le_self (zero_le)
       _ = (n : ℝ≥0) := one_mul _
   have hhalf' : n ≤ 2 * ⌈((1 : ℝ≥0) - δ) * (n : ℝ≥0)⌉₊ := by omega
   have hbound := ProximityGap.MCAAntichainLYM.epsMCA_le_choose_ceil_div

@@ -134,7 +134,7 @@ theorem whirVectorIOP_rbrKnowledgeSoundness_dummy_holds
     by_cases hi : i = _root_.WhirIOP.Construction.finalRandomnessChallengeIdx P d
     · rw [if_pos hi]
     · rw [if_neg hi]
-      exact zero_le _)
+      exact zero_le)
 
 /-- The placeholder WHIR `VectorIOP` is secure with gap for the trivial all-one RBR budget.
 

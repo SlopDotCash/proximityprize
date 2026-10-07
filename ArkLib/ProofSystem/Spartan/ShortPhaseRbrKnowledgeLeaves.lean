@@ -285,7 +285,7 @@ theorem rbrKnowledgeSoundness_singleChallenge_pure
     rw [probEvent_map]
     simp only [Function.comp_def, ProtocolSpec.Transcript.concat, Fin.snoc]
     by_cases hmem : (stmtIn, ()) ∈ relIn
-    · refine le_trans (le_of_eq (probEvent_eq_zero_iff.mpr ?_)) (zero_le _)
+    · refine le_trans (le_of_eq (probEvent_eq_zero_iff.mpr ?_)) (zero_le)
       intro c _ hc
       exact hc.1 hmem
     · refine le_trans (probEvent_mono ?_) (hflip stmtIn hmem)

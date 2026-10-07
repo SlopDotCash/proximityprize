@@ -463,7 +463,7 @@ theorem errorBound_ge_const {ι : Type} [Fintype ι] [Nonempty ι]
       simp [hm]
     have hm_nonneg : 0 ≤ m := by
       have h1 : (0 : ℝ) ≤ (↑(1 - sqrt r - δ) : ℝ) := by
-        exact_mod_cast (show (0 : ℝ≥0) ≤ (1 - sqrt r - δ) from zero_le _)
+        exact_mod_cast (show (0 : ℝ≥0) ≤ (1 - sqrt r - δ) from zero_le)
       have h2 : (0 : ℝ) ≤ Real.sqrt (r : ℝ) / 20 := by
         have : (0 : ℝ) ≤ Real.sqrt (r : ℝ) := Real.sqrt_nonneg _
         nlinarith
@@ -918,7 +918,7 @@ theorem concentration_bounds {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq
             (fun u : U => Code.relDistFromCode u V ≤ δ₁) := by
           funext u; apply propext
           constructor
-          · intro hle; exact le_trans hle (by rw [← hδ0]; exact zero_le _)
+          · intro hle; exact le_trans hle (by rw [← hδ0]; exact zero_le)
           · intro hle
             have hne : Code.relDistFromCode (u : ι → F) V ≠ (δ' : ENNReal) := by
               intro heq; exact absurd (heq ▸ hle : (δ' : ENNReal) ≤ δ₁)

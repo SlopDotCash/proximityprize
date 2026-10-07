@@ -1461,7 +1461,7 @@ theorem errorBound_ge_succ_const_of_strict_johnson {deg : ℕ} {domain : ι ↪ 
     simp [hm]
   have hm_nonneg : 0 ≤ m := by
     have h1 : (0 : ℝ) ≤ (↑(1 - sqrt r - δ) : ℝ) := by
-      exact_mod_cast (show (0 : ℝ≥0) ≤ (1 - sqrt r - δ) from zero_le _)
+      exact_mod_cast (show (0 : ℝ≥0) ≤ (1 - sqrt r - δ) from zero_le)
     have h2 : (0 : ℝ) ≤ Real.sqrt (r : ℝ) / 20 := by
       have : (0 : ℝ) ≤ Real.sqrt (r : ℝ) := Real.sqrt_nonneg _
       nlinarith
@@ -1837,7 +1837,7 @@ lemma RS_le_relativeUniqueDecodingRadius_of_le_rate_half {deg : ℕ} {domain : �
       simp [hmin, hcard_ne]
     have hδ0 : δ ≤ 0 := by
       simpa [hrate_eq] using hδ
-    exact le_trans hδ0 (zero_le _)
+    exact le_trans hδ0 (zero_le)
 
 omit [DecidableEq ι] in
 /-- Final curve theorem with the two list-decoding obligations made explicit.

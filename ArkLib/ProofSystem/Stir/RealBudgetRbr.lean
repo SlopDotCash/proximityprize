@@ -509,7 +509,7 @@ theorem probEvent_spotGame_le
       rw [hfilter]
       exact hB tr hP
   · -- the prefix predicate fails: the event is empty at this prefix
-    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
     rintro x hx ⟨hPx, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx
