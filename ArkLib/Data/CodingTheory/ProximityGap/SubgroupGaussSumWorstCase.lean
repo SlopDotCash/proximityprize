@@ -176,7 +176,7 @@ theorem sum_one_mulChar : ∑ y : F, (1 : MulChar F ℂ) y = (Fintype.card F - 1
     rw [Finset.sum_const, nsmul_eq_mul, mul_one]
   rw [h0, h1, zero_add]
   congr 1
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset F)) (p := fun y : F => y = 0)
   have hzero : (Finset.univ.filter (fun y : F => y = 0)).card = 1 := by
     rw [Finset.card_eq_one]

@@ -307,7 +307,7 @@ theorem goodPrimes_card_ge (P : Finset ℕ) (R : Finset Relation) :
   classical
   have hsplit :
       (P.filter (fun p => IsGood p R)).card + (P.filter (fun p => ¬ IsGood p R)).card = P.card :=
-    Finset.filter_card_add_filter_neg_card_eq_card (p := fun p => IsGood p R)
+    Finset.card_filter_add_card_filter_not (p := fun p => IsGood p R)
   have hbad := badPrimes_card_le_count P R
   omega
 

@@ -112,7 +112,7 @@ theorem card_even_range {μ : ℕ} (hμ : 1 ≤ μ) :
     ((range (2 ^ μ)).filter (fun j => Even j)).card = 2 ^ (μ - 1) := by
   classical
   -- total = even-count + (¬even)-count, and ¬even = odd
-  have htot := Finset.filter_card_add_filter_neg_card_eq_card
+  have htot := Finset.card_filter_add_card_filter_not
     (s := range (2 ^ μ)) (p := fun j => Even j)
   rw [Finset.card_range] at htot
   have hodd_eq :

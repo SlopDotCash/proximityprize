@@ -96,7 +96,7 @@ theorem subspaceDesign_support_card_ge {s : ℕ} {τ : ℕ → ℝ}
       + (univ.filter (fun i : ι => ¬ (A ≤ LinearMap.ker
         (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)))).card
       = Fintype.card ι := by
-    rw [Finset.filter_card_add_filter_neg_card_eq_card]; exact Finset.card_univ
+    rw [Finset.card_filter_add_card_filter_not]; exact Finset.card_univ
   have hsplitℝ : ((univ.filter (fun i : ι => A ≤ LinearMap.ker
         (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i))).card : ℝ)
       + ((univ.filter (fun i : ι => ¬ (A ≤ LinearMap.ker

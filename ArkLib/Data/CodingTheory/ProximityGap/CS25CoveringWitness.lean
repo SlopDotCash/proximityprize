@@ -62,7 +62,7 @@ theorem card_far_eq_card_sub_card_close (C : Set (ι → A)) (δ : ℝ≥0) :
       = Fintype.card (ι → A)
         - (Finset.univ.filter (fun w : ι → A => δᵣ(w, C) ≤ δ)).card := by
   classical
-  have h := Finset.filter_card_add_filter_neg_card_eq_card
+  have h := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset (ι → A))) (p := fun w : ι → A => δᵣ(w, C) ≤ δ)
   rw [Finset.card_univ] at h
   omega

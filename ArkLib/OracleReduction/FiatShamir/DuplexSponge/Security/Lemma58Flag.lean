@@ -192,7 +192,7 @@ lemma le_length_unusedValuesList (cp : List (X × X)) :
     refine le_trans (Finset.card_le_card
       (fun b hb => List.mem_toFinset.mpr (Finset.mem_filter.mp hb).2)) ?_
     exact le_trans (List.toFinset_card_le _) (by simp)
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset X)) (p := fun b : X => b ∈ cp.map Prod.snd)
   rw [Finset.card_univ] at hsplit
   omega
@@ -210,7 +210,7 @@ lemma le_length_unusedKeysList (cp : List (X × X)) :
     refine le_trans (Finset.card_le_card
       (fun a ha => List.mem_toFinset.mpr (Finset.mem_filter.mp ha).2)) ?_
     exact le_trans (List.toFinset_card_le _) (by simp)
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset X)) (p := fun a : X => a ∈ cp.map Prod.fst)
   rw [Finset.card_univ] at hsplit
   omega

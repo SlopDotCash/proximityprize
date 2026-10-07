@@ -73,7 +73,7 @@ theorem line_support_card_le {δ : ℝ≥0} (hδ1 : δ ≤ 1) {u : WordStack F (
       Finset.card_le_card hSsub
     have hpart : (Finset.univ.filter (fun i => (u 0) i + γ • (u 1) i ≠ 0)).card
         + (Finset.univ.filter (fun i => (u 0) i + γ • (u 1) i = 0)).card = Fintype.card ι := by
-      have := Finset.filter_card_add_filter_neg_card_eq_card
+      have := Finset.card_filter_add_card_filter_not
         (s := (Finset.univ : Finset ι)) (p := fun i => (u 0) i + γ • (u 1) i ≠ 0)
       simpa [Finset.card_univ, not_not] using this
     omega

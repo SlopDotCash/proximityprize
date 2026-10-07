@@ -104,7 +104,7 @@ theorem census_card_le_stratified {p : ℕ} [Fact p.Prime] {m : ℕ} (hm : 1 ≤
   have hcards : C0.card + C1.card = r := by
     rw [hC1, Finset.card_image_of_injOn hsubinj, hC0]
     rw [← hIcard]
-    exact Finset.filter_card_add_filter_neg_card_eq_card _
+    exact Finset.card_filter_add_card_filter_not _
   -- the sum identity: v = ∑_{C0} g^c − ∑_{C1} g^c
   have hsplit : v = (∑ c ∈ C0, g ^ c) - ∑ c ∈ C1, g ^ c := by
     rw [hIsum, ← Finset.sum_filter_add_sum_filter_not I (fun i => i < n)]

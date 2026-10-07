@@ -37,7 +37,7 @@ theorem offdiag_card (S : Finset (Finset (Fin n))) :
   classical
   have hsplit : ((S ×ˢ S).filter (fun p => p.1 = p.2)).card
       + ((S ×ˢ S).filter (fun p => ¬ p.1 = p.2)).card = (S ×ˢ S).card :=
-    Finset.filter_card_add_filter_neg_card_eq_card (s := S ×ˢ S)
+    Finset.card_filter_add_card_filter_not (s := S ×ˢ S)
       (p := fun p => p.1 = p.2)
   have hdiag : ((S ×ˢ S).filter (fun p => p.1 = p.2)).card = S.card := by
     refine Finset.card_bij (fun p _ => p.1) ?_ ?_ ?_

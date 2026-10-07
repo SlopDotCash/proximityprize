@@ -188,7 +188,7 @@ theorem sum_pairCollisions_le {K : ℕ} (p : ι → F[X])
     have htot : (Finset.univ.filter (fun jj : ι × ι => jj.1 = jj.2)).card
         + (Finset.univ.filter (fun jj : ι × ι => ¬ jj.1 = jj.2)).card
         = Fintype.card (ι × ι) := by
-      rw [Finset.filter_card_add_filter_neg_card_eq_card]; rw [Finset.card_univ]
+      rw [Finset.card_filter_add_card_filter_not]; rw [Finset.card_univ]
     rw [hdiag] at htot
     rw [Fintype.card_prod] at htot
     have hsq : Fintype.card ι * Fintype.card ι = Fintype.card ι ^ 2 := by ring
