@@ -488,3 +488,11 @@ ArkLib.OracleReduction.Composition.Sequential.AppendRun OracleVerifier.Append.si
 ArkLib.OracleReduction.Composition.Sequential.AppendRun OracleVerifier.Append.simulateQ_emitOStmtQueryInl
 ArkLib.OracleReduction.Composition.Sequential.AppendRun OracleVerifier.Append.router₁_handler_eq
 ArkLib.OracleReduction.Composition.Sequential.AppendRun OracleVerifier.Append.simulateQ_emitOStmt₂Query_core
+
+# Lean 4.34 STIR combination migration.
+ArkLib.ProofSystem.Stir.Combine Combine.combine_theorem
+ArkLib.ProofSystem.Stir.Combine Combine.combine_theorem_of_card_le
+ArkLib.ProofSystem.Stir.Combine Combine.combine_theorem_of_card_le_e7
+ArkLib.ProofSystem.Stir.Combine Combine.combine_theorem_proximityError
+ArkLib.ProofSystem.Stir.Combine Combine.combine_theorem_proximityError_of_card_le
+ArkLib.ProofSystem.Stir.Combine Combine.degreeCor_eq

@@ -285,6 +285,7 @@ private lemma combine_eq_flat
               specialize hx₁ ha
               specialize hx₂ ha
               simp_all
+              omega
           · simp only [union_singleton, union_sdiff_self_eq_union, insert_union, mem_union,
             mem_filter, mem_univ, lt_self_iff_false, and_false, and_self, or_true, insert_eq_of_mem,
             right_eq_union, *]
@@ -416,9 +417,9 @@ lemma degreeCor_eq {F : Type u_1} [Field F] [DecidableEq F] {ι : Type u_2} (φ 
     if q ≠ 1
     then f x * (1 - q^(dstar - degree + 1)) / (1 - q)
     else f x * (dstar - degree + 1) := by
-  convert congr_arg _ (geom_sum_cases (φ x * r) (dstar - degree)) using 1
-  rw [Nat.cast_add, Nat.cast_sub hd, Nat.cast_one]
-  split_ifs <;> ring
+  dsimp only
+  rw [degCor, geom_sum_cases]
+  split_ifs <;> (try simp only [Nat.cast_add, Nat.cast_sub hd, Nat.cast_one]) <;> ring
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
          {ι : Type} [Fintype ι]
@@ -728,7 +729,7 @@ theorem combine_theorem
         specialize (hv i ⟨0, hf i⟩)
         have hv := hv.2 x hx
         simp only [pow_zero, one_mul] at hv
-        exact hv
+        exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hv⟩
 
 
 open LinearCode Classical ProbabilityTheory ReedSolomon STIR in
