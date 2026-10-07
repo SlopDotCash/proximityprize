@@ -126,3 +126,15 @@ that target; no proof identifies the generic unit bound with it. The DP24
 arithmetic expression and the query-phase bounds are retained. The flagship
 audit pins both the arithmetic inequality and the explicitly conditional
 scalar transport theorem under their current names.
+
+Hosted validation of `35bf20c48` completed the full default build (14,036 jobs)
+and the flagship-module build (9,054 jobs). The combined axiom import then found
+a duplicate `Reduction.append_completeness_msg` declaration in two sequential
+composition modules. `AppendSeamBridges3` now reuses the canonical
+`AppendCompletenessMsgKeystone` proof; its older initializer-bearing interface
+is named `append_completeness_msg_of_neverFail`, and its two consumers use that
+name. The combined import audit remains enabled.
+The repaired module and both consumers pass a locked 3,782-job build. A direct
+import of both previously conflicting modules passes; the canonical reduction
+root, compatibility wrapper, and oracle-reduction root all have standard-only
+axiom closures.

@@ -15,7 +15,7 @@ This file discharges the LogUp Protocol 2 `AppendCompletenessResidual` — the *
 (error-bearing) sequential-composition completeness brick — using two now-proven, axiom-clean
 keystones already on `main`:
 
-* `Reduction.append_completeness_msg` (`AppendSeamBridges3.lean`) — the **plain `Reduction`-level**
+* `Reduction.append_completeness_msg_of_neverFail` (`AppendSeamBridges3.lean`) — the **plain `Reduction`-level**
   non-perfect message-seam append completeness: from component completenesses `R₁ … e₁`, `R₂ … e₂`,
   the appended reduction is complete with error `e₁ + e₂`, given the message-seam direction facts and
   the honest-implementation side conditions (`hInit` + the `himplSP/himplNF/himplVB` triple).
@@ -138,7 +138,7 @@ theorem append_completeness_msg_proof
     appendToReductionResidual_proof R₁ R₂]
   -- The component completenesses are already `Reduction.completeness` of the `toReduction`s, so feed
   -- them straight into the proven plain-level non-perfect message-seam append completeness.
-  exact Reduction.append_completeness_msg R₁.toReduction R₂.toReduction h₁ h₂ hn hDir hDir₂
+  exact Reduction.append_completeness_msg_of_neverFail R₁.toReduction R₂.toReduction h₁ h₂ hn hDir hDir₂
     hInit himplSP himplNF himplVB
 
 end NonPerfectKeystone

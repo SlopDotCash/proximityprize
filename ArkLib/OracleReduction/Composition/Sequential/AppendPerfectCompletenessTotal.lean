@@ -194,7 +194,7 @@ variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
 
 /-- **Seam-agnostic append completeness with additive error, for a nonempty trailing protocol.**
 The error-ful analogue of `append_perfectCompleteness_total` over the message/challenge split
-(`append_completeness_msg` from `AppendSeamBridges3`, `append_completeness_challenge` from
+(`append_completeness_msg_of_neverFail` from `AppendSeamBridges3`, `append_completeness_challenge` from
 `AppendPerfectCompletenessChallenge`). The `n = 0` (empty trailing) error-ful case is NOT yet
 covered: the perfect empty keystone's support-based proof does not generalize, and the empty
 game-factoring for the union-bound engine has not been built — hence the `0 < n` hypothesis
@@ -222,7 +222,7 @@ theorem append_completeness_total_pos
     exact append_completeness_challenge R₁ R₂ h₁ h₂ hn (hDir.trans hd) hd
       himplSP himplNF himplVB hInit
   | P_to_V =>
-    exact append_completeness_msg R₁ R₂ h₁ h₂ hn (hDir.trans hd) hd
+    exact append_completeness_msg_of_neverFail R₁ R₂ h₁ h₂ hn (hDir.trans hd) hd
       hInit.probFailure_eq_zero himplSP himplNF himplVB
 
 end Reduction
