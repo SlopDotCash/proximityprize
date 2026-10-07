@@ -36,7 +36,9 @@ closed-oracle outputs and a strictly sharper nonuniform-round budget. The fixed-
 probability client checks empty lists and exclusion of correct candidates. The packing clients
 check unequal ranks over a ring with zero divisors, empty observations, inverse witness
 transport, polynomial packing round trips, rejection of incorrect opening/slice/sumcheck claims,
-tight field batching bounds and their failure over zero divisors, and why an accepted observation alone does not
+tight field batching bounds and their failure over zero divisors, incompatible fields, matrix
+multiplier evaluation, scalar-layout coordinate order and off-grid interpolation, and why an
+accepted observation alone does not
 establish an honest message.
 For a convenient routine check, run:
 

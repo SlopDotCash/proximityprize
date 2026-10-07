@@ -340,6 +340,13 @@ theorem MLE_eval_scaled_sum {ι : Type*} (s : Finset ι) (z : ι → R) (g : ι 
 
 end Linearity
 
+/-- The equality polynomial factors off its first coordinate. -/
+theorem eqTilde_cons {n : ℕ} (x₀ y₀ : R) (x y : Fin n → R) :
+    eqTilde (Fin.cons x₀ x : Fin (n + 1) → R) (Fin.cons y₀ y) =
+      (x₀ * y₀ + (1 - x₀) * (1 - y₀)) * eqTilde x y := by
+  simp only [eqTilde_eq_prod, Fin.prod_univ_succ, Fin.cons_zero, Fin.cons_succ]
+  rw [add_comm ((1 - x₀) * (1 - y₀))]
+
 /-! ### Uniqueness on the Boolean hypercube -/
 
 /-- A polynomial of individual degree at most one that vanishes on the Boolean hypercube is zero.

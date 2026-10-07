@@ -62,7 +62,9 @@ Use `scripts/lake-locked.sh` for builds as described in [quickstart](quickstart.
   not assert binding or knowledge soundness. `Relations` preserves the full opening family and
   derives honest weighted sumcheck claims. `Batching` supplies proved separation bounds; its
   power and equality strategies require a finite domain, while singleton batching does not.
-  The existing native `Profile` remains separate.
+  `Multiplier` evaluates the public polynomial through matrix layers; `ScalarHead` provides
+  prefix, suffix and quirky layouts with proved reconstruction. The packing umbrella exports
+  this independent algebra. The existing native `Profile` remains separate.
 - `ArkLib/Data/Probability/SampledPolynomial.lean` transports the native PMF polynomial root
   bounds to VCVio uniform samples without replacing the existing PMF API.
 

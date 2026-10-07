@@ -552,3 +552,24 @@ integration from #1256 are still pending.
 All 27 selected roots from this relation/batching batch pass the installed-module axiom audit
 with only `propext`, `Classical.choice`, and `Quot.sound`. The repository census finds zero
 live proof holes. These clients and roots are included in the routine validation commands.
+
+
+PR #1256's remaining independent algebra is adapted: `ReadOnce`, the public multiplier evaluator,
+block splitting/reassembly, prefix/suffix scalar layouts, and Flock's quirky Lagrange layout.
+The multiplier build and both clients pass (2,070 jobs); both scalar-layout clients pass
+(1,815 jobs). Thirty additional installed roots report only standard axioms. The clients show
+that packing/opening/challenge fields need not embed into one another, distinguish a linear
+observation from a ring map, and compute both sides independently at non-Boolean points.
+The quirky example also distinguishes non-Boolean interpolation nodes from Boolean nodes.
+
+All nine client files added by #1256 are native and included in routine validation. The new
+packing umbrella exports only this framework-independent algebra; existing native protocol
+files and their stronger/different interfaces remain separate. This finishes the PR's algebra
+additions, without claiming Binius, Hachi or Flock protocol conformance. BRW26/RSG bibliography
+and KB pages retain source provenance; no paper artifact or new protocol-security theorem is
+implied by those references.
+
+The new packing umbrella also builds. The combined all-client rerun encountered macOS
+vnode exhaustion while rebuilding the previously passing batching client (the live count
+equalled `kern.maxvnodes`, 263168). Individual successful builds are not a claim that the
+combined repository gate or the full Lean migration has passed.

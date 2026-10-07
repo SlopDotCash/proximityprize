@@ -242,3 +242,35 @@ ArkLibTest.ProofSystem.RingSwitching.Packing.Batching RingSwitching.Packing.Test
 ArkLibTest.ProofSystem.RingSwitching.Packing.Batching RingSwitching.Packing.Tests.Batching.singleton_separates
 ArkLibTest.ProofSystem.RingSwitching.Packing.Batching RingSwitching.Packing.Tests.Batching.gammaPowers_one_error
 ArkLibTest.ProofSystem.RingSwitching.Packing.Batching RingSwitching.Packing.Tests.Batching.eqFold_zero_error
+
+# Matrix multiplier, scalar layouts, and independent-field clients.
+ArkLib.Data.Matrix.ReadOnce Matrix.ReadOnce.run_interpolate
+ArkLib.Data.Matrix.ReadOnce Matrix.ReadOnce.observe_interpolate
+ArkLib.Data.MvPolynomial.Split MvPolynomial.splitFirst_joinFirst
+ArkLib.Data.MvPolynomial.Split MvPolynomial.joinFirst_splitFirst
+ArkLib.Data.MvPolynomial.Split MvPolynomial.aeval_append_splitFirst
+ArkLib.Data.MvPolynomial.Split MvPolynomial.splitLast_joinLast
+ArkLib.Data.MvPolynomial.Split MvPolynomial.joinLast_splitLast
+ArkLib.Data.MvPolynomial.Split MvPolynomial.aeval_append_splitLast
+ArkLib.ProofSystem.RingSwitching.Packing.Multiplier RingSwitching.Packing.PackingData.challengeMulMatrix_mulVec
+ArkLib.ProofSystem.RingSwitching.Packing.Multiplier RingSwitching.Packing.PackingData.run_multiplierLayers
+ArkLib.ProofSystem.RingSwitching.Packing.Multiplier RingSwitching.Packing.PackingData.evaluateMultiplier_eq
+ArkLib.ProofSystem.RingSwitching.Packing.ScalarHead.Layout RingSwitching.Packing.ScalarHead.packedPrefixLayout
+ArkLib.ProofSystem.RingSwitching.Packing.ScalarHead.Layout RingSwitching.Packing.ScalarHead.packedSuffixLayout
+ArkLib.ProofSystem.RingSwitching.Packing.ScalarHead.Quirky RingSwitching.Packing.ScalarHead.quirkyComponentsEquiv
+ArkLib.ProofSystem.RingSwitching.Packing.ScalarHead.Quirky RingSwitching.Packing.ScalarHead.quirkyPolynomial_degree
+ArkLib.ProofSystem.RingSwitching.Packing.ScalarHead.Quirky RingSwitching.Packing.ScalarHead.quirkyPolynomial_eval_node
+ArkLib.ProofSystem.RingSwitching.Packing.ScalarHead.Quirky RingSwitching.Packing.ScalarHead.quirkyEval_eq_sum
+ArkLib.ProofSystem.RingSwitching.Packing.ScalarHead.Quirky RingSwitching.Packing.ScalarHead.quirkyLayout
+ArkLibTest.ProofSystem.RingSwitching.Packing.SeparateFields RingSwitching.Packing.Tests.noPackingToOpeningHom
+ArkLibTest.ProofSystem.RingSwitching.Packing.SeparateFields RingSwitching.Packing.Tests.sliceRel_shifted
+ArkLibTest.ProofSystem.RingSwitching.Packing.Multiplier RingSwitching.Packing.MultiplierTests.noOpeningToChallengeHom
+ArkLibTest.ProofSystem.RingSwitching.Packing.Multiplier RingSwitching.Packing.MultiplierTests.bridge_not_multiplicative
+ArkLibTest.ProofSystem.RingSwitching.Packing.Multiplier RingSwitching.Packing.MultiplierTests.evaluateMultiplier_eq_three
+ArkLibTest.ProofSystem.RingSwitching.Packing.Multiplier RingSwitching.Packing.MultiplierTests.multiplier_eval_three
+ArkLibTest.ProofSystem.RingSwitching.Packing.Multiplier RingSwitching.Packing.MultiplierTests.evaluateMultiplier_ne_prod_bridge
+ArkLibTest.ProofSystem.RingSwitching.Packing.Multiplier RingSwitching.Packing.MultiplierTests.evaluateMultiplier_zero_variables
+ArkLibTest.ProofSystem.RingSwitching.Packing.ScalarHead.Layout RingSwitching.Packing.Tests.Layout.prefix_suffix_distinct
+ArkLibTest.ProofSystem.RingSwitching.Packing.ScalarHead.Quirky RingSwitching.Packing.Tests.Quirky.quirky_component_order
+ArkLibTest.ProofSystem.RingSwitching.Packing.ScalarHead.Quirky RingSwitching.Packing.Tests.Quirky.quirky_off_grid
+ArkLibTest.ProofSystem.RingSwitching.Packing.ScalarHead.Quirky RingSwitching.Packing.Tests.Quirky.quirkyEval_boolNodes

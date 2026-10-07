@@ -85,7 +85,11 @@ echo "# Native security clients"
   ArkLibTest.ProofSystem.RingSwitching.Packing.CheckedObservation \
   ArkLibTest.ProofSystem.RingSwitching.Packing.Polynomial \
   ArkLibTest.ProofSystem.RingSwitching.Packing.Relations \
-  ArkLibTest.ProofSystem.RingSwitching.Packing.Batching
+  ArkLibTest.ProofSystem.RingSwitching.Packing.Batching \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.SeparateFields \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.Multiplier \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.ScalarHead.Layout \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.ScalarHead.Quirky
 
 # CI gate 2: zero live sorry/admit holes in both library and research source.
 echo ""
