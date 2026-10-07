@@ -93,7 +93,7 @@ theorem reedSolomon_affineLine_relDistFromCode_eq_zero_of_mem
         simp only [Nat.cast_zero, zero_div]
         rw [← ENNReal.coe_nnratCast]
         simp only [NNRat.cast_zero, ENNReal.coe_zero]
-  · exact zero_le _
+  · exact zero_le
 
 omit [Nonempty ι] [DecidableEq ι] [Fintype F] in
 /-- **All scalar points on an RS codeword line are close.** Since each affine-line point through
@@ -106,7 +106,7 @@ theorem reedSolomon_affineLine_all_scalars_close_of_mem
       (ReedSolomon.code domain k : Set (ι → F))) ≤ δ := by
   intro γ
   rw [reedSolomon_affineLine_relDistFromCode_eq_zero_of_mem hc₀ hc₁ γ]
-  exact zero_le _
+  exact zero_le
 
 omit [DecidableEq ι] in
 /-- **Whole-line cardinality pressure against `hwit`.** If the common-center witness hypothesis

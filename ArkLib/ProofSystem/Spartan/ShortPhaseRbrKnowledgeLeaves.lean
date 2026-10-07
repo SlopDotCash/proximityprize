@@ -285,7 +285,7 @@ theorem rbrKnowledgeSoundness_singleChallenge_pure
     rw [probEvent_map]
     simp only [Function.comp_def, ProtocolSpec.Transcript.concat, Fin.snoc]
     by_cases hmem : (stmtIn, ()) ∈ relIn
-    · refine le_trans (le_of_eq (probEvent_eq_zero_iff.mpr ?_)) (zero_le _)
+    · refine le_trans (le_of_eq (probEvent_eq_zero_iff.mpr ?_)) (zero_le)
       intro c _ hc
       exact hc.1 hmem
     · refine le_trans (probEvent_mono ?_) (hflip stmtIn hmem)
@@ -496,7 +496,7 @@ theorem zeroCheck_flip_prob_le (hm : 0 < pp.ℓ_m)
             rw [div_mul_cancel₀]
             exact ne_of_gt hqpow
         _ ≤ ((pp.ℓ_m : ℚ≥0) / (q : ℚ≥0)) * (q : ℚ≥0) ^ pp.ℓ_m :=
-            mul_le_mul_right' (le_trans hSZ hRHS) _
+            mul_le_mul_left (le_trans hSZ hRHS) _
     calc (Z.card : ℚ≥0) ≤ ((pp.ℓ_m : ℚ≥0) / (q : ℚ≥0)) * (q : ℚ≥0) ^ pp.ℓ_m := hZQ
       _ = (pp.ℓ_m : ℚ≥0) * (q : ℚ≥0) ^ (pp.ℓ_m - 1) := by
           rw [div_mul_eq_mul_div, mul_comm ((pp.ℓ_m : ℚ≥0)) _, mul_comm ((pp.ℓ_m : ℚ≥0)) _]

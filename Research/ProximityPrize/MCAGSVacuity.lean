@@ -90,7 +90,7 @@ theorem epsMCAgs_mono
   apply Pr_le_Pr_of_implies
   intro γ h_event
   obtain ⟨S, hS_card, hline, hpair⟩ := h_event
-  exact ⟨S, le_trans (mul_le_mul_of_nonneg_right (tsub_le_tsub_left h 1) (zero_le _)) hS_card,
+  exact ⟨S, le_trans (mul_le_mul_of_nonneg_right (tsub_le_tsub_left h 1) (zero_le)) hS_card,
     hline, hpair⟩
 
 end ProximityGap.MCAGS

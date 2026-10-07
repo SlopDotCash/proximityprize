@@ -6,6 +6,7 @@ Authors: Katerina Hristova, František Silváši, Chung Thai Nguyen
 
 import ArkLib.Data.CodingTheory.Basic.DecodingRadius
 import ArkLib.Data.CodingTheory.Basic.Distance
+import ArkLib.Data.CodingTheory.Basic.InterleavedDistance
 import ArkLib.Data.CodingTheory.Basic.LinearCode
 import ArkLib.Data.CodingTheory.Basic.RelativeDistance
 import ArkLib.Data.CodingTheory.ListDecodability
@@ -148,7 +149,7 @@ noncomputable instance interleavedCodeSet_fintype {A : Type*} {κ ι : Type*}
 
 /-- Interleaved code submodule of any `ModuleCode`, where each row belongs to the code. -/
 @[simp]
-instance ModuleCode.moduleInterleavedCode : ModuleCode ι F (InterleavedSymbol A κ) := {
+def ModuleCode.moduleInterleavedCode : ModuleCode ι F (InterleavedSymbol A κ) := {
   -- Simple condition wrapping over Matrix
   carrier := interleavedCodeSet (C := (MC : Set (ι → A)))
   add_mem' hU hV i := MC.add_mem (hU i) (hV i)
@@ -172,7 +173,7 @@ def codewordStackSet {A : Type*} {κ ι : Type*} (C : Set (ι → A)) : Set (Wor
   { V : WordStack A κ ι | ∀ k, V.getRowWord k ∈ C }
 
 @[simp]
-instance ModuleCode.codewordStackSubmodule : Submodule F (WordStack A κ ι) := {
+def ModuleCode.codewordStackSubmodule : Submodule F (WordStack A κ ι) := {
   -- Simple condition wrapping over Matrix
   carrier := codewordStackSet (C := (MC : Set (ι → A)))
   add_mem' hU hV i := MC.add_mem (hU i) (hV i)
@@ -368,7 +369,7 @@ lemma relHammingDist_transpose_le {F : Type*} [DecidableEq F] [Fintype ι] [None
   have h : hammingDist (V.transpose k) (f.transpose k) ≤ hammingDist V f := by
     have := hammingDist_comp_le_hammingDist (γ := fun _ : ι => Fin m → F)
       (β := fun _ : ι => F) (fun (_ : ι) (row : Fin m → F) => row k) (x := V) (y := f)
-    simpa [Matrix.transpose] using this
+    exact this
   gcongr
 
 set_option linter.unusedSectionVars false in
@@ -402,6 +403,13 @@ instance {κ₁ κ₂ : Type*} :
       (CodewordStack A (Sum κ₁ κ₂) ι C) where
   hAppend u v := finMapCodewordStacksAppend A ι C (κ₁ := κ₁) (κ₂ := κ₂) u v
 
+
+/-- Interleaving over a nonempty row index preserves minimum block distance. -/
+theorem minDist_interleavedCodeSet
+    {κ ι A : Type*} [Fintype κ] [Nonempty κ] [Fintype ι] [DecidableEq A]
+    (C : Set (ι → A)) :
+    minDist (interleavedCodeSet (κ := κ) C) = minDist C := by
+  exact minDist_rowwiseCode C
 
 namespace InterleavedCode
 
@@ -479,14 +487,13 @@ export InterleavedStructure (eq_iff_all_rows_eq eq_iff_all_symbols_eq eq_iff_all
     intro u v; constructor
     · intro h; rw [h]; exact fun i ↦ rfl
     · intro h; ext i k;
-      let res := h i; simp only [WordStack, codewordStackSet, Word, WordStack.getRowWord,
-        Set.mem_setOf_eq, Subtype.mk.injEq] at res; exact congrFun res k
+      exact congrFun (congrArg Subtype.val (h i)) k
   eq_iff_all_symbols_eq := by
     intro u v; constructor
     · intro h; rw [h]; exact fun k ↦ rfl
     · intro h; ext i k;
       let res := h k; simp only [WordStack, codewordStackSet, Word,
-        Set.mem_setOf_eq] at res; exact congrFun res i
+        Set.mem_setOf_eq, Matrix.transpose_apply] at res; exact congrFun res i
   eq_iff_all_cells_eq := by
     intro u v; constructor
     · intro h; rw [h]; exact fun i k ↦ rfl
@@ -530,12 +537,12 @@ export InterleavedStructure (eq_iff_all_rows_eq eq_iff_all_symbols_eq eq_iff_all
     intro u v; constructor
     · intro h; rw [h]; exact fun i ↦ rfl
     · intro h; ext i k;
-      let res := h k; simp only [Subtype.mk.injEq] at res; exact congrFun res i
+      exact congrFun (congrArg Subtype.val (h k)) i
   eq_iff_all_symbols_eq := by
     intro u v; constructor
     · intro h; rw [h]; exact fun k ↦ rfl
     · intro h; ext i k;
-      let res := h i; simp only at res; exact congrFun res k
+      exact congrFun (h i) k
   eq_iff_all_cells_eq := by
     intro u v; constructor
     · intro h; rw [h]; exact fun i k ↦ rfl
@@ -871,7 +878,8 @@ theorem jointAgreement_iff_jointProximity
       exact hj_in_filter.2.symm
     -- From agreement on S, we get distance bound
     have h_dist : δᵣ(u_interleaved, v_interleaved) ≤ δ := by
-      rw [relCloseToWord_iff_exists_agreementCols]
+      apply (relCloseToWord_iff_exists_agreementCols
+        (fun j => u_interleaved j) (fun j => v_interleaved j) δ).2
       use S
       rw [relDist_floor_bound_iff_complement_bound]
       constructor
@@ -906,16 +914,16 @@ theorem jointAgreement_iff_jointProximity
     have h_rel_to_nat : δᵣ(u_interleaved, interleavedCodeSet C) ≤ δ →
         ∃ v ∈ (interleavedCodeSet C), δᵣ(u_interleaved, v) ≤ δ := by
       intro h_rel
-      rw [relCloseToCode_iff_relCloseToCodeword_of_minDist] at h_rel
-      exact h_rel
+      exact (relCloseToCode_iff_relCloseToCodeword_of_minDist
+        (u := fun j => u_interleaved j) (C := interleavedCodeSet C) δ).mp h_rel
     have h_exists_v := h_rel_to_nat h_joint
     rcases h_exists_v with ⟨v, hv_mem, hv_dist⟩
     -- Now convert relative distance to agreement set
     -- We need: δᵣ(u_interleaved, v) ≤ δ → ∃ S, |S| ≥ (1-δ)*|ι| and agreement
     -- Convert relative distance δ to natural distance e
     have h_nat_dist : Δ₀(u_interleaved, v) ≤ e := by
-      rw [pairRelDist_le_iff_pairDist_le (δ := δ)] at hv_dist
-      exact hv_dist
+      exact (pairRelDist_le_iff_pairDist_le
+        (u := fun j => u_interleaved j) (v := fun j => v j) δ).mp hv_dist
     have h_agree := Code.closeToWord_iff_exists_agreementCols
       (u := u_interleaved) (v := v) (e := e)
     have h_agree_nat := h_agree.mp h_nat_dist
@@ -1068,7 +1076,7 @@ private lemma hammingDist_transpose_le {A ι κ : Type*} [Fintype ι] [Fintype �
   classical
   have := hammingDist_comp_le_hammingDist (γ := fun _ : ι => κ → A)
     (β := fun _ : ι => A) (fun (_ : ι) (row : κ → A) => row k) (x := U) (y := V)
-  simpa [Matrix.transpose] using this
+  exact this
 
 lemma minDist_eq_minDist {F A ι κ : Type*} [Semiring F] [AddCommMonoid A] [Module F A]
     [Fintype ι] [Fintype κ] [Nonempty κ] [DecidableEq A] (C : Set (ι → A)) :
@@ -1082,7 +1090,7 @@ lemma minDist_eq_minDist {F A ι κ : Type*} [Semiring F] [AddCommMonoid A] [Mod
       (fun i : ι => fun _ : κ => u i) ∈ (C ^⋈ κ) := by
     rw [interleavedCode_eq_interleavedCodeSet]
     intro k
-    simpa [Matrix.transpose] using hu
+    exact hu
   have const_ne {u v : ι → A} (huv : u ≠ v) :
       (fun i : ι => fun _ : κ => u i) ≠
         (fun i : ι => fun _ : κ => v i) := by

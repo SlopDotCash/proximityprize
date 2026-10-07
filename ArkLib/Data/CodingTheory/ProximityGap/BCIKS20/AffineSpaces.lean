@@ -1636,7 +1636,7 @@ lemma exists_gs_multiplicity {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
         · -- Otherwise: impossible since δ > 0 and δ < 1 - sqrtRate
           exfalso
           have h1 : ¬(δ ≤ (1 - (↑(LinearCode.rate (ReedSolomon.code domain deg)) : ℝ≥0)) / 2) :=
-            fun hle => h_ud (Set.mem_Icc.mpr ⟨zero_le _, hle⟩)
+            fun hle => h_ud (Set.mem_Icc.mpr ⟨zero_le, hle⟩)
           have h2 : (1 - (↑(LinearCode.rate (ReedSolomon.code domain deg)) : ℝ≥0)) / 2 < δ :=
             not_le.mp h1
           have h3 : δ < 1 - NNReal.sqrt ↑(LinearCode.rate (ReedSolomon.code domain deg)) := by
@@ -2281,7 +2281,7 @@ theorem correlatedAgreement_affine_spaces {k : ℕ} [NeZero k]
           (fun v hv => ⟨(hclose v hv).1, (hclose v hv).2⟩)
       · -- δ_star = 0: only w itself can be at distance 0, so |closeWords| ≤ 1 < |F|
         push Not at hδs_pos
-        have hδs_eq : δ_star = 0 := le_antisymm hδs_pos (zero_le _)
+        have hδs_eq : δ_star = 0 := le_antisymm hδs_pos (zero_le)
         have hclose_eq : ∀ v ∈ close, v = w := by
           intro v hv
           have hd := (hclose v hv).2

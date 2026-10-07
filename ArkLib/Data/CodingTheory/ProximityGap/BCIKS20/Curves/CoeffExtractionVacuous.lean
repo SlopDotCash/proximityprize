@@ -63,7 +63,7 @@ theorem curveCommonAgreementResidual_of_card_le {k deg : ℕ} {domain : ι ↪ F
     rw [mul_div_assoc', le_div_iff₀ hqpos, one_mul]
     exact hq
   have hstep : (1 : ℝ≥0) ≤ (k : ℝ≥0) * errorBound δ deg domain :=
-    le_trans hone (mul_le_mul_left' hconst _)
+    le_trans hone (mul_le_mul_right hconst _)
   exact_mod_cast hstep
 
 /-- **Vacuous-regime `StrictCoeffPolysResidual` (abstract form).** Composes the vacuous
@@ -113,7 +113,7 @@ theorem errorBound_ge_e7 {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
   have hm_le : m ≤ Real.sqrt (r : ℝ) / 20 := by simp [hm]
   have hm_nonneg : 0 ≤ m := by
     have h1 : (0 : ℝ) ≤ (↑(1 - sqrt r - δ) : ℝ) := by
-      exact_mod_cast (show (0 : ℝ≥0) ≤ (1 - sqrt r - δ) from zero_le _)
+      exact_mod_cast (show (0 : ℝ≥0) ≤ (1 - sqrt r - δ) from zero_le)
     have h2 : (0 : ℝ) ≤ Real.sqrt (r : ℝ) / 20 := by positivity
     simpa [hm] using le_min h1 h2
   have hr_le_one : r ≤ 1 := by
@@ -174,7 +174,7 @@ theorem curveCommonAgreementResidual_of_card_le_e7 {k deg : ℕ} {domain : ι �
     rw [mul_div_assoc', le_div_iff₀ hqpos, one_mul]
     exact hq
   have hstep : (1 : ℝ≥0) ≤ (k : ℝ≥0) * errorBound δ deg domain :=
-    le_trans hone (mul_le_mul_left' hconst _)
+    le_trans hone (mul_le_mul_right hconst _)
   have h : (1 : ENNReal) ≤ (k : ENNReal) * (errorBound δ deg domain : ENNReal) := by
     exact_mod_cast hstep
   exact absurd (lt_of_le_of_lt h hprob) (not_lt.mpr (PMF.coe_le_one _ _))

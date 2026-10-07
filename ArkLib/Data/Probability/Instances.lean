@@ -358,7 +358,7 @@ theorem Pr_le_Pr_of_implies {α : Type} (D : PMF α)
     by_cases hf : f r
     · simp only [hf, ↓reduceIte, h_imp, le_refl]
     · simp only [hf, ↓reduceIte, zero_le]
-  exact mul_le_mul_left' hite (D r)
+  exact mul_le_mul_right hite (D r)
 
 theorem Pr_multi_let_equiv_single_let {α β : Type}
     (D₁ : PMF α) (D₂ : PMF β) -- Assuming D₂ is independent for simplicity

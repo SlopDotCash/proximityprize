@@ -215,7 +215,6 @@ theorem antipodal_symmetric_sum_zero {m : ℕ} {ζ : L}
     exact antipodal_pair_sum_zero hζ a
   · -- `g a ≠ a` for `a ∈ A` (since `a < 2^(m+1)` and adding `2^m` mod changes the residue).
     intro a ha _ hcontra
-    simp only [] at hcontra
     -- `hcontra : (a + 2^m) % 2^(m+1) = a`.  `a < 2^(m+1)`, so `a % 2^(m+1) = a`.
     have halt : a < 2 ^ (m + 1) := Finset.mem_range.mp (hAsub ha)
     have ha' : a % 2 ^ (m + 1) = a := Nat.mod_eq_of_lt halt
@@ -232,7 +231,6 @@ theorem antipodal_symmetric_sum_zero {m : ℕ} {ζ : L}
     exact hA a ha
   · -- involutivity: `g (g a) = a` for `a ∈ A` (uses `a < 2^(m+1)`).
     intro a ha
-    simp only []
     have halt : a < 2 ^ (m + 1) := Finset.mem_range.mp (hAsub ha)
     -- `g (g a) ≡ (a + 2^m) + 2^m = a + 2^(m+1) ≡ a [MOD 2^(m+1)]`, and `g(g a) < 2^(m+1)`.
     set n := 2 ^ (m + 1) with hn

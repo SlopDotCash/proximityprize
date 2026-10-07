@@ -49,7 +49,7 @@ theorem doubleFactOdd_le (r : ℕ) : (doubleFactOdd r : ℝ) ≤ (2 * r : ℝ) ^
   rw [hcast]
   calc ∏ i ∈ Finset.range r, ((2 * i + 1 : ℕ) : ℝ)
       ≤ ∏ _i ∈ Finset.range r, (2 * r : ℝ) := by
-        apply Finset.prod_le_prod
+        apply Finset.prod_le_prod₀
         · intro i _; positivity
         · intro i hi
           have hir : i + 1 ≤ r := Finset.mem_range.mp hi

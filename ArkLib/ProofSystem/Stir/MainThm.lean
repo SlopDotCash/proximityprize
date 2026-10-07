@@ -45,20 +45,29 @@ structure Params (F : Type*) where
 def degree (P : Params ι F) : Fin (M + 1) → ℕ :=
   fun i => P.deg / ∏ j < i, (P.foldingParam j)
 
+omit [Field F] [Fintype F] [DecidableEq F] [∀ i : Fin (M + 1), Fintype (ι i)] in
+/-- Before any fold the degree is the initial degree. -/
+lemma degree_zero (P : Params ι F) : degree ι P 0 = P.deg := by
+  have hIio : Finset.Iio (0 : Fin (M + 1)) = ∅ := by
+    ext j
+    simp
+  simp [degree, hIio]
+
 /-- **Conditions that protocol parameters must satisfy.**
   - `h_deg` : initial degree `deg` is a power of 2
-  - `h_foldingParams` : `∑ i : Fin (M + 1), foldingParamᵢ` is a power of 2
+  - `h_foldingParams` : each folding parameter `foldingParamᵢ` is a power of 2
   - `h_deg_ge` : `deg ≥ ∏ i foldingParamᵢ`
   - `h_smooth` : each `φᵢ` must embed a smooth evaluation domain
-  - `h_smooth_le` : `|ιᵢ| ≤ degreeᵢ`
-  - `h_repeatP_le` : `∀ i : Fin (M + 1), repeatParamᵢ + 1 ≤ degreeᵢ` -/
+  - `h_smooth_lt` : `degreeᵢ < |ιᵢ|`
+  - `h_repeatP_le` : `repeatParamᵢ + 1 ≤ degreeᵢ₊₁` for `i < M`; the last repetition
+    parameter is not constrained -/
 structure ParamConditions (P : Params ι F) where
   h_deg : ∃ k : ℕ, P.deg = 2^k
   h_foldingParams : ∀ i : Fin (M + 1), ∃ k : ℕ, (P.foldingParam i) = 2^k
   h_deg_ge : P.deg ≥ ∏ i : Fin (M + 1), (P.foldingParam i)
   h_smooth : ∀ i : Fin (M + 1), Smooth (P.φ i)
-  h_smooth_le : ∀ i : Fin (M + 1), Fintype.card (ι i) ≤ (degree ι P i)
-  h_repeatP_le : ∀ i : Fin (M + 1), P.repeatParam i + 1 ≤ (degree ι P i)
+  h_smooth_lt : ∀ i : Fin (M + 1), degree ι P i < Fintype.card (ι i)
+  h_repeatP_le : ∀ i : Fin M, P.repeatParam i.castSucc + 1 ≤ degree ι P i.succ
 
 /-- Distance and list‑size targets per round. -/
 structure Distances (M : ℕ) where

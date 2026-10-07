@@ -96,7 +96,7 @@ theorem card_eq_sqrtSet_add_support (b : G) :
     Fintype.card G
       = (sqrtSet b).card + (Finset.univ.filter (fun x => mobiusInvol b x ≠ x)).card := by
   rw [sqrtSet_eq_filter_fixed, ← Finset.card_univ,
-    Finset.filter_card_add_filter_neg_card_eq_card (p := fun x => mobiusInvol b x = x)]
+    Finset.card_filter_add_card_filter_not (p := fun x => mobiusInvol b x = x)]
 
 /-- The 2-orbit count of `σ_b` (the per-`b` Möbius pencil energy summand). -/
 def t2 (b : G) : ℕ := (Finset.univ.filter (fun x => mobiusInvol b x ≠ x)).card / 2

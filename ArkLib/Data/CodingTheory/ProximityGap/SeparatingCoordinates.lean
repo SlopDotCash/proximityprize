@@ -4,7 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import Mathlib
+import Mathlib.LinearAlgebra.Dimension.Finrank
+import Mathlib.LinearAlgebra.Dimension.Constructions
+import Mathlib.Tactic
 
 /-!
 # Few coordinates separate a low-dimensional subspace (issue #389, GG25 §4.3 toward B2)

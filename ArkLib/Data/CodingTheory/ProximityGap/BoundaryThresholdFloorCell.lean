@@ -185,7 +185,7 @@ theorem floor_sevenDivTwentyFive_eq_one :
     Nat.floor ((7 / 25 : ℝ≥0) * Fintype.card I) = 1 := by
   have h : (7 / 25 : ℝ≥0) * (Fintype.card I : ℝ≥0) = 28 / 25 := by
     norm_num [I]
-  rw [h, Nat.floor_eq_iff (zero_le _)]
+  rw [h, Nat.floor_eq_iff (zero_le)]
   constructor
   · rw [Nat.cast_one, le_div_iff₀ (by norm_num : (0 : ℝ≥0) < 25)]
     norm_num

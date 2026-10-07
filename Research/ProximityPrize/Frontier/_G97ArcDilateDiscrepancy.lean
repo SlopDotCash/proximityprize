@@ -259,7 +259,7 @@ theorem arcIndex_eq_iff {K j : ℕ} (y : ZMod p) :
 theorem scaledPrefix_succ (S : Finset (ZMod p)) (K j : ℕ) :
     scaledPrefix K S ((j + 1) * p)
       = scaledPrefix K S (j * p) + (S.filter (fun y => arcIndex K y = j)).card := by
-  have hmul : j * p ≤ (j + 1) * p := mul_le_mul_right' (Nat.le_succ j) p
+  have hmul : j * p ≤ (j + 1) * p := mul_le_mul_left (Nat.le_succ j) p
   have hsplit : S.filter (fun y => K * y.val < (j + 1) * p)
       = S.filter (fun y => K * y.val < j * p)
         ∪ S.filter (fun y => arcIndex K y = j) := by
@@ -362,7 +362,7 @@ theorem per_dilate_arc_coloring (S : Finset (ZMod p)) {K : ℕ} (hK : 0 < K) :
     fun y => altSign_eq_one_or_neg_one _ _, fun j => ?_⟩
   show |∑ y ∈ S.filter (fun y => arcIndex K y = j),
       altSign (S.image (fun z => K * z.val)) (K * y.val)| ≤ 1
-  have hmul : j * p ≤ (j + 1) * p := mul_le_mul_right' (Nat.le_succ j) p
+  have hmul : j * p ≤ (j + 1) * p := mul_le_mul_left (Nat.le_succ j) p
   have hinj : ∀ x ∈ S.filter (fun y => arcIndex K y = j),
       ∀ y ∈ S.filter (fun y => arcIndex K y = j), K * x.val = K * y.val → x = y :=
     fun x _ y _ h => ZMod.val_injective p (Nat.eq_of_mul_eq_mul_left hK h)

@@ -273,7 +273,7 @@ theorem half_le_mcaDeltaStar_of_predecessor_good
         have hm := mul_lt_mul_of_pos_right hδ (by positivity)
         rwa [hhalf_mul] at hm
       have hfloorδ : Nat.floor (δ * (Fintype.card (Fin n) : ℝ≥0)) = w := by
-        rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le _)]
+        rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le)]
         constructor
         · exact hlowerFloor
         · rw [hw]

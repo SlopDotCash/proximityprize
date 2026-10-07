@@ -4,9 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
 
-import VCVio
+import VCVio.OracleComp.OracleContext
+import VCVio.OracleComp.SimSemantics.ReaderT.Basic
 import CompPoly.Data.MvPolynomial.Notation
 import ArkLib.Data.MvPolynomial.Degrees
+import Mathlib.Algebra.MvPolynomial.CommRing
 import ArkLib.Data.MvPolynomial.SchwartzZippelCounting
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.RingTheory.IntegralDomain
@@ -109,23 +111,6 @@ instance (i : Fin 0) : OracleInterface i.elim0 := Fin.elim0 i
 instance instFunction {α β : Type _} : OracleInterface (α → β) where
   Query := α
   toOC := OracleContext.ofFunction α β
-
-instance {ι : Type u} [DecidableEq ι] (v : ι → Type v) [O : ∀ i, OracleInterface (v i)]
-    [h : ∀ i, DecidableEq (Query (v i))]
-    [h' : ∀ i q, DecidableEq ((O i).Response q)] :
-    [v]ₒ.DecidableEq where
-  decidableEq_A := inferInstanceAs (DecidableEq ((i : ι) × Query (v i)))
-  decidableEq_B | ⟨i, q⟩ => h' i q
-
-instance {ι : Type u} (v : ι → Type v) [O : ∀ i, OracleInterface (v i)]
-    [h : ∀ i q, Fintype ((O i).Response q)] :
-    [v]ₒ.Fintype where
-  fintype_B | ⟨i, q⟩ => h i q
-
-instance {ι : Type u} (v : ι → Type v) [O : ∀ i, OracleInterface (v i)]
-    [h : ∀ i q, Inhabited ((O i).Response q)] :
-    [v]ₒ.Inhabited where
-  inhabited_B | ⟨i, q⟩ => h i q
 
 @[reducible, inline]
 instance {ι₁ : Type u} {T₁ : ι₁ → Type v} [inst₁ : ∀ i, OracleInterface (T₁ i)]

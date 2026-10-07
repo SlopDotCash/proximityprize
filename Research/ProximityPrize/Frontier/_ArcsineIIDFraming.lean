@@ -46,7 +46,7 @@ theorem subGaussian_of_independent_factors {m : ℕ} (y : ℝ) (σsq : ℕ → �
       ≤ Real.exp ((∑ k ∈ Finset.range m, σsq k) * y ^ 2 / 2) := by
   calc ∏ k ∈ Finset.range m, mgfFactor k
       ≤ ∏ k ∈ Finset.range m, Real.exp (σsq k * y ^ 2 / 2) :=
-        Finset.prod_le_prod hpos hfac
+        Finset.prod_le_prod₀ hpos hfac
     _ = Real.exp (∑ k ∈ Finset.range m, σsq k * y ^ 2 / 2) := by rw [← Real.exp_sum]
     _ = Real.exp ((∑ k ∈ Finset.range m, σsq k) * y ^ 2 / 2) := by
         rw [Finset.sum_mul, Finset.sum_div]

@@ -153,7 +153,8 @@ theorem sum_cube_succ {M : Type*} [AddCommMonoid M] (D : SumcheckDomain R (k + 1
   rw [← Finset.sum_product']
   have hcube : D.cube
       = (D.points 0 ×ˢ D.tail.cube).map (Fin.consEquiv (fun _ : Fin (k + 1) => R)).toEmbedding := by
-    simpa [cube, tail, points] using
+    simpa only [cube, Finset.filter_true,
+      show Fin.tail D.points = D.tail.points from rfl] using
       Finset.filter_piFinset_eq_map_consEquiv (S := D.points) (fun _ => True)
   rw [hcube, Finset.sum_map]
   rfl
@@ -186,7 +187,8 @@ theorem sum_cube_snoc {M : Type*} [AddCommMonoid M] (D : SumcheckDomain R (k + 1
       = (D.points (Fin.last k) ×ˢ D.init.cube).map
           (Fin.snocEquiv (fun _ : Fin (k + 1) => R)).toEmbedding := by
     have h := Finset.filter_piFinset_eq_map_snocEquiv (S := D.points) (fun _ => True)
-    simpa [cube, init, points, Finset.filter_true] using h
+    simpa only [cube, Finset.filter_true,
+      show Fin.init D.points = D.init.points from rfl] using h
   rw [hcube, Finset.sum_map]
   rfl
 

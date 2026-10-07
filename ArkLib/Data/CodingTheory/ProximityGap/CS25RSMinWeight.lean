@@ -68,7 +68,7 @@ theorem rs_nonzero_weight_gt (domain : ι ↪ F) (deg : ℕ) (c : ι → F)
   have hpart : (univ.filter (fun i => c i = 0)).card
       + (univ.filter (fun i => ¬ c i = 0)).card = Fintype.card ι := by
     rw [← Finset.card_univ]
-    exact Finset.filter_card_add_filter_neg_card_eq_card _
+    exact Finset.card_filter_add_card_filter_not _
   have hwt : hammingDist c (0 : ι → F) = (univ.filter (fun i => ¬ c i = 0)).card := by
     simp only [hammingDist, Pi.zero_apply, ne_eq]
   have hpos : 0 < (univ.filter (fun i => ¬ c i = 0)).card := by

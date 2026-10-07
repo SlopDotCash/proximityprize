@@ -110,7 +110,7 @@ theorem boundaryCellRadius_le {n : ℕ} (hn : 0 < n) (δ : ℝ≥0) :
     boundaryCellRadius n δ ≤ δ := by
   have hnpos : (0 : ℝ≥0) < n := by exact_mod_cast hn
   rw [boundaryCellRadius, div_le_iff₀ hnpos]
-  exact Nat.floor_le (zero_le _)
+  exact Nat.floor_le (zero_le)
 
 /-- Off the `1/n` lattice (`⌊δ·n⌋ < δ·n`), the cell radius is *strictly* below `δ`: the
 canonical strict floor-matched sub-radius of the quantization split. -/
@@ -136,7 +136,7 @@ theorem boundaryCellRadius_le_of_floor_eq {n : ℕ} {δ δ' : ℝ≥0} (hn : 0 <
     boundaryCellRadius n δ ≤ δ' := by
   have hnpos : (0 : ℝ≥0) < n := by exact_mod_cast hn
   rw [boundaryCellRadius, div_le_iff₀ hnpos, ← hfloor]
-  exact Nat.floor_le (zero_le _)
+  exact Nat.floor_le (zero_le)
 
 /-! ## The strict-radius reduction: the boundary half lives only at lattice points `j/n` -/
 

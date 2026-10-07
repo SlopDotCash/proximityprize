@@ -207,7 +207,8 @@ omit [∀ i, SampleableType (pSpec.Challenge i)] init impl in
 /-- **Union bound over a finset of indices.**  The probability that *some* index in a finset `s`
 satisfies its event is at most the sum, over `s`, of the per-index probabilities.  Proved by
 iterating the binary union bound `probEvent_or_le`. -/
-theorem probEvent_exists_mem_le_sum {m : Type → Type*} [Monad m] [HasEvalSPMF m] {α : Type}
+theorem probEvent_exists_mem_le_sum {m : Type → Type*} [Monad m] [MonadAttach m] [MonadLiftT m SPMF]
+    [LawfulMonadLiftT m SPMF] [EvalDistCompatible m] {α : Type}
     {κ : Type} [DecidableEq κ] (mx : m α) (p : κ → α → Prop) (s : Finset κ) :
     Pr[fun x => ∃ i ∈ s, p i x | mx] ≤ ∑ i ∈ s, Pr[fun x => p i x | mx] := by
   classical
@@ -241,7 +242,8 @@ omit [∀ i, SampleableType (pSpec.Challenge i)] init impl in
 the full (finite) index type, e.g. `pSpec.ChallengeIdx`.  The probability that *some* index
 satisfies its event is at most the total sum of per-index probabilities — the form used to bound a
 soundness error by `∑ i, rbrSoundnessError i`. -/
-theorem probEvent_exists_le_sum {m : Type → Type*} [Monad m] [HasEvalSPMF m] {α : Type}
+theorem probEvent_exists_le_sum {m : Type → Type*} [Monad m] [MonadAttach m] [MonadLiftT m SPMF]
+    [LawfulMonadLiftT m SPMF] [EvalDistCompatible m] {α : Type}
     {κ : Type} [Fintype κ] [DecidableEq κ] (mx : m α) (p : κ → α → Prop) :
     Pr[fun x => ∃ i, p i x | mx] ≤ ∑ i : κ, Pr[fun x => p i x | mx] := by
   have := probEvent_exists_mem_le_sum mx p Finset.univ
@@ -256,7 +258,8 @@ This is the reusable shape consumed by `rbrSoundness → soundness`: the target 
 accepts a bad statement) implies, on the support, that the round-by-round state function flips at
 *some* challenge round (the combinatorial first-crossing core), and the per-round flip probabilities
 are exactly `rbrSoundnessError i`. -/
-theorem probEvent_le_sum_of_imp_exists {m : Type → Type*} [Monad m] [HasEvalSPMF m] {α : Type}
+theorem probEvent_le_sum_of_imp_exists {m : Type → Type*} [Monad m] [MonadAttach m] [MonadLiftT m SPMF]
+    [LawfulMonadLiftT m SPMF] [EvalDistCompatible m] {α : Type}
     {κ : Type} [Fintype κ] [DecidableEq κ] (mx : m α) (q : α → Prop) (p : κ → α → Prop)
     (himp : ∀ x ∈ support mx, q x → ∃ i, p i x) :
     Pr[q | mx] ≤ ∑ i : κ, Pr[fun x => p i x | mx] := by
@@ -272,7 +275,9 @@ prover run threads the trailing `receiveChallenge`/`sendMessage`/`output` and ve
 the round-by-round game omits; since the per-round flip event depends only on the transcript prefix
 (already determined before those steps), dropping them can only raise the event probability —
 turning the marginal relation into the `≤` direction needed to chain to `rbrSoundnessError`. -/
-theorem probEvent_bind_trailing_le {m : Type → Type*} [Monad m] [LawfulMonad m] [HasEvalSPMF m]
+theorem probEvent_bind_trailing_le {m : Type → Type*} [Monad m] [LawfulMonad m]
+    [MonadAttach m] [MonadLiftT m SPMF]
+    [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
     {α β γ : Type} (mx : m α) (gb : α → m γ) (h : α → β) (p : β → Prop) :
     Pr[p | mx >>= fun x => gb x >>= fun _ => pure (h x)] ≤ Pr[p | mx >>= fun x => pure (h x)] := by
   refine probEvent_bind_mono (fun x _ => ?_)
@@ -303,7 +308,7 @@ theorem probEvent_optionT_mk_eq_elim {α : Type}
         = 0 := by simp
     rw [e1, e2, zero_add, add_comm]
     refine congrArg (· + Pr[= none | ma]) (tsum_congr (fun x => ?_))
-    by_cases hx : p x <;> simp [hx]
+    by_cases hx : p x <;> simp [Set.indicator, hx]
   have h := OptionT.probEvent_eq (OptionT.mk ma : OptionT ProbComp α) p
   simp only [OptionT.run_mk] at h
   rw [hdiff] at h
@@ -316,7 +321,8 @@ is
 bounded by that of `q'` under `oc x`, then so are the bound probabilities.  Used to chain the
 soundness game's flip event (on the `Option`-wrapped full result) to the round-by-round game's flip
 event (on the `(transcript, challenge)` pair), both threaded over the shared `init` sample. -/
-theorem probEvent_bind_mono_heteroEvent {m : Type → Type*} [Monad m] [HasEvalSPMF m]
+theorem probEvent_bind_mono_heteroEvent {m : Type → Type*} [Monad m] [MonadAttach m] [MonadLiftT m SPMF]
+    [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
     {α β β' : Type} {mx : m α} {my : α → m β} {oc : α → m β'} {q : β → Prop} {q' : β' → Prop}
     (h : ∀ x ∈ support mx, Pr[q | my x] ≤ Pr[q' | oc x]) :
     Pr[q | mx >>= my] ≤ Pr[q' | mx >>= oc] := by
@@ -683,7 +689,8 @@ def KnowledgeStateFunctionOneShot.toKnowledgeStateFunction
             rw [ht]; exact stF.toFun_empty stmtIn
           exact key m.castSucc hm tr
         exact (stF_next h0) hstF
-      · exact hmono hrel
+      · erw [Fin.init_snoc]
+        exact hmono hrel
     · rw [if_neg hm]
       rcases h with hstF | hrel
       · exact Or.inl (by by_contra hc; exact (stF_next hc) hstF)
@@ -1039,6 +1046,6 @@ lemma OracleVerifier.id_rbrKnowledgeSoundness
     {rel : Set ((Statement × ∀ i, OStatement i) × Witness)} :
     (OracleVerifier.id : OracleVerifier oSpec Statement OStatement _ _ _).rbrKnowledgeSoundness
       init impl rel rel 0 := by
-  convert Verifier.id_rbrKnowledgeSoundness init impl (rel := rel)
+  exact Verifier.id_rbrKnowledgeSoundness init impl (rel := rel)
 
 end Trivial

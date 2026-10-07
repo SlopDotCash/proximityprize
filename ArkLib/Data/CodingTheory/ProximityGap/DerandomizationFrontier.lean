@@ -186,7 +186,7 @@ lemma agreement_punctureWord_le (x : ι) (w c : ι → F) :
   · intro i hi
     simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and,
       punctureWord] at hi ⊢
-    exact hi
+    exact (Finset.mem_filter.mp hi).2
   · intro a _ b _ h
     exact Subtype.ext h
 
@@ -204,7 +204,7 @@ lemma agreement_le_punctureWord_succ (x : ι) (w c : ι → F) :
       exact Finset.mem_insert_self _ _
     · refine Finset.mem_insert_of_mem (Finset.mem_image.2 ⟨⟨i, hx⟩, ?_, rfl⟩)
       simp only [Finset.mem_filter, Finset.mem_univ, true_and, punctureWord]
-      exact hi
+      exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hi⟩
   refine (Finset.card_le_card hsub).trans ?_
   refine (Finset.card_insert_le _ _).trans ?_
   exact Nat.add_le_add_right Finset.card_image_le 1
@@ -234,7 +234,7 @@ lemma agreement_punctureWord_succ_le (x : ι) (w c : ι → F) (hx : w x = c x) 
       exact hx
     · rcases Finset.mem_image.1 h with ⟨j, hj, rfl⟩
       simp only [Finset.mem_filter, Finset.mem_univ, true_and, punctureWord] at hj ⊢
-      exact hj
+      exact (Finset.mem_filter.mp hj).2
   have h1 := Finset.card_le_card hsub
   rw [Finset.card_insert_of_notMem hnot, hcard] at h1
   exact h1

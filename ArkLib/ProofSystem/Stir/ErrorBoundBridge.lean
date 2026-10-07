@@ -55,7 +55,7 @@ theorem mul_errorBound_le_proximityError
   · simp only [h1, if_true]
     -- factor (m-1) at the ℝ≥0 level to avoid coercion of ℕ subtraction
     rw [mul_div_assoc]
-    apply mul_le_mul_of_nonneg_left _ (zero_le _)
+    apply mul_le_mul_of_nonneg_left _ (zero_le)
     -- goal (ℝ≥0): |ι|/|F| ≤ deg/(ρ*|F|)
     rw [← NNReal.coe_le_coe]
     push_cast

@@ -162,7 +162,7 @@ lemma disagree_card_split {ℓ : ℕ} (u c : Fin (ℓ + 1) → ι → A) (α : F
     hammingDist (comb u α) (comb c α)
       + ((disagree u c).filter (fun i => gdiff u c i α = 0)).card = (disagree u c).card := by
   rw [hammingDist_comb_eq, add_comm]
-  exact Finset.filter_card_add_filter_neg_card_eq_card (fun i => gdiff u c i α = 0)
+  exact Finset.card_filter_add_card_filter_not (fun i => gdiff u c i α = 0)
 
 /-- **[GG25] Lemma 3.2 (the master spread inequality), integer form.** If the two curves are
 within Hamming distance `D` at `≥ t` field points (`ℓ < t`), then the disagreement support `T`

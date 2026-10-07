@@ -123,7 +123,7 @@ theorem factorProduct_le_sqrtTwo_pow {c : ℕ → ℝ} {a : ℕ}
     (∏ k ∈ Finset.range a, c k) ≤ (Real.sqrt 2) ^ a := by
   calc (∏ k ∈ Finset.range a, c k)
       ≤ ∏ _k ∈ Finset.range a, Real.sqrt 2 :=
-        Finset.prod_le_prod (by intro k _hk; exact hc0 k) (by intro k hk; exact hc2 k hk)
+        Finset.prod_le_prod₀ (by intro k _hk; exact hc0 k) (by intro k hk; exact hc2 k hk)
     _ = (Real.sqrt 2) ^ a := by
         rw [Finset.prod_const, Finset.card_range]
 

@@ -127,7 +127,7 @@ theorem latticeBoundary_le_mcaDeltaStar_of_predecessor_good
         rwa [hboundaryMul] at hm
       have hfloorDelta :
           Nat.floor (delta * (Fintype.card (Fin n) : NNReal)) = w := by
-        rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le _)]
+        rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le)]
         constructor
         · exact hlowerFloor
         · have hcast : ((w : NNReal) + 1) = (a : NNReal) := by

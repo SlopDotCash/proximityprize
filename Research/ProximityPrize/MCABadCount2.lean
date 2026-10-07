@@ -32,7 +32,7 @@ def GrandChallenges.MCALowerWitness.top (δ ε_star : ℝ≥0) (hδ : δ ≤ 1) 
     GrandChallenges.MCALowerWitness (((⊤ : LinearCode ι F) : Set (ι → F))) ε_star :=
   GrandChallenges.MCALowerWitness.ofLe hδ <| by
     rw [epsMCA_top_eq_zero]
-    exact zero_le _
+    exact zero_le
 
 /-- **The formalized Grand MCA Challenge is a finite extremal-count statement.** For a
 linear code `C` and threshold `ε*`, the challenge predicate holds iff *every* line word

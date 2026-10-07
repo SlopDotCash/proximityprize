@@ -83,7 +83,7 @@ theorem toMLE_eval_boolPoint
     funext i
     simp
   rw [hx, MvPolynomial.MLE'_eval_zeroOne]
-  simp
+  exact MvPolynomial.MLE'_eval_zeroOne yBits (M (finFunctionFinEquiv xBits))
 
 #print axioms Matrix.toMLE_eval_boolPoint
 

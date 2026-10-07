@@ -460,7 +460,7 @@ theorem not_mcaPrize_of_small_field (domain : ι ↪ F)
           < 1 * (Fintype.card ι : ℝ≥0) := by
             apply mul_lt_mul_of_pos_right _ hpos; norm_num
         _ = (Fintype.card ι : ℝ≥0) := one_mul _
-    exact (Nat.floor_lt (zero_le _)).mpr
+    exact (Nat.floor_lt (zero_le)).mpr
       (show (1 / 2 : ℝ≥0) * (Fintype.card ι : ℝ≥0) < ((Fintype.card ι : ℕ) : ℝ≥0) from hlt)
   -- proper subset ⇒ lower bound 1/|F|
   have hproper := rsCode_ne_univ domain hk_pos hk_lt

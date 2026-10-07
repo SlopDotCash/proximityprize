@@ -157,7 +157,7 @@ theorem epsMCAGen_interleaved_le_qratio (C : Submodule F (ι → A)) (s : ℕ) [
       ≤ (Fintype.card F : ℝ≥0∞) / ((Fintype.card F - 1 : ℕ) : ℝ≥0∞)
           * epsMCAGen G (C : Set (ι → A)) δ := by
   refine le_trans (epsMCAGen_interleaved_le_factor C s G δ) ?_
-  exact mul_le_mul_right' (jo26_factor_le_qratio s) _
+  exact mul_le_mul_left (jo26_factor_le_qratio s) _
 
 /-- **The forward conditional (general generator).**  A good *base* generator-MCA bound
 `ε^gen_mca(G, C, δ) ≤ eps` forces a good interleaved bound with the clean `q/(q−1)` loss:
@@ -171,7 +171,7 @@ theorem epsMCAGen_interleaved_le_qratio_of_base_le (C : Submodule F (ι → A)) 
     epsMCAGen G ((C : Set (ι → A))^⋈ (Fin s)) δ
       ≤ (Fintype.card F : ℝ≥0∞) / ((Fintype.card F - 1 : ℕ) : ℝ≥0∞) * eps := by
   refine le_trans (epsMCAGen_interleaved_le_qratio C s G δ) ?_
-  exact mul_le_mul_left' hbase _
+  exact mul_le_mul_right hbase _
 
 /-! ### The affine-line specialization on the `epsMCA` prize surface -/
 
@@ -202,7 +202,7 @@ theorem epsMCA_interleaved_le_qratio_of_base_le (C : Submodule F (ι → A)) (s 
     ProximityGap.epsMCA (F := F) (A := Fin s → A) ((C : Set (ι → A))^⋈ (Fin s)) δ
       ≤ (Fintype.card F : ℝ≥0∞) / ((Fintype.card F - 1 : ℕ) : ℝ≥0∞) * eps := by
   refine le_trans (epsMCA_interleaved_le_qratio C s δ) ?_
-  exact mul_le_mul_left' hbase _
+  exact mul_le_mul_right hbase _
 
 /-! ### The full A27 assembly: curve-decodability ⟹ the collapse -/
 

@@ -1224,7 +1224,7 @@ theorem oracleVerifier_rbrKnowledgeSoundness [Fintype R] :
   refine ⟨fun _ => Unit, simpleRbrExtractor R deg oSpec,
     simpleKnowledgeStateFunction R deg D oSpec, ?_⟩
   intro stmtIn witIn rbrP i
-  refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
   rintro ⟨tr, chal, log⟩ - ⟨w, hn, hy⟩
   exact hn hy
 

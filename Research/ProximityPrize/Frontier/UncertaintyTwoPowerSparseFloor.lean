@@ -86,7 +86,7 @@ root-count of the sparse witness `W_s` in `μ_{2^μ}`. -/
 theorem card_filter_not_dvd_range_pow (μ s : ℕ) (hsμ : s ≤ μ) :
     ((Finset.range (2 ^ μ)).filter (fun j => ¬ 2 ^ s ∣ j)).card
       = 2 ^ μ - 2 ^ (μ - s) := by
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := Finset.range (2 ^ μ)) (p := fun j => 2 ^ s ∣ j)
   rw [card_filter_dvd_range_pow μ s hsμ, Finset.card_range] at hsplit
   omega

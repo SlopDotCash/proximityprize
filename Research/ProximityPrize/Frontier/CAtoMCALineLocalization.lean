@@ -165,7 +165,7 @@ theorem jointlyProximateContribution_le_epsMCA (C : Set (ι → A)) (δ : ℝ≥
   by_cases hjp : jointProximity (C := C) (u := u) δ
   · rw [if_pos hjp]
   · rw [if_neg hjp]
-    exact zero_le _
+    exact zero_le
 
 open Classical in
 /-- **The B4 localization identity at lines.** For any linear code,
