@@ -6,6 +6,7 @@ Authors: Katerina Hristova, František Silváši, Chung Thai Nguyen
 
 import ArkLib.Data.CodingTheory.Basic.DecodingRadius
 import ArkLib.Data.CodingTheory.Basic.Distance
+import ArkLib.Data.CodingTheory.Basic.InterleavedDistance
 import ArkLib.Data.CodingTheory.Basic.LinearCode
 import ArkLib.Data.CodingTheory.Basic.RelativeDistance
 import ArkLib.Data.CodingTheory.ListDecodability
@@ -402,6 +403,13 @@ instance {κ₁ κ₂ : Type*} :
       (CodewordStack A (Sum κ₁ κ₂) ι C) where
   hAppend u v := finMapCodewordStacksAppend A ι C (κ₁ := κ₁) (κ₂ := κ₂) u v
 
+
+/-- Interleaving over a nonempty row index preserves minimum block distance. -/
+theorem minDist_interleavedCodeSet
+    {κ ι A : Type*} [Fintype κ] [Nonempty κ] [Fintype ι] [DecidableEq A]
+    (C : Set (ι → A)) :
+    minDist (interleavedCodeSet (κ := κ) C) = minDist C := by
+  exact minDist_rowwiseCode C
 
 namespace InterleavedCode
 

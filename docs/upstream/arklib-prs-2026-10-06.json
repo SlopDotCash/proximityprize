@@ -911,7 +911,7 @@
       "base": "22f04354d6b851fbbe192ee265dbe630af9136d3",
       "base_branch": "main",
       "draft": false,
-      "disposition": "reviewed, useful witness transfer pending: generic ofLe/ofGt wrappers already exist in Research; native GrandListResolution differs from current upstream grid resolution. Imported supporting alphabet-general Johnson core and corrected list-factor bound from main under separate Corrected namespaces, preserving the native reciprocal-formula refutation. Need native interleaving/unique-decoding lemmas and adapted witness constructors; no claim of full PR validation.",
+      "disposition": "adapted useful transfer; strict composed-source checks and standard-only axiom reports pass for interleaving distance, unique-decoding list bound and both native Research witness constructors. Corrected Johnson factor isolated under Corrected namespaces; existing generic wrappers and distinct native GrandListResolution preserved. Ordinary module and full Research build validation pending.",
       "files": [
         "ArkLib.lean",
         "ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean",

@@ -248,11 +248,20 @@ case proved through Plotkin. It uses the native `ListDecodable.Lambda`, includin
 its natural-cardinality representation. Its composed-source check and full axiom
 report pass. Ordinary native module builds are still queued.
 
-This is also a dependency for PR #792's Johnson witness constructor. Its other
-generic witness wrappers overlap our existing Research constructors. The unique-
-decoding/interleaving lemmas and adapted witness constructors remain to be
-integrated; upstream's whole grand-challenge module must not replace our distinct
-Research resolution definitions merely because some declaration names coincide.
+PR #792's useful witness constructors are now adapted in
+`Research.ProximityPrize.ListDecodingWitnesses`. They use native `ListLowerWitness`,
+minimum-distance preservation for nonempty interleaving, and the new alphabet-general
+unique-decoding list bound. The Johnson constructor uses the corrected factor and
+interleaved alphabet cardinality `|F|^m`. Existing generic wrappers and the distinct
+native `GrandListResolution` remain in place. A strict composed-source Lean 4.34
+check passes for all six interleaving/witness roots with only standard axioms;
+ordinary module and Research build validation remains pending.
+
+Further direct migration checks pass for divisor-list injectivity, antipodal half-sums,
+iterated-fold membership, unconditional joint independence, and correlated agreement.
+The divisor proof now explicitly uses the Euclidean-domain GCD API. The binding-depth
+norm proof compares symbolic exponents before specialization, avoiding kernel evaluation
+of an integer with more than two billion bits while preserving the theorem statement.
 
 The mechanical migration also removes the obsolete explicit placeholder from
 `zero_le _` across 96 remaining library/Research files (150 applications/comments),

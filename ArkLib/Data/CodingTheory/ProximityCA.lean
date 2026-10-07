@@ -120,6 +120,8 @@ theorem ca_halved
     rw [Finset.mem_inter] at hx
     simp only [S₁, S₂, agreeSet, linComb, Finset.mem_filter, mem_univ, true_and] at hx
     obtain ⟨eq1, eq2⟩ := hx
+    have eq1 : f₁ x + γ₁ * f₂ x = h₁ x := (Finset.mem_filter.mp eq1).2
+    have eq2 : f₁ x + γ₂ * f₂ x = h₂ x := (Finset.mem_filter.mp eq2).2
     have hf₂ : f₂ x = g₂ x := by
       simp only [hg₂_def, Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
       rw [eq_comm, inv_mul_eq_div, div_eq_iff hγ]
@@ -209,11 +211,11 @@ private theorem ca_equal_threshold_pair
     have h1 : f₁ x + γ₁ * f₂ x = h₁ x := by
       have := hAgree₁ hxA
       simp only [agreeSet, linComb, Finset.mem_filter, mem_univ, true_and] at this
-      exact this
+      exact (Finset.mem_filter.mp this).2
     have h2 : f₁ x + γ₂ * f₂ x = h₂ x := by
       have := hAgree₂ hxA
       simp only [agreeSet, linComb, Finset.mem_filter, mem_univ, true_and] at this
-      exact this
+      exact (Finset.mem_filter.mp this).2
     have hf₂ : f₂ x = g₂ x := by
       simp only [hg₂_def, Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
       rw [eq_comm, inv_mul_eq_div, div_eq_iff hγ]

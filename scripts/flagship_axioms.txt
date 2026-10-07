@@ -124,3 +124,9 @@ ArkLib.Data.CodingTheory.JohnsonBound.Basic JohnsonBound.johnson_bound
 ArkLib.Data.CodingTheory.JohnsonBound.Lemmas JohnsonBound.plotkin_avg_distance
 ArkLib.Data.CodingTheory.JohnsonBound.CorrectedFamily CodingTheory.Corrected.johnson_bound_lambda_le_ell
 ArkLib.Data.CodingTheory.JohnsonBound.FamilyRefutationComplete JohnsonBound.JqlRefutation.johnson_bound_lambda_le_ell_false
+
+# Upstream PR 792, adapted to native list-size and Research witness APIs.
+ArkLib.Data.CodingTheory.Basic.InterleavedDistance Code.minDist_rowwiseCode
+ArkLib.Data.CodingTheory.ListDecodability.UniqueDecoding ListDecodable.Lambda_le_one_of_le_relativeUniqueDecodingRadius
+Research.ProximityPrize.ListDecodingWitnesses ProximityGap.GrandChallenges.ListLowerWitness.ofUniqueDecodingRange
+Research.ProximityPrize.ListDecodingWitnesses ProximityGap.GrandChallenges.ListLowerWitness.ofJohnsonBound
