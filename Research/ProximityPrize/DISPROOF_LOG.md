@@ -53925,3 +53925,74 @@ The actual arithmetic orbit family needs additional structure. The production
 conjecture and the BGK estimate remain open. The original PR reports successful
 Lean compilation and a standard-axiom audit; independent integration validation
 is recorded by the corresponding review PR and its CI checks.
+---
+
+### [164-second-descent-stuck-residual-refuted] Interpolation and isolated roots refute the cap
+
+Date: 2026-10-07. Target:
+`ProximityGap.Frontier.SecondDescentParity.SecondDescentStuckResidual`, declared in
+`Frontier/_SecondDescentParity.lean`. This is a statement-level refutation of a named
+root-count input to the historical antipodal/BGK descent route, not a production
+Delta Star counterexample.
+
+The general obstruction is polynomial interpolation. Given `k + 2` distinct square
+nodes with chosen square roots and `k ≥ 2`, their interpolant `A` has degree at most
+`k + 1 < 2k`. With `O = 1` it gives `k + 2` eligible roots, exceeding `k + 1`.
+The theorem `not_secondDescentStuckResidual_of_square_nodes` records this criterion
+over any field. `not_secondDescentStuckResidual_charZero_all` uses the distinct
+nodes `1^2, ..., (k + 2)^2` to refute the residual in characteristic zero for every
+`k ≥ 2`. This general theorem does not impose the sparse-head shape of the explicit
+`k = 2` witnesses below, or assert decoded-family realizability.
+
+The theorem `not_secondDescentStuckResidual_prime_range` makes the finite-field
+condition explicit. For every prime `p` and `k ≥ 2` with `2 * (k + 2) < p`,
+the positive nodes `1^2, ..., (k + 2)^2` are distinct in `ZMod p`. Factoring a
+difference of squares gives equality of the representatives or a zero positive
+sum, and the latter is impossible below `p`. The same interpolation refutes
+the unrestricted residual throughout this range, without a small-field extrapolation.
+This bound holds numerically at `k = 2^29` for both prize-shaped fields recorded
+in `_PrizeShapePrimeP30.lean` and `_PrizeShapePrimeP30Second.lean`. The nodes are
+not asserted to lie in their evaluation subgroups or to realize decoded families.
+
+The declaration permits arbitrary `A` with degree less than `2k` and arbitrary `O`
+with degree less than `k`, and bounds every eligible root set by `k + 1`. At `k = 2`,
+`A = X^3 - 35X^2 + 574X + 720` and `O = 1260` have four distinct eligible roots
+`1, 4, 9, 16` in every characteristic-zero field. The exact identity is
+
+```
+A^2 - X O^2 = (X-1)(X-4)(X-9)(X-16)(X^2-40X+900).
+```
+
+The companion `Frontier/_SecondDescentStuckResidualRefuted.lean` proves that identity,
+the root certificates, and `not_secondDescentStuckResidual_charZero`. Its generic
+`not_secondDescentStuckResidual_of_four_nodes` applies to any field where the four
+nodes remain distinct and `1260` is nonzero.
+
+The stronger characteristic-zero witness has `A = 5X^3 - 257X^2 + 1632` and
+`O = 2200 - 820X`, with the same four nodes. Its exact factorization is
+`A^2 - X O^2 = (X-1)(X-4)(X-9)(X-16)(25X^2-1820X+4624)`.
+The four values of `O` are `1380`, `-1080`, `-5180`, `-10920`, all nonzero in
+characteristic zero. The theorem `not_secondDescentStuckResidual_charZero_sparseHead`
+records this two-monomial head, constant-tail and linear-odd-part obstruction.
+
+The same file proves `not_secondDescentStuckResidual_zmod17` with
+`A = 4 + 11X^2 + 7X^3`, `O = X + 4` and the four roots `{1,2,4,8}`. Here `A`
+already has a two-monomial head and constant tail, and `O` has degree one. The
+`finiteRoots_spec` certificate verifies `x^8 = 1` and that `-x` is not a root for
+every listed point. Thus subgroup membership and antipodal isolation alone do not
+repair the claimed cap, even with that sparse head shape. The remaining decoded-family
+and production restrictions require a new, explicitly restricted statement.
+
+Reproduction at the final PR commit:
+
+```
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_SecondDescentStuckResidualRefuted.lean
+scripts/lake-locked.sh build Research.ProximityPrize.Frontier._SecondDescentStuckResidualRefuted
+python3 scripts/probes/probe_second_descent_stuck_residual.py
+```
+
+Evidence classes: Lean proof certificate and exact-arithmetic computational companion.
+The probe checks the interpolation roots over moduli `17`, `257`, `65537`, `2^31-1`,
+`2^61-1` and `2^127-1`, and exhaustively checks the finite-field isolated root set.
+The field sweep does not assert production subgroup or decoded-family realizability.
+Production Delta Star remains open.
