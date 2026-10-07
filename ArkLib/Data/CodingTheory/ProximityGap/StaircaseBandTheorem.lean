@@ -227,7 +227,7 @@ theorem mcaDeltaStar_production_shape_staircase {e : ℕ}
             Submodule (ZMod p) (Fin (2 ^ 25) → ZMod p)) : Set (Fin (2 ^ 25) → ZMod p))
         (1 / 2 ^ 128 : ℝ≥0∞)
       = (e : ℝ≥0) / ((2 ^ 25 : ℕ) : ℝ≥0) :=
-  mcaDeltaStar_staircase_band_smooth p he hplo hphi g hg
+  mcaDeltaStar_staircase_band_smooth (μ := 25) (k := 2 ^ 24) p he hplo hphi g hg
     (by norm_num; omega) (by norm_num; omega)
 
 end Prime

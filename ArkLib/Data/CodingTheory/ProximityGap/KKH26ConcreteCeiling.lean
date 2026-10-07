@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26PolyFieldCeiling
+import Mathlib.Tactic.NormNum.Prime
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZamanConstructor
 
 /-!

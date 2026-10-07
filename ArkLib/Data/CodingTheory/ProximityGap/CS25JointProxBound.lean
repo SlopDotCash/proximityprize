@@ -104,8 +104,10 @@ theorem card_jointProximityNat_le (C : Set (ι → A)) [AddCommGroup A] [Fintype
   have hiff : ∀ u : WordStack A κ ι,
       jointProximityNat C (u := u) e ↔ ArkLib.CS25.closeCount 𝒞 e u.transpose ≠ 0 := by
     intro u
-    rw [jointProximityNat_iff_closeToInterleavedCodeword, ArkLib.CS25.closeCount,
-      Finset.card_ne_zero, Finset.filter_nonempty_iff]
+    rw [jointProximityNat_iff_closeToInterleavedCodeword]
+    change (∃ v : interleavedCodeSet (κ := κ) C, hammingDist u.transpose v.val ≤ e) ↔
+      (𝒞.filter (fun c => hammingDist u.transpose c ≤ e)).card ≠ 0
+    rw [Finset.card_ne_zero, Finset.filter_nonempty_iff]
     constructor
     · rintro ⟨v, hv⟩
       exact ⟨v.val, Finset.mem_image_of_mem _ (Finset.mem_univ v), hv⟩
@@ -130,7 +132,8 @@ theorem card_jointProximityNat_le (C : Set (ι → A)) [AddCommGroup A] [Fintype
             ArkLib.CS25.closeCount 𝒞 e w ≠ 0)).card
       ≤ 𝒞.card
           * (Finset.univ.filter (fun w : InterleavedWord A κ ι => hammingDist w 0 ≤ e)).card :=
-        card_close_le_card_mul_vol _ e
+        by simpa only [InterleavedWord, Matrix] using
+          (card_close_le_card_mul_vol (F := κ → A) 𝒞 e)
     _ = (Fintype.card ↥C) ^ (Fintype.card κ)
           * (Finset.univ.filter (fun w : InterleavedWord A κ ι => hammingDist w 0 ≤ e)).card := by
         rw [h𝒞, Finset.card_image_of_injective _ Subtype.val_injective, Finset.card_univ,
@@ -187,9 +190,15 @@ theorem interleaved_ball_card_eq_volume [Nonempty ι] [AddCommGroup A] (δ : ℝ
   have heq := floor_nnreal_eq_real δ (Fintype.card ι)
   rw [CodingTheory.hammingBallVolume_eq_ncard_hammingBall (δ : ℝ) (0 : ι → (κ → A)),
     ← CodingTheory.filter_card_eq_hammingBall_ncard, ← heq]
-  refine Finset.card_nbij' id id ?_ ?_ ?_ ?_ <;> intro w hw <;>
-    simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and, id_eq,
-      hammingDist_comm] at hw ⊢ <;> exact hw
+  refine Finset.card_nbij' id id ?_ ?_ ?_ ?_
+  · intro w hw
+    simpa only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and,
+      Set.mem_setOf_eq, id_eq, hammingDist_comm] using hw
+  · intro w hw
+    simpa only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and,
+      Set.mem_setOf_eq, id_eq, hammingDist_comm] using hw
+  · intro w _; rfl
+  · intro w _; rfl
 
 open Classical in
 /-- **Explicit (band-ready) `#{jointProx}` bound.** `#{u : jointProximity C u δ} ≤
