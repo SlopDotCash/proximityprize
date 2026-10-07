@@ -17,8 +17,9 @@ import Mathlib.Tactic.Field
 
 This file defines coset FFT domains and their abstract interface.
 
-A coset FFT domain is a multiplicative coset of a finite subgroup of a field,
-indexed additively. The typeclass `CosetFftDomainClass` provides an abstract
+A coset FFT domain is a multiplicative coset of a subgroup of a field,
+indexed additively. It is finite when the index type is finite.
+The typeclass `CosetFftDomainClass` provides an abstract
 axiomatization of such domains, while `CosetFftDomain` gives a concrete
 representation.
 

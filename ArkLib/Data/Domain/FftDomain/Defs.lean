@@ -20,8 +20,8 @@ import ArkLib.Data.Domain.CosetFftDomain.Defs
 This file defines FFT domains and their abstract interface.
 
 An FFT domain is a coset FFT domain whose coset generator is `1`. Equivalently,
-it is a finite multiplicative subgroup of a field equipped with an additive
-indexing.
+it is a multiplicative subgroup of a field equipped with an additive
+indexing. It is finite when the index type is finite.
 
 ## Main definitions
 
@@ -43,7 +43,8 @@ variable {F : Type} [Field F]
 
 /-- An FFT domain is a coset FFT domain whose coset generator is `1`.
   Equivalently, an FFT domain is exactly
-  a finite multiplicative subgroup of `Fˣ` indexed additively by `ι`. -/
+  a multiplicative subgroup of `Fˣ` indexed additively by `ι`.
+  Finiteness is required only by the finite-domain operations. -/
 structure FftDomain (ι : Type) [AddCommGroup ι]
   (F : Type) [Field F] extends CosetFftDomain ι F where
   cosetGenerator_one : cosetGenerator = 1
