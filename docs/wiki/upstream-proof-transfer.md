@@ -901,3 +901,14 @@ installed roots use only standard axioms, including natural run factoring, the t
 constructors and the completeness theorem using seam factoring. They are registered for
 routine auditing. State preservation and the phase-one simulation bridge remain explicit
 hypotheses. Challenge-first factoring and full STIR validation remain pending.
+
+PR #848's Section 6 capstones were reviewed at
+`1c5c5bd7ed9d4a6407974a12ff95893fbdbc02bb`. The native duplex-sponge `Soundness` file
+contains documentation without the capstone declarations; `KnowledgeSoundness` is absent.
+The donor soundness proof assumes an explicit `KeyLemmaSecurityWitness` and coin-bearing
+state-restoration soundness. Its knowledge theorem supplies one extractor across budgets,
+but extraction may use randomness and oracle queries and receives both prover and verifier
+logs. It does not prove the deterministic prover-log-only Definition 3.6 contract or an
+extraction-time bound. These are useful missing results; importing them requires the key-lemma
+witness interface, single-salt coin/extractor semantics, query-log transports and normalization
+helpers. This review records the transfer requirements, not a native compilation result.

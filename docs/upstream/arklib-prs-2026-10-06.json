@@ -1155,7 +1155,7 @@
       "base": "036d6f561f6e33cc02d0712095c09ebfc3f1ffb1",
       "base_branch": "dsfs-section5",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed Section6 capstone statements and proofs at1c5c5bd7ed9d4a6407974a12ff95893fbdbc02bb; useful missing integration: native Soundness is documentation-only and KnowledgeSoundness is absent. Donor derives adaptive DSFS soundness from explicit KeyLemmaSecurityWitness and coin-bearing state-restoration soundness; KS preserves one extractor across budgets but is randomized and receives both prover/verifier logs, not the deterministic prover-log-only Def3.6 contract or an extraction-time proof. Integration pending KeyLemma witness, single-salt coin/extractor interfaces, query-log transports and VCVNorm dependencies; no native validation claimed.",
       "files": [
         "ArkLib.lean",
         "ArkLib/OracleReduction/FiatShamir/DuplexSponge.lean",
