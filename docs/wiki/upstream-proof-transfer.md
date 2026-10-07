@@ -764,3 +764,12 @@ Apache-licensed VCVio `SimSemantics/StateT/Basic.lean` at
 `576766ab24a044af560b05c58d2a1229857c7c07`. Fifteen selected installed roots have standard-only
 axiom closures and are registered for routine auditing. The broader STIR build remains in
 progress; these checks do not establish a full repository pass.
+
+The BCIKS20 curve module passes its ordinary build (3,548 jobs) after explicitly unfolding
+the coordinate interpolant in the degree proof. Its two pre-existing large-agreement axioms
+remain unchanged. The distributional bind-commutation helper also builds as an installed
+STIR dependency, and both exported roots have standard-only axiom closures. It now reuses
+VCVio's independent-draw swap theorem and imports only the evaluator modules, removing the
+whole-VCVio dependency from these STIR composition paths. The broader STIR attempt encountered
+macOS file-table exhaustion and artifact-write failures, plus an unported challenge-finiteness
+interface; it is not a successful STIR or repository validation.

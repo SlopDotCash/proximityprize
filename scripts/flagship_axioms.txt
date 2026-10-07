@@ -448,3 +448,7 @@ ArkLib.ToMathlib.Polynomial.HasseDerivEval Polynomial.hasseDeriv_eval_eq_sum
 ArkLib.ToMathlib.Polynomial.HasseDerivEval Polynomial.sum_choose_shift_reindex
 ArkLib.ToMathlib.SiegelInterpolation ArkLib.GS.exists_gs_interpolant
 ArkLib.ToMathlib.SubstFieldCaveat ArkLib.SubstFieldCaveat.constantCoeff_shiftSeries
+
+# Lean 4.34 distributional bind commutation.
+ArkLib.ToMathlib.OracleCompEvalDistBindComm SPMF.bind_comm
+ArkLib.ToMathlib.OracleCompEvalDistBindComm OracleComp.evalDist_bind_comm
