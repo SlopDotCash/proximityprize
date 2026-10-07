@@ -24,7 +24,7 @@ if (( RC != 0 )); then
   printf '%s\n' "$OUT" >&2
   exit "$RC"
 fi
-ERRS="$(echo "$OUT" | grep -E 'error|sorry' | grep -viE 'depends on axioms' || true)"
+ERRS="$(echo "$OUT" | grep -E '(^|:[0-9]+:[0-9]+: )(error:|warning: declaration uses .sorry.)' || true)"
 if [[ -n "$ERRS" ]]; then
   echo "❌ FAIL (${ELAPSED}s):"; echo "$ERRS" | head -30; exit 1
 fi

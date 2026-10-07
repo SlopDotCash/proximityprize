@@ -56,6 +56,11 @@ Use `scripts/lake-locked.sh` for builds as described in [quickstart](quickstart.
 
 ## Navigation Notes
 
+- `ArkLib/ProofSystem/RingSwitching/Packing/` contains framework-independent finite-basis
+  coordinates and observations. Its two algebras may have different ranks, with no embedding
+  between them. `CheckedObservation` requires an honest-message premise for readback; it does
+  not assert binding or knowledge soundness. The existing native `Profile` remains separate.
+
 - General resultant coefficient/total-degree bounds, including padded derivative resultants over
   commutative rings, live in `ArkLib/Data/Polynomial/ResultantDegree.lean`. The field-specific
   Polishchuk–Spielman resultant interface delegates to this shared module.

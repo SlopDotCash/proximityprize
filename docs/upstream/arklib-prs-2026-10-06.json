@@ -752,7 +752,7 @@
       "base": "ace55c3e29da1fc55a321378ada55ea4f7ed8790",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "partially adapted: independent finite-basis PackingData coordinates, linear transpose and batching bridge, FiniteObservation and CheckedObservation plus both upstream clients are native. Ordinary Lean4.34 build passes (3098 jobs), including unequal rank over ZMod6/zero divisors, empty observations, inverse-versus-forward witness transport and an accepted dishonest-message counterexample. No P-to-E embedding, domain assumption or security claim added. Polynomial packing/unpacking and coefficient transport plus a third zero-divisor client pass strict source-composed Lean4.34 checks; eight installed polynomial roots are standard-only. Ordinary coefficient transport, polynomial packing and client build also passes (3543 jobs including BWMatrix). Relations, multiplier protocol consumers, batching, layouts and protocol integrations remain pending.",
       "files": [
         "ArkLib.lean",
         "ArkLib/Data/Matrix/ReadOnce.lean",

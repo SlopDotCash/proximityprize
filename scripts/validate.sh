@@ -80,7 +80,10 @@ echo "# Native security clients"
   ArkLibTest.Interaction.Oracle.Security.Soundness \
   ArkLibTest.Interaction.Oracle.Security.StateRestoration \
   ArkLibTest.Interaction.Oracle.Security.StateRestorationBudget \
-  ArkLibTest.ToVCVio.EvalDist.ProbabilityBounds
+  ArkLibTest.ToVCVio.EvalDist.ProbabilityBounds \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.FiniteObservation \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.CheckedObservation \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.Polynomial
 
 # CI gate 2: zero live sorry/admit holes in both library and research source.
 echo ""

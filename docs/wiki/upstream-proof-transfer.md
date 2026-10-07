@@ -496,4 +496,35 @@ full build still needs verification.
 The PS existence proof now uses Mathlib's polynomial `natDegree_mul` for the outer variable
 and upstream's explicit arithmetic estimates. Its public hypotheses and conclusions are
 unchanged. The direct Lean 4.34 check passes; both `ps_exists_p_nonzero` and `ps_exists_p`
-report only standard axioms in the source check. Its ordinary rebuild remains pending.
+report only standard axioms in the source check. Its ordinary rebuild also passes (2,294 jobs).
+
+
+Four more whole-Mathlib imports are narrowed to the finite-field, polynomial, root-counting,
+and linear-algebra dependencies used by `StepanovWeilSubstrate`, `StepanovNonVanishing`,
+`SmoothFiberCount`, and `SeparatingCoordinates`. All four pass direct Lean 4.34 checks. The latter
+three also pass ordinary builds; the substrate now passes its ordinary rerun with the explicit
+`DegreeLT` dependency.
+No theorem statement or proof is changed by this import cleanup.
+
+PR #1256's independent coordinate layer is adapted under `RingSwitching.Packing`:
+`PackingData` supplies separate finite bases over a common commutative ring; `transpose` is a
+linear equivalence with both inverse laws; finite observations commute with this transpose.
+No embedding between the two algebras is assumed. `CheckedObservation` gives honest checking
+and inverse-witness readback under an explicit honest-message premise. It does not prove that
+an arbitrary accepted message is honest. The upstream clients exercise unequal ranks over
+`ZMod 6`, zero divisors, empty observations, and a three-cycle plus an accepted dishonest-message
+counterexample. All three packing modules and both clients pass an ordinary Lean 4.34 build (3,098 jobs).
+They are included in routine validation. Polynomial packing and coefficient transport are also
+adapted: both packing/unpacking round trips and Boolean evaluation identities pass a strict
+source-composed Lean check, including the upstream unequal-rank, zero-divisor polynomial client.
+The 14 compiled coordinate/observation roots and eight installed polynomial roots use
+only standard axioms. The ordinary polynomial and BW matrix build passes (3,543 jobs). Relations, batching,
+layout, multiplier protocol consumers, and protocol integration remain pending; #1256 is partial.
+
+The BW matrix minor and row-update proofs are adapted to Lean 4.34 using explicit matrix
+application and finite-sum rewrites, preserving their statements. The direct check passes.
+
+The divergence/concentration proofs also pass direct Lean 4.34 checking after adapting
+probability-map definitional equality, affine-span coercions, polynomial finrank, and
+nonnegative-rational casts. The ordinary rebuild also passes. Public hypotheses and conclusions
+are unchanged.

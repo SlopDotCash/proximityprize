@@ -87,7 +87,7 @@ theorem Pr_uniform_eq_one_imp_forall {α : Type} [Fintype α] [Nonempty α] (P :
   by_contra hPa
   let q : PMF Prop := ($ᵖ α : PMF α).map P
   have hqTrue : q True = 1 := by
-    simpa only [q, PMF.monad_map_eq_map] using hPr
+    exact hPr
   have hsupport : q.support = {True} := (PMF.apply_eq_one_iff q True).1 hqTrue
   have hPfalse : P a = False := by
     exact propext (iff_false_intro hPa)
@@ -262,13 +262,12 @@ theorem proximity_gap_affineSubspace {ι : Type} [Fintype ι] [Nonempty ι] [Dec
     unfold Affine.AffSpanSet
     dsimp [C]
     rw [h_affineSpan]
-    rfl
   have hUS : (U : Set (ι → F)) = (S : Set (ι → F)) := by
     have hScoe : (S : Set (ι → F)) = Affine.AffSpanSet (U := C 0) := by
       dsimp [S, Affine.AffSpanFinset]
       -- coercion of `toFinset` gives back the set
       simp
-    simpa [h_AffSpanSet] using hScoe.symm
+    exact h_AffSpanSet.symm.trans hScoe.symm
   -- Build an equivalence between U and S (identity on the underlying word)
   let eUS : U ≃ S :=
     { toFun := fun x =>
@@ -345,7 +344,7 @@ theorem reedSolomon_dim_le_deg {ι : Type} [Nonempty ι]
     simpa using
       (Submodule.finrank_map_le (f := ReedSolomon.evalOnPoints (F := F) domain)
         (p := Polynomial.degreeLT F deg))
-  simpa [Polynomial.finrank_degreeLT_n] using hle
+  exact hle.trans_eq (Polynomial.finrank_degreeLT_n deg)
 
 theorem reedSolomon_rate_le_one {ι : Type} [Fintype ι] [Nonempty ι]
     {F : Type} [Field F]
@@ -863,7 +862,8 @@ theorem concentration_bounds {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq
         intro hEqCast
         have hEq : p = δ' := (cast_ennreal_eq_iff p δ').1 hEqCast
         exact hne hEq
-    simpa [hbridge (u := (u : ι → F)), p] using hcast
+    rw [hbridge]
+    convert hcast using 1 <;> norm_cast
   -- Turn the pointwise iff into an equality of probabilities
   have hPr_eq :
       Pr_{let u ← $ᵖ U}[Code.relDistFromCode u V ≠ (δ' : ENNReal)] =
@@ -892,7 +892,8 @@ theorem concentration_bounds {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq
     have hnot_le : ¬ Code.relDistFromCode u_max_sub V ≤ (δ : ℝ≥0) := by
       intro hle
       have hle' : (δᵣ'(u_max, V) : ENNReal) ≤ (δ : ENNReal) := by
-        simpa [u_max_sub, hbridge (u := u_max)] using hle
+        rw [hbridge] at hle
+        convert hle using 1 <;> norm_cast
       have hle_q : δᵣ'(u_max, V) ≤ δ := (cast_ennreal_le_iff (δᵣ'(u_max, V)) δ).1 hle'
       have hδ_lt_umax : δ < δᵣ'(u_max, V) := by simpa [hu_max_eq] using hδlt'
       exact (not_le_of_gt hδ_lt_umax) hle_q
@@ -901,7 +902,7 @@ theorem concentration_bounds {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq
   have hmain :
       Pr_{let u ← $ᵖ U}[Code.relDistFromCode u V ≠ (δ' : ENNReal)] ≤
         (errorBound (δ' : ℝ≥0) deg domain : ENNReal) := by
-    rcases eq_or_lt_of_le (zero_le (δ : ℝ≥0)) with hδ0 | hδ_pos
+    rcases eq_or_lt_of_le (show 0 ≤ (δ : ℝ≥0) from zero_le) with hδ0 | hδ_pos
     · -- δ = 0: use hPG at δ₁ = δ'/2 > 0 instead.
       -- relDist values are {0, δ'}, so Pr[≤ 0] = Pr[≤ δ₁] for δ₁ < δ'.
       -- Then Pr[≤ δ₁] ≤ errorBound(δ₁) ≤ errorBound(δ').

@@ -33,7 +33,10 @@ kernel environment. It also builds the native security clients from `ArkLibTest`
 covering payload-dependent witnesses, false middle paths, and an executor whose
 prover fails through an empty-response query. The restoration clients check accepted and rejected
 closed-oracle outputs and a strictly sharper nonuniform-round budget. The fixed-candidate
-probability client checks empty lists and exclusion of correct candidates.
+probability client checks empty lists and exclusion of correct candidates. The packing clients
+check unequal ranks over a ring with zero divisors, empty observations, inverse witness
+transport, polynomial packing round trips, and why an accepted observation alone does not
+establish an honest message.
 For a convenient routine check, run:
 
 ```bash
@@ -420,3 +423,7 @@ G87V’s default census uses batches of at most 4,096 rows and retains one modul
 
 The transfer skeptic probe scans its stage C maximum in batches of at most 32,768 coset representatives, also capping phase matrices at four million entries. Stages A/B retain their full arrays. The calculation remains floating point and still visits every coset. Run `python3 -m unittest discover -s scripts/tests -p test_transfer_streaming.py` for comparisons with materialized sums on small fields.
 Stale build-lock reclamation also checks the recorded local owner PID with `kill -0`. A live or paused owner keeps its checkout lock and machine slot even when its heartbeat is delayed. The timeout still bounds checkout-lock waiting. PID reuse can conservatively delay reclamation; inspect the recorded owner before manual cleanup. The isolated lock regression pauses an owner beyond the stale threshold and checks that another build cannot enter.
+
+The single-file iterator uses Lean's exit status and explicit diagnostic prefixes.
+A linter suggestion containing a theorem such as `errorBound` is not a compilation error;
+`warning: declaration uses sorry` and printed `sorryAx` dependencies still fail the check.
