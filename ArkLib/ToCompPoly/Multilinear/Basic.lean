@@ -29,9 +29,10 @@ import CompPoly.Multilinear.Equiv
   points by `Fin (2 ^ n)` through little-endian bits, while Mathlib uses exponent functions
   (`CMlPolynomial.monomialOfNat`) and `Fin n → Fin 2` (matched by `finFunctionFinEquiv`).
 
-  The Hachi zero-check (`ZeroCheck/Constraints.lean`) crosses the Lagrange-side boundary: its
+  The upstream Hachi zero-check (`ZeroCheck/Constraints.lean`) crosses the Lagrange-side boundary: its
   relations use `CMlPolynomialEval.eval`, while the nested-tree zero test behind the corrected
-  Lemma 10 reasons in `MvPolynomial`. The Hachi trace head (`TraceHead/Coefficients.lean`)
+  Lemma 10 reasons in `MvPolynomial`. That zero-check consumer is not yet integrated here.
+  The Hachi trace head (`TraceHead/Coefficients.lean`)
   crosses the monomial-side boundary to state its packing through the shared `MvPolynomial`
   packing layer.
 -/
@@ -74,7 +75,7 @@ variable {R : Type*} [CommRing R] {n : ℕ}
 
 This is what makes an identity `H ≡ 0` usable at an *arbitrary* challenge point, hence the
 honest-direction step in protocols that reduce a polynomial identity to evaluation claims (the
-Hachi zero-check, `ZeroCheck/Completeness.lean`). -/
+upstream Hachi zero-check, `ZeroCheck/Completeness.lean`). -/
 @[simp]
 theorem eval_zero (x : Vector R n) : eval (0 : CMlPolynomialEval R n) x = 0 := by
   change Vector.dotProduct (0 : CMlPolynomialEval R n) (lagrangeBasis x) = 0

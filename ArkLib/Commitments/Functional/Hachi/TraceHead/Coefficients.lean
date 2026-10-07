@@ -25,9 +25,9 @@ The final section states the packing in the shared packed-polynomial layer of
 rows of the packed variables (`coefficientRows`), transported to `MvPolynomial` by
 `CMlPolynomial.equivMvPolynomialDeg1`; it is not the Boolean-restriction
 `ScalarHead.packedSuffixLayout`. Under the transport `packCoefficients e` is the shared
-`packedMLE` of the layout's components (`toMvPolynomialDeg1_packCoefficients`). The statements
-connecting the protocol relations to this layer are in the conformance test
-`ArkLibTest/ProofSystem/RingSwitching/Conformance/Hachi.lean`.
+`packedMLE` of the layout's components (`toMvPolynomialDeg1_packCoefficients`). Upstream connects the protocol relations to this layer in
+`ArkLibTest/ProofSystem/RingSwitching/Conformance/Hachi.lean`; that test and the protocol
+consumers have not yet been integrated here.
 Hachi §3.1 exercises only the packing, evaluation and opening part of the shared layer (one
 opening coordinate, no batching, multiplier or sumcheck), as in the paper, so its reuse is small
 at the proof level and real at the statement level.
