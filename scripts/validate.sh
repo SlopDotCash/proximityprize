@@ -77,7 +77,10 @@ echo "# CompPoly fresh kernel replay"
 # Native dependent-witness, false-middle-path, and failing-execution regressions.
 echo "# Native security clients"
 ./scripts/lake-locked.sh build ArkLibTest.Interaction.Oracle.Security.KnowledgeComposition \
-  ArkLibTest.Interaction.Oracle.Security.Soundness
+  ArkLibTest.Interaction.Oracle.Security.Soundness \
+  ArkLibTest.Interaction.Oracle.Security.StateRestoration \
+  ArkLibTest.Interaction.Oracle.Security.StateRestorationBudget \
+  ArkLibTest.ToVCVio.EvalDist.ProbabilityBounds
 
 # CI gate 2: zero live sorry/admit holes in both library and research source.
 echo ""

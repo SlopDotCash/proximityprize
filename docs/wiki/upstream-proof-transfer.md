@@ -133,7 +133,7 @@ and appended-challenge theorem roots passed a complete axiom audit with only
 
 The native toolchain is pinned to `leanprover/lean4:v4.34.0`, with Mathlib
 `5ed2965256430c3649e86755f9576b54eca72435`, VCVio
-`d7089e46d69e07640fa23b5ae6b1b966f1d4b949`, and PolyFun
+`91386ad88ed72292d0f4e3153a444336920fc565`, and PolyFun
 `3710d71b28404a151b8d1f0ce080ea448778dec0`.
 CompPoly is pinned to the proposed replay repair
 [`da1e1b5d048d26eca4583ff930f248c5e2bb5d9e`](https://github.com/yudduy/CompPoly/commit/da1e1b5d048d26eca4583ff930f248c5e2bb5d9e).
@@ -272,3 +272,98 @@ Lam–Leung independence, combinatorial probability, chord census, root-height,
 Gauss-sum norm, and subgroup-sumset repairs. The Gauss-sum file now reuses Mathlib's
 conjugation lemma, and an unusable hypothesis-dependent instance is exposed as an
 explicit theorem.
+
+## State-restoration and Appendix A review
+
+PR #1263 adds native adaptive state-restoration extraction, verifier replay, closed-oracle
+outputs, and independent pre-sampled private coins. Its five source modules and ordinary-import
+client are adapted locally. Its required VCVio revision is
+`fe608a46c3df4608ea774611662a255326b5d1ff`, an extension of the previous pin with dependent
+uniform tables and fresh-query bounds. Isolated dependency and native source/client checks pass, with nine full standard-only axiom
+closures. The client evaluates both accepted and rejected oracle outputs. This transfer is not
+yet validated by an ordinary build with the installed dependency pin. The later security
+stack through #1283 uses `6bf6c91b66dfa159342c355a4b81d65b55cb54a4`, a substantially broader
+VCVio change requiring a separate compatibility review.
+
+The restoration event is tied to the actual cached completion and verifier execution.
+Closed-output rejection is unsuccessful, and private-coin failure contributes missing mass.
+The pre-sampled coin theorem does not assert equivalence with arbitrary interleaved coin effects.
+These distinctions must survive the native adaptation and its test client.
+
+PR #787 fixes the paper-facing Appendix A interface: separability after specialization is over
+`RatFunc F`, and specialization content contributes to the cleared derivative/numerator weights.
+Our `RationalFunctionsCore.Hypotheses` still uses the stronger polynomial-ring separability
+assumption. Its existing results must remain available while the weaker fraction-field interface
+and corrected content bounds are adapted. The Section 5 exceptional-set/content bridge and the
+degree-one direct-root branch must remain explicit obligations; importing the PR must not turn
+its conditional interfaces into unconditional claims.
+
+PR #1264's nonuniform-round budget is adapted alongside #1263. With local errors `e_j`,
+the bound is `Q * max_j e_j + sum_j e_j`. The isolated VCVio extension at
+`91386ad88ed72292d0f4e3153a444336920fc565`, six native modules, and both clients pass.
+Three additional extraction/game/client roots have only standard axioms. The two-round client
+proves the strict improvement `7/16 < 1/2`. The native VCVio pin now includes this revision;
+all other dependency revisions were preserved. Ordinary installed-pin validation has encountered system-wide file-resource errors and
+has not yet passed.
+
+The Lean 4.34 migration also renames the removed finite-set partition-count lemma to
+`Finset.card_filter_add_card_filter_not` across 56 library/Research files (61 uses).
+The statement is unchanged. Direct checks pass for the two-power fibre count, explicit
+cyclotomic towers, and the subset-sum character interface; whole-tree validation is pending.
+
+## Consuming numeric bounds
+
+The useful authoring rule from upstream PR #776 is to carry the target comparison in Lean.
+A theorem `carrier ≤ formula` does not by itself establish the desired error/list budget.
+At a consumer, combine it with a proved `formula ≤ target`, then construct the native
+`MCALowerWitness` or `ListLowerWitness`. The existing `ofLe` interfaces and the new unique-
+decoding/Johnson constructors already require this evidence. All 17 formula-specific wrappers
+in #776 were reviewed: they add transitivity and, for list counts, an `ENat` coercion bridge;
+they do not add a mathematical bound. The native transfer uses the existing witness interfaces
+instead of duplicating these wrappers.
+
+Preserve the source statement and its domain hypotheses when adapting a bound. An admitted
+formula does not become a proved result by wrapping it. Check denominator positivity, natural
+versus real division, the probability ceiling for lower bounds, and whether existence guards
+are satisfiable. Keep the corrected Johnson formula distinct from the refuted legacy formula.
+The upstream rule is documented at
+[PR #776's bound-statement guide](https://github.com/Verified-zkEVM/ArkLib/blob/133f72bfb1b4f1e828cfcf253f9d947f18498252/docs/wiki/bound-statement-hygiene.md).
+
+The PR manifest now records each reviewed head's exact Lean toolchain and core dependency
+revisions. These are compatibility evidence, not build certificates. A newer PR can require a
+large dependency migration even when its own file diff is small.
+
+## Native packing and fixed-candidate bounds
+
+The native `RingSwitchingProfile` already contains additive and atomic extraction laws.
+`ProfileCoordinates` derives both reconstruction inverses and agreement of the two embeddings
+on the base ring without adding assumptions. These are the useful data laws introduced in
+upstream #1257, adapted to the native orientation: native rows correspond to upstream packing
+columns. Three strict composed-source axiom reports pass with standard axioms only. The
+remaining packing refactor and protocol consumers are still under review.
+
+The generic probability lemmas from #1289 and their empty/correct-candidate client are adapted
+in `ArkLib.ToVCVio.EvalDist.ProbabilityBounds`. They cover a candidate set fixed before sampling,
+exclude correct candidates, and expose the exact-functional case. Both roots have standard-only
+axioms in a strict composed-source check. The ring-switching consumers and their tight and
+challenge-dependent negative tests remain pending; this is not an adaptive-list security claim.
+
+PR #926 closes structural context-lifting gaps in upstream, but the native implementation
+already proves execution transport, completeness, and all four soundness transports.
+Its state function uses outer-language membership at round zero, then projects to the
+inner state at positive rounds. This preserves the empty-state biconditional without
+adding the language-completeness hypothesis needed by the PR's direct projection.
+Preserve that native interface; its legacy dependency closure still needs Lean 4.34 validation.
+
+PR #1266 regenerates declaration and citation indices for upstream main. Those outputs
+cannot describe the native tree and must not replace native generated files. Regenerate
+native indices from the integrated source. Its four stub paper pages add bibliographic
+scaffolding, not formal results; add native stubs when native citations require them.
+
+The FFT-domain definitions now follow the reviewed main revision's explicit additive-index
+to multiplicative-unit interface, matching the earlier coset-domain transfer. This removes
+unneeded finiteness/decidable-equality assumptions and repairs the Lean 4.34 type-tag boundary.
+Direct checks pass for the FFT module, matrix multilinear evaluation, linear multivariate
+extension, puncture/filter membership, and the nontrivial additive-character sum proof.
+The proximity-generator positivity proof is updated to the current finite-infimum API;
+its local attempts have hit file-resource failures, so that check is still pending.

@@ -124,7 +124,9 @@ Use `scripts/lake-locked.sh` for builds as described in [quickstart](quickstart.
   `Data/CodingTheory/ProximityGap/BCIKS20/...` or `ProofSystem/Binius/...`.
 - Ring switching is a **generic, instantiable compiler** under `ProofSystem/RingSwitching/`, not a
   Binius-only protocol: `Profile.lean` holds the `RingSwitchingProfile` abstraction (packing data +
-  reconstruction laws), `Prelude.lean` the shared defs + the Binius instance `binaryTowerProfile`,
+  reconstruction and atomic laws), `ProfileCoordinates.lean` derives inverse coordinates and
+  base-embedding agreement without new assumptions, `Prelude.lean` contains the shared defs and
+  the Binius instance `binaryTowerProfile`,
   and `General.lean` the full reduction and generic security theorems. Binius instantiates it in
   `ProofSystem/Binius/FRIBinius/` (`biniusProfile`); Hachi (`NOZ26`) is the intended next instance.
   Background: KB concept page `docs/kb/concepts/ring-switching.md`; blueprint section

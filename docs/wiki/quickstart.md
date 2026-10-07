@@ -31,7 +31,9 @@ The wrapper also builds CompPoly’s KoalaBear fresh-replay regression, which
 rechecks both irreducibility proof closures and quotient consistency in a fresh
 kernel environment. It also builds the native security clients from `ArkLibTest`,
 covering payload-dependent witnesses, false middle paths, and an executor whose
-prover fails through an empty-response query.
+prover fails through an empty-response query. The restoration clients check accepted and rejected
+closed-oracle outputs and a strictly sharper nonuniform-round budget. The fixed-candidate
+probability client checks empty lists and exclusion of correct candidates.
 For a convenient routine check, run:
 
 ```bash

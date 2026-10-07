@@ -12,7 +12,7 @@
       "base": "a3351e66943b4f4431c571b91526fdf4abc94ba4",
       "base_branch": "feat/ring-switch-profile-algebra",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "partially adapted: generic fixed-candidate union bound and exact-functional corollary plus upstream empty/correct-candidate client ported against current VCVio pin; strict source-composed check passes with two standard-only axiom roots. Ring-switching BatchingStrategy/BatchingPhase consumers and tight/adaptive-list protocol tests remain pending the1256/1257 packing integration.",
       "files": [
         "AGENTS.md",
         "ArkLib.lean",
@@ -26,11 +26,18 @@
         "docs/kb/concepts/ring-switching.md",
         "docs/wiki/probability-conventions.md",
         "docs/wiki/repo-map.md"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1287,
-      "title": "feat(hachi): add the \u00a73.1 trace head",
+      "title": "feat(hachi): add the §3.1 trace head",
       "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1287",
       "head": "3323359736dd521ee77073ebdaa89057822839f9",
       "base": "a3351e66943b4f4431c571b91526fdf4abc94ba4",
@@ -72,7 +79,14 @@
         "docs/kb/index.md",
         "docs/kb/papers/NOZ26.md",
         "docs/wiki/repo-map.md"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1285,
@@ -90,7 +104,14 @@
         "ArkLib/Data/Finset/TupleIntersection.lean",
         "docs/kb/audits/bcgm25-mca-generators.md",
         "scripts/axiom_baseline.json"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1283,
@@ -112,7 +133,14 @@
         "ArkLib/Interaction/Oracle/Security/EncodedCompletion.lean",
         "ArkLib/Interaction/Oracle/Security/EncodedSecurity.lean",
         "ArkLib/Interaction/Oracle/Security/EncodedSecurityEvent.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "6bf6c91b66dfa159342c355a4b81d65b55cb54a4",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1282,
@@ -129,11 +157,18 @@
         "ArkLib/Interaction/Oracle/Security/EncodedLog.lean",
         "ArkLib/Interaction/Oracle/Security/EncodedReduction.lean",
         "ArkLib/Interaction/Oracle/Security/EncodedWeighted.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "6bf6c91b66dfa159342c355a4b81d65b55cb54a4",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1281,
-      "title": "Connect canonical Fiat\u2013Shamir to native stopped verification",
+      "title": "Connect canonical Fiat–Shamir to native stopped verification",
       "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1281",
       "head": "11bd25ec5843727e6436c7331963bb4cf698902a",
       "base": "e87bc6f75192c63b69a2ba60d9a571a51361aa0a",
@@ -144,11 +179,18 @@
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/FiatShamir/LegacyStoppedConnection.lean",
         "ArkLib/OracleReduction/FiatShamir/Legacy/SingleSalt.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "6bf6c91b66dfa159342c355a4b81d65b55cb54a4",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1280,
-      "title": "Prove honest Fiat\u2013Shamir completeness from native interactive execution",
+      "title": "Prove honest Fiat–Shamir completeness from native interactive execution",
       "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1280",
       "head": "717eecf769ecec67571aff4801dd2ca970be04d6",
       "base": "2433b391b8297fe9cc0976571f0538be0b97160f",
@@ -158,11 +200,18 @@
       "files": [
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/FiatShamir/HonestSingleSalt.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "6bf6c91b66dfa159342c355a4b81d65b55cb54a4",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1279,
-      "title": "Derive canonical Fiat\u2013Shamir knowledge security from native certificates",
+      "title": "Derive canonical Fiat–Shamir knowledge security from native certificates",
       "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1279",
       "head": "e87bc6f75192c63b69a2ba60d9a571a51361aa0a",
       "base": "bd10a2d47112c9c210ec8da3d81f0f7255ecbb94",
@@ -180,11 +229,18 @@
         "ArkLib/Interaction/Oracle/Security/StateRestorationLegacyPremise.lean",
         "ArkLib/Interaction/Oracle/Security/StateRestorationLegacySecurity.lean",
         "ArkLib/Interaction/Oracle/Security/StateRestorationQueryBound.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "6bf6c91b66dfa159342c355a4b81d65b55cb54a4",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1278,
-      "title": "Identify native transcripts and challenge keys with legacy Fiat\u2013Shamir",
+      "title": "Identify native transcripts and challenge keys with legacy Fiat–Shamir",
       "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1278",
       "head": "bd10a2d47112c9c210ec8da3d81f0f7255ecbb94",
       "base": "69c9bc70ec08b6e1720c8c7986341288f0e1ec1a",
@@ -198,11 +254,18 @@
         "ArkLib/Interaction/Oracle/FiatShamir/LegacyFragment.lean",
         "ArkLib/Interaction/Oracle/FiatShamir/LegacyKeys.lean",
         "ArkLib/Interaction/Oracle/Security/StateRestorationStoppedFinite.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "6bf6c91b66dfa159342c355a4b81d65b55cb54a4",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1277,
-      "title": "Prove native single-salt Fiat\u2013Shamir security and Sumcheck bounds",
+      "title": "Prove native single-salt Fiat–Shamir security and Sumcheck bounds",
       "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1277",
       "head": "2433b391b8297fe9cc0976571f0538be0b97160f",
       "base": "ac424bacac5314cf802158c1a281c486720debcf",
@@ -219,7 +282,14 @@
         "ArkLib/Interaction/Oracle/FiatShamir/SingleSaltSecurity.lean",
         "ArkLib/Interaction/Oracle/FiatShamir/StoppedCompletionTransport.lean",
         "ArkLib/ProofSystem/Sumcheck/Interaction/FiatShamir.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "6bf6c91b66dfa159342c355a4b81d65b55cb54a4",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1276,
@@ -234,7 +304,14 @@
         "ArkLib.lean",
         "ArkLib/OracleReduction/FiatShamir/Legacy/KnowledgeGames.lean",
         "ArkLib/OracleReduction/FiatShamir/Legacy/SingleSalt.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "6bf6c91b66dfa159342c355a4b81d65b55cb54a4",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1275,
@@ -254,7 +331,14 @@
         "ArkLib/OracleReduction/ProtocolSpec/DeriveTranscript.lean",
         "lake-manifest.json",
         "lakefile.toml"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "6bf6c91b66dfa159342c355a4b81d65b55cb54a4",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1274,
@@ -273,7 +357,14 @@
         "ArkLib/ProofSystem/Sumcheck/Interaction/StoppedSoundness.lean",
         "lake-manifest.json",
         "lakefile.toml"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "6bf6c91b66dfa159342c355a4b81d65b55cb54a4",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1273,
@@ -297,7 +388,14 @@
         "roadmap/commitments/merkle-trees.md",
         "roadmap/interaction-migration.md",
         "roadmap/proof-systems/sumcheck-spartan.md"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1271,
@@ -311,7 +409,14 @@
       "files": [
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/MerkleAdaptiveTerminal.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "7ec28e1df3b660e65943d8a10cc1dfcf76239472",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1270,
@@ -329,7 +434,14 @@
         "ArkLib/Interaction/Oracle/MerkleTerminalBatch.lean",
         "lake-manifest.json",
         "lakefile.toml"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "7ec28e1df3b660e65943d8a10cc1dfcf76239472",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1269,
@@ -345,7 +457,14 @@
         "ArkLib/ProofSystem/Sumcheck/Interaction/StateRestorationCertificate.lean",
         "ArkLib/ProofSystem/Sumcheck/Interaction/StateRestorationEvaluation.lean",
         "ArkLib/ProofSystem/Sumcheck/Interaction/StateRestorationSoundness.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "e417e35ac452c3994173eda268a8eee0d26115d2",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1268,
@@ -359,7 +478,14 @@
       "files": [
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/Security/StateRestorationRandomizedKnowledge.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "e417e35ac452c3994173eda268a8eee0d26115d2",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1267,
@@ -376,7 +502,14 @@
         "ArkLib/Interaction/Oracle/Security/StateRestorationRandomized.lean",
         "lake-manifest.json",
         "lakefile.toml"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "e417e35ac452c3994173eda268a8eee0d26115d2",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1266,
@@ -386,7 +519,7 @@
       "base": "35ddcaa83f683011f944f58904be779495a5709a",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed: generated declaration/citation indices describe upstream main, not the native tree, and must not be transplanted. Native indices must be regenerated from native source after integration. Four new stub paper pages carry only bibliographic scaffolding, no Lean results; retain them in the immutable PR snapshot and introduce native stubs only if native citations require them.",
       "files": [
         "docs/kb/_generated/declarations.json",
         "docs/kb/_generated/dedup-report.md",
@@ -400,7 +533,14 @@
         "docs/kb/sources/DKT26/metadata.yml",
         "docs/kb/sources/DKTZ26/metadata.yml",
         "docs/kb/sources/Kop15/metadata.yml"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1264,
@@ -410,7 +550,7 @@
       "base": "be65c8051aa36398069ab76853f063c4382a589c",
       "base_branch": "feat/native-state-restoration",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "adapted: nonuniform state-restoration budget Q * max e + sum e and concrete 7/16 < 1/2 client. Six combined native modules and both clients pass isolated Lean 4.34 compilation against VCVio91386; three additional roots have standard-only axiom closures. Actual native dependency pin updated to91386 with all other dependency revisions preserved; ordinary installed-pin build has file-resource errors and is not yet a pass.",
       "files": [
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/Security/StateRestorationBudget.lean",
@@ -418,7 +558,14 @@
         "ArkLibTest/Interaction/Oracle/Security/StateRestorationBudget.lean",
         "lake-manifest.json",
         "lakefile.toml"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "91386ad88ed72292d0f4e3153a444336920fc565",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1263,
@@ -428,7 +575,7 @@
       "base": "372f071dd72ff9364eceb5d5361db987e120271e",
       "base_branch": "feat/native-witness-transport",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "adapted: five native state-restoration modules and ordinary-import client pass isolated Lean 4.34 compilation, actual accepted/rejected execution checks and nine complete standard-only axiom closures. Installed VCVio91386 includes the required fe608 dependent-table/fresh-query APIs. Ordinary installed-pin build has encountered system-wide file-resource errors and is not yet a pass.",
       "files": [
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/Security/StateRestoration.lean",
@@ -439,7 +586,14 @@
         "ArkLibTest/Interaction/Oracle/Security/StateRestoration.lean",
         "lake-manifest.json",
         "lakefile.toml"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "fe608a46c3df4608ea774611662a255326b5d1ff",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1261,
@@ -459,7 +613,14 @@
         "ArkLib/ProofSystem/Sumcheck/Interaction/RoundByRound.lean",
         "ArkLibTest/Interaction/Oracle/Security/Soundness.lean",
         "ArkLibTest/ProofSystem/Sumcheck/Interaction/RoundByRound.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1260,
@@ -474,7 +635,14 @@
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/Security/KnowledgeComposition.lean",
         "ArkLibTest/Interaction/Oracle/Security/KnowledgeComposition.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1259,
@@ -489,7 +657,14 @@
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/Security/Knowledge.lean",
         "ArkLib/Interaction/Oracle/Security/KnowledgeAppend.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1258,
@@ -520,7 +695,14 @@
         "docs/kb/sources/BCFW25/metadata.yml",
         "docs/kb/sources/CGKY25/metadata.yml",
         "docs/kb/sources/ChiesaYogev2024/metadata.yml"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1257,
@@ -530,7 +712,7 @@
       "base": "475b3d56f2120cd4eaa6b449ff8974886fa71fdd",
       "base_branch": "feat/ring-switch-tier-a-coordinates",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "partially adapted: native profile already has additive/atomic coordinate laws. Derived two-sided reconstruction and base-embedding agreement in ProfileCoordinates from those existing assumptions; three strict source-composed axiom roots standard-only. Native row/column names are reversed relative to upstream packing, so retain native orientation. Packing-module split, tensor constructor and modern protocol integration remain pending.",
       "files": [
         "ArkLib.lean",
         "ArkLib/Data/MvPolynomial/Multilinear.lean",
@@ -553,7 +735,14 @@
         "docs/kb/papers/DP24.md",
         "docs/kb/papers/NOZ26.md",
         "docs/wiki/repo-map.md"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1256,
@@ -595,7 +784,14 @@
         "docs/kb/papers/BRW26.md",
         "docs/kb/papers/RSG.md",
         "docs/wiki/repo-map.md"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1251,
@@ -706,11 +902,18 @@
         "scripts/RetiredProbabilitySweep.lean",
         "scripts/RetiredProbabilityTestFixtures/Clean.lean",
         "scripts/build_timing_report.sh"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.35.0-rc3",
+      "core_dependencies": {
+        "CompPoly": "c5d292ab5e51b43b317de472f9b5fe05fc3556e3",
+        "VCVio": "e4ca16b05cb778a1a75f2dae9d25f4b95505a366",
+        "mathlib": "c55e6e786f49471c72fbddbec5415808896aec1e",
+        "PolyFun": "559cd9857da50cf6f4f113c60702bf3176c9541d"
+      }
     },
     {
       "number": 1245,
-      "title": "fix(security): qualify rbrSoundness_implies_soundness with [Subsingleton \u03c3], prove it, and add the counterexample",
+      "title": "fix(security): qualify rbrSoundness_implies_soundness with [Subsingleton σ], prove it, and add the counterexample",
       "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1245",
       "head": "6aaaf49a7da0228bc6bcc18bbb9af58c2bb45258",
       "base": "7653a901ed466c88a2e61a3075011b73d7bb2316",
@@ -723,7 +926,14 @@
         "ArkLib/OracleReduction/Security/RbrToSoundness.lean",
         "ArkLib/OracleReduction/Security/RbrToSoundness/Counterexample.lean",
         "scripts/axiom_baseline.json"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1244,
@@ -742,7 +952,14 @@
         "ArkLibTest/ProofSystem/Sumcheck/LegacyVerifier.lean",
         "docs/design/00-current-status.md",
         "docs/wiki/interaction-naming.md"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1129,
@@ -752,10 +969,17 @@
       "base": "ee49b7e9ee0dd37e391e3efe7177f07579775038",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed useful execution controls: exact F5 collision probability 1/5, typed degree-one exclusion of X squared, endpoint and empty-domain rejection, and challenge-first adaptive success probability one. Requires modern Sumcheck Interaction executor absent from the native tree; retain for integration alongside that executor and PR1244 sent-polynomial correction. Not yet integrated.",
       "files": [
         "ArkLibTest/ProofSystem/Sumcheck/Interaction/Soundness.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 1128,
@@ -765,12 +989,19 @@
       "base": "6999ac4686e29dbb039854134343e3fcd043d824",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed useful algebra: coefficient-map equals direct substitution over arbitrary commutative semirings, selected-coordinate degree bound, finite-field polynomial-versus-value-table controls. Native SingleRound still inlines its projected polynomial and lacks the named roundSuffix/projectedRoundPolynomial definitions used by this PR; adapt that shared algebra before importing the two honest-round corollaries and client. Not yet integrated.",
       "files": [
         "ArkLib.lean",
         "ArkLib/ProofSystem/Sumcheck/Spec/RoundPolynomial.lean",
         "ArkLibTest/ProofSystem/Sumcheck/Spec/RoundPolynomial.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 992,
@@ -822,7 +1053,14 @@
         "docs/wiki/quickstart.md",
         "docs/wiki/repo-map.md",
         "scripts/axiom_baseline.json"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "7e3683ba72f61c1f3c2deda85953ce26392f0771",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 926,
@@ -832,11 +1070,18 @@
       "base": "7097ba9ee939a7576dddb29cbdbee1949e6c2e07",
       "base_branch": "main",
       "draft": true,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed: native Reduction already supplies the structural execution equalities, completeness and all four soundness transports with no live sorry. Its state function tests outer-language membership at round zero and uses the projected inner state only at positive rounds, so it preserves the empty-state biconditional without the new language-completeness assumption required by the PR direct-projection definition. Do not replace the native implementation or strengthen its hypotheses; Lean 4.34 migration of the legacy dependency closure remains pending.",
       "files": [
         "ArkLib/OracleReduction/LiftContext/Lens.lean",
         "ArkLib/OracleReduction/LiftContext/Reduction.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "7e3683ba72f61c1f3c2deda85953ce26392f0771",
+        "VCVio": "7a4d7ee254165f2fcf3282c7d2e6f204056e5121",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     },
     {
       "number": 848,
@@ -866,7 +1111,14 @@
         "blueprint/src/oracle_reductions/duplex_sponge_fiat_shamir.tex",
         "blueprint/src/references.bib",
         "docs/wiki/repo-map.md"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.33.1",
+      "core_dependencies": {
+        "CompPoly": "10cf26348962c8fdee51a341d7abed6445442540",
+        "VCVio": "eb22883264cd2fd513df4ee7db1bc5a86ec789c7",
+        "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+        "PolyFun": "c0c923693fc827a41d17116579a0c16ed4873b19"
+      }
     },
     {
       "number": 818,
@@ -887,7 +1139,14 @@
         "ArkLib/ProofSystem/GKR/SumcheckAux.lean",
         "blueprint/src/references.bib",
         "scripts/axiom_baseline.json"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.33.1",
+      "core_dependencies": {
+        "CompPoly": "a09455a22fea4623a2a1c5b363cf6efc61486a83",
+        "VCVio": "f9dc47d9dacfc5cb51dae9f92f1e34cb5ce2cc24",
+        "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+        "PolyFun": "c0c923693fc827a41d17116579a0c16ed4873b19"
+      }
     },
     {
       "number": 800,
@@ -901,7 +1160,14 @@
       "files": [
         "docs/kb/audits/open-problems-list-decoding-and-correlated-agreement.md",
         "docs/kb/papers/ABF26.md"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.32.2",
+      "core_dependencies": {
+        "CompPoly": "6133f9f796707c438d0a614f97dc218ae976ab8f",
+        "VCVio": "446baa72bb7d4296d6f6b7015fd6c15ca9c678b7",
+        "mathlib": "905b95818eb32af7874a58b427f50c1711a5e96c",
+        "PolyFun": "dd77aa91dd425ebaec4388270f3a8e3dc7ace571"
+      }
     },
     {
       "number": 792,
@@ -917,17 +1183,24 @@
         "ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean",
         "ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges/ListDecoding.lean",
         "docs/kb/papers/ABF26.md"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.33.1",
+      "core_dependencies": {
+        "CompPoly": "a09455a22fea4623a2a1c5b363cf6efc61486a83",
+        "VCVio": "f9dc47d9dacfc5cb51dae9f92f1e34cb5ce2cc24",
+        "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+        "PolyFun": "c0c923693fc827a41d17116579a0c16ed4873b19"
+      }
     },
     {
       "number": 787,
-      "title": "fix(BCIKS20): repair separability, Claim A.2, and \u00a75 hypotheses",
+      "title": "fix(BCIKS20): repair separability, Claim A.2, and §5 hypotheses",
       "url": "https://github.com/Verified-zkEVM/ArkLib/pull/787",
       "head": "54e2e918740738125de3c062a5bae5f1f8187981",
       "base": "df2339f7a5024a55369705fc78488abb2b4a996f",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed correction required: native RationalFunctionsCore.Hypotheses still uses ring-level separability, while this PR proves fraction-field separability and content-aware numerator weights. Existing stronger native ring results remain sound and must be preserved. Native split differs from upstream; full corrected Hensel/Section5 adaptation pending, including explicit content/exceptions and degree-one obligations.",
       "files": [
         "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Agreement.lean",
         "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Extraction.lean",
@@ -939,7 +1212,14 @@
         "ArkLib/Data/Polynomial/RationalFunctions/HenselNumerators/Weight.lean",
         "docs/kb/audits/bciks20-appendix-a-rational-functions.md",
         "scripts/axiom_baseline.json"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.32.2",
+      "core_dependencies": {
+        "CompPoly": "6133f9f796707c438d0a614f97dc218ae976ab8f",
+        "VCVio": "446baa72bb7d4296d6f6b7015fd6c15ca9c678b7",
+        "mathlib": "905b95818eb32af7874a58b427f50c1711a5e96c",
+        "PolyFun": "dd77aa91dd425ebaec4388270f3a8e3dc7ace571"
+      }
     },
     {
       "number": 776,
@@ -949,7 +1229,7 @@
       "base": "d57c8e11855c2fd528b8521f4e3b90dd2d7a64c9",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed: all17 added Lean wrappers compose an existing formula bound with an explicit budget using transitivity (plus ENat coercion for list counts); no new mathematical bound. Native MCALowerWitness/ListLowerWitness.ofLe and the imported unique/Johnson constructors already enforce target budgets. Preserve those interfaces rather than duplicate17 formula-specific wrappers; adopt the useful bound-consumption guidance in the native transfer guide. Underlying upstream main bounds are reviewed separately.",
       "files": [
         "ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA/GCXK25.lean",
         "ArkLib/Data/CodingTheory/JohnsonBound/Family.lean",
@@ -965,7 +1245,14 @@
         "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/UniqueDecoding.lean",
         "docs/wiki/README.md",
         "docs/wiki/bound-statement-hygiene.md"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.31.0",
+      "core_dependencies": {
+        "CompPoly": "e95ba1b1cac21ac3e980725abcfb2a0c707d1062",
+        "VCVio": "cbd4144b51d92da00dd50f05e068b2348fa6e529",
+        "mathlib": "fabf563a7c95a166b8d7b6efca11c8b4dc9d911f",
+        "PolyFun": "04a12b67fa2048c9412fdd26ed9e446f25919d37"
+      }
     },
     {
       "number": 737,
@@ -1021,7 +1308,14 @@
         "docs/wiki/coding-theory-conventions.md",
         "docs/wiki/repo-map.md",
         "scripts/axiom_baseline.json"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.31.0",
+      "core_dependencies": {
+        "CompPoly": "e95ba1b1cac21ac3e980725abcfb2a0c707d1062",
+        "VCVio": "cbd4144b51d92da00dd50f05e068b2348fa6e529",
+        "mathlib": "fabf563a7c95a166b8d7b6efca11c8b4dc9d911f",
+        "PolyFun": "04a12b67fa2048c9412fdd26ed9e446f25919d37"
+      }
     },
     {
       "number": 655,
@@ -1050,7 +1344,14 @@
         "ArkLib/Scratch/KzgVacuity/README.md",
         "ArkLib/Scratch/KzgVacuity/RepairSurvives.lean",
         "blueprint/src/references.bib"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.31.0",
+      "core_dependencies": {
+        "CompPoly": "e95ba1b1cac21ac3e980725abcfb2a0c707d1062",
+        "VCVio": "cbd4144b51d92da00dd50f05e068b2348fa6e529",
+        "mathlib": "fabf563a7c95a166b8d7b6efca11c8b4dc9d911f",
+        "PolyFun": "04a12b67fa2048c9412fdd26ed9e446f25919d37"
+      }
     },
     {
       "number": 615,
@@ -1185,7 +1486,14 @@
         "docs/wiki/repo-map.md",
         "docs/wiki/sequential-composition.md",
         "scripts/axiom_baseline.json"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.33.1",
+      "core_dependencies": {
+        "CompPoly": "a09455a22fea4623a2a1c5b363cf6efc61486a83",
+        "VCVio": "f9dc47d9dacfc5cb51dae9f92f1e34cb5ce2cc24",
+        "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+        "PolyFun": "c0c923693fc827a41d17116579a0c16ed4873b19"
+      }
     },
     {
       "number": 503,
@@ -1209,7 +1517,14 @@
         "ArkLib/ProofSystem/Logup/Security/Soundness/Lemmas.lean",
         "ArkLib/ProofSystem/Sumcheck/Spec/General.lean",
         "ArkLib/ProofSystem/Sumcheck/Spec/SingleRound.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.33.1",
+      "core_dependencies": {
+        "CompPoly": "a09455a22fea4623a2a1c5b363cf6efc61486a83",
+        "VCVio": "f9dc47d9dacfc5cb51dae9f92f1e34cb5ce2cc24",
+        "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+        "PolyFun": "c0c923693fc827a41d17116579a0c16ed4873b19"
+      }
     },
     {
       "number": 469,
@@ -1242,7 +1557,14 @@
         "ArkLib/OracleReduction/Security/OracleSampling.lean",
         "docs/wiki/repo-map.md",
         "scripts/axiom_baseline.json"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.33.1",
+      "core_dependencies": {
+        "CompPoly": "10cf26348962c8fdee51a341d7abed6445442540",
+        "VCVio": "eb22883264cd2fd513df4ee7db1bc5a86ec789c7",
+        "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+        "PolyFun": "c0c923693fc827a41d17116579a0c16ed4873b19"
+      }
     },
     {
       "number": 466,
@@ -1258,7 +1580,13 @@
         "ArkLib/Bridge/Clean.lean",
         "lake-manifest.json",
         "lakefile.toml"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.29.0",
+      "core_dependencies": {
+        "CompPoly": "56d10c947e3427c852b708a424f585c5673b039c",
+        "VCVio": "88b4fe7b9c66dc40f083d67d50aa67338fd578f8",
+        "mathlib": "8a178386ffc0f5fef0b77738bb5449d50efeea95"
+      }
     },
     {
       "number": 465,
@@ -1274,7 +1602,13 @@
         "ArkLib/ProofSystem/ConstraintSystem/Basic.lean",
         "ArkLib/ProofSystem/ConstraintSystem/Examples.lean",
         "ArkLib/ProofSystem/ConstraintSystem/Plonk.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.29.0",
+      "core_dependencies": {
+        "CompPoly": "56d10c947e3427c852b708a424f585c5673b039c",
+        "VCVio": "88b4fe7b9c66dc40f083d67d50aa67338fd578f8",
+        "mathlib": "8a178386ffc0f5fef0b77738bb5449d50efeea95"
+      }
     },
     {
       "number": 459,
@@ -1292,7 +1626,13 @@
         "ArkLib/ProofSystem/Plonk/Basic.lean",
         "ArkLib/ProofSystem/Plonk/PermutationCheck.lean",
         "docs/kb/_generated/lean-citations.json"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.29.0",
+      "core_dependencies": {
+        "CompPoly": "067a22b6623a0d61f27deda02f8c8a0b8b339b33",
+        "VCVio": "f85df0b4ec3ef4249876996da28a07c38e9137c2",
+        "mathlib": "8a178386ffc0f5fef0b77738bb5449d50efeea95"
+      }
     },
     {
       "number": 458,
@@ -1306,7 +1646,13 @@
       "files": [
         "ArkLib/ProofSystem/Component/SendWitness.lean",
         "ArkLib/ProofSystem/ConstraintSystem/Plonk.lean"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.29.0",
+      "core_dependencies": {
+        "CompPoly": "067a22b6623a0d61f27deda02f8c8a0b8b339b33",
+        "VCVio": "f85df0b4ec3ef4249876996da28a07c38e9137c2",
+        "mathlib": "8a178386ffc0f5fef0b77738bb5449d50efeea95"
+      }
     },
     {
       "number": 383,
@@ -1394,7 +1740,14 @@
         "docs/wiki/repo-map.md",
         "docs/wiki/sequential-composition.md",
         "scripts/axiom_baseline.json"
-      ]
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     }
   ]
 }

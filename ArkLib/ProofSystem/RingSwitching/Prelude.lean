@@ -8,7 +8,7 @@ import ArkLib.Data.MvPolynomial.Multilinear
 import ArkLib.OracleReduction.Basic
 import ArkLib.OracleReduction.Security.RoundByRound
 import CompPoly.Fields.Binary.Tower.TensorAlgebra
-import ArkLib.ProofSystem.RingSwitching.Profile
+import ArkLib.ProofSystem.RingSwitching.ProfileCoordinates
 import ArkLib.ProofSystem.Sumcheck.Structured
 import ArkLib.ToMathlib.PolynomialCombinatorialAuxiliary
 import Mathlib.Data.Fintype.Basic

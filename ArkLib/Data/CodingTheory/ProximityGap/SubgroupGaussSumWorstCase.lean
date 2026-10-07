@@ -298,11 +298,8 @@ theorem completion_identity {d : ℕ} (hd : d ∣ Fintype.card F - 1) (hd0 : 0 <
 theorem gaussSum_one_mulShift {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {b : F}
     (hb : b ≠ 0) :
     gaussSum (1 : MulChar F ℂ) (AddChar.mulShift ψ b) = -1 := by
-  have hne0 : AddChar.mulShift ψ b ≠ 0 := by
-    have h1 := hψ hb
-    simpa using h1
   have hsum : ∑ y : F, (AddChar.mulShift ψ b) y = 0 :=
-    AddChar.sum_eq_zero_iff_ne_zero.mpr hne0
+    AddChar.sum_eq_zero_of_ne_one (hψ hb)
   have h1 : ∑ y ∈ Finset.univ.erase (0 : F),
         (1 : MulChar F ℂ) y * (AddChar.mulShift ψ b) y
       = ∑ y ∈ Finset.univ.erase (0 : F), (AddChar.mulShift ψ b) y := by
