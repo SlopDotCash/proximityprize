@@ -163,7 +163,6 @@ theorem foldCol_eval {L : Type*} [Field L] {h : ℕ} (hh : 0 < h) {ζ : L}
       refine Finset.mem_range.mpr ?_
       obtain ⟨h1, h2⟩ := hp
       have hmul : p.2 * h ≤ 7 * h := Nat.mul_le_mul_right h (by omega)
-      simp only []
       omega
     · intro e he
       simp only [Finset.mem_range] at he

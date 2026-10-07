@@ -126,9 +126,9 @@ theorem census_card_le_stratified {p : ℕ} [Fact p.Prime] {m : ℕ} (hm : 1 ≤
   have hcancel : v = (∑ c ∈ C0 \ C1, g ^ c) - ∑ c ∈ C1 \ C0, g ^ c := by
     rw [hsplit]
     have e0 : ∑ c ∈ C0 ∩ C1, g ^ c + ∑ c ∈ C0 \ C1, g ^ c = ∑ c ∈ C0, g ^ c :=
-      Finset.sum_inter_add_sum_diff C0 C1 _
+      Finset.sum_inter_add_sum_sdiff C0 C1 _
     have e1 : ∑ c ∈ C1 ∩ C0, g ^ c + ∑ c ∈ C1 \ C0, g ^ c = ∑ c ∈ C1, g ^ c :=
-      Finset.sum_inter_add_sum_diff C1 C0 _
+      Finset.sum_inter_add_sum_sdiff C1 C0 _
     rw [← e0, ← e1, Finset.inter_comm C1 C0]
     ring
   -- the signed datum

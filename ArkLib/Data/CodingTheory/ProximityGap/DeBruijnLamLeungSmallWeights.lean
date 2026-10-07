@@ -275,7 +275,6 @@ theorem lam_leung_of_six_dvd [CharZero L] {n : ℕ} (h6 : 6 ∣ n) (hn : 0 < n)
     (fun p => (if p = 2 then (T - (if T % 2 = 0 then 0 else 3)) / 2
       else if p = 3 then (if T % 2 = 0 then 0 else 1) else 0) * p)
     (fun p _ hp2 hp3 => by
-      dsimp only
       rw [if_neg hp2, if_neg hp3]
       exact zero_mul p)]
   rw [if_pos rfl, if_neg (by norm_num : (3 : ℕ) ≠ 2), if_pos rfl]
@@ -332,7 +331,6 @@ theorem lam_leung_of_ten_dvd [CharZero L] {n : ℕ} (h10 : 10 ∣ n) (hn : 0 < n
       (fun p => (if p = 2 then (T - (if T % 2 = 0 then 0 else 5)) / 2
         else if p = 5 then (if T % 2 = 0 then 0 else 1) else 0) * p)
       (fun p _ hp2 hp5 => by
-        dsimp only
         rw [if_neg hp2, if_neg hp5]
         exact zero_mul p)]
     rw [if_pos rfl, if_neg (by norm_num : (5 : ℕ) ≠ 2), if_pos rfl]
@@ -611,7 +609,6 @@ theorem lam_leung_of_105_dvd [CharZero L] {n : ℕ} (h105 : 105 ∣ n) (hn : 0 <
       (fun p => (if p = 2 then (T - (if T % 2 = 0 then 0 else 3)) / 2
         else if p = 3 then (if T % 2 = 0 then 0 else 1) else 0) * p)
       (fun p _ hp2 hp3 => by
-        dsimp only
         rw [if_neg hp2, if_neg hp3]
         exact zero_mul p)]
     rw [if_pos rfl, if_neg (by norm_num : (3 : ℕ) ≠ 2), if_pos rfl]
@@ -664,7 +661,6 @@ theorem lam_leung_of_105_dvd [CharZero L] {n : ℕ} (h105 : 105 ∣ n) (hn : 0 <
       (fun p => (if p = 3 then x else if p = 5 then y
         else if p = 7 then z else 0) * p)
       (fun p _ hp3 hp5 hp7 => by
-        dsimp only
         rw [if_neg hp3, if_neg hp5, if_neg hp7]
         exact zero_mul p)]
     rw [if_pos rfl, if_neg (by norm_num : (5 : ℕ) ≠ 3), if_pos rfl,

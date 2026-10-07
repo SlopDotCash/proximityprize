@@ -172,7 +172,6 @@ theorem mcaEventP_val_iff_mcaEventCurve {parℓ : ℕ}
     (C : Set (ι → A)) (δ : ℝ≥0) (u : WordStack A (Fin parℓ) ι) (γ : F) :
     mcaEventP C (fun j : Fin parℓ => (j : ℕ)) δ u γ ↔
       ProximityGap.mcaEventCurve C δ u γ := by
-  rw [mcaEventP, ProximityGap.mcaEventCurve]
   rfl
 
 open Classical in
