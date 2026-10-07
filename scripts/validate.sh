@@ -81,6 +81,7 @@ echo "# Native security clients"
   ArkLibTest.Interaction.Oracle.Security.StateRestoration \
   ArkLibTest.Interaction.Oracle.Security.StateRestorationBudget \
   ArkLibTest.ToVCVio.EvalDist.ProbabilityBounds \
+  ArkLibTest.OracleReduction.ProtocolSpec \
   ArkLibTest.ProofSystem.RingSwitching.Packing.FiniteObservation \
   ArkLibTest.ProofSystem.RingSwitching.Packing.CheckedObservation \
   ArkLibTest.ProofSystem.RingSwitching.Packing.Polynomial \

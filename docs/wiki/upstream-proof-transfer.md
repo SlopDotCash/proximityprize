@@ -608,3 +608,28 @@ Finite-index sums and flattening also pass their ordinary build (1,213 jobs). Ex
 rewrites and a cast/append identity preserve the native flattening and inverse laws, including
 the native last-block theorem absent from current upstream. Six installed inverse, flattening,
 and quotient-bound roots use only standard axioms.
+
+The native protocol specification and oracle-reduction core now pass ordinary compilation.
+A permanent client verifies query equality and finite/decidable answers through VCVio's direct
+type instances after removal of the retired bundled oracle classes (3,177-job client build).
+The core build passes 3,181 jobs. Transcript reconstruction proofs preserve their native
+statements, and the non-adaptive verifier conversion retains its original query behavior.
+
+Logged execution also passes ordinary compilation, after adding the now-required explicit
+logging import, expressing OptionT lifting through the lawful bind/map identity, and repairing
+dependent casts in one-round transcripts. The structured Sumcheck projection also compiles
+with its existing degree bound. Its previous broad simplifier exposed incompatible dimension
+representations; the original degree theorem applies directly without that simplification.
+These execution roots are added to the routine axiom manifest. The larger RingSwitching build
+reaches the security layer; no full-repository success is implied.
+
+The security-basic target now passes (3,205 jobs). The straightline monotonicity definition
+uses equivalent per-answer finite/inhabited instances and explicitly constructs the same
+uniform probability interpretation previously selected implicitly. It does not add a
+uniformity assumption to callers or silently use an unrelated custom oracle interpretation.
+
+All eleven selected compiled protocol/execution roots pass the axiom audit: ten use only
+standard axioms and the non-adaptive verifier conversion uses none. Two audit attempts hit
+the macOS system open-file limit; the separate retry passed. The changed-source forbidden-token
+check, repository zero-hole census, imports, docs and KB checks pass. A concurrent full-source
+forbidden-token scan encountered the same system limit, so its incomplete run is not a pass.
