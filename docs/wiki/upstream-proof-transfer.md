@@ -736,3 +736,12 @@ Their ordinary build passes 3,654 jobs. Ten installed simulation/JointAgreement 
 payload constructors use only standard axioms and are registered for routine auditing. No source
 admissions or custom axioms are added. The broader completeness and sequential-append migrations
 still have source errors, so these passes do not establish the full STIR or repository build.
+
+The generic completeness module now passes its ordinary Lean 4.34 build (3,228 jobs).
+The finite uniform interpretation is activated locally from the simulation compatibility layer;
+query-lift support and optional-transformer membership use explicit current API identities.
+The zero-, one-, two- and general-message completeness characterizations retain their conclusions.
+The PMF bridge hypotheses use `evalSPMF`, the renamed legacy evaluator, rather than the new
+measure-valued `evalDist`. Eleven selected installed completeness, unrolling and PMF roots have
+standard-only axiom closures and are registered for routine auditing. Sequential composition and
+the downstream STIR completeness consumers remain unvalidated.
