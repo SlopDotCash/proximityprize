@@ -442,5 +442,7 @@ explicit algebra-map instances. These three modules pass direct checks as well.
 The interleaved-list projection now applies the existing distance projection in the needed
 orientation, removing two symmetry conversions. It explicitly transports the row equality
 decision instance to the classical instance used by the Hamming ball. Its direct check passes.
-All eight other modules in this batch also pass ordinary dependency-aware builds; the remaining
-interleaved-list target is being rebuilt after that final instance-transport repair.
+All nine repaired modules now pass ordinary dependency-aware builds. The final interleaved-list
+build completed successfully (3,414 jobs). A separate audit importing the compiled GS, PS,
+weighted-degree, and localized-place modules reports only standard axioms for all 14 selected
+roots. The next full native/Research build is still in progress.
