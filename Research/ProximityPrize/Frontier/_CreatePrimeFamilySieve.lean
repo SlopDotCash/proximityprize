@@ -167,7 +167,7 @@ theorem two_pow_card_le_norm
   -- 2^card ≤ ∏ p  (each factor ≥ 2)
   have hpow : 2 ^ S.card ≤ ∏ p ∈ S, p := by
     have hle : ∏ _p ∈ S, (2 : ℕ) ≤ ∏ p ∈ S, p :=
-      Finset.prod_le_prod' (fun p hp => (hprime p (hsub hp)).two_le)
+      Finset.prod_le_prod (fun p hp => (hprime p (hsub hp)).two_le)
     calc 2 ^ S.card = ∏ _p ∈ S, (2 : ℕ) := by rw [Finset.prod_const]
       _ ≤ ∏ p ∈ S, p := hle
   exact le_trans hpow (Nat.le_of_dvd D.hNzero hprod_dvd)

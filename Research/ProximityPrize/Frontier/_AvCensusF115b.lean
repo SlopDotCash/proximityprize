@@ -114,7 +114,7 @@ theorem doubleFactorial_le_crude (r : ℕ) :
     ∏ j ∈ range r, (2 * j + 1) ≤ (2 * r) ^ r := by
   calc ∏ j ∈ range r, (2 * j + 1)
       ≤ ∏ _j ∈ range r, (2 * r) := by
-        apply Finset.prod_le_prod'; intro i hi; rw [Finset.mem_range] at hi; omega
+        apply Finset.prod_le_prod; intro i hi; rw [Finset.mem_range] at hi; omega
     _ = (2 * r) ^ r := by rw [Finset.prod_const, Finset.card_range]
 
 /-- **The prize ceiling is `≤ n^{2r}` when `2r ≤ n`.** This is the crude char-0 (Lam–Leung/Bessel)

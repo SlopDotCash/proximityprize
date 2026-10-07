@@ -24,7 +24,7 @@ The statement factors into two layers that live in two different mathematical re
 1. **The deterministic product bound (PURELY COMBINATORIAL — PROVEN HERE).** Given a per-query
    *miss-probability vector* `pMiss : Fin q → ℝ` with `0 ≤ pMiss i ≤ 1 − halfRadius` for every
    query `i`, the product of the per-query miss probabilities is bounded by the `q`-th power:
-   `∏ᵢ pMiss i ≤ (1 − halfRadius)^q`. This is a clean order-theoretic fact (`Finset.prod_le_prod`
+   `∏ᵢ pMiss i ≤ (1 − halfRadius)^q`. This is a clean order-theoretic fact (`Finset.prod_le_prod₀`
    against the constant function, then `Finset.prod_const`). It is fully proven, `sorry`-free, and
    axiom-clean.
 
@@ -70,7 +70,7 @@ open ProximityGap.ThresholdHalvingPerRound
 
 The deterministic heart of the query-survival bound. We do not assume independence here; we only
 take a per-query miss-probability *vector* `pMiss` already known to be in `[0, 1 − halfRadius]`
-entrywise, and bound its product by the constant power. The proof is `Finset.prod_le_prod` against
+entrywise, and bound its product by the constant power. The proof is `Finset.prod_le_prod₀` against
 the constant `fun _ => 1 − halfRadius`, followed by `Finset.prod_const`. -/
 
 /-- **Per-query product bound (PROVEN, general index `Finset`).** For a per-query miss-probability
@@ -82,7 +82,7 @@ theorem prod_miss_le_pow {ι : Type*} (s : Finset ι) (pMiss : ι → ℝ) (c : 
     (h0 : ∀ i ∈ s, 0 ≤ pMiss i) (hc : ∀ i ∈ s, pMiss i ≤ c) :
     ∏ i ∈ s, pMiss i ≤ c ^ s.card := by
   calc ∏ i ∈ s, pMiss i
-      ≤ ∏ _i ∈ s, c := Finset.prod_le_prod h0 hc
+      ≤ ∏ _i ∈ s, c := Finset.prod_le_prod₀ h0 hc
     _ = c ^ s.card := Finset.prod_const c
 
 /-- **Per-query product bound over `Fin q` (PROVEN).** For `q` queries indexed by `Fin q` with

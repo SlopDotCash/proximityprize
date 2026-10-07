@@ -102,7 +102,7 @@ theorem norm_signVec_eval_le {z : ℂ} (hz : ‖z‖ = 1) (m : ℕ) (ε : ℕ �
 theorem norm_prod_le_pow {ι : Type*} (s : Finset ι) (g : ι → ℂ) {c : ℝ} (_hc : 0 ≤ c)
     (hg : ∀ i ∈ s, ‖g i‖ ≤ c) : ‖∏ i ∈ s, g i‖ ≤ c ^ s.card := by
   rw [norm_prod]
-  calc ∏ i ∈ s, ‖g i‖ ≤ ∏ _i ∈ s, c := Finset.prod_le_prod (fun _ _ => norm_nonneg _) hg
+  calc ∏ i ∈ s, ‖g i‖ ≤ ∏ _i ∈ s, c := Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _) hg
     _ = c ^ s.card := by rw [Finset.prod_const]
 
 /-! ### The assembled bound -/

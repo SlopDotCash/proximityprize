@@ -144,7 +144,7 @@ theorem bessel_term_ge_gaussian_sub {d : ℕ} (m : Fin d → ℕ) :
           rw [hP]
           calc ∏ i ∈ s, (1 : ℚ) / (Nat.factorial (m i))
               ≤ ∏ _i ∈ s, (1 : ℚ) := by
-                apply Finset.prod_le_prod
+                apply Finset.prod_le_prod₀
                 · intro i _
                   apply div_nonneg (by norm_num); exact_mod_cast Nat.zero_le _
                 · intro i _

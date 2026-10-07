@@ -243,7 +243,7 @@ theorem fallingFactorial_le_gaussianTail {r : ℕ} {n : ℝ} (hn : 0 < n)
     (hrange : ∀ j ∈ Finset.range r, (j : ℝ) ≤ n) :
     ∏ j ∈ Finset.range r, (1 - (j : ℝ) / n)
       ≤ ∏ j ∈ Finset.range r, Real.exp (-((j : ℝ) / n)) := by
-  apply Finset.prod_le_prod
+  apply Finset.prod_le_prod₀
   · intro j hj
     have : (j : ℝ) ≤ n := hrange j hj
     rw [sub_nonneg]; exact div_le_one_of_le₀ this hn.le

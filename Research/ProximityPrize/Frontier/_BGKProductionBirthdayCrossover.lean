@@ -122,7 +122,7 @@ theorem product_lt_126871_of_robust_distributedLastTwo
     ∏ i : Fin 6, c i < 126871 := by
   have hprod : (∏ i : Fin 6, c i) ≤
       ∏ i : Fin 6, robustScale * distributedLastTwoWick i := by
-    exact Finset.prod_le_prod (fun i _ => hc0 i) (fun i _ => hc i)
+    exact Finset.prod_le_prod₀ (fun i _ => hc0 i) (fun i _ => hc i)
   calc
     (∏ i : Fin 6, c i) ≤
         robustScale ^ 6 * ∏ i : Fin 6, distributedLastTwoWick i := by

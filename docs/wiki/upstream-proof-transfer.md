@@ -99,9 +99,10 @@ The script only fetches pinned revisions from the read-only upstream and creates
 separate detached checkouts. Run the native checkout's `scripts/lake-locked.sh`
 from an external PR checkout for serialized builds. Never publish upstream.
 
-Upstream Fin induction and insertion proof repairs are also adopted without
-changing theorem statements; these resolve Lean 4.34 elaboration failures in
-`ArkLib.Data.Fin.Basic`.
+Upstream Fin induction, insertion, coding-theory preliminary and polynomial
+interface proof repairs are adopted without changing their mathematical
+statements. The `AffSpanSet.instFinite` lemma remains available explicitly;
+its invalid instance registration is removed because `Set.Finite` is not a class.
 
 Native transfers under validation include the generic linear-budget,
 line-injectivity, finite-set cardinality, pairwise incidence and sample incidence
@@ -124,6 +125,21 @@ Compared with upstream `v4.34.0-patch2`, it supplies explicit concrete field and
 finiteness instances in the quintic and sextic irreducibility proofs, preserves
 their statements and certificates, and adds fresh-closure replay regressions.
 This dependency choice does not import the benchmark PR's hosted-release claims.
+
+The native compatibility edits use these Mathlib API correspondences:
+
+| Lean 4.30 spelling | Lean 4.34 spelling |
+| --- | --- |
+| `mul_le_mul_left' h a` | `mul_le_mul_right h a` |
+| `mul_le_mul_right' h a` | `mul_le_mul_left h a` |
+| `Finset.prod_le_prod hnonneg hle` | `Finset.prod_le_prod₀ hnonneg hle` |
+| `Finset.prod_le_prod' hle` | `Finset.prod_le_prod hle` |
+| Multivariate `coeff index polynomial` | `polynomial.coeff index` |
+
+These rename existing proof applications; they do not remove the nonnegativity
+premise from real-valued product comparisons. Native proofs and the imported
+linear-projection helper also use narrower imports where checked, reducing the
+number of unrelated modules loaded by each Lean process.
 
 The native migration and new transfers are still under validation. Do not treat
 the updated pins or the earlier Lean 4.30 checks as a successful Lean 4.34 build.

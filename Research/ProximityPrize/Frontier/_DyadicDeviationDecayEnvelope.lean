@@ -110,7 +110,7 @@ theorem sq_level_le_pow_mul_exp_harmonic {M : ℕ → ℝ} {C : ℝ} (hC : 0 ≤
       rw [mul_one_div, div_div]
     calc ∏ i ∈ range μ, (1 + C / (2 * ((i:ℝ) + 1)))
         ≤ ∏ i ∈ range μ, Real.exp (C / (2 * ((i:ℝ) + 1))) :=
-          prod_le_prod hpos hstep
+          prod_le_prod₀ hpos hstep
       _ = Real.exp (∑ i ∈ range μ, C / (2 * ((i:ℝ) + 1))) :=
           (Real.exp_sum (range μ) (fun i => C / (2 * ((i:ℝ) + 1)))).symm
       _ = Real.exp (C / 2 * ∑ i ∈ range μ, (1 / ((i:ℝ) + 1))) := by rw [hsum]

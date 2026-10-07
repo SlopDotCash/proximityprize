@@ -117,7 +117,7 @@ theorem tupleProduct_le_pow {A : Finset ℕ} {W k : ℕ}
   unfold tupleProduct
   calc
     ∏ i, x i ≤ ∏ _i : Fin k, W :=
-      Finset.prod_le_prod' fun i _ => hA _ (by simpa using (Fintype.mem_piFinset.mp hx i))
+      Finset.prod_le_prod fun i _ => hA _ (by simpa using (Fintype.mem_piFinset.mp hx i))
     _ = W ^ k := by simp
 
 /-- Multiplicative closure puts every tuple product back in `H` (including the empty product,

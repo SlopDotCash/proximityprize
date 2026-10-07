@@ -122,7 +122,7 @@ lemma encard_closeCodewordsRel_interleaved_le [Fintype F] [Nonempty ι] {m : ℕ
     _ = ∏ k, (closeCodewordsRel C (f.transpose k) δ).encard := by
           rw [hT]; exact Set.encard_pi_eq_prod_encard
     _ ≤ ∏ _k : Fin m, Lambda C δ := by
-          apply Finset.prod_le_prod'
+          apply Finset.prod_le_prod
           intro k _
           exact encard_closeCodewordsRel_le_Lambda (f.transpose k)
     _ = (Lambda C δ) ^ m := by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]

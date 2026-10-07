@@ -60,7 +60,7 @@ theorem const_multiplier_product_le_domain_pow
     (∏ j ∈ Finset.range m, a j) ≤ ((2 : ℝ) ^ m) ^ c := by
   calc
     (∏ j ∈ Finset.range m, a j) ≤ ∏ _j ∈ Finset.range m, ((2 : ℝ) ^ c) := by
-        refine Finset.prod_le_prod ?_ ?_
+        refine Finset.prod_le_prod₀ ?_ ?_
         · intro j hj; exact h0 j (Finset.mem_range.mp hj)
         · intro j hj; exact hle j (Finset.mem_range.mp hj)
     _ = ((2 : ℝ) ^ c) ^ m := by rw [Finset.prod_const, Finset.card_range]

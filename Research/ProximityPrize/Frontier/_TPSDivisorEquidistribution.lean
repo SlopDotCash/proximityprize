@@ -98,7 +98,7 @@ theorem two_pow_card_primeFactors_le {n : ℕ} (hn : 1 ≤ n) :
   have hprod_dvd : (∏ p ∈ n.primeFactors, p) ∣ n := Nat.prod_primeFactors_dvd n
   have hprod_le : (∏ p ∈ n.primeFactors, p) ≤ n := Nat.le_of_dvd hn hprod_dvd
   have hconst : (∏ _p ∈ n.primeFactors, (2 : ℕ)) ≤ ∏ p ∈ n.primeFactors, p :=
-    Finset.prod_le_prod' fun p hp => (Nat.prime_of_mem_primeFactors hp).two_le
+    Finset.prod_le_prod fun p hp => (Nat.prime_of_mem_primeFactors hp).two_le
   calc 2 ^ n.primeFactors.card
       = ∏ _p ∈ n.primeFactors, (2 : ℕ) := by simp [Finset.prod_const]
     _ ≤ ∏ p ∈ n.primeFactors, p := hconst
