@@ -1596,7 +1596,7 @@
       "base": "0a673357b5b8a456a1f2def25af4026a5bb70d34",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "covered by native source; no replacement needed",
       "files": [
         "ArkLib.lean",
         "ArkLib/ProofSystem/ConstraintSystem/Basic.lean",
@@ -1608,7 +1608,8 @@
         "CompPoly": "56d10c947e3427c852b708a424f585c5673b039c",
         "VCVio": "88b4fe7b9c66dc40f083d67d50aa67338fd578f8",
         "mathlib": "8a178386ffc0f5fef0b77738bb5449d50efeea95"
-      }
+      },
+      "review_notes": "ConstraintSystem/Basic.lean and Examples.lean are byte-identical to this PR head (SHA256 8d957418d1ccadd84f7e57a1dc37332426d909867628a25779c0133094656dca and 09ce16d3ebfb2a5bf5f859d04cd720758aeafa7644f800d229fd9ee994e84fdd). Native Plonk preserves the protected namespace adjustment and additionally implements the PR head's admitted permutation, with the copy-constraint product theorem. Generated ArkLib umbrella is native-managed. Source coverage only; native Lean 4.34 validation of this cone remains separate."
     },
     {
       "number": 459,
@@ -1642,7 +1643,7 @@
       "base": "781f1362c5311241b38966b36a54cd1e169ea2aa",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "covered by native source; admission-bearing replacements excluded",
       "files": [
         "ArkLib/ProofSystem/Component/SendWitness.lean",
         "ArkLib/ProofSystem/ConstraintSystem/Plonk.lean"
@@ -1652,7 +1653,8 @@
         "CompPoly": "067a22b6623a0d61f27deda02f8c8a0b8b339b33",
         "VCVio": "f85df0b4ec3ef4249876996da28a07c38e9137c2",
         "mathlib": "8a178386ffc0f5fef0b77738bb5449d50efeea95"
-      }
+      },
+      "review_notes": "Compared both files at d48f6785a3cb36eb4df9454588dbbd6503590cfe. Plonk permutation construction and prod_eq_of_copyConstraints are already present; native additionally protects Plonk.ConstraintSystem to avoid namespace collision. SendWitness perfect completeness is already proved natively; native supplies actual rbrKnowledgeSoundness statements and oracle completeness, whereas this PR head retains two live sorry proofs and two : True placeholders. No replacement is warranted. This is source-coverage disposition, not Lean 4.34 build acceptance for the Plonk/SendWitness cone."
     },
     {
       "number": 383,

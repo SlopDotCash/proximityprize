@@ -644,3 +644,11 @@ its zero error. The broader build has advanced to RingSwitching Prelude itself.
 
 All eight selected installed round-by-round roots use only standard axioms. They are included
 in the routine axiom manifest. The changed-source forbidden-token check and docs checks pass.
+
+Older PRs #458 and #465 are covered by native source rather than copied over it. At the reviewed
+#458 head, the permutation constructor and copy-constraint product theorem are already present
+natively; native SendWitness also has actual knowledge-soundness and oracle-completeness proofs
+where the donor retains admissions or `True` placeholders. #465's constraint-system abstraction
+and examples match byte-for-byte, while native Plonk additionally implements its admitted
+permutation. The PR manifest records exact source evidence. These dispositions establish source
+coverage, not a claim that the entire Plonk/SendWitness dependency cone builds on Lean 4.34.
