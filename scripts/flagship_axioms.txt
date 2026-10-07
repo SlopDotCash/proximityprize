@@ -96,3 +96,18 @@ ArkLib.Interaction.Oracle.Security.KnowledgeComposition Interaction.Oracle.Secur
 # ArkLib PR 1261: actual executor round-by-round soundness.
 ArkLib.Interaction.Oracle.Security.Soundness Interaction.Oracle.Security.executeStrategies_soundness
 ArkLib.Interaction.Oracle.Security.Soundness Interaction.Oracle.Security.executeStrategies_soundness_uniform
+
+# Lean 4.34 probability migration: support laws from compatible SPMF semantics.
+ArkLib.ToVCVio.SupportOfSPMF SPMFSupport.support_pure
+ArkLib.ToVCVio.SupportOfSPMF SPMFSupport.support_bind
+ArkLib.ToVCVio.SupportOfSPMF SPMFSupport.support_map
+ArkLib.ToVCVio.Lemmas OptionT.probFailure_mk_bind_eq_zero_iff
+ArkLib.ToVCVio.Lemmas OptionT.probFailure_simulateQ_liftQuery_eq
+ArkLib.ToVCVio.Lemmas mem_support_bind_bind_map_generic_iff
+
+# Repaired KoalaBear field certificates: replay and axiom-whitelist checks are separate gates.
+CompPoly.Fields.KoalaBear.Ext5.QuinticIrreducible KoalaBear.quinticPoly_irreducible
+CompPoly.Fields.KoalaBear.Ext6.SexticIrreducible KoalaBear.sexticPoly_irreducible
+ArkLib.ToMathlib.ProbEventBindOne probEvent_bind_eq_one
+ArkLib.ToVCVio.EvalDist.Instances.OptionT probEvent_congr_heq
+ArkLib.Data.Probability.MarginalBound probEvent_bind_le_uniform_marginal_comap

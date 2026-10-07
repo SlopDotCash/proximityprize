@@ -132,12 +132,18 @@ The native toolchain is pinned to `leanprover/lean4:v4.34.0`, with Mathlib
 `5ed2965256430c3649e86755f9576b54eca72435`, VCVio
 `d7089e46d69e07640fa23b5ae6b1b966f1d4b949`, and PolyFun
 `3710d71b28404a151b8d1f0ce080ea448778dec0`.
-CompPoly is being tested at the proposed replay repair
+CompPoly is pinned to the proposed replay repair
 [`da1e1b5d048d26eca4583ff930f248c5e2bb5d9e`](https://github.com/yudduy/CompPoly/commit/da1e1b5d048d26eca4583ff930f248c5e2bb5d9e).
 Compared with upstream `v4.34.0-patch2`, it supplies explicit concrete field and
 finiteness instances in the quintic and sextic irreducibility proofs, preserves
 their statements and certificates, and adds fresh-closure replay regressions.
-This dependency choice does not import the benchmark PR's hosted-release claims.
+The native `CompPolyTests.Fields.KoalaBear.FreshReplay` target passed locally on
+2026-10-07: it replays both complete irreducibility dependency closures in an
+empty kernel environment and checks the quotient declarations against the originals.
+Both irreducibility roots also passed a separate local axiom check with only
+`propext`, `Classical.choice`, and `Quot.sound`, and are registered in the
+independent flagship axiom-whitelist gate. This result does not establish replay of either full prize
+candidate or import the benchmark PR's hosted-release claims.
 
 The native compatibility edits use these Mathlib API correspondences:
 
@@ -159,6 +165,22 @@ interface is split across operational support, a lawful lift into `SPMF`, and
 support/distribution compatibility. In the new API, `𝒟[...]` denotes a measure;
 `𝒮[...]` denotes the discrete subprobability computation. Existing uses must be
 checked against those meanings rather than changed solely to satisfy elaboration.
+`ArkLib.ToVCVio.SupportOfSPMF` derives the pure, bind, and map support equations
+from a lawful discrete lift and support/distribution compatibility; its direct
+Lean 4.34 check reports only the standard axioms. This avoids imposing
+`ExactMonadAttach` on the older probability helpers. Uniform oracle proofs use
+VCVio's explicit `IsUniformSpec` interface rather than installing a global
+uniform interpretation for every finite inhabited oracle. `OptionT` simulation
+bridges explicitly apply `.run` when measuring the underlying computation's
+failure and `none` mass, preserving the old statements' run-level meaning.
+The oracle-interface module follows upstream in removing the retired
+`OracleSpec.DecidableEq`/`Fintype`/`Inhabited` dictionaries; ordinary per-response
+instances now supply that data. VCVio now supplies the more general
+`OptionT.probEvent_eq_of_run_map_eq`; the duplicate native specialization is
+removed while its public name remains available through the existing import.
+`MarginalBound` now imports the probability API directly rather than the protocol
+security layer; its six printed marginal-domination theorems pass the local
+Lean 4.34 axiom check with only standard axioms.
 
 The native migration and new transfers are still under validation. Do not treat
 the updated pins or the earlier Lean 4.30 checks as a successful Lean 4.34 build.
