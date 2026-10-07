@@ -846,3 +846,14 @@ The repair proves nested-lift collapse using query coherence, transports send/re
 through the current lift operation, and makes the initial-state projection explicit. Existing
 seam direction and state hypotheses remain unchanged. This validates decomposition and
 reassembly; it does not by itself discharge downstream soundness or STIR obligations.
+
+Empty-tail completeness now passes its ordinary Lean 4.34 build (3,239 jobs). The shared
+support-decomposition proof is exposed as `append_perfectCompleteness_of_run_factor`;
+the existing message and empty-tail theorems discharge its factoring hypothesis with their
+proved run identities. Both retain their original mathematical hypotheses. This removes
+another duplicated proof instead of maintaining separate support calculations. The soundness
+seam-transfer module also builds with the legacy evaluator explicitly named `evalSPMF` and
+lift coherence derived from the proved composition identity. All ten selected installed
+completeness/transfer roots have standard-only axiom closures; the six new roots are added
+to routine auditing. Initial validation attempts hit macOS file-table exhaustion; the final
+empty-tail build and installed audit passed. Full STIR and full-repository builds remain pending.

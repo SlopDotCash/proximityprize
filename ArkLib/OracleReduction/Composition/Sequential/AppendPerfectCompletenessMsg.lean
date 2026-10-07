@@ -76,15 +76,16 @@ private theorem probFailure_lift_run_getM {ι₁ ι₂ : Type} {spec₁ : Oracle
     probOutput (m := OracleComp spec₁) (mx := W.run) (x := none)
   rw [OracleComp.probOutput_liftComp (spec := spec₁) (superSpec := spec₂) (mx := W.run) (x := none)]
 
-/-- **Perfect completeness composes under `Reduction.append` (message-seam case).** -/
-theorem append_perfectCompleteness_message
+/-- Perfect completeness composes whenever the appended prover run factors in phase order. -/
+theorem append_perfectCompleteness_of_run_factor
     (R₁ : Reduction oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁)
     (R₂ : Reduction oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂)
     (h₁ : R₁.perfectCompleteness init impl rel₁ rel₂)
     (h₂ : R₂.perfectCompleteness init impl rel₂ rel₃)
-    (hn : 0 < n)
-    (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
-    (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
+    (hRun : ∀ stmt wit, (R₁.prover.append R₂.prover).run stmt wit = (do
+      let ⟨tr₁, stmt₂, wit₂⟩ ← liftM (R₁.prover.run stmt wit)
+      let ⟨tr₂, stmt₃, wit₃⟩ ← liftM (R₂.prover.run stmt₂ wit₂)
+      return ⟨tr₁ ++ₜ tr₂, stmt₃, wit₃⟩))
     [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
     [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
     [∀ t, Fintype (((oSpec + [pSpec₁.Challenge]ₒ)).Range t)] [∀ t, Inhabited (((oSpec + [pSpec₁.Challenge]ₒ)).Range t)]
@@ -97,7 +98,7 @@ theorem append_perfectCompleteness_message
   rw [perfectCompleteness_eq_prob_one] at h₁ h₂ ⊢
   intro stmtIn witIn hIn
   simp only [Reduction.run, Reduction.append,
-    Prover.append_run_msg (P₁ := R₁.prover) (P₂ := R₂.prover) stmtIn witIn hn hDir hDir₂]
+    hRun stmtIn witIn]
   simp only [probEvent_eq_one_iff] at h₁ h₂ ⊢
   obtain ⟨hf₁, hs₁⟩ := h₁ stmtIn witIn hIn
   obtain ⟨s₀, hs₀⟩ := support_nonempty_of_neverFails init hInit
@@ -417,6 +418,27 @@ theorem append_perfectCompleteness_message
           OptionT.mem_support_OptionT_pure_run_some_iff])
     simp only at key₂
     exact ⟨key₂.1, key₂.2⟩
+
+/-- **Perfect completeness composes under `Reduction.append` (message-seam case).** -/
+theorem append_perfectCompleteness_message
+    (R₁ : Reduction oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁)
+    (R₂ : Reduction oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂)
+    (h₁ : R₁.perfectCompleteness init impl rel₁ rel₂)
+    (h₂ : R₂.perfectCompleteness init impl rel₂ rel₃)
+    (hn : 0 < n)
+    (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
+    (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
+    [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Fintype (((oSpec + [pSpec₁.Challenge]ₒ)).Range t)] [∀ t, Inhabited (((oSpec + [pSpec₁.Challenge]ₒ)).Range t)]
+    [∀ t, Fintype (((oSpec + [pSpec₂.Challenge]ₒ)).Range t)] [∀ t, Inhabited (((oSpec + [pSpec₂.Challenge]ₒ)).Range t)]
+    (hInit : NeverFail init)
+    (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
+      Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
+        = support (liftM q : OracleComp oSpec β)) :
+    (R₁.append R₂).perfectCompleteness init impl rel₁ rel₃ := by
+  exact append_perfectCompleteness_of_run_factor R₁ R₂ h₁ h₂
+    (fun stmt wit => Prover.append_run_msg stmt wit hn hDir hDir₂) hInit hImplSupp
 
 /-- **Discharge of the named residual (message-seam case).**
 `reductionAppendPerfectCompletenessResidual` (defined in `Append.lean` as the append-completeness
