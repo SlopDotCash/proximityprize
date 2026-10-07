@@ -28,8 +28,9 @@ family `v 0 = √m`, `v i = 0` otherwise, with `n = 1`, satisfies the identity w
 
 The lane's honest statement ("Galois/Stickelberger pins the RMS and is blind to the phase
 anti-correlation") is therefore not merely informal: no constant makes the recorded
-implication hold uniformly over all dimensions and RMS-normalised families. Any future closure must quantify over the actual `η` orbit family rather than an
-arbitrary RMS-normalised `v : Fin m → ℝ`; the abstract implication carries no concentration
+implication hold uniformly over all dimensions and RMS-normalised families. Any future closure
+must quantify over the actual `η` orbit family rather than an arbitrary RMS-normalised
+`v : Fin m → ℝ`; the abstract implication carries no concentration
 information.
 
 All results below are axiom-clean (`propext`, `Classical.choice`, `Quot.sound` only; no

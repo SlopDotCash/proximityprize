@@ -20,10 +20,21 @@ Sequential composition of:
 * [Diamond, B.E. and Posen, J., *Polylogarithmic proofs for multilinears over binary towers*][DP24]
 -/
 
+set_option backward.isDefEq.respectTransparency false
+
 open AdditiveNTT Polynomial
 
 namespace Binius.BinaryBasefold.FullBinaryBasefold
 open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset AdditiveNTT
+
+/-- Left-boundary direction transport for appended protocols: the appended protocol's direction
+at the seam index `m` is `pSpec₂`'s direction at its round `0`. -/
+private lemma append_dir_seam {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
+    {d : Direction} (hn : 0 < n) (h : pSpec₂.dir ⟨0, hn⟩ = d) :
+    (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = d := by
+  rw [show (⟨m, by omega⟩ : Fin (m + n)) = Fin.natAdd m (⟨0, hn⟩ : Fin n) from by ext; simp]
+  rw [Prover.append_dir_natAdd]
+  exact h
 
 variable {r : ℕ} [NeZero r]
 variable {L : Type} [Field L] [Fintype L] [DecidableEq L] [CharP L 2]
@@ -38,7 +49,7 @@ variable {h_ℓ_add_R_rate : ℓ + 𝓡 < r} -- ℓ ∈ {1, ..., r-1}
 variable {𝓑 : Fin 2 ↪ L}
 variable [hdiv : Fact (ϑ ∣ ℓ)]
 
-instance {_ : Empty} : OracleInterface (Unit) := OracleInterface.instDefault
+instance : Empty → OracleInterface Unit := fun _ => OracleInterface.instDefault
 
 open CoreInteraction QueryPhase
 /-- The oracle verifier for the full Binary Basefold protocol -/
@@ -194,14 +205,6 @@ section Wired
 
 variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ ProbComp)}
 
-/-- Left-boundary direction transport for appended protocols: the appended protocol's direction
-at the seam index `m` is `pSpec₂`'s direction at its round `0`. -/
-private lemma append_dir_seam {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
-    {d : Direction} (hn : 0 < n) (h : pSpec₂.dir ⟨0, hn⟩ = d) :
-    (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = d := by
-  rw [show (⟨m, by omega⟩ : Fin (m + n)) = Fin.natAdd m (⟨0, hn⟩ : Fin n) from by ext; simp]
-  rw [Prover.append_dir_natAdd]
-  exact h
 
 /-- **Perfect completeness of the full Binary Basefold protocol, wired.** The
 core-interaction ⋈ query seam is discharged by the proven challenge-seam keystone; the query
@@ -230,6 +233,7 @@ theorem fullOracleReduction_perfectCompleteness_wired
   have hQuery := queryOracleProof_perfectCompleteness 𝔽q β γ_repetitions
     (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) init hInit impl
   exact OracleReduction.append_perfectCompleteness_challenge_keystone
+    (Oₛ₃ := fun _ : Empty => OracleInterface.instDefault)
     (R₁ := coreInteractionOracleReduction 𝔽q β (ϑ:=ϑ)
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑))
     (R₂ := queryOracleReduction 𝔽q β γ_repetitions (ϑ:=ϑ)
@@ -279,6 +283,7 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [Subsingleton σ]
       (rbrKnowledgeError := fullRbrKnowledgeError 𝔽q β γ_repetitions (ϑ:=ϑ)
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate)) := by
   have hKey := OracleVerifier.append_rbrKnowledgeSoundness_failingDet_subsingleton_challenge
+    (Oₛ₃ := fun _ : Empty => OracleInterface.instDefault)
     (init := init) (impl := impl)
     (V₁ := coreInteractionOracleVerifier 𝔽q β (ϑ:=ϑ)
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑))

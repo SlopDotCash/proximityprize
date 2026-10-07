@@ -57,5 +57,18 @@ ArkLib.ProofSystem.Binius.BinaryBasefold.General Binius.BinaryBasefold.FullBinar
 ArkLib.ProofSystem.Binius.BinaryBasefold.General Binius.BinaryBasefold.FullBinaryBasefold.fullOracleVerifier_rbrKnowledgeSoundness_wired
 ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.SoundnessCase2Discharge Binius.BinaryBasefold.prop_4_21_case_2_fiberwise_far
 ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.VerifierDeterminism Binius.BinaryBasefold.CoreInteraction.foldOracleVerifier_toVerifier_failingDet
-ArkLib.ProofSystem.Binius.FRIBinius.General Binius.FRIBinius.FullFRIBinius.fullOracleVerifier_knowledgeSoundness
+ArkLib.ProofSystem.Binius.FRIBinius.General Binius.FRIBinius.FullFRIBinius.fullOracleVerifier_knowledgeSoundness_of_sum_bound
 ArkLib.ProofSystem.Binius.FRIBinius.General Binius.FRIBinius.FullFRIBinius.fullOracleVerifier_rbrKnowledgeSoundness_wired
+
+# Refuted legacy Binius input-relation conversion.
+ArkLib.ProofSystem.Binius.FRIBinius.CoreInteractionPhase Binius.FRIBinius.CoreInteractionPhase.sumcheckFold_input_bridge_counterexample
+
+# Decoded Binius folding chain reaches the extracted polynomial evaluation.
+ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.FinalSumcheck Binius.BinaryBasefold.CoreInteraction.extracted_t_poly_eval_eq_final_constant
+
+# Successful Binius query steps preserve the fold and reach the final constant.
+ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Folding Binius.BinaryBasefold.QueryPhase.query_phase_step_preserves_fold
+ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Folding Binius.BinaryBasefold.QueryPhase.query_phase_final_fold_eq_constant
+
+# Arithmetic target bound is distinct from the unresolved scalar-security premise.
+ArkLib.ProofSystem.Binius.FRIBinius.General Binius.FRIBinius.FullFRIBinius.fullRbrKnowledgeError_sum_le_concrete

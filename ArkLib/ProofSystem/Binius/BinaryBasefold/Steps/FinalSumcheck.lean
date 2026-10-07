@@ -18,8 +18,6 @@ the prover (`finalSumcheckProver`), verifier (`finalSumcheckVerifier`), and redu
 knowledge extractor (`finalSumcheckRbrExtractor`) together with supporting evaluation lemmas.
 -/
 
-set_option linter.style.longFile 2100
-
 namespace Binius.BinaryBasefold.CoreInteraction
 noncomputable section
 open OracleSpec OracleComp ProtocolSpec Finset AdditiveNTT Polynomial MvPolynomial
@@ -1331,17 +1329,125 @@ private theorem finalOracleDecoded_pos_eq_prefixFold
     (h_ℓ_add_R_rate := h_ℓ_add_R_rate) stmtOut oStmtOut h_oracle_cons f₀
     h_close_first h_dec0_eq_f0 j.val j.isLt h_close_j
 
-set_option maxHeartbeats 20000 in
--- This extraction-to-final-constant proof expands the final verifier and its consistency witness.
+omit [SampleableType L] in
+set_option backward.isDefEq.respectTransparency false in
+/-- The decoded first oracle is the novel-basis encoding of the extracted witness. -/
+lemma decodedFirst_eq_novelEncoding
+    (f : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) 0)
+    (t : MultilinearPoly L ℓ)
+    (hc : firstOracleWitnessConsistencyProp 𝔽q β t f)
+    (hu : UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) 0 (Nat.zero_le ℓ) f) :
+    UDRCodeword 𝔽q β 0 (Nat.zero_le ℓ) f hu =
+      fun x => (polynomialFromNovelCoeffsF₂ 𝔽q β ℓ (by omega)
+        (fun ω => t.val.eval (statementOrderBitsOfIndex ω))).val.eval x.val := by
+  let P : L⦃< 2 ^ ℓ⦄[X] := polynomialFromNovelCoeffsF₂ 𝔽q β ℓ (by omega)
+    (fun ω => t.val.eval (statementOrderBitsOfIndex ω))
+  have hdeg : P.val.natDegree < 2 ^ ℓ := by
+    have hp := P.property
+    rw [Polynomial.mem_degreeLT] at hp
+    by_cases hz : P.val = 0
+    · simp [hz]
+    · exact (Polynomial.natDegree_lt_iff_degree_lt hz).mpr (by exact_mod_cast hp)
+  have hmem := polyEval_mem_BBF_Code₀ 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) P.val hdeg
+  apply Code.eq_of_le_uniqueDecodingRadius
+    (C := BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) 0) (u := f)
+    (UDRCodeword_mem_BBF_Code 𝔽q β 0 (Nat.zero_le ℓ) f hu) hmem
+    (dist_to_UDRCodeword_le_uniqueDecodingRadius 𝔽q β 0 (Nat.zero_le ℓ) f hu)
+  have hc' : 2 * hammingDist f (fun x => P.val.eval x.val) <
+      BBF_CodeDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) 0 := by
+    simpa only [firstOracleWitnessConsistencyProp, P, hammingDist_comm] using hc
+  unfold BBF_CodeDistance at hc'
+  change _ ≤ (_ - 1) / 2
+  omega
+
+set_option maxHeartbeats 4000000 in
+set_option backward.isDefEq.respectTransparency false in
+/-- The decoded folding chain ends at the extracted polynomial's claimed evaluation. -/
+lemma extracted_t_poly_eval_eq_final_constant
+    (stmtOut : FinalSumcheckStatementOut (L := L) (ℓ := ℓ))
+    (oStmtOut : ∀ j, OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      ϑ (Fin.last ℓ) j)
+    (tpoly : MultilinearPoly L ℓ)
+    (h_extractMLP : extractMLP 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      0 (getFirstOracle 𝔽q β oStmtOut) = some tpoly)
+    (h_finalSumcheckStepOracleConsistency : finalSumcheckStepOracleConsistencyProp 𝔽q β
+      (h_le := Nat.le_of_dvd (Nat.pos_of_neZero ℓ) hdiv.out) stmtOut oStmtOut) :
+    stmtOut.final_constant = (revIndexMLP tpoly).val.eval stmtOut.challenges := by
+  have hle : ϑ ≤ ℓ := Nat.le_of_dvd (Nat.pos_of_neZero ℓ) hdiv.out
+  let jLast := getLastOraclePositionIndex ℓ ϑ (Fin.last ℓ)
+  let k := jLast.val * ϑ
+  have hk : k = ℓ - ϑ := by
+    dsimp [k, jLast]
+    rw [getLastOraclePositionIndex_last, Nat.sub_mul, Nat.one_mul,
+      Nat.div_mul_cancel hdiv.out]
+  have hkadd : k + ϑ = ℓ := by omega
+  have hfirst := firstOracle_UDRClose_of_finalSumcheckStepOracleConsistency 𝔽q β
+    stmtOut oStmtOut h_finalSumcheckStepOracleConsistency
+  have hfirstCons := firstOracleWitnessConsistency_revIndexMLP_of_extractMLP_eq_some 𝔽q β
+    (getFirstOracle 𝔽q β oStmtOut) tpoly (by simpa [UDRClose] using hfirst) h_extractMLP
+  let f₀ : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) 0 :=
+    fun x => (polynomialFromNovelCoeffsF₂ 𝔽q β ℓ (by omega)
+      (fun ω => (revIndexMLP tpoly).val.eval (statementOrderBitsOfIndex ω))).val.eval x.val
+  have hf₀ : UDRCodeword 𝔽q β 0 (Nat.zero_le ℓ)
+      (getFirstOracle 𝔽q β oStmtOut) hfirst = f₀ :=
+    decodedFirst_eq_novelEncoding 𝔽q β _ _ hfirstCons hfirst
+  have hchain := h_finalSumcheckStepOracleConsistency.1
+  rcases h_finalSumcheckStepOracleConsistency.2 with ⟨hfw, hconst, hfold⟩
+  have hlast : finalOracleClose (𝔽q := 𝔽q) (β := β)
+      oStmtOut jLast.val jLast.isLt := by
+    exact UDRClose_of_fiberwiseClose 𝔽q β
+      (i := ⟨k, by omega⟩) (steps := ϑ) (destIdx := ⟨k + ϑ, by omega⟩)
+      (h_destIdx := rfl) (h_destIdx_le := by simp only [Fin.val_mk]; omega) (f := oStmtOut jLast) hfw
+  have hclose : ∀ j : Fin (toOutCodewordsCount ℓ ϑ (Fin.last ℓ)),
+      finalOracleClose (𝔽q := 𝔽q) (β := β) oStmtOut j.val j.isLt := by
+    intro j
+    by_cases hj : j.val + 1 < toOutCodewordsCount ℓ ϑ (Fin.last ℓ)
+    · exact finalOracleClose_curr 𝔽q β stmtOut oStmtOut hchain j.val hj
+    · have heq : j = jLast := by
+        apply Fin.ext
+        have hjlt := j.isLt
+        dsimp [jLast, getLastOraclePositionIndex]
+        omega
+      subst j
+      exact hlast
+  let decoded : ∀ j, OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      ϑ (Fin.last ℓ) j := fun j =>
+    finalOracleDecodedAt (𝔽q := 𝔽q) (β := β) oStmtOut j.val j.isLt (hclose j)
+  have hstrict : strictOracleFoldingConsistencyProp 𝔽q β
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (revIndexMLP tpoly) (Fin.last ℓ)
+      stmtOut.challenges decoded := by
+    intro j
+    have hp : finalOracleDecodedAt (𝔽q := 𝔽q) (β := β) oStmtOut j.val j.isLt (hclose j) =
+        finalDecodedPrefixAt (𝔽q := 𝔽q) (β := β) stmtOut f₀ j.val j.isLt :=
+      finalOracleDecoded_nat_eq_prefixFold 𝔽q β stmtOut oStmtOut hchain f₀
+        hfirst hf₀ j.val j.isLt (hclose j)
+    refine hp.trans ?_
+    unfold finalDecodedPrefixAt finalDecodedPrefixFold
+    congr 1
+    funext c
+    simp only [finalPrefixChallenges, getFoldingChallenges, zero_add]
+  have hfold' : iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (i := ⟨k, by omega⟩) (steps := ϑ) (destIdx := ⟨k + ϑ, by omega⟩)
+      (h_destIdx := rfl) (h_destIdx_le := by simp only [Fin.val_mk]; omega) (f := decoded jLast)
+      (r_challenges := getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ϑ)
+        (i := Fin.last ℓ) stmtOut.challenges k (by simp only [Fin.val_last]; omega)) =
+      fun _ => stmtOut.final_constant := by
+    simpa only [decoded, finalOracleDecodedAt, finalOracleDecoded, finalOracleRaw,
+      finalOracleBlockIdx, UDRCodeword_constFunc_eq_self] using hfold
+  have hweld := getLastOracle_finalFold_eq_eval' 𝔽q β
+    (t := revIndexMLP tpoly) (challenges := stmtOut.challenges) (oStmt := decoded) hstrict
+    (curIdx := ⟨k, by omega⟩) (destIdx := ⟨k + ϑ, by omega⟩)
+    (hcur := hk) (hdest := rfl) (hdest_le := by simp only [Fin.val_mk]; omega)
+    (h_destIdx_oracle := rfl) (hpos := by omega)
+    (rchal := getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ϑ)
+      (i := Fin.last ℓ) stmtOut.challenges k (by simp only [Fin.val_last]; omega))
+    (hrchal := rfl) (y := ⟨0, by exact zero_mem _⟩)
+  exact (congrFun hfold' ⟨0, by exact zero_mem _⟩).symm.trans hweld
 
 /-!
-The round-by-round knowledge-extractor tail of this file
-(`extracted_t_poly_eval_eq_final_constant` through `finalSumcheckKnowledgeStateFunction`)
-is an unverified draft quarantined to `FinalSumcheckExtractorDraft.wip` (same directory)
-until its phantom-lemma and KState-design blockers are resolved — see the header of that
-file and issue #317 (2026-06-11). Nothing in the BinaryBasefold cone consumes it; the only
-external consumer is FRIBinius/CoreInteractionPhase (`extracted_t_poly_eval_eq_final_constant`),
-which stays red until the draft is repaired.
+The extraction-to-final-constant bridge is now proved from unique decoding and the decoded
+prefix-fold chain. The old BinaryBasefold knowledge-state draft is not reinstated here;
+FRIBinius supplies its own final-step extractor and knowledge-state proof.
 -/
 
 end FinalSumcheckStep

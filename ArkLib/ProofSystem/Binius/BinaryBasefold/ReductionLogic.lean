@@ -200,7 +200,7 @@ def ReductionLogicStep.IsStronglyComplete
 during verification (e.g., QueryPhase in Binary Basefold).
 
 Unlike `ReductionLogicStep` where `verifierCheck` is a pure `Prop`, here it returns
-`OracleComp (oSpec + ([OracleIn]ₒ + [pSpec.Message]ₒ)) StmtOut` to support oracle
+`OptionT (OracleComp (oSpec + ([OracleIn]ₒ + [pSpec.Message]ₒ))) StmtOut` to support oracle
 queries during verification. This matches the signature of `OracleVerifier.verify`.
 
 All other components (embed, hEq, relations, proverOut, verifierOut) remain pure,
@@ -224,7 +224,7 @@ structure OracleAwareReductionLogicStep
   -- Uses the extended spec: oSpec + ([OracleIn]ₒ + [pSpec.Message]ₒ)
   -- Same signature as OracleVerifier.verify
   verifierCheck : StmtIn → FullTranscript pSpec →
-    OracleComp (oSpec + ([OracleIn]ₒ + [pSpec.Message]ₒ)) StmtOut
+    OptionT (OracleComp (oSpec + ([OracleIn]ₒ + [pSpec.Message]ₒ))) StmtOut
   -- Output computation remains pure/deterministic
   verifierOut   : StmtIn → FullTranscript pSpec → StmtOut
 
@@ -286,7 +286,7 @@ def OracleAwareReductionLogicStep.IsStronglyCompleteUnderSimulation
     let so := OracleInterface.simOracle2 oSpec oStmtIn transcript.messages
 
     -- 3. The Verifier check under simulation MUST succeed with probability 1
-    Pr[⊥ | simulateQ so (step.verifierCheck stmtIn transcript)] = 0 ∧
+    Pr[⊥ | OptionT.mk (simulateQ so (step.verifierCheck stmtIn transcript).run)] = 0 ∧
 
     -- 4. The output MUST be valid and consistent
     let verifierStmtOut := step.verifierOut stmtIn transcript

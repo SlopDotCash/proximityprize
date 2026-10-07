@@ -43,6 +43,10 @@ def hypercubeEquivFin : (Fin κ → Fin 2) ≃ Fin (2 ^ κ) :=
 instance booleanHypercubeBasis : Basis (Fin κ → Fin 2) K L :=
   β.reindex (e := (hypercubeEquivFin κ).symm)
 
+/-- The binary-tower packing profile used by the FRI-Binius ring-switching phase. -/
+abbrev ringSwitchingProfile : RingSwitching.RingSwitchingProfile K L κ :=
+  RingSwitching.binaryTowerProfile κ K L (booleanHypercubeBasis κ L K β)
+
 instance linearIndependentBooleanHypercubeBasis : Fact (LinearIndependent K ⇑β) := by
   constructor
   exact β.linearIndependent
