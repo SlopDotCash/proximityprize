@@ -53895,3 +53895,33 @@ exponent 4d+6 = 54) and δ = 0.34321 (d=24, m=128; list exponent 102); rate 1/8:
 The window-fraction law and the death of the `m = d³` hypothesis at prize rates are recorded
 in the KB note §3.6; TR26-164's capacity regime is confined by its own constraint (26) to
 rates ≲ 10⁻⁴³.
+
+
+## Abstract Galois phase-spread refutation (2026-10-06 review integration)
+
+**Source:** [the refutation module](Frontier/_AvGalois_PhaseSpreadRefuted.lean),
+original PR #206 at `0225dbf0473561762c2a822f19c14982d33ab7eb`.
+The refuted universal assertion is that one real constant `C` makes
+`GaloisPhaseSpreadResidual m n v C` hold for every dimension and every family
+satisfying `GaloisOrbitRMS`. Individual instances of this implication can still hold.
+
+`not_galoisPhaseSpreadResidual_at_two` gives the constant-family counterexample
+at `(m,n,C) = (2,1,1)`. `exists_sq_log_lt_self` supplies, for every real `C`,
+a dimension `m ≥ 2` with `C² log m < m`. The theorem
+`not_galoisPhaseSpreadResidual_for_any_constant` then places mass `√m` at one
+coordinate, with all other coordinates zero and `n = 1`, to satisfy the RMS
+identity while violating the proposed upper bound.
+
+**Reproduction:** after `scripts/pg-warm.sh`, build the imported module with
+`./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._AvGalois_StickelbergerPhaseDescent`,
+then run
+`./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_AvGalois_PhaseSpreadRefuted.lean`.
+The file prints the axioms of all three theorems; accepted dependencies are
+`propext`, `Classical.choice`, and `Quot.sound` only.
+
+**Evidence class and scope:** an abstract counterexample theorem, not a bound
+for genuine Gaussian-period values and not a production δ* refutation or closure.
+The actual arithmetic orbit family needs additional structure. The production
+conjecture and the BGK estimate remain open. The original PR reports successful
+Lean compilation and a standard-axiom audit; independent integration validation
+is recorded by the corresponding review PR and its CI checks.

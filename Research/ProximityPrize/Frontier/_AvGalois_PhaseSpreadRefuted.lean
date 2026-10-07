@@ -27,8 +27,8 @@ family `v 0 = √m`, `v i = 0` otherwise, with `n = 1`, satisfies the identity w
 ## Consequence for the reduction
 
 The lane's honest statement ("Galois/Stickelberger pins the RMS and is blind to the phase
-anti-correlation") is therefore not merely informal: the recorded `Prop` is uninhabitable as
-written. Any future closure must quantify over the actual `η` orbit family rather than an
+anti-correlation") is therefore not merely informal: no constant makes the recorded
+implication hold uniformly over all dimensions and RMS-normalised families. Any future closure must quantify over the actual `η` orbit family rather than an
 arbitrary RMS-normalised `v : Fin m → ℝ`; the abstract implication carries no concentration
 information.
 
