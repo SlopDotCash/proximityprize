@@ -633,3 +633,14 @@ standard axioms and the non-adaptive verifier conversion uses none. Two audit at
 the macOS system open-file limit; the separate retry passed. The changed-source forbidden-token
 check, repository zero-hole census, imports, docs and KB checks pass. A concurrent full-source
 forbidden-token scan encountered the same system limit, so its incomplete run is not a pass.
+
+Round-by-round security now passes ordinary compilation on Lean 4.34. Its finite union bounds,
+failure-monotone trailing bind, and heterogeneous event comparison use VCVio's separate
+`MonadAttach`, SPMF lift, lawful lift and distribution-compatibility interfaces in place of the
+retired `HasEvalSPMF` bundle. No exact-support or additional security hypothesis is introduced.
+The OptionT success event still excludes failure, and the one-shot extractor conversion keeps
+its existing monotonicity requirement. The identity oracle-verifier knowledge theorem retains
+its zero error. The broader build has advanced to RingSwitching Prelude itself.
+
+All eight selected installed round-by-round roots use only standard axioms. They are included
+in the routine axiom manifest. The changed-source forbidden-token check and docs checks pass.
