@@ -839,3 +839,10 @@ validated message-first theorem, removing its duplicate support/probability proo
 preserving the statement and hypotheses. Its optional-transformer lift and failure-support
 helpers are migrated to the current API. Empty-tail completeness and further soundness
 consumers remain under validation.
+
+Prover seam decomposition passes its ordinary Lean 4.34 build (3,219 jobs). All 35 exported
+theorems have standard-only installed axiom closures and are registered for routine auditing.
+The repair proves nested-lift collapse using query coherence, transports send/receive steps
+through the current lift operation, and makes the initial-state projection explicit. Existing
+seam direction and state hypotheses remain unchanged. This validates decomposition and
+reassembly; it does not by itself discharge downstream soundness or STIR obligations.
