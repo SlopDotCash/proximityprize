@@ -723,3 +723,16 @@ the empty oracle uses pointwise inhabited ranges, and the declaration-free SimOr
 file imports only the query-implementation API. Four selected BCIKS20/WHIR roots pass installed
 standard-axiom audits. The broader STIR completeness migration and #1291 budget/statement
 corrections remain in progress.
+
+The simulation compatibility layer now passes an ordinary Lean 4.34 build alongside BCIKS20
+JointAgreement (3,737 jobs). Retired bundled oracle instances become pointwise range instances;
+uniform finite-answer semantics are derived locally. Probability-support loop laws are derived
+from distribution compatibility, without requiring an extra exact-support assumption. The generic
+vector support equivalence uses the current exact-support interface. Transformer and query-lift
+proofs use explicit run/lift identities where required by the newer elaborator.
+
+WHIR's ten typed transcript payload constructors now explicitly unfold their slot lengths.
+Their ordinary build passes 3,654 jobs. Ten installed simulation/JointAgreement roots and all ten
+payload constructors use only standard axioms and are registered for routine auditing. No source
+admissions or custom axioms are added. The broader completeness and sequential-append migrations
+still have source errors, so these passes do not establish the full STIR or repository build.

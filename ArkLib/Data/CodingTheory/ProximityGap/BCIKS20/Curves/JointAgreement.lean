@@ -549,6 +549,7 @@ theorem RS_jointAgreement_of_goodCoeffsCurve_card_gt {k deg : ℕ} {domain : ι 
             have hbt : ¬ ((t : ℕ) = (b : ℕ)) := fun h => hb (Fin.ext h.symm)
             simp [hbt])
           (fun ht => absurd (Finset.mem_univ t) ht)] at hcoeff
+      refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩
       simpa [Polynomial.Bivariate.evalX, Polynomial.coeff] using hcoeff
   · have hdeg_gt : n < deg := Nat.lt_of_not_ge hdeg_le
     have hp_mem (p : F[X]) (w : ι → F)
