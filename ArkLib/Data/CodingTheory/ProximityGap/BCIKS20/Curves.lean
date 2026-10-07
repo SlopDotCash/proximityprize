@@ -2889,7 +2889,7 @@ private lemma exists_polynomialCurve_through {n l : ℕ} {F : Type} [Field F]
     fun x => Lagrange.interpolate Finset.univ zs (fun j => w j x) with hP
   have hdeg : ∀ x, (P x).degree < (l : WithBot ℕ) := by
     intro x
-    simpa using Lagrange.degree_interpolate_lt (s := (Finset.univ : Finset (Fin l)))
+    simpa [P] using Lagrange.degree_interpolate_lt (s := (Finset.univ : Finset (Fin l)))
       (v := zs) (r := fun j => w j x) (fun a _ b _ hab => hinj hab)
   refine ⟨fun i x => (P x).coeff i, ?_⟩
   intro j

@@ -416,3 +416,7 @@ ArkLib.OracleReduction.Composition.Sequential.ChallengeSeamBridge Prover.evalDis
 ArkLib.OracleReduction.Composition.Sequential.ChallengeSeamBridge Prover.evalDist_challengeSeam_bridge_right
 ArkLib.OracleReduction.Composition.Sequential.ChallengeSeamBridge Prover.support_challengeSeam_bridge_left
 ArkLib.OracleReduction.Composition.Sequential.ChallengeSeamBridge Prover.support_challengeSeam_bridge_right
+
+# Lean 4.34 distributional bind commutation.
+ArkLib.ToMathlib.OracleCompEvalDistBindComm SPMF.bind_comm
+ArkLib.ToMathlib.OracleCompEvalDistBindComm OracleComp.evalDist_bind_comm

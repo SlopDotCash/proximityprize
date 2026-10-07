@@ -3,17 +3,18 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import VCVio
+import VCVio.OracleComp.EvalDist
+import VCVio.EvalDist.Monad.Basic
 
 /-!
-# Distributional bind-commutation for `OracleComp` (`evalDist`-level)
+# Distributional bind-commutation for `OracleComp` (`evalSPMF`-level)
 
 `OracleComp` is a free monad over oracle queries, so two **independent** computations do **not**
 commute *syntactically*: `a >>= fun x => b >>= k x` and `b >>= fun y => a >>= fun x => k x y` are
 different free-monad trees. They are, however, equal as **distributions**, because the underlying
 sub-probability monad `SPMF` is commutative.
 
-This file proves that commutation at the `evalDist` level. It is the exact tool needed to discharge
+This file proves that commutation at the `evalSPMF` level. It is the exact tool needed to discharge
 the sequential-composition run-factoring keystone (`Prover.appendRunRightResidual`, gating #13/#114)
 in the **challenge** case, where the appended prover samples the round challenge *before* running
 `P₁.output`, while the factored form `P₁.run ≫ P₂.run` runs `P₁.output` first — an
@@ -41,16 +42,20 @@ end SPMF
 
 namespace OracleComp
 
+/-- Preserve the finite uniform interpretation of this legacy probability interface. -/
+noncomputable local instance bindCommUniformSpec {ι : Type} (spec : OracleSpec ι)
+    [∀ t, Fintype (spec.Range t)] [∀ t, Inhabited (spec.Range t)] :
+    OracleSpec.IsUniformSpec spec := OracleSpec.IsUniformSpec.ofFintypeInhabited spec
+
 /-- **Distributional bind-commutation for `OracleComp`.** Independent oracle computations commute
-under `evalDist`: `𝒟[a >>= fun x => b >>= k x] = 𝒟[b >>= fun y => a >>= fun x => k x y]`. The
+under `evalSPMF`: `𝒟[a >>= fun x => b >>= k x] = 𝒟[b >>= fun y => a >>= fun x => k x y]`. The
 `OracleComp`-syntactic equality is false (free monad); this distribution-level one holds via
 `SPMF.bind_comm`. -/
-theorem evalDist_bind_comm {ι : Type} {spec : OracleSpec ι} [spec.Fintype] [spec.Inhabited]
+theorem evalDist_bind_comm {ι : Type} {spec : OracleSpec ι} [∀ t, Fintype (spec.Range t)] [∀ t, Inhabited (spec.Range t)]
     {α β γ : Type}
     (a : OracleComp spec α) (b : OracleComp spec β) (k : α → β → OracleComp spec γ) :
-    (evalDist (a >>= fun x => b >>= fun y => k x y) : SPMF γ)
-      = evalDist (b >>= fun y => a >>= fun x => k x y) := by
-  simp only [evalDist_bind]
-  exact SPMF.bind_comm _ _ _
+    (evalSPMF (a >>= fun x => b >>= fun y => k x y) : SPMF γ)
+      = evalSPMF (b >>= fun y => a >>= fun x => k x y) := by
+  exact evalSPMF_bind_bind_swap a b k
 
 end OracleComp
