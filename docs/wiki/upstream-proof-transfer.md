@@ -813,3 +813,11 @@ and collapses both nested output lifts with proved composition identities. In pa
 `appendRunRightDistResidual_holds` and the challenge-first `append_run_evalDist_challenge`
 are validated. These are equalities of distributions; they do not assert the false general
 syntactic ordering equality. Public names and statement assumptions are retained.
+
+STIR's combination module now passes its ordinary Lean 4.34 build, together with the
+append-completeness interface file (3,766 jobs). The proof repair makes block disjointness
+arithmetic explicit, unfolds the geometric-sum definition before case splitting, and constructs
+filter membership explicitly. All six selected installed combination roots have standard-only
+axiom closures and are registered for routine auditing. The existing strict coefficient
+residual in the general combination theorem is retained; the small-field corollaries retain
+their stated regime restrictions. The message-first completeness proof remains in migration.

@@ -553,3 +553,11 @@ ArkLib.ToMathlib.RestrictedSumset MvPolynomial.erdos_heilbronn_two
 ArkLib.ToMathlib.RestrictedSumsetGeneral MvPolynomial.erdos_heilbronn
 ArkLib.Data.CodingTheory.InterleavedRowDistance ArkLib.relDistFromCode_row_le_interleaved
 ArkLib.Data.CodingTheory.ProximityGap.GWAffinePinning ArkLib.FRS.GK16.BrickW.gw_solutionSet_affine_finrank_le
+
+# Lean 4.34 STIR combination migration.
+ArkLib.ProofSystem.Stir.Combine Combine.combine_theorem
+ArkLib.ProofSystem.Stir.Combine Combine.combine_theorem_of_card_le
+ArkLib.ProofSystem.Stir.Combine Combine.combine_theorem_of_card_le_e7
+ArkLib.ProofSystem.Stir.Combine Combine.combine_theorem_proximityError
+ArkLib.ProofSystem.Stir.Combine Combine.combine_theorem_proximityError_of_card_le
+ArkLib.ProofSystem.Stir.Combine Combine.degreeCor_eq
