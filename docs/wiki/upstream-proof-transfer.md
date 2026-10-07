@@ -491,3 +491,9 @@ libraries. The three-prime packet refutation, value-spread second-moment proof, 
 direct Lean 4.34 checks with these narrower imports. This reduces the loaded dependency set without
 changing their statements or proofs. Their ordinary build now also passes (3,098 jobs); the
 full build still needs verification.
+
+
+The PS existence proof now uses Mathlib's polynomial `natDegree_mul` for the outer variable
+and upstream's explicit arithmetic estimates. Its public hypotheses and conclusions are
+unchanged. The direct Lean 4.34 check passes; both `ps_exists_p_nonzero` and `ps_exists_p`
+report only standard axioms in the source check. Its ordinary rebuild remains pending.
