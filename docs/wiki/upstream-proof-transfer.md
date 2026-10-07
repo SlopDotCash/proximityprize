@@ -912,3 +912,12 @@ logs. It does not prove the deterministic prover-log-only Definition 3.6 contrac
 extraction-time bound. These are useful missing results; importing them requires the key-lemma
 witness interface, single-salt coin/extractor semantics, query-log transports and normalization
 helpers. This review records the transfer requirements, not a native compilation result.
+
+Challenge-first sequential game factoring passes its ordinary Lean 4.34 build (3,245 jobs)
+and all four exported theorem roots have standard-only installed axiom closures. The migration
+uses pointwise oracle instances and the explicit legacy `evalSPMF` evaluator. It normalizes
+both nested output lifts via proved query coherence and closes the transcript/output equality
+explicitly. Completeness and soundness factoring preserve the existing state-preservation and
+simulation hypotheses. The result remains distributional: it does not assert the false general
+syntactic reordering of a challenge and a prover output. All four roots are registered for
+routine auditing; downstream perfect-completeness and full STIR validation remain pending.
