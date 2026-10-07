@@ -145,3 +145,7 @@ ArkLib.Interaction.Oracle.Security.StateRestorationOracle Interaction.Oracle.Sec
 ArkLib.Interaction.Oracle.Security.StateRestorationCoins Interaction.Oracle.Security.StateRestoration.stateRestoration_oracle_knowledge_soundness_privateCoins
 ArkLib.Interaction.Oracle.Security.StateRestorationBudget Interaction.Oracle.Security.StateRestoration.stateRestoration_oracle_knowledge_soundness_nonuniform
 ArkLibTest.Interaction.Oracle.Security.StateRestorationBudget Interaction.Oracle.Security.StateRestorationBudgetTest.actual_nonuniform_game_bound
+
+# Concrete-group trapdoor recovery: prerequisite for the KZG assumption audit
+ArkLib.Commitments.Functional.KZG.ConcreteTrapdoor ArkLibVacuity.dlogOf_pow
+ArkLib.Commitments.Functional.KZG.ConcreteTrapdoor ArkLibVacuity.dlogOf_generate

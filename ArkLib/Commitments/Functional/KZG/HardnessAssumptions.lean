@@ -64,6 +64,12 @@ abbrev tSdhCondition {g₁ : G₁} : (ZMod p × ZMod p × G₁) → Prop :=
 Both hardness games sample the SRS trapdoor `τ` as private setup randomness in the outer
 `ProbComp`, not through the cache-backed `randomOracle` implementation. The adversary is run from
 an empty query cache and receives only the public SRS generated from `τ`.
+
+This separates setup randomness from oracle access, but does not restrict the adversary to
+efficient or generic-group computation. The adversary type permits arbitrary Lean functions
+on concrete group elements. `ArkLibVacuity.dlogOf_generate` in `ConcreteTrapdoor.lean` recovers
+`τ` from the public verifier leg using classical choice. The probability-one attack and
+restricted generic-group replacement from upstream PR #655 still require native integration.
 -/
 
 /-- The t-SDH game for a specific adversary. -/

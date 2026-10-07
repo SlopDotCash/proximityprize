@@ -367,3 +367,27 @@ Direct checks pass for the FFT module, matrix multilinear evaluation, linear mul
 extension, puncture/filter membership, and the nontrivial additive-character sum proof.
 The proximity-generator positivity proof is updated to the current finite-infimum API;
 its local attempts have hit file-resource failures, so that check is still pending.
+
+PR #737 targets `q^((α-β²) * logb 2 q)` and still admits the hard-regime theorem.
+The native `BKR06BareT312` front door proves the natural-log variant, using the slack
+from `log 2 < 1` in its band argument. These are different bounds when `β² < α`.
+The native theorem does not settle the stronger base-two target. Preserve the proved
+native construction while reviewing upstream finite-field and good-window helpers;
+never import the admitted target as a proved improvement.
+
+The function-field regularity bridge now uses the existing explicit quotient witness
+instead of relying on simplifier reduction across the two embedding definitions.
+`RationalFunctionsCore.lean` passes its direct Lean 4.34 check after this repair.
+
+PR #655 identifies a concrete limitation of the native KZG hardness assumptions:
+private setup sampling still exposes concrete SRS group elements to unrestricted Lean
+functions. `ConcreteTrapdoor.lean` adapts its choice-defined discrete logarithm and
+inversion proof, and proves recovery from the native generated verifier SRS leg.
+A strict composed-source Lean 4.34 check of native `PrimeOrder`, `KZG.Algebra`, and the
+new module passes; the inversion and recovery roots use only standard axioms.
+This is the algebraic prerequisite, not the full probability-one game attack or the
+restricted generic-group security repair. Those transfers remain pending.
+
+Coset-domain membership transport now uses the proved `toCosetFftDomain_apply`
+interface rather than unfolding unit and type-tag representations. This preserves the
+native `mem_def` equality orientation and passes a direct Lean 4.34 check.

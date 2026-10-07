@@ -669,7 +669,10 @@ a Reed-Solomon code `C := RS[F_q, F_q, ⌊q^α⌋]` and a word `w : F_q → F_q`
 `ArkLib/ToMathlib/BKR06BareT312.lean` (witness sequence `qs i = 2^{i+N+1}` past the
 Archimedean band threshold; per-instance assembly = ZMod-2 base-field glue +
 log-2-widened band cutoffs + the tight pigeonhole close-codeword count +
-floor-window/index transport, all from `ArkLib/ToMathlib/BKR06EndToEnd.lean`).  The
+floor-window/index transport, all from `ArkLib/ToMathlib/BKR06EndToEnd.lean`).
+This native statement uses the natural logarithm `Real.log`. Upstream PR #737 instead
+asks for `Real.logb 2`; when `β² < α` and `q > 1`, that gives a strictly larger
+exponent. The native theorem does not discharge that stronger, still-admitted target. The
 `def : Prop` below is retained as the statement surface; the narrowed `_of_residuals`/
 injection/family forms remain as intermediate API.  Historical context:
 `research/formal/arklib-proof-research-2026-06.md`.
@@ -687,9 +690,9 @@ residual further: it assumes only the genuine *geometric* step — an injective 
 the counting arithmetic in-tree via `Set.ncard_le_ncard_of_injOn` together with the proven
 value-fiber engine in `ArkLib.ToMathlib.BKR06FiberCount`
 (`BKR06.card_subspacePolyHom_fiber_eq_natDegree`: a degree-`q^d` linearized polynomial takes
-each value in its image exactly `q^d` times). The statement below remains an external `Prop`
-only because the *unhypothesized* in-tree statement cannot supply that geometric encoding nor
-the "infinitely many `q`" prime-power witness sequence. -/
+each value in its image exactly `q^d` times). The statement below is retained as a `Prop`
+interface; the native geometric encoding and infinite prime-power sequence are supplied by
+the proved front door cited above. -/
 def rs_lambda_superpoly_extension_bkr06
     (α β : ℝ) (_hα_pos : 0 < α) (_hα_lt : α < β) (_hβ_lt : β < 1) :
     Prop :=
@@ -709,12 +712,7 @@ def rs_lambda_superpoly_extension_bkr06
             let C := ReedSolomon.code domain k
             ((closeCodewordsRel ((C : Set (ι → F))) w δ).ncard : ℝ) ≥
               (q : ℝ) ^ ((α - β ^ 2) * Real.log q)
-  -- ABF26-T3.12; external statement [BKR06 Cor 2.2].
-  -- Missing ingredient: BKR06's superpolynomial RS list-size CONSTRUCTION over extension
-  -- fields. Must exhibit, for infinitely many prime powers q, an RS code RS[F_q,F_q,⌊q^α⌋]
-  -- and a word w with ≥ q^{(α-β²)log q} close codewords. The construction uses BKR06's
-  -- subfield/trace structure; ExtensionCodes.lean L2.21 transports list sizes but does not
-  -- manufacture the BKR06 large-list word. LOWER bound — genuinely external.
+  -- Natural-log statement interface; discharged by BKR06BareT312, as documented above.
 
 /-- **ABF26 Theorem 3.13 [GHSZ02 Cor 20] — honest reduction form (per-instance).**
 

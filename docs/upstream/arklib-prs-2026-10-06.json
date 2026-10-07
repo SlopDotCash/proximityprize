@@ -1262,7 +1262,7 @@
       "base": "7c385f6e314caedbfebe47ceff146974457d6641",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed: upstream target uses Real.logb 2 and remains admitted, while native BKR06BareT312 proves the weaker Real.log version through a log-2-widened band. Do not report these as equivalent or replace the native proved theorem with the admitted stronger statement. Native documentation corrected to state this distinction and remove stale missing-construction comments. Upstream finite-field helpers and good-window partial recurrence results remain candidates for selective transfer; hard-regime base-two target not discharged.",
       "files": [
         "ArkLib.lean",
         "ArkLib/Data/CodingTheory/JohnsonBound/Family.lean",
@@ -1325,7 +1325,7 @@
       "base": "d72f8392ff03047dc5386f4f4bb513743e7ada65",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed concrete native gap: tSdhAssumption/arsdhAssumption still quantify over unrestricted functions on concrete SRS elements, despite private setup sampling. Adapted the PR discrete-log construction/inversion and added native SRS trapdoor recovery in ConcreteTrapdoor; strict source-composed Lean4.34 check of actual native PrimeOrder/Algebra plus new module passes with both roots standard-only. Full probability-one attacks, refutations, generic-group soundness and repaired binding API remain pending; upstream branch itself usesLean4.31, so no blanket import or validity claim.",
       "files": [
         "ArkLib.lean",
         "ArkLib/Commitments/Functional/KZG/Binding.lean",
