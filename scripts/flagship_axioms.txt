@@ -678,3 +678,10 @@ ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.ofFinCoeff
 ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.coeff_ofFinCoeff
 ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.degree_toPoly_ofFinCoeff_lt
 ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.monomial_eq_zero
+
+# Lean4.34 message-seam game factoring.
+ArkLib.OracleReduction.Composition.Sequential.AppendChallengeSeam Reduction.append_run_natural_msg
+ArkLib.OracleReduction.Composition.Sequential.AppendChallengeSeam Reduction.appendStage₁
+ArkLib.OracleReduction.Composition.Sequential.AppendChallengeSeam Reduction.appendStage₂
+ArkLib.OracleReduction.Composition.Sequential.AppendChallengeSeam Reduction.append_game_factor_msg
+ArkLib.OracleReduction.Composition.Sequential.AppendChallengeSeam Reduction.append_completeness_msg_via_seamFactor
