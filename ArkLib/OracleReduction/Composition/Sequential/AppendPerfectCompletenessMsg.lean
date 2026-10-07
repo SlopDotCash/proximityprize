@@ -6,6 +6,8 @@ Authors: ArkLib Contributors
 import ArkLib.OracleReduction.Composition.Sequential.AppendRun
 import ArkLib.OracleReduction.Completeness
 
+attribute [local instance] OracleComp.bindCommUniformSpec
+
 /-!
 # Perfect completeness of sequential composition (`Reduction.append`)
 
@@ -31,7 +33,7 @@ open OracleComp OracleSpec ProtocolSpec
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype ((oSpec).Range t)] [∀ t, Inhabited ((oSpec).Range t)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -63,13 +65,13 @@ instance lawfulSubSpec_challenge_inr :
 as the verifier run itself. Reduces "verifier+getM never fails" to "verifier never returns `none`". -/
 private theorem probFailure_lift_run_getM {ι₁ ι₂ : Type} {spec₁ : OracleSpec ι₁}
     {spec₂ : OracleSpec ι₂} [spec₁ ⊂ₒ spec₂] [LawfulSubSpec spec₁ spec₂]
-    [spec₁.Fintype] [spec₁.Inhabited] [spec₂.Fintype] [spec₂.Inhabited]
+    [∀ t, Fintype ((spec₁).Range t)] [∀ t, Inhabited ((spec₁).Range t)] [∀ t, Fintype ((spec₂).Range t)] [∀ t, Inhabited ((spec₂).Range t)]
     {S' γ : Type} (W : OptionT (OracleComp spec₁) S') (c : γ) :
     Pr[⊥ | (do let stmtOut ← liftM W.run; let vs ← stmtOut.getM; pure (c, vs)
               : OptionT (OracleComp spec₂) (γ × S'))] = Pr[⊥ | W] := by
   rw [OptionT.liftM_run_getM_bind W (fun vs => pure (c, vs)), bind_pure_comp, probFailure_map,
     OptionT.probFailure_eq (m := OracleComp spec₂), OptionT.probFailure_eq (m := OracleComp spec₁)]
-  simp only [HasEvalPMF.probFailure_eq_zero, zero_add]
+  simp only [probFailure_eq_zero, zero_add]
   change probOutput (m := OracleComp spec₂) (mx := liftComp W.run spec₂) (x := none) =
     probOutput (m := OracleComp spec₁) (mx := W.run) (x := none)
   rw [OracleComp.probOutput_liftComp (spec := spec₁) (superSpec := spec₂) (mx := W.run) (x := none)]
@@ -83,10 +85,10 @@ theorem append_perfectCompleteness_message
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited]
+    [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Fintype (((oSpec + [pSpec₁.Challenge]ₒ)).Range t)] [∀ t, Inhabited (((oSpec + [pSpec₁.Challenge]ₒ)).Range t)]
+    [∀ t, Fintype (((oSpec + [pSpec₂.Challenge]ₒ)).Range t)] [∀ t, Inhabited (((oSpec + [pSpec₂.Challenge]ₒ)).Range t)]
     (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
@@ -111,12 +113,17 @@ theorem append_perfectCompleteness_message
         simp only [QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
           QueryImpl.addLift_def, QueryImpl.add_apply_inr]
         have hq := support_challengeQueryImpl_run_eq (q := OracleQuery.mk i f) s'
+        erw [OracleComp.support_liftM (spec := [pSpec₁.Challenge]ₒ) (OracleQuery.mk i f)] at hq
         rw [support_liftM]
+        dsimp only [OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst, PFunctor.Obj.snd]
+        erw [QueryImpl.add_apply_inr]
         simpa only [ChallengeIdx, Challenge, add_apply_inr, QueryImpl.liftTarget_apply,
           StateT.run_map, StateT.run_monadLift, monadLift_self, bind_pure_comp, Functor.map_map,
           support_map, Set.fmap_eq_image, toPFunctor_add, ofPFunctor_add, ofPFunctor_toPFunctor,
           support_liftM, QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
-          liftM_map] using hq)] at hf₁
+          liftM_map, OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst_mk,
+            PFunctor.Obj.snd_mk, OracleQuery.mk, PFunctor.Obj.fst, PFunctor.Obj.snd,
+            PFunctor.Obj.mk] using hq)] at hf₁
   simp only [Reduction.run] at hf₁
   rw [OptionT.probFailure_mk_do_bindT_eq_zero_iff] at hf₁
   obtain ⟨_, hV₁nf⟩ := hf₁
@@ -134,18 +141,23 @@ theorem append_perfectCompleteness_message
           simp only [QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
             QueryImpl.addLift_def, QueryImpl.add_apply_inr]
           have hq := support_challengeQueryImpl_run_eq (q := OracleQuery.mk i f) s'
+          erw [OracleComp.support_liftM (spec := [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (OracleQuery.mk i f)] at hq
           rw [support_liftM]
+          dsimp only [OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst, PFunctor.Obj.snd]
+          erw [QueryImpl.add_apply_inr]
           simpa only [ChallengeIdx, Challenge, add_apply_inr, QueryImpl.liftTarget_apply,
             StateT.run_map, StateT.run_monadLift, monadLift_self, bind_pure_comp, Functor.map_map,
             support_map, Set.fmap_eq_image, toPFunctor_add, ofPFunctor_add, ofPFunctor_toPFunctor,
             support_liftM, QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
-            liftM_map] using hq)]
+            liftM_map, OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst_mk,
+            PFunctor.Obj.snd_mk, OracleQuery.mk, PFunctor.Obj.fst, PFunctor.Obj.snd,
+            PFunctor.Obj.mk] using hq)]
     rw [OptionT.probFailure_mk_do_bindT_eq_zero_iff]
     refine ⟨?_, ?_⟩
     · simp only [probFailure_liftM, probFailure_bind_eq_zero_iff, OptionT.probFailure_liftM,
         OptionT.probFailure_lift, OptionT.probFailure_OptionT_pure, support_liftM, support_bind,
         Set.mem_iUnion, implies_true, and_self, true_and, OptionT.probFailure_mk_do_bindT_eq_zero_iff,
-        HasEvalPMF.probFailure_eq_zero, probFailure_pure]
+        probFailure_eq_zero, probFailure_pure]
     · intro pr hpr
       rw [OptionT.mem_support_iff] at hpr
       simp only [liftM_bind, liftM_pure, bind_pure_comp, liftM_OptionT_eq, bind_assoc,
@@ -188,12 +200,17 @@ theorem append_perfectCompleteness_message
               simp only [QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
                 QueryImpl.addLift_def, QueryImpl.add_apply_inr]
               have hq := support_challengeQueryImpl_run_eq (q := OracleQuery.mk i f) s''
+              erw [OracleComp.support_liftM (spec := [pSpec₁.Challenge]ₒ) (OracleQuery.mk i f)] at hq
               rw [support_liftM]
+              dsimp only [OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst, PFunctor.Obj.snd]
+              erw [QueryImpl.add_apply_inr]
               simpa only [ChallengeIdx, Challenge, add_apply_inr, QueryImpl.liftTarget_apply,
                 StateT.run_map, StateT.run_monadLift, monadLift_self, bind_pure_comp, Functor.map_map,
                 support_map, Set.fmap_eq_image, toPFunctor_add, ofPFunctor_add, ofPFunctor_toPFunctor,
                 support_liftM, QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
-                liftM_map] using hq)]
+                liftM_map, OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst_mk,
+            PFunctor.Obj.snd_mk, OracleQuery.mk, PFunctor.Obj.fst, PFunctor.Obj.snd,
+            PFunctor.Obj.mk] using hq)]
         rw [OptionT.mem_support_iff]
         simp only [Reduction.run, liftM_bind, ChallengeIdx, Challenge, liftM_pure, bind_pure_comp,
           liftM_OptionT_eq, Prod.mk.eta, bind_assoc, bind_map_left, OptionT.support_mk,
@@ -210,7 +227,7 @@ theorem append_perfectCompleteness_message
             OptionT.mk, bind_pure_comp]
           rw [support_simulateQ_eq_OracleComp_of_superSpec (h_supp := by intro β q; rfl)]
           simpa only [support_map, Set.mem_image, Option.some.injEq, OptionT.run,
-            exists_eq_right] using hs'mem
+            exists_eq_right] using (OptionT.mem_support_iff _ _).mp hs'mem
         · simp [Option.getM, OptionT.monad_pure_eq_pure,
             OptionT.mem_support_OptionT_pure_run_some_iff])
       simp only at key
@@ -231,12 +248,17 @@ theorem append_perfectCompleteness_message
             simp only [QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
               QueryImpl.addLift_def, QueryImpl.add_apply_inr]
             have hq := support_challengeQueryImpl_run_eq (q := OracleQuery.mk i f) s''
+            erw [OracleComp.support_liftM (spec := [pSpec₂.Challenge]ₒ) (OracleQuery.mk i f)] at hq
             rw [support_liftM]
+            dsimp only [OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst, PFunctor.Obj.snd]
+            erw [QueryImpl.add_apply_inr]
             simpa only [ChallengeIdx, Challenge, add_apply_inr, QueryImpl.liftTarget_apply,
               StateT.run_map, StateT.run_monadLift, monadLift_self, bind_pure_comp, Functor.map_map,
               support_map, Set.fmap_eq_image, toPFunctor_add, ofPFunctor_add, ofPFunctor_toPFunctor,
               support_liftM, QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
-              liftM_map] using hq)] at hf₂
+              liftM_map, OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst_mk,
+            PFunctor.Obj.snd_mk, OracleQuery.mk, PFunctor.Obj.fst, PFunctor.Obj.snd,
+            PFunctor.Obj.mk] using hq)] at hf₂
       simp only [Reduction.run] at hf₂
       rw [OptionT.probFailure_mk_do_bindT_eq_zero_iff] at hf₂
       obtain ⟨_, hV₂nf⟩ := hf₂
@@ -254,12 +276,17 @@ theorem append_perfectCompleteness_message
           simp only [QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
             QueryImpl.addLift_def, QueryImpl.add_apply_inr]
           have hq := support_challengeQueryImpl_run_eq (q := OracleQuery.mk i f) s'
+          erw [OracleComp.support_liftM (spec := [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (OracleQuery.mk i f)] at hq
           rw [support_liftM]
+          dsimp only [OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst, PFunctor.Obj.snd]
+          erw [QueryImpl.add_apply_inr]
           simpa only [ChallengeIdx, Challenge, add_apply_inr, QueryImpl.liftTarget_apply,
             StateT.run_map, StateT.run_monadLift, monadLift_self, bind_pure_comp, Functor.map_map,
             support_map, Set.fmap_eq_image, toPFunctor_add, ofPFunctor_add, ofPFunctor_toPFunctor,
             support_liftM, QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
-            liftM_map] using hq)] at hx
+            liftM_map, OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst_mk,
+            PFunctor.Obj.snd_mk, OracleQuery.mk, PFunctor.Obj.fst, PFunctor.Obj.snd,
+            PFunctor.Obj.mk] using hq)] at hx
     rw [OptionT.mem_support_iff] at hx
     simp only [liftM_bind, ChallengeIdx, Challenge, liftM_pure, bind_pure_comp,
       liftM_OptionT_eq, Prod.mk.eta, bind_assoc, bind_map_left, OptionT.support_mk, Set.mem_setOf_eq,
@@ -301,9 +328,7 @@ theorem append_perfectCompleteness_message
     simp only [support_map, Set.mem_image, Option.some.injEq, OptionT.run, exists_eq_right,
       OptionT.monad_bind_eq_bind, OptionT.mem_support_OptionT_bind_run_some_iff,
       OptionT.mem_support_OptionT_pure_run_some_iff, Function.comp_apply, Prod.exists] at hV
-    obtain ⟨s₂', hV₁, s₃, hV₂, hV₃⟩ := hV
-    simp only [OptionT.monad_pure_eq_pure, OptionT.mem_support_OptionT_pure_run_some_iff] at hV₃
-    subst hV₃
+    obtain ⟨s₂', hV₁, hV₂⟩ := hV
     have key₁ := hs₁ ((tr₁, s₂, w₂), s₂') (by
       rw [support_bind_simulateQ_run'_eq_mk (hInit := hInit)
         (impl := impl.addLift challengeQueryImpl) (hImplSupp := by
@@ -315,12 +340,17 @@ theorem append_perfectCompleteness_message
             simp only [QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
               QueryImpl.addLift_def, QueryImpl.add_apply_inr]
             have hq := support_challengeQueryImpl_run_eq (q := OracleQuery.mk i f) s'
+            erw [OracleComp.support_liftM (spec := [pSpec₁.Challenge]ₒ) (OracleQuery.mk i f)] at hq
             rw [support_liftM]
+            dsimp only [OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst, PFunctor.Obj.snd]
+            erw [QueryImpl.add_apply_inr]
             simpa only [ChallengeIdx, Challenge, add_apply_inr, QueryImpl.liftTarget_apply,
               StateT.run_map, StateT.run_monadLift, monadLift_self, bind_pure_comp, Functor.map_map,
               support_map, Set.fmap_eq_image, toPFunctor_add, ofPFunctor_add, ofPFunctor_toPFunctor,
               support_liftM, QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
-              liftM_map] using hq)]
+              liftM_map, OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst_mk,
+            PFunctor.Obj.snd_mk, OracleQuery.mk, PFunctor.Obj.fst, PFunctor.Obj.snd,
+            PFunctor.Obj.mk] using hq)]
       rw [OptionT.mem_support_iff]
       simp only [Reduction.run, liftM_bind, ChallengeIdx, Challenge, liftM_pure, bind_pure_comp,
         liftM_OptionT_eq, Prod.mk.eta, bind_assoc, bind_map_left, OptionT.support_mk,
@@ -355,12 +385,17 @@ theorem append_perfectCompleteness_message
             simp only [QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
               QueryImpl.addLift_def, QueryImpl.add_apply_inr]
             have hq := support_challengeQueryImpl_run_eq (q := OracleQuery.mk i f) s'
+            erw [OracleComp.support_liftM (spec := [pSpec₂.Challenge]ₒ) (OracleQuery.mk i f)] at hq
             rw [support_liftM]
+            dsimp only [OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst, PFunctor.Obj.snd]
+            erw [QueryImpl.add_apply_inr]
             simpa only [ChallengeIdx, Challenge, add_apply_inr, QueryImpl.liftTarget_apply,
               StateT.run_map, StateT.run_monadLift, monadLift_self, bind_pure_comp, Functor.map_map,
               support_map, Set.fmap_eq_image, toPFunctor_add, ofPFunctor_add, ofPFunctor_toPFunctor,
               support_liftM, QueryImpl.mapQuery, OracleQuery.input_apply, OracleQuery.cont_apply,
-              liftM_map] using hq)]
+              liftM_map, OracleQuery.input, OracleQuery.cont, PFunctor.Obj.fst_mk,
+            PFunctor.Obj.snd_mk, OracleQuery.mk, PFunctor.Obj.fst, PFunctor.Obj.snd,
+            PFunctor.Obj.mk] using hq)]
       rw [OptionT.mem_support_iff]
       simp only [Reduction.run, liftM_bind, ChallengeIdx, Challenge, liftM_pure, bind_pure_comp,
         liftM_OptionT_eq, Prod.mk.eta, bind_assoc, bind_map_left, OptionT.support_mk,
@@ -397,10 +432,10 @@ theorem reductionAppendPerfectCompletenessResidual_of_message
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited]
+    [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Fintype (((oSpec + [pSpec₁.Challenge]ₒ)).Range t)] [∀ t, Inhabited (((oSpec + [pSpec₁.Challenge]ₒ)).Range t)]
+    [∀ t, Fintype (((oSpec + [pSpec₂.Challenge]ₒ)).Range t)] [∀ t, Inhabited (((oSpec + [pSpec₂.Challenge]ₒ)).Range t)]
     (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
@@ -419,10 +454,10 @@ theorem reduction_append_perfectCompleteness_msg
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited]
+    [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Fintype (((oSpec + [pSpec₁.Challenge]ₒ)).Range t)] [∀ t, Inhabited (((oSpec + [pSpec₁.Challenge]ₒ)).Range t)]
+    [∀ t, Fintype (((oSpec + [pSpec₂.Challenge]ₒ)).Range t)] [∀ t, Inhabited (((oSpec + [pSpec₂.Challenge]ₒ)).Range t)]
     (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)

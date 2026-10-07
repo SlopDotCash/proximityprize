@@ -821,3 +821,13 @@ filter membership explicitly. All six selected installed combination roots have 
 axiom closures and are registered for routine auditing. The existing strict coefficient
 residual in the general combination theorem is retained; the small-field corollaries retain
 their stated regime restrictions. The message-first completeness proof remains in migration.
+
+Message-first sequential completeness passes its ordinary Lean 4.34 build (3,234 jobs).
+The port uses pointwise finite/inhabited answer types and an explicit local uniform
+interpretation. Seven challenge-query support steps use the current query representation;
+optional-transformer support is transported explicitly. The three installed completeness
+roots use only standard axioms. The prover/verifier support reconstruction helper also
+builds and has a standard-only installed axiom closure. All four roots are registered for
+routine auditing. Initialization, support-faithfulness and message-seam assumptions remain
+unchanged. The separate public wrapper is being simplified to reuse this theorem; its
+remaining helper migration is not included in this validation.
