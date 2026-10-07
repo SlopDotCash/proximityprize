@@ -773,3 +773,25 @@ VCVio's independent-draw swap theorem and imports only the evaluator modules, re
 whole-VCVio dependency from these STIR composition paths. The broader STIR attempt encountered
 macOS file-table exhaustion and artifact-write failures, plus an unported challenge-finiteness
 interface; it is not a successful STIR or repository validation.
+
+PR #818's polynomial line-restriction and layered-circuit foundations are imported unchanged
+from `4dc5142fdcca586ae499cd9d1b1d6dd4b48c8fce`, preserving authorship and Apache licensing.
+The polynomial library proves evaluation along the line and the multilinear degree bound;
+the circuit library relates successive layers and the circuit's input/output evaluations.
+Both modules pass ordinary Lean 4.34 compilation, alongside the challenge-oracle instance
+migration (3,221 jobs). All nineteen selected installed roots use only standard axioms.
+The challenge helpers now construct pointwise answer-type instances, retaining their names
+and finite/inhabited requirements. All nineteen roots are registered in routine validation.
+The generated prize umbrella is unchanged, since these modules are outside its import surface.
+
+This is not yet the full GKR protocol transfer: its Sumcheck, context-lifting and sequential
+composition consumers still require integration with the native framework. The donor's final
+completeness proof inherits admitted upstream framework dependencies; it must be adapted to
+native proved or explicitly conditional routes before claiming full completeness.
+
+PR #466's Clean adapter was also reviewed. It would connect an external `FormalCircuit` to
+the existing native constraint-system interface, but the native dependency set has no Clean
+package. The donor pins a Lean 4.28-era Clean revision, so copying its lockfile is not suitable
+for this Lean 4.34 migration. Its completeness construction additionally assumes witness
+environment existence (`hWitGen`); the adapter does not prove that obligation. A compatible
+Clean dependency and adapter validation remain pending.
