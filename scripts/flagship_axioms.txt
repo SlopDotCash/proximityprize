@@ -664,3 +664,17 @@ ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessOracle Or
 # Lean4.34 non-perfect sequential completeness.
 ArkLib.OracleReduction.Composition.Sequential.AppendCompletenessNonPerfect Reduction.bad_le_of_optionT_mk_ge
 ArkLib.OracleReduction.Composition.Sequential.AppendCompletenessNonPerfect Reduction.append_completeness_msg_proof
+
+# Lean4.34 univariate compatibility and upstream replacement APIs.
+ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.toPoly_divByMonic
+ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.toPoly_modByMonic
+ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.toPoly_C
+ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.toPoly_monomial
+ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.ofFn
+ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.coeff_eq_zero_of_size_le
+ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.coeffHom
+ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.coeffHom_apply
+ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.ofFinCoeff
+ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.coeff_ofFinCoeff
+ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.degree_toPoly_ofFinCoeff_lt
+ArkLib.ToCompPoly.Univariate.Basic CompPoly.CPolynomial.monomial_eq_zero

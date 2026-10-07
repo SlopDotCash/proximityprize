@@ -884,3 +884,13 @@ standard-only axiom closures and are registered for routine auditing. Existing d
 factoring, stage-bridge and state-preservation hypotheses remain explicit. The unchanged
 `SeamCompleteness` dependency also passed direct and ordinary compilation; this does not yet
 validate all downstream challenge-seam or STIR consumers.
+
+The univariate CompPoly compatibility module now builds on the pinned dependency revision.
+Eight duplicate declarations already supplied by CompPoly are removed; their public names
+remain available through the existing imports. The local monic division and remainder bridges
+are preserved. Their proof uses a single recursive-step rewrite and direct algebra, avoiding
+an unnecessary definitional-equality expansion; zero-polynomial transport is explicit. The
+module built successfully in the Hachi dependency build, and all twelve selected installed
+API roots (eight upstream replacements and four local theorems) use only standard axioms.
+The encompassing Hachi coordinate build subsequently failed opening a Mathlib artifact due to
+macOS file-table exhaustion, so full coordinate validation is not claimed here.
