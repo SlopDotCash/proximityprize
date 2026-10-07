@@ -190,7 +190,7 @@ theorem dimGeneralSharp_badScalars_card_mul_succ_le
     have htotal : (S'.powersetCard (d + 2)).card = d + 3 := by
       rw [Finset.card_powersetCard, hS'card]
       exact Nat.choose_succ_self_right (d + 2)
-    have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+    have hsplit := Finset.card_filter_add_card_filter_not
       (s := S'.powersetCard (d + 2)) (p := fun R => polyFitOn g d R u₁)
     have hfit1 := fit_subsets_card_le_one hginj hS'card hS'unfit
     have hnonfit_ge :

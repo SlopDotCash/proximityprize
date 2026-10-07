@@ -89,7 +89,7 @@ theorem per_config_bad_set_card_le {N : ℕ} (hN : N ≠ 0) :
   calc 2 ^ (N.primeFactors).card
       = ∏ _p ∈ N.primeFactors, 2 := by rw [Finset.prod_const]
     _ ≤ ∏ p ∈ N.primeFactors, p := by
-          apply Finset.prod_le_prod
+          apply Finset.prod_le_prod₀
           · intro i _; norm_num
           · intro p hp; exact (Nat.prime_of_mem_primeFactors hp).two_le
     _ ≤ N := Nat.le_of_dvd (Nat.pos_of_ne_zero hN) (Nat.prod_primeFactors_dvd N)

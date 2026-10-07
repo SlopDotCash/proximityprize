@@ -1858,7 +1858,7 @@ theorem queryOracleVerifier_rbrKnowledgeSoundness {σ : Type} (init : ProbComp �
         _ = 0 := by
           simp only [PMF.monad_pure_eq_pure, PMF.monad_bind_eq_bind, PMF.bind_const, PMF.pure_apply,
             eq_iff_iff, iff_false, not_true_eq_false, ↓reduceIte]
-        _ ≤ _ := zero_le _
+        _ ≤ _ := zero_le
     case pos =>
       -- P is non-empty: extract preconditions from a witness
       obtain ⟨y₀, h_P_y₀⟩ := h_P_nonempty

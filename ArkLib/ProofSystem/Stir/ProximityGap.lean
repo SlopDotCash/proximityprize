@@ -33,7 +33,7 @@ open NNReal ProbabilityTheory ReedSolomon
 namespace STIR
 
 /-- Theorem 4.1[BCIKS20] from [ACFY24stir]
-  Let `C = RS[F, ι, degree]` be a ReedSolomon code with rate `degree / |ι|`
+  Let `C = RS[F, ι, degree]`, with `0 < degree`, be a ReedSolomon code with rate `degree / |ι|`
   and let Bstar(ρ) = √ρ. For all `δ ∈ (0, 1 - Bstar(ρ))`, `f₁,...,fₘ : ι → F`, if
   `Pr_{r ← F} [ δᵣ(rⱼ * fⱼ, C) ≤ δ] > err'(degree, ρ, δ, m)`
   then ∃ S ⊆ ι, |S| ≥ (1 - δ) * |ι| and
@@ -57,6 +57,10 @@ namespace STIR
      monomial / Vandermonde generator (cf. `RSGenerator.genRSC`,
      ProofSystem/Whir/ProximityGen.lean, and `Generator.ProximityGenerator.proximity`), which
      removes the counterexample.
+
+  Degree must also be positive: at degree zero the rate is zero and the division convention
+  makes the error bound vanish. The degree-zero counterexample in upstream PR #1291
+  motivates the explicit `_hdegPos` hypothesis; the conclusion is not claimed proved here.
 
   2. SOURCE residuals (Johnson/√ρ regime). Even the monomial instance reduces to BCIKS20
      Thm 1.5, `ProximityGap.correlatedAgreement_affine_curves`
@@ -83,6 +87,7 @@ def proximity_gap
   -- hypothesis holds with probability 1 while the agreement conclusion fails for `f` far
   -- from the code. BCIKS20 Theorem 4.1 is about the power generator; pin `GenFun r j = r^j`.
   (_hGen : ∀ r j, GenFun r j = r ^ (j : ℕ))
+  (_hdegPos : 0 < degree)
   (_hδPos : 0 < δ)
   (_hδLt : δ < 1 - Bstar (LinearCode.rate (code φ degree)))
   (_hProb :
@@ -102,12 +107,13 @@ theorem proximity_gap_iff_jointAgreement
     {ι : Type} [Fintype ι] [Nonempty ι] {φ : ι ↪ F}
     {degree m : ℕ} {δ : ℝ≥0} {f : Fin m → ι → F} {GenFun : F → Fin m → F}
     (hGen : ∀ r j, GenFun r j = r ^ (j : ℕ))
+    (hdegPos : 0 < degree)
     (hδPos : 0 < δ)
     (hδLt : δ < 1 - Bstar (LinearCode.rate (code φ degree)))
     (hProb :
       Pr_{ let r ← $ᵖ F}[δᵣ((fun x => ∑ j : Fin m, (GenFun r j) * f j x), code φ degree) ≤ δ] >
         ENNReal.ofReal (proximityError F degree (LinearCode.rate (code φ degree)) δ m)) :
-    proximity_gap hGen hδPos hδLt hProb ↔
+    proximity_gap hGen hdegPos hδPos hδLt hProb ↔
       Code.jointAgreement (C := (↑(code φ degree) : Set (ι → F))) (δ := δ) (W := f) := by
   rw [Code.jointAgreement_iff_forall_exists]
   unfold proximity_gap

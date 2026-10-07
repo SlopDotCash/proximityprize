@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.Probability.Instances
-import ArkLib.OracleReduction.Security.Basic
+import VCVio.EvalDist.Monad.Basic
 
 /-!
 # Marginal domination bricks for run-marginal arguments (issue #13)
@@ -35,14 +35,15 @@ Two protocol-independent probability lemmas isolating the measure-theoretic core
   uniformity of the middle draw.
 -/
 
-open OracleComp OracleSpec ProbabilityTheory
+open ProbabilityTheory
 open scoped ENNReal NNReal
 
 universe u v
 
 section MarginalBound
 
-variable {α β : Type u} {m : Type u → Type v} [Monad m] [HasEvalSPMF m]
+variable {α β : Type u} {m : Type u → Type v} [Monad m] [MonadAttach m]
+  [MonadLiftT m SPMF] [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
 
 /-- **Support-quantified bind domination.**  If every continuation reachable from the first stage
 satisfies the event bound `≤ c`, then so does the bind. -/
@@ -87,7 +88,8 @@ end MarginalBound
 
 section ProbUniform
 
-variable {β : Type} {m : Type → Type v} [Monad m] [HasEvalSPMF m]
+variable {β : Type} {m : Type → Type v} [Monad m] [MonadAttach m]
+  [MonadLiftT m SPMF] [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
 
 /-- **Uniform-marginal domination (probability-notation form).**  The same bound as
 `probEvent_bind_le_uniform_marginal`, with the right-hand side packaged as the uniform-sampling
@@ -108,7 +110,8 @@ end ProbUniform
 
 section ComapMarginal
 
-variable {α β γ : Type u} {m : Type u → Type v} [Monad m] [HasEvalSPMF m]
+variable {α β γ : Type u} {m : Type u → Type v} [Monad m] [MonadAttach m]
+  [MonadLiftT m SPMF] [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
 
 /-- **Carried-value marginal domination.**  If the middle stage draws `c ← mc` and every outcome
 of the continuation carries the drawn value (`f b = c` on the support), then the probability that
@@ -167,7 +170,8 @@ end ComapMarginal
 
 section ProbUniformComap
 
-variable {α β : Type} {m : Type → Type v} [Monad m] [HasEvalSPMF m]
+variable {α β : Type} {m : Type → Type v} [Monad m] [MonadAttach m]
+  [MonadLiftT m SPMF] [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
 
 /-- **Uniform-marginal domination through a projection (probability-notation form).** -/
 lemma probEvent_bind_le_prob_uniform_comap {F : Type} [Fintype F] [Nonempty F]

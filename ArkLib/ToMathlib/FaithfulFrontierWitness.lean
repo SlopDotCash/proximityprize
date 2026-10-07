@@ -475,7 +475,7 @@ theorem goodSet_w_eq_univ {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι
       = 0 := by
     simp [Code.relHammingDist]
   rw [hd]
-  exact le_trans (le_of_eq (by rw [ENNReal.coe_NNRat_coe_NNReal]; norm_num)) (zero_le _)
+  exact le_trans (le_of_eq (by rw [ENNReal.coe_NNRat_coe_NNReal]; norm_num)) (zero_le)
 
 end WithFintype
 

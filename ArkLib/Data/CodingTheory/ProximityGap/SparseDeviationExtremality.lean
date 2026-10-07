@@ -53,7 +53,7 @@ theorem card_inter_witnesses {α β : ℝ≥0} {T T' : Finset ι}
     ((T ∩ T').card : ℝ≥0) ≥ (1 - α - β) * Fintype.card ι := by
   by_cases hαβ : (1 : ℝ≥0) ≤ α + β
   · rw [tsub_tsub, tsub_eq_zero_of_le hαβ, zero_mul]
-    exact zero_le _
+    exact zero_le
   · push Not at hαβ
     have hα1 : α ≤ 1 := le_of_lt (lt_of_le_of_lt (le_add_right le_rfl) hαβ)
     have hβ1 : β ≤ 1 := le_of_lt (lt_of_le_of_lt (le_add_left le_rfl) hαβ)

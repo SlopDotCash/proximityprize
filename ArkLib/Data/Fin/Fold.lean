@@ -71,7 +71,7 @@ lemma dfoldl'_succ_last {n : ℕ} {α : Fin (n + 2) → Type u}
     rw [dfoldl_zero, dfoldl'_zero]
   | succ n ih =>
     rw [dfoldl_succ_last, dfoldl'_succ_last]
-    rw [ih]
+    exact congrArg (f (last n)) (ih _ _ _)
 
 /-- Left fold over `Fin n`, prime version with better defeq.
   Automatically unfolds for `0` and `n.succ`. -/

@@ -79,7 +79,7 @@ theorem branchVal_true (S : Finset F) (v : F → F) (bs : List Bool) :
 theorem pow_mem_iterSq {S : Finset F} {x : F} (hx : x ∈ S) (ℓ : ℕ) :
     x ^ 2 ^ ℓ ∈ iterSq S ℓ := by
   induction ℓ with
-  | zero => simpa using hx
+  | zero => simpa only [iterSq, pow_zero, pow_one] using hx
   | succ n ih =>
     show x ^ 2 ^ (n + 1) ∈ (iterSq S n).image (· ^ 2)
     rw [pow_succ, pow_mul]

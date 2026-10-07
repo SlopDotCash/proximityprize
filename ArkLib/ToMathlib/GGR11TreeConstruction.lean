@@ -1060,7 +1060,7 @@ private lemma redPart_encard_le [Nonempty ι]
       (fun j => f j lstar)
   calc {W ∈ nodeClass C δ f i V β (ρ + 1) | IsRedAt C f W lstar}.encard
       ≤ (hfinL.toFinset.card : ℕ∞) * leafBound C δ f β ρ := hcount
-    _ ≤ Lambda C δ * leafBound C δ f β ρ := mul_le_mul_right' hΛ _
+    _ ≤ Lambda C δ * leafBound C δ f β ρ := mul_le_mul_left hΛ _
 
 /-- An all-White member makes its node class a singleton. -/
 private lemma encard_le_one_of_allWhite [Nonempty ι]

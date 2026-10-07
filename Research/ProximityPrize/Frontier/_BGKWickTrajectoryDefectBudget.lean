@@ -222,7 +222,7 @@ theorem product_lt_injectiveCoefficient_of_robustOneUnit
     ∏ i : Fin 6, c i < injectiveCoefficient := by
   have hprod : (∏ i : Fin 6, c i) ≤
       ∏ i : Fin 6, robustWickScale * oneUnitImprovedWick k i := by
-    exact Finset.prod_le_prod (fun i _ => hc0 i) (fun i _ => hc i)
+    exact Finset.prod_le_prod₀ (fun i _ => hc0 i) (fun i _ => hc i)
   have hwick := (oneUnitImprovedWick_product_lt k).1
   calc
     (∏ i : Fin 6, c i) ≤
@@ -241,7 +241,7 @@ theorem product_lt_injectiveCoefficient_of_robustTwoLateHalfUnit
     ∏ i : Fin 6, c i < injectiveCoefficient := by
   have hprod : (∏ i : Fin 6, c i) ≤
       ∏ i : Fin 6, robustWickScale * twoLateHalfUnitWick i := by
-    exact Finset.prod_le_prod (fun i _ => hc0 i) (fun i _ => hc i)
+    exact Finset.prod_le_prod₀ (fun i _ => hc0 i) (fun i _ => hc i)
   calc
     (∏ i : Fin 6, c i) ≤
         robustWickScale ^ 6 * ∏ i : Fin 6, twoLateHalfUnitWick i := by
@@ -257,7 +257,7 @@ theorem product_lt_injectiveCoefficient_of_oneUnitImproved
     (hc : ∀ i, c i ≤ oneUnitImprovedWick k i) :
     ∏ i : Fin 6, c i < injectiveCoefficient := by
   have hprod : (∏ i : Fin 6, c i) ≤ ∏ i : Fin 6, oneUnitImprovedWick k i := by
-    exact Finset.prod_le_prod (fun i _ => hc0 i) (fun i _ => hc i)
+    exact Finset.prod_le_prod₀ (fun i _ => hc0 i) (fun i _ => hc i)
   have hstrict := (oneUnitImprovedWick_product_lt k).2
   exact lt_of_le_of_lt hprod (by simpa [injectiveCoefficient] using hstrict)
 

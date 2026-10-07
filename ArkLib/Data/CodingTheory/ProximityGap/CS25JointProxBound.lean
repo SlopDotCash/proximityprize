@@ -172,7 +172,7 @@ private theorem floor_nnreal_eq_real (δ : ℝ≥0) (n : ℕ) :
   refine le_antisymm (Nat.le_floor ?_) (Nat.le_floor ?_)
   · calc ((⌊δ * (n : ℝ≥0)⌋₊ : ℝ))
         = ((⌊δ * (n : ℝ≥0)⌋₊ : ℝ≥0) : ℝ) := by push_cast; ring
-      _ ≤ ((δ * (n : ℝ≥0) : ℝ≥0) : ℝ) := by exact_mod_cast Nat.floor_le (zero_le _)
+      _ ≤ ((δ * (n : ℝ≥0) : ℝ≥0) : ℝ) := by exact_mod_cast Nat.floor_le (zero_le)
       _ = (δ : ℝ) * (n : ℝ) := hcoe
   · have h : ((⌊(δ : ℝ) * (n : ℝ)⌋₊ : ℝ)) ≤ ((δ * (n : ℝ≥0) : ℝ≥0) : ℝ) := by
       rw [hcoe]; exact Nat.floor_le (by positivity)

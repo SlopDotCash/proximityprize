@@ -108,7 +108,7 @@ theorem not_mcaPrize_of_spike_band (domain : ι ↪ F)
   have hkn : k + 1 ≤ Fintype.card ι := by
     have hkr : (k : ℝ≥0) ≤ (1 / 16) * (Fintype.card ι : ℝ≥0) := by
       rw [hk_def, ← hrate]
-      exact Nat.floor_le (zero_le _)
+      exact Nat.floor_le (zero_le)
     have hcast : ((k + 1 : ℕ) : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by
       push_cast
       calc (k : ℝ≥0) + 1
@@ -152,7 +152,7 @@ private lemma prizeRate_floor_add_one_le (j : Fin 4) (hn : 2 ≤ Fintype.card ι
   have h2 : (2 : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by exact_mod_cast hn
   have hkr : (k : ℝ≥0) ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) := by
     rw [hk_def]
-    refine le_trans (Nat.floor_le (zero_le _)) ?_
+    refine le_trans (Nat.floor_le (zero_le)) ?_
     gcongr
     exact prizeRates_le_half j
   have hcast : ((k + 1 : ℕ) : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by

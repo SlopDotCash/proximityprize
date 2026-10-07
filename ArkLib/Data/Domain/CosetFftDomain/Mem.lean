@@ -60,11 +60,7 @@ omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
 @[simp]
 lemma mem_toCosetFftDomain_iff_mem :
     x ∈ toCosetFftDomain ω ↔ x ∈ ω := by
-  aesop (add simp
-          [mkSubgroupUnit,
-            mem_def,
-            toCosetFftDomain,
-            CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain])
+  simp only [mem_def, toCosetFftDomain_apply]
 
 omit [DecidableEq ι] in
 @[simp]

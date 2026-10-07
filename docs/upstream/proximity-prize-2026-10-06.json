@@ -1,0 +1,2161 @@
+{
+  "source": "https://github.com/proximity-prize/proximity-prize",
+  "commit": "ed2b68c4a330d76dc4ab6693eec81b685b493270",
+  "native_base": "d615aeaee",
+  "files": [
+    {
+      "path": "ProximityPrize/Benchmark/IRSProfile.lean",
+      "sha256": "75d40b94814bdc0ad00b107a2cf6a995c79f45a4b8c1ec1ce2f18ec612e81126",
+      "lines": 177,
+      "bytes": 6703,
+      "declarations": 28,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ArkLib.ProofSystem.ToyProblem.Codegen",
+        "ArkLib.ProofSystem.ToyProblem.Leaderboard",
+        "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.UniqueDecoding",
+        "ArkLib.Data.CodingTheory.ProximityGap.GrandChallenges",
+        "CompPoly.Univariate.NTT.KoalaBear"
+      ]
+    },
+    {
+      "path": "ProximityPrize/Benchmark/TargetLower.lean",
+      "sha256": "7d11762452db502cc244e2522eb83f01d3d4b8318ec1771d0c86041181bdc474",
+      "lines": 59,
+      "bytes": 2340,
+      "declarations": 3,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.Benchmark.IRSProfile"
+      ]
+    },
+    {
+      "path": "ProximityPrize/Benchmark/TargetUpper.lean",
+      "sha256": "6aebed6c075924fd9fd2db9a6e347744c1c8252c0a9b6ab3536aa4c15c7768b3",
+      "lines": 54,
+      "bytes": 2334,
+      "declarations": 2,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.Benchmark.IRSProfile",
+        "Mathlib.Data.Nat.Choose.Central",
+        "Mathlib.Data.Set.PowersetCard"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/BoundaryTailArithmetic.lean",
+      "sha256": "823a10d7461062db4b4bb8dae01db5b9c848bf4fc897c898d422b13100069765",
+      "lines": 43,
+      "bytes": 1445,
+      "declarations": 3,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_1",
+        "Mathlib.Tactic.Linarith",
+        "Mathlib.Tactic.Ring"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/BoundaryTailGates.lean",
+      "sha256": "f66efa797507944ab9b0d308a89a0d098b3ecb39dae3cb0ff7a4d48af1eea13a",
+      "lines": 54,
+      "bytes": 2733,
+      "declarations": 3,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_9",
+        "ProximityPrize.SubmissionLower.LowerGeometry"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalAssembly6815.lean",
+      "sha256": "f1585981d9c1ab71f2f85ba9ace3d3019bf08f768223d7f8eb788c1e883d2c21",
+      "lines": 154,
+      "bytes": 8098,
+      "declarations": 8,
+      "same_short_name_in_native": 4,
+      "imports": [
+        "ProximityPrize.SubmissionLower.FinalRegularBridge6815",
+        "ProximityPrize.SubmissionLower.MovingFiberPairGeometry6815",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_19"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalBaseCount6815.lean",
+      "sha256": "9db84334fbadad929e83ff01df35f5dcef2cea87faec74a274503fe79aaef5de",
+      "lines": 47,
+      "bytes": 2505,
+      "declarations": 1,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_53",
+        "ProximityPrize.SubmissionLower.PackingOwnData6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalCapRules6815.lean",
+      "sha256": "386991122f0f6fc5977974af72fbe49ce9f8b21bc1b4bbf824dae085305bc202",
+      "lines": 51,
+      "bytes": 2324,
+      "declarations": 2,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_20"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalCertificate6815.lean",
+      "sha256": "e04d30c21777dcf82d335fa6b400777d7dbf919a7b9616b1e1b74f0088be91fe",
+      "lines": 6,
+      "bytes": 401,
+      "declarations": 1,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.FinalClosure6815",
+        "ProximityPrize.SubmissionLower.FinalRulesData6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalClosure6815.lean",
+      "sha256": "b766b809861a1ececdd942ca3e0bc6ae7e0c20deb1efdf8aa48fd9c3341e3bf4",
+      "lines": 64,
+      "bytes": 2871,
+      "declarations": 6,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.FinalAssembly6815",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_12"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalFamilyAlgebra6815.lean",
+      "sha256": "baf13af81bc182c8405471ed002b572334aabc0f06cb54c461fd242a155cb58e",
+      "lines": 90,
+      "bytes": 4917,
+      "declarations": 1,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.FinalBaseCount6815",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_53",
+        "ProximityPrize.SubmissionLower.FinalCapRules6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRegularBridge6815.lean",
+      "sha256": "50544e29f7f2c9c9f6363826515451a4129fa5819f6109589153af3d33c3f3e9",
+      "lines": 196,
+      "bytes": 10008,
+      "declarations": 11,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_19",
+        "ProximityPrize.SubmissionLower.FinalRegularCount6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRegularCount6815.lean",
+      "sha256": "be8da6b657945673acfda1db743b9169e0f586eaff85301f6a281e3e92d21c69",
+      "lines": 77,
+      "bytes": 4655,
+      "declarations": 4,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.FinalFamilyAlgebra6815",
+        "ProximityPrize.SubmissionLower.SingletonCount6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesData6815.lean",
+      "sha256": "24b29821fccf99afd79ee57b076b0075ecdfc3fe23045bf4fff640bab21d93ce",
+      "lines": 116,
+      "bytes": 5941,
+      "declarations": 3,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R02",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R03",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R04",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R05",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R06",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R07",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R08",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R09",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R10",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R11",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R12",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R13",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R14",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R15",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R16",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R17",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R18",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R19",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R20",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R21",
+        "ProximityPrize.SubmissionLower.FinalRulesRows6815_R22",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_55",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_56",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_57",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_58"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R02.lean",
+      "sha256": "856c4afb07da1c364df8e7530cd5a7ab0a03fff4b47b2c61c5d989a622b46be8",
+      "lines": 47,
+      "bytes": 11670,
+      "declarations": 21,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R03.lean",
+      "sha256": "fabd52ccb3a5cf9ec3525120eb1229e754a852a9fb085cc1822c1f579ee6ca9b",
+      "lines": 47,
+      "bytes": 11734,
+      "declarations": 21,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R04.lean",
+      "sha256": "a91c6877efd9027b88a3fdaa39e9f8dbb13bcb0c6136bd5e0d1f715f2b7594c0",
+      "lines": 47,
+      "bytes": 12499,
+      "declarations": 21,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R05.lean",
+      "sha256": "5fb137cae8e4d0c1a7c3cef9f89d8fb84a144cb590d4f7c2a86efaec195e00cb",
+      "lines": 47,
+      "bytes": 12528,
+      "declarations": 21,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R06.lean",
+      "sha256": "63ad6843f361383492ab1a30602eb18199b5e1a4993ab37b41448c92a69a1536",
+      "lines": 47,
+      "bytes": 12790,
+      "declarations": 21,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R07.lean",
+      "sha256": "09195a5e7db9d5c9711c9d604bf595b5d17a0475db8aaa379768423b6d1e7467",
+      "lines": 45,
+      "bytes": 13288,
+      "declarations": 20,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R08.lean",
+      "sha256": "589d7da35f451eb1137dcdd82428873b7208ee9e9dc35b0834e0d6045b329469",
+      "lines": 45,
+      "bytes": 13668,
+      "declarations": 20,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R09.lean",
+      "sha256": "f1644bf48c6824db503fa326676067686ca13af96fdc1eef3924ec04fc6ba350",
+      "lines": 45,
+      "bytes": 13744,
+      "declarations": 20,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R10.lean",
+      "sha256": "3c4d21d568582d9802cce35d79797ed57c8e5ea015972079c0ed32a5b0506877",
+      "lines": 57,
+      "bytes": 14451,
+      "declarations": 29,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R11.lean",
+      "sha256": "f45644ec7e46a79b9ab3891ec37caa56799e8609e4116df116985c9561e8e720",
+      "lines": 189,
+      "bytes": 23707,
+      "declarations": 128,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R12.lean",
+      "sha256": "997c4cd5e5d42d5ee081a651ddd852f8ac7876dfca8d02e555415d18c12b9d93",
+      "lines": 341,
+      "bytes": 37106,
+      "declarations": 262,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R13.lean",
+      "sha256": "b1c80a3bbccbef145de8571b18cd2f63396fc55a7422c0906053559bbfcad59a",
+      "lines": 277,
+      "bytes": 35167,
+      "declarations": 210,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R14.lean",
+      "sha256": "428550285af2028cea9e90a5f416acb0ed11cc8e6d8d07c6108f0cae23949fa6",
+      "lines": 621,
+      "bytes": 72128,
+      "declarations": 488,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R15.lean",
+      "sha256": "e8faebbdc4d0c80231aec24410e60e68b6c656e0a0bd333259d5c50f04cc8899",
+      "lines": 441,
+      "bytes": 40171,
+      "declarations": 353,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R16.lean",
+      "sha256": "7678a325bbc6cfbbd65484b86adc783d42d3389a4f79afe1c956ac2079ba0d02",
+      "lines": 277,
+      "bytes": 29727,
+      "declarations": 216,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R17.lean",
+      "sha256": "387b6cbf23eb4dc9b29383754d1ed02baa9bf7a0bfd7cf035bde6905e7ff0cec",
+      "lines": 181,
+      "bytes": 31305,
+      "declarations": 126,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R18.lean",
+      "sha256": "94b1078faa8146889be37dd14cf4a6402a7376b3f243277569e21579d7c524a9",
+      "lines": 69,
+      "bytes": 15065,
+      "declarations": 38,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R19.lean",
+      "sha256": "df47a5606ac3acfdaabc325e48b90517a29fa8ba0c9145b335144890521e78cc",
+      "lines": 309,
+      "bytes": 31030,
+      "declarations": 218,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R20.lean",
+      "sha256": "93510164f0ed0adae6eadea644f4a34080b18aa8deffb3cb9acff68092e9606a",
+      "lines": 45,
+      "bytes": 13115,
+      "declarations": 20,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R21.lean",
+      "sha256": "0e6f3d535f73114696ab348bf857c00a8470db0cdd89166a368ed9c1055c3bdc",
+      "lines": 45,
+      "bytes": 12778,
+      "declarations": 20,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/FinalRulesRows6815_R22.lean",
+      "sha256": "39290c940b69f9c56f870ea15db867b37945753f5c684e610ab5a8cc752b3991",
+      "lines": 45,
+      "bytes": 12404,
+      "declarations": 20,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeBudget6812.lean",
+      "sha256": "dfc2276891e087bb57d3c28066b4fe80d46152de669438bc30499d62d543b29c",
+      "lines": 430,
+      "bytes": 22184,
+      "declarations": 14,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.LowerGeometry",
+        "ProximityPrize.SubmissionLower.HFreePlace6812",
+        "ProximityPrize.SubmissionLower.HFreeNormalize6812",
+        "Mathlib.RingTheory.Nullstellensatz",
+        "Mathlib.RingTheory.KrullDimension.Polynomial"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeChar6812.lean",
+      "sha256": "4aaabd1d96c685c61b85285973cad1df75a2df274146823559f450633098cd26",
+      "lines": 257,
+      "bytes": 13180,
+      "declarations": 10,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.HFreeBudget6812",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_5",
+        "Mathlib.Algebra.MvPolynomial.Funext"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeCore6812.lean",
+      "sha256": "80fc792075fd7deb68675ee5b69cad05b47a8b5c84686d1ebc29cf91c00ca7a5",
+      "lines": 183,
+      "bytes": 8877,
+      "declarations": 9,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "Mathlib.Algebra.MvPolynomial.Equiv",
+        "Mathlib.RingTheory.AlgebraicIndependent.Transcendental",
+        "Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous",
+        "Mathlib.Algebra.Polynomial.BigOperators"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeDedekind6812.lean",
+      "sha256": "13dfaa77adf6e9648c8ee86c72cdfcc5f4c555ddc1ec9dfe7abcbb4ba5039e0e",
+      "lines": 391,
+      "bytes": 19672,
+      "declarations": 9,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "Mathlib.RingTheory.DedekindDomain.IntegralClosure",
+        "Mathlib.RingTheory.DedekindDomain.Dvr",
+        "Mathlib.RingTheory.Localization.AsSubring",
+        "Mathlib.FieldTheory.SeparableClosure",
+        "Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed",
+        "Mathlib.FieldTheory.Minpoly.Finite",
+        "ProximityPrize.SubmissionLower.HFreeValuation6812"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeDefer6812.lean",
+      "sha256": "90aa8b7dd930ff1b548645826ff95d9e2e5eaa9a8316c4a6078d259e2824f9d1",
+      "lines": 558,
+      "bytes": 27821,
+      "declarations": 17,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.HFreeBudget6812",
+        "ProximityPrize.SubmissionLower.HFreeDedekind6812",
+        "ProximityPrize.SubmissionLower.HFreeCore6812",
+        "Mathlib.FieldTheory.AlgebraicClosure"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeDir6813.lean",
+      "sha256": "8b164346e268be9800cb07b9410e9b4b5864e1e92b033f39f2f6b72d76a7122f",
+      "lines": 666,
+      "bytes": 37640,
+      "declarations": 18,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.HFreeInfLaw6813",
+        "ProximityPrize.SubmissionLower.HFreeDischarge6812"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeDischarge6812.lean",
+      "sha256": "78f954bb832663a04e3c73f0ec12f2f7368ad442da9b1c321d59c0c1bb66c605",
+      "lines": 83,
+      "bytes": 4687,
+      "declarations": 4,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.HFreeChar6812",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_14",
+        "ProximityPrize.SubmissionLower.HFreeDefer6812"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeElim6812.lean",
+      "sha256": "05cdfafc6ecd1146eb4a9fbb1fc5aa72bcd073c802913cc1031c7b1e81b373b3",
+      "lines": 223,
+      "bytes": 10654,
+      "declarations": 5,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "Mathlib.Algebra.MvPolynomial.Equiv",
+        "Mathlib.Algebra.MvPolynomial.Monad",
+        "Mathlib.RingTheory.Polynomial.GaussLemma",
+        "Mathlib.RingTheory.Polynomial.UniqueFactorization",
+        "Mathlib.RingTheory.Polynomial.Resultant.Basic",
+        "Mathlib.RingTheory.AlgebraicIndependent.Transcendental"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeInfLaw6813.lean",
+      "sha256": "be67378a6d7b3f81c8f18d1ed1008d4aad376c985f35956dc5581f63e27558e7",
+      "lines": 505,
+      "bytes": 26899,
+      "declarations": 12,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.HFreeBudget6812"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeLocal6812.lean",
+      "sha256": "76096477c40841f0b6d6f244d859742a96977fe1ce1498bde28554398beed6cf",
+      "lines": 473,
+      "bytes": 23877,
+      "declarations": 11,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "Mathlib.RingTheory.Valuation.Basic",
+        "Mathlib.RingTheory.Derivation.Basic",
+        "Mathlib.Algebra.Polynomial.Eval.Defs",
+        "Mathlib.Algebra.Order.GroupWithZero.Canonical",
+        "Mathlib.Tactic.LinearCombination",
+        "Mathlib.Algebra.BigOperators.Group.Finset.Basic"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeNormalize6812.lean",
+      "sha256": "c1e6c0a86f94075b7954087585476472bbf8c90fb16ea18f6ad6ef27150cfb34",
+      "lines": 92,
+      "bytes": 4644,
+      "declarations": 3,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "Mathlib.RingTheory.Valuation.Basic",
+        "Mathlib.Algebra.Order.GroupWithZero.Canonical"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreePlace6812.lean",
+      "sha256": "83488214cae40298ba12bde9a383e6c8e00d4a80874cc1e5e11024a1a497074b",
+      "lines": 442,
+      "bytes": 20922,
+      "declarations": 24,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.HFreeSlice6812",
+        "ProximityPrize.SubmissionLower.HFreeValuation6812",
+        "ProximityPrize.SubmissionLower.HFreeLocal6812",
+        "ProximityPrize.SubmissionLower.HFreeRegular6812"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeRegular6812.lean",
+      "sha256": "e8047b3843219315725dfffb772307f2db60cbc0a4fa2d26f0ea8ef3fd7b95ad",
+      "lines": 63,
+      "bytes": 3179,
+      "declarations": 1,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "Mathlib.RingTheory.RegularLocalRing.Defs",
+        "Mathlib.RingTheory.Localization.AtPrime.Basic",
+        "Mathlib.Tactic.LinearCombination"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeSlice6812.lean",
+      "sha256": "c12300e41ae89f0da6026db977f551afb505e1fbc4f230902157e2b2ceb4b7fd",
+      "lines": 270,
+      "bytes": 12457,
+      "declarations": 20,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.LowerFoundation",
+        "ProximityPrize.SubmissionLower.HFreeElim6812"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/HFreeValuation6812.lean",
+      "sha256": "66af8296a47d451ae24581a791a5de2e808388230c9f3e9751cfaa83fe36dca2",
+      "lines": 408,
+      "bytes": 19462,
+      "declarations": 34,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "Mathlib.RingTheory.Valuation.ValuationSubring",
+        "Mathlib.RingTheory.Derivation.Basic",
+        "Mathlib.Algebra.Polynomial.Derivative",
+        "Mathlib.Algebra.Polynomial.Lifts",
+        "Mathlib.Algebra.Field.Subfield.Basic",
+        "Mathlib.RingTheory.LocalRing.ResidueField.Basic",
+        "Mathlib.FieldTheory.Separable"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/LiteralFinalCurves6815.lean",
+      "sha256": "66a6c20b3a66c5a992dd80d21ab0bfc0c60835b038f8a5f20f2a4670044774cb",
+      "lines": 54,
+      "bytes": 1517,
+      "declarations": 4,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedLiteralCurves6815_0"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/LowerFoundation.lean",
+      "sha256": "2492183593f140f60af094220c3486687f804837c2a41d9f5ef62d57bfb4e2e0",
+      "lines": 39592,
+      "bytes": 1753271,
+      "declarations": 2572,
+      "same_short_name_in_native": 41,
+      "imports": [
+        "Mathlib.Algebra.BigOperators.Intervals",
+        "Mathlib.Algebra.CharP.Quotient",
+        "Mathlib.Algebra.DirectSum.Algebra",
+        "Mathlib.Algebra.DirectSum.Internal",
+        "Mathlib.Algebra.DirectSum.Ring",
+        "Mathlib.Algebra.GradedMulAction",
+        "Mathlib.Algebra.GroupWithZero.Torsion",
+        "Mathlib.Algebra.Lie.Derivation.Basic",
+        "Mathlib.Algebra.Lie.NonUnitalNonAssocAlgebra",
+        "Mathlib.Algebra.MvPolynomial.Division",
+        "Mathlib.Algebra.MvPolynomial.Equiv",
+        "Mathlib.Algebra.MvPolynomial.NoZeroDivisors",
+        "Mathlib.Algebra.MvPolynomial.PDeriv",
+        "Mathlib.Algebra.Polynomial.AlgebraMap",
+        "Mathlib.Algebra.Polynomial.Div",
+        "Mathlib.Algebra.Polynomial.Eval.Coeff",
+        "Mathlib.Algebra.Polynomial.FieldDivision",
+        "Mathlib.Algebra.Polynomial.RingDivision",
+        "Mathlib.Algebra.Polynomial.Taylor",
+        "Mathlib.Combinatorics.Enumerative.DoubleCounting",
+        "Mathlib.Data.DFinsupp.WellFounded",
+        "Mathlib.Data.Finsupp.MonomialOrder",
+        "Mathlib.Data.Finsupp.MonomialOrder.DegLex",
+        "Mathlib.Data.Finsupp.WellFounded",
+        "Mathlib.Data.Int.Associated",
+        "Mathlib.Data.Int.NatAbs",
+        "Mathlib.Data.Real.Embedding",
+        "Mathlib.Data.ZMod.QuotientRing",
+        "Mathlib.FieldTheory.Galois.IsGaloisGroup",
+        "Mathlib.FieldTheory.RatFunc.Degree",
+        "Mathlib.FieldTheory.RatFunc.IntermediateField",
+        "Mathlib.FieldTheory.RatFunc.Valuation",
+        "Mathlib.GroupTheory.Submonoid.Inverses",
+        "Mathlib.LinearAlgebra.FreeModule.Determinant",
+        "Mathlib.LinearAlgebra.FreeModule.Finite.CardQuotient",
+        "Mathlib.LinearAlgebra.FreeModule.Finite.Quotient",
+        "Mathlib.LinearAlgebra.Quotient.Pi",
+        "Mathlib.LinearAlgebra.TensorProduct.Prod",
+        "Mathlib.NumberTheory.FunctionField",
+        "Mathlib.NumberTheory.RamificationInertia.Basic",
+        "Mathlib.NumberTheory.RamificationInertia.Galois",
+        "Mathlib.NumberTheory.RamificationInertia.Inertia",
+        "Mathlib.NumberTheory.RamificationInertia.Ramification",
+        "Mathlib.NumberTheory.RamificationInertia.Valuation",
+        "Mathlib.Order.GameAdd",
+        "Mathlib.RingTheory.Adjoin.Polynomial.Bivariate",
+        "Mathlib.RingTheory.DedekindDomain.Factorization",
+        "Mathlib.RingTheory.DedekindDomain.Instances",
+        "Mathlib.RingTheory.DedekindDomain.PID",
+        "Mathlib.RingTheory.Derivation.ToSquareZero",
+        "Mathlib.RingTheory.Discriminant",
+        "Mathlib.RingTheory.Etale.Kaehler",
+        "Mathlib.RingTheory.Finiteness.NilpotentKer",
+        "Mathlib.RingTheory.Finiteness.Quotient",
+        "Mathlib.RingTheory.Flat.Basic",
+        "Mathlib.RingTheory.Flat.TorsionFree",
+        "Mathlib.RingTheory.GradedAlgebra.Basic",
+        "Mathlib.RingTheory.GradedAlgebra.Homogeneous.Ideal",
+        "Mathlib.RingTheory.GradedAlgebra.Homogeneous.Submodule",
+        "Mathlib.RingTheory.Ideal.Basis",
+        "Mathlib.RingTheory.Ideal.Int",
+        "Mathlib.RingTheory.Ideal.IsPrincipal",
+        "Mathlib.RingTheory.Ideal.Norm.AbsNorm",
+        "Mathlib.RingTheory.Ideal.Norm.RelNorm",
+        "Mathlib.RingTheory.Int.Basic",
+        "Mathlib.RingTheory.IntegralClosure.IntegralRestrict",
+        "Mathlib.RingTheory.Invariant.Basic",
+        "Mathlib.RingTheory.Invariant.Galois",
+        "Mathlib.RingTheory.Jacobson.Artinian",
+        "Mathlib.RingTheory.LocalProperties.Projective",
+        "Mathlib.RingTheory.LocalRing.Length",
+        "Mathlib.RingTheory.LocalRing.ResidueField.Fiber",
+        "Mathlib.RingTheory.LocalRing.ResidueField.Instances",
+        "Mathlib.RingTheory.Localization.Free",
+        "Mathlib.RingTheory.Localization.InvSubmonoid",
+        "Mathlib.RingTheory.Localization.NormTrace",
+        "Mathlib.RingTheory.MvPolynomial.Homogeneous",
+        "Mathlib.RingTheory.MvPolynomial.Localization",
+        "Mathlib.RingTheory.MvPolynomial.MonomialOrder",
+        "Mathlib.RingTheory.MvPolynomial.MonomialOrder.DegLex",
+        "Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous",
+        "Mathlib.RingTheory.Nilpotent.Exp",
+        "Mathlib.RingTheory.Norm.Basic",
+        "Mathlib.RingTheory.Norm.Transitivity",
+        "Mathlib.RingTheory.NormalClosure",
+        "Mathlib.RingTheory.OrderOfVanishing.Basic",
+        "Mathlib.RingTheory.Polynomial.ContentIdeal",
+        "Mathlib.RingTheory.QuasiFinite.Basic",
+        "Mathlib.RingTheory.RamificationInertia.Basic",
+        "Mathlib.RingTheory.RamificationInertia.Inertia",
+        "Mathlib.RingTheory.RamificationInertia.Ramification",
+        "Mathlib.RingTheory.RingHom.Finite",
+        "Mathlib.RingTheory.Spectrum.Prime.FreeLocus",
+        "Mathlib.RingTheory.Spectrum.Prime.Jacobson",
+        "Mathlib.RingTheory.Spectrum.Prime.TensorProduct",
+        "Mathlib.RingTheory.TensorProduct.IsBaseChangePi",
+        "Mathlib.RingTheory.TensorProduct.Pi",
+        "Mathlib.RingTheory.UniqueFactorizationDomain.Finsupp",
+        "Mathlib.RingTheory.UniqueFactorizationDomain.Multiplicative",
+        "Mathlib.RingTheory.Unramified.Basic",
+        "Mathlib.RingTheory.Unramified.Field",
+        "Mathlib.RingTheory.Unramified.Finite",
+        "Mathlib.RingTheory.Unramified.LocalRing",
+        "Mathlib.RingTheory.Unramified.Locus",
+        "Mathlib.RingTheory.Valuation.Discrete.IsDiscreteValuationRing",
+        "Mathlib.RingTheory.Valuation.Discrete.RankOne",
+        "Mathlib.RingTheory.Valuation.Integral",
+        "Mathlib.RingTheory.Valuation.RankOne",
+        "Mathlib.RingTheory.ZMod",
+        "Mathlib.Topology.JacobsonSpace",
+        "Mathlib.Topology.LocallyConstant.Basic",
+        "ProximityPrize.Benchmark.TargetLower"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/LowerGeometry.lean",
+      "sha256": "6682335049efa35e0d8431d46815e73daf8177b06d933a93ee0536b1f0d3f358",
+      "lines": 9911,
+      "bytes": 391894,
+      "declarations": 648,
+      "same_short_name_in_native": 44,
+      "imports": [
+        "ProximityPrize.SubmissionLower.LowerFoundation"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_0.lean",
+      "sha256": "c264b3330856baeca8721f914c7851bbe979efa18e01cf8e510c2509bbdbb8b6",
+      "lines": 139,
+      "bytes": 7304,
+      "declarations": 8,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "Mathlib.Algebra.Order.BigOperators.Group.Finset",
+        "Mathlib.Algebra.BigOperators.Ring.Finset",
+        "Mathlib.Tactic"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_1.lean",
+      "sha256": "af9198ad5670e1640ff09e5613b8483ca6372b11ba9ed02571bc02e1d6789db3",
+      "lines": 326,
+      "bytes": 14169,
+      "declarations": 28,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.LowerFoundation"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_10.lean",
+      "sha256": "6d30ef83231ffa78ac9ebeab6401e74eafbcea3db9adb9044de88ca45929200b",
+      "lines": 1699,
+      "bytes": 77417,
+      "declarations": 120,
+      "same_short_name_in_native": 13,
+      "imports": [
+        "ProximityPrize.SubmissionLower.LowerGeometry"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_11.lean",
+      "sha256": "263dea32670bd0619055d7ac7c75fbda4b82d3e2b9b8cb8d931260cca0939594",
+      "lines": 404,
+      "bytes": 19978,
+      "declarations": 25,
+      "same_short_name_in_native": 3,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_10",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_6",
+        "ProximityPrize.SubmissionLower.LowerGeometry"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_12.lean",
+      "sha256": "bec2e996927bc36de732a47c4e474b028a74b075d464667f1b602e2da51f02a2",
+      "lines": 2488,
+      "bytes": 127880,
+      "declarations": 179,
+      "same_short_name_in_native": 21,
+      "imports": [
+        "ProximityPrize.SubmissionLower.LowerGeometry",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_10"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_13.lean",
+      "sha256": "34ad43371c873df4b5f7c40e4883e4c0bd3f9601a5ae6787116dc9cd9280279b",
+      "lines": 2056,
+      "bytes": 90348,
+      "declarations": 191,
+      "same_short_name_in_native": 4,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_10",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_12",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_7",
+        "ProximityPrize.SubmissionLower.LowerGeometry",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_8"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_14.lean",
+      "sha256": "b97cb2bb97eaec4172f64e876773bbf909a715c69b82d1b4cf77028148bf9ced",
+      "lines": 253,
+      "bytes": 11990,
+      "declarations": 10,
+      "same_short_name_in_native": 3,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_9",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_12",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_6",
+        "ProximityPrize.SubmissionLower.BoundaryTailGates",
+        "ProximityPrize.SubmissionLower.LowerGeometry",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_10"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_15.lean",
+      "sha256": "eecc69d083dd297ac2e6d346247cb51d792c8292ee665ee95dc4bedc1e72986b",
+      "lines": 1151,
+      "bytes": 47022,
+      "declarations": 339,
+      "same_short_name_in_native": 168,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_10"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_16.lean",
+      "sha256": "e73646ba686373f5c536b9484e29f7889c1818dee76831d452902dcb98b3cb6f",
+      "lines": 570,
+      "bytes": 24097,
+      "declarations": 145,
+      "same_short_name_in_native": 70,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_15",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_10"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_17.lean",
+      "sha256": "4f7dd7bfb03d3f18c63909e7dd902f945d23d31e85e6accc5196d620929e1d2e",
+      "lines": 630,
+      "bytes": 26108,
+      "declarations": 49,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_14",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_10",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_16"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_18.lean",
+      "sha256": "1aeecd36bff15f435ac84a83a183774a73df880e97342f4d0e7cc1c36b2d1c88",
+      "lines": 490,
+      "bytes": 24494,
+      "declarations": 36,
+      "same_short_name_in_native": 4,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_10",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_15"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_19.lean",
+      "sha256": "083a34e476e3cba03ee457c5425dd47de1789ae403e938f90427d6b4bbe42e2e",
+      "lines": 533,
+      "bytes": 28114,
+      "declarations": 35,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_12",
+        "ProximityPrize.SubmissionLower.LowerGeometry",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_18",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_10",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_11",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_13",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_8"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_2.lean",
+      "sha256": "0fc8c344b3fca312d644a40fbeab8d1f8ef61be8830fd23519a815f227f66297",
+      "lines": 961,
+      "bytes": 45151,
+      "declarations": 39,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.BoundaryTailArithmetic",
+        "Mathlib.RingTheory.Valuation.Basic",
+        "Mathlib.Algebra.Order.GroupWithZero.Canonical",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_1",
+        "ProximityPrize.SubmissionLower.LowerFoundation"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_20.lean",
+      "sha256": "bd122909e2a891b5e1bb7374f7e07f3b95a9e681535e2e69e04602110b306681",
+      "lines": 838,
+      "bytes": 37802,
+      "declarations": 48,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_12",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_10",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_13",
+        "ProximityPrize.SubmissionLower.LowerGeometry"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_21.lean",
+      "sha256": "b74f54e26a79095cecb201552f3f254736a7390d78f0e89bf5ea6328bee6d311",
+      "lines": 489,
+      "bytes": 26370,
+      "declarations": 69,
+      "same_short_name_in_native": 4,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_14",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_6",
+        "ProximityPrize.SubmissionLower.BoundaryTailGates",
+        "ProximityPrize.SubmissionLower.LowerGeometry",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_10",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_15",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_18",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_16"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_22.lean",
+      "sha256": "ea1b0d634375ed79688e4ab1720365d42ebd6f1618db057fb18094a1f935e305",
+      "lines": 388,
+      "bytes": 23698,
+      "declarations": 12,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_21",
+        "ProximityPrize.SubmissionLower.HFreeDir6813"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_23.lean",
+      "sha256": "5020465f9ec6b6809fe6551687bf3e1f49951a2d3df285d434a4c1adea66d7d4",
+      "lines": 438,
+      "bytes": 18379,
+      "declarations": 39,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_17"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_24.lean",
+      "sha256": "b7701330e564a17479cc1fcad3e5435602ef080f0e772c7532a4825695d9defb",
+      "lines": 198,
+      "bytes": 8685,
+      "declarations": 13,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MovingSourceGenericField6814",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_23"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_25.lean",
+      "sha256": "c0cb870ac2bb25e2733fafd6248a6f44b06d6d07b2f7b33c2f230d8f998db73f",
+      "lines": 251,
+      "bytes": 11437,
+      "declarations": 33,
+      "same_short_name_in_native": 4,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_3",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_20",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_13"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_26.lean",
+      "sha256": "70303202f326e2486d8fde107632284f5e85ca09be9bc978d23d2904a9fa6b4c",
+      "lines": 912,
+      "bytes": 40796,
+      "declarations": 76,
+      "same_short_name_in_native": 5,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_20"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_27.lean",
+      "sha256": "f71d712b8f8471022df60ac95861ed2941a783dca41e4af1599002179f268f9d",
+      "lines": 4934,
+      "bytes": 217389,
+      "declarations": 656,
+      "same_short_name_in_native": 112,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_22"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_28.lean",
+      "sha256": "1a79e9c7de120576e369a5dd8ba38bdda09bad0475f79734fb1f4d35876bf1ec",
+      "lines": 2110,
+      "bytes": 98630,
+      "declarations": 245,
+      "same_short_name_in_native": 35,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_27",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_22"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_29.lean",
+      "sha256": "f8cb6eb23439ab3052f959409ad2e6c421d6195a2c7277aa89f4fa8b03a5854f",
+      "lines": 1185,
+      "bytes": 57163,
+      "declarations": 65,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_24",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_17"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_3.lean",
+      "sha256": "a291c1ac854e95c128e46a84dc7150a19c720a22e5f855f263d45320d0972bfa",
+      "lines": 477,
+      "bytes": 20542,
+      "declarations": 60,
+      "same_short_name_in_native": 11,
+      "imports": [
+        "Mathlib.Tactic"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_30.lean",
+      "sha256": "9ba6cb30a13bebcd1b3b5409c932749c547e1fd22abf85670c0ec2e3db26c918",
+      "lines": 1389,
+      "bytes": 68804,
+      "declarations": 64,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_29"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_31.lean",
+      "sha256": "050c9f541c26c17e0a7217ed4e512f97066ac4b39f34de9f4bcf9fd68e9c2c65",
+      "lines": 477,
+      "bytes": 22827,
+      "declarations": 31,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_30",
+        "ProximityPrize.SubmissionLower.MovingSourceGenericField6814"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_32.lean",
+      "sha256": "06d9e5e484581af278757a2a1d5e0f212f9661a0ad2c1b8268b11f41461929e2",
+      "lines": 163,
+      "bytes": 8465,
+      "declarations": 6,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_31",
+        "Mathlib.RingTheory.Polynomial.GaussLemma"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_33.lean",
+      "sha256": "02f2bc9f42521a491ee9f00b7c35da40f431258daa6a2dc4c5867a84af3384c3",
+      "lines": 560,
+      "bytes": 29838,
+      "declarations": 29,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_32",
+        "Mathlib.RingTheory.Ideal.Quotient.Nilpotent"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_34.lean",
+      "sha256": "7c1c911fc986905c5cb2829da4454e5463d7169de9d9a2516e06cb3156b93ea1",
+      "lines": 668,
+      "bytes": 32678,
+      "declarations": 47,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_26",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_13"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_35.lean",
+      "sha256": "bb42fef43e9c02cdae66eb943b44fd3e6ae6978ca978089db1ff0f549e5d4b00",
+      "lines": 379,
+      "bytes": 17627,
+      "declarations": 24,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_23",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_29",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_17",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_30"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_36.lean",
+      "sha256": "97e7431b1c23e257b01ac08ec4569692958ed42d3fbf95e40a9402a2a3dac622",
+      "lines": 854,
+      "bytes": 48155,
+      "declarations": 31,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_33",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_29",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_31"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_37.lean",
+      "sha256": "c1c71b6c8f05a213996b67913a371b6e8c1757b91249365e6392b5a4f5b25c46",
+      "lines": 661,
+      "bytes": 35003,
+      "declarations": 17,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_36",
+        "ProximityPrize.SubmissionLower.HFreeDir6813",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_31"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_38.lean",
+      "sha256": "144ffe7985430d60ffde3b9432cc12fc2b1ef68779acba355e45ee7155773ca9",
+      "lines": 659,
+      "bytes": 47034,
+      "declarations": 14,
+      "same_short_name_in_native": 7,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedWidePack6815_0",
+        "ProximityPrize.SubmissionLower.MergedWidePack6815_1",
+        "ProximityPrize.SubmissionLower.MergedWidePack6815_2",
+        "ProximityPrize.SubmissionLower.MergedWidePack6815_3",
+        "ProximityPrize.SubmissionLower.MergedWidePack6815_4",
+        "ProximityPrize.SubmissionLower.MergedWidePack6815_5",
+        "ProximityPrize.SubmissionLower.MergedWidePack6815_6",
+        "ProximityPrize.SubmissionLower.MergedWidePack6815_7"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_39.lean",
+      "sha256": "43178bd8480d546e6cc211df8b7f3dc869425e43b31348947c18106f4b5b8d89",
+      "lines": 368,
+      "bytes": 20411,
+      "declarations": 10,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_35",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_32",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_31"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_4.lean",
+      "sha256": "7a16d06bb827cd13418c5d0d7732d0d598ec95a40386d5ed49904f82b63c5d9d",
+      "lines": 329,
+      "bytes": 14810,
+      "declarations": 24,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.LowerFoundation"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_40.lean",
+      "sha256": "b5028539a4ee27578301a9a49a42a8ef94a84680d62f078441dd871933d5ba90",
+      "lines": 448,
+      "bytes": 19192,
+      "declarations": 11,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_37",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_31"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_41.lean",
+      "sha256": "5ea94c9d88b8c177ca6b557a5a77ad76e5fe94c0ce67237e781ad4a9f2c72ebb",
+      "lines": 216,
+      "bytes": 11335,
+      "declarations": 6,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_39",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_35"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_42.lean",
+      "sha256": "5d3bf71dd54f2a977c82c9e64b9c4035734f1d3c24543ee34ce1019522aac22a",
+      "lines": 1079,
+      "bytes": 59637,
+      "declarations": 40,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_40",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_26"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_43.lean",
+      "sha256": "06fc5f87e3cff8c202b3dfbc729c01584887c66bcaed85696766816c55115873",
+      "lines": 218,
+      "bytes": 10331,
+      "declarations": 11,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_41",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_32"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_44.lean",
+      "sha256": "295ec09f84d5bbd6f91d6c9d9c2e21d68ac24a08e92cd3bed0136d6c3574956e",
+      "lines": 1302,
+      "bytes": 72063,
+      "declarations": 59,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_42",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_41",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_32",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_43",
+        "ProximityPrize.SubmissionLower.RetainedSharedRemainder6815",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_39",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_40",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_37",
+        "ProximityPrize.SubmissionLower.PortfolioSourceCatalogue6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_45.lean",
+      "sha256": "97797f64a642227a390ef3656f839c09a838c8e72604d449c8f14bce7ec96317",
+      "lines": 344,
+      "bytes": 17890,
+      "declarations": 27,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_44",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_3"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_46.lean",
+      "sha256": "727a5f81349bc0f81b8c56ddad87f195845ea8fa8ce60b49349474a393e3bcae",
+      "lines": 226,
+      "bytes": 12341,
+      "declarations": 17,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_44",
+        "ProximityPrize.SubmissionLower.RetainedSharedRemainder6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_47.lean",
+      "sha256": "358fcc0e5019c12fade33fea84013790d784f5bf851566cc4e779c907397dd9c",
+      "lines": 897,
+      "bytes": 47523,
+      "declarations": 80,
+      "same_short_name_in_native": 5,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_45",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_43",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_3",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_44",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_46"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_48.lean",
+      "sha256": "0787e6130517feb37dca960706bd65449eca46fec600c6866dbe91c54d9c33df",
+      "lines": 1143,
+      "bytes": 57628,
+      "declarations": 94,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_47",
+        "ProximityPrize.SubmissionLower.MergedOwnerBoxL6815_0",
+        "ProximityPrize.SubmissionLower.MergedSharedBoxL6815_0",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_44",
+        "ProximityPrize.SubmissionLower.MergedOwnerBoxI6815_0",
+        "ProximityPrize.SubmissionLower.MergedSharedBoxI6815_0",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_38",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_42",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_10",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_28",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_11",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_20"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_49.lean",
+      "sha256": "9e98e33fb96fca2351f27684a4e5c2a815432c466e6cf93944d721fe8b08ec4f",
+      "lines": 435,
+      "bytes": 23236,
+      "declarations": 35,
+      "same_short_name_in_native": 4,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_28",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_48",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_13",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_0",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_3"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_5.lean",
+      "sha256": "a9b8a1d6a4b64b98de53f318379e41a8e9d32e9744f11184c3a172c406cbde24",
+      "lines": 36,
+      "bytes": 1259,
+      "declarations": 1,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_4",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_2",
+        "Mathlib.Tactic.FieldSimp",
+        "Mathlib.Algebra.BigOperators.Field"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_50.lean",
+      "sha256": "8654badfb7ab35441b2827ca50cead316ba8cce8f21a6bf61fcc2116a21b541c",
+      "lines": 450,
+      "bytes": 18797,
+      "declarations": 33,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedLedgerRows6815_3",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_0",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_49",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_3"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_51.lean",
+      "sha256": "a1a2c1e631de9c41db58fb45286faf1e0fb86c871b1ffe4be2794ab4602f7578",
+      "lines": 260,
+      "bytes": 12710,
+      "declarations": 42,
+      "same_short_name_in_native": 7,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_50",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_20",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_13"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_52.lean",
+      "sha256": "417dcf2dee669de933af6ae12153bed2e0019610da69de797855ecc46228906c",
+      "lines": 650,
+      "bytes": 30720,
+      "declarations": 250,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedPrefixRows6815_3"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_53.lean",
+      "sha256": "b034ff97213fe5052f267fb4acb65aac6b31c6e99ef010a2ff8ce48c800f86f3",
+      "lines": 904,
+      "bytes": 45908,
+      "declarations": 121,
+      "same_short_name_in_native": 4,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedPackingFull6815_1",
+        "ProximityPrize.SubmissionLower.MergedPackingLight6815_1",
+        "ProximityPrize.SubmissionLower.SingletonData6815",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_52",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_51",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_20"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_54.lean",
+      "sha256": "5cda9fb544b49a37af4ec8d865b9e7730420e5a78c8d368b2a06f44804bae0a3",
+      "lines": 268,
+      "bytes": 21113,
+      "declarations": 55,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedLiteralThresholds6815_0",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_53",
+        "ProximityPrize.SubmissionLower.LiteralFinalCurves6815",
+        "ProximityPrize.SubmissionLower.TriangularKernel6815",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_49"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_55.lean",
+      "sha256": "1e1b81d3225b34127541406b2de157afee0fb3e7be36848377d02458e9ea6fd0",
+      "lines": 222,
+      "bytes": 82248,
+      "declarations": 95,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_56.lean",
+      "sha256": "7237149fe58e8ea50b1167362f40ad725660d602c9fb411fcb9f14667f2e98e7",
+      "lines": 222,
+      "bytes": 78483,
+      "declarations": 95,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_57.lean",
+      "sha256": "b0c3dd0b27c6cb00e0e4aeed5cdfeaf5f2c40aae777200f373f942cd336d7799",
+      "lines": 222,
+      "bytes": 75863,
+      "declarations": 95,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_58.lean",
+      "sha256": "15dbba94cb4f4ccaf6c439def27d66f408a222b808e8e6b915a0405e184382e6",
+      "lines": 88,
+      "bytes": 29725,
+      "declarations": 37,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_54"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_6.lean",
+      "sha256": "853f4f132d23f6f7cc6532bf7008d5c25376f85cd43833d6ba2000d4c8c89c5d",
+      "lines": 1315,
+      "bytes": 66637,
+      "declarations": 32,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_2",
+        "ProximityPrize.SubmissionLower.LowerGeometry",
+        "ProximityPrize.SubmissionLower.LowerFoundation"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_7.lean",
+      "sha256": "5c5558d0eed33eaf5cf397acd24db598b1ce550cbcd979f18087268dc574136b",
+      "lines": 1057,
+      "bytes": 46814,
+      "declarations": 81,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "ProximityPrize.SubmissionLower.LowerFoundation"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_8.lean",
+      "sha256": "0710b6cce81f41fe9426ea574b46d06e5f9951f1780438b49740c3691bb61f01",
+      "lines": 680,
+      "bytes": 34282,
+      "declarations": 19,
+      "same_short_name_in_native": 4,
+      "imports": [
+        "ProximityPrize.SubmissionLower.LowerGeometry"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedInfra6815_9.lean",
+      "sha256": "ac86735c66b15509c09539bd947308f706a0aa989d1b76a0f379c2c693174937",
+      "lines": 1318,
+      "bytes": 62431,
+      "declarations": 46,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.LowerGeometry",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_5",
+        "ProximityPrize.SubmissionLower.LowerFoundation",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_4",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_6"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedLedgerRows6815_0.lean",
+      "sha256": "f72b4cac8cd5ff4487c1053c010237230958fd96cfa2a1ba8018239d877a08bb",
+      "lines": 396,
+      "bytes": 364414,
+      "declarations": 156,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_25",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_3",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_49"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedLedgerRows6815_1.lean",
+      "sha256": "56538948a7a3389d576cc7a195a0e3cbc7b66f2b49d13ee56f7908908ffeede3",
+      "lines": 382,
+      "bytes": 396445,
+      "declarations": 150,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedLedgerRows6815_0"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedLedgerRows6815_2.lean",
+      "sha256": "e43ba77d1eccebeda61d8be98bd0b10c79c4fafd877d27e63a8bec3d16e20ddf",
+      "lines": 366,
+      "bytes": 330081,
+      "declarations": 142,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedLedgerRows6815_1"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedLedgerRows6815_3.lean",
+      "sha256": "226265833a6dbf533b07e8f925d2e951635a72ede24e524048ccd55432d1511e",
+      "lines": 324,
+      "bytes": 269932,
+      "declarations": 125,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedLedgerRows6815_2"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedLiteralCurves6815_0.lean",
+      "sha256": "9e4bad63b6f5d7294b84239ac5b1ea71519f95b94c9c152b58a5b08eade6ab0c",
+      "lines": 4146,
+      "bytes": 619724,
+      "declarations": 2736,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_52"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedLiteralThresholds6815_0.lean",
+      "sha256": "153b15309dbcbb9668fac4d5bf5a8188fad5d2a1e8d74306d79038102cc5d2b6",
+      "lines": 4142,
+      "bytes": 290899,
+      "declarations": 2736,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_52"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedOwnerBoxI6815_0.lean",
+      "sha256": "0f051144fbf2946b9408026543189f7ad27bc3a05fe00b77e7f2bc880db0eff0",
+      "lines": 1766,
+      "bytes": 125179,
+      "declarations": 414,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_47"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedOwnerBoxL6815_0.lean",
+      "sha256": "61bc2699c399566a9df8deb629ebf386f9deefa7e3d099e8e00cdf54996deb5d",
+      "lines": 1276,
+      "bytes": 86905,
+      "declarations": 299,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_47"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedPackingFull6815_0.lean",
+      "sha256": "7873c63f42ecf2a8e4fb00907bddfd4a7c1c022c0f88fee577ba85f7c9907f1b",
+      "lines": 2656,
+      "bytes": 854484,
+      "declarations": 844,
+      "same_short_name_in_native": 40,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_51",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_50",
+        "ProximityPrize.SubmissionLower.PackingDecode6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedPackingFull6815_1.lean",
+      "sha256": "a9381a26cfdb35a22197bb59326ecefad37c4f48e910a84349790251692a8bdc",
+      "lines": 2656,
+      "bytes": 761811,
+      "declarations": 844,
+      "same_short_name_in_native": 40,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedPackingFull6815_0",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_50",
+        "ProximityPrize.SubmissionLower.PackingDecode6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedPackingLight6815_0.lean",
+      "sha256": "44b732a2b36ea893b4f9265c8ca5c960796ff3fd0ac057e02b1b8a2a9a9c8d1b",
+      "lines": 2377,
+      "bytes": 331112,
+      "declarations": 749,
+      "same_short_name_in_native": 63,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_51",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_50",
+        "ProximityPrize.SubmissionLower.PackingDecode6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedPackingLight6815_1.lean",
+      "sha256": "a497ff29295417f71fa295f3107094f45d5ea6cd5d0b9759ed6ae5be69054c39",
+      "lines": 2377,
+      "bytes": 313291,
+      "declarations": 749,
+      "same_short_name_in_native": 63,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedPackingLight6815_0",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_50",
+        "ProximityPrize.SubmissionLower.PackingDecode6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedPackingOwnRows6815_0.lean",
+      "sha256": "ea3034584e49ef55622e2e00feb5159dba5fdb69c2ad603b2f5b16f531de1bcd",
+      "lines": 273,
+      "bytes": 19780,
+      "declarations": 100,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_53",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_49"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedPackingOwnRows6815_1.lean",
+      "sha256": "ea71e811f9e1a55b3220e8d5fb97f264efcd339af1f71b4a15315dd7f6144a53",
+      "lines": 262,
+      "bytes": 19041,
+      "declarations": 95,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedPackingOwnRows6815_0",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_49"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedPrefixRows6815_0.lean",
+      "sha256": "0c11e965e887b829f68805ae2d3b0ce3e52ddb695f8b4d8ff8a655a83e23a581",
+      "lines": 1069,
+      "bytes": 235521,
+      "declarations": 809,
+      "same_short_name_in_native": 3,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_51",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_50",
+        "ProximityPrize.SubmissionLower.SingletonData6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedPrefixRows6815_1.lean",
+      "sha256": "5922579cf1389f10ab0035713a5bfbab2da95c2049c86e12b183b4caa41ad9d1",
+      "lines": 808,
+      "bytes": 186405,
+      "declarations": 556,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedPrefixRows6815_0"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedPrefixRows6815_2.lean",
+      "sha256": "69edfd72ffe91831663901739aaeff2c82df1b42d953036a174f6860e6502015",
+      "lines": 806,
+      "bytes": 187764,
+      "declarations": 562,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedPrefixRows6815_1"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedPrefixRows6815_3.lean",
+      "sha256": "293787a3b1c13d429dd77b37b0c5c03b3b1e35fd4c283467653c32305c5c8b62",
+      "lines": 720,
+      "bytes": 165054,
+      "declarations": 503,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedPrefixRows6815_2"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedSharedBoxI6815_0.lean",
+      "sha256": "8486933db7fe80728c6809c4e644076e5ab1fea807b88e2e2baf7a8c717c5b2e",
+      "lines": 344,
+      "bytes": 34810,
+      "declarations": 144,
+      "same_short_name_in_native": 36,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_47"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedSharedBoxL6815_0.lean",
+      "sha256": "cf191df5df8533c2ef89e44069742e652025dd000e745dcbab38a35d86f2adf2",
+      "lines": 249,
+      "bytes": 23688,
+      "declarations": 104,
+      "same_short_name_in_native": 26,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_47"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedSingletonRows6815_0.lean",
+      "sha256": "d5365c186f11d63012d5f41859b35cbb44d6acc01361fe400b6f1f0a94deffd8",
+      "lines": 2159,
+      "bytes": 770026,
+      "declarations": 1921,
+      "same_short_name_in_native": 150,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_49"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedSingletonRows6815_1.lean",
+      "sha256": "962c049f01df4662e858361aa8e312253bfb243734ce8eee4dabb08f3b14bf39",
+      "lines": 2047,
+      "bytes": 672698,
+      "declarations": 1815,
+      "same_short_name_in_native": 150,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedSingletonRows6815_0"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedSingletonRows6815_2.lean",
+      "sha256": "fb66719d5cc8444188b40d2a34c0127d40955c4b70f9aeda60d6f47b7d6c50d1",
+      "lines": 1931,
+      "bytes": 427600,
+      "declarations": 1707,
+      "same_short_name_in_native": 150,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedSingletonRows6815_1"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedSingletonRows6815_3.lean",
+      "sha256": "98d28017f5481813c60cfba0685f2ca20bc364590b6825c9eb3d20b5645c1876",
+      "lines": 1647,
+      "bytes": 332725,
+      "declarations": 1448,
+      "same_short_name_in_native": 135,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedSingletonRows6815_2"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedSourceReceipts6815_0.lean",
+      "sha256": "b2e42c61e3f18297e5e5dc3af897421d58fd93d8506f799a51faa948def95522",
+      "lines": 1148,
+      "bytes": 66253,
+      "declarations": 450,
+      "same_short_name_in_native": 4,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_35"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedWidePack6815_0.lean",
+      "sha256": "34b6e1fd5b444fee2128645ff59eff7f9dead948a37efb6cb8d4242c01171242",
+      "lines": 977,
+      "bytes": 143295,
+      "declarations": 243,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.RelativeWideBlocks6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedWidePack6815_1.lean",
+      "sha256": "5460e77eef378d47d8d9d2669e4c056cf44c59f375c3abcb9389fc9dbe62591a",
+      "lines": 1036,
+      "bytes": 165029,
+      "declarations": 272,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "ProximityPrize.SubmissionLower.RelativeWideBlocks6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedWidePack6815_2.lean",
+      "sha256": "464e246c1b4266a2d97a9f2758382644e34648431c20c1b5529df258d237794e",
+      "lines": 1182,
+      "bytes": 202923,
+      "declarations": 325,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.RelativeWideBlocks6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedWidePack6815_3.lean",
+      "sha256": "e82073781b2571ab60daf2ec21f75d95b75d294ac668554e7f8eff26f7d9d72c",
+      "lines": 1606,
+      "bytes": 253980,
+      "declarations": 378,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.RelativeWideBlocks6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedWidePack6815_4.lean",
+      "sha256": "f60ef0916f779238b1f5f17626225d619e3b2449664f434c70a9808364d530fd",
+      "lines": 1553,
+      "bytes": 241736,
+      "declarations": 361,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.RelativeWideBlocks6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedWidePack6815_5.lean",
+      "sha256": "d39bd7d22651e652bb0c784b2109e0e304b9ea53d738451441c9ae19d354d6be",
+      "lines": 1279,
+      "bytes": 193903,
+      "declarations": 303,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.RelativeWideBlocks6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedWidePack6815_6.lean",
+      "sha256": "ab35da94bb192fbc0453ebeb6a9fb6fba2e3df443b8629b8c09e3689a4a0172a",
+      "lines": 897,
+      "bytes": 114999,
+      "declarations": 208,
+      "same_short_name_in_native": 4,
+      "imports": [
+        "ProximityPrize.SubmissionLower.RelativeWideBlocks6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MergedWidePack6815_7.lean",
+      "sha256": "2d28177ffeb385d580a7c6f1e768c225311bcea30ad5f27b5573448e695aada9",
+      "lines": 836,
+      "bytes": 123018,
+      "declarations": 210,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.RelativeWideBlocks6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MovingFiberPairGeometry6815.lean",
+      "sha256": "d92eacedbb2cddb4c5222577aaf9edb519c16125e6a8cc8e5e7386f5846b3c0f",
+      "lines": 130,
+      "bytes": 7026,
+      "declarations": 7,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_19",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_13"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/MovingSourceGenericField6814.lean",
+      "sha256": "6fc6e0e3e8a0b6ee23de0b00f605cab79e1b2824dde6fb1f337ad4b1e9e49b26",
+      "lines": 101,
+      "bytes": 5360,
+      "declarations": 11,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_17",
+        "Mathlib.RingTheory.Flat.Localization"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/PackingDecode6815.lean",
+      "sha256": "7562f938411024a82f690972bc58da4c49cf6fb960b42f6c266d7e7a20c08db1",
+      "lines": 14,
+      "bytes": 622,
+      "declarations": 2,
+      "same_short_name_in_native": 0,
+      "imports": []
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/PackingOwnData6815.lean",
+      "sha256": "16266f048e9624351aa0e8ea959d5c3eb988f2e541d100c20a61750beadd6138",
+      "lines": 47,
+      "bytes": 1720,
+      "declarations": 1,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedPackingOwnRows6815_1"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/PortfolioSourceCatalogue6815.lean",
+      "sha256": "c3c00816fe7f467c5f032a70ad0a7b8cb055bd20a6feb7f212078ad0bbfa0ccf",
+      "lines": 164,
+      "bytes": 5300,
+      "declarations": 5,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedSourceReceipts6815_0"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/RelativeWideBlocks6815.lean",
+      "sha256": "5d5da15c11f2808191e95dc7a7250e702d274c9a3fce8ce9dec7ac993c50912b",
+      "lines": 86,
+      "bytes": 4086,
+      "declarations": 8,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_34",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_26",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_3"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/RetainedSharedRemainder6815.lean",
+      "sha256": "e0422eb20e2bec87141fa587f5ba5666943c30d7152bee0f72377764ca01e64a",
+      "lines": 42,
+      "bytes": 1832,
+      "declarations": 1,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_32",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_31"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/SingletonCount6815.lean",
+      "sha256": "486d1d15a9ba6e2f099d3df65825aa06513285062833944af455ca7c2ef61070",
+      "lines": 51,
+      "bytes": 2693,
+      "declarations": 4,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.SingletonData6815",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_28",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_48",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_13",
+        "ProximityPrize.SubmissionLower.MergedInfra6815_0"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/SingletonData6815.lean",
+      "sha256": "bb5132642c65c7cd5c7f27302a9fa21ec1059a68d41f8f139e372e93c185dfeb",
+      "lines": 90,
+      "bytes": 4132,
+      "declarations": 4,
+      "same_short_name_in_native": 2,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedSingletonRows6815_3"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/Solution.lean",
+      "sha256": "09e740d0240810856b05bd4aff30793a29e251089eb9f06b053b584d5a33d87e",
+      "lines": 7,
+      "bytes": 304,
+      "declarations": 1,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionLower.FinalCertificate6815"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionLower/TriangularKernel6815.lean",
+      "sha256": "f009437922c21ba9779ff39942a136f12dd0b63665a8d0054ea79b531281dde0",
+      "lines": 44,
+      "bytes": 2179,
+      "declarations": 5,
+      "same_short_name_in_native": 1,
+      "imports": [
+        "ProximityPrize.SubmissionLower.MergedInfra6815_3"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionUpper/HalfRadiusCollision.lean",
+      "sha256": "e7bc9895b95fd5dfd738d5df714af843971e120608cf02dcf8cc3c93095d8ee8",
+      "lines": 554,
+      "bytes": 23204,
+      "declarations": 9,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.Benchmark.TargetUpper"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionUpper/IRSHalfRadius.lean",
+      "sha256": "238915d0fcf27cde2112c7fce76ba2a45122a1d2664e856a94eacd73ef0e1790",
+      "lines": 211,
+      "bytes": 8959,
+      "declarations": 17,
+      "same_short_name_in_native": 6,
+      "imports": [
+        "ProximityPrize.SubmissionUpper.HalfRadiusCollision"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionUpper/OrbitPencil.lean",
+      "sha256": "86ba1702d47c0a8eb6300fd5b116b0a8dbc39a8b20b2b7f309aec15eaa8d4b7f",
+      "lines": 818,
+      "bytes": 32853,
+      "declarations": 130,
+      "same_short_name_in_native": 18,
+      "imports": [
+        "ProximityPrize.SubmissionUpper.PrescribedTop"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionUpper/PrescribedTop.lean",
+      "sha256": "3946924e5d7d08a4c73e808c84fe0775fb433ae77d7d3fe19779be30d56d79c4",
+      "lines": 591,
+      "bytes": 24948,
+      "declarations": 68,
+      "same_short_name_in_native": 5,
+      "imports": [
+        "ProximityPrize.SubmissionUpper.IRSHalfRadius"
+      ]
+    },
+    {
+      "path": "ProximityPrize/SubmissionUpper/Solution.lean",
+      "sha256": "5a7e538ae723672ec733f2f494f968624cb53e26cc96ba7c6334a384cc58811e",
+      "lines": 82,
+      "bytes": 3804,
+      "declarations": 5,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.SubmissionUpper.OrbitPencil"
+      ]
+    },
+    {
+      "path": "ProximityPrize.lean",
+      "sha256": "fe34c82e98786b03b276371909f8a2c7c3975ad80f64c63dbb427f86e2206569",
+      "lines": 15,
+      "bytes": 470,
+      "declarations": 0,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize.Benchmark.IRSProfile",
+        "ProximityPrize.Benchmark.TargetLower",
+        "ProximityPrize.Benchmark.TargetUpper"
+      ]
+    },
+    {
+      "path": "scripts/check-axioms.lean",
+      "sha256": "517a76597b68cfab59bd2d82cac6e6f54b305719b97f34b6c232762cc5716bb5",
+      "lines": 66,
+      "bytes": 2853,
+      "declarations": 1,
+      "same_short_name_in_native": 0,
+      "imports": [
+        "ProximityPrize"
+      ]
+    },
+    {
+      "path": "submission-helpers/KernelEval.lean",
+      "sha256": "bbd9919eb695807b0e91e78c61984d4dd5d24cd6704a6ba260a8448fed6cd973",
+      "lines": 303,
+      "bytes": 12697,
+      "declarations": 19,
+      "same_short_name_in_native": 19,
+      "imports": [
+        "Mathlib.Algebra.BigOperators.Intervals"
+      ]
+    }
+  ],
+  "source_token_findings": [
+    [
+      "scripts/check-axioms.lean",
+      [
+        "axiom"
+      ]
+    ]
+  ],
+  "note": "Lexical inventory, not semantic equivalence or kernel validation. Short-name matches are only review hints."
+}

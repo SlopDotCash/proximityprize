@@ -57,7 +57,7 @@ theorem zeros_le_of_dft_sparse (Φ : ZMod N → ℂ) (hΦ : Φ ≠ 0) {t : ℕ} 
   -- zeros = N − |supp Φ|
   have hcompl : (univ.filter (fun j => Φ j = 0)).card + (supp Φ).card = N := by
     rw [supp]
-    have := Finset.filter_card_add_filter_neg_card_eq_card (s := (univ : Finset (ZMod N)))
+    have := Finset.card_filter_add_card_filter_not (s := (univ : Finset (ZMod N)))
       (p := fun j => Φ j = 0)
     simpa [ZMod.card, eq_comm, Finset.filter_not] using this
   have hz : ((univ.filter (fun j => Φ j = 0)).card : ℝ) = (N : ℝ) - (supp Φ).card := by

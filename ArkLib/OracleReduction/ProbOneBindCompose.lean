@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.Security.Basic
+import VCVio.EvalDist.Monad.Basic
 
 /-!
 # Probability-one bind composition (issue #114 — completeness-composition keystone helper)
@@ -32,7 +32,8 @@ namespace OracleComp
 
 universe u v
 
-variable {α β : Type u} {m : Type u → Type v} [Monad m] [HasEvalSPMF m]
+variable {α β : Type u} {m : Type u → Type v} [Monad m] [MonadAttach m]
+    [MonadLiftT m SPMF] [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
 
 /-- **Probability-one bind composition.** If `mx` satisfies `p` with probability `1`, and `f a`
 satisfies `good` with probability `1` for every `a` in the support of `mx` (in particular whenever

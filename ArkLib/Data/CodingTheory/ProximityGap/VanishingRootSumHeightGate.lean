@@ -68,7 +68,6 @@ theorem sum_eq_zero_of_antipodal (hchar : (2 : F) ≠ 0) {R : Finset F}
     (fun x hx _ => ?_) (fun x hx => hclosed x hx) (fun x _ => neg_neg x)
   -- fixed-point-free: for `x ∈ R` (so `x ≠ 0`), `-x ≠ x`, using `2 ≠ 0`.
   intro hxx
-  simp only at hxx
   have hx0 : x ≠ 0 := fun hz => h0 (hz ▸ hx)
   -- `-x = x` ⟹ `2*x = 0` ⟹ `x = 0` (char ≠ 2), contradicting `x ≠ 0`.
   have hsum : x + x = 0 := by

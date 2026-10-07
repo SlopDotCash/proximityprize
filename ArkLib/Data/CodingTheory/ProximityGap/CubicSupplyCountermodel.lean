@@ -214,7 +214,7 @@ theorem sumZero_card_quadratic (dom : Fin n ↪ F)
       _ = 3 * n := by ring
   have hsplit : S.card
       + (Finset.univ.filter (fun p : Fin n × Fin n => ¬ good p)).card = n ^ 2 := by
-    rw [hSdef, Finset.filter_card_add_filter_neg_card_eq_card,
+    rw [hSdef, Finset.card_filter_add_card_filter_not,
       Finset.card_univ, Fintype.card_prod, Fintype.card_fin, sq]
   calc (n : ℕ) ^ 2 = S.card
         + (Finset.univ.filter (fun p : Fin n × Fin n => ¬ good p)).card := hsplit.symm

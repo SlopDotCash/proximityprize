@@ -32,7 +32,7 @@ variable {σ : Type*} {R : Type*} [CommSemiring R]
 
 /-- The submodule of polynomials whose degree in each variable `i` is at most `b i`, for a
 per-variable bound `b : σ → ℕ`. Generalises `restrictDegree` (the constant-`b` case). -/
-def restrictDegreeVar (σ : Type*) (R : Type*) [CommSemiring R] (b : σ → ℕ) :
+noncomputable def restrictDegreeVar (σ : Type*) (R : Type*) [CommSemiring R] (b : σ → ℕ) :
     Submodule R (MvPolynomial σ R) :=
   restrictSupport R { n | ∀ i, n i ≤ b i }
 
@@ -113,18 +113,16 @@ lemma rename_equiv_mem_restrictDegreeVar {R : Type*} [CommSemiring R]
     {σ τ : Type*} (e : σ ≃ τ) (p : MvPolynomial σ R) {b : σ → ℕ}
     (hp : p ∈ restrictDegreeVar σ R b) :
     MvPolynomial.rename e p ∈ restrictDegreeVar τ R (b ∘ e.symm) := by
+  classical
+  rw [mem_restrictDegreeVar] at hp ⊢
   intro m hm
-  obtain ⟨n', hn', hm_eq⟩ : ∃ n' ∈ p.support, m = n'.mapDomain e := by
-    simp only [SetLike.mem_coe, Finsupp.mem_support_iff, ne_eq, mem_support_iff] at *
-    rw [MvPolynomial.rename_eq] at hm
-    contrapose! hm
-    rw [Finsupp.mapDomain, Finsupp.sum, Finsupp.finset_sum_apply]
-    exact Finset.sum_eq_zero fun x hx =>
-      Finsupp.single_eq_of_ne (hm x (by aesop))
+  rw [MvPolynomial.support_rename_of_injective e.injective] at hm
+  obtain ⟨n', hn', hm_eq⟩ := Finset.mem_image.mp hm
+  have hm_eq := hm_eq.symm
   intro i
   subst hm_eq
   rw [Finsupp.mapDomain_equiv_apply]
-  exact hp hn' (e.symm i)
+  exact hp n' hn' (e.symm i)
 
 /-- Currying via `sumAlgEquiv` preserves the per-variable bound on the outer (`S₁`) coordinates
 restricted to `Sum.inl`. -/
@@ -133,6 +131,8 @@ lemma sumAlgEquiv_mem_restrictDegreeVar {R : Type*} [CommSemiring R]
     (hp : p ∈ restrictDegreeVar (S₁ ⊕ S₂) R b) :
     (MvPolynomial.sumAlgEquiv R S₁ S₂) p ∈
       restrictDegreeVar S₁ (MvPolynomial S₂ R) (b ∘ Sum.inl) := by
+  classical
+  rw [mem_restrictDegreeVar] at hp ⊢
   intro s hs
   obtain ⟨m, hm, hs_eq⟩ : ∃ m : (S₁ ⊕ S₂) →₀ ℕ,
       m ∈ p.support ∧ s = m.comapDomain Sum.inl Sum.inl_injective.injOn := by
@@ -143,15 +143,23 @@ lemma sumAlgEquiv_mem_restrictDegreeVar {R : Type*} [CommSemiring R]
               (p.coeff m)) := by
       conv_lhs => rw [p.as_sum]
       rw [map_sum]
-      exact Finset.sum_congr rfl fun _ _ => sumToIter_monomial_aux _ _
+      have hmap : (sumAlgEquiv R S₁ S₂).toRingHom = sumToIter R S₁ S₂ := by
+        apply ringHom_ext
+        · intro r
+          simp [sumToIter]
+        · intro i
+          cases i <;> simp [sumToIter]
+      exact Finset.sum_congr rfl fun m _ => by
+        change (sumAlgEquiv R S₁ S₂).toRingHom _ = _
+        rw [hmap]
+        exact sumToIter_monomial_aux _ _
     contrapose! hs
-    simp only [h_sum, SetLike.mem_coe, Finsupp.mem_support_iff, ne_eq, not_not]
-    erw [Finsupp.finset_sum_apply]
+    simp only [h_sum, mem_support_iff, not_not, coeff_sum]
     refine Finset.sum_eq_zero fun x hx => ?_
-    erw [AddMonoidAlgebra.lsingle_apply, AddMonoidAlgebra.lsingle_apply]; aesop
+    simp [coeff_monomial, (hs x hx).symm]
   intro i
   subst hs_eq
   rw [Finsupp.comapDomain_apply]
-  exact hp hm (Sum.inl i)
+  exact hp m hm (Sum.inl i)
 
 end MvPolynomial

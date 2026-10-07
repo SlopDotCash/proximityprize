@@ -106,7 +106,7 @@ theorem rbrKnowledgeSoundness_relOut_any_of_one_le_error
     exact le_trans probEvent_le_one (by exact_mod_cast hj)
   · -- strictly after `j`: the truncated state is already `True` before the challenge,
     -- so the flip event is empty
-    refine le_trans (le_of_eq ?_) (zero_le _)
+    refine le_trans (le_of_eq ?_) (zero_le)
     rw [probEvent_eq_zero_iff]
     rintro ⟨transcript, challenge, _log⟩ _ ⟨witMid, hnot, _⟩
     exact hnot (fun hle => absurd hle (by simpa using Nat.not_le.mpr hgt))

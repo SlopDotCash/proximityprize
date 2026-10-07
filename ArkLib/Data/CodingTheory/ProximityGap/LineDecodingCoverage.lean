@@ -519,7 +519,7 @@ theorem lineDecodable_imp_epsMCA_le_target
     epsMCA (F := F) (A := A) ((C : Set (ι → A))) δ
         ≤ (a : ENNReal) / (Fintype.card F : ENNReal) := by
   rw [epsMCA_eq_zero_of_forall_double_cover (F := F) (A := A) (C : Set (ι → A)) δ hcov]
-  exact zero_le _
+  exact zero_le
 
 #print axioms CodingTheory.lineDecodable_imp_epsMCA_le_target
 

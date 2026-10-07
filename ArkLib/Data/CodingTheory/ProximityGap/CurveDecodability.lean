@@ -167,7 +167,7 @@ lemma relHammingDist_le_of_hammingDist_le {M' : Type} [DecidableEq M']
     (h : hammingDist u v ≤ hammingDist u' v') : δᵣ(u, v) ≤ δᵣ(u', v') := by
   simp only [Code.relHammingDist]
   rw [div_eq_mul_inv, div_eq_mul_inv]
-  exact mul_le_mul_right' (Nat.cast_le.mpr h) _
+  exact mul_le_mul_left (Nat.cast_le.mpr h) _
 
 /-- **[Jo26] Lemma 5.6.**  Row combination does not increase relative Hamming distance:
 if two interleaved words agree at a position, so do their `λ`-combinations. -/
@@ -407,7 +407,7 @@ theorem farWordSupply_of_far_pair {C : Set (ι → M)} {δ : ℚ≥0}
     simp only [Code.relHammingDist]
     rw [← add_div]
     rw [div_eq_mul_inv, div_eq_mul_inv]
-    refine mul_le_mul_right' ?_ _
+    refine mul_le_mul_left ?_ _
     exact_mod_cast hnat
   have hle : δᵣ(c₁, c₂) ≤ 2 * δ := by
     calc δᵣ(c₁, c₂) ≤ δᵣ(w, c₁) + δᵣ(w, c₂) := htri

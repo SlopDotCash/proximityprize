@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import Mathlib.FieldTheory.Finite.Basic
+import Mathlib.Algebra.Polynomial.HasseDeriv
+import Mathlib.LinearAlgebra.Dimension.Finrank
+import Mathlib.LinearAlgebra.Dimension.Constructions
+import Mathlib.RingTheory.Polynomial.DegreeLT
+import Mathlib.Tactic
 
 /-!
 # Issue #232 — the Stepanov→Weil construction substrate: multiplicative-character realization,

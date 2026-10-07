@@ -8,7 +8,7 @@ import ArkLib.Data.Polynomial.Bivariate
 import Mathlib.Algebra.Polynomial.Basic
 import Mathlib.LinearAlgebra.Lagrange
 import Mathlib.Tactic.Cases
-import Mathlib.Tactic.LinearCombination'
+import Mathlib.Tactic.LinearCombinationPrime
 
 import CompPoly.Univariate.Lagrange
 import CompPoly.Univariate.ToPoly.Impl

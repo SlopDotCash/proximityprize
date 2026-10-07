@@ -189,7 +189,7 @@ theorem wick_moment_bound_of_negAssoc {X : ι → Ω → ℝ} (h : NegAssoc X) (
     expt (fun ω => ∏ i ∈ s, X i ω) ≤ ∏ i ∈ s, μ i := by
   calc expt (fun ω => ∏ i ∈ s, X i ω)
       ≤ ∏ i ∈ s, expt (X i) := h s
-    _ ≤ ∏ i ∈ s, μ i := Finset.prod_le_prod hXmean hμ
+    _ ≤ ∏ i ∈ s, μ i := Finset.prod_le_prod₀ hXmean hμ
 
 /-- **Two-block split for NA families (the inductive Wick step).** Splitting the index block into
 disjoint `A ⊎ B`, the product-moment factor-dominates:

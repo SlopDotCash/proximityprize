@@ -69,7 +69,7 @@ theorem two_pow_primeFactors_card_le {N : ℕ} (hN : 1 ≤ N) :
     calc 2 ^ N.primeFactors.card
         = ∏ _p ∈ N.primeFactors, 2 := by rw [Finset.prod_const]
       _ ≤ ∏ p ∈ N.primeFactors, p :=
-          Finset.prod_le_prod' (fun p hp => (Nat.prime_of_mem_primeFactors hp).two_le)
+          Finset.prod_le_prod (fun p hp => (Nat.prime_of_mem_primeFactors hp).two_le)
   exact le_trans hle (Nat.le_of_dvd hN hprod)
 
 /-- **Per-relation prime count, archimedean form.**  If the field norm of a relation is bounded by `B^d`

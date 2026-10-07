@@ -32,7 +32,8 @@ open scoped ENNReal NNReal
 
 section IndexedMarginal
 
-variable {γ β : Type} {m : Type → Type v} [Monad m] [HasEvalSPMF m]
+variable {γ β : Type} {m : Type → Type v} [Monad m] [MonadAttach m]
+    [MonadLiftT m SPMF] [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
 
 /-- **Prefix-indexed uniform-marginal domination.** If, after a first stage `m₀`, the game draws
 from a uniformly-dominated distribution and the event is supported inside a prefix-dependent bad

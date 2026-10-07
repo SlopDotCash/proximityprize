@@ -7,6 +7,17 @@ fork. See the [repository destination rule](../../CONTRIBUTING.md#repository-des
 This page is the recommended agent playbook for commands and validation.
 Use it as the main guide for routine local checks.
 
+## Toolchain and independent caches
+
+The native project pins Lean 4.34.0 in `lean-toolchain`; `lake-manifest.json`
+records the matching dependencies. Keep a separate `.lake` directory when
+migrating between Lean releases. A worktree must not share a symlinked `.lake`
+with a checkout using another toolchain or dependency lock.
+
+The pinned external proof packages retain their own toolchains. See
+[external proof transfer](upstream-proof-transfer.md) for their build wrappers,
+immutable source pins and verification boundaries.
+
 ## Recommended Validation
 
 Install the Python regression dependencies in your active virtual environment first:
@@ -16,6 +27,19 @@ python3 -m pip install -r scripts/requirements-validation.txt
 ```
 
 CI installs the same pinned dependencies before running the validation wrapper.
+The wrapper also builds CompPoly’s KoalaBear fresh-replay regression, which
+rechecks both irreducibility proof closures and quotient consistency in a fresh
+kernel environment. It also builds the native security clients from `ArkLibTest`,
+covering payload-dependent witnesses, false middle paths, and an executor whose
+prover fails through an empty-response query. The restoration clients check accepted and rejected
+closed-oracle outputs and a strictly sharper nonuniform-round budget. The fixed-candidate
+probability client checks empty lists and exclusion of correct candidates. The packing clients
+check unequal ranks over a ring with zero divisors, empty observations, inverse witness
+transport, polynomial packing round trips, rejection of incorrect opening/slice/sumcheck claims,
+tight field batching bounds and their failure over zero divisors, incompatible fields, matrix
+multiplier evaluation, scalar-layout coordinate order and off-grid interpolation, and why an
+accepted observation alone does not
+establish an honest message. The profile client also rejects a collapsed positive-rank carrier.
 For a convenient routine check, run:
 
 ```bash
@@ -73,6 +97,15 @@ Build hygiene on shared machines:
   target warrants — for example a small-target build past 20–30 minutes that is grinding
   through `Mathlib/` files — usually indicates a clobbered cache, not a slow build. Kill the
   build tree (never agent processes), restore the cache, retry through the wrapper.
+
+On macOS, `Too many open files in system` can occur when concurrent jobs exhaust
+kernel file or vnode capacity, even if the shell's `ulimit -n` is high. Check
+`sysctl kern.num_files kern.maxfiles kern.num_vnodes kern.maxvnodes`. In this
+condition Lean may also report a missing olean that exists and is readable after
+the failed run. Verify the path before deleting or re-downloading a cache. Reduce
+this task's concurrency (for example `LEAN_NUM_THREADS=1 ./scripts/lake-locked.sh
+build <target>`) and retry after resource pressure falls; preserve other tasks'
+processes. A resource failure is not evidence of a broken proof.
 
 Do not use bare `lake update` as a routine cache-repair command. It re-resolves
 `lake-manifest.json` and may delete/re-clone package directories while other checks are running.
@@ -399,3 +432,7 @@ The transfer skeptic probe scans its stage C maximum in batches of at most 32,76
 Stale build-lock reclamation also checks the recorded local owner PID with `kill -0`. A live or paused owner keeps its checkout lock and machine slot even when its heartbeat is delayed. The timeout still bounds checkout-lock waiting. PID reuse can conservatively delay reclamation; inspect the recorded owner before manual cleanup. The isolated lock regression pauses an owner beyond the stale threshold and checks that another build cannot enter.
 
 The Python regression discovery also compiles and runs the exact-jump C++ optimizer test. A C++20-capable `c++` compiler must be on PATH. The test uses a temporary output directory and compares the optimizer with exhaustive assignments in 1875 small cases; it does not run the large research searches.
+
+The single-file iterator uses Lean's exit status and explicit diagnostic prefixes.
+A linter suggestion containing a theorem such as `errorBound` is not a compilation error;
+`warning: declaration uses sorry` and printed `sorryAx` dependencies still fail the check.

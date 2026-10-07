@@ -62,7 +62,7 @@ theorem card_far_eq_card_sub_card_close (C : Set (ι → A)) (δ : ℝ≥0) :
       = Fintype.card (ι → A)
         - (Finset.univ.filter (fun w : ι → A => δᵣ(w, C) ≤ δ)).card := by
   classical
-  have h := Finset.filter_card_add_filter_neg_card_eq_card
+  have h := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset (ι → A))) (p := fun w : ι → A => δᵣ(w, C) ≤ δ)
   rw [Finset.card_univ] at h
   omega
@@ -100,6 +100,6 @@ theorem sum_far_plus_jointProx_lt_of_close_ge (C : Set (ι → A)) (δ : ℝ≥0
       < Fintype.card (Matrix (Fin 2) ι A) := by
   rw [sum_far_card_eq, card_far_eq_card_sub_card_close]
   refine lt_of_le_of_lt (Nat.add_le_add ?_ hjp) hbudget
-  exact mul_le_mul_left' (Nat.sub_le_sub_left hclose _) _
+  exact mul_le_mul_right (Nat.sub_le_sub_left hclose _) _
 
 end ProximityGap

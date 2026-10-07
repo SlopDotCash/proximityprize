@@ -15,22 +15,39 @@ import Mathlib.Tactic.Field
 /-!
 # Coset FFT domains
 
-This file defines coset FFT domains: evaluation domains of the form `x · G` for an FFT
-subgroup domain `G`.  The data is packaged as a structure `CosetFftDomain` (an injective
-group embedding `Multiplicative ι →* Fˣ` together with a coset generator) and an
-abstract interface `CosetFftDomainClass` characterizing such maps via `map_zero_unit`,
-`map_add`, and `map_neg`.  It provides the `FunLike` instance, the evaluation identity
-`eval_coset_fft_domain_eq_eval_generator_mul_domain`, conversions between the structure and
-the class (`mkSubgroupUnit`, `toCosetFftDomain`), injectivity lemmas, the `SmoothCosetFftDomain`
-abbreviation, and the underlying `Finset` of evaluation points (`toFinset`, `card_toFinset`).
+This file defines coset FFT domains and their abstract interface.
+
+A coset FFT domain is a multiplicative coset of a finite subgroup of a field,
+indexed additively. The typeclass `CosetFftDomainClass` provides an abstract
+axiomatization of such domains, while `CosetFftDomain` gives a concrete
+representation.
+
+## Main definitions
+
+- `CosetFftDomain`: A concrete coset FFT domain.
+- `CosetFftDomainClass`: Typeclass for objects behaving like coset FFT domains.
+- `CosetFftDomainClass.mkSubgroupUnit`: Recovers the underlying subgroup element.
+- `CosetFftDomainClass.toCosetFftDomain`: Constructs a concrete domain from a class instance.
+- `SmoothCosetFftDomain`: Coset FFT domains indexed by `Fin (2 ^ n)`.
+
+## Main results
+
+- `CosetFftDomainClass.ne_zero`: Elements of a coset FFT domain are nonzero.
+- `CosetFftDomainClass.toCosetFftDomain_of_CosetFftDomain`:
+  Reconstruction is the identity on concrete domains.
+- `CosetFftDomain.map_0_eq_coset_generator`:
+  The value at zero is the coset generator.
+- `CosetFftDomain.injective`: Coset FFT domains are injective.
+
 -/
+
 
 namespace Domain
 
 open Function
 
-variable {ι : Type} [Fintype ι] [AddCommGroup ι] [DecidableEq ι]
-variable {F : Type} [Field F] [DecidableEq F]
+variable {ι : Type} [AddCommGroup ι]
+variable {F : Type} [Field F]
 
 /-- A coset FFT domain is a domain of the form `x · G` for
   an FFT domain `G`. -/
@@ -40,6 +57,11 @@ structure CosetFftDomain (ι : Type) [AddCommGroup ι]
   subgroupDomain_inj : Injective subgroupDomain
   cosetGenerator : Fˣ
 
+/-- Typeclass for objects behaving like coset FFT domains as functions `ι → F`.
+  The axioms say that the image is a shifted multiplicative subgroup:
+  `ω 0` is the coset representative, multiplication in
+  the subgroup corresponds to addition in `ι`,
+  negation gives inverses up to the coset factor, and the map is injective. -/
 class CosetFftDomainClass.{u, v}
   (D : Type u) (ι : outParam (Type v)) [AddCommGroup ι]
   (F : outParam (Type v)) [Field F] [FunLike D ι F] where
@@ -52,7 +74,7 @@ namespace CosetFftDomainClass
 
 variable {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
+/-- Every point of a coset FFT domain is nonzero. -/
 @[simp]
 lemma ne_zero (ω : D) (i : ι) : ω i ≠ 0 := fun h ↦ by
   have h0 : IsUnit (ω 0) := map_zero_unit ω
@@ -65,83 +87,107 @@ end CosetFftDomainClass
 
 namespace CosetFftDomain
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
-private lemma eq_iff_gen_and_domains_eq {φ₁ φ₂ : CosetFftDomain ι F} :
-  φ₁ = φ₂ ↔ φ₁.cosetGenerator = φ₂.cosetGenerator ∧
-    φ₁.subgroupDomain = φ₂.subgroupDomain := by
-  rcases φ₁ with ⟨f₁, h₁⟩
+/-- Two concrete coset FFT domains are equal iff
+  their coset generators and subgroup parametrizations are equal. -/
+private lemma eq_iff_gen_and_domains_eq {ω₁ ω₂ : CosetFftDomain ι F} :
+  ω₁ = ω₂ ↔ ω₁.cosetGenerator = ω₂.cosetGenerator ∧
+    ω₁.subgroupDomain = ω₂.subgroupDomain := by
+  rcases ω₁ with ⟨f₁, h₁⟩
   aesop
+
+/-- The subgroup element of a concrete coset domain at an additive index. -/
+def subgroupUnit (ω : CosetFftDomain ι F) (i : ι) : Fˣ :=
+  ω.subgroupDomain (Multiplicative.ofAdd i)
+
+@[simp]
+lemma subgroupUnit_zero (ω : CosetFftDomain ι F) : subgroupUnit ω 0 = 1 := by
+  rw [subgroupUnit, ofAdd_zero, map_one]
+
+@[simp]
+lemma subgroupUnit_add (ω : CosetFftDomain ι F) (i j : ι) :
+    subgroupUnit ω (i + j) = subgroupUnit ω i * subgroupUnit ω j := by
+  rw [subgroupUnit, ofAdd_add, map_mul]
+  rfl
+
+@[simp]
+lemma subgroupUnit_neg (ω : CosetFftDomain ι F) (i : ι) :
+    subgroupUnit ω (-i) = (subgroupUnit ω i)⁻¹ := by
+  rw [subgroupUnit, ofAdd_neg, map_inv]
+  rfl
 
 end CosetFftDomain
 
 instance : FunLike (CosetFftDomain ι F) ι F where
   coe cosetDomain i :=
-    cosetDomain.cosetGenerator * cosetDomain.subgroupDomain i
-  coe_injective' φ₁ φ₂ h := by
-    simp only at h
+    cosetDomain.cosetGenerator * cosetDomain.subgroupUnit i
+  coe_injective ω₁ ω₂ h := by
     have h₀ := congrFun h 0
-    have h := congrFun h
-    have key₀ : (φ₁.subgroupDomain (0 : ι) : F) = 1 := by
-      simp [show (0 : ι) = (1 : Multiplicative ι) from rfl]
-    have key₁ : (φ₂.subgroupDomain (0 : ι) : F) = 1 := by
-      simp [show (0 : ι) = (1 : Multiplicative ι) from rfl]
-    rw [key₀, mul_one, key₁, mul_one] at h₀
-    have h_coset : φ₁.cosetGenerator = φ₂.cosetGenerator := Units.ext h₀
-    have h_eq : ∀ a : ι, (φ₁.subgroupDomain a : F) = (φ₂.subgroupDomain a : F) := fun a ↦ by
-      have ha := h a
-      simp only [h_coset, mul_eq_mul_left_iff, Units.ne_zero, or_false] at ha
-      exact ha
+    simp only [CosetFftDomain.subgroupUnit_zero, Units.val_one, mul_one] at h₀
+    have h_coset : ω₁.cosetGenerator = ω₂.cosetGenerator := Units.ext h₀
+    have h_eq : ∀ a : ι, (ω₁.subgroupUnit a : F) = (ω₂.subgroupUnit a : F) := fun a ↦ by
+      have ha := congrFun h a
+      change (ω₁.cosetGenerator : F) * ω₁.subgroupUnit a =
+        (ω₂.cosetGenerator : F) * ω₂.subgroupUnit a at ha
+      rw [h_coset] at ha
+      exact mul_left_cancel₀ (Units.ne_zero ω₂.cosetGenerator) ha
     exact CosetFftDomain.eq_iff_gen_and_domains_eq.mpr
-      ⟨h_coset, MonoidHom.ext fun x => Units.ext (h_eq x)⟩
+      ⟨h_coset, MonoidHom.ext fun x => Units.ext <| by
+        simpa only [CosetFftDomain.subgroupUnit, ofAdd_toAdd] using
+          h_eq x.toAdd⟩
 
 namespace CosetFftDomain
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
+/-- Evaluation of a concrete coset FFT domain is multiplication of
+  the coset generator by the subgroup element indexed by `i`. -/
 lemma eval_coset_fft_domain_eq_eval_generator_mul_domain
     {cosetDomain : CosetFftDomain ι F} {i : ι} :
-  cosetDomain i = cosetDomain.cosetGenerator * cosetDomain.subgroupDomain i := rfl
+  cosetDomain i = cosetDomain.cosetGenerator * cosetDomain.subgroupUnit i := rfl
 
 end CosetFftDomain
 
+/-- `CosetFftDomain` is indeed an instance of `CosetFftDomainClass`. -/
 instance : CosetFftDomainClass (CosetFftDomain ι F) ι F where
   map_zero_unit ω := by
-    aesop (add simp [CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain])
+    rw [CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain,
+      CosetFftDomain.subgroupUnit_zero, Units.val_one, mul_one]
+    exact Units.isUnit ω.cosetGenerator
   map_add ω i j := by
-    have :
-      (i + j) = ((Multiplicative.ofAdd i) * (Multiplicative.ofAdd j) : Multiplicative ι) := by rfl
-    have : ω.subgroupDomain (0 : ι) = 1 := by
-      simp [show (0 : ι) = (1 : Multiplicative ι) from rfl]
-    aesop
-      (add simp
-        [CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain,
-          Multiplicative.ofAdd])
-      (add safe (by field_simp))
+    simp only [CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain,
+      CosetFftDomain.subgroupUnit_zero, CosetFftDomain.subgroupUnit_add, Units.val_one,
+      Units.val_mul, mul_one]
+    field_simp
   map_neg ω i := by
-    have h₁ : (-i : ι) = (Multiplicative.ofAdd i)⁻¹ := by rfl
-    have h₂ : (0 : ι) = (Multiplicative.ofAdd 0 : Multiplicative ι) := by rfl
-    aesop
-      (add simp [sq, CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain])
-      (add safe (by field_simp))
-  injective ω x y h := ω.subgroupDomain_inj <| by
-    aesop
-      (add simp [CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain])
+    simp only [CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain,
+      CosetFftDomain.subgroupUnit_zero, CosetFftDomain.subgroupUnit_neg, Units.val_one,
+      mul_one]
+    field_simp
+    rw [Units.val_inv_eq_inv_val]
+    exact inv_mul_cancel₀ (Units.ne_zero (ω.subgroupUnit i))
+  injective ω x y h := by
+    apply Multiplicative.ofAdd.injective
+    apply ω.subgroupDomain_inj
+    apply Units.ext
+    exact mul_left_cancel₀ (Units.ne_zero ω.cosetGenerator) h
 
 namespace CosetFftDomainClass
 
+/-- The normalized value `(ω 0)⁻¹ * ω i`, packaged as a unit of `F`.
+
+  This removes the coset shift and recovers the underlying subgroup element. -/
 def mkSubgroupUnit {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
     (ω : D) (i : ι) : Fˣ where
   val := (ω 0)⁻¹ * ω i
   inv := ω 0 * (ω i)⁻¹
   val_inv := by
-    have h0 := CosetFftDomainClass.ne_zero ω (0 : ι)
+    have h0 := CosetFftDomainClass.ne_zero ω 0
     have hi := CosetFftDomainClass.ne_zero ω i
     field_simp
   inv_val := by
-    have h0 := CosetFftDomainClass.ne_zero ω (0 : ι)
+    have h0 := CosetFftDomainClass.ne_zero ω 0
     have hi := CosetFftDomainClass.ne_zero ω i
     field_simp
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
+/-- The normalized subgroup unit map sends addition in the index type to multiplication. -/
 private lemma mkSubgroupUnit_mul {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
     (ω : D) (a b : ι) :
     mkSubgroupUnit ω (a + b) = mkSubgroupUnit ω a * mkSubgroupUnit ω b := by
@@ -149,17 +195,19 @@ private lemma mkSubgroupUnit_mul {D : Type} [FunLike D ι F] [CosetFftDomainClas
   have := (‹CosetFftDomainClass D ι F›.map_add ω a b)
   aesop (add safe (by grind))
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
+/-- The normalized subgroup unit map is injective. -/
 private lemma mkSubgroupUnit_injective {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
     (ω : D) : Injective (mkSubgroupUnit ω) := by
   intro a b hab
   apply (‹CosetFftDomainClass D ι F›.injective ω)
   have h_eq : (ω 0)⁻¹ * ω a = (ω 0)⁻¹ * ω b := by
-    convert congr_arg Units.val hab using 1
+    exact congr_arg Units.val hab
   exact mul_left_cancel₀
     (inv_ne_zero (show ω 0 ≠ 0 from by have :=
       (‹CosetFftDomainClass D ι F›.ne_zero ω 0); aesop)) h_eq
 
+/-- Reconstruct a concrete `CosetFftDomain` from any object
+  of a type satisfying `CosetFftDomainClass`. -/
 def toCosetFftDomain {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
     (ω : D) :
   CosetFftDomain ι F where
@@ -167,8 +215,11 @@ def toCosetFftDomain {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
     toFun := fun i ↦ mkSubgroupUnit ω (Multiplicative.toAdd i)
     map_one' := by
       ext
-      simp [mkSubgroupUnit, CosetFftDomainClass.ne_zero ω (0 : ι)]
-    map_mul' := mkSubgroupUnit_mul ω
+      simp only [toAdd_one, mkSubgroupUnit, Units.val_one]
+      exact inv_mul_cancel₀ (CosetFftDomainClass.ne_zero ω 0)
+    map_mul' := fun x y => by
+      simpa only [toAdd_mul] using
+        mkSubgroupUnit_mul ω (Multiplicative.toAdd x) (Multiplicative.toAdd y)
   }
   subgroupDomain_inj := fun x y h ↦ by
     have hinj := mkSubgroupUnit_injective ω
@@ -179,27 +230,64 @@ def toCosetFftDomain {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
     mul_inv_cancel₀ (CosetFftDomainClass.ne_zero ω (0 : ι)),
     inv_mul_cancel₀ (CosetFftDomainClass.ne_zero ω (0 : ι))⟩
 
-omit [DecidableEq ι] [DecidableEq F] [Fintype ι] in
-lemma toCosetFftDomain_of_CosetFftDomain {ω : CosetFftDomain ι F} :
-    toCosetFftDomain ω = ω := by
-  simp only [toCosetFftDomain, CosetFftDomain.eq_iff_gen_and_domains_eq]
-  constructor
-  · have h : (0 : ι) = (Multiplicative.ofAdd 0 : Multiplicative ι) := by rfl
-    aesop (add simp [CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain])
-  · have h : (0 : ι) = (Multiplicative.ofAdd 0 : Multiplicative ι) := by rfl
-    ext i
-    aesop
-      (add simp [CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain, mkSubgroupUnit])
+@[simp]
+lemma toCosetFftDomain_subgroupDomain_apply
+    {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
+    (ω : D) (i : Multiplicative ι) :
+    (toCosetFftDomain ω).subgroupDomain i = mkSubgroupUnit ω i.toAdd := rfl
 
-omit [DecidableEq ι] [DecidableEq F] [Fintype ι] in
-lemma toCosetFftDomain_apply_self {ω : CosetFftDomain ι F} {i : ι} :
+@[simp]
+lemma toCosetFftDomain_cosetGenerator_val
+    {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F] (ω : D) :
+    ((toCosetFftDomain ω).cosetGenerator : F) = ω 0 := rfl
+
+@[simp]
+lemma toCosetFftDomain_subgroupUnit
+    {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
+    (ω : D) (i : ι) :
+    (toCosetFftDomain ω).subgroupUnit i = mkSubgroupUnit ω i := by
+  rw [CosetFftDomain.subgroupUnit, toCosetFftDomain_subgroupDomain_apply, toAdd_ofAdd]
+
+/-- Converting a class-level coset FFT domain to its concrete representation preserves
+evaluation. -/
+@[simp]
+lemma toCosetFftDomain_apply
+    {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
+    (ω : D) (i : ι) :
     toCosetFftDomain ω i = ω i := by
   rw [CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain]
-  aesop
-    (add simp [toCosetFftDomain, mkSubgroupUnit])
+  simp only [toCosetFftDomain_cosetGenerator_val, toCosetFftDomain_subgroupUnit, mkSubgroupUnit,
+    Units.val_mk]
+  field_simp
+
+/-- Reconstructing a concrete coset FFT domain from its class instance
+  gives back the original domain. -/
+lemma toCosetFftDomain_of_CosetFftDomain {ω : CosetFftDomain ι F} :
+    toCosetFftDomain ω = ω := by
+  apply CosetFftDomain.eq_iff_gen_and_domains_eq.mpr
+  constructor
+  · apply Units.ext
+    simp only [toCosetFftDomain_cosetGenerator_val,
+      CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain,
+      CosetFftDomain.subgroupUnit_zero, Units.val_one, mul_one]
+  · apply MonoidHom.ext
+    intro i
+    rw [toCosetFftDomain_subgroupDomain_apply]
+    apply Units.ext
+    simp only [mkSubgroupUnit, CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain,
+      CosetFftDomain.subgroupUnit, ofAdd_toAdd]
+    have hzero : ω.subgroupDomain (Multiplicative.ofAdd 0) = 1 := by rw [ofAdd_zero, map_one]
+    simp only [hzero, Units.val_one, mul_one]
+    field_simp
+
+/-- Reconstructing a concrete coset FFT domain preserves evaluation. -/
+lemma toCosetFftDomain_apply_self {ω : CosetFftDomain ι F} {i : ι} :
+    toCosetFftDomain ω i = ω i := by
+  exact toCosetFftDomain_apply ω i
 
 end CosetFftDomainClass
 
+/-- Any class-level coset FFT domain coerces to an embedding into `F`. -/
 instance {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F] :
   CoeOut D (ι ↪ F) where
   coe ω := ⟨ω, fun _ _ h ↦ CosetFftDomainClass.injective ω h⟩
@@ -208,8 +296,13 @@ namespace CosetFftDomainClass
 
 variable {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
 
-set_option linter.unusedSectionVars false in
-omit [DecidableEq ι] [DecidableEq F] [Fintype ι] in
+/-- Evaluating the embedding induced by a coset FFT domain is the same as evaluating the domain. -/
+@[simp]
+lemma coe_embedding_apply (ω : D) (i : ι) : ((ω : ι ↪ F) i) = ω i := rfl
+
+omit [AddCommGroup ι] [Field F] [CosetFftDomainClass D ι F] in
+/-- Extensionality for class-level coset FFT domains.
+  Domains are equal if their evaluations are equal. -/
 @[ext]
 theorem ext {ω₁ ω₂ : D} (h : ∀ i, ω₁ i = ω₂ i) : ω₁ = ω₂ := DFunLike.ext _ _ h
 
@@ -217,44 +310,50 @@ end CosetFftDomainClass
 
 namespace CosetFftDomain
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
+/-- The value at zero is the coset generator. -/
 lemma map_0_eq_coset_generator {ω : CosetFftDomain ι F} :
     ω 0 = ω.cosetGenerator := by
-  simp [eval_coset_fft_domain_eq_eval_generator_mul_domain,
-        show (0 : ι) = (1 : Multiplicative ι) by rfl]
+  simp only [eval_coset_fft_domain_eq_eval_generator_mul_domain, subgroupUnit_zero,
+    Units.val_one, mul_one]
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
+/-- A concrete coset FFT domain is injective as a function. -/
 @[simp]
 lemma injective {ω : CosetFftDomain ι F} :
     Injective ω := CosetFftDomainClass.injective _
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
+/-- A concrete coset FFT domain is injective on every set. -/
 @[simp]
 lemma injOn {ω : CosetFftDomain ι F} {s : Set ι} :
     Set.InjOn ω s := fun _ _ _ _ h ↦ injective h
 
 end CosetFftDomain
 
+/-- A smooth coset FFT domain is a coset domain indexed by `Fin (2 ^ n)`. -/
 abbrev SmoothCosetFftDomain (n : ℕ) (F : Type) [Field F] : Type :=
   CosetFftDomain (Fin (2 ^ n)) F
 
+variable [Fintype ι] [DecidableEq F]
+
 namespace CosetFftDomainClass
+/-- The elements of a domain as a finset. -/
 def toFinset {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
     (ω : D) : Finset F := Finset.image ω Finset.univ
 
-omit [DecidableEq ι] in
+/-- The cardinality of the finset of elements of a domain is
+  the cardinality of the indexing type. -/
 @[simp]
 lemma card_toFinset {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
     {ω : D} :
   Finset.card (CosetFftDomainClass.toFinset ω) = Fintype.card ι := by
-  aesop
-    (add simp [CosetFftDomainClass.toFinset, Finset.card_image_of_injective,
-                CosetFftDomainClass.injective])
+  simp [CosetFftDomainClass.toFinset,
+        Finset.card_image_of_injective,
+        CosetFftDomainClass.injective]
 
 end CosetFftDomainClass
 
 namespace CosetFftDomain
 
+/-- The finset of elements of a concrete coset FFT domain. -/
 abbrev toFinset (ω : CosetFftDomain ι F) : Finset F :=
   CosetFftDomainClass.toFinset ω
 

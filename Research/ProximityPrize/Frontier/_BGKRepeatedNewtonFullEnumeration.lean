@@ -561,8 +561,8 @@ theorem production_fixed_padding_budget
       apply mul_le_mul
       · exact_mod_cast hcard
       · exact productionFixedPaddingScale_pow_fourteen_le
-      · exact zero_le _
-      · exact zero_le _
+      · exact zero_le
+      · exact zero_le
     _ = productionMomentTarget F := rfl
 
 /-- **Exact rational replacement for the irrational production coefficient audit.**  Grouping the

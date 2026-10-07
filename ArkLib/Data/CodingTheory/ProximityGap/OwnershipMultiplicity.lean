@@ -53,7 +53,7 @@ theorem owned_pairs_card_ge (S : Finset (Fin n)) {u₁ : Fin n → F} {μ : ℕ}
   set uneqc := ((S ×ˢ S).filter (fun p => u₁ p.1 ≠ u₁ p.2)).card with huneqc
   have hsplit : eqc + uneqc = S.card * S.card := by
     rw [heqc, huneqc]
-    have h := Finset.filter_card_add_filter_neg_card_eq_card
+    have h := Finset.card_filter_add_card_filter_not
       (s := S ×ˢ S) (p := fun p => u₁ p.1 = u₁ p.2)
     rw [Finset.card_product] at h
     exact h

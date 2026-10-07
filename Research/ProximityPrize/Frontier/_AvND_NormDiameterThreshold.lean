@@ -92,7 +92,7 @@ theorem norm_le_termCount_pow {ι : Type*} (s : Finset ι) (f : ι → ℝ) (B :
     |∏ i ∈ s, f i| ≤ B ^ s.card := by
   rw [abs_prod]
   calc ∏ i ∈ s, |f i| ≤ ∏ _i ∈ s, B := by
-            apply Finset.prod_le_prod
+            apply Finset.prod_le_prod₀
             · intro i _; exact abs_nonneg _
             · intro i hi; exact hf i hi
         _ = B ^ s.card := by rw [Finset.prod_const]

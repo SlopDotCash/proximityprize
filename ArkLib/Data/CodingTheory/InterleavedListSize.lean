@@ -63,28 +63,19 @@ lemma transpose_mem_closeCodewordsRel [DecidableEq F] [Nonempty ι] {m : ℕ}
     (k : Fin m) :
     V.transpose k ∈ closeCodewordsRel C (f.transpose k) δ := by
   classical
+  letI : DecidableEq F := Classical.decEq F
+  letI : DecidableEq (Fin m → F) := Classical.decEq (Fin m → F)
   obtain ⟨hmem, hball⟩ := hV
   refine ⟨hmem k, ?_⟩
-  rw [relHammingBall, Set.mem_setOf_eq] at hball ⊢
-  have hproj : (δᵣ(V.transpose k, f.transpose k) : ℝ) ≤ (δᵣ(V, f) : ℝ) := by
-    have h := relHammingDist_transpose_le (ι := ι) (F := F) f V k
+  have hballI : (δᵣ(f, V) : ℝ) ≤ δ := by
+    exact hball
+  have hproj : (δᵣ(f.transpose k, V.transpose k) : ℝ) ≤ (δᵣ(f, V) : ℝ) := by
+    have h := relHammingDist_transpose_le (ι := ι) (F := F) V f k
+    have hrow : (fun a b : Fin m → F ↦ Fintype.decidablePiFintype a b) =
+        Classical.decEq (Fin m → F) := Subsingleton.elim _ _
+    rw [hrow] at h
     exact_mod_cast h
-  -- comm at the column level (ι → F)
-  have hcomm : ∀ (a b : ι → F), (δᵣ(a, b) : ℝ) = (δᵣ(b, a) : ℝ) := by
-    intro a b; unfold relHammingDist; rw [hammingDist_comm]
-  -- comm at the matrix level (ι → (Fin m → F))
-  have hcommM : (δᵣ(f, V) : ℝ) = (δᵣ(V, f) : ℝ) := by
-    unfold relHammingDist; rw [hammingDist_comm]
-  -- `relHammingDist` values are independent of the `DecidableEq` instance (a `Subsingleton`):
-  -- prove the inequality for the inferred instances, then transport instance choices.
-  have hballI : (δᵣ(f, V) : ℝ) ≤ δ := by convert hball using 3
-  have key : (δᵣ(f.transpose k, V.transpose k) : ℝ) ≤ δ :=
-    calc (δᵣ(f.transpose k, V.transpose k) : ℝ)
-        = (δᵣ(V.transpose k, f.transpose k) : ℝ) := hcomm _ _
-      _ ≤ (δᵣ(V, f) : ℝ) := hproj
-      _ = (δᵣ(f, V) : ℝ) := hcommM.symm
-      _ ≤ δ := hballI
-  convert key using 3
+  exact hproj.trans hballI
 
 /-- The per-column base-code list size is bounded by the maximised list size `Lambda C δ`
 (when `F` is finite, so all lists are finite). -/
@@ -122,7 +113,7 @@ lemma encard_closeCodewordsRel_interleaved_le [Fintype F] [Nonempty ι] {m : ℕ
     _ = ∏ k, (closeCodewordsRel C (f.transpose k) δ).encard := by
           rw [hT]; exact Set.encard_pi_eq_prod_encard
     _ ≤ ∏ _k : Fin m, Lambda C δ := by
-          apply Finset.prod_le_prod'
+          apply Finset.prod_le_prod
           intro k _
           exact encard_closeCodewordsRel_le_Lambda (f.transpose k)
     _ = (Lambda C δ) ^ m := by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]

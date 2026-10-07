@@ -146,12 +146,12 @@ lemma exists_gt_le_one_floor_eq (n : ℕ) {δ : ℝ≥0} (hδ : δ < 1) :
         have hup' : ((δ + b) / 2) * (n : ℝ≥0) < ((j + 1 : ℕ) : ℝ≥0) := by
           push_cast
           exact hup
-        have := (Nat.floor_lt (zero_le _)).mpr hup'
+        have := (Nat.floor_lt (zero_le)).mpr hup'
         omega
       -- lower: floor is monotone.
       have hfloor_ge : j ≤ Nat.floor (((δ + b) / 2) * (n : ℝ≥0)) := by
         refine Nat.floor_le_floor ?_
-        exact mul_le_mul_of_nonneg_right hmid_gt.le (zero_le _)
+        exact mul_le_mul_of_nonneg_right hmid_gt.le (zero_le)
       omega
 
 /-- **Collapse of the Grand MCA Challenge encoding (Finding F6a).** Over a finite field
@@ -209,7 +209,7 @@ theorem closeCodewordsRel_eq_of_floor_eq {α : Type}
     intro ρ
     have hcard : (0 : ℝ) < (Fintype.card ι : ℝ) := by
       exact_mod_cast Fintype.card_pos
-    rw [Nat.le_floor_iff (zero_le _)]
+    rw [Nat.le_floor_iff (zero_le)]
     unfold relHammingDist
     push_cast
     rw [div_le_iff₀ hcard]

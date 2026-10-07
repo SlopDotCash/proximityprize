@@ -100,7 +100,7 @@ theorem prod_le_pow_of_le {r : ℕ} {B : ℝ} (hB : 0 ≤ B) (a : ℕ → ℝ)
     (ha : ∀ i ∈ Finset.range r, 0 ≤ a i) (hle : ∀ i ∈ Finset.range r, a i ≤ B) :
     ∏ i ∈ Finset.range r, a i ≤ B ^ r := by
   calc ∏ i ∈ Finset.range r, a i ≤ ∏ _i ∈ Finset.range r, B :=
-        Finset.prod_le_prod ha hle
+        Finset.prod_le_prod₀ ha hle
     _ = B ^ r := by rw [Finset.prod_const, Finset.card_range]
 
 /-- **The MINIMAL residual: single-depth Wick ⟹ explicit prize floor.** Composing `moment_saddle_value`

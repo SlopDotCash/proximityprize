@@ -173,7 +173,7 @@ summing to `~ r^2/(4m) = (log n)^2 / (2n) -> 0` (the exact vanishing of the ceil
 theorem evenProd_le_fallProd (m r : ℕ) :
     evenProd m r ≤ fallProd m r := by
   unfold evenProd fallProd
-  apply Finset.prod_le_prod'
+  apply Finset.prod_le_prod
   intro i _
   omega
 
