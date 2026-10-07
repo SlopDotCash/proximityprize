@@ -894,3 +894,10 @@ module built successfully in the Hachi dependency build, and all twelve selected
 API roots (eight upstream replacements and four local theorems) use only standard axioms.
 The encompassing Hachi coordinate build subsequently failed opening a Mathlib artifact due to
 macOS file-table exhaustion, so full coordinate validation is not claimed here.
+
+Message-seam game factoring passes its ordinary Lean 4.34 build (3,242 jobs). The port
+replaces retired oracle instance bundles and legacy evaluator references. All five selected
+installed roots use only standard axioms, including natural run factoring, the two phase-game
+constructors and the completeness theorem using seam factoring. They are registered for
+routine auditing. State preservation and the phase-one simulation bridge remain explicit
+hypotheses. Challenge-first factoring and full STIR validation remain pending.
