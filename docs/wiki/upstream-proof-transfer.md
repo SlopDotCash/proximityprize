@@ -869,3 +869,10 @@ standard-only axiom closures and are registered for routine auditing. Module-mod
 are removed and the existing native split-module path is reused. The generated prize umbrella
 is unchanged. This is a partial protocol transfer: cyclotomic trace coordinates, the trace-head
 protocol and its completeness/committed-opening/conformance consumers remain to be integrated.
+
+The oracle-reduction message-seam completeness interface passes its ordinary Lean 4.34
+build (3,239 jobs) and four-root installed audit with standard-only axioms. Retired bundled
+oracle instances are replaced by pointwise finite/inhabited response types, including omitted
+section hypotheses. The existing verifier-factorization residual is retained explicitly;
+this bridge does not claim to discharge that separate obligation. Its three theorem roots
+and residual definition are registered for routine auditing.

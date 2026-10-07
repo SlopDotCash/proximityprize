@@ -37,7 +37,7 @@ open OracleComp OracleSpec ProtocolSpec
 
 namespace OracleReduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype ((oSpec).Range t)] [∀ t, Inhabited ((oSpec).Range t)]
     {m n : ℕ}
     {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type}
     [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)]
@@ -91,10 +91,10 @@ theorem append_perfectCompleteness_msg_proof
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s) = support (liftM q : OracleComp oSpec β))
     (hBridge : appendToReductionResidual R₁ R₂)
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited] :
+    [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Fintype (((oSpec + [pSpec₁.Challenge]ₒ)).Range t)] [∀ t, Inhabited (((oSpec + [pSpec₁.Challenge]ₒ)).Range t)]
+    [∀ t, Fintype (((oSpec + [pSpec₂.Challenge]ₒ)).Range t)] [∀ t, Inhabited (((oSpec + [pSpec₂.Challenge]ₒ)).Range t)] :
     (R₁.append R₂).perfectCompleteness init impl rel₁ rel₃ := by
   change Reduction.perfectCompleteness init impl rel₁ rel₃ (R₁.append R₂).toReduction
   rw [show (R₁.append R₂).toReduction = R₁.toReduction.append R₂.toReduction from hBridge]
@@ -110,7 +110,7 @@ verifier-fusion equation, which in turn is equivalent to a per-input/per-transcr
 equality. The latter is precisely the `simulateQ`-factoring obligation — the verifier analogue of
 `Prover.append_run` — so any consumer can discharge the keystone by proving that one equation. -/
 
-omit [oSpec.Fintype] [oSpec.Inhabited] Oₛ₃
+omit [∀ t, Fintype ((oSpec).Range t)] [∀ t, Inhabited ((oSpec).Range t)] Oₛ₃
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)] in
 /-- **The append keystone residual reduces to the pure verifier-fusion equation.** Since
 `toReduction R = ⟨R.prover, R.verifier.toVerifier⟩` and the appended provers are *identical*
@@ -136,7 +136,7 @@ theorem appendToReductionResidual_iff_verifier
     rw [Reduction.mk.injEq]
     exact ⟨rfl, h⟩
 
-omit [oSpec.Fintype] [oSpec.Inhabited] Oₛ₃
+omit [∀ t, Fintype ((oSpec).Range t)] [∀ t, Inhabited ((oSpec).Range t)] Oₛ₃
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)] in
 /-- **The verifier-fusion equation reduces to a per-input `verify` equation.** Combined with
 `appendToReductionResidual_iff_verifier`, this pins the *entire* remaining content of the
