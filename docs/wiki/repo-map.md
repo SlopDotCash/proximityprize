@@ -64,7 +64,9 @@ Use `scripts/lake-locked.sh` for builds as described in [quickstart](quickstart.
   power and equality strategies require a finite domain, while singleton batching does not.
   `Multiplier` evaluates the public polynomial through matrix layers; `ScalarHead` provides
   prefix, suffix and quirky layouts with proved reconstruction. The packing umbrella exports
-  this independent algebra. The existing native `Profile` remains separate.
+  this independent algebra. `Packing/ProfileCoordinates` adapts the existing native `Profile`
+  to its observations, preserving the native row/column orientation and deriving exact carrier
+  cardinality without adding profile assumptions. The native protocol API remains separate.
 - `ArkLib/Data/Probability/SampledPolynomial.lean` transports the native PMF polynomial root
   bounds to VCVio uniform samples without replacing the existing PMF API.
 

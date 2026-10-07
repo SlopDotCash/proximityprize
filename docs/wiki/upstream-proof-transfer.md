@@ -577,3 +577,15 @@ combined repository gate or the full Lean migration has passed.
 After the isolated batching-client retry passed (3,130 jobs), the packing umbrella and all
 nine clients passed the combined build (3,197 jobs). This closes the local packing integration
 gate; the full repository migration and exact-head hosted checks remain separate requirements.
+
+
+PR #1257's profile-coordinate bridge is adapted to the native orientation: transposing native
+rows gives native columns. Both coordinate maps are additive equivalences derived from existing
+native reconstruction/additivity/atomic laws; no new profile fields or assumptions are added.
+Finite tensor observations agree with the shared packing observations and slices. The carrier
+cardinality is `|L|^(2^κ)`, and the upstream negative client excludes a carrier equivalent to `L`
+at positive rank over a finite nontrivial `L`. The module and client pass an ordinary Lean 4.34
+build (1,227 jobs). The polynomial-layout bridge and protocol algebra split remain pending.
+
+All eight selected installed profile-bridge roots use only standard axioms. The carrier
+negative client and these roots are included in routine validation.

@@ -712,7 +712,7 @@
       "base": "475b3d56f2120cd4eaa6b449ff8974886fa71fdd",
       "base_branch": "feat/ring-switch-tier-a-coordinates",
       "draft": false,
-      "disposition": "partially adapted: native profile already has additive/atomic coordinate laws. Derived two-sided reconstruction and base-embedding agreement in ProfileCoordinates from those existing assumptions; three strict source-composed axiom roots standard-only. Native row/column names are reversed relative to upstream packing, so retain native orientation. Packing-module split, tensor constructor and modern protocol integration remain pending.",
+      "disposition": "partially adapted: native profile already has additive/atomic coordinate laws. Derived two-sided reconstruction and base-embedding agreement in ProfileCoordinates from those existing assumptions; three strict source-composed axiom roots standard-only. Native row/column names are reversed relative to upstream packing, so retain native orientation. Packing-module split, tensor constructor and modern protocol integration remain pending. Native profile-coordinate bridge now also adapted: additive row/column equivalences, transpose in the native (opposite upstream) orientation, finite observation/slice laws and exact carrier cardinality. Upstream no-collapsed-carrier client and production bridge pass an ordinary Lean4.34 build (1227 jobs), without new profile fields or hypotheses. Polynomial-layout bridge and remaining protocol algebra split are still pending.",
       "files": [
         "ArkLib.lean",
         "ArkLib/Data/MvPolynomial/Multilinear.lean",

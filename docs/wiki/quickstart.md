@@ -39,7 +39,7 @@ transport, polynomial packing round trips, rejection of incorrect opening/slice/
 tight field batching bounds and their failure over zero divisors, incompatible fields, matrix
 multiplier evaluation, scalar-layout coordinate order and off-grid interpolation, and why an
 accepted observation alone does not
-establish an honest message.
+establish an honest message. The profile client also rejects a collapsed positive-rank carrier.
 For a convenient routine check, run:
 
 ```bash
