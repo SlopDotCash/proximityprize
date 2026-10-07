@@ -632,3 +632,25 @@ ArkLib.OracleReduction.Composition.Sequential.AppendSoundnessSeamTransfer Oracle
 ArkLib.OracleReduction.Composition.Sequential.AppendSoundnessSeamTransfer OracleReduction.hcoh
 ArkLib.OracleReduction.Composition.Sequential.AppendSoundnessSeamTransfer OracleReduction.evalDist_run'_challengeSeam_left
 ArkLib.OracleReduction.Composition.Sequential.AppendSoundnessSeamTransfer OracleReduction.evalDist_run'_challengeSeam_right
+
+# Upstream PR1287 Hachi coefficient packing and evaluation.
+ArkLib.Commitments.Functional.Hachi.PolynomialEvalSplit ArkLib.Lattices.Hachi.toPolynomial_get
+ArkLib.Commitments.Functional.Hachi.PolynomialEvalSplit ArkLib.Lattices.Hachi.toMatrix_toPolynomial
+ArkLib.Commitments.Functional.Hachi.PolynomialEvalSplit ArkLib.Lattices.Hachi.toPolynomial_toMatrix
+ArkLib.Commitments.Functional.Hachi.PolynomialEvalSplit ArkLib.Lattices.Hachi.splitForm_monomialBasis_eq_eval
+ArkLib.Commitments.Functional.Hachi.PolynomialEvalSplit ArkLib.Lattices.Hachi.toMatrix_add
+ArkLib.Commitments.Functional.Hachi.PolynomialEvalSplit ArkLib.Lattices.Hachi.toMatrix_smul
+ArkLib.Commitments.Functional.Hachi.PolynomialEvalSplit ArkLib.Lattices.Hachi.evalSplit_add
+ArkLib.Commitments.Functional.Hachi.PolynomialEvalSplit ArkLib.Lattices.Hachi.evalSplit_smul
+ArkLib.ToCompPoly.Multilinear.Basic CompPoly.CMlPolynomial.monomialBasis_get_eq_eval_monomial
+ArkLib.ToCompPoly.Multilinear.Basic CompPoly.CMlPolynomial.eval_eq_eval_toMvPolynomial
+ArkLib.ToCompPoly.Multilinear.Basic CompPoly.CMlPolynomialEval.eval_zero
+ArkLib.ToCompPoly.Multilinear.Basic CompPoly.CMlPolynomialEval.eval_eq_MvPolynomial_MLE
+ArkLib.ProofSystem.RingSwitching.Packing.Coordinates RingSwitching.Packing.PackingData.ofBaseOpening
+ArkLib.Commitments.Functional.Hachi.TraceHead.Coefficients ArkLib.Lattices.Hachi.TraceHead.unpackCoefficients_packCoefficients
+ArkLib.Commitments.Functional.Hachi.TraceHead.Coefficients ArkLib.Lattices.Hachi.TraceHead.packCoefficients_unpackCoefficients
+ArkLib.Commitments.Functional.Hachi.TraceHead.Coefficients ArkLib.Lattices.Hachi.TraceHead.packCoefficients_eval
+ArkLib.Commitments.Functional.Hachi.TraceHead.Coefficients ArkLib.Lattices.Hachi.TraceHead.unpackCoefficients_eval
+ArkLib.Commitments.Functional.Hachi.TraceHead.Coefficients ArkLib.Lattices.Hachi.TraceHead.coefficientRows
+ArkLib.Commitments.Functional.Hachi.TraceHead.Coefficients ArkLib.Lattices.Hachi.TraceHead.traceHeadLayout
+ArkLib.Commitments.Functional.Hachi.TraceHead.Coefficients ArkLib.Lattices.Hachi.TraceHead.toMvPolynomialDeg1_packCoefficients

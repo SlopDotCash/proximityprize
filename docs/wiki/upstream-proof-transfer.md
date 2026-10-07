@@ -857,3 +857,15 @@ lift coherence derived from the proved composition identity. All ten selected in
 completeness/transfer roots have standard-only axiom closures; the six new roots are added
 to routine auditing. Initial validation attempts hit macOS file-table exhaustion; the final
 empty-tail build and installed audit passed. Full STIR and full-repository builds remain pending.
+
+ArkLib PR #1287 (head `3323359736dd521ee77073ebdaa89057822839f9`) contributes the
+Hachi coefficient-packing layer. Its inverse matrix reshape and round-trip/evaluation proofs
+are added to native `PolynomialEvalSplit`, preserving the existing additivity/scalar lemmas.
+The computable monomial and Lagrange evaluators are connected to Mathlib polynomial evaluation;
+coefficient packing/unpacking, evaluation reconstruction and the shared scalar claim layout
+are imported, with `PackingData.ofBaseOpening` for the one-coordinate opening algebra.
+The native Lean 4.34 build passes 1,873 jobs; twenty selected installed declarations have
+standard-only axiom closures and are registered for routine auditing. Module-mode wrappers
+are removed and the existing native split-module path is reused. The generated prize umbrella
+is unchanged. This is a partial protocol transfer: cyclotomic trace coordinates, the trace-head
+protocol and its completeness/committed-opening/conformance consumers remain to be integrated.
