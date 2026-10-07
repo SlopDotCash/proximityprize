@@ -7,6 +7,17 @@ fork. See the [repository destination rule](../../CONTRIBUTING.md#repository-des
 This page is the recommended agent playbook for commands and validation.
 Use it as the main guide for routine local checks.
 
+## Toolchain and independent caches
+
+The native project pins Lean 4.34.0 in `lean-toolchain`; `lake-manifest.json`
+records the matching dependencies. Keep a separate `.lake` directory when
+migrating between Lean releases. A worktree must not share a symlinked `.lake`
+with a checkout using another toolchain or dependency lock.
+
+The pinned external proof packages retain their own toolchains. See
+[external proof transfer](upstream-proof-transfer.md) for their build wrappers,
+immutable source pins and verification boundaries.
+
 ## Recommended Validation
 
 Install the Python regression dependencies in your active virtual environment first:
@@ -16,6 +27,9 @@ python3 -m pip install -r scripts/requirements-validation.txt
 ```
 
 CI installs the same pinned dependencies before running the validation wrapper.
+The wrapper also builds CompPoly’s KoalaBear fresh-replay regression, which
+rechecks both irreducibility proof closures and quotient consistency in a fresh
+kernel environment.
 For a convenient routine check, run:
 
 ```bash
@@ -73,6 +87,15 @@ Build hygiene on shared machines:
   target warrants — for example a small-target build past 20–30 minutes that is grinding
   through `Mathlib/` files — usually indicates a clobbered cache, not a slow build. Kill the
   build tree (never agent processes), restore the cache, retry through the wrapper.
+
+On macOS, `Too many open files in system` can occur when concurrent jobs exhaust
+kernel file or vnode capacity, even if the shell's `ulimit -n` is high. Check
+`sysctl kern.num_files kern.maxfiles kern.num_vnodes kern.maxvnodes`. In this
+condition Lean may also report a missing olean that exists and is readable after
+the failed run. Verify the path before deleting or re-downloading a cache. Reduce
+this task's concurrency (for example `LEAN_NUM_THREADS=1 ./scripts/lake-locked.sh
+build <target>`) and retry after resource pressure falls; preserve other tasks'
+processes. A resource failure is not evidence of a broken proof.
 
 Do not use bare `lake update` as a routine cache-repair command. It re-resolves
 `lake-manifest.json` and may delete/re-clone package directories while other checks are running.

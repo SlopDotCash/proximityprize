@@ -19,6 +19,7 @@ Default checks (mirrors the CI gates so local == CI):
   - python3 -m unittest discover -s scripts/tests (Python regressions)
   - python3 ./scripts/forbidden_tokens.py          (CI gate 1, precheck)
   - lake build
+  - CompPoly KoalaBear fresh kernel replay
   - python3 ./scripts/sorry_census.py --fail-on-holes  (CI gate 2)
   - python3 ./scripts/axiom_audit.py                   (CI gate 3)
   - ./scripts/check-imports.sh
@@ -68,6 +69,10 @@ python3 ./scripts/forbidden_tokens.py
 echo ""
 echo "# Building project"
 ./scripts/lake-locked.sh build
+
+# Recheck imported KoalaBear irreducibility proof closures, including quotient consistency.
+echo "# CompPoly fresh kernel replay"
+./scripts/lake-locked.sh build CompPolyTests.Fields.KoalaBear.FreshReplay
 
 # CI gate 2: zero live sorry/admit holes in both library and research source.
 echo ""

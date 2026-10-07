@@ -1,3 +1,9 @@
 [submodule "external/zk-payments-confetti"]
 	path = external/zk-payments-confetti
 	url = https://github.com/dmarzzz/zk-payments-confetti.git
+[submodule "external/proximity-prize"]
+	path = external/proximity-prize
+	url = https://github.com/proximity-prize/proximity-prize.git
+[submodule "external/arklib"]
+	path = external/arklib
+	url = https://github.com/Verified-zkEVM/ArkLib.git

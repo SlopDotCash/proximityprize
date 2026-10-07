@@ -496,7 +496,7 @@ theorem zeroCheck_flip_prob_le (hm : 0 < pp.ℓ_m)
             rw [div_mul_cancel₀]
             exact ne_of_gt hqpow
         _ ≤ ((pp.ℓ_m : ℚ≥0) / (q : ℚ≥0)) * (q : ℚ≥0) ^ pp.ℓ_m :=
-            mul_le_mul_right' (le_trans hSZ hRHS) _
+            mul_le_mul_left (le_trans hSZ hRHS) _
     calc (Z.card : ℚ≥0) ≤ ((pp.ℓ_m : ℚ≥0) / (q : ℚ≥0)) * (q : ℚ≥0) ^ pp.ℓ_m := hZQ
       _ = (pp.ℓ_m : ℚ≥0) * (q : ℚ≥0) ^ (pp.ℓ_m - 1) := by
           rw [div_mul_eq_mul_div, mul_comm ((pp.ℓ_m : ℚ≥0)) _, mul_comm ((pp.ℓ_m : ℚ≥0)) _]

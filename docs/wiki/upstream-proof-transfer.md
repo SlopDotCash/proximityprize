@@ -1,0 +1,129 @@
+# External proof transfer
+
+The native campaign and the public Proximity Prize benchmark have different
+toolchains, definitions, and targets. Import reusable results into the native
+library with explicit provenance. Keep complete incompatible proof packages in
+pinned submodules with their original dependency lock and license. Do not replace
+the native campaign's definitions merely because a benchmark uses similar names.
+
+## Proximity Prize reference
+
+`external/proximity-prize` pins
+[`ed2b68c4a330d76dc4ab6693eec81b685b493270`](https://github.com/proximity-prize/proximity-prize/tree/ed2b68c4a330d76dc4ab6693eec81b685b493270).
+It retains the Apache-2.0 license, attribution, protected targets, both complete
+submission proof trees, and the optional arithmetic helper. The pin uses Lean
+4.32.2 and ArkLib `e65197892890b8fd9b0dc05b8980273cf1d595cc`; the native project
+is being migrated to Lean 4.34.0. Their oleans and Lake package directories must stay separate.
+
+The [file inventory](../upstream/proximity-prize-2026-10-06.json) records hashes,
+imports, line counts, declaration counts, and native short-name match counts.
+Short-name matches are discovery hints, not proof of semantic equivalence.
+The package contains 153 lower-submission files (149,662 lines), five upper files
+(2,256 lines), and three protected benchmark files. Review includes the terminal
+certificates, their dependency graph, the profile and score semantics, the
+kernel-evaluation helper, source-policy scan, and the verification harness.
+
+| Surface | Finding / treatment |
+| --- | --- |
+| `IRSProfile` | Concrete size-`2^18`, dimension-`2^20`, eight-row IRS over the KoalaBear sextic extension; retain its exact domain/encoder/distance proofs. Our four-coordinate Koala toy anchor is a different code. |
+| Lower candidate | `ProtocolClaim 6815 331366399 1073741824`; retain the complete selected-pencil, function-field, packing, and literal-certificate chain. Its 68.15-bit score is a spot-check quantity derived from a certified safe radius. |
+| Upper candidate | `ProtocolClaimUpper 11613 122369`; retain the collision, prescribed-top-coefficient and 512-fibre rational-pencil constructions. Its 116.13-bit claim certifies a whole unsafe suffix for winning-set density. |
+| Arithmetic helper | Backported to `ArkLib.ToMathlib.KernelEval`, preserving recursive sums, exact affine/nested-sum formulas, prefix subtraction, and inexpensive sufficient-condition lemmas. |
+| Linear projection | Backported to `ArkLib.ToMathlib.LinearProjection`: collision averaging, image density at least `N/(q+N-1)`, and surjective projection when `N > (q-1)^2`. The last proof is shortened to a corollary of the quantitative bound. |
+| Publication scripts/workflows | Retained inside the reference, never run by the native wrapper. They are specific to the organizer's verifier service and do not establish local campaign completion. |
+| README baselines | The source README still lists starting baselines of 53 and 128 bits. The actual candidate theorem types above are the appropriate snapshot record. |
+
+The retained benchmark scores are neither a proof of the native production δ*
+conjecture nor a full-protocol security claim. The upper target also explicitly
+distinguishes winning-set density from an equality with minimal game error and
+does not construct an end-to-end attacking prover.
+
+## Reproduce the separate package
+
+```sh
+git submodule update --init external/proximity-prize
+scripts/proximity-prize-reference.sh cache
+scripts/proximity-prize-reference.sh targets
+scripts/proximity-prize-reference.sh lower
+scripts/proximity-prize-reference.sh upper
+```
+
+The wrapper checks the reviewed commit and clean tracked source, selects the
+submodule's own toolchain, and uses the shared `lake-locked.sh` concurrency gate.
+The default `ProximityPrize` target imports **only protected targets**, so building
+it alone does not check either submission. The two explicit candidate builds are
+required. The wrapper never submits a score, contacts the ranking service, or
+pushes a branch. Native backports are covered by `scripts/flagship_axioms.txt` and
+the native `scripts/validate.sh` gate.
+
+## Verification boundary
+
+The pinned reference's comparator patch removes whole-environment replay and
+quotient post-checks in favor of submission-module checking against trusted
+imports. An axiom whitelist or a successful ordinary compilation does not replace
+fresh replay of the dependency closure. The open
+[reference PR #569](https://github.com/proximity-prize/proximity-prize/pull/569)
+proposes Lean 4.34, restoration of replay and quotient checks, and a CompPoly
+proof-body repair. Its description reports local replay but explicitly leaves
+new hosted profiles and verification pending. It also predates the latest 68.15
+lower candidate. Do not silently promote that proposed upgrade or use its older
+replay claim as evidence for this pin.
+
+Report source retention, native compilation, candidate compilation, axiom audits,
+fresh kernel replay, and hosted ranking separately. In particular, a pin and an
+inventory make the source reproducible; they do not certify the entire package.
+
+All publishing for this project must target `SlopDotCash/proximityprize`.
+`Verified-zkEVM/ArkLib` and the organizer's repository are read-only sources.
+
+## ArkLib main and all open PRs
+
+`external/arklib` pins upstream main at
+[`35ddcaa83f683011f944f58904be779495a5709a`](https://github.com/Verified-zkEVM/ArkLib/tree/35ddcaa83f683011f944f58904be779495a5709a).
+The [main file inventory](../upstream/arklib-main-2026-10-06.json) records all
+920 upstream library files against the native starting commit: 655 absent paths
+and 265 byte-different paths. These are discovery counts, not a semantic count
+of missing results.
+The [PR manifest](../upstream/arklib-prs-2026-10-06.json) records all 51 open PRs,
+including drafts, with immutable heads, base commits and complete file lists.
+A fetched head is not a claim that the PR has been merged or checked locally.
+
+```sh
+git submodule update --init external/arklib
+python3 scripts/arklib-reference.py list
+python3 scripts/arklib-reference.py fetch
+python3 scripts/arklib-reference.py worktree --pr 1285 --path /tmp/arklib-pr-1285
+```
+
+The script only fetches pinned revisions from the read-only upstream and creates
+separate detached checkouts. Run the native checkout's `scripts/lake-locked.sh`
+from an external PR checkout for serialized builds. Never publish upstream.
+
+Upstream Fin induction and insertion proof repairs are also adopted without
+changing theorem statements; these resolve Lean 4.34 elaboration failures in
+`ArkLib.Data.Fin.Basic`.
+
+Native transfers under validation include the generic linear-budget,
+line-injectivity, finite-set cardinality, pairwise incidence and sample incidence
+lemmas from main, tuple-intersection bounds from PR #1285, and main's 28-file
+interaction layer plus sequential probability bounds. The latter replaces the
+parked `Interaction.Reduction` implementation with the current PolyFun API.
+The two other historical parked modules remain untouched. Module visibility
+markers are removed in native copies to match this repository's legacy module
+layout; original authors and licenses are retained.
+
+## Lean 4.34 migration
+
+The native toolchain is pinned to `leanprover/lean4:v4.34.0`, with Mathlib
+`5ed2965256430c3649e86755f9576b54eca72435`, VCVio
+`d7089e46d69e07640fa23b5ae6b1b966f1d4b949`, and PolyFun
+`3710d71b28404a151b8d1f0ce080ea448778dec0`.
+CompPoly is being tested at the proposed replay repair
+[`da1e1b5d048d26eca4583ff930f248c5e2bb5d9e`](https://github.com/yudduy/CompPoly/commit/da1e1b5d048d26eca4583ff930f248c5e2bb5d9e).
+Compared with upstream `v4.34.0-patch2`, it supplies explicit concrete field and
+finiteness instances in the quintic and sextic irreducibility proofs, preserves
+their statements and certificates, and adds fresh-closure replay regressions.
+This dependency choice does not import the benchmark PR's hosted-release claims.
+
+The native migration and new transfers are still under validation. Do not treat
+the updated pins or the earlier Lean 4.30 checks as a successful Lean 4.34 build.

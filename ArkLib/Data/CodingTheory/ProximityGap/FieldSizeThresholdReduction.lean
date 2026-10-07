@@ -60,7 +60,7 @@ theorem censusDomination_pin_largeField
     have hKle : (K : ℝ≥0∞) ≤ (D : ℝ≥0∞)⁻¹ * (p : ℝ≥0∞) := by
       calc (K : ℝ≥0∞) = (D : ℝ≥0∞)⁻¹ * ((D : ℝ≥0∞) * (K : ℝ≥0∞)) := by
             rw [← mul_assoc, ENNReal.inv_mul_cancel hD0 hDt, one_mul]
-        _ ≤ (D : ℝ≥0∞)⁻¹ * (p : ℝ≥0∞) := mul_le_mul_left' h1 _
+        _ ≤ (D : ℝ≥0∞)⁻¹ * (p : ℝ≥0∞) := mul_le_mul_right h1 _
     exact ENNReal.div_le_of_le_mul hKle
   exact interiorCeiling_of_censusDomination hμ hm hr2 hn hg εstar hK hdom
 

@@ -59,3 +59,30 @@ ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.SoundnessCase2Discharge Biniu
 ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.VerifierDeterminism Binius.BinaryBasefold.CoreInteraction.foldOracleVerifier_toVerifier_failingDet
 ArkLib.ProofSystem.Binius.FRIBinius.General Binius.FRIBinius.FullFRIBinius.fullOracleVerifier_knowledgeSoundness
 ArkLib.ProofSystem.Binius.FRIBinius.General Binius.FRIBinius.FullFRIBinius.fullOracleVerifier_rbrKnowledgeSoundness_wired
+
+# Native backports from the pinned Proximity Prize reference.
+ArkLib.ToMathlib.KernelEval KernelEval.sumRange_eq
+ArkLib.ToMathlib.KernelEval KernelEval.sum_range_sub
+ArkLib.ToMathlib.KernelEval KernelEval.nested_inner_closed
+ArkLib.ToMathlib.KernelEval KernelEval.sumRange_Ico
+ArkLib.ToMathlib.LinearProjection FiniteField.LinearProjection.exists_dot_offdiag_le
+ArkLib.ToMathlib.LinearProjection FiniteField.LinearProjection.exists_dot_image_card_bound
+ArkLib.ToMathlib.LinearProjection FiniteField.LinearProjection.exists_dot_surjective_of_card_sq_lt
+
+# Compatible backports from ArkLib main and PR #1285.
+ArkLib.ToMathlib.Set.Finite Set.finite_of_forall_finset_card_le
+ArkLib.ToMathlib.BigOperators.LinearBudget Finset.add_sum_le_mul_add_mul_of_le
+ArkLib.ToMathlib.BigOperators.LinearBudget Finset.rows_mul_slotSurplusHeight_add_one_lt_sum_tsub
+ArkLib.ToMathlib.LinearAlgebra.LineInjectivity Set.Finite.exists_notMem_injOn_add_smul
+ArkLib.Data.Finset.PairwiseIntersection Finset.card_mul_sq_sub_card_mul_le_of_inter_card_le
+ArkLib.Data.Finset.SampleIncidence Finset.card_mul_choose_le_of_inter_card_lt
+ArkLib.Data.Finset.TupleIntersection Nat.pow_succ_le_choose_two_mul_pow_add_mul_descFactorial
+ArkLib.Data.Finset.TupleIntersection Finset.sum_sum_card_inf_inter_eq
+ArkLib.Data.Finset.TupleIntersection Finset.exists_injective_two_mul_card_filter_lt_card_inf_inter
+
+# Upstream dependent interaction layer (ArkLib main 35ddcaa, Lean 4.34 migration).
+ArkLib.Interaction.CompositionSoundness Interaction.TwoParty.run_appendFlat_soundness
+ArkLib.Interaction.Oracle.RuntimeSoundness Interaction.Oracle.executeStrategiesWithRuntime_appendExported_soundness
+ArkLib.Interaction.Oracle.Composition Interaction.Oracle.OrderedExecution.run_preserves_measure
+ArkLib.Interaction.Oracle.Composition Interaction.Oracle.OrderedExecution.run_append
+ArkLib.Interaction.Oracle.TerminalMeasure Interaction.Oracle.Terminal.observe_isProbabilityMeasure

@@ -670,9 +670,9 @@ lemma ENNReal.tsum_mul_le_of_le_of_sum_le_one {α : Type*} {f g : α → ℝ≥0
     ∑' x, f x * g x ≤ ε := by
   calc ∑' x, f x * g x
     _ ≤ ∑' x, f x * ε :=
-      ENNReal.tsum_le_tsum (fun x ↦ mul_le_mul_left' (hg x) _)
+      ENNReal.tsum_le_tsum (fun x ↦ mul_le_mul_right (hg x) _)
     _ = (∑' x, f x) * ε := ENNReal.tsum_mul_right
-    _ ≤ 1 * ε := mul_le_mul_right' hf ε
+    _ ≤ 1 * ε := mul_le_mul_left hf ε
     _ = ε := one_mul ε
 
 omit [oSpec.Fintype] in

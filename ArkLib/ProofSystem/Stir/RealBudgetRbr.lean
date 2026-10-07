@@ -644,7 +644,7 @@ theorem stirFinalVectorVerifierChecked_toVerifier_rbrKnowledgeSoundness {σ : Ty
               push_cast
               ring
           _ ≤ ((1 - δ) * (Fintype.card ι : ℝ≥0)) * (stirSpotMaxFiber ι F : ℝ≥0) :=
-              mul_le_mul_right' hAnn _
+              mul_le_mul_left hAnn _
           _ = (1 - δ) * ((Fintype.card ι * stirSpotMaxFiber ι F : ℕ) : ℝ≥0) := by
               push_cast
               ring

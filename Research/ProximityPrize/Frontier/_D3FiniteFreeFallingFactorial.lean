@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Tactic
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Mathlib.Data.Nat.Choose.Central
-import Mathlib.Combinatorics.Enumerative.Catalan
+import Mathlib.Combinatorics.Enumerative.Catalan.Basic
 import Mathlib.Analysis.SpecialFunctions.Exp
 
 /-!

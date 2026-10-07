@@ -279,7 +279,7 @@ private lemma div_card_pow_C_le_stepBound {A m : ℕ} (hA : A ≤ 2 * m) :
   rw [hcss]
   refine ENNReal.div_le_div ?_ tsub_le_self
   rw [mul_comm]
-  refine mul_le_mul_right' ?_ _
+  refine mul_le_mul_left ?_ _
   exact_mod_cast le_trans hA (Nat.le_succ _)
 
 /-- The permutation-arm arithmetic: `A / len ≤ stepBound` for `A` below the numerator and

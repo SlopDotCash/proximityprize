@@ -51,7 +51,7 @@ theorem reduction_diagonal_exceeds_threshold (q diag : ℕ)
     (hq0 : 0 < q) (hqbound : q < 2 ^ 256) (hdiag : q ≤ diag) :
     q ^ 2 < 2 ^ 256 * diag := by
   have h1 : q * q < 2 ^ 256 * q := mul_lt_mul_of_pos_right hqbound hq0
-  have h2 : 2 ^ 256 * q ≤ 2 ^ 256 * diag := mul_le_mul_left' hdiag _
+  have h2 : 2 ^ 256 * q ≤ 2 ^ 256 * diag := mul_le_mul_right hdiag _
   calc q ^ 2 = q * q := pow_two q
     _ < 2 ^ 256 * q := h1
     _ ≤ 2 ^ 256 * diag := h2
@@ -64,7 +64,7 @@ theorem reduction_too_weak_for_prize (q diag off : ℕ)
     (hq0 : 0 < q) (hqbound : q < 2 ^ 256) (hdiag : q ≤ diag) :
     q ^ 2 < 2 ^ 256 * (diag + off) := by
   calc q ^ 2 < 2 ^ 256 * diag := reduction_diagonal_exceeds_threshold q diag hq0 hqbound hdiag
-    _ ≤ 2 ^ 256 * (diag + off) := mul_le_mul_left' (Nat.le_add_right _ _) _
+    _ ≤ 2 ^ 256 * (diag + off) := mul_le_mul_right (Nat.le_add_right _ _) _
 
 /-- **Non-vacuity.**  A concrete prize-scale instance: `q = 2²⁰⁰` (a 200-bit field, well inside
 `q < 2²⁵⁶`), with the minimal diagonal `diag = q`.  The squared prize threshold `q²/2²⁵⁶ = 2¹⁴⁴` is
