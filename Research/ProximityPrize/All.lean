@@ -596,6 +596,7 @@ import Research.ProximityPrize.Frontier._AvGER_RecursionStep
 import Research.ProximityPrize.Frontier._AvGF_FiltrationIrrelevantWickBinding
 import Research.ProximityPrize.Frontier._AvGK_GrossKoblitzPhaseCochain
 import Research.ProximityPrize.Frontier._AvGR_GaussSumEnergyStep
+import Research.ProximityPrize.Frontier._AvGalois_PhaseSpreadRefuted
 import Research.ProximityPrize.Frontier._AvGalois_StickelbergerPhaseDescent
 import Research.ProximityPrize.Frontier._AvJB_HankelRoutesToMoments
 import Research.ProximityPrize.Frontier._AvJB_HermiteTurnoverReduction
