@@ -589,3 +589,22 @@ build (1,227 jobs). The polynomial-layout bridge and protocol algebra split rema
 
 All eight selected installed profile-bridge roots use only standard axioms. The carrier
 negative client and these roots are included in routine validation.
+
+The next native Lean 4.34 support batch repairs dependent folds and tuple casts, variable-degree
+polynomial restrictions, and Sumcheck cube sums. The five modules pass the ordinary build
+(3,069 jobs). Tuple proof adaptations reuse reviewed upstream main while preserving native
+statements. Polynomial restrictions use public support/coefficient APIs rather than the old
+internal `Finsupp` representation; their definition is now noncomputable as required by Mathlib.
+
+The vector-support helper uses the core `LawfulMonadAttach` bind/pure implications without
+requiring `ExactMonadAttach`. Its result-monad universe is generalized so the existing
+OracleComp caller remains applicable. Both helper and caller pass the ordinary build
+(3,096 jobs). Sixteen selected installed roots from this batch have only standard axioms.
+The repository source census still has zero live proof holes and nine documented residual
+axioms. The remaining protocol-specification interface errors prevent claiming the full
+RingSwitching Prelude or repository migration has passed.
+
+Finite-index sums and flattening also pass their ordinary build (1,213 jobs). Explicit dependent
+rewrites and a cast/append identity preserve the native flattening and inverse laws, including
+the native last-block theorem absent from current upstream. Six installed inverse, flattening,
+and quotient-bound roots use only standard axioms.

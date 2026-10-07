@@ -12,6 +12,8 @@ import VCVio.EvalDist.Defs.Support
 # Additions to VCV-io's `ToMathlib.Data.Vector.Basic`
 -/
 
+universe u
+
 /-- `Vector.mapM` commutes with post-composition by a pure map:
     mapping `g` after each monadic action is the same as mapping `g` over the collected vector. -/
 lemma Vector.mapM_map_postcomp {m : Type → Type} {α β γ : Type} {n : ℕ}
@@ -65,7 +67,7 @@ lemma Vector.mapM_bind_map_eq {m : Type → Type} {α β γ δ : Type} {n : ℕ}
 /-- Index-extraction for `Vector.mapM`: any component of a vector in the support of
     the sequenced computation lies in the support of the corresponding component computation. -/
 lemma Vector.support_mapM_index
-    {m : Type → Type} [Monad m] [LawfulMonad m] [HasEvalSet m]
+    {m : Type → Type u} [Monad m] [LawfulMonad m] [MonadAttach m] [LawfulMonadAttach m]
     {α β : Type} {L : ℕ} (xs : Vector β L) (f : β → m α)
     {v : Vector α L} (hv : v ∈ support (xs.mapM f)) (i : Fin L) :
     v[i] ∈ support (f xs[i]) := by
@@ -85,12 +87,10 @@ lemma Vector.support_mapM_index
         simp only [map_eq_bind_pure_comp, bind_assoc, Function.comp, pure_bind]
         rfl
       rw [hpush] at hv
-      rw [mem_support_bind_iff] at hv
-      obtain ⟨ys, hys, hv⟩ := hv
-      rw [mem_support_bind_iff] at hv
-      obtain ⟨last, hlast, hpush_eq⟩ := hv
-      rw [mem_support_pure_iff] at hpush_eq
-      have hparts := Vector.push_eq_push.mp hpush_eq.symm
+      obtain ⟨ys, hys, hv⟩ := LawfulMonadAttach.canReturn_bind_imp' hv
+      obtain ⟨last, hlast, hpush_eq⟩ := LawfulMonadAttach.canReturn_bind_imp' hv
+      have hpush_eq := LawfulMonadAttach.eq_of_canReturn_pure hpush_eq
+      have hparts := Vector.push_eq_push.mp hpush_eq
       by_cases hi : (i : ℕ) < L
       · change (v0.push y)[(i : ℕ)] ∈ support (f ((xs0.push x)[(i : ℕ)]))
         rw [Vector.getElem_push_lt hi, Vector.getElem_push_lt hi]
