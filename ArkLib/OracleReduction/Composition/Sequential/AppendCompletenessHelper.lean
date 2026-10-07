@@ -9,7 +9,7 @@ open OracleComp OracleSpec ProtocolSpec
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
   {StmtIn WitIn StmtOut WitOut : Type} {n : ℕ} {pSpec : ProtocolSpec n}
 
 /-- A `Reduction.run` outcome is in the support whenever its prover-transcript piece is in the
@@ -24,14 +24,20 @@ theorem mem_support_run_of_prover_verifier
   unfold Reduction.run
   simp only [OptionT.run_bind, Option.elimM, bind_assoc, mem_support_bind_iff]
   refine ⟨some (tr, prv), ?_, ?_⟩
-  · show some (tr, prv) ∈ support (some <$> R.prover.run stmt wit)
-    simp only [support_map, Set.mem_image, Option.some.injEq]; exact ⟨_, hP, rfl⟩
+  · apply (OptionT.mem_support_iff _ _).mp
+    simpa only [OptionT.support_liftM] using hP
   · simp only [Option.elim_some, mem_support_bind_iff]
     refine ⟨some (some vout), ?_, ?_⟩
-    · rw [OptionT.run_liftM_run, support_map,
-        support_simulateQ_eq_OracleComp_of_superSpec _ _ (fun _ => rfl)]
-      simp only [Set.mem_image, Option.some.injEq]
-      exact ⟨some vout, hV, rfl⟩
+    · rw [OptionT.run_liftM_run, support_map]
+      rw [support_simulateQ_eq_OracleComp_of_superSpec
+        (spec := oSpec + [pSpec.Challenge]ₒ) (superSpec := oSpec)
+        (fun t => liftM (oSpec.query t)) _ (by
+          intro β q
+          simp only [QueryImpl.mapQuery, support_map, OracleComp.support_liftM]
+          rw [← OracleComp.liftComp_liftM_query (oSpec + [pSpec.Challenge]ₒ),
+            OracleComp.support_liftComp, OracleComp.support_liftM]
+          simp)]
+      exact Set.mem_image_of_mem some hV
     · simp only [Option.elim_some, Option.getM_some, OptionT.run_pure, OptionT.run_bind,
         pure_bind, support_pure, Set.mem_singleton_iff]
 
