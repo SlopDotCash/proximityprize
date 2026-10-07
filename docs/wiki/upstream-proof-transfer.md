@@ -795,3 +795,12 @@ package. The donor pins a Lean 4.28-era Clean revision, so copying its lockfile 
 for this Lean 4.34 migration. Its completeness construction additionally assumes witness
 environment existence (`hWitGen`); the adapter does not prove that obligation. A compatible
 Clean dependency and adapter validation remain pending.
+
+Run unrolling and its distributional seam laws now pass an ordinary Lean 4.34 build
+(3,207 jobs). The migration retains public theorem names and their assumptions while replacing
+the legacy evaluator calls and notation with `evalSPMF` / `𝒮`. Explicit state-transformer
+identities restore challenge-state preservation and marginal equality. All thirty installed
+roots printed by the module have standard-only axiom closures and are registered for routine
+auditing, including completeness unrolling, challenge coherence, state-preserving simulation,
+short-circuit commutation and the seam union bound. These laws do not by themselves establish
+full STIR completeness or discharge arbitrary state-preservation assumptions.
