@@ -83,7 +83,7 @@ theorem transpose_symm_decomposeColumns (z : P.A) :
   rw [← P.transpose_decomposeRows]
   exact (Packing.PackingData.ofBasis P.basis).transpose.symm_apply_apply _
 
-/-- Native columns of a finite tensor observation are the shared weighted packing coordinates. -/
+/-- Native rows of a finite tensor observation are the shared weighted packing coordinates. -/
 theorem decomposeRows_observation {Y : Type*} [Fintype Y] (a v : Y → L) :
     P.decomposeRows (∑ y, P.φ₀ (a y) * P.φ₁ (v y)) =
       (Packing.PackingData.ofBasis P.basis).observe a v := by
@@ -93,7 +93,7 @@ theorem decomposeRows_observation {Y : Type*} [Fintype Y] (a v : Y → L) :
     ∑ y, P.basis.repr (v y) i • a y
   simp only [P.decomposeRows_φ₀_mul_φ₁, Finset.sum_apply, Algebra.smul_def, mul_comm]
 
-/-- Native rows of a finite tensor observation are the coordinate slices of its factor families. -/
+/-- Native columns of a finite tensor observation are the coordinate slices of its factor families. -/
 theorem decomposeColumns_observation {Y : Type*} [Fintype Y] (a v : Y → L) :
     P.decomposeColumns (∑ y, P.φ₀ (a y) * P.φ₁ (v y)) =
       (Packing.PackingData.ofBasis P.basis).coordinateSlices a v := by
