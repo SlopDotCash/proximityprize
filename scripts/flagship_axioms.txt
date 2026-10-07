@@ -315,3 +315,12 @@ ArkLib.ProofSystem.RingSwitching.Prelude RingSwitching.fixFirstVariablesOfMQP_ev
 ArkLib.ProofSystem.RingSwitching.Prelude RingSwitching.fixVars_eq_bind₁
 ArkLib.ProofSystem.RingSwitching.Prelude RingSwitching.fixVars_step
 ArkLib.ProofSystem.RingSwitching.Prelude RingSwitching.decomposeRows_embedded_MLP_eval'
+
+# Native polynomial packing, unpacking, and evaluation reconstruction.
+ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout RingSwitching.concat_eq_append
+ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout RingSwitching.packMLE_eq_packedMLE
+ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout RingSwitching.packMLE_eq_packedPrefixLayout
+ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout RingSwitching.unpackMLE_eq_joinFirst
+ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout RingSwitching.packMLE_unpackMLE
+ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout RingSwitching.unpackMLE_packMLE
+ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout RingSwitching.aeval_eq_sum_splitFirst

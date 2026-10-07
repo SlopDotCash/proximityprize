@@ -91,7 +91,8 @@ echo "# Native security clients"
   ArkLibTest.ProofSystem.RingSwitching.Packing.Multiplier \
   ArkLibTest.ProofSystem.RingSwitching.Packing.ScalarHead.Layout \
   ArkLibTest.ProofSystem.RingSwitching.Packing.ScalarHead.Quirky \
-  ArkLibTest.ProofSystem.RingSwitching.Packing.ProfileCoordinates
+  ArkLibTest.ProofSystem.RingSwitching.Packing.ProfileCoordinates \
+  ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout
 
 # CI gate 2: zero live sorry/admit holes in both library and research source.
 echo ""

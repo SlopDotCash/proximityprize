@@ -672,3 +672,16 @@ these revisions does not establish native integration or validation of their res
 Six selected installed Prelude roots pass the standard-axiom audit, including simulation of
 message queries, polynomial evaluation under currying, variable fixing, round transition and
 row decomposition. They are included in the routine axiom manifest.
+
+PR #1257's polynomial-layout bridge now connects native `packMLE` and `unpackMLE` to the
+independent basis-packing API. It proves both round trips, the packed-prefix interpretation,
+and equality-weighted evaluation reconstruction. The source-dimension cast and native
+prefix/suffix orientation are explicit. The native Prelude supplies the existing definitions;
+this transfer adds no profile fields or security hypotheses.
+
+The direct Lean 4.34 check and ordinary 3,242-job build pass. The module is explicitly included
+in routine validation because the generated campaign umbrella does not include every protocol
+module. The remaining protocol algebra split and protocol integrations are still pending.
+
+All seven installed polynomial-layout theorem roots use only standard axioms and are included
+in the routine flagship audit.
