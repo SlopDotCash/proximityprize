@@ -754,3 +754,13 @@ only standard axioms, including the round-by-round extractor and verifier-state 
 threaded round identities, and the message-first appended-run theorem. General `append_run`
 retains its existing right-block residual hypothesis; this validation does not discharge it for
 all protocols. The downstream STIR build remains in progress.
+
+Unique decoding, general sequential composition and the challenge-seam bridge now pass their
+ordinary Lean 4.34 build (3,751 jobs). Explicit singleton sums and filter membership restore the
+zero-degree curve case. The sequential completeness induction keeps its original assumptions;
+the bridge preserves public lemma names while using the legacy evaluator's current `evalSPMF`
+name. A private stateful simulation congruence is proved by OracleComp induction, adapted from
+Apache-licensed VCVio `SimSemantics/StateT/Basic.lean` at
+`576766ab24a044af560b05c58d2a1229857c7c07`. Fifteen selected installed roots have standard-only
+axiom closures and are registered for routine auditing. The broader STIR build remains in
+progress; these checks do not establish a full repository pass.
