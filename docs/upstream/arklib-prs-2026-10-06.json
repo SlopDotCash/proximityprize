@@ -374,7 +374,7 @@
       "base": "ace55c3e29da1fc55a321378ada55ea4f7ed8790",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed documentation-only: no Lean declarations. Adopted its protocol-port checklist in the native transfer guide: same claim and interfaces, execution/private-state/shared-oracle/query-log correspondence, explicit extraction and error bounds, real-to-ideal query accounting, compiled axiom checks and downstream migration before removing legacy declarations. Upstream roadmap status is not copied over native status.",
       "files": [
         "BACKGROUND.md",
         "README.md",
@@ -674,7 +674,7 @@
       "base": "ace55c3e29da1fc55a321378ada55ea4f7ed8790",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed documentation-only: no Lean source or dependency changes. Its restoration correspondence and counterexample analysis inform native transfer rules: preserve the actual cached closed-output game, challenge-visible extractor contract, unqueried-ancestor resampling, and distinguish all-path charges from actual cached expected cost. Native code adaptations of1263/1264 are separately built and audited; upstream overnight acceptance and CI records are not native evidence. Literature/legacy-equivalence gaps remain documented, not assumed.",
       "files": [
         "docs/design/03-adversarial-oracle-execution.md",
         "docs/design/04-oracle-elimination-compiler.md",
@@ -1156,7 +1156,7 @@
       "base": "14a4b351d154cacd7b01ff58bf505c1572112098",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed documentation-only ABF26 paper/source audit: no Lean code to merge. Preserve its statement-number/version and statement-specific axiom-status discipline, alphabet-normalized rate distinction, stronger folded-domain admissibility versus defective printed hypotheses, and named-extractor versus execution-cost distinction. Its upstream sorry ledger and Code.Lambda encard API do not describe the native tree; native statuses must be checked against actual declarations and residual census, not replaced with this upstream audit.",
       "files": [
         "docs/kb/audits/open-problems-list-decoding-and-correlated-agreement.md",
         "docs/kb/papers/ABF26.md"

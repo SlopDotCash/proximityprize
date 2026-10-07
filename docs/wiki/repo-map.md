@@ -56,6 +56,10 @@ Use `scripts/lake-locked.sh` for builds as described in [quickstart](quickstart.
 
 ## Navigation Notes
 
+- General resultant coefficient/total-degree bounds, including padded derivative resultants over
+  commutative rings, live in `ArkLib/Data/Polynomial/ResultantDegree.lean`. The field-specific
+  Polishchuk–Spielman resultant interface delegates to this shared module.
+
 - `ArkLib.lean` is a generated umbrella import file, not a hand-maintained module index.
 - `ArkLib/ToVCVio/` mirrors VCV-io module structure under the importable Lean prefix
   `ArkLib.ToVCVio`; use it for reusable `VCVio` helper lemmas before they are upstreamed.

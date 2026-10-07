@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 452,
+    "files_with_citations": 453,
     "keys_cited": 35,
-    "total_citation_edges": 512
+    "total_citation_edges": 513
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -638,6 +638,9 @@
     ],
     "ArkLib/Data/Polynomial/RationalFunctionsStrong.lean": [
       "BCIKS20"
+    ],
+    "ArkLib/Data/Polynomial/ResultantDegree.lean": [
+      "BCHKS25"
     ],
     "ArkLib/Data/Polynomial/Trivariate.lean": [
       "BCIKS20"
@@ -1499,6 +1502,7 @@
       "ArkLib/Data/CodingTheory/ProximityGap/MaximalEnergyUniformBound.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/MonomialSubgroupCorrelated.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/R4LaneDCosetPoint.lean",
+      "ArkLib/Data/Polynomial/ResultantDegree.lean",
       "ArkLib/ToMathlib/BadLineWitnessProof.lean",
       "ArkLib/ToMathlib/Bridge2BCHKS25.lean",
       "Research/ProximityPrize/BCIKS20/Arith.lean",

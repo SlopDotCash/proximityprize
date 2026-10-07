@@ -446,3 +446,48 @@ All nine repaired modules now pass ordinary dependency-aware builds. The final i
 build completed successfully (3,414 jobs). A separate audit importing the compiled GS, PS,
 weighted-degree, and localized-place modules reports only standard axioms for all 14 selected
 roots. The next full native/Research build is still in progress.
+
+
+## Protocol-port and literature review rules
+
+The documentation-only PRs [#1258](https://github.com/Verified-zkEVM/ArkLib/pull/1258),
+[#1273](https://github.com/Verified-zkEVM/ArkLib/pull/1273), and
+[#800](https://github.com/Verified-zkEVM/ArkLib/pull/800) contain no Lean declarations to import.
+Their useful review rules apply to the remaining ports:
+
+- Preserve statements, witness carriers, oracle interfaces, challenge distributions, and rejection.
+  Prove execution correspondence including private state, shared oracle state, and query logs.
+  Equal public outputs alone do not establish the required correspondence.
+- Keep named extraction and explicit error bounds. An ordinary soundness result with a trivial
+  witness does not replace knowledge extraction. Runtime requires executable realizers and their
+  measured execution; query charges alone do not prove extraction complexity.
+- For restoration, retain the actual cached completion and closed output. Adaptive completion
+  cannot be charged as an independent fresh event. Expected cost under independent replies is
+  not expected cost under the actual cache. The unqueried-ancestor argument needs all-background
+  resampling, not conditioning on the absence of earlier bad events.
+- Replace legacy consumers only after correspondence, security, query accounting, full builds,
+  and axiom audits. Upstream roadmaps and CI claims are not evidence for the native port.
+- Record the paper version alongside statement numbers. Compare alphabet-normalized rate with
+  base-field dimension rate, and record when folded-code admissibility is stronger than a printed
+  hypothesis. Audit the named theorem's dependency closure; neither an unrelated admission nor a
+  source-level zero-hole census determines that theorem's mathematical completion status.
+
+The upstream ABF26 audit uses a different `Lambda` API and admission ledger. Its native status
+labels must therefore be recomputed rather than copied. The native residual census remains the
+source for documented residuals.
+
+
+The new `ArkLib.Data.Polynomial.ResultantDegree` module comes from the reviewed upstream main
+revision. It generalizes the field-only PS resultant bound to commutative coefficient rings,
+explicit coefficient budgets, and padded resultants, and includes total-degree/Bezout and
+positive-characteristic derivative bounds. The native PS theorem now delegates to that shared
+result. The new module and its PS consumer pass an ordinary 2,293-job build; eight selected
+roots pass a strict source-composed standard-only axiom audit. Native public PS statements are
+preserved.
+
+Repeated open-file failures in the full build were traced to three research modules importing
+all of Mathlib. Their imports are being narrowed to the actual mathematical and tactic
+libraries. The three-prime packet refutation, value-spread second-moment proof, and Sudan list bound pass
+direct Lean 4.34 checks with these narrower imports. This reduces the loaded dependency set without
+changing their statements or proofs. Their ordinary build now also passes (3,098 jobs); the
+full build still needs verification.
