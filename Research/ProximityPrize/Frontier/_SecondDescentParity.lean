@@ -69,8 +69,9 @@ reduces to the open BGK/Kelley general-position count, exactly as `_IsoSparsityM
 already names.  Over `ℚ`/char `0` the non-coset count is `poly(t)` unconditionally
 (Bombieri–Zannier unlikely intersections); the char-`p` transfer is the wall.
 
-This file proves the char-free **second-descent split** and the **head-even drop**, and names the
-residual `SecondDescentStuckResidual` (the per-stuck-level isolated count) — NOT discharged here.
+This file proves the char-free **second-descent split** and the **head-even drop**, and records the
+historical residual `SecondDescentStuckResidual`. The companion
+`_SecondDescentStuckResidualRefuted.lean` refutes its unrestricted root-count formulation.
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.  Issue #407.
 -/
 
@@ -127,10 +128,19 @@ theorem secondDescent_head_reinjection (Ae Ao Oe Oo : F[X]) :
     (2 * (Ae * Ao) - Oe ^ 2 - X * Oo ^ 2) + (Oe ^ 2 + X * Oo ^ 2) = 2 * (Ae * Ao) := by
   ring
 
-/-! ## The named residual (the per-stuck-level isolated count — open, = BGK/Kelley) -/
+/-! ## The historical residual (the unrestricted root count is refuted) -/
 
 /--
-**`SecondDescentStuckResidual` — the genuine open input the second descent does NOT discharge.**
+**`SecondDescentStuckResidual` — the historical root-count input, false as stated.**
+
+The companion `_SecondDescentStuckResidualRefuted.lean` refutes this exact declaration
+at every `k ≥ 2` in characteristic zero, and whenever `k + 2` distinct square nodes exist.
+In a prime field `ZMod p`, the explicit range `2 * (k + 2) < p` suffices.
+An explicit witness over `ZMod 17` at `k = 2` has four
+antipodally isolated roots in the subgroup of order eight, exceeding `k + 1 = 3`.
+The definition below is retained to identify the refuted statement and preserve existing
+interfaces. A replacement needs additional decoded-family or head/tail restrictions.
+The discussion below records the original proposed route, not a surviving universal bound.
 
 The second descent peels `v₂(gcd(a,b)) − 1` head-even levels (a `2`-adic count tied to `n`, not
 `log₂ k`); at the first head-odd level the cross term re-injects degree `≈ deg A`, and the descent
@@ -152,8 +162,8 @@ def SecondDescentStuckResidual (F : Type*) [Field F] (k : ℕ) : Prop :=
         s.card ≤ k + 1
 
 /-- Documentation anchor: the second descent peels `v₂(gcd(a,b)) − 1` head-even levels, then stalls
-at the head-odd level on `SecondDescentStuckResidual`, which is the BGK/Kelley count — NOT closed
-by the descent. -/
+at the head-odd level. Its recorded unrestricted root-count residual is false. The intended
+decoded-family count still needs a correctly restricted statement and proof. -/
 def secondDescentNote : Unit := ()
 
 end ProximityGap.Frontier.SecondDescentParity
