@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
+import Mathlib.LinearAlgebra.Basis.Basic
 import Mathlib.LinearAlgebra.Basis.Defs
 import Mathlib.LinearAlgebra.Pi
 
@@ -121,6 +122,18 @@ def PackingData.ofBasis {B L : Type} [CommRing B] [CommRing L] [Algebra B L]
   ιE := ι
   packBasis := basis
   openBasis := basis
+
+/-- The specialization whose opening algebra is the base ring itself, with its one-element
+basis: opening points and values lie in `B`, and there is a single packed slice. -/
+abbrev PackingData.ofBaseOpening {B P : Type} [CommRing B] [CommRing P] [Algebra B P]
+    {ι : Type} [Fintype ι] (basis : Basis ι B P) : PackingData B where
+  P := P
+  E := B
+  ιP := ι
+  ιE := Unit
+  packBasis := basis
+  openBasis := Basis.singleton Unit B
+
 
 end
 
