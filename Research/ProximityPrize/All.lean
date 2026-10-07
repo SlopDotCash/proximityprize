@@ -2773,6 +2773,7 @@ import Research.ProximityPrize.Frontier._SYZGuardedKernelTwoCore
 import Research.ProximityPrize.Frontier._SampledOctaveUniformityGate
 import Research.ProximityPrize.Frontier._ScaledVandermondeMinor
 import Research.ProximityPrize.Frontier._SecondDescentParity
+import Research.ProximityPrize.Frontier._SecondDescentStuckResidualRefuted
 import Research.ProximityPrize.Frontier._SecondMomentExact
 import Research.ProximityPrize.Frontier._SecondMomentGapQuantified
 import Research.ProximityPrize.Frontier._SecondMomentUniformFieldWindow
