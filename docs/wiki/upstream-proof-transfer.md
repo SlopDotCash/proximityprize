@@ -745,3 +745,12 @@ The PMF bridge hypotheses use `evalSPMF`, the renamed legacy evaluator, rather t
 measure-valued `evalDist`. Eleven selected installed completeness, unrolling and PMF roots have
 standard-only axiom closures and are registered for routine auditing. Sequential composition and
 the downstream STIR completeness consumers remain unvalidated.
+
+Sequential composition now passes the ordinary Lean 4.34 build (3,217 jobs). The migration makes
+transcript casts at the protocol boundary explicit, replaces obsolete nested-lift proof steps
+with the current direct-lift congruence, and proves lift composition where definitional equality
+no longer suffices. Existing statement assumptions are preserved. Eleven installed roots use
+only standard axioms, including the round-by-round extractor and verifier-state constructors,
+threaded round identities, and the message-first appended-run theorem. General `append_run`
+retains its existing right-block residual hypothesis; this validation does not discharge it for
+all protocols. The downstream STIR build remains in progress.
