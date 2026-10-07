@@ -831,3 +831,11 @@ builds and has a standard-only installed axiom closure. All four roots are regis
 routine auditing. Initialization, support-faithfulness and message-seam assumptions remain
 unchanged. The separate public wrapper is being simplified to reuse this theorem; its
 remaining helper migration is not included in this validation.
+
+The public message-seam completeness wrapper now also passes its ordinary Lean 4.34 build
+(3,238 jobs) and a seven-root installed axiom audit. All seven roots use only standard axioms
+and are registered in routine validation. The public completeness theorem delegates to the
+validated message-first theorem, removing its duplicate support/probability proof while
+preserving the statement and hypotheses. Its optional-transformer lift and failure-support
+helpers are migrated to the current API. Empty-tail completeness and further soundness
+consumers remain under validation.
