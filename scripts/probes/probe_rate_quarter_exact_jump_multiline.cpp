@@ -34,6 +34,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
+#include <limits>
 #include <map>
 #include <numeric>
 #include <set>
@@ -74,7 +75,7 @@ struct Context {
   int primitive_root() const {
     int n = p - 1;
     std::vector<int> factors;
-    for (int q = 2; q * q <= n; ++q) {
+    for (int q = 2; q <= n / q; ++q) {
       if (n % q != 0) continue;
       factors.push_back(q);
       while (n % q == 0) n /= q;
@@ -189,10 +190,17 @@ static std::vector<Choice> choices_for(const Pattern& pattern, int root_budget) 
 static SolveResult solve_exact(const std::vector<Pattern>& coordinates,
                                int core_target, int root_budget,
                                std::vector<Choice>* assignment = nullptr) {
+  if (core_target < 0 || root_budget < 0 ||
+      coordinates.size() > std::numeric_limits<std::int16_t>::max() / 4)
+    throw std::runtime_error("DP dimensions exceed score representation");
   const int b = core_target + 1;
   const int gb = root_budget + 1;
-  const std::size_t state_count =
-      static_cast<std::size_t>(b) * b * b * b * gb;
+  std::size_t state_count = gb;
+  for (int i = 0; i < 4; ++i) {
+    if (state_count > UINT32_MAX / static_cast<std::size_t>(b))
+      throw std::runtime_error("DP state count exceeds uint32 indices");
+    state_count *= b;
+  }
   std::vector<std::int16_t> current(state_count, -1), next(state_count, -1);
   std::vector<std::uint32_t> active{0}, next_active;
   std::vector<std::vector<std::uint32_t>> parents;
@@ -333,9 +341,19 @@ int main(int argc, char** argv) {
               << " <prime> <n> <agreement> [fixed|all]\n";
     return 2;
   }
-  const int p = std::atoi(argv[1]);
-  const int n = std::atoi(argv[2]);
-  const int agreement = std::atoi(argv[3]);
+  auto parse = [](const char* text) {
+    std::size_t consumed = 0;
+    const int value = std::stoi(text, &consumed);
+    if (text[consumed] != '\0') throw std::runtime_error("expected an integer");
+    return value;
+  };
+  const int p = parse(argv[1]);
+  const int n = parse(argv[2]);
+  const int agreement = parse(argv[3]);
+  if (p < 2 || n < 32 || agreement < 1 || agreement > n)
+    throw std::runtime_error("need prime p, n >= 32, and 1 <= agreement <= n");
+  for (int divisor = 2; divisor <= p / divisor; ++divisor)
+    if (p % divisor == 0) throw std::runtime_error("p must be prime");
   const std::string mode = argc == 5 ? argv[4] : "fixed";
   if (mode != "fixed" && mode != "all") {
     throw std::runtime_error("mode must be fixed or all");

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Exact MILP companion for the source-seven no-eight signature search.
+"""Binary MILP companion for the source-seven no-eight signature search.
 
 This encodes the same predicates as
 ``probe_rate_quarter_noeight_source7_signatures_z3.py`` using binary linear
 variables and HiGHS through ``scipy.optimize.milp``.  The two independent
-backends make SAT certificates easy to cross-check and give a second route
-to exhaustive UNSAT.
+backends allow feasible signatures to be cross-checked. HiGHS uses floating
+point arithmetic: an infeasibility status is not an independently checked
+UNSAT certificate. Returned binary assignments are checked against every
+model constraint before decoding signatures.
 """
 
 from argparse import ArgumentParser
@@ -38,6 +40,25 @@ class BinaryMILP:
 
     def equal(self, coefficients, value):
         self.constraint(coefficients, value, value)
+
+    def checked_assignment(self, solution):
+        """Check a rounded binary assignment against all integer constraints."""
+        if len(solution) != len(self.names):
+            raise ValueError("assignment length mismatch")
+        rounded = []
+        for value in solution:
+            if not np.isfinite(value):
+                raise ValueError("nonfinite assignment")
+            bit = int(round(float(value)))
+            if bit not in (0, 1) or abs(float(value) - bit) > 1e-6:
+                raise ValueError("assignment is not binary within tolerance")
+            rounded.append(bit)
+        for index, (coefficients, lower, upper) in enumerate(self.rows):
+            total = sum(coefficient * rounded[variable]
+                        for variable, coefficient in coefficients.items())
+            if not lower <= total <= upper:
+                raise ValueError(f"rounded assignment violates constraint {index}")
+        return rounded
 
     def matrix(self):
         row_index = []
@@ -214,7 +235,8 @@ def run(signatures=13, maximum=2, regular_only=False, timeout=300,
            "regular_balance_only": regular_balance_only}, flush=True)
     if result.x is None:
         return result.status
-    rows = [(selected(result.x, root[s]), selected(result.x, missed[s]))
+    assignment = model.checked_assignment(result.x)
+    rows = [(selected(assignment, root[s]), selected(assignment, missed[s]))
             for s in range(signatures)]
     verify(rows, maximum, regular_balance_only)
     report(rows)
