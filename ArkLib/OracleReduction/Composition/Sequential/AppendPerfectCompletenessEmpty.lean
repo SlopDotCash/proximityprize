@@ -33,8 +33,7 @@ variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype ((oSpec).Range t)] 
   {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}
 
 set_option maxHeartbeats 1000000 in
-/-- **Perfect completeness of `Reduction.append` at an empty trailing seam (`pSpec₂ : ProtocolSpec 0`,
-UNCONDITIONAL).** The `n = 0` analogue of `append_perfectCompleteness_msg_proof`. -/
+/-- **Perfect completeness of `Reduction.append` at an empty trailing seam (`pSpec₂ : ProtocolSpec 0`).** The `n = 0` analogue of `append_perfectCompleteness_msg_proof`. -/
 theorem append_perfectCompleteness_empty_proof
     (R₁ : Reduction oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁)
     (R₂ : Reduction oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂)

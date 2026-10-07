@@ -9,9 +9,8 @@ import ArkLib.OracleReduction.RunUnroll
 /-!
 # Challenge-seam transfer for a `liftM`-ed phase game (issue #62 / #13)
 
-The two remaining `sorry`s in `AppendSoundnessMsgProof.lean` (`Verifier.append_soundness_msg'`) are
-the per-phase soundness bounds. Their only non-trivial content is a **challenge-oracle-seam
-transfer**: the appended phase-`i` game runs that phase's `pSpecᵢ` rounds under the *combined*
+The per-phase soundness bounds in `AppendSoundnessMsgProof.lean`
+(`Verifier.append_soundness_msg'`) use a **challenge-oracle-seam transfer**: the appended phase-`i` game runs that phase's `pSpecᵢ` rounds under the *combined*
 challenge oracle `[(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ`, whereas `Vᵢ.soundness` runs them under
 `pSpecᵢ`'s own oracle.
 
@@ -19,8 +18,7 @@ This file isolates that transfer as a single reusable `evalSPMF` equality, built
 proven `evalDist_challengeSeam_bridge_left`: for **any** `pSpec₁`-side computation `oa`, simulating
 its `liftM` into the appended challenge oracle (then projecting the value with `run'`) has the same
 distribution as simulating `oa` under `pSpec₁`'s own challenge oracle. The appended phase-1 game is
-exactly such a `liftM oa`, so this is the brick that turns the phase-1 `sorry` into a direct
-application of `V₁.soundness`. The right-half analogue (for phase 2 / `pSpec₂`) is symmetric,
+exactly such a `liftM oa`, so this equality permits applying `V₁.soundness` to that phase. The right-half analogue (for phase 2 / `pSpec₂`) is symmetric,
 via `evalDist_challengeSeam_bridge_right`.
 -/
 
