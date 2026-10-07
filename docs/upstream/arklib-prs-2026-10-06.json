@@ -33,6 +33,38 @@
         "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
         "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
         "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      },
+      "latest_refresh": {
+        "checked_date": "2026-10-07",
+        "number": 1289,
+        "title": "feat(ring-switching): bound collisions of a candidate list fixed before the challenge",
+        "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1289",
+        "head": "2dcb25437a4b59e59b4434a2c6f802ca6008debc",
+        "base": "a3351e66943b4f4431c571b91526fdf4abc94ba4",
+        "base_branch": "feat/ring-switch-profile-algebra",
+        "draft": true,
+        "disposition": "fetched; native integration under review",
+        "files": [
+          "AGENTS.md",
+          "ArkLib.lean",
+          "ArkLib/ProofSystem/RingSwitching/Packing.lean",
+          "ArkLib/ProofSystem/RingSwitching/Packing/Batching.lean",
+          "ArkLib/ProofSystem/RingSwitching/Packing/BatchingPhase.lean",
+          "ArkLib/ToVCVio/EvalDist/ProbabilityBounds.lean",
+          "ArkLibTest/ProofSystem/RingSwitching/Packing/Batching.lean",
+          "ArkLibTest/ToVCVio/EvalDist/ProbabilityBounds.lean",
+          "docs/design/native-measure-ledger.md",
+          "docs/kb/concepts/ring-switching.md",
+          "docs/wiki/probability-conventions.md",
+          "docs/wiki/repo-map.md"
+        ],
+        "lean_toolchain": "leanprover/lean4:v4.34.0",
+        "core_dependencies": {
+          "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+          "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+          "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+          "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+        }
       }
     },
     {
@@ -540,6 +572,38 @@
         "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
         "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
         "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      },
+      "latest_refresh": {
+        "checked_date": "2026-10-07",
+        "number": 1266,
+        "title": "chore(kb): refresh generated files",
+        "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1266",
+        "head": "93b120cce4715f8c3b2e64c2a76d6223d34570a0",
+        "base": "35ddcaa83f683011f944f58904be779495a5709a",
+        "base_branch": "main",
+        "draft": false,
+        "disposition": "fetched; native integration under review",
+        "files": [
+          "docs/kb/_generated/declarations.json",
+          "docs/kb/_generated/dedup-report.md",
+          "docs/kb/_generated/lean-citations.json",
+          "docs/kb/_generated/references.json",
+          "docs/kb/papers/BCPZZ26.md",
+          "docs/kb/papers/DKT26.md",
+          "docs/kb/papers/DKTZ26.md",
+          "docs/kb/papers/Kop15.md",
+          "docs/kb/sources/BCPZZ26/metadata.yml",
+          "docs/kb/sources/DKT26/metadata.yml",
+          "docs/kb/sources/DKTZ26/metadata.yml",
+          "docs/kb/sources/Kop15/metadata.yml"
+        ],
+        "lean_toolchain": "leanprover/lean4:v4.34.0",
+        "core_dependencies": {
+          "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+          "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+          "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+          "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+        }
       }
     },
     {
@@ -1619,7 +1683,7 @@
       "base": "781f1362c5311241b38966b36a54cd1e169ea2aa",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "covered by native source; no replacement needed",
       "files": [
         "ArkLib.lean",
         "ArkLib/ProofSystem/Component/SendWitness.lean",
@@ -1633,7 +1697,8 @@
         "CompPoly": "067a22b6623a0d61f27deda02f8c8a0b8b339b33",
         "VCVio": "f85df0b4ec3ef4249876996da28a07c38e9137c2",
         "mathlib": "8a178386ffc0f5fef0b77738bb5449d50efeea95"
-      }
+      },
+      "review_notes": "Reviewed all four Lean source files at ff2ac3d3806d205bd1893844f866c34fe87a216e. Native gateCheck and permCheck definitions and perfectCompleteness results cover the donor; native additionally has verify/support characterizations, soundness and actual rbrKnowledgeSoundness proofs. ConstraintSystem namespace qualification and SendWitness proofs retain native fixes (see458/465). No donor-only protocol declarations; generated umbrella/citation JSON remain native-managed. Source coverage only, not full Lean4.34 cone validation."
     },
     {
       "number": 458,
@@ -1750,6 +1815,111 @@
         "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
         "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
       }
+    },
+    {
+      "number": 1290,
+      "title": "test(ring-switching): state Binius's batching phase through the shared packing layer",
+      "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1290",
+      "head": "6d2f8cb95fbbadc8257dc57dc4297369bf21aabd",
+      "base": "a3351e66943b4f4431c571b91526fdf4abc94ba4",
+      "base_branch": "feat/ring-switch-profile-algebra",
+      "draft": false,
+      "disposition": "fetched; native integration under review",
+      "files": [
+        "ArkLib/ProofSystem/RingSwitching/Packing/BatchingPhase.lean",
+        "ArkLib/ProofSystem/Sumcheck/Domain.lean",
+        "ArkLibTest/ProofSystem/RingSwitching/Conformance/Binius.lean",
+        "ArkLibTest/ProofSystem/RingSwitching/Packing/Orientation.lean",
+        "docs/kb/concepts/ring-switching.md",
+        "docs/wiki/repo-map.md"
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
+    },
+    {
+      "number": 1291,
+      "title": "fix(Stir): restate the STIR proximity gap, soundness lemma and main theorem",
+      "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1291",
+      "head": "df916f59068e0829ea1da1d1c16af8d3e2167b66",
+      "base": "35ddcaa83f683011f944f58904be779495a5709a",
+      "base_branch": "main",
+      "draft": false,
+      "disposition": "fetched; native integration under review",
+      "files": [
+        "ArkLib/ProofSystem/Stir/MainThm.lean",
+        "ArkLib/ProofSystem/Stir/ProximityGap.lean",
+        "ArkLibTest/ProofSystem/Stir/MainThm.lean",
+        "ArkLibTest/ProofSystem/Stir/ProximityGap.lean",
+        "blueprint/src/proof_systems/stir.tex",
+        "docs/kb/papers/ACFY24stir.md"
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
+    },
+    {
+      "number": 1293,
+      "title": "feat(ring-switching): abort on reject and prove the packing phases",
+      "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1293",
+      "head": "0e41e80c7c16cce21e531918dff3b0f0eb2ad559",
+      "base": "6d2f8cb95fbbadc8257dc57dc4297369bf21aabd",
+      "base_branch": "feat/binius-relation-conformance",
+      "draft": false,
+      "disposition": "fetched; native integration under review",
+      "files": [
+        "ArkLib.lean",
+        "ArkLib/Commitments/Functional/Hachi/Sumcheck/Basic.lean",
+        "ArkLib/Data/MvPolynomial/RestrictDegree.lean",
+        "ArkLib/Data/Probability/Instances.lean",
+        "ArkLib/OracleReduction/Basic.lean",
+        "ArkLib/OracleReduction/OracleInterface.lean",
+        "ArkLib/OracleReduction/Security/GuardedRoundByRound.lean",
+        "ArkLib/OracleReduction/Security/RoundByRound.lean",
+        "ArkLib/ProofSystem/RingSwitching/Basic.lean",
+        "ArkLib/ProofSystem/RingSwitching/Packing.lean",
+        "ArkLib/ProofSystem/RingSwitching/Packing/BatchingPhase.lean",
+        "ArkLib/ProofSystem/RingSwitching/Packing/Compatibility.lean",
+        "ArkLib/ProofSystem/RingSwitching/Packing/General.lean",
+        "ArkLib/ProofSystem/RingSwitching/Packing/Prelude.lean",
+        "ArkLib/ProofSystem/RingSwitching/Packing/SumcheckPhase.lean",
+        "ArkLib/ProofSystem/RingSwitching/RoundVerifiers.lean",
+        "ArkLib/ProofSystem/Sumcheck/Structured/RoundLemmas.lean",
+        "ArkLib/ProofSystem/Sumcheck/Structured/SingleRound.lean",
+        "ArkLibTest/ProofSystem/RingSwitching/Conformance/Binius.lean",
+        "blueprint/src/proof_systems/ring_switching.tex",
+        "docs/kb/concepts/ring-switching.md",
+        "docs/wiki/repo-map.md",
+        "scripts/axiom_baseline.json"
+      ],
+      "lean_toolchain": "leanprover/lean4:v4.34.0",
+      "core_dependencies": {
+        "CompPoly": "df591bb8c6745126d1d72f5243faae3022b0432a",
+        "VCVio": "d7089e46d69e07640fa23b5ae6b1b966f1d4b949",
+        "mathlib": "5ed2965256430c3649e86755f9576b54eca72435",
+        "PolyFun": "3710d71b28404a151b8d1f0ce080ea448778dec0"
+      }
     }
-  ]
+  ],
+  "refresh_2026_10_07": {
+    "open_count": 54,
+    "new_pull_requests": [
+      1290,
+      1291,
+      1293
+    ],
+    "changed_heads": [
+      1289,
+      1266
+    ],
+    "note": "Previously reviewed head fields retained; changed revisions recorded in latest_refresh and separate fetched refs. All 54 open PRs enumerated including drafts."
+  }
 }

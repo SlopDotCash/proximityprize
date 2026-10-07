@@ -307,3 +307,11 @@ ArkLib.OracleReduction.Security.RoundByRound Verifier.StateFunction.probEvent_op
 ArkLib.OracleReduction.Security.RoundByRound Verifier.StateFunction.probEvent_bind_mono_heteroEvent
 ArkLib.OracleReduction.Security.RoundByRound Verifier.KnowledgeStateFunctionOneShot.toKnowledgeStateFunction
 ArkLib.OracleReduction.Security.RoundByRound OracleVerifier.id_rbrKnowledgeSoundness
+
+# Native RingSwitching Prelude compatibility and round-transition laws.
+ArkLib.ProofSystem.RingSwitching.Prelude RingSwitching.simulateQ_simOracle2_query
+ArkLib.ProofSystem.RingSwitching.Prelude RingSwitching.sumAlgEquiv_eval₂
+ArkLib.ProofSystem.RingSwitching.Prelude RingSwitching.fixFirstVariablesOfMQP_eval
+ArkLib.ProofSystem.RingSwitching.Prelude RingSwitching.fixVars_eq_bind₁
+ArkLib.ProofSystem.RingSwitching.Prelude RingSwitching.fixVars_step
+ArkLib.ProofSystem.RingSwitching.Prelude RingSwitching.decomposeRows_embedded_MLP_eval'

@@ -6,6 +6,7 @@ Authors: Chung Thai Nguyen, Quang Dao
 
 import ArkLib.Data.MvPolynomial.Multilinear
 import ArkLib.OracleReduction.Basic
+import VCVio.OracleComp.SimSemantics.OptionT.Basic
 import ArkLib.OracleReduction.Security.RoundByRound
 import CompPoly.Fields.Binary.Tower.TensorAlgebra
 import ArkLib.ProofSystem.RingSwitching.ProfileCoordinates
@@ -1568,13 +1569,13 @@ open MvPolynomial
 /-- **`sumAlgEquiv` evaluation.** Evaluating the curried polynomial `sumAlgEquiv p` by `eval x` on
 the outer (`S₁`) variables and `eval challenges` on the inner (`S₂`) coefficient ring equals
 evaluating `p` directly at the combined point `Sum.elim x challenges`. Proven by `induction_on`,
-using `sumToIter` (`= sumAlgEquiv` by `rfl`) on the generators. -/
+using the public `sumAlgEquiv` generator identities. -/
 theorem sumAlgEquiv_eval₂ {L : Type} [CommRing L] {S₁ S₂ : Type} [Fintype S₁]
     (x : S₁ → L) (challenges : S₂ → L) (p : MvPolynomial (S₁ ⊕ S₂) L) :
     eval₂ (eval challenges) x ((sumAlgEquiv L S₁ S₂) p) = eval (Sum.elim x challenges) p := by
   induction p using MvPolynomial.induction_on with
   | C a =>
-    rw [show ((sumAlgEquiv L S₁ S₂) (C a)) = sumToIter L S₁ S₂ (C a) from rfl, sumToIter_C,
+    rw [sumAlgEquiv_C_inl,
       MvPolynomial.eval₂_C, MvPolynomial.eval_C, MvPolynomial.eval_C]
   | add p q hp hq =>
     simp only [map_add, MvPolynomial.eval₂_add, MvPolynomial.eval_add, hp, hq]
@@ -1582,10 +1583,8 @@ theorem sumAlgEquiv_eval₂ {L : Type} [CommRing L] {S₁ S₂ : Type} [Fintype 
     simp only [map_mul, MvPolynomial.eval₂_mul, MvPolynomial.eval_mul, hp]
     congr 1
     cases s with
-    | inl a => rw [show ((sumAlgEquiv L S₁ S₂) (X (Sum.inl a))) = sumToIter L S₁ S₂ (X (Sum.inl a))
-        from rfl, sumToIter_Xl, MvPolynomial.eval₂_X, MvPolynomial.eval_X, Sum.elim_inl]
-    | inr b => rw [show ((sumAlgEquiv L S₁ S₂) (X (Sum.inr b))) = sumToIter L S₁ S₂ (X (Sum.inr b))
-        from rfl, sumToIter_Xr, MvPolynomial.eval₂_C, MvPolynomial.eval_X, MvPolynomial.eval_X,
+    | inl a => rw [sumAlgEquiv_X_inl, MvPolynomial.eval₂_X, MvPolynomial.eval_X, Sum.elim_inl]
+    | inr b => rw [sumAlgEquiv_X_inr, MvPolynomial.eval₂_C, MvPolynomial.eval_X, MvPolynomial.eval_X,
         Sum.elim_inr]
 
 /-- **`fixFirstVariablesOfMQP` evaluation.** Evaluating the polynomial obtained by fixing the last
@@ -1665,8 +1664,7 @@ theorem fixVars_eq_bind₁ (ℓ : ℕ) (v : Fin (ℓ + 1)) (poly : MvPolynomial 
     intro q
     induction q using MvPolynomial.induction_on with
     | C a =>
-      rw [show ((sumAlgEquiv L (Fin (ℓ - v)) (Fin v)) (C a))
-          = sumToIter L (Fin (ℓ - v)) (Fin v) (C a) from rfl, sumToIter_C]
+      rw [sumAlgEquiv_C_inl]
       simp
     | add p q hp hq => simp only [map_add, map_add, hp, hq]
     | mul_X p s hp =>
@@ -1674,12 +1672,10 @@ theorem fixVars_eq_bind₁ (ℓ : ℕ) (v : Fin (ℓ + 1)) (poly : MvPolynomial 
       congr 1
       cases s with
       | inl a =>
-        rw [show ((sumAlgEquiv L (Fin (ℓ - v)) (Fin v)) (X (Sum.inl a)))
-            = sumToIter L (Fin (ℓ - v)) (Fin v) (X (Sum.inl a)) from rfl, sumToIter_Xl]
+        rw [sumAlgEquiv_X_inl]
         simp
       | inr b =>
-        rw [show ((sumAlgEquiv L (Fin (ℓ - v)) (Fin v)) (X (Sum.inr b)))
-            = sumToIter L (Fin (ℓ - v)) (Fin v) (X (Sum.inr b)) from rfl, sumToIter_Xr]
+        rw [sumAlgEquiv_X_inr]
         simp
   rw [hmap, bind₁_rename]
   rfl

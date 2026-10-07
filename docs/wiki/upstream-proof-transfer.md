@@ -652,3 +652,23 @@ where the donor retains admissions or `True` placeholders. #465's constraint-sys
 and examples match byte-for-byte, while native Plonk additionally implements its admitted
 permutation. The PR manifest records exact source evidence. These dispositions establish source
 coverage, not a claim that the entire Plonk/SendWitness dependency cone builds on Lean 4.34.
+
+PR #459 is likewise source-covered: both Plonk checking protocols and perfect-completeness
+results exist natively, with additional verifier-support, soundness and knowledge-soundness
+proofs. Native namespace repairs and generated-file ownership are preserved. This records the
+comparison of all four Lean source files, not a completed build of that protocol cone.
+
+RingSwitching Prelude now passes both its direct check and the ordinary build (3,236 jobs).
+The OptionT simulation law is imported explicitly, and the polynomial currying proofs use
+Mathlib's public `sumAlgEquiv` generator identities rather than an obsolete definitional equality
+to `sumToIter`. Existing theorem statements and profile orientation are preserved.
+
+A fresh 2026-10-07 upstream read lists 54 open ArkLib PRs, including drafts. New PRs #1290,
+#1291 and #1293 and changed heads for #1289 and #1266 are fetched and pinned in the inventory.
+Earlier reviewed heads remain recorded; `latest_refresh` stores changed revisions separately.
+Both ArkLib main and the public prize main remain at the previously recorded commits. Fetching
+these revisions does not establish native integration or validation of their results.
+
+Six selected installed Prelude roots pass the standard-axiom audit, including simulation of
+message queries, polynomial evaluation under currying, variable fixing, round transition and
+row decomposition. They are included in the routine axiom manifest.
