@@ -1849,7 +1849,7 @@
       "base": "35ddcaa83f683011f944f58904be779495a5709a",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "partially adapted: native ParamConditions now requires degree < domain cardinality and bounds transition repetition by the next degree, leaving final repetition unconstrained; degree_zero and concrete ZMod5 parameter-consistency/negative controls added. Direct and ordinary Lean4.34 build (3620 jobs) pass; five installed theorem roots use only standard axioms. Donor three admitted theorem bodies not imported. Positive-degree proximity-gap repair/tests, corrected error arguments, strict soundness relation and main quantifier/complexity corrections remain under review.",
       "files": [
         "ArkLib/ProofSystem/Stir/MainThm.lean",
         "ArkLib/ProofSystem/Stir/ProximityGap.lean",

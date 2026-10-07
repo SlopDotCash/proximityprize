@@ -685,3 +685,22 @@ module. The remaining protocol algebra split and protocol integrations are still
 
 All seven installed polynomial-layout theorem roots use only standard axioms and are included
 in the routine flagship audit.
+
+PR #1291's STIR parameter corrections are adapted to the native statements. A smooth domain
+must have cardinality strictly larger than the degree, and the repetition bound uses the next
+round's degree for transitions only. The last round's repetition parameter is unconstrained.
+The new `degree_zero` lemma connects the folded-degree function to the initial degree.
+
+The parameter client constructs a consistent zero-transition instance over `ZMod 5`, with a
+four-point smooth domain, degree two and final repetition count 100. It proves that the old
+reversed domain inequality makes the proximity range empty, and rejects both that inequality
+and a non-power-of-two degree. Its direct check and ordinary 3,620-job build pass on Lean 4.34.
+The client is included in routine validation.
+
+The donor's three admitted theorem bodies are not imported: native `stir_main`,
+`stir_rbr_soundness` and `proximity_gap` remain statement definitions with separately documented
+conditional proof routes. Further #1291 work remains on degree-zero boundary tests, error-budget
+arguments, the strict soundness relation and the main theorem's quantifier/complexity statement.
+
+Five installed parameter-lemma and client roots use only standard axioms; all are included in
+the flagship audit.

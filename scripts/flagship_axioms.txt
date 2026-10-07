@@ -324,3 +324,10 @@ ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout RingSwitching.unpackMLE_e
 ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout RingSwitching.packMLE_unpackMLE
 ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout RingSwitching.unpackMLE_packMLE
 ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout RingSwitching.aeval_eq_sum_splitFirst
+
+# STIR parameter consistency and nonvacuity controls.
+ArkLib.ProofSystem.Stir.MainThm StirIOP.degree_zero
+ArkLibTest.ProofSystem.Stir.ParamConditions ArkLibTest.StirMainThm.rbr_soundness_hypotheses_satisfiable
+ArkLibTest.ProofSystem.Stir.ParamConditions ArkLibTest.StirMainThm.not_paramConditions_of_card_le_degree
+ArkLibTest.ProofSystem.Stir.ParamConditions ArkLibTest.StirMainThm.delta_zero_lt_false_of_card_le_degree
+ArkLibTest.ProofSystem.Stir.ParamConditions ArkLibTest.StirMainThm.not_paramConditions_of_deg_eq_three
