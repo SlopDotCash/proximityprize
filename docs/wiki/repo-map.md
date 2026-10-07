@@ -59,7 +59,12 @@ Use `scripts/lake-locked.sh` for builds as described in [quickstart](quickstart.
 - `ArkLib/ProofSystem/RingSwitching/Packing/` contains framework-independent finite-basis
   coordinates and observations. Its two algebras may have different ranks, with no embedding
   between them. `CheckedObservation` requires an honest-message premise for readback; it does
-  not assert binding or knowledge soundness. The existing native `Profile` remains separate.
+  not assert binding or knowledge soundness. `Relations` preserves the full opening family and
+  derives honest weighted sumcheck claims. `Batching` supplies proved separation bounds; its
+  power and equality strategies require a finite domain, while singleton batching does not.
+  The existing native `Profile` remains separate.
+- `ArkLib/Data/Probability/SampledPolynomial.lean` transports the native PMF polynomial root
+  bounds to VCVio uniform samples without replacing the existing PMF API.
 
 - General resultant coefficient/total-degree bounds, including padded derivative resultants over
   commutative rings, live in `ArkLib/Data/Polynomial/ResultantDegree.lean`. The field-specific

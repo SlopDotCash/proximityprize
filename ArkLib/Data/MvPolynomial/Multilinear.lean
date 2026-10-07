@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2024 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Quang Dao
+Authors: Quang Dao, Aristotle (Harmonic), Elias Judin, Stefano Rocca
 -/
 
 import Mathlib.Algebra.MvPolynomial.Monad
@@ -340,7 +340,115 @@ theorem MLE_eval_scaled_sum {ι : Type*} (s : Finset ι) (z : ι → R) (g : ι 
 
 end Linearity
 
--- Note: add lemmas about the uniqueness of multilinear polynomials up to evaluations on hypercube
+/-! ### Uniqueness on the Boolean hypercube -/
+
+/-- A polynomial of individual degree at most one that vanishes on the Boolean hypercube is zero.
+
+Unlike uniqueness from evaluation on a general finite grid, this result holds over every
+commutative ring, including rings with zero divisors. -/
+theorem eq_zero_of_degreeOf_le_one_of_eval_zeroOne_eq_zero :
+    ∀ {n : ℕ} (p : MvPolynomial (Fin n) R),
+      (∀ i, degreeOf i p ≤ 1) →
+      (∀ x : Fin n → Fin 2, eval (x : Fin n → R) p = 0) →
+      p = 0 := by
+  intro n
+  induction n with
+  | zero =>
+      intro p _ heval
+      have h := heval fun _ => 0
+      rw [eq_C_of_isEmpty p] at h ⊢
+      simpa using h
+  | succ n ih =>
+      intro p hdegree heval
+      let f := finSuccEquiv R n p
+      have hnatDegree : f.natDegree ≤ 1 := by
+        simpa [f, natDegree_finSuccEquiv] using hdegree 0
+      have hf : f = Polynomial.C (f.coeff 1) * Polynomial.X + Polynomial.C (f.coeff 0) :=
+        Polynomial.eq_X_add_C_of_natDegree_le_one hnatDegree
+      have hdegreeCoeff (k : ℕ) (i : Fin n) : degreeOf i (f.coeff k) ≤ 1 :=
+        (degreeOf_coeff_finSuccEquiv p i k).trans (hdegree i.succ)
+      have hcoeffZero : f.coeff 0 = 0 := by
+        refine ih _ (hdegreeCoeff 0) fun x => ?_
+        have h := eval_comp_eval_C_finSuccEquiv p (x : Fin n → R) 0
+        change eval (x : Fin n → R) (Polynomial.eval (C 0) f) = _ at h
+        rw [hf] at h
+        simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C,
+          Polynomial.eval_X, mul_zero, zero_add, map_zero] at h
+        rw [h]
+        convert heval (Fin.cons 0 x) using 1
+        apply congrArg (fun y => eval y p)
+        funext i
+        refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      have hcoeffOne : f.coeff 1 = 0 := by
+        refine ih _ (hdegreeCoeff 1) fun x => ?_
+        have h := eval_comp_eval_C_finSuccEquiv p (x : Fin n → R) 1
+        change eval (x : Fin n → R) (Polynomial.eval (C 1) f) = _ at h
+        rw [hf] at h
+        simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C,
+          Polynomial.eval_X, mul_one, map_one, map_add] at h
+        rw [hcoeffZero] at h
+        simp only [map_zero, add_zero] at h
+        rw [h]
+        convert heval (Fin.cons 1 x) using 1
+        apply congrArg (fun y => eval y p)
+        funext i
+        refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      have hfZero : f = 0 := by
+        rw [hf, hcoeffZero, hcoeffOne]
+        simp
+      have hp : p = (finSuccEquiv R n).symm f := by
+        simp [f]
+      rw [hp, hfZero, map_zero]
+
+/-- Two polynomials of individual degree at most one are equal if they agree on the Boolean
+hypercube. This criterion only compares Boolean evaluations, not all evaluations in the ring. -/
+theorem eq_of_degreeOf_le_one_of_eval_zeroOne_eq {n : ℕ}
+    (p q : MvPolynomial (Fin n) R) (hp : ∀ i, degreeOf i p ≤ 1)
+    (hq : ∀ i, degreeOf i q ≤ 1)
+    (heval : ∀ x : Fin n → Fin 2, eval (x : Fin n → R) p = eval (x : Fin n → R) q) :
+    p = q := by
+  apply sub_eq_zero.mp
+  refine eq_zero_of_degreeOf_le_one_of_eval_zeroOne_eq_zero (p - q) ?_ ?_
+  · exact fun i => (degreeOf_sub_le i p q).trans (max_le (hp i) (hq i))
+  · intro x
+    rw [eval_sub, heval x, sub_self]
+
+/-- A multilinear polynomial interpolating `evals` on the Boolean hypercube is `MLE evals`. -/
+theorem eq_MLE_of_degreeOf_le_one_of_eval_zeroOne_eq {n : ℕ}
+    (evals : (Fin n → Fin 2) → R) (p : MvPolynomial (Fin n) R)
+    (hdegree : ∀ i, degreeOf i p ≤ 1)
+    (heval : ∀ x : Fin n → Fin 2, eval (x : Fin n → R) p = evals x) :
+    p = MLE evals := by
+  refine eq_of_degreeOf_le_one_of_eval_zeroOne_eq p (MLE evals) hdegree
+    (MLE_degreeOf evals) fun x => ?_
+  rw [heval x, MLE_eval_zeroOne]
+
+/-- A multilinear evaluation in an algebra is the equality-weighted sum of the transported
+Boolean evaluations. Boolean interpolation makes this valid over commutative rings, including
+rings with zero divisors. -/
+theorem aeval_multilinear_eq_sum_eqTilde {A : Type*} [CommRing A] [Algebra R A]
+    {n : ℕ} {p : MvPolynomial (Fin n) R} (hp : p ∈ R⦃≤ 1⦄[X Fin n])
+    (r : Fin n → A) :
+    aeval r p = ∑ y : Fin n → Fin 2,
+      eqTilde (y : Fin n → A) r * algebraMap R A (eval (y : Fin n → R) p) := by
+  have hq : map (algebraMap R A) p ∈ A⦃≤ 1⦄[X Fin n] := by
+    rw [mem_restrictDegree] at hp ⊢
+    exact fun s hs i => hp s (support_map_subset _ _ hs) i
+  have hMLE : map (algebraMap R A) p =
+      MLE (fun y : Fin n → Fin 2 => algebraMap R A (eval (y : Fin n → R) p)) := by
+    refine eq_MLE_of_degreeOf_le_one_of_eval_zeroOne_eq _ _
+      ((mem_restrictDegree_iff_degreeOf_le _ _).mp hq) fun y => ?_
+    have hpt : (y : Fin n → A) = fun i => algebraMap R A ((y : Fin n → R) i) :=
+      funext fun i => (map_natCast (algebraMap R A) _).symm
+    rw [hpt, eval_map]
+    exact (eval₂_comp (algebraMap R A) (y : Fin n → R) p).symm
+  calc
+    aeval r p = eval r (map (algebraMap R A) p) := by rw [eval_map, aeval_def]
+    _ = _ := by
+      rw [hMLE, MLE_eval_eq_sum_eqTilde]
+      exact Finset.sum_congr rfl fun y _ => by
+        simp only [eqTilde]; rw [eqPolynomial_symm]
+
 
 variable [DecidableEq R] [IsDomain R]
 

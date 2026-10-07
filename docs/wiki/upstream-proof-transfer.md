@@ -518,8 +518,8 @@ They are included in routine validation. Polynomial packing and coefficient tran
 adapted: both packing/unpacking round trips and Boolean evaluation identities pass a strict
 source-composed Lean check, including the upstream unequal-rank, zero-divisor polynomial client.
 The 14 compiled coordinate/observation roots and eight installed polynomial roots use
-only standard axioms. The ordinary polynomial and BW matrix build passes (3,543 jobs). Relations, batching,
-layout, multiplier protocol consumers, and protocol integration remain pending; #1256 is partial.
+only standard axioms. The ordinary polynomial and BW matrix build passes (3,543 jobs). The subsequent relation/batching integration is recorded below; scalar layouts, multiplier
+protocol consumers, and protocol integration remain pending; #1256 is partial.
 
 The BW matrix minor and row-update proofs are adapted to Lean 4.34 using explicit matrix
 application and finite-sum rewrites, preserving their statements. The direct check passes.
@@ -528,3 +528,27 @@ The divergence/concentration proofs also pass direct Lean 4.34 checking after ad
 probability-map definitional equality, affine-span coercions, polynomial finrank, and
 nonnegative-rational casts. The ordinary rebuild also passes. Public hypotheses and conclusions
 are unchanged.
+
+
+PR #1256's relation and batching layers are now adapted with their original clients. The
+relation layer preserves and reflects the full family of opening claims, reconstructs openings
+from honest slices, and derives weighted sumcheck claims in a compatible challenge algebra.
+It does not infer slice correctness from an arbitrary accepted coordinate check. The client
+independently checks incorrect claims, slices and sumcheck targets over unequal-rank algebras
+with zero divisors, including the zero-variable edge case.
+
+Batching provides deterministic singleton separation over any commutative ring, reindexing,
+injective coefficient transport, and power/equality strategies over finite domains. Its client
+attains the `2/5` bound over `ZMod 5` and demonstrates the invalidity of the domain bound over
+`ZMod 6` at the actual probability level. Both production modules and both clients pass ordinary
+Lean 4.34 builds. The existing PMF root bounds are reused through the new `SampledPolynomial`
+adapter to VCVio's sampler.
+
+The supporting Boolean interpolation uniqueness and algebra-evaluation theorems work over
+commutative rings, including rings with zero divisors; the older domain-specialized native
+interface remains available. The read-once multiplier evaluator, scalar layouts, and protocol
+integration from #1256 are still pending.
+
+All 27 selected roots from this relation/batching batch pass the installed-module axiom audit
+with only `propext`, `Classical.choice`, and `Quot.sound`. The repository census finds zero
+live proof holes. These clients and roots are included in the routine validation commands.

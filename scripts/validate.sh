@@ -83,7 +83,9 @@ echo "# Native security clients"
   ArkLibTest.ToVCVio.EvalDist.ProbabilityBounds \
   ArkLibTest.ProofSystem.RingSwitching.Packing.FiniteObservation \
   ArkLibTest.ProofSystem.RingSwitching.Packing.CheckedObservation \
-  ArkLibTest.ProofSystem.RingSwitching.Packing.Polynomial
+  ArkLibTest.ProofSystem.RingSwitching.Packing.Polynomial \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.Relations \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.Batching
 
 # CI gate 2: zero live sorry/admit holes in both library and research source.
 echo ""
