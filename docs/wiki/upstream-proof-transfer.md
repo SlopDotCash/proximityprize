@@ -804,3 +804,12 @@ roots printed by the module have standard-only axiom closures and are registered
 auditing, including completeness unrolling, challenge coherence, state-preserving simulation,
 short-circuit commutation and the seam union bound. These laws do not by themselves establish
 full STIR completeness or discharge arbitrary state-preservation assumptions.
+
+Distributional append factoring now passes its ordinary Lean 4.34 build (3,220 jobs), and
+all thirteen exported theorem/lemma roots have standard-only installed axiom closures.
+The port replaces retired bundled oracle instances with pointwise answer instances and derives
+the same finite uniform semantics locally. It normalizes direct lifts at the challenge seam
+and collapses both nested output lifts with proved composition identities. In particular,
+`appendRunRightDistResidual_holds` and the challenge-first `append_run_evalDist_challenge`
+are validated. These are equalities of distributions; they do not assert the false general
+syntactic ordering equality. Public names and statement assumptions are retained.
