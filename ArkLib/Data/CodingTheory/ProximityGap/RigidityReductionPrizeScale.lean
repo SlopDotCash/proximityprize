@@ -202,16 +202,15 @@ at `n = 32` the single deg-3 readout `h_3` has a genuine prize-scale char-`p` ex
 `p = 206889121 = n^{5.525}`. The rigid (`r = k/2`) vs floppy (`r = 1`) dichotomy is real. -/
 theorem single_readout_threshold_not_prize :
     ((2 ^ 30) * 2 ^ 128 : ℕ) < (2 * (2 ^ 30 / 2)) ^ (2 * (2 ^ 30 / 2)) := by
-  -- q = 2^158; threshold = (2^30)^(2^30) = 2^(30·2^30) ≫ 2^158
-  have hq : ((2 ^ 30) * 2 ^ 128 : ℕ) = 2 ^ 158 := by norm_num
-  have hbase : (2 * (2 ^ 30 / 2)) = 2 ^ 30 := by norm_num
-  rw [hq, hbase]
-  calc (2 ^ 158 : ℕ)
-      < 2 ^ (30 * 2 ^ 30) := by
-        apply Nat.pow_lt_pow_right (by norm_num)
-        have : (2 : ℕ) ^ 30 ≥ 2 ^ 4 := by gcongr <;> norm_num
-        nlinarith [this]
-    _ = (2 ^ 30) ^ (2 ^ 30) := by rw [← pow_mul]
+  -- Prove the power comparison symbolically before specializing to the huge exponent.
+  have power_gap (a b c n : ℕ) (hab : a + b = c) (hn : n = 2 ^ a)
+      (hc : c < a * n) : (2 ^ a * 2 ^ b : ℕ) < n ^ n := by
+    calc
+      2 ^ a * 2 ^ b = 2 ^ c := by rw [← pow_add, hab]
+      _ < 2 ^ (a * n) := Nat.pow_lt_pow_right (by decide) hc
+      _ = n ^ n := by rw [hn, ← pow_mul]
+  exact power_gap 30 128 158 (2 * (2 ^ 30 / 2))
+    (by norm_num) (by norm_num) (by norm_num)
 
 end ProximityGap.RigidityReductionPrizeScale
 

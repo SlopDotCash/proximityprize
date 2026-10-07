@@ -14,6 +14,16 @@ records the matching dependencies. Keep a separate `.lake` directory when
 migrating between Lean releases. A worktree must not share a symlinked `.lake`
 with a checkout using another toolchain or dependency lock.
 
+For proof migrations, prove identities for symbolic dimensions and exponents
+before specializing to large prize parameters. This avoids kernel reduction of
+huge finite types or powers. Preserve theorem conclusions and assumptions; generic lemmas may also cover
+additional dimensions.
+remove obsolete no-progress tactic calls and supply changed coercions or module
+instances explicitly. Import the required Mathlib modules instead of the whole
+library when possible to reduce source-check resource use. A source check against
+installed dependencies is only a focused check; the complete build and axiom
+audit must still pass on the published revision.
+
 The pinned external proof packages retain their own toolchains. See
 [external proof transfer](upstream-proof-transfer.md) for their build wrappers,
 immutable source pins and verification boundaries.

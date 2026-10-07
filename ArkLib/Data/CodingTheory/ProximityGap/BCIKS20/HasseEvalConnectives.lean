@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import Mathlib
+import Mathlib.Algebra.Polynomial.HasseDeriv
+import Mathlib.Tactic
 
 /-!
 # Hasse-derivative evaluation connectives for the App-A.4 Faa-di-Bruno match (issue #9)
@@ -64,9 +65,9 @@ theorem hasseDeriv_eval_eq_sum {R : Type*} [CommRing R] (k : ℕ) (p : R[X]) (a 
     omega
   · intro i hi
     simp only [Finset.mem_filter, Finset.mem_range] at hi
-    dsimp only; omega
+    omega
   · intro n hn
-    dsimp only; omega
+    omega
   · intro i hi
     rw [Finset.mem_filter] at hi
     have hik : k ≤ i := hi.2
