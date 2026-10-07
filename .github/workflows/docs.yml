@@ -89,8 +89,13 @@ jobs:
         env:
           LEAN_NUM_THREADS: "1"
 
-      - name: Save Lean cache
+      - name: Stop leftover Lean workers before caching
         if: always() && github.ref == 'refs/heads/main'
+        id: stop-lean-0
+        run: bash scripts/ci-stop-lean.sh
+
+      - name: Save Lean cache
+        if: always() && github.ref == 'refs/heads/main' && steps.stop-lean-0.outcome == 'success'
         uses: actions/cache/save@v6
         with:
           path: ./.lake
@@ -103,8 +108,13 @@ jobs:
           DISABLE_EQUATIONS: 1
           LEAN_NUM_THREADS: "2"
 
-      - name: Save Lean cache (with docs facet)
+      - name: Stop leftover Lean workers before caching
         if: always() && github.ref == 'refs/heads/main' && steps.docs-build.outcome != 'skipped'
+        id: stop-lean-1
+        run: bash scripts/ci-stop-lean.sh
+
+      - name: Save Lean cache (with docs facet)
+        if: always() && github.ref == 'refs/heads/main' && steps.docs-build.outcome != 'skipped' && steps.stop-lean-1.outcome == 'success'
         uses: actions/cache/save@v6
         with:
           path: ./.lake

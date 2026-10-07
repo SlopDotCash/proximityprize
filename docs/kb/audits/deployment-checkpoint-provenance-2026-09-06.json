@@ -1,0 +1,22 @@
+[
+  {
+    "path": "scripts/probes/_ckpt_466_deploy/c_BabyBear.npy",
+    "sha256": "6301677b85741e228b4d15d9e4503f89420f9064c4511319a5e7b775b5dcbaeb",
+    "shape": [
+      15
+    ],
+    "dtype": "float64",
+    "mass_residual": -1.6166291061381344e-07,
+    "parseval_relative_residual": 2.5376526263641446e-16
+  },
+  {
+    "path": "scripts/probes/_ckpt_466_deploy/c_ctrl27_c17.npy",
+    "sha256": "15e342bc3be67a5efcee8b8e553d9788d857a47f54d24e0d3c5a50039b1cdc0a",
+    "shape": [
+      17
+    ],
+    "dtype": "float64",
+    "mass_residual": -2.0673746803367976e-07,
+    "parseval_relative_residual": 2.442490653037971e-15
+  }
+]

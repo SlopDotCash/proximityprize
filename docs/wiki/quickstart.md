@@ -256,6 +256,10 @@ python3 -m pip install leanblueprint
   repeatedly interrupted healthy builds. Website compilation and documentation
   each have 150 minutes within a 330-minute job. Compilation uses one worker;
   documentation generation uses two after the compiled library is available.
+  Before caching, `scripts/ci-stop-lean.sh` stops leftover Lake and Lean workers
+  on disposable GitHub-hosted Linux runners. Cancelled steps can otherwise leave
+  writers running and make the archive fail with "file changed as we read it".
+  The helper refuses to run locally or on shared self-hosted runners.
   Main CI and Pages builds finish before the latest queued main run starts,
   so incoming merges do not repeatedly interrupt compilation or cache saves.
   Superseded non-main runs may still be cancelled.
@@ -393,3 +397,5 @@ G87V’s default census uses batches of at most 4,096 rows and retains one modul
 
 The transfer skeptic probe scans its stage C maximum in batches of at most 32,768 coset representatives, also capping phase matrices at four million entries. Stages A/B retain their full arrays. The calculation remains floating point and still visits every coset. Run `python3 -m unittest discover -s scripts/tests -p test_transfer_streaming.py` for comparisons with materialized sums on small fields.
 Stale build-lock reclamation also checks the recorded local owner PID with `kill -0`. A live or paused owner keeps its checkout lock and machine slot even when its heartbeat is delayed. The timeout still bounds checkout-lock waiting. PID reuse can conservatively delay reclamation; inspect the recorded owner before manual cleanup. The isolated lock regression pauses an owner beyond the stale threshold and checks that another build cannot enter.
+
+The Python regression discovery also compiles and runs the exact-jump C++ optimizer test. A C++20-capable `c++` compiler must be on PATH. The test uses a temporary output directory and compares the optimizer with exhaustive assignments in 1875 small cases; it does not run the large research searches.

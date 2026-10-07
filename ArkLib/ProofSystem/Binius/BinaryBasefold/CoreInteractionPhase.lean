@@ -1373,6 +1373,29 @@ end ComponentReductions
 
 section CoreInteractionPhaseReduction
 
+/-- The final step preserves every input oracle interface. -/
+instance finalSumcheckVerifier_appendCoherent :
+    OracleVerifier.Append.AppendCoherent
+      (finalSumcheckVerifier 𝔽q β (ϑ := ϑ)
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)) where
+  hCohInl a k h := by
+    have hak : a = k := by
+      simpa only [finalSumcheckVerifier, finalSumcheckStepLogic,
+        Function.Embedding.coeFn_mk, Sum.inl.injEq] using h
+    subst k
+    rfl
+  hCohInr a k h := by
+    simp only [finalSumcheckVerifier, finalSumcheckStepLogic,
+      Function.Embedding.coeFn_mk, reduceCtorEq] at h
+
+/-- The final reduction inherits its verifier's oracle coherence. -/
+instance finalSumcheckOracleReduction_appendCoherent :
+    OracleVerifier.Append.AppendCoherent
+      (finalSumcheckOracleReduction 𝔽q β (ϑ := ϑ)
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)).verifier :=
+  finalSumcheckVerifier_appendCoherent 𝔽q β
+
+
 /-! The final oracle verifier that composes sumcheckFold with finalSumcheckStep -/
 @[reducible]
 def coreInteractionOracleVerifier :=
@@ -1407,6 +1430,22 @@ def coreInteractionOracleReduction :=
     (R₁ := sumcheckFoldOracleReduction 𝔽q β (ϑ:=ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑)
       (mp := BBF_SumcheckMultiplierParam))
     (R₂ := finalSumcheckOracleReduction 𝔽q β (ϑ:=ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑))
+
+/-- Sequential composition preserves the core verifier's oracle interfaces. -/
+instance coreInteractionOracleVerifier_appendCoherent :
+    OracleVerifier.Append.AppendCoherent
+      (coreInteractionOracleVerifier 𝔽q β (ϑ := ϑ)
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)) := by
+  unfold coreInteractionOracleVerifier
+  infer_instance
+
+/-- The core reduction inherits coherence from its component reductions. -/
+instance coreInteractionOracleReduction_appendCoherent :
+    OracleVerifier.Append.AppendCoherent
+      (coreInteractionOracleReduction 𝔽q β (ϑ := ϑ)
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)).verifier := by
+  unfold coreInteractionOracleReduction
+  infer_instance
 
 variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ ProbComp)}
 
