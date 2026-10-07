@@ -573,3 +573,7 @@ The new packing umbrella also builds. The combined all-client rerun encountered 
 vnode exhaustion while rebuilding the previously passing batching client (the live count
 equalled `kern.maxvnodes`, 263168). Individual successful builds are not a claim that the
 combined repository gate or the full Lean migration has passed.
+
+After the isolated batching-client retry passed (3,130 jobs), the packing umbrella and all
+nine clients passed the combined build (3,197 jobs). This closes the local packing integration
+gate; the full repository migration and exact-head hosted checks remain separate requirements.
