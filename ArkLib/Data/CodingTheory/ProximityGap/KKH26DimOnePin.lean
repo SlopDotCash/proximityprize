@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarReduction
+import Mathlib.Tactic.NormNum.Prime
 
 /-!
 # The first unconditional `δ*` pin at the KKH26 ceiling: the `r = 2` (dimension-one) slice (#357)

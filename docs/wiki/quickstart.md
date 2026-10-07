@@ -18,7 +18,7 @@ For proof migrations, prove identities for symbolic dimensions and exponents
 before specializing to large prize parameters. This avoids kernel reduction of
 huge finite types or powers. Preserve theorem conclusions and assumptions; generic lemmas may also cover
 additional dimensions.
-remove obsolete no-progress tactic calls and supply changed coercions or module
+Remove obsolete no-progress tactic calls and supply changed coercions or module
 instances explicitly. Import the required Mathlib modules instead of the whole
 library when possible to reduce source-check resource use. A source check against
 installed dependencies is only a focused check; the complete build and axiom

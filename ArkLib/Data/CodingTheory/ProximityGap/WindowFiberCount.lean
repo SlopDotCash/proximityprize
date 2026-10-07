@@ -466,7 +466,7 @@ lemma gcd_lcm_minWindowDivisors_gt {n t : ℕ} (hn : 0 < n) :
   obtain ⟨d₀, hd₀mem, hd₀d⟩ := exists_minWindowDivisor_dvd hn d hd htd
   have ht0 : t < d₀ := (Finset.mem_filter.mp hd₀mem).2.1
   have hdvd : d₀ ∣ Nat.gcd d ((minWindowDivisors n t).lcm id) :=
-    Nat.dvd_gcd hd₀d (by simpa using Finset.dvd_lcm hd₀mem)
+    Nat.dvd_gcd hd₀d (Finset.dvd_lcm hd₀mem)
   have hgcd0 : 0 < Nat.gcd d ((minWindowDivisors n t).lcm id) :=
     Nat.gcd_pos_of_pos_left _ (by omega)
   exact lt_of_lt_of_le ht0 (Nat.le_of_dvd hgcd0 hdvd)

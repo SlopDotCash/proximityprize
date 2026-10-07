@@ -95,7 +95,7 @@ theorem ker_cliquePairMap (W : Finset F) (γ : ↥W → F) :
 @[simp]
 theorem cliquePairMap_apply (W : Finset F) (γ : ↥W → F) (v : ↥W → F) :
     cliquePairMap W γ v = (∑ i : ↥W, v i, ∑ i : ↥W, γ i * v i) := by
-  simp only [cliquePairMap, LinearMap.prod_apply, Pi.prod, sumFunctional_apply,
+  simp only [cliquePairMap, LinearMap.prod_apply, Function.prod, sumFunctional_apply,
     twistFunctional_apply]
 
 /-- **The pair map is surjective when `γ` is non-constant on `W`** -- given two nodes `a ≠ b ∈ W`

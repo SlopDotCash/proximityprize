@@ -35,7 +35,7 @@ def zmod16Universe : List (ZMod 16) :=
 
 /-- Every residue appears in the canonical listing. -/
 theorem mem_zmod16Universe (x : ZMod 16) : x ∈ zmod16Universe := by
-  fin_cases x <;> decide
+  exact List.mem_map.mpr ⟨x.val, List.mem_range.mpr (ZMod.val_lt x), ZMod.natCast_zmod_val x⟩
 
 /-- The order-4 coset through `x` in `ZMod 16`. -/
 def orderFourCoset16 (x : ZMod 16) : Finset (ZMod 16) :=
@@ -145,7 +145,7 @@ private theorem a8Summary_glue (xs : List (Finset (ZMod 16))) (a b : ℕ)
     (ha : a8Summary (xs.take 1024) = (a, true))
     (hb : a8Summary (xs.drop 1024) = (b, true)) :
     a8Summary xs = (a + b, true) := by
-  simpa only [ha, hb, a8Combine] using a8Summary_split xs
+  simpa only [ha, hb, a8Combine, Bool.true_and] using a8Summary_split xs
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in

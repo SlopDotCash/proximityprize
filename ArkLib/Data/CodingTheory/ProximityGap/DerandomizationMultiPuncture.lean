@@ -104,7 +104,7 @@ lemma agreement_punctureSetWord_le (S : Finset ι) (w c : ι → F) :
   refine Finset.card_le_card_of_injOn (fun i => i.1) ?_ ?_
   · intro i hi
     simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and,
-      punctureSetWord] at hi ⊢
+      punctureSetWord, Set.mem_setOf_eq] at hi ⊢
     exact hi
   · intro a _ b _ h
     exact Subtype.ext h
@@ -123,7 +123,7 @@ lemma agreement_le_punctureSetWord_add_card (S : Finset ι) (w c : ι → F) :
     by_cases hS : i ∈ S
     · exact Finset.mem_union_left _ hS
     · refine Finset.mem_union_right _ (Finset.mem_image.2 ⟨⟨i, hS⟩, ?_, rfl⟩)
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, punctureSetWord]
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, punctureSetWord, Set.mem_setOf_eq]
       exact hi
   refine (Finset.card_le_card hsub).trans ?_
   refine (Finset.card_union_le _ _).trans ?_
@@ -158,7 +158,7 @@ lemma agreement_punctureSetWord_add_card_le (S : Finset ι) (w c : ι → F)
       exact hS i h
     · rw [himg, Finset.mem_image] at h
       rcases h with ⟨j, hj, rfl⟩
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, punctureSetWord] at hj ⊢
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, punctureSetWord, Set.mem_setOf_eq] at hj ⊢
       exact hj
   have h1 := Finset.card_le_card hsub
   rwa [Finset.card_union_of_disjoint hdisj, hcard_img, Nat.add_comm] at h1
