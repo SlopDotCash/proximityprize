@@ -550,7 +550,7 @@
       "base": "be65c8051aa36398069ab76853f063c4382a589c",
       "base_branch": "feat/native-state-restoration",
       "draft": false,
-      "disposition": "adapted: nonuniform state-restoration budget Q * max e + sum e and concrete 7/16 < 1/2 client. Six combined native modules and both clients pass isolated Lean 4.34 compilation against VCVio91386; three additional roots have standard-only axiom closures. Actual native dependency pin updated to91386 with all other dependency revisions preserved; ordinary installed-pin build has file-resource errors and is not yet a pass.",
+      "disposition": "adapted: nonuniform state-restoration budget Q * max e + sum e and concrete 7/16 < 1/2 client. Six combined native modules and both clients pass isolated Lean 4.34 compilation against VCVio91386; three additional roots have standard-only axiom closures. Actual native dependency pin updated to91386 with all other dependency revisions preserved; all six combined native modules and both clients now pass ordinary installed-pin builds and the separate raw axiom audit.",
       "files": [
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/Security/StateRestorationBudget.lean",
@@ -575,7 +575,7 @@
       "base": "372f071dd72ff9364eceb5d5361db987e120271e",
       "base_branch": "feat/native-witness-transport",
       "draft": false,
-      "disposition": "adapted: five native state-restoration modules and ordinary-import client pass isolated Lean 4.34 compilation, actual accepted/rejected execution checks and nine complete standard-only axiom closures. Installed VCVio91386 includes the required fe608 dependent-table/fresh-query APIs. Ordinary installed-pin build has encountered system-wide file-resource errors and is not yet a pass.",
+      "disposition": "adapted: five native state-restoration modules and ordinary-import client pass isolated Lean 4.34 compilation, actual accepted/rejected execution checks and nine complete standard-only axiom closures. Installed VCVio91386 includes the required fe608 dependent-table/fresh-query APIs. All six combined native modules and both clients now pass ordinary installed-pin builds. Separate raw axiom audit also passes.",
       "files": [
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/Security/StateRestoration.lean",
@@ -1325,7 +1325,7 @@
       "base": "d72f8392ff03047dc5386f4f4bb513743e7ada65",
       "base_branch": "main",
       "draft": false,
-      "disposition": "reviewed concrete native gap: tSdhAssumption/arsdhAssumption still quantify over unrestricted functions on concrete SRS elements, despite private setup sampling. Adapted the PR discrete-log construction/inversion and added native SRS trapdoor recovery in ConcreteTrapdoor; strict source-composed Lean4.34 check of actual native PrimeOrder/Algebra plus new module passes with both roots standard-only. Full probability-one attacks, refutations, generic-group soundness and repaired binding API remain pending; upstream branch itself usesLean4.31, so no blanket import or validity claim.",
+      "disposition": "partially integrated: native ConcreteTrapdoor and ConcreteVacuity port the discrete-log/SRS recovery, both actual t-SDH/ARSDH probability-one attacks, giving-up controls and meaningful-error refutations. ARSDH retains D+2<=p. Ordinary Lean4.34 build passes on native game definitions with targeted imports; all11 attack/refutation/control roots pass a raw standard-only axiom audit. Generic-group soundness and repaired restricted binding API remain pending; unrestricted native binding remains conditional on the now-refuted premise.",
       "files": [
         "ArkLib.lean",
         "ArkLib/Commitments/Functional/KZG/Binding.lean",

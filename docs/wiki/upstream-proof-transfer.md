@@ -280,8 +280,8 @@ outputs, and independent pre-sampled private coins. Its five source modules and 
 client are adapted locally. Its required VCVio revision is
 `fe608a46c3df4608ea774611662a255326b5d1ff`, an extension of the previous pin with dependent
 uniform tables and fresh-query bounds. Isolated dependency and native source/client checks pass, with nine full standard-only axiom
-closures. The client evaluates both accepted and rejected oracle outputs. This transfer is not
-yet validated by an ordinary build with the installed dependency pin. The later security
+closures. The client evaluates both accepted and rejected oracle outputs. All six combined
+restoration modules and both clients now pass ordinary builds with the installed VCVio pin. The later security
 stack through #1283 uses `6bf6c91b66dfa159342c355a4b81d65b55cb54a4`, a substantially broader
 VCVio change requiring a separate compatibility review.
 
@@ -303,8 +303,9 @@ the bound is `Q * max_j e_j + sum_j e_j`. The isolated VCVio extension at
 `91386ad88ed72292d0f4e3153a444336920fc565`, six native modules, and both clients pass.
 Three additional extraction/game/client roots have only standard axioms. The two-round client
 proves the strict improvement `7/16 < 1/2`. The native VCVio pin now includes this revision;
-all other dependency revisions were preserved. Ordinary installed-pin validation has encountered system-wide file-resource errors and
-has not yet passed.
+all other dependency revisions were preserved. Both ordinary clients and all six source modules now pass against the installed pin.
+A separate raw audit of 19 roots covering restoration, candidate bounds, native packing, and
+concrete trapdoor recovery reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 The Lean 4.34 migration also renames the removed finite-set partition-count lemma to
 `Finset.card_filter_add_card_filter_not` across 56 library/Research files (61 uses).
@@ -366,7 +367,7 @@ unneeded finiteness/decidable-equality assumptions and repairs the Lean 4.34 typ
 Direct checks pass for the FFT module, matrix multilinear evaluation, linear multivariate
 extension, puncture/filter membership, and the nontrivial additive-character sum proof.
 The proximity-generator positivity proof is updated to the current finite-infimum API;
-its local attempts have hit file-resource failures, so that check is still pending.
+its direct Lean 4.34 check now passes after explicitly supplying the nonempty-finset proof.
 
 PR #737 targets `q^((α-β²) * logb 2 q)` and still admits the hard-regime theorem.
 The native `BKR06BareT312` front door proves the natural-log variant, using the slack
@@ -385,9 +386,31 @@ functions. `ConcreteTrapdoor.lean` adapts its choice-defined discrete logarithm 
 inversion proof, and proves recovery from the native generated verifier SRS leg.
 A strict composed-source Lean 4.34 check of native `PrimeOrder`, `KZG.Algebra`, and the
 new module passes; the inversion and recovery roots use only standard axioms.
-This is the algebraic prerequisite, not the full probability-one game attack or the
-restricted generic-group security repair. Those transfers remain pending.
+`ConcreteVacuity.lean` now adapts both actual-game probability-one attacks, both giving-up
+controls, and the meaningful-error refutations. The ARSDH refutation explicitly requires
+`D + 2 ≤ p`. All compile in an ordinary Lean 4.34 build against the native game definitions;
+all 11 selected attack/refutation/control roots pass a raw standard-only axiom audit.
+The restricted generic-group security repair remains pending.
 
 Coset-domain membership transport now uses the proved `toCosetFftDomain_apply`
 interface rather than unfolding unit and type-tag representations. This preserves the
 native `mem_def` equality orientation and passes a direct Lean 4.34 check.
+
+The Reed–Solomon migration now unfolds code length and the evaluation linear map explicitly
+in the minimum-distance and interpolation proofs. Both direct checks pass. Two local oracle
+lifting lemmas are removed because the installed VCVio revision supplies them under the same
+names and signatures; native association/coherence lemmas remain and pass their direct check.
+
+The KZG sampler and hardness definitions no longer import the whole VCVio umbrella; their
+specific dependency imports suffice in the passing native build. Seven additional local
+OptionT/StateT simulation lemmas are removed in favor of the installed upstream definitions.
+The retained simulation fusion and support code passes its direct check. Interleaved-code
+constructions are definitions rather than invalid instances, and matrix/subtype boundaries
+are made explicit; that module and folded Reed–Solomon both pass direct Lean 4.34 checks.
+
+Further direct Lean 4.34 checks pass for the folded-Wronskian determinant factorization,
+folded-RS evaluation/vanishing transport, and correlated-agreement floor/probability bounds.
+These repairs expose the existing matrix/evaluation interfaces and avoid broad simplification
+of a probability expression. The Research witness build is being rerun against these repairs;
+none of these focused checks establishes a complete native/Research build. The citation index
+was regenerated from native source, and both freshness and strict knowledge-base lint pass.

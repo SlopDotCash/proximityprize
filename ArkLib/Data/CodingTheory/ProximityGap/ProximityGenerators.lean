@@ -165,7 +165,7 @@ lemma minSeedCard_pos {F : Type} {s : ℕ} (S : Fin s → Set F)
     0 < minSeedCard S := by
   unfold minSeedCard
   split_ifs
-  · apply Finset.lt_inf'_iff.mpr
+  · apply (Finset.lt_inf'_iff _).2
     intro i _
     exact Fintype.card_pos
   · exact Nat.zero_lt_one

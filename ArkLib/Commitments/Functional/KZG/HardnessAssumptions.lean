@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
 
-import VCVio
 import ArkLib.Commitments.Functional.KZG.Algebra
 import ArkLib.Commitments.Functional.KZG.Sampling
 import ArkLib.Data.GroupTheory.PrimeOrder
@@ -68,8 +67,10 @@ an empty query cache and receives only the public SRS generated from `τ`.
 This separates setup randomness from oracle access, but does not restrict the adversary to
 efficient or generic-group computation. The adversary type permits arbitrary Lean functions
 on concrete group elements. `ArkLibVacuity.dlogOf_generate` in `ConcreteTrapdoor.lean` recovers
-`τ` from the public verifier leg using classical choice. The probability-one attack and
-restricted generic-group replacement from upstream PR #655 still require native integration.
+`τ` from the public verifier leg using classical choice. `ConcreteVacuity.lean` proves
+probability-one attacks and refutes the assumptions at errors below one (for ARSDH, in the
+`D + 2 ≤ p` regime). The restricted generic-group replacement from upstream PR #655 is
+not yet integrated.
 -/
 
 /-- The t-SDH game for a specific adversary. -/
@@ -90,7 +91,9 @@ noncomputable def tSdhExperiment [∀ i, SampleableType (unifSpec.Range i)]
     (adversary : tSdhAdversary D (G₁ := G₁) (G₂ := G₂) (p := p)) : ℝ≥0∞ :=
   Pr[tSdhCondition (g₁ := g₁) | tSdhGame (g₁ := g₁) (g₂ := g₂) D adversary]
 
-/-- The `t`-SDH assumption bounds every adversary's success probability by `error`. -/
+/-- The `t`-SDH assumption bounds every adversary's success probability by `error`.
+This unrestricted concrete-group premise is refuted below error one for nontrivial `g₂`
+by `ArkLibVacuity.not_tSdhAssumption`; it is not an efficient-adversary model. -/
 def tSdhAssumption [∀ i, SampleableType (unifSpec.Range i)]
     {g₁ : G₁} {g₂ : G₂} (D : ℕ) (error : ℝ≥0) : Prop :=
   ∀ (adversary : tSdhAdversary D (G₁ := G₁) (G₂ := G₂) (p := p)),

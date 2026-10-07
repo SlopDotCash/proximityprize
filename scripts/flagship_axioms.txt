@@ -149,3 +149,16 @@ ArkLibTest.Interaction.Oracle.Security.StateRestorationBudget Interaction.Oracle
 # Concrete-group trapdoor recovery: prerequisite for the KZG assumption audit
 ArkLib.Commitments.Functional.KZG.ConcreteTrapdoor ArkLibVacuity.dlogOf_pow
 ArkLib.Commitments.Functional.KZG.ConcreteTrapdoor ArkLibVacuity.dlogOf_generate
+
+# Concrete-group game refutations and rejection controls
+ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.tSdhExperiment_tauExtractingAdversary
+ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.not_tSdhAssumption
+ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.tSdhAssumption_trivial_of_one_le
+ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.tSdhExperiment_givingUpAdversary
+ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.experiment_discriminates
+ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.binding_hypotheses_unsatisfiable
+ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.arsdhExperiment_arsdhExtractingAdversary
+ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.not_arsdhAssumption
+ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.arsdhAssumption_trivial_of_one_le
+ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.arsdhExperiment_givingUpAdversary
+ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.arsdh_binding_hypotheses_unsatisfiable

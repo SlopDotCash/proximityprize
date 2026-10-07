@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 451,
+    "files_with_citations": 452,
     "keys_cited": 35,
-    "total_citation_edges": 511
+    "total_citation_edges": 512
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -52,6 +52,9 @@
     ],
     "ArkLib/Commitments/Functional/KZG/Binding.lean": [
       "KZG10TR"
+    ],
+    "ArkLib/Commitments/Functional/KZG/ConcreteVacuity.lean": [
+      "KZG10"
     ],
     "ArkLib/Commitments/Functional/KZG/FunctionBinding/Basic.lean": [
       "CGKY25"
@@ -1900,7 +1903,8 @@
       "Research/ProximityPrize/KKH26DimGeneralSharpInterleavedPin.lean"
     ],
     "KZG10": [
-      "ArkLib/Commitments/Functional/KZG/Basic.lean"
+      "ArkLib/Commitments/Functional/KZG/Basic.lean",
+      "ArkLib/Commitments/Functional/KZG/ConcreteVacuity.lean"
     ],
     "KZG10TR": [
       "ArkLib/Commitments/Functional/KZG/Binding.lean"
