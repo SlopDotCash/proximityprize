@@ -83,7 +83,7 @@ theorem contactSubstD_origin_X_homogeneous (d : ℕ) (i : Fin (d + 2)) :
     exact isWeightedHomogeneous_X F (wOut d) j.succ.succ
 
 /-- Pair degree of an exponent vector under a pair weighting. -/
-noncomputable def pairDeg (w : Fin (d + 2) → ℤ × ℤ) (μ : Fin (d + 2) →₀ ℕ) : ℤ × ℤ :=
+noncomputable def pairDeg {d : ℕ} (w : Fin (d + 2) → ℤ × ℤ) (μ : Fin (d + 2) →₀ ℕ) : ℤ × ℤ :=
   μ.sum fun i k => k • w i
 
 /-- **Monomial images are bigraded.**  The origin substitution maps a monomial with input
