@@ -123,8 +123,11 @@ witness transports; they do not assume an online middle witness or claim
 unrestricted stateful-world composition. The original ordinary-import client is
 in `ArkLibTest/Interaction/Oracle/Security/KnowledgeComposition.lean` and is
 built by `scripts/validate.sh`. `ArkLibTest` is an optional Lake library so its
-concrete execution checks stay separate from production imports. These transfers
-remain subject to compilation and axiom auditing.
+concrete execution checks stay separate from production imports. The modules and client
+passed a local Lean 4.34 Lake build on 2026-10-07, including concrete true- and
+false-middle-path executions. Four selected extraction, sequential-certificate,
+and appended-challenge theorem roots passed a complete axiom audit with only
+`propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Lean 4.34 migration
 
@@ -194,7 +197,34 @@ and failure-induced loss of probability mass. The uniform corollary gives `count
 the zero-challenge case only assumes initial falsity for false inputs. The client exercises an
 empty response type interpreted as failure, whose successful output mass is zero.
 
-The source is admission-free, but compilation and axiom validation are still pending. The
+The generic modules and ordinary-import client passed a local Lean 4.34 build on
+2026-10-07. Both executor soundness roots passed a complete axiom audit with only
+`propext`, `Classical.choice`, and `Quot.sound`. The
 Sumcheck specialization is not yet imported because its legacy Sumcheck dependencies need
 reconciliation with this repository. This is a partial PR transfer, not validation of that
 specialization.
+
+### Additional native compatibility checks
+
+The native runtime-soundness, composition, terminal-measure, bind-one, marginal-bound,
+and OptionT helper targets passed a focused Lean 4.34 Lake build on 2026-10-07.
+`ArkLib.ToVCVio.Lemmas` also passed its native module build. Distance and multilinear
+polynomial repairs preserve theorem statements while adapting minimum APIs and
+explicit conditional reduction to Mathlib 4.34. Full-library and Research validation
+remain outstanding; these focused results do not certify the complete migration.
+
+The coset FFT-domain definitions now incorporate upstream main
+`35ddcaa83f683011f944f58904be779495a5709a`'s explicit additive/multiplicative index
+conversion and subgroup-unit API. This removes unnecessary finite/decidable
+constraints from the abstract domain interface and provides checked reconstruction
+and evaluation lemmas; the adapted native module passes a direct Lean 4.34 check.
+The native bivariate-polynomial port uses the public monomial constructors instead
+of relying on the former internal polynomial representation. Its direct check passes,
+as do the linear-code and relative-distance compatibility repairs.
+
+The indexed and vector-product marginal helpers and probability-one bind composition
+now use the split lawful-SPMF interfaces. Direct/source-composed checks pass; all
+12 vector-product/counting roots report only standard axioms in the unabridged Lean
+output. Their ordinary native module builds remain to be completed. The two new
+coset reconstruction roots also pass the complete axiom whitelist check and are
+registered in the persistent flagship gate.

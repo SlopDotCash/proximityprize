@@ -76,7 +76,8 @@ end Counting
 
 section ProductMarginal
 
-variable {β : Type u} {m : Type u → Type v} [Monad m] [HasEvalSPMF m]
+variable {β : Type u} {m : Type u → Type v} [Monad m] [MonadAttach m]
+    [MonadLiftT m SPMF] [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
 
 /-- **Product-marginal domination.**  If the first stage's output distribution on `Vector F t`
 is dominated by the uniform one (`Pr[= v] ≤ 1/|F|^t`, true in particular for `t` independent
@@ -139,7 +140,8 @@ end ProductMarginal
 
 section PowMatrix
 
-variable {α β : Type u} {m : Type u → Type v} [Monad m] [HasEvalSPMF m]
+variable {α β : Type u} {m : Type u → Type v} [Monad m] [MonadAttach m]
+    [MonadLiftT m SPMF] [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
 variable {F : Type u} [Fintype F] {t : ℕ}
 
 private lemma prod_filter_le_pow (L : Fin t → Set F) [∀ i, DecidablePred (· ∈ L i)] (s : ℕ)

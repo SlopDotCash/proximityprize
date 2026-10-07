@@ -111,3 +111,10 @@ CompPoly.Fields.KoalaBear.Ext6.SexticIrreducible KoalaBear.sexticPoly_irreducibl
 ArkLib.ToMathlib.ProbEventBindOne probEvent_bind_eq_one
 ArkLib.ToVCVio.EvalDist.Instances.OptionT probEvent_congr_heq
 ArkLib.Data.Probability.MarginalBound probEvent_bind_le_uniform_marginal_comap
+
+# Lean 4.34 probability and coset-domain compatibility
+ArkLib.Data.Probability.IndexedMarginalBound probEvent_bind_le_uniform_marginal_indexed
+ArkLib.Data.Probability.ProductMarginalBound probEvent_uniform_vector_bind_le_pow
+ArkLib.OracleReduction.ProbOneBindCompose OracleComp.probEvent_bind_eq_one
+ArkLib.Data.Domain.CosetFftDomain.Defs Domain.CosetFftDomainClass.toCosetFftDomain_apply
+ArkLib.Data.Domain.CosetFftDomain.Defs Domain.CosetFftDomainClass.toCosetFftDomain_of_CosetFftDomain
