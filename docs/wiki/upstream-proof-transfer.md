@@ -876,3 +876,11 @@ oracle instances are replaced by pointwise finite/inhabited response types, incl
 section hypotheses. The existing verifier-factorization residual is retained explicitly;
 this bridge does not claim to discharge that separate obligation. Its three theorem roots
 and residual definition are registered for routine auditing.
+
+Non-perfect message-seam completeness now passes its ordinary Lean 4.34 build (3,241 jobs).
+The port replaces retired bundled oracle instances and names the legacy distribution evaluator
+`evalSPMF` explicitly in the two game-bridge hypotheses. Both installed theorem roots have
+standard-only axiom closures and are registered for routine auditing. Existing distributional
+factoring, stage-bridge and state-preservation hypotheses remain explicit. The unchanged
+`SeamCompleteness` dependency also passed direct and ordinary compilation; this does not yet
+validate all downstream challenge-seam or STIR consumers.
