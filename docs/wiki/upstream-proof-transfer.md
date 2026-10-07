@@ -704,3 +704,22 @@ arguments, the strict soundness relation and the main theorem's quantifier/compl
 
 Five installed parameter-lemma and client roots use only standard axioms; all are included in
 the flagship audit.
+
+The #1291 proximity-gap boundary tests now pass their ordinary Lean 4.34 build (3,540 jobs).
+They prove the one-word case, reject the former free-generator counterexample under the pinned
+power generator, and establish counterexamples at the excluded proximity boundary and at degree
+zero. The native statement therefore now explicitly requires positive degree. It remains a
+statement definition; its general existence conclusion is not asserted as a proved theorem.
+
+Two upstream nearest-codeword polynomial helpers are added to native Quotienting. They expose
+polynomial witnesses realizing absolute and relative distance to a Reed–Solomon code. The tests
+use the current native polynomial-membership API and the pinned VCVio uniform-sampling laws.
+All nine selected installed helper, boundary-test and conclusion-equivalence roots use only
+standard axioms, and the test module and roots are registered for routine validation.
+
+Four support modules also pass an ordinary 3,664-job build: BCIKS20 GoodCoeffs now uses explicit
+evaluation and submatrix identities, WHIR BlockRelDistance uses the current nonnegativity API,
+the empty oracle uses pointwise inhabited ranges, and the declaration-free SimOracle support
+file imports only the query-implementation API. Four selected BCIKS20/WHIR roots pass installed
+standard-axiom audits. The broader STIR completeness migration and #1291 budget/statement
+corrections remain in progress.

@@ -375,4 +375,29 @@ lemma cpolyDisagreementSet_eq_disagreementSet
     rw [CompPoly.CPolynomial.eval_toPoly, cpolyAnsPoly_toPoly]
     exact hxDis
 
+/-- The distance to a Reed-Solomon code is realized by a polynomial below its degree bound. -/
+lemma exists_polynomial_hammingDist_eq_distFromCode {ι : Type*} [Fintype ι] (domain : ι ↪ F) (d : ℕ)
+    (u : ι → F) :
+    ∃ g : F[X], g.degree < d ∧
+      (hammingDist u (evalOnPoints domain g) : ℕ∞) =
+        Δ₀(u, (code domain d : Set (ι → F))) := by
+  have : Nonempty (↑(code domain d : Set (ι → F)) : Set (ι → F)) :=
+    ⟨⟨0, Submodule.zero_mem _⟩⟩
+  obtain ⟨M, hM, hdist⟩ := exists_closest_codeword_of_Nonempty_Code
+    (↑(code domain d) : Set (ι → F)) u
+  obtain ⟨g, hg, rfl⟩ := mem_code_iff_exists_polynomial.1 hM
+  exact ⟨g, hg, hdist⟩
+
+/-- The relative distance to a Reed-Solomon code is realized by a polynomial of degree less than
+`d`. -/
+lemma exists_polynomial_relDistFromCode_eq {ι : Type*} [Fintype ι] [Nonempty ι] (domain : ι ↪ F) (d : ℕ)
+    (u : ι → F) :
+    ∃ g : F[X], g.degree < d ∧
+      δᵣ(u, (code domain d : Set (ι → F))) =
+        (hammingDist u (evalOnPoints domain g) : ENNReal) / (Fintype.card ι : ENNReal) := by
+  obtain ⟨g, hg, hdist⟩ := exists_polynomial_hammingDist_eq_distFromCode domain d u
+  refine ⟨g, hg, ?_⟩
+  rw [relDistFromCode_eq_distFromCode_div, ← hdist]
+  rfl
+
 end Quotienting
