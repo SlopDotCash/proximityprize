@@ -43,3 +43,9 @@ name = "ArkLib"
 [[lean_lib]]
 name = "ResearchProximityPrize"
 roots = ["Research.ProximityPrize"]
+
+# Ordinary-import clients for imported native protocol security theorems.
+[[lean_lib]]
+name = "ArkLibTest"
+roots = []
+globs = ["ArkLibTest.+"]

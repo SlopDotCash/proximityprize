@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
 
-import all PolyFun.Interaction.Basic.StrategyOver
-import all PolyFun.Interaction.TwoParty.Strategy
-import all PolyFun.Interaction.TwoParty.Compose
+import PolyFun.Interaction.Basic.StrategyOver
+import PolyFun.Interaction.TwoParty.Strategy
+import PolyFun.Interaction.TwoParty.Compose
 
 import ArkLib.Interaction.Oracle.Execution
 import ArkLib.Interaction.Oracle.RunSources

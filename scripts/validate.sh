@@ -74,6 +74,11 @@ echo "# Building project"
 echo "# CompPoly fresh kernel replay"
 ./scripts/lake-locked.sh build CompPolyTests.Fields.KoalaBear.FreshReplay
 
+# Native dependent-witness, false-middle-path, and failing-execution regressions.
+echo "# Native security clients"
+./scripts/lake-locked.sh build ArkLibTest.Interaction.Oracle.Security.KnowledgeComposition \
+  ArkLibTest.Interaction.Oracle.Security.Soundness
+
 # CI gate 2: zero live sorry/admit holes in both library and research source.
 echo ""
 echo "# Sorry census (zero live holes)"

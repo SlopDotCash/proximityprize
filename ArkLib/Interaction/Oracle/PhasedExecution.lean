@@ -5,7 +5,6 @@ Authors: Quang Dao
 -/
 
 import ArkLib.Interaction.Oracle.LoggedExecution
-import all ArkLib.Interaction.Oracle.LoggedExecution
 import ArkLib.Interaction.Oracle.WorldSegments
 
 /-!

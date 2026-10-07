@@ -449,7 +449,7 @@
       "base": "ace55c3e29da1fc55a321378ada55ea4f7ed8790",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "partially imported: generic native executor laws, prefix transport, round-by-round soundness and ordinary-import client; Lean 4.34 validation pending. Sumcheck specialization awaits compatibility with the native legacy Sumcheck cone.",
       "files": [
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/Execution.lean",
@@ -469,7 +469,7 @@
       "base": "388bb2486d7621d36e9b4edf993e6d23f76b703f",
       "base_branch": "feat/native-knowledge-extraction",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "native knowledge-extraction/composition source and client imported; Lean 4.34 validation pending",
       "files": [
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/Security/KnowledgeComposition.lean",
@@ -484,7 +484,7 @@
       "base": "ace55c3e29da1fc55a321378ada55ea4f7ed8790",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "native knowledge-extraction/composition source and client imported; Lean 4.34 validation pending",
       "files": [
         "ArkLib.lean",
         "ArkLib/Interaction/Oracle/Security/Knowledge.lean",

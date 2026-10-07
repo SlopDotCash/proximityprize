@@ -5,7 +5,12 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.ResultantLiftLoop52
 import ArkLib.ToMathlib.OddCharacterOrthogonality
-import Mathlib
+import Mathlib.Analysis.MeanInequalities
+import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.RingTheory.RootsOfUnity.Complex
+import Mathlib.RingTheory.RootsOfUnity.Lemmas
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.NormNum
 
 /-!
 # KKH26 Lemma 1 — distinct signed sums of roots of unity at an explicit prime threshold

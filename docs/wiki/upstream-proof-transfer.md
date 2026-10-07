@@ -110,8 +110,21 @@ lemmas from main, tuple-intersection bounds from PR #1285, and main's 28-file
 interaction layer plus sequential probability bounds. The latter replaces the
 parked `Interaction.Reduction` implementation with the current PolyFun API.
 The two other historical parked modules remain untouched. Module visibility
-markers are removed in native copies to match this repository's legacy module
-layout; original authors and licenses are retained.
+markers and `import all` modifiers are removed in native copies to match this
+repository's legacy module layout (Lean loads legacy imports at private level);
+original authors and licenses are retained.
+
+PRs [#1259](https://github.com/Verified-zkEVM/ArkLib/pull/1259) and
+[#1260](https://github.com/Verified-zkEVM/ArkLib/pull/1260) supply the native
+backward-extraction and knowledge-composition layer. Their immutable heads are
+recorded in the PR manifest. The imported certificates quantify over every
+concrete intermediate path, including false middle claims, and retain named
+witness transports; they do not assume an online middle witness or claim
+unrestricted stateful-world composition. The original ordinary-import client is
+in `ArkLibTest/Interaction/Oracle/Security/KnowledgeComposition.lean` and is
+built by `scripts/validate.sh`. `ArkLibTest` is an optional Lake library so its
+concrete execution checks stay separate from production imports. These transfers
+remain subject to compilation and axiom auditing.
 
 ## Lean 4.34 migration
 
@@ -141,5 +154,25 @@ premise from real-valued product comparisons. Native proofs and the imported
 linear-projection helper also use narrower imports where checked, reducing the
 number of unrelated modules loaded by each Lean process.
 
+The VCVio migration also requires semantic care: the former `HasEvalSPMF`
+interface is split across operational support, a lawful lift into `SPMF`, and
+support/distribution compatibility. In the new API, `𝒟[...]` denotes a measure;
+`𝒮[...]` denotes the discrete subprobability computation. Existing uses must be
+checked against those meanings rather than changed solely to satisfy elaboration.
+
 The native migration and new transfers are still under validation. Do not treat
 the updated pins or the earlier Lean 4.30 checks as a successful Lean 4.34 build.
+
+### Native executor soundness (PR #1261)
+
+The generic portion of upstream PR #1261 at `433513c9d8126c4f93a1d0b79d8fd8ce2ad3e2aa`
+is imported with its ordinary-import client. It bounds the actual interpreted executor by the
+sum of local challenge errors, retaining prover private continuations, verifier receive effects,
+and failure-induced loss of probability mass. The uniform corollary gives `count * error`;
+the zero-challenge case only assumes initial falsity for false inputs. The client exercises an
+empty response type interpreted as failure, whose successful output mass is zero.
+
+The source is admission-free, but compilation and axiom validation are still pending. The
+Sumcheck specialization is not yet imported because its legacy Sumcheck dependencies need
+reconciliation with this repository. This is a partial PR transfer, not validation of that
+specialization.

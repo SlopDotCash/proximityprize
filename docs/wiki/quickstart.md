@@ -29,7 +29,9 @@ python3 -m pip install -r scripts/requirements-validation.txt
 CI installs the same pinned dependencies before running the validation wrapper.
 The wrapper also builds CompPoly’s KoalaBear fresh-replay regression, which
 rechecks both irreducibility proof closures and quotient consistency in a fresh
-kernel environment.
+kernel environment. It also builds the native security clients from `ArkLibTest`,
+covering payload-dependent witnesses, false middle paths, and an executor whose
+prover fails through an empty-response query.
 For a convenient routine check, run:
 
 ```bash

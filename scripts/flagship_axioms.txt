@@ -86,3 +86,13 @@ ArkLib.Interaction.Oracle.RuntimeSoundness Interaction.Oracle.executeStrategiesW
 ArkLib.Interaction.Oracle.Composition Interaction.Oracle.OrderedExecution.run_preserves_measure
 ArkLib.Interaction.Oracle.Composition Interaction.Oracle.OrderedExecution.run_append
 ArkLib.Interaction.Oracle.TerminalMeasure Interaction.Oracle.Terminal.observe_isProbabilityMeasure
+
+# ArkLib PRs 1259 and 1260: backward extraction and dependent knowledge composition.
+ArkLib.Interaction.Oracle.Security.Knowledge Interaction.Oracle.Security.RoundExtractor.extraction_failure_implies_bad_challenge
+ArkLib.Interaction.Oracle.Security.KnowledgeComposition Interaction.Oracle.Security.KnowledgeCertificate.extractWitness_sequential
+ArkLib.Interaction.Oracle.Security.KnowledgeComposition Interaction.Oracle.Security.KnowledgeCertificate.terminalKnowledge_sequential_iff
+ArkLib.Interaction.Oracle.Security.KnowledgeComposition Interaction.Oracle.Security.samplesChallenges_appendExported_withLeaf
+
+# ArkLib PR 1261: actual executor round-by-round soundness.
+ArkLib.Interaction.Oracle.Security.Soundness Interaction.Oracle.Security.executeStrategies_soundness
+ArkLib.Interaction.Oracle.Security.Soundness Interaction.Oracle.Security.executeStrategies_soundness_uniform

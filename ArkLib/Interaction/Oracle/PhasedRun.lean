@@ -7,9 +7,8 @@ Authors: Quang Dao
 import ArkLib.Interaction.Oracle.PhasedExecution
 import ArkLib.Interaction.Oracle.Runtime
 import ArkLib.Interaction.Oracle.TerminalRun
-import all ArkLib.Interaction.Oracle.WorldSegments
-import all ArkLib.Interaction.Oracle.LoggedRun
-import all ArkLib.Interaction.Oracle.TerminalRun
+import ArkLib.Interaction.Oracle.WorldSegments
+import ArkLib.Interaction.Oracle.LoggedRun
 
 /-!
 # Complete protocol executions with world phases
