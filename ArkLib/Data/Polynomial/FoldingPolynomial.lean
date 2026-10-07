@@ -680,7 +680,8 @@ theorem folding_polynomial_is_unique {q f : F[X]} {Q : F[X][Y]}
         have hQ'_deg :
           natDegreeY (Q - foldingPolynomial q f)
             ≤ max (natDegreeY Q) (natDegreeY (foldingPolynomial q f)) := by
-          convert Polynomial.natDegree_sub_le _ _ using 1
+          unfold natDegreeY
+          exact Polynomial.natDegree_sub_le _ _
         have hQ'_deg : natDegreeY (foldingPolynomial q f) < q.natDegree := by
           by_cases hq : q.degree ≤ 0
             <;> simp_all +decide only [le_sup_iff, not_le]
@@ -712,99 +713,24 @@ lemma folded_poly_degree_bound {Q : F[X][Y]} {q : F[X]} {t : ℕ}
     (h_x : degreeX Q < t)
   (h_y : natDegreeY Q < q.natDegree) :
   ((Q.map (Polynomial.compRingHom q)).eval X).natDegree < t * q.natDegree := by
-  have h : Q = foldingPolynomial q ((Q.map (Polynomial.compRingHom q)).eval X) := by
-    apply folding_polynomial_is_unique
-    · aesop
-    · by_cases hq : q = 0
-      · aesop
-      · rw [Polynomial.eval_map, Polynomial.eval₂_eq_sum_range,
-            Polynomial.natDegree_sum_eq_of_disjoint]
-        · apply le_antisymm <;> simp_all +decide only [degreeX, coe_compRingHom, Finset.sup_le_iff,
-          mem_support_iff, ne_eq]
-          · intro n hn
-            apply Nat.le_div_iff_mul_le
-              (Nat.pos_of_ne_zero (ne_of_gt (Nat.pos_of_ne_zero (by aesop)))) |>.2
-            · apply le_trans _
-                (Finset.le_sup
-                    (f := fun i ↦
-                      Polynomial.natDegree
-                        (Polynomial.comp (Q.coeff i) q * Polynomial.X ^ i))
-                    (Finset.mem_range.mpr
-                      (Nat.lt_succ_of_le
-                        (Polynomial.le_natDegree_of_ne_zero hn))))
-              simp +decide only
-              rw [Polynomial.natDegree_mul']
-                <;> simp +decide only [
-                  monic_X_pow, Monic.leadingCoeff, mul_one, ne_eq,
-                  leadingCoeff_eq_zero,
-                  natDegree_comp, natDegree_pow, natDegree_X, mul_one,
-                  le_add_iff_nonneg_right, zero_le]
-              have h_comp_nonzero :
-                Polynomial.natDegree
-                  (Polynomial.comp (Q.coeff n) q)
-                    = Polynomial.natDegree (Q.coeff n) * Polynomial.natDegree q := by
-                rw [Polynomial.natDegree_comp]
-              by_contra h_comp_zero
-              have h_deg_zero :
-                Polynomial.natDegree (Polynomial.comp (Q.coeff n) q) = 0 := by
-                rw [h_comp_zero, Polynomial.natDegree_zero]
-              simp_all +decide
-              cases h_comp_nonzero
-                <;> simp_all +decide
-                      [Polynomial.natDegree_eq_zero_iff_degree_le_zero]
-              rw [
-                Polynomial.eq_C_of_degree_le_zero ‹Polynomial.degree (Q.coeff n) ≤ 0›]
-                  at hn h_comp_zero
-              aesop
-          · rw [Nat.div_le_iff_le_mul_add_pred] <;> norm_num
-            · intro b hb
-              have h_deg :
-                Polynomial.natDegree
-                  (Polynomial.comp (Q.coeff b) q)
-                    ≤ Polynomial.natDegree q * Polynomial.natDegree (Q.coeff b) := by
-                rw [Polynomial.natDegree_comp, mul_comm]
-              by_cases h :
-                Polynomial.comp (Q.coeff b) q = 0
-                  <;> simp_all +decide only [
-                    natDegree_zero, zero_le, zero_mul,
-                    monic_X_pow, Monic.leadingCoeff, mul_one, ne_eq,
-                    leadingCoeff_eq_zero, not_false_eq_true, natDegree_mul', natDegree_pow,
-                    natDegree_X, ge_iff_le]
-              apply add_le_add (le_trans h_deg (Nat.mul_le_mul_left _
-                  (Finset.le_sup
-                      (f := fun n ↦ Polynomial.natDegree (Q.coeff n))
-                      (by aesop))))
-              exact Nat.le_sub_one_of_lt
-                  (lt_of_lt_of_le (Nat.lt_succ_of_le hb)
-                      (Nat.succ_le_of_lt
-                          (lt_of_le_of_lt
-                              (Polynomial.le_natDegree_of_mem_supp _
-                                  (by aesop)) h_y)))
-            · exact Nat.pos_of_ne_zero (by aesop)
-        · intro i hi j hj hij
-          simp_all +decide only [Finset.mem_range, Order.lt_add_one_iff, coe_compRingHom, ne_eq,
-            mul_eq_zero, pow_eq_zero_iff', X_ne_zero, false_and, or_false, Set.mem_setOf_eq,
-            Function.comp_apply, monic_X_pow, Monic.leadingCoeff, mul_one, leadingCoeff_eq_zero,
-            not_false_eq_true, natDegree_mul', natDegree_comp, natDegree_pow, natDegree_X]
-          by_contra h_contra
-          exact hij
-            (by nlinarith
-                [show Polynomial.natDegree (Q.coeff i)
-                    = Polynomial.natDegree (Q.coeff j)
-                      by nlinarith
-                        [show i < q.natDegree
-                          from lt_of_le_of_lt
-                          (Polynomial.le_natDegree_of_ne_zero (by aesop)) h_y,
-                          show j < q.natDegree
-                          from lt_of_le_of_lt
-                            (Polynomial.le_natDegree_of_ne_zero
-                              (by aesop)) h_y]])
-    · aesop
-  contrapose! h_x
-  rw [h, folding_polynomial_deg_x]
-  exact Nat.le_div_iff_mul_le
-    (Nat.pos_of_ne_zero
-        (by rintro h; simp_all +singlePass)) |>.2 h_x
+  have hq : 0 < q.natDegree := (Nat.zero_le _).trans_lt h_y
+  have h_term : ∀ i ∈ Q.support, ((Q.coeff i).comp q * X ^ i).natDegree ≤
+      degreeX Q * q.natDegree + (q.natDegree - 1) := by
+    intro i hi
+    refine natDegree_mul_le.trans (add_le_add ?_ ?_)
+    · rw [natDegree_comp]
+      exact Nat.mul_le_mul_right _ (Finset.le_sup (f := fun n ↦ (Q.coeff n).natDegree) hi)
+    · have := le_natDegree_of_mem_supp i hi
+      rw [natDegree_X_pow]
+      unfold natDegreeY at h_y
+      omega
+  have h_sum : ((Q.map (Polynomial.compRingHom q)).eval X).natDegree ≤
+      degreeX Q * q.natDegree + (q.natDegree - 1) := by
+    rw [eval_map, eval₂_eq_sum, Polynomial.sum_def]
+    exact natDegree_sum_le_of_forall_le _ _ h_term
+  calc _ ≤ degreeX Q * q.natDegree + (q.natDegree - 1) := h_sum
+    _ < (degreeX Q + 1) * q.natDegree := by rw [Nat.add_mul, Nat.one_mul]; omega
+    _ ≤ t * q.natDegree := Nat.mul_le_mul_right _ h_x
 
 /-- Alternative uniqueness theorem for the folding polynomial.
     The only difference is the `h_x` condition which in this theorem

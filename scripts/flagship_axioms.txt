@@ -162,3 +162,16 @@ ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.not_arsdhAssumpt
 ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.arsdhAssumption_trivial_of_one_le
 ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.arsdhExperiment_givingUpAdversary
 ArkLib.Commitments.Functional.KZG.ConcreteVacuity ArkLibVacuity.arsdh_binding_hypotheses_unsatisfiable
+
+# Upstream coding-theory proofs adapted to native Lean 4.34.
+ArkLib.Data.CodingTheory.GuruswamiSudan.Basic gs_degree_bound_div_lt
+ArkLib.Data.CodingTheory.GuruswamiSudan.Basic GuruswamiSudan.sum_snd_weigthBoundIndices_le
+ArkLib.Data.CodingTheory.GuruswamiSudan.Basic GuruswamiSudan.numVars_gt_numConstraints_of_mul_lt
+ArkLib.Data.CodingTheory.GuruswamiSudan.Basic GuruswamiSudan.numVars_gt_numConstraints
+ArkLib.Data.CodingTheory.GuruswamiSudan.Basic GuruswamiSudan.polySol_ne_zero
+ArkLib.Data.CodingTheory.GuruswamiSudan.Basic GuruswamiSudan.polySol_multiplicity
+ArkLib.Data.CodingTheory.GuruswamiSudan.Basic GuruswamiSudan.dvd_property
+ArkLib.Data.CodingTheory.GuruswamiSudan.Basic GuruswamiSudan.gs_dvd_property
+ArkLib.Data.CodingTheory.PolishchukSpielman.Degrees ps_degree_bounds_of_mul
+ArkLib.Data.CodingTheory.PolishchukSpielman.Degrees ps_card_eval_x_eq_zero_le_degree_x
+ArkLib.Data.CodingTheory.PolishchukSpielman.Degrees ps_exists_y_preserve_degree_x

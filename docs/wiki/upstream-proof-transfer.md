@@ -414,3 +414,33 @@ These repairs expose the existing matrix/evaluation interfaces and avoid broad s
 of a probability expression. The Research witness build is being rerun against these repairs;
 none of these focused checks establishes a complete native/Research build. The citation index
 was regenerated from native source, and both freshness and strict knowledge-base lint pass.
+
+
+## Further Lean 4.34 coding-theory repairs
+
+The native Research list-decoding witness target now passes an ordinary build (3,494 jobs).
+The full native/Research build remains incomplete: its third attempt encountered both source
+compatibility failures and repeated macOS open-file failures, and was stopped with its cache
+preserved. A focused pass is not evidence that the whole repository builds.
+
+The reviewed main revision supplies shorter Polishchuk–Spielman degree proofs that reuse the
+shared bivariate interface. Its Guruswami–Sudan update adds the first-moment bound and a shared
+arbitrary-degree counting criterion, and consolidates the multiplicity/divisibility proofs.
+Both modules pass direct Lean 4.34 checks. Eight GS and three PS roots pass raw axiom audits
+with only `propext`, `Classical.choice`, and `Quot.sound`. Native `weigthBoundIndices` and
+`codewordToPoly` names are retained so existing research clients keep their interfaces.
+
+The Berlekamp–Welch truncation now uses the current polynomial coefficient representation.
+The folding-polynomial degree bound uses upstream's direct termwise degree estimate instead
+of reconstructing the folding polynomial first. Both pass direct Lean 4.34 checks, as does
+AHIV22 support after avoiding unnecessary simplifier normalization across matrix boundaries.
+The even/odd evaluation proof now exposes composition of evaluations explicitly. The weighted
+bivariate product bound composes the finite-sum degree inequality directly; this avoids an
+expensive rewrite without raising the heartbeat limit. Localized place evaluation supplies
+explicit algebra-map instances. These three modules pass direct checks as well.
+
+The interleaved-list projection now applies the existing distance projection in the needed
+orientation, removing two symmetry conversions. It explicitly transports the row equality
+decision instance to the classical instance used by the Hamming ball. Its direct check passes.
+All eight other modules in this batch also pass ordinary dependency-aware builds; the remaining
+interleaved-list target is being rebuilt after that final instance-transport repair.
