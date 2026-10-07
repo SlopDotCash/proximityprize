@@ -1192,7 +1192,7 @@
       "base": "22dbd4e836c15a21f68889afa69b7130da04abbb",
       "base_branch": "main",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "partially integrated: line restriction and layered circuit foundations validated; full GKR protocol integration remains pending",
       "files": [
         "ArkLib.lean",
         "ArkLib/Data/MvPolynomial/LineRestriction.lean",
@@ -1210,6 +1210,22 @@
         "VCVio": "f9dc47d9dacfc5cb51dae9f92f1e34cb5ce2cc24",
         "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
         "PolyFun": "c0c923693fc827a41d17116579a0c16ed4873b19"
+      },
+      "native_validation": {
+        "source_head": "4dc5142fdcca586ae499cd9d1b1d6dd4b48c8fce",
+        "files": [
+          "ArkLib/Data/MvPolynomial/LineRestriction.lean",
+          "ArkLib/ProofSystem/GKR/Circuit.lean"
+        ],
+        "ordinary_build": "Lean 4.34.0, combined focused build passed 3221 jobs",
+        "axiom_audit": "All six polynomial lemmas and three circuit layer-value lemmas have standard-only installed axiom closures",
+        "remaining": [
+          "SumcheckAux",
+          "SingleRound",
+          "General",
+          "OracleLayer"
+        ],
+        "review_note": "Full donor completeness uses old framework lemmas with admitted dependencies; adapt against native conditional composition proofs, preserving assumptions, before claiming whole GKR completeness."
       }
     },
     {
@@ -1638,7 +1654,7 @@
       "base": "15e76b2bffe64be1d74ad93ca3020a55a743716f",
       "base_branch": "quang/constraint-system",
       "draft": false,
-      "disposition": "fetched; native integration under review",
+      "disposition": "reviewed; useful Clean adapter awaits compatible external Clean dependency and native validation",
       "files": [
         "ArkLib.lean",
         "ArkLib/Bridge/Clean.lean",
@@ -1650,7 +1666,8 @@
         "CompPoly": "56d10c947e3427c852b708a424f585c5673b039c",
         "VCVio": "88b4fe7b9c66dc40f083d67d50aa67338fd578f8",
         "mathlib": "8a178386ffc0f5fef0b77738bb5449d50efeea95"
-      }
+      },
+      "review_note": "102-line adapter missing natively. Maps FormalCircuit to existing ConstraintSystem and BehavioralContract. Soundness uses original_soundness; completeness explicitly assumes hWitGen environment existence. Donor pins Clean 4a013fed (Lean 4.28-era); native manifest has no Clean package. Do not claim unconditional witness generation or import an incompatible lockfile."
     },
     {
       "number": 465,
