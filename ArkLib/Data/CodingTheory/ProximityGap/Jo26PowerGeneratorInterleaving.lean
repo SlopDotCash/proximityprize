@@ -226,7 +226,6 @@ theorem epsMCAP_interleaved_le_epsMCAP (C : Submodule F (ι → A)) {parℓ : �
     (fun γ => if h : mcaEventP ((C : Set (ι → A))^⋈ (Fin t)) exp δ u γ
       then jointTupleSubmodule C h.choose u else ⊥)
     (fun γ => by
-      dsimp only
       split_ifs with h
       · exact jointTupleSubmodule_ne_top C u h.choose_spec.2.2
       · exact bot_ne_top)
@@ -303,7 +302,8 @@ theorem epsMCAGen_powGen_interleaved_eq_epsMCAP (C : Submodule F (ι → A)) {pa
         (fun γ : F => fun j : Fin parℓ => γ ^ exp j)
         ((C : Set (ι → A))^⋈ (Fin t)) δ
       = epsMCAP (F := F) (A := A) (C : Set (ι → A)) exp δ := by
-  rw [ProximityGap.Jo26Gen.epsMCAGen_powGen_eq_epsMCAP, epsMCAP_interleaved_eq]
+  erw [ProximityGap.Jo26Gen.epsMCAGen_powGen_eq_epsMCAP]
+  exact epsMCAP_interleaved_eq C exp t δ
 
 /-! ### The [Jo26] Theorem 4.2 factor bound, as a corollary of equality -/
 
