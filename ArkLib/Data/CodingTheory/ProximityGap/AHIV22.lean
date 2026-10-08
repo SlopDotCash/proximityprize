@@ -405,7 +405,7 @@ lemma e_le_dist_over_3_strong
                 · intro h
                   refine ⟨?_, h.2.symm⟩
                   simpa [h.2] using h.1
-              simp [pairs, emb, Finset.mem_sigma, h]
+              simp [pairs, emb, Function.Embedding.coeFn_mk, Finset.mem_sigma, h]
             simp [this]
           have hpairs_sum :
               pairs.card = ∑ j ∈ (Finset.univ : Finset ι),
@@ -855,7 +855,7 @@ lemma dir_close_of_many_close_pts
                 · intro h
                   refine ⟨?_, h.2.symm⟩
                   simpa [h.2] using h.1
-              simp [pairs, emb, h]
+              simp [pairs, emb, Function.Embedding.coeFn_mk, h]
             have hmap :
                 {p ∈ pairs | f p = j} =
                   Finset.filter (fun p : Sigma (fun _ : RS ↦ ι) ↦ p.2 = j) pairs := by
@@ -894,7 +894,7 @@ lemma dir_close_of_many_close_pts
               rcases p with ⟨r', i⟩
               by_cases hrr : r' = r
               · subst hrr
-                simp [pairs, emb]
+                simp [pairs, emb, Function.Embedding.coeFn_mk]
               · constructor
                 · intro hp
                   exfalso

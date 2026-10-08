@@ -215,6 +215,7 @@ noncomputable def pencilE (dom : Fin n ↪ F) (k w : ℕ) (u₀ u₁ : Fin n →
       C ((dom (I a)) ^ (t : ℕ)) * (X * C (u₀ (I a)) + C (u₁ (I a))))
     (fun s : Fin (w + k) => C (-((dom (I a)) ^ (s : ℕ)))) b)
 
+set_option backward.isDefEq.respectTransparency false in
 theorem pencilE_eval (dom : Fin n ↪ F) (k w : ℕ) (u₀ u₁ : Fin n → F)
     (I : Fin (w + 1) ⊕ Fin (w + k) → Fin n) (ε : F) :
     (pencilE dom k w u₀ u₁ I).eval ε
@@ -240,6 +241,7 @@ theorem pencilE_eval_zero (dom : Fin n ↪ F) (k w : ℕ) (u₀ u₁ : Fin n →
   funext a b
   rcases b with t | s <;> simp [wbMatrix]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem pencilE_natDegree_le (dom : Fin n ↪ F) (k w : ℕ) (u₀ u₁ : Fin n → F)
     (I : Fin (w + 1) ⊕ Fin (w + k) → Fin n) :
     (pencilE dom k w u₀ u₁ I).natDegree ≤ w + 1 := by

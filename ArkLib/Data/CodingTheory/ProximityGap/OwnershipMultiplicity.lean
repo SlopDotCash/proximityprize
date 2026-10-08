@@ -33,6 +33,7 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : ℕ} [NeZero n]
 
 /-- The `k = 1` residual is the pair difference. -/
+set_option backward.isDefEq.respectTransparency false in
 theorem residual_one (dom : Fin n ↪ F) (t : Fin 2 → Fin n) (y : Fin n → F) :
     residual dom 1 t y = y (t 1) - y (t 0) := by
   unfold residual borderedMatrix

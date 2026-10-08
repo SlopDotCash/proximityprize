@@ -777,3 +777,6 @@ ArkLib.OracleReduction.Composition.Sequential.SeqComposeMsgCompleteness Reductio
 ArkLib.OracleReduction.Composition.Sequential.SeqComposeMsgCompleteness Reduction.binary_append_valid_pc
 ArkLib.OracleReduction.Composition.Sequential.SeqComposeMsgCompleteness Reduction.seqCompose_perfectCompleteness_msg
 ArkLib.OracleReduction.Composition.Sequential.SeqComposeMsgCompleteness Reduction.seqCompose_pc_msg'
+
+# Unary interleaving compatibility repair.
+ArkLib.Data.CodingTheory.InterleavedFinOneEq InterleavedCode.ListSize.Lambda_interleaved_fin_one_eq
