@@ -205,8 +205,9 @@ noncomputable def coreSet (dom : I ↪ F) (u0 u1 : I → F)
 theorem coreSet_eq_jointCore [Fintype F] [DecidableEq F]
     (dom : I ↪ F) (u0 u1 : I → F) (c : F[X] × F[X]) :
     coreSet dom u0 u1 c = jointCore dom u0 u1 c.1 c.2 := by
-  ext i
-  simp [coreSet, AgreesAt, jointCore]
+  classical
+  unfold coreSet jointCore
+  exact Finset.filter_congr (fun _ _ => Iff.rfl)
 
 /-- Total core incidence is the sum of the three core cardinalities. -/
 theorem sum_coreCount_eq_sum_coreSet_cards

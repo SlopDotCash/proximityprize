@@ -213,7 +213,9 @@ theorem proximity_gap_RSCodes {k t : ℕ} [NeZero k] [NeZero t] {deg : ℕ} {dom
         rw [prob_uniform_eq_card_filter_div_card] at hcase_code
         rw [prob_uniform_eq_card_filter_div_card
           (F := ↥(Affine.affineSubspaceAtOrigin (F := F) (u' 0) (Fin.tail u')))]
-        let e := Equiv.setCongr hcarrier_eq
+        let e := Set.equivOfEq hcarrier_eq
+        have he (a) : (e a).val = a.val := rfl
+        have he_symm (b) : (e.symm b).val = b.val := rfl
         have hcard : Fintype.card ↥(Affine.affineSubspaceAtOrigin (F := F)
             (u' 0) (Fin.tail u')) = Fintype.card ↥S :=
           Fintype.card_of_bijective e.bijective
@@ -223,9 +225,9 @@ theorem proximity_gap_RSCodes {k t : ℕ} [NeZero k] [NeZero t] {deg : ℕ} {dom
           (Finset.univ.filter (fun (x : ↥S) =>
             δᵣ(x.val, (ReedSolomon.code domain deg : Set (ι → F))) ≤ δ)).card :=
           Finset.card_bij (fun a _ => e a)
-            (fun a ha => by simpa using ha)
+            (fun a ha => by simpa only [Finset.mem_filter, Finset.mem_univ, true_and, he] using ha)
             (fun a₁ _ a₂ _ h => e.injective h)
-            (fun b hb => ⟨e.symm b, by simpa using hb, e.apply_symm_apply b⟩)
+            (fun b hb => ⟨e.symm b, by simpa only [Finset.mem_filter, Finset.mem_univ, true_and, he_symm] using hb, e.apply_symm_apply b⟩)
         rw [hcard, hfilt]; exact hcase_code
       -- Apply Thm 1.7 at k := m + 1 to get jointAgreement (W := u').
       have hja_u' : jointAgreement (C := (ReedSolomon.code domain deg : Set (ι → F)))
