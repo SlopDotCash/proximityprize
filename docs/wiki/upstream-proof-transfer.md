@@ -1328,3 +1328,11 @@ builds and an installed audit of 82 selected roots with only standard axioms. Th
 include explicit prime/order imports, the current coefficient and matrix APIs, and generic
 arithmetic helpers that avoid evaluating enormous concrete powers during type checking.
 The research reductions and countermodels retain their hypotheses and conclusions.
+
+
+The pinned VCVio dependency now owns `Vector.support_mapM_index` and
+`OracleComp.support_ofFn_mapM_index`. Native compatibility modules import those
+implementations instead of redeclaring the same names. This prevents duplicate-constant
+collisions when a consumer imports the full `VCVio` umbrella alongside ArkLib. Both
+compatibility modules pass focused Lean 4.34 source checks; combined consumer validation
+remains part of the full migration gate.
