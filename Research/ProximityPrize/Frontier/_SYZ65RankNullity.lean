@@ -433,9 +433,9 @@ theorem rankNullity_windowKD {f g h : K[X]} {d : Fin 3 → ℕ}
         linear_combination hpker
       · refine pdeg_le (fun i => ?_)
         fin_cases i
-        · simpa only [pterm, Matrix.cons_val_zero] using pterm_le_of_mem p.1.2
-        · simpa only [pterm, Matrix.cons_val_one, Matrix.head_cons] using pterm_le_of_mem p.2.1.2
-        · simpa only [pterm, Matrix.cons_val_two, Matrix.tail_cons] using pterm_le_of_mem p.2.2.2
+        · exact pterm_le_of_mem p.1.2
+        · exact pterm_le_of_mem p.2.1.2
+        · exact pterm_le_of_mem p.2.2.2
     · intro w hw
       rw [SYZ64.mem_windowKD] at hw
       obtain ⟨hwN, hwde⟩ := hw

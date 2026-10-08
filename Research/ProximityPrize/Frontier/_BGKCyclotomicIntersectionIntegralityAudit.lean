@@ -303,16 +303,16 @@ def requiredLeakage : Nat := (8264 * productionN + 135135 - 1) / 135135
 theorem production_prime_certificates :
     productionP1.Prime ∧ productionP2.Prime := by
   constructor
-  · simpa [productionP1, productionN, ArkLib.ProximityGap.PrizeShapePrimeP30.P] using
+  · exact
       ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P
-  · simpa [productionP2, productionN, ArkLib.ProximityGap.PrizeShapePrimeP30Second.P] using
+  · exact
       ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P
 
 /-- Cauchy--Davenport is in its unsaturated `2n-1` regime at both production primes. -/
 theorem production_cauchyDavenport_windows :
     2 * productionN - 1 < productionP1 ∧
       2 * productionN - 1 < productionP2 := by
-  norm_num [productionN, productionP1, productionP2]
+  decide +kernel
 
 /-- The primitive coefficient gap is exactly `8264`. -/
 theorem primitive_coefficient_gap : (135135 : Nat) - 126871 = 8264 := by
@@ -320,11 +320,11 @@ theorem primitive_coefficient_gap : (135135 : Nat) - 126871 = 8264 := by
 
 /-- The exact least integer leakage is `65,663,244`, between 25 and 26 bits. -/
 theorem requiredLeakage_exact : requiredLeakage = 65663244 := by
-  norm_num [requiredLeakage, productionN]
+  decide +kernel
 
 theorem requiredLeakage_bit_window :
     2 ^ 25 < requiredLeakage ∧ requiredLeakage < 2 ^ 26 := by
-  norm_num [requiredLeakage, productionN]
+  decide +kernel
 
 /-- One unit of Cauchy--Davenport-forced leakage is insufficient by a factor between `2^25` and
 `2^26`. -/
@@ -355,7 +355,7 @@ theorem standard_integral_row_does_not_force_primitive_ratio :
 theorem requiredLeakage_is_least :
     135135 * (requiredLeakage - 1) < 8264 * productionN ∧
       8264 * productionN ≤ 135135 * requiredLeakage := by
-  norm_num [requiredLeakage, productionN]
+  decide +kernel
 
 /-- Consolidated two-prime no-go.  The actual primes are certified and Cauchy--Davenport rules
 out one cell, but the extremal integral two-cell row leaks only one unit against the exact

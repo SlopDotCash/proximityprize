@@ -425,7 +425,8 @@ theorem domain_injective : Function.Injective domain := domain.injective
 /-- Every set of at most seven parity columns is linearly independent. -/
 theorem parityColumnsMDS (J : Finset (Fin 9)) (hJ : J.card <= 7) :
     LinearIndependent F (fun x : J => column x) := by
-  simpa only [column] using
+  change LinearIndependent F (fun x : J => fun j : Fin 7 => domain x ^ (j : ℕ))
+  exact
     (ArkLib.HigherOrderMDS.rs_columns_linearIndependent
       (K := F) (D := fun x : Fin 9 => domain x) (k := 7) (J := J)
       domain.injective hJ)

@@ -1035,3 +1035,17 @@ pointwise challenge instances, explicit empty-oracle universes and current simul
 the empty composition uses identity completeness directly. Existing relation, sampling and
 component completeness hypotheses are retained. The joint STIR build still fails in later
 modules, which remain under migration.
+
+
+Focused review rechecked all eleven randomized restoration and STIR/composition modules
+from the latest donor commits under Lean 4.34. All 149 selected installed declarations
+have standard-only axiom closures; the checked source matches the donor cache source.
+The integration retains the previous audit roots while adding the new declarations.
+
+A further compatibility batch checks closed period-profile arithmetic in the kernel,
+normalizes the small totient explicitly, imports the complex primitive-character module,
+and repairs function, quotient and finite-set coercions without changing theorem statements.
+Seven full modules pass focused compilation. Five other edited modules cannot yet be
+checked locally because prerequisite artifacts are missing; isolated cyclotomic numeric
+checks pass but do not certify that full module. Full hosted migration validation remains
+required.

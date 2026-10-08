@@ -52,6 +52,7 @@ lemma repCount_sum_eq_card_sq (A : Finset α) :
   have hp' := Finset.mem_product.1 hp
   exact sub_mem_sub hp'.1 hp'.2
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Energy as the sum of squared difference-representation counts.**
 `E[A] = ∑_{x ∈ A - A} repCount A x ^ 2`.
 
