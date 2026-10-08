@@ -14,7 +14,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = "https://github.com/Verified-zkEVM/ArkLib.git"
-MANIFEST = ROOT / "docs/upstream/arklib-prs-2026-10-06.json"
+MANIFEST = ROOT / "docs/upstream/arklib-prs-2026-10-08-refresh.json"
 REFERENCE = ROOT / "external/arklib"
 
 
