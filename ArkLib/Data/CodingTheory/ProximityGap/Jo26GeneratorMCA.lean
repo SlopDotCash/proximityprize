@@ -554,6 +554,7 @@ theorem epsMCAGen_le_epsMCAGen_interleaved (C : Submodule F (ι → A)) (s : ℕ
     u
 
 open Classical in
+set_option backward.isDefEq.respectTransparency false in
 /-- **[Jo26] Theorem 4.4, hard half: `ε^gen_mca(G, C^⋈s, δ) ≤ ε^gen_mca(G, C, δ)` when
 `|Ω| ≤ q`.** The bad-seed subspaces `K_ω` form a family of at most `q` proper subspaces,
 so the covering lemma yields a single nonzero combination vector `λ` outside all of them;
@@ -636,6 +637,7 @@ theorem epsMCAGen_pairGen_eq_epsMCA (C : Set (ι → A)) (δ : ℝ≥0) :
   unfold epsMCAGen ProximityGap.epsMCA
   exact iSup_congr fun u => Pr_congr fun γ => genMCAEvent_pairGen_iff C δ u γ
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Affine-line exactness fence.**  Specializing the generator framework to
 `γ ↦ ![1, γ]`, row-wise interleaving has exactly the original affine-line MCA
 error.  Thus any general-generator interleaving improvement must use genuinely
@@ -714,6 +716,7 @@ theorem genMCAEvent_val_two_iff_mcaEvent (C : Set (ι → A)) (δ : ℝ≥0)
   rw [genMCAEvent_val_iff_mcaEventCurve]
   exact ProximityGap.mcaEventCurve_pair_iff C δ u γ
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The fixed curve MCA error is exactly invariant under row-wise interleaving. This is
 the `epsMCACurve` specialization of Jo26 exact small-seed interleaving invariance. -/
 theorem epsMCACurve_interleaved_eq (C : Submodule F (ι → A)) (s : ℕ) [NeZero s]

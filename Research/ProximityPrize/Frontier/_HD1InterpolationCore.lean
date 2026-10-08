@@ -193,6 +193,7 @@ end LinearAlgebra
 /-! ## The interpolation theorem -/
 
 open scoped Classical in
+set_option maxHeartbeats 1600000 in
 /-- **Interpolation (TR26-164 Proposition 3.13, `d = 1`, counting left explicit).**
 Let `Qs` be a finite-dimensional space of interpolants of weighted degree `< D`, `S` a finite set
 of nodes with values `y`, and suppose the ranks of the node maps on `Qs` sum to less than

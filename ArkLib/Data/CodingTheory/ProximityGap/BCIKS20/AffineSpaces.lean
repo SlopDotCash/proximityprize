@@ -1100,7 +1100,7 @@ theorem bucket_exists_common_codeword
       exact (Submodule.mem_bot F).mp this
     set j₀ : Fin k := ⟨0, NeZero.pos k⟩
     refine ⟨v_pair j₀ 0, S_j j₀, (hv_pair j₀ 0).1, hS_j j₀, ?_, ?_⟩
-    · convert (hv_pair j₀ 0).2 using 2
+    · exact (hv_pair j₀ 0).2
     · intro j
       refine ⟨0, V.zero_mem, ?_⟩
       intro c _
@@ -1472,6 +1472,7 @@ private lemma gs_degree_bound_le_inv_mu
 set_option maxHeartbeats 800000 in
 -- The low-degree branch performs several real/NNReal casts and arithmetic normalizations.
 omit [DecidableEq ι] [DecidableEq F] in
+set_option backward.isDefEq.respectTransparency false in
 /-- Construct a GS multiplicity `m` satisfying both the Johnson radius bound and the degree
 bound. Witness: `m = ⌈√ρ/(2η)⌉ + 1` where `η = 1 - √ρ - δ`. -/
 lemma exists_gs_multiplicity {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
@@ -2222,7 +2223,8 @@ theorem correlatedAgreement_affine_spaces {k : ℕ} [NeZero k]
       ext z; constructor
       · exact fun _ => Finset.mem_univ _
       · intro _
-        simp only [finMapTwoWords, Finset.mem_filter, Finset.mem_univ, true_and]
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+        change δᵣ(u_star + z • dir, (V : Set (ι → F))) ≤ ↑δ_star
         have hx_mem := h_line_in_U z
         have hx_le_div := DivergenceOfSets.relDistFromCode'_le_divergence
           (U := U) (V := (V : Set (ι → F))) _ hx_mem
