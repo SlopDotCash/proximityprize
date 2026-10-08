@@ -47,6 +47,7 @@ scripts/proximity-prize-reference.sh targets
 scripts/proximity-prize-reference.sh lower
 scripts/proximity-prize-reference.sh upper
 scripts/proximity-prize-reference.sh replay-upper
+scripts/proximity-prize-reference.sh replay-lower
 ```
 
 The wrapper checks the reviewed commit and clean tracked source, selects the
@@ -160,6 +161,10 @@ The native compatibility edits use these Mathlib API correspondences:
 | `Finset.prod_le_prod hnonneg hle` | `Finset.prod_le_prod₀ hnonneg hle` |
 | `Finset.prod_le_prod' hle` | `Finset.prod_le_prod hle` |
 | Multivariate `coeff index polynomial` | `polynomial.coeff index` |
+| `Finset.sum_inter_add_sum_diff` | `Finset.sum_inter_add_sum_sdiff` |
+| `Finset.sum_eq_sum_diff_singleton_add` | `Finset.sum_eq_sum_sdiff_singleton_add` |
+| Applied `LinearMap.coeFn_sum` | `LinearMap.sum_apply` |
+| `IsAlgClosed.splits_codomain` for the identity map | `IsAlgClosed.splits` |
 
 These rename existing proof applications; they do not remove the nonnegativity
 premise from real-valued product comparisons. Native proofs and the imported
@@ -1029,7 +1034,11 @@ replays the closure into an empty environment. Post-checks use the kernel enviro
 the higher-level environment interface can hide private declarations and produce false
 missing-name reports. This is local verification of the exact pinned upper benchmark,
 not a hosted ranking result or completion of the native production proximity-gap conjecture.
-The lower candidate remains under compilation and requires its own audit and replay.
+The lower candidate now completes its ordinary reference build (4,351 jobs). Its installed
+`candidate` and `FinalCertificate6815.protocolClaim` roots have standard-only axiom closures.
+The candidate type is `ProtocolClaim 6815 331366399 1073741824`; this bounds the benchmark
+IRS profile, rather than the native production δ* conjecture. Its separate fresh-kernel replay
+has passed for 108,676 declarations, including presence and quotient post-checks.
 
 
 Threaded n-ary oracle completeness now compiles as an ordinary Lean 4.34 module (20 seconds).
@@ -1077,3 +1086,65 @@ map conversion explicit and scopes the transparency compatibility option to the 
 invertibility proof. It preserves the field congruence and norm hypotheses. The Ajtai consumer
 passes a direct source check after its probability/measure API conversion; its ordinary build
 and installed audit are still pending, so this result does not certify that consumer.
+
+
+The next native Sumcheck transfer combines fourteen interaction modules from #1269 and
+refreshed #1261 with eleven existing dependencies. This source-composed Lean 4.34 check
+passes, including round-by-round and expected distinct-query restoration soundness. All
+98 selected imported theorem roots and six projection APIs have standard-only axiom
+closures in that check; two imported roots require no axioms. The temporary composed
+check preserves private-name isolation between source files. Separate-module ordinary
+builds and installed audits remain pending. Actual aborting executions, source-law and
+extraction hypotheses remain explicit; these results do not discharge those assumptions.
+The existing single-round implementation retains its completeness and zero-knowledge
+proofs while adopting the named projection API and current optional-transformer laws.
+
+
+The shared packing coordinate helpers now use distinct `decomposeRows_finset_sum` and
+`decomposeColumns_finset_sum` names, avoiding collisions with the legacy prelude's
+pointwise `Fintype` sum lemmas. The equality-fold batching proof normalizes Boolean
+coordinates explicitly before using polynomial symmetry. A thirteen-module source-composed
+check passes, and fourteen selected packing exports have standard-only composed axiom
+closures; ordinary builds and installed audits remain pending. The donor batching algebra
+requires an explicit translation between its row/column convention and the native one.
+
+Migration practice: when a `Finset` membership simplification stops matching under the
+new elaborator, use the typed `Finset.mem_filter.mp`/`.mpr` interfaces explicitly. Avoid
+changing the statement to accommodate a tactic failure. For computed finite checks, test
+small structural lemmas separately before rerunning the complete kernel reduction.
+
+
+The shared `Packing.BatchingAlgebra` layer from upstream commit
+`6d2f8cb95fbbadc8257dc57dc4297369bf21aabd` is now adapted to native coordinates. Native
+rows reconstruct the original claim, while native columns supply the batching target.
+The existing verifier definitions remain intact. The layer proves the carrier-to-slice
+relations, honest reconstruction, the common multiplier identity and the uniform
+`κ/|L|` collision bound for distinct carriers. A fourteen-module source-composed check
+passes, and all fifteen selected exports have standard-only axiom closures. Ordinary
+builds and installed audits remain pending. These are algebraic and local probability
+results; they do not establish end-to-end protocol soundness or remove the legacy
+batching verifier's failure-state issue. The Binius conformance client remains separate work.
+
+
+The matching `Packing.FinalAlgebra` transfer proves the Boolean-cube expansion of the
+final equality tensor and identifies its native column-coordinate check with evaluation
+of the batching multiplier. Both statements hold over commutative rings, including zero
+retained dimensions. The fifteen-module composed check passes and both exported roots
+have standard-only axiom closures. Ordinary builds remain pending. The separate concrete
+`GF(4)/GF(2)` orientation fixture is under adaptation and awaits its compiled binary-tower
+basis prerequisite; it is not covered by this successful generic check.
+
+
+Keep imports explicit for instances and tactic extensions removed from transitive import
+paths: `Mathlib.Analysis.Complex.Polynomial.Basic` supplies algebraic closure of `ℂ`,
+`Mathlib.RingTheory.Polynomial.DegreeLT` supplies the bounded-degree polynomial basis
+and finite-dimensional instance, `Mathlib.Analysis.SpecialFunctions.Log.Base` supplies
+`Real.logb`, and `Mathlib.Tactic.NormNum.Prime` supplies numeral primality proofs.
+
+
+The pinned lower candidate has now passed fresh kernel replay of its 108,676-declaration
+closure, with every exported declaration present afterward and quotient constants checked
+for consistency. This supplements its 4,351-job ordinary build and two standard-axiom
+installed roots. Reproduce it with `scripts/proximity-prize-reference.sh replay-lower`.
+This is local verification on the pinned reference's Lean 4.32.2 toolchain; native Lean 4.34
+migration and hosted ranking remain separate gates.
