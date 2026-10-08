@@ -101,7 +101,7 @@ theorem thirdMoment_jensen_lower_real
     calc
       (descPochhammer ℝ 3).eval avg / 6
           ≤ ∑ i, w i * ((m i).choose 3 : ℝ) := by
-            simpa only [Nat.factorial, Nat.cast_ofNat] using hjensen
+            simpa only [show Nat.factorial 3 = 6 from rfl, Nat.cast_ofNat] using hjensen
       _ = (∑ i, ((m i).choose 3 : ℝ)) / den := by
         simp only [w, one_div_mul_eq_div, Finset.sum_div]
   change den * a * (a - 1) * (a - 2) ≤ 6 * ∑ i, ((m i).choose 3 : ℝ)

@@ -20,7 +20,10 @@ huge finite types or powers. Preserve theorem conclusions and assumptions; gener
 additional dimensions. For nested powers such as `2 ^ (2 ^ 29)`, put the
 monotonicity argument in a symbolic helper and then specialize it. This prevents
 kernel comparison from expanding the enormous numeral while preserving the
-original bound.
+original bound. For closed arithmetic goals over bounded concrete values,
+`decide +kernel` can avoid recursive simplifier expansion. This still computes
+and checks the proof in Lean's kernel; confirm the theorem's printed axioms and
+do not substitute native decision tactics.
 Remove obsolete no-progress tactic calls and supply changed coercions or module
 instances explicitly. When simplification changes normalized-factor membership into
 prime-factor membership, use explicit `Multiset.mem_toFinset` and finite-set

@@ -74,6 +74,7 @@ evaluation domains: `domain' (f i) = (domain i)²` for every coordinate `i`. The
 The witnessing polynomial is `q.comp (X²) = q(x²)`: evaluating `q` at `(domain i)² = domain' (f i)`
 is the same as evaluating `q(x²)` at `domain i`, and `deg (q(x²)) = 2·deg q < 2k`. This is the
 exact "even part" of `RS[μ_n, 2k]`: the image of `RS[μ_{n/2}, k]` under `x ↦ x²`. -/
+set_option backward.isDefEq.respectTransparency false in
 theorem code_pullback_sq_mem (domain : ι ↪ F) (domain' : ι' ↪ F) (k : ℕ) (f : ι → ι')
     (hf : ∀ i, domain' (f i) = (domain i) ^ 2)
     {w : ι' → F} (hw : w ∈ ReedSolomon.code domain' k) :

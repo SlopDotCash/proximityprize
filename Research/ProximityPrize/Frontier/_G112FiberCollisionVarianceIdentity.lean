@@ -131,15 +131,13 @@ theorem production_collisionCeiling_mul_base_le_wick :
 actual margin is about 94 bits; the factor two statement is a deliberately stable kernel pin. -/
 theorem production_uniform_main_term_twofold_margin :
     2 * productionSource ^ 2 ≤ productionQ * productionCollisionCeiling := by
-  norm_num [productionSource, productionN, productionQ, productionCollisionCeiling,
-    Nat.descFactorial]
+  decide +kernel
 
 /-- Strong quantitative form: the uniform main term is at least ninety binary orders below the
 accepted collision ceiling after clearing the field-cardinality denominator. -/
 theorem production_uniform_main_term_ninety_bit_margin :
     2 ^ 90 * productionSource ^ 2 ≤ productionQ * productionCollisionCeiling := by
-  norm_num [productionSource, productionN, productionQ, productionCollisionCeiling,
-    Nat.descFactorial]
+  decide +kernel
 
 /-- The count supplied by the two-step recurrence `E₅ ≤ n⁴E₃` from a depth-three Wick input
 `E₃ ≤ 15n³` lies well below the accepted raw collision ceiling. -/
@@ -168,10 +166,8 @@ theorem production_raw_unordered_hbk_C1_countermodel :
   · rw [mul_comm]
     exact Nat.div_mul_le_self _ _
   constructor
-  · norm_num [productionOptimisticFifthEnergy, productionN]
-  · norm_num [productionRawUnorderedCoreCeiling, productionOptimisticFifthEnergy,
-      productionN, productionWick, correctedEnvelope, Nat.doubleFactorial,
-      Nat.descFactorial, Nat.factorial]
+  · decide +kernel
+  · decide +kernel
 
 /-- A centered variance certificate for the ordered injective-five subset-sum map implies that its
 full raw collision contribution fits the canonical production depth-five envelope.  No orbit

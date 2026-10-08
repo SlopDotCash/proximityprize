@@ -101,7 +101,7 @@ theorem antipodalTuple_injective (r : ℕ) :
   intro t t' h
   funext i
   have h0 := congrFun h (pairIdx r (i, 0))
-  simpa only [antipodalTuple, Equiv.symm_apply_apply] using h0
+  simpa only [antipodalTuple, Equiv.symm_apply_apply, if_true] using h0
 
 /-- **The antipodal injection's image card.** The set of zero-sum `2r`-tuples of the form
 `antipodalTuple r t` (`t : Fin r → G`) has cardinality exactly `|G|^r` (the injection is injective,
