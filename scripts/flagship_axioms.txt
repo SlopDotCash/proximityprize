@@ -2156,3 +2156,17 @@ Research.ProximityPrize.Frontier._BGKInjectivePacketDefectConsumer ArkLib.Proxim
 Research.ProximityPrize.Frontier._BGKInjectivePacketDefectConsumer ArkLib.ProximityGap.Frontier.BGKInjectivePacketDefectConsumer.production_injectiveSource_to_allowance
 Research.ProximityPrize.Frontier._KelleyOwenDilationPencil ProximityGap.Frontier.KelleyOwenDilationPencil.pencil_card_core
 Research.ProximityPrize.Frontier._KelleyOwenDilationPencil ProximityGap.Frontier.KelleyOwenDilationPencil.stepanov_sqrt_bound
+
+# Guarded verifier forms and native oracle query routing.
+ArkLib.OracleReduction.Security.Guarded Verifier.PureForm.isPure
+ArkLib.OracleReduction.Security.Guarded Verifier.PureForm.append
+ArkLib.OracleReduction.Security.Guarded Verifier.IsGuarded.of_isPure
+ArkLib.OracleReduction.Security.Guarded Verifier.GuardedForm.isGuarded
+ArkLib.OracleReduction.Security.Guarded Verifier.PureForm.toGuardedForm
+ArkLib.OracleReduction.Security.Guarded Verifier.GuardedForm.ofEq
+ArkLib.OracleReduction.Security.Guarded Verifier.GuardedForm.append
+ArkLib.OracleReduction.Security.Guarded Verifier.IsGuarded.append
+ArkLib.OracleReduction.Security.Guarded Verifier.append_run_guardedLeft
+ArkLib.OracleReduction.Security.Guarded Verifier.GuardedForm.append_run_of_reject
+ArkLib.OracleReduction.Security.Guarded Verifier.GuardedForm.prEvent_pos_of_check
+ArkLib.OracleReduction.Security.Guarded Verifier.GuardedForm.ofQueryGuard

@@ -1323,3 +1323,11 @@ research modules pass ordinary compilation and installed audits of 74 selected
 declarations with only standard axioms. The proof repairs use explicit finite-sum
 identities and kernel-checked concrete arithmetic. Their conditional bounds and
 frequency-invariance obstructions retain their original scope.
+
+
+The native guarded-verifier foundation now passes ordinary compilation and installed
+audits of 12 selected declarations using only standard axioms. It packages deterministic
+verdicts with a Boolean check, preserves abort-on-reject behavior, composes guarded
+forms, and adapts the queried-message guard to the native oracle-output routing.
+Worst-case round-by-round security and guarded sequential-composition proofs remain
+separate transfers; this foundation does not establish those capstones.
