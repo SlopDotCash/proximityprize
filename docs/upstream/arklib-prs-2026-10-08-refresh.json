@@ -92,7 +92,7 @@
       "base_branch": "feat/ring-switch-profile-algebra",
       "draft": true,
       "changed_since_prior_inventory": false,
-      "disposition": "exact head fetched; substantive review and integration pending"
+      "disposition": "Reviewed fixed-before-challenge restriction and both negative controls. Native CandidateList module adapts separates_finset through the already stronger native incorrect-candidate union bound. Ordinary build and installed audits of 14 declarations pass with standard axioms, including tight finite-field bounds, correct-candidate exclusion and adaptive-list counterexamples. Modern BatchingPhase integration remains part of the pending protocol-phase transfer; no adaptive extraction claim."
     },
     {
       "number": 1287,

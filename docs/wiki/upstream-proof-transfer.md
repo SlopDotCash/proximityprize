@@ -1357,3 +1357,6 @@ The half-distance lattice-threshold module passes its ordinary build and install
 
 
 Three threshold-collapse, tower-ratio, and Hasse–Davenport coset-ladder modules pass ordinary builds and installed audits of 23 declarations using only standard axioms. The repairs add the explicit complex-character import and use the current limit API without changing the mathematical statements.
+
+
+The candidate-list batching bound and its regression module pass ordinary builds and installed audits of 14 declarations using only standard axioms. The bound charges at most L times the strategy error for an incorrect member of a fixed pre-challenge list. Concrete tests attain the bound, exclude correct candidates, and refute the analogous bound for adaptive lists or events that include the correct candidate. This does not establish adaptive extraction or a full ring-switching security theorem.
