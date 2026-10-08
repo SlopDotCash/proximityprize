@@ -1360,3 +1360,6 @@ Three threshold-collapse, tower-ratio, and Hasse–Davenport coset-ladder module
 
 
 The candidate-list batching bound and its regression module pass ordinary builds and installed audits of 14 declarations using only standard axioms. The bound charges at most L times the strategy error for an incorrect member of a fixed pre-challenge list. Concrete tests attain the bound, exclude correct candidates, and refute the analogous bound for adaptive lists or events that include the correct candidate. This does not establish adaptive extraction or a full ring-switching security theorem.
+
+
+Five native modules for worst-case round-by-round contracts, generic challenge-game bounds, guarded two-message security, challenge sampling transport, and heterogeneous equality pass ordinary compilation and installed audits of 26 selected declarations with only standard axioms. Worst-case bounds imply the existing averaged games through the native probability API. Extractor-specific contracts keep the extractor and knowledge-state function visible. Binary and n-ary composition capstones remain separate transfers.
