@@ -1355,3 +1355,11 @@ while incorporating the subsequent context-lifting, transcript-distribution, Boo
 and algebra API updates. The external ArkLib reference and lookup manifest now use the
 October 8 snapshot; it remains read-only. Newly combined audit roots must pass the full
 migration gate before merge.
+
+
+For the pinned VCVio migration, finite oracle response instances are pointwise families
+(`∀ t, Fintype (oSpec.Range t)` and the corresponding `Inhabited` family). Distribution
+proofs stated over `SPMF` retain that contract through `evalSPMF` and its lemmas. The new
+`evalDist` / `𝒟[·]` surface denotes a measure and is not a drop-in replacement for an
+SPMF equality or total-variation argument. Keep these representations explicit instead
+of adding measurable-space assumptions to repair an elaboration error.
