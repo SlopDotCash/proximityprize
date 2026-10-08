@@ -92,7 +92,7 @@ theorem transcript_concat_fst {j : Fin (m + n)} (hj : m ≤ (j : ℕ))
   have halt : (a : ℕ) < (j : ℕ) := by have := a.isLt; simp only [Fin.val_mk] at this; omega
   simp only [ProtocolSpec.Transcript.fst, ProtocolSpec.Transcript.concat]
   refine HEq.trans (cast_heq _ _) (HEq.trans ?_ (cast_heq _ _).symm)
-  rw [Fin.snoc, dif_pos (show ((⟨a.val, by omega⟩ : Fin ((j : ℕ) + 1)) : ℕ) < (j : ℕ) from by
+  erw [Fin.snoc.eq_1, dif_pos (show ((⟨a.val, by omega⟩ : Fin ((j : ℕ) + 1)) : ℕ) < (j : ℕ) from by
     simp only [Fin.val_mk]; exact halt)]
   exact (Fin.ext (by simpa using hva) : ((⟨a.val, by omega⟩ : Fin ((j : ℕ) + 1)).castLT
     (by simp only [Fin.val_mk]; exact halt)) = ⟨a'.val, by omega⟩) ▸ HEq.rfl
@@ -109,7 +109,7 @@ theorem prod_cast_snd_heq {A A' B B' : Type _} (hA : A = A') (hB : B = B') (a : 
     HEq ((congrArg₂ Prod hA hB ▸ (a, b) : A' × B').2) b := by
   subst hA; subst hB; rfl
 
-/-- **evalDist transport for the phase-1 experiment.** If the combined-oracle body `bodyA` is
+/-- **evalSPMF transport for the phase-1 experiment.** If the combined-oracle body `bodyA` is
 heterogeneously equal to `liftM oa` (the `pSpec₁`-oracle body lifted into the combined oracle),
 then the two experiments' output distributions agree (heterogeneously). Proved by `subst`ing the
 value-type equality `h` (making `bodyA = liftM oa`), then transferring the per-state distribution
@@ -119,16 +119,16 @@ theorem evalDist_init_run'_heq_of_body_heq {α β : Type} (h : α = β)
     (oa : OracleComp (oSpec + [pSpec₁.Challenge]ₒ) β)
     (hbody : HEq bodyA
       (liftM oa : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) β)) :
-    HEq (evalDist (init >>= fun s =>
+    HEq (evalSPMF (init >>= fun s =>
           (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂))
             : QueryImpl _ (StateT σ ProbComp)) bodyA).run' s))
-        (evalDist (init >>= fun s =>
+        (evalSPMF (init >>= fun s =>
           (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁))
             : QueryImpl _ (StateT σ ProbComp)) oa).run' s)) := by
   subst h
   rw [eq_of_heq hbody]
   apply heq_of_eq
-  rw [evalDist_bind, evalDist_bind]
+  rw [evalSPMF_bind, evalSPMF_bind]
   exact bind_congr fun s => OracleReduction.evalDist_run'_challengeSeam_left impl oa s
 
 /-- **Phase-1 per-round experiment body HEq.** The appended rbr experiment body at a phase-1
@@ -254,7 +254,12 @@ theorem StateFunction.append_toFun_gt
     (transcript : (pSpec₁ ++ₚ pSpec₂).Transcript roundIdx) :
     (StateFunction.append init impl V₁ V₂ S₁ S₂ verify hVerify hInit).toFun roundIdx stmt₁ transcript
       = S₂.toFun ⟨roundIdx - m, by omega⟩
-          (verify stmt₁ (by simp at h; simpa [min_eq_right_of_lt h] using transcript.fst))
+          (verify stmt₁ (by
+            simp at h
+            have ht := transcript.fst
+            dsimp only [Transcript, FullTranscript, Fin.val_succ] at ht
+            rw! (castMode := .all) [min_eq_right_of_lt h] at ht
+            exact ht))
           (by simpa [h] using transcript.snd) := by
   simp only [StateFunction.append, dif_neg h]
 
@@ -376,12 +381,12 @@ theorem append_rbrSoundness_keystone
             × (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inl (pSpec₂ := pSpec₂) i₁))
           = (pSpec₁.Transcript i₁.1.castSucc × pSpec₁.Challenge i₁) := congrArg₂ Prod hTrTy hChTy
     refine probEvent_congr_heq hResTy _ _ _ _ ?hd ?hPQ
-    · -- hd : the appended and `fstCast` experiments have heterogeneously-equal `evalDist`s.
+    · -- hd : the appended and `fstCast` experiments have heterogeneously-equal `evalSPMF`s.
       -- The appended phase-1 body is `liftM` of the `fstCast` body (`phase1_body_heq` +
       -- `fstCast_runToRound`), so the experiment distributions transfer via the challenge seam.
       exact evalDist_init_run'_heq_of_body_heq hResTy _ _
         ((phase1_body_heq prover stmtIn witIn i₁).trans
-          (heq_of_eq (by rw [Prover.fstCast_runToRound]; exact OracleComp.liftComp_eq_liftM _)))
+          (heq_of_eq (by simp only [Prover.fstCast_runToRound]; exact OracleComp.liftComp_eq_liftM _)))
     · -- hPQ : the appended state-function event corresponds to `S₁`'s under the type cast.
       rintro ⟨tr, ch⟩
       have hlt : i₁.1.val < m := i₁.1.isLt
