@@ -268,7 +268,7 @@
       "base_branch": "feat/randomized-restoration-knowledge",
       "draft": false,
       "changed_since_prior_inventory": true,
-      "disposition": "delta reviewed: thirteen prior Sumcheck interaction files unchanged; newly inherited RoundByRound matches reviewed #1261 head490c8d16 exactly. Native fourteen-module transfer already adapted; ordinary builds and installed audits pending."
+      "disposition": "Native fourteen-module Sumcheck interaction transfer and single-round projection adaptation pass ordinary builds and installed audits of 114 declarations using only standard axioms. Includes actual execution, multivariate/round-by-round soundness and restoration expected distinct-query bounds. Source-law, polynomial realization, abort and extraction assumptions remain explicit. Full repository and hosted qualification remain pending."
     },
     {
       "number": 1268,
@@ -279,7 +279,7 @@
       "base_branch": "feat/randomized-restoration-games",
       "draft": false,
       "changed_since_prior_inventory": true,
-      "disposition": "delta reviewed: prior randomized-query proof files unchanged; seven new dependency/client files are the merged #1261 round-by-round layer. Native randomized adapters already published, inherited Sumcheck validation pending."
+      "disposition": "delta reviewed: prior randomized-query proof files unchanged; seven new dependency/client files are the merged #1261 round-by-round layer. Native randomized adapters already published, inherited Sumcheck now passes ordinary and installed qualification (114 selected declarations including its native projection API)."
     },
     {
       "number": 1267,
@@ -290,7 +290,7 @@
       "base_branch": "main",
       "draft": false,
       "changed_since_prior_inventory": true,
-      "disposition": "delta reviewed: prior randomized-query proof files unchanged; seven new dependency/client files are the merged #1261 round-by-round layer. Native randomized adapters already published, inherited Sumcheck validation pending."
+      "disposition": "delta reviewed: prior randomized-query proof files unchanged; seven new dependency/client files are the merged #1261 round-by-round layer. Native randomized adapters already published, inherited Sumcheck now passes ordinary and installed qualification (114 selected declarations including its native projection API)."
     },
     {
       "number": 1266,

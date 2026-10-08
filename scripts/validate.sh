@@ -100,7 +100,10 @@ echo "# Native security clients"
   ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout \
   ArkLibTest.ProofSystem.Stir.ParamConditions \
   ArkLibTest.ProofSystem.Stir.PaperStatements \
-  ArkLibTest.ProofSystem.Stir.ProximityGap
+  ArkLibTest.ProofSystem.Stir.ProximityGap \
+  ArkLib.ProofSystem.Sumcheck.Interaction.ProtocolSoundness \
+  ArkLib.ProofSystem.Sumcheck.Interaction.RoundByRound \
+  ArkLib.ProofSystem.Sumcheck.Interaction.StateRestorationSoundness
 
 # CI gate 2: zero live sorry/admit holes in both library and research source.
 echo ""

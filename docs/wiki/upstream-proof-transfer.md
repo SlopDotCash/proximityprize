@@ -1366,3 +1366,6 @@ Five native modules for worst-case round-by-round contracts, generic challenge-g
 
 
 Native claim reduction and STIR vector completeness pass ordinary builds and installed audits of eight selected declarations using only standard axioms. The claim proofs normalize current OptionT simulation; the STIR proof pins the empty ambient oracle and challenge interfaces without adding completeness hypotheses. This is completeness and honest-verifier zero knowledge, not the pending STIR security theorem.
+
+
+Fourteen native Sumcheck interaction modules and the adapted single-round projection API pass ordinary builds and installed audits of 114 declarations using only standard axioms. The transfer covers actual committed-before-challenge execution, multivariate soundness, round-by-round certificates, state restoration, and expected distinct-query budgets. Abort behavior, the source distribution law, polynomial realizations, and extractor assumptions remain explicit. An isolated-module build caught and repaired the missing NativeMeasure import in Soundness; combined source checks alone had not exposed it.
