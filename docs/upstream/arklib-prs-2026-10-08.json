@@ -70,7 +70,7 @@
       "base_branch": "main",
       "draft": false,
       "changed_since_prior_inventory": false,
-      "disposition": "same head as prior inventory; see its detailed disposition"
+      "disposition": "Corrected native error-budget arguments now compile with their front-door, assembled and checking-IOP clients: folding errors use foldingParam; shift errors use repeatParam+s inside proximityError; final error bound remains required at M=0. Five budget/regression roots and 49 checking roots pass installed standard-axiom audits. Strict soundness relation and main quantifier/complexity corrections remain under review; no donor admitted theorem imported."
     },
     {
       "number": 1290,

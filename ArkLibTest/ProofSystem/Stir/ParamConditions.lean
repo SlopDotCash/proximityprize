@@ -152,4 +152,15 @@ theorem not_paramConditions_of_deg_eq_three {F : Type} [Field F] [DecidableEq F]
         _ ≤ 2 ^ (k + 2) := Nat.pow_le_pow_right (by norm_num) (by omega)
     omega
 
+/-- Even with no transitions, the last-round error bound is still required. -/
+theorem final_bound_of_zero_transition_soundness
+    (ε_fold ε_fin : ℝ≥0) (ε_out ε_shift : Fin 0 → ℝ≥0)
+    (h : stir_rbr_soundness domains (P := params) (Dist := dist)
+      (Codes := codes) (hParams := conditions) (s := 0)
+      delta_zero_lt (fun hj => absurd (Fin.fin_one_eq_zero _) hj)
+      ε_fold ε_out ε_shift ε_fin) :
+    ε_fin ≤ (1 - dist.δ (Fin.last 0)) ^ (params.repeatParam (Fin.last 0)) := by
+  obtain ⟨n, spec, hcount, π, hsecure, hfold, hrest⟩ := h
+  exact hrest.2
+
 end ArkLibTest.StirMainThm

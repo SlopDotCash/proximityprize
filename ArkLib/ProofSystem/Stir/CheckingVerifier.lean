@@ -90,6 +90,8 @@ set_option linter.unusedTactic false
 
 namespace StirIOP
 
+attribute [local instance] legacyUniformSpec
+
 namespace MultiRound
 
 open OracleSpec OracleComp ProtocolSpec STIR ReedSolomon NNReal WhirIOP.Construction
@@ -319,6 +321,8 @@ end CheckingVerifier
 
 section Invariant
 
+set_option backward.isDefEq.respectTransparency false
+
 variable [Nonempty ι]
 
 /-- The honest packed message value at message round `iv` (`iv % 3 = 1`): the packed fold of the
@@ -339,7 +343,7 @@ a single codeword at its own degree is the identity, is the packed input codewor
 theorem stirMultiRoundProver_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
     (stmtIn : Unit × ∀ i, OracleStatement ι F i) (witIn : Unit)
     (k : Fin (3 * M + 3 + 1)) :
-    ∀ ts ∈ _root_.support
+    ∀ ts ∈ support
       ((stirMultiRoundProver M φ deg).runToRound k stmtIn witIn),
       ts.2.1 = (stmtIn, witIn) ∧
       ∀ (iv : ℕ) (hik : iv < k.val) (hdir : iv % 3 = 1),
@@ -369,7 +373,7 @@ theorem stirMultiRoundProver_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (deg
             if h : 0 < (stirMultiVSpec M ι).length ⟨(j : ℕ), j.isLt⟩
             then r.get ⟨0, h⟩ else 0) := by
           dsimp only [stirMultiRoundProver] at hfch
-          simpa only [support_pure, Set.mem_singleton_iff] using hfch
+          simpa only [liftM_pure, support_pure, Set.mem_singleton_iff] using hfch
         refine ⟨by rw [hfch']; exact ihSt, ?_⟩
         intro iv hik hdir
         by_cases hlt : iv < j.val
@@ -733,7 +737,7 @@ theorem checkingVerifier_support_iff
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit)) :
-    out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr) ↔
+    out ∈ support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr) ↔
       out = (checkingBool M φ deg stmtIn.2 tr.messages tr.challenges,
         fun i : Empty => i.elim) := by
   rw [checkingVerifier_toVerifier_verify]
@@ -747,7 +751,7 @@ theorem checkingVerifier_acceptance_iff_checkingBool
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr)) :
+    (hout : out ∈ support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr)) :
     out.1 = true ↔ checkingBool M φ deg stmtIn.2 tr.messages tr.challenges = true := by
   have hout_eq := (checkingVerifier_support_iff M φ deg stmtIn tr out).mp hout
   constructor
@@ -767,7 +771,7 @@ theorem checkingVerifier_acceptance_implies_checkingBool
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
+    (hout : out ∈ support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
     (hacc : out.1 = true) :
     checkingBool M φ deg stmtIn.2 tr.messages tr.challenges = true := by
   exact (checkingVerifier_acceptance_iff_checkingBool M φ deg stmtIn tr out hout).mp hacc
@@ -779,7 +783,7 @@ theorem checkingVerifier_acceptance_implies_fold_check
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
+    (hout : out ∈ support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
     (hacc : out.1 = true) :
     inputAns stmtIn.2 (queryPoint φ (chalFE tr.challenges (outChalIdx M 0)))
       = msgAns tr.messages (msgIdx M 0)
@@ -795,7 +799,7 @@ theorem checkingVerifier_acceptance_implies_round_consistency
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
+    (hout : out ∈ support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
     (hacc : out.1 = true)
     (j : Fin M) :
     (msgAns tr.messages (msgIdx M j.castSucc)
@@ -821,7 +825,7 @@ theorem checkingVerifier_acceptance_implies_out_consistency
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
+    (hout : out ∈ support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
     (hacc : out.1 = true)
     (j : Fin M) :
     msgAns tr.messages (msgIdx M j.castSucc)
@@ -841,7 +845,7 @@ theorem checkingVerifier_acceptance_implies_shift_consistency
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
+    (hout : out ∈ support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
     (hacc : out.1 = true)
     (j : Fin M) :
     msgAns tr.messages (msgIdx M j.castSucc)
@@ -861,7 +865,7 @@ theorem checkingVerifier_acceptance_implies_final_in_code
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
+    (hout : out ∈ support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
     (hacc : out.1 = true) :
     (fun x : ι =>
       (((List.finRange (Fintype.card ι)).map (fun k =>
@@ -873,6 +877,7 @@ theorem checkingVerifier_acceptance_implies_final_in_code
     stmtIn.2 tr.messages tr.challenges
     (checkingVerifier_acceptance_implies_checkingBool M φ deg stmtIn tr out hout hacc)
 
+set_option backward.isDefEq.respectTransparency false in
 set_option maxHeartbeats 1600000 in
 /-- **Perfect completeness of the checking (M+1)-round STIR Vector IOPP**, for arbitrary
 symbolic depth `M`, against the genuine perfect-completeness relation `stirRelation deg φ 0`:
@@ -903,9 +908,9 @@ theorem stirCheckingIOP_perfectCompleteness (M : ℕ) (φ : ι ↪ F) (deg : ℕ
     rw [probFailure_bind_eq_zero_iff]
     refine ⟨?_, fun α _hα => ?_⟩
     · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+        _root_.probFailure_liftComp, probFailure_eq_zero]
     · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_pure, HasEvalPMF.probFailure_eq_zero, zero_add,
+      simp only [OptionT.run_pure, probFailure_eq_zero, zero_add,
         probOutput_eq_zero_iff, support_pure, Set.mem_singleton_iff, reduceCtorEq,
         not_false_eq_true]
   · -- CORRECTNESS: every output in the support satisfies the relation + agreement
@@ -913,10 +918,10 @@ theorem stirCheckingIOP_perfectCompleteness (M : ℕ) (φ : ι ↪ F) (deg : ℕ
     simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
     obtain ⟨α, hα, hx⟩ := hx
     -- the run-support invariant: every transcript message is the honest packed codeword
-    have hα' : α ∈ _root_.support
+    have hα' : α ∈ support
         ((stirMultiRoundProver M φ deg).runToRound (Fin.last (3 * M + 3))
           (stmtIn, oStmtIn) witIn) := by
-      simpa only [OptionT.support_liftM] using hα
+      simpa only [OptionT.support_liftM, stirMultiRoundProver] using hα
     have hinv := stirMultiRoundProver_runToRound_invariant M φ deg (stmtIn, oStmtIn) witIn
       (Fin.last (3 * M + 3)) α hα'
     have hmsgs : ∀ j, FullTranscript.messages (pSpec := (stirMultiVSpec M ι).toProtocolSpec F)
@@ -1349,18 +1354,18 @@ theorem stir_rbr_soundness_of_checkingIOP_CA
     -- the EXISTING named per-round accounting keystone
     (hPR : PerRoundProximityGap e ProxGapBound)
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
-    (hrest : ∀ j : Fin M,
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
+    (hrest : (∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
         ∧
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
         ∧
         ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
@@ -1396,18 +1401,18 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le
     (hδsqrt : Dist.δ 0 < 1 - ReedSolomon.sqrtRate (degree ι P 0) (P.φ 0))
     (hq : (Fintype.card F : ℝ≥0) ≤ (Fintype.card (ι 0) : ℝ≥0))
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
-    (hrest : ∀ j : Fin M,
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
+    (hrest : (∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
         ∧
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
         ∧
         ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
@@ -1441,18 +1446,18 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le_e7
       ProxGapBound ProxGapBound)
     (hq : (Fintype.card F : ℝ≥0) ≤ (((degree ι P 0) ^ 2 * 10 ^ 7 : ℕ) : ℝ≥0))
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
-    (hrest : ∀ j : Fin M,
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
+    (hrest : (∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
         ∧
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
         ∧
         ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
@@ -1488,18 +1493,18 @@ theorem stir_rbr_soundness_of_checkingIOP_large
       ProximityGap.StrictCoeffPolysLargeResidual (ι := ι 0) (F := F)
         (k := k) (deg := degree ι P 0) (domain := P.φ 0) (δ := Dist.δ 0))
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
-    (hrest : ∀ j : Fin M,
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
+    (hrest : (∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
         ∧
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
         ∧
         ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
@@ -1538,18 +1543,18 @@ theorem stir_rbr_soundness_of_checkingIOP_small_field
       proximityError F (degree ι P 0)
         (LinearCode.rate (code (P.φ 0) (degree ι P 0))) (Dist.δ 0) m ≤ ε_fold)
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
-    (hrest : ∀ j : Fin M,
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
+    (hrest : (∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
         ∧
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
         ∧
         ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)

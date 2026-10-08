@@ -1039,3 +1039,16 @@ to pointwise instances; the theorem hypotheses and composition proof remain inta
 The joint Ajtai build failed independently in its lattice norm dependency, whose migration
 is still under repair. Refreshed #1266 has identical knowledge-base content to its reviewed
 prior revision, so the earlier decision to regenerate native indices remains applicable.
+
+
+The next #1291 budget corrections now compile with native STIR front-door, assembled and
+checking-IOP clients. Folding errors use `foldingParam`; the shift term passes
+`repeatParam + s` into `proximityError`, rather than adding `s` to its returned error.
+The final error bound sits outside the transition quantifier, so it is still required when
+`M = 0`; a concrete regression theorem checks that case. The five budget/regression audit
+roots, all 49 checking-verifier exports, seven assembled-protocol roots and three round-three
+completeness roots have standard-only installed axiom closures. These modules compile
+ordinarily; the joint build still failed in vector-chain completeness, whose separate repair
+is under validation. The port preserves existing explicit soundness residuals. #1291's stricter
+soundness relation and uniform main-theorem quantifiers/complexity remain under review.
+No donor admitted theorem has been substituted for a proof.
