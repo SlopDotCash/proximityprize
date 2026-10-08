@@ -57,8 +57,16 @@ lemma log_right_inverse' {ω : D} {x : ω} :
     induction fuel generalizing i with
     | zero => simp_all
     | succ fuel ih =>
-      simp [logAux]
-      grind
+      rw [logAux]
+      split_ifs with hbound hmatch
+      · exact hmatch
+      · apply ih i _ hx
+        have hne : i.val ≠ fuel := by
+          intro heq
+          have hiEq : i = ⟨fuel, hbound⟩ := Fin.ext heq
+          exact hmatch (hiEq ▸ hx)
+        omega
+      · exact ih i (by have := i.isLt; omega) hx
   exact h_log_aux _ _ (Fin.is_lt i) hi
 
 lemma log_right_inverse {ω : D} :

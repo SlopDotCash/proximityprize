@@ -119,8 +119,8 @@ abbrev toFftDomain (ω : CosetFftDomain ι F) : FftDomain ι F :=
 lemma mem_toFftDomain_iff_mul_mem :
     x ∈ ω.toFftDomain ↔ ω.cosetGenerator * x ∈ ω := by
   have : ω 0 = ω.cosetGenerator := by
-    have : (0 : ι) = (1 : Multiplicative ι) := by rfl
-    aesop (add simp [eval_coset_fft_domain_eq_eval_generator_mul_domain])
+    simp only [eval_coset_fft_domain_eq_eval_generator_mul_domain,
+      subgroupUnit_zero, Units.val_one, mul_one]
   aesop (add simp [CosetFftDomainClass.mem_toFftDomain_iff_mul_mem])
 
 lemma mul_mem_of_mem_toFftDomain_of_mem {y : F}
@@ -138,9 +138,10 @@ lemma toFffDomain_eq_self {ω : FftDomain ι F} :
   simp only [CosetFftDomainClass.toFftDomain,
     CosetFftDomainClass.toCosetFftDomain_of_CosetFftDomain,
     eval_fft_domain_eq_eval_coset_fft_domain,
-    CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain, Units.val_one, one_mul,
-    ne_eq, Units.ne_zero, not_false_eq_true, right_eq_mul₀, Units.val_eq_one]
-  exact ω.cosetGenerator_one
+    CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain,
+    Units.val_one, one_mul]
+  simp only [ω.cosetGenerator_one, Units.val_one, one_mul,
+    CosetFftDomain.subgroupUnit]
 
 end FftDomain
 

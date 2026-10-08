@@ -1208,3 +1208,10 @@ bound now pass ordinary Lean 4.34 builds and installed audits of 34 selected roo
 all limited to the standard axioms. The repairs use the current function-product API,
 explicit complex algebraic-closure imports, and finite-set membership lemmas.
 The original mathematical statements and hypotheses are unchanged.
+
+
+The coset FFT-domain logarithm and conversion APIs, A8 coset structure, ladder-spectrum
+fusion, and interleaved-list MCA consumers now pass ordinary Lean 4.34 builds. An
+installed audit covers 37 roots across these modules and the already-validated exact
+KKH26 census, all with standard axioms. Routine auditing now includes the new roots.
+These local checks do not replace the remaining full-library migration gate.
