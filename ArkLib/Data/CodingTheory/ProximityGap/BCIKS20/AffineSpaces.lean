@@ -952,7 +952,6 @@ private theorem exists_large_of_finset_cover' {α : Type}
       _ = L * B := by simp [Finset.sum_const]
   exact absurd hle (not_le.mpr hLB)
 
-
 section Bucketing
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
