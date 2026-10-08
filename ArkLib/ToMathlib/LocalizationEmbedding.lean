@@ -34,7 +34,8 @@ theorem embLoc_comp {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H)
     embLoc hHyp hξ (algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp)) a)
       = embeddingOf𝒪Into𝕃 H a := by
   unfold embLoc
-  exact IsLocalization.Away.lift_eq _ a
+  exact IsLocalization.Away.lift_eq (ξ x₀ R H hHyp)
+    (isUnit_iff_ne_zero.mpr (emb_ξ_ne_zero hHyp hξ)) a
 
 set_option maxHeartbeats 1000000 in
 /-- **`embLoc` is injective** (`lift_injective_iff`: both sides reduce to `x = y` — the

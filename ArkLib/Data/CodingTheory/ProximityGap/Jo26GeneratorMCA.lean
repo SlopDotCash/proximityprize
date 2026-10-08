@@ -485,7 +485,6 @@ theorem exists_nonzero_notMem_of_proper_family_of_card_le
   obtain ⟨lam, hlam0, hlam⟩ := ProximityGap.exists_nonzero_notMem_of_proper_family ht
     (fun γ => if h : ∃ ω, e ω = γ then K h.choose else K (Classical.arbitrary Ω))
     (fun γ => by
-      dsimp only
       split_ifs with h
       · exact hK _
       · exact hK _)
@@ -572,7 +571,6 @@ theorem epsMCAGen_interleaved_le_of_card_le (C : Submodule F (ι → A)) (s : �
     (fun ω => if h : genMCAEvent G ((C : Set (ι → A))^⋈ (Fin s)) δ U ω
       then tupleJointSubmodule C h.choose U else ⊥)
     (fun ω => by
-      dsimp only
       split_ifs with h
       · exact tupleJointSubmodule_ne_top C U h.choose_spec.2.2
       · exact bot_ne_top)

@@ -52,7 +52,7 @@ theorem exists_of_weighted_avg_gt {α : Type} (p : PMF α) (f : α → ENNReal) 
     exact le_of_not_gt this
   have hmul : ∀ a, p a * f a ≤ p a * ε := by
     intro a
-    exact mul_le_mul_of_nonneg_left (hle a) (zero_le (p a))
+    exact mul_le_mul_of_nonneg_left (hle a) zero_le
   have htsum : (∑' a, p a * f a) ≤ ∑' a, p a * ε := by
     exact ENNReal.tsum_le_tsum hmul
   have htsum' : (∑' a, p a * f a) ≤ ε := by

@@ -49,7 +49,6 @@ stronger Ramanujan form `B ≤ √2·√n` is FALSE outside the thin prize regim
 
 set_option autoImplicit false
 set_option linter.style.longLine false
-set_option linter.style.commandStart false
 
 
 open Finset

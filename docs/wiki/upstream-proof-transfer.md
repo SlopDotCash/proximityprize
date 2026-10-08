@@ -921,3 +921,10 @@ explicitly. Completeness and soundness factoring preserve the existing state-pre
 simulation hypotheses. The result remains distributional: it does not assert the false general
 syntactic reordering of a challenge and a prover output. All four roots are registered for
 routine auditing; downstream perfect-completeness and full STIR validation remain pending.
+
+The STIR fold-round completeness module passes a focused Lean 4.34 source check, with
+all five printed theorem closures using only standard axioms. The port uses pointwise
+oracle instances, a local finite-uniform interpretation, and an explicit universe for the
+empty oracle specification. It preserves the non-failing initialization assumption and
+proves the original input/output relation through the single-codeword combination identity.
+This is a focused result; the full migration build still has downstream compatibility failures.

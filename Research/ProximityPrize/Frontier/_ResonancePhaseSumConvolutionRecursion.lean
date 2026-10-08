@@ -121,7 +121,6 @@ theorem phaseSum_succ (u : ZMod m → ℂ) (r : ℕ) (c : ZMod m) :
     rw [Finset.mem_sigma, Finset.mem_filter, Finset.mem_filter] at hp
     obtain ⟨⟨_, ha0⟩, _, hYne, hYsum⟩ := hp
     rw [Finset.mem_filter]
-    simp only
     refine ⟨Finset.mem_univ _, fun i => ?_, ?_⟩
     · induction i using Fin.lastCases with
       | last => rw [Fin.snoc_last]; exact ha0
