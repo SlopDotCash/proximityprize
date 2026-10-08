@@ -193,7 +193,6 @@ end LinearAlgebra
 /-! ## The interpolation theorem -/
 
 open scoped Classical in
-set_option maxHeartbeats 1600000 in
 /-- **Interpolation (TR26-164 Proposition 3.13, `d = 1`, counting left explicit).**
 Let `Qs` be a finite-dimensional space of interpolants of weighted degree `< D`, `S` a finite set
 of nodes with values `y`, and suppose the ranks of the node maps on `Qs` sum to less than
@@ -211,7 +210,7 @@ theorem exists_interpolant (w D m A : ℕ) (hD : 0 < D) (hA : D ≤ A * m)
   obtain ⟨q, hq0, hq⟩ := exists_ne_zero_mem_iInf_ker S
     (fun α => (nodeMap α (y α) m).domRestrict Qs) hrank
   refine ⟨q, q.2, fun h => hq0 (Subtype.ext h), fun P hP hagree => ?_⟩
-  refine specialize_eq_zero_of_agreement w D m hD q (hQs q q.2)
+  refine specialize_eq_zero_of_agreement (F := F) w D m hD q (hQs q q.2)
     (S.filter fun α => P.eval α = y α) y ?_ P hP ?_ ?_
   · intro α hα
     have hαS : α ∈ S := (Finset.mem_filter.mp hα).1

@@ -1160,3 +1160,7 @@ ArkLib.Data.CodingTheory.ProximityGap.Jo26GeneratorMCA ProximityGap.Jo26Gen.genM
 ArkLib.Data.CodingTheory.ProximityGap.Jo26GeneratorMCA ProximityGap.Jo26Gen.epsMCAGen_val_eq_epsMCACurve
 ArkLib.Data.CodingTheory.ProximityGap.Jo26GeneratorMCA ProximityGap.Jo26Gen.epsMCAGen_val_two_eq_epsMCA
 ArkLib.Data.CodingTheory.ProximityGap.Jo26GeneratorMCA ProximityGap.Jo26Gen.epsMCACurve_interleaved_eq
+
+# Explicit-field interpolation elaboration regression.
+Research.ProximityPrize.Frontier._HD1InterpolationCore ArkLib.ProximityGap.Frontier.HD1Contact.exists_interpolant
+Research.ProximityPrize.Frontier._HD1InterpolationCore ArkLib.ProximityGap.Frontier.HD1Contact.specialize_eq_zero_of_agreement
