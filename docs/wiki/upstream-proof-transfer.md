@@ -1266,3 +1266,9 @@ ordinary build and installed audits of 49 selected roots. Concrete arithmetic is
 by the Lean kernel, and disjoint-union membership is handled explicitly. The permutation
 identity action is definitional. The migration preserves the distinction between
 conditional variance consumers, arithmetic countermodels, and the open production target.
+
+
+Four Kneser, orbit-spike, frequency-invariance, and prime-supply research modules
+pass their ordinary build and installed audits of 29 selected declarations using
+only standard axioms. The repairs retain the arithmetic no-go results and the
+conditional prime-supply interfaces; they do not close the production conjecture.
