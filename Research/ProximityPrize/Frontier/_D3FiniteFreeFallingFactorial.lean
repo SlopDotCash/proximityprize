@@ -254,7 +254,7 @@ exceeds the free `n^r`, in real-analytic form — the decay ratio is at most `1`
 theorem depletion_le_one {r : ℕ} {n : ℝ} (hn : 0 < n)
     (hrange : ∀ j ∈ Finset.range r, (j : ℝ) ≤ n) :
     ∏ j ∈ Finset.range r, (1 - (j : ℝ) / n) ≤ 1 := by
-  refine Finset.prod_le_one ?_ ?_
+  refine Finset.prod_le_one₀ ?_ ?_
   · intro j hj; rw [sub_nonneg]; exact div_le_one_of_le₀ (hrange j hj) hn.le
   · intro j _; have : (0 : ℝ) ≤ (j : ℝ) / n := by positivity
     linarith

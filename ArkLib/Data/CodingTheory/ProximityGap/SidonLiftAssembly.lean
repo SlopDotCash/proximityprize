@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CyclotomicSidonLift
+import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # THE CYCLOTOMIC RESULTANT BOUND + NONZERO, AND THE "NO PARALLELOGRAM" THEOREM (#389)

@@ -199,7 +199,6 @@ theorem collision_count_eq_moment (ζ : ℂ) (hζ : IsPrimitiveRoot ζ p) (S : T
   rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_comm]
   congr 2
 
-omit [Fact p.Prime] in
 /-- **The `b = 0` term is the DC term `(#T)²`.** `χ_0 ≡ 1`, so `η_0 = #T` and
 `η_0·conj(η_0) = (#T)²` (`= n^{2r}` when `T = (Fin r → μ_n)`). -/
 theorem b_zero_term_eq (ζ : ℂ) (S : T → ZMod p) :

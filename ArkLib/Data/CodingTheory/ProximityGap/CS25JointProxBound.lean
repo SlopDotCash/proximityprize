@@ -93,6 +93,7 @@ open Classical in
 interleaving `⋈|u = uᵀ` is within Hamming distance `e` of some interleaved codeword. By the union
 bound over the interleaved code `C^⋈κ` (`|C|^|κ|` codewords), the number of jointly-`e`-close stacks
 is at most `|C|^|κ| · V'`, where `V'` is the interleaved-ball volume. -/
+set_option backward.isDefEq.respectTransparency false in
 theorem card_jointProximityNat_le (C : Set (ι → A)) [AddCommGroup A] [Fintype ↥C] (e : ℕ) :
     (Finset.univ.filter (fun u : WordStack A κ ι => jointProximityNat C (u := u) e)).card
       ≤ (Fintype.card ↥C) ^ (Fintype.card κ)
@@ -107,11 +108,13 @@ theorem card_jointProximityNat_le (C : Set (ι → A)) [AddCommGroup A] [Fintype
     rw [jointProximityNat_iff_closeToInterleavedCodeword]
     change (∃ v : interleavedCodeSet (κ := κ) C, hammingDist u.transpose v.val ≤ e) ↔
       (𝒞.filter (fun c => hammingDist u.transpose c ≤ e)).card ≠ 0
-    rw [Finset.card_ne_zero, Finset.filter_nonempty_iff]
+    rw [Finset.card_ne_zero]
     constructor
     · rintro ⟨v, hv⟩
-      exact ⟨v.val, Finset.mem_image_of_mem _ (Finset.mem_univ v), hv⟩
-    · rintro ⟨c, hcS, hc⟩
+      exact ⟨v.val, Finset.mem_filter.mpr
+        ⟨Finset.mem_image_of_mem _ (Finset.mem_univ v), hv⟩⟩
+    · rintro ⟨c, hc'⟩
+      obtain ⟨hcS, hc⟩ := Finset.mem_filter.mp hc'
       obtain ⟨v, -, rfl⟩ := Finset.mem_image.mp hcS
       exact ⟨v, hc⟩
   have hreindex :
@@ -183,6 +186,7 @@ private theorem floor_nnreal_eq_real (δ : ℝ≥0) (n : ℕ) :
 
 /-- The interleaved-ball volume `V'_{⌊δn⌋}` equals `hammingBallVolume (q^|κ|) δ n`, the explicit
 sum `∑_{i≤⌊δn⌋} C(n,i)(q^|κ|-1)^i` over the interleaved alphabet `κ→A`. -/
+set_option backward.isDefEq.respectTransparency false in
 theorem interleaved_ball_card_eq_volume [Nonempty ι] [AddCommGroup A] (δ : ℝ≥0) :
     (Finset.univ.filter (fun w : InterleavedWord A κ ι =>
         hammingDist w 0 ≤ ⌊δ * (Fintype.card ι : ℝ≥0)⌋₊)).card
@@ -192,11 +196,13 @@ theorem interleaved_ball_card_eq_volume [Nonempty ι] [AddCommGroup A] (δ : ℝ
     ← CodingTheory.filter_card_eq_hammingBall_ncard, ← heq]
   refine Finset.card_nbij' id id ?_ ?_ ?_ ?_
   · intro w hw
-    simpa only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and,
-      Set.mem_setOf_eq, id_eq, hammingDist_comm] using hw
+    apply Finset.mem_filter.mpr
+    refine ⟨Finset.mem_univ _, ?_⟩
+    exact (Finset.mem_filter.mp hw).2
   · intro w hw
-    simpa only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and,
-      Set.mem_setOf_eq, id_eq, hammingDist_comm] using hw
+    apply Finset.mem_filter.mpr
+    refine ⟨Finset.mem_univ _, ?_⟩
+    exact (Finset.mem_filter.mp hw).2
   · intro w _; rfl
   · intro w _; rfl
 

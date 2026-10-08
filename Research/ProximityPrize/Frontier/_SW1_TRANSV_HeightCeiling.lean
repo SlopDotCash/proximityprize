@@ -244,15 +244,15 @@ theorem height_model_cannot_certify_core (U : Type*) [Fintype U] [DecidableEq U]
   rw [Fintype.card_prod, Fintype.card_fin, ← mul_assoc]
   exact Nat.mul_lt_mul_of_pos_right hC hW
 
+private theorem power_product_lt_square_power (a b c : ℕ) (h : a + b < 2 * c) :
+    (2 : ℕ) ^ a * 2 ^ b < 4 ^ c := by
+  rw [← pow_add, show (4 : ℕ) = 2 ^ 2 by norm_num, ← pow_mul]
+  exact Nat.pow_lt_pow_right (by norm_num) h
+
 /-- At the prize cell `n = 2^30`, `p = n · 2^128`, the height gate `(2r)^{n/2} < p` (the only
 way to get `⌊log_p H⌋ = 0`) already fails at `r = 2`: `4^{2^29} > 2^30 · 2^128`. -/
 theorem prize_gate_vacuous : (2 : ℕ) ^ 30 * 2 ^ 128 < 4 ^ (2 ^ 29) := by
-  have h1 : (2 : ℕ) ^ 30 * 2 ^ 128 = 2 ^ 158 := by norm_num
-  have h3 : (2 : ℕ) * 2 ^ 29 = 2 ^ 30 := by norm_num
-  have h2 : (4 : ℕ) ^ (2 ^ 29) = 2 ^ (2 ^ 30) := by
-    rw [show (4 : ℕ) = 2 ^ 2 by norm_num, ← pow_mul, h3]
-  rw [h1, h2]
-  exact Nat.pow_lt_pow_right (by norm_num) (by norm_num)
+  exact power_product_lt_square_power _ _ _ (by norm_num)
 
 end SW1Transv
 

@@ -17,12 +17,17 @@ with a checkout using another toolchain or dependency lock.
 For proof migrations, prove identities for symbolic dimensions and exponents
 before specializing to large prize parameters. This avoids kernel reduction of
 huge finite types or powers. Preserve theorem conclusions and assumptions; generic lemmas may also cover
-additional dimensions.
+additional dimensions. For nested powers such as `2 ^ (2 ^ 29)`, put the
+monotonicity argument in a symbolic helper and then specialize it. This prevents
+kernel comparison from expanding the enormous numeral while preserving the
+original bound.
 Remove obsolete no-progress tactic calls and supply changed coercions or module
 instances explicitly. When simplification changes normalized-factor membership into
 prime-factor membership, use explicit `Multiset.mem_toFinset` and finite-set
 membership witnesses to retain the intended proposition. Import the required Mathlib modules instead of the whole
-library when possible to reduce source-check resource use. A source check against
+library when possible to reduce source-check resource use. The retired
+`Mathlib.Data.Nat.Lattice` module supplies no lattice API; import
+`Mathlib.Order.Lattice.Nat` explicitly when using natural infima. A source check against
 installed dependencies is only a focused check; the complete build and axiom
 audit must still pass on the published revision.
 

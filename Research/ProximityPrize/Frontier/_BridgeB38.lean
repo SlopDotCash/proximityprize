@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Order.Bounds.Basic
-import Mathlib.Data.Nat.Lattice
+import Mathlib.Order.Lattice.Nat
+import Mathlib.Data.Fintype.Lattice
 
 /-!
 # Bridge B38 — converse of binding: incidence over budget ⟹ below the crossing (target X, #444)
