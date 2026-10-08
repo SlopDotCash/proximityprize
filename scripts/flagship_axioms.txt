@@ -2062,3 +2062,6 @@ ArkLib.Data.CodingTheory.ProximityGap.ChordConverseWrapper ArkLib.ProximityGap.C
 ArkLib.Data.CodingTheory.ProximityGap.ChordConverseWrapper ArkLib.ProximityGap.ChordConverseWrapper.stack_bswap₃
 ArkLib.Data.CodingTheory.ProximityGap.MCAZeta8CensusCapstone ProximityGap.MCAZeta8Census.census8_complete
 ArkLib.Data.CodingTheory.ProximityGap.MCAZeta8CensusCapstone ProximityGap.MCAZeta8Census.mu8_collinear_iff_classified
+
+# Graded beta weight migration check.
+ArkLib.ToMathlib.BetaWeightGradedAssembly ArkLib.betaRec_weight_le_graded
