@@ -46,6 +46,7 @@ scripts/proximity-prize-reference.sh cache
 scripts/proximity-prize-reference.sh targets
 scripts/proximity-prize-reference.sh lower
 scripts/proximity-prize-reference.sh upper
+scripts/proximity-prize-reference.sh replay-upper
 ```
 
 The wrapper checks the reviewed commit and clean tracked source, selects the
@@ -78,8 +79,10 @@ All publishing for this project must target `SlopDotCash/proximityprize`.
 
 ## ArkLib main and all open PRs
 
-`external/arklib` pins upstream main at
-[`35ddcaa83f683011f944f58904be779495a5709a`](https://github.com/Verified-zkEVM/ArkLib/tree/35ddcaa83f683011f944f58904be779495a5709a).
+`external/arklib` pins the reviewed October 8 upstream main at
+[`745e77939ac4cecf0333af8410a2463c5c7cb655`](https://github.com/Verified-zkEVM/ArkLib/tree/745e77939ac4cecf0333af8410a2463c5c7cb655).
+The [refreshed file inventory](../upstream/arklib-main-2026-10-08.json) compares it with
+native commit `c5846e1d8ace7df60f0c1b057cfbe55cf91b353c`; byte differences are discovery hints, not semantic gaps.
 The [main file inventory](../upstream/arklib-main-2026-10-06.json) records all
 920 upstream library files against the native starting commit: 655 absent paths
 and 265 byte-different paths. These are discovery counts, not a semantic count
@@ -1049,3 +1052,13 @@ Seven full modules pass focused compilation. Five other edited modules cannot ye
 checked locally because prerequisite artifacts are missing; isolated cyclotomic numeric
 checks pass but do not certify that full module. Full hosted migration validation remains
 required.
+The pinned upper candidate now passes fresh replay on Lean 4.32.2: all 38,274 declarations
+in its complete dependency closure are present in the fresh kernel environment, and all
+quotient declarations match the originals. Its candidate, score and integer certificate also
+pass the standard-axiom audit. The reproducible `replay-upper` command imports the pinned
+compiled candidate, checks the axiom whitelist, rejects unsafe/partial dependencies and
+replays the closure into an empty environment. Post-checks use the kernel environment directly;
+the higher-level environment interface can hide private declarations and produce false
+missing-name reports. This is local verification of the exact pinned upper benchmark,
+not a hosted ranking result or completion of the native production proximity-gap conjecture.
+The lower candidate remains under compilation and requires its own audit and replay.

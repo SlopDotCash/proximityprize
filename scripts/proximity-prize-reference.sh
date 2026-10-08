@@ -23,5 +23,6 @@ case "${1:-}" in
   targets) exec "$root/scripts/lake-locked.sh" build ProximityPrize ;;
   lower) exec "$root/scripts/lake-locked.sh" build ProximityPrize.SubmissionLower.Solution ;;
   upper) exec "$root/scripts/lake-locked.sh" build ProximityPrize.SubmissionUpper.Solution ;;
-  *) echo "Usage: $0 {cache|targets|lower|upper}" >&2; exit 2 ;;
+  replay-upper) exec lake env lean "$root/scripts/proximity-prize-upper-replay.lean" ;;
+  *) echo "Usage: $0 {cache|targets|lower|upper|replay-upper}" >&2; exit 2 ;;
 esac
