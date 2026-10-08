@@ -979,3 +979,25 @@ subtraction bounds explicit. In filter proofs, simplify membership before unfold
 predicate with its own decidability instance, then use `change` to state the arithmetic
 predicate explicitly; unfolding both together can expose list-filter implementation terms.
 This focused result does not replace full repository compilation and auditing.
+
+
+The new #1294–#1296 sequence supplies a useful missing route for guarded round-by-round
+knowledge composition. #1294 relocates the guard interface; #1295 proves binary and iterated
+composition for worst-case component bounds. The first verifier must return a deterministic
+verdict when its check passes and abort otherwise. The composed knowledge state retains that
+check after the seam, preventing a rejected first transcript from passing via a fallback verdict.
+#1296 uses this route for the full ring-switching composite under an explicit
+`MLIOPCS.RbrKnowledgeSoundWorstCase` hypothesis and a functional opening relation. Its older
+averaged-only capstone still uses admitted arbitrary-verifier composition and carries `sorryAx`.
+The new proved route does not discharge that older contract. Native adaptation requires the
+worst-case security API, guarded composition and phase modules, plus validation of the intended
+downstream opening witness. This is a source review, not a native build claim.
+
+
+Message-first n-ary sequential completeness now builds on Lean 4.34. The ordinary adapter
+build compiled `SeqComposeMsgCompleteness` successfully in 14 seconds; that joint run later
+failed in `AppendOracleAdapters`, so no adapter result is claimed here. All eight installed
+exports (six theorems and two challenge-instance constructors) have standard-only axiom
+closures. Retired oracle bundles are replaced with pointwise instances, and the empty-chain
+base case directly uses identity completeness instead of simplifying its definition. The
+message/empty-tail shape conditions and component completeness hypotheses are unchanged.

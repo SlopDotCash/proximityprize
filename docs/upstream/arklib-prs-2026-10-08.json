@@ -26,7 +26,7 @@
       "base_branch": "feat/guarded-rbr-composition",
       "draft": false,
       "changed_since_prior_inventory": true,
-      "disposition": "exact head fetched; substantive review and integration pending"
+      "disposition": "reviewed full ring-switching capstones: clean full composite requires explicit MLIOPCS.RbrKnowledgeSoundWorstCase and functional opening relation. The averaged-only legacy theorem still invokes admitted arbitrary-verifier composition and carries sorryAx; it must not be transferred as a proved result. Native guarded composition, phase APIs and concrete downstream witness validation pending"
     },
     {
       "number": 1295,
@@ -37,7 +37,7 @@
       "base_branch": "feat/guarded-rbr-api",
       "draft": false,
       "changed_since_prior_inventory": true,
-      "disposition": "exact head fetched; substantive review and integration pending"
+      "disposition": "reviewed binary and n-ary guarded worst-case composition contracts: first verifier must return a deterministic verdict or abort; both phases require worst-case round-by-round knowledge soundness. The composed knowledge state retains the first guard after the seam. Native worst-case API and proof adaptation pending"
     },
     {
       "number": 1294,
@@ -48,7 +48,7 @@
       "base_branch": "feat/ring-switch-sound-phases",
       "draft": false,
       "changed_since_prior_inventory": true,
-      "disposition": "exact head fetched; substantive review and integration pending"
+      "disposition": "reviewed routing role: relocates the guarded-verifier interface to Security/Guarded for reuse by knowledge-soundness composition; native interface and downstream port pending"
     },
     {
       "number": 1293,
