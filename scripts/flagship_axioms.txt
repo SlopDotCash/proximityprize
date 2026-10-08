@@ -921,3 +921,7 @@ ArkLib.Data.Lattices.CyclotomicRing.NormBounds.LyubashevskySeiler ArkLib.Lattice
 ArkLib.Data.Lattices.CyclotomicRing.NormBounds.LyubashevskySeiler ArkLib.Lattices.CyclotomicModulus.q_dvd_l2NormSq_of_not_isUnit
 ArkLib.Data.Lattices.CyclotomicRing.NormBounds.LyubashevskySeiler ArkLib.Lattices.CyclotomicModulus.Rq.eq_zero_of_l2NormSq_eq_zero
 ArkLib.Data.Lattices.CyclotomicRing.NormBounds.LyubashevskySeiler ArkLib.Lattices.CyclotomicModulus.isUnit_of_l1Norm_le
+
+# Exact KKH census, validated natively on Lean 4.34.
+ArkLib.Data.CodingTheory.ProximityGap.KKH26CensusExact ArkLib.ProximityGap.KKH26.census_card_le_stratified
+ArkLib.Data.CodingTheory.ProximityGap.KKH26CensusExact ArkLib.ProximityGap.KKH26.census_card_eq_stratified
