@@ -1331,3 +1331,10 @@ verdicts with a Boolean check, preserves abort-on-reject behavior, composes guar
 forms, and adapts the queried-message guard to the native oracle-output routing.
 Worst-case round-by-round security and guarded sequential-composition proofs remain
 separate transfers; this foundation does not establish those capstones.
+
+
+The low-rate strict-slack half-radius research counterexample passes ordinary
+compilation and installed audits of five selected geometric declarations using
+only standard axioms. Its parity-column independence proof now applies the
+Reed–Solomon MDS theorem directly. This preserves the existing obstruction; it
+is not a positive proof of the production proximity-gap claim.
