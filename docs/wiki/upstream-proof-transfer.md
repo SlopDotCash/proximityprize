@@ -1069,3 +1069,11 @@ randomized downstream modules compile after the cleanup. A fresh installed audit
 axioms. The actual experiments and explicit extraction assumptions are unchanged. The
 joint build's independent Ajtai failure is being repaired; it does not invalidate the
 successful restoration module builds and installed audits.
+
+
+The Lyubashevsky–Seiler lattice norm module now builds on Lean 4.34 and all nine selected
+installed theorem roots have standard-only axiom closures. The migration makes the quotient
+map conversion explicit and scopes the transparency compatibility option to the affected
+invertibility proof. It preserves the field congruence and norm hypotheses. The Ajtai consumer
+passes a direct source check after its probability/measure API conversion; its ordinary build
+and installed audit are still pending, so this result does not certify that consumer.
