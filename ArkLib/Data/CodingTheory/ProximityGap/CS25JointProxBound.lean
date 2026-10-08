@@ -89,11 +89,11 @@ theorem card_close_le_card_mul_vol {F : Type*} [Fintype F] [DecidableEq F] [AddC
         ArkLib.CS25.sum_closeCount_eq 𝒞 r
 
 open Classical in
+set_option backward.isDefEq.respectTransparency false in
 /-- **Jointly-`e`-close stack count bound.** A stack `u` is jointly `e`-close to `C` iff its
 interleaving `⋈|u = uᵀ` is within Hamming distance `e` of some interleaved codeword. By the union
 bound over the interleaved code `C^⋈κ` (`|C|^|κ|` codewords), the number of jointly-`e`-close stacks
 is at most `|C|^|κ| · V'`, where `V'` is the interleaved-ball volume. -/
-set_option backward.isDefEq.respectTransparency false in
 theorem card_jointProximityNat_le (C : Set (ι → A)) [AddCommGroup A] [Fintype ↥C] (e : ℕ) :
     (Finset.univ.filter (fun u : WordStack A κ ι => jointProximityNat C (u := u) e)).card
       ≤ (Fintype.card ↥C) ^ (Fintype.card κ)
@@ -184,9 +184,9 @@ private theorem floor_nnreal_eq_real (δ : ℝ≥0) (n : ℕ) :
       rw [hcoe]; exact Nat.floor_le (by positivity)
     exact_mod_cast h
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The interleaved-ball volume `V'_{⌊δn⌋}` equals `hammingBallVolume (q^|κ|) δ n`, the explicit
 sum `∑_{i≤⌊δn⌋} C(n,i)(q^|κ|-1)^i` over the interleaved alphabet `κ→A`. -/
-set_option backward.isDefEq.respectTransparency false in
 theorem interleaved_ball_card_eq_volume [Nonempty ι] [AddCommGroup A] (δ : ℝ≥0) :
     (Finset.univ.filter (fun w : InterleavedWord A κ ι =>
         hammingDist w 0 ≤ ⌊δ * (Fintype.card ι : ℝ≥0)⌋₊)).card
@@ -198,11 +198,11 @@ theorem interleaved_ball_card_eq_volume [Nonempty ι] [AddCommGroup A] (δ : ℝ
   · intro w hw
     apply Finset.mem_filter.mpr
     refine ⟨Finset.mem_univ _, ?_⟩
-    exact (Finset.mem_filter.mp hw).2
+    simpa only [id_eq, hammingDist_comm] using (Finset.mem_filter.mp hw).2
   · intro w hw
     apply Finset.mem_filter.mpr
     refine ⟨Finset.mem_univ _, ?_⟩
-    exact (Finset.mem_filter.mp hw).2
+    simpa only [id_eq, hammingDist_comm] using (Finset.mem_filter.mp hw).2
   · intro w _; rfl
   · intro w _; rfl
 
