@@ -185,7 +185,7 @@ theorem badSet_subset_ratio_image_universal (dom : Fin n ↪ F) {k : ℕ}
   have hPdeg' : P.natDegree < k := by
     by_cases hP0 : P = 0
     · subst hP0
-      simpa using hk
+      simpa only [Polynomial.natDegree_zero] using (show 0 < k by omega)
     · exact (Polynomial.natDegree_lt_iff_degree_lt hP0).mpr hPdeg
   have hlinezero : residual dom k t (fun i => u₀ i + γ * u₁ i) = 0 := by
     refine residual_eq_zero_of_extends dom k t hPdeg' fun a => ?_
@@ -233,12 +233,12 @@ theorem exists_perm_of_image_eq {k : ℕ} {t t' : Fin (k + 1) → Fin n}
     rw [h1, h2, himg]
   set π : Fin (k + 1) ≃ Fin (k + 1) :=
     (Equiv.ofInjective t ht).trans
-      ((Equiv.setCongr hrange).trans (Equiv.ofInjective t' ht').symm)
+      ((Set.equivOfEq hrange).trans (Equiv.ofInjective t' ht').symm)
     with hπ
   refine ⟨π, funext fun a => ?_⟩
   show t a = t' (π a)
   rw [hπ]
-  simp only [Equiv.trans_apply, Equiv.setCongr_apply]
+  simp only [Equiv.trans_apply, Set.equivOfEq_apply]
   rw [Equiv.apply_ofInjective_symm ht']
   rfl
 
