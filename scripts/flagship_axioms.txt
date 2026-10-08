@@ -3311,3 +3311,6 @@ ArkLib.Data.CodingTheory.ProximityGap.RungAgreementGeometry ProximityGap.WBPenci
 ArkLib.Data.CodingTheory.ProximityGap.RungAgreementGeometry ProximityGap.WBPencil.poly_cross_agreement
 ArkLib.Data.CodingTheory.ProximityGap.RungAgreementGeometry ProximityGap.WBPencil.lowDegree_agreement_inter_le
 ArkLib.Data.CodingTheory.ProximityGap.RungAgreementGeometry ProximityGap.WBPencil.poly_zero_class_unique
+
+ArkLib.Data.CodingTheory.ProximityGap.SubplaneSupplyFloor ProximityGap.Ownership.card_agreeIdx
+ArkLib.Data.CodingTheory.ProximityGap.SubplaneSupplyFloor ProximityGap.Ownership.subplane_supply_floor
