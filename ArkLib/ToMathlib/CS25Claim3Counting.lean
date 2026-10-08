@@ -181,7 +181,13 @@ theorem sum_pairCollisions_le {K : ℕ} (p : ι → F[X])
   have hdiag : (Finset.univ.filter (fun jj : ι × ι => jj.1 = jj.2)).card = Fintype.card ι := by
     rw [show (Finset.univ.filter (fun jj : ι × ι => jj.1 = jj.2))
           = Finset.univ.map ⟨fun j => (j, j), by intro a b h; simpa using h⟩ from by
-            ext jj; simp [Prod.ext_iff, eq_comm, and_comm]]
+            ext jj
+            simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_map]
+            constructor
+            · intro h
+              exact ⟨jj.1, Prod.ext rfl h⟩
+            · rintro ⟨a, rfl⟩
+              rfl]
     simp [Finset.card_univ]
   have hoff : (Finset.univ.filter (fun jj : ι × ι => ¬ jj.1 = jj.2)).card
       = Fintype.card ι ^ 2 - Fintype.card ι := by

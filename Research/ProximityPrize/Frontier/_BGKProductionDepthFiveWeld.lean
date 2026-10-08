@@ -122,7 +122,7 @@ theorem bgk_production_depthFive_weld {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive
 /-- The prize field cardinality clears the `2¹⁵⁸` hypothesis:
 `productionQ = 2³⁰·(2¹²⁸ + 192) + 1 ≥ 2¹⁵⁸`. Kernel arithmetic. -/
 theorem productionQ_ge : 2 ^ 158 ≤ productionQ := by
-  norm_num [productionQ, productionN]
+  decide +kernel
 
 end ArkLib.ProximityGap.Frontier.BGKProductionDepthFiveWeld
 
