@@ -1338,3 +1338,10 @@ compilation and installed audits of five selected geometric declarations using
 only standard axioms. Its parity-column independence proof now applies the
 Reed–Solomon MDS theorem directly. This preserves the existing obstruction; it
 is not a positive proof of the production proximity-gap claim.
+
+
+Seven Jensen, cyclotomic-obstruction, finite-field arithmetic, and r-fold variance
+research modules pass ordinary compilation and installed audits of 248 selected
+declarations with only standard axioms. This includes the variance module's 229
+explicit audit roots. Repairs preserve the existing conditions and counterexamples,
+using explicit arithmetic identities and kernel evaluation of concrete values.
