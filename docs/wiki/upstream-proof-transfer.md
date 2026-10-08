@@ -1030,3 +1030,12 @@ the higher-level environment interface can hide private declarations and produce
 missing-name reports. This is local verification of the exact pinned upper benchmark,
 not a hosted ranking result or completion of the native production proximity-gap conjecture.
 The lower candidate remains under compilation and requires its own audit and replay.
+
+
+Threaded n-ary oracle completeness now compiles as an ordinary Lean 4.34 module (20 seconds).
+Its three installed theorem roots have standard-only axiom closures and are registered for
+routine auditing. Only the retired ambient oracle bundles and matching `omit` clause change
+to pointwise instances; the theorem hypotheses and composition proof remain intact.
+The joint Ajtai build failed independently in its lattice norm dependency, whose migration
+is still under repair. Refreshed #1266 has identical knowledge-base content to its reviewed
+prior revision, so the earlier decision to regenerate native indices remains applicable.

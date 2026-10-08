@@ -301,7 +301,7 @@
       "base_branch": "main",
       "draft": false,
       "changed_since_prior_inventory": true,
-      "disposition": "exact head fetched; substantive review and integration pending"
+      "disposition": "Re-reviewed refreshed head: no docs/kb content changes from reviewed fd707729ef3b6f11a9bd998ec57f19882a3c777b. Generated indices describe the donor tree and must not be transplanted; native indices are generated from native sources. Four paper stubs add bibliographic scaffolding, not missing Lean proofs; import only if native citations require them."
     },
     {
       "number": 1264,

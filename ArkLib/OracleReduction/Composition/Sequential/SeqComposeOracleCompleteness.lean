@@ -36,10 +36,10 @@ open scoped NNReal
 
 namespace OracleReduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
-omit [oSpec.Fintype] [oSpec.Inhabited] in
+omit [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)] in
 /-- **Structural `toReduction`/`seqCompose` bridge.** The `Reduction` image of a `seqCompose`d
 oracle reduction is the `Reduction`-level `seqCompose` of the component `Reduction` images.
 
