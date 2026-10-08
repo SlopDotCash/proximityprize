@@ -1316,3 +1316,10 @@ pass their ordinary build and installed audits of 41 selected declarations using
 only standard axioms. These Lean 4.34 repairs retain the conditional reduction
 interfaces and explicit prime-supply hypotheses; they do not prove the open
 production proximity-gap conjecture.
+
+
+Five dilation-invariance, collision-moment, strata-count, and injective-packet
+research modules pass ordinary compilation and installed audits of 74 selected
+declarations with only standard axioms. The proof repairs use explicit finite-sum
+identities and kernel-checked concrete arithmetic. Their conditional bounds and
+frequency-invariance obstructions retain their original scope.

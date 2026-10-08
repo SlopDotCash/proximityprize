@@ -138,7 +138,7 @@ order-`N` subgroup — and the `√` is in the **subgroup order**, not the field
 theorem stepanov_sqrt_bound {r N : ℕ} (h : r * (r - 1) + 1 ≤ N) :
     (r - 1) * (r - 1) < N := by
   rcases Nat.eq_zero_or_pos r with hr0 | hrpos
-  · subst hr0; simpa using h
+  · subst hr0; simpa only [Nat.zero_sub, Nat.zero_mul] using (Nat.succ_le_iff.mp h)
   · have : (r - 1) * (r - 1) ≤ r * (r - 1) := by
       apply Nat.mul_le_mul_right; omega
     omega

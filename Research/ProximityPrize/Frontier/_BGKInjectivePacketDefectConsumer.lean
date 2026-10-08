@@ -254,7 +254,7 @@ def productionInjectiveAllowance : Nat :=
 theorem production_injectiveAllowance_bitBounds :
     2 ^ 384 <= productionInjectiveAllowance ∧
       productionInjectiveAllowance < 2 ^ 385 := by
-  norm_num [productionInjectiveAllowance, productionQ, productionN, injectiveCoefficient]
+  decide +kernel
 
 /-- Exact production all-injective source, written without any dependency on the remote G155
 falling-factorial chain. -/
@@ -268,8 +268,7 @@ than thirty-five bits even before completion-fiber losses. -/
 theorem production_injectiveSource_to_allowance :
     2 ^ 35 * productionInjectiveAllowance < productionInjectiveSource ∧
       productionInjectiveSource < 2 ^ 36 * productionInjectiveAllowance := by
-  norm_num [productionInjectiveAllowance, productionInjectiveSource, productionQ, productionN,
-    injectiveCoefficient]
+  decide +kernel
 
 /-- The ordered-to-subset symmetry factor in the depth-seven injective sector. -/
 theorem depthSeven_order_factor : Nat.factorial 7 ^ 2 = 25401600 := by
