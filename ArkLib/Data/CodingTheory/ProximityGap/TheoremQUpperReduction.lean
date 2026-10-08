@@ -137,7 +137,7 @@ degree `0 < k`). -/
 theorem evalCode_zero_mem (H : Finset F) (k : ℕ) (hk : 1 ≤ k) :
     (0 : {x : F // x ∈ H} → F) ∈ TheoremQAssembly.evalCode H k := by
   refine ⟨0, ?_, fun i => by simp⟩
-  simpa using hk
+  simpa only [Polynomial.natDegree_zero] using (Nat.lt_of_lt_of_le Nat.zero_lt_one hk)
 
 omit [Fintype F] [DecidableEq F] in
 /-- **`evalCode`: a zero direction has no bad scalar** (`k ≥ 1`). The `u₁ = 0` instance of

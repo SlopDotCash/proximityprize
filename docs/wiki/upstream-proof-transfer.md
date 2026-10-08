@@ -1288,3 +1288,10 @@ and installed audits of 51 selected declarations. The zero-knowledge and random-
 proofs use the current SPMF distribution API while retaining their transcript and
 abort semantics. The selected MDS, collision, resultant, and toy-soundness results
 remain axiom-clean with their original hypotheses.
+
+
+Ten further library modules pass ordinary compilation and installed audits of
+46 selected declarations, including context-lifting completeness and round-by-round
+security, claim reduction, restricted-sumset bounds, subspace polynomials, and the
+Mathlib-backed monic-division compatibility import. The historical commented-out
+context-lifting knowledge-soundness draft is not counted as a proved declaration.

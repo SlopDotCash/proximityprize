@@ -148,7 +148,7 @@ lemma totalDegree_vdmX_le (h : ℕ) :
 of the shifted exponent vector `t − permExp σ`. This is the determinant-of-binomials
 (Frobenius / Vandermonde-in-factorials) form of the coefficient. -/
 lemma coeff_vdmX_mul_sumPow (h M : ℕ) (t : Fin h →₀ ℕ) :
-    coeff t (vdmX (F := F) h * (∑ k : Fin h, X k) ^ M)
+    AddMonoidAlgebra.coeff (vdmX (F := F) h * (∑ k : Fin h, X k) ^ M) t
       = ∑ σ : Equiv.Perm (Fin h), (Equiv.Perm.sign σ : ℤ) •
           (if permExp σ ≤ t then
             (if (t - permExp σ).sum (fun _ m => m) = M then ((t - permExp σ).multinomial : F)
@@ -158,10 +158,10 @@ lemma coeff_vdmX_mul_sumPow (h M : ℕ) (t : Fin h →₀ ℕ) :
   apply Finset.sum_congr rfl
   intro σ _
   rw [smul_mul_assoc]
-  rw [show coeff t ((Equiv.Perm.sign σ : ℤ) •
-          ((monomial (permExp σ) (1 : F)) * (∑ k : Fin h, X k) ^ M))
+  rw [show AddMonoidAlgebra.coeff ((Equiv.Perm.sign σ : ℤ) •
+          ((monomial (permExp σ) (1 : F)) * (∑ k : Fin h, X k) ^ M)) t
         = (Equiv.Perm.sign σ : ℤ) •
-          coeff t ((monomial (permExp σ) (1 : F)) * (∑ k : Fin h, X k) ^ M)
+          AddMonoidAlgebra.coeff ((monomial (permExp σ) (1 : F)) * (∑ k : Fin h, X k) ^ M) t
       from coeff_smul t _ _]
   congr 1
   rw [coeff_monomial_mul']
@@ -277,8 +277,8 @@ smaller total degree above the Vandermonde degree. -/
 lemma coeff_ehQ_eq_leading {Cset : Finset F} {n : ℕ} (t : Fin h →₀ ℕ)
     (hCcard : Cset.card = h * (n - h))
     (htdeg : (vdmX (F := F) h).totalDegree + h * (n - h) ≤ t.degree) :
-    coeff t (ehQ h Cset)
-      = coeff t (vdmX (F := F) h * (∑ k : Fin h, X k) ^ (h * (n - h))) := by
+    AddMonoidAlgebra.coeff (ehQ h Cset) t
+      = AddMonoidAlgebra.coeff (vdmX (F := F) h * (∑ k : Fin h, X k) ^ (h * (n - h))) t := by
   classical
   set m := h * (n - h) with hm
   set P' : MvPolynomial (Fin h) F := ∏ c ∈ Cset, (ehY h - C c) with hP'
@@ -288,14 +288,14 @@ lemma coeff_ehQ_eq_leading {Cset : Finset F} {n : ℕ} (t : Fin h →₀ ℕ)
     rw [ehQ, hP', show (∑ k : Fin h, X k : MvPolynomial (Fin h) F) = ehY h from rfl]
     ring
   -- The difference has coefficient `0` at `t`.
-  have hcoeff0 : coeff t
-      (ehQ h Cset - (vdmX (F := F) h) * (∑ k : Fin h, X k) ^ m) = 0 := by
+  have hcoeff0 : AddMonoidAlgebra.coeff (ehQ h Cset - (vdmX (F := F) h) * (∑ k : Fin h, X k) ^ m) t = 0 := by
     rcases Nat.eq_zero_or_pos m with hm0 | hmpos
     · -- `m = 0`: then `Cset = ∅`, so `P' = 1` and the difference is `0`.
       have hcard0 : Cset.card = 0 := by rw [hCcard, hm0]
       have hCempty : Cset = ∅ := Finset.card_eq_zero.mp hcard0
       have : P' - ehY h ^ m = 0 := by rw [hP', hCempty, hm0]; simp
-      rw [hQdiff, this, mul_zero, coeff_zero]
+      rw [hQdiff, this, mul_zero, AddMonoidAlgebra.coeff_zero]
+      rfl
     · -- `m ≥ 1`: a total-degree argument.
       apply coeff_eq_zero_of_totalDegree_lt
       rw [← Finsupp.degree_apply]
@@ -426,7 +426,7 @@ lemma sum_sign_prod_inv_eq_det (N : Matrix (Fin h) (Fin h) F) :
 the right-hand determinant being the integer Vandermonde `∏_{i<j}(t_j − t_i)` cast into `F`. -/
 lemma coeff_closed_form (t : Fin h →₀ ℕ) (M : ℕ)
     (hsum : (∑ k, t k) = M + h.choose 2) :
-    (∏ k, ((t k).factorial : F)) * coeff t ((vdmX (F := F) h) * (∑ k : Fin h, X k) ^ M)
+    (∏ k, ((t k).factorial : F)) * AddMonoidAlgebra.coeff ((vdmX (F := F) h) * (∑ k : Fin h, X k) ^ M) t
       = (M.factorial : F) * (Matrix.vandermonde (fun k => ((t k : ℕ) : F))).det := by
   classical
   rw [coeff_vdmX_mul_sumPow, Finset.mul_sum]
@@ -490,7 +490,7 @@ lemma vandermonde_ehTarget_ne_zero {p : ℕ} (_hp : p.Prime) (hchar : ringChar F
 coefficient of the target monomial `t = ∏_i X_i^{n-1-i}` in the leading part is nonzero in `F`. -/
 lemma coeff_ehTarget_ne_zero {p : ℕ} (hp : p.Prime) (hchar : ringChar F = p)
     {n : ℕ} (hhn : h ≤ n) (hnp : n ≤ p) (hm : h * (n - h) < p) :
-    coeff (ehTarget h n) ((vdmX (F := F) h) * (∑ k : Fin h, X k) ^ (h * (n - h))) ≠ 0 := by
+    AddMonoidAlgebra.coeff ((vdmX (F := F) h) * (∑ k : Fin h, X k) ^ (h * (n - h))) (ehTarget h n) ≠ 0 := by
   classical
   -- the closed-form identity
   have hsum : (∑ k, (ehTarget h n) k) = h * (n - h) + h.choose 2 := by
@@ -551,8 +551,7 @@ classical Frobenius / Vandermonde-in-factorials arithmetic fact (a `± m!·∏(a
 ballot number, nonzero mod `p` in the stated regime). -/
 theorem erdos_heilbronn_of_coeff {p : ℕ} (hp : p.Prime) (hchar : ringChar F = p)
     (A : Finset F) (h : ℕ) (h1 : 1 ≤ h) (hhA : h ≤ A.card) (hsmall : h * (A.card - h) < p)
-    (hcoeff : coeff (ehTarget h A.card)
-        ((vdmX (F := F) h) * (∑ k : Fin h, X k) ^ (h * (A.card - h))) ≠ 0) :
+    (hcoeff : AddMonoidAlgebra.coeff ((vdmX (F := F) h) * (∑ k : Fin h, X k) ^ (h * (A.card - h))) (ehTarget h A.card) ≠ 0) :
     h * (A.card - h) + 1 ≤ (restrictedSumset A h).card := by
   classical
   set n := A.card with hncard
@@ -577,7 +576,7 @@ theorem erdos_heilbronn_of_coeff {p : ℕ} (hp : p.Prime) (hchar : ringChar F = 
     rw [hdeg_t]
     have := totalDegree_vdmX_le (F := F) h
     omega
-  have hcoeff_f : coeff t f ≠ 0 := by
+  have hcoeff_f : AddMonoidAlgebra.coeff f t ≠ 0 := by
     rw [hf, coeff_ehQ_eq_leading (n := n) t hC'card hle_deg]
     exact hcoeff
   -- total degree of `f` equals `t.degree`.
