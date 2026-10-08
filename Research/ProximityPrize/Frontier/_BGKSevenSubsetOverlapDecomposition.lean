@@ -83,9 +83,9 @@ theorem sum_sdiff_eq_of_sum_eq (A B : Finset α)
     (h : (∑ x ∈ A, x) = ∑ x ∈ B, x) :
     (∑ x ∈ A \ B, x) = ∑ x ∈ B \ A, x := by
   have hA : (∑ x ∈ A, x) = (∑ x ∈ A ∩ B, x) + ∑ x ∈ A \ B, x := by
-    rw [Finset.sum_inter_add_sum_diff A B]
+    rw [Finset.sum_inter_add_sum_sdiff A B]
   have hB : (∑ x ∈ B, x) = (∑ x ∈ B ∩ A, x) + ∑ x ∈ B \ A, x := by
-    rw [Finset.sum_inter_add_sum_diff B A]
+    rw [Finset.sum_inter_add_sum_sdiff B A]
   rw [Finset.inter_comm B A] at hB
   rw [hA, hB] at h
   exact add_left_cancel h
@@ -411,10 +411,10 @@ theorem signedPairLabel_residualPair (lift : α → β)
     signedPairLabel lift (residualPair p) = signedPairLabel lift p := by
   have hA : (∑ x ∈ p.1, lift x) =
       (∑ x ∈ p.1 ∩ p.2, lift x) + ∑ x ∈ p.1 \ p.2, lift x := by
-    rw [Finset.sum_inter_add_sum_diff p.1 p.2]
+    rw [Finset.sum_inter_add_sum_sdiff p.1 p.2]
   have hB : (∑ x ∈ p.2, lift x) =
       (∑ x ∈ p.2 ∩ p.1, lift x) + ∑ x ∈ p.2 \ p.1, lift x := by
-    rw [Finset.sum_inter_add_sum_diff p.2 p.1]
+    rw [Finset.sum_inter_add_sum_sdiff p.2 p.1]
   rw [Finset.inter_comm p.2 p.1] at hB
   unfold signedPairLabel residualPair
   rw [hA, hB]

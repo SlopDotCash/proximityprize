@@ -1162,3 +1162,13 @@ and localization embedding modules now pass ordinary Lean 4.34 builds and instal
 audits of 39 selected roots. The repairs update sum evaluation, integer coercions,
 modular-equivalence unfolding, nonnegativity elaboration, and the explicit localization
 algebra map. Existing mathematical hypotheses and theorem statements are preserved.
+
+
+Fourteen research modules now pass ordinary Lean 4.34 builds with 90 selected installed
+roots restricted to the standard axioms. This batch covers phase-sum convolution, divided
+differences, depth-two and diagonal counts, Weil-bound consumers, quartic convolution,
+subgroup convolution, Jacobi factorization, antipodal counts, overlap decomposition, and
+the radius-one collapse arguments. Changes remove ineffective simplification steps, use
+the renamed finite-set difference-sum lemma, and make a radius-one rewrite elaborate
+explicitly. Conditional research statements retain their hypotheses; this is migration
+validation, not a new proof of the production conjecture.

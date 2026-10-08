@@ -332,8 +332,8 @@ theorem not_grandListDecodingChallengeRS_of_pos
   rw [grandListDecodingChallenge_iff_Lambda_one]
   intro hbound
   -- At radius one, `Λ` is the whole interleaved code …
-  rw [show ((1 : ℝ≥0) : ℝ) = (1 : ℝ) by norm_num,
-    Lambda_one_eq_ncard (α := Fin m → F)] at hbound
+  rw [show ((1 : ℝ≥0) : ℝ) = (1 : ℝ) by norm_num] at hbound
+  erw [Lambda_one_eq_ncard (α := Fin m → F)] at hbound
   -- … which contains at least `|F|` elements.
   have hbig := card_le_ncard_interleavedCodeSet
     (ReedSolomon.code domain k : Set (ι → F)) hm
