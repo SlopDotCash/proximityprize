@@ -3,7 +3,7 @@
   "snapshot_date": "2026-10-08",
   "main": "795bd1e735d1916abac6bcf60e1dea0c42f37216",
   "prior_inventory": "arklib-prs-2026-10-08.json",
-  "scope": "all 53 currently open PRs including drafts; refreshed fetch is not integration",
+  "scope": "All 55 open upstream PRs, including drafts, refreshed 2026-10-08. Exact heads are comparison evidence, not integrated proof evidence.",
   "main_changes": "main merged1261/1263/1264. Relevant restoration/budget proof files match prior reviewed PR heads; #1261 RoundByRound and Soundness exactly match490c8d16. Native adaptation retains its compatibility repairs and requires final build qualification.",
   "pull_requests": [
     {
@@ -588,6 +588,28 @@
       "draft": false,
       "changed_since_prior_inventory": false,
       "disposition": "same head as prior inventory; see its detailed disposition"
+    },
+    {
+      "number": 1298,
+      "title": "refactor(binius)!: retire main's downstream Binary Basefold and FRI-Binius files",
+      "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1298",
+      "head": "7d2032fc8dfdaa79c07aef17190c8287e8f6bd5b",
+      "base": "9b0b5c962d97a9a0a9388c0bcc7e70d503e9ddd9",
+      "base_branch": "feat/mliopcs-worst-case",
+      "draft": false,
+      "changed_since_prior_inventory": true,
+      "disposition": "Reviewed retirement stack. Do not copy deletions: native downstream files have proved conditional/component results and no sorry tokens. Retain native protocol implementations; donor removal of admitted definitions is not native proof progress."
+    },
+    {
+      "number": 1299,
+      "title": "feat(binius): Binary Basefold foundations from #383 on main's prelude",
+      "url": "https://github.com/Verified-zkEVM/ArkLib/pull/1299",
+      "head": "135ad909d3e0b7c3391880005168ac0a9b14f36e",
+      "base": "7d2032fc8dfdaa79c07aef17190c8287e8f6bd5b",
+      "base_branch": "feat/bbf-retire",
+      "draft": false,
+      "changed_since_prior_inventory": true,
+      "disposition": "Reviewed foundation replacement and generic data additions. Native API uses different folding indices and has explicit diagnostics for the legacy else-True bad-event escape. Port generic determinant and multilinear-weight lemmas first (qualification pending); repaired incremental relations and destination-index folding require a consumer-preserving migration. Do not replace existing protocol files wholesale."
     }
   ]
 }

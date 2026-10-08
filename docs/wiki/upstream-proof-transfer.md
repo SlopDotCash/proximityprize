@@ -1375,3 +1375,6 @@ The concrete GF(4)/GF(2) orientation regression passes an ordinary build and ins
 
 
 Nine additional research modules now build under native Lean 4.34: maximal-minor certificates, resultant lattice indices, split embeddings, rank-nullity, triangle constraints, random-sign gates, Gauss-period consumers, and two threshold/counting modules. The ordinary 8,996-job target build passed; installed-module audits checked 52 declaration roots using only standard Lean axioms. Changes adapt elaboration and current Mathlib APIs while preserving theorem statements and hypotheses.
+
+
+The later 2026-10-08 refresh adds ArkLib PRs #1298 and #1299 (55 open PRs total). The retirement in #1298 must not be applied mechanically: our corresponding six protocol files contain no `sorry` tokens and include proved conditional/component results. #1299 provides useful generic determinant and multilinear-weight lemmas and repairs the donor bad-event relation. Native `badEventExistsProp_of_lt` already diagnoses the legacy vacuous escape; replacing that relation requires migrating its dependent protocol proofs and retaining explicit component assumptions. Generic lemma transfer is being qualified separately from that protocol migration.
