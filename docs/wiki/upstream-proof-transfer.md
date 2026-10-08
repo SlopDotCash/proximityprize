@@ -1348,3 +1348,6 @@ using explicit arithmetic identities and kernel evaluation of concrete values.
 
 
 Four energy, Gaussian-moment, operator, and orbit research modules pass ordinary compilation and installed audits of 38 selected declarations using only standard axioms. These Lean 4.34 compatibility repairs preserve their hypotheses, conditional results, and existing no-go boundaries.
+
+
+The explicit-round transcript projection module passes ordinary compilation and installed audits of 12 declarations using only standard axioms. Its left/right projections, concatenation laws, and heterogeneous equality bridge adapt the upstream API to native partial transcripts, including the native empty-right-prefix branch. Guarded sequential composition remains a separately qualified transfer.
