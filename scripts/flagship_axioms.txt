@@ -3769,8 +3769,6 @@ ArkLib.Data.CodingTheory.ListDecoding.CZ25SpanDimension CodingTheory.cz25SpanBou
 ArkLib.Data.CodingTheory.ListDecoding.CZ25SpanDimension CodingTheory.subspaceDesign_list_decoding_cz25_of_spanBound'
 
 # Further successful source-check audit coverage.
-.tmp.proximity-pr-review.new56-subplane-axioms ProximityGap.Ownership.card_agreeIdx
-.tmp.proximity-pr-review.new56-subplane-axioms ProximityGap.Ownership.subplane_supply_floor
 ArkLib.Data.CodingTheory.ProximityGap.SidonLiftClosed ArkLib.ProximityGap.AdditiveEnergyRepBound.resultant_fourTerm_ne_zero
 ArkLib.Data.CodingTheory.ProximityGap.SidonLiftClosed ArkLib.ProximityGap.AdditiveEnergyRepBound.prime_le_of_parallelogram
 ArkLib.Data.CodingTheory.ProximityGap.SidonSubgroupClosed ArkLib.ProximityGap.AdditiveEnergySidonModNeg.sidonModNeg_mu_n
@@ -4165,10 +4163,6 @@ Research.ProximityPrize.Frontier.Sweep_A27_CondLDtoMCA ProximityGap.Jo26Gen.epsM
 Research.ProximityPrize.Frontier.Sweep_A27_CondLDtoMCA ProximityGap.Jo26Gen.epsMCA_interleaved_le_qratio
 Research.ProximityPrize.Frontier.Sweep_A27_CondLDtoMCA ProximityGap.Jo26Gen.epsMCA_interleaved_le_qratio_of_base_le
 Research.ProximityPrize.Frontier.Sweep_A27_CondLDtoMCA ProximityGap.Jo26Gen.epsMCA_interleaved_le_qratio_of_curveDecodable
-.tmp.proximity-pr-review.new56-coset-axioms Domain.CosetFftDomain.apply_zero
-.tmp.proximity-pr-review.new56-coset-axioms Domain.CosetFftDomain.apply_add_eq_inv_mul_mul
-.tmp.proximity-pr-review.new56-coset-axioms Domain.CosetFftDomain.apply_neg_eq_sq_mul_inv
-.tmp.proximity-pr-review.new56-coset-axioms Domain.CosetFftDomain.apply_sub_eq_mul_div
 Research.ProximityPrize.Frontier._BGKActualJointPeriodLaw ArkLib.ProximityGap.Frontier.BGKActualJointPeriodLaw.squareTower_eq_pow
 Research.ProximityPrize.Frontier._BGKActualJointPeriodLaw ArkLib.ProximityGap.Frontier.BGKActualJointPeriodLaw.productionP1_colourPowers_injective
 Research.ProximityPrize.Frontier._BGKActualJointPeriodLaw ArkLib.ProximityGap.Frontier.BGKActualJointPeriodLaw.productionP2_colourPowers_injective
