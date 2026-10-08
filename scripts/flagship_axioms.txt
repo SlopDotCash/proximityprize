@@ -3082,3 +3082,7 @@ Research.ProximityPrize.Frontier._SYZ65RankNullity ArkLib.ProximityGap.SYZ65.exi
 Research.ProximityPrize.Frontier._SYZ65RankNullity ArkLib.ProximityGap.SYZ65.exists_window_repr
 Research.ProximityPrize.Frontier._SYZ65RankNullity ArkLib.ProximityGap.SYZ65.rankNullity_windowKD
 Research.ProximityPrize.Frontier._SYZ65RankNullity ArkLib.ProximityGap.SYZ65.degree_sum_unconditional
+
+# Exact KKH census, reviewed from donor 9183d9018.
+ArkLib.Data.CodingTheory.ProximityGap.KKH26CensusExact ArkLib.ProximityGap.KKH26.census_card_le_stratified
+ArkLib.Data.CodingTheory.ProximityGap.KKH26CensusExact ArkLib.ProximityGap.KKH26.census_card_eq_stratified
