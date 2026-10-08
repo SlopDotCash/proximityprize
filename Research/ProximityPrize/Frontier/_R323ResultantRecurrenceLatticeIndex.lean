@@ -163,7 +163,7 @@ theorem norm_toQ (k : ℕ) (t : AdjoinRoot (fpoly (2 ^ k))) :
       rw [(AdjoinRoot.powerBasis' (fz_monic k)).basis_eq_pow,
         (AdjoinRoot.powerBasis' (fq_monic k)).basis_eq_pow, map_pow]
       simp [toQ_root]
-    rw [← hbj, ← map_mul, Finsupp.mapDomain_equiv_apply]
+    rw [← hbj, ← map_mul, Finsupp.equivMapDomain_apply]
     exact repr_toQ k _ i
   rw [hM]
   have hdet := RingHom.map_det (Int.castRingHom ℚ)
