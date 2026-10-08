@@ -1180,3 +1180,9 @@ Use `Mathlib.Order.Lattice.Nat` for natural-number infima and `Finset.prod_le_on
 product bounds require nonnegative factors. For restricted linear maps, rewriting
 `LinearMap.domRestrict_apply` explicitly can avoid expensive coefficient unfolding during
 elaboration; increasing the heartbeat limit did not resolve that interpolation failure.
+
+
+The BCIKS20 affine-line good-coefficient, Sudan Y², and Hensel numerator modules now
+pass ordinary Lean 4.34 builds and installed audits of 34 selected roots. The migration
+repairs elaboration and proof API compatibility while retaining the original dimension,
+characteristic, and weight hypotheses. Hensel residual assumptions remain explicit.
