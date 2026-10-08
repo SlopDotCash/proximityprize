@@ -1228,3 +1228,12 @@ selected roots: KKH26 ceilings, characteristic-zero census, dimension-one pins, 
 second moment, half-pair slices, the two-branch countermodel, pencil absorption, ownership,
 and CZ25 span dimension. The changes repair imports and proof elaboration without changing
 the theorem hypotheses or conclusions. The staircase theorem is a separate pending build.
+
+
+The corrected STIR paper specifications from #1291 now build natively, together with
+five standard-axiom regression roots. They retain uniform parameter quantifiers, the
+lower field-size bound and strict soundness relation. They are proposition definitions,
+not proofs of the paper security theorem; no admitted donor theorem is imported, and
+verifier query complexity awaits an implemented counter. The legacy contract is labeled
+explicitly. Both the paper-statement fixtures and the two duplicate-block `Fin` regressions
+from the #1297 review are now registered in routine validation and installed axiom audits.
