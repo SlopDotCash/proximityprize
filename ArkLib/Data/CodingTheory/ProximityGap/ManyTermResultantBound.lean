@@ -63,7 +63,7 @@ theorem resultant_cast_eq_prod_gen {n : ℕ} (f : ℤ[X]) :
         (fun ζ => eval ζ (f.map (algebraMap ℤ ℂ)))).prod := by
   have hinj : Function.Injective (algebraMap ℤ ℂ) := (algebraMap ℤ ℂ).injective_int
   have hsplit : (cyclotomic n ℂ).Splits := by
-    simpa using IsAlgClosed.splits_codomain (k := ℂ) (f := RingHom.id ℂ) (cyclotomic n ℂ)
+    exact IsAlgClosed.splits (cyclotomic n ℂ)
   have hdeg : (f.map (algebraMap ℤ ℂ)).natDegree ≤ f.natDegree :=
     le_of_eq (natDegree_map_eq_of_injective hinj f)
   have hcd : (cyclotomic n ℤ).natDegree = (cyclotomic n ℂ).natDegree := by
@@ -112,7 +112,7 @@ theorem abs_resultant_manyTerm_le {n : ℕ} (hn : n ≠ 0) (r : ℕ) (a b : ℕ 
     rw [hmul]
     have hcard : ((cyclotomic n ℂ).roots).card = n.totient := by
       have hs : (cyclotomic n ℂ).Splits := by
-        simpa using IsAlgClosed.splits_codomain (k := ℂ) (f := RingHom.id ℂ) (cyclotomic n ℂ)
+        exact IsAlgClosed.splits (cyclotomic n ℂ)
       rw [← hs.natDegree_eq_card_roots, natDegree_cyclotomic]
     have hB : (0:ℝ) ≤ ((2 * r : ℕ) : ℝ) := by positivity
     calc ((cyclotomic n ℂ).roots.map (fun ζ => ‖g ζ‖)).prod
