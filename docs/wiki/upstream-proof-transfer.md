@@ -981,3 +981,28 @@ exports (six theorems and two challenge-instance constructors) have standard-onl
 closures. Retired oracle bundles are replaced with pointwise instances, and the empty-chain
 base case directly uses identity completeness instead of simplifying its definition. The
 message/empty-tail shape conditions and component completeness hypotheses are unchanged.
+
+
+Randomized state-restoration support from #1267 (`6c26172f0c11d3ef97fcedd1461034e46889b949`)
+and randomized knowledge security from #1268 (`ce1e20b3d3c2bb2934bb0beebee00f43e7c347f4`)
+now build natively on Lean 4.34 (3,278 jobs). Five local support modules backport logged runs,
+finite-key/cache transports and expected distinct-query charges from VCVio
+`e417e35ac452c3994173eda268a8eee0d26115d2`, retaining the existing dependency pin.
+The model retains the joint output, ordered query log and final cache, including when selection
+returns `none`. Bounds charge actual distinct cached queries; the infinite-key argument uses
+finite execution support rather than sampling an infinite uniform table. Extraction and
+component-security hypotheses remain explicit. All 129 selected installed declarations
+(59 support and 70 protocol exports) have standard-only axiom closures and are registered
+for routine auditing. The separate source-composed checks are supplementary evidence.
+Other #1267 changes, including its Ajtai integration, remain under review.
+
+The STIR round-completeness and sequential oracle-adapter modules also pass ordinary Lean 4.34
+builds (3,764 and 3,254 jobs). Their seventeen selected installed roots have standard-only
+axiom closures. Repairs use pointwise oracle instances, explicit empty-oracle universes and
+current optional-transformer simulation laws. Completeness and security hypotheses remain
+unchanged. The broader six-target STIR build still has downstream migration failures and is
+not certified by these focused results.
+
+The pinned Lean 4.32.2 reference upper candidate now passes its complete ordinary build
+(3,906 jobs). Candidate axiom auditing and fresh dependency-closure replay are separate gates;
+this build alone does not establish them, native campaign completion or hosted ranking.
