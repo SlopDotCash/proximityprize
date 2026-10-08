@@ -1201,3 +1201,10 @@ sizes. Native `castSum` already indexes positions and native `sumCases` has a co
 recursive proof; retain this stronger API. The obsolete interpolation stub is already
 absent. A new duplicate-block native regression passes direct checking, with ordinary
 build and installed audit pending.
+
+
+The two clique-rank modules, small-weight Lam–Leung arguments, and line first-moment
+bound now pass ordinary Lean 4.34 builds and installed audits of 34 selected roots,
+all limited to the standard axioms. The repairs use the current function-product API,
+explicit complex algebraic-closure imports, and finite-set membership lemmas.
+The original mathematical statements and hypotheses are unchanged.

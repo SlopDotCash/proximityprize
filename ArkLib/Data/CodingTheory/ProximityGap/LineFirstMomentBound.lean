@@ -46,12 +46,21 @@ theorem single_vote_card (f g c : Fin n → F) (hg : ∀ i, g i ≠ 0) (i : Fin 
   classical
   rw [Finset.card_eq_one]
   refine ⟨(c i - f i) / g i, ?_⟩
-  ext γ
-  simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton, linePt]
-  rw [eq_div_iff (hg i)]
+  apply Finset.ext
+  intro γ
   constructor
-  · intro h; linear_combination h
-  · intro h; linear_combination h
+  · intro h
+    have heq : f i + γ * g i = c i := (Finset.mem_filter.mp h).2
+    apply Finset.mem_singleton.mpr
+    rw [eq_div_iff (hg i)]
+    linear_combination heq
+  · intro h
+    have heq := Finset.mem_singleton.mp h
+    rw [eq_div_iff (hg i)] at heq
+    apply Finset.mem_filter.mpr
+    refine ⟨Finset.mem_univ _, ?_⟩
+    change f i + γ * g i = c i
+    linear_combination heq
 
 /-- **Single-codeword agreement sum.** Summing the per-point agreement of a fixed codeword over the
 whole line counts each coordinate exactly once: `∑_γ |agree(f+γg, c)| = n`. -/
