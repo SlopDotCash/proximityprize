@@ -137,7 +137,8 @@ lemma toFffDomain_eq_self {ω : FftDomain ι F} :
   have hzero : ω 0 = (1 : F) := by
     simp only [FftDomain.eval_fft_domain_eq_eval_domain, FftDomain.subgroupUnit_zero,
       Units.val_one]
-  simp only [toCosetFftDomain_apply, hzero, inv_one, one_mul]
+  rw [← eval_fft_domain_eq_eval_coset_fft_domain,
+    ← eval_fft_domain_eq_eval_coset_fft_domain, hzero, inv_one, one_mul]
 
 end FftDomain
 
