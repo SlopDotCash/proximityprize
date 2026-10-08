@@ -164,13 +164,13 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
     intro j
     have h := j.2
     simp [pSpecCommit, ProtocolSpec.ChallengeIdx] at h
-  letI : [(pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).Challenge]ₒ.Fintype :=
+  letI : ∀ t, Fintype ([(pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).Challenge]ₒ.Range t) :=
     ProtocolSpec.challengeOracle_fintype _
   letI : ∀ j, Inhabited ((pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).Challenge j) := by
     intro j
     have h := j.2
     simp [pSpecCommit] at h
-  letI : [(pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).Challenge]ₒ.Inhabited :=
+  letI : ∀ t, Inhabited ([(pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).Challenge]ₒ.Range t) :=
     ProtocolSpec.challengeOracle_inhabited _
   -- Step 1: Unroll the 1-message reduction
   rw [OracleReduction.unroll_1_message_reduction_perfectCompleteness_P_to_V (oSpec := []ₒ)

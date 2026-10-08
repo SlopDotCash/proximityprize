@@ -144,21 +144,21 @@ open DSTraceStorage
 
 variable [DecidableEq StmtIn] [DecidableEq U] [Fintype U]
   [codec : Codec pSpec U] [∀ i, Fintype (pSpec.Message i)]
-  [oSpec.Fintype] [oSpec.Inhabited]
+  [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
 
 local instance : Inhabited U := ⟨0⟩
 
 /-- The (slow) Fiat-Shamir challenge oracle has finite ranges: each oracle answer is a protocol
 challenge, and challenges are `VCVCompatible`. Stated as a local instance because
 `fsChallengeOracle` fixes its oracle-interface family explicitly, bypassing the generic
-`[v]ₒ.Fintype` instance. -/
-local instance : (fsChallengeOracle StmtIn pSpec).Fintype where
-  fintype_B q := inferInstanceAs (Fintype (pSpec.Challenge q.1))
+pointwise response-family instance. -/
+local instance : ∀ q, Fintype ((fsChallengeOracle StmtIn pSpec).Range q) :=
+  fun q => inferInstanceAs (Fintype (pSpec.Challenge q.1))
 
 /-- The (slow) Fiat-Shamir challenge oracle has inhabited ranges (challenges are
 `VCVCompatible`). -/
-local instance : (fsChallengeOracle StmtIn pSpec).Inhabited where
-  inhabited_B q := inferInstanceAs (Inhabited (pSpec.Challenge q.1))
+local instance : ∀ q, Inhabited ((fsChallengeOracle StmtIn pSpec).Range q) :=
+  fun q => inferInstanceAs (Inhabited (pSpec.Challenge q.1))
 
 /-- Flavor of a single query index of the DSFS adversary's oracle
 `oSpec + duplexSpongeChallengeOracle StmtIn U`: either the shared ambient oracle `oSpec`, or one
@@ -200,13 +200,13 @@ noncomputable def duplexSpongeFiatShamirGameRemapped
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)) := do
   let ⟨stmtIn, stmtOut, messages, proveQueryLog, verifyQueryLog⟩ ←
-    𝒟[duplexSpongeFiatShamirGame (U := U) V P]
+    (evalSPMF (duplexSpongeFiatShamirGame (U := U) V P))
   let proveQueryLog' ←
-    𝒟[TraceTransform.d2sTrace (T_H := T_H) (T_P := T_P) (δ := δ) (pSpec := pSpec)
-      proveQueryLog]
+    (evalSPMF (TraceTransform.d2sTrace (T_H := T_H) (T_P := T_P) (δ := δ) (pSpec := pSpec)
+      proveQueryLog))
   let verifyQueryLog' ←
-    𝒟[TraceTransform.d2sTrace (T_H := T_H) (T_P := T_P) (δ := δ) (pSpec := pSpec)
-      verifyQueryLog]
+    (evalSPMF (TraceTransform.d2sTrace (T_H := T_H) (T_P := T_P) (δ := δ) (pSpec := pSpec)
+      verifyQueryLog))
   return ⟨stmtIn, stmtOut, messages, proveQueryLog', verifyQueryLog'⟩
 
 /-- The per-prover conclusion of [CO25, Lemma 5.1].
@@ -229,7 +229,7 @@ def KeyLemmaStatement
   ∃ P' : OracleComp (oSpec + fsChallengeOracle StmtIn pSpec) (StmtIn × pSpec.Messages),
     (∀ i : ι, IsQueryBoundP P' (fun j => j.getLeft? = some i) (tₒ i)) ∧
     IsQueryBoundP P' (fun j => j.isRight = true) (θStar tₕ tₚ tₚᵢ) ∧
-    SPMF.tvDist 𝒟[basicFiatShamirGame V P']
+    SPMF.tvDist (evalSPMF (basicFiatShamirGame V P'))
         (duplexSpongeFiatShamirGameRemapped T_H T_P δ V P)
       ≤ (ηStar U tₕ tₚ tₚᵢ L codec.decodingBias : ℝ)
 

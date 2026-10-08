@@ -253,9 +253,9 @@ def transcriptSimulator :
 because the protocol has no private witness. -/
 theorem honestTranscriptDist_oracleReduction_evalDist
     (stmt : Statement) (oStmt : ∀ i, OStatement i) :
-    evalDist (Reduction.honestTranscriptDist init impl
+    evalSPMF (Reduction.honestTranscriptDist init impl
         (oracleReduction oSpec Statement OStatement relComp).toReduction (stmt, oStmt) ()) =
-      evalDist (transcriptSimulator (oSpec := oSpec) (Statement := Statement)
+      evalSPMF (transcriptSimulator (oSpec := oSpec) (Statement := Statement)
         (OStatement := OStatement) (relComp := relComp) (init := init) (impl := impl)
         (stmt, oStmt)) := rfl
 

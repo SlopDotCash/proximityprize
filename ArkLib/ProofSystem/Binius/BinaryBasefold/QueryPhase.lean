@@ -435,7 +435,7 @@ lemma checkSingleRepetition_probFailure_eq_zero
 /-- Pair-support projection wrapper of `support_simulateQ_run'_eq`.
 `Prod.fst` of the stateful run support matches the spec support. -/
 lemma support_run_simulateQ_run_fst_eq {ι : Type}
-    {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited] {σ α : Type}
+    {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)] {σ α : Type}
     (impl : QueryImpl oSpec (StateT σ ProbComp))
     (oa : OracleComp oSpec (Option α)) (s : σ)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,

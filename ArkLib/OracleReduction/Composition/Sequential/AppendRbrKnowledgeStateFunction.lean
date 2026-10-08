@@ -436,7 +436,12 @@ def KnowledgeStateFunction.append {WitMid₁ : Fin (m+1)→Type} {WitMid₂ : Fi
         (cast (appendWitMid_le h) witMid)
     else
       kSF₂.toFun ⟨roundIdx - m, by omega⟩
-        (verify stmt₁ (by simp at h; simpa [min_eq_right_of_lt h] using tr.fst))
+        (verify stmt₁ (by
+          simp at h
+          have ht := tr.fst
+          dsimp only [Transcript, FullTranscript, Fin.val_succ] at ht
+          rw! (castMode := .all) [min_eq_right_of_lt h] at ht
+          exact ht))
         (by simpa [h] using tr.snd) (cast (appendWitMid_gt h) witMid)
   toFun_empty := by
     intro stmtIn witMid
@@ -909,7 +914,12 @@ theorem KnowledgeStateFunction.append_toFun_gt {WitMid₁ : Fin (m+1)→Type} {W
     (witMid : (Fin.append (m:=m+1) WitMid₁ (Fin.tail WitMid₂) ∘ Fin.cast (by omega)) roundIdx) :
     (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun roundIdx stmt₁ tr witMid
       = kSF₂.toFun ⟨roundIdx - m, by omega⟩
-          (verify stmt₁ (by simp at h; simpa [min_eq_right_of_lt h] using tr.fst))
+          (verify stmt₁ (by
+          simp at h
+          have ht := tr.fst
+          dsimp only [Transcript, FullTranscript, Fin.val_succ] at ht
+          rw! (castMode := .all) [min_eq_right_of_lt h] at ht
+          exact ht))
           (by simpa [h] using tr.snd) (cast (appendWitMid_gt h) witMid) := by
   simp only [KnowledgeStateFunction.append, dif_neg h]
 

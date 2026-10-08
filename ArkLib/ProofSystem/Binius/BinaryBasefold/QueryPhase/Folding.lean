@@ -73,15 +73,13 @@ instance instQueryChallengeFintype : ∀ j, Fintype ((pSpecQuery 𝔽q β γ_rep
       (Fintype (Fin γ_repetitions → sDomain 𝔽q β h_ℓ_add_R_rate 0))
 
 instance instQuerySpecFintype :
-    OracleSpec.Fintype [(pSpecQuery 𝔽q β γ_repetitions (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).Challenge]ₒ where
-  fintype_B
+    ∀ t, Fintype ([(pSpecQuery 𝔽q β γ_repetitions (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).Challenge]ₒ.Range t)
   | ⟨⟨⟨0, _⟩, _⟩, _⟩ => by
     haveI : Fintype (sDomain 𝔽q β h_ℓ_add_R_rate 0) := fintype_sDomain 𝔽q β h_ℓ_add_R_rate 0
     exact inferInstanceAs (Fintype (Fin γ_repetitions → sDomain 𝔽q β h_ℓ_add_R_rate 0))
 
 instance instQuerySpecInhabited :
-    OracleSpec.Inhabited [(pSpecQuery 𝔽q β γ_repetitions (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).Challenge]ₒ where
-  inhabited_B
+    ∀ t, Inhabited ([(pSpecQuery 𝔽q β γ_repetitions (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).Challenge]ₒ.Range t)
   | ⟨⟨⟨0, _⟩, _⟩, _⟩ => ⟨fun _ => 0⟩
 
 instance instQueryChallengeInhabited : ∀ j, Inhabited ((pSpecQuery 𝔽q β γ_repetitions
