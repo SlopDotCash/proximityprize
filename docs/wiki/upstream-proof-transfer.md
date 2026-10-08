@@ -1363,3 +1363,6 @@ The candidate-list batching bound and its regression module pass ordinary builds
 
 
 Five native modules for worst-case round-by-round contracts, generic challenge-game bounds, guarded two-message security, challenge sampling transport, and heterogeneous equality pass ordinary compilation and installed audits of 26 selected declarations with only standard axioms. Worst-case bounds imply the existing averaged games through the native probability API. Extractor-specific contracts keep the extractor and knowledge-state function visible. Binary and n-ary composition capstones remain separate transfers.
+
+
+Native claim reduction and STIR vector completeness pass ordinary builds and installed audits of eight selected declarations using only standard axioms. The claim proofs normalize current OptionT simulation; the STIR proof pins the empty ambient oracle and challenge interfaces without adding completeness hypotheses. This is completeness and honest-verifier zero knowledge, not the pending STIR security theorem.

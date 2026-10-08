@@ -5,6 +5,7 @@ Authors: Quang Dao
 -/
 import ArkLib.OracleReduction.Security.RoundByRound
 import ArkLib.OracleReduction.Security.OracleZeroKnowledge
+import ArkLib.ToVCVio.Simulation
 
 /-!
   # Simple Oracle Reduction - SendClaim
@@ -111,6 +112,7 @@ it also holds in the ideal setting, etc.
 instance : ProverOnly (pSpec OStatement) where
   prover_first' := by simp
 
+set_option backward.isDefEq.respectTransparency false in
 theorem completeness [Nonempty σ] :
     (oracleReduction oSpec Statement OStatement relComp).perfectCompleteness
     init impl relIn (relOut OStatement) := by
@@ -135,7 +137,7 @@ theorem completeness [Nonempty σ] :
   simp only [OptionT.probFailure_eq, OptionT.mem_support_iff, OptionT.run_mk]
   simp only [support_bind, Set.mem_iUnion]
   exact ⟨by {
-    simp only [HasEvalPMF.probFailure_eq_zero, zero_add, probOutput_eq_zero_iff]
+    simp only [probFailure_eq_zero, zero_add, probOutput_eq_zero_iff]
     intro h
     rw [mem_support_bind_iff] at h
     obtain ⟨s, -, hs⟩ := h
@@ -147,6 +149,7 @@ theorem completeness [Nonempty σ] :
     -- Unfold SubSpec liftM + OptionT in hx
     simp only [MonadLift.monadLift, liftM, monadLift, MonadLiftT.monadLift,
       OptionT.run_mk, OptionT.run_bind, OptionT.run_lift] at hx
+    simp only [bind_pure_comp] at hx
     -- simulateQ_map rewrites simulateQ impl (some <$> _) → some <$> simulateQ impl _
     erw [simulateQ_map] at hx
     -- Peel outer simulateQ layer (OptionT.mk is definitionally transparent)
@@ -160,13 +163,11 @@ theorem completeness [Nonempty σ] :
     dsimp only [] at hs
     rcases val with _ | ⟨a⟩
     · exfalso
-      simp only [bind_pure_comp] at hval
       erw [simulateQ_map] at hval
       erw [simulateQ_map] at hval
-      erw [simulateQ_map] at hval
+      dsimp only [OptionT.run, OptionT.mk] at hval
       erw [Option.elimM_map] at hval
       simp only [Option.elim_some] at hval
-      dsimp only [OptionT.run] at hval
       simp only [bind_pure_comp] at hval
       rw [simulateQ_map, simulateQ_map] at hval
       rw [StateT.run_map] at hval
@@ -189,6 +190,7 @@ theorem completeness [Nonempty σ] :
     -- Unfold SubSpec liftM + OptionT in hy
     simp only [MonadLift.monadLift, liftM, monadLift, MonadLiftT.monadLift,
       OptionT.run_mk, OptionT.run_bind, OptionT.run_lift] at hy
+    simp only [bind_pure_comp] at hy
     -- simulateQ_map: y is always some _
     erw [simulateQ_map] at hy
     -- Peel outer simulateQ layer
@@ -202,13 +204,11 @@ theorem completeness [Nonempty σ] :
     dsimp only [] at hx
     rcases val with _ | ⟨a⟩
     · exfalso
-      simp only [bind_pure_comp] at hval
       erw [simulateQ_map] at hval
       erw [simulateQ_map] at hval
-      erw [simulateQ_map] at hval
+      dsimp only [OptionT.run, OptionT.mk] at hval
       erw [Option.elimM_map] at hval
       simp only [Option.elim_some] at hval
-      dsimp only [OptionT.run] at hval
       simp only [bind_pure_comp] at hval
       rw [simulateQ_map, simulateQ_map] at hval
       rw [StateT.run_map] at hval
@@ -220,20 +220,17 @@ theorem completeness [Nonempty σ] :
       simp only [StateT.run_pure, support_pure, Set.mem_singleton_iff, Prod.mk.injEq,
         Option.some.injEq] at hx
       obtain ⟨rfl, -⟩ := hx
-      simp only [bind_pure_comp] at hval
       erw [simulateQ_map] at hval
       erw [simulateQ_map] at hval
-      erw [simulateQ_map] at hval
+      dsimp only [OptionT.run, OptionT.mk] at hval
       erw [Option.elimM_map] at hval
       simp only [Option.elim_some] at hval
-      dsimp only [OptionT.run] at hval
       simp only [bind_pure_comp] at hval
       rw [simulateQ_map, simulateQ_map] at hval
       rw [StateT.run_map] at hval
       simp only [support_map, Set.mem_image, Prod.mk.injEq, Option.some.injEq] at hval
       obtain ⟨⟨_, _⟩, _, rfl, rfl⟩ := hval
-      simp only [Set.mem_setOf_eq]
-      refine ⟨trivial, Prod.ext (Subsingleton.elim _ _) ?_⟩
+      refine ⟨by rfl, Prod.ext (Subsingleton.elim _ _) ?_⟩
       funext i
       rcases i with j | j <;> {
         have hj : j = default := Unique.uniq _ j
@@ -253,9 +250,9 @@ def transcriptSimulator :
 because the protocol has no private witness. -/
 theorem honestTranscriptDist_oracleReduction_evalDist
     (stmt : Statement) (oStmt : ∀ i, OStatement i) :
-    evalDist (Reduction.honestTranscriptDist init impl
+    evalSPMF (Reduction.honestTranscriptDist init impl
         (oracleReduction oSpec Statement OStatement relComp).toReduction (stmt, oStmt) ()) =
-      evalDist (transcriptSimulator (oSpec := oSpec) (Statement := Statement)
+      evalSPMF (transcriptSimulator (oSpec := oSpec) (Statement := Statement)
         (OStatement := OStatement) (relComp := relComp) (init := init) (impl := impl)
         (stmt, oStmt)) := rfl
 

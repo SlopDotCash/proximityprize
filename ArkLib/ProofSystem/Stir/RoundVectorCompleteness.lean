@@ -42,24 +42,23 @@ instance instStirVecChalInhabited :
 /-- Finiteness of the vectorised fold-round challenge oracle spec, stated for the *pinned*
 generic challenge interface (the family `unroll_2_message_VP` is elaborated with). -/
 instance instStirVecChalSpecFintype :
-    OracleSpec.Fintype
-      ([((stirRoundVSpec ι F).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  fintype_B := fun ⟨i, _⟩ => by
+    ∀ t, Fintype (([((stirRoundVSpec ι F).toProtocolSpec F).Challenge]ₒ'
+        (fun i => challengeOracleInterface i)).Range t) :=
+  fun ⟨i, _⟩ => by
     show Fintype (((stirRoundVSpec ι F).toProtocolSpec F).Challenge i)
     infer_instance
 
 /-- Inhabitedness of the vectorised fold-round challenge oracle spec (pinned interface form). -/
 instance instStirVecChalSpecInhabited :
-    OracleSpec.Inhabited
-      ([((stirRoundVSpec ι F).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  inhabited_B := fun ⟨i, _⟩ => by
+    ∀ t, Inhabited (([((stirRoundVSpec ι F).toProtocolSpec F).Challenge]ₒ'
+        (fun i => challengeOracleInterface i)).Range t) :=
+  fun ⟨i, _⟩ => by
     show Inhabited (((stirRoundVSpec ι F).toProtocolSpec F).Challenge i)
     infer_instance
 
 variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp))
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 set_option maxHeartbeats 1600000 in
 /-- **Perfect completeness of the vectorised STIR fold-round object.** The honest prover packs
@@ -71,7 +70,13 @@ theorem stirRoundVectorReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ)
     OracleReduction.perfectCompleteness init impl
       (stirRoundInputRel φ deg δ) (stirRoundVectorOutputRel φ deg δ)
       (stirRoundVectorReduction φ deg) := by
-  rw [unroll_2_message_VP (stirRoundVectorReduction φ deg)
+  letI : OracleSpec.IsUniformSpec OracleSpec.emptySpec.{0, 0} :=
+    OracleSpec.IsUniformSpec.ofFintypeInhabited _
+  letI : OracleSpec.IsUniformSpec
+      (OracleSpec.emptySpec.{0, 0} + [((stirRoundVSpec ι F).toProtocolSpec F).Challenge]ₒ'
+        (fun i => challengeOracleInterface i)) :=
+    OracleSpec.IsUniformSpec.ofFintypeInhabited _
+  rw [unroll_2_message_VP (oSpec := OracleSpec.emptySpec.{0, 0}) (stirRoundVectorReduction φ deg)
     (stirRoundInputRel φ deg δ) (stirRoundVectorOutputRel φ deg δ) init impl hInit
     (by rfl) (by rfl)
     (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
@@ -86,18 +91,11 @@ theorem stirRoundVectorReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ)
     rw [probFailure_bind_eq_zero_iff]
     refine ⟨?_, fun α _hα => ?_⟩
     · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+        _root_.probFailure_liftComp, probFailure_eq_zero]
     · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-        Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
-        probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
-        Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
-        zero_add]
-      intro x hx
-      erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-      simp only [support_pure, Set.mem_singleton_iff] at hx
-      subst hx
-      simp only [Option.map_some, reduceCtorEq, not_false_eq_true]
+      erw [OptionT.simulateQ_pure, OptionT.run_map, OptionT.run_pure]
+      simp
+
   · -- CORRECTNESS: every output in the support satisfies the relation + agreement
     intro x hx
     simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
@@ -121,7 +119,7 @@ theorem stirRoundVectorReduction_completeness_any_error (φ : ι ↪ F) (deg : �
     (hInit : NeverFail init) :
     (stirRoundVectorReduction φ deg).completeness init impl
       (stirRoundInputRel φ deg δ) (stirRoundVectorOutputRel φ deg δ) ε :=
-  Reduction.completenessFromRun_mono_error _ _ _ _ _ (zero_le ε)
+  Reduction.completenessFromRun_mono_error _ _ _ _ _ (zero_le : 0 ≤ ε)
     (stirRoundVectorReduction_perfectCompleteness init impl φ deg δ hInit)
 
 end
