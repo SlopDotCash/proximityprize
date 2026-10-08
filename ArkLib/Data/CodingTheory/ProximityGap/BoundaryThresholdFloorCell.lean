@@ -162,7 +162,7 @@ theorem sqrt_eight_lt_seventyTwoDivTwentyFive : NNReal.sqrt 8 < 72 / 25 := by
 
 theorem sqrtRate_lt_eighteenDivTwentyFive :
     ReedSolomon.sqrtRate 2 domain < 18 / 25 := by
-  refine lt_of_mul_lt_mul_right ?_ (zero_le (4 : ℝ≥0))
+  refine lt_of_mul_lt_mul_right ?_ (zero_le : (0 : ℝ≥0) ≤ 4)
   have hcard : ((Fintype.card I : ℕ) : ℝ≥0) = 4 := by norm_num [I]
   have h4 : ReedSolomon.sqrtRate 2 domain * (4 : ℝ≥0) = NNReal.sqrt 8 := by
     rw [← hcard]
