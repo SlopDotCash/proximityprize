@@ -100,13 +100,12 @@ theorem goodAgreementSet_eq_of_saturatedThrough {I Iinf : IncidenceProfile} {B W
     (hsat : SaturatedThrough I Iinf W) :
     goodAgreementSet I B W = goodAgreementSet Iinf B W := by
   classical
-  apply Finset.ext
-  intro w
-  by_cases hw : w ≤ W
-  · simp [goodAgreementSet, agreementRange, GoodAgreement, hsat w hw]
-  · have hnot : w ∉ agreementRange W := by
-      simp [agreementRange, hw]
-    simp [goodAgreementSet, hnot]
+  unfold goodAgreementSet
+  apply Finset.filter_congr
+  intro w hw
+  have hw' : w ≤ W := Nat.le_of_lt_succ (Finset.mem_range.mp hw)
+  unfold GoodAgreement
+  rw [hsat w hw']
 
 /-- Pointwise refutation hook: a single in-range disagreement refutes saturation. -/
 theorem not_saturatedThrough_of_profile_ne {I Iinf : IncidenceProfile} {W w : ℕ}

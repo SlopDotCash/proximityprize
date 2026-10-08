@@ -1309,3 +1309,10 @@ ordinary compilation and installed audits of 35 selected declarations with only
 standard axioms. The migration uses explicit finite-vector extensionality, current
 span/rank APIs, a prime-tactic import, and removes simplification steps that no
 longer make progress. These changes preserve the original mathematical claims.
+
+
+Three saturated-incidence, subgroup Gauss-sum, and prime-supply research modules
+pass their ordinary build and installed audits of 41 selected declarations using
+only standard axioms. These Lean 4.34 repairs retain the conditional reduction
+interfaces and explicit prime-supply hypotheses; they do not prove the open
+production proximity-gap conjecture.

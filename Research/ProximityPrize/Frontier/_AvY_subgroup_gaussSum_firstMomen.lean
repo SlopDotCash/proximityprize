@@ -53,7 +53,6 @@ theorem subgroup_gaussSum_firstMoment {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive
     _ = ∑ y ∈ G, (if y = 0 then (Fintype.card F : ℂ) else 0) := by
         refine Finset.sum_congr rfl (fun y _ => ?_)
         have h := AddChar.sum_mulShift (R := F) (R' := ℂ) y hψ
-        simp only [mul_comm y] at h
         rw [h]; split_ifs <;> push_cast <;> ring
     _ = if (0 : F) ∈ G then (Fintype.card F : ℂ) else 0 := by
         rw [Finset.sum_ite_eq' G (0 : F) (fun _ => (Fintype.card F : ℂ))]
