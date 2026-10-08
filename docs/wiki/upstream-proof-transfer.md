@@ -1122,3 +1122,26 @@ map conversion explicit and scopes the transparency compatibility option to the 
 invertibility proof. It preserves the field congruence and norm hypotheses. The Ajtai consumer
 passes a direct source check after its probability/measure API conversion; its ordinary build
 and installed audit are still pending, so this result does not certify that consumer.
+
+
+### Integration follow-up: explicit types before larger elaboration limits
+
+Focused Lean 4.34 checks now pass for `MCAGenerator`, `Jo26GeneratorMCA`,
+`BCIKS20.AffineSpaces`, and `Frontier._HD1InterpolationCore` after building their missing
+prerequisites in a separate scratch directory. In the MCA pseudoinverse proof, changing the
+local word-family variable to its definitionally equal `Matrix` type lets the multiplication
+identities apply. In the interpolation proof, supplying `(F := F)` to
+`specialize_eq_zero_of_agreement` avoids excessive coefficient unfolding and restores a pass
+at the default heartbeat limit. Increasing that limit alone did not resolve the failure.
+For similar migration failures, inspect inference and local types before increasing limits
+or broadening transparency. These edits preserve the theorem statements and assumptions.
+The selected MCA, affine-space, interleaving and interpolation audit roots use only standard
+axioms.
+
+The two research additions in #217 and #218 also pass focused Lean 4.34 checks with their
+prerequisite chains: the MCA good-radius characterization requires two order-API proof
+updates; the decoded-head counterexample compiles unchanged. AHIV22's three embedding-fiber
+membership steps now use explicit witnesses and sigma projections, and DG25's theorem-local
+compatibility option precedes its docstring. Their focused source and selected axiom checks
+pass. These results are local migration evidence; the complete combined hosted build and
+full manifest audit remain required. The production Proximity Prize conjecture stays open.
