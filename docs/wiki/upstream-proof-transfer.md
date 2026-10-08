@@ -1351,3 +1351,9 @@ Four energy, Gaussian-moment, operator, and orbit research modules pass ordinary
 
 
 The explicit-round transcript projection module passes ordinary compilation and installed audits of 12 declarations using only standard axioms. Its left/right projections, concatenation laws, and heterogeneous equality bridge adapt the upstream API to native partial transcripts, including the native empty-right-prefix branch. Guarded sequential composition remains a separately qualified transfer.
+
+
+The half-distance lattice-threshold module passes its ordinary build and installed audits of seven declarations using only standard axioms. The interleaved separation proof uses explicit filter membership and retains its distance, rate, and budget hypotheses.
+
+
+Three threshold-collapse, tower-ratio, and Hasse–Davenport coset-ladder modules pass ordinary builds and installed audits of 23 declarations using only standard axioms. The repairs add the explicit complex-character import and use the current limit API without changing the mathematical statements.

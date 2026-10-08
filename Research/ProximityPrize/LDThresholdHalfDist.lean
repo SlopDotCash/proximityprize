@@ -83,11 +83,13 @@ lemma ncard_closeCodewordsRel_le_one_of_sep {A : Type*} [DecidableEq A] [Finite 
   omega
 
 omit [Field F] [Fintype F] [DecidableEq F] [DecidableEq ι] [Nonempty ι] in
+set_option backward.isDefEq.respectTransparency false in
 /-- Pairwise separation lifts from the base code to the interleaved code: stacks that
 differ, differ in some row, and the stack distance dominates each row distance. -/
 lemma interleaved_sep_of_base {A : Type*} [DecidableEq A] {C : Set (ι → A)} {j m : ℕ}
     (hsep : ∀ u ∈ C, ∀ v ∈ C, u ≠ v → 2 * j < hammingDist u v) :
     ∀ U ∈ (C^⋈ (Fin m)), ∀ V ∈ (C^⋈ (Fin m)), U ≠ V → 2 * j < hammingDist U V := by
+  classical
   intro U hU V hV hne
   have hU' : ∀ k : Fin m, Matrix.transpose U k ∈ C := hU
   have hV' : ∀ k : Fin m, Matrix.transpose V k ∈ C := hV
@@ -104,8 +106,9 @@ lemma interleaved_sep_of_base {A : Type*} [DecidableEq A] {C : Set (ι → A)} {
     unfold hammingDist
     apply Finset.card_le_card
     intro i hi
-    rw [Finset.mem_filter] at hi ⊢
-    refine ⟨Finset.mem_univ i, fun hUV => hi.2 ?_⟩
+    have hneRow := (Finset.mem_filter.mp hi).2
+    apply Finset.mem_filter.mpr
+    refine ⟨Finset.mem_univ i, fun hUV => hneRow ?_⟩
     exact congrFun hUV k
   omega
 
