@@ -1155,3 +1155,10 @@ ordinary Lean 4.34 module builds. Their 31 selected installed roots (14 coordina
 exports, 15 batching algebra exports, and two final algebra exports) have only standard
 axioms and are registered for routine auditing. The concrete binary-tower orientation
 fixture remains a separate pending check; these results do not claim protocol soundness.
+
+
+The GWAffine pinning, depth-two engine, weighted squarefree exponent, MCA exact-point,
+and localization embedding modules now pass ordinary Lean 4.34 builds and installed
+audits of 39 selected roots. The repairs update sum evaluation, integer coercions,
+modular-equivalence unfolding, nonnegativity elaboration, and the explicit localization
+algebra map. Existing mathematical hypotheses and theorem statements are preserved.

@@ -97,7 +97,7 @@ noncomputable def gwOperator {s : ℕ} (A : Fin s → F[X]) (γ : F) : F[X] →�
 
 theorem gwOperator_apply {s : ℕ} (A : Fin s → F[X]) (γ : F) (p : F[X]) :
     gwOperator A γ p = ∑ j : Fin s, A j * p.comp (Polynomial.C (γ ^ (j : ℕ)) * Polynomial.X) := by
-  simp only [gwOperator, LinearMap.coeFn_sum, Finset.sum_apply, LinearMap.comp_apply,
+  simp only [gwOperator, LinearMap.sum_apply, LinearMap.comp_apply,
     LinearMap.mulLeft_apply, substLinear_apply]
 
 /-! ## The homogeneous solution submodule and the (affine) solution set -/
