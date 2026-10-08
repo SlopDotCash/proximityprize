@@ -2157,5 +2157,26 @@
       ]
     ]
   ],
-  "note": "Lexical inventory, not semantic equivalence or kernel validation. Short-name matches are only review hints."
+  "note": "Lexical inventory, not semantic equivalence or kernel validation. Short-name matches are only review hints.",
+  "reference_validation": {
+    "commit": "ed2b68c4a330d76dc4ab6693eec81b685b493270",
+    "toolchain": "leanprover/lean4:v4.32.2",
+    "lower": {
+      "ordinary_build": "passed",
+      "jobs": 4351,
+      "candidate_type": "ProximityPrize.Benchmark.ProtocolClaim 6815 331366399 1073741824",
+      "installed_roots": [
+        "ProximityPrize.Benchmark.candidate",
+        "ProximityPrize.SubmissionLower.FinalCertificate6815.protocolClaim"
+      ],
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "fresh_kernel_replay": "passed: fresh environment replay, declaration-presence and quotient-consistency checks",
+      "replayed_declarations": 108676
+    },
+    "boundary": "Local pinned-reference verification, not native Lean 4.34 completion or a hosted ranking result."
+  }
 }

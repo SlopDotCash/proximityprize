@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 457,
+    "files_with_citations": 459,
     "keys_cited": 37,
-    "total_citation_edges": 519
+    "total_citation_edges": 521
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -46,6 +46,12 @@
     "ArkLib/Commitments/Functional/Hachi/PolynomialEvalSplit.lean": [
       "NOZ26",
       "NS24"
+    ],
+    "ArkLib/Commitments/Functional/Hachi/TraceHead/Coefficients.lean": [
+      "NOZ26"
+    ],
+    "ArkLib/Commitments/Functional/Hachi/TraceHead/Coordinates.lean": [
+      "NOZ26"
     ],
     "ArkLib/Commitments/Functional/KZG/Basic.lean": [
       "KZG10"
@@ -1968,6 +1974,8 @@
       "ArkLib/Commitments/Functional/Hachi/InnerOuter/Security.lean",
       "ArkLib/Commitments/Functional/Hachi/InnerOuter.lean",
       "ArkLib/Commitments/Functional/Hachi/PolynomialEvalSplit.lean",
+      "ArkLib/Commitments/Functional/Hachi/TraceHead/Coefficients.lean",
+      "ArkLib/Commitments/Functional/Hachi/TraceHead/Coordinates.lean",
       "ArkLib/Data/Lattices/CyclotomicRing/Core/Modulus.lean",
       "ArkLib/Data/Lattices/CyclotomicRing/Core.lean",
       "ArkLib/Data/Lattices/CyclotomicRing/Galois/Automorphism.lean",

@@ -216,7 +216,7 @@ theorem mellin_fourth_moment_wick_split {d : ℕ}
             if_neg (fun h2 => hj (h1.1.symm.trans h2.1)), add_zero]
         · by_cases h2 : k₁ = j₃ ∧ k₃ = j₁
           · rw [if_pos (Or.inr h2), if_neg h1, if_pos h2, zero_add]
-          · rw [if_neg (fun h => h.elim h1 h2), if_neg h1, if_neg h2, add_zero]
+          · rw [if_neg (not_or.mpr ⟨h1, h2⟩), if_neg h1, if_neg h2, add_zero]
       calc ∑ k₁ ∈ J, ∑ k₃ ∈ J,
             (if IsWickPair j₁ j₃ k₁ k₃
              then τ j₁ * τ j₃ * (starRingEnd ℂ) (τ k₁) * (starRingEnd ℂ) (τ k₃)

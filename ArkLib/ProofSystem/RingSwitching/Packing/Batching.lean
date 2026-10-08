@@ -153,7 +153,11 @@ def eqFold (κ : ℕ) : BatchingStrategy P (Fin κ → Fin 2) where
             - ∑ u : Fin κ → Fin 2, eqTilde (u : Fin κ → P) c * s' u := by
         rw [hf, MLE_eval_eq_sum_eqTilde, ← Finset.sum_sub_distrib]
         exact Finset.sum_congr rfl fun u _ => by
-          simp only [eqTilde]; rw [eqPolynomial_symm]; exact mul_sub _ _ _
+          have hbit (z : Fin 2) : (if z == 1 then (1 : P) else 0) = (z : P) := by
+            fin_cases z <;> simp
+          simp only [eqTilde, hbit]
+          rw [eqPolynomial_symm]
+          ring
       rw [hcalc, sub_eq_zero]
     -- `f ≠ 0`: it interpolates `s − s'`, which is nonzero at `u₀`
     have hf_ne : f ≠ 0 := fun h0 => sub_ne_zero_of_ne hu₀ (by
