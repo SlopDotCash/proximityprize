@@ -959,3 +959,16 @@ registered for auditing. The migration uses pointwise oracle answer instances, e
 SPMF evaluation, proved query-lift composition and explicit unfolding of the success
 predicate. Existing completeness, state and sampling hypotheses are preserved. The broader
 six-target STIR build is the next validation gate; these focused results do not prove it.
+
+
+The new #1294–#1296 sequence supplies a useful missing route for guarded round-by-round
+knowledge composition. #1294 relocates the guard interface; #1295 proves binary and iterated
+composition for worst-case component bounds. The first verifier must return a deterministic
+verdict when its check passes and abort otherwise. The composed knowledge state retains that
+check after the seam, preventing a rejected first transcript from passing via a fallback verdict.
+#1296 uses this route for the full ring-switching composite under an explicit
+`MLIOPCS.RbrKnowledgeSoundWorstCase` hypothesis and a functional opening relation. Its older
+averaged-only capstone still uses admitted arbitrary-verifier composition and carries `sorryAx`.
+The new proved route does not discharge that older contract. Native adaptation requires the
+worst-case security API, guarded composition and phase modules, plus validation of the intended
+downstream opening witness. This is a source review, not a native build claim.
