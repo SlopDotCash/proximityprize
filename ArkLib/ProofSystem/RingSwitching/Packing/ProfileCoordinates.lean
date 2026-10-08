@@ -48,12 +48,12 @@ def rowEquiv : P.A ≃+ ((Fin κ → Fin 2) → L) where
   map_add' x y := funext (P.decomposeRows_add x y)
 
 /-- Column coordinates commute with finite sums of carrier elements. -/
-theorem decomposeColumns_sum {ι : Type*} (s : Finset ι) (f : ι → P.A) :
+theorem decomposeColumns_finset_sum {ι : Type*} (s : Finset ι) (f : ι → P.A) :
     P.decomposeColumns (∑ i ∈ s, f i) = ∑ i ∈ s, P.decomposeColumns (f i) :=
   map_sum P.columnEquiv f s
 
 /-- Row coordinates commute with finite sums of carrier elements. -/
-theorem decomposeRows_sum {ι : Type*} (s : Finset ι) (f : ι → P.A) :
+theorem decomposeRows_finset_sum {ι : Type*} (s : Finset ι) (f : ι → P.A) :
     P.decomposeRows (∑ i ∈ s, f i) = ∑ i ∈ s, P.decomposeRows (f i) :=
   map_sum P.rowEquiv f s
 
@@ -68,7 +68,7 @@ theorem transpose_decomposeRows (z : P.A) :
     (Packing.PackingData.ofBasis P.basis).transpose (P.decomposeRows z) =
       P.decomposeColumns z := by
   conv_rhs => rw [P.decomposeRows_spec z]
-  rw [P.decomposeColumns_sum]
+  rw [P.decomposeColumns_finset_sum]
   funext u
   change Fin κ → Fin 2 at u
   calc
@@ -83,17 +83,17 @@ theorem transpose_symm_decomposeColumns (z : P.A) :
   rw [← P.transpose_decomposeRows]
   exact (Packing.PackingData.ofBasis P.basis).transpose.symm_apply_apply _
 
-/-- Native columns of a finite tensor observation are the shared weighted packing coordinates. -/
+/-- Native rows of a finite tensor observation are the shared weighted packing coordinates. -/
 theorem decomposeRows_observation {Y : Type*} [Fintype Y] (a v : Y → L) :
     P.decomposeRows (∑ y, P.φ₀ (a y) * P.φ₁ (v y)) =
       (Packing.PackingData.ofBasis P.basis).observe a v := by
-  rw [P.decomposeRows_sum]
+  rw [P.decomposeRows_finset_sum]
   funext i
   change (∑ y, P.decomposeRows (P.φ₀ (a y) * P.φ₁ (v y))) i =
     ∑ y, P.basis.repr (v y) i • a y
   simp only [P.decomposeRows_φ₀_mul_φ₁, Finset.sum_apply, Algebra.smul_def, mul_comm]
 
-/-- Native rows of a finite tensor observation are the coordinate slices of its factor families. -/
+/-- Native columns of a finite tensor observation are the coordinate slices of its factor families. -/
 theorem decomposeColumns_observation {Y : Type*} [Fintype Y] (a v : Y → L) :
     P.decomposeColumns (∑ y, P.φ₀ (a y) * P.φ₁ (v y)) =
       (Packing.PackingData.ofBasis P.basis).coordinateSlices a v := by

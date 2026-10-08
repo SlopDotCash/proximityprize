@@ -1148,3 +1148,10 @@ for consistency. This supplements its 4,351-job ordinary build and two standard-
 installed roots. Reproduce it with `scripts/proximity-prize-reference.sh replay-lower`.
 This is local verification on the pinned reference's Lean 4.32.2 toolchain; native Lean 4.34
 migration and hosted ranking remain separate gates.
+
+
+The shared packing coordinate bridges, `BatchingAlgebra`, and `FinalAlgebra` now pass
+ordinary Lean 4.34 module builds. Their 31 selected installed roots (14 coordinate/batching
+exports, 15 batching algebra exports, and two final algebra exports) have only standard
+axioms and are registered for routine auditing. The concrete binary-tower orientation
+fixture remains a separate pending check; these results do not claim protocol soundness.
