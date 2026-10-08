@@ -921,3 +921,21 @@ explicitly. Completeness and soundness factoring preserve the existing state-pre
 simulation hypotheses. The result remains distributional: it does not assert the false general
 syntactic reordering of a challenge and a prover output. All four roots are registered for
 routine auditing; downstream perfect-completeness and full STIR validation remain pending.
+
+
+The seam-support and message-soundness modules pass Lean 4.34 compilation: the support build
+completed 3,247 jobs, and the joint message-soundness/Hachi build completed 3,641 jobs.
+All fifteen selected installed soundness/support declarations have standard-only axiom closures.
+The port preserves message-seam, state-preservation, never-failure and value-distribution
+hypotheses. The generic optional-transformer event lemma now uses the current lawful SPMF-lift
+interface. Query-lift transitivity is proved through the common lift-composition theorem.
+
+PR #1287's cyclotomic trace coordinates are now adapted at
+`3323359736dd521ee77073ebdaa89057822839f9`. The transfer adds the linear packing map and
+equivalence, cancellation of the unit trace scale, and the binary coefficient equivalence.
+The trace check is proved equivalent to a coefficient inner product and then to evaluation
+of the decoded scalar polynomial. Three obsolete simplification steps in native trace-vanishing
+proofs were removed. The joint build completed 3,641 jobs; all twenty selected installed roots
+(eleven new coordinate/substrate declarations and nine trace-vanishing theorems) have
+standard-only axiom closures. They are registered for routine auditing. Full trace-head protocol,
+completeness, committed-opening and conformance integration remain pending.
