@@ -35,7 +35,8 @@ def zmod16Universe : List (ZMod 16) :=
 
 /-- Every residue appears in the canonical listing. -/
 theorem mem_zmod16Universe (x : ZMod 16) : x ∈ zmod16Universe := by
-  exact List.mem_map.mpr ⟨x.val, List.mem_range.mpr (ZMod.val_lt x), ZMod.natCast_zmod_val x⟩
+  change x ∈ (List.range 16).map (fun i : ℕ => (i : ZMod 16))
+  exact (List.mem_map (f := fun i : ℕ => (i : ZMod 16))).mpr ⟨x.val, List.mem_range.mpr (ZMod.val_lt x), ZMod.natCast_zmod_val x⟩
 
 /-- The order-4 coset through `x` in `ZMod 16`. -/
 def orderFourCoset16 (x : ZMod 16) : Finset (ZMod 16) :=

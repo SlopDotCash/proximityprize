@@ -966,3 +966,8 @@ registered for auditing. The migration uses pointwise oracle answer instances, e
 SPMF evaluation, proved query-lift composition and explicit unfolding of the success
 predicate. Existing completeness, state and sampling hypotheses are preserved. The broader
 six-target STIR build is the next validation gate; these focused results do not prove it.
+
+The monic-quotient linearity compatibility module now imports the five declarations supplied
+by the pinned Mathlib dependency instead of redeclaring them. The existing ArkLib import path
+is retained. The import-only module passes a focused Lean 4.34 check; downstream research
+clients still require the full integration build.
