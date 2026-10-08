@@ -1845,6 +1845,7 @@ import Research.ProximityPrize.Frontier._LowProfileFiberCoupled
 import Research.ProximityPrize.Frontier._LowerBoundPaleyZygmundReach
 import Research.ProximityPrize.Frontier._LowerBoundPermMatchingFloor
 import Research.ProximityPrize.Frontier._MCAAdjacentFloorExactPin
+import Research.ProximityPrize.Frontier._MCAGoodRadiusMaximum
 import Research.ProximityPrize.Frontier._MCAHyperplaneVertex
 import Research.ProximityPrize.Frontier._MCANormalKernelOneDimensional
 import Research.ProximityPrize.Frontier._MCAReindexEquiv

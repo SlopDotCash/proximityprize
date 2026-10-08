@@ -54019,3 +54019,28 @@ to the production field and length. The prize threshold and issue #164 remain op
 
 Reproduce with `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_DecodedHeadResidualRefuted.lean`.
 All exported declarations use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## [164-mca-good-radius-no-interior-maximum] 2026-10-08
+
+The attained-maximum formulation must be separated from the supremum in the
+production-completion contract. `_MCAGoodRadiusMaximum.lean` proves that every
+radius below one has a strictly larger radius below one with the same MCA error.
+This follows from a right plateau of the agreement ceiling and the existing
+`MCAStepFunction.epsMCA_eq_of_ceil_eq` law.
+
+`greatest_good_radius_eq_one` therefore forces any greatest element of the
+repository `mcaGoodRadii` set to equal one. `exists_greatest_good_radius_iff`
+characterizes existence exactly by goodness at radius one, for arbitrary codes
+on a nonempty finite coordinate set over the finite-field setup of `epsMCA`.
+This is a general result, not a small-field counterexample.
+
+Scope: this does not compute the production supremum, establish badness at radius
+one, or certify equivalence to the sponsor paper. It is not prize closure. The
+source-paper PDF was unavailable during the initial source check. The result is
+stated for the repository definitions, addressing the explicit mismatch in #164.
+
+Reproduction: `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_MCAGoodRadiusMaximum.lean`
+and `scripts/lake-locked.sh build Research.ProximityPrize.Frontier._MCAGoodRadiusMaximum`.
+The four printed declarations use only `propext`, `Classical.choice`, and
+`Quot.sound`. The initial tracked build passed 3502 jobs. Full repository and
+hosted gates must be reported separately.
