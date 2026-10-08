@@ -1336,3 +1336,8 @@ implementations instead of redeclaring the same names. This prevents duplicate-c
 collisions when a consumer imports the full `VCVio` umbrella alongside ArkLib. Both
 compatibility modules pass focused Lean 4.34 source checks; combined consumer validation
 remains part of the full migration gate.
+
+The same review found dependency-owned `support_bind_exists`,
+`eq_of_mem_support_pure`, and `simulateQ_randomOracle_map_uniformFin`. Their native
+compatibility modules now import the dependency proofs and also pass focused source checks.
+Private cache/table helpers with matching short names remain separate declarations.
