@@ -1172,3 +1172,11 @@ the radius-one collapse arguments. Changes remove ineffective simplification ste
 the renamed finite-set difference-sum lemma, and make a radius-one rewrite elaborate
 explicitly. Conditional research statements retain their hypotheses; this is migration
 validation, not a new proof of the production conjecture.
+
+
+The B38 crossing bridge, Hermite recurrence toolkit, two falling-factorial modules, and
+Mellin fourth-moment split now pass ordinary builds and 36 installed standard-axiom audits.
+Use `Mathlib.Order.Lattice.Nat` for natural-number infima and `Finset.prod_le_one₀` when
+product bounds require nonnegative factors. For restricted linear maps, rewriting
+`LinearMap.domRestrict_apply` explicitly can avoid expensive coefficient unfolding during
+elaboration; increasing the heartbeat limit did not resolve that interpolation failure.
