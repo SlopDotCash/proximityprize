@@ -190,7 +190,8 @@ theorem epsMCA_interleaved_le_qratio (C : Submodule F (ι → A)) (s : ℕ) [NeZ
       ≤ (Fintype.card F : ℝ≥0∞) / ((Fintype.card F - 1 : ℕ) : ℝ≥0∞)
           * ProximityGap.epsMCA (F := F) (A := A) (C : Set (ι → A)) δ := by
   have h := epsMCAGen_interleaved_le_qratio (ℓ := 2) C s (fun γ : F => ![1, γ]) δ
-  rwa [epsMCAGen_pairGen_eq_epsMCA, epsMCAGen_pairGen_eq_epsMCA] at h
+  erw [epsMCAGen_pairGen_eq_epsMCA, epsMCAGen_pairGen_eq_epsMCA] at h
+  exact h
 
 /-- **The forward conditional on the `epsMCA` surface.**  A good base MCA bound transports to the
 interleaved code with `q/(q−1)` loss:

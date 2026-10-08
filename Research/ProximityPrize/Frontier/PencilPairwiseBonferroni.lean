@@ -350,7 +350,7 @@ This machine-checks the prose Johnson-collapse threshold of `_KelleyOwenDilation
 theorem sqrt_extract_disjoint {r n : ℕ} (h : r * (r - 1) ≤ n - 1) (hn : 1 ≤ n) :
     (r - 1) * (r - 1) < n := by
   rcases Nat.eq_zero_or_pos r with hr0 | hrpos
-  · subst hr0; simpa using hn
+  · subst hr0; simp only [Nat.zero_sub, Nat.zero_mul]; omega
   · have : (r - 1) * (r - 1) ≤ r * (r - 1) := by
       apply Nat.mul_le_mul_right; omega
     omega
