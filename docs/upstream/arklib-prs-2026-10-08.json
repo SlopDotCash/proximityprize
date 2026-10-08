@@ -70,7 +70,7 @@
       "base_branch": "main",
       "draft": false,
       "changed_since_prior_inventory": false,
-      "disposition": "same head as prior inventory; see its detailed disposition"
+      "disposition": "Corrected native error-budget arguments now compile with their front-door, assembled and checking-IOP clients: folding errors use foldingParam; shift errors use repeatParam+s inside proximityError; final error bound remains required at M=0. Five budget/regression roots and 49 checking roots pass installed standard-axiom audits. Strict soundness relation and main quantifier/complexity corrections remain under review; no donor admitted theorem imported."
     },
     {
       "number": 1290,
@@ -301,7 +301,7 @@
       "base_branch": "main",
       "draft": false,
       "changed_since_prior_inventory": true,
-      "disposition": "exact head fetched; substantive review and integration pending"
+      "disposition": "Re-reviewed refreshed head: no docs/kb content changes from reviewed fd707729ef3b6f11a9bd998ec57f19882a3c777b. Generated indices describe the donor tree and must not be transplanted; native indices are generated from native sources. Four paper stubs add bibliographic scaffolding, not missing Lean proofs; import only if native citations require them."
     },
     {
       "number": 1264,
@@ -312,7 +312,7 @@
       "base_branch": "feat/native-state-restoration",
       "draft": false,
       "changed_since_prior_inventory": true,
-      "disposition": "exact head fetched; substantive review and integration pending"
+      "disposition": "Refreshed proof cleanup adapted at this exact head: removed scoped elaboration overrides using explicit protocol unfolds and strengthened rewrite arguments in clients. Three source modules and both clients compile ordinarily against native pins; refreshed randomized dependents compile too. All 129 randomized support/protocol and 19 base/client audit roots retain standard-only closures. The statements, actual cached experiments and explicit extraction assumptions are unchanged."
     },
     {
       "number": 1263,
@@ -323,7 +323,7 @@
       "base_branch": "main",
       "draft": false,
       "changed_since_prior_inventory": true,
-      "disposition": "exact head fetched; substantive review and integration pending"
+      "disposition": "Refreshed proof cleanup adapted at this exact head: removed scoped elaboration overrides using explicit protocol unfolds and strengthened rewrite arguments in clients. Three source modules and both clients compile ordinarily against native pins; refreshed randomized dependents compile too. All 129 randomized support/protocol and 19 base/client audit roots retain standard-only closures. The statements, actual cached experiments and explicit extraction assumptions are unchanged."
     },
     {
       "number": 1261,

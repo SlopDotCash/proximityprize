@@ -176,10 +176,10 @@ open LinearCode
   `δ₀ < (1 - BStar(ρ₀))`
   `∀ i ∈ {1, ..., M}, δᵢ < (1 - ρᵢ - 1/|ιᵢ|)` and `δᵢ < (1 - BStar(ρᵢ))`
   then there exists a `vector IOPP π` with parameters as above such that
-  `ε_fold ≤ errStar(degree₀/foldingParam₀, ρ₀, δ₀, repeatParam₀)`
-  `ε_outᵢ ≤ lᵢ²/2 * (degreeᵢ/ |F| - |ιᵢ|)^s`
+  `ε_fold ≤ errStar(degree₀/foldingParam₀, ρ₀, δ₀, foldingParam₀)`
+  `ε_outᵢ ≤ lᵢ²/2 * (degreeᵢ / (|F| - |ιᵢ|))^s`
   `ε_shiftᵢ ≤ (1 - δ_{i-1})^repeatParam_{i-1} + errStar(degreeᵢ, ρᵢ, δᵢ, t_{i-1} + s)`
-    `+ errStar(degreeᵢ/foldingParamᵢ, ρᵢ, δᵢ, repeatParamᵢ)`
+    `+ errStar(degreeᵢ/foldingParamᵢ, ρᵢ, δᵢ, foldingParamᵢ)`
   `ε_fin ≤ (1 - δ_M)^repeatParam_M`
 -/
 def stir_rbr_soundness
@@ -207,32 +207,32 @@ def stir_rbr_soundness
     (IsSecureWithGap (stirRelation (degree ι P 0) (P.φ 0) 0)
                     (stirRelation (degree ι P 0) (P.φ 0) (Dist.δ 0))
                     ε_rbr π) ∧
-    -- `ε_fold ≤ errStar(degree₀/foldingParam₀, ρ₀, δ₀, repeatParam₀)`
+    -- `ε_fold ≤ errStar(degree₀/foldingParam₀, ρ₀, δ₀, foldingParam₀)`
       ε_fold ≤ proximityError F (P.deg / P.foldingParam 0) (rate (code (P.φ 0) P.deg))
-                 (Dist.δ 0) (P.repeatParam 0)
+                 (Dist.δ 0) (P.foldingParam 0)
       ∧
       -- Note here that `j : Fin M`, so we need to cast into `Fin (M + 1)` for indexing of
       -- `Dist.δ` and `P.repeatParam`. To get `j`, we use `.castSucc`, whereas to get `j + 1`,
       -- we use `.succ`.
       -- Because of the difference in indexing between the paper and the code, we essentially have
       -- `j = i - 1` compared to the paper.
-      -- `ε_out_{j+1} ≤ l_{j+1}²/2 * (degree_{j+1}/ |F| - |ι_{j+1}|)^s`
-      ∀ j : Fin M,
+      -- `ε_out_{j+1} ≤ l_{j+1}²/2 * (degree_{j+1} / (|F| - |ι_{j+1}|))^s`
+      (∀ j : Fin M,
         ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s
         ∧
         -- `ε_shift_{j+1} ≤ (1 - δ_j)^repeatParam_j`
         -- `+ errStar(degree_{j+1}, ρ_{j+1}, δ_{j+1}, repeatParam_j + s)`
-        -- `+ errStar(degree_{j+1}/foldingParam_{j+1}, ρ_{j+1}, δ_{j+1}, repeatParam_{j+1})`
+        -- `+ errStar(degree_{j+1}/foldingParam_{j+1}, ρ_{j+1}, δ_{j+1}, foldingParam_{j+1})`
         ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc)  +
           -- proximityError(degreeⱼ, ρ(codeⱼ), δⱼ, repeatParam_j + s), where codeⱼ = code φⱼ degreeⱼ
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
-          -- proximityError(degreeⱼ / foldingParamⱼ, ρ(codeⱼ), δⱼ, repeatParamⱼ)
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
+          -- proximityError(degreeⱼ / foldingParamⱼ, ρ(codeⱼ), δⱼ, foldingParamⱼ)
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ)
+            (Dist.δ j.succ) (P.foldingParam j.succ))
         ∧
         -- `ε_fin ≤ (1 - δ_M)^repeatParam_M`
         ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))

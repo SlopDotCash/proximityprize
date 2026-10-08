@@ -1076,3 +1076,41 @@ proofs retain `norm_num` with a recursion limit scoped to the affected declarati
 expensive direct trial-division reduction. A standalone check verifies the `4294967377` prime
 certificate, but does not replace the missing full-module check. These results do not certify
 the full migration; known follow-up diagnostics and exact-head hosted validation remain open.
+
+Threaded n-ary oracle completeness now compiles as an ordinary Lean 4.34 module (20 seconds).
+Its three installed theorem roots have standard-only axiom closures and are registered for
+routine auditing. Only the retired ambient oracle bundles and matching `omit` clause change
+to pointwise instances; the theorem hypotheses and composition proof remain intact.
+The joint Ajtai build failed independently in its lattice norm dependency, whose migration
+is still under repair. Refreshed #1266 has identical knowledge-base content to its reviewed
+prior revision, so the earlier decision to regenerate native indices remains applicable.
+
+
+The next #1291 budget corrections now compile with native STIR front-door, assembled and
+checking-IOP clients. Folding errors use `foldingParam`; the shift term passes
+`repeatParam + s` into `proximityError`, rather than adding `s` to its returned error.
+The final error bound sits outside the transition quantifier, so it is still required when
+`M = 0`; a concrete regression theorem checks that case. The five budget/regression audit
+roots, all 49 checking-verifier exports, seven assembled-protocol roots and three round-three
+completeness roots have standard-only installed axiom closures. These modules compile
+ordinarily; the joint build still failed in vector-chain completeness, whose separate repair
+is under validation. The port preserves existing explicit soundness residuals. #1291's stricter
+soundness relation and uniform main-theorem quantifiers/complexity remain under review.
+No donor admitted theorem has been substituted for a proof.
+
+
+The focused six-target STIR build now passes completely (3,826 jobs), including vector-chain
+completeness and the error-budget regression. All eleven selected installed vector-chain
+roots have standard-only axiom closures and are registered for auditing. The chain migration
+uses pointwise oracle instances, explicit empty-oracle universes and current failure-probability
+lemmas, preserving component completeness and sampling hypotheses. This focused build does
+not replace the full native/Research validation, which is running separately.
+
+Refreshed #1263 (`70f23f721672995b61c6e900c4300948f2f60294`) and #1264
+(`eb9bfaf9ff2bfb2305ee239ac94f7e02a904de0f`) remove elaboration-option workarounds in
+three restoration modules through explicit proof steps. Both concrete clients and the
+randomized downstream modules compile after the cleanup. A fresh installed audit of all
+129 randomized support/protocol roots and 19 base/client roots still finds only standard
+axioms. The actual experiments and explicit extraction assumptions are unchanged. The
+joint build's independent Ajtai failure is being repaired; it does not invalidate the
+successful restoration module builds and installed audits.

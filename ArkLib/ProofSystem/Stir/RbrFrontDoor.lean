@@ -48,18 +48,18 @@ theorem stir_rbr_soundness_of_stirVSpec_secure_gap
         (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))
         π)
     (h_fold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-        (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
-    (h_tail : ∀ j : Fin M,
+        (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
+    (h_tail : (∀ j : Fin M,
         ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s
         ∧
         ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc)  +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ)
+            (Dist.δ j.succ) (P.foldingParam j.succ))
         ∧
         ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (F := F) ι (s := s) (P := P)
