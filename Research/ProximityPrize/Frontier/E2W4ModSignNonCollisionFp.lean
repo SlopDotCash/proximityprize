@@ -56,7 +56,7 @@ theorem cd0_modsign_mu8_zmod17 :
     Cd₀NonCollisionModSign (nthRootsFinset 8 (1 : ZMod 17)) := by
   apply cd0NonCollisionModSign_of_no_collision
   rw [nthRootsFinset_eq_filter_zmod17_8]
-  decide
+  decide +kernel
 
 local instance fact_prime_97 : Fact (Nat.Prime 97) := ⟨by norm_num⟩
 
@@ -72,7 +72,7 @@ theorem cd0_modsign_mu16_zmod97 :
     Cd₀NonCollisionModSign (nthRootsFinset 16 (1 : ZMod 97)) := by
   apply cd0NonCollisionModSign_of_no_collision
   rw [nthRootsFinset_eq_filter_zmod97_16]
-  decide
+  decide +kernel
 
 end ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 
