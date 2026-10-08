@@ -1052,3 +1052,20 @@ ordinarily; the joint build still failed in vector-chain completeness, whose sep
 is under validation. The port preserves existing explicit soundness residuals. #1291's stricter
 soundness relation and uniform main-theorem quantifiers/complexity remain under review.
 No donor admitted theorem has been substituted for a proof.
+
+
+The focused six-target STIR build now passes completely (3,826 jobs), including vector-chain
+completeness and the error-budget regression. All eleven selected installed vector-chain
+roots have standard-only axiom closures and are registered for auditing. The chain migration
+uses pointwise oracle instances, explicit empty-oracle universes and current failure-probability
+lemmas, preserving component completeness and sampling hypotheses. This focused build does
+not replace the full native/Research validation, which is running separately.
+
+Refreshed #1263 (`70f23f721672995b61c6e900c4300948f2f60294`) and #1264
+(`eb9bfaf9ff2bfb2305ee239ac94f7e02a904de0f`) remove elaboration-option workarounds in
+three restoration modules through explicit proof steps. Both concrete clients and the
+randomized downstream modules compile after the cleanup. A fresh installed audit of all
+129 randomized support/protocol roots and 19 base/client roots still finds only standard
+axioms. The actual experiments and explicit extraction assumptions are unchanged. The
+joint build's independent Ajtai failure is being repaired; it does not invalidate the
+successful restoration module builds and installed audits.

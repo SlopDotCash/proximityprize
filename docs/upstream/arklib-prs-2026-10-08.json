@@ -312,7 +312,7 @@
       "base_branch": "feat/native-state-restoration",
       "draft": false,
       "changed_since_prior_inventory": true,
-      "disposition": "exact head fetched; substantive review and integration pending"
+      "disposition": "Refreshed proof cleanup adapted at this exact head: removed scoped elaboration overrides using explicit protocol unfolds and strengthened rewrite arguments in clients. Three source modules and both clients compile ordinarily against native pins; refreshed randomized dependents compile too. All 129 randomized support/protocol and 19 base/client audit roots retain standard-only closures. The statements, actual cached experiments and explicit extraction assumptions are unchanged."
     },
     {
       "number": 1263,
@@ -323,7 +323,7 @@
       "base_branch": "main",
       "draft": false,
       "changed_since_prior_inventory": true,
-      "disposition": "exact head fetched; substantive review and integration pending"
+      "disposition": "Refreshed proof cleanup adapted at this exact head: removed scoped elaboration overrides using explicit protocol unfolds and strengthened rewrite arguments in clients. Three source modules and both clients compile ordinarily against native pins; refreshed randomized dependents compile too. All 129 randomized support/protocol and 19 base/client audit roots retain standard-only closures. The statements, actual cached experiments and explicit extraction assumptions are unchanged."
     },
     {
       "number": 1261,
