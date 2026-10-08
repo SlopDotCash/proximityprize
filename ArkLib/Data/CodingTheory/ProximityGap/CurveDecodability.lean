@@ -176,7 +176,8 @@ theorem relHammingDist_rowComb_le {s : ℕ} (lam : Fin s → F) (v w : ι → Fi
   refine relHammingDist_le_of_hammingDist_le ?_
   have h := hammingDist_comp_le_hammingDist
     (fun _ : ι => fun m : Fin s → A => ∑ k, lam k • m k) (x := v) (y := w)
-  simpa [rowComb] using h
+  unfold rowComb
+  exact h
 
 /-! ### The combination subspaces `V_B` and [Jo26] Theorem 5.7 -/
 
