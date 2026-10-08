@@ -69,11 +69,15 @@ IsMCA (generatorByRightMul G A) LC x U γ → IsMCA G LC x (matrixMulCodewords A
       ext i
       simp only [generatorByRightMul, Matrix.vecMul_vecMul]
       congr! 2
+      change G x ᵥ* (A * (Matrix.of U)) = (G x ᵥ* A) ᵥ* U
+      exact (Matrix.vecMul_vecMul (G x) A (Matrix.of U)).symm
     · contrapose! hj
       convert LinearCode.projectedCode_linearCombination LC T (fun i => matrixMulCodewords A U i)
         (fun i => B j i) (fun i => hj i) using 1
       ext k
-      simp [matrixMulCodewords, ← Matrix.mul_apply, ← Matrix.mul_assoc, hB]
+      change U j k.val = (B * (A * (Matrix.of U))) j k.val
+      rw [← Matrix.mul_assoc, hB, Matrix.one_mul]
+      rfl
   exact le_trans (Pr_le_Pr_of_implies ($ᵖ S) _ _ fun x h => isMCA_generatorByRightMul_of_isMCA x h)
     (hGMCA (matrixMulCodewords A U) γ)
 
@@ -94,7 +98,7 @@ lemma isMCA_projectedGenerator_of_isMCA (LC : LinearCode ι F) [Nonempty S] (G :
     simp only [Matrix.vecMul, dotProduct]
     rw [← Finset.sum_subset (Finset.subset_univ (Set.toFinset κ))]
     · refine Finset.sum_bij (fun j _ => j) ?_ ?_ ?_ ?_ <;>
-        simp [projectedGenerator, zeroExtend]
+        simp [projectedGenerator, zeroExtend, Set.restrict]
     · intro x _ hx; simp [zeroExtend]; aesop
   have zeroExtend_val (j : κ) : zeroExtend κ U j.val = U j := by
     simp [zeroExtend, j.property]

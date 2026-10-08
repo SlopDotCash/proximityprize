@@ -489,15 +489,16 @@ def codeW : Finset (Fin (2 ^ 20) → ZMod pW) :=
   Finset.image (fun c : Fin (2 ^ 19) → ZMod pW => fun x => ∑ i, c i * embW x ^ (i : ℕ))
     Finset.univ
 
-/-- The difference polynomial of two coefficient vectors. -/
-noncomputable def diffPolyW (c c' : Fin (2 ^ 19) → ZMod pW) : Polynomial (ZMod pW) :=
-  ∑ i : Fin (2 ^ 19), Polynomial.C (c i - c' i) * Polynomial.X ^ (i : ℕ)
+/-- The difference polynomial of two coefficient vectors of any length. -/
+noncomputable def diffPolyW {n : ℕ} (c c' : Fin n → ZMod pW) : Polynomial (ZMod pW) :=
+  ∑ i : Fin n, Polynomial.C (c i - c' i) * Polynomial.X ^ (i : ℕ)
 
-theorem coeffW (c c' : Fin (2 ^ 19) → ZMod pW) (j : Fin (2 ^ 19)) :
+/-- Coefficient recovery is proved at symbolic length to avoid expanding a prize-size sum. -/
+theorem coeffW {n : ℕ} (c c' : Fin n → ZMod pW) (j : Fin n) :
     (diffPolyW c c').coeff (j : ℕ) = c j - c' j := by
   unfold diffPolyW
-  rw [Polynomial.finset_sum_coeff]
-  have hterm : ∀ i : Fin (2 ^ 19),
+  rw [Polynomial.finsetSum_coeff]
+  have hterm : ∀ i : Fin n,
       (Polynomial.C (c i - c' i) * Polynomial.X ^ (i : ℕ)).coeff (j : ℕ)
         = if j = i then c i - c' i else 0 := by
     intro i

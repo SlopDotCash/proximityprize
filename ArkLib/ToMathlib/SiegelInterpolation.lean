@@ -131,8 +131,8 @@ noncomputable def polyOfLin {K : Type*} [CommRing K] (box : Finset (Fin 3 →₀
 /-- The coefficient of `polyOfLin box c` at a box exponent `d` is exactly `c d`. -/
 lemma coeff_polyOfLin {K : Type*} [CommRing K] (box : Finset (Fin 3 →₀ ℕ))
     (c : box → K) (d : box) :
-    coeff (d : Fin 3 →₀ ℕ) (polyOfLin box c) = c d := by
-  show coeff (d : Fin 3 →₀ ℕ) (∑ e : box, c e • monomial (e : Fin 3 →₀ ℕ) 1) = c d
+    (polyOfLin box c).coeff (d : Fin 3 →₀ ℕ) = c d := by
+  change (∑ e : box, c e • monomial (e : Fin 3 →₀ ℕ) 1).coeff (d : Fin 3 →₀ ℕ) = c d
   rw [coeff_sum, Finset.sum_eq_single d]
   · simp [coeff_smul, coeff_monomial]
   · intro b _ hbd
@@ -167,8 +167,7 @@ lemma polyOfLin_ne_zero {K : Type*} [CommRing K] (box : Finset (Fin 3 →₀ ℕ
   apply hc
   funext d
   have hcoeff := coeff_polyOfLin box c d
-  rw [hQ, coeff_zero] at hcoeff
-  simp [hcoeff.symm]
+  simpa only [hQ, MvPolynomial.coeff_zero, Finsupp.zero_apply, Pi.zero_apply] using hcoeff.symm
 
 /-- The combined constraint map: a coefficient vector on the box is sent to the
 family of constraint values `vanishCon p d (polyOfLin box c)` indexed by the

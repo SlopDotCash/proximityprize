@@ -193,6 +193,12 @@ theorem incidence_charIndependent_fullSystem {p : ℕ} (hp : (2 ^ 30) * 2 ^ 128 
 
 /-! ### The honest negative half: the reduction does NOT apply to single readouts -/
 
+private theorem single_readout_threshold_bound (a b : ℕ)
+    (hbase : 2 * (2 ^ a / 2) = 2 ^ a) (hexp : a + b < a * 2 ^ a) :
+    (2 ^ a * 2 ^ b : ℕ) < (2 * (2 ^ a / 2)) ^ (2 * (2 ^ a / 2)) := by
+  rw [hbase, ← pow_mul, ← pow_add]
+  exact Nat.pow_lt_pow_right (by decide) hexp
+
 /-- **Honest scope boundary (PROVEN).** For a *single* low-degree readout the rigidity rank is `r =
 1`, so the char-`p`-excess-free size gap degrades to `(2k)^{2k} < p`. At the prize point `k = 2^29`,
 the threshold `(2k)^{2k} = (2^30)^{2^30}` is astronomically larger than the prize field `q = 2^158`,
@@ -202,16 +208,7 @@ at `n = 32` the single deg-3 readout `h_3` has a genuine prize-scale char-`p` ex
 `p = 206889121 = n^{5.525}`. The rigid (`r = k/2`) vs floppy (`r = 1`) dichotomy is real. -/
 theorem single_readout_threshold_not_prize :
     ((2 ^ 30) * 2 ^ 128 : ℕ) < (2 * (2 ^ 30 / 2)) ^ (2 * (2 ^ 30 / 2)) := by
-  -- q = 2^158; threshold = (2^30)^(2^30) = 2^(30·2^30) ≫ 2^158
-  have hq : ((2 ^ 30) * 2 ^ 128 : ℕ) = 2 ^ 158 := by norm_num
-  have hbase : (2 * (2 ^ 30 / 2)) = 2 ^ 30 := by norm_num
-  rw [hq, hbase]
-  calc (2 ^ 158 : ℕ)
-      < 2 ^ (30 * 2 ^ 30) := by
-        apply Nat.pow_lt_pow_right (by norm_num)
-        have : (2 : ℕ) ^ 30 ≥ 2 ^ 4 := by gcongr <;> norm_num
-        nlinarith [this]
-    _ = (2 ^ 30) ^ (2 ^ 30) := by rw [← pow_mul]
+  exact single_readout_threshold_bound 30 128 (by norm_num) (by norm_num)
 
 end ProximityGap.RigidityReductionPrizeScale
 

@@ -228,7 +228,9 @@ theorem good_nonempty_quarter :
       (∑ t : Fin 2, (0 : F) ^ (t : ℕ) • uSq t) = (0 : I → F) := by
     funext i
     fin_cases i <;> simp [uSq]
-  simpa [RS_goodCoeffsCurve, hsum] using hrel
+  simp only [RS_goodCoeffsCurve, Finset.mem_filter, Finset.mem_univ, true_and]
+  rw [hsum]
+  exact hrel
 
 /-- **Kernel-checked obstruction**: no linear polynomial `a·x + b` over `ZMod 5` agrees with
 `x ↦ x²` on three of the four points `{0,1,2,3}` (a nonzero quadratic has at most two roots;

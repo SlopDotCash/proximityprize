@@ -80,7 +80,9 @@ theorem good_nonempty_affineLine :
       (∑ t : Fin 2, (0 : F) ^ (t : ℕ) • uBad₁ t) = (0 : I → F) := by
     funext i
     fin_cases i <;> simp [uBad₁]
-  simpa [RS_goodCoeffsCurve, hsum] using hrel
+  simp only [RS_goodCoeffsCurve, Finset.mem_filter, Finset.mem_univ, true_and]
+  rw [hsum]
+  exact hrel
 
 /-- `jointAgreement` fails for the affine-line bad stack at the exact square-root boundary.
 Word `1` of the stack is the injective `domain`; it can agree with a constant degree-`1` codeword

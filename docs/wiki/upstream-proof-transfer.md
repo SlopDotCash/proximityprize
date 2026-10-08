@@ -1272,3 +1272,12 @@ Four Kneser, orbit-spike, frequency-invariance, and prime-supply research module
 pass their ordinary build and installed audits of 29 selected declarations using
 only standard axioms. The repairs retain the arithmetic no-go results and the
 conditional prime-supply interfaces; they do not close the production conjecture.
+
+
+Thirty-seven library modules now pass ordinary compilation and installed audits
+of 362 selected declarations with only standard axioms. This batch includes the
+Ajtai binding reduction, coding-theory and interpolation algebra, proximity bounds,
+Stepanov/cyclotomic results, and the Boolean sum-check cube sum bridge. The repairs
+preserve existing hypotheses; symbolic-length coefficient recovery and symbolic
+exponent comparisons avoid evaluating enormous concrete expressions. Existing
+conditional results and counterexamples remain distinct from production closure.

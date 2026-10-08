@@ -70,9 +70,9 @@ theorem not_jointProximity_zero_of_row_not_mem
   -- Unfold `jointProximity` and convert the relative-distance bound to a membership.
   rw [jointProximity, interleave_wordStack_eq] at hjp
   -- `hjp : δᵣ(u.transpose, interleavedCodeSet C) ≤ (0 : ℝ≥0)`
-  rw [relDistFromCode_le_iff_distFromCode_le] at hjp
+  erw [relDistFromCode_le_iff_distFromCode_le] at hjp
   simp only [zero_mul, Nat.floor_zero, Nat.cast_zero, nonpos_iff_eq_zero] at hjp
-  rw [distFromCode_eq_zero_iff_mem] at hjp
+  erw [distFromCode_eq_zero_iff_mem] at hjp
   -- `hjp : u.transpose ∈ interleavedCodeSet C`, i.e. every row of `u` is in `C`.
   simp only [interleavedCodeSet] at hjp
   exact hk (hjp k)

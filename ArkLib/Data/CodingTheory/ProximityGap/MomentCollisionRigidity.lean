@@ -61,7 +61,7 @@ lemma aeval_psum {R : Type*} [CommRing R] {σ : Type*} [Fintype σ] (f : σ → 
 lemma multiset_newton {R : Type*} [CommRing R] {σ : Type*} [Fintype σ] [DecidableEq σ]
     (f : σ → R) (k : ℕ) :
     (k : R) * (univ.val.map f).esymm k = (-1) ^ (k + 1) *
-      ∑ a ∈ Finset.antidiagonal k with a.1 < k,
+      ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 < k,
         (-1) ^ a.1 * (univ.val.map f).esymm a.1 * psumMs (univ.val.map f) a.2 := by
   have h := MvPolynomial.mul_esymm_eq_sum σ R k
   have h2 := congrArg (MvPolynomial.aeval f) h
@@ -75,7 +75,7 @@ lemma multiset_newton {R : Type*} [CommRing R] {σ : Type*} [Fintype σ] [Decida
 
 lemma finset_newton {F : Type*} [Field F] (A : Finset F) (k : ℕ) :
     (k : F) * A.val.esymm k = (-1) ^ (k + 1) *
-      ∑ a ∈ Finset.antidiagonal k with a.1 < k,
+      ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 < k,
         (-1) ^ a.1 * A.val.esymm a.1 * psumMs A.val a.2 := by
   classical
   have key := multiset_newton (Subtype.val : A → F) k
@@ -102,13 +102,13 @@ lemma esymm_eq_of_psum_eq {F : Type*} [Field F] {j : ℕ} (A B : Finset F)
     · have hkne : (k : F) ≠ 0 := hchar k hkpos hk
       have hA := finset_newton A k
       have hB := finset_newton B k
-      have hsum : (∑ a ∈ Finset.antidiagonal k with a.1 < k,
+      have hsum : (∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 < k,
             (-1) ^ a.1 * A.val.esymm a.1 * psumMs A.val a.2) =
-          (∑ a ∈ Finset.antidiagonal k with a.1 < k,
+          (∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 < k,
             (-1) ^ a.1 * B.val.esymm a.1 * psumMs B.val a.2) := by
         apply Finset.sum_congr rfl
         intro a ha
-        rw [Finset.mem_filter, Finset.mem_antidiagonal] at ha
+        rw [Finset.mem_filter, Finset.HasAntidiagonal.mem_antidiagonal] at ha
         obtain ⟨hsum_eq, hlt⟩ := ha
         have ha2pos : 1 ≤ a.2 := by omega
         have ha2le : a.2 ≤ j := by omega

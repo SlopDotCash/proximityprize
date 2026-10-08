@@ -167,11 +167,11 @@ theorem pencilMap_injective (W : Finset F) (γ : F → F) {D : ℕ} (hD : W.card
     exact h
   have hzero := evalSyndrome_family_injective W hD
     (fun β => if h : β ∈ W then b ⟨β, h⟩ else 0) (by
-      simpa only [pencilSnd] using hb2)
+      exact hb2)
   -- read off b α = 0 for every α ∈ W
   ext α
   have := hzero α.1 α.2
-  simpa only [dif_pos α.2] using this
+  simpa only [dif_pos α.2, Pi.zero_apply] using this
 
 /-- `pencilMap` lands **entirely inside** the clique kernel solution space — by
 `clique_kernel_mem` (every pencil satisfies every clique kernel condition). -/

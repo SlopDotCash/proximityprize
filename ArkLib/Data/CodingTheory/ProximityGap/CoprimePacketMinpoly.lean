@@ -104,6 +104,7 @@ theorem minpoly_adjoin_coprime_eq_cyclotomic
     exact Subtype.ext h1
   have hle : finrank ℚ ℚ⟮ξ * η⟯ ≤ finrank ℚ ℚ⟮ξ⟯⟮η⟯ :=
     LinearMap.finrank_le_finrank_of_injective hinj
+  letI : Module.Free ℚ⟮ξ⟯ ℚ⟮ξ⟯⟮η⟯ := Module.Free.of_divisionRing _ _
   have htower : finrank ℚ ℚ⟮ξ⟯ * finrank ℚ⟮ξ⟯ ℚ⟮ξ⟯⟮η⟯ = finrank ℚ ℚ⟮ξ⟯⟮η⟯ :=
     Module.finrank_mul_finrank ℚ ℚ⟮ξ⟯ ℚ⟮ξ⟯⟮η⟯
   -- the totient tower bound: `φ(r) ≤ natDegree (minpoly ℚ⟮ξ⟯ η)`
