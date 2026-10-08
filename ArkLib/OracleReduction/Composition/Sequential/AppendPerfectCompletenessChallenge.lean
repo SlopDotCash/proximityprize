@@ -25,7 +25,7 @@ open scoped ENNReal NNReal
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -33,18 +33,18 @@ variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
   {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}
 
 /-- **Challenge-seam `hStage1Bridge` discharge.** The phase-1 game over the *combined* challenge
-oracle agrees (as `evalDist`) with `R₁`'s own phase-1 game: `appendStage₁_run_eq_liftM` rewrites the
+oracle agrees (as `evalSPMF`) with `R₁`'s own phase-1 game: `appendStage₁_run_eq_liftM` rewrites the
 stage to `liftM (R₁.run …)` over the combined oracle, and `evalDist_run'_challengeSeam_left` transfers
 the combined run back to `pSpec₁`'s own challenge oracle. -/
 theorem challenge_hStage1Bridge
     (R₁ : Reduction oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁)
     (R₂ : Reduction oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂)
     (stmt : Stmt₁) (wit : Wit₁) :
-    evalDist (Prod.fst <$> (init >>= fun s =>
+    evalSPMF (Prod.fst <$> (init >>= fun s =>
         StateT.run (simulateQ (impl.addLift challengeQueryImpl)
           (OptionT.run (appendStage₁ R₁ R₂ stmt wit))) s))
-      = evalDist (gameOf init impl R₁ stmt wit) := by
-  rw [appendStage₁_run_eq_liftM, map_bind, gameOf, evalDist_bind, evalDist_bind]
+      = evalSPMF (gameOf init impl R₁ stmt wit) := by
+  rw [appendStage₁_run_eq_liftM, map_bind, gameOf, evalSPMF_bind, evalSPMF_bind]
   refine bind_congr fun s => ?_
   rw [← StateT.run'_eq]
   exact OracleReduction.evalDist_run'_challengeSeam_left impl ((R₁.run stmt wit).run) s
@@ -120,7 +120,7 @@ theorem challenge_hStage2Bridge_perfect
       | gameOf init impl R₂ a.2 a.1.2.2] = 0 :=
     le_antisymm
       (bad_le_of_optionT_mk_ge (gameOf init impl R₂ a.2 a.1.2.2) (goodOf n pSpec₂ rel₃) 0
-        (by simpa using h₂ a.2 a.1.2.2 hrel₂)) (zero_le)
+        (by simpa [goodOf] using h₂ a.2 a.1.2.2 hrel₂)) (zero_le)
   rw [hg, nonpos_iff_eq_zero]
   have hg2 : (∑' s, Pr[= s | init] *
         Pr[fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)
@@ -152,7 +152,7 @@ theorem challenge_hStage2Bridge_general
           (OptionT.run (appendStage₁ R₁ R₂ stmt wit))) s))
     (hgood : goodOf m pSpec₁ rel₂ a)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s'))
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s'))
     (hInit : NeverFail init) :
     Pr[fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)
         | (StateT.run' (simulateQ (impl.addLift challengeQueryImpl)
@@ -236,7 +236,7 @@ theorem append_completeness_challenge
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s'))
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s'))
     (hInit : NeverFail init) :
     (R₁.append R₂).completeness init impl rel₁ rel₃ (e₁ + e₂) :=
   append_completeness_challenge_via_seamFactor R₁ R₂ h₁ h₂ hn hDir hDir₂ himplSP himplNF
