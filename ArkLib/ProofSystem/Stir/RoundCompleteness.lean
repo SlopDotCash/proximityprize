@@ -27,8 +27,6 @@ Axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 
 open OracleSpec OracleComp ProtocolSpec STIR ReedSolomon NNReal OracleReduction
 
-attribute [local instance] legacyUniformSpec
-
 namespace StirIOP.Round
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
@@ -36,7 +34,7 @@ variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
+attribute [local instance] legacyUniformSpec
 
 set_option linter.unusedTactic false
 set_option linter.unreachableTactic false
@@ -117,12 +115,13 @@ end UnrollVP
 variable [Nonempty ι]
 
 /-- The empty oracle spec is vacuously inhabited (its query index type is empty). -/
-instance (i : (OracleSpec.emptySpec.{0, 0}).Domain) : Inhabited ((OracleSpec.emptySpec.{0, 0}).Range i) := i.elim
+instance (t : PEmpty.{1}) : Inhabited (OracleSpec.emptySpec.{0, 0}.Range t) := nomatch t
 
 /-- Finiteness of the STIR fold-round challenge oracle spec (only index `0`, type `F`). -/
 instance (t : [(pSpec ι F).Challenge]ₒ.Domain) :
-    Fintype ([(pSpec ι F).Challenge]ₒ.Range t) := by
-    rcases t with ⟨⟨iv, hiv⟩, u⟩
+    Fintype ([(pSpec ι F).Challenge]ₒ.Range t) :=
+  match t with
+  | ⟨⟨iv, hiv⟩, _⟩ => by
     have h0 : iv = 0 := by
       cases iv using Fin.cases with
       | zero => rfl
@@ -130,13 +129,15 @@ instance (t : [(pSpec ι F).Challenge]ₒ.Domain) :
         | zero => simp [pSpec] at hiv
         | succ k => exact k.elim0
     subst h0
-    change Fintype F
-    infer_instance
+    change Fintype ((pSpec ι F).Challenge ⟨0, hiv⟩)
+    simpa [pSpec, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
+      OracleInterface.Response, OracleInterface.toOC] using (inferInstance : Fintype F)
 
 /-- Inhabitedness of the STIR fold-round challenge oracle spec (response `F` at index `0`). -/
 instance (t : [(pSpec ι F).Challenge]ₒ.Domain) :
-    Inhabited ([(pSpec ι F).Challenge]ₒ.Range t) := by
-    rcases t with ⟨⟨iv, hiv⟩, u⟩
+    Inhabited ([(pSpec ι F).Challenge]ₒ.Range t) :=
+  match t with
+  | ⟨⟨iv, hiv⟩, _⟩ => by
     have h0 : iv = 0 := by
       cases iv using Fin.cases with
       | zero => rfl
@@ -144,12 +145,14 @@ instance (t : [(pSpec ι F).Challenge]ₒ.Domain) :
         | zero => simp [pSpec] at hiv
         | succ k => exact k.elim0
     subst h0
-    change Inhabited F
-    exact ⟨0⟩
+    change Inhabited ((pSpec ι F).Challenge ⟨0, hiv⟩)
+    simpa [pSpec, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
+      OracleInterface.Response, OracleInterface.toOC] using (⟨(0 : F)⟩ : Inhabited F)
 
 
-variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl (OracleSpec.emptySpec.{0, 0}) (StateT σ ProbComp))
+variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp))
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 /-- **Perfect completeness of the honest STIR fold-round object.** The honest prover combines its
 single codeword at its own degree, which by `combine_single_self` is the input oracle itself; the
@@ -159,7 +162,7 @@ theorem stirRoundReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ :
     OracleReduction.perfectCompleteness init impl
       (stirRoundInputRel φ deg δ) (stirRoundOutputRel φ deg δ)
       (stirRoundReduction φ deg) := by
-  rw [unroll_2_message_VP (stirRoundReduction φ deg)
+  rw [unroll_2_message_VP (oSpec := OracleSpec.emptySpec.{0, 0}) (stirRoundReduction φ deg)
     (stirRoundInputRel φ deg δ) (stirRoundOutputRel φ deg δ) init impl hInit (by rfl) (by rfl)
     (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
   intro stmtIn oStmtIn witIn h_relIn
@@ -175,11 +178,7 @@ theorem stirRoundReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ :
     · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
         _root_.probFailure_liftComp, probFailure_eq_zero]
     · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-        Function.comp_apply, Option.map_some, probFailure_map, probFailure_eq_zero,
-        probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
-        Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero, zero_add]
-      erw [OptionT.simulateQ_pure, OptionT.run_pure]
+      erw [OptionT.simulateQ_pure, OptionT.run_map, OptionT.run_pure]
       simp
   · -- CORRECTNESS: every output in the support satisfies the relation + agreement
     intro x hx
@@ -195,8 +194,8 @@ theorem stirRoundReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ :
     have hc : Combine.combine φ deg α (fun _ : Fin 1 => oStmtIn ()) (fun _ : Fin 1 => deg)
         = oStmtIn () := combine_single_self φ deg α (oStmtIn ())
     change Code.relDistFromCode (oStmtIn ()) (ReedSolomon.code φ deg) ≤ (δ : ENNReal) at h_relIn
-    change Code.relDistFromCode (_ : ι → F) (ReedSolomon.code φ deg : Set (ι → F)) ≤ (δ : ENNReal)
-    simpa [FullTranscript.messages, FullTranscript.mk2, hc] using h_relIn
+    change Code.relDistFromCode (_ : ι → F) (ReedSolomon.code φ deg) ≤ (δ : ENNReal)
+    simpa [FullTranscript.mk2, FullTranscript.messages, hc] using h_relIn
 
 /-- The stated `stirRoundReduction_completeness` obligation is discharged: the STIR fold-round
 object is (perfectly) complete whenever the shared randomness never fails. -/
@@ -228,7 +227,7 @@ theorem stirRoundReduction_completeness_any_error (φ : ι ↪ F) (deg : ℕ) (�
     (hInit : NeverFail init) :
     (stirRoundReduction φ deg).completeness init impl
       (stirRoundInputRel φ deg δ) (stirRoundOutputRel φ deg δ) ε :=
-  Reduction.completenessFromRun_mono_error _ _ _ _ _ (zero_le)
+  Reduction.completenessFromRun_mono_error _ _ _ _ _ (zero_le : 0 ≤ ε)
     (stirRoundReduction_perfectCompleteness init impl φ deg δ hInit)
 
 

@@ -99,6 +99,7 @@ theorem mkVerifierOStmtOut_append
     refine HEq.trans (OracleVerifier.Append.messages_snd_heq tr j).symm ?_
     exact (HEq.trans (cast_heq _ _) (cast_heq _ _)).symm
 
+set_option backward.isDefEq.respectTransparency false in
 theorem oracleVerifier_append_toVerifier
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
     [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
@@ -111,7 +112,7 @@ theorem oracleVerifier_append_toVerifier
   obtain ⟨stmt, oStmt⟩ := stmtOStmt
   simp only [OracleVerifier.append, OracleVerifier.Append.verify]
   -- Step 1: push outer simulateQ through the inner OptionT bind.
-  rw [simulateQ_optionT_bind]
+  erw [OptionT.simulateQ_bind]
   -- Step 2: fuse each stage's two simulateQ via simulateQ_compose, then collapse the routers.
   -- Helper closures (work under binders via simp only).
   have hC1 : ∀ (x : OptionT (OracleComp _) Stmt₂),
@@ -148,11 +149,11 @@ theorem oracleVerifier_append_toVerifier
   rw [hch1]
   simp only [hch2]
   -- Step 4: normalize the monadic structure on both sides.
-  simp only [bind_assoc, pure_bind, bind_pure]
+  simp only [← OptionT.monad_bind_eq_bind, bind_assoc, pure_bind, bind_pure]
   -- Step 5: peel the V₁ bind (syntactically identical on both sides).
-  refine bind_congr (fun x => ?_)
+  refine bind_congr (m := OptionT (OracleComp oSpec)) (fun x => ?_)
   -- Step 6: peel the V₂ bind (oracle-stmt args are defeq: mkVerifierOStmtOut = unfolded match).
-  refine bind_congr (fun stmtOut => ?_)
+  refine bind_congr (m := OptionT (OracleComp oSpec)) (fun stmtOut => ?_)
   -- Step 7: output routing equality.
   refine congrArg pure ?_
   rw [Prod.mk.injEq]
@@ -172,7 +173,7 @@ theorem appendToReductionResidual_proof
   (appendToReductionResidual_iff_verifier R₁ R₂).mpr
     (oracleVerifier_append_toVerifier R₁.verifier R₂.verifier)
 
-variable [oSpec.Fintype] [oSpec.Inhabited]
+variable [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
     {rel₁ : Set ((Stmt₁ × ∀ i, OStmt₁ i) × Wit₁)}
     {rel₂ : Set ((Stmt₂ × ∀ i, OStmt₂ i) × Wit₂)}
@@ -197,10 +198,10 @@ theorem append_perfectCompleteness_keystone
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
         = support (liftM q : OracleComp oSpec β))
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited] :
+    [∀ t, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] :
     (R₁.append R₂).perfectCompleteness init impl rel₁ rel₃ :=
   append_perfectCompleteness_msg_proof R₁ R₂ h₁ h₂ hn hDir hDir₂ hInit hImplSupp
     (appendToReductionResidual_proof R₁ R₂)
@@ -238,7 +239,7 @@ open OracleComp OracleSpec ProtocolSpec
 
 namespace OracleReduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
     {m n : ℕ}
     {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type}
     [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)]
@@ -315,7 +316,7 @@ open OracleComp OracleSpec ProtocolSpec
 
 namespace OracleReduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
     {m : ℕ}
     {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type}
     [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)]
@@ -353,10 +354,10 @@ theorem append_perfectCompleteness_empty_keystone
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
         = support (liftM q : OracleComp oSpec β))
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited] :
+    [∀ t, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] :
     (R₁.append R₂).perfectCompleteness init impl rel₁ rel₃ := by
   change Reduction.perfectCompleteness init impl rel₁ rel₃ (R₁.append R₂).toReduction
   rw [show (R₁.append R₂).toReduction = R₁.toReduction.append R₂.toReduction from
@@ -472,7 +473,7 @@ open OracleComp OracleSpec ProtocolSpec
 
 namespace OracleReduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
     {m n : ℕ}
     {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type}
     [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)]
@@ -509,10 +510,10 @@ theorem append_perfectCompleteness_challenge
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (hInit : NeverFail init)
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited] :
+    [∀ t, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] :
     (R₁.append R₂).perfectCompleteness init impl rel₁ rel₃ := by
   change Reduction.perfectCompleteness init impl rel₁ rel₃ (R₁.append R₂).toReduction
   rw [show (R₁.append R₂).toReduction = R₁.toReduction.append R₂.toReduction from
@@ -536,10 +537,10 @@ theorem append_perfectCompleteness_empty
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
         = support (liftM q : OracleComp oSpec β))
-    [(oSpec + [(pSpec₁ ++ₚ pSpecE).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpecE).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpecE.Challenge]ₒ).Fintype] [(oSpec + [pSpecE.Challenge]ₒ).Inhabited] :
+    [∀ t, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpecE).Challenge]ₒ).Range t)]
+    [∀ t, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpecE).Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpecE.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpecE.Challenge]ₒ).Range t)] :
     (R₁.append R₂).perfectCompleteness init impl rel₁ rel₃ := by
   change Reduction.perfectCompleteness init impl rel₁ rel₃ (R₁.append R₂).toReduction
   rw [show (R₁.append R₂).toReduction = R₁.toReduction.append R₂.toReduction from
@@ -621,7 +622,7 @@ theorem append_soundness_msg
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
       (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).soundness
         init impl lang₁ lang₃ (soundnessError₁ + soundnessError₂) := by
   unfold OracleVerifier.soundness at h₁ h₂ ⊢
@@ -650,7 +651,7 @@ theorem appendSoundnessResidual_msg
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
     appendSoundnessResidual (init := init) (impl := impl) V₁ V₂ h₁ h₂ :=
   append_soundness_msg V₁ V₂ h₁ h₂ hn hDir hDir₂ himplSP himplNF himplVB
 
