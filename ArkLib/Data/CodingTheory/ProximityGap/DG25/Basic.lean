@@ -197,10 +197,10 @@ lemma eq_splitHalf_iff_merge_eq {ϑ : ℕ}
         Fin.eta] at res
       exact res
 
+set_option backward.isDefEq.respectTransparency false in
 omit [Nonempty ι] [DecidableEq ι] [Fintype A] [AddCommMonoid A] in
 /-- NOTE: This could be generalized to 2 * N instead of 2 ^ (ϑ + 1).
 Also, this can be proved for `↔` instead of `→`. -/
-set_option backward.isDefEq.respectTransparency false in
 theorem CA_split_rowwise_implies_CA
     {ϑ : ℕ} (u : WordStack A (Fin (2 ^ (ϑ + 1))) ι) (e : ℕ) :
     let U₀ : WordStack A (Fin (2^ϑ)) ι := (splitHalfRowWiseInterleavedWords (ϑ := ϑ) u).1

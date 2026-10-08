@@ -406,6 +406,13 @@ lemma e_le_dist_over_3_strong
                   refine ⟨?_, h.2.symm⟩
                   simpa [h.2] using h.1
               simp [pairs, emb, Function.Embedding.coeFn_mk, Finset.mem_sigma, h]
+              constructor
+              · rintro ⟨hj, hji⟩
+                exact ⟨r, hj, by cases hji; rfl⟩
+              · rintro ⟨a, ha, heq⟩
+                have har : a = r := congrArg Sigma.fst heq
+                subst a
+                exact ⟨ha, congrArg Sigma.snd heq⟩
             simp [this]
           have hpairs_sum :
               pairs.card = ∑ j ∈ (Finset.univ : Finset ι),
@@ -856,6 +863,13 @@ lemma dir_close_of_many_close_pts
                   refine ⟨?_, h.2.symm⟩
                   simpa [h.2] using h.1
               simp [pairs, emb, Function.Embedding.coeFn_mk, h]
+              constructor
+              · rintro ⟨hj, hji⟩
+                exact ⟨r, hj, by cases hji; rfl⟩
+              · rintro ⟨a, ha, heq⟩
+                have har : a = r := congrArg Sigma.fst heq
+                subst a
+                exact ⟨ha, congrArg Sigma.snd heq⟩
             have hmap :
                 {p ∈ pairs | f p = j} =
                   Finset.filter (fun p : Sigma (fun _ : RS ↦ ι) ↦ p.2 = j) pairs := by
@@ -895,6 +909,12 @@ lemma dir_close_of_many_close_pts
               by_cases hrr : r' = r
               · subst hrr
                 simp [pairs, emb, Function.Embedding.coeFn_mk]
+                constructor
+                · intro hi
+                  exact ⟨i, hi, rfl⟩
+                · rintro ⟨a, ha, heq⟩
+                  have hai : a = i := congrArg Sigma.snd heq
+                  simpa [hai] using ha
               · constructor
                 · intro hp
                   exfalso
