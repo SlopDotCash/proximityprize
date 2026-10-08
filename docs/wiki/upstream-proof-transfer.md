@@ -1247,3 +1247,13 @@ Use `Mathlib.Order.Lattice.Nat` for natural-number infima and `Finset.prod_le_on
 product bounds require nonnegative factors. For restricted linear maps, rewriting
 `LinearMap.domRestrict_apply` explicitly can avoid expensive coefficient unfolding during
 elaboration; increasing the heartbeat limit did not resolve that interpolation failure.
+
+
+Further integration checks pass for DG25 main results, power-generator interleaving,
+BCIKS20 cleared recursion and partition assembly, the Reed–Solomon gap consumer,
+universal boundary and Frobenius supply bounds, deep-stratum and capped-supply counts,
+and the determinant-core bridge. Matrix aliases can prevent tactics from matching even
+when displayed types agree: use explicit typed equalities or `erw` at the boundary; the
+DG25 port retains its reducible interleaved-word API with module-local
+`backward.isDefEq.respectTransparency false`. These are focused source checks with
+standard-axiom audits where recorded, not full combined hosted qualification.
