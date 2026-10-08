@@ -160,9 +160,9 @@ theorem incCount_comp_perm
     simp only [Finset.mem_filter, Finset.mem_univ, true_and,
       Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] at hγ ⊢
   · exact (MCAEquivariance.mcaEvent_comp_perm_iff (F := F) C σ hσ hσ' (γ := γ)
-      (u₀ := u₀) (u₁ := u₁)).mp hγ
+      (u₀ := u₀) (u₁ := u₁)).mp (Finset.mem_filter.mp hγ).2
   · exact (MCAEquivariance.mcaEvent_comp_perm_iff (F := F) C σ hσ hσ' (γ := γ)
-      (u₀ := u₀) (u₁ := u₁)).mpr hγ
+      (u₀ := u₀) (u₁ := u₁)).mpr (Finset.mem_filter.mp hγ).2
 
 end ProximityGap.SumsetExtremality
 

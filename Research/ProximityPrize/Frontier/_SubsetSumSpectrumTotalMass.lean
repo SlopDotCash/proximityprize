@@ -82,7 +82,7 @@ theorem sum_k_choose_two_pow (m : ℕ) :
           = (m + 1) * (m.choose j * 2 ^ j) * 2 := by
       intro j _
       have hc : (m + 1) * m.choose j = (m + 1).choose (j + 1) * (j + 1) := by
-        have := Nat.succ_mul_choose_eq m j
+        have := Nat.add_one_mul_choose_eq m j
         simpa [Nat.succ_eq_add_one] using this
       have : (j + 1) * (m + 1).choose (j + 1) = (m + 1) * m.choose j := by
         rw [hc]; ring
@@ -167,9 +167,21 @@ private theorem spectrumCount_as_filter (m r : ℕ) (hr : r ≤ 2 * m) :
           m.choose k * 2 ^ k := by
   unfold spectrumCount
   apply Finset.sum_congr
-  · ext k
-    simp only [mem_filter, mem_range, admDepth]
-    omega
+  · apply Finset.ext
+    intro k
+    simp only [mem_filter, mem_range]
+    change (k < min r (2 * m - r) + 1 ∧ k % 2 = r % 2) ↔
+      (k < 2 * m + 1 ∧ k ≤ r ∧ r ≤ 2 * m - k ∧ r % 2 = k % 2)
+    constructor
+    · rintro ⟨hk, hpar⟩
+      have hkr : k ≤ r := by omega
+      have hkbound : k ≤ 2 * m - r := by omega
+      have hsum : k + r ≤ 2 * m := (Nat.le_sub_iff_add_le hr).mp hkbound
+      exact ⟨by omega, hkr, by omega, hpar.symm⟩
+    · rintro ⟨hkm, hkr, hrk, hpar⟩
+      have hkbound : k ≤ 2 * m := by omega
+      have hsum : r + k ≤ 2 * m := (Nat.le_sub_iff_add_le hkbound).mp hrk
+      exact ⟨by omega, hpar.symm⟩
   · intro k _; rfl
 
 /-- **The depth-multiplicity swap.** `Σ_{r=0}^{2m} N_r = Σ_{k=0}^{m} (m−k+1)·C(m,k)·2^k`. -/

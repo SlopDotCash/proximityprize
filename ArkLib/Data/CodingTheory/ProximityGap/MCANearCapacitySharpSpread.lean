@@ -172,7 +172,6 @@ theorem Wsharp_natsum (k s : ℕ) (hkn : k + 1 ≤ n) (hs : s ≤ (k + 1) * (n -
     rw [Finset.mem_range] at hj
     exact node_val_of_lt (aNode_lt k s (by omega) hkn)
   rw [Finset.sum_congr rfl hnode]
-  simp only [aNode]
   rw [Finset.sum_add_distrib, gapProfile_sum (n - 1 - k) k s hs]
 
 omit [Fact p.Prime] in

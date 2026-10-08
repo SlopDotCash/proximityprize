@@ -971,3 +971,11 @@ The monic-quotient linearity compatibility module now imports the five declarati
 by the pinned Mathlib dependency instead of redeclaring them. The existing ArkLib import path
 is retained. The import-only module passes a focused Lean 4.34 check; downstream research
 clients still require the full integration build.
+
+The subset-spectrum total-mass module passes Lean 4.34 compilation against an isolated build
+of its unchanged closed-form prerequisite. Its printed theorem closures use only standard
+axioms. The port uses the current binomial-coefficient lemma and makes the natural-number
+subtraction bounds explicit. In filter proofs, simplify membership before unfolding a
+predicate with its own decidability instance, then use `change` to state the arithmetic
+predicate explicitly; unfolding both together can expose list-filter implementation terms.
+This focused result does not replace full repository compilation and auditing.
