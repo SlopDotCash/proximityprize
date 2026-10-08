@@ -81,16 +81,23 @@ All publishing for this project must target `SlopDotCash/proximityprize`.
 ## ArkLib main and all open PRs
 
 `external/arklib` pins the reviewed October 8 upstream main at
-[`745e77939ac4cecf0333af8410a2463c5c7cb655`](https://github.com/Verified-zkEVM/ArkLib/tree/745e77939ac4cecf0333af8410a2463c5c7cb655).
-The [refreshed file inventory](../upstream/arklib-main-2026-10-08.json) compares it with
-native commit `c5846e1d8ace7df60f0c1b057cfbe55cf91b353c`; byte differences are discovery hints, not semantic gaps.
+[`795bd1e735d1916abac6bcf60e1dea0c42f37216`](https://github.com/Verified-zkEVM/ArkLib/tree/795bd1e735d1916abac6bcf60e1dea0c42f37216),
+including the merged #1261, #1263 and #1264 changes. The submodule pin was rechecked
+against live upstream main when refreshed.
+The [earlier October 8 file inventory](../upstream/arklib-main-2026-10-08.json)
+compares the preceding `745e77939ac4cecf0333af8410a2463c5c7cb655` snapshot with native
+commit `c5846e1d8ace7df60f0c1b057cfbe55cf91b353c`; byte differences are discovery hints,
+not semantic gaps.
 The [main file inventory](../upstream/arklib-main-2026-10-06.json) records all
 920 upstream library files against the native starting commit: 655 absent paths
 and 265 byte-different paths. These are discovery counts, not a semantic count
 of missing results.
-The [PR manifest](../upstream/arklib-prs-2026-10-06.json) records all 51 open PRs,
-including drafts, with immutable heads, base commits and complete file lists.
-A fetched head is not a claim that the PR has been merged or checked locally.
+The [current PR manifest](../upstream/arklib-prs-2026-10-08-refresh.json) records all
+53 open PRs at the refreshed snapshot, including drafts, with immutable heads and
+dispositions. `arklib-reference.py` lists and fetches this manifest. The
+[original PR manifest](../upstream/arklib-prs-2026-10-06.json) preserves the earlier
+51-PR snapshot and its complete file lists. A fetched head is not a claim that the
+PR has been integrated or checked locally.
 
 ```sh
 git submodule update --init external/arklib
@@ -1341,3 +1348,10 @@ The same review found dependency-owned `support_bind_exists`,
 `eq_of_mem_support_pure`, and `simulateQ_randomOracle_map_uniformFin`. Their native
 compatibility modules now import the dependency proofs and also pass focused source checks.
 Private cache/table helpers with matching short names remain separate declarations.
+
+
+Integration review preserves the already source-checked overlapping Lean 4.34 repairs
+while incorporating the subsequent context-lifting, transcript-distribution, Boolean-cube,
+and algebra API updates. The external ArkLib reference and lookup manifest now use the
+October 8 snapshot; it remains read-only. Newly combined audit roots must pass the full
+migration gate before merge.
