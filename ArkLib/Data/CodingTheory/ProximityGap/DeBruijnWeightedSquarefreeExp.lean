@@ -74,11 +74,13 @@ theorem debruijn_weighted_squarefree_exp {p q : ℕ} (hp : p.Prime) (hq : q.Prim
       intro i j
       have h : e₁ * i + e₂ * j ≡ 1 * i + 0 * j [MOD p] :=
         Nat.ModEq.add (he₁p.mul_right i) (he₂p.mul_right j)
+      change (e₁ * i + e₂ * j) % p = (1 * i + 0 * j) % p at h
       simpa only [one_mul, zero_mul, add_zero] using h
     have hmodq : ∀ i j : ℕ, (e₁ * i + e₂ * j) % q = j % q := by
       intro i j
       have h : e₁ * i + e₂ * j ≡ 0 * i + 1 * j [MOD q] :=
         Nat.ModEq.add (he₁q.mul_right i) (he₂q.mul_right j)
+      change (e₁ * i + e₂ * j) % q = (0 * i + 1 * j) % q at h
       simpa only [one_mul, zero_mul, zero_add] using h
     have hpdq : p ∣ p * q := ⟨q, rfl⟩
     have hqdq : q ∣ p * q := ⟨p, Nat.mul_comm p q⟩

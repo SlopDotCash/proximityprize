@@ -806,10 +806,10 @@ theorem pg_candidatePairs_snd_natDegree_pos (x₀ : F)
         H ∈
           UniqueFactorizationMonoid.normalizedFactors
             (Bivariate.evalX (Polynomial.C x₀) R) := by
-    obtain ⟨R', hR', hH'⟩ := Finset.mem_biUnion.mp hmem
-    obtain ⟨H', hH', heq⟩ := Finset.mem_image.mp hH'
+    obtain ⟨R', hR', hpair⟩ := Finset.mem_biUnion.mp hmem
+    obtain ⟨H', hfactor, heq⟩ := Finset.mem_image.mp hpair
     obtain ⟨rfl, rfl⟩ := Prod.mk.inj heq
-    exact ⟨hR', Multiset.mem_toFinset.mp hH'⟩
+    exact ⟨hR', Multiset.mem_toFinset.mp hfactor⟩
   exact pg_natDegree_pos_of_mem_normalizedFactors_of_separable
     (Bivariate.evalX (Polynomial.C x₀) R) (hsep R h'.1) h'.2
 
