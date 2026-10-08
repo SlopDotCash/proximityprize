@@ -1345,3 +1345,6 @@ research modules pass ordinary compilation and installed audits of 248 selected
 declarations with only standard axioms. This includes the variance module's 229
 explicit audit roots. Repairs preserve the existing conditions and counterexamples,
 using explicit arithmetic identities and kernel evaluation of concrete values.
+
+
+Four energy, Gaussian-moment, operator, and orbit research modules pass ordinary compilation and installed audits of 38 selected declarations using only standard axioms. These Lean 4.34 compatibility repairs preserve their hypotheses, conditional results, and existing no-go boundaries.
