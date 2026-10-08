@@ -1215,3 +1215,9 @@ fusion, and interleaved-list MCA consumers now pass ordinary Lean 4.34 builds. A
 installed audit covers 37 roots across these modules and the already-validated exact
 KKH26 census, all with standard axioms. Routine auditing now includes the new roots.
 These local checks do not replace the remaining full-library migration gate.
+
+
+The axiom-audit parser preserves apostrophes in declaration names such as
+`log_right_inverse'`, including multiline dependency reports. Regression tests cover
+standard dependencies, forbidden `sorryAx` dependencies, and adjacent axiom-free reports.
+Run `python3 -m unittest discover -s scripts/tests -p test_axiom_audit_parser.py` for this check.
