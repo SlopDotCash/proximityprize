@@ -1372,3 +1372,6 @@ Fourteen native Sumcheck interaction modules and the adapted single-round projec
 
 
 The concrete GF(4)/GF(2) orientation regression passes an ordinary build and installed audits of 17 declarations using only standard axioms. It checks that native rows recover the original evaluation while columns feed batching, and that the final scalar matches the actual batched multiplier. The fixtures are public for downstream conformance work; the complete modern Binius protocol transfer is still pending.
+
+
+Nine additional research modules now build under native Lean 4.34: maximal-minor certificates, resultant lattice indices, split embeddings, rank-nullity, triangle constraints, random-sign gates, Gauss-period consumers, and two threshold/counting modules. The ordinary 8,996-job target build passed; installed-module audits checked 52 declaration roots using only standard Lean axioms. Changes adapt elaboration and current Mathlib APIs while preserving theorem statements and hypotheses.
