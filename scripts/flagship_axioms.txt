@@ -1230,3 +1230,8 @@ ArkLib.Data.Polynomial.RationalFunctionsStrong BCIKS20AppendixA.ClaimA2.beta_str
 ArkLib.Data.Polynomial.RationalFunctionsStrong BCIKS20AppendixA.ClaimA2.α_strong
 ArkLib.ToMathlib.TailDegProducer ArkLib.TailDegProducer.htailDeg_of_polynomial_representative_le_bound
 ArkLib.Data.Domain.CosetFftDomain.ToFftDomain Domain.FftDomain.toFffDomain_eq_self
+
+# Checked localization embedding conversion.
+ArkLib.ToMathlib.LocalizationEmbedding ArkLib.embLoc
+ArkLib.ToMathlib.LocalizationEmbedding ArkLib.embLoc_comp
+ArkLib.ToMathlib.LocalizationEmbedding ArkLib.embLoc_injective
