@@ -1252,3 +1252,10 @@ builds and an installed audit of 82 selected roots with only standard axioms. Th
 include explicit prime/order imports, the current coefficient and matrix APIs, and generic
 arithmetic helpers that avoid evaluating enormous concrete powers during type checking.
 The research reductions and countermodels retain their hypotheses and conclusions.
+
+
+Six finite-energy, covariance, and production-arithmetic research modules pass their
+ordinary build and installed audits of 49 selected roots. Concrete arithmetic is checked
+by the Lean kernel, and disjoint-union membership is handled explicitly. The permutation
+identity action is definitional. The migration preserves the distinction between
+conditional variance consumers, arithmetic countermodels, and the open production target.

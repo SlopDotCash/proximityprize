@@ -83,12 +83,14 @@ lemma addEnergy_eq_sum_repCount_sq (A : Finset α) :
   · rintro ⟨⟨a₁, a₂⟩, ⟨b₁, b₂⟩⟩ h
     simp only [mem_coe, mem_filter, mem_product] at h
     obtain ⟨⟨⟨ha₁, ha₂⟩, hb₁, hb₂⟩, hrel⟩ := h
-    simp only [mem_coe, mem_disjiUnion, mem_product, mem_filter]
+    apply Finset.mem_disjiUnion.mpr
+    simp only [mem_product, mem_filter]
     refine ⟨a₁ - a₂, sub_mem_sub ha₁ ha₂, ⟨⟨ha₁, ha₂⟩, rfl⟩, ⟨hb₂, hb₁⟩, ?_⟩
     -- `a₁ + b₁ = a₂ + b₂ ⟹ b₂ - b₁ = a₁ - a₂`
     rw [sub_eq_sub_iff_add_eq_add, hrel, add_comm]
   · rintro ⟨⟨a₁, a₂⟩, ⟨b₂, b₁⟩⟩ h
-    simp only [mem_coe, mem_disjiUnion, mem_product, mem_filter] at h
+    have h := Finset.mem_disjiUnion.mp h
+    simp only [mem_product, mem_filter] at h
     obtain ⟨d, _hd, ⟨⟨ha₁, ha₂⟩, hpd⟩, ⟨hb₂, hb₁⟩, hqd⟩ := h
     simp only [mem_coe, mem_filter, mem_product]
     refine ⟨⟨⟨ha₁, ha₂⟩, hb₁, hb₂⟩, ?_⟩

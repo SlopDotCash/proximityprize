@@ -65,15 +65,13 @@ theorem productionSixSubsetCount_eq_choose :
 theorem production_fiveSubset_sparse_window :
     30720 * productionFiveSubsetCount < productionQ ∧
       productionQ < 30721 * productionFiveSubsetCount := by
-  norm_num [productionFiveSubsetCount, productionQ, productionN,
-    Nat.descFactorial_succ, Nat.descFactorial_zero]
+  decide +kernel
 
 /-- Exact narrow window for the dense six-subset load. -/
 theorem production_sixSubset_dense_window :
     5825 * productionQ < productionSixSubsetCount ∧
       productionSixSubsetCount < 5826 * productionQ := by
-  norm_num [productionSixSubsetCount, productionQ, productionN,
-    Nat.descFactorial_succ, Nat.descFactorial_zero]
+  decide +kernel
 
 /-- The production birthday crossover is between depths five and six. -/
 theorem production_five_sparse_six_dense :
@@ -83,7 +81,7 @@ theorem production_five_sparse_six_dense :
   · have h := production_fiveSubset_sparse_window.1
     omega
   · have hq : 0 < productionQ := by
-      norm_num [productionQ, productionN]
+      exact Nat.zero_lt_succ _
     have hscale : productionQ < 5825 * productionQ := by
       nlinarith
     exact lt_trans hscale production_sixSubset_dense_window.1

@@ -281,7 +281,7 @@ theorem cyclotomic_five_irreducible_mod_two :
       refine ⟨by decide, fun k hk hk0 => ?_⟩
       interval_cases k <;> decide
     rw [natDegree_cyclotomic]
-    simpa using horder.symm
+    simpa only [show Nat.totient 5 = 4 by decide] using horder.symm
 
 /-- The whole integer family is irreducible, not merely an arbitrary reducible root profile. -/
 theorem jacobiDeterminantBlindPoly_irreducible (A : Nat) :
@@ -357,9 +357,7 @@ def literalDepthTwoResidue : Nat :=
 /-- Exact nonzero residue of the literal spike at depth two. -/
 theorem literalDepthTwoResidue_eq :
     literalDepthTwoResidue = 87113604775161076552801107946821851807744 := by
-  norm_num [literalDepthTwoResidue, literalOrbitPowerMoment, productionSpike,
-    productionLiteralBulkOrbits,
-    productionQ, productionM, productionN]
+  decide +kernel
 
 /-- The residue is a 137-bit integer. -/
 theorem literalDepthTwoResidue_bit_window :
@@ -407,9 +405,7 @@ def productionHalfNegative : Nat := productionHalfCount / 2
 theorem integral_profile_orbit_count :
     1 + productionBulkPositive + productionBulkNegative
       + productionHalfPositive + productionHalfNegative + 1 = productionM := by
-  norm_num [productionBulkPositive, productionBulkNegative, productionHalfPositive,
-    productionHalfNegative, productionBulkCount, productionHalfCount, integralSpikeScale,
-    productionM]
+  decide +kernel
 
 /-- Every amplitude used by the strengthened profile is nonzero. -/
 theorem integral_profile_has_no_zero_amplitude :
@@ -425,9 +421,7 @@ theorem integral_profile_signed_trace :
       + (productionHalfPositive : Int) * 2 ^ 14
       - (productionHalfNegative : Int) * 2 ^ 14
       - 1 = -1 := by
-  norm_num [productionBulkPositive, productionBulkNegative, productionHalfPositive,
-    productionHalfNegative, productionBulkCount, productionHalfCount, integralSpikeScale,
-    productionM]
+  decide +kernel
 
 /-- Exact squared trace `sum_i eta_i^2 = q-n`. -/
 theorem integral_profile_squared_trace :
@@ -483,16 +477,12 @@ def productionOrbitSeventhTarget : Nat := productionQ * 2 ^ 18 * productionN ^ 6
 the seventh target by more than eight bits. -/
 theorem integral_profile_eight_bit_target_failure :
     2 ^ 8 * productionOrbitSeventhTarget < integralOrbitPowerMoment 7 := by
-  norm_num [productionOrbitSeventhTarget, integralOrbitPowerMoment, integralSpikeSquared,
-    productionBulkCount, productionHalfCount, integralSpikeScale, productionQ, productionM,
-    productionN]
+  decide +kernel
 
 /-- The strengthened profile's failure is below nine bits. -/
 theorem integral_profile_target_failure_lt_nine_bits :
     integralOrbitPowerMoment 7 < 2 ^ 9 * productionOrbitSeventhTarget := by
-  norm_num [productionOrbitSeventhTarget, integralOrbitPowerMoment, integralSpikeSquared,
-    productionBulkCount, productionHalfCount, integralSpikeScale, productionQ, productionM,
-    productionN]
+  decide +kernel
 
 /-- The strengthened integral profile still fails the actual period congruence at depth two. -/
 theorem integral_profile_fails_depthTwo_periodCongruence :
@@ -505,9 +495,7 @@ theorem integral_profile_fails_depthTwo_periodCongruence :
 target, so congruence information without an archimedean coupling is far too coarse. -/
 theorem production_seventh_congruence_step_count :
     productionOrbitSeventhTarget / productionQ = 2 ^ 198 := by
-  norm_num [productionOrbitSeventhTarget, productionQ, productionM, productionN]
-
-/-! ## Production size of the discriminant/capacity information -/
+  decide +kernel
 
 /-- The field cardinality lies in its exact binary window. -/
 theorem productionQ_binary_window : 2 ^ 158 < productionQ ∧ productionQ < 2 ^ 159 := by

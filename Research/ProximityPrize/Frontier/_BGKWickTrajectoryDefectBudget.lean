@@ -205,7 +205,7 @@ theorem robustWickScale_six_margin :
 single-one-unit profile. -/
 theorem twoLateHalfUnitWick_product :
     ∏ i : Fin 6, twoLateHalfUnitWick i = 496125 / 4 := by
-  norm_num [twoLateHalfUnitWick, wickStepNumerator, Fin.prod_univ_succ, Fin.ext_iff]
+  decide +kernel
 
 /-- A `0.2%` overrun at every transition also fits around the distributed profile. -/
 theorem robustTwoLateHalfUnit_margin :
