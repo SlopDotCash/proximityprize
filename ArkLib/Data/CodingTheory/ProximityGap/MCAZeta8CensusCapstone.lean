@@ -46,11 +46,8 @@ theorem census8_complete {p p' q q' r r' : ℕ}
   simp only [List.all_eq_true] at h1
   have h2 := h1 p' (List.mem_range.mpr hb.2.1)
   have h3 := h2 q (List.mem_range.mpr hb.2.2.1)
-  simp only [List.all_eq_true] at h3
   have h4 := h3 q' (List.mem_range.mpr hb.2.2.2.1)
-  simp only [List.all_eq_true] at h4
   have h5 := h4 r (List.mem_range.mpr hb.2.2.2.2.1)
-  simp only [List.all_eq_true] at h5
   have h6 := h5 r' (List.mem_range.mpr hb.2.2.2.2.2)
   rw [Bool.or_eq_true, Bool.not_eq_true'] at h6
   rcases h6 with hfalse | heq
