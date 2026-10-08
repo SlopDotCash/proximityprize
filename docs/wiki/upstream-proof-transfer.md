@@ -1026,3 +1026,12 @@ not certified by these focused results.
 The pinned Lean 4.32.2 reference upper candidate now passes its complete ordinary build
 (3,906 jobs). Candidate axiom auditing and fresh dependency-closure replay are separate gates;
 this build alone does not establish them, native campaign completion or hosted ranking.
+
+
+STIR initial/final boundary-block completeness and threaded message-seam composition now
+compile as separate modules on Lean 4.34 (7.2 and 4.9 seconds in the broader build).
+Their three installed theorem roots have standard-only axiom closures. The port uses
+pointwise challenge instances, explicit empty-oracle universes and current simulation laws;
+the empty composition uses identity completeness directly. Existing relation, sampling and
+component completeness hypotheses are retained. The joint STIR build still fails in later
+modules, which remain under migration.
