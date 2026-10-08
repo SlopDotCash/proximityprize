@@ -1295,3 +1295,10 @@ Ten further library modules pass ordinary compilation and installed audits of
 security, claim reduction, restricted-sumset bounds, subspace polynomials, and the
 Mathlib-backed monic-division compatibility import. The historical commented-out
 context-lifting knowledge-soundness draft is not counted as a proved declaration.
+
+
+Eight propagation, core-embedding, moment, superelliptic, and wave-kernel research
+modules pass ordinary compilation and installed audits of 39 selected declarations
+with only standard axioms. Membership and coercion steps are explicit, the Kummer
+criterion has its own import, and concrete slot arithmetic uses kernel evaluation.
+The conditional moment bounds and no-go results retain their original scope.

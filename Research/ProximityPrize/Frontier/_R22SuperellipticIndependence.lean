@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import Mathlib.FieldTheory.KummerExtension
 import ArkLib.Data.CodingTheory.ProximityGap.StepanovNonVanishing
 import Research.ProximityPrize.Frontier._R21StepanovS1
 

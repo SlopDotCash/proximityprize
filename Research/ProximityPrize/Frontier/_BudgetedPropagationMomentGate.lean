@@ -104,10 +104,15 @@ theorem badNeighborhoodCount_clusterSpike_clusterRelation [DecidableEq α]
             clusterRelation cluster a b ∧
               scoreBad (fun c : α => if c ∈ cluster then S else 0) T b))
         = cluster := by
-    ext b
-    by_cases hb : b ∈ cluster
-    · simp [clusterRelation, scoreBad, ha, hb, hTS]
-    · simp [clusterRelation, scoreBad, hb, not_le.mpr hT]
+    apply Finset.ext
+    intro b
+    constructor
+    · intro hb
+      exact (Finset.mem_filter.mp hb).2.1.2
+    · intro hb
+      apply Finset.mem_filter.mpr
+      refine ⟨Finset.mem_univ _, ⟨ha, hb⟩, ?_⟩
+      simpa only [scoreBad, if_pos hb] using hTS
   unfold badNeighborhoodCount
   rw [hfilter]
 

@@ -54,14 +54,14 @@ theorem topPrefix_subset (G T : Finset F) (k : ℕ) : topPrefix G T k ⊆ T := b
   classical
   intro x hx
   have hx' : x ∈ (orderedRepresentatives G T).take k := by
-    simpa [topPrefix] using hx
+    exact hx
   have hxord : x ∈ orderedRepresentatives G T := List.mem_of_mem_take hx'
   simpa [orderedRepresentatives] using hxord
 
 theorem topPrefix_card (G T : Finset F) (k : ℕ) (hk : k ≤ T.card) :
     (topPrefix G T k).card = k := by
   classical
-  rw [topPrefix, Finset.card_mk, Multiset.coe_card]
+  change ((orderedRepresentatives G T).take k).length = k
   simp [orderedRepresentatives_length, hk]
 
 private theorem map_orderedRepresentatives (G T : Finset F) :
@@ -116,7 +116,8 @@ theorem sum_topPrefix_repCount (G T : Finset F) {k : ℕ} (hk : k ≤ T.card) :
     simpa [descendingList_length] using hk
   rw [show (∑ u ∈ topPrefix G T k, repCount G u) =
       (((orderedRepresentatives G T).take k).map (repCount G)).sum by
-    simp [topPrefix, Finset.sum_mk, Multiset.sum_coe]]
+    change (((orderedRepresentatives G T).take k).map (repCount G)).sum = _
+    rw [List.map_take]]
   rw [map_topPrefixList]
   symm
   simpa [transversalRepProfile, orderedProfile] using
