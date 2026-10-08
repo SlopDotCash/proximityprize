@@ -1302,3 +1302,10 @@ modules pass ordinary compilation and installed audits of 39 selected declaratio
 with only standard axioms. Membership and coercion steps are explicit, the Kummer
 criterion has its own import, and concrete slot arithmetic uses kernel evaluation.
 The conditional moment bounds and no-go results retain their original scope.
+
+
+Five finite-free, rank, spectrum, and pair-concentration research modules pass
+ordinary compilation and installed audits of 35 selected declarations with only
+standard axioms. The migration uses explicit finite-vector extensionality, current
+span/rank APIs, a prime-tactic import, and removes simplification steps that no
+longer make progress. These changes preserve the original mathematical claims.

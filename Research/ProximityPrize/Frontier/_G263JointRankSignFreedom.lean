@@ -97,10 +97,12 @@ theorem centeredCov_add_const (W R : Fin m → ℤ) (c : ℤ) :
 
 /-- The two centered functionals as explicit integer vectors. -/
 theorem centeredFunctional_R5 : centeredFunctional R5 = ![-4, 1, -4, 1, 6] := by
-  decide
+  funext i
+  fin_cases i <;> decide
 
 theorem centeredFunctional_R6 : centeredFunctional R6 = ![1, -4, 6, -4, 1] := by
-  decide
+  funext i
+  fin_cases i <;> decide
 
 /-- **Structural cause: rank-two independence.** No nontrivial rational combination
 `a·f₅ + b·f₆` vanishes unless `a = b = 0`; equivalently `f₅, f₆` are `ℤ`-linearly independent.
