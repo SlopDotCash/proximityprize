@@ -1,0 +1,208 @@
+/-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+
+import ArkLib.ProofSystem.RingSwitching.Prelude
+import ArkLib.ProofSystem.RingSwitching.Packing.BatchingAlgebra
+import ArkLib.ProofSystem.RingSwitching.Packing.FinalAlgebra
+import CompPoly.Fields.Binary.Tower.Concrete.Basis
+/-!
+# Ring-switching coordinate orientation
+
+Over `GF(4)/GF(2)`, packing `t(X₀, X₁) = X₀` gives the constant generator.
+The honest folded element is `1 ⊗ Z₁`. Its rows recover the original evaluation,
+while its columns give the target for batching against the packed polynomial. The final
+equality scalar must agree with evaluation of the actual batched multiplier. The fixture objects
+are public for downstream conformance tests.
+-/
+
+open Module RingSwitching MvPolynomial
+open Sumcheck.Structured
+open ConcreteBinaryTower
+open scoped TensorProduct
+noncomputable section
+
+namespace ArkLibTest.RingSwitchingOrientation
+/-- The base field `GF(2)`. -/
+abbrev K := ConcreteBTField 0
+/-- The extension field `GF(4)`. -/
+abbrev L := ConcreteBTField 1
+/-- The tower embedding of `GF(2)` into `GF(4)`, named so that importers can enable it locally. -/
+local instance algebraKL : Algebra K L := ConcreteBTFieldAlgebra (h_le := by decide)
+/-- The basis `(1, Z 1)` of `GF(4)` over `GF(2)`. -/
+def beta : Basis (Fin 1 → Fin 2) K L :=
+  (basisSucc 0).reindex (Equiv.funUnique (Fin 1) (Fin 2)).symm
+/-- The tensor-product profile of `beta`. -/
+def p : RingSwitchingProfile K L 1 := binaryTowerProfile 1 K L beta
+/-- The source polynomial `X₀`. -/
+def t : MultilinearPoly K 2 :=
+  ⟨X 0, by
+    rw [mem_restrictDegree_iff_degreeOf_le]
+    intro i
+    simp only [degreeOf_X]
+    split <;> omega
+  ⟩
+/-- The packed source. -/
+def tp : MultilinearPoly L 1 := packMLE 1 L K 2 1 rfl beta t
+/-- The zero evaluation point. -/
+def r : Fin 2 → L := fun _ => 0
+/-- The honest folded element. -/
+def shat : p.A := embedded_MLP_eval 1 L K p 2 1 rfl tp r
+/-- The first basis vector is `1`. -/
+theorem beta_zero : beta (fun _ => 0) = 1 := by
+  simp [beta, Basis.reindex_apply, basisSucc]
+/-- The second basis vector is `Z 1`. -/
+theorem beta_one : beta (fun _ => 1) = Z 1 := by
+  simp [beta, Basis.reindex_apply, basisSucc]
+private theorem honest_input_claim : (0 : L) = t.val.aeval r := by simp [t, r]
+
+/-- A sum over one Boolean bit. -/
+theorem sum_one_bit {M : Type*} [AddCommMonoid M] (f : (Fin 1 → Fin 2) → M) :
+    ∑ x, f x = f (fun _ => 0) + f (fun _ => 1) := by
+  rw [← (Equiv.funUnique (Fin 1) (Fin 2)).symm.sum_comp f]
+  simp only [Fin.sum_univ_two]
+  apply congrArg₂ (· + ·) <;> apply congrArg f <;> funext i <;> fin_cases i <;> rfl
+private theorem tp_constant : tp.val = C (Z 1) := by
+  simp only [tp, packMLE, t, eval_X, Basis.equivFun_symm_apply]
+  simp only [show (0 : Fin 2).val < 1 by decide, dite_true]
+  simp only [sum_one_bit, Fin.val_zero, Fin.val_one, Nat.cast_zero, Nat.cast_one,
+    zero_smul, one_smul, zero_add, beta_one]
+  symm
+  apply eq_MLE_of_degreeOf_le_one_of_eval_zeroOne_eq
+  · intro i; simp
+  · intro x; simp
+
+/-- The honest folded element is `1 ⊗ Z 1`. -/
+theorem shat_eq : shat = (1 : L) ⊗ₜ[K] Z 1 := by
+  change (eval _) (MvPolynomial.map _ tp.val) = _
+  rw [tp_constant, map_C, eval_C]
+  rfl
+
+/-- The two Boolean points of `Fin 1 → Fin 2` differ. -/
+theorem bit_zero_ne_one :
+    (fun _ : Fin 1 => (0 : Fin 2)) ≠ (fun _ : Fin 1 => (1 : Fin 2)) := by decide
+
+/-- Row zero of the honest folded element. -/
+theorem row_zero : p.decomposeRows shat (fun _ => 0) = 0 := by
+  rw [shat_eq]
+  change decompose_tensor_algebra_rows (L := L) (K := K) beta
+    ((1 : L) ⊗ₜ[K] Z 1) (fun _ => 0) = _
+  unfold decompose_tensor_algebra_rows
+  rw [Basis.baseChange_repr_tmul, ← beta_one, Basis.repr_self]
+  simp [bit_zero_ne_one]
+
+private theorem row_one : p.decomposeRows shat (fun _ => 1) = 1 := by
+  rw [shat_eq]
+  change decompose_tensor_algebra_rows (L := L) (K := K) beta
+    ((1 : L) ⊗ₜ[K] Z 1) (fun _ => 1) = _
+  unfold decompose_tensor_algebra_rows
+  rw [Basis.baseChange_repr_tmul, ← beta_one, Basis.repr_self]
+  simp
+
+/-- Column zero of a tensor `1 ⊗ y`. -/
+theorem column_zero (y : L) : p.decomposeColumns ((1 : L) ⊗ₜ[K] y) (fun _ => 0) = y := by
+  change decompose_tensor_algebra_columns (L := L) (K := K) beta _ _ = _
+  unfold decompose_tensor_algebra_columns
+  rw [Basis.baseChangeRight_repr_tmul, ← beta_zero, Basis.repr_self]
+  simp
+
+/-- Column one of a tensor `1 ⊗ y`. -/
+theorem column_one (y : L) : p.decomposeColumns ((1 : L) ⊗ₜ[K] y) (fun _ => 1) = 0 := by
+  change decompose_tensor_algebra_columns (L := L) (K := K) beta _ _ = _
+  unfold decompose_tensor_algebra_columns
+  rw [Basis.baseChangeRight_repr_tmul, ← beta_zero, Basis.repr_self]
+  simp [Ne.symm bit_zero_ne_one]
+
+-- The accepted statement is the actual evaluation of the small-field polynomial.
+theorem honest_original_value : (0 : L) = t.val.aeval r := honest_input_claim
+
+theorem honest_original_check_accepts : performCheckOriginalEvaluation 1 L K p 2 1 rfl 0 r shat = true := by
+  simp [performCheckOriginalEvaluation, eqWeightedCoordSum, sum_one_bit,
+    row_zero, row_one, r, eqTilde]
+
+-- A false claimed value for the same honest folded element is rejected.
+theorem false_original_check_rejects : performCheckOriginalEvaluation 1 L K p 2 1 rfl 1 r shat = false := by
+  simp [performCheckOriginalEvaluation, eqWeightedCoordSum, sum_one_bit,
+    row_zero, row_one, r, eqTilde]
+
+private theorem batched_target : compute_s0 1 L K p shat (fun _ => 0) = Z 1 := by
+  rw [shat_eq]
+  simp [compute_s0, eqWeightedCoordSum, sum_one_bit, column_zero, column_one, eqTilde]
+
+private theorem multiplier_zero :
+    compute_A_func 1 L K p 1 (fun _ => 0) (fun _ => 0) (fun _ => 0) = 1 := by
+  have hb : beta.repr (1 : L) (fun _ => 0) = 1 := by
+    rw [← beta_zero, Basis.repr_self]
+    simp
+  simp [compute_A_func, eqTilde, sum_one_bit, p, hb]
+
+private theorem multiplier_one :
+    compute_A_func 1 L K p 1 (fun _ => 0) (fun _ => 0) (fun _ => 1) = 0 := by
+  simp [compute_A_func, eqTilde]
+
+-- Batching agrees with the sumcheck summand built from the actual multiplier and packing.
+theorem batching_matches_actual_multiplier : compute_s0 1 L K p shat (fun _ => 0) =
+    ∑ w : Fin 1 → Fin 2,
+      compute_A_func 1 L K p 1 (fun _ => 0) (fun _ => 0) w *
+        tp.val.eval (fun i => (w i : L)) := by
+  rw [batched_target, sum_one_bit, multiplier_zero, multiplier_one, tp_constant]
+  simp
+
+private theorem multiplier_polynomial :
+    (compute_A_MLE 1 L K p 1 (fun _ => 0) (fun _ => 0)).val = 1 - X 0 := by
+  symm
+  apply eq_MLE_of_degreeOf_le_one_of_eval_zeroOne_eq
+  · intro i
+    exact (degreeOf_sub_le _ _ _).trans (by fin_cases i; simp)
+  · intro w
+    have hw : w = (fun _ => 0) ∨ w = (fun _ => 1) := by
+      have h := (w 0).isLt
+      interval_cases hval : (w 0).val
+      · left; funext i; fin_cases i; exact Fin.ext hval
+      · right; funext i; fin_cases i; exact Fin.ext hval
+    rcases hw with rfl | rfl
+    · simp [multiplier_zero]
+    · simp [multiplier_one]
+
+private theorem final_tensor :
+    compute_final_eq_tensor 1 L K p 2 1 rfl r (fun _ => Z 1) =
+      (1 : L) ⊗ₜ[K] (1 - Z 1) := by
+  unfold compute_final_eq_tensor
+  rw [eqTilde_eq_prod]
+  simp only [Fin.prod_univ_one, r, map_zero, zero_mul, sub_zero, one_mul]
+  change (1 : L ⊗[K] L) - (1 ⊗ₜ[K] Z 1) = _
+  rw [TensorProduct.tmul_sub]
+  rfl
+
+-- The non-Boolean final challenge detects transposing the two coordinate systems.
+theorem non_boolean_final_matches_multiplier : compute_final_eq_value 1 L K p 2 1 rfl r (fun _ => Z 1) (fun _ => 0) =
+    (compute_A_MLE 1 L K p 1 (fun _ => 0) (fun _ => 0)).val.eval (fun _ => Z 1) := by
+  unfold compute_final_eq_value
+  rw [final_tensor, multiplier_polynomial]
+  simp [eqWeightedCoordSum, sum_one_bit, column_zero, column_one, eqTilde]
+
+-- The general theorems specialize to the hand-computed checks above: the honest guard, its
+-- readback, and the final value as the multiplier evaluation.
+theorem generic_honest_check_accepts : performCheckOriginalEvaluation 1 L K p 2 1 rfl (t.val.aeval r) r shat = true :=
+  performCheckOriginalEvaluation_honest p rfl t r
+
+theorem generic_accepted_claim_is_original (s : L) (h : performCheckOriginalEvaluation 1 L K p 2 1 rfl s r shat = true) :
+    s = t.val.aeval r :=
+  original_claim_of_check p rfl t r s shat rfl h
+
+theorem generic_final_matches_multiplier : compute_final_eq_value 1 L K p 2 1 rfl r (fun _ => Z 1) (fun _ => 0) =
+    (compute_A_MLE 1 L K p 1 (getEvaluationPointSuffix 1 L 2 1 rfl r) (fun _ => 0)).val.eval
+      (fun _ => Z 1) :=
+  compute_final_eq_value_eq_eval p rfl r _ _
+
+-- The batching target is the equality-weighted column family of the honest folded element; at the
+-- zero challenge it selects the hand-computed column zero.
+theorem generic_batching_selects_column_zero : compute_s0 1 L K p shat (fun _ => 0) = Z 1 := by
+  rw [compute_s0_eq_sum, shat_eq]
+  simp [sum_one_bit, column_zero, column_one, eqTilde]
+
+end ArkLibTest.RingSwitchingOrientation
+
+end

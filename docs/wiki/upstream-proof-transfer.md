@@ -1369,3 +1369,6 @@ Native claim reduction and STIR vector completeness pass ordinary builds and ins
 
 
 Fourteen native Sumcheck interaction modules and the adapted single-round projection API pass ordinary builds and installed audits of 114 declarations using only standard axioms. The transfer covers actual committed-before-challenge execution, multivariate soundness, round-by-round certificates, state restoration, and expected distinct-query budgets. Abort behavior, the source distribution law, polynomial realizations, and extractor assumptions remain explicit. An isolated-module build caught and repaired the missing NativeMeasure import in Soundness; combined source checks alone had not exposed it.
+
+
+The concrete GF(4)/GF(2) orientation regression passes an ordinary build and installed audits of 17 declarations using only standard axioms. It checks that native rows recover the original evaluation while columns feed batching, and that the final scalar matches the actual batched multiplier. The fixtures are public for downstream conformance work; the complete modern Binius protocol transfer is still pending.

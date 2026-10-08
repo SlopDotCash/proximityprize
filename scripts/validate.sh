@@ -92,6 +92,7 @@ echo "# Native security clients"
   ArkLibTest.ProofSystem.RingSwitching.Packing.Relations \
   ArkLibTest.ProofSystem.RingSwitching.Packing.Batching \
   ArkLibTest.ProofSystem.RingSwitching.Packing.CandidateList \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.Orientation \
   ArkLibTest.ProofSystem.RingSwitching.Packing.SeparateFields \
   ArkLibTest.ProofSystem.RingSwitching.Packing.Multiplier \
   ArkLibTest.ProofSystem.RingSwitching.Packing.ScalarHead.Layout \
