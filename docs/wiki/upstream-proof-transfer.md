@@ -972,3 +972,12 @@ averaged-only capstone still uses admitted arbitrary-verifier composition and ca
 The new proved route does not discharge that older contract. Native adaptation requires the
 worst-case security API, guarded composition and phase modules, plus validation of the intended
 downstream opening witness. This is a source review, not a native build claim.
+
+
+Message-first n-ary sequential completeness now builds on Lean 4.34. The ordinary adapter
+build compiled `SeqComposeMsgCompleteness` successfully in 14 seconds; that joint run later
+failed in `AppendOracleAdapters`, so no adapter result is claimed here. All eight installed
+exports (six theorems and two challenge-instance constructors) have standard-only axiom
+closures. Retired oracle bundles are replaced with pointwise instances, and the empty-chain
+base case directly uses identity completeness instead of simplifying its definition. The
+message/empty-tail shape conditions and component completeness hypotheses are unchanged.

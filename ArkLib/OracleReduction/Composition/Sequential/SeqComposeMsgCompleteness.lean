@@ -65,20 +65,22 @@ challenge oracle spec `[pSpec.Challenge]ₒ` is finite. (Individual protocols pr
 by a manual per-round case split; this is the general form that lets the seqCompose/append
 completeness keystones synthesize their probability instances for an arbitrary growing protocol.) -/
 instance instChallengeOracleFintype {n : ℕ} {pSpec : ProtocolSpec n}
-    [∀ i, Fintype (pSpec.Challenge i)] : [pSpec.Challenge]ₒ.Fintype where
-  fintype_B := fun q => inferInstanceAs (Fintype (pSpec.Challenge q.1))
+    [∀ i, Fintype (pSpec.Challenge i)] (q : [pSpec.Challenge]ₒ.Domain) :
+    Fintype ([pSpec.Challenge]ₒ.Range q) :=
+  inferInstanceAs (Fintype (pSpec.Challenge q.1))
 
 /-- **General challenge-oracle inhabitedness.** The `Inhabited` analogue of
 `instChallengeOracleFintype`. -/
 instance instChallengeOracleInhabited {n : ℕ} {pSpec : ProtocolSpec n}
-    [∀ i, Inhabited (pSpec.Challenge i)] : [pSpec.Challenge]ₒ.Inhabited where
-  inhabited_B := fun q => inferInstanceAs (Inhabited (pSpec.Challenge q.1))
+    [∀ i, Inhabited (pSpec.Challenge i)] (q : [pSpec.Challenge]ₒ.Domain) :
+    Inhabited ([pSpec.Challenge]ₒ.Range q) :=
+  inferInstanceAs (Inhabited (pSpec.Challenge q.1))
 
 end ProtocolSpec
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
 set_option maxHeartbeats 1000000 in
@@ -110,7 +112,7 @@ theorem seqCompose_perfectCompleteness_of_append_msg {m : ℕ}
   induction m with
   | zero =>
     rw [seqCompose_zero]
-    simpa using
+    exact
       (Reduction.id_perfectCompleteness (init := init) (impl := impl) (rel := rel 0))
   | succ m ih =>
     change ((R 0).append
@@ -153,7 +155,7 @@ theorem seqCompose_pc_of_append_msg' {m : ℕ}
   induction m with
   | zero =>
     rw [seqCompose_zero]
-    simpa using
+    exact
       (Reduction.id_perfectCompleteness (init := init) (impl := impl) (rel := rel 0))
   | succ m ih =>
     change ((R 0).append
