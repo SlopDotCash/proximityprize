@@ -237,6 +237,12 @@ theorem conductor_below_prize_prime :
   rw [hcond] at hlt
   omega
 
+private theorem norm_threshold_compare {e : ℕ} (he : 6600 ≤ e) :
+    ConductorBound (2 ^ 30) 110 ≤ (2 * 110) ^ e := by
+  unfold ConductorBound
+  rw [← pow_mul]
+  exact (Nat.pow_le_pow_right (by decide) he).trans (Nat.pow_le_pow_left (by decide) _)
+
 /-- **ATTACK 2b corollary — the cyclotomic norm route is in √p-vacuity.** The TRUE threshold above
 which `p` fails to divide a short `≤2r`-term relation norm is `p > (2r)^{n/2}` (the norm bound), not
 `p > n^(2r)`. At prize scale `(2r)^{n/2} = 220^{2^29}`, vastly larger than `n^(2r) = 2^6600`, which
@@ -245,16 +251,7 @@ prize point as a concrete certificate that the genuine cyclotomic threshold is e
 `q` — i.e. `p` divides many short-relation norms, the √p-vacuity face. -/
 theorem true_norm_threshold_dwarfs_conductor :
     ConductorBound (2 ^ 30) 110 ≤ (2 * 110) ^ (2 ^ 29) := by
-  -- n^(2r) = 2^6600 = (2^30)^220.  (2r)^{n/2} = 220^{2^29}.  Compare via 2^6600 ≤ 256^{2^29} ≤ 220^{2^29}?
-  -- We bound conservatively: 2^6600 ≤ 2^(2^29) ≤ 220^(2^29).
-  have hcond : ConductorBound (2 ^ 30) 110 = 2 ^ 6600 := by
-    unfold ConductorBound; rw [← pow_mul]
-  rw [hcond]
-  calc (2 : ℕ) ^ 6600
-      ≤ 2 ^ (2 ^ 29) := Nat.pow_le_pow_right (by norm_num) (by
-        -- 6600 ≤ 2^29 = 536870912
-        norm_num)
-    _ ≤ (2 * 110) ^ (2 ^ 29) := Nat.pow_le_pow_left (by norm_num) _
+  exact norm_threshold_compare (by norm_num)
 
 /-! ## ATTACK 3 — Galois orbit-summing REPLICATES the divisibility (does not reduce it)
 

@@ -1245,3 +1245,10 @@ operations, FFT subgroup conversion, FRI round consistency, finite-set doubling,
 `CheckClaim`. The staircase arithmetic uses explicit kernel-checked power equalities
 before its linear arithmetic proof; this avoids deep kernel recursion. `CheckClaim`
 preserves the existing SPMF-valued distribution contract through the renamed API.
+
+
+Fourteen spectrum, interpolation, prime, phase, and height modules now pass ordinary
+builds and an installed audit of 82 selected roots with only standard axioms. The repairs
+include explicit prime/order imports, the current coefficient and matrix APIs, and generic
+arithmetic helpers that avoid evaluating enormous concrete powers during type checking.
+The research reductions and countermodels retain their hypotheses and conclusions.

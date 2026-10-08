@@ -75,6 +75,10 @@ theorem prime_le_of_spurious_weight
     p ≤ w ^ halfdeg :=
   le_trans (Nat.le_of_dvd hN hdvd) hle
 
+private theorem pow_gate {p e : ℕ} (hp : p < 2 ^ 158) (he : 158 ≤ e) :
+    p ≤ 2 ^ e :=
+  le_trans (le_of_lt hp) (Nat.pow_le_pow_right (by decide) he)
+
 /-- **The minimal spurious weight is `≥ 2` only when `p ≤ 2^(n/2)` is the binding constraint.**
 Equivalently: a weight-`2` spurious vanishing is possible whenever `p ≤ 2^(n/2)`.  At the prize
 order this is FALSE-to-block, i.e. the gate is wide open.  We state the *vacuity*: with the prize
@@ -84,8 +88,7 @@ constraint. -/
 theorem prizeWeight2_gate_vacuous
     {p : ℕ} (hp : p < 2 ^ 158) :
     p ≤ 2 ^ (2 ^ 29) := by
-  have h158 : (2 : ℕ) ^ 158 ≤ 2 ^ (2 ^ 29) := Nat.pow_le_pow_right (by norm_num) (by norm_num)
-  exact le_trans (le_of_lt hp) h158
+  exact pow_gate hp (by norm_num)
 
 /-- **Bit-length gap quantification.**  The weight-2 norm budget has bit-exponent `2^29`; the prize
 prime has bit-exponent `≤ 158`.  Their ratio is `2^29 / 158 > 3·10⁶`: the algebraic gate is vacuous
