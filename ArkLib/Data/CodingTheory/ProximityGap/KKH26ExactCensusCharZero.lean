@@ -709,7 +709,6 @@ theorem image_sum_eq_biUnion (hk : 1 ≤ k) (hζ : IsPrimitiveRoot ζ (2 ^ k)) (
     obtain ⟨S, hSsub, hScard, hSfree⟩ := exists_subset_with_freePart hk hζ hjfeas hF
     have hmem := Finset.mem_image_of_mem (fun S : Finset L => ∑ z ∈ S, z)
       (Finset.mem_powersetCard.mpr ⟨hSsub, hScard⟩)
-    simp only at hmem
     rw [sum_eq_sum_freePart S, hSfree] at hmem
     exact Finset.mem_image.mp hmem
 

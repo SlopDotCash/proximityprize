@@ -83,7 +83,7 @@ theorem wbSolvable_of_explainable (dom : Fin n ↪ F) {k w : ℕ} (hk : 1 ≤ k)
   have hPdeg' : P.natDegree < k := by
     by_cases hP0 : P = 0
     · subst hP0
-      simpa using hk
+      simpa using (Nat.lt_of_lt_of_le Nat.zero_lt_one hk)
     · have := Polynomial.natDegree_lt_iff_degree_lt (n := k) (hP0) |>.mpr hPdeg
       exact this
   refine wbSolvable_of_close dom hk hPdeg' (E := Finset.univ \ S) ?_ ?_

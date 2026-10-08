@@ -117,6 +117,7 @@ section DesignHalf
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] {s : ℕ}
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Per-coordinate independence ⟹ dimension bound (reusable kernel).** For a linearly
 independent finite family `b : κ → (ι → Fin s → F)` with span `A`, and any finite set `S` of
 indices whose vectors all vanish at block `i` (`b t i = 0`), the dimension of
@@ -145,7 +146,8 @@ theorem finrank_inf_ker_ge_card_vanishing
   have hindep : LinearIndependent F (fun t : {t // t ∈ S} => (⟨b t.1, hmem t⟩ : W)) := by
     have hcomp := hb.comp (fun t : {t // t ∈ S} => t.1) Subtype.val_injective
     have hsub : LinearIndependent F
-        (fun t : {t // t ∈ S} => (W.subtype) (⟨b t.1, hmem t⟩)) := by simpa using hcomp
+        (fun t : {t // t ∈ S} => (W.subtype) (⟨b t.1, hmem t⟩)) := by
+      exact hcomp
     exact hsub.of_comp _
   have hcard := hindep.fintype_card_le_finrank
   rwa [Fintype.card_coe] at hcard

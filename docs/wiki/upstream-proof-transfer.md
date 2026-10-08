@@ -1221,3 +1221,10 @@ The axiom-audit parser preserves apostrophes in declaration names such as
 `log_right_inverse'`, including multiline dependency reports. Regression tests cover
 standard dependencies, forbidden `sorryAx` dependencies, and adjacent axiom-free reports.
 Run `python3 -m unittest discover -s scripts/tests -p test_axiom_audit_parser.py` for this check.
+
+
+Nine further modules now pass ordinary Lean 4.34 builds and installed audits of 37
+selected roots: KKH26 ceilings, characteristic-zero census, dimension-one pins, the CS25
+second moment, half-pair slices, the two-branch countermodel, pencil absorption, ownership,
+and CZ25 span dimension. The changes repair imports and proof elaboration without changing
+the theorem hypotheses or conclusions. The staircase theorem is a separate pending build.
