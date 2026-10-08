@@ -1186,3 +1186,18 @@ The BCIKS20 affine-line good-coefficient, Sudan Y², and Hensel numerator module
 pass ordinary Lean 4.34 builds and installed audits of 34 selected roots. The migration
 repairs elaboration and proof API compatibility while retaining the original dimension,
 characteristic, and weight hypotheses. Hensel residual assumptions remain explicit.
+
+
+The [refreshed ArkLib inventory](../upstream/arklib-prs-2026-10-08-refresh.json) records
+main `795bd1e735d1916abac6bcf60e1dea0c42f37216` and 53 open PRs, including drafts.
+The latest main merged #1261, #1263 and #1264; their relevant proof sources match the
+reviewed heads used by the native adapters. Refreshed #1269 retains its thirteen prior
+interaction modules and inherits the already-reviewed round-by-round module. The ten
+Fiat–Shamir PRs have no refreshed delta under `ArkLib/OracleReduction`; their substantive
+port remains pending. A fetch or an unchanged source comparison is not native validation.
+
+New #1297 documents why membership-indexed `Fin.sumCases` was false for duplicate block
+sizes. Native `castSum` already indexes positions and native `sumCases` has a complete
+recursive proof; retain this stronger API. The obsolete interpolation stub is already
+absent. A new duplicate-block native regression passes direct checking, with ordinary
+build and installed audit pending.
