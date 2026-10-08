@@ -1281,3 +1281,10 @@ Stepanov/cyclotomic results, and the Boolean sum-check cube sum bridge. The repa
 preserve existing hypotheses; symbolic-length coefficient recovery and symbolic
 exponent comparisons avoid evaluating enormous concrete expressions. Existing
 conditional results and counterexamples remain distinct from production closure.
+
+
+Nine further coding-theory and transcript-security modules pass ordinary compilation
+and installed audits of 51 selected declarations. The zero-knowledge and random-query
+proofs use the current SPMF distribution API while retaining their transcript and
+abort semantics. The selected MDS, collision, resultant, and toy-soundness results
+remain axiom-clean with their original hypotheses.

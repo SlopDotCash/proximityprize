@@ -81,7 +81,7 @@ Reed–Solomon code (degree-`<k` polynomials over a field, evaluated on an injec
 instance fact_prime_eleven : Fact (Nat.Prime 11) := ⟨by norm_num⟩
 
 /-- The evaluation domain: all eleven points of `F₁₁`, indexed by `Fin 11` via `D i = i`. -/
-def D : Fin 11 ↪ ZMod 11 := ⟨fun i => (i : ZMod 11), by decide⟩
+def D : Fin 11 ↪ ZMod 11 := ⟨fun i => (i : ZMod 11), fun _ _ h => h⟩
 
 /-- The explicit received word `w = (2,4,8,5,2,4,9,1,1,9,10)`. -/
 def w : Fin 11 → ZMod 11 := ![2, 4, 8, 5, 2, 4, 9, 1, 1, 9, 10]
