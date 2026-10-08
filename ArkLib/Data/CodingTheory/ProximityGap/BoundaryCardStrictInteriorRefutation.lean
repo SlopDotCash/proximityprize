@@ -162,7 +162,7 @@ theorem boundary_floor_eq_one :
     rw [tsub_mul, one_mul]
   have hcard4 : (Fintype.card I : ℝ≥0) = 4 := by norm_num [I]
   rw [hdistrib, sqrtRate_mul_card_eq_sqrt_eight, hcard4,
-    Nat.floor_eq_iff (zero_le _)]
+    Nat.floor_eq_iff (zero_le)]
   constructor
   · rw [le_tsub_iff_right sqrt_eight_le_four]
     have h : ((1 : ℕ) : ℝ≥0) + NNReal.sqrt 8 < 1 + 3 := by
@@ -228,7 +228,10 @@ theorem good_nonempty_quarter :
       (∑ t : Fin 2, (0 : F) ^ (t : ℕ) • uSq t) = (0 : I → F) := by
     funext i
     fin_cases i <;> simp [uSq]
-  simpa [RS_goodCoeffsCurve, hsum] using hrel
+  apply Finset.mem_filter.mpr
+  refine ⟨Finset.mem_univ _, ?_⟩
+  rw [hsum]
+  exact hrel
 
 /-- **Kernel-checked obstruction**: no linear polynomial `a·x + b` over `ZMod 5` agrees with
 `x ↦ x²` on three of the four points `{0,1,2,3}` (a nonzero quadratic has at most two roots;

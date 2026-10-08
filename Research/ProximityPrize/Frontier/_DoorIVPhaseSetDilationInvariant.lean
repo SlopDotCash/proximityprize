@@ -484,17 +484,7 @@ theorem addLinearPatternMaxFiber_smul_eq {k : ℕ} (S : Finset F) (coeff : Fin k
     addLinearPatternMaxFiber (S.image (fun x => lam * x)) coeff =
       addLinearPatternMaxFiber S coeff := by
   classical
-  apply le_antisymm
-  · rw [addLinearPatternMaxFiber, Finset.max'_le_iff]
-    intro y hy
-    rw [addLinearPatternMaxFiber]
-    apply Finset.le_max'
-    simpa [addLinearPatternFiberCounts_smul_eq S coeff hlam] using hy
-  · rw [addLinearPatternMaxFiber, Finset.max'_le_iff]
-    intro y hy
-    rw [addLinearPatternMaxFiber]
-    apply Finset.le_max'
-    simpa [← addLinearPatternFiberCounts_smul_eq S coeff hlam] using hy
+  simp only [addLinearPatternMaxFiber, addLinearPatternFiberCounts_smul_eq S coeff hlam]
 
 /-- Two nonzero frequency dilates have the same maximum linear-pattern fiber.  Thus a worst-frequency
 anti-concentration attempt based on the usual `max_t` small-ball statistic is exactly `b`-blind. -/
@@ -823,17 +813,7 @@ attaining the maximum. -/
 theorem addKSumMaxFiber_smul_eq {k : ℕ} (S : Finset F) {lam : F} (hlam : lam ≠ 0) :
     addKSumMaxFiber (k := k) (S.image (fun x => lam * x)) = addKSumMaxFiber (k := k) S := by
   classical
-  apply le_antisymm
-  · rw [addKSumMaxFiber, Finset.max'_le_iff]
-    intro y hy
-    rw [addKSumMaxFiber]
-    apply Finset.le_max'
-    simpa [addKSumFiberCounts_smul_eq (k := k) S hlam] using hy
-  · rw [addKSumMaxFiber, Finset.max'_le_iff]
-    intro y hy
-    rw [addKSumMaxFiber]
-    apply Finset.le_max'
-    simpa [← addKSumFiberCounts_smul_eq (k := k) S hlam] using hy
+  simp only [addKSumMaxFiber, addKSumFiberCounts_smul_eq (k := k) S hlam]
 
 /-- Two nonzero frequency dilates have the same higher-order `L^{2k}` small-ball multiplicity.  A
 higher-order Halász max-fiber anti-concentration attempt is therefore exactly `b`-blind at every
@@ -1003,17 +983,7 @@ theorem addSystemPatternMaxFiber_smul_eq {m k : ℕ}
     addSystemPatternMaxFiber (S.image (fun x => lam * x)) A =
       addSystemPatternMaxFiber S A := by
   classical
-  apply le_antisymm
-  · rw [addSystemPatternMaxFiber, Finset.max'_le_iff]
-    intro y hy
-    rw [addSystemPatternMaxFiber]
-    apply Finset.le_max'
-    simpa [addSystemPatternFiberCounts_smul_eq S A hlam] using hy
-  · rw [addSystemPatternMaxFiber, Finset.max'_le_iff]
-    intro y hy
-    rw [addSystemPatternMaxFiber]
-    apply Finset.le_max'
-    simpa [← addSystemPatternFiberCounts_smul_eq S A hlam] using hy
+  simp only [addSystemPatternMaxFiber, addSystemPatternFiberCounts_smul_eq S A hlam]
 
 /-- Two nonzero frequency dilates have the same maximum joint-system small-ball fiber.  Thus the
 strongest target-optimized multi-dimensional additive small-ball statistic is still scalar-blind. -/

@@ -155,14 +155,14 @@ theorem incCount_comp_perm
     incCount (F := F) (C : Set (ι → A)) δ ![u₀ ∘ ⇑σ, u₁ ∘ ⇑σ]
       = incCount (F := F) (C : Set (ι → A)) δ ![u₀, u₁] := by
   unfold incCount
-  refine Finset.card_bij' (fun γ _ => γ) (fun γ _ => γ) ?_ ?_ ?_ ?_ <;>
-    intro γ hγ <;>
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and,
-      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] at hγ ⊢
-  · exact (MCAEquivariance.mcaEvent_comp_perm_iff (F := F) C σ hσ hσ' (γ := γ)
-      (u₀ := u₀) (u₁ := u₁)).mp hγ
-  · exact (MCAEquivariance.mcaEvent_comp_perm_iff (F := F) C σ hσ hσ' (γ := γ)
-      (u₀ := u₀) (u₁ := u₁)).mpr hγ
+  apply congrArg Finset.card
+  apply Finset.ext
+  intro γ
+  rw [Finset.mem_filter, Finset.mem_filter]
+  simp only [Finset.mem_univ, true_and, Matrix.cons_val_zero, Matrix.cons_val_one,
+    Matrix.head_cons]
+  exact MCAEquivariance.mcaEvent_comp_perm_iff (F := F) C σ hσ hσ'
+    (γ := γ) (u₀ := u₀) (u₁ := u₁)
 
 end ProximityGap.SumsetExtremality
 

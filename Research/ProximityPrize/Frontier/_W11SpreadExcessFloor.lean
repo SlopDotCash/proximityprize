@@ -181,7 +181,9 @@ theorem exists_disjoint_blocks {α : Type} [DecidableEq α] :
     · intro b
       induction b using Fin.cases with
       | zero => simpa using hT₀R
-      | succ i => simpa using fun x hx => Finset.sdiff_subset (hsub i hx)
+      | succ i =>
+          change T' i ⊆ R
+          exact fun x hx => Finset.sdiff_subset (hsub i hx)
     · intro b
       induction b using Fin.cases with
       | zero => simpa using hT₀c

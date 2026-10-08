@@ -209,7 +209,7 @@ theorem epsMCA_interior_divisor_floor (dom : Fin n ↪ F) {k d : ℕ}
   refine le_trans ?_ (epsMCA_dominantCoset_floor dom hk2 hkd hTcard hT hδ)
   have hd1 : 1 ≤ d := by omega
   have hle := card_locus_le dom hd1 A
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset (Fin n)))
     (p := fun i : Fin n => (dom i) ^ (2 * d) = A ^ 2)
   rw [Finset.card_univ, Fintype.card_fin] at hsplit

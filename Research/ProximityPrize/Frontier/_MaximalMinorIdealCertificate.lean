@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import Mathlib.Algebra.MvPolynomial.CommRing
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.Algebra.BigOperators.GroupWithZero.Finset
 import Mathlib.Algebra.MvPolynomial.Eval
@@ -112,7 +113,8 @@ theorem mulVec_injective_of_maximalMinor_certificate
       hcertificate hdelta
   apply mulVec_injective_of_submatrix_det_ne_zero (M.map phi) (select s)
   change ((M.submatrix (select s) id).map phi).det ≠ 0
-  simpa only [RingHom.map_det] using hs
+  rw [RingHom.map_det] at hs
+  exact hs
 
 /-- Distinct-label specialization form of the maximal-minor consumer.  Once the symbolic
 discriminant maps to the concrete Vandermonde product, injectivity of the labels discharges the

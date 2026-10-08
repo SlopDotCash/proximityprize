@@ -54022,3 +54022,25 @@ and `scripts/lake-locked.sh build Research.ProximityPrize.Frontier._MCAGoodRadiu
 The four printed declarations use only `propext`, `Classical.choice`, and
 `Quot.sound`. The initial tracked build passed 3502 jobs. Full repository and
 hosted gates must be reported separately.
+### [164-decoded-head-residual-refuted] A decoded two-monomial head still exceeds the cap
+
+2026-10-08, Mikhail (mashingaan). Kernel-checked finite-field result.
+
+`Frontier/_DecodedHeadResidualRefuted.lean` strengthens the unrestricted second-descent
+refutation with an explicit decoded head. Over `ZMod 17`, on all 16 nonzero elements,
+`X^12 + 3*X^10` is within distance `7/16` of `ReedSolomon.code domain 8`.
+The tail coefficients, in ascending order, are `[9,8,8,15,14,6,6,6]`.
+Its degree is less than 8 and there are nine agreement coordinates.
+
+The antipodal split has even-part degree less than 8 and odd-part degree less than 4.
+Seven square nodes `{1,2,4,8,9,15,16}` satisfy `A^2 - X*O^2 = 0`, with `O` nonzero.
+This exceeds the recorded residual's `k+1 = 5` at `k = 4`.
+`not_residual_four` proves the contradiction, while `decoded_distance_le`,
+`tailWord_mem`, and `isolated_spec` verify the decoded and isolated-root structure.
+
+This rules out a universal repair using only decodedness and a two-monomial head.
+It does not assert that every production restriction holds or transfer this witness
+to the production field and length. The prize threshold and issue #164 remain open.
+
+Reproduce with `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_DecodedHeadResidualRefuted.lean`.
+All exported declarations use only `propext`, `Classical.choice`, and `Quot.sound`.

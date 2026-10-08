@@ -13,7 +13,11 @@ ProximityGap olean needed for verification).  The in-tree deliverable `DeepBandR
 is identical EXCEPT it imports the real `DeepBandSubsetSumSpectrum` and calls the real
 `witness_pin_eq_neg_sum` (adding the `[Fintype F] [DecidableEq F]` instances that lemma carries).
 -/
-import Mathlib
+import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.Algebra.Polynomial.BigOperators
+import Mathlib.Data.Finset.Powerset
+import Mathlib.Data.Nat.Choose.Basic
+import Mathlib.Tactic
 
 /-! ## Inlined Vieta pin (mirror of in-tree witness_pin_eq_neg_sum, Mathlib-only deps). -/
 
@@ -85,7 +89,6 @@ theorem witness_pin_eq_neg_sum {F : Type*} [Field F] (S : Finset F) (k : ℕ) (h
     have := hmmonic; rw [Polynomial.Monic, Polynomial.leadingCoeff, hmdeg] at this; exact this
   have hcc1 : cc = 1 := by
     have h := congrArg (fun q => Polynomial.coeff q (k + 1)) hc
-    simp only at h
     rw [hPcoeff_top, Polynomial.coeff_mul_C, hm_top, one_mul] at h
     exact h.symm
   subst hcc1
@@ -95,7 +98,6 @@ theorem witness_pin_eq_neg_sum {F : Type*} [Field F] (S : Finset F) (k : ℕ) (h
       simpa using this
     rw [hmdef]; rw [hScard] at hpred; simpa using hpred
   have h := congrArg (fun q => Polynomial.coeff q k) hc
-  simp only at h
   rw [hPcoeff_k, Polynomial.coeff_mul_C, hm_k, mul_one] at h
   exact h
 

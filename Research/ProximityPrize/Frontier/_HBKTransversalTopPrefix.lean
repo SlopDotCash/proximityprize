@@ -50,6 +50,7 @@ theorem orderedRepresentatives_nodup (G T : Finset F) :
   classical
   exact (List.perm_insertionSort _ T.toList).nodup_iff.mpr T.nodup_toList
 
+set_option backward.isDefEq.respectTransparency false in
 theorem topPrefix_subset (G T : Finset F) (k : ℕ) : topPrefix G T k ⊆ T := by
   classical
   intro x hx
@@ -58,6 +59,7 @@ theorem topPrefix_subset (G T : Finset F) (k : ℕ) : topPrefix G T k ⊆ T := b
   have hxord : x ∈ orderedRepresentatives G T := List.mem_of_mem_take hx'
   simpa [orderedRepresentatives] using hxord
 
+set_option backward.isDefEq.respectTransparency false in
 theorem topPrefix_card (G T : Finset F) (k : ℕ) (hk : k ≤ T.card) :
     (topPrefix G T k).card = k := by
   classical
@@ -106,6 +108,7 @@ private theorem sum_range_getD_eq_sum_take (l : List ℕ) {k : ℕ} (hk : k ≤ 
       rw [ih xs (by simpa using hk)]
       omega
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Summing `repCount` over the realized representative prefix gives exactly the canonical profile
 prefix sum.  This is the numerical input to the HBK normalized incidence union. -/
 theorem sum_topPrefix_repCount (G T : Finset F) {k : ℕ} (hk : k ≤ T.card) :

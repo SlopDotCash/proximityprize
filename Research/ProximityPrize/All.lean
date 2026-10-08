@@ -1060,6 +1060,7 @@ import Research.ProximityPrize.Frontier._DStarOneIsPDependentBindingIsNot
 import Research.ProximityPrize.Frontier._DYN09DyadicTransferRightInverseNoGo
 import Research.ProximityPrize.Frontier._DeFinettiPeriodCovariance
 import Research.ProximityPrize.Frontier._DecayLawPIndep
+import Research.ProximityPrize.Frontier._DecodedHeadResidualRefuted
 import Research.ProximityPrize.Frontier._DecouplingTowerNoSaving
 import Research.ProximityPrize.Frontier._DedupSlackStrictButVanishing
 import Research.ProximityPrize.Frontier._DedupSurvivalCeiling
@@ -3224,6 +3225,7 @@ import Research.ProximityPrize.LineDecodingT421Faithful
 import Research.ProximityPrize.ListClosedForm
 import Research.ProximityPrize.ListDecodingConjectureRefutation
 import Research.ProximityPrize.ListDecodingUnconditionalRefute
+import Research.ProximityPrize.ListDecodingWitnesses
 import Research.ProximityPrize.MCABadCount2
 import Research.ProximityPrize.MCABadCountRatio
 import Research.ProximityPrize.MCABracket

@@ -723,6 +723,7 @@ end Concrete12289
 
 section Concrete4294967377
 
+set_option maxRecDepth 65536 in
 local instance fact_prime_4294967377 : Fact (Nat.Prime 4294967377) := ⟨by norm_num⟩
 
 /-- `526957872` has multiplicative order `16` in `F_p`, `p = 4294967377`

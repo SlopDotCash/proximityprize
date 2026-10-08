@@ -38,7 +38,7 @@ theorem hammingDist_sub_right (x y z : Fin n → F) :
   have h := hammingDist_comp (β := fun _ : Fin n => F)
     (fun (i : Fin n) (a : F) => a - z i) (x := x) (y := y)
     (fun i a b hab => by simpa using congrArg (· + z i) hab)
-  simpa only [Pi.sub_apply] using h
+  exact h
 
 /-- **Translation invariance of the ball intersection:** `|B(c,r) ∩ B(c',r)| = |B(0,r) ∩ B(c'−c,r)|`,
 via the bijection `w ↦ w − c`. -/

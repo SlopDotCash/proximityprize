@@ -5,6 +5,9 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.WindowPadeBridge
 
+-- Matrix aliases must unfold when comparing reconstruction functions.
+set_option backward.isDefEq.respectTransparency false
+
 /-!
 # The reconstruction pencil (#371, round 13): branch (i) of the window dichotomy
 
@@ -158,7 +161,8 @@ theorem recMatrix_mulVec (j w : ℕ) (γ : F)
         - (∑ s : Fin (w + 1), C (v (Sum.inr s))
             * ((ℓ₁ * R₀ + C γ * (ℓ₀ * R₁)) * X ^ (s : ℕ))) := by
     rw [recH, recZ, Finset.mul_sum, Finset.mul_sum]
-    congr 1 <;> exact Finset.sum_congr rfl fun _ _ => by ring
+    refine congrArg₂ (fun a b : F[X] => a - b) ?_ ?_ <;>
+      exact Finset.sum_congr rfl (fun _ _ => mul_left_comm _ _ _)
   rw [hexp]
   have hsum1 : ((∑ t : Fin (j + 1), C (v (Sum.inl t)) * (domZ dom * X ^ (t : ℕ)))
       %ₘ (ℓ₀ * ℓ₁))

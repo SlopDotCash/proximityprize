@@ -101,12 +101,8 @@ lemma interleaved_sep_of_base {A : Type*} [DecidableEq A] {C : Set (ι → A)} {
   have hrow := hsep _ (hU' k) _ (hV' k) hk
   have hle : hammingDist (Matrix.transpose U k) (Matrix.transpose V k) ≤
       hammingDist U V := by
-    unfold hammingDist
-    apply Finset.card_le_card
-    intro i hi
-    rw [Finset.mem_filter] at hi ⊢
-    refine ⟨Finset.mem_univ i, fun hUV => hi.2 ?_⟩
-    exact congrFun hUV k
+    exact hammingDist_comp_le_hammingDist (x := U) (y := V)
+      (fun (_ : ι) (w : Fin m → A) => w k)
   omega
 
 omit [DecidableEq ι] in

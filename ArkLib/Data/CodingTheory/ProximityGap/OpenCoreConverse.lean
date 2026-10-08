@@ -114,7 +114,7 @@ theorem epsMCA_le_of_lt_mcaDeltaStar (C : Set (ι → A)) (εstar : ℝ≥0∞) 
         rw [Set.not_nonempty_iff_eq_empty] at hempty
         rw [mcaDeltaStar, hempty, csSup_empty] at hδ
         -- `hδ : δ < 0` in ℝ≥0 is impossible
-        exact absurd hδ (not_lt_of_ge (zero_le _)))
+        exact absurd hδ (not_lt_of_ge (zero_le)))
       hδ
   -- `δ' ∈ S` means `δ' ≤ 1 ∧ ε_mca(C, δ') ≤ ε*`; transfer goodness down to `δ`.
   exact mca_good_set_downward_closed (F := F) (A := A) C εstar (le_of_lt hδδ') hδ'mem.2

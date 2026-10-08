@@ -140,11 +140,13 @@ theorem w101_agreement_le_four {P : F101[X]} (hP : P.degree < (2 : ℕ)) :
     · refine Finset.mem_union_right _ (Finset.mem_filter.mpr
         ⟨Finset.mem_filter.mpr ⟨Finset.mem_univ _, hb⟩, ?_⟩)
       rw [hiv]
-      simp [w101, dom101, hb]
+      simp [w101, dom101, hb, Function.Embedding.coeFn_mk]
+      rfl
     · refine Finset.mem_union_left _ (Finset.mem_filter.mpr
         ⟨Finset.mem_filter.mpr ⟨Finset.mem_univ _, hb⟩, ?_⟩)
       rw [hiv]
-      simp [w101, dom101, hb]
+      simp [w101, dom101, hb, Function.Embedding.coeFn_mk]
+      rfl
   refine le_trans (Finset.card_le_card hsub) (le_trans (Finset.card_union_le _ _) ?_)
   have h1 := branch_agreement_card_le dom101
     (P := P) (g := (X ^ 2 : F101[X])) (by rw [hdegX2]; exact hP)

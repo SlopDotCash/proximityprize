@@ -117,7 +117,7 @@ theorem azuma_mgf_telescope {N : ℕ} (y : ℝ) (csq : ℕ → ℝ) (mgfFactor :
       ≤ Real.exp ((∑ j ∈ Finset.range N, csq j) * y ^ 2 / 2) := by
   calc ∏ j ∈ Finset.range N, mgfFactor j
       ≤ ∏ j ∈ Finset.range N, Real.exp (csq j * y ^ 2 / 2) :=
-        Finset.prod_le_prod hpos hstep
+        Finset.prod_le_prod₀ hpos hstep
     _ = Real.exp (∑ j ∈ Finset.range N, csq j * y ^ 2 / 2) := by rw [← Real.exp_sum]
     _ = Real.exp ((∑ j ∈ Finset.range N, csq j) * y ^ 2 / 2) := by
         rw [Finset.sum_mul, Finset.sum_div]

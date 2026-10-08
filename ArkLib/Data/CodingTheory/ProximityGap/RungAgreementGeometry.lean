@@ -109,11 +109,11 @@ theorem poly_cross_agreement (hk : 1 ≤ k)
       ∀ i ∈ S₁ ∩ S₂, R₁.eval (dom i) = q.eval (dom i) := by
   have hP₁' : P₁.natDegree < k := by
     rcases eq_or_ne P₁ 0 with rfl | h
-    · simpa using hk
+    · simpa only [Polynomial.natDegree_zero] using (show 0 < k by omega)
     · exact (natDegree_lt_iff_degree_lt h).mpr (by exact_mod_cast hdP₁)
   have hP₂' : P₂.natDegree < k := by
     rcases eq_or_ne P₂ 0 with rfl | h
-    · simpa using hk
+    · simpa only [Polynomial.natDegree_zero] using (show 0 < k by omega)
     · exact (natDegree_lt_iff_degree_lt h).mpr (by exact_mod_cast hdP₂)
   refine ⟨C (γ₁ - γ₂)⁻¹ * (P₁ - P₂), ?_, ?_⟩
   · have h1 := natDegree_C_mul_le ((γ₁ - γ₂)⁻¹) (P₁ - P₂)

@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import Mathlib.FieldTheory.RatFunc.Basic
+import Mathlib.RingTheory.Polynomial.Basic
+import Mathlib.RingTheory.Polynomial.UniqueFactorization
+import Mathlib.LinearAlgebra.Dimension.Finrank
+import Mathlib.Data.ZMod.Basic
+import Mathlib.Tactic
 
 /-!
 Round 15 — the END-TO-END Sudan (multiplicity-1) list-size bound, self-contained over

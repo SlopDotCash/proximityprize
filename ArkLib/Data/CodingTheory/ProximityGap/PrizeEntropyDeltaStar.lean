@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26WitnessSpread
 import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
 import Mathlib.Analysis.SpecialFunctions.BinaryEntropy
+import Mathlib.Analysis.SpecialFunctions.Log.Base
 
 /-!
 # A proposed closed-form prize δ*: `δ* = 1 − ρ − H(ρ)/log₂(q·ε*)` (#389)

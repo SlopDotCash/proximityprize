@@ -398,7 +398,7 @@ theorem RS_jointAgreement_of_prob_gt_strict_johnson_exc
         _ = (k : ℝ≥0) * errorBound δ deg domain * qn + (k : ℝ≥0) * (b : ℝ≥0) := by
             ring
     rw [hkey]
-    exact add_le_add le_rfl (le_mul_of_one_le_left (zero_le _) hk1)
+    exact add_le_add le_rfl (le_mul_of_one_le_left (zero_le) hk1)
   have hη :
       ((k : ENNReal) * (errorBound δ deg domain : ENNReal)) *
           (Fintype.card F : ENNReal) + (b : ENNReal) ≤

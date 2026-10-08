@@ -155,7 +155,8 @@ theorem threshold_collapses_at_prize (β : ℝ) :
     Filter.Tendsto (fun n : ℝ => Real.exp (2 * β * Real.log n / n)) Filter.atTop (nhds 1) := by
   have h := collapse_exponent_tendsto_zero β
   have := (Real.continuous_exp.tendsto 0).comp h
-  simpa [Function.comp, Real.exp_zero] using this
+  rw [Real.exp_zero] at this
+  exact this
 
 /-- **The depth-vs-threshold gap is eventually adverse: for large `n`, `2β ln n` (the deep-band
 weight) exceeds the certified threshold `exp(2β ln n / n)`.** Concretely: the threshold `→ 1` (bounded)

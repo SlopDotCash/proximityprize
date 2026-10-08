@@ -68,7 +68,8 @@ soundness goal `Pr[p | OptionT.mk M]` (a `probEvent` over `OptionT m`) to the `P
 form `Pr[fun o => Option.elim o False p | M]` consumed by `probComp_seam_union_le` (whose bad-event
 predicate is `¬ Option.elim · True qg = Option.elim · False (¬qg)`). `none` (failure) does not
 satisfy `p`, matching the soundness convention. -/
-lemma probEvent_optionT_mk_eq_elim {m : Type u → Type v} [Monad m] [HasEvalSPMF m] {α : Type u}
+lemma probEvent_optionT_mk_eq_elim {m : Type u → Type v} [Monad m] [MonadLiftT m SPMF]
+    [LawfulMonadLiftT m SPMF] {α : Type u}
     (M : m (Option α)) (p : α → Prop) :
     Pr[p | (OptionT.mk M : OptionT m α)] = Pr[fun o => Option.elim o False p | M] := by
   classical
@@ -77,7 +78,6 @@ lemma probEvent_optionT_mk_eq_elim {m : Type u → Type v} [Monad m] [HasEvalSPM
     if_false, zero_add]
   refine tsum_congr fun a => ?_
   simp only [OptionT.probOutput_eq, OptionT.run_mk]
-  split_ifs <;> rfl
 
 namespace OptionTStateT
 
@@ -96,12 +96,12 @@ theorem evalDist_simulateQ_swap_under
     (P : OracleComp spec ρ)
     (A : ρ → OracleComp spec α) (B : ρ → OracleComp spec β)
     (k : ρ → α → β → OracleComp spec γ) (s : σ) :
-    evalDist ((simulateQ so (P >>= fun r => A r >>= fun a => B r >>= fun b => k r a b)).run' s)
-      = evalDist ((simulateQ so (P >>= fun r => B r >>= fun b => A r >>= fun a => k r a b)).run' s)
+    evalSPMF ((simulateQ so (P >>= fun r => A r >>= fun a => B r >>= fun b => k r a b)).run' s)
+      = evalSPMF ((simulateQ so (P >>= fun r => B r >>= fun b => A r >>= fun a => k r a b)).run' s)
         := by
-  rw [StateT.run'_eq, StateT.run'_eq, evalDist_map, evalDist_map]
+  rw [StateT.run'_eq, StateT.run'_eq, evalSPMF_map, evalSPMF_map]
   congr 1
-  simp only [simulateQ_run_bind_state_fixed so hso, evalDist_bind]
+  simp only [simulateQ_run_bind_state_fixed so hso, evalSPMF_bind]
   refine bind_congr fun p => ?_
   exact SPMF.bind_comm _ _ _
 

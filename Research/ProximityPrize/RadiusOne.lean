@@ -71,7 +71,7 @@ theorem prob_uniform_ge_inv_of_holds (P : F → Prop) {x₀ : F} (hx₀ : P x₀
       = ($ᵖ F) x₀ * (if P x₀ then (1 : ENNReal) else 0) := by
         rw [if_pos hx₀, mul_one, PMF.uniformOfFintype_apply]
     _ ≤ ∑' r, ($ᵖ F) r * (if P r then (1 : ENNReal) else 0) :=
-        ENNReal.le_tsum x₀
+        ENNReal.le_tsum (f := fun r => ($ᵖ F) r * (if P r then (1 : ENNReal) else 0)) x₀
 
 /-- **THEOREM A (lower bound).** For a linear code given as a `Submodule MC` that is a proper
 subset of all words, `ε_mca(MC, 1) ≥ 1/|F|`. -/
@@ -460,7 +460,7 @@ theorem not_mcaPrize_of_small_field (domain : ι ↪ F)
           < 1 * (Fintype.card ι : ℝ≥0) := by
             apply mul_lt_mul_of_pos_right _ hpos; norm_num
         _ = (Fintype.card ι : ℝ≥0) := one_mul _
-    exact (Nat.floor_lt (zero_le _)).mpr
+    exact (Nat.floor_lt (zero_le)).mpr
       (show (1 / 2 : ℝ≥0) * (Fintype.card ι : ℝ≥0) < ((Fintype.card ι : ℕ) : ℝ≥0) from hlt)
   -- proper subset ⇒ lower bound 1/|F|
   have hproper := rsCode_ne_univ domain hk_pos hk_lt

@@ -310,7 +310,7 @@ theorem stack_bswap₁ {A₁ B₁ A₂ B₂ A₃ B₃ h : R} (x : Fin 12) :
       = chordStack A₁ B₁ A₂ B₂ A₃ B₃ h
           ((fun y => match y with
             | 4 => 5 | 5 => 4 | 8 => 9 | 9 => 8 | z => z) x : Fin 12) := by
-  fin_cases x <;> simp only [chordStack] <;> ring
+  fin_cases x <;> norm_num [chordStack] <;> ring
 
 /-- The orientation swap `a₂ ↔ b₂` is the pure index swap `(0 1)(2 3)`. -/
 theorem stack_bswap₂ {A₁ B₁ A₂ B₂ A₃ B₃ h : R} (x : Fin 12) :
@@ -318,7 +318,7 @@ theorem stack_bswap₂ {A₁ B₁ A₂ B₂ A₃ B₃ h : R} (x : Fin 12) :
       = chordStack A₁ B₁ A₂ B₂ A₃ B₃ h
           ((fun y => match y with
             | 0 => 1 | 1 => 0 | 2 => 3 | 3 => 2 | z => z) x : Fin 12) := by
-  fin_cases x <;> simp only [chordStack] <;> ring
+  fin_cases x <;> norm_num [chordStack] <;> ring
 
 /-- The orientation swap `a₃ ↔ b₃` is the pure index swap `(6 7)(10 11)`. -/
 theorem stack_bswap₃ {A₁ B₁ A₂ B₂ A₃ B₃ h : R} (x : Fin 12) :
@@ -326,7 +326,7 @@ theorem stack_bswap₃ {A₁ B₁ A₂ B₂ A₃ B₃ h : R} (x : Fin 12) :
       = chordStack A₁ B₁ A₂ B₂ A₃ B₃ h
           ((fun y => match y with
             | 6 => 7 | 7 => 6 | 10 => 11 | 11 => 10 | z => z) x : Fin 12) := by
-  fin_cases x <;> simp only [chordStack] <;> ring
+  fin_cases x <;> norm_num [chordStack] <;> ring
 
 /-- Injectivity transports along a stack-swap law. -/
 theorem inj_of_swap {f g : Fin 12 → R} {h : R} {π : Fin 12 → Fin 12}

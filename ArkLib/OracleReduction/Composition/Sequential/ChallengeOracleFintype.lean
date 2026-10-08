@@ -8,24 +8,18 @@ import ArkLib.OracleReduction.Composition.Sequential.General
 /-!
 # Finiteness/inhabitedness of challenge oracles and their propagation through composition
 
-The sequential-composition perfect-completeness keystones
-(`Reduction.append_perfectCompleteness_msg_proof` and `…_empty_proof`) require
-`[(oSpec + [pSpec.Challenge]ₒ).Fintype]` and `[(oSpec + [pSpec.Challenge]ₒ).Inhabited]` on the
-*combined* challenge oracle of each seam. These do **not** synthesize from `SampleableType` (nor even
-from `[∀ i, Fintype (pSpec.Challenge i)]`) — there is no instance bridging per-challenge `Fintype` to
-the challenge-oracle `Fintype`, and they are explicit hypotheses throughout `Completeness.lean` by
-design (challenge types may be infinite in general).
+Sequential-composition perfect completeness requires finite, inhabited answer types for
+its combined oracle `oSpec + [pSpec.Challenge]ₒ`. The Lean 4.34 VCVio interface expresses these
+requirements pointwise as `∀ t, Fintype (spec.Range t)` and `∀ t, Inhabited (spec.Range t)`.
+Challenge types may be infinite in general, so concrete protocols supply these hypotheses.
 
-This module supplies the bridge needed to *discharge* those hypotheses whenever every challenge type
-is finite/inhabited — the situation for every concrete protocol (sum-check challenges are the field
-`R`, etc.):
+This module constructs the instances from finite, inhabited challenge families:
 
-* `challengeOracle_fintype` / `challengeOracle_inhabited`: `[pSpec.Challenge]ₒ.Fintype` /
-  `.Inhabited` from `[∀ i, Fintype/Inhabited (pSpec.Challenge i)]` (the missing
-  `toOracleSpec`-level bridge);
-* `appendChallenge_fintype` / `appendChallenge_inhabited`: per-index finiteness/inhabitedness of the
-  *appended* challenge family `(pSpec₁ ++ₚ pSpec₂).Challenge`, routed through
-  `ChallengeIdx.sumEquiv` and the `range_challenge_append_{inl,inr}` type equalities.
+* `challengeOracle_fintype` / `challengeOracle_inhabited` expose the response instances of
+  `[pSpec.Challenge]ₒ` through the default `OracleInterface`;
+* `appendChallenge_fintype` / `appendChallenge_inhabited` transport the component instances
+  through `ChallengeIdx.sumEquiv` and the appended challenge type equalities;
+* the combined-oracle and `seqCompose` helpers propagate these instances across a whole protocol.
 
 These are stated as `def`s returning the instance (rather than global `instance`s) so they can be
 introduced locally via `haveI` exactly where a seam instance is needed, without changing global
@@ -42,13 +36,13 @@ variable {ι : Type} {oSpec : OracleSpec ι}
 the `toOracleSpec`-level bridge missing from the core instance set: the response type of the `i`-th
 challenge oracle is, via the default `OracleInterface`, the challenge type `pSpec.Challenge i`. -/
 def challengeOracle_fintype {k : ℕ} (pSpec : ProtocolSpec k)
-    [∀ i, Fintype (pSpec.Challenge i)] : [pSpec.Challenge]ₒ.Fintype where
-  fintype_B := fun ⟨i, _q⟩ => (inferInstance : Fintype (pSpec.Challenge i))
+    [∀ i, Fintype (pSpec.Challenge i)] : ∀ t, Fintype ([pSpec.Challenge]ₒ.Range t) :=
+  fun ⟨i, _q⟩ => (inferInstance : Fintype (pSpec.Challenge i))
 
 /-- The challenge oracle `[pSpec.Challenge]ₒ` is `Inhabited` whenever every challenge type is. -/
 def challengeOracle_inhabited {k : ℕ} (pSpec : ProtocolSpec k)
-    [∀ i, Inhabited (pSpec.Challenge i)] : [pSpec.Challenge]ₒ.Inhabited where
-  inhabited_B := fun ⟨i, _q⟩ => (inferInstance : Inhabited (pSpec.Challenge i))
+    [∀ i, Inhabited (pSpec.Challenge i)] : ∀ t, Inhabited ([pSpec.Challenge]ₒ.Range t) :=
+  fun ⟨i, _q⟩ => (inferInstance : Inhabited (pSpec.Challenge i))
 
 /-- Per-index finiteness of the appended challenge family: each `(pSpec₁ ++ₚ pSpec₂).Challenge j`
 is `Fintype`, routed through `ChallengeIdx.sumEquiv` and the append challenge type equalities. -/
@@ -89,9 +83,9 @@ def appendChallenge_inhabited {k₁ k₂ : ℕ} (pSpec₁ : ProtocolSpec k₁) (
 and every challenge type of both phases is. This is exactly the seam instance demanded by the
 append perfect-completeness keystones. -/
 def appendCombinedOracle_fintype {k₁ k₂ : ℕ} (oSpec : OracleSpec ι)
-    (pSpec₁ : ProtocolSpec k₁) (pSpec₂ : ProtocolSpec k₂) [oSpec.Fintype]
+    (pSpec₁ : ProtocolSpec k₁) (pSpec₂ : ProtocolSpec k₂) [∀ t, Fintype (oSpec.Range t)]
     [∀ j, Fintype (pSpec₁.Challenge j)] [∀ j, Fintype (pSpec₂.Challenge j)] :
-    (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype := by
+    ∀ t, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t) := by
   haveI : ∀ j, Fintype ((pSpec₁ ++ₚ pSpec₂).Challenge j) :=
     appendChallenge_fintype pSpec₁ pSpec₂
   haveI := challengeOracle_fintype (pSpec₁ ++ₚ pSpec₂)
@@ -100,9 +94,9 @@ def appendCombinedOracle_fintype {k₁ k₂ : ℕ} (oSpec : OracleSpec ι)
 /-- The combined oracle `oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ` is `Inhabited` under the same
 hypotheses (inhabited form). -/
 def appendCombinedOracle_inhabited {k₁ k₂ : ℕ} (oSpec : OracleSpec ι)
-    (pSpec₁ : ProtocolSpec k₁) (pSpec₂ : ProtocolSpec k₂) [oSpec.Inhabited]
+    (pSpec₁ : ProtocolSpec k₁) (pSpec₂ : ProtocolSpec k₂) [∀ t, Inhabited (oSpec.Range t)]
     [∀ j, Inhabited (pSpec₁.Challenge j)] [∀ j, Inhabited (pSpec₂.Challenge j)] :
-    (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited := by
+    ∀ t, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t) := by
   haveI : ∀ j, Inhabited ((pSpec₁ ++ₚ pSpec₂).Challenge j) :=
     appendChallenge_inhabited pSpec₁ pSpec₂
   haveI := challengeOracle_inhabited (pSpec₁ ++ₚ pSpec₂)
@@ -135,9 +129,9 @@ def seqComposeChallenge_inhabited : {m : ℕ} → {n : Fin m → ℕ} → (pSpec
 every challenge type of every component is. This is the seam instance for the full multi-round
 composition (e.g. the whole sum-check protocol). -/
 def seqComposeCombinedOracle_fintype {m : ℕ} {n : Fin m → ℕ} (oSpec : OracleSpec ι)
-    (pSpec : ∀ i, ProtocolSpec (n i)) [oSpec.Fintype]
+    (pSpec : ∀ i, ProtocolSpec (n i)) [∀ t, Fintype (oSpec.Range t)]
     [∀ i j, Fintype ((pSpec i).Challenge j)] :
-    (oSpec + [(seqCompose pSpec).Challenge]ₒ).Fintype := by
+    ∀ t, Fintype ((oSpec + [(seqCompose pSpec).Challenge]ₒ).Range t) := by
   haveI : ∀ j, Fintype ((seqCompose pSpec).Challenge j) := seqComposeChallenge_fintype pSpec
   haveI := challengeOracle_fintype (seqCompose pSpec)
   infer_instance
@@ -145,9 +139,9 @@ def seqComposeCombinedOracle_fintype {m : ℕ} {n : Fin m → ℕ} (oSpec : Orac
 /-- The combined oracle `oSpec + [(seqCompose pSpec).Challenge]ₒ` is `Inhabited` under the same
 hypotheses (inhabited form). -/
 def seqComposeCombinedOracle_inhabited {m : ℕ} {n : Fin m → ℕ} (oSpec : OracleSpec ι)
-    (pSpec : ∀ i, ProtocolSpec (n i)) [oSpec.Inhabited]
+    (pSpec : ∀ i, ProtocolSpec (n i)) [∀ t, Inhabited (oSpec.Range t)]
     [∀ i j, Inhabited ((pSpec i).Challenge j)] :
-    (oSpec + [(seqCompose pSpec).Challenge]ₒ).Inhabited := by
+    ∀ t, Inhabited ((oSpec + [(seqCompose pSpec).Challenge]ₒ).Range t) := by
   haveI : ∀ j, Inhabited ((seqCompose pSpec).Challenge j) := seqComposeChallenge_inhabited pSpec
   haveI := challengeOracle_inhabited (seqCompose pSpec)
   infer_instance

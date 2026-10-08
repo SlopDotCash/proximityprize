@@ -611,7 +611,7 @@ theorem βHenselC_weight_bound_anchored (x₀ : F) (R : F[X][X][Y])
         refine le_trans (weight_Λ_over_𝒪_le_of_mk_eq hDH hH rfl) ?_
         have hweq : weight_Λ (Polynomial.X : F[X][Y]) H D
             = WithBot.some (D + 1 - Bivariate.natDegreeY H) := by
-          rw [weight_Λ, Polynomial.support_X (by norm_num)]
+          rw [weight_Λ, Polynomial.support_X]
           simp
         rw [hweq]
         refine WithBot.coe_le_coe.mpr ?_
@@ -654,7 +654,7 @@ theorem βHenselC_weight_bound_anchored_loose (x₀ : F) (R : F[X][X][Y])
   unfold structuredBound
   exact_mod_cast structured_weight_collapse
     (Bivariate.natDegreeY R) (Bivariate.natDegreeY H) D t (H.leadingCoeff).natDegree
-    hdR2 (by simpa using hH) hdHdR hWdeg
+    hdR2 hH hdHdR hWdeg
 
 /-! ## Source audit -/
 

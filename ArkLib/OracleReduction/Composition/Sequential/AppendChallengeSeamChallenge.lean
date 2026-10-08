@@ -30,7 +30,7 @@ open scoped ENNReal NNReal
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -60,12 +60,12 @@ private theorem simulateQ_continueFromTo_seam_challenge_evalDist
       Transcript.appendRight T₁
         (default : pSpec₂.Transcript (⟨0, by omega⟩ : Fin (n + 1))))
     (s : σ) :
-    evalDist (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
+    evalSPMF (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
         (Prover.continueFromTo (P₁.append P₂) stmt wit
           (⟨m, by omega⟩ : Fin (m + n)).castSucc
           (⟨m, by omega⟩ : Fin (m + n)).succ rSeam)) s)
-      = evalDist (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
+      = evalSPMF (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
         ((liftM (P₁.output (cast (Prover.append_PrvState_seam_castSucc hn) rSeam.2)) :
             OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (Stmt₂ × Wit₂)) >>= fun ctxIn₂ =>
@@ -98,9 +98,7 @@ private theorem simulateQ_continueFromTo_seam_challenge_evalDist
           (OracleComp.liftComp_eq_liftM _).symm]
     rw [Prover.liftComp_processRound_zero_challenge_appendRight
       (P₁ := P₁) (P₂ := P₂) hn hDir₂ T₁ ctxIn₂]
-  rw [Prover.liftM_via_leftChallenge_eq_liftComp
-    (pSpec₁ := pSpec₁) (pSpec₂ := pSpec₂)
-    (X := P₁.output (cast (Prover.append_PrvState_seam_castSucc hn) rSeam.2))]
+  simp only [← OracleComp.liftComp_eq_liftM]
   exact evalDist_simulateQ_swap_prefix _ (addLift_state_preserving impl himplSP)
     (pure ())
     (fun _ => (liftM (pSpec₂.getChallenge ⟨⟨0, hn⟩, hDir₂⟩) :
@@ -117,22 +115,22 @@ private theorem simulateQ_continueFromTo_seam_challenge_evalDist
             (default : pSpec₂.Transcript (⟨0, by omega⟩ : Fin (n + 1)))),
         cast (Prover.append_PrvState_seam_succ (P₁ := P₁) (P₂ := P₂) hn).symm (f challenge))) s
 
-/-- **`evalDist`-level `run'` bind decomposition under a state-preserving implementation.** When
+/-- **`evalSPMF`-level `run'` bind decomposition under a state-preserving implementation.** When
 every query implementation preserves the `σ`-state, the simulated `run'`-distribution of a bind
 decomposes as the SPMF bind of the per-stage `run'`-distributions, each from the *same* seed `s`
-(state-fixing `simulateQ_run_bind_state_fixed`). This makes any per-stage `evalDist` replacement
+(state-fixing `simulateQ_run_bind_state_fixed`). This makes any per-stage `evalSPMF` replacement
 (e.g. the seam-challenge swap) compositional: split, rewrite a stage, refold. -/
 private theorem evalDist_simulateQ_run'_bind {ιq : Type} {specq : OracleSpec ιq} {τ : Type}
     (so : QueryImpl specq (StateT τ ProbComp))
     (hso : ∀ (t : specq.Domain) (s : τ) (x : specq.Range t × τ),
       x ∈ support ((so t).run s) → x.2 = s)
     {α β : Type} (X : OracleComp specq α) (G : α → OracleComp specq β) (s : τ) :
-    evalDist (StateT.run' (simulateQ so (X >>= G)) s)
-      = evalDist (StateT.run' (simulateQ so X) s) >>= fun a =>
-          evalDist (StateT.run' (simulateQ so (G a)) s) := by
-  simp only [StateT.run'_eq, evalDist_map]
+    evalSPMF (StateT.run' (simulateQ so (X >>= G)) s)
+      = evalSPMF (StateT.run' (simulateQ so X) s) >>= fun a =>
+          evalSPMF (StateT.run' (simulateQ so (G a)) s) := by
+  simp only [StateT.run'_eq, evalSPMF_map]
   rw [simulateQ_run_bind_state_fixed so hso X G s]
-  simp only [evalDist_bind, map_bind, bind_map_left]
+  simp only [evalSPMF_bind, map_bind, bind_map_left]
 
 set_option maxHeartbeats 1000000 in
 /-- **Simulated analogue of `Prover.append_continueFromTo_right_challenge_evalDist`.** The appended
@@ -158,11 +156,11 @@ private theorem simulateQ_continueFromTo_right_challenge_evalDist
       Transcript.appendRight T₁
         (default : pSpec₂.Transcript (⟨0, by omega⟩ : Fin (n + 1))))
     (s : σ) :
-    evalDist (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
+    evalSPMF (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
         (Prover.continueFromTo (P₁.append P₂) stmt wit
           (⟨m, by omega⟩ : Fin (m + n)).castSucc (Fin.last (m + n)) rSeam)) s)
-      = evalDist (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
+      = evalSPMF (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
         ((liftM (P₁.output (cast (Prover.append_PrvState_seam_castSucc hn) rSeam.2)) :
             OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (Stmt₂ × Wit₂)) >>= fun ctx =>
@@ -182,7 +180,7 @@ private theorem simulateQ_continueFromTo_right_challenge_evalDist
     simulateQ_continueFromTo_seam_challenge_evalDist P₁ P₂ stmt wit hn hDir hDir₂ himplSP
       T₁ rSeam hT s,
     ← evalDist_simulateQ_run'_bind _ hso]
-  exact congrArg (fun X => evalDist (StateT.run'
+  exact congrArg (fun X => evalSPMF (StateT.run'
       (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp)) X) s))
     (eq_of_heq (Prover.append_right_block_from_seam_boundary_heq stmt wit hn T₁ rSeam))
@@ -205,10 +203,10 @@ private theorem simulateQ_append_run_challenge_evalDist
       x ∈ support ((impl t).run s) → x.2 = s)
     [instSC : ∀ i, SampleableType ((pSpec₁ ++ₚ pSpec₂).Challenge i)]
     (s : σ) :
-    evalDist (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
+    evalSPMF (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
         ((P₁.append P₂).run stmt wit)) s)
-      = evalDist (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
+      = evalSPMF (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
         ((do
           let ⟨transcript₁, stmt₂, wit₂⟩ ← liftM (P₁.run stmt wit)
@@ -225,7 +223,7 @@ private theorem simulateQ_append_run_challenge_evalDist
     bind_assoc,
     show (⟨m, by omega⟩ : Fin (m + n + 1))
       = (⟨m, by omega⟩ : Fin (m + n)).castSucc from by ext; simp]
-  -- Per-seam right-block replacement at the simulated `evalDist` level (the lone distributional
+  -- Per-seam right-block replacement at the simulated `evalSPMF` level (the lone distributional
   -- step, one seam-challenge swap per seam value).
   conv_lhs =>
     rw [evalDist_simulateQ_run'_bind _ hso]
@@ -237,8 +235,8 @@ private theorem simulateQ_append_run_challenge_evalDist
       ← evalDist_simulateQ_run'_bind _ hso]
   rw [← evalDist_simulateQ_run'_bind _ hso]
   -- The appended LHS is now the message-discharge shape; close by the same syntactic factoring as
-  -- the bare `appendRunRightDistResidual_holds_challenge` ending, under the simulated `evalDist`.
-  refine congrArg (fun X => evalDist (StateT.run'
+  -- the bare `appendRunRightDistResidual_holds_challenge` ending, under the simulated `evalSPMF`.
+  refine congrArg (fun X => evalSPMF (StateT.run'
       (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp)) X) s)) ?_
   apply eq_of_heq
@@ -264,10 +262,20 @@ private theorem simulateQ_append_run_challenge_evalDist
   apply heq_of_eq
   simp only [OracleComp.liftComp_eq_liftM, Prover.append_output_last hn,
     Transcript.appendRight_full, cast_cast, cast_eq]
-  refine bind_congr fun x_1 => bind_congr fun a => ?_
-  simp only [← OracleComp.liftComp_eq_liftM]
-  rw [Prover.liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₂.Challenge]ₒ)
-    (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)]
+  simp only [← OracleComp.liftComp_eq_liftM,
+    Prover.liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
+      (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl),
+    Prover.liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₂.Challenge]ₒ)
+      (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl),
+    Transcript.appendRight_full]
+  apply bind_congr
+  intro ctx
+  apply bind_congr
+  intro out
+  apply bind_congr
+  intro result
+  congr 1
+  exact Prod.ext (Transcript.appendRight_full x.1 out.1) (Prod.eta result)
 
 /-- **Syntactic seam-chain form of the appended reduction run (prover unfactored).** The appended
 reduction run is, as an `OptionT` value, the appended prover's run followed by the two verifier legs
@@ -293,9 +301,9 @@ theorem append_run_eq_seamChain
     liftM_bind, bind_assoc, OptionT.liftM_run_getM_bind, liftM_pure, pure_bind]
   rfl
 
-/-- **The simulated appended honest game factors at a challenge seam (`evalDist`-level).** The
+/-- **The simulated appended honest game factors at a challenge seam (`evalSPMF`-level).** The
 distributional core of completeness `hGameFactor` for a `V_to_P` seam: the simulated honest game of
-`R₁.append R₂` — running its rounds under `impl.addLift challengeQueryImpl` — has the same `evalDist`
+`R₁.append R₂` — running its rounds under `impl.addLift challengeQueryImpl` — has the same `evalSPMF`
 as the **union-bound order** `appendStage₁ ; appendStage₂` (= `(P₁→V₁) ; (P₂→V₂)`), in the `mx >>= my`
 shape `probComp_seam_completeness` consumes.
 
@@ -312,8 +320,8 @@ theorem append_game_factor_challenge
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0) :
-    evalDist (gameOf init impl (R₁.append R₂) stmt wit)
-      = evalDist (init >>= fun s =>
+    evalSPMF (gameOf init impl (R₁.append R₂) stmt wit)
+      = evalSPMF (init >>= fun s =>
           StateT.run' (simulateQ (impl.addLift challengeQueryImpl)
             ((appendStage₁ R₁ R₂ stmt wit) >>= (appendStage₂ R₁ R₂)).run) s) := by
   -- The `P₂`-past-`V₁` reorder (natural-order → stage chain), seam-direction-agnostic. Pin the
@@ -339,10 +347,9 @@ theorem append_game_factor_challenge
   -- differences (the combined-challenge `SampleableType`); the residual goal is the seam-challenge
   -- swap (`appended game = natural-order game`).
   refine Eq.trans ?_ hswap
-  -- `gameOf` (`abbrev`) unfolds to `init >>= fun s => (simulateQ so (·.run)).run' s`; pull `evalDist`
+  -- `gameOf` (`abbrev`) unfolds to `init >>= fun s => (simulateQ so (·.run)).run' s`; pull `evalSPMF`
   -- through the `init` bind so the residual is the per-seed seam-challenge swap.
-  simp only [gameOf]
-  rw [evalDist_bind, evalDist_bind]
+  rw [evalSPMF_bind, evalSPMF_bind]
   refine bind_congr fun s => ?_
   -- The seam-challenge swap under simulation. The appended run's seam `getChallenge` sits before the
   -- `P₁.output` replay; `simulateQ_append_run_challenge_evalDist` (state-preserving) commutes them
@@ -360,7 +367,7 @@ theorem append_game_factor_challenge
     ← evalDist_simulateQ_run'_bind _ hso]
   -- Both sides are now the factored chain; the residual is the syntactic verifier-leg relabel
   -- (`(x.1 ++ₜ a.1).fst/.snd = x.1/a.1`).
-  refine congrArg (fun X => evalDist (StateT.run'
+  refine congrArg (fun X => evalSPMF (StateT.run'
       (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp)) X) s)) ?_
   simp only [bind_assoc, pure_bind, FullTranscript.append_fst, FullTranscript.append_snd]
@@ -384,10 +391,10 @@ theorem append_completeness_challenge_via_seamFactor
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (hStage1Bridge : ∀ stmt wit, (stmt, wit) ∈ rel₁ →
-      evalDist (Prod.fst <$> (init >>= fun s =>
+      evalSPMF (Prod.fst <$> (init >>= fun s =>
           StateT.run (simulateQ (impl.addLift challengeQueryImpl)
             (OptionT.run (appendStage₁ R₁ R₂ stmt wit))) s))
-        = evalDist (gameOf init impl R₁ stmt wit))
+        = evalSPMF (gameOf init impl R₁ stmt wit))
     (hStage2Bridge : ∀ stmt wit, (stmt, wit) ∈ rel₁ →
       ∀ a s', (some a, s') ∈ support
             (init >>= fun s =>
@@ -410,7 +417,7 @@ theorem append_completeness_challenge_via_seamFactor
       append_game_factor_challenge R₁ R₂ stmt wit hn hDir hDir₂ himplSP himplNF)
     hStage1Bridge hStage2Bridge hTot
 
-/-- **Challenge-seam factoring of the *malicious-prover* soundness game (`evalDist`-level,
+/-- **Challenge-seam factoring of the *malicious-prover* soundness game (`evalSPMF`-level,
 per-seed).** The soundness analogue of `append_game_factor_challenge`: the simulated run of an
 *arbitrary* malicious prover over `pSpec₁ ++ₚ pSpec₂` against the appended verifier `V₁.append V₂`
 has, per seed `s` under the state-preserving honest implementation, the same distribution as the
@@ -432,10 +439,10 @@ theorem soundness_game_factor_challenge
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
     (s : σ) :
-    evalDist (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
+    evalSPMF (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
         ((Reduction.run stmt wit ⟨prover, V₁.append V₂⟩).run)) s)
-      = evalDist (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
+      = evalSPMF (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
         ((liftM (liftM (prover.fst.run stmt wit) :
             OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _) >>= fun x =>
@@ -465,10 +472,10 @@ theorem soundness_game_factor_challenge
   -- Strip the `OptionT` layer so the prover prefix is a plain `OracleComp` bind.
   simp only [OptionT.run_bind, Option.elimM, lift_run_elim, OptionT.run_pure]
   -- The simulated seam-challenge swap of the malicious prover's run (via `merge_run`).
-  have hPswap : evalDist (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
+  have hPswap : evalSPMF (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
         (prover.run stmt wit)) s)
-      = evalDist (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
+      = evalSPMF (StateT.run' (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
         ((do
           let ⟨transcript₁, stmt₂, wit₂⟩ ← liftM (prover.fst.run stmt wit)
@@ -485,7 +492,7 @@ theorem soundness_game_factor_challenge
   rw [evalDist_simulateQ_run'_bind _ hso (prover.run stmt wit), hPswap,
     ← evalDist_simulateQ_run'_bind _ hso]
   -- Both sides are now the factored chain; the residual is the syntactic verifier-leg relabel.
-  refine congrArg (fun X => evalDist (StateT.run'
+  refine congrArg (fun X => evalSPMF (StateT.run'
       (simulateQ (impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp)) X) s)) ?_
   simp only [OptionT.run_bind, Option.elimM, lift_run_elim, OptionT.run_pure, bind_assoc,

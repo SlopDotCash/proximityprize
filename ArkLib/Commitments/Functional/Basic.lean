@@ -74,8 +74,8 @@ open scoped NNReal ENNReal
 
 variable [DecidableEq ι]
   {oSpec : OracleSpec ι} {Data : Type} [O : OracleInterface Data]
-  {Commitment Decommitment ComKey VerifKey : Type} [oSpec.Fintype] {n : ℕ}
-  {pSpec : ProtocolSpec n} [[pSpec.Challenge]ₒ.Inhabited] [[pSpec.Challenge]ₒ.Fintype]
+  {Commitment Decommitment ComKey VerifKey : Type} [∀ i, Fintype (oSpec i)] {n : ℕ}
+  {pSpec : ProtocolSpec n} [∀ i, Inhabited (pSpec.Challenge i)] [∀ i, Fintype (pSpec.Challenge i)]
   [∀ i, VCVCompatible (pSpec.Challenge i)]
   [∀ i, SampleableType (pSpec.Challenge i)]
   {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))

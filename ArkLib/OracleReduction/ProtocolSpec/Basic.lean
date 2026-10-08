@@ -537,7 +537,7 @@ def equivMessagesChallenges :
   left_inv := fun T => by
     ext i
     simp [ofMessagesChallenges, toMessagesChallenges, toMessagesUpTo, toChallengesUpTo]
-    split <;> simp
+    split <;> rfl
   right_inv := fun ⟨messages, challenges⟩ => by
     ext i
     · have : pSpec.dir (i.val.castLE (by omega)) = Direction.P_to_V := i.property
@@ -718,35 +718,8 @@ def srChallengeOracle (Statement : Type) {n : ℕ} (pSpec : ProtocolSpec n) :
 alias fsChallengeOracle := srChallengeOracle
 
 
-/-- Decidable equality for the state-restoration / (slow) Fiat-Shamir oracle -/
-instance {pSpec : ProtocolSpec n} {Statement : Type}
-    [DecidableEq Statement]
-    [∀ i, DecidableEq (pSpec.Message i)]
-    [∀ i, DecidableEq (pSpec.Challenge i)] :
-    OracleSpec.DecidableEq (srChallengeOracle Statement pSpec) := by
-  refine { decidableEq_A := ?_, decidableEq_B := fun q => ?_ }
-  · dsimp only [srChallengeOracle, OracleInterface.toOracleSpec,
-      challengeOracleInterfaceSR, OracleSpec.toPFunctor,
-      OracleInterface.Query]
-    infer_instance
-  · dsimp only [srChallengeOracle, OracleInterface.toOracleSpec,
-      challengeOracleInterfaceSR, OracleSpec.toPFunctor,
-      OracleInterface.Response]
-    infer_instance
-
-instance {pSpec : ProtocolSpec n} {Statement : Type} [∀ i, VCVCompatible (pSpec.Challenge i)] :
-    OracleSpec.Fintype (srChallengeOracle Statement pSpec) := by
-  refine { fintype_B := fun q => ?_ }
-  dsimp only [srChallengeOracle, OracleInterface.toOracleSpec,
-    challengeOracleInterfaceSR, OracleSpec.toPFunctor, OracleInterface.Response]
-  infer_instance
-
-instance {pSpec : ProtocolSpec n} {Statement : Type} [∀ i, VCVCompatible (pSpec.Challenge i)] :
-    OracleSpec.Fintype (fsChallengeOracle Statement pSpec) := by
-  refine { fintype_B := fun q => ?_ }
-  dsimp only [fsChallengeOracle, srChallengeOracle, OracleInterface.toOracleSpec,
-    challengeOracleInterfaceSR, OracleSpec.toPFunctor, OracleInterface.Response]
-  infer_instance
+-- Equality and finite-answer data are inferred directly on the query/answer types.
+-- VCVio no longer bundles these in OracleSpec.DecidableEq / OracleSpec.Fintype.
 
 /-- Define the query implementation for the state-restoration / (slow) Fiat-Shamir oracle (returns a
     challenge given messages up to that point) in terms of `ProbComp`.

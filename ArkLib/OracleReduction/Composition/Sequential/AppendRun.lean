@@ -8,6 +8,11 @@ import ArkLib.OracleReduction.Composition.Sequential.Append
 import ArkLib.ToMathlib.OracleCompEvalDistBindComm
 import ArkLib.OracleReduction.Composition.Sequential.EmptyAppend
 
+attribute [local instance] OracleComp.bindCommUniformSpec
+
+-- Unfold dependent protocol indices during elaboration.
+set_option backward.isDefEq.respectTransparency false
+
 /-!
 # Sequential append run distributions and verifier routing
 
@@ -19,7 +24,7 @@ section
 
 
 /-!
-# Distributional (`evalDist`-level) run-factoring for the appended prover
+# Distributional (`evalSPMF`-level) run-factoring for the appended prover
 
 The syntactic run-factoring keystone `Prover.append_run` is proven *conditional* on
 `Prover.appendRunRightResidual`, a **syntactic** `OracleComp` equality between the appended run and
@@ -30,8 +35,8 @@ is a challenge: the appended prover samples the seam `getChallenge` *before* con
 distributions**, because `getChallenge` (a uniform sample) is independent of `P₁.output` (a
 computation in `oSpec`), and `SPMF` is commutative (`OracleComp.evalDist_bind_comm`).
 
-This section states the residual and the keystone at the `evalDist` level, the form actually consumed
-by completeness/soundness proofs (which only ever compare `evalDist`s). `appendRunRightDistResidual`
+This section states the residual and the keystone at the `evalSPMF` level, the form actually consumed
+by completeness/soundness proofs (which only ever compare `evalSPMF`s). `appendRunRightDistResidual`
 is the distribution-level residual; it is **dischargeable** (unlike its syntactic counterpart) by
 assembling the proven left-block / message-seam / interior pieces together with
 `evalDist_bind_comm` at the challenge seam. `append_run_evalDist` reduces the appended run to the
@@ -42,7 +47,7 @@ syntactic `append_run`.
 
 When the seam round (`pSpec₂`'s round 0) is a **prover message** (`pSpec₂.dir 0 = .P_to_V`), the
 *syntactic* residual already holds (`Prover.appendRunRightResidual_holds_msg`), so the
-distributional one follows by `congrArg evalDist`. This makes `append_run_evalDist` **unconditional**
+distributional one follows by `congrArg evalSPMF`. This makes `append_run_evalDist` **unconditional**
 for the message-seam case (`append_run_evalDist_msg`) — exactly the case that arises in LogUp
 Protocol 2, whose embedded sumcheck phase opens with a prover message (the round polynomial). The
 genuinely distributional content (`evalDist_bind_comm`) is needed only for the challenge-seam case.
@@ -57,15 +62,15 @@ variable {ι : Type} {oSpec : OracleSpec ι} {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt
   {P₁ : Prover oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁}
   {P₂ : Prover oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂}
 
-/-- **Distribution-level right-block residual of `append_run`.** The `evalDist` analogue of
+/-- **Distribution-level right-block residual of `append_run`.** The `evalSPMF` analogue of
 `appendRunRightResidual`: after the seam-split, the appended run-distribution equals the sequential
 `P₁.run ≫ P₂.run` distribution. Unlike the syntactic residual, this holds even when the seam round
 is a challenge, since the `getChallenge`/`P₁.output` reordering at the seam is a *distributional*
 commutation (`OracleComp.evalDist_bind_comm`), not a syntactic one. -/
-def appendRunRightDistResidual [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+def appendRunRightDistResidual [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
     (stmt : Stmt₁) (wit : Wit₁) : Prop :=
-  evalDist
+  evalSPMF
       (((do
           let ⟨transcript, state⟩ ←
             (Prover.runToRound (⟨m, by omega⟩ : Fin (m + n + 1)) stmt wit (P₁.append P₂)
@@ -78,7 +83,7 @@ def appendRunRightDistResidual [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]�
           pure (transcript, output)) :
             OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
               (FullTranscript (pSpec₁ ++ₚ pSpec₂) × Stmt₃ × Wit₃)))
-    = evalDist
+    = evalSPMF
       ((do
         let ⟨transcript₁, stmt₂, wit₂⟩ ← liftM (P₁.run stmt wit)
         let ⟨transcript₂, stmt₃, wit₃⟩ ← liftM (P₂.run stmt₂ wit₂)
@@ -92,12 +97,12 @@ syntactic `append_run` (`run_eq_runToRound_last` then `runToRound_eq_bind_contin
 round `⟨m⟩`), reducing to the distribution-level residual `appendRunRightDistResidual`. This is the
 form the completeness/soundness proofs consume; it sidesteps the syntactic
 `getChallenge`/`P₁.output` non-commutation that blocks the syntactic `appendRunRightResidual`. -/
-theorem append_run_evalDist [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+theorem append_run_evalDist [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
     (stmt : Stmt₁) (wit : Wit₁)
     (hRight : appendRunRightDistResidual (P₁ := P₁) (P₂ := P₂) stmt wit) :
-      evalDist ((P₁.append P₂).run stmt wit)
-        = evalDist ((do
+      evalSPMF ((P₁.append P₂).run stmt wit)
+        = evalSPMF ((do
           let ⟨transcript₁, stmt₂, wit₂⟩ ← liftM (P₁.run stmt wit)
           let ⟨transcript₂, stmt₃, wit₃⟩ ← liftM (P₂.run stmt₂ wit₂)
           return ⟨transcript₁ ++ₜ transcript₂, stmt₃, wit₃⟩) :
@@ -111,31 +116,31 @@ theorem append_run_evalDist [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).
 
 /-- **Message-seam discharge of the distributional residual (unconditional).** When the seam round
 is a prover message, the *syntactic* residual `appendRunRightResidual` already holds
-(`appendRunRightResidual_holds_msg`), so its `evalDist` image — the distributional residual — holds
-by `congrArg evalDist`. No distributional commutation is needed in this case. -/
+(`appendRunRightResidual_holds_msg`), so its `evalSPMF` image — the distributional residual — holds
+by `congrArg evalSPMF`. No distributional commutation is needed in this case. -/
 theorem appendRunRightDistResidual_holds_msg
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
     (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V) :
     appendRunRightDistResidual (P₁ := P₁) (P₂ := P₂) stmt wit := by
   unfold appendRunRightDistResidual
-  exact congrArg evalDist (appendRunRightResidual_holds_msg stmt wit hn hDir hDir₂)
+  exact congrArg evalSPMF (appendRunRightResidual_holds_msg stmt wit hn hDir hDir₂)
 
-/-- **Sequential-composition run-factoring at `evalDist`, for a message-first `P₂` (UNCONDITIONAL).**
+/-- **Sequential-composition run-factoring at `evalSPMF`, for a message-first `P₂` (UNCONDITIONAL).**
 Combines the conditional `append_run_evalDist` with the message-seam discharge
 `appendRunRightDistResidual_holds_msg`. This is the distribution-level keystone the LogUp
 completeness/soundness composition consumes (LogUp's embedded sumcheck opens with a prover message,
 so its seam is a message seam). No residual hypothesis required. -/
 theorem append_run_evalDist_msg
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
     (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V) :
-      evalDist ((P₁.append P₂).run stmt wit)
-        = evalDist ((do
+      evalSPMF ((P₁.append P₂).run stmt wit)
+        = evalSPMF ((do
           let ⟨transcript₁, stmt₂, wit₂⟩ ← liftM (P₁.run stmt wit)
           let ⟨transcript₂, stmt₃, wit₃⟩ ← liftM (P₂.run stmt₂ wit₂)
           return ⟨transcript₁ ++ₜ transcript₂, stmt₃, wit₃⟩) :
@@ -172,7 +177,7 @@ distributional step is one application of `evalDist_bind_comm` swapping the seam
 `P₁.output`; everything else reuses the proven syntactic challenge-seam machinery
 (`append_continueFromTo_seam_start_challenge_split`, `append_continueFromTo_right_interior`,
 `processRound_zero_continueFromTo_eq_runToRound_last`, the transcript/state reconciliation lemmas)
-under `congrArg evalDist`.
+under `congrArg evalSPMF`.
 
 Combined with `append_run_evalDist`, this yields `append_run_evalDist_challenge`: the appended run
 factors (distributionally) as `P₁.run ≫ P₂.run` for a challenge-first `P₂` — the inter-phase Spartan
@@ -190,14 +195,14 @@ variable {ι : Type} {oSpec : OracleSpec ι} {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt
 
 /-- **Distributional msg-shaping of the challenge seam start.**  The appended prover's seam-round
 continuation at a *challenge* seam — which samples the seam `getChallenge` *before* replaying
-`P₁.output` (`append_continueFromTo_seam_start_challenge_split`) — has the same `evalDist` as the
+`P₁.output` (`append_continueFromTo_seam_start_challenge_split`) — has the same `evalSPMF` as the
 canonical "message-shaped" boundary that runs `P₁.output` *first* and then `P₂.processRound 0`
 (itself a `getChallenge`/`receiveChallenge` for a `V_to_P` round 0).  The reorder is the lone
 distributional step, discharged by `OracleComp.evalDist_bind_comm`.  This is the challenge analogue
-of `append_continueFromTo_seam_start_message_processRound`, stated at `evalDist`. -/
+of `append_continueFromTo_seam_start_message_processRound`, stated at `evalSPMF`. -/
 theorem append_continueFromTo_seam_start_challenge_evalDist
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
     (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P)
@@ -207,10 +212,10 @@ theorem append_continueFromTo_seam_start_challenge_evalDist
     (hT : rSeam.1 =
       Transcript.appendRight T₁
         (default : pSpec₂.Transcript (⟨0, by omega⟩ : Fin (n + 1)))) :
-    evalDist (Prover.continueFromTo (P₁.append P₂) stmt wit
+    evalSPMF (Prover.continueFromTo (P₁.append P₂) stmt wit
           (⟨m, by omega⟩ : Fin (m + n)).castSucc
           (⟨m, by omega⟩ : Fin (m + n)).succ rSeam)
-      = evalDist
+      = evalSPMF
         ((liftM (P₁.output (cast (append_PrvState_seam_castSucc hn) rSeam.2)) :
             OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (Stmt₂ × Wit₂)) >>= fun ctxIn₂ =>
         (liftM
@@ -251,9 +256,7 @@ theorem append_continueFromTo_seam_start_challenge_evalDist
   -- statement's `liftM (P₁.output)` (composed instance) is `liftComp (P₁.output) (full spec)` via
   -- `liftM_via_leftChallenge_eq_liftComp`; normalize the RHS bound to that so both sides share the
   -- exact `liftComp (P₁.output) (full spec)` term, then commute distributionally.
-  rw [liftM_via_leftChallenge_eq_liftComp
-    (pSpec₁ := pSpec₁) (pSpec₂ := pSpec₂)
-    (X := P₁.output (cast (append_PrvState_seam_castSucc hn) rSeam.2))]
+  simp only [← OracleComp.liftComp_eq_liftM]
   exact (OracleComp.evalDist_bind_comm
     (liftM (pSpec₂.getChallenge ⟨⟨0, hn⟩, hDir₂⟩) :
       OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (pSpec₂.Challenge ⟨⟨0, hn⟩, hDir₂⟩))
@@ -277,7 +280,7 @@ appended interior continuation `continueFromTo ⟨m+1⟩ last` collapses (hetero
 threaded into `P₂.runToRound (last n)`, transported via `appendRight`.  This is exactly the
 post-seam-start portion of `append_continueFromTo_right_msg`'s proof, which never inspects the seam
 direction (it only uses the *shape* of `B`); factoring it lets the challenge branch reuse the same
-fold after the `evalDist`-level seam-start commute. -/
+fold after the `evalSPMF`-level seam-start commute. -/
 theorem append_right_block_from_seam_boundary_heq (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (T₁ : FullTranscript pSpec₁)
     (rSeam : (pSpec₁ ++ₚ pSpec₂).Transcript (⟨m, by omega⟩ : Fin (m + n)).castSucc
@@ -361,16 +364,16 @@ theorem append_right_block_from_seam_boundary_heq (stmt : Stmt₁) (wit : Wit₁
         ((cast_heq _ _).trans (hs.trans (cast_heq _ _).symm))
     · exact liftComp_continueFromTo_heq_target eR P₂ c1 c2 p
 
-/-- **Right-block run characterization at a challenge seam, distributional.**  The `evalDist`-level
+/-- **Right-block run characterization at a challenge seam, distributional.**  The `evalSPMF`-level
 analogue of `append_continueFromTo_right_msg`: the appended prover's continuation over the whole
 right block (seam round `⟨m⟩` to the last round) has the same distribution as `P₁`'s output threaded
 into `P₂`'s full run-to-round, transported into the appended transcript via `appendRight`.  The
 genuine distributional content is the seam `getChallenge`/`P₁.output` reorder, isolated in
 `append_continueFromTo_seam_start_challenge_evalDist`; the rest mirrors `append_continueFromTo_right_msg`
-under `congrArg evalDist`. -/
+under `congrArg evalSPMF`. -/
 theorem append_continueFromTo_right_challenge_evalDist
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
     (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P)
@@ -379,9 +382,9 @@ theorem append_continueFromTo_right_challenge_evalDist
       × (P₁.append P₂).PrvState (⟨m, by omega⟩ : Fin (m + n)).castSucc)
     (hT : rSeam.1 = Transcript.appendRight T₁
       (default : pSpec₂.Transcript (⟨0, by omega⟩ : Fin (n + 1)))) :
-    evalDist (Prover.continueFromTo (P₁.append P₂) stmt wit (⟨m, by omega⟩ : Fin (m + n)).castSucc
+    evalSPMF (Prover.continueFromTo (P₁.append P₂) stmt wit (⟨m, by omega⟩ : Fin (m + n)).castSucc
           (Fin.last (m + n)) rSeam)
-      = evalDist
+      = evalSPMF
         ((liftM (P₁.output (cast (append_PrvState_seam_castSucc hn) rSeam.2)) :
             OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (Stmt₂ × Wit₂)) >>= fun ctx =>
           ((fun p => (Transcript.appendRight T₁ p.1,
@@ -392,18 +395,18 @@ theorem append_continueFromTo_right_challenge_evalDist
               ((pSpec₁ ++ₚ pSpec₂).Transcript (Fin.last (m + n))
                 × (P₁.append P₂).PrvState (Fin.last (m + n))))) := by
   -- Split the right block at the seam successor `⟨m+1⟩` (`continueFromTo_trans`), then rewrite the
-  -- seam factor via the `evalDist`-level seam start; the interior/output assembly is the proven,
+  -- seam factor via the `evalSPMF`-level seam start; the interior/output assembly is the proven,
   -- direction-agnostic `append_right_block_from_seam_boundary_heq`.
   rw [continueFromTo_trans (P₁.append P₂) stmt wit (⟨m, by omega⟩ : Fin (m + n)).castSucc
     (⟨m, by omega⟩ : Fin (m + n)).succ (Fin.last (m + n))
     (by rw [Fin.le_def, Fin.val_castSucc, Fin.val_succ]; omega)
     (by rw [Fin.le_def, Fin.val_succ, Fin.val_last]; omega) rSeam]
-  -- Push `evalDist` through the seam/interior bind, swap the seam factor for the msg-shaped boundary
+  -- Push `evalSPMF` through the seam/interior bind, swap the seam factor for the msg-shaped boundary
   -- `B` (the one distributional step), then re-fuse the bind and fold via the syntactic helper.
-  rw [evalDist_bind,
+  rw [evalSPMF_bind,
     append_continueFromTo_seam_start_challenge_evalDist stmt wit hn hDir hDir₂ T₁ rSeam hT,
-    ← evalDist_bind]
-  exact congrArg evalDist (eq_of_heq
+    ← evalSPMF_bind]
+  exact congrArg evalSPMF (eq_of_heq
     (append_right_block_from_seam_boundary_heq stmt wit hn T₁ rSeam))
 
 /-- **Challenge-seam discharge of the distributional residual.**  When the seam round (`pSpec₂`'s
@@ -412,8 +415,8 @@ The analogue of `appendRunRightDistResidual_holds_msg`; the syntactic `appendRun
 *false* here, so this genuinely needs `evalDist_bind_comm` (inside
 `append_continueFromTo_right_challenge_evalDist`). -/
 theorem appendRunRightDistResidual_holds_challenge
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
     (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P) :
@@ -424,21 +427,21 @@ theorem appendRunRightDistResidual_holds_challenge
       = (⟨m, by omega⟩ : Fin (m + n)).castSucc from by ext; simp]
   -- After `bind_assoc` the seam-split LHS is `runToRound ⟨m⟩.castSucc >>= fun rSeam =>
   --   continueFromTo ⟨m⟩.castSucc last rSeam >>= K`.  Replace, *per seam value* and at the
-  -- `evalDist` level, the inner right-block continuation by its msg-shaped form (one bind commute
+  -- `evalSPMF` level, the inner right-block continuation by its msg-shaped form (one bind commute
   -- each, via `append_continueFromTo_right_challenge_evalDist`).  This rewrites the appended LHS into
   -- the exact shape the message discharge produces.
   conv_lhs =>
-    rw [evalDist_bind]
+    rw [evalSPMF_bind]
     enter [2, rSeam]
-    rw [evalDist_bind,
+    rw [evalSPMF_bind,
       append_continueFromTo_right_challenge_evalDist stmt wit hn hDir hDir₂
         (cast (append_Transcript_seam_castSucc hn) rSeam.1) rSeam
         (seam_transcript_appendRight hn rSeam.1),
-      ← evalDist_bind]
-  rw [← evalDist_bind]
-  -- The appended LHS is now the message-discharge LHS; close by `congrArg evalDist` of the same
+      ← evalSPMF_bind]
+  rw [← evalSPMF_bind]
+  -- The appended LHS is now the message-discharge LHS; close by `congrArg evalSPMF` of the same
   -- syntactic factoring used by `appendRunRightResidual_holds_msg`.
-  refine congrArg evalDist ?_
+  refine congrArg evalSPMF ?_
   apply eq_of_heq
   have hseam : HEq ((P₁.append P₂).runToRound (⟨m, by omega⟩ : Fin (m + n)).castSucc stmt wit)
       (liftM (P₁.runToRound (Fin.last m) stmt wit) :
@@ -461,23 +464,25 @@ theorem appendRunRightDistResidual_holds_challenge
   apply heq_of_eq
   simp only [OracleComp.liftComp_eq_liftM, append_output_last hn, Transcript.appendRight_full,
     cast_cast, cast_eq]
-  refine bind_congr fun x_1 => bind_congr fun a => ?_
   simp only [← OracleComp.liftComp_eq_liftM]
-  rw [Prover.liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₂.Challenge]ₒ)
+  simp only [Prover.liftComp_liftComp (spec := oSpec)
+    (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
+    (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl),
+    Prover.liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₂.Challenge]ₒ)
     (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)]
 
-/-- **Sequential-composition run-factoring at `evalDist`, for a challenge-first `P₂`.**  Combines the
+/-- **Sequential-composition run-factoring at `evalSPMF`, for a challenge-first `P₂`.**  Combines the
 conditional `append_run_evalDist` with the challenge-seam discharge
 `appendRunRightDistResidual_holds_challenge`.  This is the distribution-level keystone for inter-phase
 Spartan composition where a phase opens with a verifier challenge. -/
 theorem append_run_evalDist_challenge
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
     (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P) :
-      evalDist ((P₁.append P₂).run stmt wit)
-        = evalDist ((do
+      evalSPMF ((P₁.append P₂).run stmt wit)
+        = evalSPMF ((do
           let ⟨transcript₁, stmt₂, wit₂⟩ ← liftM (P₁.run stmt wit)
           let ⟨transcript₂, stmt₃, wit₃⟩ ← liftM (P₂.run stmt₂ wit₂)
           return ⟨transcript₁ ++ₜ transcript₂, stmt₃, wit₃⟩) :
@@ -487,19 +492,19 @@ theorem append_run_evalDist_challenge
 
 /-- **Seam-agnostic discharge of the distributional run-factoring residual.** Total case split:
 empty trailing protocol (the syntactic residual holds, `appendRunRightResidual_holds_empty`,
-and `evalDist` is `congrArg`), message seam (`appendRunRightDistResidual_holds_msg`), or
+and `evalSPMF` is `congrArg`), message seam (`appendRunRightDistResidual_holds_msg`), or
 challenge seam (`appendRunRightDistResidual_holds_challenge`). With this, the named
 distributional residual holds for *every* pair of provers — the syntactic
 `appendRunRightResidual` remains genuinely FALSE at challenge seams (see the challenge
 discharge's docstring), so the distributional form is the honest live statement. -/
 theorem appendRunRightDistResidual_holds
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ t, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
+    [∀ t, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range t)]
     (stmt : Stmt₁) (wit : Wit₁) :
     appendRunRightDistResidual (P₁ := P₁) (P₂ := P₂) stmt wit := by
   rcases Nat.eq_zero_or_pos n with hn | hn
   · subst hn
-    exact congrArg evalDist (appendRunRightResidual_holds_empty (P₁ := P₁) (P₂ := P₂) stmt wit)
+    exact congrArg evalSPMF (appendRunRightResidual_holds_empty (P₁ := P₁) (P₂ := P₂) stmt wit)
   · have hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n))
         = pSpec₂.dir (⟨0, hn⟩ : Fin n) := by
       rw [show (⟨m, by omega⟩ : Fin (m + n)) = Fin.natAdd m ⟨0, hn⟩ from by ext; simp,

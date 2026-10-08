@@ -233,6 +233,7 @@ theorem frs_list_decoding_capacity_cz25_of_T34_T218
       rw [← ht_def]
       simp only [htmem, if_true]
       rfl
+    dsimp only at hτeval
     rw [hτeval] at hT34_inst
     rw [hδ_eq, hbound_eq]
     exact hT34_inst

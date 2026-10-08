@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import Mathlib.Data.Fintype.CardEmbedding
 import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import Mathlib.Tactic
 
@@ -72,7 +73,7 @@ theorem strata_sum_eq_closed (h : ℕ) :
     exact_mod_cast congrArg (Nat.cast : ℕ → ℤ) (stratum111_card h)
   rcases h with _ | _ | _ | k
   · simp
-  · simp
+  · norm_num [Nat.choose]
   · simp [Nat.choose]
   · -- h = k+3: every ℕ subtraction is exact, push_cast then ring
     rw [h111]

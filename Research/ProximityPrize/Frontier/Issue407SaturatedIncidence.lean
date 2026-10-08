@@ -102,6 +102,7 @@ theorem goodAgreementSet_eq_of_saturatedThrough {I Iinf : IncidenceProfile} {B W
   classical
   apply Finset.ext
   intro w
+  simp only [goodAgreementSet, Finset.mem_filter]
   by_cases hw : w ≤ W
   · simp [goodAgreementSet, agreementRange, GoodAgreement, hsat w hw]
   · have hnot : w ∉ agreementRange W := by

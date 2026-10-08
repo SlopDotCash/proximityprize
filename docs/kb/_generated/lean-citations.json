@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 451,
-    "keys_cited": 35,
-    "total_citation_edges": 511
+    "files_with_citations": 460,
+    "keys_cited": 37,
+    "total_citation_edges": 522
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -47,11 +47,20 @@
       "NOZ26",
       "NS24"
     ],
+    "ArkLib/Commitments/Functional/Hachi/TraceHead/Coefficients.lean": [
+      "NOZ26"
+    ],
+    "ArkLib/Commitments/Functional/Hachi/TraceHead/Coordinates.lean": [
+      "NOZ26"
+    ],
     "ArkLib/Commitments/Functional/KZG/Basic.lean": [
       "KZG10"
     ],
     "ArkLib/Commitments/Functional/KZG/Binding.lean": [
       "KZG10TR"
+    ],
+    "ArkLib/Commitments/Functional/KZG/ConcreteVacuity.lean": [
+      "KZG10"
     ],
     "ArkLib/Commitments/Functional/KZG/FunctionBinding/Basic.lean": [
       "CGKY25"
@@ -636,6 +645,9 @@
     "ArkLib/Data/Polynomial/RationalFunctionsStrong.lean": [
       "BCIKS20"
     ],
+    "ArkLib/Data/Polynomial/ResultantDegree.lean": [
+      "BCHKS25"
+    ],
     "ArkLib/Data/Polynomial/Trivariate.lean": [
       "BCIKS20"
     ],
@@ -747,6 +759,20 @@
     "ArkLib/ProofSystem/RingSwitching/General.lean": [
       "DP24"
     ],
+    "ArkLib/ProofSystem/RingSwitching/Packing/Coordinates.lean": [
+      "DP24"
+    ],
+    "ArkLib/ProofSystem/RingSwitching/Packing/Multiplier.lean": [
+      "BRW26",
+      "RSG"
+    ],
+    "ArkLib/ProofSystem/RingSwitching/Packing/ScalarHead/Layout.lean": [
+      "BRW26",
+      "DP24"
+    ],
+    "ArkLib/ProofSystem/RingSwitching/Packing/ScalarHead/Quirky.lean": [
+      "BRW26"
+    ],
     "ArkLib/ProofSystem/Stir/Combine.lean": [
       "ACFY24stir"
     ],
@@ -754,6 +780,9 @@
       "ACFY24stir"
     ],
     "ArkLib/ProofSystem/Stir/OutOfDomSmpl.lean": [
+      "ACFY24stir"
+    ],
+    "ArkLib/ProofSystem/Stir/PaperStatements.lean": [
       "ACFY24stir"
     ],
     "ArkLib/ProofSystem/Stir/ProximityGap.lean": [
@@ -1443,6 +1472,7 @@
       "ArkLib/ProofSystem/Stir/Combine.lean",
       "ArkLib/ProofSystem/Stir/MainThm.lean",
       "ArkLib/ProofSystem/Stir/OutOfDomSmpl.lean",
+      "ArkLib/ProofSystem/Stir/PaperStatements.lean",
       "ArkLib/ProofSystem/Stir/ProximityGap.lean",
       "ArkLib/ProofSystem/Stir/Quotienting.lean",
       "ArkLib/ProofSystem/Stir/RoundProtocol.lean"
@@ -1496,6 +1526,7 @@
       "ArkLib/Data/CodingTheory/ProximityGap/MaximalEnergyUniformBound.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/MonomialSubgroupCorrelated.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/R4LaneDCosetPoint.lean",
+      "ArkLib/Data/Polynomial/ResultantDegree.lean",
       "ArkLib/ToMathlib/BadLineWitnessProof.lean",
       "ArkLib/ToMathlib/Bridge2BCHKS25.lean",
       "Research/ProximityPrize/BCIKS20/Arith.lean",
@@ -1791,6 +1822,11 @@
       "ArkLib/OracleReduction/Basic.lean",
       "ArkLib/OracleReduction/VectorIOR.lean"
     ],
+    "BRW26": [
+      "ArkLib/ProofSystem/RingSwitching/Packing/Multiplier.lean",
+      "ArkLib/ProofSystem/RingSwitching/Packing/ScalarHead/Layout.lean",
+      "ArkLib/ProofSystem/RingSwitching/Packing/ScalarHead/Quirky.lean"
+    ],
     "CGKY25": [
       "ArkLib/Commitments/Functional/Basic.lean",
       "ArkLib/Commitments/Functional/KZG/FunctionBinding/Basic.lean",
@@ -1836,6 +1872,8 @@
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness.lean",
       "ArkLib/ProofSystem/Binius/FRIBinius/General.lean",
       "ArkLib/ProofSystem/RingSwitching/General.lean",
+      "ArkLib/ProofSystem/RingSwitching/Packing/Coordinates.lean",
+      "ArkLib/ProofSystem/RingSwitching/Packing/ScalarHead/Layout.lean",
       "ArkLib/ToMathlib/KStateWeaken.lean",
       "ArkLib/ToMathlib/RSPhases.lean"
     ],
@@ -1900,7 +1938,8 @@
       "Research/ProximityPrize/KKH26DimGeneralSharpInterleavedPin.lean"
     ],
     "KZG10": [
-      "ArkLib/Commitments/Functional/KZG/Basic.lean"
+      "ArkLib/Commitments/Functional/KZG/Basic.lean",
+      "ArkLib/Commitments/Functional/KZG/ConcreteVacuity.lean"
     ],
     "KZG10TR": [
       "ArkLib/Commitments/Functional/KZG/Binding.lean"
@@ -1939,6 +1978,8 @@
       "ArkLib/Commitments/Functional/Hachi/InnerOuter/Security.lean",
       "ArkLib/Commitments/Functional/Hachi/InnerOuter.lean",
       "ArkLib/Commitments/Functional/Hachi/PolynomialEvalSplit.lean",
+      "ArkLib/Commitments/Functional/Hachi/TraceHead/Coefficients.lean",
+      "ArkLib/Commitments/Functional/Hachi/TraceHead/Coordinates.lean",
       "ArkLib/Data/Lattices/CyclotomicRing/Core/Modulus.lean",
       "ArkLib/Data/Lattices/CyclotomicRing/Core.lean",
       "ArkLib/Data/Lattices/CyclotomicRing/Galois/Automorphism.lean",
@@ -1991,6 +2032,9 @@
     ],
     "Poseidon2": [
       "ArkLib/Data/Hash/Poseidon2.lean"
+    ],
+    "RSG": [
+      "ArkLib/ProofSystem/RingSwitching/Packing/Multiplier.lean"
     ],
     "Spi95": [
       "ArkLib/Data/CodingTheory/PolishchukSpielman/PolishchukSpielman.lean"

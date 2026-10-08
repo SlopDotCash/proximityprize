@@ -93,10 +93,9 @@ theorem pureFace_sq (hgrp : DualFamilyGroupLaw m lam) (J : ZMod m → ℂ) (s : 
             have := (Finset.mem_sdiff.mp hk).2; simpa using this
           refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩
           simpa using h1
-        · intro c _; dsimp only; ring
-        · intro k _; dsimp only; ring
+        · intro c _; ring
+        · intro k _; ring
         · intro c _
-          dsimp only
           congr 2
           ring
 

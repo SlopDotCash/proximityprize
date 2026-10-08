@@ -103,7 +103,7 @@ theorem epsMCA_le_max_sparse_sup (C : Submodule F (ι → A)) (δ : ℝ≥0) :
     · exact mem_sparseRows.mpr
         ⟨W, Nat.ceil_le.mpr hW, fun i hi => by simp [hdW i hi]⟩
   · rw [if_neg hdb]
-    exact zero_le _
+    exact zero_le
 
 /-! ## The computable form -/
 

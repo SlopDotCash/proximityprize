@@ -15,23 +15,6 @@ namespace CompPoly.CPolynomial
 
 variable {R : Type*}
 
-/-- Construct a canonical polynomial from a coefficient function `Fin n → R`.
-
-  The coefficients are stored in an array (index `i` gives the coefficient of `X^i`)
-  and then trimmed to remove trailing zeros.
--/
-def ofFn [Zero R] [BEq R] [LawfulBEq R] {n : ℕ} (f : Fin n → R) : CPolynomial R :=
-  ⟨(Raw.mk (Array.ofFn f)).trim, Raw.Trim.isCanonical_trim _⟩
-
-/-- A `CPolynomial` coefficient past the stored `size` is `0` (`coeff` reads `Array.getD … 0`). -/
-theorem coeff_eq_zero_of_size_le [Zero R] (p : CPolynomial R) {pos : ℕ} (h : p.size ≤ pos) :
-    p.coeff pos = 0 := by
-  change p.val.getD pos 0 = 0
-  unfold Array.getD
-  split_ifs with hh
-  · exact absurd hh (Nat.not_lt.mpr h)
-  · rfl
-
 section DivisionToPoly
 
 open Polynomial
@@ -115,7 +98,7 @@ private lemma Raw.toPoly_ne_zero_of_size_pos {p : CPolynomial.Raw R}
     rw [← toPoly_eq_zero_iff cp]
     exact hp0
   have hp_empty : p = (#[] : CPolynomial.Raw R) := by
-    simpa [cp] using congrArg Subtype.val hcp0
+    exact congrArg Subtype.val hcp0
   have : p.size = 0 := by simpa using congrArg Array.size hp_empty
   omega
 
@@ -177,18 +160,16 @@ private lemma divModByMonicAux_go_eq (n : ℕ) (p q : CPolynomial.Raw R) :
     ring
   | succ n ih =>
     by_cases hlt : p.size < q.size
-    · simp only [Raw.divModByMonicAux.go, hlt, ↓reduceIte]
+    · rw [Raw.divModByMonicAux.go]
+      simp only [hlt, ↓reduceIte]
       rw [Raw.toPoly_zero]
       ring
     · let k := p.size - q.size
       let q' := Raw.C p.leadingCoeff * (q * Raw.X.pow k)
       let p' := (p - q').trim
       have ih' := ih p'
-      simp only [Raw.divModByMonicAux.go, hlt, ↓reduceIte]
-      change q.toPoly *
-            ((Raw.divModByMonicAux.go n p' q).1 +
-              Raw.C p.leadingCoeff * Raw.X ^ k).toPoly +
-          (Raw.divModByMonicAux.go n p' q).2.toPoly = p.toPoly
+      rw [Raw.divModByMonicAux.go]
+      simp only [hlt, ↓reduceIte]
       rw [Raw.toPoly_add, Raw.toPoly_mul_eq, Raw.toPoly_C, Raw.toPoly_pow_eq,
         Raw.toPoly_X]
       set g := Raw.divModByMonicAux.go n p' q
@@ -219,7 +200,8 @@ private lemma divModByMonicAux_go_degree_bound (n : ℕ) (p q : CPolynomial.Raw 
     exact Raw.toPoly_degree_lt_of_size_lt hp hq (by simpa using hfuel)
   | succ n ih =>
     by_cases hlt : p.size < q.size
-    · simp only [Raw.divModByMonicAux.go, hlt, ↓reduceIte]
+    · rw [Raw.divModByMonicAux.go]
+      simp only [hlt, ↓reduceIte]
       exact Raw.toPoly_degree_lt_of_size_lt hp hq hlt
     · let k := p.size - q.size
       let q' := Raw.C p.leadingCoeff * (q * Raw.X.pow k)
@@ -234,7 +216,8 @@ private lemma divModByMonicAux_go_degree_bound (n : ℕ) (p q : CPolynomial.Raw 
       have hstep_size : p'.size < p.size :=
         Raw.size_lt_of_toPoly_degree_lt hp hp' hstep_degree
       have hfuel' : p'.size < n + q.size := by omega
-      simp only [Raw.divModByMonicAux.go, hlt, ↓reduceIte]
+      rw [Raw.divModByMonicAux.go]
+      simp only [hlt, ↓reduceIte]
       exact ih p' hp' hfuel'
 
 /-! ### Main theorem: toPoly commutes with divByMonic -/
@@ -287,28 +270,6 @@ open Polynomial Finset
 
 variable {R : Type*} [CommRing R] [BEq R] [LawfulBEq R] [DecidableEq R] [Nontrivial R]
 
-/-- Extracting the `k`-th coefficient as an additive homomorphism. -/
-def coeffHom (k : ℕ) : CPolynomial R →+ R where
-  toFun p := p.coeff k
-  map_zero' := coeff_zero k
-  map_add' p q := coeff_add p q k
-
-omit [DecidableEq R] in
-@[simp] theorem coeffHom_apply (k : ℕ) (p : CPolynomial R) : coeffHom k p = p.coeff k := rfl
-
-/-- The polynomial with prescribed finite coefficient function: `Σ_{k<N} cₖ Xᵏ`. -/
-def ofFinCoeff (N : ℕ) (c : ℕ → R) : CPolynomial R :=
-  ∑ k ∈ range N, monomial k (c k)
-
-@[simp] theorem coeff_ofFinCoeff (N : ℕ) (c : ℕ → R) (j : ℕ) :
-    (ofFinCoeff N c).coeff j = if j < N then c j else 0 := by
-  rw [ofFinCoeff,
-    show (∑ k ∈ range N, monomial k (c k)).coeff j
-        = ∑ k ∈ range N, (monomial k (c k)).coeff j from map_sum (coeffHom j) _ _]
-  simp only [coeff_monomial]
-  rw [Finset.sum_ite_eq (range N) j (fun k => c k)]
-  simp
-
 omit [DecidableEq R] [Nontrivial R] in
 /-- `toPoly` of a constant is the Mathlib constant. -/
 theorem toPoly_C (c : R) : (C c).toPoly = Polynomial.C c := by
@@ -325,22 +286,6 @@ theorem toPoly_monomial (n : ℕ) (c : R) :
     show (monomial n c).val.coeff i = (monomial n c).coeff i from rfl,
     coeff_monomial, Polynomial.coeff_monomial]
   exact if_congr eq_comm rfl rfl
-
-omit [Nontrivial R] in
-/-- The polynomial built from `N` coefficients has degree below `N`. -/
-theorem degree_toPoly_ofFinCoeff_lt (N : ℕ) (c : ℕ → R) :
-    (ofFinCoeff N c).toPoly.degree < (N : WithBot ℕ) := by
-  rw [ofFinCoeff, toPoly_sum]
-  refine lt_of_le_of_lt (Polynomial.degree_sum_le _ _)
-    ((Finset.sup_lt_iff (WithBot.bot_lt_coe N)).mpr (fun k hk => ?_))
-  rw [toPoly_monomial]
-  exact lt_of_le_of_lt (Polynomial.degree_monomial_le k (c k))
-    (WithBot.coe_lt_coe.mpr (mem_range.mp hk))
-
-omit [Nontrivial R] in
-/-- A monomial with zero coefficient is the zero polynomial. -/
-theorem monomial_eq_zero (n : ℕ) : (monomial n (0 : R) : CPolynomial R) = 0 :=
-  eq_zero_iff_coeff_zero.mpr (fun j => by rw [coeff_monomial]; split_ifs <;> rfl)
 
 end OfFinCoeff
 

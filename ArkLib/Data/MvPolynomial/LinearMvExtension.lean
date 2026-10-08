@@ -73,7 +73,9 @@ lemma linearMvExtension_degreeOf_lt {p : Polynomial.degreeLT F (2 ^ m)} {i : Fin
     (degreeOf i (p.val.sum fun i a ↦ monomial (bitExpo i) a)) ≤
       (Finset.sup p.val.support
         (fun x ↦ degreeOf i (monomial (bitExpo x) (p.val.coeff x)))) := by
-    convert MvPolynomial.degreeOf_sum_le _ _ _
+    simpa only [Polynomial.sum_def] using
+      MvPolynomial.degreeOf_sum_le i p.val.support
+        (fun j => monomial (bitExpo j) (p.val.coeff j))
   exact h_sum_degrees.trans (Finset.sup_le @h_monomial_degrees)
 
 
@@ -261,6 +263,9 @@ lemma powContraction_is_right_inverse_to_linearMvExtension
     unfold powContraction linearMvExtensionLMap linearMvExtension
     simp +decide only [LinearMap.coe_mk, AddHom.coe_mk, AlgHom.toLinearMap_apply, powAlgHom]
     rw [MvPolynomial.aeval_def]
+    change MvPolynomial.eval₂ (algebraMap F (Polynomial F))
+      (fun j : Fin m => Polynomial.X ^ 2 ^ (j : ℕ))
+      (p.val.sum fun i a => MvPolynomial.monomial (bitExpo i) a) = _
     have h_sum_range :
         (p : Polynomial F).sum (fun i a => MvPolynomial.monomial (bitExpo (m := m) i) a) =
           ∑ i ∈ Finset.range (2 ^ m),
@@ -366,7 +371,6 @@ lemma encode_inj_of_le_one (d e : Fin m →₀ ℕ)
     · exact Nat.zero_le _
   ext j
   have hbit := congrArg (fun n => Nat.testBit n j.val) h
-  simp only at hbit
   rw [hrw d, hrw e] at hbit
   rw [testBit_sum_range_two_pow m _ hdle j.val j.is_lt,
       testBit_sum_range_two_pow m _ hele j.val j.is_lt] at hbit

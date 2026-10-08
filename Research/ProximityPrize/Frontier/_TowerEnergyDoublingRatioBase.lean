@@ -160,7 +160,7 @@ theorem towerRatio_two_tendsto_one :
     apply Filter.tendsto_atTop_add_const_right
     exact Filter.Tendsto.const_mul_atTop (by norm_num) Filter.tendsto_id
   have h2 : Filter.Tendsto (fun m : ℝ => 1 / (4 * m - 2)) Filter.atTop (nhds 0) := by
-    simpa using h1.inv_tendsto_atTop
+    simpa only [one_div, Pi.inv_def] using h1.inv_tendsto_atTop
   have h3 : Filter.Tendsto (fun m : ℝ => 1 + 1 / (4 * m - 2)) Filter.atTop (nhds (1 + 0)) :=
     Filter.Tendsto.const_add 1 h2
   simpa using h3

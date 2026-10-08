@@ -1,300 +1,250 @@
-/-! # PARKED MODULE (#60, NAMED-RESIDUAL convention)
-
-This module (landed by PR #532) targets a PolyFun API that was since redesigned
-(`Spec.Strategy.withRoles` / `Spec.Counterpart` / `Spec.PublicCoinCounterpart` moved to the
-`SyntaxOver`/`ShapeOver`/`StrategyOver.TwoParty` forms, PolyFun `5d3a160`).  Nothing in ArkLib
-imports it.  Parked to keep the root build green; un-park by migrating to the Over-style API
-(see issue #60 for the full diagnosis). -/
-
-/-
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
- -/
-import PolyFun.Interaction.Basic.Spec
-import PolyFun.Interaction.Basic.Chain
+-/
+
 import PolyFun.Interaction.TwoParty.Compose
-import PolyFun.Interaction.TwoParty.Decoration
-import PolyFun.Interaction.TwoParty.Strategy
-import PolyFun.Interaction.TwoParty.Syntax
 
-/- !
-# Provers, Verifiers, and Reductions
+/-!
+# Plain dependent reductions
 
-Interactive protocol participants and their composition, built on `Spec` with
-a `RoleDecoration`. This module replaces the old `OracleReduction/Basic.lean`
-flat-list model with one natively built on the W-type interaction tree.
+This file packages the smallest ArkLib reduction layer over PolyFun's typed interaction trees.
+A reduction pairs:
 
-## Type architecture
+* a focal prover strategy, constructed monadically from a statement and witness; and
+* a counterpart verifier strategy, constructed from the same public statement.
 
-The canonical interaction object is indexed by:
+The interaction tree, role decoration, and terminal output families may all depend on the shared
+input. `Reduction.execute` is only a transparent wrapper around `TwoParty.run`.
 
-- `SharedIn` — ambient input fixing the protocol context
-- `StatementIn : SharedIn → Type` — carried local statement/state interpreted inside
-  the protocol fixed by `SharedIn`
-- `WitnessIn : SharedIn → Type` — carried prover-local witness/state
-- `Context : SharedIn → Spec` — protocol spec depends on the ambient input
-- `Roles : (i : SharedIn) → RoleDecoration (Context i)` — roles per input
-- `StatementOut : (i : SharedIn) → Spec.Transcript (Context i) → Type`
-- `WitnessOut : (i : SharedIn) → Spec.Transcript (Context i) → Type`
+## Sequential composition
 
-This unifies both top-level protocols and suffix/continuation protocols.
-Ordinary top-level protocols are the special case `StatementIn := fun _ => PUnit`;
-mid-protocol suffixes use `SharedIn` for ambient setup or prefix transcript data
-and `StatementIn` for the carried local state inside that fixed protocol.
+`Reduction.then` appends a second reduction whose tree and roles may depend on the complete first
+path. The first prover and verifier outputs become the second reduction's inputs.
 
-SharedIn and output are represented as:
-- **SharedIn**: `Σ i, StatementIn i × WitnessIn i`
-- **Honest prover output**: `HonestProverOutput (StatementOut i tr) (WitnessOut i tr)`
+There are two distinct execution laws in PolyFun:
 
-## Participants
+* `TwoParty.run_compFlat_appendFlat_pure` factors a pure suffix constructor under `LawfulMonad`;
+* `TwoParty.run_comp_append` factors a general effectful suffix constructor under
+  `TwoParty.LawfulCommMonad`.
 
-- **Prover**: monadic setup producing a role-dependent `Strategy` whose output is
-  `HonestProverOutput StatementOut WitnessOut`.
-- **Verifier**: an `SharedIn`-indexed, `StatementIn`-parameterized `Counterpart`
-  with `StatementOut` at `.done`. No `OptionT` — acceptance semantics (if
-  needed) are chosen by the caller through the `StatementOut` type
-  (e.g., `StatementOut = fun _ _ => Option Bool`).
-- **PublicCoinVerifier**: a stronger verifier surface whose receiver nodes are
-  replayable public-coin continuations (`Spec.PublicCoinCounterpart`), used by
-  the interaction-native Fiat-Shamir transform.
-- **Reduction**: pairs a prover with a verifier for the same protocol spec.
-- **PublicCoinReduction**: pairs a prover with a public-coin verifier; forgetting
-  the extra verifier structure recovers an ordinary `Reduction`.
+ArkLib's prover setup is effectful in general, so `Reduction.execute_then` deliberately exposes
+the second boundary. Stateful clients without commutative effects must thread state explicitly
+rather than use this factorization theorem.
 
-Both `Prover` and `Verifier` are `abbrev`s (transparent type aliases) for
-the underlying function types.
+`TwoParty.run_appendFlat_splitPrefix` instead splits an arbitrary whole prover at an append
+boundary and uses its actual remaining strategy. It preserves all effects under `LawfulMonad`
+when the suffix verifier is selected by a pure function of the prefix result.
+-/
 
-## Composition
 
-Sequential composition is phrased directly at the canonical `Reduction` shape:
-the second protocol is indexed by `(input, tr₁)`, where `tr₁` is the realized
-prefix transcript. This subsumes the old continuation surface without requiring
-a separate foundational object.
-
-## Running a reduction
-
-`Reduction.execute` runs the prover's strategy against the verifier (via
-`Strategy.runWithRoles`), returning the transcript plus both outputs.
-
-See `Security.lean` for completeness, soundness, and knowledge soundness
-definitions built on this execution model.
- -/
-
-universe u v w
+universe u v w x
 
 namespace Interaction
 
 open TwoParty
 
-/- ! ## Protocol participants  -/
+namespace TwoParty
 
-/- - Output produced by an honest prover: the next statement together with the
-next witness to be forwarded by composition.  -/
+open StrategyOver.TwoParty
+
+section execution
+
+variable {m : Type u → Type u} [Monad m] [LawfulMonad m]
+  {s₁ : TypeTree} {s₂ : TypeTree.Path s₁ → TypeTree}
+  {r₁ : RoleDecoration s₁} {r₂ : (t : TypeTree.Path s₁) → RoleDecoration (s₂ t)}
+  {MidC : TypeTree.Path s₁ → Type u}
+  {OutputP OutputC : TypeTree.Path (s₁.append s₂) → Type u}
+
+/-- Split an arbitrary native adversary at the append boundary without changing execution order.
+The prefix returns the adversary's actual suffix strategy, including all its private memory and
+effectful continuations. No commutativity of the ambient effects is assumed. -/
+theorem run_appendFlat_splitPrefix
+    (prover : StrategyOver (SyntaxOver.TwoParty.pairedTypeTree m) Participant.focal
+      (s₁.append s₂) (r₁.append r₂) OutputP)
+    (counterpart₁ : StrategyOver (SyntaxOver.TwoParty.pairedTypeTree m) Participant.counterpart
+      s₁ r₁ MidC)
+    (counterpart₂ : (t : TypeTree.Path s₁) → MidC t →
+      StrategyOver (SyntaxOver.TwoParty.pairedTypeTree m) Participant.counterpart
+        (s₂ t) (r₂ t) (fun p => OutputC (PFunctor.FreeM.Path.append s₁ s₂ t p))) :
+    run (s₁.append s₂) (r₁.append r₂) prover
+      (Counterpart.appendFlat counterpart₁ counterpart₂) = (do
+      let ⟨t, next, out⟩ ← run s₁ r₁ (Focal.splitPrefix prover) counterpart₁
+      let ⟨p, outP, outC⟩ ← run (s₂ t) (r₂ t) next (counterpart₂ t out)
+      pure ⟨PFunctor.FreeM.Path.append s₁ s₂ t p, outP, outC⟩) := by
+  have h := run_compFlat_appendFlat_pure (Focal.splitPrefix prover)
+    (fun _ next => next) counterpart₁ counterpart₂
+  simpa only [Focal.compFlat_splitPrefix, pure_bind] using h
+
+end execution
+
+end TwoParty
+
+/-! ## Participants -/
+
+/-- The next statement and witness produced by an honest prover. -/
 abbrev HonestProverOutput (StatementOut : Type u) (WitnessOut : Type v) :=
   StatementOut × WitnessOut
 
 namespace HonestProverOutput
 
-/- - Statement component of an honest prover output.  -/
+/-- The statement component of an honest prover output. -/
 abbrev stmt {StatementOut : Type u} {WitnessOut : Type v}
     (out : HonestProverOutput StatementOut WitnessOut) : StatementOut :=
   out.1
 
-/- - Witness component of an honest prover output.  -/
+/-- The witness component of an honest prover output. -/
 abbrev wit {StatementOut : Type u} {WitnessOut : Type v}
     (out : HonestProverOutput StatementOut WitnessOut) : WitnessOut :=
   out.2
 
+/-- Split a lifted honest-prover output into separately lifted statement and witness outputs. -/
+def splitLiftAppend
+    (ctx₁ : TypeTree) (ctx₂ : TypeTree.Path ctx₁ → TypeTree)
+    (StatementOut WitnessOut : (tr₁ : TypeTree.Path ctx₁) → TypeTree.Path (ctx₂ tr₁) → Type u)
+    (tr : TypeTree.Path (ctx₁.append ctx₂))
+    (out : PFunctor.FreeM.Path.liftAppend ctx₁ ctx₂
+      (fun tr₁ tr₂ => HonestProverOutput (StatementOut tr₁ tr₂) (WitnessOut tr₁ tr₂)) tr) :
+    HonestProverOutput
+      (PFunctor.FreeM.Path.liftAppend ctx₁ ctx₂ StatementOut tr)
+      (PFunctor.FreeM.Path.liftAppend ctx₁ ctx₂ WitnessOut tr) :=
+  PFunctor.FreeM.Path.liftAppendProd ctx₁ ctx₂ StatementOut WitnessOut tr out
+
+theorem splitLiftAppend_packAppend
+    (ctx₁ : TypeTree) (ctx₂ : TypeTree.Path ctx₁ → TypeTree)
+    (StatementOut WitnessOut : (tr₁ : TypeTree.Path ctx₁) → TypeTree.Path (ctx₂ tr₁) → Type u)
+    (tr₁ : TypeTree.Path ctx₁) (tr₂ : TypeTree.Path (ctx₂ tr₁))
+    (out : HonestProverOutput (StatementOut tr₁ tr₂) (WitnessOut tr₁ tr₂)) :
+    splitLiftAppend ctx₁ ctx₂ StatementOut WitnessOut
+        (PFunctor.FreeM.Path.append ctx₁ ctx₂ tr₁ tr₂)
+        (PFunctor.FreeM.Path.packAppend ctx₁ ctx₂
+          (fun tr₁ tr₂ => HonestProverOutput (StatementOut tr₁ tr₂) (WitnessOut tr₁ tr₂))
+          tr₁ tr₂ out) =
+      (PFunctor.FreeM.Path.packAppend ctx₁ ctx₂ StatementOut tr₁ tr₂ out.stmt,
+        PFunctor.FreeM.Path.packAppend ctx₁ ctx₂ WitnessOut tr₁ tr₂ out.wit) :=
+  PFunctor.FreeM.Path.liftAppendProd_packAppend
+    ctx₁ ctx₂ StatementOut WitnessOut tr₁ tr₂ out
+
+/-- Split the honest-prover payload in a complete run of an appended interaction. -/
+def splitLiftAppendRun
+    (ctx₁ : TypeTree) (ctx₂ : TypeTree.Path ctx₁ → TypeTree)
+    (StatementOut WitnessOut : (tr₁ : TypeTree.Path ctx₁) → TypeTree.Path (ctx₂ tr₁) → Type u)
+    (run : (tr : TypeTree.Path (ctx₁.append ctx₂)) ×
+      PFunctor.FreeM.Path.liftAppend ctx₁ ctx₂
+        (fun tr₁ tr₂ => HonestProverOutput (StatementOut tr₁ tr₂) (WitnessOut tr₁ tr₂)) tr ×
+      PFunctor.FreeM.Path.liftAppend ctx₁ ctx₂ StatementOut tr) :
+    ((tr : TypeTree.Path (ctx₁.append ctx₂)) ×
+      HonestProverOutput
+        (PFunctor.FreeM.Path.liftAppend ctx₁ ctx₂ StatementOut tr)
+        (PFunctor.FreeM.Path.liftAppend ctx₁ ctx₂ WitnessOut tr) ×
+      PFunctor.FreeM.Path.liftAppend ctx₁ ctx₂ StatementOut tr) :=
+  ⟨run.1, splitLiftAppend ctx₁ ctx₂ StatementOut WitnessOut run.1 run.2.1, run.2.2⟩
+
 end HonestProverOutput
 
-/- - A prover: given ambient input `i`, local statement `stmt`, and local witness
-`wit`, performs monadic setup and produces a role-dependent strategy whose
-output is `HonestProverOutput (StatementOut i tr) (WitnessOut i tr)`.  -/
+/-- A prover performs monadic setup and returns the focal strategy for the selected input. -/
 abbrev Prover (m : Type u → Type u)
     (SharedIn : Type v)
-    (Context : SharedIn → Spec)
-    (Roles : (i : SharedIn) → RoleDecoration (Context i))
-    (StatementIn WitnessIn : SharedIn → Type w)
-    (StatementOut WitnessOut : (i : SharedIn) → Spec.Transcript (Context i) → Type u) :=
+    (Tree : SharedIn → TypeTree)
+    (Roles : (i : SharedIn) → RoleDecoration (Tree i))
+    (StatementIn : SharedIn → Type w)
+    (WitnessIn : SharedIn → Type x)
+    (StatementOut WitnessOut : (i : SharedIn) → TypeTree.Path (Tree i) → Type u) :=
   (i : SharedIn) → StatementIn i → WitnessIn i →
-    m (StrategyOver (SyntaxOver.TwoParty.pairedSpec m) Participant.focal
-      (Context i) (Roles i)
+    m (StrategyOver (SyntaxOver.TwoParty.pairedTypeTree m) Participant.focal
+      (Tree i) (Roles i)
       (fun tr => HonestProverOutput (StatementOut i tr) (WitnessOut i tr)))
 
-/- - A verifier: given ambient input `i` and local statement `stmt`, provides a
-`Counterpart` with `StatementOut i tr` at `.done`. No `OptionT` wrapping — the
-caller chooses whether `StatementOut` includes `Option` for accept/reject
-semantics.  -/
+/-- A verifier returns the counterpart strategy for the selected input and public statement. -/
 abbrev Verifier (m : Type u → Type u)
     (SharedIn : Type v)
-    (Context : SharedIn → Spec)
-    (Roles : (i : SharedIn) → RoleDecoration (Context i))
+    (Tree : SharedIn → TypeTree)
+    (Roles : (i : SharedIn) → RoleDecoration (Tree i))
     (StatementIn : SharedIn → Type w)
-    (StatementOut : (i : SharedIn) → Spec.Transcript (Context i) → Type u) :=
+    (StatementOut : (i : SharedIn) → TypeTree.Path (Tree i) → Type u) :=
   (i : SharedIn) → StatementIn i →
-    StrategyOver (SyntaxOver.TwoParty.pairedSpec m) Participant.counterpart
-      (Context i) (Roles i) (fun tr => StatementOut i tr)
+    StrategyOver (SyntaxOver.TwoParty.pairedTypeTree m) Participant.counterpart
+      (Tree i) (Roles i) (StatementOut i)
 
-/- - A verifier whose receiver nodes are public-coin in the strong replayable
-sense captured by `Spec.PublicCoinCounterpart`.
-
-An ordinary `Verifier` is enough to execute a protocol, but not enough to
-replay a prescribed receiver transcript: at a verifier node, the continuation
-is hidden inside an opaque monadic sample. `PublicCoinVerifier` keeps the same
-overall interface while strengthening receiver nodes so they expose both a
-challenge sampler and a challenge-indexed continuation family. Forgetting this
-extra structure recovers an ordinary `Verifier`.  -/
-abbrev PublicCoinVerifier (m : Type u → Type u)
-    (SharedIn : Type v)
-    (Context : SharedIn → Spec)
-    (Roles : (i : SharedIn) → RoleDecoration (Context i))
-    (StatementIn : SharedIn → Type w)
-    (StatementOut : (i : SharedIn) → Spec.Transcript (Context i) → Type u) :=
-  (i : SharedIn) → StatementIn i →
-    StrategyOver (TwoParty.PublicCoinCounterpart.counterpartSyntax m) PUnit.unit
-      (Context i) (Roles i) (fun tr => StatementOut i tr)
-
-namespace PublicCoinVerifier
-
-/- - Forget that a verifier is public-coin and view it as an ordinary verifier.  -/
-def toVerifier {m : Type u → Type u} [Monad m]
-    {SharedIn : Type v}
-    {Context : SharedIn → Spec}
-    {Roles : (i : SharedIn) → RoleDecoration (Context i)}
-    {StatementIn : SharedIn → Type w}
-    {StatementOut : (i : SharedIn) → Spec.Transcript (Context i) → Type u}
-    (verifier : PublicCoinVerifier m SharedIn Context Roles StatementIn StatementOut) :
-    Verifier m SharedIn Context Roles StatementIn StatementOut :=
-  fun i stmt => TwoParty.PublicCoinCounterpart.toCounterpart (verifier i stmt)
-
-/- - Replay a full transcript through a public-coin verifier.  -/
-def replay {m : Type u → Type u} [Monad m]
-    {SharedIn : Type v}
-    {Context : SharedIn → Spec}
-    {Roles : (i : SharedIn) → RoleDecoration (Context i)}
-    {StatementIn : SharedIn → Type w}
-    {StatementOut : (i : SharedIn) → Spec.Transcript (Context i) → Type u}
-    (verifier : PublicCoinVerifier m SharedIn Context Roles StatementIn StatementOut)
-    (i : SharedIn) (stmt : StatementIn i) (tr : Spec.Transcript (Context i)) :
-    m (StatementOut i tr) :=
-  TwoParty.PublicCoinCounterpart.replay (verifier i stmt) tr
-
-end PublicCoinVerifier
-
-/- - A reduction pairs a prover with a verifier for the same protocol.  -/
+/-- A plain dependent reduction pairs a prover and verifier for one typed interaction. -/
 structure Reduction (m : Type u → Type u)
     (SharedIn : Type v)
-    (Context : SharedIn → Spec)
-    (Roles : (i : SharedIn) → RoleDecoration (Context i))
-    (StatementIn WitnessIn : SharedIn → Type w)
-    (StatementOut WitnessOut : (i : SharedIn) → Spec.Transcript (Context i) → Type u) where
-  prover : Prover m SharedIn Context Roles StatementIn WitnessIn StatementOut WitnessOut
-  verifier : Verifier m SharedIn Context Roles StatementIn StatementOut
+    (Tree : SharedIn → TypeTree)
+    (Roles : (i : SharedIn) → RoleDecoration (Tree i))
+    (StatementIn : SharedIn → Type w)
+    (WitnessIn : SharedIn → Type x)
+    (StatementOut WitnessOut : (i : SharedIn) → TypeTree.Path (Tree i) → Type u) where
+  prover : Prover m SharedIn Tree Roles StatementIn WitnessIn StatementOut WitnessOut
+  verifier : Verifier m SharedIn Tree Roles StatementIn StatementOut
 
-/- - A reduction whose verifier is public-coin in the replayable sense of
-`PublicCoinVerifier`. The prover is unchanged; only the verifier carries the
-extra structure needed by verifier-side Fiat-Shamir.  -/
-structure PublicCoinReduction (m : Type u → Type u)
-    (SharedIn : Type v)
-    (Context : SharedIn → Spec)
-    (Roles : (i : SharedIn) → RoleDecoration (Context i))
-    (StatementIn WitnessIn : SharedIn → Type w)
-    (StatementOut WitnessOut : (i : SharedIn) → Spec.Transcript (Context i) → Type u) where
-  prover : Prover m SharedIn Context Roles StatementIn WitnessIn StatementOut WitnessOut
-  verifier : PublicCoinVerifier m SharedIn Context Roles StatementIn StatementOut
+/-! ## Execution -/
 
-namespace PublicCoinReduction
-
-/- - Forget that a reduction is public-coin and recover the underlying ordinary
-interactive reduction.  -/
-def toReduction {m : Type u → Type u} [Monad m]
-    {SharedIn : Type v}
-    {Context : SharedIn → Spec}
-    {Roles : (i : SharedIn) → RoleDecoration (Context i)}
-    {StatementIn WitnessIn : SharedIn → Type w}
-    {StatementOut : (i : SharedIn) → Spec.Transcript (Context i) → Type u}
-    {WitnessOut : (i : SharedIn) → Spec.Transcript (Context i) → Type u}
-    (reduction :
-      PublicCoinReduction m SharedIn Context Roles StatementIn WitnessIn StatementOut WitnessOut) :
-    Reduction m SharedIn Context Roles StatementIn WitnessIn StatementOut WitnessOut where
-  prover := reduction.prover
-  verifier := reduction.verifier.toVerifier
-
-end PublicCoinReduction
-
-/- - A proof system is a reduction where the prover does not forward any
-witness to the next stage (`WitnessOut = PUnit`). Accept/reject semantics
-are not fixed here — they are determined by the choice of `StatementOut`
-(e.g., `Bool`, `Option _`) and the security definitions. Its honest prover
-output is `HonestProverOutput StatementOut PUnit`.  -/
-abbrev Proof (m : Type u → Type u)
-    (SharedIn : Type v)
-    (Context : SharedIn → Spec)
-    (Roles : (i : SharedIn) → RoleDecoration (Context i))
-    (StatementIn WitnessIn : SharedIn → Type w)
-    (StatementOut : (i : SharedIn) → Spec.Transcript (Context i) → Type u) :=
-  Reduction m SharedIn Context Roles StatementIn WitnessIn StatementOut (fun _ _ => PUnit)
-
-/- ! ## Execution  -/
-
-/- - Execute a reduction: run the prover's strategy against the verifier's
-counterpart (via `Strategy.runWithRoles`). Returns the transcript, the
- prover's output (`HonestProverOutput StatementOut WitnessOut`), and the verifier's output
- (`StatementOut`).  -/
+/-- Execute a reduction with PolyFun's canonical two-party runner. -/
 def Reduction.execute {m : Type u → Type u} [Monad m]
     {SharedIn : Type v}
-    {Context : SharedIn → Spec}
-    {Roles : (i : SharedIn) → RoleDecoration (Context i)}
-    {StatementIn WitnessIn : SharedIn → Type w}
-    {StatementOut WitnessOut : (i : SharedIn) → Spec.Transcript (Context i) → Type u}
-    (reduction : Reduction m SharedIn Context Roles StatementIn WitnessIn StatementOut WitnessOut)
+    {Tree : SharedIn → TypeTree}
+    {Roles : (i : SharedIn) → RoleDecoration (Tree i)}
+    {StatementIn : SharedIn → Type w}
+    {WitnessIn : SharedIn → Type x}
+    {StatementOut WitnessOut : (i : SharedIn) → TypeTree.Path (Tree i) → Type u}
+    (reduction : Reduction m SharedIn Tree Roles StatementIn WitnessIn StatementOut WitnessOut)
     (i : SharedIn) (stmt : StatementIn i) (wit : WitnessIn i) :
-    m ((tr : Spec.Transcript (Context i)) ×
-       HonestProverOutput (StatementOut i tr) (WitnessOut i tr) ×
-         StatementOut i tr) := do
+    m ((tr : TypeTree.Path (Tree i)) ×
+      HonestProverOutput (StatementOut i tr) (WitnessOut i tr) × StatementOut i tr) := do
   let strategy ← reduction.prover i stmt wit
-  Spec.Strategy.runWithRoles (Context i) (Roles i) strategy (reduction.verifier i stmt)
+  TwoParty.run (Tree i) (Roles i) strategy (reduction.verifier i stmt)
 
-/- - Run a prover strategy against a verifier. Convenience wrapper around
-`Spec.Strategy.runWithRoles` that applies the input-indexed verifier.  -/
+/-- Honest execution is definitionally PolyFun's two-party runner after prover setup. -/
+theorem Reduction.execute_eq_run {m : Type u → Type u} [Monad m]
+    {SharedIn : Type v}
+    {Tree : SharedIn → TypeTree}
+    {Roles : (i : SharedIn) → RoleDecoration (Tree i)}
+    {StatementIn : SharedIn → Type w}
+    {WitnessIn : SharedIn → Type x}
+    {StatementOut WitnessOut : (i : SharedIn) → TypeTree.Path (Tree i) → Type u}
+    (reduction : Reduction m SharedIn Tree Roles StatementIn WitnessIn StatementOut WitnessOut)
+    (i : SharedIn) (stmt : StatementIn i) (wit : WitnessIn i) :
+    reduction.execute i stmt wit = (do
+      let strategy ← reduction.prover i stmt wit
+      TwoParty.run (Tree i) (Roles i) strategy (reduction.verifier i stmt)) := rfl
+
+/-- Run a focal strategy against an input-indexed verifier. -/
 def Verifier.run {m : Type u → Type u} [Monad m]
     {SharedIn : Type v}
-    {Context : SharedIn → Spec}
-    {Roles : (i : SharedIn) → RoleDecoration (Context i)}
+    {Tree : SharedIn → TypeTree}
+    {Roles : (i : SharedIn) → RoleDecoration (Tree i)}
     {StatementIn : SharedIn → Type w}
-    {StatementOut : (i : SharedIn) → Spec.Transcript (Context i) → Type u}
-    (v : Verifier m SharedIn Context Roles StatementIn StatementOut)
-    (i : SharedIn)
-    (stmt : StatementIn i)
-    {OutputP : Spec.Transcript (Context i) → Type u}
-    (prover : Spec.Strategy.withRoles m (Context i) (Roles i) OutputP) :
-    m ((tr : Spec.Transcript (Context i)) × OutputP tr × StatementOut i tr) :=
-  Spec.Strategy.runWithRoles (Context i) (Roles i) prover (v i stmt)
+    {StatementOut : (i : SharedIn) → TypeTree.Path (Tree i) → Type u}
+    (verifier : Verifier m SharedIn Tree Roles StatementIn StatementOut)
+    (i : SharedIn) (stmt : StatementIn i)
+    {OutputP : TypeTree.Path (Tree i) → Type u}
+    (prover : StrategyOver (SyntaxOver.TwoParty.pairedTypeTree m) Participant.focal
+      (Tree i) (Roles i) OutputP) :
+    m ((tr : TypeTree.Path (Tree i)) × OutputP tr × StatementOut i tr) :=
+  TwoParty.run (Tree i) (Roles i) prover (verifier i stmt)
 
-/- ! ## Sequential composition  -/
+/-! ## Sequential composition -/
 
-/- - Compose a reduction with a transcript-indexed continuation reduction.
-The first reduction runs over `ctx₁`, producing intermediate outputs `StmtMid` and
-`WitMid`. These feed into `reduction2`, whose protocol `ctx₂` may depend on the
-first transcript. The composed output types are factored two-argument families,
-lifted through `Transcript.liftAppend`.  -/
-def Reduction.comp {m : Type u → Type u} [Monad m]
+/-- Compose a reduction with a continuation reduction indexed by the complete prefix path.
+
+The second shared input remembers the original public statement as well as the realized prefix.
+Its statement and witness inputs are exactly the first reduction's outputs. The combined terminal
+families use `PFunctor.FreeM.Path.liftAppend`, preserving their dependence on both paths. -/
+def Reduction.then {m : Type u → Type u} [Monad m]
     {SharedIn : Type v}
     {StatementIn : SharedIn → Type w}
-    {WitnessIn : SharedIn → Type w}
-    {ctx₁ : SharedIn → Spec}
+    {WitnessIn : SharedIn → Type x}
+    {ctx₁ : SharedIn → TypeTree}
     {roles₁ : (i : SharedIn) → RoleDecoration (ctx₁ i)}
-    {StmtMid WitMid : (i : SharedIn) → Spec.Transcript (ctx₁ i) → Type u}
-    {ctx₂ : (i : SharedIn) → Spec.Transcript (ctx₁ i) → Spec}
-    {roles₂ : (i : SharedIn) → (tr₁ : Spec.Transcript (ctx₁ i)) →
-      RoleDecoration (ctx₂ i tr₁)}
-    {StmtOut WitOut : (i : SharedIn) → (tr₁ : Spec.Transcript (ctx₁ i)) →
-      Spec.Transcript (ctx₂ i tr₁) → Type u}
-    (reduction1 : Reduction m SharedIn ctx₁ roles₁ StatementIn WitnessIn StmtMid WitMid)
-    (reduction2 : Reduction m
-      ((i : SharedIn) × StatementIn i × Spec.Transcript (ctx₁ i))
+    {StmtMid WitMid : (i : SharedIn) → TypeTree.Path (ctx₁ i) → Type u}
+    {ctx₂ : (i : SharedIn) → TypeTree.Path (ctx₁ i) → TypeTree}
+    {roles₂ : (i : SharedIn) → (tr₁ : TypeTree.Path (ctx₁ i)) → RoleDecoration (ctx₂ i tr₁)}
+    {StmtOut WitOut : (i : SharedIn) → (tr₁ : TypeTree.Path (ctx₁ i)) →
+      TypeTree.Path (ctx₂ i tr₁) → Type u}
+    (reduction₁ : Reduction m SharedIn ctx₁ roles₁ StatementIn WitnessIn StmtMid WitMid)
+    (reduction₂ : Reduction m
+      ((i : SharedIn) × StatementIn i × TypeTree.Path (ctx₁ i))
       (fun shared => ctx₂ shared.1 shared.2.2)
       (fun shared => roles₂ shared.1 shared.2.2)
       (fun shared => StmtMid shared.1 shared.2.2)
@@ -303,320 +253,117 @@ def Reduction.comp {m : Type u → Type u} [Monad m]
       (fun shared tr₂ => WitOut shared.1 shared.2.2 tr₂)) :
     Reduction m SharedIn
       (fun i => (ctx₁ i).append (ctx₂ i))
-      (fun i => (roles₁ i).append (roles₂ i))
-      StatementIn
-      WitnessIn
-      (fun i => Spec.Transcript.liftAppend (ctx₁ i) (ctx₂ i) (StmtOut i))
-      (fun i => Spec.Transcript.liftAppend (ctx₁ i) (ctx₂ i) (WitOut i)) where
-  prover i stmt w := do
-    let strat₁ ← reduction1.prover i stmt w
-    let strat ← Spec.Strategy.compWithRoles strat₁ (fun tr₁ midOut =>
-      reduction2.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
-    pure <| Spec.Strategy.mapOutputWithRoles
-      (fun tr out =>
-        Spec.Transcript.liftAppendProd (ctx₁ i) (ctx₂ i) (StmtOut i) (WitOut i) tr out)
-      strat
+      (fun i => (roles₁ i).append (fun tr₁ => roles₂ i tr₁))
+      StatementIn WitnessIn
+      (fun i => PFunctor.FreeM.Path.liftAppend (ctx₁ i) (ctx₂ i) (StmtOut i))
+      (fun i => PFunctor.FreeM.Path.liftAppend (ctx₁ i) (ctx₂ i) (WitOut i)) where
+  prover i stmt wit := do
+    let strategy₁ ← reduction₁.prover i stmt wit
+    let strategy ← StrategyOver.TwoParty.Focal.comp strategy₁ (fun tr₁ midOut =>
+      reduction₂.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
+    pure <| StrategyOver.TwoParty.Focal.mapOutput
+      (HonestProverOutput.splitLiftAppend (ctx₁ i) (ctx₂ i) (StmtOut i) (WitOut i))
+      strategy
   verifier i stmt :=
-    Spec.Counterpart.append (reduction1.verifier i stmt) (fun tr₁ sMid =>
-      reduction2.verifier ⟨i, stmt, tr₁⟩ sMid)
+    StrategyOver.TwoParty.Counterpart.append (reduction₁.verifier i stmt) (fun tr₁ stmtMid =>
+      reduction₂.verifier ⟨i, stmt, tr₁⟩ stmtMid)
 
-/- - Executing a sequentially composed reduction factors into first executing the
-prefix reduction and then the suffix interaction induced by its outputs.  -/
-theorem Reduction.execute_comp
-    {m : Type u → Type u} [Monad m] [Spec.LawfulCommMonad m]
+/-- Executing a composed reduction factors into prefix execution and its path-indexed suffix.
+
+The final `splitLiftAppendRun` map only converts PolyFun's factored honest-prover payload into
+ArkLib's separately lifted statement and witness outputs. All interaction effects occur in the two
+executions inside the mapped computation. General effectful suffix construction requires
+`TwoParty.LawfulCommMonad`; use PolyFun's `TwoParty.run_compFlat_appendFlat_pure` when the suffix
+constructor is pure and only `LawfulMonad` is available. -/
+theorem Reduction.execute_then
+    {m : Type u → Type u} [Monad m] [TwoParty.LawfulCommMonad m]
     {SharedIn : Type v}
     {StatementIn : SharedIn → Type w}
-    {WitnessIn : SharedIn → Type w}
-    {ctx₁ : SharedIn → Spec}
+    {WitnessIn : SharedIn → Type x}
+    {ctx₁ : SharedIn → TypeTree}
     {roles₁ : (i : SharedIn) → RoleDecoration (ctx₁ i)}
-    {StmtMid WitMid : (i : SharedIn) → Spec.Transcript (ctx₁ i) → Type u}
-    {ctx₂ : (i : SharedIn) → Spec.Transcript (ctx₁ i) → Spec}
-    {roles₂ : (i : SharedIn) → (tr₁ : Spec.Transcript (ctx₁ i)) →
+    {StmtMid WitMid : (i : SharedIn) → TypeTree.Path (ctx₁ i) → Type u}
+    {ctx₂ : (i : SharedIn) → TypeTree.Path (ctx₁ i) → TypeTree}
+    {roles₂ : (i : SharedIn) → (tr₁ : TypeTree.Path (ctx₁ i)) →
       RoleDecoration (ctx₂ i tr₁)}
-    {StmtOut WitOut : (i : SharedIn) → (tr₁ : Spec.Transcript (ctx₁ i)) →
-      Spec.Transcript (ctx₂ i tr₁) → Type u}
-    (reduction1 : Reduction m SharedIn ctx₁ roles₁ StatementIn WitnessIn StmtMid WitMid)
-    (reduction2 : Reduction m
-      ((i : SharedIn) × StatementIn i × Spec.Transcript (ctx₁ i))
+    {StmtOut WitOut : (i : SharedIn) → (tr₁ : TypeTree.Path (ctx₁ i)) →
+      TypeTree.Path (ctx₂ i tr₁) → Type u}
+    (reduction₁ : Reduction m SharedIn ctx₁ roles₁ StatementIn WitnessIn StmtMid WitMid)
+    (reduction₂ : Reduction m
+      ((i : SharedIn) × StatementIn i × TypeTree.Path (ctx₁ i))
       (fun shared => ctx₂ shared.1 shared.2.2)
       (fun shared => roles₂ shared.1 shared.2.2)
       (fun shared => StmtMid shared.1 shared.2.2)
       (fun shared => WitMid shared.1 shared.2.2)
       (fun shared tr₂ => StmtOut shared.1 shared.2.2 tr₂)
       (fun shared tr₂ => WitOut shared.1 shared.2.2 tr₂))
-    (i : SharedIn) (stmt : StatementIn i) (w : WitnessIn i) :
-    (Reduction.comp reduction1 reduction2).execute i stmt w =
-      (do
-        let ⟨tr₁, midOut, sMid⟩ ← reduction1.execute i stmt w
-        let strat₂ ← reduction2.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit
-        let ⟨tr₂, out, sOut⟩ ←
-          Spec.Strategy.runWithRoles (ctx₂ i tr₁) (roles₂ i tr₁) strat₂
-            (reduction2.verifier ⟨i, stmt, tr₁⟩ sMid)
-        pure ⟨Spec.Transcript.append (ctx₁ i) (ctx₂ i) tr₁ tr₂,
-          ⟨Spec.Transcript.packAppend (ctx₁ i) (ctx₂ i) (StmtOut i) tr₁ tr₂ out.stmt,
-            Spec.Transcript.packAppend (ctx₁ i) (ctx₂ i) (WitOut i) tr₁ tr₂ out.wit⟩,
-          Spec.Transcript.packAppend (ctx₁ i) (ctx₂ i) (StmtOut i) tr₁ tr₂ sOut⟩) := by
-  simp only [execute, comp, bind_assoc, pure_bind]
-  refine congrArg (fun k => reduction1.prover i stmt w >>= k) ?_
-  funext strat₁
-  let mapOut :
-      (tr : Spec.Transcript ((ctx₁ i).append (ctx₂ i))) →
-      Spec.Transcript.liftAppend (ctx₁ i) (ctx₂ i)
-        (fun tr₁ tr₂ => HonestProverOutput (StmtOut i tr₁ tr₂) (WitOut i tr₁ tr₂)) tr →
-      HonestProverOutput
-        (Spec.Transcript.liftAppend (ctx₁ i) (ctx₂ i) (StmtOut i) tr)
-        (Spec.Transcript.liftAppend (ctx₁ i) (ctx₂ i) (WitOut i) tr) :=
-    fun tr out =>
-      Spec.Transcript.liftAppendProd (ctx₁ i) (ctx₂ i) (StmtOut i) (WitOut i) tr out
-  let mapTriple :
-      ((tr : Spec.Transcript ((ctx₁ i).append (ctx₂ i))) ×
-        Spec.Transcript.liftAppend (ctx₁ i) (ctx₂ i)
+    (i : SharedIn) (stmt : StatementIn i) (wit : WitnessIn i) :
+    (Reduction.then reduction₁ reduction₂).execute i stmt wit =
+      HonestProverOutput.splitLiftAppendRun
+        (ctx₁ i) (ctx₂ i) (StmtOut i) (WitOut i) <$> (do
+        let ⟨tr₁, midOut, stmtMid⟩ ← reduction₁.execute i stmt wit
+        let strategy₂ ← reduction₂.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit
+        let ⟨tr₂, out, stmtOut⟩ ←
+          TwoParty.run (ctx₂ i tr₁) (roles₂ i tr₁) strategy₂
+            (reduction₂.verifier ⟨i, stmt, tr₁⟩ stmtMid)
+        pure ⟨PFunctor.FreeM.Path.append (ctx₁ i) (ctx₂ i) tr₁ tr₂,
+          PFunctor.FreeM.Path.packAppend (ctx₁ i) (ctx₂ i)
+            (fun tr₁ tr₂ => HonestProverOutput (StmtOut i tr₁ tr₂) (WitOut i tr₁ tr₂))
+            tr₁ tr₂ out,
+          PFunctor.FreeM.Path.packAppend (ctx₁ i) (ctx₂ i) (fun tr₁ tr₂ => StmtOut i tr₁ tr₂)
+            tr₁ tr₂ stmtOut⟩) := by
+  simp only [execute, Reduction.then, bind_assoc, pure_bind, map_bind, map_pure]
+  refine congrArg (fun k => reduction₁.prover i stmt wit >>= k) ?_
+  funext strategy₁
+  let mapOut := HonestProverOutput.splitLiftAppend
+    (ctx₁ i) (ctx₂ i) (StmtOut i) (WitOut i)
+  let mapRun :
+      ((tr : TypeTree.Path ((ctx₁ i).append (ctx₂ i))) ×
+        PFunctor.FreeM.Path.liftAppend (ctx₁ i) (ctx₂ i)
           (fun tr₁ tr₂ => HonestProverOutput (StmtOut i tr₁ tr₂) (WitOut i tr₁ tr₂)) tr ×
-        Spec.Transcript.liftAppend (ctx₁ i) (ctx₂ i) (StmtOut i) tr) →
-      ((tr : Spec.Transcript ((ctx₁ i).append (ctx₂ i))) ×
+        PFunctor.FreeM.Path.liftAppend (ctx₁ i) (ctx₂ i) (StmtOut i) tr) →
+      ((tr : TypeTree.Path ((ctx₁ i).append (ctx₂ i))) ×
         HonestProverOutput
-          (Spec.Transcript.liftAppend (ctx₁ i) (ctx₂ i) (StmtOut i) tr)
-          (Spec.Transcript.liftAppend (ctx₁ i) (ctx₂ i) (WitOut i) tr) ×
-        Spec.Transcript.liftAppend (ctx₁ i) (ctx₂ i) (StmtOut i) tr) :=
-    fun z => ⟨z.1, mapOut z.1 z.2.1, z.2.2⟩
+          (PFunctor.FreeM.Path.liftAppend (ctx₁ i) (ctx₂ i) (StmtOut i) tr)
+          (PFunctor.FreeM.Path.liftAppend (ctx₁ i) (ctx₂ i) (WitOut i) tr) ×
+        PFunctor.FreeM.Path.liftAppend (ctx₁ i) (ctx₂ i) (StmtOut i) tr) :=
+    HonestProverOutput.splitLiftAppendRun
+      (ctx₁ i) (ctx₂ i) (StmtOut i) (WitOut i)
+  let counterpart := StrategyOver.TwoParty.Counterpart.append
+    (reduction₁.verifier i stmt) (fun tr₁ stmtMid =>
+      reduction₂.verifier ⟨i, stmt, tr₁⟩ stmtMid)
   have hmap :
       (do
-        let strat ← Spec.Strategy.compWithRoles strat₁
-          (fun tr₁ midOut => reduction2.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
-        Spec.Strategy.runWithRoles ((ctx₁ i).append (ctx₂ i)) ((roles₁ i).append (roles₂ i))
-          (Spec.Strategy.mapOutputWithRoles mapOut strat)
-          (Spec.Counterpart.append (reduction1.verifier i stmt)
-            (fun tr₁ sMid => reduction2.verifier ⟨i, stmt, tr₁⟩ sMid))) =
-        mapTriple <$>
-          (do
-            let strat ← Spec.Strategy.compWithRoles strat₁
-              (fun tr₁ midOut => reduction2.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
-            Spec.Strategy.runWithRoles ((ctx₁ i).append (ctx₂ i)) ((roles₁ i).append (roles₂ i))
-              strat
-                (Spec.Counterpart.append (reduction1.verifier i stmt)
-                  (fun tr₁ sMid => reduction2.verifier ⟨i, stmt, tr₁⟩ sMid))) := by
-    have hraw :
+        let strategy ← StrategyOver.TwoParty.Focal.comp strategy₁ (fun tr₁ midOut =>
+          reduction₂.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
+        TwoParty.run ((ctx₁ i).append (ctx₂ i))
+          ((roles₁ i).append (fun tr₁ => roles₂ i tr₁))
+          (StrategyOver.TwoParty.Focal.mapOutput mapOut strategy) counterpart) =
         (do
-          let strat ← Spec.Strategy.compWithRoles strat₁
-            (fun tr₁ midOut => reduction2.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
-          Spec.Strategy.runWithRoles ((ctx₁ i).append (ctx₂ i)) ((roles₁ i).append (roles₂ i))
-            (Spec.Strategy.mapOutputWithRoles mapOut strat)
-            (Spec.Counterpart.append (reduction1.verifier i stmt)
-              (fun tr₁ sMid => reduction2.verifier ⟨i, stmt, tr₁⟩ sMid))) =
-          (do
-            let strat ← Spec.Strategy.compWithRoles strat₁
-              (fun tr₁ midOut => reduction2.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
-            mapTriple <$>
-              Spec.Strategy.runWithRoles ((ctx₁ i).append (ctx₂ i)) ((roles₁ i).append (roles₂ i))
-                strat
-                (Spec.Counterpart.append (reduction1.verifier i stmt)
-                  (fun tr₁ sMid => reduction2.verifier ⟨i, stmt, tr₁⟩ sMid))) := by
-      refine congrArg
-        (fun k =>
-          Spec.Strategy.compWithRoles strat₁
-            (fun tr₁ midOut => reduction2.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit) >>= k) ?_
-      funext strat
-      simpa [mapTriple, mapOut, Spec.Counterpart.mapOutput_id] using
-        (Spec.Strategy.runWithRoles_mapOutputWithRoles_mapOutput
-          (fP := mapOut) (fC := fun _ x => x) strat
-          (Spec.Counterpart.append (reduction1.verifier i stmt)
-            (fun tr₁ sMid => reduction2.verifier ⟨i, stmt, tr₁⟩ sMid)))
-    calc
-      (do
-        let strat ← Spec.Strategy.compWithRoles strat₁
-          (fun tr₁ midOut => reduction2.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
-        Spec.Strategy.runWithRoles ((ctx₁ i).append (ctx₂ i)) ((roles₁ i).append (roles₂ i))
-          (Spec.Strategy.mapOutputWithRoles mapOut strat)
-          (Spec.Counterpart.append (reduction1.verifier i stmt)
-            (fun tr₁ sMid => reduction2.verifier ⟨i, stmt, tr₁⟩ sMid))) =
-          (do
-            let strat ← Spec.Strategy.compWithRoles strat₁
-              (fun tr₁ midOut => reduction2.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
-            mapTriple <$>
-              Spec.Strategy.runWithRoles ((ctx₁ i).append (ctx₂ i)) ((roles₁ i).append (roles₂ i))
-                strat
-                (Spec.Counterpart.append (reduction1.verifier i stmt)
-                  (fun tr₁ sMid => reduction2.verifier ⟨i, stmt, tr₁⟩ sMid))) := hraw
-      _ = mapTriple <$>
-            (do
-              let strat ← Spec.Strategy.compWithRoles strat₁
-                (fun tr₁ midOut => reduction2.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
-              Spec.Strategy.runWithRoles ((ctx₁ i).append (ctx₂ i)) ((roles₁ i).append (roles₂ i))
-                strat
-                (Spec.Counterpart.append (reduction1.verifier i stmt)
-                  (fun tr₁ sMid => reduction2.verifier ⟨i, stmt, tr₁⟩ sMid))) := by
-        simp
+          let strategy ← StrategyOver.TwoParty.Focal.comp strategy₁ (fun tr₁ midOut =>
+            reduction₂.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
+          mapRun <$>
+            TwoParty.run ((ctx₁ i).append (ctx₂ i))
+            ((roles₁ i).append (fun tr₁ => roles₂ i tr₁)) strategy counterpart) := by
+    refine congrArg
+      (fun k => StrategyOver.TwoParty.Focal.comp strategy₁ (fun tr₁ midOut =>
+        reduction₂.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit) >>= k) ?_
+    funext strategy
+    have mapRun_eq : mapRun =
+        fun z => ⟨z.1, mapOut z.1 z.2.1, z.2.2⟩ := rfl
+    rw [mapRun_eq]
+    simpa only [StrategyOver.TwoParty.Counterpart.mapOutput_id] using
+      (TwoParty.run_mapOutput_mapOutput
+        (fP := mapOut) (fC := fun _ out => out) strategy counterpart)
   rw [hmap]
-  simpa [mapTriple, mapOut, bind_assoc] using
-    congrArg (fun mx => mapTriple <$> mx)
-      (Spec.Strategy.runWithRoles_compWithRoles_append
-        (strat₁ := strat₁)
-        (f := fun tr₁ midOut => reduction2.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
-        (cpt₁ := reduction1.verifier i stmt)
-        (cpt₂ := fun tr₁ sMid => reduction2.verifier ⟨i, stmt, tr₁⟩ sMid))
-
-/- - Compose per-stage prover and verifier step functions into a reduction over
-a chained protocol `Spec.stateChain Stage spec advance n`.
-
-The prover and verifier each carry evolving state through the state chain:
-- `ProverState i st` is the prover's state at stage `i` with state chain state `st`.
-  Initialized from the witness via `proverInit`, then transformed at each stage
-  by `proverStep`. The terminal prover state becomes `WitnessOut`.
-- `VerifierState i st` is the verifier's state at stage `i`.
-  Initialized from the statement via `verifierInit`, then transformed by
-  `verifierStep`. The terminal verifier state becomes `StatementOut`.
-
-Both output types are computed as `Transcript.stateChainFamily` of the respective
-state families.  -/
-def Reduction.stateChainComp {m : Type u → Type u} [Monad m]
-    {SharedIn : Type v}
-    {StatementIn WitnessIn : SharedIn → Type w}
-    {Stage : Nat → Type u}
-    {spec : (i : Nat) → Stage i → Spec}
-    {advance : (i : Nat) → (s : Stage i) → Spec.Transcript (spec i s) → Stage (i + 1)}
-    {roles : (i : Nat) → (s : Stage i) → RoleDecoration (spec i s)}
-    {ProverState VerifierState : (i : Nat) → Stage i → Type u}
-    (n : Nat)
-    (initStage : SharedIn → Stage 0)
-    (proverInit : (i : SharedIn) → StatementIn i → WitnessIn i →
-      m (ProverState 0 (initStage i)))
-    (proverStep : (j : Nat) → (st : Stage j) → ProverState j st →
-      m (Spec.Strategy.withRoles m (spec j st) (roles j st)
-        (fun tr => ProverState (j + 1) (advance j st tr))))
-    (stmtResult : (i : SharedIn) → StatementIn i →
-      (tr : Spec.Transcript (Spec.stateChain Stage spec advance n 0 (initStage i))) →
-      Spec.Transcript.stateChainFamily VerifierState n 0 (initStage i) tr)
-    (verifierInit : (i : SharedIn) → StatementIn i → VerifierState 0 (initStage i))
-    (verifierStep : (j : Nat) → (st : Stage j) → VerifierState j st →
-      Spec.Counterpart m (spec j st) (roles j st)
-        (fun tr => VerifierState (j + 1) (advance j st tr))) :
-    Reduction m SharedIn
-      (fun i => Spec.stateChain Stage spec advance n 0 (initStage i))
-      (fun i => Spec.Decoration.stateChain roles n 0 (initStage i))
-      StatementIn
-      WitnessIn
-      (fun i => Spec.Transcript.stateChainFamily VerifierState n 0 (initStage i))
-      (fun i => Spec.Transcript.stateChainFamily ProverState n 0 (initStage i)) where
-  prover i stmt w := do
-    let a ← proverInit i stmt w
-    let strat ← Spec.Strategy.stateChainCompWithRoles proverStep n 0 (initStage i) a
-    pure <| Spec.Strategy.mapOutputWithRoles (fun tr pOut => ⟨stmtResult i stmt tr, pOut⟩) strat
-  verifier i stmt :=
-    Spec.Counterpart.stateChainComp verifierStep n 0 (initStage i) (verifierInit i stmt)
-
-/- ! ## Chain-based (stateless) reduction composition
-
-Reduction composition over an `n`-round protocol described by `Spec.Chain`,
-with **no prover state, no verifier state, and no round index family**.
-
-Each participant provides a per-round step that receives the remaining
-`Chain` and produces the strategy/counterpart for the current round.
-The remaining chain implicitly encodes prior transcript context
-(since it was obtained by applying prior transcripts to the original
-continuation). No state flows between rounds (per-round outputs are `PUnit`).
-The final `StatementOut` and `WitnessOut` are computed from the full
-transcript via caller-supplied result functions.  -/
-
-namespace Spec
-
-/- - Build a `Decoration S` for `Chain.toSpec n c` from per-round decorators.
-At each level, the decorator receives the remaining `Chain` and
-produces the decoration for the current round's spec.  -/
-def Decoration.ofChain {S : Type u → Type v}
-    (decoAt : {k : Nat} → (rem : Chain.{u} (k + 1)) → Decoration S rem.1) :
-    (n : Nat) → (c : Chain.{u} n) → Decoration S (Chain.toSpec n c)
-  | 0, _ => ⟨⟩
-  | n + 1, ⟨spec, cont⟩ =>
-      Decoration.append (decoAt ⟨spec, cont⟩)
-        (fun tr => Decoration.ofChain decoAt n (cont tr))
-
-namespace Chain
-
-/- - Build a `RoleDecoration` for the full spec from per-round role
-assignments. Specializes `Decoration.ofChain` to `fun _ => Role`.  -/
-abbrev roles
-    (rolesAt : {k : Nat} → (rem : Chain.{u} (k + 1)) → RoleDecoration rem.1) :
-    (n : Nat) → (c : Chain.{u} n) → RoleDecoration (Chain.toSpec n c) :=
-  Decoration.ofChain rolesAt
-
-end Chain
-
-/- - Compose per-round prover strategies into a full strategy over the
-chain. Each round's step receives the remaining `Chain` and
-produces the strategy for that round's spec. Output is `PUnit` — no
-state flows between rounds.  -/
-def Strategy.ofChain {m : Type u → Type u} [Monad m]
-    {rolesAt : {k : Nat} → (rem : Chain.{u} (k + 1)) → RoleDecoration rem.1}
-    (step : {k : Nat} → (rem : Chain.{u} (k + 1)) →
-      m (Strategy.withRoles m rem.1 (rolesAt rem) (fun _ => PUnit.{u + 1}))) :
-    (n : Nat) → (c : Chain.{u} n) →
-    m (Strategy.withRoles m (Chain.toSpec n c)
-      (Decoration.ofChain rolesAt n c) (fun _ => PUnit.{u + 1}))
-  | 0, _ => pure ⟨⟩
-  | n + 1, ⟨spec, cont⟩ => do
-    let strat ← step ⟨spec, cont⟩
-    @Strategy.compWithRolesFlat m _ spec (fun tr => Chain.toSpec n (cont tr))
-      (rolesAt ⟨spec, cont⟩) (fun tr => Decoration.ofChain rolesAt n (cont tr))
-      (fun _ => PUnit.{u + 1}) (fun _ => PUnit.{u + 1})
-      strat (fun tr _ => Strategy.ofChain step n (cont tr))
-
-/- - Compose per-round verifier counterparts into a full counterpart over
-the chain. Each round's step receives the remaining `Chain` and
-produces the counterpart for that round's spec. Output is `PUnit`.  -/
-def Counterpart.ofChain {m : Type u → Type u} [Monad m]
-    {rolesAt : {k : Nat} → (rem : Chain.{u} (k + 1)) → RoleDecoration rem.1}
-    (step : {k : Nat} → (rem : Chain.{u} (k + 1)) →
-      Counterpart m rem.1 (rolesAt rem) (fun _ => PUnit.{u + 1})) :
-    (n : Nat) → (c : Chain.{u} n) →
-    Counterpart m (Chain.toSpec n c)
-      (Decoration.ofChain rolesAt n c) (fun _ => PUnit.{u + 1})
-  | 0, _ => ⟨⟩
-  | n + 1, ⟨spec, cont⟩ =>
-    @Counterpart.appendFlat m _ spec (fun tr => Chain.toSpec n (cont tr))
-      (rolesAt ⟨spec, cont⟩) (fun tr => Decoration.ofChain rolesAt n (cont tr))
-      (fun _ => PUnit.{u + 1}) (fun _ => PUnit.{u + 1})
-      (step ⟨spec, cont⟩)
-      (fun tr _ => Counterpart.ofChain step n (cont tr))
-
-end Spec
-
-/- - Compose per-round prover and verifier steps into a full `Reduction`
-over an `n`-round `Chain`. No `ProverState`, `VerifierState`, or
-round index family. Per-round steps produce `PUnit` — no state flows
-between rounds. The final `StatementOut` and `WitnessOut` are computed
-from the full transcript via `stmtResult` and `witResult`.  -/
-def Reduction.ofChain {m : Type u → Type u} [Monad m]
-    {SharedIn : Type v}
-    {WitnessIn : SharedIn → Type w}
-    {n : Nat}
-    {c : SharedIn → Spec.Chain.{u} n}
-    {rolesAt : {k : Nat} → (rem : Spec.Chain.{u} (k + 1)) → RoleDecoration rem.1}
-    {StatementOut WitnessOut : (i : SharedIn) →
-      Spec.Transcript (Spec.Chain.toSpec n (c i)) → Type u}
-    (proverRound : (i : SharedIn) → WitnessIn i →
-      {k : Nat} → (rem : Spec.Chain.{u} (k + 1)) →
-        m (Spec.Strategy.withRoles m rem.1 (rolesAt rem) (fun _ => PUnit.{u + 1})))
-    (verifierRound : (i : SharedIn) →
-      {k : Nat} → (rem : Spec.Chain.{u} (k + 1)) →
-        Spec.Counterpart m rem.1 (rolesAt rem) (fun _ => PUnit.{u + 1}))
-    (witResult : (i : SharedIn) →
-      (tr : Spec.Transcript (Spec.Chain.toSpec n (c i))) → WitnessOut i tr)
-    (stmtResult : (i : SharedIn) →
-      (tr : Spec.Transcript (Spec.Chain.toSpec n (c i))) → StatementOut i tr) :
-    Reduction m SharedIn
-      (fun i => Spec.Chain.toSpec n (c i))
-      (fun i => Spec.Decoration.ofChain rolesAt n (c i))
-      (fun _ => PUnit)
-      WitnessIn
-      StatementOut WitnessOut where
-  prover i _ w := do
-    let strat ← Spec.Strategy.ofChain (rolesAt := rolesAt) (proverRound i w) n (c i)
-    pure <| Spec.Strategy.mapOutputWithRoles
-      (fun tr _ => ⟨stmtResult i tr, witResult i tr⟩) strat
-  verifier i _ :=
-    Spec.Counterpart.mapOutput (fun tr _ => stmtResult i tr)
-      (Spec.Counterpart.ofChain (rolesAt := rolesAt) (verifierRound i) n (c i))
+  convert congrArg (fun run => mapRun <$> run) (TwoParty.run_comp_append
+      (r₂ := fun tr₁ => roles₂ i tr₁)
+      (FP := fun tr₁ tr₂ => HonestProverOutput (StmtOut i tr₁ tr₂) (WitOut i tr₁ tr₂))
+      (FC := fun tr₁ tr₂ => StmtOut i tr₁ tr₂)
+      (strat₁ := strategy₁)
+      (f := fun tr₁ midOut => reduction₂.prover ⟨i, stmt, tr₁⟩ midOut.stmt midOut.wit)
+      (cpt₁ := reduction₁.verifier i stmt)
+      (cpt₂ := fun tr₁ stmtMid => reduction₂.verifier ⟨i, stmt, tr₁⟩ stmtMid)) using 1 <;>
+    simp only [mapRun, counterpart, map_bind, map_pure] <;> rfl
 
 end Interaction
-
--/

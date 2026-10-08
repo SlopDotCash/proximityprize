@@ -43,7 +43,7 @@ noncomputable def gaussianCoeff (d r : ℕ) : ℚ :=
 /-- **Term-by-term factor bound**: `∏ 1/(mᵢ!)² ≤ ∏ 1/mᵢ!` (each `1/mᵢ! ≤ 1`). -/
 theorem energy_term_le {d : ℕ} (m : Fin d → ℕ) :
     ∏ i, (1 : ℚ) / (Nat.factorial (m i))^2 ≤ ∏ i, (1 : ℚ) / (Nat.factorial (m i)) := by
-  apply Finset.prod_le_prod
+  apply Finset.prod_le_prod₀
   · intro i _
     positivity
   · intro i _

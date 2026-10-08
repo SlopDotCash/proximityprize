@@ -567,8 +567,12 @@ theorem epsCA_eq_of_floor_eq (C : Set (ι → A)) (δ_fld δ_int δ_int' : ℝ�
   -- whenever the floors agree.
   have h_iff : jointProximity (C := C) (u := u) δ_int ↔
                jointProximity (C := C) (u := u) δ_int' := by
-    unfold jointProximity
-    rw [relDistFromCode_le_iff_distFromCode_le, relDistFromCode_le_iff_distFromCode_le, h]
+    have h₁ := relDistFromCode_le_iff_distFromCode_le
+      (C := interleavedCodeSet C) (fun j => (⋈|u : InterleavedWord A (Fin 2) ι) j) δ_int
+    have h₂ := relDistFromCode_le_iff_distFromCode_le
+      (C := interleavedCodeSet C) (fun j => (⋈|u : InterleavedWord A (Fin 2) ι) j) δ_int'
+    rw [h] at h₁
+    exact h₁.trans h₂.symm
   by_cases hjp : jointProximity (C := C) (u := u) δ_int
   · rw [if_pos hjp, if_pos (h_iff.mp hjp)]
   · rw [if_neg hjp, if_neg (mt h_iff.mpr hjp)]
@@ -730,7 +734,7 @@ theorem line_close_probability_le_epsCA_of_not_jointProximity
     Pr_{let γ ← $ᵖ F}[δᵣ(u 0 + γ • u 1, C) ≤ δ_fld] ≤
       epsCA (F := F) C δ_fld δ_int := by
   unfold epsCA
-  simpa [hjp] using
+  simpa only [if_neg hjp] using
     (le_iSup
       (f := fun u : WordStack A (Fin 2) ι =>
         if jointProximity (C := C) (u := u) δ_int then (0 : ENNReal)

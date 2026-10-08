@@ -184,6 +184,8 @@ lemma frsCode_one_map_eq_rsCode {ι : Type} [Fintype ι] [DecidableEq ι]
   · rintro ⟨f, hf, rfl⟩
     rw [mem_frsCode_one_iff_mem_rsCode] at hf
     convert hf using 1
+    ext i
+    rfl
   · intro hg
     refine ⟨fun i _ ↦ g i, ?_, ?_⟩
     · rw [mem_frsCode_one_iff_mem_rsCode]

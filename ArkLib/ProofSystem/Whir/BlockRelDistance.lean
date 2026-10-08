@@ -322,11 +322,11 @@ lemma relHammingDist_le_blockRelDistance
     rw [hhdef, hppdef, hddef]; exact_mod_cast hcount
   -- `hh / (pp * cc) = (hh / pp) / cc ≤ dd / cc`.
   rw [← div_div]
-  rcases eq_or_lt_of_le (zero_le cc) with hcc | hcc
+  rcases eq_or_lt_of_le (zero_le : 0 ≤ cc) with hcc | hcc
   · -- `cc = 0`: both sides are `_ / 0 = 0`.
     simp [← hcc]
   · rw [div_le_div_iff_of_pos_right hcc]
-    exact div_le_of_le_mul₀ (zero_le pp) (zero_le dd) (by rwa [mul_comm] at hcount')
+    exact div_le_of_le_mul₀ (zero_le : 0 ≤ pp) (zero_le : 0 ≤ dd) (by rwa [mul_comm] at hcount')
 
 omit [Pow ι ℕ] in
 /-- Claim 4.19, Part 2

@@ -144,7 +144,7 @@ theorem z_pow_fifteen : z ^ 15 = y := by decide
 theorem lambdaValue_eq_locatorLambda :
     lambdaValue =
       HalfPredecessorRateQuarterMu16Locator.locatorLambda z := by
-  decide
+  decide +kernel
 
 /-- Values of the three line directions on the isolated hole fibre. -/
 def holeValue : Fin 3 → F := ![

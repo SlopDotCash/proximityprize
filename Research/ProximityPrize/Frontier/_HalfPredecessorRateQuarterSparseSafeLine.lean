@@ -62,6 +62,13 @@ theorem zeroAgreementTrace_card (c u0 u1 : Fin 16 -> F) :
       directionZeroAgreementSet c u0 u1 := by
     ext i
     simp [zeroAgreementTrace, directionZeroAgreementSet, e, and_comm]
+    constructor
+    · rintro ⟨a, ha, hzero, heq⟩
+      change a = i at heq
+      subst a
+      exact ⟨ha, hzero⟩
+    · rintro ⟨ha, hzero⟩
+      exact ⟨i, ha, hzero, rfl⟩
   calc
     (zeroAgreementTrace c u0 u1).card =
         ((zeroAgreementTrace c u0 u1).map e).card := by rw [Finset.card_map]

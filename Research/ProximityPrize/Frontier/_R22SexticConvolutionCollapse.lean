@@ -136,10 +136,9 @@ theorem pureFace_cube (hgrp : DualFamilyGroupLaw m lam) (J : ZMod m → ℂ) (s 
         refine Finset.sum_nbij' (fun d => d - j) (fun c => c + j) ?_ ?_ ?_ ?_ ?_
         · intro d _; exact Finset.mem_univ _
         · intro c _; exact Finset.mem_univ _
-        · intro d _; dsimp only; ring
-        · intro c _; dsimp only; ring
+        · intro d _; ring
+        · intro c _; ring
         · intro d _
-          dsimp only
           congr 2
           ring
 

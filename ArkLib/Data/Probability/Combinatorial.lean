@@ -432,7 +432,7 @@ theorem exists_large_image_of_pairwise_collision_bound
     have hA_lt_K : A < (N : ENNReal) / δ := h_neg φ hφ
     -- A < K = N/δ ⇒ K > 0 ⇒ N ≠ 0 ∧ δ ≠ ⊤.
     have hK_pos : (0 : ENNReal) < (N : ENNReal) / δ :=
-      lt_of_le_of_lt (zero_le _) hA_lt_K
+      lt_of_le_of_lt zero_le hA_lt_K
     obtain ⟨hN_ne, _hδ_ne_top⟩ := ENNReal.div_pos_iff.mp hK_pos
     have hN_ne_top : (N : ENNReal) ≠ ⊤ := ENNReal.natCast_ne_top _
     -- A · δ < N (from A < N/δ).

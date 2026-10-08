@@ -2433,7 +2433,8 @@ theorem isPrimitiveRoot_3_16_ratio_zmod17 : IsPrimitiveRoot (3 : ZMod 17) 16 := 
 /-- At the bad prime `17`, the canonical ratio for `ζ = 3` is itself a 16-th root. -/
 theorem invariantRatio_3_sq_pow16_eq_one_zmod17 :
     invariantRatio (3 : ZMod 17) ((3 : ZMod 17) ^ 2) ^ 16 = 1 := by
-  decide
+  unfold invariantRatio
+  decide +kernel
 
 /-- Equivalently, the denominator-cleared polynomial obstruction vanishes in `F₁₇`. -/
 theorem polynomial_eq_3_sq_pow16_zmod17 :

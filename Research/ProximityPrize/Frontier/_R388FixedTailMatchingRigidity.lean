@@ -71,7 +71,7 @@ theorem left_controlled
       apply eq_freeCoord_of_mem_internal σ hcard
       rw [internalLeftEdges, Finset.mem_filter]
       refine ⟨hmate, ?_, ?_⟩
-      · simpa only [hσ.1 i] using hgt
+      · simpa only [hσ.1 i] using (show (σ i).val < i.val from hgt)
       · simpa only [hσ.1 i] using hi
   · exact Or.inl hmate
 

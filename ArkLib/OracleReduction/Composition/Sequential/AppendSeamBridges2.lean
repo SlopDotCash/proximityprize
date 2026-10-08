@@ -52,7 +52,7 @@ open scoped ENNReal NNReal
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -126,13 +126,15 @@ private theorem lift_oc_optionT_coh_right' {α : Type}
 /-- **`OptionT`-level lift transitivity through the `pSpec₂` challenge seam.** The `pSpec₂` analogue
 of `OracleReduction.hcoh`: lifting an `OptionT (OracleComp oSpec)` computation directly into the
 *combined* challenge oracle equals first lifting it into `pSpec₂`'s own challenge oracle then across.
-Same `OptionT.ext`/`simulateQ_compose` normalization (the intermediate oracle is arbitrary). -/
+Use `OptionT.ext` and proved composition of `OracleComp.liftComp` query embeddings. -/
 private theorem hcoh_right' {α : Type} (oa : OptionT (OracleComp oSpec) α) :
     (liftM oa : OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) α)
     = liftM (liftM oa : OptionT (OracleComp (oSpec + [pSpec₂.Challenge]ₒ)) α) := by
   apply OptionT.ext
-  simp only [liftM, MonadLiftT.monadLift, MonadLift.monadLift, OptionT.run_mk,
-    ← QueryImpl.simulateQ_compose]
+  change OracleComp.liftComp oa.run _ =
+    OracleComp.liftComp (OracleComp.liftComp oa.run (oSpec + [pSpec₂.Challenge]ₒ)) _
+  exact (Prover.liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₂.Challenge]ₒ)
+    (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl) oa.run).symm
 
 /-! ### The stage bodies are `liftM` of the per-phase reduction run -/
 

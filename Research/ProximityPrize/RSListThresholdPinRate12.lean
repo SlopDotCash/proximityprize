@@ -119,7 +119,7 @@ theorem rs_ld_threshold_pin_rate12
       (((1 : ℝ≥0) / 2 ^ 128 : ℝ≥0) : ENNReal) * (Fintype.card F : ENNReal) := by
     have hr : (1 : ℝ≥0) ≤ ((1 : ℝ≥0) / 2 ^ 128) * (Fintype.card F : ℝ≥0) := by
       have hFr : (2 : ℝ≥0) ^ 128 ≤ (Fintype.card F : ℝ≥0) := by exact_mod_cast hF
-      have hmul := mul_le_mul_left' hFr ((1 : ℝ≥0) / 2 ^ 128)
+      have hmul := mul_le_mul_right hFr ((1 : ℝ≥0) / 2 ^ 128)
       have hone : ((1 : ℝ≥0) / 2 ^ 128) * (2 : ℝ≥0) ^ 128 = 1 := by
         rw [one_div, inv_mul_cancel₀ h2ne]
       rwa [hone] at hmul

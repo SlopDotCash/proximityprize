@@ -94,7 +94,7 @@ theorem epsMCA_le_of_lt_latticeRadius_of_predecessor_good
       rwa [latticeRadius_mul_length] at hmul
     have hfloorDelta :
         Nat.floor (delta * (Fintype.card (Fin n) : ℝ≥0)) = a - 1 := by
-      rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le _)]
+      rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le)]
       constructor
       · exact hlower
       · have hsucc : a - 1 + 1 = a := by omega

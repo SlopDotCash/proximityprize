@@ -304,7 +304,7 @@ theorem antipodal_pencil_epsMCA_lower_bound {p n : ℕ} [Fact p.Prime] [NeZero n
         have hpos : (0 : ℕ) < 2 * h := by omega
         exact_mod_cast hpos.ne'
       have hle1 : ((h + 1 : ℕ) : ℝ≥0) / ((2 * h : ℕ) : ℝ≥0) ≤ 1 := by
-        rw [div_le_one (lt_of_le_of_ne (zero_le _) (Ne.symm hn0))]
+        rw [div_le_one (lt_of_le_of_ne (zero_le) (Ne.symm hn0))]
         exact_mod_cast (by omega : h + 1 ≤ 2 * h)
       have h1δ : (1 : ℝ≥0) - (1 - ((h + 1 : ℕ) : ℝ≥0) / ((2 * h : ℕ) : ℝ≥0))
           = ((h + 1 : ℕ) : ℝ≥0) / ((2 * h : ℕ) : ℝ≥0) := tsub_tsub_cancel_of_le hle1

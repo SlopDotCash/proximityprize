@@ -692,7 +692,7 @@ theorem card_S (j : Fin 3) : (S j).card = 715128832 := by
 
 theorem card_E (j : Fin 3) : (E j).card = 358612992 := by
   have hcount : ((Finset.range 1024).filter fun b => b ∉ SLab j).card = 342 := by
-    have hkey := Finset.filter_card_add_filter_neg_card_eq_card
+    have hkey := Finset.card_filter_add_card_filter_not
       (s := Finset.range 1024) (p := fun b => b ∈ SLab j)
     rw [filter_mem_SLab, card_SLab, Finset.card_range] at hkey
     omega

@@ -53,7 +53,7 @@ theorem subgroupIndicator_zeros_card {d : ℕ} (hd : d ∣ N) :
       (univ.filter (fun j => (subgroupIndicator (N := N) d) j = 0)).card
         + (supp (subgroupIndicator (N := N) d)).card = N := by
     rw [supp]
-    have := Finset.filter_card_add_filter_neg_card_eq_card
+    have := Finset.card_filter_add_card_filter_not
       (s := (univ : Finset (ZMod N)))
       (p := fun j => (subgroupIndicator (N := N) d) j = 0)
     simpa [ZMod.card, eq_comm, Finset.filter_not] using this

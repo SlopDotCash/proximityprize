@@ -55,7 +55,7 @@ theorem ballInterCount_zero_eq (r : ℕ) :
   unfold ballInterCount
   congr 1
   ext x
-  simp
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and, and_self]
 
 /-- **Covered-fraction lower bound (high-distance linear code).**  Combining the exact second moment
 with the CS25 Paley-Zygmund inequality, the covered set is at least the first-moment count:

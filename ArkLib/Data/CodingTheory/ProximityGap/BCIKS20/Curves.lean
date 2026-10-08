@@ -1461,7 +1461,7 @@ theorem errorBound_ge_succ_const_of_strict_johnson {deg : ℕ} {domain : ι ↪ 
     simp [hm]
   have hm_nonneg : 0 ≤ m := by
     have h1 : (0 : ℝ) ≤ (↑(1 - sqrt r - δ) : ℝ) := by
-      exact_mod_cast (show (0 : ℝ≥0) ≤ (1 - sqrt r - δ) from zero_le _)
+      exact_mod_cast (show (0 : ℝ≥0) ≤ (1 - sqrt r - δ) from zero_le)
     have h2 : (0 : ℝ) ≤ Real.sqrt (r : ℝ) / 20 := by
       have : (0 : ℝ) ≤ Real.sqrt (r : ℝ) := Real.sqrt_nonneg _
       nlinarith
@@ -1837,7 +1837,7 @@ lemma RS_le_relativeUniqueDecodingRadius_of_le_rate_half {deg : ℕ} {domain : �
       simp [hmin, hcard_ne]
     have hδ0 : δ ≤ 0 := by
       simpa [hrate_eq] using hδ
-    exact le_trans hδ0 (zero_le _)
+    exact le_trans hδ0 (zero_le)
 
 omit [DecidableEq ι] in
 /-- Final curve theorem with the two list-decoding obligations made explicit.
@@ -2889,7 +2889,7 @@ private lemma exists_polynomialCurve_through {n l : ℕ} {F : Type} [Field F]
     fun x => Lagrange.interpolate Finset.univ zs (fun j => w j x) with hP
   have hdeg : ∀ x, (P x).degree < (l : WithBot ℕ) := by
     intro x
-    simpa using Lagrange.degree_interpolate_lt (s := (Finset.univ : Finset (Fin l)))
+    simpa [P] using Lagrange.degree_interpolate_lt (s := (Finset.univ : Finset (Fin l)))
       (v := zs) (r := fun j => w j x) (fun a _ b _ hab => hinj hab)
   refine ⟨fun i x => (P x).coeff i, ?_⟩
   intro j

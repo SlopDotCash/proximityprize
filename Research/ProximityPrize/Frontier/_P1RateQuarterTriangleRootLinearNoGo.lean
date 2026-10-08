@@ -98,15 +98,15 @@ theorem exists_nonzero_threePairRoot_solution
   · intro i hi
     have hx := congrArg
       (fun out : (A → F) × (B → F) × (C → F) => out.1 ⟨i, hi⟩) hLzero
-    simpa only [L, triangleRootConstraintMap, Pi.zero_apply] using hx
+    exact hx
   · intro i hi
     have hx := congrArg
       (fun out : (A → F) × (B → F) × (C → F) => out.2.1 ⟨i, hi⟩) hLzero
-    simpa only [L, triangleRootConstraintMap, Pi.zero_apply] using hx
+    exact hx
   · intro i hi
     have hx := congrArg
       (fun out : (A → F) × (B → F) × (C → F) => out.2.2 ⟨i, hi⟩) hLzero
-    simpa only [L, triangleRootConstraintMap, Pi.zero_apply] using hx
+    exact hx
 
 end ArkLib.ProximityGap.Frontier.P1RateQuarterTriangleRootLinearNoGo
 

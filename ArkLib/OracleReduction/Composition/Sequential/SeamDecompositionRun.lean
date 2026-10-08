@@ -127,7 +127,11 @@ theorem fst_processRound_left_message (P : Prover oSpec Stmt₁ Wit₁ Stmt₃ W
   have hcollapse : (liftM (liftM ((Prover.fst P).sendMessage ⟨i, hDir₁⟩ s') :
         OracleComp (oSpec + [pSpec₁.Challenge]ₒ) _) :
         OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _)
-      = liftM ((Prover.fst P).sendMessage ⟨i, hDir₁⟩ s' : OracleComp oSpec _) := rfl
+      = liftM ((Prover.fst P).sendMessage ⟨i, hDir₁⟩ s' : OracleComp oSpec _) := by
+    simpa only [liftComp_eq_liftM] using
+      (liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
+        (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
+        (fun t => rfl) ((Prover.fst P).sendMessage ⟨i, hDir₁⟩ s'))
   rw [hcollapse]
   apply bind_heq_congr (spec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
     (β := (pSpec₁ ++ₚ pSpec₂).Transcript (Fin.castLE (show m ≤ m + n by omega) i).succ
@@ -147,16 +151,7 @@ theorem fst_processRound_left_message (P : Prover oSpec Stmt₁ Wit₁ Stmt₃ W
         ((Prover.fst P).sendMessage ⟨i, hDir₁⟩ s') :=
       (fst_sendMessage_left P i hDir hDir₁ s).trans
         (sendMessage_heq_congr rfl ((cast_heq _ _).trans hs))
-    change HEq (OracleComp.liftComp (P.sendMessage ⟨Fin.castLE (show m ≤ m + n by omega) i, hDir⟩ s)
-            (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-        (OracleComp.liftComp
-          (OracleComp.liftComp ((Prover.fst P).sendMessage ⟨i, hDir₁⟩ s')
-            (oSpec + [pSpec₁.Challenge]ₒ))
-          (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-    rw [liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
-      (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)
-      ((Prover.fst P).sendMessage ⟨i, hDir₁⟩ s')]
-    exact liftComp_heq_congr (spec := oSpec)
+    exact liftM_heq_congr (spec := oSpec)
       (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) hαeq hbase
   · rintro ⟨msg, ns⟩ ⟨msg', ns'⟩ hmsg
     refine pure_heq_pure (spec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
@@ -207,7 +202,11 @@ theorem fst_processRound_left_challenge (P : Prover oSpec Stmt₁ Wit₁ Stmt₃
     have hcollapse : (liftM (liftM ((Prover.fst P).receiveChallenge ⟨i, hDir₁⟩ s') :
           OracleComp (oSpec + [pSpec₁.Challenge]ₒ) _) :
           OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _)
-        = liftM ((Prover.fst P).receiveChallenge ⟨i, hDir₁⟩ s' : OracleComp oSpec _) := by rfl
+        = liftM ((Prover.fst P).receiveChallenge ⟨i, hDir₁⟩ s' : OracleComp oSpec _) := by
+      simpa only [liftComp_eq_liftM] using
+        (liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
+          (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
+          (fun t => rfl) ((Prover.fst P).receiveChallenge ⟨i, hDir₁⟩ s'))
     rw [hcollapse]
     have hrecvBase : HEq (P.receiveChallenge ⟨Fin.castLE (show m ≤ m + n by omega) i, hDir⟩ s)
         ((Prover.fst P).receiveChallenge ⟨i, hDir₁⟩ s') :=
@@ -226,17 +225,7 @@ theorem fst_processRound_left_challenge (P : Prover oSpec Stmt₁ Wit₁ Stmt₃
             → P.PrvState (Fin.castLE (show m ≤ m + n by omega) i).succ)
           = (pSpec₁.Challenge ⟨i, hDir₁⟩ → (Prover.fst P).PrvState i.succ) := by
         rw [hChalEq, fst_PrvState_succ' P i]
-      change HEq (OracleComp.liftComp
-              (P.receiveChallenge ⟨Fin.castLE (show m ≤ m + n by omega) i, hDir⟩ s)
-              (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-          (OracleComp.liftComp
-            (OracleComp.liftComp ((Prover.fst P).receiveChallenge ⟨i, hDir₁⟩ s')
-              (oSpec + [pSpec₁.Challenge]ₒ))
-            (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-      rw [liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
-        (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)
-        ((Prover.fst P).receiveChallenge ⟨i, hDir₁⟩ s')]
-      exact liftComp_heq_congr (spec := oSpec)
+      exact liftM_heq_congr (spec := oSpec)
         (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) hαeq hrecvBase
     · rintro fA f₁ hf
       refine pure_heq_pure (spec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
@@ -785,7 +774,7 @@ theorem merge_runToRound (P : Prover oSpec Stmt₁ Wit₁ Stmt₃ Wit₃ (pSpec�
     rw [Prover.runToRound_zero_of_prover_first, Prover.runToRound_zero_of_prover_first]
     have hS0 : ((Prover.fst P).append (Prover.snd P)).PrvState 0 = P.PrvState 0 := by
       have h := append_PrvState_castLE (P₁ := Prover.fst P) (P₂ := Prover.snd P) (0 : Fin (m + 1))
-      simpa using h
+      simpa [Prover.fst] using h
     refine pure_heq_pure (by rw [hS0]) ?_
     refine prodMk_heq rfl hS0 HEq.rfl ?_
     exact append_input_heq (P₁ := Prover.fst P) (P₂ := Prover.snd P)

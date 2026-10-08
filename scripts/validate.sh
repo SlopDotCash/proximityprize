@@ -19,6 +19,7 @@ Default checks (mirrors the CI gates so local == CI):
   - python3 -m unittest discover -s scripts/tests (Python regressions)
   - python3 ./scripts/forbidden_tokens.py          (CI gate 1, precheck)
   - lake build
+  - CompPoly KoalaBear fresh kernel replay
   - python3 ./scripts/sorry_census.py --fail-on-holes  (CI gate 2)
   - python3 ./scripts/axiom_audit.py                   (CI gate 3)
   - ./scripts/check-imports.sh
@@ -68,6 +69,34 @@ python3 ./scripts/forbidden_tokens.py
 echo ""
 echo "# Building project"
 ./scripts/lake-locked.sh build
+
+# Recheck imported KoalaBear irreducibility proof closures, including quotient consistency.
+echo "# CompPoly fresh kernel replay"
+./scripts/lake-locked.sh build CompPolyTests.Fields.KoalaBear.FreshReplay
+
+# Native dependent-witness, false-middle-path, and failing-execution regressions.
+echo "# Native security clients"
+./scripts/lake-locked.sh build ArkLibTest.Interaction.Oracle.Security.KnowledgeComposition \
+  ArkLibTest.Interaction.Oracle.Security.Soundness \
+  ArkLibTest.Interaction.Oracle.Security.StateRestoration \
+  ArkLibTest.Interaction.Oracle.Security.StateRestorationBudget \
+  ArkLibTest.Data.Fin \
+  ArkLibTest.ToVCVio.EvalDist.ProbabilityBounds \
+  ArkLibTest.OracleReduction.ProtocolSpec \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.FiniteObservation \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.CheckedObservation \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.Polynomial \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.Relations \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.Batching \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.SeparateFields \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.Multiplier \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.ScalarHead.Layout \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.ScalarHead.Quirky \
+  ArkLibTest.ProofSystem.RingSwitching.Packing.ProfileCoordinates \
+  ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout \
+  ArkLibTest.ProofSystem.Stir.ParamConditions \
+  ArkLibTest.ProofSystem.Stir.PaperStatements \
+  ArkLibTest.ProofSystem.Stir.ProximityGap
 
 # CI gate 2: zero live sorry/admit holes in both library and research source.
 echo ""

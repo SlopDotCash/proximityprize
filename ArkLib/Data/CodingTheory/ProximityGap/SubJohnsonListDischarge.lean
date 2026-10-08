@@ -49,11 +49,11 @@ theorem rsCode_pairwise_agree_le (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k)
   obtain ⟨Q, hQ, rfl⟩ := hc'
   have hPk : P.natDegree < k := by
     rcases eq_or_ne P 0 with rfl | hP0
-    · simpa using hk
+    · simpa only [Polynomial.natDegree_zero] using (show 0 < k by omega)
     · exact (Polynomial.natDegree_lt_iff_degree_lt hP0).mpr hP
   have hQk : Q.natDegree < k := by
     rcases eq_or_ne Q 0 with rfl | hQ0
-    · simpa using hk
+    · simpa only [Polynomial.natDegree_zero] using (show 0 < k by omega)
     · exact (Polynomial.natDegree_lt_iff_degree_lt hQ0).mpr hQ
   have hPQ : P ≠ Q := by
     intro h; exact hne (by rw [h])

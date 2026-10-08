@@ -17,7 +17,7 @@ totality (`hTot`). The two stage-body `liftM` factorings are proven in `AppendSe
 residuals and assembles:
 
 * `Reduction.appendStage1Bridge` — the `Prod.fst`-marginal of the state-threaded phase-1 stage game
-  (run under the *combined* challenge oracle) has the same `evalDist` as the phase-1 completeness
+  (run under the *combined* challenge oracle) has the same `evalSPMF` as the phase-1 completeness
   game `gameOf R₁` (run under `pSpec₁`'s own challenge oracle). Via `appendStage₁_run_eq_liftM` +
   the proven challenge-seam bridge `evalDist_run'_challengeSeam_left`.
 * `Reduction.appendStage2Bridge` — for each phase-1 success, the phase-2 stage game's bad event
@@ -43,7 +43,7 @@ open scoped ENNReal NNReal
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -100,21 +100,21 @@ theorem appendStage1Bridge
     (R₁ : Reduction oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁)
     (R₂ : Reduction oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂)
     (stmt : Stmt₁) (wit : Wit₁) :
-    evalDist (Prod.fst <$> (init >>= fun s =>
+    evalSPMF (Prod.fst <$> (init >>= fun s =>
         StateT.run (simulateQ (impl.addLift challengeQueryImpl)
           (OptionT.run (appendStage₁ R₁ R₂ stmt wit))) s))
-      = evalDist (gameOf init impl R₁ stmt wit) := by
+      = evalSPMF (gameOf init impl R₁ stmt wit) := by
   rw [appendStage₁_run_eq_liftM]
-  show evalDist (Prod.fst <$> (init >>= fun s =>
+  show evalSPMF (Prod.fst <$> (init >>= fun s =>
       (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂)) :
         QueryImpl _ (StateT σ ProbComp))
         (liftM ((R₁.run stmt wit).run) :
           OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _)).run s))
-    = evalDist (init >>= fun s =>
+    = evalSPMF (init >>= fun s =>
       (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁)) :
         QueryImpl _ (StateT σ ProbComp)) ((R₁.run stmt wit).run)).run' s)
   simp only [map_bind]
-  rw [evalDist_bind, evalDist_bind]
+  rw [evalSPMF_bind, evalSPMF_bind]
   refine bind_congr fun s => ?_
   rw [← StateT.run'_eq]
   exact OracleReduction.evalDist_run'_challengeSeam_left impl (R₁.run stmt wit).run s
@@ -130,7 +130,7 @@ theorem appendStage2Bridge
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s'))
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s'))
     (a : (FullTranscript pSpec₁ × Stmt₂ × Wit₂) × Stmt₂) (s' : σ)
     (hgood : goodOf m pSpec₁ rel₂ a) :
     Pr[fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)
@@ -169,13 +169,13 @@ theorem appendStage2Bridge
         init >>= fun _ => (simulateQ
           (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) : QueryImpl _ (StateT σ ProbComp))
           (R₂.run a.2 a.1.2.2).run).run' s'] := by
-    have hed : evalDist (init >>= fun s => (simulateQ
+    have hed : evalSPMF (init >>= fun s => (simulateQ
           (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) : QueryImpl _ (StateT σ ProbComp))
           (R₂.run a.2 a.1.2.2).run).run' s)
-        = evalDist (init >>= fun _ => (simulateQ
+        = evalSPMF (init >>= fun _ => (simulateQ
           (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) : QueryImpl _ (StateT σ ProbComp))
           (R₂.run a.2 a.1.2.2).run).run' s') := by
-      rw [evalDist_bind, evalDist_bind]
+      rw [evalSPMF_bind, evalSPMF_bind]
       refine bind_congr fun s => ?_
       exact evalDist_simulateQ_run'_state_indep _ (addLift_state_preserving impl himplSP)
         (addLift_value_blind impl himplVB) _ s s'
@@ -221,7 +221,7 @@ theorem append_completeness_msg
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
     (R₁.append R₂).completeness init impl rel₁ rel₃ (e₁ + e₂) :=
   append_completeness_msg_via_seamFactor R₁ R₂ h₁ h₂ hn hDir hDir₂ himplSP himplNF
     (fun stmt wit _ => appendStage1Bridge R₁ R₂ stmt wit)
@@ -232,7 +232,7 @@ end Reduction
 
 namespace OracleReduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
     {m n : ℕ}
     {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type}
     [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)]
@@ -273,7 +273,7 @@ theorem append_completeness_msg
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
     (R₁.append R₂).completeness init impl rel₁ rel₃ (e₁ + e₂) := by
   change Reduction.completeness init impl rel₁ rel₃ (R₁.append R₂).toReduction (e₁ + e₂)
   rw [show (R₁.append R₂).toReduction = R₁.toReduction.append R₂.toReduction from
@@ -301,7 +301,7 @@ theorem appendCompletenessResidual_msg
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
     appendCompletenessResidual R₁ R₂ h₁ h₂ :=
   append_completeness_msg R₁ R₂ h₁ h₂ hn hDir hDir₂ himplSP himplNF himplVB
 

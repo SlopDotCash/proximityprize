@@ -95,7 +95,7 @@ theorem curveListSize_le_pow_of_rowList_le (C : Set (ι → A)) (ℓ : ℕ) (δ 
   classical
   refine le_trans (curveListSize_le_prod_rowList C ℓ δ u f asgn) ?_
   calc ∏ j : Fin (ℓ + 1), (rowList C ℓ δ u f asgn j).card
-      ≤ ∏ _j : Fin (ℓ + 1), L := Finset.prod_le_prod (fun _ _ => Nat.zero_le _) (fun j _ => hrow j)
+      ≤ ∏ _j : Fin (ℓ + 1), L := Finset.prod_le_prod₀ (fun _ _ => Nat.zero_le _) (fun j _ => hrow j)
     _ = L ^ (ℓ + 1) := by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
 
 end ProximityGap.Attack05

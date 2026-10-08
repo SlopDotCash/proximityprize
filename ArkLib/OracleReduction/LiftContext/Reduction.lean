@@ -334,7 +334,7 @@ lemma OptionT.simulateQ_addLift_liftM
     simulateQ (impl + QueryImpl.liftTarget (StateT σ ProbComp) challengeQueryImpl)
       (liftM oa.run : OracleComp (oSpec + [pSpec.Challenge]ₒ) (Option α)) =
       (simulateQ impl oa.run : StateT σ ProbComp (Option α))
-  simpa using (simulateQ_addLift_liftM (impl := impl) (oa := oa.run))
+  exact _root_.simulateQ_addLift_liftM (impl := impl) (oa := oa.run)
 
 @[simp]
 lemma OptionT.simulateQ_addLift_liftQuery
@@ -348,7 +348,13 @@ lemma OptionT.simulateQ_addLift_liftQuery
           (liftM (query t : OracleComp oSpec (oSpec.Range t)) :
             OracleComp (oSpec + [pSpec.Challenge]ₒ) (oSpec.Range t))) oa) =
       (simulateQ impl oa : OptionT (StateT σ ProbComp) α) := by
-  simpa [liftM_OptionT_eq] using
+  have hq (t : oSpec.Domain) :
+      (liftM (query t : OracleComp oSpec (oSpec.Range t)) :
+        OracleComp (oSpec + [pSpec.Challenge]ₒ) (oSpec.Range t)) =
+      (liftM (oSpec.query t) : OracleComp (oSpec + [pSpec.Challenge]ₒ) (oSpec.Range t)) := by
+    rw [← liftComp_eq_liftM]
+    exact liftComp_liftM_query (oSpec + [pSpec.Challenge]ₒ) t
+  simpa only [liftM_OptionT_eq, hq] using
     (OptionT.simulateQ_addLift_liftM (impl := impl) (oa := oa))
 
 @[simp]
@@ -575,6 +581,10 @@ where
             have hEq := stF.toFun_empty (lens.proj outerStmtIn)
             rw [← hEq]
             exact hInnerNot
+          have hTr : transcript = (default : Transcript 0 pSpec) := by
+            ext i
+            exact Fin.elim0 i
+          subst transcript
           convert stF.toFun_next 0 hDir (lens.proj outerStmtIn) default hEmpty msg using 1 <;>
             simp
         | succ j =>
@@ -610,7 +620,7 @@ where
           (outerLangIn := outerLangIn) (outerLangOut := outerLangOut)
           (innerLangIn := innerLangIn) (innerLangOut := innerLangOut)
           (init := init) (impl := impl) outerStmtIn defaultTr
-      refine le_antisymm ?_ (zero_le _)
+      refine le_antisymm ?_ (zero_le)
       exact le_trans hLift (by
         rw [hInnerFull])
     · have hInnerNot : ¬ stF (.last n) (lens.proj outerStmtIn) transcript := by
@@ -623,7 +633,7 @@ where
           (outerLangIn := outerLangIn) (outerLangOut := outerLangOut)
           (innerLangIn := innerLangIn) (innerLangOut := innerLangOut)
           (init := init) (impl := impl) outerStmtIn transcript
-      refine le_antisymm ?_ (zero_le _)
+      refine le_antisymm ?_ (zero_le)
       exact le_trans hLift (by
         rw [hInnerFull])
 
@@ -688,7 +698,7 @@ theorem liftContext_runWithLogToRound
         return ⟨⟨transcript, ⟨prvState, outerStmtIn, outerWitIn⟩⟩, queryLog⟩ := by
   unfold runWithLogToRound
   induction i using Fin.induction with
-  | zero => simp [liftContext, Function.uncurry]
+  | zero => simp [liftContext, Function.uncurry, runToRound]
   | succ i ih => simp [liftContext_runToRound, Function.uncurry]
 
 /-- Running the lifted outer prover is equivalent to running the inner prover on the projected
@@ -1921,22 +1931,26 @@ def testLensE : Extractor.Lens OuterStmtIn_Test OuterStmtOut_Test InnerStmtIn_Te
 instance instTestLensComplete : testLens.IsComplete
       outerRelIn_Test innerRelIn_Test outerRelOut_Test innerRelOut_Test
       (fun ⟨⟨p, q, _⟩, _⟩ ⟨⟨f, _⟩, _⟩ => p * q = f) where
-  proj_complete := fun ⟨p, q, t⟩ () hRelIn => by simp_all
+  proj_complete := fun ⟨p, q, t⟩ () hRelIn => by
+    change (∑ x ∈ {0, 1}, (p * q).eval x) = t
+    exact hRelIn
   lift_complete := fun ⟨p, q, t⟩ _ ⟨f, t', r⟩ _ hCompat hRelIn hRelOut' => by
-    simp_all only [outerRelIn_Test, eval_mul, Finset.mem_singleton, zero_ne_one,
-      not_false_eq_true, Finset.sum_insert, Finset.sum_singleton, Set.mem_setOf_eq,
-      innerRelOut_Test, outerRelOut_Test, testLens, testStmtLens]
-    simp [← hRelOut', ← hCompat]
+    change (p * q).eval r = t'
+    change f.eval r = t' at hRelOut'
+    rw [hCompat]
+    exact hRelOut'
 
 def instTestLensKnowledgeSound : testLensE.IsKnowledgeSound
     outerRelIn_Test innerRelIn_Test outerRelOut_Test innerRelOut_Test
       (fun ⟨p, q, _⟩ ⟨f, _⟩ => p * q = f) (fun _ _ => True) where
   proj_knowledgeSound := fun ⟨p, q, t⟩ ⟨f, t', r⟩ _ h h' => by
-    simp_all only [outerRelOut_Test, eval_mul, Statement.Lens.lift,
-      testLensE, testStmtLens, Set.mem_setOf_eq, innerRelOut_Test]
-    simp [← h', ← h]
-  lift_knowledgeSound := fun ⟨p, q, t⟩ _ _ _ _ => by
-    simp_all
+    change f.eval r = t'
+    change (p * q).eval r = t' at h'
+    rw [← h]
+    exact h'
+  lift_knowledgeSound := fun ⟨p, q, t⟩ _ _ _ h => by
+    change (∑ x ∈ {0, 1}, (p * q).eval x) = t
+    exact h
 
 end
 

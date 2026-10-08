@@ -3,7 +3,11 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.Algebra.Polynomial.BigOperators
+import Mathlib.Data.Finset.Powerset
+import Mathlib.Data.Nat.Choose.Basic
+import Mathlib.Tactic
 
 /-! ## The divided-difference / Vieta pinning identity.
 
@@ -104,7 +108,6 @@ theorem witness_pin_eq_neg_sum (S : Finset F) (k : ℕ) (hScard : S.card = k + 1
     have := hmmonic; rw [Polynomial.Monic, Polynomial.leadingCoeff, hmdeg] at this; exact this
   have hcc1 : cc = 1 := by
     have h := congrArg (fun q => Polynomial.coeff q (k + 1)) hc
-    simp only at h
     rw [hPcoeff_top, Polynomial.coeff_mul_C, hm_top, one_mul] at h
     exact h.symm
   subst hcc1
@@ -115,7 +118,6 @@ theorem witness_pin_eq_neg_sum (S : Finset F) (k : ℕ) (hScard : S.card = k + 1
       simpa using this
     rw [hmdef]; rw [hScard] at hpred; simpa using hpred
   have h := congrArg (fun q => Polynomial.coeff q k) hc
-  simp only at h
   rw [hPcoeff_k, Polynomial.coeff_mul_C, hm_k, mul_one] at h
   exact h
 

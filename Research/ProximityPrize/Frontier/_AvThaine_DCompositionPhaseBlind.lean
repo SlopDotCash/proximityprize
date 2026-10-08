@@ -112,7 +112,7 @@ cancellation accrues across the lift. -/
 theorem jacobiLift_normSq_eq (J : JacobiData) (k : ℕ) :
     Complex.normSq (lift J k).val = J.fieldSize ^ (k + 1) := by
   induction k with
-  | zero => simpa using normSq_eq J
+  | zero => simpa only [lift, Nat.zero_add, pow_one] using normSq_eq J
   | succ k ih =>
     rw [show lift J (k + 1) = compose J (lift J k) from rfl,
         show (compose J (lift J k)).val = J.val * (lift J k).val from rfl,

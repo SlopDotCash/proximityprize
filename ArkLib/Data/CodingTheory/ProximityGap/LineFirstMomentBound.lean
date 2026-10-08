@@ -46,8 +46,11 @@ theorem single_vote_card (f g c : Fin n → F) (hg : ∀ i, g i ≠ 0) (i : Fin 
   classical
   rw [Finset.card_eq_one]
   refine ⟨(c i - f i) / g i, ?_⟩
-  ext γ
-  simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton, linePt]
+  apply Finset.ext
+  intro γ
+  rw [Finset.mem_filter, Finset.mem_singleton]
+  simp only [Finset.mem_univ, true_and]
+  unfold linePt
   rw [eq_div_iff (hg i)]
   constructor
   · intro h; linear_combination h

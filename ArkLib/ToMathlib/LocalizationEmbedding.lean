@@ -31,10 +31,16 @@ noncomputable def embLoc {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H
 /-- `embLoc` restricts to the embedding on `𝒪 H`. -/
 theorem embLoc_comp {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H)
     (hξ : ξ x₀ R H hHyp ≠ 0) (a : 𝒪 H) :
-    embLoc hHyp hξ (algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp)) a)
+    embLoc hHyp hξ
+      (@algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp))
+        inferInstance inferInstance inferInstance a)
       = embeddingOf𝒪Into𝕃 H a := by
-  unfold embLoc
-  exact IsLocalization.lift_eq _ a
+  unfold embLoc Localization.awayLift
+  have h := IsLocalization.Away.lift_eq (R := 𝒪 H) (P := 𝕃 H)
+    (g := embeddingOf𝒪Into𝕃 H)
+    (S := Localization.Away (ξ x₀ R H hHyp)) (ξ x₀ R H hHyp)
+    (isUnit_iff_ne_zero.mpr (emb_ξ_ne_zero hHyp hξ)) a
+  exact h
 
 set_option maxHeartbeats 1000000 in
 /-- **`embLoc` is injective** (`lift_injective_iff`: both sides reduce to `x = y` — the

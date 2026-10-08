@@ -43,7 +43,7 @@ theorem card_agree_eq_sub_hammingDist {y c : ι → α} :
     (Finset.univ.filter (fun i => c i = y i)).card
       = Fintype.card ι - hammingDist y c := by
   classical
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset ι)) (p := fun i => c i = y i)
   rw [Finset.card_univ] at hsplit
   have hdist : hammingDist y c

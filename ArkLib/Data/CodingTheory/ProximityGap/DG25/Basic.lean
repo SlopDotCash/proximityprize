@@ -197,6 +197,7 @@ lemma eq_splitHalf_iff_merge_eq {ϑ : ℕ}
         Fin.eta] at res
       exact res
 
+set_option backward.isDefEq.respectTransparency false in
 omit [Nonempty ι] [DecidableEq ι] [Fintype A] [AddCommMonoid A] in
 /-- NOTE: This could be generalized to 2 * N instead of 2 ^ (ϑ + 1).
 Also, this can be proved for `↔` instead of `→`. -/

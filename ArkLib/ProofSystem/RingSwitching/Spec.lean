@@ -123,11 +123,11 @@ instance : ∀ i, SampleableType ((fullPspec κ (L:=L) (K:=K) P (ℓ':=ℓ') mlI
 
 /-! ## OracleSpec `Inhabited`/`Fintype` instances for completeness unrolling -/
 
-instance instInhabitedOracleSpecEmpty : (([]ₒ : OracleSpec PEmpty).Inhabited) where
-  inhabited_B i := nomatch i
+instance instInhabitedOracleSpecEmpty : ∀ i, Inhabited (([]ₒ : OracleSpec PEmpty).Range i) :=
+  fun i => nomatch i
 
-instance instFintypeOracleSpecEmpty : (([]ₒ : OracleSpec PEmpty).Fintype) where
-  fintype_B i := nomatch i
+instance instFintypeOracleSpecEmpty : ∀ i, Fintype (([]ₒ : OracleSpec PEmpty).Range i) :=
+  fun i => nomatch i
 
 /-- Per-index finiteness of the sumcheck-round challenges (the challenge at index `1` is `L`;
 index `0` is a `P_to_V` message). Feeds the n-ary `seqCompose`/append challenge instances. -/
@@ -183,8 +183,7 @@ instance instInhabitedBatchingChallengeIdx :
       Matrix.cons_val_fin_one] using (⟨fun _ => (0 : L)⟩ : Inhabited (Fin κ → L))
 
 instance instFintypePSpecSumcheckRoundChallenge :
-    ([(pSpecSumcheckRound (L:=L)).Challenge]ₒ).Fintype := by
-  refine { fintype_B := ?_ }
+    ∀ t, Fintype ([(pSpecSumcheckRound (L:=L)).Challenge]ₒ.Range t) := by
   intro x
   rcases x with ⟨⟨i, hi⟩, q⟩
   have h1 : i = 1 := by
@@ -197,8 +196,7 @@ instance instFintypePSpecSumcheckRoundChallenge :
   infer_instance
 
 instance instInhabitedPSpecSumcheckRoundChallenge :
-    ([(pSpecSumcheckRound (L:=L)).Challenge]ₒ).Inhabited := by
-  refine { inhabited_B := ?_ }
+    ∀ t, Inhabited ([(pSpecSumcheckRound (L:=L)).Challenge]ₒ.Range t) := by
   intro x
   rcases x with ⟨⟨i, hi⟩, q⟩
   have h1 : i = 1 := by
@@ -214,16 +212,14 @@ instance instInhabitedPSpecSumcheckRoundChallenge :
 `P_to_V` message, so there is no challenge index and the query type is empty. Needed by the
 1-message-round completeness `unroll`. -/
 instance instFintypePSpecFinalSumcheckChallenge :
-    ([(pSpecFinalSumcheck (L:=L)).Challenge]ₒ).Fintype := by
-  refine { fintype_B := ?_ }
+    ∀ t, Fintype ([(pSpecFinalSumcheck (L:=L)).Challenge]ₒ.Range t) := by
   rintro ⟨⟨i, hi⟩, q⟩
   exact absurd hi (by
     obtain rfl : i = 0 := by omega
     simp [pSpecFinalSumcheck])
 
 instance instInhabitedPSpecFinalSumcheckChallenge :
-    ([(pSpecFinalSumcheck (L:=L)).Challenge]ₒ).Inhabited := by
-  refine { inhabited_B := ?_ }
+    ∀ t, Inhabited ([(pSpecFinalSumcheck (L:=L)).Challenge]ₒ.Range t) := by
   rintro ⟨⟨i, hi⟩, q⟩
   exact absurd hi (by
     obtain rfl : i = 0 := by omega
@@ -237,8 +233,7 @@ instance instOracleInterfaceChallengePSpecBatching :
 /-- The batching challenge oracle is finite (its only query, round 1, returns `Fin κ → L`). Needed
 by the 2-message-round completeness `unroll`, mirroring the sumcheck-round instance. -/
 instance instFintypePSpecBatchingChallenge :
-    ([(pSpecBatching κ L K P).Challenge]ₒ).Fintype := by
-  refine { fintype_B := ?_ }
+    ∀ t, Fintype ([(pSpecBatching κ L K P).Challenge]ₒ.Range t) := by
   intro x
   rcases x with ⟨⟨i, hi⟩, q⟩
   have h1 : i = 1 := by fin_cases i <;> first | rfl | (simp [pSpecBatching] at hi)
@@ -248,8 +243,7 @@ instance instFintypePSpecBatchingChallenge :
   infer_instance
 
 instance instInhabitedPSpecBatchingChallenge :
-    ([(pSpecBatching κ L K P).Challenge]ₒ).Inhabited := by
-  refine { inhabited_B := ?_ }
+    ∀ t, Inhabited ([(pSpecBatching κ L K P).Challenge]ₒ.Range t) := by
   intro x
   rcases x with ⟨⟨i, hi⟩, q⟩
   have h1 : i = 1 := by fin_cases i <;> first | rfl | (simp [pSpecBatching] at hi)

@@ -220,7 +220,7 @@ theorem line_witness_unique_udr
     exact le_trans h1 h2
   have h_lt : Δ₀(w₁, w₂) < Code.dist C := by
     have he_le : (e : ℝ≥0) ≤ δ * (Fintype.card ι : ℝ≥0) := by
-      rw [he]; exact Nat.floor_le (zero_le _)
+      rw [he]; exact Nat.floor_le (zero_le)
     have h2e : (2 * e : ℝ≥0) ≤ 2 * δ * (Fintype.card ι : ℝ≥0) := by
       have : (2 : ℝ≥0) * (e : ℝ≥0) ≤ 2 * (δ * (Fintype.card ι : ℝ≥0)) := by gcongr
       simpa [mul_assoc] using this

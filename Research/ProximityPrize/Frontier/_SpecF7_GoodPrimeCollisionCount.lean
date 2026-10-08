@@ -157,7 +157,7 @@ theorem card_primeFactors_le_natLog {N : ℕ} (hN : 1 ≤ N) :
     calc 2 ^ N.primeFactors.card
         = ∏ _p ∈ N.primeFactors, 2 := by rw [Finset.prod_const]
       _ ≤ ∏ p ∈ N.primeFactors, p :=
-          Finset.prod_le_prod' (fun p hp => (Nat.prime_of_mem_primeFactors hp).two_le)
+          Finset.prod_le_prod (fun p hp => (Nat.prime_of_mem_primeFactors hp).two_le)
       _ ≤ N := Nat.le_of_dvd hN (Nat.prod_primeFactors_dvd N)
   exact (Nat.le_log_iff_pow_le (by norm_num) (by omega)).mpr hpow
 

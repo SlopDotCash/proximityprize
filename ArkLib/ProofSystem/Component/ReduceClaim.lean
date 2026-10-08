@@ -84,11 +84,11 @@ theorem reduction_completeness --(h : init.neverFails)
     apply probOutput_eq_zero_of_not_mem_support
     simp only [support_bind, Set.mem_iUnion, not_exists]
     intro s _ hmem
-    change none ∈ support
+    change none ∈ MonadAttach.support
       (StateT.run' (simulateQ _ (pure (some ((default, (mapStmt stmtIn, mapWit stmtIn witIn)),
         mapStmt stmtIn)) : OracleComp _ _)) s) at hmem
     rw [simulateQ_pure] at hmem
-    change none ∈ support
+    change none ∈ MonadAttach.support
       (Prod.fst <$> (pure (some ((default, (mapStmt stmtIn, mapWit stmtIn witIn)),
         mapStmt stmtIn)) : StateT σ ProbComp _).run s) at hmem
     rw [StateT.run_pure] at hmem
@@ -97,11 +97,11 @@ theorem reduction_completeness --(h : init.neverFails)
     rw [OptionT.mem_support_iff] at hx
     simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
     obtain ⟨s, _, hx⟩ := hx
-    change some x ∈ support
+    change some x ∈ MonadAttach.support
       (StateT.run' (simulateQ _ (pure (some ((default, (mapStmt stmtIn, mapWit stmtIn witIn)),
         mapStmt stmtIn)) : OracleComp _ _)) s) at hx
     rw [simulateQ_pure] at hx
-    change some x ∈ support
+    change some x ∈ MonadAttach.support
       (Prod.fst <$> (pure (some ((default, (mapStmt stmtIn, mapWit stmtIn witIn)),
         mapStmt stmtIn)) : StateT σ ProbComp _).run s) at hx
     rw [StateT.run_pure] at hx
@@ -121,12 +121,13 @@ variable {mapWitInv : StmtIn → WitOut → WitIn}
 
 
 @[simp]
-lemma support_liftM (m : Type _ → Type _) [Monad m] [HasEvalSet m]
-    {α} (mx : m α) : support (liftM mx : OptionT m α) = support mx := by
-  simp
+lemma support_liftM (m : Type _ → Type _) [Monad m] [LawfulMonad m]
+    [MonadAttach m] [ExactMonadAttach m]
+    {α} (mx : m α) : support (liftM mx : OptionT m α) = support mx :=
+  OptionT.support_liftM mx
 
 @[simp]
-lemma support_mk (m : Type _ → Type _) [Monad m] [HasEvalSet m]
+lemma support_mk (m : Type _ → Type _) [Monad m] [MonadAttach m]
     {α} (mx : m (Option α)) :
     support (OptionT.mk mx) = {x | some x ∈ support mx} := by
   rfl
@@ -235,12 +236,12 @@ theorem oracleReduction_completeness --(h : init.neverFails)
     apply probOutput_eq_zero_of_not_mem_support
     simp only [support_bind, Set.mem_iUnion, not_exists]
     intro s _ hmem
-    change none ∈ support
+    change none ∈ MonadAttach.support
       (StateT.run' (simulateQ _ (pure (some ((default,
         ((mapStmt stmtIn, mapOStmt embedIdx hEq oStmtIn), mapWit stmtIn witIn)),
         (mapStmt stmtIn, mapOStmt embedIdx hEq oStmtIn))) : OracleComp _ _)) s) at hmem
     rw [simulateQ_pure] at hmem
-    change none ∈ support
+    change none ∈ MonadAttach.support
       (Prod.fst <$> (pure (some ((default,
         ((mapStmt stmtIn, mapOStmt embedIdx hEq oStmtIn), mapWit stmtIn witIn)),
         (mapStmt stmtIn, mapOStmt embedIdx hEq oStmtIn))) :
@@ -251,12 +252,12 @@ theorem oracleReduction_completeness --(h : init.neverFails)
     rw [OptionT.mem_support_iff] at hx
     simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
     obtain ⟨s, _, hx⟩ := hx
-    change some x ∈ support
+    change some x ∈ MonadAttach.support
       (StateT.run' (simulateQ _ (pure (some ((default,
         ((mapStmt stmtIn, mapOStmt embedIdx hEq oStmtIn), mapWit stmtIn witIn)),
         (mapStmt stmtIn, mapOStmt embedIdx hEq oStmtIn))) : OracleComp _ _)) s) at hx
     rw [simulateQ_pure] at hx
-    change some x ∈ support
+    change some x ∈ MonadAttach.support
       (Prod.fst <$> (pure (some ((default,
         ((mapStmt stmtIn, mapOStmt embedIdx hEq oStmtIn), mapWit stmtIn witIn)),
         (mapStmt stmtIn, mapOStmt embedIdx hEq oStmtIn))) :

@@ -39,9 +39,10 @@ theorem ceil_radius_right_plateau (n : ℕ) (hn : 0 < n)
     Nat.ne_of_gt (Nat.ceil_pos.mpr hx)
   obtain ⟨hl, hu⟩ := (Nat.ceil_eq_iff ht).mp rfl
   obtain ⟨z, hz₀, hz₁⟩ := exists_between hl
-  have hzpos : 0 < z := lt_of_le_of_lt (zero_le _) hz₀
+  have hzpos : 0 < z := lt_of_le_of_lt zero_le hz₀
   have hxn : (1 - δ) * (n : ℝ≥0) ≤ n := by
-    exact le_trans (mul_le_mul_right' (tsub_le_self : (1 - δ : ℝ≥0) ≤ 1) _) (by simp)
+    simpa using mul_le_mul_of_nonneg_right (tsub_le_self : (1 - δ : ℝ≥0) ≤ 1)
+      (show (0 : ℝ≥0) ≤ n from zero_le)
   have hzn : z < n := lt_of_lt_of_le hz₁ hxn
   have hdiv : z / (n : ℝ≥0) < 1 := by
     exact (div_lt_one hn').mpr hzn

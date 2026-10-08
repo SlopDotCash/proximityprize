@@ -178,6 +178,7 @@ noncomputable def girth {d : ℕ} (p : ℕ) (g : Fin d → ℤ)
     (dom : Finset (Fin d → ℤ)) (W : ℕ) : ℕ :=
   ((range (W + 1)).filter (fun w => 1 ≤ w ∧ 0 < thetaShell p g dom w)).min.elim (W + 1) id
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Below-girth vanishing.** If every shell of weight `1 ≤ w ≤ W` is empty (the explicit
 "no spur up to depth `W`" hypothesis, directly read off the probe's `shells` array), then the
 cumulative theta count up to `W` is zero. -/
