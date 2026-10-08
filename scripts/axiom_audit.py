@@ -26,8 +26,8 @@ from pathlib import Path
 ALLOWED = {"propext", "Classical.choice", "Quot.sound"}
 MANIFEST = Path(__file__).resolve().parent / "flagship_axioms.txt"
 
-DEP_RE = re.compile(r"'([^']+)' depends on axioms: \[([^\]]*)\]")
-NODEP_RE = re.compile(r"'([^']+)' does not depend on any axioms")
+DEP_RE = re.compile(r"^'(.*)' depends on axioms: \[([^\]]*)\]", re.MULTILINE)
+NODEP_RE = re.compile(r"^'(.*)' does not depend on any axioms", re.MULTILINE)
 
 
 def main() -> int:

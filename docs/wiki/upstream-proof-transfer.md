@@ -1257,3 +1257,50 @@ when displayed types agree: use explicit typed equalities or `erw` at the bounda
 DG25 port retains its reducible interleaved-word API with module-local
 `backward.isDefEq.respectTransparency false`. These are focused source checks with
 standard-axiom audits where recorded, not full combined hosted qualification.
+
+The BCIKS20 affine-line good-coefficient, Sudan Y², and Hensel numerator modules now
+pass ordinary Lean 4.34 builds and installed audits of 34 selected roots. The migration
+repairs elaboration and proof API compatibility while retaining the original dimension,
+characteristic, and weight hypotheses. Hensel residual assumptions remain explicit.
+
+
+The [refreshed ArkLib inventory](../upstream/arklib-prs-2026-10-08-refresh.json) records
+main `795bd1e735d1916abac6bcf60e1dea0c42f37216` and 53 open PRs, including drafts.
+The latest main merged #1261, #1263 and #1264; their relevant proof sources match the
+reviewed heads used by the native adapters. Refreshed #1269 retains its thirteen prior
+interaction modules and inherits the already-reviewed round-by-round module. The ten
+Fiat–Shamir PRs have no refreshed delta under `ArkLib/OracleReduction`; their substantive
+port remains pending. A fetch or an unchanged source comparison is not native validation.
+
+New #1297 documents why membership-indexed `Fin.sumCases` was false for duplicate block
+sizes. Native `castSum` already indexes positions and native `sumCases` has a complete
+recursive proof; retain this stronger API. The obsolete interpolation stub is already
+absent. A new duplicate-block native regression passes direct checking, with ordinary
+build and installed audit pending.
+
+
+The two clique-rank modules, small-weight Lam–Leung arguments, and line first-moment
+bound now pass ordinary Lean 4.34 builds and installed audits of 34 selected roots,
+all limited to the standard axioms. The repairs use the current function-product API,
+explicit complex algebraic-closure imports, and finite-set membership lemmas.
+The original mathematical statements and hypotheses are unchanged.
+
+
+The coset FFT-domain logarithm and conversion APIs, A8 coset structure, ladder-spectrum
+fusion, and interleaved-list MCA consumers now pass ordinary Lean 4.34 builds. An
+installed audit covers 37 roots across these modules and the already-validated exact
+KKH26 census, all with standard axioms. Routine auditing now includes the new roots.
+These local checks do not replace the remaining full-library migration gate.
+
+
+The axiom-audit parser preserves apostrophes in declaration names such as
+`log_right_inverse'`, including multiline dependency reports. Regression tests cover
+standard dependencies, forbidden `sorryAx` dependencies, and adjacent axiom-free reports.
+Run `python3 -m unittest discover -s scripts/tests -p test_axiom_audit_parser.py` for this check.
+
+
+Nine further modules now pass ordinary Lean 4.34 builds and installed audits of 37
+selected roots: KKH26 ceilings, characteristic-zero census, dimension-one pins, the CS25
+second moment, half-pair slices, the two-branch countermodel, pencil absorption, ownership,
+and CZ25 span dimension. The changes repair imports and proof elaboration without changing
+the theorem hypotheses or conclusions. The staircase theorem is a separate pending build.
