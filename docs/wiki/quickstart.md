@@ -302,8 +302,10 @@ python3 -m pip install leanblueprint
   retain partial progress; land prerequisite build repairs separately when needed.
   The full validation build uses one Lean worker to limit peak memory:
   two-worker attempts repeatedly terminated in the heavy Frontier region
-  before saving their caches. Validation has a 270-minute budget within a
-  330-minute job, leaving room to save artifacts. A cold full-library build
+  before saving their caches. Validation has a 310-minute budget within a
+  360-minute job, leaving room to save artifacts. Two cold Lean 4.34 migration
+  runs exhausted the previous 270-minute validation budget before finishing
+  the dependency graph. A cold full-library build
   can take nearly four hours before the additional flagship targets compile;
   the validation budget covers both stages. The former 20-minute limit
   repeatedly interrupted healthy builds. Website compilation and documentation
