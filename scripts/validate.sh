@@ -80,6 +80,7 @@ echo "# Native security clients"
   ArkLibTest.Interaction.Oracle.Security.Soundness \
   ArkLibTest.Interaction.Oracle.Security.StateRestoration \
   ArkLibTest.Interaction.Oracle.Security.StateRestorationBudget \
+  ArkLibTest.Data.Fin \
   ArkLibTest.ToVCVio.EvalDist.ProbabilityBounds \
   ArkLibTest.OracleReduction.ProtocolSpec \
   ArkLibTest.ProofSystem.RingSwitching.Packing.FiniteObservation \
@@ -94,6 +95,7 @@ echo "# Native security clients"
   ArkLibTest.ProofSystem.RingSwitching.Packing.ProfileCoordinates \
   ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout \
   ArkLibTest.ProofSystem.Stir.ParamConditions \
+  ArkLibTest.ProofSystem.Stir.PaperStatements \
   ArkLibTest.ProofSystem.Stir.ProximityGap
 
 # CI gate 2: zero live sorry/admit holes in both library and research source.

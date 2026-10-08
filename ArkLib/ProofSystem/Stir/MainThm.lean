@@ -109,19 +109,13 @@ def stirRelation
     : Set ((Unit × ∀ i, (OracleStatement ι F i)) × Unit) :=
   fun ⟨⟨_, oracle⟩, _⟩ => δᵣ(oracle (), ReedSolomon.code φ degree) ≤ err
 
-/-- Theorem 5.1 : STIR main theorem
-  Consider the following ingrediants,
-  a security parameter `secpar`
-  a ReedSolomon code `RS[F, ι, degree]` with rate `ρ = degree/ |ι|`, where ι is a smooth domain
-  a proximity parameter `δ ∈ (0, 1 - 1.05 * √ρ)`
-  a folding parameter `k ≥ 4`, being a power of 2
-  if `|F| ≤ secpar * 2^{secpar * degree² * |ι|^3.5 / log(1/ρ)}`, then
-  there exists a `vector IOPP π` for `RS` with
-  - `round by round soundness error ≤ 2 ^ (- secpar)`,
-  - `M = O(logₖdegree)`
-  - `proof length = |ι| + Oₖ(log degree)`
-  - `query complexity to input = secpar / (- log(1-δ))`
-  - `query complexity to proof strings = Oₖ(log degree + secpar * log(log degree / log(1/ρ)))`
+/-- Legacy conditional STIR front-door contract, retained for the existing assembly clients.
+
+This is a proposition definition, not a proof of Theorem 5.1. Its field-size inequality,
+parameter-dependent constants and independent complexity parameters do not express the
+corrected paper specification. See `StirIOP.Paper.mainStatement` in `PaperStatements.lean`
+for the uniform quantifiers, lower field-size bound, strict soundness language and actual
+message length. Neither definition establishes the remaining security and complexity claims.
 -/
 def stir_main
     (secpar : ℕ) [SampleableType F]
