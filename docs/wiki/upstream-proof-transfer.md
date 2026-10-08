@@ -928,3 +928,41 @@ oracle instances, a local finite-uniform interpretation, and an explicit univers
 empty oracle specification. It preserves the non-failing initialization assumption and
 proves the original input/output relation through the single-codeword combination identity.
 This is a focused result; the full migration build still has downstream compatibility failures.
+
+
+The seam-support and message-soundness modules pass Lean 4.34 compilation: the support build
+completed 3,247 jobs, and the joint message-soundness/Hachi build completed 3,641 jobs.
+All fifteen selected installed soundness/support declarations have standard-only axiom closures.
+The port preserves message-seam, state-preservation, never-failure and value-distribution
+hypotheses. The generic optional-transformer event lemma now uses the current lawful SPMF-lift
+interface. Query-lift transitivity is proved through the common lift-composition theorem.
+
+PR #1287's cyclotomic trace coordinates are now adapted at
+`3323359736dd521ee77073ebdaa89057822839f9`. The transfer adds the linear packing map and
+equivalence, cancellation of the unit trace scale, and the binary coefficient equivalence.
+The trace check is proved equivalent to a coefficient inner product and then to evaluation
+of the decoded scalar polynomial. Three obsolete simplification steps in native trace-vanishing
+proofs were removed. The joint build completed 3,641 jobs; all twenty selected installed roots
+(eleven new coordinate/substrate declarations and nine trace-vanishing theorems) have
+standard-only axiom closures. They are registered for routine auditing. Full trace-head protocol,
+completeness, committed-opening and conformance integration remain pending.
+
+
+The [October 8 refresh](../upstream/arklib-prs-2026-10-08.json) records all 55 open PRs,
+including drafts. Exact heads were fetched for new PRs #1294–#1296 and updated PRs #1293,
+#1289, #1268, #1267, #1266, #1264, #1263 and #1261. Upstream main is now
+`745e77939ac4cecf0333af8410a2463c5c7cb655`, incorporating #1259 and #1260 since the
+prior main snapshot. Both merged PRs were already adapted and validated from their PR heads
+on October 7. Comparing all four affected source/client files finds the same declaration
+inventory; native elaboration repairs are retained. The eleven new or changed open-PR heads
+remain pending substantive review. The older inventory retains detailed transfer evidence
+for its reviewed revisions.
+
+
+Challenge-seam perfect and error-ful completeness now pass an ordinary Lean 4.34 build
+(3,251 jobs). All fourteen exported declarations across `AppendSeamBridges` and
+`AppendPerfectCompletenessChallenge` have standard-only installed axiom closures and are
+registered for auditing. The migration uses pointwise oracle answer instances, explicit
+SPMF evaluation, proved query-lift composition and explicit unfolding of the success
+predicate. Existing completeness, state and sampling hypotheses are preserved. The broader
+six-target STIR build is the next validation gate; these focused results do not prove it.
