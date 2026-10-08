@@ -1237,3 +1237,11 @@ not proofs of the paper security theorem; no admitted donor theorem is imported,
 verifier query complexity awaits an implemented counter. The legacy contract is labeled
 explicitly. Both the paper-statement fixtures and the two duplicate-block `Fin` regressions
 from the #1297 review are now registered in routine validation and installed axiom audits.
+
+
+A seven-module follow-up build passes with 41 selected installed roots restricted to
+standard axioms. It covers the concrete staircase, affine-line joint agreement, coset
+operations, FFT subgroup conversion, FRI round consistency, finite-set doubling, and
+`CheckClaim`. The staircase arithmetic uses explicit kernel-checked power equalities
+before its linear arithmetic proof; this avoids deep kernel recursion. `CheckClaim`
+preserves the existing SPMF-valued distribution contract through the renamed API.

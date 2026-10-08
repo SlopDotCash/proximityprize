@@ -206,6 +206,13 @@ theorem mcaDeltaStar_staircase_band_smooth {e : ℕ} (he : 1 ≤ e)
   haveI : NeZero (2 ^ μ) := ⟨pow_ne_zero μ (by norm_num)⟩
   exact mcaDeltaStar_staircase_band_zmod p he hplo hphi (smoothDom p g hg) hd3 hde
 
+private theorem production_staircase_slack {e : ℕ} (hemax : e ≤ 5592406) :
+    3 * (e - 1) + 2 ^ 24 ≤ 2 ^ 25 ∧ e + 1 + 2 ^ 24 ≤ 2 ^ 25 := by
+  have h24 : (2 : ℕ) ^ 24 = 16777216 := by decide +kernel
+  have h25 : (2 : ℕ) ^ 25 = 33554432 := by decide +kernel
+  rw [h24, h25]
+  omega
+
 open Classical in
 /-- **Production shape, ALL bands:** `n = 2²⁵`, `k = 2²⁴` (rate `1/2`), smooth domain
 `⟨g⟩` of order `2²⁵`, ANY rung `1 ≤ e ≤ 5 592 406` and any prime `p` in the `e`-th
@@ -226,9 +233,10 @@ theorem mcaDeltaStar_production_shape_staircase {e : ℕ}
         ((rsCode (smoothDom p g hg) (2 ^ 24) :
             Submodule (ZMod p) (Fin (2 ^ 25) → ZMod p)) : Set (Fin (2 ^ 25) → ZMod p))
         (1 / 2 ^ 128 : ℝ≥0∞)
-      = (e : ℝ≥0) / ((2 ^ 25 : ℕ) : ℝ≥0) :=
-  mcaDeltaStar_staircase_band_smooth p he hplo hphi g hg
-    (by norm_num; omega) (by norm_num; omega)
+      = (e : ℝ≥0) / ((2 ^ 25 : ℕ) : ℝ≥0) := by
+  exact mcaDeltaStar_staircase_band_smooth p (μ := 25) (k := 2 ^ 24)
+    he hplo hphi g hg (production_staircase_slack hemax).1
+    (production_staircase_slack hemax).2
 
 end Prime
 

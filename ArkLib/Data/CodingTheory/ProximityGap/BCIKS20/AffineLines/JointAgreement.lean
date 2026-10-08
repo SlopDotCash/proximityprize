@@ -436,14 +436,20 @@ theorem RS_jointAgreement_of_goodCoeffs_card_gt {deg : ℕ} {domain : ι ↪ F} 
         have : u 0 i = 0 := by
           have hi' : i ∈ S0 := hi
           simpa [S0] using (Finset.mem_filter.mp hi').2.1
-        simp [Code.finMapTwoWords, this]
+        apply Finset.mem_filter.mpr
+        refine ⟨Finset.mem_univ _, ?_⟩
+        change 0 = u _ i
+        exact this.symm
     · constructor
       · exact (ReedSolomon.code domain 0).zero_mem
       · intro i hi
         have : u 1 i = 0 := by
           have hi' : i ∈ S0 := hi
           simpa [S0] using (Finset.mem_filter.mp hi').2.2
-        simp [Code.finMapTwoWords, this]
+        apply Finset.mem_filter.mpr
+        refine ⟨Finset.mem_univ _, ?_⟩
+        change 0 = u _ i
+        exact this.symm
   · by_cases hdeg_le : deg ≤ n
     · letI : NeZero deg := ⟨hdeg_zero⟩
       have hBW : 2 * e < n - deg + 1 := by
@@ -722,6 +728,9 @@ theorem RS_jointAgreement_of_goodCoeffs_card_gt {deg : ℕ} {domain : ι ↪ F} 
           have hiQ : domain i ∈ Q_x := Finset.mem_preimage.mp hi
           have hEval : Polynomial.Bivariate.evalX (domain i) P = quot_y (domain i) := hQx_eval _ hiQ
           have hcoeff := congrArg (fun p : F[X] => p.coeff 0) hEval
+          apply Finset.mem_filter.mpr
+          refine ⟨Finset.mem_univ _, ?_⟩
+          change v0 i = u 0 i
           simpa [v0, quot_y, Polynomial.Bivariate.evalX, Polynomial.coeff,
             Function.leftInverse_invFun domain.injective i] using hcoeff
       · constructor
@@ -730,6 +739,9 @@ theorem RS_jointAgreement_of_goodCoeffs_card_gt {deg : ℕ} {domain : ι ↪ F} 
           have hiQ : domain i ∈ Q_x := Finset.mem_preimage.mp hi
           have hEval : Polynomial.Bivariate.evalX (domain i) P = quot_y (domain i) := hQx_eval _ hiQ
           have hcoeff := congrArg (fun p : F[X] => p.coeff 1) hEval
+          apply Finset.mem_filter.mpr
+          refine ⟨Finset.mem_univ _, ?_⟩
+          change v1 i = u 1 i
           simpa [v1, quot_y, Polynomial.Bivariate.evalX, Polynomial.coeff,
             Function.leftInverse_invFun domain.injective i] using hcoeff
     · have hdeg_gt : n < deg := Nat.lt_of_not_ge hdeg_le

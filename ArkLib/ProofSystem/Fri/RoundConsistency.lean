@@ -20,7 +20,7 @@ open Polynomial
 
 namespace RoundConsistency
 
-variable {𝔽 : Type} [CommSemiring 𝔽] [NoZeroDivisors 𝔽]
+variable {𝔽 : Type}
 
 /--
 The generalized round consistency check: checks that the Lagrange-interpolating polynomial through

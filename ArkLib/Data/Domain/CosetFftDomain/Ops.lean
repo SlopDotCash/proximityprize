@@ -38,36 +38,27 @@ variable {ω : CosetFftDomain ι F} {i j : ι}
 
 omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
 lemma apply_zero : ω 0 = ω.cosetGenerator := by
-  have : (0 : ι) = (1 : Multiplicative ι) := by rfl
-  aesop (add simp
-     [eval_coset_fft_domain_eq_eval_generator_mul_domain])
+  simp only [eval_coset_fft_domain_eq_eval_generator_mul_domain, subgroupUnit_zero,
+    Units.val_one, mul_one]
 
 omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
 lemma apply_add_eq_inv_mul_mul :
-    ω (i + j) = ω.cosetGenerator⁻¹ * ω i * ω j := by cases ω with
-  | mk x ω =>
-    have : i + j = Multiplicative.ofAdd i * Multiplicative.ofAdd j := by rfl
-    aesop
-      (add simp
-        [eval_coset_fft_domain_eq_eval_generator_mul_domain, ]) (add safe (by ring_nf))
+    ω (i + j) = ω.cosetGenerator⁻¹ * ω i * ω j := by
+  simpa only [apply_zero, Units.val_inv_eq_inv_val] using
+    CosetFftDomainClass.map_add ω i j
 
 omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
 lemma apply_neg_eq_sq_mul_inv :
-    ω (-i) = ω.cosetGenerator ^ 2 * (ω i)⁻¹ := by cases ω with
-  | mk x ω =>
-  have : -i = (Multiplicative.ofAdd i)⁻¹ := by rfl
-  aesop
-    (add simp [eval_coset_fft_domain_eq_eval_generator_mul_domain])
-    (add safe (by field_simp))
+    ω (-i) = ω.cosetGenerator ^ 2 * (ω i)⁻¹ := by
+  simpa only [apply_zero] using CosetFftDomainClass.map_neg ω i
 
 omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
 lemma apply_sub_eq_mul_div :
-    ω (i - j) = ω.cosetGenerator * ω i / ω j := by cases ω with
-  | mk x ω =>
-  have : (i - j) = Multiplicative.ofAdd i / Multiplicative.ofAdd j := by rfl
-  aesop
-    (add simp [eval_coset_fft_domain_eq_eval_generator_mul_domain, Multiplicative.ofAdd])
-    (add safe (by field_simp))
+    ω (i - j) = ω.cosetGenerator * ω i / ω j := by
+  rw [sub_eq_add_neg, apply_add_eq_inv_mul_mul, apply_neg_eq_sq_mul_inv]
+  have h := Units.ne_zero ω.cosetGenerator
+  push_cast
+  field_simp
 
 end CosetFftDomain
 

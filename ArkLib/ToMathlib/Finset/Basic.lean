@@ -95,7 +95,15 @@ theorem erase_even_mem
 @[simp]
 theorem mul_by_2_mem {s : Finset ℕ} {d : ℕ} :
     d ∈ mul_by_2 s ↔ Even d ∧ (d / 2) ∈ s := by
-  aesop (add simp [mul_by_2, Nat.even_iff], safe (by omega))
+  rw [mul_by_2, Finset.mem_map, Nat.even_iff]
+  constructor
+  · rintro ⟨w, hw, rfl⟩
+    change (2 * w) % 2 = 0 ∧ (2 * w) / 2 ∈ s
+    simpa [Nat.mul_comm] using hw
+  · rintro ⟨heven, hmem⟩
+    refine ⟨d / 2, hmem, ?_⟩
+    change 2 * (d / 2) = d
+    omega
 
 @[simp]
 theorem divide_by_2_mem {s : Finset ℕ} {d : ℕ} :
