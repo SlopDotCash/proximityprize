@@ -142,6 +142,7 @@ theorem repr_toQ (k : ℕ) (t : AdjoinRoot (fpoly (2 ^ k))) (i : Fin (fq k).natD
   rw [hmod, Polynomial.coeff_map]
   simp
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The `ℤ`-norm casts to the `ℚ`-norm along `toQ`. -/
 theorem norm_toQ (k : ℕ) (t : AdjoinRoot (fpoly (2 ^ k))) :
     ((Algebra.norm ℤ t : ℤ) : ℚ) = Algebra.norm ℚ (toQ k t) := by
@@ -172,6 +173,7 @@ theorem norm_toQ (k : ℕ) (t : AdjoinRoot (fpoly (2 ^ k))) :
 
 /-! ## §3  Norm over ℚ = product over the roots -/
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The `ℚ`-norm of `P(root)` in `ℚ[x]/(x^m+1)` equals the product of `P` over the roots of
 `x^m+1` in the algebraic closure. -/
 theorem normQ_aeval_eq_prod (k : ℕ) (PQ : ℚ[X]) :

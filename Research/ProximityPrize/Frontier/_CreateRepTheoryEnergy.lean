@@ -144,7 +144,7 @@ theorem permAction_mul {n r : ℕ} (σ τ : Equiv.Perm (Fin r)) (P : IndexPoint 
 /-- The identity of `S_r` acts trivially — confirming `permAction` is a unital action. -/
 theorem permAction_one {n r : ℕ} (P : IndexPoint n r) : permAction (1 : Equiv.Perm (Fin r)) P = P := by
   unfold permAction
-  ext <;> simp
+  ext <;> rfl
 
 /-! ## Part II — The diagonal central CHARGE character `Δ` and its `S_r`-invariance -/
 

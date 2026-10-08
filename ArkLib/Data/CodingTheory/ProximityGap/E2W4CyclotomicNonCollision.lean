@@ -2434,7 +2434,7 @@ theorem isPrimitiveRoot_3_16_ratio_zmod17 : IsPrimitiveRoot (3 : ZMod 17) 16 := 
 theorem invariantRatio_3_sq_pow16_eq_one_zmod17 :
     invariantRatio (3 : ZMod 17) ((3 : ZMod 17) ^ 2) ^ 16 = 1 := by
   unfold invariantRatio
-  decide
+  decide +kernel
 
 /-- Equivalently, the denominator-cleared polynomial obstruction vanishes in `F₁₇`. -/
 theorem polynomial_eq_3_sq_pow16_zmod17 :

@@ -88,6 +88,7 @@ differ, differ in some row, and the stack distance dominates each row distance. 
 lemma interleaved_sep_of_base {A : Type*} [DecidableEq A] {C : Set (ι → A)} {j m : ℕ}
     (hsep : ∀ u ∈ C, ∀ v ∈ C, u ≠ v → 2 * j < hammingDist u v) :
     ∀ U ∈ (C^⋈ (Fin m)), ∀ V ∈ (C^⋈ (Fin m)), U ≠ V → 2 * j < hammingDist U V := by
+  classical
   intro U hU V hV hne
   have hU' : ∀ k : Fin m, Matrix.transpose U k ∈ C := hU
   have hV' : ∀ k : Fin m, Matrix.transpose V k ∈ C := hV

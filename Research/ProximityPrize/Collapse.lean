@@ -321,6 +321,7 @@ lemma card_le_ncard_interleavedCodeSet
   exact_mod_cast h1
 
 open ListDecodable in
+set_option backward.isDefEq.respectTransparency false in
 /-- **The RS Grand List Decoding Challenge encoding is FALSE** whenever `0 < k`, `0 < m`,
 `ε* < 1`: the collapse forces the radius-one bound, where `Λ` is the whole interleaved
 code, which already contains `|F|` constants — more than `ε* · |F|`. -/

@@ -118,7 +118,7 @@ theorem injectiveSevenTransform_eq_distinctSevenPolynomial
   have he0 : (Finset.univ.val.map w).esymm 0 = (1 : ℂ) := by
     simp [Multiset.esymm]
   norm_num [Finset.sum_insert, psumMs, phasePowerSum] at h1 h2 h3 h4 h5 h6 h7
-  rw [he0] at h1 h2 h3 h4 h5 h6 h7
+  simp only [he0] at h1 h2 h3 h4 h5 h6 h7
   norm_num at h1 h2 h3 h4 h5 h6 h7
   ring_nf at h1 h2 h3 h4 h5 h6 h7
   let E : ℕ → ℂ := fun k => (Finset.univ.val.map w).esymm k

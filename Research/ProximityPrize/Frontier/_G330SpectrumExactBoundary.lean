@@ -212,11 +212,11 @@ theorem spectrumVal_injOn_of_ne17 (p : ℕ) [Fact p.Prime] (hp8 : p % 8 = 1) (hp
   have hcases := normOkSet_mod8_divisors _ hmem p hple hpn hp8
   have hprime : p.Prime := Fact.out
   rcases hcases with h | h | h | h | h
-  · subst h; exact absurd hprime (by norm_num)
-  · subst h; exact absurd hprime (by norm_num)
+  · subst h; exact absurd hprime (by decide +kernel)
+  · subst h; exact absurd hprime (by decide +kernel)
   · exact hp17 h
-  · subst h; exact absurd hprime (by norm_num)
-  · subst h; exact absurd hprime (by norm_num)
+  · subst h; exact absurd hprime (by decide +kernel)
+  · subst h; exact absurd hprime (by decide +kernel)
 
 /-- Order-eight (primitive-root) form of the hypothesis. -/
 theorem spectrumVal_injOn_of_primitiveRoot (p : ℕ) [Fact p.Prime] (hp8 : p % 8 = 1)

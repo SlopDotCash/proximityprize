@@ -1062,3 +1062,17 @@ the higher-level environment interface can hide private declarations and produce
 missing-name reports. This is local verification of the exact pinned upper benchmark,
 not a hosted ranking result or completion of the native production proximity-gap conjecture.
 The lower candidate remains under compilation and requires its own audit and replay.
+
+The integration review independently reproduced the pinned upper-candidate replay:
+38,274 declarations were exported and the fresh kernel check passed on Lean 4.32.2.
+It also verified every path and SHA-256 in the refreshed 923-file upstream inventory
+against the pinned Git objects and its stated native comparison commit.
+
+A further Lean 4.34 compatibility batch repairs finite-set membership, pointwise function
+computation, polynomial evaluation imports, and definitional-equality boundaries. Thirteen
+complete edited modules pass focused checks. Twenty other edited modules still lack local
+prerequisite artifacts. Closed moderate arithmetic uses kernel computation; larger primality
+proofs retain `norm_num` with a recursion limit scoped to the affected declaration, avoiding
+expensive direct trial-division reduction. A standalone check verifies the `4294967377` prime
+certificate, but does not replace the missing full-module check. These results do not certify
+the full migration; known follow-up diagnostics and exact-head hosted validation remain open.

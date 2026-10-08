@@ -300,6 +300,7 @@ theorem stack_swap₂₃ {A₁ B₁ A₂ B₂ A₃ B₃ h : R} (hh2 : h + h = 0)
     simp only [swapPerm₂₃, chordStack] <;>
     first | linear_combination -hh2 | linear_combination (0 : R) * hh2
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The orientation swap `a₁ ↔ b₁` is the pure index swap `(4 5)(8 9)` — no
 translation. With `stack_swap₁₂`/`stack_swap₂₃` and the analogous `a₂ ↔ b₂`
 (`(0 1)(2 3)`), `a₃ ↔ b₃` (`(6 7)(10 11)`) swaps, the full 48-element relabeling
@@ -312,6 +313,7 @@ theorem stack_bswap₁ {A₁ B₁ A₂ B₂ A₃ B₃ h : R} (x : Fin 12) :
             | 4 => 5 | 5 => 4 | 8 => 9 | 9 => 8 | z => z) x : Fin 12) := by
   fin_cases x <;> simp only [chordStack] <;> ring
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The orientation swap `a₂ ↔ b₂` is the pure index swap `(0 1)(2 3)`. -/
 theorem stack_bswap₂ {A₁ B₁ A₂ B₂ A₃ B₃ h : R} (x : Fin 12) :
     chordStack A₁ B₁ B₂ A₂ A₃ B₃ h x
@@ -320,6 +322,7 @@ theorem stack_bswap₂ {A₁ B₁ A₂ B₂ A₃ B₃ h : R} (x : Fin 12) :
             | 0 => 1 | 1 => 0 | 2 => 3 | 3 => 2 | z => z) x : Fin 12) := by
   fin_cases x <;> simp only [chordStack] <;> ring
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The orientation swap `a₃ ↔ b₃` is the pure index swap `(6 7)(10 11)`. -/
 theorem stack_bswap₃ {A₁ B₁ A₂ B₂ A₃ B₃ h : R} (x : Fin 12) :
     chordStack A₁ B₁ A₂ B₂ B₃ A₃ h x

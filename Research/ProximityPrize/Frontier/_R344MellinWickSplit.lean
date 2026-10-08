@@ -103,6 +103,7 @@ theorem sum_pair_indicator {J : Finset ℕ} {a b : ℕ} (ha : a ∈ J) (hb : b �
   exact if_pos ⟨rfl, rfl⟩
 
 open Classical in
+set_option backward.isDefEq.respectTransparency false in
 /-- **The Wick split**: the fourth moment decomposes as the exactly-computed
 diagonal plus the wraparound remainder,
 
