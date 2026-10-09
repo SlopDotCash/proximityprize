@@ -72,3 +72,6 @@ ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Folding Binius.BinaryBasefol
 
 # Arithmetic target bound is distinct from the unresolved scalar-security premise.
 ArkLib.ProofSystem.Binius.FRIBinius.General Binius.FRIBinius.FullFRIBinius.fullRbrKnowledgeError_sum_le_concrete
+
+# Full-owner linear received pair at the production P1 predecessor.
+Research.ProximityPrize.Frontier._P1RateQuarterLinearOwnerBudget ArkLib.ProximityGap.Frontier.P1RateQuarterLinearOwnerBudget.Production.badFamilyData_linear_owner_card_le
