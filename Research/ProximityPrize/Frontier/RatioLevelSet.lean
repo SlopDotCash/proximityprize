@@ -40,7 +40,7 @@ variable {ι : Type*} [Fintype ι] {F : Type*} [Field F]
 
 open Classical in
 /-- **The rational-function level-set degree bound** (research-map §4 vector 1, the algebraic
-core). For a ratio `R/ℓ` evaluated on an injective domain, a fixed value `c` is attained at at
+core). For a ratio `R/ℓ` evaluated on an injective domain, a fixed value `c` is attained at
 most `max (deg R) (deg ℓ)` domain points: those points are roots of `R − c·ℓ`, a nonzero
 polynomial of that degree. The hypothesis `R ≠ C c * ℓ` excludes the degenerate constant ratio
 (level set = whole domain). This is "incidence ≤ deg-bound on how often a fixed rational function

@@ -12,7 +12,7 @@ import Mathlib.Algebra.Order.Field.Basic
 /-!
 # Univariate polynomial agreement soundness (FRI / sum-check round)
 
-Two distinct univariate polynomials of degree `≤ d` over a field `F` agree at at most `d` points
+Two distinct univariate polynomials of degree `≤ d` over a field `F` agree at most `d` points
 (their difference is a nonzero degree-`≤ d` polynomial, with at most `degree` roots).  In
 probability form, a uniformly random point witnesses agreement with probability `≤ d/|F|`.
 
@@ -27,7 +27,7 @@ open Finset
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **Univariate agreement count bound.**  Two distinct polynomials of degree `≤ d` agree at at
+/-- **Univariate agreement count bound.**  Two distinct polynomials of degree `≤ d` agree at
 most `d` points. -/
 theorem card_agree_le_of_ne {p q : F[X]} {d : ℕ}
     (hp : p.natDegree ≤ d) (hq : q.natDegree ≤ d) (hpq : p ≠ q) :

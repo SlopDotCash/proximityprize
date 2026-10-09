@@ -10,7 +10,7 @@ import Mathlib.Tactic
 
 Let thirteen coordinate functions be indexed by `I`.  Suppose every equality
 class of identical functions has size at most three, while two nonidentical
-functions can agree at at most one parameter.  Then at most eight
+functions can agree at most one parameter.  Then at most eight
 parameter-value points are incident with six or more coordinate functions.
 
 The count keeps only ordered pairs of nonidentical functions through a rich

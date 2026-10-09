@@ -1643,7 +1643,7 @@ theorem same_nonbase_vote_forces_commonBase_directions_agree
   · exact sub_eq_zero.mp hzero
 
 /-- **Degree-sensitive cross-pencil collision cap.**  For two common-base pencils with
-distinct direction codewords, the same non-base scalar can vote on both at at most `k-1`
+distinct direction codewords, the same non-base scalar can vote on both at most `k-1`
 coordinates. -/
 theorem commonBase_sameRider_crossVote_card_le_k_sub_one
     (dom : Fin N ↪ F)

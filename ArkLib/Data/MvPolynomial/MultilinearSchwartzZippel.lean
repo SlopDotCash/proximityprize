@@ -51,8 +51,8 @@ theorem multilinear_zeros_card_mul_le
   rw [hpi, hprod] at hsz
   exact hsz
 
-/-- **Multilinear identity testing.**  Two distinct multilinear polynomials over `Fin s` agree at
-at most `s · |F|^{s-1}` points: `|{x : eval x p = eval x q}| · |F| ≤ s · |F|^s`. -/
+/-- **Multilinear identity testing.**  Two distinct multilinear polynomials over `Fin s` agree at most
+`s · |F|^{s-1}` points: `|{x : eval x p = eval x q}| · |F| ≤ s · |F|^s`. -/
 theorem multilinear_agree_card_mul_le
     {p q : MvPolynomial (Fin s) F}
     (hp : p ∈ F⦃≤ 1⦄[X (Fin s)]) (hq : q ∈ F⦃≤ 1⦄[X (Fin s)]) (hpq : p ≠ q) :

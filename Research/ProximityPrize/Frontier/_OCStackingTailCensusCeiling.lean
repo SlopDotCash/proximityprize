@@ -23,7 +23,7 @@ simultaneously at one embedding of one prime.
 This lane runs the SAME norm certificate ACROSS DISTINCT PRIMES — a direction none of
 OC-ORBIT/PIECEB/EQUI (nor FS15–FS18, which work per-window with a union bound) used:
 
-* a fixed candidate `r` with `0 < N(r) ≤ H^φ` can vanish at at most `log_P(H^φ)` DISTINCT
+* a fixed candidate `r` with `0 < N(r) ≤ H^φ` can vanish at most `log_P(H^φ)` DISTINCT
   primes `p ≥ P`, because the product of those primes divides `N(r)` (pairwise-coprime
   distinct primes), so `P^t ≤ N(r) ≤ H^φ`;
 * a violator prime consumes `≥ K` distinct candidates from the incidence pool (piece (a));

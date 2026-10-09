@@ -68,7 +68,7 @@ theorem resonanceOffDiag_two_re_eq_zero_iff_cap_at_mean (u : ZMod m → ℂ)
 
 /-- **Positive depth-two agreement excess iff some one-step frequency spikes above the mean.**
 The named off-diagonal is strictly positive exactly when the squared one-step spectrum violates the
-Parseval-floor cap at at least one frequency.  This is an exact localization of the depth-two
+Parseval-floor cap at least one frequency.  This is an exact localization of the depth-two
 obstruction, not a proof that such spikes are small for the thin Gauss-period kernel. -/
 theorem resonanceOffDiag_two_re_pos_iff_exists_above_mean (u : ZMod m → ℂ)
     (hu : ∀ l : ZMod m, ‖u l‖ = 1) :
