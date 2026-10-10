@@ -234,7 +234,7 @@ theorem specMean_eta_eq {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset 
   unfold specMean aEta
   rw [ArkLib.ProximityGap.ParsevalFloor.sum_nonzero_sq hψ G, erase_zero_card]
 
-/-- **`sum_sq_eta_eq`** — the exact sum of the fourth powers of the period norms over `b ≠ 0`:
+/-- **`sum_sq_eta_eq`** — the exact sum of the SQUARED squared periods over `b ≠ 0`:
 `∑_{b≠0}(‖η_b‖²)² = ∑_{b≠0}‖η_b‖⁴ = q·E_2 − n⁴ = A_2`. -/
 theorem sum_sq_eta_eq {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F) :
     ∑ b ∈ univ.erase (0 : F), (aEta ψ G b) ^ 2
