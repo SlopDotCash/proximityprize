@@ -91,7 +91,7 @@ injective
    `correlatedAgreement_affine_curves_johnson_concrete`), each consuming `hβemb` in place of `hβ`.
 
 The net effect: the §5 milestone is reached from the **strictly smaller, provably-equivalent**
-embedding-level residual, with the residual sitting at the level the consumer algebra uses.  No
+embedding-level residual, with the residual sitting at the level the consumer algebra uses.
 No `sorry`/`axiom`/`native_decide`.
 
 ## References

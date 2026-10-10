@@ -12,7 +12,7 @@ import ArkLib.Data.MvPolynomial.SchwartzZippelCounting
 The general-degree multivariate agreement bound, specialising
 `MvPolynomial.schwartz_zippel_counting` to the full grid `F^s`:
 
-  **two distinct polynomials over `Fin s` of total degree `≤ d` agree at at most `d · |F|^{s-1}`
+  **two distinct polynomials over `Fin s` of total degree `≤ d` agree at most `d · |F|^{s-1}`
   points** — a uniformly random point witnesses agreement with probability `≤ d/|F|`.
 
 This is the soundness primitive behind low-degree testing (FRI / STIR / DEEP) and the general
@@ -44,7 +44,7 @@ theorem lowDegree_zeros_card_mul_le {p : MvPolynomial (Fin s) F} {d : ℕ}
   exact hsz
 
 /-- **Low-degree agreement bound (count form).**  Two distinct polynomials over `Fin s` of total
-degree `≤ d` agree at at most `d · |F|^{s-1}` points. -/
+degree `≤ d` agree at most `d · |F|^{s-1}` points. -/
 theorem lowDegree_agree_card_mul_le {p q : MvPolynomial (Fin s) F} {d : ℕ}
     (hp : p.totalDegree ≤ d) (hq : q.totalDegree ≤ d) (hpq : p ≠ q) :
     (Finset.univ.filter (fun x : Fin s → F => eval x p = eval x q)).card * Fintype.card F

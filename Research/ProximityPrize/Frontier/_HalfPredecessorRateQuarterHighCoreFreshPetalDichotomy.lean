@@ -12,7 +12,7 @@ import Research.ProximityPrize.Frontier._HalfPredecessorRateQuarterCollapsedClus
 Fix two relevant decoded lines whose joint cores each contain half of the
 domain.  Every other relevant half-core line then lies in their determinant-
 collapsed cluster.  A nonzero difference of the two reference slope
-polynomials vanishes at at most `k - 1` domain coordinates.  Consequently,
+polynomials vanishes at most `k - 1` domain coordinates.  Consequently,
 `k` fresh cross-core coordinates for each selected scalar supply a transverse
 coordinate automatically, and the collapsed-cluster injection bounds the
 family by the domain.

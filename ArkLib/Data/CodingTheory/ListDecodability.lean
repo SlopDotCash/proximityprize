@@ -47,7 +47,7 @@ def closeCodewordsRel (C : Code ι F) (y : ι → F) (r : ℝ) : Set (ι → F) 
 - Remark:
    Note that the number of codewords `ℓ` in the Hamming ball of radius `r`
    centred around `y` is a real number. The reasoning for this is to accommodate the statement of
-   the Johnson Bound Theorem. For simplicity and ease of proving statements, `ℓ` can be considered a
+   the Johnson Bound Theorem. For simplicity and ease of proving statements, `ℓ` can be considered
    a natural number by taking the floor of the real value. This will not lead to information loss
    since the cardinality of the set of close codewords is a natural number anyway. -/
 def listDecodable (C : Code ι F) (r : ℝ) (ℓ : ℝ) : Prop :=

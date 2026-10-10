@@ -53,7 +53,7 @@ end MvPolynomial
 namespace Polynomial
 
 /-- **Root-set cardinality bound.** Over a finite integral domain `L`, a nonzero `p : L[X]` vanishes
-at at most `p.natDegree` points. The `Fintype`-indexed Schwartz–Zippel core. -/
+at most `p.natDegree` points. The `Fintype`-indexed Schwartz–Zippel core. -/
 theorem card_filter_eval_zero_le {L : Type*} [CommRing L] [IsDomain L]
     [Fintype L] [DecidableEq L] (p : L[X]) (hp : p ≠ 0) :
     (Finset.univ.filter (fun x => p.eval x = 0)).card ≤ p.natDegree := by

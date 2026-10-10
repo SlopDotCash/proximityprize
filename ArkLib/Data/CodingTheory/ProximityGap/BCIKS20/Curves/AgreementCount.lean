@@ -41,7 +41,7 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
          {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
 /-- Root-set cardinality bound (reproved inline to keep imports light): over a finite field a
-nonzero polynomial vanishes at at most `natDegree` points. -/
+nonzero polynomial vanishes at most `natDegree` points. -/
 private lemma card_filter_eval_zero_le (p : F[X]) (hp : p ≠ 0) :
     (Finset.univ.filter (fun x => p.eval x = 0)).card ≤ p.natDegree := by
   apply Polynomial.card_le_degree_of_subset_roots

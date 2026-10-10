@@ -108,7 +108,7 @@ theorem decoded_line_differences_kfour_common_factor
     hproportional, hcommonDeg⟩
 
 /-- A nonzero common factor and a nonzero coefficient pair make the affine
-polynomial pencil intersect zero at at most one scalar. -/
+polynomial pencil intersect zero at most one scalar. -/
 theorem unique_line_intersection_of_common_factor
     (P : F[X]) (hP : P ≠ 0) (alpha rho : F)
     (line1 line2 : F[X] × F[X])
