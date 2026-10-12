@@ -54044,3 +54044,32 @@ and `scripts/lake-locked.sh build Research.ProximityPrize.Frontier._MCAGoodRadiu
 The four printed declarations use only `propext`, `Classical.choice`, and
 `Quot.sound`. The initial tracked build passed 3502 jobs. Full repository and
 hosted gates must be reported separately.
+
+---
+
+### [164-stein-wick-residual-refuted] Free collision count refutes the Wick cap
+
+Date: 2026-10-12. Target: `ProximityGap.Frontier.ARX1.SteinWickResidual`, declared in
+`Frontier/_ArxSteinWraparoundNoGo.lean`. This is a statement-level refutation of a named
+residual, not a production Delta Star counterexample.
+
+The declaration quantifies over every `Nr n r p : ℕ` with `1 ≤ r` and `p ≠ 0` and asserts
+`dcCount Nr n r p ≤ C * wickBudget n r`. The collision count `Nr` is a free natural number,
+not tied to the collision count of `μ_n` modulo `p`, and `dcCount Nr n r p = Nr - n^(2r)/p`
+is unbounded in `Nr`. At `n = r = p = 1` one has `wickBudget 1 1 = 1` and
+`dcCount Nr 1 1 1 = Nr - 1`, so `Nr = ⌈C⌉₊ + 2` violates the bound for every real `C`. The
+theorem `not_steinWickResidual : ∀ C, ¬ SteinWickResidual C` records this.
+
+Scope: this refutes the recorded statement only. The intended statement, bounding `dcCount`
+for the genuine collision count of `μ_n` at depth `r ≈ log p`, is not touched, and the
+Wick/BGK wall remains open. It does not close #164.
+
+Reproduction at the final PR commit:
+
+```
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_SteinWickResidualRefuted.lean
+scripts/lake-locked.sh build Research.ProximityPrize.Frontier._SteinWickResidualRefuted
+```
+
+Evidence class: Lean proof certificate; the declaration uses only `propext`,
+`Classical.choice` and `Quot.sound`.

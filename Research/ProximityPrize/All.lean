@@ -2823,6 +2823,7 @@ import Research.ProximityPrize.Frontier._StackProfileDominationInterface
 import Research.ProximityPrize.Frontier._StackProfileFiberMax
 import Research.ProximityPrize.Frontier._StackProfileRefinement
 import Research.ProximityPrize.Frontier._StackRepresentativeCoverCardinality
+import Research.ProximityPrize.Frontier._SteinWickResidualRefuted
 import Research.ProximityPrize.Frontier._StepRatioMonotone
 import Research.ProximityPrize.Frontier._StepanovAtBstar
 import Research.ProximityPrize.Frontier._StickelbergerAnnihilatorNoGo
