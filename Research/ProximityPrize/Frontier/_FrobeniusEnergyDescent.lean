@@ -1,17 +1,21 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ArkLib Contributors
+Authors: ArkLib Contributors, zyongtao723-rgb
 -/
 import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.Tactic
 
 /-!
-# Frobenius / Galois descent on the energy solution set: an HONEST no-go + the tower pivot (#444)
+# Frobenius descent, the tower pivot, and the unrestricted fiber-input refutation
 
-THREAD T3-frobenius-descent. The single open residual of the Ethereum Proximity Prize (#444,
-[ABF26] ePrint 2026/680) is the **char-`p` energy bound at the saddle depth** `r* = ⌈log p⌉`:
-`E_{r*}(μ_n; F_p) ≤ (2r*−1)‼·n^{r*}`, where
+This file records the historical T3-frobenius-descent route (#444, [ABF26] ePrint 2026/680)
+and refutes its unrestricted scalar input. Its scalar energy lemmas assume their split; they
+do not construct actual energy counts or prove the production arithmetic bound. The current
+DC-subtracted production target is recorded in `_R317DeepShadowCollisionHeadroom.lean`.
+
+The historical raw-energy motivation was `E_{r*}(μ_n; F_p) ≤ (2r*−1)‼·n^{r*}` at
+`r* = ⌈log p⌉`, where
 `E_r(G) = #{(x,y) ∈ G^r × G^r : x₁+⋯+x_r = y₁+⋯+y_r}` is the additive energy / `2r`-th moment of
 the subgroup `G = μ_n ⊂ F_p^×`. A natural attack is **Galois descent**: the Frobenius
 `σ_p : x ↦ x^p` is a field automorphism of `F_p` (and its extensions) that permutes `μ_n` and
@@ -50,9 +54,10 @@ solutions NOT in the image are exactly the **wraparound** collisions
         E_r(F_p)  =  E_r(ℂ)  +  (#extra mod-p fibers)  =  E_r(ℂ) + W_r,
 ```
 
-and the open core `E_r(F_p) ≤ Wick` is **exactly** `E_r(ℂ) ≤ Wick` (PROVEN char-0, Lam–Leung)
-plus the fiber bound `W_r ≤ Wick − E_r(ℂ)`. The vertical descent thus reduces the prize to the
-**fiber count of the reduction map** — the genuine open quantity.
+Given an actual count split, the raw target `E_r(F_p) ≤ Wick` is equivalent to the pointwise
+fiber bound `W_r ≤ Wick − E_r(ℂ)`. The scalar lemmas below prove that algebraic equivalence,
+not the count split or a production fiber estimate. The production DC headroom must be retained
+when selecting the actual allowance.
 
 ## What this file proves (axiom-clean) and names
 
@@ -66,16 +71,22 @@ plus the fiber bound `W_r ≤ Wick − E_r(ℂ)`. The vertical descent thus redu
   tuple (the vertical descent is well-defined on `Sol_r`).
 * `energy_eq_charZero_add_fibers` — the exact count split `E_r(F_p) = E_r(ℂ) + W_r` as an
   identity of reals, restating the open core as a fiber bound.
-* `open_core_of_fiber_bound` — `E_r(ℂ) ≤ Wick → W_r ≤ Wick − E_r(ℂ) → E_r(F_p) ≤ Wick`: the
-  tower descent closes the open core **iff** the fiber residual is bounded.
+* `open_core_of_fiber_bound` — a bound on the actual fiber excess implies the energy bound.
+* `not_fiberCountResidual` — the historical unrestricted scalar residual is false, even on
+  positive data satisfying the split and the characteristic-zero allowance.
+* `open_core_iff_fiberCountResidualAt` — the pointwise fiber bound is exactly equivalent to the
+  energy bound under the split, with no additional loss.
 
 ## The named residual (honest)
 
-`FiberCountResidual` — the wraparound fiber count `W_r` is at most `Wick − E_r(ℂ)`. This is the
-genuine open part (= `p·W_r ≤ n^{2r} − E_r(ℂ)` of `_OpenCoreCharPLighterReduction`, an
-ONSET-THRESHOLD statement: no wraparound collisions at the saddle depth `r* = ⌈log p⌉`). It is
-NOT discharged here. The Frobenius (horizontal) route is proven **vacuous**; the tower (vertical)
-route is proven to **reduce** the prize to `FiberCountResidual`, and nothing more is claimed.
+`FiberCountResidual` historically quantified over every scalar split, without requiring the
+scalars to arise from any energy instance. `not_fiberCountResidual` refutes that formulation.
+The corrected `FiberCountResidualAt EC W Wick` states the fiber bound for specified values.
+Its equivalence with `Ep ≤ Wick` is algebraic; applying it to the prize still requires the actual
+energy/shadow/collision data and the correct allowance. In particular this file's scalar target
+is a raw energy bound, not the DC-subtracted production bound: the latter retains the additional
+`n^(2r)` headroom, as formalized in `_R317DeepShadowCollisionHeadroom.lean`. The unrestricted
+refutation neither refutes nor closes that production statement. Frobenius descent remains vacuous.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`/`native_decide`. Issue #444.
 -/
@@ -161,20 +172,13 @@ theorem reduction_maps_root_to_root {A : Type*} [CommRing A] (p : ℕ) [Fact p.P
 
 /-! ## Part III — the exact count split and the open-core reduction -/
 
-/-- **The exact energy count split `E_r(F_p) = E_r(ℂ) + W_r`.**  Writing the char-`p` energy as the
-char-0 energy plus the wraparound fiber count `W_r ≥ 0` (the extra mod-`p` collisions not lifting to
-characteristic 0), this is the definitional decomposition that the vertical descent produces.  As a
-real-number identity it is trivial; its content is that `W_r` is the *only* gap between the proven
-char-0 bound and the open char-`p` bound. -/
+/-- Preserve a supplied scalar split. This wrapper assumes the identity; it does not construct
+the actual energy counts, their excess, or nonnegativity of that excess. -/
 theorem energy_eq_charZero_add_fibers (Ep EC W : ℝ) (hdef : Ep = EC + W) :
     Ep = EC + W := hdef
 
-/-- **The tower descent closes the open core iff the fiber residual is bounded.**  Given the PROVEN
-char-0 sub-Gaussian bound `E_r(ℂ) ≤ Wick` (Lam–Leung antipodal matchings) and the **fiber bound**
-`W_r ≤ Wick − E_r(ℂ)`, the exact split `E_r(F_p) = E_r(ℂ) + W_r` yields the open core
-`E_r(F_p) ≤ Wick`.  This is the honest content of the vertical (tower) descent: it reduces the
-prize **exactly** to bounding the reduction-map fibers `W_r`, nothing more.  The Frobenius
-(horizontal) route contributed nothing (Part I); the genuine open quantity is `W_r`. -/
+/-- A supplied scalar split and a pointwise fiber allowance imply the raw energy target.
+An actual instance still needs its count split and arithmetic allowance proved separately. -/
 theorem open_core_of_fiber_bound (Ep EC W Wick : ℝ)
     (hsplit : Ep = EC + W) (hcharZero : EC ≤ Wick) (hfiber : W ≤ Wick - EC) :
     Ep ≤ Wick := by
@@ -188,37 +192,55 @@ theorem open_core_strict_of_fiber_strict (Ep EC W Wick : ℝ)
     Ep < Wick := by
   rw [hsplit]; linarith
 
-/-! ## The named residual (the genuine open part, honestly isolated) -/
+/-! ## The historical universal residual and the pointwise successor -/
 
 /--
-**`FiberCountResidual` — the wraparound fiber count at the saddle depth, honestly open.**
+**Historical universal scalar input, false as stated.**
 
-After the vertical (tower `ℤ ↠ ℤ/p`) descent, the entire gap between the PROVEN char-0 bound
-`E_r(ℂ) ≤ Wick` and the open char-`p` bound `E_r(F_p) ≤ Wick` is the **reduction-map fiber count**
-`W_r = E_r(F_p) − E_r(ℂ) ≥ 0` (the wraparound collisions not lifting to characteristic 0).  The
-prize needs, at the saddle depth `r* = ⌈log p⌉` (`n = 2^30`, `p ≈ n·2^128`),
-
-  `W_{r*} ≤ Wick − E_{r*}(ℂ)`     (equivalently `p·W_{r*} ≤ n^{2r*} − E_{r*}(ℂ)`).
-
-This is the ONSET-THRESHOLD statement (no wraparound excess at the saddle depth: `r* < r_0(n)`,
-the wraparound onset), identical to the `_OpenCoreCharPLighterReduction` core and the additive-energy
-CRUX.  Stated here as the explicit hypothesis a future closure must supply, so downstream consumers
-are written `*_of_FiberCountResidual`.  **Not** discharged in this file — the tower descent only
-*reduces to* it; the Frobenius route is proven vacuous (Part I). -/
+The split and `EC ≤ Wick` do not constrain `W`: `Ep = 2` and `EC = W = Wick = 1` satisfy both
+premises but violate the conclusion. These data are positive, so adding nonnegativity would
+not repair the implication. The definition is retained for compatibility and to identify exactly
+what `not_fiberCountResidual` refutes. Use `FiberCountResidualAt` for specified instance data;
+the actual production arithmetic bound, including DC headroom, remains open. -/
 def FiberCountResidual : Prop :=
   ∀ (Ep EC W Wick : ℝ), Ep = EC + W → EC ≤ Wick → W ≤ Wick - EC
 
-/-- Consumer wrapper: under `FiberCountResidual` (the open fiber bound), the open core holds for
-every instance of the split.  This is the modular `*_of_*` form; the hypothesis IS the genuine open
-part (honestly named), not a vacuous discharge. -/
+/-- The historical residual is false on an explicit positive scalar split. This refutes its
+unrestricted formulation, not a fiber bound for actual production energy data. -/
+theorem not_fiberCountResidual : ¬ FiberCountResidual := by
+  intro h
+  have hbad := h 2 1 1 1 (by norm_num) (by norm_num)
+  norm_num at hbad
+
+/-- The fiber allowance for specified instance data. The actual arithmetic proof that production
+data satisfy this bound is a separate obligation. -/
+def FiberCountResidualAt (EC W Wick : ℝ) : Prop :=
+  W ≤ Wick - EC
+
+/-- Under the exact split, the pointwise fiber allowance is equivalent to the energy target.
+This is an algebraic equivalence and does not supply the production bound. -/
+theorem open_core_iff_fiberCountResidualAt (Ep EC W Wick : ℝ)
+    (hsplit : Ep = EC + W) :
+    Ep ≤ Wick ↔ FiberCountResidualAt EC W Wick := by
+  unfold FiberCountResidualAt
+  rw [hsplit]
+  constructor <;> intro h <;> linarith
+
+/-- Pointwise consumer: only the fiber bound for the supplied split is needed. -/
+theorem open_core_of_fiberCountResidualAt (Ep EC W Wick : ℝ)
+    (hsplit : Ep = EC + W) (hfiber : FiberCountResidualAt EC W Wick) :
+    Ep ≤ Wick :=
+  (open_core_iff_fiberCountResidualAt Ep EC W Wick hsplit).mpr hfiber
+
+/-- Historical consumer with a false universal antecedent, retained for compatibility.
+Use `open_core_of_fiberCountResidualAt` with the actual instance bound. -/
 theorem open_core_of_FiberCountResidual (h : FiberCountResidual)
     (Ep EC W Wick : ℝ) (hsplit : Ep = EC + W) (hcharZero : EC ≤ Wick) :
     Ep ≤ Wick :=
   open_core_of_fiber_bound Ep EC W Wick hsplit hcharZero (h Ep EC W Wick hsplit hcharZero)
 
-/-- Documentation anchor: the Frobenius (horizontal) descent is vacuous at the prize
-(`frobenius_trivial_on_mu`); the tower (vertical) descent reduces the open core to
-`FiberCountResidual`, the genuine open quantity. -/
+/-- Documentation anchor: Frobenius descent is vacuous at the prize. The pointwise fiber bound
+is equivalent to the supplied energy target; the historical universal residual is refuted. -/
 def descentNote : Unit := ()
 
 end ProximityGap.Frontier.FrobeniusEnergyDescent
@@ -234,3 +256,6 @@ end ProximityGap.Frontier.FrobeniusEnergyDescent
 #print axioms ProximityGap.Frontier.FrobeniusEnergyDescent.open_core_of_fiber_bound
 #print axioms ProximityGap.Frontier.FrobeniusEnergyDescent.open_core_strict_of_fiber_strict
 #print axioms ProximityGap.Frontier.FrobeniusEnergyDescent.open_core_of_FiberCountResidual
+#print axioms ProximityGap.Frontier.FrobeniusEnergyDescent.not_fiberCountResidual
+#print axioms ProximityGap.Frontier.FrobeniusEnergyDescent.open_core_iff_fiberCountResidualAt
+#print axioms ProximityGap.Frontier.FrobeniusEnergyDescent.open_core_of_fiberCountResidualAt
