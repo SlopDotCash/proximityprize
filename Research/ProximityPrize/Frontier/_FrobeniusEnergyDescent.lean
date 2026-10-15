@@ -69,8 +69,8 @@ when selecting the actual allowance.
   extension, i.e. `μ_n ⊄ F_p`, the non-prize regime.
 * `reduction_preserves_sol` — a ring hom `π` sends a char-0 solution tuple to an `F_p` solution
   tuple (the vertical descent is well-defined on `Sol_r`).
-* `energy_eq_charZero_add_fibers` — the exact count split `E_r(F_p) = E_r(ℂ) + W_r` as an
-  identity of reals, restating the open core as a fiber bound.
+* `energy_eq_charZero_add_fibers` — preserves a supplied scalar identity `Ep = EC + W`;
+  the actual energy count split remains a separate obligation.
 * `open_core_of_fiber_bound` — a bound on the actual fiber excess implies the energy bound.
 * `not_fiberCountResidual` — the historical unrestricted scalar residual is false, even on
   positive data satisfying the split and the characteristic-zero allowance.
@@ -159,12 +159,8 @@ theorem reduction_preserves_sol {A : Type*} [CommRing A] (p : ℕ) [Fact p.Prime
     ∑ i, π (x i) = ∑ i, π (y i) := by
   rw [← map_sum, ← map_sum, hsol]
 
-/-- **`μ_n(ℂ)` reduces bijectively onto `μ_n ⊂ F_p` (the lift is faithful on the subgroup).**  A
-ring hom `π : A → ZMod p` sends an `n`-th root of unity to an `n`-th root of unity: if `ζ^n = 1`
-in `A` then `(π ζ)^n = 1` in `ZMod p`.  Together with `n ∣ p − 1` (distinct linear factors of `Φ_n`
-mod `p`), this is the statement that the vertical map identifies the two copies of `μ_n` — so the
-ONLY way the char-`p` count can exceed the char-0 count is by **extra fibers** (wraparound), never
-by collapsing `μ_n`. -/
+/-- A ring hom sends an `n`-th root of unity to an `n`-th root of unity. This proves preservation
+of the root relation; injectivity or surjectivity on an actual subgroup needs separate proof. -/
 theorem reduction_maps_root_to_root {A : Type*} [CommRing A] (p : ℕ) [Fact p.Prime]
     (π : A →+* ZMod p) {n : ℕ} {ζ : A} (hζ : ζ ^ n = 1) :
     (π ζ) ^ n = 1 := by
