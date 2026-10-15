@@ -54044,3 +54044,28 @@ and `scripts/lake-locked.sh build Research.ProximityPrize.Frontier._MCAGoodRadiu
 The four printed declarations use only `propext`, `Classical.choice`, and
 `Quot.sound`. The initial tracked build passed 3502 jobs. Full repository and
 hosted gates must be reported separately.
+
+### [164-unrestricted-fiber-count-residual-refuted] Scalar quantification loses the instance
+
+Date: 2026-10-13. Target: `ProximityGap.Frontier.FrobeniusEnergyDescent.FiberCountResidual`
+in `Frontier/_FrobeniusEnergyDescent.lean`, a named input to the historical tower-descent route.
+
+The declared proposition quantifies over arbitrary real `Ep`, `EC`, `W`, and `Wick` and asserts
+`Ep = EC + W` and `EC ≤ Wick` imply `W ≤ Wick - EC`. The positive values
+`Ep = 2`, `EC = W = Wick = 1` satisfy both premises and violate the conclusion.
+`not_fiberCountResidual` refutes this exact formulation; adding nonnegativity alone cannot fix it.
+
+The pointwise successor `FiberCountResidualAt EC W Wick` records the fiber allowance for specified
+values. `open_core_iff_fiberCountResidualAt` proves it is equivalent to `Ep ≤ Wick` under the
+exact split, and `open_core_of_fiberCountResidualAt` consumes only that instance bound. The old
+definition and consumer remain available for compatibility, explicitly identified as having a
+false universal antecedent.
+
+Scope: this is a statement-level refutation and an algebraic interface repair, not a new bound
+for actual subgroup collisions. The scalar raw-energy target must not be confused with the
+DC-subtracted production target. `_R317DeepShadowCollisionHeadroom.lean` gives the existing exact
+production headroom with the additional `n^(2r)` term. No arithmetic fiber estimate, production
+counterexample, or closure of #164 is claimed.
+
+Reproduce with `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_FrobeniusEnergyDescent.lean`.
+The three added theorems print their axioms for inspection.
