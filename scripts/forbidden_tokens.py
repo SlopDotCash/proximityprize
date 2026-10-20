@@ -122,12 +122,51 @@ def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
     return sorted(files), full_arklib_scan, errors
 
 
+def string_literal_end(text: str, start: int) -> int | None:
+    """Offset just past the Lean string literal that opens at `start`.
+
+    Returns None when the literal is never closed, so a stray quote cannot mask
+    the remainder of a file.
+    """
+    i, n = start + 1, len(text)
+    while i < n:
+        if text[i] == "\\":
+            # `\\` and `\"` keep the literal open; skip the escaped char.
+            i += 2
+            continue
+        if text[i] == '"':
+            return i + 1
+        i += 1
+    return None
+
+
+def opens_string_literal(text: str, i: int) -> bool:
+    """True when the `"` at offset `i` opens a string rather than a char literal."""
+    # `'"'` is a Char literal; the quote does not open a string.
+    return not (i > 0 and text[i - 1] == "'")
+
+
 def comment_mask(text: str) -> list[bool]:
-    """Return per-char mask: True if the char is inside a comment/docstring."""
+    """Return per-char mask: True if the char is inside a comment/docstring.
+
+    String literals are data, not code. Scanning them for comment delimiters
+    let a literal such as `def banner := "/-"` open a phantom block comment that
+    blanked the rest of the file, so every later `axiom`, bodyless
+    `opaque`/`constant`, `native_decide` and `: True` placebo went unseen. A
+    literal is therefore consumed whole: delimiters inside it are inert, and
+    the masked span keeps tokens inside a string from being reported as live.
+    """
     mask = [False] * len(text)
     i, n = 0, len(text)
     depth = 0
     while i < n:
+        if depth == 0 and text[i] == '"' and opens_string_literal(text, i):
+            end = string_literal_end(text, i)
+            if end is not None:
+                for k in range(i, end):
+                    mask[k] = True
+                i = end
+                continue
         if depth == 0 and text.startswith("--", i):
             j = text.find("\n", i)
             j = n if j == -1 else j
