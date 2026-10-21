@@ -28,7 +28,10 @@ each as:
                (for example `theorem ..._false : ¬ FooResidual ...`).  This is
                not a discharge; it means the statement surface is known false
                or too broad and should be repaired/retired rather than carried
-               as open proof debt.
+               as open proof debt.  A concrete refutation outranks a concrete
+               provider: the provider may only cover a specialized (sometimes
+               vacuous) instance, while the counterexample shows that the
+               surface as stated is false.
   open       — everything else.
 
 A residual name appearing only in hypothesis position (`(h : <Name>Residual
@@ -571,10 +574,12 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
             and not p["extra_explicit_binders"]
             and not p["ambiguous_name_match"]
         ]
-        if concrete:
-            r["status"] = "discharged"
-        elif concrete_refutations:
+        # A counterexample refutes the surface as stated, so it outranks a
+        # provider that may only cover a specialized instance (e.g. `k = 0`).
+        if concrete_refutations:
             r["status"] = "refuted"
+        elif concrete:
+            r["status"] = "discharged"
         else:
             r["status"] = "open"
 

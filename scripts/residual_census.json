@@ -2,8 +2,8 @@
  "summary": {
   "total": 89,
   "open": 44,
-  "discharged": 44,
-  "refuted": 1,
+  "discharged": 40,
+  "refuted": 5,
   "by_top_dir": {
    "(root)": {
     "total": 1,
@@ -14,8 +14,8 @@
    "Data": {
     "total": 24,
     "open": 16,
-    "discharged": 8,
-    "refuted": 0
+    "discharged": 4,
+    "refuted": 4
    },
    "OracleReduction": {
     "total": 39,
@@ -887,7 +887,7 @@
      "ambiguous_name_match": false
     }
    ],
-   "status": "discharged"
+   "status": "refuted"
   },
   {
    "name": "BoundaryProbabilityResidual",
@@ -1097,7 +1097,7 @@
      "ambiguous_name_match": false
     }
    ],
-   "status": "discharged"
+   "status": "refuted"
   },
   {
    "name": "CurveCommonAgreementResidual",
@@ -1390,7 +1390,7 @@
      "ambiguous_name_match": false
     }
    ],
-   "status": "discharged"
+   "status": "refuted"
   },
   {
    "name": "RestrictedFaaDiBrunoMatchResidual",
@@ -1584,7 +1584,7 @@
      "ambiguous_name_match": false
     }
    ],
-   "status": "discharged"
+   "status": "refuted"
   },
   {
    "name": "BoundaryCardLatticeThresholdResidual",

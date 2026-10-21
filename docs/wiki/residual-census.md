@@ -46,14 +46,14 @@ always check this census before treating a `*Residual` name as open proof debt.
 
 - **Total strict residuals:** 89
 - **Open:** 44
-- **Discharged:** 44
-- **Refuted:** 1
+- **Discharged:** 40
+- **Refuted:** 5
 - **Residual-like near misses:** 33 (listed below and in `scripts/residual_census.json`)
 
 | top-level directory | total | open | discharged | refuted |
 |---|---:|---:|---:|---:|
 | `(root)` | 1 | 0 | 1 | 0 |
-| `Data` | 24 | 16 | 8 | 0 |
+| `Data` | 24 | 16 | 4 | 4 |
 | `OracleReduction` | 39 | 22 | 17 | 0 |
 | `ProofSystem` | 14 | 6 | 8 | 0 |
 | `ToMathlib` | 11 | 0 | 10 | 1 |
@@ -148,6 +148,10 @@ proof debt and naming drift.
 
 ## Refuted Residuals
 
+- `ProximityGap.BoundaryCardResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean:2578` — refuted by `ArkLib.BoundaryCardResidualAffineLineRefutation.not_boundaryCardResidual_affineLine` (ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardResidualAffineLineRefutation.lean:118), `ArkLib.BoundaryCardResidualRefutation.not_boundaryCardResidual` (ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardResidualRefutation.lean:246), `ArkLib.BoundaryCardStrictInteriorRefutation.not_boundaryCardResidual_nonSquareEndpoint` (ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardStrictInteriorRefutation.lean:311)
+- `ProximityGap.BoundaryProbabilityResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean:2597` — refuted by `ArkLib.BoundaryCardResidualRefutation.not_boundaryProbabilityResidual` (ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardResidualRefutation.lean:274)
+- `BCIKS20.HenselNumerator.FaaDiBrunoSuccSumZeroResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:2510` — refuted by `BCIKS20.HenselNumerator.Witness.faaDiBrunoSuccSumZeroResidual_false` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2OrderZeroRefutationWitness.lean:168)
+- `ArkLib.BoundaryCardResidual.BoundaryCardLatticeResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardResidual.lean:271` — refuted by `ArkLib.BoundaryCardResidualRefutation.not_boundaryCardLatticeResidual` (ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardResidualRefutation.lean:252)
 - `CodingTheory.CS25.DeepHole.DeepHoleProbResidual` — `ArkLib/ToMathlib/CS25DeepHoleFinish.lean:265` — refuted by `CodingTheory.CS25.DeepHole.not_deepHoleProbResidual_negativeEpsilon_zmod2` (ArkLib/ToMathlib/CS25DeepHoleFinish.lean:286)
 
 ## Discharged Residuals
@@ -155,10 +159,6 @@ proof debt and naming drift.
 - `ProximityGap.GKL24FirstMomentResidual` — `ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean:1046`
 - `ProximityGap.GKL24FirstMomentWitnessCoverResidual` — `ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean:1107`
 - `ProximityGap.StrictCoeffPolysResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean:2505`
-- `ProximityGap.BoundaryCardResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean:2578`
-- `ProximityGap.BoundaryProbabilityResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean:2597`
-- `BCIKS20.HenselNumerator.FaaDiBrunoSuccSumZeroResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:2510`
-- `ArkLib.BoundaryCardResidual.BoundaryCardLatticeResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardResidual.lean:271`
 - `ProximityGap.Ownership.SubJohnsonSupplyResidual` — `ArkLib/Data/CodingTheory/ProximityGap/JohnsonSplitSupply.lean:258`
 - `Prover.appendRunRightResidual` — `ArkLib/OracleReduction/Composition/Sequential/Append.lean:3933`
 - `OracleReduction.appendToReductionResidual` — `ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessOracle.lean:67`
