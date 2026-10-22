@@ -1,9 +1,9 @@
 {
  "summary": {
   "total": 89,
-  "open": 44,
+  "open": 43,
   "discharged": 44,
-  "refuted": 1,
+  "refuted": 2,
   "by_top_dir": {
    "(root)": {
     "total": 1,
@@ -13,9 +13,9 @@
    },
    "Data": {
     "total": 24,
-    "open": 16,
+    "open": 15,
     "discharged": 8,
-    "refuted": 0
+    "refuted": 1
    },
    "OracleReduction": {
     "total": 39,
@@ -455,7 +455,7 @@
      "name": "ProximityGap.strictCoeffPolysResidual_of_commonAgreement",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CoeffExtractionResidual.lean",
-     "line": 66,
+     "line": 75,
      "conditional_on_residuals": [
       "CurveCommonAgreementResidual"
      ],
@@ -1103,7 +1103,7 @@
    "name": "CurveCommonAgreementResidual",
    "fq_name": "ProximityGap.CurveCommonAgreementResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CoeffExtractionResidual.lean",
-   "line": 37,
+   "line": 46,
    "providers": [
     {
      "name": "ProximityGap.curveCommonAgreementResidual_of_one_le_mul",
@@ -1142,7 +1142,18 @@
      "ambiguous_name_match": false
     }
    ],
-   "status": "open"
+   "refutations": [
+    {
+     "name": "ProximityGap.CurveCommonAgreementRefutation.not_curveCommonAgreementResidual",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CurveCommonAgreementRefutation.lean",
+     "line": 336,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "refuted"
   },
   {
    "name": "RSCurveListSizeResidual",

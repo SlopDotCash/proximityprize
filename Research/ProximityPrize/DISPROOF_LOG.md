@@ -54044,3 +54044,55 @@ and `scripts/lake-locked.sh build Research.ProximityPrize.Frontier._MCAGoodRadiu
 The four printed declarations use only `propext`, `Classical.choice`, and
 `Quot.sound`. The initial tracked build passed 3502 jobs. Full repository and
 hosted gates must be reported separately.
+
+## [164-curve-common-agreement-refuted] The geometric strict-Johnson common-agreement residual is false: a one-parameter adversarial decoder defeats the shared agreement set
+
+2026-10-22, gitzlx (Slop contribution). Kernel-checked finite-field counterexample.
+
+`ProximityGap.CurveCommonAgreementResidual`
+(`ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CoeffExtractionResidual.lean`) is the
+geometric form of the BCIKS20 §5/§6 strict Johnson extraction: for every curve `u` and every
+decoded parameter family `P`, there must be `k + 1` distinct good parameters `s i` such that at
+every good `z` the decoded polynomial `P z` and all sampled decodings `P (s i)` share a common
+agreement set of size at least `deg` with the curve word at `z`. The algebraic strict
+coefficient-polynomial residual is derived from this geometric statement by Lagrange
+interpolation. The geometric statement is **false as stated**.
+
+Witness (`not_curveCommonAgreementResidual`): `k = 1`, `deg = 2`, `δ = 3/7`,
+`F = GaloisField 2 64`, `ι = Fin 7`, the seven-point domain `domain7`, and the constant curve
+`curveStack` with `u 0 = eWord`, `u 1 = 0`, where `eWord` keeps the codeword
+`wLin = (X - C (domain7 0)).eval ∘ domain7` on the coordinates `{1, 2, 3}` and is zero
+elsewhere. Every curve word is therefore `eWord`, which is at relative distance exactly `3/7`
+from the code, so the good-coefficient set is all of `F` and the probability hypothesis holds
+because `errorBound (3/7) 2 domain7 < 1`.
+
+The adversarial decoder is `P z = X - C (domain7 0)` at `z = 0` and `P z = 0` otherwise. Every
+member has degree `< 2` and is at relative distance `3/7` from `eWord`, so `P` is decoded on all
+of `F`. The conclusion, evaluated at the good parameter `z = 0`, demands an agreement set `S`
+with `2 ≤ |S|` on which `linPoly` agrees with `eWord`, together with two distinct sample
+parameters `s 0` and `s 1`. At most one sample equals `0`; for the other one, `P (s i) = 0`, so
+the second clause forces `eWord` to vanish on `S`. Hence `linPoly` vanishes on `S`, and its only
+root is `domain7 0`, so `S ⊆ {0}` and `|S| ≤ 1`, contradicting `2 ≤ |S|`.
+
+Formal payload: `CurveCommonAgreementRefutation.not_curveCommonAgreementResidual` and
+`CurveCommonAgreementRefutation.errorBound_lt_one` in
+`ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CurveCommonAgreementRefutation.lean`; the
+residual definition's docstring now records the refutation. `scripts/residual_census.py`
+reclassifies `CurveCommonAgreementResidual` as `refuted` (open 44 → 43, refuted 1 → 2).
+
+Scope: this refutes the geometric residual exactly as stated, and with it any unconditional
+derivation of the strict coefficient-polynomial residual from `CurveCommonAgreementResidual`. It
+does not refute the BCIKS20 list-decoding theorem, the existence half of the extraction, the
+production parameters, or the `δ*` conjecture. Because the universal quantifier over `P` admits
+an adversarial decoder, a repaired geometric statement must fix the decoder canonically or
+restrict to a unique-decoding regime.
+
+Reproduce with
+
+```
+scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CurveCommonAgreementRefutation.lean
+scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CurveCommonAgreementRefutation
+```
+
+The printed declarations `not_curveCommonAgreementResidual` and `errorBound_lt_one` use only
+`propext`, `Classical.choice`, and `Quot.sound`.

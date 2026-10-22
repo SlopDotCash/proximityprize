@@ -90,6 +90,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CoeffExtraction
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CoeffExtractionResidual
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CoeffExtractionVacuous
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CorrelatedAgreementSmallField
+import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CurveCommonAgreementRefutation
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.GoodCoeffs
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.GoodSetAggregate
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.HeavyCodeword

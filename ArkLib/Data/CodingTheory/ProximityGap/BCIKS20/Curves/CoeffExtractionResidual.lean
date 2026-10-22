@@ -33,7 +33,16 @@ decodings share a `≥ deg`-size common agreement set with `P z` at every good p
 This is the genuinely deep content of [BCIKS20] §6: in the regime `(1-ρ)/2 < δ < 1-√ρ`, the
 decoded family is forced onto a single global low-degree bivariate structure, so the agreement
 sets of different parameters overlap on `≥ deg` points. The algebraic conclusion follows from
-this geometric one by pure Lagrange interpolation (`RS_coeffPolys_of_commonAgreement`). -/
+this geometric one by pure Lagrange interpolation (`RS_coeffPolys_of_commonAgreement`).
+
+**Status (2026-10-22): false as stated.** `CurveCommonAgreementResidual` is refuted at
+`k = 1`, `deg = 2`, `δ = 3/7`, `domain = domain7` over `GaloisField 2 64` by
+`not_curveCommonAgreementResidual` in
+`BCIKS20/Curves/CurveCommonAgreementRefutation.lean` (axiom-clean). The counterexample uses an
+adversarial decoder, which the universal quantifier over `P` permits; the geometric statement
+survives only after fixing the decoder canonically or restricting to unique decoding. The
+reduction below is therefore a conditional reduction from a refuted hypothesis, not a route to
+the strict residual as stated. -/
 def CurveCommonAgreementResidual {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} : Prop :=
   ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
     Pr_{
