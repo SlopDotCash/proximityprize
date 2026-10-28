@@ -16,6 +16,6 @@
 active Research.ProximityPrize.GrandChallenges ProximityGap.GrandChallenges.grandMCAChallenge_of_resolution grandMCAChallenge
 active Research.ProximityPrize.GrandChallenges ProximityGap.GrandChallenges.grandListDecodingChallenge_of_resolution grandListDecodingChallenge
 
-# Future #120 prize-apex producers. These become active once the theorem names land.
-active ArkLib.Data.CodingTheory.ProximityGap.GrandChallengePrizeResolution ProximityGap.prizeResolution_mca_M521 mcaPrize
-active ArkLib.Data.CodingTheory.ProximityGap.GrandChallengePrizeResolution ProximityGap.prizeResolution_ld listDecodingPrize
+# Prize-apex producers retained in the canonical Research resolution module.
+active Research.ProximityPrize.Resolution ProximityGap.prizeResolution_mca_M521 mcaPrize
+active Research.ProximityPrize.Resolution ProximityGap.prizeResolution_ld listDecodingPrize

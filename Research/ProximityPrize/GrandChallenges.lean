@@ -592,10 +592,10 @@ noncomputable def MCAUpperWitness.ofJohnsonJumpBCHKS25
 
 /-- **Radius-discharge bridge for ABF26 Theorem 4.18 [BCHKS25 Cor 1.7].**
 
-The T4.18 internal radius is definitionally the Johnson radius plus `1/8 + 1/n`, so the
-radius comparison needed by `MCAUpperWitness.ofJohnsonJumpBCHKS25` can be discharged
-uniformly.  Callers still provide the packaged BCHKS25 witness and the explicit threshold
-comparison against `ε*`. -/
+The T4.18 internal radius is the Johnson radius plus `1/8 - 1/n`, and every packaged witness
+has `n ≥ 16` (`RSJohnsonJumpWitness.sixteen_le_card`), so the radius comparison needed by
+`MCAUpperWitness.ofJohnsonJumpBCHKS25` can be discharged uniformly.  Callers still provide
+the packaged BCHKS25 witness and the explicit threshold comparison against `ε*`. -/
 noncomputable def MCAUpperWitness.ofJohnsonJumpBCHKS25AutoRadius
     {FC : Type} [Field FC] [Fintype FC] [DecidableEq FC] [CharP FC 2]
     {ιC : Type} [Fintype ιC] [Nonempty ιC] [DecidableEq ιC]
@@ -608,7 +608,7 @@ noncomputable def MCAUpperWitness.ofJohnsonJumpBCHKS25AutoRadius
     MCAUpperWitness (ι := ιC) (F := FC)
       (ReedSolomon.code W.domain W.k : Set (ιC → FC)) ε_star :=
   MCAUpperWitness.ofJohnsonJumpBCHKS25 (FC := FC) (ιC := ιC)
-    ε ε_star W (CodingTheory.johnsonJumpRadius_le_internalRadius (Fintype.card ιC)) hgt
+    ε ε_star W W.radius_le_internalRadius hgt
 
 #print axioms ProximityGap.GrandChallenges.MCAUpperWitness.ofJohnsonJumpBCHKS25AutoRadius
 

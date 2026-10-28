@@ -83,7 +83,16 @@ jobs:
             lean_relevant=false
             while IFS= read -r -d '' changed_path; do
               case "$changed_path" in
-                *.lean|lakefile.toml|lake-manifest.json|lean-toolchain|scripts/*.py|scripts/*.sh|.github/workflows/ci.yml)
+                scripts/*.md)
+                  # Script documentation feeds no gate.
+                  ;;
+                # Everything else under scripts/ can be a gate input, not only
+                # *.py/*.sh: flagship_axioms.txt is the axiom-audit manifest,
+                # sorry_baseline.json feeds the sorry census, and the Python
+                # regressions compile C++ sources and read data in tests/ and
+                # probes/. Skipping validate.sh for them lets a PR pass CI with
+                # a change those gates reject.
+                *.lean|lakefile.toml|lake-manifest.json|lean-toolchain|scripts/*|.github/workflows/ci.yml)
                   lean_relevant=true
                   break
                   ;;
@@ -96,7 +105,7 @@ jobs:
         if: steps.validation-scope.outputs.lean-relevant != 'true'
         run: |
           echo "No Lean source, toolchain, Lake manifest, or validation script changed."
-          echo "The dedicated import, documentation-integrity, and lint workflows remain required."
+          echo "The dedicated import, documentation-integrity, knowledge-base, and lint workflows remain required."
 
       - name: Restore Lean cache
         if: steps.validation-scope.outputs.lean-relevant == 'true'

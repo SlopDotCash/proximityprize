@@ -41,6 +41,11 @@ The current KB policy is:
 - Pushes to `main` that change Lean or KB inputs run the `Refresh KB Generated Files` workflow.
   When regeneration changes derived files, the workflow opens a generated-only PR and either
   enables auto-merge or merges it immediately when no required checks block it.
+- Pull requests that change Lean or KB inputs (including only `references.bib`, `docs/kb/papers/`,
+  `docs/kb/sources/` or `docs/kb/_generated/`) run the same workflow as a check: regenerate,
+  `check_generated.py`, `lint.py --strict-cited-pages`, and the committed-output check. `ci.yml`
+  treats KB-only pull requests as documentation-only and skips `validate.sh`, so this workflow is
+  what gates them.
 
 ## Review Integration
 

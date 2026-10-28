@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ArkLib Contributors
+Authors: ArkLib Contributors, Mikhail Izhutkin (mashingaan, @mashingaan)
 -/
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
@@ -34,16 +34,16 @@ The window-interior conclusion `1 − √ρ < δ* < 1 − ρ` decomposes (master
   `ρ ≤ 1/4` the surrogate `m* < k` suffices (`√ρ ≥ 2ρ` there; **B50**
   `mstar_lt_johnson_threshold_of_lt_k`). So the Johnson side reduces to `m* < k`.
 
-* **`m* < k` is exactly the BCHKS Prop.** By **B31** (`mStar_le_iff_BCHKS_mono`), under the
-  P2/E3 identification `D n m = Σ_{r}(μ_s)` and cascade monotonicity (proven), the budget-crossing
-  `m*(n) ≤ M` *is* the BCHKS subset-sum bound `|Σ_{rmap n M}(μ_{smap n})| ≤ budget n` at the matched
+* **`m* < k` follows from the BCHKS Prop.** By the sufficient half of **B31**, the one-way
+  P2/E3 domination `D n m ≤ Σ_{r}(μ_s)` and cascade monotonicity imply that the budget-crossing
+  `m*(n) ≤ M` follows from the BCHKS bound `|Σ_{rmap n M}(μ_{smap n})| ≤ budget n` at the matched
   fold. Taking `M = k − 1`, the single named Prop `BCHKSBudget Sigma (smap n) (rmap n (k−1)) (budget n)`
   yields `m* ≤ k − 1 < k`, the only input the whole chain needs.
 
 So the master theorem `prize_reduces_to_BCHKS` takes exactly ONE non-discharged hypothesis — the
-named BCHKS-type Prop `hBCHKS` — plus the structural *identifications/values* that the upstream
+named BCHKS-type Prop `hBCHKS` — plus the structural *domination/value* data that the upstream
 bricks already certify (the master-gap-identity form of `δ*`, the proven edge value, and the P2/E3
-incidence ⇄ subset-sum identification), and concludes `δ*` is window-interior.
+incidence-to-subset-sum domination), and concludes `δ*` is window-interior.
 
 ## Honesty (the contract)
 
@@ -105,25 +105,23 @@ def BCHKSBudget (Sigma : ℕ → ℕ → ℕ) (s r B : ℕ) : Prop :=
 
 /-- **The B31 monotone reduction (sufficient direction, reproved inline).**
 
-Under the P2/E3 identification `hident : ∀ m, D n m = Sigma (smap n) (rmap n m)` (the far-line
-incidence at depth `m` *is* the distinct `r`-fold subset-sum count of `μ_{smap n}` at fold
-`r = rmap n m`) and cascade monotonicity `hmono` (E4 decay, proven in B48), the BCHKS subset-sum
-bound at fold `rmap n M` forces the binding depth `m*(n) ≤ M`:
+Under the one-way P2/E3 domination `hdom : ∀ m, D n m ≤ Sigma (smap n) (rmap n m)` (deduplication
+can only shrink the far-line count relative to the distinct `r`-fold subset-sum count), the BCHKS
+subset-sum bound at fold `rmap n M` forces the binding depth `m*(n) ≤ M`:
 
   `|Σ_{rmap n M}(μ_{smap n})| ≤ budget n  ⟹  m*(n) ≤ M`.
 
 This is the *sufficient direction* the master reduction needs (we only ever pull `m*` *down* from
-the BCHKS bound). Pure `Nat.find_min'` through the identification. -/
+the BCHKS bound). Pure `Nat.find_min'` through the domination. -/
 theorem mStar_le_of_BCHKS
     (D : ℕ → ℕ → ℕ) (budget : ℕ → ℕ) (Sigma : ℕ → ℕ → ℕ)
     (smap : ℕ → ℕ) (rmap : ℕ → ℕ → ℕ) (n : ℕ)
     (hex : ∃ m, D n m ≤ budget n)
-    (hident : ∀ m, D n m = Sigma (smap n) (rmap n m)) (M : ℕ)
+    (hdom : ∀ m, D n m ≤ Sigma (smap n) (rmap n m)) (M : ℕ)
     (hBCHKS : BCHKSBudget Sigma (smap n) (rmap n M) (budget n)) :
     mStar D budget n hex ≤ M := by
-  -- The matched fold `m = M` binds: `D n M = Sigma (smap n) (rmap n M) ≤ budget n`.
-  have hbind : D n M ≤ budget n := by
-    rw [hident M]; exact hBCHKS
+  -- The matched fold `m = M` binds: `D n M ≤ Sigma ... ≤ budget n`.
+  have hbind : D n M ≤ budget n := le_trans (hdom M) hBCHKS
   exact mStar_le_of_binds D budget n hex hbind
 
 /-! ## 4. The proven CoreA1 lower bound `m* ≥ 3` (reproved inline) -/
@@ -242,9 +240,9 @@ either inline above or upstream):
 * `hedge` — the proven over-det edge value `D n 2 = Dedge m > 4m = budget` (CoreA1 `dedge_gt_budget`,
   a pure polynomial inequality), giving the **proved** lower bound `m* ≥ 3` (hence `2 ≤ m*`, the
   capacity side, with NO hypothesis).
-* `hident` — the P2/E3 identification `D n m = Σ_{rmap n m}(μ_{smap n})` (the far-line incidence IS
-  the subset-sum count). The structural bridge B31 names; here it is the substrate datum the
-  reduction is *relative to*.
+* `hdom` — the one-way P2/E3 domination `D n m ≤ Σ_{rmap n m}(μ_{smap n})`, which is all the
+  sufficient direction uses. The stronger equality is needed only for the necessity-side
+  equivalence in `_CoreReductionNecessity`.
 * `hmstar_real` — the bridge `(m* : ℝ) = mStar …` connecting the `Nat` binding depth to the ℝ in E1.
 * `hk_ge`, `hkr` — `3 ≤ k` and the fold reindex `M = k − 1` (so `m* ≤ k − 1 < k`), book-keeping that
   the prize regime (`k = ρn`, `n = 2^μ`) supplies.
@@ -270,8 +268,8 @@ theorem prize_reduces_to_BCHKS
     (hedge_val : D n 2 = Dedge m)
     -- cascade monotonicity (B48, proven upstream)
     (hmono : ∀ {a b : ℕ}, a ≤ b → D n b ≤ D n a)
-    -- the P2/E3 identification (B31's bridge datum)
-    (hident : ∀ j, D n j = Sigma (smap n) (rmap n j))
+    -- the one-way P2/E3 domination (B31's sufficient bridge datum)
+    (hdom : ∀ j, D n j ≤ Sigma (smap n) (rmap n j))
     -- the ℝ-side prize-regime data
     (kReal nReal rho deltaStar mstarReal : ℝ)
     (hnReal : nReal = (n : ℝ)) (hnpos : 0 < nReal)
@@ -292,7 +290,7 @@ theorem prize_reduces_to_BCHKS
     mStar_ge_three_of_edge_over_and_antitone D budget n hex hmono hedge
   -- (B) The open input pulls `m*` DOWN: from BCHKS at fold `rmap n (kNat-1)`, `m* ≤ kNat − 1`.
   have hle : mStar D budget n hex ≤ kNat - 1 :=
-    mStar_le_of_BCHKS D budget Sigma smap rmap n hex hident (kNat - 1) hBCHKS
+    mStar_le_of_BCHKS D budget Sigma smap rmap n hex hdom (kNat - 1) hBCHKS
   -- (C) Translate the Nat bounds to ℝ: `3 ≤ m*` and `m* < k` (since `m* ≤ k−1 < k`, `k ≥ 3`).
   have hmstar_ge3R : (3 : ℝ) ≤ mstarReal := by
     rw [hmstar_real]; exact_mod_cast hge3
@@ -341,7 +339,7 @@ example :
     (smap := id) (rmap := fun _ j => j) (n := 16) (hex := hex)
     (m := 4) (hm := by norm_num) (hn_eq := by norm_num)
     (hbudget := by norm_num) (hedge_val := by decide)
-    (hmono := ?_) (hident := ?_)
+    (hmono := ?_) (hdom := ?_)
     (kReal := 4) (nReal := 16) (rho := 1 / 4) (deltaStar := 5 / 8) (mstarReal := 3)
     (hnReal := by norm_num) (hnpos := by norm_num)
     (hk := by norm_num) (hρpos := by norm_num) (hρ4 := by norm_num)
@@ -356,7 +354,7 @@ example :
     · have ha : a ≤ 2 := le_trans hab hb
       simp [hb, ha]
     · simp [hb]
-  · -- identification: D 16 j = (modelD 16) (id 16) ((fun _ j => j) 16 j) = modelD 16 j.  `rfl`.
+  · -- domination: this model uses equality, so the required inequality is `rfl`.
     intro j; rfl
 
 end ArkLib.ProximityGap.CoreReductionComplete

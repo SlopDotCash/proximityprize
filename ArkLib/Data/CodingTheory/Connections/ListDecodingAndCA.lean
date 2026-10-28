@@ -37,9 +37,9 @@ implication "list-decoding ⇒ CA" cannot be tight in general.
 - `rs_epsCA_implies_lambda_extended_cs25` — ABF26 T5.3 [CS25 Thm 2]: small `ε_ca` for
   `RS[F, L, k]` implies a quantitative list-size bound for the related code
   `RS[F, L, k+1]`.
-- `rs_epsCA_separation_bgks20` — ABF26 T5.4 [BGKS20 Lem 3.3]: characteristic-2 RS
-  codes with rate `1/8` have `ε_ca(C, 1 - ρ^{1/3}) ≥ 1 - 1/|F|`, separating list
-  decoding from CA.
+- `rs_epsCA_separation_bgks20` — ABF26 T5.4 [BGKS20 Lem 3.3]: characteristic-2 full-domain
+  RS codes of degree `≤ |F|/8` (nominal rate `1/8`) have `ε_ca(C, 1 - ρ^{1/3}) ≥ 1 - 1/|F|`,
+  separating list decoding from CA.
 
 ## Issue #22 bridge disposition
 
@@ -1285,9 +1285,9 @@ section ListVsCAseparation
 
 /-- **ABF26 Theorem 5.4 [BGKS20 Lemma 3.3].** List decoding does **not** tightly imply CA.
 
-For all fields `F` of characteristic 2, the Reed-Solomon code `C := RS[F, F, |F|/8]`
-of rate `ρ = 1/8` (using `F` itself as the evaluation domain — a "full-domain" RS)
-satisfies
+For all fields `F` of characteristic 2 with `|F| ≥ 8`, the full-domain Reed-Solomon code `C`
+of polynomials of degree `≤ |F|/8` (in-tree `ReedSolomon.code domain (|F|/8 + 1)`; nominal rate
+`ρ = 1/8`, using `F` itself as the evaluation domain) satisfies
 
   `ε_ca(C, 1 - ρ^{1/3}) ≥ 1 - 1/|F|` .
 
@@ -1296,8 +1296,21 @@ code sits at `1 - √ρ - η ≈ 0.55`, where the list size is `≈ 40` (constan
 This witnesses a code that is list-decodable at the Johnson radius yet has CA error
 ≈ 1 at a smaller radius — separating list decoding from CA in general.
 
-The paper notes the also-true proximity-loss version: `ε_ca(C, δ_fld = 1 - ρ^{1/3},
-δ_int = 1 - ρ^{2/3}) ≥ 1 - 1/|F|`. We state both. Admitted as an external result.
+The paper notes the proximity-loss version `ε_ca(C, δ_fld = 1 - ρ^{1/3}, δ_int) ≥ 1 - 1/|F|`;
+we state it at `δ_int = 1 - ρ^{2/3} - 1/|F|`. Admitted as an external result.
+
+**Source parameters (BGKS20 Lemma 3.3 / Claim 3.4, arXiv 1903.12243 §3.1).** `q = 2^n`,
+`u*(y) = y^{q/2}`, `u(y) = y^{q/4}`; for `x ≠ 0` the line `u* + x·u` agrees on `q/2` points
+with `-P̃_x`, where `P_x(Y) = Tr(β_x Y) / β_x^{q/2} = Y^{q/2} + x·Y^{q/4} + P̃_x`,
+`β_x = x^{-2}`. The trace has a `Y^{q/8}` term with coefficient `β_x^{q/8 - q/2} ≠ 0`, so
+`deg P̃_x = q/8` exactly: Claim 3.4's "`deg P̃_x < 2^{n-3}`" is off by one, and the witness
+codewords lie in the degree-`≤ q/8` code, not in degree `< q/8`. With degree `< q/8`
+(`ReedSolomon.code domain (|F|/8)`, the previous form here) the statement is false at `|F| = 8`
+(`BGKS20SeparationRegime.rs_epsCA_separation_strict_false_of_card_eq_eight`).
+The paper's own joint-distance bound is `Δ((u*, u), C²) ≥ 3/4` (`u - v` has degree `q/4`, so at
+most `q/4` roots), and the paper pair attains joint agreement exactly `q/4` (on an
+`(n-2)`-dimensional `F₂`-subspace), so the source supports `δ_int < 1 - ρ^{2/3} = 3/4`, not
+`= 3/4`; hence the `- 1/|F|` (ABF26 Def 4.1's bad event is `Δ > δ_int`).
 
 **HONEST REDUCTION AVAILABLE.** The conjunction packaging is fully proven, `sorry`-free and
 axiom-clean, in `rs_epsCA_separation_bgks20_of_residuals`, which assembles the two BGKS20
@@ -1315,7 +1328,7 @@ theorem rs_epsCA_separation_bgks20_of_residuals
     -- BGKS20 Lemma 3.3 construction (the genuine external content): the two char-2
     -- full-domain RS lower bounds on `ε_ca`.
     (hMain :
-        let k : ℕ := Fintype.card F / 8
+        let k : ℕ := Fintype.card F / 8 + 1
         let ρ : ℝ := 1 / 8
         let C := ReedSolomon.code domain k
         (epsCA (F := F) (A := F) ((C : Set (ι → F)))
@@ -1323,14 +1336,14 @@ theorem rs_epsCA_separation_bgks20_of_residuals
             ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)) ≥
           ENNReal.ofReal (1 - 1 / Fintype.card F))
     (hLoss :
-        let k : ℕ := Fintype.card F / 8
+        let k : ℕ := Fintype.card F / 8 + 1
         let ρ : ℝ := 1 / 8
         let C := ReedSolomon.code domain k
         (epsCA (F := F) (A := F) ((C : Set (ι → F)))
             ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-            ((1 - ρ ^ ((2 : ℝ) / 3)).toNNReal)) ≥
+            ((1 - ρ ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)) ≥
           ENNReal.ofReal (1 - 1 / Fintype.card F)) :
-    let k : ℕ := Fintype.card F / 8
+    let k : ℕ := Fintype.card F / 8 + 1
     let ρ : ℝ := 1 / 8
     let C := ReedSolomon.code domain k
     (epsCA (F := F) (A := F) ((C : Set (ι → F)))
@@ -1339,7 +1352,7 @@ theorem rs_epsCA_separation_bgks20_of_residuals
       ENNReal.ofReal (1 - 1 / Fintype.card F) ∧
     (epsCA (F := F) (A := F) ((C : Set (ι → F)))
         ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-        ((1 - ρ ^ ((2 : ℝ) / 3)).toNNReal)) ≥
+        ((1 - ρ ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)) ≥
       ENNReal.ofReal (1 - 1 / Fintype.card F) :=
   ⟨hMain, hLoss⟩
 
@@ -1350,14 +1363,12 @@ def rs_epsCA_separation_bgks20
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {F : Type} [Field F] [Fintype F] [DecidableEq F] [CharP F 2]
     (_hF_eq_ι : Fintype.card F = Fintype.card ι)
-    -- Without `|F| ≥ 8` the dimension `k = ⌊|F| / 8⌋` truncates to 0,
-    -- giving the trivial code `{0}` for which the conclusion's
-    -- `ε_ca(C, _) ≥ 1 - 1/|F|` is not the intended separation result.
-    -- The paper implicitly assumes `|F|` large enough for a meaningful
-    -- rate-`1/8` code; we surface that hypothesis explicitly.
+    -- Without `|F| ≥ 8` the degree bound `⌊|F| / 8⌋` truncates to 0 and the code
+    -- degenerates to the constants, which is not the intended separation result.
+    -- BGKS20's construction needs `q = 2^n` with `n ≥ 3`; we surface that explicitly.
     (_hF_ge : 8 ≤ Fintype.card F)
     (domain : ι ↪ F) : Prop :=
-    let k : ℕ := Fintype.card F / 8
+    let k : ℕ := Fintype.card F / 8 + 1
     let ρ : ℝ := 1 / 8
     let C := ReedSolomon.code domain k
     -- main statement
@@ -1368,16 +1379,16 @@ def rs_epsCA_separation_bgks20
     -- with proximity loss
     (epsCA (F := F) (A := F) ((C : Set (ι → F)))
         ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-        ((1 - ρ ^ ((2 : ℝ) / 3)).toNNReal)) ≥
+        ((1 - ρ ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)) ≥
       ENNReal.ofReal (1 - 1 / Fintype.card F)
   -- ABF26-T5.4; external statement [BGKS20 Lem 3.3].
   -- Missing ingredient: BGKS20's char-2 full-domain RS separation construction. The
   -- ε_ca ≥ 1-1/|F| LOWER bound at radius 1-ρ^{1/3} (ρ=1/8) requires exhibiting a stack
   -- (f₀,f₁) such that for all but one γ∈F the line f₀+γ·f₁ is (1-ρ^{1/3})-close to RS while
   -- (f₀,f₁) is NOT jointly close — i.e. a near-certain proximity-gap failure. The witness
-  -- uses the char-2 Frobenius/subfield structure of RS[F,F,|F|/8] (BGKS20 §3.3). This is a
-  -- code-CONSTRUCTION lower bound (the trivial `epsCA ≤ 1` gives the wrong direction); no
-  -- in-tree machinery manufactures the bad stack. Genuinely external.
+  -- uses the char-2 trace structure of the degree-≤|F|/8 full-domain RS code (BGKS20 §3.1).
+  -- This is a code-CONSTRUCTION lower bound (the trivial `epsCA ≤ 1` gives the wrong
+  -- direction); no in-tree machinery manufactures the bad stack. Genuinely external.
 
 /-- Prop-level wrapper for T5.4. -/
 theorem rs_epsCA_separation_bgks20_of_residuals_prop
@@ -1387,7 +1398,7 @@ theorem rs_epsCA_separation_bgks20_of_residuals_prop
     (hF_ge : 8 ≤ Fintype.card F)
     (domain : ι ↪ F)
     (hMain :
-        let k : ℕ := Fintype.card F / 8
+        let k : ℕ := Fintype.card F / 8 + 1
         let ρ : ℝ := 1 / 8
         let C := ReedSolomon.code domain k
         (epsCA (F := F) (A := F) ((C : Set (ι → F)))
@@ -1395,12 +1406,12 @@ theorem rs_epsCA_separation_bgks20_of_residuals_prop
             ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)) ≥
           ENNReal.ofReal (1 - 1 / Fintype.card F))
     (hLoss :
-        let k : ℕ := Fintype.card F / 8
+        let k : ℕ := Fintype.card F / 8 + 1
         let ρ : ℝ := 1 / 8
         let C := ReedSolomon.code domain k
         (epsCA (F := F) (A := F) ((C : Set (ι → F)))
             ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-            ((1 - ρ ^ ((2 : ℝ) / 3)).toNNReal)) ≥
+            ((1 - ρ ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)) ≥
           ENNReal.ofReal (1 - 1 / Fintype.card F)) :
     rs_epsCA_separation_bgks20 hF_eq_ι hF_ge domain :=
   rs_epsCA_separation_bgks20_of_residuals hF_eq_ι hF_ge domain hMain hLoss
@@ -1418,30 +1429,30 @@ theorem rs_epsCA_separation_bgks20_of_nearCertainBadLines
     (hF_ge : 8 ≤ Fintype.card F)
     (domain : ι ↪ F)
     (hMainWitness :
-        let k : ℕ := Fintype.card F / 8
+        let k : ℕ := Fintype.card F / 8 + 1
         let ρ : ℝ := 1 / 8
         let C := ReedSolomon.code domain k
         Bridge.NearCertainBadLine (F := F) ((C : Set (ι → F)))
           ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
           ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal))
     (hLossWitness :
-        let k : ℕ := Fintype.card F / 8
+        let k : ℕ := Fintype.card F / 8 + 1
         let ρ : ℝ := 1 / 8
         let C := ReedSolomon.code domain k
         Bridge.NearCertainBadLine (F := F) ((C : Set (ι → F)))
           ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-          ((1 - ρ ^ ((2 : ℝ) / 3)).toNNReal)) :
+          ((1 - ρ ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)) :
     rs_epsCA_separation_bgks20 hF_eq_ι hF_ge domain :=
   rs_epsCA_separation_bgks20_of_residuals hF_eq_ι hF_ge domain
     (Bridge.epsCA_separation_bridge_of_residual
-      (F := F) ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F)))
+      (F := F) ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))
       ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
       ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
       hMainWitness)
     (Bridge.epsCA_separation_bridge_of_residual
-      (F := F) ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F)))
+      (F := F) ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))
       ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
-      ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3)).toNNReal)
+      ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)
       hLossWitness)
 
 /-- **BGKS20 all-but-one connector.**  This exposes the latest producer shape at the ABF26 T5.4
@@ -1462,36 +1473,36 @@ theorem rs_epsCA_separation_bgks20_of_allButOne
     (uMain : WordStack F (Fin 2) ι) (γMainBad : F)
     (hMainJoint :
       ¬ jointProximity
-        (C := ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F))))
+        (C := ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F))))
         (u := uMain)
         ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal))
     (hMainGood :
       ∀ γ : F, γ ≠ γMainBad →
         δᵣ(uMain 0 + γ • uMain 1,
-            ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F)))) ≤
+            ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))) ≤
           ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal))
     (uLoss : WordStack F (Fin 2) ι) (γLossBad : F)
     (hLossJoint :
       ¬ jointProximity
-        (C := ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F))))
+        (C := ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F))))
         (u := uLoss)
-        ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3)).toNNReal))
+        ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal))
     (hLossGood :
       ∀ γ : F, γ ≠ γLossBad →
         δᵣ(uLoss 0 + γ • uLoss 1,
-            ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F)))) ≤
+            ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))) ≤
           ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)) :
     rs_epsCA_separation_bgks20 hF_eq_ι hF_ge domain :=
   rs_epsCA_separation_bgks20_of_nearCertainBadLines hF_eq_ι hF_ge domain
     (Bridge.nearCertainBadLine_of_allButOne
-      ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F)))
+      ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))
       ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
       ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
       uMain γMainBad hMainJoint hMainGood)
     (Bridge.nearCertainBadLine_of_allButOne
-      ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F)))
+      ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))
       ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
-      ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3)).toNNReal)
+      ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)
       uLoss γLossBad hLossJoint hLossGood)
 
 /-- **BGKS20 existential all-but-one connector.**  Same top-level T5.4 surface as
@@ -1507,36 +1518,36 @@ theorem rs_epsCA_separation_bgks20_of_exists_allButOne
     (uMain : WordStack F (Fin 2) ι)
     (hMainJoint :
       ¬ jointProximity
-        (C := ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F))))
+        (C := ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F))))
         (u := uMain)
         ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal))
     (hMainGood :
       ∃ γMainBad : F, ∀ γ : F, γ ≠ γMainBad →
         δᵣ(uMain 0 + γ • uMain 1,
-            ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F)))) ≤
+            ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))) ≤
           ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal))
     (uLoss : WordStack F (Fin 2) ι)
     (hLossJoint :
       ¬ jointProximity
-        (C := ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F))))
+        (C := ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F))))
         (u := uLoss)
-        ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3)).toNNReal))
+        ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal))
     (hLossGood :
       ∃ γLossBad : F, ∀ γ : F, γ ≠ γLossBad →
         δᵣ(uLoss 0 + γ • uLoss 1,
-            ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F)))) ≤
+            ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))) ≤
           ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)) :
     rs_epsCA_separation_bgks20 hF_eq_ι hF_ge domain :=
   rs_epsCA_separation_bgks20_of_nearCertainBadLines hF_eq_ι hF_ge domain
     (Bridge.nearCertainBadLine_of_exists_allButOne
-      ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F)))
+      ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))
       ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
       ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
       uMain hMainJoint hMainGood)
     (Bridge.nearCertainBadLine_of_exists_allButOne
-      ((ReedSolomon.code domain (Fintype.card F / 8) : Set (ι → F)))
+      ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))
       ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
-      ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3)).toNNReal)
+      ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)
       uLoss hLossJoint hLossGood)
 
 end ListVsCAseparation

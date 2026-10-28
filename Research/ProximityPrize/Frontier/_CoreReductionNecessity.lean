@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ArkLib Contributors
+Authors: ArkLib Contributors, Mikhail Izhutkin (mashingaan, @mashingaan)
 -/
 import Research.ProximityPrize.Frontier._CoreReductionComplete
 
@@ -93,7 +93,8 @@ theorem mStar_le_iff_BCHKS
       hmono hident M hfail))
   · -- backward: the already-landed sufficiency reduction.
     intro hBCHKS
-    exact mStar_le_of_BCHKS D budget Sigma smap rmap n hex hident M hBCHKS
+    exact mStar_le_of_BCHKS D budget Sigma smap rmap n hex
+      (fun m => le_of_eq (hident m)) M hBCHKS
 
 /-- **Necessity corollary at the Johnson fold.** If the BCHKS budget *fails* at the fold matching
 `kNat − 1` (the binding fold the master reduction uses), then `kNat ≤ m*`, i.e. the Johnson-side

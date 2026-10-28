@@ -1,10 +1,11 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ArkLib Contributors
+Authors: ArkLib Contributors, Mikhail Izhutkin (mashingaan, @mashingaan)
 -/
 
 import Research.ProximityPrize.Frontier._PrizeShapeRateHalfBracket
+import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
 
 /-!
 # SYZ3: the over-budget degenerate stack, constructed (issue #466 / #507)
@@ -838,6 +839,101 @@ theorem firstPrime_predecessor_cap_refuted :
   intro hcount
   obtain ⟨u, hu⟩ := overBudget_degenerate_stack_exists
   exact absurd (hcount u) (not_le.mpr hu)
+
+/-! ### Canonical incidence and threshold consumers -/
+
+/-- The explicit SYZ3 stack refutes the universal production incidence budget at the literal
+`31/64` predecessor.  This is the canonical `WorstCaseIncidenceBounded` obligation, with no
+intermediate cap predicate. -/
+theorem firstPrime_predecessor_worstCaseIncidence_refuted :
+    ¬ ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+      (F := ZMod P) (A := ZMod P)
+      (evalCode g (2 ^ 30) (2 ^ 29 - 1))
+      (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) (2 ^ 30) := by
+  intro hI
+  obtain ⟨u, hu⟩ := overBudget_degenerate_stack_exists
+  exact (not_lt_of_ge (hI u)) hu
+
+/-- The same over-budget mass gives a direct canonical threshold ceiling.  The count is larger
+than the exact field-normalized budget because
+`P < (2^30 + 1) * 2^128`, so the strict `epsStar < epsMCA` premise of
+`MCAThresholdLedger.mcaDeltaStar_le_of_bad` is discharged by integer arithmetic. -/
+theorem firstPrime_predecessor_mcaDeltaStar_le :
+    ProximityGap.MCAThresholdLedger.mcaDeltaStar
+      (F := ZMod P) (A := ZMod P)
+      (evalCode g (2 ^ 30) (2 ^ 29 - 1))
+      (ProximityGap.epsStar : ℝ≥0∞)
+      ≤ predecessorRadius (2 ^ 30) (31 * 2 ^ 24) := by
+  have hbridge : evalCode g (2 ^ 30) (2 ^ 29 - 1)
+      = ((prodCode : Submodule (ZMod P) (Fin (2 ^ 30) → ZMod P)) :
+          Set (Fin (2 ^ 30) → ZMod P)) := by
+    simpa only [prodCode, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using
+      (evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1))
+  rw [hbridge]
+  let u : WordStack (ZMod P) (Fin 2) (Fin (2 ^ 30)) :=
+    fun r => if r = 0 then u0 else u1
+  let G : Finset (ZMod P) :=
+    Finset.univ.filter (fun γ : ZMod P =>
+      mcaEvent (prodCode : Set (Fin (2 ^ 30) → ZMod P))
+        (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u0 u1 γ)
+  have hu0 : u 0 = u0 := by simp [u]
+  have hu1 : u 1 = u1 := by simp [u]
+  have hcount : 2 ^ 30 + 1 ≤ G.card := by
+    have hcount' : 2 ^ 30 < G.card := by
+      dsimp only [G]
+      exact badScalar_count_over_budget
+    omega
+  have hG : ∀ γ ∈ G,
+      mcaEvent (prodCode : Set (Fin (2 ^ 30) → ZMod P))
+        (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) (u 0) (u 1) γ := by
+    intro γ hγ
+    rw [hu0, hu1]
+    exact (Finset.mem_filter.mp hγ).2
+  have hengine := ProximityGap.MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set
+    (F := ZMod P) (A := ZMod P)
+    (prodCode : Set (Fin (2 ^ 30) → ZMod P))
+    (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u G hG
+  rw [ZMod.card] at hengine
+  have hPnat : (P : ℕ) < G.card * 2 ^ 128 := by
+    have hbase : (P : ℕ) < (2 ^ 30 + 1) * 2 ^ 128 := by
+      show (365375409332725729550921208179070755120141565953 : ℕ) <
+        (2 ^ 30 + 1) * 2 ^ 128
+      norm_num
+    exact lt_of_lt_of_le hbase (Nat.mul_le_mul_right _ hcount)
+  have hP0 : ((P : ℕ) : ℝ≥0∞) ≠ 0 := by
+    simp only [ne_eq, Nat.cast_eq_zero]
+    exact prime_P.pos.ne'
+  have hPtop : ((P : ℕ) : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top P
+  have h2t0 : ((2 ^ 128 : ℕ) : ℝ≥0∞) ≠ 0 := by
+    simp only [ne_eq, Nat.cast_eq_zero]
+    norm_num
+  have h2ttop : ((2 ^ 128 : ℕ) : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top _
+  have hkey : ((P : ℕ) : ℝ≥0∞) <
+      ((G.card : ℕ) : ℝ≥0∞) * ((2 ^ 128 : ℕ) : ℝ≥0∞) := by
+    rw [← Nat.cast_mul]
+    exact_mod_cast hPnat
+  have hmass : (ProximityGap.epsStar : ℝ≥0∞) <
+      ((G.card : ℕ) : ℝ≥0∞) / ((P : ℕ) : ℝ≥0∞) := by
+    rw [epsStar_coe_eq_natCast_inv,
+      ENNReal.lt_div_iff_mul_lt (Or.inl hP0) (Or.inl hPtop),
+      ← ENNReal.div_eq_inv_mul,
+      ENNReal.div_lt_iff (Or.inl h2t0) (Or.inl h2ttop)]
+    exact hkey
+  have hlt : (ProximityGap.epsStar : ℝ≥0∞) <
+      epsMCA (F := ZMod P) (A := ZMod P)
+        (prodCode : Set (Fin (2 ^ 30) → ZMod P))
+        (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) :=
+    lt_of_lt_of_le hmass hengine
+  have hbad := ProximityGap.MCAThresholdLedger.mcaDeltaStar_le_of_bad
+    (F := ZMod P) (A := ZMod P)
+    (prodCode : Set (Fin (2 ^ 30) → ZMod P))
+    (ProximityGap.epsStar : ℝ≥0∞) hlt
+  exact hbad
+
+/-! ## Axiom audit for the canonical consumers -/
+
+#print axioms ArkLib.ProximityGap.Frontier.SYZ3OverBudgetStackWitness.firstPrime_predecessor_worstCaseIncidence_refuted
+#print axioms ArkLib.ProximityGap.Frontier.SYZ3OverBudgetStackWitness.firstPrime_predecessor_mcaDeltaStar_le
 
 end CountAssembly
 

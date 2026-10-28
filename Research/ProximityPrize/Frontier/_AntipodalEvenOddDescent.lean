@@ -37,8 +37,10 @@ This is a clean **ring identity** (proved here for any commutative ring, any `P`
 
 * **core point** (`x` and `−x` both in `S`)  ⟺  `E(u) = 0` *and* `O(u) = 0`;
 * **isolated point** (exactly one of `x, −x` in `S`)  ⟺  `O(u) ≠ 0`, and then the surviving
-  root is the *unique* `x = E(u)/O(u)` — so the isolated point is **determined by `u = x²`**,
-  hence confined to a **single coset of `μ_{n/2}`** (the square-root branch is fixed).
+  root is the *unique* `x = E(u)/O(u)` — so the isolated point is **determined by `u = x²`**.
+  This gives injectivity into the square subgroup, not confinement to one coset of that subgroup.
+  `probe_antipodal_subgroup_obstructions.py` gives isolated roots in both cosets at the two
+  sponsor fields, with the stated sparse head and low-degree tail.
 
 ## Why this is the prize-relevant reduction (honest scope)
 
@@ -47,17 +49,16 @@ The **core** lives where `O(u) = c_o(u) = 0`: since `deg O < k/2`, at most `⌊(
 (`μ_2`-fold) case that has the in-tree exact closed form.  The **isolated** set injects into
 `{u ∈ μ_{n/2} : E(u)² = u·O(u)², E(u)O(u) ≠ 0}`, a root problem of the *halved* subgroup `μ_{n/2}`.
 
-So when `S` is **ragged** (`O ≢ 0`), both `core` and `iso` are governed by the *low-degree* poly
-`O` (deg `< k/2`) and the halved-subgroup root count — **not by `n`**.  This is the mechanism
-behind the measured, `n`-independent cap `|S_ragged| ≤ k + 1` (probes: `max|iso| = k+1` for
-`n ∈ {16,32,64}`, flat in `n`), hence the ragged bad-scalars only reach agreement `≈ k+2`,
-**strictly below the production radius** `δ*·n = Θ(n)`.  At the production radius the bad scalars
-are therefore *entirely coset-pure* (the handled exact closed form).
+When `S` is **ragged** (`O ≢ 0`), the low-degree polynomial `O` controls the core. The isolated
+count still requires a bound for the halved-subgroup root problem. Earlier finite probes motivated
+an `n`-independent cap, but the identities in this file do not prove that cap or imply that every
+production-radius bad scalar is coset-pure. The mixed-coset certificate also does not decide
+production-radius decoding: it guarantees two isolated agreement points, not a threshold witness.
 
 This file proves the **characteristic-free structural identities** that make the descent exact:
 `eval_eq_even_sub_x_odd` (the ring identity), `isRoot_neg_iff_odd_eval_zero` (core ⟺ `O(x²)=0`),
-and `isolated_root_determined` (an isolated root is uniquely `x = E(x²)/O(x²)`, the single-coset
-confinement).  The remaining quantity — the exact bound `|iso| ≤ k+1` via the halved-subgroup
+and `isolated_root_determined` (an isolated root is uniquely `x = E(x²)/O(x²)`).
+The remaining quantity — the exact bound `|iso| ≤ k+1` via the halved-subgroup
 root count of `E² − u·O²` — is named as the explicit residual `IsolatedCountResidual`; it is the
 prize's recognised Kelley/BGK general-position root-count one 2-adic level down, **not** proved
 here.  No char-`p` transfer is needed for any identity in this file.
@@ -115,12 +116,12 @@ theorem isRoot_neg_iff_odd_eval_zero {F : Type*} [Field F] (hchar : (2 : F) ≠ 
     -- O(x²) = 0 ⟹ E(x²) = 0 (from hP) ⟹ E(x²) + x O(x²) = 0
     rw [h] at hP ⊢; simpa using hP
 
-/-- **Isolated root is determined by its square (single-coset confinement).**  If `x` is a root of
+/-- **Isolated root is determined by its square.**  If `x` is a root of
 `P = E(X²) − X·O(X²)` and `O(x²) ≠ 0` (an **isolated** point), then `x` is *uniquely* recovered
 from `u = x²` as `x = E(u)/O(u)`.  Consequently the two square roots `±x` of a given `u` cannot
 both be isolated roots — at most one is — so the isolated set injects into the squares `μ_{n/2}`
-via `x ↦ x²`, and (the branch `x = E(u)/O(u)` being fixed) lies in a **single coset of `μ_{n/2}`**.
-This is the formal statement of the measured per-`γ` single-coset confinement of the ragged set. -/
+via `x ↦ x²`. This does not fix the coset of the lift as `u` varies. The exact sponsor-field
+counterexamples in `probe_antipodal_subgroup_obstructions.py` have isolated roots in both cosets. -/
 theorem isolated_root_determined {F : Type*} [Field F]
     (E O : F[X]) {x : F}
     (hroot : (E.comp (X ^ 2) - X * O.comp (X ^ 2)).IsRoot x)

@@ -13,7 +13,7 @@ def research_imports(text: str) -> list[tuple[int, str]]:
                    for char, hidden in zip(text, mask))
     found = []
     for number, line in enumerate(live.splitlines(), 1):
-        match = re.match(r'\s*(?:public\s+)?import\s+(.+)', line)
+        match = re.match(r'\s*(?:(?:public|meta)\s+)*import\s+(?:all\s+)?(.+)', line)
         if match:
             found.extend((number, module) for module in match[1].split()
                          if module == 'Research' or module.startswith('Research.'))

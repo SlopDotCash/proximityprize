@@ -15,7 +15,8 @@ class DeclarationScan(unittest.TestCase):
                        for ch, hidden in zip(source, mask))
         match, = DECL_RE.finditer(live)
         self.assertEqual(match.groups(), ('opaque', 'missing'))
-        self.assertEqual(match.start(), live.index('private opaque'))
+        # The head is the live keyword itself, wherever it sits on its line.
+        self.assertEqual(match.start(), live.index('opaque missing'))
 
     def test_multiline_attributes_and_modifiers_remain_visible(self):
         source = '@[simp]\n\nprivate theorem fact : True := by trivial\n'

@@ -96,23 +96,26 @@ section ReedSolomon
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **[BCHKS25 Theorem 1.3]** residual RS epsCA in the δ_min/3-to-Johnson regime
-(T4.9.2, Issue #87). -/
+/-- **[BCHKS25 Theorem 1.3]** residual RS epsCA in the δ_min/3-to-unique-decoding regime
+(T4.9.2, Issue #87). The `h_udr` guard is the paper's `γ ≤ δ/2 - 1/n`; without it the
+residual is false (`rs_epsCA_bchks25_item2_bound_fails_beyond_udr`). -/
 def bchks25_rs_epsCA_item2_residual : Prop :=
   ∀ (domain : ι ↪ F) (k : ℕ) (δ_fld δ_int : ℝ≥0),
     ∀ (h_dmin : (Code.minDist ((ReedSolomon.code domain k : Set (ι → F))) : ℝ)
                   / Fintype.card ι / 3 ≤ δ_fld),
     ∀ (h_lt : δ_fld < δ_int),
-    rs_epsCA_bchks25_item2 domain k δ_fld δ_int h_dmin h_lt
+    ∀ (h_udr : (δ_fld : ℝ) ≤ (1 - (k : ℝ) / Fintype.card ι) / 2 - 1 / Fintype.card ι),
+    rs_epsCA_bchks25_item2 domain k δ_fld δ_int h_dmin h_lt h_udr
 
 theorem rs_epsCA_bchks25_item2_proven
     (hBCHKS25 : bchks25_rs_epsCA_item2_residual (ι := ι) (F := F))
     (domain : ι ↪ F) (k : ℕ) (δ_fld δ_int : ℝ≥0)
     (h_dmin : (Code.minDist ((ReedSolomon.code domain k : Set (ι → F))) : ℝ)
                 / Fintype.card ι / 3 ≤ δ_fld)
-    (h_lt : δ_fld < δ_int) :
-    rs_epsCA_bchks25_item2 domain k δ_fld δ_int h_dmin h_lt :=
-  hBCHKS25 domain k δ_fld δ_int h_dmin h_lt
+    (h_lt : δ_fld < δ_int)
+    (h_udr : (δ_fld : ℝ) ≤ (1 - (k : ℝ) / Fintype.card ι) / 2 - 1 / Fintype.card ι) :
+    rs_epsCA_bchks25_item2 domain k δ_fld δ_int h_dmin h_lt h_udr :=
+  hBCHKS25 domain k δ_fld δ_int h_dmin h_lt h_udr
 
 /-- **[BCHKS25 Theorem 4.6]** residual Johnson-range RS epsMCA bound
 (T4.12, Issue #85). -/
@@ -171,18 +174,24 @@ theorem rs_epsCA_breakdown_cs25_proven
     (hCS25 domain k δ hq_ge hδ_lo hδ_hi)
 
 /-- **[BCHKS25 Corollary 1.7]** residual Johnson-jump witness family
-(T4.18, Issue #83). -/
+(T4.18, Issue #83).
+
+BCHKS25 Thm 1.6 / Cor 1.7 hold for a small constant `ε` and "for `q` large enough", so the
+residual asks for `ε < 1` and a field-size threshold `q₀`.  Neither guard can be dropped: the
+statement fails over every field with fewer than 16 elements
+(`rs_epsCA_johnson_jump_bchks25_false_zmod_two`) and, for `ε > 1`, over every field
+(`rs_epsCA_johnson_jump_bchks25_false_of_one_lt`). -/
 def bchks25_rs_epsCA_johnson_jump_residual : Prop :=
-  ∀ {FC : Type} [Field FC] [Fintype FC] [DecidableEq FC] [CharP FC 2],
-    ∀ (ε : ℝ≥0) (hε : 0 < ε),
-    rs_epsCA_johnson_jump_bchks25 (FC := FC) ε hε
+  ∀ (ε : ℝ≥0) (hε : 0 < ε), (ε : ℝ) < 1 →
+    ∃ q₀ : ℕ, ∀ {FC : Type} [Field FC] [Fintype FC] [DecidableEq FC] [CharP FC 2],
+      q₀ ≤ Fintype.card FC → rs_epsCA_johnson_jump_bchks25 (FC := FC) ε hε
 
 theorem rs_epsCA_johnson_jump_bchks25_proven
     (hBCHKS25 : bchks25_rs_epsCA_johnson_jump_residual)
-    {FC : Type} [Field FC] [Fintype FC] [DecidableEq FC] [CharP FC 2]
-    (ε : ℝ≥0) (hε : 0 < ε) :
-    rs_epsCA_johnson_jump_bchks25 (FC := FC) ε hε :=
-  hBCHKS25 ε hε
+    (ε : ℝ≥0) (hε : 0 < ε) (hε_lt : (ε : ℝ) < 1) :
+    ∃ q₀ : ℕ, ∀ {FC : Type} [Field FC] [Fintype FC] [DecidableEq FC] [CharP FC 2],
+      q₀ ≤ Fintype.card FC → rs_epsCA_johnson_jump_bchks25 (FC := FC) ε hε :=
+  hBCHKS25 ε hε hε_lt
 
 end ReedSolomon
 

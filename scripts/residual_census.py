@@ -20,8 +20,11 @@ each as:
                whose explicit non-instance binders are extra assumptions not
                appearing in the provided residual instance, are recorded but do
                NOT count as a discharge (a conditional reduction is not a
-               proof).  When several census residuals share a last name across
-               namespaces, a provider is narrowed via its qualified result head
+               proof).  A result that is an equivalence (`R ↔ Q`), whose first
+               top-level connective after the head is `→`, `∨` or `=`, or that
+               fixes a named argument to a numeral (`R (k := 0)`) is likewise
+               recorded but does not discharge.  When several census residuals
+               share a last name across namespaces, a provider is narrowed via its qualified result head
                or namespace affinity; if it stays ambiguous it is recorded but
                does not discharge.
   refuted    — a concrete declaration proves a negated instance of the residual
@@ -84,10 +87,36 @@ CAMPAIGN_ADDENDUM_PREFIX = "> **Campaign addendum"
 
 
 def strip_comments(text: str) -> str:
-    """Blank out line comments, block comments, and docstrings (newlines kept)."""
+    """Blank out line comments, block comments, and docstrings (newlines kept).
+
+    String literals in live code are not comments: a ``"/-"`` or ``"--"``
+    inside a double-quoted string must not open a phantom block/line
+    comment and hide the declarations that follow it from the census.
+    Inside a block comment, comment scanning wins (Lean lexes the comment
+    first), so string markers there are not treated as string starts.
+    """
     out = list(text)
     i, n, depth = 0, len(text), 0
     while i < n:
+        if depth == 0 and text[i] == "'":
+            # Char literal: 'x' or an escaped char such as '\n'. Skip it
+            # whole so a '"' char literal is not mistaken for a string.
+            if i + 2 < n and text[i + 2] == "'":
+                i += 3
+                continue
+            if i + 3 < n and text[i + 1] == "\\" and text[i + 3] == "'":
+                i += 4
+                continue
+        if depth == 0 and text[i] == '"':
+            i += 1
+            while i < n and text[i] != '"':
+                if text[i] == "\\" and i + 1 < n:
+                    i += 2
+                else:
+                    i += 1
+            if i < n:
+                i += 1
+            continue
         if depth == 0 and text.startswith("--", i):
             j = text.find("\n", i)
             j = n if j == -1 else j
@@ -267,12 +296,45 @@ def binder_names_and_type(content: str) -> tuple[list[str], str] | None:
     return out, typ.strip()
 
 
+# Surface syntax that can only spell a proposition.  `=` is matched only when
+# it is neither part of a `:=` / `=>` named argument nor `==`; comparisons must
+# be whitespace-delimited so the mathlib data types `ℝ≥0`, `ℝ≥0∞`, and `ℚ≥0`
+# do not match.
+BARE_EQUAL_RE = re.compile(r"(?<![=:])=(?![=>])")
+COMPARISON_RE = re.compile(r"(?<=\s)[<>≤≥](?=\s)")
+PROPOSITION_MARKERS = ("≠", "∈", "∉", "↔", "∨", "∧")
+
+
+def is_proposition_shaped(typ: str) -> bool:
+    """True when a flattened binder type can only be a proposition.
+
+    Subtypes (`{x // p x}`) are excluded: such a binder carries an element,
+    and its membership proof is part of the data type, not an extra
+    hypothesis.  Type families (`ι → Type`) carry no propositional syntax and
+    are excluded by the marker set itself.
+    """
+    if "//" in typ:
+        return False
+    return bool(
+        BARE_EQUAL_RE.search(typ)
+        or COMPARISON_RE.search(typ)
+        or any(marker in typ for marker in PROPOSITION_MARKERS)
+    )
+
+
 def looks_like_proof_assumption(names: list[str], typ: str) -> bool:
     """Heuristic for explicit binders that are hypotheses rather than data.
 
     We intentionally do not classify every explicit binder absent from a result
     as conditional: Lean result heads often omit inferred type/data parameters.
     Instead, we flag binders whose names or types look proof-like.
+
+    Proposition-shaped types join the `h`-prefix and literal `Prop`/`¬` tests:
+    hypotheses are not always named `h…`.  The motivating case is the
+    `coupling` binder of `fiatShamir_hvzkTransfer_of_coupling`
+    (ArkLib/OracleReduction/FiatShamir/HVZKTransferReduction.lean), whose
+    docstring calls it "an explicit hypothesis" — it was previously recorded
+    as an unconditional provider.
     """
     typ_flat = " ".join(typ.split())
     if any(name.startswith("h") or name.startswith("H") for name in names):
@@ -281,8 +343,9 @@ def looks_like_proof_assumption(names: list[str], typ: str) -> bool:
     # `∀`, `→`, or even bounded polynomial notation.  Residual dependencies are
     # tracked separately by exact name, so this field is just for obvious
     # hypothesis binders whose names do not appear in the residual instance.
-    proof_markers = ["Prop", "¬"]
-    return any(marker in typ_flat for marker in proof_markers)
+    if "Prop" in typ_flat or "¬" in typ_flat:
+        return True
+    return is_proposition_shaped(typ_flat)
 
 
 def extra_explicit_binders(binders: str, result: str) -> list[str]:
@@ -306,6 +369,89 @@ def extra_explicit_binders(binders: str, result: str) -> list[str]:
             if not mentions_word(result, name):
                 extras.append(name)
     return sorted(set(extras))
+
+
+def has_top_level(text: str, token: str) -> bool:
+    """True when `token` occurs at bracket depth 0 of `text`."""
+    depth = 0
+    i = 0
+    while i < len(text):
+        c = text[i]
+        if c in OPEN_BRACKETS:
+            depth += 1
+        elif c in CLOSE_BRACKETS:
+            depth = max(0, depth - 1)
+        elif depth == 0 and text.startswith(token, i):
+            return True
+        i += 1
+    return False
+
+
+TOP_LEVEL_CONNECTIVES = ("↔", "→", "∧", "∨", "=")
+REDUCTION_CONNECTIVES = frozenset({"→", "∨", "="})
+
+
+def top_level_connective(result: str) -> str | None:
+    """First depth-0 connective after the result head application, if any.
+
+    A top-level `∧` still proves the residual when it is the left conjunct,
+    while `→`, `∨` and `=` only relate the residual to another proposition
+    (`R → Q` assumes `R`; `R ∨ Q` and `R = Q` prove neither side).
+    """
+    s = strip_forall_prefix(result)
+    m = HEAD_IDENT_RE.match(s)
+    if not m:
+        return None
+    depth = 0
+    i = m.end()
+    while i < len(s):
+        c = s[i]
+        if c in OPEN_BRACKETS:
+            depth += 1
+        elif c in CLOSE_BRACKETS:
+            depth = max(0, depth - 1)
+        elif depth == 0:
+            for conn in TOP_LEVEL_CONNECTIVES:
+                if s.startswith(conn, i):
+                    return conn
+        i += 1
+    return None
+
+
+NUMERAL_RE = re.compile(r"^(?:\d+|0x[0-9a-fA-F]+|∅|\[\])$")
+
+
+def specialised_arguments(result: str, rname: str) -> list[str]:
+    """Named arguments of the residual head fixed to a literal, e.g. `(k := 0)`.
+
+    A provider that fixes a parameter of the residual to a numeral (or `∅`)
+    proves one instance, not the residual: `Foo (k := 0)` is typically vacuous.
+    """
+    s = strip_forall_prefix(result)
+    m = re.search(r"(?<![\w.'])(?:[\w.']*\.)?" + re.escape(rname) + r"(?![\w'])", s)
+    if not m:
+        return []
+    rest = s[m.end():]
+    out: list[str] = []
+    depth = 0
+    start = None
+    for i, c in enumerate(rest):
+        if c in OPEN_BRACKETS:
+            if depth == 0:
+                start = i
+            depth += 1
+        elif c in CLOSE_BRACKETS:
+            depth = max(0, depth - 1)
+            if depth == 0 and start is not None:
+                group = rest[start + 1 : i]
+                nm = re.match(r"\s*([^\s:()]+)\s*:=\s*(.+?)\s*$", group, re.S)
+                if nm and NUMERAL_RE.match(nm.group(2).strip()):
+                    out.append(f"{nm.group(1)} := {nm.group(2).strip()}")
+                start = None
+        elif depth == 0 and not c.isspace() and c not in "@":
+            if not (c.isalnum() or c in "_'.⁻"):
+                break
+    return out
 
 
 def lower_first(name: str) -> str:
@@ -493,6 +639,11 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
                     if mentions_word(d["result"], rname):
                         targets.add(rname)
         consumed = [n for n in census_names if mentions_word(d["binders"], n)]
+        # `P ↔ Q` states an equivalence; it proves nothing about `P` itself.
+        is_equivalence = has_top_level(result_no_forall, "↔")
+        # `R → Q`, `R ∨ Q`, `R = Q` relate `R` to something else; not a proof of `R`.
+        reduction_only = top_level_connective(d["result"]) in REDUCTION_CONNECTIVES
+        specialised = {rname: specialised_arguments(d["result"], rname) for rname in targets}
         provider_ns = _ns_of(d["fq_name"])
         for rname in targets:
             head_for_resolution = head_full if head_last == rname else ""
@@ -507,6 +658,9 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
                         "conditional_on_residuals": consumed,
                         "extra_explicit_binders": extra_binders,
                         "ambiguous_name_match": ambiguous,
+                        "equivalence": is_equivalence,
+                        "reduction_only": reduction_only,
+                        "specialised_arguments": specialised.get(rname, []),
                     }
                 )
 
@@ -547,6 +701,9 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
                 tuple(p["conditional_on_residuals"]),
                 tuple(p["extra_explicit_binders"]),
                 p["ambiguous_name_match"],
+                p.get("equivalence", False),
+                p.get("reduction_only", False),
+                tuple(p.get("specialised_arguments", [])),
             )
             if key in seen:
                 continue
@@ -563,6 +720,9 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
             if not p["conditional_on_residuals"]
             and not p["extra_explicit_binders"]
             and not p["ambiguous_name_match"]
+            and not p["equivalence"]
+            and not p.get("reduction_only", False)
+            and not p["specialised_arguments"]
         ]
         concrete_refutations = [
             p
@@ -571,10 +731,13 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
             and not p["extra_explicit_binders"]
             and not p["ambiguous_name_match"]
         ]
-        if concrete:
-            r["status"] = "discharged"
-        elif concrete_refutations:
+        # A proved negation outranks any apparent provider: a statement
+        # cannot be both discharged and refuted, so the "provider" is a
+        # vacuous or specialised instance the census failed to recognise.
+        if concrete_refutations:
             r["status"] = "refuted"
+        elif concrete:
+            r["status"] = "discharged"
         else:
             r["status"] = "open"
 
@@ -704,8 +867,11 @@ def write_wiki_markdown(path: Path, summary: dict, residuals: list[dict], near_m
         "`def ...Residual ... : Prop`. A residual is **discharged** only when a concrete",
         "provider has no residual dependencies, no extra proof-like explicit binders, and no",
         "ambiguous namespace match. Conditional reductions are useful proof plumbing, but they",
-        "remain **open** until their side conditions are proved. A residual is **refuted** when",
-        "the tree contains a concrete theorem of a negated residual instance.",
+        "remain **open** until their side conditions are proved. An equivalence (`R ↔ Q`), a",
+        "result whose first top-level connective after the residual is `→`, `∨` or `=`, or an",
+        "instance with a parameter fixed to a numeral (`R (k := 0)`) is not a provider. A residual",
+        "is **refuted** when the tree contains a concrete theorem of a negated residual instance,",
+        "and a proved negation outranks any apparent provider.",
         "",
         "The named-residual convention is a modularity pattern, not an incompleteness marker:",
         "always check this census before treating a `*Residual` name as open proof debt.",

@@ -1,0 +1,70 @@
+name: Weighted sponsor geometry check
+on:
+  push:
+    branches: [research/sponsor-finite-bracket]
+    paths:
+      - Research/ProximityPrize/Frontier/_IncidenceWeightedTriples.lean
+      - Research/ProximityPrize/Frontier/_IncidenceAffineLines.lean
+      - Research/ProximityPrize/Frontier/_IncidenceExteriorLineCap.lean
+      - Research/ProximityPrize/Frontier/_IncidenceConstantLineCap.lean
+      - .github/workflows/sponsor-weighted.yml
+      - lean-toolchain
+      - lake-manifest.json
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  geometry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LEAN_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: leanprover/lean-action@v1.6.0
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+      - name: Restore geometry dependencies
+        id: dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: .lake
+          key: sponsor-geometry-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            sponsor-geometry-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+      - name: Fetch Mathlib cache
+        run: ./scripts/lake-locked.sh exe cache get
+      - name: Build line geometry
+        run: ./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IncidenceWeightedTriples
+      - name: Check weighted geometry and axioms
+        run: |
+          set -o pipefail
+          lake env lean Research/ProximityPrize/Frontier/_IncidenceWeightedTriples.lean | tee weighted-axioms.log
+          lake env lean Research/ProximityPrize/Frontier/_IncidenceExteriorLineCap.lean | tee -a weighted-axioms.log
+          lake env lean Research/ProximityPrize/Frontier/_IncidenceConstantLineCap.lean | tee -a weighted-axioms.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          log=Path('weighted-axioms.log').read_text()
+          reports=re.findall(r'depends on axioms:\s*\[([^\]]*)\]',log)
+          assert len(reports)==14
+          assert 'sorryAx' not in log
+          for names in reports:
+              assert set(x.strip() for x in names.split(',')) <= {'propext','Classical.choice','Quot.sound'}
+          print('Fourteen weighted geometry declarations axiom-clean')
+          PY
+      - name: Stop Lean workers
+        if: always() && !cancelled()
+        id: stop-lean
+        run: bash scripts/ci-stop-lean.sh
+      - name: Preserve geometry dependencies
+        if: always() && !cancelled() && steps.stop-lean.outcome == 'success' && steps.dependencies.outputs.cache-primary-key != ''
+        uses: actions/cache/save@v4
+        with:
+          path: .lake
+          key: ${{ steps.dependencies.outputs.cache-primary-key }}

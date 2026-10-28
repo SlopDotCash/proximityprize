@@ -11,6 +11,20 @@ on:
       - "docs/kb/sources/**"
       - "scripts/kb/**"
       - ".github/workflows/kb-generated.yml"
+  # Pull requests that touch only KB inputs (bibliography, paper pages,
+  # source metadata, generated JSON) are documentation-only for ci.yml, which
+  # then skips validate.sh and its KB checks. Run the KB gates here instead.
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "ArkLib/**/*.lean"
+      - "Research/**/*.lean"
+      - "blueprint/src/references.bib"
+      - "docs/kb/_generated/**"
+      - "docs/kb/papers/**"
+      - "docs/kb/sources/**"
+      - "scripts/kb/**"
+      - ".github/workflows/kb-generated.yml"
   workflow_dispatch:
 
 permissions:

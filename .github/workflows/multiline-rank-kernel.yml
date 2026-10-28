@@ -1,0 +1,64 @@
+name: Multi-line relation rank and shortening
+on:
+  push:
+    branches: [research/multiline-relation-shortening]
+  pull_request:
+    paths:
+      - Research/ProximityPrize/Frontier/_IncidenceDependencyArithmetic.lean
+      - Research/ProximityPrize/multiline-relation-shortening.md
+      - Research/ProximityPrize.lean
+      - scripts/probes/probe_multiline_pair_difference_cap.py
+      - scripts/probes/probe_multiline_triple_anchor.py
+      - .github/workflows/multiline-rank-kernel.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  arithmetic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: python3 scripts/probes/probe_multiline_pair_difference_cap.py
+      - run: python3 scripts/probes/probe_multiline_triple_anchor.py
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LEAN_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: leanprover/lean-action@v1.6.0
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+      - uses: actions/cache/restore@v4
+        with:
+          path: .lake
+          key: multiline-kernel-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+            incidence-dependencies-${{ runner.os }}-
+      - name: Fetch dependency cache
+        run: ./scripts/lake-locked.sh exe cache get
+      - name: Check twenty-one declarations and audit axioms
+        run: |
+          set -o pipefail
+          lake env lean Research/ProximityPrize/Frontier/_IncidenceDependencyArithmetic.lean | tee multiline-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('multiline-axioms.log').read_text()
+          assert 'sorryAx' not in text
+          matches = re.findall(r"'(ProximityGap\.IncidenceDependencyArithmetic\.[^']+)'\s+(?:depends on axioms:\s*\[([^\]]*)\]|(does not depend on any axioms))",text)
+          expected = {'coordinate_count_bound','shortened_subspace_bound','quotient_shortening_bound','received_space_shortening_bound','relation_component_shared_support','relation_core_shared_support','relation_core_shortening','relation_core_dimension','projected_relation_shortening','affine_parameters_mem_code','affine_error_plane_support','affine_head_relation_shortening','affine_support_pair_cover','three_pair_cover_card','three_head_support_budget','dependency_necessary','dependency_from_coordinate_ledger','literal_dependency_excluded','shared_support_incidence_budget','projected_relation_incidence_budget','affine_heads_of_small_error_relation'}
+          assert {name.rsplit('.',1)[1] for name,_,_ in matches} == expected
+          assert len(matches) == 21
+          for name,names,no_axioms in matches:
+              if not no_axioms:
+                  assert set(name.strip() for name in names.split(',')) <= {'propext','Classical.choice','Quot.sound'}
+          print('Twenty-one structural and finite-ledger declarations kernel checked')
+          PY

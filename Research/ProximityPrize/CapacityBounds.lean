@@ -73,7 +73,8 @@ is either:
 - `rs_epsCA_breakdown_cs25` — ABF26 Theorem 4.17 [CS25 Cor 1]: complete CA breakdown
   for RS codes when the rate sits inside an entropy-defined band.
 - `rs_epsCA_johnson_jump_bchks25` — ABF26 Theorem 4.18 [BCHKS25 Cor 1.7]: jump in
-  `ε_ca` exactly at the Johnson bound, witnessed by characteristic-2 RS codes.
+  `ε_ca` exactly at the Johnson bound, witnessed by characteristic-2 RS codes (for
+  `ε ∈ (0, 1)` and `|F|` large enough; see its docstring).
 - `linear_epsCA_ge_sampling_dg25` — ABF26 Lemma 4.19 [DG25 Thm 2.5]: `ε_ca(C, δ)`
   is bounded below by `((q-1)/q) · Pr_{u}[Δ(u, C) ≤ δ]`.
 
@@ -134,7 +135,10 @@ dischargeable by any in-tree upper-bound machinery):
   tracks the exact middle-band count).
 - `rs_epsCA_breakdown_cs25` (T4.17) — `≥ 1` half needs the qEntropy ↔ RS-ball-count bridge;
   the `≤ 1` half is trivial.
-- `rs_epsCA_johnson_jump_bchks25` (T4.18) — char-2 Johnson-jump witness family.  The
+- `rs_epsCA_johnson_jump_bchks25` (T4.18) — char-2 Johnson-jump witness family; the
+  residual carries the paper's `ε < 1` and "`q` large enough" guards, and the block-length
+  window and internal radius follow the BCHKS25 construction
+  (`CapacityBoundsJohnsonJumpRegime.lean`).  The
   supremum lower bound is now reduced to an explicit good-`γ` count via
   `johnsonJump_epsCA_lower_of_goodGamma` / `RSJohnsonJumpWitness.ofGoodGammaCount` /
   `rs_epsCA_johnson_jump_bchks25_of_goodGamma`; only the bad word-pair and the
@@ -147,7 +151,9 @@ dischargeable by any in-tree upper-bound machinery):
 - `subspaceDesign_epsCA_curves_polynomial_generators_bcgm25` — retained only as the old
   ABF26 survey-ledger `epsCA_curves` compatibility shadow; do not prove as-is.
 
-**No statement in this file is disproven.**  The two repaired items are R4.10 (the naive
+**No statement in this file is disproven.**  The repaired items are T4.18 (the unguarded
+reading over every characteristic-2 field and every `ε > 0` is refuted in
+`CapacityBoundsJohnsonJumpRegime.lean`; see `rs_epsCA_johnson_jump_bchks25`), R4.10 (the naive
 `0 < γ < 1` floor-collapse shortcut is refuted in-tree by
 `r4_10_floor_collapse_hypotheses_insufficient`; the corrected reduction carries an explicit
 no-boundary-crossing hypothesis) and the BCGM25 compatibility entry (deliberately a curve-CA
@@ -196,7 +202,7 @@ subspace-design inputs).
 set_option linter.unusedFintypeInType false
 set_option linter.unusedDecidableInType false
 set_option linter.unusedSectionVars false
-set_option linter.style.longFile 1900
+set_option linter.style.longFile 2000
 
 namespace CodingTheory
 
@@ -316,19 +322,27 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
 /-- **ABF26 Theorem 4.9 Item 2 [BCHKS25 Theorem 1.3].** Reed-Solomon CA bound in the
-`δ_min/3`-to-Johnson regime. Let `C := RS[F, L, k]` with rate `ρ`. For
-`δ_min(C)/3 ≤ δ_fld < δ_int`:
+`δ_min/3`-to-unique-decoding regime. Let `C := RS[F, L, k]` with rate `ρ`. For
+`δ_min(C)/3 ≤ δ_fld < δ_int` and `δ_fld ≤ (1 - ρ)/2 - 1/n`:
 
   `ε_ca(C, δ_fld, δ_int) ≤`
   `  max{ (1-ρ-δ_fld) / (δ_fld·(1-ρ-2·δ_fld)·|F|), δ_int / ((δ_int-δ_fld)·|F|) }`
 
 Tighter than T4.8 (AHIV17) in the regime `δ_fld ≥ δ_min/3`. Admitted as an external
-result. -/
+result.
+
+**Unique-decoding guard `_h_udr`.** [BCHKS25, Theorem 1.3] takes
+`γ ∈ [δ/3, δ/2 - 1/n]` with `δ = 1 - k/n`, i.e. the fold radius stays inside the unique
+decoding radius. The guard is not cosmetic: past `(1 - ρ)/2` the factor `1 - ρ - 2·δ_fld`
+is `≤ 0`, the first `max` term stops being a valid count, and the bound is false. See
+`rs_epsCA_bchks25_item2_bound_fails_beyond_udr` (`F = L = 𝔽₅`, `k = 1`, `δ_fld = 3/5`,
+`δ_int = 31/40`: `ε_ca = 1`, claimed bound `31/35`). -/
 def rs_epsCA_bchks25_item2
     (domain : ι ↪ F) (k : ℕ) (δ_fld δ_int : ℝ≥0)
     (_h_dmin : (Code.minDist ((ReedSolomon.code domain k : Set (ι → F))) : ℝ)
                 / Fintype.card ι / 3 ≤ δ_fld)
-    (_h_lt : δ_fld < δ_int) : Prop :=
+    (_h_lt : δ_fld < δ_int)
+    (_h_udr : (δ_fld : ℝ) ≤ (1 - (k : ℝ) / Fintype.card ι) / 2 - 1 / Fintype.card ι) : Prop :=
     let n : ℝ := Fintype.card ι
     let ρ : ℝ := k / n
     let bound : ℝ :=
@@ -336,7 +350,7 @@ def rs_epsCA_bchks25_item2
           ((δ_int : ℝ) / ((δ_int - δ_fld) * Fintype.card F))
     epsCA (F := F) (A := F) ((ReedSolomon.code domain k : Set (ι → F))) δ_fld δ_int ≤
       ENNReal.ofReal bound
-  -- Missing ingredient: BCHKS25's RS CA bound in the δ_min/3-to-Johnson regime. The max{…}
+  -- Missing ingredient: BCHKS25's RS CA bound in the δ_min/3-to-unique-decoding regime. The max{…}
   -- RHS is a two-regime analysis (interpolation term + proximity-loss term) resting on the
   -- BCHKS25 RS interpolation/multiplicity lemmas. BCKHS25/Interpolation.lean supplies the
   -- collinear-proximates engine but not the closed-form (1-ρ-δ)/(δ(1-ρ-2δ)) RS error count.
@@ -348,6 +362,7 @@ theorem rs_epsCA_bchks25_item2_of_bound
     (h_dmin : (Code.minDist ((ReedSolomon.code domain k : Set (ι → F))) : ℝ)
                 / Fintype.card ι / 3 ≤ δ_fld)
     (h_lt : δ_fld < δ_int)
+    (h_udr : (δ_fld : ℝ) ≤ (1 - (k : ℝ) / Fintype.card ι) / 2 - 1 / Fintype.card ι)
     (hbound :
       let n : ℝ := Fintype.card ι
       let ρ : ℝ := k / n
@@ -356,7 +371,7 @@ theorem rs_epsCA_bchks25_item2_of_bound
             ((δ_int : ℝ) / ((δ_int - δ_fld) * Fintype.card F))
       epsCA (F := F) (A := F) ((ReedSolomon.code domain k : Set (ι → F))) δ_fld δ_int ≤
         ENNReal.ofReal bound) :
-    rs_epsCA_bchks25_item2 domain k δ_fld δ_int h_dmin h_lt := by
+    rs_epsCA_bchks25_item2 domain k δ_fld δ_int h_dmin h_lt h_udr := by
   simpa [rs_epsCA_bchks25_item2] using hbound
 
 /-- **ABF26 Remark 4.10 — corrected reduction form.**
@@ -456,8 +471,9 @@ theorem rs_epsCA_small_loss_r4_10
     (hγ_pos : 0 < γ) (_hγ_lt : (γ : ℝ) < 1)
     (hcross : δ_fld * (Fintype.card ι : ℝ≥0) + γ <
         (Nat.floor (δ_fld * (Fintype.card ι : ℝ≥0)) : ℝ≥0) + 1)
+    (h_udr : (δ_fld : ℝ) ≤ (1 - (k : ℝ) / Fintype.card ι) / 2 - 1 / Fintype.card ι)
     (hT492 : rs_epsCA_bchks25_item2 domain k δ_fld (δ_fld + γ / (Fintype.card ι : ℝ≥0))
-      h_dmin (r4_10_delta_lt_nearby _ _ hγ_pos))
+      h_dmin (r4_10_delta_lt_nearby _ _ hγ_pos) h_udr)
     (hbound :
       let δ_int : ℝ≥0 := δ_fld + γ / (Fintype.card ι : ℝ≥0)
       let n : ℝ := Fintype.card ι
@@ -856,10 +872,19 @@ radius literal. -/
 noncomputable def johnsonJumpRadius : ℝ≥0 :=
   (((1 : ℝ) - (1 - ((15 : ℝ) / 16)) ^ ((1 : ℝ) / 2)).toNNReal)
 
-/-- The proximity-loss internal radius appearing in ABF26 T4.18 for a domain of size `n`. -/
+/-- The proximity-loss internal radius of T4.18 for a domain of size `n`:
+`J(15/16) + 1/8 - 1/n = 7/8 - 1/n`.
+
+[BCHKS25, Cor 1.7] gives `Δ([f, g], C²) ≥ 7/8 = γ + 1/8` for its witness pair, and the bad
+event of ABF26 Definition 4.1 is `Δ((f₁, f₂), C^{≡2}) > δ_int`, so the source supports every
+`δ_int < 7/8`; we take `7/8 - 1/n`.  ABF26 prints `+ 1/n`, which would need
+`Δ > 7/8 + 1/n`.  The paper's own pair does not give that: `f = X^{2^b}` and
+`g = X^{2^{b-1}}` both agree with polynomials of degree `≤ 2^{b-2} = k` on any
+`(b-1)`-dimensional `F₂`-subspace `W' ⊆ V` (reduce modulo the subspace polynomial of `W'`), so
+`Δ([f, g], C²) = 7/8` exactly for it. -/
 noncomputable def johnsonJumpInternalRadius (n : ℕ) : ℝ≥0 :=
   (((1 : ℝ) - (1 - ((15 : ℝ) / 16)) ^ ((1 : ℝ) / 2)
-      + 1 / 8 + 1 / (n : ℝ)).toNNReal)
+      + 1 / 8 - 1 / (n : ℝ)).toNNReal)
 
 /-- The fixed ABF26 T4.18 Johnson radius is `J(15/16) = 3/4`. -/
 theorem johnsonJumpRadius_eq_three_fourths :
@@ -887,9 +912,9 @@ theorem johnsonJumpRadius_pos : 0 < johnsonJumpRadius := by
 theorem johnsonJumpRadius_lt_one : johnsonJumpRadius < 1 := by
   rw [johnsonJumpRadius_eq_three_fourths]; norm_num
 
-/-- The ABF26 T4.18 internal radius is `7/8 + 1/n` after simplifying `J(15/16)`. -/
-theorem johnsonJumpInternalRadius_eq_seven_eighths_add_inv (n : ℕ) :
-    johnsonJumpInternalRadius n = (((7 : ℝ) / 8 + 1 / (n : ℝ)).toNNReal) := by
+/-- The T4.18 internal radius is `7/8 - 1/n` after simplifying `J(15/16)`. -/
+theorem johnsonJumpInternalRadius_eq_seven_eighths_sub_inv (n : ℕ) :
+    johnsonJumpInternalRadius n = (((7 : ℝ) / 8 - 1 / (n : ℝ)).toNNReal) := by
   rw [johnsonJumpInternalRadius]
   have hsqrt :
       ((1 : ℝ) - ((15 : ℝ) / 16)) ^ ((1 : ℝ) / 2) = (1 / 4 : ℝ) := by
@@ -901,27 +926,43 @@ theorem johnsonJumpInternalRadius_eq_seven_eighths_add_inv (n : ℕ) :
   congr
   ring
 
-/-- The no-loss Johnson-jump radius is always below the proximity-loss internal radius. -/
-theorem johnsonJumpRadius_le_internalRadius (n : ℕ) :
+/-- The no-loss Johnson-jump radius is below the proximity-loss internal radius once
+`n ≥ 8` (every T4.18 witness has `n ≥ 16`, see `RSJohnsonJumpWitness.sixteen_le_card`). -/
+theorem johnsonJumpRadius_le_internalRadius (n : ℕ) (hn : 8 ≤ n) :
     johnsonJumpRadius ≤ johnsonJumpInternalRadius n := by
   dsimp [johnsonJumpRadius, johnsonJumpInternalRadius]
   apply Real.toNNReal_mono
-  nlinarith [show (0 : ℝ) ≤ 1 / 8 by norm_num,
-    show (0 : ℝ) ≤ 1 / (n : ℝ) by positivity]
+  have hinv : 1 / (n : ℝ) ≤ 1 / 8 :=
+    one_div_le_one_div_of_le (by norm_num) (by exact_mod_cast hn)
+  linarith
 
 /-- **ABF26 Theorem 4.18 [BCHKS25 Cor 1.7].** CA jump at the Johnson bound. Fix `ε > 0`,
-let `δ := 15/16`. Then for all `F` of characteristic 2 there exists a Reed-Solomon code
+let `δ := 15/16`. Then for characteristic-2 fields `F` there is a Reed-Solomon code
 `C := RS[F, L, k]` with `n ≈ |F|^{(1+ε)/2}` and `δ_min(C) = 15/16` such that:
 
-  `ε_ca(C, J(δ_min(C)), J(δ_min(C)) + 1/8 + 1/n) ≥ n^{2(1-ε)} / |F|`
+  `ε_ca(C, J(δ_min(C)), J(δ_min(C)) + 1/8 - 1/n) ≥ n^{2(1-ε)} / |F|`
 
 where `J(δ) := 1 - √(1 - δ)` is the Johnson radius. Witnesses a sharp jump in CA
 error precisely at the Johnson bound.
 
-**Note on `n ≈ |F|^{(1+ε)/2}`.** Paper writes equality but `|F|^{(1+ε)/2}` is generally
-not a natural number; the intended reading is "for `n` of this order of magnitude". We
-encode this as a two-sided bound `n ≥ |F|^{(1+ε)/2} - 1 ∧ n ≤ |F|^{(1+ε)/2} + 1`,
-which allows witness `n = ⌊|F|^{(1+ε)/2}⌋` or `⌈|F|^{(1+ε)/2}⌉` as appropriate.
+This `Prop` is the per-field payload.  It is **not** true for every characteristic-2 field and
+every `ε > 0`; the residual `bchks25_rs_epsCA_johnson_jump_residual` asks for it only when
+`ε < 1` and `|F|` is large enough, which is what the source proves:
+
+* *"`q` large enough".* [BCHKS25, Thm 1.6] (of which Cor 1.7 is the case `τ = 2`) holds
+  "for `q` large enough", and its proof (§5) needs an `a`-dimensional `F₂`-subspace
+  `V ⊆ F_q` with `a = ⌈(1+ε)m/2⌉ + 2 ≤ m`, `q = 2^m`.  Here `δ_min = 15/16` forces `16 ∣ n`
+  and `n ≤ |F|`, so the statement is false over every field with fewer than 16 elements
+  (`rs_epsCA_johnson_jump_bchks25_false_zmod_two`).
+* *`ε < 1`.* The proof calls `ε` "the arbitrary small constant"; `a ≤ m` needs `ε < 1`, and for
+  `ε > 1` the window below forces `n > |F|` (`rs_epsCA_johnson_jump_bchks25_false_of_one_lt`).
+* *Block length.* The proof takes `n = |V| = 2^a = 4 · 2^{⌈(1+ε)m/2⌉}`, so
+  `4 · |F|^{(1+ε)/2} ≤ n < 8 · |F|^{(1+ε)/2}` (`bchks25_johnson_jump_blocklength_bounds`).  We
+  encode `n ≈ |F|^{(1+ε)/2}` as `|F|^{(1+ε)/2} ≤ n ≤ 8 · |F|^{(1+ε)/2}`; a `± 1` window around
+  `|F|^{(1+ε)/2}` excludes the paper's own codes.
+* *Code.* The proof's code is polynomials of degree `≤ k = n/16`, i.e.
+  `ReedSolomon.code L (k + 1)` here, whose minimum distance is exactly `15n/16`.
+* *Internal radius.* See `johnsonJumpInternalRadius` (`7/8 - 1/n`, not ABF26's `7/8 + 1/n`).
 
 Admitted as an external result. -/
 def rs_epsCA_johnson_jump_bchks25
@@ -929,10 +970,10 @@ def rs_epsCA_johnson_jump_bchks25
     (ε : ℝ≥0) (_hε : 0 < ε) : Prop :=
     ∃ (ιC : Type) (_ : Fintype ιC) (_ : Nonempty ιC) (_ : DecidableEq ιC)
       (domain : ιC ↪ FC) (k : ℕ),
-      ((Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2) - 1
+      ((Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2)
           ≤ (Fintype.card ιC : ℝ)) ∧
       ((Fintype.card ιC : ℝ)
-          ≤ (Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2) + 1) ∧
+          ≤ 8 * (Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2)) ∧
       (Code.minDist ((ReedSolomon.code domain k : Set (ιC → FC))) : ℝ)
           / Fintype.card ιC = (15 : ℝ) / 16 ∧
       epsCA (F := FC) (A := FC) ((ReedSolomon.code domain k : Set (ιC → FC)))
@@ -945,7 +986,7 @@ def rs_epsCA_johnson_jump_bchks25
   -- code with n≈|F|^{(1+ε)/2} and δ_min=15/16. Requires the char-2 subfield construction
   -- exhibiting the sharp proximity-gap discontinuity at J(δ_min). Code-construction lower
   -- bound; trivial epsCA≤1 is the wrong direction; no in-tree witness generator. Genuinely
-  -- external.
+  -- external (for `ε < 1` and `|F|` large enough; see the docstring).
 
 /-- Named payload for the BCHKS25 Johnson-jump construction.
 
@@ -959,11 +1000,11 @@ structure RSJohnsonJumpWitness
   domain : ιC ↪ FC
   k : ℕ
   card_lower :
-    ((Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2) - 1
+    ((Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2)
         ≤ (Fintype.card ιC : ℝ))
   card_upper :
     ((Fintype.card ιC : ℝ)
-        ≤ (Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2) + 1)
+        ≤ 8 * (Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2))
   minDist_eq :
     (Code.minDist ((ReedSolomon.code domain k : Set (ιC → FC))) : ℝ)
         / Fintype.card ιC = (15 : ℝ) / 16
@@ -999,6 +1040,39 @@ theorem exists_rsJohnsonJumpWitness_of_bchks25
   letI := hDecEq
   exact ⟨ιC, hFintype, hNonempty, hDecEq,
     ⟨⟨domain, k, hcard_lower, hcard_upper, hminDist, heps⟩⟩⟩
+
+/-- `δ_min = 15/16` means `16 · minDist = 15 · n`, so `16 ∣ n`: every T4.18 witness has block
+length at least `16`. -/
+theorem RSJohnsonJumpWitness.sixteen_le_card
+    {FC : Type} [Field FC] [Fintype FC] [DecidableEq FC] [CharP FC 2]
+    {ε : ℝ≥0} {ιC : Type} [Fintype ιC] [Nonempty ιC] [DecidableEq ιC]
+    (W : RSJohnsonJumpWitness (FC := FC) ε ιC) :
+    16 ≤ Fintype.card ιC := by
+  have hn : 0 < Fintype.card ιC := Fintype.card_pos
+  have hnR : (Fintype.card ιC : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+  have hmd := W.minDist_eq
+  set md := Code.minDist ((ReedSolomon.code W.domain W.k : Set (ιC → FC)))
+  have h16R : (16 * md : ℝ) = 15 * Fintype.card ιC := by
+    rw [div_eq_iff hnR] at hmd
+    linarith
+  have h16 : 16 * md = 15 * Fintype.card ιC := by exact_mod_cast h16R
+  omega
+
+/-- Every T4.18 witness has `n ≤ |F|`, hence `16 ≤ |F|`. -/
+theorem RSJohnsonJumpWitness.sixteen_le_card_field
+    {FC : Type} [Field FC] [Fintype FC] [DecidableEq FC] [CharP FC 2]
+    {ε : ℝ≥0} {ιC : Type} [Fintype ιC] [Nonempty ιC] [DecidableEq ιC]
+    (W : RSJohnsonJumpWitness (FC := FC) ε ιC) :
+    16 ≤ Fintype.card FC :=
+  le_trans W.sixteen_le_card (Fintype.card_le_of_embedding W.domain)
+
+/-- The radius comparison `J ≤ J + 1/8 - 1/n` holds at every T4.18 witness (`n ≥ 16`). -/
+theorem RSJohnsonJumpWitness.radius_le_internalRadius
+    {FC : Type} [Field FC] [Fintype FC] [DecidableEq FC] [CharP FC 2]
+    {ε : ℝ≥0} {ιC : Type} [Fintype ιC] [Nonempty ιC] [DecidableEq ιC]
+    (W : RSJohnsonJumpWitness (FC := FC) ε ιC) :
+    johnsonJumpRadius ≤ johnsonJumpInternalRadius (Fintype.card ιC) :=
+  johnsonJumpRadius_le_internalRadius _ (le_trans (by norm_num) W.sixteen_le_card)
 
 /-- **Good-γ front door for the T4.18 `epsCA_lower` obligation.**
 
@@ -1059,11 +1133,11 @@ noncomputable def RSJohnsonJumpWitness.ofGoodGammaCount
     (ε : ℝ≥0)
     (domain : ιC ↪ FC) (k : ℕ)
     (card_lower :
-      ((Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2) - 1
+      ((Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2)
           ≤ (Fintype.card ιC : ℝ)))
     (card_upper :
       ((Fintype.card ιC : ℝ)
-          ≤ (Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2) + 1))
+          ≤ 8 * (Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2)))
     (minDist_eq :
       (Code.minDist ((ReedSolomon.code domain k : Set (ιC → FC))) : ℝ)
           / Fintype.card ιC = (15 : ℝ) / 16)
@@ -1094,11 +1168,11 @@ theorem rs_epsCA_johnson_jump_bchks25_of_goodGamma
     (ε : ℝ≥0) (hε : 0 < ε)
     (domain : ιC ↪ FC) (k : ℕ)
     (card_lower :
-      ((Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2) - 1
+      ((Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2)
           ≤ (Fintype.card ιC : ℝ)))
     (card_upper :
       ((Fintype.card ιC : ℝ)
-          ≤ (Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2) + 1))
+          ≤ 8 * (Fintype.card FC : ℝ) ^ (((1 : ℝ) + ε) / 2)))
     (minDist_eq :
       (Code.minDist ((ReedSolomon.code domain k : Set (ιC → FC))) : ℝ)
           / Fintype.card ιC = (15 : ℝ) / 16)
@@ -1862,11 +1936,14 @@ end SubspaceDesignFRS
 #print axioms CodingTheory.rs_epsMCA_johnson_range_bchks25
 #print axioms CodingTheory.rs_epsMCA_johnson_range_bchks25_of_bound
 #print axioms CodingTheory.johnsonJumpRadius_eq_three_fourths
-#print axioms CodingTheory.johnsonJumpInternalRadius_eq_seven_eighths_add_inv
+#print axioms CodingTheory.johnsonJumpInternalRadius_eq_seven_eighths_sub_inv
 #print axioms CodingTheory.johnsonJumpRadius_le_internalRadius
 #print axioms CodingTheory.rs_epsCA_johnson_jump_bchks25
 #print axioms CodingTheory.rs_epsCA_johnson_jump_bchks25_of_witness
 #print axioms CodingTheory.exists_rsJohnsonJumpWitness_of_bchks25
+#print axioms CodingTheory.RSJohnsonJumpWitness.sixteen_le_card
+#print axioms CodingTheory.RSJohnsonJumpWitness.sixteen_le_card_field
+#print axioms CodingTheory.RSJohnsonJumpWitness.radius_le_internalRadius
 #print axioms CodingTheory.johnsonJump_epsCA_lower_of_goodGamma
 #print axioms CodingTheory.RSJohnsonJumpWitness.ofGoodGammaCount
 #print axioms CodingTheory.rs_epsCA_johnson_jump_bchks25_of_goodGamma

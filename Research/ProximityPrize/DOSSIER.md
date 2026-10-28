@@ -2854,3 +2854,115 @@ or explicitly probe-only-flagged above. **CORE OPEN, ON-BGK. No fabricated
 closure.**
 
 <!-- END retained v3 dossier -->
+
+
+## Production incidence update (2026-10-12, PR #224)
+
+Mikhail Izhutkin (@mashingaan) proved the unconditional first-sponsor lower bound
+`190185818 / 2^30 <= mcaDeltaStar C epsStar` in
+`Frontier/_IncidenceAverageAnchor.lean`, theorem `firstPrime_average_anchor_floor`.
+Here `C` is the canonical `evalCode g (2^30) (2^29-1)` over the certified first
+sponsor prime. The canonical `WorstCaseIncidenceBounded` theorem
+`firstPrime_average_incidence` gives budget `2^30` at radius `190185817 / 2^30`.
+Neither theorem assumes BCHKS or the structural identification `hident`.
+
+This supersedes the older lower bound `178956971 / 2^30` cited above for this
+instance. It does not compute the exact threshold or close the prize.
+The upper bounds and predecessor-cap refutations in PR #222 remain separate
+results with their own evidence.
+
+Both declarations passed the full validator and the flagship axiom audit at
+commit `dbeb686e931ca5b5f3cf3c25c68a39806ce0fbb5`, with only `propext`,
+`Classical.choice`, and `Quot.sound`.
+Reproduce the exact arithmetic with
+`python scripts/probes/probe_incidence_average_anchor.py`.
+Hosted validation: https://github.com/SlopDotCash/proximityprize/actions/runs/38143973251.
+
+## Canonical triple-incidence floor (2026-10-13, PR #224)
+
+Mikhail Izhutkin (@mashingaan) proved the stronger first-sponsor lower bound
+`210683556 / 2^30 <= mcaDeltaStar C epsStar` in
+`Frontier/_IncidenceCanonicalTriples.lean`, theorem `firstPrime_triple_floor`.
+The code and certified sponsor field are the same as in the averaged-anchor
+result above. `firstPrime_triple_incidence` proves canonical
+`WorstCaseIncidenceBounded` with budget `2^30` at radius `210683555 / 2^30`.
+
+The proof uses the RS distance budget `d=2^29`, the canonical bad-witness
+line cap `t+1`, and a finite-set block decomposition of collinear triples.
+Repeated-index triples contribute at most three square-size diagonals.
+Their combined lower bound on total error-union mass contradicts the cube
+moment upper bound at `t=210683555`, with block size `s=56755`.
+The exact arithmetic probe is `scripts/probes/probe_incidence_triple_budget.py`.
+
+This adds 20497738 Hamming steps to the averaged-anchor floor, and 31726585
+steps to the main ladder floor for the same length. It does not establish
+the exact threshold, a uniform result for all fields, or prize completion.
+No new production hypothesis is required.
+
+All 29 declarations in the three incidence modules passed the focused
+kernel check and axiom audit at commit `210cb1781b952fd652b708cc091ec92d5dea5ed5`,
+using only `propext`, `Classical.choice`, and `Quot.sound`.
+Hosted proof check: https://github.com/mashingaan/proximityprize/actions/runs/38358631172.
+
+## Explicit finite first-sponsor bracket (2026-10-13, PR #224)
+
+Mikhail Izhutkin (@mashingaan) sharpened the same canonical first-sponsor bracket to
+`218759456/1073741824 <= mcaDeltaStar C epsStar <= 178956971/536870912`.
+The lower bound adds 8075900 Hamming steps to the preceding triple-incidence floor.
+The remaining interval has exact width `139154486/1073741824`.
+
+`Frontier/_IncidenceFullScaleCores.lean` formalizes the full-scale common-factor
+construction from PR #222. Its three cores have size 715827881, each witness has
+715827882 agreement coordinates, and the construction supplies exactly `n+5`
+distinct canonical bad scalars. The strict probability comparison is transferred
+to the supremum threshold by `firstPrime_fullScale_upper`.
+
+`Frontier/_IncidenceWeightedTriples.lean` weights the collinear-triple deficit
+using private agreement coordinates. `Frontier/_IncidenceExteriorLineCap.lean`
+derives the sharper line occupancy bound `3t-d+1` from those coordinates and a
+witness outside the line. `Frontier/_IncidenceCanonicalExterior.lean` transfers
+the resulting integer budget to `firstPrime_exterior_floor`, at `t=218759455`
+and block size 56756. These steps add no production hypothesis to the canonical
+bad-witness and RS distance data.
+
+All 30 declarations in the five new modules passed hosted Lean and the axiom
+audit at `43a90f43e90b7f4b4a1c0cb1ce28a1857b93f6f3`, using only `propext`,
+`Classical.choice` and `Quot.sound`.
+Hosted proof check: https://github.com/mashingaan/proximityprize/actions/runs/38377879493.
+The independent exact-arithmetic audit is `scripts/probes/probe_sponsor_finite_audit.py`.
+The instance pins, construction audit, orders 4 through 6, and theorem assumption
+map are recorded in `exact-current-bracket.md`. The higher-order obstruction applies
+to the displayed conservative budget, not to all canonical witness assumptions.
+The bounds do not match and do not establish prize completion or sponsor equivalence.
+
+## Constant-line first-sponsor floor (2026-10-13, PR #224)
+
+The canonical lower bound is further strengthened to `221512373/1073741824`
+by `IncidenceCanonicalConstant.firstPrime_constant_floor` in
+`Frontier/_IncidenceCanonicalConstant.lean`. The full-scale ceiling is unchanged,
+giving exact interval width `136401569/1073741824`. The improvement over the
+original triple floor is 10828817 Hamming steps.
+
+`Frontier/_IncidenceConstantLineCap.lean` counts agreement outside a line's
+joint-agreement set. An outside witness and code distance force a line with
+four heads to satisfy `3(d+1)≤7t`. The literal production parameters violate
+that inequality, so every line has at most three heads. Each distinct ordered
+pair then has at most one distinct collinear completion. The resulting direct
+triple count eliminates the block-decomposition loss and yields the literal
+cube budget at `t=221512372`. No new production hypothesis is introduced.
+
+All 37 declarations in the seven new proof modules passed hosted Lean and
+the axiom audit at `c05e7331ed525cc05ceec4b9402cabd36d4ee3d8`, using only
+`propext`, `Classical.choice` and `Quot.sound`.
+Hosted check: https://github.com/mashingaan/proximityprize/actions/runs/38388307522.
+The exact probe and assumption map are recorded in `exact-current-bracket.md`.
+The two threshold bounds still do not match.
+
+### Canonical pair-union refinement
+
+IncidenceCanonicalConstant.firstPrime_constant_floor now proves
+221512374/1073741824 <= mcaDeltaStar for the exact first sponsor.
+The pair-union distance lemma and refined cube mass sum derive the improvement
+from existing canonical assumptions. Hosted focused run 38392632799 checks
+all 39 declarations with only the permitted logical axioms. The full-scale
+upper remains 178956971/536870912. This is not prize closure.

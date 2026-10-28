@@ -1,10 +1,70 @@
 # Disproof Log — ABF26 Proximity Prize Grand Challenge 1 (Issue #232)
 
+## [164-expanded-common-factor-incidence-cores] 2026-10-11
+
+Author: Mikhail Izhutkin (@mashingaan)
+
+Exact computation and algebraic derivation, not a new Lean theorem:
+`scripts/probes/probe_incidence_expanded_cores.py` expands the equal-size
+groups around 31 common coset labels. At the first sponsor field, three groups
+of 11 labels give 1107296256 distinct bad-scalar slots at radius
+369098751/1073741824, exceeding the budget by 33554432. At the second field,
+five groups of six labels give 2264924160 slots at radius
+452984831/1073741824, exceeding the budget by 117440512.
+
+The production modular-power certificates exclude coefficient collisions.
+Direct Lagrange interpolation independently verifies every witness on a
+128-point smooth domain over F_1409. The production support/nonjointness
+derivation is recorded in
+`docs/kb/deltastar-expanded-incidence-cores-2026-10-11.md`.
+The expanded-core canonical Lean and threshold transfers are not implemented.
+These are stronger exact no-go certificates for the associated all-stack caps,
+not a determination of the prize threshold or a closure claim.
+
+Coordinate-scale extension: `probe_incidence_full_scale_cores.py` uses k-2
+common coordinates and equal groups of size floor((n-k+2)/s). For s = 3 in
+the first field it gives n+5 slots at radius 178956971/536870912. For s = 5
+in the second field it gives 2n+12 slots at radius 429496731/1073741824.
+All production coefficient powers are separated exactly, with an independent
+repeated-squaring check. Direct finite-field interpolation verifies the
+construction separately. These expanded-coordinate results have the same
+non-Lean evidence class and do not establish an exact production threshold.
+
 Goal: keep trying to **disprove** the ABF26 Grand-Challenge-1 conjecture, then
 **disprove the disproof**. Record every attempt so we don't repeat ourselves and
 so we zero in. Keep lemmas that *constrain* even if they don't fully disprove.
 Default assumption: my disproof is wrong — find the precise reason it fails and
 make that reason a sorry-free Lean lemma.
+
+## [SYZ3-five-core-predecessor] Five-core rate-half construction refutes both canonical predecessor caps (2026-10-11)
+
+Author: Mikhail Izhutkin (@mashingaan)
+
+The exact probe `scripts/probes/probe_syz3_five_core_predecessor.py` constructs
+five rate-half cores at `N=2^30`, `d=2^24`, and `K=2^29`. Each core has
+`33d` coordinates and the predecessor witness has `33d+1` coordinates. The
+155 eligible core-label slots have distinct `(label,multiplier)` pairs. The
+canonical first and second prime fields have pairwise distinct values of
+`a^N` for `a=1,...,9`, so all `155d = 2,600,468,480` pencil scalars are
+distinct.
+
+The lower bound exceeds the first predecessor budget `N` by `1,526,726,656`
+and the second budget `2N` by `452,984,832`. This refutes both all-stack
+predecessor count hypotheses used by the conditional rate-half reduction.
+The finite independent check at `N=128`, `K=64`, `P=1409` verifies all `310`
+constructed MCA witnesses and exceeds `2N` by `54`.
+
+The five-core probe is exact integer and modular arithmetic only. It does not
+formalize that five-core construction, transfer it to the second field, or
+close the prize. Separately, the existing three-core SYZ3 certificate now has
+the axiom-clean declarations
+`firstPrime_predecessor_worstCaseIncidence_refuted` and
+`firstPrime_predecessor_mcaDeltaStar_le` in
+`Frontier/_SYZ3OverBudgetStackWitness.lean`. They directly connect the
+first-field predecessor no-go to the canonical incidence predicate and
+threshold ledger. The five-core rate-half construction remains separate from
+the existing rate-quarter five-core barrier, which has different dimension
+and agreement parameters.
 
 ## [466-G310-k2-interior-ceiling-prize-scale] A07 r=3 / k=2 interior-ceiling counts survive at a prize-scale Proth prime: the ceiling #bad is 40 and the below-ceiling monomial-pencil maximum is 9, q-independent at q ≈ 21·2^128 (2026-08-14)
 
@@ -54096,3 +54156,118 @@ scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curve
 
 The printed declarations `not_curveCommonAgreementResidual` and `errorBound_lt_one` use only
 `propext`, `Classical.choice`, and `Quot.sound`.
+## [164-antipodal-subgroup-obstructions] 2026-10-13
+
+Hardyzyt. Exact arithmetic certificates; no new Lean theorem.
+
+[The probe](../../scripts/probes/probe_antipodal_subgroup_obstructions.py) checks two distinct
+obstructions in the actual sponsor fields from `_PrizeShapePrimeP30.lean` and
+`_PrizeShapePrimeP30Second.lean`. Their domain generators have order `n = 2^30`.
+It uses exact modular powers, polynomial products and coefficient comparisons.
+Primality and the canonical generators come from the existing Lean modules;
+this run does not repeat their kernel verification.
+
+**Unique square lift does not imply one coset.** The documentation of
+`AntipodalEvenOddDescent.isolated_root_determined` inferred single-coset confinement.
+For a generator `g`, an even `b`, and `b+2<n`, take
+
+```
+P(X) = X^(b+2) - g^2 X^b - ((g+1)X - g^2 - g).
+```
+
+Both `1` and `g` are roots. Their antipodes evaluate to `2(g+1)` and `2g(g+1)`,
+which are nonzero. Their `n/2` powers are `1` and `-1`, so they are isolated
+roots in opposite cosets of `mu_(n/2)`. The probe chooses `b = k = 2^29`.
+Thus the two head exponents are even, at least `k`, and below `n`, while the
+tail has degree one below `k`. This refutes the documented inference at the
+literal field, length and degree parameters. It does not refute the proved
+unique-lift identity or establish agreement at the production decoding radius.
+
+**Subgroup membership and no full subcoset do not repair the recorded count.**
+Set `t = g^(n/32)` and take the five lifts `t^i`, `0<=i<=4`. Split
+`Q(X) = product_i(X-t^i)` as `A(X^2)-X O(X^2)`. Both `A` and `O` have degree
+two. The probe checks the complete coefficient identity
+
+```
+A(U)^2 - U O(U)^2 = -product_i(U-t^(2i)).
+```
+
+The five roots lie in `mu_16`, hence in the actual `mu_(2^29)`, and `O` is
+nonzero at each root. There are no further roots. No two roots are antipodal.
+Every nontrivial subgroup of a cyclic group of order a power of two contains
+`-1`, so no full nontrivial subcoset is contained in this complete root set.
+Nevertheless its size is five, above the `k+1=4` cap of
+`IsoSparsityMasonStothers.IsolatedNonCosetCountResidual` at `k=3`.
+This supplies the subgroup and full-subcoset conditions missing from the
+unrestricted rational counterexamples in PRs #227 and #229.
+
+The second construction does not supply the original high-head/low-tail
+decoded-family realization or a production-rate counterexample. Its `k=3`
+is the recorded residual parameter, not the production code dimension.
+Those further restrictions need an explicit statement and a separate proof.
+The production threshold and the completion contract in #164 remain open.
+
+Reproduce with `python3 scripts/probes/probe_antipodal_subgroup_obstructions.py`.
+The output records both fields, the sparse-head witness, all five residual
+roots, their nonzero odd-part values, and the complete factorization coefficients.
+---
+
+### [164-isolated-noncoset-residual-refuted] Five isolated roots beat the `k + 1` cap at `k = 3`
+
+Date: 2026-10-12. Target: `ProximityGap.Frontier.IsoSparsityMasonStothers.IsolatedNonCosetCountResidual`,
+declared in `Frontier/_IsoSparsityMasonStothers.lean`. This is a statement-level refutation of a
+named residual, not a production Delta Star counterexample.
+
+The declaration quantifies over all `A O : F[X]` with `natDegree < k` and every finite set `s` of
+roots of `A² − X·O²` with `O ≠ 0`, and asserts `s.card ≤ k + 1`. It has no `μ_{n/2}` membership
+condition and no sub-coset exclusion. Over `ℚ` with `k = 3`, `A = 15u² + 225u + 120` and
+`O = u² + 85u + 274` satisfy `A(t²) = t·O(t²)` for `t = 1, …, 5`, so `A² − X·O²` vanishes at
+`1, 4, 9, 16, 25`, all with `O ≠ 0`: five roots against the cap `4`. The theorem
+`not_isolatedNonCosetCountResidual_rat_three : ¬ IsolatedNonCosetCountResidual ℚ 3` records this.
+The coefficients come from the linear system `A(t²) = t·O(t²)` (six unknowns, five equations).
+
+Scope: this refutes the recorded statement only. The intended count of isolated, non-sub-coset
+roots in `μ_{n/2}`, and the Kelley / BGK general-position input over `F_q`, are not touched and
+remain open. It does not close #164.
+### [164-isolated-count-residual-refuted] Unbounded `E` refutes the isolated-root cap
+
+Date: 2026-10-12. Target:
+`ProximityGap.Frontier.AntipodalEvenOddDescent.IsolatedCountResidual`, declared in
+`Frontier/_AntipodalEvenOddDescent.lean`. This is a statement-level refutation of a named
+root-count input, not a production Delta Star counterexample.
+
+The declaration quantifies over every `E O : F[X]` with only `O.natDegree < k`. `E` has no
+degree bound, no subgroup restriction and no decodedness restriction, yet the claim caps the
+isolated roots of `E(X^2) - X * O(X^2)` at `k + 1`. At `k = 1` over `ℚ`, with `O = 1` and
+`E = -X^2/6 + 7X/6`, one has `E(0) = 0`, `E(1) = 1` and `E(4) = 2`, so `x = 0, 1, 2` are
+three isolated roots against the cap `2`. The theorem `three_isolated_roots` records the
+roots and `not_isolatedCountResidual_rat_one` the contradiction.
+
+Family: the failure is not a single sporadic instance and does not need a large `E`. For every
+`k ≥ 1`, Lagrange interpolation of `(i+1)^2 ↦ i+1` on `i < k + 2` gives `Efam k` with
+`degree < k + 2` and `Efam k (x^2) = x` at `x = 1, …, k + 2`. With `O = 1` these are `k + 2`
+isolated roots against the cap `k + 1` (`Efam_eval`, `Efam_degree_lt`,
+`not_isolatedCountResidual_rat`). So any degree bound on `E` of the form `deg E < k + 2` still
+fails over `ℚ`; only a bound tied to `k` that makes `deg(E(X^2) - X * O(X^2)) < k + 2`, or a
+finite-subgroup domain restriction, can repair the statement. Same technique as the merged
+`SecondDescentStuckResidual` refutation.
+
+Scope: this refutes the recorded statement only. The intended restrictions (halved
+`2`-power subgroup domain, degree bound on `E`) are not discharged here, and the Kelley
+general-position count and the production Delta Star problem remain open. It does not
+close #164.
+
+Reproduction at the final PR commit:
+
+```
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IsolatedNonCosetCountResidualRefuted.lean
+scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedNonCosetCountResidualRefuted
+```
+
+Evidence class: Lean proof certificate; the declaration uses only `propext`,
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IsolatedCountResidualRefuted.lean
+scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountResidualRefuted
+```
+
+Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
+`Classical.choice` and `Quot.sound`.

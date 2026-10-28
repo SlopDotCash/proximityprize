@@ -20,6 +20,59 @@ CLAUDE_PATH = REPO_ROOT / "CLAUDE.md"
 AGENTS_PATH = REPO_ROOT / "AGENTS.md"
 
 MARKDOWN_LINK_RE = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
+FENCE_START_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
+INLINE_CODE_RE = re.compile(r"(?<!`)(`+)(?!`)(.*?)(?<!`)\1(?!`)")
+
+
+def visible_markdown(text: str) -> str:
+    """Remove comments and fenced examples without joining surrounding text.
+
+    Fences close with the same marker and at least the opening marker's length.
+    Comments inside fences are literal; fences inside comments are ignored.
+    Unclosed comments and fences extend to the end of the document.
+    """
+    visible: list[str] = []
+    fence = ""
+    in_comment = False
+    for line in text.splitlines(keepends=True):
+        if fence:
+            if re.fullmatch(r" {0,3}" + re.escape(fence[0])
+                            + "{" + str(len(fence)) + r",}[ \t]*", line.rstrip("\r\n")):
+                fence = ""
+            visible.append("\n")
+            continue
+
+        start = FENCE_START_RE.match(line.rstrip("\r\n")) if not in_comment else None
+        if start and (start[1][0] == "~" or "`" not in start[2]):
+            fence = start[1]
+            visible.append("\n")
+            continue
+
+        cursor = 0
+        while cursor < len(line):
+            if in_comment:
+                end = line.find("-->", cursor)
+                if end == -1:
+                    break
+                cursor = end + 3
+                in_comment = False
+            else:
+                begin = line.find("<!--", cursor)
+                if begin == -1:
+                    visible.append(line[cursor:])
+                    break
+                code = INLINE_CODE_RE.search(line, cursor)
+                if code and code.start() < begin:
+                    visible.append(line[cursor:code.end()])
+                    cursor = code.end()
+                    continue
+                visible.append(line[cursor:begin])
+                visible.append(" ")
+                cursor = begin + 4
+                in_comment = True
+        if in_comment:
+            visible.append("\n")
+    return "".join(visible)
 
 
 def tracked_markdown_files() -> list[Path]:
@@ -76,8 +129,9 @@ def check_markdown_links() -> list[str]:
     errors: list[str] = []
     for doc_file in tracked_markdown_files():
         text = doc_file.read_text(encoding="utf-8")
-        text = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
-        text = re.sub(r"`[^`]*`", "", text)
+        # Links in comments and fenced examples are not active Markdown links.
+        text = visible_markdown(text)
+        text = INLINE_CODE_RE.sub("", text)
         for raw_target in MARKDOWN_LINK_RE.findall(text):
             resolved = resolve_link(doc_file, raw_target)
             if resolved is None:

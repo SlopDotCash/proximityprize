@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import asdict, dataclass
+from decimal import Decimal
 import json
 from math import gcd, prod
 from pathlib import Path
@@ -154,28 +155,41 @@ def verify_arithmetic() -> tuple[bool, bool, bool]:
     return g_pow_n, g_pow_half, exact_order
 
 
+def certificate_integer(value: object, field_name: str) -> int:
+    """Convert exact integer values without losing fractional JSON digits."""
+    if isinstance(value, bool):
+        raise ValueError(f"{field_name}: a boolean is not a certificate integer")
+    if isinstance(value, float) and not value.is_integer():
+        raise ValueError(f"{field_name}: certificate integers must be finite and integral")
+    if isinstance(value, Decimal) and (
+        not value.is_finite() or value != value.to_integral_value()
+    ):
+        raise ValueError(f"{field_name}: certificate integers must be finite and integral")
+    return int(value)
+
+
 def verify_result_json(
     path: Path | None,
 ) -> tuple[bool, int | None, int | None, bool | None, str | None, str | None]:
     if path is None:
         return False, None, None, None, None, None
 
-    data = json.loads(path.read_text())
-    assert int(data["n"]) == N
-    assert int(data["p"]) == P
-    assert int(data["q"]) == Q
-    assert int(data["generator"]) == G
-    assert int(data["domain_size"]) == DOMAIN_SIZE
-    assert int(data["merged_count"]) == DOMAIN_SIZE
-    assert int(data["collision_count"]) == 0
+    data = json.loads(path.read_text(), parse_float=Decimal)
+    assert certificate_integer(data["n"], "n") == N
+    assert certificate_integer(data["p"], "p") == P
+    assert certificate_integer(data["q"], "q") == Q
+    assert certificate_integer(data["generator"], "generator") == G
+    assert certificate_integer(data["domain_size"], "domain_size") == DOMAIN_SIZE
+    assert certificate_integer(data["merged_count"], "merged_count") == DOMAIN_SIZE
+    assert certificate_integer(data["collision_count"], "collision_count") == 0
     assert data["injective"] is True
     assert data["phi_image_sha256"] == PHI_IMAGE_SHA256
     assert data["sorted_record_stream_sha256"] == SORTED_RECORD_STREAM_SHA256
 
     return (
         True,
-        int(data["merged_count"]),
-        int(data["collision_count"]),
+        certificate_integer(data["merged_count"], "merged_count"),
+        certificate_integer(data["collision_count"], "collision_count"),
         bool(data["injective"]),
         str(data["phi_image_sha256"]),
         str(data["sorted_record_stream_sha256"]),
@@ -186,21 +200,24 @@ def verify_independent_json(path: Path | None) -> tuple[bool, str | None]:
     if path is None:
         return False, None
 
-    data = json.loads(path.read_text())
+    data = json.loads(path.read_text(), parse_float=Decimal)
     assert data["status"] == "verified"
     assert data["mismatches"] == {}
-    assert int(data["n"]) == N
-    assert int(data["p"]) == P
-    assert int(data["q"]) == Q
-    assert int(data["generator"]) == G
-    assert int(data["domain_size"]) == DOMAIN_SIZE
-    assert int(data["chunk_records_sum"]) == DOMAIN_SIZE
+    assert certificate_integer(data["n"], "n") == N
+    assert certificate_integer(data["p"], "p") == P
+    assert certificate_integer(data["q"], "q") == Q
+    assert certificate_integer(data["generator"], "generator") == G
+    assert certificate_integer(data["domain_size"], "domain_size") == DOMAIN_SIZE
+    assert certificate_integer(data["chunk_records_sum"], "chunk_records_sum") == DOMAIN_SIZE
 
     recomputed = data["recomputed"]
     expected = data["expected"]
+    for section, summary in (("recomputed", recomputed), ("expected", expected)):
+        assert certificate_integer(
+            summary["merged_count"], f"{section}.merged_count"
+        ) == DOMAIN_SIZE
+        assert certificate_integer(summary["collision_count"], f"{section}.collision_count") == 0
     assert recomputed == expected
-    assert int(recomputed["merged_count"]) == DOMAIN_SIZE
-    assert int(recomputed["collision_count"]) == 0
     assert recomputed["first_collision"] is None
     assert recomputed["injective"] is True
     assert recomputed["phi_image_sha256"] == PHI_IMAGE_SHA256

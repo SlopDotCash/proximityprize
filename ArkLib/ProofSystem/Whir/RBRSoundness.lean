@@ -32,7 +32,7 @@ introduced in the Section 5 [ACFY24].
   and so `Gen(l,alpha) = {1, alpha,...., alpha^{l-1}}` also corresponds to `l = 2`
   and not for a generic l.
 
-- In in Construction 5.1 and Theorem 5.2,
+- In Construction 5.1 and Theorem 5.2,
   we use M + 1 iterations instead of M, for ease of representation in Lean
 
 ## Tags

@@ -125,7 +125,7 @@ theorem mason_stothers_iso_feed_vacuous (A O : F[X]) :
 /-! ## The named residual (the open isolated / non-coset root count) -/
 
 /--
-**`IsolatedNonCosetCountResidual` — the genuine open input after MS-direct.**
+**`IsolatedNonCosetCountResidual` — the recorded count obligation after MS-direct.**
 
 MS-direct proves: `P = A² − u·O²` is `O(k)`-sparse (`isoPoly_support_card_le`) but the naive MS feed
 is vacuous (`mason_stothers_iso_feed_vacuous`).  Sparsity `T = O(k)` does **not** by itself cap roots
@@ -138,8 +138,15 @@ is the Lenstra-style coset-structure bound — unconditional over `ℚ`, but ove
 the perfect-square head `(u^{a/2}+γu^{b/2})²` can acquire subgroup structure, and the isolated-root
 count there is the **same general-position cancellation the Kelley/BGK conjecture governs**.
 
-Stated as the explicit hypothesis a future closure must supply: the count of isolated roots of an
-`O(k)`-sparse `P` on `μ_{n/2}` is `≤ k + 1` (measured flat in `n`).  Naming the obligation and proving
+The degree-only statement below is overstrong. `probe_antipodal_subgroup_obstructions.py`
+certifies five roots against its `k+1 = 4` cap at `k = 3` in both sponsor fields. All five roots
+belong to the actual halved subgroup, and the complete polynomial root set contains no full coset
+of any nontrivial subgroup. Adding those two restrictions alone therefore does not repair this
+statement. The certificate does not realize the original high-head/low-tail decoded family;
+any surviving production count must state and use those further restrictions.
+
+The intended future input bounds the isolated roots of a suitably restricted
+`O(k)`-sparse `P` on `μ_{n/2}` by `k + 1`. Naming the obligation and proving
 it elsewhere (the `*_holds` / `*_of_*` convention) is the project's modularity convention; this is **not** discharged
 here, and MS-direct does **not** close it. -/
 def IsolatedNonCosetCountResidual (F : Type*) [Field F] (k : ℕ) : Prop :=

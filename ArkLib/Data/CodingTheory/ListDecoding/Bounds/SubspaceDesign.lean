@@ -97,6 +97,18 @@ rate `ρ`. For any `η > 0` with `1/η < s`:
 When `η ≥ √(3/s)`, the bound simplifies to `|Λ(C, 1 - ρ - η)| ≤ 1/η`. Derives from
 T3.4 + T2.18 (FRS is τ-subspace-design). Admitted as an external result.
 
+**Admissibility guard.** ABF26 Definition 2.15 only defines `FRS[F, L, k, s, ω]` for an
+`(L, s)`-admissible `ω` (Definition 2.14), i.e. the `s·n` folded evaluation points `x·ωⁱ` are
+pairwise distinct. The statement therefore assumes `ω ≠ 0` and
+`ReedSolomon.Folded.Admissible (image domain) s ω`; together these say exactly that the folded
+points are distinct (`ω ≠ 0` is needed because `Admissible` alone accepts `ω = 0`, which repeats
+the point `0` across slots). Without the guard the statement is false: for `ω = 1` the code is the
+`s`-fold repetition of `RS[F, L, k]`, and over `𝔽₇` with `L = 𝔽₇`, `k = 2`, `s = 119`, `η = 1/8`
+the radius is `4/7` and the bound is `39/7`, while six lines lie within relative distance `4/7` of
+one word (`frs_list_decoding_capacity_cz25_body_false_omega_one` in
+`ProximityGap/CZ25FRSAdmissibilityRegime.lean`). Every in-tree endpoint below proves the guarded
+statement from its own hypotheses, so none of them uses the guard.
+
 **STATUS: NEEDS_CLASSICAL.** [CZ25 Cor 2.21] is the *corrected, provable* folded-RS
 capacity list-decodability result via subspace designs — NOT the disproven up-to-capacity
 conjecture for plain Reed-Solomon proximity gaps / DEEP-FRI list-decodability (those are
@@ -119,6 +131,7 @@ def frs_list_decoding_capacity_cz25
     (domain : ι ↪ F) (k s : ℕ) (ω : F)
     (_hs_pos : 0 < s)
     (η : ℝ) (_hη_pos : 0 < η) (_hη_lt_s : 1 / η < s) : Prop :=
+    ω ≠ 0 → ReedSolomon.Folded.Admissible (Finset.univ.image domain) s ω →
     let n : ℝ := Fintype.card ι
     let ρ : ℝ := k / n
     let δ : ℝ := 1 - ρ * s / (s - 1 / η + 1) - η
@@ -153,7 +166,7 @@ theorem frs_list_decoding_capacity_cz25_of_residuals_prop
             (1 - τ (Nat.floor (1 / η')) - η') : ENNReal) ≤
           ENNReal.ofReal ((1 - τ (Nat.floor (1 / η'))) / η'))
     (hηnat : (1 : ℝ) / η = (Nat.floor (1 / η) : ℕ)) :
-    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s :=
+    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := fun _ _ =>
   frs_list_decoding_capacity_cz25_of_residuals
     domain k s ω hs_pos η hη_pos hη_lt_s hT218 hT34 hηnat
 
@@ -179,7 +192,7 @@ theorem frs_list_decoding_capacity_cz25_of_T218_le_one_prop
               (s : ℝ) * (k : ℝ) / Fintype.card ι / ((s : ℝ) - r + 1) else 1)
             (Nat.floor (1 / η)) - η)).ncard ≤ 1)
     (hηnat : (1 : ℝ) / η = (Nat.floor (1 / η) : ℕ)) :
-    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s :=
+    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := fun _ _ =>
   frs_list_decoding_capacity_cz25_of_T218_le_one
     domain k s ω hs_pos η hη_pos hη_lt_s hT218 hle hηnat
 
@@ -203,6 +216,7 @@ theorem frs_list_decoding_capacity_cz25_of_T218_le_one_eta_eq_one_div_nat_prop
               (s : ℝ) * (k : ℝ) / Fintype.card ι / ((s : ℝ) - r + 1) else 1)
             (Nat.floor (1 / η)) - η)).ncard ≤ 1) :
     frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := by
+  intro _ _
   have hm_ne : (m : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt hm)
   have h_one_div : (1 : ℝ) / η = (m : ℝ) := by
     rw [hη]
@@ -232,7 +246,7 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_T218_prop
         (h : IsSubspaceDesign s τ C) (η' : ℝ) (hη' : 0 < η'),
         CZ25CoordFiberCap s τ C h η' hη')
     (hηnat : (1 : ℝ) / η = (Nat.floor (1 / η) : ℕ)) :
-    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s :=
+    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := fun _ _ =>
   frs_list_decoding_capacity_cz25_of_coordFiberCap_T218
     domain k s ω hs_pos η hη_pos hη_lt_s hT218 hCap hηnat
 
@@ -251,7 +265,7 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_injective_prop
         (h : IsSubspaceDesign s τ C) (η' : ℝ) (hη' : 0 < η'),
         CZ25CoordFiberCap s τ C h η' hη')
     (hηnat : (1 : ℝ) / η = (Nat.floor (1 / η) : ℕ)) :
-    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s :=
+    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := fun _ _ =>
   frs_list_decoding_capacity_cz25_of_coordFiberCap_injective
     domain k s ω hs_pos η hη_pos hη_lt_s hEinj hω_sep hCap hηnat
 
@@ -269,7 +283,7 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible_prop
         (h : IsSubspaceDesign s τ C) (η' : ℝ) (hη' : 0 < η'),
         CZ25CoordFiberCap s τ C h η' hη')
     (hηnat : (1 : ℝ) / η = (Nat.floor (1 / η) : ℕ)) :
-    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s :=
+    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := fun _ _ =>
   frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible
     domain k s ω hs_pos η hη_pos hη_lt_s L hL_dom hω0 hadm hkLs hkord hCap hηnat
 
@@ -290,6 +304,7 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_T218_eta_eq_one_div_nat
         (h : IsSubspaceDesign s τ C) (η' : ℝ) (hη' : 0 < η'),
         CZ25CoordFiberCap s τ C h η' hη') :
     frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := by
+  intro _ _
   have hm_ne : (m : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt hm)
   have h_one_div : (1 : ℝ) / η = (m : ℝ) := by
     rw [hη]
@@ -318,6 +333,7 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_injective_eta_eq_one_di
         (h : IsSubspaceDesign s τ C) (η' : ℝ) (hη' : 0 < η'),
         CZ25CoordFiberCap s τ C h η' hη') :
     frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := by
+  intro _ _
   have hm_ne : (m : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt hm)
   have h_one_div : (1 : ℝ) / η = (m : ℝ) := by
     rw [hη]
@@ -345,6 +361,7 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible_eta_eq_one_d
         (h : IsSubspaceDesign s τ C) (η' : ℝ) (hη' : 0 < η'),
         CZ25CoordFiberCap s τ C h η' hη') :
     frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := by
+  intro _ _
   have hm_ne : (m : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt hm)
   have h_one_div : (1 : ℝ) / η = (m : ℝ) := by
     rw [hη]
@@ -373,7 +390,7 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_orderOf_ge_of_inter_pro
         (h : IsSubspaceDesign s τ C) (η' : ℝ) (hη' : 0 < η'),
         CZ25CoordFiberCap s τ C h η' hη')
     (hηnat : (1 : ℝ) / η = (Nat.floor (1 / η) : ℕ)) :
-    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s :=
+    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := fun _ _ =>
   frs_list_decoding_capacity_cz25_of_coordFiberCap_orderOf_ge_of_inter
     domain k s ω hs_pos η hη_pos hη_lt_s L hL_dom hL_zero hω0 hs_order
     hinter hkLs hkord hCap hηnat
@@ -395,6 +412,7 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_orderOf_ge_of_inter_eta
         (h : IsSubspaceDesign s τ C) (η' : ℝ) (hη' : 0 < η'),
         CZ25CoordFiberCap s τ C h η' hη') :
     frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := by
+  intro _ _
   have hm_ne : (m : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt hm)
   have h_one_div : (1 : ℝ) / η = (m : ℝ) := by
     rw [hη]
@@ -423,7 +441,7 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_orderOf_ge_of_cosetSep_
         (h : IsSubspaceDesign s τ C) (η' : ℝ) (hη' : 0 < η'),
         CZ25CoordFiberCap s τ C h η' hη')
     (hηnat : (1 : ℝ) / η = (Nat.floor (1 / η) : ℕ)) :
-    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s :=
+    frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := fun _ _ =>
   frs_list_decoding_capacity_cz25_of_coordFiberCap_orderOf_ge_of_cosetSep
     domain k s ω hs_pos η hη_pos hη_lt_s L hL_dom hL_zero hω0 hs_order
     hcoset hkLs hkord hCap hηnat
@@ -446,6 +464,7 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_orderOf_ge_of_cosetSep_
         (h : IsSubspaceDesign s τ C) (η' : ℝ) (hη' : 0 < η'),
         CZ25CoordFiberCap s τ C h η' hη') :
     frs_list_decoding_capacity_cz25 domain k s ω hs_pos η hη_pos hη_lt_s := by
+  intro _ _
   have hm_ne : (m : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt hm)
   have h_one_div : (1 : ℝ) / η = (m : ℝ) := by
     rw [hη]

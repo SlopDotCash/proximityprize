@@ -14,6 +14,14 @@
 # owning issue discharges/removes the axiom, delete its line here (the precheck
 # warns on stale entries that match no axiom in the tree).
 #
+# One entry documents exactly ONE declaration. Because the entry is a simple
+# name, it also matches a declaration inside any namespace, so a second `axiom`
+# that clones the name (`namespace Sneaky` + `axiom <entry> : False`) would
+# otherwise inherit the entry and launder a new axiom under a trusted name. The
+# precheck rejects any allowlisted name declared more than once in the scanned
+# tree; it needs the full-tree scan (as CI and validate.sh run it) to see both
+# declarations.
+#
 # This is route (a) of #111. Routes (b) "discharge" and (c) "convert to
 # def : Prop / class" remain preferable long-term and are owned by each
 # residual's tracking issue below.

@@ -3,7 +3,8 @@
 
 This is the production-scale companion to `extract_g139_phi_collision_witnesses.py`.
 Given a proposed collision and either `u` or an exponent `k` with `u = g^k`,
-it checks the exact finite-field identities
+it requires distinct half-window exponents `r != s` and checks the exact
+finite-field identities
 
     (g^r - 1)^n = (g^s - 1)^n,
     u = (g^r - 1) / (g^s - 1),
@@ -58,6 +59,7 @@ class WitnessVerification:
     prime_modulus_assumed: bool
     exact_order_power2: bool
     window_bounds: bool
+    distinct_exponents: bool
     denominator_nonzero: bool
     quotient_matches: bool
     relation_holds: bool
@@ -141,11 +143,13 @@ def verify_witness(
     )
     quotient_matches = derived_u == u if derived_u is not None else False
     window_bounds = 1 <= r <= n // 2 and 1 <= s <= n // 2
+    distinct_exponents = r != s
     exact_order = exact_order_power2(g, n, p)
     verified = all(
         (
             exact_order,
             window_bounds,
+            distinct_exponents,
             denominator_nonzero,
             quotient_matches,
             relation_holds,
@@ -168,6 +172,7 @@ def verify_witness(
         prime_modulus_assumed=True,
         exact_order_power2=exact_order,
         window_bounds=window_bounds,
+        distinct_exponents=distinct_exponents,
         denominator_nonzero=denominator_nonzero,
         quotient_matches=quotient_matches,
         relation_holds=relation_holds,
@@ -249,7 +254,8 @@ def main() -> None:
         results = [verify_from_record(record) for record in load_witnesses(args.witness_json)]
 
     for result in results:
-        assert result.verified
+        if not result.verified:
+            raise SystemExit(f"invalid Phi collision witness: {result.label}")
     print(json.dumps([asdict(result) for result in results], sort_keys=True, indent=2))
 
 

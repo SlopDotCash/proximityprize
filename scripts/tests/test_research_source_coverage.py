@@ -57,6 +57,14 @@ class ResearchCoverage(unittest.TestCase):
             'import ArkLib.Basic Research.ProximityPrize.All\npublic import Research.Other\n'),
             [(1, 'Research.ProximityPrize.All'), (2, 'Research.Other')])
 
+    def test_boundary_rejects_meta_and_public_meta_imports(self):
+        # Lean 4.30 module files accept `meta import` and `public meta import`;
+        # both bring Research declarations into the importing module.
+        self.assertEqual(boundary.research_imports(
+            'module\nmeta import Research.A\npublic meta import Research.B\n'
+            'import all Research.C\nmeta import ArkLib.Basic\n'),
+            [(2, 'Research.A'), (3, 'Research.B'), (4, 'Research.C')])
+
     def test_boundary_ignores_nested_comments(self):
         self.assertEqual(boundary.research_imports(
             '/- outer\n/- nested -/\nimport Research.Hidden\n-/\n'

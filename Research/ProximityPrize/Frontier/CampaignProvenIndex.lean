@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ArkLib Contributors (#444)
+Authors: ArkLib Contributors (#444), Mikhail Izhutkin (mashingaan, @mashingaan)
 -/
 import Research.ProximityPrize.Frontier._wf8B2_char0_logconcave
 import Research.ProximityPrize.Frontier._wf8B5_MomentProblemLogConvex
@@ -1282,6 +1282,40 @@ theorem coreReduction_clears_johnson_iff_BCHKS_at_prev_fold_export
         (budget n) :=
   ArkLib.ProximityGap.CoreReductionComplete.clears_johnson_iff_BCHKS_at_prev_fold
     D budget Sigma smap rmap n hex hmono hident kNat hk_pos
+
+/-! The forward production consumer needs only the one-way deduplication domination.  The iff
+exports above retain `hident` because their reverse direction is a necessity statement. -/
+
+/-- **[capstone, CoreReductionComplete]** Forward BCHKS consumer without the refuted equality
+identification.  A budget bound for the matched fold, together with the one-way domination
+`D n m ≤ Sigma (smap n) (rmap n m)`, clears the binding depth through that fold. -/
+theorem coreReduction_mStar_le_of_BCHKS_export
+    (D : ℕ → ℕ → ℕ) (budget : ℕ → ℕ) (Sigma : ℕ → ℕ → ℕ)
+    (smap : ℕ → ℕ) (rmap : ℕ → ℕ → ℕ) (n : ℕ)
+    (hex : ∃ m, D n m ≤ budget n)
+    (hdom : ∀ m, D n m ≤ Sigma (smap n) (rmap n m)) (M : ℕ)
+    (hBCHKS : ArkLib.ProximityGap.CoreReductionComplete.BCHKSBudget
+      Sigma (smap n) (rmap n M) (budget n)) :
+    ArkLib.ProximityGap.CoreReductionComplete.mStar D budget n hex ≤ M :=
+  ArkLib.ProximityGap.CoreReductionComplete.mStar_le_of_BCHKS
+    D budget Sigma smap rmap n hex hdom M hBCHKS
+
+/-- **[capstone, CoreReductionComplete]** Forward Johnson-fold consumer without `hident`.
+At positive `kNat`, the BCHKS budget at `kNat - 1` forces the binding depth below `kNat` using
+only the one-way domination bridge. -/
+theorem coreReduction_clears_johnson_of_BCHKS_at_prev_fold_export
+    (D : ℕ → ℕ → ℕ) (budget : ℕ → ℕ) (Sigma : ℕ → ℕ → ℕ)
+    (smap : ℕ → ℕ) (rmap : ℕ → ℕ → ℕ) (n : ℕ)
+    (hex : ∃ m, D n m ≤ budget n)
+    (hdom : ∀ m, D n m ≤ Sigma (smap n) (rmap n m))
+    (kNat : ℕ) (hk_pos : 1 ≤ kNat)
+    (hBCHKS : ArkLib.ProximityGap.CoreReductionComplete.BCHKSBudget
+      Sigma (smap n) (rmap n (kNat - 1)) (budget n)) :
+    ArkLib.ProximityGap.CoreReductionComplete.mStar D budget n hex < kNat := by
+  have hle : ArkLib.ProximityGap.CoreReductionComplete.mStar D budget n hex ≤ kNat - 1 :=
+    coreReduction_mStar_le_of_BCHKS_export D budget Sigma smap rmap n hex hdom
+      (kNat - 1) hBCHKS
+  omega
 
 /-! ## Door-IV wraparound `Q ≥ 0` discharge. Scope: **obstruction**.
 

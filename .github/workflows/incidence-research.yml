@@ -1,0 +1,95 @@
+name: Incidence research kernel check
+on:
+  push:
+    branches: [research/incidence-triples]
+  workflow_dispatch:
+    inputs:
+      full_validation:
+        description: Run the full repository validator after the focused proof check
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.full_validation && 300 || 45 }}
+    env:
+      LEAN_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check exact triple budget arithmetic
+        run: python3 scripts/probes/probe_incidence_triple_budget.py
+      - uses: leanprover/lean-action@v1.6.0
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+      - name: Restore checked dependency build
+        id: dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: .lake
+          key: incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ hashFiles('lakefile.lean', 'lakefile.toml', 'ArkLib/**/*.lean', 'Research/ProximityPrize/**/*.lean') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+            incidence-dependencies-${{ runner.os }}-
+      - name: Fetch dependency cache
+        run: ./scripts/lake-locked.sh exe cache get
+      - name: Build existing incidence dependency
+        run: ./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IncidenceAverageAnchor
+      - name: Check research proof
+        run: |
+          set -o pipefail
+          ./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IncidenceTripleMass Research.ProximityPrize.Frontier._IncidenceAffineLines
+          lake env lean Research/ProximityPrize/Frontier/_IncidenceTripleMass.lean | tee incidence-axioms.log
+          lake env lean Research/ProximityPrize/Frontier/_IncidenceAffineLines.lean | tee -a incidence-axioms.log
+          lake env lean Research/ProximityPrize/Frontier/_IncidenceCanonicalTriples.lean | tee -a incidence-axioms.log
+      - name: Audit research axioms
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('incidence-axioms.log').read_text()
+          assert 'depends on axioms:' in s
+          assert 'sorryAx' not in s
+          import re
+          matches=re.findall(r'depends on axioms:\s*\[([^\]]*)\]',s)
+          assert len(matches)==29
+          for names in matches:
+              assert set(x.strip() for x in names.split(','))<= {'propext','Classical.choice','Quot.sound'}
+          print('Research cube lemma axiom audit clean')
+          PY
+      - uses: actions/setup-python@v7
+        if: github.event_name == 'workflow_dispatch' && inputs.full_validation
+        with:
+          python-version: "3.12"
+      - name: Install Python validation dependencies
+        if: github.event_name == 'workflow_dispatch' && inputs.full_validation
+        run: python3 -m pip install -r scripts/requirements-validation.txt
+      - name: Full repository validation
+        if: github.event_name == 'workflow_dispatch' && inputs.full_validation
+        run: |
+          (
+            while sleep 30
+            do
+              echo "Lean resource snapshot (PID PPID elapsed RSS-KiB command)"
+              ps -eo pid=,ppid=,etime=,rss=,comm=,args= | awk '$5 == "lean" || $5 == "lake"'
+              free -m
+            done
+          ) &
+          resource_monitor_pid=$!
+          trap 'kill "$resource_monitor_pid" 2>/dev/null || true' EXIT
+          timeout --signal=INT --kill-after=2m 270m ./scripts/validate.sh
+      - name: Stop Lean workers before saving the build
+        if: always() && !cancelled()
+        id: stop-lean
+        run: bash scripts/ci-stop-lean.sh
+      - name: Preserve completed build artifacts
+        if: always() && !cancelled() && steps.stop-lean.outcome == 'success' && steps.dependencies.outputs.cache-primary-key != ''
+        uses: actions/cache/save@v4
+        with:
+          path: .lake
+          key: ${{ steps.dependencies.outputs.cache-primary-key }}

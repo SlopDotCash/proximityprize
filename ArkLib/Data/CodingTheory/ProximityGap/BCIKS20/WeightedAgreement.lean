@@ -54,7 +54,8 @@ axiom weighted_correlated_agreement_for_parameterized_curves [DecidableEq ι]
     {μ : ι → Set.Icc (0 : ℚ) 1}
     {M : ℕ}
     {α : ℝ≥0}
-    (hμ : ∀ i, ∃ n : ℤ, (μ i).1 = (n : ℚ) / (M : ℚ)) :
+    (hμ : ∀ i, ∃ n : ℤ, (μ i).1 = (n : ℚ) / (M : ℚ))
+    (hrate : 0 < ReedSolomon.sqrtRate deg domain) :
     letI sqrtRate := ReedSolomon.sqrtRate deg domain
     (hα : sqrtRate < α) →
     (hα₁ : α < 1) →
@@ -89,6 +90,7 @@ axiom weighted_correlated_agreement_for_parameterized_curves'
     {M m : ℕ}
     (hm : 3 ≤ m)
     (hμ : ∀ i, ∃ n : ℤ, (μ i).1 = (n : ℚ) / (M : ℚ))
+    (hrate : 0 < ReedSolomon.sqrtRate deg domain)
     {α : ℝ≥0} :
     letI sqrtRate := ReedSolomon.sqrtRate deg domain
     letI S : Finset F := {
@@ -116,7 +118,8 @@ axiom weighted_correlated_agreement_over_affine_spaces
     {deg : ℕ} {domain : ι ↪ F}
     {μ : ι → Set.Icc (0 : ℚ) 1}
     {M : ℕ}
-    {α : ℝ≥0} :
+    {α : ℝ≥0}
+    (hrate : 0 < ReedSolomon.sqrtRate deg domain) :
     letI sqrtRate := ReedSolomon.sqrtRate deg domain
     (hα : sqrtRate < α) →
     (hα₁ : α < 1) →
@@ -151,7 +154,8 @@ axiom weighted_correlated_agreement_over_affine_spaces'
     {α : ℝ≥0}
     {M m : ℕ}
     (hm : 3 ≤ m)
-    (hμ : ∀ i, ∃ n : ℤ, (μ i).1 = (n : ℚ) / (M : ℚ)) :
+    (hμ : ∀ i, ∃ n : ℤ, (μ i).1 = (n : ℚ) / (M : ℚ))
+    (hrate : 0 < ReedSolomon.sqrtRate deg domain) :
     letI sqrtRate := ReedSolomon.sqrtRate deg domain
     letI pr :=
       let spacePts :=

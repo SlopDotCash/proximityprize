@@ -7,8 +7,32 @@ a "PROVEN" issue comment, or a grant-completion claim.
 ## What the gates already catch
 
 `./scripts/validate.sh` catches: `sorry`/`admit` holes (`sorry_census.py`), forbidden tokens
-(`native_decide`, `bv_decide`, undocumented `axiom` — `forbidden_tokens.py`), flagship-theorem
-axiom drift (`axiom_audit.py`). An auditor's job is everything those *cannot* see.
+(`native_decide`, `bv_decide`, `unsafe` declarations, `unsafeCast`, `implemented_by`,
+undocumented `axiom` — `forbidden_tokens.py`), flagship-theorem axiom drift
+(`axiom_audit.py`). An auditor's job is everything those *cannot* see.
+
+The optional post-build `python3 scripts/proximity_prize_cleanroom_audit.py` checks
+the apex declarations listed in `scripts/proximity_prize_cleanroom_targets.txt`.
+It locates the declaration's result after binders and top-level arrow premises
+before looking for the expected predicate. A signature such as
+`(h : mcaPrize domain) : True` or `mcaPrize domain → True` fails even when its
+axiom report is empty. Predicate occurrences solely in those premises cannot
+certify a prize conclusion, and neither can occurrences nested inside the result
+in an arrow premise or binder type, such as `True ∧ (mcaPrize domain → True)`.
+This remains a syntactic audit; it does not establish
+that a predicate's definition captures the intended mathematical statement.
+The manifest uses `Research.ProximityPrize.Resolution` for the retained resolution
+declarations. A dry run also rejects active `ArkLib`/`Research` modules whose
+source no longer exists; pending future entries remain permitted.
+Delimiter and predicate searches ignore quoted identifiers, strings and character literals,
+so quoted arrows cannot split the result and literal brackets cannot hide a premise.
+Run its regression and independent Lean-output fixture with
+`python3 -m unittest discover -s scripts/tests -p 'test_cleanroom_conclusion.py'`.
+
+`forbidden_tokens.py` also enforces one declaration per `scripts/residual_axioms.txt` entry: the
+allowlist stores simple names, so an entry would otherwise transfer to a second `axiom` declared
+under the same name in a fresh namespace. That check needs the full-tree scan (what CI and
+`validate.sh` run); a file-scoped run only sees duplicates inside the file it was given.
 
 ## Current shortcut snapshot (2026-06-11)
 
@@ -103,5 +127,6 @@ front door without a proof of the predicate.
 - [ ] Full hypothesis list read; every nontrivial hypothesis is a *named*, tracked residual.
 - [ ] Non-vacuity: a satisfiable nontrivial parameter regime exists (or the vacuity is flagged).
 - [ ] Fresh focused rebuild + `#print axioms` shows exactly `[propext, Classical.choice, Quot.sound]`.
-- [ ] No new `axiom`, `native_decide`, `unsafe`, `implemented_by` in the diff.
+- [ ] No new `axiom`, `native_decide`, `unsafe`, `unsafeCast`, `implemented_by` in the diff (CI gate 1 now rejects the last three in live source; still re-check the diff);
+      no second declaration of an allowlisted residual axiom name.
 - [ ] Issue comment matches what was actually proven (regime, budget, verifier variant).
