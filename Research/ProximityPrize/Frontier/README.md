@@ -217,6 +217,16 @@ pair + DIST rungs m ≥ 12; P1 `SwarmResidual`; W15 strip sliver / Λ ≤ 2 (emp
   axiom-clean, while the explicit finite-field witness remains computational evidence. The open
   gate is the lift to a genuine over-budget MCA stack; `UniformSylvesterInjective`, `ι ≤ 1`, and
   production δ* remain open.
+- **SYZ72 (2026-10-30): the first middle-band occupant is a small-`p` artifact; hit test hardened.**
+  The PR #5 probe accepted any `6 x 4` rank-`< 4` sighting, which a floor-attained constant-syzygy
+  triple satisfies just as well; the strict certificate now pins `δ₁ = 7 = max + 1` (cofactors recovered
+  by division, the `7 x 3` constant-cofactor matrix of full rank, nonzero on the leftover `T`). The
+  recorded `F_41`, `μ_20` witness survives it, but re-sweeping `μ_20` over every `p ≡ 1 (mod 20)` up to
+  `2³¹ + 41` (`560 000` configurations per prime, all `28` sub-triples per sampled pair) certifies
+  occupants only at `p = 41, 61, 101`, none at the twelve primes `p ≥ 181`, and none on `20 720`
+  structured union-of-coset supports. Occupancy is therefore an analogue-regime artifact in the
+  G84/SYZ53 sense and cannot be cited in the production regime; see `DISPROOF_LOG.md`
+  `[SYZ72-middle-band-occupancy-is-small-p]`. `ι ≤ 1`, the over-budget lift and production δ* remain open.
 - **All-depth cyclic energy floor (PR #7): exact lower bound.**
   `REnergyCyclicFloorAllDepth.lean` lifts the depth-three cyclic-orbit floor to every depth at least
   three. It supplies a stronger reusable lower floor, not an upper energy bound, characteristic
