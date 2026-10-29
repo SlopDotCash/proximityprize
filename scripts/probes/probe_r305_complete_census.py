@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import math
+import operator
 import random
 import sys
 from collections import defaultdict
@@ -53,13 +54,33 @@ def distinct_differences(keys: np.ndarray) -> np.ndarray:
 
 
 def norms_of(zs: np.ndarray, n: int) -> np.ndarray:
+    """Exact norms in Z[X]/(X^(n/2)+1), with unbounded integer arithmetic.
+
+    Pair the conjugates x and -x: for f(x)=E(x^2)+x O(x^2), their
+    product is E(y)^2-y O(y)^2. Reduce modulo y^(m/2)+1 and repeat.
+    """
+    if n < 2 or n & (n - 1):
+        raise ValueError("cyclotomic norms require dyadic n >= 2")
     m = n // 2
-    val = np.ones(len(zs), dtype=np.complex128)
-    zf = zs.astype(np.float64)
-    for u in range(1, n, 2):
-        roots = np.exp(2j * np.pi * u * np.arange(m) / n)
-        val *= zf @ roots
-    return np.rint(val.real).astype(np.int64)
+    if zs.ndim != 2 or zs.shape[1] != m:
+        raise ValueError("norm rows must have n/2 integer coordinates")
+    norms = []
+    for row in zs:
+        coefficients = [operator.index(value) for value in row]
+        while len(coefficients) > 1:
+            half = len(coefficients) // 2
+            reduced = [0] * half
+            for part, shift, sign in ((coefficients[::2], 0, 1),
+                                      (coefficients[1::2], 1, -1)):
+                for i, a in enumerate(part):
+                    if not a:
+                        continue
+                    for j, b in enumerate(part):
+                        degree = i + j + shift
+                        reduced[degree % half] += sign * (-1 if degree >= half else 1) * a * b
+            coefficients = reduced
+        norms.append(coefficients[0])
+    return np.asarray(norms, dtype=object)
 
 
 def is_probable_prime(x: int) -> bool:
@@ -119,15 +140,15 @@ def exact_excess(p: int, n: int, keys: np.ndarray, cnts: np.ndarray, e3_char0: i
             g0 = cand
             break
     assert g0 is not None
-    powers = np.empty(m, dtype=np.int64)
+    powers = np.empty(m, dtype=object)
     x = 1
     for j in range(m):
         powers[j] = x
         x = x * g0 % p
-    evals = (keys.astype(np.int64) @ powers) % p
+    evals = (keys.astype(object) @ powers) % p
     order = np.argsort(evals, kind="stable")
     ev_sorted = evals[order]
-    ct_sorted = cnts[order]
+    ct_sorted = cnts[order].astype(object)
     boundaries = np.nonzero(np.diff(ev_sorted))[0] + 1
     group_sums = np.add.reduceat(ct_sorted, np.concatenate(([0], boundaries)))
     return int(np.sum(group_sums**2)) - e3_char0
@@ -138,6 +159,8 @@ def main() -> int:
     ap.add_argument("--n", type=int, default=32)
     args = ap.parse_args()
     n = args.n
+    if n < 2 or n & (n - 1):
+        ap.error("n must be a power of two greater than one")
     headroom = 45 * n**2 - 40 * n
 
     keys, cnts = build_n3(n)
