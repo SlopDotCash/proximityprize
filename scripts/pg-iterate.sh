@@ -14,9 +14,18 @@
 # substrate once with `lake build <SubstrateModule>` (or `lake exe cache get` for mathlib),
 # then iterate with this script. Keep frontier imports MINIMAL — import only the specific
 # substrate modules you consume, never the whole ProximityGap cone (cuts olean-load time).
+#
+# WHAT ✅ MEANS: the file compiles, the reported axiom set of every `#print axioms` line is
+# inside {propext, Classical.choice, Quot.sound} plus the documented residuals of
+# `scripts/residual_axioms.txt`, and CI gate 1 (`scripts/forbidden_tokens.py`) accepts the
+# file. `requiredTests` records this script as the narrow check for prize work, so a ✅ here
+# must not certify a file that `./scripts/validate.sh` rejects.
 set -euo pipefail
 QUIET=0; [[ "${1:-}" == "-q" ]] && { QUIET=1; shift; }
 F="${1:?usage: pg-iterate.sh [-q] <file.lean>}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+RESIDUAL_ALLOWLIST="$REPO_ROOT/scripts/residual_axioms.txt"
 START=$(date +%s)
 OUT="$(lake env lean "$F" 2>&1)" && RC=0 || RC=$?
 ELAPSED=$(( $(date +%s) - START ))
@@ -28,10 +37,60 @@ ERRS="$(echo "$OUT" | grep -E 'error|sorry' | grep -viE 'depends on axioms' || t
 if [[ -n "$ERRS" ]]; then
   echo "❌ FAIL (${ELAPSED}s):"; echo "$ERRS" | head -30; exit 1
 fi
-# axiom audit (only clean if no sorryAx)
-if echo "$OUT" | grep -q "sorryAx"; then
-  echo "⚠️  compiles but has sorryAx (not axiom-clean):"; echo "$OUT" | grep -A3 sorryAx | head; exit 2
+
+# CI gate 1 parity. `lake env lean` reports nothing for `axiom`, `native_decide`,
+# `bv_decide`, `unsafe`, `@[implemented_by]` or a metaprogram `addDecl`, so the type-check
+# above cannot see them; a green ✅ from this script is the narrow evidence `requiredTests`
+# asks for, so the whole gate runs here on the same file.
+PYTHON_BIN="$(command -v python3 || command -v python || true)"
+if [[ -z "$PYTHON_BIN" ]]; then
+  echo "❌ FAIL: python3 is required to run CI gate 1 (forbidden_tokens.py) on the file;" >&2
+  echo "   without it this narrow check cannot certify axiom cleanliness. Run" >&2
+  echo "   ./scripts/validate.sh, or install Python 3 with a CA trust store." >&2
+  exit 1
 fi
+if ! GATE1="$("$PYTHON_BIN" "$REPO_ROOT/scripts/forbidden_tokens.py" "$F" 2>&1)"; then
+  echo "❌ FAIL (${ELAPSED}s) — CI gate 1 (forbidden_tokens) rejects $F:"
+  printf '%s\n' "$GATE1" | grep -v '^[[:space:]]*$' | head -20
+  exit 1
+fi
+
+# Axiom audit. `#print axioms` output is the only place a real dependency set appears, and
+# `native_decide` reports a generated name (e.g. `foo._native.native_decide.ax_1_1`), not
+# `sorryAx`, so checking for `sorryAx` alone never audits anything.
+ALLOWED_AXIOMS=$'propext\nClassical.choice\nQuot.sound'
+axiom_allowed() {
+  # Mirrors `is_allowlisted` in forbidden_tokens.py: a documented residual is
+  # matched by its simple name too, so a namespaced declaration still traces to
+  # its one allowlist entry.
+  local name="$1" simple="${1##*.}"
+  grep -qxF -- "$name" <<<"$ALLOWED_AXIOMS" && return 0
+  [[ -f "$RESIDUAL_ALLOWLIST" ]] || return 1
+  sed -e 's/#.*//' "$RESIDUAL_ALLOWLIST" | awk 'NF {print $1}' \
+    | grep -qxF -e "$name" -e "$simple"
+}
+REPORTED_AXIOMS="$(printf '%s\n' "$OUT" \
+  | sed -n 's/.*depends on axioms: \[\([^]]*\)\].*/\1/p' \
+  | tr ',' '\n' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | grep -v '^$' | sort -u || true)"
+UNAPPROVED=""
+if [[ -n "$REPORTED_AXIOMS" ]]; then
+  while IFS= read -r AX; do
+    [[ -z "$AX" ]] && continue
+    axiom_allowed "$AX" || UNAPPROVED+="${AX}"$'\n'
+  done <<<"$REPORTED_AXIOMS"
+fi
+if [[ -n "$UNAPPROVED" ]]; then
+  echo "❌ FAIL (${ELAPSED}s) — compiles but is not axiom-clean; unapproved axiom(s):"
+  printf '%s' "$UNAPPROVED" | sed 's/^/   /'
+  if grep -qF 'sorryAx' <<<"$UNAPPROVED"; then
+    echo "   (sorryAx: a declaration in this file still has a live hole)"
+  fi
+  echo "   allowed: {propext, Classical.choice, Quot.sound} plus the documented"
+  echo "   residuals in scripts/residual_axioms.txt; a new residual must be stated as"
+  echo "   an explicit axiom and documented there, not laundered."
+  exit 2
+fi
+
 if [[ $QUIET -eq 0 ]]; then
   printf '%s\n' "$OUT" | grep "depends on axioms" | sed -n '1,10p' || true
 fi
