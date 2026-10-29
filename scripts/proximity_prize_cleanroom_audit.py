@@ -10,6 +10,8 @@ listed in scripts/proximity_prize_cleanroom_targets.txt, runs `#check` and
     {propext, Classical.choice, Quot.sound},
   * the signature contains residual-style hypotheses before the final
     conclusion, or
+  * the result mentions only a namesake of the configured predicate in another
+    namespace, or
   * the expected conclusion token occurs only in a binder or arrow premise
     (including one nested inside the result type), or
   * the final conclusion token appears earlier in the signature, which catches
@@ -85,6 +87,7 @@ def build_probe(entries: list[Entry]) -> str:
         [
             "set_option pp.universes false",
             "set_option pp.all false",
+            "set_option pp.fullNames true",
             "",
         ]
     )
@@ -281,8 +284,12 @@ def in_conclusion_position(live: str, position: int) -> bool:
 
 
 def token_pattern(token: str) -> re.Pattern[str]:
-    """Match a conclusion identifier without accepting a longer lookalike."""
-    return re.compile(rf"(?<![\w']){re.escape(token)}(?![\w'])")
+    """Match a whole Lean name, including its namespace components.
+
+    The probe prints full names and the manifest pins the intended constants.
+    A dot is part of a name: neither `Other.P` nor `P.Other` certifies `P`.
+    """
+    return re.compile(rf"(?<![\w'.]){re.escape(token)}(?![\w'.])")
 
 
 def check_signature(entry: Entry, output: str) -> list[str]:

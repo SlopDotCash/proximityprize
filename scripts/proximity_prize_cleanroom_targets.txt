@@ -7,15 +7,16 @@
 #   active   checked by scripts/proximity_prize_cleanroom_audit.py
 #   pending  documented future target; skipped until the declaration exists
 #
-# The conclusion token is the final predicate expected at the end of the declaration
-# signature. The audit rejects that token if it appears in hypotheses before the
+# The conclusion token is the fully qualified Lean name of the final predicate.
+# The probe enables pp.fullNames; a same-named predicate in another namespace
+# does not satisfy this field. The audit rejects the token in hypotheses before the
 # final conclusion, which catches goal-equivalent assumptions such as
 # `(h : mcaPrize domain) -> mcaPrize domain`.
 
 # Smoke tests for the current resolution-to-challenge adapters.
-active Research.ProximityPrize.GrandChallenges ProximityGap.GrandChallenges.grandMCAChallenge_of_resolution grandMCAChallenge
-active Research.ProximityPrize.GrandChallenges ProximityGap.GrandChallenges.grandListDecodingChallenge_of_resolution grandListDecodingChallenge
+active Research.ProximityPrize.GrandChallenges ProximityGap.GrandChallenges.grandMCAChallenge_of_resolution ProximityGap.grandMCAChallenge
+active Research.ProximityPrize.GrandChallenges ProximityGap.GrandChallenges.grandListDecodingChallenge_of_resolution ProximityGap.grandListDecodingChallenge
 
 # Prize-apex producers retained in the canonical Research resolution module.
-active Research.ProximityPrize.Resolution ProximityGap.prizeResolution_mca_M521 mcaPrize
-active Research.ProximityPrize.Resolution ProximityGap.prizeResolution_ld listDecodingPrize
+active Research.ProximityPrize.Resolution ProximityGap.prizeResolution_mca_M521 ProximityGap.GrandChallenges.mcaPrize
+active Research.ProximityPrize.Resolution ProximityGap.prizeResolution_ld ProximityGap.GrandChallenges.listDecodingPrize

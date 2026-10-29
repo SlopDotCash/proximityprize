@@ -60,7 +60,7 @@ class ConclusionBoundaryTests(unittest.TestCase):
 
     def test_longer_identifier_is_not_the_expected_predicate(self):
         self.assertTrue(audit.check_signature(entry(), output(": mcaPrizePlaceholder")))
-        self.assertEqual(audit.check_signature(entry(), output(": Namespace.mcaPrize 0")), [])
+        self.assertTrue(audit.check_signature(entry(), output(": Namespace.mcaPrize 0")))
 
     def test_multiline_printed_signature(self):
         self.assertTrue(audit.check_signature(entry(), output("(n : Nat)\n  (h : mcaPrize n) :\n  True")))
@@ -95,7 +95,7 @@ class ConclusionBoundaryTests(unittest.TestCase):
     def test_nested_conclusion_positions_are_accepted(self):
         for result in ("True ∧ (Nat → mcaPrize 0)", "True ∧ ∀ (n : Nat), mcaPrize n",
                        "(mcaPrize 1 → True) ∧ mcaPrize 0", "∃ n : Nat, mcaPrize n",
-                       "¬ Namespace.mcaPrize d m ∧ (∀ k ≤ n, (A k ↔ B k)) ∧ IsEmpty X",
+                       "¬ mcaPrize d m ∧ (∀ k ≤ n, (A k ↔ B k)) ∧ IsEmpty X",
                        "mcaPrize (fun x : Nat => x) ∧ ∀ (j : Fin 4), Nonempty (R j)"):
             with self.subTest(result=result):
                 self.assertEqual(audit.check_signature(entry(), output(": " + result)), [])
