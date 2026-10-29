@@ -13,6 +13,19 @@ exec(compile(ast.Module(body=[node], type_ignores=[]), str(source), 'exec'), nam
 
 
 class CertificateShape(unittest.TestCase):
+    def test_optimized_verifier_rejects_shapes_and_pair_law_violations(self):
+        for optimization in (0, 2):
+            namespace = {'itertools': itertools}
+            exec(compile(ast.Module(body=[node], type_ignores=[]), str(source),
+                         'exec', optimize=optimization), namespace)
+            valid = ([0, 1, 2], [0, 1, 2])
+            for invalid in ([([], [])], [valid, valid],
+                            [valid, ([0, 1, 2], [0, 1, 3])]):
+                with self.subTest(optimization=optimization, invalid=invalid), \
+                        contextlib.redirect_stdout(io.StringIO()), \
+                        self.assertRaises(AssertionError):
+                    namespace['verify'](invalid)
+
     def test_regular_signature_and_invalid_shapes(self):
         valid = ([0, 1, 2], [0, 1, 2])
         with contextlib.redirect_stdout(io.StringIO()):
