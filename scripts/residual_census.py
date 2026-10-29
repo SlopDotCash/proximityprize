@@ -22,7 +22,7 @@ each as:
                NOT count as a discharge (a conditional reduction is not a
                proof).  A result that is an equivalence (`R ↔ Q`), whose first
                top-level connective after the head is `→`, `∨` or `=`, or that
-               fixes a named argument to a numeral (`R (k := 0)`) is likewise
+               fixes an argument to a numeral (`R 0` or `R (k := 0)`) is likewise
                recorded but does not discharge.  When several census residuals
                share a last name across namespaces, a provider is narrowed via its qualified result head
                or namespace affinity; if it stays ambiguous it is recorded but
@@ -422,7 +422,7 @@ NUMERAL_RE = re.compile(r"^(?:\d+|0x[0-9a-fA-F]+|∅|\[\])$")
 
 
 def specialised_arguments(result: str, rname: str) -> list[str]:
-    """Named arguments of the residual head fixed to a literal, e.g. `(k := 0)`.
+    """Residual-head arguments fixed to literals, named or positional.
 
     A provider that fixes a parameter of the residual to a numeral (or `∅`)
     proves one instance, not the residual: `Foo (k := 0)` is typically vacuous.
@@ -433,24 +433,47 @@ def specialised_arguments(result: str, rname: str) -> list[str]:
         return []
     rest = s[m.end():]
     out: list[str] = []
+    arguments: list[str] = []
     depth = 0
     start = None
     for i, c in enumerate(rest):
         if c in OPEN_BRACKETS:
             if depth == 0:
+                if start is not None:
+                    arguments.append(rest[start:i])
                 start = i
             depth += 1
         elif c in CLOSE_BRACKETS:
             depth = max(0, depth - 1)
             if depth == 0 and start is not None:
-                group = rest[start + 1 : i]
-                nm = re.match(r"\s*([^\s:()]+)\s*:=\s*(.+?)\s*$", group, re.S)
-                if nm and NUMERAL_RE.match(nm.group(2).strip()):
-                    out.append(f"{nm.group(1)} := {nm.group(2).strip()}")
+                arguments.append(rest[start:i + 1])
                 start = None
-        elif depth == 0 and not c.isspace() and c not in "@":
-            if not (c.isalnum() or c in "_'.⁻"):
-                break
+        elif depth == 0:
+            if c.isspace() or c in "∧∨→↔=":
+                if start is not None:
+                    arguments.append(rest[start:i])
+                    start = None
+                if not c.isspace():
+                    break
+            elif start is None:
+                start = i
+    else:
+        if start is not None and depth == 0:
+            arguments.append(rest[start:])
+
+    for argument in arguments:
+        label = "positional"
+        value = argument.strip()
+        if value.startswith("(") and value.endswith(")"):
+            named = re.fullmatch(r"\(\s*([^\s:()]+)\s*:=\s*(.+?)\s*\)", value, re.S)
+            if named:
+                label, value = named.group(1), named.group(2).strip()
+        while value.startswith("(") and value.endswith(")"):
+            # A nonliteral expression retains its operators/delimiters and
+            # still fails the full literal match after surrounding pairs peel.
+            value = value[1:-1].strip()
+        if NUMERAL_RE.fullmatch(value):
+            out.append(f"{label} := {value}")
     return out
 
 
