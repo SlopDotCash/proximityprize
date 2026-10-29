@@ -4,12 +4,16 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
-import ArkLib.Data.MvPolynomial.Multilinear
-import ArkLib.OracleReduction.Basic
-import ArkLib.OracleReduction.Security.RoundByRound
+import ArkLib.ProofSystem.RingSwitching.Packing.Algebra
+import ArkLib.ProofSystem.RingSwitching.Packing.Prelude
+import ArkLib.ProofSystem.RingSwitching.Packing.Profile
+import ArkLib.ProofSystem.RingSwitching.Packing.ProfileCoordinates
+import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
+import ProximityPrize.Extensions.OracleReduction.Basic
+import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
 import CompPoly.Fields.Binary.Tower.TensorAlgebra
 import ArkLib.ProofSystem.RingSwitching.Profile
-import ArkLib.ProofSystem.Sumcheck.Structured
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Structured
 import ArkLib.ToMathlib.PolynomialCombinatorialAuxiliary
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Matrix.Basic
@@ -29,7 +33,6 @@ between small field K and large field L, including embeddings `φ₀ : L → L �
 3. **Security Definitions**: Relations & Kstate for security analysis
 -/
 
-set_option linter.style.longFile 2100
 
 noncomputable section
 
@@ -57,143 +60,7 @@ Additional tensor algebra operations for the enhanced protocol specification.
 Based on the tensor algebra theory from Section 2.1.
 -/
 
-/-- Tensor Algebra A = L ⊗_K L. Based on the spec,
-it's viewed as (2^κ)x(2^κ) arrays of K-elements.
-The imported TensorAlgebra file provides the leftAlgebra instances. -/
-abbrev TensorAlgebra (K L : Type*) [CommRing K] [CommRing L] [Algebra K L] := L ⊗[K] L
-
-/--
-Column embedding φ₀: L → A as a ring homomorphism.
-φ₀(α) = α ⊗ 1, operates on columns.
--/
-def φ₀ (L K : Type*) [CommRing K] [CommRing L] [Algebra K L] : L →+* TensorAlgebra K L where
-  toFun α := α ⊗ₜ[K] (1 : L)
-  map_one' := rfl
-  map_mul' α β := by simp only [Algebra.TensorProduct.tmul_mul_tmul, mul_one]
-  map_zero' := by simp only [zero_tmul]
-  map_add' α β := by simp only [add_tmul]
-
-/--
-Row embedding φ₁: L → A as a ring homomorphism.
-φ₁(α) = 1 ⊗ α, operates on rows.
--/
-def φ₁ (L K : Type*) [CommRing K] [CommRing L] [Algebra K L] : L →+* TensorAlgebra K L where
-  toFun α := (1 : L) ⊗ₜ[K] α
-  map_one' := by rfl
-  map_mul' α β := by
-    simp only [Algebra.TensorProduct.tmul_mul_tmul, mul_one]
-  map_zero' := by simp only [tmul_zero]
-  map_add' α β := by simp only [tmul_add]
-
 open Module
-/-- Decompose `ŝ` into row components `(ŝ =: Σ_{u ∈ {0,1}^κ} β_u ⊗ ŝ_u)`.
-This views `L ⊗ L` as a module over `L` (left action)
-and finds the coordinates of `ŝ` with respect to the basis lifted from `β`. -/
-def decompose_tensor_algebra_rows {σ : Type*} (β : Basis σ K L)
-    (s_hat : TensorAlgebra K L) : σ → L :=
-  fun u =>
-    (β.baseChange L).repr s_hat u
-
-/-- Decompose `ŝ` into column components `(ŝ =: Σ_{v ∈ {0,1}^κ} ŝ_v ⊗ β_v)`.
-This views `L ⊗ L` as a module over `L` (right action)
-and finds the coordinates of `ŝ` with respect to the basis lifted from `β`. -/
-def decompose_tensor_algebra_columns {σ : Type*} (β : Basis σ K L) (s_hat : L ⊗[K] L) : σ → L :=
-  fun v => by
-    let b := Basis.baseChangeRight (b:=β) (Right:=L)
-    letI rightAlgebra : Algebra L (L ⊗[K] L) := by
-      exact Algebra.TensorProduct.rightAlgebra
-    letI rightModule : Module L (L ⊗[K] L) := rightAlgebra.toModule
-    exact b.repr s_hat v
-/--
-**Definition 2.1 (MLE packing)**.
-Packs a small-field multilinear `t` into a large-field multilinear `t'` by
-reinterpreting chunks of `2^κ` coefficients as single `L`-elements.
-For each `w ∈ {0,1}^ℓ'`, the evaluation `t'(w)` is defined as:
-`t'(w) := ∑_{v ∈ {0,1}^κ} t(v₀, ..., v_{κ-1}, w₀, ..., w_{ℓ'-1}) ⋅ β_v`
--/
-def packMLE (β : Basis (Fin κ → Fin 2) K L) (t : MultilinearPoly K ℓ) :
-    MultilinearPoly L ℓ' :=
-  -- 1. Define the function that gives the evaluations of t' on the boolean hypercube.
-  let packing_func (w : Fin ℓ' → Fin 2) : L :=
-    -- a. Define a function that computes the K-coefficients for a given `w`.
-    let coeffs_for_w (v : Fin κ → Fin 2) : K :=
-      -- Construct the full evaluation point `(v, w)` of length `ℓ`.
-      let concatenated_point (i : Fin ℓ) : Fin 2 :=
-        if h : i.val < κ then
-          v ⟨i.val, h⟩
-        else
-          w ⟨i.val - κ, by omega⟩
-      -- Evaluate the small-field polynomial `t` at this point.
-      MvPolynomial.eval (fun i => ↑(concatenated_point i)) t.val
-
-    -- b. Use `equivFun.symm` = ∑ v, (coeffs_for_w v) • (β v).
-    β.equivFun.symm coeffs_for_w
-
-  -- 2. The packed polynomial `t'` is the multilinear extension of this function.
-  ⟨MvPolynomial.MLE packing_func, MLE_mem_restrictDegree packing_func⟩
-
-/--
-**Unpacking a Packed Multilinear Polynomial**.
-Reverses the packing defined in `packMLE`. It reconstructs the small-field
-multilinear `t` from the large-field multilinear `t'`.
-
-The evaluation of `t` at a point `(v, w)` is recovered by taking the evaluation
-of `t'` at `w`, which is an element of `L`, and finding its `v`-th coordinate
-with respect to the basis `β`.
--/
-def unpackMLE (β : Basis (Fin κ → Fin 2) K L) (t' : MultilinearPoly L ℓ') :
-    MultilinearPoly K ℓ :=
-  -- 1. Define the function that gives the evaluations of the original small-field polynomial `t`.
-  let unpacked_evals (p : Fin ℓ → Fin 2) : K :=
-    -- a. Deconstruct the evaluation point `p` into `v` (first κ bits) and `w` (last ℓ' bits).
-    let v (i : Fin κ) : Fin 2 := p ⟨i.val, by omega⟩
-    let w (i : Fin ℓ') : Fin 2 := p ⟨i.val + κ, by { rw [h_l]; omega }⟩
-
-    -- b. Evaluate the large-field polynomial `t'` at the point `w`.
-    let t'_eval_at_w : L := MvPolynomial.eval (fun i => ↑(w i)) t'.val
-
-    -- c. Get the K-coefficients of this L-element with respect to the basis `β`.
-    -- `β.repr/β.equivFun` maps an element of L to its coordinate function `(Fin κ → Fin 2) → K`.
-    let coeffs : (Fin κ → Fin 2) → K := β.repr t'_eval_at_w
-    -- d. The desired evaluation t(p) = t(v,w)
-      -- is the coefficient corresponding to the basis vector `β_v`.
-    coeffs v
-
-  -- 2. The unpacked polynomial `t` is the multilinear extension of this evaluation function.
-  ⟨MvPolynomial.MLE unpacked_evals, MLE_mem_restrictDegree unpacked_evals⟩
-
-/--
-**Component-wise `φ₁` embedding**.
-Takes a polynomial `t'` with coefficients in `L` and embeds it into a polynomial
-with coefficients in the tensor algebra `A` by applying `φ₁` to each coefficient.
-This is achieved by using `MvPolynomial.map`.
--/
-def componentWise_embed_MLE {A' : Type} [CommRing A'] (φ : L →+* A')
-    (t' : MultilinearPoly L ℓ') : MultilinearPoly A' ℓ' :=
-  ⟨MvPolynomial.map (R:=L) (S₁ := A') (f:=φ) (t'.val), by
-    rw [MvPolynomial.mem_restrictDegree_iff_degreeOf_le]
-    intro i -- for any specific variable Xᵢ,
-      -- we prove its max individual degree is at most 1 in ANY monomial terms
-    calc
-      MvPolynomial.degreeOf i (MvPolynomial.map φ t'.val)
-      _ ≤ MvPolynomial.degreeOf i t'.val := by
-        refine degreeOf_le_iff.mpr ?_
-        intro m hm_support_mapped_t' -- consider any specific monomial term
-        have hm_in_support_t' : m ∈ t'.val.support := by
-          apply MvPolynomial.support_map_subset (f:=φ)
-          exact hm_support_mapped_t'
-        exact monomial_le_degreeOf i hm_in_support_t'
-      _ ≤ 1 := by
-        have h_og_t' := t'.property
-        simp only [MvPolynomial.mem_restrictDegree_iff_degreeOf_le] at h_og_t'
-        exact h_og_t' i
-  ⟩
-
-/-- Binius-named alias: component-wise `φ₁` embedding into the tensor algebra `L ⊗[K] L`. -/
-def componentWise_φ₁_embed_MLE (t' : MultilinearPoly L ℓ') :
-    MultilinearPoly (TensorAlgebra K L) ℓ' :=
-  componentWise_embed_MLE L ℓ' (A' := TensorAlgebra K L) (φ₁ L K) t'
-
 end TensorAlgebraOps
 
 section ProtocolTypes
@@ -203,16 +70,6 @@ section ProtocolTypes
 We define the Statement and Witness types at the boundaries of each phase
 following the enhanced specification.
 -/
-
-/-- Initial input (input to the Batching Phase): a polynomial-evaluation claim `s = t(r)`. -/
-structure MLPEvalStatement where
-  /-- The evaluation point `r = (r₀, …, r_{ℓ-1})` — shared input. -/
-  t_eval_point : Fin ℓ → L
-  /-- The claimed evaluation `s = t(r)`. -/
-  original_claim : L
-
-structure WitMLP where
-  t : MultilinearPoly K ℓ
 
 structure BatchingWitIn where
   t : MultilinearPoly K ℓ
@@ -249,39 +106,6 @@ def MLPEvalRelation (ιₛᵢ : Type) (OStmtIn : ιₛᵢ → Type)
   let ⟨⟨stmt, _⟩, wit⟩ := input
   stmt.original_claim = wit.t.val.eval stmt.t_eval_point
 
-structure AbstractOStmtIn where
-  ιₛᵢ : Type
-  OStmtIn : ιₛᵢ → Type
-  Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)
-  -- The abstract initial compatibility relation, which along with
-  -- MLPEvalRelation, forms the initial input relation for the MLIOPCS.
-  initialCompatibility : (MultilinearPoly L ℓ') × (∀ j, OStmtIn j) → Prop
-  /-- The *strict* (completeness-side) initial compatibility relation. Concrete oracle-code
-  instantiations (e.g. Binary Basefold) need **two** compatibility tracks: a relaxed one
-  (unique-decoding-radius closeness) that round-by-round knowledge extraction can actually land
-  in, and a strict one (exact codeword equality) that the honest prover satisfies and that
-  perfect completeness genuinely requires — perfect completeness w.r.t. the *relaxed* input
-  relation is false for such schemes (a δ-close-but-unequal committed oracle is caught by the
-  proximity test with positive probability). Defaults to `initialCompatibility`, so abstract
-  developments and single-track instantiations are unaffected. -/
-  strictInitialCompatibility : (MultilinearPoly L ℓ') × (∀ j, OStmtIn j) → Prop :=
-    initialCompatibility
-
-def AbstractOStmtIn.toRelInput (aOStmtIn : AbstractOStmtIn L ℓ') :
-    Set (((MLPEvalStatement L ℓ') × (∀ j, aOStmtIn.OStmtIn j)) × (WitMLP L ℓ')) :=
-  {input |
-    MLPEvalRelation L ℓ' aOStmtIn.ιₛᵢ aOStmtIn.OStmtIn input
-    ∧ aOStmtIn.initialCompatibility ⟨input.2.t, input.1.2⟩}
-
-/-- Strict-track input relation: `MLPEvalRelation` plus the strict initial compatibility.
-This is the input relation against which the abstract opening's *perfect completeness* is
-stated (the relaxed `toRelInput` remains the knowledge-soundness relation). -/
-def AbstractOStmtIn.toStrictRelInput (aOStmtIn : AbstractOStmtIn L ℓ') :
-    Set (((MLPEvalStatement L ℓ') × (∀ j, aOStmtIn.OStmtIn j)) × (WitMLP L ℓ')) :=
-  {input |
-    MLPEvalRelation L ℓ' aOStmtIn.ιₛᵢ aOStmtIn.OStmtIn input
-    ∧ aOStmtIn.strictInitialCompatibility ⟨input.2.t, input.1.2⟩}
-
 /-- The strict variant of an `AbstractOStmtIn`: same oracle data, with the strict
 compatibility installed as the (single-track) compatibility. Instantiating the generic
 ring-switching phase relations/bricks at `aOStmtIn.strictVariant` yields the strict-track
@@ -289,61 +113,17 @@ ring-switching phase relations/bricks at `aOStmtIn.strictVariant` yields the str
 of `aOStmtIn`. -/
 @[reducible]
 def AbstractOStmtIn.strictVariant (aOStmtIn : AbstractOStmtIn L ℓ') : AbstractOStmtIn L ℓ' :=
-  { aOStmtIn with initialCompatibility := aOStmtIn.strictInitialCompatibility }
+  aOStmtIn.strictView
 
 omit [Fintype L] [DecidableEq L] [NeZero ℓ'] in
 @[simp]
 lemma AbstractOStmtIn.strictVariant_toRelInput (aOStmtIn : AbstractOStmtIn L ℓ') :
     aOStmtIn.strictVariant.toRelInput = aOStmtIn.toStrictRelInput := rfl
 
-structure MLIOPCS extends (AbstractOStmtIn L ℓ') where
-  /-- Protocol specification -/
-  numRounds : ℕ
-  pSpec : ProtocolSpec numRounds
-  Oₘ: ∀ j, OracleInterface (pSpec.Message j)
-  O_challenges: ∀ (i : pSpec.ChallengeIdx), SampleableType (pSpec.Challenge i)
-  -- /-- The evaluation protocol Π' as an OracleReduction -/
-  oracleReduction : OracleReduction (oSpec:=[]ₒ)
-    (StmtIn := MLPEvalStatement L ℓ') (OStmtIn:= OStmtIn)
-    (StmtOut := Bool) (OStmtOut := fun _: Empty => Unit)
-    (WitIn := WitMLP L ℓ') (WitOut := Unit)
-    (pSpec := pSpec)
-  -- Security properties
-  /-- Perfect completeness of the opening, w.r.t. the **strict** input relation and under
-  `NeverFail init`. Both deviations from the former field are forced by instantiability:
-  without the `NeverFail` guard the statement is false for any failing `init` (the failure
-  mass caps the acceptance probability below 1), and w.r.t. the relaxed `toRelInput` it is
-  false for code-based openings (a δ-close-but-unequal committed oracle is rejected with
-  positive probability by the proximity test). -/
-  perfectCompleteness : ∀ {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ ProbComp)},
-    NeverFail init →
-    OracleReduction.perfectCompleteness (oSpec:=[]ₒ)
-      (StmtIn:=MLPEvalStatement L ℓ') (OStmtIn:=OStmtIn)
-      (StmtOut:=Bool) (OStmtOut:=fun _: Empty => Unit)
-      (WitIn:=WitMLP L ℓ') (WitOut:=Unit) (pSpec:=pSpec) (init:=init) (impl:=impl)
-      (relIn := toAbstractOStmtIn.toStrictRelInput)
-      (relOut := acceptRejectOracleRel)
-      (oracleReduction := oracleReduction)
-  -- RBR knowledge error function for the MLIOPCS
-  rbrKnowledgeError : pSpec.ChallengeIdx → ℝ≥0
-  -- RBR knowledge soundness property
-  rbrKnowledgeSoundness : ∀ {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ ProbComp)
-  },
-    OracleVerifier.rbrKnowledgeSoundness
-      (verifier := oracleReduction.verifier)
-      (init := init)
-      (impl := impl)
-      (relIn := toAbstractOStmtIn.toRelInput)
-      (relOut := acceptRejectOracleRel)
-      (rbrKnowledgeError := rbrKnowledgeError)
-
 end MLIOPCS
 
 section OStmt
 variable (aOStmtIn : AbstractOStmtIn L ℓ')
-
-instance instOstmtMLIOPCS : ∀ (i : aOStmtIn.ιₛᵢ), OracleInterface (aOStmtIn.OStmtIn i) :=
-  fun i => aOStmtIn.Oₛᵢ i
 
 end OStmt
 
@@ -365,66 +145,6 @@ variable (P : RingSwitchingProfile K L κ)
 variable (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero ℓ']
 variable (h_l : ℓ = ℓ' + κ)
 
-/-- Compute the tensor value ŝ := φ₁(t')(φ₀(r_κ), ..., φ₀(r_{ℓ-1})) -/
-def embedded_MLP_eval (t' : MultilinearPoly L ℓ') (r : Fin ℓ → L) :
-    P.A :=
-  -- This implements the identity:
-  -- ŝ = Σ_{w ∈ {0,1}^ℓ'} eq̃(r_suffix, w) ⊗ t'(w)
-  let r_suffix : Fin ℓ' → L :=
-    fun i => r ⟨i.val + κ, by { rw [h_l]; omega }⟩
-  let φ₁_mapped_t': MultilinearPoly P.A ℓ' := componentWise_embed_MLE L ℓ' P.φ₁ t'
-  let φ₀_mapped_r: Fin ℓ' → P.A := fun i => P.φ₀ (r_suffix i)
-  φ₁_mapped_t'.val.eval φ₀_mapped_r
-
-/-- Step 2 (V): Check 1: s ?= Σ_{v ∈ {0,1}^κ} eqTilde(v, r_{0..κ-1}) ⋅ ŝ_v.
-
-Note (soundness fix): the decomposition here must read the **row** components of `ŝ`
-(`P.decomposeRows`), which carry the `φ₁`/`t'` tensor factor: by
-`decompose_rows_packMLE`, `(rows ŝ)_u = Σ_w t(u,w)·eq̃(w, r_suffix)`, so the
-`eq̃(·, r_prefix)`-weighted sum reconstructs `t(r)`. The previous version used
-the column decomposition, which extracts the `φ₀`/`eq` factor instead
-(`(columns (a ⊗ b))_v = β.repr a v • b`); with it the check does **not** imply
-`s = t(r)` (failing term at `κ = 1`, `t(0,w) = 1`, `t(1,w) = 0`). -/
-def performCheckOriginalEvaluation (s : L) (r : Fin ℓ → L) (s_hat : P.A) : Bool :=
-  let r_prefix : Fin κ → L := fun i => r ⟨i.val, by omega⟩
-  let check_sum := Finset.sum Finset.univ fun (v : Fin κ → Fin 2) =>
-    let v_as_L : Fin κ → L := fun i => if (v i == 1) then 1 else 0
-    (eqTilde v_as_L r_prefix) * (P.decomposeRows s_hat v)
-  decide (s = check_sum)
-
-/-- Step 4a: For each `w ∈ {0,1}^{ℓ'}`, P decompose `eq̃(r_κ, ..., r_{ℓ-1}, w_0, ..., w_{ℓ'-1})`
-`=: Σ_{u ∈ {0,1}^κ} A_{w, u} ⋅ β_u`.
-P define the function
-`A: w ↦ Σ_{u ∈ {0,1}^κ} eq̃(u_0, ..., u_{κ-1}, r''_0, ..., r''_{κ-1}) ⋅ A_{w, u}`
-on `{0,1}^{ℓ'}`.
--/
-def compute_A_func (original_r_eval_suffix : Fin ℓ' → L)
-    (r''_batching : Fin κ → L) : ((Fin (ℓ') → (Fin 2)) → L) :=
-  fun w =>
-    -- Decompose eq̃(r_suffix, w) into K-basis coefficients A_{w,u}
-    let w_as_L : Fin ℓ' → L := fun i => if w i == 1 then 1 else 0
-    -- `eq̃(r_κ, ..., r_{ℓ-1}, w_0, ..., w_{ℓ'-1})`
-    let eq_w: L := eqTilde original_r_eval_suffix w_as_L
-    let coords_A_w_u: (Fin κ → Fin 2) →₀ K := P.basis.repr eq_w
-    -- Compute A(w) = Σ_{u ∈ {0,1}^κ} eq̃(u, r'') ⋅ A_{w,u}
-    Finset.sum Finset.univ fun (u : Fin κ → Fin 2) =>
-      let A_w_u : K := coords_A_w_u u
-      let u_as_L : Fin κ → L := fun i => if u i == 1 then 1 else 0
-      -- `eq̃(u_0, ..., u_{κ-1}, r''_0, ..., r''_{κ-1}) ⋅ A_{w, u}`
-      let eq_u_r_batching : L := eqTilde u_as_L r''_batching
-      A_w_u • eq_u_r_batching
-
-/-- Step 4b: P writes `A(X_0, ..., X_{ℓ'-1})` for its multilinear extension of `A_func`. -/
-def compute_A_MLE
-    (original_r_eval_suffix : Fin ℓ' → L) (r''_batching : Fin κ → L) :
-  MultilinearPoly L ℓ' :=
-  let A_func := compute_A_func κ L K P ℓ' original_r_eval_suffix r''_batching
-  let A_MLE: MultilinearPoly L ℓ' := ⟨MvPolynomial.MLE A_func, MLE_mem_restrictDegree A_func⟩
-  A_MLE
-
-def getEvaluationPointSuffix (r : Fin ℓ → L) : Fin ℓ' → L :=
-  fun i => r ⟨i.val + κ, by { rw [h_l]; omega }⟩
-
 /-- Ring-Switching multiplier parameter for sumcheck, using `A_MLE` as the multiplier. -/
 def RingSwitching_SumcheckMultParam :
     SumcheckMultiplierParam L ℓ' (RingSwitchingBaseContext κ L K ℓ P) :=
@@ -437,55 +157,6 @@ def RingSwitching_SumcheckMultParam :
   degCombinator := 1
   combinator_natDegree_le := by intro _; exact Polynomial.natDegree_X_le
 }
-
-/-- Step 5 (V): Compute the round-0 batched sumcheck target
-`s₀ := Σ_{u ∈ {0,1}^κ} eqTilde(u, r'') ⋅ ŝ_u`, where `ŝ_u` is the **column** components of `ŝ`.
-
-Orientation (completeness fix, the dual of the `performCheckOriginalEvaluation` defect #8 /
-`compute_final_eq_value` defect #10): `s₀` is the target the batched sumcheck proves, i.e. it
-must equal `Σ_x A(x)·t'(x)` where `A = compute_A_MLE` is the verifier's (witness-independent)
-sumcheck multiplier. Since `A_func(w) = Σ_u β.repr(eq̃(suffix, w))_u • eq̃(u, r'')` carries the
-`β.repr` on the *eq*-factor, the matching extraction of `ŝ = Σ_w eq̃(w, suffix) ⊗ t'(w)` is the
-**column** one (`decomposeColumns (φ₀ a · φ₁ b) = β.repr a • b`, extracting the `φ₀`/`eq` factor):
-`Σ_u eq̃(u, r'') · (columns ŝ)_u = Σ_x A_func(x)·t'(x)` exactly (`compute_s0_eq_sum_A_func`).
-The *row* orientation (extracting the `φ₁`/`t'` factor) gives the transposed bilinear pairing
-`AᵀB` vs `BᵀA`, which is *not* symmetric, so completeness fails for rows — and re-orienting `A`
-cannot fix it, since `A_func` is witness-independent and the row form puts `β.repr` on the
-witness `t'(w)`. The downstream batching soundness (`batchingMismatchPoly`, faithful via
-`decomposeColumns_spec`) is orientation-agnostic and uses the same column decomposition. -/
-def compute_s0 (s_hat : P.A) (r''_batching : Fin κ → L) : L :=
-  Finset.sum Finset.univ fun (u : Fin κ → Fin 2) =>
-    let u_as_L : Fin κ → L := fun i => if (u i == 1) then 1 else 0
-    (eqTilde u_as_L r''_batching)
-      * (P.decomposeColumns s_hat u)
-
-/-- Compute the tensor `e := eq̃(φ₀(r_κ), ..., φ₀(r_{ℓ-1}), φ₁(r'_0), ..., φ₁(r'_{ℓ'-1}))` -/
-def compute_final_eq_tensor (r : Fin ℓ → L) (r' : Fin ℓ' → L) : P.A :=
-  let φ₀_mapped_r_suffix : Fin ℓ' → P.A := fun i =>
-    P.φ₀ (r ⟨i.val + κ, by { rw [h_l]; omega }⟩)
-  let φ₁_mapped_r': Fin ℓ' → P.A := fun i => P.φ₁ (r' i)
-  eqTilde φ₀_mapped_r_suffix φ₁_mapped_r'
-
-/-- Decompose the final eq tensor `e := Σ_{u ∈ {0,1}^κ} eq̃(u, r'') ⨂ e_u`,
-where e_u is the row components of e.
-Then compute `Σ_{u ∈ {0,1}^κ} eq̃(u_0, ..., u_{κ-1}, r''_0, ..., r''_{κ-1}) ⋅ e_u`.
--/
-def compute_final_eq_value (r_eval : Fin ℓ → L)
-    (r'_challenges : Fin ℓ' → L) (r''_batching : Fin κ → L) : L :=
-  let e_tensor := compute_final_eq_tensor κ L K P ℓ ℓ' h_l r_eval r'_challenges
-  -- Soundness fix (defect #10, dual of the #8 performCheck fix): the final eq-value must read
-  -- the COLUMN components of the eq-tensor. Term-by-term derivation (via
-  -- `MLE_eval_eq_sum_eqTilde` + `eqTilde_tensor_expand` + the atomic extraction laws):
-  -- `decomposeColumns (eqTilde(φ₀∘r_suf, φ₁∘ch)) v
-  --   = Σ_w β.repr(eqTilde(w,r_suf)) v • eqTilde(w,ch)`,
-  -- which matches `A_MLE.eval ch` after eqTilde symmetry; the rows form yields the transposed
-  -- bilinear pairing, which is NOT symmetric — the A_MLE identity is false for rows.
-  let e_u : (Fin κ → Fin 2) → L := P.decomposeColumns e_tensor
-  Finset.sum Finset.univ fun (u : Fin κ → Fin 2) =>
-    let u_as_L : Fin κ → L := fun i => if u i == 1 then 1 else 0
-    let eq_u_r_batching : L := -- `eq̃(u_0, ..., u_{κ-1}, r''_0, ..., r''_{κ-1})`
-      eqTilde u_as_L r''_batching
-    eq_u_r_batching * (e_u u)
 
 /-- This condition ensures that the witness polynomial `H` has the
 correct structure `A(...) * t'(...)` -/
@@ -536,57 +207,8 @@ Marked `@[reducible]` so that, once the protocol code is rewired through the pro
 existing `rfl`/instance-driven Binius proofs (and the byte-identical `#print axioms`). -/
 @[reducible] def binaryTowerProfile (κ : ℕ) [NeZero κ] (K L : Type)
     [Field K] [Field L] [Algebra K L] (β : Module.Basis (Fin κ → Fin 2) K L) :
-    RingSwitchingProfile K L κ where
-  basis := β
-  A := TensorAlgebra K L
-  commRingA := inferInstanceAs (CommRing (L ⊗[K] L))
-  algLA := Algebra.TensorProduct.leftAlgebra
-  φ₀ := φ₀ L K
-  φ₁ := φ₁ L K
-  decomposeRows := fun s => decompose_tensor_algebra_rows (L := L) (K := K) (β := β) s
-  decomposeColumns := fun s => decompose_tensor_algebra_columns (L := L) (K := K) (β := β) s
-  decomposeRows_spec := fun z => by
-    conv_lhs => rw [← (β.baseChange L).sum_repr z]
-    refine Finset.sum_congr rfl fun u _ => ?_
-    unfold decompose_tensor_algebra_rows
-    rw [Basis.baseChange_apply, smul_tmul']
-    show _ = (φ₀ L K) _ * (φ₁ L K) _
-    unfold φ₀ φ₁
-    simp [Algebra.TensorProduct.tmul_mul_tmul]
-  decomposeColumns_spec := fun z => by
-    letI rightAlgebra : Algebra L (L ⊗[K] L) := Algebra.TensorProduct.rightAlgebra
-    letI rightModule : Module L (L ⊗[K] L) := rightAlgebra.toModule
-    conv_lhs => rw [← (Basis.baseChangeRight (b := β) (Right := L)).sum_repr z]
-    refine Finset.sum_congr rfl fun v _ => ?_
-    unfold decompose_tensor_algebra_columns
-    rw [Basis.baseChangeRight_apply, Algebra.smul_def]
-    show algebraMap L (L ⊗[K] L) _ * _ = (φ₁ L K) _ * (φ₀ L K) _
-    rw [show (algebraMap L (L ⊗[K] L)) =
-      (Algebra.TensorProduct.includeRight).toRingHom.comp (algebraMap L L) by rfl]
-    unfold φ₀ φ₁
-    simp [Algebra.TensorProduct.tmul_mul_tmul]
-  decomposeRows_add := fun z w u => by
-    unfold decompose_tensor_algebra_rows
-    simp [map_add]
-  decomposeRows_φ₀_mul_φ₁ := fun a b u => by
-    have h : φ₀ L K a * φ₁ L K b = a ⊗ₜ[K] b := by
-      simp only [φ₀, φ₁, RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk,
-        Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]
-    show decompose_tensor_algebra_rows (L := L) (K := K) (β := β) _ u = _
-    rw [h]
-    unfold decompose_tensor_algebra_rows
-    rw [Basis.baseChange_repr_tmul]
-  decomposeColumns_add := fun z w v => by
-    unfold decompose_tensor_algebra_columns
-    simp [map_add]
-  decomposeColumns_φ₀_mul_φ₁ := fun a b v => by
-    have h : φ₀ L K a * φ₁ L K b = a ⊗ₜ[K] b := by
-      simp only [φ₀, φ₁, RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk,
-        Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]
-    show decompose_tensor_algebra_columns (L := L) (K := K) (β := β) _ v = _
-    rw [h]
-    unfold decompose_tensor_algebra_columns
-    simp only [Basis.baseChangeRight_repr_tmul]
+    RingSwitchingProfile K L κ :=
+  tensorProductProfile κ K L β
 
 
 /-! ## Generic row-extraction helpers over an abstract `RingSwitchingProfile`
@@ -604,17 +226,6 @@ open Module
 variable {B L : Type*} {κ : ℕ} [CommRing B] [CommRing L] [Algebra B L]
 variable (P : RingSwitchingProfile B L κ)
 
-/-- Row coordinates of `0` vanish: a profile-level consequence of `decomposeRows_add` (apply it to
-`z = w = 0` and cancel). -/
-lemma RingSwitchingProfile.decomposeRows_zero (u : Fin κ → Fin 2) :
-    P.decomposeRows 0 u = 0 := by
-  have h := P.decomposeRows_add 0 0 u
-  rw [add_zero] at h
-  -- `h : P.decomposeRows 0 u = P.decomposeRows 0 u + P.decomposeRows 0 u`
-  -- cancel `P.decomposeRows 0 u` on the left of `… + 0 = … + …`
-  exact (add_left_cancel (a := P.decomposeRows 0 u)
-    (by rw [add_zero]; exact h)).symm
-
 /-- Row coordinates are additive over finite sums: induction from the binary additivity law
 `decomposeRows_add` (with `decomposeRows_zero` as the base case). -/
 lemma RingSwitchingProfile.decomposeRows_finsetSum {ι : Type*} [DecidableEq ι] (s : Finset ι)
@@ -623,22 +234,8 @@ lemma RingSwitchingProfile.decomposeRows_finsetSum {ι : Type*} [DecidableEq ι]
   induction s using Finset.induction with
   | empty => simp [P.decomposeRows_zero]
   | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, P.decomposeRows_add, ih]
-
-/-- `Fintype` corollary of `decomposeRows_finsetSum` for sums over `univ`. -/
-lemma RingSwitchingProfile.decomposeRows_sum {ι : Type*} [Fintype ι] [DecidableEq ι]
-    (f : ι → P.A) (u : Fin κ → Fin 2) :
-    P.decomposeRows (∑ i, f i) u = ∑ i, P.decomposeRows (f i) u :=
-  P.decomposeRows_finsetSum Finset.univ f u
-
-/-- Column coordinates of `0` vanish: the column dual of `decomposeRows_zero`, from
-`decomposeColumns_add` by cancellation. -/
-lemma RingSwitchingProfile.decomposeColumns_zero (v : Fin κ → Fin 2) :
-    P.decomposeColumns 0 v = 0 := by
-  have h := P.decomposeColumns_add 0 0 v
-  rw [add_zero] at h
-  exact (add_left_cancel (a := P.decomposeColumns 0 v)
-    (by rw [add_zero]; exact h)).symm
+    rw [Finset.sum_insert ha, Finset.sum_insert ha, P.decomposeRows_add]
+    simpa only [Pi.add_apply] using congrArg (fun z => P.decomposeRows (f a) u + z) ih
 
 /-- Column coordinates are additive over finite sums: the column dual of `decomposeRows_finsetSum`,
 by induction from `decomposeColumns_add` (with `decomposeColumns_zero` as base case). -/
@@ -648,13 +245,8 @@ lemma RingSwitchingProfile.decomposeColumns_finsetSum {ι : Type*} [DecidableEq 
   induction s using Finset.induction with
   | empty => simp [P.decomposeColumns_zero]
   | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, P.decomposeColumns_add, ih]
-
-/-- `Fintype` corollary of `decomposeColumns_finsetSum` for sums over `univ`. -/
-lemma RingSwitchingProfile.decomposeColumns_sum {ι : Type*} [Fintype ι] [DecidableEq ι]
-    (f : ι → P.A) (v : Fin κ → Fin 2) :
-    P.decomposeColumns (∑ i, f i) v = ∑ i, P.decomposeColumns (f i) v :=
-  P.decomposeColumns_finsetSum Finset.univ f v
+    rw [Finset.sum_insert ha, Finset.sum_insert ha, P.decomposeColumns_add]
+    simpa only [Pi.add_apply] using congrArg (fun z => P.decomposeColumns (f a) v + z) ih
 
 end GenericRowExtraction
 
@@ -674,14 +266,10 @@ The key facts are:
   `(decompose_rows ŝ)_u = Σ_{w ∈ {0,1}^ℓ'} t(u, w) · eq̃(w, r_suffix)`.
   This is the load-bearing identity for reconstructing `t(r)`.
 
-NOTE (definition mismatch surfaced by this layer): the recovery of `t(r)` from `ŝ`
-weights the components that carry the `t`-evaluations (`decompose_rows`, which represents
-the *right* `φ₁`/`t'` tensor factor). The verifier step `performCheckOriginalEvaluation`
-instead applies `decompose_tensor_algebra_columns`, which represents the *left* `φ₀`/`eq`
-tensor factor (`decompose_columns (a ⊗ b) v = β.repr a v • b`). Hence
-`performCheckOriginalEvaluation … = (original_claim = t(r))` does NOT hold for the
-`columns` decomposition; the true identity requires `decompose_rows`. See the module
-report for the explicit failing term.
+Coordinate convention: upstream's canonical columns recover the packed right factor;
+canonical rows recover the left evaluation-point factor. The historical helper identifiers
+below retain their names, while their types use these authoritative coordinate operations.
+The verifier's canonical column check therefore agrees with polynomial evaluation.
 -/
 section RingSwitchingAlgebra
 open Module
@@ -724,25 +312,25 @@ private lemma eqPoly_collapse {ℓ_suf : ℕ} (g : Fin ℓ_suf → L₀) (w : Fi
   exact singleEq_collapse g w i
 
 omit [Fintype L₀] [DecidableEq L₀] [CharP L₀ 2] [Fintype K₀] [DecidableEq K₀] in
-/-- `decompose_tensor_algebra_rows` is additive over finite sums of tensors. -/
+/-- `decompose_tensor_algebra_columns` is additive over finite sums of tensors. -/
 lemma decompose_rows_sum {ι : Type} [Fintype ι] (β : Basis (Fin κ₀ → Fin 2) K₀ L₀)
     (f : ι → TensorAlgebra K₀ L₀) (u : Fin κ₀ → Fin 2) :
-    decompose_tensor_algebra_rows (L := L₀) (K := K₀) (β := β) (∑ i, f i) u
-      = ∑ i, decompose_tensor_algebra_rows (L := L₀) (K := K₀) (β := β) (f i) u := by
-  unfold decompose_tensor_algebra_rows
+    decompose_tensor_algebra_columns (L := L₀) (K := K₀) (β := β) (∑ i, f i) u
+      = ∑ i, decompose_tensor_algebra_columns (L := L₀) (K := K₀) (β := β) (f i) u := by
+  unfold decompose_tensor_algebra_columns
   rw [map_sum, Finset.sum_apply']
 
 omit [Fintype L₀] [DecidableEq L₀] [CharP L₀ 2] [Fintype K₀] [DecidableEq K₀] in
 /-- Row decomposition of a separated tensor `φ₀(a) · φ₁(b) = a ⊗ b`:
 the `u`-th row component represents the *right* (`φ₁`) factor `b`, scaled by `a`. -/
 lemma decompose_rows_φ₀φ₁ (β : Basis (Fin κ₀ → Fin 2) K₀ L₀) (a b : L₀) (u : Fin κ₀ → Fin 2) :
-    decompose_tensor_algebra_rows (L := L₀) (K := K₀) (β := β) (φ₀ L₀ K₀ a * φ₁ L₀ K₀ b) u
+    decompose_tensor_algebra_columns (L := L₀) (K := K₀) (β := β) (φ₀ L₀ K₀ a * φ₁ L₀ K₀ b) u
       = (β.repr b) u • a := by
   have h : φ₀ L₀ K₀ a * φ₁ L₀ K₀ b = a ⊗ₜ[K₀] b := by
     simp only [φ₀, φ₁, RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk,
       Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]
   rw [h]
-  unfold decompose_tensor_algebra_rows
+  unfold decompose_tensor_algebra_columns
   rw [Basis.baseChange_repr_tmul]
 
 omit [Fintype L₀] [DecidableEq L₀] [CharP L₀ 2] in
@@ -886,7 +474,7 @@ def hypercubeSplitEquiv (ℓ ℓ' : ℕ) (h_l : ℓ = ℓ' + κ₀) :
 
 The lemmas above are stated for the concrete `binaryTowerProfile`; here we lift them to an abstract
 `P : RingSwitchingProfile K₀ L₀ κ₀`, using only the structure's embeddings (`P.φ₀`, `P.φ₁`), basis
-(`P.basis`), row decomposition (`P.decomposeRows`), and its extraction laws (`decomposeRows_add` /
+(`P.basis`), row decomposition (`P.decomposeColumns`), and its extraction laws (`decomposeRows_add` /
 `decomposeRows_φ₀_mul_φ₁`, via the generic helper `decomposeRows_sum`). The Boolean-literal collapse
 of the `eq`-factor (`singleEq_collapse'` / `eqPoly_collapse'`) holds for *any* pair of ring homs
 because both agree on `{0, 1}`. These need only `CommRing + IsDomain` (not `Field`), so they apply
@@ -937,7 +525,7 @@ lemma embedded_MLP_eval_eq_sum' (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero ℓ'] (h_l
         (P.φ₀ (eqTilde (fun i => (if w i == 1 then (1 : L₀) else 0))
             (getEvaluationPointSuffix κ₀ L₀ ℓ ℓ' h_l r)))
           * (P.φ₁ (eval (fun i => (if w i == 1 then (1 : L₀) else 0)) t'.val)) := by
-  unfold embedded_MLP_eval componentWise_embed_MLE getEvaluationPointSuffix
+  unfold embedded_MLP_eval componentWise_embed_MLE embedCoeffs getEvaluationPointSuffix
   simp only []
   rw [← MvPolynomial.eval₂_eq_eval_map]
   conv_lhs => rw [← MvPolynomial.is_multilinear_iff_eq_evals_zeroOne.mp t'.property]
@@ -968,17 +556,19 @@ weighted by the suffix equality factor. This is the raw orientation lemma behind
 lemma decomposeRows_embedded_MLP_eval' (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero ℓ']
     (h_l : ℓ = ℓ' + κ₀) (t' : MultilinearPoly L₀ ℓ') (r : Fin ℓ → L₀)
     (u : Fin κ₀ → Fin 2) :
-    P.decomposeRows
+    P.decomposeColumns
         (embedded_MLP_eval κ₀ L₀ K₀ P ℓ ℓ' h_l t' r) u
       = ∑ w : Fin ℓ' → Fin 2,
           P.basis.repr
               (eval (fun i => (if w i == 1 then (1 : L₀) else 0)) t'.val) u •
             (eqTilde (fun i => (if w i == 1 then (1 : L₀) else 0))
               (getEvaluationPointSuffix κ₀ L₀ ℓ ℓ' h_l r)) := by
-  rw [embedded_MLP_eval_eq_sum', P.decomposeRows_sum]
+  rw [embedded_MLP_eval_eq_sum', P.decomposeColumns_sum]
+  simp only [Finset.sum_apply]
   apply Finset.sum_congr rfl
   intro w _
-  rw [P.decomposeRows_φ₀_mul_φ₁]
+  rw [P.decomposeColumns_φ₀_mul_φ₁]
+  exact (Algebra.smul_def _ _).symm
 
 omit [CharP L₀ 2] in
 /-- **Generic column extraction for an embedded large-field multilinear polynomial** (the dual of
@@ -992,27 +582,29 @@ it matches the witness-independent batching multiplier `compute_A_func`. -/
 lemma decomposeColumns_embedded_MLP_eval' (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero ℓ']
     (h_l : ℓ = ℓ' + κ₀) (t' : MultilinearPoly L₀ ℓ') (r : Fin ℓ → L₀)
     (u : Fin κ₀ → Fin 2) :
-    P.decomposeColumns
+    P.decomposeRows
         (embedded_MLP_eval κ₀ L₀ K₀ P ℓ ℓ' h_l t' r) u
       = ∑ w : Fin ℓ' → Fin 2,
           P.basis.repr
               (eqTilde (fun i => (if w i == 1 then (1 : L₀) else 0))
                 (getEvaluationPointSuffix κ₀ L₀ ℓ ℓ' h_l r)) u •
             (eval (fun i => (if w i == 1 then (1 : L₀) else 0)) t'.val) := by
-  rw [embedded_MLP_eval_eq_sum', P.decomposeColumns_sum]
+  rw [embedded_MLP_eval_eq_sum', P.decomposeRows_sum]
+  simp only [Finset.sum_apply]
   apply Finset.sum_congr rfl
   intro w _
-  rw [P.decomposeColumns_φ₀_mul_φ₁]
+  rw [P.decomposeRows_φ₀_mul_φ₁]
+  exact (Algebra.smul_def _ _).symm
 
 omit [CharP L₀ 2] in
 /-- **Generic row recovery of `t`-evaluations** over an abstract `P` whose basis is `P.basis`.
 The row components of `ŝ = embedded_MLP_eval (packMLE P.basis t) r` carry the suffix-`eq`-weighted
 evaluations of `t`. Routes through `embedded_MLP_eval_eq_sum'`, the generic row additivity
-`P.decomposeRows_sum`, the atomic extraction law `P.decomposeRows_φ₀_mul_φ₁`, and the
+`P.decomposeColumns_sum`, the atomic extraction law `P.decomposeColumns_φ₀_mul_φ₁`, and the
 profile-independent `packMLE_repr_eval`. -/
 lemma decompose_rows_packMLE' (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero ℓ'] (h_l : ℓ = ℓ' + κ₀)
     (t : MultilinearPoly K₀ ℓ) (r : Fin ℓ → L₀) (u : Fin κ₀ → Fin 2) :
-    P.decomposeRows
+    P.decomposeColumns
         (embedded_MLP_eval κ₀ L₀ K₀ P ℓ ℓ' h_l
           (packMLE κ₀ L₀ K₀ ℓ ℓ' h_l P.basis t) r) u
       = ∑ w : Fin ℓ' → Fin 2,
@@ -1021,10 +613,14 @@ lemma decompose_rows_packMLE' (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero ℓ'] (h_l :
               t.val)
             • (eqTilde (fun i => (if w i == 1 then (1 : L₀) else 0))
                 (getEvaluationPointSuffix κ₀ L₀ ℓ ℓ' h_l r)) := by
-  rw [embedded_MLP_eval_eq_sum', P.decomposeRows_sum]
+  rw [embedded_MLP_eval_eq_sum', P.decomposeColumns_sum]
+  simp only [Finset.sum_apply]
   apply Finset.sum_congr rfl
   intro w _
-  rw [P.decomposeRows_φ₀_mul_φ₁, packMLE_repr_eval]
+  rw [P.decomposeColumns_φ₀_mul_φ₁]
+  dsimp only
+  rw [packMLE_repr_eval]
+  exact (Algebra.smul_def _ _).symm
 
 omit [CharP L₀ 2] in
 /-- **Generic DP24 ring-switching capstone (sum form)** over an abstract `P`. The verifier's
@@ -1034,7 +630,7 @@ lemma check_rows_sum_eq_aeval' (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero ℓ'] (h_l 
     (t : MultilinearPoly K₀ ℓ) (r : Fin ℓ → L₀) :
     (∑ v : Fin κ₀ → Fin 2,
         eqTilde (fun i => (if v i == 1 then (1 : L₀) else 0)) (fun i => r ⟨i.val, by omega⟩)
-          * P.decomposeRows
+          * P.decomposeColumns
               (embedded_MLP_eval κ₀ L₀ K₀ P ℓ ℓ' h_l
                 (packMLE κ₀ L₀ K₀ ℓ ℓ' h_l P.basis t) r) v)
       = (MvPolynomial.aeval r) t.val := by
@@ -1091,7 +687,7 @@ lemma performCheckOriginalEvaluation_packMLE_iff (ℓ ℓ' : ℕ) [NeZero ℓ] [
         (embedded_MLP_eval κ₀ L₀ K₀ P ℓ ℓ' h_l
           (packMLE κ₀ L₀ K₀ ℓ ℓ' h_l P.basis t) r) = true
       ↔ s = (MvPolynomial.aeval r) t.val := by
-  unfold performCheckOriginalEvaluation
+  unfold performCheckOriginalEvaluation eqWeightedCoordSum
   simp only [decide_eq_true_eq]
   rw [check_rows_sum_eq_aeval']
 
@@ -1107,7 +703,7 @@ row-decomposition value of the final eq-tensor `e := eq̃(φ₀(r_suffix), φ₁
 
 The two helper lemmas below (MLE evaluation as an `eq̃`-weighted sum over the Boolean hypercube, and
 the `φ₀/φ₁`-tensor expansion of `e`) reduce the identity to the row-extraction laws
-`P.decomposeRows_φ₀_mul_φ₁` / `P.decomposeRows_sum`, exactly as in
+`P.decomposeColumns_φ₀_mul_φ₁` / `P.decomposeColumns_sum`, exactly as in
 `decompose_rows_packMLE'`. -/
 
 omit [IsDomain L₀] [CharP L₀ 2] [IsDomain K₀] [Fintype K₀] [DecidableEq K₀] in
@@ -1211,16 +807,16 @@ lemma A_MLE_eval_eq_compute_final_eq_value (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero
       = compute_final_eq_value κ₀ L₀ K₀ P ℓ ℓ' h_l r_eval challenges r''_batching := by
   -- LHS: unfold to `eval challenges (MLE (compute_A_func suffix r''))` and expand by MLE formula.
   unfold compute_A_MLE compute_final_eq_value compute_final_eq_tensor compute_A_func
-    getEvaluationPointSuffix
+    getEvaluationPointSuffix eqWeightedCoordSum
   simp only []
   rw [MLE_eval_eq_sum_eqTilde]
   -- RHS: expand the eq-tensor and push `decomposeColumns` through the sum + atomic extraction.
   rw [eqTilde_tensor_expand P (fun j => r_eval ⟨j.val + κ₀, by rw [h_l]; omega⟩) challenges]
   -- Push `decomposeColumns` through the hypercube sum + atomic extraction (under the ∑_u binder).
-  simp only [P.decomposeColumns_sum, P.decomposeColumns_φ₀_mul_φ₁]
+  simp only [P.decomposeRows_sum, P.decomposeRows_φ₀_mul_φ₁, Finset.sum_apply]
   -- Distribute the scalar prefix into the inner hypercube sum on both sides:
   -- `∑ x, c_x * ∑ y, d_{x,y} = ∑ x, ∑ y, c_x * d_{x,y}`.
-  simp only [Finset.mul_sum]
+  simp only [Finset.sum_apply, Finset.mul_sum]
   -- Both sides are now double sums over the Boolean hypercube. Reindex the RHS (swap the two
   -- sum binders) so its outer index pairs with the LHS inner index, then match summand-wise.
   rw [Finset.sum_comm]
@@ -1233,7 +829,8 @@ lemma A_MLE_eval_eq_compute_final_eq_value (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero
   -- Align the `repr` arguments by `eqTilde` symmetry, then commute `•` past `*`.
   rw [eqTilde_comm (fun j => r_eval ⟨j.val + κ₀, by rw [h_l]; omega⟩)
       (fun i => (if u i == 1 then (1 : L₀) else 0))]
-  rw [mul_smul_comm, mul_smul_comm, mul_comm]
+  simp only [Algebra.smul_def]
+  ring
 
 end RingSwitchingAlgebra
 
@@ -1262,7 +859,7 @@ lemma embedded_MLP_eval_eq_sum (β : Module.Basis (Fin κ₀ → Fin 2) K₀ L�
         (φ₀ L₀ K₀ (eqTilde (fun i => (if w i == 1 then (1 : L₀) else 0))
             (getEvaluationPointSuffix κ₀ L₀ ℓ ℓ' h_l r)))
           * (φ₁ L₀ K₀ (eval (fun i => (if w i == 1 then (1 : L₀) else 0)) t'.val)) := by
-  unfold embedded_MLP_eval componentWise_embed_MLE getEvaluationPointSuffix
+  unfold embedded_MLP_eval componentWise_embed_MLE embedCoeffs getEvaluationPointSuffix
   simp only []
   rw [← MvPolynomial.eval₂_eq_eval_map]
   conv_lhs => rw [← MvPolynomial.is_multilinear_iff_eq_evals_zeroOne.mp t'.property]
@@ -1293,7 +890,7 @@ note above. -/
 lemma decompose_rows_packMLE (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero ℓ'] (h_l : ℓ = ℓ' + κ₀)
     (β : Basis (Fin κ₀ → Fin 2) K₀ L₀) (t : MultilinearPoly K₀ ℓ) (r : Fin ℓ → L₀)
     (u : Fin κ₀ → Fin 2) :
-    decompose_tensor_algebra_rows (L := L₀) (K := K₀) (β := β)
+    decompose_tensor_algebra_columns (L := L₀) (K := K₀) (β := β)
         (embedded_MLP_eval κ₀ L₀ K₀ (binaryTowerProfile κ₀ K₀ L₀ β) ℓ ℓ' h_l
           (packMLE κ₀ L₀ K₀ ℓ ℓ' h_l β t) r) u
       = ∑ w : Fin ℓ' → Fin 2,
@@ -1315,7 +912,7 @@ lemma check_rows_sum_eq_aeval (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero ℓ'] (h_l :
     (β : Basis (Fin κ₀ → Fin 2) K₀ L₀) (t : MultilinearPoly K₀ ℓ) (r : Fin ℓ → L₀) :
     (∑ v : Fin κ₀ → Fin 2,
         eqTilde (fun i => (if v i == 1 then (1 : L₀) else 0)) (fun i => r ⟨i.val, by omega⟩)
-          * decompose_tensor_algebra_rows (L := L₀) (K := K₀) (β := β)
+          * decompose_tensor_algebra_columns (L := L₀) (K := K₀) (β := β)
               (embedded_MLP_eval κ₀ L₀ K₀ (binaryTowerProfile κ₀ K₀ L₀ β) ℓ ℓ' h_l
                 (packMLE κ₀ L₀ K₀ ℓ ℓ' h_l β t) r) v)
       = (MvPolynomial.aeval r) t.val := by
@@ -1375,7 +972,7 @@ lemma performCheckOriginalEvaluation_packMLE_iff_binaryTower (ℓ ℓ' : ℕ) [N
         (embedded_MLP_eval κ₀ L₀ K₀ (binaryTowerProfile κ₀ K₀ L₀ β) ℓ ℓ' h_l
           (packMLE κ₀ L₀ K₀ ℓ ℓ' h_l β t) r) = true
       ↔ s = (MvPolynomial.aeval r) t.val := by
-  unfold performCheckOriginalEvaluation
+  unfold performCheckOriginalEvaluation eqWeightedCoordSum
   simp only [decide_eq_true_eq]
   rw [check_rows_sum_eq_aeval]
 
@@ -1568,67 +1165,35 @@ open MvPolynomial
 /-- **`sumAlgEquiv` evaluation.** Evaluating the curried polynomial `sumAlgEquiv p` by `eval x` on
 the outer (`S₁`) variables and `eval challenges` on the inner (`S₂`) coefficient ring equals
 evaluating `p` directly at the combined point `Sum.elim x challenges`. Proven by `induction_on`,
-using `sumToIter` (`= sumAlgEquiv` by `rfl`) on the generators. -/
+using the canonical `sumAlgEquiv` equations on the generators. -/
 theorem sumAlgEquiv_eval₂ {L : Type} [CommRing L] {S₁ S₂ : Type} [Fintype S₁]
     (x : S₁ → L) (challenges : S₂ → L) (p : MvPolynomial (S₁ ⊕ S₂) L) :
     eval₂ (eval challenges) x ((sumAlgEquiv L S₁ S₂) p) = eval (Sum.elim x challenges) p := by
   induction p using MvPolynomial.induction_on with
-  | C a =>
-    rw [show ((sumAlgEquiv L S₁ S₂) (C a)) = sumToIter L S₁ S₂ (C a) from rfl, sumToIter_C,
-      MvPolynomial.eval₂_C, MvPolynomial.eval_C, MvPolynomial.eval_C]
-  | add p q hp hq =>
-    simp only [map_add, MvPolynomial.eval₂_add, MvPolynomial.eval_add, hp, hq]
-  | mul_X p s hp =>
-    simp only [map_mul, MvPolynomial.eval₂_mul, MvPolynomial.eval_mul, hp]
+  | C a => simp
+  | add p q hp hq => simp only [map_add, MvPolynomial.eval₂_add, hp, hq]
+  | mul_X p i hp =>
+    simp only [map_mul, MvPolynomial.eval₂_mul, hp]
     congr 1
-    cases s with
-    | inl a => rw [show ((sumAlgEquiv L S₁ S₂) (X (Sum.inl a))) = sumToIter L S₁ S₂ (X (Sum.inl a))
-        from rfl, sumToIter_Xl, MvPolynomial.eval₂_X, MvPolynomial.eval_X, Sum.elim_inl]
-    | inr b => rw [show ((sumAlgEquiv L S₁ S₂) (X (Sum.inr b))) = sumToIter L S₁ S₂ (X (Sum.inr b))
-        from rfl, sumToIter_Xr, MvPolynomial.eval₂_C, MvPolynomial.eval_X, MvPolynomial.eval_X,
-        Sum.elim_inr]
+    cases i <;> simp
 
-/-- **`fixFirstVariablesOfMQP` evaluation.** Evaluating the polynomial obtained by fixing the last
-`v` variables of `poly` to `challenges` (then `eval x` on the survivors) equals evaluating `poly`
-directly at the recombined point (survivors from `x`, fixed coords from `challenges`, via the same
-`finCongr`/`finSumFinEquiv` reindexing used in `fixFirstVariablesOfMQP`). -/
-theorem fixFirstVariablesOfMQP_eval {L : Type} [CommRing L] (ℓ : ℕ) (v : Fin (ℓ+1))
+/-- Evaluation after fixing the canonical prefix of variables. -/
+theorem fixFirstVariablesOfMQP_eval {L : Type} [CommRing L] (ℓ : ℕ) (v : Fin (ℓ + 1))
     (poly : MvPolynomial (Fin ℓ) L) (challenges : Fin v → L) (x : Fin (ℓ - v) → L) :
-    eval x (fixFirstVariablesOfMQP ℓ v poly challenges)
-      = eval (fun i => Sum.elim x challenges
-          (((finCongr (by rw [Nat.add_comm]; exact (Nat.add_sub_of_le v.is_le).symm)).trans
-            (finSumFinEquiv (m := ℓ - v) (n := v).symm)) i)) poly := by
-  unfold fixFirstVariablesOfMQP
-  dsimp only
-  rw [MvPolynomial.eval_map, sumAlgEquiv_eval₂, eval_rename]
-  rfl
+    eval x (fixFirstVariablesOfMQP ℓ v poly challenges) =
+      eval (fun j => if hj : j.val < v.val then challenges ⟨j.val, hj⟩
+        else x ⟨j.val - v, by omega⟩) poly :=
+  MvPolynomial.eval_fixFirstVariablesOfMQP v poly challenges x
 
 end FixVarsEval
 
 /-! ## Round-transition algebra for the iterated sumcheck
 
-The per-round completeness of `iteratedSumcheckOracleReduction` needs to relate the projected
-round polynomial at round `i` to the one at round `i+1` after the verifier's challenge `r'` is
-folded in. Because `projectToMidSumcheckPoly ℓ t m i ch = fixFirstVariablesOfMQP ℓ i (m·t) ch`
-(`projectToMidSumcheckPoly_eq_fixVars` below), the round transition is a pure statement about
-`fixFirstVariablesOfMQP`: fixing the last `i` variables and then one more equals fixing the last
-`i+1` variables at once.
-
-CONVENTION / STATEMENT-REPAIR NOTE (counterexample-backed, defect-#8/#10/#11 family).
-`fixFirstVariablesOfMQP ℓ v poly ch` fixes the **last** `v` variables of `poly`, with `ch 0`
-fixing variable `ℓ-v`, …, `ch (v-1)` fixing variable `ℓ-1` (see its corrected docstring). When we
-fix one *more* variable (the new round-`i` challenge `r'`), that fresh variable is the *new last
-survivor*, i.e. the variable at position `ℓ-v-1`. In the combined `Fin (v+1)`-indexed challenge
-vector for `fixFirstVariablesOfMQP ℓ (v+1)`, position `0` corresponds to variable `ℓ-(v+1) = ℓ-v-1`
-(the fresh one) and positions `1..v` to the previously-fixed `ch 0 .. ch (v-1)`. Hence the correct
-recombination is `Fin.cons r' ch`, **not** `Fin.snoc ch r'`.
-
-The `Fin.snoc ch r'` form is FALSE. Counterexample (`L = ZMod 7`, `ℓ = 3`, `v = 1`,
-`poly = X 0 + 2·X 1 + 4·X 2`, `ch = ![5]`, `r' = 3`): fixing the last var to `5`, then one more to
-`3`, fixes `X 2 = 5, X 1 = 3`, giving (at survivor `X 0 = 2`) `2 + 2·3 + 4·5 = 28 = 0`. The
-`Fin.snoc ![5] 3 = ![5,3]` form fixes `X 1 = 5, X 2 = 3`, giving `2 + 2·5 + 4·3 = 24 = 3 ≠ 0`. The
-`Fin.cons 3 ![5] = ![3,5]` form fixes `X 1 = 3, X 2 = 5`, giving `2 + 2·3 + 4·5 = 0`, matching. So
-the round-transition lemma below is stated and proved with `Fin.cons r' challenges`. -/
+The authoritative `fixFirstVariablesOfMQP` fixes the first `i` variables. Extending a fixed
+prefix by the next challenge therefore uses `Fin.snoc challenges r'`. The following wrappers
+reuse the canonical substitution, evaluation and successor theorems. Historical suffix-fixing
+formulations and their original proof sources are recorded in the integration migration audit.
+-/
 section RoundTransition
 open MvPolynomial Finset Sumcheck.Structured
 
@@ -1646,92 +1211,34 @@ theorem finSumFinEquiv_symm_dite {m n : ℕ} (x : Fin (m + n)) :
   · rw [dif_neg h, finSumFinEquiv_apply_right]
     apply Fin.ext; simp; omega
 
-/-- Characterization of `fixFirstVariablesOfMQP` as a `bind₁` partial substitution: it sends the
-surviving variables (value `< ℓ-v` under the canonical reindex) to themselves and the fixed
-variables (value `≥ ℓ-v`) to the corresponding `challenges` constant. -/
+/-- The canonical prefix-fixing operation is its explicit partial substitution. -/
 theorem fixVars_eq_bind₁ (ℓ : ℕ) (v : Fin (ℓ + 1)) (poly : MvPolynomial (Fin ℓ) L)
     (challenges : Fin v → L) :
-    fixFirstVariablesOfMQP ℓ v poly challenges
-      = bind₁ (fun i : Fin ℓ =>
-          Sum.elim (X : Fin (ℓ - v) → MvPolynomial (Fin (ℓ - v)) L)
-            (fun j => C (challenges j))
-            (((finCongr (by rw [Nat.add_comm]; exact (Nat.add_sub_of_le v.is_le).symm)).trans
-              (finSumFinEquiv (m := ℓ - v) (n := v).symm)) i)) poly := by
-  unfold fixFirstVariablesOfMQP
-  dsimp only
-  have hmap : ∀ q : MvPolynomial (Fin (ℓ - v) ⊕ Fin v) L,
-      MvPolynomial.map (eval challenges) ((sumAlgEquiv L (Fin (ℓ - v)) (Fin v)) q)
-        = bind₁ (Sum.elim X (fun j => C (challenges j))) q := by
-    intro q
-    induction q using MvPolynomial.induction_on with
-    | C a =>
-      rw [show ((sumAlgEquiv L (Fin (ℓ - v)) (Fin v)) (C a))
-          = sumToIter L (Fin (ℓ - v)) (Fin v) (C a) from rfl, sumToIter_C]
-      simp
-    | add p q hp hq => simp only [map_add, map_add, hp, hq]
-    | mul_X p s hp =>
-      rw [map_mul, map_mul, hp]
-      congr 1
-      cases s with
-      | inl a =>
-        rw [show ((sumAlgEquiv L (Fin (ℓ - v)) (Fin v)) (X (Sum.inl a)))
-            = sumToIter L (Fin (ℓ - v)) (Fin v) (X (Sum.inl a)) from rfl, sumToIter_Xl]
-        simp
-      | inr b =>
-        rw [show ((sumAlgEquiv L (Fin (ℓ - v)) (Fin v)) (X (Sum.inr b)))
-            = sumToIter L (Fin (ℓ - v)) (Fin v) (X (Sum.inr b)) from rfl, sumToIter_Xr]
-        simp
-  rw [hmap, bind₁_rename]
-  rfl
+    fixFirstVariablesOfMQP ℓ v poly challenges =
+      bind₁ (MvPolynomial.fixFirstVariablesSubst v challenges) poly :=
+  MvPolynomial.fixFirstVariablesOfMQP_eq_bind₁ v poly challenges
 
-/-- **Round-transition for `fixFirstVariablesOfMQP` (cons form).** Fixing the last `v` variables of
-`poly` to `challenges` and then the new last survivor to `r'` equals fixing the last `v+1` variables
-at once to `Fin.cons r' challenges` (the fresh challenge `r'` lands at index `0`, the previously
-fixed `challenges` shift to indices `1..v`), up to the canonical reindex
-`Fin (ℓ-(v+1)) ≃ Fin (ℓ-v-1)`. See the section note for why `Fin.snoc challenges r'` is false. -/
+/-- The next prefix value appends to the previous challenges with `Fin.snoc`. -/
 theorem fixVars_step (ℓ : ℕ) (poly : MvPolynomial (Fin ℓ) L) (v : Fin (ℓ + 1))
     (hv : (v : ℕ) < ℓ) (challenges : Fin v → L) (r' : L) :
     fixFirstVariablesOfMQP (ℓ - v) ⟨1, by omega⟩
-        (fixFirstVariablesOfMQP ℓ v poly challenges) (fun _ => r')
-      = rename (finCongr (show ℓ - ((v : ℕ) + 1) = ℓ - v - 1 by omega))
-          (fixFirstVariablesOfMQP ℓ ⟨(v : ℕ) + 1, by omega⟩ poly (Fin.cons r' challenges)) := by
-  rw [fixVars_eq_bind₁ (ℓ - v) ⟨1, by omega⟩ _ (fun _ => r')]
-  rw [fixVars_eq_bind₁ ℓ v poly challenges]
-  rw [fixVars_eq_bind₁ ℓ ⟨(v : ℕ) + 1, by omega⟩ poly (Fin.cons r' challenges)]
-  rw [bind₁_bind₁]
-  rw [rename_bind₁]
-  apply congrArg (fun f => bind₁ f poly)
-  funext i
-  simp only [Equiv.trans_apply, finCongr_apply, finSumFinEquiv_symm_dite, Fin.val_cast]
-  by_cases h1 : (i : ℕ) < ℓ - v - 1
-  · have h2 : (i : ℕ) < ℓ - v := by omega
-    have h1' : (i : ℕ) < ℓ - ((v : ℕ) + 1) := by omega
-    -- survivor on both sides → X.  Inner gives X⟨i⟩; outer keeps it (also a survivor).
-    rw [dif_pos h2, Sum.elim_inl, bind₁_X_right, dif_pos h1, Sum.elim_inl]
-    rw [dif_pos h1', Sum.elim_inl]
-    rw [rename_X, finCongr_apply]
+        (fixFirstVariablesOfMQP ℓ v poly challenges) (fun _ => r') =
+      rename (finCongr (show ℓ - ((v : ℕ) + 1) = ℓ - v - 1 by omega))
+        (fixFirstVariablesOfMQP ℓ ⟨(v : ℕ) + 1, by omega⟩ poly (Fin.snoc challenges r')) := by
+  have h := MvPolynomial.fixFirstVariablesOfMQP_succ (⟨v.val, hv⟩ : Fin ℓ)
+    poly challenges r' (show ℓ - v - 1 = ℓ - (v + 1) by omega)
+  have hh := congrArg (MvPolynomial.rename
+    (finCongr (show ℓ - (v + 1) = ℓ - v - 1 by omega))) h
+  have hid : ((finCongr (show ℓ - (v + 1) = ℓ - v - 1 by omega)) ∘
+      (Fin.cast (show ℓ - v - 1 = ℓ - (v + 1) by omega)) :
+      Fin (ℓ - v - 1) → Fin (ℓ - v - 1)) = id := by
+    funext j
+    apply Fin.ext
     rfl
-  · have h1' : ¬ (i : ℕ) < ℓ - ((v : ℕ) + 1) := by omega
-    by_cases h2 : (i : ℕ) < ℓ - v
-    · -- fresh coord (i = ℓ-v-1): inner is survivor X⟨i⟩; outer fixes it (its last var) to C r'.
-      rw [dif_pos h2, Sum.elim_inl, bind₁_X_right]
-      rw [dif_neg h1, Sum.elim_inr]
-      rw [dif_neg h1', Sum.elim_inr]
-      rw [rename_C]
-      congr 1
-      -- RHS `Fin.cons r' challenges` index over `Fin (v+1)`: value `i-(ℓ-(v+1)) = 0`, gives `r'`.
-      have : (⟨(i : ℕ) - (ℓ - ((v : ℕ) + 1)), by omega⟩ : Fin ((v : ℕ) + 1)) = 0 := by
-        apply Fin.ext; simp; omega
-      rw [this, Fin.cons_zero]
-    · -- previously-fixed coord (i ≥ ℓ-v): `C (challenges ⟨i-(ℓ-v)⟩)` on both sides.
-      rw [dif_neg h2, Sum.elim_inr, bind₁_C_right]
-      rw [dif_neg h1', Sum.elim_inr, rename_C]
-      congr 1
-      -- RHS index value `i-(ℓ-(v+1)) = (i-(ℓ-v)) + 1`, i.e. `Fin.succ ⟨i-(ℓ-v)⟩`; cons drops to it.
-      have hidx : (⟨(i : ℕ) - (ℓ - ((v : ℕ) + 1)), by omega⟩ : Fin ((v : ℕ) + 1))
-          = Fin.succ ⟨(i : ℕ) - (ℓ - v), by omega⟩ := by
-        apply Fin.ext; simp only [Fin.val_succ]; omega
-      rw [hidx, Fin.cons_succ]
+  rw [MvPolynomial.rename_rename, hid, MvPolynomial.rename_id_apply] at hh
+  exact hh
+
+
 
 /-- `projectToMidSumcheckPoly` is `fixFirstVariablesOfMQP` applied to the initial round polynomial
 `m · t`, at the same number of fixed variables `i`. -/
@@ -1739,15 +1246,14 @@ theorem projectToMidSumcheckPoly_eq_fixVars (ℓ : ℕ) [NeZero ℓ] (t m : Mult
     (i : Fin (ℓ + 1)) (challenges : Fin i → L) :
     (projectToMidSumcheckPoly ℓ t m i challenges).val
       = fixFirstVariablesOfMQP ℓ ⟨i, by omega⟩ (m.val * t.val) challenges := by
-  unfold projectToMidSumcheckPoly computeInitialSumcheckPoly
-  rfl
+  unfold projectToMidSumcheckPoly
+  exact congrArg (fun q : MvPolynomial (Fin ℓ) L =>
+    fixFirstVariablesOfMQP ℓ ⟨i, by omega⟩ q challenges)
+    (coe_computeInitialSumcheckPoly ℓ t m)
 
-/-- **Round-transition for the projected sumcheck polynomial (target (a), cons form).**
-Fixing the new round-`i` survivor variable to the verifier challenge `r'` advances the projected
-round polynomial from round `i.castSucc` to round `i.succ`, with the challenge vector recombined as
-`Fin.cons r' challenges` (see the section note: the `Fin.snoc challenges r'` form is false —
-counterexample included). The two sides live over `Fin (ℓ - i.succ)` vs `Fin (ℓ - i.castSucc - 1)`;
-they are reconciled by the canonical `finCongr`. -/
+/-- Fixing the next surviving prefix variable advances the projected round polynomial.
+The challenge vector appends the new value with `Fin.snoc`; the remaining dimensions are
+identified by the canonical `finCongr`. -/
 theorem fixFirstVariablesOfMQP_projectToMid_step (ℓ : ℕ) [NeZero ℓ] (t m : MultilinearPoly L ℓ)
     (i : Fin ℓ) (challenges : Fin i.castSucc → L) (r' : L) :
     fixFirstVariablesOfMQP (ℓ - i.castSucc)
@@ -1755,13 +1261,13 @@ theorem fixFirstVariablesOfMQP_projectToMid_step (ℓ : ℕ) [NeZero ℓ] (t m :
         (projectToMidSumcheckPoly ℓ t m i.castSucc challenges).val (fun _ => r')
       = rename (finCongr (show ℓ - (i.succ : ℕ) = ℓ - i.castSucc - 1 by
           have := i.isLt; simp only [Fin.val_succ, Fin.val_castSucc]; omega))
-          (projectToMidSumcheckPoly ℓ t m i.succ (Fin.cons r' challenges)).val := by
+          (projectToMidSumcheckPoly ℓ t m i.succ (Fin.snoc challenges r')).val := by
   rw [projectToMidSumcheckPoly_eq_fixVars, projectToMidSumcheckPoly_eq_fixVars]
   -- `fixVars_step` at `v := i.castSucc`. Its `⟨↑v + 1⟩` matches `⟨↑i.succ⟩` (both `↑i + 1`).
   have hstep := fixVars_step (L := L) ℓ (m.val * t.val) i.castSucc
     (by have := i.isLt; simp only [Fin.val_castSucc]; omega) challenges r'
   rw [hstep]
-  -- Both sides are `rename (finCongr …) (fixFirstVariablesOfMQP ℓ ⟨_⟩ (m·t) (Fin.cons r' ch))`;
+  -- Both sides are `rename (finCongr …) (fixFirstVariablesOfMQP ℓ ⟨_⟩ (m·t) (Fin.snoc ch r'))`;
   -- the only difference is the fixed-variable count index `⟨↑i.castSucc + 1⟩` vs `⟨↑i.succ⟩`,
   -- which are equal `Fin (ℓ+1)` values (`↑i.succ = ↑i + 1 = ↑i.castSucc + 1`), hence defeq.
   rfl
@@ -1791,7 +1297,7 @@ theorem fixFirstVariablesOfMQP_projectToMid_succ (ℓ : ℕ) [NeZero ℓ]
           (i := i.castSucc) (challenges := challenges)).val
         (fun _ => r')
       = (projectToMidSumcheckPoly (L := L) (ℓ := ℓ) (t := t) (m := m)
-          (i := i.succ) (challenges := Fin.cons r' challenges)).val := by
+          (i := i.succ) (challenges := Fin.snoc challenges r')).val := by
   rw [fixFirstVariablesOfMQP_projectToMid_step (L := L) (ℓ := ℓ) t m i challenges r']
   exact eq_of_heq (rename_finCongr_heq_projectToMid _ _)
 
@@ -1802,15 +1308,9 @@ by `pt x`). This is the marginal that `getSumcheckRoundPoly` computes: it keeps 
 round indeterminate (`finSuccEquivNth L 0`, i.e. `Fin.insertNth 0 = Fin.cons`). Generic in the index
 type/point function so it can absorb the `Fin.append (∅) · ∘ Fin.cast` reindexing of the round code.
 
-CONVENTION NOTE (counterexample-backed, see `getSumcheckRoundPoly_eval_eq_sum_cons` in
-`SumcheckPhase.lean`): the surviving variable here is variable `0` (`Fin.cons r' (pt x)`), **not**
-the last variable. The naive target (b) form `getSumcheckRoundPoly H r' = ∑ (fixFirstVariablesOfMQP
-H {r'})` is FALSE, because `fixFirstVariablesOfMQP` fixes the *last* variable while
-`getSumcheckRoundPoly` marginalises variable `0`; for an asymmetric `H` the two marginals differ.
-Counterexample (`L = ZMod 7`, `H = X 0 + 3·X 1` over `Fin 2`, `r' = 2`):
-`getSumcheckRoundPoly H` (var 0) at `2` is `H(2,0)+H(2,1) = 2+5 = 0`, whereas
-`∑ (fix-last H {2})` is `(0+6)+(1+6) = 6 ≠ 0`. Hence (b) holds only for the variable-`0`
-marginal. -/
+The identity follows directly from `eval_eq_eval_mv_eval_finSuccEquivNth` and
+`Fin.insertNth_zero`; it agrees with the canonical prefix-fixing convention.
+-/
 theorem roundPoly_eval_eq_sum_cons {k : ℕ} {ι : Type*} (S : Finset ι) (pt : ι → (Fin k → L))
     (H : MvPolynomial (Fin (k + 1)) L) (r' : L) :
     Polynomial.eval r' (∑ x ∈ S, Polynomial.map (eval (pt x)) (finSuccEquivNth L 0 H))
@@ -1819,15 +1319,8 @@ theorem roundPoly_eval_eq_sum_cons {k : ℕ} {ι : Type*} (S : Finset ι) (pt : 
   refine Finset.sum_congr rfl fun x _ => ?_
   rw [← eval_eq_eval_mv_eval_finSuccEquivNth, Fin.insertNth_zero']
 
-/-- **Round-polynomial marginal identity (LAST-variable form, defect-#20 repair).** The last-variable
-analog of `roundPoly_eval_eq_sum_cons`: evaluating, at `r'`, the sum over `S` of the partial
-evaluations `Polynomial.map (eval (pt x)) (finSuccEquivNth L (Fin.last k) H)` equals the sum over
-`S` of the full evaluations of `H` with the **last** variable fixed to `r'` (the survivors set by
-`pt x`, via `Fin.snoc (pt x) r'`). This is the marginal that the repaired `getSumcheckRoundPoly`
-computes: it keeps the *last* variable as the round indeterminate (`finSuccEquivNth L (Fin.last k)`,
-i.e. `Fin.insertNth (Fin.last k) = Fin.snoc`), matching the witness advance
-`fixFirstVariablesOfMQP … {r'}`
-(which also fixes the last surviving variable) and the `Fin.cons`-form round transition. -/
+/-- The independent last-variable marginal identity: evaluating the partial univariate
+polynomial at `r'` is evaluation at `Fin.snoc (pt x) r'`, summed over the finite index set. -/
 theorem roundPoly_eval_eq_sum_snoc {k : ℕ} {ι : Type*} (S : Finset ι) (pt : ι → (Fin k → L))
     (H : MvPolynomial (Fin (k + 1)) L) (r' : L) :
     Polynomial.eval r' (∑ x ∈ S, Polynomial.map (eval (pt x)) (finSuccEquivNth L (Fin.last k) H))
@@ -1864,13 +1357,13 @@ theorem card_filter_eval_zero_le {L : Type*} [CommRing L] [IsDomain L]
 univariate `p` over a finite integral domain `L` with `p.natDegree ≤ d`, the probability that a
 uniformly sampled `x ← ($ᵗ L)` is a root of `p` is at most `d / |L|`. This is the form that plugs
 directly into the `rbrKnowledgeSoundness` probability endgame after the verifier-run/challenge
-plumbing has reduced the goal to `Pr[fun x => p.eval x = 0 | ($ᵗ L)] ≤ d / Fintype.card L`. -/
+plumbing has reduced the goal to `Pr{let x ← $ᵗ L}[p.eval x = 0] ≤ d / Fintype.card L`. -/
 theorem probEvent_eval_zero_le {L : Type} [CommRing L] [IsDomain L]
     [Fintype L] [DecidableEq L] [SampleableType L]
     (p : L[X]) (hp : p ≠ 0) (d : ℕ) (hd : p.natDegree ≤ d) :
-    Pr[fun x => p.eval x = 0 | ($ᵗ L)] ≤ (d : ENNReal) / (Fintype.card L) := by
+    Pr{let x ← $ᵗ L}[p.eval x = 0] ≤ (d : ENNReal) / (Fintype.card L) := by
   classical
-  rw [probEvent_uniformSample]
+  rw [SampleableType.prEvent_uniformSample]
   apply ENNReal.div_le_div_right
   exact le_trans (Nat.cast_le.mpr ((card_filter_eval_zero_le p hp).trans hd)) le_rfl
 
@@ -1882,7 +1375,7 @@ challenge point. -/
 theorem probEvent_eval_eq_le {L : Type} [CommRing L] [IsDomain L]
     [Fintype L] [DecidableEq L] [SampleableType L]
     (p q : L[X]) (hpq : p ≠ q) (d : ℕ) (hd : (p - q).natDegree ≤ d) :
-    Pr[fun x => p.eval x = q.eval x | ($ᵗ L)] ≤ (d : ENNReal) / (Fintype.card L) := by
+    Pr{let x ← $ᵗ L}[p.eval x = q.eval x] ≤ (d : ENNReal) / (Fintype.card L) := by
   have hsub : p - q ≠ 0 := sub_ne_zero_of_ne hpq
   have hev : (fun x => p.eval x = q.eval x) = (fun x => (p - q).eval x = 0) := by
     funext x; rw [Polynomial.eval_sub, sub_eq_zero]
@@ -1897,7 +1390,7 @@ plumbing that extracts `hp`, `hq`, and `hpq` from the KState branch. -/
 theorem probEvent_eval_eq_degree_two_le {L : Type} [CommRing L] [IsDomain L]
     [Fintype L] [DecidableEq L] [SampleableType L]
     (p q : L[X]) (hpq : p ≠ q) (hp : p.natDegree ≤ 2) (hq : q.natDegree ≤ 2) :
-    Pr[fun x => p.eval x = q.eval x | ($ᵗ L)] ≤ (2 : ENNReal) / (Fintype.card L) := by
+    Pr{let x ← $ᵗ L}[p.eval x = q.eval x] ≤ (2 : ENNReal) / (Fintype.card L) := by
   exact probEvent_eval_eq_le p q hpq 2
     (le_trans (Polynomial.natDegree_sub_le p q) (max_le hp hq))
 
@@ -1909,10 +1402,10 @@ use either a direct bound on `(p - q).natDegree` or one derived from common poly
 theorem probEvent_badAgreement_of_sub_degree_le {L : Type} [CommRing L] [IsDomain L]
     [Fintype L] [DecidableEq L] [SampleableType L]
     (p q : L[X]) (d : ℕ) (hd : (p - q).natDegree ≤ d) :
-    Pr[fun x => p ≠ q ∧ p.eval x = q.eval x | ($ᵗ L)] ≤
+    Pr{let x ← $ᵗ L}[p ≠ q ∧ p.eval x = q.eval x] ≤
       (d : ENNReal) / (Fintype.card L) := by
   by_cases hpq : p = q
-  · rw [probEvent_uniformSample]
+  · rw [SampleableType.prEvent_uniformSample]
     have hfilter :
         (Finset.univ.filter (fun x => p ≠ q ∧ p.eval x = q.eval x)) = ∅ := by
       apply Finset.filter_false_of_mem
@@ -1920,9 +1413,15 @@ theorem probEvent_badAgreement_of_sub_degree_le {L : Type} [CommRing L] [IsDomai
       exact hbad.1 hpq
     rw [hfilter]
     simp
-  · exact le_trans
-      (probEvent_mono (mx := ($ᵗ L)) (fun _ _ hbad => hbad.2))
-      (probEvent_eval_eq_le p q hpq d hd)
+  · have hmono : Pr{let x ← $ᵗ L}[p ≠ q ∧ p.eval x = q.eval x] ≤
+        Pr{let x ← $ᵗ L}[p.eval x = q.eval x] := by
+      rw [SampleableType.prEvent_uniformSample, SampleableType.prEvent_uniformSample]
+      apply ENNReal.div_le_div_right
+      apply Nat.cast_le.mpr
+      apply Finset.card_le_card
+      intro x hx
+      exact Finset.mem_filter.mpr ⟨Finset.mem_univ x, (Finset.mem_filter.mp hx).2.2⟩
+    exact le_trans hmono (probEvent_eval_eq_le p q hpq d hd)
 
 /-- **Bad-agreement event bound from common degree budgets.**
 If both polynomials have degree at most `d`, then the weakened-KState bad-agreement event has
@@ -1930,7 +1429,7 @@ probability at most `d / |L|`. -/
 theorem probEvent_badAgreement_le {L : Type} [CommRing L] [IsDomain L]
     [Fintype L] [DecidableEq L] [SampleableType L]
     (p q : L[X]) (d : ℕ) (hp : p.natDegree ≤ d) (hq : q.natDegree ≤ d) :
-    Pr[fun x => p ≠ q ∧ p.eval x = q.eval x | ($ᵗ L)] ≤
+    Pr{let x ← $ᵗ L}[p ≠ q ∧ p.eval x = q.eval x] ≤
       (d : ENNReal) / (Fintype.card L) := by
   exact probEvent_badAgreement_of_sub_degree_le p q d
     (le_trans (Polynomial.natDegree_sub_le p q) (max_le hp hq))
@@ -1940,7 +1439,7 @@ The degree-`≤ 2` specialization for ring-switching round polynomials. -/
 theorem probEvent_badAgreement_degree_two_le {L : Type} [CommRing L] [IsDomain L]
     [Fintype L] [DecidableEq L] [SampleableType L]
     (p q : L[X]) (hp : p.natDegree ≤ 2) (hq : q.natDegree ≤ 2) :
-    Pr[fun x => p ≠ q ∧ p.eval x = q.eval x | ($ᵗ L)] ≤
+    Pr{let x ← $ᵗ L}[p ≠ q ∧ p.eval x = q.eval x] ≤
       (2 : ENNReal) / (Fintype.card L) := by
   exact probEvent_badAgreement_le p q 2 hp hq
 
@@ -1956,3 +1455,13 @@ end SchwartzZippelRootBound
 #print axioms RingSwitching.decomposeRows_embedded_MLP_eval'
 
 end RingSwitching
+
+#print axioms RingSwitching.binaryTowerProfile
+
+#print axioms RingSwitching.performCheckOriginalEvaluation_packMLE_iff
+
+#print axioms RingSwitching.A_MLE_eval_eq_compute_final_eq_value
+
+#print axioms RingSwitching.fixVars_step
+
+#print axioms RingSwitching.fixFirstVariablesOfMQP_projectToMid_succ

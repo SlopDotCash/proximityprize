@@ -12,16 +12,19 @@ the [δ* programme guide](docs/wiki/deltastar-programme.md), the
 [live issues](https://github.com/SlopDotCash/proximityprize/issues), and the
 [Proximity Gap agent guide](Research/ProximityPrize/AGENTS.md).
 
-The campaign retains the broader ArkLib formal-verification substrate it builds
-on, including the original library overview below. Lean module and package names
-remain `ArkLib` for compatibility with the existing checked proof graph.
-The default build includes both the `ArkLib` and `ResearchProximityPrize` libraries.
-The research root imports `Research.ProximityPrize.PROXIMITY_PRIZE_WORKBENCH`,
-which includes the generated research module index. `ArkLib.lean` is the separate
-generated library index. Research may import ArkLib; ArkLib must not import Research.
-Campaign migration is still in progress, so the library index still includes
-Proximity Gap modules awaiting classification. Neither index covers every unrelated
-proof-system experiment in the repository.
+The campaign uses the complete upstream ArkLib library as its canonical foundation,
+including the original library overview below. Lean module and package names remain
+`ArkLib` for compatibility. Upstream implementations and dependency versions take
+precedence; downstream additions extend those APIs rather than supplying competing
+implementations. See the [integration guide](docs/wiki/upstream-integration.md).
+
+The default build includes canonical `ArkLib`, the downstream extension library,
+and `ResearchProximityPrize`. The research root imports
+`Research.ProximityPrize.PROXIMITY_PRIZE_WORKBENCH`, which includes its generated
+research module index. `ArkLib.lean` separately re-exports the complete canonical
+library. Research and downstream extensions may import canonical ArkLib; canonical
+ArkLib must not import either downstream layer. Existing upstream proof admissions
+remain recorded as inherited debt and are not claims of completed proofs.
 
 ## Formal verification library foundation
 

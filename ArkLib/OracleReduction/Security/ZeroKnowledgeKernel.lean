@@ -48,6 +48,8 @@ variable {ι : Type} {oSpec : OracleSpec ι}
   {n : ℕ} {pSpec : ProtocolSpec n} [∀ i, SampleableType (pSpec.Challenge i)]
   {σ : Type}
 
+local instance : MeasurableSpace (FullTranscript pSpec) := ⊤
+
 /-- The canonical simulator built from the honest transcript distribution and a witness
 selector `w₀ : StmtIn → WitIn`: on input `stmtIn`, run the honest interaction with the
 statement-selected witness `w₀ stmtIn`. This is the post-interpretation form of "the simulator
@@ -115,7 +117,7 @@ theorem statisticalHVZK_witnessSelectorSimulator
     (reduction : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec)
     (w₀ : StmtIn → WitIn) (ε : ℝ≥0)
     (hwi : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl reduction stmtIn (w₀ stmtIn))
+      measureTVDist (honestTranscriptDist init impl reduction stmtIn (w₀ stmtIn))
         (honestTranscriptDist init impl reduction stmtIn witIn) ≤ (ε : ℝ)) :
     statisticalHVZK init impl rel reduction
       (witnessSelectorSimulator init impl reduction w₀) ε :=
@@ -130,7 +132,7 @@ theorem isStatHVZK_of_witnessIndependent
     (reduction : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec)
     (w₀ : StmtIn → WitIn) (ε : ℝ≥0)
     (hwi : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl reduction stmtIn (w₀ stmtIn))
+      measureTVDist (honestTranscriptDist init impl reduction stmtIn (w₀ stmtIn))
         (honestTranscriptDist init impl reduction stmtIn witIn) ≤ (ε : ℝ)) :
     isStatHVZK init impl rel reduction ε :=
   ⟨witnessSelectorSimulator init impl reduction w₀,

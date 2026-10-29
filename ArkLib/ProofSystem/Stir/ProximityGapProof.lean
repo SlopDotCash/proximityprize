@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 import ArkLib.ProofSystem.Stir.ErrorBoundBridge
-import ArkLib.ProofSystem.Stir.ProximityGap
+import ProximityPrize.Extensions.ProofSystem.Stir.ProximityGap
 
 /-!
 # STIR proximity gap, proved from the BCIKS20 keystone
@@ -30,7 +30,9 @@ set_option linter.unusedSectionVars false
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
          {ι : Type} [Fintype ι] [Nonempty ι] {φ : ι ↪ F}
 
-/-- **STIR proximity-gap theorem (conditional on the BCIKS20 list-decoding residuals).** -/
+/-- **STIR proximity-gap theorem (conditional on the BCIKS20 list-decoding residuals).**
+The legacy `hStrict` parameter remains for compatibility but is unused because canonical
+strict-open soundness supplies its branch. The closed-boundary premise remains explicit. -/
 theorem proximity_gap_of_residuals
     {degree m : ℕ} [NeZero degree] {δ : ℝ≥0} {f : Fin m → ι → F} {GenFun : F → Fin m → F}
     (hm : 1 ≤ m)
@@ -47,11 +49,13 @@ theorem proximity_gap_of_residuals
       (S.card : ℝ≥0) ≥ (1 - δ) * (Fintype.card ι) ∧
       ∀ i : Fin m, ∃ u : ι → F, u ∈ (code φ degree) ∧ ∀ x ∈ S, f i x = u x := by
   classical
+  let : SampleableType F := SampleableType.ofFintype F
   obtain ⟨k, rfl⟩ : ∃ k, m = k + 1 := ⟨m - 1, (Nat.succ_pred_eq_of_pos hm).symm⟩
   have hJA : jointAgreement (F := F) (κ := Fin (k + 1)) (ι := ι)
       (C := (↑(code φ degree) : Set (ι → F))) (δ := δ) (W := f) := by
-    refine ProximityGap.correlatedAgreement_affine_curves
-      (k := k) (deg := degree) (domain := φ) (δ := δ) (hStrict k) (hBoundary k) hδLt f ?_
+    refine ProximityGap.correlatedAgreement_affine_curves_of_boundary_probability
+      (k := k) (deg := degree) (domain := φ) (δ := δ) hδLt (hBoundary k) f ?_
+    rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native]
     -- the curve word coincides with the keystone power-sum word
     have hword : ∀ r : F, (fun x => ∑ j : Fin (k + 1), GenFun r j * f j x)
         = (∑ j : Fin (k + 1), (r ^ (j : ℕ)) • f j) := by

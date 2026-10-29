@@ -1,163 +1,208 @@
 /-
-Copyright (c) 2025 ArkLib Contributors. All rights reserved.
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ArkLib Contributors
+Authors: Alexander Hicks
 -/
-import ArkLib.ProofSystem.Fri.Spec.General
-import ArkLib.ToMathlib.FriComplete
-import ArkLib.ToMathlib.FriCompleteCompose
+
+module
+
+public import ArkLib.ProofSystem.Fri.Spec.LocalCompleteness
+public import ArkLib.ProofSystem.Fri.Spec.HonestFolding
+public import ArkLib.ProofSystem.Fri.Spec.InputRelation
+public import ArkLib.OracleReduction.Composition.Sequential.NoAmbient
+public import ArkLib.OracleReduction.Composition.Sequential.OracleCompleteness
+public import ArkLib.OracleReduction.Security.RbrGame
 
 /-!
-# FRI: Composed Folding Reduction Perfect Completeness (issue #117)
+# Completeness of the FRI oracle reduction
 
-This module integrates the perfect completeness of the composed FRI reduction
-(`Fri.Spec.reduction`), completing the proof outline from `ArkLib.ToMathlib.FriCompleteCompose`.
-It records the false-as-stated query-round surface, defines the remaining folding-phase
-residual, and applies the sequential composition keystones.
+The honest prover preserves the supplied word and folds its polynomial witness. Only the first
+queried block can contain input errors; all later commitments are exact polynomial evaluations.
 -/
 
-namespace Fri.Spec.Completeness
+@[expose] public section
 
-open OracleSpec OracleComp ProtocolSpec NNReal Domain
+namespace Fri.Spec
 
-variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F] [SampleableType F]
-variable {n : ℕ}
-variable {k : ℕ} {s : Fin (k + 1) → ℕ+} {d : ℕ+}
-variable {ω : SmoothCosetFftDomain n F}
-variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp))
+open Domain OracleSpec OracleComp ProtocolSpec Finset
+open scoped NNReal ENNReal ProbabilityTheory
 
-/-- **Brick false-as-stated surface — query round.**
+variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]
+variable {n k : ℕ} {ω : SmoothCosetFftDomain n F}
+variable (s : Fin (k + 1) → ℕ+) (d : ℕ+) (l : ℕ)
 
-**Audit status (2026-06-10): SUSPECTED FALSE as stated — relation/check mismatch.** The query
-verifier (`QueryRound.queryVerifier`) guards `RoundConsistency.roundConsistencyCheck` for
-**every** round `i : Fin (k+1)` (comparing oracle `i` against oracle `i+1`, resp. the
-in-the-clear final polynomial at `i = k`), but the stated input relation
-(`QueryRound.outputRelation = FinalFoldPhase.outputRelation`) constrains **only the last
-fold** (plaintext match + round-`k` folding consistency). A relation member whose oracles at
-indices `< k` are inconsistent (e.g. arbitrary functions unrelated by folding) makes the
-round-`i` guard fail for `i < k`, so the success probability is below `1` and perfect
-completeness fails. The composite FRI reduction is *not* affected at the design level — the
-honest runs reaching the query phase carry fully consistent oracles — but that invariant is
-NOT recorded in the relation chain (each `FoldPhase.outputRelation i` constrains rounds
-`i, i+1` only, and chaining forgets it). The honest repair is to thread a full-chain
-consistency invariant through all round relations (a `Spec`-level relation redesign) and
-restate this residual w.r.t. it; do NOT attempt to discharge the present statement.
+/-- The folding verifier's degree guard and complete output-history map. -/
+private noncomputable def foldGuardedForm :
+    (reductionFold k (ω := ω) s d).toReduction.verifier.GuardedForm where
+  check := fun _ tr ↦ decide ((tr.snd 1).natDegree < d.val)
+  out := fun stmt tr ↦ (foldPhaseChallenges s tr, foldPhaseHistory s d stmt tr)
+  verify_eq := by
+    intro stmt tr
+    apply OptionT.ext
+    change ((reductionFold k (ω := ω) s d).verifier.toVerifier.run stmt tr).run = _
+    erw [reductionFold_run]
+    simp only [decide_eq_true_eq]
+    split_ifs <;> rfl
 
-**The repair is LANDED** (issue #341 closeout): `ToMathlib/FriCompleteQueryRound.lean`
-states the invariant in the checker's own currency (`queryCheckerAccepts`) and proves the
-repaired statement (`queryRound_perfectCompleteness_repaired`); the re-scoped remaining
-obligation is `queryRoundChainDeliveryHypothesis` there (fold phase delivers the invariant).
+namespace QueryRound
 
-This definition is intentionally **not** named as a strict residual: it is retained only as
-the historical false surface consumed by old composition wrappers. -/
-def queryRoundPerfectCompletenessFalseAsStated
-    (dom_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (l : ℕ)
-    [hQueryChallenge : ∀ i, SampleableType ((QueryRound.pSpec l (ω := ω)).Challenge i)]
-    (hInit : NeverFail init) (δ : ℝ≥0) : Prop :=
-  OracleReduction.perfectCompleteness init impl
-    (QueryRound.outputRelation s (ω := ω) d (round_bound dom_size_cond) δ)
-    (QueryRound.outputRelation s (ω := ω) d (round_bound dom_size_cond) δ)
-    (QueryRound.queryOracleReduction.{0} s d dom_size_cond l)
+/-- Uniform sampling of the complete vector of initial-domain queries, with replacement. -/
+noncomputable instance instSampleableTypeChallenge :
+    ∀ j, SampleableType ((pSpec (ω := ω) l).Challenge j) := by
+  rintro ⟨j, hj⟩
+  have hzero : j = 0 := Fin.eq_zero j
+  subst j
+  change SampleableType (Fin l → (ω.subdomain 0).toFinset)
+  infer_instance
 
-/-- **Brick — query round** (reduction to the historical false-as-stated surface). -/
-theorem queryRound_perfectCompleteness
-    (dom_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (l : ℕ)
-    (hInit : NeverFail init) (δ : ℝ≥0)
-    [hQueryChallenge : ∀ i, SampleableType ((QueryRound.pSpec l (ω := ω)).Challenge i)]
-    (hFalseStatement : queryRoundPerfectCompletenessFalseAsStated (k := k)
-      (hQueryChallenge := hQueryChallenge) init impl dom_size_cond l hInit δ) :
-    OracleReduction.perfectCompleteness init impl
-      (QueryRound.outputRelation s (ω := ω) d (round_bound dom_size_cond) δ)
-      (QueryRound.outputRelation s (ω := ω) d (round_bound dom_size_cond) δ)
-      (QueryRound.queryOracleReduction.{0} s d dom_size_cond l) :=
-  hFalseStatement
+/-- The query prover samples the verifier's vector and preserves all input data. -/
+theorem queryProver_run
+    (stmt : FinalStatement F k × ∀ j, FinalOracleStatement s ω j)
+    (p : Witness F s d (Fin.last (k + 1))) :
+    (queryProver s d l).run stmt p = (do
+      let xs ← (pSpec (ω := ω) l).getChallenge ⟨0, rfl⟩
+      pure (((default : (pSpec (ω := ω) l).Transcript 0).concat
+        (m := (0 : Fin 1)) xs), stmt, p)) := by
+  unfold Prover.run
+  erw [Prover.runToRound_succ (0 : Fin 1)]
+  erw [Prover.processRound_of_dir_eq_V_to_P (0 : Fin 1) rfl]
+  simp [Prover.runToRound_zero_of_prover_first, queryProver]
 
-/-- **Brick D — folding phase** (statement). Discharged: see
-`foldPhasePerfectCompletenessStatement_holds` (`ToMathlib/FriCompleteFoldPhase.lean`),
-proven axiom-clean from the per-round inputs. -/
-def foldPhasePerfectCompletenessStatement
-    (dom_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n)
-    (hInit : NeverFail init) (δ : ℝ≥0)
-    [hFoldChallenge : ∀ i,
-      SampleableType ((pSpecFold k s (ω := ω) ++ₚ FinalFoldPhase.pSpec F).Challenge i)]
-    (hRounds :
-      ∀ i : Fin k,
-        foldRoundPerfectCompletenessResidual (d := d) (ω := ω) init impl hInit i
-          (round_bound dom_size_cond) δ)
-    (hFinal :
-      finalFoldRoundPerfectCompletenessResidual (d := d) (ω := ω) init impl hInit
-        (round_bound dom_size_cond) δ) : Prop :=
-  OracleReduction.perfectCompleteness init impl
-    (inputRelation k s d dom_size_cond δ)
-    (FinalFoldPhase.outputRelation s (ω := ω) d (round_bound dom_size_cond) δ)
-    (reductionFold k s d (ω := ω))
+/-- Simulating the query prover draws a uniform vector and preserves the shared oracle state. -/
+theorem queryProver_simulate_run
+    (stmt : FinalStatement F k × ∀ j, FinalOracleStatement s ω j)
+    (p : Witness F s d (Fin.last (k + 1))) {σ : Type} (state : σ)
+    (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
+    (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
+      ((queryProver s d l).run stmt p)).run state = (do
+        let xs ← $ᵗ (Fin l → (ω.subdomain 0).toFinset)
+        pure ((((default : (pSpec (ω := ω) l).Transcript 0).concat
+          (m := (0 : Fin 1)) xs), stmt, p), state)) := by
+  have hget := simulateQ_addLift_challengeQueryImpl_getChallenge
+    (pSpec := pSpec (ω := ω) l) impl ⟨0, rfl⟩
+  rw [queryProver_run]
+  simp only [simulateQ_bind, simulateQ_pure]
+  erw [hget]
+  simp
 
-/-- **Brick D — folding phase completeness.** -/
-theorem foldPhase_perfectCompleteness
-    (dom_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n)
-    (hInit : NeverFail init) (δ : ℝ≥0)
-    [∀ i, ∀ j, SampleableType ((FoldPhase.pSpec (ω := ω) s i).Challenge j)]
-    [∀ j, SampleableType ((FinalFoldPhase.pSpec F).Challenge j)]
-    [hFoldChallenge : ∀ i,
-      SampleableType ((pSpecFold k s (ω := ω) ++ₚ FinalFoldPhase.pSpec F).Challenge i)]
-    [OracleVerifier.Append.AppendCoherent (reductionFold k s d (ω := ω)).verifier]
-    (hRounds :
-      ∀ i : Fin k,
-        foldRoundPerfectCompletenessResidual (d := d) (ω := ω) init impl hInit i
-          (round_bound dom_size_cond) δ)
-    (hFinal :
-      finalFoldRoundPerfectCompletenessResidual (d := d) (ω := ω) init impl hInit
-        (round_bound dom_size_cond) δ)
-    (hResidual : foldPhasePerfectCompletenessStatement
-      (hFoldChallenge := hFoldChallenge) init impl dom_size_cond hInit δ hRounds hFinal) :
-    OracleReduction.perfectCompleteness init impl
-      (inputRelation k s d dom_size_cond δ)
-      (FinalFoldPhase.outputRelation s (ω := ω) d (round_bound dom_size_cond) δ)
-      (reductionFold k s d (ω := ω)) :=
-  hResidual
+/-- A guarded form of the query verifier, checking every local folding equation. -/
+noncomputable def queryGuardedForm
+    (hdom : 2 ^ (∑ j, (s j).val) * d.val ≤ 2 ^ n) :
+    (queryOracleReduction (ω := ω) s d hdom l).toReduction.verifier.GuardedForm where
+  check := fun stmt tr ↦ decide (∀ j i,
+    (simulateQ (OracleInterface.simOracle0 (FinalOracleStatement s ω) stmt.2)
+      (checkRound s (round_bound hdom) (finalPolynomial s stmt.2)
+        (stmt.1 i) i (tr.challenges ⟨0, by simp⟩ j))).run = true)
+  out := fun stmt _ ↦ stmt
+  verify_eq := by
+    rintro ⟨α, o⟩ tr
+    apply OptionT.ext
+    change ((queryVerifier s (round_bound hdom) l).toVerifier.verify (α, o) tr).run = _
+    erw [queryVerifier_toVerifier_verify]
+    simp only [decide_eq_true_eq]
+    split_ifs <;> rfl
 
-set_option maxHeartbeats 1000000 in
--- The composition proof elaborates the generic sequential-composition theorem with FRI indices.
-/-- **Brick D — composed FRI reduction perfect completeness.**
-The honest FRI protocol is perfectly complete, reducing the proximity of the initial oracle
-to the proximity of the final polynomial and the passing of the query checks.
+/-- Querying an honest retained history preserves its exact output witness with the radius bound. -/
+theorem queryOracleReduction_completeness
+    (hdom : 2 ^ (∑ j, (s j).val) * d.val ≤ 2 ^ n) (δ : ℝ≥0)
+    {σ : Type} (state : σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
+    (queryOracleReduction (ω := ω) s d hdom l).completeness (pure state) impl
+      (foldCompletenessRelation s d δ) (Spec.outputRelation k s d hdom 0)
+      (completenessError s δ l) := by
+  change (queryOracleReduction (ω := ω) s d hdom l).toReduction.completeness _ _ _ _ _
+  rw [Reduction.completeness_iff_of_guarded_verifier _ (queryGuardedForm s d l hdom)]
+  rintro stmt p ⟨f, p₀, α, hdist, heq⟩
+  rcases Prod.mk.inj heq with ⟨rfl, rfl⟩
+  have hprob := verifyQueries_completeness s d (round_bound hdom) f p₀ α δ l hdist
+  have hout := honestHistory_mem_outputRelation s d hdom f p₀ α
+  simp_rw [eval_verifyQueries_ne_none_iff s (round_bound hdom)] at hprob
+  simp only [pure_bind]
+  erw [queryProver_simulate_run]
+  simpa [prEvent_norm, queryGuardedForm, FullTranscript.challenges, hout] using hprob
 
-The composition layer is **fully proven** (`reduction_perfectCompleteness_of_phases`,
-challenge-seam append keystone); the only remaining hypotheses are the still-open *per-phase*
-residuals (`hFoldRes`, `hQueryFalseStatement` and the per-round inputs they consume). -/
-theorem reduction_perfectCompleteness
-    (dom_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (l : ℕ)
-    (hInit : NeverFail init) (δ : ℝ≥0)
-    [∀ i, ∀ j, SampleableType ((FoldPhase.pSpec (ω := ω) s i).Challenge j)]
-    [∀ j, SampleableType ((FinalFoldPhase.pSpec F).Challenge j)]
-    [hFoldChallenge : ∀ i,
-      SampleableType ((pSpecFold k s (ω := ω) ++ₚ FinalFoldPhase.pSpec F).Challenge i)]
-    [hQueryChallenge : ∀ i, SampleableType ((QueryRound.pSpec l (ω := ω)).Challenge i)]
-    [OracleVerifier.Append.AppendCoherent (reductionFold k s d (ω := ω)).verifier]
-    (hRounds :
-      ∀ i : Fin k,
-        foldRoundPerfectCompletenessResidual (d := d) (ω := ω) init impl hInit i
-          (round_bound dom_size_cond) δ)
-    (hFinal :
-      finalFoldRoundPerfectCompletenessResidual (d := d) (ω := ω) init impl hInit
-        (round_bound dom_size_cond) δ)
-    (hFoldRes : foldPhasePerfectCompletenessStatement
-      (hFoldChallenge := hFoldChallenge) init impl dom_size_cond hInit δ hRounds hFinal)
-    (hQueryFalseStatement : queryRoundPerfectCompletenessFalseAsStated (k := k)
-      (hQueryChallenge := hQueryChallenge) init impl dom_size_cond l hInit δ) :
-    letI : ∀ i, SampleableType
-        (((pSpecFold k s (ω := ω) ++ₚ FinalFoldPhase.pSpec F) ++ₚ
-          QueryRound.pSpec l (ω := ω)).Challenge i) :=
-      @ProtocolSpec.instSampleableTypeChallengeAppend _ _ _ _ hFoldChallenge hQueryChallenge
-    OracleReduction.perfectCompleteness init impl
-      (inputRelation k s d dom_size_cond δ)
-      (QueryRound.outputRelation s (ω := ω) d (round_bound dom_size_cond) δ)
-      ((reductionFold k s d (ω := ω)).append
-        (QueryRound.queryOracleReduction.{0} s d dom_size_cond l)) := by
-  exact reduction_perfectCompleteness_of_phases init impl dom_size_cond l hInit
-    (foldPhase_perfectCompleteness init impl dom_size_cond hInit δ hRounds hFinal hFoldRes)
-    (queryRound_perfectCompleteness init impl dom_size_cond l hInit δ hQueryFalseStatement)
+/-- Querying a fixed honest history has the sharper error given by its clean first blocks. -/
+theorem queryOracleReduction_completeness_blocks
+    (hdom : 2 ^ (∑ j, (s j).val) * d.val ≤ 2 ^ n)
+    (f : OracleStatement s ω (0 : Fin (k + 1)) 0) (p₀ : Witness F s d 0)
+    {σ : Type} (state : σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
+    (queryOracleReduction (ω := ω) s d hdom l).completeness (pure state) impl
+      (honestOutputRelation s d f p₀) (Spec.outputRelation k s d hdom 0)
+      (1 - (((cleanFirstQueries ω (s 0).val (fun z ↦ f (initialQuery z))
+        (fun z ↦ p₀.val.eval (ω z))).card : ℝ≥0) / 2 ^ n) ^ l) := by
+  change (queryOracleReduction (ω := ω) s d hdom l).toReduction.completeness _ _ _ _ _
+  rw [Reduction.completeness_iff_of_guarded_verifier _ (queryGuardedForm s d l hdom)]
+  rintro stmt p ⟨α, heq⟩
+  rcases Prod.mk.inj heq with ⟨rfl, rfl⟩
+  have hprob := verifyQueries_completeness_blocks s d (round_bound hdom) f p₀ α l
+  have hout := honestHistory_mem_outputRelation s d hdom f p₀ α
+  simp_rw [eval_verifyQueries_ne_none_iff s (round_bound hdom)] at hprob
+  have hpow := pow_le_one₀ (by positivity)
+    (cleanFirstQueries_density_le_one ω (s 0).val
+      (fun z ↦ f (initialQuery z)) (fun z ↦ p₀.val.eval (ω z))) (n := l)
+  rw [← ENNReal.coe_one, ← ENNReal.coe_sub, tsub_tsub_cancel_of_le hpow]
+  simp only [pure_bind]
+  erw [queryProver_simulate_run]
+  simpa [prEvent_norm, queryGuardedForm, FullTranscript.challenges, hout] using hprob
 
-#print axioms reduction_perfectCompleteness
+end QueryRound
 
-end Fri.Spec.Completeness
+/-- Uniform challenge sampling for the complete folding and query schedule. -/
+noncomputable instance instSampleableTypeChallengePSpec :
+    ∀ j, SampleableType ((pSpec k (ω := ω) s l).Challenge j) :=
+  ProtocolSpec.instSampleableTypeChallengeAppend
+
+/-- The complete reduction accepts noisy inputs with the clipped first-fold completeness error,
+and its transmitted final polynomial equals its honest output witness. -/
+theorem reduction_completeness
+    (hdom : 2 ^ (∑ j, (s j).val) * d.val ≤ 2 ^ n) (l : ℕ) (δ : ℝ≥0)
+    {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
+    (reduction (ω := ω) k s d hdom l).completeness init impl
+      (inputRelation k s d hdom δ) (outputRelation k s d hdom 0)
+      (completenessError s δ l) := by
+  simpa only [zero_add] using OracleReduction.append_completeness_of_guarded_verifiers
+    (reductionFold k (ω := ω) s d) (QueryRound.queryOracleReduction s d hdom l)
+    (foldGuardedForm s d) (QueryRound.queryGuardedForm s d l hdom)
+    (fun _ ↦ Or.inl inferInstance)
+    (reductionFold_perfectCompleteness s d hdom δ init impl)
+    (fun state ↦ QueryRound.queryOracleReduction_completeness s d l hdom δ state impl)
+
+/-- For a fixed input word and witness, completeness depends on the exact number of clean
+first-fold blocks and preserves the complete honest output history. -/
+theorem reduction_completeness_blocks
+    (hdom : 2 ^ (∑ j, (s j).val) * d.val ≤ 2 ^ n) (l : ℕ)
+    (f : OracleStatement s ω (0 : Fin (k + 1)) 0) (p₀ : Witness F s d 0)
+    {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
+    (reduction (ω := ω) k s d hdom l).completeness init impl
+      (honestFoldRelation s d f p₀ 0) (outputRelation k s d hdom 0)
+      (1 - (((cleanFirstQueries ω (s 0).val (fun z ↦ f (initialQuery z))
+        (fun z ↦ p₀.val.eval (ω z))).card : ℝ≥0) / 2 ^ n) ^ l) := by
+  simpa only [zero_add, Fin.castSucc_zero] using
+    OracleReduction.append_completeness_of_guarded_verifiers
+      (reductionFold k (ω := ω) s d) (QueryRound.queryOracleReduction s d hdom l)
+      (foldGuardedForm s d) (QueryRound.queryGuardedForm s d l hdom)
+      (fun _ ↦ Or.inl inferInstance)
+      (reductionFold_perfectCompleteness_honest s d f p₀ init impl)
+      (fun state ↦
+        QueryRound.queryOracleReduction_completeness_blocks s d l hdom f p₀ state impl)
+
+/-- Exact input evaluations give perfect completeness for every query count. -/
+theorem perfect_completeness
+    (hdom : 2 ^ (∑ j, (s j).val) * d.val ≤ 2 ^ n) (l : ℕ)
+    {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
+    (reduction (ω := ω) k s d hdom l).perfectCompleteness init impl
+      (inputRelation k s d hdom 0) (outputRelation k s d hdom 0) := by
+  simpa only [OracleReduction.perfectCompleteness, Reduction.perfectCompleteness,
+    OracleReduction.completeness, completenessError_zero] using
+    reduction_completeness s d hdom l 0 init impl
+
+/-- With no queries, honest folding is perfectly complete for every input radius. -/
+theorem perfect_completeness_zero_queries
+    (hdom : 2 ^ (∑ j, (s j).val) * d.val ≤ 2 ^ n) (δ : ℝ≥0)
+    {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
+    (reduction (ω := ω) k s d hdom 0).perfectCompleteness init impl
+      (inputRelation k s d hdom δ) (outputRelation k s d hdom 0) := by
+  simpa only [OracleReduction.perfectCompleteness, Reduction.perfectCompleteness,
+    OracleReduction.completeness, completenessError_zero_queries] using
+    reduction_completeness s d hdom 0 δ init impl
+
+end Fri.Spec

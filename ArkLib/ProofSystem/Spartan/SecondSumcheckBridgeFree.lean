@@ -73,7 +73,8 @@ instance secondSumcheckLensCompleteBF :
   lift_complete := by
     rintro ⟨⟨t, stmt⟩, oStmt⟩ ⟨⟩ ⟨⟨t_out, r_y⟩, oStmt'⟩ ⟨⟩ _hCompat hRelIn _hRelOut
     simp only [secondSumcheckRelInBF, Set.mem_setOf_eq] at hRelIn
-    simpa only [secondSumcheckRelOutBF, Set.mem_setOf_eq] using hRelIn.1
+    simpa only [secondSumcheckRelOutBF, Set.mem_ofPred_eq, secondSumcheckContextLens,
+      OracleContext.Lens.toContext, secondSumcheckStmtLens, Statement.Lens.lift] using hRelIn.1
 
 /-- Second sum-check phase perfect completeness (restated transfer), given inner completeness. -/
 theorem secondSumcheck_perfectCompletenessBF
@@ -86,7 +87,7 @@ theorem secondSumcheck_perfectCompletenessBF
     (secondSumcheckReduction pp oSpec).perfectCompleteness init impl
       (secondSumcheckRelInBF (R := R) pp) (secondSumcheckRelOutBF (R := R) pp) := by
   haveI := secondSumcheckCoherent (R := R) pp oSpec
-  exact OracleReduction.liftContext_perfectCompleteness
+  exact OracleReduction.liftContextLegacy_perfectCompleteness
     (R := Sumcheck.Spec.oracleReduction R 2 (boolEmbedding R) pp.ℓ_n oSpec)
     (lens := secondSumcheckContextLens pp)
     (stmtLens := secondSumcheckOracleLens pp oSpec)
@@ -104,7 +105,7 @@ sum-check completeness deliverable of #114, made unconditional, routing around t
 `SecondSumcheckComplete`. -/
 theorem secondSumcheck_perfectCompleteness_bridgeFree
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
-    [Inhabited R] [oSpec.Fintype] [oSpec.Inhabited]
+    [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)

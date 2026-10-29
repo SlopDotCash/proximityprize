@@ -346,9 +346,17 @@ theorem badScalarSet_demo_ge_four :
     C542_rot_mem C542_rot_inv_mem
     (a := 3) (c := 4) (by decide) (by decide) w₀_eigen w₁_eigen
     mcaEvent_demo_g1 (by decide)
+  have hinv : (3 : F5)⁻¹ = 2 := inv_eq_of_mul_eq_one_left (by decide)
   have hord : orderOf (Units.mk0 ((3 : F5)⁻¹ * 4)
       (mul_ne_zero (inv_ne_zero (by decide)) (by decide))) = 4 := by
-    rw [orderOf_eq_iff (by norm_num)]
+    have hu : Units.mk0 ((3 : F5)⁻¹ * 4)
+        (mul_ne_zero (inv_ne_zero (by decide)) (by decide)) =
+        Units.mk0 (3 : F5) (by decide) := by
+      apply Units.ext
+      change (3 : F5)⁻¹ * 4 = 3
+      rw [hinv]
+      decide
+    rw [hu, orderOf_eq_iff (by norm_num)]
     refine ⟨by decide, ?_⟩
     intro m hm hm0
     rcases m with _ | _ | _ | _ | m

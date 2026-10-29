@@ -23,6 +23,7 @@ open OracleComp OracleSpec ProtocolSpec ReedSolomon Domain
 open NNReal Finset Function ProbabilityTheory
 
 variable {𝔽 : Type} [NonBinaryField 𝔽] [Fintype 𝔽] [DecidableEq 𝔽] [Nontrivial 𝔽]
+private noncomputable local instance : SampleableType 𝔽 := SampleableType.ofFintype 𝔽
 variable {n : ℕ} {k : ℕ}
 variable {s : Fin (k + 1) → ℕ+} {d : ℕ+}
 variable {ω : SmoothCosetFftDomain n 𝔽}
@@ -221,7 +222,7 @@ theorem friSoundnessQueryLift_densityRSAffineLine_of_probabilityInputs
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
     (h_rs : friRSAffineLineProbabilityInputs (n := n) (ω := ω) f m) :
     friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3 :=
-  friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSAffineLine
+  friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSAffineLine
     (n := n) (s := s) (d := d) (ω := ω)
     f m_ge_3 G δ_query queries l domain_size_cond h_agreement
     (friRSAffineLineDensityInputs_of_probabilityInputs (n := n) (ω := ω) f m h_rs)
@@ -246,7 +247,7 @@ theorem friSoundnessQueryLift_probabilityRSAffineLine_of_densityInputs
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
     (h_rs : friRSAffineLineDensityInputs (n := n) (ω := ω) f m) :
     friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3 :=
-  friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSAffineLine
+  friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSAffineLine
     (n := n) (s := s) (d := d) (ω := ω)
     f m_ge_3 G δ_query queries l domain_size_cond h_agreement
     (friRSAffineLineProbabilityInputs_of_densityInputs (n := n) (ω := ω) f m h_rs)
@@ -254,7 +255,7 @@ theorem friSoundnessQueryLift_probabilityRSAffineLine_of_densityInputs
 open ENNReal in
 /-- Probability-route RS affine-line inputs can feed the density-route full-domain Claim 8.3
 residual wrapper. -/
-theorem fri_soundness_densityRSAffineLine_of_probabilityInputs
+theorem fri_soundness_canonicalIndependent_densityRSAffineLine_of_probabilityInputs
     {l m : ℕ}
     (f : Fin 2 → (ω → 𝔽))
     (m_ge_3 : m ≥ 3)
@@ -272,10 +273,10 @@ theorem fri_soundness_densityRSAffineLine_of_probabilityInputs
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
     (h_rs : friRSAffineLineProbabilityInputs (n := n) (ω := ω) f m) :
-    fri_soundness (n := n) (s := s) (d := d) (ω := ω) (l := l)
+    fri_soundness_canonicalIndependent (n := n) (s := s) (d := d) (ω := ω) (l := l)
       (domain_size_cond := domain_size_cond) f m_ge_3 := by
   exact
-    fri_soundness_of_queryLift
+    fri_soundness_canonicalIndependent_of_queryLift
       (n := n) (s := s) (d := d) (ω := ω) (domain_size_cond := domain_size_cond)
       f m_ge_3
       (friSoundnessQueryLift_densityRSAffineLine_of_probabilityInputs
@@ -285,7 +286,7 @@ theorem fri_soundness_densityRSAffineLine_of_probabilityInputs
 open ENNReal in
 /-- Density-route RS affine-line inputs can feed the probability-route full-domain Claim 8.3
 residual wrapper. -/
-theorem fri_soundness_probabilityRSAffineLine_of_densityInputs
+theorem fri_soundness_canonicalIndependent_probabilityRSAffineLine_of_densityInputs
     {l m : ℕ}
     (f : Fin 2 → (ω → 𝔽))
     (m_ge_3 : m ≥ 3)
@@ -303,10 +304,10 @@ theorem fri_soundness_probabilityRSAffineLine_of_densityInputs
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
     (h_rs : friRSAffineLineDensityInputs (n := n) (ω := ω) f m) :
-    fri_soundness (n := n) (s := s) (d := d) (ω := ω) (l := l)
+    fri_soundness_canonicalIndependent (n := n) (s := s) (d := d) (ω := ω) (l := l)
       (domain_size_cond := domain_size_cond) f m_ge_3 := by
   exact
-    fri_soundness_of_queryLift
+    fri_soundness_canonicalIndependent_of_queryLift
       (n := n) (s := s) (d := d) (ω := ω) (domain_size_cond := domain_size_cond)
       f m_ge_3
       (friSoundnessQueryLift_probabilityRSAffineLine_of_densityInputs
@@ -418,9 +419,9 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms Fri.friSoundnessQueryLift_probabilityRSAffineLine_of_densityInputs
 set_option linter.style.longLine false in
-#print axioms Fri.fri_soundness_densityRSAffineLine_of_probabilityInputs
+#print axioms Fri.fri_soundness_canonicalIndependent_densityRSAffineLine_of_probabilityInputs
 set_option linter.style.longLine false in
-#print axioms Fri.fri_soundness_probabilityRSAffineLine_of_densityInputs
+#print axioms Fri.fri_soundness_canonicalIndependent_probabilityRSAffineLine_of_densityInputs
 set_option linter.style.longLine false in
 #print axioms Fri.fri_jointAgreement_densityRSAffineLine_of_probabilityInputs
 set_option linter.style.longLine false in

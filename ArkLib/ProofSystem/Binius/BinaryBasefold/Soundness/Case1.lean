@@ -5,12 +5,12 @@ Authors: ArkLib Contributors, Chung Thai Nguyen, Quang Dao
 -/
 
 import ArkLib.ProofSystem.Binius.BinaryBasefold.FoldDetDischarge
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Code
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code
 import ArkLib.Data.Probability.TensorSchwartzZippel
 import ArkLib.Data.Probability.PrUnionBound
 import ArkLib.Data.CodingTheory.ProximityGap.DG25
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Compliance
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Compliance
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
 
 /-!
 # Binary Basefold first-case soundness
@@ -46,6 +46,7 @@ These are exactly the per-point inputs the tensor Schwartz–Zippel step of
 -/
 
 set_option maxHeartbeats 400000
+set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedSectionVars false
 
 namespace Binius.BinaryBasefold
@@ -63,6 +64,29 @@ variable (β : Fin r → L) [hβ_lin_indep : Fact (LinearIndependent 𝔽q β)]
   [h_β₀_eq_1 : Fact (β 0 = 1)]
 variable {ℓ 𝓡 : ℕ} [NeZero ℓ] [NeZero 𝓡]
 variable {h_ℓ_add_R_rate : ℓ + 𝓡 < r}
+
+/-- Historical fold matrix with the newest peeled step in the low row bit. The canonical
+`foldMatrix` uses its own coordinate convention; this definition does not identify those matrices. -/
+def Compatibility.lowRowBitFoldMatrix (i : Fin r) {destIdx : Fin r} (steps : ℕ)
+    (h_destIdx : destIdx.val = i.val + steps) (h_destIdx_le : destIdx ≤ ℓ)
+    (y : sDomain 𝔽q β h_ℓ_add_R_rate destIdx) :
+    Matrix (Fin (2 ^ steps)) (Fin (2 ^ steps)) L :=
+  have hlt : i.val + steps < ℓ + 𝓡 := by
+    have hR := Nat.pos_of_neZero 𝓡
+    omega
+  foldMatrixNat 𝔽q β i steps hlt ⟨y.val, by
+    have hidx : (⟨i.val + steps, by omega⟩ : Fin r) = destIdx :=
+      Fin.eq_of_val_eq h_destIdx.symm
+    rw [hidx]
+    exact y.property⟩
+
+/-- The historical coefficient matrix is nonsingular at every bounded destination. -/
+lemma Compatibility.lowRowBitFoldMatrix_det_ne_zero (i : Fin r) {destIdx : Fin r} (steps : ℕ)
+    (h_destIdx : destIdx.val = i.val + steps) (h_destIdx_le : destIdx ≤ ℓ)
+    (y : sDomain 𝔽q β h_ℓ_add_R_rate destIdx) :
+    (Compatibility.lowRowBitFoldMatrix 𝔽q β i steps h_destIdx h_destIdx_le y).det ≠ 0 := by
+  unfold Compatibility.lowRowBitFoldMatrix
+  exact foldMatrixNat_det_ne_zero 𝔽q β i steps _ (by omega) _
 
 /-- **Fold-difference matrix form.** The pointwise difference of two iterated folds equals the
 challenge tensor dotted with `foldMatrix y` applied to the difference of fiber evaluations. -/
@@ -82,7 +106,7 @@ lemma foldDiff_eq_dotProduct_mulVec (i : Fin r) {destIdx : Fin r} (steps : ℕ)
         (fun idx => (challengeTensorProduct (L := L) (ℓ := ℓ) (𝓡 := 𝓡) (r := r)
           steps r_challenges).get idx)
         (Matrix.mulVec
-          (foldMatrix 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
+          (Compatibility.lowRowBitFoldMatrix 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
             h_destIdx h_destIdx_le y)
           (fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
               (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) (f := f) (y := y)
@@ -94,8 +118,9 @@ lemma foldDiff_eq_dotProduct_mulVec (i : Fin r) {destIdx : Fin r} (steps : ℕ)
       ← single_point_localized_fold_matrix_form_eq_iterated_fold 𝔽q β
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i steps h_destIdx h_destIdx_le h_i_lt
         g r_challenges y]
-  simp only [single_point_localized_fold_matrix_form]
+  simp only [single_point_localized_fold_matrix_form, Compatibility.lowRowBitFoldMatrix]
   rw [Matrix.mulVec_sub, dotProduct_sub]
+  rfl
 
 /-- **Nonvanishing coefficient vector.** If the fiber evaluations of `f` and `g` over `y`
 disagree at some index (i.e. `y ∈ fiberwiseDisagreementSetPerFiber … f g`), then
@@ -111,13 +136,13 @@ lemma foldDiff_coeff_ne_zero (i : Fin r) {destIdx : Fin r} (steps : ℕ)
         fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
           (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) (f := g) (y := y) idx) :
     Matrix.mulVec
-        (foldMatrix 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
+        (Compatibility.lowRowBitFoldMatrix 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
           h_destIdx h_destIdx_le y)
         (fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
             (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) (f := f) (y := y)
           - fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
             (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) (f := g) (y := y)) ≠ 0 := by
-  have hdet := foldMatrix_det_ne_zero 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+  have hdet := Compatibility.lowRowBitFoldMatrix_det_ne_zero 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
     (i := i) (steps := steps) (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) (y := y)
   intro hc
   have hv := Matrix.eq_zero_of_mulVec_eq_zero hdet hc
@@ -145,7 +170,7 @@ lemma foldDiff_zero_iff (i : Fin r) {destIdx : Fin r} (steps : ℕ)
         (fun idx => (challengeTensorProduct (L := L) (ℓ := ℓ) (𝓡 := 𝓡) (r := r)
           steps r_challenges).get idx)
         (Matrix.mulVec
-          (foldMatrix 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
+          (Compatibility.lowRowBitFoldMatrix 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
             h_destIdx h_destIdx_le y)
           (fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
               (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) (f := f) (y := y)
@@ -288,7 +313,7 @@ lemma per_point_fold_collision_prob_le (i : Fin r) {destIdx : Fin r} (steps : �
       ≤ (steps : ℝ≥0) / (Fintype.card L : ℝ≥0) := by
   set a : Fin (2 ^ steps) → L :=
     Matrix.mulVec
-      (foldMatrix 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
+      (Compatibility.lowRowBitFoldMatrix 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
         h_destIdx h_destIdx_le y)
       (fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
           (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) (f := f) (y := y)
@@ -814,3 +839,14 @@ end
 end Binius.BinaryBasefold
 
 end SoundnessProposition
+
+#print axioms Binius.BinaryBasefold.Compatibility.lowRowBitFoldMatrix_det_ne_zero
+#print axioms Binius.BinaryBasefold.foldDiff_eq_dotProduct_mulVec
+#print axioms Binius.BinaryBasefold.foldDiff_coeff_ne_zero
+#print axioms Binius.BinaryBasefold.foldDiff_zero_iff
+#print axioms Binius.BinaryBasefold.ctpAux_get_eq_tensorWeight_eval
+#print axioms Binius.BinaryBasefold.challengeTensorProduct_get_eq_tensorWeight_eval
+#print axioms Binius.BinaryBasefold.dotProduct_challengeTensor_eq_tensorComb_eval
+#print axioms Binius.BinaryBasefold.per_point_fold_collision_prob_le
+#print axioms Binius.BinaryBasefold.prop421Case1_probability_bound
+#print axioms Binius.BinaryBasefold.prop_4_21_case_1_fiberwise_close

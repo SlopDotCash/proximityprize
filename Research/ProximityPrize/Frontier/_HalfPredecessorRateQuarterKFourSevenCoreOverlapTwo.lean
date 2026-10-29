@@ -44,6 +44,8 @@ open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourGlobalCoreSynth
 open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourRegularSignatureRigidity
 open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourUniqueCoreSignatures
 
+set_option backward.isDefEq.respectTransparency false
+
 namespace ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourSevenCoreOverlapTwo
 
 attribute [local instance] Classical.propDecidable
@@ -248,11 +250,11 @@ theorem offResidualSecant_affine_plane_normal_form
   have hroot : ∀ i ∈ H, p.eval (dom i) = 0 := by
     intro i hiH
     have hiAlphaFresh : i ∈ sourceFreshAgreement family residual.source alpha :=
-      halphaH (by simpa only [H] using hiH)
+      halphaH (by simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, H] using hiH)
     have hiBetaFresh : i ∈ sourceFreshAgreement family residual.source beta :=
-      hbetaH (by simpa only [H] using hiH)
+      hbetaH (by simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, H] using hiH)
     have hiThetaFresh : i ∈ sourceFreshAgreement family residual.source theta :=
-      hthetaH (by simpa only [H] using hiH)
+      hthetaH (by simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, H] using hiH)
     have hiAlpha := (Finset.mem_sdiff.mp hiAlphaFresh).1
     have hiBeta := (Finset.mem_sdiff.mp hiBetaFresh).1
     have hiTheta := (Finset.mem_sdiff.mp hiThetaFresh).1
@@ -399,7 +401,7 @@ theorem offResidualSecant_two_triple_data
     rw [hAeq, Finset.card_sdiff_of_subset hEsub,
       residualSecantPetal_card residual, hEcard]
   exact ⟨by simpa only [T, residualSourcePetal, D, D2] using hTsub,
-    hTcard, by simpa only [A, P] using Finset.inter_subset_right, hAcard⟩
+    hTcard, by simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, A, P] using Finset.inter_subset_right, hAcard⟩
 
 /-- The full agreement set of every survivor is the disjoint geographical
 union of its source-petal triple, its secant-petal triple, and the three
@@ -450,7 +452,7 @@ theorem offResidualSecant_fullAgreement_partition
       · exact (Finset.mem_inter.mp (by
           simpa only [T, regularRootTriple, D] using hiT)).1
       · exact (Finset.mem_sdiff.mp (Finset.mem_inter.mp (by
-          simpa only [A, residualSecantPetalAgreement] using hiA)).1).1
+          simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, A, residualSecantPetalAgreement] using hiA)).1).1
     · exact (Finset.mem_sdiff.mp (hHsub (by simpa only [H] using hiH))).1
 
 /-! ## No four collinear survivors -/
@@ -500,10 +502,10 @@ theorem not_four_offResidualSecant_collinear_of_six_le_secant_core
   have hthetaMem : ∀ x, theta x ∈ regularOffResidualSecant family residual := by
     intro x
     fin_cases x
-    · simpa only [theta] using htheta0
-    · simpa only [theta] using htheta1
-    · simpa only [theta] using htheta2
-    · simpa only [theta] using htheta3
+    · simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, theta] using htheta0
+    · simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, theta] using htheta1
+    · simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, theta] using htheta2
+    · simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, theta] using htheta3
   have hthetaG : ∀ x, theta x ∈ family.G := fun x =>
     regularOffResidualSecant_subset_G family residual (hthetaMem x)
   have hline3 : line3 ∈ lineParameters family := by
@@ -516,10 +518,10 @@ theorem not_four_offResidualSecant_collinear_of_six_le_secant_core
   have hthetaOn : ∀ x, theta x ∈ pointsOn family line3 := by
     intro x
     fin_cases x
-    · simpa only [theta] using htheta0On
-    · simpa only [theta] using htheta1On
-    · simpa only [theta, line3] using htheta2On
-    · simpa only [theta, line3] using htheta3On
+    · simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, theta] using htheta0On
+    · simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, theta] using htheta1On
+    · simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, theta, line3] using htheta2On
+    · simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, theta, line3] using htheta3On
   have hline3Ne : line3 ≠ residual.source := by
     intro heq
     have hsourceOn : theta0 ∈ pointsOn family residual.source := by
@@ -586,7 +588,7 @@ theorem not_four_offResidualSecant_collinear_of_six_le_secant_core
     exact ⟨by simpa only [A, P] using hdata.2.2.1,
       by simpa only [A] using hdata.2.2.2⟩
   have hHsubD3 : H ⊆ D3 := by
-    simpa only [H, D3, line3] using
+    simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, H, D3, line3] using
       residual_holes_subset_pair_secant_core
         family hn residual htheta0 htheta1 h01
   have hD3subFull0 : D3 ⊆
@@ -603,8 +605,8 @@ theorem not_four_offResidualSecant_collinear_of_six_le_secant_core
     rcases Finset.mem_union.mp hiFull with hiTA | hiH
     · rcases Finset.mem_union.mp hiTA with hiT | hiA
       · exact Finset.mem_union_left _
-          (Finset.mem_union_right _ ((hTdata 0).1 (by simpa only [T] using hiT)))
-      · exact Finset.mem_union_right _ ((hAdata 0).1 (by simpa only [A] using hiA))
+          (Finset.mem_union_right _ ((hTdata 0).1 (by simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, T, theta] using hiT)))
+      · exact Finset.mem_union_right _ ((hAdata 0).1 (by simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, A, theta] using hiA))
     · exact Finset.mem_union_left _
         (Finset.mem_union_left _ (by simpa only [H] using hiH))
   let KT := D3 ∩ Q
@@ -697,9 +699,9 @@ theorem not_four_offResidualSecant_collinear_of_six_le_secant_core
       have hiA1 := (Finset.mem_inter.mp hi).1
       have hiA2 := (Finset.mem_inter.mp hi).2
       have hiFull1 := (Finset.mem_sdiff.mp (Finset.mem_inter.mp (by
-        simpa only [A, residualSecantPetalAgreement] using hiA1)).1).1
+        simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, A, residualSecantPetalAgreement] using hiA1)).1).1
       have hiFull2 := (Finset.mem_sdiff.mp (Finset.mem_inter.mp (by
-        simpa only [A, residualSecantPetalAgreement] using hiA2)).1).1
+        simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, A, residualSecantPetalAgreement] using hiA2)).1).1
       have hiD3 : i ∈ D3 := by
         rw [← hfullCore x y hxy]
         exact Finset.mem_inter.mpr ⟨hiFull1, hiFull2⟩
@@ -774,21 +776,21 @@ theorem third_mem_pointsOn_secant_of_common_petal_coordinate
     family hn residual htheta2).2.2
   have hi0Full : i ∈ Full theta0 := by
     exact (Finset.mem_sdiff.mp (Finset.mem_inter.mp (by
-      simpa only [residualSecantPetalAgreement] using hi0)).1).1
+      simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, residualSecantPetalAgreement] using hi0)).1).1
   have hi1Full : i ∈ Full theta1 := by
     exact (Finset.mem_sdiff.mp (Finset.mem_inter.mp (by
-      simpa only [residualSecantPetalAgreement] using hi1)).1).1
+      simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, residualSecantPetalAgreement] using hi1)).1).1
   have hi2Full : i ∈ Full theta2 := by
     exact (Finset.mem_sdiff.mp (Finset.mem_inter.mp (by
-      simpa only [residualSecantPetalAgreement] using hi2)).1).1
+      simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, residualSecantPetalAgreement] using hi2)).1).1
   have hRsub : R ⊆ (Full theta0 ∩ Full theta1) ∩ Full theta2 := by
     intro j hj
     rcases Finset.mem_insert.mp hj with rfl | hjH
     · exact Finset.mem_inter.mpr
         ⟨Finset.mem_inter.mpr ⟨hi0Full, hi1Full⟩, hi2Full⟩
-    · have hj0 := (Finset.mem_sdiff.mp (hH0 (by simpa only [H] using hjH))).1
-      have hj1 := (Finset.mem_sdiff.mp (hH1 (by simpa only [H] using hjH))).1
-      have hj2 := (Finset.mem_sdiff.mp (hH2 (by simpa only [H] using hjH))).1
+    · have hj0 := (Finset.mem_sdiff.mp (hH0 (by simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, H] using hjH))).1
+      have hj1 := (Finset.mem_sdiff.mp (hH1 (by simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, H] using hjH))).1
+      have hj2 := (Finset.mem_sdiff.mp (hH2 (by simpa [residualHoles, residualSecantPetalAgreement, sourceFreshAgreement, H] using hjH))).1
       exact Finset.mem_inter.mpr ⟨Finset.mem_inter.mpr ⟨hj0, hj1⟩, hj2⟩
   have htriple : 3 < ((Full theta0 ∩ Full theta1) ∩ Full theta2).card := by
     have hRlarge : 3 < R.card := by omega

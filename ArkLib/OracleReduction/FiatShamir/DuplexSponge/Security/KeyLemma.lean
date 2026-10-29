@@ -4,12 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.FiatShamir.Basic
+import ProximityPrize.Extensions.OracleReduction.FiatShamir.Basic
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Defs
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.TraceTransform
 import VCVio.OracleComp.EvalDist
 import VCVio.OracleComp.QueryTracking.QueryBound
-import VCVio.EvalDist.TVDist
+import VCVio.EvalDist.MeasureTVDist.Basic
+import ToMathlib.MeasureTheory.Measure.Subprobability
 
 /-!
 # Key Lemma for Duplex-Sponge Fiat-Shamir Security (Lemma 5.1)
@@ -29,7 +30,7 @@ transformation follows directly.
 
 ## Formalization shape
 
-The statistical-distance conclusion is stated faithfully via `SPMF.tvDist`:
+The statistical-distance conclusion is stated faithfully via `MeasureTheory.Measure.tvDist`:
 
 - `duplexSpongeFiatShamirGameRemapped` runs `duplexSpongeFiatShamirGame` and pushes both query
   logs through the §5.5 `D2STrace` transform (`TraceTransform.d2sTrace`), landing both
@@ -144,21 +145,50 @@ open DSTraceStorage
 
 variable [DecidableEq StmtIn] [DecidableEq U] [Fintype U]
   [codec : Codec pSpec U] [∀ i, Fintype (pSpec.Message i)]
-  [oSpec.Fintype] [oSpec.Inhabited]
+  [OracleSpec.UniformAnswerMeasure oSpec]
 
 local instance : Inhabited U := ⟨0⟩
 
-/-- The (slow) Fiat-Shamir challenge oracle has finite ranges: each oracle answer is a protocol
-challenge, and challenges are `VCVCompatible`. Stated as a local instance because
-`fsChallengeOracle` fixes its oracle-interface family explicitly, bypassing the generic
-`[v]ₒ.Fintype` instance. -/
-local instance : (fsChallengeOracle StmtIn pSpec).Fintype where
-  fintype_B q := inferInstanceAs (Fintype (pSpec.Challenge q.1))
+/-- Canonical uniform answer measures for the finite slow-FS challenge oracle. -/
+private noncomputable def slowFSUniformAnswerMeasure :
+    OracleSpec.UniformAnswerMeasure (fsChallengeOracle StmtIn pSpec) := by
+  letI : ∀ q : (fsChallengeOracle StmtIn pSpec).Domain,
+      Finite ((fsChallengeOracle StmtIn pSpec).Range q) :=
+    fun q => inferInstanceAs (Finite (pSpec.Challenge q.1))
+  letI : ∀ q : (fsChallengeOracle StmtIn pSpec).Domain,
+      Nonempty ((fsChallengeOracle StmtIn pSpec).Range q) :=
+    fun q => inferInstanceAs (Nonempty (pSpec.Challenge q.1))
+  exact .ofFiniteNonempty _
 
-/-- The (slow) Fiat-Shamir challenge oracle has inhabited ranges (challenges are
-`VCVCompatible`). -/
-local instance : (fsChallengeOracle StmtIn pSpec).Inhabited where
-  inhabited_B q := inferInstanceAs (Inhabited (pSpec.Challenge q.1))
+/-- Canonical uniform answer measures for the finite duplex-sponge oracle. -/
+private noncomputable def duplexUniformAnswerMeasure :
+    OracleSpec.UniformAnswerMeasure (duplexSpongeChallengeOracle StmtIn U) := by
+  letI : ∀ q : (duplexSpongeChallengeOracle StmtIn U).Domain,
+      Finite ((duplexSpongeChallengeOracle StmtIn U).Range q) := fun q => by
+    rcases q with x | x | x
+    · exact inferInstanceAs (Finite (Vector U SpongeSize.C))
+    · exact inferInstanceAs (Finite (CanonicalSpongeState U))
+    · exact inferInstanceAs (Finite (CanonicalSpongeState U))
+  letI : ∀ q : (duplexSpongeChallengeOracle StmtIn U).Domain,
+      Nonempty ((duplexSpongeChallengeOracle StmtIn U).Range q) := fun q => by
+    rcases q with x | x | x
+    · exact inferInstanceAs (Nonempty (Vector U SpongeSize.C))
+    · exact inferInstanceAs (Nonempty (CanonicalSpongeState U))
+    · exact inferInstanceAs (Nonempty (CanonicalSpongeState U))
+  exact .ofFiniteNonempty _
+
+private noncomputable def unitUniformAnswerMeasure :
+    OracleSpec.UniformAnswerMeasure (Unit →ₒ U) := .ofFiniteNonempty _
+
+attribute [local instance] slowFSUniformAnswerMeasure duplexUniformAnswerMeasure
+  unitUniformAnswerMeasure
+
+-- These retained discrete games observe every event, including all query-log events.
+local instance {κ : Type} (spec : OracleSpec κ) :
+    MeasurableSpace (QueryLog spec) := ⊤
+
+local instance {κ : Type} (spec : OracleSpec κ) :
+    MeasurableSpace (StmtIn × StmtOut × pSpec.Messages × QueryLog spec × QueryLog spec) := ⊤
 
 /-- Flavor of a single query index of the DSFS adversary's oracle
 `oSpec + duplexSpongeChallengeOracle StmtIn U`: either the shared ambient oracle `oSpec`, or one
@@ -184,11 +214,18 @@ def dsQueryFlavor :
   | .inr (.inr (.inl _)) => .perm
   | .inr (.inr (.inr _)) => .permInv
 
+local instance bindIsSubprobability {α β : Type} [MeasurableSpace α]
+    [DiscreteMeasurableSpace α] [MeasurableSpace β]
+    (μ : MeasureTheory.Measure α) [MeasureTheory.IsSubprobabilityMeasure μ]
+    (f : α → MeasureTheory.Measure β) [∀ x, MeasureTheory.IsSubprobabilityMeasure (f x)] :
+    MeasureTheory.IsSubprobabilityMeasure (μ.bind f) :=
+  MeasureTheory.isSubprobabilityMeasure_bind Measurable.of_discrete.aemeasurable
+
 /-- The duplex-sponge Fiat-Shamir game with its query logs remapped onto the basic-FS surface:
 run `duplexSpongeFiatShamirGame`, then push both the prover and verifier query logs through the
 §5.5 `D2STrace` transform (`TraceTransform.d2sTrace`).
 
-The result lives directly at the `SPMF` level (rather than inside one oracle monad) because the
+The result lives directly at the native measure level (rather than inside one oracle monad) because the
 trace transform consumes auxiliary `𝒰(Σ)` sampling randomness from a separate `Unit →ₒ U` oracle;
 composing the evaluation distributions is exactly CO25's "remapped experiment" (§5.5.2). -/
 noncomputable def duplexSpongeFiatShamirGameRemapped
@@ -196,18 +233,26 @@ noncomputable def duplexSpongeFiatShamirGameRemapped
     (V : Verifier oSpec StmtIn StmtOut pSpec)
     (P : OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U)
       (StmtIn × pSpec.Messages)) :
-    SPMF (StmtIn × StmtOut × pSpec.Messages
+    MeasureTheory.Measure (StmtIn × StmtOut × pSpec.Messages
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)
-      × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)) := do
-  let ⟨stmtIn, stmtOut, messages, proveQueryLog, verifyQueryLog⟩ ←
-    𝒟[duplexSpongeFiatShamirGame (U := U) V P]
-  let proveQueryLog' ←
-    𝒟[TraceTransform.d2sTrace (T_H := T_H) (T_P := T_P) (δ := δ) (pSpec := pSpec)
-      proveQueryLog]
-  let verifyQueryLog' ←
-    𝒟[TraceTransform.d2sTrace (T_H := T_H) (T_P := T_P) (δ := δ) (pSpec := pSpec)
-      verifyQueryLog]
-  return ⟨stmtIn, stmtOut, messages, proveQueryLog', verifyQueryLog'⟩
+      × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)) :=
+  (𝒟[duplexSpongeFiatShamirGame (U := U) V P]).bind
+    fun ⟨stmtIn, stmtOut, messages, proveQueryLog, verifyQueryLog⟩ =>
+      (𝒟[TraceTransform.d2sTrace (T_H := T_H) (T_P := T_P) (δ := δ) (pSpec := pSpec)
+        proveQueryLog]).bind fun proveQueryLog' =>
+        (𝒟[TraceTransform.d2sTrace (T_H := T_H) (T_P := T_P) (δ := δ) (pSpec := pSpec)
+          verifyQueryLog]).map fun verifyQueryLog' =>
+            (stmtIn, stmtOut, messages, proveQueryLog', verifyQueryLog')
+
+/-- Remapping preserves the rejected execution mass as missing subprobability mass. -/
+instance isSubprobabilityMeasure_duplexSpongeFiatShamirGameRemapped
+    (T_H T_P : Type) [LawfulTraceNablaImpl T_H T_P StmtIn U] (δ : ℕ)
+    (V : Verifier oSpec StmtIn StmtOut pSpec)
+    (P : OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U)
+      (StmtIn × pSpec.Messages)) :
+    MeasureTheory.IsSubprobabilityMeasure (duplexSpongeFiatShamirGameRemapped T_H T_P δ V P) := by
+  unfold duplexSpongeFiatShamirGameRemapped
+  infer_instance
 
 /-- The per-prover conclusion of [CO25, Lemma 5.1].
 
@@ -229,7 +274,7 @@ def KeyLemmaStatement
   ∃ P' : OracleComp (oSpec + fsChallengeOracle StmtIn pSpec) (StmtIn × pSpec.Messages),
     (∀ i : ι, IsQueryBoundP P' (fun j => j.getLeft? = some i) (tₒ i)) ∧
     IsQueryBoundP P' (fun j => j.isRight = true) (θStar tₕ tₚ tₚᵢ) ∧
-    SPMF.tvDist 𝒟[basicFiatShamirGame V P']
+    MeasureTheory.Measure.tvDist 𝒟[basicFiatShamirGame V P']
         (duplexSpongeFiatShamirGameRemapped T_H T_P δ V P)
       ≤ (ηStar U tₕ tₚ tₚᵢ L codec.decodingBias : ℝ)
 

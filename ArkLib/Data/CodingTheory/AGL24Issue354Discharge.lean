@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ArkLib.Data.Probability.Notation
 import ArkLib.Data.CodingTheory.AGL24FrankInterface
 import ArkLib.Data.CodingTheory.AGL24GMMDSInterface
 import ArkLib.Data.CodingTheory.AGL24ProbDischarge
@@ -66,7 +67,7 @@ theorem rimFailureProb_of_rootedOutCut_and_dualZeroPattern {k : Nat}
     {t : Nat} (ht : 1 <= t) (e : ι -> Finset (Fin (t + 1)))
     (hwpc : WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t + 1))) e) :
     RIMFullRankFailureProbResidual (F := F) (k := k)
-      (PMF.uniformOfFintype (ι -> F)) e
+      (ProximityPrize.Compatibility.uniformOfFintype (ι -> F)) e
       ((t * k * (k - 1) : Nat) / (Fintype.card F : ENNReal)) := by
   letI : DecidableEq F := Classical.decEq F
   exact rimFailureProb_of_symbolic

@@ -373,7 +373,7 @@ private lemma prizeRate_floor_add_one_le (j : Fin 4) (hn : 2 ≤ Fintype.card ι
   have h2 : (2 : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by exact_mod_cast hn
   have hkr : (k : ℝ≥0) ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) := by
     rw [hk_def]
-    refine le_trans (Nat.floor_le (zero_le _)) ?_
+    refine le_trans (Nat.floor_le (by positivity)) ?_
     gcongr
     exact prizeRates_le_half j
   have hcast : ((k + 1 : ℕ) : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by
@@ -403,7 +403,7 @@ theorem not_mcaPrize_of_second_moment
       Fintype.card F * Fintype.card F <
         2 ^ (128 : ℕ) *
           (M' * Fintype.card F - M' * M')) :
-    ¬ GrandChallenges.mcaPrize domain := by
+    ¬ GrandChallenges.continuousMcaPrize domain := by
   intro hprize
   set k := ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ with hk_def
   have hk_add : k + 1 ≤ Fintype.card ι := by

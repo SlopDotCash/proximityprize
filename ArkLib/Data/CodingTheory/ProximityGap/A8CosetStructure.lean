@@ -31,11 +31,13 @@ open Multiset
 
 /-- A computable canonical listing of the residues of `ZMod 16`. -/
 def zmod16Universe : List (ZMod 16) :=
-  (List.range 16).map fun i => (i : ZMod 16)
+  (List.range 16).map fun (i : ℕ) => (i : ZMod 16)
 
 /-- Every residue appears in the canonical listing. -/
 theorem mem_zmod16Universe (x : ZMod 16) : x ∈ zmod16Universe := by
-  fin_cases x <;> decide
+  unfold zmod16Universe
+  exact List.mem_map.mpr ⟨x.val, List.mem_range.mpr (ZMod.val_lt x),
+    ZMod.natCast_zmod_val x⟩
 
 /-- The order-4 coset through `x` in `ZMod 16`. -/
 def orderFourCoset16 (x : ZMod 16) : Finset (ZMod 16) :=
@@ -145,7 +147,8 @@ private theorem a8Summary_glue (xs : List (Finset (ZMod 16))) (a b : ℕ)
     (ha : a8Summary (xs.take 1024) = (a, true))
     (hb : a8Summary (xs.drop 1024) = (b, true)) :
     a8Summary xs = (a + b, true) := by
-  simpa only [ha, hb, a8Combine] using a8Summary_split xs
+  rw [a8Summary_split, ha, hb]
+  rfl
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 2000000 in
@@ -286,7 +289,8 @@ private theorem a8Tail0 : a8Summary (zmod16Subsets8.drop 0) = (70, true) := by
 -- Each batch is checked separately by the kernel to bound peak reduction memory.
 theorem balancedEightCosetCheck16_eq_true : balancedEightCosetCheck16 = true := by
   have h : a8Summary zmod16Subsets8 = (70, true) := by
-    simpa only [List.drop_zero] using a8Tail0
+    exact a8Tail0
+  unfold balancedEightCosetCheck16 balancedEightSubsets16
   exact a8Summary_check zmod16Subsets8 70 h
 
 /-- The probe's `70` balanced 8-sets are exactly the balanced members of this enumeration. -/

@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import Mathlib
 import ArkLib.Data.CodingTheory.ListDecoding.BKR06SubspacePoly
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # BKR06 Lemma 3.5: the agreement-count bridge

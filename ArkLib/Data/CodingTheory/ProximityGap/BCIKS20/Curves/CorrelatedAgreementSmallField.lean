@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CoeffExtractionVacuous
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
 
 /-!
 # Issue #304 — UNCONDITIONAL BCIKS20 correlated agreement in the vacuous regime
@@ -40,7 +40,7 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 /-- **Unconditional BCIKS20 Theorem 1.4 (affine lines), small-field regime `q ≤ n`.**
 No residual hypotheses: the §5 extraction is vacuously discharged (`errorBound ≥ n/q ≥ 1`)
 and the closed boundary is impossible at strict `δ`. -/
-theorem RS_correlatedAgreement_affineLines_of_card_le {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
+theorem RS_correlatedAgreement_affineLines_of_card_le [SampleableType F] {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     [NeZero deg]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hq : (Fintype.card F : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0)) :
@@ -52,7 +52,7 @@ theorem RS_correlatedAgreement_affineLines_of_card_le {deg : ℕ} {domain : ι �
     hδ
 
 /-- **Unconditional BCIKS20 Theorem 1.4 (affine lines), sharp interior regime `q ≤ deg²·10⁷`.** -/
-theorem RS_correlatedAgreement_affineLines_of_card_le_e7 {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
+theorem RS_correlatedAgreement_affineLines_of_card_le_e7 [SampleableType F] {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     [NeZero deg]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hq : (Fintype.card F : ℝ≥0) ≤ ((deg ^ 2 * 10 ^ 7 : ℕ) : ℝ≥0)) :
@@ -64,7 +64,7 @@ theorem RS_correlatedAgreement_affineLines_of_card_le_e7 {deg : ℕ} {domain : �
     hδ
 
 /-- **Unconditional BCIKS20 affine-curves correlated agreement, small-field regime `q ≤ k·n`.** -/
-theorem correlatedAgreement_affine_curves_of_card_le {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
+theorem correlatedAgreement_affine_curves_of_card_le [SampleableType F] {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     [NeZero deg]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hq : (Fintype.card F : ℝ≥0) ≤ (k : ℝ≥0) * (Fintype.card ι : ℝ≥0)) :
@@ -77,7 +77,7 @@ theorem correlatedAgreement_affine_curves_of_card_le {k deg : ℕ} {domain : ι 
     (fun hk u hprob hJ P hP => hres hk u hprob hJ hδ P hP)
 
 /-- **Unconditional BCIKS20 affine-curves correlated agreement, sharp interior `q ≤ k·deg²·10⁷`.** -/
-theorem correlatedAgreement_affine_curves_of_card_le_e7 {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
+theorem correlatedAgreement_affine_curves_of_card_le_e7 [SampleableType F] {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     [NeZero deg]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hq : (Fintype.card F : ℝ≥0) ≤ (k : ℝ≥0) * ((deg ^ 2 * 10 ^ 7 : ℕ) : ℝ≥0)) :

@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.MvPolynomial.Multilinear
-import ArkLib.ProofSystem.Sumcheck.Domain
+import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Domain
 
 /-!
 # Spartan ↔ sum-check cube-reindex bridge (issue #114)

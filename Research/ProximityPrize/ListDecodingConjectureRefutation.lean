@@ -9,7 +9,7 @@ import Research.ProximityPrize.GrandChallenges
 /-!
 # Refuting the up-to-capacity list-decoding bound (the negative side of ABF26 #232)
 
-The Grand List Decoding Challenge (`GrandChallenges.grandListDecodingChallenge`) asks for the
+The Grand List Decoding Challenge (`GrandChallenges.continuousGrandListDecodingChallenge`) asks for the
 largest `δ*` with `|Λ(C, δ*)| ≤ ε*·|F|`. The *up-to-capacity* hope — that `δ*` can reach the
 Singleton/min-distance radius `1 - ρ` — is **false** ([CS25], [KK25], the prime-field
 counterexample arXiv 2604.09724). This file gives the machine-checked negative result, built on

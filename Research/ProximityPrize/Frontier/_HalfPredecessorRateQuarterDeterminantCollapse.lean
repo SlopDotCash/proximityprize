@@ -273,7 +273,7 @@ theorem pairOverlap_card_add_tripleOverlap_card_le_natDegree
     intro i _ j _ hij
     exact dom.injective hij
   rw [hleft, hdomain] at hsum
-  exact hsum.trans (Polynomial.sum_rootMultiplicity_le_natDegree Delta hne _)
+  exact hsum.trans (Polynomial.sum_rootMultiplicity_le_natDegree (W := Delta) _)
 
 /-- A noncollapsed degree-`<k` triple has weighted overlap at most `2(k-1)`. -/
 theorem pairOverlap_card_add_tripleOverlap_card_le_two_mul_pred

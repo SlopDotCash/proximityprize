@@ -3,21 +3,19 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mirco Richter, Poulami Das (Least Authority)
 -/
+module
 
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Real.Basic
-import Mathlib.Data.Real.Sqrt
+public import Mathlib.Data.Finset.Basic
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Analysis.Real.Sqrt
 
 /-!
-# STIR proximity bound and proximity error functions
+# ArkLib.ProofSystem.Stir.ProximityBound
 
-This file defines the proximity parameters used by the STIR low-degree test (Section 4.1).
-
-* `STIR.Bstar` — the proximity bound function `B⋆(x) = √x` on a code rate `x : ℝ≥0`.
-* `STIR.proximityError` — the proximity error function `err⋆(d, ρ, δ, m)`, given by the
-  unique-decoding-radius bound for small `δ`, the list-decoding-radius bound for `δ` up to
-  `1 - √ρ`, and `0` outside the valid range.
+Definitions and results for this component of ArkLib.
 -/
+
+@[expose] public section
 
 open NNReal
 

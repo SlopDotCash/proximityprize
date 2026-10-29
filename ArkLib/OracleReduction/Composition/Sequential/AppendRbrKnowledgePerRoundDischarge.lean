@@ -53,7 +53,7 @@ theorem appendRbrKnowledgeSoundnessPerRoundResidual_msg_subsingleton [Subsinglet
     (kSF₂ : V₂.KnowledgeStateFunction init impl rel₂ rel₃ E₂)
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty Stmt₂) (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
@@ -62,33 +62,31 @@ theorem appendRbrKnowledgeSoundnessPerRoundResidual_msg_subsingleton [Subsinglet
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (hBound₁ : ∀ stmtIn : Stmt₁, ∀ witIn : Wit₁,
       ∀ prover : Prover oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁, ∀ i : pSpec₁.ChallengeIdx,
-        Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+        probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
           ∃ witMid,
             ¬ kSF₁.toFun i.1.castSucc stmtIn transcript
               (E₁.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-              kSF₁.toFun i.1.succ stmtIn (transcript.concat challenge) witMid
-        | do
+              kSF₁.toFun i.1.succ stmtIn (transcript.concat challenge) witMid) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec₁.getChallenge i) _
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤
           rbrKnowledgeError₁ i)
     (hBound₂ : ∀ stmtIn : Stmt₂, ∀ witIn : Wit₂,
       ∀ prover : Prover oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂, ∀ i : pSpec₂.ChallengeIdx,
-        Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+        probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
           ∃ witMid,
             ¬ kSF₂.toFun i.1.castSucc stmtIn transcript
               (E₂.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-              kSF₂.toFun i.1.succ stmtIn (transcript.concat challenge) witMid
-        | do
+              kSF₂.toFun i.1.succ stmtIn (transcript.concat challenge) witMid) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec₂.getChallenge i) _
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤
           rbrKnowledgeError₂ i) :
     appendRbrKnowledgeSoundnessPerRoundResidual (init := init) (impl := impl) V₁ V₂ kSF₁ kSF₂
       verify hVerify hInit (rbrKnowledgeError₁ := rbrKnowledgeError₁)

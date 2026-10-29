@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.Security.RoundByRound
+import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
 
 /-!
 # Conjoining rbr knowledge soundness with a verifier-preserved statement predicate
@@ -52,26 +52,22 @@ def KnowledgeStateFunction.conjoin
     (kSF : V.KnowledgeStateFunction init impl relIn relOut E)
     (P_in : Set StmtIn) (P_out : Set StmtOut)
     (hPres : ∀ stmtIn tr,
-      Pr[fun stmtOut => stmtOut ∈ P_out
-        | OptionT.mk do (simulateQ impl (V.run stmtIn tr)).run' (← init)] > 0 →
+      probEvent (fun stmtOut => stmtOut ∈ P_out) (OptionT.mk do (simulateQ impl (V.run stmtIn tr)).run' (← init)) > 0 →
       stmtIn ∈ P_in) :
     V.KnowledgeStateFunction init impl
       (relIn ∩ {x | x.1 ∈ P_in}) (relOut ∩ {y | y.1 ∈ P_out}) E where
   toFun := fun m stmtIn tr w => kSF.toFun m stmtIn tr w ∧ stmtIn ∈ P_in
   toFun_empty := fun stmtIn witMid => by
-    constructor
-    · rintro ⟨hrel, hP⟩
-      exact ⟨(kSF.toFun_empty stmtIn witMid).mp hrel, hP⟩
-    · rintro ⟨hfun, hP⟩
-      exact ⟨(kSF.toFun_empty stmtIn witMid).mpr hfun, hP⟩
+    rintro ⟨hfun, hP⟩
+    exact ⟨kSF.toFun_empty stmtIn witMid hfun, hP⟩
   toFun_next := fun m hdir stmtIn tr msg witMid h =>
     ⟨kSF.toFun_next m hdir stmtIn tr msg witMid h.1, h.2⟩
   toFun_full := fun stmtIn tr witOut h => by
     refine ⟨kSF.toFun_full stmtIn tr witOut ?_, hPres stmtIn tr ?_⟩
-    · refine lt_of_lt_of_le h (probEvent_mono ?_)
+    · refine lt_of_lt_of_le h (prEvent_mono_of_support _ _ _ ?_)
       intro x _ hx
       exact hx.1
-    · refine lt_of_lt_of_le h (probEvent_mono ?_)
+    · refine lt_of_lt_of_le h (prEvent_mono_of_support _ _ _ ?_)
       intro x _ hx
       exact hx.2
 
@@ -84,15 +80,14 @@ theorem rbrKnowledgeSoundness_conjoin
     (hKS : V.rbrKnowledgeSoundness init impl relIn relOut err)
     (P_in : Set StmtIn) (P_out : Set StmtOut)
     (hPres : ∀ stmtIn tr,
-      Pr[fun stmtOut => stmtOut ∈ P_out
-        | OptionT.mk do (simulateQ impl (V.run stmtIn tr)).run' (← init)] > 0 →
+      probEvent (fun stmtOut => stmtOut ∈ P_out) (OptionT.mk do (simulateQ impl (V.run stmtIn tr)).run' (← init)) > 0 →
       stmtIn ∈ P_in) :
     V.rbrKnowledgeSoundness init impl
       (relIn ∩ {x | x.1 ∈ P_in}) (relOut ∩ {y | y.1 ∈ P_out}) err := by
   obtain ⟨WitMid, E, kSF, hbound⟩ := hKS
   refine ⟨WitMid, E, kSF.conjoin P_in P_out hPres, ?_⟩
   intro stmtIn witIn prover i
-  refine le_trans (le_trans (probEvent_mono ?_) le_rfl) (hbound stmtIn witIn prover i)
+  refine le_trans (le_trans (prEvent_mono_of_support _ _ _ ?_) le_rfl) (hbound stmtIn witIn prover i)
   rintro ⟨transcript, challenge, _log⟩ _ ⟨witMid, ⟨hnot, hsucc⟩⟩
   exact ⟨witMid, fun hcast => hnot ⟨hcast, hsucc.2⟩, hsucc.1⟩
 

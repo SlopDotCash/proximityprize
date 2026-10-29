@@ -13,11 +13,11 @@ import Research.ProximityPrize.Lattice2.Spec
 # Faithful lattice encodings of the §1 Grand Challenges (after Finding F6)
 
 `GrandChallengeCollapse.lean` proves that the real-valued, strict-failure encodings
-`grandMCAChallenge` / `grandListDecodingChallenge` of `GrandChallenges.lean` **collapse**:
+`grandMCAChallenge` / `continuousGrandListDecodingChallenge` of `GrandChallenges.lean` **collapse**:
 because `ε_mca C δ` and `Λ(C^⋈m, δ)` are step functions of `δ` through `⌊δ·n⌋`
 (`epsMCA_eq_of_floor_eq`, `Lambda_eq_of_floor_eq`), no maximal *real* threshold `δ* < 1` can
 satisfy a strict-failure-above clause, so the encodings degenerate to radius-one statements
-and `listDecodingPrize` is provably false as encoded.
+and `continuousListDecodingPrize` is provably false as encoded.
 
 The paper [ABF26] §1 actually asks to **determine the largest *lattice* threshold**
 `δ* ∈ {0, 1/n, …, 1}`: relative Hamming distances live on the `1/n`-lattice, so the only
@@ -54,7 +54,7 @@ duplicate** — both are kept and both are fully proven (axiom-clean):
 * This file (`GrandChallengesLattice`, plural, namespace `ProximityGap.GrandChallengesLattice`)
   indexes the lattice by `Finset (Fin (n+1))` (`Finset.univ.filter …`) and supplies the
   step-function bridge to the real-valued witness framework
-  (`MCALowerWitness`/`MCAUpperWitness`, `ListLowerWitness`/`ListUpperWitness`):
+  (`MCALowerWitness`/`MCAUpperWitness`, `ContinuousListLowerWitness`/`ContinuousListUpperWitness`):
   `latticeIndexOf`, the `*_bracketed` lemmas, the `*_unique` lemmas, and the
   per-rate prize-resolution predicates. `Hab25Core.lean` consumes these objects.
 * `GrandChallengeLattice.lean` (singular, namespace `ProximityGap.GrandChallenges`)

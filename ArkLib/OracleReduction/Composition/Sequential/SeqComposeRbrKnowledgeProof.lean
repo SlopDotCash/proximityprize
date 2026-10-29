@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Composition.Sequential.General
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
 import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 import ArkLib.OracleReduction.Composition.Sequential.SeqComposeMsgCompleteness
@@ -174,7 +174,7 @@ def BinaryVerifierFusionForRbrKnowledge (oSpec : OracleSpec ι) : Prop :=
     [Oₘ₁ : ∀ i, OracleInterface.{0, 0} (pSpec₁.Message i)]
     [Oₘ₂ : ∀ i, OracleInterface.{0, 0} (pSpec₂.Message i)]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [c₁ : OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂),
     (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).toVerifier
       = Verifier.append V₁.toVerifier V₂.toVerifier
@@ -183,7 +183,7 @@ def BinaryVerifierFusionForRbrKnowledge (oSpec : OracleSpec ι) : Prop :=
 theorem binaryVerifierFusionForRbrKnowledge_holds (oSpec : OracleSpec ι) :
     BinaryVerifierFusionForRbrKnowledge oSpec := by
   intro Stmt₁ ιₛ₁ OStmt₁ Oₛ₁ Stmt₂ ιₛ₂ OStmt₂ Oₛ₂ Stmt₃ ιₛ₃ OStmt₃ Oₛ₃
-    p q pSpec₁ pSpec₂ Oₘ₁ Oₘ₂ V₁ c₁ V₂
+    p q pSpec₁ pSpec₂ Oₘ₁ Oₘ₂ V₁ V₂
   exact OracleReduction.oracleVerifier_append_toVerifier
     (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂
 
@@ -200,34 +200,10 @@ theorem seqCompose_toVerifier_of_binary_for_rbrKnowledge
     (V : (i : Fin m) →
       OracleVerifier oSpec (Stmt i.castSucc) (OStmt i.castSucc) (Stmt i.succ) (OStmt i.succ)
         (pSpec i))
-    (coh : ∀ i, OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ i.castSucc) (Oₛ₂ := Oₛ i.succ)
-      (Oₘ₁ := Oₘ i) (V i)) :
-    (OracleVerifier.seqCompose (Oₛ := Oₛ) (Oₘ := Oₘ) Stmt OStmt V (coh := coh)).toVerifier =
-      Verifier.seqCompose (fun i => Stmt i × (∀ j, OStmt i j)) (fun i => (V i).toVerifier) := by
-  induction m with
-  | zero =>
-    show (OracleVerifier.seqCompose Stmt OStmt V).toVerifier = Verifier.id
-    rw [OracleVerifier.seqCompose_zero Stmt OStmt V]
-    exact OracleVerifier.id_toVerifier
-  | succ m ih =>
-    letI tailCoh :
-        ∀ i, OracleVerifier.Append.AppendCoherent (Oₛ₁ := (fun i => Oₛ (Fin.succ i)) i.castSucc)
-          (Oₛ₂ := (fun i => Oₛ (Fin.succ i)) i.succ) (Oₘ₁ := (fun i => Oₘ (Fin.succ i)) i)
-          (V (Fin.succ i)) := fun i => coh i.succ
-    letI headCoh :
-        OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ 0) (Oₛ₂ := Oₛ 1) (Oₘ₁ := Oₘ 0) (V 0) :=
-      coh 0
-    have ihTail := ih (Stmt ∘ Fin.succ) (fun i => OStmt (Fin.succ i)) (fun i => Oₛ (Fin.succ i))
-      (fun i => Oₘ (Fin.succ i)) (fun i => V (Fin.succ i)) tailCoh
-    have hHead := hBinaryFusion (Oₛ₁ := Oₛ 0) (Oₛ₂ := Oₛ 1) (Oₛ₃ := Oₛ (Fin.last (m + 1)))
-      (Oₘ₁ := Oₘ 0)
-      (V 0) (c₁ := headCoh)
-      (OracleVerifier.seqCompose (Stmt ∘ Fin.succ) (fun i => OStmt (Fin.succ i))
-        (Oₛ := fun i => Oₛ (Fin.succ i)) (Oₘ := fun i => Oₘ (Fin.succ i))
-        (fun i => V (Fin.succ i)) (coh := tailCoh))
-    rw [OracleVerifier.seqCompose_succ Stmt OStmt (Oₛ := Oₛ) (Oₘ := Oₘ) V (coh := coh),
-        Verifier.seqCompose_succ (fun i => Stmt i × (∀ j, OStmt i j)) (fun i => (V i).toVerifier)]
-    exact hHead.trans (congrArg (Verifier.append (V 0).toVerifier) ihTail)
+     :
+    (OracleVerifier.seqCompose (Oₛ := Oₛ) (Oₘ := Oₘ) Stmt OStmt V ).toVerifier =
+      Verifier.seqCompose (fun i => Stmt i × (∀ j, OStmt i j)) (fun i => (V i).toVerifier) :=
+  OracleVerifier.seqCompose_toVerifier Stmt OStmt V
 
 end OracleVerifier
 
@@ -268,7 +244,7 @@ theorem seqCompose_rbrKnowledgeSoundness_failingDet
     (rbrKnowledgeError : ∀ i, (pSpec i).ChallengeIdx → ℝ≥0)
     (hValid : ∀ i, ∃ h : 0 < n i, (pSpec i).dir ⟨0, h⟩ = .P_to_V)
     (hNEW : ∀ i, Nonempty (Wit i))
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (h : ∀ i, (V i).rbrKnowledgeSoundness init impl (rel i.castSucc) (rel i.succ)
       (rbrKnowledgeError i)) :
     (Verifier.seqCompose Stmt V).rbrKnowledgeSoundness init impl (rel 0) (rel (Fin.last m))
@@ -375,8 +351,7 @@ theorem seqCompose_rbrKnowledgeSoundness_failingDet
     (V : (i : Fin m) →
       OracleVerifier oSpec (Stmt i.castSucc) (OStmt i.castSucc) (Stmt i.succ) (OStmt i.succ)
         (pSpec i))
-    [coh : ∀ i, OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ i.castSucc) (Oₛ₂ := Oₛ i.succ)
-      (Oₘ₁ := Oₘ i) (V i)]
+
     (rel : ∀ i, Set ((Stmt i × ∀ j, OStmt i j) × Wit i))
     (rbrKnowledgeError : ∀ i, (pSpec i).ChallengeIdx → ℝ≥0)
     (hFD : ∀ i, ∃ v? : (Stmt i.castSucc × ∀ j, OStmt i.castSucc j) → (pSpec i).FullTranscript →
@@ -384,7 +359,7 @@ theorem seqCompose_rbrKnowledgeSoundness_failingDet
       (V i).toVerifier = ⟨fun p tr => OptionT.mk (pure (v? p tr))⟩)
     (hValid : ∀ i, ∃ h : 0 < n i, (pSpec i).dir ⟨0, h⟩ = .P_to_V)
     (hNEW : ∀ i, Nonempty (Wit i))
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (h : ∀ i, (V i).rbrKnowledgeSoundness init impl (rel i.castSucc) (rel i.succ)
       (rbrKnowledgeError i)) :
     (OracleVerifier.seqCompose Stmt OStmt V).rbrKnowledgeSoundness
@@ -395,7 +370,7 @@ theorem seqCompose_rbrKnowledgeSoundness_failingDet
   show (OracleVerifier.seqCompose Stmt OStmt V).toVerifier.rbrKnowledgeSoundness
     init impl (rel 0) (rel (Fin.last m)) _
   rw [seqCompose_toVerifier_of_binary_for_rbrKnowledge
-    (binaryVerifierFusionForRbrKnowledge_holds oSpec) Stmt OStmt Oₛ Oₘ V coh]
+    (binaryVerifierFusionForRbrKnowledge_holds oSpec) Stmt OStmt Oₛ Oₘ V]
   exact Verifier.seqCompose_rbrKnowledgeSoundness_failingDet
     (fun i => Stmt i × (∀ j, OStmt i j)) Wit (fun i => (V i).toVerifier)
     (fun i => Classical.choose (hFD i)) (fun i => Classical.choose_spec (hFD i))

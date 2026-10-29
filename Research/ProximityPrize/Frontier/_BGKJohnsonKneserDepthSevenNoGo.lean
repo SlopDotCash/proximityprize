@@ -296,24 +296,19 @@ theorem production_upperBeta_range :
 theorem production_upperSpectralTerm_gap :
     2 ^ 162 * productionSevenSubsetTarget < productionUpperSpectralTerm ∧
       productionUpperSpectralTerm < 2 ^ 163 * productionSevenSubsetTarget := by
-  norm_num [productionSevenSubsetTarget, productionUpperSpectralTerm, productionUpperBeta,
-    productionKneserPositiveEigenvalue, productionKneserDegree, productionSevenSubsetCount,
-    productionQ, productionN]
+  decide +kernel
 
 /-- The exact Johnson Hoffman cap is itself `163--164` bits too weak for the centered target. -/
 theorem production_johnsonCenteredCeiling_gap :
     2 ^ 163 * productionSevenSubsetTarget < productionJohnsonCenteredCeiling ∧
       productionJohnsonCenteredCeiling < 2 ^ 164 * productionSevenSubsetTarget := by
-  norm_num [productionSevenSubsetTarget, productionJohnsonCenteredCeiling,
-    productionJohnsonFiberCap, productionSevenSubsetCount, productionQ, productionN]
+  decide +kernel
 
 /-- **Two-sided/absolute Kneser mixing misses by 190--191 bits.** -/
 theorem production_twoSidedSpectralTerm_gap :
     2 ^ 190 * productionSevenSubsetTarget < productionTwoSidedSpectralTerm ∧
       productionTwoSidedSpectralTerm < 2 ^ 191 * productionSevenSubsetTarget := by
-  norm_num [productionSevenSubsetTarget, productionTwoSidedSpectralTerm, productionTwoSidedBeta,
-    productionKneserAbsoluteEigenvalue, productionKneserDegree, productionSevenSubsetCount,
-    productionQ, productionN]
+  decide +kernel
 
 #print axioms sum_collisionOverlapCount_eq
 #print axioms not_equal_sum_of_card_seven_of_overlap_six

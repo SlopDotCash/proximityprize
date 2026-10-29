@@ -39,7 +39,7 @@ open scoped NNReal
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
 /-- The challenge `OracleInterface` of an append with an **empty trailing protocol** `!p[]`.  The
@@ -74,8 +74,7 @@ theorem seqCompose_perfectCompleteness_threaded {m : ℕ}
   induction m with
   | zero =>
     rw [seqCompose_zero]
-    simpa using
-      (Reduction.id_perfectCompleteness (init := init) (impl := impl) (rel := rel 0))
+    exact Reduction.id_perfectCompleteness (init := init) (impl := impl) (rel := rel 0)
   | succ m ih =>
     change ((R 0).append
         (seqCompose (Stmt ∘ Fin.succ) (Wit ∘ Fin.succ) (fun i => R (Fin.succ i))))
@@ -91,18 +90,18 @@ theorem seqCompose_perfectCompleteness_threaded {m : ℕ}
       subst hm
       rw [Reduction.seqCompose_zero]
       -- left phase `pSpec 0` (uses the generic `challengeOracleInterface`):
-      haveI : (oSpec + [(pSpec 0).Challenge]ₒ).Fintype := by
+      haveI : ∀ q, Fintype ((oSpec + [(pSpec 0).Challenge]ₒ).Range q) := by
         haveI := challengeOracle_fintype (pSpec 0); infer_instance
-      haveI : (oSpec + [(pSpec 0).Challenge]ₒ).Inhabited := by
+      haveI : ∀ q, Inhabited ((oSpec + [(pSpec 0).Challenge]ₒ).Range q) := by
         haveI := challengeOracle_inhabited (pSpec 0); infer_instance
       -- right phase `!p[]`: the empty challenge oracle resolves its `OracleInterface` to
       -- `instElim0` (empty `Fin 0` index), so its `Fintype`/`Inhabited` are constructed directly
       -- (vacuously) rather than through `challengeOracle_fintype` (which would carry the generic
       -- `challengeOracleInterface`, a different instance):
-      haveI : [(!p[] : ProtocolSpec 0).Challenge]ₒ.Fintype := { fintype_B := fun t => t.1.1.elim0 }
-      haveI : [(!p[] : ProtocolSpec 0).Challenge]ₒ.Inhabited := { inhabited_B := fun t => t.1.1.elim0 }
-      haveI : (oSpec + [(!p[] : ProtocolSpec 0).Challenge]ₒ).Fintype := inferInstance
-      haveI : (oSpec + [(!p[] : ProtocolSpec 0).Challenge]ₒ).Inhabited := inferInstance
+      haveI : (∀ q, Fintype (([(!p[] : ProtocolSpec 0).Challenge]ₒ).Range q)) := fun t => t.1.1.elim0
+      haveI : (∀ q, Inhabited (([(!p[] : ProtocolSpec 0).Challenge]ₒ).Range q)) := fun t => t.1.1.elim0
+      haveI : ∀ q, Fintype ((oSpec + [(!p[] : ProtocolSpec 0).Challenge]ₒ).Range q) := inferInstance
+      haveI : ∀ q, Inhabited ((oSpec + [(!p[] : ProtocolSpec 0).Challenge]ₒ).Range q) := inferInstance
       -- combined seam `pSpec 0 ++ₚ !p[]` (`OracleInterface` from `instAppendEmptyChallengeOI`):
       haveI : ∀ j, Fintype ((!p[] : ProtocolSpec 0).Challenge j) := fun j => j.1.elim0
       haveI : ∀ j, Fintype ((pSpec 0 ++ₚ (!p[] : ProtocolSpec 0)).Challenge j) :=
@@ -110,9 +109,9 @@ theorem seqCompose_perfectCompleteness_threaded {m : ℕ}
       haveI : ∀ j, Inhabited ((!p[] : ProtocolSpec 0).Challenge j) := fun j => j.1.elim0
       haveI : ∀ j, Inhabited ((pSpec 0 ++ₚ (!p[] : ProtocolSpec 0)).Challenge j) :=
         appendChallenge_inhabited (pSpec 0) (!p[] : ProtocolSpec 0)
-      haveI : (oSpec + [((pSpec 0) ++ₚ (!p[] : ProtocolSpec 0)).Challenge]ₒ).Fintype := by
+      haveI : ∀ q, Fintype ((oSpec + [((pSpec 0) ++ₚ (!p[] : ProtocolSpec 0)).Challenge]ₒ).Range q) := by
         haveI := challengeOracle_fintype (pSpec 0 ++ₚ (!p[] : ProtocolSpec 0)); infer_instance
-      haveI : (oSpec + [((pSpec 0) ++ₚ (!p[] : ProtocolSpec 0)).Challenge]ₒ).Inhabited := by
+      haveI : ∀ q, Inhabited ((oSpec + [((pSpec 0) ++ₚ (!p[] : ProtocolSpec 0)).Challenge]ₒ).Range q) := by
         haveI := challengeOracle_inhabited (pSpec 0 ++ₚ (!p[] : ProtocolSpec 0)); infer_instance
       refine append_perfectCompleteness_empty_proof (R 0) Reduction.id (h 0) ?_ hInit hImplSupp
       exact Reduction.id_perfectCompleteness (init := init) (impl := impl) (rel := rel 1)
@@ -122,19 +121,19 @@ theorem seqCompose_perfectCompleteness_threaded {m : ℕ}
         seqComposeChallenge_fintype (fun i => pSpec (Fin.succ i))
       haveI : ∀ j, Inhabited ((ProtocolSpec.seqCompose (fun i => pSpec (Fin.succ i))).Challenge j) :=
         seqComposeChallenge_inhabited (fun i => pSpec (Fin.succ i))
-      haveI : (oSpec + [(pSpec 0).Challenge]ₒ).Fintype := by
+      haveI : ∀ q, Fintype ((oSpec + [(pSpec 0).Challenge]ₒ).Range q) := by
         haveI := challengeOracle_fintype (pSpec 0); infer_instance
-      haveI : (oSpec + [(pSpec 0).Challenge]ₒ).Inhabited := by
+      haveI : ∀ q, Inhabited ((oSpec + [(pSpec 0).Challenge]ₒ).Range q) := by
         haveI := challengeOracle_inhabited (pSpec 0); infer_instance
-      haveI : (oSpec + [(ProtocolSpec.seqCompose (fun i => pSpec (Fin.succ i))).Challenge]ₒ).Fintype :=
+      haveI : ∀ q, Fintype ((oSpec + [(ProtocolSpec.seqCompose (fun i => pSpec (Fin.succ i))).Challenge]ₒ).Range q) :=
         seqComposeCombinedOracle_fintype oSpec (fun i => pSpec (Fin.succ i))
-      haveI : (oSpec + [(ProtocolSpec.seqCompose (fun i => pSpec (Fin.succ i))).Challenge]ₒ).Inhabited :=
+      haveI : ∀ q, Inhabited ((oSpec + [(ProtocolSpec.seqCompose (fun i => pSpec (Fin.succ i))).Challenge]ₒ).Range q) :=
         seqComposeCombinedOracle_inhabited oSpec (fun i => pSpec (Fin.succ i))
       haveI :
-          (oSpec + [((pSpec 0) ++ₚ (ProtocolSpec.seqCompose (fun i => pSpec (Fin.succ i)))).Challenge]ₒ).Fintype :=
+          ∀ q, Fintype ((oSpec + [((pSpec 0) ++ₚ (ProtocolSpec.seqCompose (fun i => pSpec (Fin.succ i)))).Challenge]ₒ).Range q) :=
         appendCombinedOracle_fintype oSpec (pSpec 0) (ProtocolSpec.seqCompose (fun i => pSpec (Fin.succ i)))
       haveI :
-          (oSpec + [((pSpec 0) ++ₚ (ProtocolSpec.seqCompose (fun i => pSpec (Fin.succ i)))).Challenge]ₒ).Inhabited :=
+          ∀ q, Inhabited ((oSpec + [((pSpec 0) ++ₚ (ProtocolSpec.seqCompose (fun i => pSpec (Fin.succ i)))).Challenge]ₒ).Range q) :=
         appendCombinedOracle_inhabited oSpec (pSpec 0) (ProtocolSpec.seqCompose (fun i => pSpec (Fin.succ i)))
       have hn : 0 < Fin.vsum (fun i => n (Fin.succ i)) := by
         rw [Fin.vsum_succ]; have := (hValid (Fin.succ 0)).1; omega

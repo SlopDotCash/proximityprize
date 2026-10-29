@@ -126,7 +126,7 @@ theorem prob_midSoundnessLanguage_ge_compl_support (oStmt : ∀ i, OStmtIn F n M
   have hcard : Fintype.card F - (checkSupport oStmt).card
       ≤ (Finset.univ.filter (fun x : F => x ∈ midSoundnessLanguage oStmt)).card := by
     calc Fintype.card F - (checkSupport oStmt).card
-        = (Finset.univ \ checkSupport oStmt).card := (Finset.card_univ_diff _).symm
+        = (Finset.univ \ checkSupport oStmt).card := (Finset.card_univ_sdiff _).symm
       _ = ((Finset.univ \ checkSupport oStmt).image (fun b => -b)).card := by
           rw [Finset.card_image_of_injective _ neg_injective]
       _ ≤ _ := Finset.card_le_card hsub
@@ -260,13 +260,13 @@ theorem grandSumCheckPolyS_ne_zero_of_bad_lookup
   obtain ⟨a₀, hlook, htab⟩ := bad_lookup_exists_column_only_value stmt oStmt hBad
   have hc₀ : checkCoeff oStmt a₀ ≠ 0 := by
     unfold checkCoeff
-    rw [if_pos htab]
+    rw [ite_eq_left htab]
     exact lookupMultiplicityCount_natCast_ne_zero stmt oStmt a₀ hlook
   have ha₀ : a₀ ∈ checkSupport oStmt := (mem_checkSupport_iff oStmt a₀).mpr hc₀
   intro hzero
   have heval : (grandSumCheckPolyS oStmt).eval (-a₀) = 0 := by rw [hzero]; simp
   unfold grandSumCheckPolyS at heval
-  rw [Polynomial.eval_finset_sum] at heval
+  rw [Polynomial.eval_finsetSum] at heval
   have hterms : ∀ a ∈ checkSupport oStmt, a ≠ a₀ →
       (Polynomial.C (checkCoeff oStmt a) *
         ∏ b ∈ (checkSupport oStmt).erase a, (Polynomial.X + Polynomial.C b)).eval (-a₀) = 0 := by
@@ -318,7 +318,7 @@ theorem sharp_error_le_outerSoundnessError
     ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0)
       ≤ outerSoundnessError F n M params := by
   unfold outerSoundnessError
-  refine le_trans ?_ (le_add_of_nonneg_right (zero_le _))
+  refine le_trans ?_ (le_add_of_nonneg_right (zero_le))
   rw [card_hypercube]
   have hden : (0 : ℝ≥0) < ((Fintype.card F - 2 ^ n : ℕ) : ℝ≥0) := by
     exact_mod_cast Nat.sub_pos_of_lt hcard
@@ -369,7 +369,7 @@ theorem mem_midSoundnessProtocolLanguageSharp_iff
     ((stmtOut, oStmtOut) ∈ midSoundnessProtocolLanguageSharp F n M params)
       ↔ stmtOut.xChallenge ∈ midSoundnessLanguageSharp oStmt := by
   unfold midSoundnessProtocolLanguageSharp
-  simp only [Set.mem_setOf_eq]
+  simp only [Set.mem_ofPred_eq]
   rw [funext hInput]
 
 end OuterSoundnessSharp

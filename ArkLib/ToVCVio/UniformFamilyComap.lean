@@ -30,10 +30,10 @@ re-keyings: `gSpec`/`eSpec` → `fsChallengeOracle` keys, and the salted → uns
 Proof architecture (a dependent transplant of the VCVio proof):
 1. `evalDist_uniformFamily_restrict_subtype` — restricting a uniform dependent table to a
    subdomain `{b // p b}` is uniform: split the table along `Equiv.piEquivPiSubtypeProd` and
-   marginalize via `evalDist_map_fst_uniformSample_prod`.
+   marginalize via `SampleableType.prEvent_uniformSample_fst`.
 2. `evalDist_map_bijective_uniformSample` — pushing a uniform sample through any bijection of
-   sampleable types is uniform (the `evalDist` form of
-   `probOutput_map_bijective_uniform_cross`).
+   sampleable types is uniform, using the canonical
+   `SampleableType.map_uniformSample_evalDistEq_of_bijective`.
 3. The comap factors as (restriction to `Set.range e`) ∘ (reindex + per-range transport),
    where the second leg is the explicit `Equiv`
    `(piCongrLeft _ eqv).symm.trans (piCongrRight re)` for the index reindexing
@@ -51,15 +51,13 @@ universe u
 
 section UniformFamilyComap
 
-/-- **Pushing a uniform sample through a bijection is uniform.** `evalDist` form of
-`probOutput_map_bijective_uniform_cross`: for sampleable types `α`, `β` and a bijection
-`f : α → β`, mapping the uniform sample on `α` through `f` gives the uniform distribution
-on `β`. -/
+/-- **Pushing a uniform sample through a bijection is uniform.** For sampleable types
+`α`, `β` and a bijection `f : α → β`, mapping the uniform sample on `α` through `f` gives
+its uniform output measure in every measurable structure on `β`. -/
 lemma evalDist_map_bijective_uniformSample {α β : Type} [SampleableType α] [SampleableType β]
-    [Finite α] (f : α → β) (hf : Function.Bijective f) :
+    [Finite α] [MeasurableSpace β] (f : α → β) (hf : Function.Bijective f) :
     𝒟[f <$> ($ᵗ α)] = 𝒟[$ᵗ β] := by
-  refine evalDist_ext fun y => ?_
-  exact probOutput_map_bijective_uniform_cross α f hf y
+  exact (SampleableType.map_uniformSample_evalDistEq_of_bijective hf).evalDist_eq
 
 /-- **Restricting a uniform dependent answer table to a subdomain is uniform.**
 
@@ -71,43 +69,31 @@ lemma evalDist_uniformFamily_restrict_subtype
     {ι : Type} {spec : OracleSpec ι} (p : ι → Prop) [DecidablePred p]
     [Finite ι] [∀ q : ι, Fintype (spec.Range q)] [∀ q : ι, Nonempty (spec.Range q)]
     [SampleableType ((q : ι) → spec.Range q)]
-    [SampleableType ((s : {b // p b}) → spec.Range s.1)] :
+    [SampleableType ((s : {b // p b}) → spec.Range s.1)]
+    [MeasurableSpace ((s : {b // p b}) → spec.Range s.1)] :
     𝒟[do let g ← $ᵗ ((q : ι) → spec.Range q); pure (fun s : {b // p b} => g s.1)]
       = 𝒟[$ᵗ ((s : {b // p b}) → spec.Range s.1)] := by
   classical
-  letI : Fintype ι := Fintype.ofFinite ι
-  -- Complement block: coordinates outside `p`.
-  letI : Fintype ((s : {b // ¬ p b}) → spec.Range s.1) := Pi.instFintype
-  haveI : Nonempty ((s : {b // ¬ p b}) → spec.Range s.1) :=
-    ⟨fun s => Classical.arbitrary _⟩
-  letI instC : SampleableType ((s : {b // ¬ p b}) → spec.Range s.1) :=
+  let : Fintype ι := Fintype.ofFinite ι
+  let : SampleableType ((s : {b // ¬ p b}) → spec.Range s.1) :=
     SampleableType.ofFintype _
-  -- Restricted block instances for the product draw.
-  letI : Fintype ((s : {b // p b}) → spec.Range s.1) := Fintype.ofFinite _
-  haveI : Nonempty ((s : {b // p b}) → spec.Range s.1) :=
-    ⟨fun s => Classical.arbitrary _⟩
-  letI instP : SampleableType
+  let Φ : ((q : ι) → spec.Range q) ≃
       (((s : {b // p b}) → spec.Range s.1) × ((s : {b // ¬ p b}) → spec.Range s.1)) :=
-    SampleableType.ofFintype _
-  -- Split the full table into the `p`-block and its complement.
-  set Φ : ((q : ι) → spec.Range q) ≃
-      (((s : {b // p b}) → spec.Range s.1) × ((s : {b // ¬ p b}) → spec.Range s.1)) :=
-    Equiv.piEquivPiSubtypeProd p spec.Range with hΦ
+    Equiv.piEquivPiSubtypeProd p spec.Range
   have hmap : (do let g ← $ᵗ ((q : ι) → spec.Range q); pure (fun s : {b // p b} => g s.1))
       = (Prod.fst ∘ Φ) <$> ($ᵗ ((q : ι) → spec.Range q)) := by
     simp only [bind_pure_comp]
     rfl
-  have hcross : 𝒟[Φ <$> ($ᵗ ((q : ι) → spec.Range q))]
-      = 𝒟[$ᵗ (((s : {b // p b}) → spec.Range s.1) × ((s : {b // ¬ p b}) → spec.Range s.1))] :=
-    evalDist_map_bijective_uniformSample Φ Φ.bijective
-  calc 𝒟[do let g ← $ᵗ ((q : ι) → spec.Range q); pure (fun s : {b // p b} => g s.1)]
-      = 𝒟[(Prod.fst ∘ Φ) <$> ($ᵗ ((q : ι) → spec.Range q))] := by rw [hmap]
-    _ = 𝒟[Prod.fst <$> (Φ <$> ($ᵗ ((q : ι) → spec.Range q)))] := by
-        simp only [Functor.map_map, Function.comp_def]
-    _ = 𝒟[Prod.fst <$>
-          ($ᵗ (((s : {b // p b}) → spec.Range s.1) × ((s : {b // ¬ p b}) → spec.Range s.1)))] := by
-        rw [evalDist_map, hcross, ← evalDist_map]
-    _ = 𝒟[$ᵗ ((s : {b // p b}) → spec.Range s.1)] := evalDist_map_fst_uniformSample_prod
+  rw [hmap]
+  apply EvalDistEq.evalDist_eq
+  have hcross := SampleableType.map_uniformSample_evalDistEq_of_bijective Φ.bijective
+  have hfst : Prod.fst <$>
+      ($ᵗ (((s : {b // p b}) → spec.Range s.1) × ((s : {b // ¬ p b}) → spec.Range s.1)))
+        =ᵈ ($ᵗ ((s : {b // p b}) → spec.Range s.1)) := by
+    intro event
+    simpa only [prEvent_map] using SampleableType.prEvent_uniformSample_fst
+      (β := ((s : {b // ¬ p b}) → spec.Range s.1)) event
+  simpa only [Functor.map_map, Function.comp_def] using (hcross.map Prod.fst).trans hfst
 
 /-- **Uniform oracle-family comap along a range-preserving injection** (dependent
 generalization of `evalDist_uniformSample_map_comp_injective`).
@@ -126,6 +112,7 @@ theorem evalDist_uniformFamily_comap_injective
     [∀ q : ιB, Fintype (specB.Range q)] [∀ q : ιB, Nonempty (specB.Range q)]
     [SampleableType ((q : ιA) → specA.Range q)]
     [SampleableType ((q : ιB) → specB.Range q)]
+    [MeasurableSpace ((q : ιA) → specA.Range q)]
     (e : ιA → ιB) (he : Function.Injective e)
     (re : ∀ q : ιA, specB.Range (e q) ≃ specA.Range q) :
     𝒟[do let g ← $ᵗ ((q : ιB) → specB.Range q); pure (fun q : ιA => re q (g (e q)))]
@@ -171,8 +158,16 @@ theorem evalDist_uniformFamily_comap_injective
             pure (fun s : {b // p b} => g s.1)) := by
     simp only [bind_pure_comp, Functor.map_map]
     rfl
-  rw [hfactor, evalDist_map, evalDist_uniformFamily_restrict_subtype p, ← evalDist_map]
-  exact evalDist_map_bijective_uniformSample J hJbij
+  rw [hfactor]
+  apply EvalDistEq.evalDist_eq
+  have hrestrict :
+      (do let g ← $ᵗ ((q : ιB) → specB.Range q)
+          pure (fun s : {b // p b} => g s.1))
+        =ᵈ ($ᵗ ((s : {b // p b}) → specB.Range s.1)) := by
+    let : MeasurableSpace ((s : {b // p b}) → specB.Range s.1) := ⊤
+    exact EvalDistEq.of_evalDist_eq (evalDist_uniformFamily_restrict_subtype p)
+  exact (hrestrict.map J).trans
+    (SampleableType.map_uniformSample_evalDistEq_of_bijective hJbij)
 
 /-- `cast` form of `evalDist_uniformFamily_comap_injective`: when the range preservation is
 given as a type *equality* `hr q : specB.Range (e q) = specA.Range q` (the form arising from
@@ -184,6 +179,7 @@ theorem evalDist_uniformFamily_comap_injective_cast
     [∀ q : ιB, Fintype (specB.Range q)] [∀ q : ιB, Nonempty (specB.Range q)]
     [SampleableType ((q : ιA) → specA.Range q)]
     [SampleableType ((q : ιB) → specB.Range q)]
+    [MeasurableSpace ((q : ιA) → specA.Range q)]
     (e : ιA → ιB) (he : Function.Injective e)
     (hr : ∀ q : ιA, specB.Range (e q) = specA.Range q) :
     𝒟[do let g ← $ᵗ ((q : ιB) → specB.Range q); pure (fun q : ιA => cast (hr q) (g (e q)))]
@@ -199,6 +195,7 @@ theorem evalDist_uniformFamily_comap_equiv
     [∀ q : ιB, Fintype (specB.Range q)] [∀ q : ιB, Nonempty (specB.Range q)]
     [SampleableType ((q : ιA) → specA.Range q)]
     [SampleableType ((q : ιB) → specB.Range q)]
+    [MeasurableSpace ((q : ιA) → specA.Range q)]
     (e : ιA ≃ ιB) (re : ∀ q : ιA, specB.Range (e q) ≃ specA.Range q) :
     𝒟[do let g ← $ᵗ ((q : ιB) → specB.Range q); pure (fun q : ιA => re q (g (e q)))]
       = 𝒟[$ᵗ ((q : ιA) → specA.Range q)] :=

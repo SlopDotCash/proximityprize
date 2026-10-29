@@ -204,7 +204,7 @@ theorem thirdBlock_sharedSubmodule_is_supportImproper
   have hunion : (S ∪ C).card ≤ 12 := by omega
   have hLI' := hMDS12 (S ∪ C) hunion
   have hLI : LinearIndepOn F v ((S ∪ C : Finset iota) : Set iota) := by
-    simpa only [LinearIndepOn] using hLI'
+    simpa only [LinearIndepOn, Finset.coe_sort_coe] using hLI'
   have hPS : P ≤ columnSpan (F := F) v S := by
     rcases hSparent with rfl | rfl
     · exact hPA

@@ -107,7 +107,7 @@ theorem v2_le_log {d μ : ℕ} (hd : d ≠ 0) (hdvd : d ∣ 2 ^ μ) :
 valuation vanishes: `v₂(1) = 0`.  No antipodal foldings, hence no extra plateau rung — the
 arithmetic root of the clean tower step. -/
 @[simp] theorem v2_one : v2 1 = 0 := by
-  simp [v2, padicValNat.one]
+  simp [v2, padicValNat_one_right]
 
 /-! ## Part 2 — the plateau width bounded by the valuation (the folding-chain count) -/
 

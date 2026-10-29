@@ -207,7 +207,8 @@ theorem hab25_lemma1_counting
     -- `affineGap d₀ d₁ z x = d₀ x + z * d₁ x`, the affine functional in `z`.
     have : (S.filter (fun z => d₀ x + z * d₁ x = 0)).card ≤ 1 :=
       affine_match_card_le_one (d₀ x) (d₁ x) hne S
-    simpa [affineGap] using this
+    set_option backward.isDefEq.respectTransparency false in
+      simpa only [affineGap] using this
   -- The two double-count totals.
   have hkey :
       ∑ z ∈ S, (E'.filter (fun x => affineGap d₀ d₁ z x = 0)).card

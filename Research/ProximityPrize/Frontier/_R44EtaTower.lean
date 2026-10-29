@@ -70,10 +70,9 @@ theorem eta_eq_pureFace (hfam : SubgroupDualFamily G m lam)
         have := (Finset.mem_sdiff.mp hj).2; simpa using this
       refine Finset.mem_sdiff.mpr ⟨Finset.mem_univ _, ?_⟩
       simpa using neg_ne_zero.mpr hj0
-    · intro j _; dsimp only; ring
-    · intro j _; dsimp only; ring
+    · intro j _; ring
+    · intro j _; ring
     · intro j hj
-      dsimp only
       rw [conj_lam hfam hgrp j hb]
       rw [neg_neg]
   rw [hre]

@@ -1,0 +1,35 @@
+{
+  "downstream_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+  "original_owner": "ArkLib/Data/Polynomial/RationalFunctions.lean",
+  "current_owner": "ArkLib/Data/Polynomial/RationalFunctionsCore.lean",
+  "consolidation": "Remove the redundant explicit Ring (\ud835\udcaa H) instance. The regular-element ring is already a quotient of a commutative ring and inherits the canonical quotient CommRing and its Ring projection.",
+  "reason": "Composing the natural quotient algebra map with localization exposed incompatible Ring/CommRing structure paths. Canonical quotient ownership fixes that diamond without changing the quotient, defining new algebra operations, or weakening any theorem.",
+  "preserved_contracts": [
+    "All \ud835\udcaa H and \ud835\udd43 H definitions and public theorem statements",
+    "Canonical quotient ring operations",
+    "Original locLift/coeffHom_loc definitions and commutation theorem in CoeffHomDescent"
+  ],
+  "consumer_ports": [
+    {
+      "owner": "ArkLib/ToMathlib/WeightLambdaCalculus.lean",
+      "change": "Use the generic additive-hom map_neg theorem instead of the more constrained RingHom.map_neg wrapper.",
+      "direct_check": "pg-iterate with autoImplicit=false passed12s"
+    },
+    {
+      "owner": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2BijectionApply.lean",
+      "change": "Use the generic additive-hom map_neg theorem in the same Hensel successor identity.",
+      "direct_check": "pg-iterate with autoImplicit=false passed15s; emitted reports standard3"
+    },
+    {
+      "owner": "ArkLib/ToMathlib/LocalizationEmbedding.lean",
+      "change": "Give pow_ne_zero the explicit base type \ud835\udcaa H so its zero/monoid structure is determined before elaborating the nonzero witness.",
+      "direct_check": "pg-iterate with autoImplicit=false passed27s; all3 embLoc reports standard3"
+    },
+    {
+      "owner": "ArkLib/ToMathlib/CoeffHomDescent.lean",
+      "change": "Explicitly provide all three inferred structure arguments to @algebraMap on the outer quotient-to-localization map before composing. The original quotient-map/Polynomial.C composite and public function remain unchanged; use simp only for its nested comp applications. This determines the canonical CommSemiring path before elaborating the composition.",
+      "direct_check": "Actual-import pg-iterate with autoImplicit=false passed13s; all three coefficient/descent reports standard3."
+    }
+  ],
+  "validation": "RationalFunctionsCore direct strict check passed10s; actual package rebuild passed11s. WeightLambdaCalculus, P2BijectionApply and LocalizationEmbedding rebuilt at actual boundaries. Final CoeffHomDescent source now passes strict against those actual rebuilt imports; its own package rebuild remains required."
+}

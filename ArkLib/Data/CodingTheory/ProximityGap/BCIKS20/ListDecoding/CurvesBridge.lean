@@ -5,10 +5,10 @@ Authors: Quang Dao, Katerina Hristova, Frantisek Silvasi, Julian Sutherland,
          Ilia Vlasov, Chung Thai Nguyen
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.Assembly
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Agreement
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
 import ArkLib.Data.CodingTheory.ProximityGap.BCKHS25.AffineLineJointAgreement
 import ArkLib.ToMathlib.BCIKS20ConcreteJohnson
 /-!
@@ -56,6 +56,7 @@ lemma lineWordStack_eq_finMapTwoWords (u₀ u₁ : Fin n → F) :
   | 0 => rfl
   | 1 => rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- For degree-one curves through two words, the §6 close-parameter set is the
 same set as the §5 affine-line close-proximity set. -/
 theorem coeffs_of_close_proximity_curve_finMapTwoWords_eq_close_proximity
@@ -68,7 +69,7 @@ theorem coeffs_of_close_proximity_curve_finMapTwoWords_eq_close_proximity
   intro z
   simp only [coeffs_of_close_proximity_curve, coeffs_of_close_proximity,
     ReedSolomon.toFinset, ReedSolomon.RScodeSet, Set.mem_toFinset, Set.mem_setOf_eq,
-    polynomialCurveEval_eq_sum_smul]
+    polynomialCurveEval_eq_sum_smul, Curve.polynomialCurveEval]
   constructor
   · intro hz
     have hz' :
@@ -593,7 +594,7 @@ theorem RS_jointAgreement_finMapTwoWords_of_prob_gt_strict_johnson_and_exists_na
       (W := Code.finMapTwoWords u₀ u₁) := by
   classical
   obtain ⟨Q, h_gs⟩ :=
-    modified_guruswami_has_a_solution (F := F) (m := m) (n := n) (k := k)
+    Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
       (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u₀) (u₁ := u₁) hDx hYZ
   obtain ⟨x₀, hres, D, t, hcover, hthreshold, hsmall⟩ := hcounting h_gs
   letI := hres
@@ -609,7 +610,7 @@ counting form for every affine line.
 This is the strict-radius analogue of the `PzFamily` capstone below, but it
 uses only the selected-domain coefficient-polynomial bridge; callers no longer
 need matching-set coverage at every coordinate. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting
+theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -648,7 +649,7 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting
   have h_u_eq := wordStack_fin_two_eq_finMapTwoWords (F := F) (n := n) u
   rw [h_u_eq] at hP ⊢
   obtain ⟨Q, h_gs⟩ :=
-    modified_guruswami_has_a_solution (F := F) (m := m) (n := n) (k := k)
+    Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
       (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u 0) (u₁ := u 1) hDx hYZ
   obtain ⟨x₀, hres, D, t, hcover, hthreshold, hsmall⟩ := hcounting (u 0) (u 1) h_gs
   letI := hres
@@ -663,7 +664,7 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting
 set_option linter.style.longLine false in
 /-- Strict Johnson §6 correlated-agreement front door with the Claim-5.7 residual bundle
 constructed from the concrete §5 Johnson inputs for the chosen GS interpolant. -/
-theorem correlatedAgreement_affine_lines_of_strict_gsInterpolant_johnson_counting
+theorem correlatedAgreement_affine_lines_of_strict_gsInterpolant_johnson_counting [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -806,7 +807,7 @@ theorem RS_jointAgreement_finMapTwoWords_of_prob_gt_strict_johnson_and_exists_Pz
       (W := Code.finMapTwoWords u₀ u₁) := by
   classical
   obtain ⟨Q, h_gs⟩ :=
-    modified_guruswami_has_a_solution (F := F) (m := m) (n := n) (k := k)
+    Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
       (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u₀) (u₁ := u₁) hDx hYZ
   exact RS_jointAgreement_finMapTwoWords_of_prob_gt_strict_johnson_and_PzFamily
     (F := F) (n := n) (m := m) (k := k) (ωs := ωs) (Q := Q)
@@ -818,7 +819,7 @@ set_option linter.style.longLine false in
 /-- Degree-one correlated-agreement capstone in the native §5 affine-line
 language, using the nat-ceil Claim-5.11 counting package for the strict branch
 and a boundary-card obligation for the closed square-root boundary. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_and_boundary_card
+theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_and_boundary_card [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -862,7 +863,7 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_and_b
     have h_u_eq := wordStack_fin_two_eq_finMapTwoWords (F := F) (n := n) u
     rw [h_u_eq] at hP ⊢
     obtain ⟨Q, h_gs⟩ :=
-      modified_guruswami_has_a_solution (F := F) (m := m) (n := n) (k := k)
+      Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
         (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u 0) (u₁ := u 1) hDx hYZ
     obtain ⟨x₀, hres, D, t, hcover, hthreshold, hsmall⟩ :=
       hcounting (u 0) (u 1) h_gs
@@ -890,7 +891,7 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_and_b
 language, exposing the strict branch as one canonical coefficient-polynomial
 `PzFamily` package per received word stack.  The selected coordinate domain is
 produced from the nat-ceil Claim-5.11 counting package. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_canonical_coeff
+theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_canonical_coeff [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -934,7 +935,7 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_canon
     have h_u_eq := wordStack_fin_two_eq_finMapTwoWords (F := F) (n := n) u
     rw [h_u_eq]
     obtain ⟨Q, h_gs⟩ :=
-      modified_guruswami_has_a_solution (F := F) (m := m) (n := n) (k := k)
+      Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
         (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u 0) (u₁ := u 1) hDx hYZ
     obtain ⟨x₀, hres, D, t, hcover, hthreshold, hsmall⟩ :=
       hcounting (u 0) (u 1) h_gs
@@ -1026,7 +1027,7 @@ theorem section5_strict_canonical_coeff_polys_for_RS_goodCoeffsCurve_finMapTwoWo
   have h_u_eq := wordStack_fin_two_eq_finMapTwoWords (F := F) (n := n) u
   rw [h_u_eq]
   obtain ⟨Q, h_gs⟩ :=
-    modified_guruswami_has_a_solution (F := F) (m := m) (n := n) (k := k)
+    Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
       (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u 0) (u₁ := u 1) hDx hYZ
   obtain ⟨x₀, hres, D, hcover, hthreshold, hsmall⟩ := hcounting (u 0) (u 1) h_gs
   letI := hres
@@ -1044,7 +1045,7 @@ language, with Claim-5.11 counting supplied in the complement-threshold
 arithmetic shape.  This is the same canonical-coefficient front door as
 `correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_canonical_coeff`,
 but the strict branch uses the natural slack `#S - threshold` directly. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff
+theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1093,7 +1094,7 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_cou
     have h_u_eq := wordStack_fin_two_eq_finMapTwoWords (F := F) (n := n) u
     rw [h_u_eq]
     obtain ⟨Q, h_gs⟩ :=
-      modified_guruswami_has_a_solution (F := F) (m := m) (n := n) (k := k)
+      Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
         (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u 0) (u₁ := u 1) hDx hYZ
     obtain ⟨x₀, hres, D, hcover, hthreshold, hsmall⟩ := hcounting (u 0) (u 1) h_gs
     letI := hres
@@ -1120,7 +1121,7 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_cou
 affine lines, with the strict branch supplied by the §5 complement-counting
 canonical-coefficient package and the boundary branch supplied by the
 Hensel-free [BCKHS25] restored-distance affine-line theorem. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_BCKHS25_boundary
+theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_BCKHS25_boundary [SampleableType F]
     {m k e h DZ : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1189,7 +1190,7 @@ native §5 affine-line language, with Claim-5.11 counting supplied in the
 complement-threshold arithmetic shape. Unlike the closed-boundary wrapper, this
 version needs no boundary obligation because the global hypothesis is already
 `δ < 1 - sqrtRate`. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_strict
+theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_strict [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1243,7 +1244,7 @@ This is the complement-counting analogue of
 primitive GS-specialization, Johnson-budget, largeness, factor-list, and complement-counting data
 for the chosen interpolant; the raw `Claim57Residuals` instance is assembled internally by
 `claim57Residuals_of_gsInterpolant`. -/
-theorem correlatedAgreement_affine_lines_of_strict_gsInterpolant_johnson_complement_counting_canonical_coeff
+theorem correlatedAgreement_affine_lines_of_strict_gsInterpolant_johnson_complement_counting_canonical_coeff [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1328,7 +1329,7 @@ This is the same §5 affine-line input package as the sibling theorem
 `correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff`
 with the `_strict` suffix, but it consumes the public `Curves.Assembly` front door rather than the
 lower-level curve theorem directly. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_assembled
+theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_assembled [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1384,7 +1385,7 @@ This is the top-level strict square-root-radius §5-to-§6 bridge in the native
 affine-line predicate: the concrete Claim-5.11 complement-counting package
 supplies the strict list-decoding branch, and the strict radius makes the closed
 boundary branch impossible. -/
-theorem RS_correlatedAgreement_affineLines_of_strict_exists_natCeil_complement_counting_canonical_coeff_assembled
+theorem RS_correlatedAgreement_affineLines_of_strict_exists_natCeil_complement_counting_canonical_coeff_assembled [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1481,7 +1482,7 @@ theorem section5_strict_canonical_eval_polys_for_RS_goodCoeffsCurve_finMapTwoWor
   intro _hk u _hprob _hJ
   have h_u_eq := wordStack_fin_two_eq_finMapTwoWords (F := F) (n := n) u
   obtain ⟨Q, h_gs⟩ :=
-    modified_guruswami_has_a_solution (F := F) (m := m) (n := n) (k := k)
+    Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
       (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u 0) (u₁ := u 1) hDx hYZ
   obtain ⟨P₀, _hDecoded, hEval, huniq⟩ :=
     PzFamily_exists_canonical_eval_polys_goodCoeffsCurve_finMapTwoWords
@@ -1495,7 +1496,7 @@ theorem section5_strict_canonical_eval_polys_for_RS_goodCoeffsCurve_finMapTwoWor
 /-- Strict square-root-radius degree-one correlated-agreement capstone routed
 through the non-cyclic closed assembly wrapper, using the native §5
 `PzFamily`/evaluation-polynomial package. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_PzFamily_assembled
+theorem correlatedAgreement_affine_lines_of_strict_exists_PzFamily_assembled [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     (δ : ℚ≥0)
     (hδ : (δ : ℝ≥0) < 1 - ReedSolomon.sqrtRate (k + 1) ωs)
@@ -1578,7 +1579,7 @@ same mathematical content as
 `correlatedAgreement_affine_lines_of_strict_exists_PzFamily_and_boundary_card`,
 but exposes the §5 extraction in the non-canonical hypothesis shape consumed by
 `correlatedAgreement_affine_curves_of_strict_eval_polys_and_boundary_card`. -/
-theorem correlatedAgreement_affine_lines_of_strict_eval_polys_and_boundary_card
+theorem correlatedAgreement_affine_lines_of_strict_eval_polys_and_boundary_card [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     (δ : ℚ≥0)
     (hδ : (δ : ℝ≥0) ≤ 1 - ReedSolomon.sqrtRate (k + 1) ωs)
@@ -1623,7 +1624,7 @@ theorem correlatedAgreement_affine_lines_of_strict_eval_polys_and_boundary_card
 /-- Strict square-root-radius degree-one correlated-agreement capstone in the
 native §5 affine-line language, using the raw strict evaluation-polynomial
 front door. -/
-theorem correlatedAgreement_affine_lines_of_strict_eval_polys
+theorem correlatedAgreement_affine_lines_of_strict_eval_polys [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     (δ : ℚ≥0)
     (hδ : (δ : ℝ≥0) < 1 - ReedSolomon.sqrtRate (k + 1) ωs)
@@ -1656,7 +1657,7 @@ language. The generic §6 theorem quantifies over arbitrary
 `Code.finMapTwoWords (u 0) (u 1)` and transports both the strict
 `PzFamily` package and the closed-boundary cardinality obligation through the
 §5/§6 close-set equality. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_PzFamily_and_boundary_card
+theorem correlatedAgreement_affine_lines_of_strict_exists_PzFamily_and_boundary_card [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     (δ : ℚ≥0)
     (hδ : (δ : ℝ≥0) ≤ 1 - ReedSolomon.sqrtRate (k + 1) ωs)
@@ -1703,7 +1704,7 @@ native §5 affine-line language. Unlike
 `correlatedAgreement_affine_lines_of_strict_exists_PzFamily_and_boundary_card`,
 this version needs no closed-boundary obligation because the global hypothesis
 is already `δ < 1 - sqrtRate`. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_PzFamily
+theorem correlatedAgreement_affine_lines_of_strict_exists_PzFamily [SampleableType F]
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     (δ : ℚ≥0)
     (hδ : (δ : ℝ≥0) < 1 - ReedSolomon.sqrtRate (k + 1) ωs)

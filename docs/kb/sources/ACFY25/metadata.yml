@@ -1,5 +1,4 @@
 bibkey: ACFY25
-source_kind: publication
-canonical_url: https://doi.org/10.1007/978-3-031-91134-7_8
+source_kind: inproceedings
 committed_artifacts: []
-notes: "Published EUROCRYPT 2025 version of WHIR; cited for lemma-numbered statements."
+notes: "Published EUROCRYPT 2025 WHIR version; ArkLib cites Lemma 4.10 for the unique-decoding MCA-to-CA direction. The reference PDF is not committed."

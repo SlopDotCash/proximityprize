@@ -49,6 +49,7 @@ theorem frob_agreeSet_card_le :
       = Finset.univ.filter (fun i => P.eval (dom i) = (dom i) ^ p) := by
     ext i
     simp [agreeSet, frobWord]
+    exact Finset.mem_filter_univ i
   rw [hset]
   convert h using 3
 

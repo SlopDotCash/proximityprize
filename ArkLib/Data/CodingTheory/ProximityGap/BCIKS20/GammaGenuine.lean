@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.Polynomial.HenselSeriesCoeff
-import ArkLib.Data.Polynomial.RationalFunctions
+import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
 
 /-!
 # The genuine Hensel-lifted root `γ` of [BCIKS20] App. A.4 (the P2 instantiation)

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Hab25ErrStarArith
 import Research.ProximityPrize.Hab25JohnsonArithmetic
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # Unit (3) glue: `johnsonBoundReal ≤` the conjecture's `errStar`, instantiated

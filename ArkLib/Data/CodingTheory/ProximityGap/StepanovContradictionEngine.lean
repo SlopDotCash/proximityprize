@@ -47,7 +47,7 @@ theorem stepanov_card_mul_M_le_natDegree (Ψ : F[X]) (hΨ : Ψ ≠ 0)
   calc P.card * M
       = ∑ _a ∈ P, M := by rw [Finset.sum_const, smul_eq_mul]
     _ ≤ ∑ a ∈ P, Polynomial.rootMultiplicity a Ψ := Finset.sum_le_sum hmult
-    _ ≤ Ψ.natDegree := Polynomial.sum_rootMultiplicity_le_natDegree Ψ hΨ P
+    _ ≤ Ψ.natDegree := Polynomial.sum_rootMultiplicity_le_natDegree (W := Ψ) P
 
 /-- **Contrapositive packaging.** If `#P · M > deg Ψ` for a polynomial vanishing to order `≥ M` on `P`,
 then `Ψ = 0`. This is the form a Stepanov argument invokes: having built a *nonzero* `Ψ` (via

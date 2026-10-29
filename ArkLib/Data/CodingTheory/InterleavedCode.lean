@@ -3,28 +3,26 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Katerina Hristova, František Silváši, Chung Thai Nguyen
 -/
+module
 
-import ArkLib.Data.CodingTheory.Basic.DecodingRadius
-import ArkLib.Data.CodingTheory.Basic.Distance
-import ArkLib.Data.CodingTheory.Basic.LinearCode
-import ArkLib.Data.CodingTheory.Basic.RelativeDistance
-import ArkLib.Data.CodingTheory.ListDecodability
-import ArkLib.Data.CodingTheory.ReedSolomon
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Logic.Equiv.Fin.Basic
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.Probability.Distributions.Uniform
-import Mathlib.Data.Real.Basic
-import Mathlib.Data.Real.Sqrt
-import ArkLib.Data.Fin.Basic
-import ArkLib.Data.CodingTheory.Prelims
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Analysis.InnerProductSpace.PiL2
-import Mathlib.Data.ENat.Lattice
-import Mathlib.InformationTheory.Hamming
-import Mathlib.Tactic.Qify
-import Mathlib.Topology.MetricSpace.Infsep
-import Mathlib.Data.NNReal.Defs
+public import ArkLib.Data.CodingTheory.Basic.DecodingRadius
+public import ArkLib.Data.CodingTheory.Basic.Distance
+public import ArkLib.Data.CodingTheory.Basic.LinearCode
+public import ArkLib.Data.CodingTheory.Basic.RelativeDistance
+public import Mathlib.Logic.Equiv.Fin.Basic
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.Probability.Distributions.Uniform
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Analysis.Real.Sqrt
+public import ArkLib.Data.Fin.Basic
+public import ArkLib.Data.CodingTheory.Prelims
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Analysis.InnerProductSpace.PiL2
+public import Mathlib.Data.ENat.Lattice
+public import Mathlib.InformationTheory.Hamming
+public import Mathlib.Tactic.Qify
+public import Mathlib.Topology.MetricSpace.Infsep
+public import Mathlib.Basic.NNReal.Defs
 
 /-!
 ## Main definitions
@@ -62,6 +60,11 @@ Interleaved codes for generic codes over a semiring, with **unified global APIs*
 - **`ModuleCode.codewordStackSubmodule`** - codeword stack as
   `Submodule F (WordStack A κ ι)` (preserves submodule for horizontal interleaving)
 
+### Structure of the interleaved module code
+- **`moduleInterleavedCodeEquiv`** - the column-tuple linear equivalence
+  `(κ → MC) ≃ₗ[F] (MC ^⋈ κ)`
+- **`finrank_moduleInterleavedCode`** - `finrank F (MC ^⋈ κ) = Fintype.card κ * finrank F MC`
+
 ### Joint Proximity & Agreement (Consequent of Proximity Gap)
 - **`jointProximity u δ`** - interleaved `u` within relative distance `δ` of `C^⋈κ`
 - **`jointProximityNat u e`** - interleaved `u` within concrete distance `e` of `C^⋈κ`
@@ -84,6 +87,8 @@ Interleaved codes for generic codes over a semiring, with **unified global APIs*
 * [Diamond, B. E. and Gruen, A., *Proximity Gaps in Interleaved Codes*, In: IACR
   Communications in Cryptology 1.4 (Jan. 13, 2025). issn: 3006-5496. doi: 10.62056/a0ljbkrz.][DG25]
 -/
+
+@[expose] public section
 
 section InterleavedCodeDefinitions
 variable (F : Type*) [Semiring F]
@@ -127,6 +132,11 @@ abbrev InterleavedWord := Matrix ι κ A
 def InterleavedWord.getRowWord {A : Type*} {κ : Type*} {ι : Type*}
     (v : InterleavedWord A κ ι) (k : κ) : Word A ι := v.transpose k
 
+/-- Evaluating a row extracted from an interleaved word. -/
+@[simp]
+lemma InterleavedWord.getRowWord_apply {A : Type*} {κ : Type*} {ι : Type*}
+    (v : InterleavedWord A κ ι) (k : κ) (i : ι) : v.getRowWord k i = v i k := rfl
+
 @[simp]
 def InterleavedWord.getSymbol {A : Type*} {κ : Type*} {ι : Type*}
     (v : InterleavedWord A κ ι) (i : ι) : InterleavedSymbol A κ := v i
@@ -148,7 +158,7 @@ noncomputable instance interleavedCodeSet_fintype {A : Type*} {κ ι : Type*}
 
 /-- Interleaved code submodule of any `ModuleCode`, where each row belongs to the code. -/
 @[simp]
-instance ModuleCode.moduleInterleavedCode : ModuleCode ι F (InterleavedSymbol A κ) := {
+def ModuleCode.moduleInterleavedCode : ModuleCode ι F (InterleavedSymbol A κ) := {
   -- Simple condition wrapping over Matrix
   carrier := interleavedCodeSet (C := (MC : Set (ι → A)))
   add_mem' hU hV i := MC.add_mem (hU i) (hV i)
@@ -156,7 +166,7 @@ instance ModuleCode.moduleInterleavedCode : ModuleCode ι F (InterleavedSymbol A
   smul_mem' a _ hV i := MC.smul_mem a (hV i)
 }
 
--- Note: lift these to CodeInterleavable
+-- TODO: lift these to CodeInterleavable
 omit [Fintype κ] [Fintype ι] [AddCommMonoid A] in
 @[simp]
 lemma mem_interleavedCode_iff (v : InterleavedWord A κ ι) : -- column-wise matrix
@@ -167,12 +177,38 @@ lemma mem_moduleInterleavedCode_iff (v : InterleavedWord A κ ι) :
     v ∈ ModuleCode.moduleInterleavedCode (F := F) (A := A) (κ := κ) (ι := ι) (MC := MC)
     ↔ ∀ k, InterleavedWord.getRowWord v k ∈ MC := by exact Eq.to_iff rfl
 
+omit [Fintype κ] [Fintype ι] in
+/-- **Projection commutes with interleaving.** An interleaved word projects into the interleaved
+code on `T` iff each of its rows projects into the base code on `T`.
+
+Forward direction: extract rows of the interleaved witness. Backward direction: assemble the
+chosen row witnesses into an interleaved codeword. This is the bridge that lets mutual correlated
+agreement be applied to interleaved codes: the proof of Lemma 4.4 [BCGM25] applies MCA of the
+inner generator to the `ℓ`-fold interleaving `C^ℓ`, and this lemma converts its projected
+membership clauses row-wise. -/
+lemma projectedCodeSubmod_moduleInterleavedCode_iff (v : InterleavedWord A κ ι) (T : Finset ι) :
+    LinearCode.projectedWord v T ∈
+      LinearCode.projectedCodeSubmod (ModuleCode.moduleInterleavedCode F A κ ι MC) T ↔
+    ∀ k, LinearCode.projectedWord (InterleavedWord.getRowWord v k) T ∈
+      LinearCode.projectedCodeSubmod MC T := by
+  constructor
+  · intro h k
+    obtain ⟨c, hc, hw⟩ := (LinearCode.mem_projectedCodeSubmod_iff _ T _).mp h
+    exact (LinearCode.mem_projectedCodeSubmod_iff _ T _).mpr
+      ⟨InterleavedWord.getRowWord c k, (mem_moduleInterleavedCode_iff F A κ ι MC c).mp hc k,
+        funext fun i => congr_fun (congr_fun hw i) k⟩
+  · intro h
+    choose c hc hw using fun k => (LinearCode.mem_projectedCodeSubmod_iff _ T _).mp (h k)
+    exact (LinearCode.mem_projectedCodeSubmod_iff _ T _).mpr
+      ⟨fun i k => c k i, (mem_moduleInterleavedCode_iff F A κ ι MC _).mpr fun k => hc k,
+        funext fun i => funext fun k => congr_fun (hw k) i⟩
+
 @[simp]
 def codewordStackSet {A : Type*} {κ ι : Type*} (C : Set (ι → A)) : Set (WordStack A κ ι) :=
   { V : WordStack A κ ι | ∀ k, V.getRowWord k ∈ C }
 
 @[simp]
-instance ModuleCode.codewordStackSubmodule : Submodule F (WordStack A κ ι) := {
+def ModuleCode.codewordStackSubmodule : Submodule F (WordStack A κ ι) := {
   -- Simple condition wrapping over Matrix
   carrier := codewordStackSet (C := (MC : Set (ι → A)))
   add_mem' hU hV i := MC.add_mem (hU i) (hV i)
@@ -213,11 +249,16 @@ abbrev InterleavedCodeword := interleavedCodeSet (κ := κ) (C := C)
 @[simp]
 abbrev CodewordStack := codewordStackSet (κ := κ) (C := C)
 
--- Note: mem of Module interleaved code, Module codeword stack
+-- TODO: mem of Module interleaved code, Module codeword stack
 
 @[simp]
-def interleaveWordStack {A : Type*} {κ ι : Type*} (u : WordStack A κ ι) : InterleavedWord A κ ι
-    := u.transpose
+def interleaveWordStack {A : Type*} {κ ι : Type*}
+    (u : WordStack A κ ι) : InterleavedWord A κ ι := u.transpose
+
+/-- Evaluating the interleaving of a stack of words. -/
+@[simp]
+lemma interleaveWordStack_apply {A : Type*} {κ ι : Type*} (u : WordStack A κ ι)
+    (i : ι) (k : κ) : interleaveWordStack u i k = u k i := rfl
 
 /-- Interleave a codeword stack into an interleaved codeword. -/
 @[simp]
@@ -231,9 +272,8 @@ def interleaveCodewordStack (u : CodewordStack A κ ι C) : InterleavedCodeword 
   ⟩
 
 @[simp]
-def finMapTwoWords {A : Type*} {ι : Type*} (u₀ u₁ : Word A ι)
-    : WordStack A (κ := Fin 2) (ι := ι)
-    := fun rowIdx =>
+def finMapTwoWords {A : Type*} {ι : Type*}
+    (u₀ u₁ : Word A ι) : WordStack A (κ := Fin 2) (ι := ι) := fun rowIdx =>
   match rowIdx with
   | ⟨0, _⟩ => u₀
   | ⟨1, _⟩ => u₁
@@ -243,7 +283,7 @@ def finMapTwoCodewords (u₀ u₁ : C) :
     CodewordStack A (κ := Fin 2) (ι := ι) C :=
   ⟨finMapTwoWords u₀ u₁, by
     simp only [WordStack, CodewordStack, codewordStackSet, Word, WordStack.getRowWord,
-      Set.mem_setOf_eq, finMapTwoWords]
+      Set.mem_ofPred_eq, finMapTwoWords]
     intro k
     match k with
     | 0 => simp only [Subtype.coe_prop]
@@ -268,7 +308,7 @@ def finMapCodewordStacksAppend {κ₁ κ₂ : Type*}
     match s with
     | Sum.inl k₁ => u.val k₁
     | Sum.inr k₂ => v.val k₂, by
-    simp only [WordStack, CodewordStack, mem_codewordStack_iff]
+    simp only [WordStack, CodewordStack]
     intro s
     match s with
     | Sum.inl k₁ =>
@@ -358,35 +398,230 @@ noncomputable instance instFintypeInterleavedModuleCode [Fintype A] : Fintype (M
 lemma interleavedCode_eq_interleavedCodeSet {A : Type*} {ι : Type*} {κ : Type*} {C : Set (ι → A)} :
     (C ^⋈ κ) = interleavedCodeSet (κ := κ) C:= by rfl
 
-set_option linter.unusedSectionVars false in
-set_option linter.unusedFintypeInType false in
--- Column projection shrinks relative Hamming distance for interleaved words.
-lemma relHammingDist_transpose_le {F : Type*} [DecidableEq F] [Fintype ι] [Nonempty ι] {m : ℕ}
-    (f V : Matrix ι (Fin m) F) (k : Fin m) :
-    δᵣ(V.transpose k, f.transpose k) ≤ δᵣ(V, f) := by
-  unfold relHammingDist
-  have h : hammingDist (V.transpose k) (f.transpose k) ≤ hammingDist V f := by
-    have := hammingDist_comp_le_hammingDist (γ := fun _ : ι => Fin m → F)
-      (β := fun _ : ι => F) (fun (_ : ι) (row : Fin m → F) => row k) (x := V) (y := f)
-    simpa [Matrix.transpose] using this
-  gcongr
-
-set_option linter.unusedSectionVars false in
-set_option linter.unusedFintypeInType false in
-/-- A close interleaved codeword projects, column-wise, to a codeword of the base code. -/
-lemma closeCodewordsRel_interleaved_transpose_mem_code {F : Type*}
-    {m : ℕ} {C : Set (ι → F)} {δ : ℝ}
-    {f V : Matrix ι (Fin m) F}
-    (hV : V ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
-    (k : Fin m) :
-    V.transpose k ∈ C :=
-  hV.1 k
-
 @[simp]
 lemma interleavedCode_eq_interleavedCodeSet_of_moduleCode {F A : Type*} {κ ι : Type*} [Semiring F]
     [AddCommMonoid A] [Module F A] {MC : ModuleCode ι F A} :
-    ((MC ^⋈ κ) : Set (ι → (κ → A))) = interleavedCodeSet (κ := κ) (C := (MC : Set (ι → A)))
-    := by rfl
+    ((MC ^⋈ κ) : Set (ι → (κ → A))) =
+      interleavedCodeSet (κ := κ) (C := (MC : Set (ι → A))) := by rfl
+
+/-- Interleaving over a nonempty row index preserves minimum block distance:
+`minDist (interleavedCodeSet C) = minDist C`.
+
+For `≥`, two distinct interleaved words differ in some row, whose Hamming distance is bounded
+by their block distance. For `≤`, place a minimum-distance base pair in one row and repeat
+one endpoint in every other row. The subsingleton case is handled separately, both sides
+being zero there. -/
+theorem minDist_interleavedCodeSet
+    {κ ι A : Type*} [Fintype κ] [Nonempty κ] [Fintype ι] [DecidableEq A]
+    (C : Set (ι → A)) :
+    minDist (interleavedCodeSet (κ := κ) C) = minDist C := by
+  classical
+  let IC : Set (ι → κ → A) := {V | ∀ k, (fun i ↦ V i k) ∈ C}
+  change minDist IC = minDist C
+  by_cases hC : Set.Nontrivial C
+  · obtain ⟨u, hu, v, hv, huv⟩ := hC
+    let k0 : κ := Classical.choice ‹Nonempty κ›
+    let U : ι → κ → A := fun i _ ↦ u i
+    let V : ι → κ → A := fun i k ↦ if k = k0 then v i else u i
+    have hU : U ∈ IC := by
+      intro k
+      change (fun i ↦ u i) ∈ C
+      exact hu
+    have hV : V ∈ IC := by
+      intro k
+      by_cases hk : k = k0
+      · subst k
+        change (fun i ↦ if k0 = k0 then v i else u i) ∈ C
+        simpa using hv
+      · change (fun i ↦ if k = k0 then v i else u i) ∈ C
+        simp [hk, hu]
+    have hUV : U ≠ V := by
+      intro h
+      apply huv
+      funext i
+      have := congrFun (congrFun h i) k0
+      simpa [U, V] using this
+    have hupper : minDist IC ≤ minDist C := by
+      have hS : {d | ∃ x ∈ C, ∃ y ∈ C, x ≠ y ∧ hammingDist x y = d}.Nonempty :=
+        ⟨hammingDist u v, u, hu, v, hv, huv, rfl⟩
+      have hmem : ∃ x ∈ C, ∃ y ∈ C, x ≠ y ∧ hammingDist x y = minDist C := by
+        exact Nat.sInf_mem hS
+      obtain ⟨x, hx, y, hy, hxy, hdist⟩ := hmem
+      let X : ι → κ → A := fun i _ ↦ x i
+      let Y : ι → κ → A := fun i k ↦ if k = k0 then y i else x i
+      have hX : X ∈ IC := by
+        intro k
+        change (fun i ↦ x i) ∈ C
+        exact hx
+      have hY : Y ∈ IC := by
+        intro k
+        by_cases hk : k = k0
+        · subst k
+          change (fun i ↦ if k0 = k0 then y i else x i) ∈ C
+          simpa using hy
+        · change (fun i ↦ if k = k0 then y i else x i) ∈ C
+          simp [hk, hx]
+      have hXY : X ≠ Y := by
+        intro h
+        apply hxy
+        funext i
+        have := congrFun (congrFun h i) k0
+        simpa [X, Y] using this
+      apply Nat.sInf_le
+      refine ⟨X, hX, Y, hY, hXY, ?_⟩
+      rw [← hdist]
+      unfold hammingDist
+      congr 1
+      ext i
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      constructor
+      · intro hne hxy_i
+        apply hne
+        funext k
+        simp [X, Y, hxy_i]
+      · intro hxy_i hEq
+        apply hxy_i
+        have := congrFun hEq k0
+        simpa [X, Y] using this
+    have hSIC : {d | ∃ x ∈ IC, ∃ y ∈ IC, x ≠ y ∧ hammingDist x y = d}.Nonempty :=
+      ⟨hammingDist U V, U, hU, V, hV, hUV, rfl⟩
+    have hmemIC : ∃ X ∈ IC, ∃ Y ∈ IC, X ≠ Y ∧ hammingDist X Y = minDist IC := by
+      exact Nat.sInf_mem hSIC
+    obtain ⟨X, hX, Y, hY, hXY, hdist⟩ := hmemIC
+    have hex : ∃ i k, X i k ≠ Y i k := by
+      obtain ⟨i, hi⟩ := Function.ne_iff.mp hXY
+      obtain ⟨k, hk⟩ := Function.ne_iff.mp hi
+      exact ⟨i, k, hk⟩
+    obtain ⟨i0, k, hik⟩ := hex
+    have hrow : (fun i ↦ X i k) ≠ fun i ↦ Y i k := by
+      intro h
+      exact hik (congrFun h i0)
+    have hlower : minDist C ≤ minDist IC := by
+      calc
+        minDist C ≤ hammingDist (fun i ↦ X i k) (fun i ↦ Y i k) := by
+          apply Nat.sInf_le
+          exact ⟨_, hX k, _, hY k, hrow, rfl⟩
+        _ ≤ hammingDist X Y := by
+          unfold hammingDist
+          apply Finset.card_le_card
+          intro i hi
+          simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi ⊢
+          intro h
+          exact hi (congrFun h k)
+        _ = minDist IC := hdist
+    exact le_antisymm hupper hlower
+  · have hCsub : Set.Subsingleton C := Set.not_nontrivial_iff.mp hC
+    have hICsub : Set.Subsingleton IC := by
+      intro U hU V hV
+      funext i k
+      have h := hCsub (hU k) (hV k)
+      exact congrFun h i
+    have hbase : minDist C = 0 := by
+      unfold minDist
+      have hempty : {d | ∃ x ∈ C, ∃ y ∈ C, x ≠ y ∧ hammingDist x y = d} = ∅ := by
+        rw [Set.eq_empty_iff_forall_notMem]
+        rintro d ⟨x, hx, y, hy, hxy, -⟩
+        exact hxy (hCsub hx hy)
+      rw [hempty, Nat.sInf_empty]
+    have hinter : minDist IC = 0 := by
+      unfold minDist
+      have hempty : {d | ∃ x ∈ IC, ∃ y ∈ IC, x ≠ y ∧ hammingDist x y = d} = ∅ := by
+        rw [Set.eq_empty_iff_forall_notMem]
+        rintro d ⟨x, hx, y, hy, hxy, -⟩
+        exact hxy (hICsub hx hy)
+      rw [hempty, Nat.sInf_empty]
+    rw [hbase, hinter]
+
+/-- Interleaving over a nonempty row index preserves the *relative* minimum distance:
+`δᵣ (MC ^⋈ κ) = δᵣ MC`. The relative form of `minDist_interleavedCodeSet`, via the bridge
+`minDist_div_card_eq_minRelHammingDistCode`: both codes have block length `ι`, so equal
+absolute distances give equal relative ones. -/
+lemma minRelHammingDistCode_moduleInterleavedCode
+    {ι F A κ : Type*} [Fintype ι] [Nonempty ι] [Semiring F]
+    [AddCommMonoid A] [Module F A] [DecidableEq A] [Fintype κ] [Nonempty κ]
+    (MC : ModuleCode ι F A) :
+    minRelHammingDistCode (ModuleCode.moduleInterleavedCode F A κ ι MC).carrier
+      = minRelHammingDistCode MC.carrier := by
+  have hmd : minDist ((ModuleCode.moduleInterleavedCode F A κ ι MC).carrier)
+      = minDist (MC.carrier : Set (ι → A)) :=
+    minDist_interleavedCodeSet (κ := κ) (MC.carrier : Set (ι → A))
+  have h1 := minDist_div_card_eq_minRelHammingDistCode
+    ((ModuleCode.moduleInterleavedCode F A κ ι MC).carrier)
+  have h2 := minDist_div_card_eq_minRelHammingDistCode (MC.carrier : Set (ι → A))
+  have hq : ((minRelHammingDistCode
+        (ModuleCode.moduleInterleavedCode F A κ ι MC).carrier : ℚ≥0) : ℚ)
+      = ((minRelHammingDistCode MC.carrier : ℚ≥0) : ℚ) := by
+    rw [← h1, ← h2, hmd]
+  exact_mod_cast hq
+
+/-- With a single row (`κ = Fin 1`), the Hamming distance of two interleaved words is the
+Hamming distance of their rows. -/
+lemma hammingDist_fin_one {A ι : Type*} [Fintype ι] [DecidableEq A]
+    {u v : ι → Fin 1 → A} :
+    hammingDist u v = hammingDist (fun y => u y 0) (fun y => v y 0) := by
+  convert (hammingDist_comp (fun _ (w : Fin 1 → A) => w 0)
+    (fun _ => (Equiv.funUnique (Fin 1) A).injective)).symm
+
+/-- With a single row (`κ = Fin 1`), the distance from an interleaved word to the interleaved
+code of `C` is the distance from its row to `C`. -/
+lemma distFromCode_interleavedCodeSet_fin_one {A ι : Type*} [Fintype ι] [DecidableEq A]
+    (u : ι → Fin 1 → A) (C : Set (ι → A)) :
+    Δ₀(u, interleavedCodeSet (κ := Fin 1) C) = Δ₀((fun y => u y 0), C) := by
+  classical
+  simp only [distFromCode]
+  congr 1; ext d; simp only [Set.mem_ofPred_eq]; constructor
+  · rintro ⟨v, hv_mem, hv_dist⟩
+    refine ⟨fun y => v y 0, hv_mem 0, ?_⟩
+    rwa [← hammingDist_fin_one (u := u) (v := v)]
+  · rintro ⟨w, hw_mem, hw_dist⟩
+    refine ⟨fun y _ => w y, fun k => by rwa [show k = 0 from Subsingleton.elim k 0], ?_⟩
+    rwa [hammingDist_fin_one (A := A) (u := u) (v := fun y _ => w y)]
+
+/-- Interleaving over a nonempty row index preserves the relative unique-decoding radius:
+`relUDR (interleavedCodeSet C) = relUDR C`. Both codes have block length `ι` and, by
+`minDist_interleavedCodeSet`, the same minimum distance. -/
+theorem relativeUniqueDecodingRadius_interleavedCodeSet
+    {κ ι A : Type*} [Fintype κ] [Nonempty κ] [Fintype ι] [DecidableEq A]
+    (C : Set (ι → A)) :
+    relativeUniqueDecodingRadius (interleavedCodeSet (κ := κ) C) =
+      relativeUniqueDecodingRadius C := by
+  have h : Code.dist (interleavedCodeSet (κ := κ) C) = Code.dist C :=
+    (dist_eq_minDist _).trans ((minDist_interleavedCodeSet C).trans (dist_eq_minDist C).symm)
+  -- `interleavedCodeSet C` lives in `Set (Matrix ι κ A)`, so `rw [h]` cannot see the distance
+  -- inside the left-hand side; transport `h` through the radius formula instead.
+  exact congrArg (fun d : ℕ => (((d : ℝ≥0) - 1) / 2) / (Fintype.card ι : ℝ≥0)) h
+
+section Finrank
+
+/-! ### Structure and dimension of an interleaved module code -/
+
+/-- A `κ`-tuple of codewords of a module code `MC` is the same data as a codeword of the
+interleave `MC ^⋈ κ`: the tuple `g` corresponds to the interleaved word whose `k`-th row is
+`g k`. No finiteness of `κ` or `ι` is required. -/
+def moduleInterleavedCodeEquiv {F : Type*} [Semiring F] {A : Type*} [AddCommMonoid A]
+    [Module F A] {ι : Type*} (MC : ModuleCode ι F A) (κ : Type*) :
+    (κ → MC) ≃ₗ[F] (MC ^⋈ κ) where
+  toFun g := ⟨fun i k => (g k : ι → A) i, fun k => (g k).2⟩
+  invFun V := fun k => ⟨fun i => V.val i k, V.2 k⟩
+  left_inv g := by funext k; exact Subtype.ext rfl
+  right_inv V := by apply Subtype.ext; funext i k; rfl
+  map_add' g g' := by apply Subtype.ext; funext i k; rfl
+  map_smul' a g := by apply Subtype.ext; funext i k; rfl
+
+/-- Interleaving multiplies the dimension by the interleaving factor:
+`finrank F (MC ^⋈ κ) = Fintype.card κ * finrank F MC`.
+
+Immediate from `moduleInterleavedCodeEquiv` and `Module.finrank_pi_fintype`, whose `Free` and
+`Finite` hypotheses are inherited; both hold automatically when `F` is a field and the ambient
+`ι → A` is finite-dimensional. -/
+lemma finrank_moduleInterleavedCode {F : Type*} [Semiring F] [StrongRankCondition F]
+    {A : Type*} [AddCommMonoid A] [Module F A] {ι : Type*} (MC : ModuleCode ι F A)
+    [Module.Free F MC] [Module.Finite F MC] (κ : Type*) [Fintype κ] :
+    Module.finrank F (MC ^⋈ κ) = Fintype.card κ * Module.finrank F MC := by
+  rw [← (moduleInterleavedCodeEquiv MC κ).finrank_eq, Module.finrank_pi_fintype,
+    Finset.sum_const, Finset.card_univ, smul_eq_mul]
+
+end Finrank
 
 @[simp]
 instance {κ₁ κ₂ : Type*} :
@@ -478,21 +713,18 @@ export InterleavedStructure (eq_iff_all_rows_eq eq_iff_all_symbols_eq eq_iff_all
   eq_iff_all_rows_eq := by
     intro u v; constructor
     · intro h; rw [h]; exact fun i ↦ rfl
-    · intro h; ext i k;
-      let res := h i; simp only [WordStack, codewordStackSet, Word, WordStack.getRowWord,
-        Set.mem_setOf_eq, Subtype.mk.injEq] at res; exact congrFun res k
+    · intro h; ext i k
+      exact congrFun (congrArg Subtype.val (h i)) k
   eq_iff_all_symbols_eq := by
     intro u v; constructor
     · intro h; rw [h]; exact fun k ↦ rfl
-    · intro h; ext i k;
-      let res := h k; simp only [WordStack, codewordStackSet, Word,
-        Set.mem_setOf_eq] at res; exact congrFun res i
+    · intro h; ext i k
+      exact congrFun (h k) i
   eq_iff_all_cells_eq := by
     intro u v; constructor
     · intro h; rw [h]; exact fun i k ↦ rfl
-    · intro h; ext i k;
-      let res := h i k; simp only [WordStack, codewordStackSet, Word,
-        Set.mem_setOf_eq] at res; exact res
+    · intro h; ext i k
+      exact h i k
 
 -- InterleavedWord
 @[simp] instance instInterleavedStructureInterleavedWord :
@@ -530,12 +762,12 @@ export InterleavedStructure (eq_iff_all_rows_eq eq_iff_all_symbols_eq eq_iff_all
     intro u v; constructor
     · intro h; rw [h]; exact fun i ↦ rfl
     · intro h; ext i k;
-      let res := h k; simp only [Subtype.mk.injEq] at res; exact congrFun res i
+      exact congrFun (congrArg Subtype.val (h k)) i
   eq_iff_all_symbols_eq := by
     intro u v; constructor
     · intro h; rw [h]; exact fun k ↦ rfl
     · intro h; ext i k;
-      let res := h i; simp only at res; exact congrFun res k
+      exact congrFun (h i) k
   eq_iff_all_cells_eq := by
     intro u v; constructor
     · intro h; rw [h]; exact fun i k ↦ rfl
@@ -590,11 +822,9 @@ instance instNonemptyInterleavedCode [Nonempty C] :
   intro k
   exact c.property
 
-example (C : Set (ι → A)) : ((C ^⋈ (Fin 2))) = interleavedCodeSet (κ := Fin 2) C
-    := by rfl
+example (C : Set (ι → A)) : ((C ^⋈ (Fin 2))) = interleavedCodeSet (κ := Fin 2) C := by rfl
 example (MC : ModuleCode ι F A) : (MC ^⋈ (Fin 2))
-    = ModuleCode.moduleInterleavedCode (F := F) (A := A) (κ := Fin 2) (ι := ι) (MC := MC)
-    := by rfl
+    = ModuleCode.moduleInterleavedCode (F := F) (A := A) (κ := Fin 2) (ι := ι) (MC := MC) := by rfl
 example (u : CodewordStack A κ ι C) :
   let iuCodewords: InterleavedCodeword A κ ι C := ⋈|u
   let iuWords: InterleavedWord A κ ι := ⋈|u.val
@@ -693,137 +923,11 @@ theorem jointProximityNat_iff_closeToInterleavedCodeword (u : WordStack A κ ι)
 `S` with the base code `C`.
 Variants of this definition should follow the naming conventions of `jointProximity`
 if possible, for consistency.
-This can generalize further to support the consequent of mutual correlated agreement. -/
+TOOD: this can generalize further to support the consequent of mutual correlated agreement. -/
 def jointAgreement {F κ ι : Type*} [Fintype ι] [DecidableEq F]
     (C : Set (ι → F)) (δ : ℝ≥0) (W : κ → ι → F) : Prop :=
   ∃ S : Finset ι, S.card ≥ (1 - δ) * (Fintype.card ι) ∧
       ∃ v : κ → ι → F, ∀ i, v i ∈ C ∧ S ⊆ Finset.filter (fun j => v i j = W i j) Finset.univ
-
-/-- If every word in the stack is already a codeword, then the stack has joint agreement with
-the code on the full coordinate set.  This is the complete extreme of the
-correlated-agreement-to-`jointAgreement` bridge used by FRI/WHIR frontiers. -/
-theorem jointAgreement_of_forall_mem {F κ ι : Type*} [Fintype ι] [DecidableEq F]
-    {C : Set (ι → F)} {δ : ℝ≥0} {W : κ → ι → F} (hW : ∀ i, W i ∈ C) :
-    jointAgreement (F := F) (κ := κ) (ι := ι) (C := C) (δ := δ) (W := W) := by
-  classical
-  refine ⟨Finset.univ, ?_, W, ?_⟩
-  · simpa [mul_comm] using
-      mul_le_mul_left (tsub_le_self : 1 - δ ≤ (1 : ℝ≥0)) (Fintype.card ι : ℝ≥0)
-  · intro i
-    constructor
-    · exact hW i
-    · intro j hj
-      simp
-
-/-- Monotonicity of `jointAgreement` in the proximity radius: increasing `δ` weakens the common
-agreement-set size requirement. -/
-theorem jointAgreement_mono {F κ ι : Type*} [Fintype ι] [DecidableEq F]
-    {C : Set (ι → F)} {δ₁ δ₂ : ℝ≥0} {W : κ → ι → F} (hδ : δ₁ ≤ δ₂)
-    (h : jointAgreement (F := F) (κ := κ) (ι := ι) (C := C) (δ := δ₁) (W := W)) :
-    jointAgreement (F := F) (κ := κ) (ι := ι) (C := C) (δ := δ₂) (W := W) := by
-  classical
-  rcases h with ⟨S, hS, v, hv⟩
-  refine ⟨S, ?_, v, hv⟩
-  have hsub : 1 - δ₂ ≤ 1 - δ₁ := by
-    exact tsub_le_tsub_left hδ 1
-  have hmul :
-      (1 - δ₂) * (Fintype.card ι : ℝ≥0) ≤
-        (1 - δ₁) * (Fintype.card ι : ℝ≥0) := by
-    simpa [mul_comm] using mul_le_mul_left hsub (Fintype.card ι : ℝ≥0)
-  exact hmul.trans hS
-
-/-- Monotonicity of `jointAgreement` in the code: enlarging the code preserves joint agreement,
-since each agreeing codeword for the smaller code is also a codeword for the larger one.  Companion
-to `jointAgreement_mono` (monotone in the proximity radius). -/
-theorem jointAgreement_mono_code {F κ ι : Type*} [Fintype ι] [DecidableEq F]
-    {C₁ C₂ : Set (ι → F)} {δ : ℝ≥0} {W : κ → ι → F} (hC : C₁ ⊆ C₂)
-    (h : jointAgreement (F := F) (κ := κ) (ι := ι) (C := C₁) (δ := δ) (W := W)) :
-    jointAgreement (F := F) (κ := κ) (ι := ι) (C := C₂) (δ := δ) (W := W) := by
-  rcases h with ⟨S, hS, v, hv⟩
-  exact ⟨S, hS, v, fun i => ⟨hC (hv i).1, (hv i).2⟩⟩
-
-/-- `jointAgreement` in per-word `∀ i, ∃ u` form: the single agreeing-codeword function (the
-`∃ v` Skolem form in the definition) is equivalent to per-word existence of an agreeing codeword on
-a common large set.  This is the normal form in which the STIR/FRI/WHIR proximity-gap conclusions
-are stated (`∃ S, |S| ≥ (1-δ)|ι| ∧ ∀ i, ∃ u ∈ C, agree on S`), so it bridges those bespoke
-conclusions to the shared `jointAgreement` API. -/
-theorem jointAgreement_iff_forall_exists {F κ ι : Type*} [Fintype ι] [DecidableEq F]
-    (C : Set (ι → F)) (δ : ℝ≥0) (W : κ → ι → F) :
-    jointAgreement (F := F) (κ := κ) (ι := ι) (C := C) (δ := δ) (W := W) ↔
-      ∃ S : Finset ι, (S.card : ℝ≥0) ≥ (1 - δ) * (Fintype.card ι) ∧
-        ∀ i, ∃ u, u ∈ C ∧ ∀ x ∈ S, W i x = u x := by
-  classical
-  constructor
-  · rintro ⟨S, hS, v, hv⟩
-    refine ⟨S, hS, fun i => ⟨v i, (hv i).1, fun x hx => ?_⟩⟩
-    have := (hv i).2 hx
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at this
-    exact this.symm
-  · rintro ⟨S, hS, h⟩
-    choose u hu_mem hu_eq using h
-    refine ⟨S, hS, u, fun i => ⟨hu_mem i, ?_⟩⟩
-    intro x hx
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-    exact (hu_eq i x hx).symm
-
-#print axioms jointAgreement_of_forall_mem
-#print axioms jointAgreement_mono
-#print axioms jointAgreement_mono_code
-#print axioms jointAgreement_iff_forall_exists
-
-/-- Transport joint agreement across an equivalence of coordinate domains.
-
-The code predicate itself is supplied by `hC`: every codeword for `C₁`, reindexed along
-`e.symm`, must be a codeword for `C₂`.  This isolates the finite-coordinate bookkeeping from
-domain-specific code transport lemmas such as Reed-Solomon invariance under equivalent
-evaluation domains. -/
-theorem jointAgreement_equiv_of_codeword_transport
-    {F κ ι₁ ι₂ : Type*}
-    [Fintype ι₁] [Fintype ι₂] [DecidableEq F]
-    (e : ι₁ ≃ ι₂)
-    (C₁ : Set (ι₁ → F)) (C₂ : Set (ι₂ → F))
-    (δ : NNReal) (W₂ : κ → ι₂ → F)
-    (hC : ∀ v, v ∈ C₁ → (fun y => v (e.symm y)) ∈ C₂)
-    (h :
-      jointAgreement
-        (C := C₁) (δ := δ) (W := fun k x => W₂ k (e x))) :
-      jointAgreement (C := C₂) (δ := δ) (W := W₂) := by
-  classical
-  rcases h with ⟨S, hS, v, hv⟩
-  refine ⟨S.map e.toEmbedding, ?_, fun k y => v k (e.symm y), ?_⟩
-  · have hcard : Fintype.card ι₂ = Fintype.card ι₁ := Fintype.card_congr e.symm
-    simpa [Finset.card_map, hcard] using hS
-  · intro k
-    constructor
-    · exact hC (v k) (hv k).1
-    · intro y hy
-      rcases Finset.mem_map.mp hy with ⟨x, hx, rfl⟩
-      have hx_filter := (hv k).2 hx
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx_filter ⊢
-      simpa using hx_filter
-
-/-- **Reed-Solomon joint-agreement transport across a domain reindexing.**
-
-Specialises `jointAgreement_equiv_of_codeword_transport` to Reed-Solomon codes: if the two
-evaluation embeddings agree up to the coordinate equivalence `e` (`domain₁ x = domain₂ (e x)`),
-then joint agreement of the reindexed word stack against the code on `domain₁` lifts to joint
-agreement of the original word stack against the code on `domain₂`.  The Reed-Solomon-specific
-codeword transport is discharged by `ReedSolomon.code_reindex_mem`.  This is the coding-theoretic
-core of the FRI/STIR Claim 8.3 lift between an evaluation subdomain and the full domain. -/
-theorem jointAgreement_reedSolomon_equiv
-    {F : Type*} [Semiring F] [DecidableEq F]
-    {κ ι₁ ι₂ : Type*} [Fintype ι₁] [Fintype ι₂]
-    (e : ι₁ ≃ ι₂) {domain₁ : ι₁ ↪ F} {domain₂ : ι₂ ↪ F} {n : ℕ}
-    (hdom : ∀ x, domain₁ x = domain₂ (e x))
-    {δ : NNReal} {W₂ : κ → ι₂ → F}
-    (h : jointAgreement (C := (↑(ReedSolomon.code domain₁ n) : Set (ι₁ → F)))
-          (δ := δ) (W := fun k x => W₂ k (e x))) :
-    jointAgreement (C := (↑(ReedSolomon.code domain₂ n) : Set (ι₂ → F)))
-      (δ := δ) (W := W₂) := by
-  refine jointAgreement_equiv_of_codeword_transport e
-    (↑(ReedSolomon.code domain₁ n)) (↑(ReedSolomon.code domain₂ n)) δ W₂ ?_ h
-  intro v hv
-  exact ReedSolomon.code_reindex_mem e hdom hv
 
 open InterleavedCode in
 /-- Equivalence between the agreement-based definition `jointAgreement` and
@@ -871,7 +975,7 @@ theorem jointAgreement_iff_jointProximity
       exact hj_in_filter.2.symm
     -- From agreement on S, we get distance bound
     have h_dist : δᵣ(u_interleaved, v_interleaved) ≤ δ := by
-      rw [relCloseToWord_iff_exists_agreementCols]
+      apply (relCloseToWord_iff_exists_agreementCols u_interleaved v_interleaved δ).2
       use S
       rw [relDist_floor_bound_iff_complement_bound]
       constructor
@@ -888,8 +992,7 @@ theorem jointAgreement_iff_jointProximity
     -- Since v_interleaved ∈ MC.interleavedCode, we have δᵣ(u_interleaved, MC.interleavedCode) ≤ δ
     unfold jointProximity
     have h_min_dist :
-        δᵣ(u_interleaved, interleavedCodeSet C) ≤ δᵣ(u_interleaved, v_interleaved)
-      := by
+        δᵣ(u_interleaved, interleavedCodeSet C) ≤ δᵣ(u_interleaved, v_interleaved) := by
       apply relDistFromCode_le_relDist_to_mem (u := u_interleaved) (C := interleavedCodeSet C)
         (v := v_interleaved) (hv := hv_interleaved_mem)
     exact le_trans h_min_dist h_dist
@@ -906,16 +1009,14 @@ theorem jointAgreement_iff_jointProximity
     have h_rel_to_nat : δᵣ(u_interleaved, interleavedCodeSet C) ≤ δ →
         ∃ v ∈ (interleavedCodeSet C), δᵣ(u_interleaved, v) ≤ δ := by
       intro h_rel
-      rw [relCloseToCode_iff_relCloseToCodeword_of_minDist] at h_rel
-      exact h_rel
+      exact (relCloseToCode_iff_relCloseToCodeword_of_minDist u_interleaved δ).1 h_rel
     have h_exists_v := h_rel_to_nat h_joint
     rcases h_exists_v with ⟨v, hv_mem, hv_dist⟩
     -- Now convert relative distance to agreement set
     -- We need: δᵣ(u_interleaved, v) ≤ δ → ∃ S, |S| ≥ (1-δ)*|ι| and agreement
     -- Convert relative distance δ to natural distance e
     have h_nat_dist : Δ₀(u_interleaved, v) ≤ e := by
-      rw [pairRelDist_le_iff_pairDist_le (δ := δ)] at hv_dist
-      exact hv_dist
+      exact (pairRelDist_le_iff_pairDist_le (u := u_interleaved) (v := v) δ).1 hv_dist
     have h_agree := Code.closeToWord_iff_exists_agreementCols
       (u := u_interleaved) (v := v) (e := e)
     have h_agree_nat := h_agree.mp h_nat_dist
@@ -933,7 +1034,7 @@ theorem jointAgreement_iff_jointProximity
       intro i
       constructor
       · -- v_rows i ∈ MC
-        simp only [interleavedCodeSet, Set.mem_setOf_eq] at hv_mem
+        simp only [interleavedCodeSet, Set.mem_ofPred_eq] at hv_mem
         exact hv_mem i
       · -- S ⊆ {j | v_rows i j = u i j}
         simp only [Finset.subset_iff]
@@ -956,184 +1057,3 @@ end JointProximityDefinitions
 
 end Code
 end InterleavedCodeDefinitions
-
-namespace InterleavedCode
-
-open ListDecodable Code
-
-/-- **Lemma 2.10 of [ABF26]** (= **[GGR11]**) — interleaved-code
-list-size bound.
-
-Let `C` be a code with relative minimum distance `δ_C := δ_min(C) / |ι|`,
-and let `δ ∈ [0, δ_C)`. Define
-  `η := δ_C - δ`,
-  `b := ⌈δ / η⌉`,
-  `r := ⌈log₂(δ_C / η)⌉`.
-Then for every `m ≥ 1`,
-
-  `|Λ(C^{≡m}, δ)| ≤ (b+r choose r) · |Λ(C, δ)|^r`.
-
-The key feature is that the bound's dependence on the interleaving
-factor `m` is hidden inside the constant `(b+r choose r)` — once `δ`
-is fixed, the list size of `C^{≡m}` grows as a *polynomial in*
-`|Λ(C, δ)|` of degree `r`, **independent of `m`**. Used in ABF26 §3
-list-decoding analyses and §6.3.
-
-## Disposition: REDUCED to the external GGR11 list-size recursion.
-
-All *in-tree* infrastructure this statement rests on is proven sorry-free in this
-file and in `ListDecodability.lean`: the interleaved-code carrier
-(`interleavedCodeSet`, with its `Fintype` instance `interleavedCodeSet_fintype`),
-the maximised list size `Lambda` (= `ListDecodability.Lambda`) and its monotonicity
-(`Lambda_mono`), and the row-projection characterisation `mem_interleavedCode_iff`
-(`V ∈ C^{≡m} ↔ ∀ k, V.transpose k ∈ C`).  In particular,
-`closeCodewordsRel_interleaved_transpose_mem_code` proves that any interleaved
-codeword in a relative Hamming ball projects, row-wise, to a codeword of `C`.
-
-The residual is the **Gopalan–Guruswami–Raghavendra (GGR11)** combinatorial
-list-recovery recursion (RANDOM 2011, "List Decoding Tensor Products and Interleaved
-Codes"; ABF26 Lemma 2.10).  This `def` only *states* the bound (it is `Prop`-valued,
-not proven here); the proof is carried out, modulo a precisely named residual, in
-`ArkLib.ToMathlib.GGR11Interleaved`, where the GGR11 §3 argument is split into two
-parts:
-
-* **(Leaf counting — now fully in-tree.)**  A rooted tree whose root→leaf paths use
-  at most `b` Blue and `r` Red edges, with at most one Blue and `≤ |Λ(C,δ)|` Red
-  out-edges per node, has at most `(b+r choose r)·|Λ(C,δ)|^r` leaves (GGR11
-  Theorem 3.6).  This is proved sorry-free as
-  `InterleavedCode.GGR11.ggr11_tree_count_le` (double induction on the Pascal
-  recursion `t(b,r) ≤ t(b-1,r) + L·t(b,r-1)`).
-
-* **(Tree construction — the remaining named residual.)**  The Erase-Decode tree
-  (GGR11 Algorithm 1, Lemmas 3.3–3.5) with those Blue/Red budgets exists and
-  dominates the per-word close-codeword set.  This is the list-recovery /
-  erasure-decoding content that has **no in-tree analogue** (ArkLib has neither a
-  list-recovery primitive nor the column-pruning lemmas it needs).  It is named
-  `InterleavedCode.GGR11.GGR11TreeStructure`, with the named per-word frontier
-  `InterleavedCode.GGR11.GGR11TreeFrontier` exposing the witness data. The chain
-  `GGR11TreeFrontier ↔ GGR11TreeStructure → GGR11PerWordBound → (this bound)` is
-  fully proven there.
-
-Note also `F` is only `[Field F]` (not `[Fintype F]`), so over an infinite field
-`Lambda C δ` can be `⊤`, in which case the RHS is `⊤` and the bound is trivially true;
-but the universally-quantified statement is governed by the finite-list case, which is
-exactly the GGR11 recursion above.  This `def` is `Prop`-valued and contains **no
-`sorry`**; the precisely characterised external wall is `GGR11TreeStructure`.
-
-Residual external lemma: GGR11 Erase-Decode tree existence
-(`InterleavedCode.GGR11.GGR11TreeStructure`). -/
-def lambda_le_ggr11 {ι F : Type} [Fintype ι] [Field F] [DecidableEq F]
-    (C : Set (ι → F)) (δ : ℝ) (m : ℕ) (_hm : 1 ≤ m)
-    (_hδ_lb : 0 ≤ δ)
-    (_hδ_ub : δ < (Code.minDist C : ℝ) / Fintype.card ι) : Prop :=
-    let η : ℝ := (Code.minDist C : ℝ) / Fintype.card ι - δ
-    let b : ℕ := ⌈δ / η⌉₊
-    let r : ℕ := ⌈Real.log ((Code.minDist C : ℝ) / Fintype.card ι / η) /
-                  Real.log 2⌉₊
-    Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤
-      ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r
-
-private lemma exists_transpose_ne_of_ne {A ι κ : Type*} {U V : Matrix ι κ A}
-    (hUV : U ≠ V) : ∃ k : κ, U.transpose k ≠ V.transpose k := by
-  by_contra h
-  apply hUV
-  funext i k
-  have hk : U.transpose k = V.transpose k := by
-    by_contra hk
-    exact (not_exists.mp h k) hk
-  simpa [Matrix.transpose] using congrFun hk i
-
-private lemma hammingDist_const_interleaved {A ι κ : Type*} [Fintype ι] [Fintype κ]
-    [Nonempty κ] [DecidableEq A] (u v : ι → A) :
-    hammingDist (fun i : ι => fun _ : κ => u i)
-      (fun i : ι => fun _ : κ => v i) = hammingDist u v := by
-  classical
-  rw [hammingDist_eq_disagreementCols_card, hammingDist_eq_disagreementCols_card]
-  apply congrArg Finset.card
-  ext i
-  simp only [mem_disagreementCols]
-  constructor
-  · intro hfun
-    by_contra hne
-    apply hfun
-    funext _k
-    exact hne
-  · intro hne hfun
-    obtain ⟨k⟩ := (inferInstance : Nonempty κ)
-    exact hne (congrFun hfun k)
-
-private lemma hammingDist_transpose_le {A ι κ : Type*} [Fintype ι] [Fintype κ]
-    [DecidableEq A] (U V : Matrix ι κ A) (k : κ) :
-    hammingDist (U.transpose k) (V.transpose k) ≤ hammingDist U V := by
-  classical
-  have := hammingDist_comp_le_hammingDist (γ := fun _ : ι => κ → A)
-    (β := fun _ : ι => A) (fun (_ : ι) (row : κ → A) => row k) (x := U) (y := V)
-  simpa [Matrix.transpose] using this
-
-lemma minDist_eq_minDist {F A ι κ : Type*} [Semiring F] [AddCommMonoid A] [Module F A]
-    [Fintype ι] [Fintype κ] [Nonempty κ] [DecidableEq A] (C : Set (ι → A)) :
-    Code.minDist (C^⋈κ) = Code.minDist C := by
-  classical
-  let Sbase : Set ℕ :=
-    {d | ∃ u ∈ C, ∃ v ∈ C, u ≠ v ∧ hammingDist u v = d}
-  let Sint : Set ℕ :=
-    {d | ∃ U ∈ (C ^⋈ κ), ∃ V ∈ (C ^⋈ κ), U ≠ V ∧ hammingDist U V = d}
-  have const_mem {u : ι → A} (hu : u ∈ C) :
-      (fun i : ι => fun _ : κ => u i) ∈ (C ^⋈ κ) := by
-    rw [interleavedCode_eq_interleavedCodeSet]
-    intro k
-    simpa [Matrix.transpose] using hu
-  have const_ne {u v : ι → A} (huv : u ≠ v) :
-      (fun i : ι => fun _ : κ => u i) ≠
-        (fun i : ι => fun _ : κ => v i) := by
-    intro h
-    apply huv
-    funext i
-    obtain ⟨k⟩ := (inferInstance : Nonempty κ)
-    exact congrFun (congrFun h i) k
-  have base_to_interleaved {d : ℕ} (hd : d ∈ Sbase) : d ∈ Sint := by
-    rcases hd with ⟨u, hu, v, hv, huv, hdist⟩
-    exact ⟨fun i : ι => fun _ : κ => u i, const_mem hu,
-      fun i : ι => fun _ : κ => v i, const_mem hv, const_ne huv, by
-        rw [hammingDist_const_interleaved]
-        exact hdist⟩
-  have row_mem_of_mem {U : Matrix ι κ A} (hU : U ∈ (C ^⋈ κ)) (k : κ) :
-      U.transpose k ∈ C := by
-    have hU' : ∀ k : κ, U.transpose k ∈ C := by
-      simpa [interleavedCode_eq_interleavedCodeSet, interleavedCodeSet] using hU
-    exact hU' k
-  unfold Code.minDist
-  change sInf Sint = sInf Sbase
-  by_cases hbase : Sbase.Nonempty
-  · have hSint : Sint.Nonempty := by
-      rcases hbase with ⟨d, hd⟩
-      exact ⟨d, base_to_interleaved hd⟩
-    apply le_antisymm
-    · exact Nat.sInf_le (base_to_interleaved (Nat.sInf_mem hbase))
-    · apply sInf.le_sInf_of_LB hSint
-      intro d hd
-      rcases hd with ⟨U, hU, V, hV, hUV, hdist⟩
-      rcases exists_transpose_ne_of_ne hUV with ⟨k, hk⟩
-      have hrowU : U.transpose k ∈ C := row_mem_of_mem hU k
-      have hrowV : V.transpose k ∈ C := row_mem_of_mem hV k
-      have hbase_row : hammingDist (U.transpose k) (V.transpose k) ∈ Sbase :=
-        ⟨U.transpose k, hrowU, V.transpose k, hrowV, hk, rfl⟩
-      have hmin_le_row : sInf Sbase ≤ hammingDist (U.transpose k) (V.transpose k) :=
-        Nat.sInf_le hbase_row
-      have hrow_le : hammingDist (U.transpose k) (V.transpose k) ≤ hammingDist U V :=
-        hammingDist_transpose_le U V k
-      exact le_trans hmin_le_row (by simpa [hdist] using hrow_le)
-  · have hSbase_empty : Sbase = ∅ := Set.not_nonempty_iff_eq_empty.mp hbase
-    have hSint_empty : Sint = ∅ := by
-      apply Set.eq_empty_iff_forall_notMem.mpr
-      intro d hd
-      rcases hd with ⟨U, hU, V, hV, hUV, _hdist⟩
-      rcases exists_transpose_ne_of_ne hUV with ⟨k, hk⟩
-      have hrowU : U.transpose k ∈ C := row_mem_of_mem hU k
-      have hrowV : V.transpose k ∈ C := row_mem_of_mem hV k
-      have hbase_row : hammingDist (U.transpose k) (V.transpose k) ∈ Sbase :=
-        ⟨U.transpose k, hrowU, V.transpose k, hrowV, hk, rfl⟩
-      simp [hSbase_empty] at hbase_row
-    simp [hSbase_empty, hSint_empty]
-
-end InterleavedCode

@@ -3,7 +3,7 @@
 # `pg-iterate.sh` (lake env lean) starts hot and never stalls on a missing olean.
 #
 # Run this ONCE per machine (or after a mathlib bump). Do NOT run it per-iteration. It takes
-# the build lock, so run it while no agent is mid-`lake build`. After it finishes, all agents
+# the build lock, so run it while no agent is mid-`./scripts/lake-locked.sh build`. After it finishes, all agents
 # iterate lock-free in parallel via `scripts/pg-iterate.sh`.
 #
 # It builds only the substrate the Frontier lanes consume — NOT the full 808-file cone.
@@ -21,5 +21,13 @@ MODS=(
 )
 echo "Warming ${#MODS[@]} substrate modules (one-time, holds the build lock)…"
 # one lake invocation builds them in parallel across all cores (shared dependency graph)
-"$(dirname "$0")/lake-locked.sh" build "${MODS[@]}" 2>&1 | tail -2
+warm_log="$(mktemp "${TMPDIR:-/tmp}/pg-warm.XXXXXX")"
+trap 'rm -f "$warm_log"' EXIT
+if "$(dirname "$0")/lake-locked.sh" build "${MODS[@]}" >"$warm_log" 2>&1; then
+  tail -n 2 "$warm_log"
+else
+  warm_status=$?
+  cat "$warm_log" >&2 || true
+  exit "$warm_status"
+fi
 echo "Done. Agents may now iterate lock-free with scripts/pg-iterate.sh."

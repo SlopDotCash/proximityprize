@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.InterleavedCode
+import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
 import ArkLib.ToMathlib.GGR11Interleaved
 
 /-!
@@ -78,9 +78,9 @@ theorem lambda_le_ggr11_iff
     (C : Set (ι → F)) (δ : ℝ) (m : ℕ) (hm : 1 ≤ m)
     (hδ_lb : 0 ≤ δ) (hδ_ub : δ < (Code.minDist C : ℝ) / Fintype.card ι) :
     InterleavedCode.lambda_le_ggr11 C δ m hm hδ_lb hδ_ub ↔
-      Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤
+      ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤
         ((ggr11BlueBudget C δ + ggr11RedBudget C δ).choose (ggr11RedBudget C δ) : ℕ∞)
-          * (Lambda C δ) ^ ggr11RedBudget C δ :=
+          * (ListDecodable.Lambda C δ) ^ ggr11RedBudget C δ :=
   Iff.rfl
 
 /-- **Reconnect (tree-existence form).** The bare `InterleavedCode.lambda_le_ggr11`
@@ -122,7 +122,7 @@ the interleaving factor (`m ≤ r`) and the base list size is at least one, the 
 theorem lambda_le_ggr11_of_le_exp [Fintype F] [Nonempty ι]
     (C : Set (ι → F)) (δ : ℝ) (m : ℕ) (hm : 1 ≤ m)
     (hδ_lb : 0 ≤ δ) (hδ_ub : δ < (Code.minDist C : ℝ) / Fintype.card ι)
-    (hmr : m ≤ ggr11RedBudget C δ) (hL : 1 ≤ Lambda C δ) :
+    (hmr : m ≤ ggr11RedBudget C δ) (hL : 1 ≤ ListDecodable.Lambda C δ) :
     InterleavedCode.lambda_le_ggr11 C δ m hm hδ_lb hδ_ub :=
   lambda_le_ggr11_of_treeStructure C δ m hm hδ_lb hδ_ub
     (GGR11.ggr11_treeStructure_of_le_exp hmr hL)
@@ -134,7 +134,7 @@ bare `lambda_le_ggr11` holds *unconditionally*
 theorem lambda_le_ggr11_of_Lambda_top
     (C : Set (ι → F)) (δ : ℝ) (m : ℕ) (hm : 1 ≤ m)
     (hδ_lb : 0 ≤ δ) (hδ_ub : δ < (Code.minDist C : ℝ) / Fintype.card ι)
-    (hr : 0 < ggr11RedBudget C δ) (hL : Lambda C δ = ⊤) :
+    (hr : 0 < ggr11RedBudget C δ) (hL : ListDecodable.Lambda C δ = ⊤) :
     InterleavedCode.lambda_le_ggr11 C δ m hm hδ_lb hδ_ub :=
   lambda_le_ggr11_of_perWordBound C δ m hm hδ_lb hδ_ub
     (GGR11.ggr11_perWordBound_of_Lambda_top hr hL)
@@ -160,9 +160,9 @@ example (h : GGR11.GGR11TreeStructure C δ m (ggr11BlueBudget C δ) (ggr11RedBud
 `GGR11PerWordBound → Λ(C^{≡m})` step), independent of the `lambda_le_ggr11`
 packaging. -/
 example (h : GGR11.GGR11PerWordBound C δ m (ggr11BlueBudget C δ) (ggr11RedBudget C δ)) :
-    Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤
+    ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤
       ((ggr11BlueBudget C δ + ggr11RedBudget C δ).choose (ggr11RedBudget C δ) : ℕ∞)
-        * (Lambda C δ) ^ ggr11RedBudget C δ :=
+        * (ListDecodable.Lambda C δ) ^ ggr11RedBudget C δ :=
   GGR11.lambda_le_ggr11_of_perWordBound h
 
 /-- The whole reduction chain composes: tree existence at the GGR11 budgets gives
@@ -186,9 +186,9 @@ GGR11-budget bound, so the budget abbreviations track the `let`-bindings inside
 example (hm : 1 ≤ m) (hδ_lb : 0 ≤ δ)
     (hδ_ub : δ < (Code.minDist C : ℝ) / Fintype.card ι) :
     InterleavedCode.lambda_le_ggr11 C δ m hm hδ_lb hδ_ub ↔
-      Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤
+      ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤
         ((ggr11BlueBudget C δ + ggr11RedBudget C δ).choose (ggr11RedBudget C δ) : ℕ∞)
-          * (Lambda C δ) ^ ggr11RedBudget C δ :=
+          * (ListDecodable.Lambda C δ) ^ ggr11RedBudget C δ :=
   lambda_le_ggr11_iff C δ m hm hδ_lb hδ_ub
 
 end Regression

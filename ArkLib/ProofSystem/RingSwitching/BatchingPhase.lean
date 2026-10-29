@@ -6,9 +6,12 @@ Authors: Chung Thai Nguyen, Quang Dao
 
 import ArkLib.ProofSystem.RingSwitching.Prelude
 import ArkLib.ProofSystem.RingSwitching.Spec
-import ArkLib.OracleReduction.Basic
+import ProximityPrize.Extensions.OracleReduction.Basic
 import ArkLib.OracleReduction.Completeness
-import ArkLib.Data.Probability.Instances
+import ArkLib.OracleReduction.Security.GuardedRoundByRound
+import ProximityPrize.Compatibility.DiscreteProbability
+import ProximityPrize.Compatibility.UniformProbability
+import ProximityPrize.Extensions.Data.Probability.Instances
 import ArkLib.Data.Probability.Notation
 import CompPoly.Fields.Binary.Tower.TensorAlgebra
 
@@ -52,14 +55,17 @@ open Sumcheck.Structured
 noncomputable section
 namespace RingSwitching.BatchingPhase
 
-/-- Bridge the framework's `SampleableType` uniform sampler to the PMF uniform notation used by
-Schwartz-Zippel lemmas. -/
+/-- Finite PMF and native sampling have the same uniform event probability. -/
 private theorem probEvent_uniformSample_eq_Pr_uniform {α : Type} [SampleableType α] [Fintype α]
     [Nonempty α] (p : α → Prop) [DecidablePred p] :
-    Pr[p | ($ᵗ α)] = Pr_{ let x ← $ᵖ α }[p x] := by
-  rw [probEvent_uniformSample]
-  rw [prob_uniform_eq_card_filter_div_card]
-  norm_num
+    Pr{let x ← $ᵗ α}[p x] = Pr_{ let x ← $ᵖ α }[p x] :=
+  (ProximityPrize.Compatibility.pmf_uniform_probability_eq_native p).symm
+
+private lemma probEvent_optionT_eq_one_iff {ι : Type} {spec : OracleSpec ι}
+    [spec.UniformAnswerMeasure] {α : Type} (mx : OptionT (OracleComp spec) α)
+    (p : α → Prop) :
+    probEvent p mx = 1 ↔ ∀ o ∈ support mx.run, ∃ x, o = some x ∧ p x := by
+  exact OptionT.prEvent_mk_eq_one_iff mx.run p
 
 /-- The default oracle interface (`OracleInterface.instDefault`, used by the ring-switching message
 oracles in `Spec.lean`) answers its only (unit) query with the message itself. -/
@@ -101,6 +107,19 @@ variable (P : RingSwitchingProfile K L κ)
 variable (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero ℓ']
 variable (h_l : ℓ = ℓ' + κ)
 variable (aOStmtIn : AbstractOStmtIn L ℓ')
+
+noncomputable local instance : OracleSpec.UniformAnswerMeasure
+    ([]ₒ : OracleSpec.{0, 0} PEmpty.{1}) := by
+  letI : ∀ t : ([]ₒ : OracleSpec.{0, 0} PEmpty.{1}).Domain,
+      Finite (([]ₒ : OracleSpec.{0, 0} PEmpty.{1}).Range t) := fun t => by cases t
+  letI : ∀ t : ([]ₒ : OracleSpec.{0, 0} PEmpty.{1}).Domain,
+      Nonempty (([]ₒ : OracleSpec.{0, 0} PEmpty.{1}).Range t) := fun t => by cases t
+  exact OracleSpec.UniformAnswerMeasure.ofFiniteNonempty _
+
+
+noncomputable local instance :
+    OracleSpec.UniformAnswerMeasure ([(pSpecBatching κ L K P).Challenge]ₒ) :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty _
 
 /-! ## Formalized Helper Functions
 These functions provide concrete implementations for tensor algebra operations
@@ -178,7 +197,7 @@ noncomputable def oracleProver :
     }
     let h_poly: ↥L⦃≤ 2⦄[X Fin ℓ'] :=
       projectToMidSumcheckPoly (L := L) (ℓ := ℓ') (t := wit.t')
-        (m := (RingSwitching_SumcheckMultParam κ L K P ℓ ℓ' h_l).multpoly (ctx := ctx))
+        (m := (RingSwitching_SumcheckMultParam κ L K P ℓ ℓ' h_l).multpoly ctx)
         (i := 0) (challenges := Fin.elim0)
     -- Prover computes s₀ locally for its output witness.
     let s₀ := compute_s0 κ L K P s_hat r_batching
@@ -229,22 +248,10 @@ noncomputable def oracleVerifier :
     }
     return stmtOut
   -- Standard embedding for empty oSpec.
-  embed := ⟨fun j => Sum.inl j, fun a b h => by cases h; rfl⟩
-  hEq := fun i => rfl
-
-/-- The batching-phase oracle verifier passes every output oracle through to the unchanged input
-oracle (`embed = Sum.inl`, `OStmtIn = OStmtOut`, `hEq = rfl`) and exposes no message oracle, so its
-`AppendCoherent` coherence holds by `rfl`. Used to `.append` the batching phase onto the core
-interaction phase. -/
-instance instOracleVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (oracleVerifier κ L K P ℓ ℓ' h_l (aOStmtIn := aOStmtIn)) where
-  hCohInl := fun a k h => by
-    have : a = k := by
-      simpa only [oracleVerifier, Function.Embedding.coeFn_mk, Sum.inl.injEq] using h
-    subst this; rfl
-  hCohInr := fun a k h => by
-    simp only [oracleVerifier, Function.Embedding.coeFn_mk, reduceCtorEq] at h
+  outputOracle := .inl {
+    embed := ⟨fun j => Sum.inl j, fun a b h => by cases h; rfl⟩
+    hEq := fun _ => rfl
+    outputInterface_heq := by intro j; rfl }
 
 open OracleInterface in
 omit [NeZero κ] [Fintype L] [SampleableType L] [Fintype K] [DecidableEq K]
@@ -271,7 +278,7 @@ lemma oracleVerifier_verify_collapse
          else pure (failureState κ L K P ℓ ℓ' stmt (FullTranscript.messages tr ⟨0, by rfl⟩))
          : OptionT (OracleComp []ₒ) _) := by
   simp only [oracleVerifier]
-  rw [simulateQ_optionT_bind]
+  erw [simulateQ_optionT_bind]
   erw [simulateQ_simOracle2_query]
   -- `simulateQ (simOracle2 …) (query) = OptionT.lift (pure (answer …))`. Reduce the lift-bind at
   -- the `.run` level via `OptionT.run_bind_lift` (+ `pure_bind`), then push `simulateQ` through
@@ -291,6 +298,23 @@ lemma oracleVerifier_verify_collapse
     simp only [hc, Bool.false_eq_true, reduceIte] <;>
     (erw [simulateQ_pure]; rfl)
 
+set_option backward.isDefEq.respectTransparency false in
+/-- The native verifier's actual deterministic accept/failure-state output. -/
+private def batchingVerifierGuardedForm :
+    (oracleVerifier κ L K P ℓ ℓ' h_l aOStmtIn).toVerifier.GuardedForm where
+  check := fun _ _ => true
+  out := fun (stmt, oStmt) tr =>
+    ((if performCheckOriginalEvaluation κ L K P ℓ ℓ' h_l stmt.original_claim stmt.t_eval_point
+        (tr.messages ⟨0, rfl⟩) then
+      batchingAcceptStatement κ L K P ℓ ℓ' stmt (tr.messages ⟨0, rfl⟩)
+        (tr.challenges ⟨1, rfl⟩)
+    else failureState κ L K P ℓ ℓ' stmt (tr.messages ⟨0, rfl⟩)), oStmt)
+  verify_eq := by
+    intro (stmt, oStmt) tr
+    simp only [Bool.true_eq, ite_true, OracleVerifier.toVerifier]
+    erw [oracleVerifier_verify_collapse]
+    split <;> rfl
+
 /-- The Oracle Reduction for the Batching Phase. -/
 noncomputable def batchingOracleReduction : OracleReduction (oSpec:=[]ₒ)
     (StmtIn := BatchingStmtIn L ℓ) (OStmtIn := aOStmtIn.OStmtIn) (WitIn := BatchingWitIn L K ℓ ℓ')
@@ -300,15 +324,6 @@ noncomputable def batchingOracleReduction : OracleReduction (oSpec:=[]ₒ)
     (pSpec := pSpecBatching (κ:=κ) (L:=L) (K:=K) (P:=P)) where
   prover := oracleProver κ L K P ℓ ℓ' h_l (aOStmtIn:=aOStmtIn)
   verifier := oracleVerifier κ L K P ℓ ℓ' h_l (aOStmtIn:=aOStmtIn)
-
-/-- The batching oracle *reduction*'s verifier is definitionally `oracleVerifier`, so it inherits
-`AppendCoherent`. -/
-instance instBatchingOracleReductionAppendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (batchingOracleReduction κ L K P ℓ ℓ' h_l (aOStmtIn := aOStmtIn)).verifier :=
-  instOracleVerifierAppendCoherent κ L K P ℓ ℓ' h_l (aOStmtIn := aOStmtIn)
-
-/-! ## RBR Knowledge Soundness Components -/
 
 variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ ProbComp)}
 
@@ -337,7 +352,7 @@ noncomputable def batchingRbrExtractor :
     (WitOut := SumcheckWitness L ℓ' 0)
     (pSpec := pSpecBatching (κ:=κ) (L:=L) (K:=K) (P:=P))
     (WitMid := batchingWitMid L K ℓ ℓ') where
-  eqIn := rfl
+  extractIn := fun _ wit => wit
   extractMid m _ _ witSucc :=
     match m with
     | ⟨0, _⟩ => witSucc -- Extracting `WitIn` from a future `WitIn`
@@ -421,6 +436,7 @@ def batchingKStateProp {m : Fin (2 + 1)}
 -- the small/large carrier is a genuine precondition for the reduction to be sound. Scoped to the
 -- knowledge-soundness pipeline only (completeness needs no such hypothesis).
 variable [IsDomain L] [IsDomain K] in
+set_option backward.isDefEq.respectTransparency false in
 /-- Knowledge state function for the batching phase. -/
 noncomputable def batchingKnowledgeStateFunction :
   (oracleVerifier κ L K P ℓ ℓ' h_l (aOStmtIn:=aOStmtIn)).KnowledgeStateFunction init impl
@@ -429,7 +445,7 @@ noncomputable def batchingKnowledgeStateFunction :
     (batchingRbrExtractor κ L K P ℓ ℓ' h_l (aOStmtIn:=aOStmtIn)) where
   toFun := fun m ⟨stmt, oStmt⟩ tr witMid =>
     batchingKStateProp κ L K P ℓ ℓ' h_l aOStmtIn tr stmt witMid oStmt
-  toFun_empty _ _ := by rfl
+  toFun_empty := fun _ _ h => h
   toFun_next := fun m hDir stmtIn tr msg witMid =>
     match m with
     | ⟨0, _⟩ => by -- from accumulative KState
@@ -470,77 +486,21 @@ noncomputable def batchingKnowledgeStateFunction :
       exact (performCheckOriginalEvaluation_packMLE_iff P ℓ ℓ' h_l
         stmtIn.1.original_claim witMid.t stmtIn.1.t_eval_point).mp hcheck
     | ⟨1, h⟩ => nomatch h
-  toFun_full := fun ⟨stmtLast, oStmtLast⟩ tr witOut => by
-    -- Spec repair (#17) APPLIED: the round-2 `batchingKStateProp` (the `⟨2,_⟩` case above) now
-    -- mirrors the verifier's accept/reject decision via an `if performCheck … then … else …`,
-    -- asserting `sumcheckRoundRelationProp` for whichever statement the verifier actually outputs
-    -- (`stmtOutAccept` on accept, `failureState` on reject). Hence BOTH branches transport directly
-    -- from `h_relOut`:
-    --   • accept (`performCheck … s_hat = true`): the verifier's deterministic `stmtOutᵥ` equals
-    --     `stmtOutAccept`; with `extractOut … witOut = witOut`, `h_relOut` IS the round-2 goal.
-    --   • reject (`performCheck … s_hat = false`): the verifier returns `failureState`; `h_relOut`
-    --     is `(failureState, witOut) ∈ relOut`, exactly the repaired else-branch goal.
-    -- The sumcheck-consistency conjunct lives inside `sumcheckRoundRelationProp`/`relOut` under the
-    -- SAME free `𝓑`, so it transports verbatim — NO `𝓑` pinning needed here (pinning is only
-    -- required by the batching-phase completeness argument, which must establish consistency from
-    -- scratch on the honest run).
-    --
-    -- VERIFIER-RUN QUERY SIMULATION (resolved). To consume `h_relOut` we resolve
-    -- `Pr[(stmtOutᵥ, witOut) ∈ relOut | (simulateQ impl (verifier.run …)).run' …]` to the
-    -- concrete `stmtOutᵥ`. The verifier's `verify` issues a message-oracle query
-    -- (`query (spec := [pSpecBatching.Message]ₒ) ⟨⟨0,rfl⟩,()⟩`); under
-    -- `simulateQ (OracleInterface.simOracle2 …)` it collapses, via the support lemma
-    -- `Prelude.simulateQ_simOracle2_query`, to `pure (answer s_hat)`. Threaded through
-    -- `oracleVerifier_verify_collapse`, the whole `verifier.run` reduces to a single deterministic
-    -- `pure (if performCheck … then stmtOutAccept else failureState, oStmtOut)`; the proof then
-    --   runs
-    -- `probEvent_pos_iff` → `OptionT.mem_support_iff` → collapse → `split` on `performCheck` →
-    -- `subst` the singleton support → transport `h_relOut` (the `embed = Sum.inl` map gives
-    -- `oStmtOut = oStmt`). The same `Prelude` support lemma serves the analogous message-querying
-    -- `toFun_full`s in `SumcheckPhase` and `BinaryBasefold/Steps`.
-    intro h
-    rw [gt_iff_lt, probEvent_pos_iff] at h
-    obtain ⟨x, hx, hrel⟩ := h
-    rw [OptionT.mem_support_iff] at hx
-    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
-    obtain ⟨s, _, hx⟩ := hx
-    simp only [OracleVerifier.toVerifier, Verifier.run, StateT.run'_eq,
-      support_map, Set.mem_image, Prod.exists] at hx
-    obtain ⟨val, s', hmem, heq⟩ := hx
-    -- Collapse the inner verifier body (the message query is the load-bearing step) to the
-    -- deterministic `if performCheck … then stmtOutAccept else failureState` via the collapse
-    --   lemma.
-    rw [oracleVerifier_verify_collapse] at hmem
-    -- The verifier run is now query-free (`pure`/`if`). Case-split the verifier's accept/reject
-    -- decision (`split`), then collapse each `pure` branch to a singleton support.
-    split at hmem <;>
-      simp only [bind_pure_comp, map_pure] at hmem <;>
-      erw [simulateQ_pure] at hmem <;>
-      simp only [StateT.run_pure, support_pure, Set.mem_singleton_iff, Prod.mk.injEq] at hmem <;>
-      obtain ⟨rfl, -⟩ := hmem <;>
-      injection heq with hxv <;>
-      subst hxv
-    -- Goal in each branch: round-2 `batchingKStateProp` = the `if performCheck …` over
-    -- `sumcheckRoundRelationProp` for the statement the verifier output. `hrel` provides exactly
-    -- that membership for the deterministic output `x`; transport it.
-    all_goals
-      simp only [batchingKStateProp, batchingRbrExtractor, Fin.isValue, Equiv.toFun_as_coe,
-        Transcript.equivMessagesChallenges_apply, sumcheckRoundRelation, Set.mem_setOf_eq,
-        Transcript.toMessagesChallenges,
-        Transcript.toMessagesUpTo, Transcript.toChallengesUpTo, FullTranscript.messages,
-        FullTranscript.challenges, oracleVerifier] at hrel ⊢
-    -- `hrel` (verifier output ∈ relOut) IS the round-2 KState for the matching branch; the
-    -- `embed = Sum.inl` map makes `oStmtOut = oStmtLast`, and the message/challenge accessors
-    --   agree.
-    all_goals dsimp only [Fin.last, Fin.isValue]
-    -- The verifier's accept/reject decision (`hmem`'s `split`, hyp `h✝`) determines which branch
-    -- of the round-2 KState `if` is taken; `hrel` supplies exactly that
-    --   `sumcheckRoundRelationProp`.
-    -- The `embed = Sum.inl` map gives `oStmtOut = oStmtLast`, so `hrel` matches up to that cast.
-    · rw [if_pos (by assumption)]
-      convert hrel using 3
-    · rw [if_neg (by assumption)]
-      convert hrel using 3
+  toFun_full := fun (stmt, oStmt) tr witOut hpr => by
+    let G := batchingVerifierGuardedForm κ L K P ℓ ℓ' h_l aOStmtIn
+    have h := (G.check_and_of_prEvent_pos (init := init) (impl := impl) hpr).2
+    dsimp only [G, batchingVerifierGuardedForm] at h
+    dsimp only [batchingKStateProp, batchingRbrExtractor, Fin.last, Fin.isValue,
+      Transcript.equivMessagesChallenges, Transcript.toMessagesChallenges,
+      Transcript.toMessagesUpTo, Transcript.toChallengesUpTo]
+    dsimp only [Equiv.coe_fn_mk, Transcript.toMessagesChallenges,
+      Transcript.toMessagesUpTo, Transcript.toChallengesUpTo]
+    dsimp only [FullTranscript.messages, FullTranscript.challenges] at h
+    simp only [Fin.zero_eta, Fin.mk_one] at h ⊢
+    split_ifs at h ⊢ <;>
+      simp only [sumcheckRoundRelation, Set.mem_setOf_eq, batchingAcceptStatement,
+        FullTranscript.messages, FullTranscript.challenges] at h <;>
+      convert h using 1 <;> rfl
 
 /-! ## Security Properties -/
 
@@ -571,7 +531,7 @@ theorem batchingReduction_perfectCompleteness
 large-field multilinear polynomial `t'`.
 
 This packages the orientation used by the batching verifier: `compute_s0` reads
-`P.decomposeColumns`, so it extracts the basis coordinates of the *suffix equality factor* (the
+`P.decomposeRows`, so it extracts the basis coordinates of the *suffix equality factor* (the
 `φ₀`/`eq` tensor factor) and weights them by `eqTilde(u, y)`, scaling the `t'` value at each
 Boolean suffix. This is the column form that matches the witness-independent batching multiplier
 `compute_A_func` — see `compute_s0_eq_sum_A_func`. -/
@@ -614,6 +574,7 @@ lemma compute_s0_eq_sum_A_func
   rw [eqTilde_comm (getEvaluationPointSuffix κ L ℓ ℓ' h_l r)
     (fun i => (if w i == 1 then (1 : L) else 0))]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Round-0 batching sumcheck consistency (completeness keystone, abstract multiplier).** For the
 honest prover's embedded tensor `ŝ = embedded_MLP_eval t' r`, the batched sumcheck target
 `compute_s0 ŝ y` equals the honest sumcheck consistency sum `∑_{x ∈ {0,1}^ℓ'} H(x)` over the
@@ -646,21 +607,9 @@ theorem batching_consistency_of_multpoly [IsDomain L] [IsDomain K]
   have hproj : (projectToMidSumcheckPoly ℓ' t' m 0 Fin.elim0).val.eval
         (fun j => (if b j == 1 then (1 : L) else 0))
       = (m.val * t'.val).eval (fun j => (if b j == 1 then (1 : L) else 0)) := by
-    rw [projectToMidSumcheckPoly_eq_fixVars]
-    erw [fixFirstVariablesOfMQP_eval]
-    refine congrArg (fun g => eval g (m.val * t'.val)) ?_
-    funext i
-    simp only [Equiv.trans_apply, finCongr_apply]
-    rcases hsym : finSumFinEquiv.symm (Fin.cast (by simp) i) with j | j
-    · simp only [Sum.elim_inl]
-      have hji : j = i := by
-        have hi := congrArg finSumFinEquiv hsym
-        rw [Equiv.apply_symm_apply] at hi
-        apply Fin.ext
-        have hval := congrArg Fin.val hi
-        simpa [finSumFinEquiv_apply_left] using hval.symm
-      rw [hji]
-    · exact j.elim0
+    erw [projectToMidSumcheckPoly_eq_fixVars, fixFirstVariablesOfMQP_eval]
+    congr 1
+
   rw [MvPolynomial.eval_mul, hm b] at hproj
   exact hproj.symm
 
@@ -684,6 +633,7 @@ theorem batching_consistency_honest [IsDomain L] [IsDomain K]
   exact MvPolynomial.MLE_eval_zeroOne b _
 
 set_option maxHeartbeats 1000000 in
+set_option backward.isDefEq.respectTransparency false in
 /-- **Batching perfect completeness — `batchingReduction_perfectCompleteness_residual` PROVEN.**
 The honest batching reduction is perfectly complete (given `NeverFail init`). The verifier-run
 collapse is the deterministic `oracleVerifier_verify_collapse`; the honest accept branch fires
@@ -723,10 +673,11 @@ theorem batchingReduction_perfectCompleteness_proved [IsDomain L] [IsDomain K]
         (embedded_MLP_eval κ L K P ℓ ℓ' h_l witIn.t' stmtIn.t_eval_point) = true := by
       rw [h_t'_eq, performCheckOriginalEvaluation_packMLE_iff]; exact h_claim
     simp only [OracleVerifier.toVerifier]
-    rw [oracleVerifier_verify_collapse]
+    erw [oracleVerifier_verify_collapse]
     simp only [FullTranscript.messages, FullTranscript.challenges, FullTranscript.mk2]
     rw [if_pos hcheck]
     simp only [pure_bind, batchingAcceptStatement, oracleVerifier]
+    rfl
   -- relation membership of the honest accept output
   have h_rel_out : ∀ r1 : Fin κ → L,
       ((batchingAcceptStatement κ L K P ℓ ℓ' stmtIn
@@ -743,47 +694,33 @@ theorem batchingReduction_perfectCompleteness_proved [IsDomain L] [IsDomain K]
     refine ⟨rfl, ?_, h_compat⟩
     exact batching_consistency_honest (κ := κ) (L := L) (K := K) (P := P) (ℓ := ℓ) (ℓ' := ℓ')
       (h_l := h_l) (t' := witIn.t') (r := stmtIn.t_eval_point) (y := r1)
-  rw [probEvent_eq_one_iff]
   dsimp only [batchingOracleReduction, oracleProver]
   simp only [liftComp_pure, liftM_pure, pure_bind, bind_pure_comp, Function.comp, hverify,
-    liftComp_pure, _root_.map_pure]
-  refine ⟨?_, ?_⟩
-  · -- No failure: a uniform challenge sample followed by `pure`.
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun r1 _ => ?_⟩
-    · simp only [OptionT.probFailure_liftM, OracleComp.probFailure_liftComp,
-        HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map]
-      erw [OracleComp.liftComp_pure]
-      apply probFailure_pure
-  · -- Correctness: the honest output lies in the batching output relation.
-    intro x hx
-    simp only [OptionT.mem_support_iff, OptionT.run_bind, support_bind, Set.mem_iUnion,
-      OptionT.run_pure, support_pure, Set.mem_singleton_iff, exists_prop, OptionT.run_map,
-      OptionT.run_monadLift, support_map, support_liftM,
-      Set.mem_image, _root_.map_pure] at hx
-    obtain ⟨r1, -, x_1, hx1, rfl⟩ := hx
-    change x_1 ∈ _root_.support (pure _ : OptionT (OracleComp _) _) at hx1
-    simp only [OptionT.mem_support_iff, OptionT.run_pure, support_pure, Set.mem_preimage,
-      Set.mem_singleton_iff, Option.some.injEq] at hx1
-    subst hx1
-    exact ⟨h_rel_out r1, rfl, rfl⟩
-
-
+    _root_.map_pure]
+  rw [probEvent_optionT_eq_one_iff]
+  intro out hout
+  simp only [OptionT.run_bind, Option.elimM, OptionT.run_liftComp_eq,
+    OracleComp.liftComp_pure, OptionT.run_pure, support_bind, Set.mem_iUnion,
+    support_pure, Set.mem_singleton_iff, exists_prop, OptionT.run_map,
+    OptionT.run_monadLift, support_map, support_liftM, Set.mem_image, _root_.map_pure] at hout
+  obtain ⟨_, ⟨r1, _, rfl⟩, hout⟩ := hout
+  simp only [Option.elim_some, Option.map_some, support_pure, Set.mem_singleton_iff] at hout
+  subst out
+  exact ⟨_, rfl, h_rel_out r1, rfl, rfl⟩
 
 /-- Mismatch polynomial from column-decomposition difference `msg0 - s_bar`. The batching verifier
 target `compute_s0` reads `decomposeColumns`, so the soundness mismatch test uses the same
 (faithful, by `decomposeColumns_spec`) column decomposition. -/
 noncomputable def batchingMismatchPoly (msg0 s_bar : P.A) : MvPolynomial (Fin κ) L :=
   MvPolynomial.MLE (fun u : Fin κ → Fin 2 =>
-    P.decomposeColumns msg0 u - P.decomposeColumns s_bar u)
+    P.decomposeRows msg0 u - P.decomposeRows s_bar u)
 
 /-- The mismatch polynomial evaluates to the `compute_s0` difference. -/
 lemma batching_compute_s0_sub_eq_eval_mismatch
     (msg0 s_bar : P.A) (y : Fin κ → L) :
     compute_s0 κ L K P msg0 y - compute_s0 κ L K P s_bar y =
       MvPolynomial.eval y (batchingMismatchPoly (κ := κ) (L := L) (K := K) (P := P) msg0 s_bar) := by
-  unfold compute_s0 batchingMismatchPoly
+  unfold compute_s0 eqWeightedCoordSum batchingMismatchPoly
   rw [MLE_eval_eq_sum_eqTilde]
   simp only [Finset.sum_sub_distrib, mul_sub]
 
@@ -795,7 +732,7 @@ lemma batchingMismatchPoly_totalDegree_le
   have h_mem : Poly ∈ MvPolynomial.restrictDegree (Fin κ) L 1 := by
     exact (MvPolynomial.MLE_mem_restrictDegree (σ := Fin κ) (R := L)
       (evals := fun u : Fin κ → Fin 2 =>
-        P.decomposeColumns msg0 u - P.decomposeColumns s_bar u))
+        P.decomposeRows msg0 u - P.decomposeRows s_bar u))
   have h_degOf : ∀ i : Fin κ, MvPolynomial.degreeOf i Poly ≤ 1 := by
     intro i
     exact (MvPolynomial.mem_restrictDegree_iff_degreeOf_le (p := Poly) (n := 1)).1 h_mem i
@@ -821,18 +758,18 @@ lemma batchingMismatchPoly_nonzero_of_ne
     (msg0 s_bar : P.A) (h_ne : msg0 ≠ s_bar) :
     batchingMismatchPoly (κ := κ) (L := L) (K := K) (P := P) msg0 s_bar ≠ 0 := by
   have h_cols_ne :
-      (P.decomposeColumns msg0) ≠
-      (P.decomposeColumns s_bar) := by
+      (P.decomposeRows msg0) ≠
+      (P.decomposeRows s_bar) := by
     intro h_eq
     apply h_ne
     calc msg0
-      _ = ∑ u, P.φ₁ (P.decomposeColumns msg0 u) * P.φ₀ (P.basis u) := P.decomposeColumns_spec msg0
-      _ = ∑ u, P.φ₁ (P.decomposeColumns s_bar u) * P.φ₀ (P.basis u) := by simp [h_eq]
-      _ = s_bar := (P.decomposeColumns_spec s_bar).symm
+      _ = ∑ u, P.φ₀ (P.basis u) * P.φ₁ (P.decomposeRows msg0 u) := P.decomposeRows_spec msg0
+      _ = ∑ u, P.φ₀ (P.basis u) * P.φ₁ (P.decomposeRows s_bar u) := by simp [h_eq]
+      _ = s_bar := (P.decomposeRows_spec s_bar).symm
   have h_diff_ne :
       (fun u : Fin κ → Fin 2 =>
-        P.decomposeColumns msg0 u -
-        P.decomposeColumns s_bar u) ≠ 0 := by
+        P.decomposeRows msg0 u -
+        P.decomposeRows s_bar u) ≠ 0 := by
     intro h_zero
     apply h_cols_ne
     funext u
@@ -848,8 +785,8 @@ lemma batchingMismatchPoly_nonzero_of_ne
   have hu_eval_mle :
       MvPolynomial.eval (fun i => ((u i : Fin 2) : L))
         (batchingMismatchPoly (κ := κ) (L := L) (K := K) (P := P) msg0 s_bar) =
-      P.decomposeColumns msg0 u -
-        P.decomposeColumns s_bar u := by
+      P.decomposeRows msg0 u -
+        P.decomposeRows s_bar u := by
     simp [batchingMismatchPoly, MvPolynomial.MLE_eval_zeroOne]
   rw [hu_eval_mle] at hu_eval_zero
   exact hu_eval_zero
@@ -864,20 +801,20 @@ lemma batchingMismatchPoly_nonzero_of_embed_ne
       (embedded_MLP_eval κ L K P ℓ ℓ' h_l t' stmt.t_eval_point) ≠ 0 := by
   let s_bar := embedded_MLP_eval κ L K P ℓ ℓ' h_l t' stmt.t_eval_point
   have h_cols_ne :
-      (P.decomposeColumns msg0) ≠
-      (P.decomposeColumns s_bar) := by
+      (P.decomposeRows msg0) ≠
+      (P.decomposeRows s_bar) := by
     intro h_eq
     have hs : msg0 = s_bar := by
       calc msg0
-        _ = ∑ u, P.φ₁ (P.decomposeColumns msg0 u) * P.φ₀ (P.basis u) :=
-          P.decomposeColumns_spec msg0
-        _ = ∑ u, P.φ₁ (P.decomposeColumns s_bar u) * P.φ₀ (P.basis u) := by simp [h_eq]
-        _ = s_bar := (P.decomposeColumns_spec s_bar).symm
+        _ = ∑ u, P.φ₀ (P.basis u) * P.φ₁ (P.decomposeRows msg0 u) :=
+          P.decomposeRows_spec msg0
+        _ = ∑ u, P.φ₀ (P.basis u) * P.φ₁ (P.decomposeRows s_bar u) := by simp [h_eq]
+        _ = s_bar := (P.decomposeRows_spec s_bar).symm
     exact h_embed_ne (by simpa [s_bar] using hs.symm)
   have h_diff_ne :
       (fun u : Fin κ → Fin 2 =>
-        P.decomposeColumns msg0 u -
-        P.decomposeColumns s_bar u) ≠ 0 := by
+        P.decomposeRows msg0 u -
+        P.decomposeRows s_bar u) ≠ 0 := by
     intro h_zero
     apply h_cols_ne
     funext u
@@ -896,8 +833,8 @@ lemma batchingMismatchPoly_nonzero_of_embed_ne
   have hu_eval_mle :
       MvPolynomial.eval (fun i => ((u i : Fin 2) : L))
         (batchingMismatchPoly (κ := κ) (L := L) (K := K) (P := P) msg0 s_bar) =
-      P.decomposeColumns msg0 u -
-        P.decomposeColumns s_bar u := by
+      P.decomposeRows msg0 u -
+        P.decomposeRows s_bar u := by
     simp [batchingMismatchPoly, MvPolynomial.MLE_eval_zeroOne]
   rw [hu_eval_mle] at hu_eval_zero
   exact hu_eval_zero
@@ -932,6 +869,7 @@ def rbrExtractionFailureEvent
       kSF j.1.succ stmtIn (transcript.concat challenge) witMid
 
 omit [SampleableType L] in
+set_option backward.isDefEq.respectTransparency false in
 /-- Accept-branch batching doom escape exposes the algebraic source of failure.
 
 Even before the sumcheck-consistency orientation is addressed, the raw RBR doom event does not
@@ -1014,6 +952,7 @@ lemma batching_rbrExtractionFailureEvent_accept_pack_or_embed
   · exact Or.inl hPack
 
 omit [SampleableType L] in
+set_option backward.isDefEq.respectTransparency false in
 /-- The accept-branch doom event reaches `badBatchingEventProp` once the two remaining batching
 bridges are supplied.
 
@@ -1111,12 +1050,10 @@ lemma batching_doom_accept_imply_bad_of_bridges
 /-- **Schwartz-Zippel bound for the bad batching event.** -/
 lemma probability_bound_badBatchingEventProp [Fintype L] [DecidableEq L] [IsDomain L]
     (msg0 s_bar : P.A) :
-    Pr[fun y =>
-      badBatchingEventProp (κ := κ) (L := L) (K := K) (P := P) y msg0 s_bar |
-        ($ᵗ (Fin κ → L))] ≤
+    Pr{let y ← $ᵗ (Fin κ → L)}[badBatchingEventProp (κ := κ) (L := L) (K := K) (P := P) y msg0 s_bar] ≤
       batchingRBRKnowledgeError (κ := κ) (L := L) (K := K) (P := P) ⟨1, rfl⟩ := by
   change _ ≤ ((1 : ℝ≥0) : ENNReal)
-  exact probEvent_le_one
+  exact prEvent_le_one _
 
 /-- **Sharp standalone Schwartz-Zippel bound for the bad batching event.**
 
@@ -1126,14 +1063,14 @@ the algebraic probability endgame: a bad batching event forces the nonzero multi
 polynomial to vanish at the sampled batching vector. -/
 lemma probability_bound_badBatchingEventProp_sharp [Fintype L] [DecidableEq L] [IsDomain L]
     (msg0 s_bar : P.A) :
-    Pr[fun y =>
-      badBatchingEventProp (κ := κ) (L := L) (K := K) (P := P) y msg0 s_bar |
-        ($ᵗ (Fin κ → L))] ≤
+    Pr{let y ← $ᵗ (Fin κ → L)}[badBatchingEventProp (κ := κ) (L := L) (K := K) (P := P) y msg0 s_bar] ≤
       (κ : ENNReal) / (Fintype.card L : ENNReal) := by
   classical
   rw [probEvent_uniformSample_eq_Pr_uniform]
   by_cases h_eq : msg0 = s_bar
-  · simp [badBatchingEventProp, h_eq]
+  · simp only [badBatchingEventProp, h_eq, ne_eq, not_true_eq_false, false_and]
+    rw [ProbabilityTheory.Pr_eq_tsum_indicator]
+    simp
   · let mismatch :=
       batchingMismatchPoly (κ := κ) (L := L) (K := K) (P := P) msg0 s_bar
     have h_nonzero : mismatch ≠ 0 := by
@@ -1162,17 +1099,16 @@ lemma probability_bound_badBatchingEventProp_sharp [Fintype L] [DecidableEq L] [
 lemma batching_doom_escape_probability_bound [Fintype L] [DecidableEq L] [IsDomain L] [IsDomain K]
     (stmtOStmtIn : (BatchingStmtIn L ℓ) × (∀ j, aOStmtIn.OStmtIn j))
     (msg0 : (pSpecBatching (κ := κ) (L := L) (K := K) (P := P)).Message ⟨0, rfl⟩) :
-    Pr[fun y =>
-      rbrExtractionFailureEvent
+    Pr{let y ← $ᵗ (Fin κ → L)}[rbrExtractionFailureEvent
         (kSF := batchingKnowledgeStateFunction (κ := κ) (L := L) (K := K) (P := P) (ℓ := ℓ)
           (ℓ' := ℓ') (h_l := h_l) (aOStmtIn := aOStmtIn) (init := init) (impl := impl))
         (extractor := batchingRbrExtractor (κ := κ) (L := L) (K := K) (P := P) (ℓ := ℓ)
           (ℓ' := ℓ') (h_l := h_l) (aOStmtIn := aOStmtIn))
         (j := ⟨1, rfl⟩) (stmtIn := stmtOStmtIn) (transcript := fun | ⟨0, _⟩ => msg0)
-        (challenge := y) | ($ᵗ (Fin κ → L))] ≤
+        (challenge := y)] ≤
       batchingRBRKnowledgeError (κ := κ) (L := L) (K := K) (P := P) ⟨1, rfl⟩ := by
   change _ ≤ ((1 : ℝ≥0) : ENNReal)
-  exact probEvent_le_one
+  exact prEvent_le_one _
 
 /-- RBR knowledge soundness for the batching phase oracle verifier. `IsDomain K` (alongside the
 existing `IsDomain L`) is required by the round-0 knowledge-state conjunct's DP24 capstone; it
@@ -1190,7 +1126,7 @@ theorem batchingOracleVerifier_rbrKnowledgeSoundness [IsDomain L] [IsDomain K] :
   use batchingKnowledgeStateFunction κ L K P ℓ ℓ' h_l (aOStmtIn:=aOStmtIn) (init:=init) (impl:=impl)
   intro stmtIn witIn prover iChal
   change _ ≤ ((1 : ℝ≥0) : ENNReal)
-  exact probEvent_le_one
+  exact prEvent_le_one _
 
 end BatchingPhase
 end RingSwitching
@@ -1211,3 +1147,5 @@ end RingSwitching
 #print axioms RingSwitching.BatchingPhase.batching_consistency_honest
 #print axioms RingSwitching.BatchingPhase.batchingReduction_perfectCompleteness_proved
 #print axioms RingSwitching.BatchingPhase.probability_bound_badBatchingEventProp_sharp
+
+#print axioms RingSwitching.BatchingPhase.batchingKnowledgeStateFunction

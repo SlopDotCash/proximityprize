@@ -88,6 +88,7 @@ def tracked_markdown_files() -> list[Path]:
         REPO_ROOT / "scripts" / "README.md",
         *docs_md,
         *sorted((REPO_ROOT / "Research").rglob("*.md")),
+        *sorted((REPO_ROOT / "ProximityPrize").rglob("*.md")),
     ]
 
 
@@ -128,6 +129,9 @@ def resolve_link(source_file: Path, raw_target: str) -> Path | None:
 def check_markdown_links() -> list[str]:
     errors: list[str] = []
     for doc_file in tracked_markdown_files():
+        if not doc_file.is_file():
+            errors.append(f"Missing documentation file: {doc_file.relative_to(REPO_ROOT)}")
+            continue
         text = doc_file.read_text(encoding="utf-8")
         # Links in comments and fenced examples are not active Markdown links.
         text = visible_markdown(text)

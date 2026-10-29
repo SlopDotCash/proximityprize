@@ -42,7 +42,7 @@ open ListDecodable
 /-- `Λ(C^⋈m, j/n) ≤ ε*·|F|` at the lattice radius `j/n`. -/
 def listSatisfies (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0)
     (j : Fin (Fintype.card ι + 1)) : Prop :=
-  (Lambda (C^⋈ (Fin m)) ((mcaLatticePoint (Fintype.card ι) j : ℝ≥0) : ℝ) : ENNReal) ≤
+  (ListDecodable.Lambda (C^⋈ (Fin m)) ((mcaLatticePoint (Fintype.card ι) j : ℝ≥0) : ℝ) : ENNReal) ≤
     ((ε_star : ENNReal) * (Fintype.card F : ENNReal))
 
 noncomputable instance (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) :
@@ -158,7 +158,7 @@ theorem listThreshold_val_eq_listLatticeThreshold
 theorem gt_listThreshold_exceeds (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0)
     (hne : listThresholdExists C m ε_star) {j : Fin (Fintype.card ι + 1)}
     (hj : listThreshold C m ε_star hne < j) :
-    (Lambda (C^⋈ (Fin m)) ((mcaLatticePoint (Fintype.card ι) j : ℝ≥0) : ℝ) : ENNReal) >
+    (ListDecodable.Lambda (C^⋈ (Fin m)) ((mcaLatticePoint (Fintype.card ι) j : ℝ≥0) : ℝ) : ENNReal) >
       ((ε_star : ENNReal) * (Fintype.card F : ENNReal)) := by
   by_contra h
   exact absurd (le_listThreshold C m ε_star hne (not_lt.mp h)) (not_le.mpr hj)
@@ -174,18 +174,18 @@ theorem listThreshold_unique (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0)
 
 /-- `Λ` at a real radius equals `Λ` at its lattice point `⌊δ·n⌋/n` (step structure). -/
 theorem Lambda_eq_at_latticeIndex (C : Set (ι → F)) (m : ℕ) (δ : ℝ≥0) (hδ : δ ≤ 1) :
-    (Lambda (C^⋈ (Fin m)) ((δ : ℝ≥0) : ℝ) : ENNReal) =
-      (Lambda (C^⋈ (Fin m))
+    (ListDecodable.Lambda (C^⋈ (Fin m)) ((δ : ℝ≥0) : ℝ) : ENNReal) =
+      (ListDecodable.Lambda (C^⋈ (Fin m))
         ((mcaLatticePoint (Fintype.card ι) (latticeIndexOf (ι := ι) δ hδ) : ℝ≥0) : ℝ) : ENNReal) := by
   have hn : 0 < Fintype.card ι := Fintype.card_pos
   congr 1
   refine Lambda_eq_of_floor_eq (C^⋈ (Fin m)) ?_
   rw [floor_mcaLatticePoint _ hn, latticeIndexOf_val]
 
-/-- **Lower bracket.** A `ListLowerWitness` forces `⌊δ·n⌋ ≤ listThreshold`. -/
+/-- **Lower bracket.** A `ContinuousListLowerWitness` forces `⌊δ·n⌋ ≤ listThreshold`. -/
 theorem ListLowerWitness_le_listThreshold (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0)
     (hne : listThresholdExists C m ε_star)
-    (w : GrandChallenges.ListLowerWitness C m ε_star) :
+    (w : GrandChallenges.ContinuousListLowerWitness C m ε_star) :
     latticeIndexOf (ι := ι) w.δ w.le_one ≤ listThreshold C m ε_star hne := by
   refine le_listThreshold C m ε_star hne ?_
   unfold listSatisfies
@@ -194,7 +194,7 @@ theorem ListLowerWitness_le_listThreshold (C : Set (ι → F)) (m : ℕ) (ε_sta
 
 /-- A lower list-decoding witness is enough to make the faithful list threshold exist. -/
 theorem listThresholdExists_of_ListLowerWitness (C : Set (ι → F)) (m : ℕ)
-    (ε_star : ℝ≥0) (w : GrandChallenges.ListLowerWitness C m ε_star) :
+    (ε_star : ℝ≥0) (w : GrandChallenges.ContinuousListLowerWitness C m ε_star) :
     listThresholdExists C m ε_star :=
   ⟨latticeIndexOf (ι := ι) w.δ w.le_one, by
     unfold listSatisfies
@@ -204,22 +204,22 @@ theorem listThresholdExists_of_ListLowerWitness (C : Set (ι → F)) (m : ℕ)
 /-- The faithful list-decoding threshold obtained from a lower witness satisfies the list
 bound. -/
 theorem listThreshold_spec_of_ListLowerWitness (C : Set (ι → F)) (m : ℕ)
-    (ε_star : ℝ≥0) (w : GrandChallenges.ListLowerWitness C m ε_star) :
+    (ε_star : ℝ≥0) (w : GrandChallenges.ContinuousListLowerWitness C m ε_star) :
     let hne := listThresholdExists_of_ListLowerWitness C m ε_star w
     listSatisfies C m ε_star (listThreshold C m ε_star hne) :=
   listThreshold_spec C m ε_star (listThresholdExists_of_ListLowerWitness C m ε_star w)
 
-/-- **Upper bracket.** A `ListUpperWitness` at a radius `δ ≤ 1` forces
+/-- **Upper bracket.** A `ContinuousListUpperWitness` at a radius `δ ≤ 1` forces
 `listThreshold < ⌊δ·n⌋`. -/
 theorem listThreshold_lt_ListUpperWitness (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0)
     (hne : listThresholdExists C m ε_star)
-    (w : GrandChallenges.ListUpperWitness C m ε_star) (hδ : w.δ ≤ 1) :
+    (w : GrandChallenges.ContinuousListUpperWitness C m ε_star) (hδ : w.δ ≤ 1) :
     listThreshold C m ε_star hne < latticeIndexOf (ι := ι) w.δ hδ := by
   by_contra h
   push Not at h
   have hsat : listSatisfies C m ε_star (latticeIndexOf (ι := ι) w.δ hδ) :=
     listSatisfies_downward_closed C m ε_star h (listThreshold_spec C m ε_star hne)
-  have hb : (Lambda (C^⋈ (Fin m))
+  have hb : (ListDecodable.Lambda (C^⋈ (Fin m))
       ((mcaLatticePoint (Fintype.card ι) (latticeIndexOf (ι := ι) w.δ hδ) : ℝ≥0) : ℝ) : ENNReal) ≤ ((ε_star : ENNReal) * (Fintype.card F : ENNReal)) := hsat
   rw [← Lambda_eq_at_latticeIndex C m w.δ hδ] at hb
   exact absurd hb (not_le.mpr w.exceeds)
@@ -227,19 +227,19 @@ theorem listThreshold_lt_ListUpperWitness (C : Set (ι → F)) (m : ℕ) (ε_sta
 /-- A strict `Λ` lower bound gives a lattice upper bracket on the faithful list threshold. -/
 theorem listThreshold_lt_ofLambdaGt (C : Set (ι → F)) (m : ℕ) {ε_star δ : ℝ≥0}
     (hne : listThresholdExists C m ε_star)
-    (h : (Lambda (C^⋈ (Fin m)) (δ : ℝ) : ENNReal) >
+    (h : (ListDecodable.Lambda (C^⋈ (Fin m)) (δ : ℝ) : ENNReal) >
       ((ε_star : ENNReal) * (Fintype.card F : ENNReal)))
     (hδ : δ ≤ 1) :
     listThreshold C m ε_star hne < latticeIndexOf (ι := ι) δ hδ :=
   listThreshold_lt_ListUpperWitness C m ε_star hne
-    (GrandChallenges.ListUpperWitness.ofGt h) hδ
+    (GrandChallenges.ContinuousListUpperWitness.ofGt h) hδ
 
 /-- A lower list witness and a strict `Λ` upper-side bound bracket the faithful list lattice
 threshold directly. -/
 theorem listThresholdLattice_bracketed_of_lowerWitness_and_LambdaGt
     (C : Set (ι → F)) (m : ℕ) {ε_star δ_hi : ℝ≥0}
-    (wlo : GrandChallenges.ListLowerWitness C m ε_star)
-    (hhi : (Lambda (C^⋈ (Fin m)) (δ_hi : ℝ) : ENNReal) >
+    (wlo : GrandChallenges.ContinuousListLowerWitness C m ε_star)
+    (hhi : (ListDecodable.Lambda (C^⋈ (Fin m)) (δ_hi : ℝ) : ENNReal) >
       ((ε_star : ENNReal) * (Fintype.card F : ENNReal)))
     (hδhi : δ_hi ≤ 1) :
     let hne := listThresholdExists_of_ListLowerWitness C m ε_star wlo
@@ -256,8 +256,8 @@ A lower witness and an upper witness (at a radius `≤ 1`) bracket the lattice t
 `mcaThresholdLattice_bracketed`. -/
 theorem listThresholdLattice_bracketed (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0)
     (hne : listThresholdExists C m ε_star)
-    (wlo : GrandChallenges.ListLowerWitness C m ε_star)
-    (whi : GrandChallenges.ListUpperWitness C m ε_star) (hδhi : whi.δ ≤ 1) :
+    (wlo : GrandChallenges.ContinuousListLowerWitness C m ε_star)
+    (whi : GrandChallenges.ContinuousListUpperWitness C m ε_star) (hδhi : whi.δ ≤ 1) :
     latticeIndexOf (ι := ι) wlo.δ wlo.le_one ≤ listThreshold C m ε_star hne ∧
       listThreshold C m ε_star hne < latticeIndexOf (ι := ι) whi.δ hδhi :=
   ⟨ListLowerWitness_le_listThreshold C m ε_star hne wlo,
@@ -267,8 +267,8 @@ theorem listThresholdLattice_bracketed (C : Set (ι → F)) (m : ℕ) (ε_star :
 constructs the threshold's nonemptiness proof and supplies the lower bracket. -/
 theorem listThresholdLattice_bracketed_of_witnesses (C : Set (ι → F)) (m : ℕ)
     (ε_star : ℝ≥0)
-    (wlo : GrandChallenges.ListLowerWitness C m ε_star)
-    (whi : GrandChallenges.ListUpperWitness C m ε_star) (hδhi : whi.δ ≤ 1) :
+    (wlo : GrandChallenges.ContinuousListLowerWitness C m ε_star)
+    (whi : GrandChallenges.ContinuousListUpperWitness C m ε_star) (hδhi : whi.δ ≤ 1) :
     let hne := listThresholdExists_of_ListLowerWitness C m ε_star wlo
     latticeIndexOf (ι := ι) wlo.δ wlo.le_one ≤ listThreshold C m ε_star hne ∧
       listThreshold C m ε_star hne < latticeIndexOf (ι := ι) whi.δ hδhi :=
@@ -279,8 +279,8 @@ theorem listThresholdLattice_bracketed_of_witnesses (C : Set (ι → F)) (m : �
 faithful list-decoding threshold is exactly the lower witness index. -/
 theorem listThreshold_eq_latticeIndexOf_lowerWitness_of_adjacent
     (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0)
-    (wlo : GrandChallenges.ListLowerWitness C m ε_star)
-    (whi : GrandChallenges.ListUpperWitness C m ε_star) (hδhi : whi.δ ≤ 1)
+    (wlo : GrandChallenges.ContinuousListLowerWitness C m ε_star)
+    (whi : GrandChallenges.ContinuousListUpperWitness C m ε_star) (hδhi : whi.δ ≤ 1)
     (hadj :
       (latticeIndexOf (ι := ι) whi.δ hδhi).val =
         (latticeIndexOf (ι := ι) wlo.δ wlo.le_one).val + 1) :

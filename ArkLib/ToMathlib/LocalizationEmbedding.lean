@@ -31,7 +31,9 @@ noncomputable def embLoc {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H
 /-- `embLoc` restricts to the embedding on `𝒪 H`. -/
 theorem embLoc_comp {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H)
     (hξ : ξ x₀ R H hHyp ≠ 0) (a : 𝒪 H) :
-    embLoc hHyp hξ (algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp)) a)
+    embLoc hHyp hξ
+      ((@algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp))
+        inferInstance inferInstance inferInstance) a)
       = embeddingOf𝒪Into𝕃 H a := by
   unfold embLoc
   exact IsLocalization.lift_eq _ a
@@ -57,7 +59,7 @@ theorem embLoc_injective {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H
     obtain ⟨n, hn⟩ := c.2
     have hc0 : (c : 𝒪 H) ≠ 0 := by
       rw [← hn]
-      exact pow_ne_zero _ hξ
+      exact pow_ne_zero (a := (ξ x₀ R H hHyp : 𝒪 H)) n hξ
     have hxy : x = y := by
       have hc' : (c : 𝒪 H) * x = (c : 𝒪 H) * y := by
         simpa [mul_comm] using hc

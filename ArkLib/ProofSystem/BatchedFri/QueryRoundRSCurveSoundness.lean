@@ -22,6 +22,7 @@ open OracleComp OracleSpec ProtocolSpec ReedSolomon Domain
 open NNReal Finset Function ProbabilityTheory
 
 variable {𝔽 : Type} [NonBinaryField 𝔽] [Fintype 𝔽] [DecidableEq 𝔽] [Nontrivial 𝔽]
+private noncomputable local instance : SampleableType 𝔽 := SampleableType.ofFintype 𝔽
 variable {n : ℕ} {k : ℕ}
 variable {s : Fin (k + 1) → ℕ+} {d : ℕ+}
 variable {ω : SmoothCosetFftDomain n 𝔽}
@@ -57,7 +58,7 @@ def friRSCurveProbabilityInputs
 
 /-- Probability-route Claim 8.3 query-lift specialized to the Batched FRI subdomain
 Reed-Solomon polynomial-curve correlated-agreement theorem. -/
-theorem friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve
+theorem friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
     {t m : ℕ}
     (f : Fin t.succ → (ω → 𝔽))
     (m_ge_3 : m ≥ 3)
@@ -110,7 +111,7 @@ theorem friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLe
   exact
     fri_query_soundness_lift_subdomainZero_to_domain
       (n := n) (ω := ω) (f := f) h_agreement m_ge_3
-      (fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve
+      (fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
         (n := n) (s := s) (d := d) (ω := ω)
         (f := fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x))
         h_agreement m_ge_3 G δ_query queries l domain_size_cond
@@ -121,7 +122,7 @@ theorem friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLe
 
 /-- Probability-route Claim 8.3 residual specialized to the Batched FRI subdomain
 Reed-Solomon polynomial-curve correlated-agreement theorem. -/
-theorem fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve
+theorem fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
     {t l m : ℕ}
     (f : Fin t.succ → (ω → 𝔽))
     (m_ge_3 : m ≥ 3)
@@ -139,19 +140,19 @@ theorem fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSC
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
     (h_rs : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
-    fri_soundness (n := n) (s := s) (d := d) (ω := ω) (l := l)
+    fri_soundness_canonicalIndependent (n := n) (s := s) (d := d) (ω := ω) (l := l)
       (domain_size_cond := domain_size_cond) f m_ge_3 := by
   exact
-    fri_soundness_of_queryLift
+    fri_soundness_canonicalIndependent_of_queryLift
       (n := n) (s := s) (d := d) (ω := ω) (domain_size_cond := domain_size_cond)
       f m_ge_3
-      (friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve
+      (friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
         (n := n) (s := s) (d := d) (ω := ω)
         f m_ge_3 G δ_query queries l domain_size_cond h_agreement h_rs)
 
 /-- Raw full-domain Claim 8.2 conclusion from the Batched FRI subdomain Reed-Solomon
 polynomial-curve probability-route wrapper. -/
-theorem fri_jointAgreement_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve
+theorem fri_jointAgreement_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
     {t m : ℕ}
     (f : Fin t.succ → (ω → 𝔽))
     (m_ge_3 : m ≥ 3)
@@ -184,7 +185,7 @@ theorem fri_jointAgreement_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensA
       (W := f) := by
   change friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3
   exact
-    friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve
+    friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
       (n := n) (s := s) (d := d) (ω := ω)
       f m_ge_3 G δ_query queries l domain_size_cond h_agreement h_rs
 
@@ -391,7 +392,7 @@ theorem friRSCurveDensityInputs.curveProbability
 
 /-- Density-route Claim 8.3 query-lift specialized to the Batched FRI subdomain Reed-Solomon
 polynomial-curve correlated-agreement theorem. -/
-theorem friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve
+theorem friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve
     {t m : ℕ}
     (f : Fin t.succ → (ω → 𝔽))
     (m_ge_3 : m ≥ 3)
@@ -444,7 +445,7 @@ theorem friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAn
   exact
     fri_query_soundness_lift_subdomainZero_to_domain
       (n := n) (ω := ω) (f := f) h_agreement m_ge_3
-      (fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve
+      (fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve
         (n := n) (s := s) (d := d) (ω := ω)
         (f := fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x))
         h_agreement m_ge_3 G δ_query queries l domain_size_cond
@@ -456,7 +457,7 @@ theorem friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAn
 open ENNReal in
 /-- Density-route Claim 8.3 residual specialized to the Batched FRI subdomain Reed-Solomon
 polynomial-curve correlated-agreement theorem. -/
-theorem fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve
+theorem fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve
     {t l m : ℕ}
     (f : Fin t.succ → (ω → 𝔽))
     (m_ge_3 : m ≥ 3)
@@ -474,19 +475,19 @@ theorem fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
     (h_rs : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
-    fri_soundness (n := n) (s := s) (d := d) (ω := ω) (l := l)
+    fri_soundness_canonicalIndependent (n := n) (s := s) (d := d) (ω := ω) (l := l)
       (domain_size_cond := domain_size_cond) f m_ge_3 := by
   exact
-    fri_soundness_of_queryLift
+    fri_soundness_canonicalIndependent_of_queryLift
       (n := n) (s := s) (d := d) (ω := ω) (domain_size_cond := domain_size_cond)
       f m_ge_3
-      (friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve
+      (friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve
         (n := n) (s := s) (d := d) (ω := ω)
         f m_ge_3 G δ_query queries l domain_size_cond h_agreement h_rs)
 
 /-- Raw full-domain Claim 8.2 conclusion from the Batched FRI subdomain Reed-Solomon
 polynomial-curve density-route wrapper. -/
-theorem fri_jointAgreement_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve
+theorem fri_jointAgreement_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve
     {t m : ℕ}
     (f : Fin t.succ → (ω → 𝔽))
     (m_ge_3 : m ≥ 3)
@@ -519,7 +520,7 @@ theorem fri_jointAgreement_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRS
       (W := f) := by
   change friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3
   exact
-    friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve
+    friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve
       (n := n) (s := s) (d := d) (ω := ω)
       f m_ge_3 G δ_query queries l domain_size_cond h_agreement h_rs
 
@@ -544,7 +545,7 @@ theorem friSoundnessQueryLift_densityRSCurve_of_probabilityInputs
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
     (h_rs : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
     friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3 :=
-  friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve
+  friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve
     (n := n) (s := s) (d := d) (ω := ω)
     f m_ge_3 G δ_query queries l domain_size_cond h_agreement
     (friRSCurveDensityInputs_of_probabilityInputs (n := n) (ω := ω) f m h_rs)
@@ -570,7 +571,7 @@ theorem friSoundnessQueryLift_probabilityRSCurve_of_densityInputs
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
     (h_rs : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
     friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3 :=
-  friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve
+  friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
     (n := n) (s := s) (d := d) (ω := ω)
     f m_ge_3 G δ_query queries l domain_size_cond h_agreement
     (friRSCurveProbabilityInputs_of_densityInputs (n := n) (ω := ω) f m h_rs)
@@ -578,7 +579,7 @@ theorem friSoundnessQueryLift_probabilityRSCurve_of_densityInputs
 open ENNReal in
 /-- Probability-route RS-curve inputs can feed the density-route full-domain Claim 8.3
 residual wrapper. -/
-theorem fri_soundness_densityRSCurve_of_probabilityInputs
+theorem fri_soundness_canonicalIndependent_densityRSCurve_of_probabilityInputs
     {t l m : ℕ}
     (f : Fin t.succ → (ω → 𝔽))
     (m_ge_3 : m ≥ 3)
@@ -596,10 +597,10 @@ theorem fri_soundness_densityRSCurve_of_probabilityInputs
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
     (h_rs : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
-    fri_soundness (n := n) (s := s) (d := d) (ω := ω) (l := l)
+    fri_soundness_canonicalIndependent (n := n) (s := s) (d := d) (ω := ω) (l := l)
       (domain_size_cond := domain_size_cond) f m_ge_3 := by
   exact
-    fri_soundness_of_queryLift
+    fri_soundness_canonicalIndependent_of_queryLift
       (n := n) (s := s) (d := d) (ω := ω) (domain_size_cond := domain_size_cond)
       f m_ge_3
       (friSoundnessQueryLift_densityRSCurve_of_probabilityInputs
@@ -609,7 +610,7 @@ theorem fri_soundness_densityRSCurve_of_probabilityInputs
 open ENNReal in
 /-- Density-route RS-curve inputs can feed the probability-route full-domain Claim 8.3
 residual wrapper. -/
-theorem fri_soundness_probabilityRSCurve_of_densityInputs
+theorem fri_soundness_canonicalIndependent_probabilityRSCurve_of_densityInputs
     {t l m : ℕ}
     (f : Fin t.succ → (ω → 𝔽))
     (m_ge_3 : m ≥ 3)
@@ -627,10 +628,10 @@ theorem fri_soundness_probabilityRSCurve_of_densityInputs
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
     (h_rs : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
-    fri_soundness (n := n) (s := s) (d := d) (ω := ω) (l := l)
+    fri_soundness_canonicalIndependent (n := n) (s := s) (d := d) (ω := ω) (l := l)
       (domain_size_cond := domain_size_cond) f m_ge_3 := by
   exact
-    fri_soundness_of_queryLift
+    fri_soundness_canonicalIndependent_of_queryLift
       (n := n) (s := s) (d := d) (ω := ω) (domain_size_cond := domain_size_cond)
       f m_ge_3
       (friSoundnessQueryLift_probabilityRSCurve_of_densityInputs
@@ -718,11 +719,11 @@ theorem fri_jointAgreement_probabilityRSCurve_of_densityInputs
 set_option linter.style.longLine false in
 #print axioms Fri.friRSCurveProbabilityInputs
 set_option linter.style.longLine false in
-#print axioms Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve
+#print axioms Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
 set_option linter.style.longLine false in
-#print axioms Fri.fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve
+#print axioms Fri.fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
 set_option linter.style.longLine false in
-#print axioms Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve
+#print axioms Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
 set_option linter.style.longLine false in
 #print axioms Fri.friRSCurveDensityInputs
 set_option linter.style.longLine false in
@@ -748,19 +749,19 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms Fri.friRSCurveDensityInputs.curveProbability
 set_option linter.style.longLine false in
-#print axioms Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve
+#print axioms Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve
 set_option linter.style.longLine false in
-#print axioms Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve
+#print axioms Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve
 set_option linter.style.longLine false in
-#print axioms Fri.fri_jointAgreement_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve
+#print axioms Fri.fri_jointAgreement_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve
 set_option linter.style.longLine false in
 #print axioms Fri.friSoundnessQueryLift_densityRSCurve_of_probabilityInputs
 set_option linter.style.longLine false in
 #print axioms Fri.friSoundnessQueryLift_probabilityRSCurve_of_densityInputs
 set_option linter.style.longLine false in
-#print axioms Fri.fri_soundness_densityRSCurve_of_probabilityInputs
+#print axioms Fri.fri_soundness_canonicalIndependent_densityRSCurve_of_probabilityInputs
 set_option linter.style.longLine false in
-#print axioms Fri.fri_soundness_probabilityRSCurve_of_densityInputs
+#print axioms Fri.fri_soundness_canonicalIndependent_probabilityRSCurve_of_densityInputs
 set_option linter.style.longLine false in
 #print axioms Fri.fri_jointAgreement_densityRSCurve_of_probabilityInputs
 set_option linter.style.longLine false in

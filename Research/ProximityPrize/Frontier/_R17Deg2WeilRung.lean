@@ -174,11 +174,9 @@ theorem sum_chi_two_point (hχ : IsRealQuadChar χ) {a b : F} (hab : a ≠ b) :
       · exact hu1 (sub_eq_zero.mp (inv_eq_zero.mp h'))
     · intro t ht
       have ht0 : t ≠ 0 := (Finset.mem_erase.mp ht).1
-      dsimp only
       rw [add_sub_cancel_left, mul_inv, inv_inv, ← mul_assoc, mul_inv_cancel₀ hd0, one_mul]
     · intro u hu
       have hu1 : u ≠ 1 := (Finset.mem_erase.mp hu).1
-      dsimp only
       rw [mul_inv, inv_inv, ← mul_assoc, mul_inv_cancel₀ hd0, one_mul]
       ring
     · intro t _; rfl
@@ -211,7 +209,6 @@ theorem sum_chi_psi_mul (hχ : IsRealQuadChar χ) (ψ : AddChar F ℂ) (c : F) :
     unfold gSum
     rw [Finset.mul_sum]
     refine Fintype.sum_bijective (fun b => c * b) (mulLeft_bijective₀ c hc) _ _ (fun b => ?_)
-    dsimp only
     rw [hχ.map_mul c b]
     push_cast
     rw [show b * c = c * b from mul_comm b c]

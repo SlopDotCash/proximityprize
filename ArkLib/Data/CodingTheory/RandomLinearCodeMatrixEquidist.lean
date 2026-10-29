@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import Mathlib.Data.Matrix.Mul
 import Mathlib.Probability.Distributions.Uniform
 import Mathlib.Probability.ProbabilityMassFunction.Constructions
@@ -111,12 +112,12 @@ lemma card_mat_eq_block {M : Matrix (Fin r) (Fin k) F} {N : Matrix (Fin k) (Fin 
 distribution pushes forward under `G ↦ M * G` to the uniform distribution on `Matrix (Fin r) ι F`. -/
 theorem map_mul_uniformOfFintype {M : Matrix (Fin r) (Fin k) F} {N : Matrix (Fin k) (Fin r) F}
     (hMN : M * N = 1) :
-    (PMF.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => M * G)
-      = PMF.uniformOfFintype (Matrix (Fin r) ι F) := by
+    (ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => M * G)
+      = ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin r) ι F) := by
   classical
   ext D
   rw [PMF.map_apply, tsum_fintype]
-  simp only [PMF.uniformOfFintype_apply]
+  simp only [ProximityPrize.Compatibility.uniformOfFintype_apply]
   rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
   have hfilter :
       (Finset.univ.filter (fun G : Matrix (Fin k) ι F => D = M * G))
@@ -145,17 +146,17 @@ theorem map_mul_uniformOfFintype {M : Matrix (Fin r) (Fin k) F} {N : Matrix (Fin
 `(q^{n})^{-r} = |Matrix (Fin r) ι F|⁻¹`. -/
 theorem mul_uniform_apply {M : Matrix (Fin r) (Fin k) F} {N : Matrix (Fin k) (Fin r) F}
     (hMN : M * N = 1) (D : Matrix (Fin r) ι F) :
-    ((PMF.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => M * G)) D
+    ((ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => M * G)) D
       = (Fintype.card (Matrix (Fin r) ι F) : ℝ≥0∞)⁻¹ := by
-  rw [map_mul_uniformOfFintype hMN, PMF.uniformOfFintype_apply]
+  rw [map_mul_uniformOfFintype hMN, ProximityPrize.Compatibility.uniformOfFintype_apply]
 
 /-- Set form: the joint codeword lands in a set `S` with probability `|S| / |Matrix (Fin r) ι F|`,
 the GLMRSW22 second-moment summand for a full-row-rank block of messages. -/
 theorem mul_uniform_mem_prob {M : Matrix (Fin r) (Fin k) F} {N : Matrix (Fin k) (Fin r) F}
     (hMN : M * N = 1) (S : Set (Matrix (Fin r) ι F)) [Fintype S] :
-    ((PMF.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => M * G)).toOuterMeasure S
+    ((ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => M * G)).toOuterMeasure S
       = Fintype.card S / Fintype.card (Matrix (Fin r) ι F) := by
-  rw [map_mul_uniformOfFintype hMN, PMF.toOuterMeasure_uniformOfFintype_apply]
+  rw [map_mul_uniformOfFintype hMN, ProximityPrize.Compatibility.toOuterMeasure_uniformOfFintype_apply]
 
 end ArkLib.RandomLinearCode
 

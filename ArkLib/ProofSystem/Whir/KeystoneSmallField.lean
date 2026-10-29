@@ -35,6 +35,7 @@ theorem keystone_curves_bound_of_card_le {k deg : ℕ} {domain : ι ↪ F} {δ :
     (hq : (Fintype.card F : ℝ≥0) ≤ (k : ℝ≥0) * (Fintype.card ι : ℝ≥0)) :
     epsCA_curves (F := F) (ReedSolomon.code domain deg : Set (ι → F)) k δ δ ≤
       ((k * errorBound δ deg domain : ℝ≥0) : ENNReal) :=
+  letI : SampleableType F := SampleableType.ofFintype F
   (δ_ε_correlatedAgreementCurves_iff_epsCA_curves_le (F := F) (k := k)
     (C := (ReedSolomon.code domain deg : Set (ι → F))) δ (errorBound δ deg domain)).mp
     (correlatedAgreement_affine_curves_of_card_le hδ hq)
@@ -45,6 +46,7 @@ theorem keystone_curves_bound_of_card_le_e7 {k deg : ℕ} {domain : ι ↪ F} {�
     (hq : (Fintype.card F : ℝ≥0) ≤ (k : ℝ≥0) * ((deg ^ 2 * 10 ^ 7 : ℕ) : ℝ≥0)) :
     epsCA_curves (F := F) (ReedSolomon.code domain deg : Set (ι → F)) k δ δ ≤
       ((k * errorBound δ deg domain : ℝ≥0) : ENNReal) :=
+  letI : SampleableType F := SampleableType.ofFintype F
   (δ_ε_correlatedAgreementCurves_iff_epsCA_curves_le (F := F) (k := k)
     (C := (ReedSolomon.code domain deg : Set (ι → F))) δ (errorBound δ deg domain)).mp
     (correlatedAgreement_affine_curves_of_card_le_e7 hδ hq)

@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.ToMathlib.NatPrimeCheckpoint
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26DimTwoPin
 import Mathlib.LinearAlgebra.Lagrange
 
@@ -723,7 +724,7 @@ end Concrete12289
 
 section Concrete4294967377
 
-local instance fact_prime_4294967377 : Fact (Nat.Prime 4294967377) := ⟨by norm_num⟩
+local instance fact_prime_4294967377 : Fact (Nat.Prime 4294967377) := ⟨by prime_checkpoint⟩
 
 /-- `526957872` has multiplicative order `16` in `F_p`, `p = 4294967377`
 (`526957872⁸ = −1`; the element is `15^((p−1)/16)` for the primitive root `15`). -/

@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.ProofSystem.RingSwitching.SumcheckPhase
+import ArkLib.OracleReduction.Composition.Sequential.SeqComposeOracleCompleteness
 
 /-!
 # Sumcheck-loop perfect completeness (issue #29)
@@ -35,6 +36,7 @@ variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ Pro
 -- `perfectCompleteness` unfolds through `.toReduction` of the full ring-switching seqCompose — this
 -- defeq is `whnf`-heavy (slow but terminating), hence the raised heartbeat budget.
 set_option maxHeartbeats 40000000 in
+set_option backward.isDefEq.respectTransparency false in
 /-- **Sumcheck-loop perfect completeness (issue #29, phase 1).** The `seqCompose` of the `ℓ'`
 per-round oracle reductions (`sumcheckLoopOracleReduction = OracleReduction.seqCompose …
 iteratedSumcheckOracleReduction`) is perfectly complete from `0` to `Fin.last ℓ'`.
@@ -58,6 +60,10 @@ theorem sumcheckLoopOracleReduction_perfectCompleteness [IsDomain L]
       (relOut := sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn (Fin.last ℓ'))
       (init := init) (impl := impl) := by
   classical
+  letI : ∀ q : ([]ₒ : OracleSpec.{0, 0} PEmpty.{1}).Domain,
+      Fintype (([]ₒ : OracleSpec.{0, 0} PEmpty.{1}).Range q) := fun q => by cases q
+  letI : ∀ q : ([]ₒ : OracleSpec.{0, 0} PEmpty.{1}).Domain,
+      Inhabited (([]ₒ : OracleSpec.{0, 0} PEmpty.{1}).Range q) := fun q => by cases q
   haveI : Nonempty L := ⟨0⟩
   -- per-round challenge finiteness/inhabitedness: the challenge type at index `1` is the field `L`
   -- (index `0` is a `P_to_V` message, so its `ChallengeIdx` proof is absurd).
@@ -79,7 +85,8 @@ theorem sumcheckLoopOracleReduction_perfectCompleteness [IsDomain L]
     (relIn := (fun i => sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn i) 0)
     (relOut := (fun i => sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn i) (Fin.last ℓ'))
     (init := init) (impl := impl)
-  have H := OracleReduction.seqCompose_pc_oracle_msg' (init := init) (impl := impl)
+  have H := OracleReduction.seqCompose_pc_oracle_msg'
+    (oSpec := ([]ₒ : OracleSpec.{0, 0} PEmpty.{1})) (init := init) (impl := impl)
     (Stmt := Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ P))
     (OStmt := fun _ => aOStmtIn.OStmtIn)
     -- `Oₛ`/`Oₘ` supplied explicitly with β-reduced target types: instance *search* against the
@@ -88,24 +95,21 @@ theorem sumcheckLoopOracleReduction_perfectCompleteness [IsDomain L]
     (Oₘ := fun _ j => (inferInstance : OracleInterface ((pSpecSumcheckRound L).Message j)))
     (Wit := fun i => SumcheckWitness L ℓ' i)
     (R := fun i => iteratedSumcheckOracleReduction κ L K P ℓ ℓ' aOStmtIn i)
-    (coh := fun i => instIteratedSumcheckOracleReductionAppendCoherent
-      (κ := κ) (L := L) (K := K) (P := P) (ℓ := ℓ) (ℓ' := ℓ') (aOStmtIn := aOStmtIn) i)
+
     (rel := fun i => sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn i)
     (fun _ _ => inferInstance)
     (fun _ j => by
       rcases j with ⟨⟨v, hv⟩, hj⟩
       interval_cases v
       · exact absurd hj (by simp [pSpecSumcheckRound, Sumcheck.Structured.pSpecSumcheckRound])
-      · simpa only [pSpecSumcheckRound, Sumcheck.Structured.pSpecSumcheckRound,
-          ProtocolSpec.Challenge, Matrix.cons_val_one, Matrix.cons_val_fin_one] using
-          (inferInstance : Fintype L))
+      · change Fintype L
+        infer_instance)
     (fun _ j => by
       rcases j with ⟨⟨v, hv⟩, hj⟩
       interval_cases v
       · exact absurd hj (by simp [pSpecSumcheckRound, Sumcheck.Structured.pSpecSumcheckRound])
-      · simpa only [pSpecSumcheckRound, Sumcheck.Structured.pSpecSumcheckRound,
-          ProtocolSpec.Challenge, Matrix.cons_val_one, Matrix.cons_val_fin_one] using
-          (⟨(0 : L)⟩ : Inhabited L))
+      · change Inhabited L
+        exact ⟨0⟩)
     (fun _ => ⟨by norm_num, rfl⟩)
     hInit
     (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])
@@ -114,3 +118,5 @@ theorem sumcheckLoopOracleReduction_perfectCompleteness [IsDomain L]
       (aOStmtIn := aOStmtIn) (init := init) (impl := impl) hInit i)
   exact H
 end RingSwitching.SumcheckPhase
+
+#print axioms RingSwitching.SumcheckPhase.sumcheckLoopOracleReduction_perfectCompleteness

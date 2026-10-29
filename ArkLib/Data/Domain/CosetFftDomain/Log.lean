@@ -3,24 +3,38 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Ilia Vlasov, Aristotle (Harmonic)
 -/
+module
 
-import Mathlib.Logic.Embedding.Basic
-import Mathlib.Data.Fintype.Defs
+public import Mathlib.Logic.Embedding.Basic
+public import Mathlib.Data.Fintype.Defs
 
-import ArkLib.Data.Domain.CosetFftDomain.Mem
-import ArkLib.Data.Domain.FftDomain.Mem
+public import ArkLib.Data.Domain.CosetFftDomain.Mem
+public import ArkLib.Data.Domain.FftDomain.Mem
 
 /-!
-# Discrete logarithm on coset FFT domains
+# Discrete logarithms in smooth FFT domains
 
-We define the discrete logarithm `log` for elements of a coset FFT domain `ω`, returning the
-index in `Fin (2 ^ n)` whose image under `ω` is the given element. `logAux` performs the bounded
-linear search and `log` runs it with full fuel `2 ^ n`.
+This file defines a logarithm operation for smooth FFT domains and smooth coset
+FFT domains.
 
-The lemmas `log_right_inverse'`, `log_right_inverse`, and `log_left_inverse` establish that `log`
-is a two-sided inverse to the domain map, and `log` abbreviations are provided for the smooth
-coset and smooth FFT domain wrappers.
+Given an element of the image of a domain, `log` recovers the unique index that
+maps to it.
+
+## Main definitions
+
+- `CosetFftDomainClass.log`: Inverse to the domain parametrization.
+- `CosetFftDomain.log`: Concrete logarithm for smooth coset FFT domains.
+- `FftDomain.log`: Concrete logarithm for smooth FFT domains.
+
+## Main results
+
+- `log_right_inverse'`: Evaluating at `log` recovers the original element.
+- `log_right_inverse`: `log` is a right inverse.
+- `log_left_inverse`: `log` is a left inverse.
+
 -/
+
+@[expose] public section
 
 namespace Domain
 
@@ -32,8 +46,10 @@ namespace CosetFftDomainClass
 variable {D : Type} [FunLike D (Fin (2 ^ n)) F]
 variable [CosetFftDomainClass D (Fin (2 ^ n)) F]
 
-private def logAux (ω : D)
-  (x : ω) (fuel : ℕ) : Fin (2 ^ n) :=
+/-- Auxiliary bounded search for the index of `x` in a smooth coset FFT domain.
+  The `fuel` parameter bounds the search through `Fin (2 ^ n)`. -/
+def logAux (ω : D)
+    (x : ω) (fuel : ℕ) : Fin (2 ^ n) :=
   match fuel with
   | 0 => default
   | fuel + 1 =>
@@ -44,6 +60,7 @@ private def logAux (ω : D)
 /-- Finds a preimage of `x` under the mapping `ω`. -/
 def log (ω : D) (x : ω) : Fin (2 ^ n) := logAux ω x (2 ^ n)
 
+/-- Evaluating `ω` at the index found by `log` recovers `x`. -/
 @[simp]
 lemma log_right_inverse' {ω : D} {x : ω} :
     ω (log ω x) = x := by
@@ -57,13 +74,30 @@ lemma log_right_inverse' {ω : D} {x : ω} :
     induction fuel generalizing i with
     | zero => simp_all
     | succ fuel ih =>
-      simp [logAux]
-      grind
+      by_cases hfuel : fuel < 2 ^ n
+      · by_cases hfound : ω (⟨fuel, hfuel⟩ : Fin (2 ^ n)) = x
+        · simp [logAux, hfuel, hfound]
+        · rw [show logAux ω x (fuel + 1) = logAux ω x fuel by simp [logAux, hfuel, hfound]]
+          apply ih i
+          · have hi_ne : i.val ≠ fuel := by
+              intro hval
+              apply hfound
+              have hfin : i = (⟨fuel, hfuel⟩ : Fin (2 ^ n)) := Fin.ext hval
+              rw [← hfin]
+              exact hx
+            omega
+          · exact hx
+      · rw [show logAux ω x (fuel + 1) = logAux ω x fuel by simp [logAux, hfuel]]
+        apply ih i
+        · exact lt_of_lt_of_le i.isLt (Nat.le_of_not_gt hfuel)
+        · exact hx
   exact h_log_aux _ _ (Fin.is_lt i) hi
 
+/-- The logarithm is a right inverse to the subtype-valued parametrization of the domain. -/
 lemma log_right_inverse {ω : D} :
     Function.RightInverse (log ω) (fun x ↦ ⟨ω x, by simp⟩) := fun x ↦ by simp
 
+/-- The logarithm is a left inverse to the subtype-valued parametrization of the domain. -/
 lemma log_left_inverse {ω : D} :
     Function.LeftInverse (log ω) (fun x ↦ ⟨ω x, by simp⟩) :=
     fun x ↦ CosetFftDomainClass.injective (ω := ω) (by simp)
@@ -72,6 +106,7 @@ end CosetFftDomainClass
 
 namespace CosetFftDomain
 
+/-- Concrete notation for the logarithm on a smooth coset FFT domain. -/
 abbrev log {n : ℕ} (ω : SmoothCosetFftDomain n F) (x : ω) : Fin (2 ^ n) :=
   CosetFftDomainClass.log ω x
 
@@ -79,6 +114,7 @@ end CosetFftDomain
 
 namespace FftDomain
 
+/-- Concrete notation for the logarithm on a smooth FFT domain. -/
 abbrev log {n : ℕ} (ω : SmoothFftDomain n F) (x : ω) : Fin (2 ^ n) :=
   CosetFftDomainClass.log ω x
 

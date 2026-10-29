@@ -32,51 +32,27 @@ noncomputable def stirOStmtRel (S : Type) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ�
   fun ⟨⟨_, oracle⟩, _⟩ =>
     Code.relDistFromCode (oracle ()) (ReedSolomon.code φ deg) ≤ (δ : ENNReal)
 
-/-- Finiteness of the init-block challenge oracle spec (single index `0`, type `F`). -/
-instance : [(pSpecInit F).Challenge]ₒ.Fintype where
-  fintype_B
-  | ⟨⟨iv, hiv⟩, _⟩ => by
-    have h0 : iv = 0 := by omega
-    subst h0
-    simpa [pSpecInit, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
-      OracleInterface.Response, OracleInterface.toOC] using (inferInstance : Fintype F)
+private noncomputable local instance stirBlockUniformAnswers
+    {κ : Type} {spec : OracleSpec κ}
+    [∀ q, Fintype (spec.Range q)] [∀ q, Inhabited (spec.Range q)] :
+    OracleSpec.UniformAnswerMeasure spec :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty spec
 
-/-- Inhabitedness of the init-block challenge oracle spec. -/
-instance : [(pSpecInit F).Challenge]ₒ.Inhabited where
-  inhabited_B
-  | ⟨⟨iv, hiv⟩, _⟩ => by
-    have h0 : iv = 0 := by omega
-    subst h0
-    simpa [pSpecInit, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
-      OracleInterface.Response, OracleInterface.toOC] using (⟨(0 : F)⟩ : Inhabited F)
+private noncomputable local instance stirBlockChallengeUniform {N : ℕ} (p : ProtocolSpec N)
+    [∀ j, SampleableType (p.Challenge j)] :
+    OracleSpec.UniformAnswerMeasure ([p.Challenge]ₒ'ProtocolSpec.challengeOracleInterface) := by
+  letI : ∀ t, Finite (([p.Challenge]ₒ'ProtocolSpec.challengeOracleInterface).Range t)
+    | ⟨j, ()⟩ => by change Finite (p.Challenge j); infer_instance
+  letI : ∀ t, Nonempty (([p.Challenge]ₒ'ProtocolSpec.challengeOracleInterface).Range t)
+    | ⟨j, ()⟩ => by change Nonempty (p.Challenge j); infer_instance
+  exact OracleSpec.UniformAnswerMeasure.ofFiniteNonempty _
 
-/-- Finiteness of the final-block challenge oracle spec (only index `1`, type `F`). -/
-instance : [(pSpecFinal ι F).Challenge]ₒ.Fintype where
-  fintype_B
-  | ⟨⟨iv, hiv⟩, _⟩ => by
-    have h1 : iv = 1 := by
-      cases iv using Fin.cases with
-      | zero => simp [pSpecFinal] at hiv
-      | succ i1 => cases i1 using Fin.cases with
-        | zero => rfl
-        | succ k => exact k.elim0
-    subst h1
-    simpa [pSpecFinal, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
-      OracleInterface.Response, OracleInterface.toOC] using (inferInstance : Fintype F)
-
-/-- Inhabitedness of the final-block challenge oracle spec. -/
-instance : [(pSpecFinal ι F).Challenge]ₒ.Inhabited where
-  inhabited_B
-  | ⟨⟨iv, hiv⟩, _⟩ => by
-    have h1 : iv = 1 := by
-      cases iv using Fin.cases with
-      | zero => simp [pSpecFinal] at hiv
-      | succ i1 => cases i1 using Fin.cases with
-        | zero => rfl
-        | succ k => exact k.elim0
-    subst h1
-    simpa [pSpecFinal, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
-      OracleInterface.Response, OracleInterface.toOC] using (⟨(0 : F)⟩ : Inhabited F)
+private theorem liftedOption {κ : Type} {spec : OracleSpec.{0, 0} κ} {β : Type}
+    (mx : OracleComp spec β) :
+    (liftM mx : OptionT (OracleComp spec) β) = some <$> mx := by
+  change (mx >>= fun x => pure (some x)) = some <$> mx
+  rw [map_eq_bind_pure_comp]
+  rfl
 
 instance : ∀ j, SampleableType ((pSpecInit F).Challenge j)
   | ⟨0, _⟩ => by
@@ -109,35 +85,21 @@ theorem stirInitReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ : 
     OStmt, stirOStmtRel]
   simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,
     Prod.mk.eta, bind_assoc, map_pure, liftComp_pure, liftM_pure]
-  rw [probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · -- SAFETY: the run never fails
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun α _hα => ?_⟩
-    · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-        Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
-        probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
-        Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
-        zero_add]
-      intro x hx
-      erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-      simp only [support_pure, Set.mem_singleton_iff] at hx
-      subst hx
-      simp only [Option.map_some, reduceCtorEq, not_false_eq_true]
-  · -- CORRECTNESS
-    intro x hx
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨α, _hα, hx⟩ := hx
-    rw [OptionT.mem_support_iff] at hx
-    erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-    simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-      Function.comp_apply, Option.map_some, support_map, support_pure, Set.mem_image,
-      Set.mem_singleton_iff, Option.some.injEq, exists_eq_left, exists_eq_right] at hx
-    subst hx
-    exact ⟨h_relIn, rfl, by funext u; rfl⟩
+  apply (OptionT.prEvent_mk_eq_one_iff _ _).2
+  intro value hvalue
+  obtain ⟨α, hα, hvalue⟩ := OracleComp.mem_support_bind_peel _ _ hvalue
+  erw [liftedOption] at hα
+  obtain ⟨a, _, ha⟩ := OracleComp.mem_support_map_peel _ _ hα
+  subst α
+  simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure,
+    simulateQ_pure, _root_.map_pure, Option.map_some, liftComp_pure] at hvalue
+  have hv := OracleComp.eq_of_mem_support_pure _ hvalue
+  subst value
+  refine ⟨_, rfl, ?_, rfl, by funext u; rfl⟩
+  change Code.relDistFromCode (oStmtIn ()) (ReedSolomon.code φ deg) ≤ (δ : ENNReal) at h_relIn
+  change Code.relDistFromCode _ (ReedSolomon.code φ deg : Set (ι → F)) ≤ (δ : ENNReal)
+  simpa only [OracleVerifier.materializeOutput, OracleVerifier.materializeOutputOracle,
+    FullTranscript.messages, FullTranscript.mk1, FullTranscript.mk2, DFunLike.coe, id_eq] using h_relIn
 
 open scoped Classical in
 set_option maxHeartbeats 800000 in
@@ -160,35 +122,21 @@ theorem stirFinalReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ :
     OStmt, stirOStmtRel]
   simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,
     Prod.mk.eta, bind_assoc, map_pure, liftComp_pure, liftM_pure]
-  rw [probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · -- SAFETY
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun α _hα => ?_⟩
-    · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-        Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
-        probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
-        Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
-        zero_add]
-      intro x hx
-      erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-      simp only [support_pure, Set.mem_singleton_iff] at hx
-      subst hx
-      simp only [Option.map_some, reduceCtorEq, not_false_eq_true]
-  · -- CORRECTNESS
-    intro x hx
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨α, _hα, hx⟩ := hx
-    rw [OptionT.mem_support_iff] at hx
-    erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-    simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-      Function.comp_apply, Option.map_some, support_map, support_pure, Set.mem_image,
-      Set.mem_singleton_iff, Option.some.injEq, exists_eq_left, exists_eq_right] at hx
-    subst hx
-    exact ⟨h_relIn, rfl, by funext u; rfl⟩
+  apply (OptionT.prEvent_mk_eq_one_iff _ _).2
+  intro value hvalue
+  obtain ⟨α, hα, hvalue⟩ := OracleComp.mem_support_bind_peel _ _ hvalue
+  erw [liftedOption] at hα
+  obtain ⟨a, _, ha⟩ := OracleComp.mem_support_map_peel _ _ hα
+  subst α
+  simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure,
+    simulateQ_pure, _root_.map_pure, Option.map_some, liftComp_pure] at hvalue
+  have hv := OracleComp.eq_of_mem_support_pure _ hvalue
+  subst value
+  refine ⟨_, rfl, ?_, rfl, by funext u; rfl⟩
+  change Code.relDistFromCode (oStmtIn ()) (ReedSolomon.code φ deg) ≤ (δ : ENNReal) at h_relIn
+  change Code.relDistFromCode _ (ReedSolomon.code φ deg : Set (ι → F)) ≤ (δ : ENNReal)
+  simpa only [OracleVerifier.materializeOutput, OracleVerifier.materializeOutputOracle,
+    FullTranscript.messages, FullTranscript.mk1, FullTranscript.mk2, DFunLike.coe, id_eq] using h_relIn
 
 end Round3
 

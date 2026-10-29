@@ -3,8 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.CodingTheory.JohnsonBound.Family
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.JohnsonBound.Family
+import ProximityPrize.Compatibility.ListSize
 
 /-!
 # Reed–Solomon Johnson list-size at the `Lambda` level (#371 / #389 floor lane)
@@ -47,10 +48,13 @@ theorem rs_johnson_lambda_le {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq
     (Lambda ((ReedSolomon.code α k : Set (ι → F)))
         (1 - Real.sqrt ((k : ℝ) / Fintype.card ι) - η) : ENNReal) ≤
       ENNReal.ofReal (1 / (2 * η * ((k : ℝ) / Fintype.card ι))) := by
+  classical
+  let : Inhabited ι := Classical.inhabited_of_nonempty ‹Nonempty ι›
+  rw [ProximityPrize.Compatibility.legacyLambda_eq_canonical]
   have hfin : Module.finrank F (ReedSolomon.code α k) = k :=
     ReedSolomon.dim_eq_deg_of_le' hk
   have hmds := CodingTheory.mds_johnson_lambda_le
-    (ReedSolomon.code α k) η hη_pos (ReedSolomon.isMDS_code hk)
+    (ReedSolomon.code α k) η hη_pos ReedSolomon.isMDS_code
   simpa only [hfin] using hmds
 
 /-- **`ℕ`-valued RS Johnson list-size, ready for the GCXK25 floor consumer.** The same bound

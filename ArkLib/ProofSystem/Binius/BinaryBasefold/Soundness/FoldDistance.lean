@@ -3,24 +3,32 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
+module
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Compliance
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.PreTensorMaps
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Compliance
+
 /-!
-## Binary Basefold Soundness Fold Distance
+# Binary Basefold: folded distance at a noncompliant oracle
 
-Distance and disagreement transfer lemmas from fiber views to folded codewords.
-This file packages:
-1. helper lemmas turning fiber agreement into fold agreement
-2. disagreement propagation from noncompliant fibers to folded evaluations
-3. the folded-distance lower bounds used in the later bad-block analysis
+## Main statements
+
+* `iteratedFold_eq_of_eq_on_fiber`: two oracles that agree on the fiber of `y` have equal folds
+  at `y`.
+* `disagreementSet_iteratedFold_subset_fiberwiseDisagreementSet`: folding creates no
+  disagreement outside the fiberwise disagreement set, for any two oracles and any challenges
+  (the containment of [DP24] Lemma 4.19, there stated for an oracle and its decoded codeword).
+* `not_pairUniqueDecodingClose_iteratedFold_of_not_isCompliant`: at a noncompliant oracle whose next
+  oracle is within the unique-decoding radius, and outside the folding bad event, the fold is
+  not within the unique-decoding radius of the next oracle's decoded codeword ([DP24]
+  Lemma 4.25). The query-phase soundness consumes it.
 
 ## References
 
 * [Diamond, B.E. and Posen, J., *Polylogarithmic proofs for multilinears over binary towers*][DP24]
-  Statement numbering follows the archived revision of [DP24].
+  Numbering follows the archived revision of [DP24].
 -/
+
+@[expose] public section
 
 namespace Binius.BinaryBasefold
 
@@ -32,14 +40,17 @@ open Finset AdditiveNTT Polynomial MvPolynomial Nat Matrix
 open ProbabilityTheory
 
 variable {r : ℕ} [NeZero r]
-variable {L : Type} [Field L] [Fintype L] [DecidableEq L] [CharP L 2]
+variable {L : Type} [Field L] [Fintype L] [DecidableEq L]
 variable (𝔽q : Type) [Field 𝔽q] [Fintype 𝔽q] [DecidableEq 𝔽q]
-  [h_Fq_char_prime : Fact (Nat.Prime (ringChar 𝔽q))] [hF₂ : Fact (Fintype.card 𝔽q = 2)]
+  [hF₂ : Fact (Fintype.card 𝔽q = 2)]
 variable [Algebra 𝔽q L]
+
+omit [Fintype 𝔽q] in
+local instance [Finite 𝔽q] : Fact (Nat.Prime (ringChar 𝔽q)) := ⟨CharP.prime_ringChar 𝔽q⟩
 variable (β : Fin r → L) [hβ_lin_indep : Fact (LinearIndependent 𝔽q β)]
   [h_β₀_eq_1 : Fact (β 0 = 1)]
-variable {ℓ 𝓡 ϑ : ℕ} (γ_repetitions : ℕ) [NeZero ℓ] [NeZero 𝓡] [NeZero ϑ] -- Should we allow ℓ = 0?
-variable {h_ℓ_add_R_rate : ℓ + 𝓡 < r} -- ℓ ∈ {1, ..., r-1}
+variable {ℓ 𝓡 ϑ : ℕ} [NeZero ℓ] [NeZero 𝓡] [NeZero ϑ]
+variable {h_ℓ_add_R_rate : ℓ + 𝓡 < r}
 variable {𝓑 : Fin 2 ↪ L}
 noncomputable section
 variable [SampleableType L]
@@ -48,347 +59,248 @@ variable [hdiv : Fact (ϑ ∣ ℓ)]
 open scoped NNReal ProbabilityTheory
 
 open Classical in
-omit [CharP L 2] [DecidableEq 𝔽q] hF₂ h_β₀_eq_1 [NeZero ℓ] [NeZero 𝓡]
-  [SampleableType L] in
-/-- Pair-closeness to a concrete BBF codeword implies UDR-closeness to the BBF code. -/
-lemma UDRClose_of_pair_UDRClose_to_BBF_Codeword (i : Fin r) (h_i : i ≤ ℓ)
-    (f g : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)
-    (hg : g ∈ BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)
-    (h_pair : pair_UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      (i := i) h_i (f := f) (g := g)) :
-    UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      (i := i) (h_i := h_i) (f := f) := by
-  unfold UDRClose pair_UDRClose at *
-  calc
-    2 * Δ₀(f, (BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)) ≤
-        2 * Δ₀(f, g) := by
-      rw [ENat.mul_le_mul_left_iff
-        (ha := by simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true])
-        (h_top := by simp only [ne_eq, ENat.ofNat_ne_top, not_false_eq_true])]
-      exact Code.distFromCode_le_dist_to_mem
-        (C := BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)
-        (u := f) (v := g) hg
-    _ < BBF_CodeDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) := by
-      simpa only [Nat.cast_ofNat, Nat.cast_mul] using (ENat.coe_lt_coe.mpr h_pair)
-
-omit [SampleableType L] in
-/-- Folding a fiberwise-close word and its source UDR codeword stays pair-UDR-close. -/
-lemma pair_UDRClose_iterated_fold_UDRCodeword_of_fiberwiseClose
-    (i_star : Fin ℓ) (steps : ℕ) [NeZero steps]
-    {destIdx : Fin r} (h_destIdx : destIdx.val = i_star.val + steps)
-    (h_destIdx_le : destIdx ≤ ℓ)
-    (f_star : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i_star, by omega⟩)
-    (r_challenges : Fin steps → L)
-    (h_close : fiberwiseClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      (i := ⟨i_star, by omega⟩) (steps := steps) (destIdx := destIdx)
-      (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) (f := f_star)) :
-    let h_source_close := UDRClose_of_fiberwiseClose 𝔽q β
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := ⟨i_star, by omega⟩)
-      (steps := steps) (destIdx := destIdx) (h_destIdx := h_destIdx)
-      (h_destIdx_le := h_destIdx_le) (f := f_star) h_close
-    let f_bar_star := UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      ⟨i_star, by omega⟩ (Nat.le_of_lt i_star.isLt) (f := f_star)
-      (h_within_radius := h_source_close)
-    let folded_f := iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      ⟨i_star, by omega⟩ steps h_destIdx h_destIdx_le f_star
-      (r_challenges := r_challenges)
-    let folded_bar := iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      ⟨i_star, by omega⟩ steps h_destIdx h_destIdx_le f_bar_star
-      (r_challenges := r_challenges)
-    pair_UDRClose 𝔽q β destIdx h_destIdx_le folded_f folded_bar := by
-  classical
-  dsimp only
-  let sourceIdx : Fin r := ⟨i_star, by omega⟩
-  let h_source_close := UDRClose_of_fiberwiseClose 𝔽q β
-    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := sourceIdx)
-    (steps := steps) (destIdx := destIdx) (h_destIdx := h_destIdx)
-    (h_destIdx_le := h_destIdx_le) (f := f_star) h_close
-  let f_bar_star := UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-    sourceIdx (Nat.le_of_lt i_star.isLt) (f := f_star)
-    (h_within_radius := h_source_close)
-  let folded_f := iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-    sourceIdx steps h_destIdx h_destIdx_le f_star (r_challenges := r_challenges)
-  let folded_bar := iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-    sourceIdx steps h_destIdx h_destIdx_le f_bar_star (r_challenges := r_challenges)
-  have h_containment :
-      disagreementSet 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := destIdx) (destIdx := destIdx) (h_destIdx := rfl)
-        (f := folded_f) (g := folded_bar) ⊆
-      fiberwiseDisagreementSetPerFiber 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := sourceIdx) (steps := steps) (destIdx := destIdx)
-        (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
-        f_star f_bar_star := by
-    intro y hy
-    rw [mem_fiberwiseDisagreementSetPerFiber]
-    by_contra hno
-    have hfiber :
-        fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-            (i := sourceIdx) (destIdx := destIdx) (steps := steps)
-            h_destIdx h_destIdx_le f_star y =
-        fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-            (i := sourceIdx) (destIdx := destIdx) (steps := steps)
-            h_destIdx h_destIdx_le f_bar_star y := by
-      funext idx
-      by_contra hne
-      exact hno ⟨idx, hne⟩
-    have hfold := iterated_fold_eq_of_fiberEvaluations_eq 𝔽q β
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      (i := i_star) (steps := steps) (destIdx := destIdx)
-      h_destIdx h_destIdx_le f_star f_bar_star r_challenges y hfiber
-    have hy_ne : folded_f y ≠ folded_bar y := by
-      simpa [disagreementSet, folded_f, folded_bar] using hy
-    exact hy_ne hfold
-  have h_hamming_le :
-      hammingDist folded_f folded_bar ≤
-        (fiberwiseDisagreementSetPerFiber 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-          (i := sourceIdx) (steps := steps) (destIdx := destIdx)
-          (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
-          f_star f_bar_star).card := by
-    have h_card := Finset.card_le_card h_containment
-    simpa [hammingDist, folded_f, folded_bar] using h_card
-  have h_min_eq :
-      fiberwiseDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := sourceIdx) (steps := steps) (destIdx := destIdx)
-        h_destIdx h_destIdx_le (f := f_star) =
-      pair_fiberwiseDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := sourceIdx) (steps := steps) (destIdx := destIdx)
-        h_destIdx h_destIdx_le (f := f_star) (g := f_bar_star) := by
-    rcases exists_fiberwiseClosestCodeword_within_close 𝔽q β
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := sourceIdx)
-      (destIdx := destIdx) (steps := steps) (h_destIdx := h_destIdx)
-      (h_destIdx_le := h_destIdx_le) (f := f_star) h_close with ⟨g, hg_mem, hg_min⟩
-    let C_source : Set (sDomain 𝔽q β h_ℓ_add_R_rate sourceIdx → L) :=
-      BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) sourceIdx
-    haveI h_C_source_dist_ne :
-        NeZero (‖(C_source : Set (sDomain 𝔽q β h_ℓ_add_R_rate sourceIdx → L))‖₀) := ⟨by
-      dsimp only [C_source]
-      change BBF_CodeDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) sourceIdx ≠ 0
-      rw [BBF_CodeDistance_eq 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := sourceIdx) (h_i := Nat.le_of_lt i_star.isLt)]
-      omega⟩
-    have h_pair_fw : pair_fiberwiseClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := sourceIdx) (steps := steps) (destIdx := destIdx)
-        h_destIdx h_destIdx_le (f := f_star) (g := g) := by
-      unfold pair_fiberwiseClose
-      rw [← hg_min]
-      exact h_close.2
-    have h_pair_udr : pair_UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := sourceIdx) (h_i := Nat.le_of_lt i_star.isLt) (f := f_star) (g := g) :=
-      by
-        simpa [sourceIdx] using
-          pairUDRClose_of_pairFiberwiseClose 𝔽q β
-            (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i_star)
-            (steps := steps) (destIdx := destIdx) h_destIdx h_destIdx_le
-            (f := f_star) (g := g) h_pair_fw
-    have h_g_le :
-        Δ₀(f_star, g) ≤ Code.uniqueDecodingRadius (C := C_source) := by
-      exact (Code.UDRClose_iff_two_mul_proximity_lt_d_UDR (C := C_source)).2 (by
-        simpa [C_source, pair_UDRClose, BBF_CodeDistance] using h_pair_udr)
-    have h_bar_mem : f_bar_star ∈ C_source := by
-      dsimp only [C_source]
-      exact UDRCodeword_mem_BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := sourceIdx) (h_i := Nat.le_of_lt i_star.isLt)
-        (f := f_star) (h_within_radius := h_source_close)
-    have h_bar_le :
-        Δ₀(f_star, f_bar_star) ≤ Code.uniqueDecodingRadius (C := C_source) := by
-      simpa [C_source, f_bar_star] using
-        dist_to_UDRCodeword_le_uniqueDecodingRadius 𝔽q β
-          (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-          (i := sourceIdx) (h_i := Nat.le_of_lt i_star.isLt)
-          (f := f_star) (h_within_radius := h_source_close)
-    have hg_eq : g = f_bar_star :=
-      Code.eq_of_le_uniqueDecodingRadius (C := C_source) (u := f_star)
-        (v := g) (w := f_bar_star) (hv := by simpa [C_source] using hg_mem)
-        (hw := h_bar_mem) (huv := h_g_le) (huw := h_bar_le)
-    rw [hg_eq] at hg_min
-    simpa [f_bar_star, h_source_close] using hg_min
-  have h_source_lt :
-      2 *
-          (fiberwiseDisagreementSetPerFiber 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-            (i := sourceIdx) (steps := steps) (destIdx := destIdx)
-            (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
-            f_star f_bar_star).card <
-        BBF_CodeDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-          (i := destIdx) := by
-    unfold fiberwiseClose at h_close
-    rw [h_min_eq] at h_close
-    simpa [pair_fiberwiseDistance, sourceIdx, f_bar_star] using h_close.2
-  unfold pair_UDRClose
-  exact lt_of_le_of_lt (Nat.mul_le_mul_left 2 h_hamming_le) h_source_lt
-
-omit [CharP L 2] [DecidableEq 𝔽q] hF₂ h_β₀_eq_1 [NeZero ℓ] [SampleableType L] in
-/-- Helper: global agreement of two source words is preserved by iterated folding. -/
-lemma fold_agreement_of_fiber_agreement (i : Fin ℓ) (steps : ℕ)
+omit [DecidableEq 𝔽q] hF₂ [NeZero ℓ] [SampleableType L] in
+/-- If `f` and `g` agree on the fiber of `y`, their folds agree at `y`. -/
+lemma iteratedFold_eq_of_eq_on_fiber (i : Fin ℓ) (steps : ℕ)
     {destIdx : Fin r} (h_destIdx : destIdx.val = i.val + steps) (h_destIdx_le : destIdx ≤ ℓ)
     (f g : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i, by omega⟩)
-    (r_challenges : Fin steps → L) (y : sDomain 𝔽q β h_ℓ_add_R_rate destIdx) :
-    (∀ x, f x = g x) →
-    (iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i, by omega⟩ steps h_destIdx h_destIdx_le f (r_challenges := r_challenges) y =
-    (iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i, by omega⟩ steps h_destIdx h_destIdx_le g (r_challenges := r_challenges) y)) := by
-  intro h_agree
-  have hfg : f = g := funext h_agree
-  rw [hfg]
+    (r_challenges : Fin steps → L) (y : sDomain 𝔽q β h_ℓ_add_R_rate destIdx)
+    (h_fiber_agree : ∀ x,
+      iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨i, by omega⟩) (destIdx := destIdx)
+        (k := steps) (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) x = y →
+      f x = g x) :
+    (iteratedFold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i, by omega⟩ steps
+      h_destIdx h_destIdx_le f (r_challenges := r_challenges) y =
+    (iteratedFold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i, by omega⟩ steps
+      h_destIdx h_destIdx_le g (r_challenges := r_challenges) (y := y))) := by
+  -- Expand to matrix form: fold(y) = Tensor(r) * M_y * fiber_vals
+  rw [iteratedFold_eq_matrix_form 𝔽q β (i := ⟨i, by omega⟩) (steps := steps)
+    (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) (f := f)
+    (r_challenges := r_challenges)]
+  rw [iteratedFold_eq_matrix_form 𝔽q β (i := ⟨i, by omega⟩) (steps := steps)
+    (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) (f := g)
+    (r_challenges := r_challenges)]
+  -- iteratedFoldMatrixForm 𝔽q β i steps h_destIdx h_destIdx_le g r y
+  unfold iteratedFoldMatrixForm pointFoldMatrixForm
+  simp only
+  congr 2
+  let fiberValsF := fiberEvaluations 𝔽q β (i := ⟨i, by omega⟩) (steps := steps)
+    (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) f y
+  let fiberValsG := fiberEvaluations 𝔽q β (i := ⟨i, by omega⟩) (steps := steps)
+    (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) g y
+  have h_fiber_eval_eq : fiberValsF = fiberValsG := by
+    unfold fiberValsF fiberValsG fiberEvaluations
+    ext idx
+    let x := quotientFiber 𝔽q β (i := ⟨i, by omega⟩) (steps := steps)
+      (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) y idx
+    have h_x_folds_to_y := eq_iteratedQuotientMap_of_mem_quotientFiber_range 𝔽q β
+      (i := ⟨i, by omega⟩) (steps := steps)
+      (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
+      (x := x) (y := y) (hx_is_fiber := by use idx)
+    exact h_fiber_agree x h_x_folds_to_y.symm
+  unfold fiberValsF fiberValsG at h_fiber_eval_eq
+  rw [h_fiber_eval_eq]
 
-omit [CharP L 2] [DecidableEq 𝔽q] hF₂ h_β₀_eq_1 [NeZero ℓ] [SampleableType L] in
-/-- Helper: The disagreement set of the folded functions is a subset of the fiberwise disagreement set. -/
-lemma disagreement_fold_subset_fiberwiseDisagreement (i : Fin ℓ) (steps : ℕ) [NeZero steps]
+omit [DecidableEq 𝔽q] hF₂ [NeZero ℓ] [SampleableType L] in
+/-- The disagreement set of the folds of `f` and `g` is contained in their fiberwise
+disagreement set. -/
+lemma disagreementSet_iteratedFold_subset_fiberwiseDisagreementSet (i : Fin ℓ) (steps : ℕ)
     {destIdx : Fin r} (h_destIdx : destIdx.val = i.val + steps) (h_destIdx_le : destIdx ≤ ℓ)
     (f g : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i, by omega⟩)
     (r_challenges : Fin steps → L) :
-    let folded_f := iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i, by omega⟩ steps h_destIdx h_destIdx_le f (r_challenges := r_challenges)
-    let folded_g := iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i, by omega⟩ steps h_destIdx h_destIdx_le g (r_challenges := r_challenges)
-    disagreementSet 𝔽q β (i := destIdx) (destIdx := destIdx) (h_destIdx := rfl) (f := folded_f) (g := folded_g) ⊆
+    let folded_f := iteratedFold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      ⟨i, by omega⟩ steps h_destIdx h_destIdx_le f (r_challenges := r_challenges)
+    let folded_g := iteratedFold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      ⟨i, by omega⟩ steps h_destIdx h_destIdx_le g (r_challenges := r_challenges)
+    disagreementSet 𝔽q β (i := destIdx) (destIdx := destIdx) (h_destIdx := rfl)
+      (f := folded_f) (g := folded_g) ⊆
     fiberwiseDisagreementSet 𝔽q β (i := ⟨i, by omega⟩) steps h_destIdx h_destIdx_le f g := by
-  classical
-  dsimp only
-  intro y hy
-  have h_steps_ne : steps ≠ 0 := NeZero.ne steps
-  have h_exists : ∃ x, f x ≠ g x := by
-    by_contra hnone
-    have hfg : f = g := by
-      funext x
-      exact not_not.mp (by
-        intro hx
-        exact hnone ⟨x, hx⟩)
-    rw [hfg] at hy
-    simp [disagreementSet] at hy
-  simp [fiberwiseDisagreementSet, h_steps_ne, h_exists]
+  simp only
+  intro y hy_mem
+  simp only [disagreementSet, ne_eq, mem_filter, mem_univ, true_and] at hy_mem
+  simp only [fiberwiseDisagreementSet, ne_eq, Subtype.exists, mem_filter, mem_univ, true_and]
+  -- Contrapositive: If y is NOT in fiberwise disagreement, then f and g agree on fiber.
+  -- Then folds must agree (lemma above). Then y is NOT in disagreement set.
+  by_contra h_not_in_fiber_diff
+  have h_agree_on_fiber : ∀ x,
+      iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨i, by omega⟩) (destIdx := destIdx)
+        (k := steps) (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) x = y →
+      f x = g x := by
+    intro x hx
+    by_contra h_neq
+    apply h_not_in_fiber_diff
+    refine ⟨x, by simp only [SetLike.coe_mem], ?_⟩
+    simp only [Subtype.coe_eta]
+    exact ⟨hx, h_neq⟩
+  have h_fold_eq := iteratedFold_eq_of_eq_on_fiber 𝔽q β i steps
+    h_destIdx h_destIdx_le f g (r_challenges := r_challenges) (y := y) h_agree_on_fiber
+  exact hy_mem h_fold_eq
 
-omit [SampleableType L] in
-/-- **Lemma 4.25 distance bridge.**
-If the last noncompliant block has no folding bad event and the next word is UDR-close, then
-the folded source is not pair-UDR-close to the decoded next codeword. In the close branch,
-otherwise two destination codewords would both lie inside the unique-decoding ball around the
-folded source, forcing compliance; in the far branch this is exactly the bad-event negation. -/
-lemma lemma_4_24_dist_folded_ge_of_last_noncompliant (i_star : Fin ℓ) (steps : ℕ) [NeZero steps]
+omit [DecidableEq 𝔽q] [NeZero ℓ] [SampleableType L] in
+/-- If the oracle `f_star` is not compliant with the next oracle `f_next`, the folding bad event
+does not occur at `f_star`, and `f_next` is within the unique-decoding radius, then the fold of
+`f_star` is not within the unique-decoding radius of the decoded codeword of `f_next`. -/
+lemma not_pairUniqueDecodingClose_iteratedFold_of_not_isCompliant (i_star : Fin ℓ) (steps : ℕ)
+    [NeZero steps]
     {destIdx : Fin r} (h_destIdx : destIdx.val = i_star.val + steps) (h_destIdx_le : destIdx ≤ ℓ)
     (f_star : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i_star, by omega⟩)
     (f_next : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) destIdx)
     (r_challenges : Fin steps → L)
-    -- 1. f_next is the actual folded function
-    -- 2. i* is non-compliant
-    (h_not_compliant : ¬ isCompliant 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i_star, by omega⟩ steps h_destIdx h_destIdx_le
+    (h_not_compliant : ¬ IsCompliant 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      ⟨i_star, by omega⟩ steps h_destIdx h_destIdx_le
        f_star f_next (challenges := r_challenges))
-    -- 3. No bad event occurred at i*
-    (h_no_bad_event : ¬ foldingBadEvent 𝔽q β (i := ⟨i_star, by omega⟩) steps h_destIdx h_destIdx_le f_star r_challenges)
-    -- 4. The next function `f_next` IS close enough to have a unique codeword `f_bar_next`
-    (h_next_close : UDRClose 𝔽q β destIdx h_destIdx_le f_next) :
-      let folded_f := iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        ⟨i_star, by omega⟩ steps h_destIdx h_destIdx_le f_star
+    (h_no_bad_event : ¬ FoldingBadEvent 𝔽q β (i := ⟨i_star, by omega⟩)
+      steps h_destIdx h_destIdx_le f_star r_challenges)
+    (h_next_close : UniqueDecodingClose 𝔽q β destIdx f_next) :
+      let f_i_star_folded := iteratedFold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+       ⟨i_star, by omega⟩ steps h_destIdx h_destIdx_le f_star r_challenges
+    let f_bar_next := uniqueDecodingCodeword 𝔽q β destIdx h_destIdx_le
+      (f := f_next) (h_within_radius := h_next_close)
+    ¬ PairUniqueDecodingClose 𝔽q β destIdx f_i_star_folded f_bar_next := by
+  -- Definitions for clarity
+  let d_next := codeDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) destIdx
+  let S_next := sDomain 𝔽q β h_ℓ_add_R_rate destIdx
+  let C_next := code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) destIdx
+  let f_bar_next := uniqueDecodingCodeword 𝔽q β destIdx h_destIdx_le
+      (f := f_next) (h_within_radius := h_next_close)
+  let f_i_star_folded := iteratedFold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+       ⟨i_star, by omega⟩ steps h_destIdx h_destIdx_le f_star r_challenges
+  have h_f_bar_next_mem_C_next : f_bar_next ∈ C_next := by -- due to definition
+    unfold f_bar_next uniqueDecodingCodeword
+    apply uniqueDecodingCodeword_mem_code (i := destIdx) (h_i := h_destIdx_le)
+      (f := f_next) (h_within_radius := h_next_close)
+  have h_d_next_ne_0 : d_next ≠ 0 :=
+    Nat.ne_of_gt (codeDistance_pos 𝔽q β destIdx)
+  let d_fw := fiberwiseDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := ⟨i_star, by omega⟩)
+    steps h_destIdx h_destIdx_le (f := f_star)
+  -- Split into Case 1 (Close) and Case 2 (Far)
+  by_cases h_fw_close : FiberwiseClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+    (i := ⟨i_star, by omega⟩) (steps := steps) (h_destIdx := h_destIdx)
+    (h_destIdx_le := h_destIdx_le) (f := f_star)
+  -- Case 1: Fiberwise Close (d < d_next / 2)
+  · have h_fw_dist_lt := h_fw_close -- This gives 2 * fiber_dist < d_next
+    -- Choose the unique fiberwise-close codeword for f_star.
+    obtain ⟨f_bar_star, ⟨h_f_bar_star_mem, h_f_bar_star_min_card,
+        h_f_bar_star_eq_UDRCodeword⟩, -⟩ :=
+      exists_unique_codeword_of_fiberwiseClose 𝔽q β
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := ⟨i_star, by omega⟩)
+        (steps := steps) (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
+        (f := f_star) (h_fw_close := h_fw_close)
+    have h_fw_dist_f_g_eq :
+        #(fiberwiseDisagreementSet 𝔽q β ⟨i_star, by omega⟩ steps
+          h_destIdx h_destIdx_le f_star f_bar_star) = d_fw := by
+      unfold d_fw
+      rw [h_f_bar_star_min_card]; rfl
+    let folded_f_bar_star := iteratedFold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      ⟨i_star, by omega⟩
+       steps h_destIdx h_destIdx_le f_bar_star (r_challenges := r_challenges)
+    have h_folded_f_bar_star_mem_C_next : folded_f_bar_star ∈ C_next := by
+      unfold folded_f_bar_star
+      apply iteratedFold_mem_code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+        (i := ⟨i_star, by omega⟩) (steps := steps) (h_destIdx := h_destIdx)
+        (h_destIdx_le := h_destIdx_le) (f := ⟨f_bar_star, h_f_bar_star_mem⟩)
         (r_challenges := r_challenges)
-      let f_bar_next := UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        destIdx h_destIdx_le (f := f_next) (h_within_radius := h_next_close)
-      ¬ pair_UDRClose 𝔽q β destIdx h_destIdx_le folded_f f_bar_next := by
-  dsimp only
-  intro h_pair
-  let folded_f := iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-    ⟨i_star, by omega⟩ steps h_destIdx h_destIdx_le f_star
-    (r_challenges := r_challenges)
-  let f_bar_next := UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-    destIdx h_destIdx_le (f := f_next) (h_within_radius := h_next_close)
-  by_cases h_close : fiberwiseClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      (i := ⟨i_star, by omega⟩) (steps := steps) (destIdx := destIdx)
-      (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) (f := f_star)
-  · let sourceIdx : Fin r := ⟨i_star, by omega⟩
-    let h_source_close := UDRClose_of_fiberwiseClose 𝔽q β
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := sourceIdx)
-      (steps := steps) (destIdx := destIdx) (h_destIdx := h_destIdx)
-      (h_destIdx_le := h_destIdx_le) (f := f_star) h_close
-    let f_bar_star := UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      sourceIdx (Nat.le_of_lt i_star.isLt) (f := f_star)
-      (h_within_radius := h_source_close)
-    let folded_bar := iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      sourceIdx steps h_destIdx h_destIdx_le f_bar_star
-      (r_challenges := r_challenges)
-    have h_pair_bar : pair_UDRClose 𝔽q β destIdx h_destIdx_le folded_f folded_bar := by
-      simpa [folded_f, folded_bar, f_bar_star, h_source_close] using
-        pair_UDRClose_iterated_fold_UDRCodeword_of_fiberwiseClose 𝔽q β
-          (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-          (i_star := i_star) (steps := steps) (destIdx := destIdx)
-          (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
-          (f_star := f_star) (r_challenges := r_challenges) h_close
-    let C_dest : Set (sDomain 𝔽q β h_ℓ_add_R_rate destIdx → L) :=
-      BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) destIdx
-    have h_bar_next_mem : f_bar_next ∈ C_dest := by
-      simpa [C_dest, f_bar_next] using
-        UDRCodeword_mem_BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-          (i := destIdx) (h_i := h_destIdx_le) (f := f_next)
-          (h_within_radius := h_next_close)
-    have h_bar_star_mem :
-        f_bar_star ∈ BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) sourceIdx :=
-      UDRCodeword_mem_BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := sourceIdx) (h_i := Nat.le_of_lt i_star.isLt)
-        (f := f_star) (h_within_radius := h_source_close)
-    have h_steps_lt : steps < ℓ + 1 := by
-      have hle : i_star.val + steps ≤ ℓ := by
-        rw [← h_destIdx]
-        exact h_destIdx_le
-      omega
-    have h_i_add_steps : sourceIdx.val + steps < ℓ + 𝓡 := by
-      have hle : i_star.val + steps ≤ ℓ := by
-        rw [← h_destIdx]
-        exact h_destIdx_le
-      exact Nat.lt_of_le_of_lt hle (Nat.lt_add_of_pos_right (Nat.pos_of_neZero 𝓡))
-    have h_destIdx_fin :
-        destIdx =
-          (⟨sourceIdx.val + steps, Nat.lt_trans h_i_add_steps h_ℓ_add_R_rate⟩ : Fin r) :=
-      Fin.eq_of_val_eq h_destIdx
-    have h_folded_bar_mem : folded_bar ∈ C_dest := by
-      let f_bar_subtype :
-          BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-            sourceIdx := ⟨f_bar_star, h_bar_star_mem⟩
-      have h_mem := iterated_fold_preserves_BBF_Code_membership 𝔽q β
-        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := sourceIdx)
-        (destIdx := destIdx) (steps := ⟨steps, h_steps_lt⟩)
-        (h_i_add_steps := h_i_add_steps) (h_destIdx := h_destIdx_fin)
-        (h_destIdx_le := h_destIdx_le) (f := f_bar_subtype)
-        (r_challenges := r_challenges)
-      simpa [C_dest, folded_bar, f_bar_subtype]
-        using h_mem
-    haveI h_C_dest_dist_ne :
-        NeZero (‖(C_dest : Set (sDomain 𝔽q β h_ℓ_add_R_rate destIdx → L))‖₀) := ⟨by
-      dsimp only [C_dest]
-      change BBF_CodeDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) destIdx ≠ 0
-      rw [BBF_CodeDistance_eq 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := destIdx) (h_i := h_destIdx_le)]
-      omega⟩
-    have h_pair_bar_le :
-        Δ₀(folded_f, folded_bar) ≤ Code.uniqueDecodingRadius (C := C_dest) := by
-      exact (Code.UDRClose_iff_two_mul_proximity_lt_d_UDR (C := C_dest)).2 (by
-        simpa [C_dest, pair_UDRClose] using h_pair_bar)
-    have h_pair_next_le :
-        Δ₀(folded_f, f_bar_next) ≤ Code.uniqueDecodingRadius (C := C_dest) := by
-      exact (Code.UDRClose_iff_two_mul_proximity_lt_d_UDR (C := C_dest)).2 (by
-        simpa [C_dest, pair_UDRClose, BBF_CodeDistance, folded_f, f_bar_next] using h_pair)
-    have h_folded_bar_eq_next : folded_bar = f_bar_next :=
-      Code.eq_of_le_uniqueDecodingRadius (C := C_dest) (u := folded_f)
-        (v := folded_bar) (w := f_bar_next)
-        (hv := h_folded_bar_mem) (hw := h_bar_next_mem)
-        (huv := h_pair_bar_le) (huw := h_pair_next_le)
-    have h_compliant : isCompliant 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := sourceIdx) (steps := steps) (destIdx := destIdx)
-        (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
-        (f_i := f_star) (f_i_plus_steps := f_next) (challenges := r_challenges) := by
-      refine ⟨h_close, h_next_close, ?_⟩
-      simpa [folded_bar, f_bar_star, f_bar_next, h_source_close] using h_folded_bar_eq_next
-    exact h_not_compliant (by simpa [sourceIdx] using h_compliant)
-  · have h_bar_mem : f_bar_next ∈
-        BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) destIdx :=
-      UDRCodeword_mem_BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := destIdx) (h_i := h_destIdx_le) (f := f_next)
-        (h_within_radius := h_next_close)
-    have h_folded_close : UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := destIdx) (h_i := h_destIdx_le) (f := folded_f) :=
-      UDRClose_of_pair_UDRClose_to_BBF_Codeword 𝔽q β
-        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := destIdx)
-        (h_i := h_destIdx_le) (f := folded_f) (g := f_bar_next)
-        h_bar_mem h_pair
-    have h_far' : ¬ fiberwiseClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := ⟨i_star, by omega⟩) (steps := steps) (destIdx := destIdx)
-        (h_destIdx := by omega) (h_destIdx_le := h_destIdx_le) (f := f_star) := by
-      simpa using h_close
-    apply h_no_bad_event
-    simp [foldingBadEvent, h_far', folded_f, h_folded_close]
+    -- We prove two inequalities (1) and (2) as per the proof sketch.
+    -- Distinct codewords differ by at least the code distance.
+    -- First, show that `folded_f_bar_star` ≠ `f_bar_next`.
+    -- This follows because `f_star` is NON-COMPLIANT.
+    have h_codewords_neq : f_bar_next ≠ folded_f_bar_star := by
+      by_contra h_eq
+      -- If they were equal, `IsCompliant` would be true (satisfying all 3 conditions).
+      apply h_not_compliant
+      use h_fw_dist_lt -- Condition 1: f_star is close
+      use h_next_close -- Condition 2: f_next is close
+      -- Condition 3: folded decoding equals next decoding
+      simp only
+      rw [←h_f_bar_star_eq_UDRCodeword]
+      -- The decoded source folds to the decoded next oracle.
+      exact id (Eq.symm h_eq)
+    -- Since they are distinct codewords, their distance is at least `d_next`.
+    have h_ineq_1 : Δ₀(f_bar_next, folded_f_bar_star) ≥ d_next := by
+      apply Code.pairDist_ge_code_mindist_of_ne (C := (C_next : Set _))
+        (u := f_bar_next) (v := folded_f_bar_star)
+      · exact h_f_bar_next_mem_C_next
+      · exact h_folded_f_bar_star_mem_C_next
+      · exact h_codewords_neq
+    -- Bound the distance between the folded functions.
+    -- We know |Δ_fiber(f*, f_bar*)| < d_next / 2 (from fiberwise close hypothesis).
+    have h_fiber_dist_lt_half :
+        2 * (fiberwiseDisagreementSet 𝔽q β (i := ⟨i_star, by omega⟩) steps
+          h_destIdx h_destIdx_le f_star f_bar_star).card < d_next := by
+      rw [Nat.two_mul_lt_iff_le_half_of_sub_one (h_b_pos := by omega)]
+      -- Express the fiber-disagreement bound using the integer half-distance radius.
+      rw [h_fw_dist_f_g_eq]
+      rw [←Nat.two_mul_lt_iff_le_half_of_sub_one (h_b_pos := by omega)]
+      unfold d_fw
+      unfold FiberwiseClose at h_fw_close
+      norm_cast at h_fw_close
+    -- Folding containment: d(fold(f), fold(g)) ≤ |Δ_fiber(f, g)|
+    have h_ineq_2 : 2 * Δ₀(f_i_star_folded, folded_f_bar_star) < d_next := by
+      calc
+        2 * Δ₀(iteratedFold 𝔽q β ⟨i_star, by omega⟩ steps h_destIdx h_destIdx_le
+          f_star (r_challenges := r_challenges), folded_f_bar_star)
+        _ ≤ 2 * (fiberwiseDisagreementSet 𝔽q β (i := ⟨i_star, by omega⟩) steps
+            h_destIdx h_destIdx_le f_star f_bar_star).card := by
+          -- Hamming distance is card(disagreementSet)
+          -- disagreementSet ⊆ fiberwiseDisagreementSet
+          apply Nat.mul_le_mul_left
+          have res := disagreementSet_iteratedFold_subset_fiberwiseDisagreementSet 𝔽q β
+            (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i_star) (steps := steps)
+            (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
+            (f := f_star) (g := f_bar_star) (r_challenges := r_challenges)
+          simp only at res
+          apply Finset.card_le_card
+          exact res
+        _ < d_next := h_fiber_dist_lt_half
+    -- Apply the reverse triangle inequality.
+    -- d(A, C) ≥ d(B, C) - d(A, B)
+    -- We want 2 * d(f_i_star_folded, f_bar_next) ≥ d_next
+    have h_triangle :
+        Δ₀(f_bar_next, folded_f_bar_star) ≤
+          Δ₀(f_bar_next, f_i_star_folded) + Δ₀(f_i_star_folded, folded_f_bar_star) :=
+      hammingDist_triangle f_bar_next f_i_star_folded folded_f_bar_star
+    have h_final_bound :
+        2 * d_next ≤
+          2 * Δ₀(f_bar_next, f_i_star_folded) + 2 * Δ₀(f_i_star_folded, folded_f_bar_star) := by
+      have h_trans : d_next ≤ Δ₀(f_bar_next, folded_f_bar_star) := h_ineq_1
+      have h_mul : 2 * d_next ≤ 2 * Δ₀(f_bar_next, folded_f_bar_star) :=
+        Nat.mul_le_mul_left 2 h_trans
+      linarith [h_triangle, h_mul]
+    -- We have 2*d_next ≤ 2*d(Target) + (something < d_next)
+    -- This implies 2*d(Target) > d_next
+    -- Or in integer arithmetic: 2*d(Target) ≥ d_next
+    rw [hammingDist_comm] at h_final_bound -- align directions
+    unfold PairUniqueDecodingClose
+    simp only [not_lt, ge_iff_le]
+    apply le_of_not_gt
+    intro h_contra
+    -- If 2 * d(target) < d_next:
+    -- Sum < d_next + d_next = 2*d_next. Contradiction.
+    linarith [h_ineq_2, h_final_bound, h_contra]
+  -- Fiberwise distance is at least half the code distance.
+  · -- In this case, the definition of `FoldingBadEvent` (Case 2 branch) simplifies.
+    -- The bad event is defined as: UniqueDecodingClose(f_next).
+    unfold FoldingBadEvent at h_no_bad_event
+    simp only [h_fw_close, ↓reduceDIte] at h_no_bad_event
+    -- h_no_bad_event : ¬ UniqueDecodingClose ...
+    -- This means f_next is NOT close to the code C_next.
+    -- Definition of not UniqueDecodingClose: 2 * dist(f_next, C_next) ≥ d_next
+    unfold UniqueDecodingClose at h_no_bad_event
+    simp only [not_lt] at h_no_bad_event
+    -- ↑(codeDistance 𝔽q β destIdx)
+    have h_no_bad_event_alt : (d_next : ℕ∞) ≤ 2 * Δ₀(f_i_star_folded, f_bar_next):= by
+      calc
+        d_next ≤ 2 * Δ₀(f_i_star_folded, (C_next : Set (S_next → L))) := by
+          exact h_no_bad_event
+        _ ≤ 2 * Δ₀(f_i_star_folded, f_bar_next) := by
+          rw [ENat.mul_le_mul_left_iff]
+          · simp only [Code.distFromCode_le_dist_to_mem (C := (C_next : Set (S_next → L))) (u :=
+              f_i_star_folded) (v := f_bar_next) (hv := h_f_bar_next_mem_C_next)]
+          · simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true]
+          · simp only [ne_eq, ENat.ofNat_ne_top, not_false_eq_true]
+    unfold PairUniqueDecodingClose
+    simp only [not_lt, ge_iff_le]
+    norm_cast at h_no_bad_event_alt
 
 end
 

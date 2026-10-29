@@ -37,6 +37,14 @@ Everything else is PROVEN here:
 -/
 
 open OracleComp OracleSpec ProtocolSpec
+set_option backward.isDefEq.respectTransparency false
+
+-- Keep every complete outcome observable, including explicit verifier rejection.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : MeasurableSpace (Option A) :=
+  @Option.instMeasurableSpace A ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
 
 namespace Reduction
 
@@ -178,7 +186,6 @@ theorem reduction_run_peeled
     OptionT.run_pure, bind_assoc, pure_bind, Option.elim_some, OptionT.run_liftM_run,
     optionT_run_getM, option_elim_pure_pure_some, map_bind, bind_map_left]
   simp only [← OracleComp.liftComp_def, ← OracleComp.liftComp_eq_liftM]
-  rfl
 
 /-! ## The common residual continuation and the (G2) full-transcript coupling -/
 
@@ -190,10 +197,10 @@ the verifier accepts, `none` otherwise). -/
 noncomputable def verifierLegK (impl : QueryImpl oSpec (StateT σ ProbComp))
     (R : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec) (stmt : StmtIn) :
     pSpec.FullTranscript × R.prover.PrvState (Fin.last n) × σ →
-      SPMF (Option (FiatShamirProofTranscript (pSpec := pSpec))) :=
+      ProbComp (Option (FiatShamirProofTranscript (pSpec := pSpec))) :=
   fun x =>
-    evalDist ((simulateQ impl (R.prover.output x.2.1)).run x.2.2) >>= fun p =>
-    evalDist ((simulateQ impl ((R.verifier.verify stmt x.1).run)).run p.2) >>= fun q =>
+    ((simulateQ impl (R.prover.output x.2.1)).run x.2.2) >>= fun p =>
+    ((simulateQ impl ((R.verifier.verify stmt x.1).run)).run p.2) >>= fun q =>
     pure (q.1.map fun _ => msgProjFS (pSpec := pSpec) x.1)
 
 /-- **(G2) The full-transcript joint coupling** — the single remaining hypothesis.
@@ -214,14 +221,14 @@ def fullTranscriptCoupling (impl : QueryImpl oSpec (StateT σ ProbComp))
     (R : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec)
     (stmt : StmtIn) (wit : WitIn) : Prop :=
   ∀ a : σ,
-    ((fun z => (reconstruct (StmtIn := StmtIn) (pSpec := pSpec) stmt z.1.1 z.2.2,
+    evalDist ((fun z => (reconstruct (StmtIn := StmtIn) (pSpec := pSpec) stmt z.1.1 z.2.2,
         z.1.2.2, z.2.1)) <$>
-      evalDist (StateT.run (simulateQ
+      (StateT.run (simulateQ
           (ambientProd (StmtIn := StmtIn) pSpec impl
             + fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
         (R.prover.runToRoundFS (Fin.last n) stmt (R.prover.input (stmt, wit)))) (a, ∅)))
-    = ((fun r => ((r.1.1 : pSpec.FullTranscript), r.1.2, r.2)) <$>
-      evalDist (StateT.run (simulateQ
+    = evalDist ((fun r => ((r.1.1 : pSpec.FullTranscript), r.1.2, r.2)) <$>
+      (StateT.run (simulateQ
           (impl.addLift (challengeQueryImpl (pSpec := pSpec)) :
             QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp))
         (R.prover.runToRound (Fin.last n) stmt wit)) a))
@@ -237,11 +244,10 @@ set_option maxHeartbeats 1000000 in
 (The marginal projection is stated at the partial-transcript type
 `pSpec.Transcript (Fin.last n)` — definitionally `pSpec.FullTranscript` — so that it matches the
 prover-run bind spine syntactically; the main theorem absorbs the definitional seam.) -/
-theorem intSide_collapse (impl : QueryImpl oSpec (StateT σ ProbComp))
+theorem intSide_collapse_program_eq (impl : QueryImpl oSpec (StateT σ ProbComp))
     (R : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec) (stmt : StmtIn) (wit : WitIn)
     (a : σ) :
-    evalDist
-        (Option.map (msgProjFS (pSpec := pSpec)) <$>
+    (Option.map (msgProjFS (pSpec := pSpec)) <$>
           StateT.run'
             (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec)) :
                 QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp))
@@ -249,7 +255,7 @@ theorem intSide_collapse (impl : QueryImpl oSpec (StateT σ ProbComp))
                   (fun result : (pSpec.Transcript (Fin.last n) × StmtOut × WitOut) × StmtOut =>
                   result.1.1)) <$> (R.run stmt wit).run)) a)
       = ((fun r => ((r.1.1 : pSpec.FullTranscript), r.1.2, r.2)) <$>
-          evalDist (StateT.run (simulateQ
+          (StateT.run (simulateQ
               (impl.addLift (challengeQueryImpl (pSpec := pSpec)) :
                 QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp))
             (R.prover.runToRound (Fin.last n) stmt wit)) a))
@@ -257,10 +263,10 @@ theorem intSide_collapse (impl : QueryImpl oSpec (StateT σ ProbComp))
   rw [reduction_run_peeled]
   rw [bind_map_left]
   simp only [simulateQ_map, simulateQ_bind, StateT.run'_eq, StateT.run_map, StateT.run_bind,
-    Functor.map_map, evalDist_map, evalDist_bind, map_bind]
+    Functor.map_map, map_bind]
   refine bind_congr fun x => ?_
   simp only [verifierLegK, QueryImpl.addLift_def, QueryImpl.liftTarget_self,
-    QueryImpl.simulateQ_add_liftComp_left, simulateQ_pure, StateT.run_pure, evalDist_pure]
+    QueryImpl.simulateQ_add_liftComp_left, simulateQ_pure, StateT.run_pure]
   refine bind_congr fun p => bind_congr fun q => ?_
   simp only [LawfulApplicative.map_pure, Option.map_map]
   rfl
@@ -273,11 +279,10 @@ prover state, and ambient `σ`-state, continued by the SAME common verifier leg 
 The verifier's transcript re-derivation has been collapsed by the cache-replay lemma
 (`deriveTranscriptFS_lazy_run_of_runOutput`), and the FS proof bundle has been rewritten as
 `msgProjFS` of the reconstructed transcript (`msgProjFS_reconstruct`). -/
-theorem fsSide_collapse (impl : QueryImpl oSpec (StateT σ ProbComp))
+theorem fsSide_collapse_program_eq (impl : QueryImpl oSpec (StateT σ ProbComp))
     (R : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec) (stmt : StmtIn) (wit : WitIn)
     (a : σ) :
-    evalDist
-        (StateT.run'
+    (StateT.run'
           ((Option.map (fun r : (FiatShamirProofTranscript (pSpec := pSpec) × StmtOut × WitOut) ×
               StmtOut => r.1.1)) <$>
             simulateQ (ambientProd (StmtIn := StmtIn) pSpec impl
@@ -286,7 +291,7 @@ theorem fsSide_collapse (impl : QueryImpl oSpec (StateT σ ProbComp))
           (a, ∅))
       = ((fun z => (reconstruct (StmtIn := StmtIn) (pSpec := pSpec) stmt z.1.1 z.2.2,
             z.1.2.2, z.2.1)) <$>
-          evalDist (StateT.run (simulateQ
+          (StateT.run (simulateQ
               (ambientProd (StmtIn := StmtIn) pSpec impl
                 + fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
             (R.prover.runToRoundFS (Fin.last n) stmt (R.prover.input (stmt, wit)))) (a, ∅)))
@@ -294,20 +299,52 @@ theorem fsSide_collapse (impl : QueryImpl oSpec (StateT σ ProbComp))
   rw [fiatShamirHonestExecution_run_peeled]
   rw [bind_map_left]
   simp only [simulateQ_bind, StateT.run'_eq, StateT.run_map, StateT.run_bind,
-    Functor.map_map, evalDist_map, evalDist_bind, map_bind]
-  refine SPMF.bind_congr_of_support _ _ _ (fun z hz => ?_)
+    Functor.map_map, map_bind]
+  refine OracleComp.bind_congr_of_forall_mem_support _ (fun z hz => ?_)
   have hzoc : z ∈ support (StateT.run (simulateQ
       (ambientProd (StmtIn := StmtIn) pSpec impl
         + fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
       (R.prover.runToRoundFS (Fin.last n) stmt (R.prover.input (stmt, wit)))) (a, ∅)) := by
-    rw [← mem_support_evalDist_iff]; simpa using hz
+    exact hz
   simp only [verifierLegK, QueryImpl.simulateQ_add_liftComp_left,
-    simulateQ_ambientProd_run impl, evalDist_map, bind_map_left,
+    simulateQ_ambientProd_run impl, bind_map_left,
     deriveTranscriptFS_lazy_run_of_runOutput R.prover impl stmt wit a z hzoc,
-    simulateQ_pure, StateT.run_pure, evalDist_pure, pure_bind, msgProjFS_reconstruct]
+    simulateQ_pure, StateT.run_pure, pure_bind, msgProjFS_reconstruct]
   refine bind_congr fun p => bind_congr fun q => ?_
   simp only [LawfulApplicative.map_pure, Option.map_map]
   rfl
+
+/-- Native measure form of the interactive program decomposition. -/
+theorem intSide_collapse (impl : QueryImpl oSpec (StateT σ ProbComp))
+    (R : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec) (stmt : StmtIn) (wit : WitIn)
+    (a : σ) :
+    evalDist (Option.map (msgProjFS (pSpec := pSpec)) <$>
+      StateT.run' (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec)) :
+        QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp))
+        ((Option.map (fun result : (pSpec.Transcript (Fin.last n) × StmtOut × WitOut) × StmtOut =>
+          result.1.1)) <$> (R.run stmt wit).run)) a)
+      = evalDist (((fun r => ((r.1.1 : pSpec.FullTranscript), r.1.2, r.2)) <$>
+        StateT.run (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec)) :
+          QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp))
+          (R.prover.runToRound (Fin.last n) stmt wit)) a) >>= verifierLegK impl R stmt) :=
+  congrArg evalDist (intSide_collapse_program_eq impl R stmt wit a)
+
+/-- Native measure form of the lazy Fiat–Shamir program decomposition. -/
+theorem fsSide_collapse (impl : QueryImpl oSpec (StateT σ ProbComp))
+    (R : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec) (stmt : StmtIn) (wit : WitIn)
+    (a : σ) :
+    evalDist (StateT.run' ((Option.map (fun r :
+      (FiatShamirProofTranscript (pSpec := pSpec) × StmtOut × WitOut) × StmtOut => r.1.1)) <$>
+      simulateQ (ambientProd (StmtIn := StmtIn) pSpec impl +
+        fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
+        (R.fiatShamirHonestExecution stmt wit).run) (a, ∅))
+      = evalDist (((fun z =>
+        (reconstruct (StmtIn := StmtIn) (pSpec := pSpec) stmt z.1.1 z.2.2, z.1.2.2, z.2.1)) <$>
+        StateT.run (simulateQ (ambientProd (StmtIn := StmtIn) pSpec impl +
+          fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
+          (R.prover.runToRoundFS (Fin.last n) stmt (R.prover.input (stmt, wit)))) (a, ∅)) >>=
+        verifierLegK impl R stmt) :=
+  congrArg evalDist (fsSide_collapse_program_eq impl R stmt wit a)
 
 /-! ## The main reduction: per-state coupling from the full-transcript coupling -/
 
@@ -331,8 +368,8 @@ theorem canonicalFSPerStateCoupling_of_fullTranscriptCoupling
     canonicalFSPerStateCoupling impl R stmt wit := by
   intro a
   exact (fsSide_collapse impl R stmt wit a).trans
-    ((congrArg (· >>= verifierLegK impl R stmt) (hG2 a)).trans
-      (intSide_collapse impl R stmt wit a).symm)
+    ((((_root_.EvalDistEq.of_evalDist_eq (hG2 a)).bind_left
+      (verifierLegK impl R stmt)).evalDist_eq).trans (intSide_collapse impl R stmt wit a).symm)
 
 -- Axiom audit of the deliverables.
 #print axioms addLift_canonicalFSChallengeImpl_eq_prod

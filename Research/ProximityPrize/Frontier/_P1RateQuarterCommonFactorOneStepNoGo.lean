@@ -703,7 +703,7 @@ theorem mcaBadCount_lt_N_of_projectiveNonjointSaturatedThreeZeroCoreCertificate
     have hcap : P1RateQuarterExtremeZeroJohnsonBand.twoTierSupportCap ≤ N := by
       norm_num [P1RateQuarterExtremeZeroJohnsonBand.twoTierSupportCap, N]
     omega
-  simpa only [_root_.ProximityGap.mcaBadCount, v0, v1] using
+  simpa only [_root_.ProximityGap.mcaBadCount, ProximityGap.MCAFloorFactorization.badCount, v0, v1] using
     P1RateQuarterProjectiveExtremeZeroSplit.badCount_lt_N_of_rowMix_direction_translate_safe
       dom u0 u1 cert.r cert.det_ne cert.r_mem hsafe hsupport
 

@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
-import ArkLib.Data.CodingTheory.ListDecodability
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.MvPolynomial.SchwartzZippelCounting
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.MvPolynomial.SchwartzZippelCounting
 import ArkLib.Data.CodingTheory.Connections.EpsMCABadGlue
 import ArkLib.ToMathlib.Bridge2GCXK25
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
@@ -65,7 +65,7 @@ either `0` or a PMF probability, hence at most `1`. -/
 theorem epsCA_le_one (C : Set (ι → A)) (δ_fld δ_int : ℝ≥0) :
     epsCA (F := F) (A := A) C δ_fld δ_int ≤ 1 := by
   classical
-  unfold epsCA
+  rw [epsCA_eq_pmf]
   refine iSup_le fun u => ?_
   by_cases h : Code.jointProximity C (u := u) δ_int
   · rw [if_pos h]; exact zero_le_one

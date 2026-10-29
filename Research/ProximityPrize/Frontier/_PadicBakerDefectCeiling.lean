@@ -151,6 +151,19 @@ def prize_n : ℕ := 2 ^ 30
 /-- Prize prime lower-bound exponent: `p ≈ 2^120` at `β = 4`. -/
 def prize_pBits : ℕ := 120
 
+private theorem not_padicClean_one_of_bit_bound (n bits : ℕ) (h : bits ≤ n / 2) :
+    ¬ PadicClean n (2 ^ bits) 1 := by
+  unfold PadicClean
+  simpa only [mul_one] using
+    (Nat.not_lt.mpr (Nat.pow_le_pow_right (by decide : 0 < 2) h))
+
+private theorem no_padic_depth_of_not_one (n p : ℕ) (h : ¬ PadicClean n p 1) :
+    ¬ ∃ r : ℕ, 1 ≤ r ∧ PadicClean n p r := by
+  rintro ⟨r, hr, hclean⟩
+  apply h
+  unfold PadicClean at hclean ⊢
+  exact lt_of_le_of_lt (Nat.pow_le_pow_left (by omega : 2 * 1 ≤ 2 * r) _) hclean
+
 /-- **THE PRIZE COLLAPSE (`r = 1` already fails).** At prize params the depth-`1` archimedean/p-adic
 transfer predicate is FALSE: `(2·1)^{n/2} = 2^{2^29} ≥ 2^120 ≈ p`. So the p-adic lens certifies the
 energy transfer at NO depth `r ≥ 1`, hence cannot reach the optimal depth `r ≈ log m = 128` and a
@@ -158,14 +171,8 @@ fortiori cannot recover the `√(n·log m)` floor. (Proved via `2^120 ≤ 2^{2^2
 and `2^{2^29} = (2·1)^{n/2}`.) -/
 theorem prize_padic_fails_at_r_one :
     ¬ PadicClean prize_n (2 ^ prize_pBits) 1 := by
-  unfold PadicClean prize_n prize_pBits
-  -- goal: ¬ (2*1)^(2^30/2) < 2^120, i.e. ¬ 2^(2^29) < 2^120
-  rw [show (2 * 1 : ℕ) = 2 from rfl, show (2 ^ 30 / 2 : ℕ) = 2 ^ 29 by norm_num]
-  -- need 2^120 ≤ 2^(2^29)
-  apply Nat.not_lt.mpr
-  apply Nat.pow_le_pow_right (by norm_num)
-  -- 120 ≤ 2^29
-  norm_num
+  exact not_padicClean_one_of_bit_bound prize_n prize_pBits (by
+    norm_num [prize_n, prize_pBits])
 
 /-- **The lens certifies only the trivial Parseval floor (no `√log m`).** Packaging
 `prize_padic_fails_at_r_one`: since the lens reaches no depth `r ≥ 1`, the best `M(n)`-bound it can
@@ -174,13 +181,7 @@ output is the depth-`0` (Parseval) bound `M(n) ≤ √n · C` — it provably ca
 which the lens's transfer predicate holds at prize params. -/
 theorem padic_no_nontrivial_depth :
     ¬ ∃ r : ℕ, 1 ≤ r ∧ PadicClean prize_n (2 ^ prize_pBits) r := by
-  rintro ⟨r, hr, hclean⟩
-  -- monotone: if it holds at r ≥ 1 it holds at r = 1 (since (2·1)^{n/2} ≤ (2r)^{n/2})
-  apply prize_padic_fails_at_r_one
-  unfold PadicClean at hclean ⊢
-  calc (2 * 1) ^ (prize_n / 2) ≤ (2 * r) ^ (prize_n / 2) :=
-        Nat.pow_le_pow_left (by omega) _
-    _ < 2 ^ prize_pBits := hclean
+  exact no_padic_depth_of_not_one prize_n (2 ^ prize_pBits) prize_padic_fails_at_r_one
 
 /-! ## 4. The lens verdict (the self-assessed horn, as a theorem)
 

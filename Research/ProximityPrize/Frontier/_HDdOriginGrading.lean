@@ -49,7 +49,7 @@ theorem contactSubstD_origin_X_homogeneous (d : ℕ) (i : Fin (d + 2)) :
   refine Fin.cases ?_ (fun i => Fin.cases ?_ (fun j => ?_) i) i
   · -- X ↦ C 0 + T
     simp only [contactSubstD, aeval_X, Fin.cons_zero, map_zero, zero_add, wIn]
-    simpa using isWeightedHomogeneous_X F (wOut d) 0
+    simpa only [wOut, Fin.cons_zero] using isWeightedHomogeneous_X F (wOut d) 0
   · -- Y₀ ↦ C 0 + Σ_j C(−1)^j T^{j+1} Y_{j+1} + T^d E
     have h1 : (1 : Fin (d + 2)) = Fin.succ 0 := by ext; simp
     simp only [contactSubstD, aeval_X, h1, Fin.cons_succ, Fin.cons_zero, map_zero, zero_add,
@@ -73,6 +73,7 @@ theorem contactSubstD_origin_X_homogeneous (d : ℕ) (i : Fin (d + 2)) :
       have hXX := isWeightedHomogeneous_X_pow_mul_X (F := F) (wOut d) 0 1 d
       have h1' : (1 : Fin (d + 2)) = Fin.succ 0 := by ext; simp
       convert hXX using 1
+      · rw [← h1']
       show ((1 : ℤ), (0 : ℤ)) = d • wOut d 0 + wOut d 1
       rw [h1']
       simp only [wOut, Fin.cons_zero, Fin.cons_succ, Prod.smul_mk, smul_eq_mul,

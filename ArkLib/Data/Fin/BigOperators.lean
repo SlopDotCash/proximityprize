@@ -1,20 +1,41 @@
 /-
-Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Chung Thai Nguyen, Quang Dao
+Authors: ArkLib Contributors
+-/
+module
+
+public import Mathlib.Data.Fin.Tuple.Finset
+public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
+
+/-! # Sums over finite coordinate domains
+
+This file owns splitting dependent finite products into their first coordinate and tail,
+and transport of uniform product sums along equality of dimensions.
 -/
 
-import CompPoly.Data.Fin.BigOperators
+@[expose] public section
 
-/-!
-# Compatibility exports for Fin big-operator helpers
+namespace Fin
 
-Most Fin arithmetic and big-operator helpers in this file moved to
-`CompPoly.Data.Fin.BigOperators`. This module keeps the historical ArkLib import path and the
-legacy theorem name still used by older ArkLib modules.
--/
+/-- Split a dependent finite product into its first coordinate and remaining coordinates. -/
+theorem sum_piFinset_cons {n : ℕ} {α : Fin (n + 1) → Type*}
+    {M : Type*} [AddCommMonoid M] (S : ∀ i, Finset (α i)) (f : (∀ i, α i) → M) :
+    ∑ x ∈ Fintype.piFinset S, f x =
+      ∑ a ∈ S 0, ∑ y ∈ Fintype.piFinset (Fin.tail S), f (Fin.cons a y) := by
+  classical
+  rw [← Finset.sum_product']
+  have h := Finset.filter_piFinset_eq_map_consEquiv (S := S) (fun _ => True)
+  simp only [Finset.filter_true] at h
+  rw [h, Finset.sum_map]
+  rfl
 
-theorem Fin.sum_univ_odd_even {n : ℕ} {M : Type*} [AddCommMonoid M] (f : ℕ → M) :
-    (∑ i : Fin (2 ^ n), f (2 * i)) + (∑ i : Fin (2 ^ n), f (2 * i + 1))
-    = ∑ i : Fin (2 ^ (n + 1)), f i :=
-  Fin.sum_univ_pow_two_even_add_odd f
+/-- Reindex a uniform finite product along equality of its dimensions. -/
+theorem sum_piFinset_cast {R M : Type*} [AddCommMonoid M] (S : Finset R)
+    {k l : ℕ} (h : k = l) (f : (Fin k → R) → M) :
+    ∑ x ∈ Fintype.piFinset (fun _ : Fin k => S), f x =
+      ∑ x ∈ Fintype.piFinset (fun _ : Fin l => S), f (x ∘ Fin.cast h) := by
+  subst l
+  rfl
+
+end Fin

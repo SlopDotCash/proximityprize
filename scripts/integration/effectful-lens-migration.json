@@ -1,0 +1,106 @@
+{
+  "upstream_revision": "94fb4cdd70c2ea061037bf6337611300d71c4e88",
+  "canonical_api": "OracleStatement.ExecutableLens / OracleVerifier.liftContext, with explicit LiftContextOutput agreement. Canonical files are unchanged.",
+  "legacy_api": "OracleStatement.OracleLens / OracleVerifier.liftContextLegacy / OracleReduction.liftContextLegacy",
+  "reason": "The retained downstream oracle lens may execute shared-oSpec queries while answering virtual input queries, and may select outer input/message outputs directly. It is not an alias for the canonical executable lens.",
+  "preserved_coherence": "OracleVerifier.LiftContextCoherent still requires equality with the plain value-lens verifier. Legacy completeness additionally requires stmtLens.toLens = lens.stmt. No automatic coherence assumption is inserted.",
+  "output_interface_contract": "OracleStatement.OracleLens now carries outputInterface_heq for each selected output source, beyond equality of carrier types; toOutputEmbedding constructs the canonical native representation from those proofs.",
+  "retained_security_transfers": [
+    "OracleReduction.liftContextLegacy_toReduction_comm",
+    "OracleReduction.liftContextLegacy_completeness",
+    "OracleReduction.liftContextLegacy_perfectCompleteness",
+    "OracleVerifier.liftContextLegacy_soundness",
+    "OracleVerifier.liftContextLegacy_rbr_soundness",
+    "OracleVerifier.liftContextLegacy_rbr_knowledgeSoundness"
+  ],
+  "native_materialization": "Generic downstream coherence uses V.materializeOutput so that embedded and virtual native output representations retain their actual semantics.",
+  "simple_constructor_owners": [
+    "ArkLib/ProofSystem/Spartan/SecondSumcheckWithTarget.lean",
+    "ArkLib/ProofSystem/Spartan/SecondSumcheckReduction.lean",
+    "ArkLib/ProofSystem/Spartan/FirstSumcheckReduction.lean",
+    "ArkLib/ProofSystem/Spartan/FirstSumcheckWithTarget.lean",
+    "ProximityPrize/Extensions/ProofSystem/Spartan/Basic.lean",
+    "ProximityPrize/Extensions/ProofSystem/Sumcheck/Spec/SingleRound.lean"
+  ],
+  "caller_routing": [
+    "ArkLib/ProofSystem/Spartan/SumcheckKnowledgeLeaves.lean",
+    "ArkLib/ProofSystem/Spartan/TightFirstCompleteness.lean",
+    "ArkLib/ProofSystem/Spartan/TightSecondCompleteness.lean",
+    "ArkLib/ProofSystem/Spartan/SecondSumcheckBridgeFree.lean",
+    "ArkLib/ProofSystem/Spartan/SecondSumcheckWithTarget.lean",
+    "ArkLib/ProofSystem/Spartan/SumcheckDeterminismWitnesses.lean",
+    "ArkLib/ProofSystem/Spartan/SpartanSumcheckUnconditional.lean",
+    "ArkLib/ProofSystem/Spartan/SecondSumcheckWithTargetComplete.lean",
+    "ArkLib/ProofSystem/Spartan/ComposedTightRbrKnowledge.lean",
+    "ArkLib/ProofSystem/Spartan/FirstSumcheckBridgeFree.lean",
+    "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeSoundness.lean",
+    "ArkLib/ProofSystem/Spartan/SecondSumcheckReduction.lean",
+    "ArkLib/ProofSystem/Spartan/SumcheckPhaseRbr.lean",
+    "ArkLib/ProofSystem/Spartan/FirstSumcheckComplete.lean",
+    "ArkLib/ProofSystem/Spartan/SecondSumcheckFaithful.lean",
+    "ArkLib/ProofSystem/Spartan/TightDeterminismWitnesses.lean",
+    "ArkLib/ProofSystem/Spartan/FirstSumcheckReduction.lean",
+    "ArkLib/ProofSystem/Spartan/SecondSumcheckComplete.lean",
+    "ArkLib/ProofSystem/Spartan/FirstSumcheckWithTarget.lean",
+    "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessWired.lean",
+    "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessLift.lean",
+    "ArkLib/ProofSystem/Logup/Security/SumcheckComposedRejection.lean",
+    "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessPointwise.lean",
+    "ArkLib/ProofSystem/Logup/Security/Completeness.lean",
+    "ArkLib/ProofSystem/Logup/Security/SumcheckCompletenessClose.lean",
+    "ArkLib/ProofSystem/Logup/Sumcheck/SumcheckBridge.lean",
+    "ArkLib/ProofSystem/Logup/Sumcheck/SumcheckLiftCoherent.lean",
+    "ArkLib/ProofSystem/Sumcheck/Spec/SingleRoundBridge.lean",
+    "ArkLib/ProofSystem/Sumcheck/Spec/RbrKnowledgeSoundnessOracle.lean",
+    "ArkLib/ProofSystem/Sumcheck/Spec/OracleCompletenessThreaded.lean",
+    "ArkLib/ProofSystem/Sumcheck/Spec/SeqComposeRbrSoundness.lean",
+    "ArkLib/ProofSystem/Binius/FRIBinius/CoreInteractionPhase.lean"
+  ],
+  "validation": [
+    "Lens actual-import strict check8s; staged",
+    "Legacy adapter + retained native transfer proofs strict exact3-source composition11s; all five printed transfer anchors use standard3",
+    "OracleStatementPreserving native reselection/query-interface bridge actual-import strict check9s; no new assumptions or holes",
+    "Generic meaningful Coherence + current Legacy base strict exact4-source composition passed19s; all transfer anchors standard3. Native materialized output versus legacy output embedding equality is proved by dependent index case analysis and heterogeneous cast transport.",
+    "OracleStatementPreserving plus generic canonical identity executable lens/output-representation copy helpers actual-import strict check13s."
+  ],
+  "remaining_boundaries": [
+    "Actual package rebuild of current Lens, Legacy OracleReduction and Coherence",
+    "Concrete constructor and protocol package checks; identity lifts must preserve virtual outputs rather than synthesize an embedding"
+  ],
+  "spartan_scalar_claim_outputs": {
+    "owner": "ProximityPrize/Extensions/ProofSystem/Spartan/Basic.lean",
+    "canonical_family_owner": "ArkLib/ProofSystem/Spartan/Basic.lean",
+    "preserved": "The prover sends the same one bundled evaluation-claim message. Canonical output families expose its three scalar components; native virtual-output queries project the selected component. Matrix/witness outputs pass through. R1CS iff lemma statement is unchanged.",
+    "consolidated_instances": [
+      "EvalClaim OracleInterface: reuse authoritative canonical default interfaces",
+      "AfterSendEvalClaim OracleInterface: reuse authoritative canonical scalar-family interface instead of the obsolete bundled-family workaround"
+    ],
+    "validation": "Actual-import strict check10s, all4constructor/prover anchors standard3; package rebuild remains required."
+  },
+  "spartan_sumcheck_native_passthrough": {
+    "owner": "ArkLib/ProofSystem/Spartan/SumcheckPhaseRbr.lean",
+    "preserved": [
+      "Verifier.rbrSoundness_mono_langOut",
+      "Statement.Lens.pullbackIsSound",
+      "OracleVerifier.liftContext_rbrSoundness_pullback",
+      "Sumcheck.Spec.mem_support_oracleVerifier_run_oStmt"
+    ],
+    "retired_metadata": [
+      "OracleVerifier.seqCompose'_embed_inl",
+      "Sumcheck.Spec.oracleVerifier_embed"
+    ],
+    "replacement": "OracleVerifier.seqCompose_materializeOutput_eq_input proves extensional oracle-value pass-through for embedded and virtual outputs; Sumcheck.Spec.oracleVerifier_materializeOutput_eq_input specializes it to canonical sum-check. Metadata projection is no longer a public representation invariant. No external callers of the retired metadata lemmas were found.",
+    "validation": "Actual-import strict8s, both printed oracle-pass-through anchors standard3; original supported-run oracle equality preserved."
+  },
+  "fiat_shamir_hvzk_coupling_step": {
+    "owner": "ArkLib/OracleReduction/FiatShamir/HVZKCouplingStep.lean",
+    "preserved": "Reduction.processRound_step_coupling: same per-round coupling equality, full all-events observation; native evalDist_bind_comm and canonical transcript-view lemmas replace retired SPMF plumbing. No mathematical assumptions added.",
+    "validation": "Actual-import strict8s; printed coupling anchor standard3."
+  },
+  "plonk_composition_native_security": {
+    "owner": "ArkLib/ProofSystem/Plonk/Composition.lean",
+    "preserved": "Completed zero-error ordinary soundness, straightline knowledge soundness, round-by-round soundness and round-by-round knowledge soundness claims, without new premises. Straightline proof now quantifies arbitrary Aux and proves the extracted Option witness is some valid transcript witness before contradicting the canonical universal-Option bad event. Native extractIn replaces removed eqIn.",
+    "transcript_projection": "Explicit canonical FullTranscript.fst/snd projections fix the ambiguity with partial Transcript.fst/snd, without changing transcript entries.",
+    "validation": "Actual-import strict check7s; all existing printed proof anchors accepted as standard-axiom reports; package boundary remains required."
+  }
+}

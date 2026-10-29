@@ -7,6 +7,8 @@ import Mathlib.Data.ZMod.Basic
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Data.Finset.Basic
 import Mathlib.Tactic
+import ArkLib.Data.CodingTheory.Quarantine.Hypotheses
+import ArkLib.Data.CodingTheory.Quarantine.CounterexampleFixture
 
 /-!
 # Promoted Hypotheses Group B (Correlated Error Support)
@@ -21,18 +23,14 @@ We formulate a generic counterexample in `GF(3)` and use it to refute
 all 5 hypotheses without sorry.
 -/
 
-abbrev F := ZMod 3
-abbrev n : ℕ := 4
+namespace ProximityGap.PromotedHypothesesB
 
--- The parity check matrix for our MDS code C (k = 2, so n - k = 2)
-def H_matrix : Matrix (Fin 2) (Fin 4) F :=
-  ![![1, 0, 1, 1],
-    ![0, 1, 1, 2]]
+open ProximityGap.HypothesisCounterexample
 
 -- A codeword is in C if its syndrome is zero
 -- `abbrev` (reducible) so `decide` can see through to the decidable matrix equation.
 abbrev C (x : Fin 4 → F) : Prop :=
-  Matrix.mulVec H_matrix x = 0
+  QuarantineHypotheses.C H_matrix x
 
 instance (x : Fin 4 → F) : Decidable (C x) :=
   inferInstanceAs (Decidable (Matrix.mulVec H_matrix x = 0))
@@ -41,11 +39,7 @@ instance (x : Fin 4 → F) : Decidable (C x) :=
 def u0 : Fin 4 → F := ![0, 1, 0, 0]
 def u1 : Fin 4 → F := ![1, 0, 0, 0]
 
--- The closest codewords for each γ ∈ GF(3)
-def w0 : Fin 4 → F := ![0, 0, 0, 0]
-def w1 : Fin 4 → F := ![1, 1, 2, 0]
-def w2 : Fin 4 → F := ![2, 1, 0, 1]
-
+-- The closest codewords use the shared GF(3) fixture.
 def w (γ : F) : Fin 4 → F :=
   if γ = 0 then w0 else if γ = 1 then w1 else w2
 
@@ -64,14 +58,12 @@ lemma w_in_C : ∀ (γ : F), C (w γ) := by decide
 lemma e_eq : ∀ (γ : F), e γ = u0 + γ • u1 - w γ := by decide
 
 -- Weight metric
-def weight (x : Fin 4 → F) : ℕ :=
-  (Finset.univ.filter (fun i => x i ≠ 0)).card
+abbrev weight (x : Fin 4 → F) : ℕ := QuarantineHypotheses.weight x
 
 -- Prove the bundle is 1-close to C
 lemma e_weight_le_one : ∀ (γ : F), weight (e γ) ≤ 1 := by decide
 
-def support (x : Fin 4 → F) : Finset (Fin 4) :=
-  Finset.univ.filter (fun i => x i ≠ 0)
+abbrev support (x : Fin 4 → F) : Finset (Fin 4) := QuarantineHypotheses.support x
 
 --------------------------------------------------------------------------------
 -- H13 (Support Union Bound): The size of the union of the supports of the
@@ -113,3 +105,5 @@ def sum_e : Fin 4 → F := e 0 + e 1 + e 2
 
 theorem refutation_H20 : sum_e ≠ 0 := by decide
 
+
+end ProximityGap.PromotedHypothesesB

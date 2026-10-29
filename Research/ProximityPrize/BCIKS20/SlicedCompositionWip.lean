@@ -182,7 +182,9 @@ theorem improve_disjunct_of_heavy_sliced {x₀ : F} {R : F[X][X][Y]}
     affineCaptured_of_pencil_proximity_sliced hHyp hξ hlc hab hwn hdvd z root hx hbase
       hsepZ domain k δ u S hScard hSagree hSnoJoint
   exact CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.affineCaptured_improve
-    hdeg₀ hdeg₁ hcap
+    (domain := domain) (k := k) (δ := δ) (u := u) (γ := z)
+    (ab := (BCIKS20.Claim510SliceAffine.affinePencil x₀ a n,
+      BCIKS20.Claim510SliceAffine.affinePencil x₀ b n)) hdeg₀ hdeg₁ hcap
 
 /-- **Decoded-fold heavy branch to the dichotomy improve disjunct, fully sliced.**  Both
 the truncation/agreement lanes and the terminal affine-capture hand-off consume only

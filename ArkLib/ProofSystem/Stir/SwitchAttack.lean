@@ -110,15 +110,14 @@ fixed `Function.invFun` fallback point and can only increase acceptance.) -/
 theorem stirChecking_switch_attack (f u : ι → F) (hu : u ∈ ReedSolomon.code φ deg)
     (chals₀ : ((stirMultiVSpec M ι).toProtocolSpec F).Challenges) :
     ((Finset.univ.filter (fun x : ι => f x = u x)).card : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)
-      ≤ Pr[fun r : F =>
+      ≤ probEvent (fun r : F =>
           checkingBool M φ deg (fun _ => f) (constMsgs M u)
             (Function.update chals₀ (outChalIdx M 0)
               (Vector.cast (by
                 rw [stirMulti_length_chal (M := M) (ι := ι) (outChalIdx M 0).1 (by
                   show ((outChalIdx M 0).1 : ℕ) % 3 ≠ 1
                   simp [outChalIdx])]
-                ) (Vector.replicate 1 r))) = true
-        | $ᵗ F] := by
+                ) (Vector.replicate 1 r))) = true) ($ᵗ F) := by
   classical
   set A : Finset ι := Finset.univ.filter (fun x : ι => f x = u x) with hA
   -- the event contains the φ-image of the agreement set
@@ -149,16 +148,15 @@ theorem stirChecking_switch_attack (f u : ι → F) (hu : u ∈ ReedSolomon.code
     simpa [hA] using hxA
   -- count: Pr over the uniform draw is the filter density
   have hcount : ((A.image φ).card : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)
-      ≤ Pr[fun r : F =>
+      ≤ probEvent (fun r : F =>
           checkingBool M φ deg (fun _ => f) (constMsgs M u)
             (Function.update chals₀ (outChalIdx M 0)
               (Vector.cast (by
                 rw [stirMulti_length_chal (M := M) (ι := ι) (outChalIdx M 0).1 (by
                   show ((outChalIdx M 0).1 : ℕ) % 3 ≠ 1
                   simp [outChalIdx])]
-                ) (Vector.replicate 1 r))) = true
-        | $ᵗ F] := by
-    rw [probEvent_uniformSample]
+                ) (Vector.replicate 1 r))) = true) ($ᵗ F) := by
+    rw [probEvent, SampleableType.prEvent_uniformSample]
     exact ENNReal.div_le_div_right (by exact_mod_cast Finset.card_le_card hsub) _
   rw [Finset.card_image_of_injective _ φ.injective] at hcount
   exact hcount

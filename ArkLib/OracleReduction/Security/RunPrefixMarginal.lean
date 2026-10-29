@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Execution
+import ProximityPrize.Extensions.OracleReduction.Execution
 import ArkLib.OracleReduction.ProcessRoundSupport
 import ArkLib.Data.Probability.MarginalBound
 import ArkLib.ToVCVio.OracleComp.SimSemantics.SubsingletonState
@@ -41,30 +41,21 @@ universe v
 
 section Generic
 
-variable {α β : Type} {m : Type → Type v} [Monad m] [HasEvalSPMF m]
+variable {α β : Type} {m : Type → Type v} [Monad m] [LawfulMonad m]
+  [EvalDistSemantics m] [LawfulEvalDistSemantics m]
 
 /-- **Fiber-constancy comparison**: if the event `q` is constant (`= p x`) on every support
 fiber of `my x`, the bound probability of `q` under the bind is at most that of `p` under
 the base. -/
-lemma probEvent_bind_le_probEvent_of_fiber (mx : m α) (my : α → m β)
+lemma probEvent_bind_le_probEvent_of_fiber [MonadAttach m] [WeaklyLawfulMonadAttach m]
+    (mx : m α) (my : α → m β)
     (q : β → Prop) (p : α → Prop)
     (h : ∀ x ∈ support mx, ∀ y ∈ support (my x), (q y ↔ p x)) :
-    Pr[ q | mx >>= my] ≤ Pr[ p | mx] := by
-  classical
-  rw [probEvent_bind_eq_tsum, probEvent_eq_tsum_ite]
-  refine ENNReal.tsum_le_tsum fun x => ?_
-  by_cases hx : x ∈ support mx
-  · by_cases hp : p x
-    · simp only [if_pos hp]
-      exact mul_le_of_le_one_right' probEvent_le_one
-    · simp only [if_neg hp]
-      have hq0 : Pr[ q | my x] = 0 := by
-        refine probEvent_eq_zero ?_
-        intro y hy hqy
-        exact hp ((h x hx y hy).mp hqy)
-      rw [hq0, mul_zero]
-  · have hx0 : Pr[= x | mx] = 0 := probOutput_eq_zero_of_not_mem_support hx
-    simp [hx0]
+    probEvent q (mx >>= my) ≤ probEvent p mx := by
+  apply prEvent_bind_le_prEvent_of_support mx my p q
+  intro x hx hp
+  exact prEvent_eq_zero_of_forall_mem_support (my x) q
+    (fun y hy hq => hp ((h x hx y hy).mp hq))
 
 end Generic
 
@@ -134,11 +125,11 @@ theorem probEvent_take_simulated_runToRound_le {σ : Type} [Subsingleton σ]
     (impl : QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp)) (s : σ)
     (stmt : StmtIn) (wit : WitIn) (k j : Fin (n + 1)) (hkj : k ≤ j)
     (E : pSpec.Transcript k → Prop) :
-    Pr[fun out : pSpec.Transcript j × prover.PrvState j =>
-        E (fun i : Fin k.val => out.1 (Fin.castLE (by omega) i))
-      | (simulateQ impl (prover.runToRound j stmt wit)).run' s]
-      ≤ Pr[fun out : pSpec.Transcript k × prover.PrvState k => E out.1
-          | (simulateQ impl (prover.runToRound k stmt wit)).run' s] := by
+    probEvent (fun out : pSpec.Transcript j × prover.PrvState j =>
+        E (fun i : Fin k.val => out.1 (Fin.castLE (by omega) i)))
+      ((simulateQ impl (prover.runToRound j stmt wit)).run' s)
+      ≤ probEvent (fun out : pSpec.Transcript k × prover.PrvState k => E out.1)
+          ((simulateQ impl (prover.runToRound k stmt wit)).run' s) := by
   rw [runToRound_eq_bind_continueFromTo prover stmt wit k j hkj,
     simulateQ_run'_bind_of_subsingleton impl _ _ s]
   refine probEvent_bind_le_probEvent_of_fiber _ _ _ _ ?_
@@ -165,30 +156,26 @@ end Backbone
 
 section UnionBound
 
-variable {α : Type} {m : Type → Type v} [Monad m] [HasEvalSPMF m]
+variable {α : Type} {m : Type → Type v} [Monad m] [LawfulMonad m]
+  [EvalDistSemantics m] [LawfulEvalDistSemantics m]
 
 /-- **The finite union bound**: the probability that some event in a finite family holds
 is at most the sum of the individual probabilities (`probEvent_or_le`, iterated). -/
 lemma probEvent_exists_finset_le_sum {κ : Type*} (T : Finset κ)
     (mx : m α) (E : κ → α → Prop) :
-    Pr[fun x => ∃ i ∈ T, E i x | mx] ≤ ∑ i ∈ T, Pr[E i | mx] := by
-  letI : DecidableEq κ := Classical.decEq κ
+    probEvent (fun x => ∃ i ∈ T, E i x) mx ≤ ∑ i ∈ T, probEvent (E i) mx := by
+  classical
   induction T using Finset.induction_on with
-  | empty =>
-      rw [Finset.sum_empty, probEvent_eq_zero ?_]
-      intro x _ hx
-      obtain ⟨i, hi, -⟩ := hx
-      exact absurd hi (Finset.notMem_empty i)
-  | @insert a S haS ih =>
-      rw [Finset.sum_insert haS]
-      refine le_trans (le_trans (probEvent_mono ?_)
-        (probEvent_or_le mx (E a) (fun x => ∃ i ∈ S, E i x))) ?_
-      · intro x _ hx
-        obtain ⟨i, hi, hEi⟩ := hx
-        rcases Finset.mem_insert.mp hi with rfl | hiT
-        · exact Or.inl hEi
-        · exact Or.inr ⟨i, hiT, hEi⟩
-      · exact add_le_add le_rfl ih
+  | empty => simp [probEvent]
+  | @insert a S ha ih =>
+      rw [Finset.sum_insert ha]
+      have hevent : (fun x => ∃ i ∈ insert a S, E i x) =
+          (fun x => E a x ∨ ∃ i ∈ S, E i x) := by
+        funext x
+        simp
+      rw [hevent]
+      exact (prEvent_or_le mx (E a) (fun x => ∃ i ∈ S, E i x)).trans
+        (add_le_add le_rfl ih)
 
 end UnionBound
 

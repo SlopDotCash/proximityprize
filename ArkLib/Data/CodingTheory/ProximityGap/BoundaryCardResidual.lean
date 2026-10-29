@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 
 /-!
 # The closed square-root boundary `BoundaryCardResidual` via quantization (§6.2)
@@ -161,9 +161,9 @@ theorem exists_lt_floor_eq_of_floor_lt (n : ℕ) {δ : ℝ≥0} (hn : 0 < n)
     lt_of_lt_of_le (mul_lt_mul_of_pos_right hlt2 (by positivity)) (le_of_lt hδn_lt)
   have hfloor_le : Nat.floor (δ' * (n : ℝ≥0)) ≤ j := by
     have hup' : δ' * (n : ℝ≥0) < ((j + 1 : ℕ) : ℝ≥0) := by push_cast; exact hup
-    have := (Nat.floor_lt (zero_le _)).mpr hup'
+    have := (Nat.floor_lt bot_le).mpr hup'
     omega
-  have hfloor_ge : j ≤ Nat.floor (δ' * (n : ℝ≥0)) := (Nat.le_floor_iff (zero_le _)).mpr hlow
+  have hfloor_ge : j ≤ Nat.floor (δ' * (n : ℝ≥0)) := (Nat.le_floor_iff bot_le).mpr hlow
   omega
 
 /-- **At a lattice endpoint, every strict sub-radius has strictly smaller floor.**  This is the
@@ -179,7 +179,7 @@ theorem floor_lt_of_lt_of_lattice (n : ℕ) {δ δ' : ℝ≥0} (hn : 0 < n)
   have hmul_lt_floor :
       δ' * (n : ℝ≥0) < (Nat.floor (δ * (n : ℝ≥0)) : ℝ≥0) := by
     simpa [hfloor] using hmul_lt
-  exact (Nat.floor_lt (zero_le _)).mpr hmul_lt_floor
+  exact (Nat.floor_lt bot_le).mpr hmul_lt_floor
 
 /-- **No strict sub-radius has the same floor at a lattice endpoint.**  This records the precise
 failure mode of the quantization reduction on the square-root lattice branch. -/
@@ -466,7 +466,7 @@ theorem boundaryCardResidual_of_lattice_residual {k deg : ℕ} {domain : ι ↪ 
   intro hk u hδeq hcardPos
   -- `⌊δ·n⌋ ≤ δ·n` always; split into the strict (non-lattice) and equality (lattice) cases.
   have hle : (Nat.floor (δ * Fintype.card ι) : ℝ≥0) ≤ δ * Fintype.card ι :=
-    Nat.floor_le (zero_le _)
+    Nat.floor_le bot_le
   rcases lt_or_eq_of_le hle with hlt | heq
   · exact boundaryCardResidual_of_not_lattice (deg := deg) (domain := domain) hlt hStrict
       hk u hδeq hcardPos
@@ -758,7 +758,7 @@ theorem boundary_not_lattice_of_not_isSquare_deg_mul_card {deg : ℕ} {domain : 
       (Nat.floor (δ * Fintype.card ι) : ℝ≥0) ≠ δ * Fintype.card ι := by
     intro hfloor
     exact hNotSquare (hiff.mp hfloor)
-  exact lt_of_le_of_ne (Nat.floor_le (zero_le _)) hne
+  exact lt_of_le_of_ne (Nat.floor_le bot_le) hne
 
 omit [DecidableEq ι] in
 /-- **Closed boundary residual in the non-square case.**  If the exact Johnson endpoint is not a
@@ -839,6 +839,7 @@ theorem boundaryProbabilityResidual_of_isSquare_deg_mul_card {k deg : ℕ}
 
 /-! ## The strengthened keystone corollary consuming the isolated lattice residual -/
 
+
 omit [DecidableEq ι] in
 /-- **[BCIKS20] Theorem 1.5, with the boundary residual reduced by quantization.**
 
@@ -858,7 +859,7 @@ The boundary `BoundaryCardResidual` is reconstructed from `hStrict` and `hLattic
 this corollary moves the entire non-lattice boundary off the measure-zero boundary into the strict
 interior, leaving `hLattice` as the only genuinely boundary-specific datum. -/
 theorem correlatedAgreement_affine_curves_of_lattice_residual {k deg : ℕ} {domain : ι ↪ F}
-    {δ : ℝ≥0} [NeZero deg] [DecidableEq ι]
+    {δ : ℝ≥0} [NeZero deg] [SampleableType F] [DecidableEq ι]
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual (k := k) (deg := deg) (domain := domain) (δ := δ))
     (hStrict : ∀ (u : WordStack F (Fin (k + 1)) ι) (δ' : ℝ≥0),
@@ -883,7 +884,7 @@ This is the data-level counterpart of `correlatedAgreement_affine_curves_of_latt
 the final curve keystone can consume the strict-interior producer plus the smaller
 `BoundaryCardLatticeData` package directly. -/
 theorem correlatedAgreement_affine_curves_of_lattice_data {k deg : ℕ} {domain : ι ↪ F}
-    {δ : ℝ≥0} [NeZero deg]
+    {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual (k := k) (deg := deg) (domain := domain) (δ := δ))
     (hStrict :
@@ -902,7 +903,7 @@ omit [DecidableEq ι] in
 to `correlatedAgreement_affine_curves_of_lattice_residual`, but makes the exact remaining boundary
 surface a single reusable input. -/
 theorem correlatedAgreement_affine_curves_of_quantization_residuals {k deg : ℕ} {domain : ι ↪ F}
-    {δ : ℝ≥0} [NeZero deg]
+    {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual (k := k) (deg := deg) (domain := domain) (δ := δ))
     (hBoundary :
@@ -920,7 +921,7 @@ omit [DecidableEq ι] in
 of the quantization split away from the exact square-lattice branch: the closed boundary input is
 recovered from the strict-interior supply and `¬ IsSquare (deg · |ι|)`. -/
 theorem correlatedAgreement_affine_curves_of_not_isSquare_deg_mul_card {k deg : ℕ}
-    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual (k := k) (deg := deg) (domain := domain) (δ := δ))
     (hStrict :
@@ -945,7 +946,7 @@ omit [DecidableEq ι] in
 the exact square-lattice branch, the boundary input is exactly the isolated
 `BoundaryCardLatticeResidual`, with no strict-subradius producer required. -/
 theorem correlatedAgreement_affine_curves_of_isSquare_deg_mul_card {k deg : ℕ}
-    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual (k := k) (deg := deg) (domain := domain) (δ := δ))
     (hLattice :
@@ -1000,7 +1001,7 @@ This is the data-level counterpart of `correlatedAgreement_affine_curves_of_isSq
 once the endpoint is known to be the exact square branch, the final curve keystone consumes the
 smaller `BoundaryCardLatticeData` package directly. -/
 theorem correlatedAgreement_affine_curves_of_lattice_data_isSquare {k deg : ℕ}
-    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual (k := k) (deg := deg) (domain := domain) (δ := δ))
     (hData : BoundaryCardLatticeData (k := k) (deg := deg) (domain := domain) (δ := δ))
@@ -1044,7 +1045,7 @@ theorem BoundaryCardQuantizationResiduals.toBoundaryProbResidual_isSquare {k deg
 omit [DecidableEq ι] in
 /-- Curve-facing square-endpoint adapter from packaged quantization residuals. -/
 theorem correlatedAgreement_affine_curves_of_quantization_residuals_isSquare {k deg : ℕ}
-    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual (k := k) (deg := deg) (domain := domain) (δ := δ))
     (h : BoundaryCardQuantizationResiduals (k := k) (deg := deg) (domain := domain) (δ := δ))

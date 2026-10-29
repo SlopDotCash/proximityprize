@@ -44,6 +44,9 @@ open Polynomial Polynomial.Bivariate BCIKS20AppendixA BCIKS20AppendixA.ClaimA2
 open BCIKS20.HenselNumerator
 open scoped BigOperators
 
+private noncomputable local instance {F : Type} [Field F] [Fintype F] :
+    SampleableType F := SampleableType.ofFintype F
+
 namespace ArkLib
 
 namespace GSSurfaceKeystone
@@ -126,7 +129,6 @@ noncomputable def curveFamilyData_comp_shift {k deg : ℕ} {domain : ι ↪ F} {
   hPz := fun z hz => by
     have h := congrArg (fun q : Polynomial F => q.comp (Polynomial.X - Polynomial.C s))
       (D.hPz z hz)
-    simp only at h
     rw [taylor_comp_sub] at h
     rw [h, finset_sum_comp]
     exact Finset.sum_congr rfl fun t _ => Polynomial.smul_comp _ _ _

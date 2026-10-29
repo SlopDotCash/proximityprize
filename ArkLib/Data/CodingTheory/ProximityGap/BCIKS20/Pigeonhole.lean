@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import ArkLib.Data.CodingTheory.GuruswamiSudan.GSFactorAssignment
 import ArkLib.ProofSystem.Whir.MutualCorrAgreement
 
@@ -486,7 +487,7 @@ theorem Pr_uniform_image_of_injective {α β : Type} [Fintype α] [Nonempty α]
   refine tsum_congr fun x => ?_
   have hcard : Fintype.card ↥(Finset.image f Finset.univ) = Fintype.card α := by
     rw [Fintype.card_coe, Finset.card_image_of_injective _ hf, Finset.card_univ]
-  rw [PMF.uniformOfFintype_apply, PMF.uniformOfFintype_apply, hcard]
+  rw [ProximityPrize.Compatibility.uniformOfFintype_apply, ProximityPrize.Compatibility.uniformOfFintype_apply, hcard]
   rfl
 
 /-- The RS generator map `r ↦ (r^{exp j})ⱼ` is injective as soon as one exponent is `1`. -/

@@ -181,14 +181,21 @@ theorem sum_pairCollisions_le {K : ℕ} (p : ι → F[X])
   have hdiag : (Finset.univ.filter (fun jj : ι × ι => jj.1 = jj.2)).card = Fintype.card ι := by
     rw [show (Finset.univ.filter (fun jj : ι × ι => jj.1 = jj.2))
           = Finset.univ.map ⟨fun j => (j, j), by intro a b h; simpa using h⟩ from by
-            ext jj; simp [Prod.ext_iff, eq_comm, and_comm]]
+            ext jj
+            simp [Prod.ext_iff, eq_comm, and_comm]
+            change jj.1 = jj.2 ↔ ∃ a, jj.1 = a ∧ jj.2 = a
+            constructor
+            · intro h
+              exact ⟨jj.1, rfl, h.symm⟩
+            · rintro ⟨a, h₁, h₂⟩
+              exact h₁.trans h₂.symm]
     simp [Finset.card_univ]
   have hoff : (Finset.univ.filter (fun jj : ι × ι => ¬ jj.1 = jj.2)).card
       = Fintype.card ι ^ 2 - Fintype.card ι := by
     have htot : (Finset.univ.filter (fun jj : ι × ι => jj.1 = jj.2)).card
         + (Finset.univ.filter (fun jj : ι × ι => ¬ jj.1 = jj.2)).card
         = Fintype.card (ι × ι) := by
-      rw [Finset.filter_card_add_filter_neg_card_eq_card]; rw [Finset.card_univ]
+      rw [Finset.card_filter_add_card_filter_not]; rw [Finset.card_univ]
     rw [hdiag] at htot
     rw [Fintype.card_prod] at htot
     have hsq : Fintype.card ι * Fintype.card ι = Fintype.card ι ^ 2 := by ring

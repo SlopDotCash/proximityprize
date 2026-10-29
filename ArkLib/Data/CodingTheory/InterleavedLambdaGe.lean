@@ -40,21 +40,22 @@ variable {ι F : Type} [Fintype ι]
 injects each base point list into the interleaved point list, so `Λ C δ ≤ Λ(C^⋈Fin m, δ)`. -/
 theorem Lambda_interleaved_ge [Fintype F] [Nonempty ι] [DecidableEq F] {m : ℕ} [NeZero m]
     (C : Set (ι → F)) (δ : ℝ) :
-    Lambda C δ ≤ Lambda (interleavedCodeSet (κ := Fin m) C) δ := by
+    ListDecodable.Lambda C δ ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ := by
   classical
-  haveI : Nonempty (Fin m) := ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne m)⟩⟩
+  have : Nonempty (Fin m) := ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne m)⟩⟩
   refine iSup_le fun g => ?_
   set G : Matrix ι (Fin m) F := fun i _ => g i with hG
   set φ : (ι → F) → Matrix ι (Fin m) F := fun c => fun i _ => c i with hφ
-  have hmaps : Set.MapsTo φ (closeCodewordsRel C g δ)
-      (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ) := by
+  have hmaps : Set.MapsTo φ (ListDecodable.closeCodewordsRel C g δ)
+      (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ) := by
     intro c hc
     obtain ⟨hcC, hcball⟩ := hc
     refine ⟨?_, ?_⟩
     · intro k
-      have hcol : (φ c).transpose k = c := by funext i; simp [hφ, Matrix.transpose_apply]
+      have hcol : (φ c).transpose k = c := by funext i; rfl
       rw [hcol]; exact hcC
-    · rw [relHammingBall, Set.mem_setOf_eq] at hcball ⊢
+    · unfold ListDecodable.relHammingBall at hcball ⊢
+      change _ ≤ δ at hcball ⊢
       convert hcball using 3
       unfold Code.relHammingDist
       congr 1
@@ -64,20 +65,20 @@ theorem Lambda_interleaved_ge [Fintype F] [Nonempty ι] [DecidableEq F] {m : ℕ
       ext i
       simp only [Finset.mem_filter, Finset.mem_univ, true_and, hφ, hG, ne_eq,
         funext_iff, forall_const]
-  have hinj : Set.InjOn φ (closeCodewordsRel C g δ) := by
+  have hinj : Set.InjOn φ (ListDecodable.closeCodewordsRel C g δ) := by
     intro a _ b _ hab
     funext i
     have := congrFun (congrFun hab i) (Classical.arbitrary (Fin m))
     simpa [hφ] using this
-  calc ((closeCodewordsRel C g δ).ncard : ℕ∞)
-      = (closeCodewordsRel C g δ).encard := (Set.toFinite _).cast_ncard_eq
-    _ ≤ (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ).encard :=
+  calc ((ListDecodable.closeCodewordsRel C g δ).ncard : ℕ∞)
+      = (ListDecodable.closeCodewordsRel C g δ).encard := (Set.toFinite _).cast_ncard_eq
+    _ ≤ (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ).encard :=
         Set.encard_le_encard_of_injOn hmaps hinj
-    _ = ((closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ).ncard : ℕ∞) :=
+    _ = ((ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ).ncard : ℕ∞) :=
         ((Set.toFinite _).cast_ncard_eq).symm
-    _ ≤ Lambda (interleavedCodeSet (κ := Fin m) C) δ :=
+    _ ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ :=
         le_iSup
-          (fun f => ((closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).ncard : ℕ∞)) G
+          (fun f => ((ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).ncard : ℕ∞)) G
 
 #print axioms Lambda_interleaved_ge
 

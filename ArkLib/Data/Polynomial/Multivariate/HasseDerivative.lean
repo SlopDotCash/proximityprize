@@ -19,12 +19,11 @@ noncomputable def taylor : MvPolynomial σ R →+* MvPolynomial σ (MvPolynomial
 /-- The Hasse derivative of `p` with respect to a multi-index `d`
 is the coefficient of `Y^d` in `taylor p`. -/
 noncomputable def hasseDeriv (d : σ →₀ ℕ) (p : MvPolynomial σ R) : MvPolynomial σ R :=
-  coeff d (taylor p)
+  (taylor p).coeff d
 
 lemma hasseDeriv_add (d : σ →₀ ℕ) (p q : MvPolynomial σ R) :
     hasseDeriv d (p + q) = hasseDeriv d p + hasseDeriv d q := by
-  dsimp [hasseDeriv]
-  rw [map_add, coeff_add]
+  simp only [hasseDeriv, map_add, AddMonoidAlgebra.coeff_add, Finsupp.add_apply]
 
 lemma hasseDeriv_mul [DecidableEq σ] (d : σ →₀ ℕ) (p q : MvPolynomial σ R) :
     hasseDeriv d (p * q)

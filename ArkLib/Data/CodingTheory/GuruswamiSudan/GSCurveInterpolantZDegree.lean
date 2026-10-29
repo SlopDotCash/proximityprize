@@ -71,7 +71,7 @@ theorem gsMatrixZCurve_natDegree_le {k n m L : ℕ} (hk : 1 < k) (ωs : Fin n �
     (gsMatrixZCurve k n m L ωs u D ist p).natDegree ≤ D * (L - 1) := by
   have hb : p.1.2 ≤ D := by
     have hp := p.2
-    simp only [weigthBoundIndices, mem_filter] at hp
+    simp only [weigthBoundIndices, weightBoundIndices, mem_filter] at hp
     have h1 : 1 ≤ k - 1 := by omega
     nlinarith [hp.2, p.1.1.zero_le]
   calc (gsMatrixZCurve k n m L ωs u D ist p).natDegree
@@ -229,7 +229,7 @@ theorem gs_existence_curve_zDegree {n L : ℕ} (k m : ℕ) (ωs : Fin n ↪ F)
     intro p _
     refine (Polynomial.natDegree_monomial_le _).trans ?_
     have hp := p.2
-    simp only [weigthBoundIndices, mem_filter] at hp
+    simp only [weigthBoundIndices, weightBoundIndices, mem_filter] at hp
     have h1 : 1 ≤ k - 1 := by omega
     nlinarith [hp.2, p.1.1.zero_le]
   refine ⟨Q₀, ?_, ?_, hYdeg, ?_⟩

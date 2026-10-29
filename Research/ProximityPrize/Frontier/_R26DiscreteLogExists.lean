@@ -206,11 +206,9 @@ theorem dl_fiber_card (hmn : m * n = Fintype.card F - 1) (c : ZMod m) :
       rw [dl_map_mul (n := n) hmn v b hv0 hb0, hdlv, h2.2]
       ring
     · intro a _
-      dsimp only
       rw [← mul_assoc]
       rw [show v * u = 1 from by rw [mul_comm]; exact huv, one_mul]
     · intro b _
-      dsimp only
       rw [← mul_assoc]
       rw [huv, one_mul]
   -- Step 2: the m equal fibers partition the q−1 nonzero elements.

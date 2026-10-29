@@ -17,25 +17,28 @@ import VCVio.OracleComp.ProbComp
 lemma OptionT.probEvent_eq_of_run_map_eq {α β : Type}
     (mx : OptionT ProbComp α) (my : OptionT ProbComp β) (f : β → α) (P : α → Prop)
     (h : mx.run = (Option.map f) <$> my.run) :
-    Pr[P | mx] = Pr[P ∘ f | my] := by
+    Pr{let x ← mx}[P x] = Pr{let y ← my}[P (f y)] := by
   have hmx : mx = f <$> my := by
     change mx.run = (f <$> my).run
     rw [OptionT.run_map]; exact h
-  rw [hmx, probEvent_map]
+  rw [hmx, prEvent_map]
 
 /-- **Cross-type `probEvent` congruence.** When two computations of *propositionally-equal* value
-types have heterogeneously-equal `evalDist`s and corresponding events (transported along the type
+types have heterogeneously-equal discrete `evalDist`s and corresponding events (transported along
+the type
 equality), their probability events agree. The seam-transfer proofs produce exactly this shape: the
 appended and recast experiments live over equal-but-not-defeq transcript types, with `evalDist`s
 related through that type equality. Proved by `subst`ing the type equality (turning the `HEq`s into
-`Eq`s) and using that `probEvent` depends only on `evalDist` and the event-set. -/
-lemma probEvent_congr_heq {m : Type → Type _} [Monad m] [HasEvalSPMF m] {α β : Type} (h : α = β)
+`Eq`s) and using that native event probability depends only on the discrete evaluation measure and event-set. -/
+lemma probEvent_congr_heq {m : Type → Type _} [Monad m] [LawfulMonad m]
+    [EvalDistSemantics m] [LawfulEvalDistSemantics m] {α β : Type} (h : α = β)
     (mx : m α) (my : m β) (P : α → Prop) (Q : β → Prop)
-    (hd : HEq (𝒟[mx]) (𝒟[my])) (hPQ : ∀ x, P x ↔ Q (h ▸ x)) :
-    Pr[P | mx] = Pr[Q | my] := by
+    (hd : HEq (@evalDist m _ α ⊤ mx) (@evalDist m _ β ⊤ my))
+    (hPQ : ∀ x, P x ↔ Q (h ▸ x)) :
+    Pr{let x ← mx}[P x] = Pr{let y ← my}[Q y] := by
   subst h
-  have hde : (𝒟[mx]) = (𝒟[my]) := eq_of_heq hd
-  unfold probEvent
-  rw [hde]
+  let : MeasurableSpace α := ⊤
+  have hde : 𝒟[mx] = 𝒟[my] := eq_of_heq hd
+  rw [prEvent_eq_evalDist_of_discrete, prEvent_eq_evalDist_of_discrete, hde]
   congr 1
-  exact congrArg (Set.image some) (Set.ext fun x => hPQ x)
+  exact Set.ext fun x => hPQ x

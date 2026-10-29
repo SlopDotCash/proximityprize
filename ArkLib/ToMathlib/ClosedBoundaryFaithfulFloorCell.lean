@@ -93,6 +93,9 @@ probe-verified content of `scripts/probes/probe_boundary_threshold_floorcell.py`
   Codes*, §5 (list-decoding agreement chain), §6.2 (closed Johnson boundary at `1 − √ρ`).
 -/
 
+private noncomputable local instance {F : Type} [Field F] [Fintype F] :
+    SampleableType F := SampleableType.ofFintype F
+
 namespace ArkLib
 
 namespace ClosedBoundaryFaithfulFloorCell
@@ -278,7 +281,7 @@ theorem correlatedAgreementCurves_closedBoundary_assembly
     ∃ ε : ℝ≥0, 0 < ε ∧
       δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)
         (C := (ReedSolomon.code domain deg : Set (ι → F))) (δ := δ) (ε := ε) := by
-  rcases lt_or_eq_of_le (Nat.floor_le (zero_le (δ * Fintype.card ι))) with hlt | heq
+  rcases lt_or_eq_of_le (Nat.floor_le (a := δ * (Fintype.card ι : ℝ≥0)) (by positivity)) with hlt | heq
   · obtain ⟨δ', hδ'lt, hδ'floor, hProd⟩ := hCell hlt
     have hδ'b : δ' < 1 - ReedSolomon.sqrtRate deg domain :=
       lt_of_lt_of_le hδ'lt hδeq.le

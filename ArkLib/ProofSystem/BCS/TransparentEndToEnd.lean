@@ -56,11 +56,17 @@ results; both are axiom-clean (only `propext`/`Classical.choice`/`Quot.sound`).
 open OracleSpec OracleComp SubSpec ProtocolSpec Commitment
 open scoped NNReal ENNReal
 
+-- Historical PMF equalities compare complete all-subsets output measures.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : MeasurableSpace (Option A) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
 namespace BCSTransparentEndToEnd
 
 /-! ## The ambient data and the source protocol spec -/
 
-variable {ι : Type} [DecidableEq ι] {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} [DecidableEq ι] {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     {Data : Type} [O : OracleInterface Data] [∀ q : O.Query, DecidableEq (O.Response q)]
 
 /-- The source interactive (oracle) protocol spec: a single prover message of type `Data`. -/
@@ -95,6 +101,7 @@ instance : Unique ((srcPSpec (Data := Data)).MessageIdx) where
 /-- The ordering equivalence `MessageIdx ≃ Fin 1`: the source has exactly one message. -/
 def e : (srcPSpec (Data := Data)).MessageIdx ≃ Fin 1 := Equiv.ofUnique _ _
 
+omit O [(q : O.Query) → DecidableEq (O.Response q)] in
 /-- The opening phase has length `1` (one opening message). -/
 theorem vsum_eq_one :
     Fin.vsum (fun j => (nCom (Data := Data)) ((e (Data := Data)).symm j)) = 1 := rfl
@@ -115,16 +122,16 @@ abbrev OpeningWit := Data × Unit
 /-- The middle relation: the claimed response is the honest oracle answer on the committed data, and
 the witness data is the committed data. This is a genuine (non-vacuous) predicate. -/
 def relMid : Set ((OpeningStmt (Data := Data)) × (OpeningWit (Data := Data))) :=
-  setOf (fun ⟨⟨cm, q, y⟩, ⟨d, _⟩⟩ => O.answer cm q = y ∧ d = cm)
+  Set.ofPred (fun ⟨⟨cm, q, y⟩, ⟨d, _⟩⟩ => O.answer cm q = y ∧ d = cm)
 
 /-- The middle language: the claimed response is consistent with the commitment (i.e. it is the
 honest oracle answer on the committed data). A malicious opening prover cannot make the verifier
 accept a statement outside this language — that is the binding content. -/
 def langMid : Set (OpeningStmt (Data := Data)) :=
-  setOf (fun ⟨cm, q, y⟩ => O.answer cm q = y)
+  Set.ofPred (fun ⟨cm, q, y⟩ => O.answer cm q = y)
 
 /-- The output language: the verifier accepted. -/
-def langOut : Set Bool := setOf (· = true)
+def langOut : Set Bool := Set.ofPred (· = true)
 
 /-! ## The interaction phase
 
@@ -227,6 +234,7 @@ instance instProverOnlyOpening :
   prover_first' := rfl
 
 set_option maxHeartbeats 800000 in
+omit [DecidableEq ι] [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] in
 /-- **Perfect completeness of the opening phase.** For an honest opening statement (the claimed
 response is the honest oracle answer on the committed data) the transparent opening verifier returns
 `decide (answer cm q = y) = true`, so it accepts with probability one. -/
@@ -235,7 +243,7 @@ theorem openingRed_perfectCompleteness :
       (relMid (Data := Data)) acceptRejectRel := by
   rw [Reduction.perfectCompleteness_eq_prob_one]
   rintro ⟨cm, q, y⟩ ⟨d, u⟩ hmem
-  simp only [relMid, Set.mem_setOf_eq] at hmem
+  simp only [relMid] at hmem
   obtain ⟨hans, hd⟩ := hmem
   -- The underlying `OracleComp` (the prover-first run with a constant verdict) has *only* successful
   -- outputs, each of which accepts. This support fact is state-independent (no oracle queries).
@@ -246,7 +254,7 @@ theorem openingRed_perfectCompleteness :
     intro z hz
     -- `openingRed` is *definitionally* the transparent opening over `openingPSpec`; rewrite its run
     -- via the prover-first lemma (using the `openingPSpec` `ProverOnly` instance).
-    haveI : ProverOnly Commitment.Transparent.openingPSpec := { prover_first' := by simp }
+    have : ProverOnly Commitment.Transparent.openingPSpec := { prover_first' := by simp }
     have hrun := Reduction.run_of_prover_first (oSpec := oSpec)
       (pSpec := Commitment.Transparent.openingPSpec)
       (cm, (⟨q, y⟩ : (q : O.Query) × O.Response q)) (d, u)
@@ -259,16 +267,16 @@ theorem openingRed_perfectCompleteness :
     -- `Option.elim` on `some` selects the continuation. The verifier's verdict is
     -- `decide (answer cm q = y) = true` by `hans`.
     simp only [Commitment.Transparent.transparentScheme, OptionT.run_pure,
-      liftM_pure, pure_bind, Option.getM_some, hans,
-      Set.mem_singleton_iff] at hz
+      liftM_pure, pure_bind, Option.getM_some, hans] at hz
     subst hz
     exact ⟨_, rfl, by simp [acceptRejectRel], rfl⟩
   -- Now lift the support fact through `init`-bind, `simulateQ`, and `OptionT`.
   rw [probEvent_eq_one_iff]
   refine ⟨?_, ?_⟩
-  · rw [OptionT.probFailure_eq, OptionT.run_mk]
-    simp only [probFailure_eq_zero, _root_.zero_add]
-    apply probOutput_eq_zero_of_not_mem_support
+  · change prFail _ = 0
+    rw [OptionT.probFailure_eq, OptionT.run_mk]
+    simp only [OracleComp.prFail_eq_zero, _root_.zero_add]
+    apply (probOutput_eq_zero_iff _ _).2
     simp only [support_bind, Set.mem_iUnion, not_exists]
     intro s _ hc
     obtain ⟨_, hsome, _⟩ := hsupp none (_root_.support_simulateQ_run'_subset _ _ s hc)
@@ -282,6 +290,7 @@ theorem openingRed_perfectCompleteness :
     exact hP
 
 set_option maxHeartbeats 800000 in
+omit [DecidableEq ι] [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] in
 /-- **Perfect soundness of the opening phase.** The transparent opening verifier's verdict is the
 transcript-independent boolean `decide (answer cm q = y)` (`opening_verify`). Hence for any opening
 statement `(cm, ⟨q, y⟩)` *outside* `langMid` (i.e. `answer cm q ≠ y`) the verifier outputs `false`,
@@ -294,9 +303,9 @@ theorem openingRed_soundness :
   unfold Verifier.soundness
   intro WitIn WitOut witIn prover stmtIn hstmtIn pImpl
   obtain ⟨cm, q, y⟩ := stmtIn
-  simp only [langMid, Set.mem_setOf_eq] at hstmtIn
+  simp only [langMid] at hstmtIn
   -- The bad event `stmtOut ∈ langOut` (= `stmtOut = true`) never holds: the verdict is `false`.
-  simp only [ENNReal.coe_zero, nonpos_iff_eq_zero, probEvent_eq_zero_iff]
+  simp only [ENNReal.coe_zero, nonpos_iff_eq_zero, ProximityPrize.Compatibility.DiscreteSupportSemantics.prEvent_eq_zero_iff]
   intro x hx hev
   rw [OptionT.mem_support_iff, OptionT.run_mk] at hx
   simp only [support_bind, Set.mem_iUnion] at hx
@@ -309,7 +318,7 @@ theorem openingRed_soundness :
           (cm, ⟨q, y⟩) witIn)).run, ∀ a, z = some a → a.2 = false := by
       intro z hz a hza
       rw [Reduction.run] at hz
-      simp only [OptionT.run_bind, Option.elimM, bind_assoc] at hz
+      simp only [OptionT.run_bind, Option.elimM] at hz
       rw [mem_support_bind_iff] at hz
       obtain ⟨proverResultOpt, _, hz⟩ := hz
       cases proverResultOpt with
@@ -325,8 +334,7 @@ theorem openingRed_soundness :
         simp only [openingRed, Commitment.Transparent.transparentScheme, OptionT.run_pure,
           liftM_pure, support_pure, Set.mem_singleton_iff] at hstmtOut
         subst hstmtOut
-        simp only [Option.getM_some, Option.elim_some, support_pure,
-          Set.mem_singleton_iff] at hz
+        simp only [Option.getM_some, Option.elim_some] at hz
         subst hz
         simp only [Option.some.injEq] at hza
         subst hza
@@ -334,10 +342,11 @@ theorem openingRed_soundness :
         exact hstmtIn
     exact key (some x) (_root_.support_simulateQ_run'_subset _ _ s hx) x rfl
   rw [hverdict] at hev
-  simp only [langOut, Set.mem_setOf_eq] at hev
+  simp only [langOut, Set.mem_ofPred_eq] at hev
   exact absurd hev (by simp)
 
 set_option maxHeartbeats 800000 in
+omit [DecidableEq ι] [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] [(q : O.Query) → DecidableEq (O.Response q)] in
 /-- **Perfect completeness of the interaction phase.** The "commit and forward" reduction sends the
 commitment and returns the input statement/witness unchanged; the verifier forwards the statement.
 Hence for any `(stmt, wit) ∈ relMid` the output `(stmt, wit)` is again in `relMid`, with probability
@@ -354,16 +363,16 @@ theorem interactionRed_perfectCompleteness :
     intro z hz
     rw [Reduction.run_of_prover_first stmt wit
       (interactionRed (oSpec := oSpec) (Data := Data))] at hz
-    simp only [interactionRed, interactionProver, interactionVerifier, Verifier.run,
-      OptionT.run_pure, liftM_pure, pure_bind, Option.getM_some,
-      Set.mem_singleton_iff] at hz
+    simp only [interactionRed, interactionProver, interactionVerifier,
+      OptionT.run_pure, liftM_pure, pure_bind, Option.getM_some] at hz
     subst hz
     exact ⟨_, rfl, hmem, rfl⟩
   rw [probEvent_eq_one_iff]
   refine ⟨?_, ?_⟩
-  · rw [OptionT.probFailure_eq, OptionT.run_mk]
-    simp only [probFailure_eq_zero, _root_.zero_add]
-    apply probOutput_eq_zero_of_not_mem_support
+  · change prFail _ = 0
+    rw [OptionT.probFailure_eq, OptionT.run_mk]
+    simp only [OracleComp.prFail_eq_zero, _root_.zero_add]
+    apply (probOutput_eq_zero_iff _ _).2
     simp only [support_bind, Set.mem_iUnion, not_exists]
     intro s _ hc
     obtain ⟨_, hsome, _⟩ := hsupp none (_root_.support_simulateQ_run'_subset _ _ s hc)
@@ -377,6 +386,7 @@ theorem interactionRed_perfectCompleteness :
     exact hP
 
 set_option maxHeartbeats 800000 in
+omit [DecidableEq ι] [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] [(q : O.Query) → DecidableEq (O.Response q)] in
 /-- **Perfect soundness of the interaction phase.** The interaction verifier returns its input
 statement unchanged, so for any malicious prover and any `stmtIn ∉ langMid` the output statement
 equals `stmtIn ∉ langMid`; the bad event has probability `0`. -/
@@ -385,7 +395,7 @@ theorem interactionRed_soundness :
       (langMid (Data := Data)) (langMid (Data := Data)) 0 := by
   unfold Verifier.soundness
   intro WitIn WitOut witIn prover stmtIn hstmtIn pImpl
-  simp only [ENNReal.coe_zero, nonpos_iff_eq_zero, probEvent_eq_zero_iff]
+  simp only [ENNReal.coe_zero, nonpos_iff_eq_zero, ProximityPrize.Compatibility.DiscreteSupportSemantics.prEvent_eq_zero_iff]
   intro x hx hev
   apply hstmtIn
   rw [OptionT.mem_support_iff, OptionT.run_mk] at hx
@@ -398,7 +408,7 @@ theorem interactionRed_soundness :
           stmtIn witIn)).run, ∀ a, z = some a → a.2 = stmtIn := by
       intro z hz a hza
       rw [Reduction.run] at hz
-      simp only [OptionT.run_bind, Option.elimM, bind_assoc] at hz
+      simp only [OptionT.run_bind, Option.elimM] at hz
       rw [mem_support_bind_iff] at hz
       obtain ⟨proverResultOpt, _, hz⟩ := hz
       cases proverResultOpt with
@@ -413,8 +423,7 @@ theorem interactionRed_soundness :
         simp only [interactionRed, interactionVerifier, OptionT.run_pure, liftM_pure,
           support_pure, Set.mem_singleton_iff] at hstmtOut
         subst hstmtOut
-        simp only [Option.getM_some, Option.elim_some, support_pure,
-          Set.mem_singleton_iff] at hz
+        simp only [Option.getM_some, Option.elim_some] at hz
         subst hz
         simp only [Option.some.injEq] at hza
         subst hza
@@ -429,16 +438,19 @@ end Security
 Both keystones consume the same two direction facts: the interaction → opening seam round, and the
 opening phase's first round, are prover messages. -/
 
+omit O [(q : O.Query) → DecidableEq (O.Response q)] in
 theorem hn_pos :
     (0 : ℕ) < Fin.vsum (fun j => (nCom (Data := Data)) ((e (Data := Data)).symm j)) := by
   rw [vsum_eq_one]; norm_num
 
+omit O [(q : O.Query) → DecidableEq (O.Response q)] in
 theorem hOpeningFirstDir :
     ((srcPSpec (Data := Data)).BCSOpeningPhase (pSpecCom (Data := Data)) (e (Data := Data))).dir
       (⟨0, hn_pos (Data := Data)⟩ :
         Fin (Fin.vsum (fun j => (nCom (Data := Data)) ((e (Data := Data)).symm j))))
       = .P_to_V := rfl
 
+omit O [(q : O.Query) → DecidableEq (O.Response q)] in
 theorem hSeamDir :
     (((srcPSpec (Data := Data)).renameMessage (CommitmentType (Data := Data))) ++ₚ
         ((srcPSpec (Data := Data)).BCSOpeningPhase (pSpecCom (Data := Data))
@@ -476,10 +488,13 @@ of the two phases' challenges, both vacuously sampleable (no verifier challenges
 instance instSampleableBCSTransform :
     ∀ i, SampleableType (((srcPSpec (Data := Data)).BCSTransform (pSpecCom (Data := Data))
       (CommitmentType (Data := Data)) (e (Data := Data))).Challenge i) :=
-  fun i => inferInstanceAs (SampleableType
-    ((((srcPSpec (Data := Data)).renameMessage (CommitmentType (Data := Data))) ++ₚ
-      ((srcPSpec (Data := Data)).BCSOpeningPhase (pSpecCom (Data := Data))
-        (e (Data := Data)))).Challenge i))
+  fun i => by
+    let ij := (ChallengeIdx.sumEquiv
+      (pSpec₁ := (srcPSpec (Data := Data)).renameMessage (CommitmentType (Data := Data)))
+      (pSpec₂ := (srcPSpec (Data := Data)).BCSOpeningPhase (pSpecCom (Data := Data))
+        (e (Data := Data)))).symm i
+    exact ij.elim isEmptyElim isEmptyElim
+
 
 /-- Concrete realization obligation for the transparent interaction phase: the prover's unique
 message is the source commitment and the phase forwards the original statement/witness pair. -/
@@ -489,6 +504,7 @@ def interactionRealizesOracleMessages : Prop :=
         (srcMsgIdx (Data := Data)) (stmt, wit)
       = pure (stmt.1, (stmt, wit))
 
+omit [DecidableEq ι] [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] [(q : O.Query) → DecidableEq (O.Response q)] in
 theorem interactionRealizesOracleMessages_holds :
     interactionRealizesOracleMessages (oSpec := oSpec) (Data := Data) := by
   intro stmt wit
@@ -503,6 +519,7 @@ def openingRealizesQueryLog : Prop :=
     (openingRed (oSpec := oSpec) (Data := Data)).verifier.verify (cm, ⟨q, y⟩) tr
       = (pure (decide (O.answer cm q = y)) : OptionT (OracleComp oSpec) Bool)
 
+omit [DecidableEq ι] [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] in
 theorem openingRealizesQueryLog_holds :
     openingRealizesQueryLog (oSpec := oSpec) (Data := Data) := by
   intro cm q y tr
@@ -524,6 +541,7 @@ def phases :
     (Data := Data)
   opening_realizes_query_log := openingRealizesQueryLog (oSpec := oSpec) (Data := Data)
 
+omit [DecidableEq ι] [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] in
 theorem phases_realizationFrontier :
     OracleReduction.BCSPhaseRealizationFrontier
       (phases (oSpec := oSpec) (Data := Data)) := by
@@ -545,6 +563,7 @@ def phasesLawful :
     interactionRealizesOracleMessages_holds (oSpec := oSpec) (Data := Data)
   opening_realization_holds := openingRealizesQueryLog_holds (oSpec := oSpec) (Data := Data)
 
+omit [DecidableEq ι] [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] in
 /-- The lawful packaging projects back to the original phases (sanity seam). -/
 theorem phasesLawful_toBCSCompiledPhases :
     (phasesLawful (oSpec := oSpec) (Data := Data)).toBCSCompiledPhases
@@ -554,6 +573,7 @@ section Final
 
 variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
+omit [DecidableEq ι] in
 /-- **Headline (a): perfect completeness of the compiled transparent BCS protocol.**
 
 The BCS transform of the "commit and forward" interaction phase and the transparent opening phase is
@@ -572,29 +592,29 @@ theorem transparentBCS_perfectCompleteness
         (openingRed (oSpec := oSpec) (Data := Data))).perfectCompleteness init impl
       (relMid (Data := Data)) acceptRejectRel := by
   -- All challenge-augmented oracle specs are finite/inhabited: every challenge family is empty.
-  haveI : (oSpec + [(((srcPSpec (Data := Data)).renameMessage (CommitmentType (Data := Data))) ++ₚ
+  have : ∀ q, Fintype (((oSpec + [(((srcPSpec (Data := Data)).renameMessage (CommitmentType (Data := Data))) ++ₚ
       ((srcPSpec (Data := Data)).BCSOpeningPhase (pSpecCom (Data := Data))
-        (e (Data := Data)))).Challenge]ₒ).Fintype :=
+        (e (Data := Data)))).Challenge]ₒ) : OracleSpec.{0, 0} _).Range q) :=
     ProtocolSpec.appendCombinedOracle_fintype oSpec _ _
-  haveI : (oSpec + [(((srcPSpec (Data := Data)).renameMessage (CommitmentType (Data := Data))) ++ₚ
+  have : ∀ q, Inhabited (((oSpec + [(((srcPSpec (Data := Data)).renameMessage (CommitmentType (Data := Data))) ++ₚ
       ((srcPSpec (Data := Data)).BCSOpeningPhase (pSpecCom (Data := Data))
-        (e (Data := Data)))).Challenge]ₒ).Inhabited :=
+        (e (Data := Data)))).Challenge]ₒ) : OracleSpec.{0, 0} _).Range q) :=
     ProtocolSpec.appendCombinedOracle_inhabited oSpec _ _
-  haveI : (oSpec + [((srcPSpec (Data := Data)).renameMessage
-      (CommitmentType (Data := Data))).Challenge]ₒ).Fintype :=
-    haveI := ProtocolSpec.challengeOracle_fintype ((srcPSpec (Data := Data)).renameMessage
+  have : ∀ q, Fintype (((oSpec + [((srcPSpec (Data := Data)).renameMessage
+      (CommitmentType (Data := Data))).Challenge]ₒ) : OracleSpec.{0, 0} _).Range q) :=
+    have := ProtocolSpec.challengeOracle_fintype ((srcPSpec (Data := Data)).renameMessage
       (CommitmentType (Data := Data))); inferInstance
-  haveI : (oSpec + [((srcPSpec (Data := Data)).renameMessage
-      (CommitmentType (Data := Data))).Challenge]ₒ).Inhabited :=
-    haveI := ProtocolSpec.challengeOracle_inhabited ((srcPSpec (Data := Data)).renameMessage
+  have : ∀ q, Inhabited (((oSpec + [((srcPSpec (Data := Data)).renameMessage
+      (CommitmentType (Data := Data))).Challenge]ₒ) : OracleSpec.{0, 0} _).Range q) :=
+    have := ProtocolSpec.challengeOracle_inhabited ((srcPSpec (Data := Data)).renameMessage
       (CommitmentType (Data := Data))); inferInstance
-  haveI : (oSpec + [((srcPSpec (Data := Data)).BCSOpeningPhase (pSpecCom (Data := Data))
-      (e (Data := Data))).Challenge]ₒ).Fintype :=
-    haveI := ProtocolSpec.challengeOracle_fintype ((srcPSpec (Data := Data)).BCSOpeningPhase
+  have : ∀ q, Fintype (((oSpec + [((srcPSpec (Data := Data)).BCSOpeningPhase (pSpecCom (Data := Data))
+      (e (Data := Data))).Challenge]ₒ) : OracleSpec.{0, 0} _).Range q) :=
+    have := ProtocolSpec.challengeOracle_fintype ((srcPSpec (Data := Data)).BCSOpeningPhase
       (pSpecCom (Data := Data)) (e (Data := Data))); inferInstance
-  haveI : (oSpec + [((srcPSpec (Data := Data)).BCSOpeningPhase (pSpecCom (Data := Data))
-      (e (Data := Data))).Challenge]ₒ).Inhabited :=
-    haveI := ProtocolSpec.challengeOracle_inhabited ((srcPSpec (Data := Data)).BCSOpeningPhase
+  have : ∀ q, Inhabited (((oSpec + [((srcPSpec (Data := Data)).BCSOpeningPhase (pSpecCom (Data := Data))
+      (e (Data := Data))).Challenge]ₒ) : OracleSpec.{0, 0} _).Range q) :=
+    have := ProtocolSpec.challengeOracle_inhabited ((srcPSpec (Data := Data)).BCSOpeningPhase
       (pSpecCom (Data := Data)) (e (Data := Data))); inferInstance
   exact OracleReduction.BCSTransform_perfectCompleteness (e (Data := Data))
     (interactionRed (oSpec := oSpec) (Data := Data)) (openingRed (oSpec := oSpec) (Data := Data))
@@ -603,6 +623,7 @@ theorem transparentBCS_perfectCompleteness
     (hn_pos (Data := Data)) (hSeamDir (Data := Data)) (hOpeningFirstDir (Data := Data))
     hInit hImplSupp
 
+omit [DecidableEq ι] [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] in
 /-- **Headline (b): soundness of the compiled transparent BCS protocol.**
 
 The compiled BCS verifier is sound with error `0 + 0 = 0` (input language `langMid`, output language
@@ -615,7 +636,7 @@ theorem transparentBCS_soundness [Inhabited Data] [Inhabited O.Query]
     [∀ q, Inhabited (O.Response q)]
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     @Verifier.soundness _ oSpec (OpeningStmt (Data := Data)) Bool

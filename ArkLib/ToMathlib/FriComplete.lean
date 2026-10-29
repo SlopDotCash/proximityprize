@@ -3,8 +3,9 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.ProofSystem.Fri.Spec.General
+import ProximityPrize.Extensions.ProofSystem.Fri.Spec.General
 import ArkLib.OracleReduction.Completeness
+import ArkLib.ProofSystem.Fri.Spec.HonestFolding
 
 /-!
 # FRI: Perfect Completeness of the Composed Folding Reduction (scratch / issue #117)
@@ -65,31 +66,13 @@ direction; the codeword/polynomial messages are in the prover→verifier directi
 the instance the completeness keystone needs. These mirror the existing `Inhabited`/`Fintype`
 challenge instances in `Fri/Spec/SingleRound.lean`. -/
 
-instance instSampleableTypeFoldChallenge {i : Fin k} :
-    ∀ j, SampleableType ((FoldPhase.pSpec s (ω := ω) i).Challenge j) := by
-  rintro ⟨j, hj⟩
-  have h_j_eq_0 : j = 0 := by
-    cases j using Fin.cases with
-    | zero => rfl
-    | succ j1 =>
-        cases j1 using Fin.cases with
-        | zero => simp at hj
-        | succ j2 => exact j2.elim0
-  subst h_j_eq_0
-  simpa [FoldPhase.pSpec, Challenge] using (inferInstance : SampleableType F)
+noncomputable instance instSampleableTypeFoldChallenge {i : Fin k} :
+    ∀ j, SampleableType ((FoldPhase.pSpec s (ω := ω) i).Challenge j) :=
+  FoldPhase.instSampleableTypeChallenge s i
 
-instance instSampleableTypeFinalFoldChallenge :
-    ∀ j, SampleableType ((FinalFoldPhase.pSpec F).Challenge j) := by
-  rintro ⟨j, hj⟩
-  have h_j_eq_0 : j = 0 := by
-    cases j using Fin.cases with
-    | zero => rfl
-    | succ j1 =>
-        cases j1 using Fin.cases with
-        | zero => simp at hj
-        | succ j2 => exact j2.elim0
-  subst h_j_eq_0
-  simpa [FinalFoldPhase.pSpec, Challenge] using (inferInstance : SampleableType F)
+noncomputable instance instSampleableTypeFinalFoldChallenge :
+    ∀ j, SampleableType ((FinalFoldPhase.pSpec F).Challenge j) :=
+  FinalFoldPhase.instSampleableTypeChallenge
 
 /-! ## Brick A/B: per-round perfect completeness (named residual) -/
 

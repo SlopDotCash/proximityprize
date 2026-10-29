@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors (#466)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CensusLowerBound
+import Research.ProximityPrize.Frontier._G86RankCollapseDichotomy
 import Research.ProximityPrize.Frontier._PrizeShapeRateHalfBracket
 
 /-!
@@ -97,10 +98,8 @@ open scoped NNReal
 
 /-! ## G86 core, restated
 
-The abstract dichotomy from `Frontier/_G86RankCollapseDichotomy.lean` (statements
-byte-identical up to namespace).  Restated locally because that file landed after the
-shared olean cache was last built; the proofs are the same few lines of Mathlib linear
-algebra, and `#print axioms` below re-audits them. -/
+The abstract dichotomy is owned by `Frontier/_G86RankCollapseDichotomy.lean`.
+The local public names delegate to that owner, preserving the syndrome bridge's API. -/
 
 section G86Core
 
@@ -110,41 +109,20 @@ variable {r m : ℕ}
 /-- Restatement of `G86RankCollapseDichotomy.Plantable`: some **nonzero** syndrome
 vector is annihilated by every constraint functional. -/
 def Plantable (φ : Fin r × Fin m → Module.Dual F V) : Prop :=
-  ∃ v : V, v ≠ 0 ∧ ∀ p : Fin r × Fin m, φ p v = 0
+  ArkLib.ProximityGap.Frontier.G86RankCollapseDichotomy.Plantable φ
 
 /-- Restatement of `G86RankCollapseDichotomy.plantable_linearIndependent_cap`. -/
 theorem plantable_linearIndependent_cap {φ : Fin r × Fin m → Module.Dual F V}
-    (hp : Plantable φ) (h : LinearIndependent F φ) : r * m + 1 ≤ finrank F V := by
-  obtain ⟨v, hv, hann⟩ := hp
-  set W : Subspace F (Module.Dual F V) := (F ∙ v).dualAnnihilator with hW
-  have hmem : ∀ p : Fin r × Fin m, φ p ∈ W := by
-    intro p
-    rw [hW, Submodule.mem_dualAnnihilator]
-    intro w hw
-    obtain ⟨a, rfl⟩ := Submodule.mem_span_singleton.mp hw
-    simp [hann p]
-  set ψ : Fin r × Fin m → W := fun p => ⟨φ p, hmem p⟩ with hψ
-  have hψli : LinearIndependent F ψ := by
-    refine LinearIndependent.of_comp W.subtype ?_
-    have : (W.subtype ∘ ψ) = φ := by funext p; simp [hψ]
-    rwa [this]
-  have hcard : r * m ≤ finrank F W := by
-    have := hψli.fintype_card_le_finrank
-    simpa [Fintype.card_prod, Fintype.card_fin] using this
-  have hsplit : finrank F (F ∙ v) + finrank F W = finrank F V :=
-    Subspace.finrank_add_finrank_dualAnnihilator_eq (F ∙ v)
-  have hone : finrank F (F ∙ v) = 1 := finrank_span_singleton hv
-  omega
+    (hp : Plantable φ) (h : LinearIndependent F φ) : r * m + 1 ≤ finrank F V :=
+  ArkLib.ProximityGap.Frontier.G86RankCollapseDichotomy.plantable_linearIndependent_cap hp h
 
 /-- Restatement of `G86RankCollapseDichotomy.plantable_dichotomy`: generic cap OR
 explicit syzygy. -/
 theorem plantable_dichotomy {φ : Fin r × Fin m → Module.Dual F V} (hp : Plantable φ) :
     r * m + 1 ≤ finrank F V ∨
       ∃ c : Fin r × Fin m → F,
-        (∑ p : Fin r × Fin m, c p • φ p = 0) ∧ ∃ p : Fin r × Fin m, c p ≠ 0 := by
-  by_cases h : LinearIndependent F φ
-  · exact Or.inl (plantable_linearIndependent_cap hp h)
-  · exact Or.inr (Fintype.not_linearIndependent_iff.mp h)
+        (∑ p : Fin r × Fin m, c p • φ p = 0) ∧ ∃ p : Fin r × Fin m, c p ≠ 0 :=
+  ArkLib.ProximityGap.Frontier.G86RankCollapseDichotomy.plantable_dichotomy hp
 
 end G86Core
 
@@ -309,8 +287,10 @@ theorem exists_bridge_functionals (C : Submodule F (ι → F)) {r t : ℕ}
       apply LinearMap.ext
       intro v
       have := congrArg (fun f => f ((C.mkQ v, 0) : SyndromePair C)) ha
+      have hmk (j) : lbar i j (Submodule.Quotient.mk v) = ℓ i j v :=
+        hlbar_mk i j v
       simpa [LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.add_apply,
-        LinearMap.comp_apply, hlbar_mk] using this
+        LinearMap.comp_apply, hmk] using this
     exact Fintype.linearIndependent_iff.mp (hℓli i) a hzero
 
 /-! ## The bridge theorem: G86 applies verbatim -/
@@ -381,6 +361,121 @@ theorem mcaEvent_not_both_mem (C : Submodule F (ι → F)) {δ : ℝ≥0}
 
 end McaEvent
 
+/-- The coercion identity is checked with symbolic dimension and generator. -/
+private theorem censusEvalCode_coe_symbolic {p n k : ℕ} [Fact p.Prime] [NeZero n]
+    (g : ZMod p) :
+    (ProximityGap.CensusLowerBound.evalCode (fun i : Fin n => g ^ (i : ℕ)) k :
+      Set (Fin n → ZMod p)) = ArkLib.ProximityGap.KKH26.evalCode g n (k - 1) := rfl
+
+/-- Positive-dimensional evaluation codes have dimension at most their polynomial budget. -/
+private theorem finrank_censusEvalCode_le {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    (dom : ι → F) {k : ℕ} (hk : 0 < k) :
+    Module.finrank F (ProximityGap.CensusLowerBound.evalCode dom k) ≤ k := by
+  classical
+  let E : Polynomial F →ₗ[F] (ι → F) :=
+    LinearMap.pi (fun i => Polynomial.leval (dom i))
+  have hsub : ProximityGap.CensusLowerBound.evalCode dom k ≤
+      (Polynomial.degreeLT F k).map E := by
+    rintro f ⟨q, hq, hf⟩
+    have hqm : q ∈ Polynomial.degreeLT F k := by
+      rw [Polynomial.mem_degreeLT]
+      refine lt_of_le_of_lt Polynomial.degree_le_natDegree ?_
+      have hq' : q.natDegree < k := by omega
+      exact_mod_cast hq'
+    refine Submodule.mem_map.mpr ⟨q, hqm, ?_⟩
+    funext i
+    simp only [E, LinearMap.pi_apply, Polynomial.leval_apply, hf i]
+  have h1 := Submodule.finrank_mono hsub
+  have h2 := Submodule.finrank_map_le E (Polynomial.degreeLT F k)
+  have h3 : Module.finrank F (Polynomial.degreeLT F k) = k := by
+    rw [(Polynomial.degreeLTEquiv F k).finrank_eq]
+    simp
+  exact h1.trans (h2.trans h3.le)
+
+/-- A bad-scalar family exceeding the syndrome dimension supplies a syzygy. -/
+private theorem mcaEvent_syzygy_of_overbudget
+    {F ι : Type} [Field F] [Fintype F] [DecidableEq F]
+    [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    (C : Submodule F (ι → F)) {r t : ℕ} {δ : ℝ≥0} {u₀ u₁ : ι → F}
+    (γ : Fin r → F) (hr : 0 < r)
+    (hbad : ∀ i, _root_.ProximityGap.mcaEvent (C : Set (ι → F)) δ u₀ u₁ (γ i))
+    (ht : (t : ℝ≥0) ≤ (1 - δ) * (Fintype.card ι : ℝ≥0))
+    (hbudget : 2 * (Fintype.card ι - Module.finrank F C) <
+      r * (t - Module.finrank F C) + 1) :
+    ∃ φ : Fin r × Fin (t - Module.finrank F C) → Module.Dual F (SyndromePair C),
+      (∀ p, φ p (syndromePair C u₀ u₁) = 0) ∧
+      (∀ i, LinearIndependent F fun j => φ (i, j)) ∧
+      ∃ cc : Fin r × Fin (t - Module.finrank F C) → F,
+        (∑ p, cc p • φ p = 0) ∧ ∃ p, cc p ≠ 0 := by
+  have hwit : ∀ i, ∃ S : Finset ι, S.card = t ∧
+      ∃ c ∈ C, ∀ x ∈ S, c x = u₀ x + γ i * u₁ x :=
+    fun i => mcaEvent_witness (hbad i) ht
+  have hstack : u₀ ∉ C ∨ u₁ ∉ C :=
+    mcaEvent_not_both_mem C (hbad ⟨0, hr⟩)
+  obtain ⟨φ, hann, hblock, hdich⟩ := syndrome_dichotomy C γ hstack hwit
+  refine ⟨φ, hann, hblock, ?_⟩
+  exact hdich.resolve_left (not_le_of_gt hbudget)
+
+/-- The same budget conclusion in the independent-family presentation. -/
+private theorem mcaEvent_not_independent_of_overbudget
+    {F ι : Type} [Field F] [Fintype F] [DecidableEq F]
+    [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    (C : Submodule F (ι → F)) {r t : ℕ} {δ : ℝ≥0} {u₀ u₁ : ι → F}
+    (γ : Fin r → F) (hr : 0 < r)
+    (hbad : ∀ i, _root_.ProximityGap.mcaEvent (C : Set (ι → F)) δ u₀ u₁ (γ i))
+    (ht : (t : ℝ≥0) ≤ (1 - δ) * (Fintype.card ι : ℝ≥0))
+    (hbudget : 2 * (Fintype.card ι - Module.finrank F C) <
+      r * (t - Module.finrank F C) + 1) :
+    ∃ φ : Fin r × Fin (t - Module.finrank F C) → Module.Dual F (SyndromePair C),
+      (∀ p, φ p (syndromePair C u₀ u₁) = 0) ∧
+      (∀ i, LinearIndependent F fun j => φ (i, j)) ∧ ¬ LinearIndependent F φ := by
+  obtain ⟨φ, hann, hblock, cc, hcc, hne⟩ :=
+    mcaEvent_syzygy_of_overbudget C γ hr hbad ht hbudget
+  exact ⟨φ, hann, hblock, Fintype.not_linearIndependent_iff.mpr ⟨cc, hcc, hne⟩⟩
+
+/-- Specialize cardinal conversions while the finite index length is still symbolic. -/
+private theorem fin_mcaEvent_syzygy_of_overbudget
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {n : ℕ} [Nonempty (Fin n)]
+    (C : Submodule F (Fin n → F)) {r t : ℕ} {δ : ℝ≥0} {u₀ u₁ : Fin n → F}
+    (γ : Fin r → F) (hr : 0 < r)
+    (hbad : ∀ i, _root_.ProximityGap.mcaEvent (C : Set (Fin n → F)) δ u₀ u₁ (γ i))
+    (ht : (t : ℝ≥0) ≤ (1 - δ) * (n : ℝ≥0))
+    (hbudget : 2 * (n - Module.finrank F C) < r * (t - Module.finrank F C) + 1) :
+    ∃ φ : Fin r × Fin (t - Module.finrank F C) → Module.Dual F (SyndromePair C),
+      (∀ p, φ p (syndromePair C u₀ u₁) = 0) ∧
+      (∀ i, LinearIndependent F fun j => φ (i, j)) ∧
+      ∃ cc : Fin r × Fin (t - Module.finrank F C) → F,
+        (∑ p, cc p • φ p = 0) ∧ ∃ p, cc p ≠ 0 := by
+  exact mcaEvent_syzygy_of_overbudget C γ hr hbad
+    (by simpa only [Fintype.card_fin] using ht)
+    (by simpa only [Fintype.card_fin] using hbudget)
+
+/-- The independent-family presentation with the same symbolic finite-index conversion. -/
+private theorem fin_mcaEvent_not_independent_of_overbudget
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {n : ℕ} [Nonempty (Fin n)]
+    (C : Submodule F (Fin n → F)) {r t : ℕ} {δ : ℝ≥0} {u₀ u₁ : Fin n → F}
+    (γ : Fin r → F) (hr : 0 < r)
+    (hbad : ∀ i, _root_.ProximityGap.mcaEvent (C : Set (Fin n → F)) δ u₀ u₁ (γ i))
+    (ht : (t : ℝ≥0) ≤ (1 - δ) * (n : ℝ≥0))
+    (hbudget : 2 * (n - Module.finrank F C) < r * (t - Module.finrank F C) + 1) :
+    ∃ φ : Fin r × Fin (t - Module.finrank F C) → Module.Dual F (SyndromePair C),
+      (∀ p, φ p (syndromePair C u₀ u₁) = 0) ∧
+      (∀ i, LinearIndependent F fun j => φ (i, j)) ∧ ¬ LinearIndependent F φ := by
+  exact mcaEvent_not_independent_of_overbudget C γ hr hbad
+    (by simpa only [Fintype.card_fin] using ht)
+    (by simpa only [Fintype.card_fin] using hbudget)
+
+/-- The production integer budget, proved before introducing concrete field metadata. -/
+private theorem production_syzygy_budget {r K : ℕ} (hr : 64 ≤ r) (hK : K ≤ 2 ^ 29) :
+    2 * (2 ^ 30 - K) < r * (553648129 - K) + 1 := by
+  have h64 : 64 * (553648129 - K) ≤ r * (553648129 - K) :=
+    Nat.mul_le_mul_right _ hr
+  norm_num only [Nat.reducePow] at hK ⊢
+  omega
+
 /-! ## Consumer corollary at the production shape -/
 
 section Wall
@@ -396,41 +491,22 @@ local instance localInstance_G87McaEventSyndromeBridge_2 : NeZero P := ⟨prime_
 /-- The gate code, presented as a `Submodule`: evaluations of polynomials of degree
 `< 2^29` on the smooth domain `i ↦ g^i`, `n = 2^30`. -/
 noncomputable def wallCode : Submodule (ZMod P) (Fin (2 ^ 30) → ZMod P) :=
-  ProximityGap.CensusLowerBound.evalCode (fun i : Fin (2 ^ 30) => g ^ (i : ℕ)) (2 ^ 29)
+  ProximityGap.CensusLowerBound.evalCode (fun i : Fin (2 ^ 30) => ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ)) (2 ^ 29)
 
 /-- The submodule presentation carries exactly the gate hypothesis' code
 (`KKH26.evalCode g (2^30) (2^29 − 1)`, the code of
 `firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count`). -/
 theorem wallCode_coe :
     (wallCode : Set (Fin (2 ^ 30) → ZMod P)) =
-      ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1) := rfl
+      ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1) :=
+  censusEvalCode_coe_symbolic (k := 2 ^ 29) ArkLib.ProximityGap.PrizeShapePrimeP30.g
 
 /-- One-sided dimension bound: the wall code is parametrized by polynomials of degree
 `< 2^29`, so its dimension is at most `2^29`.  (The reverse Vandermonde inequality is
 never needed: a smaller code only shrinks the generic planting budget further.) -/
 theorem finrank_wallCode_le : Module.finrank (ZMod P) wallCode ≤ 2 ^ 29 := by
-  classical
-  set E : Polynomial (ZMod P) →ₗ[ZMod P] (Fin (2 ^ 30) → ZMod P) :=
-    LinearMap.pi (fun i : Fin (2 ^ 30) => Polynomial.leval (g ^ (i : ℕ))) with hE
-  have hsub : wallCode ≤ (Polynomial.degreeLT (ZMod P) (2 ^ 29)).map E := by
-    rintro f ⟨q, hq, hf⟩
-    have hqm : q ∈ Polynomial.degreeLT (ZMod P) (2 ^ 29) := by
-      rw [Polynomial.mem_degreeLT]
-      refine lt_of_le_of_lt (Polynomial.degree_le_natDegree) ?_
-      exact_mod_cast Nat.lt_of_le_of_lt hq (by norm_num)
-    refine Submodule.mem_map.mpr ⟨q, hqm, ?_⟩
-    funext i
-    simp [hE, LinearMap.pi_apply, Polynomial.leval_apply, hf i]
-  have h1 : Module.finrank (ZMod P) wallCode ≤
-      Module.finrank (ZMod P) ((Polynomial.degreeLT (ZMod P) (2 ^ 29)).map E) :=
-    Submodule.finrank_mono hsub
-  have h2 : Module.finrank (ZMod P) ((Polynomial.degreeLT (ZMod P) (2 ^ 29)).map E) ≤
-      Module.finrank (ZMod P) (Polynomial.degreeLT (ZMod P) (2 ^ 29)) :=
-    Submodule.finrank_map_le E _
-  have h3 : Module.finrank (ZMod P) (Polynomial.degreeLT (ZMod P) (2 ^ 29)) = 2 ^ 29 := by
-    rw [(Polynomial.degreeLTEquiv (ZMod P) (2 ^ 29)).finrank_eq]
-    simp
-  omega
+  exact finrank_censusEvalCode_le
+    (fun i : Fin (2 ^ 30) => ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ)) (by norm_num)
 
 /-- The wall threshold: at the gate radius (`predecessorRadius (2^30) (31·2^24)`), the
 `mcaEvent` witness set has at least `t = 2^30 − 31·2^24 + 1 = 553648129` points. -/
@@ -442,6 +518,11 @@ theorem wall_threshold :
     div_mul_cancel₀ _ (by norm_num : ((2 ^ 30 : ℕ) : ℝ≥0) ≠ 0),
     le_tsub_iff_right (Nat.cast_le.mpr (by norm_num : (31 * 2 ^ 24 - 1 : ℕ) ≤ 2 ^ 30))]
   exact_mod_cast (by norm_num : (553648129 + (31 * 2 ^ 24 - 1) : ℕ) ≤ 2 ^ 30)
+
+private theorem wall_threshold_numeric :
+    ((553648129 : ℕ) : ℝ≥0) ≤
+      (1 - predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) * ((2 ^ 30 : ℕ) : ℝ≥0) := by
+  simpa only [Fintype.card_fin] using wall_threshold
 
 /-- **Consumer corollary at the production shape (the honest provable form).**
 For the first certified prize field, the exact code, and the exact predecessor radius
@@ -457,7 +538,7 @@ syzygy configurations: independent-block planting is capped at `63` scalars. -/
 theorem wall_syzygy_of_sixtyFour_bad_scalars
     {r : ℕ} (hr : 64 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)
     (hbad : ∀ i, mcaEvent
-      (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))
+      (ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))
       (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u₀ u₁ (γ i)) :
     ∃ φ : Fin r × Fin (553648129 - Module.finrank (ZMod P) wallCode) →
         Module.Dual (ZMod P) (SyndromePair wallCode),
@@ -467,28 +548,15 @@ theorem wall_syzygy_of_sixtyFour_bad_scalars
         (∑ p, cc p • φ p = 0) ∧ ∃ p, cc p ≠ 0 := by
   have hbad' : ∀ i, mcaEvent (wallCode : Set (Fin (2 ^ 30) → ZMod P))
       (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u₀ u₁ (γ i) := by
-    intro i; rw [wallCode_coe]; exact hbad i
-  have hwit : ∀ i, ∃ S : Finset (Fin (2 ^ 30)), S.card = 553648129 ∧
-      ∃ c ∈ wallCode, ∀ x ∈ S, c x = u₀ x + γ i * u₁ x :=
-    fun i => mcaEvent_witness (hbad' i) wall_threshold
-  have hstack : u₀ ∉ wallCode ∨ u₁ ∉ wallCode :=
-    mcaEvent_not_both_mem wallCode (hbad' ⟨0, by omega⟩)
-  obtain ⟨φ, hann, hblock, hdich⟩ := syndrome_dichotomy wallCode γ hstack hwit
-  refine ⟨φ, hann, hblock, ?_⟩
-  rcases hdich with hcap | hsyz
-  · -- the generic cap is numerically impossible at the production shape
-    exfalso
-    have hkle : Module.finrank (ZMod P) wallCode ≤ 536870912 :=
-      le_trans finrank_wallCode_le (by norm_num)
-    have hcard : Fintype.card (Fin (2 ^ 30)) = 1073741824 := by
-      rw [Fintype.card_fin]; norm_num
-    generalize hK : Module.finrank (ZMod P) ↥wallCode = K at hcap hkle
-    generalize hN : Fintype.card (Fin (2 ^ 30)) = N at hcap hcard
-    have h64 : 64 * (553648129 - K) ≤ r * (553648129 - K) :=
-      Nat.mul_le_mul_right _ hr
-    have hcap' := le_trans (Nat.add_le_add_right h64 1) hcap
-    omega
-  · exact hsyz
+    simpa only [wallCode_coe] using hbad
+  have hbudget : 2 * (2 ^ 30 - Module.finrank (ZMod P) wallCode) <
+      r * (553648129 - Module.finrank (ZMod P) wallCode) + 1 :=
+    production_syzygy_budget hr finrank_wallCode_le
+  exact fin_mcaEvent_syzygy_of_overbudget (F := ZMod P) (n := 2 ^ 30)
+    (r := r) (t := 553648129)
+    (δ := predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) (u₀ := u₀) (u₁ := u₁)
+    wallCode γ (Nat.lt_of_lt_of_le (by norm_num : 0 < 64) hr)
+    hbad' wall_threshold_numeric hbudget
 
 /-- Equivalent impossibility form: the witness functionals of `64` bad scalars at the
 gate shape can **never** be linearly independent (their count over-spends the syndrome
@@ -496,16 +564,24 @@ budget: independent planting is capped at `63`). -/
 theorem wall_not_linearIndependent_of_sixtyFour_bad_scalars
     {r : ℕ} (hr : 64 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)
     (hbad : ∀ i, mcaEvent
-      (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))
+      (ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))
       (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u₀ u₁ (γ i)) :
     ∃ φ : Fin r × Fin (553648129 - Module.finrank (ZMod P) wallCode) →
         Module.Dual (ZMod P) (SyndromePair wallCode),
       (∀ p, φ p (syndromePair wallCode u₀ u₁) = 0) ∧
       (∀ i, LinearIndependent (ZMod P) fun j => φ (i, j)) ∧
       ¬ LinearIndependent (ZMod P) φ := by
-  obtain ⟨φ, hann, hblock, cc, hcc, hne⟩ :=
-    wall_syzygy_of_sixtyFour_bad_scalars hr u₀ u₁ γ hbad
-  exact ⟨φ, hann, hblock, Fintype.not_linearIndependent_iff.mpr ⟨cc, hcc, hne⟩⟩
+  have hbad' : ∀ i, mcaEvent (wallCode : Set (Fin (2 ^ 30) → ZMod P))
+      (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u₀ u₁ (γ i) := by
+    simpa only [wallCode_coe] using hbad
+  have hbudget : 2 * (2 ^ 30 - Module.finrank (ZMod P) wallCode) <
+      r * (553648129 - Module.finrank (ZMod P) wallCode) + 1 :=
+    production_syzygy_budget hr finrank_wallCode_le
+  exact fin_mcaEvent_not_independent_of_overbudget (F := ZMod P) (n := 2 ^ 30)
+    (r := r) (t := 553648129)
+    (δ := predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) (u₀ := u₀) (u₁ := u₁)
+    wallCode γ (Nat.lt_of_lt_of_le (by norm_num : 0 < 64) hr)
+    hbad' wall_threshold_numeric hbudget
 
 end Wall
 

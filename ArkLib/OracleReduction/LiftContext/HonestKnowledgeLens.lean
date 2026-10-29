@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.LiftContext.Lens
+import ProximityPrize.Extensions.OracleReduction.LiftContext.Lens
 
 /-!
 # The honest knowledge-soundness lens: pullback-in / transported-out relations
@@ -69,7 +69,7 @@ construction — both fields are definitional, with no false cross-phase implica
       ⟨stmtLens, Witness.InvLens.trivial⟩ where
   proj_knowledgeSound := by
     rintro outerStmtIn innerStmtOut ⟨⟩ hCompat hLift
-    exact hLift outerStmtIn innerStmtOut hCompat rfl
+    exact Or.inl (hLift outerStmtIn innerStmtOut hCompat rfl)
   lift_knowledgeSound := by
     rintro outerStmtIn ⟨⟩ ⟨⟩ _hCompat hRelIn
     exact hRelIn

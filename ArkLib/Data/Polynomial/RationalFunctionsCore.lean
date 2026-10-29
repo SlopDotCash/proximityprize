@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Katerina Hristova, František Silváši, Julian Sutherland, Ilia Vlasov
 -/
 
-import ArkLib.Data.Polynomial.Bivariate
+import ProximityPrize.Extensions.Data.Polynomial.Bivariate
 import ArkLib.Data.Polynomial.Prelims
 import Mathlib.FieldTheory.RatFunc.Defs
 import Mathlib.RingTheory.Ideal.Quotient.Defs
@@ -440,9 +440,9 @@ end FieldIrreducibility
 abbrev 𝒪 (H : F[X][Y]) : Type :=
   (Polynomial (Polynomial F)) ⧸ (Ideal.span {H_tilde' H})
 
-/-- The ring of regular elements field `𝒪` is a indeed a ring. -/
-noncomputable instance {H : F[X][Y]} : Ring (𝒪 H) :=
-  Ideal.Quotient.ring (Ideal.span {H_tilde' H})
+-- `𝒪 H` inherits the quotient's canonical CommRing and its Ring projection.
+-- A separate Ring instance here creates incompatible structure paths in
+-- composites with quotient algebra maps and localizations.
 
 /-- The ring homomorphism defining the embedding of `𝒪` into `𝕃`. -/
 noncomputable def embeddingOf𝒪Into𝕃 (H : F[X][Y]) : 𝒪 H →+* 𝕃 H :=
@@ -1708,7 +1708,7 @@ lemma regular_liftToFunctionField (H : F[X][Y]) (p : F[X]) :
 /-- Coefficient-polynomial images are regular elements of the function field. -/
 lemma regularElms_set_liftToFunctionField (H : F[X][Y]) (p : F[X]) :
     liftToFunctionField (H := H) p ∈ regularElms_set H := by
-  simpa using regularElms_set_liftBivariate H (Polynomial.C p)
+  exact regularElms_set_liftBivariate H (Polynomial.C p)
 
 /-- Nonzero coefficient polynomials remain nonzero after embedding into the function field. -/
 lemma liftToFunctionField_ne_zero {F : Type} [Field F] {H : F[X][Y]}

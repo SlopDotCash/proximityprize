@@ -58,6 +58,9 @@ variable {ι : Type} {oSpec : OracleSpec ι}
   {n : ℕ} {pSpec : ProtocolSpec n} [∀ i, SampleableType (pSpec.Challenge i)]
   {σ : Type}
 
+-- Observe all transcript events, as in the retained HVZK definitions.
+local instance : MeasurableSpace (FullTranscript pSpec) := ⊤
+
 /-- **Perfect HVZK transfers along an `evalDist`-equal honest distribution.** If two reductions have
 the same honest transcript distribution on every related pair, a simulator that is perfect-HVZK for
 one is perfect-HVZK for the other. -/
@@ -88,7 +91,7 @@ theorem statisticalHVZK.congr_honestDist
         evalDist (honestTranscriptDist init impl R₂ stmtIn witIn)) :
     statisticalHVZK init impl rel R₂ sim ε := by
   intro stmtIn witIn hMem
-  unfold tvDist
+  unfold measureTVDist
   rw [← hdist stmtIn witIn hMem]
   exact h stmtIn witIn hMem
 
@@ -144,7 +147,7 @@ theorem statisticalHVZK.simulator_congr
     (hsim : ∀ stmtIn, evalDist (sim stmtIn) = evalDist (sim' stmtIn)) :
     statisticalHVZK init impl rel R sim' ε := by
   intro stmtIn witIn hMem
-  unfold tvDist
+  unfold measureTVDist
   rw [← hsim stmtIn]
   exact h stmtIn witIn hMem
 
@@ -244,17 +247,17 @@ theorem statisticalHVZK.simulator_triangle
     {sim₁ sim₂ : TranscriptSimulator oSpec StmtIn pSpec} {ε₁ ε₂ : ℝ≥0}
     (h₁ : statisticalHVZK init impl rel R sim₁ ε₁)
     (h₂ : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R stmtIn witIn) (sim₂ stmtIn) ≤ (ε₂ : ℝ)) :
+      measureTVDist (honestTranscriptDist init impl R stmtIn witIn) (sim₂ stmtIn) ≤ (ε₂ : ℝ)) :
     ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (sim₁ stmtIn) (sim₂ stmtIn) ≤ ((ε₁ + ε₂ : ℝ≥0) : ℝ) := by
+      measureTVDist (sim₁ stmtIn) (sim₂ stmtIn) ≤ ((ε₁ + ε₂ : ℝ≥0) : ℝ) := by
   intro stmtIn witIn hMem
   have hstep₁ := h₁ stmtIn witIn hMem
   have hstep₂ := h₂ stmtIn witIn hMem
-  have htri := tvDist_triangle (sim₁ stmtIn)
+  have htri := measureTVDist_triangle (sim₁ stmtIn)
     (honestTranscriptDist init impl R stmtIn witIn) (sim₂ stmtIn)
-  calc tvDist (sim₁ stmtIn) (sim₂ stmtIn)
-      ≤ tvDist (sim₁ stmtIn) (honestTranscriptDist init impl R stmtIn witIn)
-          + tvDist (honestTranscriptDist init impl R stmtIn witIn) (sim₂ stmtIn) := htri
+  calc measureTVDist (sim₁ stmtIn) (sim₂ stmtIn)
+      ≤ measureTVDist (sim₁ stmtIn) (honestTranscriptDist init impl R stmtIn witIn)
+          + measureTVDist (honestTranscriptDist init impl R stmtIn witIn) (sim₂ stmtIn) := htri
     _ ≤ (ε₁ : ℝ) + (ε₂ : ℝ) := add_le_add hstep₁ hstep₂
     _ = ((ε₁ + ε₂ : ℝ≥0) : ℝ) := by push_cast; ring
 
@@ -269,18 +272,18 @@ theorem statisticalHVZK.triangle_honestDist
     {sim : TranscriptSimulator oSpec StmtIn pSpec} {ε₁ ε₂ : ℝ≥0}
     (h : statisticalHVZK init impl rel R₁ sim ε₁)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R₁ stmtIn witIn)
+      measureTVDist (honestTranscriptDist init impl R₁ stmtIn witIn)
         (honestTranscriptDist init impl R₂ stmtIn witIn) ≤ (ε₂ : ℝ)) :
     statisticalHVZK init impl rel R₂ sim (ε₁ + ε₂) := by
   intro stmtIn witIn hMem
   have hstep₁ := h stmtIn witIn hMem
   have hstep₂ := hdist stmtIn witIn hMem
-  have htri := tvDist_triangle (sim stmtIn)
+  have htri := measureTVDist_triangle (sim stmtIn)
     (honestTranscriptDist init impl R₁ stmtIn witIn)
     (honestTranscriptDist init impl R₂ stmtIn witIn)
-  calc tvDist (sim stmtIn) (honestTranscriptDist init impl R₂ stmtIn witIn)
-      ≤ tvDist (sim stmtIn) (honestTranscriptDist init impl R₁ stmtIn witIn)
-          + tvDist (honestTranscriptDist init impl R₁ stmtIn witIn)
+  calc measureTVDist (sim stmtIn) (honestTranscriptDist init impl R₂ stmtIn witIn)
+      ≤ measureTVDist (sim stmtIn) (honestTranscriptDist init impl R₁ stmtIn witIn)
+          + measureTVDist (honestTranscriptDist init impl R₁ stmtIn witIn)
             (honestTranscriptDist init impl R₂ stmtIn witIn) := htri
     _ ≤ (ε₁ : ℝ) + (ε₂ : ℝ) := add_le_add hstep₁ hstep₂
     _ = ((ε₁ + ε₂ : ℝ≥0) : ℝ) := by push_cast; ring
@@ -295,11 +298,11 @@ theorem statisticalHVZK.triangle_honestDist_symm
     {sim : TranscriptSimulator oSpec StmtIn pSpec} {ε₁ ε₂ : ℝ≥0}
     (h : statisticalHVZK init impl rel R₁ sim ε₁)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R₂ stmtIn witIn)
+      measureTVDist (honestTranscriptDist init impl R₂ stmtIn witIn)
         (honestTranscriptDist init impl R₁ stmtIn witIn) ≤ (ε₂ : ℝ)) :
     statisticalHVZK init impl rel R₂ sim (ε₁ + ε₂) :=
   h.triangle_honestDist fun stmtIn witIn hMem => by
-    rw [tvDist_comm]
+    rw [measureTVDist_comm]
     exact hdist stmtIn witIn hMem
 
 /-- **Zero-error approximate honest-distribution transfer for statistical HVZK.** If the honest
@@ -312,7 +315,7 @@ theorem statisticalHVZK.triangle_honestDist_zero
     {sim : TranscriptSimulator oSpec StmtIn pSpec} {ε : ℝ≥0}
     (h : statisticalHVZK init impl rel R₁ sim ε)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R₁ stmtIn witIn)
+      measureTVDist (honestTranscriptDist init impl R₁ stmtIn witIn)
         (honestTranscriptDist init impl R₂ stmtIn witIn) ≤ (0 : ℝ)) :
     statisticalHVZK init impl rel R₂ sim ε := by
   have hstat :
@@ -328,11 +331,11 @@ theorem statisticalHVZK.triangle_honestDist_symm_zero
     {sim : TranscriptSimulator oSpec StmtIn pSpec} {ε : ℝ≥0}
     (h : statisticalHVZK init impl rel R₁ sim ε)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R₂ stmtIn witIn)
+      measureTVDist (honestTranscriptDist init impl R₂ stmtIn witIn)
         (honestTranscriptDist init impl R₁ stmtIn witIn) ≤ (0 : ℝ)) :
     statisticalHVZK init impl rel R₂ sim ε :=
   h.triangle_honestDist_zero fun stmtIn witIn hMem => by
-    rw [tvDist_comm]
+    rw [measureTVDist_comm]
     exact hdist stmtIn witIn hMem
 
 /-- **Zero-error approximate honest-distribution transfer for perfect HVZK.** If the
@@ -346,7 +349,7 @@ theorem perfectHVZK.triangle_honestDist_zero
     {sim : TranscriptSimulator oSpec StmtIn pSpec}
     (h : perfectHVZK init impl rel R₁ sim)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R₁ stmtIn witIn)
+      measureTVDist (honestTranscriptDist init impl R₁ stmtIn witIn)
         (honestTranscriptDist init impl R₂ stmtIn witIn) ≤ (0 : ℝ)) :
     perfectHVZK init impl rel R₂ sim := by
   have hstat₁ :
@@ -366,11 +369,11 @@ theorem perfectHVZK.triangle_honestDist_symm_zero
     {sim : TranscriptSimulator oSpec StmtIn pSpec}
     (h : perfectHVZK init impl rel R₁ sim)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R₂ stmtIn witIn)
+      measureTVDist (honestTranscriptDist init impl R₂ stmtIn witIn)
         (honestTranscriptDist init impl R₁ stmtIn witIn) ≤ (0 : ℝ)) :
     perfectHVZK init impl rel R₂ sim :=
   h.triangle_honestDist_zero fun stmtIn witIn hMem => by
-    rw [tvDist_comm]
+    rw [measureTVDist_comm]
     exact hdist stmtIn witIn hMem
 
 /-- **Constant-simulator criterion for perfect HVZK.** If the honest transcript distribution is
@@ -533,7 +536,7 @@ theorem isStatHVZK.triangle_honestDist
     {R₁ R₂ : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec} {ε₁ ε₂ : ℝ≥0}
     (h : isStatHVZK init impl rel R₁ ε₁)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R₁ stmtIn witIn)
+      measureTVDist (honestTranscriptDist init impl R₁ stmtIn witIn)
         (honestTranscriptDist init impl R₂ stmtIn witIn) ≤ (ε₂ : ℝ)) :
     isStatHVZK init impl rel R₂ (ε₁ + ε₂) :=
   let ⟨sim, hsim⟩ := h
@@ -546,7 +549,7 @@ theorem isStatHVZK.triangle_honestDist_symm
     {R₁ R₂ : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec} {ε₁ ε₂ : ℝ≥0}
     (h : isStatHVZK init impl rel R₁ ε₁)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R₂ stmtIn witIn)
+      measureTVDist (honestTranscriptDist init impl R₂ stmtIn witIn)
         (honestTranscriptDist init impl R₁ stmtIn witIn) ≤ (ε₂ : ℝ)) :
     isStatHVZK init impl rel R₂ (ε₁ + ε₂) :=
   let ⟨sim, hsim⟩ := h
@@ -559,7 +562,7 @@ theorem isStatHVZK.triangle_honestDist_zero
     {R₁ R₂ : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec} {ε : ℝ≥0}
     (h : isStatHVZK init impl rel R₁ ε)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R₁ stmtIn witIn)
+      measureTVDist (honestTranscriptDist init impl R₁ stmtIn witIn)
         (honestTranscriptDist init impl R₂ stmtIn witIn) ≤ (0 : ℝ)) :
     isStatHVZK init impl rel R₂ ε :=
   let ⟨sim, hsim⟩ := h
@@ -573,7 +576,7 @@ theorem isStatHVZK.triangle_honestDist_symm_zero
     {R₁ R₂ : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec} {ε : ℝ≥0}
     (h : isStatHVZK init impl rel R₁ ε)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R₂ stmtIn witIn)
+      measureTVDist (honestTranscriptDist init impl R₂ stmtIn witIn)
         (honestTranscriptDist init impl R₁ stmtIn witIn) ≤ (0 : ℝ)) :
     isStatHVZK init impl rel R₂ ε :=
   let ⟨sim, hsim⟩ := h
@@ -586,7 +589,7 @@ theorem isHVZK.triangle_honestDist_zero
     {R₁ R₂ : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec}
     (h : isHVZK init impl rel R₁)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R₁ stmtIn witIn)
+      measureTVDist (honestTranscriptDist init impl R₁ stmtIn witIn)
         (honestTranscriptDist init impl R₂ stmtIn witIn) ≤ (0 : ℝ)) :
     isHVZK init impl rel R₂ :=
   let ⟨sim, hsim⟩ := h
@@ -600,7 +603,7 @@ theorem isHVZK.triangle_honestDist_symm_zero
     {R₁ R₂ : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec}
     (h : isHVZK init impl rel R₁)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (honestTranscriptDist init impl R₂ stmtIn witIn)
+      measureTVDist (honestTranscriptDist init impl R₂ stmtIn witIn)
         (honestTranscriptDist init impl R₁ stmtIn witIn) ≤ (0 : ℝ)) :
     isHVZK init impl rel R₂ :=
   let ⟨sim, hsim⟩ := h

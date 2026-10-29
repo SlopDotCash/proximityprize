@@ -60,12 +60,21 @@ namespace Reduction
 
 set_option linter.unusedSectionVars false
 
+-- The retained distribution equalities observe all events, as in the original discrete model.
+private local instance (priority := 100) (α : Type) : MeasurableSpace α := ⊤
+private local instance (priority := 100) (α : Type) : DiscreteMeasurableSpace α := ⟨fun _ => MeasurableSpace.measurableSet_top⟩
+private local instance (priority := 100) (α : Type) : MeasurableSingletonClass α := ⟨fun _ => MeasurableSpace.measurableSet_top⟩
+
 variable {ι : Type} {oSpec : OracleSpec ι} {StmtIn WitIn StmtOut WitOut : Type}
   {n : ℕ} {pSpec : ProtocolSpec n} [∀ i, SampleableType (pSpec.Challenge i)]
   {σ : Type}
   [VCVCompatible StmtIn] [∀ i, VCVCompatible (pSpec.Challenge i)]
   [DecidableEq StmtIn] [∀ i, DecidableEq (pSpec.Message i)]
   [∀ i, DecidableEq (pSpec.Challenge i)] [∀ i, VCVCompatible (pSpec.Message i)]
+
+private local instance : MeasurableSpace (FullTranscript pSpec) := ⊤
+private local instance : MeasurableSpace (FiatShamirProofTranscript (pSpec := pSpec)) := ⊤
+private local instance : MeasurableSpace σ := ⊤
 
 /-! ## Piece 1: Fiat-Shamir query keys at different rounds are distinct -/
 
@@ -274,18 +283,12 @@ measure-preserving. -/
 lemma evalDist_uniformSample_bind_update_bind_dep
     {ι' : Type} {R : ι' → Type} [Fintype ι'] [DecidableEq ι']
     [∀ i, Fintype (R i)] [∀ i, Nonempty (R i)] [∀ i, SampleableType (R i)]
-    [SampleableType (∀ i, R i)] (t : ι') {β : Type} (Ψ : (∀ i, R i) → ProbComp β) :
+    [SampleableType (∀ i, R i)] (t : ι') {β : Type} [MeasurableSpace β] (Ψ : (∀ i, R i) → ProbComp β) :
     𝒟[do let u ← $ᵗ (R t); let g ← $ᵗ (∀ i, R i); Ψ (Function.update g t u)]
       = 𝒟[do let g ← $ᵗ (∀ i, R i); Ψ g] := by
-  have h1 : (do let u ← $ᵗ (R t); let g ← $ᵗ (∀ i, R i); Ψ (Function.update g t u))
-      = (($ᵗ (R t)) >>= fun u => ($ᵗ (∀ i, R i)) >>= fun g =>
-          pure (Function.update g t u)) >>= Ψ := by
-    simp only [bind_assoc, pure_bind]
-  have h2 : (($ᵗ (R t)) >>= fun u => ($ᵗ (∀ i, R i)) >>= fun g =>
-        pure (Function.update g t u))
-      = (do let u ← $ᵗ (R t); let g ← $ᵗ (∀ i, R i); pure (Function.update g t u)) := rfl
-  rw [h1, evalDist_bind, h2, OracleComp.evalDist_uniformSample_bind_update_dep t,
-    ← evalDist_bind]
+  simpa only [bind_assoc, pure_bind] using
+    (evalDist_bind_bind_update_dependent t ($ᵗ (R t)) ($ᵗ (∀ i, R i))
+      SampleableType.evalDist_uniformSample SampleableType.evalDist_uniformSample Ψ)
 
 set_option maxHeartbeats 2000000 in
 /-- **Mixed lazy random oracle = eager challenge-table sampling (cache-parametrized).**
@@ -298,7 +301,7 @@ deterministically from the overlay `tableExtendingDep c g`. This is the lazy-vs-
 `fsChallenge_lazy_eq_eager` lifted across the mixed `oSpec + fsChallengeOracle` simulation, and is
 the form in which the cache disappears from the HVZK coupling kernel. -/
 theorem evalDist_simulateQ_canonicalFSImpl_run_eq_eager
-    (impl : QueryImpl oSpec (StateT σ ProbComp)) {α : Type}
+    (impl : QueryImpl oSpec (StateT σ ProbComp)) {α : Type} [MeasurableSpace α]
     (oa : OracleComp (oSpec + fsChallengeOracle StmtIn pSpec) α)
     (a : σ) (c : (fsChallengeOracle StmtIn pSpec).QueryCache) :
     𝒟[(fun p : α × σ × (fsChallengeOracle StmtIn pSpec).QueryCache => (p.1, p.2.1)) <$>
@@ -320,7 +323,7 @@ theorem evalDist_simulateQ_canonicalFSImpl_run_eq_eager
       rw [simulateQ_pure]
       change (fun p : α × σ × (fsChallengeOracle StmtIn pSpec).QueryCache => (p.1, p.2.1)) <$>
         (pure (x, (a, c)) : ProbComp _) = _
-      rw [map_pure]
+      rw [_root_.map_pure]
     rw [hlhs]
     have hin : ∀ g : (q : (fsChallengeOracle StmtIn pSpec).Domain) →
         (fsChallengeOracle StmtIn pSpec).Range q,
@@ -329,10 +332,8 @@ theorem evalDist_simulateQ_canonicalFSImpl_run_eq_eager
         = (pure (x, a) : ProbComp (α × σ)) := by
       intro g; rw [simulateQ_pure]; rfl
     simp only [hin]
-    symm
-    refine evalDist_ext fun z => ?_
-    rw [probOutput_bind_eq_tsum, ENNReal.tsum_mul_right,
-      tsum_probOutput_eq_one' (by simp), one_mul]
+    exact (OracleComp.evalDist_bind_const _ _).symm
+
   | query_bind t k ih =>
     simp only [simulateQ_bind, simulateQ_spec_query, StateT.run_bind, map_bind]
     rcases t with t₁ | t₂
@@ -343,9 +344,7 @@ theorem evalDist_simulateQ_canonicalFSImpl_run_eq_eager
         ($ᵗ ((q : (fsChallengeOracle StmtIn pSpec).Domain) →
           (fsChallengeOracle StmtIn pSpec).Range q)) >>= fun g =>
           (simulateQ (impl + fsTableImpl (σ := σ) (tableExtendingDep c g)) (k y.1)).run y.2]
-      · rw [evalDist_bind, evalDist_bind]
-        refine congrArg _ (funext fun y => ?_)
-        exact ih y.1 y.2 c
+      · exact OracleComp.evalDist_bind_congr_of_support _ _ _ (fun y _ => ih y.1 y.2 c)
       · exact (OracleComp.evalDist_bind_comm _ _ _).symm
     · -- challenge query: split on cache hit/miss.
       rcases hc : c t₂ with _ | u
@@ -373,27 +372,28 @@ theorem evalDist_simulateQ_canonicalFSImpl_run_eq_eager
           let g ← $ᵗ ((q : (fsChallengeOracle StmtIn pSpec).Domain) →
             (fsChallengeOracle StmtIn pSpec).Range q)
           ψ (Function.update g t₂ u)]
-        · rw [evalDist_bind, evalDist_bind]
-          refine congrArg _ (funext fun u => ?_)
+        · apply OracleComp.evalDist_bind_congr_of_support
+          intro u _
           rw [ih u a (c.cacheQuery t₂ u)]
           rw [hfun u]
-        · rw [evalDist_uniformSample_bind_update_bind_dep
+        · exact evalDist_uniformSample_bind_update_bind_dep
             (ι' := (fsChallengeOracle StmtIn pSpec).Domain)
-            (R := (fsChallengeOracle StmtIn pSpec).Range) t₂ ψ]
+            (R := (fsChallengeOracle StmtIn pSpec).Range) t₂ ψ
       · -- hit: the cached value is read back on both sides; no sampling.
         rw [canonicalFSImpl_run_inr, canonicalFSChallengeImpl_run_some hc, bind_assoc]
         simp only [pure_bind, add_fsTableImpl_run_inr]
         have htbl : ∀ g : (q : (fsChallengeOracle StmtIn pSpec).Domain) →
             (fsChallengeOracle StmtIn pSpec).Range q,
             tableExtendingDep c g t₂ = u := by
-          intro g; simp [tableExtendingDep, hc]
+          intro g
+          simp only [tableExtendingDep, completeTable, hc, Option.getD_some]
         simp only [htbl]
         exact ih u a c
 
 /-- Empty-cache form of the mixed lazy = eager bridge: starting from the empty challenge cache,
 the overlay is the bare uniform table. -/
 theorem evalDist_simulateQ_canonicalFSImpl_run_empty_eq_eager
-    (impl : QueryImpl oSpec (StateT σ ProbComp)) {α : Type}
+    (impl : QueryImpl oSpec (StateT σ ProbComp)) {α : Type} [MeasurableSpace α]
     (oa : OracleComp (oSpec + fsChallengeOracle StmtIn pSpec) α) (a : σ) :
     𝒟[(fun p : α × σ × (fsChallengeOracle StmtIn pSpec).QueryCache => (p.1, p.2.1)) <$>
         (simulateQ (canonicalFSImpl (StmtIn := StmtIn) impl) oa).run (a, ∅)]
@@ -408,7 +408,7 @@ theorem evalDist_simulateQ_canonicalFSImpl_run_empty_eq_eager
 
 /-- Output-marginal (`run'`) form of the mixed lazy = eager bridge from the empty cache. -/
 theorem evalDist_simulateQ_canonicalFSImpl_run'_empty_eq_eager
-    (impl : QueryImpl oSpec (StateT σ ProbComp)) {α : Type}
+    (impl : QueryImpl oSpec (StateT σ ProbComp)) {α : Type} [MeasurableSpace α]
     (oa : OracleComp (oSpec + fsChallengeOracle StmtIn pSpec) α) (a : σ) :
     𝒟[(simulateQ (canonicalFSImpl (StmtIn := StmtIn) impl) oa).run' (a, ∅)]
       = 𝒟[do
@@ -432,8 +432,8 @@ theorem evalDist_simulateQ_canonicalFSImpl_run'_empty_eq_eager
     rw [map_bind]
     exact rfl
   rw [h1, h2]
-  conv_lhs => rw [evalDist_map]
-  conv_rhs => rw [evalDist_map]
+  conv_lhs => rw [evalDist_map _ measurable_fst]
+  conv_rhs => rw [evalDist_map _ measurable_fst]
   rw [evalDist_simulateQ_canonicalFSImpl_run_empty_eq_eager impl oa a]
 
 /-! ## Reduction of the coupling kernel to its cache-free eager form
@@ -497,10 +497,10 @@ theorem canonicalFSPerStateCoupling_of_eagerCoupling
             (StateT (σ × (fsChallengeOracle StmtIn pSpec).QueryCache) ProbComp))
       = canonicalFSImpl (StmtIn := StmtIn) impl from rfl]
   rw [stateT_run'_map]
-  conv_lhs => rw [evalDist_map,
+  conv_lhs => rw [evalDist_map _ (by fun_prop),
     evalDist_simulateQ_canonicalFSImpl_run'_empty_eq_eager impl
       (R.fiatShamirHonestExecution stmt wit).run a]
-  conv_rhs => rw [evalDist_map]
+  conv_rhs => rw [evalDist_map _ (by fun_prop)]
 
 /-! ## Verifier collapse in the eager world
 
@@ -557,22 +557,18 @@ theorem simulateQ_add_fsTableImpl_deriveTranscriptSRAux_run
       = pure (derivedTranscriptAux g stmt k messages j, a) := by
   induction j using Fin.induction with
   | zero =>
-    simp only [MessagesUpTo.deriveTranscriptSRAux, derivedTranscriptAux, Fin.induction_zero]
-    rw [simulateQ_pure]
+    rw [MessagesUpTo.deriveTranscriptSRAux_zero, simulateQ_pure]
     rfl
   | succ i ihj =>
-    simp only [MessagesUpTo.deriveTranscriptSRAux, derivedTranscriptAux] at ihj ⊢
-    rw [Fin.induction_succ, Fin.induction_succ]
-    rw [simulateQ_bind, StateT.run_bind, ihj]
-    simp only [pure_bind]
+    rw [MessagesUpTo.deriveTranscriptSRAux_succ, simulateQ_bind, StateT.run_bind, ihj]
+    simp only [pure_bind, derivedTranscriptAux, Fin.induction_succ]
     split <;> rename_i hDir <;> split <;> rename_i hDir' <;>
       first
         | exact Direction.noConfusion (hDir.symm.trans hDir')
-        | (rw [simulateQ_pure]; rfl)
-        | (rw [simulateQ_bind, StateT.run_bind,
+        | rfl
+        | (erw [simulateQ_bind, StateT.run_bind,
             simulateQ_add_fsTableImpl_query_run impl g _ a]
            simp only [pure_bind]
-           rw [simulateQ_pure]
            rfl)
 
 /-- Full-length form of the eager verifier collapse: re-deriving the entire transcript from the
@@ -600,18 +596,7 @@ theorem toMessagesUpTo_extend {n : ℕ} {pSpec : ProtocolSpec n} {m : Fin n}
     (h : pSpec.dir m = .V_to_P)
     (T : Transcript m.castSucc pSpec) (ch : pSpec.Challenge ⟨m, h⟩) :
     (Transcript.concat ch T).toMessagesUpTo = T.toMessagesUpTo.extend h := by
-  funext j
-  obtain ⟨i, hi⟩ := j
-  simp only [Transcript.toMessagesUpTo, Transcript.concat, MessagesUpTo.extend,
-    MessagesUpTo.concat']
-  revert hi
-  induction i using Fin.lastCases with
-  | last =>
-    intro hi
-    exact Direction.noConfusion (hi.symm.trans h)
-  | cast k =>
-    intro _
-    simp [Fin.snoc_castSucc, Fin.dconcat_castSucc]
+  exact Transcript.toMessagesUpTo_concat_challenge T h ch
 
 namespace MessagesUpTo
 

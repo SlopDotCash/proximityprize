@@ -3,13 +3,14 @@ Copyright (c) 2024 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
+module
 
-import VCVio
-import CompPoly.Data.MvPolynomial.Notation
-import ArkLib.Data.MvPolynomial.Degrees
-import ArkLib.Data.MvPolynomial.SchwartzZippelCounting
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.RingTheory.IntegralDomain
+public import VCVio.OracleComp.OracleContext
+public import VCVio.OracleComp.SimSemantics.ReaderT.Basic
+public import CompPoly.Data.MvPolynomial.Notation
+public import Mathlib.Algebra.Polynomial.Roots
+public import ArkLib.Data.MvPolynomial.Degrees
+public import ArkLib.Data.MvPolynomial.SchwartzZippelCounting
 -- import ArkLib.Data.MlPoly.Basic
 
 /-!
@@ -30,6 +31,8 @@ import Mathlib.RingTheory.IntegralDomain
   - Vectors. This instance turns vectors into oracles for which one can query specific positions.
 -/
 
+@[expose] public section
+
 universe u v w
 
 open OracleComp OracleSpec OracleQuery
@@ -41,7 +44,7 @@ open OracleComp OracleSpec OracleQuery
   - a function `answer` that given a message `m : Message` and a query `q : Query`,
   returns a response `r : Response`.
 
-Note: turn `(Query, Response)` into a general `PFunctor` (i.e. `Response : Query → Type`) This
+TODO: turn `(Query, Response)` into a general `PFunctor` (i.e. `Response : Query → Type`) This
 allows for better compositionality of `OracleInterface`, including (indexed) sum, instead of
 requiring indexed family of `OracleInterface`s.
 
@@ -69,14 +72,24 @@ def spec {Message : Type*} [O : OracleInterface Message] :
     OracleSpec O.Query :=
   O.toOC.spec
 
+@[implicit_reducible]
 def answer {Message : Type*} [O : OracleInterface Message]
     (m : Message) (q : O.Query) : O.Response q :=
   (O.toOC.impl q).run m
+
+/-- Pointwise decidable response equality induces a decidable predicate for equality of two
+oracle answers. Keeping this at the `answer` API boundary avoids exposing its `ReaderM`
+implementation merely to construct a finite filter. -/
+instance instDecidablePredAnswerEq {Message : Type*} [O : OracleInterface Message]
+    [∀ q, DecidableEq (O.toOC.spec q)] (a b : Message) :
+    DecidablePred (fun q => answer a q = answer b q) := fun q =>
+  (inferInstance : DecidableEq (O.toOC.spec q)) (answer a q) (answer b q)
 
 /-- The default instance for `OracleInterface`, where the query is trivial (a `Unit`) and the
   response returns the data. We do not register this as an instance, instead explicitly calling it
   where necessary.
 -/
+@[reducible]
 def instDefault {Message : Type u} : OracleInterface Message where
   Query := Unit
   toOC.spec := fun _ => Message
@@ -109,23 +122,6 @@ instance (i : Fin 0) : OracleInterface i.elim0 := Fin.elim0 i
 instance instFunction {α β : Type _} : OracleInterface (α → β) where
   Query := α
   toOC := OracleContext.ofFunction α β
-
-instance {ι : Type u} [DecidableEq ι] (v : ι → Type v) [O : ∀ i, OracleInterface (v i)]
-    [h : ∀ i, DecidableEq (Query (v i))]
-    [h' : ∀ i q, DecidableEq ((O i).Response q)] :
-    [v]ₒ.DecidableEq where
-  decidableEq_A := inferInstanceAs (DecidableEq ((i : ι) × Query (v i)))
-  decidableEq_B | ⟨i, q⟩ => h' i q
-
-instance {ι : Type u} (v : ι → Type v) [O : ∀ i, OracleInterface (v i)]
-    [h : ∀ i q, Fintype ((O i).Response q)] :
-    [v]ₒ.Fintype where
-  fintype_B | ⟨i, q⟩ => h i q
-
-instance {ι : Type u} (v : ι → Type v) [O : ∀ i, OracleInterface (v i)]
-    [h : ∀ i q, Inhabited ((O i).Response q)] :
-    [v]ₒ.Inhabited where
-  inhabited_B | ⟨i, q⟩ => h i q
 
 @[reducible, inline]
 instance {ι₁ : Type u} {T₁ : ι₁ → Type v} [inst₁ : ∀ i, OracleInterface (T₁ i)]
@@ -232,7 +228,32 @@ def simOracle2 {ι : Type u} (oSpec : OracleSpec ι)
   QueryImpl.addLift (QueryImpl.id oSpec)
     (QueryImpl.add (simOracle0 T₁ t₁) (simOracle0 T₂ t₂))
 
-open Finset in
+/-- Simulating a query to the second oracle family through `simOracle2` answers it from that
+family's values. For an oracle verifier this family is the prover's messages.
+
+The query is stated at its single-step lift into the combined specification. A verifier's
+`query` elaborates through a longer `MonadLiftT` chain, so this rewrites it only up to instance
+unfolding (`OracleVerifier.toVerifier_verify_of_query_guard` uses it with `erw`). -/
+theorem simulateQ_simOracle2_liftM_query_snd {ι : Type} {oSpec : OracleSpec ι}
+    {ι₁ : Type} {T₁ : ι₁ → Type} [∀ i, OracleInterface (T₁ i)]
+    {ι₂ : Type} {T₂ : ι₂ → Type} [∀ i, OracleInterface (T₂ i)]
+    (t₁ : ∀ i, T₁ i) (t₂ : ∀ i, T₂ i) (j : ι₂) (q : Query (T₂ j)) :
+    simulateQ (simOracle2 oSpec t₁ t₂)
+      (liftM (OracleSpec.query (spec := [T₂]ₒ) ⟨j, q⟩) :
+        OracleComp (oSpec + ([T₁]ₒ + [T₂]ₒ)) _) = pure (answer (t₂ j) q) :=
+  rfl
+
+/-- The queries on which two messages give the same oracle answer. -/
+def agreementQueries {Message : Type*} (O : OracleInterface Message)
+    [Fintype O.Query] [∀ q, DecidableEq (O.toOC.spec q)] (a b : Message) : Finset O.Query :=
+  Finset.univ.filter fun q => answer a q = answer b q
+
+@[simp]
+lemma mem_agreementQueries {Message : Type*} {O : OracleInterface Message}
+    [Fintype O.Query] [∀ q, DecidableEq (O.toOC.spec q)] {a b : Message} {q : O.Query} :
+    q ∈ O.agreementQueries a b ↔ answer a q = answer b q := by
+  simp [agreementQueries]
+
 /-- A message type together with a `OracleInterface` instance is said to have **oracle distance**
   (at most) `d` if for any two distinct messages, there is at most `d` queries that distinguish
   them, i.e.
@@ -244,9 +265,7 @@ open Finset in
   `(Mv)Polynomial`. -/
 def distanceLE {Message : Type*} (O : OracleInterface Message)
     [Fintype O.Query] [∀ q, DecidableEq (O.toOC.spec q)] (d : ℕ) : Prop :=
-  have eval : Message → (q : O.Query) → O.toOC.spec q :=
-    fun m q => (O.toOC.impl q).run m
-  ∀ a b : Message, a ≠ b → #{q | eval a q = eval b q} ≤ d
+  ∀ a b : Message, a ≠ b → (O.agreementQueries a b).card ≤ d
 
 section Polynomial
 
@@ -321,38 +340,22 @@ end OracleInterface
 
 section PolynomialDistance
 
--- Note: refactor these theorems and move them into the appropriate `(Mv)Polynomial` files
+-- TODO: refactor these theorems and move them into the appropriate `(Mv)Polynomial` files
 
-open Polynomial MvPolynomial OracleInterface Finset
+open Polynomial MvPolynomial OracleInterface
 
 variable {R : Type*} [CommRing R] {d : ℕ} [Fintype R] [DecidableEq R] [IsDomain R]
 
-omit [Fintype R] [DecidableEq R] [IsDomain R] in
-private lemma totalDegree_le_card_mul_of_degreeOf_le {σ : Type*} [Fintype σ]
-    {p : MvPolynomial σ R} (hp : ∀ i, p.degreeOf i ≤ d) :
-    p.totalDegree ≤ Fintype.card σ * d := by
-  classical
-  rw [MvPolynomial.totalDegree]
-  refine Finset.sup_le ?_
-  intro m hm
-  calc
-    Finsupp.sum m (fun _ e => e) = ∑ i : σ, m i := by
-      simp [Finsupp.sum_fintype]
-    _ ≤ ∑ _i : σ, d := by
-      exact Finset.sum_le_sum fun i _ =>
-        le_trans (MvPolynomial.monomial_le_degreeOf i hm) (hp i)
-    _ = Fintype.card σ * d := by
-      simp [Finset.sum_const, mul_comm]
-
--- Note: golf this theorem
+-- TODO: golf this theorem
 @[simp]
 theorem distanceLE_polynomial_degreeLT :
     distanceLE (instPolynomialDegreeLT R d) (d - 1) := by
-  simp [distanceLE, instPolynomialDegreeLT, mem_degreeLT]
+  simp only [distanceLE, ne_eq, instPolynomialDegreeLT, Subtype.forall,
+    mem_degreeLT, Subtype.mk.injEq]
   intro p hp p' hp' hNe
-  have : ∀ q ∈ Finset.univ, p.eval q = p'.eval q ↔ q ∈ (p - p').roots := by
+  have hEvalRoot : ∀ q ∈ Finset.univ, p.eval q = p'.eval q ↔ q ∈ (p - p').roots := by
     intro q _
-    simp
+    simp only [mem_roots', ne_eq, IsRoot.def, Polynomial.eval_sub]
     constructor <;> intro h
     · constructor
       · intro h'; contrapose! hNe; exact sub_eq_zero.mp h'
@@ -360,21 +363,22 @@ theorem distanceLE_polynomial_degreeLT :
     · exact sub_eq_zero.mp h.2
   conv =>
     enter [1, 1]
-    apply Finset.filter_congr this
-  simp [Membership.mem, Finset.filter, Finset.card]
+    apply Finset.filter_congr hEvalRoot
+  simp only [mem_roots', ne_eq, IsRoot.def, Polynomial.eval_sub]
   have : (p - p').roots.card < d := by
     have hSubNe : p - p' ≠ 0 := sub_ne_zero_of_ne hNe
     have hSubDegLt : (p - p').degree < d := lt_of_le_of_lt (degree_sub_le p p') (by simp [hp, hp'])
     have := Polynomial.card_roots hSubNe
     have : (p - p').roots.card < (d : WithBot ℕ) := lt_of_le_of_lt this hSubDegLt
-    simp at this; exact this
+    simp only [Nat.cast_lt] at this
+    exact this
   refine Nat.le_sub_one_of_lt (lt_of_le_of_lt ?_ this)
   apply Multiset.card_le_card
   rw [Multiset.le_iff_subset]
-  · intro x hx; simp at hx; exact hx
-  · simp [Multiset.nodup_iff_count_le_one]
-    intro a; simp [Multiset.count_filter, Multiset.count_univ]
-    aesop
+  · intro x hx
+    rw [mem_roots']
+    simpa only [IsRoot.def, Polynomial.eval_sub] using (Multiset.mem_filter.mp hx).2
+  · exact Finset.univ.nodup.filter _
 
 theorem distanceLE_polynomial_degreeLE :
     distanceLE (instPolynomialDegreeLT R d) d := by
@@ -387,68 +391,17 @@ theorem distanceLE_polynomial_degreeLE :
 theorem distanceLE_mvPolynomial_degreeLE {σ : Type} [Fintype σ] [DecidableEq σ] :
     distanceLE (instMvPolynomialDegreeLE R d σ)
       (Fintype.card σ * d * Fintype.card R ^ (Fintype.card σ - 1)) := by
-  classical
-  intro a b hne
-  change #{q | MvPolynomial.eval q a.1 = MvPolynomial.eval q b.1} ≤
-      Fintype.card σ * d * Fintype.card R ^ (Fintype.card σ - 1)
-  let f : MvPolynomial σ R := a.1 - b.1
-  have hf : f ≠ 0 := by
-    intro hf0
-    apply hne
-    have hf0' : a.1 - b.1 = 0 := by simpa [f] using hf0
-    exact Subtype.ext (sub_eq_zero.mp hf0')
-  have hdegOf : ∀ i, f.degreeOf i ≤ d := by
-    intro i
-    have ha := (MvPolynomial.mem_restrictDegree_iff_degreeOf_le a.1 d).mp a.2 i
-    have hb := (MvPolynomial.mem_restrictDegree_iff_degreeOf_le b.1 d).mp b.2 i
-    exact le_trans (by simpa [f] using MvPolynomial.degreeOf_sub_le i a.1 b.1) (max_le ha hb)
-  have htd : f.totalDegree ≤ Fintype.card σ * d :=
-    totalDegree_le_card_mul_of_degreeOf_le hdegOf
-  have hfilter_eq : #{q | MvPolynomial.eval q a.1 = MvPolynomial.eval q b.1} =
-      #{q | MvPolynomial.eval q f = 0} := by
-    congr 1
-    exact Finset.filter_congr (by
-      intro q _
-      simp [f, MvPolynomial.eval_sub, sub_eq_zero])
-  rw [hfilter_eq]
-  let e : σ ≃ Fin (Fintype.card σ) := Fintype.equivFin σ
-  let g : MvPolynomial (Fin (Fintype.card σ)) R := (MvPolynomial.renameEquiv R e) f
-  have hcard_rename : #{q | MvPolynomial.eval q f = 0} =
-      (Finset.filter (fun x => MvPolynomial.eval x g = 0)
-        (Fintype.piFinset fun _ : Fin (Fintype.card σ) => (Finset.univ : Finset R))).card := by
-    refine Finset.card_bijective (fun q : σ → R => q ∘ e.symm) ?_ ?_
-    · exact Function.Bijective.comp_right e.symm.bijective
-    · intro q
-      simp [g, MvPolynomial.renameEquiv_apply, MvPolynomial.eval_rename, Function.comp_assoc]
-  rw [hcard_rename]
-  have hg : g ≠ 0 := by
-    intro hg0
-    apply hf
-    have h : (MvPolynomial.renameEquiv R e) f = (MvPolynomial.renameEquiv R e) 0 := by
-      simpa [g] using hg0
-    exact EquivLike.injective (MvPolynomial.renameEquiv R e) h
-  have htdg : g.totalDegree ≤ Fintype.card σ * d := by
-    simpa [g] using
-      (show ((MvPolynomial.renameEquiv R e) f).totalDegree ≤ Fintype.card σ * d from by
-        rw [MvPolynomial.totalDegree_renameEquiv]
-        exact htd)
-  letI : Field R := Fintype.fieldOfDomain R
-  have hRpos : 0 < Fintype.card R := Fintype.card_pos_iff.mpr ⟨0⟩
-  have hcount := schwartz_zippel_counting (F := R) (f := g) hg
-    (fun _ : Fin (Fintype.card σ) => (Finset.univ : Finset R))
-    (Fintype.card σ * d) (Fintype.card R) htdg hRpos (fun _ => le_rfl)
-  have hcount' :
-      (Finset.filter (fun x => MvPolynomial.eval x g = 0)
-        (Fintype.piFinset fun _ : Fin (Fintype.card σ) => (Finset.univ : Finset R))).card *
-          Fintype.card R ≤
-        (Fintype.card σ * d * Fintype.card R ^ (Fintype.card σ - 1)) *
-          Fintype.card R := by
-    refine hcount.trans ?_
-    simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
-    set n := Fintype.card σ
-    cases n with
-    | zero => simp
-    | succ n => simp [Nat.pow_succ, Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm]
-  exact Nat.le_of_mul_le_mul_right hcount' hRpos
+  let : Field R := Fintype.fieldOfDomain R
+  intro a b hab
+  have hne : (a : MvPolynomial σ R) - (b : MvPolynomial σ R) ≠ 0 := by
+    rw [sub_ne_zero]
+    exact fun h => hab (Subtype.ext h)
+  have hdeg : ((a : MvPolynomial σ R) - (b : MvPolynomial σ R)).totalDegree
+      ≤ Fintype.card σ * d :=
+    MvPolynomial.totalDegree_le_card_mul_of_mem_restrictDegree _ d (sub_mem a.2 b.2)
+  have hcount := MvPolynomial.card_zeros_le_of_totalDegree_le _ hne hdeg
+  refine le_trans (le_of_eq ?_) hcount
+  simp only [instMvPolynomialDegreeLE, map_sub, sub_eq_zero]
+  rfl
 
 end PolynomialDistance

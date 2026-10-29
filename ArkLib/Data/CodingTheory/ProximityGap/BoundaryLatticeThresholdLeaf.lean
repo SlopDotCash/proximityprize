@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 
 import Mathlib.Algebra.Field.ZMod
 import ArkLib.Data.CodingTheory.ProximityGap.BoundaryCardResidual
+import ProximityPrize.Compatibility.UniformProbability
 
 /-!
 # The lattice leaf of the corrected boundary route: quantitative threshold + §5 extraction
@@ -183,12 +184,13 @@ def LatticeCoeffPolyExtraction {k deg : ℕ} (domain : ι ↪ F) (δ : ℝ≥0) 
 the honest replacement for the refuted nonemptiness export and for the vacuous
 `ε = errorBound (1 − √ρ) = 0`. -/
 theorem correlatedAgreementCurves_of_latticeExtraction {k deg : ℕ} {domain : ι ↪ F}
-    {δ : ℝ≥0} [NeZero deg] (hk : 0 < k)
+    {δ : ℝ≥0} [NeZero deg] [SampleableType F] (hk : 0 < k)
     (hExt : LatticeCoeffPolyExtraction (k := k) (deg := deg) (domain := domain) δ) :
     δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)
       (C := (ReedSolomon.code domain deg : Set (ι → F))) (δ := δ)
       (ε := latticeThresholdEps ι F) := by
   intro u hprob
+  rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native] at hprob
   exact jointAgreement_of_latticeThreshold_of_coeffPolys hk u hprob
     (hExt u (card_gt_of_prob_gt_latticeThreshold u hprob))
 
@@ -281,7 +283,7 @@ theorem boundaryCardLatticeThresholdResidual_of_canonical {k deg : ℕ} {domain 
 /-- Consumer shape from the canonical-family residual: curve correlated agreement with
 `ε = (n+1)/|F|`. -/
 theorem correlatedAgreementCurves_of_latticeCanonical {k deg : ℕ} {domain : ι ↪ F}
-    {δ : ℝ≥0} [NeZero deg] (hk : 0 < k)
+    {δ : ℝ≥0} [NeZero deg] [SampleableType F] (hk : 0 < k)
     (hCanon :
       LatticeCanonicalCoeffPolyExtraction (k := k) (deg := deg) (domain := domain) δ) :
     δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)

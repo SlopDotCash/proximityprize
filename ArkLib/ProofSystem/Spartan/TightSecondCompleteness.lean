@@ -93,7 +93,7 @@ set_option linter.unusedFintypeInType false in
 output pins the carried terminal: `e₂ = eval r_y ℳ` — the first conjunct of
 `tightFinalRelOut`. Unconditional modulo the standard honest execution-model facts. -/
 theorem secondSumcheckWithTarget_perfectCompleteness_enriched
-    [oSpec.Fintype] [oSpec.Inhabited]
+    [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
@@ -103,7 +103,7 @@ theorem secondSumcheckWithTarget_perfectCompleteness_enriched
       (secondSumcheckWithTargetRelOutEnriched (R := R) pp) := by
   intro stmtIn witIn hmem
   set P : R⦃≤ 2⦄[X Fin pp.ℓ_n] := secondSumcheckVirtualOracle pp stmtIn with hPdef
-  letI : (secondSumcheckContextLensWithTarget pp).toContext.IsComplete
+  let : (secondSumcheckContextLensWithTarget pp).toContext.IsComplete
       (secondSumcheckWithTargetRelInAt pp oSpec P)
       (Sumcheck.Spec.relationRoundPinned R pp.ℓ_n 2 (boolEmbedding R) P (0 : Fin (pp.ℓ_n + 1)))
       (secondSumcheckWithTargetRelOutEnriched pp)
@@ -112,8 +112,8 @@ theorem secondSumcheckWithTarget_perfectCompleteness_enriched
           pp.ℓ_n oSpec).toReduction.compatContext
         (secondSumcheckContextLensWithTarget pp).toContext) :=
     secondSumcheckWithTargetLensCompleteAt pp oSpec P
-  haveI := secondSumcheckCoherentWithTarget (R := R) pp oSpec
-  exact OracleReduction.liftContext_perfectCompleteness
+  have := secondSumcheckCoherentWithTarget (R := R) pp oSpec
+  exact OracleReduction.liftContextLegacy_perfectCompleteness
     (lens := secondSumcheckContextLensWithTarget pp)
     (stmtLens := secondSumcheckOracleLensWithTarget pp oSpec)
     (outerRelIn := secondSumcheckWithTargetRelInAt pp oSpec P)

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Relations
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations
 
 /-!
 # Final oracle bridge
@@ -61,7 +61,7 @@ lemma strictOracleFoldingConsistency_last_getLastOracle_eq_prefixFold
       (h_destIdx := by simp only [curDomainIdx, Fin.val_zero, zero_add])
       (h_destIdx_le := by simp only [curDomainIdx]; omega)
       (f := f₀)
-      (r_challenges := getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ℓ - ϑ)
+      (r_challenges := Compatibility.newestFirstFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ℓ - ϑ)
         (i := Fin.last ℓ) challenges 0 (h := by
           simp only [zero_add, Fin.val_last]
           omega)) := by
@@ -85,7 +85,7 @@ lemma strictOracleFoldingConsistency_last_getLastOracle_eq_prefixFold
       (h_destIdx := by simp only [curDomainIdx, Fin.val_zero, zero_add])
       (h_destIdx_le := by simp only [curDomainIdx]; omega)
       (f := f₀)
-      (r_challenges := getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ℓ - ϑ)
+      (r_challenges := Compatibility.newestFirstFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ℓ - ϑ)
         (i := Fin.last ℓ) challenges 0 (h := by
           simp only [zero_add, Fin.val_last]
           omega))
@@ -111,7 +111,7 @@ lemma strictOracleFoldingConsistency_last_getLastOracle_eq_prefixFold
       (h_destIdx := by simp only [curDomainIdx, Fin.val_zero, zero_add])
       (h_destIdx_le := by simp only [curDomainIdx]; omega)
       (f := f₀)
-      (r_challenges := getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ℓ - ϑ)
+      (r_challenges := Compatibility.newestFirstFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ℓ - ϑ)
         (i := Fin.last ℓ) challenges 0 (h := by
           simp only [zero_add, Fin.val_last]
           omega)) y
@@ -127,7 +127,7 @@ lemma strictOracleFoldingConsistency_last_getLastOracle_eq_prefixFold
       simpa only [prefixIdx] using h_le)
     (h_steps_eq_steps' := h_steps)
     (f := f₀)
-    (r_challenges := getFoldingChallenges (r := r) (𝓡 := 𝓡)
+    (r_challenges := Compatibility.newestFirstFoldingChallenges (r := r) (𝓡 := 𝓡)
       (ϑ := jLast.val * ϑ) (i := Fin.last ℓ) challenges 0 (h := by
         have h_le := oracle_block_k_le_i (ℓ := ℓ) (ϑ := ϑ)
           (i := Fin.last ℓ) (j := jLast)
@@ -136,18 +136,18 @@ lemma strictOracleFoldingConsistency_last_getLastOracle_eq_prefixFold
   rw [h_step_congr]
   have h_prefix_challenges :
       (fun cIdx : Fin (ℓ - ϑ) =>
-        getFoldingChallenges (r := r) (𝓡 := 𝓡)
+        Compatibility.newestFirstFoldingChallenges (r := r) (𝓡 := 𝓡)
           (ϑ := jLast.val * ϑ) (i := Fin.last ℓ) challenges 0 (h := by
             have h_le := oracle_block_k_le_i (ℓ := ℓ) (ϑ := ϑ)
               (i := Fin.last ℓ) (j := jLast)
             simpa only [zero_add, Fin.val_last] using h_le)
           ⟨cIdx, by omega⟩) =
-      getFoldingChallenges (r := r) (𝓡 := 𝓡)
+      Compatibility.newestFirstFoldingChallenges (r := r) (𝓡 := 𝓡)
         (ϑ := ℓ - ϑ) (i := Fin.last ℓ) challenges 0 (h := by
           simp only [zero_add, Fin.val_last]
           omega) := by
     funext cIdx
-    dsimp only [getFoldingChallenges]
+    dsimp only [Compatibility.newestFirstFoldingChallenges, getFoldingChallenges]
   rw [h_prefix_challenges]
   have h_dest_congr := iterated_fold_congr_dest_index 𝔽q β
     (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := 0)
@@ -160,7 +160,7 @@ lemma strictOracleFoldingConsistency_last_getLastOracle_eq_prefixFold
       simpa only [prefixIdx] using h_le)
     (h_destIdx_eq_destIdx' := h_idx.symm)
     (f := f₀)
-    (r_challenges := getFoldingChallenges (r := r) (𝓡 := 𝓡)
+    (r_challenges := Compatibility.newestFirstFoldingChallenges (r := r) (𝓡 := 𝓡)
       (ϑ := ℓ - ϑ) (i := Fin.last ℓ) challenges 0 (h := by
         simp only [zero_add, Fin.val_last]
         omega))
@@ -171,3 +171,5 @@ lemma strictOracleFoldingConsistency_last_getLastOracle_eq_prefixFold
 end
 
 end Binius.BinaryBasefold
+
+#print axioms Binius.BinaryBasefold.strictOracleFoldingConsistency_last_getLastOracle_eq_prefixFold

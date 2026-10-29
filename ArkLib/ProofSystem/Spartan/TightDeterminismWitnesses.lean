@@ -39,9 +39,9 @@ theorem firstSumcheckWithTarget_toVerifier_isFailingDet :
     change OracleVerifier.LiftContextCoherent (firstSumcheckOracleLensWithTarget pp oSpec)
       (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier
     exact firstSumcheckCoherentWithTarget (R := R) pp oSpec
-  show ((Sumcheck.Spec.oracleVerifier R 3 (boolEmbedding R) pp.ℓ_m oSpec).liftContext
+  show ((Sumcheck.Spec.oracleVerifier R 3 (boolEmbedding R) pp.ℓ_m oSpec).liftContextLegacy
     (firstSumcheckOracleLensWithTarget pp oSpec)).toVerifier.IsFailingDet
-  rw [OracleVerifier.liftContext_toVerifier_comm]
+  rw [OracleVerifier.liftContextLegacy_toVerifier_comm]
   obtain ⟨v?, hv⟩ := sumcheckFull_toVerifier_isFailingDet oSpec 3 (boolEmbedding R) pp.ℓ_m
   exact ⟨_, Verifier.liftContext_failingDet _ _ v? hv⟩
 
@@ -54,9 +54,9 @@ theorem secondSumcheckWithTarget_toVerifier_isFailingDet :
     change OracleVerifier.LiftContextCoherent (secondSumcheckOracleLensWithTarget pp oSpec)
       (Sumcheck.Spec.oracleReduction R 2 (boolEmbedding R) pp.ℓ_n oSpec).verifier
     exact secondSumcheckCoherentWithTarget (R := R) pp oSpec
-  show ((Sumcheck.Spec.oracleVerifier R 2 (boolEmbedding R) pp.ℓ_n oSpec).liftContext
+  show ((Sumcheck.Spec.oracleVerifier R 2 (boolEmbedding R) pp.ℓ_n oSpec).liftContextLegacy
     (secondSumcheckOracleLensWithTarget pp oSpec)).toVerifier.IsFailingDet
-  rw [OracleVerifier.liftContext_toVerifier_comm]
+  rw [OracleVerifier.liftContextLegacy_toVerifier_comm]
   obtain ⟨v?, hv⟩ := sumcheckFull_toVerifier_isFailingDet oSpec 2 (boolEmbedding R) pp.ℓ_n
   exact ⟨_, Verifier.liftContext_failingDet _ _ v? hv⟩
 

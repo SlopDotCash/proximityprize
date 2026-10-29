@@ -82,12 +82,12 @@ instance firstSumcheckLensComplete' :
         (firstSumcheckContextLens pp).toContext) where
   proj_complete := by
     rintro ⟨⟨τ, 𝕩⟩, oStmt⟩ ⟨⟩ hRelIn
-    simp only [firstSumcheckRelIn', Set.mem_setOf_eq] at hRelIn
+    simp only [firstSumcheckRelIn', Set.mem_ofPred_eq] at hRelIn
     exact firstSumcheck_proj_mem_relationRound pp τ 𝕩 oStmt hRelIn
   lift_complete := by
     rintro ⟨⟨τ, 𝕩⟩, oStmt⟩ ⟨⟩ ⟨⟨t_out, r_x⟩, oStmt'⟩ ⟨⟩ _hCompat hRelIn _hRelOut
-    simp only [firstSumcheckRelIn', Set.mem_setOf_eq] at hRelIn
-    simpa only [firstSumcheckRelOut', Set.mem_setOf_eq] using hRelIn
+    simp only [firstSumcheckRelIn', Set.mem_ofPred_eq] at hRelIn
+    exact hRelIn
 
 /-- **First sum-check phase perfect completeness (restated), given inner completeness `h_inner`.**
 Identical to `FirstSumcheckComplete.firstSumcheck_perfectCompleteness`, against the restated
@@ -101,8 +101,8 @@ theorem firstSumcheck_perfectCompleteness'
         (Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (Fin.last pp.ℓ_m))) :
     (firstSumcheckReduction pp oSpec).perfectCompleteness init impl
       (firstSumcheckRelIn' (R := R) pp) (firstSumcheckRelOut' (R := R) pp) := by
-  haveI := firstSumcheckCoherent (R := R) pp oSpec
-  exact OracleReduction.liftContext_perfectCompleteness
+  have := firstSumcheckCoherent (R := R) pp oSpec
+  exact OracleReduction.liftContextLegacy_perfectCompleteness
     (R := Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec)
     (lens := firstSumcheckContextLens pp)
     (stmtLens := firstSumcheckOracleLens pp oSpec)
@@ -122,7 +122,7 @@ The inner multi-round sum-check oracle perfect completeness `h_inner` is supplie
 inner-completeness obligation is left to the caller. -/
 theorem firstSumcheck_perfectCompleteness_unconditional
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
-    [Inhabited R] [oSpec.Fintype] [oSpec.Inhabited]
+    [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     (hBridge : Sumcheck.Spec.oracleReductionToReductionResidual R 3 (boolEmbedding R) pp.ℓ_m oSpec)
     (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,

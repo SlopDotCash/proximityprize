@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.ToMathlib.BetaRecursion
 import ArkLib.ToMathlib.WeightLambdaCalculus
 import ArkLib.ToMathlib.HasseDerivNumerators
-import ArkLib.Data.Polynomial.RationalFunctions
+import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
 import Mathlib
 
 /-!

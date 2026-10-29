@@ -3,10 +3,11 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Ilia Vlasov
 -/
+module
 
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.MvPolynomial.Multilinear
-import ArkLib.Data.MvPolynomial.LinearMvExtension
+public import ArkLib.Data.CodingTheory.ReedSolomon
+public import ArkLib.Data.MvPolynomial.Multilinear
+public import ArkLib.Data.MvPolynomial.LinearMvExtension
 
 /-! This module provides an equivalent representation
   of RS-codes in terms of multilinear polynomials
@@ -17,6 +18,8 @@ import ArkLib.Data.MvPolynomial.LinearMvExtension
   * [Arnon, G., Chiesa, A., Fenzi, G., and Yogev, E., *WHIR: Reed–Solomon Proximity Testing
       with Super-Fast Verification*][ACFY24]
 -/
+
+@[expose] public section
 
 namespace ReedSolomon
 
@@ -37,8 +40,8 @@ lemma mem_rs_code_iff_exists_mle
       aesop (add simp [Polynomial.mem_degreeLT])
     ⟩
     exists ⟨poly, by aesop (add simp [mem_restrictDegree_iff_degreeOf_le,
-                                       linearMvExtension_degreeOf_lt])⟩
-    aesop (add simp powAlgHom_is_right_inverse_to_linearMvExtension)
+                                       degreeOf_linearMvExtension_le])⟩
+    aesop (add simp powAlgHom_linearMvExtension)
   · obtain ⟨g, h⟩ := h
     exact mem_code_of_polynomial_of_natDegree_lt_of_eval
       (powAlgHom g.1)

@@ -38,20 +38,21 @@ variable {ι F : Type} [Fintype ι]
 injects each base point list into the interleaved point list, so `Lambda C δ ≤ Lambda (C^⋈ Fin 1) δ`. -/
 theorem Lambda_interleaved_fin_one_ge [Fintype F] [Nonempty ι] [DecidableEq F]
     (C : Set (ι → F)) (δ : ℝ) :
-    Lambda C δ ≤ Lambda (interleavedCodeSet (κ := Fin 1) C) δ := by
+    ListDecodable.Lambda C δ ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin 1) C) δ := by
   classical
   refine iSup_le fun g => ?_
   set G : Matrix ι (Fin 1) F := fun i _ => g i with hG
   set φ : (ι → F) → Matrix ι (Fin 1) F := fun c => fun i _ => c i with hφ
-  have hmaps : Set.MapsTo φ (closeCodewordsRel C g δ)
-      (closeCodewordsRel (interleavedCodeSet (κ := Fin 1) C) G δ) := by
+  have hmaps : Set.MapsTo φ (ListDecodable.closeCodewordsRel C g δ)
+      (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin 1) C) G δ) := by
     intro c hc
     obtain ⟨hcC, hcball⟩ := hc
     refine ⟨?_, ?_⟩
     · intro k
-      have hcol : (φ c).transpose k = c := by funext i; simp [hφ, Matrix.transpose_apply]
+      have hcol : (φ c).transpose k = c := by funext i; rfl
       rw [hcol]; exact hcC
-    · rw [relHammingBall, Set.mem_setOf_eq] at hcball ⊢
+    · unfold ListDecodable.relHammingBall at hcball ⊢
+      change _ ≤ δ at hcball ⊢
       -- reduce to the (instance-uniform) distance equality inside the `convert` goal
       convert hcball using 3
       unfold Code.relHammingDist
@@ -62,25 +63,25 @@ theorem Lambda_interleaved_fin_one_ge [Fintype F] [Nonempty ι] [DecidableEq F]
       ext i
       simp only [Finset.mem_filter, Finset.mem_univ, true_and, hφ, hG, ne_eq,
         funext_iff, Fin.forall_fin_one]
-  have hinj : Set.InjOn φ (closeCodewordsRel C g δ) := by
+  have hinj : Set.InjOn φ (ListDecodable.closeCodewordsRel C g δ) := by
     intro a _ b _ hab
     funext i
     have := congrFun (congrFun hab i) 0
     simpa [hφ] using this
-  calc ((closeCodewordsRel C g δ).ncard : ℕ∞)
-      = (closeCodewordsRel C g δ).encard := (Set.toFinite _).cast_ncard_eq
-    _ ≤ (closeCodewordsRel (interleavedCodeSet (κ := Fin 1) C) G δ).encard :=
+  calc ((ListDecodable.closeCodewordsRel C g δ).ncard : ℕ∞)
+      = (ListDecodable.closeCodewordsRel C g δ).encard := (Set.toFinite _).cast_ncard_eq
+    _ ≤ (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin 1) C) G δ).encard :=
         Set.encard_le_encard_of_injOn hmaps hinj
-    _ = ((closeCodewordsRel (interleavedCodeSet (κ := Fin 1) C) G δ).ncard : ℕ∞) :=
+    _ = ((ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin 1) C) G δ).ncard : ℕ∞) :=
         ((Set.toFinite _).cast_ncard_eq).symm
-    _ ≤ Lambda (interleavedCodeSet (κ := Fin 1) C) δ :=
+    _ ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin 1) C) δ :=
         le_iSup
-          (fun f => ((closeCodewordsRel (interleavedCodeSet (κ := Fin 1) C) f δ).ncard : ℕ∞)) G
+          (fun f => ((ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin 1) C) f δ).ncard : ℕ∞)) G
 
 /-- **Unary interleaving preserves the list size exactly.** -/
 theorem Lambda_interleaved_fin_one_eq [Fintype F] [Nonempty ι] [DecidableEq F]
     (C : Set (ι → F)) (δ : ℝ) :
-    Lambda (interleavedCodeSet (κ := Fin 1) C) δ = Lambda C δ :=
+    ListDecodable.Lambda (interleavedCodeSet (κ := Fin 1) C) δ = ListDecodable.Lambda C δ :=
   le_antisymm (Lambda_interleaved_fin_one_le C δ) (Lambda_interleaved_fin_one_ge C δ)
 
 #print axioms Lambda_interleaved_fin_one_eq

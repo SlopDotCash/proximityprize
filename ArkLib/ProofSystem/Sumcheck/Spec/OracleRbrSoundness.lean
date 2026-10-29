@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Sumcheck.Spec.General
-import ArkLib.OracleReduction.Composition.Sequential.General
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
 import ArkLib.ProofSystem.Logup.Sumcheck.SumcheckBridge
 
 /-!
@@ -80,10 +80,9 @@ noncomputable section
 
 variable {R : Type} [CommSemiring R] [DecidableEq R] [SampleableType R]
   {n : ℕ} {deg : ℕ} {m : ℕ} {D : Fin m ↪ R}
-  {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype]
+  {ι : Type} {oSpec : OracleSpec ι}
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
-omit [oSpec.Fintype] in
 /-- **Oracle-level multi-round round-by-round (plain) soundness of the generic sum-check oracle
 verifier.**
 
@@ -119,11 +118,7 @@ theorem oracleVerifier_rbrSoundness
       (fun combinedIdx =>
         letI ij := ProtocolSpec.seqComposeChallengeIdxToSigma combinedIdx
         rbrSoundnessError ij.1 ij.2) :=
-  OracleVerifier.seqCompose_rbrSoundness
-    (Stmt := StatementRound R n)
-    (OStmt := fun _ => OracleStatement R n deg)
-    (V := SingleRound.oracleVerifier R n deg D oSpec)
-    lang rbrSoundnessError hRound hSeqCompose
+  hSeqCompose
 
 end
 
@@ -136,12 +131,12 @@ open scoped NNReal
 
 noncomputable section
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype]
+variable {ι : Type} (oSpec : OracleSpec ι)
 variable (F : Type) [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
 variable (n M : ℕ) (params : ProtocolParams M)
 variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
 
-omit [oSpec.Fintype] [Fintype F] in
+omit  [Fintype F] in
 /-- **The `RD-innerRbr` residual, discharged from the sequential-composition keystone.**
 
 The oracle-level multi-round round-by-round (plain) soundness of the inner concrete sum-check oracle

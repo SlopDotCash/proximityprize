@@ -5,10 +5,10 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.CodingTheory.ProximityGap.TwoLineExtraction
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 import ArkLib.Data.Polynomial.UnivariateAgreement
 import ArkLib.Data.Polynomial.DegreeLTDimension
-import ArkLib.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 
 /-!
 # Reed–Solomon unique decoding (concrete instantiation)

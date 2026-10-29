@@ -156,7 +156,6 @@ theorem stirFinalCheckedAns_honest
       = stirIncomingAt oStmt (stirFinalQueryIndex (stirRepChallengePoint chals)) := by
     unfold stirFinalWordAt stirIncomingAt
     rw [hmsg]
-    rfl
   unfold stirFinalCheckedAns
   rw [if_pos hcond]
 
@@ -199,8 +198,10 @@ noncomputable def stirFinalVectorVerifierChecked :
     OracleVerifier []ₒ F (VOStmt ι F) (F × F) (VOStmt ι F)
       ((stirFinalVSpec ι F).toProtocolSpec F) where
   verify := fun r chals => OptionT.mk (stirFinalCheckedComp r chals)
-  embed := ⟨fun _ => Sum.inr ⟨0, stirFinalVSpec_dir_zero⟩, fun _ _ _ => rfl⟩
-  hEq := fun _ => rfl
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inr ⟨0, stirFinalVSpec_dir_zero⟩, fun _ _ _ => rfl⟩
+    hEq := fun _ => rfl
+    outputInterface_heq := by intro u; cases u; rfl }
 
 /-- **The CHECKED mid-chain vectorised final block** (`VOStmt → VOStmt`): the honest
 `stirFinalVectorProverMid` against the checking verifier. -/
@@ -209,28 +210,6 @@ noncomputable def stirFinalVectorReductionChecked :
       ((stirFinalVSpec ι F).toProtocolSpec F) where
   prover := stirFinalVectorProverMid
   verifier := stirFinalVectorVerifierChecked
-
-instance instStirFinalVectorVerifierCheckedAppendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (stirFinalVectorVerifierChecked (ι := ι) (F := F)) where
-  hCohInl := fun i k h => by
-    exact absurd h (by simp [stirFinalVectorVerifierChecked])
-  hCohInr := fun i k h => by
-    have hk : k = ⟨0, stirFinalVSpec_dir_zero⟩ := by
-      have := h.symm
-      simp only [stirFinalVectorVerifierChecked, Function.Embedding.coeFn_mk] at this
-      exact (Sum.inr.inj this)
-    subst hk
-    apply eq_of_heq
-    refine HEq.trans ?_ (cast_heq _ _).symm
-    rfl
-
-instance instStirFinalVectorReductionCheckedAppendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (stirFinalVectorReductionChecked (ι := ι) (F := F)).verifier :=
-  instStirFinalVectorVerifierCheckedAppendCoherent
-
-/-! ### `simulateQ` collapse at the `OptionT` layer + the transcript-level honest lemma -/
 
 /-- `simulateQ` collapse of the checked verify computation at the `OptionT` layer. -/
 theorem simulateQ_optionT_stirFinalCheckedComp
@@ -254,43 +233,35 @@ theorem stirFinalVectorVerifierChecked_toVerifier_honest
     (stirFinalVectorVerifierChecked (ι := ι) (F := F)).toVerifier.verify (stmtIn, oStmtIn)
       (FullTranscript.mk2 (oStmtIn ()) r1)
       = pure ((stmtIn, r1.get 0), fun _ : Unit => oStmtIn ()) := by
-  have h1 : (stirFinalVectorVerifierChecked (ι := ι) (F := F)).toVerifier.verify
-      (stmtIn, oStmtIn) (FullTranscript.mk2 (oStmtIn ()) r1)
-      = ((do
-          let s ← (simulateQ (OracleInterface.simOracle2 []ₒ oStmtIn
-                (FullTranscript.mk2 (oStmtIn ()) r1).messages)
-              (OptionT.mk (stirFinalCheckedComp stmtIn
-                (FullTranscript.mk2 (oStmtIn ()) r1).challenges))
-              : OptionT (OracleComp []ₒ) (F × F))
-          pure (s, fun _ : Unit => oStmtIn ()))
-        : OptionT (OracleComp []ₒ) ((F × F) × ∀ i, VOStmt ι F i)) := rfl
-  rw [h1, simulateQ_optionT_stirFinalCheckedComp,
-    stirFinalCheckedAns_honest oStmtIn _ rfl]
+  change (Option.map (fun stmtOut => (stmtOut,
+      (stirFinalVectorVerifierChecked (ι := ι) (F := F)).materializeOutput
+        (FullTranscript.mk2 (oStmtIn ()) r1).challenges oStmtIn
+        (FullTranscript.mk2 (oStmtIn ()) r1).messages)) <$>
+    simulateQ (OracleInterface.simOracle2 []ₒ oStmtIn
+      (FullTranscript.mk2 (oStmtIn ()) r1).messages)
+      (stirFinalCheckedComp stmtIn (FullTranscript.mk2 (oStmtIn ()) r1).challenges))
+    = pure (some ((stmtIn, r1.get 0), fun _ : Unit => oStmtIn ()))
+  rw [simulateQ_stirFinalCheckedComp,
+    stirFinalCheckedAns_honest oStmtIn (FullTranscript.mk2 (oStmtIn ()) r1).messages rfl]
   rfl
 
 /-! ### Perfect completeness of the CHECKED final block -/
 
+private noncomputable local instance stirCheckedFinalUniformAnswers
+    {κ : Type} {spec : OracleSpec κ}
+    [∀ q, Fintype (spec.Range q)] [∀ q, Inhabited (spec.Range q)] :
+    OracleSpec.UniformAnswerMeasure spec :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty spec
+
 variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp))
 
-/-- Spec-lifting an `OptionT`-level `pure` is `pure` (definitional; the WHIR
-`CheckedVerifier` helper). -/
-private lemma liftComp_optionT_pure {ι₁ ι₂ : Type} {spec₁ : OracleSpec ι₁}
-    {spec₂ : OracleSpec ι₂} [MonadLiftT (OracleQuery spec₁) (OracleQuery spec₂)]
-    {α : Type} (y : α) :
-    (OracleComp.liftComp (pure y : OptionT (OracleComp spec₁) α) spec₂ :
-      OptionT (OracleComp spec₂) α) = pure y := rfl
+private theorem optionTLift_eq_some_map {κ : Type} {spec : OracleSpec.{0, 0} κ}
+    {α : Type} (mx : OracleComp spec α) :
+    (liftM mx : OptionT (OracleComp spec) α) = some <$> mx := by
+  change (mx >>= fun x => pure (some x)) = some <$> mx
+  rw [map_eq_bind_pure_comp]
+  rfl
 
-/-- Defeq-extraction helper: membership of `v` in the `OptionT`-level support of the
-`pure y >>= fun a => pure (some a)` computation (the shape the support-image simp leaves
-behind, with the monad type degraded to `FreeM` form where no instance synthesis fires)
-forces `v = y`. Stated via `OptionT.mk` so the inner bind elaborates at the `OracleComp`
-level and application to the degraded hypothesis is a pure defeq cast. -/
-private lemma eq_of_mem_support_optionT_pure_bind_some {ιx : Type} {spec : OracleSpec ιx}
-    {β : Type} {y v : β}
-    (h : v ∈ support (OptionT.mk
-      ((pure y : OracleComp spec β) >>= fun a => pure (some a)))) : v = y := by
-  have h' : some v ∈ support ((pure (some y)) : OracleComp spec (Option β)) := h
-  simpa using h'
 
 open scoped Classical in
 set_option maxHeartbeats 1600000 in
@@ -317,30 +288,17 @@ theorem stirFinalVectorReductionChecked_perfectCompleteness (φ : ι ↪ F) (deg
   simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,
     Prod.mk.eta, bind_assoc, map_pure, liftComp_pure, liftM_pure, id_eq]
   simp only [stirFinalVectorVerifierChecked_toVerifier_honest]
-  rw [probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · -- SAFETY: the run never fails (the check PASSES on the honest transcript)
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun α _hα => ?_⟩
-    · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_pure, probFailure_pure, probOutput_pure, reduceCtorEq,
-        if_false, add_zero, zero_add]
-  · -- CORRECTNESS: the unique reachable output accepts and agrees (the check PASSED on the
-    -- honest transcript, so the verifier's output is the deterministic `pure` value)
-    intro x hx
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨α, _hα, hx⟩ := hx
-    rw [liftComp_optionT_pure] at hx
-    simp only [OptionT.run_map, OptionT.run_pure, _root_.map_pure, Function.comp_apply,
-      support_map, support_pure, Set.mem_image, Set.mem_singleton_iff,
-      exists_eq_left, exists_eq_right] at hx
-    obtain ⟨v, hv, hxx⟩ := hx
-    have hveq := eq_of_mem_support_optionT_pure_bind_some hv
-    subst hveq
-    subst hxx
-    exact ⟨h_relIn, rfl, rfl⟩
+  apply (OptionT.prEvent_mk_eq_one_iff _ _).2
+  intro value hvalue
+  obtain ⟨a1, ha1, hvalue⟩ := OracleComp.mem_support_bind_peel _ _ hvalue
+  erw [optionTLift_eq_some_map] at ha1
+  obtain ⟨r1, _, heq1⟩ := OracleComp.mem_support_map_peel _ _ ha1
+  subst a1
+  simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure,
+    simulateQ_pure, LawfulApplicative.map_pure, Option.map_some, liftComp_pure] at hvalue
+  have hv := OracleComp.eq_of_mem_support_pure _ hvalue
+  subst value
+  exact ⟨_, rfl, h_relIn, rfl, rfl⟩
 
 end Round3
 
@@ -351,7 +309,6 @@ end StirIOP
 #print axioms StirIOP.Round3.exists_stirFinalCheckedAns_eq_none
 #print axioms StirIOP.Round3.stirFinalVectorVerifierChecked
 #print axioms StirIOP.Round3.stirFinalVectorReductionChecked
-#print axioms StirIOP.Round3.instStirFinalVectorReductionCheckedAppendCoherent
 #print axioms StirIOP.Round3.simulateQ_optionT_stirFinalCheckedComp
 #print axioms StirIOP.Round3.stirFinalVectorVerifierChecked_toVerifier_honest
 #print axioms StirIOP.Round3.stirFinalVectorReductionChecked_perfectCompleteness

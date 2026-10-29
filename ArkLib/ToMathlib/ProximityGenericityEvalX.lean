@@ -1,6 +1,6 @@
 import ArkLib.ToMathlib.ProximityGenericity
-import ArkLib.Data.Polynomial.Bivariate
-import ArkLib.Data.Polynomial.Trivariate
+import ProximityPrize.Extensions.Data.Polynomial.Bivariate
+import ProximityPrize.Extensions.Data.Polynomial.Trivariate
 
 /-! Closing the `hx0` existence for BCIKS20 §5 genericity (#8): a single specialization point
 `x₀ ∈ F` with `evalX (C x₀) R ≠ 0` for every `R` in a finite family of nonzero trivariate
@@ -84,6 +84,7 @@ specialized fibre. -/
 lemma eval_on_Z_separable_of_separable {z : F}
     {p : Polynomial (Polynomial (Polynomial F))} (h : p.Separable) :
     (Trivariate.eval_on_Z p z).Separable := by
+  simp only [Trivariate.eval_on_Z]
   rw [Trivariate.eval_on_Z_eq]
   exact h.map
 

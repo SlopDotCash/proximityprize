@@ -84,8 +84,9 @@ constraint. -/
 theorem prizeWeight2_gate_vacuous
     {p : ℕ} (hp : p < 2 ^ 158) :
     p ≤ 2 ^ (2 ^ 29) := by
-  have h158 : (2 : ℕ) ^ 158 ≤ 2 ^ (2 ^ 29) := Nat.pow_le_pow_right (by norm_num) (by norm_num)
-  exact le_trans (le_of_lt hp) h158
+  have compare (p e : ℕ) (hp : p < 2 ^ 158) (he : 158 ≤ e) : p ≤ 2 ^ e :=
+    (le_of_lt hp).trans (Nat.pow_le_pow_right (by decide) he)
+  exact compare p (2 ^ 29) hp (by norm_num)
 
 /-- **Bit-length gap quantification.**  The weight-2 norm budget has bit-exponent `2^29`; the prize
 prime has bit-exponent `≤ 158`.  Their ratio is `2^29 / 158 > 3·10⁶`: the algebraic gate is vacuous

@@ -276,8 +276,8 @@ theorem orderedInjectiveTransform_eq_factorial_mul_subsetSumPeriod
   have hmap : Finset.univ.val.map (subgroupPhase psi G b) =
       G.val.map (fun x => psi (b * x)) := by
     rw [Finset.univ_eq_attach, Finset.attach_val]
-    simpa [subgroupPhase] using
-      (Multiset.attach_map_val' G.val (fun x => psi (b * x)))
+    unfold subgroupPhase
+    exact Multiset.attach_map_val' G.val (fun x => psi (b * x))
   rw [hmap]
 
 end NewtonJoins
@@ -436,7 +436,7 @@ theorem lateNewtonPacket_six_eq_orderedInjectiveTransform
   simp_rw [newtonJoinPeriod_eq_powerSum_mul_esymm]
   let w := subgroupPhase psi G b
   have h6 := multiset_newton w 6
-  have ha6 : (Finset.antidiagonal 6).filter (fun a => a.1 < 6) =
+  have ha6 : (HasAntidiagonal.antidiagonal 6).filter (fun a => a.1 < 6) =
       {(0, 6), (1, 5), (2, 4), (3, 3), (4, 2), (5, 1)} := by decide
   rw [ha6] at h6
   have he0 : (G.val.attach.map w).esymm 0 = (1 : Complex) := by
@@ -445,7 +445,7 @@ theorem lateNewtonPacket_six_eq_orderedInjectiveTransform
   dsimp [w] at h6 he0
   unfold phasePowerSum orderedInjectiveTransform
   simp only [Finset.univ_eq_attach, Finset.sum_eq_multiset_sum, Finset.attach_val] at h6 ⊢
-  rw [he0] at h6 ⊢
+  rw [he0]
   norm_num at h6
   ring_nf at h6 ⊢
   linear_combination -120 * h6
@@ -459,7 +459,7 @@ theorem lateNewtonPacket_seven_eq_orderedInjectiveTransform
   simp_rw [newtonJoinPeriod_eq_powerSum_mul_esymm]
   let w := subgroupPhase psi G b
   have h7 := multiset_newton w 7
-  have ha7 : (Finset.antidiagonal 7).filter (fun a => a.1 < 7) =
+  have ha7 : (HasAntidiagonal.antidiagonal 7).filter (fun a => a.1 < 7) =
       {(0, 7), (1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)} := by decide
   rw [ha7] at h7
   have he0 : (G.val.attach.map w).esymm 0 = (1 : Complex) := by
@@ -468,7 +468,7 @@ theorem lateNewtonPacket_seven_eq_orderedInjectiveTransform
   dsimp [w] at h7 he0
   unfold phasePowerSum orderedInjectiveTransform
   simp only [Finset.univ_eq_attach, Finset.sum_eq_multiset_sum, Finset.attach_val] at h7 ⊢
-  rw [he0] at h7 ⊢
+  rw [he0]
   norm_num at h7
   ring_nf at h7 ⊢
   linear_combination -720 * h7

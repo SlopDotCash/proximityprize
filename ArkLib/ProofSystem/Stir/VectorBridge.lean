@@ -136,8 +136,10 @@ def stirRound3VectorVerifier (φ : ι ↪ F) (deg : ℕ) :
   verify := fun _ chals =>
     let rShift : Vector F 1 := chals ⟨2, stirRound3VSpec_dir_two⟩
     pure (rShift.get 0)
-  embed := ⟨fun _ => Sum.inr ⟨0, stirRound3VSpec_dir_zero⟩, fun _ _ _ => rfl⟩
-  hEq := fun _ => rfl
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inr ⟨0, stirRound3VSpec_dir_zero⟩, fun _ _ _ => rfl⟩
+    hEq := fun _ => rfl
+    outputInterface_heq := by intro u; cases u <;> rfl }
 
 /-- **The vectorised 3-slot STIR round-block oracle reduction** — the per-round block of the
 `stirVSpec` layout at the vector wire format quantified over by `stir_main` /
@@ -204,8 +206,10 @@ def stirInitVectorVerifier :
   verify := fun _ chals =>
     let r : Vector F 1 := chals ⟨0, stirInitVSpec_dir_zero⟩
     pure (r.get 0)
-  embed := ⟨fun _ => Sum.inl (), fun _ _ _ => rfl⟩
-  hEq := fun _ => rfl
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inl (), fun _ _ _ => rfl⟩
+    hEq := fun _ => rfl
+    outputInterface_heq := by intro u; cases u <;> rfl }
 
 /-- **The vectorised initial `[C_fold]` block** of the `stirVSpec` layout. -/
 def stirInitVectorReduction :
@@ -288,8 +292,10 @@ def stirFinalVectorVerifier :
   verify := fun r chals =>
     let rFin : Vector F 1 := chals ⟨1, stirFinalVSpec_dir_one⟩
     pure (r, rFin.get 0)
-  embed := ⟨fun _ => Sum.inr ⟨0, stirFinalVSpec_dir_zero⟩, fun _ _ _ => rfl⟩
-  hEq := fun _ => rfl
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inr ⟨0, stirFinalVSpec_dir_zero⟩, fun _ _ _ => rfl⟩
+    hEq := fun _ => rfl
+    outputInterface_heq := by intro u; cases u <;> rfl }
 
 /-- **The vectorised final `[p, C_fin]` block** of the `stirVSpec` layout. -/
 noncomputable def stirFinalVectorReduction :
@@ -391,58 +397,6 @@ end Security
 
 /-! ## `AppendCoherent` instances for the vectorised verifiers (the `Round3Compose` shapes) -/
 
-instance instStirRound3VectorVerifierAppendCoherent (φ : ι ↪ F) (deg : ℕ) :
-    OracleVerifier.Append.AppendCoherent (stirRound3VectorVerifier φ deg) where
-  hCohInl := fun i k h => by
-    exact absurd h (by simp [stirRound3VectorVerifier])
-  hCohInr := fun i k h => by
-    have hk : k = ⟨0, stirRound3VSpec_dir_zero⟩ := by
-      have := h.symm
-      simp only [stirRound3VectorVerifier, Function.Embedding.coeFn_mk] at this
-      exact (Sum.inr.inj this)
-    subst hk
-    apply eq_of_heq
-    refine HEq.trans ?_ (cast_heq _ _).symm
-    rfl
-
-instance instStirRound3VectorReductionAppendCoherent (φ : ι ↪ F) (deg : ℕ) :
-    OracleVerifier.Append.AppendCoherent (stirRound3VectorReduction φ deg).verifier :=
-  instStirRound3VectorVerifierAppendCoherent φ deg
-
-instance instStirInitVectorVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (stirInitVectorVerifier (ι := ι) (F := F)) where
-  hCohInl := fun i k h => by
-    have hk : k = () := rfl
-    subst hk
-    apply eq_of_heq
-    refine HEq.trans ?_ (cast_heq _ _).symm
-    rfl
-  hCohInr := fun i k h => by
-    exact absurd h (by simp [stirInitVectorVerifier])
-
-instance instStirInitVectorReductionAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (stirInitVectorReduction (ι := ι) (F := F)).verifier :=
-  instStirInitVectorVerifierAppendCoherent
-
-instance instStirFinalVectorVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (stirFinalVectorVerifier (ι := ι) (F := F)) where
-  hCohInl := fun i k h => by
-    exact absurd h (by simp [stirFinalVectorVerifier])
-  hCohInr := fun i k h => by
-    have hk : k = ⟨0, stirFinalVSpec_dir_zero⟩ := by
-      have := h.symm
-      simp only [stirFinalVectorVerifier, Function.Embedding.coeFn_mk] at this
-      exact (Sum.inr.inj this)
-    subst hk
-    apply eq_of_heq
-    refine HEq.trans ?_ (cast_heq _ _).symm
-    rfl
-
-instance instStirFinalVectorReductionAppendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (stirFinalVectorReduction (ι := ι) (F := F)).verifier :=
-  instStirFinalVectorVerifierAppendCoherent
-
 end Round3
 
 end StirIOP
@@ -463,6 +417,3 @@ end StirIOP
 #print axioms StirIOP.Round3.stirInitVectorOutputRel_of_inputRel
 #print axioms StirIOP.Round3.unpack_stirFinalVector_message
 #print axioms StirIOP.Round3.stirFinalVectorOutputRel_of_inputRel
-#print axioms StirIOP.Round3.instStirRound3VectorVerifierAppendCoherent
-#print axioms StirIOP.Round3.instStirInitVectorVerifierAppendCoherent
-#print axioms StirIOP.Round3.instStirFinalVectorVerifierAppendCoherent

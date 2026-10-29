@@ -286,7 +286,7 @@ theorem qr_shift_count (h2 : (2 : F) ≠ 0) (hneg1 : IsSquare (-1 : F)) :
     rw [Finset.card_eq_sum_card_fiberwise hAmaps, Finset.sum_congr rfl hAfib,
       Finset.sum_const, smul_eq_mul, mul_comm]
   -- assemble
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := C) (p := fun p : F × F => p.1 ≠ 0 ∧ p.2 ≠ 0)
   rw [hAcard, hBcard] at hsplit
   have hCcard : C.card = Fintype.card F - 1 := by rw [hC]; exact conic_card h2

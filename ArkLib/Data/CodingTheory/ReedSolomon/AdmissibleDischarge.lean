@@ -56,7 +56,8 @@ theorem admissible_of_orderOf_ge_of_inter
     (L : Finset F) (s : ℕ) (ω : F) (h0 : (0 : F) ∉ L) (hs : s ≤ orderOf ω)
     (hinter : ∀ α ∈ L, ∀ β ∈ L, α ≠ β → ∀ i : ℕ, i < s → α * ω ^ i ≠ β) :
     Admissible L s ω :=
-  ⟨hinter, admissible_intra_of_orderOf_ge L s ω h0 hs⟩
+  ⟨hinter, fun α hα i hi_s hi_pos =>
+    admissible_intra_of_orderOf_ge L s ω h0 hs α hα i hi_pos hi_s⟩
 
 /-- **Inter-orbit clause of `Admissible`, discharged from coset separation.** If distinct
 domain points never lie in the same `⟨ω⟩`-coset — formalized as: `β = α · ω^i` (any natural
@@ -159,7 +160,8 @@ theorem geomDomain_admissible (γ : F) (s n : ℕ)
     intro hmem
     obtain ⟨i, _, hi⟩ := Finset.mem_image.mp hmem
     exact geomDomain_ne_zero γ s n hγ i hi
-  refine ⟨?_, admissible_intra_of_orderOf_ge _ s γ h0 hs_ord⟩
+  refine ⟨?_, fun α hα i hi_s hi_pos =>
+    admissible_intra_of_orderOf_ge _ s γ h0 hs_ord α hα i hi_pos hi_s⟩
   -- inter-orbit clause from the bounded coset separation
   intro α hα β hβ hne i hi heq
   obtain ⟨a, _, rfl⟩ := Finset.mem_image.mp hα

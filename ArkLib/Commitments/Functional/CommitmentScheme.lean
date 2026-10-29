@@ -5,13 +5,17 @@ Authors: Tobias Rothmann
 -/
 
 import VCVio
-import ArkLib.OracleReduction.Security.Basic
+import ProximityPrize.Extensions.OracleReduction.Security.Basic
 
 /-!
   # Ordinary Commitment Schemes
 
   This file defines ordinary commitment schemes, where committing to a message also returns the
   opening value that the verifier checks directly.
+
+  The oracle-parametric, separate-key adversaries are `OracleBindingAdversary` and
+  `OracleHidingAdversary`. VCVio owns the shorter adversary names for its `ProbComp` schemes;
+  these retained records have different parameters and preserve the broader oracle interface.
 
   This differs from `ArkLib.Commitments.Functional.Basic`, which formalizes *functional* commitment
   schemes with interactive oracle openings for claims of the form "this committed data answers query
@@ -56,7 +60,7 @@ open scoped NNReal
 
 variable [DecidableEq ι]
   {oSpec : OracleSpec ι} {CommitterKey VerifierKey Message Commitment Opening : Type}
-  [oSpec.Fintype] [oSpec.Inhabited]
+  [OracleSpec.UniformAnswerMeasure oSpec]
 
 /-- A commitment scheme satisfies **correctness** with error `correctnessError` if, for every
   message, the honestly generated commitment and opening verify with probability at least
@@ -64,10 +68,10 @@ variable [DecidableEq ι]
 def correctness (scheme : Scheme oSpec CommitterKey VerifierKey Message Commitment Opening)
     (correctnessError : ℝ≥0) : Prop :=
   ∀ message : Message,
-    Pr[ fun accepted => accepted | do
+    Pr{let result ← (do
         let ⟨committerKey, verifierKey⟩ ← scheme.keygen
         let ⟨cm, op⟩ ← scheme.commit committerKey message
-        scheme.verify verifierKey cm message op] ≥ 1 - correctnessError
+        scheme.verify verifierKey cm message op)}[(fun accepted => accepted) result] ≥ 1 - correctnessError
 
 /-- A commitment scheme satisfies **perfect correctness** if it satisfies correctness with no
   error. -/
@@ -86,7 +90,7 @@ structure BindingAdversaryOutput (Message Commitment Opening : Type) where
 
 /-- An adversary in the binding game returns a commitment and two purported openings to possibly
   different messages. -/
-structure BindingAdversary (oSpec : OracleSpec ι)
+structure OracleBindingAdversary (oSpec : OracleSpec ι)
     (CommitterKey VerifierKey Message Commitment Opening : Type) where
   run : CommitterKey → VerifierKey →
     OracleComp oSpec (BindingAdversaryOutput Message Commitment Opening)
@@ -103,14 +107,14 @@ structure BindingExperimentOutput (Message : Type) where
   most `bindingError`. -/
 def binding (scheme : Scheme oSpec CommitterKey VerifierKey Message Commitment Opening)
     (bindingError : ℝ≥0) : Prop :=
-  ∀ adversary : BindingAdversary oSpec CommitterKey VerifierKey Message Commitment Opening,
-    Pr[ fun result : BindingExperimentOutput Message =>
-        result.message₁ ≠ result.message₂ ∧ result.accept₁ ∧ result.accept₂ | do
+  ∀ adversary : OracleBindingAdversary oSpec CommitterKey VerifierKey Message Commitment Opening,
+    Pr{let result ← (do
       let ⟨committerKey, verifierKey⟩ ← scheme.keygen
       let result ← adversary.run committerKey verifierKey
       let accept₁ ← scheme.verify verifierKey result.commitment result.message₁ result.opening₁
       let accept₂ ← scheme.verify verifierKey result.commitment result.message₂ result.opening₂
-      return (BindingExperimentOutput.mk result.message₁ result.message₂ accept₁ accept₂)] ≤
+      return (BindingExperimentOutput.mk result.message₁ result.message₂ accept₁ accept₂))}[(fun result : BindingExperimentOutput Message =>
+        result.message₁ ≠ result.message₂ ∧ result.accept₁ ∧ result.accept₂) result] ≤
         bindingError
 
 /-- A commitment scheme satisfies **perfect binding** if it satisfies binding with no error. -/
@@ -162,14 +166,14 @@ def extractability (scheme : Scheme oSpec CommitterKey VerifierKey Message Commi
   ∀ AuxState : Type,
   ∀ adversary :
     ExtractabilityAdversary oSpec CommitterKey VerifierKey Message Commitment Opening AuxState,
-    Pr[ fun result : ExtractabilityExperimentOutput Message =>
-        result.accept ∧ result.extractedMessage ≠ result.claimedMessage | do
+    Pr{let result ← (do
       let ⟨committerKey, verifierKey⟩ ← scheme.keygen
       let ⟨result, queryLog⟩ ←
         WriterT.run (simulateQ loggingOracle (adversary.run committerKey verifierKey))
       let extractedMessage := extractor committerKey verifierKey result.commitment queryLog
       let accept ← scheme.verify verifierKey result.commitment result.message result.opening
-      return (ExtractabilityExperimentOutput.mk result.message extractedMessage accept)] ≤
+      return (ExtractabilityExperimentOutput.mk result.message extractedMessage accept))}[(fun result : ExtractabilityExperimentOutput Message =>
+        result.accept ∧ result.extractedMessage ≠ result.claimedMessage) result] ≤
         extractabilityError
 
 /-- The first-phase output of a hiding adversary: two challenge messages and state passed to the
@@ -182,7 +186,7 @@ structure HidingChallenge (Message State : Type) where
 /-- A two-phase adversary for the hiding game. The adversary first chooses two messages and private
   state, then receives a commitment to one of the two messages and tries to distinguish which
   experiment it is in. -/
-structure HidingAdversary (oSpec : OracleSpec ι)
+structure OracleHidingAdversary (oSpec : OracleSpec ι)
     (CommitterKey VerifierKey Message Commitment : Type) where
   State : Type
   choose : CommitterKey → VerifierKey → OracleComp oSpec (HidingChallenge Message State)
@@ -192,7 +196,7 @@ structure HidingAdversary (oSpec : OracleSpec ι)
   message chosen by the adversary; if `useRight = true`, it commits to the second. In both cases,
   only the commitment, not the opening value, is given to the distinguisher. -/
 def hidingExperiment (scheme : Scheme oSpec CommitterKey VerifierKey Message Commitment Opening)
-    (adversary : HidingAdversary oSpec CommitterKey VerifierKey Message Commitment)
+    (adversary : OracleHidingAdversary oSpec CommitterKey VerifierKey Message Commitment)
     (useRight : Bool) :
     OracleComp oSpec Bool := do
   let ⟨committerKey, verifierKey⟩ ← scheme.keygen
@@ -211,11 +215,11 @@ def hidingExperiment (scheme : Scheme oSpec CommitterKey VerifierKey Message Com
   left-vs-right distinguishing advantage. -/
 def hiding' (scheme : Scheme oSpec CommitterKey VerifierKey Message Commitment Opening)
     (hidingError : ℝ≥0) : Prop :=
-  ∀ adversary : HidingAdversary oSpec CommitterKey VerifierKey Message Commitment,
-    Pr[= true | hidingExperiment scheme adversary false] ≤
-        Pr[= true | hidingExperiment scheme adversary true] + hidingError ∧
-    Pr[= true | hidingExperiment scheme adversary true] ≤
-        Pr[= true | hidingExperiment scheme adversary false] + hidingError
+  ∀ adversary : OracleHidingAdversary oSpec CommitterKey VerifierKey Message Commitment,
+    Pr{let result ← (hidingExperiment scheme adversary false)}[result = true] ≤
+        Pr{let result ← (hidingExperiment scheme adversary true)}[result = true] + hidingError ∧
+    Pr{let result ← (hidingExperiment scheme adversary true)}[result = true] ≤
+        Pr{let result ← (hidingExperiment scheme adversary false)}[result = true] + hidingError
 
 end
 

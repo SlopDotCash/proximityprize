@@ -35,9 +35,15 @@ open scoped ENNReal NNReal
 
 section ReductionDischarge
 
+-- Preserve historical PMF equality contracts with private all-subsets observations.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : MeasurableSpace (Option A) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -62,7 +68,7 @@ theorem reductionAppendCompletenessResidual_msg
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     reductionAppendCompletenessResidual R₁ R₂ h₁ h₂ :=
@@ -96,7 +102,7 @@ theorem appendRbrKnowledgeSoundnessResidual_msg_subsingleton [Subsingleton σ]
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty Stmt₂) (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
@@ -115,7 +121,7 @@ section OracleReductionDischarge
 
 namespace OracleReduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {Stmt₁ Stmt₂ Stmt₃ Wit₁ Wit₂ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [Oₘ₁ : ∀ i, OracleInterface (pSpec₁.Message i)] [Oₘ₂ : ∀ i, OracleInterface (pSpec₂.Message i)]
@@ -137,7 +143,7 @@ Direct from `OracleReduction.append_perfectCompleteness_keystone`
 (`AppendToVerifierKeystone.lean`). -/
 theorem appendPerfectCompletenessResidual_msg
     (R₁ : OracleReduction oSpec Stmt₁ OStmt₁ Wit₁ Stmt₂ OStmt₂ Wit₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) R₁.verifier]
+
     (R₂ : OracleReduction oSpec Stmt₂ OStmt₂ Wit₂ Stmt₃ OStmt₃ Wit₃ pSpec₂)
     (h₁ : R₁.perfectCompleteness init impl rel₁ rel₂)
     (h₂ : R₂.perfectCompleteness init impl rel₂ rel₃)
@@ -148,10 +154,10 @@ theorem appendPerfectCompletenessResidual_msg
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
         = support (liftM q : OracleComp oSpec β))
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited] :
+    [∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range q)] [∀ q, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range q)]
+    [∀ q, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range q)] [∀ q, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range q)] :
     appendPerfectCompletenessResidual R₁ R₂ h₁ h₂ :=
   append_perfectCompleteness_keystone R₁ R₂ h₁ h₂ hn hDir hDir₂ hInit hImplSupp
 

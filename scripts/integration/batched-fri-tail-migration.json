@@ -1,0 +1,768 @@
+{
+  "upstream_revision": "94fb4cdd70c2ea061037bf6337611300d71c4e88",
+  "original_sources": [
+    {
+      "original_file": "ArkLib/ProofSystem/BatchedFri/Spec/General.lean",
+      "revision": "883e99d61e51264327b5fee859732d047f7d7038",
+      "git_blob": "f3bfde9e5e65655836a080a942dd1af8c254f6e5",
+      "sha256": "0b4b8e96a13e53e7a7b5c8bc32e6e2f99281d39db26aeea742419b47899f5c7b"
+    },
+    {
+      "original_file": "ArkLib/ProofSystem/BatchedFri/Security.lean",
+      "revision": "883e99d61e51264327b5fee859732d047f7d7038",
+      "git_blob": "7f6fddccf7481bca0913a97248d5c692384ca3d8",
+      "sha256": "08a2f433d6feda1a7f705a09119a0b21c5c48d0036bcef2c94f5ebbc747fc42b"
+    }
+  ],
+  "status": "Scoped tail retirement and current-model source ports pass strict checks. Actual package boundary validation remains queued in full downstream build9.",
+  "incompatibility": "The old tail stores batching coefficients only in its non-oracle input statement. Canonical outputOracle materialization observes tail challenges, input oracles and prover messages, and cannot observe that input statement. Its initial FRI output is coefficient-dependent. The old embed mapped that combined input to outer input0 and did not prove actual LiftContextCoherent agreement.",
+  "formal_model_regression": {
+    "owner": "ProximityPrize/Compatibility/BatchedFriOutputModel.lean",
+    "declaration": "ProximityPrize.Compatibility.BatchedFri.no_statement_independent_batching_output",
+    "statement": "For a nontrivial semiring, no function of two inputs alone implements inputs0 + coefficient * inputs1 for all coefficients.",
+    "validation": "Actual-import strict5s; axiom report propext only."
+  },
+  "canonical_construction": "ArkLib/ProofSystem/BatchedFri/Spec/SingleRound.lean exposes the generator-selected combined virtual oracle as the batching-round output, then ArkLib/ProofSystem/BatchedFri/Spec/General.lean appends the canonical FRI reduction.",
+  "retired_commands": [
+    {
+      "name": "BatchedFri.Spec.batchedFRIOracleLens",
+      "source": "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/General.lean",
+      "source_sha256": "095dd8a80b69f1b8d438d6e6069506a1ef2d3c9933090d21284fc693289ef804",
+      "command_sha256": "e3cf2f98583ab5d312fec3add6ace6df941df401b3e83d5096f1e5c3399438ec",
+      "archive": "scripts/integration/retired/batched-fri-statement-tail.lean.txt",
+      "reason": "The old tail stores batching coefficients only in its non-oracle input statement. Canonical outputOracle materialization observes tail challenges, input oracles and prover messages, and cannot observe that input statement. Its initial FRI output is coefficient-dependent. The old embed mapped that combined input to outer input0 and did not prove actual LiftContextCoherent agreement."
+    },
+    {
+      "name": "BatchedFri.Spec.liftedFRI",
+      "source": "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/General.lean",
+      "source_sha256": "095dd8a80b69f1b8d438d6e6069506a1ef2d3c9933090d21284fc693289ef804",
+      "command_sha256": "9a4d28ab649d24fd6fd8dbaa933280346673a6b96ff7933b78d385c08d21ec02",
+      "archive": "scripts/integration/retired/batched-fri-statement-tail.lean.txt",
+      "reason": "The old tail stores batching coefficients only in its non-oracle input statement. Canonical outputOracle materialization observes tail challenges, input oracles and prover messages, and cannot observe that input statement. Its initial FRI output is coefficient-dependent. The old embed mapped that combined input to outer input0 and did not prove actual LiftContextCoherent agreement."
+    }
+  ],
+  "preservation_rule": "Keep genuine algebraic and conditional security results. Retire the obsolete same-interface tail metadata and route genuine batch-plus-FRI claims through the canonical seam, with explicit original premises.",
+  "security_port": {
+    "original_source_sha256": "21ff4b34d6efb7a18c1e89c7d74b7ba032364245dc51227e273438ba8f62760f",
+    "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+    "explicit_name_changes": {
+      "batchedFRIOracleLensReduction": "batchedFRICanonicalSeam",
+      "BatchedFRIOracleLens": "CanonicalBatchingSeam",
+      "friSoundnessSequentialComposition": "friSoundnessCanonicalSequentialComposition",
+      "FriSoundnessParts": "CanonicalFriSoundnessParts",
+      "fri_soundness": "fri_soundness_canonicalIndependent",
+      "batchedFRIreduction_verifier_eq_append": "batchedFRIreduction_canonicalVerifier_eq_append",
+      "batchedFRISequentialCompositionSoundness_of_append": "batchedFRICanonicalSequentialCompositionSoundness_of_append"
+    },
+    "commands": [
+      {
+        "original_name": "Fri.batchedFRIOracleLensReduction",
+        "current_name": "Fri.batchedFRICanonicalSeam",
+        "original_command_sha256": "56b3d7f5ae1437e3451b590bf86b734b6f2c4d180cb76fd7a81a2edd74170cf6",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.batchedFRIOracleLensReduction_holds",
+        "current_name": "Fri.batchedFRICanonicalSeam_holds",
+        "original_command_sha256": "6b7ad031c2198384c2279c25b4c64e4899995da67305027a1a81987a393c4c8e",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.FriQuerySoundnessParts.of_queryRoundDensityBoundAndBatchedFRIOracleLens",
+        "current_name": "Fri.FriQuerySoundnessParts.of_queryRoundDensityBoundAndCanonicalBatchingSeam",
+        "original_command_sha256": "0faf17279ed7afcef9883354a3c253fa0e780f8f010ba3f1cb2ac4a6e9860bca",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLens",
+        "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeam",
+        "original_command_sha256": "8169749bced83171fe2b611a795cb1d195853ccb3eccda638677b073614df820",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndJointProximity",
+        "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndJointProximity",
+        "original_command_sha256": "11e74ca0bc739cb79bd3ad011451b485481bc9318f45f65fb21d9e86721630f6",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineSpacesCA",
+        "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineSpacesCA",
+        "original_command_sha256": "c0f5a485d2055231e0f7574345a9fb5ab43835a092d0948aa94a92339ff6de11",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineLineCA",
+        "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineLineCA",
+        "original_command_sha256": "c3c270cbefb92439918951804b63b18627371022d55a76d2993050e864751686",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSAffineLine",
+        "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSAffineLine",
+        "original_command_sha256": "d6eaba99dd7adfc8e83ea6a2b7f20208742fe9dabc89926c6f48b6a8b5dcc998",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndCurveCA",
+        "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndCurveCA",
+        "original_command_sha256": "8f20e13e1db91d638094dcd79e05307e6e6d7b4e659687e551f371ffd31f2c77",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve",
+        "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve",
+        "original_command_sha256": "74fc88a560d9e343dfb598b65c0022bbc48f9e5962251cf6bab4883a1d6b132d",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_soundness",
+        "current_name": "Fri.fri_soundness_canonicalIndependent",
+        "original_command_sha256": "a1bdf6a36ad648c80db1a8822f2a45e6062898fefa6431488e6e48f16d5c43d6",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_jointAgreement_of_queryRoundDensityBoundAndBatchedFRIOracleLens",
+        "current_name": "Fri.fri_jointAgreement_of_queryRoundDensityBoundAndCanonicalBatchingSeam",
+        "original_command_sha256": "32649600e3416ac6fc00a362ead4ed80e624f1ea06dfb940a9110adb84cb22df",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.batchedFRIreduction_verifier_eq_append",
+        "current_name": "Fri.batchedFRIreduction_canonicalVerifier_eq_append",
+        "original_command_sha256": "3e863ed5502e2de07e58ae13346bd3173852468d90c16a0388e0542926566a7f",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.batchedFRISequentialCompositionSoundness_of_append",
+        "current_name": "Fri.batchedFRICanonicalSequentialCompositionSoundness_of_append",
+        "original_command_sha256": "4a4d732962ab19a58e065f1b45642683ce069249db4670771136e2397c559e2f",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.friSoundnessSequentialComposition",
+        "current_name": "Fri.friSoundnessCanonicalSequentialComposition",
+        "original_command_sha256": "535efe8e8379d43bcadde78b26496b08c8601377e84b0a395762ad8edd99c022",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.friSoundnessSequentialComposition_of_append",
+        "current_name": "Fri.friSoundnessCanonicalSequentialComposition_of_append",
+        "original_command_sha256": "9d7c6100e8efb8c99048fc176370da8a9758d3f776c35fc3aacee0e2fa132435",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLens",
+        "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeam",
+        "original_command_sha256": "72a43c121f67bd54c2344dacd84626656b04627fba411321f19eb8700d8f473f",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndJointProximity",
+        "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndJointProximity",
+        "original_command_sha256": "92dc58744106e7ef681719719f2a5e53f7910131007d243b69a5b85bda273d67",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndJointProximity",
+        "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndJointProximity",
+        "original_command_sha256": "bdbd41bed55cbad1704fc87af5c3eebf2aaaca99886209b7f10987687674dc42",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineLineCA",
+        "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineLineCA",
+        "original_command_sha256": "2281247d3b2dabb55c7745bf966ad2cddf4d9769d8e647453529bda442ec6a36",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineLineCA",
+        "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineLineCA",
+        "original_command_sha256": "9e0f69357c28c5cbf20d0cc44d96ed94f2e892570ceff9e1ef2cf6f51928e67e",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSAffineLine",
+        "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSAffineLine",
+        "original_command_sha256": "8cd91a9bc6b588c3710ad15c8c78fc952c8cfba1024ce7fe4dbafe76bd279b58",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSAffineLine",
+        "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSAffineLine",
+        "original_command_sha256": "4fccd21f2f419864e6f7dc8e4983d257b303e1debff8fca976d8a0ae18fc77e3",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_jointAgreement_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSAffineLine",
+        "current_name": "Fri.fri_jointAgreement_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSAffineLine",
+        "original_command_sha256": "602e2380cac4dc026a5d7332f213dc38f337309c7621db59c180e837b29f3d55",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineSpaceCA",
+        "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineSpaceCA",
+        "original_command_sha256": "39fe863cfeb40b5e404411be4fe1ed63004f2e50510c7dcb7b881512de112265",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineSpaceCA",
+        "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineSpaceCA",
+        "original_command_sha256": "bf891b3375732094e8e64a6e270d1b9777d663daf7b67d2d3e511bf18e742153",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndCurveCA",
+        "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndCurveCA",
+        "original_command_sha256": "0b49c74df961596073d07382786536f3556ac660c1b6f6e687696398567a245c",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndCurveCA",
+        "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndCurveCA",
+        "original_command_sha256": "adf217929ef62945633f58e010fc5184d634692ad61f6e0a7ddcb77ab1c770e4",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.FriSoundnessParts.of_queryRoundDensityBoundAndBatchedFRIOracleLens",
+        "current_name": "Fri.CanonicalFriSoundnessParts.of_queryRoundDensityBoundAndCanonicalBatchingSeam",
+        "original_command_sha256": "3aaae862446ab9867fadd9bb16a1e7223d9851360b4944c4c9d6e4929e60d4a2",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.FriSoundnessParts.of_queryRoundDensityBoundAndBatchedFRIOracleLensAndSequentialComposition",
+        "current_name": "Fri.CanonicalFriSoundnessParts.of_queryRoundDensityBoundAndCanonicalBatchingSeamAndSequentialComposition",
+        "original_command_sha256": "6419a7368fcd19e35e209c80c74ebb8355fb88a272125382acaed1a36624556d",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLens",
+        "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeam",
+        "original_command_sha256": "66205646bb7947ae0519216e22e65fdfce110b5324d38341dc08ecfc16179bee",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndSequentialComposition",
+        "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndSequentialComposition",
+        "original_command_sha256": "c8ff2dd6773fa12479198b08d1c3ddccf4a7c57070ad1901482eb0646c466431",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndSequentialCompositionAndTotalError",
+        "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndSequentialCompositionAndTotalError",
+        "original_command_sha256": "593083b9f55a8bbb8dca8eba5c9f9967c44fced0eb3ee84ee50c9069d6c6311b",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      },
+      {
+        "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndSequentialCompositionAndPhaseErrorBounds",
+        "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndSequentialCompositionAndPhaseErrorBounds",
+        "original_command_sha256": "25c06d96542bf3ad421dd3547bacf0c4003a2951c74fdb52869d8e9c4ee5a8b9",
+        "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt"
+      }
+    ],
+    "semantics": "Independent affine coefficients selected by the canonical generator; batching materializes the combined single oracle before the native FRI tail. Genuine conditional density/CA/error/sequential-residual premises remain explicit. Actual validation pending.",
+    "native_measure_choice": "The challenge-only finite game selects native UniformAnswerMeasure.ofFiniteNonempty locally; the original uniformly sampled field/seed semantics is preserved. This uses existing finite/nonempty field data, adds no mathematical premise, and does not restore an SPMF interpreter.",
+    "validation": "Exact current General + Security source composition: strict PASS97s. Exact current General + Security + all five consumer sources: strict PASS96s. No sorry warnings or sorryAx reports. Actual package target remains required.",
+    "current_source_sha256": "eeb7c7fc73da6cf4afc60263f35364b8508ed33bb1b5c03623e4f24f531ce9e9"
+  },
+  "value_layer_validation": "Actual-import strict pg-iterate passed10s after retiring exactly the two incompatible effectful tail commands. Pure batchCode and liftingLens retained.",
+  "routed_consumers": [
+    {
+      "file": "ArkLib/ProofSystem/BatchedFri/QueryRoundProbability.lean",
+      "before_sha256": "ec375623c69aa987f8513035c7b694e0cc11672c7962fe8a9c28c4e9eeca7492",
+      "after_sha256": "3631cb71195d6e4718429bd3a9ae0728f3afceeae4e9a1859e772831c515e743",
+      "public_name_changes": [
+        {
+          "original_name": "Fri.FriQuerySoundnessParts.of_queryRoundProbabilityBoundAndBatchedFRIOracleLens",
+          "current_name": "Fri.FriQuerySoundnessParts.of_queryRoundProbabilityBoundAndCanonicalBatchingSeam",
+          "command_sha256": "76309d0da3fd214efb129609a800f9f688b2e703c0e210e9b2c289ff4d28fa6e"
+        },
+        {
+          "original_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens",
+          "current_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeam",
+          "command_sha256": "26abdbcdd4e17f089a65e9a5d1cf8b1708070afe16e1760aec7f687da1418aeb"
+        },
+        {
+          "original_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndJointProximity",
+          "current_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndJointProximity",
+          "command_sha256": "a2909ef1ac2d6f8701d73668454674be6f147a93843ba38cfd2f2ba330a311ae"
+        },
+        {
+          "original_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineLineCA",
+          "current_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineLineCA",
+          "command_sha256": "124ee656f5f30fe93128c04a758e5b0f2962d6f3c07dc68341ebfb4eac33b983"
+        },
+        {
+          "original_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSAffineLine",
+          "current_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSAffineLine",
+          "command_sha256": "16b1e422cbf55c46aebf272c1355eefe72512a065c390fc177797c62418bc237"
+        },
+        {
+          "original_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineSpacesCA",
+          "current_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineSpacesCA",
+          "command_sha256": "6cf2e1cd35b729fb7538a5ef0cabdacb3635521d885a066971c8a35926ff4192"
+        },
+        {
+          "original_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndCurveCA",
+          "current_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndCurveCA",
+          "command_sha256": "a5b8a8050c45a817ccb855ad54573ebb0268f6da4f59341cbb35fce8133a9f48"
+        },
+        {
+          "original_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve",
+          "current_name": "Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve",
+          "command_sha256": "69ae9da065f5b6219d2c9949e3f24b0808ced04e7e19827d1c49a38458a8e52a"
+        }
+      ],
+      "validation": "Included in exact seven-source native closure strict PASS96s."
+    },
+    {
+      "file": "ArkLib/ProofSystem/BatchedFri/QueryRoundSoundness.lean",
+      "before_sha256": "320381e6345d83f4961129ea81ded1fd60a2097dbd90d62fe3b6a50c0ca9b825",
+      "after_sha256": "d0f5f1f0e947526e4873e2e31d906fef452563c5853570ce9c7a1aa313260dbb",
+      "public_name_changes": [
+        {
+          "original_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens",
+          "current_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeam",
+          "command_sha256": "a3237da1c715bb3bab9c8128edbffa8726f3a5ea45902096902744dc51d5ca44"
+        },
+        {
+          "original_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndJointProximity",
+          "current_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndJointProximity",
+          "command_sha256": "54686b2dbf61928ffac0c7a9544820577b6908a116a0bb24111e236b4de23f44"
+        },
+        {
+          "original_name": "Fri.fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndJointProximity",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndJointProximity",
+          "command_sha256": "7ff6bf180e37e9accfd09bd848de2b1ad032050598edc58d987e7512763431d7"
+        },
+        {
+          "original_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineLineCA",
+          "current_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineLineCA",
+          "command_sha256": "91c4c9260f94af1157f0e4133229bf38c816192a18c5b68a23a7d18b943eb976"
+        },
+        {
+          "original_name": "Fri.fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineLineCA",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineLineCA",
+          "command_sha256": "94c2cb2039aeb0d17270609ef0814a591d589d4602f1aade90629081b14da9d8"
+        },
+        {
+          "original_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSAffineLine",
+          "current_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSAffineLine",
+          "command_sha256": "4bd50c58c2a31372cd8545764282c76fbbb7126e2b570ee4ea132c08594cace2"
+        },
+        {
+          "original_name": "Fri.fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSAffineLine",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSAffineLine",
+          "command_sha256": "001cfcbfa5d5ca520206e68d78a8243f24cc35c26a3ce31050107a4f98d744eb"
+        },
+        {
+          "original_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineSpaceCA",
+          "current_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineSpaceCA",
+          "command_sha256": "fbcee19ea0ff4e10d19084c05ce1f1c5ecef0b0c5c3e96f710f416e60292f484"
+        },
+        {
+          "original_name": "Fri.fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineSpaceCA",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineSpaceCA",
+          "command_sha256": "69577f7f0803f3120335865519bfda06712656e1a6f5e25dfbc8b114e226279a"
+        },
+        {
+          "original_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndCurveCA",
+          "current_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndCurveCA",
+          "command_sha256": "43e4a0baf0554b6e469b2953d004ba318a7f16aa216a6d38654c437e5cce7b36"
+        },
+        {
+          "original_name": "Fri.fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndCurveCA",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndCurveCA",
+          "command_sha256": "21865ac9d2bd86030f11099a79f08ab2942cbc7f820e9a1e6134d993bd35ae71"
+        },
+        {
+          "original_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens",
+          "current_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndCanonicalBatchingSeam",
+          "command_sha256": "b514d66ab7d4ac848991f3fca6045e3b071c590fba22daefbfd27bcdca9bc2ed"
+        },
+        {
+          "original_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndJointProximity",
+          "current_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndJointProximity",
+          "command_sha256": "87e77b6caa32fac4e530382d62a0e3f838e25238e40c2d16761f2675e31f599d"
+        },
+        {
+          "original_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineLineCA",
+          "current_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineLineCA",
+          "command_sha256": "50b6cd8d88c3ceaf09ff440826cc52334e9bf19e2bcd3010e5e16b747485fc86"
+        },
+        {
+          "original_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSAffineLine",
+          "current_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSAffineLine",
+          "command_sha256": "51ae47e4febc095013950f72c5322312cec7861c498d218623b879c60e148837"
+        },
+        {
+          "original_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineSpaceCA",
+          "current_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineSpaceCA",
+          "command_sha256": "c05ad8308d3c0cef51d748ef4fe44df29fab857ab0238262aae8912b9e2faf8c"
+        },
+        {
+          "original_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndCurveCA",
+          "current_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndCurveCA",
+          "command_sha256": "0696f27be8f2803eb2ce950e431416c9a45d9b3c34bdd49f2d43ecd66c050261"
+        },
+        {
+          "original_name": "Fri.fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndSequentialComposition",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndSequentialComposition",
+          "command_sha256": "f945287e22cc68abad2f87699dd853f20dab8bd2bd99d463a0fe0992c21a546c"
+        },
+        {
+          "original_name": "Fri.fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndSoundnessFields",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndSoundnessFields",
+          "command_sha256": "841b1c488be79473507361f7683932b9ab380a3e094dff08bdae37732d593ddb"
+        },
+        {
+          "original_name": "Fri.fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndSoundnessFieldAndNamedPhaseBounds",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndSoundnessFieldAndNamedPhaseBounds",
+          "command_sha256": "4c81ce14f17afbaa9a1417061c1af32eddcc6a7575f7e791c2327890818e2710"
+        },
+        {
+          "original_name": "Fri.fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndSequentialCompositionAndTotalError",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndSequentialCompositionAndTotalError",
+          "command_sha256": "6dabc79503d48b08275d802f0ee5e3ea66258a60e2656f840d6f86e32959b85a"
+        },
+        {
+          "original_name": "Fri.fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndSequentialCompositionAndPhaseErrorBounds",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndSequentialCompositionAndPhaseErrorBounds",
+          "command_sha256": "aec3e6e164f7942e8f514f9bcdc24b8a7259f8b51e096ff28008ce0979a15d42"
+        }
+      ],
+      "validation": "Included in exact seven-source native closure strict PASS96s."
+    },
+    {
+      "file": "ArkLib/ProofSystem/BatchedFri/QueryRoundRSAffineLineSoundness.lean",
+      "before_sha256": "f380a04b523dfd124f873eea0da23543b72596948c9ddaf633e277fec7aeaa3f",
+      "after_sha256": "ec3d8b38333cfe3b1619b2ec54d8675cda9586a9a0142db15bf381223e124cd3",
+      "public_name_changes": [
+        {
+          "original_name": "Fri.fri_soundness_densityRSAffineLine_of_probabilityInputs",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_densityRSAffineLine_of_probabilityInputs",
+          "command_sha256": "38deb3622b816ddefa8ab2988fa34a80cea35f115ea8fa244a74fcb8be1ffeae"
+        },
+        {
+          "original_name": "Fri.fri_soundness_probabilityRSAffineLine_of_densityInputs",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_probabilityRSAffineLine_of_densityInputs",
+          "command_sha256": "1932ac7271721a02f39b45ad9a5b94fad5b1dc011b8f315fd0c0b5d045cb4516"
+        }
+      ],
+      "validation": "Included in exact seven-source native closure strict PASS96s."
+    },
+    {
+      "file": "ArkLib/ProofSystem/BatchedFri/QueryRoundRSCurveSoundness.lean",
+      "before_sha256": "e07b9082bdc9dde47224d370881ae3366567675157320d1a76daff9cbacb0fad",
+      "after_sha256": "d7aa7440cc9ff1533acd96436c251d667aa58ed5457b47b24ee4f1979c062e75",
+      "public_name_changes": [
+        {
+          "original_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve",
+          "current_name": "Fri.friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve",
+          "command_sha256": "567b8a310816bb4efcd9a6989167edda8aa8e1041a1f6ba856449d6c9371ea3a"
+        },
+        {
+          "original_name": "Fri.fri_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve",
+          "command_sha256": "d224d4f9a9fd0010c4c6518fdd46d940f06ff357dbbfd483de53b74c663c4c75"
+        },
+        {
+          "original_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve",
+          "current_name": "Fri.fri_jointAgreement_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve",
+          "command_sha256": "9bec9e694ad6a1a85e7d199f6d384006d100765cd92b87c0f758c3d6597f89ce"
+        },
+        {
+          "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve",
+          "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve",
+          "command_sha256": "5340fd14cb7e9fa7d7705e96285b21a850a572db3b77ceae818d3dc6ce167631"
+        },
+        {
+          "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve",
+          "command_sha256": "333628153e0a79d4ebde4f15d284bc1b352d7f64f789aacc665ca95ac4201b6c"
+        },
+        {
+          "original_name": "Fri.fri_jointAgreement_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve",
+          "current_name": "Fri.fri_jointAgreement_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve",
+          "command_sha256": "a2febdf4c692d8ce89f6b30b39461e765c31dd7bd16c8b62bd7776759a869de5"
+        },
+        {
+          "original_name": "Fri.fri_soundness_densityRSCurve_of_probabilityInputs",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_densityRSCurve_of_probabilityInputs",
+          "command_sha256": "eba2f608ea7220ab32ececc0ad1beea002f11a3ae3bd253c2ee61a6bf4f59e9b"
+        },
+        {
+          "original_name": "Fri.fri_soundness_probabilityRSCurve_of_densityInputs",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_probabilityRSCurve_of_densityInputs",
+          "command_sha256": "06effc2822aa913bbf2d9e77205b1fc911ace98d04e6d45148a88b603b6b9c18"
+        }
+      ],
+      "validation": "Included in exact seven-source native closure strict PASS96s."
+    },
+    {
+      "file": "ArkLib/ProofSystem/BatchedFri/QuerySoundnessSmallField.lean",
+      "before_sha256": "11c3564001b98dcfb80ce1fd92623911f4c94e13eb4db5a0044bc11a83488208",
+      "after_sha256": "4ddc03a2a5b2c3789f853b115491e4a18645a77136b42976abfbb60374126f1e",
+      "public_name_changes": [
+        {
+          "original_name": "Fri.fri_soundness_of_card_le_curve",
+          "current_name": "Fri.fri_soundness_canonicalIndependent_of_card_le_curve",
+          "command_sha256": "2fc44407ec330fb28a622628ed3f98dd70e07fb316c5097c88c3a70a3446025b"
+        }
+      ],
+      "validation": "Included in exact seven-source native closure strict PASS96s."
+    }
+  ],
+  "retired_and_replaced_security_interfaces": [
+    {
+      "original_name": "Fri.batchedFRIOracleLensReduction",
+      "current_name": "Fri.batchedFRICanonicalSeam",
+      "original_command_sha256": "56b3d7f5ae1437e3451b590bf86b734b6f2c4d180cb76fd7a81a2edd74170cf6",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.batchedFRIOracleLensReduction_holds",
+      "current_name": "Fri.batchedFRICanonicalSeam_holds",
+      "original_command_sha256": "6b7ad031c2198384c2279c25b4c64e4899995da67305027a1a81987a393c4c8e",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.FriQuerySoundnessParts.of_queryRoundDensityBoundAndBatchedFRIOracleLens",
+      "current_name": "Fri.FriQuerySoundnessParts.of_queryRoundDensityBoundAndCanonicalBatchingSeam",
+      "original_command_sha256": "0faf17279ed7afcef9883354a3c253fa0e780f8f010ba3f1cb2ac4a6e9860bca",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLens",
+      "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeam",
+      "original_command_sha256": "8169749bced83171fe2b611a795cb1d195853ccb3eccda638677b073614df820",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndJointProximity",
+      "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndJointProximity",
+      "original_command_sha256": "11e74ca0bc739cb79bd3ad011451b485481bc9318f45f65fb21d9e86721630f6",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineSpacesCA",
+      "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineSpacesCA",
+      "original_command_sha256": "c0f5a485d2055231e0f7574345a9fb5ab43835a092d0948aa94a92339ff6de11",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineLineCA",
+      "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineLineCA",
+      "original_command_sha256": "c3c270cbefb92439918951804b63b18627371022d55a76d2993050e864751686",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSAffineLine",
+      "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSAffineLine",
+      "original_command_sha256": "d6eaba99dd7adfc8e83ea6a2b7f20208742fe9dabc89926c6f48b6a8b5dcc998",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndCurveCA",
+      "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndCurveCA",
+      "original_command_sha256": "8f20e13e1db91d638094dcd79e05307e6e6d7b4e659687e551f371ffd31f2c77",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve",
+      "current_name": "Fri.fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve",
+      "original_command_sha256": "74fc88a560d9e343dfb598b65c0022bbc48f9e5962251cf6bab4883a1d6b132d",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_soundness",
+      "current_name": "Fri.fri_soundness_canonicalIndependent",
+      "original_command_sha256": "a1bdf6a36ad648c80db1a8822f2a45e6062898fefa6431488e6e48f16d5c43d6",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_jointAgreement_of_queryRoundDensityBoundAndBatchedFRIOracleLens",
+      "current_name": "Fri.fri_jointAgreement_of_queryRoundDensityBoundAndCanonicalBatchingSeam",
+      "original_command_sha256": "32649600e3416ac6fc00a362ead4ed80e624f1ea06dfb940a9110adb84cb22df",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.batchedFRIreduction_verifier_eq_append",
+      "current_name": "Fri.batchedFRIreduction_canonicalVerifier_eq_append",
+      "original_command_sha256": "3e863ed5502e2de07e58ae13346bd3173852468d90c16a0388e0542926566a7f",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.batchedFRISequentialCompositionSoundness_of_append",
+      "current_name": "Fri.batchedFRICanonicalSequentialCompositionSoundness_of_append",
+      "original_command_sha256": "4a4d732962ab19a58e065f1b45642683ce069249db4670771136e2397c559e2f",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.friSoundnessSequentialComposition",
+      "current_name": "Fri.friSoundnessCanonicalSequentialComposition",
+      "original_command_sha256": "535efe8e8379d43bcadde78b26496b08c8601377e84b0a395762ad8edd99c022",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.friSoundnessSequentialComposition_of_append",
+      "current_name": "Fri.friSoundnessCanonicalSequentialComposition_of_append",
+      "original_command_sha256": "9d7c6100e8efb8c99048fc176370da8a9758d3f776c35fc3aacee0e2fa132435",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLens",
+      "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeam",
+      "original_command_sha256": "72a43c121f67bd54c2344dacd84626656b04627fba411321f19eb8700d8f473f",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndJointProximity",
+      "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndJointProximity",
+      "original_command_sha256": "92dc58744106e7ef681719719f2a5e53f7910131007d243b69a5b85bda273d67",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndJointProximity",
+      "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndJointProximity",
+      "original_command_sha256": "bdbd41bed55cbad1704fc87af5c3eebf2aaaca99886209b7f10987687674dc42",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineLineCA",
+      "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineLineCA",
+      "original_command_sha256": "2281247d3b2dabb55c7745bf966ad2cddf4d9769d8e647453529bda442ec6a36",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineLineCA",
+      "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineLineCA",
+      "original_command_sha256": "9e0f69357c28c5cbf20d0cc44d96ed94f2e892570ceff9e1ef2cf6f51928e67e",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSAffineLine",
+      "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSAffineLine",
+      "original_command_sha256": "8cd91a9bc6b588c3710ad15c8c78fc952c8cfba1024ce7fe4dbafe76bd279b58",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSAffineLine",
+      "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSAffineLine",
+      "original_command_sha256": "4fccd21f2f419864e6f7dc8e4983d257b303e1debff8fca976d8a0ae18fc77e3",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_jointAgreement_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSAffineLine",
+      "current_name": "Fri.fri_jointAgreement_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSAffineLine",
+      "original_command_sha256": "602e2380cac4dc026a5d7332f213dc38f337309c7621db59c180e837b29f3d55",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineSpaceCA",
+      "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineSpaceCA",
+      "original_command_sha256": "39fe863cfeb40b5e404411be4fe1ed63004f2e50510c7dcb7b881512de112265",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineSpaceCA",
+      "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineSpaceCA",
+      "original_command_sha256": "bf891b3375732094e8e64a6e270d1b9777d663daf7b67d2d3e511bf18e742153",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndCurveCA",
+      "current_name": "Fri.friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndCurveCA",
+      "original_command_sha256": "0b49c74df961596073d07382786536f3556ac660c1b6f6e687696398567a245c",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndCurveCA",
+      "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndCurveCA",
+      "original_command_sha256": "adf217929ef62945633f58e010fc5184d634692ad61f6e0a7ddcb77ab1c770e4",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.FriSoundnessParts.of_queryRoundDensityBoundAndBatchedFRIOracleLens",
+      "current_name": "Fri.CanonicalFriSoundnessParts.of_queryRoundDensityBoundAndCanonicalBatchingSeam",
+      "original_command_sha256": "3aaae862446ab9867fadd9bb16a1e7223d9851360b4944c4c9d6e4929e60d4a2",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.FriSoundnessParts.of_queryRoundDensityBoundAndBatchedFRIOracleLensAndSequentialComposition",
+      "current_name": "Fri.CanonicalFriSoundnessParts.of_queryRoundDensityBoundAndCanonicalBatchingSeamAndSequentialComposition",
+      "original_command_sha256": "6419a7368fcd19e35e209c80c74ebb8355fb88a272125382acaed1a36624556d",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLens",
+      "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeam",
+      "original_command_sha256": "66205646bb7947ae0519216e22e65fdfce110b5324d38341dc08ecfc16179bee",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndSequentialComposition",
+      "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndSequentialComposition",
+      "original_command_sha256": "c8ff2dd6773fa12479198b08d1c3ddccf4a7c57070ad1901482eb0646c466431",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndSequentialCompositionAndTotalError",
+      "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndSequentialCompositionAndTotalError",
+      "original_command_sha256": "593083b9f55a8bbb8dca8eba5c9f9967c44fced0eb3ee84ee50c9069d6c6311b",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    },
+    {
+      "original_name": "Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndSequentialCompositionAndPhaseErrorBounds",
+      "current_name": "Fri.fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndSequentialCompositionAndPhaseErrorBounds",
+      "original_command_sha256": "25c06d96542bf3ad421dd3547bacf0c4003a2951c74fdb52869d8e9c4ee5a8b9",
+      "archive": "scripts/integration/retired/batched-fri-security-statement-tail.lean.txt",
+      "reason": "The old coefficient-carrying tail interface is retired; this explicitly named replacement uses canonical generator-selected batching and the native FRI seam, preserving genuine conditional mathematical premises."
+    }
+  ],
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [
+      "/security_port/semantics"
+    ],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

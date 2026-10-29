@@ -51,6 +51,9 @@ the constant-budget surface costs `b/|F|`.  For the BCIKS20 parameter regime
 actually discharge.
 -/
 
+private noncomputable local instance {F : Type} [Field F] [Fintype F] :
+    SampleableType F := SampleableType.ofFintype F
+
 namespace ProximityGap
 
 set_option linter.unusedDecidableInType false
@@ -323,7 +326,7 @@ theorem RS_jointAgreement_of_prob_gt_strict_johnson_share
             ring
     rw [hkey]
     calc (S : ℝ≥0) ≤ (k : ℝ≥0) * (S : ℝ≥0) :=
-          le_mul_of_one_le_left (zero_le _) hk1
+          le_mul_of_one_le_left (by positivity) hk1
       _ ≤ (k : ℝ≥0) * errorBound δ deg domain * qn + (k : ℝ≥0) * (S : ℝ≥0) :=
           le_add_self
   have hη :
@@ -371,6 +374,7 @@ theorem correlatedAgreement_affine_curves_of_strict_coeff_polys_share {k : ℕ}
         (RS_correlatedAgreement_curves_uniqueDecodingRegime hkpos hUDR)
     · unfold δ_ε_correlatedAgreementCurves
       intro u hprob
+      rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native] at hprob
       have hprob_weak :
           Pr_{
             let z ← $ᵖ F}[δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,

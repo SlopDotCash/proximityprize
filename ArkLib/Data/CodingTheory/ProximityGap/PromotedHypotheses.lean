@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.InformationTheory.Hamming
 import Mathlib.LinearAlgebra.Lagrange
 import Mathlib.Tactic
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 import ArkLib.Data.CodingTheory.ProximityGap.UniqueDecodingListBound
 
 /-!

@@ -69,13 +69,6 @@ open OracleComp OracleSpec ProtocolSpec
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
-  {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
-  {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
-  [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
-  {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
-  {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}
-
 -- NOTE: The placebo `def append_perfectCompleteness_msg : … := (R₁.append R₂).perfectCompleteness …`
 -- (which merely restated the goal as a `Prop`-valued def, ignoring its own hypotheses) was removed.
 -- The genuine, axiom-clean append perfect-completeness keystone is the *theorem*

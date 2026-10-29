@@ -5,7 +5,7 @@ open OracleComp OracleSpec ProtocolSpec
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -14,7 +14,7 @@ variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
 
 /-- Residual for append perfect-completeness in the message-first case. The previous theorem body
 ended in `sorry`; keep the exact target named without asserting it. -/
-def reduction_append_perfectCompleteness_msg
+def reduction_append_perfectCompleteness_msg_legacyResidual
     (R₁ : Reduction oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁)
     (R₂ : Reduction oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂)
     (_h₁ : R₁.perfectCompleteness init impl rel₁ rel₂)

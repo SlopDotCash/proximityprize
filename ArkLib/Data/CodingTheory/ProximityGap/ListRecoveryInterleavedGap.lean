@@ -92,8 +92,8 @@ The lower bound is `Lambda_interleaved_ge` (diagonal embedding); the upper bound
 collapse: interleaving moves the list size only *within* a fixed power band. -/
 theorem Lambda_interleaved_sandwich [Fintype F] [Nonempty ι] [DecidableEq F] {m : ℕ} [NeZero m]
     (C : Set (ι → F)) (δ : ℝ) :
-    Lambda C δ ≤ Lambda (interleavedCodeSet (κ := Fin m) C) δ ∧
-      Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤ (Lambda C δ) ^ m :=
+    ListDecodable.Lambda C δ ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ ∧
+      ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤ (ListDecodable.Lambda C δ) ^ m :=
   ⟨Lambda_interleaved_ge C δ, Lambda_interleaved_le_pow C δ⟩
 
 /-! ### 2. Polynomial-threshold transfer (the collapse, in `≤ B` form). -/
@@ -102,8 +102,8 @@ theorem Lambda_interleaved_sandwich [Fintype F] [Nonempty ι] [DecidableEq F] {m
 bounded by `B` at radius `δ`, then the interleaved list is bounded by `B^m`.  This is the forward
 half of the `δ*`-collapse: a radius with a polynomial base list has a polynomial interleaved list. -/
 theorem interleaved_poly_of_base_poly [Fintype F] [Nonempty ι] [DecidableEq F] {m : ℕ}
-    (C : Set (ι → F)) (δ : ℝ) {B : ℕ∞} (hB : Lambda C δ ≤ B) :
-    Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤ B ^ m :=
+    (C : Set (ι → F)) (δ : ℝ) {B : ℕ∞} (hB : ListDecodable.Lambda C δ ≤ B) :
+    ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤ B ^ m :=
   le_trans (Lambda_interleaved_le_pow C δ) (pow_le_pow_left' hB m)
 
 /-- **Interleaved bound ⟹ base bound (same threshold).** If the interleaved list is bounded by `B`
@@ -112,8 +112,8 @@ at radius `δ`, then the base list is bounded by the *same* `B`.  This is the ba
 threshold, so a polynomial interleaved list forces a polynomial base list. -/
 theorem base_poly_of_interleaved_poly [Fintype F] [Nonempty ι] [DecidableEq F] {m : ℕ} [NeZero m]
     (C : Set (ι → F)) (δ : ℝ) {B : ℕ∞}
-    (hB : Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤ B) :
-    Lambda C δ ≤ B :=
+    (hB : ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ ≤ B) :
+    ListDecodable.Lambda C δ ≤ B :=
   le_trans (Lambda_interleaved_ge C δ) hB
 
 /-! ### 3. Finiteness collapse. -/
@@ -122,7 +122,7 @@ theorem base_poly_of_interleaved_poly [Fintype F] [Nonempty ι] [DecidableEq F] 
 Interleaving neither creates nor destroys an infinite decoding list at any fixed radius `δ`. -/
 theorem interleaved_finite_iff_base_finite [Fintype F] [Nonempty ι] [DecidableEq F] {m : ℕ}
     [NeZero m] (C : Set (ι → F)) (δ : ℝ) :
-    Lambda (interleavedCodeSet (κ := Fin m) C) δ < ⊤ ↔ Lambda C δ < ⊤ := by
+    ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ < ⊤ ↔ ListDecodable.Lambda C δ < ⊤ := by
   constructor
   · -- interleaved finite ⟹ base finite, via the (exact) lower bound `Λ C ≤ Λ C^{≡m}`.
     intro h
@@ -138,7 +138,7 @@ theorem interleaved_finite_iff_base_finite [Fintype F] [Nonempty ι] [DecidableE
 /-- A radius `δ` is **`B`-good** for a code `D` if its maximised list size is `≤ B`.  The prize
 quantity `δ*` is the supremum of radii that are `ε·|F|`-good (for `ε = 2^{-128}`); we keep `B`
 abstract so the statement is threshold-agnostic. -/
-def IsGood (D : Set (ι → F)) (δ : ℝ) (B : ℕ∞) : Prop := Lambda D δ ≤ B
+def IsGood (D : Set (ι → F)) (δ : ℝ) (B : ℕ∞) : Prop := ListDecodable.Lambda D δ ≤ B
 
 /-- **`δ*`-collapse, forward.** Every radius that is `B`-good for the base code is `B^m`-good for the
 interleaved code.  So the base code's set of polynomial-list radii is contained (after raising the
@@ -178,8 +178,8 @@ for the base code at an interior radius `δ` propagates verbatim to the interlea
 *same* interior radius.  So the list-recovery reformulation **inherits** the round-1 convergent
 wall — it does not provide a route around the `(1-√ρ, 1-ρ)` gap. -/
 theorem gap_present_in_interleaved [Finite F] [Nonempty ι] {m : ℕ} [NeZero m]
-    (C : Set (ι → F)) (δ : ℝ) {L : ℕ∞} (hL : L ≤ Lambda C δ) :
-    L ≤ Lambda (interleavedCodeSet (κ := Fin m) C) δ := by
+    (C : Set (ι → F)) (δ : ℝ) {L : ℕ∞} (hL : L ≤ ListDecodable.Lambda C δ) :
+    L ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ := by
   classical
   cases nonempty_fintype F
   exact le_trans hL (Lambda_interleaved_ge C δ)

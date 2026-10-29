@@ -3,9 +3,10 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
+module
 
-import ArkLib.OracleReduction.Security.Basic
-import PolyFun.PFunctor.Lens.Basic
+public import ArkLib.OracleReduction.Security.Basic
+public import PolyFun.PFunctor.Lens.Basic
 
 /-!
   ## Lens between Input and Output Contexts of (Oracle) Reductions
@@ -19,6 +20,8 @@ import PolyFun.PFunctor.Lens.Basic
   lenses where we have (only) an equivalence between the statements / witnesses, or lenses where the
   witnesses are trivial.
 -/
+
+@[expose] public section
 
 open OracleSpec OracleComp PFunctor
 
@@ -35,9 +38,8 @@ open OracleSpec OracleComp PFunctor
   output statements (from the outer to the inner context).
 -/
 @[inline, reducible]
-def Statement.Lens (OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut : Type)
-    := PFunctor.Lens (OuterStmtIn X^ OuterStmtOut)
-                   (InnerStmtIn X^ InnerStmtOut)
+def Statement.Lens (OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut : Type) :=
+  PFunctor.Lens (OuterStmtIn X^ OuterStmtOut) (InnerStmtIn X^ InnerStmtOut)
 
 namespace Statement.Lens
 
@@ -60,30 +62,30 @@ end Statement.Lens
 /-- A lens for transporting input and output statements (both oracle and non-oracle) for the
   oracle verifier of an oracle reduction.
 
-  This is currently a statement lens over paired non-oracle and oracle statements. -/
+  TODO: figure out the right way to define this -/
 @[inline, reducible]
 def OracleStatement.Lens (OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut : Type)
     {Outer_ιₛᵢ : Type} (OuterOStmtIn : Outer_ιₛᵢ → Type) [∀ i, OracleInterface (OuterOStmtIn i)]
     {Outer_ιₛₒ : Type} (OuterOStmtOut : Outer_ιₛₒ → Type) [∀ i, OracleInterface (OuterOStmtOut i)]
     {Inner_ιₛᵢ : Type} (InnerOStmtIn : Inner_ιₛᵢ → Type) [∀ i, OracleInterface (InnerOStmtIn i)]
-    {Inner_ιₛₒ : Type} (InnerOStmtOut : Inner_ιₛₒ → Type) [∀ i, OracleInterface (InnerOStmtOut i)]
-  :=
+    {Inner_ιₛₒ : Type} (InnerOStmtOut : Inner_ιₛₒ → Type)
+    [∀ i, OracleInterface (InnerOStmtOut i)] :=
     Statement.Lens (OuterStmtIn × ∀ i, OuterOStmtIn i) (OuterStmtOut × ∀ i, OuterOStmtOut i)
                   (InnerStmtIn × ∀ i, InnerOStmtIn i) (InnerStmtOut × ∀ i, InnerOStmtOut i)
-  -- Extra conditions belong here once oracle-statement lenses carry query simulation data.
-  /- Basically, as we model the output oracle statement as a subset of the input oracle statement +
-  the prover's messages, we need to make sure that this subset relation is satisfied in the
-  statement lens mapping.
+  -- TODO: fill in the extra conditions
+  /- For a legacy embedded output, the lens must preserve the embedding into the input oracle
+  statements and prover messages. Derived virtual outputs instead use `ExecutableLens`, which
+  transports their query implementation and materialization-agreement proof.
 
   We also need to provide a `QueryImpl` instance for simulating the outer oracle verifier using
   the inner oracle verifier.
   -/
 
-  -- simOStmt : QueryImpl [InnerOStmtIn]ₒ
+  -- simulateOutputQuery : QueryImpl [InnerOStmtIn]ₒ
   --   (ReaderT OuterStmtIn (OracleComp [OuterOStmtIn]ₒ))
 
   -- simOStmt_neverFails : ∀ i, ∀ t, ∀ outerStmtIn,
-  --   ((simOStmt.impl (query i t)).run outerStmtIn).neverFails
+  --   ((simulateOutputQuery.impl (query i t)).run outerStmtIn).neverFails
   -- To get back an output oracle statement in the outer context, we may simulate it using the input
   -- (non-oracle) statement of the outer context, the output (non-oracle) statement of the inner
   -- context, along with oracle access to the inner output oracle statements
@@ -104,7 +106,7 @@ variable {OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut : Type}
                 OuterOStmtIn OuterOStmtOut InnerOStmtIn InnerOStmtOut)
 /-- Transport input statements from the outer context to the inner context
 
-This is the projection component of the oracle-statement lens. -/
+TODO: refactor etc. -/
 @[inline, reducible]
 def proj : OuterStmtIn × (∀ i, OuterOStmtIn i) → InnerStmtIn × (∀ i, InnerOStmtIn i) :=
   lens.toFunA
@@ -112,7 +114,7 @@ def proj : OuterStmtIn × (∀ i, OuterOStmtIn i) → InnerStmtIn × (∀ i, Inn
 /-- Transport output statements from the inner context to the outer context,
   additionally relying on the input statements of the outer context.
 
-  This is the lifting component of the oracle-statement lens. -/
+  TODO: refactor etc. -/
 @[inline, reducible]
 def lift : OuterStmtIn × (∀ i, OuterOStmtIn i) → InnerStmtOut × (∀ i, InnerOStmtOut i) →
     OuterStmtOut × (∀ i, OuterOStmtOut i) :=
@@ -125,89 +127,84 @@ def lift : OuterStmtIn × (∀ i, OuterOStmtIn i) → InnerStmtOut × (∀ i, In
 
 end OracleStatement.Lens
 
-/-- An **oracle-routing lens** for lifting an *oracle verifier* from an inner oracle reduction to
-  an outer one.
+/-! ### Executable oracle-statement lenses
 
-  Design note (#433): the value-level `OracleStatement.Lens` only transports the *values* of the
-  oracle statements; it cannot express how the outer oracle verifier should *answer the inner
-  verifier's oracle queries* using the outer oracles, nor which outer oracles/messages the output
-  oracle statements are drawn from. Those two pieces of routing data are exactly what an oracle
-  verifier needs (see `OracleVerifier` in `OracleReduction/Basic.lean`, whose `verify`/`embed`/`hEq`
-  fields this lens supplies). This structure adds them on top of the value-level lens:
+The extensional `OracleStatement.Lens` above is sufficient for relation-level
+reasoning, but it cannot by itself implement an oracle verifier: an arbitrary
+function on whole oracle values need not be realizable by queries.  The
+following structure records the query implementations and their pointwise
+agreement with materialized oracle values. -/
 
-  - `simOStmt` : routes each inner *input* oracle query into an `OracleComp` over the outer input
-    oracles (with access to the outer input statement via `ReaderT`). This realizes virtual /
-    non-invertible oracle routing such as sum-check's "answer the inner univariate query at `x` by
-    `∑` over `|D|^(n-i)` evaluation queries to the outer multivariate oracle".
-  - `embedOStmt` / `hEqOStmt` : the *output*-side routing, mirroring `OracleVerifier.embed`/`hEq` —
-    each outer output oracle index is drawn from an outer input oracle or a prover message, with a
-    type-coherence proof. This supports index-type-changing output routing (e.g. Spartan).
-  - `projStmt` / `liftStmt` : the non-oracle input projection and output lift, matching the
-    `projStmt` / `liftStmt` interface documented in `LiftContext/Reduction.lean`.
+/-- A query-realizable lens between oracle statements.
 
-  We deliberately do **not** add these fields to `OracleStatement.Lens` itself (that would break
-  every construction site repo-wide). Instead this is a separate structure that carries a
-  `toLens : OracleStatement.Lens` so that all the value-level soundness / completeness machinery
-  (`IsSound`, `IsComplete`, …) continues to apply to `toLens`. -/
-structure OracleStatement.OracleLens
-    {ι : Type} (oSpec : OracleSpec ι)
+Input-oracle projection may depend on the explicit outer input statement.
+Output-oracle lifting is deliberately statement-independent: this is the
+condition needed for output-oracle simulations to remain composable without
+materializing intermediate verifier statements. -/
+structure OracleStatement.ExecutableLens
     (OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut : Type)
-    {Outer_ιₛᵢ : Type} (OuterOStmtIn : Outer_ιₛᵢ → Type) [∀ i, OracleInterface (OuterOStmtIn i)]
-    {Outer_ιₛₒ : Type} (OuterOStmtOut : Outer_ιₛₒ → Type) [∀ i, OracleInterface (OuterOStmtOut i)]
-    {Inner_ιₛᵢ : Type} (InnerOStmtIn : Inner_ιₛᵢ → Type) [∀ i, OracleInterface (InnerOStmtIn i)]
-    {Inner_ιₛₒ : Type} (InnerOStmtOut : Inner_ιₛₒ → Type) [∀ i, OracleInterface (InnerOStmtOut i)]
-    {n : ℕ} (pSpec : ProtocolSpec n) [∀ i, OracleInterface (pSpec.Message i)] where
-  /-- The underlying value-level oracle-statement lens (used by all the soundness / completeness
-    conditions, which are stated purely in terms of values). -/
-  toLens : OracleStatement.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut
-              OuterOStmtIn OuterOStmtOut InnerOStmtIn InnerOStmtOut
-  /-- Non-oracle input-statement projection (outer → inner). -/
+    {Outer_ιₛᵢ : Type} (OuterOStmtIn : Outer_ιₛᵢ → Type)
+    [OuterOᵢ : ∀ i, OracleInterface (OuterOStmtIn i)]
+    {Outer_ιₛₒ : Type} (OuterOStmtOut : Outer_ιₛₒ → Type)
+    [OuterOₒ : ∀ i, OracleInterface (OuterOStmtOut i)]
+    {Inner_ιₛᵢ : Type} (InnerOStmtIn : Inner_ιₛᵢ → Type)
+    [InnerOᵢ : ∀ i, OracleInterface (InnerOStmtIn i)]
+    {Inner_ιₛₒ : Type} (InnerOStmtOut : Inner_ιₛₒ → Type)
+    [InnerOₒ : ∀ i, OracleInterface (InnerOStmtOut i)] where
+  /-- Project the explicit input statement. -/
   projStmt : OuterStmtIn → InnerStmtIn
-  /-- Non-oracle output-statement lift (inner output → outer output, relying on the outer input). -/
+  /-- Materialized input-oracle projection, used by relation-facing semantics. -/
+  materializeInput : OuterStmtIn →
+    (∀ i, OuterOStmtIn i) → ∀ i, InnerOStmtIn i
+  /-- Query-by-query implementation of the input-oracle projection. -/
+  simulateInput : OuterStmtIn →
+    QueryImpl [InnerOStmtIn]ₒ (OracleComp [OuterOStmtIn]ₒ)
+  /-- The input query implementation agrees with the materialized projection. -/
+  simulateInput_eq : ∀ outerStmt outerOStmt q,
+    simulateQ (OracleInterface.simOracle0 OuterOStmtIn outerOStmt)
+        (simulateInput outerStmt q) =
+      (InnerOᵢ q.1).answer (materializeInput outerStmt outerOStmt q.1) q.2
+  /-- Lift the explicit output statement. -/
   liftStmt : OuterStmtIn → InnerStmtOut → OuterStmtOut
-  /-- Routing of each *inner input* oracle query into an `OracleComp` over the *outer input* oracles
-    (plus the shared `oSpec`), with `ReaderT` access to the outer (non-oracle) input statement.
+  /-- Materialized output-oracle lift, used by relation-facing semantics. -/
+  materializeOutput : (∀ i, OuterOStmtIn i) →
+    (∀ i, InnerOStmtOut i) → ∀ i, OuterOStmtOut i
+  /-- Query-by-query implementation of the output-oracle lift. -/
+  simulateOutput :
+    QueryImpl [OuterOStmtOut]ₒ (OracleComp ([OuterOStmtIn]ₒ + [InnerOStmtOut]ₒ))
+  /-- The output query implementation agrees with the materialized lift. -/
+  simulateOutput_eq : ∀ outerOStmt innerOStmt q,
+    simulateQ
+        (QueryImpl.add (OracleInterface.simOracle0 OuterOStmtIn outerOStmt)
+          (OracleInterface.simOracle0 InnerOStmtOut innerOStmt))
+        (simulateOutput q) =
+      (OuterOₒ q.1).answer (materializeOutput outerOStmt innerOStmt q.1) q.2
 
-    This is the heart of virtual oracle reductions: it is allowed to be non-invertible (e.g. a sum
-    over many outer queries answering a single inner query). -/
-  simOStmt : QueryImpl [InnerOStmtIn]ₒ
-    (ReaderT OuterStmtIn (OracleComp (oSpec + [OuterOStmtIn]ₒ)))
-  /-- Output-side embedding: each outer *output* oracle index is derived either from an outer input
-    oracle (`Sum.inl`) or from a prover message (`Sum.inr`). Mirrors `OracleVerifier.embed`. -/
-  embedOStmt : Outer_ιₛₒ ↪ Outer_ιₛᵢ ⊕ pSpec.MessageIdx
-  /-- Type coherence for `embedOStmt`, mirroring `OracleVerifier.hEq`. -/
-  hEqOStmt : ∀ i, OuterOStmtOut i = match embedOStmt i with
-    | Sum.inl j => OuterOStmtIn j
-    | Sum.inr j => pSpec.Message j
+namespace OracleStatement.ExecutableLens
 
-namespace OracleStatement.OracleLens
+variable {OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut : Type}
+    {Outer_ιₛᵢ : Type} {OuterOStmtIn : Outer_ιₛᵢ → Type}
+    [∀ i, OracleInterface (OuterOStmtIn i)]
+    {Outer_ιₛₒ : Type} {OuterOStmtOut : Outer_ιₛₒ → Type}
+    [∀ i, OracleInterface (OuterOStmtOut i)]
+    {Inner_ιₛᵢ : Type} {InnerOStmtIn : Inner_ιₛᵢ → Type}
+    [∀ i, OracleInterface (InnerOStmtIn i)]
+    {Inner_ιₛₒ : Type} {InnerOStmtOut : Inner_ιₛₒ → Type}
+    [∀ i, OracleInterface (InnerOStmtOut i)]
 
-variable {ι : Type} {oSpec : OracleSpec ι}
-    {OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut : Type}
-    {Outer_ιₛᵢ : Type} {OuterOStmtIn : Outer_ιₛᵢ → Type} [∀ i, OracleInterface (OuterOStmtIn i)]
-    {Outer_ιₛₒ : Type} {OuterOStmtOut : Outer_ιₛₒ → Type} [∀ i, OracleInterface (OuterOStmtOut i)]
-    {Inner_ιₛᵢ : Type} {InnerOStmtIn : Inner_ιₛᵢ → Type} [∀ i, OracleInterface (InnerOStmtIn i)]
-    {Inner_ιₛₒ : Type} {InnerOStmtOut : Inner_ιₛₒ → Type} [∀ i, OracleInterface (InnerOStmtOut i)]
-    {n : ℕ} {pSpec : ProtocolSpec n} [∀ i, OracleInterface (pSpec.Message i)]
+/-- Forget query implementations and retain the extensional statement lens. -/
+@[reducible]
+def toLens (lens : OracleStatement.ExecutableLens
+    OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut
+    OuterOStmtIn OuterOStmtOut InnerOStmtIn InnerOStmtOut) :
+    OracleStatement.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut
+      OuterOStmtIn OuterOStmtOut InnerOStmtIn InnerOStmtOut where
+  toFunA := fun ⟨stmt, oStmt⟩ ↦
+    ⟨lens.projStmt stmt, lens.materializeInput stmt oStmt⟩
+  toFunB := fun ⟨stmt, oStmt⟩ ⟨stmtOut, oStmtOut⟩ ↦
+    ⟨lens.liftStmt stmt stmtOut, lens.materializeOutput oStmt oStmtOut⟩
 
-/-- The identity oracle-routing lens (over a single oracle-statement family `OuterOStmtIn` used for
-  both input and output): identity on values, routes each inner input oracle query to the
-  identically-indexed outer input oracle, and draws each output oracle statement from the
-  corresponding input oracle. Mirrors `OracleVerifier.id`. -/
-@[inline]
-protected def id :
-    OracleStatement.OracleLens oSpec OuterStmtIn OuterStmtOut OuterStmtIn OuterStmtOut
-      OuterOStmtIn OuterOStmtIn OuterOStmtIn OuterOStmtIn pSpec where
-  toLens := PFunctor.Lens.id _
-  projStmt := id
-  liftStmt := fun _ s => s
-  simOStmt := fun q => ReaderT.mk fun _ =>
-    (OracleComp.lift <| OracleSpec.query (spec := [OuterOStmtIn]ₒ) q :
-      OracleComp (oSpec + [OuterOStmtIn]ₒ) _)
-  embedOStmt := Function.Embedding.inl
-  hEqOStmt := fun _ => rfl
-
-end OracleStatement.OracleLens
+end OracleStatement.ExecutableLens
 
 /-- Lenses for transporting the input & output witnesses from an inner protocol to an outer
     protocol.
@@ -222,9 +219,10 @@ end OracleStatement.OracleLens
   The inclusion of the statements are necessary when we consider the full view of the prover. In
   practice as well, oftentimes a lens between only witnesses are not enough. -/
 @[inline, reducible]
-def Witness.Lens (OuterStmtIn InnerStmtOut OuterWitIn OuterWitOut InnerWitIn InnerWitOut : Type)
-    := PFunctor.Lens ((OuterStmtIn × OuterWitIn) X^ OuterWitOut)
-                     (InnerWitIn X^ (InnerStmtOut × InnerWitOut))
+def Witness.Lens
+    (OuterStmtIn InnerStmtOut OuterWitIn OuterWitOut InnerWitIn InnerWitOut : Type) :=
+  PFunctor.Lens ((OuterStmtIn × OuterWitIn) X^ OuterWitOut)
+    (InnerWitIn X^ (InnerStmtOut × InnerWitOut))
 
 namespace Witness.Lens
 
@@ -318,6 +316,54 @@ def toContext :
 
 end OracleContext.Lens
 
+/-- An oracle-context lens whose statement component is executable by
+querying, together with the ordinary witness lens used by the prover. -/
+structure OracleContext.ExecutableLens
+    (OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut : Type)
+    {Outer_ιₛᵢ : Type} (OuterOStmtIn : Outer_ιₛᵢ → Type)
+    [∀ i, OracleInterface (OuterOStmtIn i)]
+    {Outer_ιₛₒ : Type} (OuterOStmtOut : Outer_ιₛₒ → Type)
+    [∀ i, OracleInterface (OuterOStmtOut i)]
+    {Inner_ιₛᵢ : Type} (InnerOStmtIn : Inner_ιₛᵢ → Type)
+    [∀ i, OracleInterface (InnerOStmtIn i)]
+    {Inner_ιₛₒ : Type} (InnerOStmtOut : Inner_ιₛₒ → Type)
+    [∀ i, OracleInterface (InnerOStmtOut i)]
+    (OuterWitIn OuterWitOut InnerWitIn InnerWitOut : Type) where
+  stmt : OracleStatement.ExecutableLens
+    OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut
+    OuterOStmtIn OuterOStmtOut InnerOStmtIn InnerOStmtOut
+  wit : Witness.Lens (OuterStmtIn × ∀ i, OuterOStmtIn i)
+    (InnerStmtOut × ∀ i, InnerOStmtOut i)
+    OuterWitIn OuterWitOut InnerWitIn InnerWitOut
+
+namespace OracleContext.ExecutableLens
+
+variable {OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut : Type}
+    {Outer_ιₛᵢ : Type} {OuterOStmtIn : Outer_ιₛᵢ → Type}
+    [∀ i, OracleInterface (OuterOStmtIn i)]
+    {Outer_ιₛₒ : Type} {OuterOStmtOut : Outer_ιₛₒ → Type}
+    [∀ i, OracleInterface (OuterOStmtOut i)]
+    {Inner_ιₛᵢ : Type} {InnerOStmtIn : Inner_ιₛᵢ → Type}
+    [∀ i, OracleInterface (InnerOStmtIn i)]
+    {Inner_ιₛₒ : Type} {InnerOStmtOut : Inner_ιₛₒ → Type}
+    [∀ i, OracleInterface (InnerOStmtOut i)]
+    {OuterWitIn OuterWitOut InnerWitIn InnerWitOut : Type}
+
+/-- Forget the executable implementations and retain the extensional oracle
+context lens. -/
+@[reducible]
+def toLens (lens : OracleContext.ExecutableLens
+    OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut
+    OuterOStmtIn OuterOStmtOut InnerOStmtIn InnerOStmtOut
+    OuterWitIn OuterWitOut InnerWitIn InnerWitOut) :
+    OracleContext.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut
+      OuterOStmtIn OuterOStmtOut InnerOStmtIn InnerOStmtOut
+      OuterWitIn OuterWitOut InnerWitIn InnerWitOut where
+  stmt := lens.stmt.toLens
+  wit := lens.wit
+
+end OracleContext.ExecutableLens
+
 /-- Lens for lifting the witness extraction procedure from the inner reduction to the outer
   reduction.
 
@@ -325,9 +371,8 @@ This goes in the reverse direction (output to input) compared to the witness len
 and requires in addition the outer input statement.
 -/
 @[inline, reducible]
-def Witness.InvLens (OuterStmtIn OuterWitIn OuterWitOut InnerWitIn InnerWitOut : Type)
-    := PFunctor.Lens ((OuterStmtIn × OuterWitOut) X^ OuterWitIn)
-                     (InnerWitOut X^ InnerWitIn)
+def Witness.InvLens (OuterStmtIn OuterWitIn OuterWitOut InnerWitIn InnerWitOut : Type) :=
+  PFunctor.Lens ((OuterStmtIn × OuterWitOut) X^ OuterWitIn) (InnerWitOut X^ InnerWitIn)
 
 namespace Witness.InvLens
 
@@ -441,6 +486,7 @@ class Statement.Lens.IsSound {OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut 
     outerStmtIn ∉ outerLangIn → lens.proj outerStmtIn ∉ innerLangIn
 
   lift_sound : ∀ outerStmtIn innerStmtOut,
+    outerStmtIn ∉ outerLangIn →
     compatStmt outerStmtIn innerStmtOut →
     innerStmtOut ∉ innerLangOut →
     lens.lift outerStmtIn innerStmtOut ∉ outerLangOut
@@ -476,11 +522,14 @@ class Extractor.Lens.IsKnowledgeSound
     (lens : Extractor.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut
                             OuterWitIn OuterWitOut InnerWitIn InnerWitOut) where
 
-  /-- outer_to_inner for output witness (note: for statements, it's `lift` in this condition) -/
+  /-- An accepting output witness either projects inward or lifts every compatible input
+  witness to a valid outer input witness. -/
   proj_knowledgeSound : ∀ outerStmtIn innerStmtOut outerWitOut,
     compatStmt outerStmtIn innerStmtOut →
     (lens.stmt.lift outerStmtIn innerStmtOut, outerWitOut) ∈ outerRelOut →
-    (innerStmtOut, lens.wit.proj (outerStmtIn, outerWitOut)) ∈ innerRelOut
+    (innerStmtOut, lens.wit.proj (outerStmtIn, outerWitOut)) ∈ innerRelOut ∨
+      ∀ innerWitIn, compatWit outerWitOut innerWitIn →
+        (outerStmtIn, lens.wit.lift (outerStmtIn, outerWitOut) innerWitIn) ∈ outerRelIn
 
   /-- inner_to_outer for input witness (note: for statements, it's `proj` in this condition) -/
   lift_knowledgeSound : ∀ outerStmtIn outerWitOut innerWitIn,
@@ -501,8 +550,9 @@ variable {OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut : Type}
     (lens : Extractor.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut
                 OuterWitIn OuterWitOut InnerWitIn InnerWitOut)
 
-/-- If an extractor lens is knowledge sound, then the associated statement lens is sound. -/
-instance [Inhabited OuterWitOut]
+/-- A knowledge-sound extractor lens induces a sound statement lens. Nonempty inner input
+witnesses let the shortcut supply an outer input witness. -/
+instance [Inhabited OuterWitOut] [Nonempty InnerWitIn]
     [instKS : lens.IsKnowledgeSound
                 outerRelIn innerRelIn
                 outerRelOut innerRelOut
@@ -512,22 +562,22 @@ instance [Inhabited OuterWitOut]
       innerRelIn.language innerRelOut.language
       compatStmt where
   proj_sound := fun outerStmtIn hCompat => by
-    simp only [Set.language, Set.mem_image, Prod.exists, exists_and_right, exists_eq_right,
+    simp only [Set.mem_image, Prod.exists, exists_and_right, exists_eq_right,
       not_exists] at hCompat ⊢
     intro innerWitIn hRelIn
     contrapose! hCompat
     let outerWitIn := lens.wit.lift (outerStmtIn, default) innerWitIn
     have hOuterWitIn := instKS.lift_knowledgeSound outerStmtIn default innerWitIn (by simp) hRelIn
     exact ⟨outerWitIn, hOuterWitIn⟩
-  lift_sound := fun outerStmtIn innerStmtOut hCompat hInnerRelOut => by
-    simp only [Set.language, Set.mem_image, Prod.exists, exists_and_right, exists_eq_right,
-      not_exists] at hCompat hInnerRelOut ⊢
+  lift_sound := fun outerStmtIn innerStmtOut hOuterRelIn hCompat hInnerRelOut => by
+    simp only [Set.mem_image, Prod.exists, exists_and_right, exists_eq_right,
+      not_exists] at hOuterRelIn hInnerRelOut ⊢
     intro outerWitOut hOuterRelOut
-    contrapose! hInnerRelOut
-    let innerWitOut := lens.wit.proj (outerStmtIn, outerWitOut)
-    have hInnerWitOut :=
-      instKS.proj_knowledgeSound outerStmtIn innerStmtOut outerWitOut hCompat hOuterRelOut
-    exact ⟨innerWitOut, hInnerWitOut⟩
+    rcases instKS.proj_knowledgeSound outerStmtIn innerStmtOut outerWitOut
+      hCompat hOuterRelOut with hInner | hShortcut
+    · exact hInnerRelOut _ hInner
+    · obtain ⟨innerWitIn⟩ := ‹Nonempty InnerWitIn›
+      exact hOuterRelIn _ (hShortcut innerWitIn trivial)
 
 end Extractor.Lens.IsKnowledgeSound
 
@@ -541,7 +591,7 @@ section SpecialCases
 -- 1.2. Over the input witness only
 -- 1.2.1. When the map is an equivalence
 
--- NOTE for oracle statements as we haven't figured it out
+-- TODO for oracle statements as we haven't figured it out
 
 -- 2. When the lens is over the output context only (keeping the input the same)
 -- 2.1. Over the output statement only
@@ -588,7 +638,8 @@ end Statement.Lens
 
 namespace OracleStatement.Lens
 
--- Oracle-statement lens utilities.
+-- TODO: replace with new definitions when we figure out the right definition for oracle statements
+-- lens
 
 /-- The identity lens for the statement, which acts as identity on the input and output. -/
 @[inline, reducible]
@@ -765,6 +816,48 @@ def idWit {stmtLens : Statement.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerS
   wit := Witness.InvLens.id
 
 alias trivialWit := Extractor.Lens.idWit
+
+variable (stmtLens : Statement.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut)
+    (outerLangIn : Set OuterStmtIn) (outerLangOut : Set OuterStmtOut)
+    (innerLangIn : Set InnerStmtIn) (innerLangOut : Set InnerStmtOut)
+    (compatStmt : OuterStmtIn → InnerStmtOut → Prop)
+
+/-- A sound statement lens is knowledge sound with trivial `Unit` witnesses. -/
+theorem unit_knowledgeSound
+    (h : stmtLens.IsSound outerLangIn outerLangOut innerLangIn innerLangOut compatStmt) :
+    (idWit (stmtLens := stmtLens) (OuterWitIn := Unit) (OuterWitOut := Unit)).IsKnowledgeSound
+      (outerLangIn ×ˢ Set.univ) (innerLangIn ×ˢ Set.univ)
+      (outerLangOut ×ˢ Set.univ) (innerLangOut ×ˢ Set.univ) compatStmt (fun _ _ => True) where
+  proj_knowledgeSound := by
+    intro x y _ hc ho
+    by_cases hi : y ∈ innerLangOut
+    · exact Or.inl ⟨hi, trivial⟩
+    · right
+      have hx : x ∈ outerLangIn := by
+        by_contra hx
+        exact h.lift_sound x y hx hc hi ho.1
+      exact fun _ _ => ⟨hx, trivial⟩
+  lift_knowledgeSound := by
+    intro x _ _ _ hi
+    refine ⟨?_, trivial⟩
+    by_contra hx
+    exact h.proj_sound x hx hi.1
+
+/-- Knowledge soundness with trivial `Unit` witnesses implies statement soundness. -/
+theorem sound_of_unit_knowledgeSound
+    (h : (idWit (stmtLens := stmtLens) (OuterWitIn := Unit)
+      (OuterWitOut := Unit)).IsKnowledgeSound
+      (outerLangIn ×ˢ Set.univ) (innerLangIn ×ˢ Set.univ)
+      (outerLangOut ×ˢ Set.univ) (innerLangOut ×ˢ Set.univ) compatStmt (fun _ _ => True)) :
+    stmtLens.IsSound outerLangIn outerLangOut innerLangIn innerLangOut compatStmt where
+  proj_sound := by
+    intro x hx hi
+    exact hx (h.lift_knowledgeSound x () () trivial ⟨hi, trivial⟩).1
+  lift_sound := by
+    intro x y hx hc hi ho
+    rcases h.proj_knowledgeSound x y () hc ⟨ho, trivial⟩ with hInner | hShortcut
+    · exact hi hInner.1
+    · exact hx (hShortcut () trivial).1
 
 end Extractor.Lens
 

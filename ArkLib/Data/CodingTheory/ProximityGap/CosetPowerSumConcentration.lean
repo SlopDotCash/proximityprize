@@ -239,6 +239,7 @@ theorem N2_G8_zero_eq_two :
     ((G8.powersetCard 4).filter
       (fun S => (∑ x ∈ S, x) = 0 ∧ (∑ x ∈ S, x ^ 2) = 0)).card = 2 := by decide
 
+set_option maxRecDepth 4000 in
 /-- **Anti-concentration witness.** The `70` four-subsets of `μ_8` realize `69` distinct
 `(∑x, ∑x²)` statistics — a single collision (the two cosets), so the statistic is maximally spread
 apart from the coset coincidence. -/

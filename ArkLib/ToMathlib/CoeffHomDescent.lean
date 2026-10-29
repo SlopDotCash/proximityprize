@@ -19,7 +19,8 @@ variable {H : F[X][Y]} [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
 (constant-embed into `𝒪 H`, then localize). -/
 noncomputable def locLift {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H) :
     F[X] →+* Localization.Away (ξ x₀ R H hHyp) :=
-  (algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp))).comp
+  (@algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp))
+      inferInstance inferInstance inferInstance).comp
     ((Ideal.Quotient.mk (Ideal.span {H_tilde' H})).comp (Polynomial.C : F[X] →+* F[X][Y]))
 
 /-- **The localization-valued `coeffHom`** — the canonical `Localization.Away ξ`-preimage of
@@ -51,7 +52,7 @@ theorem map_embLoc_coeffHom_loc (x₀ : F) {R : F[X][X][Y]} (hHyp : Hypotheses x
   ext n
   rw [PowerSeries.coeff_map, coeff_coeffHom_loc, ProximityPrize.BCIKS20.GammaGenuine.coeff_coeffHom]
   unfold locLift
-  rw [RingHom.comp_apply, RingHom.comp_apply]
+  simp only [RingHom.comp_apply]
   rw [embLoc_comp]
   exact BCIKS20.HenselNumerator.emb_mk_C _
 

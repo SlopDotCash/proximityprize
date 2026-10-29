@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.HigherOrderMDSReedSolomon
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # The general-position list bound for `ReedSolomon.code` (#389, layer 6)
@@ -48,7 +48,7 @@ theorem exists_message_of_mem_code {D : ι ↪ K} {k : ℕ} {c : ι → K}
   have hpdeg : p.degree < (k : WithBot ℕ) := Polynomial.mem_degreeLT.mp hp
   refine ⟨∑ j : Fin k, p.coeff (j : ℕ) • LinearMap.proj j, ?_⟩
   funext i
-  simp only [evalMapₗ_apply, reedSolomonFrame, LinearMap.coeFn_sum, LinearMap.smul_apply,
+  simp only [evalMapₗ_apply, reedSolomonFrame, LinearMap.sum_apply, LinearMap.smul_apply,
     LinearMap.proj_apply, smul_eq_mul, Finset.sum_apply]
   show (∑ j : Fin k, p.coeff (j : ℕ) * (D i) ^ (j : ℕ)) = (ReedSolomon.evalOnPoints D p) i
   rw [ReedSolomon.evalOnPoints]

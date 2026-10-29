@@ -3,41 +3,58 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Julian Sutherland, Ilia Vlasov, Aristotle (Harmonic)
 -/
+module
 
-import Mathlib.GroupTheory.SpecificGroups.Cyclic
-import Mathlib.Algebra.Group.TypeTags.Basic
-import Mathlib.Algebra.Group.Defs
-import Mathlib.Tactic.Cases
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.LinearCombination
-import Mathlib.Tactic.Field
+public import Mathlib.GroupTheory.SpecificGroups.Cyclic
+public import Mathlib.Algebra.Group.TypeTags.Basic
+public import Mathlib.Algebra.Group.Defs
+public import Mathlib.Tactic.Cases
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.LinearCombination
+public import Mathlib.Tactic.Field
 
-import ArkLib.Data.Domain.CosetFftDomain.Defs
-import ArkLib.ToMathlib.Finset.ToListWithProof
+public import ArkLib.Data.Domain.CosetFftDomain.Defs
+public import ArkLib.ToMathlib.Finset.ToListWithProof
 
 /-!
-# Membership for coset FFT domains
+# Membership in coset FFT domains
 
-We equip a coset FFT domain `D` with a `Membership F D` instance (`x ∈ φ ↔ ∃ i, φ i = x`) and
-prove the basic membership characterizations: `mem_def`, `mem_self`, the bridges
-`mem_toCosetFftDomain_iff_mem` / `mem_toFinset_iff_mem`, `not_zero_mem`, and
-`mem_iff_exists_mul`. `Inhabited` instances for the underlying domain and its `toFinset` are also
-provided.
+This file develops membership and `toFinset` constructions for coset FFT
+domains.
+
+## Main definitions
+
+- `Membership F D`: Membership in a domain via evaluation.
+- `CosetFftDomainClass.toFinset`: The finset of elements of a domain.
+- `CosetFftDomain.toFinset`: The finset of elements of a concrete coset FFT domain.
+
+## Main results
+
+- `CosetFftDomainClass.mem_def`: Characterization of membership.
+- `CosetFftDomainClass.not_zero_mem`: Zero does not belong to a coset FFT domain.
+- `CosetFftDomain.mem_iff_exists_mul`: Membership as a coset-generator multiple.
+- `CosetFftDomainClass.card_toFinset`: Cardinality of the image finset.
+
 -/
+
+@[expose] public section
 
 namespace Domain
 
 open Function
 
-variable {ι : Type} [Fintype ι] [AddCommGroup ι] [DecidableEq ι]
-variable {F : Type} [Field F] [DecidableEq F]
+variable {ι : Type} [AddCommGroup ι]
+variable {F : Type} [Field F]
 
+/-- Membership in a class-level coset FFT domain means
+  being equal to one of the values of its indexing function. -/
 instance {D : Type}
   [FunLike D ι F] [CosetFftDomainClass D ι F] : Membership F D where
-  mem φ x := ∃ i, φ i = x
+  mem ω x := ∃ i, ω i = x
 
+/-- A class-level coset FFT domain coerces to the type associated to its finset of elements. -/
 instance
-    {ι : Type} [AddCommGroup ι] [Fintype ι] [DecidableEq ι]
+    {ι : Type} [AddCommGroup ι] [Fintype ι]
     {F : Type} [Field F] [DecidableEq F]
     {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F] :
   CoeSort D Type where
@@ -48,35 +65,35 @@ namespace CosetFftDomainClass
 variable {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F] {ω : D}
 variable {x : F}
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
-lemma mem_def : x ∈ ω ↔ ∃ i, x = ω i := by aesop (add simp [Membership.mem])
+/-- Unfold membership in a class-level coset FFT domain. -/
+lemma mem_def : x ∈ ω ↔ ∃ i, ω i = x := by rfl
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
+/-- Every value of a coset FFT domain belongs to that domain. -/
 @[simp high]
 lemma mem_self {i : ι} :
     ω i ∈ ω := by simp [mem_def]
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
+/-- Membership is preserved by converting a class-level coset FFT domain
+  to the concrete `CosetFftDomain` structure. -/
 @[simp]
 lemma mem_toCosetFftDomain_iff_mem :
     x ∈ toCosetFftDomain ω ↔ x ∈ ω := by
-  aesop (add simp
-          [mkSubgroupUnit,
-            mem_def,
-            toCosetFftDomain,
-            CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain])
+  simp only [mem_def, toCosetFftDomain_apply]
 
-omit [DecidableEq ι] in
+/-- Membership in the finset of elements is the same as membership in the coset FFT domain. -/
 @[simp]
-lemma mem_toFinset_iff_mem :
+lemma mem_toFinset_iff_mem [Fintype ι] [DecidableEq F] :
     x ∈ toFinset ω ↔ x ∈ ω := by aesop (add simp [toFinset, mem_def])
 
-omit [DecidableEq ι] in
+/-- Every value of a coset FFT domain belongs to the set of its elements. -/
 @[simp high]
-lemma mem_toFinset_self {i : ι} :
+lemma mem_toFinset_self [Fintype ι] [DecidableEq F] {i : ι} :
     ω i ∈ toFinset ω := by simp
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
+lemma card_toFinset_le_fintype_card [Fintype F] [Fintype ι] [DecidableEq F] :
+    Finset.card (toFinset ω) ≤ Fintype.card F := Finset.card_le_card (by simp)
+
+/-- Zero is not a member of a coset FFT domain. -/
 @[simp]
 lemma not_zero_mem :
     0 ∉ ω := fun contra ↦ by
@@ -84,47 +101,76 @@ lemma not_zero_mem :
   obtain ⟨i, contra⟩ := contra
   exact CosetFftDomainClass.ne_zero ω i (by simp_all)
 
-omit [DecidableEq ι] in
-@[simp high]
-lemma not_zero_mem_toFinset :
-  0 ∉ toFinset ω := by simp
+@[simp]
+lemma ne_zero_dep [Fintype ι] [DecidableEq F] (x : ω) :
+    x.val ≠ 0 := fun contra ↦ by
+  have := x.2
+  simp_all
+
+/-- The finset of elements of a coset FFT domain is inhabited.
+
+  There always exists `ω 0`.
+-/
+instance [Fintype ι] [DecidableEq F] {ω : CosetFftDomain ι F} : Inhabited ω.toFinset where
+  default := ⟨ω 0, by simp [CosetFftDomainClass.toFinset]⟩
+
+/-- A concrete coset FFT domain coerced to `Type` is inhabited. -/
+instance [Fintype ι] [DecidableEq F] {ω : CosetFftDomain ι F} : Inhabited ω where
+  default := ⟨ω 0, by simp [CosetFftDomainClass.toFinset]⟩
+
+/-- Membership in a coset FFT domain is decidable
+  via membership in its finset of elements. -/
+instance [Fintype ι] [DecidableEq F] : Decidable (x ∈ ω) :=
+  decidable_of_iff _ mem_toFinset_iff_mem
 
 end CosetFftDomainClass
-
-instance {ω : CosetFftDomain ι F} : Inhabited ω.toFinset where
-  default := ⟨ω 0, by simp [CosetFftDomainClass.toFinset]⟩
-
-instance {ω : CosetFftDomain ι F} : Inhabited ω where
-  default := ⟨ω 0, by simp [CosetFftDomainClass.toFinset]⟩
-
 
 namespace CosetFftDomain
 
 variable {ω : CosetFftDomain ι F} {x : F}
 
-omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
+/-- Membership in a concrete coset FFT domain means
+  being a coset generator times some subgroup element. -/
 lemma mem_iff_exists_mul :
     x ∈ ω ↔ ∃ i, x = ω.cosetGenerator * ω.subgroupDomain i := by
   aesop (add simp [Membership.mem])
 
-omit [DecidableEq ι] in
-lemma mem_toFinset_iff_exists_mul :
+/-- Membership in the finset of elements of a concrete coset FFT domain means
+  being a coset generator times some subgroup element. -/
+lemma mem_toFinset_iff_exists_mul [Fintype ι] [DecidableEq F] :
     x ∈ ω.toFinset ↔ ∃ i, x = ω.cosetGenerator * ω.subgroupDomain i := by
-  aesop (add simp [CosetFftDomainClass.toFinset])
+  simp [mem_iff_exists_mul]
 
-omit [DecidableEq ι] in
+/-- Membership in the finset of elements is
+  the same as membership in the concrete coset FFT domain. -/
 @[simp]
-lemma mem_toFinset_iff_mem :
+lemma mem_toFinset_iff_mem [Fintype ι] [DecidableEq F] :
     x ∈ ω.toFinset ↔ x ∈ ω := CosetFftDomainClass.mem_toFinset_iff_mem
 
-omit [DecidableEq ι] in
+/-- Every value of a concrete coset FFT domain belongs to its finset of elements. -/
 @[simp high]
-lemma mem_toFinset_self {i : ι} :
+lemma mem_toFinset_self [Fintype ι] [DecidableEq F] {i : ι} :
     ω i ∈ ω.toFinset := CosetFftDomainClass.mem_toFinset_self
 
-end CosetFftDomain
+/-- The indexing type and the subtype of domain elements describe the same finite domain. -/
+noncomputable def equivToFinset [Fintype ι] [DecidableEq F] (ω : CosetFftDomain ι F) :
+    ι ≃ ω.toFinset :=
+  Equiv.ofBijective (fun i ↦ ⟨ω i, mem_toFinset_self⟩) ⟨
+    fun _ _ h ↦ injective (congrArg Subtype.val h),
+    fun ⟨x, hx⟩ ↦ by
+      obtain ⟨i, rfl⟩ := mem_toFinset_iff_mem.mp hx
+      exact ⟨i, rfl⟩⟩
 
-instance {x : F} {ω : CosetFftDomain ι F} : Decidable (x ∈ ω) :=
-  decidable_of_iff _ CosetFftDomain.mem_toFinset_iff_mem
+@[simp]
+theorem equivToFinset_apply [Fintype ι] [DecidableEq F] (ω : CosetFftDomain ι F) (i : ι) :
+    ω.equivToFinset i = ⟨ω i, mem_toFinset_self⟩ := rfl
+
+@[simp]
+theorem equivToFinset_symm_apply [Fintype ι] [DecidableEq F]
+    (ω : CosetFftDomain ι F) (x : ω.toFinset) :
+    ω (ω.equivToFinset.symm x) = x.val :=
+  congrArg Subtype.val (ω.equivToFinset.apply_symm_apply x)
+
+end CosetFftDomain
 
 end Domain

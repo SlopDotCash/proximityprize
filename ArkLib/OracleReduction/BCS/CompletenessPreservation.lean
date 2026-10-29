@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.BCS.Basic
+import ProximityPrize.Extensions.OracleReduction.BCS.Basic
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessProof
 
 /-!
@@ -23,7 +23,7 @@ open OracleComp OracleSpec ProtocolSpec
 namespace OracleReduction
 
 variable {n : ℕ} {pSpec : ProtocolSpec n} {ι : Type} {oSpec : OracleSpec ι}
-    [oSpec.Fintype] [oSpec.Inhabited]
+    [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
     {m : ℕ} {nCom : pSpec.MessageIdx → ℕ} {pSpecCom : ∀ i, ProtocolSpec (nCom i)}
     {StmtIn StmtOut WitIn WitOut StmtMid WitMid : Type}
@@ -41,8 +41,8 @@ local instance instSampleableTypeBCSTransformChallenge
     [∀ i, SampleableType ((pSpec.renameMessage CommitmentType).Challenge i)]
     [∀ i, SampleableType ((pSpec.BCSOpeningPhase pSpecCom e).Challenge i)] :
     ∀ i, SampleableType ((pSpec.BCSTransform pSpecCom CommitmentType e).Challenge i) :=
-  fun i => inferInstanceAs (SampleableType
-    (((pSpec.renameMessage CommitmentType) ++ₚ (pSpec.BCSOpeningPhase pSpecCom e)).Challenge i))
+  ProtocolSpec.instSampleableTypeChallengeAppend
+    (pSpec₁ := pSpec.renameMessage CommitmentType) (pSpec₂ := pSpec.BCSOpeningPhase pSpecCom e)
 
 /-- **The BCS transform preserves perfect completeness.** If the interaction phase and the opening
 phase are each perfectly complete (for the intermediate relation `relMid`), then the BCS-compiled
@@ -69,14 +69,14 @@ theorem BCSTransform_perfectCompleteness
     (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s) = support (liftM q : OracleComp oSpec β))
-    [(oSpec + [((pSpec.renameMessage CommitmentType) ++ₚ
-        (pSpec.BCSOpeningPhase pSpecCom e)).Challenge]ₒ).Fintype]
-    [(oSpec + [((pSpec.renameMessage CommitmentType) ++ₚ
-        (pSpec.BCSOpeningPhase pSpecCom e)).Challenge]ₒ).Inhabited]
-    [(oSpec + [(pSpec.renameMessage CommitmentType).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec.renameMessage CommitmentType).Challenge]ₒ).Inhabited]
-    [(oSpec + [(pSpec.BCSOpeningPhase pSpecCom e).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec.BCSOpeningPhase pSpecCom e).Challenge]ₒ).Inhabited] :
+    [∀ q, Fintype ((oSpec + [((pSpec.renameMessage CommitmentType) ++ₚ
+      (pSpec.BCSOpeningPhase pSpecCom e)).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [((pSpec.renameMessage CommitmentType) ++ₚ
+      (pSpec.BCSOpeningPhase pSpecCom e)).Challenge]ₒ).Range q)]
+    [∀ q, Fintype ((oSpec + [(pSpec.renameMessage CommitmentType).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec.renameMessage CommitmentType).Challenge]ₒ).Range q)]
+    [∀ q, Fintype ((oSpec + [(pSpec.BCSOpeningPhase pSpecCom e).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec.BCSOpeningPhase pSpecCom e).Challenge]ₒ).Range q)] :
     (OracleReduction.BCSTransform e interaction opening).perfectCompleteness init impl relIn relOut := by
   -- `OracleReduction.BCSTransform e interaction opening` is, by definition, the sequential
   -- composition `Reduction.append interaction opening` over the append spec
@@ -84,11 +84,9 @@ theorem BCSTransform_perfectCompleteness
   -- composition completeness theorem with the two phase specs supplied *explicitly* (so the
   -- elaborator never has to whnf-unfold `ProtocolSpec.BCSTransform` to recover them), leaving only a
   -- `rfl`-defeq between the goal's `BCSTransform`-form reduction and `interaction.append opening`.
-  exact @Reduction.append_perfectCompleteness_msg_proof ι oSpec _ _
-    StmtIn WitIn StmtMid WitMid StmtOut WitOut
-    n (Fin.vsum (fun j => nCom (e.symm j)))
-    (pSpec.renameMessage CommitmentType) (pSpec.BCSOpeningPhase pSpecCom e) _ _
-    σ init impl relIn relMid relOut
-    interaction opening h_int h_open hn hDir hDir₂ hInit hImplSupp _ _ _ _ _ _
+  exact Reduction.append_perfectCompleteness_msg_proof interaction opening
+    h_int h_open hn hDir hDir₂ hInit hImplSupp
 
 end OracleReduction
+
+#print axioms OracleReduction.BCSTransform_perfectCompleteness

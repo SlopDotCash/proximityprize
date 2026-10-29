@@ -66,6 +66,10 @@ open ProximityGap Code NNReal Finset Function ProbabilityTheory
 open ProximityPrize.BCIKS20.GammaGenuine BCIKS20.HenselNumerator
 open scoped BigOperators ENNReal ProbabilityTheory LinearCode
 
+-- Preserve the historical finite-field surface with its uniform finite sampler.
+private noncomputable local instance {F : Type} [Field F] [Fintype F] :
+    SampleableType F := SampleableType.ofFintype F
+
 namespace ArkLib
 
 /-! ## Part 1 — the counting branch at restricted roots -/
@@ -219,20 +223,16 @@ noncomputable def curveHenselDatum_of_truncatedLocalRoot_on {k deg : ℕ} {domai
           (BCIKS20.HenselNumerator.βHensel H x₀ R hHyp 0))
       else 0)
     (fun z hz => by
-      dsimp only
       rw [dif_pos hz]
       exact Polynomial.dvd_iff_isRoot.mp (hdvd z hz))
     (fun z hz => by
-      dsimp only
       rw [dif_pos hz, ← htrunc z hz]
       exact trunc_localSeries_isRoot_of_alphaFromBeta_vanishing hHyp hξ hlc z (rootOn z hz)
         (hx z hz) hvanish)
     (fun z hz => by
-      dsimp only
       rw [dif_pos hz]
       exact hcong z hz)
     (fun z hz => by
-      dsimp only
       rw [dif_pos hz, ← htrunc z hz,
         ← powerSeries_eq_coe_trunc_of_tail_zero (fun t ht =>
           coeff_localSeries_eq_zero_of_alphaFromBeta_eq_zero hHyp hξ z (rootOn z hz)
@@ -241,7 +241,6 @@ noncomputable def curveHenselDatum_of_truncatedLocalRoot_on {k deg : ℕ} {domai
         constantCoeff_localSeries hHyp z (rootOn z hz) (hx z hz), PowerSeries.constantCoeff_C,
         sub_self])
     (fun z hz => by
-      dsimp only
       rw [dif_pos hz]
       exact specialized_separable_of_R_separable hHyp z (rootOn z hz) (hx z hz) hR)
 

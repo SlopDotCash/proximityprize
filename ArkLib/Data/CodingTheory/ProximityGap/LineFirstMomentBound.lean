@@ -47,7 +47,9 @@ theorem single_vote_card (f g c : Fin n → F) (hg : ∀ i, g i ≠ 0) (i : Fin 
   rw [Finset.card_eq_one]
   refine ⟨(c i - f i) / g i, ?_⟩
   ext γ
-  simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton, linePt]
+  rw [Finset.mem_filter, Finset.mem_singleton]
+  simp only [Finset.mem_univ, true_and]
+  change f i + γ * g i = c i ↔ γ = (c i - f i) / g i
   rw [eq_div_iff (hg i)]
   constructor
   · intro h; linear_combination h

@@ -3,8 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.ProofSystem.Sumcheck.Spec.SingleRound
-import ArkLib.OracleReduction.LiftContext.OracleReduction
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
+import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
 
 /-!
 # The single-round sum-check `toReduction = reduction` bridge (`hPerRound`, issue #13)
@@ -22,13 +22,13 @@ genuinely-deep residual.
 
 ## What is structural (proven here, unconditionally)
 
-Each side of `(★)` is a *lifted* object built by `OracleReduction.liftContext`:
+Each side of `(★)` is a *lifted* object built by `OracleReduction.liftContextLegacy`:
 
 * `SingleRound.oracleReduction i =
     (Simple.oracleReduction).liftContext (oCtxLens i) (sumcheckOracleLens i)`;
 * `SingleRound.reduction i = (Simple.reduction).liftContext (oCtxLens i).toContext`.
 
-The framework lemma `OracleReduction.liftContext_toReduction_comm` rewrites the LHS of `(★)` to
+The framework lemma `OracleReduction.liftContextLegacy_toReduction_comm` rewrites the LHS of `(★)` to
 `(Simple.oracleReduction).toReduction.liftContext (oCtxLens i).toContext` **given** two side
 conditions:
 
@@ -80,7 +80,7 @@ theorem sumcheckOracleLens_toLens_eq_oCtxLens_stmt (i : Fin n) :
 /-- **The per-round `toReduction = reduction` bridge — modulo its two named residuals.**
 
 The structural `liftContext`-commutation is discharged in full (the `hStmt` side condition is `rfl`
-and the framework lemma `OracleReduction.liftContext_toReduction_comm` does the rest given the
+and the framework lemma `OracleReduction.liftContextLegacy_toReduction_comm` does the rest given the
 routing coherence `coh`). What remains is exactly the *lifted image* of the simple-level base bridge
 `(Simple.oracleReduction).toReduction = Simple.reduction` (`hSimpleBridge`), which is genuinely deep
 (the simple oracle verifier reads the oracle statement, the plain verifier reads the prover message).
@@ -96,21 +96,10 @@ theorem singleRound_toReduction_eq_reduction_of (i : Fin n)
     (hSimpleBridge :
       (Simple.oracleReduction R deg D oSpec).toReduction = Simple.reduction R deg D oSpec) :
     (oracleReduction R n deg D oSpec i).toReduction = reduction R n deg D oSpec i := by
-  haveI : OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)
-      (Simple.oracleReduction R deg D oSpec).verifier := coh
-  -- `oracleReduction i` / `reduction i` are the lifted `Simple.oracleReduction` / `Simple.reduction`.
-  show ((Simple.oracleReduction R deg D oSpec).liftContext (oCtxLens R n deg D i)
-        (sumcheckOracleLens R n deg D oSpec i)).toReduction
-      = (Simple.reduction R deg D oSpec).liftContext (oCtxLens R n deg D i).toContext
-  -- (1) Structural step: commute `toReduction` past the lift via the framework lemma
-  --     (`hStmt` is `rfl`; `coh` supplies the routing coherence).
-  rw [OracleReduction.liftContext_toReduction_comm
-        (lens := oCtxLens R n deg D i) (stmtLens := sumcheckOracleLens R n deg D oSpec i)
-        (R := Simple.oracleReduction R deg D oSpec)
-        (sumcheckOracleLens_toLens_eq_oCtxLens_stmt i)]
-  -- (2) Both sides are now `(·).liftContext (oCtxLens i).toContext`; rewrite the inner reduction via
-  --     the named simple-level base bridge.
-  rw [hSimpleBridge]
+  apply Reduction.ext
+  · rfl
+  · exact oracleVerifier_eq_verifier (R := R) (n := n) (deg := deg)
+      (D := D) (oSpec := oSpec) i
 
 /-- **The `∀ i`-form `hPerRound`, modulo the two named residuals.**
 

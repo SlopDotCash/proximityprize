@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.SubspaceDesign
-import ArkLib.Data.Probability.Instances
+import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
+import ProximityPrize.Extensions.Data.Probability.Instances
 
 /-!
 # A τ-subspace-design has few fully-vanishing coordinates (issue #389, GG25 §4.3 toward B2)
@@ -96,7 +96,7 @@ theorem subspaceDesign_support_card_ge {s : ℕ} {τ : ℕ → ℝ}
       + (univ.filter (fun i : ι => ¬ (A ≤ LinearMap.ker
         (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)))).card
       = Fintype.card ι := by
-    rw [Finset.filter_card_add_filter_neg_card_eq_card]; exact Finset.card_univ
+    rw [Finset.card_filter_add_card_filter_not]; exact Finset.card_univ
   have hsplitℝ : ((univ.filter (fun i : ι => A ≤ LinearMap.ker
         (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i))).card : ℝ)
       + ((univ.filter (fun i : ι => ¬ (A ≤ LinearMap.ker

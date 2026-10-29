@@ -35,7 +35,7 @@ variable {F : Type*} [Field F]
 /-- The low-truncated origin node functional of a monomial, extended by zero to all keys. -/
 noncomputable def nodeFun (d m : ℕ) (μ : Fin (d + 2) →₀ ℕ) : (Fin (d + 2) →₀ ℕ) → F :=
   fun ν => if ν 0 + ν 1 < m then
-    MvPolynomial.coeff ν (contactSubstD d (0 : F) 0 (MvPolynomial.monomial μ 1)) else 0
+    (contactSubstD d (0 : F) 0 (MvPolynomial.monomial μ 1)).coeff ν else 0
 
 /-- The finite set of low-index keys hit by the substituted monomials of `M`. -/
 noncomputable def hitKeys (d m : ℕ) (M : Finset (Fin (d + 2) →₀ ℕ)) :

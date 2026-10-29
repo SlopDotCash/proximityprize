@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.QueryPhase
 import ArkLib.ProofSystem.Binius.FRIBinius.CoreInteractionPhase
 import ArkLib.ProofSystem.RingSwitching.BatchingPhase
-import ArkLib.OracleReduction.Security.Basic
+import ProximityPrize.Extensions.OracleReduction.Security.Basic
 import ArkLib.OracleReduction.Security.Implications
 import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
@@ -58,7 +58,6 @@ variable (h_l : ℓ = ℓ' + κ)
 variable {𝓑 : Fin 2 ↪ L}
 variable [hdiv : Fact (ϑ ∣ ℓ')]
 
-local instance : Empty → OracleInterface Unit := fun _ => OracleInterface.instDefault
 
 
 -- Pin the profile before composing the dependent message and challenge families.
@@ -95,24 +94,7 @@ instance : ∀ j, SampleableType ((fullPspec κ L K β ℓ' 𝓡 ϑ γ_repetitio
     (pSpec₂ := BinaryBasefold.pSpecQuery K β γ_repetitions (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
 
 
-local instance batchingVerifier_appendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (BatchingPhase.oracleVerifier κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l
-        (aOStmtIn := BinaryBasefoldAbstractOStmtIn κ L K β ℓ' 𝓡 ϑ h_ℓ_add_R_rate)) :=
-  BatchingPhase.instOracleVerifierAppendCoherent κ L K
-    (ringSwitchingProfile κ L K β) ℓ ℓ' h_l
-    (aOStmtIn := BinaryBasefoldAbstractOStmtIn κ L K β ℓ' 𝓡 ϑ h_ℓ_add_R_rate)
-
-local instance batchingReduction_appendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (BatchingPhase.batchingOracleReduction κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l
-        (aOStmtIn := BinaryBasefoldAbstractOStmtIn κ L K β ℓ' 𝓡 ϑ h_ℓ_add_R_rate)).verifier :=
-  BatchingPhase.instBatchingOracleReductionAppendCoherent κ L K
-    (ringSwitchingProfile κ L K β) ℓ ℓ' h_l
-    (aOStmtIn := BinaryBasefoldAbstractOStmtIn κ L K β ℓ' 𝓡 ϑ h_ℓ_add_R_rate)
-
 def batchingCoreVerifier :=
-  letI := batchingVerifier_appendCoherent κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
   OracleVerifier.append (oSpec:=[]ₒ)
     (V₁:= RingSwitching.BatchingPhase.oracleVerifier κ (L := L) (K := K)
       (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l
@@ -131,7 +113,6 @@ def batchingCoreVerifier :=
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑))
 
 def batchingCoreReduction :=
-  letI := batchingReduction_appendCoherent κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
   OracleReduction.append (oSpec:=[]ₒ)
     (R₁ := RingSwitching.BatchingPhase.batchingOracleReduction κ (L := L) (K := K)
       (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l
@@ -148,31 +129,15 @@ def batchingCoreReduction :=
     (R₂ := FRIBinius.CoreInteractionPhase.coreInteractionOracleReduction κ L K
       β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
 
-/-- Batching and core verification preserve all retained oracle interfaces. -/
-instance batchingCoreVerifier_appendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (batchingCoreVerifier κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)) := by
-  unfold batchingCoreVerifier
-  infer_instance
-
-/-- The batching/core reduction inherits its component coherence proofs. -/
-instance batchingCoreReduction_appendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (batchingCoreReduction κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)).verifier := by
-  unfold batchingCoreReduction
-  infer_instance
-
 /-- The oracle verifier for the full Binary Basefold protocol -/
 @[reducible]
 noncomputable def fullOracleVerifier :
-  OracleVerifier (oSpec:=[]ₒ)
-    (StmtIn := BatchingStmtIn (L := L) (ℓ:=ℓ))
-    (OStmtIn := (BinaryBasefoldAbstractOStmtIn (β := β)
+  OracleProofVerifier (oSpec:=[]ₒ)
+    (Statement := BatchingStmtIn (L := L) (ℓ:=ℓ))
+    (OStatement := (BinaryBasefoldAbstractOStmtIn (β := β)
         (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).OStmtIn)
-    (StmtOut := Bool)
-    (OStmtOut := fun _ : Empty => Unit)
     (pSpec := fullPspec κ L K β ℓ' 𝓡 ϑ γ_repetitions (h_ℓ_add_R_rate := h_ℓ_add_R_rate)) :=
-  OracleVerifier.append (oSpec:=[]ₒ)
+  OracleVerifier.append (oSpec:=[]ₒ) (Oₛ₃ := fun i : Empty => nomatch i)
     (Stmt₁ := BatchingStmtIn (L := L) (ℓ:=ℓ))
     (Stmt₂ := BinaryBasefold.FinalSumcheckStatementOut (L:=L) (ℓ:=ℓ'))
     (Stmt₃ := Bool)
@@ -191,16 +156,13 @@ noncomputable def fullOracleVerifier :
 /-- The reduction for the full Binary Basefold protocol -/
 @[reducible]
 noncomputable def fullOracleReduction :
-  OracleReduction (oSpec:=[]ₒ)
-    (StmtIn := BatchingStmtIn (L := L) (ℓ:=ℓ))
-    (OStmtIn := (BinaryBasefoldAbstractOStmtIn (β := β)
+  OracleProof (oSpec:=[]ₒ)
+    (Statement := BatchingStmtIn (L := L) (ℓ:=ℓ))
+    (OStatement := (BinaryBasefoldAbstractOStmtIn (β := β)
       (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).OStmtIn)
-    (StmtOut := Bool)
-    (OStmtOut := fun _ : Empty => Unit)
-    (WitIn := BatchingWitIn L K ℓ ℓ')
-    (WitOut := Unit)
+    (Witness := BatchingWitIn L K ℓ ℓ')
     (pSpec := fullPspec κ L K β ℓ' 𝓡 ϑ γ_repetitions (h_ℓ_add_R_rate := h_ℓ_add_R_rate)) :=
-  OracleReduction.append (oSpec:=[]ₒ)
+  OracleReduction.append (oSpec:=[]ₒ) (Oₛ₃ := fun i : Empty => nomatch i)
     (Stmt₁ := BatchingStmtIn (L := L) (ℓ:=ℓ))
     (Stmt₂ := BinaryBasefold.FinalSumcheckStatementOut (L:=L) (ℓ:=ℓ'))
     (Stmt₃ := Bool)
@@ -254,14 +216,14 @@ variable [h_B01 : Fact (𝓑 0 = 0 ∧ 𝓑 1 = 1)]
 /-- Perfect completeness for the full Binary Basefold protocol (reduction) -/
 theorem fullOracleReduction_perfectCompleteness (hInit : NeverFail init)
     (hAppendPerfectCompleteness :
-      OracleReduction.perfectCompleteness
+      OracleReduction.perfectCompleteness (Oₛₒ := fun i : Empty => nomatch i)
         (oracleReduction := fullOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate) h_l (𝓑:=𝓑))
         (relIn := strictBatchingInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l)
         (relOut := acceptRejectOracleRel)
         (init := init)
         (impl := impl)) :
-  OracleReduction.perfectCompleteness
+  OracleReduction.perfectCompleteness (Oₛₒ := fun i : Empty => nomatch i)
     (oracleReduction := fullOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) h_l (𝓑:=𝓑))
     (relIn := strictBatchingInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l)
@@ -270,7 +232,7 @@ theorem fullOracleReduction_perfectCompleteness (hInit : NeverFail init)
     (impl := impl) :=
   hAppendPerfectCompleteness
 
-open scoped NNReal
+open scoped NNReal ProbabilityTheory
 
 /-- Sharp batching error required by the DP24 target. This is an obligation of the
 composition hypothesis, not the unit bound of the current generic batching theorem. -/
@@ -302,7 +264,7 @@ open FRIBinius.CoreInteractionPhase in
 theorem fullOracleVerifier_rbrKnowledgeSoundness
     (hAppendRbrKnowledgeSoundness :
       (fullOracleVerifier κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions
-        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl (Oₛₒ := fun i : Empty => nomatch i)
         (relIn := BatchingPhase.batchingInputRelation κ L K (P := ringSwitchingProfile κ L K β)
           ℓ ℓ' h_l (BinaryBasefoldAbstractOStmtIn (β := β)
             (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)))
@@ -310,7 +272,7 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness
         (rbrKnowledgeError := fullRbrKnowledgeError κ L K β ℓ' 𝓡 ϑ γ_repetitions
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate))) :
   (fullOracleVerifier κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions
-    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl (Oₛₒ := fun i : Empty => nomatch i)
     (relIn := BatchingPhase.batchingInputRelation κ L K (P := ringSwitchingProfile κ L K β)
       ℓ ℓ' h_l (BinaryBasefoldAbstractOStmtIn (β := β)
         (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)))
@@ -481,7 +443,7 @@ theorem fullRbrKnowledgeError_sum_le_concrete :
         QueryPhase.queryRbrKnowledgeError K β γ_repetitions
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)
       = querySingleRepetitionError (𝓡 := 𝓡) ^ γ_repetitions := by
-    simp [QueryPhase.queryRbrKnowledgeError, QueryPhase.queryRbrKnowledgeError_singleRepetition,
+    simp [QueryPhase.queryRbrKnowledgeError, QueryPhase.queryRbrKnowledgeErrorSingleRepetition,
       querySingleRepetitionError, BinaryBasefold.pSpecQuery, ChallengeIdx]
   have h_le_mid :
       (κ : ℝ≥0) / (Fintype.card L : ℝ≥0)
@@ -547,15 +509,15 @@ The scalar security premise is explicit: the retired unconditional wrapper omitt
 its round-by-round premise and a valid implication from round-by-round to scalar security. -/
 theorem fullOracleVerifier_knowledgeSoundness_of_sum_bound
     (hKnowledgeSoundness :
-      (fullOracleVerifier κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions h_ℓ_add_R_rate h_l
-        (𝓑 := 𝓑)).toVerifier.knowledgeSoundness init impl
+      ((fullOracleVerifier κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions h_ℓ_add_R_rate h_l
+        (𝓑 := 𝓑)).toVerifier (Oₛₒ := fun i : Empty => nomatch i)).knowledgeSoundness init impl
         (relIn := BatchingPhase.batchingInputRelation κ L K (ringSwitchingProfile κ L K β)
           ℓ ℓ' h_l (BinaryBasefoldAbstractOStmtIn κ L K β ℓ' 𝓡 ϑ h_ℓ_add_R_rate))
         (relOut := acceptRejectOracleRel)
         (knowledgeError := ∑ i, fullRbrKnowledgeError κ L K β ℓ' 𝓡 ϑ γ_repetitions
           h_ℓ_add_R_rate i)) :
-    (fullOracleVerifier κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions h_ℓ_add_R_rate h_l
-      (𝓑 := 𝓑)).toVerifier.knowledgeSoundness init impl
+    ((fullOracleVerifier κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions h_ℓ_add_R_rate h_l
+      (𝓑 := 𝓑)).toVerifier (Oₛₒ := fun i : Empty => nomatch i)).knowledgeSoundness init impl
       (relIn := BatchingPhase.batchingInputRelation κ L K (ringSwitchingProfile κ L K β)
         ℓ ℓ' h_l (BinaryBasefoldAbstractOStmtIn κ L K β ℓ' 𝓡 ϑ h_ℓ_add_R_rate))
       (relOut := acceptRejectOracleRel)
@@ -574,7 +536,7 @@ a single hypothesis. The `_wired` theorems below replace that monolithic hypothe
   (`OracleReduction.append_perfectCompleteness_challenge_keystone` /
   `OracleVerifier.append_rbrKnowledgeSoundness_failingDet_subsingleton_challenge`).
 * The **query phase** side is supplied by the *proven* BinaryBasefold keystones
-  (`queryOracleProof_perfectCompleteness` / `queryOracleVerifier_rbrKnowledgeSoundness`) — exactly
+  (`queryOracleProof_perfectCompleteness_native` / `queryOracleVerifier_rbrKnowledgeSoundness`) — exactly
   the wiring requested by the #313 close-out.
 
 What survives as a hypothesis is strictly smaller than the full-protocol statement it replaces:
@@ -589,7 +551,7 @@ open BinaryBasefold
 
 /-- **Perfect completeness of the full FRI-Binius protocol, wired (issue #313).** The
 `batchingCore ⋈ query` seam is discharged by the proven challenge-seam keystone; the query phase
-is the proven `BinaryBasefold.queryOracleProof_perfectCompleteness`. Only the `batchingCore` phase
+is the proven `BinaryBasefold.queryOracleProof_perfectCompleteness_native`. Only the `batchingCore` phase
 completeness (the existing `batchingCoreReduction` surface) survives as a hypothesis. -/
 theorem fullOracleReduction_perfectCompleteness_wired (hInit : NeverFail init)
     (hBatchingCorePerfectCompleteness :
@@ -600,17 +562,17 @@ theorem fullOracleReduction_perfectCompleteness_wired (hInit : NeverFail init)
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
         (init := init)
         (impl := impl)) :
-    OracleReduction.perfectCompleteness
+    OracleReduction.perfectCompleteness (Oₛₒ := fun i : Empty => nomatch i)
       (oracleReduction := fullOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) h_l (𝓑:=𝓑))
       (relIn := strictBatchingInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l)
       (relOut := acceptRejectOracleRel)
       (init := init)
       (impl := impl) := by
-  have hQuery := BinaryBasefold.QueryPhase.queryOracleProof_perfectCompleteness K β γ_repetitions
+  have hQuery := BinaryBasefold.QueryPhase.queryOracleProof_perfectCompleteness_native K β γ_repetitions
     (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) init hInit impl
   exact OracleReduction.append_perfectCompleteness_challenge_keystone
-    (Oₛ₃ := fun _ : Empty => OracleInterface.instDefault)
+    (Oₛ₃ := fun i : Empty => nomatch i)
     (R₁ := batchingCoreReduction κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
     (R₂ := QueryPhase.queryOracleReduction K β γ_repetitions
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ϑ:=ϑ))
@@ -633,7 +595,7 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [Subsingleton σ]
     [Inhabited (BinaryBasefold.FinalSumcheckStatementOut (L := L) (ℓ := ℓ') ×
       ∀ j, BinaryBasefold.OracleStatement K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ
         (Fin.last ℓ') j)]
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail init = 0)
     (verify? : (BatchingStmtIn (L := L) (ℓ:=ℓ) ×
         ∀ j, (BinaryBasefoldAbstractOStmtIn (β := β) (ϑ := ϑ)
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).OStmtIn j) →
@@ -655,7 +617,7 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [Subsingleton σ]
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
         (rbrKnowledgeError := batchingCoreRbrKnowledgeError κ L K β ℓ' 𝓡 ϑ h_ℓ_add_R_rate)) :
     (fullOracleVerifier κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl (Oₛₒ := fun i : Empty => nomatch i)
       (relIn := BatchingPhase.batchingInputRelation κ L K (P := ringSwitchingProfile κ L K β)
         ℓ ℓ' h_l (BinaryBasefoldAbstractOStmtIn (β := β)
           (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)))
@@ -663,7 +625,7 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [Subsingleton σ]
       (rbrKnowledgeError := fullRbrKnowledgeError κ L K β ℓ' 𝓡 ϑ γ_repetitions
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate)) := by
   have hKey := OracleVerifier.append_rbrKnowledgeSoundness_failingDet_subsingleton_challenge
-    (Oₛ₃ := fun _ : Empty => OracleInterface.instDefault)
+    (Oₛ₃ := fun i : Empty => nomatch i)
     (init := init) (impl := impl)
     (V₁ := batchingCoreVerifier κ (L := L) (K := K) (𝓑 := 𝓑) (β := β) (ℓ := ℓ) (ℓ' := ℓ')
       (h_l := h_l) (𝓡 := 𝓡) (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
@@ -692,3 +654,11 @@ end CanonicalB
 
 end
 end Binius.FRIBinius.FullFRIBinius
+
+#print axioms Binius.FRIBinius.FullFRIBinius.fullOracleProof
+#print axioms Binius.FRIBinius.FullFRIBinius.fullOracleReduction_perfectCompleteness
+#print axioms Binius.FRIBinius.FullFRIBinius.fullOracleVerifier_rbrKnowledgeSoundness
+#print axioms Binius.FRIBinius.FullFRIBinius.fullRbrKnowledgeError_sum_le_concrete
+#print axioms Binius.FRIBinius.FullFRIBinius.fullOracleVerifier_knowledgeSoundness_of_sum_bound
+#print axioms Binius.FRIBinius.FullFRIBinius.fullOracleReduction_perfectCompleteness_wired
+#print axioms Binius.FRIBinius.FullFRIBinius.fullOracleVerifier_rbrKnowledgeSoundness_wired

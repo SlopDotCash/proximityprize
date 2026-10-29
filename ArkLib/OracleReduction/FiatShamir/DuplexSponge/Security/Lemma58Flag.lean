@@ -36,6 +36,11 @@ open scoped ENNReal NNReal
 
 namespace DuplexSpongeFS.EagerLazyDS
 
+private theorem card_vector_pow {Y : Type} [Fintype Y] (n : ℕ) :
+    Fintype.card (Vector Y n) = Fintype.card Y ^ n := by
+  rw [Fintype.card_congr (Equiv.rootVectorEquivFin (α := Y) (n := n)),
+    Fintype.card_fun, Fintype.card_fin]
+
 variable {StmtIn : Type} {U : Type} [SpongeUnit U] [SpongeSize]
   [DecidableEq StmtIn]
   [SampleableType (Vector U SpongeSize.C)]
@@ -192,7 +197,7 @@ lemma le_length_unusedValuesList (cp : List (X × X)) :
     refine le_trans (Finset.card_le_card
       (fun b hb => List.mem_toFinset.mpr (Finset.mem_filter.mp hb).2)) ?_
     exact le_trans (List.toFinset_card_le _) (by simp)
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset X)) (p := fun b : X => b ∈ cp.map Prod.snd)
   rw [Finset.card_univ] at hsplit
   omega
@@ -210,7 +215,7 @@ lemma le_length_unusedKeysList (cp : List (X × X)) :
     refine le_trans (Finset.card_le_card
       (fun a ha => List.mem_toFinset.mpr (Finset.mem_filter.mp ha).2)) ?_
     exact le_trans (List.toFinset_card_le _) (by simp)
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset X)) (p := fun a : X => a ∈ cp.map Prod.fst)
   rw [Finset.card_univ] at hsplit
   omega
@@ -279,7 +284,7 @@ private lemma div_card_pow_C_le_stepBound {A m : ℕ} (hA : A ≤ 2 * m) :
   rw [hcss]
   refine ENNReal.div_le_div ?_ tsub_le_self
   rw [mul_comm]
-  refine mul_le_mul_right' ?_ _
+  gcongr
   exact_mod_cast le_trans hA (Nat.le_succ _)
 
 /-- The permutation-arm arithmetic: `A / len ≤ stepBound` for `A` below the numerator and
@@ -300,7 +305,7 @@ inside a pool of at least `|U|^N − m` unused states. -/
 theorem lazyDSImplFlagged_step_bad
     (t : (duplexSpongeChallengeOracle StmtIn U).Domain) (s : DSCache StmtIn U × Prop)
     (hfl : ¬ s.2) :
-    Pr[ fun us : _ × (DSCache StmtIn U × Prop) => us.2.2 | (lazyDSImplFlagged t).run s]
+    Pr{let us ← ((lazyDSImplFlagged t).run s)}[us.2.2]
       ≤ lemma58StepBound U (dsCacheSize s.1) := by
   classical
   have hNE : Nonempty U := ⟨0⟩
@@ -312,18 +317,18 @@ theorem lazyDSImplFlagged_step_bad
       ≤ 2 * dsCacheSize ((ch, cp) : DSCache StmtIn U) :=
     le_trans (List.toFinset_card_le _) (slotList_length_le _)
   rw [lazyDSImplFlagged_run]
-  simp only [probEvent_map]
+  simp only [prEvent_map]
   rcases t with q | sIn | sOut
   · -- hash arm
     rw [lazyDSImpl_run_hash]
-    erw [probEvent_map]
+    erw [prEvent_map]
     rcases hcq : ch q with _ | u
     · -- fresh hash draw
       rw [QueryImpl.withCaching_run_none _ hcq]
-      simp only [probEvent_map]
+      simp only [prEvent_map]
       rw [show (uniformSampleImpl (spec := StmtIn →ₒ Vector U SpongeSize.C) q
           : ProbComp (Vector U SpongeSize.C)) = $ᵗ (Vector U SpongeSize.C) from rfl]
-      refine le_trans (probEvent_mono
+      refine le_trans (prEvent_mono_of_support _ _
         (q := (· ∈ (slotList ((ch, cp) : DSCache StmtIn U)).toFinset))
         (fun u _ h => ?_)) ?_
       · have h' : fl ∨ (ch q = none ∧
@@ -336,7 +341,7 @@ theorem lazyDSImplFlagged_step_bad
         exact div_card_pow_C_le_stepBound hslot
     · -- hash hit: never flags
       rw [QueryImpl.withCaching_run_some _ hcq]
-      refine le_trans (le_of_eq (probEvent_eq_zero fun z hz hbad => ?_)) (zero_le _)
+      refine le_trans (le_of_eq (prEvent_eq_zero_of_forall_mem_support _ _ fun z hz hbad => ?_)) (zero_le)
       rw [support_pure, Set.mem_singleton_iff] at hz
       subst hz
       have h' : fl ∨ (ch q = none ∧
@@ -352,14 +357,14 @@ theorem lazyDSImplFlagged_step_bad
         have hcard : Fintype.card (CanonicalSpongeState U)
             ≤ dsCacheSize ((ch, cp) : DSCache StmtIn U) :=
           le_trans (card_le_of_unusedValuesList_eq_nil hnil) hcpm
-        refine le_trans probEvent_le_one ?_
+        refine le_trans (prEvent_le_one _) ?_
         unfold lemma58StepBound
         rw [tsub_eq_zero_of_le (by exact_mod_cast hcard),
           ENNReal.div_zero (lemma58_num_ne_zero _)]
         exact le_top
       · rw [lazyDSImpl_run_fwd, LazyPermBridge.lazyPermImpl_run_inl_none cp hcfind]
-        erw [probEvent_map, probEvent_map]
-        refine le_trans (probEvent_mono
+        erw [prEvent_map, prEvent_map]
+        refine le_trans (prEvent_mono_of_support _ _
           (q := (· ∈ Finset.univ.filter
             (fun b : CanonicalSpongeState U => b.capacitySegment ∈
               insert sIn.capacitySegment
@@ -385,7 +390,7 @@ theorem lazyDSImplFlagged_step_bad
     · -- forward hit: never flags
       rw [lazyDSImpl_run_fwd, LazyPermBridge.lazyPermImpl_run_inl_some cp hcfind,
         map_pure]
-      refine le_trans (le_of_eq (probEvent_eq_zero fun z hz hbad => ?_)) (zero_le _)
+      refine le_trans (le_of_eq (prEvent_eq_zero_of_forall_mem_support _ _ fun z hz hbad => ?_)) (zero_le)
       have hz' : z ∈ support ((pure ((w.2 : CanonicalSpongeState U),
           ((ch, cp) : DSCache StmtIn U)) : ProbComp _)) := hz
       rw [support_pure] at hz'
@@ -405,14 +410,14 @@ theorem lazyDSImplFlagged_step_bad
       · have hcard : Fintype.card (CanonicalSpongeState U)
             ≤ dsCacheSize ((ch, cp) : DSCache StmtIn U) :=
           le_trans (card_le_of_unusedKeysList_eq_nil hnil) hcpm
-        refine le_trans probEvent_le_one ?_
+        refine le_trans (prEvent_le_one _) ?_
         unfold lemma58StepBound
         rw [tsub_eq_zero_of_le (by exact_mod_cast hcard),
           ENNReal.div_zero (lemma58_num_ne_zero _)]
         exact le_top
       · rw [lazyDSImpl_run_inv, LazyPermBridge.lazyPermImpl_run_inr_none cp hcfind]
-        erw [probEvent_map, probEvent_map]
-        refine le_trans (probEvent_mono
+        erw [prEvent_map, prEvent_map]
+        refine le_trans (prEvent_mono_of_support _ _
           (q := (· ∈ Finset.univ.filter
             (fun a : CanonicalSpongeState U => a.capacitySegment ∈
               insert sOut.capacitySegment
@@ -438,7 +443,7 @@ theorem lazyDSImplFlagged_step_bad
     · -- inverse hit: never flags
       rw [lazyDSImpl_run_inv, LazyPermBridge.lazyPermImpl_run_inr_some cp hcfind,
         map_pure]
-      refine le_trans (le_of_eq (probEvent_eq_zero fun z hz hbad => ?_)) (zero_le _)
+      refine le_trans (le_of_eq (prEvent_eq_zero_of_forall_mem_support _ _ fun z hz hbad => ?_)) (zero_le)
       have hz' : z ∈ support ((pure ((w.1 : CanonicalSpongeState U),
           ((ch, cp) : DSCache StmtIn U)) : ProbComp _)) := hz
       rw [support_pure] at hz'
@@ -465,9 +470,8 @@ the flag down, ends flagged with probability at most `∑_{i<T} (2i+1)·|U|^R/(|
 theorem probEvent_flag_final_le_sum {α : Type}
     (oa : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (T : ℕ)
     (hT : IsTotalQueryBound oa T) :
-    Pr[ fun xs : α × (DSCache StmtIn U × Prop) => xs.2.2 |
-        (simulateQ lazyDSImplFlagged oa).run
-          ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U))), False)]
+    Pr{let xs ← ((simulateQ lazyDSImplFlagged oa).run
+          ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U))), False))}[xs.2.2]
       ≤ ∑ i ∈ Finset.range T, lemma58StepBound U i := by
   have h := DuplexSpongeFS.BirthdayBound.probEvent_simulateQ_stateT_le_sum_of_step
     (impl := lazyDSImplFlagged) (bad := fun s : DSCache StmtIn U × Prop => s.2)
@@ -545,19 +549,17 @@ open DuplexSpongeFS.BirthdayBound in
 theorem probEvent_flag_final_toReal_le_lemma5_8Bound {α : Type}
     (oa : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (T : ℕ)
     (hT : IsTotalQueryBound oa T) :
-    (Pr[ fun xs : α × (DSCache StmtIn U × Prop) => xs.2.2 |
-        (simulateQ lazyDSImplFlagged oa).run
-          ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U))), False)]).toReal
+    (Pr{let xs ← ((simulateQ lazyDSImplFlagged oa).run
+          ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U))), False))}[xs.2.2]).toReal
       ≤ lemma5_8Bound U T := by
   have hNE : Nonempty U := ⟨0⟩
   have hcardU : (1 : ℕ) ≤ Fintype.card U := Fintype.card_pos
   have hpowC : (0 : ℝ) < (Fintype.card U : ℝ) ^ SpongeSize.C := by positivity
   rcases Nat.eq_zero_or_pos T with rfl | hT1
   · -- `T = 0`: the sum is empty, the flag stays down
-    have h0 : Pr[ fun xs : α × (DSCache StmtIn U × Prop) => xs.2.2 |
-        (simulateQ lazyDSImplFlagged oa).run
-          ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U))), False)] = 0 :=
-      le_antisymm (by simpa using probEvent_flag_final_le_sum oa 0 hT) (zero_le _)
+    have h0 : Pr{let xs ← ((simulateQ lazyDSImplFlagged oa).run
+          ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U))), False))}[xs.2.2] = 0 :=
+      le_antisymm (by simpa using probEvent_flag_final_le_sum oa 0 hT) (zero_le)
     rw [h0]
     simp [lemma5_8Bound]
   rcases Nat.le_total (2 * T) (Fintype.card (CanonicalSpongeState U)) with h2T | h2T
@@ -576,9 +578,8 @@ theorem probEvent_flag_final_toReal_le_lemma5_8Bound {α : Type}
     have hTT : (0 : ℝ) ≤ 3 * (T : ℝ) ^ 2 - 3 * T := by nlinarith
     nlinarith [mul_nonneg hTT hpowC.le]
   · -- large `T`: the bound exceeds one
-    have hple : (Pr[ fun xs : α × (DSCache StmtIn U × Prop) => xs.2.2 |
-        (simulateQ lazyDSImplFlagged oa).run ((∅, []), False)]).toReal ≤ 1 :=
-      le_trans (ENNReal.toReal_mono ENNReal.one_ne_top probEvent_le_one) (by simp)
+    have hple : (Pr{let xs ← ((simulateQ lazyDSImplFlagged oa).run ((∅, []), False))}[xs.2.2]).toReal ≤ 1 :=
+      le_trans (ENNReal.toReal_mono ENNReal.one_ne_top (prEvent_le_one _)) (by simp)
     refine le_trans hple ?_
     unfold lemma5_8Bound
     rw [le_div_iff₀ (by positivity)]

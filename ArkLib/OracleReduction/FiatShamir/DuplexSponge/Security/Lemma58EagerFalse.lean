@@ -104,25 +104,19 @@ lemma game_eq :
 single-inverse-query adversary: the trace always contains a `p⁻¹` entry, and any inverse
 entry fires `E` (`Sponge316.hasInvEntry_implies_E`, the machine-checked B1 artifact). -/
 lemma probEvent_E_eq_one :
-    Pr[ fun z : (CanonicalSpongeState UInt8) ×
-          QueryLog (duplexSpongeChallengeOracle Unit UInt8) => E z.2 |
-      do
+    Pr{let z ← (do
         let c ← (D_DS Unit UInt8).sample
         simulateQ ((D_DS Unit UInt8).toImpl c)
-          ((simulateQ loggingOracle P).run)] = 1 := by
+          ((simulateQ loggingOracle P).run))}[E z.2] = 1 := by
   rw [game_eq]
-  refine probEvent_eq_one ⟨?_, ?_⟩
-  · -- the game never fails
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun c _ => by simp⟩
-    simp [D_DS]
-  · -- every output trace contains the inverse entry, hence fires `E`
-    intro z hz
-    simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff] at hz
-    obtain ⟨c, _, hz⟩ := hz
-    subst hz
-    exact DuplexSpongeFS.Sponge316.hasInvEntry_implies_E _
-      ⟨s₀, c.2.symm s₀, List.mem_singleton_self _⟩
+  apply prEvent_eq_one_of_forall_mem_support
+  -- Every output trace contains the inverse entry, hence fires `E`.
+  intro z hz
+  simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff] at hz
+  obtain ⟨c, _, hz⟩ := hz
+  subst hz
+  exact DuplexSpongeFS.Sponge316.hasInvEntry_implies_E _
+    ⟨s₀, c.2.symm s₀, List.mem_singleton_self _⟩
 
 /-- The claimed CO25 Lemma 5.8 bound at `T = 1` is `4/(2·256) < 1`. -/
 lemma lemma5_8Bound_one_lt_one :

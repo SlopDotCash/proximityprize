@@ -1,0 +1,51 @@
+{
+  "owner": "ProximityPrize/Compatibility/PureKnowledge.lean",
+  "original_prefixes": [
+    {
+      "source": "ArkLib/ProofSystem/Spartan/ShortPhaseKnowledgeLeaves.lean",
+      "source_sha256": "042405503cbe3e8fdd91bd4b6291872b291484d197464f6cfea1597c787cb631",
+      "prefix_archive": "scripts/integration/retired/ShortPhaseKnowledgeLeaves-generic-prefix.lean.txt",
+      "prefix_sha256": "a0ee9e229f53ae92d3532ef6d81494c904ce4b08931a2b7ec60a4ce0da95de9c",
+      "pruned_source_sha256": "a0ed4dd97de63e60297a37e589f3989aa6b78ecb28f0a441b14b79ee7ed3aeba",
+      "consumer_validation": "Pending protocol-owner source check; prefix removal changes no remaining protocol command."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/ShortPhaseRbrKnowledgeLeaves.lean",
+      "source_sha256": "90dae9ecca1ba34217b7bee032f106100b2ce1e6dbb0697c9c3c350cbe11cbf1",
+      "prefix_archive": "scripts/integration/retired/ShortPhaseRbrKnowledgeLeaves-generic-prefix.lean.txt",
+      "prefix_sha256": "9ddf96f6e20c6968994fa6d60bf3edbb0de19e2ea328b83399509674f9275bc3",
+      "pruned_source_sha256": "65d1f5f650fc3df906ddc71201c01dc02f8c3fdf7f67e8ef7c3473da6a121dc3",
+      "consumer_validation": "Pending protocol-owner source check; prefix removal changes no remaining protocol command."
+    }
+  ],
+  "policy": "Preserve exact hExt/pushforward/carry and Unit-witness flip contracts. Native stateful mixture bound; no new totality, support-faithfulness, coherence or countability assumptions.",
+  "status": "Owner strict temporary-overlay source check PASS; whole consumer/protocol checks and package build remain required",
+  "current_owner_sha256": "27cc7db630a803890744a1d6b843e1de3f6346e8ded6a99aaadbe7d915fea9eb",
+  "owner_source_check_receipt": "/tmp/arklib-PureKnowledge-overlay-native2.receipt.json",
+  "owner_elapsed_seconds": 8.456,
+  "axiom_audit": "All five generic theorem anchors use only propext, Classical.choice, Quot.sound.",
+  "native_game_proof": "The single-challenge bound uses ProtocolSpec.prEvent_simulateQ_addLift_getChallenge_bind_le on the actual shared-state/prover-log game; it keeps rejected mass and adds no countability or totality premise.",
+  "owner_compiled_receipt": {
+    "path": "/tmp/arklib-PureKnowledge-owner-build.receipt.json",
+    "elapsed_seconds": 7.282,
+    "source_sha256": "27cc7db630a803890744a1d6b843e1de3f6346e8ded6a99aaadbe7d915fea9eb",
+    "artifact_family_sha256": {
+      "PureKnowledge.olean": "7a30385b42c517f7bafb82931c53ef35a72a5077dbcf6f996babb090fc90c280"
+    },
+    "not_a_lake_package_build": true
+  },
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [
+      "/status",
+      "/original_prefixes/0/consumer_validation",
+      "/original_prefixes/1/consumer_validation"
+    ],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

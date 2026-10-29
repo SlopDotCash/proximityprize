@@ -88,7 +88,7 @@ theorem card_sizedSubset [Fintype α] [DecidableEq α] :
 noncomputable def uniformSizedSubset [Fintype α] [DecidableEq α]
     (h : n ≤ Fintype.card α) : PMF (SizedSubset α n) :=
   letI : Nonempty (SizedSubset α n) := ⟨SizedSubset.some h⟩
-  PMF.uniformOfFintype (SizedSubset α n)
+  ProximityPrize.Compatibility.uniformOfFintype (SizedSubset α n)
 
 @[simp]
 theorem uniformSizedSubset_apply [Fintype α] [DecidableEq α]

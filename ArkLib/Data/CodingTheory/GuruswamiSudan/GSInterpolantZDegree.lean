@@ -71,7 +71,7 @@ theorem evalConstraint_monomial {L : Type} [Field L] (x y : L) (s t a b : ℕ) :
 inner `F[X]` as the polynomial ring in `Z`). Row index: interpolation point × Hasse order;
 column index: weighted-degree-bounded monomial. -/
 noncomputable def gsMatrixZ (k n m : ℕ) (ωs : Fin n ↪ F) (f₀ f₁ : Fin n → F) (D : ℕ) :
-    Matrix (Fin n × constraintIndices m) (weigthBoundIndices k D) F[X] :=
+    Matrix (Fin n × constraintIndices m) (weightBoundIndices k D) F[X] :=
   fun ist p =>
     C ((p.1.1.choose ist.2.1.1 : F) * (ωs ist.1) ^ (p.1.1 - ist.2.1.1) *
         (p.1.2.choose ist.2.1.2 : F)) *
@@ -81,11 +81,11 @@ noncomputable def gsMatrixZ (k n m : ℕ) (ωs : Fin n ↪ F) (f₀ f₁ : Fin n
 an entry is at most `b - t ≤ b ≤ D` since `a + (k-1)·b ≤ D` and `k - 1 ≥ 1`. -/
 theorem gsMatrixZ_natDegree_le {k n m : ℕ} (hk : 1 < k) (ωs : Fin n ↪ F)
     (f₀ f₁ : Fin n → F) (D : ℕ) (ist : Fin n × constraintIndices m)
-    (p : weigthBoundIndices k D) :
+    (p : weightBoundIndices k D) :
     (gsMatrixZ k n m ωs f₀ f₁ D ist p).natDegree ≤ D := by
   have hb : p.1.2 ≤ D := by
     have hp := p.2
-    simp only [weigthBoundIndices, mem_filter] at hp
+    simp only [weightBoundIndices, mem_filter] at hp
     have h1 : 1 ≤ k - 1 := by omega
     nlinarith [hp.2, p.1.1.zero_le]
   calc (gsMatrixZ k n m ωs f₀ f₁ D ist p).natDegree
@@ -105,9 +105,9 @@ theorem gsMatrixZ_natDegree_le {k n m : ℕ} (hk : 1 < k) (ωs : Fin n ↪ F)
 
 /-- `coeffsToPoly` as a plain finite sum over the index set. -/
 theorem coeffsToPoly_eq_sum {L : Type} [Field L] (k D : ℕ)
-    (c : weigthBoundIndices k D → L) :
+    (c : weightBoundIndices k D → L) :
     coeffsToPoly k D c =
-      ∑ p : weigthBoundIndices k D, c p • GuruswamiSudan.monomial p.1.1 p.1.2 := by
+      ∑ p : weightBoundIndices k D, c p • GuruswamiSudan.monomial p.1.1 p.1.2 := by
   classical
   simp only [coeffsToPoly, LinearMap.comp_apply, LinearEquiv.coe_toLinearMap]
   rw [Finsupp.linearCombination_apply, Finsupp.sum_fintype]
@@ -117,7 +117,7 @@ theorem coeffsToPoly_eq_sum {L : Type} [Field L] (k D : ℕ)
 /-- The matrix `gsMatrixZ`, mapped into `K = F(Z)`, represents `constraintMap` for the
 generic fold on the monomial-coefficient coordinates. -/
 theorem constraintMap_eq_mulVec {k n m : ℕ} (ωs : Fin n ↪ F) (f₀ f₁ : Fin n → F) (D : ℕ)
-    (c : weigthBoundIndices k D → K) (ist : Fin n × constraintIndices m) :
+    (c : weightBoundIndices k D → K) (ist : Fin n × constraintIndices m) :
     constraintMap k n m (liftedDomain ωs) (genericFold f₀ f₁) D c ist.1 ist.2 =
       ((gsMatrixZ k n m ωs f₀ f₁ D).map (algebraMap F[X] K)).mulVec c ist := by
   classical
@@ -173,13 +173,13 @@ theorem gs_existence_over_ratfunc_zDegree {n : ℕ} (k m : ℕ) (ωs : Fin n ↪
       (gsMatrixZ k n m ωs f₀ f₁ D)
       (fun i j => gsMatrixZ_natDegree_le hk ωs f₀ f₁ D i j) c hc0 hker
   -- 4. the integer interpolant and its coefficient extraction
-  set Q₀ : (F[X])[X][Y] := ∑ p : weigthBoundIndices k D,
+  set Q₀ : (F[X])[X][Y] := ∑ p : weightBoundIndices k D,
       Polynomial.monomial p.1.2 (Polynomial.monomial p.1.1 (c' p)) with hQ₀
   have hcoeff : ∀ a b : ℕ, ((Q₀.coeff b).coeff a) =
-      if h : (a, b) ∈ weigthBoundIndices k D then c' ⟨(a, b), h⟩ else 0 := by
+      if h : (a, b) ∈ weightBoundIndices k D then c' ⟨(a, b), h⟩ else 0 := by
     intro a b
     rw [hQ₀, Polynomial.finset_sum_coeff]
-    have hterm : ∀ p : weigthBoundIndices k D,
+    have hterm : ∀ p : weightBoundIndices k D,
         ((Polynomial.monomial p.1.2 (Polynomial.monomial p.1.1 (c' p))).coeff b).coeff a =
           if p.1 = (a, b) then c' p else 0 := by
       intro p
@@ -190,16 +190,16 @@ theorem gs_existence_over_ratfunc_zDegree {n : ℕ} (k m : ℕ) (ωs : Fin n ↪
         · rw [if_pos h1, if_pos (Prod.ext h1 h2)]
         · rw [if_neg h1, if_neg (fun h => h1 (by rw [h]))]
       · rw [if_neg h2, Polynomial.coeff_zero, if_neg (fun h => h2 (by rw [h]))]
-    calc (∑ p : weigthBoundIndices k D,
+    calc (∑ p : weightBoundIndices k D,
             ((Polynomial.monomial p.1.2 (Polynomial.monomial p.1.1 (c' p))).coeff b)).coeff a
-        = ∑ p : weigthBoundIndices k D,
+        = ∑ p : weightBoundIndices k D,
             ((Polynomial.monomial p.1.2 (Polynomial.monomial p.1.1 (c' p))).coeff b).coeff a := by
           rw [Polynomial.finset_sum_coeff]
-      _ = ∑ p : weigthBoundIndices k D, if p.1 = (a, b) then c' p else 0 := by
+      _ = ∑ p : weightBoundIndices k D, if p.1 = (a, b) then c' p else 0 := by
           exact Finset.sum_congr rfl fun p _ => hterm p
-      _ = if h : (a, b) ∈ weigthBoundIndices k D then c' ⟨(a, b), h⟩ else 0 := by
-          by_cases h : (a, b) ∈ weigthBoundIndices k D
-          · rw [dif_pos h, Finset.sum_eq_single (⟨(a, b), h⟩ : weigthBoundIndices k D)]
+      _ = if h : (a, b) ∈ weightBoundIndices k D then c' ⟨(a, b), h⟩ else 0 := by
+          by_cases h : (a, b) ∈ weightBoundIndices k D
+          · rw [dif_pos h, Finset.sum_eq_single (⟨(a, b), h⟩ : weightBoundIndices k D)]
             · rw [if_pos rfl]
             · intro p _ hne
               rw [if_neg (fun hp => hne (Subtype.ext hp))]
@@ -208,7 +208,7 @@ theorem gs_existence_over_ratfunc_zDegree {n : ℕ} (k m : ℕ) (ωs : Fin n ↪
             intro p _
             rw [if_neg (fun hp => h (by rw [← hp]; exact p.2))]
   -- the mapped interpolant is `coeffsToPoly` of the mapped kernel vector
-  set c'' : weigthBoundIndices k D → K := fun p => algebraMap F[X] K (c' p) with hc''
+  set c'' : weightBoundIndices k D → K := fun p => algebraMap F[X] K (c' p) with hc''
   have hmap : Q₀.map (Polynomial.mapRingHom (algebraMap F[X] K)) = coeffsToPoly k D c'' := by
     rw [coeffsToPoly_eq_sum, hQ₀, Polynomial.map_sum]
     refine Finset.sum_congr rfl fun p _ => ?_
@@ -241,7 +241,7 @@ theorem gs_existence_over_ratfunc_zDegree {n : ℕ} (k m : ℕ) (ωs : Fin n ↪
   -- injectivity of `coeffsToPoly` over K (for the nonzero leg)
   have h_inj : Function.Injective (coeffsToPoly (F := K) k D) := by
     have : Function.Injective (Finsupp.linearCombination K
-        (fun p : weigthBoundIndices k D ↦ GuruswamiSudan.monomial (F := K) p.1.1 p.1.2)) :=
+        (fun p : weightBoundIndices k D ↦ GuruswamiSudan.monomial (F := K) p.1.1 p.1.2)) :=
       linearIndependent_monomials.comp _ (fun p q h ↦ by aesop)
     exact this.comp (LinearEquiv.injective _)
   refine ⟨Q₀, ?_, ?_, ?_⟩
@@ -253,7 +253,7 @@ theorem gs_existence_over_ratfunc_zDegree {n : ℕ} (k m : ℕ) (ωs : Fin n ↪
     rw [habs] at this
     simp only [Polynomial.coeff_zero] at this
     rw [dif_pos (by exact (Prod.mk.eta (p := p₀.1)) ▸ p₀.2)] at this
-    rw [show (⟨(p₀.1.1, p₀.1.2), _⟩ : weigthBoundIndices k D) = p₀ from
+    rw [show (⟨(p₀.1.1, p₀.1.2), _⟩ : weightBoundIndices k D) = p₀ from
       Subtype.ext (Prod.mk.eta)] at this
     exact this.symm
   · -- Conditions: the four legs at K, mirroring `gs_existence` with kernel vector c''
@@ -281,7 +281,7 @@ theorem gs_existence_over_ratfunc_zDegree {n : ℕ} (k m : ℕ) (ωs : Fin n ↪
   · -- the Z-degree budget
     intro b a
     rw [hcoeff a b]
-    by_cases h : (a, b) ∈ weigthBoundIndices k D
+    by_cases h : (a, b) ∈ weightBoundIndices k D
     · rw [dif_pos h]
       refine (hdeg ⟨(a, b), h⟩).trans ?_
       have hcard : Fintype.card (Fin n × constraintIndices m) =

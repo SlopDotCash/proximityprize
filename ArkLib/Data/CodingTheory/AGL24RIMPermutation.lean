@@ -63,8 +63,9 @@ theorem RIM_eval_comp_perm {t k : ℕ} (e : ι → Finset (Fin (t + 1))) (σ : E
     (MvPolynomial.eval α) (RIM F (e ∘ σ) r c)
       = (MvPolynomial.eval (α ∘ σ.symm)) (RIM F e (rimRowEquiv e σ r) c) := by
   obtain ⟨i, j⟩ := r
-  unfold RIM rimRowEquiv
-  simp only [Equiv.coe_fn_mk]
+  change (MvPolynomial.eval α) (RIM F (e ∘ σ) ⟨i, j⟩ c) =
+    (MvPolynomial.eval (α ∘ σ.symm)) (RIM F e ⟨σ i, j⟩ c)
+  unfold RIM
   -- The min-terms coincide definitionally ((e ∘ σ) i = e (σ i)); the variable evaluations
   -- coincide through the permutation.
   by_cases h1 : c.1.castSucc = ((e ∘ σ) i).min' ⟨j.val, j.property.1⟩

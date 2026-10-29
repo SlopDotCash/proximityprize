@@ -431,9 +431,10 @@ noncomputable def largeOverlapGraph
   Adj x y := x ≠ y ∧ K ≤
     (fullAgreement dom (u 0) (u 1) x.1 (family.q x.1) ∩
       fullAgreement dom (u 0) (u 1) y.1 (family.q y.1)).card
-  symm := by
+  symm := ⟨by
     intro x y h
     exact ⟨h.1.symm, by simpa only [Finset.inter_comm] using h.2⟩
+  ⟩
   loopless := ⟨fun x h => h.1 rfl⟩
 
 /-- **Global graph form of six-point forcing.**  At the P1 predecessor, the complement of the
@@ -565,7 +566,7 @@ theorem turan_lower_bound_largeOverlap_edges
   have hsmall :
       #Gᶜ.edgeFinset ≤
         (m ^ 2 - (m % 5) ^ 2) * 4 / 10 + (m % 5).choose 2 := by
-    simpa only [m, Nat.reduceAdd, Nat.reduceSub, Nat.reduceMul] using
+    simpa only [m, SimpleGraph.turanNumber_eq, Nat.reduceAdd, Nat.reduceSub, Nat.reduceMul] using
       (SimpleGraph.CliqueFree.card_edgeFinset_le (G := Gᶜ) (r := 5) hfree)
   have hpartition :
       #G.edgeFinset + #Gᶜ.edgeFinset = m.choose 2 := by
@@ -610,7 +611,7 @@ theorem turan_fourPart_lower_bound_largeOverlap_edges
   have hsmall :
       #Gᶜ.edgeFinset ≤
         (m ^ 2 - (m % 4) ^ 2) * 3 / 8 + (m % 4).choose 2 := by
-    simpa only [m, Nat.reduceAdd, Nat.reduceSub, Nat.reduceMul] using
+    simpa only [m, SimpleGraph.turanNumber_eq, Nat.reduceAdd, Nat.reduceSub, Nat.reduceMul] using
       (SimpleGraph.CliqueFree.card_edgeFinset_le (G := Gᶜ) (r := 4) hfree)
   have hpartition :
       #G.edgeFinset + #Gᶜ.edgeFinset = m.choose 2 := by

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SpartanFirstChallenge
 import ArkLib.ProofSystem.Spartan.ComposedCompleteness
 import ArkLib.ProofSystem.Spartan.SpartanDirFacts
 import ArkLib.ProofSystem.Spartan.TightApexPure
@@ -36,27 +37,18 @@ variable {R : Type 0} [CommRing R] [IsDomain R] [Fintype R] [DecidableEq R] [Inh
 /-- The honest RLC-target adapter pinned to the concrete oracle-interface universe used by the
 current append-completeness keystones. -/
 private abbrev prependRLCTargetWTPC {ι : Type} (oSpec : OracleSpec ι) :
-    OracleReduction.{0, 0} oSpec
+    OracleReduction oSpec
       (Statement.AfterLinearCombinationWithTarget R pp)
       (OracleStatement.AfterLinearCombination R pp) Unit
       (R × Statement.AfterLinearCombinationWithTarget R pp)
       (OracleStatement.AfterLinearCombination R pp) Unit !p[] :=
   prependRLCTargetWithTarget pp oSpec
 
-private instance {ι : Type} (oSpec : OracleSpec ι) :
-    OracleVerifier.Append.AppendCoherent (prependRLCTargetWTPC (R := R) pp oSpec).verifier :=
-  inferInstanceAs (OracleVerifier.Append.AppendCoherent
-    (prependRLCTargetWithTargetVerifier (R := R) pp oSpec))
-
--- Direction facts now live in `SpartanDirFacts.lean` (DRY-audit item 8).
-
-/-! ### The seven-seam assembly -/
-
 set_option maxHeartbeats 4000000
 set_option synthInstance.maxHeartbeats 4000000
 set_option synthInstance.maxSize 512
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
   {relA : Set ((Statement R pp × ∀ i, OracleStatement R pp i) × Witness R pp)}
   {relB : Set ((Statement.AfterFirstMessage R pp ×
@@ -180,7 +172,7 @@ private theorem step5
     (hInit : NeverFail init)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0) :
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0) :
     ((sendEvalClaimWithTarget pp oSpec).append
       ((linearCombinationWithTarget pp oSpec).append ((prependRLCTargetWTPC pp oSpec).append
         ((secondSumcheckReductionWithTarget pp oSpec).append
@@ -233,7 +225,7 @@ private theorem step4
 /-- Seam 2 (`firstChallenge ▷ …`, message seam: the right block opens with the first
 sum-check's leading `P_to_V` polynomial message). -/
 private theorem step3 (hm : 0 < pp.ℓ_m)
-    (h₂ : (oracleReduction.firstChallenge R pp oSpec).perfectCompleteness init impl relB relC)
+    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).perfectCompleteness init impl relB relC)
     (hRest : ((firstSumcheckReductionWithTarget pp oSpec).append
       ((sendEvalClaimWithTarget pp oSpec).append
         ((linearCombinationWithTarget pp oSpec).append ((prependRLCTargetWTPC pp oSpec).append
@@ -243,7 +235,7 @@ private theorem step3 (hm : 0 < pp.ℓ_m)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
         = support (liftM q : OracleComp oSpec β)) :
-    ((oracleReduction.firstChallenge R pp oSpec).append ((firstSumcheckReductionWithTarget pp oSpec).append
+    ((oracleReduction.completedFirstChallenge R pp oSpec).append ((firstSumcheckReductionWithTarget pp oSpec).append
       ((sendEvalClaimWithTarget pp oSpec).append
         ((linearCombinationWithTarget pp oSpec).append ((prependRLCTargetWTPC pp oSpec).append
           ((secondSumcheckReductionWithTarget pp oSpec).append
@@ -269,7 +261,7 @@ private theorem step3 (hm : 0 < pp.ℓ_m)
   haveI := ProtocolSpec.challengeOracle_inhabited
     ((⟨!v[.V_to_P], !v[FirstChallenge R pp]⟩ : ProtocolSpec 1) ++ₚ sfx2 (R := R) pp)
   exact OracleReduction.append_perfectCompleteness_keystone
-    (oracleReduction.firstChallenge R pp oSpec)
+    (oracleReduction.completedFirstChallenge R pp oSpec)
     ((firstSumcheckReductionWithTarget pp oSpec).append
       ((sendEvalClaimWithTarget pp oSpec).append
         ((linearCombinationWithTarget pp oSpec).append ((prependRLCTargetWTPC pp oSpec).append
@@ -285,7 +277,7 @@ direction). -/
 theorem composedPIOPTightPure_perfectCompleteness_of_leaves
     (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)
     (h₁ : (oracleReduction.firstMessage R pp oSpec).perfectCompleteness init impl relA relB)
-    (h₂ : (oracleReduction.firstChallenge R pp oSpec).perfectCompleteness init impl relB relC)
+    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).perfectCompleteness init impl relB relC)
     (h₃ : (firstSumcheckReductionWithTarget pp oSpec).perfectCompleteness init impl relC relD)
     (h₄ : (sendEvalClaimWithTarget pp oSpec).perfectCompleteness init impl relD relE)
     (h₅ : (linearCombinationWithTarget pp oSpec).perfectCompleteness init impl relE relF)
@@ -298,7 +290,7 @@ theorem composedPIOPTightPure_perfectCompleteness_of_leaves
         = support (liftM q : OracleComp oSpec β))
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0) :
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0) :
     (composedPIOPTightPure_Rc (R := R) pp oSpec).perfectCompleteness init impl relA relI := by
   have hS8 := step8 pp oSpec h₇ h₈ hInit hImplSupp
   have hS7 := step7 pp oSpec hn h₆ hS8 hInit hImplSupp
@@ -308,7 +300,7 @@ theorem composedPIOPTightPure_perfectCompleteness_of_leaves
   have hS3 := step3 pp oSpec hm h₂ hS4 hInit hImplSupp
   exact OracleReduction.append_perfectCompleteness_keystone_challenge_114
     (oracleReduction.firstMessage R pp oSpec)
-    ((oracleReduction.firstChallenge R pp oSpec).append ((firstSumcheckReductionWithTarget pp oSpec).append
+    ((oracleReduction.completedFirstChallenge R pp oSpec).append ((firstSumcheckReductionWithTarget pp oSpec).append
       ((sendEvalClaimWithTarget pp oSpec).append
         ((linearCombinationWithTarget pp oSpec).append ((prependRLCTargetWTPC pp oSpec).append
           ((secondSumcheckReductionWithTarget pp oSpec).append (finalCheckPure pp oSpec)))))))

@@ -90,6 +90,11 @@ set_option linter.unusedDecidableInType false
 
 namespace DuplexSpongeFS.KeyLemmaAssembly
 
+-- Match the all-event optional-transcript observation of the ladder definitions.
+local instance {n : ℕ} (pSpec : ProtocolSpec n) {StmtIn StmtOut : Type}
+    {κ : Type} (spec : OracleSpec κ) :
+    MeasurableSpace (StmtIn × StmtOut × pSpec.Messages × QueryLog spec × QueryLog spec) := ⊤
+
 open DSTraceStorage TraceTransform ProverTransform KeyLemmaFoundations KeyLemmaHybrids
 
 variable {n : ℕ} {pSpec : ProtocolSpec n} {ι : Type} {oSpec : OracleSpec ι}
@@ -166,7 +171,7 @@ theorem keyLemmaEager_of_steps_strictSplit
       IsQueryBoundP P (fun j => dsQueryFlavor j = .hash) tₕ →
       IsQueryBoundP P (fun j => dsQueryFlavor j = .perm) tₚ →
       IsQueryBoundP P (fun j => dsQueryFlavor j = .permInv) tₚᵢ →
-      SPMF.tvDist (Hyb3 T_H T_P δ Salt oImpl V P)
+      MeasureTheory.Measure.tvDist (Hyb3 T_H T_P δ Salt oImpl V P)
           (VerifierReplay.Hyb3Strict T_H T_P δ Salt oImpl V P)
         ≤ εA tₕ tₚ tₚᵢ L)
     (hB : ∀ (V : Verifier oSpec StmtIn StmtOut pSpec)
@@ -177,7 +182,7 @@ theorem keyLemmaEager_of_steps_strictSplit
       IsQueryBoundP P (fun j => dsQueryFlavor j = .hash) tₕ →
       IsQueryBoundP P (fun j => dsQueryFlavor j = .perm) tₚ →
       IsQueryBoundP P (fun j => dsQueryFlavor j = .permInv) tₚᵢ →
-      SPMF.tvDist (VerifierReplay.Hyb3Strict T_H T_P δ Salt oImpl V P)
+      MeasureTheory.Measure.tvDist (VerifierReplay.Hyb3Strict T_H T_P δ Salt oImpl V P)
           (Hyb4 oImpl V
             (eagerSimulatedProver (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt) P))
         ≤ εB tₕ tₚ tₚᵢ L)

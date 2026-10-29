@@ -90,6 +90,66 @@ local instance primeFactP30 : Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrim
 local instance localInstance_SYZ66BadCountBridge_1 : NeZero ArkLib.ProximityGap.PrizeShapePrimeP30.P :=
   ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P.ne_zero⟩
 
+private theorem strip_cap_from_budget {n K r : ℕ}
+    (hn : n ≤ 2 ^ 30) (hK : K ≤ 2 ^ 29)
+    (hcap : r * (715827884 - K) + 1 ≤ 2 * (n - K)) : r ≤ 5 := by
+  norm_num only [Nat.reducePow] at hn hK
+  by_contra h
+  have h6 : 6 * (715827884 - K) ≤ r * (715827884 - K) :=
+    Nat.mul_le_mul_right _ (by omega)
+  omega
+
+private theorem strip_independent_cap_symbolic
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] {n : ℕ} [NeZero n]
+    (C : Submodule F (Fin n → F)) (hn : n ≤ 2 ^ 30)
+    (hK : Module.finrank F C ≤ 2 ^ 29) {r : ℕ} {u₀ u₁ : Fin n → F}
+    {φ : Fin r × Fin (715827884 - Module.finrank F C) → Module.Dual F (SyndromePair C)}
+    (hann : ∀ p, φ p (syndromePair C u₀ u₁) = 0)
+    (hne : syndromePair C u₀ u₁ ≠ 0) (hli : LinearIndependent F φ) : r ≤ 5 := by
+  have hplant : Plantable φ := ⟨syndromePair C u₀ u₁, hne, hann⟩
+  have hcap := plantable_linearIndependent_cap hplant hli
+  rw [finrank_syndromePair C, Fintype.card_fin] at hcap
+  exact strip_cap_from_budget hn hK hcap
+
+private theorem strip_syzygy_symbolic
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] {n : ℕ} [NeZero n]
+    (C : Submodule F (Fin n → F)) (hn : n ≤ 2 ^ 30)
+    (hK : Module.finrank F C ≤ 2 ^ 29) {r : ℕ} (hr : 6 ≤ r)
+    (u₀ u₁ : Fin n → F) (γ : Fin r → F) {δ : ℝ≥0}
+    (hbad : ∀ i, mcaEvent (C : Set (Fin n → F)) δ u₀ u₁ (γ i))
+    (ht : ((715827884 : ℕ) : ℝ≥0) ≤ (1 - δ) * (n : ℝ≥0)) :
+    ∃ φ : Fin r × Fin (715827884 - Module.finrank F C) → Module.Dual F (SyndromePair C),
+      (∀ p, φ p (syndromePair C u₀ u₁) = 0) ∧
+      (∀ i, LinearIndependent F fun j => φ (i, j)) ∧
+      ∃ cc : Fin r × Fin (715827884 - Module.finrank F C) → F,
+        (∑ p, cc p • φ p = 0) ∧ ∃ p, cc p ≠ 0 := by
+  have hwit : ∀ i, ∃ S : Finset (Fin n), S.card = 715827884 ∧
+      ∃ c ∈ C, ∀ x ∈ S, c x = u₀ x + γ i * u₁ x :=
+    fun i => mcaEvent_witness (hbad i) (by simpa only [Fintype.card_fin] using ht)
+  have hstack : u₀ ∉ C ∨ u₁ ∉ C :=
+    mcaEvent_not_both_mem C (hbad ⟨0, Nat.lt_of_lt_of_le (by norm_num : 0 < 6) hr⟩)
+  obtain ⟨φ, hann, hblock, hdich⟩ := syndrome_dichotomy C γ hstack hwit
+  refine ⟨φ, hann, hblock, ?_⟩
+  rcases hdich with hcap | hsyz
+  · rw [Fintype.card_fin] at hcap
+    have hsmall := strip_cap_from_budget hn hK hcap
+    omega
+  · exact hsyz
+
+private theorem strip_not_independent_symbolic
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] {n : ℕ} [NeZero n]
+    (C : Submodule F (Fin n → F)) (hn : n ≤ 2 ^ 30)
+    (hK : Module.finrank F C ≤ 2 ^ 29) {r : ℕ} (hr : 6 ≤ r)
+    (u₀ u₁ : Fin n → F) (γ : Fin r → F) {δ : ℝ≥0}
+    (hbad : ∀ i, mcaEvent (C : Set (Fin n → F)) δ u₀ u₁ (γ i))
+    (ht : ((715827884 : ℕ) : ℝ≥0) ≤ (1 - δ) * (n : ℝ≥0)) :
+    ∃ φ : Fin r × Fin (715827884 - Module.finrank F C) → Module.Dual F (SyndromePair C),
+      (∀ p, φ p (syndromePair C u₀ u₁) = 0) ∧
+      (∀ i, LinearIndependent F fun j => φ (i, j)) ∧ ¬ LinearIndependent F φ := by
+  obtain ⟨φ, hann, hblock, cc, hcc, hne⟩ :=
+    strip_syzygy_symbolic C hn hK hr u₀ u₁ γ hbad ht
+  exact ⟨φ, hann, hblock, Fintype.not_linearIndependent_iff.mpr ⟨cc, hcc, hne⟩⟩
+
 /-! ## 1. The strip witness threshold -/
 
 /-- **The strip witness threshold.**  At the strip predecessor radius
@@ -104,6 +164,11 @@ theorem strip_threshold :
     one_mul, div_mul_cancel₀ _ (by norm_num : ((2 ^ 30 : ℕ) : ℝ≥0) ≠ 0),
     le_tsub_iff_right (Nat.cast_le.mpr (by norm_num : (357913941 - 1 : ℕ) ≤ 2 ^ 30))]
   exact_mod_cast (by norm_num : (715827884 + (357913941 - 1) : ℕ) ≤ 2 ^ 30)
+
+private theorem strip_threshold_numeric :
+    ((715827884 : ℕ) : ℝ≥0) ≤
+      (1 - predecessorRadius (2 ^ 30) stripNumerator) * ((2 ^ 30 : ℕ) : ℝ≥0) := by
+  simpa only [Fintype.card_fin] using strip_threshold
 
 /-! ## 2. The proven independent cap: syzygy-free bad families have ≤ 5 scalars -/
 
@@ -122,18 +187,7 @@ theorem strip_independent_cap {r : ℕ}
     (hann : ∀ p, φ p (syndromePair wallCode u₀ u₁) = 0)
     (hne : syndromePair wallCode u₀ u₁ ≠ 0)
     (hli : LinearIndependent (ZMod P) φ) : r ≤ 5 := by
-  have hplant : Plantable φ := ⟨syndromePair wallCode u₀ u₁, hne, hann⟩
-  have hcap := plantable_linearIndependent_cap hplant hli
-  rw [finrank_syndromePair wallCode] at hcap
-  have hkle : Module.finrank (ZMod P) wallCode ≤ 536870912 :=
-    le_trans finrank_wallCode_le (by norm_num)
-  have hcard : Fintype.card (Fin (2 ^ 30)) = 1073741824 := by rw [Fintype.card_fin]; norm_num
-  rw [hcard] at hcap
-  by_contra h
-  push_neg at h
-  generalize hK : Module.finrank (ZMod P) wallCode = K at hcap hkle
-  have h6 : 6 * (715827884 - K) ≤ r * (715827884 - K) := Nat.mul_le_mul_right _ (by omega)
-  omega
+  exact strip_independent_cap_symbolic wallCode (le_refl _) finrank_wallCode_le hann hne hli
 
 /-! ## 3. The strip force-syzygy corollaries (family form) -/
 
@@ -147,7 +201,7 @@ wall corollary. -/
 theorem strip_six_bad_scalars_force_syzygy
     {r : ℕ} (hr : 6 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)
     (hbad : ∀ i, mcaEvent
-      (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))
+      (ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))
       (predecessorRadius (2 ^ 30) stripNumerator) u₀ u₁ (γ i)) :
     ∃ φ : Fin r × Fin (715827884 - Module.finrank (ZMod P) wallCode) →
         Module.Dual (ZMod P) (SyndromePair wallCode),
@@ -157,43 +211,27 @@ theorem strip_six_bad_scalars_force_syzygy
         (∑ p, cc p • φ p = 0) ∧ ∃ p, cc p ≠ 0 := by
   have hbad' : ∀ i, mcaEvent (wallCode : Set (Fin (2 ^ 30) → ZMod P))
       (predecessorRadius (2 ^ 30) stripNumerator) u₀ u₁ (γ i) := by
-    intro i; rw [wallCode_coe]; exact hbad i
-  have hwit : ∀ i, ∃ S : Finset (Fin (2 ^ 30)), S.card = 715827884 ∧
-      ∃ c ∈ wallCode, ∀ x ∈ S, c x = u₀ x + γ i * u₁ x :=
-    fun i => mcaEvent_witness (hbad' i) strip_threshold
-  have hstack : u₀ ∉ wallCode ∨ u₁ ∉ wallCode :=
-    mcaEvent_not_both_mem wallCode (hbad' ⟨0, by omega⟩)
-  obtain ⟨φ, hann, hblock, hdich⟩ := syndrome_dichotomy wallCode γ hstack hwit
-  refine ⟨φ, hann, hblock, ?_⟩
-  rcases hdich with hcap | hsyz
-  · -- the generic cap is numerically impossible at the strip shape
-    exfalso
-    have hkle : Module.finrank (ZMod P) wallCode ≤ 536870912 :=
-      le_trans finrank_wallCode_le (by norm_num)
-    have hcard : Fintype.card (Fin (2 ^ 30)) = 1073741824 := by rw [Fintype.card_fin]; norm_num
-    generalize hK : Module.finrank (ZMod P) wallCode = K at hcap hkle
-    generalize hN : Fintype.card (Fin (2 ^ 30)) = N at hcap hcard
-    have h6 : 6 * (715827884 - K) ≤ r * (715827884 - K) :=
-      Nat.mul_le_mul_right _ hr
-    have hcap' := le_trans (Nat.add_le_add_right h6 1) hcap
-    omega
-  · exact hsyz
+    simpa only [wallCode_coe] using hbad
+  exact strip_syzygy_symbolic wallCode (le_refl _) finrank_wallCode_le hr u₀ u₁ γ hbad'
+    strip_threshold_numeric
 
 /-- **Impossibility form.**  The witness functionals of `6` bad scalars at the strip shape can
 **never** be linearly independent: independent-block planting is capped at `5`. -/
 theorem strip_six_bad_scalars_not_linearIndependent
     {r : ℕ} (hr : 6 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)
     (hbad : ∀ i, mcaEvent
-      (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))
+      (ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))
       (predecessorRadius (2 ^ 30) stripNumerator) u₀ u₁ (γ i)) :
     ∃ φ : Fin r × Fin (715827884 - Module.finrank (ZMod P) wallCode) →
         Module.Dual (ZMod P) (SyndromePair wallCode),
       (∀ p, φ p (syndromePair wallCode u₀ u₁) = 0) ∧
       (∀ i, LinearIndependent (ZMod P) fun j => φ (i, j)) ∧
       ¬ LinearIndependent (ZMod P) φ := by
-  obtain ⟨φ, hann, hblock, cc, hcc, hne⟩ :=
-    strip_six_bad_scalars_force_syzygy hr u₀ u₁ γ hbad
-  exact ⟨φ, hann, hblock, Fintype.not_linearIndependent_iff.mpr ⟨cc, hcc, hne⟩⟩
+  have hbad' : ∀ i, mcaEvent (wallCode : Set (Fin (2 ^ 30) → ZMod P))
+      (predecessorRadius (2 ^ 30) stripNumerator) u₀ u₁ (γ i) := by
+    simpa only [wallCode_coe] using hbad
+  exact strip_not_independent_symbolic wallCode (le_refl _) finrank_wallCode_le
+    hr u₀ u₁ γ hbad' strip_threshold_numeric
 
 /-! ## 4. Lifting to the concrete `mcaBadCount`: ≥ 6 bad scalars ⇒ syzygy -/
 
@@ -223,7 +261,7 @@ independent cap. -/
 theorem strip_count_ge_six_forces_syzygy
     (u₀ u₁ : Fin (2 ^ 30) → ZMod P)
     (h : 6 ≤ mcaBadCount (F := ZMod P)
-      (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))
+      (ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))
       (predecessorRadius (2 ^ 30) stripNumerator) u₀ u₁) :
     ∃ φ : Fin 6 × Fin (715827884 - Module.finrank (ZMod P) wallCode) →
         Module.Dual (ZMod P) (SyndromePair wallCode),
@@ -244,10 +282,10 @@ SYZ56's cross-witness chaining is a NO-GO for: the scalar-level pencil attributi
 def StripSyzygyControlledCeiling : Prop :=
   ∀ u : WordStack (ZMod P) (Fin 2) (Fin (2 ^ 30)),
     6 ≤ mcaBadCount (F := ZMod P)
-        (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))
+        (ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))
         (predecessorRadius (2 ^ 30) stripNumerator) (u 0) (u 1) →
     mcaBadCount (F := ZMod P)
-        (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))
+        (ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))
         (predecessorRadius (2 ^ 30) stripNumerator) (u 0) (u 1) ≤ 2 ^ 30
 
 /-- **The honest composition.**  `BadCountCeiling` follows from `StripSyzygyControlledCeiling`: the
@@ -259,10 +297,10 @@ theorem badCountCeiling_of_syzygyControlled (h : StripSyzygyControlledCeiling) :
     ArkLib.ProximityGap.Frontier.SYZ60Dictionary.BadCountCeiling := by
   intro u
   by_cases hc : 6 ≤ mcaBadCount (F := ZMod P)
-      (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))
+      (ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))
       (predecessorRadius (2 ^ 30) stripNumerator) (u 0) (u 1)
   · exact h u hc
-  · push_neg at hc; exact le_trans hc.le (by norm_num)
+  · push Not at hc; exact le_trans hc.le (by norm_num)
 
 /-- **The dictionary collapse, chained.**  Composing with SYZ60: syzygy control discharges the whole
 counting dictionary. -/

@@ -263,7 +263,7 @@ open scoped BigOperators ENNReal ProbabilityTheory LinearCode
 namespace BetaIdentify
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
+variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
 
 /-- **`Section5StrictData` from the embedding-level residual.**  The `…_betaEmb` analogue of
 `CorrelatedAgreementListDecodingClosed.section5StrictData_of_betaEq`: it takes every field except
@@ -310,7 +310,7 @@ open KeystoneStrictResidual HPzBridge HcardDischarge BetaToCurveCoeffPolys Claim
 open BetaIdentify
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
+variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
 
 /-- **`BetaCurveInput` from the embedding-level residual.**  The `…_betaEmb` analogue of
 `BetaInputSupply.betaCurveInput_of_section5`, with `BetaEmbedEq` in place of the element-level `hβ`.
@@ -411,7 +411,7 @@ open ProximityGap Code NNReal Finset Function ProbabilityTheory
 open scoped BigOperators ENNReal ProbabilityTheory LinearCode
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
+variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
 
 /-- **The §5 milestone from the embedding-level residual.**  The `…_betaEmb` analogue of
 `Section5Concrete.correlatedAgreement_affine_curves_johnson_concrete`: the literal BCIKS20 keystone

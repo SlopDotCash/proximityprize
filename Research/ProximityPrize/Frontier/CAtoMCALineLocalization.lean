@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 
 /-!
 # B4 at lines: the CA ⇒ MCA collapse, localized and floored (#466 Lane W3)
@@ -165,7 +165,7 @@ theorem jointlyProximateContribution_le_epsMCA (C : Set (ι → A)) (δ : ℝ≥
   by_cases hjp : jointProximity (C := C) (u := u) δ
   · rw [if_pos hjp]
   · rw [if_neg hjp]
-    exact zero_le _
+    positivity
 
 open Classical in
 /-- **The B4 localization identity at lines.** For any linear code,

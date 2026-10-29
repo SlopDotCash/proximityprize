@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SumcheckKnowledge
 import ArkLib.ProofSystem.Spartan.FirstSumcheckReduction
 import ArkLib.ProofSystem.Spartan.FirstSumcheckRelComplete
 import ArkLib.OracleReduction.LiftContext.HonestKnowledgeLens
@@ -11,6 +12,12 @@ import ArkLib.ProofSystem.Sumcheck.Spec.RbrKnowledgeSoundnessOracle
 import ArkLib.ProofSystem.Sumcheck.Spec.OracleCompletenessUncondCorrect
 
 /-!
+
+Canonical-message integration: the degree-2/degree-3 round knowledge bounds remain explicit
+hypotheses of the `_of_sumcheck_rounds` constructions below. Former unconditional zero-flip
+completion claims are retired; exact names, commands and added obligations are recorded in
+`scripts/integration/sumcheck-message-semantics-retirements.json`.
+
 # The target-preserving Spartan first sum-check lift (issue #329, Brick B)
 
 `firstSumcheckReduction`'s lens **drops** the inner sum-check's terminal target: its
@@ -103,6 +110,7 @@ noncomputable def firstSumcheckOracleLensWithTarget :
     | ⟨_, point⟩ => ReaderT.mk fun stmt => firstSCEvalFromOracles pp oSpec stmt point
   embedOStmt := Function.Embedding.inl
   hEqOStmt := fun _ => rfl
+  outputInterface_heq := fun _ => HEq.rfl
 
 /-- The **target-preserving** value-level oracle context lens for the first sum-check. -/
 noncomputable def firstSumcheckContextLensWithTarget :
@@ -124,27 +132,14 @@ noncomputable def firstSumcheckReductionWithTarget :
       (Statement.AfterFirstChallenge R pp) (OracleStatement.AfterFirstChallenge R pp) Unit
       (Statement.AfterFirstSumcheckWithTarget R pp) (OracleStatement.AfterFirstSumcheck R pp) Unit
       (Sumcheck.Spec.pSpec R 3 pp.ℓ_m) :=
-  (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).liftContext
+  (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).liftContextLegacy
     (firstSumcheckContextLensWithTarget pp) (firstSumcheckOracleLensWithTarget pp oSpec)
-
-instance instFirstSumcheckWithTargetVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (firstSumcheckReductionWithTarget (R := R) pp oSpec).verifier where
-  hCohInl i k h := by
-    simp only [firstSumcheckReductionWithTarget, OracleVerifier.liftContext,
-      Function.Embedding.inl_apply] at h
-    obtain rfl := Sum.inl.inj h
-    rfl
-  hCohInr i k h := by
-    simp only [firstSumcheckReductionWithTarget, OracleVerifier.liftContext,
-      Function.Embedding.inl_apply] at h
-    cases h
 
 /-- **`LiftContextCoherent` instance for the target-preserving first sum-check lens** — the #433
 framework gate, mirroring `firstSumcheckCoherent` (the faithfulness content
 `firstSCEvalFromOracles_simOracle2` is shared; only the output lift differs, and it is coherent by
 construction). -/
-@[reducible] noncomputable def firstSumcheckCoherentWithTarget :
+theorem firstSumcheckCoherentWithTarget :
     OracleVerifier.LiftContextCoherent (firstSumcheckOracleLensWithTarget pp oSpec)
       (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier :=
   liftContextCoherent_of (firstSumcheckOracleLensWithTarget pp oSpec) _
@@ -164,7 +159,9 @@ construction). -/
       obtain ⟨τ, 𝕩⟩ := os
       obtain ⟨t', r_x⟩ := so
       simp [firstSumcheckOracleLensWithTarget, firstSumcheckStmtLensWithTarget,
-        OracleStatement.Lens.lift, OracleStatement.Lens.proj])
+        OracleStatement.Lens.lift, OracleStatement.Lens.proj]
+      funext j
+      rfl)
 
 /-! ## Perfect completeness at the target-preserving endpoint -/
 
@@ -205,12 +202,12 @@ instance firstSumcheckWithTargetLensComplete :
         (firstSumcheckContextLensWithTarget pp).toContext) where
   proj_complete := by
     rintro ⟨⟨τ, 𝕩⟩, oStmt⟩ ⟨⟩ hRelIn
-    simp only [firstSumcheckWithTargetRelIn, Set.mem_setOf_eq] at hRelIn
+    simp only [firstSumcheckWithTargetRelIn, Set.mem_ofPred_eq] at hRelIn
     exact firstSumcheck_proj_mem_relationRound pp τ 𝕩 oStmt hRelIn
   lift_complete := by
     rintro ⟨⟨τ, 𝕩⟩, oStmt⟩ ⟨⟩ ⟨⟨t_out, r_x⟩, oStmt'⟩ ⟨⟩ _hCompat hRelIn _hRelOut
-    simp only [firstSumcheckWithTargetRelIn, Set.mem_setOf_eq] at hRelIn
-    simpa only [firstSumcheckWithTargetRelOut, Set.mem_setOf_eq] using hRelIn
+    simp only [firstSumcheckWithTargetRelIn, Set.mem_ofPred_eq] at hRelIn
+    exact hRelIn
 
 /-- **Target-preserving first sum-check phase perfect completeness**, given the inner multi-round
 sum-check perfect completeness `h_inner`. Mirrors `firstSumcheck_perfectCompleteness` with the
@@ -224,8 +221,8 @@ theorem firstSumcheckWithTarget_perfectCompleteness
         (Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (Fin.last pp.ℓ_m))) :
     (firstSumcheckReductionWithTarget pp oSpec).perfectCompleteness init impl
       (firstSumcheckWithTargetRelIn (R := R) pp) (firstSumcheckWithTargetRelOut (R := R) pp) := by
-  haveI := firstSumcheckCoherentWithTarget (R := R) pp oSpec
-  exact OracleReduction.liftContext_perfectCompleteness
+  have := firstSumcheckCoherentWithTarget (R := R) pp oSpec
+  exact OracleReduction.liftContextLegacy_perfectCompleteness
     (R := Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec)
     (lens := firstSumcheckContextLensWithTarget pp)
     (stmtLens := firstSumcheckOracleLensWithTarget pp oSpec)
@@ -240,7 +237,7 @@ honest execution-model data facts `hInit`/`hImplSupp`: the inner completeness is
 bridge-free `Sumcheck.Spec.oracleReduction_perfectCompleteness_unconditional`. -/
 theorem firstSumcheckWithTarget_perfectCompleteness_unconditional
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
-    [Inhabited R] [oSpec.Fintype] [oSpec.Inhabited]
+    [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
@@ -286,6 +283,7 @@ abbrev firstSumcheckWithTargetRbrRelOut :
     ((Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier.toVerifier
       |>.compatStatement (firstSumcheckOracleLensWithTarget pp oSpec).toLens)
 
+omit [Fintype R] in
 /-- **The kept target is pinned.** Membership in the target-preserving transported output relation
 pins the outer statement's carried target `y.1.1.1`: every compatible inner terminal statement
 `sOut` lifting to `y.1` has `sOut.1.target = y.1.1.1` *and* satisfies the terminal sum-check
@@ -316,7 +314,7 @@ theorem firstSumcheckWithTargetRbrRelOut_pins_target
 set_option linter.unusedFintypeInType false in
 /-- **The target-preserving first sum-check RBR-KS leaf** over the honest transported relation
 contract, reduced to the inner generic multi-round sum-check RBR-KS theorem. Mirrors
-`firstSumcheck_rbrKnowledgeSoundness_honest` at the target-preserving lens. -/
+`firstSumcheck_rbrKnowledgeSoundness_honest_of_round` at the target-preserving lens. -/
 theorem firstSumcheckWithTarget_rbrKnowledgeSoundness_honest
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
     (rbrKnowledgeError : (Sumcheck.Spec.pSpec R 3 pp.ℓ_m).ChallengeIdx → ℝ≥0)
@@ -330,8 +328,8 @@ theorem firstSumcheckWithTarget_rbrKnowledgeSoundness_honest
       (firstSumcheckWithTargetRbrRelIn pp oSpec)
       (firstSumcheckWithTargetRbrRelOut pp oSpec)
       rbrKnowledgeError := by
-  haveI := firstSumcheckCoherentWithTarget (R := R) pp oSpec
-  letI : Extractor.Lens.IsKnowledgeSound
+  have := firstSumcheckCoherentWithTarget (R := R) pp oSpec
+  let : Extractor.Lens.IsKnowledgeSound
       (firstSumcheckWithTargetRbrRelIn pp oSpec)
       (Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (0 : Fin (pp.ℓ_m + 1)))
       (firstSumcheckWithTargetRbrRelOut pp oSpec)
@@ -345,27 +343,29 @@ theorem firstSumcheckWithTarget_rbrKnowledgeSoundness_honest
       (Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (Fin.last pp.ℓ_m))
       ((Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier.toVerifier
         |>.compatStatement (firstSumcheckOracleLensWithTarget pp oSpec).toLens)
-  exact OracleVerifier.liftContext_rbr_knowledgeSoundness
+  exact OracleVerifier.liftContextLegacy_rbr_knowledgeSoundness
     (V := (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier)
     (stmtLens := firstSumcheckOracleLensWithTarget pp oSpec)
     (witLens := Witness.InvLens.trivial)
     h_inner
 
 set_option linter.unusedFintypeInType false in
-/-- **The target-preserving first sum-check RBR-KS leaf, with the generic multi-round sum-check
-oracle RBR-KS theorem plugged in** (per-round error `3/|R|`). Mirrors
-`firstSumcheck_rbrKnowledgeSoundness_honest_full` at the target-preserving lens. -/
-theorem firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full [Inhabited R]
+/-- The completed Spartan composition construction, conditional on the actual canonical
+sumcheck degree-3 per-round knowledge bounds. The former unconditional zero-flip
+completion is retired; exact source and the added obligations are recorded in the migration audit. -/
+theorem firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds [Inhabited R]
     {σ : Type} [Subsingleton σ] {init : ProbComp σ}
     {impl : QueryImpl oSpec (StateT σ ProbComp)}
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
+    (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
+    :
     (firstSumcheckReductionWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (firstSumcheckWithTargetRbrRelIn (R := R) pp oSpec)
       (firstSumcheckWithTargetRbrRelOut (R := R) pp oSpec)
       (fun _ => (3 : ℝ≥0) / (Fintype.card R)) :=
   firstSumcheckWithTarget_rbrKnowledgeSoundness_honest (R := R) pp oSpec
     (fun _ => (3 : ℝ≥0) / (Fintype.card R))
-    (Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness
+    (Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness_failingDet_of_round (hRound := hRound3)
       (R := R) (deg := 3) (D := boolEmbedding R) (n := pp.ℓ_m)
       (oSpec := oSpec) (init := init) (impl := impl) hInit hInitNF)
 
@@ -374,6 +374,6 @@ theorem firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full [Inhabited R]
 #print axioms firstSumcheckWithTarget_perfectCompleteness
 #print axioms firstSumcheckWithTarget_perfectCompleteness_unconditional
 #print axioms firstSumcheckWithTarget_rbrKnowledgeSoundness_honest
-#print axioms firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full
+#print axioms firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds
 
 end Spartan.Spec

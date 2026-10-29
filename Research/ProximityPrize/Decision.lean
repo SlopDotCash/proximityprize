@@ -14,7 +14,7 @@ import Research.ProximityPrize.SubsetSumRadiusOne
 # Decision of the formalized §1 Grand MCA Prize at both field-size extremes
 
 This file composes the endpoint-collapse equivalence (`GrandChallengeCollapse`:
-`mcaPrize domain ↔ ∀ j, ε_mca(RS_j, 1) ≤ 2⁻¹²⁸`), the universal pinning upper bound
+`continuousMcaPrize domain ↔ ∀ j, ε_mca(RS_j, 1) ≤ 2⁻¹²⁸`), the universal pinning upper bound
 (`MCAEndpointUpper`: `ε_mca(MC, δ) ≤ 2ⁿ/q`), and the spike lower bound
 (`MCAEndpointLower`: `min(n-k, q)/q ≤ ε_mca(RS, 1)`) into a *decision* of the formal
 ABF26 §1 MCA prize predicate outside an explicit middle band of field sizes:
@@ -56,19 +56,19 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 /-- **Complete negative decision of the formal §1 list-decoding prize predicate.**
 
 For every positive interleaving parameter and every evaluation domain with at least two points,
-the existence-form `GrandChallenges.listDecodingPrize` predicate is false.  This is the direct
+the existence-form `GrandChallenges.continuousListDecodingPrize` predicate is false.  This is the direct
 decision-theorem wrapper around `GrandChallengeCollapse.not_listDecodingPrize`: the encoded
 `∃ δ*` challenge collapses to radius `1`, where Reed-Solomon constants already force a list of
 size at least `|F|`, contradicting `ε* < 1`. -/
 theorem listDecodingPrize_decided_false (domain : ι ↪ F) {m : ℕ}
     (hm : 0 < m) (hι : 2 ≤ Fintype.card ι) :
-    ¬ GrandChallenges.listDecodingPrize domain m :=
+    ¬ GrandChallenges.continuousListDecodingPrize domain m :=
   not_listDecodingPrize domain hm hι
 
 /-- Equivalent Boolean-shaped form of `listDecodingPrize_decided_false`. -/
 theorem listDecodingPrize_iff_false (domain : ι ↪ F) {m : ℕ}
     (hm : 0 < m) (hι : 2 ≤ Fintype.card ι) :
-    GrandChallenges.listDecodingPrize domain m ↔ False :=
+    GrandChallenges.continuousListDecodingPrize domain m ↔ False :=
   iff_false_intro (listDecodingPrize_decided_false domain hm hι)
 
 /-- **Huge-field decision (positive direction).** For `q ≥ 2^(n+128)` the formal §1 MCA
@@ -76,7 +76,7 @@ prize predicate holds: by the endpoint collapse it suffices to bound `ε_mca(·,
 prize rate, and the universal pinning bound `2ⁿ/q ≤ 2⁻¹²⁸` does so uniformly. -/
 theorem mcaPrize_of_huge_field (domain : ι ↪ F)
     (hq : 2 ^ (Fintype.card ι + 128) ≤ Fintype.card F) :
-    GrandChallenges.mcaPrize domain := by
+    GrandChallenges.continuousMcaPrize domain := by
   rw [mcaPrize_iff_forall_epsMCA_one]
   intro j
   exact epsMCA_le_epsStar_of_huge_field
@@ -90,7 +90,7 @@ theorem not_mcaPrize_of_spike_band (domain : ι ↪ F)
     (hn : 16 ≤ Fintype.card ι)
     (hq : Fintype.card F <
       2 ^ (128 : ℕ) * (Fintype.card ι - ⌊prizeRates 3 * (Fintype.card ι : ℝ≥0)⌋₊)) :
-    ¬ GrandChallenges.mcaPrize domain := by
+    ¬ GrandChallenges.continuousMcaPrize domain := by
   intro hprize
   set k := ⌊prizeRates 3 * (Fintype.card ι : ℝ≥0)⌋₊ with hk_def
   have hrate : prizeRates 3 = 1 / 16 := by
@@ -108,7 +108,7 @@ theorem not_mcaPrize_of_spike_band (domain : ι ↪ F)
   have hkn : k + 1 ≤ Fintype.card ι := by
     have hkr : (k : ℝ≥0) ≤ (1 / 16) * (Fintype.card ι : ℝ≥0) := by
       rw [hk_def, ← hrate]
-      exact Nat.floor_le (zero_le _)
+      exact Nat.floor_le (by positivity)
     have hcast : ((k + 1 : ℕ) : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by
       push_cast
       calc (k : ℝ≥0) + 1
@@ -152,7 +152,7 @@ private lemma prizeRate_floor_add_one_le (j : Fin 4) (hn : 2 ≤ Fintype.card ι
   have h2 : (2 : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by exact_mod_cast hn
   have hkr : (k : ℝ≥0) ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) := by
     rw [hk_def]
-    refine le_trans (Nat.floor_le (zero_le _)) ?_
+    refine le_trans (Nat.floor_le (by positivity)) ?_
     gcongr
     exact prizeRates_le_half j
   have hcast : ((k + 1 : ℕ) : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by
@@ -179,7 +179,7 @@ theorem not_mcaPrize_of_subsetSums (domain : ι ↪ F) (j : Fin 4)
     (hq : Fintype.card F < 2 ^ (128 : ℕ) *
       (subsetSumsKplus1 domain
         ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊).card) :
-    ¬ GrandChallenges.mcaPrize domain := by
+    ¬ GrandChallenges.continuousMcaPrize domain := by
   intro hprize
   set k := ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ with hk_def
   have hk_add : k + 1 ≤ Fintype.card ι := by
@@ -199,12 +199,12 @@ theorem mcaPrize_iff_of_quadratic_field (domain : ι ↪ F)
     (hq : ∀ j : Fin 4,
       (Nat.choose (Fintype.card ι)
         (⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ + 1)).choose 2 < Fintype.card F) :
-    GrandChallenges.mcaPrize domain ↔
+    GrandChallenges.continuousMcaPrize domain ↔
       ∀ j : Fin 4,
         ((Nat.choose (Fintype.card ι)
             (⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ + 1) : ℕ) : ℝ≥0∞) /
             (Fintype.card F : ℝ≥0∞) ≤ (epsStar : ENNReal) := by
-  unfold GrandChallenges.mcaPrize GrandChallenges.grandMCAChallengeRSrate
+  unfold GrandChallenges.continuousMcaPrize GrandChallenges.grandMCAChallengeRSrate
     GrandChallenges.grandMCAChallengeRS
   exact forall_congr' fun j =>
     grandMCAChallenge_iff_choose_le domain

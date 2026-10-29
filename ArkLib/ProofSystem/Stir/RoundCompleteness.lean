@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Stir.RoundProtocol
 import ArkLib.OracleReduction.Completeness
+import ArkLib.ProofSystem.Whir.FoldRound
 
 /-!
 # Issue #301 — perfect completeness of the STIR fold round
@@ -40,109 +41,23 @@ set_option linter.unnecessarySeqFocus false
 set_option linter.unusedSimpArgs false
 set_option linter.unusedSectionVars false
 
-/-! ### `[V_to_P, P_to_V]` unroll lemma (heterogeneous `processRound` round-peeling) -/
-section UnrollVP
+/-! The generic challenge-first unroll proof is owned by WHIR's fold-round module. -/
+abbrev unroll_2_message_VP := @WhirIOP.FoldRound.unroll_2_message_VP
 
-variable {ιₒ : Type} {oSpec : OracleSpec ιₒ} [oSpec.Fintype] [oSpec.Inhabited]
-  {StmtIn WitIn StmtOut WitOut : Type}
-  {ιₛᵢ ιₛₒ : Type} {OStmtIn : ιₛᵢ → Type} {OStmtOut : ιₛₒ → Type}
-  [∀ i, OracleInterface (OStmtIn i)]
-  {pSpecVP : ProtocolSpec 2} [∀ i, SampleableType (pSpecVP.Challenge i)]
-  [[pSpecVP.Challenge]ₒ.Fintype] [[pSpecVP.Challenge]ₒ.Inhabited]
-  [∀ i, OracleInterface (pSpecVP.Message i)]
-  {σ : Type}
+private noncomputable local instance (priority := low) stirRoundUniformAnswers
+    {κ : Type} {spec : OracleSpec κ}
+    [∀ q, Fintype (spec.Range q)] [∀ q, Inhabited (spec.Range q)] :
+    OracleSpec.UniformAnswerMeasure spec :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty spec
 
-theorem unroll_2_message_VP
-    (reduction : OracleReduction oSpec StmtIn OStmtIn WitIn StmtOut OStmtOut WitOut pSpecVP)
-    (relIn : Set ((StmtIn × ∀ i, OStmtIn i) × WitIn))
-    (relOut : Set ((StmtOut × ∀ i, OStmtOut i) × WitOut))
-    (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp)) (hInit : NeverFail init)
-    (hDir0 : pSpecVP.dir 0 = .V_to_P) (hDir1 : pSpecVP.dir 1 = .P_to_V)
-    (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
-      Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
-        = support (OracleReduction.liftQuery q)) :
-    OracleReduction.perfectCompleteness init impl relIn relOut reduction ↔
-    ∀ (stmtIn : StmtIn) (oStmtIn : ∀ i, OStmtIn i) (witIn : WitIn),
-      ((stmtIn, oStmtIn), witIn) ∈ relIn →
-      Pr[fun ((prvStmt, prvOStmt), (verStmt, verOStmt), witOut) =>
-          ((verStmt, verOStmt), witOut) ∈ relOut ∧ prvStmt = verStmt ∧ prvOStmt = verOStmt
-        | ((do
-          let r0 ← liftComp (pSpecVP.getChallenge ⟨0, hDir0⟩) (oSpec + [pSpecVP.Challenge]ₒ)
-          let receiveChallengeFn ← liftComp (reduction.prover.receiveChallenge ⟨0, hDir0⟩
-            (reduction.prover.input ((stmtIn, oStmtIn), witIn))) (oSpec + [pSpecVP.Challenge]ₒ)
-          let state1 := receiveChallengeFn r0
-          let ⟨msg1, state2⟩ ← liftComp (reduction.prover.sendMessage ⟨1, hDir1⟩ state1)
-            (oSpec + [pSpecVP.Challenge]ₒ)
-          let ⟨⟨prvStmtOut, prvOStmtOut⟩, witOut⟩ ← liftComp (reduction.prover.output state2)
-            (oSpec + [pSpecVP.Challenge]ₒ)
-          let transcript := ProtocolSpec.FullTranscript.mk2 r0 msg1
-          let verifierStmtOut ← liftComp
-            (reduction.verifier.toVerifier.verify (stmtIn, oStmtIn) transcript)
-            (oSpec + [pSpecVP.Challenge]ₒ)
-          pure ((prvStmtOut, prvOStmtOut), verifierStmtOut, witOut)
-        ) : OptionT (OracleComp (oSpec + [pSpecVP.Challenge]ₒ))
-            ((StmtOut × ((i : ιₛₒ) → OStmtOut i)) × (StmtOut × ((i : ιₛₒ) → OStmtOut i)) × WitOut))
-      ] = 1 := by
-  rw [OracleReduction.unroll_n_message_reduction_perfectCompleteness (n := 2)
-    (reduction := reduction) relIn relOut init impl hInit hImplSupp]
-  apply forall_congr'; intro stmtIn
-  apply forall_congr'; intro oStmtIn
-  apply forall_congr'; intro witIn
-  apply imp_congr_right; intro h_relIn
-  simp only [Prover.runToRound]
-  have h_last_eq_two : (Fin.last 2) = 2 := by rfl
-  rw! (castMode := .all) [h_last_eq_two]
-  conv_lhs =>
-    simp only [Fin.induction_two']
-    rw [Prover.processRound_V_to_P (h := hDir0)]
-    rw [Prover.processRound_P_to_V (h := hDir1)]
-    simp only
-  dsimp
-  simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,
-    Prod.mk.eta, bind_assoc]
-  congr!
-  all_goals
-    first
-    | (funext i; fin_cases i <;> rfl)
-    | (congr 1 <;> (try funext i) <;> (try fin_cases i) <;> rfl)
-    | (congr 2 <;> (try funext i) <;> (try fin_cases i) <;> rfl)
-
-end UnrollVP
-
-variable [Nonempty ι]
-
-/-- The empty oracle spec is vacuously inhabited (its query index type is empty). -/
-instance : []ₒ.Inhabited where
-  inhabited_B := fun i => i.elim
-
-/-- Finiteness of the STIR fold-round challenge oracle spec (only index `0`, type `F`). -/
-instance : [(pSpec ι F).Challenge]ₒ.Fintype where
-  fintype_B
-  | ⟨⟨iv, hiv⟩, _⟩ => by
-    have h0 : iv = 0 := by
-      cases iv using Fin.cases with
-      | zero => rfl
-      | succ i1 => cases i1 using Fin.cases with
-        | zero => simp [pSpec] at hiv
-        | succ k => exact k.elim0
-    subst h0
-    simpa [pSpec, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
-      OracleInterface.Response, OracleInterface.toOC] using (inferInstance : Fintype F)
-
-/-- Inhabitedness of the STIR fold-round challenge oracle spec (response `F` at index `0`). -/
-instance : [(pSpec ι F).Challenge]ₒ.Inhabited where
-  inhabited_B
-  | ⟨⟨iv, hiv⟩, _⟩ => by
-    have h0 : iv = 0 := by
-      cases iv using Fin.cases with
-      | zero => rfl
-      | succ i1 => cases i1 using Fin.cases with
-        | zero => simp [pSpec] at hiv
-        | succ k => exact k.elim0
-    subst h0
-    simpa [pSpec, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
-      OracleInterface.Response, OracleInterface.toOC] using (⟨(0 : F)⟩ : Inhabited F)
-
+private noncomputable local instance stirChallengeUniform {N : ℕ} (p : ProtocolSpec N)
+    [∀ j, SampleableType (p.Challenge j)] :
+    OracleSpec.UniformAnswerMeasure ([p.Challenge]ₒ'ProtocolSpec.challengeOracleInterface) := by
+  letI : ∀ t, Finite (([p.Challenge]ₒ'ProtocolSpec.challengeOracleInterface).Range t)
+    | ⟨j, ()⟩ => by change Finite (p.Challenge j); infer_instance
+  letI : ∀ t, Nonempty (([p.Challenge]ₒ'ProtocolSpec.challengeOracleInterface).Range t)
+    | ⟨j, ()⟩ => by change Nonempty (p.Challenge j); infer_instance
+  exact OracleSpec.UniformAnswerMeasure.ofFiniteNonempty _
 
 variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp))
 
@@ -155,7 +70,7 @@ theorem stirRoundReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ :
     OracleReduction.perfectCompleteness init impl
       (stirRoundInputRel φ deg δ) (stirRoundOutputRel φ deg δ)
       (stirRoundReduction φ deg) := by
-  rw [unroll_2_message_VP (stirRoundReduction φ deg)
+  rw [WhirIOP.FoldRound.unroll_2_message_VP (stirRoundReduction φ deg)
     (stirRoundInputRel φ deg δ) (stirRoundOutputRel φ deg δ) init impl hInit (by rfl) (by rfl)
     (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
   intro stmtIn oStmtIn witIn h_relIn
@@ -163,37 +78,33 @@ theorem stirRoundReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ :
     OStmt, stirRoundInputRel, stirRoundOutputRel]
   simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,
     Prod.mk.eta, bind_assoc, map_pure, liftComp_pure, liftM_pure]
-  rw [probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · -- SAFETY: the run never fails
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun α _hα => ?_⟩
-    · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-        Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
-        probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
-        Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero, zero_add]
-      intro x hx
-      erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-      simp only [support_pure, Set.mem_singleton_iff] at hx
-      subst hx
-      simp only [Option.map_some, reduceCtorEq, not_false_eq_true]
-  · -- CORRECTNESS: every output in the support satisfies the relation + agreement
-    intro x hx
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨α, _hα, hx⟩ := hx
-    rw [OptionT.mem_support_iff] at hx
-    erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-    simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-      Function.comp_apply, Option.map_some, support_map, support_pure, Set.mem_image,
-      Set.mem_singleton_iff, Option.some.injEq, exists_eq_left, exists_eq_right] at hx
-    subst hx
-    refine ⟨?_, trivial, by funext u; rfl⟩
-    have hc : Combine.combine φ deg α (fun _ : Fin 1 => oStmtIn ()) (fun _ : Fin 1 => deg)
-        = oStmtIn () := combine_single_self φ deg α (oStmtIn ())
-    simpa [hc] using h_relIn
+  apply (OptionT.prEvent_mk_eq_one_iff _ _).2
+  intro value hvalue
+  have hopt {κ : Type} {spec : OracleSpec.{0, 0} κ} {β : Type} (mx : OracleComp spec β) :
+      (liftM mx : OptionT (OracleComp spec) β) = some <$> mx := by
+    change (mx >>= fun x => pure (some x)) = some <$> mx
+    rw [map_eq_bind_pure_comp]
+    rfl
+  obtain ⟨α, hα, hvalue⟩ := OracleComp.mem_support_bind_peel _ _ hvalue
+  erw [hopt] at hα
+  obtain ⟨a, _, ha⟩ := OracleComp.mem_support_map_peel _ _ hα
+  subst α
+  simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure,
+    simulateQ_pure, _root_.map_pure, Option.map_some, liftComp_pure] at hvalue
+  have hv := OracleComp.eq_of_mem_support_pure _ hvalue
+  subst value
+  refine ⟨_, rfl, ?_, trivial, by funext u; rfl⟩
+  have hc : Combine.combine φ deg a (fun _ : Fin 1 => oStmtIn ()) (fun _ : Fin 1 => deg)
+      = oStmtIn () := combine_single_self φ deg a (oStmtIn ())
+  change Code.relDistFromCode (oStmtIn ()) (ReedSolomon.code φ deg) ≤ (δ : ENNReal) at h_relIn
+  change Code.relDistFromCode _ (ReedSolomon.code φ deg : Set (ι → F)) ≤ (δ : ENNReal)
+  simp only [OracleVerifier.materializeOutput, OracleVerifier.materializeOutputOracle,
+    FullTranscript.messages, FullTranscript.mk2, DFunLike.coe]
+  change Code.relDistFromCode
+    (Combine.combine φ deg a (fun _ : Fin 1 => oStmtIn ()) (fun _ : Fin 1 => deg))
+    (ReedSolomon.code φ deg) ≤ (δ : ENNReal)
+  rw [hc]
+  exact h_relIn
 
 /-- The stated `stirRoundReduction_completeness` obligation is discharged: the STIR fold-round
 object is (perfectly) complete whenever the shared randomness never fails. -/
@@ -225,7 +136,7 @@ theorem stirRoundReduction_completeness_any_error (φ : ι ↪ F) (deg : ℕ) (�
     (hInit : NeverFail init) :
     (stirRoundReduction φ deg).completeness init impl
       (stirRoundInputRel φ deg δ) (stirRoundOutputRel φ deg δ) ε :=
-  Reduction.completenessFromRun_mono_error _ _ _ _ _ (zero_le ε)
+  Reduction.completenessFromRun_mono_error _ _ _ _ _ (by positivity)
     (stirRoundReduction_perfectCompleteness init impl φ deg δ hInit)
 
 

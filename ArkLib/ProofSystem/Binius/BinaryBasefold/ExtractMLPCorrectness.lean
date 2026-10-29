@@ -4,21 +4,22 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Relations
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations
 import ArkLib.Data.CodingTheory.BerlekampWelch.BerlekampWelch
 
 /-!
-# Berlekamp–Welch extraction correctness at the base level (`i = 0`)
+# Historical Berlekamp–Welch extraction correctness at the base level (`i = 0`)
 
 This file proves the corrected base-level extraction statement and documents the
 endianness mismatch that made the old unreversed formulation false for `ℓ ≥ 2`.
 
 ## The mismatch
 
-`extractMLP` (Basic.lean) reconstructs the multilinear polynomial from the decoded
+The downstream `extractMLP` (`ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Basic`)
+reconstructs the multilinear polynomial from the decoded
 novel-basis coefficient vector via `Nat.binaryFinMapToNat`, which is **little-endian**:
 the hypercube point `w` is sent to the coefficient index whose `j`-th bit is `w j`.
-`firstOracleWitnessConsistencyProp` (Basic.lean) instead reads the coefficient at
+the historical `firstOracleWitnessConsistencyProp` instead reads the coefficient at
 index `ω` off the polynomial via `statementOrderBitsOfIndex ω`, whose `j`-th
 coordinate is the `Fin.rev j`-th bit of `ω`.  The two conventions differ by the
 bit-reversal permutation, so the polynomial extracted by `extractMLP` is the
@@ -141,7 +142,7 @@ lemma polynomialFromNovelCoeffs_monomialToNovelCoeffs (m : ℕ) (h : m ≤ r)
   have hQdeg : (polynomialFromNovelCoeffs 𝔽q β m h a).degree < (2 ^ m : ℕ) := by
     have hprop := (polynomialFromNovelCoeffsF₂ 𝔽q β m h a).property
     rw [Polynomial.mem_degreeLT] at hprop
-    simpa using hprop
+    simpa only [polynomialFromNovelCoeffsF₂] using hprop
   apply Polynomial.ext
   intro n
   by_cases hn : n < 2 ^ m
@@ -199,8 +200,8 @@ lemma statementOrderBitsOfIndex_eq_coe_bit2 (ω : Fin (2 ^ ℓ)) :
     (statementOrderBitsOfIndex (L := L) ω : Fin ℓ → L) =
       fun j => ((bit2 ω (Fin.rev j) : Fin 2) : L) := by
   funext j
-  unfold statementOrderBitsOfIndex bitsOfIndex bit2
-  rw [apply_ite (fun b : Fin 2 => ((b : Fin 2) : L))]
+  unfold statementOrderBitsOfIndex bit2
+  rw [bitsOfIndex_apply, apply_ite (fun b : Fin 2 => ((b : Fin 2) : L))]
   simp
 
 /-- **G1**: evaluating `revIndexMLP s` at a statement-order Boolean index recovers the
@@ -243,8 +244,8 @@ lemma MLE_binaryFinMap_statementOrder_eq_revIndexMLP (t : MultilinearPoly L ℓ)
   rw [hcoe, h]
   apply congrArg (fun x : Fin ℓ → L => MvPolynomial.eval x t.val)
   funext j
-  unfold statementOrderBitsOfIndex bitsOfIndex
-  rw [Nat.getBit_of_binaryFinMapToNat]
+  unfold statementOrderBitsOfIndex
+  rw [bitsOfIndex_apply, Nat.getBit_of_binaryFinMapToNat]
   have hlt : (Fin.rev j).val < ℓ := (Fin.rev j).isLt
   simp only [hlt, ↓reduceDIte, Fin.eta]
   exact fin2_coe_eq_ite (w (Fin.rev j))
@@ -325,14 +326,13 @@ variable {N : ℕ} [NeZero N]
 lemma polyEval_mem_BBF_Code₀ (P : L[X]) (hdeg : P.natDegree < 2 ^ ℓ) :
     (fun x : sDomain 𝔽q β h_ℓ_add_R_rate (0 : Fin r) => P.eval x.val) ∈
       BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (0 : Fin r) := by
-  unfold BBF_Code
+  unfold BBF_Code code
   rw [ReedSolomon.mem_code_iff_exists_polynomial]
   refine ⟨P, ?_, ?_⟩
   · simp only [Fin.val_zero, tsub_zero]
     calc P.degree ≤ (P.natDegree : WithBot ℕ) := Polynomial.degree_le_natDegree
       _ < ((2 ^ ℓ : ℕ) : WithBot ℕ) := by exact_mod_cast hdeg
-  · funext x
-    simp [ReedSolomon.evalOnPoints]
+  · rfl
 
 /-- Distance transport along the pipeline enumeration. -/
 lemma pipeline_dist_transport (E : sDomain 𝔽q β h_ℓ_add_R_rate (0 : Fin r) ≃ Fin N)
@@ -615,7 +615,7 @@ lemma UDRClose_of_firstOracleWitnessConsistency
       (u := f) (v := Pcw) (hv := hPmem)
   calc 2 * (Code.distFromCode (u := f)
       (C := BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (0 : Fin r)))
-      ≤ 2 * (hammingDist f Pcw : ℕ∞) := mul_le_mul_left' hle 2
+      ≤ 2 * (hammingDist f Pcw : ℕ∞) := by gcongr
     _ = ((2 * hammingDist f Pcw : ℕ) : ℕ∞) := by push_cast; ring
     _ < (BBF_CodeDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (0 : Fin r) : ℕ∞) := by
         rw [hammingDist_comm]
@@ -737,8 +737,8 @@ lemma exists_firstOracleWitnessConsistency_of_UDRClose
     · simp only [hz, Polynomial.natDegree_zero]
       positivity
     · have := (Polynomial.natDegree_lt_iff_degree_lt hz).mpr (by
-        simpa using hprop)
-      simpa using this
+        simpa only [Fin.val_zero, tsub_zero] using hprop)
+      simpa only [Fin.val_zero, tsub_zero] using this
   -- 3. Statement-order coefficients of the close polynomial.
   set c : Fin (2 ^ ℓ) → L :=
     AdditiveNTT.monomialToNovelCoeffs 𝔽q β ℓ h_ℓ_le_r (fun i => P.val.coeff i.val) with hc
@@ -802,3 +802,10 @@ end Main
 end
 
 end Binius.BinaryBasefold
+
+#print axioms Binius.BinaryBasefold.polynomialFromNovelCoeffs_monomialToNovelCoeffs
+#print axioms Binius.BinaryBasefold.extractMLP_zero_eq_some_revIndexMLP_iff
+#print axioms Binius.BinaryBasefold.extractMLP_zero_eq_some_of_firstOracleWitnessConsistency
+#print axioms Binius.BinaryBasefold.firstOracleWitnessConsistency_revIndexMLP_of_extractMLP_eq_some
+#print axioms Binius.BinaryBasefold.firstOracleWitnessConsistencyProp_unique'
+#print axioms Binius.BinaryBasefold.extractMLP_zero_isSome_of_UDRClose

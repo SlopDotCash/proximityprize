@@ -177,7 +177,7 @@ private lemma hasHashEntry_eraseIdxPaper
     have hkeep : (tr.eraseIdx idx.val)[j'.val]? = tr[j'.val]? :=
       List.getElem?_eraseIdx_of_lt hj'idx
     have hhit : tr[j'.val]? = some tr[j'] := by
-      simpa only [List.get_eq_getElem] using List.getElem?_eq_getElem (l := tr) j'.isLt
+      simpa only [List.get_eq_getElem, Fin.getElem_fin] using List.getElem?_eq_getElem (l := tr) j'.isLt
     exact mem_of_getElem?' (by rw [hkeep, hhit, hentry])
   · rw [List.mem_iff_getElem] at hP
     obtain ⟨p, hp, hpe⟩ := hP
@@ -351,16 +351,16 @@ private lemma firstPermNatPaper_of_first
     jPrev, hlt, prevIn, prevOut, hprev, hcap⟩ := h
   have hcur? : tr[jCur.val]? = some (forwardEntryP curIn curOut) := by
     rw [List.getElem?_eq_getElem jCur.isLt]
-    simpa only [List.get_eq_getElem] using congrArg some hcur
+    simpa only [List.get_eq_getElem, Fin.getElem_fin] using congrArg some hcur
   have hprev? : tr[jPrev.val]? = some (forwardEntryP prevIn prevOut) ∨
       tr[jPrev.val]? = some (inverseEntryP prevOut prevIn) := by
     rcases hprev with hf | hi
     · exact Or.inl (by
         rw [List.getElem?_eq_getElem jPrev.isLt]
-        simpa only [List.get_eq_getElem] using congrArg some hf)
+        simpa only [List.get_eq_getElem, Fin.getElem_fin] using congrArg some hf)
     · exact Or.inr (by
         rw [List.getElem?_eq_getElem jPrev.isLt]
-        simpa only [List.get_eq_getElem] using congrArg some hi)
+        simpa only [List.get_eq_getElem, Fin.getElem_fin] using congrArg some hi)
   have hfirstNat : ∀ j, j < jCur.val →
       tr[j]? ≠ some (forwardEntryP curIn curOut) ∧
         tr[j]? ≠ some (inverseEntryP curOut curIn) := by
@@ -427,11 +427,11 @@ private lemma firstPermNatPaper_eraseIdx
     rcases hcase with hsame | hinv
     · have hsome : tr[j'.val]? = some (forwardEntryP curIn curOut) := by
         rw [List.getElem?_eq_getElem j'.isLt]
-        simpa only [List.get_eq_getElem] using congrArg some hsame
+        simpa only [List.get_eq_getElem, Fin.getElem_fin] using congrArg some hsame
       exact False.elim ((hfirst j'.val hjCur).1 hsome)
     · have hsome : tr[j'.val]? = some (inverseEntryP curOut curIn) := by
         rw [List.getElem?_eq_getElem j'.isLt]
-        simpa only [List.get_eq_getElem] using congrArg some hinv
+        simpa only [List.get_eq_getElem, Fin.getElem_fin] using congrArg some hinv
       exact False.elim ((hfirst j'.val hjCur).2 hsome)
   · let iCur' := if idx.val < iCur then iCur - 1 else iCur
     have hcur' : (tr.eraseIdx idx.val)[iCur']? = some (forwardEntryP curIn curOut) := by
@@ -504,10 +504,10 @@ private lemma firstPermNatPaper_eraseIdx
           rcases hentry with hf | hi
           · exact Or.inl (by
               rw [hkeep, List.getElem?_eq_getElem j'.isLt]
-              simpa [forwardEntryP, List.get_eq_getElem] using congrArg some hf)
+              simpa [forwardEntryP, List.get_eq_getElem, Fin.getElem_fin] using congrArg some hf)
           · exact Or.inr (by
               rw [hkeep, List.getElem?_eq_getElem j'.isLt]
-              simpa [inverseEntryP, List.get_eq_getElem] using congrArg some hi)
+              simpa [inverseEntryP, List.get_eq_getElem, Fin.getElem_fin] using congrArg some hi)
         refine ⟨iCur', j'.val, curIn, curOut, stateIn', stateOut',
           ?_, hcur', hprev', hcap', hfirst'⟩
         by_cases hidxCur : idx.val < iCur
@@ -532,10 +532,10 @@ private lemma firstPermNatPaper_eraseIdx
           rcases hentry with hf | hi
           · exact Or.inl (by
               rw [hkeep, List.getElem?_eq_getElem j'.isLt]
-              simpa [forwardEntryP, List.get_eq_getElem] using congrArg some hf)
+              simpa [forwardEntryP, List.get_eq_getElem, Fin.getElem_fin] using congrArg some hf)
           · exact Or.inr (by
               rw [hkeep, List.getElem?_eq_getElem j'.isLt]
-              simpa [inverseEntryP, List.get_eq_getElem] using congrArg some hi)
+              simpa [inverseEntryP, List.get_eq_getElem, Fin.getElem_fin] using congrArg some hi)
         refine ⟨iCur', j'.val, curIn, curOut, stateIn', stateOut',
           ?_, hcur', hprev', hcap', hfirst'⟩
         by_cases hidxCur : idx.val < iCur
@@ -757,7 +757,7 @@ private lemma firstHashPermNatPaper_eraseIdx
       intro j hj hbad
       have : tr[j.val]? = some (hashEntryP stmt capSeg) := by
         rw [List.getElem?_eq_getElem j.isLt]
-        simpa only [List.get_eq_getElem] using congrArg some hbad
+        simpa only [List.get_eq_getElem, Fin.getElem_fin] using congrArg some hbad
       exact (hfirst j.val (by omega)) this
     exact absurd hred
       (not_redundantEntryDSPaper_hash_of_no_prior tr idx hidxVal hfirstFin)
@@ -809,10 +809,10 @@ private lemma firstHashPermNatPaper_eraseIdx
           rcases hentry with hfe | hie
           · exact Or.inl (by
               rw [hkeep, List.getElem?_eq_getElem j'.isLt]
-              simpa [forwardEntryP, List.get_eq_getElem] using congrArg some hfe)
+              simpa [forwardEntryP, List.get_eq_getElem, Fin.getElem_fin] using congrArg some hfe)
           · exact Or.inr (by
               rw [hkeep, List.getElem?_eq_getElem j'.isLt]
-              simpa [inverseEntryP, List.get_eq_getElem] using congrArg some hie)
+              simpa [inverseEntryP, List.get_eq_getElem, Fin.getElem_fin] using congrArg some hie)
         have hj'v : j'.val < idx.val := hj'
         refine ⟨jh', j'.val, ?_, hhash', hfirst', sIn', sOut', hperm', hcap'⟩
         by_cases hidxh : idx.val < jh
@@ -835,10 +835,10 @@ private lemma firstHashPermNatPaper_eraseIdx
           rcases hentry with hfe | hie
           · exact Or.inl (by
               rw [hkeep, List.getElem?_eq_getElem j'.isLt]
-              simpa [forwardEntryP, List.get_eq_getElem] using congrArg some hfe)
+              simpa [forwardEntryP, List.get_eq_getElem, Fin.getElem_fin] using congrArg some hfe)
           · exact Or.inr (by
               rw [hkeep, List.getElem?_eq_getElem j'.isLt]
-              simpa [inverseEntryP, List.get_eq_getElem] using congrArg some hie)
+              simpa [inverseEntryP, List.get_eq_getElem, Fin.getElem_fin] using congrArg some hie)
         have hj'v : j'.val < idx.val := hj'
         refine ⟨jh', j'.val, ?_, hhash', hfirst', sIn', sOut', hperm', hcap'⟩
         by_cases hidxh : idx.val < jh

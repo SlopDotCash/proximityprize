@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.OracleReduction.Composition.Sequential.AppendCompletenessNonPerfect
 import ArkLib.OracleReduction.Composition.Sequential.AppendRun
 import ArkLib.OracleReduction.RunUnroll
+import ArkLib.ToVCVio.Lemmas
 
 /-!
 # The append challenge-seam: distributional run-factoring for completeness `hGameFactor`
@@ -57,7 +58,12 @@ open scoped ENNReal NNReal
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : MeasurableSpace (Option A) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
+variable {ι : Type} {oSpec : OracleSpec ι}
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -74,6 +80,7 @@ private theorem liftM_pure_run_elim {ιₛ : Type} {spec : OracleSpec ιₛ} {α
   show (((fun a => some a) <$> (pure v : OracleComp spec α)) >>= fun o => o.elim (pure none) k) = k v
   simp only [map_pure, pure_bind, Option.elim_some]
 
+
 /-- **Natural-order `OptionT` factoring of the appended reduction run (message seam).** For a message
 seam, running `R₁.append R₂` is, as an `OptionT (OracleComp …)` value, exactly the natural order: run
 prover₁, then prover₂ (concatenating transcripts), then verifier₁ on the first transcript half, then
@@ -87,9 +94,9 @@ theorem append_run_natural_msg
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V) :
     (R₁.append R₂).run stmt wit
-      = ((liftM (liftM (R₁.prover.run stmt wit)
+      = ((liftM (liftAppendLeft pSpec₂ (R₁.prover.run stmt wit)
               : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _) >>= fun x =>
-          liftM (liftM (R₂.prover.run x.2.1 x.2.2)
+          liftM (liftAppendRight pSpec₁ (R₂.prover.run x.2.1 x.2.2)
               : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _) >>= fun a =>
             (MonadLift.monadLift (R₁.verifier.verify stmt x.1) :
                 OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) Stmt₂)
@@ -102,7 +109,7 @@ theorem append_run_natural_msg
   -- Mirror the soundness refold (`AppendSoundnessMsgProof.append_soundness_msg'`): unfold
   -- `Reduction.run`, factor the appended prover with the proven syntactic keystone
   -- `Prover.append_run_msg`, split the appended verifier with the definitional `Verifier.append`,
-  -- and refold to the canonical seam chain `liftM FST ≫ liftM SND ≫ V₁ ≫ V₂`. `OptionT.liftM_run_getM_bind`
+  -- and refold to the canonical seam chain `liftM FST ≫ liftM SND ≫ V₁ ≫ V₂`. `liftM_run_getM_bind`
   -- cancels the `getM` of the verifier leg.
   simp only [Reduction.run, Prover.append_run_msg (P₁ := R₁.prover) (P₂ := R₂.prover)
       stmt wit hn hDir hDir₂, Reduction.append, Verifier.append, Verifier.run,
@@ -122,7 +129,7 @@ def appendStage₁
     (stmt : Stmt₁) (wit : Wit₁) :
     OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
       ((FullTranscript pSpec₁ × Stmt₂ × Wit₂) × Stmt₂) :=
-  liftM (liftM (R₁.prover.run stmt wit)
+  liftM (liftAppendLeft pSpec₂ (R₁.prover.run stmt wit)
       : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _) >>= fun x =>
     (MonadLift.monadLift (R₁.verifier.verify stmt x.1) :
         OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) Stmt₂) >>= fun s₂ =>
@@ -139,7 +146,7 @@ def appendStage₂
     (p : (FullTranscript pSpec₁ × Stmt₂ × Wit₂) × Stmt₂) :
     OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
       ((FullTranscript (pSpec₁ ++ₚ pSpec₂) × Stmt₃ × Wit₃) × Stmt₃) :=
-  liftM (liftM (R₂.prover.run p.1.2.1 p.1.2.2)
+  liftM (liftAppendRight pSpec₁ (R₂.prover.run p.1.2.1 p.1.2.2)
       : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _) >>= fun a =>
     (MonadLift.monadLift (R₂.verifier.verify p.2 a.1) :
         OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) Stmt₃) >>= fun s₃ =>
@@ -167,7 +174,7 @@ theorem append_game_factor_msg
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0) :
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), probFailure ((impl t).run s) = 0) :
     evalDist (gameOf init impl (R₁.append R₂) stmt wit)
       = evalDist (init >>= fun s =>
           StateT.run' (simulateQ (impl.addLift challengeQueryImpl)
@@ -176,7 +183,7 @@ theorem append_game_factor_msg
   -- appendStage₂`) is *definitionally* its RHS (the stages are exactly the two union-bound legs).
   have hswap := seam_swap_evalDist_eq init (impl.addLift challengeQueryImpl)
     (addLift_state_preserving impl himplSP)
-    (liftM (R₁.prover.run stmt wit)) (fun x => liftM (R₂.prover.run x.2.1 x.2.2))
+    (liftAppendLeft pSpec₂ (R₁.prover.run stmt wit)) (fun x => liftAppendRight pSpec₁ (R₂.prover.run x.2.1 x.2.2))
     (fun x => (MonadLift.monadLift (R₁.verifier.verify stmt x.1) :
         OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) Stmt₂))
     (fun x a s₂ => (MonadLift.monadLift (R₂.verifier.verify s₂ a.1) :
@@ -218,7 +225,7 @@ theorem append_completeness_msg_via_seamFactor
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), probFailure ((impl t).run s) = 0)
     -- Per-phase challenge-oracle seam relabel residuals (the soundness analogue is
     -- `evalDist_run'_challengeSeam_left/right`): the stage-`i` game over the *combined* challenge
     -- oracle agrees distributionally with `gameOf Rᵢ` over `pSpecᵢ`'s own challenge oracle.
@@ -233,13 +240,11 @@ theorem append_completeness_msg_via_seamFactor
               StateT.run (simulateQ (impl.addLift challengeQueryImpl)
                 (OptionT.run (appendStage₁ R₁ R₂ stmt wit))) s) →
           goodOf m pSpec₁ rel₂ a →
-          Pr[fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)
-              | (StateT.run' (simulateQ (impl.addLift challengeQueryImpl)
-                  (OptionT.run (appendStage₂ R₁ R₂ a))) s' : ProbComp (Option _))]
-            ≤ Pr[fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)
-              | gameOf init impl R₂ a.2 a.1.2.2])
+          probEvent (fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)) ((StateT.run' (simulateQ (impl.addLift challengeQueryImpl)
+                  (OptionT.run (appendStage₂ R₁ R₂ a))) s' : ProbComp (Option _)))
+            ≤ probEvent (fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)) (gameOf init impl R₂ a.2 a.1.2.2))
     (hTot : ∀ stmt wit, (stmt, wit) ∈ rel₁ →
-      Pr[⊥ | gameOf init impl (R₁.append R₂) stmt wit] = 0) :
+      probFailure (gameOf init impl (R₁.append R₂) stmt wit) = 0) :
     (R₁.append R₂).completeness init impl rel₁ rel₃ (e₁ + e₂) :=
   append_completeness_msg_proof R₁ R₂ h₁ h₂
     (so := impl.addLift challengeQueryImpl)

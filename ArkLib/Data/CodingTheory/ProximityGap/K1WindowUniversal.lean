@@ -81,7 +81,7 @@ theorem k1_badScalars_card_mul_le_universal (dom : Fin n ↪ F)
         rw [hε]
         simp [sub_eq_zero]
       rw [hcompl]
-      have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+      have hsplit := Finset.card_filter_add_card_filter_not
         (s := (Finset.univ : Finset (Fin n))) (p := fun i => u₁ i = a)
       have huniv : (Finset.univ : Finset (Fin n)).card = n := by
         rw [Finset.card_univ, Fintype.card_fin]

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.MCAWitnessSpread
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # General-rate near-capacity MCA lower bound via window interpolation (Proximity Prize, #232)
@@ -166,7 +166,7 @@ theorem mcaEvent_of_window [NeZero n] (domain : Fin n ↪ F) (k : ℕ) (hk : 1 �
             rw [natDegree_X_pow]
             have hQn : Q.natDegree < k := by
               rcases eq_or_ne Q 0 with rfl | hQ0
-              · simpa using hk
+              · simpa using (show 0 < k by omega)
               · exact (natDegree_lt_iff_degree_lt hQ0).mpr hQdeg
             omega
     have hQk : Q = X ^ k :=

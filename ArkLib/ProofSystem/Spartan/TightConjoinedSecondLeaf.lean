@@ -4,15 +4,23 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SumcheckKnowledge
+import ArkLib.ProofSystem.Spartan.SumcheckDeterminismWitnesses
 import ArkLib.ProofSystem.Spartan.SecondSumcheckWithTarget
 import ArkLib.ProofSystem.Spartan.TightMidLeaves
 import ArkLib.OracleReduction.Security.RbrKnowledgeConjoin
 
 /-!
+
+Canonical-message integration: the degree-2/degree-3 round knowledge bounds remain explicit
+hypotheses of the `_of_sumcheck_rounds` constructions below. Former unconditional zero-flip
+completion claims are retired; exact names, commands and added obligations are recorded in
+`scripts/integration/sumcheck-message-semantics-retirements.json`.
+
 # The conjoined carried second sum-check leaf (issue #329, X-lane, leaf `h₇`)
 
 **The first application of `Verifier.rbrKnowledgeSoundness_conjoin`** (the #114 combinator): the
-carried second sum-check leaf (`secondSumcheckWithTarget_rbrKnowledgeSoundness_honest_full`,
+carried second sum-check leaf (`secondSumcheckWithTarget_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds`,
 per-round error `2/|R|`) is conjoined with the first-terminal binding identity
 `e₁ = eq̃(τ)(r_x)·(v_A·v_B − v_C)` as a pass-through statement predicate, at **unchanged error**.
 
@@ -62,17 +70,21 @@ section Conjoined
 variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
 set_option linter.unusedFintypeInType false in
-/-- **Leaf `h₇` (tight chain): the conjoined carried second sum-check rbr-KS leaf** at unchanged
-per-round error `2/|R|` — the first application of `Verifier.rbrKnowledgeSoundness_conjoin`. -/
-theorem secondSumcheckWithTarget_conjoined_rbrKnowledgeSoundness [Subsingleton σ]
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :
+/-- The completed Spartan composition construction, conditional on the actual canonical
+sumcheck degree-2 per-round knowledge bounds. The former unconditional zero-flip
+completion is retired; exact source and the added obligations are recorded in the migration audit. -/
+theorem secondSumcheckWithTarget_conjoined_rbrKnowledgeSoundness_of_sumcheck_rounds [Subsingleton σ]
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
+    (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
+    :
     (secondSumcheckReductionWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
       ((secondSumcheckWithTargetRbrRelIn (R := R) pp oSpec)
         ∩ {x | x.1 ∈ bindingAtSecondIn (R := R) pp})
       ((secondSumcheckWithTargetRbrRelOut (R := R) pp oSpec)
         ∩ {y | y.1 ∈ bindingAtSecondOut (R := R) pp})
       (fun _ => (2 : ℝ≥0) / (Fintype.card R)) := by
-  have hbase := secondSumcheckWithTarget_rbrKnowledgeSoundness_honest_full
+  have hbase := secondSumcheckWithTarget_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds
+    (hRound2 := hRound2)
     (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF
   unfold OracleVerifier.rbrKnowledgeSoundness at hbase ⊢
   refine Verifier.rbrKnowledgeSoundness_conjoin hbase
@@ -90,10 +102,9 @@ theorem secondSumcheckWithTarget_conjoined_rbrKnowledgeSoundness [Subsingleton �
     refine hcomm.trans ?_
     exact Verifier.liftContext_failingDet
       (secondSumcheckOracleLensWithTarget (R := R) pp oSpec).toLens _ v? hv
-  rw [gt_iff_lt, probEvent_pos_iff] at hPr
+  rw [gt_iff_lt, OracleComp.OptionT.prEvent_mk_pos_iff] at hPr
   obtain ⟨x, hx, hPx⟩ := hPr
-  rw [OptionT.mem_support_iff] at hx
-  simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
+  simp only [support_bind, Set.mem_iUnion] at hx
   obtain ⟨s, _, hx⟩ := hx
   rw [hVeq] at hx
   have key : (simulateQ impl
@@ -131,4 +142,5 @@ end
 end Spartan.Spec.Bricks
 
 -- Axiom audit: must report only `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
-#print axioms Spartan.Spec.Bricks.secondSumcheckWithTarget_conjoined_rbrKnowledgeSoundness
+#print axioms
+  Spartan.Spec.Bricks.secondSumcheckWithTarget_conjoined_rbrKnowledgeSoundness_of_sumcheck_rounds

@@ -658,7 +658,7 @@ theorem not_four_disjoint_pairHallBad
     rw [Fintype.sum_prod_type]
     apply Finset.sum_congr rfl
     intro i _hi
-    simp [pairEndpoint]
+    simp only [Fin.sum_univ_two, pairEndpoint_zero, pairEndpoint_one]
   have hpair : surplus + 4 ≤ exactThree := by
     calc
       surplus + 4 = ∑ i : Fin 4,
@@ -708,7 +708,7 @@ theorem exists_six_cover_of_not_four_disjoint
     dsimp only [C2, C1]
     have houter := card_insert_two_le a1 b1 {a0, b0}
     have hinner : ({a0, b0} : Finset J).card ≤ 2 := by
-      simpa only [Finset.card_empty, Nat.zero_add] using card_insert_two_le a0 b0 ∅
+      simpa using card_insert_two_le a0 b0 ∅
     omega
   push_neg at h2
   obtain ⟨a2, b2, hab2, ha2, hb2⟩ := h2
@@ -719,7 +719,7 @@ theorem exists_six_cover_of_not_four_disjoint
     have h2c := card_insert_two_le a2 b2 (insert a1 (insert b1 {a0, b0}))
     have h1c := card_insert_two_le a1 b1 {a0, b0}
     have h0c : ({a0, b0} : Finset J).card ≤ 2 := by
-      simpa only [Finset.card_empty, Nat.zero_add] using card_insert_two_le a0 b0 ∅
+      simpa using card_insert_two_le a0 b0 ∅
     omega
   push_neg at h3
   obtain ⟨a3, b3, hab3, ha3, hb3⟩ := h3

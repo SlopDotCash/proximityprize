@@ -5,9 +5,17 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ToMathlib.WhirBricksConstruction
 import ArkLib.OracleReduction.Completeness
+import ProximityPrize.Compatibility.ConstantOutputCompleteness
 import ArkLib.ProofSystem.Whir.Protocol
 
 open OracleSpec OracleComp ProtocolSpec NNReal WhirIOP WhirIOP.Construction
+
+-- The retained finite-oracle API chooses uniform answer measures locally.
+private noncomputable local instance (priority := low) whirPaperUniformAnswers
+    {κ : Type} {spec : OracleSpec κ}
+    [∀ q, Fintype (spec.Range q)] [∀ q, Inhabited (spec.Range q)] :
+    OracleSpec.UniformAnswerMeasure spec :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty spec
 
 namespace Whir302
 
@@ -16,11 +24,7 @@ variable {M : ℕ} {ιs : Fin (M + 1) → Type} [∀ i : Fin (M + 1), Fintype (�
 
 /-! ### Local instances needed by the generic unroll theorem -/
 
-instance : (([]ₒ : OracleSpec PEmpty)).Inhabited where
-  inhabited_B i := nomatch i
 
-instance : (([]ₒ : OracleSpec PEmpty)).Fintype where
-  fintype_B i := nomatch i
 
 noncomputable local instance : VCVCompatible F :=
   { toFintype := inferInstance, toInhabited := ⟨0⟩ }
@@ -35,87 +39,47 @@ noncomputable instance (P : Params ιs F) (d : ℕ) :
   fun _ => by dsimp [ProtocolSpec.Challenge]; infer_instance
 
 noncomputable instance instChalFintype (P : Params ιs F) (d : ℕ) :
-    OracleSpec.Fintype
-      ([((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  fintype_B := fun ⟨i, _⟩ => by
+    ∀ t, Fintype (([((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge]ₒ'
+        (fun i => challengeOracleInterface i)).Range t) := fun ⟨i, _⟩ => by
     show Fintype (((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge i)
     infer_instance
 
 noncomputable instance instChalInhabited (P : Params ιs F) (d : ℕ) :
-    OracleSpec.Inhabited
-      ([((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  inhabited_B := fun ⟨i, _⟩ => by
+    ∀ t, Inhabited (([((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge]ₒ'
+        (fun i => challengeOracleInterface i)).Range t) := fun ⟨i, _⟩ => by
     show Inhabited (((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge i)
     infer_instance
 
 /-! ### Statement A: the paper prover's partial run never fails -/
 
-omit [SampleableType F] in
 theorem probFailure_runToRound_paperProver (P : Params ιs F) (d : ℕ)
     (mk : (Unit × (∀ u : Unit, OracleStatement (ιs 0) F u)) × Unit → PaperTranscriptData P d)
     (stmt : Unit × (∀ u : Unit, OracleStatement (ιs 0) F u)) (wit : Unit)
     (i : Fin (Fintype.card (PaperTranscriptSlot P) + 1)) :
-    Pr[⊥ | (paperTranscriptOracleProver P d mk).runToRound i stmt wit] = 0 :=
-  HasEvalPMF.probFailure_eq_zero _
+    probFailure ((paperTranscriptOracleProver P d mk).runToRound i stmt wit) = 0 :=
+  OracleComp.prFail_eq_zero _
 
 /-! ### Statement B: perfect completeness with the always-accepting verifier -/
 
-/-- Spec-lifting an `OptionT`-level `pure` is `pure` (definitional). -/
-private lemma liftComp_optionT_pure {ι₁ ι₂ : Type} {spec₁ : OracleSpec ι₁}
-    {spec₂ : OracleSpec ι₂} [MonadLiftT (OracleQuery spec₁) (OracleQuery spec₂)]
-    {α : Type} (y : α) :
-    (OracleComp.liftComp (pure y : OptionT (OracleComp spec₁) α) spec₂ :
-      OptionT (OracleComp spec₂) α) = pure y := rfl
-
+set_option backward.isDefEq.respectTransparency false in
 theorem paperTranscriptVectorIOP_pureTrue_perfectCompleteness (P : Params ιs F) (d : ℕ)
     (mk : (Unit × (∀ u : Unit, OracleStatement (ιs 0) F u)) × Unit → PaperTranscriptData P d)
     (relation : Set ((Unit × ∀ u : Unit, OracleStatement (ιs 0) F u) × Unit)) :
     (paperTranscriptVectorIOP P d mk (fun _ _ => pure true)).perfectCompleteness
       (pure ()) isEmptyElim relation := by
-  show OracleReduction.perfectCompleteness (pure ()) isEmptyElim relation acceptRejectOracleRel
+  show OracleReduction.perfectCompleteness (Oₛₒ := fun i : Empty => nomatch i)
+    (pure ()) isEmptyElim relation acceptRejectOracleRel
     (paperTranscriptVectorIOP P d mk (fun _ _ => pure true))
-  rw [OracleReduction.unroll_n_message_reduction_perfectCompleteness
-    (reduction := paperTranscriptVectorIOP P d mk (fun _ _ => pure true))
-    relation acceptRejectOracleRel (pure ()) isEmptyElim
-    (by simp)
-    (by intro β q s; exact nomatch q.1)]
-  intro stmtIn oStmtIn witIn _h_relIn
-  -- The pure-true verifier's lifted verify computation is a `pure`.
-  have hverify0 : ∀ transcript, ∃ g : ∀ _ : Empty, Unit,
-      (paperTranscriptVectorIOP P d mk (fun _ _ => pure true)).verifier.toVerifier.verify
-        (stmtIn, oStmtIn) transcript
-      = pure (true, g) := fun _ => ⟨_, rfl⟩
-  choose g hverify using hverify0
-  have houtput : ∀ state,
-      (paperTranscriptVectorIOP P d mk (fun _ _ => pure true)).prover.output state
-      = pure ((true, fun e : Empty => nomatch e), ()) := fun _ => rfl
-  rw [probEvent_eq_one_iff]
-  constructor
-  · -- SAFETY: prover run is a plain `OracleComp` (never fails); output and verify are `pure`.
-    simp only [houtput, hverify, liftComp_optionT_pure, liftComp_pure, liftM_pure, pure_bind]
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, ?_⟩
-    · rw [OptionT.probFailure_liftM]
-      exact HasEvalPMF.probFailure_eq_zero _
-    · rintro ⟨transcript, state⟩ _
-      exact probFailure_pure _
-  · -- CORRECTNESS: the unique reachable output accepts.
-    intro x hx
-    simp only [houtput, hverify, liftComp_optionT_pure, liftComp_pure, liftM_pure, pure_bind,
-      support_bind, OptionT.support_liftM, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨⟨transcript, state⟩, _, hx⟩ := hx
-    obtain ⟨v, hv, hx⟩ := hx
-    simp only [support_pure, Set.mem_singleton_iff] at hx
-    subst hx
-    replace hv : v ∈ (some ⁻¹'
-        ({some (true, g transcript)} : Set (Option (Bool × (Empty → Unit))))) := hv
-    simp only [Set.mem_preimage, Set.mem_singleton_iff, Option.some.injEq] at hv
-    subst hv
-    refine ⟨?_, rfl, Subsingleton.elim _ _⟩
-    show _ ∈ acceptRejectOracleRel
-    simp only [acceptRejectOracleRel, Set.mem_singleton_iff]
+  unfold OracleReduction.perfectCompleteness
+  refine Reduction.perfectCompleteness_of_constant_output _ _ _ _ _
+    (true, fun e : Empty => nomatch e) () (fun _ => rfl) ?_ ?_
+  · intro stmt tr
+    apply OptionT.ext
+    simp only [Verifier.run, OracleReduction.toReduction, paperTranscriptVectorIOP,
+      paperTranscriptOracleVerifier, OracleProofVerifier.ofVerify, OracleVerifier.toVerifier,
+      OptionT.run_pure, simulateQ_pure, LawfulApplicative.map_pure]
+    congr 2
+  · rfl
 
 /-! ### Wiring: discharge Protocol.lean's perfect-completeness residual
 

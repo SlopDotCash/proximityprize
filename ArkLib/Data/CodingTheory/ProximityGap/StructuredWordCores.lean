@@ -74,7 +74,6 @@ theorem structuredWord_no_deep_cores (dom : Fin n ↪ F) {k m : ℕ} (hk : 1 ≤
     intro i hi
     have key : Pc.eval (dom i) = Q.eval (dom i) := by
       have e := congrFun hPcev i
-      simp only [] at e
       rw [← e]; exact hcw i hi
     rw [hD, Polynomial.eval_sub, key]; ring
   have hDdeg : D.degree < ((k + m + 1 : ℕ) : WithBot ℕ) := by

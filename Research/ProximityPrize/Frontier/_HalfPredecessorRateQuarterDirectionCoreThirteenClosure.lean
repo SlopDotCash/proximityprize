@@ -22,6 +22,7 @@ saturated unsafe fiber uses at most the three moving coordinates.
 -/
 
 set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedSectionVars false
 set_option linter.unusedDecidableInType false
 set_option linter.unusedFintypeInType false

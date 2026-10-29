@@ -194,14 +194,12 @@ theorem etFun_add_rigid (hp : p.Prime) (hp2 : p ≠ 2) {i j k l : ℕ}
   have hylt : k * k % p + l * l % p < 2 * p := by omega
   have hdiv : i + j = k + l := by
     have h1 := congrArg (· / (2 * p)) hEq
-    simp only at h1
     have hx0 : (i * i % p + j * j % p) / (2 * p) = 0 := Nat.div_eq_of_lt hxlt
     have hy0 : (k * k % p + l * l % p) / (2 * p) = 0 := Nat.div_eq_of_lt hylt
     rwa [Nat.mul_add_div (by omega), Nat.mul_add_div (by omega), hx0, hy0,
       Nat.add_zero, Nat.add_zero] at h1
   have hmod : i * i % p + j * j % p = k * k % p + l * l % p := by
     have h1 := congrArg (· % (2 * p)) hEq
-    simp only at h1
     have hx0 : (i * i % p + j * j % p) % (2 * p) = i * i % p + j * j % p :=
       Nat.mod_eq_of_lt hxlt
     have hy0 : (k * k % p + l * l % p) % (2 * p) = k * k % p + l * l % p :=
@@ -307,12 +305,10 @@ theorem hybrid_inj (hM : 0 < M) : Set.InjOn (fun q : ℕ × ℕ => 5 * M * q.1 +
   have hu : u < 5 * M := by omega
   have hv : v < 5 * M := by omega
   have hdivx := congrArg (· / (5 * M)) h
-  simp only at hdivx
   rw [Nat.mul_add_div (by omega), Nat.mul_add_div (by omega),
     Nat.div_eq_of_lt hu, Nat.div_eq_of_lt hv] at hdivx
   have hx_eq : x = y := by omega
   have hmodx := congrArg (· % (5 * M)) h
-  simp only at hmodx
   rw [Nat.mul_add_mod, Nat.mul_add_mod, Nat.mod_eq_of_lt hu, Nat.mod_eq_of_lt hv] at hmodx
   exact Prod.ext hx_eq hmodx
 

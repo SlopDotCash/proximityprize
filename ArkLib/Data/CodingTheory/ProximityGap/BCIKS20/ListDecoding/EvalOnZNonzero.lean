@@ -3,8 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.Polynomial.Trivariate
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
+import ProximityPrize.Extensions.Data.Polynomial.Trivariate
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
 import ArkLib.Data.CodingTheory.GuruswamiSudan.FactorExtraction
 import ArkLib.ToMathlib.BivariateDegreeToolkit
 
@@ -51,6 +51,7 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 /-- The double-coefficient of a `Z`-specialization is the inner-`Z` coefficient evaluated at `z`. -/
 theorem eval_on_Z_coeff_coeff (Q : F[Z][X][Y]) (z : F) (j i : ℕ) :
     ((eval_on_Z Q z).coeff j).coeff i = ((Q.coeff j).coeff i).eval z := by
+  unfold Trivariate.eval_on_Z
   rw [eval_on_Z_eq, Polynomial.coeff_map, Polynomial.coe_mapRingHom, Polynomial.coeff_map,
     Polynomial.coe_evalRingHom]
 

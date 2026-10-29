@@ -26,6 +26,36 @@ class ResidualCensusTests(unittest.TestCase):
         self.census.find_providers(decls, residuals)
         return {r["name"]: r["status"] for r in residuals}
 
+    def test_provider_in_relocated_extension_preserves_discharge(self):
+        canonical = self.root / "ArkLib" / "Data" / "A.lean"
+        extension = self.root / "ProximityPrize" / "Extensions" / "Data" / "A.lean"
+        canonical.parent.mkdir(parents=True)
+        extension.parent.mkdir(parents=True)
+        canonical.write_text(HEADER + "def FooResidual : Prop := True\n" + FOOTER)
+        extension.write_text(HEADER +
+            "theorem fooResidual_holds : FooResidual := trivial\n" + FOOTER)
+        decls, residuals, _ = self.census.collect(self.root)
+        self.census.find_providers(decls, residuals)
+        self.assertEqual(len(residuals), 1)
+        self.assertEqual(residuals[0]["status"], "discharged")
+        self.assertEqual(residuals[0]["providers"][0]["file"],
+                         "ProximityPrize/Extensions/Data/A.lean")
+
+    def test_relocated_residual_stays_in_production_census(self):
+        source = self.root / "ProximityPrize" / "Extensions" / "Data" / "A.lean"
+        research = self.root / "Research" / "A.lean"
+        source.parent.mkdir(parents=True)
+        research.parent.mkdir()
+        source.write_text(HEADER + "def FooResidual : Prop := True\n" + FOOTER)
+        research.write_text(HEADER +
+            "theorem fooResidual_holds : FooResidual := trivial\n" + FOOTER)
+        decls, residuals, _ = self.census.collect(self.root)
+        self.census.find_providers(decls, residuals)
+        self.assertEqual(len(residuals), 1)
+        self.assertEqual(residuals[0]["status"], "open")
+        self.assertEqual(residuals[0]["file"], "ProximityPrize/Extensions/Data/A.lean")
+        self.assertEqual(self.census.top_dir(residuals[0]["file"]), "Data")
+
     def test_general_provider_discharges(self):
         got = self.statuses(
             "def FooResidual {k : Nat} : Prop := True\n\n"

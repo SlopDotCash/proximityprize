@@ -1,0 +1,51 @@
+{
+  "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+  "canonical_probability_owner": "VCVio 6214f907760776ceab8b1f828c9015f549e66e31",
+  "state_collapse": {
+    "module": "ArkLib/OracleReduction/StateCollapse.lean",
+    "retained": [
+      "State-preserving query implementations pinned to s0 retain both knowledge and plain round-by-round soundness equivalences.",
+      "The transfer first proves equality of the actual ProbComp programs, then derives native measure, event and failure observations.",
+      "Native measure equality makes the output MeasurableSpace explicit; event and structural program statements require no output measurable-space assumption.",
+      "The sampled-initial-state upper bound delegates to canonical prEvent_bind_le_of_forall_le."
+    ],
+    "validation": "Strict source check passed; all five printed theorem anchors use only propext, Classical.choice, Quot.sound."
+  },
+  "knowledge_security": {
+    "module": "ArkLib/OracleReduction/Security/ImplicationsCore.lean",
+    "canonical_definition": "ArkLib.OracleReduction.Security.Basic.knowledgeSoundnessWith counts extraction none as a bad event and quantifies arbitrary auxiliary private input types.",
+    "retired": [
+      "Verifier.knowledgeSoundness_vacuous",
+      "Verifier.rbrKnowledgeSoundness_implies_knowledgeSoundness"
+    ],
+    "retirement_reason": "Both old declarations relied on a historical knowledge game which discarded extractor-failure mass. Their statements are false for the canonical game and have no external Lean consumers.",
+    "retained_conditional_bridge": "Verifier.rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal now certifies canonical knowledgeSoundnessWith for E.toStraightline. KnowledgeAcceptLast, KnowledgeFlipTransport and the per-round bound explicitly quantify over arbitrary private Aux, matching the conclusion. The pure extractor returns some witness; the game preserves Option WitIn and observes its failure correctly.",
+    "packaged_bridge": "Verifier.rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine delegates to the canonical guarded worst-case bridge, exposing GuardedForm and rbrKnowledgeSoundnessWorstCase.",
+    "deduplication": "Verifier.rbrKnowledgeSoundness_implies_rbrSoundness is imported from canonical Security.Implications; its duplicated proof and unnecessary Nonempty restrictions are removed. Pure downstream prover adapters and witness-chain lemmas remain available.",
+    "validation": "Strict source check passed; all nine printed anchors use only the standard three axioms."
+  },
+  "round_by_round_consumers": {
+    "modules": [
+      "ArkLib/OracleReduction/Security/RbrKnowledgeConjoin.lean",
+      "ArkLib/OracleReduction/Security/RbrKnowledgeFlip.lean",
+      "ArkLib/OracleReduction/Security/RbrKnowledgeTruncate.lean"
+    ],
+    "port": "Initial knowledge-state evidence is consumed through the canonical one-way extraction implication. Event containment and trivial probability bounds delegate to native VCVio theorems. Relations, truncation rounds and numerical errors are preserved.",
+    "validation": "All three strict source checks passed with standard-axiom anchors."
+  },
+  "research_and_coding_leaf_ports": {
+    "root_leaf_batch": "JohnsonExactPoint, RungAgreementGeometry, SmoothLadderInstance, ListSizeVolumeBound, AsymptoticGVBound, General, CS25JointProxBound, K1WindowUniversal, FarWordSupplyCounting, AllWitnessFloorGeneric, WBPencilGradedLadder, Level1RungPin, _FoldedPinBrick1, _G134ProductionCrossoverPin and the Research MCA/Lattice/Collapse clients pass strict source checks.",
+    "scope": "Canonical Finset API renames, explicit legacy finite-list cardinality observers, local Matrix/transcript transparency and ordinary kernel arithmetic preserve the original claims. JohnsonExactPoint uses kernel decide rather than native evaluation; the enormous G134 power comparison applies a generic monotonicity lemma before instantiating production exponents."
+  },
+  "generic_completeness": {
+    "module": "ArkLib/OracleReduction/Completeness.lean",
+    "scope": "Perfect completeness remains equivalent to the n-message honest-execution event. The stateful-to-unsimulated bridge retains its explicit support-faithful implementation and never-failing initialization premises. OptionT maps, none mass and prover/verifier output equality are normalized using canonical program and support laws.",
+    "deduplication": "The canonical ProtocolSpec.FullTranscript.mk1 and mk1_eq_snoc declarations replace the duplicate local definitions.",
+    "validation": "Strict actual-import source check passed; printed unroll_n_message_reduction_perfectCompleteness anchor uses only standard axioms."
+  },
+  "output_casts": {
+    "module": "ArkLib/OracleReduction/CastInOut.lean",
+    "scope": "Canonical OracleReduction and OracleVerifier types index both input and output OracleInterface families. General and simple casts now explicitly transport output interfaces through HEq, in addition to the existing type/index equalities and input-interface coherence. All six completeness/RBR transfer contracts retain their relation transports and now expose this required interface premise. No external Lean consumers of these cast names were found.",
+    "validation": "Strict actual-import source check passed with all six printed anchors using only standard axioms."
+  }
+}

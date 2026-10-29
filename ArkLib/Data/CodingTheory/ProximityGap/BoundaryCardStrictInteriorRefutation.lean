@@ -80,7 +80,7 @@ the refuted nonemptiness boundary residuals: the closed-boundary keystone conclu
 `errorBound (1 − √ρ) = 0`. -/
 theorem correlatedAgreementCurves_boundary_of_floorEq_strict
     {ι : Type} [Fintype ι] [Nonempty ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
     {k deg : ℕ} {domain : ι ↪ F} {δ δ' : ℝ≥0} {ε : ℝ≥0}
     (hfloor : Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι))
     (hCA : δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)
@@ -89,6 +89,7 @@ theorem correlatedAgreementCurves_boundary_of_floorEq_strict
       (C := (ReedSolomon.code domain deg : Set (ι → F))) (δ := δ) (ε := ε) := by
   classical
   intro u hprob
+  rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native] at hprob
   have hPrδ := prob_close_curve_eq_card_goodCoeffsCurve_div_card
     (k := k) (deg := deg) (domain := domain) (δ := δ) u
   have hPrδ' := prob_close_curve_eq_card_goodCoeffsCurve_div_card
@@ -100,6 +101,7 @@ theorem correlatedAgreementCurves_boundary_of_floorEq_strict
       (domain := domain) u hfloor
   refine (ArkLib.BoundaryCardResidual.jointAgreement_iff_of_floor_eq
     (deg := deg) (domain := domain) u hfloor.symm).mpr (hCA u ?_)
+  rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native]
   rw [hPrδ', hgood, ← hPrδ]
   exact hprob
 
@@ -162,7 +164,7 @@ theorem boundary_floor_eq_one :
     rw [tsub_mul, one_mul]
   have hcard4 : (Fintype.card I : ℝ≥0) = 4 := by norm_num [I]
   rw [hdistrib, sqrtRate_mul_card_eq_sqrt_eight, hcard4,
-    Nat.floor_eq_iff (zero_le _)]
+    Nat.floor_eq_iff (bot_le : (0 : ℝ≥0) ≤ _)]
   constructor
   · rw [le_tsub_iff_right sqrt_eight_le_four]
     have h : ((1 : ℕ) : ℝ≥0) + NNReal.sqrt 8 < 1 + 3 := by
@@ -228,7 +230,10 @@ theorem good_nonempty_quarter :
       (∑ t : Fin 2, (0 : F) ^ (t : ℕ) • uSq t) = (0 : I → F) := by
     funext i
     fin_cases i <;> simp [uSq]
-  simpa [RS_goodCoeffsCurve, hsum] using hrel
+  unfold RS_goodCoeffsCurve
+  apply (Finset.mem_filter_univ (0 : F)).mpr
+  rw [hsum]
+  exact hrel
 
 /-- **Kernel-checked obstruction**: no linear polynomial `a·x + b` over `ZMod 5` agrees with
 `x ↦ x²` on three of the four points `{0,1,2,3}` (a nonzero quadratic has at most two roots;

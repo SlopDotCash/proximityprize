@@ -145,9 +145,9 @@ theorem jbt_hash_getElem''
     (hp : p ∈ Backtrack.J_BT S) :
     tr[p.2.1] =
       (⟨Sum.inl p.1.stmt,
-        Vector.drop (p.1.inputState[0]'(by
+        (p.1.inputState[0]'(by
           rw [p.1.inputState_length_eq_outputState_length_succ]
-          exact Nat.succ_pos _)) SpongeSize.R⟩ :
+          exact Nat.succ_pos _)).capacitySegment⟩ :
         OracleSpec.duplexSpongeTraceEntry (StartType := StmtIn) (U := U)) := by
   have hget := Sponge316.jbt_hash_getElem? tr state S p hp
   rw [List.getElem?_eq_getElem p.2.1.isLt] at hget
@@ -200,20 +200,30 @@ theorem ePaper_of_jbt_inv_slot'
             = tr[(⟨(p.2.2 ⟨0, hmIn⟩).val, hk⟩ : Fin tr.length)] :=
           congrArg (fun k : Fin tr.length => tr[k]) hEq
         rw [hHashEq, hinv] at hgetEq
-        simp at hgetEq
+        have hindex := congrArg (fun e : OracleSpec.duplexSpongeTraceEntry
+          (StartType := StmtIn) (U := U) => e.1) hgetEq
+        cases hindex
       rcases lt_or_gt_of_ne hneH with hlt | hgt'
       · -- hash anchor strictly earlier: C1 at (hash, inverse step 0)
         refine ePaper_of_answerCap_pair tr hlt hfocH hfocC ?_ ?_
         · rw [hHashEq, hinv]
-          simp
+          intro hentry
+          have hindex := congrArg (fun e : OracleSpec.duplexSpongeTraceEntry
+            (StartType := StmtIn) (U := U) => e.1) hentry
+          cases hindex
         · rw [hHashEq, hinv]
-          simp only [answerCap_hash, answerCap_inv]
+          simp only [answerCap, SpongeSize.C,
+            CanonicalSpongeState.capacitySegment]
       · -- inverse step 0 strictly earlier: C1 at (inverse step 0, hash)
         refine ePaper_of_answerCap_pair tr hgt' hfocC hfocH ?_ ?_
         · rw [hHashEq, hinv]
-          simp
+          intro hentry
+          have hindex := congrArg (fun e : OracleSpec.duplexSpongeTraceEntry
+            (StartType := StmtIn) (U := U) => e.1) hentry
+          cases hindex
         · rw [hHashEq, hinv]
-          simp only [answerCap_hash, answerCap_inv]
+          simp only [answerCap, SpongeSize.C,
+            CanonicalSpongeState.capacitySegment]
   | succ m ih =>
       intro hm hmIn hk hinv
       have hmP : m < p.1.outputState.length := Nat.lt_of_succ_lt hm
@@ -234,21 +244,23 @@ theorem ePaper_of_jbt_inv_slot'
               = tr[(⟨(p.2.2 ⟨m + 1, hmIn⟩).val, hk⟩ : Fin tr.length)] :=
             congrArg (fun k : Fin tr.length => tr[k]) hEq
           rw [hfwdP, hinv] at hgetEq
-          simp at hgetEq
+          have hindex := congrArg (fun e : OracleSpec.duplexSpongeTraceEntry
+            (StartType := StmtIn) (U := U) => e.1) hgetEq
+          cases hindex
         rcases lt_or_gt_of_ne hneP with hlt | hgt'
         · -- forward step m strictly earlier: C1 at (forward m, inverse m+1)
           refine ePaper_of_answerCap_pair tr hlt hfocP hfocC ?_ ?_
           · rw [hfwdP, hinv]
             simp
           · rw [hfwdP, hinv]
-            simp only [answerCap_fwd, answerCap_inv]
+            simp only [answerCap]
             exact hcont
         · -- inverse step m+1 strictly earlier: C1 at (inverse m+1, forward m)
           refine ePaper_of_answerCap_pair tr hgt' hfocC hfocP ?_ ?_
           · rw [hfwdP, hinv]
             simp
           · rw [hfwdP, hinv]
-            simp only [answerCap_fwd, answerCap_inv]
+            simp only [answerCap]
             exact hcont.symm
       · -- previous step also inverse: recurse
         exact ih hmP hmInP hkP hinvP
@@ -284,7 +296,7 @@ theorem lemma516HashPaper
       (c := (p.1.inputState[0]'h0In).capacitySegment) hlt hfocC hfocH ?_ ?_
     · rw [hfwd, queryCap?_fwd]
     · rw [hHashEq]
-      simp only [answerCap_hash]
+      simp only [answerCap]
   · -- inverse chain step: delegate to the 5.12 core
     exact ePaper_of_jbt_inv_slot' tr state S p hp 0 h0 h0In hk hinv
 
@@ -331,14 +343,14 @@ theorem lemma516TimePPaper
       refine ePaper_of_queryCap_hit_lt tr
         (c := (p.1.outputState[ix.val]'hmA).capacitySegment) hlt hfocB hfocA ?_ ?_
       · rw [hfwdB, queryCap?_fwd, hcont]
-      · rw [hfwdA, answerCap_fwd]
+      · rw [hfwdA, answerCap]
     · -- step ι+1 inverse: C1 — its answer cap is cap(s_in,ι+1) = cap(s_out,ι) = answer cap
       -- of the (later) forward step ι slot
       refine ePaper_of_answerCap_pair tr hlt hfocB hfocA ?_ ?_
       · rw [hfwdA, hinvB]
         simp
       · rw [hfwdA, hinvB]
-        simp only [answerCap_fwd, answerCap_inv]
+        simp only [answerCap]
         exact hcont.symm
   · -- step ι inverse: delegate to the 5.12 core
     exact ePaper_of_jbt_inv_slot' tr state S p hp ix.val hmA hmInA hkA hinvA

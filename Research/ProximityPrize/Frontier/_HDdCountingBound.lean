@@ -67,7 +67,9 @@ theorem finrank_span_image_le_min (Φ : ι → ρ → F) (t : Finset ι) (s : Fi
   classical
   refine le_min ?_ ?_
   · calc finrank F (span F (Φ '' t)) ≤ (t.image Φ).card := by
-          simpa [Finset.coe_image] using finrank_span_finset_le_card (t.image Φ)
+          change Set.finrank F (Φ '' (t : Set ι)) ≤ (t.image Φ).card
+          rw [← Finset.coe_image]
+          exact finrank_span_finset_le_card (t.image Φ)
       _ ≤ t.card := Finset.card_image_le
   · have hle : span F (Φ '' t) ≤ supportedOn (F := F) s := by
       rw [span_le]

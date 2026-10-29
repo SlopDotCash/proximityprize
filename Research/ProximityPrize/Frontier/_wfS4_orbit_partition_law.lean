@@ -181,7 +181,7 @@ theorem perPrime_pos_iff_total_pos
     rw [← hmul]; exact Nat.mul_pos hG h
   · intro h
     rw [← hmul] at h
-    exact (Nat.pos_of_mul_pos_left (by rwa [Nat.mul_comm] at h))
+    exact (Nat.pos_of_mul_pos_left h)
 
 end ProximityGap.Frontier.GaloisOrbitPartition
 

@@ -33,6 +33,9 @@ being the exact shape a `McaDecodeCurve`-based producer can discharge (see
 `¬ jointAgreement`).
 -/
 
+private noncomputable local instance {F : Type} [Field F] [Fintype F] :
+    SampleableType F := SampleableType.ofFintype F
+
 namespace ProximityGap
 
 set_option linter.unusedDecidableInType false
@@ -156,6 +159,7 @@ theorem correlatedAgreement_affine_curves_of_strict_coeff_polys_share_or {k : �
         (RS_correlatedAgreement_curves_uniqueDecodingRegime hkpos hUDR)
     · unfold δ_ε_correlatedAgreementCurves
       intro u hprob
+      rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native] at hprob
       have hprob_weak :
           Pr_{
             let z ← $ᵖ F}[δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.FiatShamir.Basic
+import ProximityPrize.Extensions.OracleReduction.FiatShamir.Basic
 import ArkLib.OracleReduction.FiatShamir.BasicCompleteness
 import ArkLib.OracleReduction.Security.ZeroKnowledge
 import ArkLib.OracleReduction.FiatShamir.ChallengeOracleSampling
@@ -45,6 +45,11 @@ variable {ι : Type} {oSpec : OracleSpec ι} {StmtIn WitIn StmtOut WitOut : Type
   {n : ℕ} {pSpec : ProtocolSpec n} [∀ i, SampleableType (pSpec.Challenge i)]
   {σ τ : Type}
   [VCVCompatible StmtIn] [∀ i, VCVCompatible (pSpec.Challenge i)]
+
+-- Observe every transcript event, as in the retained discrete HVZK interface.
+private local instance : MeasurableSpace (FullTranscript pSpec) := ⊤
+private local instance : MeasurableSpace (FiatShamirProofTranscript (pSpec := pSpec)) := ⊤
+private local instance : MeasurableSpace σ := ⊤
 
 /-- Project an interactive full transcript onto the one-message Fiat-Shamir proof transcript: the
 single `P_to_V` message is the bundle of interactive prover messages. -/
@@ -113,7 +118,7 @@ theorem fiatShamir_hvzkTransfer_of_coupling
   intro hHVZK
   obtain ⟨sim, hsim⟩ := hHVZK
   refine ⟨fun stmt => msgProjFS <$> sim stmt, fun stmt wit hmem => ?_⟩
-  rw [evalDist_map, hsim stmt wit hmem, ← evalDist_map]
+  rw [evalDist_map_of_discrete, hsim stmt wit hmem, ← evalDist_map_of_discrete]
   exact coupling stmt wit hmem
 
 /-! ### Canonical cached (lazy random oracle) Fiat-Shamir challenge implementation
@@ -250,21 +255,15 @@ theorem canonicalFSCouplingKernel_of_perStateCoupling
     canonicalFSCouplingKernel init impl rel R := by
   intro stmt wit hmem
   -- `evalDist` on `OptionT ProbComp` is determined by `evalDist` of the underlying `.run`.
-  have bridge : ∀ {β : Type} (mx my : OptionT ProbComp β),
+  have bridge : ∀ {β : Type} [MeasurableSpace β] (mx my : OptionT ProbComp β),
       evalDist mx.run = evalDist my.run → evalDist mx = evalDist my := by
-    intro β mx my h
-    rw [show (𝒟[mx] : SPMF β) = (HasEvalSPMF.toSPMF mx.run >>= fun y =>
-          match y with | some a => pure a | none => failure : SPMF β) from rfl,
-        show (𝒟[my] : SPMF β) = (HasEvalSPMF.toSPMF my.run >>= fun y =>
-          match y with | some a => pure a | none => failure : SPMF β) from rfl]
-    have hrun : (HasEvalSPMF.toSPMF mx.run : SPMF (Option β)) =
-        HasEvalSPMF.toSPMF my.run := h
-    rw [hrun]
+    intro β _ mx my h
+    rw [OptionT.evalDist_eq_comap_some, OptionT.evalDist_eq_comap_some, h]
   refine bridge _ _ ?_
   rw [OptionT.run_map]
   unfold honestTranscriptDist canonicalFSImpl
   simp only [OptionT.run_mk, OptionT.run_map]
-  rw [map_bind, evalDist_bind, evalDist_bind]
+  rw [map_bind, evalDist_bind_of_discrete, evalDist_bind_of_discrete]
   refine congrArg _ (funext fun a => ?_)
   exact hCoupling stmt wit hmem a
 

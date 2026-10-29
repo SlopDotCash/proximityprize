@@ -320,11 +320,9 @@ theorem simulateQ_checkingCompT (oStmt : ∀ i, OracleStatement ι F i)
 
 /-- **The t-point checking verifier** (IOP shape: no forwarded oracles). -/
 noncomputable def stirCheckingVerifierT :
-    OracleVerifier []ₒ Unit (OracleStatement ι F) Bool (fun _ : Empty => Unit)
-      ((stirMultiVSpecT M ι t).toProtocolSpec F) where
-  verify := fun _ chals => OptionT.lift (checkingCompT M φ deg t chals)
-  embed := ⟨fun i => i.elim, fun i => i.elim⟩
-  hEq := fun i => i.elim
+    OracleProofVerifier []ₒ Unit (OracleStatement ι F)
+      ((stirMultiVSpecT M ι t).toProtocolSpec F) :=
+  OracleProofVerifier.ofVerify (fun _ chals => OptionT.lift (checkingCompT M φ deg t chals))
 
 /-- **The t-repetition multi-round STIR prover**: verbatim the landed honest prover — it
 already reads only coordinate `0` of each vector challenge (`dite` on length positivity),
@@ -346,9 +344,9 @@ noncomputable def stirMultiRoundProverT (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (t
 /-- **The t-repetition checking STIR Vector IOPP**: the honest folding prover with the
 t-point checking verifier. -/
 noncomputable def stirCheckingIOPT (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (t : ℕ) :
-    VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpecT M ι t) F where
-  prover := stirMultiRoundProverT M φ deg t
-  verifier := stirCheckingVerifierT M φ deg t
+    VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpecT M ι t) F :=
+  OracleReduction.mk (Oₛₒ := fun i : Empty => nomatch i)
+    (stirMultiRoundProverT M φ deg t) (stirCheckingVerifierT M φ deg t)
 
 /-- The t-repetition rbr knowledge-soundness residual — the A1 soundness target, to be
 discharged by the door-die predicate with PRODUCT flip bounds
@@ -361,7 +359,7 @@ noncomputable def stirCheckingRbrSoundnessResidualT
     (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (t : ℕ) (δ : ℝ≥0)
     (ε_rbr : ((stirMultiVSpecT M ι t).toProtocolSpec F).ChallengeIdx → ℝ≥0) : Prop :=
   OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
-    (stirRelation deg φ δ) (stirCheckingIOPT M φ deg t).verifier ε_rbr
+    (stirRelation deg φ δ) (stirCheckingIOPT M φ deg t).toOracleVerifier ε_rbr
 
 end CheckingT
 

@@ -78,7 +78,7 @@ def productionSeventhTarget : Nat :=
 and the remaining bulk orbits. -/
 theorem profile_orbit_count :
     1 + 1 + productionZeroOrbits + productionBulkOrbits = productionM := by
-  norm_num [productionZeroOrbits, productionBulkOrbits, productionM]
+  decide +kernel
 
 /-- The spike respects the elementary Gauss-sum cap `s_b = |eta_b|^2 <= n^2`. -/
 theorem productionSpike_le_trivialCap : productionSpike <= productionN ^ 2 := by
@@ -88,8 +88,7 @@ theorem productionSpike_le_trivialCap : productionSpike <= productionN ^ 2 := by
 `n * sum_orbits s = n*(q-n)`. -/
 theorem fullPowerMoment_one_exact :
     fullPowerMoment 1 = productionN * (productionQ - productionN) := by
-  norm_num [fullPowerMoment, orbitPowerMoment, productionSpike, productionBulkOrbits,
-    productionQ, productionM, productionN]
+  decide +kernel
 
 /-- The first through sixth Wick coefficients. -/
 def wickCoefficient (r : Nat) : Nat := Nat.doubleFactorial (2 * r - 1)
@@ -98,36 +97,31 @@ def wickCoefficient (r : Nat) : Nat := Nat.doubleFactorial (2 * r - 1)
 feasible. -/
 theorem fullPowerMoment_two_le_wick :
     fullPowerMoment 2 <= productionQ * wickCoefficient 2 * productionN ^ 2 := by
-  norm_num [fullPowerMoment, orbitPowerMoment, productionSpike, productionBulkOrbits,
-    productionQ, productionM, productionN, wickCoefficient, Nat.doubleFactorial]
+  decide +kernel
 
 /-- Even after granting the characteristic-zero Wick ceiling at depth three, the profile is
 feasible. -/
 theorem fullPowerMoment_three_le_wick :
     fullPowerMoment 3 <= productionQ * wickCoefficient 3 * productionN ^ 3 := by
-  norm_num [fullPowerMoment, orbitPowerMoment, productionSpike, productionBulkOrbits,
-    productionQ, productionM, productionN, wickCoefficient, Nat.doubleFactorial]
+  decide +kernel
 
 /-- Even after granting the characteristic-zero Wick ceiling at depth four, the profile is
 feasible. -/
 theorem fullPowerMoment_four_le_wick :
     fullPowerMoment 4 <= productionQ * wickCoefficient 4 * productionN ^ 4 := by
-  norm_num [fullPowerMoment, orbitPowerMoment, productionSpike, productionBulkOrbits,
-    productionQ, productionM, productionN, wickCoefficient, Nat.doubleFactorial]
+  decide +kernel
 
 /-- Even after granting the characteristic-zero Wick ceiling at depth five, the profile is
 feasible. -/
 theorem fullPowerMoment_five_le_wick :
     fullPowerMoment 5 <= productionQ * wickCoefficient 5 * productionN ^ 5 := by
-  norm_num [fullPowerMoment, orbitPowerMoment, productionSpike, productionBulkOrbits,
-    productionQ, productionM, productionN, wickCoefficient, Nat.doubleFactorial]
+  decide +kernel
 
 /-- Even after granting the characteristic-zero Wick ceiling at depth six, the profile is
 feasible.  This is the load-bearing strongest lower-moment constraint. -/
 theorem fullPowerMoment_six_le_wick :
     fullPowerMoment 6 <= productionQ * wickCoefficient 6 * productionN ^ 6 := by
-  norm_num [fullPowerMoment, orbitPowerMoment, productionSpike, productionBulkOrbits,
-    productionQ, productionM, productionN, wickCoefficient, Nat.doubleFactorial]
+  decide +kernel
 
 /-- Package of every granted lower-moment ceiling `r = 2,...,6`. -/
 theorem all_lower_moment_wick_ceils :
@@ -144,14 +138,12 @@ theorem all_lower_moment_wick_ceils :
 /-- The explicit profile exceeds the repaired seventh-moment target by more than fifteen bits. -/
 theorem fifteen_bit_target_failure :
     2 ^ 15 * productionSeventhTarget < fullPowerMoment 7 := by
-  norm_num [productionSeventhTarget, fullPowerMoment, orbitPowerMoment, productionSpike,
-    productionBulkOrbits, productionQ, productionM, productionN]
+  decide +kernel
 
 /-- The exact gap is below sixteen bits, locating the countermodel ratio in `[2^15,2^16)`. -/
 theorem target_failure_lt_sixteen_bits :
     fullPowerMoment 7 < 2 ^ 16 * productionSeventhTarget := by
-  norm_num [productionSeventhTarget, fullPowerMoment, orbitPowerMoment, productionSpike,
-    productionBulkOrbits, productionQ, productionM, productionN]
+  decide +kernel
 
 /-- Consolidated no-go: exact mass, orbit count, the elementary amplitude cap, and every Wick
 ceiling through depth six coexist with a greater-than-`2^15` failure of the depth-seven target. -/

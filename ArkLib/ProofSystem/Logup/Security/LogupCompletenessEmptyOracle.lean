@@ -44,11 +44,11 @@ variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ Pro
 
 /-- The empty ambient oracle spec is a probability spec (finite + inhabited oracle interfaces):
 vacuously so, since it has no oracles (`[]ₒ.Domain = PEmpty`). -/
-local instance instEmptySpecFintype : ([]ₒ : OracleSpec PEmpty).Fintype where
-  fintype_B := fun q => q.elim
+local instance instEmptySpecFintype : ∀ q, Fintype (([]ₒ : OracleSpec PEmpty).Range q) :=
+  fun q => q.elim
 
-local instance instEmptySpecInhabited : ([]ₒ : OracleSpec PEmpty).Inhabited where
-  inhabited_B := fun q => q.elim
+local instance instEmptySpecInhabited : ∀ q, Inhabited (([]ₒ : OracleSpec PEmpty).Range q) :=
+  fun q => q.elim
 
 /-- **The empty-oracle support-faithfulness side condition is vacuously true.** A query
 `q : OracleQuery []ₒ β` carries a domain index `q.1 : ([]ₒ).Domain`, and `([]ₒ).Domain` is the empty

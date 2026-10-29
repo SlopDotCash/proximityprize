@@ -5,8 +5,8 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.ToMathlib.GGR11Interleaved
-import ArkLib.Data.CodingTheory.Basic.Distance
-import ArkLib.Data.CodingTheory.JohnsonBound.Family
+import ProximityPrize.Extensions.Data.CodingTheory.Basic.Distance
+import ProximityPrize.Extensions.Data.CodingTheory.JohnsonBound.Family
 
 /-!
 # GGR11 divergence lemma and the exact tree-structure ⟺ per-word-bound equivalence
@@ -57,8 +57,8 @@ theorem hammingDist_ge_minDist_of_mem_closeCodewordsRel_ne
     [Field F] [DecidableEq F] [Nonempty ι] {C : Set (ι → F)} {δ : ℝ} {m : ℕ} [NeZero m]
     {f : Matrix ι (Fin m) F}
     {V V' : Matrix ι (Fin m) F}
-    (hV : V ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
-    (hV' : V' ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hV : V ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hV' : V' ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
     (hne : V ≠ V') :
     Code.minDist C ≤ hammingDist V V' := by
   classical
@@ -79,6 +79,7 @@ theorem hammingDist_ge_minDist_of_mem_closeCodewordsRel_ne
     (C := interleavedCodeSet (κ := Fin m) C) hVcode hV'code hne
   rwa [hmin] at h
 
+open Classical in
 /-- **Agreement-set overlap bound.**  Distinct `δ`-close interleaved codewords agree with each
 other on at most `n − minDist C` coordinates; hence their agreement sets with the received
 word `f` overlap in at most `n − minDist C = (1 − δ_C)·n` coordinates. -/
@@ -86,8 +87,8 @@ theorem agreement_inter_card_le
     [Field F] [DecidableEq F] [Nonempty ι] {C : Set (ι → F)} {δ : ℝ} {m : ℕ} [NeZero m]
     {f : Matrix ι (Fin m) F}
     {V V' : Matrix ι (Fin m) F}
-    (hV : V ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
-    (hV' : V' ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hV : V ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hV' : V' ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
     (hne : V ≠ V') :
     (Finset.univ.filter (fun i => V i = f i ∧ V' i = f i)).card
       ≤ Fintype.card ι - Code.minDist C := by
@@ -101,8 +102,11 @@ theorem agreement_inter_card_le
   -- |{i : V i = V' i}| = n − hammingDist V V'
   have hcompl : (Finset.univ.filter (fun i => V i = V' i)).card
       = Fintype.card ι - hammingDist V V' := by
-    simpa [Code.agreementCols] using
-      Code.agreementCols_card_eq_card_sub_hammingDist (u := V) (v := V')
+    convert Code.agreementCols_card_eq_card_sub_hammingDist (u := V) (v := V') using 1
+    unfold Code.agreementCols
+    congr 1
+    ext i
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
   -- minDist ≤ hammingDist
   have hmin := hammingDist_ge_minDist_of_mem_closeCodewordsRel_ne hV hV' hne
   calc (Finset.univ.filter (fun i => V i = f i ∧ V' i = f i)).card
@@ -155,11 +159,11 @@ theorem treeStructure_of_perWordBound
     (h : GGR11PerWordBound C δ m b r) :
     GGR11TreeStructure C δ m b r := by
   intro f
-  refine ⟨fun b' r' => ((b' + r').choose r' : ℕ∞) * (Lambda C δ) ^ r', ?_, ?_, ?_, ?_⟩
+  refine ⟨fun b' r' => ((b' + r').choose r' : ℕ∞) * (ListDecodable.Lambda C δ) ^ r', ?_, ?_, ?_, ?_⟩
   · exact h f
-  · exact (closedForm_satisfies_recursion (Lambda C δ)).1
-  · exact (closedForm_satisfies_recursion (Lambda C δ)).2.1
-  · exact (closedForm_satisfies_recursion (Lambda C δ)).2.2
+  · exact (closedForm_satisfies_recursion (ListDecodable.Lambda C δ)).1
+  · exact (closedForm_satisfies_recursion (ListDecodable.Lambda C δ)).2.1
+  · exact (closedForm_satisfies_recursion (ListDecodable.Lambda C δ)).2.2
 
 /-- **The refined residual is exactly the per-word bound.**  `GGR11TreeStructure` and
 `GGR11PerWordBound` are equivalent, so the Erase-Decode "tree existence" framing carries no

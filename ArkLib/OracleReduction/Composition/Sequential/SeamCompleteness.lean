@@ -3,7 +3,7 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import ArkLib.OracleReduction.RunUnroll
-import ArkLib.OracleReduction.Security.RoundByRound
+import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
 
 /-!
 # Two-stage seam *completeness* union bound
@@ -12,8 +12,8 @@ This is the **completeness** counterpart of `probComp_seam_union_le` (the soundn
 union bound in `RunUnroll.lean`). The difference is the failure convention: for *completeness* a
 `none` (failed) output **does** count as a failure (the honest run is supposed to succeed), whereas
 for soundness `none` is benign. Concretely the "good" predicates here are
-`fun o => Option.elim o False g` — `none ↦ False` (so its complement `¬ Option.elim · False g` is the
-*bad* event, and `none` is bad).
+`fun o => Option.elim o False g` — `none ↦ False`. Its complement
+`¬ Option.elim · False g` is the bad event, and `none` is bad.
 
 This is exactly the "standard two-stage success-probability union bound" that the message-seam
 sequential-composition completeness keystone (`reduction_append_completeness` for the message seam)
@@ -46,13 +46,10 @@ theorem probComp_seam_completeness
     (init : ProbComp σ) (so : QueryImpl spec (StateT σ ProbComp))
     (mx : OptionT (OracleComp spec) α) (my : α → OptionT (OracleComp spec) β)
     (pg : α → Prop) (qg : β → Prop) (e₁ e₂ : ℝ≥0∞)
-    (h₁ : Pr[fun r => ¬ Option.elim r.1 False pg
-          | init >>= fun s => (simulateQ so mx.run).run s] ≤ e₁)
+    (h₁ : probEvent (fun r => ¬ Option.elim r.1 False pg) (init >>= fun s => (simulateQ so mx.run).run s) ≤ e₁)
     (h₂ : ∀ a s', (some a, s') ∈ support (init >>= fun s => (simulateQ so mx.run).run s) → pg a →
-          Pr[fun o => ¬ Option.elim o False qg
-            | (simulateQ so (my a).run).run' s'] ≤ e₂) :
-    Pr[fun o => ¬ Option.elim o False qg
-        | init >>= fun s => (simulateQ so (mx >>= my).run).run' s] ≤ e₁ + e₂ := by
+          probEvent (fun o => ¬ Option.elim o False qg) ((simulateQ so (my a).run).run' s') ≤ e₂) :
+    probEvent (fun o => ¬ Option.elim o False qg) (init >>= fun s => (simulateQ so (mx >>= my).run).run' s) ≤ e₁ + e₂ := by
   classical
   have hgame : (init >>= fun s => (simulateQ so ((mx >>= my).run)).run' s)
       = (init >>= fun s => (simulateQ so mx.run).run s) >>= fun r =>
@@ -61,14 +58,17 @@ theorem probComp_seam_completeness
     refine bind_congr fun s => ?_
     rw [simulateQ_run'_optionT_bind_run]
   rw [hgame]
-  refine probEvent_bind_le_add
-    (mx := init >>= fun s => (simulateQ so mx.run).run s)
-    (p := fun (r : Option α × σ) => Option.elim r.1 False pg)
-    (q := fun (o : Option β) => Option.elim o False qg) h₁ ?_
-  rintro ⟨o, s'⟩ hmem hp
-  cases o with
-  | none => exact hp.elim
-  | some a => exact h₂ a s' hmem hp
+  have hbound := prEvent_bind_le_prEvent_add_of_support
+    (init >>= fun s => (simulateQ so mx.run).run s)
+    (fun r => r.1.elim (pure none) (fun a => (simulateQ so (my a).run).run' r.2))
+    (fun r => ¬ Option.elim r.1 False pg) (fun o => ¬ Option.elim o False qg)
+    (ε := e₂) (by
+      rintro ⟨o, s'⟩ hmem hp
+      have hp' : Option.elim o False pg := not_not.mp hp
+      cases o with
+      | none => exact hp'.elim
+      | some a => exact h₂ a s' hmem hp')
+  exact hbound.trans (add_le_add h₁ le_rfl)
 
 end OracleReduction
 
@@ -98,28 +98,26 @@ theorem probComp_seam_swap_completeness
     {A B C D : Type}
     (FST : OracleComp spec A) (SND : A → OracleComp spec B)
     (W1 : A → OptionT (OracleComp spec) C) (W2 : A → B → C → OptionT (OracleComp spec) D)
-    (hB : ∀ (x : A) (s' : σ), Pr[⊥ | (simulateQ so (SND x)).run s'] = 0)
+    (hB : ∀ (x : A) (s' : σ), probFailure ((simulateQ so (SND x)).run s') = 0)
     (pg : A × C → Prop) (qg : D → Prop) (e₁ e₂ : ℝ≥0∞)
-    (h₁ : Pr[fun r => ¬ Option.elim r.1 False pg
-          | init >>= fun s => (simulateQ so
+    (h₁ : probEvent (fun r => ¬ Option.elim r.1 False pg) (init >>= fun s => (simulateQ so
               (liftM FST >>= fun x => W1 x >>= fun s₂ =>
-                (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s] ≤ e₁)
+                (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s) ≤ e₁)
     (h₂ : ∀ (p : A × C) (s' : σ),
           (some p, s') ∈ support (init >>= fun s => (simulateQ so
               (liftM FST >>= fun x => W1 x >>= fun s₂ =>
                 (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s) → pg p →
-          Pr[fun o => ¬ Option.elim o False qg
-            | (simulateQ so (liftM (SND p.1) >>= fun a => W2 p.1 a p.2).run).run' s'] ≤ e₂) :
-    Pr[fun o => ¬ Option.elim o False qg
-        | init >>= fun s => (simulateQ so
+          probEvent (fun o => ¬ Option.elim o False qg) ((simulateQ so (liftM (SND p.1) >>= fun a => W2 p.1 a p.2).run).run' s') ≤ e₂) :
+    probEvent (fun o => ¬ Option.elim o False qg) (init >>= fun s => (simulateQ so
             (liftM FST >>= fun x => liftM (SND x) >>= fun a => W1 x >>= fun s₂ =>
-              W2 x a s₂).run).run' s] ≤ e₁ + e₂ := by
+              W2 x a s₂).run).run' s) ≤ e₁ + e₂ := by
+  letI : MeasurableSpace (Option D) := ⊤
   have key := seam_swap_evalDist_eq init so hso FST SND W1 W2 hB
   have hmain := OracleReduction.probComp_seam_completeness init so
     (liftM FST >>= fun x => W1 x >>= fun s₂ => (pure (x, s₂) : OptionT (OracleComp spec) (A × C)))
     (fun p => liftM (SND p.1) >>= fun a => W2 p.1 a p.2)
     pg qg e₁ e₂ h₁ h₂
-  unfold probEvent at hmain ⊢
+  simp only [probEvent, prEvent_eq_evalDist_of_discrete] at hmain ⊢
   rw [key]; exact hmain
 
 /-- The `seam_swap` natural-order `OptionT` run, unfolded to the plain-`OracleComp` `Option.elim`
@@ -147,22 +145,19 @@ theorem probComp_seam_swap_completeness_PABk
     {A B C D : Type}
     (FST : OracleComp spec A) (SND : A → OracleComp spec B)
     (W1 : A → OptionT (OracleComp spec) C) (W2 : A → B → C → OptionT (OracleComp spec) D)
-    (hB : ∀ (x : A) (s' : σ), Pr[⊥ | (simulateQ so (SND x)).run s'] = 0)
+    (hB : ∀ (x : A) (s' : σ), probFailure ((simulateQ so (SND x)).run s') = 0)
     (pg : A × C → Prop) (qg : D → Prop) (e₁ e₂ : ℝ≥0∞)
-    (h₁ : Pr[fun r => ¬ Option.elim r.1 False pg
-          | init >>= fun s => (simulateQ so
+    (h₁ : probEvent (fun r => ¬ Option.elim r.1 False pg) (init >>= fun s => (simulateQ so
               (liftM FST >>= fun x => W1 x >>= fun s₂ =>
-                (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s] ≤ e₁)
+                (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s) ≤ e₁)
     (h₂ : ∀ (p : A × C) (s' : σ),
           (some p, s') ∈ support (init >>= fun s => (simulateQ so
               (liftM FST >>= fun x => W1 x >>= fun s₂ =>
                 (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s) → pg p →
-          Pr[fun o => ¬ Option.elim o False qg
-            | (simulateQ so (liftM (SND p.1) >>= fun a => W2 p.1 a p.2).run).run' s'] ≤ e₂) :
-    Pr[fun o => ¬ Option.elim o False qg
-        | init >>= fun s => (simulateQ so
+          probEvent (fun o => ¬ Option.elim o False qg) ((simulateQ so (liftM (SND p.1) >>= fun a => W2 p.1 a p.2).run).run' s') ≤ e₂) :
+    probEvent (fun o => ¬ Option.elim o False qg) (init >>= fun s => (simulateQ so
             (FST >>= fun x => SND x >>= fun a => (W1 x).run >>= fun o₁ =>
-              o₁.elim (pure none) (fun s₂ => (W2 x a s₂).run))).run' s] ≤ e₁ + e₂ := by
+              o₁.elim (pure none) (fun s₂ => (W2 x a s₂).run))).run' s) ≤ e₁ + e₂ := by
   have key := probComp_seam_swap_completeness init so hso FST SND W1 W2 hB pg qg e₁ e₂ h₁ h₂
   rwa [seam_natural_run_eq] at key
 
@@ -179,27 +174,25 @@ theorem probComp_seam_swap_union_le' (init : ProbComp σ) (so : QueryImpl spec (
     {A B C D : Type}
     (FST : OracleComp spec A) (SND : A → OracleComp spec B)
     (W1 : A → OptionT (OracleComp spec) C) (W2 : A → B → C → OptionT (OracleComp spec) D)
-    (hB : ∀ (x : A) (s' : σ), Pr[⊥ | (simulateQ so (SND x)).run s'] = 0)
+    (hB : ∀ (x : A) (s' : σ), probFailure ((simulateQ so (SND x)).run s') = 0)
     (pg : A × C → Prop) (qg : D → Prop) (e₁ e₂ : ℝ≥0∞)
-    (h₁ : Pr[fun r => ¬ Option.elim r.1 True pg
-          | init >>= fun s => (simulateQ so
+    (h₁ : probEvent (fun r => ¬ Option.elim r.1 True pg) (init >>= fun s => (simulateQ so
               (liftM FST >>= fun x => W1 x >>= fun s₂ =>
-                (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s] ≤ e₁)
+                (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s) ≤ e₁)
     (h₂ : ∀ (p : A × C) (s' : σ),
           (some p, s') ∈ support (init >>= fun s => (simulateQ so
               (liftM FST >>= fun x => W1 x >>= fun s₂ =>
                 (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s) → pg p →
-          Pr[fun o => ¬ Option.elim o True qg
-            | (simulateQ so (liftM (SND p.1) >>= fun a => W2 p.1 a p.2).run).run' s'] ≤ e₂) :
-    Pr[fun o => ¬ Option.elim o True qg
-        | init >>= fun s => (simulateQ so
+          probEvent (fun o => ¬ Option.elim o True qg) ((simulateQ so (liftM (SND p.1) >>= fun a => W2 p.1 a p.2).run).run' s') ≤ e₂) :
+    probEvent (fun o => ¬ Option.elim o True qg) (init >>= fun s => (simulateQ so
             (liftM FST >>= fun x => liftM (SND x) >>= fun a => W1 x >>= fun s₂ =>
-              W2 x a s₂).run).run' s] ≤ e₁ + e₂ := by
+              W2 x a s₂).run).run' s) ≤ e₁ + e₂ := by
+  letI : MeasurableSpace (Option D) := ⊤
   have key := seam_swap_evalDist_eq init so hso FST SND W1 W2 hB
   have hmain := probComp_seam_union_le init so
     (liftM FST >>= fun x => W1 x >>= fun s₂ => (pure (x, s₂) : OptionT (OracleComp spec) (A × C)))
     (fun p => liftM (SND p.1) >>= fun a => W2 p.1 a p.2) pg qg e₁ e₂ h₁ h₂
-  unfold probEvent at hmain ⊢
+  simp only [probEvent, prEvent_eq_evalDist_of_discrete] at hmain ⊢
   rw [key]; exact hmain
 
 /-- **`P/A/B/k`-form soundness swap-union.** The soundness twin of
@@ -214,22 +207,19 @@ theorem probComp_seam_swap_union_le_PABk (init : ProbComp σ)
     {A B C D : Type}
     (FST : OracleComp spec A) (SND : A → OracleComp spec B)
     (W1 : A → OptionT (OracleComp spec) C) (W2 : A → B → C → OptionT (OracleComp spec) D)
-    (hB : ∀ (x : A) (s' : σ), Pr[⊥ | (simulateQ so (SND x)).run s'] = 0)
+    (hB : ∀ (x : A) (s' : σ), probFailure ((simulateQ so (SND x)).run s') = 0)
     (pg : A × C → Prop) (qg : D → Prop) (e₁ e₂ : ℝ≥0∞)
-    (h₁ : Pr[fun r => ¬ Option.elim r.1 True pg
-          | init >>= fun s => (simulateQ so
+    (h₁ : probEvent (fun r => ¬ Option.elim r.1 True pg) (init >>= fun s => (simulateQ so
               (liftM FST >>= fun x => W1 x >>= fun s₂ =>
-                (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s] ≤ e₁)
+                (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s) ≤ e₁)
     (h₂ : ∀ (p : A × C) (s' : σ),
           (some p, s') ∈ support (init >>= fun s => (simulateQ so
               (liftM FST >>= fun x => W1 x >>= fun s₂ =>
                 (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s) → pg p →
-          Pr[fun o => ¬ Option.elim o True qg
-            | (simulateQ so (liftM (SND p.1) >>= fun a => W2 p.1 a p.2).run).run' s'] ≤ e₂) :
-    Pr[fun o => ¬ Option.elim o True qg
-        | init >>= fun s => (simulateQ so
+          probEvent (fun o => ¬ Option.elim o True qg) ((simulateQ so (liftM (SND p.1) >>= fun a => W2 p.1 a p.2).run).run' s') ≤ e₂) :
+    probEvent (fun o => ¬ Option.elim o True qg) (init >>= fun s => (simulateQ so
             (FST >>= fun x => SND x >>= fun a => (W1 x).run >>= fun o₁ =>
-              o₁.elim (pure none) (fun s₂ => (W2 x a s₂).run))).run' s] ≤ e₁ + e₂ := by
+              o₁.elim (pure none) (fun s₂ => (W2 x a s₂).run))).run' s) ≤ e₁ + e₂ := by
   have key := probComp_seam_swap_union_le' init so hso FST SND W1 W2 hB pg qg e₁ e₂ h₁ h₂
   rwa [seam_natural_run_eq] at key
 
@@ -251,17 +241,18 @@ Here the two are fused into the single `none`-or-`¬good` event, the exact event
 bounds (`probComp_seam_completeness` / `OptionTStateT.probComp_seam_swap_completeness`) produce. -/
 theorem probEvent_optionT_mk_ge_of_bad_le {α : Type} (ma : ProbComp (Option α))
     (good : α → Prop) (e : ℝ≥0∞)
-    (htot : Pr[⊥ | ma] = 0)
-    (hbad : Pr[fun o => ¬ Option.elim o False good | ma] ≤ e) :
-    Pr[good | (OptionT.mk ma : OptionT ProbComp α)] ≥ 1 - e := by
+    (htot : probFailure (ma) = 0)
+    (hbad : probEvent (fun o => ¬ Option.elim o False good) (ma) ≤ e) :
+    probEvent (good) ((OptionT.mk ma : OptionT ProbComp α)) ≥ 1 - e := by
   rw [Verifier.StateFunction.probEvent_optionT_mk_eq_elim]
-  have hc := probEvent_compl ma (fun o => Option.elim o False good)
-  rw [htot, tsub_zero] at hc
+  have hc := prEvent_add_prEvent_not_eq_prEvent_true ma
+    (fun o => Option.elim o False good)
+  rw [(prFail_eq_zero_iff ma).mp htot] at hc
   rw [ge_iff_le, tsub_le_iff_right]
   calc (1 : ℝ≥0∞)
-      = Pr[fun o => Option.elim o False good | ma]
-        + Pr[fun o => ¬ Option.elim o False good | ma] := hc.symm
-    _ ≤ Pr[fun o => Option.elim o False good | ma] + e := by gcongr
+      = probEvent (fun o => Option.elim o False good) (ma)
+        + probEvent (fun o => ¬ Option.elim o False good) (ma) := hc.symm
+    _ ≤ probEvent (fun o => Option.elim o False good) (ma) + e := by gcongr
 
 /-- **Completeness from a single bad-event bound + game totality (general adapter).**
 
@@ -283,14 +274,13 @@ theorem completenessFromRun_of_bad_le
     (completenessError : ℝ≥0)
     (hbad :
       ∀ stmtIn witIn, (stmtIn, witIn) ∈ relIn →
-        Pr[fun o => ¬ Option.elim o False
+        probEvent (fun o => ¬ Option.elim o False
               (fun (r : (Trace × StmtOut × WitOut) × StmtOut) =>
-                (r.2, r.1.2.2) ∈ relOut ∧ r.1.2.1 = r.2) |
-            (do (simulateQ runImpl (run stmtIn witIn).run).run' (← runInit))]
+                (r.2, r.1.2.2) ∈ relOut ∧ r.1.2.1 = r.2)) ((do (simulateQ runImpl (run stmtIn witIn).run).run' (← runInit)))
           ≤ (completenessError : ℝ≥0∞))
     (htot :
       ∀ stmtIn witIn, (stmtIn, witIn) ∈ relIn →
-        Pr[⊥ | (do (simulateQ runImpl (run stmtIn witIn).run).run' (← runInit))] = 0) :
+        probFailure ((do (simulateQ runImpl (run stmtIn witIn).run).run' (← runInit))) = 0) :
     Reduction.completenessFromRun runInit runImpl relIn relOut run completenessError := by
   intro stmtIn witIn hRel
   exact probEvent_optionT_mk_ge_of_bad_le _ _ _ (htot stmtIn witIn hRel) (hbad stmtIn witIn hRel)

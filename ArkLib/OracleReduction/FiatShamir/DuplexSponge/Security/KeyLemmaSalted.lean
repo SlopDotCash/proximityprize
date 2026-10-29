@@ -89,6 +89,12 @@ open OracleComp OracleSpec ProtocolSpec OracleReduction
 
 namespace DuplexSpongeFS.KeyLemmaSalted
 
+-- Retain the discrete, all-event observation of the optional salted transcript.
+local instance {n : ℕ} (pSpec : ProtocolSpec n) {StmtIn StmtOut Salt : Type}
+    {κ : Type} (spec : OracleSpec κ) :
+    MeasurableSpace (StmtIn × StmtOut × FSSaltedProof pSpec Salt ×
+      QueryLog spec × QueryLog spec) := ⊤
+
 open DSTraceStorage TraceTransform ProverTransform KeyLemmaFoundations KeyLemmaHybrids
 open scoped NNReal
 
@@ -370,7 +376,7 @@ noncomputable def Hyb0S [SampleableType U]
     (V : Verifier oSpec StmtIn StmtOut pSpec)
     (P : OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U)
       (StmtIn × pSpec.Messages)) :
-    SPMF (Option (StmtIn × StmtOut × FSSaltedProof pSpec Salt
+    MeasureTheory.Measure (Option (StmtIn × StmtOut × FSSaltedProof pSpec Salt
       × QueryLog (oSpec + fsChallengeOracle (StmtIn × Salt) pSpec)
       × QueryLog (oSpec + fsChallengeOracle (StmtIn × Salt) pSpec))) :=
   𝒟[duplexSpongeFiatShamirGameRemappedEagerSalted (T_H := T_H) (T_P := T_P) δ Salt
@@ -388,7 +394,7 @@ noncomputable def Hyb1S [SampleableType U]
     (V : Verifier oSpec StmtIn StmtOut pSpec)
     (P : OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U)
       (StmtIn × pSpec.Messages)) :
-    SPMF (Option (StmtIn × StmtOut × FSSaltedProof pSpec Salt
+    MeasureTheory.Measure (Option (StmtIn × StmtOut × FSSaltedProof pSpec Salt
       × QueryLog (oSpec + fsChallengeOracle (StmtIn × Salt) pSpec)
       × QueryLog (oSpec + fsChallengeOracle (StmtIn × Salt) pSpec))) :=
   𝒟[hybGameEagerSalted (T_H := T_H) (T_P := T_P) δ Salt
@@ -407,7 +413,7 @@ noncomputable def Hyb2S [SampleableType U]
     (V : Verifier oSpec StmtIn StmtOut pSpec)
     (P : OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U)
       (StmtIn × pSpec.Messages)) :
-    SPMF (Option (StmtIn × StmtOut × FSSaltedProof pSpec Salt
+    MeasureTheory.Measure (Option (StmtIn × StmtOut × FSSaltedProof pSpec Salt
       × QueryLog (oSpec + fsChallengeOracle (StmtIn × Salt) pSpec)
       × QueryLog (oSpec + fsChallengeOracle (StmtIn × Salt) pSpec))) :=
   𝒟[hybGameEagerSalted (T_H := T_H) (T_P := T_P) δ Salt
@@ -429,7 +435,7 @@ noncomputable def Hyb3S [SampleableType U]
     (V : Verifier oSpec StmtIn StmtOut pSpec)
     (P : OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U)
       (StmtIn × pSpec.Messages)) :
-    SPMF (Option (StmtIn × StmtOut × FSSaltedProof pSpec Salt
+    MeasureTheory.Measure (Option (StmtIn × StmtOut × FSSaltedProof pSpec Salt
       × QueryLog (oSpec + fsChallengeOracle (StmtIn × Salt) pSpec)
       × QueryLog (oSpec + fsChallengeOracle (StmtIn × Salt) pSpec))) :=
   𝒟[hybGameEagerSalted (T_H := T_H) (T_P := T_P) δ Salt
@@ -448,7 +454,7 @@ noncomputable def Hyb4S
     (V : Verifier oSpec StmtIn StmtOut pSpec)
     (P' : OracleComp ((oSpec + fsChallengeOracle (StmtIn × Salt) pSpec) + unifSpec)
       (StmtIn × FSSaltedProof pSpec Salt)) :
-    SPMF (Option (StmtIn × StmtOut × FSSaltedProof pSpec Salt
+    MeasureTheory.Measure (Option (StmtIn × StmtOut × FSSaltedProof pSpec Salt
       × QueryLog (oSpec + fsChallengeOracle (StmtIn × Salt) pSpec)
       × QueryLog (oSpec + fsChallengeOracle (StmtIn × Salt) pSpec))) :=
   𝒟[basicFiatShamirGameEagerRandSalted Salt
@@ -602,7 +608,7 @@ def Hyb01StepResidualS [SampleableType U]
     IsQueryBoundP P (fun j => dsQueryFlavor j = .hash) tₕ →
     IsQueryBoundP P (fun j => dsQueryFlavor j = .perm) tₚ →
     IsQueryBoundP P (fun j => dsQueryFlavor j = .permInv) tₚᵢ →
-    SPMF.tvDist (Hyb0S T_H T_P δ Salt oImpl V P) (Hyb1S T_H T_P δ Salt oImpl V P)
+    MeasureTheory.Measure.tvDist (Hyb0S T_H T_P δ Salt oImpl V P) (Hyb1S T_H T_P δ Salt oImpl V P)
       ≤ claim5_21Bound U tₕ tₚ tₚᵢ L
 
 /-- CO25 Claim 5.22 residual (Eq. 53), salted surface —
@@ -623,7 +629,7 @@ def Hyb12StepResidualS [SampleableType U]
     IsQueryBoundP P (fun j => dsQueryFlavor j = .hash) tₕ →
     IsQueryBoundP P (fun j => dsQueryFlavor j = .perm) tₚ →
     IsQueryBoundP P (fun j => dsQueryFlavor j = .permInv) tₚᵢ →
-    SPMF.tvDist (Hyb1S T_H T_P δ Salt oImpl V P) (Hyb2S T_H T_P δ Salt oImpl V P)
+    MeasureTheory.Measure.tvDist (Hyb1S T_H T_P δ Salt oImpl V P) (Hyb2S T_H T_P δ Salt oImpl V P)
       ≤ claim5_22Bound (pSpec := pSpec) tₕ tₚ tₚᵢ codec.decodingBias
 
 /-- CO25 Claim 5.23 residual, salted surface — `Δ(Hyb₂ˢ, Hyb₃ˢ) = 0`: the two hybrids
@@ -641,7 +647,7 @@ def Hyb23StepResidualS [SampleableType U]
   ∀ (V : Verifier oSpec StmtIn StmtOut pSpec)
     (P : OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U)
       (StmtIn × pSpec.Messages)),
-    SPMF.tvDist (Hyb2S T_H T_P δ Salt oImpl V P) (Hyb3S T_H T_P δ Salt oImpl V P) = 0
+    MeasureTheory.Measure.tvDist (Hyb2S T_H T_P δ Salt oImpl V P) (Hyb3S T_H T_P δ Salt oImpl V P) = 0
 
 /-- CO25 Claim 5.24 residual (Eq. 55), salted surface —
 `Δ(Hyb₃ˢ, Hyb₄ˢ) ≤ 7L(2tₕ+2+2tₚ+L+2tₚᵢ)/(2|Σ|^c) − 5(L+1)/|Σ|^c`: both hybrids use the
@@ -666,7 +672,7 @@ def Hyb34StepResidualS [SampleableType U]
     IsQueryBoundP P (fun j => dsQueryFlavor j = .hash) tₕ →
     IsQueryBoundP P (fun j => dsQueryFlavor j = .perm) tₚ →
     IsQueryBoundP P (fun j => dsQueryFlavor j = .permInv) tₚᵢ →
-    SPMF.tvDist (Hyb3S T_H T_P δ Salt oImpl V P)
+    MeasureTheory.Measure.tvDist (Hyb3S T_H T_P δ Salt oImpl V P)
         (Hyb4S Salt oImpl V
           (eagerSimulatedProverSalted (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt) P))
       ≤ claim5_24Bound U tₕ tₚ tₚᵢ L
@@ -700,7 +706,7 @@ def KeyLemmaStatementEagerSalted [SampleableType U]
       (StmtIn × FSSaltedProof pSpec Salt),
     (∀ i : ι, IsQueryBoundP P' (fun j => isSharedCoinIdx i j = true) (tₒ i)) ∧
     IsQueryBoundP P' (fun j => isFSChallengeCoinIdx j = true) (θStar tₕ tₚ tₚᵢ) ∧
-    SPMF.tvDist
+    MeasureTheory.Measure.tvDist
         𝒟[basicFiatShamirGameEagerRandSalted Salt Df oImpl V P']
         𝒟[duplexSpongeFiatShamirGameRemappedEagerSalted (T_H := T_H) (T_P := T_P) δ Salt
             Dds oImpl V P]
@@ -773,6 +779,24 @@ theorem keyLemmaEagerSalted_of_steps
     exact eagerSimulatedProverSalted_challenge_budget (δ := δ) (Salt := Salt) T_H T_P P
       tₕ tₚ tₚᵢ hPerm
   · -- the total-variation bound, assembled across the salted ladder
+    haveI : MeasureTheory.IsSubprobabilityMeasure (Hyb0S T_H T_P δ Salt oImpl V P) := by
+      unfold Hyb0S
+      infer_instance
+    haveI : MeasureTheory.IsSubprobabilityMeasure (Hyb1S T_H T_P δ Salt oImpl V P) := by
+      unfold Hyb1S
+      infer_instance
+    haveI : MeasureTheory.IsSubprobabilityMeasure (Hyb2S T_H T_P δ Salt oImpl V P) := by
+      unfold Hyb2S
+      infer_instance
+    haveI : MeasureTheory.IsSubprobabilityMeasure (Hyb3S T_H T_P δ Salt oImpl V P) := by
+      unfold Hyb3S
+      infer_instance
+    haveI : MeasureTheory.IsSubprobabilityMeasure
+        (Hyb4S Salt oImpl V
+          (eagerSimulatedProverSalted (T_H := T_H) (T_P := T_P) (δ' := δ)
+            (Salt' := Salt) P)) := by
+      unfold Hyb4S
+      infer_instance
     have hchain :=
       tvDist_chain4
         (Hyb0S T_H T_P δ Salt oImpl V P) (Hyb1S T_H T_P δ Salt oImpl V P)
@@ -788,7 +812,7 @@ theorem keyLemmaEagerSalted_of_steps
     rw [← hyb4S_eq_basicFiatShamirEagerRandSalted Salt oImpl V
         (eagerSimulatedProverSalted (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt) P),
       ← hyb0S_eq_duplexSpongeRemappedEagerSalted T_H T_P δ Salt oImpl V P,
-      SPMF.tvDist_comm]
+      MeasureTheory.Measure.tvDist_comm]
     have hsum := claimSum_le_ηStarPaper (pSpec := pSpec) U tₕ tₚ tₚᵢ L codec.decodingBias
     linarith
 

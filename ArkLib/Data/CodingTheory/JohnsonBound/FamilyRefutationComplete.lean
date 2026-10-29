@@ -4,57 +4,20 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.JohnsonBound.Family
+import ProximityPrize.Extensions.Data.CodingTheory.JohnsonBound.Family
 
 /-!
-# `johnson_bound_lambda_le_ell` is *false* as stated (Finding-26 style refutation)
+# Three-word Johnson-radius regression fixture
 
-`ArkLib/Data/CodingTheory/JohnsonBound/Family.lean` exposes `johnson_bound_lambda_le_ell`
-(ABF26 Theorem 3.2) as a `Prop`-valued predicate (NOT a `theorem`, NOT a `sorry`):
+The former refutation used an obsolete `Jqℓ` definition with factor `ℓ/(ℓ-1)`.
+Canonical upstream corrects that factor to `(ℓ-1)/ℓ` and proves
+`CodingTheory.johnson_bound_lambda_le_ell`. At `q = ℓ = 2`, `δ = 1/2`, the corrected
+radius is `(1 - sqrt (1/2)) / 2`, strictly smaller than `1/2`.
 
-  for any code `C ⊆ Σ^n` with `|Σ| = q` and `ℓ ≥ 2`,
-  `|Λ(C, J_{q,ℓ}(δ_min(C)))| ≤ ℓ`,  where  `δ_min(C) = minDist(C)/n`.
-
-This file proves the statement is **not a theorem as stated** by exhibiting a concrete
-instance whose conclusion fails (`johnson_bound_lambda_le_ell_false`). The predicate
-therefore cannot be honestly upgraded to a theorem — it needs a hypothesis repair
-(a proximity bound keeping the square-root argument of `Jqℓ` nonnegative). The usable
-Johnson outputs that carry that constraint are `mds_johnson_lambda_le` (proved sorry-free
-in `Family.lean`) and the squared form in
-`ProximityGap/GrandChallengeLDThresholdJohnsonSq.lean`. See disposition
-`docs/kb/audits/proximity-prize/dispositions/issue-49-johnson-family.md`.
-
-## Why it is false
-
-`Jqℓ q ℓ δ = (1 - 1/q) · (1 - √(1 - (q/(q-1))·(ℓ/(ℓ-1))·δ))`.  The standard q-ary
-ℓ-Johnson bound is valid only in the regime where the radicand
-`1 - (q/(q-1))·(ℓ/(ℓ-1))·δ` is **nonnegative**; the Lean statement carries no such
-hypothesis.  Mathlib's `Real.sqrt` returns `0` on negative inputs, so once
-`(q/(q-1))·(ℓ/(ℓ-1))·δ > 1` the radius collapses to the meaninglessly large value
-`(1 - 1/q)`, and a ball of that radius can contain far more than `ℓ` codewords.
-
-## The witness
-
-Take `ι = Fin 2` (so `n = |ι| = 2`), `α = Fin 2` (so `q = 2`), `ℓ = 2`, and the explicit
-three-word code
-
-  `C = { ![0,0], ![0,1], ![1,0] } ⊆ (Fin 2 → Fin 2)`.
-
-* `minDist(C) = 1` (the closest distinct pair `![0,0], ![0,1]` differs in one coordinate),
-  so `δ_min = 1/2`.
-* `(q/(q-1))·(ℓ/(ℓ-1))·δ_min = 2·2·(1/2) = 2 > 1`, hence the radicand is `1 - 2 = -1 < 0`,
-  `√(-1) = 0`, and `Jqℓ 2 2 (1/2) = (1 - 1/2)·(1 - 0) = 1/2`.
-* Centring at `f = ![0,0]`, all three codewords lie within relative distance `1/2`
-  (distances `0, 1/2, 1/2`), so `closeCodewordsRel C f (1/2) = C` has `ncard = 3` and
-  `Λ(C, 1/2) ≥ 3 > 2 = ℓ`.
-
-Hence `|Λ(C, J_{q,ℓ}(δ_min(C)))| = 3 > 2 = ℓ`, refuting the statement.
-
-The one subtlety is that `relHammingBall` is defined with `open Classical`, so the ball
-membership uses `Classical.propDecidable` whereas the `Fin 2` codeword facts compute with
-`instDecidableEqFin`.  These give *equal* relative distances (`relHammingDist`'s value is
-instance-independent); the helper `mem_ball_of_mem_C` is therefore stated for an *arbitrary*
-`DecidableEq α` instance so it applies to whichever instance the ball carries.
+The three-word code, its minimum distance, and its large list at radius `1/2` remain valid
+and are retained below. They do not refute the corrected radius. The obsolete radius equality
+and inconsistency claims are retired in `scripts/integration/johnson-radius-retirement.json`.
+The historical module path and namespace remain for clients of the valid finite-code facts.
 -/
 
 set_option linter.unusedSectionVars false
@@ -105,12 +68,6 @@ theorem minDist_C : Code.minDist C = 1 := by
     rintro d ⟨u, _, v, _, huv, rfl⟩
     exact Nat.one_le_iff_ne_zero.mpr (by simpa [hammingDist_eq_zero] using huv)
 
-/-- **The Johnson radius collapses to `1/2` at `q = ℓ = 2`, `δ = 1/2`.**
-The radicand `1 - (2/1)·(2/1)·(1/2) = -1 < 0`, so `√(-1) = 0` and
-`Jqℓ 2 2 (1/2) = (1 - 1/2)·(1 - 0) = 1/2`. -/
-theorem Jqℓ_eq_half : Jqℓ (2 : ℚ) (2 : ℚ) ((1 : ℚ) / 2) = (1 / 2 : ℝ) := by
-  norm_num [Jqℓ, Real.sqrt_eq_zero_of_nonpos]
-
 /-- **Ball membership (canonical instance).**  Every codeword lies within relative distance
 `1/2` of `c0` (distances `0, 1/2, 1/2`).  Stated with the ambient (canonical `Fin 2`)
 `DecidableEq` instance, under which the `Fin 2` Hamming-distance facts compute. -/
@@ -136,9 +93,9 @@ theorem relDist_le_half (c : ι → α) (hc : c = c0 ∨ c = c1 ∨ c = c2) :
 `Classical.propDecidable` instance; `DecidableEq (Fin 2)` is a subsingleton, so we transport
 to the canonical instance (under which `relDist_le_half` is stated) by `Subsingleton.elim`. -/
 theorem closeCodewordsRel_eq_C :
-    closeCodewordsRel C c0 (1 / 2 : ℝ) = C := by
+    ListDecodable.closeCodewordsRel C c0 (1 / 2 : ℝ) = C := by
   ext c
-  simp only [closeCodewordsRel, relHammingBall, Set.mem_setOf_eq]
+  simp only [ListDecodable.closeCodewordsRel, ListDecodable.relHammingBall, Set.mem_setOf_eq]
   constructor
   · rintro ⟨hcC, _⟩; exact hcC
   · intro hcC
@@ -157,56 +114,35 @@ theorem ncard_C : C.ncard = 3 := by
 
 /-- **`Λ(C, 1/2) ≥ 3`.**  The point-list at the centre `c0` is all of `C` (`ncard = 3`), and
 `Lambda` is the supremum over centres. -/
-theorem three_le_Lambda : (3 : ℕ∞) ≤ Lambda C (1 / 2 : ℝ) := by
-  have hpt : ((closeCodewordsRel C c0 (1 / 2 : ℝ)).ncard : ℕ∞) ≤ Lambda C (1 / 2 : ℝ) :=
-    le_iSup (fun f : ι → α => ((closeCodewordsRel C f (1 / 2 : ℝ)).ncard : ℕ∞)) c0
+theorem three_le_Lambda : (3 : ℕ∞) ≤ ListDecodable.Lambda C (1 / 2 : ℝ) := by
+  have hpt : ((ListDecodable.closeCodewordsRel C c0 (1 / 2 : ℝ)).ncard : ℕ∞) ≤ ListDecodable.Lambda C (1 / 2 : ℝ) :=
+    le_iSup (fun f : ι → α => ((ListDecodable.closeCodewordsRel C f (1 / 2 : ℝ)).ncard : ℕ∞)) c0
   rwa [closeCodewordsRel_eq_C, ncard_C] at hpt
 
-/-- **ABF26 Theorem 3.2 (`johnson_bound_lambda_le_ell`) is FALSE as stated.**
+/-- The corrected canonical radius for this binary fixture. -/
+theorem corrected_Jqℓ_value :
+    Jqℓ (2 : ℚ) (2 : ℚ) ((1 : ℚ) / 2) = (1 - Real.sqrt (1 / 2)) / 2 := by
+  norm_num [Jqℓ, JohnsonBound.J]
+  ring
 
-For the concrete code `C = { ![0,0], ![0,1], ![1,0] } ⊆ (Fin 2 → Fin 2)` and `ℓ = 2`, the
-conclusion `Lambda C (Jqℓ q ℓ δ_min) ≤ ℓ` FAILS: the left side is `≥ 3` while the right side
-is `2`.  The failure is intrinsic to the unconditioned statement — `δ_min = 1/2` drives the
-square-root argument of `Jqℓ` negative, `Real.sqrt` clamps it to `0`, and the Johnson
-"radius" collapses to `1/2`, a ball that swallows the entire code.  The theorem needs a
-proximity hypothesis (`(q/(q-1))·(ℓ/(ℓ-1))·δ_min ≤ 1`) that the present statement lacks. -/
-theorem johnson_bound_lambda_le_ell_false :
-    ¬ (let q : ℚ := Fintype.card α
-       let δ_min : ℚ := Code.minDist C / Fintype.card ι
-       Lambda C (Jqℓ q 2 δ_min) ≤ (2 : ℕ∞)) := by
-  -- the radius at this instance is exactly `1/2`: `q = 2`, `minDist C = 1`, `card ι = 2`.
-  have hradius :
-      Jqℓ (Fintype.card α : ℚ) 2 ((Code.minDist C : ℚ) / Fintype.card ι) = (1 / 2 : ℝ) := by
-    have hq : (Fintype.card α : ℚ) = 2 := by rw [show Fintype.card α = 2 from by decide]; rfl
-    have hmd : Code.minDist C = 1 := minDist_C
-    rw [hq, hmd]
-    -- goal: `Jqℓ 2 2 (↑1 / 2) = 1/2`; same radicand collapse as `Jqℓ_eq_half`.
-    norm_num [Jqℓ, Real.sqrt_eq_zero_of_nonpos]
-  simp only [hradius]
-  intro hle
-  exact absurd (le_trans three_le_Lambda hle) (by decide)
+/-- The corrected radius lies below the radius of the large-list fixture. -/
+theorem corrected_Jqℓ_lt_half :
+    Jqℓ (2 : ℚ) (2 : ℚ) ((1 : ℚ) / 2) < (1 / 2 : ℝ) := by
+  rw [corrected_Jqℓ_value]
+  have hpos : 0 < Real.sqrt (1 / 2 : ℝ) := Real.sqrt_pos.2 (by norm_num)
+  linarith
 
-/-- **Direct contradiction with the named statement.**  If `johnson_bound_lambda_le_ell` (ABF26
-T3.2, the refuted `Prop`-valued predicate in `Family.lean`) were a theorem, instantiating it at
-the witness `C`, `ℓ = 2`, `(le_refl 2 : 2 ≤ 2)` would prove exactly the proposition refuted by
-`johnson_bound_lambda_le_ell_false`.  This is packaged as an implication so the file does not
-itself assume the (false) upstream statement: any honest proof of the hypothesis yields `False`. -/
-theorem upstream_theorem_is_inconsistent
-    (johnson_bound_lambda_le_ell :
-      ∀ {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-        {α : Type} [Fintype α] [DecidableEq α]
-        (C : Set (ι → α)) (ℓ : ℕ), 2 ≤ ℓ →
-        (let q : ℚ := Fintype.card α
-         let δ_min : ℚ := Code.minDist C / Fintype.card ι
-         Lambda C (Jqℓ q ℓ δ_min) ≤ (ℓ : ℕ∞))) :
-    False :=
-  johnson_bound_lambda_le_ell_false (johnson_bound_lambda_le_ell C 2 (le_refl 2))
+/-- The canonical Johnson theorem holds at its corrected radius for this code. -/
+theorem corrected_johnson_bound :
+    Code.Lambda C
+      (Jqℓ (Fintype.card α : ℚ) 2 ((Code.minDist C : ℚ) / Fintype.card ι)) ≤
+      (2 : ℕ∞) :=
+  CodingTheory.johnson_bound_lambda_le_ell C 2 (by decide)
 
--- Axiom audit (must be exactly `[propext, Classical.choice, Quot.sound]`, no `sorryAx`).
-#print axioms upstream_theorem_is_inconsistent
-#print axioms johnson_bound_lambda_le_ell_false
 #print axioms three_le_Lambda
 #print axioms minDist_C
-#print axioms Jqℓ_eq_half
+#print axioms corrected_Jqℓ_value
+#print axioms corrected_Jqℓ_lt_half
+#print axioms corrected_johnson_bound
 
 end JohnsonBound.JqlRefutation

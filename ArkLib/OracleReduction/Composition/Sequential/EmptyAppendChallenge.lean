@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Composition.Sequential.Append
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
 import ArkLib.ToVCVio.OracleComp.SimSemantics.SubsingletonState
 import ArkLib.ToVCVio.Lemmas
 
@@ -32,10 +32,17 @@ a 0-round trailing protocol consumes (see `EmptyAppendReduction`, `SubsingletonS
 
 open OracleSpec OracleComp ProtocolSpec SubSpec
 
+private theorem optionT_run_liftM_same_spec {ι : Type} {spec : OracleSpec ι}
+    {α : Type} (mx : OracleComp spec α) :
+    (liftM mx : OptionT (OracleComp spec) α).run = some <$> mx := by
+  change (mx >>= fun x => pure (some x)) = some <$> mx
+  rw [map_eq_bind_pure_comp]
+  rfl
+
 namespace OracleComp
 
 variable {ι₁ ι₂ : Type} {spec₁ : OracleSpec ι₁} {spec₂ : OracleSpec ι₂}
-  {α : Type} {mo : Type → Type} [Monad mo] [LawfulMonad mo] [HasEvalSet mo]
+  {α : Type} {mo : Type → Type} [Monad mo] [LawfulMonad mo] [MonadAttach mo] [ExactMonadAttach mo]
   [MonadLiftT (OracleComp spec₁) (OracleComp spec₂)]
   [LawfulMonadLiftT (OracleComp spec₁) (OracleComp spec₂)]
 
@@ -136,7 +143,10 @@ theorem support_simulateQ_challengeQueryImpl_append_left
 (the lift adds the state `u`, which `run'` then discards), so its support is unchanged. -/
 theorem support_run'_map_liftM {σ : Type} (u : σ) {α : Type} (p : ProbComp α) :
     support ((fun x => x.1) <$> (liftM p : StateT σ ProbComp α).run u) = support p := by
-  have h : (liftM p : StateT σ ProbComp α).run u = (fun a => (a, u)) <$> p := rfl
+  have h : (liftM p : StateT σ ProbComp α).run u = (fun a => (a, u)) <$> p := by
+    change (p >>= fun a => pure (a, u)) = (fun a => (a, u)) <$> p
+    rw [map_eq_bind_pure_comp]
+    rfl
   rw [h]; simp [Set.image_image]
 
 /-- **Per-query challenge-spec agreement for the honest-execution handler (feeder for
@@ -206,7 +216,7 @@ theorem mem_support_run'_simulateQ_liftM_lift_iff {ιₒ : Type} {oSpec : Oracle
         QueryImpl (oSpec + [pSpec₁.Challenge]ₒ) (StateT σ ProbComp)) oa).run' u) := by
   rw [show (liftM (liftM oa : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) α)
         : OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) α).run
-      = Option.some <$> (liftM oa : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) α) from rfl,
+      = Option.some <$> (liftM oa : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) α) from optionT_run_liftM_same_spec _,
     simulateQ_map]
   have hmap : ∀ (W : StateT σ ProbComp α),
       ((Option.some <$> W).run' u) = Option.some <$> (W.run' u) := by
@@ -260,7 +270,7 @@ theorem mem_support_run_of_marginals (stmt : StmtIn) (wit : WitIn)
         OracleComp (oSpec + [pSpec.Challenge]ₒ) (Option StmtOut))).run' u)) :
     some (pres, sv) ∈ support ((simulateQ c (R.run stmt wit).run).run' u) := by
   unfold Reduction.run
-  simp only [OptionT.run_bind, OptionT.run_lift, OptionT.run_pure, bind_assoc, Option.elimM]
+  simp only [OptionT.run_bind, optionT_run_liftM_same_spec, OptionT.run_pure, bind_assoc, Option.elimM]
   rw [simulateQ_run'_bind_of_subsingleton, mem_support_bind_iff]
   refine ⟨some pres, (mem_support_some_map u c _ pres).mpr hp, ?_⟩
   simp only [Option.elim_some, bind_assoc]

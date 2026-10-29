@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Stir.BlockCompleteness
-import ArkLib.ProofSystem.Component.SendWitness
+import ProximityPrize.Extensions.ProofSystem.Component.SendWitness
 
 /-!
 # RBR knowledge soundness of the initial `[C_fold]` STIR block (#301)
@@ -72,14 +72,14 @@ theorem stirInitVerifier_rbrKnowledgeSoundness (φ : ι ↪ F) (deg : ℕ) (δ :
       (stirOStmtRel Unit φ deg δ) (stirOStmtRel F φ deg δ) 0 := by
   simp only [OracleVerifier.rbrKnowledgeSoundness]
   refine ⟨fun _ => Unit, {
-    eqIn := rfl
+    extractIn := fun _ _ => ()
     extractMid := fun _ _ _ _ => ()
     extractOut := fun _ _ _ => ()
   }, {
     -- The knowledge state function: the input (statement, oracle) pair is in the input
     -- relation. It ignores the round, the transcript, and the (trivial) witness.
     toFun := fun _ stmtIn _ _ => (stmtIn, ()) ∈ stirOStmtRel Unit φ deg δ
-    toFun_empty := fun _ _ => Iff.rfl
+    toFun_empty := fun _ _ h => h
     -- The state is constant across rounds, so any extension preserves it.
     toFun_next := fun _ _ _ _ _ _ h => h
     toFun_full := fun stmtIn tr witOut hpr => by
@@ -87,20 +87,20 @@ theorem stirInitVerifier_rbrKnowledgeSoundness (φ : ι ↪ F) (deg : ℕ) (δ :
       -- positive-probability output in `stirOStmtRel F` therefore witnesses that the *input*
       -- oracle is `δ`-close to the code, which is the goal.
       obtain ⟨u, oStmt⟩ := stmtIn
-      rw [gt_iff_lt, probEvent_pos_iff] at hpr
+      rw [gt_iff_lt, OracleComp.OptionT.prEvent_mk_pos_iff] at hpr
       obtain ⟨x, hx, hrel⟩ := hpr
-      rw [OptionT.mem_support_iff] at hx
-      simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
+      simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
       obtain ⟨s, _, hx⟩ := hx
       erw [stirInitVerifier_toVerifier_run, simulateQ_optionT_pure_run'] at hx
+      simp only [support_pure, Set.mem_singleton_iff] at hx
       cases (Option.some.inj hx)
       exact hrel
   }, ?_⟩
   -- Per-challenge bound: the event "state false before the challenge, true after" is
   -- pointwise contradictory (the state ignores the transcript), so its probability is 0.
   intro stmtIn witIn prover i
-  refine le_trans (le_of_eq ?_) (zero_le _)
-  rw [probEvent_eq_zero_iff]
+  refine le_trans (le_of_eq ?_) (by positivity)
+  rw [OracleComp.prEvent_eq_zero_iff]
   rintro ⟨transcript, challenge, log⟩ _ ⟨witMid, hnot, hyes⟩
   exact hnot hyes
 

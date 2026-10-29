@@ -297,12 +297,40 @@ theorem alphaOne_preimage_forced (hH : 0 < myH.natDegree) (a : 𝒪 myH)
     embeddingOf𝒪Into𝕃_injective hH hlift
   have hstep : a = βHensel myH 0 myR myHyp 1
       * Ideal.Quotient.mk (Ideal.span {H_tilde' myH}) Polynomial.X := by
-    conv_lhs => rw [← mul_one a, ← hξinv, ← mul_assoc, ← hbeta]
-  rw [hstep, hβ1, neg_mul, ← map_mul, ← map_neg]
-  congr 1
-  rw [show Polynomial.C (Polynomial.X : K[X]) = Polynomial.monomial 0 (Polynomial.X : K[X]) from
-      (Polynomial.monomial_zero_left _).symm, Polynomial.monomial_mul_X,
-    ← Polynomial.monomial_neg]
+    calc
+      a = a * 1 := (mul_one a).symm
+      _ = a * (ClaimA2.ξ 0 myR myH myHyp *
+          Ideal.Quotient.mk (Ideal.span {H_tilde' myH}) Polynomial.X) :=
+        congrArg (fun z : 𝒪 myH => a * z) hξinv.symm
+      _ = (a * ClaimA2.ξ 0 myR myH myHyp) *
+          Ideal.Quotient.mk (Ideal.span {H_tilde' myH}) Polynomial.X :=
+        (mul_assoc a _ _).symm
+      _ = _ := congrArg (fun z : 𝒪 myH => z *
+        Ideal.Quotient.mk (Ideal.span {H_tilde' myH}) Polynomial.X) hbeta.symm
+  rw [hstep, hβ1]
+  let q := Ideal.Quotient.mk (Ideal.span {H_tilde' myH})
+  change -(q (Polynomial.C (Polynomial.X : K[X]))) * q Polynomial.X =
+    q (Polynomial.monomial 1 (-(Polynomial.X : K[X])))
+  have hneg (x y : 𝒪 myH) : -x * y = -(x * y) := by
+    apply eq_neg_of_add_eq_zero_left
+    calc
+      -x * y + x * y = (-x + x) * y := (add_mul (-x) x y).symm
+      _ = 0 * y := congrArg (fun z : 𝒪 myH => z * y) (neg_add_cancel x)
+      _ = 0 := zero_mul y
+  calc
+    _ = -(q (Polynomial.C (Polynomial.X : K[X])) * q Polynomial.X) :=
+      hneg (q (Polynomial.C (Polynomial.X : K[X]))) (q Polynomial.X)
+    _ = -q (Polynomial.C (Polynomial.X : K[X]) * Polynomial.X) :=
+      congrArg (fun z : 𝒪 myH => -z)
+        (map_mul q (Polynomial.C (Polynomial.X : K[X])) Polynomial.X).symm
+    _ = q (-(Polynomial.C (Polynomial.X : K[X]) * Polynomial.X)) :=
+      (map_neg q _).symm
+    _ = _ := by
+      congr 1
+      rw [show Polynomial.C (Polynomial.X : K[X]) =
+          Polynomial.monomial 0 (Polynomial.X : K[X]) from
+        (Polynomial.monomial_zero_left (a := (Polynomial.X : K[X]))).symm, Polynomial.monomial_mul_X,
+        ← Polynomial.monomial_neg]
 
 /-- **The X-degree budget is FALSE on the witness at the pinned `D = 2`** — the exact budget
 hypothesis of `alphaGenuineRegularWeightLe_of_monic_natDegree_two_of_budget` fails at `t = 1`:

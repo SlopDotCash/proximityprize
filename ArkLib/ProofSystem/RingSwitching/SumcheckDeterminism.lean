@@ -57,25 +57,22 @@ def roundVerifyFn? (i : Fin ℓ')
     some { ctx := p.1.ctx,
            sumcheck_target := (FullTranscript.messages tr ⟨0, rfl⟩).val.eval
              (FullTranscript.challenges tr ⟨1, rfl⟩),
-           challenges := Fin.cons (FullTranscript.challenges tr ⟨1, rfl⟩) p.1.challenges }
+           challenges := Fin.snoc p.1.challenges (FullTranscript.challenges tr ⟨1, rfl⟩) }
   else none
 
 /-- **Failing-determinism witness for the round verifier.** -/
 theorem iteratedSumcheckOracleVerifier_toVerifier_failingDet (i : Fin ℓ') :
     (iteratedSumcheckOracleVerifier κ L K P ℓ ℓ' aOStmtIn i).toVerifier
       = ⟨fun p tr => OptionT.mk (pure ((roundVerifyFn? κ L K P ℓ ℓ' aOStmtIn i p tr).map (fun s => (s,
-          fun j => match h : (iteratedSumcheckOracleVerifier κ L K P ℓ ℓ' aOStmtIn i).embed j with
-            | Sum.inl j' =>
-                ((iteratedSumcheckOracleVerifier κ L K P ℓ ℓ' aOStmtIn i).hEq j ▸ h ▸ p.2 j')
-            | Sum.inr j' =>
-                ((iteratedSumcheckOracleVerifier κ L K P ℓ ℓ' aOStmtIn i).hEq j ▸ h ▸
-                  tr.messages j')))))⟩ :=
+          (iteratedSumcheckOracleVerifier κ L K P ℓ ℓ' aOStmtIn i).materializeOutput
+            tr.challenges p.2 tr.messages))))⟩ :=
   OracleVerifier.toVerifier_eq_failingDet_of_collapse _ _ (fun stmt oStmt tr => by
     rw [iteratedSumcheckOracleVerifier_verify_collapse, ite_pure_failure_eq_mk]
     rfl)
 
 variable [IsDomain L] [IsDomain K]
 
+omit [Nontrivial L] in
 /-- The final-sumcheck verifier's deterministic partial verdict. Matches
 `finalSumcheckVerifier_verify_collapse` exactly. -/
 def finalSumcheckVerifyFn?
@@ -95,12 +92,8 @@ theorem finalSumcheckVerifier_toVerifier_failingDet :
     (finalSumcheckVerifier κ L K P ℓ ℓ' h_l aOStmtIn).toVerifier
       = ⟨fun p tr => OptionT.mk (pure
           ((finalSumcheckVerifyFn? κ L K P ℓ ℓ' h_l aOStmtIn p tr).map (fun s => (s,
-          fun j => match h : (finalSumcheckVerifier κ L K P ℓ ℓ' h_l aOStmtIn).embed j with
-            | Sum.inl j' =>
-                ((finalSumcheckVerifier κ L K P ℓ ℓ' h_l aOStmtIn).hEq j ▸ h ▸ p.2 j')
-            | Sum.inr j' =>
-                ((finalSumcheckVerifier κ L K P ℓ ℓ' h_l aOStmtIn).hEq j ▸ h ▸
-                  tr.messages j')))))⟩ :=
+          (finalSumcheckVerifier κ L K P ℓ ℓ' h_l aOStmtIn).materializeOutput
+            tr.challenges p.2 tr.messages))))⟩ :=
   OracleVerifier.toVerifier_eq_failingDet_of_collapse _ _ (fun stmt oStmt tr => by
     rw [finalSumcheckVerifier_verify_collapse, ite_pure_failure_eq_mk]
     rfl)

@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Logup.Sumcheck.SumcheckPolynomial
 import ArkLib.ProofSystem.Sumcheck.Spec.General
+import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
 
 /-!
 # LogUp Sumcheck Bridge
@@ -465,7 +466,8 @@ theorem logupSumcheckRelationInput_of_rowsAgree
         rw [logupOuterSumcheckClaim]
         apply Finset.sum_congr rfl
         intro u _
-        simpa [signDomain, signPoint] using hRows u
+        convert hRows u using 1
+        congr 1
     _ = 0 := hZero
 
 /-- The obligations needed to replace the current abstract embedded sumcheck by ArkLib's generic
@@ -578,13 +580,12 @@ theorem logupSumcheckOutputTarget_eq_eval
   rw [Finset.sum_eq_single x0]
   · have hpoint :
         Fin.append out.challenges x0 ∘
-            Fin.cast (Sumcheck.Spec.relationRound._proof_1 n (Fin.last n)) =
+            Fin.cast (by simp) =
           out.challenges := by
       rw [Fin.append_right_nil out.challenges x0 hzero]
       ext i
       simp
     rw [hpoint]
-    rfl
   · intro y _ hy
     exfalso
     apply hy
@@ -753,11 +754,12 @@ noncomputable def logupSumcheckOracleLens [Fintype F] [DecidableEq F] [Sampleabl
             stmt.batchingScalars evals)
   embedOStmt := Function.Embedding.ofIsEmpty
   hEqOStmt := fun i => Fin.elim0 i
+  outputInterface_heq := fun i => Fin.elim0 i
 
 /-- The embedded LogUp sumcheck phase, obtained by lifting ArkLib's generic Sumcheck reduction
 through the LogUp-to-Sumcheck context lens.
 
-Migrated to the new `OracleReduction.liftContext` signature (#433): the value-level context lens
+Migrated to the new `OracleReduction.liftContextLegacy` signature (#433): the value-level context lens
 `logupSumcheckContextLens` drives the prover, threaded alongside the oracle-routing
 `stmtLens := logupSumcheckOracleLens` (carrying the `simOStmt` / `embedOStmt` data). -/
 noncomputable def sumcheckOracleReduction [SampleableType F] :
@@ -765,9 +767,9 @@ noncomputable def sumcheckOracleReduction [SampleableType F] :
       (StmtOut) (OStmtOut) Unit
       (logupSumcheckPSpec F n M params) :=
   (logupConcreteSumcheckOracleReduction oSpec F n M params
-      (Fact.out : (-1 : F) ≠ 1)).liftContext
+      (Fact.out : (-1 : F) ≠ 1)).liftContextLegacy
     (logupSumcheckContextLens.{0} F n M params)
-    (logupSumcheckOracleLens.{0} oSpec F n M params)
+    (logupSumcheckOracleLens oSpec F n M params)
 
 end SumcheckLift
 

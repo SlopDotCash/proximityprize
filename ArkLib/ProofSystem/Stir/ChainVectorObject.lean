@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Stir.VSpecBridge
-import ArkLib.OracleReduction.Cast
+import ProximityPrize.Extensions.OracleReduction.Cast
 
 /-!
 # The hOₘ object cast: `stirChainVectorObject` (#301)

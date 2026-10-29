@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import Mathlib
 
 /-!
@@ -107,13 +108,13 @@ theorem card_filter_exists_not_pi {β : Type*} [Fintype β] [DecidableEq β] (s 
 /-- The mass of a finite event under the uniform distribution is its cardinality divided by the
 sample-space cardinality. -/
 theorem uniform_event_mass {α : Type*} [Fintype α] [Nonempty α] (E : Finset α) :
-    (PMF.uniformOfFintype α).toOuterMeasure (E : Set α)
+    (ProximityPrize.Compatibility.uniformOfFintype α).toOuterMeasure (E : Set α)
       = (E.card : ℝ≥0∞) / Fintype.card α := by
   classical
   rw [PMF.toOuterMeasure_apply_finset]
-  have hval : ∀ a ∈ E, (PMF.uniformOfFintype α) a = (Fintype.card α : ℝ≥0∞)⁻¹ := by
+  have hval : ∀ a ∈ E, (ProximityPrize.Compatibility.uniformOfFintype α) a = (Fintype.card α : ℝ≥0∞)⁻¹ := by
     intro a _
-    exact PMF.uniformOfFintype_apply a
+    exact ProximityPrize.Compatibility.uniformOfFintype_apply a
   rw [Finset.sum_congr rfl hval]
   rw [Finset.sum_const, nsmul_eq_mul, ENNReal.div_eq_inv_mul]
   ring
@@ -406,7 +407,7 @@ theorem card_filter_exists_eval_ne_const_ge_of_ne_C_natDegree_le {F : Type*}
 degree-`< N` polynomial. -/
 theorem prob_filter_forall_isRoot_le {F : Type*} [Field F] [Fintype F] [Nonempty F]
     {N s : ℕ} {p : F[X]} (hp0 : p ≠ 0) (hp : p.natDegree < N) :
-    (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
         {r : Fin s → F | ∀ i, p.IsRoot (r i)}
       ≤ (((N - 1) ^ s : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ^ s := by
   classical
@@ -428,7 +429,7 @@ theorem prob_filter_forall_isRoot_le {F : Type*} [Field F] [Fintype F] [Nonempty
 /-- Uniform-tuple root-event probability from a direct degree bound. -/
 theorem prob_filter_forall_isRoot_le_of_natDegree_le {F : Type*} [Field F] [Fintype F]
     [Nonempty F] {D s : ℕ} {p : F[X]} (hp0 : p ≠ 0) (hp : p.natDegree ≤ D) :
-    (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
         {r : Fin s → F | ∀ i, p.IsRoot (r i)}
       ≤ ((D ^ s : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ^ s := by
   classical
@@ -453,7 +454,7 @@ theorem prob_filter_exists_not_isRoot_ge {F : Type*} [Field F] [Fintype F] [None
     {N s : ℕ} {p : F[X]} (hp0 : p ≠ 0) (hp : p.natDegree < N) :
     (((Fintype.card F ^ s - (N - 1) ^ s : ℕ) : ℝ≥0∞)
         / (Fintype.card F : ℝ≥0∞) ^ s)
-      ≤ (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+      ≤ (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
           {r : Fin s → F | ∃ i, ¬ p.IsRoot (r i)} := by
   classical
   let E : Finset (Fin s → F) :=
@@ -476,7 +477,7 @@ theorem prob_filter_exists_not_isRoot_ge_of_natDegree_le {F : Type*} [Field F] [
     [Nonempty F] {D s : ℕ} {p : F[X]} (hp0 : p ≠ 0) (hp : p.natDegree ≤ D) :
     (((Fintype.card F ^ s - D ^ s : ℕ) : ℝ≥0∞)
         / (Fintype.card F : ℝ≥0∞) ^ s)
-      ≤ (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+      ≤ (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
           {r : Fin s → F | ∃ i, ¬ p.IsRoot (r i)} := by
   classical
   let E : Finset (Fin s → F) :=
@@ -499,7 +500,7 @@ degree-`< N` polynomials. -/
 theorem prob_filter_forall_eval_eq_le_of_natDegree_lt {F : Type*} [Field F] [Fintype F]
     [Nonempty F] {N s : ℕ} {p q : F[X]} (hpq : p ≠ q)
     (hp : p.natDegree < N) (hq : q.natDegree < N) :
-    (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
         {r : Fin s → F | ∀ i, p.eval (r i) = q.eval (r i)}
       ≤ (((N - 1) ^ s : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ^ s := by
   classical
@@ -521,7 +522,7 @@ theorem prob_filter_forall_eval_eq_le_of_natDegree_lt {F : Type*} [Field F] [Fin
 /-- Uniform-tuple coordinatewise agreement probability from a direct degree bound on `p - q`. -/
 theorem prob_filter_forall_eval_eq_le_of_sub_natDegree_le {F : Type*} [Field F] [Fintype F]
     [Nonempty F] {D s : ℕ} {p q : F[X]} (hpq : p ≠ q) (hdeg : (p - q).natDegree ≤ D) :
-    (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
         {r : Fin s → F | ∀ i, p.eval (r i) = q.eval (r i)}
       ≤ ((D ^ s : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ^ s := by
   classical
@@ -547,7 +548,7 @@ theorem prob_filter_exists_eval_ne_ge_of_natDegree_lt {F : Type*} [Field F] [Fin
     (hp : p.natDegree < N) (hq : q.natDegree < N) :
     (((Fintype.card F ^ s - (N - 1) ^ s : ℕ) : ℝ≥0∞)
         / (Fintype.card F : ℝ≥0∞) ^ s)
-      ≤ (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+      ≤ (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
           {r : Fin s → F | ∃ i, p.eval (r i) ≠ q.eval (r i)} := by
   classical
   let E : Finset (Fin s → F) :=
@@ -570,7 +571,7 @@ theorem prob_filter_exists_eval_ne_ge_of_sub_natDegree_le {F : Type*} [Field F] 
     [Nonempty F] {D s : ℕ} {p q : F[X]} (hpq : p ≠ q) (hdeg : (p - q).natDegree ≤ D) :
     (((Fintype.card F ^ s - D ^ s : ℕ) : ℝ≥0∞)
         / (Fintype.card F : ℝ≥0∞) ^ s)
-      ≤ (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+      ≤ (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
           {r : Fin s → F | ∃ i, p.eval (r i) ≠ q.eval (r i)} := by
   classical
   let E : Finset (Fin s → F) :=
@@ -592,7 +593,7 @@ theorem prob_filter_exists_eval_ne_ge_of_sub_natDegree_le {F : Type*} [Field F] 
 theorem prob_filter_forall_eval_eq_const_le_of_sub_C_natDegree_le {F : Type*}
     [Field F] [Fintype F] [Nonempty F] {D s : ℕ} {p : F[X]} {a : F}
     (hp0 : p - C a ≠ 0) (hdeg : (p - C a).natDegree ≤ D) :
-    (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
         {r : Fin s → F | ∀ i, p.eval (r i) = a}
       ≤ ((D ^ s : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ^ s := by
   classical
@@ -617,7 +618,7 @@ theorem prob_filter_exists_eval_ne_const_ge_of_sub_C_natDegree_le {F : Type*}
     (hp0 : p - C a ≠ 0) (hdeg : (p - C a).natDegree ≤ D) :
     (((Fintype.card F ^ s - D ^ s : ℕ) : ℝ≥0∞)
         / (Fintype.card F : ℝ≥0∞) ^ s)
-      ≤ (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+      ≤ (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
           {r : Fin s → F | ∃ i, p.eval (r i) ≠ a} := by
   classical
   let E : Finset (Fin s → F) :=
@@ -639,7 +640,7 @@ theorem prob_filter_exists_eval_ne_const_ge_of_sub_C_natDegree_le {F : Type*}
 theorem prob_filter_forall_eval_eq_const_le_of_natDegree_le {F : Type*}
     [Field F] [Fintype F] [Nonempty F] {D s : ℕ} {p : F[X]} {a : F}
     (hp0 : p - C a ≠ 0) (hp : p.natDegree ≤ D) :
-    (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
         {r : Fin s → F | ∀ i, p.eval (r i) = a}
       ≤ ((D ^ s : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ^ s := by
   have hC : (C a : F[X]).natDegree ≤ D := by
@@ -655,7 +656,7 @@ theorem prob_filter_exists_eval_ne_const_ge_of_natDegree_le {F : Type*}
     (hp0 : p - C a ≠ 0) (hp : p.natDegree ≤ D) :
     (((Fintype.card F ^ s - D ^ s : ℕ) : ℝ≥0∞)
         / (Fintype.card F : ℝ≥0∞) ^ s)
-      ≤ (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+      ≤ (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
           {r : Fin s → F | ∃ i, p.eval (r i) ≠ a} := by
   have hC : (C a : F[X]).natDegree ≤ D := by
     simp
@@ -668,7 +669,7 @@ theorem prob_filter_exists_eval_ne_const_ge_of_natDegree_le {F : Type*}
 theorem prob_filter_forall_eval_eq_const_le_of_ne_C_natDegree_le {F : Type*}
     [Field F] [Fintype F] [Nonempty F] {D s : ℕ} {p : F[X]} {a : F}
     (hpC : p ≠ C a) (hp : p.natDegree ≤ D) :
-    (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
         {r : Fin s → F | ∀ i, p.eval (r i) = a}
       ≤ ((D ^ s : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ^ s := by
   exact prob_filter_forall_eval_eq_const_le_of_natDegree_le
@@ -680,7 +681,7 @@ theorem prob_filter_exists_eval_ne_const_ge_of_ne_C_natDegree_le {F : Type*}
     (hpC : p ≠ C a) (hp : p.natDegree ≤ D) :
     (((Fintype.card F ^ s - D ^ s : ℕ) : ℝ≥0∞)
         / (Fintype.card F : ℝ≥0∞) ^ s)
-      ≤ (PMF.uniformOfFintype (Fin s → F)).toOuterMeasure
+      ≤ (ProximityPrize.Compatibility.uniformOfFintype (Fin s → F)).toOuterMeasure
           {r : Fin s → F | ∃ i, p.eval (r i) ≠ a} := by
   exact prob_filter_exists_eval_ne_const_ge_of_natDegree_le
     (F := F) (D := D) (s := s) (p := p) (a := a) (sub_ne_zero_of_ne hpC) hp

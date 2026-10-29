@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import Research.ProximityPrize.MCAGSWitness
-import ArkLib.Data.Polynomial.Bivariate
+import ProximityPrize.Extensions.Data.Polynomial.Bivariate
 import Mathlib.RingTheory.Polynomial.Resultant.Basic
 
 /-!

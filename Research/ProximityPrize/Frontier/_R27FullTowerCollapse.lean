@@ -100,10 +100,9 @@ theorem pureFace_pow (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroup
           refine Finset.sum_nbij' (fun d => d - j) (fun c => c + j) ?_ ?_ ?_ ?_ ?_
           · intro d _; exact Finset.mem_univ _
           · intro c _; exact Finset.mem_univ _
-          · intro d _; dsimp only; ring
-          · intro c _; dsimp only; ring
+          · intro d _; ring
+          · intro c _; ring
           · intro d _
-            dsimp only
             congr 2
             ring
 

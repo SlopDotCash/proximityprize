@@ -102,9 +102,6 @@ theorem imprimitive_fiber_card (d : ℕ) {y : G} (hy : y ∈ Set.range (powHom (
       = Fintype.card (powHom (G := G) d).ker := by
     rw [Fintype.card_subtype]
     congr 1
-    apply Finset.filter_congr
-    intro x _
-    simp [MonoidHom.mem_ker, powHom, powMonoidHom_apply]
   rw [hbij]
   have hnc := IsCyclic.card_powMonoidHom_ker G d
   rw [Nat.card_eq_fintype_card, Nat.card_eq_fintype_card] at hnc

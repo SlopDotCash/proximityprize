@@ -195,7 +195,7 @@ theorem mcaEvent_owned_tuples (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (δ :
   have hPdeg' : P.natDegree < k := by
     by_cases hP0 : P = 0
     · subst hP0
-      simpa using hk
+      simpa only [Polynomial.natDegree_zero] using (show 0 < k by omega)
     · exact (Polynomial.natDegree_lt_iff_degree_lt hP0).mpr hPdeg
   rw [← residual_line dom k t u₀ u₁ γ]
   refine residual_eq_zero_of_extends dom k t hPdeg' fun a => ?_

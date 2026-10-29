@@ -75,9 +75,9 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr
         let maxDeg := (Finset.univ : Finset (Fin m_0)).sup (fun i => wPoly₀.degreeOf (Fin.succ i))
         let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
         let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-          Fintype (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
+          Fintype (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
         let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-          Nonempty (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
+          Nonempty (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
         ∀ j : Fin ((P.foldingParam 0) + 1),
           let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
         ∀ j : Fin (P.foldingParam 0),
@@ -95,9 +95,9 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr
         let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
         let d := max dstar 3
         let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          Fintype (BlockRelDistance.indexPowT (S i) (P.φ i) j) := h.inst1
+          Fintype (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst1
         let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          Nonempty (BlockRelDistance.indexPowT (S i) (P.φ i) j) := h.inst2
+          Nonempty (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst2
         ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
           let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
         ∀ i : Fin (M + 1), ∀ j : Fin (P.foldingParam i),
@@ -119,7 +119,7 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr
       (P := P) (S := S) (hParams := hParams) (h := h)
       hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)
       ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin :=
-  whir_rbr_soundness_of_secure_gap (ι := Unit)
+  whir_rbr_soundness_of_secure_gap
     hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)
     ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin
     hChallengeCard (whirCheckedVectorIOP P d')

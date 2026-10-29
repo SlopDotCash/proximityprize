@@ -3,96 +3,23 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Security.RoundByRound
+import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
+import ArkLib.OracleReduction.Security.Implications
+import ArkLib.OracleReduction.Security.GuardedBridges
 
 /-!
-# Implications between security notions (core implications)
+# Conditional downstream security bridges
 
-This file proves the implications between the security notions defined in
-`Security/Basic.lean` and `Security/RoundByRound.lean` (the "Implications Between Security
-Notions" lattice from the blueprint):
+The canonical security definitions count extractor failure as a bad event and allow arbitrary
+private prover inputs. The former `knowledgeSoundness_vacuous` claim and its unconditional
+round-by-round corollary relied on the retired convention that discarded extraction failure;
+they are intentionally retired. `Security.Implications` owns the round-by-round knowledge to
+plain soundness implication, and `Security.GuardedBridges` owns the guarded worst-case bridge.
 
-* round-by-round knowledge soundness ⟹ (straightline) knowledge soundness
-  (`Verifier.rbrKnowledgeSoundness_implies_knowledgeSoundness` — but see the ⚠ VACUITY NOTE
-  below — and the *genuine*, extractor-exhibiting version
-  `Verifier.rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal`);
-* round-by-round knowledge soundness ⟹ round-by-round soundness
-  (`Verifier.rbrKnowledgeSoundness_implies_rbrSoundness`);
-* round-by-round soundness ⟹ soundness, conditional on the marginal-domination residual
-  (`Verifier.rbrSoundness_implies_soundness_of_marginal`);
-* knowledge soundness ⟹ soundness: **documented as open**; the literal statement is *false*
-  under the current definitions (see the final section of this file for the three obstructions
-  and the proposed honest variant).
-
-## ⚠ VACUITY NOTE: the scalar `knowledgeSoundness` definition is trivially satisfiable
-
-`Extractor.Straightline` (`Security/Basic.lean`, around line 271) returns an
-`OptionT (OracleComp oSpec) WitIn`, so the always-failing extractor
-`fun _ _ _ _ _ => failure` is a legal straightline extractor.  The knowledge game in
-`Verifier.knowledgeSoundness` (`Security/Basic.lean`, around line 357) *binds* the extractor's
-output inside the measured `OptionT` computation, and `probEvent` over an `OptionT` computation
-does **not** count failures toward the event (see
-`Verifier.StateFunction.probEvent_optionT_mk_eq_elim` in `Security/RoundByRound.lean`: the
-event is `o.elim False p`, which is `False` on `none`).  Consequently **every** verifier
-satisfies `knowledgeSoundness` with error `0`, witnessed by the failing extractor
-(`Verifier.knowledgeSoundness_vacuous` below makes this explicit).
-
-In the literature, an extraction *failure* makes the knowledge game's bad event *true* (the
-extractor must succeed whenever the verifier accepts); the current Lean definition instead
-silently drops failing runs.  This is a definitional porting bug that should eventually be
-repaired (e.g. by scoring `(stmtOut, witOut) ∈ relOut ∧ (extraction failed ∨ extracted ∉ relIn)`
-as the bad event).  Until then:
-
-* `Verifier.rbrKnowledgeSoundness_implies_knowledgeSoundness` (the statement consumed by
-  `ProofSystem/Binius/FRIBinius/General.lean`) is proven *honestly but vacuously* via the
-  failing extractor — the proof does not use the round-by-round hypothesis at all;
-* the *genuine* mathematical content (the bound for the real, fold-of-`extractMid` extractor)
-  is `Verifier.rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal`, stated
-  so that the exhibited extractor is `Extractor.RoundByRound.toStraightline` and the bound is
-  proved for *that* extractor, conditional on two named measure-theoretic residuals (see below).
-
-## The two named residuals of the genuine implication
-
-The genuine `rbrKnowledgeSoundness → knowledgeSoundness` proof has the same structure as the
-`rbrSoundness → soundness` bridge in
-`ProofSystem/Logup/Security/{RbrToSoundBridge,MarginalBridgeProof}.lean` (generic theorems
-which are misfiled under `Logup` and should be re-homed next to this file; they could not be
-imported in this change because their compiled artifacts are not part of the core `Security`
-build):
-
-1. `Verifier.KnowledgeAcceptLast` — the *fresh-init seam*: on the support of the (logged) full
-   run, a prover output accepted by the output relation forces the knowledge state function at
-   the last round.  This is the knowledge twin of the `toFun_full` seam in
-   `Verifier.marginalBridge_holds`: `KnowledgeStateFunction.toFun_full` only constrains
-   verifier runs started from a *fresh* `init` sample, while the full run threads the
-   post-prover implementation state into the verifier, so this residual is genuinely
-   conditional (for state-mutating `impl` the unconditional statement is **false**; see the
-   counterexample documented at `ProofSystem/Logup/Security/MarginalBridgeProof.lean`, lines
-   20–31).  It is dischargeable for honest implementations (state-preserving / value-blind
-   `impl`, via `OptionTStateT.addLift_state_preserving` and the state-independence of
-   `evalDist`), exactly as in `Verifier.marginalBridge_holds`.
-
-2. `Verifier.KnowledgeFlipTransport` — the *per-round marginal transport*: the probability of
-   the round-`i` flip event along the realized full-run transcript is dominated by the
-   round-by-round game's flip probability (the game that runs the prover only up to round `i`
-   and samples a fresh challenge).  This is the knowledge twin of
-   `Verifier.fullRun_flip_marginal_le_rbrGameFlipProb`
-   (`ProofSystem/Logup/Security/MarginalBridgeProof.lean`), whose proof is unconditional but
-   relies on the `continueFromTo` trailing-drop machinery for the *unlogged* run; the logged
-   (`runWithLog`) analogue needed here is left as this named residual.
-
-Everything else — the extractor fold, the first-crossing pigeonhole on the realized transcript
-(`false` at round `0` via `toFun_empty`, `true` at the last round via the seam, no flip at
-prover rounds via `toFun_next`), the union bound over challenge rounds, and the error
-summation — is proven below, axiom-clean.
-
-## Technique summary
-
-Per-round bounds are consumed/produced against the *literal* round-by-round games by event
-implication (`probEvent_mono`) and program-level `map` transport (`simulateQ_map`,
-`StateT.run'`/`map` commutation, `probEvent_map`), never by unfolding the run; the
-combinatorial core is `Verifier.StateFunction.exists_challenge_flip_of_false_zero_true_last`
-plus the union bound `Verifier.StateFunction.probEvent_le_sum_of_imp_exists`.
+The additional full-run seam and marginal transport predicates below remain explicit hypotheses.
+They quantify over arbitrary private prover inputs, matching canonical knowledge soundness. Their
+conditional bridge certifies the specified pure backward-fold extractor. No fresh-state seam or
+marginal transport is assumed implicitly.
 -/
 
 noncomputable section
@@ -126,9 +53,10 @@ private theorem run'_init_map {α β : Type}
 private theorem probEvent_run'_init_map {α β : Type}
     (so : QueryImpl spec (StateT σ ProbComp)) (ma : OracleComp spec α) (f : α → β)
     (p : β → Prop) :
-    Pr[p | do (simulateQ so (f <$> ma)).run' (← init)]
-      = Pr[p ∘ f | do (simulateQ so ma).run' (← init)] := by
-  rw [run'_init_map, probEvent_map]
+    probEvent (p) (do (simulateQ so (f <$> ma)).run' (← init))
+      = probEvent (p ∘ f) (do (simulateQ so ma).run' (← init)) := by
+  rw [run'_init_map]
+  exact prEvent_map _ _ _
 
 /-- Generic first-projection/bind commutation: consuming only the first component of a
 mapped first stage equals consuming the first component of the unmapped stage.  (Stated over a
@@ -157,75 +85,6 @@ theorem knowledgeSoundness_error_mono
     verifier.knowledgeSoundness init impl relIn relOut knowledgeError₂ :=
   knowledgeSoundness.mono_error init impl h hε
 
-/-! ## The vacuity of `knowledgeSoundness`, made explicit -/
-
-/-- ⚠ VACUITY NOTE.  **Every verifier satisfies `knowledgeSoundness` at error `0`**, witnessed
-by the always-failing straightline extractor.  This is *not* a meaningful security statement: it
-exposes the definitional weakness documented in the module docstring (`Extractor.Straightline`
-is `OptionT`-valued and `probEvent` does not count failures, so an extractor that always fails
-makes the knowledge game's bad event have probability `0`).  It is recorded here (a) to make the
-definitional bug impossible to overlook and (b) as the honest engine behind the literal
-statement `rbrKnowledgeSoundness_implies_knowledgeSoundness` below. -/
-theorem knowledgeSoundness_vacuous
-    (relIn : Set (StmtIn × WitIn)) (relOut : Set (StmtOut × WitOut))
-    (verifier : Verifier oSpec StmtIn StmtOut pSpec) :
-    verifier.knowledgeSoundness init impl relIn relOut 0 := by
-  refine ⟨fun _ _ _ _ _ => failure, fun stmtIn witIn prover => ?_⟩
-  show Pr[fun (y : StmtIn × WitIn × StmtOut × WitOut) =>
-      (y.1, y.2.1) ∉ relIn ∧ (y.2.2.1, y.2.2.2) ∈ relOut |
-    OptionT.mk do
-      (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
-        (OptionT.run (do
-          let ⟨⟨⟨transcript, ⟨_, witOut⟩⟩, stmtOut⟩, proveQueryLog, verifyQueryLog⟩
-            ← (Reduction.mk prover verifier).runWithLog stmtIn witIn
-          let extractedWitIn ← (failure : OptionT (OracleComp oSpec) WitIn)
-          return (stmtIn, extractedWitIn, stmtOut, witOut)))).run' (← init)] ≤ _
-  refine le_of_eq ?_
-  rw [ENNReal.coe_zero, StateFunction.probEvent_optionT_mk_eq_elim]
-  -- The second stage of the `OptionT` bind is the failing extractor, so every run returns
-  -- `none`: the game is the constant-`none` post-processing of the logged run.
-  have hrun : OptionT.run (do
-        let ⟨⟨⟨transcript, ⟨_, witOut⟩⟩, stmtOut⟩, proveQueryLog, verifyQueryLog⟩
-          ← (Reduction.mk prover verifier).runWithLog stmtIn witIn
-        let extractedWitIn ← (failure : OptionT (OracleComp oSpec) WitIn)
-        return (stmtIn, extractedWitIn, stmtOut, witOut))
-      = (fun _ => (none : Option (StmtIn × WitIn × StmtOut × WitOut))) <$>
-        OptionT.run ((Reduction.mk prover verifier).runWithLog stmtIn witIn) := by
-    rw [map_eq_bind_pure_comp, OptionT.run_bind]
-    simp only [Option.elimM]
-    refine bind_congr fun o => ?_
-    cases o with
-    | none => simp
-    | some x =>
-      obtain ⟨⟨⟨tr, _pOut, wOut⟩, sOut⟩, pLog, vLog⟩ := x
-      simp only [OracleComp.failure_def, OptionT.fail, OptionT.run, OptionT.mk]
-      rfl
-  rw [hrun, probEvent_run'_init_map init (impl.addLift challengeQueryImpl),
-    probEvent_eq_zero_iff]
-  intro o _
-  exact fun h => h
-
-/-! ## I4 (literal statement): `rbrKnowledgeSoundness → knowledgeSoundness` -/
-
-/-- **Round-by-round knowledge soundness implies (straightline) knowledge soundness** with the
-union-bound error `∑ i, rbrKnowledgeError i` — *as literally stated*.
-
-⚠ VACUITY NOTE.  Under the current definition of `Verifier.knowledgeSoundness` this statement
-is true for a degenerate reason: the conclusion is *always* satisfiable via the always-failing
-`OptionT` extractor (see `knowledgeSoundness_vacuous` and the module docstring), so this proof
-does **not** use the round-by-round hypothesis.  The statement is kept in this exact shape
-because it is the one consumed by `ProofSystem/Binius/FRIBinius/General.lean`; the *genuine*
-implication — where the exhibited extractor is the real fold of the round-by-round extractor
-and the bound is proven for it — is
-`rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal` below. -/
-theorem rbrKnowledgeSoundness_implies_knowledgeSoundness
-    (relIn : Set (StmtIn × WitIn)) (relOut : Set (StmtOut × WitOut))
-    (verifier : Verifier oSpec StmtIn StmtOut pSpec)
-    (rbrKnowledgeError : pSpec.ChallengeIdx → ℝ≥0) :
-    verifier.rbrKnowledgeSoundness init impl relIn relOut rbrKnowledgeError →
-      verifier.knowledgeSoundness init impl relIn relOut (∑ i, rbrKnowledgeError i) :=
-  fun _ => knowledgeSoundness_error_mono init impl (zero_le _)
-    (knowledgeSoundness_vacuous init impl relIn relOut verifier)
 
 end Verifier
 
@@ -262,12 +121,12 @@ lemma chainWit_castSucc (E : Extractor.RoundByRound oSpec StmtIn WitIn WitOut pS
 
 /-- **The genuine straightline extractor obtained from a round-by-round extractor**: seed the
 last-round intermediate witness with `extractOut`, fold `extractMid` down to round `0` along the
-realized transcript (`chainWit`), and transport along `eqIn`.  It is deterministic, never fails,
+realized transcript (`chainWit`), and apply `extractIn`.  It is deterministic, never fails,
 and ignores the query logs. -/
 def toStraightline (E : Extractor.RoundByRound oSpec StmtIn WitIn WitOut pSpec WitMid) :
     Extractor.Straightline oSpec StmtIn WitIn WitOut pSpec :=
   fun stmtIn witOut tr _ _ =>
-    pure (cast E.eqIn (E.chainWit stmtIn tr (E.extractOut stmtIn tr witOut) 0))
+    pure (E.extractIn stmtIn (E.chainWit stmtIn tr (E.extractOut stmtIn tr witOut) 0))
 
 end Extractor.RoundByRound
 
@@ -286,10 +145,10 @@ simulated against the shared-oracle implementation and averaged over the initial
 the base random variable of the knowledge game: the literal `knowledgeSoundness` game is a pure
 post-processing (`Option.map`) of it once the extractor is deterministic. -/
 @[reducible]
-def knowledgeBaseRun
+def knowledgeBaseRun {Aux : Type}
     (verifier : Verifier oSpec StmtIn StmtOut pSpec)
-    (prover : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec)
-    (stmtIn : StmtIn) (witIn : WitIn) :
+    (prover : Prover oSpec StmtIn Aux StmtOut WitOut pSpec)
+    (stmtIn : StmtIn) (witIn : Aux) :
     ProbComp (Option (((FullTranscript pSpec × StmtOut × WitOut) × StmtOut) ×
       QueryLog (oSpec + [pSpec.Challenge]ₒ) × QueryLog oSpec)) :=
   do (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
@@ -326,8 +185,8 @@ it is **false** for general state-mutating implementations (same counterexample 
 that file, lines 20–31). -/
 def KnowledgeAcceptLast (E : Extractor.RoundByRound oSpec StmtIn WitIn WitOut pSpec WitMid)
     (kSF : verifier.KnowledgeStateFunction init impl relIn relOut E) : Prop :=
-  ∀ (stmtIn : StmtIn) (witIn : WitIn)
-    (prover : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec) x,
+  ∀ (Aux : Type) (stmtIn : StmtIn) (witIn : Aux)
+    (prover : Prover oSpec StmtIn Aux StmtOut WitOut pSpec) x,
     some x ∈ support (knowledgeBaseRun init impl verifier prover stmtIn witIn) →
     (x.1.2, x.1.1.2.2) ∈ relOut →
     kSF.toFun (.last n) stmtIn x.1.1.1 (E.extractOut stmtIn x.1.1.1 x.1.1.2.2)
@@ -340,22 +199,20 @@ trailing-drop core `Verifier.fullRun_flip_marginal_le_rbrGameFlipProb`
 run, and the `runWithLog` analogue required here is precisely this statement. -/
 def KnowledgeFlipTransport (E : Extractor.RoundByRound oSpec StmtIn WitIn WitOut pSpec WitMid)
     (kSF : verifier.KnowledgeStateFunction init impl relIn relOut E) : Prop :=
-  ∀ (stmtIn : StmtIn) (witIn : WitIn)
-    (prover : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec) (i : pSpec.ChallengeIdx),
-    Pr[fun o => o.elim False (kSFFlip init impl E kSF stmtIn i) |
-        knowledgeBaseRun init impl verifier prover stmtIn witIn] ≤
-      Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+  ∀ (Aux : Type) (stmtIn : StmtIn) (witIn : Aux)
+    (prover : Prover oSpec StmtIn Aux StmtOut WitOut pSpec) (i : pSpec.ChallengeIdx),
+    probEvent (fun o => o.elim False (kSFFlip init impl E kSF stmtIn i)) (knowledgeBaseRun init impl verifier prover stmtIn witIn) ≤
+      probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
         ∃ witMid,
           ¬ kSF i.1.castSucc stmtIn transcript
             (E.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-            kSF i.1.succ stmtIn (transcript.concat challenge) witMid
-      | do
+            kSF i.1.succ stmtIn (transcript.concat challenge) witMid) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn
             let challenge ← liftComp (pSpec.getChallenge i) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)]
+            return (transcript, challenge, proveQueryLog))).run' (← init))
 
 omit [∀ i, SampleableType (pSpec.Challenge i)] in
 /-- **First-crossing along a realized transcript** (the combinatorial core of the genuine
@@ -367,7 +224,7 @@ private lemma chainWit_crossing
     (E : Extractor.RoundByRound oSpec StmtIn WitIn WitOut pSpec WitMid)
     (kSF : verifier.KnowledgeStateFunction init impl relIn relOut E)
     (stmtIn : StmtIn) (tr : FullTranscript pSpec) (wLast : WitMid (.last n))
-    (hNotIn : (stmtIn, cast E.eqIn (E.chainWit stmtIn tr wLast 0)) ∉ relIn)
+    (hNotIn : (stmtIn, E.extractIn stmtIn (E.chainWit stmtIn tr wLast 0)) ∉ relIn)
     (hlast : kSF.toFun (.last n) stmtIn tr wLast) :
     ∃ i : pSpec.ChallengeIdx, ∃ witMid,
       ¬ kSF.toFun i.1.castSucc stmtIn (tr.take i.1.castSucc.val i.1.castSucc.is_le)
@@ -383,7 +240,7 @@ private lemma chainWit_crossing
   have h0 : ¬ kSF.toFun 0 stmtIn (tr.take (0 : Fin (n + 1)).val (0 : Fin (n + 1)).is_le)
       (E.chainWit stmtIn tr wLast 0) := by
     intro hP0
-    refine hNotIn ((kSF.toFun_empty stmtIn (E.chainWit stmtIn tr wLast 0)).mpr ?_)
+    refine hNotIn (kSF.toFun_empty stmtIn (E.chainWit stmtIn tr wLast 0) ?_)
     have hdef : ((tr.take (0 : Fin (n + 1)).val (0 : Fin (n + 1)).is_le) :
         Transcript 0 pSpec) = default := Subsingleton.elim _ _
     rw [← hdef]
@@ -440,46 +297,44 @@ theorem rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal
     (hAccept : KnowledgeAcceptLast init impl E kSF)
     (hTransport : KnowledgeFlipTransport init impl E kSF)
     {ε : pSpec.ChallengeIdx → ℝ≥0}
-    (hBound : ∀ (stmtIn : StmtIn) (witIn : WitIn)
-      (prover : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec) (i : pSpec.ChallengeIdx),
-      Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+    (hBound : ∀ (Aux : Type) (stmtIn : StmtIn) (witIn : Aux)
+      (prover : Prover oSpec StmtIn Aux StmtOut WitOut pSpec) (i : pSpec.ChallengeIdx),
+      probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
         ∃ witMid,
           ¬ kSF i.1.castSucc stmtIn transcript
             (E.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-            kSF i.1.succ stmtIn (transcript.concat challenge) witMid
-      | do
+            kSF i.1.succ stmtIn (transcript.concat challenge) witMid) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn
             let challenge ← liftComp (pSpec.getChallenge i) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)] ≤ ε i) :
-    verifier.knowledgeSoundness init impl relIn relOut (∑ i, ε i) := by
+            return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ ε i) :
+    verifier.knowledgeSoundnessWith init impl relIn relOut E.toStraightline (∑ i, ε i) := by
   classical
-  refine ⟨E.toStraightline, fun stmtIn witIn prover => ?_⟩
-  show Pr[fun (y : StmtIn × WitIn × StmtOut × WitOut) =>
-      (y.1, y.2.1) ∉ relIn ∧ (y.2.2.1, y.2.2.2) ∈ relOut |
-    OptionT.mk do
+  intro Aux stmtIn witIn prover
+  show probEvent (fun (y : StmtIn × Option WitIn × StmtOut × WitOut) =>
+      (∀ w ∈ y.2.1, (y.1, w) ∉ relIn) ∧ (y.2.2.1, y.2.2.2) ∈ relOut) (OptionT.mk do
       (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
         (OptionT.run (do
           let ⟨⟨⟨transcript, ⟨_, witOut⟩⟩, stmtOut⟩, proveQueryLog, verifyQueryLog⟩
             ← (Reduction.mk prover verifier).runWithLog stmtIn witIn
-          let extractedWitIn ← E.toStraightline stmtIn witOut transcript
-            proveQueryLog.fst verifyQueryLog
-          return (stmtIn, extractedWitIn, stmtOut, witOut)))).run' (← init)] ≤ _
+          let extractedWitIn ← liftM
+            (E.toStraightline stmtIn witOut transcript proveQueryLog.fst verifyQueryLog).run
+          return (stmtIn, extractedWitIn, stmtOut, witOut)))).run' (← init)) ≤ _
   rw [StateFunction.probEvent_optionT_mk_eq_elim]
   -- Step 1: the literal knowledge game is the deterministic extraction post-processing of the
   -- logged base run.
   have hexec : (do
         let ⟨⟨⟨transcript, ⟨_, witOut⟩⟩, stmtOut⟩, proveQueryLog, verifyQueryLog⟩
           ← (Reduction.mk prover verifier).runWithLog stmtIn witIn
-        let extractedWitIn ← E.toStraightline stmtIn witOut transcript
-          proveQueryLog.fst verifyQueryLog
+        let extractedWitIn ← liftM
+          (E.toStraightline stmtIn witOut transcript proveQueryLog.fst verifyQueryLog).run
         return (stmtIn, extractedWitIn, stmtOut, witOut))
       = (fun x : ((FullTranscript pSpec × StmtOut × WitOut) × StmtOut) ×
             QueryLog (oSpec + [pSpec.Challenge]ₒ) × QueryLog oSpec =>
           (stmtIn,
-            cast E.eqIn (E.chainWit stmtIn x.1.1.1 (E.extractOut stmtIn x.1.1.1 x.1.1.2.2) 0),
+            some (E.extractIn stmtIn (E.chainWit stmtIn x.1.1.1 (E.extractOut stmtIn x.1.1.1 x.1.1.2.2) 0)),
             x.1.2, x.1.1.2.2)) <$>
         (Reduction.mk prover verifier).runWithLog stmtIn witIn := by
     rw [map_eq_bind_pure_comp]
@@ -498,35 +353,23 @@ theorem rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal
     | none => exact hq.elim
     | some x =>
       obtain ⟨hNotIn, hRelOut⟩ := hq
-      have hlast := hAccept stmtIn witIn prover x ho hRelOut
+      have hlast := hAccept Aux stmtIn witIn prover x ho hRelOut
       obtain ⟨i, witMid, h1, h2⟩ := chainWit_crossing init impl E kSF stmtIn x.1.1.1
-        (E.extractOut stmtIn x.1.1.1 x.1.1.2.2) hNotIn hlast
+        (E.extractOut stmtIn x.1.1.1 x.1.1.2.2) (hNotIn _ rfl) hlast
       exact ⟨i, witMid, h1, h2⟩
   · -- per-round: transport to the round-by-round game, then apply the per-round bound
-    rw [ENNReal.coe_finset_sum]
+    rw [ENNReal.ofNNReal_finsetSum]
     refine Finset.sum_le_sum fun i _ => ?_
-    exact le_trans (hTransport stmtIn witIn prover i) (hBound stmtIn witIn prover i)
+    exact le_trans (hTransport Aux stmtIn witIn prover i) (hBound Aux stmtIn witIn prover i)
 
-/-- **The genuine implication, packaged**: from `rbrKnowledgeSoundness` (whose data satisfies
-the two transport residuals), conclude `knowledgeSoundness` at the union-bound error, with the
-exhibited extractor being `E.toStraightline` for the round-by-round extractor `E` supplied by
-the hypothesis.  See `rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal` for
-the data-level statement (which makes the genuine extractor visible in the conclusion). -/
+/-- The canonical guarded worst-case bridge supplies ordinary knowledge soundness with the
+sum of the round budgets. Unlike the retired fixed-private-input formulation, this exposes the
+execution guard and fixed-prefix bound required by the canonical security game. -/
 theorem rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine
-    {ε : pSpec.ChallengeIdx → ℝ≥0}
-    (hRbr : verifier.rbrKnowledgeSoundness init impl relIn relOut ε)
-    (hAccept : ∀ (WitMid : Fin (n + 1) → Type)
-      (E : Extractor.RoundByRound oSpec StmtIn WitIn WitOut pSpec WitMid)
-      (kSF : verifier.KnowledgeStateFunction init impl relIn relOut E),
-      KnowledgeAcceptLast init impl E kSF)
-    (hTransport : ∀ (WitMid : Fin (n + 1) → Type)
-      (E : Extractor.RoundByRound oSpec StmtIn WitIn WitOut pSpec WitMid)
-      (kSF : verifier.KnowledgeStateFunction init impl relIn relOut E),
-      KnowledgeFlipTransport init impl E kSF) :
-    verifier.knowledgeSoundness init impl relIn relOut (∑ i, ε i) := by
-  obtain ⟨WitMid, E, kSF, hBound⟩ := hRbr
-  exact rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal init impl E kSF
-    (hAccept WitMid E kSF) (hTransport WitMid E kSF) hBound
+    (G : verifier.GuardedForm) {ε : pSpec.ChallengeIdx → ℝ≥0}
+    (h : verifier.rbrKnowledgeSoundnessWorstCase init impl relIn relOut ε) :
+    verifier.knowledgeSoundness init impl relIn relOut (∑ i, ε i) :=
+  G.knowledgeSoundness_of_rbrKnowledgeSoundnessWorstCase h
 
 end GenuineKnowledge
 
@@ -584,67 +427,8 @@ end Prover
 
 namespace Verifier
 
-/-- **Round-by-round knowledge soundness implies round-by-round soundness** (same per-round
-error, languages of the relations).
-
-The state function is `KnowledgeStateFunction.toStateFunction` (existence of an intermediate
-witness).  The per-round bound for an *arbitrary-witness-typed* prover is obtained by (a) the
-pointwise event implication from the existential state-function flip to the knowledge
-state-function flip (`probEvent_mono`), (b) re-typing the prover through `Prover.deWitness`
-(which leaves all partial runs unchanged), and (c) re-introducing the (ignored) query log to
-match the round-by-round knowledge game (`runWithLogToRound_discard_log_eq_runToRound` + `map`
-transport).
-
-The `[Nonempty WitIn]` hypothesis is genuinely required: `rbrSoundness` demands bounds for
-provers over *all* witness types, while the `rbrKnowledgeSoundness` hypothesis only bounds
-games that thread *some* witness of the relation's input witness type `WitIn`; if `WitIn` were
-empty the hypothesis would be silent while the conclusion is not. -/
-theorem rbrKnowledgeSoundness_implies_rbrSoundness [Nonempty WitIn] [Nonempty WitOut]
-    {relIn : Set (StmtIn × WitIn)} {relOut : Set (StmtOut × WitOut)}
-    {verifier : Verifier oSpec StmtIn StmtOut pSpec}
-    {ε : pSpec.ChallengeIdx → ℝ≥0}
-    (hRbr : verifier.rbrKnowledgeSoundness init impl relIn relOut ε) :
-    verifier.rbrSoundness init impl relIn.language relOut.language ε := by
-  classical
-  obtain ⟨WitMid, E, kSF, hBound⟩ := hRbr
-  refine ⟨kSF.toStateFunction init impl, ?_⟩
-  intro stmtIn _hStmtIn WitIn' WitOut' witIn' prover i
-  have w₀ : WitIn := Classical.arbitrary WitIn
-  -- The per-round bound for the knowledge flip event, on this round game.
-  have hMain : Pr[fun (p : pSpec.Transcript i.1.castSucc × pSpec.Challenge i) =>
-      ∃ witMid,
-        ¬ kSF.toFun i.1.castSucc stmtIn p.1
-            (E.extractMid i.1 stmtIn (p.1.concat p.2) witMid) ∧
-          kSF.toFun i.1.succ stmtIn (p.1.concat p.2) witMid |
-      do
-        (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
-          (do
-            let ⟨transcript, _⟩ ← prover.runToRound i.1.castSucc stmtIn witIn'
-            let challenge ← liftComp (pSpec.getChallenge i) _
-            return (transcript, challenge))).run' (← init)] ≤ (ε i : ℝ≥0∞) := by
-    -- Swap in the adapter prover (identical partial runs), then re-introduce the query log.
-    have hinner : (do
-          let ⟨transcript, _⟩ ← prover.runToRound i.1.castSucc stmtIn witIn'
-          let challenge ← liftComp (pSpec.getChallenge i) _
-          return (transcript, challenge))
-        = (fun x : pSpec.Transcript i.1.castSucc × pSpec.Challenge i ×
-            QueryLog (oSpec + [pSpec.Challenge]ₒ) => (x.1, x.2.1)) <$> (do
-          let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
-            (prover.deWitness witIn' WitIn WitOut).runWithLogToRound i.1.castSucc stmtIn w₀
-          let challenge ← liftComp (pSpec.getChallenge i) _
-          return (transcript, challenge, proveQueryLog)) := by
-      rw [← Prover.deWitness_runToRound prover witIn' WitIn WitOut i.1.castSucc stmtIn w₀,
-        ← Prover.runWithLogToRound_discard_log_eq_runToRound]
-      simp only [map_bind, map_pure]
-      exact bind_fst_map_eq _ _ _
-    rw [hinner, probEvent_run'_init_map init (impl.addLift challengeQueryImpl)]
-    exact hBound stmtIn w₀ (prover.deWitness witIn' WitIn WitOut) i
-  refine le_trans (probEvent_mono ?_) hMain
-  -- Pointwise event implication: an existential-state-function flip yields a knowledge flip
-  -- witness (take the round-`i.succ` witness; the round-`i` negation is universal).
-  rintro ⟨transcript, challenge⟩ _ ⟨hno, hyes⟩
-  obtain ⟨wm, hwm⟩ := hyes
-  exact ⟨wm, fun h => hno ⟨_, h⟩, hwm⟩
+/-! The round-by-round knowledge-to-soundness theorem is imported from the canonical
+`Security.Implications` owner; the prover adapters above remain available to downstream callers. -/
 
 /-! ## I2: `rbrSoundness → soundness`, conditional on the marginal-domination residual -/
 
@@ -680,87 +464,33 @@ theorem rbrSoundness_implies_soundness_of_marginal
       ∀ (WitIn WitOut : Type) (witIn : WitIn)
         (prover : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec),
         ∀ stmtIn ∉ langIn,
-        Pr[fun (x : (FullTranscript pSpec × StmtOut × WitOut) × StmtOut) => x.2 ∈ langOut |
-            OptionT.mk do
+        probEvent (fun (x : (FullTranscript pSpec × StmtOut × WitOut) × StmtOut) => x.2 ∈ langOut) (OptionT.mk do
               (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
                 (OptionT.run ((Reduction.mk prover verifier).run stmtIn witIn))).run'
-                (← init)] ≤
+                (← init)) ≤
           ∑ i : pSpec.ChallengeIdx,
-            Pr[fun (p : pSpec.Transcript i.1.castSucc × pSpec.Challenge i) =>
-              ¬ sf i.1.castSucc stmtIn p.1 ∧ sf i.1.succ stmtIn (p.1.concat p.2) |
-            do
+            probEvent (fun (p : pSpec.Transcript i.1.castSucc × pSpec.Challenge i) =>
+              ¬ sf i.1.castSucc stmtIn p.1 ∧ sf i.1.succ stmtIn (p.1.concat p.2)) (do
               (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
                 (do
                   let ⟨transcript, _⟩ ← prover.runToRound i.1.castSucc stmtIn witIn
                   let challenge ← liftComp (pSpec.getChallenge i) _
-                  return (transcript, challenge))).run' (← init)]) :
+                  return (transcript, challenge))).run' (← init))) :
     verifier.soundness init impl langIn langOut
       (∑ i : pSpec.ChallengeIdx, rbrSoundnessError i) := by
   classical
   obtain ⟨sf, hPerRound⟩ := hRbr
   intro WitIn WitOut witIn prover stmtIn hStmtIn
   refine le_trans (hMarginal sf WitIn WitOut witIn prover stmtIn hStmtIn) ?_
-  rw [ENNReal.coe_finset_sum]
+  rw [ENNReal.ofNNReal_finsetSum]
   exact Finset.sum_le_sum fun i _ => hPerRound stmtIn hStmtIn WitIn WitOut witIn prover i
 
-/-! ## I1: `knowledgeSoundness → soundness` — DOCUMENTED OPEN (the literal statement is false)
-
-The blueprint implication "knowledge soundness (with error `κ < 1`) implies soundness (with
-error `κ`, for the languages of the relations)" is **not provable** — indeed *false as
-literally stated* — under the current definitions, for three independent reasons:
-
-1. **Vacuity of the hypothesis** (see the ⚠ VACUITY NOTE in the module docstring and
-   `knowledgeSoundness_vacuous`): every verifier satisfies `knowledgeSoundness` at error `0`
-   via the always-failing `OptionT` extractor, while `soundness` is a real constraint (e.g.
-   the verifier that always accepts is not sound for a non-full output language).  Hence
-   `knowledgeSoundness relIn relOut V κ → soundness relIn.language relOut.language V κ'` is
-   false for every `κ' < 1` at, say, the always-accepting verifier.
-
-2. **`witOut`-vs-language mismatch**: the knowledge game's bad event tests the *prover's own*
-   output witness against `relOut` (`(stmtOut, witOut) ∈ relOut`), while the soundness event
-   only tests `stmtOut ∈ relOut.language = {s | ∃ w, (s, w) ∈ relOut}`.  An accepting
-   soundness run need not carry a `relOut`-valid `witOut`, so the soundness event does not
-   imply the knowledge event.  The honest repair is the side condition
-   `∀ stmtOut witOut, stmtOut ∈ relOut.language → (stmtOut, witOut) ∈ relOut`
-   (satisfied e.g. by `acceptRejectRel`-style output relations, where the witness is trivial).
-
-3. **Witness-type rigidity** (documented at `Security/Basic.lean`, around lines 421–433):
-   `soundness` quantifies over provers with arbitrary witness types inside the definition,
-   while `knowledgeSoundness` fixes them to the relation's types; transporting a prover across
-   witness types requires the `Prover.deWitness`-style adapter *with a non-failing output*
-   (`output := fun s => (fun out => (out.1, default)) <$> P.output s`, needing
-   `[Inhabited WitOut]`), since a failing output would *lower* the adapted prover's accept
-   probability — the wrong direction for this implication (unlike I3, where only partial runs
-   matter).
-
-**Proposed honest variant** (statement written out; not proven here — the remaining work is
-the run/`runWithLog` game alignment with the inserted extractor stage and the output-adapter
-transport):
-
-```
-theorem knowledgeSoundness_implies_soundness_of_neverFails [Nonempty WitIn] [Inhabited WitOut]
-    {relIn : Set (StmtIn × WitIn)} {relOut : Set (StmtOut × WitOut)}
-    {verifier : Verifier oSpec StmtIn StmtOut pSpec} {κ : ℝ≥0}
-    (hRelOut : ∀ stmtOut witOut, stmtOut ∈ relOut.language → (stmtOut, witOut) ∈ relOut)
-    (hKS : ∃ extr : Extractor.Straightline oSpec StmtIn WitIn WitOut pSpec,
-      (∀ stmtIn witOut tr pLog vLog, ∃ w, extr stmtIn witOut tr pLog vLog = pure w) ∧
-      <the knowledgeSoundness bound of Security/Basic.lean for extr, at error κ>) :
-    verifier.soundness init impl relIn.language relOut.language κ
-```
-
-The never-failing hypothesis on the extractor closes obstruction 1 (for *this* extractor the
-knowledge game does not silently drop runs), `hRelOut` closes obstruction 2, and the
-`[Inhabited WitOut]` output adapter closes obstruction 3.  A definitional repair of
-`knowledgeSoundness` (counting extraction failure toward the bad event) would make the
-never-failing hypothesis unnecessary and is the recommended long-term fix. -/
 
 end Verifier
 
 /-! ## Axiom audit -/
 
 #print axioms Verifier.knowledgeSoundness_error_mono
-#print axioms Verifier.knowledgeSoundness_vacuous
-#print axioms Verifier.rbrKnowledgeSoundness_implies_knowledgeSoundness
 #print axioms Extractor.RoundByRound.chainWit
 #print axioms Extractor.RoundByRound.toStraightline
 #print axioms Verifier.rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal

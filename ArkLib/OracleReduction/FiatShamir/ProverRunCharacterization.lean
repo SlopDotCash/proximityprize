@@ -47,8 +47,8 @@ theorem toMessagesUpTo_concat {n : ℕ} {pSpec : ProtocolSpec n} {m : Fin n}
     MessagesUpTo.concat']
   revert hi
   induction i using Fin.lastCases with
-  | last => intro _; simp [Fin.snoc_last, Fin.dconcat_last]
-  | cast k => intro _; simp [Fin.snoc_castSucc, Fin.dconcat_castSucc]
+  | last => intro _; erw [Fin.dconcat_last, Fin.snoc_last]
+  | cast k => intro _; erw [Fin.dconcat_castSucc, Fin.snoc_castSucc]
 
 namespace MessagesUpTo
 

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.Basic.Entropy
 import ArkLib.Data.CodingTheory.CodeGeometry
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 import ArkLib.Data.CodingTheory.ProximityLeaves
 import Mathlib.Algebra.GroupWithZero.Units.Basic
 import Mathlib.Algebra.Order.Field.Basic
@@ -243,29 +243,6 @@ The non-negativity is the three-term sign decomposition:
 theorem qEntropy_nonneg_and_basic {q : ℕ} (hq : 2 ≤ q) {δ : ℝ}
     (hδ0 : 0 ≤ δ) (hδ1 : δ ≤ 1) :
     0 ≤ qEntropy q δ ∧ qEntropy q 0 = 0 := by
-  refine ⟨?_, qEntropy_zero q⟩
-  -- Base `(q : ℝ) > 1`.
-  have hb : (1 : ℝ) < (q : ℝ) := by
-    have : (2 : ℝ) ≤ (q : ℝ) := by exact_mod_cast hq
-    linarith
-  -- `q - 1 ≥ 1` as a real number.
-  have hq1 : (1 : ℝ) ≤ (q : ℝ) - 1 := by
-    have : (2 : ℝ) ≤ (q : ℝ) := by exact_mod_cast hq
-    linarith
-  -- Term 1: `δ · logb q (q-1) ≥ 0`.
-  have t1 : 0 ≤ δ * Real.logb (q : ℝ) ((q : ℝ) - 1) :=
-    mul_nonneg hδ0 (Real.logb_nonneg hb hq1)
-  -- Term 2: `-(δ · logb q δ) ≥ 0`, i.e. `δ · logb q δ ≤ 0`.
-  have t2 : δ * Real.logb (q : ℝ) δ ≤ 0 :=
-    mul_nonpos_of_nonneg_of_nonpos hδ0 (Real.logb_nonpos hb hδ0 hδ1)
-  -- Term 3: `-(1-δ) · logb q (1-δ) ≥ 0`, i.e. `(1-δ) · logb q (1-δ) ≤ 0`.
-  have h1δ0 : 0 ≤ 1 - δ := by linarith
-  have h1δ1 : 1 - δ ≤ 1 := by linarith
-  have t3 : (1 - δ) * Real.logb (q : ℝ) (1 - δ) ≤ 0 :=
-    mul_nonpos_of_nonneg_of_nonpos h1δ0 (Real.logb_nonpos hb h1δ0 h1δ1)
-  -- Combine.  The cast `((q : ℕ) : ℝ) - 1` matches the definition's `(q - 1)`.
-  unfold qEntropy
-  -- After unfolding, the base is `((q : ℕ) : ℝ)` (Nat cast), and `q - 1` is `(↑q - 1 : ℝ)`.
-  linarith [t1, t2, t3]
+  exact ⟨qEntropy_nonneg hδ0 hδ1, qEntropy_zero q⟩
 
 end CodingTheory

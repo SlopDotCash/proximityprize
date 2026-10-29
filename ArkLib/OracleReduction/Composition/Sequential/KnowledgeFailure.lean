@@ -134,7 +134,7 @@ theorem optionLift_rbrKnowledgeSoundness [Inhabited Stmt₂]
     (V.optionLift).rbrKnowledgeSoundness init impl (optionRel rel₂) rel₃ err := by
   obtain ⟨WitMid, E, kSF, hBound⟩ := h
   refine ⟨WitMid,
-    { eqIn := E.eqIn
+    { extractIn := fun s? w => E.extractIn (s?.getD default) w
       extractMid := fun m s? tr w => E.extractMid m (s?.getD default) tr w
       extractOut := fun s? tr w => E.extractOut (s?.getD default) tr w },
     { toFun := fun m s? tr w => match s? with
@@ -155,10 +155,9 @@ theorem optionLift_rbrKnowledgeSoundness [Inhabited Stmt₂]
           -- `optionLift.run none = failure`: the run always yields `none`, so the acceptance
           -- probability is `0`, contradicting `hPos`.
           exfalso
-          rw [gt_iff_lt, probEvent_pos_iff] at hPos
+          rw [gt_iff_lt, OracleComp.OptionT.prEvent_mk_pos_iff] at hPos
           obtain ⟨x, hx, -⟩ := hPos
-          rw [OptionT.mem_support_iff] at hx
-          simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
+          simp only [OptionT.run_mk, support_bind, Set.mem_iUnion, exists_prop] at hx
           obtain ⟨s, -, hmem⟩ := hx
           -- the simulated `failure` run is definitionally the constant-`none` computation
           rw [show ((simulateQ impl ((V.optionLift).run (none : Option Stmt₂) tr)).run' s :
@@ -170,13 +169,12 @@ theorem optionLift_rbrKnowledgeSoundness [Inhabited Stmt₂]
   cases s? with
   | none =>
     -- the flip event's second conjunct is `False` at a `none` statement: probability `0`.
-    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
-    rintro ⟨tr, ch, log⟩ _
-    rintro ⟨wm, -, hsucc⟩
+    refine le_trans (le_of_eq (prEvent_eq_zero_of_forall_not _ _ ?_)) zero_le
+    rintro ⟨tr, ch, log⟩ ⟨wm, -, hsucc⟩
     exact hsucc
   | some s =>
     -- precompose the prover and defer to the inner per-round bound at `s`.
-    simpa using hBound s w P.someStmt i
+    exact hBound s w P.someStmt i
 
 /-- **Output-statement adaptation of a prover.** Replaces the prover's output statement type
 (discarding the statement to `default`); the interaction rounds are untouched, so all partial runs
@@ -223,12 +221,11 @@ theorem failingDet_optionized_rbrKnowledgeSoundness [Inhabited Stmt₂]
         refine kSF.toFun_full s tr w ?_
         -- positivity transfers: both runs hit their output relations exactly when
         -- `verify? s tr = some s₂` with `(s₂, w) ∈ rel₂`.
-        rw [gt_iff_lt, probEvent_pos_iff] at hPos ⊢
+        rw [gt_iff_lt, OracleComp.OptionT.prEvent_mk_pos_iff] at hPos ⊢
         obtain ⟨x?, hx, hrel⟩ := hPos
         obtain ⟨s₂, hsome, hs₂⟩ := hrel
         -- the total run always outputs `verify? s tr`; membership pins `x? = verify? s tr`.
-        rw [OptionT.mem_support_iff] at hx
-        simp only [Verifier.run, OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
+        simp only [Verifier.run, OptionT.run_mk, support_bind, Set.mem_iUnion, exists_prop] at hx
         obtain ⟨st, hst, hmem⟩ := hx
         rw [show ((simulateQ impl
               ((⟨fun s tr => pure (verify? s tr)⟩ :
@@ -239,8 +236,7 @@ theorem failingDet_optionized_rbrKnowledgeSoundness [Inhabited Stmt₂]
         subst hmem
         -- now exhibit `s₂` in the failing run's support
         refine ⟨s₂, ?_, hs₂⟩
-        rw [OptionT.mem_support_iff]
-        simp only [Verifier.run, OptionT.run_mk, support_bind, Set.mem_iUnion]
+        simp only [Verifier.run, OptionT.run_mk, support_bind, Set.mem_iUnion, exists_prop]
         refine ⟨st, hst, ?_⟩
         rw [show ((simulateQ impl
               ((⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ :
@@ -251,7 +247,7 @@ theorem failingDet_optionized_rbrKnowledgeSoundness [Inhabited Stmt₂]
         first | exact hsome.symm | exact hsome },
     ?_⟩
   intro s w P i
-  simpa using hBound s w (P.defaultOutputStmt (StmtB := Stmt₂)) i
+  exact hBound s w (P.defaultOutputStmt (StmtB := Stmt₂)) i
 
 /-- **The failing-deterministic rbr knowledge-soundness append keystone (`Subsingleton σ`,
 message seam).** The capstone of the optionization reduction: appending a *failing*-deterministic
@@ -272,7 +268,7 @@ theorem append_rbrKnowledgeSoundness_failingDet_subsingleton
     (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}
     {err₁ : pSpec₁.ChallengeIdx → ℝ≥0} {err₂ : pSpec₂.ChallengeIdx → ℝ≥0}
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
@@ -330,11 +326,6 @@ theorem append_pure_failingDet
       = ⟨fun s tr => OptionT.mk (pure (v₂? (v₁ s tr.fst) tr.snd))⟩ := by
   unfold Verifier.append
   congr 1
-  funext s tr
-  refine OptionT.ext ?_
-  simp only [OptionT.run_bind, OptionT.run_pure, OptionT.run_mk, Option.elimM, pure_bind,
-    Option.elim_some]
-  cases h : v₂? (v₁ s tr.fst) tr.snd <;> simp
 
 /-- **Failing-deterministic left, total-deterministic right.** -/
 theorem append_failingDet_pure
@@ -368,7 +359,7 @@ verdict (the deterministic `oStmtOut` routing rides along on success). -/
 theorem toVerifier_eq_failingDet_of_collapse
     {ιₛᵢ ιₛₒ : Type} {StmtIn StmtOut : Type}
     {OStmtIn : ιₛᵢ → Type} [Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)]
-    {OStmtOut : ιₛₒ → Type}
+    {OStmtOut : ιₛₒ → Type} [Oₛₒ : ∀ i, OracleInterface (OStmtOut i)]
     {n' : ℕ} {pSpec : ProtocolSpec n'} [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
     (V : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec)
     (v? : (StmtIn × ∀ i, OStmtIn i) → pSpec.FullTranscript → Option StmtOut)
@@ -376,18 +367,20 @@ theorem toVerifier_eq_failingDet_of_collapse
       simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages)
           (V.verify stmt tr.challenges)
         = (OptionT.mk (pure (v? (stmt, oStmt) tr)) : OptionT (OracleComp oSpec) StmtOut)) :
-    V.toVerifier = ⟨fun p tr => OptionT.mk (pure ((v? p tr).map (fun s => (s,
-      fun i => match h : V.embed i with
-        | Sum.inl j => (V.hEq i ▸ h ▸ p.2 j : OStmtOut i)
-        | Sum.inr j => (V.hEq i ▸ h ▸ tr.messages j : OStmtOut i)))))⟩ := by
+    V.toVerifier = ⟨fun p tr =>
+      OptionT.mk (pure ((v? p tr).map fun s =>
+        (s, V.materializeOutput tr.challenges p.2 tr.messages)))⟩ := by
   unfold OracleVerifier.toVerifier
   congr 1
   funext p tr
   obtain ⟨stmt, oStmt⟩ := p
-  simp only [hcollapse stmt oStmt tr]
-  refine OptionT.ext ?_
-  simp only [OptionT.run_bind, OptionT.run_mk, Option.elimM, pure_bind]
-  cases h : v? (stmt, oStmt) tr <;> simp <;> rfl
+  have hr := congrArg OptionT.run (hcollapse stmt oStmt tr)
+  change simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages)
+    (V.verify stmt tr.challenges).run = pure (v? (stmt, oStmt) tr) at hr
+  apply OptionT.ext
+  simp only [OptionT.run_mk]
+  rw [hr]
+  simp only [LawfulApplicative.map_pure]
 
 variable {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type}
     [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)]
@@ -417,14 +410,14 @@ variable {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type}
 theorem append_rbrKnowledgeSoundness_failingDet_subsingleton
     [Subsingleton σ] [Inhabited (Stmt₂ × ∀ i, OStmt₂ i)]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {rbrKnowledgeError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify? : (Stmt₁ × ∀ i, OStmt₁ i) → pSpec₁.FullTranscript →
       Option (Stmt₂ × ∀ i, OStmt₂ i))
     (hVerify : V₁.toVerifier = ⟨fun p tr => OptionT.mk (pure (verify? p tr))⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
@@ -527,7 +520,7 @@ theorem append_rbrKnowledgeSoundness_failingDet_subsingleton_challenge
     (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}
     {err₁ : pSpec₁.ChallengeIdx → ℝ≥0} {err₂ : pSpec₂.ChallengeIdx → ℝ≥0}
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
@@ -581,14 +574,14 @@ BinaryBasefold `append(coreInteraction, queryPhase)` shape. One-shot from
 theorem append_rbrKnowledgeSoundness_failingDet_subsingleton_challenge
     [Subsingleton σ] [Inhabited (Stmt₂ × ∀ i, OStmt₂ i)]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {rbrKnowledgeError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify? : (Stmt₁ × ∀ i, OStmt₁ i) → pSpec₁.FullTranscript →
       Option (Stmt₂ × ∀ i, OStmt₂ i))
     (hVerify : V₁.toVerifier = ⟨fun p tr => OptionT.mk (pure (verify? p tr))⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
@@ -716,7 +709,7 @@ no lossless-`init`, and no seam-direction hypotheses. One-shot from
 theorem append_rbrKnowledgeSoundness_failingDet_empty
     [Inhabited (Stmt₂ × ∀ i, OStmt₂ i)]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {rbrKnowledgeError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}

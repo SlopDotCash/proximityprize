@@ -26,6 +26,11 @@ reduction has a residual-free rbr knowledge-soundness keystone in the `Subsingle
 open OracleComp OracleSpec ProtocolSpec
 open scoped NNReal
 
+-- Legacy transcript predicates observe every subset of the complete value space.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
 namespace Verifier
 
 variable {ι : Type} {oSpec : OracleSpec ι} {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
@@ -48,15 +53,14 @@ def appendRbrKnowledgePhase2SeamReconcilePos {WitMid₁ : Fin (m+1)→Type} {Wit
     (s : σ)
     (ctx : pSpec₁.FullTranscript ×
       prover.PrvState (Fin.castLE (show m + 1 ≤ m + n + 1 by omega) (Fin.last m)) × Unit),
-    Pr[fun x =>
+    probEvent (fun x =>
         ∃ witMid,
           ¬ (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
               (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc stmtIn x.1
               ((Extractor.RoundByRound.append E₁ E₂ verify).extractMid
                 (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1 stmtIn (x.1.concat x.2) witMid) ∧
             (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
-              (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.succ stmtIn (x.1.concat x.2) witMid
-      | ((do
+              (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.succ stmtIn (x.1.concat x.2) witMid) (((do
           let x ← (simulateQ (impl.addLift challengeQueryImpl
               : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
               (liftM ((Prover.snd prover).runToRound i₂.1.castSucc ctx.2.1 ctx.2.2))).run' s
@@ -70,13 +74,12 @@ def appendRbrKnowledgePhase2SeamReconcilePos {WitMid₁ : Fin (m+1)→Type} {Wit
               (pure (Transcript.appendRight ctx.1 x.1, x_1))).run' s) :
             ProbComp ((pSpec₁ ++ₚ pSpec₂).Transcript
               (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc
-                × (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)))]
-    = Pr[fun x =>
+                × (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂))))
+    = probEvent (fun x =>
           ∃ witMid,
             ¬ kSF₂.toFun i₂.1.castSucc (verify stmtIn ctx.1) x.1
               (E₂.extractMid i₂.1 (verify stmtIn ctx.1) (x.1.concat x.2) witMid) ∧
-              kSF₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2) witMid
-        | (simulateQ (impl.addLift challengeQueryImpl
+              kSF₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2) witMid) ((simulateQ (impl.addLift challengeQueryImpl
               : QueryImpl (oSpec + [pSpec₂.Challenge]ₒ) (StateT σ ProbComp))
             (do
               let ⟨transcript, _⟩ ← ((Prover.snd prover).runToRound i₂.1.castSucc ctx.2.1 ()
@@ -84,7 +87,7 @@ def appendRbrKnowledgePhase2SeamReconcilePos {WitMid₁ : Fin (m+1)→Type} {Wit
                     (pSpec₂.Transcript i₂.1.castSucc × (Prover.snd prover).PrvState i₂.1.castSucc))
               let challenge ← liftComp (pSpec₂.getChallenge i₂)
                 (oSpec + [pSpec₂.Challenge]ₒ)
-              return (transcript, challenge))).run' s]
+              return (transcript, challenge))).run' s)
 
 theorem appendRbrKnowledgePhase2SeamReconcile_proof_pos [Subsingleton σ]
     {WitMid₁ : Fin (m+1)→Type} {WitMid₂ : Fin (n+1)→Type}
@@ -124,17 +127,16 @@ theorem appendRbrKnowledgePhase2SeamReconcile_proof_pos [Subsingleton σ]
         ((pSpec₁ ++ₚ pSpec₂).getChallenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂))
         (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
       pure (Transcript.appendRight ctx.1 x.1, x_1)) with hBODY
-  show Pr[E | _] = _
+  show probEvent (E) (_) = _
   -- Reduce the goal's 3-block computation to `(simulateQ impl BODY).run' s` via the subsingleton
   -- split.
-  suffices hkey : Pr[E | (simulateQ (impl.addLift challengeQueryImpl
-        : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp)) BODY).run' s]
-      = Pr[fun x =>
+  suffices hkey : probEvent (E) ((simulateQ (impl.addLift challengeQueryImpl
+        : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp)) BODY).run' s)
+      = probEvent (fun x =>
           ∃ witMid,
             ¬ kSF₂.toFun i₂.1.castSucc (verify stmtIn ctx.1) x.1
               (E₂.extractMid i₂.1 (verify stmtIn ctx.1) (x.1.concat x.2) witMid) ∧
-              kSF₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2) witMid
-        | (simulateQ (impl.addLift challengeQueryImpl
+              kSF₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2) witMid) ((simulateQ (impl.addLift challengeQueryImpl
               : QueryImpl (oSpec + [pSpec₂.Challenge]ₒ) (StateT σ ProbComp))
             (do
               let ⟨transcript, _⟩ ← ((Prover.snd prover).runToRound i₂.1.castSucc ctx.2.1 ()
@@ -142,8 +144,9 @@ theorem appendRbrKnowledgePhase2SeamReconcile_proof_pos [Subsingleton σ]
                     (pSpec₂.Transcript i₂.1.castSucc × (Prover.snd prover).PrvState i₂.1.castSucc))
               let challenge ← liftComp (pSpec₂.getChallenge i₂)
                 (oSpec + [pSpec₂.Challenge]ₒ)
-              return (transcript, challenge))).run' s] by
-    simpa only [hBODY, simulateQ_run'_bind_of_subsingleton] using hkey
+              return (transcript, challenge))).run' s) by
+    convert hkey using 1 <;>
+      simp only [hBODY, simulateQ_run'_bind_of_subsingleton] <;> rfl
   -- The challenge value-type equality at the phase-2 index.
   have hChTy : (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)
       = pSpec₂.Challenge i₂ := by
@@ -211,9 +214,11 @@ theorem appendRbrKnowledgePhase2SeamReconcile_proof_pos [Subsingleton σ]
       OracleComp.liftComp_eq_liftM _]
   have hseam := OracleReduction.evalDist_run'_challengeSeam_right (pSpec₁ := pSpec₁)
     (impl := impl) INNER s
-  rw [probEvent_congr_heq rfl _
+  have hNativeEvent := probEvent_congr_heq rfl _
     ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂))
-      : QueryImpl _ (StateT σ ProbComp)) INNER).run' s) E E (heq_of_eq hseam) (fun x => Iff.rfl)]
+      : QueryImpl _ (StateT σ ProbComp)) INNER).run' s) E E (heq_of_eq hseam) (fun x => Iff.rfl)
+  change probEvent _ _ = probEvent _ _ at hNativeEvent
+  rw [hNativeEvent]
   -- STEP C: `INNER = wrap <$> RHSbody`; push the map out and collapse via `probEvent_map`.
   set RHSbody : OracleComp (oSpec + [pSpec₂.Challenge]ₒ)
       (pSpec₂.Transcript i₂.1.castSucc × pSpec₂.Challenge i₂) :=
@@ -239,10 +244,10 @@ theorem appendRbrKnowledgePhase2SeamReconcile_proof_pos [Subsingleton σ]
         = wrap <$> (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂))
           : QueryImpl _ (StateT σ ProbComp)) RHSbody).run' s from by
       simp only [simulateQ_map, StateT.run'_eq, StateT.run_map, Functor.map_map]]
-  rw [probEvent_map]
+  simp only [probEvent, prEvent_map]
   -- STEP D: the event correspondence `E ∘ wrap = E_inner` (pointwise).
-  refine congrArg (fun p => Pr[p | (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂))
-      : QueryImpl _ (StateT σ ProbComp)) RHSbody).run' s]) ?_
+  refine congrArg (fun p => probEvent (p) ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂))
+      : QueryImpl _ (StateT σ ProbComp)) RHSbody).run' s)) ?_
   funext x
   apply propext
   -- Notation: `trW := appendRight ctx.1 x.1`, the wrapped combined transcript; `chW := cast .. x.2`.
@@ -372,25 +377,24 @@ theorem appendRbrKnowledgeSoundnessPhase2_subsingleton_challenge [Subsingleton �
     (kSF₂ : V₂.KnowledgeStateFunction init impl rel₂ rel₃ E₂)
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩) (hInit : ∃ s, s ∈ support init)
-    (hNEW₂ : Nonempty Wit₂) (hInitNF : Pr[⊥ | init] = 0)
+    (hNEW₂ : Nonempty Wit₂) (hInitNF : prFail (init) = 0)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P)
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (hBound₂ : ∀ stmtIn : Stmt₂, ∀ witIn : Wit₂,
       ∀ prover : Prover oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂, ∀ i : pSpec₂.ChallengeIdx,
-        Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+        probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
           ∃ witMid,
             ¬ kSF₂.toFun i.1.castSucc stmtIn transcript
               (E₂.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-              kSF₂.toFun i.1.succ stmtIn (transcript.concat challenge) witMid
-        | do
+              kSF₂.toFun i.1.succ stmtIn (transcript.concat challenge) witMid) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec₂.getChallenge i) _
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤
           rbrKnowledgeError₂ i)
     (hReconcilePos : appendRbrKnowledgePhase2SeamReconcilePos (init := init) (impl := impl)
       V₁ V₂ kSF₁ kSF₂ verify hVerify hInit) :
@@ -468,15 +472,17 @@ theorem appendRbrKnowledgeSoundnessPhase2_subsingleton_challenge [Subsingleton �
       refine Prover.bind_heq_congr rfl hResTy HEq.rfl (fun s s' hs => ?_)
       cases eq_of_heq hs
       exact heq_simrun s hResTy _ _ hbody
-    rw [probEvent_congr_heq hResTy _ _ E (fun x => E (hResTy ▸ x)) hd (fun x => Iff.rfl)]
+    have hNativeEvent := probEvent_congr_heq hResTy _ _ E (fun x => E (hResTy ▸ x)) hd (fun x => Iff.rfl)
+    change probEvent _ _ = probEvent _ _ at hNativeEvent
+    rw [hNativeEvent]
     -- STEP 2: bound the seam-factored game via the Subsingleton bind split.
     -- Under `Subsingleton σ`, `simulateQ_run'_bind_of_subsingleton` distributes the simulated
     -- experiment over the seam bind `liftM (fst.run) >>= REST`.
     simp only [simulateQ_run'_bind_of_subsingleton]
     -- Outer bind over `init`: bound uniformly over each sampled `s`.
-    refine probEvent_bind_le_of_forall_le (fun s _hs => ?_)
+    refine prEvent_bind_le_of_forall_le_of_support _ _ _ (fun s _hs => ?_)
     -- Inner bind over the (simulated) `fst.run` realization `ctx = (tr₁, seamState, ())`.
-    refine probEvent_bind_le_of_forall_le (fun ctx hctx => ?_)
+    refine prEvent_bind_le_of_forall_le_of_support _ _ _ (fun ctx hctx => ?_)
     -- The realized seam statement `s₂ := verify stmtIn tr₁` and the amnesiac re-injection prover that
     -- resumes `Prover.snd prover` from the realized seam state `ctx.2.1`.
     set s₂ : Stmt₂ := verify stmtIn ctx.1 with hs₂
@@ -491,19 +497,13 @@ theorem appendRbrKnowledgeSoundnessPhase2_subsingleton_challenge [Subsingleton �
     simp only [Prover.sndAmnesiac_runToRound] at hb
     -- Under `Subsingleton σ`, the inner `init`-averaged game equals its value at our fixed `s` (all
     -- states are forced equal); with `Pr[⊥|init]=0`, `hb` collapses to the fixed-`s` snd game.
-    rw [probEvent_bind_of_const init
-        (r := Pr[fun x => ∃ witMid, ¬ kSF₂.toFun i₂.1.castSucc s₂ x.1
-              (E₂.extractMid i₂.1 s₂ (x.1.concat x.2) witMid) ∧
-              kSF₂.toFun i₂.1.succ s₂ (x.1.concat x.2) witMid
-          | (simulateQ (impl.addLift challengeQueryImpl
-              : QueryImpl (oSpec + [pSpec₂.Challenge]ₒ) (StateT σ ProbComp))
-              (do
-                let ⟨transcript, _⟩ ← (Prover.snd prover).runToRound i₂.1.castSucc ctx.2.1 ()
-                let challenge ← liftComp (pSpec₂.getChallenge i₂) _
-                return (transcript, challenge))).run' s])
-        (fun s' _ => by rw [Subsingleton.elim s' s]; rfl),
-        hInitNF] at hb
-    simp only [tsub_zero, one_mul] at hb
+    conv_lhs at hb =>
+      arg 2
+      arg 2
+      intro s'
+      rw [Subsingleton.elim s' s]
+    simp only [probEvent, map_bind] at hb
+    rw [OracleComp.prEvent_bind_const] at hb
     -- FINAL SEAM RECONCILIATION (the smallest remaining typed residual): the appended phase-2 inner
     -- game (combined challenge oracle, transcript prefixed by the realized phase-1 transcript `ctx.1`,
     -- event read through the composite `KnowledgeStateFunction.append` / `Extractor.RoundByRound.append`)
@@ -536,7 +536,7 @@ theorem append_rbrKnowledgeSoundness_keystone_subsingleton_challenge [Subsinglet
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty Stmt₂) (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)

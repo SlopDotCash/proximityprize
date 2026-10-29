@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.GuruswamiSudan.GuruswamiSudan
+import ProximityPrize.Extensions.Data.CodingTheory.GuruswamiSudan.GuruswamiSudan
 
 /-!
 # SYZ10 — BCIKS20 Claim 5.7 program, Chunk 1: the surface / interpolation existence step

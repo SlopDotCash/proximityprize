@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.MvPolynomial.Multilinear
-import ArkLib.Data.MvPolynomial.SchwartzZippelCounting
+import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
+import ProximityPrize.Extensions.Data.MvPolynomial.SchwartzZippelCounting
 
 /-!
 # Multilinear Schwartz–Zippel bound (sum-check round soundness)

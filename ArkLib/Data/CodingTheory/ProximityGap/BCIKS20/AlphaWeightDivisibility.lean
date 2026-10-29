@@ -97,7 +97,9 @@ theorem clearingProduct_eq_ξ_pow_of_monic (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H) (hmonic : H.Monic) (t : ℕ) :
     (W𝒪 H) ^ (t + 1) * (ClaimA2.ξ x₀ R H hHyp) ^ (2 * t - 1)
       = (ClaimA2.ξ x₀ R H hHyp) ^ (2 * t - 1) := by
-  rw [W𝒪_eq_one_of_monic H hmonic, one_pow, one_mul]
+  rw [W𝒪_eq_one_of_monic H hmonic]
+  exact (congrArg (fun z : 𝒪 H => z * (ClaimA2.ξ x₀ R H hHyp) ^ (2 * t - 1))
+    (one_pow (t + 1))).trans (one_mul _)
 
 /-! ### 4. The order-0 root is `T` itself, and the order-0 weight invariant is provable -/
 
@@ -136,7 +138,7 @@ theorem DivWeightLe_zero_of_monic (x₀ : F) (R : F[X][X][Y])
     DivWeightLe_zero H x₀ R hHyp hH D := by
   refine ⟨βHensel H x₀ R hHyp 0, ?_, βHensel_zero_weight_le_one H x₀ R hHyp hH hd hD⟩
   rw [W𝒪_eq_one_of_monic H hmonic]
-  simp
+  ring
 
 end BCIKS20.HenselNumerator.AlphaWeight
 

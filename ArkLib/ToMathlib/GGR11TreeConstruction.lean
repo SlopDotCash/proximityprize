@@ -269,19 +269,19 @@ def prefixAgree (V W : Matrix ι (Fin m) F) (i : ℕ) : Prop :=
 `(i, V)` whose remaining colour counts fit the budgets `(b', r')`. -/
 def nodeClass (f : Matrix ι (Fin m) F) (i : ℕ) (V : Matrix ι (Fin m) F)
     (b' r' : ℕ) : Set (Matrix ι (Fin m) F) :=
-  {W | W ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ ∧
+  {W | W ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ ∧
     prefixAgree V W i ∧ blueAfter C δ f W i ≤ b' ∧ redAfter C f W i ≤ r'}
 
 /-- The Algorithm-1 leaf-count function certified by the construction: the
 worst node class over all tree nodes. -/
 noncomputable def leafBound (f : Matrix ι (Fin m) F) (b' r' : ℕ) : ℕ∞ :=
   ⨆ (i : ℕ) (V : Matrix ι (Fin m) F)
-      (_ : V ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ),
+      (_ : V ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ),
     (nodeClass C δ f i V b' r').encard
 
 lemma nodeClass_encard_le_leafBound (f : Matrix ι (Fin m) F) {i : ℕ}
     {V : Matrix ι (Fin m) F}
-    (hV : V ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hV : V ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
     (b' r' : ℕ) :
     (nodeClass C δ f i V b' r').encard ≤ leafBound C δ f b' r' := by
   unfold leafBound
@@ -297,7 +297,7 @@ variable [DecidableEq F] {C : Set (ι → F)} {δ : ℝ} {m : ℕ} {f : Matrix �
 
 /-- Columns of close interleaved codewords are codewords. -/
 lemma col_mem_of_close {W : Matrix ι (Fin m) F}
-    (hW : W ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hW : W ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
     (l : Fin m) : (fun j => W j l) ∈ C := by
   have h : ∀ k : Fin m, W.transpose k ∈ C := hW.1
   have hcol : W.transpose l = fun j => W j l := by
@@ -308,14 +308,15 @@ lemma col_mem_of_close {W : Matrix ι (Fin m) F}
 
 /-- Closeness, in absolute terms: the final erasure count is at most `δ·n`. -/
 lemma total_le_of_close [Nonempty ι] {W : Matrix ι (Fin m) F}
-    (hW : W ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ) :
+    (hW : W ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ) :
     ((eraseSet f W m).card : ℝ) ≤ δ * (Fintype.card ι) := by
   classical
   obtain ⟨_, hball⟩ := hW
-  rw [relHammingBall, Set.mem_setOf_eq] at hball
+  unfold ListDecodable.relHammingBall at hball
+  change _ ≤ δ at hball
   -- transport to the ambient `DecidableEq` instance (`Decidable` is a subsingleton)
   have hballI : ((Code.relHammingDist f W : ℚ≥0) : ℝ) ≤ δ := by
-    convert hball using 3
+    convert hball using 3 <;> congr 1
   have hcard : (0 : ℝ) < (Fintype.card ι : ℝ) := by
     exact_mod_cast Fintype.card_pos
   rw [card_eraseSet_top]
@@ -338,8 +339,8 @@ codewords share all columns below `l` but differ at column `l`, then
 `d(C) ≤ μ + w + w'` where `μ` is the shared erasure count at level `l` and
 `w, w'` are the two level weights. -/
 lemma minDist_le_mu_add_wt_add_wt {W W' : Matrix ι (Fin m) F}
-    (hW : W ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
-    (hW' : W' ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hW : W ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hW' : W' ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
     {l : Fin m}
     (hpre : ∀ k : Fin m, (k : ℕ) < (l : ℕ) → ∀ j, W j k = W' j k)
     (hdiff : ∃ j, W j l ≠ W' j l) :
@@ -390,8 +391,8 @@ lemma minDist_le_mu_add_wt_add_wt {W W' : Matrix ι (Fin m) F}
 
 /-- **GGR11 Lemma 3.3** (White uniqueness): a White edge has no sibling. -/
 lemma eq_col_of_isWhiteAt [Nonempty ι] {W W' : Matrix ι (Fin m) F}
-    (hW : W ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
-    (hW' : W' ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hW : W ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hW' : W' ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
     {l : Fin m}
     (hpre : ∀ k : Fin m, (k : ℕ) < (l : ℕ) → ∀ j, W j k = W' j k)
     (hwhite : IsWhiteAt C δ f W l) :
@@ -421,8 +422,8 @@ lemma eq_col_of_isWhiteAt [Nonempty ι] {W W' : Matrix ι (Fin m) F}
 agree — at most one codeword lies within the unique-decoding radius of the
 punctured code. -/
 lemma eq_col_of_not_isRedAt {W W' : Matrix ι (Fin m) F}
-    (hW : W ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
-    (hW' : W' ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hW : W ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hW' : W' ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
     {l : Fin m}
     (hpre : ∀ k : Fin m, (k : ℕ) < (l : ℕ) → ∀ j, W j k = W' j k)
     (hred : ¬ IsRedAt C f W l) (hred' : ¬ IsRedAt C f W' l) :
@@ -440,9 +441,9 @@ lemma eq_col_of_not_isRedAt {W W' : Matrix ι (Fin m) F}
 corresponding column of the received word, so per-node branching is bounded by
 the base list (in-tree: `ListSize.transpose_mem_closeCodewordsRel`). -/
 lemma col_mem_closeCodewordsRel [Nonempty ι] {W : Matrix ι (Fin m) F}
-    (hW : W ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hW : W ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
     (l : Fin m) :
-    (fun j => W j l) ∈ closeCodewordsRel C (fun j => f j l) δ :=
+    (fun j => W j l) ∈ ListDecodable.closeCodewordsRel C (fun j => f j l) δ :=
   ListSize.transpose_mem_closeCodewordsRel hW l
 
 end CloseFacts
@@ -456,7 +457,7 @@ variable [DecidableEq F] {C : Set (ι → F)} {δ : ℝ} {m : ℕ} {f : Matrix �
 /-- **GGR11 Lemma 3.4, budget half**: the number of Blue levels is bounded by
 any `b` with `δ·n ≤ b·(d(C) − δ·n)`. -/
 lemma blueAfter_le_budget [Nonempty ι] {W : Matrix ι (Fin m) F}
-    (hW : W ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hW : W ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
     {b : ℕ}
     (hδD : δ * (Fintype.card ι) < (Code.minDist C : ℝ))
     (hb : δ * (Fintype.card ι)
@@ -604,7 +605,7 @@ private lemma redDoubling_invariant {W : Matrix ι (Fin m) F} :
 /-- **GGR11 Lemma 3.5**: the number of Red levels is bounded by any `r` with
 `d(C) ≤ 2^r·(d(C) − δ·n)`. -/
 lemma redAfter_le_budget [Nonempty ι] {W : Matrix ι (Fin m) F}
-    (hW : W ∈ closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
+    (hW : W ∈ ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ)
     {r : ℕ}
     (hδD : δ * (Fintype.card ι) < (Code.minDist C : ℝ))
     (hr : (Code.minDist C : ℝ)
@@ -742,7 +743,7 @@ private lemma encard_le_card_mul_of_fibers {α β : Type*} {s : Set α} {g : α 
 /-- Whenever some close codeword exists, every leaf-count value is at least 1,
 witnessed by the leaf node of that codeword. -/
 private lemma one_le_leafBound
-    (hne : (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).Nonempty)
+    (hne : (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).Nonempty)
     (b' r' : ℕ) : 1 ≤ leafBound C δ f b' r' := by
   classical
   obtain ⟨W₀, hW₀⟩ := hne
@@ -994,13 +995,13 @@ private lemma exists_common_branch [Nonempty ι]
 Red at a common branching level `l*` number at most `Λ(C,δ)` column choices,
 each of whose classes has a decremented Red budget. -/
 private lemma redPart_encard_le [Nonempty ι]
-    (hfin : ∀ y : ι → F, (closeCodewordsRel C y δ).Finite)
+    (hfin : ∀ y : ι → F, (ListDecodable.closeCodewordsRel C y δ).Finite)
     {i : ℕ} {V W₀ : Matrix ι (Fin m) F} {β ρ : ℕ} {lstar : Fin m}
     (hlstar_ge : i ≤ (lstar : ℕ))
     (hlstar_pre : ∀ W ∈ nodeClass C δ f i V β (ρ + 1),
       ∀ k : Fin m, (k : ℕ) < (lstar : ℕ) → ∀ j, W j k = W₀ j k) :
     {W ∈ nodeClass C δ f i V β (ρ + 1) | IsRedAt C f W lstar}.encard
-      ≤ Lambda C δ * leafBound C δ f β ρ := by
+      ≤ ListDecodable.Lambda C δ * leafBound C δ f β ρ := by
   classical
   set hfinL := hfin (fun j => f j lstar) with hfinLdef
   have hmaps : ∀ W ∈ {W ∈ nodeClass C δ f i V β (ρ + 1) | IsRedAt C f W lstar},
@@ -1051,16 +1052,16 @@ private lemma redPart_encard_le [Nonempty ι]
       _ ≤ leafBound C δ f β ρ :=
           nodeClass_encard_le_leafBound C δ f hWR.1.1.1 β ρ
   have hcount := encard_le_card_mul_of_fibers hmaps hfib
-  have hΛ : (hfinL.toFinset.card : ℕ∞) ≤ Lambda C δ := by
-    have hcard : (closeCodewordsRel C (fun j => f j lstar) δ).ncard
+  have hΛ : (hfinL.toFinset.card : ℕ∞) ≤ ListDecodable.Lambda C δ := by
+    have hcard : (ListDecodable.closeCodewordsRel C (fun j => f j lstar) δ).ncard
         = hfinL.toFinset.card :=
       Set.ncard_eq_toFinset_card _ hfinL
     rw [← hcard]
-    exact le_iSup (fun y => ((closeCodewordsRel C y δ).ncard : ℕ∞))
+    exact le_iSup (fun y => ((ListDecodable.closeCodewordsRel C y δ).ncard : ℕ∞))
       (fun j => f j lstar)
   calc {W ∈ nodeClass C δ f i V β (ρ + 1) | IsRedAt C f W lstar}.encard
       ≤ (hfinL.toFinset.card : ℕ∞) * leafBound C δ f β ρ := hcount
-    _ ≤ Lambda C δ * leafBound C δ f β ρ := mul_le_mul_right' hΛ _
+    _ ≤ ListDecodable.Lambda C δ * leafBound C δ f β ρ := mul_le_mul' hΛ le_rfl
 
 /-- An all-White member makes its node class a singleton. -/
 private lemma encard_le_one_of_allWhite [Nonempty ι]
@@ -1088,21 +1089,21 @@ private lemma encard_le_one_of_allWhite [Nonempty ι]
 /-- **The Red-only column of the Pascal recursion**:
 `t(0, ρ+1) ≤ Λ(C,δ) · t(0, ρ)`. -/
 private lemma nodeClass_encard_step_zero [Nonempty ι]
-    (hfin : ∀ y : ι → F, (closeCodewordsRel C y δ).Finite)
-    (hΛ1 : 1 ≤ Lambda C δ)
+    (hfin : ∀ y : ι → F, (ListDecodable.closeCodewordsRel C y δ).Finite)
+    (hΛ1 : 1 ≤ ListDecodable.Lambda C δ)
     {i : ℕ} {V : Matrix ι (Fin m) F} (ρ : ℕ) :
     (nodeClass C δ f i V 0 (ρ + 1)).encard
-      ≤ Lambda C δ * leafBound C δ f 0 ρ := by
+      ≤ ListDecodable.Lambda C δ * leafBound C δ f 0 ρ := by
   classical
   rcases (nodeClass C δ f i V 0 (ρ + 1)).eq_empty_or_nonempty with hAe | hAne
   · rw [hAe]
     simp
   obtain ⟨W₀, hW₀⟩ := hAne
-  have hclose_ne : (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).Nonempty :=
+  have hclose_ne : (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).Nonempty :=
     ⟨W₀, hW₀.1⟩
-  have hone : (1 : ℕ∞) ≤ Lambda C δ * leafBound C δ f 0 ρ := by
+  have hone : (1 : ℕ∞) ≤ ListDecodable.Lambda C δ * leafBound C δ f 0 ρ := by
     calc (1 : ℕ∞) = 1 * 1 := (one_mul 1).symm
-      _ ≤ Lambda C δ * leafBound C δ f 0 ρ :=
+      _ ≤ ListDecodable.Lambda C δ * leafBound C δ f 0 ρ :=
         mul_le_mul' hΛ1 (one_le_leafBound hclose_ne 0 ρ)
   by_cases hallW : ∃ W ∈ nodeClass C δ f i V 0 (ρ + 1),
       ∀ l : Fin m, i ≤ (l : ℕ) → IsWhiteAt C δ f W l
@@ -1125,34 +1126,34 @@ private lemma nodeClass_encard_step_zero [Nonempty ι]
     calc (nodeClass C δ f i V 0 (ρ + 1)).encard
         ≤ {W ∈ nodeClass C δ f i V 0 (ρ + 1) | IsRedAt C f W lstar}.encard :=
           Set.encard_mono hAred
-      _ ≤ Lambda C δ * leafBound C δ f 0 ρ :=
+      _ ≤ ListDecodable.Lambda C δ * leafBound C δ f 0 ρ :=
           redPart_encard_le hfin hlstar_ge hlstar_pre
 
 /-- **The Pascal step of the recursion**:
 `t(β+1, ρ+1) ≤ t(β, ρ+1) + Λ(C,δ) · t(β+1, ρ)`. -/
 private lemma nodeClass_encard_step_succ [Nonempty ι]
-    (hfin : ∀ y : ι → F, (closeCodewordsRel C y δ).Finite)
-    (hΛ1 : 1 ≤ Lambda C δ)
+    (hfin : ∀ y : ι → F, (ListDecodable.closeCodewordsRel C y δ).Finite)
+    (hΛ1 : 1 ≤ ListDecodable.Lambda C δ)
     {i : ℕ} {V : Matrix ι (Fin m) F} (β ρ : ℕ) :
     (nodeClass C δ f i V (β + 1) (ρ + 1)).encard
-      ≤ leafBound C δ f β (ρ + 1) + Lambda C δ * leafBound C δ f (β + 1) ρ := by
+      ≤ leafBound C δ f β (ρ + 1) + ListDecodable.Lambda C δ * leafBound C δ f (β + 1) ρ := by
   classical
   rcases (nodeClass C δ f i V (β + 1) (ρ + 1)).eq_empty_or_nonempty with hAe | hAne
   · rw [hAe]
     simp
   obtain ⟨W₀, hW₀⟩ := hAne
-  have hclose_ne : (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).Nonempty :=
+  have hclose_ne : (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).Nonempty :=
     ⟨W₀, hW₀.1⟩
-  have hone : (1 : ℕ∞) ≤ Lambda C δ * leafBound C δ f (β + 1) ρ := by
+  have hone : (1 : ℕ∞) ≤ ListDecodable.Lambda C δ * leafBound C δ f (β + 1) ρ := by
     calc (1 : ℕ∞) = 1 * 1 := (one_mul 1).symm
-      _ ≤ Lambda C δ * leafBound C δ f (β + 1) ρ :=
+      _ ≤ ListDecodable.Lambda C δ * leafBound C δ f (β + 1) ρ :=
         mul_le_mul' hΛ1 (one_le_leafBound hclose_ne (β + 1) ρ)
   by_cases hallW : ∃ W ∈ nodeClass C δ f i V (β + 1) (ρ + 1),
       ∀ l : Fin m, i ≤ (l : ℕ) → IsWhiteAt C δ f W l
   · obtain ⟨Wa, hWa, hWawhite⟩ := hallW
     calc (nodeClass C δ f i V (β + 1) (ρ + 1)).encard
         ≤ 1 := encard_le_one_of_allWhite hWa hWawhite
-      _ ≤ Lambda C δ * leafBound C δ f (β + 1) ρ := hone
+      _ ≤ ListDecodable.Lambda C δ * leafBound C δ f (β + 1) ρ := hone
       _ ≤ _ := self_le_add_left _ _
   · push_neg at hallW
     obtain ⟨lstar, hlstar_ge, hlstar_nw, hlstar_pre⟩ :=
@@ -1245,13 +1246,13 @@ private lemma code_nonempty_of_minDist_pos (hD : 0 < Code.minDist C) : C.Nonempt
 /-- With a nonempty code, a nonnegative radius, and finite lists, the
 maximised list size is at least one. -/
 private lemma one_le_Lambda_of_nonempty
-    (hfin : ∀ y : ι → F, (closeCodewordsRel C y δ).Finite)
-    (hC : C.Nonempty) (hδ0 : 0 ≤ δ) : 1 ≤ Lambda C δ := by
+    (hfin : ∀ y : ι → F, (ListDecodable.closeCodewordsRel C y δ).Finite)
+    (hC : C.Nonempty) (hδ0 : 0 ≤ δ) : 1 ≤ ListDecodable.Lambda C δ := by
   classical
   obtain ⟨c, hc⟩ := hC
-  have hmem : c ∈ closeCodewordsRel C c δ := by
+  have hmem : c ∈ ListDecodable.closeCodewordsRel C c δ := by
     refine ⟨hc, ?_⟩
-    rw [relHammingBall, Set.mem_setOf_eq]
+    rw [ListDecodable.relHammingBall, Set.mem_setOf_eq]
     have h0 : ((Code.relHammingDist c c : ℚ≥0) : ℝ) ≤ δ := by
       have hself : Code.relHammingDist c c = 0 := by
         unfold Code.relHammingDist
@@ -1259,12 +1260,12 @@ private lemma one_le_Lambda_of_nonempty
       rw [hself]
       simpa using hδ0
     convert h0 using 3
-  have hpos : 0 < (closeCodewordsRel C c δ).ncard :=
+  have hpos : 0 < (ListDecodable.closeCodewordsRel C c δ).ncard :=
     Set.ncard_pos (hfin c) |>.mpr ⟨c, hmem⟩
-  calc (1 : ℕ∞) ≤ ((closeCodewordsRel C c δ).ncard : ℕ∞) := by
+  calc (1 : ℕ∞) ≤ ((ListDecodable.closeCodewordsRel C c δ).ncard : ℕ∞) := by
         exact_mod_cast hpos
-    _ ≤ Lambda C δ :=
-        le_iSup (fun y => ((closeCodewordsRel C y δ).ncard : ℕ∞)) c
+    _ ≤ ListDecodable.Lambda C δ :=
+        le_iSup (fun y => ((ListDecodable.closeCodewordsRel C y δ).ncard : ℕ∞)) c
 
 /-- **The GGR11 Erase-Decode tree structure, constructed** (issue #73).
 
@@ -1275,7 +1276,7 @@ the relative distance (in the absolute form `δ·n < d(C)`), and any budgets
 **holds for every interleaving order `m`**.  The witnessing leaf-count function
 is `leafBound C δ f`. -/
 theorem ggr11_treeStructure_of_budgets [Nonempty ι]
-    (hfin : ∀ y : ι → F, (closeCodewordsRel C y δ).Finite)
+    (hfin : ∀ y : ι → F, (ListDecodable.closeCodewordsRel C y δ).Finite)
     (hδ0 : 0 ≤ δ)
     (hδD : δ * (Fintype.card ι) < (Code.minDist C : ℝ))
     {b r : ℕ}
@@ -1294,16 +1295,16 @@ theorem ggr11_treeStructure_of_budgets [Nonempty ι]
     have hn : (0 : ℝ) ≤ δ * (Fintype.card ι) :=
       mul_nonneg hδ0 (by positivity)
     linarith
-  have hΛ1 : 1 ≤ Lambda C δ :=
+  have hΛ1 : 1 ≤ ListDecodable.Lambda C δ :=
     one_le_Lambda_of_nonempty hfin (code_nonempty_of_minDist_pos hD) hδ0
   intro f
   refine ⟨leafBound C δ f, ?_, ?_, ?_, ?_⟩
   · -- domination: the root node class is the whole close set
-    rcases (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).eq_empty_or_nonempty
+    rcases (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).eq_empty_or_nonempty
       with he | ⟨V, hV⟩
     · rw [he]
       simp
-    · have hsub : closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ
+    · have hsub : ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ
           ⊆ nodeClass C δ f 0 V b r := by
         intro W hW
         refine ⟨hW, ?_, ?_, ?_⟩
@@ -1311,7 +1312,7 @@ theorem ggr11_treeStructure_of_budgets [Nonempty ι]
           exact absurd hl (Nat.not_lt_zero _)
         · exact blueAfter_le_budget hW hδD hb 0
         · exact redAfter_le_budget hW hδD hr 0
-      calc (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
+      calc (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ (nodeClass C δ f 0 V b r).encard := Set.encard_mono hsub
         _ ≤ leafBound C δ f b r := nodeClass_encard_le_leafBound C δ f hV b r
   · -- base: `t(b', 0) ≤ 1`
@@ -1329,7 +1330,7 @@ theorem ggr11_treeStructure_of_budgets [Nonempty ι]
 
 /-- The granular per-word frontier, from the construction. -/
 theorem ggr11_treeFrontier_of_budgets [Nonempty ι]
-    (hfin : ∀ y : ι → F, (closeCodewordsRel C y δ).Finite)
+    (hfin : ∀ y : ι → F, (ListDecodable.closeCodewordsRel C y δ).Finite)
     (hδ0 : 0 ≤ δ)
     (hδD : δ * (Fintype.card ι) < (Code.minDist C : ℝ))
     {b r : ℕ}
@@ -1343,7 +1344,7 @@ theorem ggr11_treeFrontier_of_budgets [Nonempty ι]
 
 /-- The per-word GGR11 list-size bound, from the construction. -/
 theorem ggr11_perWordBound_of_budgets [Nonempty ι]
-    (hfin : ∀ y : ι → F, (closeCodewordsRel C y δ).Finite)
+    (hfin : ∀ y : ι → F, (ListDecodable.closeCodewordsRel C y δ).Finite)
     (hδ0 : 0 ≤ δ)
     (hδD : δ * (Fintype.card ι) < (Code.minDist C : ℝ))
     {b r : ℕ}
@@ -1359,7 +1360,7 @@ theorem ggr11_perWordBound_of_budgets [Nonempty ι]
 GGR11 Theorem 3.6): `|Λ(C^{≡m}, δ)| ≤ (b+r choose r)·|Λ(C,δ)|^r`, with no
 external hypotheses beyond finiteness of the base lists. -/
 theorem lambda_le_ggr11_of_budgets [Nonempty ι]
-    (hfin : ∀ y : ι → F, (closeCodewordsRel C y δ).Finite)
+    (hfin : ∀ y : ι → F, (ListDecodable.closeCodewordsRel C y δ).Finite)
     (hδ0 : 0 ≤ δ)
     (hδD : δ * (Fintype.card ι) < (Code.minDist C : ℝ))
     {b r : ℕ}
@@ -1368,8 +1369,8 @@ theorem lambda_le_ggr11_of_budgets [Nonempty ι]
     (hr : (Code.minDist C : ℝ)
       ≤ 2 ^ r * ((Code.minDist C : ℝ) - δ * (Fintype.card ι)))
     (m : ℕ) :
-    Lambda (interleavedCodeSet (κ := Fin m) C) δ
-      ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r :=
+    ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
   lambda_le_ggr11_of_treeStructure (ggr11_treeStructure_of_budgets hfin hδ0 hδD hb hr m)
 
 end Assembly
@@ -1447,7 +1448,7 @@ private lemma canonical_hr [Nonempty ι]
 
 /-- `GGR11TreeStructure` at the canonical GGR11 budgets. -/
 theorem ggr11_treeStructure_canonical [Nonempty ι]
-    (hfin : ∀ y : ι → F, (closeCodewordsRel C y δ).Finite)
+    (hfin : ∀ y : ι → F, (ListDecodable.closeCodewordsRel C y δ).Finite)
     (hδ0 : 0 ≤ δ)
     (hδub : δ < (Code.minDist C : ℝ) / (Fintype.card ι))
     (m : ℕ) :
@@ -1469,7 +1470,7 @@ theorem lambda_le_ggr11_holds {ι F : Type} [Fintype ι] [Field F] [DecidableEq 
     (C : Set (ι → F)) (δ : ℝ) (m : ℕ) (hm : 1 ≤ m)
     (hδ_lb : 0 ≤ δ)
     (hδ_ub : δ < (Code.minDist C : ℝ) / (Fintype.card ι))
-    (hfin : ∀ y : ι → F, (closeCodewordsRel C y δ).Finite) :
+    (hfin : ∀ y : ι → F, (ListDecodable.closeCodewordsRel C y δ).Finite) :
     lambda_le_ggr11 C δ m hm hδ_lb hδ_ub := by
   have hι : Nonempty ι := by
     by_contra hι

@@ -7,7 +7,7 @@ formalization structure.
 
 - [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) is canonical for style, docstrings, naming,
   and citation policy.
-- `blueprint/src/` contains blueprint sources.
+- `blueprint/src/` contains blueprint sources; `leanblueprint web` refreshes `blueprint/lean_decls`.
 - `blueprint/web/` and `blueprint/print/` are outputs.
 - `BACKGROUND.md` is a lightweight reference list, not the detailed theory source.
 
@@ -22,32 +22,45 @@ For substantial contributions, discuss the blueprint-first workflow described in
 
 ## Citation Workflow
 
-1. Cite papers in Lean docstrings by citation key, for example `[BCIKS20]`.
-2. Give the Lean file a `## References` section in its module docstring.
+1. Cite papers by citation key, for example `[BCIKS20]`, only in the top-level Lean module
+   docstring. Keep URLs and paper-specific locators there too; declaration docstrings state the
+   mathematics and relevant hypotheses directly.
+2. Give the module docstring a `## References` section and brief provenance. Link to the KB
+   paper page or audit for paper-specific statement/version mappings, coverage and gaps.
 3. Add the matching BibTeX entry to `blueprint/src/references.bib`.
 4. For durable paper context, create or update `docs/kb/papers/KEY.md` for the same citation key.
+   Leave stub-only paper pages and source metadata to the main-branch KB workflow.
 5. Prefer public paper titles, venues, DOIs, or URLs in shared docs rather than pointing readers
    to private or local notes.
 
 ## Knowledge Base Mapping
 
+Lean declarations describe the mathematics independently of a source's numbering or revision.
+The same result can occur in several papers; the KB records those correspondences, and the
+wiki routes contributors to them.
+
 - `blueprint/src/references.bib` is the bibliographic source of truth.
 - `docs/kb/papers/KEY.md` is the preferred repository-local landing page for a cited paper key.
 - `docs/kb/sources/KEY/metadata.yml` records source provenance and optional local artifacts.
 - `docs/kb/_generated/lean-citations.json` is the generated map from Lean files to cited keys.
-  `python3 scripts/kb/regenerate.py` scans both `ArkLib/` and `Research/`, using
-  the same roots as `check_generated.py`. Changes under either tree trigger
-  the KB freshness workflow.
+  Do not commit `_generated` changes from feature PRs.
 
 ## Build And Publish Checks
 
-The Pages workflow prints active Lean processes, memory usage, and free disk space every
-30 seconds during the project build. If a runner terminates without a Lean error, inspect
-the final resource snapshots in the downloaded job log before retrying or changing proofs.
+For a local preview of the docs + blueprint website:
 
 ```bash
-DISABLE_EQUATIONS=1 lake build ArkLib:docs
-./scripts/build-web.sh
+DISABLE_EQUATIONS=1 ./scripts/build-web.sh
+```
+
+The nondefault `ArkLibBlueprint` library imports dependency declarations cited only by the
+blueprint, including the abstract binary tower. It keeps those references available to
+`checkdecls` without adding them to the production `ArkLib` import graph or default build.
+For a direct declaration check, run:
+
+```bash
+lake build ArkLib ArkLibBlueprint
+lake exe checkdecls blueprint/lean_decls
 ```
 
 If blueprint output matters and `leanblueprint` is missing:
@@ -56,54 +69,36 @@ If blueprint output matters and `leanblueprint` is missing:
 python3 -m pip install leanblueprint
 ```
 
-### Building the blueprint locally without TeX
+### Continuous integration
 
-`leanblueprint web` (plasTeX) resolves every `\input` through the external `kpsewhich`
-binary. On a machine without a TeX distribution the build "succeeds" but every chapter is an
-empty ~5KB shell (18 `File not found` warnings) — a vacuous gate. Two fixes:
+Publishing to GitHub Pages is handled by [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml),
+which delegates to the maintained [`leanprover-community/docgen-action`](https://github.com/leanprover-community/docgen-action)
+rather than a hand-rolled TeX/pygraphviz setup. The action runs after CI's Lean
+build on the same runner, so blueprint validation and documentation publishing
+reuse the existing `.lake` build instead of compiling the project again. It
+builds the API docs via doc-gen4 (in an isolated `docbuild` project, the layout
+recommended by [doc-gen4](https://github.com/leanprover/doc-gen4)), builds the
+blueprint with `leanblueprint pdf` + `leanblueprint web`, runs
+`lake exe checkdecls blueprint/lean_decls` to confirm every `\lean{...}`
+declaration exists, and deploys the static `home_page/` (with `docs/` and
+`blueprint/` copied in). Pull requests run a validation-only build (blueprint +
+`checkdecls`, no deploy), so LaTeX and declaration errors are caught before they
+reach `main`. CI explicitly builds `ArkLibBlueprint` before the declaration check. On
+main pushes, a following step adds `ArkLibBlueprint:docs` in the same isolated `docbuild`
+project and copies the combined output before upload, since the pinned action selects only
+default-target API facets. The local preview selects the same four default-library facets
+(`ArkLib:docs`, `ArkLibExtensions:docs`, `ResearchProximityPrize:docs`, and
+`ProximityPrizeExtensions:docs`) plus `ArkLibBlueprint:docs` in one locked build.
+The glob-only `ArkLibExtensions` library has no umbrella roots; its classic APIs appear in
+the documentation when imported by the selected Research or ProximityPrize roots.
 
-- Install TeX (what CI does via the `texlive-full` container; `leanblueprint pdf` also needs it).
-- Or shim `kpsewhich` with a script that searches `$TEXINPUTS` then the cwd, trying
-  `name`, `name.tex`, `name.sty`; put it on `PATH` before running `leanblueprint web`.
-  With the shim the local web build produces full chapters (`chap-proof_systems.html` ≈ 300KB,
-  not ≈ 5KB) and the genuine content warnings (missing bib keys, unsupported macros) become
-  visible. `pip install pygraphviz` needs `brew install graphviz` headers
-  (`CFLAGS=-I$(brew --prefix graphviz)/include LDFLAGS=-L$(brew --prefix graphviz)/lib`).
+### Blueprint LaTeX gotchas
 
-Sanity probe after any blueprint build: `wc -c blueprint/web/chap-*.html` — chapters in the
-single-digit-KB range mean the inputs did not resolve and the build was vacuous.
+These break the PDF build (and therefore the whole publish workflow):
 
-### Deployment configuration
-
-GitHub Pages uses `.github/workflows/docs.yml` on `main`; pushes trigger it only
-for Lean sources, blueprint or landing-page files, and build configuration.
-Coordination notes and agent guides do not cancel an in-flight site build.
-Manual dispatch remains available. The repository must have Pages enabled with
-GitHub Actions as its build source. The workflow builds
-the Lean library, API documentation, and blueprint before deploying.
-
-The Cloudflare workflows watch their website directories on `main` and also
-accept manual dispatch on `main`. Pushes build and upload the static site artifacts.
-Publish locally using an authenticated Wrangler session from the site directory:
-
-```bash
-npm ci
-npm run build
-npx wrangler pages deploy out --project-name=deltastar-paper --branch=main
-# Use --project-name=truthmining from website/truthmining instead.
-```
-
-GitHub-hosted deployment is opt-in through the manual `deploy` input and requires
-repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. A local
-Wrangler OAuth login is not available on GitHub runners. Push filters and
-production deployment guards must use the same branch.
-
-Blueprint figures require `graphicx` in the shared package preamble. Without
-it, plasTeX can finish with an `imageoverride` template warning while emitting
-the image filename as text. Check that figure markup contains an image and that
-the referenced image is included in the generated web directory.
-
-Use `\texorpdfstring{mathematical title}{plain-text title}` for mathematical
-section headings. PDF bookmarks need a text equivalent; passing Unicode-math
-commands directly to hyperref can abort the PDF build. Run the PDF build before
-the HTML build so `leanblueprint` copies the generated bibliography to `web.bbl`.
+- Math in `\section`/`\subsection` titles reaches hyperref's PDF bookmarks, where
+  commands such as `\cong` raise a fatal `Improper alphabetic constant`. Wrap any
+  math in a title with `\texorpdfstring{$...$}{plain-text fallback}`.
+- Every `@key{...}` in `blueprint/src/references.bib` must be unique; a duplicate
+  key makes BibTeX error out and leaves all citations unresolved.
+- Only use macros that are defined in `blueprint/src/macros/`.

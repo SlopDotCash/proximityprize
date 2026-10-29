@@ -1,0 +1,29 @@
+{
+  "scope": "Noncanonical downstream concrete-example fixtures only. No theorem statement is weakened; namespaces disambiguate independent claims that previously used the same global names.",
+  "pre_consolidation_sha256": {
+    "ArkLib/Data/CodingTheory/Quarantine/Hypotheses.lean": "8cd814db6d08807bb98b0569e2715ca1f66765a4c905e7fa2fadd43dabc9a154",
+    "ArkLib/Data/CodingTheory/Quarantine/HypothesesRefutations.lean": "709f002da2ab2eac204e4e63b1d55d2c65ea50d34169bd4dedeefb317e96dbd1",
+    "ArkLib/Data/CodingTheory/ProximityGap/PromotedHypothesesB.lean": "cb7839f5142a3fd8da0b73a758141eb1ee60a1fdea87b5e3c6bb64831ce1773e"
+  },
+  "fixture_owner": "ArkLib/Data/CodingTheory/Quarantine/CounterexampleFixture.lean",
+  "fixture_namespace": "ProximityGap.HypothesisCounterexample",
+  "shared_data": [
+    "F",
+    "n",
+    "m",
+    "H_matrix",
+    "w0",
+    "w1",
+    "w2"
+  ],
+  "generic_owner": "ArkLib/Data/CodingTheory/Quarantine/Hypotheses.lean",
+  "generic_namespace": "ProximityGap.QuarantineHypotheses",
+  "generic_specializations": "PromotedHypothesesB.C, weight and support are reducible aliases of the generic definitions at the concrete fixture.",
+  "claim_namespaces": [
+    "ProximityGap.PromotedHypothesesB",
+    "ProximityGap.QuarantineHypotheses.Refutations"
+  ],
+  "distinct_claims_preserved": "The two w_in_C lemmas have different quantifiers (the parametrized nearest codeword versus finite-set membership); each is retained in its own claim namespace.",
+  "external_qualified_consumers": "Full ArkLib/ProximityPrize/Research search found no qualified theorem or fixture consumers; only HypothesesRefutations imports Hypotheses, updated together.",
+  "validation": "Strict exact-source composition of all four modified/new modules passed19s with autoImplicit=false; actual package boundary remains required."
+}

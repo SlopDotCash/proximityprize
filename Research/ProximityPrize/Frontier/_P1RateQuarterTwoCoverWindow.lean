@@ -487,6 +487,31 @@ theorem base_sum_at_eleven (hg : orderOf gen = 2 ^ 30) (e : Fin N) (h : (e : ℕ
 
 /-! ### Codeword membership -/
 
+-- Keep the degree calculation symbolic before specializing the large power exponents.
+private theorem degree_six_sparse_factors (a b c d : ℕ)
+    (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (hd : 0 < d)
+    (ca cb cc cd ce cf : F) :
+    (((Polynomial.X : F[X]) ^ a - Polynomial.C ca) *
+      ((Polynomial.X ^ b - Polynomial.C cb) * (Polynomial.X ^ c - Polynomial.C cc)) *
+      ((Polynomial.X ^ d - Polynomial.C cd) *
+        ((Polynomial.X ^ d - Polynomial.C ce) * (Polynomial.X ^ d - Polynomial.C cf)))).degree =
+      ((a + (b + c) + (d + (d + d)) : ℕ) : WithBot ℕ) := by
+  rw [degree_mul, degree_mul, degree_mul, degree_mul, degree_mul,
+    degree_X_pow_sub_C ha, degree_X_pow_sub_C hb, degree_X_pow_sub_C hc,
+    degree_X_pow_sub_C hd, degree_X_pow_sub_C hd, degree_X_pow_sub_C hd]
+  norm_cast
+
+private theorem degree_scaled_six_sparse_factors (a b c d : ℕ)
+    (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (hd : 0 < d)
+    (s ca cb cc cd ce cf : F) (hs : s ≠ 0) :
+    (Polynomial.C s * (((Polynomial.X : F[X]) ^ a - Polynomial.C ca) *
+      ((Polynomial.X ^ b - Polynomial.C cb) * (Polynomial.X ^ c - Polynomial.C cc)) *
+      ((Polynomial.X ^ d - Polynomial.C cd) *
+        ((Polynomial.X ^ d - Polynomial.C ce) * (Polynomial.X ^ d - Polynomial.C cf))))).degree =
+      ((a + (b + c) + (d + (d + d)) : ℕ) : WithBot ℕ) := by
+  rw [degree_mul, degree_C hs, zero_add,
+    degree_six_sparse_factors a b c d ha hb hc hd]
+
 /-- **RS membership of `Df`**: the sparse product polynomial has degree
 `2^23 + 2^24 + 2^25 + 3·2^26 = 31·2^23 < k = 2^28`. -/
 theorem Dffun_mem (hg : orderOf gen = 2 ^ 30) (hg0 : gen ≠ 0) :
@@ -499,13 +524,8 @@ theorem Dffun_mem (hg : orderOf gen = 2 ^ 30) (hg0 : gen ≠ 0) :
         (((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) - Polynomial.C (w16 gen)) *
           ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) - Polynomial.C (w16 gen ^ 8)))))
     ?_ ?_
-  · rw [degree_mul, degree_mul, degree_mul, degree_mul, degree_mul,
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 23) (w128 gen ^ 15),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 24) (w64 gen ^ 14),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 25) (w32 gen ^ 12),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 26) (1 : F),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 26) (w16 gen),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 26) (w16 gen ^ 8)]
+  · rw [degree_six_sparse_factors _ _ _ _ (by norm_num) (by norm_num)
+      (by norm_num) (by norm_num)]
     exact_mod_cast (by norm_num [k] :
       (2 : ℕ) ^ 23 + (2 ^ 24 + 2 ^ 25) + (2 ^ 26 + (2 ^ 26 + 2 ^ 26)) < k)
   · intro i
@@ -529,15 +549,8 @@ theorem Dgfun_mem (hg : orderOf gen = 2 ^ 30) (hg0 : gen ≠ 0) :
     ?_ ?_
   · have hlam : (-(w16 gen ^ 2) : F) ≠ 0 :=
       neg_ne_zero.mpr (pow_ne_zero _ (w16_ne_zero gen hg0))
-    rw [degree_mul, degree_mul, degree_mul, degree_mul, degree_mul, degree_mul,
-      Polynomial.degree_C hlam,
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 23) (w128 gen ^ 15),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 24) (w64 gen ^ 14),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 25) (w32 gen ^ 12),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 26) (w16 gen ^ 2),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 26) (w16 gen ^ 9),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 26) (w16 gen ^ 10)]
-    rw [zero_add]
+    rw [degree_scaled_six_sparse_factors _ _ _ _ (by norm_num) (by norm_num)
+      (by norm_num) (by norm_num) _ _ _ _ _ _ _ hlam]
     exact_mod_cast (by norm_num [k] :
       (2 : ℕ) ^ 23 + (2 ^ 24 + 2 ^ 25) + (2 ^ 26 + (2 ^ 26 + 2 ^ 26)) < k)
   · intro i

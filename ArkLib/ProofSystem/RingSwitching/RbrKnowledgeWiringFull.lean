@@ -65,7 +65,7 @@ the core-interaction side supplied by `coreInteraction_rbrKnowledgeSoundness_wir
 `fullOracleVerifier_rbrKnowledgeSoundness`. -/
 theorem batchingCore_rbrKnowledgeSoundness_wired [IsDomain L] [IsDomain K] [Subsingleton σ]
     [Inhabited (∀ j, mlIOPCS.toAbstractOStmtIn.OStmtIn j)]
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail init = 0) :
     (batchingCoreVerifier κ L K P ℓ ℓ' h_l mlIOPCS).rbrKnowledgeSoundness
       (init := init) (impl := impl)
       (relIn := fullInputRelation κ L K P ℓ ℓ' h_l mlIOPCS)
@@ -118,10 +118,11 @@ the structure's own `rbrKnowledgeSoundness` field. The `Sum.elim` error is defin
 `fullRbrKnowledgeError`. -/
 theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [IsDomain L] [IsDomain K] [Subsingleton σ]
     [Inhabited (∀ j, mlIOPCS.toAbstractOStmtIn.OStmtIn j)]
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail init = 0)
     (hMlnPos : 0 < mlIOPCS.numRounds)
     (hMlnDir : mlIOPCS.pSpec.dir ⟨0, hMlnPos⟩ = .P_to_V) :
     (fullOracleVerifier κ L K P ℓ ℓ' h_l mlIOPCS).rbrKnowledgeSoundness
+      (Oₛₒ := fun i : Empty => nomatch i)
       (init := init) (impl := impl)
       (relIn := fullInputRelation κ L K P ℓ ℓ' h_l mlIOPCS)
       (relOut := fullOutputRelation)
@@ -130,8 +131,8 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [IsDomain L] [IsDomain K]
   have hKey := OracleVerifier.append_rbrKnowledgeSoundness_failingDet_subsingleton
     (init := init) (impl := impl)
     (V₁ := batchingCoreVerifier κ L K P ℓ ℓ' h_l mlIOPCS)
-    (V₂ := mlIOPCS.oracleReduction.verifier)
-    (Oₛ₃ := fun _ => OracleInterface.instDefault)
+    (V₂ := mlIOPCS.oracleReduction.toOracleVerifier)
+    (Oₛ₃ := fun i : Empty => nomatch i)
     (verify? := v?) (hVerify := hVerify)
     (hInit := hInit) (hInitNF := hInitNF)
     (hNEW₂ := ⟨default⟩)

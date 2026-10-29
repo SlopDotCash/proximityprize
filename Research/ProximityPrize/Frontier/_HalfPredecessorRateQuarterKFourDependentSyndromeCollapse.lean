@@ -215,7 +215,9 @@ theorem regular_missedEdgeSyndromeRepresentation
     intro hzero
     have haffineC : v0 + gamma • v1 ∈ C0 := by
       apply (Submodule.Quotient.mk_eq_zero C0).mp
-      simpa only [map_add, map_smul, quotientAffinePoint] using hzero
+      change C0.mkQ (v0 + gamma • v1) = 0
+      rw [map_add, map_smul]
+      exact hzero
     have heC : e ∈ C0 := by
       exact C0.sub_mem haffineC hwC
     have heWeight : Code.wt e ≤ 4 := by
@@ -394,7 +396,7 @@ theorem endpoint_mem_of_column_mem_of_finrank_le_one_of_chordMeets
         omega)
   have hLI' := hMDS4 (S ∪ C) hunionCard
   have hLI : LinearIndepOn F v (((S ∪ C : Finset J) : Set J)) := by
-    simpa only [LinearIndepOn] using hLI'
+    exact hLI'
   have hcommon : P ≤ columnSpan (F := F) v (S ∩ C) :=
     sharedSubmodule_le_commonSpan v S C P hLI hPS hPC
   have hinter : S ∩ C = ∅ := by
@@ -490,9 +492,7 @@ theorem three_regular_missedUnion_card_le_four_of_rows_dependent
     simp only [V, sourceComplement, Finset.card_sdiff,
       Finset.inter_univ, Finset.card_univ, hn, hcore]
   have hMDS4 : IndependentUpTo (F := F) col 4 := by
-    simpa only [col, C0, sourceComplementCode, domV] using
-      reedSolomon_eight_four_quotientColumns_independentUpTo_four
-        domV hVcard
+    exact reedSolomon_eight_four_quotientColumns_independentUpTo_four domV hVcard
   have hPdim : finrank F P ≤ 1 := by
     simpa only [P, C0, v0, v1] using
       rowPlane_finrank_le_one_of_not_independent

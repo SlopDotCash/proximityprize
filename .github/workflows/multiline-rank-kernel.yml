@@ -37,7 +37,9 @@ jobs:
           use-mathlib-cache: false
       - uses: actions/cache/restore@v4
         with:
-          path: .lake
+          path: |
+            .lake
+            !.lake/**/*.setup.json
           key: multiline-kernel-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-

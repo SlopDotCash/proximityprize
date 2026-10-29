@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.ReedSolomonSparseWitness
 import Research.ProximityPrize.Frontier._P1RateQuarterSharedFreshCoordinate
 import Research.ProximityPrize.Frontier._P1RateQuarterCanonicalCodeBridge
 
@@ -326,15 +327,8 @@ theorem agreement (g : F) (hg : orderOf g = 2 ^ 30) (j : Fin 3) :
 
 theorem pfun_mem (g : F) (hg : orderOf g = 2 ^ 30) (hg0 : g ≠ 0) (j : Fin 3) :
     pfun g j ∈ predecessorCode (powDomain g hg hg0) := by
-  refine ReedSolomon.mem_code_of_polynomial_of_degree_lt_of_eval
-    ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 27) + Polynomial.C (gam g j)) ?_ ?_
-  · rw [Polynomial.degree_X_pow_add_C (by norm_num : 0 < (2 : ℕ) ^ 27) (gam g j)]
-    exact_mod_cast (by norm_num [k] : (2 : ℕ) ^ 27 < k)
-  · intro i
-    show (g ^ ((i : Fin N) : ℕ)) ^ ((2 : ℕ) ^ 27) + gam g j = _
-    rw [Polynomial.eval_add, Polynomial.eval_pow, Polynomial.eval_X,
-      Polynomial.eval_C]
-    rfl
+  exact ReedSolomon.mem_code_monomial_add_constant
+    (powDomain g hg hg0) (e := 2 ^ 27) (k := k) (by norm_num [k]) (gam g j)
 
 theorem onefun_mem (dom : Fin N ↪ F) :
     (fun _ : Fin N => (1 : F)) ∈ predecessorCode dom := by

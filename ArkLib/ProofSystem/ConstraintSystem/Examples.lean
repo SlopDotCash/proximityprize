@@ -6,7 +6,7 @@ Authors: Quang Dao
 
 import ArkLib.ProofSystem.ConstraintSystem.Basic
 import ArkLib.ProofSystem.ConstraintSystem.R1CS
-import ArkLib.ProofSystem.ConstraintSystem.Plonk
+import ProximityPrize.Extensions.ProofSystem.ConstraintSystem.Plonk
 
 /-!
 # Concrete instances of the universal `ConstraintSystem`
@@ -64,7 +64,7 @@ instance : Inhabited Plonk.Shape where
 universal `ConstraintSystem`. The in-the-clear statement holds the public inputs, the
 oracle statement holds the full gate layout (a `Plonk.ConstraintSystem` value), and the
 witness holds the private wire values. -/
-def Plonk.toConstraintSystem (𝓡 : Type) [CommRing 𝓡] : ConstraintSystem where
+def Plonk.toConstraintSystem (𝓡 : Type) [CommRing 𝓡] : _root_.ConstraintSystem where
   Index := Plonk.Shape
   Stmt := fun s => Fin s.ℓ → 𝓡
   OStmt := fun s => Plonk.ConstraintSystem 𝓡 s.numWires s.numGates

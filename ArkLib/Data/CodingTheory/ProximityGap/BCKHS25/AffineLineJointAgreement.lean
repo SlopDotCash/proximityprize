@@ -6,8 +6,8 @@ Authors: ArkLib Contributors
 
 import ArkLib.Data.CodingTheory.ProximityGap.BCKHS25.Interpolation
 import ArkLib.Data.CodingTheory.ProximityGap.BCKHS25.CollinearProximates
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.CodingTheory.InterleavedCode
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
 
 /-!
 # From the [BCKHS25] joint proximate to affine-line `jointAgreement`

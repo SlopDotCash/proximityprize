@@ -52,12 +52,14 @@ def stirRound3Prover' (φ : ι ↪ F) (deg : ℕ) :
 def stirRound3Verifier' (φ : ι ↪ F) (deg : ℕ) :
     OracleVerifier []ₒ F (OStmt ι F) F (OStmt ι F) (pSpec3 ι F) where
   verify := fun _ chals => pure (chals ⟨2, pSpec3_dir_two⟩)
-  embed := ⟨fun _ => Sum.inr ⟨0, pSpec3_dir_zero⟩, fun _ _ _ => rfl⟩
-  hEq := by
-    intro i
-    show (ι → F) = (pSpec3 ι F).Message ⟨0, pSpec3_dir_zero⟩
-    unfold pSpec3 ProtocolSpec.Message
-    simp
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inr ⟨0, pSpec3_dir_zero⟩, fun _ _ _ => rfl⟩
+    hEq := by
+      intro i
+      show (ι → F) = (pSpec3 ι F).Message ⟨0, pSpec3_dir_zero⟩
+      unfold pSpec3 ProtocolSpec.Message
+      simp
+    outputInterface_heq := by intro u; cases u <;> rfl }
 
 /-- The uniform-threading 3-slot block reduction. -/
 def stirRound3Reduction' (φ : ι ↪ F) (deg : ℕ) :
@@ -65,47 +67,13 @@ def stirRound3Reduction' (φ : ι ↪ F) (deg : ℕ) :
   prover := stirRound3Prover' φ deg
   verifier := stirRound3Verifier' φ deg
 
-instance instStirRound3Verifier'AppendCoherent (φ : ι ↪ F) (deg : ℕ) :
-    OracleVerifier.Append.AppendCoherent (stirRound3Verifier' φ deg) where
-  hCohInl := fun i k h => by
-    exact absurd h (by simp [stirRound3Verifier'])
-  hCohInr := fun i k h => by
-    have hk : k = ⟨0, pSpec3_dir_zero⟩ := by
-      have := h.symm
-      simp only [stirRound3Verifier', Function.Embedding.coeFn_mk] at this
-      exact (Sum.inr.inj this)
-    subst hk
-    apply eq_of_heq
-    refine HEq.trans ?_ (cast_heq _ _).symm
-    rfl
-
-instance instStirRound3Reduction'AppendCoherent (φ : ι ↪ F) (deg : ℕ) :
-    OracleVerifier.Append.AppendCoherent (stirRound3Reduction' φ deg).verifier :=
-  instStirRound3Verifier'AppendCoherent φ deg
-
-/-! ## The M-block middle composite -/
-
 /-- **The `M`-block middle phase**: `seqCompose` of `M` uniform-threading 3-slot blocks. -/
 noncomputable def stirBlocksReduction (φ : ι ↪ F) (deg : ℕ) (M : ℕ) :
     OracleReduction []ₒ F (OStmt ι F) Unit F (OStmt ι F) Unit
       (ProtocolSpec.seqCompose (fun _ : Fin M => pSpec3 ι F)) :=
   OracleReduction.seqCompose (fun _ => F) (fun _ => OStmt ι F) (fun _ => Unit)
     (fun _ => stirRound3Reduction' φ deg)
-    (coh := fun _ => instStirRound3Reduction'AppendCoherent φ deg)
 
-instance instStirBlocksReductionAppendCoherent (φ : ι ↪ F) (deg : ℕ) (M : ℕ) :
-    OracleVerifier.Append.AppendCoherent (stirBlocksReduction φ deg M).verifier :=
-  OracleReduction.seqCompose_verifier_appendCoherent
-    (fun _ => F) (fun _ => OStmt ι F) (fun _ => Unit)
-    (fun _ => stirRound3Reduction' φ deg)
-    (coh := fun _ => instStirRound3Reduction'AppendCoherent φ deg)
-
-instance instStirInitReductionAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (stirInitReduction (ι := ι) (F := F)).verifier :=
-  instStirInitVerifierAppendCoherent
-
-/-! ## Compound-spec interface instances (registered by name — the FRI/MultiRound idiom:
-instance search does not find the generic append instance at these compound heads). -/
 
 instance instStirChainInnerMessageInterface (M : ℕ) : ∀ j, OracleInterface
     (((ProtocolSpec.seqCompose (fun _ : Fin M => pSpec3 ι F)) ++ₚ pSpecFinal ι F).Message j) :=

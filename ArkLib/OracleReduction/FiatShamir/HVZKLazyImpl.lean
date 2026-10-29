@@ -24,6 +24,13 @@ run a `Fin.induction` mirroring `coupling_run`.
 -/
 
 open OracleComp OracleSpec ProtocolSpec
+set_option backward.isDefEq.respectTransparency false
+
+-- The retained distribution claims observe every subset of complete outputs.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : MeasurableSpace (Option A) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
 
 namespace Reduction
 
@@ -31,6 +38,11 @@ variable {ι : Type} {oSpec : OracleSpec ι} {StmtIn WitIn StmtOut WitOut : Type
   {n : ℕ} {pSpec : ProtocolSpec n} [∀ i, SampleableType (pSpec.Challenge i)]
   {σ : Type} [∀ i, VCVCompatible (pSpec.Challenge i)]
   [DecidableEq StmtIn] [∀ i, DecidableEq (pSpec.Message i)]
+
+private local instance fsLazyKeyDecidableEq :
+    DecidableEq (fsChallengeOracle StmtIn pSpec).Domain := by
+  change DecidableEq ((i : pSpec.ChallengeIdx) × (StmtIn × pSpec.MessagesUpTo i.1.castSucc))
+  infer_instance
 
 /-- The lazy caching Fiat-Shamir challenge implementation: on a cache miss, draw a fresh uniform
 challenge and store it; on a hit, replay the stored value. This is `srChallengeQueryImpl.withCaching`
@@ -115,7 +127,8 @@ theorem simulateQ_lazyProd_query_run_miss
     simulateQ_query]
   show (_ <$> (ambientProd (StmtIn := StmtIn) pSpec impl + fsLazyProd (StmtIn := StmtIn) (σ := σ)
       pSpec) (Sum.inr q)).run (s, cache) = _
-  rw [QueryImpl.add_apply_inr, StateT.run_map]
+  rw [QueryImpl.add_apply_inr]
+  erw [StateT.run_map]
   show (fun p => ((id : (fsChallengeOracle StmtIn pSpec).Range q → _) p.1, p.2)) <$>
       (fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec q).run (s, cache) = _
   rw [show (fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec q).run (s, cache)
@@ -147,7 +160,8 @@ theorem simulateQ_uniformProd_query_run
     simulateQ_query]
   show (_ <$> (ambientProd (StmtIn := StmtIn) pSpec impl
       + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec) (Sum.inr q)).run (s, cache) = _
-  rw [QueryImpl.add_apply_inr, StateT.run_map]
+  rw [QueryImpl.add_apply_inr]
+  erw [StateT.run_map]
   show (fun p => ((id : (fsChallengeOracle StmtIn pSpec).Range q → _) p.1, p.2)) <$>
       (fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec q).run (s, cache) = _
   rw [show (fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec q).run (s, cache)
@@ -227,19 +241,19 @@ lazy-product impl, starting from a cache that misses the round-`j` key, projects
 prover state, and the ambient `σ`, dropping the cache) to the SAME distribution as running it under
 the uniform-product impl. Both reduce to the identical fresh `$ᵗ` draw on the round-`j` challenge;
 the cache is irrelevant after projection. -/
-theorem processRoundFS_lazy_uniform_step
+theorem processRoundFS_lazy_uniform_step_program_eq
     (impl : QueryImpl oSpec (StateT σ ProbComp)) (stmt : StmtIn) (j : Fin n)
     (m : pSpec.MessagesUpTo j.castSucc) (st : P.PrvState j.castSucc)
     (σ' : σ) (cache : QueryCache (fsChallengeOracle StmtIn pSpec))
     (hmiss : ∀ (hDir : pSpec.dir j = Direction.V_to_P),
       cache ⟨⟨j, hDir⟩, ⟨stmt, m⟩⟩ = none) :
     (fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
-        evalDist (StateT.run (simulateQ
+        (StateT.run (simulateQ
             (ambientProd (StmtIn := StmtIn) pSpec impl
               + fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.processRoundFS j (pure (m, stmt, st)))) (σ', cache))
       = (fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
-        evalDist (StateT.run (simulateQ
+        (StateT.run (simulateQ
             (ambientProd (StmtIn := StmtIn) pSpec impl
               + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.processRoundFS j (pure (m, stmt, st)))) (σ', cache)) := by
@@ -254,17 +268,17 @@ theorem processRoundFS_lazy_uniform_step
     simp only [simulateQ_bind, simulateQ_map, StateT.run_bind, StateT.run_map, map_bind,
       ← OracleComp.liftComp_eq_liftM, QueryImpl.simulateQ_add_liftComp_left,
       simulateQ_ambientProd_run impl _ σ' cache, bind_map_left, Function.comp,
-      evalDist_map, evalDist_bind, map_bind]
+      map_bind]
     refine bind_congr fun a => ?_
     rw [simulateQ_lazyProd_query_run_miss impl _ a.2 cache (hmiss hDir),
       simulateQ_uniformProd_query_run impl _ a.2 cache]
     simp only [simulateQ_pure, StateT.run_pure]
-    -- Push `evalDist` through the FS draw on both sides; `erw` handles the proof-in-index
-    -- (`⟨j, hDir⟩`) mismatch between the lazy and uniform `$ᵗ` arguments.
-    erw [evalDist_map, evalDist_map]
-    simp only [evalDist_pure, bind_map_left, _root_.map_pure, Function.comp]
-    refine bind_congr fun c => ?_
-    rw [LawfulApplicative.map_pure, LawfulApplicative.map_pure]
+    -- Normalize the canonical free-program equations after discarding the cache.
+    change PFunctor.FreeM.bind (PFunctor.FreeM.map _ _) _ =
+      PFunctor.FreeM.bind (PFunctor.FreeM.map _ _) _
+    rw [← PFunctor.FreeM.bind_pure_comp, ← PFunctor.FreeM.bind_pure_comp]
+    simp only [PFunctor.FreeM.bind_assoc, PFunctor.FreeM.pure_bind, Function.comp_def]
+    congr 1
   · rename_i hDir
     -- P_to_V: no FS query; both runs are the identical ambient `sendMessage`.
     simp only [simulateQ_bind, simulateQ_map, StateT.run_bind, StateT.run_map, map_bind,
@@ -301,8 +315,8 @@ theorem processRoundFS_lazy_cacheBelow (impl : QueryImpl oSpec (StateT σ ProbCo
     rintro ⟨i, ⟨x, _, rfl⟩, i_1, hi1, hzp⟩
     rw [simulateQ_lazyProd_query_run_miss impl ⟨⟨j, hDir⟩, (stmt, m)⟩ x.2 cache
         (cacheBelow_miss_at_round j hDir stmt m hcache)] at hi1
-    simp only [support_map, Set.mem_image] at hi1
-    obtain ⟨c, _, rfl⟩ := hi1
+    obtain ⟨c, _, hc⟩ := OracleComp.mem_support_map_peel _ _ hi1
+    subst i_1
     simp only [support_pure, Set.mem_singleton_iff] at hzp
     subst hzp
     -- output cache = `cache.cacheQuery (round-j key) c`; its indices are `< j` (from `hcache`) or `j`.
@@ -388,27 +402,18 @@ theorem runToRoundFS_stmt_inv {τ : Type}
     · rintro ⟨i, _, hzz⟩
       subst hzz; simpa using hwst
 
-/-- Support-restricted `bind_congr` for `SPMF` (= `OptionT PMF`): two continuations that agree on
-the support of `p` give equal binds. -/
-theorem SPMF.bind_congr_of_support {α β : Type} (p : SPMF α) (f g : α → SPMF β)
-    (h : ∀ x ∈ p.support, f x = g x) : p >>= f = p >>= g := by
-  refine SPMF.ext fun y => ?_
-  have := probOutput_bind_congr (m := SPMF) (mx := p) (ob₁ := f) (ob₂ := g) (y := y)
-    (fun x hx => by rw [h x hx])
-  simpa [probOutput] using this
-
 /-- The uniform-product round's projection is independent of the carried cache (the uniform handler
 ignores the whole product state's cache component). -/
-theorem processRoundFS_uniform_cache_irrelevant (impl : QueryImpl oSpec (StateT σ ProbComp))
+theorem processRoundFS_uniform_cache_irrelevant_program_eq (impl : QueryImpl oSpec (StateT σ ProbComp))
     (stmt : StmtIn) (j : Fin n) (m : pSpec.MessagesUpTo j.castSucc) (st : P.PrvState j.castSucc)
     (σ' : σ) (cache : QueryCache (fsChallengeOracle StmtIn pSpec)) :
     (fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
-        evalDist (StateT.run (simulateQ
+        (StateT.run (simulateQ
             (ambientProd (StmtIn := StmtIn) pSpec impl
               + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.processRoundFS j (pure (m, stmt, st)))) (σ', cache))
       = (fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
-        evalDist (StateT.run (simulateQ
+        (StateT.run (simulateQ
             (ambientProd (StmtIn := StmtIn) pSpec impl
               + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.processRoundFS j (pure (m, stmt, st)))) (σ', ∅)) := by
@@ -418,90 +423,87 @@ theorem processRoundFS_uniform_cache_irrelevant (impl : QueryImpl oSpec (StateT 
     simp only [simulateQ_bind, simulateQ_map, StateT.run_bind, StateT.run_map, map_bind,
       ← OracleComp.liftComp_eq_liftM, QueryImpl.simulateQ_add_liftComp_left,
       simulateQ_ambientProd_run impl _ σ' cache, simulateQ_ambientProd_run impl _ σ' ∅,
-      bind_map_left, Function.comp, evalDist_map, evalDist_bind, map_bind]
+      bind_map_left, Function.comp, map_bind]
     refine bind_congr fun a => ?_
     rw [simulateQ_uniformProd_query_run impl _ a.2 cache,
       simulateQ_uniformProd_query_run impl _ a.2 ∅]
     simp only [simulateQ_pure, StateT.run_pure]
-    erw [evalDist_map, evalDist_map]
-    simp only [evalDist_pure, bind_map_left, _root_.map_pure, Function.comp]
-    refine bind_congr fun c => ?_
-    rw [LawfulApplicative.map_pure, LawfulApplicative.map_pure]
+    change PFunctor.FreeM.bind (PFunctor.FreeM.map _ _) _ =
+      PFunctor.FreeM.bind (PFunctor.FreeM.map _ _) _
+    rw [← PFunctor.FreeM.bind_pure_comp, ← PFunctor.FreeM.bind_pure_comp]
+    simp only [PFunctor.FreeM.bind_assoc, PFunctor.FreeM.pure_bind, Function.comp_def]
+    congr 1
   · rename_i hDir
     simp only [simulateQ_bind, simulateQ_map, StateT.run_bind, StateT.run_map, map_bind,
       ← OracleComp.liftComp_eq_liftM, QueryImpl.simulateQ_add_liftComp_left,
       simulateQ_ambientProd_run impl _ σ' cache, simulateQ_ambientProd_run impl _ σ' ∅,
-      simulateQ_pure, StateT.run_pure, Function.comp, evalDist_map, evalDist_bind, evalDist_pure,
-      map_bind, _root_.map_pure, bind_map_left]
-    refine bind_congr fun a => ?_
-    rw [LawfulApplicative.map_pure, LawfulApplicative.map_pure]
+      simulateQ_pure, StateT.run_pure, Function.comp, map_bind, _root_.map_pure, bind_map_left]
 
 /-- **Run-level lazy↔uniform message coupling.** The lazy-product `runToRoundFS j` run, projected to
 its messages, prover state, and ambient `σ` (dropping the cache), has the same `evalDist` as the
 uniform-product run. By `Fin.induction` over rounds (mirroring `coupling_run`): the per-round step
-`processRoundFS_lazy_uniform_step` reconciles each round, its cache-miss precondition supplied by the
+`processRoundFS_lazy_uniform_step_program_eq` reconciles each round, its cache-miss precondition supplied by the
 run-level cache invariant `runToRoundFS_lazy_cacheBelow`. -/
-theorem runToRoundFS_lazy_uniform_coupling (impl : QueryImpl oSpec (StateT σ ProbComp))
+theorem runToRoundFS_lazy_uniform_coupling_program_eq (impl : QueryImpl oSpec (StateT σ ProbComp))
     (stmt : StmtIn) (wit : WitIn) (j : Fin (n + 1)) (σ' : σ) :
     (fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
-        evalDist (StateT.run (simulateQ
+        (StateT.run (simulateQ
             (ambientProd (StmtIn := StmtIn) pSpec impl
               + fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.runToRoundFS j stmt (P.input (stmt, wit)))) (σ', ∅))
       = (fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
-        evalDist (StateT.run (simulateQ
+        (StateT.run (simulateQ
             (ambientProd (StmtIn := StmtIn) pSpec impl
               + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.runToRoundFS j stmt (P.input (stmt, wit)))) (σ', ∅)) := by
   induction j using Fin.induction with
   | zero =>
     simp only [Prover.runToRoundFS, Fin.induction_zero, simulateQ_pure, StateT.run_pure,
-      _root_.map_pure, evalDist_pure]
+      _root_.map_pure]
   | succ j ih =>
     -- Peel one round. The common per-round continuation `G` depends only on `(messages, prvState,
     -- σ)`; the lazy round (from a `CacheBelow j.castSucc` cache — always a miss) and the uniform
-    -- round agree on it by `processRoundFS_lazy_uniform_step`, and the prefix runs agree by `ih`.
-    simp only [runToRoundFS_succ, simulateQ_bind, StateT.run_bind, map_bind, evalDist_bind,
-      evalDist_map, Function.comp]
+    -- round agree on it by `processRoundFS_lazy_uniform_step_program_eq`, and the prefix runs agree by `ih`.
+    simp only [runToRoundFS_succ, simulateQ_bind, StateT.run_bind, map_bind, Function.comp]
     -- the round projection `ψ` (drop carried stmt + cache) and the common continuation `G`.
     set ψ : (pSpec.MessagesUpTo j.castSucc × StmtIn × P.PrvState j.castSucc)
         × (σ × QueryCache (fsChallengeOracle StmtIn pSpec)) →
         pSpec.MessagesUpTo j.castSucc × P.PrvState j.castSucc × σ :=
       fun r => (r.1.1, r.1.2.2, r.2.1) with hψ
     set G : pSpec.MessagesUpTo j.castSucc × P.PrvState j.castSucc × σ →
-        SPMF (pSpec.MessagesUpTo j.succ × P.PrvState j.succ × σ) :=
+        ProbComp (pSpec.MessagesUpTo j.succ × P.PrvState j.succ × σ) :=
       fun q => (fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
-        evalDist (StateT.run (simulateQ
+        (StateT.run (simulateQ
             (ambientProd (StmtIn := StmtIn) pSpec impl
               + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.processRoundFS j (pure (q.1, stmt, q.2.1)))) (q.2.2, ∅)) with hG
-    have hmapbind : ∀ {β : Type} (p : SPMF ((pSpec.MessagesUpTo j.castSucc × StmtIn
+    have hmapbind : ∀ {β : Type} (p : ProbComp ((pSpec.MessagesUpTo j.castSucc × StmtIn
           × P.PrvState j.castSucc) × (σ × QueryCache (fsChallengeOracle StmtIn pSpec))))
-        (k : _ → SPMF β),
+        (k : _ → ProbComp β),
         (p >>= fun x => k (ψ x)) = (ψ <$> p) >>= k := by
       intro β p k
       rw [← bind_pure_comp, bind_assoc]; simp only [pure_bind]
     -- LHS continuation = `G ∘ ψ` on the lazy-prefix support.
-    have hL : (evalDist (StateT.run (simulateQ
+    have hL : ((StateT.run (simulateQ
             (ambientProd (StmtIn := StmtIn) pSpec impl
               + fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.runToRoundFS j.castSucc stmt (P.input (stmt, wit)))) (σ', ∅))) >>=
           (fun x => (fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
-            evalDist (StateT.run (simulateQ
+            (StateT.run (simulateQ
                 (ambientProd (StmtIn := StmtIn) pSpec impl
                   + fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
               (P.processRoundFS j (pure x.1))) x.2))
-        = (ψ <$> evalDist (StateT.run (simulateQ
+        = (ψ <$> (StateT.run (simulateQ
             (ambientProd (StmtIn := StmtIn) pSpec impl
               + fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.runToRoundFS j.castSucc stmt (P.input (stmt, wit)))) (σ', ∅))) >>= G := by
       rw [← hmapbind]
-      refine SPMF.bind_congr_of_support _ _ _ (fun x hx => ?_)
+      refine OracleComp.bind_congr_of_forall_mem_support _ (fun x hx => ?_)
       have hxoc : x ∈ support (StateT.run (simulateQ
           (ambientProd (StmtIn := StmtIn) pSpec impl
             + fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.runToRoundFS j.castSucc stmt (P.input (stmt, wit)))) (σ', ∅)) := by
-        rw [← mem_support_evalDist_iff]; simpa using hx
+        exact hx
       have hst : x.1.2.1 = stmt :=
         runToRoundFS_stmt_inv (P := P) (fsImpl := fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (ambImpl := ambientProd (StmtIn := StmtIn) pSpec impl) (stmt := stmt)
@@ -509,35 +511,35 @@ theorem runToRoundFS_lazy_uniform_coupling (impl : QueryImpl oSpec (StateT σ Pr
       have hcb : CacheBelow (StmtIn := StmtIn) (pSpec := pSpec) j.castSucc x.2.2 :=
         runToRoundFS_lazy_cacheBelow P impl stmt wit j.castSucc ∅ σ' (cacheBelow_empty 0) x hxoc
       rw [hG]
-      have hstep := processRoundFS_lazy_uniform_step P impl stmt j x.1.1 x.1.2.2 x.2.1 x.2.2
+      have hstep := processRoundFS_lazy_uniform_step_program_eq P impl stmt j x.1.1 x.1.2.2 x.2.1 x.2.2
         (fun hDir => cacheBelow_miss_at_round j hDir stmt x.1.1 hcb)
-      have hci := processRoundFS_uniform_cache_irrelevant P impl stmt j x.1.1 x.1.2.2 x.2.1 x.2.2
+      have hci := processRoundFS_uniform_cache_irrelevant_program_eq P impl stmt j x.1.1 x.1.2.2 x.2.1 x.2.2
       -- rewrite `x.1` as `(x.1.1, stmt, x.1.2.2)` using `hst`, then chain
       -- lazy@(σ,cache) = uniform@(σ,cache) [hstep] = uniform@(σ,∅) [hci].
       have hx1 : x.1 = (x.1.1, stmt, x.1.2.2) := by rw [← hst]
       rw [hx1, show x.2 = (x.2.1, x.2.2) from rfl]
       exact hstep.trans hci
     -- RHS continuation = `G ∘ ψ` on the uniform-prefix support.
-    have hR : (evalDist (StateT.run (simulateQ
+    have hR : ((StateT.run (simulateQ
             (ambientProd (StmtIn := StmtIn) pSpec impl
               + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.runToRoundFS j.castSucc stmt (P.input (stmt, wit)))) (σ', ∅))) >>=
           (fun x => (fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
-            evalDist (StateT.run (simulateQ
+            (StateT.run (simulateQ
                 (ambientProd (StmtIn := StmtIn) pSpec impl
                   + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
               (P.processRoundFS j (pure x.1))) x.2))
-        = (ψ <$> evalDist (StateT.run (simulateQ
+        = (ψ <$> (StateT.run (simulateQ
             (ambientProd (StmtIn := StmtIn) pSpec impl
               + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.runToRoundFS j.castSucc stmt (P.input (stmt, wit)))) (σ', ∅))) >>= G := by
       rw [← hmapbind]
-      refine SPMF.bind_congr_of_support _ _ _ (fun x hx => ?_)
+      refine OracleComp.bind_congr_of_forall_mem_support _ (fun x hx => ?_)
       have hxoc : x ∈ support (StateT.run (simulateQ
           (ambientProd (StmtIn := StmtIn) pSpec impl
             + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (P.runToRoundFS j.castSucc stmt (P.input (stmt, wit)))) (σ', ∅)) := by
-        rw [← mem_support_evalDist_iff]; simpa using hx
+        exact hx
       have hst : x.1.2.1 = stmt :=
         runToRoundFS_stmt_inv (P := P) (fsImpl := fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
           (ambImpl := ambientProd (StmtIn := StmtIn) pSpec impl) (stmt := stmt)
@@ -546,9 +548,59 @@ theorem runToRoundFS_lazy_uniform_coupling (impl : QueryImpl oSpec (StateT σ Pr
       have hx1 : x.1 = (x.1.1, stmt, x.1.2.2) := by rw [← hst]
       rw [hx1, show x.2 = (x.2.1, x.2.2) from rfl]
       -- the uniform round ignores the cache, so the carried cache `x.2.2` is irrelevant.
-      rw [processRoundFS_uniform_cache_irrelevant P impl stmt j x.1.1 x.1.2.2 x.2.1 x.2.2]
+      rw [processRoundFS_uniform_cache_irrelevant_program_eq P impl stmt j x.1.1 x.1.2.2 x.2.1 x.2.2]
     rw [hL, hR]
     exact congrArg (· >>= G) ih
+
+/-- Native distributional form of the completed program equality. -/
+theorem processRoundFS_lazy_uniform_step
+    (impl : QueryImpl oSpec (StateT σ ProbComp)) (stmt : StmtIn) (j : Fin n)
+    (m : pSpec.MessagesUpTo j.castSucc) (st : P.PrvState j.castSucc)
+    (σ' : σ) (cache : QueryCache (fsChallengeOracle StmtIn pSpec))
+    (hmiss : ∀ (hDir : pSpec.dir j = Direction.V_to_P),
+      cache ⟨⟨j, hDir⟩, ⟨stmt, m⟩⟩ = none) :
+    evalDist ((fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
+        (StateT.run (simulateQ
+            (ambientProd (StmtIn := StmtIn) pSpec impl
+              + fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
+          (P.processRoundFS j (pure (m, stmt, st)))) (σ', cache)))
+      = evalDist ((fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
+        (StateT.run (simulateQ
+            (ambientProd (StmtIn := StmtIn) pSpec impl
+              + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
+          (P.processRoundFS j (pure (m, stmt, st)))) (σ', cache))) :=
+  congrArg evalDist (processRoundFS_lazy_uniform_step_program_eq P impl stmt j m st σ' cache hmiss)
+
+/-- Native distributional form of the completed program equality. -/
+theorem processRoundFS_uniform_cache_irrelevant (impl : QueryImpl oSpec (StateT σ ProbComp))
+    (stmt : StmtIn) (j : Fin n) (m : pSpec.MessagesUpTo j.castSucc) (st : P.PrvState j.castSucc)
+    (σ' : σ) (cache : QueryCache (fsChallengeOracle StmtIn pSpec)) :
+    evalDist ((fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
+        (StateT.run (simulateQ
+            (ambientProd (StmtIn := StmtIn) pSpec impl
+              + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
+          (P.processRoundFS j (pure (m, stmt, st)))) (σ', cache)))
+      = evalDist ((fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
+        (StateT.run (simulateQ
+            (ambientProd (StmtIn := StmtIn) pSpec impl
+              + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
+          (P.processRoundFS j (pure (m, stmt, st)))) (σ', ∅))) :=
+  congrArg evalDist (processRoundFS_uniform_cache_irrelevant_program_eq P impl stmt j m st σ' cache)
+
+/-- Native distributional form of the completed program equality. -/
+theorem runToRoundFS_lazy_uniform_coupling (impl : QueryImpl oSpec (StateT σ ProbComp))
+    (stmt : StmtIn) (wit : WitIn) (j : Fin (n + 1)) (σ' : σ) :
+    evalDist ((fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
+        (StateT.run (simulateQ
+            (ambientProd (StmtIn := StmtIn) pSpec impl
+              + fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
+          (P.runToRoundFS j stmt (P.input (stmt, wit)))) (σ', ∅)))
+      = evalDist ((fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
+        (StateT.run (simulateQ
+            (ambientProd (StmtIn := StmtIn) pSpec impl
+              + fsUniformProd (StmtIn := StmtIn) (σ := σ) pSpec)
+          (P.runToRoundFS j stmt (P.input (stmt, wit)))) (σ', ∅))) :=
+  congrArg evalDist (runToRoundFS_lazy_uniform_coupling_program_eq P impl stmt wit j σ')
 
 /-- **The lazy FS prover-run message coupling (Path A, final deliverable).**
 
@@ -559,7 +611,7 @@ cache), induces the SAME `evalDist` as running the interactive prover `runToRoun
 challenges via `challengeQueryImpl`), projected to its messages.
 
 This is the lazy-impl analogue of `coupling_run`, obtained by transferring it through
-`runToRoundFS_lazy_uniform_coupling`: the prover's FS queries are at pairwise-distinct (round-indexed)
+`runToRoundFS_lazy_uniform_coupling_program_eq`: the prover's FS queries are at pairwise-distinct (round-indexed)
 keys, hence all cache misses, so the lazy impl reproduces the fresh-draw behaviour of the canonical
 uniform impl `fsChallengeUniformImpl` that `coupling_run` uses.
 
@@ -569,20 +621,20 @@ same product state `σ × QueryCache` (exactly the form `coupling_run` produces 
 sides are projected to `(messages, prover state, ambient σ)`, dropping the cache. Axiom-clean. -/
 theorem coupling_run_lazy (impl : QueryImpl oSpec (StateT σ ProbComp))
     (stmt : StmtIn) (wit : WitIn) (j : Fin (n + 1)) (σ' : σ) :
-    (fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
-        evalDist (StateT.run (simulateQ
+    evalDist ((fun r => (r.1.1, r.1.2.2, r.2.1)) <$>
+        (StateT.run (simulateQ
             (ambientProd (StmtIn := StmtIn) pSpec impl
               + fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec)
-          (P.runToRoundFS j stmt (P.input (stmt, wit)))) (σ', ∅))
-      = (fun r => (r.1.1.toMessagesUpTo, r.1.2, r.2.1)) <$>
-        evalDist (StateT.run (simulateQ
+          (P.runToRoundFS j stmt (P.input (stmt, wit)))) (σ', ∅)))
+      = evalDist ((fun r => (r.1.1.toMessagesUpTo, r.1.2, r.2.1)) <$>
+        (StateT.run (simulateQ
             ((ambientProd (StmtIn := StmtIn) pSpec impl).addLift
               (challengeQueryImpl (pSpec := pSpec)) :
             QueryImpl (oSpec + [pSpec.Challenge]ₒ)
               (StateT (σ × QueryCache (fsChallengeOracle StmtIn pSpec)) ProbComp))
-          (P.runToRound j stmt wit)) (σ', ∅)) := by
+          (P.runToRound j stmt wit)) (σ', ∅))) := by
   -- (1) lazy-product = uniform-product (this file's run coupling).
-  rw [runToRoundFS_lazy_uniform_coupling P impl stmt wit j σ']
+  rw [runToRoundFS_lazy_uniform_coupling_program_eq P impl stmt wit j σ']
   -- (2) uniform-product = interactive, via `coupling_run` at `σ := σ × QueryCache`,
   --     ambient impl `:= ambientProd impl`. Its `addLift fsChallengeUniformImpl` is exactly
   --     `ambientProd impl + fsUniformProd`.
@@ -599,9 +651,10 @@ theorem coupling_run_lazy (impl : QueryImpl oSpec (StateT σ ProbComp))
   -- `coupling_run` keeps the whole product state `(σ, cache)` as the third projected component;
   -- post-compose `Prod.map id (Prod.map id Prod.fst)` on both sides to drop the cache, matching our
   -- `(messages, prvState, σ)` projection.
-  have hmap := congrArg (fun d => (Prod.map id (Prod.map id Prod.fst)
-      : _ × _ × (σ × QueryCache (fsChallengeOracle StmtIn pSpec)) → _ × _ × σ) <$> d) hcr
-  simp only [evalDist_map, Functor.map_map, Function.comp, Prod.map, id_eq] at hmap ⊢
+  have hmap := ((_root_.EvalDistEq.of_evalDist_eq hcr).map
+    (Prod.map id (Prod.map id Prod.fst)
+      : _ × _ × (σ × QueryCache (fsChallengeOracle StmtIn pSpec)) → _ × _ × σ)).evalDist_eq
+  simp only [Functor.map_map, Function.comp, Prod.map, id_eq] at hmap ⊢
   -- The interactive challenge handler is lifted to the product `StateT` via a (defeq) `MonadLiftT`
   -- chain that differs syntactically from `coupling_run`'s; reconcile per query with `QueryImpl.ext`.
   convert hmap using 5
@@ -613,11 +666,16 @@ theorem coupling_run_lazy (impl : QueryImpl oSpec (StateT σ ProbComp))
     simp only [QueryImpl.addLift_def, QueryImpl.add_apply_inr, QueryImpl.liftTarget_apply,
       liftM, monadLift, MonadLift.monadLift, StateT.lift, StateT.run_bind, StateT.run_monadLift,
       bind_pure_comp, map_bind, _root_.map_pure, Functor.map_map, Function.comp]
+    change ((fun a => (a, s)) <$> challengeQueryImpl t) =
+      (do let a ← challengeQueryImpl t; pure (a, s))
+    rw [map_eq_bind_pure_comp]
     rfl
 
 -- Axiom audit of the deliverables (all `[propext, Classical.choice, Quot.sound]`).
 #print axioms processRoundFS_lazy_uniform_step
+#print axioms processRoundFS_lazy_uniform_step_program_eq
 #print axioms runToRoundFS_lazy_uniform_coupling
+#print axioms runToRoundFS_lazy_uniform_coupling_program_eq
 #print axioms coupling_run_lazy
 
 end Reduction

@@ -7,7 +7,7 @@ Authors: ArkLib Contributors
 import ArkLib.ToMathlib.SpartanBricks
 import ArkLib.ProofSystem.Spartan.SumcheckCubeBridge
 import ArkLib.ProofSystem.Sumcheck.Spec.General
-import ArkLib.ProofSystem.Sumcheck.Domain
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Domain
 
 /-!
 # Second sum-check input-relation completeness (issue #114)
@@ -57,7 +57,7 @@ theorem secondSC_relationRound_zero
     rw [Function.comp_apply, Fin.elim0_append, Function.comp_apply]
     simp only [Fin.cast_cast, Fin.cast_eq_self]
     generalize Y i = b
-    fin_cases b <;> simp [boolEmbedding]
+    fin_cases b <;> simp [boolEmbedding] <;> rfl
   rw [hpt]
 
 #print axioms secondSC_relationRound_zero

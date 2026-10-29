@@ -1,3 +1,10 @@
+> **Superseded for the Johnson-radius refutation by the upstream integration.** Canonical
+> `Jqℓ` uses `(ℓ - 1) / ℓ`, and `CodingTheory.johnson_bound_lambda_le_ell` is now proved.
+> The old inverse-factor diagnostic and inconsistency conclusion below are historical and
+> have been retired. See [the current integration note](../../../../wiki/upstream-integration.md#corrected-johnson-radius)
+> and [the retirement record](../../../../../scripts/integration/johnson-radius-retirement.json).
+> The remaining text records the earlier downstream state, not the current theorem status.
+
 STATUS: CLOSED — Johnson-family deliverables resolved in-tree; only stale `sorry`-wording remained, now corrected. Regression check below returns zero raw-hole hits.
 
 # issue-49 — Johnson-family list-decoding bounds (Joh62 Jqℓ + MDS corollary)

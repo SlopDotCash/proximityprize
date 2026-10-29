@@ -476,7 +476,7 @@ theorem BoundaryCardQuantizationData.toBoundaryProbabilityResidual {k deg : ℕ}
 /-- The affine-curves keystone can consume the complete boundary quantization package through
 the concrete `BoundaryCardLatticeData` square-branch surface. -/
 theorem correlatedAgreement_affine_curves_of_quantization_data
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [DecidableEq ι]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F] [DecidableEq ι]
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual (k := k) (deg := deg) (domain := domain) (δ := δ))
     (hBoundary :
@@ -540,7 +540,7 @@ coefficient-polynomial residual and strict-subradius producer are unchanged, whi
 lattice branch is supplied through `BoundaryCardLatticeData` rather than the older
 `BoundaryCardLatticeResidual`. -/
 theorem correlatedAgreement_affine_curves_of_lattice_data
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [DecidableEq ι]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F] [DecidableEq ι]
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual (k := k) (deg := deg) (domain := domain) (δ := δ))
     (hLatticeData :
@@ -603,7 +603,7 @@ omit [DecidableEq ι] in
 lattice-data counterpart of
 `BoundaryCardResidual.correlatedAgreement_affine_curves_of_isSquare_deg_mul_card`. -/
 theorem correlatedAgreement_affine_curves_of_lattice_data_isSquare
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual (k := k) (deg := deg) (domain := domain) (δ := δ))
     (hLatticeData :
@@ -645,18 +645,18 @@ theorem boundaryProbabilityResidual_zero
 omit [DecidableEq ι] in
 /-- At `k = 0`, the affine-curves keystone has no closed-boundary obligation beyond the usual
 strict coefficient-polynomial residual: the boundary-probability residual is vacuous because its
-first argument is `0 < k`. -/
+first argument is `0 < k`. The legacy `hStrictCoeff` parameter is retained for
+compatibility; canonical strict-open soundness supplies its branch. -/
 theorem correlatedAgreement_affine_curves_zero
-    {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual (k := 0) (deg := deg) (domain := domain) (δ := δ))
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain) :
     δ_ε_correlatedAgreementCurves (k := 0) (A := F) (F := F) (ι := ι)
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) := by
   classical
-  exact ProximityGap.correlatedAgreement_affine_curves
-    (deg := deg) (domain := domain) (δ := δ) hStrictCoeff
-    boundaryProbabilityResidual_zero hδ
+  exact ProximityGap.correlatedAgreement_affine_curves_of_boundary_probability
+    (deg := deg) (domain := domain) (δ := δ) hδ boundaryProbabilityResidual_zero
 
 end BoundaryDischarge
 

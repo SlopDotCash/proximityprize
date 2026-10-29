@@ -1,1718 +1,1154 @@
-import ArkLib.Data.CodingTheory.ProximityGap
-import ArkLib.Data.CodingTheory.ProximityGap.A2Injective
-import ArkLib.Data.CodingTheory.ProximityGap.A3InstanceBadness
-import ArkLib.Data.CodingTheory.ProximityGap.A3InstanceCore
-import ArkLib.Data.CodingTheory.ProximityGap.A3ProportionalityTrap
-import ArkLib.Data.CodingTheory.ProximityGap.A4CensusValue
-import ArkLib.Data.CodingTheory.ProximityGap.A4CyclotomicGaloisAntipodal
-import ArkLib.Data.CodingTheory.ProximityGap.A5CensusValue
-import ArkLib.Data.CodingTheory.ProximityGap.A5CompositeEquivariance
-import ArkLib.Data.CodingTheory.ProximityGap.A8CosetStructure
-import ArkLib.Data.CodingTheory.ProximityGap.AHIV22
-import ArkLib.Data.CodingTheory.ProximityGap.AHIV22Support
-import ArkLib.Data.CodingTheory.ProximityGap.AbacusNCore
-import ArkLib.Data.CodingTheory.ProximityGap.AbacusReduction
-import ArkLib.Data.CodingTheory.ProximityGap.ActionOrbitFRI
-import ArkLib.Data.CodingTheory.ProximityGap.ActionOrbitGeneralF
-import ArkLib.Data.CodingTheory.ProximityGap.AddEnergyCubeBound
-import ArkLib.Data.CodingTheory.ProximityGap.AddEnergyGcdDegreeBound
-import ArkLib.Data.CodingTheory.ProximityGap.AddEnergyGroupRepBound
-import ArkLib.Data.CodingTheory.ProximityGap.AddEnergyMathlibBridge
-import ArkLib.Data.CodingTheory.ProximityGap.AddEnergyMulHomogeneous
-import ArkLib.Data.CodingTheory.ProximityGap.AddEnergyNormalizedBound
-import ArkLib.Data.CodingTheory.ProximityGap.AddEnergySumsetSupport
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyBridge
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyChar0
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyCharacterization
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyFermat
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyFullGroupClosedForm
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyKernel
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyLowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyNegClosedLower
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyParity
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyRepBound
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyResultant
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyResultantProduct
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergySidonModNeg
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergySixDvd
-import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyThreeDvd
-import ArkLib.Data.CodingTheory.ProximityGap.AdjacentPairDepthOneClean
-import ArkLib.Data.CodingTheory.ProximityGap.AffineBlockKernels
-import ArkLib.Data.CodingTheory.ProximityGap.AffinePlaneSharpness
-import ArkLib.Data.CodingTheory.ProximityGap.AffineSubspaceCardBound
-import ArkLib.Data.CodingTheory.ProximityGap.AgreementMomentOne
-import ArkLib.Data.CodingTheory.ProximityGap.AgreementMomentTwo
-import ArkLib.Data.CodingTheory.ProximityGap.AllRatesJohnsonInstances
-import ArkLib.Data.CodingTheory.ProximityGap.AllWitnessFloorGeneric
-import ArkLib.Data.CodingTheory.ProximityGap.AllWitnessOwnershipFloor
-import ArkLib.Data.CodingTheory.ProximityGap.AntipodalBalanceBounded
-import ArkLib.Data.CodingTheory.ProximityGap.AttackLoop46
-import ArkLib.Data.CodingTheory.ProximityGap.AutocorrelationMax
-import ArkLib.Data.CodingTheory.ProximityGap.AveragingFiberConservation
-import ArkLib.Data.CodingTheory.ProximityGap.AveragingListLowerBoundRS
-import ArkLib.Data.CodingTheory.ProximityGap.AveragingReachNoGo
-import ArkLib.Data.CodingTheory.ProximityGap.B1CountLawUnconditional
-import ArkLib.Data.CodingTheory.ProximityGap.B1IncidenceBridge
-import ArkLib.Data.CodingTheory.ProximityGap.B1IncidenceInjectionBridge
-import ArkLib.Data.CodingTheory.ProximityGap.B1IncidencePivotSharp
-import ArkLib.Data.CodingTheory.ProximityGap.B1TopDirectionCountLaw
-import ArkLib.Data.CodingTheory.ProximityGap.B5DeepBandSaturation
-import ArkLib.Data.CodingTheory.ProximityGap.BCHVarietyRigidity
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.BWMatrix
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.GoodCoeffs
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.JointAgreement
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.UniqueDecoding
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffinePair
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineSpaces
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Agreement
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AgreementSupply
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AlphaWeight
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AlphaWeightAll
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AlphaWeightCleared
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AlphaWeightClearedObstruction
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AlphaWeightDivisibility
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AlphaWeightResummation
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.BCoeffVanishing
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.CellPinning
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ClearedFaaDiBruno
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ClearedFaaDiBrunoProof
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ClearedKill
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ClearedLiftIdentity
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ClearedRecursion
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ClearedWeld
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ClearingProduct
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.AgreementCount
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.Assembly
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CanonicalCoeffExtractionRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CoeffExtraction
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CoeffExtractionResidual
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CoeffExtractionVacuous
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CorrelatedAgreementSmallField
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.GoodCoeffs
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.GoodSetAggregate
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.HeavyCodeword
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.JointAgreement
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.ListSizeResidual
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.ListSizeResidualRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.PairSecondMoment
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.Pigeonhole
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.SudanY2
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.UniqueDecoding
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.DivWeightLeMonicRefuted
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.EndToEnd
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ErrorBound
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.FaaDiBrunoBijectionPieces
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Finding14Countermodel
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.GammaGenuine
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.HasseEvalConnectives
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.HasseIndexShift
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.HenselNumerator
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Kill
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Agreement
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.CloseInterpolantsCount
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.CurvesBridge
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.DescendedAgreement
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.DescendedDegreeSum
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.DescendedRset
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.EvalOnZNonzero
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Extraction
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.FieldDischarge
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.JointAgreementWiring
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.PzFamilyUD
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.RootClearing
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.LocalSeriesProducer
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.MonicFaaDiBrunoMatch
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.MonicFaaDiBrunoMatchAlt
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1BetaOneRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1Conditional
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1ConditionalAll
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1ConditionalAllCleared
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1ConditionalCleared
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicIntegrality
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicReduction
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicWeightExplicit
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicWeightHolds
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicWeightRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicWfreeCleared
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1XiOrderExtraction
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Assembly
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Bijection
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2BijectionApply
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2ClearedBridge
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2ClearedGap
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2ClearedGapIdeal
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Close
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2FilterDrop
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2FubiniReabsorb
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2KeystoneReindex
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Match
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MatchMonic
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MatchProof
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MatchRoot
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MonicConsequences
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MonicOrderZero
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MonicWfree
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MonicWfreeConsumers
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MonicWfreeFullSum
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MonicWfreeFullSumAt
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MonicWfreeGlobal
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MonicWfreeRange
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MonicWfreeRangeConsumers
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MonicWfreeS5
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2OrderZeroRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2OrderZeroRefutationWitness
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Reabsorb
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Reindex
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2RootBridge
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2RootBridgeS5
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Vanish
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Pigeonhole
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.PointwiseAgreement
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Prelude
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ReedSolomonGap
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.RemainingCore
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.RestrictedFaaDiBrunoExtract
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.RestrictedFaaDiBrunoXiTelescope
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.S5Genuine
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.S5GenuineMonic
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.S5GenuineZLinearMonic
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.S5GenuineZLinearQuadratic
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.SliceAffine
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.SliceSeparabilityBoundary
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.SlicedComposition
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.StrictCoeffLargeReduction
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.StrictCoeffPolysExceptional
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.StrictCoeffProducer
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.StructuredWeightInduction
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Supply
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.TailWiring
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.UnclearedEmbedding
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.VandermondeAgreement
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.WPowerInjective
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Weight1FromZLinear
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.WeightedAgreement
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.WeightedAgreementDegenerate
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Weld
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20AppAProof
-import ArkLib.Data.CodingTheory.ProximityGap.BCKHS25.AffineLineJointAgreement
-import ArkLib.Data.CodingTheory.ProximityGap.BCKHS25.CollinearProximates
-import ArkLib.Data.CodingTheory.ProximityGap.BCKHS25.Interpolation
-import ArkLib.Data.CodingTheory.ProximityGap.BGKBridge
-import ArkLib.Data.CodingTheory.ProximityGap.BGKEnergyCharacterSum
-import ArkLib.Data.CodingTheory.ProximityGap.BGKExponentReduction
-import ArkLib.Data.CodingTheory.ProximityGap.BGKLimitConditional
-import ArkLib.Data.CodingTheory.ProximityGap.BGKNearRamanujan
-import ArkLib.Data.CodingTheory.ProximityGap.BGKS20SeparationRegime
-import ArkLib.Data.CodingTheory.ProximityGap.BGKSolSetSymmetry
-import ArkLib.Data.CodingTheory.ProximityGap.BadFamilyCensus
-import ArkLib.Data.CodingTheory.ProximityGap.BadGammaAffineCount
-import ArkLib.Data.CodingTheory.ProximityGap.BadPrimeGaloisDivisibility
-import ArkLib.Data.CodingTheory.ProximityGap.BadPrimeNormBound
-import ArkLib.Data.CodingTheory.ProximityGap.BadScalarSingleWord
-import ArkLib.Data.CodingTheory.ProximityGap.BalancedFiveLaw
-import ArkLib.Data.CodingTheory.ProximityGap.BalancedFourLaw
-import ArkLib.Data.CodingTheory.ProximityGap.BallIntersectionSecondMomentLinear
-import ArkLib.Data.CodingTheory.ProximityGap.BallVolume
-import ArkLib.Data.CodingTheory.ProximityGap.BandAttainment
-import ArkLib.Data.CodingTheory.ProximityGap.BandAttainmentChained
-import ArkLib.Data.CodingTheory.ProximityGap.BandCollapse
-import ArkLib.Data.CodingTheory.ProximityGap.BandPackingLaw
-import ArkLib.Data.CodingTheory.ProximityGap.Basic
-import ArkLib.Data.CodingTheory.ProximityGap.BatchedFRIJointProximity
-import ArkLib.Data.CodingTheory.ProximityGap.BatchedFRIProof
-import ArkLib.Data.CodingTheory.ProximityGap.BelowUDRPuncture
-import ArkLib.Data.CodingTheory.ProximityGap.BesselCentralBinomConstantTerm
-import ArkLib.Data.CodingTheory.ProximityGap.BestProvableBracket
-import ArkLib.Data.CodingTheory.ProximityGap.BetaSetSize
-import ArkLib.Data.CodingTheory.ProximityGap.BetaSetYoungDiagram
-import ArkLib.Data.CodingTheory.ProximityGap.BinomialMatrixDet
-import ArkLib.Data.CodingTheory.ProximityGap.BorderStrip
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryCardLatticeSlice
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryCardResidual
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryCardResidualAffineLineRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryCardResidualRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryCardStrictInteriorRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryDefectBound
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryExactEpsF13
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryExactEpsF19
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryExactEpsF31
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryExactEpsF37
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryGenericFarExact
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryLatticeThresholdLeaf
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryLatticeThresholdRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryListJohnson
-import ArkLib.Data.CodingTheory.ProximityGap.BoundarySliceEveryLine
-import ArkLib.Data.CodingTheory.ProximityGap.BoundarySliceExact
-import ArkLib.Data.CodingTheory.ProximityGap.BoundarySliceUnconditional
-import ArkLib.Data.CodingTheory.ProximityGap.BoundarySupExactness
-import ArkLib.Data.CodingTheory.ProximityGap.BoundaryThresholdFloorCell
-import ArkLib.Data.CodingTheory.ProximityGap.BoundedCyclotomicIndep
-import ArkLib.Data.CodingTheory.ProximityGap.BridgeBounded
-import ArkLib.Data.CodingTheory.ProximityGap.BridgeClaim62Loop48
-import ArkLib.Data.CodingTheory.ProximityGap.BridgeLoop41
-import ArkLib.Data.CodingTheory.ProximityGap.BridgeLoop43
-import ArkLib.Data.CodingTheory.ProximityGap.BridgeLoop44
-import ArkLib.Data.CodingTheory.ProximityGap.C1ConditionalBound
-import ArkLib.Data.CodingTheory.ProximityGap.C2CoreEliminationBound
-import ArkLib.Data.CodingTheory.ProximityGap.C71BinomialBadScalarCount
-import ArkLib.Data.CodingTheory.ProximityGap.C71BinomialIncidence
-import ArkLib.Data.CodingTheory.ProximityGap.C71BinomialIncidenceGcd
-import ArkLib.Data.CodingTheory.ProximityGap.C71BinomialIncidenceSharp
-import ArkLib.Data.CodingTheory.ProximityGap.C71BinomialWindowAverage
-import ArkLib.Data.CodingTheory.ProximityGap.C71SparseOrbitGap
-import ArkLib.Data.CodingTheory.ProximityGap.C71SparseStrataIncidence
-import ArkLib.Data.CodingTheory.ProximityGap.C71SparseStrataReduce
-import ArkLib.Data.CodingTheory.ProximityGap.C71SparseStrataWindow
-import ArkLib.Data.CodingTheory.ProximityGap.C71TrinomialGcdObstruction
-import ArkLib.Data.CodingTheory.ProximityGap.C71TrinomialIncidence
-import ArkLib.Data.CodingTheory.ProximityGap.CAPairExtractionEngine
-import ArkLib.Data.CodingTheory.ProximityGap.CRTDoubleSlice
-import ArkLib.Data.CodingTheory.ProximityGap.CRTExponentGridSum
-import ArkLib.Data.CodingTheory.ProximityGap.CRTPacketMinpoly
-import ArkLib.Data.CodingTheory.ProximityGap.CRTSubsetSumFiberSlice
-import ArkLib.Data.CodingTheory.ProximityGap.CS25BallEntropy
-import ArkLib.Data.CodingTheory.ProximityGap.CS25BallInterShell
-import ArkLib.Data.CodingTheory.ProximityGap.CS25BallInterVanish
-import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersection
-import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionBound
-import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionBudget
-import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionDecaySum
-import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionEntropy
-import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionGlobal
-import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionMGF
-import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionWeightInvariant
-import ArkLib.Data.CodingTheory.ProximityGap.CS25BudgetArith
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CodeCoveredFractionJohnson
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CodeCoveredFractionJohnsonDiv
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CodeCoveredFractionJohnsonEntropy
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CodeJohnsonRadius
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CodeJohnsonRadiusSqrt
-import ArkLib.Data.CodingTheory.ProximityGap.CS25Coset
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoverageAssembled
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveredFraction
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveredFractionEntropy
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveredFractionEntropyDiv
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveredFractionEntropyGen
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveredFractionEntropyGenDiv
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveredFractionEntropyListSize
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveredFractionJohnsonEntropyDiv
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveredFractionListSize
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveredFractionUniqueDecoding
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveringCount
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveringExistence
-import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveringWitness
-import ArkLib.Data.CodingTheory.ProximityGap.CS25FourierIdentity
-import ArkLib.Data.CodingTheory.ProximityGap.CS25InnerExclusionMonotone
-import ArkLib.Data.CodingTheory.ProximityGap.CS25JointProxBound
-import ArkLib.Data.CodingTheory.ProximityGap.CS25NonDegeneratePigeonhole
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSConcreteCoveredFraction
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSCoveredFraction
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSCoveredFractionJohnson
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSCoveredFractionJohnsonEntropy
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSDimension
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSEncodingInjective
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSJohnsonRadius
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSJohnsonRadiusSqrt
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSListDecoding
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSMDSOptimal
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSMinDistance
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSMinWeight
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSNearBound
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSSecondMomentMGF
-import ArkLib.Data.CodingTheory.ProximityGap.CS25RSUniqueDecodability
-import ArkLib.Data.CodingTheory.ProximityGap.CS25ReedSolomonHighDist
-import ArkLib.Data.CodingTheory.ProximityGap.CS25SecondMomentHighDist
-import ArkLib.Data.CodingTheory.ProximityGap.CS25SecondMomentLinear
-import ArkLib.Data.CodingTheory.ProximityGap.CS25SecondMomentListSize
-import ArkLib.Data.CodingTheory.ProximityGap.CS25SecondMomentPairCount
-import ArkLib.Data.CodingTheory.ProximityGap.CS25SecondMomentPairs
-import ArkLib.Data.CodingTheory.ProximityGap.CS25SecondMomentReduction
-import ArkLib.Data.CodingTheory.ProximityGap.CS25SecondMomentShell
-import ArkLib.Data.CodingTheory.ProximityGap.CS25SecondMomentUpper
-import ArkLib.Data.CodingTheory.ProximityGap.CS25TailSupport
-import ArkLib.Data.CodingTheory.ProximityGap.CZ25FRSAdmissibilityRegime
-import ArkLib.Data.CodingTheory.ProximityGap.CZ25T34TauZeroRegime
-import ArkLib.Data.CodingTheory.ProximityGap.CapacityFailureBandwidth
-import ArkLib.Data.CodingTheory.ProximityGap.CapacityVacuity
-import ArkLib.Data.CodingTheory.ProximityGap.CappedSupplyMassIdentity
-import ArkLib.Data.CodingTheory.ProximityGap.CensusClassificationCharZero
-import ArkLib.Data.CodingTheory.ProximityGap.CensusCollapse
-import ArkLib.Data.CodingTheory.ProximityGap.CensusConditionalPin
-import ArkLib.Data.CodingTheory.ProximityGap.CensusDominationWeld
-import ArkLib.Data.CodingTheory.ProximityGap.CensusDoubling
-import ArkLib.Data.CodingTheory.ProximityGap.CensusDoublingMap
-import ArkLib.Data.CodingTheory.ProximityGap.CensusExtremalFloor
-import ArkLib.Data.CodingTheory.ProximityGap.CensusLowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.CensusTowerDescent
-import ArkLib.Data.CodingTheory.ProximityGap.CensusTowerFinite
-import ArkLib.Data.CodingTheory.ProximityGap.CensusTowerFiniteDivisibility
-import ArkLib.Data.CodingTheory.ProximityGap.CertifiedRungPrime
-import ArkLib.Data.CodingTheory.ProximityGap.CharFactorPi
-import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTail
-import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTailComparison
-import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTailReindexed
-import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTailRootSharp
-import ArkLib.Data.CodingTheory.ProximityGap.CharPMomentRecursion
-import ArkLib.Data.CodingTheory.ProximityGap.CharPWickAutocorrPin
-import ArkLib.Data.CodingTheory.ProximityGap.CharPWickConditionalPin
-import ArkLib.Data.CodingTheory.ProximityGap.CharPWickStepRatioPin
-import ArkLib.Data.CodingTheory.ProximityGap.CharSumBudgetVacuity
-import ArkLib.Data.CodingTheory.ProximityGap.CharSumDeltaStarBridge
-import ArkLib.Data.CodingTheory.ProximityGap.CharSumMomentDeepWall
-import ArkLib.Data.CodingTheory.ProximityGap.CharSumTransferNoGo
-import ArkLib.Data.CodingTheory.ProximityGap.ChordConverseCore
-import ArkLib.Data.CodingTheory.ProximityGap.ChordConverseWrapper
-import ArkLib.Data.CodingTheory.ProximityGap.ChordFamilyCount
-import ArkLib.Data.CodingTheory.ProximityGap.CircleMethodFreeSetSupport
-import ArkLib.Data.CodingTheory.ProximityGap.ClassChartBounds
-import ArkLib.Data.CodingTheory.ProximityGap.ClassSupplyFloor
-import ArkLib.Data.CodingTheory.ProximityGap.CleanRangeNorm
-import ArkLib.Data.CodingTheory.ProximityGap.CodewordHeavyScalar
-import ArkLib.Data.CodingTheory.ProximityGap.CollinearityCensusTransfer
-import ArkLib.Data.CodingTheory.ProximityGap.CollinearityMatchingFrame
-import ArkLib.Data.CodingTheory.ProximityGap.CollisionLemma
-import ArkLib.Data.CodingTheory.ProximityGap.CollisionRigidityThreeSwap
-import ArkLib.Data.CodingTheory.ProximityGap.ComplementQuadric
-import ArkLib.Data.CodingTheory.ProximityGap.CompletionSharpMargin
-import ArkLib.Data.CodingTheory.ProximityGap.ConcreteWeilInstance
-import ArkLib.Data.CodingTheory.ProximityGap.ConcreteWeilInstanceMu10
-import ArkLib.Data.CodingTheory.ProximityGap.ConcreteWeilInstanceMu10F101
-import ArkLib.Data.CodingTheory.ProximityGap.ConcreteWeilInstanceMu12
-import ArkLib.Data.CodingTheory.ProximityGap.ConcreteWeilInstanceMu18
-import ArkLib.Data.CodingTheory.ProximityGap.ConcreteWeilInstanceMu20
-import ArkLib.Data.CodingTheory.ProximityGap.ConcreteWeilInstanceMu4
-import ArkLib.Data.CodingTheory.ProximityGap.ConcreteWeilInstanceMu8
-import ArkLib.Data.CodingTheory.ProximityGap.ConditionalSqrtCancellation
-import ArkLib.Data.CodingTheory.ProximityGap.Conj41CliqueCounterexample
-import ArkLib.Data.CodingTheory.ProximityGap.Conjecture41CliqueBeachhead
-import ArkLib.Data.CodingTheory.ProximityGap.Conjecture41CliqueConstraintFinrank
-import ArkLib.Data.CodingTheory.ProximityGap.Conjecture41CliqueDegeneracySupport
-import ArkLib.Data.CodingTheory.ProximityGap.Conjecture41CliqueGradedFinrank
-import ArkLib.Data.CodingTheory.ProximityGap.Conjecture41CliqueInfFinrank
-import ArkLib.Data.CodingTheory.ProximityGap.Conjecture41CliqueKernelStructure
-import ArkLib.Data.CodingTheory.ProximityGap.Conjecture41CliqueRankDeficient
-import ArkLib.Data.CodingTheory.ProximityGap.Conjecture41CliqueRelationModule
-import ArkLib.Data.CodingTheory.ProximityGap.Conjecture41CliqueRelationReconstruct
-import ArkLib.Data.CodingTheory.ProximityGap.ConstantIndexGaussSumBound
-import ArkLib.Data.CodingTheory.ProximityGap.ConstantIndexSubGaussianPeriod
-import ArkLib.Data.CodingTheory.ProximityGap.ConverseLamLeung2Power
-import ArkLib.Data.CodingTheory.ProximityGap.CoprimePacketMinpoly
-import ArkLib.Data.CodingTheory.ProximityGap.CorePartitionLemma
-import ArkLib.Data.CodingTheory.ProximityGap.CosetAugmentation
-import ArkLib.Data.CodingTheory.ProximityGap.CosetCliqueBoundary
-import ArkLib.Data.CodingTheory.ProximityGap.CosetExactCount
-import ArkLib.Data.CodingTheory.ProximityGap.CosetFamilyAttainment
-import ArkLib.Data.CodingTheory.ProximityGap.CosetPeriodOrthogonal
-import ArkLib.Data.CodingTheory.ProximityGap.CosetPigeonhole
-import ArkLib.Data.CodingTheory.ProximityGap.CosetPowerSumConcentration
-import ArkLib.Data.CodingTheory.ProximityGap.CosetReducedEnergyBound
-import ArkLib.Data.CodingTheory.ProximityGap.CosetRepFourthMomentCensus
-import ArkLib.Data.CodingTheory.ProximityGap.CosetRepSecondMomentCensus
-import ArkLib.Data.CodingTheory.ProximityGap.CosetRigidity
-import ArkLib.Data.CodingTheory.ProximityGap.CosetSplittingFloor
-import ArkLib.Data.CodingTheory.ProximityGap.CosetStrip
-import ArkLib.Data.CodingTheory.ProximityGap.CosetUnionExact
-import ArkLib.Data.CodingTheory.ProximityGap.CosetUnionGrowth
-import ArkLib.Data.CodingTheory.ProximityGap.CosetUnionSuperAdditive
-import ArkLib.Data.CodingTheory.ProximityGap.CosetVanishingDichotomy
-import ArkLib.Data.CodingTheory.ProximityGap.CosetWallDeepInteriorNoGo
-import ArkLib.Data.CodingTheory.ProximityGap.CosetWordCap
-import ArkLib.Data.CodingTheory.ProximityGap.CountAntipodalBounded
-import ArkLib.Data.CodingTheory.ProximityGap.CountingGapConjecture
-import ArkLib.Data.CodingTheory.ProximityGap.CoveragePigeonhole
-import ArkLib.Data.CodingTheory.ProximityGap.CoveringFromFarCount
-import ArkLib.Data.CodingTheory.ProximityGap.CoveringTransfer
-import ArkLib.Data.CodingTheory.ProximityGap.CrossCellShkredovBound
-import ArkLib.Data.CodingTheory.ProximityGap.CrossParityAggregate
-import ArkLib.Data.CodingTheory.ProximityGap.CrossParitySplitVacuity
-import ArkLib.Data.CodingTheory.ProximityGap.CrossingCountBound
-import ArkLib.Data.CodingTheory.ProximityGap.CrossingCountGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.CrossingPin
-import ArkLib.Data.CodingTheory.ProximityGap.CubeDichotomyCharZero
-import ArkLib.Data.CodingTheory.ProximityGap.CubeZeroSumCountVanishCharZero
-import ArkLib.Data.CodingTheory.ProximityGap.CubicCosetSupplyGrowth
-import ArkLib.Data.CodingTheory.ProximityGap.CubicOrchardIdentity
-import ArkLib.Data.CodingTheory.ProximityGap.CubicSupplyCosetBridge
-import ArkLib.Data.CodingTheory.ProximityGap.CubicSupplyCountermodel
-import ArkLib.Data.CodingTheory.ProximityGap.CubicSupplyDichotomy
-import ArkLib.Data.CodingTheory.ProximityGap.CubicSupplyExact
-import ArkLib.Data.CodingTheory.ProximityGap.CubicSupplySilentPrizeScale
-import ArkLib.Data.CodingTheory.ProximityGap.CubicSupplyZeroF73
-import ArkLib.Data.CodingTheory.ProximityGap.CubicSupplyZeroNTT
-import ArkLib.Data.CodingTheory.ProximityGap.CumulantDyadicConvolution
-import ArkLib.Data.CodingTheory.ProximityGap.CumulantDyadicDescent
-import ArkLib.Data.CodingTheory.ProximityGap.CumulantDyadicSplitExact
-import ArkLib.Data.CodingTheory.ProximityGap.CumulantFermatObstruction
-import ArkLib.Data.CodingTheory.ProximityGap.CumulantGaussPeriodBound
-import ArkLib.Data.CodingTheory.ProximityGap.CumulantOrderThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.CumulantTowerAzumaWall
-import ArkLib.Data.CodingTheory.ProximityGap.CurveAgreementThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.CurveCloseSetTargetBound
-import ArkLib.Data.CodingTheory.ProximityGap.CurveDecodability
-import ArkLib.Data.CodingTheory.ProximityGap.CurveUDRBadCount
-import ArkLib.Data.CodingTheory.ProximityGap.CurveUDRCoefficients
-import ArkLib.Data.CodingTheory.ProximityGap.CyclotomicConcentration
-import ArkLib.Data.CodingTheory.ProximityGap.CyclotomicLatticeWrapOnset
-import ArkLib.Data.CodingTheory.ProximityGap.CyclotomicResultantBound
-import ArkLib.Data.CodingTheory.ProximityGap.CyclotomicSidonLift
-import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyBaseCase
-import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyCorrection
-import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyEssential
-import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyRungThree
-import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyRungTwo
-import ArkLib.Data.CodingTheory.ProximityGap.DCMomentSupBound
-import ArkLib.Data.CodingTheory.ProximityGap.DCOptimized
-import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
-import ArkLib.Data.CodingTheory.ProximityGap.DCSupNormBound
-import ArkLib.Data.CodingTheory.ProximityGap.DCWorstCaseWiring
-import ArkLib.Data.CodingTheory.ProximityGap.DG25
-import ArkLib.Data.CodingTheory.ProximityGap.DG25.Basic
-import ArkLib.Data.CodingTheory.ProximityGap.DG25.Contrapositive
-import ArkLib.Data.CodingTheory.ProximityGap.DG25.MainResults
-import ArkLib.Data.CodingTheory.ProximityGap.DG25.ReedSolomon
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnIndicatorDisjointness
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnIntRelations
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnIntWindowedLaw
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnLamLeungReduction
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnLamLeungSmallWeights
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnPrimePower
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnSquarefreeIff
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnSquarefreePQ
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnThreePrimeIntGrid
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnTowerWiring
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnTwoPrime
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnTwoPrimeAssembly
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnWeightedCardTwoPrime
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnWeightedSquarefree
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnWeightedSquarefreeExp
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnWeightedTwoPrime
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnWeightedWindowLaw
-import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnWindowedLaw
-import ArkLib.Data.CodingTheory.ProximityGap.DecoupledJohnsonBound
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandCeilingWindow
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandCoherence
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandDeltaStarCeiling
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandFailureClosedForm
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandFailureClosedFormSharp
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandFailureUnconditional
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandFieldSizeWindow
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandMomentInstance
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandMomentInstanceSharp
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandMultiplicity
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandPairRank
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandProductionGatedOnOpenCore
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandProductionSubJohnson
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandProductionSubJohnsonGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandR3Bound
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandR4Bound
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandR5Bound
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSaturationDischarge
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSaturationMajority
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSaturationSharp
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSecondMoment
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSecondMomentEps
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSecondMomentEpsSharp
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSecondMomentSharp
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSpectrumCentralEvenCard
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSpectrumCentralNegInvariant
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSpectrumComplementSymmetry
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSpectrumDilationInvariant
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSpectrumFreeDivisibility
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSpectrumUpper
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSubJohnsonSharpRate
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSubsetSumSpectrum
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSupplyExponential
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSupplyGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSupplyTheorem
-import ArkLib.Data.CodingTheory.ProximityGap.DeepPairIndependence
-import ArkLib.Data.CodingTheory.ProximityGap.DeepQuotientTransfer
-import ArkLib.Data.CodingTheory.ProximityGap.DeepRungFrontier
-import ArkLib.Data.CodingTheory.ProximityGap.DeepStrataExactFibers
-import ArkLib.Data.CodingTheory.ProximityGap.DeepStratumMovingDirection
-import ArkLib.Data.CodingTheory.ProximityGap.DeepStratumRankUnconditional
-import ArkLib.Data.CodingTheory.ProximityGap.DeepStratumSurvivingCoord
-import ArkLib.Data.CodingTheory.ProximityGap.DegeneracyLocusRank
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarAveragingBracket
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarBracket
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarCeilingTightTheory
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarConcretePinF17
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarConstantGapBelowCapacity
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarExactCrossoverF17
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarExactPinF5
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarPinF11H5
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarPinMu8F4129
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarPinchBracketD3
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarPinsF17N8
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarSecondPinF17
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarSecondPinF17Maximal
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarSecondPinF17Widened
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarSmoothNTTGranularity
-import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarTableSmoothInstances
-import ArkLib.Data.CodingTheory.ProximityGap.DeployedRegimeReduction
-import ArkLib.Data.CodingTheory.ProximityGap.DepthLogConfinedToThin
-import ArkLib.Data.CodingTheory.ProximityGap.DepthTwoEngine
-import ArkLib.Data.CodingTheory.ProximityGap.DerandomizationFrontier
-import ArkLib.Data.CodingTheory.ProximityGap.DerandomizationMultiPuncture
-import ArkLib.Data.CodingTheory.ProximityGap.DescentKernelLemma
-import ArkLib.Data.CodingTheory.ProximityGap.DeviationSupSplit
-import ArkLib.Data.CodingTheory.ProximityGap.DivisorListBound
-import ArkLib.Data.CodingTheory.ProximityGap.DyadicEnergyK1
-import ArkLib.Data.CodingTheory.ProximityGap.DyadicFourierUncertainty
-import ArkLib.Data.CodingTheory.ProximityGap.DyadicHalvingRecursion
-import ArkLib.Data.CodingTheory.ProximityGap.DyadicLacunaryDeltaStar
-import ArkLib.Data.CodingTheory.ProximityGap.DyadicOddMomentVanishing
-import ArkLib.Data.CodingTheory.ProximityGap.DyadicTowerRecursion
-import ArkLib.Data.CodingTheory.ProximityGap.E2CharFreeLowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.E2DilationDirectCount
-import ArkLib.Data.CodingTheory.ProximityGap.E2SquaringRecursion
-import ArkLib.Data.CodingTheory.ProximityGap.E2VanishEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.E2VanishRigidityModP
-import ArkLib.Data.CodingTheory.ProximityGap.E2VanishWidthFourFullCount
-import ArkLib.Data.CodingTheory.ProximityGap.E2W4CyclotomicNonCollision
-import ArkLib.Data.CodingTheory.ProximityGap.EffectiveTransfer
-import ArkLib.Data.CodingTheory.ProximityGap.EnergyBoundImplication
-import ArkLib.Data.CodingTheory.ProximityGap.EnergyCharacterTransport
-import ArkLib.Data.CodingTheory.ProximityGap.EnergyDilationReduction
-import ArkLib.Data.CodingTheory.ProximityGap.EnergyExcessCore
-import ArkLib.Data.CodingTheory.ProximityGap.EnergyExcessStructure
-import ArkLib.Data.CodingTheory.ProximityGap.EnergyInjection
-import ArkLib.Data.CodingTheory.ProximityGap.EnergyMinimalF73
-import ArkLib.Data.CodingTheory.ProximityGap.EnergyRelationAntipodal
-import ArkLib.Data.CodingTheory.ProximityGap.EntropyGateBinomial
-import ArkLib.Data.CodingTheory.ProximityGap.EntropyGateDeltaStar
-import ArkLib.Data.CodingTheory.ProximityGap.EpsCAMono
-import ArkLib.Data.CodingTheory.ProximityGap.EpsMCAInterleavedJohnson
-import ArkLib.Data.CodingTheory.ProximityGap.EpsMCAInterleavedList
-import ArkLib.Data.CodingTheory.ProximityGap.EpsMCAInterleavedUD
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
-import ArkLib.Data.CodingTheory.ProximityGap.EsymmFiber
-import ArkLib.Data.CodingTheory.ProximityGap.EsymmFiberCodewordList
-import ArkLib.Data.CodingTheory.ProximityGap.EsymmFiberCodewordListExp
-import ArkLib.Data.CodingTheory.ProximityGap.EtaComplementFlip
-import ArkLib.Data.CodingTheory.ProximityGap.EtaCosetSplit
-import ArkLib.Data.CodingTheory.ProximityGap.EtaPointwiseAutocorr
-import ArkLib.Data.CodingTheory.ProximityGap.EtaQuarticUncond
-import ArkLib.Data.CodingTheory.ProximityGap.EtaShallowTailUncond
-import ArkLib.Data.CodingTheory.ProximityGap.EvenOddAntipodalCharFree
-import ArkLib.Data.CodingTheory.ProximityGap.EvenTowerSupplyGrowth
-import ArkLib.Data.CodingTheory.ProximityGap.ExactCoherenceCount
-import ArkLib.Data.CodingTheory.ProximityGap.ExactnessWithoutCoverability
-import ArkLib.Data.CodingTheory.ProximityGap.ExcessCensusLaw
-import ArkLib.Data.CodingTheory.ProximityGap.ExplainableCoreExactCount
-import ArkLib.Data.CodingTheory.ProximityGap.ExplainableCoreSupplyInstance
-import ArkLib.Data.CodingTheory.ProximityGap.FactorizableStacks
-import ArkLib.Data.CodingTheory.ProximityGap.FactorizationRigidity
-import ArkLib.Data.CodingTheory.ProximityGap.FamilyBadBound
-import ArkLib.Data.CodingTheory.ProximityGap.FarCosetExplosion
-import ArkLib.Data.CodingTheory.ProximityGap.FarLineIncidenceEquivariance
-import ArkLib.Data.CodingTheory.ProximityGap.FarLineScalarDilation
-import ArkLib.Data.CodingTheory.ProximityGap.FarPairRankBound
-import ArkLib.Data.CodingTheory.ProximityGap.FarPairRankSupply
-import ArkLib.Data.CodingTheory.ProximityGap.FarThresholdMaximality
-import ArkLib.Data.CodingTheory.ProximityGap.FarWordSupplyCounting
-import ArkLib.Data.CodingTheory.ProximityGap.Fermat257EnergyCrossover
-import ArkLib.Data.CodingTheory.ProximityGap.FiberEnergyListBound
-import ArkLib.Data.CodingTheory.ProximityGap.FieldSizeThresholdReduction
-import ArkLib.Data.CodingTheory.ProximityGap.FiniteFieldDisproofLoop53
-import ArkLib.Data.CodingTheory.ProximityGap.FiniteFieldLiftLoop51
-import ArkLib.Data.CodingTheory.ProximityGap.FisherJohnsonCrossover
-import ArkLib.Data.CodingTheory.ProximityGap.FisherPastJohnsonCap
-import ArkLib.Data.CodingTheory.ProximityGap.FitFamilyBound
-import ArkLib.Data.CodingTheory.ProximityGap.FoldPolynomialSlices
-import ArkLib.Data.CodingTheory.ProximityGap.FoldedCurveCloseSetBound
-import ArkLib.Data.CodingTheory.ProximityGap.FoldedSumThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.Folding
-import ArkLib.Data.CodingTheory.ProximityGap.Folding.Multilinear
-import ArkLib.Data.CodingTheory.ProximityGap.FoldingTransferNoGo
-import ArkLib.Data.CodingTheory.ProximityGap.FourthMomentCLT
-import ArkLib.Data.CodingTheory.ProximityGap.FpReductionHom
-import ArkLib.Data.CodingTheory.ProximityGap.FpVanishingBridge
-import ArkLib.Data.CodingTheory.ProximityGap.FrobeniusImmunityMuN
-import ArkLib.Data.CodingTheory.ProximityGap.FrobeniusSubfieldBlowup
-import ArkLib.Data.CodingTheory.ProximityGap.FrobeniusSupplyExact
-import ArkLib.Data.CodingTheory.ProximityGap.FullBandLadderLaw
-import ArkLib.Data.CodingTheory.ProximityGap.FullWindowDichotomy
-import ArkLib.Data.CodingTheory.ProximityGap.GG25CurveDecodFromListSize
-import ArkLib.Data.CodingTheory.ProximityGap.GG25CurveDecodability
-import ArkLib.Data.CodingTheory.ProximityGap.GG25ExactPreservation
-import ArkLib.Data.CodingTheory.ProximityGap.GG25MCAFromCurveDecodability
-import ArkLib.Data.CodingTheory.ProximityGap.GG25MarkedCurve
-import ArkLib.Data.CodingTheory.ProximityGap.GG25MarkedEquivalence
-import ArkLib.Data.CodingTheory.ProximityGap.GG25NonCovering
-import ArkLib.Data.CodingTheory.ProximityGap.GG25SmallWitness
-import ArkLib.Data.CodingTheory.ProximityGap.GG25SpreadBound
-import ArkLib.Data.CodingTheory.ProximityGap.GG25WeightedTransfer
-import ArkLib.Data.CodingTheory.ProximityGap.GK16Admissible
-import ArkLib.Data.CodingTheory.ProximityGap.GK16Claim16Transport
-import ArkLib.Data.CodingTheory.ProximityGap.GK16DegreeBudget
-import ArkLib.Data.CodingTheory.ProximityGap.GK16FrsTransport
-import ArkLib.Data.CodingTheory.ProximityGap.GK16Lemma12
-import ArkLib.Data.CodingTheory.ProximityGap.GK16RootCounting
-import ArkLib.Data.CodingTheory.ProximityGap.GK16Wronskian
-import ArkLib.Data.CodingTheory.ProximityGap.GSCounting
-import ArkLib.Data.CodingTheory.ProximityGap.GSExactCountWall
-import ArkLib.Data.CodingTheory.ProximityGap.GSFullListBound
-import ArkLib.Data.CodingTheory.ProximityGap.GSHasseMultiplicity
-import ArkLib.Data.CodingTheory.ProximityGap.GSInterpolationExistence
-import ArkLib.Data.CodingTheory.ProximityGap.GSJohnsonWall
-import ArkLib.Data.CodingTheory.ProximityGap.GSKernelAffineDescent
-import ArkLib.Data.CodingTheory.ProximityGap.GSListSizeBoundStatus
-import ArkLib.Data.CodingTheory.ProximityGap.GSMultiplicityChainCompose
-import ArkLib.Data.CodingTheory.ProximityGap.GSMultiplicityCore
-import ArkLib.Data.CodingTheory.ProximityGap.GSPipelineAssembly
-import ArkLib.Data.CodingTheory.ProximityGap.GSReachesJohnson
-import ArkLib.Data.CodingTheory.ProximityGap.GSRootOrderStep
-import ArkLib.Data.CodingTheory.ProximityGap.GSYDegreeListCap
-import ArkLib.Data.CodingTheory.ProximityGap.GVDvdSuccClosure
-import ArkLib.Data.CodingTheory.ProximityGap.GVHBKEnergyReduction
-import ArkLib.Data.CodingTheory.ProximityGap.GVObjectTowerDecomposition
-import ArkLib.Data.CodingTheory.ProximityGap.GVRepBoundFermat257
-import ArkLib.Data.CodingTheory.ProximityGap.GVRepBoundFromEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.GVTowerLevelDegreeBound
-import ArkLib.Data.CodingTheory.ProximityGap.GWAffinePinning
-import ArkLib.Data.CodingTheory.ProximityGap.GWDirectionScopedWiring
-import ArkLib.Data.CodingTheory.ProximityGap.GWFiberChargeRepair
-import ArkLib.Data.CodingTheory.ProximityGap.GWFoldedDegreeBound
-import ArkLib.Data.CodingTheory.ProximityGap.GWInterpolation
-import ArkLib.Data.CodingTheory.ProximityGap.GWKernelReduction
-import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodCosetReduction
-import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
-import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBoundSlack
-import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodOptimizedBound
-import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodOrbitPartition
-import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodParsevalFloor
-import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodSpectralConstantFloor
-import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodSpectralFrame
-import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodTower
-import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodTransversalSum
-import ArkLib.Data.CodingTheory.ProximityGap.GaussPhaseResonance
-import ArkLib.Data.CodingTheory.ProximityGap.GaussianEnergyFromPairing
-import ArkLib.Data.CodingTheory.ProximityGap.GaussianEnergyThreeRepThree
-import ArkLib.Data.CodingTheory.ProximityGap.GcdTrivialOffSumset
-import ArkLib.Data.CodingTheory.ProximityGap.GeneralEnergyBound
-import ArkLib.Data.CodingTheory.ProximityGap.GeneralGapCensusLaw
-import ArkLib.Data.CodingTheory.ProximityGap.GeneralKMultiplicity
-import ArkLib.Data.CodingTheory.ProximityGap.GeneralMomentPeriodBound
-import ArkLib.Data.CodingTheory.ProximityGap.GeneralOrchardIdentity
-import ArkLib.Data.CodingTheory.ProximityGap.GeneralOrchardSumZero
-import ArkLib.Data.CodingTheory.ProximityGap.GeneralPacketCombination
-import ArkLib.Data.CodingTheory.ProximityGap.GeneralPencilPacking
-import ArkLib.Data.CodingTheory.ProximityGap.GeneralizedPaleyRamanujan
-import ArkLib.Data.CodingTheory.ProximityGap.GeneratorMCA
-import ArkLib.Data.CodingTheory.ProximityGap.GenericFarPin
-import ArkLib.Data.CodingTheory.ProximityGap.GenericFarSeparation
-import ArkLib.Data.CodingTheory.ProximityGap.GenuineQuadrupleMulClosed
-import ArkLib.Data.CodingTheory.ProximityGap.GenuineQuadrupleSidonModNeg
-import ArkLib.Data.CodingTheory.ProximityGap.GranularityLadderRS
-import ArkLib.Data.CodingTheory.ProximityGap.GridSupplyRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.HBKEnergySupplyBound
-import ArkLib.Data.CodingTheory.ProximityGap.HOMDSSmoothObstruction
-import ArkLib.Data.CodingTheory.ProximityGap.Hab25DegreeBudget
-import ArkLib.Data.CodingTheory.ProximityGap.Hab25ErrStarArith
-import ArkLib.Data.CodingTheory.ProximityGap.Hab25FiberPigeonhole
-import ArkLib.Data.CodingTheory.ProximityGap.Hab25HeavyPoints
-import ArkLib.Data.CodingTheory.ProximityGap.Hab25Multiplicity
-import ArkLib.Data.CodingTheory.ProximityGap.HalfJohnsonDeltaStar
-import ArkLib.Data.CodingTheory.ProximityGap.HalfPairSliceExact
-import ArkLib.Data.CodingTheory.ProximityGap.HalfSumNormClosedForm
-import ArkLib.Data.CodingTheory.ProximityGap.HalfSumRunNormUniform
-import ArkLib.Data.CodingTheory.ProximityGap.HalfThresholdCA
-import ArkLib.Data.CodingTheory.ProximityGap.HaloFreeDivisibility
-import ArkLib.Data.CodingTheory.ProximityGap.HaloFreeThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.HalvingWindowExit
-import ArkLib.Data.CodingTheory.ProximityGap.HammingBound
-import ArkLib.Data.CodingTheory.ProximityGap.HasseMonomial
-import ArkLib.Data.CodingTheory.ProximityGap.HasseMultiplicityBridge
-import ArkLib.Data.CodingTheory.ProximityGap.HasseSchmidt
-import ArkLib.Data.CodingTheory.ProximityGap.HasseWeilBoundInstances
-import ArkLib.Data.CodingTheory.ProximityGap.HasseWronskianMonomial
-import ArkLib.Data.CodingTheory.ProximityGap.HasseWronskianPoly
-import ArkLib.Data.CodingTheory.ProximityGap.HeightGateAMGM
-import ArkLib.Data.CodingTheory.ProximityGap.HeightGateAMGMWire
-import ArkLib.Data.CodingTheory.ProximityGap.HeightGateBindingDepthVacuity
-import ArkLib.Data.CodingTheory.ProximityGap.HeightGateNormBound
-import ArkLib.Data.CodingTheory.ProximityGap.HeightGatePowerMean
-import ArkLib.Data.CodingTheory.ProximityGap.HeightGateThresholdAnalysis
-import ArkLib.Data.CodingTheory.ProximityGap.HenselNumeratorWeightWitness
-import ArkLib.Data.CodingTheory.ProximityGap.HighMultiplicityBadCount
-import ArkLib.Data.CodingTheory.ProximityGap.HigherIntersectionEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.HybridConcentrationDepthNoGo
-import ArkLib.Data.CodingTheory.ProximityGap.HybridPinInstance
-import ArkLib.Data.CodingTheory.ProximityGap.I031MatchedGaussianCovariance
-import ArkLib.Data.CodingTheory.ProximityGap.I031SubGaussianMaxBridge
-import ArkLib.Data.CodingTheory.ProximityGap.I031TailFromPointwise
-import ArkLib.Data.CodingTheory.ProximityGap.IdealSVPGirthVerdict
-import ArkLib.Data.CodingTheory.ProximityGap.IidCoordinateHit
-import ArkLib.Data.CodingTheory.ProximityGap.IncidenceDeviationCharSum
-import ArkLib.Data.CodingTheory.ProximityGap.IncidencePeriodBridge
-import ArkLib.Data.CodingTheory.ProximityGap.IntSquarefreeClassification
-import ArkLib.Data.CodingTheory.ProximityGap.IntegerThreadSplit
-import ArkLib.Data.CodingTheory.ProximityGap.InteriorListCountBridge
-import ArkLib.Data.CodingTheory.ProximityGap.InteriorWorstCaseIncompleteSum
-import ArkLib.Data.CodingTheory.ProximityGap.InterleavedListMCACollapse
-import ArkLib.Data.CodingTheory.ProximityGap.InterleavedListMDSBound
-import ArkLib.Data.CodingTheory.ProximityGap.InterleavingStabilityLedger
-import ArkLib.Data.CodingTheory.ProximityGap.InterleavingStabilityMCA
-import ArkLib.Data.CodingTheory.ProximityGap.InterleavingStabilityMCAP
-import ArkLib.Data.CodingTheory.ProximityGap.InvolutionClosedCount
-import ArkLib.Data.CodingTheory.ProximityGap.IteratedSliceRootCoherence
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26CurveInterpolationRegime
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26CurveNonCovering
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26DeviationKernels
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26FullyCloseAssembly
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26GeneratorDichotomy
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26GeneratorMCA
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26InterleavingBound
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26MissingLineBigSeedRefuted
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26MissingLineGenerousRefuted
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26MissingLineSmallSeed
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26ObstructionCount
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26ObstructionRowCount
-import ArkLib.Data.CodingTheory.ProximityGap.Jo26PowerGeneratorInterleaving
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityBound
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCapacityMonotonicity
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonComparisonForms
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonCompositionLaws
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonEndpoints
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonExactPoint
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonFixedPoint
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonFourthMomentNoGo
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonGapBounds
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonGapIdentities
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonListBound
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonOrdering
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonPerWord
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonRSComparisons
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonRSEndpoints
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonRSInstance
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonRateGap
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSamplePoints
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSecantForms
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSecondMomentFrontier
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSimplexBound
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSplitSupply
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonSplitSupplyClosure
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonTaylorBounds
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonTightnessRefuted
-import ArkLib.Data.CodingTheory.ProximityGap.JohnsonTouchingCorner
-import ArkLib.Data.CodingTheory.ProximityGap.JointT2FiberTightness
-import ArkLib.Data.CodingTheory.ProximityGap.JointT2Unconditional
-import ArkLib.Data.CodingTheory.ProximityGap.K1WindowUniversal
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26AlignmentSupply
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26AsymptoticCeiling
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26BadLineConstruction
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26CeilingMarch
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26CensusExact
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26CensusLaw
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26CharZeroCollisionLaw
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26ConcreteCeiling
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26ConstrainedCensusLaw
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarPinAllWitness
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarPinF4129R3
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarReduction
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26DimGeneralPin
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26DimGeneralSharpPin
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26DimOnePin
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26DimTwoPin
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26EntropyForm
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26ExactCensusCharZero
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26ExactListLowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26FiberStructural
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26FixedRResultantBound
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26FoldQuotientStack
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26FoldStability
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26FoldSupplyDecay
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26FoldSupplyTower
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26FoldTransport
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26GapCensusLaw
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26LadderArithmetic
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26PolyFieldCeiling
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26S128Ceiling
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26StratifiedSpread
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26SumsOfRootsOfUnity
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZaman
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZamanConstructor
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26TightCeiling
-import ArkLib.Data.CodingTheory.ProximityGap.KKH26WitnessSpread
-import ArkLib.Data.CodingTheory.ProximityGap.KambireDeepBandFloor
-import ArkLib.Data.CodingTheory.ProximityGap.KambireExponentialGap
-import ArkLib.Data.CodingTheory.ProximityGap.KambireNotExtremal
-import ArkLib.Data.CodingTheory.ProximityGap.KambireSumsetR2
-import ArkLib.Data.CodingTheory.ProximityGap.KatzEffectiveGaussSum
-import ArkLib.Data.CodingTheory.ProximityGap.KowalskiUntrauBarrier
-import ArkLib.Data.CodingTheory.ProximityGap.KrawtchoukPoly
-import ArkLib.Data.CodingTheory.ProximityGap.L2MahlerNormBound
-import ArkLib.Data.CodingTheory.ProximityGap.LDLeMCANoGo
-import ArkLib.Data.CodingTheory.ProximityGap.LadderCensusCharZeroExact
-import ArkLib.Data.CodingTheory.ProximityGap.LadderExactList
-import ArkLib.Data.CodingTheory.ProximityGap.LadderFloorRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.LadderListCliff
-import ArkLib.Data.CodingTheory.ProximityGap.LadderListCliffGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.LadderListExactCount
-import ArkLib.Data.CodingTheory.ProximityGap.LadderListModP
-import ArkLib.Data.CodingTheory.ProximityGap.LadderSchurReduction
-import ArkLib.Data.CodingTheory.ProximityGap.LadderSpectrumFusion
-import ArkLib.Data.CodingTheory.ProximityGap.LadderSpectrumFusionExact
-import ArkLib.Data.CodingTheory.ProximityGap.LadderSpectrumFusionValue
-import ArkLib.Data.CodingTheory.ProximityGap.LadderSupplyExact
-import ArkLib.Data.CodingTheory.ProximityGap.LadderTowerCharZeroExact
-import ArkLib.Data.CodingTheory.ProximityGap.LamLeungAntipodalTightness
-import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
-import ArkLib.Data.CodingTheory.ProximityGap.LamLeungSpanTwoPrime
-import ArkLib.Data.CodingTheory.ProximityGap.LamLeungSquarefreeReduction
-import ArkLib.Data.CodingTheory.ProximityGap.LamLeungTwoPow
-import ArkLib.Data.CodingTheory.ProximityGap.LamLeungTwoPower
-import ArkLib.Data.CodingTheory.ProximityGap.LamLeungUnconditionalGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.LamLeungUnconditionalQ
-import ArkLib.Data.CodingTheory.ProximityGap.Level1RungPin
-import ArkLib.Data.CodingTheory.ProximityGap.LiWanSubsetSumEquidistribution
-import ArkLib.Data.CodingTheory.ProximityGap.LineAgreementCount
-import ArkLib.Data.CodingTheory.ProximityGap.LineBallIntersection
-import ArkLib.Data.CodingTheory.ProximityGap.LineClosePairsLinear
-import ArkLib.Data.CodingTheory.ProximityGap.LineCodewordIncidence
-import ArkLib.Data.CodingTheory.ProximityGap.LineCorePartition
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecoding
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingBadScalarCount
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingCounting
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingCoverage
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingCoverageDegree
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingGuruswamiSudan
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingRepair
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingRepairExtra
-import ArkLib.Data.CodingTheory.ProximityGap.LineDichotomy
-import ArkLib.Data.CodingTheory.ProximityGap.LineFirstMomentBound
-import ArkLib.Data.CodingTheory.ProximityGap.LineHeavySetBound
-import ArkLib.Data.CodingTheory.ProximityGap.LineIncidenceSpectral
-import ArkLib.Data.CodingTheory.ProximityGap.LineListAppearanceFiber
-import ArkLib.Data.CodingTheory.ProximityGap.LineListAppearanceFiberMixedProfile
-import ArkLib.Data.CodingTheory.ProximityGap.LineListAppearanceFiberMixedProfileFit
-import ArkLib.Data.CodingTheory.ProximityGap.LineListArithmeticObstruction
-import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordCollapse
-import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSingletonRelationCliqueCover
-import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSingletonRelationColorCover
-import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSingletonRelationColorNoGo
-import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSingletonRelationException
-import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSingletonSecondWitnessRelation
-import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSingletonSupportDivWeight
-import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSingletonSupportOverlapRelation
-import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSingletonSupportRatio
-import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSupportChooseArithmeticObstruction
-import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSupportDivArithmeticObstruction
-import ArkLib.Data.CodingTheory.ProximityGap.LineListDimensionLift
-import ArkLib.Data.CodingTheory.ProximityGap.LineListIncidenceMultiplicity
-import ArkLib.Data.CodingTheory.ProximityGap.LineListJohnsonClosure
-import ArkLib.Data.CodingTheory.ProximityGap.LineListMCAWeld
-import ArkLib.Data.CodingTheory.ProximityGap.LineListReduction
-import ArkLib.Data.CodingTheory.ProximityGap.LineListSingletonArithmeticObstruction
-import ArkLib.Data.CodingTheory.ProximityGap.LineListSingletonDefectGeometry
-import ArkLib.Data.CodingTheory.ProximityGap.LineListSupportRatioArithmeticObstruction
-import ArkLib.Data.CodingTheory.ProximityGap.LineListSupportRatioFiber
-import ArkLib.Data.CodingTheory.ProximityGap.LineListSupportRatioMixedProfile
-import ArkLib.Data.CodingTheory.ProximityGap.LinePairCooccurrenceBound
-import ArkLib.Data.CodingTheory.ProximityGap.LineSecondMomentBound
-import ArkLib.Data.CodingTheory.ProximityGap.LineSecondMomentSharp
-import ArkLib.Data.CodingTheory.ProximityGap.LineUniqueDecode
-import ArkLib.Data.CodingTheory.ProximityGap.LineWeightSliceMDS
-import ArkLib.Data.CodingTheory.ProximityGap.LinearizedPolynomialHasse
-import ArkLib.Data.CodingTheory.ProximityGap.ListAroundBallIntersectionKernel
-import ArkLib.Data.CodingTheory.ProximityGap.ListBallIntersectionReduction
-import ArkLib.Data.CodingTheory.ProximityGap.ListCapacityFieldIndependent
-import ArkLib.Data.CodingTheory.ProximityGap.ListDecEquivLoop47
-import ArkLib.Data.CodingTheory.ProximityGap.ListDecodingCapacityOverflow
-import ArkLib.Data.CodingTheory.ProximityGap.ListDecodingThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.ListIncidencePolyMethod
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorDataPointF7
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorDeltaStarUpperPin
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorPinF11
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorPinF11K3
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorPinF17Subgroup
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorPinGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorQDependenceNoGo
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorQIndependentNegSymm
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorT2TwoSymmetric
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorT3ThreeSymmetric
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorTwoSidedF7
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorUnconditionalGeneralT
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorUnconditionalT1
-import ArkLib.Data.CodingTheory.ProximityGap.ListInteriorUnconditionalT2
-import ArkLib.Data.CodingTheory.ProximityGap.ListMCAWiringNoGo
-import ArkLib.Data.CodingTheory.ProximityGap.ListRecoveryInterleavedGap
-import ArkLib.Data.CodingTheory.ProximityGap.ListSizeMoments
-import ArkLib.Data.CodingTheory.ProximityGap.ListSizeMomentsConcrete
-import ArkLib.Data.CodingTheory.ProximityGap.ListSizeMomentsWeight
-import ArkLib.Data.CodingTheory.ProximityGap.ListThresholdWellDefined
-import ArkLib.Data.CodingTheory.ProximityGap.LiteralBudgetPin
-import ArkLib.Data.CodingTheory.ProximityGap.LiteralBudgetRateThreeSixteenths
-import ArkLib.Data.CodingTheory.ProximityGap.LogUpAppendProof
-import ArkLib.Data.CodingTheory.ProximityGap.MCAAntichainEngine
-import ArkLib.Data.CodingTheory.ProximityGap.MCAAntichainLYM
-import ArkLib.Data.CodingTheory.ProximityGap.MCABadCount
-import ArkLib.Data.CodingTheory.ProximityGap.MCABadScalarSpreadBridge
-import ArkLib.Data.CodingTheory.ProximityGap.MCABandThreeAssembly
-import ArkLib.Data.CodingTheory.ProximityGap.MCABandThreeCoredCollapse
-import ArkLib.Data.CodingTheory.ProximityGap.MCABandThreeExact
-import ArkLib.Data.CodingTheory.ProximityGap.MCABandThreeInfra
-import ArkLib.Data.CodingTheory.ProximityGap.MCABandTwoCollapse
-import ArkLib.Data.CodingTheory.ProximityGap.MCABandTwoExact
-import ArkLib.Data.CodingTheory.ProximityGap.MCABandTwoRS
-import ArkLib.Data.CodingTheory.ProximityGap.MCACircuitPropagation
-import ArkLib.Data.CodingTheory.ProximityGap.MCAClosureFamily
-import ArkLib.Data.CodingTheory.ProximityGap.MCACurveEvent
-import ArkLib.Data.CodingTheory.ProximityGap.MCADeadWitness
-import ArkLib.Data.CodingTheory.ProximityGap.MCADefectLineKill
-import ArkLib.Data.CodingTheory.ProximityGap.MCADeltaStarCapacity
-import ArkLib.Data.CodingTheory.ProximityGap.MCADeltaStarExactPoint
-import ArkLib.Data.CodingTheory.ProximityGap.MCADeltaStarFullBand
-import ArkLib.Data.CodingTheory.ProximityGap.MCADeltaStarHighRateFamily
-import ArkLib.Data.CodingTheory.ProximityGap.MCADeltaStarListReduction
-import ArkLib.Data.CodingTheory.ProximityGap.MCADeltaStarLiteralEps
-import ArkLib.Data.CodingTheory.ProximityGap.MCADeltaStarProductionFloor
-import ArkLib.Data.CodingTheory.ProximityGap.MCADeltaStarSandwich
-import ArkLib.Data.CodingTheory.ProximityGap.MCADictionaryBracket
-import ArkLib.Data.CodingTheory.ProximityGap.MCADualPencilLaw
-import ArkLib.Data.CodingTheory.ProximityGap.MCAEigenstackOrbitLaw
-import ArkLib.Data.CodingTheory.ProximityGap.MCAEquivariance
-import ArkLib.Data.CodingTheory.ProximityGap.MCAEventAgreeWitness
-import ArkLib.Data.CodingTheory.ProximityGap.MCAEventCosetInvariance
-import ArkLib.Data.CodingTheory.ProximityGap.MCAExactComputationKit
-import ArkLib.Data.CodingTheory.ProximityGap.MCAExactPin
-import ArkLib.Data.CodingTheory.ProximityGap.MCAExplicitTransversal
-import ArkLib.Data.CodingTheory.ProximityGap.MCAFiniteTable
-import ArkLib.Data.CodingTheory.ProximityGap.MCAFloorFactorization
-import ArkLib.Data.CodingTheory.ProximityGap.MCAForallDoubleCoverRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.MCAFullLayerSupply
-import ArkLib.Data.CodingTheory.ProximityGap.MCAGammaReduction
-import ArkLib.Data.CodingTheory.ProximityGap.MCAGeneralLowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.MCAGeneralStaircaseRefuted
-import ArkLib.Data.CodingTheory.ProximityGap.MCAGenerator
-import ArkLib.Data.CodingTheory.ProximityGap.MCAHalfDistanceGeneralRefuted
-import ArkLib.Data.CodingTheory.ProximityGap.MCAHalfDistanceStaircase
-import ArkLib.Data.CodingTheory.ProximityGap.MCAIncidenceCensus
-import ArkLib.Data.CodingTheory.ProximityGap.MCAJumpValueExact
-import ArkLib.Data.CodingTheory.ProximityGap.MCALYMCeiling
-import ArkLib.Data.CodingTheory.ProximityGap.MCALineReduction
-import ArkLib.Data.CodingTheory.ProximityGap.MCALineReductionSharp
-import ArkLib.Data.CodingTheory.ProximityGap.MCAListBracketInterpolation
-import ArkLib.Data.CodingTheory.ProximityGap.MCAListCollapseFullSupport
-import ArkLib.Data.CodingTheory.ProximityGap.MCALowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.MCAMDSStaircaseRefuted
-import ArkLib.Data.CodingTheory.ProximityGap.MCAMasterBound
-import ArkLib.Data.CodingTheory.ProximityGap.MCAMobiusInversion
-import ArkLib.Data.CodingTheory.ProximityGap.MCAMonomialEquivariance
-import ArkLib.Data.CodingTheory.ProximityGap.MCANearCapacityGeneralRate
-import ArkLib.Data.CodingTheory.ProximityGap.MCANearCapacityLowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.MCANearCapacityQuadratic
-import ArkLib.Data.CodingTheory.ProximityGap.MCANearCapacitySharpSpread
-import ArkLib.Data.CodingTheory.ProximityGap.MCANearCapacitySpreadOptimal
-import ArkLib.Data.CodingTheory.ProximityGap.MCAParabolaStratification
-import ArkLib.Data.CodingTheory.ProximityGap.MCAProjectiveEquivariance
-import ArkLib.Data.CodingTheory.ProximityGap.MCARSBoundaryArithmetic
-import ArkLib.Data.CodingTheory.ProximityGap.MCASmoothJumpUnconditional
-import ArkLib.Data.CodingTheory.ProximityGap.MCAStaircaseDeltaStar
-import ArkLib.Data.CodingTheory.ProximityGap.MCAStaircaseExact
-import ArkLib.Data.CodingTheory.ProximityGap.MCAStaircaseMaster
-import ArkLib.Data.CodingTheory.ProximityGap.MCAStaircaseRS
-import ArkLib.Data.CodingTheory.ProximityGap.MCAStepFunction
-import ArkLib.Data.CodingTheory.ProximityGap.MCAStructuralSeparation
-import ArkLib.Data.CodingTheory.ProximityGap.MCASubdomainLift
-import ArkLib.Data.CodingTheory.ProximityGap.MCASyndromeFactorization
-import ArkLib.Data.CodingTheory.ProximityGap.MCASyndromeSup
-import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdBudgetMono
-import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
-import ArkLib.Data.CodingTheory.ProximityGap.MCAUpToCapacityFalse
-import ArkLib.Data.CodingTheory.ProximityGap.MCAVerticalStratumCharZero
-import ArkLib.Data.CodingTheory.ProximityGap.MCAWindowInteriorExact
-import ArkLib.Data.CodingTheory.ProximityGap.MCAWindowInteriorFamily
-import ArkLib.Data.CodingTheory.ProximityGap.MCAWindowInteriorFamilyInstance
-import ArkLib.Data.CodingTheory.ProximityGap.MCAWindowInteriorPin
-import ArkLib.Data.CodingTheory.ProximityGap.MCAWitnessCountEngine
-import ArkLib.Data.CodingTheory.ProximityGap.MCAWitnessSpread
-import ArkLib.Data.CodingTheory.ProximityGap.MCAWitnessSpreadCodeword
-import ArkLib.Data.CodingTheory.ProximityGap.MCAWitnessSpreadExample
-import ArkLib.Data.CodingTheory.ProximityGap.MCAZeroCodeCharacterization
-import ArkLib.Data.CodingTheory.ProximityGap.MCAZeroCodeExact
-import ArkLib.Data.CodingTheory.ProximityGap.MCAZeroCodeLowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.MCAZeroCodeUpperBound
-import ArkLib.Data.CodingTheory.ProximityGap.MCAZeta8Bridge
-import ArkLib.Data.CodingTheory.ProximityGap.MCAZeta8Census
-import ArkLib.Data.CodingTheory.ProximityGap.MCAZeta8CensusCapstone
-import ArkLib.Data.CodingTheory.ProximityGap.MCAZeta8CensusCheck
-import ArkLib.Data.CodingTheory.ProximityGap.MDSNearCountVolume
-import ArkLib.Data.CodingTheory.ProximityGap.MannFiberCollapse
-import ArkLib.Data.CodingTheory.ProximityGap.ManyTermResultantBound
-import ArkLib.Data.CodingTheory.ProximityGap.ManyTermResultantSharp
-import ArkLib.Data.CodingTheory.ProximityGap.MarkedCurveDecodableMonotone
-import ArkLib.Data.CodingTheory.ProximityGap.MarkedCurveDecodableVacuity
-import ArkLib.Data.CodingTheory.ProximityGap.MasterLoop45
-import ArkLib.Data.CodingTheory.ProximityGap.MatchingDomainUniqueness
-import ArkLib.Data.CodingTheory.ProximityGap.MatchingForcingLemmas
-import ArkLib.Data.CodingTheory.ProximityGap.MaximalEnergyUniformBound
-import ArkLib.Data.CodingTheory.ProximityGap.MeanDegreeCauchySchwarz
-import ArkLib.Data.CodingTheory.ProximityGap.MeanDegreeDeepBand
-import ArkLib.Data.CodingTheory.ProximityGap.MeanDegreeGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.MeanDegreeLawRefuted
-import ArkLib.Data.CodingTheory.ProximityGap.MetaTheoremSecondOrderCap
-import ArkLib.Data.CodingTheory.ProximityGap.MetaplecticParsevalAmplification
-import ArkLib.Data.CodingTheory.ProximityGap.MinimalVanishingReduction
-import ArkLib.Data.CodingTheory.ProximityGap.MissingLineDefeater
-import ArkLib.Data.CodingTheory.ProximityGap.MixedGaussSumCompleteSquare
-import ArkLib.Data.CodingTheory.ProximityGap.MixedGaussSumDiagonal
-import ArkLib.Data.CodingTheory.ProximityGap.MixedRadixTower
-import ArkLib.Data.CodingTheory.ProximityGap.MobiusCoincidenceWitness
-import ArkLib.Data.CodingTheory.ProximityGap.MobiusInvolutionEvenSupport
-import ArkLib.Data.CodingTheory.ProximityGap.MobiusMCASymmetry
-import ArkLib.Data.CodingTheory.ProximityGap.MobiusPencilEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.MomentCollisionLocalFactor
-import ArkLib.Data.CodingTheory.ProximityGap.MomentCollisionMultigrade
-import ArkLib.Data.CodingTheory.ProximityGap.MomentCollisionRigidity
-import ArkLib.Data.CodingTheory.ProximityGap.MomentCollisionSpectral
-import ArkLib.Data.CodingTheory.ProximityGap.MomentCollisionSubgroupData
-import ArkLib.Data.CodingTheory.ProximityGap.MomentCollisionTower
-import ArkLib.Data.CodingTheory.ProximityGap.MomentCollisionWeilConditional
-import ArkLib.Data.CodingTheory.ProximityGap.MomentCountSupBound
-import ArkLib.Data.CodingTheory.ProximityGap.MomentCountSupNotSharper
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra10
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra11
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra12
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra13
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra14
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra15
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra16
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra17
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra18
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra19
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra2
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra20
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra3
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra4
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra5
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra6
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra7
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra8
-import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThresholdExtra9
-import ArkLib.Data.CodingTheory.ProximityGap.MomentLogConvex
-import ArkLib.Data.CodingTheory.ProximityGap.MomentSupNormBridge
-import ArkLib.Data.CodingTheory.ProximityGap.MomentSupplyIdentity
-import ArkLib.Data.CodingTheory.ProximityGap.MomentSupplySaturation
-import ArkLib.Data.CodingTheory.ProximityGap.MomentWickBridge
-import ArkLib.Data.CodingTheory.ProximityGap.MonodromyConductorScaffold
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialDivisorWitness
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialDomainRootSpectrum
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialDominantCoset
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialDominationBoundaryRefuted
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialDominationKilled
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialDominationPin
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialLineListBridge
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialLocusCollapse
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialPencilQuasiHomog
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialRowFullSupport
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialSpectrumEquivariance
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialStripExplosion
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialSubgroupCorrelated
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialSupplyChoose
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialSupplyWitness
-import ArkLib.Data.CodingTheory.ProximityGap.MonomialZeroSumIdentity
-import ArkLib.Data.CodingTheory.ProximityGap.MovingDirectionCoordinate
-import ArkLib.Data.CodingTheory.ProximityGap.Mu6ConditionalPin
-import ArkLib.Data.CodingTheory.ProximityGap.Mu6DeepRung
-import ArkLib.Data.CodingTheory.ProximityGap.Mu6Dim15Pin
-import ArkLib.Data.CodingTheory.ProximityGap.Mu6Dim8Pin
-import ArkLib.Data.CodingTheory.ProximityGap.Mu6LiteralBands
-import ArkLib.Data.CodingTheory.ProximityGap.Mu8AntipodalProfile
-import ArkLib.Data.CodingTheory.ProximityGap.MuTwoPowDerandRIMRank
-import ArkLib.Data.CodingTheory.ProximityGap.MuTwoPowDerandRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.MultiplicativeRigidityAttainment
-import ArkLib.Data.CodingTheory.ProximityGap.MultiplicativeRigidityFiber
-import ArkLib.Data.CodingTheory.ProximityGap.MultiplicativeRigidityProducts
-import ArkLib.Data.CodingTheory.ProximityGap.MultiplicativeRigidityZMod
-import ArkLib.Data.CodingTheory.ProximityGap.MultisetEsymmSidon
-import ArkLib.Data.CodingTheory.ProximityGap.NCoreEmptyCParametrization
-import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedPairingCount
-import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedPairingLifting
-import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedSumZero
-import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
-import ArkLib.Data.CodingTheory.ProximityGap.NegationClosure
-import ArkLib.Data.CodingTheory.ProximityGap.NewtonPowerSumWindow
-import ArkLib.Data.CodingTheory.ProximityGap.NoExcessBindingRootSum
-import ArkLib.Data.CodingTheory.ProximityGap.NoJohnsonSidonBound
-import ArkLib.Data.CodingTheory.ProximityGap.NodalSupplyGeneralK
-import ArkLib.Data.CodingTheory.ProximityGap.NodalSupplyWitness
-import ArkLib.Data.CodingTheory.ProximityGap.NormalRankSharpThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.NotRamanujanLowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.O11StructureLoop48
-import ArkLib.Data.CodingTheory.ProximityGap.OddZeroSumCountSpuriousLocalization
-import ArkLib.Data.CodingTheory.ProximityGap.OddZeroSumCountVanishCharZero
-import ArkLib.Data.CodingTheory.ProximityGap.OnePointFiveJohnsonGeometry
-import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreBudgetAdapters
-import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
-import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConverse
-import ArkLib.Data.CodingTheory.ProximityGap.OrbitCountConsumerBridge
-import ArkLib.Data.CodingTheory.ProximityGap.OrbitCountCrossingLaw
-import ArkLib.Data.CodingTheory.ProximityGap.OrbitCountFixedPointSplit
-import ArkLib.Data.CodingTheory.ProximityGap.OrbitCountFreeActionMCA
-import ArkLib.Data.CodingTheory.ProximityGap.OrbitCountFreeActionWeld
-import ArkLib.Data.CodingTheory.ProximityGap.OrbitCountPinNecessity
-import ArkLib.Data.CodingTheory.ProximityGap.OrbitSpectrumBound
-import ArkLib.Data.CodingTheory.ProximityGap.OrderStatResort
-import ArkLib.Data.CodingTheory.ProximityGap.OverdetIncidenceMaxClosedForm
-import ArkLib.Data.CodingTheory.ProximityGap.OverdetIncidenceMaxClosedFormExt
-import ArkLib.Data.CodingTheory.ProximityGap.OwnershipBound
-import ArkLib.Data.CodingTheory.ProximityGap.OwnershipCensusSharpened
-import ArkLib.Data.CodingTheory.ProximityGap.OwnershipMultiplicity
-import ArkLib.Data.CodingTheory.ProximityGap.OwnershipSeedExtension
-import ArkLib.Data.CodingTheory.ProximityGap.PMOneWordCap
-import ArkLib.Data.CodingTheory.ProximityGap.PTEFamilyConstruction
-import ArkLib.Data.CodingTheory.ProximityGap.PacketCombinationDivisibility
-import ArkLib.Data.CodingTheory.ProximityGap.PackingClassCSP
-import ArkLib.Data.CodingTheory.ProximityGap.PackingDeepBandMiss
-import ArkLib.Data.CodingTheory.ProximityGap.PackingEnvelope
-import ArkLib.Data.CodingTheory.ProximityGap.PackingSubdivision
-import ArkLib.Data.CodingTheory.ProximityGap.PackingTreeSufficiency
-import ArkLib.Data.CodingTheory.ProximityGap.PadePartialFractionsKill
-import ArkLib.Data.CodingTheory.ProximityGap.PairCoherenceCount
-import ArkLib.Data.CodingTheory.ProximityGap.PairPinnedScalarAntipodal
-import ArkLib.Data.CodingTheory.ProximityGap.PairSumRigidityModP
-import ArkLib.Data.CodingTheory.ProximityGap.PairSumsWiring
-import ArkLib.Data.CodingTheory.ProximityGap.PairingResidualFailsAtPrize
-import ArkLib.Data.CodingTheory.ProximityGap.PaleySpectralFloor
-import ArkLib.Data.CodingTheory.ProximityGap.ParsevalFloorSqrtN
-import ArkLib.Data.CodingTheory.ProximityGap.PartialDFTClosure
-import ArkLib.Data.CodingTheory.ProximityGap.PastJohnsonThresholdArith
-import ArkLib.Data.CodingTheory.ProximityGap.PencilAgreementUnique
-import ArkLib.Data.CodingTheory.ProximityGap.PencilDegreeBound
-import ArkLib.Data.CodingTheory.ProximityGap.PencilDegreeGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.PencilNormalizerBand
-import ArkLib.Data.CodingTheory.ProximityGap.PencilSplitCount
-import ArkLib.Data.CodingTheory.ProximityGap.PeriodHistogramTailCount
-import ArkLib.Data.CodingTheory.ProximityGap.PeriodMomentLaw
-import ArkLib.Data.CodingTheory.ProximityGap.PeriodTailMarkov
-import ArkLib.Data.CodingTheory.ProximityGap.PinBeyondJohnson
-import ArkLib.Data.CodingTheory.ProximityGap.PointwiseEnergyCeilingNoGo
-import ArkLib.Data.CodingTheory.ProximityGap.PoissonCeilingFloor
-import ArkLib.Data.CodingTheory.ProximityGap.PoleSpikeMatching
-import ArkLib.Data.CodingTheory.ProximityGap.PolynomialFoldDecomposition
-import ArkLib.Data.CodingTheory.ProximityGap.PolywordSupplyGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.PopularCodewords
-import ArkLib.Data.CodingTheory.ProximityGap.PowerWordListBound
-import ArkLib.Data.CodingTheory.ProximityGap.PrimePowerMultisetWindow
-import ArkLib.Data.CodingTheory.ProximityGap.PrimitiveFactorAdmissible
-import ArkLib.Data.CodingTheory.ProximityGap.PrimitiveFactorCovering
-import ArkLib.Data.CodingTheory.ProximityGap.PrizeEnergyHeadline
-import ArkLib.Data.CodingTheory.ProximityGap.PrizeEntropyDeltaStar
-import ArkLib.Data.CodingTheory.ProximityGap.PrizeEntropyPinRefuted
-import ArkLib.Data.CodingTheory.ProximityGap.PrizeEquivalence
-import ArkLib.Data.CodingTheory.ProximityGap.PrizeRadiusCompletionCeiling
-import ArkLib.Data.CodingTheory.ProximityGap.PrizeSpectralLevelSetSharp
-import ArkLib.Data.CodingTheory.ProximityGap.PrizeSpectralLevelSetSixth
-import ArkLib.Data.CodingTheory.ProximityGap.PrizeStructuralConstant
-import ArkLib.Data.CodingTheory.ProximityGap.PrizeSupNormFromPairing
-import ArkLib.Data.CodingTheory.ProximityGap.PrizeSupNormHeadline
-import ArkLib.Data.CodingTheory.ProximityGap.ProductionBoundaryFailure
-import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveCosetWeight
-import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveMetricUnification
-import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveProperBallSpectralCriterion
-import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveProperQuotientBall
-import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientBall
-import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientSupport
-import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveRankTwoAPI
-import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveWorstCaseIncidence
-import ArkLib.Data.CodingTheory.ProximityGap.PromotedHypotheses
-import ArkLib.Data.CodingTheory.ProximityGap.PromotedHypothesesA
-import ArkLib.Data.CodingTheory.ProximityGap.PromotedHypothesesB
-import ArkLib.Data.CodingTheory.ProximityGap.PromotedHypothesesC
-import ArkLib.Data.CodingTheory.ProximityGap.Proof
-import ArkLib.Data.CodingTheory.ProximityGap.ProofLoop39
-import ArkLib.Data.CodingTheory.ProximityGap.ProofLoop40
-import ArkLib.Data.CodingTheory.ProximityGap.ProofLoop42
-import ArkLib.Data.CodingTheory.ProximityGap.ProximityGapLoop49
-import ArkLib.Data.CodingTheory.ProximityGap.ProximityGapP
-import ArkLib.Data.CodingTheory.ProximityGap.ProximityGenerators
-import ArkLib.Data.CodingTheory.ProximityGap.Q1ClaimADyadic
-import ArkLib.Data.CodingTheory.ProximityGap.Q1ClaimBDegH
-import ArkLib.Data.CodingTheory.ProximityGap.QRAdditiveEnergyClosedForm
-import ArkLib.Data.CodingTheory.ProximityGap.QRAdditiveEnergyGaussSum
-import ArkLib.Data.CodingTheory.ProximityGap.QRAdditiveEnergyIngredients
-import ArkLib.Data.CodingTheory.ProximityGap.QRCubicClosedForm
-import ArkLib.Data.CodingTheory.ProximityGap.QRCubicExactList
-import ArkLib.Data.CodingTheory.ProximityGap.QRCubicExactValue
-import ArkLib.Data.CodingTheory.ProximityGap.QRCubicOrderedClosedForm
-import ArkLib.Data.CodingTheory.ProximityGap.QRCubicSupplyLower
-import ArkLib.Data.CodingTheory.ProximityGap.QRDegenerateCount
-import ArkLib.Data.CodingTheory.ProximityGap.QREnergyCubicLower
-import ArkLib.Data.CodingTheory.ProximityGap.QRExponentialSum
-import ArkLib.Data.CodingTheory.ProximityGap.QRFrequencySumEval
-import ArkLib.Data.CodingTheory.ProximityGap.QRShiftPairCount
-import ArkLib.Data.CodingTheory.ProximityGap.QRWorstCaseIncompleteSum
-import ArkLib.Data.CodingTheory.ProximityGap.QRZeroSumTripleScaling
-import ArkLib.Data.CodingTheory.ProximityGap.QuadZeroSumEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.QuadraticGaussSumMagnitude
-import ArkLib.Data.CodingTheory.ProximityGap.QuadraticGaussSumNorm
-import ArkLib.Data.CodingTheory.ProximityGap.QuartetTowerLaw
-import ArkLib.Data.CodingTheory.ProximityGap.QuarticPowerSumFiber
-import ArkLib.Data.CodingTheory.ProximityGap.QuarticSupplyDichotomy
-import ArkLib.Data.CodingTheory.ProximityGap.QuarticZeroSumPairingCharZero
-import ArkLib.Data.CodingTheory.ProximityGap.QueryRoundAmplification
-import ArkLib.Data.CodingTheory.ProximityGap.QuotientDeepCore
-import ArkLib.Data.CodingTheory.ProximityGap.R4FiveSetSingleCoset
-import ArkLib.Data.CodingTheory.ProximityGap.R4LaneDCosetPoint
-import ArkLib.Data.CodingTheory.ProximityGap.REnergyMaxFiberBound
-import ArkLib.Data.CodingTheory.ProximityGap.REnergyMaxFiberSharp
-import ArkLib.Data.CodingTheory.ProximityGap.REnergyTwoExact
-import ArkLib.Data.CodingTheory.ProximityGap.RSAveragingDeltaStarUpper
-import ArkLib.Data.CodingTheory.ProximityGap.RSDeltaStarLDGoodSide
-import ArkLib.Data.CodingTheory.ProximityGap.RSDeltaStarLargeField
-import ArkLib.Data.CodingTheory.ProximityGap.RSDistinctness
-import ArkLib.Data.CodingTheory.ProximityGap.RSDivisorListBound
-import ArkLib.Data.CodingTheory.ProximityGap.RSInterleavedLambdaSubJohnson
-import ArkLib.Data.CodingTheory.ProximityGap.RSLambdaJohnson
-import ArkLib.Data.CodingTheory.ProximityGap.RSLambdaSubJohnson
-import ArkLib.Data.CodingTheory.ProximityGap.RSLambdaSubJohnsonMCA
-import ArkLib.Data.CodingTheory.ProximityGap.RSListDecodingCapacityGap
-import ArkLib.Data.CodingTheory.ProximityGap.RSListDecodingFrontier
-import ArkLib.Data.CodingTheory.ProximityGap.RSListSize
-import ArkLib.Data.CodingTheory.ProximityGap.RSListSizeDataPoint
-import ArkLib.Data.CodingTheory.ProximityGap.RSMDSListBound
-import ArkLib.Data.CodingTheory.ProximityGap.RatSquarefreeClassification
-import ArkLib.Data.CodingTheory.ProximityGap.RatWeightedSquarefreeGrid
-import ArkLib.Data.CodingTheory.ProximityGap.RatesBracket
-import ArkLib.Data.CodingTheory.ProximityGap.RatioCensusIdentity
-import ArkLib.Data.CodingTheory.ProximityGap.RatioCensusWeightIdentity
-import ArkLib.Data.CodingTheory.ProximityGap.RatioMultiplicityBridge
-import ArkLib.Data.CodingTheory.ProximityGap.RatioPigeonholeGoodSide
-import ArkLib.Data.CodingTheory.ProximityGap.RatioValueMultiplicity
-import ArkLib.Data.CodingTheory.ProximityGap.RectNCore
-import ArkLib.Data.CodingTheory.ProximityGap.ReedSolomonJohnson
-import ArkLib.Data.CodingTheory.ProximityGap.ReedSolomonListDecodingBound
-import ArkLib.Data.CodingTheory.ProximityGap.ReedSolomonStirOutOfDom
-import ArkLib.Data.CodingTheory.ProximityGap.ReedSolomonUniqueDecode
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountCharZeroBound
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountCharZeroEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountCosetConcentration
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountCosetInvariance
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountCurve
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountDiagonalBound
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountDiagonalSymmetry
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountDiagonalVanish
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountEnergyNfold
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountFiber
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountFiberGcdSharp
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountFiberPolyBound
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountFrobeniusBound
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountFrobeniusEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountFrobeniusGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountFrobeniusInvariance
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountShiftedPower
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountSidonBound
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountStepanovEvenSharp
-import ArkLib.Data.CodingTheory.ProximityGap.RepCountStepanovOrderTwo
-import ArkLib.Data.CodingTheory.ProximityGap.ResidualModularReduction
-import ArkLib.Data.CodingTheory.ProximityGap.ResonanceFreeBridge
-import ArkLib.Data.CodingTheory.ProximityGap.ResultantLiftLoop52
-import ArkLib.Data.CodingTheory.ProximityGap.ReverseDictionary
-import ArkLib.Data.CodingTheory.ProximityGap.RigidityBaseCasePairs
-import ArkLib.Data.CodingTheory.ProximityGap.RigidityFullWindow
-import ArkLib.Data.CodingTheory.ProximityGap.RigidityGeneralT1
-import ArkLib.Data.CodingTheory.ProximityGap.RigidityIterated2kLift
-import ArkLib.Data.CodingTheory.ProximityGap.RigidityReductionPrizeScale
-import ArkLib.Data.CodingTheory.ProximityGap.RigiditySunflowerCore
-import ArkLib.Data.CodingTheory.ProximityGap.RigidityTriplesSunflower
-import ArkLib.Data.CodingTheory.ProximityGap.RigidityWindowHalving
-import ArkLib.Data.CodingTheory.ProximityGap.RimHookArea
-import ArkLib.Data.CodingTheory.ProximityGap.RimHookBorderStrip
-import ArkLib.Data.CodingTheory.ProximityGap.RimHookConfluence
-import ArkLib.Data.CodingTheory.ProximityGap.RootSumNormBound
-import ArkLib.Data.CodingTheory.ProximityGap.RootsOfUnityAdditiveEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.RootsOfUnityAdditiveEnergyExact
-import ArkLib.Data.CodingTheory.ProximityGap.RootsOfUnityCyclicList
-import ArkLib.Data.CodingTheory.ProximityGap.RootsOfUnityEnergyExact
-import ArkLib.Data.CodingTheory.ProximityGap.RootsOfUnityVandermonde
-import ArkLib.Data.CodingTheory.ProximityGap.Round8CollisionOffDiagonal
-import ArkLib.Data.CodingTheory.ProximityGap.Round8CosetConcentration
-import ArkLib.Data.CodingTheory.ProximityGap.Round8CosetWall
-import ArkLib.Data.CodingTheory.ProximityGap.Round9SalieQuarticReduction
-import ArkLib.Data.CodingTheory.ProximityGap.Round9SubgroupCharExpansion
-import ArkLib.Data.CodingTheory.ProximityGap.RungAgreementFisher
-import ArkLib.Data.CodingTheory.ProximityGap.RungAgreementGeometry
-import ArkLib.Data.CodingTheory.ProximityGap.RungBesselEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.RungClassFamily
-import ArkLib.Data.CodingTheory.ProximityGap.RungClassPartition
-import ArkLib.Data.CodingTheory.ProximityGap.RungCollisionDichotomy
-import ArkLib.Data.CodingTheory.ProximityGap.RungCoverAssembly
-import ArkLib.Data.CodingTheory.ProximityGap.RungCoverSplit
-import ArkLib.Data.CodingTheory.ProximityGap.RungCrossRestriction
-import ArkLib.Data.CodingTheory.ProximityGap.RungEventInterface
-import ArkLib.Data.CodingTheory.ProximityGap.RungFrameCensus
-import ArkLib.Data.CodingTheory.ProximityGap.RungFrameGeometry
-import ArkLib.Data.CodingTheory.ProximityGap.RungGluing
-import ArkLib.Data.CodingTheory.ProximityGap.RungGluingDegrees
-import ArkLib.Data.CodingTheory.ProximityGap.RungInstanceF12289
-import ArkLib.Data.CodingTheory.ProximityGap.RungMaximalFrame
-import ArkLib.Data.CodingTheory.ProximityGap.RungOffPointPinning
-import ArkLib.Data.CodingTheory.ProximityGap.RungPackingResidual
-import ArkLib.Data.CodingTheory.ProximityGap.RungPoolSpan
-import ArkLib.Data.CodingTheory.ProximityGap.RungSharpCap
-import ArkLib.Data.CodingTheory.ProximityGap.RungSoloBound
-import ArkLib.Data.CodingTheory.ProximityGap.RungSparseDivisor
-import ArkLib.Data.CodingTheory.ProximityGap.RungSummationScaffold
-import ArkLib.Data.CodingTheory.ProximityGap.RungThreeClassCollapse
-import ArkLib.Data.CodingTheory.ProximityGap.RungThresholdRouter
-import ArkLib.Data.CodingTheory.ProximityGap.RungTopCancel
-import ArkLib.Data.CodingTheory.ProximityGap.RungTripleRelation
-import ArkLib.Data.CodingTheory.ProximityGap.RungTwoCosetDivisor
-import ArkLib.Data.CodingTheory.ProximityGap.SV11DistinctExp
-import ArkLib.Data.CodingTheory.ProximityGap.SV11GeneratorFamily
-import ArkLib.Data.CodingTheory.ProximityGap.SV11JetStructure
-import ArkLib.Data.CodingTheory.ProximityGap.SV11MomentFullRank
-import ArkLib.Data.CodingTheory.ProximityGap.SV11RepMultiplicity
-import ArkLib.Data.CodingTheory.ProximityGap.SV11WronskianFactor
-import ArkLib.Data.CodingTheory.ProximityGap.ScaleBracketFull
-import ArkLib.Data.CodingTheory.ProximityGap.ScaleJohnsonInstance
-import ArkLib.Data.CodingTheory.ProximityGap.ScaleThresholdBracket
-import ArkLib.Data.CodingTheory.ProximityGap.ScalingZeroSumReduction
-import ArkLib.Data.CodingTheory.ProximityGap.SchurLagrangeBridge
-import ArkLib.Data.CodingTheory.ProximityGap.SecondLayerConverseCore
-import ArkLib.Data.CodingTheory.ProximityGap.SecondLayerSeedFamily
-import ArkLib.Data.CodingTheory.ProximityGap.SecondMomentExact
-import ArkLib.Data.CodingTheory.ProximityGap.SecondMomentLowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.SecondMomentReductionLimit
-import ArkLib.Data.CodingTheory.ProximityGap.SecondMomentThetaOptimization
-import ArkLib.Data.CodingTheory.ProximityGap.SeedCensusBound
-import ArkLib.Data.CodingTheory.ProximityGap.SeedCensusDyadicChain
-import ArkLib.Data.CodingTheory.ProximityGap.SeedCensusDyadicChainCorollaries
-import ArkLib.Data.CodingTheory.ProximityGap.SeparatingCoordinates
-import ArkLib.Data.CodingTheory.ProximityGap.SeparatingCoordsAvoiding
-import ArkLib.Data.CodingTheory.ProximityGap.SeparatingCoordsCount
-import ArkLib.Data.CodingTheory.ProximityGap.SeparationProbability
-import ArkLib.Data.CodingTheory.ProximityGap.SeparationSurvivalCount
-import ArkLib.Data.CodingTheory.ProximityGap.SharpResultantBound
-import ArkLib.Data.CodingTheory.ProximityGap.SharpThresholdDischarge
-import ArkLib.Data.CodingTheory.ProximityGap.ShawFlatnessRefuted
-import ArkLib.Data.CodingTheory.ProximityGap.ShawOperator
-import ArkLib.Data.CodingTheory.ProximityGap.ShawOperatorDual
-import ArkLib.Data.CodingTheory.ProximityGap.ShawSecondMoment
-import ArkLib.Data.CodingTheory.ProximityGap.ShellFourierKrawtchouk
-import ArkLib.Data.CodingTheory.ProximityGap.ShortRelationNormBase
-import ArkLib.Data.CodingTheory.ProximityGap.SidonDoubledBound
-import ArkLib.Data.CodingTheory.ProximityGap.SidonDoubledThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.SidonEnergyIff
-import ArkLib.Data.CodingTheory.ProximityGap.SidonGVClosure
-import ArkLib.Data.CodingTheory.ProximityGap.SidonGaussSum4thMoment
-import ArkLib.Data.CodingTheory.ProximityGap.SidonInjTransfer
-import ArkLib.Data.CodingTheory.ProximityGap.SidonLiftAssembly
-import ArkLib.Data.CodingTheory.ProximityGap.SidonLiftClosed
-import ArkLib.Data.CodingTheory.ProximityGap.SidonLiftDevacuated
-import ArkLib.Data.CodingTheory.ProximityGap.SidonModNegComplex
-import ArkLib.Data.CodingTheory.ProximityGap.SidonModNegEnergyEquality
-import ArkLib.Data.CodingTheory.ProximityGap.SidonModNegImproved
-import ArkLib.Data.CodingTheory.ProximityGap.SidonModNegValidationFermat257
-import ArkLib.Data.CodingTheory.ProximityGap.SidonParsevalBound
-import ArkLib.Data.CodingTheory.ProximityGap.SidonParsevalGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.SidonParsevalNthRoots
-import ArkLib.Data.CodingTheory.ProximityGap.SidonRepCountCharacterization
-import ArkLib.Data.CodingTheory.ProximityGap.SidonResultantImproved
-import ArkLib.Data.CodingTheory.ProximityGap.SidonSubgroupClosed
-import ArkLib.Data.CodingTheory.ProximityGap.SidonSubgroupGVBound
-import ArkLib.Data.CodingTheory.ProximityGap.SidonThresholdImproved
-import ArkLib.Data.CodingTheory.ProximityGap.SidonThresholdTight
-import ArkLib.Data.CodingTheory.ProximityGap.SignedPeriodPowerAllOrderAbs
-import ArkLib.Data.CodingTheory.ProximityGap.SignedPeriodPowerCount
-import ArkLib.Data.CodingTheory.ProximityGap.SignedPeriodPowerEvenFloor
-import ArkLib.Data.CodingTheory.ProximityGap.SignedPeriodZeroSumBridge
-import ArkLib.Data.CodingTheory.ProximityGap.SignedWalkMoment
-import ArkLib.Data.CodingTheory.ProximityGap.SignedZeroSumCountEven
-import ArkLib.Data.CodingTheory.ProximityGap.SingleClassWeight
-import ArkLib.Data.CodingTheory.ProximityGap.SinglePencilQIndependence
-import ArkLib.Data.CodingTheory.ProximityGap.SixTermResultantImproved
-import ArkLib.Data.CodingTheory.ProximityGap.Slack1Assembly
-import ArkLib.Data.CodingTheory.ProximityGap.SlantedSupplyWideCircuits
-import ArkLib.Data.CodingTheory.ProximityGap.SlantedTransferThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.SliceLevelTwoCount
-import ArkLib.Data.CodingTheory.ProximityGap.SliceLocusCount
-import ArkLib.Data.CodingTheory.ProximityGap.SliceLocusUnionBudget
-import ArkLib.Data.CodingTheory.ProximityGap.SmallSubgroupDeltaStarPin
-import ArkLib.Data.CodingTheory.ProximityGap.SmallSubgroupGVRepTwo
-import ArkLib.Data.CodingTheory.ProximityGap.SmallSubgroupGoodListMDS
-import ArkLib.Data.CodingTheory.ProximityGap.SmallSubgroupInterleavedJohnsonFloor
-import ArkLib.Data.CodingTheory.ProximityGap.SmallSubgroupSidon
-import ArkLib.Data.CodingTheory.ProximityGap.SmallSubgroupSidonModNeg
-import ArkLib.Data.CodingTheory.ProximityGap.SmallSubgroupUncondQuarter
-import ArkLib.Data.CodingTheory.ProximityGap.SmoothCubicCapstone
-import ArkLib.Data.CodingTheory.ProximityGap.SmoothCubicSupplyBound
-import ArkLib.Data.CodingTheory.ProximityGap.SmoothDomainSelfSimilarity
-import ArkLib.Data.CodingTheory.ProximityGap.SmoothFiberCount
-import ArkLib.Data.CodingTheory.ProximityGap.SmoothLadderInstance
-import ArkLib.Data.CodingTheory.ProximityGap.SmoothMomentBridge
-import ArkLib.Data.CodingTheory.ProximityGap.SmoothMomentBridgeOnLattice
-import ArkLib.Data.CodingTheory.ProximityGap.SmoothSupplyTowerBridge
-import ArkLib.Data.CodingTheory.ProximityGap.SmoothWindowSaturation
-import ArkLib.Data.CodingTheory.ProximityGap.SparseCoverComputable
-import ArkLib.Data.CodingTheory.ProximityGap.SparseDeviationExtremality
-import ArkLib.Data.CodingTheory.ProximityGap.SparseDirectionGeneralK
-import ArkLib.Data.CodingTheory.ProximityGap.SparseDirectionWindow
-import ArkLib.Data.CodingTheory.ProximityGap.SparseMultiplicity
-import ArkLib.Data.CodingTheory.ProximityGap.SpectrumCosetLevelBound
-import ArkLib.Data.CodingTheory.ProximityGap.SpernerCeiling
-import ArkLib.Data.CodingTheory.ProximityGap.SplitPencilBound
-import ArkLib.Data.CodingTheory.ProximityGap.SplittingLadder
-import ArkLib.Data.CodingTheory.ProximityGap.SpurPrimePersistTower
-import ArkLib.Data.CodingTheory.ProximityGap.SpurPrimeReducibleTower
-import ArkLib.Data.CodingTheory.ProximityGap.SpurSplitPrizeRegime
-import ArkLib.Data.CodingTheory.ProximityGap.SpurWeightFourCollision
-import ArkLib.Data.CodingTheory.ProximityGap.SpurWeightFourFermat641
-import ArkLib.Data.CodingTheory.ProximityGap.SpurWeightThreeCollision
-import ArkLib.Data.CodingTheory.ProximityGap.SqrtFreeRSBridge
-import ArkLib.Data.CodingTheory.ProximityGap.StackJointAgreement
-import ArkLib.Data.CodingTheory.ProximityGap.StaircaseBandTheorem
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovAuxFramework
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovContradictionEngine
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovCountingLemma
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovEvenSharpEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovFrobeniusReduction
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovGeneratorIndep
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovGenericInsufficiency
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovHasseInterface
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovHighMultVanisher
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovNonVanishing
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovPointCountEngine
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovUnconditionalEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovVanisherExistence
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovWeilEngine
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovWeilSqrtCorollary
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovWeilSqrtExplicit
-import ArkLib.Data.CodingTheory.ProximityGap.StepanovWeilSubstrate
-import ArkLib.Data.CodingTheory.ProximityGap.StripEdgeDeltaStar
-import ArkLib.Data.CodingTheory.ProximityGap.StripSupExactness
-import ArkLib.Data.CodingTheory.ProximityGap.StructureLoop27
-import ArkLib.Data.CodingTheory.ProximityGap.StructureLoop28
-import ArkLib.Data.CodingTheory.ProximityGap.StructureLoop29
-import ArkLib.Data.CodingTheory.ProximityGap.StructureLoop30
-import ArkLib.Data.CodingTheory.ProximityGap.StructureLoop31
-import ArkLib.Data.CodingTheory.ProximityGap.StructureLoop32
-import ArkLib.Data.CodingTheory.ProximityGap.StructureLoop33
-import ArkLib.Data.CodingTheory.ProximityGap.StructureLoop34
-import ArkLib.Data.CodingTheory.ProximityGap.StructureLoop35
-import ArkLib.Data.CodingTheory.ProximityGap.StructureLoop36
-import ArkLib.Data.CodingTheory.ProximityGap.StructureLoop37
-import ArkLib.Data.CodingTheory.ProximityGap.StructureLoop38
-import ArkLib.Data.CodingTheory.ProximityGap.StructuredLineCoherence
-import ArkLib.Data.CodingTheory.ProximityGap.StructuredSupplyViaCollapse
-import ArkLib.Data.CodingTheory.ProximityGap.StructuredWordCores
-import ArkLib.Data.CodingTheory.ProximityGap.SubCeilingLadder
-import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonCorradiEnvelope
-import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonListBound
-import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonListDischarge
-import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonListMonotone
-import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonListSupply
-import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonListSupplyJohnsonRegime
-import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonResidualFloor
-import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonSupplyReframe
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupAdditiveEnergyF17
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupAdditiveEnergyFermat257
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupAdditiveEnergyFermat65537
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupAdditiveEnergyTowerF17
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupCharacterSumNoGo
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupEnergyAntiConcGV
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupEnergyQuadraticFloor
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumAntiConc
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumAntiConcElementary
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumCosetInv
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumDensity
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumDilationRecursion
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumEnergyReduction
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMarkov
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMarkovMuN
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMoment
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumLadderMarkov
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumLadderMarkovWick
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumLevelSet
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMarkov
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMomentBound
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMomentLadder
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMomentLevelSet
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumOrbitReduction
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumRawMoment
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMarkov
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMarkovWick
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMoment
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSpectralSpread
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSupportAvgCeiling
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumTowerL2
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumTowerLevelSet
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumWorstCase
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumWorstCaseFromMoment
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupPowerHalvingGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupQuadraticHalving
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupQuadraticSecondMoment
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupQuarticHalvingRecursion
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupRepCountFiniteFieldCounterexample
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupRepCountGcdExact
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupRepresentationRoots
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupSpectrumNoImprovement
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupSquaresHalvingRecursion
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupSumsetConjecture
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupSumsetFactorWitness
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupSumsetLargeFactorReduction
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupSumsetLoop49
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupSumsetThreePowUpper
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupSumsetWiden
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupZeroSumCountDvd
-import ArkLib.Data.CodingTheory.ProximityGap.SubplaneSupplyFloor
-import ArkLib.Data.CodingTheory.ProximityGap.SubqDegreeLowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumCharacterSum
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumE2PairingInflate
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumE2PowerSumReduction
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumEsymmVanishing
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumHaloEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumLowerLoop50
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumNegSymmConcentration
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumOmegaConcentration
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumPairingInflate
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumPaleyZygmundDichotomy
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumPigeonholeFiber
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumPigeonholeManyTargets
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumQuarticDescent
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumSecondMomentCollision
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumSquaringBijection
-import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumZeroInflation
-import ArkLib.Data.CodingTheory.ProximityGap.SubspaceAvoidance
-import ArkLib.Data.CodingTheory.ProximityGap.SubspaceDesignFullVanish
-import ArkLib.Data.CodingTheory.ProximityGap.SubspaceDesignJointAgree
-import ArkLib.Data.CodingTheory.ProximityGap.SubspaceDesignLineDecodable
-import ArkLib.Data.CodingTheory.ProximityGap.SubspaceDesignListDim
-import ArkLib.Data.CodingTheory.ProximityGap.SubspaceDesignListSize
-import ArkLib.Data.CodingTheory.ProximityGap.SudanListBound
-import ArkLib.Data.CodingTheory.ProximityGap.SumProductBridge
-import ArkLib.Data.CodingTheory.ProximityGap.SumZeroSubsetsBound
-import ArkLib.Data.CodingTheory.ProximityGap.SumsetDistinctDissociation
-import ArkLib.Data.CodingTheory.ProximityGap.SumsetExtremalityGuard
-import ArkLib.Data.CodingTheory.ProximityGap.SumsetExtremalityReduction
-import ArkLib.Data.CodingTheory.ProximityGap.SumsetLowerBoundMuN
-import ArkLib.Data.CodingTheory.ProximityGap.SupNormBracket
-import ArkLib.Data.CodingTheory.ProximityGap.SuperCodeListBridge
-import ArkLib.Data.CodingTheory.ProximityGap.SupplyFoldInjection
-import ArkLib.Data.CodingTheory.ProximityGap.SupplyForcingLowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.SupplyProfileDiagnostic
-import ArkLib.Data.CodingTheory.ProximityGap.SupplySizeProfile
-import ArkLib.Data.CodingTheory.ProximityGap.SurvivingTPrimeRetired
-import ArkLib.Data.CodingTheory.ProximityGap.TakeoverCountermodel
-import ArkLib.Data.CodingTheory.ProximityGap.TangentSumJacobiAverage
-import ArkLib.Data.CodingTheory.ProximityGap.TheoremQAssembly
-import ArkLib.Data.CodingTheory.ProximityGap.TheoremQUDExtraction
-import ArkLib.Data.CodingTheory.ProximityGap.TheoremQUpperReduction
-import ArkLib.Data.CodingTheory.ProximityGap.ThreadSplit
-import ArkLib.Data.CodingTheory.ProximityGap.ThreeGenPackingObstruction
-import ArkLib.Data.CodingTheory.ProximityGap.ThreePrimeFiberCountLaw
-import ArkLib.Data.CodingTheory.ProximityGap.ThreePrimeIntClassification
-import ArkLib.Data.CodingTheory.ProximityGap.ThreePrimePacketRefutation
-import ArkLib.Data.CodingTheory.ProximityGap.ThreePrimeRatClassification
-import ArkLib.Data.CodingTheory.ProximityGap.ThreePrimeWindowObstruction
-import ArkLib.Data.CodingTheory.ProximityGap.ThreeRootsSumZeroCharZero
-import ArkLib.Data.CodingTheory.ProximityGap.TopDirectionLineCount
-import ArkLib.Data.CodingTheory.ProximityGap.TotalTwist
-import ArkLib.Data.CodingTheory.ProximityGap.TowerCeiling
-import ArkLib.Data.CodingTheory.ProximityGap.TowerMomentBinomial
-import ArkLib.Data.CodingTheory.ProximityGap.TowerMomentBridge
-import ArkLib.Data.CodingTheory.ProximityGap.TowerMonotonicity
-import ArkLib.Data.CodingTheory.ProximityGap.TowerMonotonicityRS
-import ArkLib.Data.CodingTheory.ProximityGap.TruncatedRecurrenceTransversality
-import ArkLib.Data.CodingTheory.ProximityGap.TwoBranchSupplyCountermodel
-import ArkLib.Data.CodingTheory.ProximityGap.TwoElementEnergy
-import ArkLib.Data.CodingTheory.ProximityGap.TwoGenPackingCapacity
-import ArkLib.Data.CodingTheory.ProximityGap.TwoLineExtraction
-import ArkLib.Data.CodingTheory.ProximityGap.TwoPlusAntipodalChordLaw
-import ArkLib.Data.CodingTheory.ProximityGap.TwoPowerFibreValue
-import ArkLib.Data.CodingTheory.ProximityGap.TwoPowerSubsetSumSpectrum
-import ArkLib.Data.CodingTheory.ProximityGap.TwoPowerTowerFactorization
-import ArkLib.Data.CodingTheory.ProximityGap.TwoPrimeSyndromeBudget
-import ArkLib.Data.CodingTheory.ProximityGap.TwoPrimeWindowLaw
-import ArkLib.Data.CodingTheory.ProximityGap.TwoSidedBracketScale
-import ArkLib.Data.CodingTheory.ProximityGap.UDRBadCount
-import ArkLib.Data.CodingTheory.ProximityGap.UDREdgeClosure
-import ArkLib.Data.CodingTheory.ProximityGap.UniqueDecodingListBound
-import ArkLib.Data.CodingTheory.ProximityGap.UnitCircleAddQuadruple
-import ArkLib.Data.CodingTheory.ProximityGap.UnitCircleSidon
-import ArkLib.Data.CodingTheory.ProximityGap.UnitCircleSidonQuad
-import ArkLib.Data.CodingTheory.ProximityGap.UnitCircleSidonQuadWrapper
-import ArkLib.Data.CodingTheory.ProximityGap.UnitCircleSidonQuint
-import ArkLib.Data.CodingTheory.ProximityGap.UnitCircleSidonTriple
-import ArkLib.Data.CodingTheory.ProximityGap.UniversalAlignmentLaw
-import ArkLib.Data.CodingTheory.ProximityGap.UniversalAlignmentThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.UniversalBelowUDR
-import ArkLib.Data.CodingTheory.ProximityGap.UniversalBoundaryBound
-import ArkLib.Data.CodingTheory.ProximityGap.UniversalGSArchitecture
-import ArkLib.Data.CodingTheory.ProximityGap.UniversalSpikeFloor
-import ArkLib.Data.CodingTheory.ProximityGap.UniversalStaircaseCollapse
-import ArkLib.Data.CodingTheory.ProximityGap.UpToCapacityFalseGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.UpToCapacityListDecodingFalse
-import ArkLib.Data.CodingTheory.ProximityGap.VVectorN16
-import ArkLib.Data.CodingTheory.ProximityGap.ValueSpreadSecondMoment
-import ArkLib.Data.CodingTheory.ProximityGap.VandermondeInterpolationSafe
-import ArkLib.Data.CodingTheory.ProximityGap.VandermondeMCAExtract
-import ArkLib.Data.CodingTheory.ProximityGap.VanishingRootSumHeightGate
-import ArkLib.Data.CodingTheory.ProximityGap.VerifiedBricks
-import ArkLib.Data.CodingTheory.ProximityGap.W2WindowHalfCount
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilAbsorption
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilBelowUDR
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilBound
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilBoundarySlice
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilCoincidenceRefined
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilCorankTwo
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilCorankTwoThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilGradedConsumer
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilGradedLadder
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilLadderZero
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilLinearBudget
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilPolynomialRow
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilRationalReduction
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilSubmatrix
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilSymmetry
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilWindowCapstone
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilWindowLaw
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilWindowMatrix
-import ArkLib.Data.CodingTheory.ProximityGap.WBPencilWindowRecursion
-import ArkLib.Data.CodingTheory.ProximityGap.WeightedPrimePowerPacket
-import ArkLib.Data.CodingTheory.ProximityGap.WeightedSparseCharPLift
-import ArkLib.Data.CodingTheory.ProximityGap.WeightedSparseResultant
-import ArkLib.Data.CodingTheory.ProximityGap.WeightedThreadSplit
-import ArkLib.Data.CodingTheory.ProximityGap.WeilRegimeClosure
-import ArkLib.Data.CodingTheory.ProximityGap.WickStepRatio
-import ArkLib.Data.CodingTheory.ProximityGap.WideCircuitTrichotomy
-import ArkLib.Data.CodingTheory.ProximityGap.WideRegimeDisjointness
-import ArkLib.Data.CodingTheory.ProximityGap.WindowChainStructure
-import ArkLib.Data.CodingTheory.ProximityGap.WindowCrossWitness
-import ArkLib.Data.CodingTheory.ProximityGap.WindowExoticBound
-import ArkLib.Data.CodingTheory.ProximityGap.WindowFiberCount
-import ArkLib.Data.CodingTheory.ProximityGap.WindowFiberPencil
-import ArkLib.Data.CodingTheory.ProximityGap.WindowMassSpan
-import ArkLib.Data.CodingTheory.ProximityGap.WindowPackingLaw
-import ArkLib.Data.CodingTheory.ProximityGap.WindowPadeBridge
-import ArkLib.Data.CodingTheory.ProximityGap.WindowParametricCapstone
-import ArkLib.Data.CodingTheory.ProximityGap.WindowPencilDegenerate
-import ArkLib.Data.CodingTheory.ProximityGap.WindowReconstructionActiveCols
-import ArkLib.Data.CodingTheory.ProximityGap.WindowReconstructionPencil
-import ArkLib.Data.CodingTheory.ProximityGap.WindowStrataKills
-import ArkLib.Data.CodingTheory.ProximityGap.WindowTelescope
-import ArkLib.Data.CodingTheory.ProximityGap.WindowTwoLayerThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.WindowedFoldingBelowJohnson
-import ArkLib.Data.CodingTheory.ProximityGap.WindowedFoldingTransfer
-import ArkLib.Data.CodingTheory.ProximityGap.WitnessLayerCount
-import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodLowerBound
-import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodMomentAvgLower
-import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodMomentBound
-import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodMomentRatioLower
-import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodRootBound
-import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodSidonBound
-import ArkLib.Data.CodingTheory.ProximityGap.WraparoundThreshold
-import ArkLib.Data.CodingTheory.ProximityGap.WronskianGeneral
-import ArkLib.Data.CodingTheory.ProximityGap.WronskianNonVanishing
-import ArkLib.Data.CodingTheory.ProximityGap.WronskianStepanovBridge
-import ArkLib.Data.CodingTheory.ProximityGap.ZeroSumCountNegationParity
+module
+
+public import ArkLib.AGM.Basic
+public import ArkLib.Commitments.Functional.Basic
+public import ArkLib.Commitments.Functional.BitZ.ExponentLift
+public import ArkLib.Commitments.Functional.BitZ.OutOfDomain
+public import ArkLib.Commitments.Functional.BitZ.Round1
+public import ArkLib.Commitments.Functional.BitZ.Round2
+public import ArkLib.Commitments.Functional.Hachi.Basic
+public import ArkLib.Commitments.Functional.Hachi.Commitment
+public import ArkLib.Commitments.Functional.Hachi.Composition
+public import ArkLib.Commitments.Functional.Hachi.Concrete
+public import ArkLib.Commitments.Functional.Hachi.Correctness
+public import ArkLib.Commitments.Functional.Hachi.EndPiece.Basic
+public import ArkLib.Commitments.Functional.Hachi.EndPiece.Reduction
+public import ArkLib.Commitments.Functional.Hachi.EvalSplit
+public import ArkLib.Commitments.Functional.Hachi.Gadget.Basic
+public import ArkLib.Commitments.Functional.Hachi.Gadget.Core
+public import ArkLib.Commitments.Functional.Hachi.Gadget.Norms
+public import ArkLib.Commitments.Functional.Hachi.HonestChain
+public import ArkLib.Commitments.Functional.Hachi.InnerOuter.Arithmetic
+public import ArkLib.Commitments.Functional.Hachi.InnerOuter.Basic
+public import ArkLib.Commitments.Functional.Hachi.InnerOuter.Correctness
+public import ArkLib.Commitments.Functional.Hachi.InnerOuter.Scheme
+public import ArkLib.Commitments.Functional.Hachi.InnerOuter.Security
+public import ArkLib.Commitments.Functional.Hachi.Params
+public import ArkLib.Commitments.Functional.Hachi.QuadEval.Basic
+public import ArkLib.Commitments.Functional.Hachi.QuadEval.Bridge
+public import ArkLib.Commitments.Functional.Hachi.QuadEval.Completeness
+public import ArkLib.Commitments.Functional.Hachi.QuadEval.Gadgets
+public import ArkLib.Commitments.Functional.Hachi.QuadEval.Reduction
+public import ArkLib.Commitments.Functional.Hachi.QuadEval.Soundness
+public import ArkLib.Commitments.Functional.Hachi.Recursion.Basic
+public import ArkLib.Commitments.Functional.Hachi.Recursion.PartialEval
+public import ArkLib.Commitments.Functional.Hachi.Recursion.TraceHandoff
+public import ArkLib.Commitments.Functional.Hachi.Recursion.ZBatchBridge
+public import ArkLib.Commitments.Functional.Hachi.RingSwitch.Basic
+public import ArkLib.Commitments.Functional.Hachi.RingSwitch.Completeness
+public import ArkLib.Commitments.Functional.Hachi.RingSwitch.ComputableWitness
+public import ArkLib.Commitments.Functional.Hachi.RingSwitch.QuotientNorms
+public import ArkLib.Commitments.Functional.Hachi.RingSwitch.Reduction
+public import ArkLib.Commitments.Functional.Hachi.RingSwitch.RhoDigits
+public import ArkLib.Commitments.Functional.Hachi.RingSwitch.Rlin
+public import ArkLib.Commitments.Functional.Hachi.Sumcheck.Basic
+public import ArkLib.Commitments.Functional.Hachi.Sumcheck.Bridge
+public import ArkLib.Commitments.Functional.Hachi.Sumcheck.Completeness
+public import ArkLib.Commitments.Functional.Hachi.Sumcheck.FinalEval
+public import ArkLib.Commitments.Functional.Hachi.Sumcheck.RoundPoly
+public import ArkLib.Commitments.Functional.Hachi.Sumcheck.Rounds
+public import ArkLib.Commitments.Functional.Hachi.TraceHead.Basic
+public import ArkLib.Commitments.Functional.Hachi.TraceHead.Coefficients
+public import ArkLib.Commitments.Functional.Hachi.TraceHead.Commitment
+public import ArkLib.Commitments.Functional.Hachi.TraceHead.Completeness
+public import ArkLib.Commitments.Functional.Hachi.TraceHead.Conformance
+public import ArkLib.Commitments.Functional.Hachi.TraceHead.Coordinates
+public import ArkLib.Commitments.Functional.Hachi.TraceHead.Protocol
+public import ArkLib.Commitments.Functional.Hachi.ZeroCheck.Basic
+public import ArkLib.Commitments.Functional.Hachi.ZeroCheck.Batch
+public import ArkLib.Commitments.Functional.Hachi.ZeroCheck.Completeness
+public import ArkLib.Commitments.Functional.Hachi.ZeroCheck.Constraints
+public import ArkLib.Commitments.Functional.Hachi.ZeroCheck.Reduction
+public import ArkLib.Commitments.Functional.KZG.Algebra
+public import ArkLib.Commitments.Functional.KZG.Basic
+public import ArkLib.Commitments.Functional.KZG.Binding
+public import ArkLib.Commitments.Functional.KZG.Correctness
+public import ArkLib.Commitments.Functional.KZG.FunctionBinding.Basic
+public import ArkLib.Commitments.Functional.KZG.FunctionBinding.DegreeConflict
+public import ArkLib.Commitments.Functional.KZG.FunctionBinding.EvaluationBindingConflict
+public import ArkLib.Commitments.Functional.KZG.FunctionBinding.Support
+public import ArkLib.Commitments.Functional.KZG.FunctionBinding.TauInQueries
+public import ArkLib.Commitments.Functional.KZG.HardnessAssumptions
+public import ArkLib.Commitments.Functional.KZG.Sampling
+public import ArkLib.Commitments.Ordinary.Ajtai.Simple
+public import ArkLib.Commitments.Ordinary.Ajtai.Simple.Correctness
+public import ArkLib.Commitments.Ordinary.Ajtai.Simple.Scheme
+public import ArkLib.Commitments.Ordinary.Ajtai.Simple.Security
+public import ArkLib.Commitments.Ordinary.Basic
+public import ArkLib.Commitments.Ordinary.SimpleRO
+public import ArkLib.Data.Classes.CloseToUniform
+public import ArkLib.Data.Classes.FunEquiv
+public import ArkLib.Data.Classes.Initialize
+public import ArkLib.Data.Classes.Slice
+public import ArkLib.Data.CodingTheory.Basic.BlockRelDistance
+public import ArkLib.Data.CodingTheory.Basic.DecodingRadius
+public import ArkLib.Data.CodingTheory.Basic.Distance
+public import ArkLib.Data.CodingTheory.Basic.Entropy
+public import ArkLib.Data.CodingTheory.Basic.LinearCode
+public import ArkLib.Data.CodingTheory.Basic.MDSCode
+public import ArkLib.Data.CodingTheory.Basic.RelativeDistance
+public import ArkLib.Data.CodingTheory.BerlekampWelch.BerlekampWelch
+public import ArkLib.Data.CodingTheory.BerlekampWelch.Condition
+public import ArkLib.Data.CodingTheory.BerlekampWelch.ElocPoly
+public import ArkLib.Data.CodingTheory.BerlekampWelch.Existence
+public import ArkLib.Data.CodingTheory.BerlekampWelch.Sorries
+public import ArkLib.Data.CodingTheory.Connections.ListDecodingAndCA
+public import ArkLib.Data.CodingTheory.Connections.ListDecodingAndCA.BCHKS25
+public import ArkLib.Data.CodingTheory.Connections.ListDecodingAndCA.CS25
+public import ArkLib.Data.CodingTheory.Connections.ListDecodingAndCA.GCXK25
+public import ArkLib.Data.CodingTheory.DivergenceOfSets
+public import ArkLib.Data.CodingTheory.Erasure
+public import ArkLib.Data.CodingTheory.ExtensionCodes
+public import ArkLib.Data.CodingTheory.GuruswamiSudan
+public import ArkLib.Data.CodingTheory.GuruswamiSudan.Basic
+public import ArkLib.Data.CodingTheory.GuruswamiSudan.Correctness
+public import ArkLib.Data.CodingTheory.GuruswamiSudan.Executable
+public import ArkLib.Data.CodingTheory.GuruswamiSudan.GuruswamiSudan
+public import ArkLib.Data.CodingTheory.HammingBallVolume
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Certificates
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Counting
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Dimension
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.CurveCertificate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.CurveHeightCounting
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.CurveRank
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.Dimension
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.HeightCounting
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.Interpolant
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.ListBound
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.Profile
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.RateCertificate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.Space
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.Symbolic
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.SymbolicRank
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FreeOrderDimension
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Global.Interpolation
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Global.Multiplicity
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Index
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.CertifiedRankBound
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.ConstraintKernel
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.ConstraintMap
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.Contact
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.Coordinates
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.GradedRank
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.Identity
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.IntermediateSpace
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.KernelSliceIndependence
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.Rank
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.RankBudget
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.RemainderMap
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.Translation
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Local.ZeroOrder
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.PartitionSupport.Basic
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.PartitionSupport.Counting
+public import
+  ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.PartitionSupport.CurveCertificate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.PartitionSupport.Dimension
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.PartitionSupport.FiniteSurplus
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.PartitionSupport.FloorTransfer
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.PartitionSupport.LocalRank
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.PartitionSupport.MomentSource
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.PartitionSupport.RateBound
+public import
+  ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.PartitionSupport.RateCertificate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.SolutionEmbedding
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.SourceMonomial
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Space
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.SpecializationDegree
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.ChallengeDegree
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.ColumnHeight
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.ConstraintMatrix
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.CurveCertificate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.CurveHeight
+public import
+  ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.CurveSupportCertificate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.JohnsonCertificate
+public import
+  ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.JohnsonCurveCertificate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.LocalRank
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.PartitionRank
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.ReceivedCurve
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.Soundness
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.SourceColumn
+public import
+  ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.WeightedJohnsonCertificate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.WeightedSupport
+public import
+  ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.Symbolic.WeightedSupportCertificate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.WeightedSupport.Basic
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.WeightedSupport.Dimension
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.WeightedSupport.Estimate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.WeightedSupport.FloorTransfer
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.WeightedSupport.Interpolation
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.WeightedSupport.LocalRank
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.WeightedSupport.Margin
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.WeightedSupport.MomentBounds
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.WeightedSupport.Moments
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.WeightedSupport.NormalizedRank
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.WeightedSupport.RankBound
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.WeightedSupport.RankIntegral
+public import ArkLib.Data.CodingTheory.HiddenDerivative.NormalizedSubstitution
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.Basic
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.ExactCharacteristicBudget
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.AgreementCounting
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.AutomaticBounds
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.AutomaticParameters
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.BranchwiseRate
+public import
+  ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.DerivativeCappedCounting
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.FiniteRateParameters
+public import
+  ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.HybridAgreementCounting
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.HybridConstants
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.HybridRateEnvelope
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.LowRateStationary
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.RateBound
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.RoundedCounts
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.StageCharges
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.StageComparison
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.StageSum
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.Uniform
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FirstOrder.UniformMca
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.FreeOrder
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.Johnson.FiniteBounds
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.Johnson.InterpolationBounds
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.Johnson.LegacyComparison
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.Johnson.WeightedCertificate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.RankRounding
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.RatePartition.BlockLength
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.RatePartition.ClosedMultiplicity
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.RatePartition.FiniteRatio
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.RatePartition.FixedRateGate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.RatePartition.Gate
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.RatePartition.MathematicalUniform
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.RatePartition.Moment
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.RatePartition.Recipe
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.RatePartition.UniformEnvelope
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.RatePartition.UniformGamma
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.RatePartition.UniformParameters
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.WeightedSupport.Block
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.WeightedSupport.Capacity
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.WeightedSupport.DimensionInputs
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.WeightedSupport.Endpoints
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.WeightedSupport.Rounding
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.WeightedSupport.ScalarParameters
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Parameters.WeightedSupport.Surplus
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Substitution
+public import ArkLib.Data.CodingTheory.HiddenDerivative.Variables
+public import ArkLib.Data.CodingTheory.InterleavedCode
+public import ArkLib.Data.CodingTheory.InterleavedCode.ExactAgreement
+public import ArkLib.Data.CodingTheory.InterleavedCode.Projection
+public import ArkLib.Data.CodingTheory.JohnsonBound.Basic
+public import ArkLib.Data.CodingTheory.JohnsonBound.Choose2
+public import ArkLib.Data.CodingTheory.JohnsonBound.Expectations
+public import ArkLib.Data.CodingTheory.JohnsonBound.Family
+public import ArkLib.Data.CodingTheory.JohnsonBound.Lemmas
+public import ArkLib.Data.CodingTheory.JohnsonBound.Pairwise
+public import ArkLib.Data.CodingTheory.ListDecodability
+public import ArkLib.Data.CodingTheory.ListDecodability.AgreementBound
+public import ArkLib.Data.CodingTheory.ListDecodability.AgreementRadius
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.AgreementHypergraph
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.Basic
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.Interleaved
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.KKH26
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.KKH26Asymptotic
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.KKH26SumSet
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.LargeAlphabet
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.LargeAlphabet.Barrier
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.LargeAlphabet.Basic
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.LargeAlphabet.Centers
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.LargeAlphabet.Pigeonhole
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.Linear
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.ReedSolomon
+public import ArkLib.Data.CodingTheory.ListDecodability.Bounds.SubspaceDesign
+public import ArkLib.Data.CodingTheory.ListDecodability.PairAgreementBound
+public import ArkLib.Data.CodingTheory.ListDecodability.SampleIncidence
+public import ArkLib.Data.CodingTheory.ListDecodability.SymbolMap
+public import ArkLib.Data.CodingTheory.PolishchukSpielman
+public import ArkLib.Data.CodingTheory.PolishchukSpielman.Degrees
+public import ArkLib.Data.CodingTheory.PolishchukSpielman.Existence
+public import ArkLib.Data.CodingTheory.PolishchukSpielman.PolishchukSpielman
+public import ArkLib.Data.CodingTheory.PolishchukSpielman.Resultant
+public import ArkLib.Data.CodingTheory.Prelims
+public import ArkLib.Data.CodingTheory.ProximityGap.AHIV22
+public import ArkLib.Data.CodingTheory.ProximityGap.AHIV22Support
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineCoefficients
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineCoefficients.Basic
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.BWMatrix
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.GoodCoeffs
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.JohnsonBridge
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.JohnsonComparison
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.JointAgreement
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.UniqueDecoding
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineSpaces
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineSpaces.Basic
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.CurveBWMatrix
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.CurveBridge
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.CurveExplicit
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.CurveUniqueAgreement
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.EpsCa
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ErrorBound
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.GeneratorBounds
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Prelude
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ReedSolomonGap
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.WeightedAgreement
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.WeightedAgreement.Bounds
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.WeightedAgreement.Exact
+public import ArkLib.Data.CodingTheory.ProximityGap.Basic
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.Entropy
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.Entropy.Counting
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.Frs
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.Frs.LineDecoding
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.Frs.Pinning
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.JohnsonCa
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.JohnsonLower
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.JohnsonLower.BinaryBasics
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.JohnsonMca
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.Powers
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.Powers.Incidence
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.Sampling
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.Subfield
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.Subfield.Algebra
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.Subfield.Moments
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.SubspaceDesign
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.UniqueDecoding
+public import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds.UniqueDecoding.Internal
+public import ArkLib.Data.CodingTheory.ProximityGap.DG25.Basic
+public import ArkLib.Data.CodingTheory.ProximityGap.DG25.MainResults
+public import ArkLib.Data.CodingTheory.ProximityGap.DG25.ReedSolomon
+public import ArkLib.Data.CodingTheory.ProximityGap.Errors
+public import ArkLib.Data.CodingTheory.ProximityGap.Folding
+public import ArkLib.Data.CodingTheory.ProximityGap.Folding.FoldingContext
+public import ArkLib.Data.CodingTheory.ProximityGap.Folding.ListDecodability
+public import ArkLib.Data.CodingTheory.ProximityGap.Folding.Multilinear
+public import ArkLib.Data.CodingTheory.ProximityGap.GrandChallenges
+public import ArkLib.Data.CodingTheory.ProximityGap.GrandChallenges.CapacityBounds
+public import ArkLib.Data.CodingTheory.ProximityGap.GrandChallenges.ListDecoding
+public import ArkLib.Data.CodingTheory.ProximityGap.GrandChallenges.UniqueDecoding
+public import ArkLib.Data.CodingTheory.ProximityGap.InformationSetLowerBound
+public import ArkLib.Data.CodingTheory.ProximityGap.LineDecoding
+public import ArkLib.Data.CodingTheory.ProximityGap.Separation
+public import ArkLib.Data.CodingTheory.ProximityGenerator.AffineGenerator
+public import ArkLib.Data.CodingTheory.ProximityGenerator.Basic
+public import ArkLib.Data.CodingTheory.ProximityGenerator.BinaryTensorFoldAgreement
+public import ArkLib.Data.CodingTheory.ProximityGenerator.BinaryTensorFoldProbability
+public import ArkLib.Data.CodingTheory.ProximityGenerator.ExceptionalSet
+public import ArkLib.Data.CodingTheory.ProximityGenerator.Interleaving
+public import ArkLib.Data.CodingTheory.ProximityGenerator.MCAGenerator
+public import ArkLib.Data.CodingTheory.ProximityGenerator.MDSGenerator
+public import ArkLib.Data.CodingTheory.ProximityGenerator.Multilinear
+public import ArkLib.Data.CodingTheory.ProximityGenerator.PolynomialGenerator
+public import ArkLib.Data.CodingTheory.ProximityGenerator.TensorGenerator
+public import ArkLib.Data.CodingTheory.ReedSolomon
+public import ArkLib.Data.CodingTheory.ReedSolomon.Agreement
+public import ArkLib.Data.CodingTheory.ReedSolomon.AgreementList
+public import ArkLib.Data.CodingTheory.ReedSolomon.AgreementThreshold
+public import ArkLib.Data.CodingTheory.ReedSolomon.Binary.TraceAgreement
+public import ArkLib.Data.CodingTheory.ReedSolomon.Binary.TraceLine
+public import ArkLib.Data.CodingTheory.ReedSolomon.Constrained
+public import ArkLib.Data.CodingTheory.ReedSolomon.Folded
+public import ArkLib.Data.CodingTheory.ReedSolomon.Interleaved
+public import ArkLib.Data.CodingTheory.ReedSolomon.Interleaved.AgreementBounds
+public import ArkLib.Data.CodingTheory.ReedSolomon.Interleaved.AnchoredAgreement
+public import ArkLib.Data.CodingTheory.ReedSolomon.Interleaved.AnchoredReconstruction
+public import ArkLib.Data.CodingTheory.ReedSolomon.Interleaved.PowerAgreement
+public import ArkLib.Data.CodingTheory.ReedSolomon.Interleaved.TensorFoldAgreement
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.Basic
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.CodewordBound
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.CurveCertificate
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.ExactLists
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.FiniteField
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.FixedRateExplicitGate
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.GeometricBound
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.MathematicalUniformRate
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.QuarterGap
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.RatePartition
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.UniformRate
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.WeightedSupport
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.WeightedSupportInterpolant
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.DirectJetList
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.FirstOrder.Bounds
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.FirstOrder.FiniteLengthParameters
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.FirstOrder.FiniteLengthSelectors
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.FirstOrder.LowRateFiniteLength
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.FirstOrder.LowRateFiniteLengthBounds
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.FirstOrder.Profile
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.FirstOrder.Uniform
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.HiddenDerivativeBound
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.PairwiseJohnson
+public import ArkLib.Data.CodingTheory.ReedSolomon.ListSpecification
+public import ArkLib.Data.CodingTheory.ReedSolomon.Multilinear
+public import ArkLib.Data.CodingTheory.ReedSolomon.Multiplicity
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity.CertificateBound
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity.FixedRateExplicitGate
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity.MathematicalUniformRate
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity.Midpoint
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity.Parameters
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity.PrescribedCurve
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity.PrescribedLine
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity.ProductBounds
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity.ProductCounting
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity.RatePartition
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity.SharpCountingBound
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Capacity.UniformRate
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.ComponentDimension
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.EquationDescent
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.ExtensionDescent
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.AutomaticHybrid
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.AutomaticMcaError
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.Branchwise
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.CurveAgreement
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.FiniteLengthMca
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.FiniteLengthRateBounds
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.HybridCurveProfile
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.HybridCurveRecovery
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.HybridCurveTransfer
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.HybridTransfer
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.LowRateSemantics
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.OrdinaryTail
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.Profile
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.RateBounds
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.Squarefree.Certificates
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.Squarefree.CurveMCA
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.Squarefree.Factorwise
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.Squarefree.RetainedTail
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.Squarefree.SharpCurve
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.Squarefree.TailBound
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.UniformLineMca
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FrobeniusAdmissibility
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FrobeniusComponentRecognition
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FrobeniusIncidence
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FrobeniusRetainedFamily
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FullAgreement
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FullDimension
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.GraphLine
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.GraphLineComponent
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.HalfGap.Line
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Johnson.Agreement
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Johnson.Curves
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Johnson.FullCode
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Johnson.Probability
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.LineToAffine
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Ordinary.BaseEquation
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Ordinary.Equation
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Ordinary.FactorAssembly
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Ordinary.FactorBudget
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Ordinary.IrreducibleEquation
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Pairs.ExceptionalSet
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.Pairs.Family
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedAdmissibility
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedCertificate
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedComponentAgreement
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedComponentRecognition
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedDerivativeImage
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedExceptionalChallenges
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedFrobeniusFamily
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedGeometricTransfer
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedGraphCounting
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedIncidence
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedPointRecognition
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedRegularEquation
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerBatchedSharpRegularAgreement
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerToLine
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerTupleCounting
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerTupleIncidence
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerTupleRegularBound
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerTupleSeparableBound
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.SingularTail
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.TaylorChart.DerivativeTupleCounting
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.TaylorChart.ExceptionalChallenges
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.TaylorChart.Incidence
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.TaylorChart.PairCounting
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.TaylorChart.PointRecognition
+public import
+  ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.TaylorChart.RegularEquation
+public import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.TupleSpecialization
+public import ArkLib.Data.CodingTheory.ReedSolomon.PowerAgreement
+public import ArkLib.Data.CodingTheory.ReedSolomon.PowerAgreement.ConstantCode
+public import ArkLib.Data.CodingTheory.ReedSolomon.ReciprocalWord
+public import ArkLib.Data.CodingTheory.SubspaceDesign
+public import ArkLib.Data.Domain.CosetFftDomain.Block
+public import ArkLib.Data.Domain.CosetFftDomain.Defs
+public import ArkLib.Data.Domain.CosetFftDomain.Log
+public import ArkLib.Data.Domain.CosetFftDomain.Mem
+public import ArkLib.Data.Domain.CosetFftDomain.Ops
+public import ArkLib.Data.Domain.CosetFftDomain.Pullback
+public import ArkLib.Data.Domain.CosetFftDomain.Subdomain
+public import ArkLib.Data.Domain.CosetFftDomain.ToFftDomain
+public import ArkLib.Data.Domain.CosetFftDomain.ToList
+public import ArkLib.Data.Domain.FftDomain.Defs
+public import ArkLib.Data.Domain.FftDomain.Mem
+public import ArkLib.Data.Domain.FftDomain.Ops
+public import ArkLib.Data.Domain.FftDomain.Subdomain
+public import ArkLib.Data.Domain.FftDomain.ToSubgroup
+public import ArkLib.Data.EllipticCurve.BN254
+public import ArkLib.Data.FieldTheory.BinaryTrace
+public import ArkLib.Data.Fin.Basic
+public import ArkLib.Data.Fin.BigOperators
+public import ArkLib.Data.Fin.Fold
+public import ArkLib.Data.Fin.Lift
+public import ArkLib.Data.Fin.Sigma
+public import ArkLib.Data.Fin.Tuple.Defs
+public import ArkLib.Data.Fin.Tuple.Lemmas
+public import ArkLib.Data.Fin.Tuple.Notation
+public import ArkLib.Data.Fin.Tuple.TakeDrop
+public import ArkLib.Data.Finset.Enumeration
+public import ArkLib.Data.Finset.PairwiseIntersection
+public import ArkLib.Data.Finset.PickSubset
+public import ArkLib.Data.Finset.SampleIncidence
+public import ArkLib.Data.Finset.Staircase
+public import ArkLib.Data.Finset.TupleIntersection
+public import ArkLib.Data.Finset.WeightedSimplex
+public import ArkLib.Data.Finset.WeightedSimplex.FloorTransfer
+public import ArkLib.Data.Finset.WeightedSimplex.Moments
+public import ArkLib.Data.Finset.WeightedSimplex.RankIntegral
+public import ArkLib.Data.Finset.WeightedSimplex.Variance
+public import ArkLib.Data.GroupTheory.PrimeOrder
+public import ArkLib.Data.Hash.Poseidon2
+public import ArkLib.Data.Lattices.CyclotomicRing.Core
+public import ArkLib.Data.Lattices.CyclotomicRing.Core.Basic
+public import ArkLib.Data.Lattices.CyclotomicRing.Core.Modulus
+public import ArkLib.Data.Lattices.CyclotomicRing.Galois
+public import ArkLib.Data.Lattices.CyclotomicRing.Galois.Automorphism
+public import ArkLib.Data.Lattices.CyclotomicRing.Galois.FixedSubring
+public import ArkLib.Data.Lattices.CyclotomicRing.Galois.Group
+public import ArkLib.Data.Lattices.CyclotomicRing.Galois.Order
+public import ArkLib.Data.Lattices.CyclotomicRing.Galois.Trace
+public import ArkLib.Data.Lattices.CyclotomicRing.Inverse
+public import ArkLib.Data.Lattices.CyclotomicRing.NormBounds
+public import ArkLib.Data.Lattices.CyclotomicRing.NormBounds.Basic
+public import ArkLib.Data.Lattices.CyclotomicRing.NormBounds.LsCore
+public import ArkLib.Data.Lattices.CyclotomicRing.NormBounds.LyubashevskySeiler
+public import ArkLib.Data.Lattices.CyclotomicRing.NormBounds.MicciancioYoung
+public import ArkLib.Data.Lattices.CyclotomicRing.Norms
+public import ArkLib.Data.Lattices.CyclotomicRing.PowTwo
+public import ArkLib.Data.Lattices.CyclotomicRing.QuotientLift
+public import ArkLib.Data.Lattices.CyclotomicRing.Rq
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Basis
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Bijectivity
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Cardinality
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Factorization
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Field
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.NormBound
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Packing
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.TraceInnerProduct
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.TraceVanishing
+public import ArkLib.Data.Lattices.ModuleSIS
+public import ArkLib.Data.Lattices.Vectors
+public import ArkLib.Data.Matrix.Basic
+public import ArkLib.Data.Matrix.DotProduct
+public import ArkLib.Data.Matrix.ReadOnce
+public import ArkLib.Data.Matrix.Sparse
+public import ArkLib.Data.Matrix.Vandermonde
+public import ArkLib.Data.Misc.Basic
+public import ArkLib.Data.MvPolynomial.Degrees
+public import ArkLib.Data.MvPolynomial.EvalExcept
+public import ArkLib.Data.MvPolynomial.EvenAndOdd
+public import ArkLib.Data.MvPolynomial.FrobeniusContraction
+public import ArkLib.Data.MvPolynomial.Hypercube
+public import ArkLib.Data.MvPolynomial.Interpolation
+public import ArkLib.Data.MvPolynomial.JointDegree
+public import ArkLib.Data.MvPolynomial.LinearMvExtension
+public import ArkLib.Data.MvPolynomial.MapExponents
+public import ArkLib.Data.MvPolynomial.Multilinear
+public import ArkLib.Data.MvPolynomial.NestedEvaluationTree
+public import ArkLib.Data.MvPolynomial.PrimeFingerprint
+public import ArkLib.Data.MvPolynomial.PrimeFingerprintProbability
+public import ArkLib.Data.MvPolynomial.RadicalSplit.Separable
+public import ArkLib.Data.MvPolynomial.RestrictDegree
+public import ArkLib.Data.MvPolynomial.RestrictDegreeVar
+public import ArkLib.Data.MvPolynomial.SchwartzZippelCounting
+public import ArkLib.Data.MvPolynomial.Split
+public import ArkLib.Data.MvPolynomial.WeightAtMost
+public import ArkLib.Data.MvPolynomial.WeightedDegree
+public import ArkLib.Data.MvPolynomial.WeightedDegree.Products
+public import ArkLib.Data.MvPolynomial.WeightedHomogeneous
+public import ArkLib.Data.MvPolynomial.WeightedOrder
+public import ArkLib.Data.Nat.BitSum
+public import ArkLib.Data.OracleComp.QueryBounds
+public import ArkLib.Data.Polynomial.BinaryTrace
+public import ArkLib.Data.Polynomial.BinaryTraceQuotient
+public import ArkLib.Data.Polynomial.Bivariate
+public import ArkLib.Data.Polynomial.BivariateFactorDegrees
+public import ArkLib.Data.Polynomial.ClassicalWronskian
+public import ArkLib.Data.Polynomial.CosetChunks
+public import ArkLib.Data.Polynomial.Differential.BaseChange
+public import ArkLib.Data.Polynomial.Differential.Basic
+public import ArkLib.Data.Polynomial.Differential.ChainWitness
+public import ArkLib.Data.Polynomial.Differential.ContentExceptions
+public import ArkLib.Data.Polynomial.Differential.DerivativeDescent
+public import ArkLib.Data.Polynomial.Differential.DirectRegularLift
+public import ArkLib.Data.Polynomial.Differential.FirstOrderStageSum
+public import ArkLib.Data.Polynomial.Differential.FrobeniusEquation
+public import ArkLib.Data.Polynomial.Differential.FrobeniusTaylorWitness
+public import ArkLib.Data.Polynomial.Differential.JetDegree
+public import ArkLib.Data.Polynomial.Differential.JetPrefix
+public import ArkLib.Data.Polynomial.Differential.JetPrefixPresentation
+public import ArkLib.Data.Polynomial.Differential.OrderZeroPresentation
+public import ArkLib.Data.Polynomial.Differential.RationalTaylor
+public import ArkLib.Data.Polynomial.Differential.RationalTaylorAlgebra
+public import ArkLib.Data.Polynomial.Differential.RationalTaylorBidegree
+public import ArkLib.Data.Polynomial.Differential.RationalTaylorDerivativeDegree
+public import ArkLib.Data.Polynomial.Differential.RationalTaylorJointDegree
+public import ArkLib.Data.Polynomial.Differential.RecursiveCount
+public import ArkLib.Data.Polynomial.Differential.RegularIteration
+public import ArkLib.Data.Polynomial.Differential.RegularJetCount
+public import ArkLib.Data.Polynomial.Differential.RegularLift
+public import ArkLib.Data.Polynomial.Differential.RetainedCurve
+public import ArkLib.Data.Polynomial.Differential.RootPresentation
+public import ArkLib.Data.Polynomial.Differential.SeparantChain
+public import ArkLib.Data.Polynomial.Differential.ShiftedJet
+public import ArkLib.Data.Polynomial.Differential.SingularRecursion
+public import ArkLib.Data.Polynomial.Differential.TaylorChart
+public import ArkLib.Data.Polynomial.Differential.TaylorChartAlgebra
+public import ArkLib.Data.Polynomial.Differential.TaylorChartBaseChange
+public import ArkLib.Data.Polynomial.Differential.TaylorChartGeometry
+public import ArkLib.Data.Polynomial.Differential.TaylorChartIncidence
+public import ArkLib.Data.Polynomial.Differential.TaylorIndexWeight
+public import ArkLib.Data.Polynomial.Differential.TaylorResidual
+public import ArkLib.Data.Polynomial.Differential.TotalJetDegreeCount
+public import ArkLib.Data.Polynomial.Differential.Types
+public import ArkLib.Data.Polynomial.Differential.WitnessCount
+public import ArkLib.Data.Polynomial.DivisorReconstruction
+public import ArkLib.Data.Polynomial.FoldedWronskian
+public import ArkLib.Data.Polynomial.FoldingPolynomial
+public import ArkLib.Data.Polynomial.FractionFieldExpand
+public import ArkLib.Data.Polynomial.FractionFieldFactorization
+public import ArkLib.Data.Polynomial.FractionFieldResultant
+public import ArkLib.Data.Polynomial.FractionFieldRoots
+public import ArkLib.Data.Polynomial.FrobeniusContraction
+public import ArkLib.Data.Polynomial.Indicator
+public import ArkLib.Data.Polynomial.Interface
+public import ArkLib.Data.Polynomial.PointCollision
+public import ArkLib.Data.Polynomial.PointCollisionProbability
+public import ArkLib.Data.Polynomial.Prelims
+public import ArkLib.Data.Polynomial.RationalFunctions
+public import ArkLib.Data.Polynomial.RationalFunctions.FunctionField
+public import ArkLib.Data.Polynomial.RationalFunctions.HenselNumerators.FractionField
+public import ArkLib.Data.Polynomial.RationalFunctions.HenselNumerators.Hensel
+public import ArkLib.Data.Polynomial.RationalFunctions.HenselNumerators.Sequence
+public import ArkLib.Data.Polynomial.RationalFunctions.HenselNumerators.Setup
+public import ArkLib.Data.Polynomial.RationalFunctions.HenselNumerators.Weight
+public import ArkLib.Data.Polynomial.RationalFunctions.Lifts
+public import ArkLib.Data.Polynomial.RationalFunctions.RationalRootVanishing
+public import ArkLib.Data.Polynomial.RationalFunctions.Weight
+public import ArkLib.Data.Polynomial.ResultantDegree
+public import ArkLib.Data.Polynomial.ResultantSpecialization
+public import ArkLib.Data.Polynomial.SpecializationAvoidance
+public import ArkLib.Data.Polynomial.SplitFold
+public import ArkLib.Data.Polynomial.SymbolicInterpolationParameters
+public import ArkLib.Data.Polynomial.SymbolicInterpolationSupport
+public import ArkLib.Data.Polynomial.SymbolicInterpolationSurplus
+public import ArkLib.Data.Polynomial.TaylorPrefix
+public import ArkLib.Data.Polynomial.Trivariate
+public import ArkLib.Data.Polynomial.UniversalHenselNumerator
+public import ArkLib.Data.Probability.Combinatorial
+public import ArkLib.Data.Probability.Instances
+public import ArkLib.Data.Probability.KoalaBear
+public import ArkLib.Data.Probability.Sequential
+public import ArkLib.Data.Probability.Uniform
+public import ArkLib.Interaction.CompositionSoundness
+public import ArkLib.Interaction.Oracle.Access
+public import ArkLib.Interaction.Oracle.Claim
+public import ArkLib.Interaction.Oracle.Composition
+public import ArkLib.Interaction.Oracle.CompositionSoundness
+public import ArkLib.Interaction.Oracle.CoreRun
+public import ArkLib.Interaction.Oracle.Execution
+public import ArkLib.Interaction.Oracle.LoggedExecution
+public import ArkLib.Interaction.Oracle.LoggedRun
+public import ArkLib.Interaction.Oracle.PhasedExecution
+public import ArkLib.Interaction.Oracle.PhasedRun
+public import ArkLib.Interaction.Oracle.Prefix
+public import ArkLib.Interaction.Oracle.Protocol
+public import ArkLib.Interaction.Oracle.Resource
+public import ArkLib.Interaction.Oracle.RunSources
+public import ArkLib.Interaction.Oracle.Runtime
+public import ArkLib.Interaction.Oracle.RuntimeSoundness
+public import ArkLib.Interaction.Oracle.Security.Knowledge
+public import ArkLib.Interaction.Oracle.Security.KnowledgeAppend
+public import ArkLib.Interaction.Oracle.Security.KnowledgeComposition
+public import ArkLib.Interaction.Oracle.Security.RoundByRound
+public import ArkLib.Interaction.Oracle.Security.Soundness
+public import ArkLib.Interaction.Oracle.Security.StateRestoration
+public import ArkLib.Interaction.Oracle.Security.StateRestorationBudget
+public import ArkLib.Interaction.Oracle.Security.StateRestorationCoins
+public import ArkLib.Interaction.Oracle.Security.StateRestorationGame
+public import ArkLib.Interaction.Oracle.Security.StateRestorationOracle
+public import ArkLib.Interaction.Oracle.Security.StateRestorationReplay
+public import ArkLib.Interaction.Oracle.Sequential
+public import ArkLib.Interaction.Oracle.Source
+public import ArkLib.Interaction.Oracle.SourceRouting
+public import ArkLib.Interaction.Oracle.Terminal
+public import ArkLib.Interaction.Oracle.TerminalMeasure
+public import ArkLib.Interaction.Oracle.TerminalRun
+public import ArkLib.Interaction.Oracle.TypeTree
+public import ArkLib.Interaction.Oracle.TypeTree.Decoration
+public import ArkLib.Interaction.Oracle.Virtual
+public import ArkLib.Interaction.Oracle.WorldSegments
+public import ArkLib.Interaction.Reduction
+public import ArkLib.OracleReduction.BCS.Basic
+public import ArkLib.OracleReduction.Basic
+public import ArkLib.OracleReduction.Cast
+public import ArkLib.OracleReduction.CastIdx
+public import ArkLib.OracleReduction.Composition.Parallel.Basic
+public import ArkLib.OracleReduction.Composition.Sequential.Append
+public import ArkLib.OracleReduction.Composition.Sequential.Append.Basic
+public import ArkLib.OracleReduction.Composition.Sequential.Append.Completeness
+public import ArkLib.OracleReduction.Composition.Sequential.Append.Execution
+public import ArkLib.OracleReduction.Composition.Sequential.Append.GuardedRoundByRound
+public import ArkLib.OracleReduction.Composition.Sequential.Append.NoAmbient
+public import ArkLib.OracleReduction.Composition.Sequential.Append.OneMessage
+public import ArkLib.OracleReduction.Composition.Sequential.Append.OrdinaryComposition
+public import ArkLib.OracleReduction.Composition.Sequential.Append.ProverSplit
+public import ArkLib.OracleReduction.Composition.Sequential.Append.RoundByRound
+public import ArkLib.OracleReduction.Composition.Sequential.Append.Security
+public import ArkLib.OracleReduction.Composition.Sequential.Append.Simulation
+public import ArkLib.OracleReduction.Composition.Sequential.Append.StateFunction
+public import ArkLib.OracleReduction.Composition.Sequential.Completeness
+public import ArkLib.OracleReduction.Composition.Sequential.General
+public import ArkLib.OracleReduction.Composition.Sequential.GuardedCompleteness
+public import ArkLib.OracleReduction.Composition.Sequential.GuardedNary
+public import ArkLib.OracleReduction.Composition.Sequential.GuardedRoundByRound
+public import ArkLib.OracleReduction.Composition.Sequential.IsPure
+public import ArkLib.OracleReduction.Composition.Sequential.NoAmbient
+public import ArkLib.OracleReduction.Composition.Sequential.OracleCompleteness
+public import ArkLib.OracleReduction.Equiv
+public import ArkLib.OracleReduction.Execution
+public import ArkLib.OracleReduction.FiatShamir.Basic
+public import ArkLib.OracleReduction.FiatShamir.Completeness
+public import ArkLib.OracleReduction.LiftContext.Lens
+public import ArkLib.OracleReduction.LiftContext.OracleReduction
+public import ArkLib.OracleReduction.LiftContext.Purity
+public import ArkLib.OracleReduction.LiftContext.Reduction
+public import ArkLib.OracleReduction.LogicStep
+public import ArkLib.OracleReduction.OracleInterface
+public import ArkLib.OracleReduction.Prelude
+public import ArkLib.OracleReduction.ProtocolSpec.Basic
+public import ArkLib.OracleReduction.ProtocolSpec.Cast
+public import ArkLib.OracleReduction.ProtocolSpec.SeqCompose
+public import ArkLib.OracleReduction.Salt
+public import ArkLib.OracleReduction.Security.Acceptance
+public import ArkLib.OracleReduction.Security.Accumulation
+public import ArkLib.OracleReduction.Security.BadEvents
+public import ArkLib.OracleReduction.Security.Basic
+public import ArkLib.OracleReduction.Security.ChallengePresampling
+public import ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness
+public import ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness.Basic
+public import ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness.CommittedScalar
+public import ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness.Composition
+public import ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness.Escape
+public import ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness.Guarded
+public import ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness.NoChallenge
+public import ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness.Package
+public import ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness.ScalarRound
+public import ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness.SingleRound
+public import ArkLib.OracleReduction.Security.Guarded
+public import ArkLib.OracleReduction.Security.GuardedBridges
+public import ArkLib.OracleReduction.Security.GuardedRoundByRound
+public import ArkLib.OracleReduction.Security.GuardedSoundness
+public import ArkLib.OracleReduction.Security.Implications
+public import ArkLib.OracleReduction.Security.KnowledgeSoundnessRun
+public import ArkLib.OracleReduction.Security.RbrGame
+public import ArkLib.OracleReduction.Security.Rewinding
+public import ArkLib.OracleReduction.Security.RoundByRound
+public import ArkLib.OracleReduction.Security.SoundnessInitialization
+public import ArkLib.OracleReduction.Security.SpecialSoundness
+public import ArkLib.OracleReduction.Security.StateRestoration
+public import ArkLib.OracleReduction.Security.TranscriptTree
+public import ArkLib.OracleReduction.Security.TranscriptTree.Basic
+public import ArkLib.OracleReduction.Security.TranscriptTree.Composition
+public import ArkLib.OracleReduction.VectorIOR
+public import ArkLib.ProofSystem.BatchedFri.EndToEnd
+public import ArkLib.ProofSystem.BatchedFri.Security
+public import ArkLib.ProofSystem.BatchedFri.Spec.General
+public import ArkLib.ProofSystem.BatchedFri.Spec.SingleRound
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Basic
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Basic.IndexAndSumcheck
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Code
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Commitment
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Compliance
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.CoreInteractionPhase
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.CoreInteractionPhase.Protocol
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.CoreInteractionPhase.Security
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.General
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Opening
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Prelude
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Prelude.Fibers
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Prelude.Folding
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Completeness
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Execution
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Folding
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Protocol
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Soundness
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.ReductionLogic
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Relations
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Relations.Initial
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.BadBlocks
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.FoldDistance
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Incremental
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhasePrelims
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseSoundness
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryRejection
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Spec
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Commit
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.FinalSumcheck
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.FinalSumcheck.Extraction
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Fold
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Fold.Protocol
+public import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Relay
+public import ArkLib.ProofSystem.Binius.FRIBinius.Conformance
+public import ArkLib.ProofSystem.Binius.FRIBinius.Prelude
+public import ArkLib.ProofSystem.Binius.FRIBinius.RingSwitch
+public import ArkLib.ProofSystem.Component.CheckClaim
+public import ArkLib.ProofSystem.Component.DoNothing
+public import ArkLib.ProofSystem.Component.NoInteraction
+public import ArkLib.ProofSystem.Component.RandomQuery
+public import ArkLib.ProofSystem.Component.ReduceClaim
+public import ArkLib.ProofSystem.Component.SendChallenge
+public import ArkLib.ProofSystem.Component.SendClaim
+public import ArkLib.ProofSystem.Component.SendWitness
+public import ArkLib.ProofSystem.ConstraintSystem.Lookup
+public import ArkLib.ProofSystem.ConstraintSystem.MemoryChecking
+public import ArkLib.ProofSystem.ConstraintSystem.Plonk
+public import ArkLib.ProofSystem.ConstraintSystem.R1CS
+public import ArkLib.ProofSystem.Fri.ErrorBounds
+public import ArkLib.ProofSystem.Fri.FoldingSoundness
+public import ArkLib.ProofSystem.Fri.Projection
+public import ArkLib.ProofSystem.Fri.QuerySoundness
+public import ArkLib.ProofSystem.Fri.RoundConsistency
+public import ArkLib.ProofSystem.Fri.Spec.AdaptiveSoundness
+public import ArkLib.ProofSystem.Fri.Spec.Agreement
+public import ArkLib.ProofSystem.Fri.Spec.BadEvents
+public import ArkLib.ProofSystem.Fri.Spec.Completeness
+public import ArkLib.ProofSystem.Fri.Spec.Execution
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.Access
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.BlockArrays
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.Check
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.ClosedCost
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.Cost
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.DriverCost
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.ExtractCost
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.FullCost
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.Generator
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.GeneratorBudget
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.GeneratorCost
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.LoopCost
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.NextValue
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.Prepare
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.Program
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.Readers
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.RoundCost
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.Scan
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.Selection
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.SetupCost
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.Traversal
+public import ArkLib.ProofSystem.Fri.Spec.Extraction.WordCost
+public import ArkLib.ProofSystem.Fri.Spec.ExtractionCorrectness
+public import ArkLib.ProofSystem.Fri.Spec.FoldExecution
+public import ArkLib.ProofSystem.Fri.Spec.General
+public import ArkLib.ProofSystem.Fri.Spec.HonestExecution
+public import ArkLib.ProofSystem.Fri.Spec.HonestFinalFolding
+public import ArkLib.ProofSystem.Fri.Spec.HonestFolding
+public import ArkLib.ProofSystem.Fri.Spec.InputRelation
+public import ArkLib.ProofSystem.Fri.Spec.KnowledgeSoundness
+public import ArkLib.ProofSystem.Fri.Spec.LocalCompleteness
+public import ArkLib.ProofSystem.Fri.Spec.QueryCompleteness
+public import ArkLib.ProofSystem.Fri.Spec.QueryExecution
+public import ArkLib.ProofSystem.Fri.Spec.QuerySoundness
+public import ArkLib.ProofSystem.Fri.Spec.RoundSoundness
+public import ArkLib.ProofSystem.Fri.Spec.SingleRound
+public import ArkLib.ProofSystem.Fri.Spec.Soundness
+public import ArkLib.ProofSystem.Fri.Spec.Transcript
+public import ArkLib.ProofSystem.Fri.Spec.VerifierExecution
+public import ArkLib.ProofSystem.Plonk.Basic
+public import ArkLib.ProofSystem.RingSwitching.Basic
+public import ArkLib.ProofSystem.RingSwitching.Lift
+public import ArkLib.ProofSystem.RingSwitching.Lift.Presentation
+public import ArkLib.ProofSystem.RingSwitching.Lift.Reduction
+public import ArkLib.ProofSystem.RingSwitching.Packing
+public import ArkLib.ProofSystem.RingSwitching.Packing.Algebra
+public import ArkLib.ProofSystem.RingSwitching.Packing.Batching
+public import ArkLib.ProofSystem.RingSwitching.Packing.Batching.CoordinateSample
+public import ArkLib.ProofSystem.RingSwitching.Packing.BatchingAlgebra
+public import ArkLib.ProofSystem.RingSwitching.Packing.CheckedObservation
+public import ArkLib.ProofSystem.RingSwitching.Packing.ClaimLayout
+public import ArkLib.ProofSystem.RingSwitching.Packing.ClaimLayout.Quirky
+public import ArkLib.ProofSystem.RingSwitching.Packing.Compatibility
+public import ArkLib.ProofSystem.RingSwitching.Packing.Conformance
+public import ArkLib.ProofSystem.RingSwitching.Packing.Coordinates
+public import ArkLib.ProofSystem.RingSwitching.Packing.DerivedBatching
+public import ArkLib.ProofSystem.RingSwitching.Packing.FinalAlgebra
+public import ArkLib.ProofSystem.RingSwitching.Packing.FiniteObservation
+public import ArkLib.ProofSystem.RingSwitching.Packing.Head
+public import ArkLib.ProofSystem.RingSwitching.Packing.Multiplier
+public import ArkLib.ProofSystem.RingSwitching.Packing.OpeningAdapter
+public import ArkLib.ProofSystem.RingSwitching.Packing.PackedCommitment
+public import ArkLib.ProofSystem.RingSwitching.Packing.Polynomial
+public import ArkLib.ProofSystem.RingSwitching.Packing.Prelude
+public import ArkLib.ProofSystem.RingSwitching.Packing.ProductSumcheck
+public import ArkLib.ProofSystem.RingSwitching.Packing.ProductSumcheck.Basic
+public import ArkLib.ProofSystem.RingSwitching.Packing.ProductSumcheck.Knowledge
+public import ArkLib.ProofSystem.RingSwitching.Packing.ProductSumcheck.Round
+public import ArkLib.ProofSystem.RingSwitching.Packing.ProductSumcheck.RoundExecution
+public import ArkLib.ProofSystem.RingSwitching.Packing.ProductSumcheck.RoundSecurity
+public import ArkLib.ProofSystem.RingSwitching.Packing.ProductSumcheck.SeqCompose
+public import ArkLib.ProofSystem.RingSwitching.Packing.ProductSumcheck.Terminal
+public import ArkLib.ProofSystem.RingSwitching.Packing.Profile
+public import ArkLib.ProofSystem.RingSwitching.Packing.ProfileCoordinates
+public import ArkLib.ProofSystem.RingSwitching.Packing.ProfileLayout
+public import ArkLib.ProofSystem.RingSwitching.Packing.Relations
+public import ArkLib.ProofSystem.RingSwitching.Packing.RingSwitch
+public import ArkLib.ProofSystem.RingSwitching.Packing.TensorPrefix
+public import ArkLib.ProofSystem.RingSwitching.RoundVerifiers
+public import ArkLib.ProofSystem.RingSwitching.Transport
+public import ArkLib.ProofSystem.RingSwitching.Transport.Coeffs
+public import ArkLib.ProofSystem.RingSwitching.Transport.Eval
+public import ArkLib.ProofSystem.Spartan.Basic
+public import ArkLib.ProofSystem.Stir.Combine
+public import ArkLib.ProofSystem.Stir.MainThm
+public import ArkLib.ProofSystem.Stir.OutOfDomSmpl
+public import ArkLib.ProofSystem.Stir.ProximityBound
+public import ArkLib.ProofSystem.Stir.ProximityGap
+public import ArkLib.ProofSystem.Stir.Quotienting
+public import ArkLib.ProofSystem.Sumcheck.Domain
+public import ArkLib.ProofSystem.Sumcheck.Impl.Basic
+public import ArkLib.ProofSystem.Sumcheck.Impl.Projection
+public import ArkLib.ProofSystem.Sumcheck.Impl.Representation
+public import ArkLib.ProofSystem.Sumcheck.Interaction.ArbitraryCompleteness
+public import ArkLib.ProofSystem.Sumcheck.Interaction.ArbitraryRounds
+public import ArkLib.ProofSystem.Sumcheck.Interaction.Closing
+public import ArkLib.ProofSystem.Sumcheck.Interaction.Composition
+public import ArkLib.ProofSystem.Sumcheck.Interaction.Computable
+public import ArkLib.ProofSystem.Sumcheck.Interaction.ComputableCompleteness
+public import ArkLib.ProofSystem.Sumcheck.Interaction.ComputableSoundness
+public import ArkLib.ProofSystem.Sumcheck.Interaction.Legacy
+public import ArkLib.ProofSystem.Sumcheck.Interaction.MultivariateRound
+public import ArkLib.ProofSystem.Sumcheck.Interaction.MultivariateSoundness
+public import ArkLib.ProofSystem.Sumcheck.Interaction.Projection
+public import ArkLib.ProofSystem.Sumcheck.Interaction.ProjectionTransport
+public import ArkLib.ProofSystem.Sumcheck.Interaction.Protocol
+public import ArkLib.ProofSystem.Sumcheck.Interaction.ProtocolCompleteness
+public import ArkLib.ProofSystem.Sumcheck.Interaction.ProtocolSoundness
+public import ArkLib.ProofSystem.Sumcheck.Interaction.RoundByRound
+public import ArkLib.ProofSystem.Sumcheck.Interaction.Sequential
+public import ArkLib.ProofSystem.Sumcheck.Interaction.SingleRound
+public import ArkLib.ProofSystem.Sumcheck.Interaction.Soundness
+public import ArkLib.ProofSystem.Sumcheck.Message.Basic
+public import ArkLib.ProofSystem.Sumcheck.Message.CompPoly
+public import ArkLib.ProofSystem.Sumcheck.Message.Quadratic
+public import ArkLib.ProofSystem.Sumcheck.Prover.Basic
+public import ArkLib.ProofSystem.Sumcheck.Prover.Enumeration
+public import ArkLib.ProofSystem.Sumcheck.Source
+public import ArkLib.ProofSystem.Sumcheck.Spec.General
+public import ArkLib.ProofSystem.Sumcheck.Spec.SingleRound
+public import ArkLib.ProofSystem.Sumcheck.Structured
+public import ArkLib.ProofSystem.Sumcheck.Structured.RoundLemmas
+public import ArkLib.ProofSystem.Sumcheck.Structured.SingleRound
+public import ArkLib.ProofSystem.ToyProblem.Codegen
+public import ArkLib.ProofSystem.ToyProblem.ConstrainedCode
+public import ArkLib.ProofSystem.ToyProblem.Definitions
+public import ArkLib.ProofSystem.ToyProblem.Impl.FRS
+public import ArkLib.ProofSystem.ToyProblem.Impl.IRS
+public import ArkLib.ProofSystem.ToyProblem.Leaderboard
+public import ArkLib.ProofSystem.ToyProblem.SoundnessBounds
+public import ArkLib.ProofSystem.ToyProblem.Spec.Completeness
+public import ArkLib.ProofSystem.ToyProblem.Spec.ErasureDecoder
+public import ArkLib.ProofSystem.ToyProblem.Spec.General
+public import ArkLib.ProofSystem.ToyProblem.Spec.KnowledgeSoundness
+public import ArkLib.ProofSystem.ToyProblem.Spec.SimplifiedIOR
+public import ArkLib.ToCompPoly.Multilinear.Basic
+public import ArkLib.ToCompPoly.Multilinear.NestedEvaluationTree
+public import ArkLib.ToCompPoly.Multivariate.Eval
+public import ArkLib.ToCompPoly.Univariate.Arithmetic
+public import ArkLib.ToCompPoly.Univariate.ArithmeticConvolutionCost
+public import ArkLib.ToCompPoly.Univariate.ArithmeticCost
+public import ArkLib.ToCompPoly.Univariate.ArithmeticEvaluation
+public import ArkLib.ToCompPoly.Univariate.ArithmeticEvaluationBound
+public import ArkLib.ToCompPoly.Univariate.ArithmeticInterpolation
+public import ArkLib.ToCompPoly.Univariate.ArithmeticInterpolationBound
+public import ArkLib.ToCompPoly.Univariate.ArithmeticInterpolationCost
+public import ArkLib.ToCompPoly.Univariate.ArithmeticPolynomial
+public import ArkLib.ToCompPoly.Univariate.ArithmeticPolynomialCost
+public import ArkLib.ToCompPoly.Univariate.ArithmeticPower
+public import ArkLib.ToCompPoly.Univariate.Basic
+public import ArkLib.ToCompPoly.Univariate.Lagrange
+public import ArkLib.ToCompPoly.Univariate.Primitive
+public import ArkLib.ToCompPoly.Univariate.Raw.Size
+public import ArkLib.ToCompPoly.Univariate.Size
+public import ArkLib.ToMathlib.Algebra.Order.Floor.Ratio
+public import ArkLib.ToMathlib.Algebra.Order.Floor.RelativeError
+public import ArkLib.ToMathlib.Algebra.Order.Floor.Semiring
+public import ArkLib.ToMathlib.Analysis.ExponentialStaircase
+public import ArkLib.ToMathlib.Analysis.Simplex.CenteredMoments
+public import ArkLib.ToMathlib.Analysis.Simplex.MaxCoordinate
+public import ArkLib.ToMathlib.Analysis.Simplex.Moments
+public import ArkLib.ToMathlib.Analysis.Simplex.MonomialIntegral
+public import ArkLib.ToMathlib.Analysis.Simplex.OrderedSimplex
+public import ArkLib.ToMathlib.Analysis.Simplex.VolumeIntegral
+public import ArkLib.ToMathlib.Analysis.Simplex.WeightedVolume
+public import ArkLib.ToMathlib.Analysis.SpecialFunctions.ExpLogRpow
+public import ArkLib.ToMathlib.Analysis.SpecificLimits.GeometricBounds
+public import ArkLib.ToMathlib.BigOperators.Fin
+public import ArkLib.ToMathlib.BigOperators.Intervals
+public import ArkLib.ToMathlib.BigOperators.LinearBudget
+public import ArkLib.ToMathlib.Combinatorics.CubicStaircase
+public import ArkLib.ToMathlib.Combinatorics.Enumerative.DoubleCounting
+public import ArkLib.ToMathlib.Combinatorics.Enumerative.IncidenceProduct
+public import ArkLib.ToMathlib.Combinatorics.Enumerative.MonomialCount
+public import ArkLib.ToMathlib.Combinatorics.QuadraticStaircase
+public import ArkLib.ToMathlib.Control.MonadLift
+public import ArkLib.ToMathlib.FieldTheory.Kummer
+public import ArkLib.ToMathlib.Finset.Basic
+public import ArkLib.ToMathlib.Finset.LineAgreement
+public import ArkLib.ToMathlib.Finset.SumRangeFrom
+public import ArkLib.ToMathlib.Finset.ToListWithProof
+public import ArkLib.ToMathlib.Finsupp.Weight
+public import ArkLib.ToMathlib.InformationTheory.Hamming
+public import ArkLib.ToMathlib.LinearAlgebra.FiniteDimensional
+public import ArkLib.ToMathlib.LinearAlgebra.LagrangeLine
+public import ArkLib.ToMathlib.LinearAlgebra.LineInjectivity
+public import ArkLib.ToMathlib.LinearAlgebra.Matrix.Determinant
+public import ArkLib.ToMathlib.LinearAlgebra.Matrix.InvertibleCombination
+public import ArkLib.ToMathlib.LinearAlgebra.Matrix.PrimitiveKernel
+public import ArkLib.ToMathlib.LinearAlgebra.Matrix.Rank
+public import ArkLib.ToMathlib.LinearAlgebra.Matrix.RowBasis
+public import ArkLib.ToMathlib.LinearAlgebra.Matrix.SupportedRows
+public import ArkLib.ToMathlib.LinearAlgebra.PolynomialKernelHeight
+public import ArkLib.ToMathlib.LinearAlgebra.ShiftedPolynomialKernelHeight
+public import ArkLib.ToMathlib.LinearAlgebra.Submodule.Union
+public import ArkLib.ToMathlib.LinearAlgebra.TriangularInjective
+public import ArkLib.ToMathlib.List.Basic
+public import ArkLib.ToMathlib.Logic.HEq
+public import ArkLib.ToMathlib.MeasureTheory.Integral.NatFloorCells
+public import ArkLib.ToMathlib.MeasureTheory.Integral.PositivePart
+public import ArkLib.ToMathlib.MvPolynomial.ClearedSubstitution
+public import ArkLib.ToMathlib.MvPolynomial.CoeffBound
+public import ArkLib.ToMathlib.MvPolynomial.CompleteHomogeneous
+public import ArkLib.ToMathlib.MvPolynomial.FirstOrderTaylor
+public import ArkLib.ToMathlib.MvPolynomial.FrobeniusPullback
+public import ArkLib.ToMathlib.MvPolynomial.OptionRoots
+public import ArkLib.ToMathlib.MvPolynomial.OptionWeightedDegree
+public import ArkLib.ToMathlib.MvPolynomial.PDeriv
+public import ArkLib.ToMathlib.MvPolynomial.PolynomialCoefficients
+public import ArkLib.ToMathlib.MvPolynomial.PowerMomentGeometry
+public import ArkLib.ToMathlib.MvPolynomial.PowerMomentLift
+public import ArkLib.ToMathlib.MvPolynomial.RadicalSplit
+public import ArkLib.ToMathlib.MvPolynomial.RootContraction
+public import ArkLib.ToMathlib.MvPolynomial.SchwartzZippel
+public import ArkLib.ToMathlib.MvPolynomial.SupportWeight
+public import ArkLib.ToMathlib.MvPolynomial.SupportWeightOffset
+public import ArkLib.ToMathlib.MvPolynomial.UnivariateSpecialization
+public import ArkLib.ToMathlib.NumberTheory.Harmonic.Bounds
+public import ArkLib.ToMathlib.NumberTheory.Harmonic.Thresholds
+public import ArkLib.ToMathlib.Order.FloorHalf
+public import ArkLib.ToMathlib.Polynomial.AevalXPow
+public import ArkLib.ToMathlib.Polynomial.CompositionDegree
+public import ArkLib.ToMathlib.Polynomial.DegreeLT
+public import ArkLib.ToMathlib.Polynomial.DivByXPowAddOne
+public import ArkLib.ToMathlib.Polynomial.EvalExt
+public import ArkLib.ToMathlib.Polynomial.EventualGrowth
+public import ArkLib.ToMathlib.Polynomial.FrobeniusTaylor
+public import ArkLib.ToMathlib.Polynomial.HasseTaylor
+public import ArkLib.ToMathlib.Polynomial.HasseTaylor.FiniteJet
+public import ArkLib.ToMathlib.Polynomial.HasseTaylor.Forward
+public import ArkLib.ToMathlib.Polynomial.HasseTaylor.JetDivisibility
+public import ArkLib.ToMathlib.Polynomial.HasseTaylor.Lifting
+public import ArkLib.ToMathlib.Polynomial.HasseTaylor.Shift
+public import ArkLib.ToMathlib.Polynomial.NatDegreeOfSum
+public import ArkLib.ToMathlib.Polynomial.RectangleDifference
+public import ArkLib.ToMathlib.Polynomial.RootMultiplicity
+public import ArkLib.ToMathlib.Polynomial.SparseContraction
+public import ArkLib.ToMathlib.RingTheory.Ideal.CutFamily
+public import ArkLib.ToMathlib.RingTheory.Ideal.HeightUnder
+public import ArkLib.ToMathlib.RingTheory.Ideal.MinimalPrime.Noetherian
+public import ArkLib.ToMathlib.RingTheory.Ideal.PrincipalCut
+public import ArkLib.ToMathlib.RingTheory.Ideal.Separator
+public import ArkLib.ToMathlib.RingTheory.Ideal.SurjectiveMap
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AffineDegree
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AffineHilbert
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AffineHilbertAlgHom
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AffineHilbertBidegree
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AffineHilbertCappedBidegree
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AffineHilbertCappedDegree
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AffineHilbertComap
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AffineHilbertComponents
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AffineHilbertCutFamily
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AffineHilbertPolynomial
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AffineHilbertPurity
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AffineHilbertRadical
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.AwayPresentation
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.Bidegree
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.CappedBidegree
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.CappedDegree
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.CoefficientEvaluation
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.MonomialMap
+public import ArkLib.ToMathlib.RingTheory.MvPolynomial.StandardMonomials
+public import ArkLib.ToMathlib.RingTheory.Nullstellensatz
+public import ArkLib.ToMathlib.RingTheory.Nullstellensatz.AffineHilbertPolynomial
+public import ArkLib.ToMathlib.RingTheory.Nullstellensatz.AgreementIncidence
+public import ArkLib.ToMathlib.RingTheory.Nullstellensatz.BidegreeIncidence
+public import ArkLib.ToMathlib.RingTheory.Nullstellensatz.CappedBidegreeIncidence
+public import ArkLib.ToMathlib.RingTheory.Nullstellensatz.CappedDegreeIncidence
+public import ArkLib.ToMathlib.RingTheory.Nullstellensatz.CutFamily
+public import ArkLib.ToMathlib.RingTheory.Nullstellensatz.DimensionSensitiveIncidence
+public import ArkLib.ToMathlib.RingTheory.Nullstellensatz.FiniteQuotient
+public import ArkLib.ToMathlib.RingTheory.Nullstellensatz.FiniteZeroLocus
+public import ArkLib.ToMathlib.RingTheory.Nullstellensatz.PrincipalOpen
+public import ArkLib.ToMathlib.RingTheory.Nullstellensatz.PrincipalOpenParametrization
+public import ArkLib.ToMathlib.RingTheory.Radical.Representative
+public import ArkLib.ToMathlib.Set.Finite

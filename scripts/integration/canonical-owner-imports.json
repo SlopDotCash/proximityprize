@@ -1,0 +1,382 @@
+{
+  "upstream_revision": "94fb4cdd70c2ea061037bf6337611300d71c4e88",
+  "method": "canonical explicit public FQN ownership plus current transitive source-header import closure; only absent canonical owner imports added, source bodies preserved",
+  "skipped_active_ports": [
+    "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Basic.lean",
+    "ProximityPrize/Extensions/Data/CodingTheory/ReedSolomon.lean",
+    "ProximityPrize/Extensions/OracleReduction/Basic.lean"
+  ],
+  "files": {
+    "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Basic.lean": {
+      "missing_canonical_owners": {
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.ReductionLogic": [
+          "Binius.BinaryBasefold.getFirstOracle_snoc_oracle"
+        ],
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Relations": [
+          "Binius.BinaryBasefold.getFoldingChallenges",
+          "Binius.BinaryBasefold.getNextOracle",
+          "Binius.BinaryBasefold.getMidCodewords",
+          "Binius.BinaryBasefold.foldStepRelOut",
+          "Binius.BinaryBasefold.roundRelation",
+          "Binius.BinaryBasefold.finalSumcheckRelOut"
+        ]
+      },
+      "action": "added explicit canonical imports",
+      "before_sha256": "0601f91bd1ab1ace838cfa93f48406adc863abe74d8834fa82596bd80967c460",
+      "after_sha256": "778950a96e03a6b2ec7f4c04625f6675a08e45bd3f9b9f7182a4c6dfe3a7dd81"
+    },
+    "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Prelude.lean": {
+      "missing_canonical_owners": {
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Basic.IndexAndSumcheck": [
+          "Binius.BinaryBasefold.lt_r_of_le_ℓ",
+          "Binius.BinaryBasefold.lt_r_of_lt_ℓ"
+        ]
+      },
+      "action": "added explicit canonical imports",
+      "before_sha256": "6c612d2918320acba77e9ccf7ca424ea86846713a9117f53a17447f00278b337",
+      "after_sha256": "51f54bb97f5bf3e0b27fae0653d062e7a8da31834e805de88a3ed2e31361e890"
+    },
+    "ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/General.lean": {
+      "missing_canonical_owners": {
+        "ArkLib.ProofSystem.ToyProblem.Spec.Completeness": [
+          "ToyProblem.Spec.oracleReduction_perfectCompleteness"
+        ]
+      },
+      "action": "added explicit canonical imports",
+      "before_sha256": "1ed735072af507b78de2fbb9d60e78fda2dacb2465ce3c9f8bae331326c15d21",
+      "after_sha256": "06a2e388c4ee32eb56594cffd065efb449e1bf36645df26da3579400c8f64640"
+    }
+  },
+  "unresolved_removed_public_names": [],
+  "private_name_collisions": [
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.lagrangeInterpolateRaw",
+      "line": 133,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 317,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.rawToPolyBounded",
+      "line": 149,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 333,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.compPolyCandidate",
+      "line": 155,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 339,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.compPolyCandidateSet",
+      "line": 169,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 353,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.evalCoeffVecAt",
+      "line": 205,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 389,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.hasseDerivEvalAt",
+      "line": 221,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 405,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.hasseMultiplicityCheck",
+      "line": 233,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 417,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.isWitnessC",
+      "line": 279,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 463,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.witnessVarCount",
+      "line": 339,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 523,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.witnessVarToPair",
+      "line": 342,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 526,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.witnessPairToVar",
+      "line": 352,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 536,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.witnessSolToCoeffVec",
+      "line": 367,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 551,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.gsDerivBlockSize",
+      "line": 372,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 556,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.gsDerivRowCount",
+      "line": 375,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 559,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.gsLinearRowCount",
+      "line": 378,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 562,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.gsLinearMatrixEntry",
+      "line": 381,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 565,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.gsLinearMatrix",
+      "line": 402,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 586,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.gsLinearRhs",
+      "line": 408,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 592,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.solveGsWitnessAtTarget",
+      "line": 412,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 596,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.witnessTargets",
+      "line": 422,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 606,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.computeGsWitness",
+      "line": 428,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 612,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.hasWitnessC",
+      "line": 433,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 617,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.polyToRaw",
+      "line": 459,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 642,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.evalQAtPRaw",
+      "line": 467,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 650,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.isQRootRaw",
+      "line": 488,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 671,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.witnessCandidateSet",
+      "line": 521,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 704,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.guruswami_sudan_for_proximity_gap_existence",
+      "line": 658,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 892,
+      "identical_private_to_public_promotion": true
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.guruswami_sudan_for_proximity_gap_existence_strong",
+      "line": 676,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 910,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.guruswami_sudan_for_proximity_gap_property",
+      "line": 697,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 931,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "name": "GuruswamiSudan.guruswami_sudan_for_proximity_gap_property_strong",
+      "line": 720,
+      "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "upstream_line": 954,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "name": "JohnsonBound.Fi",
+      "line": 35,
+      "upstream_owner": "ArkLib/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "upstream_line": 35,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "name": "JohnsonBound.K",
+      "line": 39,
+      "upstream_owner": "ArkLib/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "upstream_line": 39,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "name": "JohnsonBound.sum_choose_K_i",
+      "line": 44,
+      "upstream_owner": "ArkLib/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "upstream_line": 102,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "name": "JohnsonBound.k",
+      "line": 48,
+      "upstream_owner": "ArkLib/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "upstream_line": 119,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "name": "JohnsonBound.aux_frac",
+      "line": 53,
+      "upstream_owner": "ArkLib/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "upstream_line": 184,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "name": "JohnsonBound.F2i",
+      "line": 57,
+      "upstream_owner": "ArkLib/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "upstream_line": 231,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "name": "JohnsonBound.Bi",
+      "line": 62,
+      "upstream_owner": "ArkLib/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "upstream_line": 253,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Folding.lean",
+      "name": "ProximityGap.foldWordAuxCoeff",
+      "line": 189,
+      "upstream_owner": "ArkLib/Data/CodingTheory/ProximityGap/Folding.lean",
+      "upstream_line": 533,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Folding.lean",
+      "name": "ProximityGap.foldWordAux_eq_sum_of_foldWordAuxCoeff",
+      "line": 210,
+      "upstream_owner": "ArkLib/Data/CodingTheory/ProximityGap/Folding.lean",
+      "upstream_line": 552,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Folding.lean",
+      "name": "ProximityGap.foldValue_eq_sum_of_foldAuxCoeff_mul_pow_alpha",
+      "line": 224,
+      "upstream_owner": "ArkLib/Data/CodingTheory/ProximityGap/Folding.lean",
+      "upstream_line": 566,
+      "identical_private_to_public_promotion": false
+    },
+    {
+      "extension": "ProximityPrize/Extensions/ProofSystem/Stir/Combine.lean",
+      "name": "Combine.block_size",
+      "line": 57,
+      "upstream_owner": "ArkLib/ProofSystem/Stir/Combine.lean",
+      "upstream_line": 105,
+      "identical_private_to_public_promotion": true
+    }
+  ],
+  "private_inventory_status": "Snapshot before the confirmed27 removals in promoted-private-dedup.json and the independent JohnsonBound port; remaining non-exact matches require review."
+}

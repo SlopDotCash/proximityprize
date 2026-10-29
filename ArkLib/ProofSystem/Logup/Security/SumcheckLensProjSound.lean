@@ -56,7 +56,7 @@ namespace Logup
 
 section SumcheckLensProjSound
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype]
+variable {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)]
 variable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]
   [SampleableType F]
 variable (n M : ℕ)
@@ -64,6 +64,7 @@ variable (params : ProtocolParams M)
 
 local instance instInhabitedFieldSumcheckLensProjSound : Inhabited F := ⟨0⟩
 
+omit [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)] [SampleableType F] in
 /-- **Bijection between the `{±1}`-domain product Finset and the Boolean hypercube.** A copy of the
 in-tree (private) `sum_piFinset_map_univ_eq_sum_hypercube`, kept here so this file can re-derive the
 round-`0` sum identity without reaching into the (private) bridge internals. The sum over the product
@@ -98,6 +99,7 @@ private theorem sum_piFinset_map_univ_eq_sum_hypercube'
   · intro u _
     rfl
 
+omit [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)] [SampleableType F] in
 /-- **The round-`0` sum equals the LogUp outer sum-check claim, unconditionally.** The projected
 generic round-`0` sum-check sum of the LogUp polynomial `Q` over the `{±1}`-hypercube equals
 `logupOuterSumcheckClaim`. This does *not* use any zero hypothesis: the row-agreement
@@ -124,10 +126,13 @@ theorem logupSumcheck_round0_sum_eq_outerClaim
   -- `(fun j => signDomain F hSigns (u j)) = signPoint F u` reindexes the evaluation point.
   have hpt : (fun j => (signDomain F hSigns) (u j)) = signPoint F u := by
     funext j
-    simp [signDomain, signPoint, bitToSign]
+    change bitToSign F (u j) = if u j = 0 then -1 else 1
+    generalize u j = b
+    fin_cases b <;> rfl
   rw [hpt]
   exact hRows u
 
+omit [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)] [SampleableType F] in
 /-- **`logupSumcheckRelationInput ↔ mid-claim is zero`.** The projected generic round-`0` sum-check
 relation (zero target, LogUp polynomial `Q` as oracle) holds *iff* the LogUp outer sum-check claim
 vanishes. Both directions follow from the unconditional equality
@@ -142,7 +147,7 @@ theorem logupSumcheckRelationInput_iff_claimZero
   -- Unfold the relation membership to the round-`0` sum-equals-target (`= 0`) equation.
   unfold logupSumcheckRelationInput Sumcheck.Spec.relationRound
   simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, Nat.sub_zero, logupInitialSumcheckStatement,
-    Set.mem_setOf_eq, Fin.elim0_append, logupSumcheckOracleStmt]
+    Set.mem_ofPred_eq, Fin.elim0_append, logupSumcheckOracleStmt]
   -- The goal is `(round-0 sum) = 0 ↔ logupOuterSumcheckClaim … = 0`; the LHS sum equals the claim
   -- by the unconditional bridging identity, so both sides are the *same* equation.
   refine iff_of_eq (congrArg (· = (0 : F)) ?_)
@@ -158,6 +163,7 @@ def logupSumcheckInputLanguage (hSigns : (-1 : F) ≠ 1) :
       (∀ i, LogupSumcheckOracleStatement F n M params i)) :=
   (Sumcheck.Spec.relationRound F n (logupSumcheckDegree M params) (signDomain F hSigns) 0).language
 
+omit [∀ q, Fintype (oSpec.Range q)] [Fact ((-1 : F) ≠ 1)] in
 /-- **`SumcheckLensProjSound` discharged** for the canonical inner sum-check input language.
 
 For every after-outer statement outside `midLanguage` (nonzero LogUp mid-claim), the lens projection
@@ -175,7 +181,7 @@ theorem SumcheckLensProjSound_holds (hSigns : (-1 : F) ≠ 1) :
   classical
   intro outerStmtIn hNotMid
   -- `hNotMid : outerStmtIn ∉ midLanguage`, i.e. `logupOuterSumcheckClaim … ≠ 0`.
-  rw [midLanguage, Set.mem_setOf_eq] at hNotMid
+  rw [midLanguage, Set.mem_ofPred_eq] at hNotMid
   intro hMem
   -- `hMem : proj outerStmtIn ∈ (relationRound …).language`; extract the (Unit) witness.
   rw [logupSumcheckInputLanguage, Set.mem_language_iff] at hMem

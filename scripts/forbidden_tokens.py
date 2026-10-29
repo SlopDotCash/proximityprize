@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Reject axiom-laundering tokens in live library and research source.
 
-By default, scans every .lean file under ArkLib/ and Research/. If one or more paths are
+By default, scans every .lean file under ArkLib/, Research/, and ProximityPrize/. If one or more paths are
 provided, scans only those Lean files/directories. Fails if live
 (non-comment) code contains (`axiom` text inside a string literal is data):
   - `native_decide` / `bv_decide` (kernel-bypassing decision procedures), the
@@ -64,6 +64,9 @@ from __future__ import annotations
 
 import re
 import sys
+import hashlib
+import json
+import subprocess
 from pathlib import Path
 
 TOKEN_RE = re.compile(r"\b(native_decide|bv_decide|unsafeCast|implemented_by)\b")
@@ -173,6 +176,130 @@ CONSTANT_DECL_RE = re.compile(
 OPAQUE_KINDS = {"opaque", "constant"}
 
 ALLOWLIST_PATH = Path(__file__).resolve().parent / "residual_axioms.txt"
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+class InheritedSourcePolicy:
+    """Recognize only explicitly reviewed, byte-identical upstream True stubs.
+
+    This never exempts a file or any native/custom-axiom violation. A changed file,
+    copied declaration, changed violation kind, or changed upstream inventory makes
+    the original source-policy error live again. The named revision's Git blob is
+    checked as well as the current bytes, so editing the JSON digest cannot create
+    an exception for a new stub.
+    """
+
+    def __init__(self, root: Path = REPO_ROOT):
+        self.root = root.resolve()
+        baseline = self.root / "scripts/upstream-source-policy.json"
+        inventory = self.root / "scripts/arklib-upstream.json"
+        self.data = json.loads(baseline.read_text()) if baseline.is_file() else {}
+        self.inventory = json.loads(inventory.read_text()) if inventory.is_file() else {}
+        self.blob_hashes: dict[str, str | None] = {}
+        self.blob_contents: dict[str, bytes | None] = {}
+
+    def allows(self, path: Path, declaration: str, kind: str) -> bool:
+        if kind != "vacuous_true_theorem":
+            return False
+        try:
+            relative = path.resolve().relative_to(self.root).as_posix()
+        except ValueError:
+            return False
+        matching = [entry for entry in self.data.get("exceptions", [])
+                    if entry.get("file") == relative
+                    and entry.get("declaration") == declaration
+                    and entry.get("kind") == kind]
+        return any(self.matches_upstream_file(path, entry.get("sha256"),
+                                             self.data.get("revision"),
+                                             self.data.get("repository"))
+                   for entry in matching)
+
+    def matches_upstream_file(self, path: Path, digest: str | None,
+                              revision: str | None, repository: str | None) -> bool:
+        """Check provenance and exact bytes; used by the inherited sorry baseline too."""
+        try:
+            relative = path.resolve().relative_to(self.root).as_posix()
+        except ValueError:
+            return False
+        if (not revision or revision != self.inventory.get("revision")
+                or repository != "https://github.com/Verified-zkEVM/ArkLib"
+                or repository != self.inventory.get("repository")
+                or relative not in self.inventory.get("files", []) or not path.is_file()):
+            return False
+        current_hash = hashlib.sha256(path.read_bytes()).hexdigest()
+        self._load_upstream_blob(relative, revision)
+        return digest == current_hash == self.blob_hashes[relative]
+
+    def _load_upstream_blob(self, relative: str, revision: str) -> bytes | None:
+        if relative not in self.blob_contents:
+            result = subprocess.run(["git", "show", f"{revision}:{relative}"], cwd=self.root,
+                                    capture_output=True)
+            self.blob_contents[relative] = result.stdout if result.returncode == 0 else None
+            self.blob_hashes[relative] = (hashlib.sha256(result.stdout).hexdigest()
+                                          if result.returncode == 0 else None)
+        return self.blob_contents[relative]
+
+    def matches_adapted_upstream_hole(self, path: Path, row: dict, entry: dict,
+                                     revision: str | None, repository: str | None) -> bool:
+        """Accept only an unchanged admitted command inside a reviewed adaptation.
+
+        Whole-file matching remains mandatory for True-stub exceptions. This
+        separate path is used only for sorry-census tokens, and checks each token's
+        position so a later command cannot reuse its predecessor's census label.
+        """
+        try:
+            relative = path.resolve().relative_to(self.root).as_posix()
+        except ValueError:
+            return False
+        if (not revision or revision != self.inventory.get("revision")
+                or repository != "https://github.com/Verified-zkEVM/ArkLib"
+                or repository != self.inventory.get("repository")
+                or relative not in self.inventory.get("files", [])
+                or relative != row.get("file") or relative != entry.get("file")
+                or row.get("decl") != entry.get("decl") or row.get("kind") != "hole"
+                or not path.is_file()):
+            return False
+        adaptations = [item for item in self.inventory.get("downstream_adaptations", [])
+                       if item.get("path") == relative]
+        if len(adaptations) != 1:
+            return False
+        adapted = adaptations[0]
+        current_bytes = path.read_bytes()
+        upstream_bytes = self._load_upstream_blob(relative, revision)
+        if (upstream_bytes is None or entry.get("sha256") != self.blob_hashes[relative]
+                or hashlib.sha256(current_bytes).hexdigest() != adapted.get("sha256")
+                or not adapted.get("declarations") or not adapted.get("source_revision")
+                or not adapted.get("reason")):
+            return False
+        upstream_blob = hashlib.sha1(b"blob " + str(len(upstream_bytes)).encode() + b"\0"
+                                     + upstream_bytes).hexdigest()
+        if upstream_blob != adapted.get("upstream_blob"):
+            return False
+        # The reviewed declaration identity must be unambiguous in both source
+        # versions. The strict parser rejects uncertain command boundaries.
+        from integration.extract_downstream_extensions import parse_commands
+        try:
+            current = current_bytes.decode("utf-8")
+            upstream = upstream_bytes.decode("utf-8")
+            def matching(text: str):
+                return [command for command in parse_commands(text)
+                        if command.full_name == entry.get("declaration")
+                        and f"{command.kind} {command.name}" == entry.get("decl")]
+            old_commands, new_commands = matching(upstream), matching(current)
+        except (UnicodeError, ValueError):
+            return False
+        if len(old_commands) != 1 or len(new_commands) != 1:
+            return False
+        old, new = old_commands[0], new_commands[0]
+        def digest(text: str, command) -> str:
+            return hashlib.sha256(text[command.start:command.end].strip().encode()).hexdigest()
+        if not entry.get("command_sha256") == digest(upstream, old) == digest(current, new):
+            return False
+        offset = row.get("offset")
+        token = row.get("token")
+        return (isinstance(offset, int) and isinstance(token, str)
+                and new.start <= offset < new.end
+                and current[offset:offset + len(token)] == token)
 
 # Heads of proof-carrying declarations whose statement type must never be the
 # vacuous `True`. The live `theorem`/`lemma` keyword starts a declaration
@@ -202,7 +329,7 @@ def load_allowlist(path: Path) -> set[str]:
 def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
     """Return files to scan, whether this is a full-ArkLib scan, and path errors."""
     if not args:
-        return sorted(f for name in ("ArkLib", "Research") for f in Path(name).rglob("*.lean")), True, []
+        return sorted(f for name in ("ArkLib", "Research", "ProximityPrize") for f in Path(name).rglob("*.lean")), True, []
 
     files: set[Path] = set()
     full_arklib_scan = False
@@ -225,6 +352,7 @@ def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
         if nested_arklib.is_dir():
             files.update(nested_arklib.rglob("*.lean"))
             files.update((path / "Research").rglob("*.lean"))
+            files.update((path / "ProximityPrize").rglob("*.lean"))
             full_arklib_scan = True
         else:
             files.update(path.rglob("*.lean"))
@@ -772,8 +900,10 @@ def main() -> int:
         return 1
 
     allowlist = load_allowlist(ALLOWLIST_PATH)
+    inherited = InheritedSourcePolicy()
     failures: list[str] = []
     allowed_hits: list[str] = []
+    inherited_hits: list[str] = []
     seen_allowed: set[str] = set()
     allow_sites: dict[str, list[str]] = {}
     for path in files:
@@ -862,6 +992,10 @@ def main() -> int:
                 )
 
         for line_no, name in find_true_placebos(text, lexed):
+            if inherited.allows(path, name, "vacuous_true_theorem"):
+                inherited_hits.append(f"{path}:{line_no}: inherited upstream True stub {name} "
+                                      "(byte-pinned debt; scripts/upstream-source-policy.json)")
+                continue
             failures.append(
                 f"{path}:{line_no}: forbidden vacuous placebo "
                 f"`theorem/lemma {name} : True` proves nothing about the named "
@@ -895,11 +1029,14 @@ def main() -> int:
         return 1
     if allowed_hits:
         print("\n".join(allowed_hits))
+    if inherited_hits:
+        print("\n".join(inherited_hits))
     print(
         "forbidden-token precheck: clean (no native_decide / bv_decide / "
         "unsafe declaration / unsafeCast / implemented_by / "
-        "undocumented custom axiom / vacuous `: True` placebo; "
-        f"{len(allowed_hits)} allowlisted residual axiom(s))"
+        "undocumented custom axiom / new vacuous `: True` placebo; "
+        f"{len(allowed_hits)} allowlisted residual axiom(s), "
+        f"{len(inherited_hits)} byte-pinned upstream True stub(s))"
     )
     return 0
 

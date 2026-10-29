@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.MCAListBracketInterpolation
 import ArkLib.Data.CodingTheory.ProximityGap.MCADeltaStarExactPoint
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # The first exact `δ*` for an infinite family: `δ*(RS[F, D, n−2], ε*) = 1/n` (#357)

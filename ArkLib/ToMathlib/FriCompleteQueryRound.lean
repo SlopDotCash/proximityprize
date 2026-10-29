@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Fri.Spec.Completeness
+import ProximityPrize.Extensions.ProofSystem.Fri.Spec.Completeness
 import ArkLib.ToVCVio.Lemmas
 import ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype
 
@@ -42,29 +42,11 @@ open OracleSpec OracleComp ProtocolSpec NNReal Domain
 
 namespace Fri.Spec.Completeness
 
-/-- The empty oracle spec is (vacuously) `Inhabited`: it has no query domain. -/
-instance instEmptySpecInhabited : ([]ₒ : OracleSpec PEmpty).Inhabited where
-  inhabited_B := fun t => t.elim
-
 variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F] [SampleableType F]
 variable {n : ℕ}
 variable {k : ℕ} {s : Fin (k + 1) → ℕ+} {d : ℕ+}
 variable {ω : SmoothCosetFftDomain n F}
 variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp))
-
-/-- Fintype for the query-round challenge oracle spec **at the generic challenge interface**
-(the interface the generic unroll machinery elaborates `[pSpec.Challenge]ₒ` with — distinct
-from the round's bespoke per-challenge instance). -/
-noncomputable instance instQueryChallengeGenericFintype (l : ℕ) [NeZero l] :
-    ([(QueryRound.pSpec (ω := ω) l).Challenge]ₒ'
-      (fun i => challengeOracleInterface i)).Fintype :=
-  ProtocolSpec.challengeOracle_fintype (QueryRound.pSpec (ω := ω) l)
-
-/-- Inhabitedness at the generic challenge interface. -/
-noncomputable instance instQueryChallengeGenericInhabited (l : ℕ) [NeZero l] :
-    ([(QueryRound.pSpec (ω := ω) l).Challenge]ₒ'
-      (fun i => challengeOracleInterface i)).Inhabited :=
-  ProtocolSpec.challengeOracle_inhabited (QueryRound.pSpec (ω := ω) l)
 
 /-- **The checker-acceptance invariant** (the full-chain consistency invariant of the FRI
 query phase, stated in the checker's own currency): the compiled query verifier never fails
@@ -74,16 +56,12 @@ check passes at every sample point". -/
 def queryCheckerAccepts (cond : (∑ j', (s j').1) ≤ n) (l : ℕ) [NeZero l]
     (stmt : FinalStatement F k) (oStmt : ∀ j, FinalOracleStatement s ω j) : Prop :=
   ∀ tr : (QueryRound.pSpec (ω := ω) l).FullTranscript,
-    probFailure
-      (m := OptionT (OracleComp ([]ₒ + [(QueryRound.pSpec (ω := ω) l).Challenge]ₒ' (fun i => challengeOracleInterface i))))
-      (mx := liftComp ((QueryRound.queryVerifier.{0} (k_le_n := cond) s l).toVerifier.verify
-        (stmt, oStmt) tr) ([]ₒ + [(QueryRound.pSpec (ω := ω) l).Challenge]ₒ' (fun i => challengeOracleInterface i))) = 0 ∧
-    ∀ x, x ∈ support
-      (liftComp ((QueryRound.queryVerifier.{0} (k_le_n := cond) s l).toVerifier.verify
-        (stmt, oStmt) tr) ([]ₒ + [(QueryRound.pSpec (ω := ω) l).Challenge]ₒ' (fun i => challengeOracleInterface i)) :
-        OptionT (OracleComp ([]ₒ + [(QueryRound.pSpec (ω := ω) l).Challenge]ₒ' (fun i => challengeOracleInterface i)))
-          (FinalStatement F k × ∀ j, FinalOracleStatement s ω j)) →
-      x = (stmt, oStmt)
+    let verified := liftComp
+      ((QueryRound.queryVerifier (k_le_n := cond) s l).toVerifier.verify (stmt, oStmt) tr).run
+      ([]ₒ + [(QueryRound.pSpec (ω := ω) l).Challenge]ₒ'
+        (fun i => challengeOracleInterface i))
+    none ∉ support verified ∧
+      ∀ out, some out ∈ support verified → out = (stmt, oStmt)
 
 /-- The repaired query-round input relation: the base relation conjoined with
 checker acceptance. -/
@@ -130,37 +108,28 @@ theorem queryRound_perfectCompleteness_repaired
     OracleReduction.perfectCompleteness init impl
       (queryRoundChainRelation (ω := ω) dom_size_cond l δ)
       (QueryRound.outputRelation s (ω := ω) d (round_bound dom_size_cond) δ)
-      (QueryRound.queryOracleReduction.{0} s d dom_size_cond l) := by
+      (QueryRound.queryOracleReduction s d dom_size_cond l) := by
   classical
-  rw [OracleReduction.unroll_1_message_reduction_perfectCompleteness_V_to_P
-    (QueryRound.queryOracleReduction.{0} s d dom_size_cond l)
-    (queryRoundChainRelation (ω := ω) dom_size_cond l δ)
-    (QueryRound.outputRelation s (ω := ω) d (round_bound dom_size_cond) δ)
-    init impl hInit (by rfl) hImplSupp]
-  rintro stmtIn oStmtIn witIn ⟨h_base, h_acc⟩
-  -- the prover is a pure pass-through
-  dsimp only [QueryRound.queryOracleReduction, QueryRound.queryProver]
-  simp only [Fin.isValue, bind_pure_comp, pure_bind, Prod.mk.eta, liftComp_pure, liftM_pure]
-  rw [probEvent_eq_one_iff]
-  constructor
-  · -- SAFETY: the run never fails
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun chal _hchal => ?_⟩
-    · simp only [OptionT.probFailure_liftM, HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map]
-      exact (h_acc (ProtocolSpec.FullTranscript.mk1 chal)).1
-  · -- CORRECTNESS: every output in the support satisfies the event
-    intro x hx
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨chal, _hchal, hx⟩ := hx
-    simp only [support_map, Set.mem_image] at hx
-    obtain ⟨verOut, hverOut, hx⟩ := hx
-    -- the verifier output is pinned by checker acceptance
-    have hpin : verOut = (stmtIn, oStmtIn) := by
-      simpa using (h_acc (ProtocolSpec.FullTranscript.mk1 chal)).2 (some verOut) hverOut
+  unfold OracleReduction.perfectCompleteness
+  apply Reduction.perfectCompleteness_of_run_support init impl
+  rintro ⟨stmt, oracles⟩ wit ⟨hbase, hacc⟩ value hvalue
+  rw [Reduction.run_run_eq_bind] at hvalue
+  change value ∈ support (do
+    let pr ← (QueryRound.queryProver s d l).run (stmt, oracles) wit
+    let out ← liftComp ((QueryRound.queryVerifier s (round_bound dom_size_cond) l).toVerifier.run
+      (stmt, oracles) pr.1).run _
+    pure (out.map (fun v => (pr, v)))) at hvalue
+  rw [QueryRound.queryProver_run] at hvalue
+  simp only [bind_assoc, pure_bind] at hvalue
+  obtain ⟨chal, _, hvalue⟩ := OracleComp.mem_support_bind_peel _ _ hvalue
+  obtain ⟨out, hout, hvalue⟩ := OracleComp.mem_support_bind_peel _ _ hvalue
+  cases out with
+  | none => exact False.elim ((hacc _).1 hout)
+  | some out =>
+    have hpin := (hacc _).2 out hout
     subst hpin
-    subst hx
-    exact ⟨h_base, rfl, rfl⟩
+    simp only [Option.map_some, mem_support_pure_iff] at hvalue
+    exact ⟨_, hvalue, hbase, rfl⟩
 
 /-- **The cleanly re-scoped remaining hypothesis (issue #341): chain delivery.**  The fold phase
 is expected to be perfectly complete **into the strengthened (chain) relation**: honest folding

@@ -64,12 +64,12 @@ instance firstSumcheckLensCompleteBF :
         (firstSumcheckContextLens pp).toContext) where
   proj_complete := by
     rintro ⟨⟨τ, 𝕩⟩, oStmt⟩ ⟨⟩ hRelIn
-    simp only [firstSumcheckRelInBF, Set.mem_setOf_eq] at hRelIn
+    simp only [firstSumcheckRelInBF, Set.mem_ofPred_eq] at hRelIn
     exact firstSumcheck_proj_mem_relationRound pp τ 𝕩 oStmt hRelIn
   lift_complete := by
     rintro ⟨⟨τ, 𝕩⟩, oStmt⟩ ⟨⟩ ⟨⟨t_out, r_x⟩, oStmt'⟩ ⟨⟩ _hCompat hRelIn _hRelOut
-    simp only [firstSumcheckRelInBF, Set.mem_setOf_eq] at hRelIn
-    simpa only [firstSumcheckRelOutBF, Set.mem_setOf_eq] using hRelIn
+    simp only [firstSumcheckRelInBF, Set.mem_ofPred_eq] at hRelIn
+    exact hRelIn
 
 /-- First sum-check phase perfect completeness (restated transfer), given inner completeness. -/
 theorem firstSumcheck_perfectCompletenessBF
@@ -81,8 +81,8 @@ theorem firstSumcheck_perfectCompletenessBF
         (Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (Fin.last pp.ℓ_m))) :
     (firstSumcheckReduction pp oSpec).perfectCompleteness init impl
       (firstSumcheckRelInBF (R := R) pp) (firstSumcheckRelOutBF (R := R) pp) := by
-  haveI := firstSumcheckCoherent (R := R) pp oSpec
-  exact OracleReduction.liftContext_perfectCompleteness
+  have := firstSumcheckCoherent (R := R) pp oSpec
+  exact OracleReduction.liftContextLegacy_perfectCompleteness
     (R := Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec)
     (lens := firstSumcheckContextLens pp)
     (stmtLens := firstSumcheckOracleLens pp oSpec)
@@ -101,7 +101,7 @@ unconditional (the bridge→threaded re-point that `firstSumcheck_perfectComplet
 left open). -/
 theorem firstSumcheck_perfectCompleteness_bridgeFree
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
-    [Inhabited R] [oSpec.Fintype] [oSpec.Inhabited]
+    [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
@@ -112,3 +112,7 @@ theorem firstSumcheck_perfectCompleteness_bridgeFree
     (Sumcheck.Spec.oracleReduction_perfectCompleteness_unconditional hInit hImplSupp)
 
 end Spartan.Spec
+
+#print axioms Spartan.Spec.firstSumcheck_perfectCompletenessBF
+
+#print axioms Spartan.Spec.firstSumcheck_perfectCompleteness_bridgeFree

@@ -397,7 +397,7 @@ theorem hcardFin_of_graded_nonmonic (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
               + (H.leadingCoeff).natDegree)
               * (2 * t - 1)
             + (D - H.natDegree + 1)) * H.natDegree : ℕ) : WithBot ℕ) :=
-    withBot_mul_right_le''' (by simpa using hwt)
+    withBot_mul_right_le''' hwt
   exact lt_of_le_of_lt hmul (hconcreteFin t hkt htT)
 
 /-- **The non-monic finite-range `hcardFin` family at the signed canonical family
@@ -429,7 +429,7 @@ theorem hcardFin_of_graded_signed_nonmonic (x₀ : F) (R : F[X][X][Y]) (H : F[X]
               + (H.leadingCoeff).natDegree)
               * (2 * t - 1)
             + (D - H.natDegree + 1)) * H.natDegree : ℕ) : WithBot ℕ) :=
-    withBot_mul_right_le''' (by simpa using hwt)
+    withBot_mul_right_le''' hwt
   exact lt_of_le_of_lt hmul (hconcreteFin t hkt htT)
 
 end NonmonicWeight

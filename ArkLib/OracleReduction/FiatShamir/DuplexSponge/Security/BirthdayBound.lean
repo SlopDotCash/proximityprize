@@ -6,6 +6,8 @@ Authors: ArkLib Contributors
 
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.Lemma512Honest
 import VCVio.OracleComp.QueryTracking.Birthday
+import VCVio.EvalDist.ProbabilityBounds
+import VCVio.OracleComp.Constructions.SampleableType.Measure
 
 /-!
 # Birthday-bound bricks for the DSFS bad events (CO25 Lemma 5.8 / Claim 5.21, R1)
@@ -109,17 +111,17 @@ theorem probEvent_simulateQ_stateT_le_sum_of_step
     {impl : QueryImpl spec (StateT σ ProbComp)}
     {bad : σ → Prop} {size : σ → ℕ} {ε : ℕ → ℝ≥0∞} (hmono : Monotone ε)
     (hstep_bad : ∀ (t : spec.Domain) (s : σ), ¬ bad s →
-      Pr[ fun us : spec.Range t × σ => bad us.2 | (impl t).run s] ≤ ε (size s))
+      Pr{let us ← ((impl t).run s)}[bad us.2] ≤ ε (size s))
     (hstep_size : ∀ (t : spec.Domain) (s : σ), ¬ bad s →
       ∀ us ∈ support ((impl t).run s), size us.2 ≤ size s + 1)
     {oa : OracleComp spec α} (T : ℕ) (hT : IsTotalQueryBound oa T)
     (s₀ : σ) (h₀ : ¬ bad s₀) :
-    Pr[ fun xs : α × σ => bad xs.2 | (simulateQ impl oa).run s₀] ≤
+    Pr{let xs ← ((simulateQ impl oa).run s₀)}[bad xs.2] ≤
       ∑ i ∈ Finset.range T, ε (size s₀ + i) := by
   induction oa using OracleComp.inductionOn generalizing T s₀ with
   | pure x =>
       simp only [simulateQ_pure, StateT.run_pure]
-      refine le_trans (le_of_eq (probEvent_eq_zero fun z hz hbad => ?_)) (zero_le _)
+      refine le_trans (le_of_eq (prEvent_eq_zero_of_forall_mem_support _ _ fun z hz hbad => ?_)) (zero_le)
       rw [support_pure, Set.mem_singleton_iff] at hz
       subst hz
       exact h₀ hbad
@@ -128,19 +130,17 @@ theorem probEvent_simulateQ_stateT_le_sum_of_step
       obtain ⟨hTpos, hrest⟩ := hT
       rw [simulateQ_query_bind, StateT.run_bind]
       simp only [OracleQuery.input_query, monadLift_self]
-      have hmain := probEvent_bind_le_add
-        (mx := (impl t).run s₀)
-        (my := fun us => (simulateQ impl (mx us.1)).run us.2)
-        (p := fun us : spec.Range t × σ => ¬ bad us.2)
-        (q := fun xs : α × σ => ¬ bad xs.2)
-        (ε₁ := ε (size s₀))
-        (ε₂ := ∑ i ∈ Finset.range (T - 1), ε (size s₀ + 1 + i))
-        (by simpa [not_not] using hstep_bad t s₀ h₀)
+      have hmain := (prEvent_bind_le_prEvent_add_of_support
+        ((impl t).run s₀)
+        (fun us => (simulateQ impl (mx us.1)).run us.2)
+        (fun us : spec.Range t × σ => bad us.2)
+        (fun xs : α × σ => bad xs.2)
+        (ε := ∑ i ∈ Finset.range (T - 1), ε (size s₀ + 1 + i))
         (fun us hus hnb => by
-          refine le_trans (by simpa [not_not] using ih us.1 (T - 1) (hrest us.1) us.2 hnb) ?_
+          refine le_trans (ih us.1 (T - 1) (hrest us.1) us.2 hnb) ?_
           refine Finset.sum_le_sum fun i _ => hmono ?_
           have := hstep_size t s₀ h₀ us hus
-          omega)
+          omega)).trans (add_le_add (hstep_bad t s₀ h₀) le_rfl)
       refine le_trans (by simpa [not_not] using hmain) ?_
       have hT1 : T = (T - 1) + 1 := by omega
       refine le_of_eq ?_
@@ -171,16 +171,16 @@ omit [DecidableEq X] in
 /-- One fresh uniform draw collides with a duplicate-free answer list `l` with probability
 at most `|l|/|X|` (the per-step cost of the birthday accumulator). -/
 lemma freshUniformLogImpl_step_collision_le (a : A) (l : List X) (hl : ¬¬ l.Nodup) :
-    Pr[ fun us : X × List X => ¬ us.2.Nodup | (freshUniformLogImpl A X a).run l] ≤
+    Pr{let us ← ((freshUniformLogImpl A X a).run l)}[¬ us.2.Nodup] ≤
       (l.length : ℝ≥0∞) * (Fintype.card X : ℝ≥0∞)⁻¹ := by
   letI : DecidableEq X := Classical.decEq X
   rw [not_not] at hl
-  change Pr[ fun us : X × List X => ¬ us.2.Nodup | (fun x => (x, x :: l)) <$> ($ᵗ X)] ≤ _
-  rw [probEvent_map]
-  refine le_trans (probEvent_mono'' (q := fun x => x ∈ l) fun x hx => ?_) ?_
+  change Pr{let us ← ((fun x => (x, x :: l)) <$> ($ᵗ X))}[¬ us.2.Nodup] ≤ _
+  rw [prEvent_map]
+  refine le_trans (prEvent_mono _ _ (fun x => x ∈ l) fun x hx => ?_) ?_
   · by_contra hmem
     exact hx (List.nodup_cons.mpr ⟨hmem, hl⟩)
-  · rw [probEvent_uniformSample, div_eq_mul_inv]
+  · rw [SampleableType.prEvent_uniformSample, div_eq_mul_inv]
     refine mul_le_mul' ?_ le_rfl
     calc ((Finset.univ.filter (fun x => x ∈ l)).card : ℝ≥0∞)
         ≤ (l.toFinset.card : ℝ≥0∞) := by
@@ -194,8 +194,7 @@ answered by fresh uniform draws over `X` produce two equal answers with probabil
 `T(T−1)/(2|X|)`. -/
 theorem probEvent_collision_freshUniformLog_le_tight {α : Type}
     (oa : OracleComp (A →ₒ X) α) (T : ℕ) (hT : IsTotalQueryBound oa T) :
-    Pr[ fun xs : α × List X => ¬ xs.2.Nodup |
-        (simulateQ (freshUniformLogImpl A X) oa).run []] ≤
+    Pr{let xs ← ((simulateQ (freshUniformLogImpl A X) oa).run [])}[¬ xs.2.Nodup] ≤
       ((T * (T - 1) : ℕ) : ℝ≥0∞) / (2 * Fintype.card X) := by
   have h := probEvent_simulateQ_stateT_le_sum_of_step
     (impl := freshUniformLogImpl A X)
@@ -218,8 +217,7 @@ omit [DecidableEq X] in
 the CO25 §5.8 claim arithmetic). -/
 theorem probEvent_collision_freshUniformLog_le {α : Type}
     (oa : OracleComp (A →ₒ X) α) (T : ℕ) (hT : IsTotalQueryBound oa T) :
-    Pr[ fun xs : α × List X => ¬ xs.2.Nodup |
-        (simulateQ (freshUniformLogImpl A X) oa).run []] ≤
+    Pr{let xs ← ((simulateQ (freshUniformLogImpl A X) oa).run [])}[¬ xs.2.Nodup] ≤
       ((T : ℝ≥0∞) ^ 2) / (2 * Fintype.card X) := by
   refine le_trans (probEvent_collision_freshUniformLog_le_tight A X oa T hT) ?_
   gcongr
@@ -246,8 +244,7 @@ with probability at most `Tk/|X|`. -/
 theorem probEvent_hit_freshUniformHit_le {α : Type} (S : A → Finset X) (k : ℕ)
     (hS : ∀ a, (S a).card ≤ k)
     (oa : OracleComp (A →ₒ X) α) (T : ℕ) (hT : IsTotalQueryBound oa T) :
-    Pr[ fun xs : α × Bool => xs.2 = true |
-        (simulateQ (freshUniformHitImpl A X S) oa).run false] ≤
+    Pr{let xs ← ((simulateQ (freshUniformHitImpl A X S) oa).run false)}[xs.2 = true] ≤
       (T : ℝ≥0∞) * k / Fintype.card X := by
   have h := probEvent_simulateQ_stateT_le_sum_of_step
     (impl := freshUniformHitImpl A X S)
@@ -257,12 +254,11 @@ theorem probEvent_hit_freshUniformHit_le {α : Type} (S : A → Finset X) (k : �
     (fun a b hb => by
       have hbf : b = false := by simpa using hb
       subst hbf
-      change Pr[ fun us : X × Bool => us.2 = true |
-        (fun x => (x, false || decide (x ∈ S a))) <$> ($ᵗ X)] ≤ _
-      rw [probEvent_map]
-      refine le_trans (probEvent_mono'' (q := fun x => x ∈ S a) fun x hx => by
+      change Pr{let us ← ((fun x => (x, false || decide (x ∈ S a))) <$> ($ᵗ X))}[us.2 = true] ≤ _
+      rw [prEvent_map]
+      refine le_trans (prEvent_mono _ _ (fun x => x ∈ S a) fun x hx => by
         simpa using hx) ?_
-      rw [probEvent_uniformSample, Finset.filter_univ_mem, div_eq_mul_inv]
+      rw [SampleableType.prEvent_uniformSample, Finset.filter_univ_mem, div_eq_mul_inv]
       exact mul_le_mul' (by exact_mod_cast hS a) le_rfl)
     (fun _ _ _ _ _ => Nat.zero_le _)
     T hT false (by simp)
@@ -369,11 +365,11 @@ theorem probEvent_honestBad_le_probEvent_E
     {β : Type} (game : ProbComp β)
     (tr : β → QueryLog (duplexSpongeChallengeOracle StmtIn U))
     (st : β → CanonicalSpongeState U) :
-    Pr[ fun z => ∃ S : Backtrack.S_BT (tr z) (st z),
+    Pr{let z ← (game)}[∃ S : Backtrack.S_BT (tr z) (st z),
         E_inv_honest (tr z) (st z) S ∨ E_fork_honest (tr z) (st z) S
-          ∨ E_time_honest (tr z) (st z) S | game]
-      ≤ Pr[ fun z => E (tr z) | game] := by
-  refine probEvent_mono'' fun z hz => ?_
+          ∨ E_time_honest (tr z) (st z) S]
+      ≤ Pr{let z ← (game)}[E (tr z)] := by
+  refine prEvent_mono _ _ _ fun z hz => ?_
   obtain ⟨S, hS⟩ := hz
   by_contra hE
   rcases hS with h | h | h
@@ -390,10 +386,10 @@ theorem probEvent_dedupTimeHonest_le_probEvent_E
     {β : Type} (game : ProbComp β)
     (tr : β → QueryLog (duplexSpongeChallengeOracle StmtIn U))
     (st : β → CanonicalSpongeState U) :
-    Pr[ fun z => ∃ S : Backtrack.S_BT (removeRedundantEntryDS (tr z)).1 (st z),
-        E_time_honest (removeRedundantEntryDS (tr z)).1 (st z) S | game]
-      ≤ Pr[ fun z => E (tr z) | game] := by
-  refine probEvent_mono'' fun z hz => ?_
+    Pr{let z ← (game)}[∃ S : Backtrack.S_BT (removeRedundantEntryDS (tr z)).1 (st z),
+        E_time_honest (removeRedundantEntryDS (tr z)).1 (st z) S]
+      ≤ Pr{let z ← (game)}[E (tr z)] := by
+  refine prEvent_mono _ _ _ fun z hz => ?_
   obtain ⟨S, hS⟩ := hz
   by_contra hE
   exact (Sponge316.not_e_time_honest_removeRedundantEntryDS_of_not_E_raw
@@ -408,13 +404,12 @@ theorem probEvent_honestBadDedupTime_le_probEvent_E
     {β : Type} (game : ProbComp β)
     (tr : β → QueryLog (duplexSpongeChallengeOracle StmtIn U))
     (st : β → CanonicalSpongeState U) :
-    Pr[ fun z =>
-        (∃ S : Backtrack.S_BT (tr z) (st z),
+    Pr{let z ← (game)}[(∃ S : Backtrack.S_BT (tr z) (st z),
           E_inv_honest (tr z) (st z) S ∨ E_fork_honest (tr z) (st z) S) ∨
         ∃ S : Backtrack.S_BT (removeRedundantEntryDS (tr z)).1 (st z),
-          E_time_honest (removeRedundantEntryDS (tr z)).1 (st z) S | game]
-      ≤ Pr[ fun z => E (tr z) | game] := by
-  refine probEvent_mono'' fun z hz => ?_
+          E_time_honest (removeRedundantEntryDS (tr z)).1 (st z) S]
+      ≤ Pr{let z ← (game)}[E (tr z)] := by
+  refine prEvent_mono _ _ _ fun z hz => ?_
   by_contra hE
   rcases hz with hRaw | hTime
   · obtain ⟨S, hS⟩ := hRaw
@@ -474,11 +469,10 @@ work; the steps 1–3 above describe the proof plan against the *repaired* event
 def Lemma5_8EagerBirthdayFalseStatement : Prop :=
   ∀ {α : Type} (P : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (T : ℕ),
     IsTotalQueryBound P T →
-    (Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) => E z.2 |
-      do
+    (Pr{let z ← (do
         let c ← (D_DS StmtIn U).sample
         simulateQ ((D_DS StmtIn U).toImpl c)
-          ((simulateQ loggingOracle P).run)]).toReal
+          ((simulateQ loggingOracle P).run))}[E z.2]).toReal
       ≤ lemma5_8Bound U T
 
 variable {StmtIn U}
@@ -497,16 +491,14 @@ theorem honestBad_birthday_of_residuals
     (h58 : Lemma5_8EagerBirthdayFalseStatement StmtIn U)
     {α : Type} (P : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (T : ℕ)
     (hT : IsTotalQueryBound P T) (st₀ : CanonicalSpongeState U) :
-    (Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) =>
-        ∃ S : Backtrack.S_BT z.2 st₀,
-          E_inv_honest z.2 st₀ S ∨ E_fork_honest z.2 st₀ S ∨ E_time_honest z.2 st₀ S |
-      do
+    (Pr{let z ← (do
         let c ← (D_DS StmtIn U).sample
         simulateQ ((D_DS StmtIn U).toImpl c)
-          ((simulateQ loggingOracle P).run)]).toReal
+          ((simulateQ loggingOracle P).run))}[∃ S : Backtrack.S_BT z.2 st₀,
+          E_inv_honest z.2 st₀ S ∨ E_fork_honest z.2 st₀ S ∨ E_time_honest z.2 st₀ S]).toReal
       ≤ lemma5_8Bound U T := by
   refine le_trans (ENNReal.toReal_mono
-    (ne_top_of_le_ne_top ENNReal.one_ne_top probEvent_le_one) ?_) (h58 P T hT)
+    (ne_top_of_le_ne_top ENNReal.one_ne_top (prEvent_le_one _)) ?_) (h58 P T hT)
   exact probEvent_honestBad_le_probEvent_E h12 h14 h16 _
     (fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) => z.2) (fun _ => st₀)
 
@@ -517,16 +509,14 @@ theorem dedupTimeHonest_birthday_of_residual
     (h58 : Lemma5_8EagerBirthdayFalseStatement StmtIn U)
     {α : Type} (P : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (T : ℕ)
     (hT : IsTotalQueryBound P T) (st₀ : CanonicalSpongeState U) :
-    (Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) =>
-        ∃ S : Backtrack.S_BT (removeRedundantEntryDS z.2).1 st₀,
-          E_time_honest (removeRedundantEntryDS z.2).1 st₀ S |
-      do
+    (Pr{let z ← (do
         let c ← (D_DS StmtIn U).sample
         simulateQ ((D_DS StmtIn U).toImpl c)
-          ((simulateQ loggingOracle P).run)]).toReal
+          ((simulateQ loggingOracle P).run))}[∃ S : Backtrack.S_BT (removeRedundantEntryDS z.2).1 st₀,
+          E_time_honest (removeRedundantEntryDS z.2).1 st₀ S]).toReal
       ≤ lemma5_8Bound U T := by
   refine le_trans (ENNReal.toReal_mono
-    (ne_top_of_le_ne_top ENNReal.one_ne_top probEvent_le_one) ?_) (h58 P T hT)
+    (ne_top_of_le_ne_top ENNReal.one_ne_top (prEvent_le_one _)) ?_) (h58 P T hT)
   exact probEvent_dedupTimeHonest_le_probEvent_E _
     (fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) => z.2) (fun _ => st₀)
 
@@ -540,18 +530,16 @@ theorem honestBadDedupTime_birthday_of_residuals
     (h58 : Lemma5_8EagerBirthdayFalseStatement StmtIn U)
     {α : Type} (P : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (T : ℕ)
     (hT : IsTotalQueryBound P T) (st₀ : CanonicalSpongeState U) :
-    (Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) =>
-        (∃ S : Backtrack.S_BT z.2 st₀,
-          E_inv_honest z.2 st₀ S ∨ E_fork_honest z.2 st₀ S) ∨
-        ∃ S : Backtrack.S_BT (removeRedundantEntryDS z.2).1 st₀,
-          E_time_honest (removeRedundantEntryDS z.2).1 st₀ S |
-      do
+    (Pr{let z ← (do
         let c ← (D_DS StmtIn U).sample
         simulateQ ((D_DS StmtIn U).toImpl c)
-          ((simulateQ loggingOracle P).run)]).toReal
+          ((simulateQ loggingOracle P).run))}[(∃ S : Backtrack.S_BT z.2 st₀,
+          E_inv_honest z.2 st₀ S ∨ E_fork_honest z.2 st₀ S) ∨
+        ∃ S : Backtrack.S_BT (removeRedundantEntryDS z.2).1 st₀,
+          E_time_honest (removeRedundantEntryDS z.2).1 st₀ S]).toReal
       ≤ lemma5_8Bound U T := by
   refine le_trans (ENNReal.toReal_mono
-    (ne_top_of_le_ne_top ENNReal.one_ne_top probEvent_le_one) ?_) (h58 P T hT)
+    (ne_top_of_le_ne_top ENNReal.one_ne_top (prEvent_le_one _)) ?_) (h58 P T hT)
   exact probEvent_honestBadDedupTime_le_probEvent_E h12 h14 _
     (fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) => z.2) (fun _ => st₀)
 

@@ -4,182 +4,32 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao, Katerina Hristova, František Silváši, Julian Sutherland,
          Ilia Vlasov, Chung Thai Nguyen
 -/
+module
 
-import ArkLib.Data.CodingTheory.ProximityGap.Basic
-import ArkLib.Data.CodingTheory.GuruswamiSudan.Basic
-import ArkLib.Data.CodingTheory.GuruswamiSudan.GuruswamiSudan
-import ArkLib.Data.Polynomial.Trivariate
-import Mathlib.Combinatorics.Pigeonhole
+public import ArkLib.Data.CodingTheory.ProximityGap.Basic
+public import ArkLib.Data.CodingTheory.GuruswamiSudan.Basic
+public import ArkLib.Data.CodingTheory.GuruswamiSudan.GuruswamiSudan
+public import ArkLib.Data.Polynomial.Trivariate
 
 /-!
-# BCIKS20 §5 trivariate Guruswami–Sudan interpolation
+# Guruswami–Sudan interpolation for BCIKS20
 
-This file builds the trivariate Guruswami–Sudan interpolation machinery used by the [BCIKS20]
-§5 proximity-gap list-decoding argument (Claim 5.4 and surrounding).  Working with
-`Q : F[Z][X][Y]` over the coefficient ring `S = F[Z]` (an integral domain, not a field), it
-re-establishes the order-`m` vanishing criterion `triv_rootMultiplicity_ge_of_shift_zero` over
-any domain, develops generic weighted-degree sub-additivity and trivariate monomial degree
-facts, sets up the Guruswami–Sudan linear system together with its box/budget counting
-inequality and `Z`-degree budget, and proves existence of a nonzero kernel element.
+This module proves the existence and divisibility statements of BCIKS20 Lemma 5.3 and the
+modified trivariate interpolation construction of Claim 5.4. The construction supplies a
+nonzero polynomial satisfying the degree and multiplicity bounds in `ModifiedGuruswami`.
+
+The affine-line correlated-agreement theorem in `BCIKS20.AffineLines.Main` uses the proved
+Johnson bound independently of this construction.
 -/
 
-namespace ProximityGap
+@[expose] public section
 
--- Decidability/Fintype instances are threaded through the sections for the §5 machinery;
--- several statement-level lemmas do not mention them directly.
-set_option linter.unusedDecidableInType false
-set_option linter.unusedSectionVars false
-set_option linter.unusedFintypeInType false
+namespace ProximityGap
 
 open NNReal Finset Function ProbabilityTheory Code
 open scoped BigOperators LinearCode
 
 universe u v w k l
-
-/-! ### Generic order-of-vanishing lower bound over an integral-domain coefficient ring
-
-The bivariate root-multiplicity lower bound `GuruswamiSudan.rootMultiplicity_ge_of_shift_zero`
-is stated over a field.  The trivariate Guruswami–Sudan setting of [BCIKS20] Claim 5.4 evaluates
-multiplicity of `Q : F[Z][X][Y]` over the coefficient ring `S = F[Z] = Polynomial F`, which is an
-integral domain but not a field.  The lemmas below re-establish the order-`m` vanishing criterion
-(`triv_rootMultiplicity_ge_of_shift_zero`) over any `[CommRing S] [IsDomain S]`, mirroring the
-field proof but only using `NoZeroDivisors`. -/
-section GenericTrivariateMultiplicity
-
-open Polynomial Polynomial.Bivariate
-
-variable {S : Type} [CommRing S] [IsDomain S] [DecidableEq S]
-
-private lemma triv_comp_add_C_eq_zero_iff (p : S[X]) (a : S) :
-    p.comp (Polynomial.X + Polynomial.C a) = 0 ↔ p = 0 := by
-  rw [Polynomial.comp_eq_zero_iff]
-  refine ⟨?_, fun h => Or.inl h⟩
-  rintro (h | ⟨_, h2⟩)
-  · exact h
-  · exfalso; have := congrArg (fun q => Polynomial.coeff q 1) h2; simp at this
-
-private lemma triv_compRingHom_addC_injective (a : S) :
-    Function.Injective
-      (Polynomial.compRingHom (Polynomial.X + Polynomial.C a) : S[X] →+* S[X]) := by
-  rw [injective_iff_map_eq_zero]; intro r hr
-  rw [Polynomial.coe_compRingHom] at hr; exact (triv_comp_add_C_eq_zero_iff r a).mp hr
-
-omit [IsDomain S] in
-private lemma triv_rm0_none_imp_zero (g : S[X][Y]) (hg : rootMultiplicity₀ g = none) :
-    g = 0 := by
-  unfold rootMultiplicity₀ at hg
-  cases hwd : weightedDegree g 1 1 with
-  | none => exact absurd hwd (weightedDegree_ne_none _ _ _)
-  | some deg =>
-    rw [hwd] at hg; simp only at hg
-    rw [List.min?_eq_none_iff, List.filterMap_eq_nil_iff] at hg
-    have hcoeff_zero : ∀ s t, s ≤ deg → t ≤ deg → coeff g s t = 0 := by
-      intro s t hs ht
-      have hmem := hg (s, t) (by
-        rw [List.product, List.mem_flatMap]
-        refine ⟨s, List.mem_range.mpr (Nat.lt_succ_of_le hs), ?_⟩
-        rw [List.mem_map]; exact ⟨t, List.mem_range.mpr (Nat.lt_succ_of_le ht), rfl⟩)
-      by_contra hc; simp only [hc, if_false] at hmem; exact (Option.some_ne_none _ hmem)
-    have hwd_nat : natWeightedDegree g 1 1 = deg := by
-      rw [weightedDegree_eq_natWeightedDegree] at hwd; exact Option.some.inj hwd
-    have hcn : ∀ nn, g.coeff nn = 0 := by
-      intro nn; by_contra hgn
-      have hb : 1 * (g.coeff nn).natDegree + 1 * nn ≤ natWeightedDegree g 1 1 :=
-        Finset.le_sup (f := fun mm => 1 * (g.coeff mm).natDegree + 1 * mm)
-          (Polynomial.mem_support_iff.mpr hgn)
-      rw [hwd_nat] at hb; simp only [one_mul] at hb
-      have hn' : nn ≤ deg := by omega
-      apply hgn; ext s; simp only [Polynomial.coeff_zero]
-      by_cases hs : s ≤ deg
-      · have := hcoeff_zero s nn hs hn'; rwa [Bivariate.coeff] at this
-      · push Not at hs; exact Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
-    exact Polynomial.ext (fun nn => by rw [hcn nn, Polynomial.coeff_zero])
-
-private lemma triv_shift_eq_zero_iff (f : S[X][Y]) (x y : S) :
-    shift f x y = 0 ↔ f = 0 := by
-  unfold shift
-  rw [Polynomial.map_eq_zero_iff (triv_compRingHom_addC_injective x)]
-  exact triv_comp_add_C_eq_zero_iff f (Polynomial.C y)
-
-omit [IsDomain S] in
-private lemma triv_rm0_some_witness (g : S[X][Y]) (val : ℕ)
-    (hg : rootMultiplicity₀ g = some val) :
-    ∃ s t, coeff g s t ≠ 0 ∧ s + t = val := by
-  unfold rootMultiplicity₀ at hg
-  cases hwd : weightedDegree g 1 1 with
-  | none => rw [hwd] at hg; simp at hg
-  | some deg =>
-    rw [hwd] at hg; simp only at hg
-    have hmem := List.min?_mem hg
-    rw [List.mem_filterMap] at hmem
-    obtain ⟨⟨s, t⟩, _, hval⟩ := hmem
-    by_cases hc : coeff g s t = 0
-    · simp [hc] at hval
-    · simp only [hc, if_false] at hval; exact ⟨s, t, hc, by simpa using hval⟩
-
-/-- Order-`m` vanishing from shifted-coefficient vanishing, over an integral-domain coefficient
-ring `S`.  This is the `[CommRing S] [IsDomain S]` port of the field-only
-`GuruswamiSudan.rootMultiplicity_ge_of_shift_zero`, needed for the trivariate setting `S = F[Z]`. -/
-private lemma triv_rootMultiplicity_ge_of_shift_zero {f : S[X][Y]} {x y : S}
-    {m : ℕ} (hf : f ≠ 0)
-    (h : ∀ s t, s + t < m → ((shift f x y).coeff t).coeff s = 0) :
-    (m : ℕ) ≤ Bivariate.rootMultiplicity f x y := by
-  unfold Bivariate.rootMultiplicity
-  cases hrm : rootMultiplicity₀ (shift f x y) with
-  | none => exact absurd ((triv_shift_eq_zero_iff f x y).mp (triv_rm0_none_imp_zero _ hrm)) hf
-  | some val =>
-    show (m : Option ℕ) ≤ some val
-    have hmval : m ≤ val := by
-      by_contra hlt
-      push Not at hlt
-      obtain ⟨s, t, hne, hst⟩ := triv_rm0_some_witness (shift f x y) val hrm
-      apply hne; rw [Bivariate.coeff]; exact h s t (by omega)
-    exact_mod_cast hmval
-
-end GenericTrivariateMultiplicity
-
-/-! ### Generic weighted-degree sub-additivity (any coefficient semiring)
-
-These mirror `GuruswamiSudan.natWeightedDegree_{add,sum,smul}_le` (which are proven for a field
-coefficient ring) over an arbitrary semiring `S`, so they apply to the trivariate setting where the
-coefficient ring is `S = F[Z]`. -/
-section GenericTrivariateDegree
-
-open Polynomial Polynomial.Bivariate
-
-variable {S : Type} [Semiring S]
-
-lemma tri_natWeightedDegree_add_le (p q : S[X][Y]) (u v : ℕ) :
-    natWeightedDegree (p + q) u v ≤ max (natWeightedDegree p u v) (natWeightedDegree q u v) := by
-  refine Finset.sup_le fun mm hm ↦ ?_
-  by_cases h : mm ∈ p.support <;>
-  by_cases h' : mm ∈ q.support <;>
-    simp_all only [Polynomial.mem_support_iff, coeff_add, ne_eq, le_sup_iff]
-  · have h_deg : (p.coeff mm + q.coeff mm).natDegree ≤
-        max ((p.coeff mm).natDegree) ((q.coeff mm).natDegree) :=
-      natDegree_add_le (p.coeff mm) (q.coeff mm)
-    cases max_cases (natDegree (p.coeff mm)) (natDegree (q.coeff mm)) <;>
-      simp_all only [sup_of_le_left, sup_eq_left, and_self, natWeightedDegree]
-    · exact Or.inl (le_trans (add_le_add (mul_le_mul_of_nonneg_left h_deg <| Nat.zero_le _) le_rfl)
-        <| Finset.le_sup (f := fun mm ↦ u * natDegree (p.coeff mm) + v * mm) <| by aesop)
-    · exact Or.inr (le_trans (add_le_add (mul_le_mul_of_nonneg_left h_deg <| Nat.zero_le _) le_rfl)
-        <| Finset.le_sup (f := fun mm ↦ u * natDegree (q.coeff mm) + v * mm) <| by aesop)
-  all_goals simp_all only [not_not, add_zero, zero_add, not_false_eq_true]
-  · exact Or.inl <| Finset.le_sup (f := fun mm ↦ u * natDegree (p.coeff mm) + v * mm) <| by aesop
-  · exact Or.inr <| Finset.le_sup (f := fun mm ↦ u * natDegree (q.coeff mm) + v * mm) <| by aesop
-  · simp at hm
-
-lemma tri_natWeightedDegree_sum_le {ι : Type*} (s : Finset ι) (f : ι → S[X][Y]) (u v : ℕ) :
-    natWeightedDegree (∑ i ∈ s, f i) u v ≤ s.sup (fun i ↦ natWeightedDegree (f i) u v) := by
-  classical
-  induction s using Finset.induction with
-  | empty => simp only [Finset.sum_empty, Finset.sup_empty, Nat.bot_eq_zero, nonpos_iff_eq_zero,
-      natWeightedDegree, Polynomial.support_zero, coeff_zero, natDegree_zero, mul_zero, zero_add,
-      Finset.sup_empty, Nat.bot_eq_zero]
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sup_insert]
-                        exact le_trans (tri_natWeightedDegree_add_le _ _ _ _) (max_le_max le_rfl ih)
-
-end GenericTrivariateDegree
 
 section BCIKS20ProximityGapSection5
 
@@ -216,9 +66,9 @@ lemma guruswami_sudan_for_proximity_gap_property {k m : ℕ} {ωs : Fin n ↪ F}
     (hk : k + 2 ≤ n) (hm : 1 ≤ m)
     (cond : Conditions (k + 1) m (_root_.proximity_gap_degree_bound (k + 1) n m) ωs w Q)
     {p : ReedSolomon.code ωs (k + 1)}
-    (h : (↑Δ₀(w, fun i ↦ Polynomial.eval (ωs i) (ReedSolomon.codewordToPoly p)) : ℝ) / ↑n <
+    (h : (↑Δ₀(w, fun i ↦ Polynomial.eval (ωs i) (ReedSolomon.toPolynomial p)) : ℝ) / ↑n <
          _root_.proximity_gap_johnson (k + 1) n m) :
-    (Polynomial.X - Polynomial.C (ReedSolomon.codewordToPoly p)) ∣ Q :=
+    (Polynomial.X - Polynomial.C (ReedSolomon.toPolynomial p)) ∣ Q :=
   GuruswamiSudan.proximity_gap_divisibility hk hm p cond h
 
 /-- The Guruswami-Sudan condition as it is stated in [BCIKS20]. -/
@@ -238,7 +88,7 @@ structure ModifiedGuruswami
             ≥ m
   /-- The X-degree bound. -/
   Q_deg_X :
-    degreeX Q < D_X ((k + 1) / (n : ℚ)) n m
+    Trivariate.degreeInX Q < D_X ((k + 1) / (n : ℚ)) n m
   /-- The Y-degree bound. -/
   Q_D_Y :
     D_Y Q < D_X ((k + 1 : ℚ) / n) n m / k
@@ -246,1011 +96,1013 @@ structure ModifiedGuruswami
   Q_D_YZ :
     D_YZ Q ≤ n * (m + 1/(2 : ℚ))^3 / (6 * Real.sqrt ((k + 1) / n))
 
-section ModifiedGuruswamiHelpers
+private theorem finsetMaxGetD_le (s : Finset ℕ) (B : ℕ)
+    (h : ∀ a ∈ s, a ≤ B) : Option.getD (Finset.max s) 0 ≤ B := by
+  have hmax : Finset.max s ≤ (B : WithBot ℕ) := by
+    apply Finset.max_le
+    intro a ha
+    exact WithBot.coe_le_coe.mpr (h a ha)
+  have hunbot : (Finset.max s).unbotD 0 ≤ B := by
+    rw [WithBot.unbotD_le_iff]
+    · exact hmax
+    · intro hbot
+      omega
+  have heq : (Finset.max s).unbotD 0 = Option.getD (Finset.max s) 0 := by
+    cases Finset.max s <;> rfl
+  rw [← heq]
+  exact hunbot
 
-/-! ### Degree facts for the trivariate constant `1`
 
-The constant polynomial `1 : F[Z][X][Y]` has all (bivariate-over-`F[Z]`) degree measures equal
-to `0` and root multiplicity `0` at every curve point. These are the base facts used when
-building/reasoning about candidate solutions `Q` of `ModifiedGuruswami` and, in particular, they
-pin down the value of each `ModifiedGuruswami` constraint on the simplest nonzero witness. -/
 
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- The `X`-degree of the trivariate constant `1` is `0`. -/
-lemma degreeX_one_triv : degreeX (1 : F[Z][X][Y]) = 0 := by
-  unfold Polynomial.Bivariate.degreeX
-  apply le_antisymm _ (Nat.zero_le _)
-  apply Finset.sup_le
-  intro i hi
-  rw [Polynomial.mem_support_iff] at hi
-  rcases eq_or_ne i 0 with h | h
-  · subst h; simp
-  · simp [Polynomial.coeff_one, h] at hi
 
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- The `Y`-degree of the trivariate constant `1` is `0`. -/
-lemma natDegreeY_one_triv : natDegreeY (1 : F[Z][X][Y]) = 0 := by
-  unfold Polynomial.Bivariate.natDegreeY
-  simp
+private noncomputable def symbolicGSEvalConstraint {F : Type} [Field F]
+    (x y : Polynomial F) (s t d : ℕ) :
+    Polynomial (Polynomial (Polynomial F)) →ₗ[F] F where
+  toFun Q := ((((Polynomial.Bivariate.shift Q x y).coeff t).coeff s).coeff d)
+  map_add' Q R := by simp [Polynomial.Bivariate.shift]
+  map_smul' a Q := by simp [Polynomial.Bivariate.shift]
 
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- The `(u, v)`-weighted degree of the trivariate constant `1` is `0`. -/
-lemma natWeightedDegree_one_triv (u v : ℕ) :
-    natWeightedDegree (1 : F[Z][X][Y]) u v = 0 := by
-  unfold Polynomial.Bivariate.natWeightedDegree
-  apply le_antisymm _ (Nat.zero_le _)
-  apply Finset.sup_le
-  intro i hi
-  rw [Polynomial.mem_support_iff] at hi
-  rcases eq_or_ne i 0 with h | h
-  · subst h; simp
-  · simp [Polynomial.coeff_one, h] at hi
+private theorem symbolicInnerMonomial_shift_coeff {F : Type} [Field F]
+    (a h : ℕ) (x : F) (s : ℕ) :
+    (((Polynomial.monomial a (Polynomial.monomial h 1) :
+      Polynomial (Polynomial F)).comp
+        (Polynomial.X + Polynomial.C (Polynomial.C x))).coeff s) =
+      Polynomial.monomial h (x ^ (a - s) * (a.choose s : F)) := by
+  rw [Polynomial.monomial_comp, Polynomial.coeff_C_mul,
+    Polynomial.coeff_X_add_C_pow]
+  rw [← Polynomial.C_eq_natCast]
+  rw [← map_pow, ← map_mul, Polynomial.monomial_mul_C, one_mul]
 
-omit [DecidableEq (RatFunc F)] in
-/-- The root multiplicity of the trivariate constant `1` at any point `(x, y)` is `0`.
-Here the coefficient ring is `F[Z] = Polynomial (Polynomial F)`. -/
-lemma rootMultiplicity_one_triv (x y : Polynomial F) :
-    rootMultiplicity (1 : F[Z][X][Y]) x y = some 0 := by
-  unfold Polynomial.Bivariate.rootMultiplicity
-  rw [show Polynomial.Bivariate.shift (1 : F[Z][X][Y]) x y = 1 from by
-    unfold Polynomial.Bivariate.shift; simp]
-  unfold Polynomial.Bivariate.rootMultiplicity₀
-  have hw : weightedDegree (1 : F[Z][X][Y]) 1 1 = some 0 := by
-    unfold Polynomial.Bivariate.weightedDegree
-    simp [Polynomial.natDegree_one]
-  rw [hw]
-  simp only [Nat.succ_eq_add_one, Nat.zero_add, List.range_one]
-  have hp : ([0].product [0]) = [((0 : ℕ), (0 : ℕ))] := rfl
-  rw [hp]
-  simp only [List.filterMap_cons, List.filterMap_nil]
-  have hc : coeff (1 : F[Z][X][Y]) 0 0 = 1 := by
-    simp [Polynomial.Bivariate.coeff, Polynomial.coeff_one]
-  rw [hc, if_neg one_ne_zero]
-  simp
+private noncomputable def symbolicModifiedGSCap (n k m : ℕ) : ℕ :=
+  _root_.proximity_gap_degree_bound k n m
 
-/-! ### Necessity of `0 < n` and `0 < k`
+private theorem symbolicModifiedGSCap_le_DX {n k m : ℕ} (hn : 0 < n) :
+    (symbolicModifiedGSCap n k m : ℝ) ≤
+      D_X ((k + 1 : ℚ) / n) n m := by
+  unfold symbolicModifiedGSCap _root_.proximity_gap_degree_bound D_X
+  dsimp only
+  exact Nat.floor_le (by positivity)
 
-The statement of Claim 5.4 below quantifies over **all** `n, k, m`.  As formalized this is
-**unsatisfiable** when `n = 0` or `k = 0`: the degree bound `D_X ρ n m` collapses to `0`, while
-the `X`-degree (resp. `Y`-degree) of any polynomial is a natural number `≥ 0`, so the strict
-constraints `degreeX Q < D_X …` (resp. `D_Y Q < D_X … / k`) cannot hold.
+private theorem symbolicModifiedGSCap_pos {n k m : ℕ}
+    (hn : 0 < n) (hk : 0 < k) (hm : 1 ≤ m) :
+    0 < symbolicModifiedGSCap n k m := by
+  unfold symbolicModifiedGSCap _root_.proximity_gap_degree_bound
+  dsimp only
+  rw [Nat.floor_pos]
+  let y : ℝ := Real.sqrt (↑((k + 1 : ℚ) / n)) * n
+  have hy0 : 0 ≤ y := by positivity
+  have hr : 0 ≤ (↑((k + 1 : ℚ) / n) : ℝ) := by positivity
+  have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt hn)
+  have hysq : y ^ 2 = ((k : ℝ) + 1) * n := by
+    dsimp [y]
+    rw [mul_pow, Real.sq_sqrt hr]
+    push_cast
+    field_simp [hn0]
+  have hysq2 : 2 ≤ y ^ 2 := by
+    rw [hysq]
+    have hk' : (1 : ℝ) ≤ k := by exact_mod_cast hk
+    have hn' : (1 : ℝ) ≤ n := by exact_mod_cast hn
+    linarith [mul_le_mul (show (2 : ℝ) ≤ k + 1 by linarith) hn' (by positivity) (by positivity)]
+  have hy1 : 1 ≤ y := (one_le_pow_iff_of_nonneg hy0 two_ne_zero).mp (by linarith)
+  have hy1' : 1 ≤ Real.sqrt (↑((k + 1 : ℚ) / n)) * n := by exact hy1
+  have hm' : (1 : ℝ) ≤ m := by exact_mod_cast hm
+  rw [mul_assoc]
+  have hfac : (1 : ℝ) ≤ m + 1 / 2 := by linarith
+  have hmul : (m + 1 / 2 : ℝ) * 1 ≤
+      (m + 1 / 2 : ℝ) * (Real.sqrt (↑((k + 1 : ℚ) / n)) * n) :=
+    mul_le_mul_of_nonneg_left hy1' (by positivity)
+  exact hfac.trans (by simpa only [mul_one] using hmul)
 
-The two lemmas below record this precisely: any solution forces a contradiction.  Hence a faithful
-restatement of Claim 5.4 must assume `0 < n` and `0 < k` (matching the non-degenerate Reed–Solomon
-regime `k + 1 ≤ n` of [BCIKS20], and the `1 < k`, `n ≠ 0` hypotheses of the bivariate analogue
-`GuruswamiSudan.gs_existence`). -/
+private theorem symbolicModifiedGSCap_sq_gt {n k m : ℕ} (hn : 0 < n) :
+    ((symbolicModifiedGSCap n k m : ℝ) + 1) ^ 2 >
+      (m + 1 / 2) ^ 2 * (k + 1) * n := by
+  unfold symbolicModifiedGSCap
+  exact GuruswamiSudan.proximity_gap_degree_bound_sq_gt
+    (k := k) (n := n) (m := m) (ne_of_gt hn)
 
-omit [DecidableEq (RatFunc F)] in
-/-- For `n = 0`, no `Q` can satisfy `ModifiedGuruswami`: the `X`-degree bound `D_X ρ 0 m = 0`
-forces `(degreeX Q : ℝ) < 0`, which is impossible. -/
-lemma modified_guruswami_unsat_of_n_zero {m k : ℕ} {ωs : Fin 0 ↪ F} {Q : F[Z][X][Y]}
-    {u₀ u₁ : Fin 0 → F} (h : ModifiedGuruswami m 0 k ωs Q u₀ u₁) : False := by
-  have hX := h.Q_deg_X
-  unfold D_X at hX
-  simp only [mul_zero, CharP.cast_eq_zero] at hX
-  exact absurd hX (not_lt.mpr (Nat.cast_nonneg _))
+private theorem symbolicOuterAffine_map {F : Type} [Field F]
+    (x y₀ y₁ : F) :
+    Polynomial.map
+      (Polynomial.compRingHom (Polynomial.X + Polynomial.C (Polynomial.C x)))
+      (Polynomial.X + Polynomial.C
+        (Polynomial.C (Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁))) =
+      Polynomial.X + Polynomial.C
+        (Polynomial.C (Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁)) := by
+  simp [Polynomial.coe_compRingHom_apply]
 
-omit [DecidableEq (RatFunc F)] in
-/-- For `k = 0`, no `Q` can satisfy `ModifiedGuruswami`: the `Y`-degree bound `D_X ρ n m / 0 = 0`
-forces `(D_Y Q : ℝ) < 0`, which is impossible. -/
-lemma modified_guruswami_unsat_of_k_zero {m n : ℕ} {ωs : Fin n ↪ F} {Q : F[Z][X][Y]}
-    {u₀ u₁ : Fin n → F} (h : ModifiedGuruswami m n 0 ωs Q u₀ u₁) : False := by
-  have hY := h.Q_D_Y
-  simp only [Nat.cast_zero, div_zero] at hY
-  exact absurd hY (not_lt.mpr (Nat.cast_nonneg _))
 
-/-! ### Trivariate monomial degree facts
+private noncomputable def symbolicUpperTriangleBase (n k m : ℕ) : Finset (ℕ × ℕ) :=
+  (GuruswamiSudan.weightBoundIndices (k + 2) (symbolicModifiedGSCap n k m - 1)).image
+    (fun p => (p.1 + p.2, p.2))
 
-The candidate solution `Q` of `ModifiedGuruswami` is assembled from the monomials `X^i Y^j Z^t`.
-The lemmas below pin down each degree measure of a single such monomial, which is what controls
-where a sum of monomials sits relative to the `ModifiedGuruswami` degree bounds. -/
+private theorem symbolicCapPoint_not_mem_base {n k m : ℕ}
+    (hn : 0 < n) (hk : 0 < k) (hm : 1 ≤ m) :
+    (symbolicModifiedGSCap n k m, 0) ∉ symbolicUpperTriangleBase n k m := by
+  classical
+  intro hmem
+  unfold symbolicUpperTriangleBase at hmem
+  rw [Finset.mem_image] at hmem
+  obtain ⟨q, hq, heq⟩ := hmem
+  unfold GuruswamiSudan.weightBoundIndices at hq
+  simp only [Finset.mem_filter] at hq
+  simp only [Prod.mk.injEq] at heq
+  have hLpos := symbolicModifiedGSCap_pos hn hk hm
+  have hq2 : q.2 = 0 := heq.2
+  have hq1 : q.1 = symbolicModifiedGSCap n k m := by omega
+  have hw := hq.2
+  rw [hq2, hq1] at hw
+  simp only [mul_zero, add_zero] at hw
+  omega
 
-/-- The trivariate monomial `X^i Y^j Z^t` as an element of `F[Z][X][Y]`. -/
-noncomputable def triMonomial (i j t : ℕ) : F[Z][X][Y] :=
-  Polynomial.monomial j (Polynomial.monomial i (Polynomial.monomial t (1 : F)))
+private theorem symbolicUpperTriangleBase_card (n k m : ℕ) :
+    (symbolicUpperTriangleBase n k m).card =
+      GuruswamiSudan.numVars (k + 2) (symbolicModifiedGSCap n k m - 1) := by
+  classical
+  let s := GuruswamiSudan.weightBoundIndices (k + 2)
+    (symbolicModifiedGSCap n k m - 1)
+  let f : ℕ × ℕ → ℕ × ℕ := fun p => (p.1 + p.2, p.2)
+  have hinj : Set.InjOn f (s : Set (ℕ × ℕ)) := by
+    intro p hp q hq h
+    rcases p with ⟨p₁, p₂⟩
+    rcases q with ⟨q₁, q₂⟩
+    simp only [f, Prod.mk.injEq] at h ⊢
+    omega
+  unfold symbolicUpperTriangleBase GuruswamiSudan.numVars
+  exact Finset.card_image_iff.mpr hinj
 
-omit [DecidableEq (RatFunc F)] in
-/-- The trivariate monomial `X^i Y^j Z^t` is nonzero. -/
-lemma triMonomial_ne_zero (i j t : ℕ) : triMonomial (F := F) i j t ≠ 0 := by
-  unfold triMonomial; simp
+private noncomputable def symbolicUpperTriangleCandidates (n k m : ℕ) : Finset (ℕ × ℕ) :=
+  if (symbolicModifiedGSCap n k m : ℝ) < D_X ((k + 1 : ℚ) / n) n m then
+    insert (symbolicModifiedGSCap n k m, 0) (symbolicUpperTriangleBase n k m)
+  else
+    symbolicUpperTriangleBase n k m
 
-omit [DecidableEq (RatFunc F)] in
-/-- `degreeX (X^i Y^j Z^t) = i`. -/
-lemma degreeX_triMonomial (i j t : ℕ) : degreeX (triMonomial (F := F) i j t) = i := by
-  unfold degreeX triMonomial
-  rw [Polynomial.support_monomial _
-    (by simp : (Polynomial.monomial i (Polynomial.monomial t (1:F))) ≠ 0)]
-  simp [Polynomial.coeff_monomial, Polynomial.natDegree_monomial]
+private theorem symbolicUpperTriangleCandidates_support {n k m : ℕ}
+    (hn : 0 < n) (hk : 0 < k) (hm : 1 ≤ m) :
+    ∀ p ∈ symbolicUpperTriangleCandidates n k m,
+      p.2 ≤ p.1 ∧
+      ((p.1 + k * p.2 : ℕ) : ℝ) < D_X ((k + 1 : ℚ) / n) n m := by
+  intro p hp
+  have hLpos := symbolicModifiedGSCap_pos hn hk hm
+  have hLle := symbolicModifiedGSCap_le_DX (n := n) (k := k) (m := m) hn
+  unfold symbolicUpperTriangleCandidates at hp
+  split at hp
+  · rename_i hstrict
+    simp only [Finset.mem_insert] at hp
+    rcases hp with rfl | hp
+    · exact ⟨by simp only [Nat.zero_le], by simpa using hstrict⟩
+    · unfold symbolicUpperTriangleBase at hp
+      rw [Finset.mem_image] at hp
+      obtain ⟨q, hq, rfl⟩ := hp
+      unfold GuruswamiSudan.weightBoundIndices at hq
+      simp only [Finset.mem_filter] at hq
+      have hweight : q.1 + (k + 1) * q.2 ≤ symbolicModifiedGSCap n k m - 1 := by
+        simpa only [show k + 2 - 1 = k + 1 by omega] using hq.2
+      constructor
+      · omega
+      · have heq : q.1 + q.2 + k * q.2 = q.1 + (k + 1) * q.2 := by ring
+        have hnat : q.1 + q.2 + k * q.2 < symbolicModifiedGSCap n k m := by
+          rw [heq]
+          omega
+        exact (by exact_mod_cast hnat :
+          ((q.1 + q.2 + k * q.2 : ℕ) : ℝ) < symbolicModifiedGSCap n k m) |>.trans_le hLle
+  · unfold symbolicUpperTriangleBase at hp
+    rw [Finset.mem_image] at hp
+    obtain ⟨q, hq, rfl⟩ := hp
+    unfold GuruswamiSudan.weightBoundIndices at hq
+    simp only [Finset.mem_filter] at hq
+    have hweight : q.1 + (k + 1) * q.2 ≤ symbolicModifiedGSCap n k m - 1 := by
+      simpa only [show k + 2 - 1 = k + 1 by omega] using hq.2
+    constructor
+    · omega
+    · have heq : q.1 + q.2 + k * q.2 = q.1 + (k + 1) * q.2 := by ring
+      have hnat : q.1 + q.2 + k * q.2 < symbolicModifiedGSCap n k m := by
+        rw [heq]
+        omega
+      exact (by exact_mod_cast hnat :
+        ((q.1 + q.2 + k * q.2 : ℕ) : ℝ) < symbolicModifiedGSCap n k m) |>.trans_le hLle
 
-omit [DecidableEq (RatFunc F)] in
-/-- `natDegreeY (X^i Y^j Z^t) = j`. -/
-lemma natDegreeY_triMonomial (i j t : ℕ) : natDegreeY (triMonomial (F := F) i j t) = j := by
-  unfold natDegreeY triMonomial
-  rw [Polynomial.natDegree_monomial]
-  simp
+open scoped BigOperators in
+private def symbolicYSum (A : Finset (ℕ × ℕ)) : ℕ := ∑ p ∈ A, p.2
 
-omit [DecidableEq (RatFunc F)] in
-/-- `natWeightedDegree (X^i Y^j Z^t) u v = u*i + v*j`. -/
-lemma natWeightedDegree_triMonomial (i j t u v : ℕ) :
-    natWeightedDegree (triMonomial (F := F) i j t) u v = u * i + v * j := by
-  unfold natWeightedDegree triMonomial
-  rw [Polynomial.support_monomial _
-    (by simp : (Polynomial.monomial i (Polynomial.monomial t (1:F))) ≠ 0)]
-  simp [Polynomial.coeff_monomial, Polynomial.natDegree_monomial]
+private def SymbolicGSConstraintIndex (n m : ℕ) (A : Finset (ℕ × ℕ)) :=
+  Fin n × (GuruswamiSudan.constraintIndices m) × Fin (symbolicYSum A + 1)
 
-omit [DecidableEq (RatFunc F)] in
-/-- The `D_YZ` measure (as defined in `Trivariate.lean`) of a monomial `X^i Y^j Z^t` with `i ≠ j`
-equals just the `Y`-degree index `j`.
+private abbrev SymbolicGSIndex (A : Finset (ℕ × ℕ)) :=
+  Σ p : {q // q ∈ A}, Fin (symbolicYSum A - p.1.2 + 1)
 
-This records a property of the *current* `D_YZ` definition: it computes
-`max over j_Y of (j_Y + max over k_X of (Bivariate.coeff Q j_Y k_X).natDegree)`, and since
-`Bivariate.coeff Q a b = (Q.coeff b).coeff a` (the first argument is the inner `X`-index), the
-inner contribution vanishes for a single monomial unless `i = j`.  In particular the `Z`-degree
-`t` is not captured, which makes the `Q_D_YZ` bound of `ModifiedGuruswami` easy to satisfy. -/
-lemma D_YZ_triMonomial_of_ne (i j t : ℕ) (hij : i ≠ j) :
-    D_YZ (triMonomial (F := F) i j t) = j := by
-  unfold D_YZ triMonomial
-  rw [Polynomial.support_monomial _
-    (by simp : (Polynomial.monomial i (Polynomial.monomial t (1:F))) ≠ 0)]
-  simp only [Finset.image_singleton, Finset.max_singleton]
-  have hcj : (Polynomial.monomial j (Polynomial.monomial i (Polynomial.monomial t (1:F)))).coeff j
-      = Polynomial.monomial i (Polynomial.monomial t (1:F)) := by
-    rw [Polynomial.coeff_monomial, if_pos rfl]
-  rw [hcj]
-  rw [Polynomial.support_monomial _ (by simp : (Polynomial.monomial t (1:F)) ≠ 0)]
-  simp only [Finset.image_singleton, Finset.max_singleton]
-  unfold Polynomial.Bivariate.coeff
-  rw [Polynomial.coeff_monomial, if_neg (Ne.symm hij)]
-  simp [Polynomial.natDegree_zero]
+private noncomputable def symbolicGSBasis {F : Type} [Field F]
+    {A : Finset (ℕ × ℕ)} (q : SymbolicGSIndex A) :
+    Polynomial (Polynomial (Polynomial F)) :=
+  Polynomial.monomial q.1.1.2
+    (Polynomial.monomial q.1.1.1 (Polynomial.monomial q.2.1 1))
+
+private theorem symbolicGSBasis_shift_coeff_formula {F : Type} [Field F]
+    {A : Finset (ℕ × ℕ)} (q : SymbolicGSIndex A)
+    (x y₀ y₁ : F) (s t : ℕ) :
+    ((Polynomial.Bivariate.shift (symbolicGSBasis (F := F) q)
+      (Polynomial.C x)
+      (Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁)).coeff t).coeff s =
+    Polynomial.monomial q.2.1
+      (x ^ (q.1.1.1 - s) * (q.1.1.1.choose s : F) * (q.1.1.2.choose t : F)) *
+      (Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁) ^ (q.1.1.2 - t) := by
+  classical
+  unfold symbolicGSBasis Polynomial.Bivariate.shift
+  rw [Polynomial.monomial_comp, Polynomial.map_mul, Polynomial.map_C,
+    Polynomial.map_pow, symbolicOuterAffine_map]
+  rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_add_C_pow]
+  rw [← Polynomial.C_eq_natCast]
+  rw [← map_pow, ← map_mul, Polynomial.coeff_mul_C]
+  rw [Polynomial.coe_compRingHom_apply, symbolicInnerMonomial_shift_coeff]
+  rw [← Polynomial.C_eq_natCast]
+  calc
+    Polynomial.monomial q.2.1
+        (x ^ (q.1.1.1 - s) * (q.1.1.1.choose s : F)) *
+        ((Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁) ^ (q.1.1.2 - t) *
+          Polynomial.C (q.1.1.2.choose t : F)) =
+      (Polynomial.monomial q.2.1
+        (x ^ (q.1.1.1 - s) * (q.1.1.1.choose s : F)) *
+          Polynomial.C (q.1.1.2.choose t : F)) *
+        (Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁) ^ (q.1.1.2 - t) := by ring
+    _ = Polynomial.monomial q.2.1
+        (x ^ (q.1.1.1 - s) * (q.1.1.1.choose s : F) * (q.1.1.2.choose t : F)) *
+        (Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁) ^ (q.1.1.2 - t) := by
+      rw [Polynomial.monomial_mul_C]
+
+private theorem symbolicGSBasis_shift_coeff_natDegree_le {F : Type} [Field F]
+    {A : Finset (ℕ × ℕ)} (q : SymbolicGSIndex A)
+    (x y₀ y₁ : F) (s t : ℕ) :
+    (((Polynomial.Bivariate.shift (symbolicGSBasis (F := F) q)
+      (Polynomial.C x)
+      (Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁)).coeff t).coeff s).natDegree ≤
+      q.2.1 + q.1.1.2 := by
+  rw [symbolicGSBasis_shift_coeff_formula]
+  have hL : (Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁).natDegree ≤ 1 := by
+    rw [show Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁ =
+      Polynomial.C y₁ * Polynomial.X + Polynomial.C y₀ by ring]
+    exact Polynomial.natDegree_linear_le
+  have hpow := Polynomial.natDegree_pow_le_of_le (q.1.1.2 - t) hL
+  have hmono := Polynomial.natDegree_monomial_le
+    (m := q.2.1)
+    (x ^ (q.1.1.1 - s) * (q.1.1.1.choose s : F) * (q.1.1.2.choose t : F))
+  calc
+    (Polynomial.monomial q.2.1
+        (x ^ (q.1.1.1 - s) * (q.1.1.1.choose s : F) * (q.1.1.2.choose t : F)) *
+      (Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁) ^ (q.1.1.2 - t)).natDegree
+        ≤ (Polynomial.monomial q.2.1
+          (x ^ (q.1.1.1 - s) * (q.1.1.1.choose s : F) * (q.1.1.2.choose t : F))).natDegree +
+          ((Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁) ^ (q.1.1.2 - t)).natDegree :=
+      Polynomial.natDegree_mul_le
+    _ ≤ q.2.1 + (q.1.1.2 - t) := by
+      exact add_le_add hmono (by simpa only [mul_one] using hpow)
+    _ ≤ q.2.1 + q.1.1.2 := by omega
+
+private noncomputable instance symbolicGSConstraintIndexFintype (n m : ℕ)
+    (A : Finset (ℕ × ℕ)) : Fintype (SymbolicGSConstraintIndex n m A) := by
+  unfold SymbolicGSConstraintIndex
+  infer_instance
+
+private theorem symbolicGSConstraintIndex_card (n m : ℕ) (A : Finset (ℕ × ℕ)) :
+    Fintype.card (SymbolicGSConstraintIndex n m A) =
+      GuruswamiSudan.numConstraints n m * (symbolicYSum A + 1) := by
+  classical
+  change Fintype.card
+    (Fin n × ((GuruswamiSudan.constraintIndices m) × Fin (symbolicYSum A + 1))) = _
+  rw [Fintype.card_prod, Fintype.card_prod]
+  simp only [Fintype.card_fin, Fintype.card_coe, GuruswamiSudan.numConstraints,
+    Nat.mul_assoc]
+
+open scoped BigOperators in
+private theorem symbolicGSIndex_card_sum (A : Finset (ℕ × ℕ)) :
+    Fintype.card (SymbolicGSIndex A) =
+      ∑ p : {q // q ∈ A}, (symbolicYSum A - p.1.2 + 1) := by
+  classical
+  simpa only [Fintype.card_fin] using
+    (Fintype.card_sigma :
+      Fintype.card (Σ p : {q // q ∈ A}, Fin (symbolicYSum A - p.1.2 + 1)) =
+        ∑ p : {q // q ∈ A}, Fintype.card (Fin (symbolicYSum A - p.1.2 + 1)))
+
+private noncomputable def symbolicGSPolyLinearMap {F : Type} [Field F]
+    (A : Finset (ℕ × ℕ)) : (SymbolicGSIndex A → F) →ₗ[F]
+      Polynomial (Polynomial (Polynomial F)) :=
+  Finsupp.linearCombination F (fun q : SymbolicGSIndex A =>
+    Polynomial.monomial q.1.1.2
+      (Polynomial.monomial q.1.1.1 (Polynomial.monomial q.2.1 1))) ∘ₗ
+    (Finsupp.linearEquivFunOnFinite F F (SymbolicGSIndex A)).symm.toLinearMap
+
+private noncomputable def symbolicGSConstraintMap {F : Type} [Field F]
+    (n m : ℕ) (A : Finset (ℕ × ℕ)) (ωs : Fin n ↪ F) (u₀ u₁ : Fin n → F) :
+    (SymbolicGSIndex A → F) →ₗ[F] (SymbolicGSConstraintIndex n m A → F) :=
+  LinearMap.pi (fun q =>
+    symbolicGSEvalConstraint
+      (Polynomial.C (ωs q.1))
+      (Polynomial.C (u₀ q.1) + Polynomial.X * Polynomial.C (u₁ q.1))
+      q.2.1.1.1 q.2.1.1.2 q.2.2 ∘ₗ
+    symbolicGSPolyLinearMap (F := F) A)
+
+private structure SymbolicGSKernelWitness {F : Type} [Field F]
+    (n m : ℕ) (A : Finset (ℕ × ℕ)) (ωs : Fin n ↪ F) (u₀ u₁ : Fin n → F) where
+  c : SymbolicGSIndex A → F
+  c_ne_zero : c ≠ 0
+  constraints : symbolicGSConstraintMap n m A ωs u₀ u₁ c = 0
+
+open scoped BigOperators in
+private noncomputable def symbolicGSPoly {F : Type} [Field F] (A : Finset (ℕ × ℕ))
+    (c : SymbolicGSIndex A → F) : Polynomial (Polynomial (Polynomial F)) :=
+  symbolicGSPolyLinearMap (F := F) A c
+
+private theorem symbolicGSConstraintMap_apply {F : Type} [Field F]
+    (n m : ℕ) (A : Finset (ℕ × ℕ)) (ωs : Fin n ↪ F) (u₀ u₁ : Fin n → F)
+    (c : SymbolicGSIndex A → F) (q : SymbolicGSConstraintIndex n m A) :
+    symbolicGSConstraintMap n m A ωs u₀ u₁ c q =
+      ((((Polynomial.Bivariate.shift (symbolicGSPoly (F := F) A c)
+        (Polynomial.C (ωs q.1))
+        (Polynomial.C (u₀ q.1) + Polynomial.X * Polynomial.C (u₁ q.1))).coeff
+          q.2.1.1.2).coeff q.2.1.1.1).coeff q.2.2) := by
   rfl
 
-/-! ### Assembling a candidate from box-indexed coefficients
+private theorem symbolicGSPolyMultiplicityBridge {F : Type} [Field F] [DecidableEq F]
+    {m n : ℕ} {A : Finset (ℕ × ℕ)} {ωs : Fin n ↪ F} {u₀ u₁ : Fin n → F}
+    {c : SymbolicGSIndex A → F}
+    (hQ : symbolicGSPoly (F := F) A c ≠ 0)
+    (hvan : ∀ i s t, s + t < m →
+      (((Polynomial.Bivariate.shift (symbolicGSPoly (F := F) A c)
+        (Polynomial.C (ωs i))
+        (Polynomial.C (u₀ i) + Polynomial.X * Polynomial.C (u₁ i))).coeff t).coeff s) = 0) :
+    ∀ i, m ≤ Polynomial.Bivariate.rootMultiplicity
+      (symbolicGSPoly (F := F) A c)
+      (Polynomial.C (ωs i))
+      (Polynomial.C (u₀ i) + Polynomial.X * Polynomial.C (u₁ i)) := by
+  intro i
+  let g := Polynomial.Bivariate.shift (symbolicGSPoly (F := F) A c)
+    (Polynomial.C (ωs i))
+    (Polynomial.C (u₀ i) + Polynomial.X * Polynomial.C (u₁ i))
+  have hg : ∀ s t, s + t < m → Polynomial.Bivariate.coeff g s t = 0 := by
+    intro s t hst
+    exact hvan i s t hst
+  have H := (Polynomial.Bivariate.rootMultiplicity₀_ge_iff g m).mp hg
+  have hgne : g ≠ 0 := Polynomial.Bivariate.shift_ne_zero _ _ _ hQ
+  have hroot : Polynomial.Bivariate.rootMultiplicity₀ g ≠ none :=
+    Polynomial.Bivariate.rootMultiplicity₀_ne_none g hgne
+  change (some m : Option ℕ) ≤ Polynomial.Bivariate.rootMultiplicity₀ g
+  cases hr : Polynomial.Bivariate.rootMultiplicity₀ g with
+  | none => exact False.elim (hroot hr)
+  | some r =>
+      have hmr : m ≤ r := H r (by simp only [hr, Option.mem_def])
+      simpa only [hr, Option.some_le_some] using hmr
 
-`triCoeffsToPoly box c` assembles `Q = ∑ c_{i,j,t} · X^i Y^j Z^t` over a finite index box of
-triples `(i, j, t)`.  `natWeightedDegree_triCoeffsToPoly_le` bounds its `(u,v)`-weighted degree by
-the box's weighted cap; specialising `(u,v)` recovers the `degreeX` and `natDegreeY` bounds via
-`degreeX_as_weighted_deg` / `degreeY_as_weighted_deg`. -/
+open scoped BigOperators in
+private theorem symbolicGSPoly_eq_sum {F : Type} [Field F]
+    (A : Finset (ℕ × ℕ)) (c : SymbolicGSIndex A → F) :
+    symbolicGSPoly (F := F) A c =
+      ∑ q : SymbolicGSIndex A, c q •
+        Polynomial.monomial q.1.1.2
+          (Polynomial.monomial q.1.1.1 (Polynomial.monomial q.2.1 1)) := by
+  unfold symbolicGSPoly symbolicGSPolyLinearMap
+  rw [Finsupp.linearCombination_eq_fintype_linearCombination,
+    Fintype.linearCombination_apply]
 
-/-- `a · X^i Y^j Z^t` as nested monomials (carries the coefficient inside, avoiding the long
-`SMul F (F[Z][X][Y])` synthesis path). -/
-noncomputable def triMonC (i j t : ℕ) (a : F) : F[Z][X][Y] :=
-  Polynomial.monomial j (Polynomial.monomial i (Polynomial.monomial t a))
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- The `(u,v)`-weighted degree of `a · X^i Y^j Z^t` is at most `u*i + v*j`. -/
-lemma natWeightedDegree_triMonC_le (i j t u v : ℕ) (a : F) :
-    natWeightedDegree (triMonC (F := F) i j t a) u v ≤ u * i + v * j := by
+open scoped BigOperators in
+private theorem symbolicGSPoly_coeff_pair {F : Type} [Field F]
+    (A : Finset (ℕ × ℕ)) (c : SymbolicGSIndex A → F) (i j : ℕ) :
+    ((symbolicGSPoly (F := F) A c).coeff j).coeff i =
+      ∑ q : SymbolicGSIndex A,
+        if q.1.1 = (i, j) then Polynomial.monomial q.2.1 (c q) else 0 := by
   classical
-  unfold natWeightedDegree triMonC
-  refine Finset.sup_le fun b hb ↦ ?_
-  have hbj : b = j := by
-    by_contra hbj
-    rw [Polynomial.mem_support_iff, Polynomial.coeff_monomial, if_neg (Ne.symm hbj)] at hb
-    exact hb rfl
-  subst hbj
-  rw [Polynomial.coeff_monomial, if_pos rfl]
-  refine add_le_add (Nat.mul_le_mul_left u ?_) le_rfl
-  exact Polynomial.natDegree_monomial_le _
+  rw [symbolicGSPoly_eq_sum]
+  rw [Polynomial.finsetSum_coeff, Polynomial.finsetSum_coeff]
+  apply Finset.sum_congr rfl
+  intro q hq
+  by_cases hp : q.1.1 = (i, j)
+  · have hi : q.1.1.1 = i := congrArg Prod.fst hp
+    have hj : q.1.1.2 = j := congrArg Prod.snd hp
+    simp [
+      Polynomial.smul_monomial, hp]
+  · have hcases : q.1.1.2 ≠ j ∨ q.1.1.1 ≠ i := by
+      by_contra h
+      push Not at h
+      exact hp (Prod.ext h.2 h.1)
+    rcases hcases with hj | hi
+    · simp [Polynomial.coeff_smul, Polynomial.coeff_monomial, hj, hp]
+    · by_cases hj : q.1.1.2 = j
+      · simp [Polynomial.coeff_smul, Polynomial.coeff_monomial, hi, hj, hp]
+      · simp [Polynomial.coeff_smul, Polynomial.coeff_monomial, hj, hp]
 
-/-- Assemble a trivariate polynomial from box-indexed coefficients. -/
-noncomputable def triCoeffsToPoly (box : Finset (ℕ × ℕ × ℕ)) (c : box → F) : F[Z][X][Y] :=
-  ∑ p : box, triMonC (F := F) p.1.1 p.1.2.1 p.1.2.2 (c p)
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- The weighted degree of the assembled polynomial is bounded by the box's weighted-degree cap. -/
-lemma natWeightedDegree_triCoeffsToPoly_le (box : Finset (ℕ × ℕ × ℕ)) (c : box → F) (u v D : ℕ)
-    (hbox : ∀ p ∈ box, u * p.1 + v * p.2.1 ≤ D) :
-    natWeightedDegree (triCoeffsToPoly box c) u v ≤ D := by
+open scoped BigOperators in
+private theorem symbolicGSPoly_coeff_index {F : Type} [Field F]
+    (A : Finset (ℕ × ℕ)) (c : SymbolicGSIndex A → F) (q : SymbolicGSIndex A) :
+    ((((symbolicGSPoly (F := F) A c).coeff q.1.1.2).coeff q.1.1.1).coeff q.2.1) =
+      c q := by
   classical
-  unfold triCoeffsToPoly
-  refine le_trans (tri_natWeightedDegree_sum_le _ _ _ _) ?_
-  refine Finset.sup_le fun p _ ↦ ?_
-  exact le_trans (natWeightedDegree_triMonC_le _ _ _ _ _ _) (hbox p.1 p.2)
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- The `(i, j, t)`-coefficient of `a · X^i Y^j Z^t` (i.e. `((·.coeff j).coeff i).coeff t`). -/
-lemma coeff_triMonC (i j t i' j' t' : ℕ) (a : F) :
-    (((triMonC (F := F) i' j' t' a).coeff j).coeff i).coeff t
-      = if (i', j', t') = (i, j, t) then a else 0 := by
-  unfold triMonC
-  rw [Polynomial.coeff_monomial]
-  by_cases hj : j' = j
-  · subst hj
-    rw [if_pos rfl, Polynomial.coeff_monomial]
-    by_cases hi : i' = i
-    · subst hi
-      rw [if_pos rfl, Polynomial.coeff_monomial]
-      by_cases ht : t' = t
-      · subst ht; rw [if_pos rfl, if_pos rfl]
-      · rw [if_neg ht, if_neg (by simp [ht])]
-    · rw [if_neg hi, Polynomial.coeff_zero, if_neg (by simp [hi])]
-  · rw [if_neg hj, Polynomial.coeff_zero, Polynomial.coeff_zero, if_neg (by simp [hj])]
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- Coefficient extraction for `triCoeffsToPoly`: the coefficient of `X^i Y^j Z^t` at a box index
-`p = (i, j, t)` is exactly `c p`. -/
-lemma coeff_triCoeffsToPoly (box : Finset (ℕ × ℕ × ℕ)) (c : box → F) (p : box) :
-    (((triCoeffsToPoly box c).coeff p.1.2.1).coeff p.1.1).coeff p.1.2.2 = c p := by
-  unfold triCoeffsToPoly
-  rw [Polynomial.finset_sum_coeff, Polynomial.finset_sum_coeff, Polynomial.finset_sum_coeff]
-  rw [Finset.sum_eq_single p]
-  · rw [coeff_triMonC, if_pos rfl]
-  · intro q _ hq
-    rw [coeff_triMonC, if_neg]
-    intro heq
-    exact hq (Subtype.ext heq)
-  · intro h; exact absurd (Finset.mem_univ p) h
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- A nonzero coefficient vector yields a nonzero assembled polynomial (the `Q_ne_0` field). -/
-lemma triCoeffsToPoly_ne_zero (box : Finset (ℕ × ℕ × ℕ)) (c : box → F) (hc : c ≠ 0) :
-    triCoeffsToPoly box c ≠ 0 := by
-  obtain ⟨p, hp⟩ := Function.ne_iff.mp hc
-  rw [Pi.zero_apply] at hp
-  intro hQ
-  apply hp
-  rw [← coeff_triCoeffsToPoly box c p, hQ]
-  simp
-
-/-! ### The trivariate Guruswami–Sudan linear system
-
-Mirroring the bivariate `GuruswamiSudan.{coeffsToPoly, evalConstraint, constraintMap}`, we build
-the F-linear system whose nonzero kernel elements give multiplicity-`m` solutions `Q`.  The
-trivariate twist: each multiplicity constraint `((shift Q x y).coeff t).coeff s = 0` is an equation
-in the coefficient ring `S = F[Z]`, so we extract every `Z`-coefficient up to a budget `zMax`,
-turning each `(s, t)` constraint into `zMax + 1` scalar `F`-constraints. -/
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- `a · X^i Y^j Z^t = a • (X^i Y^j Z^t)` (carrying the scalar inside the nested monomials equals
-the `F`-scalar action). -/
-lemma triMonC_eq_smul (i j t : ℕ) (a : F) :
-    triMonC (F := F) i j t a = a • triMonomial (F := F) i j t := by
-  unfold triMonC triMonomial
-  rw [Polynomial.smul_monomial, Polynomial.smul_monomial, Polynomial.smul_monomial, smul_eq_mul,
-    mul_one]
-
-/-- Linear assembly of a trivariate polynomial from box-indexed coefficients, as an `F`-linear map.
-This is the linear version of `triCoeffsToPoly`; the two agree (`triCoeffsToPolyₗ_apply`). -/
-noncomputable def triCoeffsToPolyₗ (box : Finset (ℕ × ℕ × ℕ)) : (box → F) →ₗ[F] F[Z][X][Y] :=
-  Finsupp.linearCombination F (fun p : box ↦ triMonomial (F := F) p.1.1 p.1.2.1 p.1.2.2) ∘ₗ
-    (Finsupp.linearEquivFunOnFinite F F box).symm.toLinearMap
-
-omit [DecidableEq (RatFunc F)] in
-/-- The linear assembly `triCoeffsToPolyₗ` agrees with `triCoeffsToPoly`. -/
-lemma triCoeffsToPolyₗ_apply (box : Finset (ℕ × ℕ × ℕ)) (c : box → F) :
-    triCoeffsToPolyₗ box c = triCoeffsToPoly box c := by
-  classical
-  unfold triCoeffsToPolyₗ triCoeffsToPoly
-  simp only [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply,
-    Finsupp.linearCombination_apply]
-  rw [Finsupp.sum_fintype]
-  · refine Finset.sum_congr rfl (fun p _ ↦ ?_)
-    rw [triMonC_eq_smul]
-    congr 1
-  · intro p; simp
-
-/-- The `F`-linear functional extracting the `z`-th `Z`-coefficient of the `(s, t)`-shifted
-coefficient `((shift f x y).coeff t).coeff s` at the curve point `(x, y) ∈ F[Z] × F[Z]`. -/
-noncomputable def triEvalConstraint (x y : Polynomial F) (s t z : ℕ) : F[Z][X][Y] →ₗ[F] F where
-  toFun f := (((Polynomial.Bivariate.shift f x y).coeff t).coeff s).coeff z
-  map_add' f g := by simp [Polynomial.Bivariate.shift]
-  map_smul' a f := by simp [Polynomial.Bivariate.shift]
-
-/-- The trivariate Guruswami–Sudan constraint map: sends a box-indexed coefficient vector to the
-`Z`-coefficients (up to budget `zMax`) of the multiplicity constraints at all `n` curve points.
-A nonzero kernel element gives a `Q` with multiplicity `≥ m` at each point. -/
-noncomputable def triConstraintMap (box : Finset (ℕ × ℕ × ℕ)) (m zMax : ℕ)
-    (ωs : Fin n ↪ F) (u₀ u₁ : Fin n → F) :
-    (box → F) →ₗ[F] (Fin n × GuruswamiSudan.constraintIndices m × Fin (zMax + 1) → F) :=
-  (LinearMap.pi fun i ↦ triEvalConstraint (Polynomial.C (ωs i.1))
-      (Polynomial.C (u₀ i.1) + Polynomial.X * Polynomial.C (u₁ i.1))
-      i.2.1.1.1 i.2.1.1.2 i.2.2.1) ∘ₗ triCoeffsToPolyₗ box
-
-/-! ### Box, budget and the counting inequality
-
-We instantiate the linear system with a concrete box of `(i, j, t)` triples and a `Z`-budget large
-enough that the number of unknowns strictly exceeds the number of constraints.  The `(i, j)` part is
-the bivariate Guruswami–Sudan box `weigthBoundIndices (k+1) Dpg` (so its size is the proven
-`numVars (k+1) Dpg`); the `Z`-index `t` ranges over `0 … zCap`.  Choosing `zCap =
-(#constraints)·Dpg`
-makes the strict bivariate gap `numVars > numConstraints` dominate the extra `Z`-degree the shift
-introduces, giving `#box > #constraints`. -/
-
-open GuruswamiSudan in
-/-- The bivariate degree cap used for Claim 5.4: the proximity-gap degree bound with `ρ=(k+1)/n`. -/
-noncomputable def gsDpg (n m k : ℕ) : ℕ := proximity_gap_degree_bound (k + 1) n m
-
-/-- The `Z`-budget of the box: large enough that the `Z`-degree introduced by shifting (`≤ Dpg`)
-cannot overturn the strict bivariate counting gap. -/
-noncomputable def gsZCap (n m k : ℕ) : ℕ := GuruswamiSudan.numConstraints n m * gsDpg n m k
-
-/-- The number of `Z`-coefficients the constraints can occupy: the box `Z`-budget plus the maximal
-`Y`-degree `≤ Dpg` (the shift `Y ← Y + (u₀ + Z·u₁)` raises the `Z`-degree by at most the
-`Y`-degree).
--/
-noncomputable def gsZMax (n m k : ℕ) : ℕ := gsZCap n m k + gsDpg n m k
-
-/-- The embedding `((i,j),t) ↦ (i,j,t)`. -/
-def gsTriple : (ℕ × ℕ) × ℕ → ℕ × ℕ × ℕ := fun p ↦ (p.1.1, p.1.2, p.2)
-
-lemma gsTriple_injective : Function.Injective gsTriple := by
-  intro ⟨⟨i, j⟩, t⟩ ⟨⟨i', j'⟩, t'⟩ h
-  simp only [gsTriple, Prod.mk.injEq] at h
-  obtain ⟨hi, hj, ht⟩ := h
-  simp [hi, hj, ht]
-
-open GuruswamiSudan in
-/-- The box of `(i, j, t)` triples: bivariate Guruswami–Sudan `(i,j)`-box times `Z`-budget. -/
-noncomputable def gsBox (n m k : ℕ) : Finset (ℕ × ℕ × ℕ) :=
-  ((weigthBoundIndices (k + 1) (gsDpg n m k)) ×ˢ (Finset.range (gsZCap n m k + 1))).image gsTriple
-
-open GuruswamiSudan in
-/-- The cardinality of the box is `numVars (k+1) Dpg · (zCap+1)`. -/
-lemma card_gsBox (n m k : ℕ) :
-    (gsBox n m k).card = numVars (k + 1) (gsDpg n m k) * (gsZCap n m k + 1) := by
-  classical
-  unfold gsBox numVars
-  rw [Finset.card_image_of_injective _ gsTriple_injective, Finset.card_product, Finset.card_range]
-
-open GuruswamiSudan in
-/-- Membership in the box: `(i, j, t) ∈ gsBox` iff `(i,j) ∈ weigthBoundIndices (k+1) Dpg` and
-`t ≤ zCap`. -/
-lemma mem_gsBox {n m k : ℕ} {p : ℕ × ℕ × ℕ} :
-    p ∈ gsBox n m k ↔
-      (p.1, p.2.1) ∈ weigthBoundIndices (k + 1) (gsDpg n m k) ∧ p.2.2 ≤ gsZCap n m k := by
-  classical
-  unfold gsBox
-  rw [Finset.mem_image]
-  constructor
-  · rintro ⟨⟨⟨i, j⟩, t⟩, hmem, rfl⟩
-    rw [Finset.mem_product] at hmem
-    simp only [gsTriple, Finset.mem_range] at *
-    exact ⟨hmem.1, Nat.lt_succ_iff.mp hmem.2⟩
-  · intro ⟨h1, h2⟩
-    refine ⟨((p.1, p.2.1), p.2.2), ?_, ?_⟩
-    · rw [Finset.mem_product, Finset.mem_range]
-      exact ⟨h1, Nat.lt_succ_of_le h2⟩
-    · simp [gsTriple]
-
-open GuruswamiSudan in
-/-- The counting inequality: `#box > #constraints`.  This is the trivariate analogue of
-`numVars_gt_numConstraints`, with the `Z`-budget chosen so the strict bivariate gap dominates. -/
-lemma card_gsBox_gt_constraints (n m k : ℕ) :
-    (gsBox n m k).card >
-      n * (constraintIndices m).card * (gsZMax n m k + 1) := by
-  rw [card_gsBox]
-  set Dpg := gsDpg n m k with hDpg
-  set B := numConstraints n m with hB
-  -- A := numVars (k+1) Dpg ≥ B + 1
-  have hAB : numVars (k + 1) Dpg ≥ B + 1 := by
-    have h := numVars_gt_numConstraints (k + 1) n m
-    have hDpg' : Dpg = proximity_gap_degree_bound (k + 1) n m := hDpg
-    rw [hDpg', hB]; omega
-  have hzcap : gsZCap n m k = B * Dpg := by rw [gsZCap, hDpg, hB]
-  have hzmax : gsZMax n m k = B * Dpg + Dpg := by rw [gsZMax, hzcap, hDpg]
-  have hBconstr : n * (constraintIndices m).card = B := by rw [hB, numConstraints]
-  rw [hBconstr, hzmax, hzcap]
-  -- numVars · (B·Dpg + 1) > B · (B·Dpg + Dpg + 1)
-  calc n * (constraintIndices m).card * (B * Dpg + Dpg + 1)
-      = B * (B * Dpg + Dpg + 1) := by rw [hBconstr]
-    _ < (B + 1) * (B * Dpg + 1) := by ring_nf; omega
-    _ ≤ numVars (k + 1) Dpg * (B * Dpg + 1) := by
-        exact Nat.mul_le_mul_right _ hAB
-
-/-! ### `Z`-degree budget of the shifted constraints
-
-To turn the finite system "all `Z`-coefficients up to `zMax` vanish" into the genuine multiplicity
-condition "the `F[Z]`-coefficient vanishes", we bound the `Z`-degree of every constraint output.
-`ZdegLE f d` says all bivariate coefficients of `f : F[Z][X][Y]` are `F[Z]`-polynomials of degree
-`≤ d`.  Shifting raises the `Z`-degree by at most the `Y`-degree (the only point coordinate with
-positive `Z`-degree is `y = u₀ + Z·u₁`). -/
-
-/-- `ZdegLE f d`: every bivariate coefficient `((f.coeff j).coeff i)` of `f : F[Z][X][Y]` is an
-`F[Z]`-polynomial of degree at most `d`. -/
-def ZdegLE (f : F[Z][X][Y]) (d : ℕ) : Prop := ∀ i j, ((f.coeff j).coeff i).natDegree ≤ d
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE_zero (d : ℕ) : ZdegLE (0 : F[Z][X][Y]) d := by
-  intro i j; simp
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE.add {f g : F[Z][X][Y]} {d : ℕ} (hf : ZdegLE f d) (hg : ZdegLE g d) :
-    ZdegLE (f + g) d := by
-  intro i j
-  rw [Polynomial.coeff_add, Polynomial.coeff_add]
-  exact le_trans (Polynomial.natDegree_add_le _ _) (max_le (hf i j) (hg i j))
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE.mono {f : F[Z][X][Y]} {d e : ℕ} (hf : ZdegLE f d) (hde : d ≤ e) : ZdegLE f e :=
-  fun i j ↦ le_trans (hf i j) hde
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE_sum {ι : Type*} (s : Finset ι) (g : ι → F[Z][X][Y]) (d : ℕ)
-    (h : ∀ i ∈ s, ZdegLE (g i) d) : ZdegLE (∑ i ∈ s, g i) d := by
-  classical
-  induction s using Finset.induction with
-  | empty => simpa using ZdegLE_zero d
-  | insert a s ha ih =>
-      rw [Finset.sum_insert ha]
-      exact (h a (Finset.mem_insert_self a s)).add (ih (fun i hi ↦ h i (Finset.mem_insert_of_mem
-        hi)))
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE.mul {f g : F[Z][X][Y]} {d e : ℕ} (hf : ZdegLE f d) (hg : ZdegLE g e) :
-    ZdegLE (f * g) (d + e) := by
-  classical
-  intro i j
-  rw [Polynomial.coeff_mul]
-  rw [Polynomial.finset_sum_coeff]
-  refine Polynomial.natDegree_sum_le_of_forall_le _ _ (fun p hp ↦ ?_)
-  rw [Polynomial.coeff_mul]
-  refine Polynomial.natDegree_sum_le_of_forall_le _ _ (fun q hq ↦ ?_)
-  exact le_trans (Polynomial.natDegree_mul_le) (Nat.add_le_add (hf _ _) (hg _ _))
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE_one : ZdegLE (1 : F[Z][X][Y]) 0 := by
-  intro i j
-  rw [Polynomial.coeff_one]
-  by_cases hj : j = 0
-  · subst hj
-    rw [if_pos rfl, Polynomial.coeff_one]
-    by_cases hi : i = 0
-    · rw [if_pos hi]; simp
-    · rw [if_neg hi]; simp
-  · rw [if_neg hj]; simp
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE.pow {f : F[Z][X][Y]} {d : ℕ} (hf : ZdegLE f d) (a : ℕ) :
-    ZdegLE (f ^ a) (a * d) := by
-  induction a with
-  | zero => simpa using ZdegLE_one.mono (Nat.zero_le _)
-  | succ a ih =>
-      rw [pow_succ]
-      exact (ih.mul hf).mono (by ring_nf; omega)
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- `ZdegLE (C P) d` whenever every `X`-coefficient of `P : F[Z][X]` has `Z`-degree `≤ d`. -/
-lemma ZdegLE_C {P : F[Z][X]} {d : ℕ} (hP : ∀ i, (P.coeff i).natDegree ≤ d) :
-    ZdegLE (Polynomial.C P) d := by
-  intro i j
-  rw [Polynomial.coeff_C]
-  by_cases hj : j = 0
-  · rw [if_pos hj]; exact hP i
-  · rw [if_neg hj]; simp
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- The double-constant `C (C s)` (constant in `X` and `Y`) has `Z`-degree `s.natDegree`. -/
-lemma ZdegLE_CC (s : Polynomial F) : ZdegLE (Polynomial.C (Polynomial.C s)) s.natDegree := by
-  refine ZdegLE_C (fun i ↦ ?_)
-  rw [Polynomial.coeff_C]
-  by_cases hi : i = 0
-  · rw [if_pos hi]
-  · rw [if_neg hi]; simp
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- The outer variable `Y` has `Z`-degree `0`. -/
-lemma ZdegLE_Y : ZdegLE (Polynomial.X : F[Z][X][Y]) 0 := by
-  intro i j
-  rw [Polynomial.coeff_X]
-  by_cases hj : 1 = j
-  · rw [if_pos hj]; simp [Polynomial.coeff_one]; by_cases hi : i = 0 <;> simp [hi]
-  · rw [if_neg hj]; simp
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- `comp`-closure for the outer `Y`-substitution: substituting `Y ↦ Y + c` raises the `Z`-degree
-by at most `(Y-degree of f) · (Z-degree of c)`. -/
-lemma ZdegLE.comp_addYC {f c : F[Z][X][Y]} {d e : ℕ} (hf : ZdegLE f d) (hc : ZdegLE c e) :
-    ZdegLE (f.comp (Polynomial.X + c)) (d + f.natDegree * e) := by
-  classical
-  rw [Polynomial.comp, Polynomial.eval₂_eq_sum, Polynomial.sum_def]
-  refine ZdegLE_sum _ _ _ (fun a ha ↦ ?_)
-  have hCa : ZdegLE (Polynomial.C (f.coeff a)) d := ZdegLE_C (fun i ↦ hf i a)
-  have hYc : ZdegLE (Polynomial.X + c) e := (ZdegLE_Y.mono (Nat.zero_le e)).add hc
-  have hpow : ZdegLE ((Polynomial.X + c) ^ a) (a * e) := hYc.pow a
-  have hbound : ZdegLE (Polynomial.C (f.coeff a) * (Polynomial.X + c) ^ a) (d + a * e) :=
-    hCa.mul hpow
-  refine hbound.mono ?_
-  have ha_le : a ≤ f.natDegree := Polynomial.le_natDegree_of_mem_supp a ha
-  exact Nat.add_le_add_left (Nat.mul_le_mul_right e ha_le) d
-
-/-- `ZdegLE1 p d`: every `X`-coefficient of `p : F[Z][X]` is an `F[Z]`-polynomial of degree `≤ d`.
-The middle-variable analogue of `ZdegLE`, used to push a `Z`-degree bound through the inner
-`X ↦ X + C(C ω)` substitution. -/
-def ZdegLE1 (p : F[Z][X]) (d : ℕ) : Prop := ∀ i, (p.coeff i).natDegree ≤ d
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE1_zero (d : ℕ) : ZdegLE1 (0 : F[Z][X]) d := by intro i; simp
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE1.add {p q : F[Z][X]} {d : ℕ} (hp : ZdegLE1 p d) (hq : ZdegLE1 q d) :
-    ZdegLE1 (p + q) d := by
-  intro i; rw [Polynomial.coeff_add]
-  exact le_trans (Polynomial.natDegree_add_le _ _) (max_le (hp i) (hq i))
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE1.mono {p : F[Z][X]} {d e : ℕ} (hp : ZdegLE1 p d) (hde : d ≤ e) : ZdegLE1 p e :=
-  fun i ↦ le_trans (hp i) hde
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE1_sum {ι : Type*} (s : Finset ι) (g : ι → F[Z][X]) (d : ℕ)
-    (h : ∀ i ∈ s, ZdegLE1 (g i) d) : ZdegLE1 (∑ i ∈ s, g i) d := by
-  classical
-  induction s using Finset.induction with
-  | empty => simpa using ZdegLE1_zero d
-  | insert a s ha ih =>
-      rw [Finset.sum_insert ha]
-      exact (h a (Finset.mem_insert_self a s)).add
-        (ih (fun i hi ↦ h i (Finset.mem_insert_of_mem hi)))
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE1.mul {p q : F[Z][X]} {d e : ℕ} (hp : ZdegLE1 p d) (hq : ZdegLE1 q e) :
-    ZdegLE1 (p * q) (d + e) := by
-  classical
-  intro i; rw [Polynomial.coeff_mul]
-  refine Polynomial.natDegree_sum_le_of_forall_le _ _ (fun x _ ↦ ?_)
-  exact le_trans Polynomial.natDegree_mul_le (Nat.add_le_add (hp _) (hq _))
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE1_one : ZdegLE1 (1 : F[Z][X]) 0 := by
-  intro i; rw [Polynomial.coeff_one]
-  by_cases hi : i = 0
-  · rw [if_pos hi]; simp
-  · rw [if_neg hi]; simp
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-lemma ZdegLE1.pow {p : F[Z][X]} {d : ℕ} (hp : ZdegLE1 p d) (a : ℕ) : ZdegLE1 (p ^ a) (a * d) := by
-  induction a with
-  | zero => simpa using ZdegLE1_one.mono (Nat.zero_le _)
-  | succ a ih => rw [pow_succ]; exact (ih.mul hp).mono (by ring_nf; omega)
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- `X` has `Z`-degree `0` at the middle level. -/
-lemma ZdegLE1_X : ZdegLE1 (Polynomial.X : F[Z][X]) 0 := by
-  intro i; rw [Polynomial.coeff_X]
-  by_cases hi : 1 = i
-  · rw [if_pos hi]; simp
-  · rw [if_neg hi]; simp
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- `C (C ω)` (constant in `X`, scalar in `Z`) has `Z`-degree `0`. -/
-lemma ZdegLE1_CC (ω : F) : ZdegLE1 (Polynomial.C (Polynomial.C ω) : F[Z][X]) 0 := by
-  intro i; rw [Polynomial.coeff_C]
-  by_cases hi : i = 0
-  · rw [if_pos hi]; simp
-  · rw [if_neg hi]; simp
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- Pushing a middle-level `Z`-degree bound through the substitution `X ↦ X + C(C ω)` (which is
-`Z`-degree `0`): the bound is preserved. -/
-lemma ZdegLE1.comp_addXCC {p : F[Z][X]} {d : ℕ} (hp : ZdegLE1 p d) (ω : F) :
-    ZdegLE1 (p.comp (Polynomial.X + Polynomial.C (Polynomial.C ω))) d := by
-  classical
-  rw [Polynomial.comp, Polynomial.eval₂_eq_sum, Polynomial.sum_def]
-  refine ZdegLE1_sum _ _ _ (fun a _ ↦ ?_)
-  have hCa : ZdegLE1 (Polynomial.C (p.coeff a)) d := by
-    intro i; rw [Polynomial.coeff_C]
-    by_cases hi : i = 0
-    · rw [if_pos hi]; exact hp a
-    · rw [if_neg hi]; simp
-  have hg : ZdegLE1 ((Polynomial.X + Polynomial.C (Polynomial.C ω)) ^ a) 0 :=
-    ((ZdegLE1_X.mono (le_refl 0)).add (ZdegLE1_CC ω)).pow a |>.mono (by simp)
-  exact (hCa.mul hg).mono (by simp)
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- Pushing the `Z`-degree bound through the outer map `X ↦ X + C(C ω)` of `shift`. -/
-lemma ZdegLE.map_compX {f : F[Z][X][Y]} {d : ℕ} (hf : ZdegLE f d) (ω : F) :
-    ZdegLE (f.map (Polynomial.compRingHom (Polynomial.X + Polynomial.C (Polynomial.C ω)))) d := by
-  intro i j
-  rw [Polynomial.coeff_map, Polynomial.coe_compRingHom]
-  exact (ZdegLE1.comp_addXCC (fun i' ↦ hf i' j) ω) i
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- `s = u₀ + Z·u₁ : F[Z]` has `Z`-degree at most `1`. -/
-lemma natDegree_u0_add_Z_u1 (u0 u1 : F) :
-    (Polynomial.C u0 + Polynomial.X * Polynomial.C u1 : Polynomial F).natDegree ≤ 1 := by
-  refine le_trans (Polynomial.natDegree_add_le _ _) (max_le ?_ ?_)
+  rw [symbolicGSPoly_coeff_pair]
+  change (∑ r ∈ Finset.univ,
+    (if r.1.1 = q.1.1 then Polynomial.monomial r.2.1 (c r) else 0)).coeff q.2.1 = c q
+  rw [Polynomial.finsetSum_coeff]
+  rw [Finset.sum_eq_single q]
+  · simp []
+  · intro r hr hrq
+    by_cases hp : r.1.1 = q.1.1
+    · have hz : r.2.1 ≠ q.2.1 := by
+        intro hz
+        apply hrq
+        rcases r with ⟨rp, rh⟩
+        rcases q with ⟨qp, qh⟩
+        simp only at hp hz ⊢
+        have hp' : rp = qp := Subtype.ext hp
+        subst qp
+        have hz' : rh = qh := Fin.ext hz
+        subst qh
+        rfl
+      simp [hp, hz, Polynomial.coeff_monomial]
+    · simp [hp]
   · simp
-  · rw [mul_comm]
-    exact le_trans (Polynomial.natDegree_C_mul_le _ _) (le_of_eq Polynomial.natDegree_X)
 
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- **Master `Z`-degree bound for the shift.**  At the Claim-5.4 curve point
-`(x, y) = (C ω, u₀ + Z·u₁)`, shifting raises the `Z`-degree by at most the `Y`-degree of `Q`
-(since only `y` carries positive `Z`-degree, `≤ 1`).  Hence every constraint output
-`((shift Q x y).coeff t).coeff s` is an `F[Z]`-polynomial of degree `≤ d + natDegreeY Q`. -/
-lemma ZdegLE_shift {Q : F[Z][X][Y]} {d : ℕ} (hQ : ZdegLE Q d) (ω u0 u1 : F) :
-    ZdegLE (Polynomial.Bivariate.shift Q (Polynomial.C ω)
-        (Polynomial.C u0 + Polynomial.X * Polynomial.C u1)) (d + Q.natDegree) := by
-  unfold Polynomial.Bivariate.shift
-  set s : Polynomial F := Polynomial.C u0 + Polynomial.X * Polynomial.C u1 with hs
-  have hcdeg : s.natDegree ≤ 1 := natDegree_u0_add_Z_u1 u0 u1
-  have hc : ZdegLE (Polynomial.C (Polynomial.C s) : F[Z][X][Y]) s.natDegree := ZdegLE_CC s
-  have hcomp : ZdegLE (Q.comp (Polynomial.X + Polynomial.C (Polynomial.C s)))
-      (d + Q.natDegree) :=
-    (hQ.comp_addYC hc).mono (by
-      refine Nat.add_le_add_left ?_ d
-      calc Q.natDegree * s.natDegree ≤ Q.natDegree * 1 := Nat.mul_le_mul_left _ hcdeg
-        _ = Q.natDegree := Nat.mul_one _)
-  exact hcomp.map_compX ω
+open scoped BigOperators in
+private theorem symbolicGSPoly_coeff_ne_zero_mem {F : Type} [Field F]
+    (A : Finset (ℕ × ℕ)) (c : SymbolicGSIndex A → F) {i j : ℕ}
+    (hcoeff : ((symbolicGSPoly (F := F) A c).coeff j).coeff i ≠ 0) :
+    (i, j) ∈ A := by
+  by_contra hp
+  rw [symbolicGSPoly_coeff_pair] at hcoeff
+  apply hcoeff
+  apply Finset.sum_eq_zero
+  intro q hq
+  rw [ite_eq_right]
+  intro heq
+  apply hp
+  rw [← heq]
+  exact q.1.2
 
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- The monomial `a · X^i Y^j Z^t` has `Z`-degree `≤ t`. -/
-lemma ZdegLE_triMonC (i j t : ℕ) (a : F) : ZdegLE (triMonC (F := F) i j t a) t := by
-  intro i' j'
-  unfold triMonC
-  rw [Polynomial.coeff_monomial]
-  by_cases hj : j = j'
-  · subst hj; rw [if_pos rfl, Polynomial.coeff_monomial]
-    by_cases hi : i = i'
-    · subst hi; rw [if_pos rfl]; exact Polynomial.natDegree_monomial_le _
-    · rw [if_neg hi]; simp
-  · rw [if_neg hj]; simp
+private theorem symbolicGSPoly_ne_zero {F : Type} [Field F]
+    (A : Finset (ℕ × ℕ)) (c : SymbolicGSIndex A → F) (hc : c ≠ 0) :
+    symbolicGSPoly (F := F) A c ≠ 0 := by
+  intro hQ
+  apply hc
+  funext q
+  have h := symbolicGSPoly_coeff_index (F := F) A c q
+  rw [hQ] at h
+  simp only [Polynomial.coeff_zero] at h
+  exact h.symm
 
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- If every box index has `Z`-degree `t ≤ zCap`, the assembled `Q` has `Z`-degree `≤ zCap`. -/
-lemma ZdegLE_triCoeffsToPoly (box : Finset (ℕ × ℕ × ℕ)) (c : box → F) (zCap : ℕ)
-    (hbox : ∀ p ∈ box, p.2.2 ≤ zCap) :
-    ZdegLE (triCoeffsToPoly box c) zCap := by
+open scoped BigOperators in
+private theorem symbolicGSPoly_shift_coeff_eq_sum {F : Type} [Field F]
+    (A : Finset (ℕ × ℕ)) (c : SymbolicGSIndex A → F)
+    (x y : Polynomial F) (s t : ℕ) :
+    ((Polynomial.Bivariate.shift (symbolicGSPoly (F := F) A c) x y).coeff t).coeff s =
+      ∑ q : SymbolicGSIndex A, c q •
+        ((Polynomial.Bivariate.shift
+          (Polynomial.monomial q.1.1.2
+            (Polynomial.monomial q.1.1.1 (Polynomial.monomial q.2.1 1))) x y).coeff t).coeff s := by
+  ext d
+  change symbolicGSEvalConstraint x y s t d (symbolicGSPoly (F := F) A c) = _
+  rw [symbolicGSPoly_eq_sum, map_sum]
+  simp only [map_smul]
+  change (∑ q : SymbolicGSIndex A,
+      c q • symbolicGSEvalConstraint x y s t d
+        (Polynomial.monomial q.1.1.2
+          (Polynomial.monomial q.1.1.1 (Polynomial.monomial q.2.1 1)))) =
+    (∑ q ∈ Finset.univ, c q •
+      ((Polynomial.Bivariate.shift
+        (Polynomial.monomial q.1.1.2
+          (Polynomial.monomial q.1.1.1 (Polynomial.monomial q.2.1 1)))
+            x y).coeff t).coeff s).coeff d
+  rw [Polynomial.finsetSum_coeff]
+  rfl
+
+
+private theorem symbolicGSPoly_weighted_lt {F : Type} [Field F]
+    (A : Finset (ℕ × ℕ)) (c : SymbolicGSIndex A → F) {k : ℕ} {D : ℝ}
+    (hQ : symbolicGSPoly (F := F) A c ≠ 0)
+    (hA : ∀ p ∈ A, ((p.1 + k * p.2 : ℕ) : ℝ) < D) :
+    Polynomial.Bivariate.natWeightedDegree (symbolicGSPoly (F := F) A c) 1 k < D := by
+  unfold Polynomial.Bivariate.natWeightedDegree
+  obtain ⟨j, hj, hsup⟩ := Finset.exists_mem_eq_sup
+    (symbolicGSPoly (F := F) A c).support
+    (Polynomial.nonempty_support_iff.mpr hQ)
+    (fun j => 1 * ((symbolicGSPoly (F := F) A c).coeff j).natDegree + k * j)
+  rw [hsup]
+  norm_num
+  have hc : (symbolicGSPoly (F := F) A c).coeff j ≠ 0 :=
+    Polynomial.mem_support_iff.mp hj
+  have hi : ((symbolicGSPoly (F := F) A c).coeff j).natDegree ∈
+      ((symbolicGSPoly (F := F) A c).coeff j).support :=
+    Polynomial.natDegree_mem_support_of_nonzero hc
+  have hp := symbolicGSPoly_coeff_ne_zero_mem A c
+    (Polynomial.mem_support_iff.mp hi)
+  simpa only [Prod.fst, Prod.snd, Nat.cast_add, Nat.cast_mul] using
+    hA (((symbolicGSPoly (F := F) A c).coeff j).natDegree, j) hp
+
+open scoped BigOperators in
+private theorem symbolicUpperTriangleBase_ySum (n k m : ℕ) :
+    symbolicYSum (symbolicUpperTriangleBase n k m) =
+      ∑ p ∈ GuruswamiSudan.weightBoundIndices (k + 2)
+        (symbolicModifiedGSCap n k m - 1), p.2 := by
   classical
-  unfold triCoeffsToPoly
-  refine ZdegLE_sum _ _ _ (fun p _ ↦ ?_)
-  exact (ZdegLE_triMonC _ _ _ _).mono (hbox p.1 p.2)
+  let s := GuruswamiSudan.weightBoundIndices (k + 2)
+    (symbolicModifiedGSCap n k m - 1)
+  let f : ℕ × ℕ → ℕ × ℕ := fun p => (p.1 + p.2, p.2)
+  have hinj : Set.InjOn f (s : Set (ℕ × ℕ)) := by
+    intro p hp q hq h
+    rcases p with ⟨p₁, p₂⟩
+    rcases q with ⟨q₁, q₂⟩
+    simp only [f, Prod.mk.injEq] at h ⊢
+    omega
+  unfold symbolicYSum symbolicUpperTriangleBase
+  rw [Finset.sum_image hinj]
 
-/-! ### Existence of a nonzero kernel element
-
-Rank-nullity over the box: since `#box > #constraints`, the linear constraint map has a nonzero
-kernel, mirroring `GuruswamiSudan.exists_nonzero_solution_gen`. -/
-
-open GuruswamiSudan in
-/-- There is a nonzero box-coefficient vector in the kernel of the trivariate constraint map. -/
-lemma exists_nonzero_triSolution (n m k : ℕ) (ωs : Fin n ↪ F) (u₀ u₁ : Fin n → F) :
-    ∃ c : (gsBox n m k) → F, c ≠ 0 ∧
-      triConstraintMap (gsBox n m k) m (gsZMax n m k) ωs u₀ u₁ c = 0 := by
+open scoped BigOperators in
+private theorem symbolicUpperTriangleCandidates_ySum_eq_base (n k m : ℕ) :
+    symbolicYSum (symbolicUpperTriangleCandidates n k m) =
+      symbolicYSum (symbolicUpperTriangleBase n k m) := by
   classical
-  have h_kernel_nontrivial :
-      Module.finrank F ((gsBox n m k) → F) >
-        Module.finrank F (Fin n × constraintIndices m × Fin (gsZMax n m k + 1) → F) := by
-    rw [Module.finrank_fintype_fun_eq_card, Module.finrank_fintype_fun_eq_card]
-    simp only [Fintype.card_coe, Fintype.card_prod, Fintype.card_fin]
-    have h := card_gsBox_gt_constraints n m k
-    rw [gt_iff_lt, ← mul_assoc]
-    exact h
-  have h_inj : ¬ Function.Injective
-      (triConstraintMap (gsBox n m k) m (gsZMax n m k) ωs u₀ u₁) := by
-    intro h_inj
-    exact h_kernel_nontrivial.not_ge
-      (LinearMap.finrank_range_of_inj h_inj ▸ Submodule.finrank_le _)
-  contrapose! h_inj
-  exact LinearMap.ker_eq_bot.mp (eq_bot_iff.mpr fun x hx ↦
-    by_contra fun hx' ↦ h_inj x hx' <| by simpa using hx)
+  unfold symbolicUpperTriangleCandidates symbolicYSum
+  split <;> simp
 
-/-! ### Box degree facts and the multiplicity bridge -/
+open scoped BigOperators in
+private theorem symbolicUpperTriangleCandidates_ySum_nat_bound {n k m : ℕ}
+    (hn : 0 < n) (hk : 0 < k) (hm : 1 ≤ m) :
+    6 * (k + 1) ^ 2 * symbolicYSum (symbolicUpperTriangleCandidates n k m) ≤
+      (symbolicModifiedGSCap n k m) ^ 3 := by
+  rw [symbolicUpperTriangleCandidates_ySum_eq_base,
+    symbolicUpperTriangleBase_ySum]
+  have h := GuruswamiSudan.sum_snd_weightBoundIndices_le
+    (k := k + 2) (D := symbolicModifiedGSCap n k m - 1) (by omega : 1 < k + 2)
+  have hLpos := symbolicModifiedGSCap_pos hn hk hm
+  simpa only [show k + 2 - 1 = k + 1 by omega,
+    Nat.sub_add_cancel (by omega : 1 ≤ symbolicModifiedGSCap n k m)] using h
 
-open GuruswamiSudan in
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- For a box index `(i,j,t)`: `i + k·j ≤ Dpg`. -/
-lemma gsBox_weighted_le {n m k : ℕ} {p : ℕ × ℕ × ℕ} (_hk : 0 < k) (hp : p ∈ gsBox n m k) :
-    1 * p.1 + k * p.2.1 ≤ gsDpg n m k := by
-  rw [mem_gsBox] at hp
-  have hw := hp.1
-  unfold weigthBoundIndices at hw
-  rw [Finset.mem_filter] at hw
-  have := hw.2
-  simp only [Nat.add_sub_cancel] at this
+private theorem symbolic_DX_cube_div_identity {n k m : ℕ} (hn : 0 < n) (hk : 0 < k) :
+    D_X ((k + 1 : ℚ) / n) n m ^ 3 / (6 * ((k : ℝ) + 1) ^ 2) =
+      n * (m + 1 / (2 : ℚ)) ^ 3 /
+        (6 * Real.sqrt ((k + 1) / n)) := by
+  unfold D_X
+  push_cast
+  set s : ℝ := Real.sqrt (((k : ℝ) + 1) / n) with hs
+  have hspos : 0 < s := by
+    rw [hs]
+    positivity
+  have hsne : s ≠ 0 := ne_of_gt hspos
+  have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt hn)
+  have hsquare : s ^ 2 = ((k : ℝ) + 1) / n := by
+    rw [hs, Real.sq_sqrt (by positivity)]
+  field_simp [hsne, hn0]
+  rw [show ((k : ℝ) + 1) = s ^ 2 * n by
+    rw [hsquare]
+    field_simp [hn0]]
+  ring
+
+private theorem symbolicUpperTriangleCandidates_ySum_real_bound {n k m : ℕ}
+    (hn : 0 < n) (hk : 0 < k) (hm : 1 ≤ m) :
+    (symbolicYSum (symbolicUpperTriangleCandidates n k m) : ℝ) ≤
+      n * (m + 1 / (2 : ℚ)) ^ 3 /
+        (6 * Real.sqrt ((k + 1) / n)) := by
+  have hnat := symbolicUpperTriangleCandidates_ySum_nat_bound hn hk hm
+  have hcast : 6 * ((k : ℝ) + 1) ^ 2 *
+      (symbolicYSum (symbolicUpperTriangleCandidates n k m) : ℝ) ≤
+      (symbolicModifiedGSCap n k m : ℝ) ^ 3 := by
+    exact_mod_cast hnat
+  have hcap := symbolicModifiedGSCap_le_DX (n := n) (k := k) (m := m) hn
+  have hcube : (symbolicModifiedGSCap n k m : ℝ) ^ 3 ≤
+      D_X ((k + 1 : ℚ) / n) n m ^ 3 := by
+    gcongr
+  rw [← symbolic_DX_cube_div_identity (n := n) (k := k) (m := m) hn hk]
+  rw [le_div_iff₀ (by positivity : (0 : ℝ) < 6 * ((k : ℝ) + 1) ^ 2)]
+  simpa only [mul_comm] using hcast.trans hcube
+
+private theorem symbolic_DX_sq_identity {n k m : ℕ} (hn : 0 < n) :
+    D_X ((k + 1 : ℚ) / n) n m ^ 2 =
+      ((m : ℝ) + 1 / 2) ^ 2 * ((k : ℝ) + 1) * n := by
+  unfold D_X
+  rw [mul_pow, mul_pow, Real.sq_sqrt (by positivity)]
+  push_cast
+  field_simp [show (n : ℝ) ≠ 0 by exact_mod_cast (ne_of_gt hn)]
+
+private theorem symbolicModifiedGSCap_strict_k_one_n_one {m : ℕ} (_hm : 1 ≤ m) :
+    (symbolicModifiedGSCap 1 1 m : ℝ) < D_X (2 : ℚ) 1 m := by
+  have hle := symbolicModifiedGSCap_le_DX (n := 1) (k := 1) (m := m) (by omega)
+  norm_num at hle
+  by_contra hnot
+  have heq : (symbolicModifiedGSCap 1 1 m : ℝ) = D_X (2 : ℚ) 1 m :=
+    le_antisymm hle (le_of_not_gt hnot)
+  have hsquare := symbolic_DX_sq_identity (n := 1) (k := 1) (m := m) (by omega)
+  norm_num at hsquare
+  rw [← heq] at hsquare
+  have hdoubleR : (((2 * (symbolicModifiedGSCap 1 1 m) ^ 2 : ℕ) : ℝ)) =
+      (((4 * m * (m + 1) + 1 : ℕ) : ℝ)) := by
+    push_cast
+    linarith
+  have hdouble : 2 * (symbolicModifiedGSCap 1 1 m) ^ 2 =
+      4 * m * (m + 1) + 1 := by exact_mod_cast hdoubleR
+  have hmod := congrArg (fun x : ℕ => x % 2) hdouble
+  norm_num [Nat.add_mod, Nat.mul_mod] at hmod
+
+private theorem symbolic_numConstraints_scaled (n k m : ℕ) :
+    2 * (k + 1) * GuruswamiSudan.numConstraints n m =
+      (k + 1) * n * m * (m + 1) := by
+  unfold GuruswamiSudan.numConstraints
+  rw [GuruswamiSudan.card_constraintIndices]
+  have heven : Even (m * (m + 1)) := Nat.even_mul_succ_self m
+  have htwo : 2 * (m * (m + 1) / 2) = m * (m + 1) :=
+    Nat.two_mul_div_two_of_even heven
+  calc
+    2 * (k + 1) * (n * (m * (m + 1) / 2))
+        = (k + 1) * n * (2 * (m * (m + 1) / 2)) := by ring
+    _ = (k + 1) * n * (m * (m + 1)) := by rw [htwo]
+    _ = (k + 1) * n * m * (m + 1) := by ring
+
+private theorem symbolic_numVars_lower_bound_boundary (a D : ℕ) (ha : 0 < a) :
+    (D + 1) ^ 2 + a * (D + 1) ≤
+      2 * a * GuruswamiSudan.numVars (a + 1) D := by
+  have h_numVars_def : GuruswamiSudan.numVars (a + 1) D =
+      ((D / a) + 1) * (2 * D + 2 - a * (D / a)) / 2 := by
+    simpa only [Nat.add_sub_cancel] using
+      (GuruswamiSudan.numVars_eq_of_gt_one (D := D) (k := a + 1) (by omega : 1 < a + 1))
+  rw [h_numVars_def]
+  obtain ⟨r, hr, hD⟩ : ∃ r, r < a ∧ D = a * (D / a) + r :=
+    ⟨D % a, D.mod_lt ha, (D.div_add_mod a).symm⟩
+  generalize D / a = q at hD ⊢
+  subst hD
+  have hsub : 2 * (a * q + r) + 2 - a * q = a * q + 2 * (r + 1) := by omega
+  have hdvd : 2 ∣ (q + 1) * (a * q + 2 * (r + 1)) := by
+    rcases Nat.even_or_odd q with hq | hq
+    · exact (dvd_add (hq.two_dvd.mul_left a) (Dvd.intro _ rfl)).mul_left _
+    · exact hq.add_one.two_dvd.mul_right _
+  rw [hsub, mul_comm 2 a, mul_assoc, Nat.mul_div_cancel' hdvd]
+  obtain ⟨t, rfl⟩ : ∃ t, a = (r + 1) + t := ⟨a - (r + 1), by omega⟩
+  exact Nat.le.intro (k := (r + 1) * t) (by ring)
+
+private theorem symbolicUpperTriangleBase_card_ge_k_one_n_one {m : ℕ} (hm : 1 ≤ m) :
+    GuruswamiSudan.numConstraints 1 m ≤
+      (symbolicUpperTriangleBase 1 1 m).card := by
+  let T := symbolicModifiedGSCap 1 1 m
+  have hTpos : 0 < T := symbolicModifiedGSCap_pos (by omega) (by omega) hm
+  have hbound := symbolic_numVars_lower_bound_boundary 2 (T - 1) (by omega)
+  have hcard := symbolicUpperTriangleBase_card 1 1 m
+  rw [← hcard] at hbound
+  have hTone : T - 1 + 1 = T := by omega
+  rw [hTone] at hbound
+  have hsq := symbolicModifiedGSCap_sq_gt (n := 1) (k := 1) (m := m) (by omega)
+  have hident : ((m : ℝ) + 1 / 2) ^ 2 =
+      (m : ℝ) * (m + 1) + 1 / 4 := by ring
+  rw [hident] at hsq
+  norm_num at hsq
+  change ((m : ℝ) * (m + 1) + 1 / 4) * 2 < ((T : ℝ) + 1) ^ 2 at hsq
+  have hscaled : 2 * m * (m + 1) ≤ T ^ 2 + 2 * T := by
+    by_contra hnot
+    have hplus : T ^ 2 + 2 * T + 1 ≤ 2 * m * (m + 1) := by omega
+    have hplusR : (((T ^ 2 + 2 * T + 1 : ℕ) : ℝ)) ≤
+        (((2 * m * (m + 1) : ℕ) : ℝ)) := by exact_mod_cast hplus
+    push_cast at hplusR
+    linarith
+  have hscaled' : 2 * (1 + 1) * GuruswamiSudan.numConstraints 1 m ≤
+      T ^ 2 + (1 + 1) * T := by
+    rw [symbolic_numConstraints_scaled]
+    simpa only [Nat.reduceAdd, Nat.reduceMul, one_mul] using hscaled
+  have hmul : 2 * (1 + 1) * GuruswamiSudan.numConstraints 1 m ≤
+      2 * (1 + 1) * (symbolicUpperTriangleBase 1 1 m).card :=
+    hscaled'.trans hbound
+  exact le_of_mul_le_mul_left hmul (by omega)
+
+private theorem symbolicUpperTriangleBase_card_gt_k_one_of_two_le_n {n m : ℕ}
+    (hn : 2 ≤ n) (hm : 1 ≤ m) :
+    GuruswamiSudan.numConstraints n m <
+      (symbolicUpperTriangleBase n 1 m).card := by
+  let T := symbolicModifiedGSCap n 1 m
+  have hnpos : 0 < n := by omega
+  have hTpos : 0 < T := symbolicModifiedGSCap_pos hnpos (by omega) hm
+  have hbound := symbolic_numVars_lower_bound_boundary 2 (T - 1) (by omega)
+  have hcard := symbolicUpperTriangleBase_card n 1 m
+  rw [← hcard] at hbound
+  have hTone : T - 1 + 1 = T := by omega
+  rw [hTone] at hbound
+  have hsq := symbolicModifiedGSCap_sq_gt (n := n) (k := 1) (m := m) hnpos
+  have hident : ((m : ℝ) + 1 / 2) ^ 2 =
+      (m : ℝ) * (m + 1) + 1 / 4 := by ring
+  rw [hident] at hsq
+  have hncast : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hscaledR : ((2 * n * m * (m + 1) : ℕ) : ℝ) <
+      ((T ^ 2 + 2 * T : ℕ) : ℝ) := by
+    push_cast
+    linarith
+  have hscaled : 2 * n * m * (m + 1) < T ^ 2 + 2 * T := by
+    exact_mod_cast hscaledR
+  have hscaled' : 2 * (1 + 1) * GuruswamiSudan.numConstraints n m <
+      T ^ 2 + (1 + 1) * T := by
+    rw [symbolic_numConstraints_scaled]
+    simpa only [Nat.reduceAdd, Nat.reduceMul] using hscaled
+  have hmul : 2 * (1 + 1) * GuruswamiSudan.numConstraints n m <
+      2 * (1 + 1) * (symbolicUpperTriangleBase n 1 m).card :=
+    hscaled'.trans_le hbound
+  exact lt_of_mul_lt_mul_left' hmul
+
+private theorem symbolicUpperTriangleBase_card_gt_of_two_le_k {n k m : ℕ}
+    (hn : 0 < n) (hk : 2 ≤ k) (hm : 1 ≤ m) :
+    GuruswamiSudan.numConstraints n m <
+      (symbolicUpperTriangleBase n k m).card := by
+  let T := symbolicModifiedGSCap n k m
+  have hTpos : 0 < T := symbolicModifiedGSCap_pos hn (by omega) hm
+  have hbound := symbolic_numVars_lower_bound_boundary (k + 1) (T - 1) (by omega)
+  have hcard := symbolicUpperTriangleBase_card n k m
+  rw [← hcard] at hbound
+  have hTone : T - 1 + 1 = T := by omega
+  rw [hTone] at hbound
+  have hsq := symbolicModifiedGSCap_sq_gt (n := n) (k := k) (m := m) hn
+  have hident : ((m : ℝ) + 1 / 2) ^ 2 =
+      (m : ℝ) * (m + 1) + 1 / 4 := by ring
+  rw [hident] at hsq
+  have hTcast : (1 : ℝ) ≤ T := by exact_mod_cast hTpos
+  have hkcast : (2 : ℝ) ≤ k := by exact_mod_cast hk
+  have hscaledR : (((k + 1) * n * m * (m + 1) : ℕ) : ℝ) <
+      ((T ^ 2 + (k + 1) * T : ℕ) : ℝ) := by
+    push_cast
+    have hkT : 2 * (T : ℝ) ≤ k * T := mul_le_mul_of_nonneg_right hkcast (by positivity)
+    linarith [mul_pos (show (0 : ℝ) < k + 1 by positivity)
+      (show (0 : ℝ) < n by exact_mod_cast hn)]
+  have hscaled : (k + 1) * n * m * (m + 1) <
+      T ^ 2 + (k + 1) * T := by exact_mod_cast hscaledR
+  rw [← symbolic_numConstraints_scaled] at hscaled
+  have hmul : 2 * (k + 1) * GuruswamiSudan.numConstraints n m <
+      2 * (k + 1) * (symbolicUpperTriangleBase n k m).card :=
+    hscaled.trans_le hbound
+  exact lt_of_mul_lt_mul_left' hmul
+
+private theorem symbolicUpperTriangleCandidates_card_gt {n k m : ℕ}
+    (hn : 0 < n) (hk : 0 < k) (hm : 1 ≤ m) :
+    GuruswamiSudan.numConstraints n m <
+      (symbolicUpperTriangleCandidates n k m).card := by
+  by_cases hk2 : 2 ≤ k
+  · have hbase := symbolicUpperTriangleBase_card_gt_of_two_le_k hn hk2 hm
+    unfold symbolicUpperTriangleCandidates
+    split
+    · rw [Finset.card_insert_of_notMem (symbolicCapPoint_not_mem_base hn hk hm)]
+      omega
+    · exact hbase
+  · have hk1 : k = 1 := by omega
+    subst k
+    by_cases hn2 : 2 ≤ n
+    · have hbase := symbolicUpperTriangleBase_card_gt_k_one_of_two_le_n hn2 hm
+      unfold symbolicUpperTriangleCandidates
+      split
+      · rw [Finset.card_insert_of_notMem
+          (symbolicCapPoint_not_mem_base hn (by omega) hm)]
+        omega
+      · exact hbase
+    · have hn1 : n = 1 := by omega
+      subst n
+      have hstrict := symbolicModifiedGSCap_strict_k_one_n_one hm
+      have hbase := symbolicUpperTriangleBase_card_ge_k_one_n_one hm
+      unfold symbolicUpperTriangleCandidates
+      rw [ite_eq_left]
+      · rw [Finset.card_insert_of_notMem
+          (symbolicCapPoint_not_mem_base (by omega) (by omega) hm)]
+        omega
+      · norm_num at hstrict ⊢
+        exact hstrict
+
+open scoped BigOperators in
+private theorem symbolic_snd_le_ySum (A : Finset (ℕ × ℕ)) {p : ℕ × ℕ} (hp : p ∈ A) :
+    p.2 ≤ symbolicYSum A := by
+  unfold symbolicYSum
+  exact Finset.single_le_sum (fun q hq => Nat.zero_le q.2) hp
+
+open scoped BigOperators in
+private theorem symbolicGSIndex_card_closed (A : Finset (ℕ × ℕ)) :
+    Fintype.card (SymbolicGSIndex A) + symbolicYSum A =
+      A.card * (symbolicYSum A + 1) := by
+  classical
+  rw [symbolicGSIndex_card_sum]
+  have hsum : (∑ p : {q // q ∈ A}, p.1.2) = symbolicYSum A := by
+    rw [Finset.sum_coe_sort_eq_attach, Finset.sum_attach]
+    rfl
+  calc
+    (∑ p : {q // q ∈ A}, (symbolicYSum A - p.1.2 + 1)) + symbolicYSum A
+        = (∑ p : {q // q ∈ A}, (symbolicYSum A - p.1.2 + 1)) +
+            ∑ p : {q // q ∈ A}, p.1.2 := by rw [hsum]
+    _ = ∑ p : {q // q ∈ A},
+          ((symbolicYSum A - p.1.2 + 1) + p.1.2) := by
+      rw [← Finset.sum_add_distrib]
+    _ = ∑ p : {q // q ∈ A}, (symbolicYSum A + 1) := by
+      apply Finset.sum_congr rfl
+      intro p hp
+      have hle := symbolic_snd_le_ySum A p.2
+      omega
+    _ = A.card * (symbolicYSum A + 1) := by
+      simp
+
+private theorem symbolicGSConstraintIndex_card_lt (n m : ℕ) (A : Finset (ℕ × ℕ))
+    (hcount : GuruswamiSudan.numConstraints n m < A.card) :
+    Fintype.card (SymbolicGSConstraintIndex n m A) <
+      Fintype.card (SymbolicGSIndex A) := by
+  let C := GuruswamiSudan.numConstraints n m
+  let B := symbolicYSum A
+  let J := Fintype.card (SymbolicGSConstraintIndex n m A)
+  let I := Fintype.card (SymbolicGSIndex A)
+  have hc : J = C * (B + 1) := by
+    exact symbolicGSConstraintIndex_card n m A
+  have hi : I + B = A.card * (B + 1) := by
+    exact symbolicGSIndex_card_closed A
+  have hsucc : C + 1 ≤ A.card := by omega
+  have hmul : (C + 1) * (B + 1) ≤ A.card * (B + 1) :=
+    Nat.mul_le_mul_right (B + 1) hsucc
+  have hid : C * (B + 1) + B + 1 = (C + 1) * (B + 1) := by ring
+  have hstep : J + B < (C + 1) * (B + 1) := by
+    rw [hc, ← hid]
+    omega
+  have hsum : J + B < I + B := by
+    rw [hi]
+    exact hstep.trans_le hmul
   omega
 
-open GuruswamiSudan in
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- For a box index `(i,j,t)`: `j ≤ Dpg`. -/
-lemma gsBox_Y_le {n m k : ℕ} {p : ℕ × ℕ × ℕ} (hk : 0 < k) (hp : p ∈ gsBox n m k) :
-    0 * p.1 + 1 * p.2.1 ≤ gsDpg n m k := by
-  have := gsBox_weighted_le hk hp
-  have hk1 : 1 ≤ k := hk
-  nlinarith [this]
+private theorem exists_symbolicGSKernelWitness {F : Type} [Field F]
+    (n m : ℕ) (A : Finset (ℕ × ℕ)) (ωs : Fin n ↪ F) (u₀ u₁ : Fin n → F)
+    (hcount : GuruswamiSudan.numConstraints n m < A.card) :
+    Nonempty (SymbolicGSKernelWitness n m A ωs u₀ u₁) := by
+  have hcard := symbolicGSConstraintIndex_card_lt n m A hcount
+  have hfinrank : Module.finrank F (SymbolicGSConstraintIndex n m A → F) <
+      Module.finrank F (SymbolicGSIndex A → F) := by
+    simpa only [Module.finrank_fintype_fun_eq_card] using hcard
+  have hker : LinearMap.ker (symbolicGSConstraintMap n m A ωs u₀ u₁) ≠ ⊥ :=
+    LinearMap.ker_ne_bot_of_finrank_lt hfinrank
+  obtain ⟨c, hc, hc0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hker
+  refine ⟨{ c := c, c_ne_zero := hc0, constraints := ?_ }⟩
+  exact hc
 
-open GuruswamiSudan in
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- For a box index `(i,j,t)`: `i ≤ Dpg`. -/
-lemma gsBox_X_le {n m k : ℕ} {p : ℕ × ℕ × ℕ} (hk : 0 < k) (hp : p ∈ gsBox n m k) :
-    1 * p.1 + 0 * p.2.1 ≤ gsDpg n m k := by
-  have := gsBox_weighted_le hk hp
+private theorem symbolicGSIndex_z_add_y_le (A : Finset (ℕ × ℕ)) (q : SymbolicGSIndex A) :
+    q.2.1 + q.1.1.2 ≤ symbolicYSum A := by
+  have hy := symbolic_snd_le_ySum A q.1.2
+  have hz := q.2.2
   omega
 
-open GuruswamiSudan in
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- For a box index `(i,j,t)`: `t ≤ zCap`. -/
-lemma gsBox_Z_le {n m k : ℕ} {p : ℕ × ℕ × ℕ} (hp : p ∈ gsBox n m k) :
-    p.2.2 ≤ gsZCap n m k := by
-  rw [mem_gsBox] at hp; exact hp.2
+open scoped BigOperators in
+private theorem symbolicGSPoly_coeff_natDegree_add_le_of_mem {F : Type} [Field F]
+    (A : Finset (ℕ × ℕ)) (c : SymbolicGSIndex A → F) {i j : ℕ}
+    (hp : (i, j) ∈ A) :
+    (((symbolicGSPoly (F := F) A c).coeff j).coeff i).natDegree + j ≤
+      symbolicYSum A := by
+  rw [symbolicGSPoly_coeff_pair]
+  have hjB := symbolic_snd_le_ySum A hp
+  have hdeg : (∑ q : SymbolicGSIndex A,
+      if q.1.1 = (i, j) then Polynomial.monomial q.2.1 (c q) else 0).natDegree ≤
+      symbolicYSum A - j := by
+    apply Polynomial.natDegree_sum_le_of_forall_le
+    intro q hq
+    by_cases heq : q.1.1 = (i, j)
+    · rw [ite_eq_left heq]
+      have hbudget := symbolicGSIndex_z_add_y_le A q
+      have hj : q.1.1.2 = j := congrArg Prod.snd heq
+      have hmono := Polynomial.natDegree_monomial_le (m := q.2.1) (c q)
+      omega
+    · rw [ite_eq_right heq]
+      simp only [Polynomial.natDegree_zero]
+      omega
+  omega
 
-open GuruswamiSudan Polynomial.Bivariate in
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- The `Y`-degree of the box-assembled `Q` is at most `Dpg`. -/
-lemma natDegree_gsQ_le {n m k : ℕ} (hk : 0 < k) (c : (gsBox n m k) → F) :
-    (triCoeffsToPoly (gsBox n m k) c).natDegree ≤ gsDpg n m k := by
-  have h := natWeightedDegree_triCoeffsToPoly_le (gsBox n m k) c 0 1 (gsDpg n m k)
-    (fun p hp ↦ gsBox_Y_le hk hp)
-  rwa [← degreeY_as_weighted_deg, natDegreeY] at h
+private theorem symbolicGSPoly_DYZ_term_le {F : Type} [Field F]
+    (A : Finset (ℕ × ℕ)) (c : SymbolicGSIndex A → F) {i j : ℕ}
+    (hi : i ∈ ((symbolicGSPoly (F := F) A c).coeff j).support) :
+    j + (Polynomial.Bivariate.coeff (symbolicGSPoly (F := F) A c) i j).natDegree ≤
+      symbolicYSum A := by
+  have hp : (i, j) ∈ A := symbolicGSPoly_coeff_ne_zero_mem A c
+    (Polynomial.mem_support_iff.mp hi)
+  have hdeg := symbolicGSPoly_coeff_natDegree_add_le_of_mem A c hp
+  unfold Polynomial.Bivariate.coeff
+  omega
 
-open GuruswamiSudan Polynomial.Bivariate in
-omit [DecidableEq (RatFunc F)] in
-/-- **Multiplicity bridge.**  If `c` lies in the kernel of the constraint map, the assembled
-nonzero `Q` has root multiplicity `≥ m` at every curve point `(C ωᵢ, u₀ᵢ + Z·u₁ᵢ)`.
+private theorem symbolicGSPoly_DYZ_le {F : Type} [Field F]
+    (A : Finset (ℕ × ℕ)) (c : SymbolicGSIndex A → F) :
+    Trivariate.D_YZ (symbolicGSPoly (F := F) A c) ≤ symbolicYSum A := by
+  unfold Trivariate.D_YZ Trivariate.degreeYZ
+  apply finsetMaxGetD_le
+  intro outer houter
+  rw [Finset.mem_image] at houter
+  obtain ⟨j, hj, rfl⟩ := houter
+  apply finsetMaxGetD_le
+  intro inner hinner
+  rw [Finset.mem_image] at hinner
+  obtain ⟨i, hi, rfl⟩ := hinner
+  exact symbolicGSPoly_DYZ_term_le A c hi
 
-The kernel forces every `Z`-coefficient (up to `zMax`) of each order-`< m` shifted coefficient to
-vanish; combined with the `Z`-degree budget (`ZdegLE_shift` + the box bound), the whole `F[Z]`
-coefficient vanishes, and `triv_rootMultiplicity_ge_of_shift_zero` yields multiplicity `≥ m`. -/
-lemma gsQ_multiplicity {n m k : ℕ} (hk : 0 < k) (ωs : Fin n ↪ F) (u₀ u₁ : Fin n → F)
-    (c : (gsBox n m k) → F) (hc : c ≠ 0)
-    (hker : triConstraintMap (gsBox n m k) m (gsZMax n m k) ωs u₀ u₁ c = 0) (i : Fin n) :
-    (m : ℕ) ≤ rootMultiplicity (triCoeffsToPoly (gsBox n m k) c)
-        (Polynomial.C (ωs i)) (Polynomial.C (u₀ i) + Polynomial.X * Polynomial.C (u₁ i)) := by
-  classical
-  set Q := triCoeffsToPoly (gsBox n m k) c with hQdef
-  set x := Polynomial.C (ωs i) with hx
-  set y := Polynomial.C (u₀ i) + Polynomial.X * Polynomial.C (u₁ i) with hy
-  -- Q ≠ 0
-  have hQne : Q ≠ 0 := triCoeffsToPoly_ne_zero (gsBox n m k) c hc
-  -- Q has Z-degree ≤ zCap and Y-degree ≤ Dpg
-  have hQz : ZdegLE Q (gsZCap n m k) :=
-    ZdegLE_triCoeffsToPoly (gsBox n m k) c (gsZCap n m k) (fun p hp ↦ gsBox_Z_le hp)
-  have hQy : Q.natDegree ≤ gsDpg n m k := natDegree_gsQ_le hk c
-  -- the shifted constraint output has Z-degree ≤ zMax
-  have hshiftZ : ZdegLE (shift Q x y) (gsZMax n m k) := by
-    refine (ZdegLE_shift hQz (ωs i) (u₀ i) (u₁ i)).mono ?_
-    rw [gsZMax]; exact Nat.add_le_add_left hQy _
-  -- apply the order-of-vanishing criterion
-  refine triv_rootMultiplicity_ge_of_shift_zero hQne (fun s t hst ↦ ?_)
-  -- every Z-coefficient up to zMax vanishes, and Z-degree ≤ zMax ⟹ the F[Z] coeff is 0
+open scoped BigOperators in
+private theorem symbolicGSPoly_shift_coeff_natDegree_le {F : Type} [Field F]
+    (A : Finset (ℕ × ℕ)) (c : SymbolicGSIndex A → F)
+    (x y₀ y₁ : F) (s t : ℕ) :
+    (((Polynomial.Bivariate.shift (symbolicGSPoly (F := F) A c)
+      (Polynomial.C x)
+      (Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁)).coeff t).coeff s).natDegree ≤
+      symbolicYSum A := by
+  rw [symbolicGSPoly_shift_coeff_eq_sum]
+  apply Polynomial.natDegree_sum_le_of_forall_le
+  intro q hq
+  calc
+    (c q • ((Polynomial.Bivariate.shift
+      (Polynomial.monomial q.1.1.2
+        (Polynomial.monomial q.1.1.1 (Polynomial.monomial q.2.1 1)))
+      (Polynomial.C x)
+      (Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁)).coeff t).coeff s).natDegree
+      ≤ (((Polynomial.Bivariate.shift
+        (Polynomial.monomial q.1.1.2
+          (Polynomial.monomial q.1.1.1 (Polynomial.monomial q.2.1 1)))
+        (Polynomial.C x)
+        (Polynomial.C y₀ + Polynomial.X * Polynomial.C y₁)).coeff t).coeff s).natDegree :=
+        Polynomial.natDegree_smul_le _ _
+    _ ≤ q.2.1 + q.1.1.2 :=
+      symbolicGSBasis_shift_coeff_natDegree_le q x y₀ y₁ s t
+    _ ≤ symbolicYSum A := symbolicGSIndex_z_add_y_le A q
+
+private theorem symbolicGSKernelWitness_shift_vanish {F : Type} [Field F]
+    {n m : ℕ} (A : Finset (ℕ × ℕ)) (ωs : Fin n ↪ F) (u₀ u₁ : Fin n → F)
+    (w : SymbolicGSKernelWitness n m A ωs u₀ u₁) :
+    ∀ i s t, s + t < m →
+      ((Polynomial.Bivariate.shift (symbolicGSPoly (F := F) A w.c)
+        (Polynomial.C (ωs i))
+        (Polynomial.C (u₀ i) + Polynomial.X * Polynomial.C (u₁ i))).coeff t).coeff s = 0 := by
+  intro i s t hst
   apply Polynomial.ext
-  intro z
-  rw [Polynomial.coeff_zero]
-  by_cases hz : z ≤ gsZMax n m k
-  · -- use the kernel: the (i, (s,t), z) coordinate is 0
-    have hst' : (s, t) ∈ constraintIndices m := by
-      unfold constraintIndices
-      rw [Finset.mem_filter, Finset.product_eq_sprod, Finset.mem_product, Finset.mem_range,
-        Finset.mem_range]
-      exact ⟨⟨by omega, by omega⟩, hst⟩
-    have hcoord := congr_fun hker (i, ⟨(s, t), hst'⟩, ⟨z, Nat.lt_succ_of_le hz⟩)
-    simp only [triConstraintMap, LinearMap.coe_comp, Function.comp_apply, LinearMap.pi_apply,
-      triEvalConstraint, LinearMap.coe_mk, AddHom.coe_mk, Pi.zero_apply] at hcoord
-    rw [triCoeffsToPolyₗ_apply] at hcoord
-    exact hcoord
-  · -- beyond the Z-degree budget: the coefficient is 0 by the degree bound
-    exact Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (hshiftZ s t) (by omega))
-
-/-! ### Box degree facts for the `ModifiedGuruswami` degree fields -/
-
-open GuruswamiSudan Polynomial.Bivariate in
-omit [DecidableEq (RatFunc F)] in
-/-- The `(1,k)`-weighted degree of the box-assembled `Q` is at most `Dpg`. -/
-lemma natWeightedDegree_gsQ_1k_le {n m k : ℕ} (hk : 0 < k) (c : (gsBox n m k) → F) :
-    natWeightedDegree (triCoeffsToPoly (gsBox n m k) c) 1 k ≤ gsDpg n m k :=
-  natWeightedDegree_triCoeffsToPoly_le (gsBox n m k) c 1 k (gsDpg n m k)
-    (fun _p hp ↦ gsBox_weighted_le hk hp)
-
-open GuruswamiSudan Polynomial.Bivariate in
-omit [DecidableEq (RatFunc F)] in
-/-- The `X`-degree of the box-assembled `Q` is at most `Dpg`. -/
-lemma degreeX_gsQ_le {n m k : ℕ} (hk : 0 < k) (c : (gsBox n m k) → F) :
-    degreeX (triCoeffsToPoly (gsBox n m k) c) ≤ gsDpg n m k := by
-  have h := natWeightedDegree_triCoeffsToPoly_le (gsBox n m k) c 1 0 (gsDpg n m k)
-    (fun p hp ↦ gsBox_X_le hk hp)
-  rwa [← degreeX_as_weighted_deg] at h
-
-open GuruswamiSudan Polynomial.Bivariate in
-omit [DecidableEq (RatFunc F)] in
-/-- `k · (Y-degree of the box-assembled `Q`) ≤ Dpg` (the `Y`-degree is `≤ Dpg/k`). -/
-lemma k_mul_natDegreeY_gsQ_le {n m k : ℕ} (hk : 0 < k) (c : (gsBox n m k) → F) :
-    k * natDegreeY (triCoeffsToPoly (gsBox n m k) c) ≤ gsDpg n m k := by
-  classical
-  set Q := triCoeffsToPoly (gsBox n m k) c with hQ
-  have hwd : natWeightedDegree Q 0 k ≤ gsDpg n m k :=
-    natWeightedDegree_triCoeffsToPoly_le (gsBox n m k) c 0 k (gsDpg n m k)
-      (fun p hp ↦ by
-        have := gsBox_weighted_le hk hp; omega)
-  refine le_trans ?_ hwd
-  rcases eq_or_ne Q 0 with hQ0 | hQ0
-  · simp [hQ0, natDegreeY]
-  · -- the maximal Y-index `d := natDegreeY Q` is in the support
-    have hd : natDegreeY Q ∈ Q.support := by
-      rw [natDegreeY, Polynomial.mem_support_iff]
-      exact Polynomial.leadingCoeff_ne_zero.mpr hQ0
-    have := Finset.le_sup (f := fun mm ↦ 0 * (Q.coeff mm).natDegree + k * mm) hd
-    simpa [natWeightedDegree] using this
-
-/-! ### `D_YZ` upper bound and box facts -/
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- A `Finset ℕ` all of whose elements are `≤ B` has `(max).getD 0 ≤ B`.  This is the
-`Option.getD`-wrapped form of `Finset.max_le_iff`, matching the shape of `D_YZ`. -/
-lemma finset_max_getD_le {s : Finset ℕ} {B : ℕ} (h : ∀ x ∈ s, x ≤ B) :
-    (s.max).getD 0 ≤ B := by
-  rcases s.eq_empty_or_nonempty with rfl | hne
-  · simp only [Finset.max_empty, Option.getD]; exact Nat.zero_le _
-  · obtain ⟨b, hb⟩ := Finset.max_of_nonempty hne
-    rw [hb]
-    exact h b (Finset.mem_of_max hb)
-
-omit [DecidableEq F] [DecidableEq (RatFunc F)] in
-/-- **`D_YZ` upper bound.**  If `Q` has `Y`-degree `≤ d` and every bivariate coefficient has
-`Z`-degree `≤ e` (`ZdegLE Q e`), then `D_YZ Q ≤ d + e`.
-
-`D_YZ Q = maxⱼ maxₖ (j + Zdeg(coeff of `X^j Y^k`))`; the outer `j` is a `Y`-degree `≤ d` and every
-`Z`-degree term is `≤ e`, so each summand is `≤ d + e`. -/
-lemma D_YZ_le_of_ZdegLE {Q : F[Z][X][Y]} {d e : ℕ}
-    (hY : Polynomial.Bivariate.natDegreeY Q ≤ d) (hZ : ZdegLE Q e) :
-    Trivariate.D_YZ Q ≤ d + e := by
-  classical
-  unfold Trivariate.D_YZ
-  apply finset_max_getD_le
-  intro x hx
-  rw [Finset.mem_image] at hx
-  obtain ⟨j, hj, rfl⟩ := hx
-  apply finset_max_getD_le
-  intro y hy
-  rw [Finset.mem_image] at hy
-  obtain ⟨kx, hkx, rfl⟩ := hy
-  have hjd : j ≤ d := le_trans (Polynomial.le_natDegree_of_mem_supp j hj) hY
-  have hze : (Polynomial.Bivariate.coeff Q j kx).natDegree ≤ e := by
-    unfold Polynomial.Bivariate.coeff
-    exact hZ j kx
-  omega
-
-end ModifiedGuruswamiHelpers
+  intro d
+  by_cases hd : d ≤ symbolicYSum A
+  · have hstmem : (s, t) ∈ GuruswamiSudan.constraintIndices m := by
+      unfold GuruswamiSudan.constraintIndices
+      refine Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨?_, ?_⟩, hst⟩
+      · exact Finset.mem_range.mpr (by omega)
+      · exact Finset.mem_range.mpr (by omega)
+    let q : SymbolicGSConstraintIndex n m A :=
+      (i, (⟨(s, t), hstmem⟩, ⟨d, Nat.lt_succ_of_le hd⟩))
+    have hzero := congrFun w.constraints q
+    simp only [Pi.zero_apply] at hzero
+    rw [symbolicGSConstraintMap_apply] at hzero
+    exact hzero
+  · have hdeg := symbolicGSPoly_shift_coeff_natDegree_le A w.c
+      (ωs i) (u₀ i) (u₁ i) s t
+    exact Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdeg (by omega))
 
 
-omit [DecidableEq (RatFunc F)] in
-/-- Claim 5.4 from [BCIKS20].
-It essentially claims that there exists a solution to the Guruswami-Sudan constraints above.
+private theorem symbolicDY_lt_of_weighted {R : Type} [Semiring R]
+    {Q : Polynomial (Polynomial R)} {k : ℕ} (hk : 0 < k) {B : ℝ}
+    (hQ : ((Polynomial.Bivariate.natWeightedDegree Q 1 k : ℕ) : ℝ) < B) :
+    ((Polynomial.Bivariate.natDegreeY Q : ℕ) : ℝ) < B / k := by
+  have h := Polynomial.Bivariate.mul_natDegreeY_le_natWeightedDegree Q k
+  have hkR : (0 : ℝ) < k := by exact_mod_cast hk
+  rw [lt_div_iff₀ hkR]
+  calc ((Polynomial.Bivariate.natDegreeY Q : ℕ) : ℝ) * k
+      = ((k * Polynomial.Bivariate.natDegreeY Q : ℕ) : ℝ) := by push_cast; ring
+    _ ≤ ((Polynomial.Bivariate.natWeightedDegree Q 1 k : ℕ) : ℝ) := by exact_mod_cast h
+    _ < B := hQ
 
-NOTE: As currently formalized this lemma is **false** for `n = 0` or `k = 0` (see
-`modified_guruswami_unsat_of_n_zero` / `modified_guruswami_unsat_of_k_zero`): the degree bound
-`D_X` collapses to `0` and the strict degree constraints become unsatisfiable.  The statement
-below therefore carries the proven-necessary side conditions `0 < n` and `0 < k` (the paper's
-non-degenerate regime is `k + 1 ≤ n`, `1 ≤ m`).
-
-It also carries two **regime side conditions** on the construction parameters, both honest
-parameter inequalities (no per-`Q` assumption — the `Q`-specific bounds are *proved* from them):
-
-* `hDx`: the (integer) degree cap `gsDpg = ⌊D_X⌋₊` of the construction box lies strictly below the
-  real bound `D_X = (m+½)·√ρ·n`.  This is forced because the three strict `ModifiedGuruswami`
-  degree fields (`Q_deg`, `Q_deg_X`, `Q_D_Y`) all reduce to `(gsDpg : ℝ) < D_X`, which FAILS exactly
-  when `D_X` is attained by an integer (e.g. `k+1=4, n=1, m=0`).  In the paper's non-integer regime
-  it holds; we expose it as a hypothesis rather than silently weaken the (uneditable)
-  `ModifiedGuruswami` fields from `<` to `≤`.
-
-* `hYZ`: the box's `Y`+`Z` degree budget `gsDpg + gsZCap` fits under the `YZ`-degree bound.  The
-  current `D_YZ` definition adds a monomial's `Y`-degree to the `Z`-degree of its transpose, so a
-  kernel element with nonzero high-`Z` coefficients on a transpose-paired pair realizes
-  `D_YZ Q ≈ gsZCap`.  With the (uneditable, counting-locked) budget `gsZCap = #constraints · gsDpg`,
-  the only honest way to guarantee `Q_D_YZ` for an arbitrary kernel element is to assume the box
-  budget itself fits the bound; we then *prove* `D_YZ Q ≤ gsDpg + gsZCap ≤ RHS` via
-  `D_YZ_le_of_ZdegLE`.  (Shrinking `gsZCap` to make this unconditional would require re-deriving a
-  quantitative bivariate counting gap `numVars − numConstraints ≥ g`; with the structural gap
-  `g = 1` the minimal feasible `gsZCap` is exactly `#constraints · gsDpg`, so this side condition is
-  the faithful regime statement for the present infrastructure.) -/
-lemma modified_guruswami_has_a_solution {m n k : ℕ} (_hn : 0 < n) (hk : 0 < k)
-    {ωs : Fin n ↪ F} {u₀ u₁ : Fin n → F}
-    (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
-    (hYZ : ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
-      n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n))) :
+private theorem modified_guruswami_has_a_solution_core
+    {F : Type} [Field F] [DecidableEq F] {m n k : ℕ}
+    (hn : 0 < n) (hk : 0 < k) (hm : 1 ≤ m)
+    {ωs : Fin n ↪ F} {u₀ u₁ : Fin n → F} :
     ∃ Q : F[Z][X][Y], ModifiedGuruswami m n k ωs Q u₀ u₁ := by
   classical
-  -- a nonzero kernel element gives the assembled candidate `Q`
-  obtain ⟨c, hc_ne, hc_ker⟩ := exists_nonzero_triSolution n m k ωs u₀ u₁
-  set Q := triCoeffsToPoly (gsBox n m k) c with hQdef
-  have hQne : Q ≠ 0 := triCoeffsToPoly_ne_zero (gsBox n m k) c hc_ne
-  -- real-arithmetic helpers
-  have hkR : (0 : ℝ) < (k : ℝ) := by exact_mod_cast hk
-  refine ⟨Q, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · -- Q_ne_0
-    exact hQne
-  · -- Q_deg : natWeightedDegree Q 1 k < D_X
-    have h1 : (natWeightedDegree Q 1 k : ℝ) ≤ (gsDpg n m k : ℝ) := by
-      exact_mod_cast natWeightedDegree_gsQ_1k_le hk c
-    exact lt_of_le_of_lt h1 hDx
-  · -- Q_multiplicity
-    intro i
-    exact gsQ_multiplicity hk ωs u₀ u₁ c hc_ne hc_ker i
-  · -- Q_deg_X : degreeX Q < D_X
-    have h1 : (degreeX Q : ℝ) ≤ (gsDpg n m k : ℝ) := by
-      exact_mod_cast degreeX_gsQ_le hk c
-    exact lt_of_le_of_lt h1 hDx
-  · -- Q_D_Y : D_Y Q < D_X / k
-    have hkD : (k : ℝ) * (D_Y Q : ℝ) ≤ (gsDpg n m k : ℝ) := by
-      have := k_mul_natDegreeY_gsQ_le hk c
-      have : (k * natDegreeY Q : ℕ) ≤ gsDpg n m k := this
-      push_cast at this ⊢
-      simpa [D_Y, mul_comm] using (by exact_mod_cast this :
-        (k : ℝ) * (natDegreeY Q : ℝ) ≤ (gsDpg n m k : ℝ))
-    have : (k : ℝ) * (D_Y Q : ℝ) < D_X ((k + 1) / (n : ℚ)) n m := lt_of_le_of_lt hkD hDx
-    rw [lt_div_iff₀ hkR, mul_comm]
-    convert this using 2
-  · -- Q_D_YZ : D_YZ Q ≤ RHS
-    have hYdeg : Polynomial.Bivariate.natDegreeY Q ≤ gsDpg n m k := natDegree_gsQ_le hk c
-    have hZdeg : ZdegLE Q (gsZCap n m k) :=
-      ZdegLE_triCoeffsToPoly (gsBox n m k) c (gsZCap n m k) (fun p hp ↦ gsBox_Z_le hp)
-    have hbound : Trivariate.D_YZ Q ≤ gsDpg n m k + gsZCap n m k :=
-      D_YZ_le_of_ZdegLE hYdeg hZdeg
-    calc (D_YZ Q : ℝ) ≤ ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) := by exact_mod_cast hbound
-      _ ≤ n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)) := hYZ
+  let A := symbolicUpperTriangleCandidates n k m
+  let w : SymbolicGSKernelWitness n m A ωs u₀ u₁ :=
+    Classical.choice (exists_symbolicGSKernelWitness n m A ωs u₀ u₁
+      (by simpa only [A] using symbolicUpperTriangleCandidates_card_gt hn hk hm))
+  let Q := symbolicGSPoly (F := F) A w.c
+  have hsupp := symbolicUpperTriangleCandidates_support hn hk hm
+  have hweight : ∀ p ∈ A,
+      ((p.1 + k * p.2 : ℕ) : ℝ) < D_X ((k + 1 : ℚ) / n) n m := by
+    intro p hp
+    exact (hsupp p (by simpa only [A] using hp)).2
+  have hQ : Q ≠ 0 := by
+    exact symbolicGSPoly_ne_zero A w.c w.c_ne_zero
+  have hdeg : Polynomial.Bivariate.natWeightedDegree Q 1 k <
+      D_X ((k + 1 : ℚ) / n) n m := by
+    exact symbolicGSPoly_weighted_lt A w.c hQ hweight
+  refine ⟨Q, {
+    Q_ne_0 := hQ
+    Q_deg := hdeg
+    Q_multiplicity := ?_
+    Q_deg_X := ?_
+    Q_D_Y := ?_
+    Q_D_YZ := ?_ }⟩
+  · apply symbolicGSPolyMultiplicityBridge hQ
+    exact symbolicGSKernelWitness_shift_vanish A ωs u₀ u₁ w
+  · have hx := Polynomial.Bivariate.degreeX_le_natWeightedDegree Q k
+    exact lt_of_le_of_lt (by simpa [Trivariate.degreeInX] using hx) hdeg
+  · have hy := symbolicDY_lt_of_weighted (Q := Q) hk hdeg
+    simpa only [Trivariate.D_Y, Trivariate.degreeInY] using hy
+  · have hyz := symbolicGSPoly_DYZ_le A w.c
+    have hyzR : (Trivariate.D_YZ Q : ℝ) ≤ symbolicYSum A := by
+      exact_mod_cast hyz
+    exact hyzR.trans (by
+      simpa only [A] using symbolicUpperTriangleCandidates_ySum_real_bound hn hk hm)
+
+
+omit [DecidableEq (RatFunc F)] in
+/-- The modified Guruswami-Sudan system is solvable: for every evaluation domain `ωs` and word
+pair `u₀ u₁`, some nonzero trivariate `Q` meets all the degree and multiplicity constraints of
+`ModifiedGuruswami` (Claim 5.4).
+
+The hypotheses `0 < n` and `0 < k` are necessary: with `n = 0` or `k = 0` the rational degree
+bounds `D_X` and `D_X / k` collapse to `0`, making the strict degree constraints unsatisfiable.
+`1 ≤ m` matches the interpolation count that supplies `Q`. -/
+lemma modified_guruswami_has_a_solution {m n k : ℕ}
+    (hn : 0 < n) (hk : 0 < k) (hm : 1 ≤ m)
+    {ωs : Fin n ↪ F} {u₀ u₁ : Fin n → F} :
+    ∃ Q : F[Z][X][Y], ModifiedGuruswami m n k ωs Q u₀ u₁ :=
+  modified_guruswami_has_a_solution_core hn hk hm
 
 end
-
-variable {m : ℕ} (k : ℕ) {δ : ℚ} {x₀ : F} {u₀ u₁ : Fin n → F} {Q : F[Z][X][Y]} {ωs : Fin n ↪ F}
-         [Finite F]
-
-noncomputable instance {α : Type} (s : Set α) [inst : Finite s] : Fintype s := Fintype.ofFinite _
-
-/-- The set `S` (equation 5.2 of [BCIKS20]). -/
-noncomputable def coeffs_of_close_proximity (ωs : Fin n ↪ F) (δ : ℚ) (u₀ u₁ : Fin n → F) : Finset F := Set.toFinset { z | ∃ v : ReedSolomon.code ωs (k + 1), δᵣ(u₀ + z • u₁, v) ≤ δ}
-
-open Polynomial
-
-omit [DecidableEq (RatFunc F)] in
-/-- There exists a `δ`-close polynomial `P_z` for each `z` from the set `S`. -/
-lemma exists_Pz_of_coeffs_of_close_proximity
-    {k : ℕ}
-  {z : F}
-  (hS : z ∈ coeffs_of_close_proximity (k := k) ωs δ u₀ u₁) :
-  ∃ Pz : F[X], Pz.natDegree ≤ k ∧ δᵣ(u₀ + z • u₁, Pz.eval ∘ ωs) ≤ δ := by
-    unfold coeffs_of_close_proximity at hS
-    obtain ⟨w, hS, dist⟩ : ∃ a ∈ ReedSolomon.code ωs (k + 1), ↑δᵣ(u₀ + z • u₁, a) ≤ δ := by
-      simpa using hS
-    obtain ⟨p, hS⟩ : ∃ y ∈ degreeLT F (k + 1), (ReedSolomon.evalOnPoints ωs) y = w := by
-      simpa using hS
-    exact ⟨p, ⟨
-      by if h : p = 0
-         then simp [h]
-         else rw [mem_degreeLT, degree_eq_natDegree h, Nat.cast_lt] at hS; grind,
-      by convert dist; rw [←hS.2]; rfl
-    ⟩⟩
-
-/-- The `δ`-close polynomial `Pz` for each `z` from the set `S` (`coeffs_of_close_proximity`). -/
-noncomputable def Pz {k : ℕ} {z : F} (hS : z ∈ coeffs_of_close_proximity k ωs δ u₀ u₁) : F[X] :=
-  (exists_Pz_of_coeffs_of_close_proximity (n := n) (k := k) hS).choose
-
-omit [DecidableEq (RatFunc F)] in
-/-- The chosen close polynomial `Pz` has degree at most `k`. -/
-lemma Pz_natDegree_le {k : ℕ} {z : F}
-    (hS : z ∈ coeffs_of_close_proximity (k := k) ωs δ u₀ u₁) :
-    (Pz (n := n) (k := k) (ωs := ωs) (δ := δ) (u₀ := u₀) (u₁ := u₁) hS).natDegree
-      ≤ k := by
-  exact (Classical.choose_spec
-    (exists_Pz_of_coeffs_of_close_proximity (n := n) (k := k) hS)).1
-
-omit [DecidableEq (RatFunc F)] in
-/-- The chosen close polynomial `Pz` is `δ`-close to the corresponding line word. -/
-lemma Pz_relDist_le {k : ℕ} {z : F}
-    (hS : z ∈ coeffs_of_close_proximity (k := k) ωs δ u₀ u₁) :
-    δᵣ(u₀ + z • u₁,
-        (Pz (n := n) (k := k) (ωs := ωs) (δ := δ) (u₀ := u₀) (u₁ := u₁) hS).eval
-          ∘ ωs) ≤ δ := by
-  exact (Classical.choose_spec
-    (exists_Pz_of_coeffs_of_close_proximity (n := n) (k := k) hS)).2
-
-/-- *Tagged-fiber pigeonhole* (self-contained combinatorial core of [BCIKS20] Prop 5.5).
-
-If every element of a finite index set `S : Finset ι` carries a `tag x` lying in a finite tag
-set `T : Finset τ` (`hmaps`), and `T` is nonempty, then some tag class `y ∈ T` is shared by at
-least `#S / #T` (nat division = `⌊#S/#T⌋`, the floor of the average fiber size) elements of `S`.
-
-This is the abstract pigeonhole behind Prop 5.5: there the index set is `S =
-coeffs_of_close_proximity` and the tag would be the irreducible `Y`-factor of `Q` whose
-graph passes through `(z, Pz)`, of which there are at most `D_Y Q`.  Specialized with `#T ≤ D_Y Q`
-this yields a fiber of size `≥ #S / D_Y Q`; whether that exceeds the strict target
-`#S / (2 · D_Y Q)` is *not* a free consequence (nat division: `#S/(2M) < #S/M` fails for small
-`#S`, e.g. `#S = 1, M = 2`), but holds in the paper's regime where `#S` is large relative to
-`D_Y Q` (i.e. `δ` below the list-decoding radius). -/
-lemma tagged_fiber_pigeonhole {ι τ : Type} [DecidableEq τ] (S : Finset ι) (tag : ι → τ)
-    (T : Finset τ) (hmaps : ∀ x ∈ S, tag x ∈ T) (hT : T.Nonempty) :
-    ∃ y ∈ T, #S / #T ≤ #{x ∈ S | tag x = y} := by
-  classical
-  refine exists_le_card_fiber_of_mul_le_card_of_maps_to hmaps hT ?_
-  rw [Nat.mul_comm]
-  exact Nat.div_mul_le_self (#S) (#T)
 
 end BCIKS20ProximityGapSection5
 

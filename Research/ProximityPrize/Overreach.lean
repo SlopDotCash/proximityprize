@@ -20,7 +20,7 @@ demanding `ε_mca(C, δ) ≤ ε*` at **every** radius `δ ≤ 1` simultaneously
 `δ ≥ 1 - ρ` at and beyond list-decoding capacity.
 
 ABF26's actual §4.5 target (`mcaConjecture`) only asks for the bound at radii `δ < 1 - ρ`,
-*strictly below capacity*. So the formal `grandMCAChallenge` / `mcaPrize` encoding is not
+*strictly below capacity*. So the formal `grandMCAChallenge` / `continuousMcaPrize` encoding is not
 merely defect-collapsed (F6); it is **strictly stronger** than the paper's ask — it
 additionally forces the bound on the closed-to-capacity window `[1 - ρ, 1]`, where for
 realistic parameters `ε_mca(C, 1) = C(n, k+1)/|F| ≫ ε*` (`epsMCA_one_eq_choose_div`,

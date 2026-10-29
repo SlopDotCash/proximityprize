@@ -64,9 +64,9 @@ theorem hasseDeriv_eval_eq_sum {R : Type*} [CommRing R] (k : ℕ) (p : R[X]) (a 
     omega
   · intro i hi
     simp only [Finset.mem_filter, Finset.mem_range] at hi
-    dsimp only; omega
+    omega
   · intro n hn
-    dsimp only; omega
+    omega
   · intro i hi
     rw [Finset.mem_filter] at hi
     have hik : k ≤ i := hi.2

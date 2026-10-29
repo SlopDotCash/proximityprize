@@ -169,7 +169,7 @@ theorem abs_norm_le_of_bgk_conjugates (α : K) {B : ℝ} (hB : 0 ≤ B)
       = ‖∏ σ : K →ₐ[ℚ] ℂ, σ α‖ := by rw [← hnorm, key]
     _ = ∏ σ : K →ₐ[ℚ] ℂ, ‖σ α‖ := norm_prod _ _
     _ ≤ ∏ _σ : K →ₐ[ℚ] ℂ, B :=
-        Finset.prod_le_prod (fun _ _ => norm_nonneg _) (fun σ _ => hconj σ)
+        Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _) (fun σ _ => hconj σ)
     _ = B ^ (Fintype.card (K →ₐ[ℚ] ℂ)) := by rw [Finset.prod_const, Finset.card_univ]
     _ = B ^ finrank ℚ K := by
         rw [AlgHom.card_of_splits ℚ K ℂ (fun _ ↦ IsAlgClosed.splits _)]

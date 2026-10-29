@@ -1,0 +1,68 @@
+{
+  "repository": "https://github.com/Verified-zkEVM/ArkLib",
+  "revision": "78835bdb3a4d24ea9dd2977db4c46029eb8de5db",
+  "issue": "https://github.com/SlopDotCash/proximityprize/issues/2",
+  "note": "Inherited upstream placeholder theorems of type True; these prove no intended tuple identity. Only these named violation sites in the byte-identical upstream Git blob are accepted. No native evaluation or custom axiom is exempted.",
+  "exceptions": [
+    {
+      "file": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+      "sha256": "289a6bbec62327ff5edcfab74722003c164950d04eefc854df1a371454e7aa19",
+      "declaration": "dappend_assoc",
+      "kind": "vacuous_true_theorem"
+    },
+    {
+      "file": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+      "sha256": "289a6bbec62327ff5edcfab74722003c164950d04eefc854df1a371454e7aa19",
+      "declaration": "hconcat_hcons",
+      "kind": "vacuous_true_theorem"
+    },
+    {
+      "file": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+      "sha256": "289a6bbec62327ff5edcfab74722003c164950d04eefc854df1a371454e7aa19",
+      "declaration": "dinit_hconcat",
+      "kind": "vacuous_true_theorem"
+    },
+    {
+      "file": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+      "sha256": "289a6bbec62327ff5edcfab74722003c164950d04eefc854df1a371454e7aa19",
+      "declaration": "hconcat_init_self",
+      "kind": "vacuous_true_theorem"
+    },
+    {
+      "file": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+      "sha256": "289a6bbec62327ff5edcfab74722003c164950d04eefc854df1a371454e7aa19",
+      "declaration": "happend_hcons",
+      "kind": "vacuous_true_theorem"
+    },
+    {
+      "file": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+      "sha256": "289a6bbec62327ff5edcfab74722003c164950d04eefc854df1a371454e7aa19",
+      "declaration": "happend_hconcat",
+      "kind": "vacuous_true_theorem"
+    },
+    {
+      "file": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+      "sha256": "289a6bbec62327ff5edcfab74722003c164950d04eefc854df1a371454e7aa19",
+      "declaration": "happend_left_eq_hcons",
+      "kind": "vacuous_true_theorem"
+    },
+    {
+      "file": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+      "sha256": "289a6bbec62327ff5edcfab74722003c164950d04eefc854df1a371454e7aa19",
+      "declaration": "hcons_happend_comm",
+      "kind": "vacuous_true_theorem"
+    },
+    {
+      "file": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+      "sha256": "289a6bbec62327ff5edcfab74722003c164950d04eefc854df1a371454e7aa19",
+      "declaration": "happend_singleton",
+      "kind": "vacuous_true_theorem"
+    },
+    {
+      "file": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+      "sha256": "289a6bbec62327ff5edcfab74722003c164950d04eefc854df1a371454e7aa19",
+      "declaration": "singleton_happend",
+      "kind": "vacuous_true_theorem"
+    }
+  ]
+}

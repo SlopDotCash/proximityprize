@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
-import ArkLib.ProofSystem.ToyProblem.Definitions
-import ArkLib.Data.CodingTheory.InterleavedCode
+import ProximityPrize.Extensions.ProofSystem.ToyProblem.Definitions
+import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
 
 /-!
 # Toy-problem violation bridge (ABF26 §6.4.1)
@@ -82,7 +82,8 @@ theorem relaxedRelation_two_zero_imp_jointProximity [Nonempty ι] {k : ℕ}
     exact hSag k i hi
   -- Hence the relative Hamming distance of the two interleaved words is ≤ δ.
   have hclose_word : δᵣ((⋈| u), (⋈| Wm)) ≤ δ := by
-    rw [relCloseToWord_iff_exists_agreementCols]
+    apply (relCloseToWord_iff_exists_agreementCols (fun i => (⋈| u) i)
+      (fun i => (⋈| Wm) i) δ).2
     refine ⟨S, ?_, ?_⟩
     · -- `|ι| - ⌊δ·|ι|⌋ ≤ |S|`, from `(1-δ)·|ι| ≤ |S|`.
       rw [relDist_floor_bound_iff_complement_bound]
@@ -96,7 +97,7 @@ theorem relaxedRelation_two_zero_imp_jointProximity [Nonempty ι] {k : ℕ}
         exact hcoe
       · -- `δ ≥ 1`: `(1:ℝ≥0) - δ = 0`, so the bound is `0 ≤ |S|`.
         rw [tsub_eq_zero_of_le hδgt, zero_mul]
-        exact zero_le _
+        positivity
     · intro colIdx
       refine ⟨fun hmem => hagree colIdx hmem, ?_⟩
       intro hne

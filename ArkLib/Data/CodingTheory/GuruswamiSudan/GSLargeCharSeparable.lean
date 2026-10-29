@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.GuruswamiSudan.Hab25SeparableSupply
+import ArkLib.ToMathlib.SeparableLowDegree
 import Mathlib.Algebra.CharP.Algebra
 import Mathlib.Algebra.Polynomial.Expand
 
@@ -98,11 +99,11 @@ theorem _root_.Irreducible.separable_of_natDegree_lt_charP {L : Type*} [Field L]
 with `0 < natDegree f` and `natDegree f < ringChar L` *or* `ringChar L = 0` is separable.
 This is the exact drop-in replacement for the `[CharZero L]`/`[PerfectField L]` supply
 of `Irreducible.separable`, usable over imperfect fields such as `F(Z)(X)`. -/
-theorem _root_.Irreducible.separable_of_natDegree_lt_ringChar {L : Type*} [Field L]
+theorem _root_.Irreducible.separable_of_natDegree_lt_ringChar_or_zero {L : Type*} [Field L]
     {f : L[X]} (hirr : Irreducible f) (hdeg : 0 < f.natDegree)
     (hchar : f.natDegree < ringChar L ∨ ringChar L = 0) : f.Separable := by
   rcases hchar with hlt | hzero
-  · exact hirr.separable_of_natDegree_lt_charP (ringChar L) hdeg hlt
+  · exact hirr.separable_of_natDegree_lt_ringChar hlt
   · haveI : CharZero L := (CharP.ringChar_zero_iff_CharZero L).mp hzero
     exact hirr.separable
 
@@ -125,7 +126,7 @@ theorem discr_ne_zero_of_irreducible_of_natDegree_lt_ringChar
   have hmapdeg : (f.map (algebraMap A (FractionRing A))).natDegree = f.natDegree :=
     natDegree_map_eq_of_injective hinj f
   have hsep : (f.map (algebraMap A (FractionRing A))).Separable :=
-    hirr'.separable_of_natDegree_lt_ringChar (by rw [hmapdeg]; exact hdeg)
+    hirr'.separable_of_natDegree_lt_ringChar_or_zero (by rw [hmapdeg]; exact hdeg)
       (by rw [hmapdeg]; exact hchar)
   exact discr_ne_zero_of_separable_map hinj hdeg hsep
 
@@ -167,7 +168,7 @@ lemma separable_map_of_mem_primeFactors_of_natDegree_lt_ringChar
     have hmapdeg : (R.map (algebraMap A (FractionRing A))).natDegree = R.natDegree :=
       Polynomial.natDegree_map_eq_of_injective
         (IsFractionRing.injective A (FractionRing A)) R
-    exact hirr'.separable_of_natDegree_lt_ringChar
+    exact hirr'.separable_of_natDegree_lt_ringChar_or_zero
       (by rw [hmapdeg]; exact Nat.pos_of_ne_zero hdeg) (by rw [hmapdeg]; exact hchar)
 
 /-- **Global separability of the squarefree part, per-factor characteristic bound**
@@ -401,7 +402,7 @@ end GuruswamiSudan.OverRatFunc
 
 /-! ## Axiom audit — all kernel-clean. -/
 #print axioms Irreducible.separable_of_natDegree_lt_charP
-#print axioms Irreducible.separable_of_natDegree_lt_ringChar
+#print axioms Irreducible.separable_of_natDegree_lt_ringChar_or_zero
 #print axioms Polynomial.discr_ne_zero_of_irreducible_of_natDegree_lt_ringChar
 #print axioms GuruswamiSudan.OverRatFunc.ringChar_fractionRing_eq_ringChar
 #print axioms GuruswamiSudan.OverRatFunc.irreducible_discr_ne_zero_of_natDegree_lt_ringChar

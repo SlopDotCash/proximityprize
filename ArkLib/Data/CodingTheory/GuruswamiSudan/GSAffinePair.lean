@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.GuruswamiSudan.GSOverRatFunc
-import Mathlib.LinearAlgebra.Lagrange
+import ArkLib.ToMathlib.LinearAlgebra.LagrangeLine
 
 /-!
 # Hab25 §3 Step S6 deep kernel — the unique affine pair, by Lagrange descent
@@ -42,33 +42,7 @@ Axiom-clean: `[propext, Classical.choice, Quot.sound]`.
 
 open Polynomial
 
-/-! ## Lagrange interpolation commutes with field embeddings (Mathlib-ready) -/
-
-namespace Lagrange
-
-variable {F K : Type*} [Field F] [Field K]
-
-theorem map_basisDivisor (φ : F →+* K) (x y : F) :
-    (basisDivisor x y).map φ = basisDivisor (φ x) (φ y) := by
-  simp [basisDivisor, Polynomial.map_mul, Polynomial.map_sub, Polynomial.map_C,
-    Polynomial.map_X, map_inv₀, map_sub]
-
-theorem map_basis {ι : Type*} [DecidableEq ι] (φ : F →+* K)
-    (s : Finset ι) (v : ι → F) (i : ι) :
-    (Lagrange.basis s v i).map φ = Lagrange.basis s (φ ∘ v) i := by
-  simp [Lagrange.basis, Polynomial.map_prod, map_basisDivisor, Function.comp]
-
-/-- **Lagrange interpolation commutes with field embeddings**: interpolating the mapped
-values through the mapped nodes is the map of the interpolant. -/
-theorem map_interpolate {ι : Type*} [DecidableEq ι] (φ : F →+* K)
-    (s : Finset ι) (v : ι → F) (r : ι → F) :
-    (interpolate s v r).map φ = interpolate s (φ ∘ v) (φ ∘ r) := by
-  rw [interpolate_apply, interpolate_apply, Polynomial.map_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Polynomial.map_mul, Polynomial.map_C, map_basis]
-  rfl
-
-end Lagrange
+/-! The canonical `LagrangeLine` owner supplies the three field-map interpolation laws. -/
 
 namespace GuruswamiSudan.OverRatFunc
 

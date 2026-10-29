@@ -77,6 +77,11 @@ open OracleComp OracleSpec ProtocolSpec OracleReduction
 
 namespace DuplexSpongeFS.VerifierReplay
 
+-- Observe every event of the eager experiment's optional transcript output.
+local instance {n : ℕ} (pSpec : ProtocolSpec n) {StmtIn StmtOut : Type}
+    {κ : Type} (spec : OracleSpec κ) :
+    MeasurableSpace (StmtIn × StmtOut × pSpec.Messages × QueryLog spec × QueryLog spec) := ⊤
+
 open DSTraceStorage TraceTransform ProverTransform KeyLemmaFoundations KeyLemmaHybrids
 
 -- Sections below share one DSFS-wide variable block; several bricks use only a slice of it.
@@ -288,7 +293,8 @@ theorem d2sCodecBridgeImplMemo_commit
       simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
         Prod.mk.injEq] at h
       obtain ⟨hr, hm⟩ := h
-      subst hr; subst hm
+      cases hr
+      cases hm
       exact ⟨hl, [], by simp⟩
   | none =>
       rw [d2sCodecBridgeImplMemo_run_miss gq memo hl] at h
@@ -313,7 +319,6 @@ theorem d2sCodecBridgeImplMemo_commit
           simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
             Prod.mk.injEq] at h
           obtain ⟨hr, hm⟩ := h
-          subst hr; subst hm
           refine ⟨?_, [bridgeMemoEntry (Salt := Salt) gq r], rfl⟩
           exact lookupD2SAlgoMemo_insert_self_of_none memo
             (bridgeMemoEntry (Salt := Salt) gq r) hl
@@ -651,7 +656,8 @@ theorem memoCoherentTable_keystone
       simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
         Prod.mk.injEq] at h
       obtain ⟨hr, hm⟩ := h
-      subst hr; subst hm
+      cases hr
+      cases hm
       exact ⟨hcoh gq.1 gq.2.1
         (SaltCodec.encode (U := U) (δ := δ) (Salt := Salt) gq.2.2.1) gq.2.2.2
         r msgs hl hparse, hcoh⟩
@@ -675,7 +681,6 @@ theorem memoCoherentTable_keystone
           simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
             Prod.mk.injEq] at h
           obtain ⟨hr, hm⟩ := h
-          subst hr; subst hm
           have hfresh := deserialize_of_mem_support_bridge_table c gq msgs hparse r ho
           refine ⟨hfresh, hcoh.insert gq r fun msgs' hparse' => ?_⟩
           rw [hparse'] at hparse
@@ -909,7 +914,7 @@ noncomputable def Hyb3Strict [SampleableType U]
     (V : Verifier oSpec StmtIn StmtOut pSpec)
     (P : OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U)
       (StmtIn × pSpec.Messages)) :
-    SPMF (Option (StmtIn × StmtOut × pSpec.Messages
+    MeasureTheory.Measure (Option (StmtIn × StmtOut × pSpec.Messages
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec))) :=
   𝒟[hybGameEagerSplit (T_H := T_H) (T_P := T_P) δ
@@ -948,7 +953,7 @@ theorem hyb34Step_of_strictSplit [SampleableType U]
       IsQueryBoundP P (fun j => dsQueryFlavor j = .hash) tₕ →
       IsQueryBoundP P (fun j => dsQueryFlavor j = .perm) tₚ →
       IsQueryBoundP P (fun j => dsQueryFlavor j = .permInv) tₚᵢ →
-      SPMF.tvDist (Hyb3 T_H T_P δ Salt oImpl V P)
+      MeasureTheory.Measure.tvDist (Hyb3 T_H T_P δ Salt oImpl V P)
           (Hyb3Strict T_H T_P δ Salt oImpl V P)
         ≤ εA tₕ tₚ tₚᵢ L)
     (hB : ∀ (V : Verifier oSpec StmtIn StmtOut pSpec)
@@ -959,7 +964,7 @@ theorem hyb34Step_of_strictSplit [SampleableType U]
       IsQueryBoundP P (fun j => dsQueryFlavor j = .hash) tₕ →
       IsQueryBoundP P (fun j => dsQueryFlavor j = .perm) tₚ →
       IsQueryBoundP P (fun j => dsQueryFlavor j = .permInv) tₚᵢ →
-      SPMF.tvDist (Hyb3Strict T_H T_P δ Salt oImpl V P)
+      MeasureTheory.Measure.tvDist (Hyb3Strict T_H T_P δ Salt oImpl V P)
           (Hyb4 oImpl V
             (eagerSimulatedProver (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt) P))
         ≤ εB tₕ tₚ tₚᵢ L)
@@ -970,10 +975,25 @@ theorem hyb34Step_of_strictSplit [SampleableType U]
   intro V P tₕ tₚ tₚᵢ L hL hHash hPerm hPermInv
   have h1 := hA V P tₕ tₚ tₚᵢ L hL hHash hPerm hPermInv
   have h2 := hB V P tₕ tₚ tₚᵢ L hL hHash hPerm hPermInv
-  have htri := SPMF.tvDist_triangle (Hyb3 T_H T_P δ Salt oImpl V P)
+  haveI : MeasureTheory.IsSubprobabilityMeasure (Hyb3 T_H T_P δ Salt oImpl V P) := by
+    unfold Hyb3
+    infer_instance
+  haveI : MeasureTheory.IsSubprobabilityMeasure (Hyb3Strict T_H T_P δ Salt oImpl V P) := by
+    unfold Hyb3Strict
+    infer_instance
+  haveI : MeasureTheory.IsSubprobabilityMeasure
+      (Hyb4 oImpl V
+        (eagerSimulatedProver (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt) P)) := by
+    unfold Hyb4
+    infer_instance
+  have htri := MeasureTheory.Measure.tvDist_triangle
+    (Hyb3 T_H T_P δ Salt oImpl V P)
     (Hyb3Strict T_H T_P δ Salt oImpl V P)
     (Hyb4 oImpl V
       (eagerSimulatedProver (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt) P))
+    (MeasureTheory.measure_univ_le _)
+    (MeasureTheory.measure_univ_le _)
+    (MeasureTheory.measure_univ_le _)
   have hs := hsum tₕ tₚ tₚᵢ L
   linarith
 

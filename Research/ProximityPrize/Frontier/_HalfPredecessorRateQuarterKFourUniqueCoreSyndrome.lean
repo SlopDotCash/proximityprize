@@ -46,6 +46,8 @@ open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourUniqueCoreSigna
 open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourSyndromeChordBound
 open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourWeightTwoSyndrome
 
+set_option backward.isDefEq.respectTransparency false
+
 namespace ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourUniqueCoreSyndrome
 
 attribute [local instance] Classical.propDecidable

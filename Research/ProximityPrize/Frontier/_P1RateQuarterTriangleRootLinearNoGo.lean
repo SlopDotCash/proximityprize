@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 import ArkLib.Data.Polynomial.DegreeLTDimension
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 
@@ -98,15 +98,15 @@ theorem exists_nonzero_threePairRoot_solution
   · intro i hi
     have hx := congrArg
       (fun out : (A → F) × (B → F) × (C → F) => out.1 ⟨i, hi⟩) hLzero
-    simpa only [L, triangleRootConstraintMap, Pi.zero_apply] using hx
+    exact hx
   · intro i hi
     have hx := congrArg
       (fun out : (A → F) × (B → F) × (C → F) => out.2.1 ⟨i, hi⟩) hLzero
-    simpa only [L, triangleRootConstraintMap, Pi.zero_apply] using hx
+    exact hx
   · intro i hi
     have hx := congrArg
       (fun out : (A → F) × (B → F) × (C → F) => out.2.2 ⟨i, hi⟩) hLzero
-    simpa only [L, triangleRootConstraintMap, Pi.zero_apply] using hx
+    exact hx
 
 end ArkLib.ProximityGap.Frontier.P1RateQuarterTriangleRootLinearNoGo
 

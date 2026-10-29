@@ -1,0 +1,241 @@
+namespace Verifier
+
+variable {ι : Type} {oSpec : OracleSpec ι} {σ : Type}
+
+section ZeroRoundPure
+
+variable {StmtIn StmtOut : Type}
+
+/-- The trivial rbr extractor for a zero-round reduction with `Unit` witnesses. -/
+def zeroRoundPureExtractor :
+    Extractor.RoundByRound oSpec StmtIn Unit Unit !p[] (fun _ => Unit) where
+  eqIn := rfl
+  extractMid := fun i => Fin.elim0 i
+  extractOut := fun _ _ _ => ()
+
+/-- Knowledge state function for a zero-round pure verifier `pure ∘ v`, along a relation
+transport `relOut ∘ v ⊆ relIn`. -/
+def zeroRoundPureKSF (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
+    (v : StmtIn → StmtOut)
+    {relIn : Set (StmtIn × Unit)} {relOut : Set (StmtOut × Unit)}
+    (hdoom : ∀ stmtIn, (v stmtIn, ()) ∈ relOut → (stmtIn, ()) ∈ relIn) :
+    (⟨fun p _tr => pure (v p)⟩ :
+      Verifier oSpec StmtIn StmtOut !p[]).KnowledgeStateFunction init impl relIn relOut
+      zeroRoundPureExtractor where
+  toFun := fun _ stmtIn _ _ => (stmtIn, ()) ∈ relIn
+  toFun_empty := fun stmtIn witMid => by simp
+  toFun_next := fun i => Fin.elim0 i
+  toFun_full := fun stmtIn tr witOut h => by
+    simp only [Verifier.run] at h
+    rw [gt_iff_lt, probEvent_pos_iff] at h
+    obtain ⟨x, hx, hrel⟩ := h
+    rw [OptionT.mem_support_iff] at hx
+    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
+    obtain ⟨s, _, hx⟩ := hx
+    have key : (simulateQ impl (pure (v stmtIn) : OptionT (OracleComp oSpec) StmtOut)).run' s =
+        pure (some (v stmtIn)) := by
+      change (simulateQ impl
+        (pure (some (v stmtIn)) : OracleComp oSpec (Option StmtOut))).run' s = _
+      rw [simulateQ_pure]
+      change Prod.fst <$> (pure (some (v stmtIn)) : StateT σ ProbComp _).run s = _
+      rw [StateT.run_pure]; simp [map_pure]
+    rw [key] at hx
+    simp only [support_pure, Set.mem_singleton_iff] at hx
+    cases (Option.some.inj hx)
+    exact hdoom stmtIn hrel
+
+/-- **Zero-round pure verifiers are perfectly rbr knowledge-sound along a relation transport.**
+Generalizes `Verifier.id_rbrKnowledgeSoundness` from `v = id`, `relIn = relOut` to any
+deterministic-total verifier with `relOut ∘ v ⊆ relIn`. -/
+theorem rbrKnowledgeSoundness_zeroRound_pure
+    (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
+    (v : StmtIn → StmtOut)
+    {relIn : Set (StmtIn × Unit)} {relOut : Set (StmtOut × Unit)}
+    (hdoom : ∀ stmtIn, (v stmtIn, ()) ∈ relOut → (stmtIn, ()) ∈ relIn) :
+    (⟨fun p _tr => pure (v p)⟩ :
+      Verifier oSpec StmtIn StmtOut !p[]).rbrKnowledgeSoundness init impl relIn relOut 0 :=
+  ⟨fun _ => Unit, zeroRoundPureExtractor, zeroRoundPureKSF init impl v hdoom,
+    fun _ _ _ i => Fin.elim0 i.1⟩
+
+end ZeroRoundPure
+
+section SingleMessagePure
+
+variable {StmtIn StmtOut M : Type}
+
+/-- The trivial rbr extractor for a single-message-round reduction with `Unit` witnesses. -/
+def singleMessagePureExtractor :
+    Extractor.RoundByRound oSpec StmtIn Unit Unit ⟨!v[.P_to_V], !v[M]⟩ (fun _ => Unit) where
+  eqIn := rfl
+  extractMid := fun _ _ _ _ => ()
+  extractOut := fun _ _ _ => ()
+
+/-- Knowledge state function for a single-message-round pure verifier: the input-relation
+membership is carried unchanged through the (adversarial) message, and `hdoom` recovers it from
+any output landing in `relOut`. -/
+def singleMessagePureKSF (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
+    (v : StmtIn → M → StmtOut)
+    {relIn : Set (StmtIn × Unit)} {relOut : Set (StmtOut × Unit)}
+    (hdoom : ∀ stmtIn msg, (v stmtIn msg, ()) ∈ relOut → (stmtIn, ()) ∈ relIn) :
+    (⟨fun p tr => pure (v p (tr.messages ⟨0, rfl⟩))⟩ :
+      Verifier oSpec StmtIn StmtOut ⟨!v[.P_to_V], !v[M]⟩).KnowledgeStateFunction init impl
+      relIn relOut singleMessagePureExtractor where
+  toFun := fun _ stmtIn _ _ => (stmtIn, ()) ∈ relIn
+  toFun_empty := fun stmtIn witMid => by simp
+  toFun_next := fun _ _ _ _ _ _ h => h
+  toFun_full := fun stmtIn tr witOut h => by
+    simp only [Verifier.run] at h
+    rw [gt_iff_lt, probEvent_pos_iff] at h
+    obtain ⟨x, hx, hrel⟩ := h
+    rw [OptionT.mem_support_iff] at hx
+    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
+    obtain ⟨s, _, hx⟩ := hx
+    have key : ∀ out : StmtOut,
+        (simulateQ impl (pure out : OptionT (OracleComp oSpec) StmtOut)).run' s =
+          pure (some out) := by
+      intro out
+      change (simulateQ impl (pure (some out) :
+        OracleComp oSpec (Option StmtOut))).run' s = _
+      rw [simulateQ_pure]
+      change Prod.fst <$> (pure (some out) : StateT σ ProbComp _).run s = _
+      rw [StateT.run_pure]; simp [map_pure]
+    rw [key] at hx
+    simp only [support_pure, Set.mem_singleton_iff] at hx
+    cases (Option.some.inj hx)
+    exact hdoom stmtIn _ hrel
+
+/-- **Single-message-round pure verifiers are perfectly rbr knowledge-sound along a relation
+transport.** There is no challenge round, so the error is `0`. -/
+theorem rbrKnowledgeSoundness_singleMessage_pure
+    (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
+    (v : StmtIn → M → StmtOut)
+    {relIn : Set (StmtIn × Unit)} {relOut : Set (StmtOut × Unit)}
+    (hdoom : ∀ stmtIn msg, (v stmtIn msg, ()) ∈ relOut → (stmtIn, ()) ∈ relIn) :
+    (⟨fun p tr => pure (v p (tr.messages ⟨0, rfl⟩))⟩ :
+      Verifier oSpec StmtIn StmtOut ⟨!v[.P_to_V], !v[M]⟩).rbrKnowledgeSoundness init impl
+      relIn relOut 0 := by
+  refine ⟨fun _ => Unit, singleMessagePureExtractor,
+    singleMessagePureKSF init impl v hdoom, ?_⟩
+  intro _stmtIn _witIn _prover ⟨⟨0, _⟩, hdir⟩
+  exact absurd hdir (by simp)
+
+end SingleMessagePure
+
+section SingleChallengePure
+
+variable {StmtIn StmtOut C : Type} [SampleableType C]
+
+/-- The trivial rbr extractor for a single-challenge-round reduction with `Unit` witnesses. -/
+def singleChallengePureExtractor :
+    Extractor.RoundByRound oSpec StmtIn Unit Unit ⟨!v[.V_to_P], !v[C]⟩ (fun _ => Unit) where
+  eqIn := rfl
+  extractMid := fun _ _ _ _ => ()
+  extractOut := fun _ _ _ => ()
+
+/-- Knowledge state function for a single-challenge-round pure verifier: before the challenge,
+input-relation membership; after the challenge, output-relation membership of the deterministic
+output. -/
+def singleChallengePureKSF (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
+    (v : StmtIn → C → StmtOut)
+    (relIn : Set (StmtIn × Unit)) (relOut : Set (StmtOut × Unit)) :
+    (⟨fun p tr => pure (v p (tr.challenges ⟨0, rfl⟩))⟩ :
+      Verifier oSpec StmtIn StmtOut ⟨!v[.V_to_P], !v[C]⟩).KnowledgeStateFunction init impl
+      relIn relOut singleChallengePureExtractor where
+  toFun
+  | ⟨0, _⟩ => fun stmtIn _ _ => (stmtIn, ()) ∈ relIn
+  | ⟨1, _⟩ => fun stmtIn tr _ => (v stmtIn (tr.challenges ⟨0, rfl⟩), ()) ∈ relOut
+  toFun_empty := fun stmtIn witMid => by simp
+  toFun_next := fun m hdir => by
+    exfalso
+    have hm : m = 0 := by omega
+    subst hm
+    simp at hdir
+  toFun_full := fun stmtIn tr witOut h => by
+    simp only [Verifier.run] at h
+    rw [gt_iff_lt, probEvent_pos_iff] at h
+    obtain ⟨x, hx, hrel⟩ := h
+    rw [OptionT.mem_support_iff] at hx
+    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
+    obtain ⟨s, _, hx⟩ := hx
+    have key : ∀ out : StmtOut,
+        (simulateQ impl (pure out : OptionT (OracleComp oSpec) StmtOut)).run' s =
+          pure (some out) := by
+      intro out
+      change (simulateQ impl (pure (some out) :
+        OracleComp oSpec (Option StmtOut))).run' s = _
+      rw [simulateQ_pure]
+      change Prod.fst <$> (pure (some out) : StateT σ ProbComp _).run s = _
+      rw [StateT.run_pure]; simp [map_pure]
+    rw [key] at hx
+    simp only [support_pure, Set.mem_singleton_iff] at hx
+    cases (Option.some.inj hx)
+    exact hrel
+
+/-- **Single-challenge-round pure verifiers are rbr knowledge-sound at the false-to-true flip
+probability of the challenge.** The per-round error is any bound on the probability, over a
+uniform challenge, that a doomed input statement (`∉ relIn`) is mapped into `relOut`. -/
+theorem rbrKnowledgeSoundness_singleChallenge_pure
+    (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
+    (v : StmtIn → C → StmtOut)
+    (relIn : Set (StmtIn × Unit)) (relOut : Set (StmtOut × Unit))
+    (err : ℝ≥0)
+    (hflip : ∀ stmtIn, (stmtIn, ()) ∉ relIn →
+      probEvent (fun c : C => (v stmtIn c, ()) ∈ relOut) ($ᵗ C) ≤ err) :
+    (⟨fun p tr => pure (v p (tr.challenges ⟨0, rfl⟩))⟩ :
+      Verifier oSpec StmtIn StmtOut ⟨!v[.V_to_P], !v[C]⟩).rbrKnowledgeSoundness init impl
+      relIn relOut (fun _ => err) := by
+  refine ⟨fun _ => Unit, singleChallengePureExtractor,
+    singleChallengePureKSF init impl v relIn relOut, ?_⟩
+  intro stmtIn witIn prover i
+  have : i = ⟨0, by simp⟩ := by aesop
+  subst this
+  simp [Prover.runWithLogToRound, Prover.runToRound, singleChallengePureExtractor,
+    singleChallengePureKSF]
+  erw [simulateQ_bind]
+  simp only [MonadLift.monadLift, liftM, monadLift, MonadLiftT.monadLift]
+  simp only [pure_bind, bind_assoc, map_pure, StateT.run'_eq, StateT.run_bind, map_bind]
+  erw [simulateQ_pure]
+  simp only [loggingOracle, simulateQ_pure, WriterT.run_pure, pure_bind, map_pure,
+    StateT.run_pure, StateT.run_bind, QueryImpl.simulateQ_add_liftComp_right]
+  erw [simulateQ_bind, QueryImpl.simulateQ_add_liftComp_right]
+  erw [simulateQ_spec_query]
+  simp only [QueryImpl.liftTarget_apply, challengeQueryImpl, StateT.run_bind, map_bind, pure_bind]
+  classical
+  rw [probEvent_bind_eq_tsum]
+  refine le_trans (ENNReal.tsum_le_tsum
+    (g := fun s => probEvent (= s) (init) * (err : ENNReal))
+    fun s => mul_le_mul' le_rfl ?_) ?_
+  · rw [probEvent_bind_eq_tsum]
+    have hc2 : ∀ (x : C × σ),
+        ((fun y => y.1) <$> (simulateQ
+            (impl + QueryImpl.liftTarget (StateT σ ProbComp)
+              (challengeQueryImpl (pSpec := (⟨!v[.V_to_P], !v[C]⟩ : ProtocolSpec 1))))
+            (pure (default, x.1, ∅))).run x.2)
+        = (pure (default, x.1, ∅) :
+            ProbComp (Transcript 0 (⟨!v[.V_to_P], !v[C]⟩ : ProtocolSpec 1) × C ×
+              (oSpec + [(⟨!v[.V_to_P], !v[C]⟩ : ProtocolSpec 1).Challenge]ₒ'
+                challengeOracleInterface).QueryLog)) := by
+      intro x
+      erw [simulateQ_pure]
+      rw [StateT.run_pure, map_pure]
+    apply le_trans (le_of_eq (tsum_congr fun x =>
+      congrArg (fun mz => _ * probEvent mz _) (hc2 x)))
+    rw [← probEvent_bind_eq_tsum]
+    erw [StateT.run_lift]
+    simp only [bind_assoc, pure_bind]
+    show (probEvent ((fun x => (default, x, ∅)) <$> ($ᵗ _)) _) ≤ _
+    rw [probEvent_map]
+    simp only [Function.comp_def, ProtocolSpec.Transcript.concat, Fin.snoc]
+    by_cases hmem : (stmtIn, ()) ∈ relIn
+    · refine le_trans (le_of_eq (probEvent_eq_zero_iff.mpr ?_)) (zero_le _)
+      intro c _ hc
+      exact hc.1 hmem
+    · refine le_trans (probEvent_mono ?_) (hflip stmtIn hmem)
+      intro c _ hc
+      exact hc.2
+  · rw [ENNReal.tsum_mul_right]
+    exact le_trans (mul_le_mul' tsum_probOutput_le_one le_rfl) (by rw [one_mul])
+
+end SingleChallengePure
+
+end Verifier

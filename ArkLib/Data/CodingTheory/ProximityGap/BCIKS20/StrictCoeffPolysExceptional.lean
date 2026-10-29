@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 
 /-!
 # BCIKS20 §5/§6 — exceptional-set form of the strict coefficient-polynomial residual
@@ -357,7 +357,7 @@ theorem RS_jointAgreement_of_prob_gt_exc
 /-- `δ_ε_correlatedAgreementCurves` is antitone in the threshold direction: a statement at
 proximity error `ε` implies the statement at any larger `ε'`. -/
 theorem δ_ε_correlatedAgreementCurves_mono_error {k : ℕ}
-    {C : Set (ι → F)} {δ ε ε' : ℝ≥0}
+    {C : Set (ι → F)} {δ ε ε' : ℝ≥0} [SampleableType F]
     (hεε' : ε ≤ ε')
     (h : δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)
       (C := C) (δ := δ) (ε := ε)) :
@@ -421,7 +421,7 @@ theorem RS_jointAgreement_of_prob_gt_strict_johnson_exc
         _ = (k : ℝ≥0) * errorBound δ deg domain * qn + (k : ℝ≥0) * (b : ℝ≥0) := by
             ring
     rw [hkey]
-    exact add_le_add le_rfl (le_mul_of_one_le_left (zero_le _) hk1)
+    exact add_le_add le_rfl (le_mul_of_one_le_left bot_le hk1)
   have hη :
       ((k : ENNReal) * (errorBound δ deg domain : ENNReal)) *
           (Fintype.card F : ENNReal) + (b : ENNReal) ≤
@@ -444,7 +444,7 @@ exceptional parameters) and the proximity error pays for it:
 `ε = errorBound δ deg domain + b / |F|`. -/
 theorem correlatedAgreement_affine_curves_of_strict_coeff_polys_exc {k : ℕ}
     {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
-    [NeZero deg]
+    [NeZero deg] [SampleableType F]
     (b : ℕ)
     (_hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hStrictCoeffExc :
@@ -469,6 +469,7 @@ theorem correlatedAgreement_affine_curves_of_strict_coeff_polys_exc {k : ℕ}
         (RS_correlatedAgreement_curves_uniqueDecodingRegime hkpos hUDR)
     · unfold δ_ε_correlatedAgreementCurves
       intro u hprob
+      rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native] at hprob
       have hprob_weak :
           Pr_{
             let z ← $ᵖ F}[δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,
@@ -494,7 +495,7 @@ coefficient residual gives the curve correlated-agreement theorem without any
 `BoundaryProbabilityResidual` assumption. -/
 theorem correlatedAgreement_affine_curves_strict_of_strict_coeff_polys_exc {k : ℕ}
     {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
-    [NeZero deg]
+    [NeZero deg] [SampleableType F]
     (b : ℕ)
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hStrictCoeffExc :

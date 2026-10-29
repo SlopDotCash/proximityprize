@@ -14,17 +14,26 @@ from pathlib import Path
 
 SCRIPT = Path(__file__).resolve().parents[1] / "forbidden_tokens.py"
 ALLOWLISTED = "foldOracleVerifier_rbrKnowledgeSoundness"
-OTHER_ALLOWLISTED = "no_selfReciprocal_factor"
+OTHER_ALLOWLISTED = "testOtherResidual"
 
 
 def scan(*paths: Path) -> "subprocess.CompletedProcess[str]":
     """Run the precheck over `paths`, with the script's own directory as cwd."""
-    return subprocess.run(
-        [sys.executable, str(SCRIPT), *[str(path) for path in paths]],
-        capture_output=True,
-        text=True,
-        cwd=str(SCRIPT.parent.parent),
-    )
+    # Test the one-entry/one-declaration invariant independently of how many
+    # real residuals remain in the repository's debt ledger.
+    with tempfile.TemporaryDirectory() as fixture:
+        fixture_script = Path(fixture) / "scripts" / SCRIPT.name
+        fixture_script.parent.mkdir()
+        fixture_script.write_text(SCRIPT.read_text(), encoding="utf-8")
+        (fixture_script.parent / "residual_axioms.txt").write_text(
+            f"{ALLOWLISTED}\n{OTHER_ALLOWLISTED}\n", encoding="utf-8"
+        )
+        return subprocess.run(
+            [sys.executable, str(fixture_script), *[str(path) for path in paths]],
+            capture_output=True,
+            text=True,
+            cwd=str(SCRIPT.parent.parent),
+        )
 
 
 class AllowlistIdentity(unittest.TestCase):

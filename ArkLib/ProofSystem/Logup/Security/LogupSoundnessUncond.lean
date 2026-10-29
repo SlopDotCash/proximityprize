@@ -116,7 +116,7 @@ oracle-statement bookkeeping off the deep malicious-prover seam union bound, shr
 to the smaller plain-verifier one. -/
 theorem oracleAppendSoundnessResidual_of_plain
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [hCoh : OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {soundnessError₁ soundnessError₂ : ℝ≥0}
     (h₁ : V₁.soundness (init := init) (impl := impl) lang₁ lang₂ soundnessError₁)
@@ -180,7 +180,7 @@ theorem logupAppendSoundnessResidual_of_plain (sumcheckSoundnessError : ℝ≥0)
     OracleVerifier.appendSoundnessResidual (init := init) (impl := impl)
       (outerVerifier oSpec F n M params) (sumcheckVerifier oSpec F n M params)
       hOuter hSumcheck :=
-  OracleVerifier.oracleAppendSoundnessResidual_of_plain.{0, 0}
+  OracleVerifier.oracleAppendSoundnessResidual_of_plain
     (init := init) (impl := impl)
     (outerVerifier oSpec F n M params) (sumcheckVerifier oSpec F n M params)
     hOuter hSumcheck hPlainAppend

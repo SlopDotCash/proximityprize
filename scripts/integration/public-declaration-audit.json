@@ -1,0 +1,18 @@
+{
+  "method": "Tracked named public commands, with module-default privacy and nested scope visibility.",
+  "limitations": "Lexical candidate audit; exports, syntax and generated names require actual Lean compilation.",
+  "source_roots": [
+    "ArkLib",
+    "ProximityPrize",
+    "Research"
+  ],
+  "source_files": 7500,
+  "source_inventory_sha256": "603f67f0a7207294b031857b4a1994e4c4f2c11ca68803551f944b71b4b30723",
+  "public_named_records": 71767,
+  "duplicate_names": 0,
+  "duplicates": {},
+  "duplicates_truncated": false,
+  "parse_failure_count": 0,
+  "parse_failures": [],
+  "parse_failures_truncated": false
+}

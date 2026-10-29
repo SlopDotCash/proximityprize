@@ -90,7 +90,9 @@ theorem span_pblk_eq_span_rblk_insert (w : R[X]) (c : R) (d : ℕ) :
       have hmem : pblk w 0 ∈
           Submodule.span R (Set.range (fun i : Fin (d + 1) => pblk w (i : ℕ))) :=
         Submodule.subset_span ⟨⟨0, by omega⟩, rfl⟩
-      simpa only [pblk, pow_zero, mul_one] using hmem
+      have hzero : pblk w 0 = w := by simp [pblk]
+      rw [hzero] at hmem
+      exact hmem
     · rintro _ ⟨i, rfl⟩
       exact rblk_mem_span_pblk w c (by omega : (i : ℕ) + 1 ≤ d)
 

@@ -59,7 +59,8 @@ theorem iterConvEnergy_succ_le_card_sq_mul (J : ZMod m → ℂ) (q r : ℕ)
           have hcard : (S.card : ℝ) ≤ (m : ℝ) := by
             have hle : S.card ≤ (Finset.univ : Finset (ZMod m)).card :=
               Finset.card_le_card (by intro j _hj; exact Finset.mem_univ j)
-            simpa [S, ZMod.card] using (Nat.cast_le.mpr hle : _)
+            simpa only [Finset.card_univ, ZMod.card] using
+              (Nat.cast_le.mpr hle : (S.card : ℝ) ≤ ((Finset.univ : Finset (ZMod m)).card : ℝ))
           exact mul_le_mul_of_nonneg_right hcard (by positivity)
   have hpoint : ∀ d : ZMod m,
       ‖iterConv J (r + 1) d‖ ^ 2 ≤ iterConvEnergy J r * ((m : ℝ) * (q : ℝ)) := by
@@ -167,8 +168,7 @@ theorem iterConv_one (J : ZMod m → ℂ) (c : ZMod m) :
           = iterConv J 0 (c - c) * J c
             + ∑ j ∈ (Finset.univ \ {(0 : ZMod m)}).erase c,
                 iterConv J 0 (c - j) * J j := by
-      rw [Finset.sum_eq_sum_diff_singleton_add hmem]
-      simp [Finset.sdiff_singleton_eq_erase, add_comm]
+      exact (Finset.add_sum_erase _ _ hmem).symm
     rw [hsplit]
     have hrest :
         ∑ j ∈ (Finset.univ \ {(0 : ZMod m)}).erase c,

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CurveDecodability
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # The far-word supply, discharged by counting (#357)
@@ -229,7 +229,7 @@ theorem farWordSupply_of_forall_exists_ne (C : Submodule F (ι → A))
         ≤ (q : ℚ≥0) * ((∑ v ∈ Cfin,
               ((Finset.univ.filter (fun j => v j = w j)).card : ℚ≥0))
             + (Cfin.card : ℚ≥0) * (δ * n)) := by
-          exact mul_le_mul_of_nonneg_left hsum (zero_le _)
+          exact mul_le_mul_of_nonneg_left hsum (by positivity)
       _ = (q : ℚ≥0) * (∑ v ∈ Cfin,
               ((Finset.univ.filter (fun j => v j = w j)).card : ℚ≥0))
             + (q : ℚ≥0) * ((Cfin.card : ℚ≥0) * (δ * n)) := by ring

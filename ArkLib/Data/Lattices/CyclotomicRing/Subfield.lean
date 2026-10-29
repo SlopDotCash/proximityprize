@@ -3,15 +3,17 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
-import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Basis
-import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Packing
-import ArkLib.Data.Lattices.CyclotomicRing.Subfield.TraceVanishing
-import ArkLib.Data.Lattices.CyclotomicRing.Subfield.TraceInnerProduct
-import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Cardinality
-import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Bijectivity
-import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Factorization
-import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Field
-import ArkLib.Data.Lattices.CyclotomicRing.Subfield.NormBound
+module
+
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Basis
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Packing
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.TraceVanishing
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.TraceInnerProduct
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Cardinality
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Bijectivity
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Factorization
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Field
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.NormBound
 
 /-!
 # Hachi §3 in Lean: the Subfield Layer of `R_q` (Lemma 5, Theorem 2, Lemma 6)
@@ -45,10 +47,12 @@ The Section 3 results:
   (`X^{(d/2k)j} + σ_{-1}(X^{(d/2k)j})`, the Eq. 7 family up to the reindexing `j ↦ k − j`),
   `vElt_coeff` in `Subfield/Basis.lean`; `fixedBasisMap`, `card_fixedSubring_eq` in
   `Subfield/Cardinality.lean`.
-* **Lemma 5** (`R_q^H` is a subfield `≅ F_{q^k}`) — `fixedSubring_isField`,
-  `fixedSubringEquivGaloisField` in `Subfield/Field.lean`; the `q ≡ 5 (mod 8)` number theory
-  (`orderOf_q_eq`, `neg_one_notMem_powers_q`, `cyclotomic_card_normalizedFactors`) in
-  `Subfield/Factorization.lean`.
+* **Lemma 5** (`R_q^H` is a subfield `≅ F_{q^k}`) — the fully proved theorems
+  `fixedSubring_isField` and `fixedSubringEquivGaloisField` in `Subfield/Field.lean`. The key
+  step is `no_selfReciprocal_factor` (reversal swaps the two irreducible factors of `X^d + 1`),
+  proved from the root-orbit lemma `not_associated_reverse_self`. The supporting
+  `q ≡ 5 (mod 8)` number theory (`orderOf_q_eq`, `neg_one_notMem_powers_q`,
+  `cyclotomic_card_normalizedFactors`) is proved in `Subfield/Factorization.lean`.
 * **Theorem 2, Eq. 8** (the packing map `ψ`) — `packExp`, `psi` in `Subfield/Packing.lean`.
 * **Theorem 2, Claim 1** (`⟨4k+1⟩ = {4k·α + 1 : α < d/2k}`, order `d/2k`) — `four_pow_injOn`
   in `Galois/Order.lean`, `Hexp_card` in `Galois/Group.lean`, `four_pow_i_reindex` in
@@ -62,7 +66,8 @@ The Section 3 results:
   `Subfield/TraceInnerProduct.lean`.
 * **Theorem 2, `ψ` is a bijection** — `psi_injective` in `Subfield/TraceInnerProduct.lean`,
   `psi_bijective` in `Subfield/Bijectivity.lean`.
-* **Lemma 6** (`‖ψ(a)‖∞ ≤ 2β`) — `cInfNorm_psi_le` in `Subfield/NormBound.lean`.
+* **Lemma 6** (`‖ψ(a)‖∞ ≤ 2β`) — the fully proved theorem `cInfNorm_psi_le` in
+  `Subfield/NormBound.lean`.
 
 ## Deviations from the paper
 
@@ -85,33 +90,40 @@ The Section 3 results:
   `conjExp = 2^{α+1} − 1`.
 * **Hypotheses.** The paper's "`k ≥ 1` divides `d/2`" is `2 * k ∣ 2^α`; the explicit
   "`k` is a power of two" (`hk2pow`) is recorded although automatic for divisors of
-  `2^{α-1}`. The blanket `q ≡ 5 (mod 8)` is demanded only where genuinely needed (the field
-  structure, `Subfield/Field.lean` / `Subfield/Factorization.lean`); the trace formula,
-  bijectivity, and cardinality need only `(2 : R) ≠ 0` (i.e. `q` odd) — slightly more
-  general than the paper.
+  `2^{α-1}`. The blanket `q ≡ 5 (mod 8)` is demanded only where genuinely needed by the
+  current field proof (`Subfield/Field.lean` / `Subfield/Factorization.lean`). The trace formula,
+  bijectivity, cardinality, and Lemma 6 need only `(2 : R) ≠ 0` (for Lemma 6,
+  `(2 : ZMod q) ≠ 0`), so these results are slightly more general than the paper.
 * **`ψ`-injectivity via the trace pairing.** The paper proves injectivity by the coefficient
   analysis of Eq. 9; the formal proof tests against basis vectors through the (already
   proven) trace formula and closes bijectivity by the cardinality match. Eq. 9's coefficient
-  analysis instead underlies `vElt_coeff` and the Lemma 6 proof plan.
+  analysis instead underlies `vElt_coeff` and the proved Lemma 6 coefficient bound.
 
-## Open items (`sorry`)
+## Proof status
+
+The subfield layer has no `sorry`: Lemma 5, Theorem 2, and Lemma 6 are fully proved.
 
 * `no_selfReciprocal_factor` (`Subfield/Field.lean`) — reversal swaps the two irreducible
-  factors of `X^d + 1`. Everything downstream of it in the Lemma 5 chain is proven.
-* `cInfNorm_psi_le` (`Subfield/NormBound.lean`) — Lemma 6; statement formalized, proof plan
-  in its docstring.
+  factors of `X^d + 1`. It is proved, so the Lemma 5 field/isomorphism declarations
+  (`fixedSubring_isField`, `fixedSubringEquivGaloisField`) are unconditional.
+* `cInfNorm_psi_le` (`Subfield/NormBound.lean`) — Lemma 6. Its support and
+  at-most-two-contributions argument uses `fixedSubring_coeff_eq_zero`, but not the field
+  upgrade from Lemma 5.
 
 ## File map
 
 * `Subfield/Basis.lean` — monomials `X^i`, the `X^d = -1` folding toolkit, the `Fintype`
   instance and `|R_q| = q^{2^α}`, and the symmetric basis `vElt` with its triangular
   coefficient formula (Eq. 7).
-* `Subfield/Packing.lean` — the packing map `ψ` (Eq. 8) and its additivity.
+* `Subfield/Packing.lean` — the packing map `ψ` (Eq. 8), its additivity and fixed-subring
+  linearity (`psiLinearMap`).
 * `Subfield/TraceVanishing.lean` — the trace-of-monomial vanishing identities (Claims 2, 3).
 * `Subfield/TraceInnerProduct.lean` — the trace formula
-  `Tr_H(ψ(a)·σ_{-1}(ψ(b))) = (d/k)·⟨a,b⟩` and the injectivity of `ψ`.
+  `Tr_H(ψ(a)·σ_{-1}(ψ(b))) = (d/k)·⟨a,b⟩`, the injectivity of `ψ`, and the cancellation of the
+  unit `d/k` (`isUnit_traceScale`, `traceH_psi_mul_conj_eq_iff`).
 * `Subfield/Cardinality.lean` — `|R_q^H| = q^k` (Eq. 7) from the symmetric basis.
-* `Subfield/Bijectivity.lean` — `ψ` is a bijection (Theorem 2).
+* `Subfield/Bijectivity.lean` — `ψ` is a bijection (Theorem 2) and a fixed-subring linear
+  equivalence (`psiLinearEquiv`).
 * `Subfield/Factorization.lean` — `X^{2^α}+1 = Φ_{2^{α+1}}` has exactly two irreducible
   factors over `Z_q` for `q ≡ 5 (mod 8)`; `orderOf q = 2^{α-1}` and `−1 ∉ ⟨q⟩`.
 * `Subfield/Field.lean` — `R_q^H` is a field isomorphic to `F_{q^k}` (Lemma 5).
@@ -122,3 +134,5 @@ The Section 3 results:
 * [Nguyen, N. K., O'Rourke, G., and Zhang, J., *Hachi: Efficient Lattice-Based Multilinear
     Polynomial Commitments over Extension Fields*][NOZ26]
 -/
+
+@[expose] public section

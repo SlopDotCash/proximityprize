@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SpartanFirstChallenge
 import ArkLib.ProofSystem.Spartan.ComposedCompleteness
 import ArkLib.ProofSystem.Spartan.ComposedCompletenessLeaves
 import ArkLib.ProofSystem.Spartan.FirstChallengeComplete
@@ -47,8 +48,8 @@ set_option synthInstance.maxHeartbeats 4000000
 set_option linter.unusedSectionVars false
 
 variable {R : Type 0} [CommRing R] [IsDomain R] [Fintype R] [DecidableEq R] [Inhabited R]
-  [SampleableType R] [VCVCompatible R] (pp : PublicParams)
-  {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype] [oSpec.Inhabited]
+  [SampleableType R]  (pp : PublicParams)
+  {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
 /-- **Seam 1→2:** the `firstMessage` pushforward relation is (an inclusion into) the
@@ -69,10 +70,10 @@ theorem firstChallengeRelOut_subset_firstSumcheckRelInBF :
 `composedCompletenessStatement_of_five_leaves`): perfect completeness from
 `firstMessageRelOut` into `firstSumcheckRelInBF`, by re-pointing
 `firstChallenge_perfectCompleteness` across the two seam inclusions. -/
-theorem firstChallenge_perfectCompleteness_consumer :
-    (oracleReduction.firstChallenge R pp oSpec).perfectCompleteness init impl
+theorem completedFirstChallenge_perfectCompleteness_consumer :
+    (oracleReduction.completedFirstChallenge R pp oSpec).perfectCompleteness init impl
       (firstMessageRelOut (R := R) pp) (firstSumcheckRelInBF (R := R) pp) := by
-  have h := firstChallenge_perfectCompleteness (R := R) (pp := pp) (oSpec := oSpec)
+  have h := completedFirstChallenge_perfectCompleteness (R := R) (pp := pp) (oSpec := oSpec)
     (init := init) (impl := impl)
   unfold OracleReduction.perfectCompleteness Reduction.perfectCompleteness at h ⊢
   have h' := Reduction.completeness_relOut_mono init impl
@@ -93,10 +94,10 @@ theorem composedCompletenessStatement_proven
         = support (liftM q : OracleComp oSpec β))
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0) :
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0) :
     composedCompletenessStatement R pp oSpec (composedPIOP_Rc pp oSpec) init impl :=
-  composedCompletenessStatement_of_five_leaves.{0, 0, 0} pp oSpec hm hn
-    (firstChallenge_perfectCompleteness_consumer pp oSpec)
+  composedCompletenessStatement_of_five_leaves pp oSpec hm hn
+    (completedFirstChallenge_perfectCompleteness_consumer pp oSpec)
     (sendEvalClaim_perfectCompleteness R pp oSpec init impl
       (firstSumcheckRelOutBF (R := R) pp))
     (linearCombination_perfectCompleteness_sendEvalClaimBF pp oSpec)
@@ -109,5 +110,5 @@ end Spartan.Spec.Bricks
 
 -- Axiom checks
 #print axioms Spartan.Spec.Bricks.firstMessageRelOut_subset_firstChallengeRelIn
-#print axioms Spartan.Spec.Bricks.firstChallenge_perfectCompleteness_consumer
+#print axioms Spartan.Spec.Bricks.completedFirstChallenge_perfectCompleteness_consumer
 #print axioms Spartan.Spec.Bricks.composedCompletenessStatement_proven

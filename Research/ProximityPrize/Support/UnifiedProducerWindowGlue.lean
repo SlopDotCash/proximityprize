@@ -77,6 +77,9 @@ open Polynomial ProximityGap Code NNReal Finset Function ProbabilityTheory
 open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame
 open scoped BigOperators ENNReal ProbabilityTheory LinearCode
 
+private noncomputable local instance {F : Type} [Field F] [Fintype F] :
+    SampleableType F := SampleableType.ofFintype F
+
 namespace ArkLib
 
 namespace UnifiedProducerWindowGlue

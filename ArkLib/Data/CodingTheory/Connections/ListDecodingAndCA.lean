@@ -3,71 +3,39 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
+module
 
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
-import ArkLib.Data.CodingTheory.ListDecodability
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.ToMathlib.BridgeListDecodingCA
-import ArkLib.ToMathlib.Bridge2BCHKS25
-import ArkLib.ToMathlib.Bridge2BGKS20
-import ArkLib.ToMathlib.BadLineWitnessProof
-import ArkLib.ToMathlib.NearCertainBadLineProof
-import ArkLib.Data.CodingTheory.Connections.EpsMCABadGlue
-import ArkLib.Data.CodingTheory.Connections.GKL24FirstMoment
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import ArkLib.Data.CodingTheory.ProximityGap.Errors
+public import ArkLib.Data.CodingTheory.ListDecodability
+public import ArkLib.Data.CodingTheory.ReedSolomon
+public import ArkLib.Data.CodingTheory.Connections.ListDecodingAndCA.BCHKS25
+public import ArkLib.Data.CodingTheory.Connections.ListDecodingAndCA.CS25
+public import ArkLib.Data.CodingTheory.Connections.ListDecodingAndCA.GCXK25
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 /-!
-# Connections between list decoding and correlated agreement (ABF26 §5)
+# Connections between list decoding and correlated agreement
 
-External *proposition statements* for the §5 results that link list-size bounds to
-correlated-agreement error bounds and vice versa. From ABF26 (Arnon-Boneh-Fenzi,
-*Open Problems in List Decoding and Correlated Agreement*, 2026), §5.
+This module relates the maximized list size `Code.Lambda` to the numeric CA and MCA errors. It
+contains source-facing bounds for general linear and Reed--Solomon codes, together with one
+in-tree real-radius corollary of the integer-radius CS25 statement.
 
-These four propositions directly bridge the Grand List Decoding Challenge and the
-Grand MCA Challenge of §1. T5.1 turns a list-size bound into an MCA bound;
-T5.2 / T5.3 turn CA bounds into list-size bounds; T5.4 demonstrates that the
-implication "list-decoding ⇒ CA" cannot be tight in general.
+## Main statements
 
-## Main statements (external admits)
+- `linear_mcaError_le_of_Lambda_le` turns a list-size bound below the relative minimum distance
+  into an affine-line MCA bound.
+- `rs_Lambda_le_card_of_epsCa_lt` bounds an RS list by the field size from a small CA error.
+- `rs_Lambda_extended_le_of_epsCa_int_radius` is the integer-radius CS25 bound for a related RS
+  code; `rs_Lambda_extended_le_of_epsCa` is its real-radius corollary.
 
-- `linear_listSize_to_epsMCA_gcxk25` — ABF26 T5.1 [GCXK25 Thm 3]: list decoding at
-  `δ` with list size `L` implies `ε_mca(C, 1 - √(1-δ+η)) ≤ (L²·δ·n + 1/η)/|F|`.
-- `rs_epsCA_small_implies_lambda_lt_F_bchks25` — ABF26 T5.2 [BCHKS25 Thm 1.9]:
-  `ε_ca < 1/(2n)` (with explicit proximity loss) implies `|Λ(C, δ)| < |F|`.
-- `rs_epsCA_implies_lambda_extended_cs25` — ABF26 T5.3 [CS25 Thm 2]: small `ε_ca` for
-  `RS[F, L, k]` implies a quantitative list-size bound for the related code
-  `RS[F, L, k+1]`.
-- `rs_epsCA_separation_bgks20` — ABF26 T5.4 [BGKS20 Lem 3.3]: characteristic-2 full-domain
-  RS codes of degree `≤ |F|/8` (nominal rate `1/8`) have `ε_ca(C, 1 - ρ^{1/3}) ≥ 1 - 1/|F|`,
-  separating list decoding from CA.
+ABF26 Theorem 5.4, the characteristic-two separation between list decoding and CA after
+[BenSassonGKS20] Lemma 3.3, is not stated here. As printed it is false: its trace witness has a
+term of degree `|F|/8`, outside the rate-`1/8` code. Stronger separations over binary fields are
+proved in [DKTZ26], whose results are formalized in Lean at
+<https://github.com/GUJustin/binary_field_gap_counterexamples>.
 
-## Issue #22 bridge disposition
-
-The CS25 deep-hole probability residual is no longer an external input: see
-`ArkLib.ToMathlib.CS25JointFar.deepHoleProbResidual_holds`, which supplies
-`DeepHoleProbResidual` from the in-tree joint-far/minimum-distance argument under the explicit
-rate condition.
-
-The BCHKS25/BGKS20 bridge boundaries have also been narrowed to explicit producer data:
-`ArkLib.ToMathlib.BadLineWitnessProof` assembles `Bridge.BadLineWitness` from BCHKS25
-interpolation output, and `ArkLib.ToMathlib.NearCertainBadLineProof` assembles
-`Bridge.NearCertainBadLine` from all-but-one or line-code witnesses. The wrappers below expose
-those producer surfaces at the ABF26 §5 API while keeping the remaining paper-specific data
-auditable.
-
-## Coercion conventions
-
-Each statement bounds an `ENNReal`-valued `ε_ca` or `ε_mca` (or `Lambda`) in terms of a
-real-valued numeric expression. To wire real expressions into the `ENNReal` and `ℝ≥0`
-worlds we use:
-
-- `ENNReal.ofReal x` when `x : ℝ` is the RHS of a `≤` / `<` / `=`. This truncates
-  negative `x` to `0`, which only matters in degenerate parameter regimes where the
-  paper's bound is vacuous anyway.
-- `x.toNNReal` when `x : ℝ` is the proximity radius (argument to `ε_mca` / `ε_ca`).
-  Each occurrence is either provably non-negative under the theorem's hypotheses (most
-  cases), or the truncation aligns with the paper-stated regime (e.g. T5.1 uses
-  `η ≤ δ` to keep `1 − √(1−δ+η)` in `[0, 1]`).
+Real-valued numeric bounds are embedded into `ENNReal` with `ENNReal.ofReal`. MCA statements use
+the real-radius `mcaError`; CA statements use the nonnegative-radius `epsCa` interface.
 
 ## References
 
@@ -76,1513 +44,186 @@ worlds we use:
 - [GCXK25] Theorem 3 in their paper.
 - [BCHKS25] Theorem 1.9.
 - [CS25] Theorem 2.
-- [BGKS20] Lemma 3.3.
+- [BenSassonGKS20] Lemma 3.3.
+- [DKTZ26] Dao, Kominers, Thaler, Zheng. *Counterexamples to Beyond-Johnson Proximity Gaps over
+  Binary Fields*. 2026.
 -/
 
-set_option linter.unusedFintypeInType false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedSectionVars false
-set_option linter.style.longFile 1600
+@[expose] public section
 
 namespace CodingTheory
 
 open scoped NNReal
-open scoped ProbabilityTheory BigOperators
-open ListDecodable ProximityGap Code
+open Code CoreDefinitions ProximityGap
 
 section ListImpliesMCA
 
-/-- The Johnson-lift radius from ABF26 T5.1 is bounded by the original list-decoding radius
-under the standard slack guard `0 < η ≤ δ < 1`.
-
-If `J(δ, η) = 1 - sqrt (1 - δ + η)`, then `J(δ, η) ≤ δ`. The conclusion is stated with the
-same `toNNReal` truncation used by `linear_listSize_to_epsMCA_gcxk25`. -/
-theorem johnson_lift_toNNReal_le
-    (δ η : ℝ) (hη_pos : 0 < η) (hη_le_δ : η ≤ δ) (hδ_lt : δ < 1) :
-    (((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal : ℝ)) ≤ δ := by
-  set x : ℝ := δ - η with hx
-  have hx0 : 0 ≤ x := by
-    rw [hx]
-    linarith
-  have hx1 : x ≤ 1 := by
-    rw [hx]
-    linarith
-  have hx_le_delta : x ≤ δ := by
-    rw [hx]
-    linarith [le_of_lt hη_pos]
-  have hmain : 1 - Real.sqrt (1 - x) ≤ x := by
-    have hy0 : 0 ≤ 1 - x := by
-      linarith
-    have hy1 : 1 - x ≤ 1 := by
-      linarith
-    have hsq_le : (1 - x) ^ 2 ≤ 1 - x := by
-      nlinarith [mul_nonneg hy0 (sub_nonneg.mpr hy1)]
-    have hsqrt_ge : 1 - x ≤ Real.sqrt (1 - x) :=
-      Real.le_sqrt_of_sq_le hsq_le
-    linarith
-  have hrpow : (1 - δ + η) ^ ((1 : ℝ) / 2) = Real.sqrt (1 - x) := by
-    rw [show 1 - δ + η = 1 - x by rw [hx]; ring]
-    rw [← Real.sqrt_eq_rpow]
-  have hnonneg_radius : 0 ≤ 1 - (1 - δ + η) ^ ((1 : ℝ) / 2) := by
-    rw [hrpow]
-    have hsqrt_le_one : Real.sqrt (1 - x) ≤ 1 := by
-      rw [Real.sqrt_le_one]
-      linarith
-    linarith
-  rw [Real.toNNReal_of_nonneg hnonneg_radius]
-  simp only [NNReal.coe_mk]
-  rw [hrpow]
-  exact le_trans hmain hx_le_delta
-
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
-
-/-- **ABF26 Theorem 5.1 [GCXK25 Theorem 3].** List decoding implies MCA.
-
-Let `C ⊆ F^n` be a linear code and let `δ, η ∈ (0, 1)`. If `|Λ(C, δ)| ≤ L`, then
-
-  `ε_mca(C, 1 - √(1 - δ + η)) ≤ (L²·δ·n + 1/η) / |F|`
-
-The conclusion's proximity radius `1 - √(1 - δ + η)` is the "Johnson lift" of `δ`
-(plus the `η` slack). For Reed-Solomon codes this implies MCA up to the "2 Johnson"
-regime via Corollary 3.3; for random RS codes (which list-decode to capacity by
-Theorem 3.6) it implies MCA for random RS up to the Johnson bound.
-
-**Paper divergence — added hypothesis `η ≤ δ`.** Paper T5.1 only
-requires `δ, η ∈ (0, 1)`. We strengthen this to `η ≤ δ` so that the
-conclusion's proximity radius `1 - √(1 - δ + η)` stays in `[0, 1]`
-(without it, `(1 - √…).toNNReal` silently truncates to `0` and the
-statement becomes vacuous — almost certainly not the paper's intent in
-the `η > δ` regime, which is the "list-decoding capacity overshoot"
-case the paper itself doesn't analyse). The added hypothesis matches
-the way every existing application of the bound uses it.
-
-If a downstream caller genuinely needs the `0 < η < 1` regime without
-the `η ≤ δ` bound, the right move is to add a paper-faithful variant
-of this theorem with the truncation made explicit (and the bound made
-vacuous), rather than dropping the hypothesis here.
-
-**HONEST REDUCTION AVAILABLE.** The supremum-packaging glue is fully proven, `sorry`-free
-and axiom-clean, in `linear_listSize_to_epsMCA_gcxk25_of_residuals`, which derives this exact
-bound from the GCXK25 *per-stack* amplification bound (`hPerStack` — the genuine external
-content: for *each* word stack `u`, the probability of the MCA bad-event is at most the
-`(L²δn + 1/η)/|F|` bound) by `iSup_le`.  The external statement below isolates exactly
-`hPerStack`, which the *unhypothesized* in-tree statement cannot supply: that needs GCXK25's
-`Bad¹ ≤ pn` count (the GKL24 maximal-correlated-agree-domain machinery, not connected to
-`epsMCA`/`Lambda` in-tree) together with the in-tree `Bad² < 1/ε` second-moment count
-(`Connections/GCXK25SecondMoment.lean`) and the §5 reduction from `epsMCA`'s arbitrary-stack
-supremum to GCXK25's per-codeword-pair `Bad(π₁,π₂,δ)` count.
-
-Admitted as an external result. -/
-theorem linear_listSize_to_epsMCA_gcxk25_of_residuals
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (_hδ_pos : 0 < δ) (_hδ_lt : δ < 1)
-    (_hη_pos : 0 < η) (_hη_lt : η < 1) (_hη_le_δ : η ≤ δ)
-    (_hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    -- GCXK25 Theorem 3 per-stack amplification bound (the genuine external content):
-    (hPerStack :
-        ∀ u : Code.WordStack F (Fin 2) ι,
-          Pr_{let γ ← $ᵖ F}[mcaEvent (F := F)
-              ((C : Set (ι → F)))
-              ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) (u 0) (u 1) γ] ≤
-            ENNReal.ofReal
-              (((L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η) / Fintype.card F)) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        (((L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η) / Fintype.card F) := by
-  unfold epsMCA
-  exact iSup_le hPerStack
-
-/-- **ABF26 Theorem 5.1 [GCXK25 Theorem 3] — sharpened honest reduction via the bad-`γ`
-count.** This derives the exact T5.1 bound from the GCXK25 *per-stack bad-combining-point
-count* (`hBadCount`: for every stack `u`, the number of scalars `γ` for which the MCA bad
-event fires is at most `L²·δ·n + 1/η`), rather than from the raw per-stack *probability*
-bound used in `linear_listSize_to_epsMCA_gcxk25_of_residuals`.
-
-The residual `hBadCount` is *strictly closer* to GCXK25's actual combinatorial content: it is
-literally `|Bad(π₁,π₂,δ)| ≤ pn·L² + 1/ε`, i.e. the sum of GCXK25's first-moment count
-`|Bad¹| ≤ pn` (the GKL24 agree-domain machinery, the named external residual) and the in-tree
-second-moment count `|Bad²| < 1/ε` (`GCXK25SecondMoment.card_lt_one_div_of_second_moment_rs`),
-times the `L²` list-size factor. The entire supremum-to-count plumbing of ABF26 §5 — going
-from `ε_mca`'s arbitrary-stack supremum to a uniform per-stack count of bad `γ` — is now
-*proven* in-tree via `ProximityGap.epsMCA_le_ofReal_of_forall_mcaBad_card_le`. -/
-theorem linear_listSize_to_epsMCA_gcxk25_of_bad_count
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (_hδ_pos : 0 < δ) (_hδ_lt : δ < 1)
-    (_hη_pos : 0 < η) (_hη_lt : η < 1) (_hη_le_δ : η ≤ δ)
-    (_hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    -- GCXK25 Theorem 3 per-stack bad-combining-point count (the genuine external content):
-    (hBadCount :
-        ∀ u : Code.WordStack F (Fin 2) ι,
-          ((ProximityGap.mcaBad (F := F) ((C : Set (ι → F)))
-              ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) (u 0) (u 1)).card : ℝ) ≤
-            (L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        (((L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η) / Fintype.card F) :=
-  ProximityGap.epsMCA_le_ofReal_of_forall_mcaBad_card_le
-    ((C : Set (ι → F)))
-    ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-    hBadCount
-
-/-- **ABF26 Theorem 5.1 [GCXK25 Theorem 3] — first-moment summand from the in-tree GKL24
-brick.** This derives the *first-moment* part of T5.1,
-
-  `ε_mca(C, 1 − √(1 − δ + η)) ≤ ENNReal.ofReal ((L²·δ·n) / |F|)`,
-
-from the single named residual `ProximityGap.GKL24FirstMomentResidual` (the GKL24
-agree-domain / `|Bad¹| ≤ p·n` first-moment count, uniformly over a size-`L²` close-codeword
-carrier), via the *fully in-tree* per-codeword determinacy brick proven in
-`Connections/GKL24FirstMoment.lean` (`epsMCA_le_ofReal_of_gkl24_residual`).
-
-This is strictly sharper plumbing than `linear_listSize_to_epsMCA_gcxk25_of_bad_count`: there the
-whole per-stack count `L²·δ·n + 1/η` was a single opaque residual, whereas here the per-codeword
-*first-moment* count is reduced to its honest GKL24 core — the combining point of any single
-witness codeword is determined by the support of `u₁` (proven in-tree), so the only external input
-left in this summand is GKL24's sharpening of that support count to `δ·n`. The `1/η` second-moment
-summand is supplied separately by `GCXK25SecondMoment.card_lt_one_div_of_second_moment_rs`. -/
-theorem linear_listSize_to_epsMCA_gcxk25_firstMoment_of_gkl24_residual
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (_hδ_lt : δ < 1)
-    (_hη_pos : 0 < η) (_hη_lt : η < 1) (_hη_le_δ : η ≤ δ)
-    (_hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    -- The GKL24 first-moment agree-domain residual (the genuine external content): at the
-    -- Johnson-lifted MCA radius, with list-size factor `B_T = L²` and per-codeword count
-    -- `b = δ·n` (`δ` the *list-decoding* radius, GCXK25's `|Bad¹| ≤ p·n`):
-    (hres :
-        ProximityGap.GKL24FirstMomentResidual C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          ((L : ℝ) ^ 2) (δ * Fintype.card ι)) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        (((L : ℝ) ^ 2 * (δ * Fintype.card ι)) / Fintype.card F) :=
-  ProximityGap.epsMCA_le_ofReal_of_gkl24_residual C
-    ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-    (by positivity) hres
-
-/-- **ABF26 T5.1 front door from the GKL24 first-moment residual.** This wires the
-count-level adapter `ProximityGap.mcaBad_card_le_t51_firstMoment_of_gkl24_residual` into the
-T5.1 consumer `linear_listSize_to_epsMCA_gcxk25_of_bad_count`.
-
-The theorem is deliberately conditional on `GKL24FirstMomentResidual`; it does not prove the
-GCXK25/GKL24 `|Bad¹| ≤ δ·n` theorem. Once that residual is supplied at the Johnson-lifted MCA
-radius with `B_T = L²` and `b = δ·n`, the first-moment bad-count bound is padded by the nonnegative
-`1 / η` slack to match the exact ABF26 T5.1 RHS. -/
-theorem linear_listSize_to_epsMCA_gcxk25_of_gkl24_firstMoment_residual
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
-    (hη_pos : 0 < η) (hη_lt : η < 1) (hη_le_δ : η ≤ δ)
-    (hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    (hres :
-        ProximityGap.GKL24FirstMomentResidual C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          ((L : ℝ) ^ 2) (δ * (Fintype.card ι : ℝ))) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        (((L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η) / Fintype.card F) :=
-  linear_listSize_to_epsMCA_gcxk25_of_bad_count C L δ η
-    hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ
-    (fun u => by
-      have hfirst :
-          ((ProximityGap.mcaBad (F := F) ((C : Set (ι → F)))
-              ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) (u 0) (u 1)).card : ℝ) ≤
-            (L : ℝ) ^ 2 * (δ * (Fintype.card ι : ℝ)) :=
-        ProximityGap.mcaBad_card_le_t51_firstMoment_of_gkl24_residual C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          (by positivity) hres u
-      calc
-        ((ProximityGap.mcaBad (F := F) ((C : Set (ι → F)))
-              ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) (u 0) (u 1)).card : ℝ)
-            ≤ (L : ℝ) ^ 2 * (δ * (Fintype.card ι : ℝ)) := hfirst
-        _ = (L : ℝ) ^ 2 * δ * Fintype.card ι := by ring
-        _ ≤ (L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η :=
-          le_add_of_nonneg_right (by positivity))
-
-/-- **ABF26 T5.1 front door from the witness-cover GKL24 first-moment residual.** This is the
-carrier-faithful companion to `linear_listSize_to_epsMCA_gcxk25_of_gkl24_firstMoment_residual`.
-The residual only asks that the chosen finite list cover the actual bad combining scalars through
-per-codeword witness sets; it does not require the list to contain every codeword of `C`.
-
-Once the GCXK/GKL first-moment proof supplies this residual at the Johnson-lifted MCA radius with
-`B_T = L²` and `b = δ·n`, the first-moment bad-count bound is padded by the nonnegative `1 / η`
-slack to match the exact ABF26 T5.1 RHS. -/
-theorem linear_listSize_to_epsMCA_gcxk25_of_gkl24_witnessCover_residual
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
-    (hη_pos : 0 < η) (hη_lt : η < 1) (hη_le_δ : η ≤ δ)
-    (hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    (hres :
-        ProximityGap.GKL24FirstMomentWitnessCoverResidual C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          ((L : ℝ) ^ 2) (δ * (Fintype.card ι : ℝ))) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        (((L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η) / Fintype.card F) :=
-  linear_listSize_to_epsMCA_gcxk25_of_bad_count C L δ η
-    hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ
-    (fun u => by
-      have hfirst :
-          ((ProximityGap.mcaBad (F := F) ((C : Set (ι → F)))
-              ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) (u 0) (u 1)).card : ℝ) ≤
-            (L : ℝ) ^ 2 * (δ * (Fintype.card ι : ℝ)) :=
-        ProximityGap.mcaBad_card_le_t51_firstMoment_of_gkl24_witnessCover_residual C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          (by positivity) hres u
-      calc
-        ((ProximityGap.mcaBad (F := F) ((C : Set (ι → F)))
-              ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) (u 0) (u 1)).card : ℝ)
-            ≤ (L : ℝ) ^ 2 * (δ * (Fintype.card ι : ℝ)) := hfirst
-        _ = (L : ℝ) ^ 2 * δ * Fintype.card ι := by ring
-        _ ≤ (L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η :=
-          le_add_of_nonneg_right (by positivity))
-
-/-- **ABF26 Theorem 5.1 [GCXK25 Theorem 3] — first-moment summand from the
-maximal-correlated-domain GKL24 hypothesis.**
-
-This is the first-moment-only `ε_mca` consumer for the sharpened hypothesis surface
-`GKL24MaxCorrWitnessCoverHypothesis`: at the Johnson-lifted MCA radius, with `B_T = L²` and
-list-decoding radius `p = δ`, the in-tree max-correlation bridge gives the
-`L²·δ·n / |F|` summand. -/
-theorem linear_listSize_to_epsMCA_gcxk25_firstMoment_of_gkl24_maxCorr_hypothesis
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (_hδ_lt : δ < 1)
-    (_hη_pos : 0 < η) (_hη_lt : η < 1) (_hη_le_δ : η ≤ δ)
-    (_hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    (hres :
-        ProximityGap.GKL24MaxCorrWitnessCoverHypothesis C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          δ.toNNReal
-          ((L : ℝ) ^ 2)) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        (((L : ℝ) ^ 2 * (δ * Fintype.card ι)) / Fintype.card F) := by
-  have h := ProximityGap.epsMCA_le_ofReal_of_gkl24_maxCorr_witnessCover_hypothesis C
-    ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-    δ.toNNReal hres
-  simpa [Real.toNNReal_of_nonneg (le_of_lt hδ_pos), mul_assoc] using h
-
-/-- **ABF26 T5.1 front door from the maximal-correlated-domain GKL24 hypothesis.**
-This is the carrier-faithful, maximal-agree-domain version of
-`linear_listSize_to_epsMCA_gcxk25_of_gkl24_witnessCover_residual`. The hypothesis supplies
-per-codeword maximal correlated agree domains with list factor `B_T = L²` and radius `p = δ`;
-the in-tree bridge converts it to the `L²·δ·n` first-moment bad-count term, then pads by the
-nonnegative `1 / η` second-moment slack to match the ABF26 T5.1 RHS. -/
-theorem linear_listSize_to_epsMCA_gcxk25_of_gkl24_maxCorr_witnessCover_hypothesis
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
-    (hη_pos : 0 < η) (hη_lt : η < 1) (hη_le_δ : η ≤ δ)
-    (hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    (hres :
-        ProximityGap.GKL24MaxCorrWitnessCoverHypothesis C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          δ.toNNReal
-          ((L : ℝ) ^ 2)) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        (((L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η) / Fintype.card F) :=
-  linear_listSize_to_epsMCA_gcxk25_of_bad_count C L δ η
-    hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ
-    (fun u => by
-      have hfirst :
-          ((ProximityGap.mcaBad (F := F) ((C : Set (ι → F)))
-              ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) (u 0) (u 1)).card : ℝ) ≤
-            (L : ℝ) ^ 2 * ((δ.toNNReal : ℝ) * (Fintype.card ι : ℝ)) :=
-        ProximityGap.mcaBad_card_le_of_gkl24_maxCorr_witnessCover_hypothesis C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          δ.toNNReal hres u
-      calc
-        ((ProximityGap.mcaBad (F := F) ((C : Set (ι → F)))
-              ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) (u 0) (u 1)).card : ℝ)
-            ≤ (L : ℝ) ^ 2 * ((δ.toNNReal : ℝ) * (Fintype.card ι : ℝ)) := hfirst
-        _ = (L : ℝ) ^ 2 * δ * Fintype.card ι := by
-          rw [Real.toNNReal_of_nonneg (le_of_lt hδ_pos)]
-          simp only [NNReal.coe_mk]
-          ring_nf
-        _ ≤ (L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η :=
-          le_add_of_nonneg_right (by positivity))
-
-/-- **ABF26 Theorem 5.1 [GCXK25 Theorem 3] — first-moment summand from the
-strict-expansion-only maximal-correlated-domain GKL24 false surface.**
-
-This is the strict-cover analogue of
-`linear_listSize_to_epsMCA_gcxk25_firstMoment_of_gkl24_maxCorr_hypothesis`. The additional
-Johnson-side condition is exactly the hypothesis needed by the strict-cover-to-max-corr bridge:
-the strict cover only supplies the pairwise large-intersection clause when the MCA radius is at
-most half of the list-decoding radius. -/
-theorem linear_listSize_to_epsMCA_gcxk25_firstMoment_of_gkl24_strict_falseAsStated
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
-    (_hη_pos : 0 < η) (_hη_lt : η < 1) (_hη_le_δ : η ≤ δ)
-    (_hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    (hstrict_radius :
-        2 * ((((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal : ℝ≥0) : ℝ)) ≤
-          (δ.toNNReal : ℝ))
-    (hres :
-        ProximityGap.GKL24MaxCorrStrictWitnessCoverFalseAsStated C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          δ.toNNReal
-          ((L : ℝ) ^ 2)) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        (((L : ℝ) ^ 2 * (δ * Fintype.card ι)) / Fintype.card F) := by
-  have hp_le_one : δ.toNNReal ≤ (1 : ℝ≥0) := by
-    rw [Real.toNNReal_le_one]
-    exact le_of_lt hδ_lt
-  have h := ProximityGap.epsMCA_le_ofReal_of_gkl24_strict_witnessCover_falseAsStated C
-    ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-    δ.toNNReal hp_le_one hstrict_radius hres
-  simpa [Real.toNNReal_of_nonneg (le_of_lt hδ_pos), mul_assoc] using h
-
-/-- **ABF26 T5.1 front door from the strict-expansion-only maximal-domain GKL24 false surface.**
-This composes the strict-cover false surface through
-`GKL24MaxCorrWitnessCoverHypothesis_of_strict_cover` and then reuses the max-corr T5.1 consumer.
-The only extra assumption is the strict-cover radius relation `2 * J(δ, η) ≤ δ`, expressed after
-the same `toNNReal` truncation as the theorem parameters. -/
-theorem linear_listSize_to_epsMCA_gcxk25_of_gkl24_strict_witnessCover_falseAsStated
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
-    (hη_pos : 0 < η) (hη_lt : η < 1) (hη_le_δ : η ≤ δ)
-    (hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    (hstrict_radius :
-        2 * ((((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal : ℝ≥0) : ℝ)) ≤
-          (δ.toNNReal : ℝ))
-    (hres :
-        ProximityGap.GKL24MaxCorrStrictWitnessCoverFalseAsStated C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          δ.toNNReal
-          ((L : ℝ) ^ 2)) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        (((L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η) / Fintype.card F) := by
-  have hp_le_one : δ.toNNReal ≤ (1 : ℝ≥0) := by
-    rw [Real.toNNReal_le_one]
-    exact le_of_lt hδ_lt
-  exact linear_listSize_to_epsMCA_gcxk25_of_gkl24_maxCorr_witnessCover_hypothesis C L δ η
-    hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ
-    (ProximityGap.GKL24MaxCorrWitnessCoverHypothesis_of_strict_cover C
-      ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-      δ.toNNReal hp_le_one hstrict_radius hres)
-
-/-- **ABF26 Theorem 5.1 [GCXK25 Theorem 3] — unconditional in-tree first-moment
-relaxation.**  This is the same first-moment plumbing as
-`linear_listSize_to_epsMCA_gcxk25_firstMoment_of_gkl24_residual`, but with the genuinely proven
-per-codeword determinacy bound `|Bad_w| ≤ n` in place of the external GKL24 sharpening
-`|Bad_w| ≤ δ·n`.
-
-Thus a carrier `T` of codewords with `(T.card : ℝ) ≤ B_T` gives
-
-  `ε_mca(C, 1 − √(1 − δ + η)) ≤ ENNReal.ofReal ((B_T·n)/|F|)`.
-
-The proof contains no paper residual: it is exactly
-`ProximityGap.epsMCA_le_ofReal_of_listFactor`, whose per-codeword count is proved in
-`Connections/GKL24FirstMoment.lean`. -/
-theorem linear_listSize_to_epsMCA_gcxk25_firstMoment_inTree_card
-    (C : LinearCode ι F) (δ η : ℝ)
-    (T : Finset (ι → F)) {B_T : ℝ}
-    (hT : ∀ w ∈ (C : Set (ι → F)), w ∈ T)
-    (hTsub : ∀ w ∈ T, w ∈ (C : Set (ι → F)))
-    (hcard : (T.card : ℝ) ≤ B_T) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal ((B_T * (Fintype.card ι : ℝ)) / Fintype.card F) :=
-  ProximityGap.epsMCA_le_ofReal_of_listFactor C
-    ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-    T hT hTsub hcard
-
-/-- **ABF26 Theorem 5.1 [GCXK25 Theorem 3] — sharpened unconditional in-tree
-first-moment relaxation.**  This is the same carrier-level consumer as
-`linear_listSize_to_epsMCA_gcxk25_firstMoment_inTree_card`, but with the sharper in-tree
-pairwise-witness count from `ProximityGap.epsMCA_le_ofReal_of_listFactor_two_delta`.
-
-Thus a carrier `T` of codewords with `(T.card : ℝ) ≤ B_T` gives
-
-  `ε_mca(C, 1 − √(1 − δ + η)) ≤
-    ENNReal.ofReal ((B_T · max 1 (2 · δ_mca · n)) / |F|)`,
-
-where `δ_mca = 1 − √(1 − δ + η)` is the Johnson-lifted MCA radius. This is still not the
-GCXK25/GKL24 `B_T · δ · n` first-moment theorem, but it exposes the strongest unconditional
-in-tree count currently proved at the ABF26 T5.1 boundary. -/
-theorem linear_listSize_to_epsMCA_gcxk25_firstMoment_inTree_two_delta_card
-    (C : LinearCode ι F) (δ η : ℝ)
-    (T : Finset (ι → F)) {B_T : ℝ}
-    (hT : ∀ w ∈ (C : Set (ι → F)), w ∈ T)
-    (hTsub : ∀ w ∈ T, w ∈ (C : Set (ι → F)))
-    (hcard : (T.card : ℝ) ≤ B_T) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        ((B_T *
-            max 1
-              (2 * (((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal : ℝ)) *
-                (Fintype.card ι : ℝ))) /
-          Fintype.card F) :=
-  ProximityGap.epsMCA_le_ofReal_of_listFactor_two_delta C
-    ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-    T hT hTsub hcard
-
-/-- **ABF26 Theorem 5.1 [GCXK25 Theorem 3] — no-carrier sharpened in-tree
-first-moment relaxation.** This is the no-carrier companion to
-`linear_listSize_to_epsMCA_gcxk25_firstMoment_inTree_two_delta_card`. Taking the carrier to be all
-codewords gives
-
-  `ε_mca(C, 1 − √(1 − δ + η)) ≤
-    ENNReal.ofReal ((|F|^n · max 1 (2 · δ_mca · n)) / |F|)`,
-
-where `δ_mca = 1 − √(1 − δ + η)`. It remains a factor-of-two first-moment relaxation of the sharp
-GCXK25/GKL24 `δ·n` count, but requires no external residual or explicit carrier. -/
-theorem linear_listSize_to_epsMCA_gcxk25_firstMoment_inTree_two_delta_univ
-    (C : LinearCode ι F) (δ η : ℝ) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        (((Fintype.card (ι → F) : ℝ) *
-            max 1
-              (2 * (((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal : ℝ)) *
-                (Fintype.card ι : ℝ))) /
-          Fintype.card F) :=
-  ProximityGap.epsMCA_le_ofReal_of_listFactor_two_delta_univ C
-    ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-
-/-- **ABF26 Theorem 5.1 [GCXK25 Theorem 3] — canonical in-tree first-moment relaxation.**
-This is the no-carrier version of `linear_listSize_to_epsMCA_gcxk25_firstMoment_inTree_card`.
-Taking the carrier to be all codewords and using the proven single-codeword determinacy count gives
-
-  `ε_mca(C, 1 − √(1 − δ + η)) ≤ ENNReal.ofReal ((|F|^n · n)/|F|)`.
-
-It is intentionally much weaker than the GCXK25/GKL24 `L²·δ·n` first-moment term, but it closes
-the first-moment residual interface without any external hypothesis. -/
-theorem linear_listSize_to_epsMCA_gcxk25_firstMoment_inTree_univ
-    (C : LinearCode ι F) (δ η : ℝ) :
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        (((Fintype.card (ι → F) : ℝ) * (Fintype.card ι : ℝ)) / Fintype.card F) :=
-  ProximityGap.epsMCA_le_ofReal_inTree_firstMoment_card C
-    ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-
-/-- **ABF26 Theorem 5.1 [GCXK25 Theorem 3].** List decoding implies MCA.
-
-Let `C ⊆ F^n` be a linear code and let `δ, η ∈ (0, 1)`. If `|Λ(C, δ)| ≤ L`, then
-
-  `ε_mca(C, 1 - √(1 - δ + η)) ≤ (L²·δ·n + 1/η) / |F|`
-
-See `linear_listSize_to_epsMCA_gcxk25_of_residuals` for the honest reduction (this external
-statement isolates the genuinely external GCXK25 per-stack amplification bound), or
-`linear_listSize_to_epsMCA_gcxk25_of_bad_count` for the sharpened reduction that isolates the
-genuinely external content as a per-stack *bad-`γ` count* (closest to GCXK25's `Bad` count).
-Admitted as an external result. -/
-def linear_listSize_to_epsMCA_gcxk25
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (_hδ_pos : 0 < δ) (_hδ_lt : δ < 1)
-    (_hη_pos : 0 < η) (_hη_lt : η < 1) (_hη_le_δ : η ≤ δ)
-    (_hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞)) : Prop :=
-    epsMCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) ≤
-      ENNReal.ofReal
-        (((L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η) / Fintype.card F)
-  -- ABF26-T5.1; external statement [GCXK25 Thm 3].
-  -- Missing ingredient: the GCXK25 list-decoding→MCA amplification. GCXK25 (eprint 2025/870)
-  -- partition the bad combining points into `Bad¹` (count `≤ p·n`, their Cor 2 via the GKL24
-  -- agree-domain intersection Lemma 1/Cor 1) and `Bad²` (count `< 1/ε`, their Lemma 3, a
-  -- second-moment Cauchy–Schwarz count over the δ-agreement domains); together with the
-  -- `l ≤ L²` list-size factor this gives the `L²·δ·n + 1/η` shape, divided by |F|.
-  --
-  -- VERIFIED BACKBONE: the GCXK25 Lemma 3 `Bad² < 1/ε` second-moment count is now formalized
-  -- kernel-clean in `Connections/GCXK25SecondMoment.lean`
-  -- (`GCXK25SecondMoment.card_lt_inv_of_second_moment_rs`, with the abstract master inequality
-  -- `card_le_of_second_moment` and the Cauchy–Schwarz step
-  -- `sq_sum_card_le_card_mul_sum_sum_card_inter`). Its `ε ≤ p` hypothesis is exactly the
-  -- `η ≤ δ` constraint imposed above.
-  --
-  -- STRUCTURAL GLUE NOW IN-TREE: the supremum-to-count reduction of ABF26 §5 — going from
-  -- `epsMCA`'s ARBITRARY-stack supremum to a uniform per-stack count of bad scalars `γ` — is
-  -- proven `sorry`-free / axiom-clean in `Connections/EpsMCABadGlue.lean`
-  -- (`ProximityGap.epsMCA_le_ofReal_of_forall_mcaBad_card_le`, via the per-stack counting
-  -- bound `mcaEvent_prob_le_of_mcaBad_card_le`). It is wired into the sharpened reduction
-  -- `linear_listSize_to_epsMCA_gcxk25_of_bad_count` above, whose residual `hBadCount` is the
-  -- per-stack bad-`γ` count `|mcaBad u| ≤ L²·δ·n + 1/η` (i.e. GCXK25's `|Bad(π₁,π₂,δ)|`).
-  --
-  -- STILL EXTERNAL (not in-tree): the per-stack count `|mcaBad u| ≤ L²·δ·n + 1/η` itself, i.e.
-  -- GCXK25's amplification = the GKL24 maximal-correlated-agree-domain machinery and the
-  -- `Bad¹ ≤ pn` first-moment count (the `A_{δ,{π₁,π₂},C}` agree-domain structure, not connected
-  -- to `Lambda`/`epsMCA` in-tree) plus the connection of GCXK25's per-CODEWORD-PAIR
-  -- `Bad(π₁,π₂,δ)` count to the arbitrary stack's `mcaBad`. The in-tree second-moment count
-  -- `|Bad²| < 1/ε` (`GCXK25SecondMoment`) supplies the `1/η` summand of that residual.
-  -- Genuinely external pending the first-moment / agree-domain piece.
-
-/-- Prop-level wrapper for T5.1 from the per-stack probability residual. -/
-theorem linear_listSize_to_epsMCA_gcxk25_of_residuals_prop
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
-    (hη_pos : 0 < η) (hη_lt : η < 1) (hη_le_δ : η ≤ δ)
-    (hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    (hPerStack :
-        ∀ u : Code.WordStack F (Fin 2) ι,
-          Pr_{let γ ← $ᵖ F}[mcaEvent (F := F)
-              ((C : Set (ι → F)))
-              ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) (u 0) (u 1) γ] ≤
-            ENNReal.ofReal
-              (((L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η) / Fintype.card F)) :
-    linear_listSize_to_epsMCA_gcxk25 C L δ η
-      hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ :=
-  linear_listSize_to_epsMCA_gcxk25_of_residuals C L δ η
-    hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ hPerStack
-
-/-- Prop-level wrapper for T5.1 from the sharper bad-`γ` count residual. -/
-theorem linear_listSize_to_epsMCA_gcxk25_of_bad_count_prop
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
-    (hη_pos : 0 < η) (hη_lt : η < 1) (hη_le_δ : η ≤ δ)
-    (hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    (hBadCount :
-        ∀ u : Code.WordStack F (Fin 2) ι,
-          ((ProximityGap.mcaBad (F := F) ((C : Set (ι → F)))
-              ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal) (u 0) (u 1)).card : ℝ) ≤
-            (L : ℝ) ^ 2 * δ * Fintype.card ι + 1 / η) :
-    linear_listSize_to_epsMCA_gcxk25 C L δ η
-      hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ :=
-  linear_listSize_to_epsMCA_gcxk25_of_bad_count C L δ η
-    hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ hBadCount
-
-/-- Prop-level wrapper for T5.1 from the GKL24 first-moment residual front door. -/
-theorem linear_listSize_to_epsMCA_gcxk25_of_gkl24_firstMoment_residual_prop
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
-    (hη_pos : 0 < η) (hη_lt : η < 1) (hη_le_δ : η ≤ δ)
-    (hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    (hres :
-        ProximityGap.GKL24FirstMomentResidual C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          ((L : ℝ) ^ 2) (δ * (Fintype.card ι : ℝ))) :
-    linear_listSize_to_epsMCA_gcxk25 C L δ η
-      hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ :=
-  linear_listSize_to_epsMCA_gcxk25_of_gkl24_firstMoment_residual C L δ η
-    hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ hres
-
-/-- Prop-level wrapper for T5.1 from the witness-cover GKL24 first-moment residual front door. -/
-theorem linear_listSize_to_epsMCA_gcxk25_of_gkl24_witnessCover_residual_prop
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
-    (hη_pos : 0 < η) (hη_lt : η < 1) (hη_le_δ : η ≤ δ)
-    (hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    (hres :
-        ProximityGap.GKL24FirstMomentWitnessCoverResidual C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          ((L : ℝ) ^ 2) (δ * (Fintype.card ι : ℝ))) :
-    linear_listSize_to_epsMCA_gcxk25 C L δ η
-      hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ :=
-  linear_listSize_to_epsMCA_gcxk25_of_gkl24_witnessCover_residual C L δ η
-    hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ hres
-
-/-- Prop-level wrapper for T5.1 from the maximal-domain witness-cover hypothesis front door. -/
-theorem linear_listSize_to_epsMCA_gcxk25_of_gkl24_maxCorr_witnessCover_hypothesis_prop
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
-    (hη_pos : 0 < η) (hη_lt : η < 1) (hη_le_δ : η ≤ δ)
-    (hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    (hres :
-        ProximityGap.GKL24MaxCorrWitnessCoverHypothesis C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          δ.toNNReal
-          ((L : ℝ) ^ 2)) :
-    linear_listSize_to_epsMCA_gcxk25 C L δ η
-      hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ :=
-  linear_listSize_to_epsMCA_gcxk25_of_gkl24_maxCorr_witnessCover_hypothesis C L δ η
-    hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ hres
-
-/-- Prop-level wrapper for T5.1 from the strict-expansion-only maximal-domain witness-cover
-false-as-stated front door. -/
-theorem linear_listSize_to_epsMCA_gcxk25_of_gkl24_strict_witnessCover_falseAsStated_prop
-    (C : LinearCode ι F) (L : ℕ) (δ η : ℝ)
-    (hδ_pos : 0 < δ) (hδ_lt : δ < 1)
-    (hη_pos : 0 < η) (hη_lt : η < 1) (hη_le_δ : η ≤ δ)
-    (hΛ : Lambda ((C : Set (ι → F))) δ ≤ (L : ℕ∞))
-    (hstrict_radius :
-        2 * ((((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal : ℝ≥0) : ℝ)) ≤
-          (δ.toNNReal : ℝ))
-    (hres :
-        ProximityGap.GKL24MaxCorrStrictWitnessCoverFalseAsStated C
-          ((1 - (1 - δ + η) ^ ((1 : ℝ) / 2)).toNNReal)
-          δ.toNNReal
-          ((L : ℝ) ^ 2)) :
-    linear_listSize_to_epsMCA_gcxk25 C L δ η
-      hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ :=
-  linear_listSize_to_epsMCA_gcxk25_of_gkl24_strict_witnessCover_falseAsStated C L δ η
-    hδ_pos hδ_lt hη_pos hη_lt hη_le_δ hΛ hstrict_radius hres
+variable {F : Type} [Field F] [Fintype F] [SampleableType F] [DecidableEq F]
 
 end ListImpliesMCA
 
 section CAImpliesList
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
+variable {F : Type} [Field F] [Fintype F] [SampleableType F] [DecidableEq F]
 
-/-- **ABF26 Theorem 5.2 [BCHKS25 Theorem 1.9].** Small CA error implies small list size.
-
-Let `C := RS[F, L, k]` be a Reed-Solomon code with rate `ρ` and let `δ ∈ (0, 1-ρ)`.
-If
-
-  `ε_ca(C, δ_fld = δ + 2/n, δ_int = 1 - ρ - 1/n) < 1/(2n)`
-
-then
-
-  `|Λ(C, δ)| < |F|` .
-
-Reading: CA at `δ + 2/n` with proximity loss to `1 - ρ - 1/n` having very small error
-forces the list size at `δ` to be strictly below the field size. Admitted as an
-external result.
-
-**HONEST REDUCTION AVAILABLE.** The contrapositive packaging is fully proven, `sorry`-free
-and axiom-clean, in `rs_epsCA_small_implies_lambda_lt_F_bchks25_of_residuals`, which derives
-the bound from BCHKS25's bad-line count (`hBadLine` — the genuine external content: a list of
-`≥ |F|` close codewords forces `ε_ca ≥ 1/(2n)` via the affine-shift interpolation argument)
-as an explicit hypothesis.  The bare external statement isolates exactly `hBadLine`, which
-needs the RS interpolation lemma "|F|-codewords ⟹ bad line" not connected to `epsCA`/`Lambda`
-in-tree. -/
-theorem rs_epsCA_small_implies_lambda_lt_F_bchks25_of_residuals
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ)
-    (_hδ_pos : 0 < δ)
-    (_hδ_lt : (δ : ℝ) < 1 - (k : ℝ) / Fintype.card ι)
-    (_hε_ca :
-        epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal) <
-          ENNReal.ofReal (1 / (2 * Fintype.card ι)))
-    -- BCHKS25 Theorem 1.9 bad-line count (the genuine external content): if the list size at
-    -- `δ` is *not* below `|F|`, the affine-shift interpolation produces a CA failure of
-    -- probability `≥ 1/(2n)`.
-    (hBadLine :
-        ¬ (Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞)) →
-          ENNReal.ofReal (1 / (2 * Fintype.card ι)) ≤
-            epsCA (F := F) (A := F)
-              ((ReedSolomon.code domain k : Set (ι → F)))
-              ((δ + 2 / Fintype.card ι).toNNReal)
-              ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)) :
-    Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞) := by
-  by_contra hcon
-  exact absurd (hBadLine hcon) (not_le.mpr _hε_ca)
-
-/-- **ABF26 Theorem 5.2 [BCHKS25 Theorem 1.9].** Small CA error implies small list size.
-(External statement — see `rs_epsCA_small_implies_lambda_lt_F_bchks25_of_residuals` for the
-fully-proven honest reduction.) -/
-def rs_epsCA_small_implies_lambda_lt_F_bchks25
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ)
-    (_hδ_pos : 0 < δ)
-    (_hδ_lt : (δ : ℝ) < 1 - (k : ℝ) / Fintype.card ι)
-    (_hε_ca :
-        epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal) <
-          ENNReal.ofReal (1 / (2 * Fintype.card ι))) : Prop :=
-    Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞)
-  -- ABF26-T5.2; external statement [BCHKS25 Thm 1.9].
-  -- Missing ingredient: BCHKS25's CA→list contrapositive for RS. The proof negates
-  -- `|Λ(C,δ)| ≥ |F|`: if ≥|F| codewords are δ-close to some `w`, an averaging/interpolation
-  -- argument over the |F| affine shifts produces a line `w + γ·v` that is δ_fld-close on a
-  -- (1-δ_fld)-fraction for ≥ 1/(2n)·|F| values of γ while the pair fails δ_int-joint-proximity,
-  -- forcing `epsCA(δ_fld=δ+2/n, δ_int=1-ρ-1/n) ≥ 1/(2n)`. This requires the RS-specific
-  -- interpolation lemma (BCKHS25/Interpolation.lean has the collinear-proximates engine but
-  -- not the |F|-codewords⇒bad-line counting). Genuinely external.
-
-/-- Prop-level wrapper for T5.2. -/
-theorem rs_epsCA_small_implies_lambda_lt_F_bchks25_of_residuals_prop
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ)
-    (hδ_pos : 0 < δ)
-    (hδ_lt : (δ : ℝ) < 1 - (k : ℝ) / Fintype.card ι)
-    (hε_ca :
-        epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal) <
-          ENNReal.ofReal (1 / (2 * Fintype.card ι)))
-    (hBadLine :
-        ¬ (Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞)) →
-          ENNReal.ofReal (1 / (2 * Fintype.card ι)) ≤
-            epsCA (F := F) (A := F)
-              ((ReedSolomon.code domain k : Set (ι → F)))
-              ((δ + 2 / Fintype.card ι).toNNReal)
-              ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)) :
-    rs_epsCA_small_implies_lambda_lt_F_bchks25 domain k δ hδ_pos hδ_lt hε_ca :=
-  rs_epsCA_small_implies_lambda_lt_F_bchks25_of_residuals
-    domain k δ hδ_pos hδ_lt hε_ca hBadLine
-
-/-- **BCHKS25 named-witness connector.**  This is the exact ABF26 T5.2 reduction with the
-opaque `hBadLine` hypothesis replaced by the strictly smaller `BadLineWitness` producer from
-`ArkLib.ToMathlib.Bridge2BCHKS25`.
-
-The remaining obligation is the genuine BCHKS25 construction: from the negated list-size bound,
-produce the bad combining line.  Once supplied, the in-tree bridge arithmetic converts it to the
-`hBadLine` shape consumed by `rs_epsCA_small_implies_lambda_lt_F_bchks25_of_residuals`. -/
-theorem rs_epsCA_small_implies_lambda_lt_F_bchks25_of_badLineWitness
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ)
-    (hδ_pos : 0 < δ)
-    (hδ_lt : (δ : ℝ) < 1 - (k : ℝ) / Fintype.card ι)
-    (hε_ca :
-        epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal) <
-          ENNReal.ofReal (1 / (2 * Fintype.card ι)))
-    (provBadLine :
-        ¬ (Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞)) →
-          Bridge.BadLineWitness (F := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)) :
-    Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞) :=
-  rs_epsCA_small_implies_lambda_lt_F_bchks25_of_residuals
-    domain k δ hδ_pos hδ_lt hε_ca
-    (Bridge.hBadLine_of_provBadLine
-      ((ReedSolomon.code domain k : Set (ι → F)))
-      ((δ + 2 / Fintype.card ι).toNNReal)
-      ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)
-      provBadLine)
-
-/-- Prop-level wrapper for T5.2 from a `BadLineWitness` producer. -/
-theorem rs_epsCA_small_implies_lambda_lt_F_bchks25_of_badLineWitness_prop
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ)
-    (hδ_pos : 0 < δ)
-    (hδ_lt : (δ : ℝ) < 1 - (k : ℝ) / Fintype.card ι)
-    (hε_ca :
-        epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal) <
-          ENNReal.ofReal (1 / (2 * Fintype.card ι)))
-    (provBadLine :
-        ¬ (Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞)) →
-          Bridge.BadLineWitness (F := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)) :
-    rs_epsCA_small_implies_lambda_lt_F_bchks25 domain k δ hδ_pos hδ_lt hε_ca :=
-  rs_epsCA_small_implies_lambda_lt_F_bchks25_of_badLineWitness
-    domain k δ hδ_pos hδ_lt hε_ca provBadLine
-
-/-- **BCHKS25 interpolation-data connector.**  This is the same ABF26 T5.2 reduction as
-`rs_epsCA_small_implies_lambda_lt_F_bchks25_of_badLineWitness`, but with the witness producer
-written in the exact `BadLineWitnessProof.provBadLine_of_interpolation` input shape: from a
-negated list-size bound, provide BCHKS25's affine-shift output `(u, Γ)` plus the good-combiner
-fraction count `|F|/(2n) ≤ |Γ|`.
-
-All surrounding count arithmetic and CA plumbing are in-tree; the remaining paper-specific datum
-is precisely the interpolation output packaged by `interp`. -/
-theorem rs_epsCA_small_implies_lambda_lt_F_bchks25_of_interpolation
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ)
-    (hδ_pos : 0 < δ)
-    (hδ_lt : (δ : ℝ) < 1 - (k : ℝ) / Fintype.card ι)
-    (hε_ca :
-        epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal) <
-          ENNReal.ofReal (1 / (2 * Fintype.card ι)))
-    (interp :
-        ¬ (Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞)) →
-          Σ' u : WordStack F (Fin 2) ι,
-            PLift
-              (¬ jointProximity
-                (C := ((ReedSolomon.code domain k : Set (ι → F)))) (u := u)
-                ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)) ×'
-            Σ' Γ : Finset F,
-              PLift
-                (∀ γ ∈ Γ,
-                  δᵣ(u 0 + γ • u 1, ((ReedSolomon.code domain k : Set (ι → F)))) ≤
-                    ((δ + 2 / Fintype.card ι).toNNReal)) ×'
-              PLift ((Fintype.card F : ℝ) / (2 * Fintype.card ι) ≤ (Γ.card : ℝ))) :
-    Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞) :=
-  rs_epsCA_small_implies_lambda_lt_F_bchks25_of_badLineWitness
-    domain k δ hδ_pos hδ_lt hε_ca
-    (Bridge.provBadLine_of_interpolation
-      ((ReedSolomon.code domain k : Set (ι → F)))
-      ((δ + 2 / Fintype.card ι).toNNReal)
-      ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)
-      interp)
-
-/-- Prop-level wrapper for T5.2 from BCHKS25 interpolation data. -/
-theorem rs_epsCA_small_implies_lambda_lt_F_bchks25_of_interpolation_prop
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ)
-    (hδ_pos : 0 < δ)
-    (hδ_lt : (δ : ℝ) < 1 - (k : ℝ) / Fintype.card ι)
-    (hε_ca :
-        epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal) <
-          ENNReal.ofReal (1 / (2 * Fintype.card ι)))
-    (interp :
-        ¬ (Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞)) →
-          Σ' u : WordStack F (Fin 2) ι,
-            PLift
-              (¬ jointProximity
-                (C := ((ReedSolomon.code domain k : Set (ι → F)))) (u := u)
-                ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)) ×'
-            Σ' Γ : Finset F,
-              PLift
-                (∀ γ ∈ Γ,
-                  δᵣ(u 0 + γ • u 1, ((ReedSolomon.code domain k : Set (ι → F)))) ≤
-                    ((δ + 2 / Fintype.card ι).toNNReal)) ×'
-              PLift ((Fintype.card F : ℝ) / (2 * Fintype.card ι) ≤ (Γ.card : ℝ))) :
-    rs_epsCA_small_implies_lambda_lt_F_bchks25 domain k δ hδ_pos hδ_lt hε_ca :=
-  rs_epsCA_small_implies_lambda_lt_F_bchks25_of_interpolation
-    domain k δ hδ_pos hδ_lt hε_ca interp
-
-/-- **BCHKS25 all-but-one connector.**  This exposes the all-but-one bad-line producer shape at
-the ABF26 T5.2 front door: under the negated list-size conclusion, supply one stack and one
-exceptional scalar such that every other affine combiner is close to the RS code. The lower BCHKS
-bridge converts those data to `BadLineWitness`, and the existing named-witness connector closes
-the T5.2 contradiction.
-
-This theorem still leaves the paper-specific BCHKS construction visible: the conditional producer
-`provAllButOne` is exactly the affine-shift bad-line datum that must come from the external
-interpolation/counting argument. -/
-theorem rs_epsCA_small_implies_lambda_lt_F_bchks25_of_allButOne
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ)
-    (hδ_pos : 0 < δ)
-    (hδ_lt : (δ : ℝ) < 1 - (k : ℝ) / Fintype.card ι)
-    (hε_ca :
-        epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal) <
-          ENNReal.ofReal (1 / (2 * Fintype.card ι)))
-    (provAllButOne :
-        ¬ (Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞)) →
-          Σ' u : WordStack F (Fin 2) ι,
-            PLift
-              (¬ jointProximity
-                (C := ((ReedSolomon.code domain k : Set (ι → F)))) (u := u)
-                ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)) ×'
-            Σ' γ_bad : F,
-              PLift
-                (∀ γ : F, γ ≠ γ_bad →
-                  δᵣ(u 0 + γ • u 1, ((ReedSolomon.code domain k : Set (ι → F)))) ≤
-                    ((δ + 2 / Fintype.card ι).toNNReal))) :
-    Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞) :=
-  rs_epsCA_small_implies_lambda_lt_F_bchks25_of_badLineWitness
-    domain k δ hδ_pos hδ_lt hε_ca
-    (fun hnot => by
-      obtain ⟨u, ⟨hjp⟩, γ_bad, ⟨hgood⟩⟩ := provAllButOne hnot
-      exact Bridge.badLineWitness_of_allButOne
-        ((ReedSolomon.code domain k : Set (ι → F)))
-        ((δ + 2 / Fintype.card ι).toNNReal)
-        ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)
-        u γ_bad hjp hgood)
-
-/-- Prop-level wrapper for T5.2 from BCHKS25 all-but-one bad-line data. -/
-theorem rs_epsCA_small_implies_lambda_lt_F_bchks25_of_allButOne_prop
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ)
-    (hδ_pos : 0 < δ)
-    (hδ_lt : (δ : ℝ) < 1 - (k : ℝ) / Fintype.card ι)
-    (hε_ca :
-        epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal) <
-          ENNReal.ofReal (1 / (2 * Fintype.card ι)))
-    (provAllButOne :
-        ¬ (Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞)) →
-          Σ' u : WordStack F (Fin 2) ι,
-            PLift
-              (¬ jointProximity
-                (C := ((ReedSolomon.code domain k : Set (ι → F)))) (u := u)
-                ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)) ×'
-            Σ' γ_bad : F,
-              PLift
-                (∀ γ : F, γ ≠ γ_bad →
-                  δᵣ(u 0 + γ • u 1, ((ReedSolomon.code domain k : Set (ι → F)))) ≤
-                    ((δ + 2 / Fintype.card ι).toNNReal))) :
-    rs_epsCA_small_implies_lambda_lt_F_bchks25 domain k δ hδ_pos hδ_lt hε_ca :=
-  rs_epsCA_small_implies_lambda_lt_F_bchks25_of_allButOne
-    domain k δ hδ_pos hδ_lt hε_ca provAllButOne
-
-/-- **BCHKS25 existential all-but-one connector.**  Same top-level T5.2 surface as
-`rs_epsCA_small_implies_lambda_lt_F_bchks25_of_allButOne`, but matching paper statements that
-only assert the existence of one exceptional scalar for the produced bad stack. -/
-theorem rs_epsCA_small_implies_lambda_lt_F_bchks25_of_exists_allButOne
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ)
-    (hδ_pos : 0 < δ)
-    (hδ_lt : (δ : ℝ) < 1 - (k : ℝ) / Fintype.card ι)
-    (hε_ca :
-        epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal) <
-          ENNReal.ofReal (1 / (2 * Fintype.card ι)))
-    (provExistsAllButOne :
-        ¬ (Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞)) →
-          Σ' u : WordStack F (Fin 2) ι,
-            PLift
-              (¬ jointProximity
-                (C := ((ReedSolomon.code domain k : Set (ι → F)))) (u := u)
-                ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)) ×'
-            PLift
-              (∃ γ_bad : F, ∀ γ : F, γ ≠ γ_bad →
-                δᵣ(u 0 + γ • u 1, ((ReedSolomon.code domain k : Set (ι → F)))) ≤
-                  ((δ + 2 / Fintype.card ι).toNNReal))) :
-    Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞) :=
-  rs_epsCA_small_implies_lambda_lt_F_bchks25_of_badLineWitness
-    domain k δ hδ_pos hδ_lt hε_ca
-    (fun hnot => by
-      obtain ⟨u, ⟨hjp⟩, ⟨hgood⟩⟩ := provExistsAllButOne hnot
-      exact Bridge.badLineWitness_of_exists_allButOne
-        ((ReedSolomon.code domain k : Set (ι → F)))
-        ((δ + 2 / Fintype.card ι).toNNReal)
-        ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)
-        u hjp hgood)
-
-/-- Prop-level wrapper for T5.2 from existential BCHKS25 all-but-one bad-line data. -/
-theorem rs_epsCA_small_implies_lambda_lt_F_bchks25_of_exists_allButOne_prop
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ)
-    (hδ_pos : 0 < δ)
-    (hδ_lt : (δ : ℝ) < 1 - (k : ℝ) / Fintype.card ι)
-    (hε_ca :
-        epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            ((δ + 2 / Fintype.card ι).toNNReal)
-            ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal) <
-          ENNReal.ofReal (1 / (2 * Fintype.card ι)))
-    (provExistsAllButOne :
-        ¬ (Lambda ((ReedSolomon.code domain k : Set (ι → F))) δ < (Fintype.card F : ℕ∞)) →
-          Σ' u : WordStack F (Fin 2) ι,
-            PLift
-              (¬ jointProximity
-                (C := ((ReedSolomon.code domain k : Set (ι → F)))) (u := u)
-                ((1 - (k : ℝ) / Fintype.card ι - 1 / Fintype.card ι).toNNReal)) ×'
-            PLift
-              (∃ γ_bad : F, ∀ γ : F, γ ≠ γ_bad →
-                δᵣ(u 0 + γ • u 1, ((ReedSolomon.code domain k : Set (ι → F)))) ≤
-                  ((δ + 2 / Fintype.card ι).toNNReal))) :
-    rs_epsCA_small_implies_lambda_lt_F_bchks25 domain k δ hδ_pos hδ_lt hε_ca :=
-  rs_epsCA_small_implies_lambda_lt_F_bchks25_of_exists_allButOne
-    domain k δ hδ_pos hδ_lt hε_ca provExistsAllButOne
-
-/-- **ABF26 Theorem 5.3 [CS25 Theorem 2] — honest reduction form.**
-
-The fully-proven, `sorry`-free, axiom-clean *contradiction core* of CS25 Theorem 2, with the
-single genuinely-external ingredient (CS25's "Claim 3" deep-hole + Schwartz–Zippel count,
-which manufactures the bad correlated-agreement stack from a large `C⁺`-list) surfaced as an
-explicit hypothesis `hClaim3`.
-
-Write `q := |F|`, `n := |ι|`, `s := q - n`, `ε := ε_ca(C, δ).toReal`, and
-`L0 := ⌈q/(1-η)·ε⌉`.  CS25's Claim 3 says: if the degree-`(k+1)` code has *more than* `L0`
-codewords within relative distance `δ` of some word, then evaluating the deep-hole
-construction at `L = L0+1` produces **strictly more than** `E(L0) := L0·s/(L0·k + s)`
-bad combining points (strict because `E` is increasing in the list size `L` and the list has
-size `≥ L0+1`), forcing `ε_ca·q > E(L0)`.  This is exactly `hClaim3`.
-
-The arithmetic glue (`Bridge.cs25_qeps_le_E`: the two numeric hypotheses force
-`ε_ca·q ≤ E(L0)`) then contradicts `hClaim3`, closing the bound.  This matches the paper's
-"substituting `E = εq` gives the contradiction".
-
-Faithfulness of the *statement*: under `η = k·ε·q/s` (the tightest admissible slack) the
-threshold `L0 = ⌈q·ε·s/(s − k·ε·q)⌉` coincides with CS25 Theorem 2's published list size
-`L = ⌈εq(q−n)/(q−n−kεq)⌉`; for larger admissible `η` the in-tree `L0` is *weaker* (larger),
-so the in-tree statement is valid.  The strict comparison `ε_ca·q > E(L0)` (rather than `≥`)
-is the in-tree analogue of CS25's *strict* hypothesis `ε < (q−n)/(kq)`, which the in-tree
-`η < 1` already supplies (`ε ≤ η(q−n)/(kq) < (q−n)/(kq)`); it is needed because at the
-measure-zero boundary `E(L0) = εq` the non-strict count is vacuous. -/
-theorem rs_epsCA_implies_lambda_extended_cs25_of_residuals
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ) (η : ℝ)
-    (_hk_pos : 0 < k)
-    (_hη_lo : 0 ≤ η) (_hη_lt : η < 1)
-    (hs_pos : (0 : ℝ) < Fintype.card F - Fintype.card ι)
-    (_hε_ca :
-        (epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            δ.toNNReal δ.toNNReal).toReal ≤
-          η * (1 / k - Fintype.card ι / (k * Fintype.card F)))
-    -- CS25 "Claim 3" (the genuine external content): a `C⁺`-list strictly larger than the
-    -- claimed bound forces, via the deep-hole/Schwartz–Zippel construction, strictly more
-    -- bad combining points than `E(L0)`, i.e. `ε_ca·q > E(L0)`.
-    (hClaim3 :
-        let ε := (epsCA (F := F) (A := F)
-                    ((ReedSolomon.code domain k : Set (ι → F)))
-                    δ.toNNReal δ.toNNReal).toReal
-        let L0 : ℕ := Nat.ceil ((Fintype.card F : ℝ) / (1 - η) * ε)
-        let s : ℝ := Fintype.card F - Fintype.card ι
-        ¬ (Lambda ((ReedSolomon.code domain (k + 1) : Set (ι → F))) δ ≤ (L0 : ℕ∞)) →
-          (L0 : ℝ) * s / ((L0 : ℝ) * k + s) < ε * Fintype.card F) :
-    Lambda ((ReedSolomon.code domain (k + 1) : Set (ι → F))) δ ≤
-      (Nat.ceil
-        ((Fintype.card F : ℝ) / (1 - η)
-          * (epsCA (F := F) (A := F)
-                ((ReedSolomon.code domain k : Set (ι → F)))
-                δ.toNNReal δ.toNNReal).toReal) : ℕ∞) := by
+omit [Nonempty ι] [DecidableEq ι] [Fintype F] in
+/-- `ε_ca` is never `⊤`: each branch of the supremum is `0` or a native event probability
+(`≤ 1`). Derivation infrastructure for `rs_Lambda_extended_le_of_epsCa`. -/
+private lemma epsCa_ne_top (C : Set (ι → F)) (δ_fld δ_int : ℝ≥0) :
+    epsCa (F := F) (A := F) C δ_fld δ_int ≠ ⊤ := by
   classical
-  -- Abbreviations.
-  set ε := (epsCA (F := F) (A := F)
-              ((ReedSolomon.code domain k : Set (ι → F)))
-              δ.toNNReal δ.toNNReal).toReal with hεdef
-  set q : ℝ := (Fintype.card F : ℝ) with hqdef
-  set s : ℝ := (Fintype.card F : ℝ) - (Fintype.card ι : ℝ) with hsdef
-  set L0 : ℕ := Nat.ceil (q / (1 - η) * ε) with hL0def
-  -- Numerics.
-  have hkpos : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast _hk_pos
-  have hqpos : (0 : ℝ) < q := by
-    rw [hqdef]; exact_mod_cast Fintype.card_pos
-  have hηlt : η < 1 := _hη_lt
-  have h1η : (0 : ℝ) < 1 - η := by linarith
-  -- `ε ≥ 0`.
-  have hε0 : 0 ≤ ε := by
-    rw [hεdef]; exact ENNReal.toReal_nonneg
-  -- Rewrite the CA-cap hypothesis as `q·ε ≤ η·s/k`.
-  have hcap1 : q * ε ≤ η * s / (k : ℝ) := by
-    have hrw : η * (1 / (k : ℝ) - (Fintype.card ι : ℝ) / ((k : ℝ) * (Fintype.card F : ℝ)))
-        = η * s / (k : ℝ) / q := by
-      rw [hsdef, hqdef]
-      have hkne : (k : ℝ) ≠ 0 := by
-        have : (0 : ℝ) < k := by exact_mod_cast _hk_pos
-        exact ne_of_gt this
-      have hqne : (Fintype.card F : ℝ) ≠ 0 := ne_of_gt (by exact_mod_cast Fintype.card_pos)
-      field_simp
-    have := _hε_ca
-    rw [hrw] at this
-    -- this : ε ≤ η*s/k / q
-    have hq' : ε * q ≤ η * s / (k : ℝ) := by
-      rw [le_div_iff₀ hqpos] at this; linarith [this]
-    linarith [hq']
-  by_contra hcon
-  -- From the residual, `E(L0) < ε·q`.
-  have hstrict : (L0 : ℝ) * s / ((L0 : ℝ) * k + s) < ε * q := by
-    simpa [hεdef, hL0def, hsdef, hqdef] using hClaim3 hcon
-  -- `L0 ≥ 1`: else `Lambda ≤ 0` would need to fail, but `hcon` says `¬ ≤ L0`.
-  -- We get `1 ≤ L0` from the residual's strict inequality forcing a positive count.
-  have hL0pos : 1 ≤ (L0 : ℝ) := by
-    by_contra hlt
-    push Not at hlt
-    -- L0 = 0, so the LHS of hstrict is 0; but then 0 < ε·q.
-    have hL0z : L0 = 0 := by
-      have : (L0 : ℝ) < 1 := hlt
-      exact_mod_cast Nat.lt_one_iff.mp (by exact_mod_cast this)
-    rw [hL0z] at hstrict
-    simp at hstrict
-    -- hstrict : 0 < ε * q (after simp); combine with hcap1 and η<1.
-    -- Actually with L0=0, ⌈q/(1-η)·ε⌉ = 0 ⇒ q/(1-η)·ε ≤ 0 ⇒ ε ≤ 0 ⇒ ε = 0 ⇒ contradiction.
-    have hceil : q / (1 - η) * ε ≤ 0 := by
-      have : Nat.ceil (q / (1 - η) * ε) = 0 := hL0z
-      exact_mod_cast Nat.ceil_eq_zero.mp this
-    have hεz : ε ≤ 0 := by
-      by_contra hpos
-      push Not at hpos
-      have : 0 < q / (1 - η) * ε := by positivity
-      linarith
-    have : ε * q ≤ 0 := by nlinarith [hε0, hqpos.le]
-    nlinarith [hstrict, this]
-  -- Arithmetic: the two caps force `q·ε ≤ E(L0)`.
-  have hcap2 : q * ε ≤ (1 - η) * (L0 : ℝ) := by
-    have hceil_ge : q / (1 - η) * ε ≤ (L0 : ℝ) := by
-      rw [hL0def]; exact_mod_cast Nat.le_ceil _
-    -- multiply both sides by (1-η) > 0
-    have hmul := mul_le_mul_of_nonneg_left hceil_ge (le_of_lt h1η)
-    have heq : (1 - η) * (q / (1 - η) * ε) = q * ε := by
-      field_simp
-    rw [heq] at hmul
-    exact hmul
-  have hEle : q * ε ≤ (L0 : ℝ) * s / ((L0 : ℝ) * k + s) := by
-    exact Bridge.cs25_qeps_le_E (s := s) (m := (L0 : ℝ)) (k := (k : ℝ)) (η := η)
-      (qε := q * ε) hs_pos hkpos hL0pos _hη_lo _hη_lt hcap1 hcap2
-  -- Contradiction: E(L0) < ε·q = q·ε ≤ E(L0).
-  have : (L0 : ℝ) * s / ((L0 : ℝ) * k + s) < (L0 : ℝ) * s / ((L0 : ℝ) * k + s) := by
-    calc (L0 : ℝ) * s / ((L0 : ℝ) * k + s) < ε * q := hstrict
-      _ = q * ε := by ring
-      _ ≤ (L0 : ℝ) * s / ((L0 : ℝ) * k + s) := hEle
-  exact lt_irrefl _ this
+  refine ne_top_of_le_ne_top ENNReal.one_ne_top ?_
+  simp only [epsCa_eq]
+  refine iSup_le fun u => ?_
+  split_ifs
+  · exact zero_le_one
+  · exact prEvent_le_one _
 
-/-- **ABF26 Theorem 5.3 [CS25 Theorem 2].** CA error converts to list size for related RS.
+/-- `Nat.floor` commutes with the `ℝ≥0 → ℝ` coercion. Derivation infrastructure for
+`rs_Lambda_extended_le_of_epsCa`. -/
+private lemma nat_floor_coe_nnreal (x : ℝ≥0) : Nat.floor (x : ℝ) = Nat.floor x :=
+  le_antisymm
+    (Nat.le_floor (by exact_mod_cast Nat.floor_le x.coe_nonneg))
+    (Nat.le_floor (by exact_mod_cast Nat.floor_le (zero_le (α := ℝ≥0))))
 
-Let `C := RS[F, L, k]` and `C⁺ := RS[F, L, k+1]` be Reed-Solomon codes with `|L| = n`.
-For `δ ∈ (0, δ_min(C))` and `η ∈ [0, 1)`, if
+omit [DecidableEq ι] [Field F] [Fintype F] [SampleableType F] [DecidableEq F] in
+/-- `Λ(C, ·)` is `1/n`-quantised: relative Hamming distance takes values in
+`{0, 1/n, …, 1}`, so the list size at a real radius `δ ≥ 0` equals the list size at the
+grid point `⌊δ·n⌋/n`. `Lambda` analogue of `ProximityGap.epsCa_eq_of_floor_eq`;
+derivation infrastructure for `rs_Lambda_extended_le_of_epsCa`. -/
+private lemma Lambda_eq_floor_div_card (C : Set (ι → F)) {δ : ℝ} (hδ : 0 ≤ δ) :
+    Lambda C δ
+      = Lambda C ((⌊δ * Fintype.card ι⌋₊ : ℝ) / Fintype.card ι) := by
+  have hn : (0 : ℝ) < Fintype.card ι := by
+    exact_mod_cast Fintype.card_pos (α := ι)
+  have hset : ∀ y : ι → F,
+      closeCodewordsRel C y δ
+        = closeCodewordsRel C y ((⌊δ * Fintype.card ι⌋₊ : ℝ) / Fintype.card ι) := by
+    intro y
+    ext c
+    simp only [closeCodewordsRel, relHammingBall, Set.mem_ofPred_eq, and_congr_right_iff,
+      Code.relHammingDist]
+    intro _
+    push_cast
+    rw [div_le_iff₀ hn, div_le_iff₀ hn, div_mul_cancel₀ _ hn.ne', Nat.cast_le,
+      ← Nat.le_floor_iff (by positivity)]
+  unfold Lambda
+  exact iSup_congr fun y => by rw [hset y]
+
+omit [DecidableEq ι] in
+/-- A real-radius corollary of `rs_Lambda_extended_le_of_epsCa_int_radius`. For
+`δ ∈ (0, (n-k-1)/n)` and `η ∈ [0,1)`, if
 
   `ε_ca(C, δ) ≤ η · (1/k - n/(k·|F|))`
 
-then
-
-  `|Λ(C⁺, δ)| ≤ ⌈|F|/(1-η) · ε_ca(C, δ)⌉`
-
-Pivots CA on `C` to a list-size bound on the extended code `C⁺`. This is *the* key bridge
-from the in-tree CA chain to the Grand List-Decoding Challenge.
-
-**HONEST REDUCTION AVAILABLE.** The contradiction core is fully proven, `sorry`-free and
-axiom-clean, in `rs_epsCA_implies_lambda_extended_cs25_of_residuals`, which derives this exact
-bound from CS25's "Claim 3" deep-hole/Schwartz–Zippel count (`hClaim3`) and the standard-regime
-side condition `0 < |F| − |ι|` as explicit hypotheses, together with the arithmetic glue
-`Bridge.cs25_qeps_le_E`.  The external statement below isolates exactly `hClaim3`, which the
-*unhypothesized* in-tree statement cannot manufacture: that needs the deep-hole construction
-`u⁽¹⁾ = 1/(x−a)`, pointwise scaling, the polynomial-remainder lift `RS[k] ⊂ RS[k+1]`, and the
-Schwartz–Zippel collision count over the list of degree-`k` polynomials, none of which is
-connected to `epsCA`/`Lambda` in-tree.  Admitted as an external result. -/
-def rs_epsCA_implies_lambda_extended_cs25
-    (domain : ι ↪ F) (k : ℕ) (δ : ℝ) (η : ℝ)
-    (_hk_pos : 0 < k)
-    (_hδ_pos : 0 < δ)
-    (_hδ_min :
-        (δ : ℝ) < Code.minDist ((ReedSolomon.code domain k : Set (ι → F)))
-                    / Fintype.card ι)
-    (_hη_lo : 0 ≤ η) (_hη_lt : η < 1)
-    (_hε_ca :
-        (epsCA (F := F) (A := F)
-            ((ReedSolomon.code domain k : Set (ι → F)))
-            δ.toNNReal δ.toNNReal).toReal ≤
-          η * (1 / k - Fintype.card ι / (k * Fintype.card F))) : Prop :=
-    Lambda ((ReedSolomon.code domain (k + 1) : Set (ι → F))) δ ≤
-      (Nat.ceil
-        ((Fintype.card F : ℝ) / (1 - η)
-          * (epsCA (F := F) (A := F)
-                ((ReedSolomon.code domain k : Set (ι → F)))
-                δ.toNNReal δ.toNNReal).toReal) : ℕ∞)
-  -- ABF26-T5.3; external statement [CS25 Thm 2].
-  -- Missing ingredient: CS25's degree-lift list-size formula. The bound on Λ(C⁺,δ) for
-  -- C⁺ = RS[F,L,k+1] in terms of ε_ca(C,δ) uses that a codeword of C⁺ δ-close to `w`
-  -- restricts (mod the degree-k subcode C) to a near-codeword whose multiplicity is
-  -- controlled by the CA error of C; the ⌈|F|/(1-η)·ε_ca⌉ count is the number of degree-(k+1)
-  -- extensions surviving the η-margin. Needs: the RS degree-filtration C ⊂ C⁺ list map and
-  -- the CS25 multiplicity bound (not in-tree; ReedSolomon.lean has the code but not the
-  -- degree-lift list correspondence). Genuinely external.
-
-/-- Prop-level wrapper for T5.3. -/
-theorem rs_epsCA_implies_lambda_extended_cs25_of_residuals_prop
+then `Λ(RS(k+1), δ) ≤ ⌈|F|/(1-η) · ε_ca(C, δ)⌉`. The proof uses the `1/n` quantization
+of `epsCa` and `Lambda`. The strict radius bound and `n < |F|` ensure that the integer theorem's
+radius and denominator hypotheses hold. -/
+theorem rs_Lambda_extended_le_of_epsCa
     (domain : ι ↪ F) (k : ℕ) (δ : ℝ) (η : ℝ)
     (hk_pos : 0 < k)
     (hδ_pos : 0 < δ)
-    (hδ_min :
-        (δ : ℝ) < Code.minDist ((ReedSolomon.code domain k : Set (ι → F)))
-                    / Fintype.card ι)
-    (hη_lo : 0 ≤ η) (hη_lt : η < 1)
+    (hδ_radius : δ < ((Fintype.card ι : ℝ) - k - 1) / Fintype.card ι)
+    (_hη_lo : 0 ≤ η) (hη_lt : η < 1)
+    (hn_lt_F : Fintype.card ι < Fintype.card F)
     (hε_ca :
-        (epsCA (F := F) (A := F)
+        (epsCa (F := F) (A := F)
             ((ReedSolomon.code domain k : Set (ι → F)))
             δ.toNNReal δ.toNNReal).toReal ≤
-          η * (1 / k - Fintype.card ι / (k * Fintype.card F)))
-    (hs_pos : (0 : ℝ) < Fintype.card F - Fintype.card ι)
-    (hClaim3 :
-        let ε := (epsCA (F := F) (A := F)
-                    ((ReedSolomon.code domain k : Set (ι → F)))
-                    δ.toNNReal δ.toNNReal).toReal
-        let L0 : ℕ := Nat.ceil ((Fintype.card F : ℝ) / (1 - η) * ε)
-        let s : ℝ := Fintype.card F - Fintype.card ι
-        ¬ (Lambda ((ReedSolomon.code domain (k + 1) : Set (ι → F))) δ ≤ (L0 : ℕ∞)) →
-          (L0 : ℝ) * s / ((L0 : ℝ) * k + s) < ε * Fintype.card F) :
-    rs_epsCA_implies_lambda_extended_cs25 domain k δ η
-      hk_pos hδ_pos hδ_min hη_lo hη_lt hε_ca :=
-  rs_epsCA_implies_lambda_extended_cs25_of_residuals
-    domain k δ η hk_pos hη_lo hη_lt hs_pos hε_ca hClaim3
+          η * (1 / k - Fintype.card ι / (k * Fintype.card F))) :
+    Lambda ((ReedSolomon.code domain (k + 1) : Set (ι → F))) δ ≤
+      (Nat.ceil
+        ((Fintype.card F : ℝ) / (1 - η)
+          * (epsCa (F := F) (A := F)
+                ((ReedSolomon.code domain k : Set (ι → F)))
+                δ.toNNReal δ.toNNReal).toReal) : ℕ∞) := by
+  classical
+  set C : Set (ι → F) := (ReedSolomon.code domain k : Set (ι → F)) with hC
+  set ε : ℝ := (epsCa (F := F) (A := F) C δ.toNNReal δ.toNNReal).toReal with hε
+  set n : ℕ := Fintype.card ι with hn
+  set q : ℕ := Fintype.card F with hq
+  have hnR : (0 : ℝ) < n := by exact_mod_cast Fintype.card_pos (α := ι)
+  have hqR : (0 : ℝ) < q := by exact_mod_cast Fintype.card_pos (α := F)
+  have hkR : (0 : ℝ) < k := by exact_mod_cast hk_pos
+  have hX : (0 : ℝ) < (q : ℝ) - n := by
+    have : (n : ℝ) < q := by exact_mod_cast hn_lt_F
+    linarith
+  have hη1 : (0 : ℝ) < 1 - η := by linarith
+  have hε_nonneg : 0 ≤ ε := ENNReal.toReal_nonneg
+  -- The tex margin `1/k - n/(kq)` is the source margin `(q-n)/(kq)`.
+  have hmargin : η * (1 / (k : ℝ) - n / (k * q)) = η * (((q : ℝ) - n) / (k * q)) := by
+    field_simp
+  have hε_le : ε ≤ η * (((q : ℝ) - n) / (k * q)) := hmargin ▸ hε_ca
+  have hε_lt : ε < ((q : ℝ) - n) / (k * q) := by
+    refine lt_of_le_of_lt hε_le ?_
+    have hpos : (0 : ℝ) < ((q : ℝ) - n) / (k * q) := by positivity
+    nlinarith [mul_pos (sub_pos.mpr hη_lt) hpos]
+  -- The integer radius `f := ⌊δ·n⌋` is in the source regime `f < n - k - 1`.
+  set f : ℕ := ⌊δ * n⌋₊ with hf
+  have hf_le : (f : ℝ) ≤ δ * n := Nat.floor_le (by positivity)
+  have hf_lt : f + k + 1 < n := by
+    have hδn : δ * n < (n : ℝ) - k - 1 := by
+      have h := mul_lt_mul_of_pos_right hδ_radius hnR
+      rwa [div_mul_cancel₀ _ hnR.ne'] at h
+    have : ((f + k + 1 : ℕ) : ℝ) < n := by push_cast; linarith
+    exact_mod_cast this
+  -- `ε_ca` at the grid point `f/n` is dominated by `ε_ca` at `δ` (quantisation +
+  -- monotonicity in `δ_fld`).
+  have hnNN : ((n : ℝ≥0)) ≠ 0 := by
+    exact_mod_cast (Fintype.card_pos (α := ι)).ne'
+  have hfn_le : ((f : ℝ≥0) / n) ≤ δ.toNNReal := by
+    rw [← NNReal.coe_le_coe]
+    push_cast
+    rw [Real.coe_toNNReal _ hδ_pos.le]
+    exact (div_le_iff₀ hnR).mpr hf_le
+  have hfloor_eq :
+      Nat.floor (((f : ℝ≥0) / n) * n) = Nat.floor (δ.toNNReal * (n : ℝ≥0)) := by
+    rw [div_mul_cancel₀ _ hnNN, Nat.floor_natCast, ← nat_floor_coe_nnreal]
+    have hcoe : ((δ.toNNReal * (n : ℝ≥0) : ℝ≥0) : ℝ) = δ * n := by
+      push_cast
+      rw [Real.coe_toNNReal _ hδ_pos.le]
+    rw [hcoe]
+  have h_eps_le :
+      epsCa (F := F) (A := F) C ((f : ℝ≥0) / n) ((f : ℝ≥0) / n)
+        ≤ epsCa (F := F) (A := F) C δ.toNNReal δ.toNNReal := by
+    calc epsCa (F := F) (A := F) C ((f : ℝ≥0) / n) ((f : ℝ≥0) / n)
+        = epsCa (F := F) (A := F) C ((f : ℝ≥0) / n) δ.toNNReal :=
+          epsCa_eq_of_floor_eq C _ _ _ hfloor_eq
+      _ ≤ epsCa (F := F) (A := F) C δ.toNNReal δ.toNNReal :=
+          epsCa_mono_left C _ hfn_le
+  have h_eps_toReal :
+      (epsCa (F := F) (A := F) C ((f : ℝ≥0) / n) ((f : ℝ≥0) / n)).toReal ≤ ε :=
+    ENNReal.toReal_mono (epsCa_ne_top C _ _) h_eps_le
+  -- Apply the source-native theorem at `f` and `ε`.
+  have hmain :=
+    rs_Lambda_extended_le_of_epsCa_int_radius
+      (domain := domain) (k := k) (f := f) (ε := ε)
+      hk_pos hf_lt hε_lt h_eps_toReal
+  -- `Λ` at `δ` equals `Λ` at the grid point `f/n`.
+  have hΛ :
+      Lambda ((ReedSolomon.code domain (k + 1) : Set (ι → F))) δ
+        = Lambda ((ReedSolomon.code domain (k + 1) : Set (ι → F))) ((f : ℝ) / n) :=
+    Lambda_eq_floor_div_card _ hδ_pos.le
+  -- Ceiling comparison: the source list bound is dominated by the tex bound.
+  have hkεq : ε * ((k : ℝ) * q) ≤ η * ((q : ℝ) - n) := by
+    have h := mul_le_mul_of_nonneg_right hε_le (mul_pos hkR hqR).le
+    rwa [mul_assoc, div_mul_cancel₀ _ (mul_pos hkR hqR).ne'] at h
+  have hD : (1 - η) * ((q : ℝ) - n) ≤ (q : ℝ) - n - k * ε * q := by nlinarith [hkεq]
+  have hDpos : (0 : ℝ) < (1 - η) * ((q : ℝ) - n) := by positivity
+  have hceil :
+      Nat.ceil (ε * q * ((q : ℝ) - n) / ((q : ℝ) - n - k * ε * q))
+        ≤ Nat.ceil ((q : ℝ) / (1 - η) * ε) := by
+    refine Nat.ceil_le_ceil ?_
+    calc ε * q * ((q : ℝ) - n) / ((q : ℝ) - n - k * ε * q)
+        ≤ ε * q * ((q : ℝ) - n) / ((1 - η) * ((q : ℝ) - n)) := by
+          gcongr
+      _ = (q : ℝ) / (1 - η) * ε := by
+          field_simp
+  rw [hΛ]
+  exact hmain.trans (by exact_mod_cast hceil)
 
 end CAImpliesList
 
-section ListVsCAseparation
-
-/-- **ABF26 Theorem 5.4 [BGKS20 Lemma 3.3].** List decoding does **not** tightly imply CA.
-
-For all fields `F` of characteristic 2 with `|F| ≥ 8`, the full-domain Reed-Solomon code `C`
-of polynomials of degree `≤ |F|/8` (in-tree `ReedSolomon.code domain (|F|/8 + 1)`; nominal rate
-`ρ = 1/8`, using `F` itself as the evaluation domain) satisfies
-
-  `ε_ca(C, 1 - ρ^{1/3}) ≥ 1 - 1/|F|` .
-
-In particular `1 - ρ^{1/3} = 1 - (1/8)^{1/3} = 0.5`; the Johnson bound for the same
-code sits at `1 - √ρ - η ≈ 0.55`, where the list size is `≈ 40` (constant in `|F|`).
-This witnesses a code that is list-decodable at the Johnson radius yet has CA error
-≈ 1 at a smaller radius — separating list decoding from CA in general.
-
-The paper notes the proximity-loss version `ε_ca(C, δ_fld = 1 - ρ^{1/3}, δ_int) ≥ 1 - 1/|F|`;
-we state it at `δ_int = 1 - ρ^{2/3} - 1/|F|`. Admitted as an external result.
-
-**Source parameters (BGKS20 Lemma 3.3 / Claim 3.4, arXiv 1903.12243 §3.1).** `q = 2^n`,
-`u*(y) = y^{q/2}`, `u(y) = y^{q/4}`; for `x ≠ 0` the line `u* + x·u` agrees on `q/2` points
-with `-P̃_x`, where `P_x(Y) = Tr(β_x Y) / β_x^{q/2} = Y^{q/2} + x·Y^{q/4} + P̃_x`,
-`β_x = x^{-2}`. The trace has a `Y^{q/8}` term with coefficient `β_x^{q/8 - q/2} ≠ 0`, so
-`deg P̃_x = q/8` exactly: Claim 3.4's "`deg P̃_x < 2^{n-3}`" is off by one, and the witness
-codewords lie in the degree-`≤ q/8` code, not in degree `< q/8`. With degree `< q/8`
-(`ReedSolomon.code domain (|F|/8)`, the previous form here) the statement is false at `|F| = 8`
-(`BGKS20SeparationRegime.rs_epsCA_separation_strict_false_of_card_eq_eight`).
-The paper's own joint-distance bound is `Δ((u*, u), C²) ≥ 3/4` (`u - v` has degree `q/4`, so at
-most `q/4` roots), and the paper pair attains joint agreement exactly `q/4` (on an
-`(n-2)`-dimensional `F₂`-subspace), so the source supports `δ_int < 1 - ρ^{2/3} = 3/4`, not
-`= 3/4`; hence the `- 1/|F|` (ABF26 Def 4.1's bad event is `Δ > δ_int`).
-
-**HONEST REDUCTION AVAILABLE.** The conjunction packaging is fully proven, `sorry`-free and
-axiom-clean, in `rs_epsCA_separation_bgks20_of_residuals`, which assembles the two BGKS20
-lower bounds (`hMain`, `hLoss` — the genuine external content: the char-2 full-domain RS
-bad-stack construction yielding `ε_ca ≥ 1 - 1/|F|` at radius `1 - ρ^{1/3}`).  These are
-*lower* bounds on `ε_ca`; the trivial in-tree fact `ε_ca ≤ 1` (`Bridge.epsCA_le_one`) is the
-wrong direction, so no in-tree machinery manufactures the bad stack — that needs BGKS20's
-Frobenius/subfield construction. -/
-theorem rs_epsCA_separation_bgks20_of_residuals
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F] [CharP F 2]
-    (_hF_eq_ι : Fintype.card F = Fintype.card ι)
-    (_hF_ge : 8 ≤ Fintype.card F)
-    (domain : ι ↪ F)
-    -- BGKS20 Lemma 3.3 construction (the genuine external content): the two char-2
-    -- full-domain RS lower bounds on `ε_ca`.
-    (hMain :
-        let k : ℕ := Fintype.card F / 8 + 1
-        let ρ : ℝ := 1 / 8
-        let C := ReedSolomon.code domain k
-        (epsCA (F := F) (A := F) ((C : Set (ι → F)))
-            ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-            ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)) ≥
-          ENNReal.ofReal (1 - 1 / Fintype.card F))
-    (hLoss :
-        let k : ℕ := Fintype.card F / 8 + 1
-        let ρ : ℝ := 1 / 8
-        let C := ReedSolomon.code domain k
-        (epsCA (F := F) (A := F) ((C : Set (ι → F)))
-            ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-            ((1 - ρ ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)) ≥
-          ENNReal.ofReal (1 - 1 / Fintype.card F)) :
-    let k : ℕ := Fintype.card F / 8 + 1
-    let ρ : ℝ := 1 / 8
-    let C := ReedSolomon.code domain k
-    (epsCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-        ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)) ≥
-      ENNReal.ofReal (1 - 1 / Fintype.card F) ∧
-    (epsCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-        ((1 - ρ ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)) ≥
-      ENNReal.ofReal (1 - 1 / Fintype.card F) :=
-  ⟨hMain, hLoss⟩
-
-/-- **ABF26 Theorem 5.4 [BGKS20 Lemma 3.3].** List decoding does **not** tightly imply CA.
-(External statement — see `rs_epsCA_separation_bgks20_of_residuals` for the fully-proven
-honest reduction.) -/
-def rs_epsCA_separation_bgks20
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F] [CharP F 2]
-    (_hF_eq_ι : Fintype.card F = Fintype.card ι)
-    -- Without `|F| ≥ 8` the degree bound `⌊|F| / 8⌋` truncates to 0 and the code
-    -- degenerates to the constants, which is not the intended separation result.
-    -- BGKS20's construction needs `q = 2^n` with `n ≥ 3`; we surface that explicitly.
-    (_hF_ge : 8 ≤ Fintype.card F)
-    (domain : ι ↪ F) : Prop :=
-    let k : ℕ := Fintype.card F / 8 + 1
-    let ρ : ℝ := 1 / 8
-    let C := ReedSolomon.code domain k
-    -- main statement
-    (epsCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-        ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)) ≥
-      ENNReal.ofReal (1 - 1 / Fintype.card F) ∧
-    -- with proximity loss
-    (epsCA (F := F) (A := F) ((C : Set (ι → F)))
-        ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-        ((1 - ρ ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)) ≥
-      ENNReal.ofReal (1 - 1 / Fintype.card F)
-  -- ABF26-T5.4; external statement [BGKS20 Lem 3.3].
-  -- Missing ingredient: BGKS20's char-2 full-domain RS separation construction. The
-  -- ε_ca ≥ 1-1/|F| LOWER bound at radius 1-ρ^{1/3} (ρ=1/8) requires exhibiting a stack
-  -- (f₀,f₁) such that for all but one γ∈F the line f₀+γ·f₁ is (1-ρ^{1/3})-close to RS while
-  -- (f₀,f₁) is NOT jointly close — i.e. a near-certain proximity-gap failure. The witness
-  -- uses the char-2 trace structure of the degree-≤|F|/8 full-domain RS code (BGKS20 §3.1).
-  -- This is a code-CONSTRUCTION lower bound (the trivial `epsCA ≤ 1` gives the wrong
-  -- direction); no in-tree machinery manufactures the bad stack. Genuinely external.
-
-/-- Prop-level wrapper for T5.4. -/
-theorem rs_epsCA_separation_bgks20_of_residuals_prop
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F] [CharP F 2]
-    (hF_eq_ι : Fintype.card F = Fintype.card ι)
-    (hF_ge : 8 ≤ Fintype.card F)
-    (domain : ι ↪ F)
-    (hMain :
-        let k : ℕ := Fintype.card F / 8 + 1
-        let ρ : ℝ := 1 / 8
-        let C := ReedSolomon.code domain k
-        (epsCA (F := F) (A := F) ((C : Set (ι → F)))
-            ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-            ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)) ≥
-          ENNReal.ofReal (1 - 1 / Fintype.card F))
-    (hLoss :
-        let k : ℕ := Fintype.card F / 8 + 1
-        let ρ : ℝ := 1 / 8
-        let C := ReedSolomon.code domain k
-        (epsCA (F := F) (A := F) ((C : Set (ι → F)))
-            ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-            ((1 - ρ ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)) ≥
-          ENNReal.ofReal (1 - 1 / Fintype.card F)) :
-    rs_epsCA_separation_bgks20 hF_eq_ι hF_ge domain :=
-  rs_epsCA_separation_bgks20_of_residuals hF_eq_ι hF_ge domain hMain hLoss
-
-/-- **BGKS20 named-witness connector.**  This packages ABF26 T5.4 from the geometric
-`NearCertainBadLine` residuals isolated in `ArkLib.ToMathlib.Bridge2BGKS20`.
-
-The two remaining inputs are exactly the BGKS20 characteristic-2 constructions: one bad stack at
-the main radius and one at the proximity-loss radius.  The bridge file proves the conversion from
-each witness to the corresponding `ε_ca ≥ 1 - 1/|F|` lower bound. -/
-theorem rs_epsCA_separation_bgks20_of_nearCertainBadLines
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F] [CharP F 2]
-    (hF_eq_ι : Fintype.card F = Fintype.card ι)
-    (hF_ge : 8 ≤ Fintype.card F)
-    (domain : ι ↪ F)
-    (hMainWitness :
-        let k : ℕ := Fintype.card F / 8 + 1
-        let ρ : ℝ := 1 / 8
-        let C := ReedSolomon.code domain k
-        Bridge.NearCertainBadLine (F := F) ((C : Set (ι → F)))
-          ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-          ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal))
-    (hLossWitness :
-        let k : ℕ := Fintype.card F / 8 + 1
-        let ρ : ℝ := 1 / 8
-        let C := ReedSolomon.code domain k
-        Bridge.NearCertainBadLine (F := F) ((C : Set (ι → F)))
-          ((1 - ρ ^ ((1 : ℝ) / 3)).toNNReal)
-          ((1 - ρ ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)) :
-    rs_epsCA_separation_bgks20 hF_eq_ι hF_ge domain :=
-  rs_epsCA_separation_bgks20_of_residuals hF_eq_ι hF_ge domain
-    (Bridge.epsCA_separation_bridge_of_residual
-      (F := F) ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))
-      ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
-      ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
-      hMainWitness)
-    (Bridge.epsCA_separation_bridge_of_residual
-      (F := F) ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))
-      ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
-      ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)
-      hLossWitness)
-
-/-- **BGKS20 all-but-one connector.**  This exposes the latest producer shape at the ABF26 T5.4
-surface: for the RS code at rate `1/8`, give one stack for the main radius and one stack for the
-proximity-loss radius such that every scalar except one distinguished bad scalar makes the affine
-combination close to the code. The generic all-but-one lemma converts those data into
-`NearCertainBadLine` witnesses, and the existing residual bridge supplies the `ε_ca` lower bounds.
-
-This theorem does not hide the remaining BGKS-specific construction: the two stacks, joint-far
-proofs, and all-but-one closeness proofs are exactly the data that must come from the paper's
-characteristic-2 construction for the target RS family. -/
-theorem rs_epsCA_separation_bgks20_of_allButOne
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F] [CharP F 2]
-    (hF_eq_ι : Fintype.card F = Fintype.card ι)
-    (hF_ge : 8 ≤ Fintype.card F)
-    (domain : ι ↪ F)
-    (uMain : WordStack F (Fin 2) ι) (γMainBad : F)
-    (hMainJoint :
-      ¬ jointProximity
-        (C := ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F))))
-        (u := uMain)
-        ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal))
-    (hMainGood :
-      ∀ γ : F, γ ≠ γMainBad →
-        δᵣ(uMain 0 + γ • uMain 1,
-            ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))) ≤
-          ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal))
-    (uLoss : WordStack F (Fin 2) ι) (γLossBad : F)
-    (hLossJoint :
-      ¬ jointProximity
-        (C := ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F))))
-        (u := uLoss)
-        ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal))
-    (hLossGood :
-      ∀ γ : F, γ ≠ γLossBad →
-        δᵣ(uLoss 0 + γ • uLoss 1,
-            ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))) ≤
-          ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)) :
-    rs_epsCA_separation_bgks20 hF_eq_ι hF_ge domain :=
-  rs_epsCA_separation_bgks20_of_nearCertainBadLines hF_eq_ι hF_ge domain
-    (Bridge.nearCertainBadLine_of_allButOne
-      ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))
-      ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
-      ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
-      uMain γMainBad hMainJoint hMainGood)
-    (Bridge.nearCertainBadLine_of_allButOne
-      ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))
-      ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
-      ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)
-      uLoss γLossBad hLossJoint hLossGood)
-
-/-- **BGKS20 existential all-but-one connector.**  Same top-level T5.4 surface as
-`rs_epsCA_separation_bgks20_of_allButOne`, but matching paper statements that only assert the
-existence of one exceptional scalar for each stack. The lower bridge converts each existential
-all-but-one hypothesis into the corresponding `NearCertainBadLine` witness. -/
-theorem rs_epsCA_separation_bgks20_of_exists_allButOne
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F] [CharP F 2]
-    (hF_eq_ι : Fintype.card F = Fintype.card ι)
-    (hF_ge : 8 ≤ Fintype.card F)
-    (domain : ι ↪ F)
-    (uMain : WordStack F (Fin 2) ι)
-    (hMainJoint :
-      ¬ jointProximity
-        (C := ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F))))
-        (u := uMain)
-        ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal))
-    (hMainGood :
-      ∃ γMainBad : F, ∀ γ : F, γ ≠ γMainBad →
-        δᵣ(uMain 0 + γ • uMain 1,
-            ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))) ≤
-          ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal))
-    (uLoss : WordStack F (Fin 2) ι)
-    (hLossJoint :
-      ¬ jointProximity
-        (C := ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F))))
-        (u := uLoss)
-        ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal))
-    (hLossGood :
-      ∃ γLossBad : F, ∀ γ : F, γ ≠ γLossBad →
-        δᵣ(uLoss 0 + γ • uLoss 1,
-            ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))) ≤
-          ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)) :
-    rs_epsCA_separation_bgks20 hF_eq_ι hF_ge domain :=
-  rs_epsCA_separation_bgks20_of_nearCertainBadLines hF_eq_ι hF_ge domain
-    (Bridge.nearCertainBadLine_of_exists_allButOne
-      ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))
-      ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
-      ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
-      uMain hMainJoint hMainGood)
-    (Bridge.nearCertainBadLine_of_exists_allButOne
-      ((ReedSolomon.code domain (Fintype.card F / 8 + 1) : Set (ι → F)))
-      ((1 - ((1 : ℝ) / 8) ^ ((1 : ℝ) / 3)).toNNReal)
-      ((1 - ((1 : ℝ) / 8) ^ ((2 : ℝ) / 3) - 1 / Fintype.card F).toNNReal)
-      uLoss hLossJoint hLossGood)
-
-end ListVsCAseparation
-
 end CodingTheory
-
-/- Axiom audit for the ABF26 T5.1 / GCXK25, T5.2 / BCHKS25, and T5.4 / BGKS20 front-door
-wrappers.  These entries cover the checked plumbing from per-stack/probability residuals, GKL24
-first-moment residuals, BCHKS25 all-but-one witnesses, and BGKS20 all-but-one witnesses into the
-public propositions. -/
-namespace CodingTheory
-#print axioms johnson_lift_toNNReal_le
-#print axioms linear_listSize_to_epsMCA_gcxk25_of_residuals
-#print axioms linear_listSize_to_epsMCA_gcxk25_of_bad_count
-#print axioms linear_listSize_to_epsMCA_gcxk25_firstMoment_of_gkl24_residual
-#print axioms linear_listSize_to_epsMCA_gcxk25_of_gkl24_firstMoment_residual
-#print axioms linear_listSize_to_epsMCA_gcxk25_of_gkl24_witnessCover_residual
-#print axioms linear_listSize_to_epsMCA_gcxk25_firstMoment_of_gkl24_maxCorr_hypothesis
-#print axioms linear_listSize_to_epsMCA_gcxk25_of_gkl24_maxCorr_witnessCover_hypothesis
-#print axioms linear_listSize_to_epsMCA_gcxk25_firstMoment_of_gkl24_strict_falseAsStated
-#print axioms linear_listSize_to_epsMCA_gcxk25_of_gkl24_strict_witnessCover_falseAsStated
-#print axioms linear_listSize_to_epsMCA_gcxk25_firstMoment_inTree_card
-#print axioms linear_listSize_to_epsMCA_gcxk25_firstMoment_inTree_two_delta_card
-#print axioms linear_listSize_to_epsMCA_gcxk25_firstMoment_inTree_two_delta_univ
-#print axioms linear_listSize_to_epsMCA_gcxk25_firstMoment_inTree_univ
-#print axioms linear_listSize_to_epsMCA_gcxk25
-#print axioms linear_listSize_to_epsMCA_gcxk25_of_residuals_prop
-#print axioms linear_listSize_to_epsMCA_gcxk25_of_bad_count_prop
-#print axioms linear_listSize_to_epsMCA_gcxk25_of_gkl24_firstMoment_residual_prop
-#print axioms linear_listSize_to_epsMCA_gcxk25_of_gkl24_witnessCover_residual_prop
-#print axioms linear_listSize_to_epsMCA_gcxk25_of_gkl24_maxCorr_witnessCover_hypothesis_prop
-#print axioms linear_listSize_to_epsMCA_gcxk25_of_gkl24_strict_witnessCover_falseAsStated_prop
-end CodingTheory
-#print axioms CodingTheory.rs_epsCA_small_implies_lambda_lt_F_bchks25_of_allButOne
-#print axioms CodingTheory.rs_epsCA_small_implies_lambda_lt_F_bchks25_of_allButOne_prop
-#print axioms CodingTheory.rs_epsCA_small_implies_lambda_lt_F_bchks25_of_exists_allButOne
-#print axioms CodingTheory.rs_epsCA_small_implies_lambda_lt_F_bchks25_of_exists_allButOne_prop
-#print axioms CodingTheory.rs_epsCA_separation_bgks20_of_exists_allButOne

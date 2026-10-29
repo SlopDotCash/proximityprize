@@ -65,7 +65,7 @@ theorem card_nonzero_avoiding_ge (K : Submodule F (Fin s → F)) (hK : K ≠ ⊤
   have hsum : (univ.filter (fun x : Fin s → F => x ∈ K)).card
       + (univ.filter (fun x : Fin s → F => ¬ x ∈ K)).card
       = Fintype.card (Fin s → F) := by
-    rw [Finset.filter_card_add_filter_neg_card_eq_card]
+    rw [Finset.card_filter_add_card_filter_not]
     simp
   have hKcard : (univ.filter (fun x : Fin s → F => x ∈ K)).card = Nat.card K := by
     rw [Nat.card_eq_fintype_card]

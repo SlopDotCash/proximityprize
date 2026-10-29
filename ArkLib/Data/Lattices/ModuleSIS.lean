@@ -3,9 +3,11 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
-import VCVio.OracleComp.Constructions.SampleableType
-import ArkLib.Data.Lattices.CyclotomicRing.Rq
-import ArkLib.Data.Lattices.Vectors
+module
+
+public import VCVio.OracleComp.Constructions.SampleableType
+public import ArkLib.Data.Lattices.CyclotomicRing.Rq
+public import ArkLib.Data.Lattices.Vectors
 
 /-!
 # Module Short Integer Solution (Module-SIS) over the Cyclotomic Ring
@@ -14,9 +16,9 @@ A small, ArkLib-native generic `SIS` search game and its Module-SIS specializati
 over the computable cyclotomic ring `Rq Φ`. The kernel-form relation: given a uniformly
 random matrix `A`, find a nonzero short vector `z` with `A *ᵥ z = 0`.
 
-Note, there is another SIS definition in VCV-io, that is however not defined over computable
-polynomials (CompPoly), for details checkout:
-`VCV-io/LatticeCrypto/HardnessAssumptions/ShortIntegerSolution.lean`.
+Note, there is another SIS definition in VCVio, that is however not defined over computable
+polynomials (CompPoly), for details checkout VCVio's
+`LatticeCrypto/HardnessAssumptions/ShortIntegerSolution.lean`.
 
 This is the hardness assumption the Ajtai [Ajt96] commitment binding reductions target, in
 the module form used by Greyhound [NS24] and Hachi [NOZ26].
@@ -33,6 +35,8 @@ the module form used by Greyhound [NS24] and Hachi [NOZ26].
 * [Nguyen, N. K., O'Rourke, G., and Zhang, J., *Hachi: Efficient Lattice-Based Multilinear
     Polynomial Commitments over Extension Fields*][NOZ26]
 -/
+
+@[expose] public section
 
 open OracleComp CompPoly ArkLib.Lattices
 open scoped ENNReal
@@ -65,7 +69,7 @@ def experiment (problem : Problem Sample Solution) (adv : Adversary problem) : P
 /-- Search advantage for a SIS-style problem. -/
 noncomputable def advantage (problem : Problem Sample Solution) (adv : Adversary problem) :
     ℝ≥0∞ :=
-  Pr[= true | experiment problem adv]
+  𝒟[experiment problem adv] {true}
 
 end SIS
 

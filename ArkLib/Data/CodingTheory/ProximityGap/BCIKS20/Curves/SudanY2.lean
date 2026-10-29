@@ -142,7 +142,7 @@ theorem exists_nonzero_kernelVec_wide_natDegree_le {N d : ℕ}
                 (b := j) hb)
           simp [haj]
         · intro t; simp [ha_on t]
-      simpa [Matrix.mulVec] using hsum.symm
+      simpa [Matrix.mulVec, dotProduct] using hsum.symm
     have hmulVec : Matrix.mulVec K a = 0 := by
       funext i
       by_cases hi : i ∈ Set.range I
@@ -150,7 +150,7 @@ theorem exists_nonzero_kernelVec_wide_natDegree_le {N d : ℕ}
         have hrow : (Matrix.mulVec B u) (Fin.castSucc t) = 0 := by
           simpa using congrArg (fun v : Fin (r + 1) → F[X] => v (Fin.castSucc t)) hBu
         have hrow' : (∑ x : Fin (r + 1), K (I t) (J' x) * u x) = 0 := by
-          simpa [Matrix.mulVec, B, I', J'] using hrow
+          simpa [Matrix.mulVec, dotProduct, B, I', J'] using hrow
         rw [hmul_formula (i := I t)]; simpa using hrow'
       · have hi' : i ∉ Set.range I := hi
         let Ii : Fin (r + 1) ↪ ι := Fin.Embedding.snoc I hi'
@@ -260,7 +260,7 @@ theorem exists_nonzero_kernelVec_wide_natDegree_le {N d : ℕ}
                 (b := j) hb)
           simp [haj]
         · intro t; simp [ha_on t]
-      simpa [Matrix.mulVec] using hsum.symm
+      simpa [Matrix.mulVec, dotProduct] using hsum.symm
     have hmulVec : Matrix.mulVec K a = 0 := by
       funext i
       obtain ⟨t, rfl⟩ := hIsurj i

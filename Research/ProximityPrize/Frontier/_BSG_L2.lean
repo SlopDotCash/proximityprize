@@ -83,13 +83,20 @@ lemma addEnergy_eq_sum_repCount_sq (A : Finset α) :
   · rintro ⟨⟨a₁, a₂⟩, ⟨b₁, b₂⟩⟩ h
     simp only [mem_coe, mem_filter, mem_product] at h
     obtain ⟨⟨⟨ha₁, ha₂⟩, hb₁, hb₂⟩, hrel⟩ := h
-    simp only [mem_coe, mem_disjiUnion, mem_product, mem_filter]
-    refine ⟨a₁ - a₂, sub_mem_sub ha₁ ha₂, ⟨⟨ha₁, ha₂⟩, rfl⟩, ⟨hb₂, hb₁⟩, ?_⟩
+    apply mem_disjiUnion.mpr
+    refine ⟨a₁ - a₂, sub_mem_sub ha₁ ha₂, ?_⟩
+    apply mem_product.mpr
+    refine ⟨mem_filter.mpr ⟨mem_product.mpr ⟨ha₁, ha₂⟩, rfl⟩, ?_⟩
+    refine mem_filter.mpr ⟨mem_product.mpr ⟨hb₂, hb₁⟩, ?_⟩
     -- `a₁ + b₁ = a₂ + b₂ ⟹ b₂ - b₁ = a₁ - a₂`
     rw [sub_eq_sub_iff_add_eq_add, hrel, add_comm]
   · rintro ⟨⟨a₁, a₂⟩, ⟨b₂, b₁⟩⟩ h
-    simp only [mem_coe, mem_disjiUnion, mem_product, mem_filter] at h
-    obtain ⟨d, _hd, ⟨⟨ha₁, ha₂⟩, hpd⟩, ⟨hb₂, hb₁⟩, hqd⟩ := h
+    obtain ⟨d, _hd, hmem⟩ := mem_disjiUnion.mp h
+    obtain ⟨hp, hq⟩ := mem_product.mp hmem
+    obtain ⟨hpa, hpd⟩ := mem_filter.mp hp
+    obtain ⟨hqa, hqd⟩ := mem_filter.mp hq
+    obtain ⟨ha₁, ha₂⟩ := mem_product.mp hpa
+    obtain ⟨hb₂, hb₁⟩ := mem_product.mp hqa
     simp only [mem_coe, mem_filter, mem_product]
     refine ⟨⟨⟨ha₁, ha₂⟩, hb₁, hb₂⟩, ?_⟩
     -- `a₁ - a₂ = d = b₂ - b₁ ⟹ a₁ + b₁ = a₂ + b₂`

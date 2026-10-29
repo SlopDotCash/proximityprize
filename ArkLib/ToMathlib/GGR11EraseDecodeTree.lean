@@ -622,40 +622,40 @@ algorithm produces a concrete tree whose leaves dominate the close-codeword set
 and whose Blue/Red depths and Red branching obey the GGR11 budgets, the closed
 Pascal-form leaf-count function satisfies the `GGR11TreeWitness` interface. -/
 noncomputable def treeWitness_of_concreteEraseDecodeTree
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     (f : Matrix ι (Fin m) F) (tree : EraseDecodeTree)
     (hdom :
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ tree.leafCount)
     (hbd : tree.blueDepth ≤ b) (hrd : tree.redDepth ≤ r)
-    (hbr : tree.redBranchingLe (Lambda C δ)) :
+    (hbr : tree.redBranchingLe (ListDecodable.Lambda C δ)) :
     GGR11TreeWitness C δ m b r f := by
   refine
-    { leafCount := fun b' r' => ((b' + r').choose r' : ℕ∞) * (Lambda C δ) ^ r'
+    { leafCount := fun b' r' => ((b' + r').choose r' : ℕ∞) * (ListDecodable.Lambda C δ) ^ r'
       close_le_leafCount := ?_
       no_red_budget := ?_
       red_only_step := ?_
       blue_red_step := ?_ }
-  · calc (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+  · calc (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ tree.leafCount := hdom
-        _ ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r :=
-            EraseDecodeTree.leafCount_le (Lambda C δ) hL tree b r hbd hrd hbr
+        _ ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
+            EraseDecodeTree.leafCount_le (ListDecodable.Lambda C δ) hL tree b r hbd hrd hbr
   · intro b'; simp
   · intro r'
     simp only [Nat.zero_add, Nat.choose_self, Nat.cast_one, one_mul]
     rw [pow_succ, mul_comm]
   · intro b' r'
-    calc ((b' + 1 + (r' + 1)).choose (r' + 1) : ℕ∞) * (Lambda C δ) ^ (r' + 1)
+    calc ((b' + 1 + (r' + 1)).choose (r' + 1) : ℕ∞) * (ListDecodable.Lambda C δ) ^ (r' + 1)
         = (((b' + (r' + 1)).choose (r' + 1) : ℕ∞)
-            + ((b' + (r' + 1)).choose r' : ℕ∞)) * (Lambda C δ) ^ (r' + 1) := by
+            + ((b' + (r' + 1)).choose r' : ℕ∞)) * (ListDecodable.Lambda C δ) ^ (r' + 1) := by
           congr 1
           have hsplit : b' + 1 + (r' + 1) = (b' + (r' + 1)) + 1 := by ring
           rw [hsplit, Nat.choose_succ_succ (b' + (r' + 1)) r']
           push_cast; ring
-      _ = ((b' + (r' + 1)).choose (r' + 1) : ℕ∞) * (Lambda C δ) ^ (r' + 1)
-            + ((b' + (r' + 1)).choose r' : ℕ∞) * (Lambda C δ) ^ (r' + 1) := by ring
-      _ ≤ ((b' + (r' + 1)).choose (r' + 1) : ℕ∞) * (Lambda C δ) ^ (r' + 1)
-            + (Lambda C δ) * (((b' + 1 + r').choose r' : ℕ∞) * (Lambda C δ) ^ r') := by
+      _ = ((b' + (r' + 1)).choose (r' + 1) : ℕ∞) * (ListDecodable.Lambda C δ) ^ (r' + 1)
+            + ((b' + (r' + 1)).choose r' : ℕ∞) * (ListDecodable.Lambda C δ) ^ (r' + 1) := by ring
+      _ ≤ ((b' + (r' + 1)).choose (r' + 1) : ℕ∞) * (ListDecodable.Lambda C δ) ^ (r' + 1)
+            + (ListDecodable.Lambda C δ) * (((b' + 1 + r').choose r' : ℕ∞) * (ListDecodable.Lambda C δ) ^ r') := by
           refine add_le_add (le_refl _) ?_
           rw [pow_succ]
           have hcast : ((b' + (r' + 1)).choose r' : ℕ∞)
@@ -663,23 +663,23 @@ noncomputable def treeWitness_of_concreteEraseDecodeTree
             have : (b' + (r' + 1)).choose r' = (b' + 1 + r').choose r' := by
               congr 1; omega
             exact le_of_eq (by exact_mod_cast this)
-          calc ((b' + (r' + 1)).choose r' : ℕ∞) * ((Lambda C δ) ^ r' * (Lambda C δ))
-              = (Lambda C δ) * (((b' + (r' + 1)).choose r' : ℕ∞) * (Lambda C δ) ^ r') := by
+          calc ((b' + (r' + 1)).choose r' : ℕ∞) * ((ListDecodable.Lambda C δ) ^ r' * (ListDecodable.Lambda C δ))
+              = (ListDecodable.Lambda C δ) * (((b' + (r' + 1)).choose r' : ℕ∞) * (ListDecodable.Lambda C δ) ^ r') := by
                 ring
-            _ ≤ (Lambda C δ) * (((b' + 1 + r').choose r' : ℕ∞) * (Lambda C δ) ^ r') :=
+            _ ≤ (ListDecodable.Lambda C δ) * (((b' + 1 + r').choose r' : ℕ∞) * (ListDecodable.Lambda C δ) ^ r') :=
                 mul_le_mul' (le_refl _) (mul_le_mul' hcast (le_refl _))
 
 /-- Constructor-facing witness adapter when the concrete tree's red branching is bounded by a
 smaller budget `L ≤ Λ(C,δ)`. Future Algorithm-1 builders can prove a sharper local branching bound
 and lift it to the ambient GGR11 budget here. -/
 noncomputable def treeWitness_of_concreteEraseDecodeTree_of_redBranchingLe_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (f : Matrix ι (Fin m) F) (tree : EraseDecodeTree)
     (hdom :
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ tree.leafCount)
     (hbd : tree.blueDepth ≤ b) (hrd : tree.redDepth ≤ r)
-    {L : ℕ∞} (hL_le : L ≤ Lambda C δ) (hbr : tree.redBranchingLe L) :
+    {L : ℕ∞} (hL_le : L ≤ ListDecodable.Lambda C δ) (hbr : tree.redBranchingLe L) :
     GGR11TreeWitness C δ m b r f :=
   treeWitness_of_concreteEraseDecodeTree hLambda f tree hdom hbd hrd
     (EraseDecodeTree.redBranchingLe_mono hL_le tree hbr)
@@ -688,13 +688,13 @@ noncomputable def treeWitness_of_concreteEraseDecodeTree_of_redBranchingLe_le
 Algorithm-1 builders may prove the numeric inequality `tree.redBranching ≤ Λ(C,δ)` and avoid
 carrying the recursive `redBranchingLe` predicate separately. -/
 noncomputable def treeWitness_of_concreteEraseDecodeTree_of_redBranching_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (f : Matrix ι (Fin m) F) (tree : EraseDecodeTree)
     (hdom :
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ tree.leafCount)
     (hbd : tree.blueDepth ≤ b) (hrd : tree.redDepth ≤ r)
-    (hbr : (tree.redBranching : ℕ∞) ≤ Lambda C δ) :
+    (hbr : (tree.redBranching : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     GGR11TreeWitness C δ m b r f :=
   treeWitness_of_concreteEraseDecodeTree hLambda f tree hdom hbd hrd
     (EraseDecodeTree.redBranchingLe_of_redBranching_le hbr)
@@ -705,13 +705,13 @@ noncomputable def treeWitness_of_concreteEraseDecodeTree_of_redBranching_le
 inequality `tree.redBranchingBudget ≤ Λ(C,δ)`, and the recursive branching predicate is rebuilt
 internally. -/
 noncomputable def treeWitness_of_concreteEraseDecodeTree_of_redBranchingBudget_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (f : Matrix ι (Fin m) F) (tree : EraseDecodeTree)
     (hdom :
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ tree.leafCount)
     (hbd : tree.blueDepth ≤ b) (hrd : tree.redDepth ≤ r)
-    (hbr : (tree.redBranchingBudget : ℕ∞) ≤ Lambda C δ) :
+    (hbr : (tree.redBranchingBudget : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     GGR11TreeWitness C δ m b r f :=
   treeWitness_of_concreteEraseDecodeTree hLambda f tree hdom hbd hrd
     (EraseDecodeTree.redBranchingLe_mono hbr tree
@@ -721,12 +721,12 @@ noncomputable def treeWitness_of_concreteEraseDecodeTree_of_redBranchingBudget_l
 depths. This is the constructor-facing form for future Algorithm-1 tree builders: they only need
 to provide leaf domination and Red-branching, and the depth indices are read from the tree. -/
 noncomputable def treeWitness_of_concreteEraseDecodeTree_self
-    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     (f : Matrix ι (Fin m) F) (tree : EraseDecodeTree)
     (hdom :
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ tree.leafCount)
-    (hbr : tree.redBranchingLe (Lambda C δ)) :
+    (hbr : tree.redBranchingLe (ListDecodable.Lambda C δ)) :
     GGR11TreeWitness C δ m tree.blueDepth tree.redDepth f :=
   treeWitness_of_concreteEraseDecodeTree hL f tree hdom le_rfl le_rfl hbr
 
@@ -734,36 +734,36 @@ noncomputable def treeWitness_of_concreteEraseDecodeTree_self
 budget `L ≤ Λ(C,δ)`. This is the self-depth analogue of
 `treeWitness_of_concreteEraseDecodeTree_of_redBranchingLe_le`. -/
 noncomputable def treeWitness_of_concreteEraseDecodeTree_self_of_redBranchingLe_le
-    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (f : Matrix ι (Fin m) F) (tree : EraseDecodeTree)
     (hdom :
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ tree.leafCount)
-    {L : ℕ∞} (hL_le : L ≤ Lambda C δ) (hbr : tree.redBranchingLe L) :
+    {L : ℕ∞} (hL_le : L ≤ ListDecodable.Lambda C δ) (hbr : tree.redBranchingLe L) :
     GGR11TreeWitness C δ m tree.blueDepth tree.redDepth f :=
   treeWitness_of_concreteEraseDecodeTree_self hLambda f tree hdom
     (EraseDecodeTree.redBranchingLe_mono hL_le tree hbr)
 
 /-- Exact-depth witness adapter from the tree's computed maximum Red out-degree. -/
 noncomputable def treeWitness_of_concreteEraseDecodeTree_self_of_redBranching_le
-    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (f : Matrix ι (Fin m) F) (tree : EraseDecodeTree)
     (hdom :
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ tree.leafCount)
-    (hbr : (tree.redBranching : ℕ∞) ≤ Lambda C δ) :
+    (hbr : (tree.redBranching : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     GGR11TreeWitness C δ m tree.blueDepth tree.redDepth f :=
   treeWitness_of_concreteEraseDecodeTree_self hLambda f tree hdom
     (EraseDecodeTree.redBranchingLe_of_redBranching_le hbr)
 
 /-- Exact-depth witness adapter from the tree's total computed Red-branching budget. -/
 noncomputable def treeWitness_of_concreteEraseDecodeTree_self_of_redBranchingBudget_le
-    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (f : Matrix ι (Fin m) F) (tree : EraseDecodeTree)
     (hdom :
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ tree.leafCount)
-    (hbr : (tree.redBranchingBudget : ℕ∞) ≤ Lambda C δ) :
+    (hbr : (tree.redBranchingBudget : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     GGR11TreeWitness C δ m tree.blueDepth tree.redDepth f :=
   treeWitness_of_concreteEraseDecodeTree_self hLambda f tree hdom
     (EraseDecodeTree.redBranchingLe_mono hbr tree
@@ -772,12 +772,12 @@ noncomputable def treeWitness_of_concreteEraseDecodeTree_self_of_redBranchingBud
 /-- Concrete Erase-Decode tree existence, with no preselected depth budgets, supplies some exact
 GGR11 witness indexed by the tree's own Blue/Red depths. -/
 theorem treeWitness_of_eraseDecodeTree_self
-    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     {f : Matrix ι (Fin m) F}
     (H : ∃ t : EraseDecodeTree,
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ t.leafCount ∧
-      t.redBranchingLe (Lambda C δ)) :
+      t.redBranchingLe (ListDecodable.Lambda C δ)) :
     ∃ b r : ℕ, Nonempty (GGR11TreeWitness C δ m b r f) := by
   obtain ⟨tree, hdom, hbr⟩ := H
   exact
@@ -788,11 +788,11 @@ theorem treeWitness_of_eraseDecodeTree_self
 supplies some exact-depth GGR11 witness. This packages the common constructor output shape where
 the local tree builder proves a sharper branching bound than the ambient GGR11 budget. -/
 theorem treeWitness_of_eraseDecodeTree_self_of_redBranchingLe_le
-    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     {f : Matrix ι (Fin m) F}
     (H : ∃ (L : ℕ∞) (t : EraseDecodeTree),
-      L ≤ Lambda C δ ∧
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      L ≤ ListDecodable.Lambda C δ ∧
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ t.leafCount ∧
       t.redBranchingLe L) :
     ∃ b r : ℕ, Nonempty (GGR11TreeWitness C δ m b r f) := by
@@ -805,12 +805,12 @@ theorem treeWitness_of_eraseDecodeTree_self_of_redBranchingLe_le
 /-- Concrete Erase-Decode tree existence with its computed maximum Red out-degree bounded by
 `Λ(C,δ)` supplies some exact-depth GGR11 witness. -/
 theorem treeWitness_of_eraseDecodeTree_self_of_redBranching_le
-    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     {f : Matrix ι (Fin m) F}
     (H : ∃ t : EraseDecodeTree,
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ t.leafCount ∧
-      (t.redBranching : ℕ∞) ≤ Lambda C δ) :
+      (t.redBranching : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     ∃ b r : ℕ, Nonempty (GGR11TreeWitness C δ m b r f) := by
   obtain ⟨tree, hdom, hbr⟩ := H
   exact
@@ -821,12 +821,12 @@ theorem treeWitness_of_eraseDecodeTree_self_of_redBranching_le
 /-- Concrete Erase-Decode tree existence with its total computed Red-branching budget bounded by
 `Λ(C,δ)` supplies some exact-depth GGR11 witness. -/
 theorem treeWitness_of_eraseDecodeTree_self_of_redBranchingBudget_le
-    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     {f : Matrix ι (Fin m) F}
     (H : ∃ t : EraseDecodeTree,
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ t.leafCount ∧
-      (t.redBranchingBudget : ℕ∞) ≤ Lambda C δ) :
+      (t.redBranchingBudget : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     ∃ b r : ℕ, Nonempty (GGR11TreeWitness C δ m b r f) := by
   obtain ⟨tree, hdom, hbr⟩ := H
   exact
@@ -840,12 +840,12 @@ This is the one-word construction target for the remaining Algorithm-1 work: pro
 tree whose leaves dominate the close codewords and whose Blue/Red depths and Red branching meet
 the GGR11 budgets. The closed-form witness data is then fully internal. -/
 theorem treeWitness_of_eraseDecodeTree
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     {f : Matrix ι (Fin m) F}
     (H : ∃ t : EraseDecodeTree,
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ t.leafCount ∧
-      t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe (Lambda C δ)) :
+      t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe (ListDecodable.Lambda C δ)) :
     Nonempty (GGR11TreeWitness C δ m b r f) := by
   obtain ⟨tree, hdom, hbd, hrd, hbr⟩ := H
   exact ⟨treeWitness_of_concreteEraseDecodeTree hL f tree hdom hbd hrd hbr⟩
@@ -861,12 +861,12 @@ This exhibits the abstract leaf-count function `t` as the closed-form GGR11 boun
 applied to the *actual* tree, so the residual is no longer an unwitnessed `∃ t`;
 the only thing still external is producing the trees themselves. -/
 theorem treeStructure_of_eraseDecodeTree
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
-        t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe (Lambda C δ)) :
+        t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe (ListDecodable.Lambda C δ)) :
     GGR11TreeStructure C δ m b r := by
   intro f
   obtain ⟨w⟩ := treeWitness_of_eraseDecodeTree hL (H f)
@@ -876,47 +876,47 @@ theorem treeStructure_of_eraseDecodeTree
 frontier form of `treeStructure_of_eraseDecodeTree`, useful for downstream code that wants the
 per-word witness interface rather than the older anonymous residual. -/
 theorem treeFrontier_of_eraseDecodeTree
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
-        t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe (Lambda C δ)) :
+        t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe (ListDecodable.Lambda C δ)) :
     GGR11TreeFrontier C δ m b r := by
   intro f
   exact treeWitness_of_eraseDecodeTree hL (H f)
 
 /-- Concrete Erase-Decode trees discharge the per-word GGR11 list-size bound. -/
 theorem perWordBound_of_eraseDecodeTree
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
-        t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe (Lambda C δ)) :
+        t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe (ListDecodable.Lambda C δ)) :
     GGR11PerWordBound C δ m b r :=
   perWordBound_of_treeFrontier (treeFrontier_of_eraseDecodeTree hL H)
 
 /-- End-to-end interleaved list-size bound from concrete Erase-Decode trees. -/
 theorem lambda_le_ggr11_of_eraseDecodeTree
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
-        t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe (Lambda C δ)) :
-    Lambda (Code.interleavedCodeSet (κ := Fin m) C) δ
-      ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r :=
+        t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe (ListDecodable.Lambda C δ)) :
+    ListDecodable.Lambda (Code.interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
   lambda_le_ggr11_of_treeFrontier (treeFrontier_of_eraseDecodeTree hL H)
 
 /-- A concrete Erase-Decode tree whose Red branching is bounded by a sharper local budget
 `L ≤ Λ(C,δ)` supplies the named per-word GGR11 witness after lifting that local budget to the
 ambient one. -/
 theorem treeWitness_of_eraseDecodeTree_of_redBranchingLe_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
-    {f : Matrix ι (Fin m) F} {L : ℕ∞} (hL_le : L ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
+    {f : Matrix ι (Fin m) F} {L : ℕ∞} (hL_le : L ≤ ListDecodable.Lambda C δ)
     (H : ∃ t : EraseDecodeTree,
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ t.leafCount ∧
       t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe L) :
     Nonempty (GGR11TreeWitness C δ m b r f) := by
@@ -928,13 +928,13 @@ theorem treeWitness_of_eraseDecodeTree_of_redBranchingLe_le
 /-- Concrete Erase-Decode tree existence with its computed maximum Red out-degree bounded by
 `Λ(C,δ)` supplies the named per-word GGR11 witness. -/
 theorem treeWitness_of_eraseDecodeTree_of_redBranching_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     {f : Matrix ι (Fin m) F}
     (H : ∃ t : EraseDecodeTree,
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ t.leafCount ∧
       t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧
-      (t.redBranching : ℕ∞) ≤ Lambda C δ) :
+      (t.redBranching : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     Nonempty (GGR11TreeWitness C δ m b r f) := by
   obtain ⟨tree, hdom, hbd, hrd, hbr⟩ := H
   exact
@@ -944,13 +944,13 @@ theorem treeWitness_of_eraseDecodeTree_of_redBranching_le
 /-- Concrete Erase-Decode tree existence with its total computed Red-branching budget bounded by
 `Λ(C,δ)` supplies the named per-word GGR11 witness. -/
 theorem treeWitness_of_eraseDecodeTree_of_redBranchingBudget_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     {f : Matrix ι (Fin m) F}
     (H : ∃ t : EraseDecodeTree,
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
           ≤ t.leafCount ∧
       t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧
-      (t.redBranchingBudget : ℕ∞) ≤ Lambda C δ) :
+      (t.redBranchingBudget : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     Nonempty (GGR11TreeWitness C δ m b r f) := by
   obtain ⟨tree, hdom, hbd, hrd, hbr⟩ := H
   exact
@@ -960,11 +960,11 @@ theorem treeWitness_of_eraseDecodeTree_of_redBranchingBudget_le
 /-- Uniform concrete Erase-Decode trees with a sharper local Red-branching budget supply the named
 GGR11 frontier whenever the local budget is at most `Λ(C,δ)`. -/
 theorem treeFrontier_of_eraseDecodeTree_of_redBranchingLe_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
-    {L : ℕ∞} (hL_le : L ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
+    {L : ℕ∞} (hL_le : L ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
         t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe L) :
     GGR11TreeFrontier C δ m b r := by
@@ -974,13 +974,13 @@ theorem treeFrontier_of_eraseDecodeTree_of_redBranchingLe_le
 /-- Uniform concrete Erase-Decode trees with computed Red branching bounded by `Λ(C,δ)` supply
 the named GGR11 frontier. -/
 theorem treeFrontier_of_eraseDecodeTree_of_redBranching_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
         t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧
-        (t.redBranching : ℕ∞) ≤ Lambda C δ) :
+        (t.redBranching : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     GGR11TreeFrontier C δ m b r := by
   intro f
   exact treeWitness_of_eraseDecodeTree_of_redBranching_le hLambda (H f)
@@ -988,13 +988,13 @@ theorem treeFrontier_of_eraseDecodeTree_of_redBranching_le
 /-- Uniform concrete Erase-Decode trees with total computed Red-branching budget bounded by
 `Λ(C,δ)` supply the named GGR11 frontier. -/
 theorem treeFrontier_of_eraseDecodeTree_of_redBranchingBudget_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
         t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧
-        (t.redBranchingBudget : ℕ∞) ≤ Lambda C δ) :
+        (t.redBranchingBudget : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     GGR11TreeFrontier C δ m b r := by
   intro f
   exact treeWitness_of_eraseDecodeTree_of_redBranchingBudget_le hLambda (H f)
@@ -1002,11 +1002,11 @@ theorem treeFrontier_of_eraseDecodeTree_of_redBranchingBudget_le
 /-- Uniform concrete Erase-Decode trees with a sharper local Red-branching budget discharge the
 abstract GGR11 tree-structure residual after monotone lifting to `Λ(C,δ)`. -/
 theorem treeStructure_of_eraseDecodeTree_of_redBranchingLe_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
-    {L : ℕ∞} (hL_le : L ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
+    {L : ℕ∞} (hL_le : L ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
         t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe L) :
     GGR11TreeStructure C δ m b r :=
@@ -1016,26 +1016,26 @@ theorem treeStructure_of_eraseDecodeTree_of_redBranchingLe_le
 /-- Concrete trees whose computed Red branching is bounded by `Λ(C,δ)` discharge the abstract
 GGR11 tree-structure residual. -/
 theorem treeStructure_of_eraseDecodeTree_of_redBranching_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
         t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧
-        (t.redBranching : ℕ∞) ≤ Lambda C δ) :
+        (t.redBranching : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     GGR11TreeStructure C δ m b r :=
   treeStructure_of_frontier (treeFrontier_of_eraseDecodeTree_of_redBranching_le hLambda H)
 
 /-- Concrete trees whose total computed Red-branching budget is bounded by `Λ(C,δ)` discharge the
 abstract GGR11 tree-structure residual. -/
 theorem treeStructure_of_eraseDecodeTree_of_redBranchingBudget_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
         t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧
-        (t.redBranchingBudget : ℕ∞) ≤ Lambda C δ) :
+        (t.redBranchingBudget : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     GGR11TreeStructure C δ m b r :=
   treeStructure_of_frontier
     (treeFrontier_of_eraseDecodeTree_of_redBranchingBudget_le hLambda H)
@@ -1043,11 +1043,11 @@ theorem treeStructure_of_eraseDecodeTree_of_redBranchingBudget_le
 /-- Concrete trees with a sharper local Red-branching budget, exposed at the per-word GGR11 bound
 surface. -/
 theorem perWordBound_of_eraseDecodeTree_of_redBranchingLe_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
-    {L : ℕ∞} (hL_le : L ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
+    {L : ℕ∞} (hL_le : L ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
         t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe L) :
     GGR11PerWordBound C δ m b r :=
@@ -1057,71 +1057,71 @@ theorem perWordBound_of_eraseDecodeTree_of_redBranchingLe_le
 /-- Concrete trees with computed Red branching bounded by `Λ(C,δ)`, exposed at the per-word GGR11
 bound surface. -/
 theorem perWordBound_of_eraseDecodeTree_of_redBranching_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
         t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧
-        (t.redBranching : ℕ∞) ≤ Lambda C δ) :
+        (t.redBranching : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     GGR11PerWordBound C δ m b r :=
   perWordBound_of_treeFrontier (treeFrontier_of_eraseDecodeTree_of_redBranching_le hLambda H)
 
 /-- Concrete trees with total computed Red-branching budget bounded by `Λ(C,δ)`, exposed at the
 per-word GGR11 bound surface. -/
 theorem perWordBound_of_eraseDecodeTree_of_redBranchingBudget_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
         t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧
-        (t.redBranchingBudget : ℕ∞) ≤ Lambda C δ) :
+        (t.redBranchingBudget : ℕ∞) ≤ ListDecodable.Lambda C δ) :
     GGR11PerWordBound C δ m b r :=
   perWordBound_of_treeFrontier
     (treeFrontier_of_eraseDecodeTree_of_redBranchingBudget_le hLambda H)
 
 /-- End-to-end GGR11 bound from concrete trees with a sharper local Red-branching budget. -/
 theorem lambda_le_ggr11_of_eraseDecodeTree_of_redBranchingLe_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
-    {L : ℕ∞} (hL_le : L ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
+    {L : ℕ∞} (hL_le : L ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
         t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe L) :
-    Lambda (Code.interleavedCodeSet (κ := Fin m) C) δ
-      ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r :=
+    ListDecodable.Lambda (Code.interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
   lambda_le_ggr11_of_treeFrontier
     (treeFrontier_of_eraseDecodeTree_of_redBranchingLe_le hLambda hL_le H)
 
 /-- End-to-end GGR11 bound from concrete trees whose computed Red branching is bounded by
 `Λ(C,δ)`. -/
 theorem lambda_le_ggr11_of_eraseDecodeTree_of_redBranching_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
         t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧
-        (t.redBranching : ℕ∞) ≤ Lambda C δ) :
-    Lambda (Code.interleavedCodeSet (κ := Fin m) C) δ
-      ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r :=
+        (t.redBranching : ℕ∞) ≤ ListDecodable.Lambda C δ) :
+    ListDecodable.Lambda (Code.interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
   lambda_le_ggr11_of_treeFrontier
     (treeFrontier_of_eraseDecodeTree_of_redBranching_le hLambda H)
 
 /-- End-to-end GGR11 bound from concrete trees whose total computed Red-branching budget is
 bounded by `Λ(C,δ)`. -/
 theorem lambda_le_ggr11_of_eraseDecodeTree_of_redBranchingBudget_le
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hLambda : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
         t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧
-        (t.redBranchingBudget : ℕ∞) ≤ Lambda C δ) :
-    Lambda (Code.interleavedCodeSet (κ := Fin m) C) δ
-      ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r :=
+        (t.redBranchingBudget : ℕ∞) ≤ ListDecodable.Lambda C δ) :
+    ListDecodable.Lambda (Code.interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
   lambda_le_ggr11_of_treeFrontier
     (treeFrontier_of_eraseDecodeTree_of_redBranchingBudget_le hLambda H)
 
@@ -1130,21 +1130,21 @@ theorem lambda_le_ggr11_of_eraseDecodeTree_of_redBranchingBudget_le
 theorem eraseDecodeTreeExists_of_leaf_close_le_one
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
     (H : ∀ f : Matrix ι (Fin m) F,
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ 1) :
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ 1) :
     ∀ f : Matrix ι (Fin m) F,
       ∃ t : EraseDecodeTree,
-        (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
+        (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard
             ≤ t.leafCount ∧
-        t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe (Lambda C δ) := by
+        t.blueDepth ≤ b ∧ t.redDepth ≤ r ∧ t.redBranchingLe (ListDecodable.Lambda C δ) := by
   intro f
   exact ⟨EraseDecodeTree.leaf, by simpa using H f, by simp, by simp, by simp⟩
 
 /-- One-close-codeword close sets discharge the abstract GGR11 tree-structure residual via the
 concrete leaf tree. -/
 theorem treeStructure_of_leaf_close_le_one
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ 1) :
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ 1) :
     GGR11TreeStructure C δ m b r :=
   treeStructure_of_eraseDecodeTree hL (eraseDecodeTreeExists_of_leaf_close_le_one H)
 
@@ -1152,10 +1152,10 @@ theorem treeStructure_of_leaf_close_le_one
 degenerate Erase-Decode construction target in the same named witness interface as the general
 Algorithm-1 residual. -/
 theorem treeWitness_of_leaf_close_le_one
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     {f : Matrix ι (Fin m) F}
     (hclose :
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ 1) :
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ 1) :
     Nonempty (GGR11TreeWitness C δ m b r f) := by
   exact
     ⟨treeWitness_of_concreteEraseDecodeTree hL f EraseDecodeTree.leaf
@@ -1164,28 +1164,28 @@ theorem treeWitness_of_leaf_close_le_one
 /-- If every received word has at most one close interleaved codeword, the concrete leaf tree
 supplies the named GGR11 tree frontier. -/
 theorem treeFrontier_of_leaf_close_le_one
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ 1) :
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ 1) :
     GGR11TreeFrontier C δ m b r := by
   intro f
   exact treeWitness_of_leaf_close_le_one hL (H f)
 
 /-- Concrete leaf-tree frontier, exposed at the per-word GGR11 bound surface. -/
 theorem perWordBound_of_leaf_close_le_one
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ 1) :
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ 1) :
     GGR11PerWordBound C δ m b r :=
   perWordBound_of_treeFrontier (treeFrontier_of_leaf_close_le_one hL H)
 
 /-- End-to-end GGR11 bound from the concrete leaf-tree frontier. -/
 theorem lambda_le_ggr11_of_leaf_close_le_one
-    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ Lambda C δ)
+    {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ} (hL : 1 ≤ ListDecodable.Lambda C δ)
     (H : ∀ f : Matrix ι (Fin m) F,
-      (closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ 1) :
-    Lambda (Code.interleavedCodeSet (κ := Fin m) C) δ
-      ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r :=
+      (ListDecodable.closeCodewordsRel (Code.interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ 1) :
+    ListDecodable.Lambda (Code.interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
   lambda_le_ggr11_of_treeFrontier (treeFrontier_of_leaf_close_le_one hL H)
 
 -- Axiom audit.

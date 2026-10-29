@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZaman
 import Mathlib.Data.Nat.Totient
+import ArkLib.ToMathlib.NatPrimeCheckpoint
 import Mathlib.Tactic.NormNum.Prime
 
 /-!
@@ -328,7 +329,8 @@ theorem tzPrimeSupply_128_three : TZPrimeSupply 128 (3 : ℝ) 12 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by norm_num, by norm_num [Nat.ModEq], by rw [hpow]; norm_num,
+        by rw [hpow]; norm_num⟩
   calc (12 : ℕ)
       = ({2100097, 2100353, 2100737, 2101249, 2102273, 2103041, 2103169, 2103553,
           2104961, 2105729, 2107393, 2108033} : Finset ℕ).card := by decide
@@ -346,7 +348,8 @@ theorem tzPrimeSupply_256_three : TZPrimeSupply 256 (3 : ℝ) 12 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by norm_num, by norm_num [Nat.ModEq], by rw [hpow]; norm_num,
+        by rw [hpow]; norm_num⟩
   calc (12 : ℕ)
       = ({16777729, 16778497, 16780289, 16780801, 16783873, 16787713, 16789249, 16790017,
           16790273, 16793089, 16795393, 16796161} : Finset ℕ).card := by decide
@@ -365,7 +368,8 @@ theorem tzPrimeSupply_128_four : TZPrimeSupply 128 (4 : ℝ) 12 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq], by rw [hpow]; norm_num,
+        by rw [hpow]; norm_num⟩
   calc (12 : ℕ)
       = ({268437889, 268438657, 268438913, 268439681, 268440449, 268440577, 268440833,
           268440961, 268441601, 268441729, 268445057, 268447873} : Finset ℕ).card := by decide
@@ -385,7 +389,8 @@ theorem tzPrimeSupply_256_four : TZPrimeSupply 256 (4 : ℝ) 8 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq], by rw [hpow]; norm_num,
+        by rw [hpow]; norm_num⟩
   calc (8 : ℕ)
       = ({4294968833, 4294973953, 4294977793, 4294979329, 4294983937, 4294986497,
           4294988801, 4294989313} : Finset ℕ).card := by decide

@@ -4,9 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao, Chung Thai Nguyen
 -/
 
+import ArkLib.Data.Probability.Notation
 import ArkLib.Data.Hash.DuplexSponge
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Preliminaries
-import ArkLib.OracleReduction.FiatShamir.Basic
+import ProximityPrize.Extensions.OracleReduction.FiatShamir.Basic
 import ArkLib.OracleReduction.FiatShamir.SingleSalt
 
 /-!
@@ -105,12 +106,12 @@ class Codec {n : ℕ} (pSpec : ProtocolSpec n) (U : Type)
   decode : (i : pSpec.ChallengeIdx) → Vector U (challengeSize i) → pSpec.Challenge i
   decodingBias : pSpec.ChallengeIdx → NNReal -- `ε_cdc`
   /-- For every `i`, `decode i` is ε-biased: `dist (𝒰 Challenge_i) (decode_i <$> 𝒰 Domain_i)`
-    ≤ `decodingBias i`. Matches `Deserialize.CloseToUniform.ε_close` (CO25 Definition 4.1). -/
+    ≤ `decodingBias i`. Matches `Deserialize.PMFCloseToUniform.ε_close` (CO25 Definition 4.1). -/
   decode_isBiased : ∀ (i : pSpec.ChallengeIdx)
       [Fintype (Vector U (challengeSize i))] [Nonempty (Vector U (challengeSize i))]
       [Fintype (pSpec.Challenge i)] [Nonempty (pSpec.Challenge i)],
-      dist (PMF.uniformOfFintype (pSpec.Challenge i))
-        (decode i <$> PMF.uniformOfFintype (Vector U (challengeSize i))) ≤ decodingBias i
+      dist (ProximityPrize.Compatibility.uniformOfFintype (pSpec.Challenge i))
+        (decode i <$> ProximityPrize.Compatibility.uniformOfFintype (Vector U (challengeSize i))) ≤ decodingBias i
   /-- For every `i`, `decode i` is surjective: every challenge has at least one encoded preimage.
     Required for the `ψ⁻¹` sampler in the Section 5.8 reduction. -/
   decode_surjective : ∀ i, Function.Surjective (decode i)
@@ -145,7 +146,7 @@ def mk' {n : ℕ} (pSpec : ProtocolSpec n) (U : Type)
     [serMsg : ∀ i, Serialize (pSpec.Message i) (Vector U (mSize i))]
     [serMsgInj : ∀ i, Serialize.IsInjective (pSpec.Message i) (Vector U (mSize i))]
     [decChal : ∀ i, Deserialize (pSpec.Challenge i) (Vector U (cSize i))]
-    [decChalUniform : ∀ i, Deserialize.CloseToUniform (pSpec.Challenge i) (Vector U (cSize i))]
+    [decChalUniform : ∀ i, Deserialize.PMFCloseToUniform (pSpec.Challenge i) (Vector U (cSize i))]
     (dechalSurj : ∀ i, Function.Surjective ((decChal i).deserialize))
     (sampler : (i : pSpec.ChallengeIdx) → pSpec.Challenge i → ProbComp (Vector U (cSize i))) :
     Codec pSpec U where
@@ -176,11 +177,11 @@ instance instIsLawful [c : Codec pSpec U] : ProtocolSpec.Codec.IsLawful (c := c)
   decode_surjective := c.decode_surjective
 
 /-- A lawful codec's decoder is close to uniform with bias `decodingBias`, derived from the
-`decode_isBiased` field. Provides `Deserialize.CloseToUniform` at use sites needing it. -/
+`decode_isBiased` field. Provides `Deserialize.PMFCloseToUniform` at use sites needing it. -/
 instance instDeserializeCloseToUniform [c : Codec pSpec U]
     [∀ i, Fintype (Vector U (c.challengeSize i))] [∀ i, Nonempty (Vector U (c.challengeSize i))]
     [∀ i, Fintype (pSpec.Challenge i)] [∀ i, Nonempty (pSpec.Challenge i)] :
-    ∀ i, Deserialize.CloseToUniform (pSpec.Challenge i) (Vector U (c.challengeSize i)) := by
+    ∀ i, Deserialize.PMFCloseToUniform (pSpec.Challenge i) (Vector U (c.challengeSize i)) := by
   intro i
   refine ⟨c.decodingBias i, ?_⟩
   exact c.decode_isBiased i

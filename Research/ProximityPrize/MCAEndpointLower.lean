@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ArkLib.Data.Probability.Notation
 import Research.ProximityPrize.GrandChallenges
 
 /-!
@@ -307,7 +308,7 @@ lemma pr_mcaEvent_spike_ge
       rw [himG, Finset.mem_image] at hγ
       obtain ⟨j, -, rfl⟩ := hγ
       have hevent := mcaEvent_spike e g domain k δ ht_n hδ j
-      rw [if_pos hevent, mul_one, PMF.uniformOfFintype_apply]
+      rw [if_pos hevent, mul_one, ProximityPrize.Compatibility.uniformOfFintype_apply]
     rw [Finset.sum_congr rfl hterm, Finset.sum_const, himG_card, nsmul_eq_mul]
   -- Conclude.
   calc (t : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)
@@ -355,7 +356,7 @@ theorem epsMCA_ge_inv_card (domain : ι ↪ F) (k : ℕ) (δ : ℝ≥0)
     have hmul : ((1 - δ) * Fintype.card ι : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by
       calc ((1 - δ) * Fintype.card ι : ℝ≥0)
           ≤ 1 * (Fintype.card ι : ℝ≥0) := by
-            exact mul_le_mul_of_nonneg_right h1 (zero_le _)
+            exact mul_le_mul_of_nonneg_right h1 (by positivity)
         _ = (Fintype.card ι : ℝ≥0) := one_mul _
     refine le_trans hmul ?_
     have : Fintype.card ι ≤ Fintype.card ι - 1 + 1 := by omega
@@ -374,7 +375,7 @@ theorem epsMCA_one_ge (domain : ι ↪ F) (k : ℕ) (hk : k ≤ Fintype.card ι)
     omega
   have ht_q : t ≤ Fintype.card F := min_le_right _ _
   have hδ : ((1 - (1 : ℝ≥0)) * Fintype.card ι : ℝ≥0) ≤ (Fintype.card ι - t + 1 : ℕ) := by
-    rw [tsub_self, zero_mul]; exact zero_le _
+    rw [tsub_self, zero_mul]; exact by positivity
   exact epsMCA_ge_spike domain k t 1 ht_n ht_q hδ
 
 /-- **Refutation of the formalized §1 MCA prize for small fields.** If `q < 2^128·(n - k)`

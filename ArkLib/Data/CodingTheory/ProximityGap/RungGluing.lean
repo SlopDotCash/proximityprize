@@ -74,7 +74,6 @@ theorem gluing_eq_above_k {k : ℕ} {A₁ A₂ : Finset (Fin n)}
   intro t ht
   have hglue := class_gluing_equation hfac₁ hfac₂
   have hc := congrArg (fun p : F[X] => p.coeff t) hglue
-  dsimp only at hc
   have hz : (q₂ - q₁).coeff t = 0 :=
     coeff_eq_zero_of_natDegree_lt (lt_of_lt_of_le hq ht)
   rw [hz, coeff_sub] at hc

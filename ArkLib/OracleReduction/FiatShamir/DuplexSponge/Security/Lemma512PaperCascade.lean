@@ -361,7 +361,9 @@ theorem index_entry_forward_of_not_E
         · -- equal indices: a hash entry cannot be a permutation entry
           rw [heq] at hhash'
           have hcontra := hhash'.symm.trans hinv
-          simp [hashEntryC] at hcontra
+          have hindex := congrArg (fun e : OracleSpec.duplexSpongeTraceEntry
+            (StartType := StmtIn) (U := U) => e.1) (Option.some.inj hcontra)
+          cases hindex
         · -- hash strictly later: the landed hash-anchored keystone
           exact hE (e_of_hasFirstHashPermCapNatPaper tr
             ⟨_, _, hgt, hhash', hhashFirst, sIn, sOut, Or.inr hinv, Or.inr rfl⟩)

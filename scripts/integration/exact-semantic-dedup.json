@@ -1,0 +1,3946 @@
+{
+  "method": "identical normalized command, namespace and active context in current source and upstream",
+  "manual_ports_preserved": [
+    "ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors"
+  ],
+  "summary": {
+    "files": 32,
+    "commands": 270
+  },
+  "files": {
+    "ProximityPrize/Extensions/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean": {
+      "before_sha256": "213809a9071e8b3216346a48014d83e9159c387dfa82cce7f79f680aa8b096b5",
+      "after_sha256": "ee3c18bd482c102fd422d4c8fe4cd65e297a553a1b2c1e38b3e9146c45fcc293",
+      "removed": [
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 63,
+          "namespace": "ArkLib.Lattices.Ajtai.InnerOuter",
+          "active_context": [
+            "open ArkLib.Lattices ArkLib.Lattices.CyclotomicModulus CompPoly CompPoly.CPolynomial",
+            "variable (q : ℕ) [Fact (Nat.Prime q)] [BEq (ZMod q)] [LawfulBEq (ZMod q)] (α : ℕ)"
+          ],
+          "upstream_owner": "ArkLib/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean",
+          "upstream_line": 68,
+          "normalized_command_sha256": "18aaac4a74bd69d26539729768b65bf2eaeafc0a7baf3fe4050a94d5815d5553"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 65,
+          "namespace": "ArkLib.Lattices.Ajtai.InnerOuter",
+          "active_context": [
+            "open ArkLib.Lattices ArkLib.Lattices.CyclotomicModulus CompPoly CompPoly.CPolynomial",
+            "variable (q : ℕ) [Fact (Nat.Prime q)] [BEq (ZMod q)] [LawfulBEq (ZMod q)] (α : ℕ)"
+          ],
+          "upstream_owner": "ArkLib/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean",
+          "upstream_line": 74,
+          "normalized_command_sha256": "c6547f3007c509d428b1a03f19705a98aade8b7e97917cc9b125b87f17a0c5d6"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/Classes/FunEquiv.lean": {
+      "before_sha256": "14ba595742ada88cf833bddf425c0a67f532c700bacf1bc8bca6733e0acc6c49",
+      "after_sha256": "35b1f687986f4f28ae89019243f159016f6f719551c7834f99c728315b92bd07",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 32,
+          "namespace": "DFunEquiv",
+          "active_context": [
+            "variable {F : Sort*} {α : Sort*} {β : α → Sort*} [inst : DFunEquiv F α β]"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/FunEquiv.lean",
+          "upstream_line": 40,
+          "normalized_command_sha256": "eedd33d655f099bc2944d99e7f15a9c9143222211d7d3ae4a9d92d4de6d2a14a"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 44,
+          "namespace": "DFunEquiv",
+          "active_context": [
+            "variable {F : Sort*} {α : Sort*} {β : α → Sort*} [inst : DFunEquiv F α β]"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/FunEquiv.lean",
+          "upstream_line": 52,
+          "normalized_command_sha256": "eecb8c4b7366ee43bbb70954e62ea41b068d72dbeae749059b086c861f5e7dbb"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/Classes/Slice.lean": {
+      "before_sha256": "30b897c2ff94c64e7b0809aeaac9a4db0c2e2958237a537591e2483b66fa9c55",
+      "after_sha256": "acd65e0ebcbdf57bd3bf17a2ee620ee65955eaf18591b1b8809eb16ed69f69b1",
+      "removed": [
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 55,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 83,
+          "normalized_command_sha256": "8d996f640a0620c36ccef5098d27187bb83d5db90ed974f85e436b29e666c905"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 56,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 84,
+          "normalized_command_sha256": "0ad814bb4d54f45d21a9aaa6eb3c71a31f30257bd5b08c4017c2f00edb380f28"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 61,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 89,
+          "normalized_command_sha256": "5f0d7a6f476d11c2fa8a14a7cae462c9ce824f341e276487977467f7879783d5"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 62,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 90,
+          "normalized_command_sha256": "bf794b65c5926568b16737d28be8da5f3b10d3631b161146d1c1f067a0f753cc"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 67,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 95,
+          "normalized_command_sha256": "236a358965a79eeb3f82b7a46e146e8b9b5da7e8df52b1575f5e79a70255dcfe"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 68,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 96,
+          "normalized_command_sha256": "b078e195489074f95c9484a6dda644e3a06142de92c1a69a0257fb034074e07c"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 72,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 100,
+          "normalized_command_sha256": "cc1058a00c407a103bae9d99610ac589620dbe28055e02f1d91f71fcf8e4dc60"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 73,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 101,
+          "normalized_command_sha256": "992a0f33de647c6161d53bc148bc52732f12752fd7849f1c04c21b0f0f8820bf"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 78,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 106,
+          "normalized_command_sha256": "0bf713c98118666cf03fdbfd4907b70817d54bd8a244b50e588d023aabb05dc5"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 79,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 107,
+          "normalized_command_sha256": "61c48bd41b7e6758b002e6fee1b152053fc225642e3a2ca0ef21c16da8732edd"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 84,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 112,
+          "normalized_command_sha256": "432877ce6aecd09787c0456e957378d3925adcade774efdbe0b2fbbaee0fe0a1"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 86,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 114,
+          "normalized_command_sha256": "d4e29c675b8d82b7530e28316495b223e80d9d00be363a85d07574dab7b6d1c6"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 95,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 147,
+          "normalized_command_sha256": "027ad53a9c5e6fbc9d4140968e7bec8ac7249015b20a8d3d4df28f995fe756c8"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 98,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 150,
+          "normalized_command_sha256": "3b7641cf8c7bffb3742bc5392f8708ff25a43b69264c3f0bd27cdb9a3f2e6da5"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 101,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 153,
+          "normalized_command_sha256": "1eca3cd58db9f526b04a99d767b5762f38d33ed8ddc1872ab5b4191c6ef1c896"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 110,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 162,
+          "normalized_command_sha256": "cd8faa6e12fee8756710dbd52073e91b693e3f69108443eed6c3f7e4cacaf507"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 113,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 165,
+          "normalized_command_sha256": "74e0b4f324155cd3d81f69f109fe33041b0ddcee311b142de0837f7d0435195e"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 116,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Classes/Slice.lean",
+          "upstream_line": 168,
+          "normalized_command_sha256": "dd303e4224f871a0dc8c0d664bb04ffc0addcadb5efc1345369dd7525bc6b1d6"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/CodingTheory/Basic/Distance.lean": {
+      "before_sha256": "a799f4ad3dc9822cde2f3a9ba104a180c12a3676a599c80f30f8b0723854cdb1",
+      "after_sha256": "7a2efb05a96701943f5c707aa1a90efbd95d4b3309dd1c7cc1ec812b64f729ad",
+      "removed": [
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 136,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
+          "upstream_line": 132,
+          "normalized_command_sha256": "3d47fe0e4a843140751a52ef55f574262ccf39f47cd2cf584f8922a3f7659251"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 138,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
+          "upstream_line": 134,
+          "normalized_command_sha256": "1cbdb716c8be0fe38cf73f136a1ea4d48bebf20e2a1cabaef7a466d7b0c40f45"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 187,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
+          "upstream_line": 218,
+          "normalized_command_sha256": "4a70422814a7486243791f01c1c6a869008f69e16e0a0652c6d136df3d7d99e3"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 190,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
+          "upstream_line": 221,
+          "normalized_command_sha256": "0ca1495979702849a2df27c1f49a4ff77217feb207cc2c9ae45515324395ea97"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 193,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
+          "upstream_line": 228,
+          "normalized_command_sha256": "6a03dee38968ebd619b1281a26820fbfb9b8e417742b37bdfaaa15830a3867ea"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 195,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
+          "upstream_line": 235,
+          "normalized_command_sha256": "4a03281efc045c8768208eb8d26f37a28142886b4824dbfef29729f2b55e0f0b"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 199,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
+          "upstream_line": 811,
+          "normalized_command_sha256": "205a5ba6f90b95bd42c057416ce510e0bf2dd614bd0dabb5d9cab321efd5c102"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 217,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal",
+            "variable {C : Set (n → R)} [Fintype C]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
+          "upstream_line": 1010,
+          "normalized_command_sha256": "bc174a07a8e2fe3bc49fab9ab4285fab659c0ef47a528e5924bb83a8677d549e"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/CodingTheory/Basic/LinearCode.lean": {
+      "before_sha256": "22c8d13b128c87399363a784af6e8a08dd29aae4d0f941c3b939862bd076ad53",
+      "after_sha256": "357b232bc61cdca62afce5b93f95fcf5deaaf193456a3dc408bf487cd6c7eba6",
+      "removed": [
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 74,
+          "namespace": "LinearCode",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "variable [Finite R]",
+            "open Fintype",
+            "variable {F : Type*} {A : Type*} [AddCommMonoid A] {ι : Type*} [Fintype ι] {κ : Type*} [Fintype κ]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/LinearCode.lean",
+          "upstream_line": 268,
+          "normalized_command_sha256": "4ed1284aedd67d0b015122ef0ae99bf55993e2593226609e6699df522360df2e"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 76,
+          "namespace": "LinearCode",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "variable [Finite R]",
+            "open Fintype",
+            "variable {F : Type*} {A : Type*} [AddCommMonoid A] {ι : Type*} [Fintype ι] {κ : Type*} [Fintype κ]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/LinearCode.lean",
+          "upstream_line": 270,
+          "normalized_command_sha256": "bbe2bb0c2b1f0a4988cb5fc51c619a2af80f05212ec025dea1070aa94a9eac54"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/CodingTheory/Basic/RelativeDistance.lean": {
+      "before_sha256": "e03e13298ca788f9d13439ccaec2b006b51626a7fea9469fe734ed46a7e92644",
+      "after_sha256": "12e05ca1c0debf266d0f76faa5508cea14e55b3a0bd4e6302eecf677ea856771",
+      "removed": [
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 45,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal",
+            "open scoped NNReal",
+            "variable {ι : Type*} [Fintype ι] {F : Type*} {u v w c : ι → F} {C : Set (ι → F)}",
+            "variable [Nonempty ι] [DecidableEq F]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/RelativeDistance.lean",
+          "upstream_line": 48,
+          "normalized_command_sha256": "3c42bfa2f88ad1423c64725400c94f82307da933721c2eab751b7ff7124a61cf"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 88,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal",
+            "open scoped NNReal",
+            "variable {ι : Type*} [Fintype ι] {F : Type*} {u v w c : ι → F} {C : Set (ι → F)}",
+            "variable [Nonempty ι] [DecidableEq F]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/RelativeDistance.lean",
+          "upstream_line": 60,
+          "normalized_command_sha256": "73cff922373437b7cbee8333d3ee4c24e63c3cc74004d1f768aa47f0a3b0e657"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 112,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal",
+            "open scoped NNReal",
+            "variable {ι : Type*} [Fintype ι] {F : Type*} {u v w c : ι → F} {C : Set (ι → F)}"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/RelativeDistance.lean",
+          "upstream_line": 600,
+          "normalized_command_sha256": "17279cc9126e889f823d17172044c69707134e45b53a514ffd2a3371b4bd5bd9"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 119,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal",
+            "open scoped NNReal",
+            "variable {ι : Type*} [Fintype ι] {F : Type*} {u v w c : ι → F} {C : Set (ι → F)}"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/RelativeDistance.lean",
+          "upstream_line": 723,
+          "normalized_command_sha256": "0fa0b6fa3c92cf6e2264e779c3a7edeb0eb4a0e9e2b85a69024dcae42c03da3f"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 140,
+          "namespace": "Code",
+          "active_context": [
+            "variable {n : Type*} [Fintype n] {R : Type*} [DecidableEq R]",
+            "open NNReal",
+            "open scoped NNReal",
+            "variable {ι : Type*} [Fintype ι] {F : Type*} {u v w c : ι → F} {C : Set (ι → F)}"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Basic/RelativeDistance.lean",
+          "upstream_line": 756,
+          "normalized_command_sha256": "208f18f5fef051dee25316c9bb261c8fc1fc672608092e5e74ab3b8ece1cc29b"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/CodingTheory/InterleavedCode.lean": {
+      "before_sha256": "09d8014661c1d8ce62b80bf95bc5d08deedd0c988eb3df8321536344a629264c",
+      "after_sha256": "d7c6078c1072dd548f10be78c196cf31b72b73d7295527a761132fc28a685e9a",
+      "removed": [
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 106,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 331,
+          "normalized_command_sha256": "0ed5b07c26d570b8875389dcbee4e1abd4c6e25663b268d48a9d5de00b496f21"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 108,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 335,
+          "normalized_command_sha256": "a8d89d76e667b163991793be9c7508b85b7fff6846c8d5589c9c6ed389680b4d"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 110,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 342,
+          "normalized_command_sha256": "04e6a010a19c1fbda3460ab1b4f0a6f4a86ee74e793f27c38482de8235b8fe69"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 113,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 345,
+          "normalized_command_sha256": "33376bcd75f3dc9caf79896a4a10d334af8063325118349727e58833fd9d69f3"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 117,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 349,
+          "normalized_command_sha256": "505df468558326089da953edd2b2e4f1ba669c09ad57f3891c57a9bdcb091e1f"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 127,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 359,
+          "normalized_command_sha256": "feda124a601ca25f759f103f436d37edabb2f19e6ff5cbf563a93f8ac7169e41"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 132,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 364,
+          "normalized_command_sha256": "ff38e8a572c5cdec1cf06cd9ccdc61f3e1022f3a197e9b77bc4225680e018b26"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 136,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 368,
+          "normalized_command_sha256": "5ecca940165e166c89a423cc56f49286e45385aaf569c481b196a50ebbf7ddb1"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 141,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 373,
+          "normalized_command_sha256": "8980571491ae301b0e2a762f412634adcc8494cc0cc8b001835617857df141fc"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 147,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 379,
+          "normalized_command_sha256": "be069a60be5ab6996084d9f5cfd71abd0eb26cc29e3058fca721283255b52bdc"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 177,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 627,
+          "normalized_command_sha256": "1cabb8c06725fb94d9dbe1873eac3369b5509a7b49888986d02ccd34e079c44e"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 185,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 635,
+          "normalized_command_sha256": "efa5f611674205ad0c9c71f10243c8c37c606c5beefaedddb7822671ef308332"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 210,
+          "namespace": "Code.InterleavedCode",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal",
+            "variable (RowIdx SymbolIdx : Type*)",
+            "variable (RowType SymbolType CellTy : Type*)"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 683,
+          "normalized_command_sha256": "4a5d2ffb35b403a3a2205a86637f5554bcc34335ff15150f59583959289ba6e2"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 230,
+          "namespace": "Code.InterleavedCode",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal",
+            "variable (RowIdx SymbolIdx : Type*)",
+            "variable (RowType SymbolType CellTy : Type*)"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 779,
+          "normalized_command_sha256": "d69e2822dd62b5f6a27a74e5d4fb74d3cec30a78fbe765c8adb295f9ca52866a"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 233,
+          "namespace": "Code.InterleavedCode",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal",
+            "variable (RowIdx SymbolIdx : Type*)",
+            "variable (RowType SymbolType CellTy : Type*)"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 782,
+          "normalized_command_sha256": "1931793458b6cb99fc31ffb51307717d15de279ad857014ac41e0639b7143e5f"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 237,
+          "namespace": "Code.InterleavedCode",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal",
+            "variable (RowIdx SymbolIdx : Type*)",
+            "variable (RowType SymbolType CellTy : Type*)"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 786,
+          "normalized_command_sha256": "b833a8a6b3585c43bca01c56dc7a2cc520bde65347bb4a888492194e08416a9d"
+        },
+        {
+          "kind": "infixl",
+          "name": null,
+          "line": 247,
+          "namespace": "Code.InterleavedCode",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal",
+            "variable (RowIdx SymbolIdx : Type*)",
+            "variable (RowType SymbolType CellTy : Type*)"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 815,
+          "normalized_command_sha256": "415ac7caa28b6439951a3716b05285dc624514b0049c61ad1d8b13e3e7886524"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 412,
+          "namespace": "Code",
+          "active_context": [
+            "variable (F : Type*) [Semiring F]",
+            "variable (A : Type*) [AddCommMonoid A] [Module F A]",
+            "variable (κ ι : Type*) [Fintype κ] [Fintype ι]",
+            "variable (MC : ModuleCode ι F A)",
+            "variable (C : Set (ι → A))",
+            "open NNReal",
+            "variable {κ ι : Type*} [Fintype ι] [Fintype κ] {A : Type*} (C : Set (ι → A)) [DecidableEq A]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+          "upstream_line": 1054,
+          "normalized_command_sha256": "a056a17982112aa2d5d73e956f8a652199d194f830b8b694c4c8d98d1ce7141c"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/CodingTheory/Prelims.lean": {
+      "before_sha256": "6804766b8f30247e48acf610aecb84f89d3ebd58cc72ef00f21069b1fc3f05ff",
+      "after_sha256": "1ff77ff95b5632eab867d343197b69a1232445de3527204fc513a70a6c5371fc",
+      "removed": [
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 27,
+          "namespace": "",
+          "active_context": [
+            "variable {F : Type*} [CommRing F] [Fintype F] [DecidableEq F] {A : Type*} [AddCommMonoid A] [Module F A]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Prelims.lean",
+          "upstream_line": 79,
+          "normalized_command_sha256": "ad6f97292ece05e45fcb45636a075a9f9b5e16ad5d6b9dd890f0beb977abf429"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 75,
+          "namespace": "Affine",
+          "active_context": [
+            "variable {ι : Type*} [Fintype ι] {F A : Type*} {k : ℕ}",
+            "variable [DecidableEq F] [Ring F] [Fintype F]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Prelims.lean",
+          "upstream_line": 288,
+          "normalized_command_sha256": "7bb9d04f82c7550c3dd958222bd5380ea342d16c8592167dfcd5e0fc11b67ecc"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 78,
+          "namespace": "Affine",
+          "active_context": [
+            "variable {ι : Type*} [Fintype ι] {F A : Type*} {k : ℕ}",
+            "variable [DecidableEq F] [Ring F] [Fintype F]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Prelims.lean",
+          "upstream_line": 291,
+          "normalized_command_sha256": "3073a638bd758eccb754a1dddad92dac4cd28e28baf730f3239083cbb7091aa8"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 82,
+          "namespace": "Affine",
+          "active_context": [
+            "variable {ι : Type*} [Fintype ι] {F A : Type*} {k : ℕ}",
+            "variable [DecidableEq F] [Ring F] [Fintype F]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Prelims.lean",
+          "upstream_line": 295,
+          "normalized_command_sha256": "8cfbf03072567510ea7eea94bd2007121be5052cd78b613bdcd9535ec7a365be"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 86,
+          "namespace": "Affine",
+          "active_context": [
+            "variable {ι : Type*} [Fintype ι] {F A : Type*} {k : ℕ}",
+            "variable [DecidableEq F] [Ring F] [Fintype F]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Prelims.lean",
+          "upstream_line": 299,
+          "normalized_command_sha256": "0143780eaf7726308137684968b173ffab670ad1a879ef3807440bda75af06c1"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 91,
+          "namespace": "Affine",
+          "active_context": [
+            "variable {ι : Type*} [Fintype ι] {F A : Type*} {k : ℕ}",
+            "variable [DecidableEq F] [Ring F] [Fintype F]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Prelims.lean",
+          "upstream_line": 304,
+          "normalized_command_sha256": "5ad6e33450b46a3e70c0aa8c4ea27e51ed7984fba16337dd9a9ac096687b8774"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 102,
+          "namespace": "Affine",
+          "active_context": [
+            "variable {ι : Type*} [Fintype ι] {F A : Type*} {k : ℕ}",
+            "variable [DecidableEq F] [Ring F] [Fintype F]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Prelims.lean",
+          "upstream_line": 335,
+          "normalized_command_sha256": "0caf0631aecb8db0c731fbe4a550e9c026d1eb91bae56774b2342425170ba0af"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 129,
+          "namespace": "Curve",
+          "active_context": [
+            "open Finset",
+            "variable {ι : Type*} [Fintype ι] [Nonempty ι] [DecidableEq ι] {F A : Type*} [Semiring F] [Fintype F] [AddCommMonoid A] [Module F A] [Fintype A] [DecidableEq A]"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Prelims.lean",
+          "upstream_line": 412,
+          "normalized_command_sha256": "43da61a00d34f750aaf2fe8a74645d3c61badaaa90254fdad0e0268da8edab19"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 138,
+          "namespace": "Curve",
+          "active_context": [
+            "open Finset",
+            "variable {ι : Type*} [Fintype ι] [Nonempty ι] [DecidableEq ι] {F A : Type*} [Semiring F] [Fintype F] [AddCommMonoid A] [Module F A] [Fintype A] [DecidableEq A]",
+            "open Finset"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/Prelims.lean",
+          "upstream_line": 421,
+          "normalized_command_sha256": "8097185a91362f8f290289b2e72eee7b7d8c2a7c42c6bfdae3f0952b56d4fa84"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/CodingTheory/ReedSolomon.lean": {
+      "before_sha256": "346309c3423b461b8c39c7bfd4f05a834bc2305c61027ab3af72624f121f90bb",
+      "after_sha256": "b97fec85ca8385868089523a527cec116f0c447ebcdd9ef03e4984c88b18b8a0",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 336,
+          "namespace": "ReedSolomon",
+          "active_context": [
+            "open Polynomial NNReal",
+            "variable {F : Type*} {ι : Type*} (domain : ι ↪ F)",
+            "open Polynomial Matrix Code LinearCode",
+            "variable {F ι ι' : Type*} {C : Set (ι → F)}"
+          ],
+          "upstream_owner": "ArkLib/Data/CodingTheory/ReedSolomon.lean",
+          "upstream_line": 552,
+          "normalized_command_sha256": "91db1471090d87f9adcb5106e4bedbc4296d7496ef22a80041acac72da5d1462"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/EllipticCurve/BN254.lean": {
+      "before_sha256": "f795a826e4c239bf5dedeb8071fc8876894ae68d2d6e3ea650f035bd74a2c997",
+      "after_sha256": "4f2fbc268aa74b4a127e37a0eadf0673b0fbc4add104fb7f084a280a603f8a35",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 46,
+          "namespace": "BN254",
+          "active_context": [],
+          "upstream_owner": "ArkLib/Data/EllipticCurve/BN254.lean",
+          "upstream_line": 147,
+          "normalized_command_sha256": "6cf3cdbd9e5b2671369f28f6139b232a3019ed180ee3f1bb8066c448b2062963"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 48,
+          "namespace": "BN254",
+          "active_context": [],
+          "upstream_owner": "ArkLib/Data/EllipticCurve/BN254.lean",
+          "upstream_line": 149,
+          "normalized_command_sha256": "e64a83eeeba17a8f96fc23ab7d83a0255a14f99ef9d0e2d25ac52bec8c7e0f02"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 51,
+          "namespace": "BN254",
+          "active_context": [],
+          "upstream_owner": "ArkLib/Data/EllipticCurve/BN254.lean",
+          "upstream_line": 161,
+          "normalized_command_sha256": "e548cd05f2e8be3dcb09cdf95048e809887d28855b39de80319b40fe5fdd534a"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 54,
+          "namespace": "BN254",
+          "active_context": [],
+          "upstream_owner": "ArkLib/Data/EllipticCurve/BN254.lean",
+          "upstream_line": 164,
+          "normalized_command_sha256": "3b69910433919de63ffed6a1bb645655617229d560f837eac734387d6bfed3c1"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/Fin/Basic.lean": {
+      "before_sha256": "bfaa1c3487efa053896d83ea10a1974306cba20088ca8f7155571c8000a913d2",
+      "after_sha256": "1f832950977fe69ad132a7ca607f93cf92c2fc60fe0604b36170f73da4384f2f",
+      "removed": [
+        {
+          "kind": "alias",
+          "name": null,
+          "line": 36,
+          "namespace": "",
+          "active_context": [
+            "universe u v w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Basic.lean",
+          "upstream_line": 42,
+          "normalized_command_sha256": "9c3775c3abff1ac5302d902048ee015cee9790c1589e9b8d3f087fb2e53e4d4f"
+        },
+        {
+          "kind": "alias",
+          "name": null,
+          "line": 38,
+          "namespace": "",
+          "active_context": [
+            "universe u v w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Basic.lean",
+          "upstream_line": 62,
+          "normalized_command_sha256": "4d630924d557d406c3f7e10043bb17dd6f10b330e808dd35cf929b7b6a10925b"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/Fin/Tuple/Lemmas.lean": {
+      "before_sha256": "c7afab601284ffe67b511978e2d2f38dd980a9ba9407e6774690a1a4a6f2a1a3",
+      "after_sha256": "00696c4421ee4aa57af9d019dac0e7564091ca433d600d43f9babecd1af303f9",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 32,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v w",
+            "variable {m n : ℕ} {α : Sort u}"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+          "upstream_line": 27,
+          "normalized_command_sha256": "2ff25fe0007b03f5138241ea804ee3f5623584c2d36a210f6806e31c98c2b3b3"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 37,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v w",
+            "variable {m n : ℕ} {α : Sort u}"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+          "upstream_line": 32,
+          "normalized_command_sha256": "dd58b1f2aa4c5eb2bca1eb0c6b0686fe554fa64ccf538fdb4fbdba6f7f54e7ca"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 54,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v w",
+            "variable {m n : ℕ} {α : Sort u}"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+          "upstream_line": 1304,
+          "normalized_command_sha256": "ce4bd671d9e7f60a0f7aa7ef84aba7ad964c2db3779213a3e3de6c85890f0b3c"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/Fin/Tuple/Notation.lean": {
+      "before_sha256": "3f0f2952d6b834a04e3f05482ba0fd95adc46d5fea32ca4839d84570a0bd347b",
+      "after_sha256": "6dfc4594b199fd828173492956fbbb56b7723c27d6a0518ac2debc219dbeb702",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 54,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 49,
+          "normalized_command_sha256": "9fb5c26e6b7aabfee6c2b7e3592a059ba4efd32206a10088d378c3e7d76b23a9"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 60,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 55,
+          "normalized_command_sha256": "2b473dedc19e98a3645ef9bf4abd7893d30cbd3c834f6272f9cb6c443e70562d"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 67,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 62,
+          "normalized_command_sha256": "0dd88959e34a92d1a23f11c48533387a5ded44cd55b429b82b687d828f0d28fe"
+        },
+        {
+          "kind": "infixr",
+          "name": null,
+          "line": 220,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 215,
+          "normalized_command_sha256": "985266e2ef46ba02a9db680fb882817377c7cabaf1641c144ac8a77f51d32421"
+        },
+        {
+          "kind": "infixl",
+          "name": null,
+          "line": 224,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 219,
+          "normalized_command_sha256": "b28141e06516adc32f9224e842a0365f46a8a4ceabc64e3e99af84284e14f370"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 227,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 222,
+          "normalized_command_sha256": "7ec98a20e485b52816cbc29231c26df3b20c806de14758cf0a75ac1364303d3b"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 230,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 225,
+          "normalized_command_sha256": "844867f082c1e57ad478274116720735ecf0d1c5a25cc78acc975a3915546488"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 233,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 228,
+          "normalized_command_sha256": "ee0d90cdb5b1e6df60e3a97000d462332d4128f12bff0e92aa774026b3636c9e"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 235,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 230,
+          "normalized_command_sha256": "77e3605aef5883be0b858413f469842b00fe13d5228f9aa736951671fcbe8b94"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 238,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 233,
+          "normalized_command_sha256": "67624f8e6d7594a7e9fc2ac6f259ba8b3d7f4a579c4ba2aae2db2dc0915a6f03"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 241,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 236,
+          "normalized_command_sha256": "39f1832d70a4cc9563f365a78d14254722c047b7d162783945aeabfb84605b8d"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 246,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 241,
+          "normalized_command_sha256": "cb379ecf4254fe0044e98e0721824954fe2afa0d50b214725cce920103714923"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 250,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 245,
+          "normalized_command_sha256": "4a1dbe04edff1a8f633669684d9e8a3c16626dd1d9249eb66def5ad358e1b8d7"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 252,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 247,
+          "normalized_command_sha256": "a4b3cd42385a58385d4a3a45aa0490f2a7dd5040962bcbe089eee4813e1c6e6c"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 257,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 252,
+          "normalized_command_sha256": "6af6ae40cdab10a015f5a896f6e548f93c9d10456981b9fe54d828466952d3b0"
+        },
+        {
+          "kind": "infixr",
+          "name": null,
+          "line": 263,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 272,
+          "normalized_command_sha256": "ee0720412de5fbdf01d16c7a9b960d81d76325cdf4ac030054b10e19e198e605"
+        },
+        {
+          "kind": "infixl",
+          "name": null,
+          "line": 266,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 275,
+          "normalized_command_sha256": "4b3cc593b4624998d1b0a9261032954916d5634eda8c240d8366773db6d6950d"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 269,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 278,
+          "normalized_command_sha256": "055537b6ecb67e7cd9b296252649e6ff61af44cfd7a574d2c3826a1aba38f7f7"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 272,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 281,
+          "normalized_command_sha256": "1ac0e3929186fc5383e9076d646566f7bf1970ef74541a99adb264bfdf677e30"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 275,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 284,
+          "normalized_command_sha256": "788fa20b2d575ae1edfa8ad17bacdfc481aa21f83ac83146476d01503bc81d70"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 278,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 287,
+          "normalized_command_sha256": "4bd9b33dea8a8cd6ec6ef72fab429991d56004794d81c34e8eae5e199eb98d95"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 281,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 290,
+          "normalized_command_sha256": "87961820535eb4150db0daa301e5651f73462d041f81e4579848b017dcd72e1e"
+        },
+        {
+          "kind": "infixr",
+          "name": null,
+          "line": 284,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 293,
+          "normalized_command_sha256": "a4aeeb216f470630041593286930021a4557391d84d2a622f3ff79f3b389fa7c"
+        },
+        {
+          "kind": "infixl",
+          "name": null,
+          "line": 287,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 296,
+          "normalized_command_sha256": "bf19add6b107421bda2a306f8385038b1fbdecff60dfbd21616dad5780a71ba2"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 290,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 299,
+          "normalized_command_sha256": "b2bf116009f23b2de5846a32cfb671c070e63983f647cfdcd75c4e42d807a51a"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 293,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 302,
+          "normalized_command_sha256": "fd5f4a9803f3d3a49d32accd348882ceeb680fd72dd5160c9a38f589ee114f5d"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 297,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 306,
+          "normalized_command_sha256": "5d3d6d350174d494372df024ca924b4f103e69696c6186da038a3d3f9fc5ae96"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 301,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 310,
+          "normalized_command_sha256": "44f537282212251d6b94fcc1b0e9c2dc5b9c1c320ee675b5905404f19c659a41"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 304,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 313,
+          "normalized_command_sha256": "7261562a0f61383c68d6290617fbb7845ed4ed378df583ecdbf9ace61dc52260"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 308,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 317,
+          "normalized_command_sha256": "fb2f132c74a871f64bb44c6bd4d62d2715dc066004bb1fdfbaa925881907d7cf"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 312,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 321,
+          "normalized_command_sha256": "fe358d42ec5969dceb530b2a3f4e832729f0e5b05d121d149be3273d2c30f268"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 314,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 323,
+          "normalized_command_sha256": "18077dee6c11d3767d1ca86a908a425712426fc20507221312dac0852b0c5f86"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 319,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 328,
+          "normalized_command_sha256": "13c9ab650bb7085a18ffb335f6dc2d12d73474cb2b546776142699c2638113bb"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 328,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 337,
+          "normalized_command_sha256": "20e28c262df5cc7f6bde3757d40fad44c519ce9e883eea8e8a7af5ed01acfa1a"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 332,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 341,
+          "normalized_command_sha256": "8e1b2c8bf41da2403b5e0583a1ad556f92b966db4979f0884956c371435feed1"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 335,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 344,
+          "normalized_command_sha256": "7f98c33cf5fe9e2b09fd28ba8c1fffeccd272fcee437faca55d1ea9f985d228b"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 344,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 353,
+          "normalized_command_sha256": "4f999e75026ddfb4a4c3355ec34590feb4615c212e15ebe37806e99053fd2714"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 358,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 381,
+          "normalized_command_sha256": "bb35c4f44ad807f2da5f3320f9e97c8a8146d9fa43c30a4d4de61d5a82e41b6f"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 363,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 386,
+          "normalized_command_sha256": "98c3ec3903ccbc231b288085e7430707dd7cb4b76091a6525f728e5c40e6350e"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 368,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 391,
+          "normalized_command_sha256": "a13b26ee88feb8ef43750330acb4fb5046361f80907a674d69234c9567a2908d"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 374,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 397,
+          "normalized_command_sha256": "77f7923108126623fc5bf2786f229076c7cc45a9eb6ffaa07d23cc4097741bd3"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 377,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 400,
+          "normalized_command_sha256": "6736b5463c404d59873e268ff29756b7dff199c738470507ecdb70f4252237b2"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 380,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 403,
+          "normalized_command_sha256": "aae254a7db1835c73da306cd7f8b8c518d75ab37a14b3587e913c5c37a57e84a"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 383,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 406,
+          "normalized_command_sha256": "ea3ea3810d272d37ac37534eb2e2c78f29db93356437fad553f045fa1cfa2c6e"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 390,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 413,
+          "normalized_command_sha256": "7e3025f87b94f548563072d8ca15500cba2a38f9e09d44e429511fac48f665d5"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 394,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 417,
+          "normalized_command_sha256": "13b626785c00095d7949864ed23f77d9c6a973a7a6c096be2d3a4dc2b22b8e22"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 395,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 418,
+          "normalized_command_sha256": "53ff8e3cc69f0163ef6cea4069020d152dc33849d9b481b36299484930b58ddd"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 396,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 419,
+          "normalized_command_sha256": "1490e3f7c2eca373d72a78c06724ef55c891c942ab9a060197c42151e1d3d18d"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 398,
+          "namespace": "Fin",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 421,
+          "normalized_command_sha256": "8c1f5ef14258b9d54fd7b63dac34b9555271f3e943ceff055425428b282b3308"
+        },
+        {
+          "kind": "infixl",
+          "name": null,
+          "line": 410,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 455,
+          "normalized_command_sha256": "ee5a4f1036491bda4c19368182ab1d90d4f109ab6a9fe83c5faa65d613a581ab"
+        },
+        {
+          "kind": "infixl",
+          "name": null,
+          "line": 413,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 458,
+          "normalized_command_sha256": "bc5171c437cfc4723e98723bdceebb20d9bf7d35ced8b710db0d10c97b6725cc"
+        },
+        {
+          "kind": "infixl",
+          "name": null,
+          "line": 416,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 461,
+          "normalized_command_sha256": "213b2e41afac8c7b65da00c4cfc03b63c1a360b9c442193cac1cc5031d2528e0"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 419,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 464,
+          "normalized_command_sha256": "542682ae4722b597763f0054a0eeabbffda7e71264635a0e19e0a19e0e5ab4dc"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 422,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 467,
+          "normalized_command_sha256": "a07019481c2a1717b340e210a08edda7845e7383def33c7645e224d2e3a5494f"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 425,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 470,
+          "normalized_command_sha256": "a18e6f3cd20e51348b2823a210b512224212e77bde8eee8b303e699cc16c262a"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 428,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 473,
+          "normalized_command_sha256": "c8976346216b97ef0488cf9570e96380f473406e9530a49ca9d0afd0c2bc662e"
+        },
+        {
+          "kind": "syntax",
+          "name": null,
+          "line": 431,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 476,
+          "normalized_command_sha256": "2519abb23bb4c1ba4bd03baba9758c9a767e87e05958179e296e1d5c3e7b3781"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 433,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 478,
+          "normalized_command_sha256": "17e1d382411816e563b5e27c7afe9365c8ff54b05047ededd2ee7b8964617bc1"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 436,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 481,
+          "normalized_command_sha256": "3fb5f5be2ad9ea38946899aa9f1406ee88e2c9d3ca47418bed21fa206aea620a"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 440,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 485,
+          "normalized_command_sha256": "af918ae9b2741dd2e09b0b98f366ace923a7cfc0a723482acfcf9804542542a0"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 443,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 488,
+          "normalized_command_sha256": "84a57096bf3ed92eaf6111c1802c33d008d458c3f699252ee5591a944b2bcb85"
+        },
+        {
+          "kind": "macro_rules",
+          "name": null,
+          "line": 447,
+          "namespace": "",
+          "active_context": [
+            "universe u v v' w"
+          ],
+          "upstream_owner": "ArkLib/Data/Fin/Tuple/Notation.lean",
+          "upstream_line": 492,
+          "normalized_command_sha256": "74aa368e1f463323666b1b9cfdab9c5e1ea660d46f7c6468f7f20f782ab6ff73"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/GroupTheory/PrimeOrder.lean": {
+      "before_sha256": "6495e5545c2a365cf60929724478567a6b3c3a9f566a14e204a54d99091ae471",
+      "after_sha256": "d88c4009eb5950a7c1d35c32f84f05faf605b253e54eac85e72b2240929671ae",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 28,
+          "namespace": "PrimeOrder",
+          "active_context": [
+            "variable {G : Type*} [Group G] [PrimeOrder G]"
+          ],
+          "upstream_owner": "ArkLib/Data/GroupTheory/PrimeOrder.lean",
+          "upstream_line": 29,
+          "normalized_command_sha256": "f238d31bc30504224565f15a5f7a8f769309ed066e02c143b820a00f12e20f75"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 31,
+          "namespace": "PrimeOrder",
+          "active_context": [
+            "variable {G : Type*} [Group G] [PrimeOrder G]"
+          ],
+          "upstream_owner": "ArkLib/Data/GroupTheory/PrimeOrder.lean",
+          "upstream_line": 32,
+          "normalized_command_sha256": "8d9c1cf6c190222b4d11137f4c810e1234a04bd375381a2e632baf5a349f47e9"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 34,
+          "namespace": "PrimeOrder",
+          "active_context": [
+            "variable {G : Type*} [Group G] [PrimeOrder G]"
+          ],
+          "upstream_owner": "ArkLib/Data/GroupTheory/PrimeOrder.lean",
+          "upstream_line": 35,
+          "normalized_command_sha256": "c391b62f05dde84d434338f05a7c0aed3c4efeb80cd453220ebbdfcb0c3014a8"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 42,
+          "namespace": "PrimeOrderWith",
+          "active_context": [
+            "variable {G : Type*} [Group G] {p : outParam ℕ} [Fact (Nat.Prime p)] [PrimeOrderWith G p]"
+          ],
+          "upstream_owner": "ArkLib/Data/GroupTheory/PrimeOrder.lean",
+          "upstream_line": 47,
+          "normalized_command_sha256": "bb673c5028716c256d092835fa5170a4590d96914d6e2ffb087bfc84413833ee"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/Lattices/CyclotomicRing/NormBounds/Basic.lean": {
+      "before_sha256": "8746d090071b41cf90c96c76bf7d2d00917babddfec2ba56d88bfa1bac72ef2a",
+      "after_sha256": "a626bd6f6550f4bd22299b5758d87d89aa51129574432154a314ed4287cd1836",
+      "removed": [
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 57,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus",
+          "active_context": [
+            "open scoped BigOperators",
+            "variable {q : ℕ} [NeZero q]",
+            "variable [Fact (Nat.Prime q)] [BEq (ZMod q)] [LawfulBEq (ZMod q)] (Φ : CyclotomicModulus (ZMod q)) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/NormBounds/Basic.lean",
+          "upstream_line": 139,
+          "normalized_command_sha256": "bd9bc2850531f872b6dd1c679abfcfd425bc5faf3ee63a4a4d70f1857dfd4369"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 59,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus",
+          "active_context": [
+            "open scoped BigOperators",
+            "variable {q : ℕ} [NeZero q]",
+            "variable [Fact (Nat.Prime q)] [BEq (ZMod q)] [LawfulBEq (ZMod q)] (Φ : CyclotomicModulus (ZMod q)) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/NormBounds/Basic.lean",
+          "upstream_line": 141,
+          "normalized_command_sha256": "6ed1b71c6cc569d57b1cfa791366e2243e3298ea651c20893c82eb2fea425b42"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 61,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus",
+          "active_context": [
+            "open scoped BigOperators",
+            "variable {q : ℕ} [NeZero q]",
+            "variable [Fact (Nat.Prime q)] [BEq (ZMod q)] [LawfulBEq (ZMod q)] (Φ : CyclotomicModulus (ZMod q)) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/NormBounds/Basic.lean",
+          "upstream_line": 143,
+          "normalized_command_sha256": "645c6c0fe26b0cecbdb0d1250b20a3e8b01984bd39e82f445d49904ff8f04f5a"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/Lattices/CyclotomicRing/Rq.lean": {
+      "before_sha256": "7f10b449b474789eb42c9b1c6139fa28406f55ef9334d1586ae91f9dc5862f42",
+      "after_sha256": "97734108c4105a1b4fdd12fc1da2b99604403fd1fc7b6013e3fc235218cb171d",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 52,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus.Rq",
+          "active_context": [
+            "open Polynomial CompPoly CompPoly.CPolynomial",
+            "variable {R : Type*} [Field R] [BEq R] [LawfulBEq R]",
+            "variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+          "upstream_line": 111,
+          "normalized_command_sha256": "a2cb8f0da85a8597c35ed1908352afec1db21b9493db4b352a623acde5c72d51"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 54,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus.Rq",
+          "active_context": [
+            "open Polynomial CompPoly CompPoly.CPolynomial",
+            "variable {R : Type*} [Field R] [BEq R] [LawfulBEq R]",
+            "variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+          "upstream_line": 113,
+          "normalized_command_sha256": "661b9da2e964144d73f5411528481d1d91c4d045f9f6e997d39933dfa9427f5a"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 55,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus.Rq",
+          "active_context": [
+            "open Polynomial CompPoly CompPoly.CPolynomial",
+            "variable {R : Type*} [Field R] [BEq R] [LawfulBEq R]",
+            "variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+          "upstream_line": 114,
+          "normalized_command_sha256": "5a41a94db064e73ecf7e09cacfb5c1ef3018a27cda1662fb4b733fddfbdd9d82"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 56,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus.Rq",
+          "active_context": [
+            "open Polynomial CompPoly CompPoly.CPolynomial",
+            "variable {R : Type*} [Field R] [BEq R] [LawfulBEq R]",
+            "variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+          "upstream_line": 115,
+          "normalized_command_sha256": "c6d135a7bd182a0b9f0d0fb682f8b5861cc05489dd71bb914c42ad7731f4756a"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 57,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus.Rq",
+          "active_context": [
+            "open Polynomial CompPoly CompPoly.CPolynomial",
+            "variable {R : Type*} [Field R] [BEq R] [LawfulBEq R]",
+            "variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+          "upstream_line": 116,
+          "normalized_command_sha256": "7a1f4044e4364f9e7a46b743f3bea35b32ead77be4ddac6a60a1253fe3a99de4"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 58,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus.Rq",
+          "active_context": [
+            "open Polynomial CompPoly CompPoly.CPolynomial",
+            "variable {R : Type*} [Field R] [BEq R] [LawfulBEq R]",
+            "variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+          "upstream_line": 117,
+          "normalized_command_sha256": "88cc2e3ad3132bda12e9a6d423752dc9081024a5e71788799a5d852364fd377f"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 59,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus.Rq",
+          "active_context": [
+            "open Polynomial CompPoly CompPoly.CPolynomial",
+            "variable {R : Type*} [Field R] [BEq R] [LawfulBEq R]",
+            "variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+          "upstream_line": 118,
+          "normalized_command_sha256": "6b510e4f3ce09e4d14d808fd01463603b53f5ab8dff280a1284f478d1765e748"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 60,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus.Rq",
+          "active_context": [
+            "open Polynomial CompPoly CompPoly.CPolynomial",
+            "variable {R : Type*} [Field R] [BEq R] [LawfulBEq R]",
+            "variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+          "upstream_line": 119,
+          "normalized_command_sha256": "f91e75760eb73f881a3f52d52f773ca96c50e533c072edc90947efb97a39d1a5"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 61,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus.Rq",
+          "active_context": [
+            "open Polynomial CompPoly CompPoly.CPolynomial",
+            "variable {R : Type*} [Field R] [BEq R] [LawfulBEq R]",
+            "variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+          "upstream_line": 120,
+          "normalized_command_sha256": "0d204610634d2445041bea17aee2bb621107effc61fcd0648489e274ec4c5ab7"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 62,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus.Rq",
+          "active_context": [
+            "open Polynomial CompPoly CompPoly.CPolynomial",
+            "variable {R : Type*} [Field R] [BEq R] [LawfulBEq R]",
+            "variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+          "upstream_line": 121,
+          "normalized_command_sha256": "ad3f4985dbcfb52ceadf0427ac354c71661bc87a0046df866e2afe8aad46e3f9"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 63,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus.Rq",
+          "active_context": [
+            "open Polynomial CompPoly CompPoly.CPolynomial",
+            "variable {R : Type*} [Field R] [BEq R] [LawfulBEq R]",
+            "variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+          "upstream_line": 122,
+          "normalized_command_sha256": "2707acb26a0be71716860294bc0c4534886f426733d77f11294ebfc69edd8d1d"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 64,
+          "namespace": "ArkLib.Lattices.CyclotomicModulus.Rq",
+          "active_context": [
+            "open Polynomial CompPoly CompPoly.CPolynomial",
+            "variable {R : Type*} [Field R] [BEq R] [LawfulBEq R]",
+            "variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+          "upstream_line": 123,
+          "normalized_command_sha256": "22a10af86d82a0512745fe51a51da692acfecb7afb0233ab4c80713e9d92b42a"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/Lattices/Vectors.lean": {
+      "before_sha256": "1feba313da07df260b2c299a52ee76760009430ef3dec92f1950c2b3c5c654f5",
+      "after_sha256": "0662aef81af460439c51cc93fe3b51c9c411905164fb4dab2597f01ef3d6d778",
+      "removed": [
+        {
+          "kind": "infixr",
+          "name": null,
+          "line": 58,
+          "namespace": "ArkLib.Lattices",
+          "active_context": [
+            "open scoped BigOperators",
+            "universe u",
+            "variable {P : Type u} [Mul P] [Add P] [Zero P]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/Vectors.lean",
+          "upstream_line": 104,
+          "normalized_command_sha256": "63283f02e2593ab62021f208e9ab8f33d93dbb648853ae385c29f3ca1643eea0"
+        },
+        {
+          "kind": "infixl",
+          "name": null,
+          "line": 59,
+          "namespace": "ArkLib.Lattices",
+          "active_context": [
+            "open scoped BigOperators",
+            "universe u",
+            "variable {P : Type u} [Mul P] [Add P] [Zero P]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/Vectors.lean",
+          "upstream_line": 105,
+          "normalized_command_sha256": "82bfccaa7fea1f15e3551efbb03ca85fc9133b89b639ab8ce9815436f1772e35"
+        },
+        {
+          "kind": "infixr",
+          "name": null,
+          "line": 60,
+          "namespace": "ArkLib.Lattices",
+          "active_context": [
+            "open scoped BigOperators",
+            "universe u",
+            "variable {P : Type u} [Mul P] [Add P] [Zero P]"
+          ],
+          "upstream_owner": "ArkLib/Data/Lattices/Vectors.lean",
+          "upstream_line": 106,
+          "normalized_command_sha256": "50f54b4af53bc90cc16720adc8b0b9ebccd7085679576f8a5bd80e6ecaae6f3c"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/Data/MvPolynomial/Interpolation.lean": {
+      "before_sha256": "c9f56ac12765a562483f7ff599959a01d529e5362c7acb6e0519045cce1a1358",
+      "after_sha256": "dfb953a199fc5db051045fc4ffb1c18e922097279baa6e15c769e791193a9693",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 57,
+          "namespace": "MvPolynomial",
+          "active_context": [
+            "open Finset",
+            "variable {σ : Type*}"
+          ],
+          "upstream_owner": "ArkLib/Data/MvPolynomial/Interpolation.lean",
+          "upstream_line": 153,
+          "normalized_command_sha256": "1b213c5d0e9c52e584815585b43392eb70b17f2eb65d023e31e112e0c054f9a3"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/OracleReduction/Basic.lean": {
+      "before_sha256": "80d197e269336d69de7e0043d4e1dce9c342aac8764e40a4d5068c76ba59e70f",
+      "after_sha256": "794746bee802a78419c36f37b07624b55c2e49c7b1371381e4bc21f9bc5461bc",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 447,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 1}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 890,
+          "normalized_command_sha256": "26935d4597cc91909116f6c846b3891d75bb8dc323ed86f2d8cfe727529298ad"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 449,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 1}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 892,
+          "normalized_command_sha256": "1b1acd7b0de77dfc53a06b4f4eadca26d701991a81771fd8dfbb66c870f3b129"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 451,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 1}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 894,
+          "normalized_command_sha256": "d3918d36775462d277876466ec3f66057c1e97819d24bff20ab763a7edd99949"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 453,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 1}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 896,
+          "normalized_command_sha256": "5fd838c5be4cd7b0438663b203a2cb7bad7f27d284e375a0bdf7795bad4bd982"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 456,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 1}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 899,
+          "normalized_command_sha256": "193373322b8cadbe5bf418cabc1f8468802afcddb6fe980dfa48805b9d0e599b"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 460,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 1}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 903,
+          "normalized_command_sha256": "7c548143355de2c98e6a2dea42a0951471e1cc529a83b29568ba6611c3c3dfec"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 464,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 1}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 907,
+          "normalized_command_sha256": "954c7914d4588df10ec6823ec53e65bbe31ab507aa8780cfd1d0b00c18b39295"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 467,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 1}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 910,
+          "normalized_command_sha256": "ee8a67e817be59ea90814cbd67890819dbcdb3b0cca0438d070ca27a398ff507"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 470,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 1}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 913,
+          "normalized_command_sha256": "e7a52ede2a2c2b8007109e5ee3a707ccc0f7f19724e72aa3cafbba74879c3ae4"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 471,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 1}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 914,
+          "normalized_command_sha256": "e81446bef7275b0184499dbdca5a15ebedf175b371551238d695bb883e9f3780"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 473,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 1}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 916,
+          "normalized_command_sha256": "a50f36e50856de3b0d2a6e9f0c388a415a014df7bb1fb34e10cd0979039a59ea"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 476,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 1}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 919,
+          "normalized_command_sha256": "b69fc090a24c4ad265d8a11174f9c3b80b6786ae5244dccf57cea3f8c91f828c"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 487,
+          "namespace": "ProtocolSpec.IsSingleRound",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 2}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 948,
+          "normalized_command_sha256": "ae941a3d37cece6c1f6de00d753aa1ad7da4caf9c429e362c47d48f6fe9df98c"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 497,
+          "namespace": "ProtocolSpec.IsSingleRound",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 2}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 958,
+          "normalized_command_sha256": "eca0a3d9edb615def33d3ddd5be55a46a846032220377618d87626372a380000"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 506,
+          "namespace": "ProtocolSpec.IsSingleRound",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 2}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 967,
+          "normalized_command_sha256": "2e2447de648e73dc221acf75d47920b77c05b05e1a0767286407308faa4b25fb"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 512,
+          "namespace": "ProtocolSpec.IsSingleRound",
+          "active_context": [
+            "open OracleComp OracleSpec SubSpec ProtocolSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec 2}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Basic.lean",
+          "upstream_line": 973,
+          "normalized_command_sha256": "a42aa281dc90fafdf72b18a1e2d09b2f287eb753ec576571bca3ae16a41dad89"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/OracleReduction/FiatShamir/Basic.lean": {
+      "before_sha256": "0097de62ef43759835b2661d185d1551ae6db9f7e12555470bee6f1471d91424",
+      "after_sha256": "ddb0596518dceb8637fbdc845a902128ed3807d82cd53f6c3386bda1f294ad35",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 49,
+          "namespace": "",
+          "active_context": [
+            "universe u v",
+            "variable {n : ℕ} {σ τ : Type u} {m : Type u → Type v} [Monad m]"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/FiatShamir/Basic.lean",
+          "upstream_line": 54,
+          "normalized_command_sha256": "28296a0fd91f9c592d56cc8606fc8c94c86fa2d502b7b9d99ce13aa691c759f5"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 52,
+          "namespace": "",
+          "active_context": [
+            "universe u v",
+            "variable {n : ℕ} {σ τ : Type u} {m : Type u → Type v} [Monad m]"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/FiatShamir/Basic.lean",
+          "upstream_line": 57,
+          "normalized_command_sha256": "e38597f548f02fd3c70d4675224443ca9cb74a5014148ed6dde96e66a507132a"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/OracleReduction/OracleInterface.lean": {
+      "before_sha256": "b945fd609bfffc4eed7400946ca61af9e22c668f7e222bab95a19595b8c8cc4d",
+      "after_sha256": "1e523b4cd6225b65d9d96ab9a12e11003b42126a6e87b5d2c017590d78818a91",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 47,
+          "namespace": "OracleInterface",
+          "active_context": [
+            "universe u v w",
+            "open OracleComp OracleSpec OracleQuery"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/OracleInterface.lean",
+          "upstream_line": 98,
+          "normalized_command_sha256": "d47af63b462e5106802ae4d5b2a3e8b693f5a7577d3c0c74a81c4f43cece4aca"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 50,
+          "namespace": "OracleInterface",
+          "active_context": [
+            "universe u v w",
+            "open OracleComp OracleSpec OracleQuery"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/OracleInterface.lean",
+          "upstream_line": 108,
+          "normalized_command_sha256": "b23c887c3ddce1f989f8298b9b5173f4e491d6bfd6407f7aee5ec638fc2ffaac"
+        },
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 51,
+          "namespace": "OracleInterface",
+          "active_context": [
+            "universe u v w",
+            "open OracleComp OracleSpec OracleQuery"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/OracleInterface.lean",
+          "upstream_line": 109,
+          "normalized_command_sha256": "48ae90a88b90b3fe78f616cc61325b6c1655fd1873e9e58df96580d23c39897e"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 55,
+          "namespace": "OracleInterface",
+          "active_context": [
+            "universe u v w",
+            "open OracleComp OracleSpec OracleQuery"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/OracleInterface.lean",
+          "upstream_line": 119,
+          "normalized_command_sha256": "44d4d49ffe9ed0b40665556fdcfb293f485917a755cbfaec73a1410392c8fcea"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 75,
+          "namespace": "OracleInterface",
+          "active_context": [
+            "universe u v w",
+            "open OracleComp OracleSpec OracleQuery"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/OracleInterface.lean",
+          "upstream_line": 127,
+          "normalized_command_sha256": "32e0d5fbf88b6426ebec7e37f175eca9a39b973fe24c511e61b7bbe23d5cba4d"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 90,
+          "namespace": "OracleInterface",
+          "active_context": [
+            "universe u v w",
+            "open OracleComp OracleSpec OracleQuery"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/OracleInterface.lean",
+          "upstream_line": 142,
+          "normalized_command_sha256": "3dc5d19ba4ba502fcc4d496c0059a396e96708b803f7dee507083869ed39d588"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 109,
+          "namespace": "OracleInterface",
+          "active_context": [
+            "universe u v w",
+            "open OracleComp OracleSpec OracleQuery"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/OracleInterface.lean",
+          "upstream_line": 175,
+          "normalized_command_sha256": "775e7e13b6cb73982ab46f5262f465024f3ffcebe3e9be3e56f1084a3a77b0fb"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 121,
+          "namespace": "OracleInterface",
+          "active_context": [
+            "universe u v w",
+            "open OracleComp OracleSpec OracleQuery",
+            "open Polynomial MvPolynomial",
+            "variable (R : Type _) [CommSemiring R] (d : ℕ) (σ : Type*)"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/OracleInterface.lean",
+          "upstream_line": 310,
+          "normalized_command_sha256": "d26dad104aa287a8964564a92d295a37609d3d7788a549d47d60c304b86ea3aa"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/OracleReduction/Prelude.lean": {
+      "before_sha256": "5760ee805438f097c488609d84133b7d4620d15b2f8fa7eeb10c28084ed62490",
+      "after_sha256": "e0b4ebbe8e0130b4ec7add097200fe1667e9e4d0d61643e47eb3004a28ceab8a",
+      "removed": [
+        {
+          "kind": "infixr",
+          "name": null,
+          "line": 33,
+          "namespace": "",
+          "active_context": [
+            "open OracleComp"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Prelude.lean",
+          "upstream_line": 28,
+          "normalized_command_sha256": "ab3839460f2a1810ef552faa20d0078d9446e100e31d0c61a7974d8ac32e4dfd"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 36,
+          "namespace": "",
+          "active_context": [
+            "open OracleComp"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Prelude.lean",
+          "upstream_line": 39,
+          "normalized_command_sha256": "c6e0cf1410c43d2e9fa77b8698825e661c675469cf7f021e5b84807882042040"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 40,
+          "namespace": "",
+          "active_context": [
+            "open OracleComp"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Prelude.lean",
+          "upstream_line": 54,
+          "normalized_command_sha256": "671dac89219e0683cba9d4afffc1373f279e88a69a30892ba3d2139cf087ecb6"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 42,
+          "namespace": "",
+          "active_context": [
+            "open OracleComp"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Prelude.lean",
+          "upstream_line": 56,
+          "normalized_command_sha256": "1ac4d998577d04d4a9e06343d81647a7c60b47c7dee428ecbeed2184de0f5d4f"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 44,
+          "namespace": "",
+          "active_context": [
+            "open OracleComp"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Prelude.lean",
+          "upstream_line": 61,
+          "normalized_command_sha256": "8cb1638f62b999a7890ef602413e9b371f50be64c1a2b60d98203463509ca70b"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 49,
+          "namespace": "Direction",
+          "active_context": [
+            "open OracleComp"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Prelude.lean",
+          "upstream_line": 90,
+          "normalized_command_sha256": "664a7e87e2c493e1f25a2567a7ce48a9bedbf438b371ab45cf8254bb16d435af"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 51,
+          "namespace": "Direction",
+          "active_context": [
+            "open OracleComp"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Prelude.lean",
+          "upstream_line": 92,
+          "normalized_command_sha256": "b8cc95c9f150f9591c13f581c1db0e8fcce98f8e55a9fe9ac0e819fc12672461"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/OracleReduction/ProtocolSpec/Basic.lean": {
+      "before_sha256": "902973358a5302765e46e1fb2566fd899782af7e5df831234bedd256d151e63d",
+      "after_sha256": "089ac48c7558b1fe4d81cbe4ebd669ad24c09b77bfbd248ae61ca843231e9962",
+      "removed": [
+        {
+          "kind": "notation",
+          "name": null,
+          "line": 48,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 48,
+          "normalized_command_sha256": "788d0c6ab10ea1dad694d0fedb5e12c8a6964416788fc332d3b8efa0fc9364c7"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 50,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 60,
+          "normalized_command_sha256": "5a6b15708ed99f35f2325385d83b2d4f98f48b5e000478466414066e1fbcd139"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 52,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 62,
+          "normalized_command_sha256": "7cdb25c00498998fe03bb484c0c92ac0369c0983e1ed1fda5c4466622b9bb522"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 59,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 136,
+          "normalized_command_sha256": "61bf513a65c353592d10a2e26bdcc1ac2904e49ef16f90feb39fed82fa420623"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 65,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 142,
+          "normalized_command_sha256": "1dbeb013088c8696c6f5e57dbad74c210556ba360a5b6147dcbc6836f94a4024"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 71,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 148,
+          "normalized_command_sha256": "af5811707c7d3ae70ebf3704829977e67b9516d3fd8b4e880d394c9e9de31f5a"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 84,
+          "namespace": "ProtocolSpec.FullTranscript",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {n : ℕ}",
+            "variable {m start stop : ℕ} {h : m ≤ n} {h1 : start ≤ stop} {h2 : stop ≤ n} {pSpec : ProtocolSpec n}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 192,
+          "normalized_command_sha256": "815da24c95bb386a9fd1d8ed165382331743c229a615bf6f8a2f94939ba50cd9"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 90,
+          "namespace": "ProtocolSpec.FullTranscript",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {n : ℕ}",
+            "variable {m start stop : ℕ} {h : m ≤ n} {h1 : start ≤ stop} {h2 : stop ≤ n} {pSpec : ProtocolSpec n}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 198,
+          "normalized_command_sha256": "185425f2a58705c85a756eba9d08001011ae04ff748fb0fc86907a7e96a9bd24"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 96,
+          "namespace": "ProtocolSpec.FullTranscript",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {n : ℕ}",
+            "variable {m start stop : ℕ} {h : m ≤ n} {h1 : start ≤ stop} {h2 : stop ≤ n} {pSpec : ProtocolSpec n}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 204,
+          "normalized_command_sha256": "47b91c66bdccc831eff3d318e7626de2a2325419a46585215a9840c312943225"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 122,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 285,
+          "normalized_command_sha256": "2cc32eaef239908742a2c7534ef047988f67549f409a61ce65072e79b3634227"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 125,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 288,
+          "normalized_command_sha256": "933965e153cb493c87931d75d0e035aebdfd0eff6b6be50364efc564e24fbc0d"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 128,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 291,
+          "normalized_command_sha256": "26c40035a8345f4885e618f228fa216cea4d11c35bdee798ed7dda541b09e7d6"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 132,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 295,
+          "normalized_command_sha256": "aac0a2082bde39415863262d59cfb5eb8e2f18c11bb4c410bcb7373263a425c2"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 133,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 296,
+          "normalized_command_sha256": "2fce9e8db522b125013a5732030f59f04e20c74c599f3a577ed2fd4ff0600bc5"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 134,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 297,
+          "normalized_command_sha256": "d925b0b9111db6dc8f15ab57258bccc74dcf975b87d300131089adb1f1630c5a"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 138,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 301,
+          "normalized_command_sha256": "37f702d3f05f54928034532571a1a3207a3dede822d8fa706ae0542cef999d7f"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 140,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 303,
+          "normalized_command_sha256": "612b0c91823fe482c26d381620b7a58e7f5df4fa6056a10ecc1660ce1f8e67d4"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 143,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 306,
+          "normalized_command_sha256": "d5a252bdb72aae1e6549c96f6949f15fd328e85db8ae222c64778fa6b3af342f"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 145,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 308,
+          "normalized_command_sha256": "e7c68ba5eb73647978a6e6831359443280437592ff7549dba5a3a0c360233ef7"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 147,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 310,
+          "normalized_command_sha256": "f6890024f97cff0c73f45f95579aac4acbe6a6a14ee0f3516502567ff202f292"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 150,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 313,
+          "normalized_command_sha256": "c76d3aa63dc69c2fb188c0454215f8796a3616998014fdaa5272f0b24573f9e8"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 152,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 315,
+          "normalized_command_sha256": "bc6d78d8e38504089703a6f243f308efc0aa76ad728d5bd93ea3113ef4349b4a"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 155,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 318,
+          "normalized_command_sha256": "c710a5bceaad1dfebb8e93b79e8b6dadb88953d2d6aa88c2729229db61cf8022"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 157,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 320,
+          "normalized_command_sha256": "3ef21bc1c00a511fb0f60a1fe95c781191ff704b656bd950806b8dee2bb4a732"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 159,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 322,
+          "normalized_command_sha256": "985572303b272508be539329fae44d88c9748b193a591f0ecd50e3f1fe8a5230"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 164,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 327,
+          "normalized_command_sha256": "dafb5e118d6ab9abdbb7cfa443bd471ba0618d297fc217e9b2667b8629c3a607"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 165,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 328,
+          "normalized_command_sha256": "214c5f5673a770590b61496e13b8f09979bf0d008770cbbeab7f04650f91d44b"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 166,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 329,
+          "normalized_command_sha256": "0cd45c9e0759c3992c78bfb63a36de5232839d6ddcc24d549e1f2d59275e585c"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 168,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {Msg Chal : Type}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 331,
+          "normalized_command_sha256": "4a97e3064d396c1b651eaee3fa7c63e1e7adf7a82e4decc9ba709b87b51fde2b"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 199,
+          "namespace": "ProtocolSpec.MessagesUpTo",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 380,
+          "normalized_command_sha256": "9bfd08bdb2c3cddded2cb509d1d76d42cf2bea4f3970dce6b6219fb90ba5315a"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 204,
+          "namespace": "ProtocolSpec.MessagesUpTo",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 385,
+          "normalized_command_sha256": "4f24a77e73d9876200fc9846806fda56e8fbcb261f854c76bc59695ae256976d"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 214,
+          "namespace": "ProtocolSpec.MessagesUpTo",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 395,
+          "normalized_command_sha256": "232d4d58f00ebde60f3b967dfbc81ad861070c7dfab7aa10f7d894803fe1c6c6"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 218,
+          "namespace": "ProtocolSpec.MessagesUpTo",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 429,
+          "normalized_command_sha256": "d9694825f7dc3f62d7cd1fe503c1bda5a7763b14367bd7e9e64b072a541c85f7"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 228,
+          "namespace": "ProtocolSpec.ChallengesUpTo",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 439,
+          "normalized_command_sha256": "2dc1680e8fcde5e76fced2abd5c3ece7daa0e14e2cdc83d73777f00ae677db47"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 233,
+          "namespace": "ProtocolSpec.ChallengesUpTo",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 444,
+          "normalized_command_sha256": "46a576fb13db8d7ac176fd434b1ea2815e37b1a7391e183d36d519bf09749da8"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 243,
+          "namespace": "ProtocolSpec.ChallengesUpTo",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 454,
+          "normalized_command_sha256": "0cc17372c2c573e6621e577b5db55aa60a36e333ebaf18411c6f1707bc91eadb"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 252,
+          "namespace": "ProtocolSpec.Transcript",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 491,
+          "normalized_command_sha256": "ac463ea3bc94c6229af6f9d413bfc1100d4d6c48b2359ab73a58a67486d9c094"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 257,
+          "namespace": "ProtocolSpec.Transcript",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 496,
+          "normalized_command_sha256": "770aed255619e5bd41241fae4c26f169b1fb6ef397bbfe35f156fc00da1ca59e"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 267,
+          "namespace": "ProtocolSpec.Transcript",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 506,
+          "normalized_command_sha256": "365fe31ff2f301ffd145b6f2021caa256ba65d14329be6adcdcba0b2e73e52f9"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 298,
+          "namespace": "ProtocolSpec.FullTranscript",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 638,
+          "normalized_command_sha256": "6bae370bec2a2ab0f72883a21da1b8a93923060c7a5ad4042f3da567e1b3874f"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 317,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n}",
+            "variable (pSpec : ProtocolSpec n) [inst : OracleInterfaces pSpec]"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+          "upstream_line": 677,
+          "normalized_command_sha256": "8af29d4e1ca9e50c0e1fe9807ceecd65fd18bda065764367215f4cc3405997a0"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/OracleReduction/ProtocolSpec/SeqCompose.lean": {
+      "before_sha256": "34f0bfdab46eec11af6369938ea073fab34184992f245e54c27bc594c4702ad1",
+      "after_sha256": "c0b52e4d1a8efd68fb6593f41e272e921d43cf8219c3c325e57df29f7e5515ff",
+      "removed": [
+        {
+          "kind": "infixl",
+          "name": null,
+          "line": 34,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {m n : ℕ}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
+          "upstream_line": 43,
+          "normalized_command_sha256": "5ae08dbaaf9b5350540afda847b26e1f603663f60c745c7d9ad29f428a497b01"
+        },
+        {
+          "kind": "infixl",
+          "name": null,
+          "line": 47,
+          "namespace": "ProtocolSpec.FullTranscript",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {m n : ℕ}",
+            "variable {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
+          "upstream_line": 176,
+          "normalized_command_sha256": "02a64df7c99666f2d67990dfb9d25b395c3ac612df68444408effcd63327d0ab"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 118,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {m n : ℕ}",
+            "variable {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}",
+            "variable {ι : Type} {oSpec : OracleSpec ι} {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type} {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
+          "upstream_line": 491,
+          "normalized_command_sha256": "3b7b7181c96679a0beefe113ea751a7e63e3d7c19d77c9afd9eeb13eb3e1bb76"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 129,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {m n : ℕ}",
+            "variable {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}",
+            "variable {ι : Type} {oSpec : OracleSpec ι} {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type} {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
+          "upstream_line": 502,
+          "normalized_command_sha256": "37c9df290f039015a71855b14d9410dd0a6916c507ab12f49e2dd5d9709877de"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 140,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {m n : ℕ}",
+            "variable {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}",
+            "variable {ι : Type} {oSpec : OracleSpec ι} {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type} {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
+          "upstream_line": 513,
+          "normalized_command_sha256": "80fb1a32d13ccfb0ab02499a6ab9b466cff8ddbe9d5671e79086715cc421c233"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 150,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {m n : ℕ}",
+            "variable {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}",
+            "variable {ι : Type} {oSpec : OracleSpec ι} {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type} {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
+          "upstream_line": 523,
+          "normalized_command_sha256": "c0734444a784bc063ddb96fdf6b355a3614edcbf751617a6325b795e35c7d995"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 158,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {m n : ℕ}",
+            "variable {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}",
+            "variable {ι : Type} {oSpec : OracleSpec ι} {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type} {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
+          "upstream_line": 531,
+          "normalized_command_sha256": "ca492c6b524a428cc4a049763f88cede16c4afe23196c0e6254b548d120515bf"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 204,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {m n : ℕ}",
+            "variable {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
+          "upstream_line": 752,
+          "normalized_command_sha256": "b6f865e92b7fad7e66c70bc54363f17e25238d30c8f5332220c6f781a99a366e"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 211,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {m n : ℕ}",
+            "variable {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
+          "upstream_line": 773,
+          "normalized_command_sha256": "d0fc9cbd8c7fae156cee2a86c7e4a10d4e0ab6335792e4125ee84a2f78e085cb"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 218,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {m n : ℕ}",
+            "variable {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
+          "upstream_line": 780,
+          "normalized_command_sha256": "51ee2cd6b5e4ec03c4a6ccaceca68ada53726c42581e232f5e85ce4dd31271b3"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 227,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "universe u v",
+            "open OracleComp OracleSpec",
+            "variable {m n : ℕ}",
+            "variable {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
+          "upstream_line": 789,
+          "normalized_command_sha256": "ef52430bdba2cddf87874d13d2b006e14819e53e842e0b82cacf8fbf1fbb9218"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/OracleReduction/Salt.lean": {
+      "before_sha256": "992dc381c0d02fe0f2fdbe5aa3f406c606a552e26fc15999492d1ffeef1cd0cc",
+      "after_sha256": "974900cacc0ba7b7bb8aa5714b38cee90a8bf5753b37d8accf1e2b3f68e6e64f",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 59,
+          "namespace": "ProtocolSpec",
+          "active_context": [
+            "open OracleComp OracleSpec",
+            "variable {n : ℕ}",
+            "variable {pSpec : ProtocolSpec n} {Salt : pSpec.MessageIdx → Type}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/Salt.lean",
+          "upstream_line": 135,
+          "normalized_command_sha256": "c2a94d61cae75322c2bc3a6b9a62adedbd6207169a80aea32691d4acb63a7fc0"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/OracleReduction/VectorIOR.lean": {
+      "before_sha256": "fb41befc41f7e113b7ccd467b6596ccb62dec3c44b9aa697c9426f12bb4df9ad",
+      "after_sha256": "1991ec54fa734531fdfb1e31f7d94e19c21d0cb493d2e21c3ed128f081a8db6a",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 41,
+          "namespace": "ProtocolSpec.VectorSpec",
+          "active_context": [
+            "variable {n : ℕ}",
+            "variable {A : Type} {vPSpec : VectorSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/VectorIOR.lean",
+          "upstream_line": 79,
+          "normalized_command_sha256": "bf68d313b56fc813579751802794ae8a8098d91fdadc32607331c6d62cf3f1f9"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 44,
+          "namespace": "ProtocolSpec.VectorSpec",
+          "active_context": [
+            "variable {n : ℕ}",
+            "variable {A : Type} {vPSpec : VectorSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/VectorIOR.lean",
+          "upstream_line": 82,
+          "normalized_command_sha256": "56a5c8d99a801b14b839bcc4d68a0b0605d4906eb7751ee09f62bacb3a825900"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 47,
+          "namespace": "ProtocolSpec.VectorSpec",
+          "active_context": [
+            "variable {n : ℕ}",
+            "variable {A : Type} {vPSpec : VectorSpec n}"
+          ],
+          "upstream_owner": "ArkLib/OracleReduction/VectorIOR.lean",
+          "upstream_line": 85,
+          "normalized_command_sha256": "16504fb2f3120a1d3ad5e99e93099c6320fd92adba1214f4638e3012b8dcfbd8"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/SingleRound.lean": {
+      "before_sha256": "4f3c9951192bd457e6658fd02616bfc4ffaa6094b5a888779cfb0a89faa9aa99",
+      "after_sha256": "b6080499fbc2efccea5777d2b280712596af62a913009dbd74853053248399dd",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 52,
+          "namespace": "BatchedFri.Spec",
+          "active_context": [
+            "open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset Fri NNReal Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable {k : ℕ} (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (m : ℕ)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/BatchedFri/Spec/SingleRound.lean",
+          "upstream_line": 63,
+          "normalized_command_sha256": "2144caaf4c80569e6b18866d40a3a434e9d6a09e21bc5baa56dc05fe25245535"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/ProofSystem/Component/SendWitness.lean": {
+      "before_sha256": "71114214d73c8c751629d1eda212ddeef15b8a26659ee834fb3e4aa0fbd7f5b4",
+      "after_sha256": "be508a9d4e73c864c74d91df527622be9ed07a806fb599de1dbe94905b8567ff",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 61,
+          "namespace": "SendWitness",
+          "active_context": [
+            "open OracleSpec OracleComp OracleQuery ProtocolSpec Function Equiv",
+            "variable {ι : Type} (oSpec : OracleSpec ι) (Statement : Type)",
+            "variable (Witness : Type)"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Component/SendWitness.lean",
+          "upstream_line": 60,
+          "normalized_command_sha256": "39b8c5eec2b1f18c173a71a69a649a26c2a65e0cb9d3d4ec3458cd6ac8e1087f"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/ProofSystem/ConstraintSystem/MemoryChecking.lean": {
+      "before_sha256": "a44ca0dc6aecabfc7c83dfe15af9af07affbfb52f9c1b8f45b3e6de4b6973130",
+      "after_sha256": "f117db055a7f946fa9540c9e464f600b3f47cd48b568e454394aa2c2dfdfb158",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 69,
+          "namespace": "MemoryChecking",
+          "active_context": [
+            "universe u v w",
+            "variable {ι : Type u} {α : ι → Type v}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/ConstraintSystem/MemoryChecking.lean",
+          "upstream_line": 108,
+          "normalized_command_sha256": "a657f51612d099f701aead07c5736425fa9853fb029bd021d1626b9642494441"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 74,
+          "namespace": "MemoryChecking",
+          "active_context": [
+            "universe u v w",
+            "variable {ι : Type u} {α : ι → Type v}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/ConstraintSystem/MemoryChecking.lean",
+          "upstream_line": 113,
+          "normalized_command_sha256": "644d201c5d2b029334f5052b19c87f22c096400a297ae1be6b04394fabe94654"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/ProofSystem/Fri/Spec/General.lean": {
+      "before_sha256": "539fe43287ceff84510943db1d33b48fd084e23b85b9636364ee6233bb71d997",
+      "after_sha256": "fe0a560241394765214ac7dd50f105d2218335b5b4f6bdb8db0b3ae0a45ef874",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 54,
+          "namespace": "Fri.Spec",
+          "active_context": [
+            "open OracleSpec OracleComp ProtocolSpec NNReal Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable (k : ℕ) (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (dom_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n)",
+            "variable (l : ℕ)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/General.lean",
+          "upstream_line": 65,
+          "normalized_command_sha256": "ffd8f99b527a0544bb0e2aa7d9a673c8fd2d5243729700aadd8166336320198d"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 57,
+          "namespace": "Fri.Spec",
+          "active_context": [
+            "open OracleSpec OracleComp ProtocolSpec NNReal Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable (k : ℕ) (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (dom_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n)",
+            "variable (l : ℕ)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/General.lean",
+          "upstream_line": 68,
+          "normalized_command_sha256": "3456513d4873fa4b4ac971f39f62764bcf128c5758290ae8256acc8d2beeb03f"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 60,
+          "namespace": "Fri.Spec",
+          "active_context": [
+            "open OracleSpec OracleComp ProtocolSpec NNReal Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable (k : ℕ) (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (dom_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n)",
+            "variable (l : ℕ)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/General.lean",
+          "upstream_line": 71,
+          "normalized_command_sha256": "84e900f8f727b6c59b10e221474d653594b96103feb6bfe4ed79a1a2d174014b"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 63,
+          "namespace": "Fri.Spec",
+          "active_context": [
+            "open OracleSpec OracleComp ProtocolSpec NNReal Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable (k : ℕ) (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (dom_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n)",
+            "variable (l : ℕ)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/General.lean",
+          "upstream_line": 75,
+          "normalized_command_sha256": "09b1368252090a3b8d1a65faa4092637a28d8511795cfba2e4d4a4c77bd77d49"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 68,
+          "namespace": "Fri.Spec",
+          "active_context": [
+            "open OracleSpec OracleComp ProtocolSpec NNReal Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable (k : ℕ) (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (dom_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n)",
+            "variable (l : ℕ)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/General.lean",
+          "upstream_line": 81,
+          "normalized_command_sha256": "9b1ce2541efe2607d3466576bf7e3660a7a59e76aea860d4660aa35cb150bb49"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/ProofSystem/Fri/Spec/SingleRound.lean": {
+      "before_sha256": "781b5076e081cb47bbc6b576f16f4c68717675813c51578c6fa7bb06abc2f318",
+      "after_sha256": "f243545fc80bad783e9c2a916f0a5dba1b82c09e316986b555674aa9e3c84338",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 74,
+          "namespace": "Fri.Spec",
+          "active_context": [
+            "open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset NNReal",
+            "open Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable {k : ℕ} (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (domain_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (i : Fin k)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
+          "upstream_line": 169,
+          "normalized_command_sha256": "7b59a3702b5c7acd4984b4b659533c395ebc72ee927cb2810347840e8a39477b"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 153,
+          "namespace": "Fri.Spec.FoldPhase",
+          "active_context": [
+            "open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset NNReal",
+            "open Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable {k : ℕ} (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (domain_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (i : Fin k)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
+          "upstream_line": 256,
+          "normalized_command_sha256": "7a2100947db97b3b8c0de36fe3f96e17aeb3b6584a7c78ff3f8e388dc31ab4c5"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 160,
+          "namespace": "Fri.Spec.FoldPhase",
+          "active_context": [
+            "open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset NNReal",
+            "open Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable {k : ℕ} (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (domain_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (i : Fin k)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
+          "upstream_line": 263,
+          "normalized_command_sha256": "cf831d2c0b02d43b70b6c6ffa265c34e0c75fed32e60c72ad38c11b40b0e2ad4"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 177,
+          "namespace": "Fri.Spec.FoldPhase",
+          "active_context": [
+            "open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset NNReal",
+            "open Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable {k : ℕ} (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (domain_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (i : Fin k)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
+          "upstream_line": 280,
+          "normalized_command_sha256": "2dba4eb0daa08d5e8360375431b9065e13ac66ffcc8ed551222e9beebf40393c"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 297,
+          "namespace": "Fri.Spec.FinalFoldPhase",
+          "active_context": [
+            "open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset NNReal",
+            "open Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable {k : ℕ} (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (domain_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (i : Fin k)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
+          "upstream_line": 445,
+          "normalized_command_sha256": "90bef5864a8ef3cdf4354c0f5909245543803c2cee78fb112c4258d6716067a0"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 302,
+          "namespace": "Fri.Spec.FinalFoldPhase",
+          "active_context": [
+            "open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset NNReal",
+            "open Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable {k : ℕ} (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (domain_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (i : Fin k)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
+          "upstream_line": 450,
+          "normalized_command_sha256": "db0a76d372a5526e90e926de7c0d4ac6d1b089a8b897e0cb7121eeadd3b92979"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 304,
+          "namespace": "Fri.Spec.FinalFoldPhase",
+          "active_context": [
+            "open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset NNReal",
+            "open Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable {k : ℕ} (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (domain_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (i : Fin k)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
+          "upstream_line": 452,
+          "normalized_command_sha256": "36fc4b4621193c663ed7bdda8b26b889e3d4b87e721162bd951dc3ac2e989aca"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 318,
+          "namespace": "Fri.Spec.FinalFoldPhase",
+          "active_context": [
+            "open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset NNReal",
+            "open Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable {k : ℕ} (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (domain_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (i : Fin k)",
+            "variable {ω : SmoothCosetFftDomain n F}"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
+          "upstream_line": 466,
+          "normalized_command_sha256": "53a6d7c88229790fac4b9412f0050b39ee54a7e2183745b32e088dbf8997f8f1"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 469,
+          "namespace": "Fri.Spec.QueryRound",
+          "active_context": [
+            "open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset NNReal",
+            "open Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable {k : ℕ} (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (domain_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (i : Fin k)",
+            "variable {ω : SmoothCosetFftDomain n F}",
+            "variable (l : ℕ) [NeZero l]"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
+          "upstream_line": 684,
+          "normalized_command_sha256": "93124ba5d6d2a9cbb1170562be6ce1e6b1c37a7839ba19150f2983d7b4023bb1"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 475,
+          "namespace": "Fri.Spec.QueryRound",
+          "active_context": [
+            "open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset NNReal",
+            "open Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable {k : ℕ} (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (domain_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (i : Fin k)",
+            "variable {ω : SmoothCosetFftDomain n F}",
+            "variable (l : ℕ) [NeZero l]"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
+          "upstream_line": 689,
+          "normalized_command_sha256": "c6a22d56a7dffb626fb9151526d59faf4ec643fbd2f9b1fd4b3fb6d66cf1be44"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 485,
+          "namespace": "Fri.Spec.QueryRound",
+          "active_context": [
+            "open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset NNReal",
+            "open Domain",
+            "variable {F : Type} [NonBinaryField F] [Fintype F] [DecidableEq F]",
+            "variable {n : ℕ}",
+            "variable {k : ℕ} (s : Fin (k + 1) → ℕ+) (d : ℕ+)",
+            "variable (domain_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n) (i : Fin k)",
+            "variable {ω : SmoothCosetFftDomain n F}",
+            "variable (l : ℕ) [NeZero l]"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
+          "upstream_line": 700,
+          "normalized_command_sha256": "cab98ee4229b2c7cc2f903ab7e183bf4cb4f2d60e17265d6fd3651c3e8a60a8e"
+        }
+      ]
+    },
+    "ProximityPrize/Extensions/ProofSystem/Sumcheck/Structured/SingleRound.lean": {
+      "before_sha256": "8591e3983e07211d6170bda8d3094b23f6ab3ed68e710511fa551865f66b9d76",
+      "after_sha256": "cdff5b23912d8aaa6b21997adf207becd7c86c03777e37c28ca324d751a378c8",
+      "removed": [
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 226,
+          "namespace": "Sumcheck.Structured",
+          "active_context": [
+            "open OracleSpec OracleComp ProtocolSpec Finset Polynomial MvPolynomial",
+            "variable (L : Type) [Semiring L]"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Sumcheck/Structured/SingleRound.lean",
+          "upstream_line": 77,
+          "normalized_command_sha256": "5e2fbd233241d9edef50db3db7b002a63ea05289e6759109c5f97d0ca186ea4d"
+        },
+        {
+          "kind": "instance",
+          "name": null,
+          "line": 232,
+          "namespace": "Sumcheck.Structured",
+          "active_context": [
+            "open OracleSpec OracleComp ProtocolSpec Finset Polynomial MvPolynomial",
+            "variable (L : Type) [Semiring L]",
+            "variable [Fintype L] [DecidableEq L] [SampleableType L]"
+          ],
+          "upstream_owner": "ArkLib/ProofSystem/Sumcheck/Structured/SingleRound.lean",
+          "upstream_line": 83,
+          "normalized_command_sha256": "ddca05d2e758bc7241583379b2e4bb213144f6c3c13f8f1345729219268a9cf0"
+        }
+      ]
+    }
+  },
+  "upstream_revision": "94fb4cdd70c2ea061037bf6337611300d71c4e88"
+}

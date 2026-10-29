@@ -3,6 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.CheckClaimPassThrough
+import ProximityPrize.Compatibility.SpartanSendEvalClaim
+import ProximityPrize.Compatibility.SpartanLinearCombination
 import ArkLib.ProofSystem.Spartan.Composition
 import ArkLib.ProofSystem.Spartan.SecondSumcheckComplete
 import ArkLib.ProofSystem.Spartan.SecondSumcheckBridgeFree
@@ -33,14 +36,15 @@ open MvPolynomial OracleComp OracleSpec OracleQuery OracleInterface ProtocolSpec
 namespace Spartan.Spec
 
 variable {R : Type} [CommRing R] [IsDomain R] [Fintype R] [DecidableEq R] [SampleableType R]
-  [VCVCompatible R] (pp : Spartan.PublicParams) {ι : Type} (oSpec : OracleSpec ι)
+  (pp : Spartan.PublicParams) {ι : Type} (oSpec : OracleSpec ι)
 
 /-- The `linearCombination` challenge `LinearCombinationChallenge R = R1CS.MatrixIdx → R` is a
 `SampleableType` (nonempty `Fintype`). Mirrors `Bricks.instSampleableTypeLinearCombinationChallenge`
 in `Composition.lean`; restated here so the standalone check resolves the challenge instance. -/
 noncomputable instance instSampleableTypeLinearCombinationChallenge' :
-    SampleableType (LinearCombinationChallenge R) :=
-  SampleableType.ofFintype (R1CS.MatrixIdx → R)
+    SampleableType (LinearCombinationChallenge R) := by
+  letI : Inhabited R := ⟨0⟩
+  exact SampleableType.ofFintype (R1CS.MatrixIdx → R)
 
 /-- Outer input relation of the `linearCombination` phase: R1CS satisfiability, carried through. -/
 def linearCombinationRelIn :
@@ -61,78 +65,34 @@ instance instLinearCombinationVerifierOnly :
     VerifierOnly (⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ : ProtocolSpec 1) where
   verifier_first' := by simp
 
-set_option linter.unusedSimpArgs false in
-omit [IsDomain R] [DecidableEq R] [SampleableType R] in
+omit [DecidableEq R] [SampleableType R] in
+/-- The completed challenge phase preserves an arbitrary relation after stripping its recorded
+challenge. This is a run-support property of the completed downstream constructor. -/
+theorem completedLinearCombination_perfectCompleteness_of
+    {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
+    (rel : Set ((Statement.AfterSendEvalClaim R pp ×
+      (∀ i, OracleStatement.AfterSendEvalClaim R pp i)) × Unit)) :
+    (oracleReduction.completedLinearCombination R pp oSpec).perfectCompleteness init impl rel
+      { x | ((x.1.1.2, x.1.2), ()) ∈ rel } := by
+  apply Reduction.perfectCompleteness_of_run_support
+  rintro ⟨stmt, oStmt⟩ ⟨⟩ hRelIn z hz
+  simp only [oracleReduction.completedLinearCombination, OracleReduction.toReduction, Reduction.run,
+    Prover.run_of_verifier_first, linearCombinationProver, linearCombinationVerifier,
+    OracleVerifier.toVerifier, Verifier.run] at hz
+  simp only [OptionT.run_bind, OptionT.run_mk, OptionT.run_pure, OptionT.run_monadLift,
+    simulateQ_pure, pure_bind, map_pure, liftM_pure,
+    Option.elimM, Option.getM_some, Option.map_some] at hz
+  simp_all [OracleVerifier.materializeOutput, OracleVerifier.materializeOutputOracle, FullTranscript.messages]
+  obtain ⟨q, _, rfl⟩ := hz
+  exact ⟨_, q, stmt.1, stmt.2.1, stmt.2.2, oStmt, ⟨(), rfl⟩, hRelIn⟩
+
+omit [DecidableEq R] [SampleableType R] in
+/-- The completed RLC challenge phase carries the R1CS satisfaction relation unchanged. -/
 theorem linearCombination_perfectCompleteness
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)} :
-    (oracleReduction.linearCombination R pp oSpec).perfectCompleteness init impl
-      (linearCombinationRelIn (R := R) pp) (linearCombinationRelOut (R := R) pp) := by
-  simp only [OracleReduction.perfectCompleteness, oracleReduction.linearCombination,
-    linearCombinationRelIn, linearCombinationRelOut]
-  simp only [Reduction.perfectCompleteness_eq_prob_one]
-  intro ⟨stmt, oStmt⟩ wit hRelIn
-  simp only [OracleReduction.toReduction, Reduction.run,
-    Prover.run_of_verifier_first, linearCombinationProver, linearCombinationVerifier,
-    OracleVerifier.toVerifier, Verifier.run]
-  simp_rw [show (pure : _ → OptionT (OracleComp _) _) = fun x => (pure (some x) :
-    OracleComp _ _) from rfl]
-  simp only [← OracleComp.liftComp_eq_liftM, OracleComp.liftComp_pure,
-    pure_bind, bind_assoc]
-  erw [simulateQ_bind]
-  erw [simulateQ_bind]
-  simp only [QueryImpl.addLift_def, simulateQ_pure,
-    QueryImpl.simulateQ_add_liftComp_right, QueryImpl.simulateQ_add_liftComp_left,
-    simulateQ_query,
-    ← OracleComp.liftComp_eq_liftM, OracleComp.liftComp_pure,
-    pure_bind, bind_assoc, map_pure, monadLift_pure, monadLift_bind]
-  erw [simulateQ_bind]
-  simp only [QueryImpl.addLift_def, simulateQ_pure,
-    QueryImpl.simulateQ_add_liftComp_right, QueryImpl.simulateQ_add_liftComp_left,
-    simulateQ_query,
-    ← OracleComp.liftComp_eq_liftM, OracleComp.liftComp_pure,
-    pure_bind, bind_assoc, map_pure, monadLift_pure, monadLift_bind,
-    OptionT.run_mk, OptionT.run_pure, OptionT.run_bind, OptionT.run,
-    Option.getM, Option.bind_some, Option.elimM,
-    FullTranscript.challenges, FullTranscript.messages, ChallengeIdx, Challenge]
-  erw [simulateQ_query]
-  simp only [Fin.isValue, Fin.vcons_of_one, ChallengeIdx,
-    Challenge, ofPFunctor_toPFunctor, QueryImpl.liftTarget_self, MessageIdx,
-    Message, bind_map_left, StateT.run'_eq, StateT.run_bind, map_bind, OptionT.mk_bind,
-    Set.mem_setOf_eq, probEvent_eq_one_iff, probFailure_bind_eq_zero_iff,
-    OptionT.probFailure_liftM, HasEvalPMF.probFailure_eq_zero, OptionT.support_liftM,
-    Prod.forall, true_and, support_bind, Set.mem_iUnion, OptionT.mem_support_iff,
-    OptionT.run_mk, support_map, Set.mem_image, Prod.exists, exists_and_right,
-    exists_eq_right, exists_prop, forall_exists_index, and_imp, Prod.mk.injEq]
-  constructor <;> intro <;> intro <;> intro <;> intro
-  all_goals try erw [simulateQ_bind]
-  all_goals simp only [MonadLift.monadLift, liftM, monadLift, MonadLiftT.monadLift]
-  all_goals simp only [OracleComp.liftComp_pure, QueryImpl.simulateQ_add_liftComp_left,
-    simulateQ_pure, simulateQ_id', pure_bind, bind_assoc, map_pure, monadLift_pure,
-    OptionT.run_mk, OptionT.run_pure, OptionT.run_bind, OptionT.run,
-    StateT.run'_eq, probFailure_eq_zero,
-    support_pure, Set.mem_singleton_iff, Prod.eq_iff_fst_eq_snd_eq]
-  all_goals try erw [simulateQ_pure]
-  all_goals try simp_all only [simulateQ_pure, pure_bind, map_pure,
-    OptionT.run_mk, OptionT.run_pure, OptionT.run_bind, OptionT.run,
-    StateT.run'_eq, StateT.run_pure, probFailure_eq_zero,
-    support_pure, support_map, Set.mem_singleton_iff, Set.mem_image,
-    OptionT.probFailure_eq, probOutput_pure]
-  · erw [simulateQ_bind, simulateQ_pure]
-    simp only [pure_bind]
-    erw [simulateQ_pure]
-    simp [map_pure, OptionT.mk, probFailure_pure]
-  · intro trFull lc fsc fc x1 oOut wOut lc2 fsc2 fc2 x2 oOut2 sI hsI rng
-    erw [simulateQ_bind] at rng
-    simp only [liftComp_eq_liftM, pure_bind, simulateQ_pure, OptionT.lift,
-      OptionT.run_mk, map_pure] at rng
-    erw [simulateQ_pure] at rng
-    simp only [pure_bind, simulateQ_pure, support_pure, StateT.run, StateT.run',
-      Set.mem_singleton_iff, Prod.mk.injEq] at rng
-    obtain ⟨⟨⟨rfl, rfl⟩, rfl⟩, rfl⟩ := rng
-    refine ⟨?_, ⟨rfl, rfl, rfl, rfl⟩, ?_⟩
-    · simpa only [Set.mem_setOf_eq] using hRelIn
-    · funext i
-      rcases i with j | j <;> rfl
+    (oracleReduction.completedLinearCombination R pp oSpec).perfectCompleteness init impl
+      (linearCombinationRelIn (R := R) pp) (linearCombinationRelOut (R := R) pp) :=
+  completedLinearCombination_perfectCompleteness_of pp oSpec (linearCombinationRelIn pp)
 
 end Spartan.Spec
 
@@ -160,7 +120,7 @@ def sendEvalClaimRelOut
     Set ((Statement.AfterSendEvalClaim R pp ×
         (∀ i, OracleStatement.AfterSendEvalClaim R pp i)) × Unit) :=
   { x | ((x.1.1, fun j => x.1.2 (.inr j)), ()) ∈ relIn ∧
-        x.1.2 (.inl 0) = evalClaimValue R pp x.1.1 (fun j => x.1.2 (.inr j)) }
+        (fun idx => (show R from x.1.2 (.inl idx))) = evalClaimValue R pp x.1.1 (fun j => x.1.2 (.inr j)) }
 
 set_option maxHeartbeats 1000000 in
 omit [IsDomain R] [Fintype R] [SampleableType R] in
@@ -171,40 +131,22 @@ pass-through and the eval-claim honesty are deterministic. -/
 theorem sendEvalClaim_perfectCompleteness
     (relIn : Set ((Statement.AfterFirstSumcheck R pp ×
         (∀ i, OracleStatement.AfterFirstSumcheck R pp i)) × Unit)) :
-    (oracleReduction.sendEvalClaim R pp oSpec).perfectCompleteness init impl
+    (oracleReduction.completedSendEvalClaim R pp oSpec).perfectCompleteness init impl
       relIn (sendEvalClaimRelOut R pp relIn) := by
-  simp only [OracleReduction.perfectCompleteness, Reduction.perfectCompleteness,
-    Reduction.completeness, Reduction.completenessFromRun, ENNReal.coe_zero, tsub_zero]
-  intro ⟨stmt, oStmt⟩ wit hIn
-  have _inst : ProverOnly (⟨!v[.P_to_V], !v[∀ i, EvalClaim R i]⟩ : ProtocolSpec 1) :=
+  apply Reduction.perfectCompleteness_of_run_support
+  rintro ⟨stmt, oStmt⟩ ⟨⟩ hIn z hz
+  have : ProverOnly (⟨!v[.P_to_V], !v[∀ i, EvalClaim R i]⟩ : ProtocolSpec 1) :=
     { prover_first' := by simp }
-  simp only [OracleReduction.toReduction, oracleReduction.sendEvalClaim]
-  rw [Reduction.run_of_prover_first]
+  simp only [OracleReduction.toReduction, oracleReduction.completedSendEvalClaim] at hz
+  rw [Reduction.run_of_prover_first] at hz
   simp only [sendEvalClaimProver, sendEvalClaimVerifier, liftM_pure, pure_bind,
-    bind_pure_comp, OracleVerifier.toVerifier]
-  erw [simulateQ_pure]
-  simp only [map_pure, StateT.run'_eq, StateT.run_pure]
-  rw [ge_iff_le, one_le_probEvent_iff, probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · -- `probFailure = 0`: a `ProbComp` (`OracleComp unifSpec`) cannot fail and the appended
-    -- `pure (some ·)` is total, so the failure probability is structurally zero.
-    rw [OptionT.probFailure_eq, OptionT.run_mk]
-    simp
-  · intro x hx
-    rw [OptionT.mem_support_iff, OptionT.run_mk] at hx
-    simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff] at hx
-    obtain ⟨s, _, hx⟩ := hx
-    cases hx
-    refine ⟨?_, ?_⟩
-    · refine ⟨?_, ?_⟩
-      · -- relation pass-through: input pair recovered from `.inr` part lands in `relIn`
-        convert hIn using 2
-      · -- eval-claim honesty: `.inl 0` slot equals the honest `evalClaimValue`
-        rfl
-    · -- prover output statement equals verifier output statement
-      refine Prod.ext rfl ?_
-      funext i
-      rcases i with j | j <;> rfl
+    bind_pure_comp, OracleVerifier.toVerifier, Verifier.run] at hz
+  simp only [OptionT.run_bind, OptionT.run_mk, OptionT.run_pure, OptionT.run_monadLift,
+    simulateQ_pure, pure_bind, map_pure, liftM_pure,
+    Option.elimM, Option.getM_some, Option.map_some] at hz
+  simp_all [sendEvalClaimRelOut, OracleVerifier.materializeOutput,
+    OracleVerifier.materializeOutputOracle]
+  exact ⟨rfl, rfl⟩
 
 #print axioms sendEvalClaim_perfectCompleteness
 
@@ -247,45 +189,11 @@ theorem prependSlot_perfectCompleteness (Stmt : Type) (OStmt : ιₛ → Type)
     (rel : Set ((Stmt × (∀ i, OStmt i)) × Unit)) :
     (prependSlot (R := R) oSpec Stmt OStmt).perfectCompleteness init impl
       rel (prependSlotRelOut R Stmt OStmt rel) := by
-  unfold OracleReduction.perfectCompleteness
-  simp only [Reduction.perfectCompleteness, Reduction.completeness, Reduction.completenessFromRun,
-    ENNReal.coe_zero, tsub_zero]
-  intro ⟨stmt, oStmt⟩ ⟨⟩ hIn
-  simp only [prependSlot_run]
-  rw [ge_iff_le, one_le_probEvent_iff, probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · rw [OptionT.probFailure_eq, OptionT.run_mk]
-    simp only [probFailure_eq_zero, zero_add]
-    apply probOutput_eq_zero_of_not_mem_support
-    simp only [support_bind, Set.mem_iUnion, not_exists]
-    intro s _
-    change none ∈ _root_.support (StateT.run' (simulateQ _
-        (pure (some (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-          (((0 : R), stmt), oStmt), ()), (((0 : R), stmt), oStmt))) : OracleComp _ _)) s) → False
-    rw [simulateQ_pure]
-    change none ∈ _root_.support (Prod.fst <$>
-      (pure (some (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-        (((0 : R), stmt), oStmt), ()), (((0 : R), stmt), oStmt))) :
-        StateT σ ProbComp _).run s) → False
-    rw [StateT.run_pure]; simp [map_pure]
-  · intro x hx
-    rw [OptionT.mem_support_iff] at hx
-    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
-    obtain ⟨s, _, hx⟩ := hx
-    change some x ∈ _root_.support (StateT.run' (simulateQ _
-        (pure (some (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-          (((0 : R), stmt), oStmt), ()), (((0 : R), stmt), oStmt))) : OracleComp _ _)) s) at hx
-    rw [simulateQ_pure] at hx
-    change some x ∈ _root_.support (Prod.fst <$>
-      (pure (some (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-        (((0 : R), stmt), oStmt), ()), (((0 : R), stmt), oStmt))) :
-        StateT σ ProbComp _).run s) at hx
-    rw [StateT.run_pure] at hx
-    simp only [_root_.map_pure, _root_.support_pure, Set.mem_singleton_iff,
-      Option.some.injEq, Prod.mk.injEq] at hx
-    cases hx
-    simp only [prependSlotRelOut, Set.mem_setOf_eq]
-    exact ⟨hIn, trivial⟩
+  apply Reduction.perfectCompleteness_of_run_support
+  rintro ⟨stmt, oStmt⟩ ⟨⟩ hIn z hz
+  rw [prependSlot_run, OptionT.run_pure, support_pure, Set.mem_singleton_iff] at hz
+  subst z
+  exact ⟨_, rfl, hIn, rfl⟩
 
 /-- **prependTarget is perfectly complete** (linearCombination→secondSumcheck adapter). -/
 theorem prependTarget_perfectCompleteness {σ} {init : ProbComp σ}
@@ -333,9 +241,9 @@ def prependRLCTargetRelOut :
         (∀ i, OracleStatement.AfterLinearCombination R pp i)) × Unit) :=
   { x | R1CS.relation R pp.toSizeR1CS x.1.1.2.2.2.2
           (fun idx => x.1.2 (.inr (.inl idx))) (x.1.2 (.inr (.inr 0)))
-        ∧ (∀ idx, x.1.2 (.inl 0) idx =
+        ∧ (∀ idx, (show R from x.1.2 (.inl idx)) =
             evalClaimValue R pp x.1.1.2.2 (fun i => x.1.2 (.inr i)) idx)
-        ∧ x.1.1.1 = ∑ idx, x.1.1.2.1 idx * x.1.2 (.inl 0) idx }
+        ∧ x.1.1.1 = ∑ idx, x.1.1.2.1 idx * (show R from x.1.2 (.inl idx)) }
 
 /-- Input relation for the honest RLC-target adapter: the R1CS instance is still satisfied and the
 bundled claim oracle `.inl 0` stores the honest `evalClaimValue`. The adapter adds exactly the RLC
@@ -345,7 +253,7 @@ def prependRLCTargetRelIn :
         (∀ i, OracleStatement.AfterLinearCombination R pp i)) × Unit) :=
   { x | R1CS.relation R pp.toSizeR1CS x.1.1.2.2.2
           (fun idx => x.1.2 (.inr (.inl idx))) (x.1.2 (.inr (.inr 0)))
-        ∧ (∀ idx, x.1.2 (.inl 0) idx =
+        ∧ (∀ idx, (show R from x.1.2 (.inl idx)) =
             evalClaimValue R pp x.1.1.2 (fun i => x.1.2 (.inr i)) idx) }
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] [SampleableType R] in
@@ -369,9 +277,9 @@ theorem simulateQ_queryClaimDirect
     (oStmt : ∀ i, OracleStatement.AfterLinearCombination R pp i)
     (msgs : ∀ i, (!p[] : ProtocolSpec 0).Message i) (idx : R1CS.MatrixIdx) :
     simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs) (queryClaimDirect pp oSpec idx)
-      = pure (oStmt (.inl 0) idx) := by
+      = pure ((show R from oStmt (.inl idx))) := by
   unfold queryClaimDirect OracleInterface.simOracle2
-  rw [simulateQ_query]
+  erw [simulateQ_query]
   simp only [QueryImpl.addLift_def, QueryImpl.id,
     OracleQuery.input_query, OracleQuery.cont_query,
     QueryImpl.add_apply_inr, QueryImpl.liftTarget_apply, simOracle0,
@@ -385,16 +293,11 @@ theorem simulateQ_rlcStep
     (msgs : ∀ i, (!p[] : ProtocolSpec 0).Message i) (idx : R1CS.MatrixIdx) :
     simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
       (rlcStep pp oSpec idx : OracleComp _ (Option (R1CS.MatrixIdx × R)))
-      = (pure (some (idx, oStmt (.inl 0) idx))) := by
-  show simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
-      ((liftM (queryClaimDirect pp oSpec idx) >>= fun v =>
-        (pure (idx, v) : OptionT (OracleComp _) (R1CS.MatrixIdx × R))) :
-        OptionT (OracleComp _) (R1CS.MatrixIdx × R)).run = _
-  rw [simulateQ_optionT_bind']
-  rw [show ((liftM (queryClaimDirect pp oSpec idx) :
-      OptionT (OracleComp _) R)) = OptionT.lift (queryClaimDirect pp oSpec idx) from rfl]
-  simp only [OptionT.run, simulateQ_optionT_lift, simulateQ_queryClaimDirect,
-    OptionT.lift, OptionT.mk, simulateQ_bind, simulateQ_pure, bind_assoc, pure_bind, map_pure]
+      = (pure (some (idx, (show R from oStmt (.inl idx))))) := by
+  simp [rlcStep, OptionT.run_bind, OptionT.run_monadLift, OptionT.run_pure,
+    simulateQ_bind, simulateQ_queryClaimDirect, simulateQ_pure, _root_.map_pure, Option.map_some]
+  change (Option.map (Prod.mk idx) <$>
+    (some <$> (pure (show R from oStmt (.inl idx)) : OracleComp oSpec R))) = _
   rfl
 
 omit [IsDomain R] [SampleableType R] in
@@ -408,24 +311,21 @@ theorem simulateQ_prependRLCTargetVerifier
     simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
       ((prependRLCTargetVerifier (R := R) pp oSpec).verify stmt chals
         : OracleComp _ (Option (R × Statement.AfterLinearCombination R pp)))
-      = pure (some (∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt)) := by
-  show simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
-      ((liftM ((Finset.univ : Finset R1CS.MatrixIdx).toList.mapM (rlcStep pp oSpec)) >>=
-        fun claims => (pure ((claims.map (fun p => stmt.1 p.1 * p.2)).sum, stmt) :
-          OptionT (OracleComp _) (R × Statement.AfterLinearCombination R pp))) :
-        OptionT (OracleComp _) (R × Statement.AfterLinearCombination R pp)).run = _
-  rw [simulateQ_optionT_bind']
-  rw [show ((liftM ((Finset.univ : Finset R1CS.MatrixIdx).toList.mapM (rlcStep pp oSpec)) :
-      OptionT (OracleComp _) (List (R1CS.MatrixIdx × R)))) =
-      ((Finset.univ : Finset R1CS.MatrixIdx).toList.mapM (rlcStep pp oSpec)) from rfl]
+      = pure (some (∑ idx, stmt.1 idx * (show R from oStmt (.inl idx)), stmt)) := by
+  change simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
+    (((Finset.univ : Finset R1CS.MatrixIdx).toList.mapM (rlcStep pp oSpec) >>= fun claims =>
+      pure ((claims.map (fun p => stmt.1 p.1 * p.2)).sum, stmt) :
+        OptionT (OracleComp _) (R × Statement.AfterLinearCombination R pp)).run) = _
+  rw [OptionT.run_bind, Option.elimM, simulateQ_bind]
   erw [simulateQ_optionT_list_mapM_pure (OracleInterface.simOracle2 oSpec oStmt msgs)
       (rlcStep pp oSpec)
-      (fun idx => ((idx, oStmt (.inl 0) idx) : R1CS.MatrixIdx × R)) _
+      (fun idx => ((idx, (show R from oStmt (.inl idx))) : R1CS.MatrixIdx × R)) _
       (fun idx => simulateQ_rlcStep pp oSpec oStmt msgs idx)]
-  simp only [OptionT.run_pure, simulateQ_pure]
-  refine Eq.trans (pure_bind _ _) (congrArg (fun z => pure (some (z, stmt))) ?_)
+  simp only [pure_bind, Option.elim_some, OptionT.run_pure, simulateQ_pure]
+  congr 1
+  congr 1
   rw [List.map_map,
-    ← Finset.sum_map_toList Finset.univ (fun idx => stmt.1 idx * oStmt (.inl 0) idx)]
+    ← Finset.sum_map_toList Finset.univ (fun idx => stmt.1 idx * (show R from oStmt (.inl idx)))]
   rfl
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] [SampleableType R] in
@@ -437,7 +337,7 @@ theorem prependRLCTargetProver_run
     (oStmt : ∀ i, OracleStatement.AfterLinearCombination R pp i) :
     (prependRLCTargetProver (R := R) pp oSpec).run (stmt, oStmt) () =
       pure ((default : (!p[] : ProtocolSpec 0).FullTranscript),
-        ((∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt), oStmt), ()) := rfl
+        ((∑ idx, stmt.1 idx * (show R from oStmt (.inl idx)), stmt), oStmt), ()) := rfl
 
 omit [IsDomain R] [SampleableType R] in
 /-- The honest RLC-target adapter has a deterministic 0-round run. -/
@@ -446,16 +346,18 @@ theorem prependRLCTarget_run
     (oStmt : ∀ i, OracleStatement.AfterLinearCombination R pp i) :
     (prependRLCTarget (R := R) pp oSpec).toReduction.run (stmt, oStmt) () =
       (pure (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-          (((∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt), oStmt), ())),
-        ((∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt), oStmt)) :
+          (((∑ idx, stmt.1 idx * (show R from oStmt (.inl idx)), stmt), oStmt), ())),
+        ((∑ idx, stmt.1 idx * (show R from oStmt (.inl idx)), stmt), oStmt)) :
         OptionT (OracleComp _) _) := by
+  change ((prependRLCTarget (R := R) pp oSpec).toReduction.run (stmt, oStmt) ()).run = _
   simp only [prependRLCTarget, OracleReduction.toReduction, Reduction.run,
     Verifier.run, OracleVerifier.toVerifier]
   rw [prependRLCTargetProver_run]
-  simp only [liftM_pure, pure_bind]
-  rw [simulateQ_prependRLCTargetVerifier]
-  simp only [OptionT.run_map, OptionT.run_pure, OptionT.run_mk, liftM_pure, pure_bind,
-    bind_pure_comp, _root_.map_pure, Option.map_some, Option.getM, Option.bind_some]
+  simp only [liftM_pure, pure_bind, OptionT.run_bind, OptionT.run_monadLift,
+    OptionT.run_mk, OptionT.run_map, OptionT.run_pure, Option.elimM, Option.getM_some]
+  erw [simulateQ_prependRLCTargetVerifier]
+  simp only [_root_.map_pure, Option.map_some, pure_bind, liftM_pure,
+    Option.getM_some]
   rfl
 
 /-- **The honest RLC-target adapter is perfectly complete.** From an input where the bundled
@@ -465,52 +367,12 @@ theorem prependRLCTarget_perfectCompleteness {σ : Type} {init : ProbComp σ}
     {impl : QueryImpl oSpec (StateT σ ProbComp)} :
     (prependRLCTarget (R := R) pp oSpec).perfectCompleteness init impl
       (prependRLCTargetRelIn (R := R) pp) (prependRLCTargetRelOut (R := R) pp) := by
-  unfold OracleReduction.perfectCompleteness
-  simp only [Reduction.perfectCompleteness, Reduction.completeness, Reduction.completenessFromRun,
-    ENNReal.coe_zero, tsub_zero]
-  intro ⟨stmt, oStmt⟩ ⟨⟩ hIn
-  simp only [prependRLCTarget_run]
-  rw [ge_iff_le, one_le_probEvent_iff, probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · rw [OptionT.probFailure_eq, OptionT.run_mk]
-    simp only [probFailure_eq_zero, zero_add]
-    apply probOutput_eq_zero_of_not_mem_support
-    simp only [support_bind, Set.mem_iUnion, not_exists]
-    intro s _
-    change none ∈ _root_.support (StateT.run' (simulateQ _
-        (pure (some (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-          (((∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt), oStmt), ())),
-          ((∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt), oStmt))) :
-          OracleComp _ _)) s) → False
-    rw [simulateQ_pure]
-    change none ∈ _root_.support (Prod.fst <$>
-      (pure (some (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-        (((∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt), oStmt), ())),
-        ((∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt), oStmt))) :
-        StateT σ ProbComp _).run s) → False
-    rw [StateT.run_pure]; simp [map_pure]
-  · intro x hx
-    rw [OptionT.mem_support_iff] at hx
-    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
-    obtain ⟨s, _, hx⟩ := hx
-    change some x ∈ _root_.support (StateT.run' (simulateQ _
-        (pure (some (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-          (((∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt), oStmt), ())),
-          ((∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt), oStmt))) :
-          OracleComp _ _)) s) at hx
-    rw [simulateQ_pure] at hx
-    change some x ∈ _root_.support (Prod.fst <$>
-      (pure (some (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-        (((∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt), oStmt), ())),
-        ((∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt), oStmt))) :
-        StateT σ ProbComp _).run s) at hx
-    rw [StateT.run_pure] at hx
-    simp only [_root_.map_pure, _root_.support_pure, Set.mem_singleton_iff,
-      Option.some.injEq, Prod.mk.injEq] at hx
-    cases hx
-    obtain ⟨hR1CS, hEval⟩ := hIn
-    refine ⟨?_, rfl⟩
-    exact ⟨hR1CS, hEval, rfl⟩
+  apply Reduction.perfectCompleteness_of_run_support
+  rintro ⟨stmt, oStmt⟩ ⟨⟩ hIn z hz
+  rw [prependRLCTarget_run, OptionT.run_pure, support_pure, Set.mem_singleton_iff] at hz
+  subst z
+  obtain ⟨hR1CS, hEval⟩ := hIn
+  exact ⟨_, rfl, ⟨hR1CS, hEval, rfl⟩, rfl⟩
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] [SampleableType R] in
 /-- The honest RLC-target output relation refines the **bridge-free** second-sum-check input
@@ -542,7 +404,6 @@ theorem prependRLCTarget_perfectCompleteness_secondSumcheckRelInBF {σ : Type}
 #print axioms prependRLCTargetProver
 #print axioms prependRLCTargetVerifier
 #print axioms prependRLCTarget
-#print axioms instPrependRLCTargetVerifierAppendCoherent
 #print axioms prependRLCTargetRelOut_subset_secondSumcheckRelIn
 #print axioms simulateQ_prependRLCTargetVerifier
 #print axioms prependRLCTargetProver_run
@@ -563,7 +424,7 @@ open Spartan.Spec Spartan.Spec.Bricks
 variable {R : Type} [CommRing R] [IsDomain R] [Fintype R] [DecidableEq R]
   [VCVCompatible R]
   (pp : Spartan.PublicParams)
-  {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype] [oSpec.Inhabited]
+  {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 
 /-- The 0-round `finalCheck` run collapses to `pure`: the prover is deterministic and the
 verifier's `finalPredicate` queries are eliminated by the honest `simOracle2` (its result is
@@ -572,15 +433,7 @@ theorem finalCheck_run (stmt : FinalStatement R pp) (oStmt : ∀ i, FinalOracleS
     (finalCheck R pp oSpec).toReduction.run (stmt, oStmt) () =
       (pure (((default : (!p[] : ProtocolSpec 0).FullTranscript), (stmt, oStmt), ()),
         (stmt, oStmt)) : OptionT (OracleComp oSpec) _) := by
-  simp only [finalCheck, CheckClaim.oracleReduction, CheckClaim.oracleProver,
-    CheckClaim.oracleVerifier, OracleReduction.toReduction, Reduction.run, Prover.run,
-    Verifier.run, OracleVerifier.toVerifier]
-  unfold finalPredicate
-  simp only [← OracleComp.liftComp_eq_liftM, OracleComp.liftComp_bind, OracleComp.liftComp_map,
-    OracleComp.liftComp_pure, simulateQ_bind, simulateQ_map, simulateQ_pure, pure_bind,
-    bind_pure_comp, map_pure, simulateQ_simOracle2_lift_liftComp_query_T1,
-    map_bind, bind_assoc, liftM_pure, Option.map_some, Option.getM, Option.bind_some]
-  rfl
+  exact CheckClaim.oracleReduction_run_run stmt oStmt
 
 /-- **`finalCheck` is perfectly complete** (0-round; the output relation is full). The relation-
 freeness on the output side matches `finalCheckRelOut = Set.univ`-style consumers: the only content
@@ -590,43 +443,11 @@ theorem finalCheck_perfectCompleteness {σ : Type} {init : ProbComp σ}
     {impl : QueryImpl oSpec (StateT σ ProbComp)}
     (rel : Set (((FinalStatement R pp) × (∀ i, FinalOracleStatement R pp i)) × Unit)) :
     (finalCheck R pp oSpec).perfectCompleteness init impl rel Set.univ := by
-  unfold OracleReduction.perfectCompleteness
-  simp only [Reduction.perfectCompleteness, Reduction.completeness, Reduction.completenessFromRun,
-    ENNReal.coe_zero, tsub_zero]
-  intro ⟨stmt, oStmt⟩ ⟨⟩ hIn
-  simp only [finalCheck_run]
-  rw [ge_iff_le, one_le_probEvent_iff, probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · rw [OptionT.probFailure_eq, OptionT.run_mk]
-    simp only [probFailure_eq_zero, zero_add]
-    apply probOutput_eq_zero_of_not_mem_support
-    simp only [support_bind, Set.mem_iUnion, not_exists]
-    intro s _
-    change none ∈ _root_.support (StateT.run' (simulateQ _
-        (pure (some (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-          (stmt, oStmt), ()), (stmt, oStmt))) : OracleComp _ _)) s) → False
-    rw [simulateQ_pure]
-    change none ∈ _root_.support (Prod.fst <$>
-      (pure (some (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-        (stmt, oStmt), ()), (stmt, oStmt))) :
-        StateT σ ProbComp _).run s) → False
-    rw [StateT.run_pure]; simp [map_pure]
-  · intro x hx
-    rw [OptionT.mem_support_iff] at hx
-    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
-    obtain ⟨s, _, hx⟩ := hx
-    change some x ∈ _root_.support (StateT.run' (simulateQ _
-        (pure (some (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-          (stmt, oStmt), ()), (stmt, oStmt))) : OracleComp _ _)) s) at hx
-    rw [simulateQ_pure] at hx
-    change some x ∈ _root_.support (Prod.fst <$>
-      (pure (some (((default : (!p[] : ProtocolSpec 0).FullTranscript),
-        (stmt, oStmt), ()), (stmt, oStmt))) :
-        StateT σ ProbComp _).run s) at hx
-    rw [StateT.run_pure] at hx
-    simp only [_root_.map_pure, _root_.support_pure, Set.mem_singleton_iff,
-      Option.some.injEq, Prod.mk.injEq] at hx
-    cases hx
-    exact ⟨Set.mem_univ _, rfl⟩
+  apply Reduction.perfectCompleteness_of_run_support
+  rintro ⟨stmt, oStmt⟩ ⟨⟩ _ z hz
+  simp only [finalCheck_run, OptionT.run_monadLift, OptionT.run_pure, liftM_pure,
+    support_pure, Set.mem_singleton_iff] at hz
+  subst z
+  exact ⟨_, rfl, Set.mem_univ _, rfl⟩
 
 end Bricks2

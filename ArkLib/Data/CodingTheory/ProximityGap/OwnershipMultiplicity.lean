@@ -36,7 +36,7 @@ variable {n : ℕ} [NeZero n]
 theorem residual_one (dom : Fin n ↪ F) (t : Fin 2 → Fin n) (y : Fin n → F) :
     residual dom 1 t y = y (t 1) - y (t 0) := by
   unfold residual borderedMatrix
-  rw [Matrix.det_fin_two]
+  erw [Matrix.det_fin_two]
   have h00 : ((0 : Fin 2) : ℕ) < 1 := by norm_num
   have h11 : ¬ ((1 : Fin 2) : ℕ) < 1 := by norm_num
   rw [if_pos h00, if_pos h00, if_neg h11, if_neg h11]
@@ -53,7 +53,7 @@ theorem owned_pairs_card_ge (S : Finset (Fin n)) {u₁ : Fin n → F} {μ : ℕ}
   set uneqc := ((S ×ˢ S).filter (fun p => u₁ p.1 ≠ u₁ p.2)).card with huneqc
   have hsplit : eqc + uneqc = S.card * S.card := by
     rw [heqc, huneqc]
-    have h := Finset.filter_card_add_filter_neg_card_eq_card
+    have h := Finset.card_filter_add_card_filter_not
       (s := S ×ˢ S) (p := fun p => u₁ p.1 = u₁ p.2)
     rw [Finset.card_product] at h
     exact h

@@ -1,0 +1,248 @@
+{
+  "owner": "ArkLib/ProofSystem/Logup/Security/OuterRbrSoundness.lean",
+  "original_source": "/-\nCopyright (c) 2026 ArkLib Contributors. All rights reserved.\nReleased under Apache 2.0 license as described in the file LICENSE.\nAuthors: ArkLib Contributors\n-/\nimport ArkLib.ProofSystem.Logup.Security.OuterVerifierSupport\nimport ArkLib.ProofSystem.Logup.Security.MarginalBridgeProof\nimport ArkLib.ProofSystem.Logup.Security.OuterCompleteness\nimport ArkLib.ProofSystem.Logup.Security.OuterSoundnessReal\nimport ArkLib.ProofSystem.Logup.Security.LogupProtocol2Status\n\n/-!\n# LogUp outer phase: RBR soundness and the `hOuter` discharge at the sharp language (issue #13)\n\nThis file closes the **outer half** of the LogUp Protocol 2 soundness obligation — the `hOuter`\nhypothesis consumed by `issue13_soundness_msgSeam_sharp_wiredRoundAppend` — by the round-by-round\nroute, so that **no run-unfolding of `Reduction.run` is needed at all**:\n\n* `outerSharpState` / `outerSharpStateFunction` — the RBR state function for the compiled outer\n  verifier at the sharp protocol language: the state is \"the recorded round-1 challenge lies in\n  the sharp claim language `midSoundnessLanguageSharp` of the input oracles\". Its `toFun_full`\n  is the proven verifier-collapse pinning (`outer_toVerifier_accept_pins_challenge`); its\n  prover-round monotonicity is the transcript-entry preservation under `Transcript.concat`\n  (definitional, `Fin.snoc` below the appended position).\n\n* `outerVerifier_rbrSoundness_sharp` — round-by-round soundness with per-round error\n  `outerRbrError`: the round-1 flip is exactly the sharp Schwartz–Zippel event (the freshly\n  drawn uniform challenge lands in the vanishing locus of the support-cleared check polynomial,\n  bounded by `(M·2ⁿ − 1)/|F|` via the proven `outerSoundness_sharp`); the round-3 batching\n  challenge cannot flip the state (the state reads only the round-1 entry).\n\n* `outerVerifier_soundness_sharp` — **the `hOuter` discharge**: composing the RBR soundness with\n  the proven generic marginal bridge (`Verifier.marginalBridge_holds`, which packages the whole\n  run/`simulateQ` plumbing once and for all) yields the protocol-level outer soundness\n  `(outerVerifier).soundness init impl (inputRelation).language\n  (midSoundnessProtocolLanguageSharp) (outerSoundnessError)` for every state-preserving,\n  non-failing, value-blind shared-oracle implementation, over any field with `2ⁿ < |F|`.\n\nTogether with the already-landed sumcheck pointwise route this removes the last *outer-phase*\nsemantic residual of issue #13's soundness side. No `sorry`/`admit`/`axiom`; the audit at the\nbottom confirms axiom-cleanliness.\n-/\n\nopen scoped NNReal ENNReal\nopen OracleComp OracleSpec ProtocolSpec\n\nnamespace Logup\n\nsection OuterRbr\n\nvariable {ι : Type} (oSpec : OracleSpec ι)\nvariable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]\n  [SampleableType F]\nvariable (n M : ℕ) (params : ProtocolParams M)\nvariable {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))\n\nlocal instance instInhabitedFieldOuterRbr : Inhabited F := ⟨0⟩\n\n/-- The round-by-round state predicate for the outer phase at the sharp language: the input is\ngood, or the transcript has reached round 2 and its recorded round-1 challenge lies in the\nsharp claim language of the input oracles. -/\ndef outerSharpState (m : Fin 5) (stmt : StmtIn F n M × (∀ i, OStmtIn F n M i))\n    (tr : (outerPSpec F n params).Transcript m) : Prop :=\n  stmt ∈ (inputRelation F n M).language ∨\n    ∃ h : 1 < m.val, (show F from tr ⟨1, h⟩) ∈ midSoundnessLanguageSharp stmt.2\n\n/-- **The outer sharp state function.** -/\nnoncomputable def outerSharpStateFunction :\n    ((outerVerifier oSpec F n M params).toVerifier).StateFunction init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params) where\n  toFun := outerSharpState F n M params\n  toFun_empty := fun stmt => by\n    unfold outerSharpState\n    constructor\n    · exact fun h => Or.inl h\n    · rintro (h | ⟨h, -⟩)\n      · exact h\n      · exact absurd h (by omega)\n  toFun_next := fun m hdir stmt tr hno msg => by\n    fin_cases m\n    · -- round 0 (message): no entry exists on either side\n      unfold outerSharpState at hno ⊢\n      rintro (h | ⟨h, -⟩)\n      · exact hno (Or.inl h)\n      · exact absurd h (by norm_num)\n    · -- round 1 is a challenge round: direction contradiction\n      exact absurd hdir (by simp [outerPSpec] at hdir ⊢; exact fun h => by cases hdir)\n    · -- round 2 (message): entry 1 preserved by concat\n      unfold outerSharpState at hno ⊢\n      rintro (h | ⟨h, hmem⟩)\n      · exact hno (Or.inl h)\n      · refine hno (Or.inr ⟨by norm_num, ?_⟩)\n        exact hmem\n    · -- round 3 is a challenge round: direction contradiction\n      exact absurd hdir (by simp [outerPSpec] at hdir ⊢; exact fun h => by cases hdir)\n  toFun_full := fun stmt tr hno => by\n    classical\n    refine probEvent_eq_zero ?_\n    intro x hx hmem\n    rw [OptionT.mem_support_iff] at hx\n    simp only [OptionT.run_mk, mem_support_bind_iff] at hx\n    obtain ⟨s, -, hx⟩ := hx\n    have hx' := _root_.support_simulateQ_run'_subset impl _ s hx\n    have hpin := outer_toVerifier_accept_pins_challenge stmt.1 stmt.2 tr x hx' hmem\n    unfold outerSharpState at hno\n    push Not at hno\n    exact hno.2 (by norm_num) hpin\n\nend OuterRbr\n\nsection OuterRbrBound\n\nvariable {ι : Type} (oSpec : OracleSpec ι)\nvariable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]\n  [SampleableType F]\nvariable (n M : ℕ) (params : ProtocolParams M)\nvariable {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))\n\nlocal instance instInhabitedFieldOuterRbrB : Inhabited F := ⟨0⟩\n\n/-- The per-round RBR soundness error for the outer phase: the sharp Schwartz–Zippel budget at\nthe round-1 challenge, zero at the round-3 batching challenge. -/\nnoncomputable def outerRbrError : (outerPSpec F n params).ChallengeIdx → ℝ≥0 :=\n  fun i => if i.1.val = 1 then ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0) else 0\n\n/-- **Outer RBR soundness at the sharp language.** -/\ntheorem outerVerifier_rbrSoundness_sharp :\n    ((outerVerifier oSpec F n M params).toVerifier).rbrSoundness init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params)\n      (outerRbrError F n M params) := by\n  classical\n  refine ⟨outerSharpStateFunction oSpec F n M params init impl, ?_⟩\n  intro stmtIn hStmtIn WitIn WitOut witIn prover i\n  -- the two challenge rounds\n  rcases i with ⟨⟨iv, hiv⟩, hdir⟩\n  interval_cases iv\n  · -- round 0 is a message round: direction contradiction\n    exact absurd hdir (by exact fun h => by cases h)\n  · -- round 1: the sharp Schwartz–Zippel flip\n    have herr : outerRbrError F n M params ⟨⟨1, hiv⟩, hdir⟩\n        = ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0) := by\n      unfold outerRbrError; norm_num\n    rw [herr]\n    -- the bad-lookup hypothesis in relation form\n    have hBad : ¬ (((stmtIn.1, stmtIn.2), ()) ∈ inputRelation F n M) := by\n      intro h\n      exact hStmtIn ((Set.mem_language_iff _ _).mpr ⟨(), h⟩)\n    -- peel the init draw\n    refine le_trans (probEvent_bind_le_of_forall_support init _ _ _ (fun s _ => ?_)) le_rfl\n    -- distribute the simulation over the prefix bind\n    rw [simulateQ_bind, StateT.run'_bind_lib]\n    -- peel the prover prefix\n    refine probEvent_bind_le_of_forall_support _ _ _ _ (fun rk _ => ?_)\n    obtain ⟨⟨t, pst⟩, s'⟩ := rk\n    -- the challenge draw in `liftM` form, then the uniform average over the drawn challenge\n    rw [liftComp_eq_liftM]\n    rw [ChallengeCoherence.probEvent_run'_simulateQ_addLift_getChallenge_bind impl s'\n      ⟨⟨1, hiv⟩, hdir⟩ (fun c => pure (t, c)) _]\n    -- bound the average by the uniform sharp-language mass, then Schwartz–Zippel\n    haveI hfinC : Fintype ((outerPSpec F n params).Challenge ⟨⟨1, hiv⟩, hdir⟩) :=\n      (inferInstance : Fintype F)\n    haveI hsampC : SampleableType ((outerPSpec F n params).Challenge ⟨⟨1, hiv⟩, hdir⟩) :=\n      (inferInstance : SampleableType F)\n    refine le_trans (tsum_uniform_challenge_mem_le_prob_uniform\n      (midSoundnessLanguageSharp stmtIn.2)\n      (C := (outerPSpec F n params).Challenge ⟨⟨1, hiv⟩, hdir⟩) rfl _\n      (fun c => (show F from c) ∈ midSoundnessLanguageSharp stmtIn.2)\n      (fun c => Iff.rfl) ?hg ?hgle) ?_\n    case hg =>\n      intro c hc\n      rw [mul_eq_zero]\n      right\n      rw [simulateQ_pure]\n      refine probEvent_eq_zero ?_\n      rintro x hx ⟨hno, hyes⟩\n      simp only [StateT.run'_eq, StateT.run_pure, map_pure, support_pure,\n        Set.mem_singleton_iff] at hx\n      subst hx\n      simp only [outerSharpStateFunction] at hyes\n      unfold outerSharpState at hyes\n      rcases hyes with h | ⟨h, hmem⟩\n      · exact hStmtIn h\n      · exact hc hmem\n    case hgle =>\n      intro c\n      refine le_trans (mul_le_mul' (le_of_eq ?_) probEvent_le_one) (by rw [mul_one])\n      rw [probOutput_uniformSample]\n      congr 1\n      exact congrArg Nat.cast (Fintype.card_congr (Equiv.cast (rfl : _ = F)))\n    · -- the uniform mass of the sharp language is the Schwartz–Zippel budget\n      rw [ENNReal.coe_div (by exact_mod_cast Fintype.card_ne_zero)]\n      exact outerSoundness_sharp stmtIn.1 stmtIn.2 hBad\n  · -- round 2 is a message round: direction contradiction\n    exact absurd hdir (by exact fun h => by cases h)\n  · -- round 3: the batch challenge cannot flip the state\n    have hzero : outerRbrError F n M params ⟨⟨3, hiv⟩, hdir⟩ = 0 := by\n      unfold outerRbrError; norm_num\n    rw [hzero]\n    refine le_of_eq (probEvent_eq_zero ?_)\n    rintro ⟨tr, c⟩ - ⟨hno, hyes⟩\n    refine hno ?_\n    simp only [outerSharpStateFunction] at hyes ⊢\n    unfold outerSharpState at hyes ⊢\n    rcases hyes with h | ⟨h, hmem⟩\n    · exact Or.inl h\n    · exact Or.inr ⟨by norm_num, hmem⟩\n\nend OuterRbrBound\n\n\nsection OuterSoundnessCapstone\n\nvariable {ι : Type} (oSpec : OracleSpec ι)\nvariable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]\n  [SampleableType F]\nvariable (n M : ℕ) (params : ProtocolParams M)\nvariable {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))\n\nlocal instance instInhabitedFieldOuterCap : Inhabited F := ⟨0⟩\n\n/-- The total outer RBR error is the sharp Schwartz–Zippel budget (the round-3 term is zero). -/\ntheorem sum_outerRbrError :\n    ∑ i : (outerPSpec F n params).ChallengeIdx, outerRbrError F n M params i\n      = ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0) := by\n  classical\n  have hsub : ∑ i ∈ Finset.univ.filter\n        (fun i : Fin 4 => (outerPSpec F n params).dir i = Direction.V_to_P),\n        (if i.val = 1 then ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0) else 0)\n      = ∑ i : (outerPSpec F n params).ChallengeIdx, outerRbrError F n M params i := by\n    refine Finset.sum_subtype _ (fun x => ?_) _\n    simp [ProtocolSpec.ChallengeIdx]\n  have hfilter : Finset.univ.filter\n      (fun i : Fin 4 => (outerPSpec F n params).dir i = Direction.V_to_P)\n      = ({⟨1, by norm_num⟩, ⟨3, by norm_num⟩} : Finset (Fin 4)) := by\n    ext i\n    fin_cases i\n    · exact iff_of_false (fun h => nomatch (Finset.mem_filter.mp h).2) (by decide)\n    · exact iff_of_true (Finset.mem_filter.mpr ⟨Finset.mem_univ _, rfl⟩) (by decide)\n    · exact iff_of_false (fun h => nomatch (Finset.mem_filter.mp h).2) (by decide)\n    · exact iff_of_true (Finset.mem_filter.mpr ⟨Finset.mem_univ _, rfl⟩) (by decide)\n  rw [← hsub, hfilter, Finset.sum_insert (by decide), Finset.sum_singleton]\n  norm_num\n\nset_option maxHeartbeats 4000000 in\n/-- **`hOuter` discharged: protocol-level outer soundness at the sharp language.**\n\nThe outer LogUp verifier is sound from the input language into the sharp protocol-level\nintermediate language with the paper-shaped error `outerSoundnessError`, for any\nstate-preserving, non-failing, value-blind shared-oracle implementation. -/\ntheorem outerVerifier_soundness_sharp (hcard : 2 ^ n < Fintype.card F)\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    (outerVerifier oSpec F n M params).soundness init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params)\n      (outerSoundnessError F n M params) := by\n  have hRbr := outerVerifier_rbrSoundness_sharp oSpec F n M params init impl\n  have hbr : Verifier.MarginalBridge init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params)\n      ((outerVerifier oSpec F n M params).toVerifier)\n      (outerRbrError F n M params) :=\n    Verifier.marginalBridge_holds himplSP himplNF himplVB\n  have h := Verifier.rbrSoundness_imp_soundness_of_marginal init impl hRbr hbr\n  have hle : (∑ i : (outerPSpec F n params).ChallengeIdx, outerRbrError F n M params i)\n      ≤ outerSoundnessError F n M params := by\n    rw [sum_outerRbrError]\n    exact sharp_error_le_outerSoundnessError (params := params) hcard\n  exact Verifier.soundness.mono_error init impl h hle\n\nend OuterSoundnessCapstone\n\n\nsection WiredCorollary\n\nvariable {ι : Type} (oSpec : OracleSpec ι)\nvariable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]\n  [SampleableType F]\nvariable (n M : ℕ) (params : ProtocolParams M)\nvariable {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))\n\nlocal instance instInhabitedFieldOuterWired : Inhabited F := ⟨0⟩\n\n/-- **Issue #13 soundness with the outer half fully discharged.** The sharp-language LogUp\nsoundness front door with `hOuter` replaced by the proven `outerVerifier_soundness_sharp`:\nthe remaining hypotheses are the embedded-sumcheck projection/RBR data, the append-RBR\nkeystone, the error equation, and the honest-implementation side conditions. -/\ntheorem issue13_soundness_sharp_outerDischarged [oSpec.Fintype]\n    (sumcheckSoundnessError : ℝ≥0)\n    (lang : (i : Fin (n + 1)) →\n      Set (Sumcheck.Spec.StatementRound F n i ×\n        (∀ j, Sumcheck.Spec.OracleStatement F n (logupSumcheckDegree M params) j)))\n    (rbrSoundnessError :\n      ∀ _ : Fin n,\n        (Sumcheck.Spec.SingleRound.pSpec F (logupSumcheckDegree M params)).ChallengeIdx → ℝ≥0)\n    (hn : 0 < n) (hcard : 2 ^ n < Fintype.card F)\n    (hLast : lang (Fin.last n) = Set.univ)\n    (hError : sumcheckSoundnessError =\n      ∑ i : (logupSumcheckPSpec F n M params).ChallengeIdx,\n        (fun combinedIdx =>\n          letI ij := ProtocolSpec.seqComposeChallengeIdxToSigma combinedIdx\n          rbrSoundnessError ij.1 ij.2) i)\n    (hProj :\n      SumcheckLensProjSoundFor oSpec F n M params\n        (midSoundnessProtocolLanguageSharp F n M params) (lang 0))\n    (hRound : ∀ i : Fin n,\n      (Sumcheck.Spec.SingleRound.oracleVerifier F n (logupSumcheckDegree M params)\n          (signDomain F (Fact.out : (-1 : F) ≠ 1)) oSpec i).rbrSoundness init impl\n        (lang i.castSucc) (lang i.succ) (rbrSoundnessError i))\n    (hAppend : ∀ {S₁ S₂ S₃ : Type} {k₁ k₂ : ℕ}\n        {p₁ : ProtocolSpec k₁} {p₂ : ProtocolSpec k₂}\n        [∀ j, SampleableType (p₁.Challenge j)] [∀ j, SampleableType (p₂.Challenge j)]\n        (V₁ : Verifier oSpec S₁ S₂ p₁) (V₂ : Verifier oSpec S₂ S₃ p₂)\n        {l₁ : Set S₁} {l₂ : Set S₂} {l₃ : Set S₃}\n        {e₁ : p₁.ChallengeIdx → ℝ≥0} {e₂ : p₂.ChallengeIdx → ℝ≥0},\n        V₁.rbrSoundness init impl l₁ l₂ e₁ → V₂.rbrSoundness init impl l₂ l₃ e₂ →\n        (V₁.append V₂).rbrSoundness init impl l₁ l₃\n          (Sum.elim e₁ e₂ ∘ ChallengeIdx.sumEquiv.symm))\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    (logupVerifier oSpec F n M params).soundness init impl\n      (inputRelation F n M).language outputRelation.language\n      (logupSoundnessError F n M params sumcheckSoundnessError) :=\n  issue13_soundness_msgSeam_sharp_wiredRoundAppend oSpec F n M params init impl\n    sumcheckSoundnessError lang rbrSoundnessError hn\n    (outerVerifier_soundness_sharp oSpec F n M params init impl hcard himplSP himplNF himplVB)\n    hLast hError hProj hRound hAppend himplSP himplNF himplVB\n\nend WiredCorollary\n\nend Logup\n\n/-! ### Axiom audit (issue #13 outer RBR discharge) -/\n\n#print axioms Logup.outerSharpStateFunction\n#print axioms Logup.outerVerifier_rbrSoundness_sharp\n#print axioms Logup.sum_outerRbrError\n#print axioms Logup.outerVerifier_soundness_sharp\n#print axioms Logup.issue13_soundness_sharp_outerDischarged\n",
+  "original_source_sha256": "291f35ed0545b342cd615d8b7fdf85ff15ee0e9d72973d25b00c239dc5d4efc8",
+  "current_source_sha256": "89643d3c2ef062326d5d9cb4b172346bffd82958e9691945ba7f2e2f5f7b6616",
+  "public_contract_count": 7,
+  "all_public_contracts_preserved_modulo_explicit_native_API_mapping": true,
+  "public_contracts": [
+    {
+      "name": "Logup.outerSharpState",
+      "original_header": "/-- The round-by-round state predicate for the outer phase at the sharp language: the input is\ngood, or the transcript has reached round 2 and its recorded round-1 challenge lies in the\nsharp claim language of the input oracles. -/\ndef outerSharpState (m : Fin 5) (stmt : StmtIn F n M × (∀ i, OStmtIn F n M i))\n    (tr : (outerPSpec F n params).Transcript m) : Prop ",
+      "current_header": "/-- The round-by-round state predicate for the outer phase at the sharp language: the input is\ngood, or the transcript has reached round 2 and its recorded round-1 challenge lies in the\nsharp claim language of the input oracles. -/\ndef outerSharpState (m : Fin 5) (stmt : StmtIn F n M × (∀ i, OStmtIn F n M i))\n    (tr : (outerPSpec F n params).Transcript m) : Prop ",
+      "original_command": "/-- The round-by-round state predicate for the outer phase at the sharp language: the input is\ngood, or the transcript has reached round 2 and its recorded round-1 challenge lies in the\nsharp claim language of the input oracles. -/\ndef outerSharpState (m : Fin 5) (stmt : StmtIn F n M × (∀ i, OStmtIn F n M i))\n    (tr : (outerPSpec F n params).Transcript m) : Prop :=\n  stmt ∈ (inputRelation F n M).language ∨\n    ∃ h : 1 < m.val, (show F from tr ⟨1, h⟩) ∈ midSoundnessLanguageSharp stmt.2\n\n",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_native_probability_api_transport": true
+    },
+    {
+      "name": "Logup.outerSharpStateFunction",
+      "original_header": "/-- **The outer sharp state function.** -/\nnoncomputable def outerSharpStateFunction :\n    ((outerVerifier oSpec F n M params).toVerifier).StateFunction init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params) where\n  toFun ",
+      "current_header": "/-- **The outer sharp state function.** -/\nnoncomputable def outerSharpStateFunction :\n    ((outerVerifier oSpec F n M params).toVerifier).StateFunction init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params) where\n  toFun ",
+      "original_command": "/-- **The outer sharp state function.** -/\nnoncomputable def outerSharpStateFunction :\n    ((outerVerifier oSpec F n M params).toVerifier).StateFunction init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params) where\n  toFun := outerSharpState F n M params\n  toFun_empty := fun stmt => by\n    unfold outerSharpState\n    constructor\n    · exact fun h => Or.inl h\n    · rintro (h | ⟨h, -⟩)\n      · exact h\n      · exact absurd h (by omega)\n  toFun_next := fun m hdir stmt tr hno msg => by\n    fin_cases m\n    · -- round 0 (message): no entry exists on either side\n      unfold outerSharpState at hno ⊢\n      rintro (h | ⟨h, -⟩)\n      · exact hno (Or.inl h)\n      · exact absurd h (by norm_num)\n    · -- round 1 is a challenge round: direction contradiction\n      exact absurd hdir (by simp [outerPSpec] at hdir ⊢; exact fun h => by cases hdir)\n    · -- round 2 (message): entry 1 preserved by concat\n      unfold outerSharpState at hno ⊢\n      rintro (h | ⟨h, hmem⟩)\n      · exact hno (Or.inl h)\n      · refine hno (Or.inr ⟨by norm_num, ?_⟩)\n        exact hmem\n    · -- round 3 is a challenge round: direction contradiction\n      exact absurd hdir (by simp [outerPSpec] at hdir ⊢; exact fun h => by cases hdir)\n  toFun_full := fun stmt tr hno => by\n    classical\n    refine probEvent_eq_zero ?_\n    intro x hx hmem\n    rw [OptionT.mem_support_iff] at hx\n    simp only [OptionT.run_mk, mem_support_bind_iff] at hx\n    obtain ⟨s, -, hx⟩ := hx\n    have hx' := _root_.support_simulateQ_run'_subset impl _ s hx\n    have hpin := outer_toVerifier_accept_pins_challenge stmt.1 stmt.2 tr x hx' hmem\n    unfold outerSharpState at hno\n    push Not at hno\n    exact hno.2 (by norm_num) hpin\n\n",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_native_probability_api_transport": true
+    },
+    {
+      "name": "Logup.outerRbrError",
+      "original_header": "/-- The per-round RBR soundness error for the outer phase: the sharp Schwartz–Zippel budget at\nthe round-1 challenge, zero at the round-3 batching challenge. -/\nnoncomputable def outerRbrError : (outerPSpec F n params).ChallengeIdx → ℝ≥0 ",
+      "current_header": "/-- The per-round RBR soundness error for the outer phase: the sharp Schwartz–Zippel budget at\nthe round-1 challenge, zero at the round-3 batching challenge. -/\nnoncomputable def outerRbrError : (outerPSpec F n params).ChallengeIdx → ℝ≥0 ",
+      "original_command": "/-- The per-round RBR soundness error for the outer phase: the sharp Schwartz–Zippel budget at\nthe round-1 challenge, zero at the round-3 batching challenge. -/\nnoncomputable def outerRbrError : (outerPSpec F n params).ChallengeIdx → ℝ≥0 :=\n  fun i => if i.1.val = 1 then ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0) else 0\n\n",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_native_probability_api_transport": true
+    },
+    {
+      "name": "Logup.outerVerifier_rbrSoundness_sharp",
+      "original_header": "/-- **Outer RBR soundness at the sharp language.** -/\ntheorem outerVerifier_rbrSoundness_sharp :\n    ((outerVerifier oSpec F n M params).toVerifier).rbrSoundness init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params)\n      (outerRbrError F n M params) ",
+      "current_header": "/-- **Outer RBR soundness at the sharp language.** -/\ntheorem outerVerifier_rbrSoundness_sharp :\n    ((outerVerifier oSpec F n M params).toVerifier).rbrSoundness init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params)\n      (outerRbrError F n M params) ",
+      "original_command": "/-- **Outer RBR soundness at the sharp language.** -/\ntheorem outerVerifier_rbrSoundness_sharp :\n    ((outerVerifier oSpec F n M params).toVerifier).rbrSoundness init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params)\n      (outerRbrError F n M params) := by\n  classical\n  refine ⟨outerSharpStateFunction oSpec F n M params init impl, ?_⟩\n  intro stmtIn hStmtIn WitIn WitOut witIn prover i\n  -- the two challenge rounds\n  rcases i with ⟨⟨iv, hiv⟩, hdir⟩\n  interval_cases iv\n  · -- round 0 is a message round: direction contradiction\n    exact absurd hdir (by exact fun h => by cases h)\n  · -- round 1: the sharp Schwartz–Zippel flip\n    have herr : outerRbrError F n M params ⟨⟨1, hiv⟩, hdir⟩\n        = ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0) := by\n      unfold outerRbrError; norm_num\n    rw [herr]\n    -- the bad-lookup hypothesis in relation form\n    have hBad : ¬ (((stmtIn.1, stmtIn.2), ()) ∈ inputRelation F n M) := by\n      intro h\n      exact hStmtIn ((Set.mem_language_iff _ _).mpr ⟨(), h⟩)\n    -- peel the init draw\n    refine le_trans (probEvent_bind_le_of_forall_support init _ _ _ (fun s _ => ?_)) le_rfl\n    -- distribute the simulation over the prefix bind\n    rw [simulateQ_bind, StateT.run'_bind_lib]\n    -- peel the prover prefix\n    refine probEvent_bind_le_of_forall_support _ _ _ _ (fun rk _ => ?_)\n    obtain ⟨⟨t, pst⟩, s'⟩ := rk\n    -- the challenge draw in `liftM` form, then the uniform average over the drawn challenge\n    rw [liftComp_eq_liftM]\n    rw [ChallengeCoherence.probEvent_run'_simulateQ_addLift_getChallenge_bind impl s'\n      ⟨⟨1, hiv⟩, hdir⟩ (fun c => pure (t, c)) _]\n    -- bound the average by the uniform sharp-language mass, then Schwartz–Zippel\n    haveI hfinC : Fintype ((outerPSpec F n params).Challenge ⟨⟨1, hiv⟩, hdir⟩) :=\n      (inferInstance : Fintype F)\n    haveI hsampC : SampleableType ((outerPSpec F n params).Challenge ⟨⟨1, hiv⟩, hdir⟩) :=\n      (inferInstance : SampleableType F)\n    refine le_trans (tsum_uniform_challenge_mem_le_prob_uniform\n      (midSoundnessLanguageSharp stmtIn.2)\n      (C := (outerPSpec F n params).Challenge ⟨⟨1, hiv⟩, hdir⟩) rfl _\n      (fun c => (show F from c) ∈ midSoundnessLanguageSharp stmtIn.2)\n      (fun c => Iff.rfl) ?hg ?hgle) ?_\n    case hg =>\n      intro c hc\n      rw [mul_eq_zero]\n      right\n      rw [simulateQ_pure]\n      refine probEvent_eq_zero ?_\n      rintro x hx ⟨hno, hyes⟩\n      simp only [StateT.run'_eq, StateT.run_pure, map_pure, support_pure,\n        Set.mem_singleton_iff] at hx\n      subst hx\n      simp only [outerSharpStateFunction] at hyes\n      unfold outerSharpState at hyes\n      rcases hyes with h | ⟨h, hmem⟩\n      · exact hStmtIn h\n      · exact hc hmem\n    case hgle =>\n      intro c\n      refine le_trans (mul_le_mul' (le_of_eq ?_) probEvent_le_one) (by rw [mul_one])\n      rw [probOutput_uniformSample]\n      congr 1\n      exact congrArg Nat.cast (Fintype.card_congr (Equiv.cast (rfl : _ = F)))\n    · -- the uniform mass of the sharp language is the Schwartz–Zippel budget\n      rw [ENNReal.coe_div (by exact_mod_cast Fintype.card_ne_zero)]\n      exact outerSoundness_sharp stmtIn.1 stmtIn.2 hBad\n  · -- round 2 is a message round: direction contradiction\n    exact absurd hdir (by exact fun h => by cases h)\n  · -- round 3: the batch challenge cannot flip the state\n    have hzero : outerRbrError F n M params ⟨⟨3, hiv⟩, hdir⟩ = 0 := by\n      unfold outerRbrError; norm_num\n    rw [hzero]\n    refine le_of_eq (probEvent_eq_zero ?_)\n    rintro ⟨tr, c⟩ - ⟨hno, hyes⟩\n    refine hno ?_\n    simp only [outerSharpStateFunction] at hyes ⊢\n    unfold outerSharpState at hyes ⊢\n    rcases hyes with h | ⟨h, hmem⟩\n    · exact Or.inl h\n    · exact Or.inr ⟨by norm_num, hmem⟩\n\n",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_native_probability_api_transport": true
+    },
+    {
+      "name": "Logup.sum_outerRbrError",
+      "original_header": "/-- The total outer RBR error is the sharp Schwartz–Zippel budget (the round-3 term is zero). -/\ntheorem sum_outerRbrError :\n    ∑ i : (outerPSpec F n params).ChallengeIdx, outerRbrError F n M params i\n      = ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0) ",
+      "current_header": "/-- The total outer RBR error is the sharp Schwartz–Zippel budget (the round-3 term is zero). -/\ntheorem sum_outerRbrError :\n    ∑ i : (outerPSpec F n params).ChallengeIdx, outerRbrError F n M params i\n      = ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0) ",
+      "original_command": "/-- The total outer RBR error is the sharp Schwartz–Zippel budget (the round-3 term is zero). -/\ntheorem sum_outerRbrError :\n    ∑ i : (outerPSpec F n params).ChallengeIdx, outerRbrError F n M params i\n      = ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0) := by\n  classical\n  have hsub : ∑ i ∈ Finset.univ.filter\n        (fun i : Fin 4 => (outerPSpec F n params).dir i = Direction.V_to_P),\n        (if i.val = 1 then ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0) else 0)\n      = ∑ i : (outerPSpec F n params).ChallengeIdx, outerRbrError F n M params i := by\n    refine Finset.sum_subtype _ (fun x => ?_) _\n    simp [ProtocolSpec.ChallengeIdx]\n  have hfilter : Finset.univ.filter\n      (fun i : Fin 4 => (outerPSpec F n params).dir i = Direction.V_to_P)\n      = ({⟨1, by norm_num⟩, ⟨3, by norm_num⟩} : Finset (Fin 4)) := by\n    ext i\n    fin_cases i\n    · exact iff_of_false (fun h => nomatch (Finset.mem_filter.mp h).2) (by decide)\n    · exact iff_of_true (Finset.mem_filter.mpr ⟨Finset.mem_univ _, rfl⟩) (by decide)\n    · exact iff_of_false (fun h => nomatch (Finset.mem_filter.mp h).2) (by decide)\n    · exact iff_of_true (Finset.mem_filter.mpr ⟨Finset.mem_univ _, rfl⟩) (by decide)\n  rw [← hsub, hfilter, Finset.sum_insert (by decide), Finset.sum_singleton]\n  norm_num\n\n",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_native_probability_api_transport": true
+    },
+    {
+      "name": "Logup.outerVerifier_soundness_sharp",
+      "original_header": "set_option maxHeartbeats 4000000 in\n/-- **`hOuter` discharged: protocol-level outer soundness at the sharp language.**\n\nThe outer LogUp verifier is sound from the input language into the sharp protocol-level\nintermediate language with the paper-shaped error `outerSoundnessError`, for any\nstate-preserving, non-failing, value-blind shared-oracle implementation. -/\ntheorem outerVerifier_soundness_sharp (hcard : 2 ^ n < Fintype.card F)\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    (outerVerifier oSpec F n M params).soundness init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params)\n      (outerSoundnessError F n M params) ",
+      "current_header": "set_option maxHeartbeats 4000000 in\n/-- **`hOuter` discharged: protocol-level outer soundness at the sharp language.**\n\nThe outer LogUp verifier is sound from the input language into the sharp protocol-level\nintermediate language with the paper-shaped error `outerSoundnessError`, for any\nstate-preserving, non-failing, value-blind shared-oracle implementation. -/\ntheorem outerVerifier_soundness_sharp (hcard : 2 ^ n < Fintype.card F)\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    (outerVerifier oSpec F n M params).soundness init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params)\n      (outerSoundnessError F n M params) ",
+      "original_command": "set_option maxHeartbeats 4000000 in\n/-- **`hOuter` discharged: protocol-level outer soundness at the sharp language.**\n\nThe outer LogUp verifier is sound from the input language into the sharp protocol-level\nintermediate language with the paper-shaped error `outerSoundnessError`, for any\nstate-preserving, non-failing, value-blind shared-oracle implementation. -/\ntheorem outerVerifier_soundness_sharp (hcard : 2 ^ n < Fintype.card F)\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    (outerVerifier oSpec F n M params).soundness init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params)\n      (outerSoundnessError F n M params) := by\n  have hRbr := outerVerifier_rbrSoundness_sharp oSpec F n M params init impl\n  have hbr : Verifier.MarginalBridge init impl\n      (inputRelation F n M).language\n      (midSoundnessProtocolLanguageSharp F n M params)\n      ((outerVerifier oSpec F n M params).toVerifier)\n      (outerRbrError F n M params) :=\n    Verifier.marginalBridge_holds himplSP himplNF himplVB\n  have h := Verifier.rbrSoundness_imp_soundness_of_marginal init impl hRbr hbr\n  have hle : (∑ i : (outerPSpec F n params).ChallengeIdx, outerRbrError F n M params i)\n      ≤ outerSoundnessError F n M params := by\n    rw [sum_outerRbrError]\n    exact sharp_error_le_outerSoundnessError (params := params) hcard\n  exact Verifier.soundness.mono_error init impl h hle\n\n",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_native_probability_api_transport": true
+    },
+    {
+      "name": "Logup.issue13_soundness_sharp_outerDischarged",
+      "original_header": "/-- **Issue #13 soundness with the outer half fully discharged.** The sharp-language LogUp\nsoundness front door with `hOuter` replaced by the proven `outerVerifier_soundness_sharp`:\nthe remaining hypotheses are the embedded-sumcheck projection/RBR data, the append-RBR\nkeystone, the error equation, and the honest-implementation side conditions. -/\ntheorem issue13_soundness_sharp_outerDischarged [oSpec.Fintype]\n    (sumcheckSoundnessError : ℝ≥0)\n    (lang : (i : Fin (n + 1)) →\n      Set (Sumcheck.Spec.StatementRound F n i ×\n        (∀ j, Sumcheck.Spec.OracleStatement F n (logupSumcheckDegree M params) j)))\n    (rbrSoundnessError :\n      ∀ _ : Fin n,\n        (Sumcheck.Spec.SingleRound.pSpec F (logupSumcheckDegree M params)).ChallengeIdx → ℝ≥0)\n    (hn : 0 < n) (hcard : 2 ^ n < Fintype.card F)\n    (hLast : lang (Fin.last n) = Set.univ)\n    (hError : sumcheckSoundnessError =\n      ∑ i : (logupSumcheckPSpec F n M params).ChallengeIdx,\n        (fun combinedIdx =>\n          letI ij ",
+      "current_header": "/-- **Issue #13 soundness with the outer half fully discharged.** The sharp-language LogUp\nsoundness front door with `hOuter` replaced by the proven `outerVerifier_soundness_sharp`:\nthe remaining hypotheses are the embedded-sumcheck projection/RBR data, the append-RBR\nkeystone, the error equation, and the honest-implementation side conditions. -/\ntheorem issue13_soundness_sharp_outerDischarged [∀ q, Fintype (oSpec.Range q)]\n    (sumcheckSoundnessError : ℝ≥0)\n    (lang : (i : Fin (n + 1)) →\n      Set (Sumcheck.Spec.StatementRound F n i ×\n        (∀ j, Sumcheck.Spec.OracleStatement F n (logupSumcheckDegree M params) j)))\n    (rbrSoundnessError :\n      ∀ _ : Fin n,\n        (Sumcheck.Spec.SingleRound.pSpec F (logupSumcheckDegree M params)).ChallengeIdx → ℝ≥0)\n    (hn : 0 < n) (hcard : 2 ^ n < Fintype.card F)\n    (hLast : lang (Fin.last n) = Set.univ)\n    (hError : sumcheckSoundnessError =\n      ∑ i : (logupSumcheckPSpec F n M params).ChallengeIdx,\n        (fun combinedIdx =>\n          letI ij ",
+      "original_command": "/-- **Issue #13 soundness with the outer half fully discharged.** The sharp-language LogUp\nsoundness front door with `hOuter` replaced by the proven `outerVerifier_soundness_sharp`:\nthe remaining hypotheses are the embedded-sumcheck projection/RBR data, the append-RBR\nkeystone, the error equation, and the honest-implementation side conditions. -/\ntheorem issue13_soundness_sharp_outerDischarged [oSpec.Fintype]\n    (sumcheckSoundnessError : ℝ≥0)\n    (lang : (i : Fin (n + 1)) →\n      Set (Sumcheck.Spec.StatementRound F n i ×\n        (∀ j, Sumcheck.Spec.OracleStatement F n (logupSumcheckDegree M params) j)))\n    (rbrSoundnessError :\n      ∀ _ : Fin n,\n        (Sumcheck.Spec.SingleRound.pSpec F (logupSumcheckDegree M params)).ChallengeIdx → ℝ≥0)\n    (hn : 0 < n) (hcard : 2 ^ n < Fintype.card F)\n    (hLast : lang (Fin.last n) = Set.univ)\n    (hError : sumcheckSoundnessError =\n      ∑ i : (logupSumcheckPSpec F n M params).ChallengeIdx,\n        (fun combinedIdx =>\n          letI ij := ProtocolSpec.seqComposeChallengeIdxToSigma combinedIdx\n          rbrSoundnessError ij.1 ij.2) i)\n    (hProj :\n      SumcheckLensProjSoundFor oSpec F n M params\n        (midSoundnessProtocolLanguageSharp F n M params) (lang 0))\n    (hRound : ∀ i : Fin n,\n      (Sumcheck.Spec.SingleRound.oracleVerifier F n (logupSumcheckDegree M params)\n          (signDomain F (Fact.out : (-1 : F) ≠ 1)) oSpec i).rbrSoundness init impl\n        (lang i.castSucc) (lang i.succ) (rbrSoundnessError i))\n    (hAppend : ∀ {S₁ S₂ S₃ : Type} {k₁ k₂ : ℕ}\n        {p₁ : ProtocolSpec k₁} {p₂ : ProtocolSpec k₂}\n        [∀ j, SampleableType (p₁.Challenge j)] [∀ j, SampleableType (p₂.Challenge j)]\n        (V₁ : Verifier oSpec S₁ S₂ p₁) (V₂ : Verifier oSpec S₂ S₃ p₂)\n        {l₁ : Set S₁} {l₂ : Set S₂} {l₃ : Set S₃}\n        {e₁ : p₁.ChallengeIdx → ℝ≥0} {e₂ : p₂.ChallengeIdx → ℝ≥0},\n        V₁.rbrSoundness init impl l₁ l₂ e₁ → V₂.rbrSoundness init impl l₂ l₃ e₂ →\n        (V₁.append V₂).rbrSoundness init impl l₁ l₃\n          (Sum.elim e₁ e₂ ∘ ChallengeIdx.sumEquiv.symm))\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    (logupVerifier oSpec F n M params).soundness init impl\n      (inputRelation F n M).language outputRelation.language\n      (logupSoundnessError F n M params sumcheckSoundnessError) :=\n  issue13_soundness_msgSeam_sharp_wiredRoundAppend oSpec F n M params init impl\n    sumcheckSoundnessError lang rbrSoundnessError hn\n    (outerVerifier_soundness_sharp oSpec F n M params init impl hcard himplSP himplNF himplVB)\n    hLast hError hProj hRound hAppend himplSP himplNF himplVB\n\n",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_native_probability_api_transport": true
+    }
+  ],
+  "native_API_mapping": [
+    {
+      "old": "StateFunction.toFun_empty equivalence constructor",
+      "new": "The canonical toFun_empty field requires initial state→input language; retain the original reverse implication proof.",
+      "scope": "The unchanged outerSharpState definition still contains the input-language disjunct; no valid input/state behavior changes."
+    },
+    {
+      "old": "probEvent_eq_zero support argument",
+      "new": "prEvent_eq_zero_of_forall_mem_support",
+      "scope": "Prove zero probability of accepted language events using native OptionT support. Verifier none remains rejection and is not replaced with a successful output. Prefix or init missing mass is retained by native bind inequalities."
+    },
+    {
+      "old": "probEvent_le_one / probOutput_uniformSample",
+      "new": "prEvent_le_one / SampleableType.prEvent_uniformSample_eq_singleton",
+      "scope": "The same round1 uniform scalar event is bounded by the sharp-language mass. Transparent local Fintype/SampleableType values retain the canonical field sampler and avoid an opaque-instance diamond. Round3 state flips still have probability zero."
+    },
+    {
+      "old": "Pr[⊥ | (impl t).run s] = 0",
+      "new": "prFail ((impl t).run s) = 0",
+      "scope": "Original implementation losslessness hypothesis only; no new nonfailure hypothesis added to the RBR theorem."
+    },
+    {
+      "old": "[oSpec.Fintype]",
+      "new": "[∀ q, Fintype (oSpec.Range q)]",
+      "scope": "Equivalent pointwise finite responses; no finite query-domain assumption."
+    },
+    {
+      "old": "Full PMF value-law equality for implementation state blindness",
+      "new": "Native evalDist equality with private local discrete observation spaces",
+      "scope": "The former all-subsets law is observed locally. No global discrete interpretation or PMF/SPMF interpreter is introduced."
+    }
+  ],
+  "mathematical_scope": "Same input relation, sharp intermediate language, outerSharpState, round1 Schwartz–Zippel budget(M*2^n−1)/|F|, zero round3 budget, total outerSoundnessError, and all existing state-preserving/nonfailing/value-blind implementation conditions. The issue13 assembly continues to assume its explicit inner-round, projection, append-RBR, error, and dimension obligations.",
+  "validation": {
+    "actual_lake_import_source_check": {
+      "file": "ArkLib/ProofSystem/Logup/Security/OuterRbrSoundness.lean",
+      "status": "actual_lake_import_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 9.262,
+      "source_before_sha256": "89643d3c2ef062326d5d9cb4b172346bffd82958e9691945ba7f2e2f5f7b6616",
+      "source_after_sha256": "89643d3c2ef062326d5d9cb4b172346bffd82958e9691945ba7f2e2f5f7b6616",
+      "source_unchanged": true,
+      "direct_actual_imports": {
+        "ArkLib.ProofSystem.Logup.Security.OuterVerifierSupport": {
+          "path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterVerifierSupport.olean",
+          "sha256": "2947463866e527759ffee6ee73510416c445cc5c9ab00b187ad9b7ad18a116a9"
+        },
+        "ArkLib.ProofSystem.Logup.Security.MarginalBridgeProof": {
+          "path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Logup/Security/MarginalBridgeProof.olean",
+          "sha256": "821ee920e0700fdda4c527a257295ef7e5091483c6c46a3188430a3d56614140"
+        },
+        "ArkLib.ProofSystem.Logup.Security.OuterCompleteness": {
+          "path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterCompleteness.olean",
+          "sha256": "169de22589f67fb61abef11f9600af818c24ac0d74383a7bfc7e58e8b345ceb9"
+        },
+        "ArkLib.ProofSystem.Logup.Security.OuterSoundnessReal": {
+          "path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterSoundnessReal.olean",
+          "sha256": "d5f1ab6b423f93d3380b27c0e5e96ad21ce22e2956613baf2d6657daefe2ba23"
+        },
+        "ArkLib.ProofSystem.Logup.Security.LogupProtocol2Status": {
+          "path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Logup/Security/LogupProtocol2Status.olean",
+          "sha256": "0966e49a49b490e7ccec175a9a9c9e731164c63a90a9e9ad5a9887103962c359"
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-OuterRbrSoundness-actual-import.log",
+      "not_a_lake_package_build": true
+    },
+    "temporary_overlay_cross_check": {
+      "file": "ArkLib/ProofSystem/Logup/Security/OuterRbrSoundness.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 18.925,
+      "source_before_sha256": "89643d3c2ef062326d5d9cb4b172346bffd82958e9691945ba7f2e2f5f7b6616",
+      "source_after_sha256": "89643d3c2ef062326d5d9cb4b172346bffd82958e9691945ba7f2e2f5f7b6616",
+      "import_artifacts": {
+        "ArkLib.ProofSystem.Logup.Security.OuterVerifierSupport": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterVerifierSupport.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterVerifierSupport.olean",
+          "sha256": "2947463866e527759ffee6ee73510416c445cc5c9ab00b187ad9b7ad18a116a9",
+          "artifact_family": {
+            "OuterVerifierSupport.olean": "2947463866e527759ffee6ee73510416c445cc5c9ab00b187ad9b7ad18a116a9"
+          }
+        },
+        "ArkLib.ProofSystem.Logup.Security.MarginalBridgeProof": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/MarginalBridgeProof.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/MarginalBridgeProof.olean",
+          "sha256": "5392f583cc637e1b98b3851800276c897ba567c29101aec3ddc2182574fe33eb",
+          "artifact_family": {
+            "MarginalBridgeProof.olean": "5392f583cc637e1b98b3851800276c897ba567c29101aec3ddc2182574fe33eb"
+          }
+        },
+        "ArkLib.ProofSystem.Logup.Security.OuterCompleteness": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterCompleteness.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterCompleteness.olean",
+          "sha256": "3386c0e8345f33494ce8d76d20a2137eedde333d655d9e8683af911027e6f997",
+          "artifact_family": {
+            "OuterCompleteness.olean": "3386c0e8345f33494ce8d76d20a2137eedde333d655d9e8683af911027e6f997"
+          }
+        },
+        "ArkLib.ProofSystem.Logup.Security.OuterSoundnessReal": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterSoundnessReal.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterSoundnessReal.olean",
+          "sha256": "96abaff1a5ab9de3bde3b64ab53557bc8d0d62d4397d10007c661018877a8044",
+          "artifact_family": {
+            "OuterSoundnessReal.olean": "96abaff1a5ab9de3bde3b64ab53557bc8d0d62d4397d10007c661018877a8044"
+          }
+        },
+        "ArkLib.ProofSystem.Logup.Security.LogupProtocol2Status": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/LogupProtocol2Status.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Logup/Security/LogupProtocol2Status.olean",
+          "sha256": "0966e49a49b490e7ccec175a9a9c9e731164c63a90a9e9ad5a9887103962c359",
+          "artifact_family": {
+            "LogupProtocol2Status.olean": "0966e49a49b490e7ccec175a9a9c9e731164c63a90a9e9ad5a9887103962c359"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/ArkLib.ProofSystem.Logup.Security.OuterRbrSoundness.lean.1793255912778231000.check.log",
+      "not_a_lake_package_build": true
+    },
+    "five_printed_anchors": [
+      {
+        "name": "Logup.outerSharpStateFunction",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "Logup.outerVerifier_rbrSoundness_sharp",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "Logup.sum_outerRbrError",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "Logup.outerVerifier_soundness_sharp",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "Logup.issue13_soundness_sharp_outerDischarged",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      }
+    ],
+    "warning_count": 1,
+    "warning_scope": "One inherited unusedSectionVars warning in the unchanged sum_outerRbrError contract; original assumptions are preserved. No linter suppression added.",
+    "package_validation_pending": false
+  },
+  "no_new_admissions_axioms_native_trust_or_mathematical_premises": true,
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [
+      "/validation/package_validation_pending"
+    ],
+    "superseded_historical_status_paths": [],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.Data.CodingTheory.EntropyVolumeUpper
 import ArkLib.Data.CodingTheory.QEntropyMonotone
-import ArkLib.Data.CodingTheory.HammingBallVolume
+import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
 
 /-!
 # q-ary Hamming-ball volume UPPER bound (sub-capacity)
@@ -52,7 +52,7 @@ theorem hammingBallVolume_le_qEntropy (hq : 2 ≤ q) (δ : ℝ) {n : ℕ}
     have hpos : (0 : ℝ) < 1 / (q : ℝ) := by positivity
     linarith [hcap]
   have hH_nn : 0 ≤ qEntropy q ((r : ℝ) / (n : ℝ)) :=
-    (qEntropy_nonneg_and_basic hq hrn_nn hrn_le1).1
+    qEntropy_nonneg hrn_nn hrn_le1
   set B := (q : ℝ) ^ ((n : ℝ) * qEntropy q ((r : ℝ) / (n : ℝ))) with hBdef
   have hB_ge_one : (1 : ℝ) ≤ B := by
     rw [hBdef]

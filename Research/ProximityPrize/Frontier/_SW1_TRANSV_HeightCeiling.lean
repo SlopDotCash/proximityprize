@@ -247,12 +247,11 @@ theorem height_model_cannot_certify_core (U : Type*) [Fintype U] [DecidableEq U]
 /-- At the prize cell `n = 2^30`, `p = n · 2^128`, the height gate `(2r)^{n/2} < p` (the only
 way to get `⌊log_p H⌋ = 0`) already fails at `r = 2`: `4^{2^29} > 2^30 · 2^128`. -/
 theorem prize_gate_vacuous : (2 : ℕ) ^ 30 * 2 ^ 128 < 4 ^ (2 ^ 29) := by
+  have compare (e : ℕ) (he : 158 < 2 * e) : (2 : ℕ) ^ 158 < 4 ^ e := by
+    rw [show (4 : ℕ) = 2 ^ 2 by decide, ← pow_mul]
+    exact Nat.pow_lt_pow_right (by decide) he
   have h1 : (2 : ℕ) ^ 30 * 2 ^ 128 = 2 ^ 158 := by norm_num
-  have h3 : (2 : ℕ) * 2 ^ 29 = 2 ^ 30 := by norm_num
-  have h2 : (4 : ℕ) ^ (2 ^ 29) = 2 ^ (2 ^ 30) := by
-    rw [show (4 : ℕ) = 2 ^ 2 by norm_num, ← pow_mul, h3]
-  rw [h1, h2]
-  exact Nat.pow_lt_pow_right (by norm_num) (by norm_num)
+  simpa only [h1] using compare (2 ^ 29) (by norm_num)
 
 end SW1Transv
 

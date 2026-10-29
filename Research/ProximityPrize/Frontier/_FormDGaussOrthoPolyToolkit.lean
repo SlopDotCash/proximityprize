@@ -64,7 +64,7 @@ def momentFunctional : ℝ[X] →ₗ[ℝ] ℝ where
 
 @[simp] theorem momentFunctional_C (c : ℝ) :
     momentFunctional n (C c) = c := by
-  have : (C c : ℝ[X]) = Polynomial.monomial 0 c := (Polynomial.monomial_zero_left c).symm
+  have : (C c : ℝ[X]) = Polynomial.monomial 0 c := (Polynomial.monomial_zero_left (a := c)).symm
   rw [this, momentFunctional_monomial]; simp [wickMoment]
 
 /-- The **moment shift** `m(r+1) = n·r·m(r-1)`: the half-step Wick recursion that powers

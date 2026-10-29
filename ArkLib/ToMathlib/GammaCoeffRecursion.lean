@@ -220,7 +220,7 @@ series `γ'` is the double sum over the `Y`-index of `R` and the antidiagonal of
 `evalX (C x₀) (hasseDerivX a R)` (via `coeff_Q_coeff_eq_evalX_hasseDerivX_coeff`). -/
 theorem coeff_eval_Q_expand (x₀ : F) (R : F[X][X][Y]) (γ' : PowerSeries (𝕃 H)) (s : ℕ) :
     PowerSeries.coeff s (Polynomial.eval γ' (Q x₀ R H))
-      = ∑ i ∈ Finset.range (R.natDegree + 1), ∑ ab ∈ Finset.antidiagonal s,
+      = ∑ i ∈ Finset.range (R.natDegree + 1), ∑ ab ∈ _root_.Finset.HasAntidiagonal.antidiagonal s,
           liftToFunctionField (H := H)
               ((Bivariate.evalX (Polynomial.C x₀) (hasseDerivX ab.1 R)).coeff i)
             * PowerSeries.coeff ab.2 (γ' ^ i) := by
@@ -237,7 +237,7 @@ about the opaque Hensel `choose`. -/
 theorem ζ_mul_αGenuine_succ_explicit {x₀ : F} {R : F[X][X][Y]}
     (hHyp : Hypotheses x₀ R H) (t : ℕ) :
     ClaimA2.ζ R x₀ H * αGenuine H x₀ R hHyp (t + 1)
-      = - ∑ i ∈ Finset.range (R.natDegree + 1), ∑ ab ∈ Finset.antidiagonal (t + 1),
+      = - ∑ i ∈ Finset.range (R.natDegree + 1), ∑ ab ∈ _root_.Finset.HasAntidiagonal.antidiagonal (t + 1),
           liftToFunctionField (H := H)
               ((Bivariate.evalX (Polynomial.C x₀) (hasseDerivX ab.1 R)).coeff i)
             * PowerSeries.coeff ab.2 ((gammaTruncGenuine H x₀ R hHyp t) ^ i) := by

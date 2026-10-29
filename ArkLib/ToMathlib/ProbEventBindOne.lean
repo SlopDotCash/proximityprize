@@ -4,35 +4,30 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import VCVio.EvalDist.Monad.Basic
+import VCVio.EvalDist.ProbabilityBounds
 
 /-!
-# Two-stage perfect-event composition for monadic bind
+# Perfect-event composition under native probability semantics
 
-`probEvent_bind_eq_one` is the perfect-completeness building block for sequential composition: if
-the first computation produces a `P`-output with probability `1`, and from any `P`-output the
-continuation produces a `Q`-output with probability `1`, then the bind produces a `Q`-output with
-probability `1`. Proved from `probEvent_eq_one_iff` (probability `1` ⇔ never-fails and holds on the
-whole support), `probFailure_bind_eq_zero_iff`, and `mem_support_bind_iff`. Intended for upstreaming
-to VCVio's `EvalDist` API.
+A prefix event of probability one and continuation events of probability one imply that the
+composed event has probability one. The canonical conditional lower bound proves this directly;
+no positive-mass/support coherence or global discrete instance is needed. The probability-one
+prefix hypothesis already accounts for failure mass.
 -/
 
-open scoped ENNReal
+universe v
 
-universe u v
+variable {m : Type → Type v} [Monad m] [LawfulMonad m]
+  [EvalDistSemantics m] [LawfulEvalDistSemantics m] {α β : Type}
 
-variable {m : Type u → Type v} [Monad m] [HasEvalSPMF m] {α β : Type u}
-
-/-- **Two-stage perfect composition.** If `mx` produces an output satisfying `P` with probability 1,
-and from any `P`-output the continuation `my` produces a `Q`-output with probability 1, then the
-bind produces a `Q`-output with probability 1. -/
+/-- A probability-one prefix event followed by probability-one conditional events composes. -/
 theorem probEvent_bind_eq_one (mx : m α) (my : α → m β) (P : α → Prop) (Q : β → Prop)
-    (h1 : Pr[ P | mx] = 1) (h2 : ∀ a, P a → Pr[ Q | my a] = 1) :
-    Pr[ Q | mx >>= my] = 1 := by
-  rw [probEvent_eq_one_iff] at h1 ⊢
-  obtain ⟨hf1, hs1⟩ := h1
-  refine ⟨(probFailure_bind_eq_zero_iff mx my).mpr
-      ⟨hf1, fun a ha => (probEvent_eq_one_iff.mp (h2 a (hs1 a ha))).1⟩, ?_⟩
-  intro y hy
-  obtain ⟨a, ha, hya⟩ := (mem_support_bind_iff mx my y).mp hy
-  exact (probEvent_eq_one_iff.mp (h2 a (hs1 a ha))).2 y hya
+    (h1 : Pr{let a ← mx}[P a] = 1)
+    (h2 : ∀ a, P a → Pr{let b ← my a}[Q b] = 1) :
+    Pr{let b ← mx >>= my}[Q b] = 1 := by
+  apply le_antisymm (prEvent_le_one _)
+  have h := mul_le_prEvent_bind_of_forall mx my P Q (r := 1) (r' := 1)
+    h1.ge (fun a ha => (h2 a ha).ge)
+  simpa only [one_mul] using h
+
+#print axioms probEvent_bind_eq_one

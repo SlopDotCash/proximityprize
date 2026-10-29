@@ -62,6 +62,9 @@ namespace FaithfulCurveExtraction
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
+-- These historical finite-field statements use the uniform finite sampler.
+private noncomputable local instance : SampleableType F := SampleableType.ofFintype F
+
 /-! ## Part 1 — the per-`z` pin: Hensel uniqueness against the curve specialization -/
 
 omit [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype F] [DecidableEq F] in

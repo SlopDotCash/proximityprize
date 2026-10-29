@@ -178,7 +178,7 @@ theorem cocycleGeometricMeanLaw_of_uniform_step {M : ℕ → ℝ} {N0 L : ℕ} {
   refine ⟨hG, ?_⟩
   calc ∏ j ∈ range L, cocycle M (N0 + j)
       ≤ ∏ _j ∈ range L, G := by
-        apply prod_le_prod
+        apply prod_le_prod₀
         · intro j hj; exact hnonneg j (mem_range.mp hj)
         · intro j hj; exact hstep j (mem_range.mp hj)
     _ = G ^ L := by rw [prod_const, card_range]

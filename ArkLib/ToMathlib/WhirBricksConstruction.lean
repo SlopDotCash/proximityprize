@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eliza
 -/
 
-import ArkLib.OracleReduction.Basic
-import ArkLib.OracleReduction.VectorIOR
-import ArkLib.OracleReduction.Security.Basic
-import ArkLib.OracleReduction.Security.RoundByRound
+import ProximityPrize.Extensions.OracleReduction.Basic
+import ProximityPrize.Extensions.OracleReduction.VectorIOR
+import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
 import ArkLib.Data.Polynomial.Interface
 import ArkLib.ProofSystem.Whir.Folding
 import ArkLib.ProofSystem.Whir.RBRSoundness
@@ -194,7 +194,7 @@ noncomputable def paperMessageIdx {M : ℕ} {ιs : Fin (M + 1) → Type}
     change paperTranscriptSlotDirection
         ((Fintype.equivFin (PaperTranscriptSlot P)).symm (paperTranscriptSlotIndex slot)) =
       Direction.P_to_V
-    simpa [paperTranscriptSlotIndex] using hslot⟩
+    simpa [paperTranscriptSlotIndex, paperTranscriptSlotLength] using hslot⟩
 
 omit [Field F] [SampleableType F] in
 /-- Turn a paper verifier-challenge slot into the corresponding `VectorSpec.ChallengeIdx`. -/
@@ -206,7 +206,7 @@ noncomputable def paperChallengeIdx {M : ℕ} {ιs : Fin (M + 1) → Type}
     change paperTranscriptSlotDirection
         ((Fintype.equivFin (PaperTranscriptSlot P)).symm (paperTranscriptSlotIndex slot)) =
       Direction.V_to_P
-    simpa [paperTranscriptSlotIndex] using hslot⟩
+    simpa [paperTranscriptSlotIndex, paperTranscriptSlotLength] using hslot⟩
 
 omit [Field F] [SampleableType F] in
 noncomputable def initialSumcheckMessageIdx {M : ℕ} {ιs : Fin (M + 1) → Type}
@@ -294,7 +294,7 @@ def initialSumcheckMessagePayload {M : ℕ} {ιs : Fin (M + 1) → Type}
     ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Message
       (initialSumcheckMessageIdx P d s) := by
   simpa [initialSumcheckMessageIdx, paperMessageIdx, whirPaperTranscriptVectorSpec,
-    paperTranscriptSlotIndex] using coeffs
+    paperTranscriptSlotIndex, paperTranscriptSlotLength] using coeffs
 
 omit [Field F] [SampleableType F] in
 /-- Payload for an initial sumcheck scalar challenge. -/
@@ -304,7 +304,7 @@ def initialSumcheckChallengePayload {M : ℕ} {ιs : Fin (M + 1) → Type}
     ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge
       (initialSumcheckChallengeIdx P d s) := by
   simpa [initialSumcheckChallengeIdx, paperChallengeIdx, whirPaperTranscriptVectorSpec,
-    paperTranscriptSlotIndex] using singletonFieldPayload x
+    paperTranscriptSlotIndex, paperTranscriptSlotLength] using singletonFieldPayload x
 
 omit [Field F] [SampleableType F] in
 /-- Payload for a folded-oracle message in transition round `i`. -/
@@ -314,7 +314,7 @@ noncomputable def mainFoldedOraclePayload {M : ℕ} {ιs : Fin (M + 1) → Type}
     ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Message
       (mainFoldedOracleMessageIdx P d i) := by
   simpa [mainFoldedOracleMessageIdx, paperMessageIdx, whirPaperTranscriptVectorSpec,
-    paperTranscriptSlotIndex] using packFiniteFunction (ιs i.succ) f
+    paperTranscriptSlotIndex, paperTranscriptSlotLength] using packFiniteFunction (ιs i.succ) f
 
 omit [Field F] [SampleableType F] in
 /-- Challenge payload for an out-of-domain sample in transition round `i`. -/
@@ -324,7 +324,7 @@ def mainOutOfDomainChallengePayload {M : ℕ} {ιs : Fin (M + 1) → Type}
     ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge
       (mainOutOfDomainChallengeIdx P d i) := by
   simpa [mainOutOfDomainChallengeIdx, paperChallengeIdx, whirPaperTranscriptVectorSpec,
-    paperTranscriptSlotIndex] using singletonFieldPayload z
+    paperTranscriptSlotIndex, paperTranscriptSlotLength] using singletonFieldPayload z
 
 omit [Field F] [SampleableType F] in
 /-- Payload for an out-of-domain reply message in transition round `i`. -/
@@ -334,7 +334,7 @@ def mainOutOfDomainReplyPayload {M : ℕ} {ιs : Fin (M + 1) → Type}
     ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Message
       (mainOutOfDomainReplyMessageIdx P d i) := by
   simpa [mainOutOfDomainReplyMessageIdx, paperMessageIdx, whirPaperTranscriptVectorSpec,
-    paperTranscriptSlotIndex] using singletonFieldPayload y
+    paperTranscriptSlotIndex, paperTranscriptSlotLength] using singletonFieldPayload y
 
 omit [Field F] [SampleableType F] in
 /-- Challenge payload constructor for the batched shift/random-linear-combination samples. -/
@@ -344,7 +344,7 @@ def mainShiftChallengePayload {M : ℕ} {ιs : Fin (M + 1) → Type}
     ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge
       (mainShiftChallengeIdx P d i) := by
   simpa [mainShiftChallengeIdx, paperChallengeIdx, whirPaperTranscriptVectorSpec,
-    paperTranscriptSlotIndex] using xs
+    paperTranscriptSlotIndex, paperTranscriptSlotLength] using xs
 
 omit [Field F] [SampleableType F] in
 /-- Payload for a main-loop sumcheck polynomial-message slot. -/
@@ -354,7 +354,7 @@ def mainSumcheckMessagePayload {M : ℕ} {ιs : Fin (M + 1) → Type}
     ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Message
       (mainSumcheckMessageIdx P d i s) := by
   simpa [mainSumcheckMessageIdx, paperMessageIdx, whirPaperTranscriptVectorSpec,
-    paperTranscriptSlotIndex] using coeffs
+    paperTranscriptSlotIndex, paperTranscriptSlotLength] using coeffs
 
 omit [Field F] [SampleableType F] in
 /-- Challenge payload for a main-loop sumcheck scalar challenge. -/
@@ -364,7 +364,7 @@ def mainSumcheckChallengePayload {M : ℕ} {ιs : Fin (M + 1) → Type}
     ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge
       (mainSumcheckChallengeIdx P d i s) := by
   simpa [mainSumcheckChallengeIdx, paperChallengeIdx, whirPaperTranscriptVectorSpec,
-    paperTranscriptSlotIndex] using singletonFieldPayload x
+    paperTranscriptSlotIndex, paperTranscriptSlotLength] using singletonFieldPayload x
 
 omit [Field F] [SampleableType F] in
 /-- Payload for the final polynomial message. -/
@@ -374,7 +374,7 @@ noncomputable def finalPolynomialPayload {M : ℕ} {ιs : Fin (M + 1) → Type}
     ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Message
       (finalPolynomialMessageIdx P d) := by
   simpa [finalPolynomialMessageIdx, paperMessageIdx, whirPaperTranscriptVectorSpec,
-    paperTranscriptSlotIndex] using
+    paperTranscriptSlotIndex, paperTranscriptSlotLength] using
       packFiniteFunction (Fin (2 ^ P.varCount (Fin.last M))) f
 
 omit [Field F] [SampleableType F] in
@@ -385,7 +385,7 @@ def finalRandomnessChallengePayload {M : ℕ} {ιs : Fin (M + 1) → Type}
     ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge
       (finalRandomnessChallengeIdx P d) := by
   simpa [finalRandomnessChallengeIdx, paperChallengeIdx, whirPaperTranscriptVectorSpec,
-    paperTranscriptSlotIndex] using xs
+    paperTranscriptSlotIndex, paperTranscriptSlotLength] using xs
 
 /-- Field data for one complete paper-order WHIR transcript.
 
@@ -557,14 +557,9 @@ noncomputable def paperTranscriptOracleVerifier {M : ℕ} {ιs : Fin (M + 1) →
               ([OracleStatement (ιs 0) F]ₒ +
                 [((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Message]ₒ)))
           Bool) :
-    OracleVerifier []ₒ Unit (OracleStatement (ιs 0) F)
-      Bool (fun _ : Empty => Unit) ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F) where
-  verify := verify
-  embed := {
-    toFun := fun e => nomatch e
-    inj' := fun e => nomatch e
-  }
-  hEq := fun e => nomatch e
+    OracleProofVerifier []ₒ Unit (OracleStatement (ιs 0) F)
+      ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F) :=
+  OracleProofVerifier.ofVerify verify
 
 omit [Field F] [SampleableType F] in
 /-- Package supplied paper-order transcript generation and verifier logic as an actual WHIR-shaped
@@ -585,9 +580,10 @@ noncomputable def paperTranscriptVectorIOP {M : ℕ} {ιs : Fin (M + 1) → Type
               ([OracleStatement (ιs 0) F]ₒ +
                 [((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Message]ₒ)))
           Bool) :
-    VectorIOP Unit (OracleStatement (ιs 0) F) Unit (whirPaperTranscriptVectorSpec P d) F where
-  prover := paperTranscriptOracleProver P d makeTranscript
-  verifier := paperTranscriptOracleVerifier P d verify
+    VectorIOP Unit (OracleStatement (ιs 0) F) Unit (whirPaperTranscriptVectorSpec P d) F :=
+  OracleReduction.mk (Oₛₒ := fun e : Empty => nomatch e)
+    (paperTranscriptOracleProver P d makeTranscript)
+    (paperTranscriptOracleVerifier P d verify)
 
 omit [Field F] [DecidableEq F] [Fintype ι] [DecidableEq ι] [Nonempty ι] in
 /-- Package the two semantic proof obligations for the paper-transcript adapter into the
@@ -621,7 +617,8 @@ theorem paperTranscriptVectorIOP_isSecureWithGap_of_complete_and_rbr {M : ℕ}
     VectorIOP.IsSecureWithGap completeRelation soundRelation ε_rbr
       (paperTranscriptVectorIOP P d makeTranscript verify) where
   is_complete := hComplete
-  is_rbr_knowledge_sound := hRbr
+  is_rbr_knowledge_sound := by
+    simpa only [paperTranscriptVectorIOP, OracleProof.toOracleVerifier] using hRbr
 
 omit [Fintype F] [DecidableEq F] [SampleableType F] in
 /-- Folding challenges for each WHIR transition, read from the paper-order transcript schedule.
@@ -670,7 +667,7 @@ structure PaperFoldDomainBridge {M : ℕ} {ιs : Fin (M + 1) → Type}
   nextDomainEquiv :
     (i : Fin M) →
       ιs i.succ ≃
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc)
           (P.foldingParam i.castSucc)
 
 omit [Fintype F] [DecidableEq F] [SampleableType F] in
@@ -683,7 +680,7 @@ keeps that extra assumption explicit instead of hiding it inside the verifier bi
 structure PaperInputDomainBridge {M : ℕ} {ιs : Fin (M + 1) → Type}
     (P : Params ιs F) (S : ∀ i : Fin (M + 1), Finset (ιs i)) where
   sourceDomainEquiv :
-    ιs 0 ≃ BlockRelDistance.indexPowT (S 0) (P.φ 0) 0
+    ιs 0 ≃ BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) 0
 
 omit [Fintype F] [DecidableEq F] [SampleableType F] in
 @[simp] theorem paperInputDomainBridge_sourceDomainEquiv_apply {M : ℕ}
@@ -698,14 +695,14 @@ omit [Fintype F] [DecidableEq F] [SampleableType F] in
 noncomputable def paperInputSourceFromOracle {M : ℕ} {ιs : Fin (M + 1) → Type}
     (P : Params ιs F) (S : ∀ i : Fin (M + 1), Finset (ιs i))
     (bridge : PaperInputDomainBridge P S) (oracle : OracleStatement (ιs 0) F ()) :
-    BlockRelDistance.indexPowT (S 0) (P.φ 0) 0 → F :=
+    BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) 0 → F :=
   fun x => oracle (bridge.sourceDomainEquiv.symm x)
 
 omit [Fintype F] [DecidableEq F] [SampleableType F] in
 @[simp] theorem paperInputSourceFromOracle_apply {M : ℕ} {ιs : Fin (M + 1) → Type}
     (P : Params ιs F) (S : ∀ i : Fin (M + 1), Finset (ιs i))
     (bridge : PaperInputDomainBridge P S) (oracle : OracleStatement (ιs 0) F ())
-    (x : BlockRelDistance.indexPowT (S 0) (P.φ 0) 0) :
+    (x : BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) 0) :
     paperInputSourceFromOracle P S bridge oracle x =
       oracle (bridge.sourceDomainEquiv.symm x) :=
   rfl
@@ -729,15 +726,15 @@ noncomputable def paperFoldedOracleFrom {M : ℕ} {ιs : Fin (M + 1) → Type}
     (bridge : PaperFoldDomainBridge P S)
     (hNeg :
       ∀ i : Fin M, ∀ j : ℕ,
-        Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
+        Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
     (source :
       (i : Fin M) →
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
     (foldChallenge : (i : Fin M) → Fin (P.foldingParam i.castSucc) → F)
     (hFoldLe : ∀ i : Fin M, P.foldingParam i.castSucc ≤ P.varCount i.castSucc)
     (i : Fin M) (x : ιs i.succ) : F :=
   letI : ∀ j : ℕ,
-      Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j) :=
+      Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j) :=
     hNeg i
   Fold.fold_k (source i) (foldChallenge i) (hFoldLe i) (bridge.nextDomainEquiv i x)
 
@@ -747,16 +744,16 @@ omit [Fintype F] [DecidableEq F] [SampleableType F] in
     (bridge : PaperFoldDomainBridge P S)
     (hNeg :
       ∀ i : Fin M, ∀ j : ℕ,
-        Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
+        Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
     (source :
       (i : Fin M) →
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
     (foldChallenge : (i : Fin M) → Fin (P.foldingParam i.castSucc) → F)
     (hFoldLe : ∀ i : Fin M, P.foldingParam i.castSucc ≤ P.varCount i.castSucc)
     (i : Fin M) (x : ιs i.succ) :
     paperFoldedOracleFrom P S bridge hNeg source foldChallenge hFoldLe i x =
       letI : ∀ j : ℕ,
-          Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j) :=
+          Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j) :=
         hNeg i
       Fold.fold_k (source i) (foldChallenge i) (hFoldLe i)
         (bridge.nextDomainEquiv i x) :=
@@ -771,10 +768,10 @@ def paperTranscriptHasFoldedOracles {M : ℕ} {ιs : Fin (M + 1) → Type}
     (bridge : PaperFoldDomainBridge P S)
     (hNeg :
       ∀ i : Fin M, ∀ j : ℕ,
-        Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
+        Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
     (source :
       (i : Fin M) →
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
     (foldChallenge : (i : Fin M) → Fin (P.foldingParam i.castSucc) → F)
     (hFoldLe : ∀ i : Fin M, P.foldingParam i.castSucc ≤ P.varCount i.castSucc)
     (T : PaperTranscriptData P d) : Prop :=
@@ -791,10 +788,10 @@ theorem paperTranscriptSlotPayload_mainFoldedOracle_of_hasFoldedOracles {M : ℕ
     (bridge : PaperFoldDomainBridge P S)
     (hNeg :
       ∀ i : Fin M, ∀ j : ℕ,
-        Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
+        Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
     (source :
       (i : Fin M) →
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
     (foldChallenge : (i : Fin M) → Fin (P.foldingParam i.castSucc) → F)
     (hFoldLe : ∀ i : Fin M, P.foldingParam i.castSucc ≤ P.varCount i.castSucc)
     (T : PaperTranscriptData P d)
@@ -819,10 +816,10 @@ def paperTranscriptHasFoldedOraclesFromTranscript {M : ℕ}
     (bridge : PaperFoldDomainBridge P S)
     (hNeg :
       ∀ i : Fin (M + 1), ∀ j : ℕ,
-        Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
+        Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
     (source :
       (i : Fin (M + 1)) →
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
     (hFoldLe : ∀ i : Fin (M + 1), P.foldingParam i.castSucc ≤ P.varCount i.castSucc)
     (T : PaperTranscriptData P d) : Prop :=
   paperTranscriptHasFoldedOracles P d S bridge hNeg source
@@ -838,10 +835,10 @@ theorem paperTranscriptSlotPayload_mainFoldedOracle_of_hasFoldedOraclesFromTrans
     (bridge : PaperFoldDomainBridge P S)
     (hNeg :
       ∀ i : Fin (M + 1), ∀ j : ℕ,
-        Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
+        Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
     (source :
       (i : Fin (M + 1)) →
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
     (hFoldLe : ∀ i : Fin (M + 1), P.foldingParam i.castSucc ≤ P.varCount i.castSucc)
     (T : PaperTranscriptData P d)
     (hT : paperTranscriptHasFoldedOraclesFromTranscript P d S bridge hNeg source hFoldLe T)
@@ -1021,10 +1018,10 @@ structure PaperTranscriptAlgebraicConsistency {M : ℕ}
     (bridge : PaperFoldDomainBridge P S)
     (hNeg :
       ∀ i : Fin M, ∀ j : ℕ,
-        Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
+        Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
     (source :
       (i : Fin M) →
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
     (foldChallenge : (i : Fin M) → Fin (P.foldingParam i.castSucc) → F)
     (hFoldLe : ∀ i : Fin M, P.foldingParam i.castSucc ≤ P.varCount i.castSucc)
     (T : PaperTranscriptData P d) where
@@ -1041,10 +1038,10 @@ noncomputable def paperTranscriptAlgebraicConsistencyFinalEvaluations {M : ℕ}
     (bridge : PaperFoldDomainBridge P S)
     (hNeg :
       ∀ i : Fin M, ∀ j : ℕ,
-        Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
+        Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
     (source :
       (i : Fin M) →
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
     (foldChallenge : (i : Fin M) → Fin (P.foldingParam i.castSucc) → F)
     (hFoldLe : ∀ i : Fin M, P.foldingParam i.castSucc ≤ P.varCount i.castSucc)
     (T : PaperTranscriptData P d)
@@ -1060,10 +1057,10 @@ omit [Fintype F] [DecidableEq F] [SampleableType F] in
     (bridge : PaperFoldDomainBridge P S)
     (hNeg :
       ∀ i : Fin M, ∀ j : ℕ,
-        Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
+        Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
     (source :
       (i : Fin M) →
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
     (foldChallenge : (i : Fin M) → Fin (P.foldingParam i.castSucc) → F)
     (hFoldLe : ∀ i : Fin M, P.foldingParam i.castSucc ≤ P.varCount i.castSucc)
     (T : PaperTranscriptData P d)
@@ -1083,10 +1080,10 @@ theorem paperTranscriptSlotPayload_mainFoldedOracle_of_algebraicConsistency {M :
     (bridge : PaperFoldDomainBridge P S)
     (hNeg :
       ∀ i : Fin M, ∀ j : ℕ,
-        Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
+        Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
     (source :
       (i : Fin M) →
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
     (foldChallenge : (i : Fin M) → Fin (P.foldingParam i.castSucc) → F)
     (hFoldLe : ∀ i : Fin M, P.foldingParam i.castSucc ≤ P.varCount i.castSucc)
     (T : PaperTranscriptData P d)
@@ -1107,10 +1104,10 @@ theorem paperTranscriptSlotPayload_mainOutOfDomainReply_of_algebraicConsistency 
     (bridge : PaperFoldDomainBridge P S)
     (hNeg :
       ∀ i : Fin M, ∀ j : ℕ,
-        Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
+        Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
     (source :
       (i : Fin M) →
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
     (foldChallenge : (i : Fin M) → Fin (P.foldingParam i.castSucc) → F)
     (hFoldLe : ∀ i : Fin M, P.foldingParam i.castSucc ≤ P.varCount i.castSucc)
     (T : PaperTranscriptData P d)
@@ -1130,10 +1127,10 @@ theorem paperTranscriptSlotPayload_finalPolynomial_of_algebraicConsistency {M : 
     (bridge : PaperFoldDomainBridge P S)
     (hNeg :
       ∀ i : Fin M, ∀ j : ℕ,
-        Neg (BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
+        Neg (BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) j))
     (source :
       (i : Fin M) →
-        BlockRelDistance.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
+        BlockRelDistance.Generic.indexPowT (S i.castSucc) (P.φ i.castSucc) 0 → F)
     (foldChallenge : (i : Fin M) → Fin (P.foldingParam i.castSucc) → F)
     (hFoldLe : ∀ i : Fin M, P.foldingParam i.castSucc ≤ P.varCount i.castSucc)
     (T : PaperTranscriptData P d)
@@ -1641,9 +1638,9 @@ theorem whir_rbr_soundness_of_secure_gap
         let maxDeg := (Finset.univ : Finset (Fin m_0)).sup (fun i => wPoly₀.degreeOf (Fin.succ i))
         let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
         let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-          Fintype (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
+          Fintype (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
         let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-          Nonempty (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
+          Nonempty (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
         ∀ j : Fin ((P.foldingParam 0) + 1),
           let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
         ∀ j : Fin (P.foldingParam 0),
@@ -1661,9 +1658,9 @@ theorem whir_rbr_soundness_of_secure_gap
         let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
         let d := max dstar 3
         let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          Fintype (BlockRelDistance.indexPowT (S i) (P.φ i) j) := h.inst1
+          Fintype (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst1
         let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          Nonempty (BlockRelDistance.indexPowT (S i) (P.φ i) j) := h.inst2
+          Nonempty (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst2
         ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
           let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
         ∀ i : Fin (M + 1), ∀ j : Fin (P.foldingParam i),
@@ -1710,9 +1707,9 @@ theorem whir_rbr_soundness_of_whirVectorSpec_secure_gap
         let maxDeg := (Finset.univ : Finset (Fin m_0)).sup (fun i => wPoly₀.degreeOf (Fin.succ i))
         let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
         let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-          Fintype (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
+          Fintype (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
         let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-          Nonempty (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
+          Nonempty (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
         ∀ j : Fin ((P.foldingParam 0) + 1),
           let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
         ∀ j : Fin (P.foldingParam 0),
@@ -1730,9 +1727,9 @@ theorem whir_rbr_soundness_of_whirVectorSpec_secure_gap
         let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
         let d := max dstar 3
         let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          Fintype (BlockRelDistance.indexPowT (S i) (P.φ i) j) := h.inst1
+          Fintype (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst1
         let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          Nonempty (BlockRelDistance.indexPowT (S i) (P.φ i) j) := h.inst2
+          Nonempty (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst2
         ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
           let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
         ∀ i : Fin (M + 1), ∀ j : Fin (P.foldingParam i),

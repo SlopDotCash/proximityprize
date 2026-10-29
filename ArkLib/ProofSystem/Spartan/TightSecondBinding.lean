@@ -45,7 +45,7 @@ failing-deterministic with verdict `(v? (proj s) tr).map (lift s)`
 (`sumcheckFull_toVerifier_isFailingDet` + `Verifier.liftContext_failingDet`), and the lift
 forwards the passenger statement and the oracles untouched. -/
 theorem secondSumcheckWithTarget_perfectCompleteness_enrichedBinding
-    [oSpec.Fintype] [oSpec.Inhabited]
+    [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)

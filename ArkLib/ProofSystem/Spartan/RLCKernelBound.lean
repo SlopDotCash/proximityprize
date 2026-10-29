@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SpartanLinearCombination
 import ArkLib.ProofSystem.Spartan.ShortPhaseRbrKnowledgeLeaves
 import ArkLib.ToMathlib.LinearFormKernelCard
 
@@ -64,7 +65,7 @@ claim deviation, which survives the RLC challenge with probability exactly `1/|R
 def sendEvalClaimClaimsCorrectRel :
     Set ((Statement.AfterSendEvalClaim R pp ×
       ∀ i, OracleStatement.AfterSendEvalClaim R pp i) × Unit) :=
-  { x | ∀ idx, x.1.2 (.inl 0) idx
+  { x | ∀ idx, x.1.2 (.inl idx)
       = evalClaimValue R pp x.1.1 (fun i => x.1.2 (.inr i)) idx }
 
 /-- Membership in the pinned downstream relation `relF` is exactly the scalar RLC identity
@@ -75,10 +76,10 @@ theorem mem_prependRLCTargetRbrRelF_iff_rlc
     (c : LinearCombinationChallenge R) (stmt : Statement.AfterSendEvalClaim R pp)
     (oStmt : ∀ i, OracleStatement.AfterSendEvalClaim R pp i) :
     ((((c, stmt), oStmt), ()) ∈ prependRLCTargetRbrRelF (R := R) pp oSpec)
-      ↔ ∑ idx, c idx * oStmt (.inl 0) idx
+      ↔ ∑ idx, c idx * (show R from oStmt (.inl idx))
           = ∑ idx, c idx * evalClaimValue R pp stmt (fun i => oStmt (.inr i)) idx := by
   simp only [prependRLCTargetRbrRelF, Spartan.Spec.secondSumcheckRbrRelIn,
-    Extractor.Lens.Honest.pullbackRelIn, Set.mem_setOf_eq, Sumcheck.Spec.relationRound,
+    Extractor.Lens.Honest.pullbackRelIn, Set.mem_ofPred_eq, Sumcheck.Spec.relationRound,
     Spartan.Spec.secondSumcheckOracleLens, Spartan.Spec.secondSumcheckStmtLens,
     Statement.Lens.proj]
   have hsum : (∑ x ∈ (Finset.univ.map (boolEmbedding R)) ^ᶠ (pp.ℓ_n - 0),
@@ -108,16 +109,15 @@ on `R1CS.MatrixIdx → R`. -/
 theorem linearCombination_flip_prob_eq
     (stmt : Statement.AfterSendEvalClaim R pp)
     (oStmt : ∀ i, OracleStatement.AfterSendEvalClaim R pp i)
-    (hbad : ¬ ∀ idx, oStmt (.inl 0) idx
+    (hbad : ¬ ∀ idx, oStmt (.inl idx)
       = evalClaimValue R pp stmt (fun i => oStmt (.inr i)) idx) :
-    Pr[fun c : LinearCombinationChallenge R =>
-        ((((c, stmt), oStmt), ()) ∈ prependRLCTargetRbrRelF (R := R) pp oSpec)
-      | $ᵗ (LinearCombinationChallenge R)]
+    Pr{let c ← $ᵗ (LinearCombinationChallenge R)}[
+        ((((c, stmt), oStmt), ()) ∈ prependRLCTargetRbrRelF (R := R) pp oSpec)]
       = ((Fintype.card R : ENNReal))⁻¹ := by
   classical
   have hiff : ∀ c : LinearCombinationChallenge R,
       ((((c, stmt), oStmt), ()) ∈ prependRLCTargetRbrRelF (R := R) pp oSpec)
-        ↔ ∑ idx, c idx * (oStmt (.inl 0) idx
+        ↔ ∑ idx, c idx * ((show R from oStmt (.inl idx))
             - evalClaimValue R pp stmt (fun i => oStmt (.inr i)) idx) = 0 := by
     intro c
     rw [mem_prependRLCTargetRbrRelF_iff_rlc pp oSpec c stmt oStmt, ← sub_eq_zero,
@@ -129,16 +129,17 @@ theorem linearCombination_flip_prob_eq
     · intro h
       rw [← h]
       exact Finset.sum_congr rfl fun idx _ => (mul_sub _ _ _).symm
-  rw [probEvent_ext (q := fun c : LinearCombinationChallenge R =>
-      ∑ idx, c idx * (oStmt (.inl 0) idx
-        - evalClaimValue R pp stmt (fun i => oStmt (.inr i)) idx) = 0)
-    (fun c _ => hiff c)]
-  have hd : (fun idx => oStmt (.inl 0) idx
+  have hEvent := prEvent_congr ($ᵗ (LinearCombinationChallenge R)) _ _ hiff
+  rw [hEvent]
+  have hd : (fun idx => (show R from oStmt (.inl idx))
       - evalClaimValue R pp stmt (fun i => oStmt (.inr i)) idx) ≠ 0 := by
     intro h0
     refine hbad fun idx => ?_
     have := congrFun h0 idx
-    simpa [sub_eq_zero] using this
+    have hi : (show R from oStmt (.inl idx)) =
+        (show R from evalClaimValue R pp stmt (fun i => oStmt (.inr i)) idx) :=
+      sub_eq_zero.mp this
+    exact hi
   exact LinearFormKernel.probEvent_linearForm_eq_inv_card_of_ne_zero hd 0
 
 /-- **The tight `linearCombination` rbr-KS leaf (issue #329).**  The `linearCombination` phase is
@@ -149,7 +150,7 @@ relation `relF`, with per-round error `1/|R|` — the bound Spartan itself assig
 predicates and conjoin onto this leaf at unchanged error via
 `Verifier.rbrKnowledgeSoundness_conjoin`. -/
 theorem linearCombination_rbrKnowledgeSoundness_claimBound :
-    (oracleReduction.linearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (sendEvalClaimClaimsCorrectRel (R := R) pp)
       (prependRLCTargetRbrRelF (R := R) pp oSpec)
       (fun _ => ((Fintype.card R : ℝ≥0))⁻¹) := by
@@ -163,11 +164,12 @@ theorem linearCombination_rbrKnowledgeSoundness_claimBound :
     (sendEvalClaimClaimsCorrectRel (R := R) pp)
     (prependRLCTargetRbrRelF (R := R) pp oSpec) _ ?_
   rintro ⟨stmt, oStmt⟩ hbad
-  have hbad' : ¬ ∀ idx, oStmt (.inl 0) idx
+  have hbad' : ¬ ∀ idx, oStmt (.inl idx)
       = evalClaimValue R pp stmt (fun i => oStmt (.inr i)) idx := by
     intro h
     exact hbad (by simpa [sendEvalClaimClaimsCorrectRel] using h)
   refine le_of_eq ?_
+  simp only [probEvent]
   rw [linearCombination_flip_prob_eq pp oSpec stmt oStmt hbad']
   rw [← ENNReal.coe_natCast, ← ENNReal.coe_inv (by exact_mod_cast Fintype.card_pos.ne')]
 

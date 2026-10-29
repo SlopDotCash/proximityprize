@@ -107,8 +107,12 @@ theorem pair_pencil_aligned_floor
       (pencil_reproduces_second hne (pf γ) (pf γ')).symm⟩, ?_, ?_⟩
   · intro i hi
     have h := pencil_agrees_on_inter hne
-      (fun j hj => by simpa [smul_eq_mul] using hagree j hj)
-      (fun j hj => by simpa [smul_eq_mul] using hagree' j hj) i hi
+      (fun j hj => by
+        change pf γ j = u₀ j + γ * u₁ j
+        exact hagree j hj)
+      (fun j hj => by
+        change pf γ' j = u₀ j + γ' * u₁ j
+        exact hagree' j hj) i hi
     exact (mem_alignedSet_iff u₀ u₁ _ _ i).mpr h
   · have hu := Finset.card_union_add_card_inter (Sf γ) (Sf γ')
     have hN : (Sf γ ∪ Sf γ').card ≤ N := by

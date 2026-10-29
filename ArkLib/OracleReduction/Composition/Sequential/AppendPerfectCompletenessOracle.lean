@@ -37,7 +37,7 @@ open OracleComp OracleSpec ProtocolSpec
 
 namespace OracleReduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     {m n : ℕ}
     {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type}
     [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)]
@@ -66,11 +66,10 @@ verifiers route their oracle queries faithfully, so for concrete protocols this 
 on the nose; we keep it named so downstream code can supply it as a small, concrete obligation. -/
 def appendToReductionResidual
     (R₁ : OracleReduction oSpec Stmt₁ OStmt₁ Wit₁ Stmt₂ OStmt₂ Wit₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) R₁.verifier]
+
     (R₂ : OracleReduction oSpec Stmt₂ OStmt₂ Wit₂ Stmt₃ OStmt₃ Wit₃ pSpec₂) : Prop :=
   (R₁.append R₂).toReduction = R₁.toReduction.append R₂.toReduction
 
-omit Oₛ₃ in
 /-- **Oracle-level perfect-completeness keystone (message seam).**
 
 Perfect completeness of `R₁.append R₂` for oracle reductions, from the two component
@@ -80,7 +79,7 @@ single named verifier bridge `appendToReductionResidual`. Pure pass-through to t
 to `R₁.toReduction.append R₂.toReduction`. -/
 theorem append_perfectCompleteness_msg_proof
     (R₁ : OracleReduction oSpec Stmt₁ OStmt₁ Wit₁ Stmt₂ OStmt₂ Wit₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) R₁.verifier]
+
     (R₂ : OracleReduction oSpec Stmt₂ OStmt₂ Wit₂ Stmt₃ OStmt₃ Wit₃ pSpec₂)
     (h₁ : R₁.perfectCompleteness init impl rel₁ rel₂)
     (h₂ : R₂.perfectCompleteness init impl rel₂ rel₃)
@@ -91,10 +90,10 @@ theorem append_perfectCompleteness_msg_proof
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s) = support (liftM q : OracleComp oSpec β))
     (hBridge : appendToReductionResidual R₁ R₂)
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited] :
+    [∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range q)] [∀ q, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range q)]
+    [∀ q, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range q)] [∀ q, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range q)] :
     (R₁.append R₂).perfectCompleteness init impl rel₁ rel₃ := by
   change Reduction.perfectCompleteness init impl rel₁ rel₃ (R₁.append R₂).toReduction
   rw [show (R₁.append R₂).toReduction = R₁.toReduction.append R₂.toReduction from hBridge]
@@ -110,7 +109,7 @@ verifier-fusion equation, which in turn is equivalent to a per-input/per-transcr
 equality. The latter is precisely the `simulateQ`-factoring obligation — the verifier analogue of
 `Prover.append_run` — so any consumer can discharge the keystone by proving that one equation. -/
 
-omit [oSpec.Fintype] [oSpec.Inhabited] Oₛ₃
+omit [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)] in
 /-- **The append keystone residual reduces to the pure verifier-fusion equation.** Since
 `toReduction R = ⟨R.prover, R.verifier.toVerifier⟩` and the appended provers are *identical*
@@ -121,7 +120,7 @@ strips the reduction-packaging noise, isolating the exact remaining content as a
 equation. -/
 theorem appendToReductionResidual_iff_verifier
     (R₁ : OracleReduction oSpec Stmt₁ OStmt₁ Wit₁ Stmt₂ OStmt₂ Wit₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) R₁.verifier]
+
     (R₂ : OracleReduction oSpec Stmt₂ OStmt₂ Wit₂ Stmt₃ OStmt₃ Wit₃ pSpec₂) :
     appendToReductionResidual R₁ R₂ ↔
       (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁)
@@ -136,7 +135,7 @@ theorem appendToReductionResidual_iff_verifier
     rw [Reduction.mk.injEq]
     exact ⟨rfl, h⟩
 
-omit [oSpec.Fintype] [oSpec.Inhabited] Oₛ₃
+omit [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)] in
 /-- **The verifier-fusion equation reduces to a per-input `verify` equation.** Combined with
 `appendToReductionResidual_iff_verifier`, this pins the *entire* remaining content of the
@@ -147,7 +146,7 @@ oracle-level append perfect-completeness keystone to: for every input `(stmt, oS
 deep obligation — the verifier analogue of `Prover.append_run`. -/
 theorem verifier_append_eq_iff_verify
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂) :
     (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).toVerifier
         = Verifier.append V₁.toVerifier V₂.toVerifier ↔

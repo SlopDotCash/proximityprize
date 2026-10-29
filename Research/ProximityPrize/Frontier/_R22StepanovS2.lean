@@ -111,14 +111,14 @@ theorem hasseDeriv_mul_X_card_pow {F : Type*} [Field F] [Fintype F] (u : F[X]) (
   rw [Finset.sum_eq_single (k, 0)]
   · rw [hasseDeriv_zero']
   · rintro ⟨i, l⟩ hmem hne
-    rw [Finset.mem_antidiagonal] at hmem
+    rw [HasAntidiagonal.mem_antidiagonal] at hmem
     have hl0 : 0 < l := by
       rcases Nat.eq_zero_or_pos l with h | h
       · exact absurd (by simp [h, ← hmem]) hne
       · exact h
     rw [hasseDeriv_X_card_mul_eq_zero j l hl0 (by omega), mul_zero]
   · intro h
-    exact absurd (Finset.mem_antidiagonal.mpr (by omega)) h
+    exact absurd (HasAntidiagonal.mem_antidiagonal.mpr (by omega)) h
 
 /-! ## 2. Divisibility: `f^{N−k} ∣ D^{(k)}(f^N·a)` (the Leibniz induction) -/
 
@@ -136,7 +136,7 @@ theorem pow_sub_dvd_hasseDeriv_pow {F : Type*} [Field F] (f : F[X]) :
     rw [pow_succ, mul_comm (f ^ N) f, hasseDeriv_mul]
     refine Finset.dvd_sum ?_
     rintro ⟨i, l⟩ hmem
-    rw [Finset.mem_antidiagonal] at hmem
+    rw [HasAntidiagonal.mem_antidiagonal] at hmem
     rcases Nat.eq_zero_or_pos i with hi | hi
     · -- term `f · D^{(k)}(f^N)`
       have hl : l = k := by omega
@@ -162,7 +162,7 @@ theorem pow_sub_dvd_hasseDeriv_pow_mul {F : Type*} [Field F] (f a : F[X]) (N k :
   rw [hasseDeriv_mul]
   refine Finset.dvd_sum ?_
   rintro ⟨i, l⟩ hmem
-  rw [Finset.mem_antidiagonal] at hmem
+  rw [HasAntidiagonal.mem_antidiagonal] at hmem
   have hiN : i ≤ N := by omega
   refine dvd_trans (pow_dvd_pow f (show N - k ≤ N - i by omega)) ?_
   exact Dvd.dvd.mul_right (pow_sub_dvd_hasseDeriv_pow f N i hiN) _

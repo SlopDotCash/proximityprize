@@ -61,13 +61,13 @@ rewrite the appended `toVerifier` via the proven `oracleVerifier_append_toVerifi
 Protocol-level challenge keystone. -/
 theorem append_rbrKnowledgeSoundness_subsingleton_challenge [Subsingleton σ]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {rbrKnowledgeError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : (Stmt₁ × ∀ i, OStmt₁ i) → pSpec₁.FullTranscript → (Stmt₂ × ∀ i, OStmt₂ i))
     (hVerify : V₁.toVerifier = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty (Stmt₂ × ∀ i, OStmt₂ i)) (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)

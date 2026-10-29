@@ -107,7 +107,6 @@ lemma tupleToPoly_injective {k : ℕ} : Function.Injective (tupleToPoly (F := F)
   intro c d h
   funext j
   have hc := congrArg (fun p => Polynomial.coeff p (j : ℕ)) h
-  simp only at hc
   rw [tupleToPoly_coeff c j j.isLt, tupleToPoly_coeff d j j.isLt] at hc
   simpa using hc
 

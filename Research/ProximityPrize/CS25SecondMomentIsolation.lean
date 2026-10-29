@@ -77,7 +77,7 @@ theorem rs_epsCA_breakdown_cs25_of_close_lower
   -- close + far = N
   have hpart : close + far = N := by
     rw [hclose, hfar, hNdef, ← Finset.card_univ]
-    exact Finset.filter_card_add_filter_neg_card_eq_card _
+    exact Finset.card_filter_add_card_filter_not _
   -- multiplicative identity feeding omega
   have hmul : q * (N * close) + q * (N * far) = q * (N * N) := by
     rw [← Nat.mul_add, ← Nat.mul_add, hpart]

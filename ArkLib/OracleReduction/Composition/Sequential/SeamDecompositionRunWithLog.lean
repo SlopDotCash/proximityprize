@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.OracleReduction.Composition.Sequential.SeamDecompositionRun
-import ArkLib.OracleReduction.Execution
+import ProximityPrize.Extensions.OracleReduction.Execution
 
 /-!
 # Log-carrying seam factoring for the round-by-round knowledge experiment (issues #13 / #114 / #116)
@@ -114,6 +114,7 @@ theorem map_runWithLog_body_eq_run_body
       let challenge ← liftComp (pSpec.getChallenge i) _
       pure (transcript, challenge))
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped ENNReal in
 /-- **Log-free reduction of a round-by-round knowledge per-round experiment** for *any* log-blind
 event `Q` on `(transcript, challenge)`.  The log-carrying `runWithLogToRound` experiment has the same
@@ -123,24 +124,39 @@ theorem rbrKnowledge_logfree_reduce
     (prover : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec)
     (i : pSpec.ChallengeIdx) (stmt : StmtIn) (wit : WitIn) (init : ProbComp σ)
     (Q : pSpec.Transcript i.1.castSucc × pSpec.Challenge i → Prop) :
-    Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ => Q (transcript, challenge)
-      | do
+    probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ => Q (transcript, challenge))
+      (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ← prover.runWithLogToRound i.1.castSucc stmt wit
             let challenge ← liftComp (pSpec.getChallenge i) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)]
-      = Pr[Q
-        | do
+            return (transcript, challenge, proveQueryLog))).run' (← init))
+      = probEvent Q
+        (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨transcript, _⟩ ← prover.runToRound i.1.castSucc stmt wit
               let challenge ← liftComp (pSpec.getChallenge i) _
-              return (transcript, challenge))).run' (← init)] := by
-  rw [probEvent_bind_eq_tsum, probEvent_bind_eq_tsum]
-  refine tsum_congr fun s => ?_
-  congr 1
-  rw [← map_runWithLog_body_eq_run_body impl prover i stmt wit s, probEvent_map]
-  rfl
+              return (transcript, challenge))).run' (← init)) := by
+  have hQ : (fun x : pSpec.Transcript i.1.castSucc × pSpec.Challenge i ×
+      QueryLog (oSpec + [pSpec.Challenge]ₒ) =>
+      match x with | (tr, ch, _) => Q (tr, ch)) = (fun x => Q (x.1, x.2.1)) := by
+    funext ⟨tr, ch, log⟩
+    rfl
+  rw [hQ]
+  refine (prEvent_map (m := ProbComp) _
+    (fun x : pSpec.Transcript i.1.castSucc × pSpec.Challenge i ×
+      QueryLog (oSpec + [pSpec.Challenge]ₒ) => (x.1, x.2.1)) Q).symm.trans ?_
+  apply congrArg (fun mx : ProbComp (pSpec.Transcript i.1.castSucc × pSpec.Challenge i) =>
+    probEvent Q mx)
+  rw [map_bind]
+  apply bind_congr
+  intro s
+  exact map_runWithLog_body_eq_run_body impl prover i stmt wit s
+
 
 end OracleReduction
+
+#print axioms Prover.runWithLogToRound_bind_discardLog
+#print axioms OracleReduction.map_runWithLog_body_eq_run_body
+#print axioms OracleReduction.rbrKnowledge_logfree_reduce

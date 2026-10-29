@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "scope": [
+    "ArkLib/ProofSystem/Stir/RepWire.lean",
+    "ArkLib/ProofSystem/Stir/SwitchAttack.lean"
+  ],
+  "contract": "Every original public repetition and switch-attack theorem name and mathematical hypothesis is retained. The checking algorithm remains the real query program checkingCompRep; the canonical verifier wrapper materializes the empty output family.",
+  "native_probability": "All five remaining legacy Pr events become the same native predicate/program observations. Canonical uniformSample counting proves the same switch acceptance lower bound; completed native product-marginal bounds retain the (single-query base)^t repetition budget.",
+  "optional_outcomes": "Perfect completeness uses the proved OptionT probability-one support characterization. Full acceptance is extracted from the actual some-success tuple, and None is never accepted silently.",
+  "response_instances": "The retired aggregate Fintype/Inhabited instances become private named pointwise response families derived from the existing finite field data, with no new public assumptions or global discrete interpreter.",
+  "program_transport": "The canonical RunUnroll getChallenge simulation program identity supplies fresh uniform sampling. Native zero-event and positive-support theorems replace retired probability wrappers.",
+  "archives": [
+    {
+      "snapshot": "arklib-RepWire-before-proof-constructor.lean",
+      "sha256": "e1d390b71c2a16686c0b40cad7d94128b4e8f5f116bf723128683f747bde3d41",
+      "commands": [
+        {
+          "name": "StirIOP.MultiRound.stirCheckingVerifierRep",
+          "source": "/-- **The t-repetition checking multi-round STIR verifier.** Forwards no oracles; its\n`verify` is the genuine t-repetition checking computation. -/\nnoncomputable def stirCheckingVerifierRep :\n    OracleVerifier []ₒ Unit (OracleStatement ι F) Bool (fun _ : Empty => Unit)\n      ((stirMultiVSpecRep M ι t).toProtocolSpec F) where\n  verify := fun _ chals => OptionT.lift (checkingCompRep M φ deg t chals)\n  outputOracle := .inl {\n    embed := ⟨fun i => i.elim, fun i => i.elim⟩\n    hEq := fun i => i.elim\n    outputInterface_heq := by intro u; cases u <;> rfl }\n\n"
+        },
+        {
+          "name": "StirIOP.MultiRound.stirCheckingIOPRep",
+          "source": "/-- **The t-repetition checking (M+1)-round STIR Vector IOPP**: the honest folding prover at\nthe rep spec together with the t-repetition checking verifier. -/\nnoncomputable def stirCheckingIOPRep :\n    VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpecRep M ι t) F where\n  prover := stirMultiRoundProverRep M φ deg t\n  verifier := stirCheckingVerifierRep M φ deg t\n\n"
+        }
+      ]
+    },
+    {
+      "snapshot": "arklib-RepWire-before-native-probability.lean",
+      "sha256": "808bdb32d89700489a44eb72747a947f8d2926da0e71402649197ed7e278d18e",
+      "commands": [
+        {
+          "name": "StirIOP.MultiRound.stirCheckingIOPRep_perfectCompleteness",
+          "source": "set_option maxHeartbeats 1600000 in\n/-- **Perfect completeness of the t-repetition checking (M+1)-round STIR Vector IOPP**, for\narbitrary symbolic depth `M` and repetition parameter `t`, against the genuine\nperfect-completeness relation `stirRelation deg φ 0`: by the run-support invariant every\nconsistency check compares equal values FOR EVERY repetition coordinate `s`, and the final\nfull-read low-degree check sees exactly the input codeword, which the `δ = 0` input relation\nforces into the code. -/\ntheorem stirCheckingIOPRep_perfectCompleteness (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (t : ℕ) :\n    OracleReduction.perfectCompleteness (pure ()) isEmptyElim\n      (stirRelation deg φ 0) acceptRejectOracleRel (stirCheckingIOPRep M φ deg t) := by\n  rw [OracleReduction.unroll_n_message_reduction_perfectCompleteness\n    (reduction := stirCheckingIOPRep M φ deg t) (stirRelation deg φ 0) acceptRejectOracleRel\n    (pure ()) isEmptyElim inferInstance\n    (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]\n  intro stmtIn oStmtIn witIn h_relIn\n  -- the δ = 0 input relation is genuine code membership\n  have hmem : oStmtIn () ∈ ReedSolomon.code φ deg := by\n    have h0 : Code.relDistFromCode (oStmtIn ()) (ReedSolomon.code φ deg)\n        ≤ ((0 : ℝ≥0) : ENNReal) := h_relIn\n    exact mem_of_relDistFromCode_le_zero ⟨0, Submodule.zero_mem _⟩ (by simpa using h0)\n  dsimp only [stirCheckingIOPRep, stirMultiRoundProverRep]\n  simp only [checkingVerifierRep_toVerifier_verify]\n  simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,\n    Prod.mk.eta, bind_assoc, _root_.map_pure, liftComp_pure, liftM_pure]\n  rw [probEvent_eq_one_iff]\n  refine ⟨?_, ?_⟩\n  · -- SAFETY: the run never fails (the prefix is plain `OracleComp`; the rest is pure)\n    rw [probFailure_bind_eq_zero_iff]\n    refine ⟨?_, fun α _hα => ?_⟩\n    · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,\n        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]\n    · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]\n      simp only [OptionT.run_pure, HasEvalPMF.probFailure_eq_zero, zero_add,\n        probOutput_eq_zero_iff, support_pure, Set.mem_singleton_iff, reduceCtorEq,\n        not_false_eq_true]\n  · -- CORRECTNESS: every output in the support satisfies the relation + agreement\n    intro x hx\n    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx\n    obtain ⟨α, hα, hx⟩ := hx\n    -- the run-support invariant: every transcript message is the honest packed codeword\n    have hα' : α ∈ _root_.support\n        ((stirMultiRoundProverRep M φ deg t).runToRound (Fin.last (3 * M + 3))\n          (stmtIn, oStmtIn) witIn) := by\n      simpa only [OptionT.support_liftM] using hα\n    have hinv := stirMultiRoundProverRep_runToRound_invariant M φ deg t (stmtIn, oStmtIn) witIn\n      (Fin.last (3 * M + 3)) α hα'\n    have hmsgs : ∀ j, FullTranscript.messages\n        (pSpec := (stirMultiVSpecRep M ι t).toProtocolSpec F) α.1 j\n        = Vector.cast (stirMultiVSpecRep_length_msg j)\n            (packFiniteFunction ι (oStmtIn ())) := by\n      intro j\n      have hdir : ((j.1 : Fin (3 * M + 3)) : ℕ) % 3 = 1 :=\n        (stirVSpec_dir_eq_msg_iff (M := M) (msgLen := fun _ => Fintype.card ι)\n          (chalLen := t)).mp j.2\n      exact hinv.2 j.1.val j.1.isLt hdir\n    have hbool : checkingBoolRep M φ deg t oStmtIn\n        (FullTranscript.messages (pSpec := (stirMultiVSpecRep M ι t).toProtocolSpec F) α.1)\n        (FullTranscript.challenges (pSpec := (stirMultiVSpecRep M ι t).toProtocolSpec F) α.1)\n        = true :=\n      checkingBoolRep_honest M φ deg t (oStmtIn ()) hmem oStmtIn rfl _ hmsgs _\n    rw [OptionT.mem_support_iff] at hx\n    simp only [OptionT.run_map, support_map, Set.mem_image] at hx\n    erw [OptionT_run_liftComp_pure] at hx\n    simp only [support_pure, Set.mem_singleton_iff, exists_eq_left, Option.map_some,\n      Option.some.injEq] at hx\n    subst hx\n    have hfn : ∀ (f g : ∀ _ : Empty, Unit), f = g := fun _ _ => funext fun i => i.elim\n    refine ⟨?_, ?_, hfn _ _⟩\n    · simp only [acceptRejectOracleRel, Set.mem_singleton_iff, Prod.mk.injEq, hbool]\n    · show (true : Bool) = checkingBoolRep M φ deg t oStmtIn _ _\n      rw [hbool]\n\n"
+        },
+        {
+          "name": "StirIOP.MultiRound.stirCheckingRepRbrSoundness_genuine",
+          "source": "/-- **T1-rep — genuine rbr knowledge soundness of the t-repetition checking verifier at the\n`(·)^t` budget**: outright, with no correlated-agreement residuals and no vacuity. -/\ntheorem stirCheckingRepRbrSoundness_genuine :\n    stirCheckingRepRbrSoundnessStatement M φ deg δ t (stirEpsStarRep (F := F) (ι := ι) M δ t) := by\n  have hcardF : (Fintype.card F : ℝ≥0) ≠ 0 := by\n    exact_mod_cast Fintype.card_ne_zero (α := F)\n  refine ThresholdKSF.rbrKnowledgeSoundness_of_flipBounds (pure ()) isEmptyElim\n    ((stirCheckingIOPRep M φ deg t).verifier.toVerifier)\n    (stirRelation deg φ δ) acceptRejectOracleRel\n    (stirCheckingPredRep M φ deg δ t) (stirEpsStarRep (F := F) (ι := ι) M δ t)\n    (fun stmtIn _ => stirCheckingPredRep_empty M φ deg δ t stmtIn default)\n    (fun m hdir stmtIn tr msg h => by\n      rw [show ((stirMultiVSpecRep M ι t).toProtocolSpec F).dir m\n          = (stirMultiVSpecRep M ι t).dir m from rfl,\n        stirVSpec_dir_eq_msg_iff] at hdir\n      exact stirCheckingPredRep_concat_msg M φ deg δ t stmtIn tr msg hdir h)\n    (fun stmtIn tr witOut hpr => by\n      rw [gt_iff_lt, probEvent_pos_iff] at hpr\n      obtain ⟨x, hx, hrel⟩ := hpr\n      rw [OptionT.mem_support_iff] at hx\n      simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx\n      obtain ⟨s, _, hx⟩ := hx\n      have hrun : Verifier.run stmtIn tr (stirCheckingIOPRep M φ deg t).verifier.toVerifier\n          = (pure (checkingBoolRep M φ deg t stmtIn.2 tr.messages tr.challenges,\n              fun i : Empty => i.elim) : OptionT (OracleComp []ₒ) _) :=\n        checkingVerifierRep_toVerifier_verify M φ deg t stmtIn tr\n      erw [hrun, simulateQ_optionT_pure_run'] at hx\n      cases (Option.some.inj hx)\n      refine stirCheckingPredRep_full_of_accept M φ deg δ t stmtIn tr ?_\n      simpa [acceptRejectOracleRel, Prod.ext_iff] using hrel)\n    (fun i stmtIn witIn prover => by\n      by_cases h2 : (i.1 : ℕ) = 2\n      · refine le_trans\n          (stirFlipRep_le_round2 M φ deg δ t (pure ()) isEmptyElim i h2 stmtIn witIn prover) ?_\n        rw [stirEpsStarRep, if_pos h2, ENNReal.coe_pow, ENNReal.coe_div hcardF]\n        simp only [ENNReal.coe_natCast]\n        exact le_refl _\n      · by_cases hmod2 : (i.1 : ℕ) % 3 = 2\n        · obtain ⟨j, hj⟩ : ∃ j, (i.1 : ℕ) = 3 * j + 5 := ⟨((i.1 : ℕ) - 5) / 3, by omega⟩\n          have hjM : j < M := by have := i.1.isLt; omega\n          refine le_trans\n            (stirFlipRep_le_out M φ deg δ t (pure ()) isEmptyElim i j hjM hj\n              stmtIn witIn prover) ?_\n          rw [stirEpsStarRep, if_neg h2, if_pos hmod2, ENNReal.coe_pow,\n            ENNReal.coe_div hcardF]\n          simp only [ENNReal.coe_natCast]\n          exact le_refl _\n        · have hdir := i.2\n          rw [show ((stirMultiVSpecRep M ι t).toProtocolSpec F).dir i.1\n              = (stirMultiVSpecRep M ι t).dir i.1 from rfl,\n            stirVSpec_dir_eq_chal_iff] at hdir\n          have h0 : (i.1 : ℕ) % 3 = 0 := by omega\n          refine le_trans\n            (stirFlipRep_le_zero M φ deg δ t (pure ()) isEmptyElim i h0\n              stmtIn witIn prover) ?_\n          rw [stirEpsStarRep, if_neg h2, if_neg hmod2]\n          simp)\n\n"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "file": "ArkLib/ProofSystem/Stir/SwitchAttack.lean",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 17.637,
+      "source_before_sha256": "7853bdcb116e2c73ab2278a813266d92752906d2122c71693bd32ce61a020d92",
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/SwitchAttack.lean.check.log",
+      "not_a_lake_package_build": true
+    },
+    {
+      "file": "ArkLib/ProofSystem/Stir/RepWire.lean",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 13.812,
+      "source_before_sha256": "a5f80f24c6a41eaaae910852ed43facee09921bde970a2b53f79874a04ebc5b2",
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/RepWire.lean.check.log",
+      "not_a_lake_package_build": true
+    }
+  ],
+  "temporary_switch_owner_build": "/tmp/arklib-switch-attack-native-owner.log",
+  "axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "package_validation": "Pending parent full package validation; temporary overlay checks are not package-build receipts.",
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [
+      "/package_validation"
+    ],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

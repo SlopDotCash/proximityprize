@@ -26,7 +26,7 @@ plus the floor arithmetic fitting the peeling radius `(ℓ+1)·⌊δn⌋` under 
 
 * `ball_finset_card_le_of_lambda_le` — **the Λ→Finset bridge** (unconditional): any Finset of
   codewords inside an integer-radius-`D` Hamming ball with `D ≤ δ'·n` injects into
-  `closeCodewordsRel` at relative radius `δ'`, so a `Λ(C, δ') ≤ bound ≤ L` cap bounds its
+  `ListDecodable.closeCodewordsRel` at relative radius `δ'`, so a `Λ(C, δ') ≤ bound ≤ L` cap bounds its
   cardinality by `L`.
 * `subspaceDesign_curveDecodable_capacity_of_spanBound` — **the [JLR26] 5.9→5.10 capacity
   composition** for EVERY τ-subspace-design code, conditional on the ONE named deep input
@@ -111,13 +111,13 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
 /-- **The Λ→Finset bridge (unconditional).**  A Finset `S` of codewords of `C` inside the
 integer-radius-`D` Hamming ball around `y`, with `D ≤ δ'·n`, injects into the relative-radius
-list `closeCodewordsRel C y δ'`; so a maximised-list cap `Λ(C, δ') ≤ bound ≤ L` bounds
+list `ListDecodable.closeCodewordsRel C y δ'`; so a maximised-list cap `Λ(C, δ') ≤ bound ≤ L` bounds
 `|S| ≤ L`.  This is the mechanical (ℕ∞ / `ncard` / real-radius) → (Finset / integer-radius)
 conversion that lets the CZ25 capacity `Λ`-bound feed the ZW17 peeling engine's
 list-decodability hypothesis. -/
 theorem ball_finset_card_le_of_lambda_le
     {s : ℕ} (C : Submodule F (ι → Fin s → F)) {δ' bound : ℝ} {L D : ℕ}
-    (hΛ : (Lambda ((C : Set (ι → Fin s → F))) δ' : ENNReal) ≤ ENNReal.ofReal bound)
+    (hΛ : (ListDecodable.Lambda ((C : Set (ι → Fin s → F))) δ' : ENNReal) ≤ ENNReal.ofReal bound)
     (hbound : bound ≤ (L : ℝ))
     (hD : (D : ℝ) ≤ δ' * Fintype.card ι)
     (y : ι → Fin s → F) (S : Finset (ι → Fin s → F))
@@ -127,7 +127,7 @@ theorem ball_finset_card_le_of_lambda_le
   have hn_pos : (0 : ℝ) < (Fintype.card ι : ℝ) := by exact_mod_cast Fintype.card_pos
   -- Step 1: `S` sits inside the relative-radius-`δ'` list around `y`.
   have hsub : (↑S : Set (ι → Fin s → F)) ⊆
-      closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ' := by
+      ListDecodable.closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ' := by
     intro c hc
     obtain ⟨hcC, hcd⟩ := hS c (Finset.mem_coe.mp hc)
     rw [mem_closeCodewordsRel_iff_real]
@@ -138,26 +138,26 @@ theorem ball_finset_card_le_of_lambda_le
     rw [hcast, div_le_iff₀ hn_pos]
     calc (hammingDist y c : ℝ) ≤ (D : ℝ) := by exact_mod_cast hcd
       _ ≤ δ' * Fintype.card ι := hD
-  have hcard1 : S.card ≤ (closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ').ncard := by
+  have hcard1 : S.card ≤ (ListDecodable.closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ').ncard := by
     rw [← Set.ncard_coe_finset S]
     exact Set.ncard_le_ncard hsub (Set.toFinite _)
   -- Step 2: the point list around `y` is dominated by the maximised `Λ`, hence by `L`.
-  have hpoint : (((closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ').ncard : ℕ∞))
-      ≤ Lambda ((C : Set (ι → Fin s → F))) δ' := by
+  have hpoint : (((ListDecodable.closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ').ncard : ℕ∞))
+      ≤ ListDecodable.Lambda ((C : Set (ι → Fin s → F))) δ' := by
     unfold ListDecodable.Lambda
     exact le_iSup
-      (fun g => (((closeCodewordsRel ((C : Set (ι → Fin s → F))) g δ').ncard : ℕ∞))) y
+      (fun g => (((ListDecodable.closeCodewordsRel ((C : Set (ι → Fin s → F))) g δ').ncard : ℕ∞))) y
   have hchain :
-      (((closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ').ncard : ℕ) : ENNReal)
+      (((ListDecodable.closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ').ncard : ℕ) : ENNReal)
         ≤ ((L : ℕ) : ENNReal) := by
-    calc (((closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ').ncard : ℕ) : ENNReal)
-        = ((((closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ').ncard : ℕ∞)) :
-            ENNReal) := by simp
-      _ ≤ (Lambda ((C : Set (ι → Fin s → F))) δ' : ENNReal) := ENat.toENNReal_mono hpoint
+    calc (((ListDecodable.closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ').ncard : ℕ) : ENNReal)
+        = ((((ListDecodable.closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ').ncard : ℕ∞)) :
+            ENNReal) := by rfl
+      _ ≤ (ListDecodable.Lambda ((C : Set (ι → Fin s → F))) δ' : ENNReal) := ENat.toENNReal_mono hpoint
       _ ≤ ENNReal.ofReal bound := hΛ
       _ ≤ ENNReal.ofReal (L : ℝ) := ENNReal.ofReal_le_ofReal hbound
       _ = ((L : ℕ) : ENNReal) := ENNReal.ofReal_natCast L
-  have hncard : (closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ').ncard ≤ L := by
+  have hncard : (ListDecodable.closeCodewordsRel ((C : Set (ι → Fin s → F))) y δ').ncard ≤ L := by
     exact_mod_cast hchain
   exact le_trans hcard1 hncard
 

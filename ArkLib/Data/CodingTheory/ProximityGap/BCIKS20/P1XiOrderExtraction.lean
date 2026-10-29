@@ -105,11 +105,17 @@ theorem betaHensel_succ_xi_pow_extraction
         W𝒪 H ^ (i1 + deltaSave i1 - 1) * B_coeff H x₀ R i1 lam * partitionProd lam a, ?_⟩
   rw [βHensel_succ]
   set ξ := ClaimA2.ξ x₀ R H hHyp with hξ
-  rw [neg_mul]
+  have hneg (x y : 𝒪 H) : -x * y = -(x * y) := by
+    apply eq_neg_of_add_eq_zero_left
+    calc
+      -x * y + x * y = (-x + x) * y := (add_mul (-x) x y).symm
+      _ = 0 * y := congrArg (fun z : 𝒪 H => z * y) (neg_add_cancel x)
+      _ = 0 := zero_mul y
+  refine Eq.trans ?_ (hneg _ _).symm
   congr 1
-  rw [Finset.sum_mul]
+  refine Eq.trans ?_ (Finset.sum_mul (R := 𝒪 H) _ _ _).symm
   refine Finset.sum_congr rfl (fun i1 hi1 => ?_)
-  rw [Finset.sum_mul]
+  refine Eq.trans ?_ (Finset.sum_mul (R := 𝒪 H) _ _ _).symm
   refine Finset.sum_congr rfl (fun lam hlam_mem => ?_)
   have hlam : (k + 1) ∉ lam.parts := (Finset.mem_filter.mp hlam_mem).2
   have hi1le : i1 ≤ k + 1 := by have := Finset.mem_range.mp hi1; omega
@@ -152,7 +158,7 @@ theorem betaHensel_succ_xi_pow_extraction
           ring
     _ = (W𝒪 H ^ (i1 + deltaSave i1 - 1) * B_coeff H x₀ R i1 lam * partitionProd lam a)
             * ξ ^ ((2 * i1 + sigmaLambda lam - 2) + (2 * (k + 1 - i1) - sigmaLambda lam)) := by
-          rw [← pow_add]
+          rw [← pow_add ξ]
     _ = (W𝒪 H ^ (i1 + deltaSave i1 - 1) * B_coeff H x₀ R i1 lam * partitionProd lam a)
             * ξ ^ (2 * k) := by rw [hexp]
 

@@ -26,9 +26,12 @@ variable {ι : Type} {oSpec : OracleSpec ι}
   {StmtIn : Type} {ιₛᵢ : Type} {OStmtIn : ιₛᵢ → Type} {WitIn : Type}
   {StmtOut : Type} {ιₛₒ : Type} {OStmtOut : ιₛₒ → Type} {WitOut : Type}
   {n : ℕ} {pSpec : ProtocolSpec n}
-  [∀ i, OracleInterface (OStmtIn i)] [∀ i, OracleInterface (pSpec.Message i)]
+  [∀ i, OracleInterface (OStmtIn i)] [∀ i, OracleInterface (OStmtOut i)]
+  [∀ i, OracleInterface (pSpec.Message i)]
   [∀ i, SampleableType (pSpec.Challenge i)]
   {σ : Type}
+
+local instance : MeasurableSpace (FullTranscript pSpec) := ⊤
 
 section Definitions
 

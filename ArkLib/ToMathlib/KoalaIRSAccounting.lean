@@ -125,16 +125,16 @@ theorem hammingDist_rsEncoder_ge_three {m m' : Fin 2 → Sextic}
     intro i hi j hj
     by_contra hij
     have hi' : rsEncoder m i = rsEncoder m' i := by
-      simpa [hA] using hi
+      exact (Finset.mem_filter.mp hi).2
     have hj' : rsEncoder m j = rsEncoder m' j := by
-      simpa [hA] using hj
+      exact (Finset.mem_filter.mp hj).2
     obtain ⟨h0, h1⟩ := rsEncoder_agree_two_points_imp_eq hij hi' hj'
     apply hne
     funext k
     simp only [rsEncoder_apply, h0, h1]
   -- The disagreement set is the complement of `A`.
   have hcompl : (Finset.univ.filter (fun j => rsEncoder m j ≠ rsEncoder m' j)) = Aᶜ := by
-    ext j; simp [hA]
+    ext j; simp only [hA, Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_compl]
   -- `hammingDist = |disagreement set| = |Aᶜ| = 4 - |A| ≥ 3`.
   have hcard : hammingDist (rsEncoder m) (rsEncoder m') = Aᶜ.card := by
     unfold hammingDist
@@ -191,12 +191,11 @@ theorem koalaIRS_delta_lt_minRelHammingDist :
   -- `koalaIRS.δ = 3/10`, `koalaIRS.C = rsCodeSet` definitionally.
   show (3 / 10 : ℝ≥0) < (minRelHammingDistCode KoalaBear.rsCodeSet : ℝ≥0)
   have h_le_R : (3 / 4 : ℝ≥0) ≤ (minRelHammingDistCode KoalaBear.rsCodeSet : ℝ≥0) := by
-    have h_le_q := KoalaBear.le_minRelHammingDistCode_rsCodeSet
-    have h_le_real :
-        ((3 / 4 : ℚ≥0) : ℝ) ≤
-          ((minRelHammingDistCode KoalaBear.rsCodeSet : ℚ≥0) : ℝ) := by
-      exact_mod_cast h_le_q
-    exact NNReal.coe_le_coe.mp (by simpa using h_le_real)
+    have hcast : (((3 / 4 : ℚ≥0) : ℝ≥0)) ≤
+        (minRelHammingDistCode KoalaBear.rsCodeSet : ℝ≥0) :=
+      NNRat.cast_le.mpr KoalaBear.le_minRelHammingDistCode_rsCodeSet
+    convert hcast using 1 <;> norm_num
+
   have h_lt : (3 / 10 : ℝ≥0) < (3 / 4 : ℝ≥0) := by norm_num
   exact lt_of_lt_of_le h_lt h_le_R
 

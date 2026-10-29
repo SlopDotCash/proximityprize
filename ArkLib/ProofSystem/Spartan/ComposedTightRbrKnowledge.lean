@@ -4,14 +4,23 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SpartanFirstChallenge
+import ProximityPrize.Compatibility.SumcheckKnowledge
+import ArkLib.ProofSystem.Spartan.ShortPhaseRbrKnowledgeLeaves
 import ArkLib.ProofSystem.Spartan.TightMidLeaves
 import ArkLib.ProofSystem.Spartan.ComposedRbrKnowledgeSoundness
 import ArkLib.ProofSystem.Spartan.SumcheckDeterminismWitnesses
 
 /-!
+
+Canonical-message integration: the degree-2/degree-3 round knowledge bounds remain explicit
+hypotheses of the `_of_sumcheck_rounds` constructions below. Former unconditional zero-flip
+completion claims are retired; exact names, commands and added obligations are recorded in
+`scripts/integration/sumcheck-message-semantics-retirements.json`.
+
 # The composed TIGHT Spartan rbr knowledge soundness — no `1`-slots (issue #329, K3+K5)
 
-The old composed theorem `composedRbrKnowledgeSoundnessPreserving_unconditional`
+The old composed theorem `composedRbrKnowledgeSoundnessPreserving_of_sumcheck_rounds`
 (`ShortPhaseRbrKnowledgeLeaves.lean`) carries the proven-forced per-round error `err₅ = 1` at the
 `linearCombination` round: on the target-dropping relation chain a prover sending the *true*
 evaluation claims defeats any smaller bound (the v=t attack of #114). This module assembles the
@@ -63,16 +72,17 @@ Which leaves are reusable as-is, and where the seams needed work:
 * `composedTightPIOP` — the 6-phase composed oracle reduction.
 * `composedTightPIOP_rbrKnowledgeSoundness_of_leaves` — the relation-chain-agnostic 5-seam fold
   (all determinism witnesses discharged internally; only the six per-phase leaves are taken).
-* `composedTightRbrKnowledgeSoundness_unconditional` — **the headline**: the composed tight
-  chain is rbr knowledge-sound from `spartanRelIn` to `tightRelG` with per-round errors
+* `composedTightRbrKnowledgeSoundness_of_sumcheck_rounds` — **the headline**: the composed tight
+  chain is rbr knowledge-sound from `spartanRelIn` to `tightRelG`, assuming the canonical
+  degree-three round-knowledge bound, with per-round errors
   `(0, ℓ_m/|R|, 3/|R| per round, 0, 1/|R|)` — the `err₅ = 1` slot of the old composition is
   eliminated.
 * `composedTightRbrError_unconditional_le` — the no-`1`-slot certificate: every per-round error
   of the headline error vector is `≤ max(ℓ_m, 3)/|R|`.
 
 **Scope note (DRY audit 2026-06-11, item 10):** this 6-phase chain is a strict ancestor of the
-full 8-phase apex — `TightComposedFull.lean` (`composedTightFull_rbrKnowledgeSoundness`) and
-the paired chain `TightApexPure.lean` (`composedTightPure_rbrKnowledgeSoundness` +
+full 8-phase apex — `TightComposedFull.lean` (`composedTightFull_rbrKnowledgeSoundness_of_sumcheck_rounds`) and
+the paired chain `TightApexPure.lean` (`composedTightPure_rbrKnowledgeSoundness_of_sumcheck_rounds` +
 `composedTightPure_perfectCompleteness`). Its endpoint (`tightRelG`) is interior to the full
 chain. New consumers should target the apex; this file remains as the documented shorter
 assembly pattern.
@@ -158,24 +168,11 @@ variable {ι : Type} (oSpec : OracleSpec ι)
 
 /-! ### The composed tight reduction -/
 
-/-- Reduction-level `AppendCoherent` alias for the carried `sendEvalClaim` round (the verifier
-instance is keyed on the raw `sendEvalClaimWithTargetVerifier`). -/
-instance instSendEvalClaimWithTargetReductionAppendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (sendEvalClaimWithTarget (R := R) pp oSpec).verifier :=
-  instSendEvalClaimWithTargetVerifierAppendCoherent pp oSpec
-
-/-- Reduction-level `AppendCoherent` alias for the carried `linearCombination` round. -/
-instance instLinearCombinationWithTargetReductionAppendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (linearCombinationWithTarget (R := R) pp oSpec).verifier :=
-  instLinearCombinationWithTargetVerifierAppendCoherent pp oSpec
-
 /-- The carried honest RLC-target adapter pinned to the concrete oracle-interface universe used
 by the rbr append keystones (mirror of the private `prependRLCTargetKS` of
 `ComposedRbrKnowledgeSoundness.lean`). -/
 private abbrev prependRLCTargetWTKS {ι : Type} (oSpec : OracleSpec ι) :
-    OracleReduction.{0, 0} oSpec
+    OracleReduction oSpec
       (Statement.AfterLinearCombinationWithTarget R pp)
       (OracleStatement.AfterLinearCombination R pp) Unit
       (R × Statement.AfterLinearCombinationWithTarget R pp)
@@ -192,7 +189,7 @@ def composedTightPIOP :
       (OracleStatement.AfterLinearCombination R pp) Unit
       (composedTightPSpec (R := R) pp) :=
   (oracleReduction.firstMessage R pp oSpec).append <|
-  (oracleReduction.firstChallenge R pp oSpec).append <|
+  (oracleReduction.completedFirstChallenge R pp oSpec).append <|
     (firstSumcheckReductionWithTarget pp oSpec).append <|
     (sendEvalClaimWithTarget pp oSpec).append <|
     (linearCombinationWithTarget pp oSpec).append <|
@@ -316,14 +313,14 @@ failing-deterministic** (mirror of `firstSumcheck_toVerifier_isFailingDet` at th
 target-preserving lens, through the proven `firstSumcheckCoherentWithTarget` instance). -/
 theorem firstSumcheckWithTarget_toVerifier_isFailingDet :
     (firstSumcheckReductionWithTarget (R := R) pp oSpec).verifier.toVerifier.IsFailingDet := by
-  letI coh : OracleVerifier.LiftContextCoherent (firstSumcheckOracleLensWithTarget pp oSpec)
+  have coh : OracleVerifier.LiftContextCoherent (firstSumcheckOracleLensWithTarget pp oSpec)
       (Sumcheck.Spec.oracleVerifier R 3 (boolEmbedding R) pp.ℓ_m oSpec) := by
     change OracleVerifier.LiftContextCoherent (firstSumcheckOracleLensWithTarget pp oSpec)
       (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier
     exact firstSumcheckCoherentWithTarget (R := R) pp oSpec
-  show ((Sumcheck.Spec.oracleVerifier R 3 (boolEmbedding R) pp.ℓ_m oSpec).liftContext
+  show ((Sumcheck.Spec.oracleVerifier R 3 (boolEmbedding R) pp.ℓ_m oSpec).liftContextLegacy
     (firstSumcheckOracleLensWithTarget pp oSpec)).toVerifier.IsFailingDet
-  rw [OracleVerifier.liftContext_toVerifier_comm]
+  rw [OracleVerifier.liftContextLegacy_toVerifier_comm]
   obtain ⟨v?, hv⟩ := sumcheckFull_toVerifier_isFailingDet oSpec 3 (boolEmbedding R) pp.ℓ_m
   exact ⟨_, Verifier.liftContext_failingDet _ _ v? hv⟩
 
@@ -387,7 +384,7 @@ theorem composedTightPIOP_rbrKnowledgeSoundness_of_leaves [Subsingleton σ]
     {err₆ : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0}
     (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       relA relB err₁)
-    (h₂ : (oracleReduction.firstChallenge.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       relB relC err₂)
     (h₃ : (firstSumcheckReductionWithTarget pp oSpec).verifier.rbrKnowledgeSoundness init impl
       relC relD err₃)
@@ -397,7 +394,7 @@ theorem composedTightPIOP_rbrKnowledgeSoundness_of_leaves [Subsingleton σ]
       relEt relFt err₅)
     (h₆ : (prependRLCTargetWTKS pp oSpec).verifier.rbrKnowledgeSoundness init impl
       relFt relGt err₆)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×
       ∀ i, OracleStatement.AfterFirstMessage R pp i))
     (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×
@@ -407,7 +404,7 @@ theorem composedTightPIOP_rbrKnowledgeSoundness_of_leaves [Subsingleton σ]
     (composedTightPIOP (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl relA relGt
       (composedTightRbrError pp err₁ err₂ err₃ err₄ err₅ err₆) := by
   obtain ⟨verify₁, hV₁⟩ := firstMessage_toVerifier_pure (R := R) pp oSpec
-  obtain ⟨verify₂, hV₂⟩ := firstChallenge_toVerifier_pure.{0} (R := R) pp oSpec
+  obtain ⟨verify₂, hV₂⟩ := firstChallenge_toVerifier_pure (R := R) pp oSpec
   obtain ⟨verify₃?, hV₃⟩ := firstSumcheckWithTarget_toVerifier_isFailingDet (R := R) pp oSpec
   -- Seam 5 (`linearCombinationWithTarget ▷ prependRLCTargetWithTarget`, empty right seam;
   -- pure (hence failing-deterministic) left verifier). Residual-free, no direction facts.
@@ -451,7 +448,7 @@ theorem composedTightPIOP_rbrKnowledgeSoundness_of_leaves [Subsingleton σ]
       verify₃? hV₃ hInit hInitNF ⟨()⟩ (by omega)
       (tightSfx3_dir_seam pp (by omega)) (tightSfx4_dir_zero (R := R) (by omega)) h₃ hS4
   -- Seam 2 (`firstChallenge ▷ …`, message seam; pure left verifier).
-  have hS2 : ((oracleReduction.firstChallenge R pp oSpec).append
+  have hS2 : ((oracleReduction.completedFirstChallenge R pp oSpec).append
       ((firstSumcheckReductionWithTarget pp oSpec).append
         ((sendEvalClaimWithTarget pp oSpec).append
           ((linearCombinationWithTarget pp oSpec).append
@@ -461,7 +458,7 @@ theorem composedTightPIOP_rbrKnowledgeSoundness_of_leaves [Subsingleton σ]
           ∘ ChallengeIdx.sumEquiv.symm)
         ∘ ChallengeIdx.sumEquiv.symm) :=
     OracleVerifier.append_rbrKnowledgeSoundness_subsingleton
-      (oracleReduction.firstChallenge R pp oSpec).verifier
+      (oracleReduction.completedFirstChallenge R pp oSpec).verifier
       ((firstSumcheckReductionWithTarget pp oSpec).append
         ((sendEvalClaimWithTarget pp oSpec).append
           ((linearCombinationWithTarget pp oSpec).append
@@ -471,7 +468,7 @@ theorem composedTightPIOP_rbrKnowledgeSoundness_of_leaves [Subsingleton σ]
   -- Seam 1 (`firstMessage ▷ …`, challenge seam; pure left verifier).
   exact OracleVerifier.append_rbrKnowledgeSoundness_subsingleton_challenge
     (oracleReduction.firstMessage R pp oSpec).verifier
-    ((oracleReduction.firstChallenge R pp oSpec).append
+    ((oracleReduction.completedFirstChallenge R pp oSpec).append
       ((firstSumcheckReductionWithTarget pp oSpec).append
         ((sendEvalClaimWithTarget pp oSpec).append
           ((linearCombinationWithTarget pp oSpec).append
@@ -479,28 +476,26 @@ theorem composedTightPIOP_rbrKnowledgeSoundness_of_leaves [Subsingleton σ]
     verify₁ hV₁ hInit hInitNF hNE_B ⟨()⟩ (by omega)
     (composedTightPSpec_dir_seam pp (by omega)) (tightSfx2_dir_zero pp (by omega)) h₁ hS2
 
-/-! ### The unconditional headline -/
+/-! ### The headline with explicit round bounds -/
 
-/-- **Unconditional composed TIGHT rbr knowledge soundness for the Spartan chain (issue #329):
-the `err₅ = 1` slot is eliminated.** From `spartanRelIn` to `tightRelG` (carried target = true
-RLC, claims bound to the first-terminal identity), with per-round errors `0`
-(message/adapter rounds), `ℓ_m/|R|` (`firstChallenge`, Schwartz–Zippel), `3/|R|` per
-first-sum-check round, and **`1/|R|`** at `linearCombination` (Spartan Lemma 5.1's bound) —
-where the old chain `composedRbrKnowledgeSoundnessPreserving_unconditional` was proven-forced
-to carry error `1`. -/
-theorem composedTightRbrKnowledgeSoundness_unconditional [Subsingleton σ]
+/-- The completed Spartan composition construction, conditional on the actual canonical
+sumcheck degree-3 per-round knowledge bounds. The former unconditional zero-flip
+completion is retired; exact source and the added obligations are recorded in the migration audit. -/
+theorem composedTightRbrKnowledgeSoundness_of_sumcheck_rounds [Subsingleton σ]
     (hm : 0 < pp.ℓ_m)
     [Inhabited (Statement.AfterFirstSumcheckWithTarget R pp ×
       ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]
     [Inhabited (Statement.AfterLinearCombinationWithTarget R pp ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i)]
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×
       ∀ i, OracleStatement.AfterFirstMessage R pp i))
     (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×
       ∀ i, OracleStatement.AfterFirstChallenge R pp i))
     (hNE_E : Nonempty (Statement.AfterSendEvalClaimWithTarget R pp ×
-      ∀ i, OracleStatement.AfterSendEvalClaim R pp i)) :
+      ∀ i, OracleStatement.AfterSendEvalClaim R pp i))
+    (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
+    :
     (composedTightPIOP (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (spartanRelIn R pp) (tightRelG (R := R) pp)
       (composedTightRbrError pp
@@ -510,18 +505,19 @@ theorem composedTightRbrKnowledgeSoundness_unconditional [Subsingleton σ]
         (0 : (⟨!v[.P_to_V], !v[∀ i, EvalClaim R i]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)
         (fun _ => (1 : ℝ≥0) / (Fintype.card R : ℝ≥0))
         (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)) := by
-  have h₂ : (oracleReduction.firstChallenge.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+  have h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (firstMessageRbrRelB (R := R) pp)
       (firstSumcheckWithTargetRbrRelIn (R := R) pp oSpec)
       (fun _ => (pp.ℓ_m : ℝ≥0) / (Fintype.card R : ℝ≥0)) := by
     rw [firstSumcheckWithTargetRbrRelIn_eq_relIn]
     exact firstChallenge_rbrKnowledgeSoundness_schwartzZippel pp oSpec hm
-  exact composedTightPIOP_rbrKnowledgeSoundness_of_leaves.{0} pp oSpec hm
+  exact composedTightPIOP_rbrKnowledgeSoundness_of_leaves pp oSpec hm
     (firstMessage_rbrKnowledgeSoundness_spartanRelIn pp oSpec)
     h₂
-    (firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full pp oSpec hInit hInitNF)
+    (firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds (hRound3 :=
+      hRound3) pp oSpec hInit hInitNF)
     (sendEvalClaimWithTarget_rbrKnowledgeSoundness_leaf pp oSpec)
-    (linearCombinationWithTarget_rbrKnowledgeSoundness_leaf.{0} pp oSpec)
+    (linearCombinationWithTarget_rbrKnowledgeSoundness_leaf pp oSpec)
     (prependRLCTargetWithTarget_rbrKnowledgeSoundness_leaf pp oSpec)
     hInit hInitNF hNE_B hNE_C hNE_E
 
@@ -544,7 +540,7 @@ theorem composedTightRbrError_unconditional_le
   simp only [Function.comp_apply]
   rcases ChallengeIdx.sumEquiv.symm i with j₁ | i₁
   · simp only [Sum.elim_inl, Pi.zero_apply]
-    exact zero_le _
+    exact zero_le
   · simp only [Sum.elim_inr, Function.comp_apply]
     rcases ChallengeIdx.sumEquiv.symm i₁ with j₂ | i₂
     · simp only [Sum.elim_inl]
@@ -558,7 +554,7 @@ theorem composedTightRbrError_unconditional_le
       · simp only [Sum.elim_inr, Function.comp_apply]
         rcases ChallengeIdx.sumEquiv.symm i₃ with j₄ | i₄
         · simp only [Sum.elim_inl, Pi.zero_apply]
-          exact zero_le _
+          exact zero_le
         · simp only [Sum.elim_inr, Function.comp_apply]
           rcases ChallengeIdx.sumEquiv.symm i₄ with j₅ | i₅
           · simp only [Sum.elim_inl]
@@ -575,5 +571,5 @@ end Spartan.Spec.Bricks
 #print axioms Spartan.Spec.Bricks.firstSumcheckWithTargetRbrRelIn_eq_relIn
 #print axioms Spartan.Spec.Bricks.firstSumcheckWithTarget_toVerifier_isFailingDet
 #print axioms Spartan.Spec.Bricks.composedTightPIOP_rbrKnowledgeSoundness_of_leaves
-#print axioms Spartan.Spec.Bricks.composedTightRbrKnowledgeSoundness_unconditional
+#print axioms Spartan.Spec.Bricks.composedTightRbrKnowledgeSoundness_of_sumcheck_rounds
 #print axioms Spartan.Spec.Bricks.composedTightRbrError_unconditional_le

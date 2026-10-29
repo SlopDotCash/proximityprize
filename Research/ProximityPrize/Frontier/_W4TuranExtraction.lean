@@ -246,10 +246,11 @@ noncomputable def overlapGraph
   Adj x y := x ≠ y ∧ x ∈ family.G ∧ y ∈ family.G ∧
     K ≤ (fullAgreement dom (u 0) (u 1) x (family.q x) ∩
       fullAgreement dom (u 0) (u 1) y (family.q y)).card
-  symm := by
+  symm := ⟨by
     rintro x y ⟨hne, hx, hy, hcard⟩
     exact ⟨hne.symm, hy, hx, by
       simpa only [Finset.inter_comm] using hcard⟩
+  ⟩
   loopless := ⟨fun x h => h.1 rfl⟩
 
 /-- Six-point forcing holds inside the selected family: any six selected

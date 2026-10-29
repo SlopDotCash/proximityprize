@@ -19,7 +19,7 @@ induction hypotheses, then uses the substitution-divisibility kernel
 This file formalizes the **transport machinery** for that argument — the lifted substitution
 `substPoly p q = Polynomial.map (substVar p q)` on `R[X]` (`R = MvPolynomial (Fin n) F`) and how it
 interacts with the vanishing polynomials `pVanish`, working **in fixed dimension `n`** (the merge is
-realized as `mergeVec p q`, which moves the `p`-mass onto `q` and zeroes `p`, keeping the variable
+realized as `mergeVecSameDimension p q`, which moves the `p`-mass onto `q` and zeroes `p`, keeping the variable
 set `Fin n`; the reindexing `Fin n → Fin (n−1)` needed to invoke the `n`-IH, and the final
 minimality contradiction, are NOT in this file — see the residual note below).
 
@@ -27,12 +27,12 @@ minimality contradiction, are NOT in this file — see the residual note below).
 
 * `substPoly`, `substPoly_X`, `substPoly_C`, `substPoly_xSubC`, `substPoly_xSubA` — the lifted
   substitution and its action on `X`, `C`, and the linear factors `xSubA i`.
-* `mergeVec`, `vAbs_mergeVec` — **(S1 core)** the merged multiplicity vector and weight
-  preservation `|mergeVec p q v| = |v|` (`p ≠ q`).
-* `substPoly_pVanish` — **(S2 core)** `substPoly p q (pVanish v) = pVanish (mergeVec p q v)`: the
+* `mergeVecSameDimension`, `vAbs_mergeVec` — **(S1 core)** the merged multiplicity vector and weight
+  preservation `|mergeVecSameDimension p q v| = |v|` (`p ≠ q`).
+* `substPoly_pVanish` — **(S2 core)** `substPoly p q (pVanish v) = pVanish (mergeVecSameDimension p q v)`: the
   substitution merges the `(n−1)` and `j*` factors at the polynomial level.
 * `substPoly_relation_transport` — **(S2)** a vanishing relation `∑ₗ pVanish (V l) · A l = 0`
-  transports to `∑ₗ pVanish (mergeVec p q (V l)) · substPoly (A l) = 0`.
+  transports to `∑ₗ pVanish (mergeVecSameDimension p q (V l)) · substPoly (A l) = 0`.
 * `substPoly_natDegree_le` — **(S3 budget)** the substitution does not raise degree, so a valid
   coefficient stays valid.
 * `C_subX_dvd_of_substPoly_eq_zero` — **(S4)** if `substPoly p q A = 0` then
@@ -87,30 +87,30 @@ theorem substPoly_xSubA (p q i : Fin n) :
   · rw [substVar_X_of_ne h, if_neg h]
 
 /-- The merged vector in dimension `n`: move the `p`-mass onto `q`, zero out `p`. -/
-def mergeVec (p q : Fin n) (v : Fin n → ℕ) : Fin n → ℕ :=
+def mergeVecSameDimension (p q : Fin n) (v : Fin n → ℕ) : Fin n → ℕ :=
   Function.update (Function.update v p 0) q (v q + v p)
 
 /-- **(S1 core) Weight preservation.**  Merging coordinate `p` onto `q` (`p ≠ q`) preserves the
 total weight `|v|`. -/
 theorem vAbs_mergeVec (p q : Fin n) (hpq : p ≠ q) (v : Fin n → ℕ) :
-    vAbs (mergeVec p q v) = vAbs v := by
+    vAbs (mergeVecSameDimension p q v) = vAbs v := by
   classical
-  rw [vAbs, vAbs, mergeVec]
+  rw [vAbs, vAbs, mergeVecSameDimension]
   have hp_mem : p ∈ (Finset.univ \ {q} : Finset (Fin n)) := by
     simp [Finset.mem_sdiff, hpq]
   -- LHS: update at q, then isolate p in the remainder.
   rw [Finset.sum_update_of_mem (Finset.mem_univ q),
       Finset.sum_update_of_mem hp_mem]
   -- RHS: ∑ v = v q + (v p + ∑_{(univ\{q})\{p}} v)
-  rw [Finset.sum_eq_add_sum_diff_singleton_of_mem (Finset.mem_univ q) v,
-      Finset.sum_eq_add_sum_diff_singleton_of_mem hp_mem v]
+  rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem (Finset.mem_univ q) v,
+      Finset.sum_eq_add_sum_sdiff_singleton_of_mem hp_mem v]
   omega
 
-/-- **(S2 core) `pVanish` transport.**  `substPoly p q (pVanish v) = pVanish (mergeVec p q v)`:
+/-- **(S2 core) `pVanish` transport.**  `substPoly p q (pVanish v) = pVanish (mergeVecSameDimension p q v)`:
 the substitution `X_p ↦ X_q` merges the `p`-factor onto the `q`-factor at the level of the
 vanishing polynomial. -/
 theorem substPoly_pVanish (p q : Fin n) (hpq : p ≠ q) (v : Fin n → ℕ) :
-    substPoly (F := F) p q (pVanish v) = pVanish (mergeVec p q v) := by
+    substPoly (F := F) p q (pVanish v) = pVanish (mergeVecSameDimension p q v) := by
   classical
   rw [pVanish, map_prod]
   -- LHS = ∏ i (xSubA (if i = p then q else i))^(v i)
@@ -124,7 +124,7 @@ theorem substPoly_pVanish (p q : Fin n) (hpq : p ≠ q) (v : Fin n → ℕ) :
   set f : Fin n → (MvPolynomial (Fin n) F)[X] :=
     fun i => (xSubA (if i = p then q else i)) ^ (v i) with hf
   set g : Fin n → (MvPolynomial (Fin n) F)[X] :=
-    fun i => (xSubA i) ^ (mergeVec p q v i) with hg
+    fun i => (xSubA i) ^ (mergeVecSameDimension p q v i) with hg
   rw [Finset.prod_eq_mul_prod_diff_singleton_of_mem hmem_p f,
       Finset.prod_eq_mul_prod_diff_singleton_of_mem hmem_p g]
   have hmem_q' : q ∈ (Finset.univ \ {p} : Finset (Fin n)) := by
@@ -134,11 +134,11 @@ theorem substPoly_pVanish (p q : Fin n) (hpq : p ≠ q) (v : Fin n → ℕ) :
   -- f p = (xSubA q)^(v p); g p = (xSubA p)^0 = 1
   have hfp : f p = (xSubA (F := F) q) ^ (v p) := by rw [hf]; simp
   have hgp : g p = 1 := by
-    rw [hg]; simp only [mergeVec, Function.update_of_ne hpq, Function.update_self, pow_zero]
+    rw [hg]; simp only [mergeVecSameDimension, Function.update_of_ne hpq, Function.update_self, pow_zero]
   -- f q = (xSubA q)^(v q); g q = (xSubA q)^(v q + v p)
   have hfq : f q = (xSubA (F := F) q) ^ (v q) := by rw [hf]; simp [hpq.symm]
   have hgq : g q = (xSubA (F := F) q) ^ (v q + v p) := by
-    rw [hg]; simp only [mergeVec, Function.update_self]
+    rw [hg]; simp only [mergeVecSameDimension, Function.update_self]
   rw [hfp, hgp, hfq, hgq]
   -- the leftover products (over univ \ {p} \ {q}) agree pointwise
   have hrest : ∀ i ∈ ((Finset.univ \ {p}) \ {q} : Finset (Fin n)), f i = g i := by
@@ -148,7 +148,7 @@ theorem substPoly_pVanish (p q : Fin n) (hpq : p ≠ q) (v : Fin n → ℕ) :
     rw [hf, hg]
     simp only [if_neg hip]
     congr 2
-    simp only [mergeVec]
+    simp only [mergeVecSameDimension]
     rw [Function.update_of_ne hiq, Function.update_of_ne hip]
   rw [Finset.prod_congr rfl hrest]
   ring
@@ -175,13 +175,13 @@ theorem substPoly_natDegree_le (p q : Fin n) (A : (MvPolynomial (Fin n) F)[X]) :
     Polynomial.natDegree_map_le (f := (substVar (F := F) p q).toRingHom) (p := A)
 
 /-- **(S2) Relation transport.**  Applying the lifted substitution to a vanishing relation
-`∑ₗ pVanish (V l) · A l = 0` yields `∑ₗ pVanish (mergeVec p q (V l)) · substPoly (A l) = 0`,
+`∑ₗ pVanish (V l) · A l = 0` yields `∑ₗ pVanish (mergeVecSameDimension p q (V l)) · substPoly (A l) = 0`,
 because `substPoly` is a ring hom (commutes with `∑`, `·`) and `substPoly_pVanish` rewrites each
 factor. -/
 theorem substPoly_relation_transport {m : ℕ} (p q : Fin n) (hpq : p ≠ q)
     (V : Fin m → (Fin n → ℕ)) (A : Fin m → (MvPolynomial (Fin n) F)[X])
     (hrel : ∑ l, pVanish (F := F) (V l) * A l = 0) :
-    ∑ l, pVanish (F := F) (mergeVec p q (V l)) * substPoly (F := F) p q (A l) = 0 := by
+    ∑ l, pVanish (F := F) (mergeVecSameDimension p q (V l)) * substPoly (F := F) p q (A l) = 0 := by
   have := congrArg (substPoly (F := F) p q) hrel
   rw [map_sum, map_zero] at this
   rw [← this]

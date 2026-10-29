@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.FiatShamir.Basic
-import ArkLib.OracleReduction.LiftContext.Reduction
+import ProximityPrize.Extensions.OracleReduction.FiatShamir.Basic
+import ProximityPrize.Extensions.OracleReduction.LiftContext.Reduction
 
 /-!
   # Discharging Basic Fiat-Shamir Completeness (#116)
@@ -262,7 +262,7 @@ theorem fiatShamir_completeness_of_perfect_honestExecution_discharged
       R.fiatShamirHonestExecution) :
     R.fiatShamir.completeness init impl relIn relOut completenessError := by
   unfold Reduction.perfectCompletenessFromRun at hHonest
-  exact Reduction.completeness_error_mono init impl (zero_le completenessError)
+  exact Reduction.completeness_error_mono init impl (show 0 ≤ completenessError from zero_le)
     (fiatShamir_completeness_of_honestExecution_discharged init impl relIn relOut
       0 R hHonest)
 
@@ -348,7 +348,7 @@ theorem fiatShamir_completeness_of_perfect_honestExecution_mono_relations_error_
   exact fiatShamir_completeness_of_honestExecution_mono_relations_error_discharged init impl
     (relIn := relIn) (relIn' := relIn') (relOut := relOut) (relOut' := relOut')
     (completenessError₁ := 0) (completenessError₂ := completenessError)
-    R hHonest hIn hOut (zero_le completenessError)
+    R hHonest hIn hOut (show 0 ≤ completenessError from zero_le)
 
 #print axioms fiatShamir_runCollapse
 #print axioms fiatShamir_completeness_unroll_discharged

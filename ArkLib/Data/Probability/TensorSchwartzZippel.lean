@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.Probability.Instances
+import ProximityPrize.Extensions.Data.Probability.Instances
+import Mathlib.Algebra.MvPolynomial.CommRing
 
 /-!
 # Tensor-affine Schwartz-Zippel engine
@@ -160,7 +161,7 @@ lemma tensorWeight_totalDegree (n : ℕ) (idx : Fin (2 ^ n)) :
 /-- The tensor combination has total degree at most `n`. -/
 lemma tensorComb_totalDegree (n : ℕ) (a : Fin (2 ^ n) → L) :
     (tensorComb L n a).totalDegree ≤ n := by
-  refine le_trans (MvPolynomial.totalDegree_finset_sum _ _) ?_
+  refine le_trans (MvPolynomial.totalDegree_finsetSum _ _) ?_
   refine Finset.sup_le fun idx _ => ?_
   refine le_trans (MvPolynomial.totalDegree_mul _ _) ?_
   have := tensorWeight_totalDegree L n idx

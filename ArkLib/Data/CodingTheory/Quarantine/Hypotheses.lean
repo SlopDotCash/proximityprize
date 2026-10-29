@@ -10,6 +10,8 @@ This file formalizes 4 candidate bounds drawn from cross-disciplinary
 theoretical frameworks, aiming to bound the capacity limit of Reed-Solomon codes.
 -/
 
+namespace ProximityGap.QuarantineHypotheses
+
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 variable {n m : ℕ} (H_matrix : Matrix (Fin m) (Fin n) F)
 
@@ -69,3 +71,5 @@ def hyp_HasseWeil_agreement_bound (t : ℕ) (x : Fin n → F) : Prop :=
 def hyp_SumProduct_escape (u1 u2 : Fin n → F) (h1 : C H_matrix u1)
     (h2 : C H_matrix u2) (h_ne : u1 ≠ u2) : Prop :=
     weight (fun i => u1 i * u2 i) ≤ n - 1
+
+end ProximityGap.QuarantineHypotheses

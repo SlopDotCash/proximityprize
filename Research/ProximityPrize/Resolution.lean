@@ -32,7 +32,7 @@ discharges every numeric hypothesis with no remaining holes, no `sorry`/`admit`/
   the exact-value separation `C(C(16,9),2) < q` and the budget `C(16,9)/q ≤ 2^{−128}`.
 * `prizeResolution_ld` — the list-side resolution: for every domain with `2 ≤ n` and every
   `m ≥ 1`, the formal list-decoding prize is **false** (`not_listDecodingPrize`), the closed
-  form `q^{k·m} ≤ ε*·q` explains why, and **no** `GrandListResolution` exists at the prize
+  form `q^{k·m} ≤ ε*·q` explains why, and **no** `ContinuousGrandListResolution` exists at the prize
   parameters (`isEmpty_grandListResolution_prize`).
 
 ## Anti-vacuity audit (per issue #121)
@@ -41,7 +41,7 @@ discharges every numeric hypothesis with no remaining holes, no `sorry`/`admit`/
   concrete instance `prizeResolution_mca_M521` is a literal witness that they are
   simultaneously satisfiable.
 * `prizeResolution_mca_M521`: vacuity is impossible — it is a closed theorem with no
-  hypotheses, asserting an unconditional `mcaPrize`.
+  hypotheses, asserting an unconditional `continuousMcaPrize`.
 * `prizeResolution_ld` / `isEmpty_grandListResolution_prize`: vacuity is impossible — these are
   *negations* (`¬ prize`, `IsEmpty`), so they carry no dischargeable hypotheses that could be
   silently false; the `2 ≤ n`, `1 ≤ m` side-conditions are exactly the regime where the prize
@@ -91,7 +91,7 @@ theorem prizeResolution_mca_of_numeric
     (hbound : ∀ j : Fin 4,
       (Nat.choose (Fintype.card ι) (⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ + 1) : ENNReal)
         / (Fintype.card F : ENNReal) ≤ (epsStar : ENNReal)) :
-    GrandChallenges.mcaPrize domain ∧
+    GrandChallenges.continuousMcaPrize domain ∧
       ∀ j : Fin 4,
         Nonempty (GrandMCAResolution
           (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
@@ -222,7 +222,7 @@ This is the genuinely new content: a *closed* theorem (no hypotheses) instantiat
   (`prizeChoose_fin16_le`);
 * the separation `C(C(16,kⱼ+1),2) < q` and budget `C(16,kⱼ+1)·2^128 ≤ q` from `q > 2^142`. -/
 theorem prizeResolution_mca_M521 :
-    GrandChallenges.mcaPrize prizeDomain ∧
+    GrandChallenges.continuousMcaPrize prizeDomain ∧
       ∀ j : Fin 4,
         Nonempty (GrandMCAResolution
           (ReedSolomon.code prizeDomain
@@ -253,16 +253,16 @@ section ListSide
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **No `GrandListResolution` exists at the prize parameters.**
+/-- **No `ContinuousGrandListResolution` exists at the prize parameters.**
 
 At any prize rate `ρ = 1/2` (degree `k = ⌊n/2⌋ ≥ 1`), positive interleaving `m ≥ 1`, threshold
-`ε* = 2^{−128} < 1` and `2 ≤ n`, the type `GrandListResolution (RS[F,domain,k]^⋈m) m ε*` is
+`ε* = 2^{−128} < 1` and `2 ≤ n`, the type `ContinuousGrandListResolution (RS[F,domain,k]^⋈m) m ε*` is
 **empty**: any inhabitant would, via `grandListDecodingChallenge_of_resolution`, prove the
 Grand List Decoding Challenge, which `not_grandListDecodingChallengeRS_of_pos` refutes (the
 radius-one collapse makes the list the whole interleaved code, of size `> ε*·|F|`). -/
 theorem isEmpty_grandListResolution_prize (domain : ι ↪ F) {m : ℕ} (hm : 0 < m)
     (hι : 2 ≤ Fintype.card ι) :
-    IsEmpty (GrandListResolution
+    IsEmpty (ContinuousGrandListResolution
       (ReedSolomon.code domain ⌊prizeRates 0 * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
       m epsStar) := by
   constructor
@@ -292,18 +292,18 @@ For every evaluation domain with `2 ≤ n` and every interleaving `m ≥ 1`:
 2. for `k ≤ n` the underlying challenge has the **closed form**
    `q^{k·m} ≤ ε*·q` (`grandListDecodingChallengeRS_iff_pow_le`), which is the precise reason
    the prize fails (LHS `≥ q²`, RHS `< q`);
-3. **no** `GrandListResolution` exists at the prize parameters
+3. **no** `ContinuousGrandListResolution` exists at the prize parameters
    (`isEmpty_grandListResolution_prize`).
 
 Vacuity is impossible: this is a conjunction of negations and an `IsEmpty`. -/
 theorem prizeResolution_ld (domain : ι ↪ F) {m : ℕ} (hm : 0 < m)
     (hι : 2 ≤ Fintype.card ι) :
-    ¬ GrandChallenges.listDecodingPrize domain m ∧
+    ¬ GrandChallenges.continuousListDecodingPrize domain m ∧
       (∀ k : ℕ, k ≤ Fintype.card ι →
         (GrandChallenges.grandListDecodingChallengeRS domain k m epsStar ↔
           ((Fintype.card F : ENNReal) ^ (k * m)) ≤
             ((epsStar : ENNReal) * (Fintype.card F : ENNReal)))) ∧
-      IsEmpty (GrandListResolution
+      IsEmpty (ContinuousGrandListResolution
         (ReedSolomon.code domain ⌊prizeRates 0 * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
         m epsStar) :=
   ⟨not_listDecodingPrize domain hm hι,
@@ -325,7 +325,7 @@ axiom.
 **NON-VACUITY RECORD (the F4/F6 distinction — do not misread as a genuine-threshold result):**
 
 * `prizeResolution_ld` (list side) is a *negative* deliverable —
-  `¬ listDecodingPrize ∧ … ∧ IsEmpty (GrandListResolution …)`. A conjunction of negations and an
+  `¬ continuousListDecodingPrize ∧ … ∧ IsEmpty (ContinuousGrandListResolution …)`. A conjunction of negations and an
   `IsEmpty` cannot be vacuously inflated. Genuinely non-vacuous.
 
 * `prizeResolution_mca_M521` (MCA side) is honest and kernel-clean, but the `GrandMCAResolution`

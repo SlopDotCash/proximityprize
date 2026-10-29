@@ -219,7 +219,7 @@ theorem pencilE_eval (dom : Fin n ↪ F) (k w : ℕ) (u₀ u₁ : Fin n → F)
     (I : Fin (w + 1) ⊕ Fin (w + k) → Fin n) (ε : F) :
     (pencilE dom k w u₀ u₁ I).eval ε
       = ((wbMatrix dom k w (fun i => ε * u₀ i + u₁ i)).submatrix I id).det := by
-  rw [pencilE, ← Polynomial.coe_evalRingHom, RingHom.map_det]
+  erw [pencilE, ← Polynomial.coe_evalRingHom, RingHom.map_det]
   congr 1
   funext a b
   rcases b with t | s
@@ -266,7 +266,7 @@ theorem pencilE_natDegree_le (dom : Fin n ↪ F) (k w : ℕ) (u₀ u₁ : Fin n 
               omega
         _ = 1 := by omega
     · simp only [Sum.elim_inr, natDegree_C, le_refl]
-  rw [pencilE, Matrix.det_apply]
+  erw [pencilE, Matrix.det_apply]
   refine natDegree_sum_le_of_forall_le _ _ fun σ _ => ?_
   have hprod' : (∏ b : Fin (w + 1) ⊕ Fin (w + k),
       (fun a b => Sum.elim

@@ -123,12 +123,14 @@ def stirRound3Verifier (φ : ι ↪ F) (deg : ℕ) :
     OracleVerifier []ₒ F (OStmt ι F) (F × F) (OStmt ι F) (pSpec3 ι F) where
   verify := fun _ chals =>
     pure (chals ⟨1, pSpec3_dir_one⟩, chals ⟨2, pSpec3_dir_two⟩)
-  embed := ⟨fun _ => Sum.inr ⟨0, pSpec3_dir_zero⟩, fun _ _ _ => rfl⟩
-  hEq := by
-    intro i
-    show (ι → F) = (pSpec3 ι F).Message ⟨0, pSpec3_dir_zero⟩
-    unfold pSpec3 ProtocolSpec.Message
-    simp
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inr ⟨0, pSpec3_dir_zero⟩, fun _ _ _ => rfl⟩
+    hEq := by
+      intro i
+      show (ι → F) = (pSpec3 ι F).Message ⟨0, pSpec3_dir_zero⟩
+      unfold pSpec3 ProtocolSpec.Message
+      simp
+    outputInterface_heq := by intro u; cases u; rfl }
 
 /-- **The 3-slot STIR round-block oracle reduction** — the per-round protocol object of the
 `stirVSpec` layout, carrying the fold randomness through the statement and emitting the

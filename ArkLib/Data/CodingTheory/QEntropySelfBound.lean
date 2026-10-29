@@ -92,11 +92,9 @@ theorem qEntropy_gt_self (q : ℕ) (hq : 2 ≤ q) (x : ℝ) (hx0 : 0 < x)
   have hcore := binEntropy_gt_linear q hq x hx0 hxb
   have hmul : qEntropy q x * Real.log q
       = x * Real.log ((q:ℝ) - 1) + Real.binEntropy x := by
-    unfold qEntropy
-    rw [Real.binEntropy_eq_negMulLog_add_negMulLog_one_sub, Real.negMulLog, Real.negMulLog]
-    simp only [Real.logb]
-    field_simp
-    ring
+    rw [qEntropy, div_mul_cancel₀ _ (ne_of_gt hlogq), Real.qaryEntropy]
+    push_cast
+    rfl
   have h3 : x * Real.log q < qEntropy q x * Real.log q := by
     rw [hmul]; nlinarith [hcore]
   exact lt_of_mul_lt_mul_right h3 (le_of_lt hlogq)

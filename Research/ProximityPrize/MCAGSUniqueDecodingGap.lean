@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.MCAGS
-import ArkLib.Data.CodingTheory.ProximityGap.AHIV22
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.AHIV22
 
 /-!
 # Issue #141 — the GS-exposed MCA error obeys the proven proximity gap in the unique-decoding regime

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
+import ArkLib.Data.Probability.Notation
 import ArkLib.Data.CodingTheory.ListDecoding.Bounds.General
 
 /-!
@@ -85,7 +86,7 @@ noncomputable def uniformRandomLinearGeneratorMatrix
   letI : Nonempty (Matrix (Fin k) ι F) := by
     change Nonempty (Fin k → ι → F)
     infer_instance
-  exact PMF.uniformOfFintype (Matrix (Fin k) ι F)
+  exact ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)
 
 @[simp]
 theorem support_uniformRandomLinearGeneratorMatrix

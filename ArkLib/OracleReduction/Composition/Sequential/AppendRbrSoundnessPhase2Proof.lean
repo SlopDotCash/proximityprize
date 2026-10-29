@@ -7,56 +7,35 @@ import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeSoundness
 import ArkLib.OracleReduction.Composition.Sequential.AppendRightPartialProjections
 
 /-!
-# Unconditional round-by-round soundness append keystone (`append_rbrSoundness_keystone`)
+# Unconditional round-by-round soundness for message-seam append
 
-This file discharges the **phase-2** half of the round-by-round soundness append keystone and
-assembles the unconditional keystone `Verifier.append_rbrSoundness_keystone`: from the two
-components' `rbrSoundness` (`h₁`/`h₂`) alone — plus the standard structural side conditions of the
-deterministic-`V₁` message-seam, `Subsingleton σ` regime — it proves
+This file proves `append_rbrSoundness_keystone_subsingleton_unconditional` and discharges
+`appendRbrSoundnessResidual_msg_subsingleton`. Both retain their component soundness premises,
+deterministic first verifier, message-first seam, and `Subsingleton` simulation state.
 
-  `(V₁.append V₂).rbrSoundness init impl lang₁ lang₃
-      (Sum.elim rbrSoundnessError₁ rbrSoundnessError₂ ∘ ChallengeIdx.sumEquiv.symm)`,
+The composite is canonical `StateFunction.append` applied to `S₁` and `S₂.doom`. Its second-phase
+state is
 
-which is exactly the conclusion of the named residual `Verifier.appendRbrSoundnessResidual`
-(`Append.lean`). The unconditional keystone is `append_rbrSoundness_keystone_subsingleton_unconditional`;
-the discharge of the named residual under these side conditions is
-`appendRbrSoundnessResidual_msg_subsingleton` (both at the end of this file).
+  `S₁ (last m) stmt tr₁ ∨ verify stmt tr₁ ∈ lang₂ ∨ S₂ k (verify stmt tr₁) tr₂`.
 
-## Why the plain phase-2 is provable after all — the *doomed-escape* composite state function
+The completed first-phase state is part of canonical append. The middle disjunct is the additional
+escape clause introduced by `doom`. Either fixed disjunct makes the second-phase false-to-true
+flip impossible. When both are false, the flip reduces to the second component's event at an
+out-of-language seam statement, where its original soundness premise applies.
 
-The earlier keystone (`append_rbrSoundness_keystone_ofPhase2Residual`, `AppendRbrKeystone.lean`)
-isolated phase 2 as the residual `appendRbrSoundnessPhase2Residual`, with the obstruction analysis:
-against the *fixed* composite state function `StateFunction.append`, the phase-2 flip event carries
-mass on the in-language seam event `verify stmtIn tr.fst ∈ lang₂`, which `h₂` (quantified only over
-`stmtIn ∉ lang₂`) cannot control. That analysis is correct *for that state function* — but
-`rbrSoundness` is **existential** in the state function, and the obstruction disappears for the
-standard "doomed-escape" composite used in the round-by-round literature: on phase-2 rounds we take
-
-  `verify stmt₁ tr.fst ∈ lang₂ ∨ S₂ (k - m) (verify stmt₁ tr.fst) tr.snd`
-
-(i.e. the appended state is *also* true whenever the seam-crossing statement is in `lang₂`). Then:
-
-* `toFun_empty` / `toFun_full` are inherited verbatim from the proven `StateFunction.append`
-  (the escape disjunct is absent at round `0` and only *weakens* the negation at the last round);
-* `toFun_next` keeps the escape clause stable across phase-2 prover messages (the phase-1
-  truncation is unchanged, `transcript_concat_fst`), and at the crossing the falsity of
-  `S₁ (last m)` *forces* `verify stmt₁ tr.fst ∉ lang₂`
-  (`StateFunction.verify_notMem_lang_of_full_false`, the doomed-ness language-crossing brick);
-* the phase-2 **flip event** now *implies* `verify stmtIn tr.fst ∉ lang₂` (from the `castSucc`
-  negation), confining all flip mass to seam statements where `h₂` has content.
-
-The probabilistic seam then follows the proven knowledge-side template
-(`appendRbrKnowledgeSoundnessPhase2_subsingleton` / `appendRbrKnowledgePhase2SeamReconcile_proof`):
-seam-factor the appended partial run (`phase2_body_heq`), split the simulated experiment across the
-seam (`simulateQ_run'_bind_of_subsingleton`, the `Subsingleton σ` stateless regime), condition on
-the realized phase-1 output `ctx`, case on `verify stmtIn ctx.1 ∈ lang₂` (in-language: the flip
-event is pointwise *false*, probability `0`; out-of-language: apply `h₂` to the amnesiac
-re-injection prover `Prover.sndAmnesiac`), and reconcile the inner game across the right
-challenge-oracle seam (`evalDist_run'_challengeSeam_right`).
+The proof factors the appended experiment at the seam, transports the right challenge oracle,
+and uses the amnesiac second-phase prover. Native `ProbComp` is lossless, so its constant bind
+law removes the initial-state average after `Subsingleton` identifies the states. Exact historical
+source and the corrected projection interfaces are recorded in
+`scripts/integration/append-phase2-carry-migration.json`.
 -/
 
 open OracleComp OracleSpec ProtocolSpec SubSpec
 open scoped ENNReal NNReal
+
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
 
 universe u v
 
@@ -97,24 +76,39 @@ theorem StateFunction.verify_notMem_lang_of_full_false
     (hNeg : ¬ S₁ (Fin.last m) stmt tr) :
     verify stmt tr ∉ lang₂ := by
   have hPr := S₁.toFun_full stmt tr hNeg
-  rw [probEvent_eq_zero_iff] at hPr
+  rw [OptionT.prEvent_mk_eq_zero_iff] at hPr
   obtain ⟨s, hs⟩ := hInit
   refine hPr (verify stmt tr) ?_
-  rw [OptionT.mem_support_iff]
   simp only [OptionT.run_mk, support_bind, Set.mem_iUnion]
   refine ⟨s, hs, ?_⟩
   have hrun : (V₁.run stmt tr) = (pure (verify stmt tr) : OptionT (OracleComp oSpec) Stmt₂) := by
     subst hVerify; rfl
   rw [hrun]
-  change some (verify stmt tr) ∈ _root_.support
+  change some (verify stmt tr) ∈ support
     (StateT.run' (simulateQ impl (pure (some (verify stmt tr)) :
       OracleComp oSpec (Option Stmt₂))) s)
   rw [simulateQ_pure]
-  change some (verify stmt tr) ∈ _root_.support
+  change some (verify stmt tr) ∈ support
     (Prod.fst <$> (pure (some (verify stmt tr)) : StateT σ ProbComp _).run s)
   rw [StateT.run_pure]
   simp [map_pure]
 
+
+/-- Reindex the complete first transcript without identifying dependent carrier families. -/
+private theorem fullPrefix_eq_of_heq {k : Fin (m + n + 1)}
+    (hk : m ≤ k.val) (tr : (pSpec₁ ++ₚ pSpec₂).Transcript k)
+    (tr₁ : pSpec₁.FullTranscript) (ht : HEq tr.fst tr₁) :
+    (fun i : Fin m => tr.fst ⟨i.val, by simpa [min_eq_right hk] using i.isLt⟩) = tr₁ := by
+  have hsize : min k.val m = m := min_eq_right hk
+  have hh : HEq
+      (fun i : Fin m => tr.fst ⟨i.val, by simpa [hsize] using i.isLt⟩) tr.fst := by
+    refine Function.hfunext (congrArg Fin hsize.symm) ?_
+    intro a b hab
+    have hv : a.val = b.val := (Fin.heq_ext_iff hsize.symm).1 hab
+    have hi : (⟨a.val, by simpa [hsize] using a.isLt⟩ : Fin (min k.val m)) = b := Fin.ext hv
+    cases hi
+    rfl
+  exact eq_of_heq (hh.trans ht)
 
 /-- **The doomed variant of a state function.** Same verifier, same languages; the state is
 additionally *true* whenever the input statement already lies in the input language. All three
@@ -134,8 +128,7 @@ def StateFunction.doom {N : ℕ} {p : ProtocolSpec N} {StmtIn StmtOut : Type}
     (S : V.StateFunction init impl langIn langOut) :
     V.StateFunction init impl langIn langOut where
   toFun := fun k stmt tr => stmt ∈ langIn ∨ S.toFun k stmt tr
-  toFun_empty := fun stmt =>
-    ⟨Or.inl, fun h => h.elim (fun hmem => hmem) (fun hS => (S.toFun_empty stmt).mpr hS)⟩
+  toFun_empty := fun stmt h => h.elim (fun h => h) (S.toFun_empty stmt)
   toFun_next := fun k hdir stmt tr hneg msg => by
     rintro (hmem | hS)
     · exact hneg (Or.inl hmem)
@@ -152,10 +145,9 @@ theorem StateFunction.doom_toFun {N : ℕ} {p : ProtocolSpec N} {StmtIn StmtOut 
     (S.doom).toFun k stmt tr = (stmt ∈ langIn ∨ S.toFun k stmt tr) := rfl
 
 /-- **The doomed-escape composite state function**: the proven `StateFunction.append` applied to
-`S₁` and the doomed `S₂.doom`. On phase-1 rounds it is `S₁` on the truncation
-(`StateFunction.append_toFun_le`); on phase-2 rounds it is
-`verify stmt₁ tr.fst ∈ lang₂ ∨ S₂ (roundIdx - m) (verify stmt₁ tr.fst) tr.snd`
-(`StateFunction.append_toFun_gt` + `StateFunction.doom_toFun`). -/
+`S₁` and the doomed `S₂.doom`. Phase one reads `S₁` on the truncation. Phase two reads the
+completed `S₁` state, the seam-language escape clause, or the current `S₂` state. The historical
+`hInit` parameter remains in this compatibility interface; canonical append needs no such premise. -/
 noncomputable def StateFunction.appendDoomed
     (V₁ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     (S₁ : V₁.StateFunction init impl lang₁ lang₂) (S₂ : V₂.StateFunction init impl lang₂ lang₃)
@@ -163,7 +155,7 @@ noncomputable def StateFunction.appendDoomed
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
     (hInit : ∃ s, s ∈ support init) :
     (V₁.append V₂).StateFunction init impl lang₁ lang₃ :=
-  StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify hInit
+  StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify
 
 /-- **Phase-1 projection of the doomed composite** — inherited verbatim from
 `StateFunction.append_toFun_le`. -/
@@ -178,8 +170,9 @@ theorem StateFunction.appendDoomed_toFun_le
       = S₁.toFun ⟨roundIdx, by omega⟩ stmt₁ (by simpa [h] using transcript.fst) :=
   StateFunction.append_toFun_le V₁ V₂ S₁ (S₂.doom) verify hVerify hInit h stmt₁ transcript
 
-/-- **Phase-2 projection of the doomed composite**: the escape disjunction at the `verify`-fed
-seam statement — `StateFunction.append_toFun_gt` composed with `StateFunction.doom_toFun`. -/
+set_option backward.isDefEq.respectTransparency false in
+/-- Phase-two projection including the completed first-phase carry, seam-language escape,
+and current second-phase state. -/
 theorem StateFunction.appendDoomed_toFun_gt
     (V₁ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     (S₁ : V₁.StateFunction init impl lang₁ lang₂) (S₂ : V₂.StateFunction init impl lang₂ lang₃)
@@ -188,12 +181,17 @@ theorem StateFunction.appendDoomed_toFun_gt
     {roundIdx : Fin (m + n + 1)} (h : ¬ roundIdx.val ≤ m) (stmt₁ : Stmt₁)
     (transcript : (pSpec₁ ++ₚ pSpec₂).Transcript roundIdx) :
     (StateFunction.appendDoomed V₁ V₂ S₁ S₂ verify hVerify hInit).toFun roundIdx stmt₁ transcript
-      = (verify stmt₁ (by simp at h; simpa [min_eq_right_of_lt h] using transcript.fst) ∈ lang₂ ∨
-          S₂.toFun ⟨roundIdx - m, by omega⟩
-            (verify stmt₁ (by simp at h; simpa [min_eq_right_of_lt h] using transcript.fst))
-            (by simpa [h] using transcript.snd)) :=
-  StateFunction.append_toFun_gt V₁ V₂ S₁ (S₂.doom) verify hVerify hInit h stmt₁ transcript
+      = (let tr₁ : pSpec₁.FullTranscript := fun i =>
+           transcript.fst ⟨i.val, by simpa [min_eq_right_of_lt (show m < roundIdx.val by omega)] using i.isLt⟩
+         S₁.toFun (Fin.last m) stmt₁ tr₁ ∨
+           (verify stmt₁ tr₁ ∈ lang₂ ∨
+             S₂.toFun ⟨roundIdx - m, by omega⟩ (verify stmt₁ tr₁)
+               (by simpa [h] using transcript.snd))) := by
+  have hproj := StateFunction.append_toFun_gt_eq_or V₁ V₂ S₁ (S₂.doom) verify hVerify h stmt₁ transcript
+  simp only [StateFunction.doom_toFun] at hproj
+  convert hproj using 1 <;> rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Soundness-side phase-2 inner seam reconciliation, at the doomed composite.** The plain
 (witness-free) analogue of the proven `appendRbrKnowledgePhase2SeamReconcile_proof`: at a fixed
 Subsingleton state `s` and a realized `Prover.fst`-output `ctx`, the appended phase-2 inner game —
@@ -201,13 +199,13 @@ running `Prover.snd prover` from the realized seam state under the **combined** 
 prefixing the phase-2 transcript with the realized phase-1 transcript `ctx.1` via
 `Transcript.appendRight`, and reading the per-round flip event through the doomed composite
 `StateFunction.append … S₁ (S₂.doom)` — has the same event-probability as the inner `pSpec₂` snd
-game (over `pSpec₂`'s **own** challenge oracle), with the event read as the doomed disjunction
-`verify stmtIn ctx.1 ∈ lang₂ ∨ S₂ …` at the realized seam statement.
+game (over `pSpec₂`'s **own** challenge oracle), retaining the completed first-phase carry and
+the seam-language escape clause in its flip predicate.
 
 Ingredients (all previously proven): body recombination via `simulateQ_run'_bind_of_subsingleton`
 (read right-to-left) + `Prover.append_getChallenge_natAdd`; the right challenge-oracle-seam
 transfer `OracleReduction.evalDist_run'_challengeSeam_right`; and the gt-event collapse
-`StateFunction.append_toFun_gt` + `StateFunction.doom_toFun` under the `appendRight ctx.1` prefix
+`StateFunction.append_toFun_gt_eq_or` + `StateFunction.doom_toFun` under the `appendRight ctx.1` prefix
 (`appendRight_fst/snd`, `appendRight_concat_fst/snd`). -/
 theorem appendDoomed_phase2_seam_reconcile [Subsingleton σ]
     (V₁ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
@@ -221,12 +219,11 @@ theorem appendDoomed_phase2_seam_reconcile [Subsingleton σ]
     (i₂ : pSpec₂.ChallengeIdx) (s : σ)
     (ctx : pSpec₁.FullTranscript ×
       prover.PrvState (Fin.castLE (show m + 1 ≤ m + n + 1 by omega) (Fin.last m)) × Unit) :
-    Pr[fun x =>
-        ¬ (StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify hInit).toFun
+    probEvent (fun x =>
+        ¬ (StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify).toFun
             (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc stmtIn x.1 ∧
-          (StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify hInit).toFun
-            (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.succ stmtIn (x.1.concat x.2)
-      | ((do
+          (StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify).toFun
+            (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.succ stmtIn (x.1.concat x.2)) (((do
           let x ← (simulateQ (impl.addLift challengeQueryImpl
               : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
               (liftM ((Prover.snd prover).runToRound i₂.1.castSucc ctx.2.1 ctx.2.2))).run' s
@@ -240,13 +237,12 @@ theorem appendDoomed_phase2_seam_reconcile [Subsingleton σ]
               (pure (Transcript.appendRight ctx.1 x.1, x_1))).run' s) :
             ProbComp ((pSpec₁ ++ₚ pSpec₂).Transcript
               (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc
-                × (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)))]
-    = Pr[fun x =>
-          ¬ (verify stmtIn ctx.1 ∈ lang₂ ∨
+                × (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂))))
+    = probEvent (fun x =>
+          ¬ (S₁.toFun (Fin.last m) stmtIn ctx.1 ∨ verify stmtIn ctx.1 ∈ lang₂ ∨
               S₂.toFun i₂.1.castSucc (verify stmtIn ctx.1) x.1) ∧
-            (verify stmtIn ctx.1 ∈ lang₂ ∨
-              S₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2))
-        | (simulateQ (impl.addLift challengeQueryImpl
+            (S₁.toFun (Fin.last m) stmtIn ctx.1 ∨ verify stmtIn ctx.1 ∈ lang₂ ∨
+              S₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2))) ((simulateQ (impl.addLift challengeQueryImpl
               : QueryImpl (oSpec + [pSpec₂.Challenge]ₒ) (StateT σ ProbComp))
             (do
               let ⟨transcript, _⟩ ← ((Prover.snd prover).runToRound i₂.1.castSucc ctx.2.1 ()
@@ -254,7 +250,7 @@ theorem appendDoomed_phase2_seam_reconcile [Subsingleton σ]
                     (pSpec₂.Transcript i₂.1.castSucc × (Prover.snd prover).PrvState i₂.1.castSucc))
               let challenge ← liftComp (pSpec₂.getChallenge i₂)
                 (oSpec + [pSpec₂.Challenge]ₒ)
-              return (transcript, challenge))).run' s] := by
+              return (transcript, challenge))).run' s) := by
   classical
   have hn : 0 < n := Fin.pos_iff_nonempty.mpr ⟨i₂.1⟩
   have hpos : 0 < ((i₂.1 : Fin n) : ℕ) :=
@@ -263,9 +259,9 @@ theorem appendDoomed_phase2_seam_reconcile [Subsingleton σ]
   set E : (pSpec₁ ++ₚ pSpec₂).Transcript (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc
       × (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂) → Prop :=
     fun x =>
-      ¬ (StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify hInit).toFun
+      ¬ (StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify).toFun
           (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc stmtIn x.1 ∧
-        (StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify hInit).toFun
+        (StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify).toFun
           (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.succ stmtIn (x.1.concat x.2)
     with hEdef
   -- The recombined LHS body (combined oracle).
@@ -278,17 +274,16 @@ theorem appendDoomed_phase2_seam_reconcile [Subsingleton σ]
         ((pSpec₁ ++ₚ pSpec₂).getChallenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂))
         (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
       pure (Transcript.appendRight ctx.1 x.1, x_1)) with hBODY
-  show Pr[E | _] = _
+  show probEvent (E) (_) = _
   -- Reduce the goal's 3-block computation to `(simulateQ impl BODY).run' s` via the subsingleton
   -- split.
-  suffices hkey : Pr[E | (simulateQ (impl.addLift challengeQueryImpl
-        : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp)) BODY).run' s]
-      = Pr[fun x =>
-          ¬ (verify stmtIn ctx.1 ∈ lang₂ ∨
+  suffices hkey : probEvent (E) ((simulateQ (impl.addLift challengeQueryImpl
+        : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp)) BODY).run' s)
+      = probEvent (fun x =>
+          ¬ (S₁.toFun (Fin.last m) stmtIn ctx.1 ∨ verify stmtIn ctx.1 ∈ lang₂ ∨
               S₂.toFun i₂.1.castSucc (verify stmtIn ctx.1) x.1) ∧
-            (verify stmtIn ctx.1 ∈ lang₂ ∨
-              S₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2))
-        | (simulateQ (impl.addLift challengeQueryImpl
+            (S₁.toFun (Fin.last m) stmtIn ctx.1 ∨ verify stmtIn ctx.1 ∈ lang₂ ∨
+              S₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2))) ((simulateQ (impl.addLift challengeQueryImpl
               : QueryImpl (oSpec + [pSpec₂.Challenge]ₒ) (StateT σ ProbComp))
             (do
               let ⟨transcript, _⟩ ← ((Prover.snd prover).runToRound i₂.1.castSucc ctx.2.1 ()
@@ -296,7 +291,7 @@ theorem appendDoomed_phase2_seam_reconcile [Subsingleton σ]
                     (pSpec₂.Transcript i₂.1.castSucc × (Prover.snd prover).PrvState i₂.1.castSucc))
               let challenge ← liftComp (pSpec₂.getChallenge i₂)
                 (oSpec + [pSpec₂.Challenge]ₒ)
-              return (transcript, challenge))).run' s] by
+              return (transcript, challenge))).run' s) by
     simpa only [hBODY, simulateQ_run'_bind_of_subsingleton] using hkey
   -- The challenge value-type equality at the phase-2 index.
   have hChTy : (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)
@@ -365,10 +360,12 @@ theorem appendDoomed_phase2_seam_reconcile [Subsingleton σ]
       OracleComp.liftComp_eq_liftM _]
   have hseam := OracleReduction.evalDist_run'_challengeSeam_right (pSpec₁ := pSpec₁)
     (impl := impl) INNER s
-  rw [probEvent_congr_heq rfl _
+  have hEvent := probEvent_congr_heq rfl _
     ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂))
-      : QueryImpl _ (StateT σ ProbComp)) INNER).run' s) E E (heq_of_eq hseam) (fun x => Iff.rfl)]
-  -- STEP C: `INNER = wrap <$> RHSbody`; push the map out and collapse via `probEvent_map`.
+      : QueryImpl _ (StateT σ ProbComp)) INNER).run' s) E E (heq_of_eq hseam) (fun x => Iff.rfl)
+  change probEvent _ _ = probEvent _ _ at hEvent
+  rw [hEvent]
+  -- STEP C: `INNER = wrap <$> RHSbody`; push the map out via native `prEvent_map`.
   set RHSbody : OracleComp (oSpec + [pSpec₂.Challenge]ₒ)
       (pSpec₂.Transcript i₂.1.castSucc × pSpec₂.Challenge i₂) :=
     (do
@@ -393,10 +390,10 @@ theorem appendDoomed_phase2_seam_reconcile [Subsingleton σ]
         = wrap <$> (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂))
           : QueryImpl _ (StateT σ ProbComp)) RHSbody).run' s from by
       simp only [simulateQ_map, StateT.run'_eq, StateT.run_map, Functor.map_map]]
-  rw [probEvent_map]
+  simp only [probEvent, prEvent_map]
   -- STEP D: the event correspondence `E ∘ wrap = E_inner` (pointwise).
-  refine congrArg (fun p => Pr[p | (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂))
-      : QueryImpl _ (StateT σ ProbComp)) RHSbody).run' s]) ?_
+  refine congrArg (fun p => probEvent (p) ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂))
+      : QueryImpl _ (StateT σ ProbComp)) RHSbody).run' s)) ?_
   funext x
   apply propext
   -- Notation: `trW := appendRight ctx.1 x.1`, the wrapped combined transcript; `chW := cast .. x.2`.
@@ -422,7 +419,7 @@ theorem appendDoomed_phase2_seam_reconcile [Subsingleton σ]
   -- `chW` is the cast of the pSpec₂ message `x.2`; rewrite to the `append_Type_natAdd` cast form
   -- used by the `appendRight_concat` bricks.
   have hchW_eq : chW = cast (append_Type_natAdd i₂.1).symm x.2 := by
-    rw [hchW]; rfl
+    rw [hchW]
   -- The concat'd transcript projections.
   have hconcat_fst : HEq (Transcript.fst (Transcript.concat chW trW)) ctx.1 := by
     rw [htrW, hchW_eq]
@@ -442,63 +439,59 @@ theorem appendDoomed_phase2_seam_reconcile [Subsingleton σ]
     apply Fin.ext
     show ((ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.succ : ℕ) - m = (i₂.1.succ : ℕ)
     rw [Fin.val_succ, Fin.val_succ, hval]; omega
-  -- The two flip-event legs collapse to the doomed disjunction at the realized seam statement.
+  have hfullBefore := fullPrefix_eq_of_heq (by omega) trW ctx.1 htrW_fst
+  have hfullAfter := fullPrefix_eq_of_heq (by omega) (trW.concat chW) ctx.1 hconcat_fst
   refine iff_of_eq (congrArg₂ (fun A B => ¬ A ∧ B) ?_ ?_)
-  · rw [StateFunction.append_toFun_gt V₁ V₂ S₁ (S₂.doom) verify hVerify hInit hcs_gt,
-      StateFunction.doom_toFun]
-    exact congrArg₂ Or
-      (congrArg (· ∈ lang₂)
-        (congrArg (verify stmtIn) (eq_of_heq ((cast_heq _ _).trans htrW_fst))))
-      (sToFun_congr_stmt S₂.toFun hidxcs
-        (congrArg (verify stmtIn) (eq_of_heq ((cast_heq _ _).trans htrW_fst)))
-        (HEq.trans HEq.rfl htrW_snd))
-  · rw [StateFunction.append_toFun_gt V₁ V₂ S₁ (S₂.doom) verify hVerify hInit hsu_gt,
-      StateFunction.doom_toFun]
-    exact congrArg₂ Or
-      (congrArg (· ∈ lang₂)
-        (congrArg (verify stmtIn) (eq_of_heq ((cast_heq _ _).trans hconcat_fst))))
-      (sToFun_congr_stmt S₂.toFun hidxsu
-        (congrArg (verify stmtIn) (eq_of_heq ((cast_heq _ _).trans hconcat_fst)))
-        (HEq.trans HEq.rfl hconcat_snd))
+  · rw [StateFunction.append_toFun_gt_eq_or V₁ V₂ S₁ (S₂.doom) verify hVerify hcs_gt]
+    dsimp only [StateFunction.doom]
+    exact congrArg₂ Or (congrArg (S₁.toFun (Fin.last m) stmtIn) hfullBefore)
+      (congrArg₂ Or (congrArg (· ∈ lang₂) (congrArg (verify stmtIn) hfullBefore))
+        (sToFun_congr_stmt S₂.toFun hidxcs (congrArg (verify stmtIn) hfullBefore)
+          (HEq.trans HEq.rfl htrW_snd)))
+  · rw [StateFunction.append_toFun_gt_eq_or V₁ V₂ S₁ (S₂.doom) verify hVerify hsu_gt]
+    dsimp only [StateFunction.doom]
+    exact congrArg₂ Or (congrArg (S₁.toFun (Fin.last m) stmtIn) hfullAfter)
+      (congrArg₂ Or (congrArg (· ∈ lang₂) (congrArg (verify stmtIn) hfullAfter))
+        (sToFun_congr_stmt S₂.toFun hidxsu (congrArg (verify stmtIn) hfullAfter)
+          (HEq.trans HEq.rfl hconcat_snd)))
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Discharge of the phase-2 per-round soundness residual at the doomed composite, under
 `Subsingleton σ` (stateless / transparent-oracle regime) and a prover-message seam.**
 
 This proves `appendRbrSoundnessPhase2Residual V₁ V₂ S₁ (S₂.doom) …` — the phase-2 residual of
 `append_rbrSoundness_keystone` *instantiated at the doomed second state function* `S₂.doom` — from
-the inner per-round bound `hS₂` for `S₂` alone.  The doomed escape disjunct is exactly what makes
-this provable where the same residual at the plain `S₂` is not: after seam-factoring
+the inner per-round bound `hS₂` for `S₂` alone. The doomed escape disjunct confines all flip
+mass to out-of-language seam inputs. After seam-factoring
 (`phase2_body_heq`), Subsingleton-splitting (`simulateQ_run'_bind_of_subsingleton`), conditioning
 on the realized phase-1 output `ctx`, and reconciling the inner game across the right
 challenge-oracle seam (`appendDoomed_phase2_seam_reconcile`), the per-realization bound cases on
-the seam statement `verify stmtIn ctx.1 ∈ lang₂`:
+the fixed completed carry or seam-language disjunction:
 
-* **in-language**: the doomed flip event is *pointwise false* (the escape disjunct holds at the
-  `castSucc` round, contradicting its negation), so the conditional probability is `0`;
-* **out-of-language**: the escape disjuncts are false and the doomed event *is* `S₂`'s flip event
-  at the seam statement, which `hS₂` (applied to the amnesiac re-injection prover
-  `Prover.sndAmnesiac`, with the `init`-average collapsed to the fixed Subsingleton state via
-  `probEvent_bind_of_const` + `hInitNF`) bounds by `rbrSoundnessError₂ i₂`. -/
+* If either the completed `S₁` state or seam-language escape holds, the doomed flip is
+  pointwise false and its conditional probability is zero.
+* Otherwise the event is exactly `S₂`'s flip at an out-of-language seam statement. Apply
+  `hS₂` to `Prover.sndAmnesiac` and remove the constant initial-state bind using native
+  `OracleComp.prEvent_bind_const`. The historical `hInitNF` parameter remains available. -/
 theorem appendRbrSoundnessPhase2_doomed_subsingleton [Subsingleton σ]
     (V₁ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     (S₁ : V₁.StateFunction init impl lang₁ lang₂) (S₂ : V₂.StateFunction init impl lang₂ lang₃)
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : probFailure init = 0)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
     {rbrSoundnessError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (hS₂ : ∀ stmtIn ∉ lang₂, ∀ WitIn WitOut : Type, ∀ witIn : WitIn,
       ∀ prover : Prover oSpec Stmt₂ WitIn Stmt₃ WitOut pSpec₂, ∀ i : pSpec₂.ChallengeIdx,
-        Pr[fun ⟨transcript, challenge⟩ =>
-          ¬ S₂ i.1.castSucc stmtIn transcript ∧ S₂ i.1.succ stmtIn (transcript.concat challenge)
-        | do
+        probEvent (fun ⟨transcript, challenge⟩ =>
+          ¬ S₂ i.1.castSucc stmtIn transcript ∧ S₂ i.1.succ stmtIn (transcript.concat challenge)) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨transcript, _⟩ ← prover.runToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec₂.getChallenge i) _
-              return (transcript, challenge))).run' (← init)] ≤ rbrSoundnessError₂ i) :
+              return (transcript, challenge))).run' (← init)) ≤ rbrSoundnessError₂ i) :
     appendRbrSoundnessPhase2Residual (init := init) (impl := impl) V₁ V₂ S₁ (S₂.doom)
       verify hVerify hInit (rbrSoundnessError₂ := rbrSoundnessError₂) := by
   intro stmtIn hStmtIn WitIn WitOut witIn prover i₂
@@ -508,9 +501,9 @@ theorem appendRbrSoundnessPhase2_doomed_subsingleton [Subsingleton σ]
   set E : (pSpec₁ ++ₚ pSpec₂).Transcript (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc
       × (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂) → Prop :=
     fun x =>
-      ¬ (StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify hInit).toFun
+      ¬ (StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify).toFun
           (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc stmtIn x.1 ∧
-        (StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify hInit).toFun
+        (StateFunction.append init impl V₁ V₂ S₁ (S₂.doom) verify hVerify).toFun
           (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.succ stmtIn (x.1.concat x.2) with hE
   -- The seam index identity and the induced transcript value-type equality.
   have hidx : (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc
@@ -559,48 +552,48 @@ theorem appendRbrSoundnessPhase2_doomed_subsingleton [Subsingleton σ]
     refine Prover.bind_heq_congr rfl hResTy HEq.rfl (fun s s' hs => ?_)
     cases eq_of_heq hs
     exact heq_simrun s hResTy _ _ hbody
-  rw [probEvent_congr_heq hResTy _ _ E (fun x => E (hResTy ▸ x)) hd (fun x => Iff.rfl)]
+  have hGame := probEvent_congr_heq hResTy _ _ E (fun x => E (hResTy ▸ x)) hd (fun x => Iff.rfl)
+  change probEvent _ _ = probEvent _ _ at hGame
+  rw [hGame]
   -- STEP 2: bound the seam-factored game via the Subsingleton bind split.
   simp only [simulateQ_run'_bind_of_subsingleton]
-  refine probEvent_bind_le_of_forall_le (fun s _hs => ?_)
-  refine probEvent_bind_le_of_forall_le (fun ctx hctx => ?_)
+  refine prEvent_bind_le_of_forall_le_of_support _ _ _ (fun s _hs => ?_)
+  refine prEvent_bind_le_of_forall_le_of_support _ _ _ (fun ctx hctx => ?_)
   -- Reconcile the appended inner game with the inner `pSpec₂` snd game at the doomed event.
   refine le_trans (le_of_eq (appendDoomed_phase2_seam_reconcile V₁ V₂ S₁ S₂ verify hVerify hInit
     (fun _ => hDir₂) stmtIn prover i₂ s ctx)) ?_
-  -- Case on the realized seam statement's membership in `lang₂`.
-  by_cases hmem : verify stmtIn ctx.1 ∈ lang₂
-  · -- In-language: the doomed flip event is pointwise false (the escape disjunct holds at
-    -- `castSucc`, contradicting the negation), so the probability is `0`.
-    refine le_trans (le_of_eq ?_) (zero_le _)
-    rw [probEvent_eq_zero_iff]
+  -- Either completed carry or seam-language membership makes the flip impossible.
+  by_cases hmem : S₁.toFun (Fin.last m) stmtIn ctx.1 ∨ verify stmtIn ctx.1 ∈ lang₂
+  · -- A fixed disjunct already holds before the challenge, so the flip event is false.
+    refine le_trans (le_of_eq ?_) (by exact bot_le)
+    apply (OracleComp.prEvent_eq_zero_iff _ _).2
     rintro x _ ⟨hneg, _⟩
-    exact hneg (Or.inl hmem)
-  · -- Out-of-language: the escape disjuncts are false, so the doomed event is `S₂`'s flip event at
+    exact hneg (hmem.elim Or.inl (fun h => Or.inr (Or.inl h)))
+  · -- Both fixed disjuncts are false, so the doomed event is `S₂`'s flip event at
     -- the seam statement; apply the inner per-round bound `hS₂` to the amnesiac re-injection
     -- prover, collapsing the `init`-average to the fixed Subsingleton state `s`.
-    have hb := hS₂ (verify stmtIn ctx.1) hmem Unit WitOut ()
+    have hb := hS₂ (verify stmtIn ctx.1) (fun h => hmem (Or.inr h)) Unit WitOut ()
       (Prover.sndAmnesiac prover ctx.2.1) i₂
     simp only [Prover.sndAmnesiac_runToRound] at hb
-    rw [probEvent_bind_of_const init
-        (r := Pr[fun (x : pSpec₂.Transcript i₂.1.castSucc × pSpec₂.Challenge i₂) =>
-              ¬ S₂.toFun i₂.1.castSucc (verify stmtIn ctx.1) x.1 ∧
-                S₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2)
-          | (simulateQ (impl.addLift challengeQueryImpl
-              : QueryImpl (oSpec + [pSpec₂.Challenge]ₒ) (StateT σ ProbComp))
-              (do
-                let ⟨transcript, _⟩ ← (Prover.snd prover).runToRound i₂.1.castSucc ctx.2.1 ()
-                let challenge ← liftComp (pSpec₂.getChallenge i₂) _
-                return (transcript, challenge))).run' s])
-        (fun s' _ => by rw [Subsingleton.elim s' s]; rfl),
-        hInitNF] at hb
-    simp only [tsub_zero, one_mul] at hb
+    conv_lhs at hb =>
+      arg 2
+      arg 2
+      intro s'
+      rw [Subsingleton.elim s' s]
+    simp only [probEvent, map_bind] at hb
+    rw [OracleComp.prEvent_bind_const] at hb
     refine le_trans (le_of_eq ?_) hb
-    refine probEvent_ext (fun x _ => ?_)
+    apply congrArg₂ (fun P mx => probEvent P mx) ?_ rfl
+    funext x
+    apply propext
     constructor
     · rintro ⟨hneg, hpos'⟩
-      exact ⟨fun h2 => hneg (Or.inr h2), hpos'.resolve_left hmem⟩
+      exact ⟨fun h2 => hneg (Or.inr (Or.inr h2)),
+        (hpos'.resolve_left (fun h => hmem (Or.inl h))).resolve_left
+          (fun h => hmem (Or.inr h))⟩
     · rintro ⟨hneg, hpos'⟩
-      exact ⟨fun h2 => h2.elim hmem hneg, Or.inr hpos'⟩
+      exact ⟨fun h2 => h2.elim (fun h => hmem (Or.inl h))
+        (fun h => h.elim (fun h => hmem (Or.inr h)) hneg), Or.inr (Or.inr hpos')⟩
 
 /-- **Round-by-round soundness append keystone, `Subsingleton σ` message-seam case —
 UNCONDITIONAL.** From the two components' `rbrSoundness` (`h₁`/`h₂`) alone — plus the standard
@@ -616,7 +609,7 @@ theorem append_rbrSoundness_keystone_subsingleton_unconditional [Subsingleton σ
     {rbrSoundnessError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : probFailure init = 0)
     (hNE : Nonempty Stmt₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
@@ -642,7 +635,7 @@ theorem appendRbrSoundnessResidual_msg_subsingleton [Subsingleton σ]
     {rbrSoundnessError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : probFailure init = 0)
     (hNE : Nonempty Stmt₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)

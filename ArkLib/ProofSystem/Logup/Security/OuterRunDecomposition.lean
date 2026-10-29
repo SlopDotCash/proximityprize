@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.ProofSystem.Logup.Security.MarginalBridgeProof
+import ProximityPrize.Compatibility.ReductionRunNormalForm
+import ArkLib.OracleReduction.RunUnroll
+import ArkLib.OracleReduction.ProcessRoundSupport
 import ArkLib.ProofSystem.Logup.Protocol
 
 /-!
@@ -474,14 +476,13 @@ theorem probEvent_outerGame_eq_xChallenge_bind
       (outerPSpec F n params))
     (stmtIn : StmtIn F n M × ∀ i, OStmtIn F n M i) (witIn : WitIn)
     (p : OuterGameResult F n M params WitOut → Prop) :
-    Pr[p | (OptionT.mk (do
+    Pr{let eventOutput ← ((OptionT.mk (do
         (simulateQ (impl.addLift challengeQueryImpl :
             QueryImpl (oSpec + [(outerPSpec F n params).Challenge]ₒ) (StateT σ ProbComp))
           ((Reduction.mk P (outerVerifier oSpec F n M params).toVerifier).run
             stmtIn witIn).run).run' (← init)) :
-        OptionT ProbComp (OuterGameResult F n M params WitOut))]
-      = Pr[fun o => Option.elim o False p |
-          (init >>= fun s =>
+        OptionT ProbComp (OuterGameResult F n M params WitOut)))}[(p) eventOutput]
+      = Pr{let o ← ((init >>= fun s =>
             (simulateQ (impl.addLift challengeQueryImpl :
                 QueryImpl (oSpec + [(outerPSpec F n params).Challenge]ₒ) (StateT σ ProbComp))
               (P.runToRound (outerXChallengeIdx F n params).1.castSucc stmtIn witIn)).run s)
@@ -490,7 +491,8 @@ theorem probEvent_outerGame_eq_xChallenge_bind
               (simulateQ (impl.addLift challengeQueryImpl :
                   QueryImpl (oSpec + [(outerPSpec F n params).Challenge]ₒ) (StateT σ ProbComp))
                 (challengeTail P (outerVerifier oSpec F n M params).toVerifier stmtIn witIn
-                  (outerXChallengeIdx F n params) rk.1 c)).run' rk.2] := by
+                  (outerXChallengeIdx F n params) rk.1 c)).run' rk.2)}[Option.elim o False p] := by
+  change probEvent p (OptionT.mk _) = _
   rw [OptionTStateT.probEvent_optionT_mk,
     outerGame_eq_xChallenge_bind init impl P stmtIn witIn]
 
@@ -504,14 +506,13 @@ theorem probEvent_outerGame_eq_double_challenge_bind
       (outerPSpec F n params))
     (stmtIn : StmtIn F n M × ∀ i, OStmtIn F n M i) (witIn : WitIn)
     (p : OuterGameResult F n M params WitOut → Prop) :
-    Pr[p | (OptionT.mk (do
+    Pr{let eventOutput ← ((OptionT.mk (do
         (simulateQ (impl.addLift challengeQueryImpl :
             QueryImpl (oSpec + [(outerPSpec F n params).Challenge]ₒ) (StateT σ ProbComp))
           ((Reduction.mk P (outerVerifier oSpec F n M params).toVerifier).run
             stmtIn witIn).run).run' (← init)) :
-        OptionT ProbComp (OuterGameResult F n M params WitOut))]
-      = Pr[fun o => Option.elim o False p |
-          (init >>= fun s =>
+        OptionT ProbComp (OuterGameResult F n M params WitOut)))}[(p) eventOutput]
+      = Pr{let o ← ((init >>= fun s =>
             (simulateQ (impl.addLift challengeQueryImpl :
                 QueryImpl (oSpec + [(outerPSpec F n params).Challenge]ₒ) (StateT σ ProbComp))
               (P.runToRound (outerXChallengeIdx F n params).1.castSucc stmtIn witIn)).run s)
@@ -527,7 +528,8 @@ theorem probEvent_outerGame_eq_double_challenge_bind
                       QueryImpl (oSpec + [(outerPSpec F n params).Challenge]ₒ)
                         (StateT σ ProbComp))
                     (challengeTail P (outerVerifier oSpec F n M params).toVerifier stmtIn witIn
-                      (outerBatchChallengeIdx F n params) rl.1 b)).run' rl.2] := by
+                      (outerBatchChallengeIdx F n params) rl.1 b)).run' rl.2)}[Option.elim o False p] := by
+  change probEvent p (OptionT.mk _) = _
   rw [OptionTStateT.probEvent_optionT_mk,
     outerGame_eq_double_challenge_bind init impl P stmtIn witIn]
 
@@ -535,3 +537,8 @@ end OuterRunDecomposition
 
 end Logup
 
+
+#print axioms Verifier.game_eq_challenge_bind
+#print axioms Verifier.run'_simulateQ_challengeTail_eq_challenge_bind
+#print axioms Logup.outerGame_eq_double_challenge_bind
+#print axioms Logup.probEvent_outerGame_eq_double_challenge_bind

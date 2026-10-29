@@ -101,17 +101,16 @@ theorem appendRbrKnowledgePhase2SeamReconcile_proof [Subsingleton σ]
         ((pSpec₁ ++ₚ pSpec₂).getChallenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂))
         (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
       pure (Transcript.appendRight ctx.1 x.1, x_1)) with hBODY
-  show Pr[E | _] = _
+  show probEvent (E) (_) = _
   -- Reduce the goal's 3-block computation to `(simulateQ impl BODY).run' s` via the subsingleton
   -- split.
-  suffices hkey : Pr[E | (simulateQ (impl.addLift challengeQueryImpl
-        : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp)) BODY).run' s]
-      = Pr[fun x =>
+  suffices hkey : probEvent (E) ((simulateQ (impl.addLift challengeQueryImpl
+        : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp)) BODY).run' s)
+      = probEvent (fun x =>
           ∃ witMid,
             ¬ kSF₂.toFun i₂.1.castSucc (verify stmtIn ctx.1) x.1
               (E₂.extractMid i₂.1 (verify stmtIn ctx.1) (x.1.concat x.2) witMid) ∧
-              kSF₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2) witMid
-        | (simulateQ (impl.addLift challengeQueryImpl
+              kSF₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2) witMid) ((simulateQ (impl.addLift challengeQueryImpl
               : QueryImpl (oSpec + [pSpec₂.Challenge]ₒ) (StateT σ ProbComp))
             (do
               let ⟨transcript, _⟩ ← ((Prover.snd prover).runToRound i₂.1.castSucc ctx.2.1 ()
@@ -119,8 +118,9 @@ theorem appendRbrKnowledgePhase2SeamReconcile_proof [Subsingleton σ]
                     (pSpec₂.Transcript i₂.1.castSucc × (Prover.snd prover).PrvState i₂.1.castSucc))
               let challenge ← liftComp (pSpec₂.getChallenge i₂)
                 (oSpec + [pSpec₂.Challenge]ₒ)
-              return (transcript, challenge))).run' s] by
-    simpa only [hBODY, simulateQ_run'_bind_of_subsingleton] using hkey
+              return (transcript, challenge))).run' s) by
+    convert hkey using 1 <;>
+      simp only [hBODY, simulateQ_run'_bind_of_subsingleton] <;> rfl
   -- The challenge value-type equality at the phase-2 index.
   have hChTy : (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)
       = pSpec₂.Challenge i₂ := by
@@ -188,9 +188,11 @@ theorem appendRbrKnowledgePhase2SeamReconcile_proof [Subsingleton σ]
       OracleComp.liftComp_eq_liftM _]
   have hseam := OracleReduction.evalDist_run'_challengeSeam_right (pSpec₁ := pSpec₁)
     (impl := impl) INNER s
-  rw [probEvent_congr_heq rfl _
+  have hEvent := probEvent_congr_heq rfl _
     ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂))
-      : QueryImpl _ (StateT σ ProbComp)) INNER).run' s) E E (heq_of_eq hseam) (fun x => Iff.rfl)]
+      : QueryImpl _ (StateT σ ProbComp)) INNER).run' s) E E (heq_of_eq hseam) (fun x => Iff.rfl)
+  change probEvent _ _ = probEvent _ _ at hEvent
+  rw [hEvent]
   -- STEP C: `INNER = wrap <$> RHSbody`; push the map out and collapse via `probEvent_map`.
   set RHSbody : OracleComp (oSpec + [pSpec₂.Challenge]ₒ)
       (pSpec₂.Transcript i₂.1.castSucc × pSpec₂.Challenge i₂) :=
@@ -216,10 +218,10 @@ theorem appendRbrKnowledgePhase2SeamReconcile_proof [Subsingleton σ]
         = wrap <$> (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂))
           : QueryImpl _ (StateT σ ProbComp)) RHSbody).run' s from by
       simp only [simulateQ_map, StateT.run'_eq, StateT.run_map, Functor.map_map]]
-  rw [probEvent_map]
+  simp only [probEvent, prEvent_map]
   -- STEP D: the event correspondence `E ∘ wrap = E_inner` (pointwise).
-  refine congrArg (fun p => Pr[p | (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂))
-      : QueryImpl _ (StateT σ ProbComp)) RHSbody).run' s]) ?_
+  refine congrArg (fun p => probEvent (p) ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂))
+      : QueryImpl _ (StateT σ ProbComp)) RHSbody).run' s)) ?_
   funext x
   apply propext
   -- Notation: `trW := appendRight ctx.1 x.1`, the wrapped combined transcript; `chW := cast .. x.2`.
@@ -353,7 +355,7 @@ theorem append_rbrKnowledgeSoundness_keystone_subsingleton_unconditional [Subsin
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty Stmt₂) (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)

@@ -4,8 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Poulami Das (Least Authority), Alexander Hicks
 -/
 
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.CodingTheory.ListDecodability
+import ArkLib.Data.CodingTheory.Basic.BlockRelDistance
+
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 
 /-!
 # Block Relative Distance for smooth Reed-Solomon Codes
@@ -32,7 +34,7 @@ The definitions from Section 4.3.1 correspond to i = 0.
 
 -/
 
-namespace BlockRelDistance
+namespace BlockRelDistance.Generic
 
 open ListDecodable NNReal ReedSolomon
 
@@ -322,11 +324,11 @@ lemma relHammingDist_le_blockRelDistance
     rw [hhdef, hppdef, hddef]; exact_mod_cast hcount
   -- `hh / (pp * cc) = (hh / pp) / cc ≤ dd / cc`.
   rw [← div_div]
-  rcases eq_or_lt_of_le (zero_le cc) with hcc | hcc
+  rcases eq_or_lt_of_le (by positivity : 0 ≤ cc) with hcc | hcc
   · -- `cc = 0`: both sides are `_ / 0 = 0`.
     simp [← hcc]
   · rw [div_le_div_iff_of_pos_right hcc]
-    exact div_le_of_le_mul₀ (zero_le pp) (zero_le dd) (by rwa [mul_comm] at hcount')
+    exact div_le_of_le_mul₀ (by positivity : 0 ≤ pp) (by positivity : 0 ≤ dd) (by rwa [mul_comm] at hcount')
 
 omit [Pow ι ℕ] in
 /-- Claim 4.19, Part 2
@@ -363,4 +365,4 @@ lemma listBlock_subset_listHamming
   exact_mod_cast h3
 
 
-end BlockRelDistance
+end BlockRelDistance.Generic

@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.JointAgreement
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ErrorBound
+import ProximityPrize.Compatibility.UniformProbability
 
 /-!
 # Correlated agreement for parameterized curves — unique-decoding regime
@@ -38,7 +39,7 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 regime** ([BCIKS20] Theorem 6.1 / the UDR case of Theorem 1.5): curves analogue
 of `RS_correlatedAgreement_affineLines_uniqueDecodingRegime`. -/
 theorem RS_correlatedAgreement_curves_uniqueDecodingRegime {k deg : ℕ}
-    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] (hk : 0 < k)
+    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F] (hk : 0 < k)
     (hδ : δ ≤ relativeUniqueDecodingRadius (ι := ι) (F := F)
       (C := ReedSolomon.code domain deg)) :
     δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)
@@ -46,6 +47,7 @@ theorem RS_correlatedAgreement_curves_uniqueDecodingRegime {k deg : ℕ}
   classical
   unfold δ_ε_correlatedAgreementCurves
   intro u hprob
+  rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native] at hprob
   have hkε : (k : ℝ≥0) * errorBound δ deg domain
       = ((k * Fintype.card ι : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0) := by
     rw [errorBound_eq_n_div_q_of_le_relUDR (deg := deg) (domain := domain) (δ := δ) hδ]
@@ -73,16 +75,18 @@ theorem RS_correlatedAgreement_curves_uniqueDecodingRegime {k deg : ℕ}
 constant word `u 0`, so any positive probability of closeness gives the plain
 closeness fact, and joint agreement follows from unique decoding. -/
 theorem RS_correlatedAgreement_curves_k_zero {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
-    [NeZero deg] :
+    [NeZero deg] [SampleableType F] :
     δ_ε_correlatedAgreementCurves (k := 0) (A := F) (F := F) (ι := ι)
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) := by
   classical
   unfold δ_ε_correlatedAgreementCurves
   intro u hprob
+  rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native] at hprob
   -- the curve is constant: ∑ t : Fin 1, r^t • u t = u 0
   have hconst : ∀ r : F, (∑ t : Fin (0 + 1), (r ^ (t : ℕ)) • u t) = u 0 := by
     intro r
-    simp
+    rw [Fin.sum_univ_one]
+    simp only [Fin.val_zero, pow_zero, one_smul]
   -- positive probability ⇒ nonempty good set (bridge at k = 0) ⇒ the constant fact
   have hS := card_RS_goodCoeffsCurve_gt_of_prob_gt_kn_div_q (k := 0) (deg := deg)
     (domain := domain) (δ := δ) u (by simpa using hprob)
@@ -91,10 +95,8 @@ theorem RS_correlatedAgreement_curves_k_zero {deg : ℕ} {domain : ι ↪ F} {δ
       rw [← Finset.card_pos]
       omega
     obtain ⟨z, hz⟩ := hne
-    have hz' := hz
-    simp only [RS_goodCoeffsCurve] at hz'
-    by_contra hp
-    simp [hp] at hz'
+    have hz' := (Finset.mem_filter.mp hz).2
+    simpa only [hconst] using hz'
   -- unique-decode and collect the agreement set
   set e : ℕ := Nat.floor (δ * Fintype.card ι) with he
   have hdist : Δ₀(u 0, (ReedSolomon.code domain deg : Set (ι → F))) ≤ (e : ℕ∞) := by
@@ -156,6 +158,7 @@ theorem proximity_gap_uniqueDecodingRegime {k deg : ℕ}
       ∀ i : Fin (k + 1), ∃ u : ι → F,
         u ∈ (ReedSolomon.code domain deg : Set (ι → F)) ∧ ∀ x ∈ S, f i x = u x := by
   classical
+  let : SampleableType F := SampleableType.ofFintype F
   -- Instantiate the curves keystone (proven UDR branch of `correlatedAgreement_affine_curves`):
   -- the `k = 0` corner and the `k > 0` case both land in the unique-decoding regime here.
   have keystone : δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)
@@ -165,7 +168,9 @@ theorem proximity_gap_uniqueDecodingRegime {k deg : ℕ}
     · exact RS_correlatedAgreement_curves_uniqueDecodingRegime hkpos hδ
   -- Feed the probability hypothesis through the keystone (same shape as Combine.lean:599+).
   simp only [δ_ε_correlatedAgreementCurves] at keystone
-  have hja := keystone f (by exact_mod_cast hProb)
+  have hja := keystone f (by
+    rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native]
+    exact_mod_cast hProb)
   -- Destructure `jointAgreement` into the witness-extraction form.
   simp only [jointAgreement, ge_iff_le, SetLike.mem_coe] at hja
   obtain ⟨S, hS_card, v, hv⟩ := hja

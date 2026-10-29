@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Data.Finset.Max
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
@@ -104,7 +104,9 @@ where `C = ReedSolomon.code domain deg`. `epsCA_curves C k δ δ` is the worst-c
 that a random poly-curve point `∑ rⁱ•uᵢ` is δ-close to `C` while the stack `u` is NOT jointly
 δ-close — i.e. the per-round proximity-gap quantity. PROVEN by feeding the keystone's predicate
 output through the in-tree numeric bridge
-`δ_ε_correlatedAgreementCurves_iff_epsCA_curves_le`. -/
+`δ_ε_correlatedAgreementCurves_iff_epsCA_curves_le`.
+The legacy `hStrictCoeff` parameter is retained for compatibility but unused: canonical
+strict-open soundness supplies its branch. The closed-boundary premise remains explicit. -/
 theorem keystone_curves_bound {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
     (hStrictCoeff :
       StrictCoeffPolysResidual (k := k) (deg := deg) (domain := domain) (δ := δ))
@@ -113,10 +115,11 @@ theorem keystone_curves_bound {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain) :
     epsCA_curves (F := F) (ReedSolomon.code domain deg : Set (ι → F)) k δ δ ≤
       ((k * errorBound δ deg domain : ℝ≥0) : ENNReal) := by
+  let : SampleableType F := SampleableType.ofFintype F
   -- keystone: the predicate `δ_ε_correlatedAgreementCurves C δ (errorBound δ deg domain)`.
   have hpred :=
-    correlatedAgreement_affine_curves (k := k) (deg := deg) (domain := domain) (δ := δ)
-      hStrictCoeff hBoundary hδ
+    correlatedAgreement_affine_curves_of_boundary_probability
+      (k := k) (deg := deg) (domain := domain) (δ := δ) hδ hBoundary
   -- numeric bridge (Errors.lean): predicate ↔ `epsCA_curves ≤ k * ε`.
   exact (δ_ε_correlatedAgreementCurves_iff_epsCA_curves_le (F := F) (k := k)
     (C := (ReedSolomon.code domain deg : Set (ι → F))) δ (errorBound δ deg domain)).mp hpred
@@ -144,7 +147,7 @@ theorem keystone_epsPG_bound {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZ
   have hcurve_eq :
       epsCA_curves (F := F) (ReedSolomon.code domain deg : Set (ι → F)) 1 δ δ =
       epsCA (F := F) (ReedSolomon.code domain deg : Set (ι → F)) δ δ := by
-    unfold epsCA_curves epsCA
+    rw [epsCA_curves_eq_pmf, epsCA_eq_pmf]
     refine iSup_congr (fun u => ?_)
     by_cases hjp : jointProximity (C := (ReedSolomon.code domain deg : Set (ι → F)))
         (u := u) δ

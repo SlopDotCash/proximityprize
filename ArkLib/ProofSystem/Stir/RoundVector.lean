@@ -77,8 +77,10 @@ def stirRoundVectorVerifier (φ : ι ↪ F) (deg : ℕ) :
     OracleVerifier []ₒ Unit (OStmt ι F) Unit (VOStmt ι F)
       ((stirRoundVSpec ι F).toProtocolSpec F) where
   verify := fun _ _ => pure ()
-  embed := ⟨fun _ => Sum.inr ⟨1, stirRoundVSpec_dir_one⟩, fun _ _ _ => rfl⟩
-  hEq := fun _ => rfl
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inr ⟨1, stirRoundVSpec_dir_one⟩, fun _ _ _ => rfl⟩
+    hEq := fun _ => rfl
+    outputInterface_heq := by intro u; cases u; rfl }
 
 /-- **The vectorised STIR fold-round oracle reduction** — the first STIR protocol object over a
 `VectorSpec`, the wire format quantified over by `stir_main` / `stir_rbr_soundness`. -/

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ToMathlib.HasseDerivNumerators
-import ArkLib.Data.Polynomial.RationalFunctions
+import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
 import Mathlib
 
 /-!

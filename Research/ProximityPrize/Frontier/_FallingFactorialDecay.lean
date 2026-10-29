@@ -53,7 +53,7 @@ theorem fallingFactorial_le_gaussianTail {r : ℕ} {n : ℝ} (hn : 0 < n)
     (hrange : ∀ j ∈ Finset.range r, (j : ℝ) ≤ n) :
     ∏ j ∈ Finset.range r, (1 - (j : ℝ) / n)
       ≤ ∏ j ∈ Finset.range r, Real.exp (-((j : ℝ) / n)) := by
-  apply Finset.prod_le_prod
+  apply Finset.prod_le_prod₀
   · intro j hj
     have : (j : ℝ) ≤ n := hrange j hj
     rw [sub_nonneg]
@@ -76,7 +76,7 @@ theorem prize_of_fallingFactorial {r : ℕ} {n A wick : ℝ} (hn : 0 < n) (hwick
   refine le_trans hbound ?_
   -- the falling-factorial product is ≤ 1: each factor `1 - j/n ∈ [0,1]`.
   have hP1 : ∏ j ∈ Finset.range r, (1 - (j : ℝ) / n) ≤ 1 := by
-    refine le_trans (Finset.prod_le_one ?_ ?_) (le_refl 1)
+    refine le_trans (Finset.prod_le_one₀ ?_ ?_) (le_refl 1)
     · intro j hj
       rw [sub_nonneg]
       exact div_le_one_of_le₀ (hrange j hj) (le_of_lt hn)

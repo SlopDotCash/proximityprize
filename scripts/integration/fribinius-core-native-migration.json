@@ -1,0 +1,213 @@
+{
+  "source": "ArkLib/ProofSystem/Binius/FRIBinius/CoreInteractionPhase.lean",
+  "original_downstream_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+  "original_source_archive": "scripts/integration/retired/fribinius-core-interaction-legacy.lean.txt",
+  "original_source_sha256": "53e995398450a5364c8c082bf6f11d0db9c1e0b50533d3c9063a45948740f150",
+  "pre_native_candidate_sha256": "f4382a3cb18c1292ada21583089d969702039af1e6f3492a93a7d9ab48d98dbe",
+  "pre_native_command_archive": "scripts/integration/retired/fribinius-core-interaction-pre-native-commands.lean.txt",
+  "pre_native_commands": [
+    {
+      "name": "Binius.FRIBinius.CoreInteractionPhase.sumcheckFoldCtxLens_complete",
+      "sha256": "8540807ee09d162cc1fdfea34dec3c4c094a40286a58111b90702f8bd8c5cb7b"
+    },
+    {
+      "name": "Binius.FRIBinius.CoreInteractionPhase.sumcheckFoldOracleReduction_perfectCompleteness",
+      "sha256": "9c2de711d6c21d9d70514f33b92f1ed91eb5c76e4d06e9d006dfbceec16e7edd"
+    },
+    {
+      "name": "Binius.FRIBinius.CoreInteractionPhase.sumcheckFold_input_bridge_counterexample",
+      "sha256": "be209bbf25227dac208a02aaaa56c06cd3f99c96b05024780a37d36f8c4c8f99"
+    },
+    {
+      "name": "Binius.FRIBinius.CoreInteractionPhase.finalSumcheckStepLogic",
+      "sha256": "467bb8c1f4ba5c2b5f9c015a92b13de15ea98a15f4ea0a7a3c9ef95e349696c0"
+    },
+    {
+      "name": "Binius.FRIBinius.CoreInteractionPhase.finalSumcheckStep_is_logic_complete",
+      "sha256": "0ba75cde5edfcda5d79a30a47c5152d2e9cfa63b2cbc1fcbcdfccca280a3b7bb"
+    },
+    {
+      "name": "Binius.FRIBinius.CoreInteractionPhase.finalSumcheckOracleReduction_perfectCompleteness",
+      "sha256": "533297e204a9416228643368746d7279b3ddc2a9ef9a700221d8c78d8ef62aba"
+    },
+    {
+      "name": "Binius.FRIBinius.CoreInteractionPhase.finalSumcheckRbrExtractor",
+      "sha256": "db75027ee48c08c6ecdb6bfeddf270f2d8aeb4bbc6bdca14ee1f188f01fc8fae"
+    },
+    {
+      "name": "Binius.FRIBinius.CoreInteractionPhase.finalSumcheckKStateProp",
+      "sha256": "2d76c9fc676310894508122c7fd111729ab1376296718185df1fa1d40dbe831e"
+    },
+    {
+      "name": "Binius.FRIBinius.CoreInteractionPhase.finalSumcheckKnowledgeStateFunction",
+      "sha256": "29a16d643ae877d8fa5ca17e401b045ec401eb1aff968a752cd942b42c669ec7"
+    },
+    {
+      "name": "Binius.FRIBinius.CoreInteractionPhase.finalSumcheckOracleVerifier_rbrKnowledgeSoundness",
+      "sha256": "9843b45b39fb21a6ebac6e34738f0b78594fd2ed2e3add90aa2ac79ae51ebac0"
+    },
+    {
+      "name": "Binius.FRIBinius.CoreInteractionPhase.coreInteractionOracleReduction_perfectCompleteness",
+      "sha256": "a8bb6cc83c2285a4bbc7b2d4e7e80567fb95dd44937a2a6fad9c176ade9e5a9b"
+    }
+  ],
+  "canonical_policy": "Canonical modules unchanged. Native relations use the authoritative chronological challenge/Boolean encoding and current HasIncrementalBadEvent. No equivalence with the historical newest-first coefficient convention is asserted.",
+  "retained_legacy_math": [
+    "strictSumcheckInputRelation (historical newest-first input relation)",
+    "sumcheckFold_legacy_input_bridge_counterexample (the old bad-event model only)",
+    "finalCodeword_zero_eq_t_eval (delegates explicit newestFirstCodeword endpoint bridge)",
+    "iterated_fold_to_const_strict (historical fold convention)",
+    "finalSumcheckStep_verifierCheck_passed (historical structural invariant)"
+  ],
+  "native_names": [
+    "nativeStrictSumcheckInputRelation",
+    "nativeSumcheckFoldCtxLens_complete",
+    "sumcheckFoldOracleReduction_perfectCompleteness_native",
+    "finalSumcheckStep_is_logic_complete_native",
+    "finalSumcheckOracleReduction_perfectCompleteness_native",
+    "finalSumcheckRbrExtractor_native",
+    "finalSumcheckKStateProp_native",
+    "finalSumcheckKnowledgeStateFunction_native",
+    "finalSumcheckOracleVerifier_rbrKnowledgeSoundness_native",
+    "coreInteractionOracleReduction_perfectCompleteness_native"
+  ],
+  "meaning": [
+    "Native sumcheck-fold reduction delegates canonical rounds and preserves their virtual output representation through the identity executable lens.",
+    "Final-step completeness uses the canonical exact-encoding invariant, a query/guard native verifier, and the shared deterministic logic-step engine; old support-interpreter expansion is superseded.",
+    "Native final extractor uses canonical extractMlp, including its actual decoding guard, without an unproved coefficient reversal.",
+    "Final knowledge-state transport preserves both canonical oracle consistency and genuine bad-event branches.",
+    "The end-to-end core RBR wrapper remains conditional on its explicit original append-RBR premise; it does not claim that premise discharged."
+  ],
+  "caller_audit": "Repository search found no external code references to renamed relation/completeness/knowledge-state declarations in ArkLib, ProximityPrize, or Research. FRIBinius.General consumes the retained native constructors and numeric error bound.",
+  "validation_status": "strict temporary-overlay source check PASS; current package build remains required",
+  "encoding_regression": {
+    "file": "ArkLibTest/Compatibility/FRIBiniusEncoding.lean",
+    "sha256": "2f0fa85afc980dc9bf7cbbf5214aefe0e1bdf7ed9309411744ad38ab478e8a8a",
+    "receipt": "/tmp/arklib-FRIBiniusEncoding-overlay-native2.receipt.json",
+    "result": "temporary-overlay source check compiler0/admission0/stable, 15.32s; all three anchors only standard three axioms",
+    "meaning": "At two variables and coefficient index1, canonical chronological bit0 is1 and historical reversed bit0 is0; the input coefficient views are not identical.",
+    "actual_package_validation": "Parent confirmed the current unchanged test passed the 5,520-job package acceptance build; full default/production integration acceptance remains separate."
+  },
+  "current_source_sha256": "d1b9be35de59548d93e5160f9109901d878e0ce27c86941314342c1131fda9e9",
+  "source_check_receipt": "/tmp/arklib-FRIBinius-CoreInteraction-overlay-native7.receipt.json",
+  "source_check_elapsed_seconds": 25.596,
+  "printed_axiom_audit": [
+    {
+      "declaration": "Binius.FRIBinius.CoreInteractionPhase.sumcheckFoldOracleReduction_perfectCompleteness_native",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "Binius.FRIBinius.CoreInteractionPhase.sumcheckFold_legacy_input_bridge_counterexample",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "Binius.FRIBinius.CoreInteractionPhase.finalCodeword_zero_eq_t_eval",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "Binius.FRIBinius.CoreInteractionPhase.iterated_fold_to_const_strict",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "Binius.FRIBinius.CoreInteractionPhase.finalSumcheckStep_verifierCheck_passed",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "Binius.FRIBinius.CoreInteractionPhase.finalSumcheckStep_is_logic_complete_native",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "Binius.FRIBinius.CoreInteractionPhase.finalSumcheckOracleReduction_perfectCompleteness_native",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "Binius.FRIBinius.CoreInteractionPhase.finalSumcheckKnowledgeStateFunction_native",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "Binius.FRIBinius.CoreInteractionPhase.finalSumcheckOracleVerifier_rbrKnowledgeSoundness_native",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "Binius.FRIBinius.CoreInteractionPhase.coreInteractionOracleReduction_perfectCompleteness_native",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "Binius.FRIBinius.CoreInteractionPhase.coreInteractionOracleVerifier_rbrKnowledgeSoundness",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "Binius.FRIBinius.CoreInteractionPhase.coreInteractionOracleRbrKnowledgeError_le",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  ],
+  "compiled_owner_receipt": {
+    "path": "/tmp/arklib-FRIBinius-CoreInteraction-owner-build.receipt.json",
+    "elapsed_seconds": 23.452,
+    "artifact_family_sha256": {
+      "CoreInteractionPhase.olean": "7f053441194d5e2e9b2e0336254be91b2cae1be1ab627d58a5fdbc724281b009"
+    },
+    "source_sha256": "d1b9be35de59548d93e5160f9109901d878e0ce27c86941314342c1131fda9e9",
+    "not_a_lake_package_build": true
+  },
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [
+      "/validation_status"
+    ],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

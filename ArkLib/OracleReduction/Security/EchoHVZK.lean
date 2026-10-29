@@ -26,6 +26,9 @@ namespace Issue112ZK
 variable {ι : Type} {oSpec : OracleSpec ι}
   {Statement Witness : Type} {σ : Type}
 
+local instance {n : ℕ} {pSpec : ProtocolSpec n} :
+    MeasurableSpace (FullTranscript pSpec) := ⊤
+
 /-- The single-message protocol spec: one prover-to-verifier message of type `Statement`. -/
 abbrev echoPSpec (Statement : Type) : ProtocolSpec 1 := ⟨!v[.P_to_V], !v[Statement]⟩
 
@@ -83,14 +86,12 @@ theorem honestTranscriptDist_echo_evalDist
         (echoReduction : Reduction oSpec Statement Witness _ _ _) stmt wit) =
       evalDist (pure (echoTranscript stmt) :
         OptionT ProbComp (FullTranscript (echoPSpec Statement))) := by
-  apply evalDist_ext
-  intro transcript
   classical
   unfold Reduction.honestTranscriptDist
   simp only [echoReduction_run, map_pure, OptionT.run_pure, simulateQ_pure, StateT.run'_eq,
     StateT.run_pure, bind_pure_comp]
-  rw [OptionT.probOutput_eq, OptionT.probOutput_eq]
-  simp [probOutput_map_const, HasEvalPMF.probFailure_eq_zero]
+  rw [OptionT.evalDist_eq_comap_some, OptionT.evalDist_eq_comap_some]
+  simp only [OptionT.run_mk, OptionT.run_pure, OracleComp.evalDist_map_const, evalDist_pure]
 
 /-- **Main theorem.** The single-message "statement echo" reduction satisfies PERFECT
   honest-verifier zero-knowledge for any input relation, with the public-statement-replay simulator.

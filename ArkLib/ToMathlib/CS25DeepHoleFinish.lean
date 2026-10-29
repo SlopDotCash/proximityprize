@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.ToMathlib.CS25DeepHole
 import ArkLib.ToMathlib.CS25Claim3
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 import Mathlib.Data.ZMod.Basic
 
 /-!
@@ -307,6 +307,8 @@ theorem not_deepHoleProbResidual_negativeEpsilon_zmod2 :
     norm_num [Code.relHammingDist, hammingDist_self]
   have hsample : (1 : ZMod 2) ∈ sampleSet zmod2SingletonDomain := by
     simp [sampleSet, zmod2SingletonDomain]
+    change (1 : ZMod 2) ≠ 0
+    decide
   have hbad := h hdeg hclose (1 : ZMod 2) hsample
   norm_num [numDistinct] at hbad
 

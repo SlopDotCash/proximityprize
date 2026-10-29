@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.Probability.Instances
-import ArkLib.Data.Probability.Combinatorial
+import ProximityPrize.Extensions.Data.Probability.Instances
+import ProximityPrize.Extensions.Data.Probability.Combinatorial
 
 /-!
 # Rewinding / forking extractors (framework)
@@ -263,8 +263,30 @@ theorem exists_schedule_with_many_distinct_challenges
         Pr_{ let φ ← Φ }[(decide (φ x = φ y) : Prop)] ≤ ε) :
     ∃ φ ∈ Φ.support, ((Finset.univ.image φ).card : ENNReal) ≥
       (Fintype.card Schedule : ENNReal) /
-        (1 + (Fintype.card Schedule - 1) * ε) :=
-  Probability.exists_large_image_of_pairwise_collision_bound Φ ε hΦ
+        (1 + (Fintype.card Schedule - 1) * ε) := by
+  classical
+  let : MeasurableSpace (Schedule → Challenge) := ⊤
+  have hcollision : ∀ x y : Schedule, x ≠ y →
+      Φ.toMeasure {φ | φ x = φ y} ≤ ε := by
+    intro x y hxy
+    have h := hΦ x y hxy
+    have hprob : Φ.toMeasure {φ | φ x = φ y} =
+        Pr_{let φ ← Φ}[(decide (φ x = φ y) : Prop)] := by
+      rw [PMF.toMeasure_apply _ MeasurableSet.of_discrete, Pr_decide_eq_tsum_indicator]
+      apply tsum_congr
+      intro φ
+      by_cases heq : φ x = φ y <;> simp [heq]
+    rwa [hprob]
+  obtain ⟨φ, hφ, _, hcard⟩ :=
+    Probability.exists_large_image_of_pairwise_collision_bound Φ.toMeasure Φ.support
+      Φ.support_countable (by
+        rw [PMF.toMeasure_apply_eq_one_iff _ MeasurableSet.of_discrete]) ε hcollision
+  refine ⟨φ, hφ, ?_⟩
+  convert hcard using 1
+  norm_cast
+  apply congrArg Finset.card
+  ext value
+  simp
 
 end Collision
 

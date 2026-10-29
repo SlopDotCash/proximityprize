@@ -1,0 +1,33 @@
+{
+  "path": "ProximityPrize/Extensions/OracleReduction/Security/CoordinateWiseSpecialSoundness/Composition.lean",
+  "reviewed_source_sha256": "9b5b03a934c44305204c7639801a1df64838f7f6451ff0256051ec87377a5449",
+  "declaration": "Verifier.append_treeSpecialSound",
+  "original_command": "omit [∀ i, SampleableType (pSpec₂.Challenge i)] in\n/-- Generic preservation of tree-special soundness under binary verifier append. -/\ntheorem append_treeSpecialSound\n    (V₁ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁)\n    (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)\n    (S₁ : ChallengeTreeShape pSpec₁) (S₂ : ChallengeTreeShape pSpec₂)\n    (verify₁ : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)\n    (hV₁ : ∀ stmt tr, V₁.verify stmt tr = pure (verify₁ stmt tr))\n    (h₁ : V₁.treeSpecialSound init impl S₁ rel₁ rel₂)\n    (h₂ : V₂.treeSpecialSound init impl S₂ rel₂ rel₃) :\n      (V₁.append V₂).treeSpecialSound init impl\n        (S₁.append S₂) rel₁ rel₃ := by\n  rcases h₁ with ⟨E₁, hE₁⟩\n  rcases h₂ with ⟨E₂, hE₂⟩\n  refine ⟨fun stmt tree => E₁ stmt tree.appendSplit.fst, ?_⟩\n  intro stmt tree hStructured hAccept\n  apply hE₁ stmt tree.appendSplit.fst\n  · exact ChallengeTree.appendSplit_fst_isStructured tree hStructured\n  · intro tr₁ htr₁\n    obtain ⟨path, rfl⟩ :=\n      ChallengeTree.LeafPath.exists_of_mem_fullTranscripts (T := tree.appendSplit.fst) htr₁\n    have hSuffixStructured :\n        (tree.appendSplit.sndAt path).IsStructured S₂ :=\n      ChallengeTree.appendSplit_sndAt_isStructured tree hStructured path\n    have hSuffixAccept :\n        (tree.appendSplit.sndAt path).IsAccepting init impl V₂\n          (verify₁ stmt path.fullTranscript) rel₃.language := by\n      intro tr₂ htr₂\n      have hmem :\n          path.fullTranscript ++ₜ tr₂ ∈ tree.fullTranscripts :=\n        ChallengeTree.appendSplit_fullTranscripts_append_of_mem tree path htr₂\n      have hfull := hAccept (path.fullTranscript ++ₜ tr₂) hmem\n      simpa [append_run_pure_left V₁ V₂ verify₁ hV₁\n          stmt path.fullTranscript tr₂] using hfull\n    have hRel₂ :\n        (verify₁ stmt path.fullTranscript,\n          E₂ (verify₁ stmt path.fullTranscript) (tree.appendSplit.sndAt path)) ∈ rel₂ :=\n      hE₂ (verify₁ stmt path.fullTranscript) (tree.appendSplit.sndAt path)\n        hSuffixStructured hSuffixAccept\n    have hLang₂ : verify₁ stmt path.fullTranscript ∈ rel₂.language :=\n      (Set.mem_language_iff rel₂ (verify₁ stmt path.fullTranscript)).2\n        ⟨E₂ (verify₁ stmt path.fullTranscript) (tree.appendSplit.sndAt path), hRel₂⟩\n    exact pure_accepting_of_mem init impl V₁ stmt path.fullTranscript rel₂.language\n      (verify₁ stmt path.fullTranscript) (hV₁ stmt path.fullTranscript) hLang₂\n\n",
+  "original_command_sha256": "cc4a3f4ffd199613cd0227324e4ce82e09b1b1181ab227a0bb34c1613b907840",
+  "reviewed_command_sha256": "c880fa5f1520918ae8621201241ede19af422395e53149bf252508d5e7d0b354",
+  "public_header_unchanged": true,
+  "canonical_owner": "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Composition.lean",
+  "canonical_theorem": "Verifier.append_treeSpecialSoundWith",
+  "extractor": "Extractor.TreeBased.append verify₁ E₁ E₂",
+  "reason": "The native tree extractor consumes valid output witnesses at every leaf. The obsolete proof supplied only E₁ on a prefix tree, dropping the downstream leaf-witness input. The existential compatibility wrapper now packages the canonical named composition, which derives intermediate leaf witnessing through E₂ and preserves actual output reachability.",
+  "validation": {
+    "compiler_exit_code": 0,
+    "admission_checker_exit_code": 0,
+    "elapsed_seconds": 48.741,
+    "source_before_sha256": "9b5b03a934c44305204c7639801a1df64838f7f6451ff0256051ec87377a5449",
+    "source_after_sha256": "9b5b03a934c44305204c7639801a1df64838f7f6451ff0256051ec87377a5449",
+    "imports_unchanged": true,
+    "not_a_lake_package_build": true
+  },
+  "axioms": "Explicit exact-source probe of Verifier.append_treeSpecialSound, Verifier.append_coordinateWiseSpecialSound, OracleVerifier.append_coordinateWiseSpecialSound: only propext/Classical.choice/Quot.sound.",
+  "canonical_sources_modified": false,
+  "axiom_probe_validation": {
+    "compiler_exit_code": 0,
+    "admission_checker_exit_code": 0,
+    "elapsed_seconds": 27.915,
+    "source_before_sha256": "ad920e61a65cf8350447586d91d5896e99c2ef92b17447a0cb5bebf57a9f8fe2",
+    "source_after_sha256": "ad920e61a65cf8350447586d91d5896e99c2ef92b17447a0cb5bebf57a9f8fe2",
+    "imports_unchanged": true,
+    "not_a_lake_package_build": true
+  }
+}

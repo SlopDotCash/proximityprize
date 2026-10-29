@@ -4,13 +4,25 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SpartanSendEvalClaim
+import ProximityPrize.Compatibility.SpartanLinearCombination
+import ProximityPrize.Compatibility.SpartanFirstChallenge
+import ProximityPrize.Compatibility.SumcheckKnowledge
 import ArkLib.ProofSystem.Spartan.ComposedRbrKnowledgeSoundness
 import ArkLib.ProofSystem.Spartan.SumcheckKnowledgeLeaves
 import ArkLib.ProofSystem.Spartan.PrependRLCDeterminism
 import ArkLib.ProofSystem.Spartan.SumcheckDeterminismWitnesses
 import ArkLib.ProofSystem.Spartan.FinalCheckRbrKnowledgeLeaf
 
+import ProximityPrize.Compatibility.PureKnowledge
+
 /-!
+
+Canonical-message integration: the degree-2/degree-3 round knowledge bounds remain explicit
+hypotheses of the `_of_sumcheck_rounds` constructions below. Former unconditional zero-flip
+completion claims are retired; exact names, commands and added obligations are recorded in
+`scripts/integration/sumcheck-message-semantics-retirements.json`.
+
 # Spartan short-phase RBR-KS leaves + the one-seam composed assembly (#114)
 
 This module discharges the five remaining short-phase round-by-round knowledge-soundness leaves
@@ -18,8 +30,8 @@ of `composedPIOP_Rc_rbrKnowledgeSoundness_of_leaves` (`firstMessage`, `firstChal
 `sendEvalClaim`, `linearCombination`, `prependRLCTarget`; the two sum-check leaves live in
 `SumcheckKnowledgeLeaves.lean` and the terminal `finalCheck` leaf in
 `FinalCheckRbrKnowledgeLeaf.lean`), and folds everything into
-`composedPIOP_Rc_rbrKnowledgeSoundness_of_rlcSeamBridge`: the **full composed Spartan rbr
-knowledge soundness, conditional on a single named seam hypothesis**.
+`composedPIOP_Rc_rbrKnowledgeSoundness_of_rlcSeamBridge_of_sumcheck_rounds`: the **full composed Spartan rbr
+knowledge soundness with explicit canonical round bounds and a named seam hypothesis**.
 
 ## The generic engine
 
@@ -77,130 +89,9 @@ audited by the `#print axioms` commands at the bottom of this file.
 open OracleComp OracleSpec ProtocolSpec
 open scoped NNReal
 
-/-! ### Generic core (to be merged into the final file) -/
+/-! Generic pure-verifier transport is shared by `Compatibility.PureKnowledge`. -/
 
-namespace Verifier
 
-variable {ι : Type} {oSpec : OracleSpec ι} {StmtIn StmtOut WitIn WitOut : Type}
-  {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
-
-section Defs
-
-variable {n : ℕ} {pSpec : ProtocolSpec n}
-
-/-- KS pushforward of `relOut` along a pure verifier map. -/
-def pureKSPushforward (verify : StmtIn → pSpec.FullTranscript → StmtOut)
-    (relOut : Set (StmtOut × WitOut)) : Set (StmtIn × WitIn) :=
-  {x | ∃ tr wOut, (verify x.1 tr, wOut) ∈ relOut}
-
-/-- KS carry of `relIn` along a pure verifier map. -/
-def pureKSCarry (verify : StmtIn → pSpec.FullTranscript → StmtOut)
-    (relIn : Set (StmtIn × WitIn)) : Set (StmtOut × WitOut) :=
-  {y | ∀ stmt tr, verify stmt tr = y.1 → ∀ wIn, (stmt, wIn) ∈ relIn}
-
-end Defs
-
-section OneRound
-
-variable {pSpec : ProtocolSpec 1} [∀ i, SampleableType (pSpec.Challenge i)]
-
-theorem rbrKnowledgeSoundness_of_pure_oneRound
-    (verify : StmtIn → pSpec.FullTranscript → StmtOut)
-    (ext : StmtIn → pSpec.FullTranscript → WitOut → WitIn)
-    (relIn : Set (StmtIn × WitIn)) (relOut : Set (StmtOut × WitOut))
-    (hExt : ∀ stmt tr wOut, (verify stmt tr, wOut) ∈ relOut → (stmt, ext stmt tr wOut) ∈ relIn) :
-    Verifier.rbrKnowledgeSoundness init impl relIn relOut
-      (⟨fun stmt tr => pure (verify stmt tr)⟩ : Verifier oSpec StmtIn StmtOut pSpec) 0 := by
-  refine ⟨fun _ => WitIn,
-    { eqIn := rfl
-      extractMid := fun _ _ _ w => w
-      extractOut := fun stmt tr wOut => ext stmt tr wOut },
-    { toFun := fun m => match m with
-        | ⟨0, _⟩ => fun stmt _ w => (stmt, w) ∈ relIn
-        | ⟨1, _⟩ => fun stmt tr w => ∃ wOut, (verify stmt tr, wOut) ∈ relOut ∧ w = ext stmt tr wOut
-      toFun_empty := fun stmt w => Iff.rfl
-      toFun_next := fun m hDir stmt tr msg w h => by
-        match m with
-        | ⟨0, _⟩ =>
-          obtain ⟨wOut, hrel, rfl⟩ := h
-          exact hExt _ _ _ hrel
-      toFun_full := fun stmt tr wOut h => by
-        rw [gt_iff_lt, probEvent_pos_iff] at h
-        obtain ⟨x, hx, hrel⟩ := h
-        rw [OptionT.mem_support_iff] at hx
-        simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
-        obtain ⟨s, _, hx⟩ := hx
-        have key : (simulateQ impl
-            ((⟨fun stmt tr => pure (verify stmt tr)⟩ :
-              Verifier oSpec StmtIn StmtOut pSpec).run stmt tr)).run' s
-            = pure (some (verify stmt tr)) := by
-          change (simulateQ impl
-            (pure (some (verify stmt tr)) : OracleComp oSpec (Option StmtOut))).run' s = _
-          rw [simulateQ_pure]
-          change Prod.fst <$> (pure (some (verify stmt tr)) : StateT σ ProbComp _).run s = _
-          rw [StateT.run_pure]; simp [map_pure]
-        rw [key] at hx
-        simp only [support_pure, Set.mem_singleton_iff] at hx
-        cases (Option.some.inj hx)
-        exact ⟨wOut, hrel, rfl⟩ },
-    ?_⟩
-  intro stmtIn witIn prover i
-  rcases i with ⟨⟨iv, hiv⟩, hdir⟩
-  match iv, hiv with
-  | 0, hiv =>
-    refine le_of_eq ?_
-    rw [show ((0 : pSpec.ChallengeIdx → NNReal) ⟨⟨0, hiv⟩, hdir⟩ : ENNReal) = 0 by simp]
-    rw [probEvent_eq_zero_iff]
-    rintro ⟨transcript, challenge, log⟩ _ ⟨w, hnot, hyes⟩
-    obtain ⟨wOut, hrel, rfl⟩ := hyes
-    exact hnot (hExt _ _ _ hrel)
-
-end OneRound
-
-section ZeroRound
-
-variable {pSpec : ProtocolSpec 0} [∀ i, SampleableType (pSpec.Challenge i)]
-
-theorem rbrKnowledgeSoundness_of_pure_zeroRound
-    (verify : StmtIn → pSpec.FullTranscript → StmtOut)
-    (ext : StmtIn → pSpec.FullTranscript → WitOut → WitIn)
-    (relIn : Set (StmtIn × WitIn)) (relOut : Set (StmtOut × WitOut))
-    (hExt : ∀ stmt tr wOut, (verify stmt tr, wOut) ∈ relOut → (stmt, ext stmt tr wOut) ∈ relIn) :
-    Verifier.rbrKnowledgeSoundness init impl relIn relOut
-      (⟨fun stmt tr => pure (verify stmt tr)⟩ : Verifier oSpec StmtIn StmtOut pSpec) 0 := by
-  refine ⟨fun _ => WitIn,
-    { eqIn := rfl
-      extractMid := fun m => Fin.elim0 m
-      extractOut := fun stmt tr wOut => ext stmt tr wOut },
-    { toFun := fun _ stmt _ w => (stmt, w) ∈ relIn
-      toFun_empty := fun stmt w => Iff.rfl
-      toFun_next := fun m => Fin.elim0 m
-      toFun_full := fun stmt tr wOut h => by
-        rw [gt_iff_lt, probEvent_pos_iff] at h
-        obtain ⟨x, hx, hrel⟩ := h
-        rw [OptionT.mem_support_iff] at hx
-        simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
-        obtain ⟨s, _, hx⟩ := hx
-        have key : (simulateQ impl
-            ((⟨fun stmt tr => pure (verify stmt tr)⟩ :
-              Verifier oSpec StmtIn StmtOut pSpec).run stmt tr)).run' s
-            = pure (some (verify stmt tr)) := by
-          change (simulateQ impl
-            (pure (some (verify stmt tr)) : OracleComp oSpec (Option StmtOut))).run' s = _
-          rw [simulateQ_pure]
-          change Prod.fst <$> (pure (some (verify stmt tr)) : StateT σ ProbComp _).run s = _
-          rw [StateT.run_pure]; simp [map_pure]
-        rw [key] at hx
-        simp only [support_pure, Set.mem_singleton_iff] at hx
-        cases (Option.some.inj hx)
-        exact hExt _ _ _ hrel },
-    ?_⟩
-  intro stmtIn witIn prover i
-  exact Fin.elim0 i.1
-
-end ZeroRound
-
-end Verifier
 
 /-! ### Spartan leaves -/
 
@@ -228,30 +119,30 @@ theorem firstMessageVerify_spec :
 
 /-- The pure map computed by the compiled `firstChallenge` verifier. -/
 noncomputable def firstChallengeVerify :=
-  (firstChallenge_toVerifier_pure.{0} (R := R) pp oSpec).choose
+  (firstChallenge_toVerifier_pure (R := R) pp oSpec).choose
 
 theorem firstChallengeVerify_spec :
-    (oracleReduction.firstChallenge.{0} R pp oSpec).verifier.toVerifier
+    (oracleReduction.completedFirstChallenge R pp oSpec).verifier.toVerifier
       = ⟨fun p tr => pure (firstChallengeVerify pp oSpec p tr)⟩ :=
-  (firstChallenge_toVerifier_pure.{0} (R := R) pp oSpec).choose_spec
+  (firstChallenge_toVerifier_pure (R := R) pp oSpec).choose_spec
 
 /-- The pure map computed by the compiled `sendEvalClaim` verifier. -/
 noncomputable def sendEvalClaimVerify :=
   (sendEvalClaim_toVerifier_pure (R := R) pp oSpec).choose
 
 theorem sendEvalClaimVerify_spec :
-    (oracleReduction.sendEvalClaim R pp oSpec).verifier.toVerifier
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.toVerifier
       = ⟨fun p tr => pure (sendEvalClaimVerify pp oSpec p tr)⟩ :=
   (sendEvalClaim_toVerifier_pure (R := R) pp oSpec).choose_spec
 
 /-- The pure map computed by the compiled `linearCombination` verifier. -/
 noncomputable def linearCombinationVerify :=
-  (linearCombination_toVerifier_pure.{0} (R := R) pp oSpec).choose
+  (linearCombination_toVerifier_pure (R := R) pp oSpec).choose
 
 theorem linearCombinationVerify_spec :
-    (oracleReduction.linearCombination.{0} R pp oSpec).verifier.toVerifier
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.toVerifier
       = ⟨fun p tr => pure (linearCombinationVerify pp oSpec p tr)⟩ :=
-  (linearCombination_toVerifier_pure.{0} (R := R) pp oSpec).choose_spec
+  (linearCombination_toVerifier_pure (R := R) pp oSpec).choose_spec
 
 /-- The pure map computed by the compiled `prependRLCTarget` verifier (concrete form). -/
 def prependRLCVerify :
@@ -260,12 +151,13 @@ def prependRLCVerify :
     (!p[] : ProtocolSpec 0).FullTranscript →
     ((R × Statement.AfterLinearCombination R pp) ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i) :=
-  fun p _tr => ((∑ idx, p.1.1 idx * p.2 (.inl 0) idx, p.1), p.2)
+  fun p _tr => ((∑ idx, p.1.1 idx * (show R from p.2 (.inl idx)), p.1), p.2)
 
 theorem prependRLCVerify_spec :
     (prependRLCTarget (R := R) pp oSpec).verifier.toVerifier
-      = ⟨fun p tr => pure (prependRLCVerify pp p tr)⟩ :=
-  prependRLCTarget_toVerifier_pure (R := R) pp oSpec
+      = ⟨fun p tr => pure (prependRLCVerify pp p tr)⟩ := by
+  simpa only [prependRLCVerify] using
+    (prependRLCTarget_toVerifier_pure (R := R) pp oSpec)
 
 
 /-! ### Chain relations -/
@@ -334,7 +226,7 @@ theorem firstMessage_rbrKnowledgeSoundness_pushforward
 theorem firstChallenge_rbrKnowledgeSoundness_pushforward
     (relOut : Set ((Statement.AfterFirstChallenge R pp ×
       ∀ i, OracleStatement.AfterFirstChallenge R pp i) × Unit)) :
-    (oracleReduction.firstChallenge.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (Verifier.pureKSPushforward (firstChallengeVerify pp oSpec) relOut :
         Set ((Statement.AfterFirstMessage R pp ×
           ∀ i, OracleStatement.AfterFirstMessage R pp i) × Unit))
@@ -348,7 +240,7 @@ theorem firstChallenge_rbrKnowledgeSoundness_pushforward
 theorem sendEvalClaim_rbrKnowledgeSoundness_pushforward
     (relOut : Set ((Statement.AfterSendEvalClaim R pp ×
       ∀ i, OracleStatement.AfterSendEvalClaim R pp i) × Unit)) :
-    (oracleReduction.sendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (Verifier.pureKSPushforward (sendEvalClaimVerify pp oSpec) relOut :
         Set ((Statement.AfterFirstSumcheck R pp ×
           ∀ i, OracleStatement.AfterFirstSumcheck R pp i) × Unit))
@@ -363,7 +255,7 @@ theorem sendEvalClaim_rbrKnowledgeSoundness_pushforward
 theorem sendEvalClaim_rbrKnowledgeSoundness_carry
     (relIn : Set ((Statement.AfterFirstSumcheck R pp ×
       ∀ i, OracleStatement.AfterFirstSumcheck R pp i) × Unit)) :
-    (oracleReduction.sendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       relIn
       (Verifier.pureKSCarry (sendEvalClaimVerify pp oSpec) relIn :
         Set ((Statement.AfterSendEvalClaim R pp ×
@@ -380,7 +272,7 @@ theorem sendEvalClaim_rbrKnowledgeSoundness_carry
 theorem linearCombination_rbrKnowledgeSoundness_pushforward
     (relOut : Set ((Statement.AfterLinearCombination R pp ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i) × Unit)) :
-    (oracleReduction.linearCombination.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (Verifier.pureKSPushforward (linearCombinationVerify pp oSpec) relOut :
         Set ((Statement.AfterSendEvalClaim R pp ×
           ∀ i, OracleStatement.AfterSendEvalClaim R pp i) × Unit))
@@ -394,7 +286,7 @@ theorem linearCombination_rbrKnowledgeSoundness_pushforward
 theorem linearCombination_rbrKnowledgeSoundness_carry
     (relIn : Set ((Statement.AfterSendEvalClaim R pp ×
       ∀ i, OracleStatement.AfterSendEvalClaim R pp i) × Unit)) :
-    (oracleReduction.linearCombination.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       relIn
       (Verifier.pureKSCarry (linearCombinationVerify pp oSpec) relIn :
         Set ((Statement.AfterLinearCombination R pp ×
@@ -429,34 +321,34 @@ theorem firstMessage_rbrKnowledgeSoundness_leaf :
 
 /-- **Leaf `h₂`** (`firstChallenge`): ends exactly at the pinned `firstSumcheckRbrRelIn`. -/
 theorem firstChallenge_rbrKnowledgeSoundness_leaf :
-    (oracleReduction.firstChallenge.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (firstChallengeKSRelIn pp oSpec) (firstSumcheckRbrRelIn (R := R) pp oSpec) 0 :=
   firstChallenge_rbrKnowledgeSoundness_pushforward pp oSpec init impl _
 
 /-- **Leaf `h₄`, carry form** (`sendEvalClaim`): starts exactly at the pinned
 `firstSumcheckRbrRelOut`. -/
 theorem sendEvalClaim_rbrKnowledgeSoundness_leaf_carry :
-    (oracleReduction.sendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (firstSumcheckRbrRelOut (R := R) pp oSpec) (sendEvalClaimKSRelOut pp oSpec) 0 :=
   sendEvalClaim_rbrKnowledgeSoundness_carry pp oSpec init impl _
 
 /-- **Leaf `h₄`, pushforward form** (`sendEvalClaim`): ends exactly at
 `linearCombinationKSRelIn`. -/
 theorem sendEvalClaim_rbrKnowledgeSoundness_leaf_pushforward :
-    (oracleReduction.sendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (sendEvalClaimKSRelIn pp oSpec) (linearCombinationKSRelIn pp oSpec) 0 :=
   sendEvalClaim_rbrKnowledgeSoundness_pushforward pp oSpec init impl _
 
 /-- **Leaf `h₅`, pushforward form** (`linearCombination`). -/
 theorem linearCombination_rbrKnowledgeSoundness_leaf_pushforward :
-    (oracleReduction.linearCombination.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (linearCombinationKSRelIn pp oSpec) (prependRLCKSRelIn pp oSpec) 0 :=
   linearCombination_rbrKnowledgeSoundness_pushforward pp oSpec init impl _
 
 /-- **Leaf `h₅`, carry form** (`linearCombination`): continues the carry chain from
 `sendEvalClaimKSRelOut`. -/
 theorem linearCombination_rbrKnowledgeSoundness_leaf_carry :
-    (oracleReduction.linearCombination.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (sendEvalClaimKSRelOut pp oSpec) (linearCombinationKSRelOut pp oSpec) 0 :=
   linearCombination_rbrKnowledgeSoundness_carry pp oSpec init impl _
 
@@ -470,30 +362,19 @@ theorem prependRLCTarget_rbrKnowledgeSoundness_leaf :
 
 /-! ### The composed assembly, reduced to the single RLC seam bridge -/
 
-/-- **Composed Spartan PIOP rbr knowledge soundness, reduced to a single named seam bridge.**
-
-All eight per-phase leaves of `composedPIOP_Rc_rbrKnowledgeSoundness_of_leaves` are discharged
-along the relation chain
-
-`firstMessageKSRelIn → firstChallengeKSRelIn → firstSumcheckRbrRelIn → firstSumcheckRbrRelOut →
-sendEvalClaimKSRelOut → prependRLCKSRelIn → secondSumcheckRbrRelIn → secondSumcheckRbrRelOut →
-secondSumcheckRbrRelOut`
-
-except the `linearCombination` leaf `h₅`, which is taken as the named hypothesis `hSeam`: rbr
-knowledge soundness from the carried first-sumcheck terminal relation (`sendEvalClaimKSRelOut`)
-to the preimage of the second-sumcheck honest input relation (`prependRLCKSRelIn`). This is the
-genuine remaining mathematical content of the composed rbr-KS chain: the random-linear-
-combination batching step binding the prover's eval claims across the two sum-checks. -/
-theorem composedPIOP_Rc_rbrKnowledgeSoundness_of_rlcSeamBridge [Subsingleton σ]
+/-- The completed Spartan composition construction, conditional on the actual canonical
+sumcheck degree-2, degree-3 per-round knowledge bounds. The former unconditional zero-flip
+completion is retired; exact source and the added obligations are recorded in the migration audit. -/
+theorem composedPIOP_Rc_rbrKnowledgeSoundness_of_rlcSeamBridge_of_sumcheck_rounds [Subsingleton σ]
     (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)
     [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]
     [Inhabited (Statement.AfterFirstSumcheck R pp ×
       ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]
     {err₅ : (⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ :
       ProtocolSpec 1).ChallengeIdx → ℝ≥0}
-    (hSeam : (oracleReduction.linearCombination.{0} R pp oSpec).verifier.rbrKnowledgeSoundness
+    (hSeam : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness
       init impl (sendEvalClaimKSRelOut pp oSpec) (prependRLCKSRelIn pp oSpec) err₅)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×
       ∀ i, OracleStatement.AfterFirstMessage R pp i))
     (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×
@@ -503,28 +384,32 @@ theorem composedPIOP_Rc_rbrKnowledgeSoundness_of_rlcSeamBridge [Subsingleton σ]
     (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i))
     (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×
-      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :
+      ∀ i, OracleStatement.AfterLinearCombination R pp i))
+    (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
+    (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
+    :
     (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (firstMessageKSRelIn pp oSpec) (secondSumcheckRbrRelOut (R := R) pp oSpec)
       (composedRbrError pp 0 0 (fun _ => (3 : ℝ≥0) / (Fintype.card R)) 0 err₅ 0
         (fun _ => (2 : ℝ≥0) / (Fintype.card R)) 0) := by
   obtain ⟨verify₁, hV₁⟩ := firstMessage_toVerifier_pure (R := R) pp oSpec
-  obtain ⟨verify₂, hV₂⟩ := firstChallenge_toVerifier_pure.{0} (R := R) pp oSpec
+  obtain ⟨verify₂, hV₂⟩ := firstChallenge_toVerifier_pure (R := R) pp oSpec
   obtain ⟨verify₃?, hV₃⟩ :=
     Spartan.Spec.firstSumcheck_toVerifier_isFailingDet (R := R) pp oSpec
   obtain ⟨verify₄, hV₄⟩ := sendEvalClaim_toVerifier_pure (R := R) pp oSpec
-  obtain ⟨verify₅, hV₅⟩ := linearCombination_toVerifier_pure.{0} (R := R) pp oSpec
+  obtain ⟨verify₅, hV₅⟩ := linearCombination_toVerifier_pure (R := R) pp oSpec
   obtain ⟨verify₇?, hV₇⟩ :=
     Spartan.Spec.secondSumcheck_toVerifier_isFailingDet (R := R) pp oSpec
   have h₁ := firstMessage_rbrKnowledgeSoundness_leaf (R := R) pp oSpec init impl
   have h₂ := firstChallenge_rbrKnowledgeSoundness_leaf (R := R) pp oSpec init impl
-  have h₃ := firstSumcheck_rbrKnowledgeSoundness_honest_full
+  have h₃ := firstSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds (hRound3 := hRound3)
     (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF
   have h₄ := sendEvalClaim_rbrKnowledgeSoundness_leaf_carry (R := R) pp oSpec init impl
   have h₆ := prependRLCTarget_rbrKnowledgeSoundness_leaf (R := R) pp oSpec init impl
-  have h₇ := secondSumcheck_rbrKnowledgeSoundness_honest_full
+  have h₇ := secondSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds (hRound2 :=
+    hRound2)
     (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF
-  have h₈ := finalCheck_rbrKnowledgeSoundness_secondSumcheckRbrRelOut.{0}
+  have h₈ := finalCheck_rbrKnowledgeSoundness_secondSumcheckRbrRelOut
     (R := R) pp oSpec (init := init) (impl := impl)
   exact composedPIOP_Rc_rbrKnowledgeSoundness_of_leaves pp oSpec hm hn
     verify₁ hV₁ verify₂ hV₂ verify₃? hV₃ verify₄ hV₄ verify₅ hV₅
@@ -546,4 +431,5 @@ end Spartan.Spec.Bricks
 #print axioms Spartan.Spec.Bricks.linearCombination_rbrKnowledgeSoundness_leaf_pushforward
 #print axioms Spartan.Spec.Bricks.linearCombination_rbrKnowledgeSoundness_leaf_carry
 #print axioms Spartan.Spec.Bricks.prependRLCTarget_rbrKnowledgeSoundness_leaf
-#print axioms Spartan.Spec.Bricks.composedPIOP_Rc_rbrKnowledgeSoundness_of_rlcSeamBridge
+#print axioms
+  Spartan.Spec.Bricks.composedPIOP_Rc_rbrKnowledgeSoundness_of_rlcSeamBridge_of_sumcheck_rounds

@@ -1,0 +1,37 @@
+{
+  "path": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Compliance.lean",
+  "reviewed_source_sha256": "4b6181c09a9a8ac55afb143f51810c15bf2016e132b67a095e80c79fc94ab980",
+  "declaration": "Binius.BinaryBasefold.fold_error_containment_of_UDRClose",
+  "original_command": "lemma fold_error_containment_of_UDRClose (i : Fin r) {destIdx : Fin r} (steps : ℕ)\n    (h_destIdx : destIdx = i + steps) (h_destIdx_le : destIdx ≤ ℓ) [NeZero steps]\n  (f_i : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)\n  (challenges : Fin steps → L)\n  (h_UDRClose : UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (h_i := by omega)\n    (f := f_i)) :\n  let f_bar := UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (h_i := by omega)\n    (f := f_i) (h_within_radius := h_UDRClose)\n  fold_error_containment 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)\n    (destIdx := destIdx) (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)\n    (f := f_i) (f_bar := f_bar) (r_challenges := challenges) := by\n  classical\n  dsimp [fold_error_containment]\n  intro y hy\n  have h_steps_ne : steps ≠ 0 := NeZero.ne steps\n  have h_exists : ∃ x, f_i x ≠\n      UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (h_i := by omega)\n        (f := f_i) (h_within_radius := h_UDRClose) x := by\n    by_contra hnone\n    have h_eq : f_i =\n        UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (h_i := by omega)\n          (f := f_i) (h_within_radius := h_UDRClose) := by\n      funext x\n      exact not_not.mp (by\n        intro hx\n        exact hnone ⟨x, hx⟩)\n    -- Rewrite in the generalizing direction (composite `UDRCodeword …` term ↦ the variable\n    -- `f_i`): the forward direction's motive is not type correct because the codeword's\n    -- `h_within_radius` argument itself mentions `f_i`.  `simp only` rather than `rw`:\n    -- the codeword occurrence in `hy` carries proof arguments that only match up to\n    -- proof irrelevance, which `rw`'s keyed abstraction cannot see.\n    -- `dsimp` exposed the codeword in `hy` as its `Classical.choose` body, while `h_eq`\n    -- carries the folded `UDRCodeword` head — unfold it so the rewrite pattern matches.\n    unfold UDRCodeword at h_eq\n    rw [← h_eq] at hy\n    simpa [disagreementSet] using hy\n  simpa [fiberwiseDisagreementSet, h_steps_ne, h_exists]\n\n",
+  "original_public_header_unchanged": true,
+  "corrected_canonical_semantics": "fiberwiseDisagreementSet is the actual image of source disagreements under iteratedQuotientMap. A disagreement somewhere does not make every destination point bad.",
+  "proof": "The stronger fold_error_containment_all handles arbitrary f,g and any step count. Absence of a disagreement above y makes the canonical fiber evaluation vectors equal. The canonical matrix theorem gives equal iteratedFold values, and Compatibility.iterated_fold_eq_canonical transfers to the historical wrapper. This contradicts the purported folded disagreement.",
+  "legacy_proof_issue": "The former closing simp used a global source disagreement together with nonzero steps; that relied on the obsolete univ-on-disagreement implementation and did not identify a source point in the specific fiber.",
+  "stronger_declaration": "Binius.BinaryBasefold.fold_error_containment_all",
+  "stronger_contract": "No UDR closeness or nonzero-step premise; existing ambient field/domain assumptions retained.",
+  "canonical_sources_modified": false,
+  "validation": {
+    "kind": "temporary-overlay exact BiniusFolding + Compliance source composition; imports hoisted; separate sections isolate local options",
+    "compiler_exit_code": 0,
+    "admission_checker_exit_code": 0,
+    "elapsed_seconds": 52.516,
+    "source_before_sha256": "a1e0c770265b62dbaff9d70f9b08ecefa54d43471b952455a0d98b4e0d8e5f26",
+    "source_after_sha256": "a1e0c770265b62dbaff9d70f9b08ecefa54d43471b952455a0d98b4e0d8e5f26",
+    "imports_unchanged": true,
+    "axioms": "Both fold_error_containment_all and old UDR-close wrapper only propext/Classical.choice/Quot.sound",
+    "not_a_lake_package_build": true,
+    "actual_owner": "Compiled as isolated temporary-overlay owner; this remains distinct from the final package build."
+  },
+  "actual_overlay_owner": {
+    "status": "compiled",
+    "compiler_exit_code": 0,
+    "admission_checker_exit_code": 0,
+    "source_sha256": "4b6181c09a9a8ac55afb143f51810c15bf2016e132b67a095e80c79fc94ab980",
+    "source_before_sha256": "4b6181c09a9a8ac55afb143f51810c15bf2016e132b67a095e80c79fc94ab980",
+    "source_after_sha256": "4b6181c09a9a8ac55afb143f51810c15bf2016e132b67a095e80c79fc94ab980",
+    "elapsed_seconds": 3.72,
+    "artifact_sha256": "a85ef45ae538e9779cab141eef24f3e356279c123cab9e190b380dc0b670b1b5",
+    "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Compliance.log",
+    "not_a_lake_package_build": true
+  }
+}

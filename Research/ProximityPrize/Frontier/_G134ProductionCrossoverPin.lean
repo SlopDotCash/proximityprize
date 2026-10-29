@@ -60,7 +60,10 @@ anchor `dcEnergyBound_two_rootsOfUnity` needs `12^φ(2^30) = 12^(2^29) < p²`, b
 theorem sidon_threshold_fails_at_production :
     (2 ^ 320 : ℕ) < 2 ^ (2 ^ 29) ∧ Nat.totient (2 ^ 30) = 2 ^ 29 := by
   constructor
-  · exact Nat.pow_lt_pow_right (by norm_num) (by norm_num)
+  · have hmono : ∀ a b : ℕ, a < b → (2 : ℕ) ^ a < 2 ^ b := by
+      intro a b hab
+      exact Nat.pow_lt_pow_right (by decide) hab
+    exact hmono 320 (2 ^ 29) (by norm_num)
   · rw [Nat.totient_prime_pow Nat.prime_two (by norm_num : 0 < 30)]
     norm_num
 

@@ -1,0 +1,120 @@
+namespace Verifier
+
+variable {ι : Type} {oSpec : OracleSpec ι} {StmtIn StmtOut WitIn WitOut : Type}
+  {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
+
+section Defs
+
+variable {n : ℕ} {pSpec : ProtocolSpec n}
+
+/-- KS pushforward of `relOut` along a pure verifier map. -/
+def pureKSPushforward (verify : StmtIn → pSpec.FullTranscript → StmtOut)
+    (relOut : Set (StmtOut × WitOut)) : Set (StmtIn × WitIn) :=
+  {x | ∃ tr wOut, (verify x.1 tr, wOut) ∈ relOut}
+
+/-- KS carry of `relIn` along a pure verifier map. -/
+def pureKSCarry (verify : StmtIn → pSpec.FullTranscript → StmtOut)
+    (relIn : Set (StmtIn × WitIn)) : Set (StmtOut × WitOut) :=
+  {y | ∀ stmt tr, verify stmt tr = y.1 → ∀ wIn, (stmt, wIn) ∈ relIn}
+
+end Defs
+
+section OneRound
+
+variable {pSpec : ProtocolSpec 1} [∀ i, SampleableType (pSpec.Challenge i)]
+
+theorem rbrKnowledgeSoundness_of_pure_oneRound
+    (verify : StmtIn → pSpec.FullTranscript → StmtOut)
+    (ext : StmtIn → pSpec.FullTranscript → WitOut → WitIn)
+    (relIn : Set (StmtIn × WitIn)) (relOut : Set (StmtOut × WitOut))
+    (hExt : ∀ stmt tr wOut, (verify stmt tr, wOut) ∈ relOut → (stmt, ext stmt tr wOut) ∈ relIn) :
+    Verifier.rbrKnowledgeSoundness init impl relIn relOut
+      (⟨fun stmt tr => pure (verify stmt tr)⟩ : Verifier oSpec StmtIn StmtOut pSpec) 0 := by
+  refine ⟨fun _ => WitIn,
+    { extractIn := fun _ w => w
+      extractMid := fun _ _ _ w => w
+      extractOut := fun stmt tr wOut => ext stmt tr wOut },
+    { toFun := fun m => match m with
+        | ⟨0, _⟩ => fun stmt _ w => (stmt, w) ∈ relIn
+        | ⟨1, _⟩ => fun stmt tr w => ∃ wOut, (verify stmt tr, wOut) ∈ relOut ∧ w = ext stmt tr wOut
+      toFun_empty := fun _ _ h => h
+      toFun_next := fun m hDir stmt tr msg w h => by
+        match m with
+        | ⟨0, _⟩ =>
+          obtain ⟨wOut, hrel, rfl⟩ := h
+          exact hExt _ _ _ hrel
+      toFun_full := fun stmt tr wOut h => by
+        rw [gt_iff_lt, OracleComp.OptionT.prEvent_mk_pos_iff] at h
+        obtain ⟨x, hx, hrel⟩ := h
+        simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
+        obtain ⟨s, _, hx⟩ := hx
+        have key : (simulateQ impl
+            ((⟨fun stmt tr => pure (verify stmt tr)⟩ :
+              Verifier oSpec StmtIn StmtOut pSpec).run stmt tr)).run' s
+            = pure (some (verify stmt tr)) := by
+          change (simulateQ impl
+            (pure (some (verify stmt tr)) : OracleComp oSpec (Option StmtOut))).run' s = _
+          rw [simulateQ_pure]
+          change Prod.fst <$> (pure (some (verify stmt tr)) : StateT σ ProbComp _).run s = _
+          rw [StateT.run_pure]; simp [map_pure]
+        rw [key] at hx
+        simp only [support_pure, Set.mem_singleton_iff] at hx
+        cases (Option.some.inj hx)
+        exact ⟨wOut, hrel, rfl⟩ },
+    ?_⟩
+  intro stmtIn witIn prover i
+  rcases i with ⟨⟨iv, hiv⟩, hdir⟩
+  match iv, hiv with
+  | 0, hiv =>
+    refine le_of_eq ?_
+    rw [show ((0 : pSpec.ChallengeIdx → NNReal) ⟨⟨0, hiv⟩, hdir⟩ : ENNReal) = 0 by simp]
+    rw [OracleComp.prEvent_eq_zero_iff]
+    rintro ⟨transcript, challenge, log⟩ _ ⟨w, hnot, hyes⟩
+    obtain ⟨wOut, hrel, rfl⟩ := hyes
+    exact hnot (hExt _ _ _ hrel)
+
+end OneRound
+
+section ZeroRound
+
+variable {pSpec : ProtocolSpec 0} [∀ i, SampleableType (pSpec.Challenge i)]
+
+theorem rbrKnowledgeSoundness_of_pure_zeroRound
+    (verify : StmtIn → pSpec.FullTranscript → StmtOut)
+    (ext : StmtIn → pSpec.FullTranscript → WitOut → WitIn)
+    (relIn : Set (StmtIn × WitIn)) (relOut : Set (StmtOut × WitOut))
+    (hExt : ∀ stmt tr wOut, (verify stmt tr, wOut) ∈ relOut → (stmt, ext stmt tr wOut) ∈ relIn) :
+    Verifier.rbrKnowledgeSoundness init impl relIn relOut
+      (⟨fun stmt tr => pure (verify stmt tr)⟩ : Verifier oSpec StmtIn StmtOut pSpec) 0 := by
+  refine ⟨fun _ => WitIn,
+    { extractIn := fun _ w => w
+      extractMid := fun m => Fin.elim0 m
+      extractOut := fun stmt tr wOut => ext stmt tr wOut },
+    { toFun := fun _ stmt _ w => (stmt, w) ∈ relIn
+      toFun_empty := fun _ _ h => h
+      toFun_next := fun m => Fin.elim0 m
+      toFun_full := fun stmt tr wOut h => by
+        rw [gt_iff_lt, OracleComp.OptionT.prEvent_mk_pos_iff] at h
+        obtain ⟨x, hx, hrel⟩ := h
+        simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
+        obtain ⟨s, _, hx⟩ := hx
+        have key : (simulateQ impl
+            ((⟨fun stmt tr => pure (verify stmt tr)⟩ :
+              Verifier oSpec StmtIn StmtOut pSpec).run stmt tr)).run' s
+            = pure (some (verify stmt tr)) := by
+          change (simulateQ impl
+            (pure (some (verify stmt tr)) : OracleComp oSpec (Option StmtOut))).run' s = _
+          rw [simulateQ_pure]
+          change Prod.fst <$> (pure (some (verify stmt tr)) : StateT σ ProbComp _).run s = _
+          rw [StateT.run_pure]; simp [map_pure]
+        rw [key] at hx
+        simp only [support_pure, Set.mem_singleton_iff] at hx
+        cases (Option.some.inj hx)
+        exact hExt _ _ _ hrel },
+    ?_⟩
+  intro stmtIn witIn prover i
+  exact Fin.elim0 i.1
+
+end ZeroRound
+
+end Verifier

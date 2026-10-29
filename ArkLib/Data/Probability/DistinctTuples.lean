@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.Probability.Combinatorial
+import ArkLib.Data.Probability.Notation
+import ProximityPrize.Extensions.Data.Probability.Combinatorial
 import ArkLib.Data.Probability.UniformPushforward
 
 /-!
@@ -130,7 +131,7 @@ noncomputable def uniformDistinctTuples (α : Type*) [Fintype α] [DecidableEq �
     (h : n ≤ Fintype.card α) : PMF (Fin n ↪ α) :=
   letI : Nonempty (Fin n ↪ α) :=
     Function.Embedding.nonempty_of_card_le (by simpa using h)
-  PMF.uniformOfFintype (Fin n ↪ α)
+  ProximityPrize.Compatibility.uniformOfFintype (Fin n ↪ α)
 
 /-- **The distinct-tuple ↔ subset distribution bridge.**  The image map `ofEmbedding` pushes
 the uniform distinct-tuple distribution forward to the uniform size-`n` subset distribution:
@@ -140,16 +141,16 @@ theorem map_uniformDistinctTuples_ofEmbedding (h : n ≤ Fintype.card α) :
   letI : Nonempty (Fin n ↪ α) :=
     Function.Embedding.nonempty_of_card_le (by simpa using h)
   letI : Nonempty (SizeSubset α n) := SizeSubset.nonempty_of_le h
-  have huni : uniformDistinctTuples α n h = PMF.uniformOfFintype (Fin n ↪ α) := rfl
+  have huni : uniformDistinctTuples α n h = ProximityPrize.Compatibility.uniformOfFintype (Fin n ↪ α) := rfl
   have hmap : (uniformDistinctTuples α n h).map SizeSubset.ofEmbedding
-      = PMF.uniformOfFintype (SizeSubset α n) := by
+      = ProximityPrize.Compatibility.uniformOfFintype (SizeSubset α n) := by
     rw [huni]
     exact ArkLib.Probability.map_uniformOfFintype_of_fiber_card_eq
       SizeSubset.ofEmbedding SizeSubset.ofEmbedding_surjective
       (fun s₁ s₂ => by
         rw [SizeSubset.card_fiber_ofEmbedding, SizeSubset.card_fiber_ofEmbedding])
   ext s
-  rw [hmap, PMF.uniformOfFintype_apply, uniformSizeSubsetOfLe_apply h s]
+  rw [hmap, ProximityPrize.Compatibility.uniformOfFintype_apply, uniformSizeSubsetOfLe_apply h s]
   congr 1
   rw [Fintype.card_eq_nat_card]
   exact_mod_cast SizeSubset.card

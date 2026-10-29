@@ -118,7 +118,7 @@ distinct. This is the smallest nontrivial **prize-regime** power-of-2 domain whe
 `3^{n/2}` holds. -/
 theorem subsetSumCube_card_eq_three_pow_four :
     cubeCard 97 4 (64 : ZMod 97) = 3 ^ 4 := by
-  unfold cubeCard cval; decide
+  unfold cubeCard cval; decide +kernel
 
 /-! ## REFUTED — the unconditional "exact `3^{n/2}` for all even `n`" is FALSE at `n = 6` -/
 

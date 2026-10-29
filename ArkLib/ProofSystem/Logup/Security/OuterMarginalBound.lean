@@ -54,14 +54,15 @@ For any two-stage decomposition `mx >>= k` of the outer soundness game around th
 language through the drawn value — the bad-accept probability is at most the paper-shaped
 `outerSoundnessError`. -/
 theorem outer_bad_accept_le_outerSoundnessError_sharp
-    {β : Type} {m : Type → Type v} [Monad m] [HasEvalSPMF m]
+    {β : Type} {m : Type → Type v} [Monad m] [LawfulMonad m]
+    [EvalDistSemantics m] [LawfulEvalDistSemantics m]
     (stmt : StmtIn F n M) (oStmt : ∀ i, OStmtIn F n M i)
     (hBad : ¬ (((stmt, oStmt), ()) ∈ inputRelation F n M))
     (hcard : 2 ^ n < Fintype.card F)
     (mx : m F) (k : F → m β) (q : β → Prop)
-    (hunif : ∀ x : F, Pr[= x | mx] ≤ (Fintype.card F : ℝ≥0∞)⁻¹)
-    (hsupp : ∀ x : F, x ∉ midSoundnessLanguageSharp oStmt → Pr[ q | k x] = 0) :
-    Pr[ q | mx >>= k] ≤ (outerSoundnessError F n M params : ℝ≥0∞) := by
+    (hunif : ∀ x : F, probOutput mx x ≤ (Fintype.card F : ℝ≥0∞)⁻¹)
+    (hsupp : ∀ x : F, x ∉ midSoundnessLanguageSharp oStmt → probEvent (q) (k x) = 0) :
+    probEvent (q) (mx >>= k) ≤ (outerSoundnessError F n M params : ℝ≥0∞) := by
   classical
   refine le_trans
     (probEvent_bind_le_prob_uniform mx k q (midSoundnessLanguageSharp oStmt) hunif hsupp) ?_
@@ -73,14 +74,15 @@ The variant of `outer_bad_accept_le_outerSoundnessError_sharp` matching the shap
 decomposing the outer run around the round-1 challenge query: the first stage outputs a state
 *carrying* the drawn challenge (extracted by `f`), rather than the bare challenge. -/
 theorem outer_bad_accept_le_outerSoundnessError_sharp_comap
-    {α β : Type} {m : Type → Type v} [Monad m] [HasEvalSPMF m]
+    {α β : Type} {m : Type → Type v} [Monad m] [LawfulMonad m]
+    [EvalDistSemantics m] [LawfulEvalDistSemantics m]
     (stmt : StmtIn F n M) (oStmt : ∀ i, OStmtIn F n M i)
     (hBad : ¬ (((stmt, oStmt), ()) ∈ inputRelation F n M))
     (hcard : 2 ^ n < Fintype.card F)
     (mx : m α) (f : α → F) (k : α → m β) (q : β → Prop)
-    (hunif : ∀ x : F, Pr[ fun a => f a = x | mx] ≤ (Fintype.card F : ℝ≥0∞)⁻¹)
-    (hsupp : ∀ a : α, f a ∉ midSoundnessLanguageSharp oStmt → Pr[ q | k a] = 0) :
-    Pr[ q | mx >>= k] ≤ (outerSoundnessError F n M params : ℝ≥0∞) := by
+    (hunif : ∀ x : F, probEvent (fun a => f a = x) (mx) ≤ (Fintype.card F : ℝ≥0∞)⁻¹)
+    (hsupp : ∀ a : α, f a ∉ midSoundnessLanguageSharp oStmt → probEvent (q) (k a) = 0) :
+    probEvent (q) (mx >>= k) ≤ (outerSoundnessError F n M params : ℝ≥0∞) := by
   classical
   refine le_trans
     (probEvent_bind_le_prob_uniform_comap mx f k q (midSoundnessLanguageSharp oStmt)

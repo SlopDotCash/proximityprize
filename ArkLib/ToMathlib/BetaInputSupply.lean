@@ -143,7 +143,7 @@ theorem hcard_of_concrete (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
       hbB hBzero hbξ t
   have hmul : weight_Λ_over_𝒪 hH (betaRec x₀ R H hHyp Bcoeff t) D * (H.natDegree : WithBot ℕ)
       ≤ ((((2 * t + 1) * d * D) * H.natDegree : ℕ) : WithBot ℕ) :=
-    withBot_mul_right_le (by simpa using hwt)
+    withBot_mul_right_le hwt
   -- Align the two concrete nat products and chain `≤ < `.
   refine lt_of_le_of_lt hmul ?_
   have : (((2 * t + 1) * d * D) * H.natDegree : ℕ) = ((2 * t + 1) * d * D * H.natDegree : ℕ) := by

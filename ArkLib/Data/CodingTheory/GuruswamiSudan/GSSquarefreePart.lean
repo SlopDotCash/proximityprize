@@ -130,11 +130,10 @@ lemma isCoprime_map_of_mem_primeFactors {Q R S : A[X]} (hQ0 : Q ≠ 0)
       hc0 ((IsFractionRing.injective A (FractionRing A)) (by rw [h, map_zero])))
   -- both positive degree: irreducible images, non-associate by Gauss descent
   have hprimR : R.IsPrimitive := hirrR.isPrimitive hdegR
-  have hprimS : S.IsPrimitive := hirrS.isPrimitive hdegS
   have hirrR' : Irreducible (R.map (algebraMap A (FractionRing A))) :=
     hprimR.irreducible_iff_irreducible_map_fraction_map.mp hirrR
   refine hirrR'.coprime_iff_not_dvd.mpr fun hdvd => ?_
-  have hRS : R ∣ S := hprimR.dvd_of_fraction_map_dvd_fraction_map hprimS hdvd
+  have hRS : R ∣ S := hprimR.dvd_of_fraction_map_dvd_fraction_map hdvd
   exact hne ((hirrR.associated_of_dvd hirrS hRS).eq_of_normalized hnormR hnormS)
 
 /-- **Global separability of the squarefree part.** Over a domain `A` with perfect fraction

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
 import ArkLib.Data.CodingTheory.ProximityGap.DG25.Contrapositive
 
 /-!
@@ -77,6 +77,7 @@ lemma UDRClose_iff_dist_le_udr (i : Fin r) (h_i : i ≤ ℓ)
   unfold BBF_CodeDistance at hd ⊢
   set d : ℕ := ‖((BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)
     : Set ((sDomain 𝔽q β h_ℓ_add_R_rate) i → L))‖₀ with hd_def
+  change 1 ≤ d at hd
   induction Δ₀(f, ((BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)
       : Set ((sDomain 𝔽q β h_ℓ_add_R_rate) i → L))) using ENat.recTopCoe with
   | top =>
@@ -139,6 +140,7 @@ lemma prop421Case2_probability_bound_of_bridges
         h_destIdx h_destIdx_le f_i r
       UDRClose 𝔽q β destIdx h_destIdx_le f_next
     ] ≤ ((steps * next_domain_size) / Fintype.card L) := by
+  letI : SampleableType L := SampleableType.ofFintype L
   -- Notation for the destination code (as a set) and its UDR.
   set C : Set ((sDomain 𝔽q β h_ℓ_add_R_rate) destIdx → L) :=
     ((BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) destIdx)
@@ -188,3 +190,7 @@ lemma prop421Case2_probability_bound_of_bridges
 end
 
 end Binius.BinaryBasefold
+
+#print axioms Binius.BinaryBasefold.BBF_Code_nontrivial
+#print axioms Binius.BinaryBasefold.UDRClose_iff_dist_le_udr
+#print axioms Binius.BinaryBasefold.prop421Case2_probability_bound_of_bridges

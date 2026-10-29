@@ -37,10 +37,14 @@ theorem reedSolomon_out_of_dom_smpl_1
       (((dZ : ℝ≥0) * ((dZ : ℝ≥0) - 1) / 2))
         * (((degree : ℝ≥0) - 1) / (Fintype.card F - Fintype.card ι)) ^ s :=
   OutOfDomSmpl.out_of_dom_smpl_1 (l := (dZ : ℝ≥0)) ((ReedSolomon.code φ degree : Set (ι → F))) rfl
-    (show listDecodable ((ReedSolomon.code φ degree : Set (ι → F))) (δ : ℝ) ((dZ : ℝ≥0) : ℝ) by
+    (by
+      apply Code.isListDecodable_iff_forall_ncard_le.mpr
+      intro y
+      -- Finite alphabets supply the finiteness required by the canonical list-size API.
+      refine ⟨Set.toFinite _, ?_⟩
       rw [NNReal.coe_natCast]
       exact reedSolomon_listDecodable (α := φ) (k := degree) (dX := dX) (dZ := dZ)
-        δ.coe_nonneg hbig he hdeg)
+        δ.coe_nonneg hbig he hdeg y)
     h_nonempty
 
 /-- **STIR out-of-domain sampling for Reed–Solomon (Lemma 4.5.1, simplified form, unconditional).**
@@ -56,10 +60,14 @@ theorem reedSolomon_out_of_dom_smpl_2
       (((dZ : ℝ≥0) ^ 2 / 2))
         * (((degree : ℝ≥0)) / (Fintype.card F - Fintype.card ι)) ^ s :=
   OutOfDomSmpl.out_of_dom_smpl_2 (l := (dZ : ℝ≥0)) ((ReedSolomon.code φ degree : Set (ι → F))) rfl
-    (show listDecodable ((ReedSolomon.code φ degree : Set (ι → F))) (δ : ℝ) ((dZ : ℝ≥0) : ℝ) by
+    (by
+      apply Code.isListDecodable_iff_forall_ncard_le.mpr
+      intro y
+      -- Finite alphabets supply the finiteness required by the canonical list-size API.
+      refine ⟨Set.toFinite _, ?_⟩
       rw [NNReal.coe_natCast]
       exact reedSolomon_listDecodable (α := φ) (k := degree) (dX := dX) (dZ := dZ)
-        δ.coe_nonneg hbig he hdeg)
+        δ.coe_nonneg hbig he hdeg y)
     h_nonempty
 
 /-- **The smooth-domain Reed–Solomon code is `(δ, dZ)`-list-decodable.**  `smoothCode φ m` is by

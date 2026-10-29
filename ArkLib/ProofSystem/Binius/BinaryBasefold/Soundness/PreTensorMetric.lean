@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
 
 /-!
 # Binary Basefold pre-tensor metric bounds
@@ -203,7 +203,10 @@ lemma iterated_fold_eq_of_fiberEvaluations_eq
     f g r_challenges y ?_
   intro idx
   have hidx := congrFun hfiber idx
-  simpa [fiberEvaluations] using hidx
+  by_cases hs : steps = 0
+  · subst steps
+    simpa [fiberEvaluations, quotientFiber, qMap_total_fiber] using hidx
+  · simpa only [fiberEvaluations, quotientFiber, qMap_total_fiber, hs, ↓reduceDIte] using hidx
 
 lemma preTensorCombine_row_eq_of_fiberEvaluations_eq
     (i : Fin ℓ) (steps : ℕ) {destIdx : Fin r}
@@ -308,6 +311,7 @@ private lemma exists_row_ne_of_interleave_ne
   by_contra hne
   exact hnone ⟨rowIdx, hne⟩
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Column disagreements of two pre-tensor stacks are contained in the honest per-fiber
 disagreement set. -/
 lemma preTensorCombine_disagreementCols_subset_fiberwiseDisagreementSetPerFiber
@@ -376,6 +380,7 @@ private lemma hammingDist_le_card_of_disagreementCols_subset
   rw [Code.hammingDist_eq_disagreementCols_card]
   exact Finset.card_le_card hsubset
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The interleaved Hamming distance between two pre-tensor stacks is bounded by the number of
 quotient points whose whole source fiber contains a disagreement. -/
 lemma preTensorCombine_interleaved_hamming_le_pair_fiberwiseDistance
@@ -399,7 +404,7 @@ lemma preTensorCombine_interleaved_hamming_le_pair_fiberwiseDistance
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
         (i := i) (steps := steps) (destIdx := destIdx)
         h_destIdx h_destIdx_le f g
-  simpa [Uf, Ug, pair_fiberwiseDistance] using
+  simpa [Uf, Ug, pair_fiberwiseDistance, pairFiberwiseDistance, fiberwiseDisagreementSetPerFiber] using
     hammingDist_le_card_of_disagreementCols_subset
       (Code.interleaveWordStack Uf) (Code.interleaveWordStack Ug) hsubset
 
@@ -735,9 +740,10 @@ variable {ℓ 𝓡 ϑ : ℕ} [NeZero ℓ] [NeZero 𝓡] [NeZero ϑ]
 variable {h_ℓ_add_R_rate : ℓ + 𝓡 < r}
 variable {𝓑 : Fin 2 ↪ L}
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Fiberwise closeness of a source word gives joint proximity of its pre-tensor stack to the
 destination interleaved code. -/
-lemma preTensorCombine_jointProximityNat_of_fiberwiseClose
+lemma preTensorCombine_WordStack_jointProximityNat_of_fiberwiseClose
     (i : Fin ℓ) (steps : ℕ) [NeZero steps] {destIdx : Fin r}
     (h_destIdx : destIdx.val = i.val + steps) (h_destIdx_le : destIdx ≤ ℓ)
     (f_i : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i, by omega⟩)
@@ -765,7 +771,8 @@ lemma preTensorCombine_jointProximityNat_of_fiberwiseClose
       fiberwiseDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
         (i := ⟨i, by omega⟩) (destIdx := destIdx) (steps := steps)
         h_destIdx h_destIdx_le f_i := by
-    simpa [C_dest] using
+    simpa only [C_dest, preTensorCombine_distFromInterleavedCode,
+      preTensorCombine_interleavedWord, preTensorCombine_destInterleavedCode] using
       preTensorCombine_distFromInterleavedCode_le_fiberwiseDistance_of_closest 𝔽q β
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
         (i := i) (steps := steps) (destIdx := destIdx)
@@ -835,6 +842,7 @@ variable {h_ℓ_add_R_rate : ℓ + 𝓡 < r}
 variable {𝓑 : Fin 2 ↪ L}
 
 set_option maxHeartbeats 1600000 in
+set_option backward.isDefEq.respectTransparency false in
 /-- Fiberwise closeness gives an explicit interleaved codeword within the destination UDR. -/
 lemma preTensorCombine_exists_close_interleavedCodeword_of_fiberwiseClose
     (i : Fin ℓ) (steps : ℕ) [NeZero steps] {destIdx : Fin r}
@@ -863,8 +871,9 @@ lemma preTensorCombine_exists_close_interleavedCodeword_of_fiberwiseClose
   have hg_interleaved :
       (⋈|preTensorCombine_WordStack 𝔽q β i steps h_destIdx h_destIdx_le g) ∈
         interleavedCodeSet (C := C_dest) := by
-    simpa [C_dest] using
-      preTensorCombine_is_interleavedCodeword_of_codeword 𝔽q β
+    simpa only [C_dest, preTensorCombine_interleavedWord,
+      preTensorCombine_destInterleavedCode] using
+      preTensorCombine_interleavedWord_mem_destInterleavedCode 𝔽q β
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
         (i := i) (steps := steps) (destIdx := destIdx)
         h_destIdx h_destIdx_le ⟨g, hg_mem⟩

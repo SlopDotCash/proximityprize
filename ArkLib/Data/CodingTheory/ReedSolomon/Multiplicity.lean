@@ -3,80 +3,79 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
+module
 
-import ArkLib.Data.CodingTheory.ReedSolomon
-import Mathlib.Algebra.Polynomial.Derivative
+public import ArkLib.Data.CodingTheory.ReedSolomon
+public import ArkLib.ToMathlib.Polynomial.RootMultiplicity
+public import Mathlib.Algebra.CharP.Lemmas
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Taylor
+public import Mathlib.Data.Nat.Factorial.NatCast
 
 /-!
-# Univariate multiplicity codes (ABF26 Definition A.7)
+# Univariate multiplicity codes
 
-The univariate multiplicity code packs the evaluations of a polynomial
-**and its first `s − 1` formal derivatives** at each domain point into
-a length-`s` symbol, mirroring how folded Reed-Solomon codes pack
-`s` consecutive evaluations on a multiplicative orbit. Originally
-introduced in [GW13] and analysed in detail in [KSY14]; ABF26 §A.2
-records the definition in the context of the toy-problem
-parametrisations.
+The univariate multiplicity code packs the evaluations of a polynomial of degree `< k`
+*and of its first `s - 1` formal derivatives* at each domain point into a single symbol of
+the alphabet `Fin s → F`:
 
-## Notation
+  `umCode domain k s = { f | ∃ p, deg p < k ∧ ∀ x j, f x j = (derivative^[j] p).eval (domain x) }` .
 
-For `f̂ ∈ F^{<k}[X]`, write `f̂^(j)` for the `j`-th formal derivative.
-Then
+At `s = 1` it is the plain Reed-Solomon code (`mem_umCode_one_iff_mem_rsCode`).
 
-  `UM[F, L, k, s] := { f : L → F^s | ∃ f̂ ∈ F^{<k}[X],`
-  `                     ∀ x ∈ L, f(x) = (f̂^{(0)}(x), …, f̂^{(s-1)}(x)) }`.
+## Main definitions
 
-For `s = 1`, this degenerates to the plain Reed-Solomon code
-`RS[F, L, k]` (see `mem_umCode_one_iff_mem_rsCode`).
+* `ReedSolomon.Multiplicity.umEvalOnPoints` — the encoder, as an `F`-linear map.
+* `ReedSolomon.Multiplicity.umCode` — the code, as an `F`-submodule of `ι → Fin s → F`.
 
-**Characteristic condition.** For `s ≥ 2`, the paper's A.7 requires
-`char(F) ≥ k` so that the derivative-of-monomial coefficients
-`(a_i · i)` do not vanish below degree `k` (without this, multiple
-distinct polynomials of degree `< k` can fold to the same multiplicity
-codeword, and the dimension claim collapses). The bare encoder
-`umEvalOnPoints` is well-typed in any `CommRing F` — we keep the
-hypothesis as a downstream caller's responsibility rather than baking
-it into the definition, since the `s = 1` collapse lemma below works
-unconditionally.
+## Main statements
 
-## Layout
+* `ReedSolomon.Multiplicity.pow_dvd_of_eval_iterate_derivative_eq_zero` — vanishing of the
+  first `s` derivatives at a point gives a root of multiplicity `s` there.
+* `ReedSolomon.Multiplicity.umEvalOnPoints_domRestrict_injective` — the encoder is injective
+  on `Polynomial.degreeLT F k`.
+* `ReedSolomon.Multiplicity.dim_umCode_eq_min`, `ReedSolomon.Multiplicity.dim_umCode` — the
+  dimension is `min k (s * |ι|)`, hence `k` below saturation.
 
-* `umEvalOnPoints` — the encoder, as an `F`-linear map from polynomials
-  to multiplicity codewords.
-* `umCode` — the multiplicity code as an `F`-submodule of `ι → Fin s → F`.
+## The derivative is the ordinary one
 
-Sanity lemmas:
+The derivatives here are iterates of the ordinary formal derivative `Polynomial.derivative`,
+not Hasse derivatives. Correspondingly, the results above assume `ringChar F = 0` or
+`k ≤ ringChar F`, phrased as a disjunction so that characteristic zero is not excluded by
+`ringChar F = 0` forcing `k = 0`.
 
-* `mem_umCode_one_iff_mem_rsCode` — `UM[F, L, k, 1]` collapses to
-  `RS[F, L, k]` (modulo the `Fin 1 → F` ≃ `F` reshaping).
+That hypothesis is what makes the two agree up to the units `j !`, and it cannot be dropped:
+in characteristic `p ≤ k` one has `derivative^[p] (X ^ p) = 0`, so the encoder loses
+information and the dimension statement fails. A small-characteristic variant should
+therefore be a separate definition built on `Polynomial.hasseDeriv`, not a substitution
+here.
 
 ## References
 
-* [Arnon, G., Boneh, D., Fenzi, G., *Open Problems in List Decoding and
-  Correlated Agreement*][ABF26] (§A.2, Definitions A.6, A.7).
-* [GW13] Guruswami-Wang. *Linear-algebraic list decoding for
-  variants of Reed-Solomon codes.*
-* [KSY14] Kopparty-Saraf-Yekhanin. *High-rate codes with sublinear-time
-  decoding.*
+* [Guruswami, V., and Wang, C., *Linear-Algebraic List Decoding for Variants of
+    Reed-Solomon Codes*][GW13]
+* [Kopparty, S., Saraf, S., and Yekhanin, S., *High-rate codes with sublinear-time
+    decoding*][KSY14]
+* [Arnon, G., Boneh, D., and Fenzi, G., *Open Problems in List Decoding and Correlated
+    Agreement*][ABF26]
 -/
 
+@[expose] public section
 namespace ReedSolomon
 
 namespace Multiplicity
 
-variable {ι : Type*} [Fintype ι]
-variable {F : Type*} [CommRing F]
+variable {ι : Type*}
+variable {F : Type*}
 
-/-- The univariate multiplicity-code evaluation map: send a polynomial
-`p` to the matrix `(p^{(j)}(domain x))_{x ∈ ι, j ∈ Fin s}` packaging the
-first `s` formal derivatives of `p` evaluated on the domain.
+section CommSemiring
 
-`F`-linear by construction: each entry is `c ↦ (derivative^[j] c).eval (domain x)`,
-and both `Polynomial.derivative` (iterated) and `Polynomial.eval ·` are
-`F`-linear (the latter as a function of the polynomial).
+variable [CommSemiring F]
 
-Mirrors `ReedSolomon.evalOnPoints` (the `s = 1` case) and the FRS encoder
-`ReedSolomon.Folded.frsEvalOnPoints`. -/
+/-- The multiplicity-code evaluation map, sending a polynomial `p` to the matrix
+`(derivative^[j] p).eval (domain x)` indexed by `x : ι` and `j : Fin s`.
+
+It is `F`-linear because iterated `Polynomial.derivative` and `Polynomial.eval` both are. -/
 noncomputable def umEvalOnPoints (domain : ι ↪ F) (s : ℕ) :
     Polynomial F →ₗ[F] (ι → Fin s → F) where
   toFun p := fun x j ↦ (Polynomial.derivative^[j.val] p).eval (domain x)
@@ -87,50 +86,162 @@ noncomputable def umEvalOnPoints (domain : ι ↪ F) (s : ℕ) :
     ext x j
     simp [Polynomial.eval_smul]
 
-/-- **ABF26 Definition A.7 [GW13, KSY14]** — the univariate multiplicity
-code `UM[F, L, k, s]`.
-
-Defined as the image of `Polynomial.degreeLT F k` under
-`umEvalOnPoints`, exactly mirroring the structure of `ReedSolomon.code`
-and `ReedSolomon.Folded.frsCode`. This makes `umCode` an
-`F`-submodule of `ι → Fin s → F`. -/
+/-- The univariate multiplicity code: the image of `Polynomial.degreeLT F k` under
+`umEvalOnPoints`, an `F`-submodule of `ι → Fin s → F`. -/
 noncomputable def umCode (domain : ι ↪ F) (k s : ℕ) :
     Submodule F (ι → Fin s → F) :=
   (Polynomial.degreeLT F k).map (umEvalOnPoints domain s)
 
+end CommSemiring
+
+section Field
+
+variable [Field F]
+
+/-- If the first `s` ordinary derivatives of a polynomial of degree `< k` vanish at `a`,
+then `a` is a root of multiplicity at least `s`, provided `F` has characteristic zero or
+characteristic at least `k`.
+
+The characteristic hypothesis is what makes the ordinary and Hasse derivatives differ by a
+unit `j !` throughout the relevant degree range; Mathlib's root-multiplicity criterion is
+stated for the latter. -/
+lemma pow_dvd_of_eval_iterate_derivative_eq_zero
+    {p : Polynomial F} {a : F} {s k : ℕ}
+    (hp : p ∈ Polynomial.degreeLT F k) (hchar : ringChar F = 0 ∨ k ≤ ringChar F)
+    (hzero : ∀ j : Fin s, (Polynomial.derivative^[j.val] p).eval a = 0) :
+    (Polynomial.X - Polynomial.C a) ^ s ∣ p := by
+  rw [Polynomial.X_sub_C_pow_dvd_iff, Polynomial.X_pow_dvd_iff]
+  intro d hd
+  change (Polynomial.taylor a p).coeff d = 0
+  rw [Polynomial.taylor_coeff]
+  by_cases hdk : d < k
+  · have hfac : IsUnit (d.factorial : F) := by
+      rcases hchar with hchar0 | hcharpos
+      · let : CharZero F := (CharP.ringChar_zero_iff_CharZero F).mp hchar0
+        exact IsUnit.natCast_factorial_of_algebra F d
+      · let : NeZero (ringChar F) :=
+          ⟨Nat.ne_zero_of_lt ((Nat.zero_le d).trans_lt (hdk.trans_le hcharpos))⟩
+        let : Fact (Nat.Prime (ringChar F)) := CharP.char_is_prime_of_pos F _
+        exact (IsUnit.natCast_factorial_iff_of_charP (ringChar F)).2 (hdk.trans_le hcharpos)
+    have hder := hzero ⟨d, hd⟩
+    change (Polynomial.derivative^[d] p).eval a = 0 at hder
+    have hscale := congrFun (Polynomial.factorial_smul_hasseDeriv (R := F) d) p
+    rw [← hscale] at hder
+    simp only [LinearMap.smul_apply, Polynomial.eval_smul] at hder
+    rw [nsmul_eq_mul] at hder
+    exact (mul_eq_zero.mp hder).resolve_left hfac.ne_zero
+  · by_cases hp0 : p = 0
+    · simp [hp0]
+    · have hpdeg : p.degree < (k : WithBot ℕ) := Polynomial.mem_degreeLT.mp hp
+      have hdeg : p.natDegree < k :=
+        (Polynomial.natDegree_lt_iff_degree_lt hp0).mpr hpdeg
+      rw [Polynomial.hasseDeriv_eq_zero_of_lt_natDegree p d (hdeg.trans_le (not_lt.mp hdk))]
+      simp
+
+/-- The univariate-multiplicity encoder is injective on degree-`< k` polynomials whenever
+the message dimension does not exceed the `s · n` scalar coordinates and the characteristic
+is either zero or at least `k`. -/
+lemma umEvalOnPoints_domRestrict_injective
+    {ι : Type*} [Fintype ι] {k s : ℕ}
+    (domain : ι ↪ F) (hchar : ringChar F = 0 ∨ k ≤ ringChar F)
+    (hk : k ≤ s * Fintype.card ι) :
+    Function.Injective
+      ((umEvalOnPoints domain s).domRestrict (Polynomial.degreeLT F k)) := by
+  classical
+  rw [← LinearMap.ker_eq_bot]
+  ext p
+  simp only [LinearMap.mem_ker, LinearMap.domRestrict_apply, Submodule.mem_bot]
+  constructor
+  · intro hfp
+    apply Subtype.ext
+    rcases Nat.eq_zero_or_pos k with rfl | hkpos
+    · have hdeg := Polynomial.mem_degreeLT.mp p.2
+      rw [Nat.cast_zero, Nat.WithBot.lt_zero_iff, Polynomial.degree_eq_bot] at hdeg
+      exact hdeg
+    · have : NeZero k := ⟨by omega⟩
+      by_contra hp0
+      have hpow : ∀ i : ι,
+          (Polynomial.X - Polynomial.C (domain i)) ^ s ∣ p.val := by
+        intro i
+        apply pow_dvd_of_eval_iterate_derivative_eq_zero p.2 hchar
+        intro j
+        exact congrFun (congrFun hfp i) j
+      have hmult : ∀ i : ι, s ≤ p.val.rootMultiplicity (domain i) := by
+        intro i
+        exact (Polynomial.le_rootMultiplicity_iff hp0).mpr (hpow i)
+      have hsumlow : Fintype.card ι * s ≤
+          ∑ a ∈ Finset.univ.map domain, p.val.rootMultiplicity a := by
+        rw [Finset.sum_map]
+        simpa [Finset.sum_const, nsmul_eq_mul] using
+          (Finset.sum_le_sum fun i (_hi : i ∈ (Finset.univ : Finset ι)) => hmult i)
+      have hsumhigh := Polynomial.sum_rootMultiplicity_le_natDegree
+        (W := p.val) (Finset.univ.map domain)
+      have hpdeg := ReedSolomon.natDegree_lt_of_mem_degreeLT p.2
+      rw [Nat.mul_comm] at hk
+      omega
+  · intro hp
+    simp [hp]
+
+/-- Monotonicity of univariate multiplicity codes in their message-degree parameter. -/
+lemma umCode_mono {ι : Type*} {k l s : ℕ} (hkl : k ≤ l) (domain : ι ↪ F) :
+    umCode domain k s ≤ umCode domain l s :=
+  Submodule.map_mono (Polynomial.degreeLT_mono hkl)
+
+/-- In the unsaturated range `k ≤ s · n`, a univariate multiplicity code has dimension
+exactly `k`. -/
+lemma dim_umCode {ι : Type*} [Fintype ι] {k s : ℕ}
+    (domain : ι ↪ F) (hchar : ringChar F = 0 ∨ k ≤ ringChar F)
+    (hk : k ≤ s * Fintype.card ι) :
+    Module.finrank F (umCode domain k s) = k := by
+  rw [umCode]
+  have hrange : (Polynomial.degreeLT F k).map (umEvalOnPoints domain s) =
+      LinearMap.range ((umEvalOnPoints domain s).domRestrict (Polynomial.degreeLT F k)) := by
+    ext x
+    simp [Submodule.mem_map]
+  rw [hrange, LinearMap.finrank_range_of_inj
+    (umEvalOnPoints_domRestrict_injective domain hchar hk), Polynomial.finrank_degreeLT_n]
+
+/-- The exact dimension of a univariate multiplicity code, including saturation at the
+ambient scalar dimension `s · n`. -/
+lemma dim_umCode_eq_min {ι : Type*} [Fintype ι]
+    (domain : ι ↪ F) (k s : ℕ) (hchar : ringChar F = 0 ∨ k ≤ ringChar F) :
+    Module.finrank F (umCode domain k s) = min k (s * Fintype.card ι) := by
+  classical
+  by_cases hk : k ≤ s * Fintype.card ι
+  · rw [dim_umCode domain hchar hk, min_eq_left hk]
+  · have hnsk : s * Fintype.card ι ≤ k := by omega
+    have hchar' : ringChar F = 0 ∨ s * Fintype.card ι ≤ ringChar F :=
+      hchar.imp_right hnsk.trans
+    have hdimsmall : Module.finrank F
+        (umCode domain (s * Fintype.card ι) s) = s * Fintype.card ι :=
+      dim_umCode domain hchar' le_rfl
+    have hle := umCode_mono hnsk domain (s := s)
+    have hdimle := Submodule.finrank_mono hle
+    have hamb : Module.finrank F (ι → Fin s → F) = s * Fintype.card ι := by
+      simp [Module.finrank_pi_fintype, Nat.mul_comm]
+    have hdimhigh : Module.finrank F (umCode domain k s) = s * Fintype.card ι := by
+      apply le_antisymm
+      · rw [← hamb]
+        exact Submodule.finrank_le _
+      · rw [← hdimsmall]
+        exact hdimle
+    rw [hdimhigh, min_eq_right hnsk]
+
+end Field
+
 end Multiplicity
 
-/-- **Sanity check: `UM[F, L, k, 1]` ↔ `RS[F, L, k]`.** With `s = 1`,
-the only fold index is `0 : Fin 1`, and `Polynomial.derivative^[0]` is
-the identity, so each multiplicity codeword reduces to a plain RS
-codeword. Stated as an iff between memberships (the LHS lives in
-`ι → Fin 1 → F`, the RHS in `ι → F`, avoiding the cross-type equality
-issue).
-
-Stated outside the `Multiplicity` namespace's `[CommRing F]` section to
-sidestep the `Polynomial`-Semiring instance clash between `CommRing.to…`
-and `Field.to…`: when both are in scope, the `umCode`-side polynomial
-type is incommensurate with the `ReedSolomon.code`-side one. -/
+/-- At `s = 1` the multiplicity code collapses to the plain Reed-Solomon code: the only
+index is `0 : Fin 1` and `Polynomial.derivative^[0]` is the identity. Stated as an
+equivalence of memberships, the two codes living in the distinct types `ι → Fin 1 → F` and
+`ι → F`. -/
 lemma Multiplicity.mem_umCode_one_iff_mem_rsCode
-    {ι : Type*} {F : Type*} [Field F]
+    {ι : Type*} {F : Type*} [CommSemiring F]
     (domain : ι ↪ F) (k : ℕ) (f : ι → Fin 1 → F) :
     f ∈ Multiplicity.umCode domain k 1 ↔
-      (fun i ↦ f i 0) ∈ ReedSolomon.code domain k := by
-  simp only [Multiplicity.umCode, Multiplicity.umEvalOnPoints,
-    ReedSolomon.code, ReedSolomon.evalOnPoints,
-    Submodule.mem_map, LinearMap.coe_mk, AddHom.coe_mk]
-  constructor
-  · rintro ⟨p, hp, hf⟩
-    refine ⟨p, hp, ?_⟩
-    funext i
-    have := congrFun (congrFun hf i) (0 : Fin 1)
-    simpa using this
-  · rintro ⟨p, hp, hp_eval⟩
-    refine ⟨p, hp, ?_⟩
-    funext i j
-    have hj : j = 0 := Subsingleton.elim _ _
-    subst hj
-    have := congrFun hp_eval i
-    simpa using this
+      (fun i ↦ f i 0) ∈ ReedSolomon.code domain k :=
+  ReedSolomon.mem_map_degreeLT_one_iff_mem_code domain k
+    (Multiplicity.umEvalOnPoints domain 1)
+    (fun p x => by simp [Multiplicity.umEvalOnPoints]) f
 
 end ReedSolomon

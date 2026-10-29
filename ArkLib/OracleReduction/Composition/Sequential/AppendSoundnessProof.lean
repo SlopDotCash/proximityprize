@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.OracleReduction.Composition.Sequential.SeamDecompositionRun
 import ArkLib.OracleReduction.Composition.Sequential.ChallengeSeamBridge
 import ArkLib.OracleReduction.Composition.Sequential.SeamCompleteness
+import ProximityPrize.Compatibility.StatePreservingSimulation
 
 /-!
 # Sequential-composition soundness: the seam stage-swap under a leading bind
@@ -61,23 +62,22 @@ completeness proof's `hImplSupp`.
 open OracleComp OracleSpec ProtocolSpec OptionTStateT
 open scoped ENNReal
 
-universe u v
+universe v
+
+private local instance (A : Type) : MeasurableSpace A := ⊤
 
 /-- **`OptionT.mk` event = `Option.elim`-bad event on the underlying computation.** Bridges the
 soundness goal `Pr[p | OptionT.mk M]` (a `probEvent` over `OptionT m`) to the `ProbComp (Option _)`
 form `Pr[fun o => Option.elim o False p | M]` consumed by `probComp_seam_union_le` (whose bad-event
 predicate is `¬ Option.elim · True qg = Option.elim · False (¬qg)`). `none` (failure) does not
 satisfy `p`, matching the soundness convention. -/
-lemma probEvent_optionT_mk_eq_elim {m : Type u → Type v} [Monad m] [HasEvalSPMF m] {α : Type u}
-    (M : m (Option α)) (p : α → Prop) :
-    Pr[p | (OptionT.mk M : OptionT m α)] = Pr[fun o => Option.elim o False p | M] := by
-  classical
-  rw [probEvent_eq_tsum_indicator, probEvent_eq_tsum_indicator, tsum_option _ ENNReal.summable]
-  simp only [Set.indicator_apply, Set.mem_setOf_eq, Option.elim_none, Option.elim_some,
-    if_false, zero_add]
-  refine tsum_congr fun a => ?_
-  simp only [OptionT.probOutput_eq, OptionT.run_mk]
-  split_ifs <;> rfl
+lemma probEvent_optionT_mk_eq_elim {m : Type → Type v} [Monad m] [LawfulMonad m]
+    [EvalDistSemantics m] [LawfulEvalDistSemantics m] {α : Type} (M : m (Option α)) (p : α → Prop) :
+    Pr{let x ← (OptionT.mk M : OptionT m α)}[p x] =
+      Pr{let o ← M}[Option.elim o False p] :=
+  OptionT.prEvent_mk M p
+
+#print axioms probEvent_optionT_mk_eq_elim
 
 namespace OptionTStateT
 
@@ -86,7 +86,7 @@ variable {ι : Type} {spec : OracleSpec ι} {σ : Type}
 /-- **Seam stage swap under a leading bind.** Generalises `evalDist_simulateQ_swap` to swap the two
 inner stages `A`, `B` that sit underneath a leading stage `P` whose output `r` both inner stages may
 depend on. Under state-preservation (`hso`) every stage runs from the same starting state, so the
-`A`/`B` binds commute (`SPMF.bind_comm`). This is the exact shape of the appended soundness run:
+`A`/`B` binds commute (the native uniform-answer bind commutation law). This is the exact shape of the appended soundness run:
 `P = fst` prover, `A = snd` prover, `B = V₁`, and `k` finishes with `V₂` and the output. -/
 theorem evalDist_simulateQ_swap_under
     (so : QueryImpl spec (StateT σ ProbComp))
@@ -99,11 +99,9 @@ theorem evalDist_simulateQ_swap_under
     evalDist ((simulateQ so (P >>= fun r => A r >>= fun a => B r >>= fun b => k r a b)).run' s)
       = evalDist ((simulateQ so (P >>= fun r => B r >>= fun b => A r >>= fun a => k r a b)).run' s)
         := by
-  rw [StateT.run'_eq, StateT.run'_eq, evalDist_map, evalDist_map]
-  congr 1
-  simp only [simulateQ_run_bind_state_fixed so hso, evalDist_bind]
-  refine bind_congr fun p => ?_
-  exact SPMF.bind_comm _ _ _
+  exact evalDist_simulateQ_swap_prefix so hso P A B k s
+
+#print axioms evalDist_simulateQ_swap_under
 
 end OptionTStateT
 

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.GuruswamiSudan.GSDiscriminantOverRatFunc
+import ArkLib.Data.Polynomial.BivariateFactorDegrees
 
 /-!
 # Hab25 §3 — factor degree data for the GS interpolant (S3 for factors), discharging the
@@ -40,34 +41,12 @@ namespace Polynomial.Bivariate
 
 variable {F : Type*}
 
-section Semiring
-
-variable [Semiring F]
-
-/-- The `(1, v)`-weighted degree dominates the `X`-degree: weight `1` sits on the `X`-variable,
-so dropping the `v·(Y-exponent)` summand can only decrease each term of the support-sup. -/
-lemma degreeX_le_natWeightedDegree (f : F[X][Y]) (v : ℕ) :
-    degreeX f ≤ natWeightedDegree f 1 v := by
-  refine Finset.sup_mono_fun fun m _ => ?_
-  simp only [one_mul]
-  exact Nat.le_add_right _ _
-
-end Semiring
+/- The universe-polymorphic weighted-degree bound is supplied by the canonical
+`ArkLib.Data.Polynomial.Bivariate` module. -/
 
 section CommRing
 
 variable [CommRing F] [IsDomain F]
-
-/-- **Divisors inherit the `X`-degree bound.** Over a domain, `degreeX` is additive on
-products (`degreeX_mul`), so a divisor of a nonzero bivariate polynomial has no larger
-`X`-degree. -/
-lemma degreeX_le_of_dvd {f q : F[X][Y]} (hq : q ∣ f) (hf : f ≠ 0) :
-    degreeX q ≤ degreeX f := by
-  obtain ⟨s, rfl⟩ := hq
-  have hq0 : q ≠ 0 := fun h => hf (by simp [h])
-  have hs0 : s ≠ 0 := fun h => hf (by simp [h])
-  rw [degreeX_mul q s hq0 hs0]
-  exact Nat.le_add_right _ _
 
 /-- Every `Y`-coefficient of a divisor of the nonzero `f` has `X`-degree `≤ degreeX f` —
 the per-factor coefficient bound the S5 discriminant estimate consumes. -/

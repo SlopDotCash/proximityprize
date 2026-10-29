@@ -103,10 +103,10 @@ variable {ι R : Type} [Fintype ι] [DecidableEq ι] [CommRing R] [Fintype R] [D
 `∑ i, r i * d i = t` with probability exactly `1/|R|`, whenever `d` has a unit coordinate. -/
 theorem probEvent_linearForm_eq_inv_card (d : ι → R) {i₀ : ι} (hd : IsUnit (d i₀)) (t : R)
     [SampleableType (ι → R)] :
-    Pr[fun r : ι → R => ∑ i, r i * d i = t | $ᵗ (ι → R)]
+    Pr{let r ← $ᵗ (ι → R)}[∑ i, r i * d i = t]
       = ((Fintype.card R : ENNReal))⁻¹ := by
   classical
-  rw [probEvent_uniformSample]
+  rw [SampleableType.prEvent_uniformSample]
   have hmul := card_levelSet_mul_card d hd t
   set a : ℕ := (Finset.univ.filter fun r : ι → R => ∑ i, r i * d i = t).card with ha
   have hbpos : 0 < Fintype.card (ι → R) := Fintype.card_pos
@@ -139,7 +139,7 @@ a claim vector that deviates from the truth by `d ≠ 0` survives the challenge 
 lands in one affine level set. -/
 theorem probEvent_linearForm_eq_inv_card_of_ne_zero {d : ι → R} (hd : d ≠ 0) (t : R)
     [SampleableType (ι → R)] :
-    Pr[fun r : ι → R => ∑ i, r i * d i = t | $ᵗ (ι → R)]
+    Pr{let r ← $ᵗ (ι → R)}[∑ i, r i * d i = t]
       = ((Fintype.card R : ENNReal))⁻¹ := by
   obtain ⟨i₀, hi₀⟩ := Function.ne_iff.mp hd
   exact probEvent_linearForm_eq_inv_card d (isUnit_of_ne_zero_of_finite hi₀) t

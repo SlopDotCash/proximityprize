@@ -22,6 +22,10 @@ jobs:
       LEAN_NUM_THREADS: '1'
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Check downstream proof-source policy
+        run: python3 scripts/forbidden_tokens.py
       - name: Independent literal arithmetic
         run: |
           python3 - <<'PY'
@@ -47,22 +51,32 @@ jobs:
           lint: false
           use-github-cache: false
           use-mathlib-cache: false
-      - uses: actions/cache/restore@v4
+      - name: Restore dependency cache
+        uses: actions/cache/restore@v6
         with:
-          path: .lake
-          key: udr-floor-${{ runner.os }}-${{ github.run_id }}
+          path: |
+            .lake/packages
+            !.lake/packages/**/*.setup.json
+          key: ${{ runner.os }}-lean-deps-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}
           restore-keys: |
-            ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-
-            ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}
-            udr-floor-dependencies-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
-            incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
-            incidence-dependencies-${{ runner.os }}-
+            ${{ runner.os }}-lean-deps-
+      - name: Restore build cache
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            .lake/build
+            !.lake/build/**/*.setup.json
+          key: ${{ runner.os }}-arklib-build-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-arklib-build-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}-
+            ${{ runner.os }}-arklib-build-
       - run: ./scripts/lake-locked.sh exe cache get
-      - run: ./scripts/lake-locked.sh build Research.ProximityPrize.MCAUDRBound Research.ProximityPrize.KKH26RegimeSplit Research.ProximityPrize.Frontier._PrizeShapeRateHalfBracket
+      - name: Build the consumer with package options and source-policy plugin
+        run: ./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._FirstSponsorUDRFloor
       - name: Check canonical consumer and source axioms
         run: |
           set -o pipefail
-          lake env lean Research/ProximityPrize/Frontier/_FirstSponsorUDRFloor.lean | tee udr-axioms.log
+          lake env lean -DautoImplicit=false Research/ProximityPrize/Frontier/_FirstSponsorUDRFloor.lean | tee udr-axioms.log
           python3 - <<'PY'
           import re
           from pathlib import Path

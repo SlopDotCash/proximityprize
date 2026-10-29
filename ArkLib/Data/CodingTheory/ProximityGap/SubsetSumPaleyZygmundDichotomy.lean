@@ -128,11 +128,6 @@ theorem sum_n2Count_eq_choose (G : Finset F) (a : ℕ) :
     refine Finset.sum_congr rfl (fun p _ => ?_)
     unfold n2Count
     congr 1
-    apply Finset.filter_congr
-    intro S _
-    constructor
-    · rintro ⟨h1, h2⟩; rw [Prod.ext_iff]; exact ⟨h1, h2⟩
-    · intro h; rw [Prod.ext_iff] at h; exact ⟨h.1, h.2⟩
   rw [hconv, ← hpart]
 
 /-! ## 2. The second moment `M2(a) := ∑_{(c₁,c₂)} N2(a; c₁,c₂)²`. -/

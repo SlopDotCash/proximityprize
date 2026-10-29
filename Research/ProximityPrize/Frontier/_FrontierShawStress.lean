@@ -245,16 +245,16 @@ prize point as a concrete certificate that the genuine cyclotomic threshold is e
 `q` — i.e. `p` divides many short-relation norms, the √p-vacuity face. -/
 theorem true_norm_threshold_dwarfs_conductor :
     ConductorBound (2 ^ 30) 110 ≤ (2 * 110) ^ (2 ^ 29) := by
-  -- n^(2r) = 2^6600 = (2^30)^220.  (2r)^{n/2} = 220^{2^29}.  Compare via 2^6600 ≤ 256^{2^29} ≤ 220^{2^29}?
-  -- We bound conservatively: 2^6600 ≤ 2^(2^29) ≤ 220^(2^29).
-  have hcond : ConductorBound (2 ^ 30) 110 = 2 ^ 6600 := by
-    unfold ConductorBound; rw [← pow_mul]
-  rw [hcond]
-  calc (2 : ℕ) ^ 6600
-      ≤ 2 ^ (2 ^ 29) := Nat.pow_le_pow_right (by norm_num) (by
-        -- 6600 ≤ 2^29 = 536870912
-        norm_num)
-    _ ≤ (2 * 110) ^ (2 ^ 29) := Nat.pow_le_pow_left (by norm_num) _
+  -- Compare symbolically before instantiating the enormous exponent.
+  have compare (n r e : ℕ) (hcond : ConductorBound n r = 2 ^ 6600)
+      (he : 6600 ≤ e) (hr : 2 ≤ 2 * r) : ConductorBound n r ≤ (2 * r) ^ e := by
+    rw [hcond]
+    exact (Nat.pow_le_pow_right (by decide) he).trans (Nat.pow_le_pow_left hr e)
+  apply compare (2 ^ 30) 110 (2 ^ 29)
+  · unfold ConductorBound
+    rw [← pow_mul]
+  · norm_num
+  · norm_num
 
 /-! ## ATTACK 3 — Galois orbit-summing REPLICATES the divisibility (does not reduce it)
 

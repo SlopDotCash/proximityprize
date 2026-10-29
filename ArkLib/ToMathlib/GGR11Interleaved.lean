@@ -107,8 +107,8 @@ the finite case.
 We do **not** prove this here: it is the named external obstruction. -/
 def GGR11PerWordBound (C : Set (ι → F)) (δ : ℝ) (m b r : ℕ) : Prop :=
   ∀ f : Matrix ι (Fin m) F,
-    (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
-      ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r
+    (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
+      ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r
 
 /-- **Reduction of the GGR11 interleaved list-size bound to its per-word form.**
 
@@ -118,13 +118,13 @@ encard` argument; *all* the mathematical depth lives in the hypothesis. -/
 theorem lambda_le_ggr11_of_perWordBound
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
     (h : GGR11PerWordBound C δ m b r) :
-    Lambda (interleavedCodeSet (κ := Fin m) C) δ
-      ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r := by
+    ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r := by
   refine iSup_le (fun f => ?_)
-  calc ((closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).ncard : ℕ∞)
-      ≤ (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard :=
+  calc ((ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).ncard : ℕ∞)
+      ≤ (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard :=
         Set.ncard_le_encard _
-    _ ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r := h f
+    _ ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r := h f
 
 /-! ### The GGR11 leaf-counting recursion (Theorem 3.6) — fully in-tree -/
 
@@ -201,10 +201,10 @@ the closed-form `(b+r choose r)·L^r` combinatorics, which is now the proved lem
 def GGR11TreeStructure (C : Set (ι → F)) (δ : ℝ) (m b r : ℕ) : Prop :=
   ∀ f : Matrix ι (Fin m) F,
     ∃ t : ℕ → ℕ → ℕ∞,
-      (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ t b r ∧
+      (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ t b r ∧
       (∀ b', t b' 0 ≤ 1) ∧
-      (∀ r', t 0 (r' + 1) ≤ (Lambda C δ) * t 0 r') ∧
-      (∀ b' r', t (b' + 1) (r' + 1) ≤ t b' (r' + 1) + (Lambda C δ) * t (b' + 1) r')
+      (∀ r', t 0 (r' + 1) ≤ (ListDecodable.Lambda C δ) * t 0 r') ∧
+      (∀ b' r', t (b' + 1) (r' + 1) ≤ t b' (r' + 1) + (ListDecodable.Lambda C δ) * t (b' + 1) r')
 
 /-- Named per-received-word witness for the GGR11 Erase-Decode tree residual.
 
@@ -215,13 +215,13 @@ structure GGR11TreeWitness (C : Set (ι → F)) (δ : ℝ) (m b r : ℕ)
     (f : Matrix ι (Fin m) F) where
   leafCount : ℕ → ℕ → ℕ∞
   close_le_leafCount :
-    (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ leafCount b r
+    (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard ≤ leafCount b r
   no_red_budget : ∀ b', leafCount b' 0 ≤ 1
-  red_only_step : ∀ r', leafCount 0 (r' + 1) ≤ (Lambda C δ) * leafCount 0 r'
+  red_only_step : ∀ r', leafCount 0 (r' + 1) ≤ (ListDecodable.Lambda C δ) * leafCount 0 r'
   blue_red_step :
     ∀ b' r',
       leafCount (b' + 1) (r' + 1) ≤
-        leafCount b' (r' + 1) + (Lambda C δ) * leafCount (b' + 1) r'
+        leafCount b' (r' + 1) + (ListDecodable.Lambda C δ) * leafCount (b' + 1) r'
 
 /-- Granular frontier for the remaining GGR11 construction: every received word has a named
 Erase-Decode tree witness satisfying the Blue/Red budget recursion. -/
@@ -266,10 +266,10 @@ theorem perWordBound_of_treeStructure
     GGR11PerWordBound C δ m b r := by
   intro f
   obtain ⟨t, hdom, hbase, hrec0, hrec⟩ := h f
-  calc (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
+  calc (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
       ≤ t b r := hdom
-    _ ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r :=
-        ggr11_tree_count_le (Lambda C δ) t hbase hrec0 hrec b r
+    _ ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
+        ggr11_tree_count_le (ListDecodable.Lambda C δ) t hbase hrec0 hrec b r
 
 /-- The named frontier also reassembles to the per-word GGR11 bound. -/
 theorem perWordBound_of_treeFrontier
@@ -283,16 +283,16 @@ tree-existence residual. -/
 theorem lambda_le_ggr11_of_treeStructure
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
     (h : GGR11TreeStructure C δ m b r) :
-    Lambda (interleavedCodeSet (κ := Fin m) C) δ
-      ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r :=
+    ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
   lambda_le_ggr11_of_perWordBound (perWordBound_of_treeStructure h)
 
 /-- End-to-end GGR11 list-size bound from the granular named frontier. -/
 theorem lambda_le_ggr11_of_treeFrontier
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
     (h : GGR11TreeFrontier C δ m b r) :
-    Lambda (interleavedCodeSet (κ := Fin m) C) δ
-      ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r :=
+    ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
   lambda_le_ggr11_of_treeStructure (treeStructure_of_frontier h)
 
 set_option linter.unusedFintypeInType false in
@@ -308,15 +308,15 @@ complementary `m > r` regime (where `t b' r' := Λ^{r'}` no longer dominates) th
 needs the genuine GGR11 erasure-decoding construction. -/
 theorem ggr11_treeStructure_of_le_exp [Fintype F] [Nonempty ι]
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
-    (hmr : m ≤ r) (hL : 1 ≤ Lambda C δ) :
+    (hmr : m ≤ r) (hL : 1 ≤ ListDecodable.Lambda C δ) :
     GGR11TreeStructure C δ m b r := by
   intro f
-  refine ⟨fun _ r' => (Lambda C δ) ^ r', ?_, ?_, ?_, ?_⟩
+  refine ⟨fun _ r' => (ListDecodable.Lambda C δ) ^ r', ?_, ?_, ?_, ?_⟩
   · -- domination: encard ≤ Λ^m ≤ Λ^r = t b r
-    calc (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
-        ≤ (Lambda C δ) ^ m :=
+    calc (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
+        ≤ (ListDecodable.Lambda C δ) ^ m :=
           InterleavedCode.ListSize.encard_closeCodewordsRel_interleaved_le f
-      _ ≤ (Lambda C δ) ^ r := pow_le_pow_right₀ hL hmr
+      _ ≤ (ListDecodable.Lambda C δ) ^ r := pow_le_pow_right₀ hL hmr
   · -- base: Λ^0 = 1 ≤ 1
     intro b'; simp
   · -- Red column: Λ^(r'+1) ≤ Λ · Λ^(r')  (equality)
@@ -334,7 +334,7 @@ As with `ggr11_treeStructure_of_le_exp`, this is the consistency sub-case `m ≤
 GGR11 content is the complementary finite `m > r` Erase-Decode construction, which remains external. -/
 theorem ggr11_treeFrontier_of_le_exp [Fintype F] [Nonempty ι]
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
-    (hmr : m ≤ r) (hL : 1 ≤ Lambda C δ) :
+    (hmr : m ≤ r) (hL : 1 ≤ ListDecodable.Lambda C δ) :
     GGR11TreeFrontier C δ m b r :=
   frontier_of_treeStructure (ggr11_treeStructure_of_le_exp hmr hL)
 
@@ -343,7 +343,7 @@ automatic: the RHS is `⊤`. This discharges the infinite-list edge case and lea
 list-recovery recursion as genuine external content. -/
 theorem ggr11_perWordBound_of_Lambda_top
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
-    (hr : 0 < r) (hL : Lambda C δ = ⊤) :
+    (hr : 0 < r) (hL : ListDecodable.Lambda C δ = ⊤) :
     GGR11PerWordBound C δ m b r := by
   intro f
   rw [hL]
@@ -372,30 +372,30 @@ is a sanity sub-case showing the reduction is consistent with the in-tree bound.
 It now factors through the refined residual via `ggr11_treeStructure_of_le_exp`. -/
 theorem ggr11_perWordBound_of_le_exp [Fintype F] [Nonempty ι]
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
-    (hmr : m ≤ r) (hL : 1 ≤ Lambda C δ) :
+    (hmr : m ≤ r) (hL : 1 ≤ ListDecodable.Lambda C δ) :
     GGR11PerWordBound C δ m b r := by
   intro f
-  have hpow : (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
-      ≤ (Lambda C δ) ^ m :=
+  have hpow : (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
+      ≤ (ListDecodable.Lambda C δ) ^ m :=
     InterleavedCode.ListSize.encard_closeCodewordsRel_interleaved_le f
-  have hexp : (Lambda C δ) ^ m ≤ (Lambda C δ) ^ r := pow_le_pow_right₀ hL hmr
+  have hexp : (ListDecodable.Lambda C δ) ^ m ≤ (ListDecodable.Lambda C δ) ^ r := pow_le_pow_right₀ hL hmr
   have hbinom : (1 : ℕ∞) ≤ ((b + r).choose r : ℕ∞) := by
     have : 1 ≤ (b + r).choose r := Nat.choose_pos (Nat.le_add_left r b)
     exact_mod_cast this
-  calc (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
-      ≤ (Lambda C δ) ^ m := hpow
-    _ ≤ (Lambda C δ) ^ r := hexp
-    _ = 1 * (Lambda C δ) ^ r := (one_mul _).symm
-    _ ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r := by
+  calc (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
+      ≤ (ListDecodable.Lambda C δ) ^ m := hpow
+    _ ≤ (ListDecodable.Lambda C δ) ^ r := hexp
+    _ = 1 * (ListDecodable.Lambda C δ) ^ r := (one_mul _).symm
+    _ ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r := by
           gcongr
 
 /-- Generic end-to-end elementary regime: if the Red budget already dominates the
 interleaving factor, the in-tree product bound proves the GGR11 list-size conclusion. -/
 theorem lambda_le_ggr11_of_le_exp [Fintype F] [Nonempty ι]
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
-    (hmr : m ≤ r) (hL : 1 ≤ Lambda C δ) :
-    Lambda (interleavedCodeSet (κ := Fin m) C) δ
-      ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r :=
+    (hmr : m ≤ r) (hL : 1 ≤ ListDecodable.Lambda C δ) :
+    ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
   lambda_le_ggr11_of_perWordBound (ggr11_perWordBound_of_le_exp hmr hL)
 
 /-- Generic end-to-end infinite-list regime: if the base list size is infinite and the
@@ -403,9 +403,9 @@ Red budget is positive, the right-hand side is `⊤`, so the GGR11 list-size con
 automatic. -/
 theorem lambda_le_ggr11_of_Lambda_top
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
-    (hr : 0 < r) (hL : Lambda C δ = ⊤) :
-    Lambda (interleavedCodeSet (κ := Fin m) C) δ
-      ≤ ((b + r).choose r : ℕ∞) * (Lambda C δ) ^ r :=
+    (hr : 0 < r) (hL : ListDecodable.Lambda C δ = ⊤) :
+    ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
   lambda_le_ggr11_of_perWordBound (ggr11_perWordBound_of_Lambda_top hr hL)
 
 -- Axiom audit: generic frontier/reassembly surfaces for the GGR11 tree residual.

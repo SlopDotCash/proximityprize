@@ -1,0 +1,55 @@
+{
+  "canonical_owner": "ArkLib/ProofSystem/Component/CheckClaim.lean",
+  "canonical_owner_sha256": "82fd2b58b61926bf2042589cc5898b0d3144872dfd666efd29c59b7dd7d8f612",
+  "shared_compatibility_owner": "ProximityPrize/Compatibility/CheckClaimPassThrough.lean",
+  "shared_owner_sha256": "02bf58277e41109e08c43e58c94d79c8092ed0ddcc6963f8766a09bd5f4fc331",
+  "implementation": "Canonical pure pass-through. The compatibility predicate parameter labels a relational condition and is not executed by this verifier. No runtime guard or predicate-query effects are fabricated.",
+  "preserved_public_laws": [
+    "CheckClaim.oracleProver_run",
+    "CheckClaim.support_toVerifier_run",
+    "CheckClaim.support_oracleReduction_run",
+    "CheckClaim.oracleReduction_perfectCompleteness_any",
+    "CheckClaim.oracleReduction_perfectCompleteness_passthrough",
+    "CheckClaim.oracleReduction_neverFails"
+  ],
+  "stronger_run_law": "CheckClaim.oracleReduction_run_run",
+  "old_sources": {
+    "ArkLib/ProofSystem/Spartan/FinalCheckTightComplete.lean": "a5a1c3b91fa3a7f938f70b887d7862bb7952f9d843dbe3668303d145789628de",
+    "ArkLib/ProofSystem/Spartan/TightFinalCompleteness.lean": "ddd5bda25b882479027696ff4003a9e1a9a5d12442cf78688d4e926c861b73a4"
+  },
+  "archived_old_generic_blocks": "scripts/integration/retired/checkclaim-legacy-support-proofs.lean.txt",
+  "validation": {
+    "kind": "Actual-import strict source check and temporary-overlay compiled import boundary",
+    "receipt": "/tmp/arklib-CheckClaimPassThrough-owner-build.receipt.json",
+    "axioms": "All four printed anchors use only propext, Classical.choice and Quot.sound (the run equation needs no Classical.choice).",
+    "package_build": "Required; no complete package result claimed."
+  },
+  "consumers_pending_import_validation": [],
+  "retained_model": "The completed terminal pass-through claims keep their original relation contracts. tightFinalPredicate remains explicit diagnostic data; tightFinalRelOut records the terminal identities.",
+  "compiled_consumers": [
+    {
+      "file": "ArkLib/ProofSystem/Spartan/TightFinalLeaf.lean",
+      "source_sha256": "41f1937a8c79ed2f00c5595e9835146fe1e41def3a4732e0f099c36245659e9c",
+      "receipt": "/tmp/arklib-Tight-first-second-owner-native1.receipt.json",
+      "validation_kind": "temporary-overlay current compiled import boundary; not a Lake package build"
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/FinalCheckTightComplete.lean",
+      "source_sha256": "9ba7cfb0db25968314824be89fc4a7b99b2594057daf4b2500b69b7f87eb0221",
+      "receipt": "/tmp/arklib-TightFinalCompleteness-owner-native1.receipt.json",
+      "validation_kind": "temporary-overlay current compiled import boundary; not a Lake package build"
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/TightFinalCompleteness.lean",
+      "source_sha256": "3f28b03e7729fa5a9a8a900b2109dcd768a2b3c5821c09e6347aa3c432457695",
+      "receipt": "/tmp/arklib-TightFinalCompleteness-owner-native1.receipt.json",
+      "validation_kind": "temporary-overlay current compiled import boundary; not a Lake package build"
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/TightFinalTrivial.lean",
+      "source_sha256": "cb4ccf91488c01a98c3018b28df3e921eed9c5b05a9dc7ddef961e783ae2df0a",
+      "receipt": "/tmp/arklib-TightFinalTrivial-owner-native1.receipt.json",
+      "validation_kind": "temporary-overlay current compiled import boundary; not a Lake package build"
+    }
+  ]
+}

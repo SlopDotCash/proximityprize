@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.ProofSystem.Spartan.FirstSumcheckFaithful
 import ArkLib.OracleReduction.SimOracleFoldlM
-import ArkLib.Data.Matrix.Basic
+import ProximityPrize.Extensions.Data.Matrix.Basic
 
 /-!
 # First-phase inner matrix-vector fold reconstruction (issue #114)
@@ -51,12 +51,16 @@ theorem matVecInnerFold_simOracle
   rw [simulateQ_simOracle_foldlM]
   intro a y
   rw [simulateQ_bind, matVecSummandFromOracles_simOracle]
-  simp only [pure_bind]
+  simp only [pure_bind, simulateQ_pure]
   rw [show (boolPoint R xEnum : Fin pp.ℓ_m → R)
         = ((finFunctionFinEquiv.symm xEnum : Fin pp.ℓ_m → Fin 2) : Fin pp.ℓ_m → R) from rfl,
      show (boolPoint R y : Fin pp.ℓ_n → R)
-        = ((finFunctionFinEquiv.symm y : Fin pp.ℓ_n → Fin 2) : Fin pp.ℓ_n → R) from rfl,
-     Matrix.toMLE_eval_boolPoint]
+        = ((finFunctionFinEquiv.symm y : Fin pp.ℓ_n → Fin 2) : Fin pp.ℓ_n → R) from rfl]
+  have hM := Matrix.toMLE_eval_boolPoint (m := pp.ℓ_m) (n := pp.ℓ_n)
+    (M := by simpa only [OracleStatement.AfterFirstMessage, OracleStatement, R1CS.OracleStatement,
+      PublicParams.toSizeR1CS] using oos (.inl idx))
+    (finFunctionFinEquiv.symm xEnum) (finFunctionFinEquiv.symm y)
+  rw [hM]
   simp
 
 end Spartan.Spec

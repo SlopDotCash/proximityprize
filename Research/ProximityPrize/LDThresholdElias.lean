@@ -285,7 +285,7 @@ theorem listLatticeThreshold_eq_of_lambda_elias_frontier
 
 /-- **Elias-volume upper witness for the faithful list-prize API.**
 If the Elias volume lower bound already exceeds the prize budget at lattice radius `j/n`,
-then that radius is a public `ListUpperWitness`, not only an upper bound on the canonical
+then that radius is a public `ContinuousListUpperWitness`, not only an upper bound on the canonical
 `listLatticeThreshold`. -/
 noncomputable def listUpperWitness_of_elias_volume
     (C : Submodule F (ι → F)) {m j : ℕ} (hm : m ≠ 0)
@@ -297,7 +297,7 @@ noncomputable def listUpperWitness_of_elias_volume
             (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) (Fintype.card ι) : ℝ)
           / (Fintype.card F : ℝ) ^
               ((Fintype.card ι : ℝ) - Module.finrank F C))) :
-    GrandChallenges.ListUpperWitness (C : Set (ι → F)) m ε_star := by
+    GrandChallenges.ContinuousListUpperWitness (C : Set (ι → F)) m ε_star := by
   classical
   let δ : ℝ≥0 := (j : ℝ≥0) / (Fintype.card ι : ℝ≥0)
   have hδpos : (0 : ℝ) < (δ : ℝ) := by
@@ -311,7 +311,7 @@ noncomputable def listUpperWitness_of_elias_volume
     exact_mod_cast hjn
   have helias := CodingTheory.linear_lambda_ge_elias_volume_eli57 C (δ : ℝ) hδpos hδlt
   have hdiag := Lambda_le_Lambda_interleaved (C : Set (ι → F)) hm (δ : ℝ)
-  refine GrandChallenges.ListUpperWitness.ofGt (C := (C : Set (ι → F))) (m := m)
+  refine GrandChallenges.ContinuousListUpperWitness.ofGt (C := (C : Set (ι → F))) (m := m)
     (ε_star := ε_star) (δ := δ) ?_
   calc (ε_star : ENNReal) * (Fintype.card F : ENNReal)
       < ENNReal.ofReal

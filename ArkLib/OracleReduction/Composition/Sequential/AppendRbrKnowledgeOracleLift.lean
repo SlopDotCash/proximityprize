@@ -64,13 +64,13 @@ Proof: `OracleVerifier.rbrKnowledgeSoundness` is definitionally `toVerifier`-lev
 keystone. -/
 theorem append_rbrKnowledgeSoundness_subsingleton [Subsingleton σ]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {rbrKnowledgeError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : (Stmt₁ × ∀ i, OStmt₁ i) → pSpec₁.FullTranscript → (Stmt₂ × ∀ i, OStmt₂ i))
     (hVerify : V₁.toVerifier = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty (Stmt₂ × ∀ i, OStmt₂ i)) (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
@@ -93,13 +93,13 @@ residual's conclusion is precisely the keystone's, so this is definitional from
 stateless regime. -/
 theorem appendRbrKnowledgeSoundnessResidual_msg_subsingleton [Subsingleton σ]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {rbrKnowledgeError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : (Stmt₁ × ∀ i, OStmt₁ i) → pSpec₁.FullTranscript → (Stmt₂ × ∀ i, OStmt₂ i))
     (hVerify : V₁.toVerifier = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty (Stmt₂ × ∀ i, OStmt₂ i)) (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
@@ -118,7 +118,7 @@ literally the pure verifier on `v` paired with the deterministic `oStmtOut` rout
 theorem toVerifier_eq_pure_of_collapse
     {ιₛᵢ ιₛₒ : Type} {StmtIn StmtOut : Type}
     {OStmtIn : ιₛᵢ → Type} [Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)]
-    {OStmtOut : ιₛₒ → Type}
+    {OStmtOut : ιₛₒ → Type} [Oₛₒ : ∀ i, OracleInterface (OStmtOut i)]
     {n' : ℕ} {pSpec : ProtocolSpec n'} [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
     (V : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec)
     (v : (StmtIn × ∀ i, OStmtIn i) → pSpec.FullTranscript → StmtOut)
@@ -126,15 +126,19 @@ theorem toVerifier_eq_pure_of_collapse
       simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages)
           (V.verify stmt tr.challenges)
         = (pure (v (stmt, oStmt) tr) : OptionT (OracleComp oSpec) StmtOut)) :
-    V.toVerifier = ⟨fun p tr => pure (v p tr,
-      fun i => match h : V.embed i with
-        | Sum.inl j => (V.hEq i ▸ h ▸ p.2 j : OStmtOut i)
-        | Sum.inr j => (V.hEq i ▸ h ▸ tr.messages j : OStmtOut i))⟩ := by
+    V.toVerifier = ⟨fun p tr =>
+      pure (v p tr, V.materializeOutput tr.challenges p.2 tr.messages)⟩ := by
   unfold OracleVerifier.toVerifier
   congr 1
   funext p tr
   obtain ⟨stmt, oStmt⟩ := p
-  simp only [hcollapse stmt oStmt tr, pure_bind]
+  have hr := congrArg OptionT.run (hcollapse stmt oStmt tr)
+  change simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages)
+    (V.verify stmt tr.challenges).run = pure (some (v (stmt, oStmt) tr)) at hr
+  apply OptionT.ext
+  simp only [OptionT.run_mk]
+  rw [hr]
+  simp only [LawfulApplicative.map_pure]
   rfl
 
 end OracleVerifier

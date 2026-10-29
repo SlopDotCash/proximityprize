@@ -238,7 +238,7 @@ private lemma inputState_length_eq_pairs_length
 private lemma challengeSize_le_Lvi_mul_R (i : pSpec.ChallengeIdx) :
     challengeSize i ≤ pSpec.Lᵥᵢ i * SpongeSize.R := by
   have hceil : ((challengeSize i : ℚ) / SpongeSize.R) ≤ (pSpec.Lᵥᵢ i : ℚ) := by
-    simpa [ProtocolSpec.numPermQueriesChallenge] using
+    simpa only [ProtocolSpec.Lᵥᵢ, ProtocolSpec.numPermQueriesChallenge] using
       (Nat.le_ceil ((challengeSize i : ℚ) / SpongeSize.R))
   have hRnonneg : (0 : ℚ) ≤ SpongeSize.R := by
     exact_mod_cast (Nat.zero_le SpongeSize.R)

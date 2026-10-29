@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.WeightedAgreement
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.WeightedAgreement
 import Mathlib.FieldTheory.Finite.Basic
 
 /-!
@@ -57,7 +57,7 @@ lemma code_zero {w : Fin 1 → ZMod 3} (hw : w ∈ ReedSolomon.code dom 0) : w =
   simp
 
 lemma dim0 : LinearCode.dim (ReedSolomon.code (ι := Fin 1) (F := ZMod 3) dom 0) = 0 :=
-  ReedSolomon.dim_eq_deg_of_le' (ι := Fin 1) (F := ZMod 3) (α := dom) (by simp)
+  ReedSolomon.dim_eq_deg_of_le (ι := Fin 1) (F := ZMod 3) (α := dom) (by simp)
 
 /-- At `deg = 0` the square-root rate is `0`, so the guard `0 < sqrtRate` excludes this case. -/
 lemma sqrtRate_zero_deg : ReedSolomon.sqrtRate (ι := Fin 1) (F := ZMod 3) 0 dom = 0 := by

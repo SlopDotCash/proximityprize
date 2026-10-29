@@ -18,6 +18,8 @@ jobs:
       LEAN_NUM_THREADS: "1"
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - name: Check exact triple budget arithmetic
         run: python3 scripts/probes/probe_incidence_triple_budget.py
       - uses: leanprover/lean-action@v1.6.0
@@ -32,7 +34,9 @@ jobs:
         id: dependencies
         uses: actions/cache/restore@v4
         with:
-          path: .lake
+          path: |
+            .lake
+            !.lake/**/*.setup.json
           key: incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ hashFiles('lakefile.lean', 'lakefile.toml', 'ArkLib/**/*.lean', 'Research/ProximityPrize/**/*.lean') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
@@ -91,5 +95,7 @@ jobs:
         if: always() && !cancelled() && steps.stop-lean.outcome == 'success' && steps.dependencies.outputs.cache-primary-key != ''
         uses: actions/cache/save@v4
         with:
-          path: .lake
+          path: |
+            .lake
+            !.lake/**/*.setup.json
           key: ${{ steps.dependencies.outputs.cache-primary-key }}

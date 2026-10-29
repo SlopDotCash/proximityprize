@@ -49,7 +49,7 @@ theorem toPoly_add (k D : ℕ) (c c' : CoeffSpace (F := F) k D) :
     toPoly k D (c + c') = toPoly k D c + toPoly k D c' := by
   simp only [toPoly, Pi.add_apply, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun st _ => ?_)
-  rw [← Polynomial.monomial_add, ← Polynomial.monomial_add]
+  simp only [map_add]
 
 /-- **Base-case Hasse correspondence (order `(0,0)`).** The bivariate evaluation of `toPoly c`
 at `(x₀, y₀)` equals the order-`(0,0)` Hasse coefficient (plain evaluation). This anchors the

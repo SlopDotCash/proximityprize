@@ -236,7 +236,7 @@ noncomputable def interpolant (s : Finset F) (a : F → F) : F[X] :=
 /-- The interpolant takes the prescribed value at each node. -/
 theorem interpolant_eval_node {s : Finset F} (a : F → F) {z : F} (hz : z ∈ s) :
     (interpolant s a).eval z = a z := by
-  simpa using Lagrange.eval_interpolate_at_node a (Set.injOn_id _) hz
+  exact Lagrange.eval_interpolate_at_node a (Set.injOn_id _) hz
 
 /-- The interpolant has degree `< #s` (`natDegree` form; needs a nonempty node set for the
 zero-polynomial corner). -/
@@ -247,7 +247,7 @@ theorem natDegree_interpolant_lt {s : Finset F} (hs : s.Nonempty) (a : F → F) 
     exact hs.card_pos
   · have hinj : Set.InjOn id (↑s : Set F) := fun x _ y _ hxy => hxy
     exact (Polynomial.natDegree_lt_iff_degree_lt hne).mpr
-      (by simpa using Lagrange.degree_interpolate_lt a hinj)
+      (Lagrange.degree_interpolate_lt a hinj)
 
 /-- **Brick C2 — the interpolated representative.**  Interpolate the two per-`z` value
 families at the node set `s` and assemble them in the bundle's eval shape. -/

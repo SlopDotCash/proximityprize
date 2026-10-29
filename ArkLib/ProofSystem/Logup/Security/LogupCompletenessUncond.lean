@@ -91,7 +91,7 @@ namespace Logup
 
 section Uncond
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 variable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]
   [SampleableType F]
 variable (n M : ℕ)
@@ -104,7 +104,7 @@ local instance instInhabitedFieldLogupUncond : Inhabited F := ⟨0⟩
 
 /-! ### Step 1: the binary verifier fusion is proven (no residual) -/
 
-omit [oSpec.Fintype] [oSpec.Inhabited] in
+omit [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)] in
 /-- **The binary verifier-fusion residual is discharged.** `OracleVerifier.BinaryVerifierFusion`
 is, by definition, the universally-quantified
 `(OracleVerifier.append V₁ V₂).toVerifier = Verifier.append V₁.toVerifier V₂.toVerifier`, which is
@@ -113,7 +113,7 @@ exactly the proven keystone `OracleReduction.oracleVerifier_append_toVerifier` (
 Sumcheck `hBridge` — is now unconditional. -/
 theorem binaryVerifierFusion_holds : OracleVerifier.BinaryVerifierFusion oSpec := by
   intro Stmt₁ ιₛ₁ OStmt₁ Oₛ₁ Stmt₂ ιₛ₂ OStmt₂ Oₛ₂ Stmt₃ ιₛ₃ OStmt₃ Oₛ₃
-    p q pSpec₁ pSpec₂ Oₘ₁ Oₘ₂ V₁ c₁ V₂
+    p q pSpec₁ pSpec₂ Oₘ₁ Oₘ₂ V₁ V₂
   exact OracleReduction.oracleVerifier_append_toVerifier (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁)
     V₁ V₂
 

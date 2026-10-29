@@ -4,10 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen
 -/
 
+import ArkLib.Data.Probability.Notation
 import ArkLib.Data.Classes.Serde
-import ArkLib.Data.Probability.Instances
+import ProximityPrize.Extensions.Data.Probability.Instances
 import Mathlib.Probability.ProbabilityMassFunction.Constructions
-import ToMathlib.Probability.ProbabilityMassFunction.TotalVariation
+import ProximityPrize.Compatibility.PMFTotalVariation
 
 /-!
 # Mathematical Preliminaries for Duplex-Sponge Fiat-Shamir
@@ -22,6 +23,9 @@ of the Duplex-Sponge Fiat-Shamir (DSFS) transformation. Specifically, we formali
 -/
 
 open ProbabilityTheory
+open ProximityPrize.Compatibility
+open PMFTotalVariation
+open scoped ProximityPrize.Compatibility.PMFTotalVariation
 open scoped BigOperators ProbabilityTheory
 
 namespace DuplexSpongeFS.Preliminaries
@@ -45,7 +49,7 @@ noncomputable def sampleUniformPreimage (ψ : B → A) (hψ : Function.Surjectiv
   by
     classical
     letI := preimageNonempty ψ hψ a
-    exact (PMF.uniformOfFintype (Preimage ψ a)).map Subtype.val
+    exact (ProximityPrize.Compatibility.uniformOfFintype (Preimage ψ a)).map Subtype.val
 
 /-- Pointwise evaluation of the uniform preimage sampler. The probability of sampling $b \in B$ given the target $a \in A$ is $(|{\psi^{-1}(a)}|)^{-1}$ if $\psi(b) = a$, and $0$ otherwise. -/
 theorem sampleUniformPreimage_apply (ψ : B → A) (hψ : Function.Surjective ψ) (a : A) (b : B) :
@@ -56,7 +60,7 @@ theorem sampleUniformPreimage_apply (ψ : B → A) (hψ : Function.Surjective ψ
   rw [sampleUniformPreimage, PMF.map_apply]
   by_cases h : ψ b = a
   · rw [tsum_eq_single ⟨b, h⟩]
-    · simp [PMF.uniformOfFintype_apply, h]
+    · simp [ProximityPrize.Compatibility.uniformOfFintype_apply, h]
     · intro y hy
       have hy' : b ≠ y.1 := by
         intro hEq
@@ -127,7 +131,7 @@ theorem bind_sampleUniformPreimage_eq_uniform (ψ : B → A) (hψ : Function.Sur
         intro hEq
         exact hx' hEq.symm
       change (($ᵖ B : PMF B) x) * sampleUniformPreimage ψ hψ (ψ x) b = 0
-      simp [PMF.uniformOfFintype_apply, sampleUniformPreimage_apply, hx''])]
+      simp [ProximityPrize.Compatibility.uniformOfFintype_apply, sampleUniformPreimage_apply, hx''])]
   calc
     s.sum (fun x => (($ᵖ B : PMF B) x) * sampleUniformPreimage ψ hψ (ψ x) b)
         =
@@ -137,7 +141,7 @@ theorem bind_sampleUniformPreimage_eq_uniform (ψ : B → A) (hψ : Function.Sur
           have hx' : ψ x = ψ b := by
             rw [hs_def] at hx
             simpa using (Finset.mem_filter.mp hx).2
-          rw [PMF.uniformOfFintype_apply, sampleUniformPreimage_apply, if_pos hx'.symm]
+          rw [ProximityPrize.Compatibility.uniformOfFintype_apply, sampleUniformPreimage_apply, if_pos hx'.symm]
           simp [c, hx']
   _ = s.card * ((Fintype.card B : ENNReal)⁻¹ * c) := by
           rw [Finset.sum_const, nsmul_eq_mul]
@@ -158,7 +162,7 @@ theorem bind_sampleUniformPreimage_eq_uniform (ψ : B → A) (hψ : Function.Sur
               (ENNReal.mul_inv_cancel hcard
                 (ENNReal.natCast_ne_top (Fintype.card (Preimage ψ (ψ b)))))
   _ = ($ᵖ B : PMF B) b := by
-          rw [PMF.uniformOfFintype_apply]
+          rw [ProximityPrize.Compatibility.uniformOfFintype_apply]
 
 /-- [CO25, Lemma 3.2] showing that the statistical distance between the uniform distribution and the composition of pushforward with uniform preimage resampling is zero. -/
 theorem lemma_3_2 (ψ : B → A) (hψ : Function.Surjective ψ) :
@@ -172,8 +176,9 @@ theorem lemma_3_2 (ψ : B → A) (hψ : Function.Surjective ψ) :
 /-- [CO25, Lemma 3.2] composition equation: $\psi^{-1} \circ \psi_*(\mathcal{U}(B)) = \mathcal{U}(B)$. -/
 theorem lemma_3_2_paperEquation (ψ : B → A) (hψ : Function.Surjective ψ) :
     ((uniformPreimageSampler ψ hψ) ∘ pushforward ψ) (𝒰 B) = 𝒰 B := by
-  simpa [uniformPreimageSampler, pushforward, 𝒰, Functor.map] using
-    (bind_sampleUniformPreimage_eq_uniform (ψ := ψ) hψ)
+  have h := bind_sampleUniformPreimage_eq_uniform (ψ := ψ) hψ
+  change PMF.bind ($ᵖ B) (fun b => sampleUniformPreimage ψ hψ (ψ b)) = $ᵖ B at h
+  simpa [uniformPreimageSampler, pushforward, 𝒰, PMF.bind_map, Function.comp_def] using h
 
 /-- [CO25, Lemma 3.2] in the standard total variation distance format: $\delta( \mathcal{U}(B), \psi^{-1} \circ \psi_*(\mathcal{U}(B)) ) = 0$. -/
 theorem lemma_3_2_paperNotation (ψ : B → A) (hψ : Function.Surjective ψ) :
@@ -198,7 +203,7 @@ theorem claim_1_2_10
     (hs₁ : ∃ a ∈ s₁, a ∈ p.support)
     (hs₂ : ∃ a ∈ s₂, a ∈ q.support)
     (hProb : ∑' a, s₁.indicator p a = ∑' a, s₂.indicator q a) :
-    p.tvDist q ≤ (p.filter s₁ hs₁).tvDist (q.filter s₂ hs₂) +
+    PMFTotalVariation.tvDist p q ≤ PMFTotalVariation.tvDist (p.filter s₁ hs₁) (q.filter s₂ hs₂) +
       (1 - (∑' a, s₁.indicator p a).toReal) := by
   set c := ∑' a, s₁.indicator p a with hc_def
   -- Basic properties of c (= Pr_p[s₁] = Pr_q[s₂])
@@ -291,8 +296,9 @@ theorem claim_1_2_10
             rw [← ENNReal.tsum_add, ← ENNReal.tsum_add]
       _ = _ := by rw [hcompl₁, hcompl₂]
   -- Main ENNReal inequality: etvDist p q ≤ c * etvDist(filter1, filter2) + (1 - c)
-  have hmain_ennreal : p.etvDist q ≤ c * (p.filter s₁ hs₁).etvDist (q.filter s₂ hs₂) + (1 - c) := by
-    rw [PMF.etvDist, PMF.etvDist, hsum_abs_filter]
+  have hmain_ennreal : PMFTotalVariation.etvDist p q ≤ c * PMFTotalVariation.etvDist (p.filter s₁ hs₁) (q.filter s₂ hs₂) + (1 - c) := by
+    rw [PMFTotalVariation.etvDist_eq_half_tsum, PMFTotalVariation.etvDist_eq_half_tsum,
+      hsum_abs_filter]
     -- c * (sum_ind * c⁻¹ / 2) = sum_ind / 2
     have hc_mul : c * ((∑' x, ENNReal.absDiff (s₁.indicator p x) (s₂.indicator q x)) * c⁻¹ / 2) =
         (∑' x, ENNReal.absDiff (s₁.indicator p x) (s₂.indicator q x)) / 2 := by
@@ -312,18 +318,18 @@ theorem claim_1_2_10
   have h1mc_eq : (1 - c).toReal = 1 - c.toReal :=
     ENNReal.toReal_sub_of_le hc_le ENNReal.one_ne_top
   have hmain_real :
-      p.tvDist q ≤ c.toReal * (p.filter s₁ hs₁).tvDist (q.filter s₂ hs₂) + (1 - c.toReal) := by
-    rw [PMF.tvDist, PMF.tvDist]
-    have hRHS_ne_top : c * (p.filter s₁ hs₁).etvDist (q.filter s₂ hs₂) + (1 - c) ≠ ⊤ :=
-      ENNReal.add_ne_top.mpr ⟨ENNReal.mul_ne_top hc_ne_top (PMF.etvDist_ne_top _ _),
+      PMFTotalVariation.tvDist p q ≤ c.toReal * PMFTotalVariation.tvDist (p.filter s₁ hs₁) (q.filter s₂ hs₂) + (1 - c.toReal) := by
+    rw [PMFTotalVariation.tvDist, PMFTotalVariation.tvDist]
+    have hRHS_ne_top : c * PMFTotalVariation.etvDist (p.filter s₁ hs₁) (q.filter s₂ hs₂) + (1 - c) ≠ ⊤ :=
+      ENNReal.add_ne_top.mpr ⟨ENNReal.mul_ne_top hc_ne_top (PMFTotalVariation.etvDist_ne_top _ _),
         ENNReal.sub_ne_top ENNReal.one_ne_top⟩
     have := ENNReal.toReal_mono hRHS_ne_top hmain_ennreal
-    rw [ENNReal.toReal_add (ENNReal.mul_ne_top hc_ne_top (PMF.etvDist_ne_top _ _))
+    rw [ENNReal.toReal_add (ENNReal.mul_ne_top hc_ne_top (PMFTotalVariation.etvDist_ne_top _ _))
           (ENNReal.sub_ne_top ENNReal.one_ne_top),
         ENNReal.toReal_mul, h1mc_eq] at this
     exact this
-  linarith [PMF.tvDist_nonneg (p.filter s₁ hs₁) (q.filter s₂ hs₂),
-    mul_le_of_le_one_left (PMF.tvDist_nonneg (p.filter s₁ hs₁) (q.filter s₂ hs₂)) hc_toReal_le]
+  linarith [PMFTotalVariation.tvDist_nonneg (p.filter s₁ hs₁) (q.filter s₂ hs₂),
+    mul_le_of_le_one_left (PMFTotalVariation.tvDist_nonneg (p.filter s₁ hs₁) (q.filter s₂ hs₂)) hc_toReal_le]
 
 end Claim1210
 

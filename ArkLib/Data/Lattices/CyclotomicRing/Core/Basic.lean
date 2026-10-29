@@ -3,8 +3,10 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
-import ArkLib.Data.Lattices.CyclotomicRing.Core.Modulus
-import Mathlib.RingTheory.Ideal.Quotient.Operations
+module
+
+public import ArkLib.Data.Lattices.CyclotomicRing.Core.Modulus
+public import Mathlib.RingTheory.Ideal.Quotient.Operations
 
 /-!
 # The Cyclotomic Ring `R[X] / (Φ_m)`
@@ -43,6 +45,8 @@ The only extra fact is `quotientHom_reduce`: reduction modulo
 * `quotientHom_mul` — `quotientHom (mul a b) = quotientHom a * quotientHom b`.
 -/
 
+@[expose] public section
+
 open Polynomial CompPoly CompPoly.CPolynomial
 
 namespace ArkLib.Lattices.CyclotomicModulus
@@ -69,7 +73,7 @@ def reduce (p : CPolynomial R) : CPolynomial R := p.modByMonic Φ.φ
 /-- Computable multiplication in the cyclotomic ring: multiply in `CPolynomial R`,
 then reduce modulo `φ`.
 
-Future work add proper NTT multiplication here, not just reduce-after-CPolynomial-mul
+TODO add proper NTT multiplication here, not just reduce-after-CPolynomial-mul
 (or prove equivalence to the NTT-based definition once we have the NTT).
 Can we adapt CompPoly NTT for this?
 -/
@@ -84,7 +88,8 @@ noncomputable def quotientHom : CPolynomial R →+* Φ.CyclotomicRing :=
     (CPolynomial.ringEquiv : CPolynomial R ≃+* Polynomial R).toRingHom
 
 @[simp] theorem quotientHom_apply (p : CPolynomial R) :
-    Φ.quotientHom p = Ideal.Quotient.mk Φ.modIdeal p.toPoly := rfl
+    Φ.quotientHom p = Ideal.Quotient.mk Φ.modIdeal p.toPoly := by
+  simp [quotientHom]
 
 /-- Reduction modulo `φ` is invisible in the quotient: `reduce p ≡ p (mod φ)`.
 This is the cyclotomic analogue of the `NegacyclicRingSemantics` soundness data. -/
@@ -116,5 +121,10 @@ semantic ring. -/
 @[simp] theorem quotientHom_zero : Φ.quotientHom 0 = 0 := map_zero _
 
 @[simp] theorem quotientHom_one : Φ.quotientHom 1 = 1 := map_one _
+
+/-- The modulus itself vanishes in the quotient — the defining relation of `R[X] / (φ)`. -/
+@[simp] theorem quotientHom_phi : Φ.quotientHom Φ.φ = 0 := by
+  rw [quotientHom_apply]
+  exact Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton_self _)
 
 end ArkLib.Lattices.CyclotomicModulus

@@ -30,6 +30,10 @@ namespace ZK112Refutation
 
 open OracleComp OracleSpec ProtocolSpec
 
+-- The HVZK API compares every transcript event under this same local observer.
+local instance {n : ℕ} {pSpec : ProtocolSpec n} :
+    MeasurableSpace (FullTranscript pSpec) := ⊤
+
 /-- A non-interactive reduction that **leaks the witness**: its single prover→verifier message is
 the witness bit itself. -/
 def leakProver : Prover []ₒ Unit Bool Unit Bool ⟨!v[.P_to_V], !v[Bool]⟩ where
@@ -62,8 +66,8 @@ def leakTranscript (w : Bool) : FullTranscript ⟨!v[.P_to_V], !v[Bool]⟩ :=
 theorem leakReduction_run_eq (w : Bool) :
     leakReduction.run () w = pure ⟨⟨leakTranscript w, (), w⟩, ()⟩ := by
   rw [Reduction.run_of_prover_first]
-  simp only [leakReduction, leakProver, leakVerifier, Verifier.run, leakTranscript, liftM_pure,
-    monadLift_pure, OptionT.run_pure, Option.getM, bind_pure_comp, map_pure, pure_bind, bind_assoc]
+  simp only [leakReduction, leakProver, leakVerifier, liftM_pure, OptionT.run_pure,
+    Option.getM, bind_pure_comp, map_pure, pure_bind]
   rfl
 
 /-- The honest transcript distribution is the point mass at `leakTranscript w`. -/
@@ -72,13 +76,11 @@ theorem honest_evalDist {σ : Type} (init : ProbComp σ)
     evalDist (Reduction.honestTranscriptDist init impl leakReduction () w) =
       evalDist (pure (leakTranscript w) : OptionT ProbComp (FullTranscript _)) := by
   classical
-  apply evalDist_ext
-  intro t
   unfold Reduction.honestTranscriptDist
   simp only [leakReduction_run_eq, map_pure, OptionT.run_pure, simulateQ_pure, StateT.run'_eq,
     StateT.run_pure, bind_pure_comp]
-  rw [OptionT.probOutput_eq, OptionT.probOutput_eq]
-  simp [probOutput_map_const, HasEvalPMF.probFailure_eq_zero]
+  rw [OptionT.evalDist_eq_comap_some, OptionT.evalDist_eq_comap_some]
+  simp only [OptionT.run_mk, OptionT.run_pure, OracleComp.evalDist_map_const, evalDist_pure]
 
 /-- Distinct witnesses give distinct transcripts. -/
 theorem leakTranscript_injOn (w w' : Bool) (h : leakTranscript w = leakTranscript w') : w = w' := by
@@ -99,14 +101,10 @@ theorem leakReduction_not_isHVZK {σ : Type} (init : ProbComp σ)
   have hpt : evalDist (pure (leakTranscript false) : OptionT ProbComp (FullTranscript _)) =
       evalDist (pure (leakTranscript true) : OptionT ProbComp (FullTranscript _)) :=
     h0.symm.trans h1
-  have key : probOutput (pure (leakTranscript false) : OptionT ProbComp (FullTranscript _))
-        (leakTranscript false)
-      = probOutput (pure (leakTranscript true) : OptionT ProbComp (FullTranscript _))
-        (leakTranscript false) := by
-    unfold probOutput; rw [hpt]
-  rw [probOutput_pure_self, probOutput_pure,
-    if_neg (fun h => absurd (leakTranscript_injOn _ _ h) (by decide))] at key
-  exact one_ne_zero key
+  have key := congrArg (fun μ => μ {leakTranscript false}) hpt
+  have hne : leakTranscript true ≠ leakTranscript false := fun h =>
+    (by decide : true ≠ false) (leakTranscript_injOn _ _ h)
+  simp [evalDist_pure, MeasureTheory.Measure.dirac_apply', hne] at key
 
 /-- **Issue #112 refutation (universal).** Honest-verifier zero-knowledge does NOT hold for an
 arbitrary reduction — the universal claim that *every* reduction is HVZK is false. -/
@@ -121,3 +119,7 @@ theorem not_forall_isHVZK :
     (H (pure ()) default Set.univ leakReduction)
 
 end ZK112Refutation
+
+#print axioms ZK112Refutation.honest_evalDist
+#print axioms ZK112Refutation.leakReduction_not_isHVZK
+#print axioms ZK112Refutation.not_forall_isHVZK

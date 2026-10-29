@@ -198,7 +198,7 @@ load-bearing context). The δ* target now has an **exact-rational form**: `δ* =
   incomputable lemma is OUT.**
 
 ⚠️ **DEGENERACY TRAP (do not target these).** The *real-valued* `grandMCAChallenge` /
-`grandListDecodingChallenge` collapse: `grandMCAChallenge_iff_epsMCA_one` (radius-one only),
+`continuousGrandListDecodingChallenge` collapse: `grandMCAChallenge_iff_epsMCA_one` (radius-one only),
 and `not_grandListDecodingChallengeRS_of_pos` (the LD one is *false* for `0<k`, `ε*<1`).
 **The faithful fixed-code targets are the operational supremum `mcaDeltaStar` (§2) and the
 finite-lattice specification `GrandChallengesLattice.mcaPrizeLatticeResolved`.**  The uniform
@@ -220,7 +220,7 @@ equivalent to determining the four prize instances.
 **(T3) The uniform MCA conjecture** `ProximityGap.mcaConjecture` (ABF26 §4.5):
   `∃ c₁ c₂ c₃, ∀ RS[F,L,k], ∀ δ < 1−ρ,  ε_mca(RS,δ) ≤ (1/q)·n^{c₁}/(ρ^{c₂}·η^{c₃})`,
   `η = 1−ρ−δ`. Constants quantified BEFORE the ∀-over-codes. Proving this resolves the
-  MCA witness problem at every rate (`nonempty_mcaLowerWitness_of_mcaConjecture` → `mcaPrize`),
+  MCA witness problem at every rate (`nonempty_mcaLowerWitness_of_mcaConjecture` → `continuousMcaPrize`),
   but it is stronger than T1/T2 and should not be advertised as their equivalent.
 **(T4) Treat the list-decoding threshold as a separate target.** ABF26 Theorem 5.1 sends an LD
   bound to MCA with a square-root radius loss; Theorems 5.2/5.3 send sufficiently small CA to an
@@ -806,7 +806,7 @@ a solver relies on it. -/
 
 -- §1 targets
 #check @mcaConjecture
-#check @GrandChallenges.mcaPrize
+#check @GrandChallenges.continuousMcaPrize
 #check @GrandChallenges.mcaConjectureBound
 #check @GrandChallenges.nonempty_mcaLowerWitness_of_mcaConjecture   -- conjecture ⟹ prize witness
 -- §2 the law
@@ -844,7 +844,7 @@ example : Prop := mcaConjecture
 /-- The MCA prize (all four rates, `ε* = 2^-128`) is in scope for any smooth domain. -/
 example {F ι : Type} [Field F] [Fintype F] [DecidableEq F]
     [Fintype ι] [Nonempty ι] [DecidableEq ι] (domain : ι ↪ F) : Prop :=
-  GrandChallenges.mcaPrize domain
+  GrandChallenges.continuousMcaPrize domain
 
 /-- The operational threshold `mcaDeltaStar` is in scope (the law's δ*). -/
 noncomputable example {F : Type} [Field F] [Fintype F] [DecidableEq F] {n : ℕ}

@@ -3,69 +3,16 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.ProofSystem.Sumcheck.Spec.SingleRound
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
 
 /-!
-# All-prover-witness-type per-round knowledge-flip bound (issue #13, residual `H-knowFlip`)
+# Conditional sumcheck facts under canonical message-polynomial semantics
 
-The generic plain-from-knowledge weakening
-`Verifier.RoundByRound.oracleVerifier_rbrSoundness_of_knowledgeFlip`
-(`Spec/SingleRoundPlainRbr.lean`) consumes the named hypothesis `hKnowFlip`: the per-round
-round-by-round *knowledge-flip* probability bound **for every prover witness type**, namely
-
-```
-∀ (PWitIn PWitOut : Type) (stmtIn …) (witIn' : PWitIn)
-    (prover : Prover oSpec … PWitIn … PWitOut pSpec) (i : pSpec.ChallengeIdx),
-  Pr[fun ⟨transcript, challenge, _⟩ =>
-      ∃ witMid,
-        ¬ kSF i.castSucc stmtIn transcript
-          (extractor.extractMid i stmtIn (transcript.concat challenge) witMid) ∧
-          kSF i.succ stmtIn (transcript.concat challenge) witMid
-    | run-block prover witIn' i] ≤ rbrError i.
-```
-
-This file discharges that residual for the single-round sum-check oracle verifier.
-
-## The key fact: the flip event is identically `False`
-
-The proven `Sumcheck.Spec.SingleRound.Simple.oracleVerifier_rbrKnowledgeSoundness`
-(`Spec/SingleRound.lean`) gives the bound only for the *relation* witness types (`Unit`/`Unit`).
-Its proof, however, does **not** use the prover or the witness at all: the per-round knowledge-flip
-event is *pointwise impossible*.  Concretely, the knowledge state function
-`Simple.simpleKnowledgeStateFunction` is **transcript-independent** — its value
-`kSF m stmtIn tr witMid = (stmtIn, ()) ∈ inputRelation` does not depend on `m`, `tr`, or `witMid`.
-Hence at a flip the two conjuncts read
-
-```
-¬ kSF i.castSucc stmtIn tr (extractMid …)   -- ⇔ (stmtIn,()) ∉ inputRelation
-  ∧ kSF i.succ stmtIn (tr.concat chal) witMid  -- ⇔ (stmtIn,()) ∈ inputRelation
-```
-
-which is `¬P ∧ P`, a contradiction.  The flip is therefore impossible regardless of `prover`,
-`witIn'`, `PWitIn`, `PWitOut`, so the flip probability is `0 ≤ rbrError i` *uniformly in every
-prover witness type*.  This is exactly the all-witness content the abstract `hKnowFlip` demands.
-
-## What is proven vs. taken as a named hypothesis
-
-`Simple.simpleKnowledgeStateFunction` / `Simple.simpleRbrExtractor` are `private` in
-`Spec/SingleRound.lean`, so a downstream file cannot name them to re-derive the impossibility from
-their definitions.  We therefore prove the *fully general* statement:
-
-* `rbrKnowledgeFlipProb_eq_zero_of_flipImpossible` — for **any** verifier, extractor, and knowledge
-  state function `kSF`, if the per-round knowledge-flip event is pointwise impossible
-  (hypothesis `hFlipImp`), then the per-round flip probability is `0` for **every** prover witness
-  type.  This is the entire mathematical content of the `Unit`-only `oracleVerifier_rbrKnowledgeSoundness`
-  proof, abstracted away from the (private) concrete `kSF` and stated for all witness types.
-
-* `oracleVerifier_hKnowFlip_of_flipImpossible` — its single-round sum-check oracle-verifier
-  specialization, producing the `hKnowFlip` argument in *exactly* the shape consumed by
-  `Verifier.RoundByRound.oracleVerifier_rbrSoundness_of_knowledgeFlip` (with any error family),
-  from the same flip-impossibility hypothesis.
-
-The only residual is the named hypothesis `hFlipImp` — the transcript-independence /
-flip-impossibility of the single-round knowledge state function — which is precisely the property
-the private `simpleKnowledgeStateFunction` satisfies and which the `Unit`-only proof already used
-(`hn hy`).  No `sorry`/`admit`.
+The input-only rejection and transcript-independent concrete knowledge-state claims from the old
+verifier are retired. The declarations below retain only mathematical correspondence, outer-phase,
+or explicitly conditional knowledge-flip results. No zero-error sumcheck completion follows from
+this module. Exact retired commands are in
+`scripts/integration/sumcheck-message-semantics-retirements.json`.
 -/
 
 open OracleComp OracleSpec ProtocolSpec
@@ -96,10 +43,10 @@ function `kSF`, suppose the per-round knowledge-flip event is *pointwise impossi
 Then, for **every** prover witness type `PWitIn`/`PWitOut`, prover, witness, and round, the per-round
 knowledge-flip probability over the with-log run block is `0`.
 
-This is the prover- and witness-agnostic core of `oracleVerifier_rbrKnowledgeSoundness`: the proof of
-that `Unit`-only result never touches the prover or witness, only the `hn hy` contradiction inside
-the flip event.  Abstracting it makes the bound hold uniformly in the prover witness type, which is
-exactly what the abstract `hKnowFlip` residual requires. -/
+This abstracts the zero-flip step used by the former input-query verifier's proof. For the
+canonical message-polynomial verifier it applies only when the caller supplies a valid knowledge
+state function and a flip-impossibility proof. This module does not construct those inputs or
+prove the canonical round-knowledge bound. The transfer is uniform in the prover witness type. -/
 theorem rbrKnowledgeFlipProb_eq_zero_of_flipImpossible
     {relIn : Set (StmtIn × WitIn)} {relOut : Set (StmtOut × WitOut)}
     {verifier : Verifier oSpec StmtIn StmtOut pSpec} {WitMid : Fin (n + 1) → Type}
@@ -113,22 +60,21 @@ theorem rbrKnowledgeFlipProb_eq_zero_of_flipImpossible
           kSF i.1.succ stmtIn (transcript.concat challenge) witMid))
     (PWitIn PWitOut : Type) (stmtIn : StmtIn) (witIn' : PWitIn)
     (prover : Prover oSpec StmtIn PWitIn StmtOut PWitOut pSpec) (i : pSpec.ChallengeIdx) :
-    Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+    probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
         ∃ witMid,
           ¬ kSF i.1.castSucc stmtIn transcript
             (extractor.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-            kSF i.1.succ stmtIn (transcript.concat challenge) witMid
-      | do
+            kSF i.1.succ stmtIn (transcript.concat challenge) witMid) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn'
             let challenge ← liftComp (pSpec.getChallenge i) (oSpec + [pSpec.Challenge]ₒ)
-            return (transcript, challenge, proveQueryLog))).run' (← init)] = 0 := by
+            return (transcript, challenge, proveQueryLog))).run' (← init)) = 0 := by
   -- The flip event holds for no point of the support: any witness exhibiting the flip would
   -- contradict the pointwise impossibility `hFlipImp`.
-  refine probEvent_eq_zero ?_
-  rintro ⟨transcript, challenge, _log⟩ - ⟨witMid, hNot, hYes⟩
+  refine _root_.prEvent_eq_zero_of_forall_not _ _ ?_
+  rintro ⟨transcript, challenge, _log⟩ ⟨witMid, hNot, hYes⟩
   exact hFlipImp i stmtIn transcript challenge witMid ⟨hNot, hYes⟩
 
 /-- **All-prover-witness-type per-round knowledge-flip bound from pointwise flip-impossibility.**
@@ -150,21 +96,20 @@ theorem rbrKnowledgeFlipProb_le_of_flipImpossible
           kSF i.1.succ stmtIn (transcript.concat challenge) witMid))
     (PWitIn PWitOut : Type) (stmtIn : StmtIn) (witIn' : PWitIn)
     (prover : Prover oSpec StmtIn PWitIn StmtOut PWitOut pSpec) (i : pSpec.ChallengeIdx) :
-    Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+    probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
         ∃ witMid,
           ¬ kSF i.1.castSucc stmtIn transcript
             (extractor.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-            kSF i.1.succ stmtIn (transcript.concat challenge) witMid
-      | do
+            kSF i.1.succ stmtIn (transcript.concat challenge) witMid) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn'
             let challenge ← liftComp (pSpec.getChallenge i) (oSpec + [pSpec.Challenge]ₒ)
-            return (transcript, challenge, proveQueryLog))).run' (← init)] ≤ rbrError i := by
+            return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ rbrError i := by
   rw [rbrKnowledgeFlipProb_eq_zero_of_flipImpossible kSF hFlipImp PWitIn PWitOut stmtIn witIn'
     prover i]
-  exact zero_le _
+  exact zero_le
 
 end Sumcheck.Spec.SingleRound.KnowFlip
 
@@ -178,24 +123,24 @@ variable {R : Type} [CommSemiring R] {deg : ℕ} {m : ℕ} {D : Fin m ↪ R}
 
 /-- **The `H-knowFlip` residual, single-round sum-check oracle verifier.**
 
-For the single-round sum-check oracle verifier `Simple.oracleVerifier R deg D oSpec`, given
+For the single-round sum-check oracle verifier `Simple.oracleVerifier R deg D oSpec`, the caller supplies:
 
-* a knowledge state function `kSF` (with extractor `extractor`) — in practice the in-tree
-  `simpleKnowledgeStateFunction` / `simpleRbrExtractor`, which is `private` and so cannot be named
-  here — and
-* the **flip-impossibility** hypothesis `hFlipImp` (the transcript-independence property that makes
-  the per-round knowledge-flip event identically `False`; the private
-  `simpleKnowledgeStateFunction` satisfies this, and the proven `oracleVerifier_rbrKnowledgeSoundness`
-  already uses it via `hn hy`),
+* a supplied knowledge state function `kSF` with extractor `extractor`, satisfying the current
+  canonical verifier's clauses, and
+* an explicit **flip-impossibility** proof `hFlipImp` for that supplied function,
 
-this produces the per-round knowledge-flip bound **for every prover witness type** `PWitIn`/`PWitOut`
+These are genuine assumptions. The former constant-input-relation
+`simpleKnowledgeStateFunction` belonged to the historical input-query verifier and is retired;
+it does not establish these clauses for the canonical message-polynomial verifier.
+
+The supplied data produce the per-round knowledge-flip bound **for every prover witness type** `PWitIn`/`PWitOut`
 and any error family `rbrError` — i.e. exactly the `hKnowFlip` argument consumed by
 `Verifier.RoundByRound.oracleVerifier_rbrSoundness_of_knowledgeFlip`
 (`Spec/SingleRoundPlainRbr.lean`).
 
 The conclusion is `≤ rbrError i` (with the flip probability being `0`), uniformly over the prover
-witness type, because the flip is pointwise impossible.  This discharges `H-knowFlip` modulo the
-single named residual `hFlipImp`. -/
+witness type, because the supplied proof makes the flip pointwise impossible. This transfers the
+stated assumptions; it does not discharge canonical sumcheck knowledge soundness. -/
 theorem oracleVerifier_hKnowFlip_of_flipImpossible
     {relIn : Set ((StmtIn R × ∀ i, OStmtIn R deg i) × Unit)}
     {relOut : Set ((StmtOut R × ∀ i, OStmtOut R deg i) × Unit)}
@@ -216,19 +161,18 @@ theorem oracleVerifier_hKnowFlip_of_flipImpossible
     (prover : Prover oSpec (StmtIn R × ∀ i, OStmtIn R deg i) PWitIn
       (StmtOut R × ∀ i, OStmtOut R deg i) PWitOut (SingleRound.pSpec R deg))
     (i : (SingleRound.pSpec R deg).ChallengeIdx) :
-    Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+    probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
         ∃ witMid,
           ¬ kSF i.1.castSucc stmtIn transcript
             (extractor.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-            kSF i.1.succ stmtIn (transcript.concat challenge) witMid
-      | do
+            kSF i.1.succ stmtIn (transcript.concat challenge) witMid) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn'
             let challenge ← liftComp ((SingleRound.pSpec R deg).getChallenge i)
               (oSpec + [(SingleRound.pSpec R deg).Challenge]ₒ'(challengeOracleInterface))
-            return (transcript, challenge, proveQueryLog))).run' (← init)] ≤ rbrError i :=
+            return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ rbrError i :=
   rbrKnowledgeFlipProb_le_of_flipImpossible kSF rbrError hFlipImp PWitIn PWitOut stmtIn witIn'
     prover i
 

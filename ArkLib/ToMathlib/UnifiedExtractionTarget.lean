@@ -55,6 +55,9 @@ namespace UnifiedExtractionTarget
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
+-- These historical finite-field statements use the uniform finite sampler.
+private noncomputable local instance : SampleableType F := SampleableType.ofFintype F
+
 /-- **The unified production target**: per word-stack and per decoded family, with the count
 trigger (the weakest any consumer supplies), a faithful `CurveFamilyData`. -/
 def UnifiedProducer (k deg : ℕ) (domain : ι ↪ F) (δ : ℝ≥0) : Prop :=

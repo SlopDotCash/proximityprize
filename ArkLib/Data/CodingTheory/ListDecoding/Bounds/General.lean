@@ -4,9 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
-import ArkLib.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
+import ProximityPrize.Compatibility.ListSize
+import ArkLib.Data.CodingTheory.ListDecodability.Bounds.Linear
 import ArkLib.Data.CodingTheory.Basic.Entropy
-import ArkLib.Data.CodingTheory.HammingBallVolume
+import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
 import ArkLib.Data.CodingTheory.ListDecoding.JH01
 import ArkLib.Data.CodingTheory.ListDecoding.AGL23Barrier
 import ArkLib.Data.CodingTheory.ListDecoding.CZ25CapacityReduction
@@ -14,9 +16,9 @@ import ArkLib.Data.CodingTheory.ListDecoding.CZ25DesignToLambda
 import ArkLib.Data.CodingTheory.ListDecoding.BKR06SubspacePoly
 import ArkLib.ToMathlib.BKR06FiberCount
 import ArkLib.ToMathlib.BKR06Injection
-import ArkLib.Data.CodingTheory.SubspaceDesign
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.Probability.Combinatorial
+import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.Probability.Combinatorial
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.FieldTheory.Finiteness
 import Mathlib.Algebra.Order.Floor.Extended
@@ -79,84 +81,9 @@ section LowerBounds_General
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
-/-- For any fixed center over a finite alphabet, the number of words in the corresponding
-Hamming ball is `hammingBallVolume`. The count is pure Hamming-distance combinatorics and does
-not require a field structure. -/
-theorem card_filter_hammingDist_le_eq_hammingBallVolume
-    {A : Type} [Fintype A] [DecidableEq A] (c : ι → A) (δ : ℝ) :
-    (Finset.univ.filter
-        (fun f : ι → A => hammingDist c f ≤ ⌊δ * Fintype.card ι⌋₊)).card =
-      hammingBallVolume (Fintype.card A) δ (Fintype.card ι) := by
-  rw [hammingBallVolume_eq_ncard_hammingBall δ c, ← Set.ncard_coe_finset]
-  congr 1
-  ext f
-  simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq,
-    ListDecodable.hammingBall]
-  congr!
-
-/-- **Alphabet-generic averaging identity.** Summing point-list sizes over all received words
-counts every codeword once for each center in its Hamming ball, hence
-`∑ f, |Λ(C, δ, f)| = |C| · Vol_q(δ, n)`. -/
-theorem sum_ncard_closeCodewordsRel_eq_of_set
-    {A : Type} [Fintype A] [DecidableEq A]
-    (C : Set (ι → A)) (δ : ℝ) (hδ : 0 ≤ δ) :
-    ∑ f : ι → A, (closeCodewordsRel C f δ).ncard =
-      C.ncard * hammingBallVolume (Fintype.card A) δ (Fintype.card ι) := by
-  haveI : DecidablePred (fun c : ι → A => c ∈ C) := fun c => Classical.dec _
-  set n : ℕ := Fintype.card ι with hn_def
-  set r : ℕ := ⌊δ * (n : ℝ)⌋₊ with hr_def
-  have hn_pos : 0 < n := Fintype.card_pos
-  have hbridge : ∀ f c : ι → A,
-      (c ∈ closeCodewordsRel C f δ) ↔ (c ∈ C ∧ hammingDist f c ≤ r) := by
-    intro f c
-    simp only [closeCodewordsRel, relHammingBall, Set.mem_setOf_eq]
-    refine and_congr_right (fun _ => ?_)
-    simp only [Code.relHammingDist, NNRat.cast_div, NNRat.cast_natCast]
-    rw [div_le_iff₀ (by exact_mod_cast hn_pos : (0 : ℝ) < (Fintype.card ι : ℝ)), hr_def,
-      ← hn_def, Nat.le_floor_iff (mul_nonneg hδ (Nat.cast_nonneg n))]
-    congr!
-  have hncard : ∀ f : ι → A,
-      (closeCodewordsRel C f δ).ncard =
-        (Finset.univ.filter (fun c => c ∈ C ∧ hammingDist f c ≤ r)).card := by
-    intro f
-    rw [← Set.ncard_coe_finset]
-    congr 1
-    ext c
-    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq]
-    exact hbridge f c
-  simp_rw [hncard, Finset.card_filter]
-  rw [Finset.sum_comm]
-  have hinner : ∀ c : ι → A,
-      (∑ f : ι → A, if c ∈ C ∧ hammingDist f c ≤ r then (1 : ℕ) else 0) =
-        if c ∈ C then hammingBallVolume (Fintype.card A) δ n else 0 := by
-    intro c
-    by_cases hc : c ∈ C
-    · simp only [hc, true_and, if_true]
-      rw [← Finset.card_filter, hammingBallVolume_eq_ncard_hammingBall δ c,
-        ← Set.ncard_coe_finset]
-      congr 1
-      ext f
-      simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq,
-        ListDecodable.hammingBall]
-      rw [hr_def, ← hn_def, hammingDist_comm]
-      congr!
-    · simp only [hc, false_and, if_false, Finset.sum_const_zero]
-  rw [Finset.sum_congr rfl (fun c _ => hinner c), ← Finset.sum_filter, Finset.sum_const,
-    smul_eq_mul]
-  have hcardC : (Finset.univ.filter (fun c => c ∈ C)).card = C.ncard := by
-    rw [← Set.ncard_coe_finset]
-    congr 1
-    ext c
-    simp
-  rw [hcardC, hn_def]
-
-/-- Field-linear specialization of `sum_ncard_closeCodewordsRel_eq_of_set`. -/
-theorem sum_ncard_closeCodewordsRel_eq
-    (C : Submodule F (ι → F)) (δ : ℝ) (hδ : 0 ≤ δ) :
-    ∑ f : ι → F, (closeCodewordsRel (C : Set (ι → F)) f δ).ncard =
-      (C : Set (ι → F)).ncard *
-        hammingBallVolume (Fintype.card F) δ (Fintype.card ι) :=
-  sum_ncard_closeCodewordsRel_eq_of_set (C : Set (ι → F)) δ hδ
+/- The canonical ListDecodability.Bounds.Basic owner provides the three Hamming-ball
+cardinality and averaging declarations formerly copied here. Their point-list definitions are
+identical; the canonical statements also remove unnecessary decidability/nonempty premises. -/
 
 /-- **ABF26 Lemma 3.7 [Eli57].** Elias volume lower bound on list size for an arbitrary
 finite-alphabet code:
@@ -184,7 +111,7 @@ theorem lambda_ge_elias_volume_eli57
   set Vol : ℕ := hammingBallVolume q δ n with hVol_def
   have hδ_nonneg : (0 : ℝ) ≤ δ := le_of_lt _hδ_pos
   have hsum : ∑ f : ι → A, (closeCodewordsRel C f δ).ncard = q ^ k * Vol := by
-    rw [sum_ncard_closeCodewordsRel_eq_of_set C δ hδ_nonneg, hcard, hVol_def]
+    erw [sum_ncard_closeCodewordsRel_eq_of_set C δ hδ_nonneg, hcard, hVol_def]
   -- Choose a received word attaining the maximum point-list size.
   obtain ⟨f₀, -, hf₀max⟩ := Finset.exists_max_image Finset.univ
     (fun f => (closeCodewordsRel C f δ).ncard)
@@ -655,7 +582,7 @@ theorem qpow_eq_exp (q : ℕ) (n : ℕ) (δ : ℝ) (hq : 2 ≤ q) :
   have hlogq : Real.log q ≠ 0 := by have := Real.log_pos hq1; linarith
   rw [Real.rpow_def_of_pos hqpos]
   congr 1
-  rw [qEntropy]
+  rw [qEntropy_eq_logb_form]
   simp only [Real.logb]
   field_simp
 
@@ -835,7 +762,7 @@ ported Robbins upper bound `stirlingSeq m ≤ √π·e^{1/(12m)}` (`ABF26C38.rob
 telescoped from `Stirling.log_stirlingSeq_diff_le`), and exact treatment of the three tight
 corners `{(2,1),(3,1),(3,2)}` (with `(2,1)` an exact equality `stirlingSeq(1)² = e²/2`).
 [MS77, MacWilliams–Sloane, *The Theory of Error-Correcting Codes*, Ch. 10, Lemma 7]. -/
-theorem lambda_ge_entropy_volume
+theorem lambda_ge_entropy_volume_of_floor_eq
     {A : Type} [Fintype A] [Nontrivial A] [DecidableEq A]
     (C : Set (ι → A)) (k : ℕ) (hcard : C.ncard = Fintype.card A ^ k)
     (δ : ℝ) (_hδ_pos : 0 < δ) (_hδ_lt : δ < 1)
@@ -847,62 +774,14 @@ theorem lambda_ge_entropy_volume
         ((q : ℝ) ^ ((n : ℝ) * (ρ - 1 + qEntropy q δ))
           / (8 * n * δ * (1 - δ)) ^ ((1 : ℝ) / 2))
       ≤ (Lambda C δ : ENNReal) := by
-  -- ABF26-C3.8: VERIFIED reduction to the single external MS77 ingredient (★).
-  intro q n ρ
-  -- Abbreviations matching L3.7's real bound.
-  set S : ℝ := (8 * (n : ℝ) * δ * (1 - δ)) ^ ((1 : ℝ) / 2) with hS_def
-  set Vol : ℝ := (hammingBallVolume q δ n : ℝ) with hVol_def
-  set P : ℝ := (q : ℝ) ^ ((n : ℝ) - (k : ℝ)) with hP_def
-  -- Basic positivity facts.
-  have hn_pos : 0 < n := Fintype.card_pos
-  have hn_ne : (n : ℝ) ≠ 0 := by exact_mod_cast hn_pos.ne'
-  have hqr_pos : (0 : ℝ) < (q : ℝ) := by
-    have : 1 < q := Fintype.one_lt_card
-    exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one this.le
-  have hP_pos : 0 < P := Real.rpow_pos_of_pos hqr_pos _
-  -- MS77 Stirling volume estimate (★), PROVEN at lattice points (see `ABF26C38.ms77_lattice`).
-  have hq2 : 2 ≤ q := Fintype.one_lt_card (α := A)
-  have hn1 : 1 ≤ n := hn_pos
-  -- (Fintype.one_lt_card gives `1 < q`, hence `2 ≤ q`.)
-  -- the lattice hypothesis, with `n = Fintype.card ι`.
-  have hlat' : δ * (n : ℝ) = (⌊δ * (n : ℝ)⌋₊ : ℝ) := hlat
-  have hMS77 : (q : ℝ) ^ ((n : ℝ) * qEntropy q δ) / S ≤ Vol := by
-    rw [hS_def, hVol_def]
-    exact ABF26C38.ms77_lattice q n δ hq2 _hδ_pos _hδ_lt hn1 hlat'
-  -- Algebra: rewrite the C3.8 numerator exponent via `n·ρ = k`.
-  have hnρ : (n : ℝ) * ρ = (k : ℝ) := by
-    simp only [ρ]; field_simp
-  have hexp : (n : ℝ) * (ρ - 1 + qEntropy q δ)
-      = ((n : ℝ) * qEntropy q δ) - ((n : ℝ) - (k : ℝ)) := by
-    have : (n : ℝ) * (ρ - 1 + qEntropy q δ)
-        = (n : ℝ) * ρ - (n : ℝ) + (n : ℝ) * qEntropy q δ := by ring
-    rw [this, hnρ]; ring
-  -- `q^{n(ρ-1+H_q)} = q^{n·H_q} / q^{n-k}`.
-  have hnum : (q : ℝ) ^ ((n : ℝ) * (ρ - 1 + qEntropy q δ))
-      = (q : ℝ) ^ ((n : ℝ) * qEntropy q δ) / P := by
-    rw [hexp, Real.rpow_sub hqr_pos, hP_def]
-  -- The real-side reduction: C3.8 RHS ≤ Vol / P (= L3.7 real bound).
-  have hreduce :
-      (q : ℝ) ^ ((n : ℝ) * (ρ - 1 + qEntropy q δ)) / S ≤ Vol / P := by
-    -- `(q^{nH}/P)/S = (q^{nH}/S)/P ≤ Vol/P` by (★) and `P > 0`.
-    rw [hnum]
-    have hcomm : ((q : ℝ) ^ ((n : ℝ) * qEntropy q δ) / P) / S
-        = ((q : ℝ) ^ ((n : ℝ) * qEntropy q δ) / S) / P := by
-      rw [div_div, div_div, mul_comm P S]
-    rw [hcomm]
-    -- divide both sides of (★) by `P > 0`.
-    gcongr
-  -- Chain through L3.7 (PROVEN): ofReal(Vol/P) ≤ Λ.
-  have hL37 := lambda_ge_elias_volume_eli57 (ι := ι) C k hcard δ _hδ_pos _hδ_lt
-  -- L3.7's RHS real expression is `Vol / P`; rewrite to our `set` names.
-  refine le_trans (ENNReal.ofReal_le_ofReal hreduce) ?_
-  -- now: ofReal (Vol / P) ≤ Λ, matching L3.7.
-  convert hL37 using 2
+  rw [ProximityPrize.Compatibility.legacyLambda_eq_canonical]
+  exact lambda_ge_entropy_volume C k hcard δ _hδ_pos _hδ_lt
+    ⟨⌊δ * (Fintype.card ι : ℝ)⌋₊, hlat.symm⟩
 
 /-- **ABF26 Corollary 3.8 for a field-linear code.** This preserves the original API as a
 specialization of `lambda_ge_entropy_volume`, with the code cardinality supplied by
 `Module.card_eq_pow_finrank`. -/
-theorem linear_lambda_ge_entropy_volume
+theorem linear_lambda_ge_entropy_volume_of_floor_eq
     (C : Submodule F (ι → F)) (δ : ℝ) (_hδ_pos : 0 < δ) (_hδ_lt : δ < 1)
     (hlat : δ * (Fintype.card ι : ℝ) = (⌊δ * (Fintype.card ι : ℝ)⌋₊ : ℝ)) :
     let q : ℕ := Fintype.card F
@@ -913,12 +792,9 @@ theorem linear_lambda_ge_entropy_volume
         ((q : ℝ) ^ ((n : ℝ) * (ρ - 1 + qEntropy q δ))
           / (8 * n * δ * (1 - δ)) ^ ((1 : ℝ) / 2))
       ≤ (Lambda ((C : Set (ι → F))) δ : ENNReal) := by
-  apply lambda_ge_entropy_volume (C := (C : Set (ι → F)))
-    (k := Module.finrank F C) (δ := δ) ?_ _hδ_pos _hδ_lt hlat
-  classical
-  haveI : Fintype (↥C) := Fintype.ofFinite _
-  rw [← Nat.card_coe_set_eq, Nat.card_eq_fintype_card]
-  exact Module.card_eq_pow_finrank (K := F) (V := ↥C)
+  rw [ProximityPrize.Compatibility.legacyLambda_eq_canonical]
+  exact linear_lambda_ge_entropy_volume C δ _hδ_pos _hδ_lt
+    ⟨⌊δ * (Fintype.card ι : ℝ)⌋₊, hlat.symm⟩
 
 /- **ST20 plurality-center averaging core (in-tree, fully proven).**
 Given `ℓ + 1` words `c₀, …, c_ℓ : ι → F`, the *plurality center* `z`, obtained by choosing at
@@ -1140,7 +1016,9 @@ private theorem st20_dist_bound (S : Finset ι) (ℓ : ℕ)
     have hbase := st20_attach_fiber_ge Sc (ℓ+1) (by omega) j.val j.isLt e
     have hcongr : (Sc.attach.filter (fun x => (e x).val % (ℓ+1) = j.val)).card
         = (Sc.attach.filter (fun x => partN x = j)).card := by
-      congr 1; apply Finset.filter_congr; intro x _
+      apply congrArg Finset.card
+      apply Finset.filter_congr
+      intro x _
       constructor
       · intro h; apply Fin.ext; simp only [hpartN]; exact h
       · intro h; have := congrArg Fin.val h; simpa [hpartN] using this

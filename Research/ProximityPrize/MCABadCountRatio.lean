@@ -278,11 +278,11 @@ theorem mcaPrize_iff_of_cT_injOn (domain : ι ↪ F)
           (⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ + 1),
         cT domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ T (u₀ j) =
           cT domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ T' (u₀ j) → T = T') :
-    mcaPrize domain ↔
+    continuousMcaPrize domain ↔
       ∀ j : Fin 4,
         ((Fintype.card ι).choose (⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ + 1) : ENNReal) /
             (Fintype.card F : ENNReal) ≤ (epsStar : ENNReal) := by
-  unfold mcaPrize grandMCAChallengeRSrate grandMCAChallengeRS
+  unfold continuousMcaPrize grandMCAChallengeRSrate grandMCAChallengeRS
   exact forall_congr' fun j =>
     grandMCAChallenge_iff_choose_le_of_cT_injOn domain _ (u₀ j) (hu₀ j) epsStar
 

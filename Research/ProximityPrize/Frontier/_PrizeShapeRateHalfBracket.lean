@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.EvaluationCodeDimension
 import Research.ProximityPrize.Frontier._GenericQuotientInterpolationSpread
 import Research.ProximityPrize.Frontier._SecondMomentUniformFieldWindow
 import Research.ProximityPrize.Frontier._PrizeShapePrimeP30
@@ -36,6 +37,7 @@ formally refuted by the quotient construction.
 -/
 
 set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedSectionVars false
 set_option maxRecDepth 100000
 
@@ -127,7 +129,7 @@ theorem latticeBoundary_le_mcaDeltaStar_of_predecessor_good
         rwa [hboundaryMul] at hm
       have hfloorDelta :
           Nat.floor (delta * (Fintype.card (Fin n) : NNReal)) = w := by
-        rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le _)]
+        rw [Fintype.card_fin, Nat.floor_eq_iff (by positivity)]
         constructor
         · exact hlowerFloor
         · have hcast : ((w : NNReal) + 1) = (a : NNReal) := by
@@ -233,8 +235,8 @@ theorem firstPrime_rateHalf_epsStar_lt_epsMCA_thirtyOneSixtyFour :
       epsMCA (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)
         (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g
           (2 ^ 30) (2 ^ 29 - 1)) (31 / 64 : NNReal) := by
-  letI : NeZero (64 : Nat) := ⟨by norm_num⟩
-  letI : NeZero (2 ^ 24 : Nat) := ⟨by norm_num⟩
+  have : NeZero (64 : Nat) := ⟨by norm_num⟩
+  have : NeZero (2 ^ 24 : Nat) := ⟨by norm_num⟩
   have h := epsStar_lt_epsMCA_of_exact_rounded_quotient_supply
     (p := ArkLib.ProximityGap.PrizeShapePrimeP30.P)
     (s := 64) (m := 2 ^ 24) (r := 33)
@@ -273,8 +275,8 @@ theorem secondPrime_rateHalf_mcaDeltaStar_le_thirtyOneSixtyFour :
       (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
         (2 ^ 30) (2 ^ 29 - 1))
       (ProximityGap.epsStar : ENNReal) <= (31 / 64 : NNReal) := by
-  letI : NeZero (64 : Nat) := ⟨by norm_num⟩
-  letI : NeZero (2 ^ 24 : Nat) := ⟨by norm_num⟩
+  have : NeZero (64 : Nat) := ⟨by norm_num⟩
+  have : NeZero (2 ^ 24 : Nat) := ⟨by norm_num⟩
   have h := mcaDeltaStar_le_of_exact_rounded_quotient_supply
     (p := ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)
     (s := 64) (m := 2 ^ 24) (r := 33)
@@ -304,7 +306,7 @@ theorem firstPrime_rateHalf_ladder_floor :
         (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g
           (2 ^ 30) (2 ^ 29 - 1))
         (ProximityGap.epsStar : ENNReal) := by
-  letI : NeZero (2 ^ 30 : Nat) := ⟨by norm_num⟩
+  have : NeZero (2 ^ 30 : Nat) := ⟨by norm_num⟩
   let dom : Fin (2 ^ 30) ↪ ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P :=
     ProximityGap.Ownership.smoothDom ArkLib.ProximityGap.PrizeShapePrimeP30.g
       (2 ^ 30) ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g
@@ -326,11 +328,10 @@ theorem firstPrime_rateHalf_ladder_floor :
           Submodule (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)
             (Fin (2 ^ 30) -> ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) :
           Set (Fin (2 ^ 30) -> ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) := by
-    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 <= 2 ^ 29)] using
-      (ProximityGap.Ownership.evalCode_eq_rsCode
-        ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (2 ^ 29 - 1))
+    exact ProximityGap.Ownership.evalCode_pred_eq_rsCode (k := 2 ^ 29)
+      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (by norm_num)
   rw [← hcode] at hlower
-  convert hlower using 1 <;> norm_num
+  convert hlower using 1; norm_num
 
 /-- The same unconditional staircase floor in the second certified field. -/
 theorem secondPrime_rateHalf_ladder_floor :
@@ -341,7 +342,7 @@ theorem secondPrime_rateHalf_ladder_floor :
         (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
           (2 ^ 30) (2 ^ 29 - 1))
         (ProximityGap.epsStar : ENNReal) := by
-  letI : NeZero (2 ^ 30 : Nat) := ⟨by norm_num⟩
+  have : NeZero (2 ^ 30 : Nat) := ⟨by norm_num⟩
   let dom : Fin (2 ^ 30) ↪ ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P :=
     ProximityGap.Ownership.smoothDom ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
       (2 ^ 30) ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g
@@ -363,11 +364,10 @@ theorem secondPrime_rateHalf_ladder_floor :
           Submodule (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)
             (Fin (2 ^ 30) -> ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)) :
           Set (Fin (2 ^ 30) -> ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)) := by
-    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 <= 2 ^ 29)] using
-      (ProximityGap.Ownership.evalCode_eq_rsCode
-        ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g (2 ^ 29 - 1))
+    exact ProximityGap.Ownership.evalCode_pred_eq_rsCode (k := 2 ^ 29)
+      ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g (by norm_num)
   rw [← hcode] at hlower
-  convert hlower using 1 <;> norm_num
+  convert hlower using 1; norm_num
 
 /-- The strongest presently unconditional concrete bracket supplied by the landed
 good- and bad-side mechanisms in the first field. -/
@@ -425,7 +425,7 @@ theorem firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count
       (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g
         (2 ^ 30) (2 ^ 29 - 1))
       (ProximityGap.epsStar : ENNReal) = (31 / 64 : NNReal) := by
-  letI : NeZero (2 ^ 30 : Nat) := ⟨by norm_num⟩
+  have : NeZero (2 ^ 30 : Nat) := ⟨by norm_num⟩
   have hbudget : ((2 ^ 30 : Nat) : ENNReal) /
       (Fintype.card (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P) : ENNReal) <=
         (ProximityGap.epsStar : ENNReal) := by
@@ -462,7 +462,7 @@ theorem firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count
         (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g
           (2 ^ 30) (2 ^ 29 - 1))
         (ProximityGap.epsStar : ENNReal) := by
-    convert hlower using 1 <;> norm_num
+    convert hlower using 1; norm_num
   exact le_antisymm firstPrime_rateHalf_mcaDeltaStar_le_thirtyOneSixtyFour hlower'
 
 /-- In the second certified field the exact normalized budget is twice the block
@@ -483,7 +483,7 @@ theorem secondPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_coun
       (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
         (2 ^ 30) (2 ^ 29 - 1))
       (ProximityGap.epsStar : ENNReal) = (31 / 64 : NNReal) := by
-  letI : NeZero (2 ^ 30 : Nat) := ⟨by norm_num⟩
+  have : NeZero (2 ^ 30 : Nat) := ⟨by norm_num⟩
   have hbudget : ((2 ^ 31 : Nat) : ENNReal) /
       (Fintype.card (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) : ENNReal) <=
         (ProximityGap.epsStar : ENNReal) := by
@@ -520,7 +520,7 @@ theorem secondPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_coun
         (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
           (2 ^ 30) (2 ^ 29 - 1))
         (ProximityGap.epsStar : ENNReal) := by
-    convert hlower using 1 <;> norm_num
+    convert hlower using 1; norm_num
   exact le_antisymm secondPrime_rateHalf_mcaDeltaStar_le_thirtyOneSixtyFour hlower'
 
 /-- **Naive half-predecessor refutation at exact rate `1/2`.**  There cannot be an

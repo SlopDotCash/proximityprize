@@ -22,7 +22,7 @@ class ResearchCoverage(unittest.TestCase):
     def test_default_and_checkout_scans_include_both_trees(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()
-            for name in ('ArkLib', 'Research'):
+            for name in ('ArkLib', 'Research', 'ProximityPrize'):
                 (root / name).mkdir()
                 (root / name / 'Probe.lean').write_text('theorem unfinished : True := by sorry\n')
             previous = Path.cwd()
@@ -31,26 +31,26 @@ class ResearchCoverage(unittest.TestCase):
                 for arguments in ([], ['.']):
                     files, full, errors = forbidden_tokens.scan_plan(arguments)
                     self.assertEqual({p.resolve() for p in files},
-                                     {root / name / 'Probe.lean' for name in ('ArkLib', 'Research')})
+                                     {root / name / 'Probe.lean' for name in ('ArkLib', 'Research', 'ProximityPrize')})
                     self.assertTrue(full)
                     self.assertEqual(errors, [])
                 holes = [row for row in sorry_census.census(root) if row['kind'] == 'hole']
                 self.assertEqual({row['file'] for row in holes},
-                                 {'ArkLib/Probe.lean', 'Research/Probe.lean'})
+                                 {'ArkLib/Probe.lean', 'Research/Probe.lean', 'ProximityPrize/Probe.lean'})
             finally:
                 os.chdir(previous)
 
     def test_citation_catalog_keeps_both_roots(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            roots = [root / name for name in ('ArkLib', 'Research')]
+            roots = [root / name for name in ('ArkLib', 'Research', 'ProximityPrize')]
             for source in roots:
                 source.mkdir()
                 (source / 'Citation.lean').write_text('/- [Example] -/\n')
             payload = extract_citations(roots, ['Example'])
             self.assertEqual(payload['keys']['Example'],
-                             ['ArkLib/Citation.lean', 'Research/Citation.lean'])
-            self.assertEqual(payload['lean_roots'], ['ArkLib', 'Research'])
+                             ['ArkLib/Citation.lean', 'ProximityPrize/Citation.lean', 'Research/Citation.lean'])
+            self.assertEqual(payload['lean_roots'], ['ArkLib', 'Research', 'ProximityPrize'])
 
     def test_boundary_rejects_each_live_research_import(self):
         self.assertEqual(boundary.research_imports(

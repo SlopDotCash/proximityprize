@@ -271,6 +271,29 @@ theorem level_card_le_of_arith (dom : Fin N ↪ F) (u₀ u₁ p₀ : Fin N → F
 
 /-! ## The marginal-partition assembly: the small-pool budget theorem -/
 
+/-- Bound a layer cake with two exceptional levels and a uniform remaining cap.
+The interval endpoint stays a variable throughout the proof, so kernel reduction never
+constructs the large concrete interval used by the application. -/
+private theorem layer_cake_three_caps (f : ℕ → ℕ) (B c₁ c₂ c₃ : ℕ)
+    (hB : 2 ≤ B) (h₁ : f 1 ≤ c₁) (h₂ : f 2 ≤ c₂)
+    (h₃ : ∀ m ∈ Finset.Icc 3 B, f m ≤ c₃) :
+    (∑ m ∈ Finset.Icc 1 B, f m) ≤ c₁ + (c₂ + (B - 2) * c₃) := by
+  rw [← Finset.Ico_add_one_right_eq_Icc]
+  rw [Finset.sum_eq_sum_Ico_succ_bot (by omega : 1 < B + 1)]
+  rw [Finset.sum_eq_sum_Ico_succ_bot (by omega : 1 + 1 < B + 1)]
+  simp only [Nat.reduceAdd]
+  refine Nat.add_le_add h₁ (Nat.add_le_add h₂ ?_)
+  have hbound : ∀ m ∈ Finset.Ico 3 (B + 1), f m ≤ c₃ := by
+    intro m hm
+    have hbnds := Finset.mem_Ico.mp hm
+    exact h₃ m (Finset.mem_Icc.mpr ⟨hbnds.1, Nat.le_of_lt_succ hbnds.2⟩)
+  calc
+    (∑ m ∈ Finset.Ico 3 (B + 1), f m) ≤ (Finset.Ico 3 (B + 1)).card • c₃ :=
+      Finset.sum_le_card_nsmul _ _ c₃ hbound
+    _ = (B - 2) * c₃ := by
+      rw [Nat.card_Ico, nsmul_eq_mul]
+      congr 1
+
 /-- **The small-pool branch, unconditionally**: a bad family with SOME base scalar of
 pool `F ≤ F₀ = 75018133` respects the budget `G.card ≤ N`.  Proof: fiber partition over
 the through-base pencils, layer-cake over the rider counts, per-level `Z`-relative
@@ -458,27 +481,21 @@ theorem smallPool_budget (dom : Fin N ↪ F) (u₀ u₁ : Fin N → F)
         Nat.mul_le_mul_left 6
           (Nat.sub_le_sub_left (Nat.mul_le_mul_right _ hle) _)
       exact lt_of_le_of_lt s1 (lt_of_lt_of_le hA3 s2)
-  -- ## Assemble the ledger (Ico-peel form: `insert`-splits and `sum_const` rewrites on
-  -- the width-`F₀` interval blow up the kernel; `sum_eq_sum_Ico_succ_bot` +
-  -- `sum_le_card_nsmul` stay symbolic)
-  rw [← Finset.Ico_add_one_right_eq_Icc] at hlc
-  rw [Finset.sum_eq_sum_Ico_succ_bot (by norm_num : (1:ℕ) < 75018133 + 1)] at hlc
-  rw [Finset.sum_eq_sum_Ico_succ_bot (by norm_num : (1+1:ℕ) < 75018133 + 1)] at hlc
-  simp only [Nat.reduceAdd] at hlc
-  have hb : ∀ m ∈ Finset.Ico 3 75018134, (P.filter (fun π => m ≤
-      ((G.erase γ₀).filter (fun γ => pencilOf pf γ₀ γ = π)).card)).card ≤ 5 := by
-    intro m hm
-    have := Finset.mem_Ico.mp hm
-    exact hlev3 m (Finset.mem_Icc.mpr (by omega))
-  have hcard : (Finset.Ico 3 75018134).card = 75018131 := by rw [Nat.card_Ico]
-  have htail : ∑ m ∈ Finset.Ico 3 75018134, (P.filter (fun π => m ≤
-      ((G.erase γ₀).filter (fun γ => pencilOf pf γ₀ γ = π)).card)).card ≤
-      75018131 * 5 := by
-    calc ∑ m ∈ Finset.Ico 3 75018134, (P.filter (fun π => m ≤
-          ((G.erase γ₀).filter (fun γ => pencilOf pf γ₀ γ = π)).card)).card
-        ≤ (Finset.Ico 3 75018134).card • 5 := Finset.sum_le_card_nsmul _ _ 5 hb
-      _ = 75018131 * 5 := by rw [hcard, smul_eq_mul]
-  omega
+  -- Apply the symbolic ledger before fixing its large endpoint.
+  have htotal := layer_cake_three_caps
+    (fun m => (P.filter (fun π => m ≤
+      ((G.erase γ₀).filter (fun γ => pencilOf pf γ₀ γ = π)).card)).card)
+    75018133 657668325 7 5 (by norm_num) hlev1 hlev2 hlev3
+  calc
+    G.card = 1 + ∑ π ∈ P,
+        ((G.erase γ₀).filter (fun γ => pencilOf pf γ₀ γ = π)).card := hGsum
+    _ = 1 + ∑ m ∈ Finset.Icc 1 75018133,
+        (P.filter (fun π => m ≤
+          ((G.erase γ₀).filter (fun γ => pencilOf pf γ₀ γ = π)).card)).card :=
+      congrArg (fun n : ℕ => 1 + n) hlc
+    _ ≤ 1 + (657668325 + (7 + (75018133 - 2) * 5)) :=
+      Nat.add_le_add_left htotal 1
+    _ ≤ N := by norm_num [N]
 
 /-! ## The discharge and the upgraded consumer -/
 

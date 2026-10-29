@@ -82,7 +82,7 @@ theorem prod_miss_le_pow {ι : Type*} (s : Finset ι) (pMiss : ι → ℝ) (c : 
     (h0 : ∀ i ∈ s, 0 ≤ pMiss i) (hc : ∀ i ∈ s, pMiss i ≤ c) :
     ∏ i ∈ s, pMiss i ≤ c ^ s.card := by
   calc ∏ i ∈ s, pMiss i
-      ≤ ∏ _i ∈ s, c := Finset.prod_le_prod h0 hc
+      ≤ ∏ _i ∈ s, c := Finset.prod_le_prod₀ h0 hc
     _ = c ^ s.card := Finset.prod_const c
 
 /-- **Per-query product bound over `Fin q` (PROVEN).** For `q` queries indexed by `Fin q` with

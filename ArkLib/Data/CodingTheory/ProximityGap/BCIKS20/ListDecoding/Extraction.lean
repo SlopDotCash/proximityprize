@@ -5,8 +5,8 @@ Authors: Quang Dao, Katerina Hristova, František Silváši, Julian Sutherland,
          Ilia Vlasov, Chung Thai Nguyen
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
-import ArkLib.Data.Polynomial.RationalFunctions
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
+import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
 
 /-!
 # BCIKS20 §5 list decoding: factor extraction and discriminant non-vanishing
@@ -202,9 +202,9 @@ theorem eq512_descent_of_fraction_field_contraction
   have hdvd2 : g.map φ ∣ (Polynomial.expand R n r).map φ := by
     rw [hexpand_map]; exact Dvd.intro_left _ rfl
   have hd1R : (Polynomial.expand R n r) ∣ g :=
-    (hEprim.dvd_iff_fraction_map_dvd_fraction_map (K := K) hgprim).mpr hdvd1
+    (hEprim.dvd_iff_fraction_map_dvd_fraction_map (K := K)).mpr hdvd1
   have hd2R : g ∣ (Polynomial.expand R n r) :=
-    (hgprim.dvd_iff_fraction_map_dvd_fraction_map (K := K) hEprim).mpr hdvd2
+    (hgprim.dvd_iff_fraction_map_dvd_fraction_map (K := K)).mpr hdvd2
   have hassoc : Associated (Polynomial.expand R n r) g := associated_of_dvd_dvd hd1R hd2R
   have hE_irr : Irreducible (Polynomial.expand R n r) := hassoc.symm.irreducible hg
   have hr_irr : Irreducible r := Polynomial.of_irreducible_expand hn.ne' hE_irr
@@ -751,7 +751,7 @@ theorem pg_Rset_irreducible (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁) :
   unfold pg_Rset at hR
   -- `hR` is membership in the `toFinset` of the multiset of normalized factors
   have hR' : R ∈ UniqueFactorizationMonoid.normalizedFactors Q := by
-    simpa using hR
+    simpa [UniqueFactorizationMonoid.mem_primeFactors] using hR
   exact UniqueFactorizationMonoid.irreducible_of_normalized_factor (a := Q) R hR'
 
 noncomputable def pg_candidatePairs
@@ -806,7 +806,7 @@ theorem pg_candidatePairs_snd_natDegree_pos (x₀ : F)
         H ∈
           UniqueFactorizationMonoid.normalizedFactors
             (Bivariate.evalX (Polynomial.C x₀) R) := by
-    simpa [pg_candidatePairs] using hmem
+    simpa [pg_candidatePairs, UniqueFactorizationMonoid.mem_primeFactors] using hmem
   exact pg_natDegree_pos_of_mem_normalizedFactors_of_separable
     (Bivariate.evalX (Polynomial.C x₀) R) (hsep R h'.1) h'.2
 
@@ -1093,7 +1093,7 @@ theorem pg_exists_pair_for_z (δ : ℚ) (x₀ : F)
           H ∈
             UniqueFactorizationMonoid.normalizedFactors (Bivariate.evalX (Polynomial.C x₀) R) :=
       And.intro hRmem hHmem
-    simpa [pg_candidatePairs] using h'
+    simpa [pg_candidatePairs, UniqueFactorizationMonoid.mem_primeFactors] using h'
   -- 5) Package everything.
   refine ⟨R, H, hPairMem, ?_⟩
   -- Discharge the inner `let P := ...` binder using our local `P`.
@@ -1289,7 +1289,8 @@ theorem pg_sum_natDegreeY_Rset_le_natDegreeY_Q (h_gs : ModifiedGuruswami m n k �
     Polynomial.natDegree_eq_natDegree (p := s.prod) (q := Q) hdeg_assoc
   have hnatY_assoc : Bivariate.natDegreeY s.prod = Bivariate.natDegreeY Q := by
     simp [Bivariate.natDegreeY, hnat_assoc]
-  simpa [hnatY_assoc] using hleft_le_prod
+  rw [hnatY_assoc] at hleft_le_prod
+  simpa [hs] using hleft_le_prod
 
 omit [DecidableEq (RatFunc F)] [Finite F] in
 theorem pg_card_candidatePairs_le_natDegreeY (x₀ : F) (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
@@ -1424,9 +1425,10 @@ theorem common_roots_subset_S_β_mk
           _root_.BCIKS20AppendixA.𝒪 H) := by
   intro z hz
   obtain ⟨t, hHt, hPt⟩ := hroot z (by simpa using hz)
-  refine ⟨⟨t, hHt⟩, ?_⟩
-  rw [_root_.BCIKS20AppendixA.π_z, Ideal.Quotient.lift_mk]
-  exact hPt
+  let root : _root_.BCIKS20AppendixA.rationalRoot
+      (_root_.BCIKS20AppendixA.H_tilde' H) z := ⟨t, hHt⟩
+  refine ⟨root, ?_⟩
+  exact (_root_.BCIKS20AppendixA.π_z_mk z root P).trans hPt
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
 theorem common_roots_force_lift_zero

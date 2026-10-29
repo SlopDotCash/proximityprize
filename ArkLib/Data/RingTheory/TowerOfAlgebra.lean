@@ -62,14 +62,12 @@ instance AssocTowerOfAlgebra.toIsScalarTower (a : AssocTowerOfAlgebra C) {i j k 
   letI instIK: Algebra (C i) (C k) := by exact a.toAlgebra (h1.trans h2)
   exact {
     smul_assoc := fun (x : C i) (y : C j) (z : C k) => by
-      simp_rw [Algebra.smul_def]
-      simp only [map_mul]
-      rw [←RingHom.comp_apply]
-      unfold instIJ instJK instIK TowerOfAlgebra.toAlgebra
-      simp_rw [algebraMap, Algebra.algebraMap]
-      have h_assoc := a.assoc' (i:=i) (j:=j) (k:=k) (h1:=h1) (h2:=h2)
-      rw [h_assoc]
-      rw [mul_assoc]
+      change TowerOfAlgebra.towerAlgebraMap j k h2
+          (TowerOfAlgebra.towerAlgebraMap i j h1 x * y) * z =
+        TowerOfAlgebra.towerAlgebraMap i k (h1.trans h2) x *
+          (TowerOfAlgebra.towerAlgebraMap j k h2 y * z)
+      have h_assoc := a.assoc' (i := i) (j := j) (k := k) (h1 := h1) (h2 := h2)
+      rw [map_mul, h_assoc, RingHom.comp_apply, mul_assoc]
   }
 
 structure TowerOfAlgebraEquiv (A : ι → Type*) [∀ i, CommSemiring (A i)] [a : TowerOfAlgebra A]

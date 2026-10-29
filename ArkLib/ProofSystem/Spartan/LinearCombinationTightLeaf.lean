@@ -4,7 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SpartanLinearCombination
 import ArkLib.ProofSystem.Spartan.TightRLCKernel
+import ArkLib.ProofSystem.Spartan.ShortPhaseRbrKnowledgeLeaves
 
 /-!
 # The tight `linearCombination` rbr knowledge-soundness leaf at `1/|R|` (issue #329, Brick A)
@@ -22,7 +24,7 @@ abstractly over a pinning function
 `trueV = fun (stmt, oStmt) idx => (M_idx 𝕫) ⸨r_x⸩`-style evaluation is follow-up work):
 
 * `linearCombinationRelE_pinned trueV` — the input relation: the base `sendEvalClaimRbrRelE`
-  **and** the bundled claim oracle (the `.inl 0` component of
+  **and** the scalar claim oracle family (the `.inl idx` components of
   `OracleStatement.AfterSendEvalClaim`) equals `trueV` of the input statement;
 * `linearCombinationRelF_pinned trueV` — the output relation: the base
   `prependRLCTargetRbrRelF` content, the base `relE` content transported along the underlying
@@ -71,14 +73,14 @@ variable {ι : Type} (oSpec : OracleSpec ι)
 
 /-- The claim-pinned input relation for the `linearCombination` round: the base
 `sendEvalClaimRbrRelE` together with the pin that the bundled evaluation-claim oracle
-(the `.inl 0` component) carries exactly the true values `trueV` of the input statement. -/
+(the indexed `.inl idx` components) carries exactly the true values `trueV` of the input statement. -/
 @[reducible]
 def linearCombinationRelE_pinned
     (trueV : Statement.AfterSendEvalClaim R pp ×
       (∀ i, OracleStatement.AfterSendEvalClaim R pp i) → R1CS.MatrixIdx → R) :
     Set ((Statement.AfterSendEvalClaim R pp ×
       ∀ i, OracleStatement.AfterSendEvalClaim R pp i) × Unit) :=
-  { x | x ∈ sendEvalClaimRbrRelE (R := R) pp oSpec ∧ x.1.2 (.inl 0) = trueV x.1 }
+  { x | x ∈ sendEvalClaimRbrRelE (R := R) pp oSpec ∧ (fun idx => x.1.2 (.inl idx)) = trueV x.1 }
 
 /-- The claim-pinned output relation for the `linearCombination` round: the base
 `prependRLCTargetRbrRelF` content, the base `relE` content transported along the underlying
@@ -93,7 +95,7 @@ def linearCombinationRelF_pinned
       ∀ i, OracleStatement.AfterLinearCombination R pp i) × Unit) :=
   { y | y ∈ prependRLCTargetRbrRelF (R := R) pp oSpec ∧
         ((y.1.1.2, y.1.2), ()) ∈ sendEvalClaimRbrRelE (R := R) pp oSpec ∧
-        (∑ idx, y.1.1.1 idx * y.1.2 (.inl 0) idx)
+        (∑ idx, y.1.1.1 idx * (show R from y.1.2 (.inl idx)))
           = ∑ idx, y.1.1.1 idx * trueV (y.1.1.2, y.1.2) idx }
 
 /-! ### The tight leaf -/
@@ -107,7 +109,7 @@ kernel event, which `TightRLCKernel.probEvent_linearForm_eq_le` bounds by `1/|R|
 theorem linearCombination_rbrKnowledgeSoundness_tight
     (trueV : Statement.AfterSendEvalClaim R pp ×
       (∀ i, OracleStatement.AfterSendEvalClaim R pp i) → R1CS.MatrixIdx → R) :
-    (oracleReduction.linearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (linearCombinationRelE_pinned (R := R) pp oSpec trueV)
       (linearCombinationRelF_pinned (R := R) pp oSpec trueV)
       (fun _ => (1 : ℝ≥0) / (Fintype.card R : ℝ≥0)) := by
@@ -121,19 +123,19 @@ theorem linearCombination_rbrKnowledgeSoundness_tight
     (linearCombinationRelE_pinned (R := R) pp oSpec trueV)
     (linearCombinationRelF_pinned (R := R) pp oSpec trueV) _ ?_
   intro stmtIn hbad
-  by_cases hclaims : stmtIn.2 (.inl 0) = trueV stmtIn
+  by_cases hclaims : (fun idx => stmtIn.2 (.inl idx)) = trueV stmtIn
   · -- Case (a): claims are true but the base `relE` fails — the transported `relE` conjunct of
     -- the output relation is challenge-independent and false, so the flip probability is `0`.
     have hrelE : (stmtIn, ()) ∉ sendEvalClaimRbrRelE (R := R) pp oSpec :=
       fun h => hbad ⟨h, hclaims⟩
-    refine le_trans (le_of_eq (probEvent_eq_zero_iff.mpr ?_)) (zero_le _)
+    refine le_trans (le_of_eq ((OracleComp.prEvent_eq_zero_iff _ _).mpr ?_)) zero_le
     intro c _ hc
     obtain ⟨-, h2, -⟩ := hc
     exact hrelE h2
   · -- Case (b): claims differ from `trueV` — membership forces the RLC kernel event, bounded
     -- by `1/|R|` via the TightRLCKernel affine corollary.
-    refine le_trans (probEvent_mono ?_)
-      (probEvent_linearForm_eq_le (stmtIn.2 (.inl 0)) (trueV stmtIn) hclaims)
+    refine le_trans (prEvent_mono_of_support _ _ _ ?_)
+      (probEvent_linearForm_eq_le ((fun idx => stmtIn.2 (.inl idx))) (trueV stmtIn) hclaims)
     intro c _ hc
     obtain ⟨-, -, h3⟩ := hc
     exact h3
@@ -153,21 +155,20 @@ theorem linearCombination_tight_error_exact
       (∀ i, OracleStatement.AfterSendEvalClaim R pp i) → R1CS.MatrixIdx → R)
     (stmtIn : Statement.AfterSendEvalClaim R pp ×
       ∀ i, OracleStatement.AfterSendEvalClaim R pp i)
-    (hclaims : stmtIn.2 (.inl 0) ≠ trueV stmtIn)
+    (hclaims : (fun idx => stmtIn.2 (.inl idx)) ≠ trueV stmtIn)
     (hcompat : ∀ c : LinearCombinationChallenge R,
-      (∑ idx, c idx * stmtIn.2 (.inl 0) idx) = (∑ idx, c idx * trueV stmtIn idx) →
+      (∑ idx, c idx * (show R from stmtIn.2 (.inl idx))) = (∑ idx, c idx * trueV stmtIn idx) →
       ((((c, stmtIn.1), stmtIn.2)), ()) ∈
         linearCombinationRelF_pinned (R := R) pp oSpec trueV) :
-    Pr[fun c : LinearCombinationChallenge R =>
+    Pr{let c ← $ᵗ (LinearCombinationChallenge R)}[
         ((((c, stmtIn.1), stmtIn.2)), ()) ∈
-          linearCombinationRelF_pinned (R := R) pp oSpec trueV
-      | $ᵗ (LinearCombinationChallenge R)]
+          linearCombinationRelF_pinned (R := R) pp oSpec trueV]
       = 1 / (Fintype.card R : ENNReal) := by
   have hev : (fun c : LinearCombinationChallenge R =>
         ((((c, stmtIn.1), stmtIn.2)), ()) ∈
           linearCombinationRelF_pinned (R := R) pp oSpec trueV)
       = (fun c : LinearCombinationChallenge R =>
-          (∑ idx, c idx * stmtIn.2 (.inl 0) idx) = ∑ idx, c idx * trueV stmtIn idx) := by
+          (∑ idx, c idx * (show R from stmtIn.2 (.inl idx))) = ∑ idx, c idx * trueV stmtIn idx) := by
     funext c
     apply propext
     constructor
@@ -175,7 +176,7 @@ theorem linearCombination_tight_error_exact
       exact h3
     · exact hcompat c
   rw [hev]
-  exact probEvent_linearForm_eq (stmtIn.2 (.inl 0)) (trueV stmtIn) hclaims
+  exact probEvent_linearForm_eq ((fun idx => stmtIn.2 (.inl idx))) (trueV stmtIn) hclaims
 
 end
 

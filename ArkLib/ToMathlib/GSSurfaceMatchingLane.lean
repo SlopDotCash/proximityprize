@@ -44,6 +44,9 @@ open Polynomial Polynomial.Bivariate BCIKS20AppendixA BCIKS20AppendixA.ClaimA2
 open BCIKS20.HenselNumerator
 open scoped BigOperators
 
+private noncomputable local instance {F : Type} [Field F] [Fintype F] :
+    SampleableType F := SampleableType.ofFintype F
+
 namespace ArkLib
 
 namespace GSSurfaceKeystone

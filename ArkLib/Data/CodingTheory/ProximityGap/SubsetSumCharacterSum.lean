@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
+import Mathlib.NumberTheory.LegendreSymbol.Complex
 import Mathlib.RingTheory.Polynomial.Vieta
 import Mathlib.FieldTheory.Finite.Basic
 

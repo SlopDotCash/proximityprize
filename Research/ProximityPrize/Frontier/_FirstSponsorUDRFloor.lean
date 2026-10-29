@@ -33,17 +33,17 @@ local instance : Fact (Nat.Prime pSponsor) := ⟨prime_P⟩
 local instance : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
 local instance : NeZero (2 ^ 29 : ℕ) := ⟨by norm_num⟩
 
-theorem generator_ne_zero : g ≠ 0 :=
+theorem generator_ne_zero : ArkLib.ProximityGap.PrizeShapePrimeP30.g ≠ 0 :=
   KKH26RegimeSplit.ne_zero_of_orderOf_eq orderOf_g
 
 def domain : Fin (2 ^ 30) ↪ ZMod pSponsor :=
-  KKH26RegimeSplit.powDomain g orderOf_g generator_ne_zero
+  KKH26RegimeSplit.powDomain ArkLib.ProximityGap.PrizeShapePrimeP30.g orderOf_g generator_ne_zero
 
 abbrev code : Set (Fin (2 ^ 30) → ZMod pSponsor) :=
   (ReedSolomon.code domain (2 ^ 29) : Submodule (ZMod pSponsor) (Fin (2 ^ 30) → ZMod pSponsor))
 
-theorem canonical_code_eq : evalCode g (2 ^ 30) (2 ^ 29 - 1) = code := by
-  rw [KKH26RegimeSplit.evalCode_eq_reedSolomon g orderOf_g generator_ne_zero
+theorem canonical_code_eq : evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1) = code := by
+  rw [KKH26RegimeSplit.evalCode_eq_reedSolomon ArkLib.ProximityGap.PrizeShapePrimeP30.g orderOf_g generator_ne_zero
     (2 ^ 29 - 1)]
   norm_num [code, domain]
 
@@ -89,7 +89,7 @@ theorem quarter_full_udr_regime :
 
 theorem canonical_epsMCA_quarter_le :
     epsMCA (F := ZMod pSponsor) (A := ZMod pSponsor)
-      (evalCode g (2 ^ 30) (2 ^ 29 - 1)) (1 / 4) ≤ (epsStar : ℝ≥0∞) := by
+      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1)) (1 / 4) ≤ (epsStar : ℝ≥0∞) := by
   rw [canonical_code_eq]
   refine (UDRwire.epsMCA_rs_udr_le_full domain (2 ^ 29)
     (by norm_num) (1 / 4) quarter_le_udr quarter_full_udr_regime).trans ?_
@@ -103,7 +103,7 @@ theorem canonical_epsMCA_quarter_le :
 theorem quarter_le_canonical_threshold :
     (1 / 4 : ℝ≥0) ≤ MCAThresholdLedger.mcaDeltaStar
       (F := ZMod pSponsor) (A := ZMod pSponsor)
-      (evalCode g (2 ^ 30) (2 ^ 29 - 1)) (epsStar : ℝ≥0∞) := by
+      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1)) (epsStar : ℝ≥0∞) := by
   apply MCAThresholdLedger.le_mcaDeltaStar_of_good
   · rw [← NNReal.coe_le_coe]
     push_cast

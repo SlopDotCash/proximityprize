@@ -1,0 +1,336 @@
+{
+  "scope": "Native and representation compatibility ports against authoritative canonical ArkLib; canonical sources unchanged.",
+  "validation_limit": "Temporary overlay and single-file checks are isolated Lean validation. The complete Lake package build remains mandatory; no full-library success is claimed by this ledger.",
+  "proof_policy": "No new axioms, native trust, admitted proofs or mathematical hypotheses. Original printed proof anchors in the completed modules report only propext, Classical.choice and Quot.sound.",
+  "ports": [
+    {
+      "file": "ArkLib/ProofSystem/Spartan/FirstSumcheckReduction.lean",
+      "source_sha256": "eddcb89b7cc9c27a5bf3a88e593cb686856c5496cbeaaa51c10478df780eabcd",
+      "validation_kind": "actual-import strict source check",
+      "receipt": "/tmp/arklib-FirstSumcheckReduction-native-fix1.log",
+      "changes": [
+        "Normalize the matrix-vector MLE composition definitionally.",
+        "Prove unchanged output-oracle materialization by function extensionality.",
+        "Retain the existing sampler data required by the nonempty native reduction constructor."
+      ]
+    },
+    {
+      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
+      "source_sha256": "381ddf3e7497b36f7c42fad474824cedbde61296f6fc969c538e9fbbae8984e5",
+      "validation_kind": "temporary-overlay strict source check and compiled import boundary",
+      "receipt": "/tmp/arklib-SpartanBricks-owner-build.receipt.json",
+      "changes": [
+        "Use the canonical three scalar evaluation-claim oracles, preserving all three claim values.",
+        "Keep canonical CheckClaim.oracleReduction as a pure pass-through; finalPredicate and finalClaimPredicate remain diagnostic/relational conditions and are not asserted to execute in that verifier.",
+        "Preserve the completed Z reconstruction, matrix MLE and second-sumcheck hypercube identities; use explicit local polynomial terms to avoid a rewrite unification storm at ordinary proof limits.",
+        "Preserve all original named mathematical theorem contracts modulo canonical scalar-oracle indexing."
+      ]
+    },
+    {
+      "file": "ArkLib/ProofSystem/Stir/SubUnitRbr.lean",
+      "source_sha256": "6346a8a99e22f6b4f0cf32a10c9dcbcdeecc94bc98927dc2f47ccb4b69f746cf",
+      "validation_kind": "temporary-overlay strict source check and compiled import boundary",
+      "receipt": "/tmp/arklib-Stir-SubUnitRbr-owner-build.receipt.json",
+      "changes": [
+        "Delegate the full predicate KSF to the native shared FullPredKSF implementation.",
+        "Use native event probability/support and raw challenge-program equalities, without an SPMF interpreter.",
+        "Observe successful optional verifier outputs, preserve failure mass, and extract the accepted Boolean from the singleton acceptance relation.",
+        "Keep arbitrary symbolic round count and the original round-2 and later-round sub-unit bounds, with no added mathematical hypotheses."
+      ]
+    },
+    {
+      "file": "ArkLib/ProofSystem/RingSwitching/BatchingDeterminism.lean",
+      "source_sha256": "39b6b30e5a5b47e43d1f02caa9566e61cec862000c6ddb98e0f88a45a303373c",
+      "validation_kind": "actual-import strict source check",
+      "receipt": "/tmp/arklib-RingSwitching-BatchingDeterminism-native1.log",
+      "changes": [
+        "Replace retired embed/hEq metadata with canonical materializeOutput, including virtual output oracles."
+      ]
+    },
+    {
+      "file": "ArkLib/ProofSystem/RingSwitching/SumcheckDeterminism.lean",
+      "source_sha256": "e01b1c0e7b25701b0ef9268e20f0837e1114b808fc39afe0aad647b9b0b8a125",
+      "validation_kind": "actual-import strict source check",
+      "receipt": "/tmp/arklib-RingSwitching-SumcheckDeterminism-native3.log",
+      "changes": [
+        "Replace retired embed/hEq metadata with canonical materializeOutput while preserving Option.map failure behavior.",
+        "The native round verdict uses canonical chronological Fin.snoc, replacing the old newest-first Fin.cons adapter."
+      ]
+    },
+    {
+      "file": "ArkLib/ToMathlib/FriCompleteCompose.lean",
+      "source_sha256": "66ed828b03a146f83769c0d40f3248e11b9d094749d019a9e8d056aba20278e0",
+      "validation_kind": "actual-import strict source check",
+      "receipt": "/tmp/arklib-FriCompleteCompose-native2.log",
+      "changes": [
+        "Remove retired explicit query-reduction universe arguments and obsolete aggregate empty-oracle dictionaries.",
+        "Retain the original per-phase completeness, NeverFail initialization and challenge-seam hypotheses."
+      ]
+    },
+    {
+      "file": "ArkLib/ProofSystem/Logup/Security/OuterAcceptance.lean",
+      "source_sha256": "5aa8802430d946a4af71693ad908f1abad62d6324a621527403fec2e3962406b",
+      "validation_kind": "actual-import strict source check",
+      "receipt": "/tmp/arklib-Logup-OuterAcceptance-native1.log",
+      "changes": [
+        "Use native predicate-first event observation; original pole-event bound unchanged."
+      ]
+    },
+    {
+      "file": "ArkLib/ProofSystem/Logup/Security/LogupHonestSupport.lean",
+      "source_sha256": "617492c6ba5cb743f178adadd059742e59c41b2336fa9cb06f1ecc0ade5dd15e",
+      "validation_kind": "actual-import strict source check",
+      "receipt": "/tmp/arklib-LogupHonestSupport-native1.log",
+      "changes": [
+        "Use native predicate-first event observation; original honest-support pole budget unchanged."
+      ]
+    },
+    {
+      "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Hyb4ChallengeEntry.lean",
+      "source_sha256": "9f4124ce6ca15b1d88fbded60e6d461b8aeac6e552b0ff5054deecb9304ecb18",
+      "validation_kind": "actual-import strict source check",
+      "receipt": "/tmp/arklib-Hyb4ChallengeEntry-native1.log",
+      "changes": [
+        "Remove one no-progress simplification after canonical pure simulation already normalizes the term."
+      ]
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/SecondSumcheckFaithful.lean",
+      "source_sha256": "b08f24b9be279af4f759b819c96f203c9f939d10eb1e99fa42df70e9ec4b2c55",
+      "validation_kind": "temporary-overlay strict source check and compiled import boundary",
+      "receipt": "/tmp/arklib-SecondSumcheckFaithful-owner-build.receipt.json",
+      "changes": [
+        "Prove the native lifted scalar-query handler once and reuse it for the three matrix queries and witness reconstruction.",
+        "Preserve the completed second virtual-polynomial identity and all original hypotheses.",
+        "Prove the unchanged output materialization by function extensionality."
+      ]
+    },
+    {
+      "file": "ArkLib/ProofSystem/RingSwitching/Spec.lean",
+      "source_sha256": "46adb950bc69958f8c9fde3473e8911653adadbf9afb353ddf2661fe363faf41",
+      "validation_kind": "actual-import strict source check and temporary-overlay compiled import boundary",
+      "receipt": "/tmp/arklib-RingSwitching-General-owner-build.receipt.json",
+      "changes": [
+        "Bind the empty query domain directly as PEmpty in its Fintype/Inhabited instances, removing an unused independent range-universe parameter.",
+        "Keep actual query input/range polymorphism and instance behavior unchanged."
+      ]
+    },
+    {
+      "file": "ArkLib/ProofSystem/RingSwitching/General.lean",
+      "source_sha256": "1f7e4c20aef9004eb24c4e38ffe9774cdbfc4b88e45658d75913ed0ab6fd40ed",
+      "validation_kind": "temporary-overlay coherent compiled phase boundary",
+      "receipt": "/tmp/arklib-RingSwitching-General-owner-build.receipt.json",
+      "changes": [
+        "Materialize the canonical empty output interface explicitly and use OracleProof.toOracleVerifier.",
+        "Preserve the strict-track end-to-end completeness proof through all three native append seams, with original NeverFail and opening-direction hypotheses.",
+        "Retain the original explicit full RBR composition premise; its conditional wrapper delegates that premise and does not claim it was discharged."
+      ]
+    },
+    {
+      "file": "ProximityPrize/Extensions/ProofSystem/Fri/Spec/Completeness.lean",
+      "source_sha256": "8af9156b1974603b8128a44a2719ee337f28efea414456ca08ed72c4e3dfc2aa",
+      "validation_kind": "actual-import strict source check",
+      "receipt": "/tmp/arklib-Fri-extension-Completeness-native1.log",
+      "changes": [
+        "Remove stale explicit query-reduction universe arguments.",
+        "Retain the documented historical false-as-stated query-round premise as an explicit premise; no false query completeness claim is asserted."
+      ]
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/SecondSumcheckRelIn.lean",
+      "source_sha256": "833206d8f90e57bb102f993db523bb4f021a5d091500b837422e3c105530766c",
+      "validation_kind": "temporary-overlay strict source check / compiled import boundary; not a Lake package build",
+      "receipt": "/tmp/arklib-SecondSumcheckRelIn-overlay-native3.receipt.json",
+      "changes": [
+        "Normalize the Boolean-domain embedding at the existing two endpoints without changing the relation."
+      ]
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/SecondSumcheckBridgeFree.lean",
+      "source_sha256": "2f056c433b56805d177141f264c298b94dec6a7ecca1781ed721b06b0fd6f662",
+      "validation_kind": "temporary-overlay strict source check / compiled import boundary; not a Lake package build",
+      "receipt": "/tmp/arklib-SecondSumcheckBridgeFree-owner-build3.receipt.json",
+      "changes": [
+        "Unfold the current statement/context lens in the completed pass-through proof; retain every completeness premise.",
+        "Replace retired aggregate oracle dictionaries with pointwise Range dictionaries."
+      ]
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/SecondSumcheckComplete.lean",
+      "source_sha256": "b97a5e24a41727c02b9f9bdf4afcd262cc2d87213afaf40b7d716b1d214bc9f0",
+      "validation_kind": "temporary-overlay strict source check / compiled import boundary; not a Lake package build",
+      "receipt": "/tmp/arklib-SecondSumcheckComplete-FinalCheckLeaf-owner-build.receipt.json",
+      "changes": [
+        "Normalize the native lens output in lift_complete; preserve the original h_inner completeness and pullback soundness contracts."
+      ],
+      "transitive_axiom_audit": "/tmp/arklib-binius-incremental-second-complete-axioms.receipt.json: all four imported headline theorems use only propext, Classical.choice, Quot.sound"
+    },
+    {
+      "file": "ArkLib/ProofSystem/RingSwitching/RbrKnowledgeWiring.lean",
+      "source_sha256": "f97f27f661e2b9916e1bc1e6605cbe95215f297779f0dba11393496de59aa10a",
+      "validation_kind": "temporary-overlay strict source check / compiled import boundary; not a Lake package build",
+      "receipt": "/tmp/arklib-RingSwitching-RbrKnowledgeWiring-overlay-native2.receipt.json",
+      "changes": [
+        "Use native prFail init = 0; original stateless and reachable/lossless-init premises remain unchanged.",
+        "All four original printed theorem anchors use only propext, Classical.choice and Quot.sound."
+      ]
+    },
+    {
+      "file": "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/IncrementalCase1.lean",
+      "source_sha256": "7afc5f8dc90bc7575d8c768f68f8f804ae410a3dd9e059db823f5f10cf227b25",
+      "validation_kind": "temporary-overlay strict source check / compiled import boundary; not a Lake package build",
+      "receipt": "/tmp/arklib-IncrementalCase1-owner-build.receipt.json",
+      "changes": [
+        "Use current PMF bind/pure identities in the false-event branch; preserve its exact event and None mass.",
+        "Normalize the honest bounded quotient fiber and destination-index cast; preserve the full original incremental bound."
+      ],
+      "transitive_axiom_audit": "/tmp/arklib-binius-incremental-second-complete-axioms.receipt.json: all four imported headline theorems use only propext, Classical.choice, Quot.sound"
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/TightRLCKernel.lean",
+      "source_sha256": "d0990b9de68553bc872f3f9d956abe6e93b8cea4117928bdd614bc1e6470810b",
+      "validation_kind": "temporary-overlay strict source check and compiled import boundary",
+      "receipt": "/tmp/arklib-TightRLCKernel-overlay-native3.receipt.json",
+      "owner_receipt": "/tmp/arklib-TightRLCKernel-owner-build.receipt.json",
+      "changes": [
+        "Preserve all generic finite-domain kernel-count and exact 1/card probability statements.",
+        "Use native uniform-sample event semantics and the canonical SampleableType.prEvent_uniformSample theorem.",
+        "Narrow the generic mathematics import off the protocol-level ShortPhase chain."
+      ],
+      "axiom_audit": "All ten original printed anchors use only propext, Classical.choice, Quot.sound."
+    },
+    {
+      "file": "ArkLib/ProofSystem/RingSwitching/RbrKnowledgeWiringFull.lean",
+      "source_sha256": "a31eacf63e9bf3d5d322e6e145eac36c4ec3bf9d9dc2daf7cc207f441bf885d5",
+      "validation_kind": "temporary-overlay strict source check",
+      "receipt": "/tmp/arklib-RingSwitching-RbrKnowledgeWiringFull-overlay-native2.receipt.json",
+      "changes": [
+        "Preserve original end-to-end wired knowledge bound and all stateless/reachable/lossless-init/opening-seam premises.",
+        "Use native prFail and OracleProof.toOracleVerifier with the actual Empty output interface."
+      ],
+      "axiom_audit": "All three original printed headline anchors use only propext, Classical.choice, Quot.sound."
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/TightMidLeaves.lean",
+      "source_sha256": "9aa41b8a5ba82751ad97190ff503630e49a90b15262d658a5b4ff7a20132c39d",
+      "validation_kind": "temporary-overlay strict source check; not a Lake package build",
+      "receipt": "/tmp/arklib-TightMidLeaves-overlay-native3.receipt.json",
+      "changes": [
+        "Preserve all eight original tight knowledge anchors, the exact 1/card RLC error and scalar canonical claim semantics.",
+        "Delegate actual native challenge and pure-game laws; no new coherence or totality premises."
+      ],
+      "axiom_audit": "All original printed theorem anchors use only propext, Classical.choice, Quot.sound.",
+      "owner_receipt": "/tmp/arklib-TightMidLeaves-owner-build.receipt.json"
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/TightFirstCompleteness.lean",
+      "source_sha256": "01773698cd97279287da95c094551cf16b67dfc5d2ed9a7d7a3c6212b9c23916",
+      "validation_kind": "temporary-overlay strict source check; not a Lake package build",
+      "receipt": "/tmp/arklib-Tight-first-second-owner-native2.receipt.json",
+      "changes": [
+        "Preserve the per-polynomial-fiber pinned relation and enriched first terminal identity.",
+        "Use equivalent pointwise Range classes and unfold the carried lens to recover the unchanged R1CS pass-through."
+      ],
+      "axiom_audit": "All original printed theorem anchors use only propext, Classical.choice, Quot.sound."
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/TightSecondCompleteness.lean",
+      "source_sha256": "3aceed6b95624ed0808b872e6a79ce2eb9127302ed7ea30406ad8a71c1e61e73",
+      "validation_kind": "temporary-overlay strict source check; not a Lake package build",
+      "receipt": "/tmp/arklib-Tight-first-second-owner-native2.receipt.json",
+      "changes": [
+        "Preserve the per-polynomial-fiber second terminal identity and honest support hypotheses.",
+        "Replace retired aggregate oracle classes by equivalent pointwise Range classes."
+      ],
+      "axiom_audit": "All original printed theorem anchors use only propext, Classical.choice, Quot.sound."
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/SecondSumcheckWithTargetComplete.lean",
+      "source_sha256": "7177d88e1161a3edfc2cef999cbae0615bc3984418ad394fc44727018bb099ad",
+      "validation_kind": "temporary-overlay strict source check; not a Lake package build",
+      "receipt": "/tmp/arklib-SecondSumcheckWithTargetComplete-overlay-native1.receipt.json",
+      "changes": [
+        "Consolidate verifier-support decomposition through Reduction.mem_support_verifier_run_of_mem_support_run.",
+        "Lift completeness using native event support monotonicity with the actual verifier compatibility witness; optional failure and original premises remain."
+      ],
+      "axiom_audit": "All original printed theorem anchors use only propext, Classical.choice, Quot.sound."
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/TightFinalTrivial.lean",
+      "source_sha256": "cb4ccf91488c01a98c3018b28df3e921eed9c5b05a9dc7ddef961e783ae2df0a",
+      "validation_kind": "temporary-overlay strict source check; not a Lake package build",
+      "receipt": "/tmp/arklib-TightFinalTrivial-overlay-native1.receipt.json",
+      "owner_receipt": "/tmp/arklib-TightFinalTrivial-owner-native1.receipt.json",
+      "changes": [
+        "Preserve all original public pure-terminal knowledge, run and completeness guarantees.",
+        "Consolidate finalCheckPure as the exact canonical finalCheckTight pass-through implementation; the diagnostic predicate is relational data and is not executed.",
+        "Reuse shared CheckClaim support theorem and original semantic output relation; no new premises."
+      ],
+      "prior_source_archive": "scripts/integration/retired/tight-final-trivial-pre-native.lean.txt",
+      "prior_source_sha256": "5b5e524a5e0d45b41b74434b42a87ac97202adcde66ec262171cc751962cba42",
+      "axiom_audit": "All four original printed theorem anchors use only propext, Classical.choice, Quot.sound."
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/TightMidCompleteness.lean",
+      "source_sha256": "fe5558f913a3cf4138a5f3a37dcddffe43d62b06bcc1ecf4852b1a3c914bb4c4",
+      "validation_kind": "temporary-overlay compiled current owner; not a Lake package build",
+      "receipt": "/tmp/arklib-TightMidCompleteness-owner-native-final.receipt.json",
+      "elapsed_seconds": 14.054,
+      "changes": [
+        "Preserve the full original honest enriched relation chain: first terminal identity, scalar evaluation-claim honesty, first-terminal binding, arbitrary-relation challenge transport and honest RLC target.",
+        "Replace old PMF/interpreter expansion by the canonical run-support perfect-completeness engine; output oracles are materialized from the actual completed native verifier.",
+        "Consolidate deterministic target run through the existing checked simulator collapse. No new public hypotheses."
+      ],
+      "axiom_audit": "All seven original printed theorem anchors use only propext, Classical.choice, Quot.sound."
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/TightComposedCompleteness.lean",
+      "source_sha256": "761ce75214d7bc454a2c813ce09391d8660c3cf4561c4003a93d95e3e1a8ce2a",
+      "validation_kind": "temporary-overlay current compiled owner; not a Lake package build",
+      "receipt": "/tmp/arklib-TightComposedCompleteness-owner-native2.receipt.json",
+      "elapsed_seconds": 4.95,
+      "changes": [
+        "Retain original seven-seam relation-generic fold and all init/support/stateless/lossless premises.",
+        "Replace retired aggregate Range classes, old failure notation and stale explicit universe annotations."
+      ],
+      "axiom_audit": "All printed original or explicitly renamed headline anchors use only propext, Classical.choice, Quot.sound."
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/TightComposedComplete.lean",
+      "source_sha256": "f2bf6814e1bb5a2b707591dab7048202534b43091546210b9116077a02496898",
+      "validation_kind": "temporary-overlay current compiled owner; not a Lake package build",
+      "receipt": "/tmp/arklib-Tight-completeness-final-owners-native2.receipt.json",
+      "elapsed_seconds": 15.381,
+      "changes": [
+        "Consolidate mirrored private direction and completeness seam proofs by delegating the checked Pure fold, preserving all public wrappers.",
+        "The full and pure terminal constructors now definitionally share canonical CheckClaim; preserve carried enriched terminal relations and honest execution contracts."
+      ],
+      "axiom_audit": "All printed original or explicitly renamed headline anchors use only propext, Classical.choice, Quot.sound."
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/TightCompletenessProven.lean",
+      "source_sha256": "d7774cd827ceea767b0e7fab129cb5ce22d635e07017d1e32cf2615a9637a98f",
+      "validation_kind": "temporary-overlay current compiled owner; not a Lake package build",
+      "receipt": "/tmp/arklib-Tight-completeness-final-owners-native2.receipt.json",
+      "elapsed_seconds": 5.955,
+      "changes": [
+        "Preserve original fully assembled perfect-completeness theorem and honest execution hypotheses.",
+        "Use current stronger witness-send completeness without an obsolete extra hInit argument; the original hInit premise remains in the public assembly.",
+        "Document explicit round-knowledge obligations of the companion knowledge theorem."
+      ],
+      "axiom_audit": "All printed original or explicitly renamed headline anchors use only propext, Classical.choice, Quot.sound."
+    }
+  ],
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [
+      "/validation_limit"
+    ],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

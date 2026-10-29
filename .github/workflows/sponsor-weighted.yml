@@ -33,7 +33,9 @@ jobs:
         id: dependencies
         uses: actions/cache/restore@v4
         with:
-          path: .lake
+          path: |
+            .lake
+            !.lake/**/*.setup.json
           key: sponsor-geometry-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             sponsor-geometry-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
@@ -66,5 +68,7 @@ jobs:
         if: always() && !cancelled() && steps.stop-lean.outcome == 'success' && steps.dependencies.outputs.cache-primary-key != ''
         uses: actions/cache/save@v4
         with:
-          path: .lake
+          path: |
+            .lake
+            !.lake/**/*.setup.json
           key: ${{ steps.dependencies.outputs.cache-primary-key }}

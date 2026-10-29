@@ -135,9 +135,11 @@ theorem weightTwoKernelWord_support (g : F) (hg : g ≠ 0)
     {m : Nat} (hm : 2 <= m) :
     fieldSupport (weightTwoKernelWord g hm) =
       {⟨0, by omega⟩, ⟨1, by omega⟩} := by
+  unfold fieldSupport
   ext j
-  simp only [fieldSupport, weightTwoKernelWord, Finset.mem_filter, Finset.mem_univ,
-    true_and, Finset.mem_insert, Finset.mem_singleton]
+  rw [Finset.mem_filter]
+  simp only [Finset.mem_univ, true_and, weightTwoKernelWord,
+    Finset.mem_insert, Finset.mem_singleton]
   by_cases hj0 : (j : Nat) = 0
   · have hj : j = (⟨0, by omega⟩ : Fin m) := Fin.ext hj0
     simp [hj, hg]

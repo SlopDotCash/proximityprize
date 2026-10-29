@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
-import ArkLib.ProofSystem.ToyProblem.SoundnessBounds
+import ProximityPrize.Extensions.ProofSystem.ToyProblem.SoundnessBounds
 import ArkLib.ToMathlib.ToyProblemViolation
 import ArkLib.ToMathlib.KoalaBearCode
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
@@ -12,6 +12,13 @@ import Mathlib.Analysis.SpecialFunctions.Log.Base
 
 /-!
 # Proximity-Prize "bits of security" leaderboard (ABF26 §6)
+
+This retained model uses the existential-encoding relations from the downstream Definitions
+module. Its instance and ratio APIs live in `ToyProblem.ExistentialEncoding`, and
+`winningSetSoundness` is their combinatorial supremum. Canonical `winningSetDensity` instead
+pins one encoder. References below to the soundness error mean the retained scalar; identifying
+it with a concrete protocol-game error requires additional coupling theorems. No equality with
+the canonical fixed-encoder quantity is asserted.
 
 A machine-checked **leaderboard contract** for the soundness of the §6 toy
 protocol (Construction 6.2 / its simplified IOR Construction 6.9). The
@@ -106,7 +113,7 @@ violating constraint is essential — over *all* inputs a valid instance has
 /-- An instance of the simplified IOR whose stack `(v, μ₁, μ₂, f₁, f₂)`
 violates the relaxed relation `R̃_{C,δ}^2`. This is the index of the
 worst-case soundness supremum of Definition 6.11. -/
-structure ViolatingInstance (C : Set (ι → F)) (δ : ℝ≥0) (k : ℕ) where
+structure ExistentialEncoding.ViolatingInstance (C : Set (ι → F)) (δ : ℝ≥0) (k : ℕ) where
   /-- The linear-constraint vector. -/
   v : Fin k → F
   /-- First constraint value. -/
@@ -122,8 +129,8 @@ structure ViolatingInstance (C : Set (ι → F)) (δ : ℝ≥0) (k : ℕ) where
 
 /-- The winning-challenge fraction `|Ω^{f₁,f₂}_{v,μ₁,μ₂}| / |F|` of a
 violating instance. Always in `[0, 1]` (`winningSet ⊆ F`). -/
-noncomputable def winningSetRatio {k : ℕ} {C : Set (ι → F)} {δ : ℝ≥0}
-    (x : ViolatingInstance C δ k) : ℝ≥0 :=
+noncomputable def ExistentialEncoding.winningSetRatio {k : ℕ} {C : Set (ι → F)} {δ : ℝ≥0}
+    (x : ExistentialEncoding.ViolatingInstance C δ k) : ℝ≥0 :=
   ((winningSet C δ x.v x.μ₁ x.μ₂ x.f₁ x.f₂).ncard : ℝ≥0) / (Fintype.card F : ℝ≥0)
 
 /-- **Definition 6.11 of [ABF26]** (soundness error of the simplified IOR).
@@ -133,15 +140,15 @@ The worst-case winning-challenge fraction over violating instances:
 *actual* soundness error after the combination-randomness round — the common
 quantity the leaderboard's two sides bound from opposite directions. -/
 noncomputable def winningSetSoundness {k : ℕ} (C : Set (ι → F)) (δ : ℝ≥0) : ℝ≥0 :=
-  ⨆ x : ViolatingInstance C δ k, winningSetRatio x
+  ⨆ x : ExistentialEncoding.ViolatingInstance C δ k, ExistentialEncoding.winningSetRatio x
 
 /-- The winning-challenge fraction never exceeds `1` (`winningSet ⊆ F`). -/
-theorem winningSetRatio_le_one {k : ℕ} {C : Set (ι → F)} {δ : ℝ≥0}
-    (x : ViolatingInstance C δ k) : winningSetRatio x ≤ 1 := by
+theorem ExistentialEncoding.winningSetRatio_le_one {k : ℕ} {C : Set (ι → F)} {δ : ℝ≥0}
+    (x : ExistentialEncoding.ViolatingInstance C δ k) : ExistentialEncoding.winningSetRatio x ≤ 1 := by
   haveI : Nonempty F := ⟨0⟩
   have hpos : (0 : ℝ≥0) < (Fintype.card F : ℝ≥0) := by
     exact_mod_cast Fintype.card_pos
-  rw [winningSetRatio, div_le_one hpos]
+  rw [ExistentialEncoding.winningSetRatio, div_le_one hpos]
   have hle : (winningSet C δ x.v x.μ₁ x.μ₂ x.f₁ x.f₂).ncard ≤ Fintype.card F := by
     have := Set.ncard_le_ncard (Set.subset_univ
       (winningSet C δ x.v x.μ₁ x.μ₂ x.f₁ x.f₂)) (Set.finite_univ)
@@ -150,24 +157,24 @@ theorem winningSetRatio_le_one {k : ℕ} {C : Set (ι → F)} {δ : ℝ≥0}
 
 /-- The family of winning-challenge fractions is bounded above (by `1`), so
 its supremum is well-behaved in the conditionally complete order `ℝ≥0`. -/
-theorem bddAbove_winningSetRatio {k : ℕ} (C : Set (ι → F)) (δ : ℝ≥0) :
-    BddAbove (Set.range (fun x : ViolatingInstance C δ k ↦ winningSetRatio x)) := by
+theorem ExistentialEncoding.bddAbove_winningSetRatio {k : ℕ} (C : Set (ι → F)) (δ : ℝ≥0) :
+    BddAbove (Set.range (fun x : ExistentialEncoding.ViolatingInstance C δ k ↦ ExistentialEncoding.winningSetRatio x)) := by
   refine ⟨1, ?_⟩
   rintro r ⟨x, rfl⟩
-  exact winningSetRatio_le_one x
+  exact ExistentialEncoding.winningSetRatio_le_one x
 
 /-- Each violating instance's winning fraction is a lower bound on the
 soundness error of [ABF26] Definition 6.11 — the backbone of the attack (Y)
 side: an explicit attack witness lower-bounds `winningSetSoundness`. -/
 theorem winningSetRatio_le_winningSetSoundness {k : ℕ} {C : Set (ι → F)} {δ : ℝ≥0}
-    (x : ViolatingInstance C δ k) :
-    winningSetRatio x ≤ winningSetSoundness (k := k) C δ :=
-  le_ciSup (bddAbove_winningSetRatio C δ) x
+    (x : ExistentialEncoding.ViolatingInstance C δ k) :
+    ExistentialEncoding.winningSetRatio x ≤ winningSetSoundness (k := k) C δ :=
+  le_ciSup (ExistentialEncoding.bddAbove_winningSetRatio C δ) x
 
 /-- The simplified-IOR soundness scalar is a genuine probability bound: it is at most `1`. -/
 theorem winningSetSoundness_le_one {k : ℕ} (C : Set (ι → F)) (δ : ℝ≥0) :
     winningSetSoundness (k := k) C δ ≤ 1 := by
-  exact ciSup_le' fun x : ViolatingInstance C δ k => winningSetRatio_le_one x
+  exact ciSup_le' fun x : ExistentialEncoding.ViolatingInstance C δ k => ExistentialEncoding.winningSetRatio_le_one x
 
 /-- **The correlated-agreement attack lower-bounds the simplified-IOR soundness**
 (the §6.4.2 attack chain, end-to-end and machine-checked). For a linear code
@@ -213,11 +220,11 @@ theorem epsCA_le_winningSetSoundness {k : ℕ} [Nonempty ι] (C : Set (ι → F)
   rw [show epsCA (F := F) (A := F) C δ δ
         = ⨆ u : WordStack F (Fin 2) ι,
             if jointProximity C (u := u) δ then (0 : ENNReal)
-            else Pr_{let γ ← $ᵖ F}[δᵣ(u 0 + γ • u 1, C) ≤ δ] from rfl]
+            else Pr_{let γ ← $ᵖ F}[δᵣ(u 0 + γ • u 1, C) ≤ δ] from epsCA_eq_pmf C δ δ]
   refine iSup_le (fun u => ?_)
   by_cases hjp : jointProximity C (u := u) δ
   · -- Trivial branch: the term is `0`.
-    simp only [hjp, if_true]; exact zero_le _
+    simp only [hjp, ite_true]; positivity
   · -- Non-trivial branch: build the `ViolatingInstance` and bound `Pr · 1 ≤ winningSetSoundness`.
     simp only [hjp, if_false]
     -- Violation certificate via the bridge's contrapositive at `v = 0`, `μ = (0,0)`.
@@ -232,10 +239,10 @@ theorem epsCA_le_winningSetSoundness {k : ℕ} [Nonempty ι] (C : Set (ι → F)
       rw [hu_eq] at this
       exact hjp this
     -- Package the violating instance.
-    set x : ViolatingInstance C δ k :=
+    set x : ExistentialEncoding.ViolatingInstance C δ k :=
       { v := 0, μ₁ := 0, μ₂ := 0, f₁ := u 0, f₂ := u 1, violates := hviol } with hx
     -- The winning-set ratio of `x` lower-bounds `winningSetSoundness`.
-    have hxle : winningSetRatio x ≤ winningSetSoundness (k := k) C δ :=
+    have hxle : ExistentialEncoding.winningSetRatio x ≤ winningSetSoundness (k := k) C δ :=
       winningSetRatio_le_winningSetSoundness x
     -- `Pr[…] = |S| / |F|` and `S ⊆ winningSet`, so `Pr[…] ≤ winningSetRatio x` in ENNReal.
     set S : Finset F := Finset.univ.filter
@@ -275,7 +282,7 @@ theorem epsCA_le_winningSetSoundness {k : ℕ} [Nonempty ι] (C : Set (ι → F)
       exact Set.ncard_le_ncard hsub hwin_fin
     -- Assemble: `Pr[…] = |S|/|F| ≤ |winningSet|/|F| = winningSetRatio x ≤ winningSetSoundness`.
     have hcardF_ne : (Fintype.card F : ℝ≥0) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
-    have hratio_eq : winningSetRatio x
+    have hratio_eq : ExistentialEncoding.winningSetRatio x
         = (((winningSet (k := k) C δ (0 : Fin k → F) 0 0 (u 0) (u 1)).ncard : ℝ≥0)
             / (Fintype.card F : ℝ≥0)) := by
       rw [hx]; rfl
@@ -324,7 +331,7 @@ simplified-IOR soundness `winningSetSoundness` from above (X-side vehicle); the
 `(1-δ)^t` branch is what caps provable security at 64 bits at the prize regime. -/
 noncomputable def toySoundnessError (C : Set (ι → F)) (δ : ℝ≥0) (t : ℕ) : ℝ≥0 :=
   max ((epsMCA (F := F) (A := F) C δ).toNNReal +
-        ((Lambda (interleavedCodeSet (κ := Fin 2) C) (δ : ℝ)).toNat : ℝ≥0)
+        ((ListDecodable.Lambda (interleavedCodeSet (κ := Fin 2) C) (δ : ℝ)).toNat : ℝ≥0)
           / (Fintype.card F : ℝ≥0))
       ((1 - δ) ^ t)
 
@@ -360,7 +367,7 @@ def winningSetSoundness_le_toySoundnessError_mcaSafe_residual {k : ℕ} [Nonempt
   δ < (minRelHammingDistCode C : ℝ≥0) →
   winningSetSoundness (k := k) C δ ≤
     (epsMCA (F := F) (A := F) C δ).toNNReal +
-      ((Lambda (interleavedCodeSet (κ := Fin 2) C) (δ : ℝ)).toNat : ℝ≥0)
+      ((ListDecodable.Lambda (interleavedCodeSet (κ := Fin 2) C) (δ : ℝ)).toNat : ℝ≥0)
         / (Fintype.card F : ℝ≥0)
 
 /-- **The simplified-IOR soundness is below the full-protocol RBR bound**
@@ -454,7 +461,7 @@ theorem ToyParams.soundnessError_le_one (p : ToyParams) :
 /-- The bundled simplified-IOR soundness error lies in the probability interval `[0, 1]`. -/
 theorem ToyParams.soundnessError_mem_Icc (p : ToyParams) :
     p.soundnessError ∈ Set.Icc 0 1 :=
-  ⟨zero_le _, p.soundnessError_le_one⟩
+  ⟨by positivity, p.soundnessError_le_one⟩
 
 /-- Real-valued form of `ToyParams.soundnessError_mem_Icc`. -/
 theorem ToyParams.coe_soundnessError_mem_Icc (p : ToyParams) :
@@ -782,14 +789,14 @@ is the parameter-general core of the concrete anchor below: it consumes a
 winning-set *cardinality* hypothesis (the §6.4 construction's output), it does
 not produce one, so it is reusable at any leaderboard parameter point. -/
 theorem winningSetSoundness_ge_of_card_le {k : ℕ} {C : Set (ι → F)} {δ : ℝ≥0}
-    {b N : ℕ} (x : ViolatingInstance C δ k)
+    {b N : ℕ} (x : ExistentialEncoding.ViolatingInstance C δ k)
     (hF : (Fintype.card F : ℝ≥0) ≤ (2 : ℝ≥0) ^ N) (hb : b ≤ N)
     (hx : (2 : ℕ) ^ (N - b) ≤
       (winningSet C δ x.v x.μ₁ x.μ₂ x.f₁ x.f₂).ncard) :
     (2 : ℝ≥0) ^ (-(b : ℝ)) ≤ winningSetSoundness (k := k) C δ := by
   -- `winningSetRatio x ≤ winningSetSoundness`; bound `2^(-b) ≤ winningSetRatio x`.
   refine le_trans ?_ (winningSetRatio_le_winningSetSoundness x)
-  rw [winningSetRatio]
+  rw [ExistentialEncoding.winningSetRatio]
   rw [show (2 : ℝ≥0) ^ (-(b : ℝ)) = ((2 : ℝ≥0) ^ b)⁻¹ from two_rpow_neg_natCast b]
   -- Abbreviate the winning-set cardinality.
   set Ncard : ℕ :=
@@ -818,7 +825,7 @@ This is the `N = 186`, `b = 116` specialization of the field-general
 `winningSetSoundness_ge_of_card_le`, with the concrete `|F| = p^6 ≤ 2^186`
 bound supplied by `KoalaBear.card_sextic_le_186`. -/
 theorem winningSetSoundness_concrete_ge_of_card
-    (x : ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2)
+    (x : ExistentialEncoding.ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2)
     (hx : (2 : ℕ) ^ 70 ≤
       (winningSet KoalaBear.rsCodeSet (3 / 10) x.v x.μ₁ x.μ₂ x.f₁ x.f₂).ncard) :
     (2 : ℝ≥0) ^ (-(116 : ℝ)) ≤
@@ -852,7 +859,7 @@ with `≥ 2^70` winning challenges. This is the *pure coding-theory* content owe
 stripped of all field arithmetic and linearity (the latter holds by
 construction via `KoalaBear.rsCode_isLinear`). -/
 def fenziSanso_upperBound_attack_concrete_residual : Prop :=
-  ∃ x : ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2,
+  ∃ x : ExistentialEncoding.ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2,
     (2 : ℕ) ^ 70 ≤
       (winningSet KoalaBear.rsCodeSet (3 / 10) x.v x.μ₁ x.μ₂ x.f₁ x.f₂).ncard
 
@@ -955,7 +962,7 @@ theorem spotCheck_le_two_pow_neg_64 :
 theorem koalaIRSConcrete_spotCheck_le_two_pow_neg_64 :
     ((1 : ℝ≥0) - koalaIRSConcrete.δ) ^ koalaIRSConcrete.t ≤
       (2 : ℝ≥0) ^ (-(64 : ℝ)) := by
-  simpa [koalaIRSConcrete] using spotCheck_le_two_pow_neg_64
+  simpa [koalaIRSConcrete, koalaIRS] using spotCheck_le_two_pow_neg_64
 
 end ToyProblem
 

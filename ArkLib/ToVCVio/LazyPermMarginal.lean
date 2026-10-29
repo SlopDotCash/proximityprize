@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import Mathlib.GroupTheory.Perm.Basic
 import Mathlib.Logic.Equiv.Basic
 import Mathlib.Data.Fintype.Card
@@ -250,12 +251,12 @@ extensions of the grown cache. This is the per-query step of the lazy permutatio
 theorem uniformOfFinset_extends_step (c : List (X × X)) (a : X)
     (hkeys : (c.map Prod.fst).Nodup) (hvals : (c.map Prod.snd).Nodup)
     (ha : a ∉ c.map Prod.fst) (hne : (extendsFinset c).Nonempty) :
-    PMF.uniformOfFinset (extendsFinset c) hne
-      = (PMF.uniformOfFinset (unusedFinset c)
+    ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne
+      = (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset c)
           (unusedFinset_nonempty c a hkeys hvals ha)).bind (fun b =>
             if h : (extendsFinset (c.concat (a, b))).Nonempty then
-              PMF.uniformOfFinset (extendsFinset (c.concat (a, b))) h
-            else PMF.uniformOfFinset (extendsFinset c) hne) := by
+              ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.concat (a, b))) h
+            else ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne) := by
   classical
   ext π
   rw [PMF.bind_apply]
@@ -270,11 +271,11 @@ theorem uniformOfFinset_extends_step (c : List (X × X)) (a : X)
     have hconc : (extendsFinset (c.concat (a, π a))).Nonempty :=
       ⟨π, mem_extendsFinset.mpr hπext⟩
     have hside : ∀ b, b ≠ π a →
-        (PMF.uniformOfFinset (unusedFinset c)
+        (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset c)
             (unusedFinset_nonempty c a hkeys hvals ha)) b *
           (if h : (extendsFinset (c.concat (a, b))).Nonempty then
-              PMF.uniformOfFinset (extendsFinset (c.concat (a, b))) h
-            else PMF.uniformOfFinset (extendsFinset c) hne) π = 0 := by
+              ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.concat (a, b))) h
+            else ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne) π = 0 := by
       intro b hb
       by_cases hbu : b ∈ unusedFinset c
       · rw [dif_pos (extendsFinset_concat_nonempty c a b ha (mem_unusedFinset.mp hbu) hne)]
@@ -282,11 +283,11 @@ theorem uniformOfFinset_extends_step (c : List (X × X)) (a : X)
           rw [mem_extendsFinset, extends_concat_iff]
           rintro ⟨-, hab⟩
           exact hb hab.symm
-        rw [PMF.uniformOfFinset_apply_of_notMem (hs := extendsFinset_concat_nonempty c a b ha (mem_unusedFinset.mp hbu) hne) hnotin, mul_zero]
-      · rw [PMF.uniformOfFinset_apply_of_notMem (hs := unusedFinset_nonempty c a hkeys hvals ha) hbu, zero_mul]
-    rw [tsum_eq_single (π a) hside, PMF.uniformOfFinset_apply_of_mem (hs := unusedFinset_nonempty c a hkeys hvals ha) hπa_unused,
-      dif_pos hconc, PMF.uniformOfFinset_apply_of_mem (hs := hconc) (mem_extendsFinset.mpr hπext),
-      PMF.uniformOfFinset_apply_of_mem (hs := hne) (mem_extendsFinset.mpr hπ)]
+        rw [ProximityPrize.Compatibility.uniformOfFinset_apply_of_notMem (hs := extendsFinset_concat_nonempty c a b ha (mem_unusedFinset.mp hbu) hne) hnotin, mul_zero]
+      · rw [ProximityPrize.Compatibility.uniformOfFinset_apply_of_notMem (hs := unusedFinset_nonempty c a hkeys hvals ha) hbu, zero_mul]
+    rw [tsum_eq_single (π a) hside, ProximityPrize.Compatibility.uniformOfFinset_apply_of_mem (hs := unusedFinset_nonempty c a hkeys hvals ha) hπa_unused,
+      dif_pos hconc, ProximityPrize.Compatibility.uniformOfFinset_apply_of_mem (hs := hconc) (mem_extendsFinset.mpr hπext),
+      ProximityPrize.Compatibility.uniformOfFinset_apply_of_mem (hs := hne) (mem_extendsFinset.mpr hπ)]
     have hN := card_extendsFinset_eq_card_unused_mul c a (π a) ha
       (mem_unusedFinset.mp hπa_unused)
     rw [hN, Nat.cast_mul,
@@ -294,7 +295,7 @@ theorem uniformOfFinset_extends_step (c : List (X × X)) (a : X)
         (Or.inl (ENNReal.natCast_ne_top _))]
     rfl
   · -- both sides vanish off the extensions of `c`
-    rw [PMF.uniformOfFinset_apply_of_notMem (hs := hne) (fun h => hπ (mem_extendsFinset.mp h))]
+    rw [ProximityPrize.Compatibility.uniformOfFinset_apply_of_notMem (hs := hne) (fun h => hπ (mem_extendsFinset.mp h))]
     refine (ENNReal.tsum_eq_zero.mpr fun b => ?_).symm
     by_cases hbu : b ∈ unusedFinset c
     · rw [dif_pos (extendsFinset_concat_nonempty c a b ha (mem_unusedFinset.mp hbu) hne)]
@@ -302,8 +303,8 @@ theorem uniformOfFinset_extends_step (c : List (X × X)) (a : X)
         rw [mem_extendsFinset]
         intro hext
         exact hπ ((extends_concat_iff π c a b).mp hext).1
-      rw [PMF.uniformOfFinset_apply_of_notMem (hs := extendsFinset_concat_nonempty c a b ha (mem_unusedFinset.mp hbu) hne) hnotin, mul_zero]
-    · rw [PMF.uniformOfFinset_apply_of_notMem (hs := unusedFinset_nonempty c a hkeys hvals ha) hbu, zero_mul]
+      rw [ProximityPrize.Compatibility.uniformOfFinset_apply_of_notMem (hs := extendsFinset_concat_nonempty c a b ha (mem_unusedFinset.mp hbu) hne) hnotin, mul_zero]
+    · rw [ProximityPrize.Compatibility.uniformOfFinset_apply_of_notMem (hs := unusedFinset_nonempty c a hkeys hvals ha) hbu, zero_mul]
 
 /-- Inversion as a bijection between extension sets: the extensions of the swapped cache
 are exactly the inverses of the extensions of `c`. -/
@@ -326,9 +327,9 @@ the uniform distribution on the original cache's extensions. -/
 lemma map_symm_uniform_extends_swap (d : List (X × X))
     (hne : (extendsFinset d).Nonempty)
     (hneswap : (extendsFinset (d.map Prod.swap)).Nonempty) :
-    (PMF.uniformOfFinset (extendsFinset (d.map Prod.swap)) hneswap).map
+    (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (d.map Prod.swap)) hneswap).map
       (fun π : Equiv.Perm X => π.symm)
-      = PMF.uniformOfFinset (extendsFinset d) hne := by
+      = ProximityPrize.Compatibility.uniformOfFinset (extendsFinset d) hne := by
   classical
   ext τ
   rw [PMF.map_apply]
@@ -339,13 +340,13 @@ lemma map_symm_uniform_extends_swap (d : List (X × X))
     exact hπ e.symm)]
   rw [if_pos (by simp)]
   by_cases hτ : Extends τ d
-  · rw [PMF.uniformOfFinset_apply_of_mem (hs := hneswap)
+  · rw [ProximityPrize.Compatibility.uniformOfFinset_apply_of_mem (hs := hneswap)
       (mem_extendsFinset.mpr ((extends_symm_swap_iff τ d).mpr hτ)),
-      PMF.uniformOfFinset_apply_of_mem (hs := hne) (mem_extendsFinset.mpr hτ),
+      ProximityPrize.Compatibility.uniformOfFinset_apply_of_mem (hs := hne) (mem_extendsFinset.mpr hτ),
       extendsFinset_swap_card]
-  · rw [PMF.uniformOfFinset_apply_of_notMem (hs := hneswap)
+  · rw [ProximityPrize.Compatibility.uniformOfFinset_apply_of_notMem (hs := hneswap)
       (fun h => hτ ((extends_symm_swap_iff τ d).mp (mem_extendsFinset.mp h))),
-      PMF.uniformOfFinset_apply_of_notMem (hs := hne)
+      ProximityPrize.Compatibility.uniformOfFinset_apply_of_notMem (hs := hne)
         (fun h => hτ (mem_extendsFinset.mp h))]
 
 /-- `bind` only depends on the function over the support. -/
@@ -369,15 +370,15 @@ of `uniformOfFinset_extends_step` along the inversion involution. -/
 theorem uniformOfFinset_extends_step_inv (c : List (X × X)) (b : X)
     (hkeys : (c.map Prod.fst).Nodup) (hvals : (c.map Prod.snd).Nodup)
     (hb : b ∉ c.map Prod.snd) (hne : (extendsFinset c).Nonempty) :
-    PMF.uniformOfFinset (extendsFinset c) hne
-      = (PMF.uniformOfFinset (unusedFinset (c.map Prod.swap))
+    ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne
+      = (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset (c.map Prod.swap))
           (unusedFinset_nonempty (c.map Prod.swap) b
             (by simpa [List.map_map, Function.comp_def] using hvals)
             (by simpa [List.map_map, Function.comp_def] using hkeys)
             (by simpa [List.map_map, Function.comp_def] using hb))).bind (fun a =>
             if h : (extendsFinset (c.concat (a, b))).Nonempty then
-              PMF.uniformOfFinset (extendsFinset (c.concat (a, b))) h
-            else PMF.uniformOfFinset (extendsFinset c) hne) := by
+              ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.concat (a, b))) h
+            else ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne) := by
   classical
   have hswapk : ((c.map Prod.swap).map Prod.fst).Nodup := by
     simpa [List.map_map, Function.comp_def] using hvals
@@ -395,27 +396,27 @@ theorem uniformOfFinset_extends_step_inv (c : List (X × X)) (b : X)
       = (c.concat (a, b)).map Prod.swap := by
     intro a
     simp [List.concat_eq_append]
-  calc PMF.uniformOfFinset (extendsFinset c) hne
-      = (PMF.uniformOfFinset (extendsFinset (c.map Prod.swap)) hneswap).map
+  calc ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne
+      = (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.map Prod.swap)) hneswap).map
           (fun π : Equiv.Perm X => π.symm) :=
         (map_symm_uniform_extends_swap c hne hneswap).symm
-    _ = ((PMF.uniformOfFinset (unusedFinset (c.map Prod.swap))
+    _ = ((ProximityPrize.Compatibility.uniformOfFinset (unusedFinset (c.map Prod.swap))
           (unusedFinset_nonempty (c.map Prod.swap) b hswapk hswapv hbswap)).bind
             (fun a =>
               if h : (extendsFinset ((c.map Prod.swap).concat (b, a))).Nonempty then
-                PMF.uniformOfFinset (extendsFinset ((c.map Prod.swap).concat (b, a))) h
-              else PMF.uniformOfFinset (extendsFinset (c.map Prod.swap)) hneswap)).map
+                ProximityPrize.Compatibility.uniformOfFinset (extendsFinset ((c.map Prod.swap).concat (b, a))) h
+              else ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.map Prod.swap)) hneswap)).map
           (fun π : Equiv.Perm X => π.symm) := by rw [← hstep]
-    _ = (PMF.uniformOfFinset (unusedFinset (c.map Prod.swap))
+    _ = (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset (c.map Prod.swap))
           (unusedFinset_nonempty (c.map Prod.swap) b hswapk hswapv hbswap)).bind
             (fun a =>
               (if h : (extendsFinset ((c.map Prod.swap).concat (b, a))).Nonempty then
-                PMF.uniformOfFinset (extendsFinset ((c.map Prod.swap).concat (b, a))) h
-              else PMF.uniformOfFinset (extendsFinset (c.map Prod.swap)) hneswap).map
+                ProximityPrize.Compatibility.uniformOfFinset (extendsFinset ((c.map Prod.swap).concat (b, a))) h
+              else ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.map Prod.swap)) hneswap).map
                 (fun π : Equiv.Perm X => π.symm)) := PMF.map_bind _ _ _
     _ = _ := by
         refine bind_congr_support _ _ _ fun a ha => ?_
-        rw [PMF.mem_support_uniformOfFinset_iff, mem_unusedFinset] at ha
+        rw [ProximityPrize.Compatibility.mem_support_uniformOfFinset_iff, mem_unusedFinset] at ha
         have haK : a ∉ c.map Prod.fst := by
           simpa [List.map_map, Function.comp_def] using ha
         have hposSwap : (extendsFinset ((c.map Prod.swap).concat (b, a))).Nonempty :=

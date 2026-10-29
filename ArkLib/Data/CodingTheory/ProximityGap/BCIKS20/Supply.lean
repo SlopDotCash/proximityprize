@@ -210,10 +210,20 @@ theorem betaHensel_eq_aPre_mul_xi_pow (hlc : H.leadingCoeff = 1) (t : ℕ) :
       * ClaimA2.ξ x₀ R H hHyp = 1 := by
     have h := (isUnit_ξ_of_monic H x₀ R hHyp hlc).unit.inv_mul
     rwa [IsUnit.unit_spec] at h
-  rw [aPre, mul_assoc,
-    ← mul_pow (((isUnit_ξ_of_monic H x₀ R hHyp hlc).unit⁻¹ : (𝒪 H)ˣ) : 𝒪 H)
-      (ClaimA2.ξ x₀ R H hHyp) (2 * t - 1),
-    hu, one_pow, mul_one]
+  let b : 𝒪 H := βHensel H x₀ R hHyp t
+  let u : 𝒪 H := (((isUnit_ξ_of_monic H x₀ R hHyp hlc).unit⁻¹ : (𝒪 H)ˣ) : 𝒪 H)
+  let e : ℕ := 2 * t - 1
+  have hone : (1 : 𝒪 H) ^ e = 1 := one_pow (M := 𝒪 H) e
+  change b = (b * u ^ e) * ClaimA2.ξ x₀ R H hHyp ^ e
+  calc
+    b = b * 1 := (mul_one b).symm
+    _ = b * (u * ClaimA2.ξ x₀ R H hHyp) ^ e :=
+      congrArg (fun z : 𝒪 H => b * z)
+        ((congrArg (fun z : 𝒪 H => z ^ e) hu).trans hone).symm
+    _ = b * (u ^ e * ClaimA2.ξ x₀ R H hHyp ^ e) :=
+      congrArg (fun z : 𝒪 H => b * z) (mul_pow u (ClaimA2.ξ x₀ R H hHyp) e)
+    _ = _ := (mul_assoc b _ _).symm
+
 
 /-- **The automatic pinning** (the weld's `hpin`, pinning conjunct): at EVERY place, the
 weld's per-place pinning holds with `c t := π_z (aPre t)` — by applying the ring hom `π_z`

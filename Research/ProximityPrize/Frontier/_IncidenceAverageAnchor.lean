@@ -3,6 +3,7 @@ Copyright (c) 2026 Mikhail Izhutkin. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mikhail Izhutkin (mashingaan, @mashingaan)
 -/
+import ProximityPrize.Compatibility.EvaluationCodeDimension
 import Research.ProximityPrize.Frontier._IncidenceAnchorPair
 import ArkLib.Data.CodingTheory.ProximityGap.CoveragePigeonhole
 
@@ -257,8 +258,8 @@ theorem firstPrime_average_incidence :
   have hcode : ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1) =
       ((rsCode dom (2 ^ 29) : Submodule (ZMod sponsorP) (Fin (2 ^ 30) → ZMod sponsorP)) :
         Set (Fin (2 ^ 30) → ZMod sponsorP)) := by
-    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using
-      (evalCode_eq_rsCode ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (2 ^ 29 - 1))
+    exact ProximityGap.Ownership.evalCode_pred_eq_rsCode
+      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (by norm_num)
   intro u
   rw [hcode]
   apply badScalars_card_le_of_anchor (j := 2 ^ 30)

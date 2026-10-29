@@ -4,14 +4,15 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.Security.Basic
+import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import VCVio.EvalDist.MeasureTVDist.Basic
 
 /-!
   # Honest-Verifier Zero-Knowledge for Reductions
 
   This file defines transcript-level honest-verifier zero-knowledge for `Reduction`s, stated against
   the existing `Reduction.run` execution semantics and the existing probability vocabulary
-  (`evalDist`, `tvDist`, `probEvent`).
+  (`evalDist`, `measureTVDist`, `probEvent`).
 
   The honest interaction produces, for a given `(stmtIn, witIn)`, a full transcript
   `FullTranscript pSpec` together with prover and verifier outputs. We interpret that computation
@@ -39,6 +40,9 @@ variable {ι : Type} {oSpec : OracleSpec ι}
   {StmtIn WitIn StmtOut WitOut : Type}
   {n : ℕ} {pSpec : ProtocolSpec n} [∀ i, SampleableType (pSpec.Challenge i)]
   {σ : Type}
+
+-- Retained transcript distributions observe every event, matching the original discrete API.
+local instance : MeasurableSpace (FullTranscript pSpec) := ⊤
 
 section Definitions
 
@@ -83,7 +87,7 @@ def statisticalHVZK
     (reduction : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec)
     (sim : TranscriptSimulator oSpec StmtIn pSpec) (ε : ℝ≥0) : Prop :=
   ∀ stmtIn : StmtIn, ∀ witIn : WitIn, (stmtIn, witIn) ∈ rel →
-    tvDist (sim stmtIn) (honestTranscriptDist init impl reduction stmtIn witIn) ≤ (ε : ℝ)
+    measureTVDist (sim stmtIn) (honestTranscriptDist init impl reduction stmtIn witIn) ≤ (ε : ℝ)
 
 /-- A reduction is honest-verifier zero-knowledge for relation `rel` if some simulator achieves
   perfect HVZK. -/
@@ -118,19 +122,19 @@ theorem perfectHVZK_iff_statisticalHVZK_zero
   · intro h stmtIn witIn hMem
     have heq := h stmtIn witIn hMem
     simp only [NNReal.coe_zero]
-    rw [show (0 : ℝ) = tvDist (honestTranscriptDist init impl reduction stmtIn witIn)
-        (honestTranscriptDist init impl reduction stmtIn witIn) from (tvDist_self _).symm]
-    rw [tvDist, tvDist, heq]
+    rw [show (0 : ℝ) = measureTVDist (honestTranscriptDist init impl reduction stmtIn witIn)
+        (honestTranscriptDist init impl reduction stmtIn witIn) from (measureTVDist_self _).symm]
+    rw [measureTVDist, measureTVDist, heq]
   · intro h stmtIn witIn hMem
     have := h stmtIn witIn hMem
     simp only [NNReal.coe_zero] at this
-    have hle : tvDist (sim stmtIn) (honestTranscriptDist init impl reduction stmtIn witIn) ≤ 0 :=
+    have hle : measureTVDist (sim stmtIn) (honestTranscriptDist init impl reduction stmtIn witIn) ≤ 0 :=
       this
-    have hge : 0 ≤ tvDist (sim stmtIn) (honestTranscriptDist init impl reduction stmtIn witIn) :=
-      tvDist_nonneg _ _
-    have hzero : tvDist (sim stmtIn) (honestTranscriptDist init impl reduction stmtIn witIn) = 0 :=
+    have hge : 0 ≤ measureTVDist (sim stmtIn) (honestTranscriptDist init impl reduction stmtIn witIn) :=
+      measureTVDist_nonneg _ _
+    have hzero : measureTVDist (sim stmtIn) (honestTranscriptDist init impl reduction stmtIn witIn) = 0 :=
       le_antisymm hle hge
-    rw [tvDist_eq_zero_iff] at hzero
+    rw [measureTVDist_eq_zero_iff] at hzero
     exact hzero
 
 /-- Perfect HVZK implies statistical HVZK with any error `ε`. -/
@@ -144,8 +148,8 @@ theorem perfectHVZK.statisticalHVZK
   intro stmtIn witIn hMem
   have heq := h stmtIn witIn hMem
   have hzero :
-      tvDist (sim stmtIn) (honestTranscriptDist init impl reduction stmtIn witIn) = 0 := by
-    rw [tvDist_eq_zero_iff]
+      measureTVDist (sim stmtIn) (honestTranscriptDist init impl reduction stmtIn witIn) = 0 := by
+    rw [measureTVDist_eq_zero_iff]
     exact heq
   rw [hzero]
   positivity
@@ -341,14 +345,12 @@ theorem honestTranscriptDist_id_evalDist
     evalDist (honestTranscriptDist init impl
         (Reduction.id : Reduction oSpec StmtIn WitIn StmtIn WitIn !p[]) stmtIn witIn) =
       evalDist (pure default : OptionT ProbComp (FullTranscript !p[])) := by
-  apply evalDist_ext
-  intro transcript
   classical
   unfold honestTranscriptDist
   simp only [Reduction.id_run, map_pure, OptionT.run_pure, simulateQ_pure, StateT.run'_eq,
     StateT.run_pure, bind_pure_comp]
-  rw [OptionT.probOutput_eq, OptionT.probOutput_eq]
-  simp [probOutput_map_const, HasEvalPMF.probFailure_eq_zero]
+  rw [OptionT.evalDist_eq_comap_some, OptionT.evalDist_eq_comap_some]
+  simp only [OptionT.run_mk, OptionT.run_pure, OracleComp.evalDist_map_const, evalDist_pure]
 
 /-- The zero-round identity reduction satisfies perfect honest-verifier zero-knowledge for any
   input relation. -/

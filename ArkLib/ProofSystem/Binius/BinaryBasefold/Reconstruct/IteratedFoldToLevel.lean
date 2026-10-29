@@ -41,7 +41,7 @@ lemma intermediateEvaluationPoly_last_iteratedRefineCoeffs_eval
     (coeffs : Fin (2 ^ ℓ) → L) (r_challenges : Fin ℓ → L)
     (y : sDomain 𝔽q β h_ℓ_add_R_rate (i := ⟨(Fin.last ℓ).val, by omega⟩)) :
     (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-      (i := ⟨(Fin.last ℓ).val, by omega⟩)
+      (i := ⟨(Fin.last ℓ).val, by omega⟩) (h_i := by simp)
       (iteratedRefineCoeffs (𝓡 := 𝓡) (i := 0)
         (destIdx := ⟨(Fin.last ℓ).val, by omega⟩) (Fin.last ℓ).val
         (by simp) (by simp) coeffs r_challenges)).eval y.val =
@@ -68,7 +68,7 @@ lemma intermediateEvaluationPoly_last_iteratedRefineCoeffs_eval
   simp only [Fin.val_zero, zero_mul, zero_add]
   apply Finset.sum_congr rfl
   intro x _
-  simp
+  simp [h_default]
 
 /-- The last mid-codeword value produced by the honest fold chain is the multilinear polynomial
 evaluation at the statement challenges. -/
@@ -78,8 +78,20 @@ lemma getMidCodewords_last_apply_eq_eval
     getMidCodewords 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (i := Fin.last ℓ) t challenges y =
       t.val.eval challenges := by
+  have h := iteratedFold_to_level_ℓ_eval 𝔽q β
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) t ⟨ℓ, by omega⟩ rfl challenges
+  exact congrFun h y
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Full folding also evaluates the historical reverse-variable/newest-first encoding. This
+compares only the final scalar value; intermediate historical and canonical codewords differ. -/
+lemma Compatibility.newestFirstCodeword_last_apply_eq_eval
+    (t : MultilinearPoly L ℓ) (challenges : Fin ℓ → L)
+    (y : sDomain 𝔽q β h_ℓ_add_R_rate (i := ⟨Fin.last ℓ, by omega⟩)) :
+    Compatibility.newestFirstCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (i := Fin.last ℓ) t challenges y = t.val.eval challenges := by
   classical
-  dsimp only [getMidCodewords]
+  rw [Compatibility.newestFirstCodeword_eq_legacy]
   let coeffs : Fin (2 ^ ℓ) → L :=
     fun ω => t.val.eval (statementOrderBitsOfIndex (L := L) ω)
   have h_adv := iterated_fold_advances_evaluation_poly 𝔽q β
@@ -88,8 +100,6 @@ lemma getMidCodewords_last_apply_eq_eval
     (h_destIdx := by simp) (h_destIdx_le := by simp)
     (coeffs := coeffs)
     (r_challenges := foldOrderChallenges (ℓ := ℓ) (L := L) (i := Fin.last ℓ) challenges)
-  unfold polyToOracleFunc at h_adv
-  simp only [Fin.val_zero] at h_adv
   have h_base := intermediate_poly_P_base 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
     (h_ℓ := by omega) (coeffs := coeffs)
   rw [h_base] at h_adv
@@ -108,10 +118,10 @@ lemma getMidCodewords_last_apply_eq_eval
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (coeffs := coeffs)
       (r_challenges := foldOrderChallenges (ℓ := ℓ) (L := L) (i := Fin.last ℓ) challenges)
       (y := y) using 1
-  rw [multilinear_eval_eq_sum_statementOrderBitsOfIndex (t := t) (r := challenges)]
-  apply Finset.sum_congr rfl
-  intro x _
-  congr
+  change (∑ x : Fin (2 ^ ℓ),
+      multilinearWeight (fun j : Fin ℓ => challenges j.rev) x *
+        t.val.eval (statementOrderBitsOfIndex x)) = t.val.eval challenges
+  exact (multilinear_eval_eq_sum_statementOrderBitsOfIndex (t := t) (r := challenges)).symm
 
 /-- The final mid-codeword at the canonical zero point is the multilinear evaluation. -/
 lemma getMidCodewords_last_zero_eq_eval
@@ -136,6 +146,7 @@ lemma getMidCodewords_last_is_constant
       (t := t) (challenges := challenges) (y := y)]
 
 #print axioms intermediateEvaluationPoly_last_iteratedRefineCoeffs_eval
+#print axioms Compatibility.newestFirstCodeword_last_apply_eq_eval
 #print axioms getMidCodewords_last_apply_eq_eval
 #print axioms getMidCodewords_last_zero_eq_eval
 #print axioms getMidCodewords_last_is_constant

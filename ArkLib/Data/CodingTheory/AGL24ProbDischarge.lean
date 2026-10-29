@@ -4,11 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ArkLib.Data.Probability.Notation
 import Mathlib
 import ArkLib.Data.CodingTheory.AGL24NonzeroMinor
 import ArkLib.Data.CodingTheory.AGL24DetDegree
 import ArkLib.Data.CodingTheory.AGL24UnionBound
-import ArkLib.Data.MvPolynomial.Interpolation
+import ProximityPrize.Extensions.Data.MvPolynomial.Interpolation
 
 /-!
 # [AGL24] discharging the probabilistic residual via Schwartz–Zippel (issue #354, stage 2)
@@ -90,7 +91,7 @@ theorem rimFailureProb_of_symbolic {k : ℕ}
     {t : ℕ} (ht : 1 ≤ t) (e : ι → Finset (Fin (t + 1)))
     (hwpc : WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t + 1))) e) :
     RIMFullRankFailureProbResidual (F := F) (k := k)
-      (PMF.uniformOfFintype (ι → F)) e
+      (ProximityPrize.Compatibility.uniformOfFintype (ι → F)) e
       ((t * k * (k - 1) : ℕ) / (Fintype.card F : ENNReal)) := by
   classical
   unfold RIMFullRankFailureProbResidual
@@ -99,28 +100,28 @@ theorem rimFailureProb_of_symbolic {k : ℕ}
   set p := ((RIM F e).submatrix rows id).det with hp
   set Z := Finset.univ.filter (fun α : ι → F => MvPolynomial.eval α p = 0) with hZ
   -- Event inclusion.
-  refine le_trans ((PMF.uniformOfFintype (ι → F)).toOuterMeasure.mono
+  refine le_trans ((ProximityPrize.Compatibility.uniformOfFintype (ι → F)).toOuterMeasure.mono
     (rank_deficit_subset_minor_zero e rows)) ?_
   rw [← hp]
   -- The uniform measure of the zero set is card/total.
-  have hmeasure : (PMF.uniformOfFintype (ι → F)).toOuterMeasure
+  have hmeasure : (ProximityPrize.Compatibility.uniformOfFintype (ι → F)).toOuterMeasure
       {α : ι → F | MvPolynomial.eval α p = 0}
       = (Z.card : ENNReal) / (Fintype.card (ι → F) : ENNReal) := by
     rw [PMF.toOuterMeasure_apply, tsum_fintype]
     have hterm : ∀ α : ι → F, Set.indicator {α : ι → F | MvPolynomial.eval α p = 0}
-        (⇑(PMF.uniformOfFintype (ι → F))) α
+        (⇑(ProximityPrize.Compatibility.uniformOfFintype (ι → F))) α
         = if MvPolynomial.eval α p = 0
             then (Fintype.card (ι → F) : ENNReal)⁻¹ else 0 := by
       intro α
       rw [Set.indicator_apply]
       by_cases hα : MvPolynomial.eval α p = 0
-      · rw [if_pos hα, if_pos (Set.mem_setOf_eq ▸ hα), PMF.uniformOfFintype_apply]
+      · rw [if_pos hα, if_pos (Set.mem_setOf_eq ▸ hα), ProximityPrize.Compatibility.uniformOfFintype_apply]
       · rw [if_neg hα, if_neg (by rw [Set.mem_setOf_eq]; exact hα)]
     rw [Finset.sum_congr rfl fun α _ => hterm α]
     rw [← Finset.sum_filter]
     rw [← hZ, Finset.sum_const, nsmul_eq_mul]
     rw [div_eq_mul_inv]
-  show (PMF.uniformOfFintype (ι → F)).toOuterMeasure
+  show (ProximityPrize.Compatibility.uniformOfFintype (ι → F)).toOuterMeasure
     {α : ι → F | MvPolynomial.eval α p = 0} ≤ _
   rw [hmeasure]
   -- The Schwartz–Zippel count (ℚ≥0), specialized to all-universe boxes.

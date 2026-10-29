@@ -68,11 +68,15 @@ theorem AlphaGenuineRegularWeightLe_of_monic_of_succDivWeight
     H x₀ R hHyp hH D (fun t => ?_) ?_ (fun t => ?_)
   · exact (BCIKS20.HenselNumerator.P2_closed_of_leadingCoeff_one H x₀ R hHyp hlc).2 (t + 1)
   · refine ⟨βHensel H x₀ R hHyp 0, ?_, βHensel_zero_weight_le_one H x₀ R hHyp hH hd hD⟩
-    rw [W𝒪_eq_one_of_monic H hmonic, mul_one]
+    rw [W𝒪_eq_one_of_monic H hmonic]
+    exact (mul_one (βHensel H x₀ R hHyp 0)).symm
   · obtain ⟨a, ha, hwt⟩ := hsucc t
     refine ⟨a, ?_, hwt⟩
-    rw [W𝒪_eq_one_of_monic H hmonic, one_pow, mul_one]
-    exact ha
+    rw [W𝒪_eq_one_of_monic H hmonic]
+    calc
+      _ = a * ClaimA2.ξ x₀ R H hHyp ^ (2 * t + 1) := ha
+      _ = _ := congrArg (fun z : 𝒪 H => z * ClaimA2.ξ x₀ R H hHyp ^ (2 * t + 1))
+        ((mul_one a).symm.trans (congrArg (fun z : 𝒪 H => a * z) (one_pow (t + 2)).symm))
 
 /-- In the monic regime the proved P2 lift identity transports the P1 carved alpha regularity
 predicate to its divisibility-with-weight endpoint. -/
@@ -104,7 +108,9 @@ theorem SuccDivWeightLe_of_monic_of_divWeight
   intro t
   rcases (DivWeightLe.normalized_cases H x₀ R hHyp hH D hdiv).2 t with ⟨a, ha, hwt⟩
   refine ⟨a, ?_, hwt⟩
-  simpa [W𝒪_eq_one_of_monic H hmonic] using ha
+  rw [W𝒪_eq_one_of_monic H hmonic] at ha
+  exact ha.trans (congrArg (fun z : 𝒪 H => z * ClaimA2.ξ x₀ R H hHyp ^ (2 * t + 1))
+    ((congrArg (fun z : 𝒪 H => a * z) (one_pow (t + 2))).trans (mul_one a)))
 
 /-- In the monic/degree-budget regime, the named successor core is exactly the existing
 divisibility-with-weight endpoint. -/

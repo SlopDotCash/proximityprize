@@ -113,7 +113,15 @@ theorem productionN_eq_twice_half : productionN = 2 * productionHalf := by
 theorem production_primes_in_cyclotomic_halfCap_range :
     3 * productionN < 2 * (productionP1 + 1) /\
       3 * productionN < 2 * (productionP2 + 1) := by
-  norm_num [productionN, productionP1, productionP2]
+  constructor
+  · unfold productionP1
+    have hM : 2 ≤ (2 : Nat) ^ 128 + 192 := by omega
+    have hmul := Nat.mul_le_mul_left productionN hM
+    omega
+  · unfold productionP2
+    have hM : 2 ≤ (2 : Nat) ^ 129 + 13 := by omega
+    have hmul := Nat.mul_le_mul_left productionN hM
+    omega
 
 /-! ## Exact capped-row countermodel -/
 

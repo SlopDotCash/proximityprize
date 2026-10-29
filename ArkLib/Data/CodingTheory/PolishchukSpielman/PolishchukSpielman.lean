@@ -3,8 +3,9 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Katerina Hristova, František Silváši, Julian Sutherland, Alexander Hicks, Aleph
 -/
+module
 
-import ArkLib.Data.CodingTheory.PolishchukSpielman.Existence
+public import ArkLib.Data.CodingTheory.PolishchukSpielman.Existence
 
 /-!
 # Polishchuk-Spielman lemma
@@ -39,6 +40,8 @@ the difference of the global degrees.
 
 -/
 
+@[expose] public section
+
 open Polynomial.Bivariate Polynomial Matrix
 open scoped BigOperators
 
@@ -68,7 +71,7 @@ theorem polishchuk_spielman {F : Type} [Field F]
       ∧ (∃ Q_y : Finset F, Q_y.card ≥ (n_y : ℕ) - a_y ∧ Q_y ⊆ P_y ∧
           ∀ y ∈ Q_y, Polynomial.Bivariate.evalY y P = quot_x y) := by
   classical
-  letI : DecidableEq F := Classical.decEq F
+  let : DecidableEq F := Classical.decEq F
   -- 1. obtain P with B = P * A
   obtain ⟨P, hBA⟩ :=
     ps_exists_p (F := F) a_x a_y b_x b_y n_x n_y h_bx_ge_ax h_by_ge_ay A B
@@ -100,55 +103,3 @@ theorem polishchuk_spielman {F : Type} [Field F]
   refine ⟨P, hBA, hdeg.1, hdeg.2, ?_, ?_⟩
   · exact ⟨Q_x, hQx_card, hQx_sub, hQx_eval⟩
   · exact ⟨Q_y, hQy_card, hQy_sub, hQy_eval⟩
-
-/-- Boundary-strengthened Polishchuk–Spielman: the **divisibility** `B = P * A` together with
-the **degree bounds** on the global quotient hold *without* assuming `A ≠ 0`.
-
-This isolates exactly the part of `polishchuk_spielman` that survives the degenerate case.
-The full lemma additionally requires `A ≠ 0`, and that hypothesis is genuinely necessary for the
-*agreement* clauses: when `A = 0` the hypotheses force `B = 0` but leave the local quotients
-`quot_x`, `quot_y` completely unconstrained (the equations `evalX x B = quot_y x * evalX x A`
-become `0 = quot_y x * 0`, true for every `quot_y x`). The conclusion's agreement clauses then
-demand a single bounded-degree `P` whose restrictions match arbitrarily-prescribed univariate
-data on `≥ n_x - a_x` vertical and `≥ n_y - a_y` horizontal lines — an over-determined,
-generally infeasible interpolation problem. In particular the naive witness `P = 0` gives
-`evalX x P = 0`, which fails `evalX x P = quot_y x` as soon as some `quot_y x ≠ 0`. Hence the
-agreement clauses cannot be recovered in the `A = 0` case, but divisibility and the degree
-bounds always can. -/
-theorem polishchuk_spielman_dvd {F : Type} [Field F]
-    (a_x a_y b_x b_y : ℕ) (n_x n_y : ℕ+)
-    (h_bx_ge_ax : b_x ≥ a_x) (h_by_ge_ay : b_y ≥ a_y)
-    (A B : F[X][Y])
-    (h_f_degX : a_x ≥ Polynomial.Bivariate.degreeX A)
-    (h_g_degX : b_x ≥ Polynomial.Bivariate.degreeX B)
-    (h_f_degY : a_y ≥ Polynomial.Bivariate.natDegreeY A)
-    (h_g_degY : b_y ≥ Polynomial.Bivariate.natDegreeY B)
-    (P_x P_y : Finset F) [Nonempty P_x] [Nonempty P_y]
-    (quot_x quot_y : F → F[X])
-    (h_card_Px : n_x ≤ P_x.card) (h_card_Py : n_y ≤ P_y.card)
-    (h_quot_x : ∀ y ∈ P_y,
-      (quot_x y).natDegree ≤ (b_x - a_x) ∧
-      Polynomial.Bivariate.evalY y B = (quot_x y) * (Polynomial.Bivariate.evalY y A))
-    (h_quot_y : ∀ x ∈ P_x,
-      (quot_y x).natDegree ≤ (b_y - a_y) ∧
-        Polynomial.Bivariate.evalX x B = (quot_y x) * (Polynomial.Bivariate.evalX x A))
-    (h_le_1 : 1 > (b_x : ℚ) / (n_x : ℚ) + (b_y : ℚ) / (n_y : ℚ)) :
-    ∃ P : F[X][Y], B = P * A
-      ∧ Polynomial.Bivariate.degreeX P ≤ b_x - a_x
-      ∧ Polynomial.Bivariate.natDegreeY P ≤ b_y - a_y := by
-  classical
-  obtain ⟨P, hBA⟩ :=
-    ps_exists_p (F := F) a_x a_y b_x b_y n_x n_y h_bx_ge_ax h_by_ge_ay A B
-      h_f_degX h_g_degX h_f_degY h_g_degY P_x P_y quot_x quot_y h_card_Px h_card_Py
-      h_quot_x h_quot_y h_le_1
-  by_cases hA0 : A = 0
-  · -- `A = 0` forces `B = P * 0 = 0`; the witness `P = 0` discharges divisibility and degrees.
-    refine ⟨0, ?_, ?_, ?_⟩
-    · rw [hBA, hA0]; ring
-    · simp [Polynomial.Bivariate.degreeX]
-    · simp [Polynomial.Bivariate.natDegreeY]
-  · obtain ⟨hdx, hdy⟩ :=
-      ps_degree_bounds_of_mul (F := F) a_x a_y b_x b_y n_x n_y h_bx_ge_ax h_by_ge_ay
-        (A := A) (B := B) (P := P) hA0 hBA h_f_degX h_f_degY h_g_degY P_x P_y
-        quot_x quot_y h_card_Px h_card_Py h_quot_x h_quot_y h_le_1
-    exact ⟨P, hBA, hdx, hdy⟩

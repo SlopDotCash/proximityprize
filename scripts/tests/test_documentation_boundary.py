@@ -1,7 +1,11 @@
 """Regression coverage for the source/documentation boundary."""
 import importlib.util
+import json
+import os
 from pathlib import Path
+import subprocess
 import tempfile
+import tomllib
 import unittest
 from unittest.mock import patch
 
@@ -96,6 +100,55 @@ class DocumentationBoundaryTests(unittest.TestCase):
         with patch.object(self.checker, "tracked_markdown_files", return_value=[doc]):
             self.assertEqual(self.checker.check_markdown_links(),
                              ["Broken link in example.md: missing.md"])
+
+
+class WebsiteDocumentationTargets(unittest.TestCase):
+    def test_local_site_build_selects_all_default_library_docs_and_blueprint(self):
+        """Exercise the actual shell flow with fake tools, without invoking Lake or TeX."""
+        repo = Path(__file__).resolve().parents[2]
+        config = tomllib.loads((repo / "lakefile.toml").read_text())
+        libraries = {lib["name"] for lib in config["lean_lib"]}
+        expected = {target + ":docs" for target in config["defaultTargets"]
+                    if target in libraries} | {"ArkLibBlueprint:docs"}
+        with tempfile.TemporaryDirectory(prefix="site-docs-test-") as tmp:
+            root = Path(tmp)
+            scripts = root / "scripts"
+            scripts.mkdir()
+            (scripts / "build-web.sh").write_text((repo / "scripts/build-web.sh").read_text())
+            calls = root / "calls.jsonl"
+            lake = scripts / "lake-locked.sh"
+            lake.write_text("#!/usr/bin/env python3\n"
+                            "import json, os, pathlib, sys\n"
+                            "with open(os.environ['DOCS_TEST_CALLS'], 'a') as f:\n"
+                            " f.write(json.dumps(sys.argv[1:]) + '\\n')\n"
+                            "if any(arg.endswith(':docs') for arg in sys.argv[1:]):\n"
+                            " p = pathlib.Path('.lake/build/doc')\n"
+                            " p.mkdir(parents=True, exist_ok=True)\n"
+                            " (p / 'index.html').write_text('API fixture')\n")
+            lake.chmod(0o755)
+            binary = root / "bin"
+            binary.mkdir()
+            blueprint = binary / "leanblueprint"
+            blueprint.write_text("#!/usr/bin/env python3\n"
+                                 "import pathlib, sys\n"
+                                 "p = pathlib.Path('print/print.pdf' if sys.argv[1] == 'pdf' "
+                                 "else 'web/index.html')\n"
+                                 "p.parent.mkdir(parents=True, exist_ok=True)\n"
+                                 "p.write_text('blueprint fixture')\n")
+            blueprint.chmod(0o755)
+            (root / "blueprint").mkdir()
+            env = dict(os.environ, DOCS_TEST_CALLS=str(calls),
+                       PATH=str(binary) + os.pathsep + os.environ["PATH"])
+            subprocess.run(["bash", "scripts/build-web.sh"], cwd=root, env=env,
+                           check=True, capture_output=True, text=True)
+            commands = [json.loads(line) for line in calls.read_text().splitlines()]
+            docs = [target for command in commands if command[0] == "build"
+                    for target in command[1:] if target.endswith(":docs")]
+            self.assertCountEqual(docs, expected)
+            self.assertIn(["build", "ArkLibBlueprint"], commands)
+            self.assertIn(["exe", "checkdecls", "blueprint/lean_decls"], commands)
+            self.assertTrue((root / "home_page/docs/index.html").is_file())
+            self.assertTrue((root / "home_page/blueprint/index.html").is_file())
 
 
 if __name__ == "__main__":

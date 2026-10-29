@@ -7,7 +7,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.MCALowerBound
 import ArkLib.Data.CodingTheory.ProximityGap.UDRBadCount
 import ArkLib.Data.CodingTheory.ProximityGap.ReedSolomonUniqueDecode
 import Research.ProximityPrize.GrandChallenges
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.JointAgreement
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.JointAgreement
 
 /-!
 # Connected unique-decoding-regime MCA bound for Reed–Solomon, from scratch (#232)

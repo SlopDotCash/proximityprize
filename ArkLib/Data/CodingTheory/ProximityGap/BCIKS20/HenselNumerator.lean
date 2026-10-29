@@ -8,7 +8,7 @@ import Mathlib.Algebra.MvPolynomial.PDeriv
 import Mathlib.Algebra.Polynomial.HasseDeriv
 import Mathlib.Combinatorics.Enumerative.Partition.Basic
 import Mathlib.Data.Nat.Choose.Multinomial
-import ArkLib.Data.Polynomial.RationalFunctions
+import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
 import ArkLib.Data.Polynomial.PowerSeriesComposition
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.GammaGenuine
 
@@ -180,7 +180,7 @@ binomial-weighted shift used by BCIKS20 (characteristic-free, no division, no `m
 the iterated single-variable `Polynomial.hasseDeriv`, one derivative per variable
 (`mvHasseCoeff_single_coeff` shows the single-variable agreement). -/
 def mvHasseCoeff (k : σ →₀ ℕ) (p : MvPolynomial σ R) : MvPolynomial σ R :=
-  ∑ s ∈ p.support, MvPolynomial.monomial (s - k) ((mvBinom s k : R) * MvPolynomial.coeff s p)
+  ∑ s ∈ p.support, MvPolynomial.monomial (s - k) ((mvBinom s k : R) * p.coeff s)
 
 @[simp]
 theorem mvHasseCoeff_zero_right (k : σ →₀ ℕ) :
@@ -189,8 +189,8 @@ theorem mvHasseCoeff_zero_right (k : σ →₀ ℕ) :
 
 /-- The defining coefficient formula: the genuine binomial-weighted shift. -/
 theorem mvHasseCoeff_coeff (k : σ →₀ ℕ) (p : MvPolynomial σ R) (n : σ →₀ ℕ) :
-    MvPolynomial.coeff n (mvHasseCoeff k p)
-      = (mvBinom (n + k) k : R) * MvPolynomial.coeff (n + k) p := by
+    (mvHasseCoeff k p).coeff n
+      = (mvBinom (n + k) k : R) * p.coeff (n + k) := by
   classical
   rw [mvHasseCoeff, MvPolynomial.coeff_sum]
   -- Only the term `s = n + k` can contribute to `coeff n`, via `coeff_monomial` at `s - k = n`.
@@ -283,8 +283,8 @@ binomial-weighted shift `(n+m).choose m · coeff (single i (n+m)) p` — identic
 coefficient produced by the single-variable `Polynomial.hasseDeriv m`
 (`Polynomial.hasseDeriv_coeff`).  This certifies `mvHasseCoeff` is the genuine Hasse object. -/
 theorem mvHasseCoeff_single_coeff (i : σ) (m n : ℕ) (p : MvPolynomial σ R) :
-    MvPolynomial.coeff (Finsupp.single i n) (mvHasseCoeff (Finsupp.single i m) p)
-      = ((n + m).choose m : R) * MvPolynomial.coeff (Finsupp.single i (n + m)) p := by
+    (mvHasseCoeff (Finsupp.single i m) p).coeff (Finsupp.single i n)
+      = ((n + m).choose m : R) * p.coeff (Finsupp.single i (n + m)) := by
   classical
   rw [mvHasseCoeff_coeff, ← Finsupp.single_add, mvBinom_single]
 
@@ -336,7 +336,7 @@ is the genuine Hasse object, never a secretly-zero map.  (Stated over any `CommS
 positive characteristic the *cast* of the weight may collapse, so the honest non-vacuity is the
 ℕ-level `mvBinom_pos`, not a field-level `≠ 0` — which would be false over `Fₚ`.) -/
 theorem mvHasseCoeff_monomial_coeff_eq (k s : σ →₀ ℕ) (a : R) :
-    MvPolynomial.coeff (s - k) (mvHasseCoeff k (MvPolynomial.monomial s a))
+    (mvHasseCoeff k (MvPolynomial.monomial s a)).coeff (s - k)
       = (mvBinom s k : R) * a := by
   classical
   rw [mvHasseCoeff_monomial, MvPolynomial.coeff_monomial, if_pos rfl]
@@ -1476,7 +1476,7 @@ theorem βHensel_weight_bound_of_structured_weight (x₀ : F) (R : F[X][X][Y])
   refine hstructured.trans ?_
   exact_mod_cast structured_weight_collapse
     (Bivariate.natDegreeY R) (Bivariate.natDegreeY H) D t (H.leadingCoeff).natDegree
-    hdR2 (by simpa using hH) hdHR hW
+    hdR2 (by change 1 ≤ H.natDegree; exact hH) hdHR hW
 
 /-- **Re-baselined structured invariant consumer for (P1).**
 
@@ -1499,7 +1499,7 @@ theorem βHensel_weight_bound_of_structured_weight_rebased (x₀ : F) (R : F[X][
   refine hstructured.trans ?_
   exact_mod_cast structured_weight_collapse_rebased
     (Bivariate.natDegreeY R) (Bivariate.natDegreeY H) D t (H.leadingCoeff).natDegree
-    hdR2 (by simpa using hH) hdHR hW
+    hdR2 (by change 1 ≤ H.natDegree; exact hH) hdHR hW
 
 /-- **WAVE 5 — the `WithBot ℕ` nsmul-bound helper.**  If `w ≤ some n` then `k • w ≤ some (k·n)`:
 the over-`𝒪` power bound `weight_Λ_over_𝒪_pow_le` produces `k • Λ_𝒪(a)`, and this descends a
@@ -1582,7 +1582,7 @@ theorem βHensel_weight_bound_zero (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.H
   refine le_trans (weight_Λ_over_𝒪_le_of_mk_eq hDH hH rfl) ?_
   have hweq : weight_Λ (Polynomial.X : F[X][Y]) H D
       = WithBot.some (D + 1 - Bivariate.natDegreeY H) := by
-    rw [weight_Λ, Polynomial.support_X (by norm_num)]
+    rw [weight_Λ, Polynomial.support_X]
     simp [Polynomial.coeff_X_one]
   rw [hweq]
   have hdHY : Bivariate.natDegreeY H = H.natDegree := rfl
@@ -2702,7 +2702,7 @@ theorem structured_term_collapse (d dH D wW k i1 sl : ℕ)
     split_ifs with hh
     · subst hh; omega
     · omega
-  set X := (d - 1) * (D - dH + 1) with hX
+  set degreeBudget := (d - 1) * (D - dH + 1) with hX
   set DdH := D + 1 - dH with hDdH
   set eW := i1 + (if i1 = 0 then 1 else 0) - 1 with heW
   set eξ := 2 * i1 + sl - 2 with heξ
@@ -2711,8 +2711,8 @@ theorem structured_term_collapse (d dH D wW k i1 sl : ℕ)
   set dσ := d - sl with hdσ
   set Dσ := D - sl with hDσ
   have hreg :
-      eW * wW + eξ * X + (dσ * DdH + Dσ) + (sl + mw * wW + mσ * X)
-        = (eW + mw) * wW + (eξ + mσ) * X + (dσ * DdH + Dσ) + sl := by ring
+      eW * wW + eξ * degreeBudget + (dσ * DdH + Dσ) + (sl + mw * wW + mσ * degreeBudget)
+        = (eW + mw) * wW + (eξ + mσ) * degreeBudget + (dσ * DdH + Dσ) + sl := by ring
   rw [hreg, hXcoef]
   have hb1 : (eW + mw) * wW ≤ (k + 1 + sl) * wW := Nat.mul_le_mul hWcoef (le_refl wW)
   have hb2 : dσ * DdH ≤ d * DdH := Nat.mul_le_mul (Nat.sub_le d sl) (le_refl DdH)

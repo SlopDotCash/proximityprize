@@ -3,6 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.SpartanSendEvalClaim
+import ProximityPrize.Compatibility.SpartanLinearCombination
+import ProximityPrize.Compatibility.SpartanFirstChallenge
 import ArkLib.ToMathlib.SpartanBricks
 
 /-!
@@ -27,25 +30,18 @@ the seven Spartan phases:
 and the target-carrying variant adds a trailing `prependClaim` to land in
 `FinalClaimStatement = R × FinalStatement`.
 
-## Why the two documented blockers do not block
+## Phase interfaces and canonical output materialization
 
-* **Witness threading** already lines up on the developed tree: `firstMessage` (a
-  `SendSingleWitness` phase) outputs witness `Unit`, and every subsequent phase consumes/outputs
-  `Unit`, so each `append` seam's witness types match definitionally. No coercion lens is needed.
-* **`AppendCoherent` leaves.** `OracleReduction.append R₁ R₂` needs `AppendCoherent R₁.verifier`.
-  With the chain **right-associated** (via `<|`), every left operand is a single phase (a *leaf*),
-  so only the per-phase leaf instances are needed; those already exist for the six real phases
-  (`instFirstMessageVerifierAppendCoherent`, …, `instSecondSumcheckVerifierAppendCoherent`). The
-  composite `AppendCoherent` for any nested right operand is supplied automatically by
-  `OracleVerifier.Append.AppendCoherent.oracleReductionAppend`. The new `prependRLCTarget` /
-  `prependClaim` adapters carry their own immediate `inl`-shaped instances.
+The downstream completed first-challenge, evaluation-claim and linear-combination phases consume
+`Unit` witnesses after the first message. Their explicit `completed*` constructors reuse the
+completed prover and verifier programs. The inherited canonical admitted constructors retain their
+original interfaces and are not claimed complete by this assembly.
 
-The only new ingredient is the 0-round (`!p[]`) honest statement adapter `prependRLCTarget`, bridging
-`linearCombination`'s output statement `AfterLinearCombination` to `secondSumcheck`'s input statement
-`R × AfterLinearCombination` (the leading `R` is the second sum-check's claimed target).  It reads the
-bundled evaluation-claim oracle and carries the random linear combination required by the second
-sum-check relation. `prependClaim` is its terminal analogue, prepending the final target slot to land in
-`FinalClaimStatement`.
+Canonical append materializes both embedded and virtual output oracles. In particular,
+`completedSendEvalClaim` exposes each scalar claim through its bundled message's indexed query
+interface. The 0-round `prependRLCTarget` adapter queries those scalar claims and prepends their
+honest random linear combination as the second sum-check's target. `prependClaim` prepends the
+terminal target slot for `FinalClaimStatement`.
 
 ## Honesty
 
@@ -91,8 +87,8 @@ noncomputable instance instSampleableTypeLinearCombinationChallenge :
 /-! ### A trivial 0-round "prepend a target slot" oracle reduction
 
 Prepends a default scalar slot `R` to the statement over the empty protocol `!p[]`, forwarding the
-oracle-statement family and `Unit` witness unchanged. Modeled on `CheckClaim.oracleReduction`; its
-embedding is `inl`, so its `AppendCoherent` instance is immediate. This is the statement-reshaping
+oracle-statement family and `Unit` witness unchanged. Its canonical output embedding carries the
+input interfaces through with reflexive heterogeneous interface equality. This is the statement-reshaping
 component that bridges output statements differing only by a leading `R` target slot. -/
 
 variable {ιₛ : Type} (Stmt : Type) (OStmt : ιₛ → Type) [∀ i, OracleInterface (OStmt i)]
@@ -112,24 +108,16 @@ the corresponding input oracle (`embed = inl`). -/
 def prependSlotVerifier :
     OracleVerifier oSpec Stmt OStmt (R × Stmt) OStmt !p[] where
   verify := fun stmt _ => pure (0, stmt)
-  embed := Embedding.inl
-  hEq := by intro i; simp
+  outputOracle := .inl {
+    embed := Embedding.inl
+    hEq := fun _ => rfl
+    outputInterface_heq := fun _ => HEq.rfl }
 
 /-- The 0-round prepend-slot oracle reduction. -/
 def prependSlot :
     OracleReduction oSpec Stmt OStmt Unit (R × Stmt) OStmt Unit !p[] where
   prover := prependSlotProver (R := R) oSpec Stmt OStmt
   verifier := prependSlotVerifier (R := R) oSpec Stmt OStmt
-
-instance instPrependSlotVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (prependSlotVerifier (R := R) oSpec Stmt OStmt) where
-  hCohInl i k h := by
-    simp only [prependSlotVerifier, Function.Embedding.inl_apply] at h
-    obtain rfl := Sum.inl.inj h
-    rfl
-  hCohInr i k h := by
-    simp only [prependSlotVerifier, Function.Embedding.inl_apply] at h
-    cases h
 
 /-- **`prependTarget`**: the target-slot adapter between `linearCombination` and `secondSumcheck`,
 bridging `AfterLinearCombination` to `R × AfterLinearCombination`. -/
@@ -141,16 +129,8 @@ def prependTarget :
   prependSlot oSpec
     (Statement.AfterLinearCombination R pp) (OracleStatement.AfterLinearCombination R pp)
 
-instance instPrependTargetVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (prependTarget (R := R) pp oSpec).verifier :=
-    inferInstanceAs (OracleVerifier.Append.AppendCoherent
-      (prependSlotVerifier (R := R) oSpec
-        (Statement.AfterLinearCombination R pp) (OracleStatement.AfterLinearCombination R pp)))
-
-/-! ### Honest RLC-target adapter -/
-
 /-- The 0-round honest RLC-target oracle prover: emits the RLC
-`∑ idx, r idx * v idx`, reading the bundled eval-claim oracle `.inl 0`. -/
+`∑ idx, r idx * v idx`, reading each canonical scalar claim oracle `.inl idx`. -/
 noncomputable def prependRLCTargetProver :
     OracleProver oSpec
       (Statement.AfterLinearCombination R pp) (OracleStatement.AfterLinearCombination R pp) Unit
@@ -163,9 +143,9 @@ noncomputable def prependRLCTargetProver :
   sendMessage := fun i => nomatch i
   receiveChallenge := fun i => nomatch i
   output := fun st =>
-    pure (((∑ idx, st.1.1 idx * st.2 (.inl 0) idx, st.1), st.2), ())
+    pure (((∑ idx, st.1.1 idx * (show R from st.2 (.inl idx)), st.1), st.2), ())
 
-/-- Direct combined-spec query of the bundled claim oracle `.inl 0` at index `idx`. -/
+/-- Direct combined-spec query of the scalar claim oracle `.inl idx` at its unit query. -/
 noncomputable def queryClaimDirect (idx : R1CS.MatrixIdx) :
     OracleComp (oSpec + ([OracleStatement.AfterLinearCombination R pp]ₒ
       + [(!p[] : ProtocolSpec 0).Message]ₒ)) R :=
@@ -174,7 +154,7 @@ noncomputable def queryClaimDirect (idx : R1CS.MatrixIdx) :
       + [(!p[] : ProtocolSpec 0).Message]ₒ))
     (show (oSpec + ([OracleStatement.AfterLinearCombination R pp]ₒ
       + [(!p[] : ProtocolSpec 0).Message]ₒ)).Domain from
-        Sum.inr (Sum.inl ⟨.inl 0, ⟨idx, ()⟩⟩)) :
+        Sum.inr (Sum.inl ⟨.inl idx, ()⟩)) :
     OracleComp _ R)
 
 /-- One RLC-verifier query step: query the claim oracle, return `(idx, value)`. -/
@@ -184,7 +164,7 @@ noncomputable def rlcStep (idx : R1CS.MatrixIdx) :
   let v ← liftM (queryClaimDirect pp oSpec idx)
   pure (idx, v)
 
-/-- The honest RLC-target verifier: queries the bundled claim oracle for each matrix index and
+/-- The honest RLC-target verifier: queries the scalar claim oracle for each matrix index and
 emits `(∑ idx, r idx * v idx, stmt)`. -/
 noncomputable def prependRLCTargetVerifier :
     OracleVerifier oSpec
@@ -196,8 +176,10 @@ noncomputable def prependRLCTargetVerifier :
       OptionT (OracleComp _) (List (R1CS.MatrixIdx × R)))
     let rlc : R := (claims.map (fun p => stmt.1 p.1 * p.2)).sum
     pure (rlc, stmt)
-  embed := Embedding.inl
-  hEq := by intro i; simp
+  outputOracle := .inl {
+    embed := Embedding.inl
+    hEq := fun _ => rfl
+    outputInterface_heq := fun _ => HEq.rfl }
 
 /-- The honest RLC-target oracle reduction between `linearCombination` and the second sum-check. -/
 noncomputable def prependRLCTarget :
@@ -208,21 +190,6 @@ noncomputable def prependRLCTarget :
   prover := prependRLCTargetProver pp oSpec
   verifier := prependRLCTargetVerifier pp oSpec
 
-instance instPrependRLCTargetVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (prependRLCTargetVerifier (R := R) pp oSpec) where
-  hCohInl i k h := by
-    simp only [prependRLCTargetVerifier, Function.Embedding.inl_apply] at h
-    obtain rfl := Sum.inl.inj h
-    rfl
-  hCohInr i k h := by
-    simp only [prependRLCTargetVerifier, Function.Embedding.inl_apply] at h
-    cases h
-
-instance instPrependRLCTargetReductionAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (prependRLCTarget (R := R) pp oSpec).verifier :=
-  inferInstanceAs
-    (OracleVerifier.Append.AppendCoherent (prependRLCTargetVerifier (R := R) pp oSpec))
-
 /-- **`prependClaim`**: the terminal target-slot adapter after `finalCheck`, bridging `FinalStatement`
 to the target-carrying `FinalClaimStatement = R × FinalStatement`. -/
 def prependClaim :
@@ -232,59 +199,6 @@ def prependClaim :
       !p[] :=
   prependSlot oSpec (FinalStatement R pp) (FinalOracleStatement R pp)
 
-instance instPrependClaimVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (prependClaim (R := R) pp oSpec).verifier :=
-  inferInstanceAs (OracleVerifier.Append.AppendCoherent
-    (prependSlotVerifier (R := R) oSpec
-      (FinalStatement R pp) (FinalOracleStatement R pp)))
-
-/-- `AppendCoherent` for `(oracleReduction.sendEvalClaim …).verifier`. The Basic-file instance
-`instSendEvalClaimVerifierAppendCoherent` is keyed on the raw `sendEvalClaimVerifier`, which is the
-`.verifier` field of `oracleReduction.sendEvalClaim`; since that def is not reducible, instance
-synthesis does not bridge the two, so we re-key it here (by `inferInstanceAs`, defeq). -/
-instance instSendEvalClaimReductionAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (oracleReduction.sendEvalClaim R pp oSpec).verifier :=
-  inferInstanceAs (OracleVerifier.Append.AppendCoherent (sendEvalClaimVerifier R pp oSpec))
-
-/-- `AppendCoherent` for `(oracleReduction.linearCombination …).verifier`; re-keyed from the Basic
-instance `instLinearCombinationVerifierAppendCoherent` (keyed on the raw `linearCombinationVerifier`)
-by `inferInstanceAs` (defeq). -/
-instance instLinearCombinationReductionAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (oracleReduction.linearCombination R pp oSpec).verifier :=
-  inferInstanceAs (OracleVerifier.Append.AppendCoherent (linearCombinationVerifier R pp oSpec))
-
-/-- `AppendCoherent` for the terminal `finalCheck` verifier (a `CheckClaim` oracle verifier with
-`embed = inl`). Needed only for the target-carrying variant, where `finalCheck` becomes a *left*
-operand of the trailing `prependClaim` append. (The analogous instance is `local` in
-`Sumcheck/Spec/SingleRound.lean`, so we re-establish it here.) -/
-instance instFinalCheckVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (finalCheck R pp oSpec).verifier where
-  hCohInl i k h := by
-    simp only [finalCheck, CheckClaim.oracleReduction, CheckClaim.oracleVerifier,
-      Function.Embedding.inl_apply] at h
-    obtain rfl := Sum.inl.inj h
-    rfl
-  hCohInr i k h := by
-    simp only [finalCheck, CheckClaim.oracleReduction, CheckClaim.oracleVerifier,
-      Function.Embedding.inl_apply] at h
-    cases h
-
-/-! ### The composed Spartan oracle reduction
-
-  Right-associated iterated `OracleReduction.append` over the seven phases (plus the `prependRLCTarget`
-  empty adapter, and — for the target-carrying variant — the trailing `prependClaim`). Every left
-operand is a leaf phase, so the required `AppendCoherent` instances are exactly the per-phase leaves;
-the nested right composites get theirs automatically from `AppendCoherent.oracleReductionAppend`.
-
-The combined protocol-spec is built right-associated from named suffixes `sfx2 … sfxFull`, with the
-combined `OracleInterface (Message …)` / `SampleableType (Challenge …)` instances declared
-**explicitly bottom-up** via `instOracleInterfaceMessageAppend` / `instSampleableTypeChallengeAppend`.
-This restatement is required because (per the note in `Sumcheck/Spec/SingleRound.lean`) instance
-synthesis does *not* automatically chain the `++ₚ` message/challenge instances through nested appends;
-the leaves' instances must be threaded through each `++ₚ` level by hand. -/
-
--- Standalone message/challenge instances for the two *general* sum-check sub-specs (the seqCompose
--- form, whose instances are not auto-synthesized; cf. the same restatement need in `SingleRound`).
 instance instSumcheck3Msg : ∀ i, OracleInterface ((Sumcheck.Spec.pSpec R 3 pp.ℓ_m).Message i) :=
   inferInstance
 instance instSumcheck3Chal : ∀ i, SampleableType ((Sumcheck.Spec.pSpec R 3 pp.ℓ_m).Challenge i) :=
@@ -370,10 +284,10 @@ def composedPIOP_Rc :
       (FinalStatement R pp) (FinalOracleStatement R pp) Unit
       (composedPSpec (R := R) pp) :=
   (oracleReduction.firstMessage R pp oSpec).append <|
-  (oracleReduction.firstChallenge R pp oSpec).append <|
+  (oracleReduction.completedFirstChallenge R pp oSpec).append <|
     (firstSumcheckReduction pp oSpec).append <|
-    (oracleReduction.sendEvalClaim R pp oSpec).append <|
-    (oracleReduction.linearCombination R pp oSpec).append <|
+    (oracleReduction.completedSendEvalClaim R pp oSpec).append <|
+    (oracleReduction.completedLinearCombination R pp oSpec).append <|
     (prependRLCTarget pp oSpec).append <|
     (secondSumcheckReduction pp oSpec).append <|
     (finalCheck R pp oSpec)
@@ -463,10 +377,10 @@ def composedPIOPWithClaim_Rc :
       (FinalClaimStatement R pp) (FinalOracleStatement R pp) Unit
       (composedPSpecWithClaim (R := R) pp) :=
   (oracleReduction.firstMessage R pp oSpec).append <|
-  (oracleReduction.firstChallenge R pp oSpec).append <|
+  (oracleReduction.completedFirstChallenge R pp oSpec).append <|
     (firstSumcheckReduction pp oSpec).append <|
-    (oracleReduction.sendEvalClaim R pp oSpec).append <|
-    (oracleReduction.linearCombination R pp oSpec).append <|
+    (oracleReduction.completedSendEvalClaim R pp oSpec).append <|
+    (oracleReduction.completedLinearCombination R pp oSpec).append <|
     (prependRLCTarget pp oSpec).append <|
     (secondSumcheckReduction pp oSpec).append <|
   (finalCheck R pp oSpec).append <|

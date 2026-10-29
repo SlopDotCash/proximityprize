@@ -2,7 +2,7 @@
 """Deterministic sorry/admit census for the library and research source trees.
 
 Produces a per-declaration inventory of every `sorry`/`admit` token under
-ArkLib/ and Research/, distinguishing real proof holes from docstring/comment mentions.
+ArkLib/, Research/, and ProximityPrize/, distinguishing real proof holes from docstring/comment mentions.
 With --fail-on-holes (the CI gate), exits non-zero if any live hole exists.
 
 Usage:
@@ -328,7 +328,7 @@ def strip_comments_map(text: str) -> list[bool]:
 
 def census(root: Path) -> list[dict]:
     rows: list[dict] = []
-    for f in sorted(f for name in ("ArkLib", "Research") for f in (root / name).rglob("*.lean")):
+    for f in sorted(f for name in ("ArkLib", "Research", "ProximityPrize") for f in (root / name).rglob("*.lean")):
         text = f.read_text(encoding="utf-8", errors="replace")
         mask = strip_comments_map(text)
         lines = text.splitlines()
@@ -354,6 +354,7 @@ def census(root: Path) -> list[dict]:
                 {
                     "file": str(f.relative_to(root)),
                     "line": line_no + 1,
+                    "offset": start,
                     "token": token,
                     "kind": "doc" if in_comment else "hole",
                     "decl": decl or "<file-level>",
@@ -402,13 +403,30 @@ def main() -> int:
     print(json.dumps(out["summary"], indent=2))
 
     baseline: set[tuple[str, str]] = set()
+    entries: list[dict] = []
+    provenance = None
     if args.baseline.is_file():
         data = json.loads(args.baseline.read_text())
-        baseline = {(e["file"], e["decl"]) for e in data["holes"]}
+        # Inherited debt applies only to the exact upstream blob. Adding a hole
+        # to an already listed declaration changes its file digest and fails.
+        from forbidden_tokens import InheritedSourcePolicy
+        provenance = InheritedSourcePolicy(args.root.expanduser())
+        entries = data["holes"]
+        baseline = {(e["file"], e["decl"]) for e in entries}
 
     holes = [r for r in rows if r["kind"] == "hole"]
-    new_holes = [r for r in holes if (r["file"], r["decl"]) not in baseline]
-    baselined = [r for r in holes if (r["file"], r["decl"]) in baseline]
+    def inherited(row: dict) -> bool:
+        if provenance is None:
+            return False
+        path = args.root.expanduser() / row["file"]
+        return any((entry["file"], entry["decl"]) == (row["file"], row["decl"])
+                   and (provenance.matches_upstream_file(
+                       path, entry.get("sha256"), data.get("revision"), data.get("repository"))
+                        or provenance.matches_adapted_upstream_hole(
+                            path, row, entry, data.get("revision"), data.get("repository")))
+                   for entry in entries)
+    baselined = [row for row in holes if inherited(row)]
+    new_holes = [row for row in holes if row not in baselined]
     retired = baseline - {(r["file"], r["decl"]) for r in holes}
     if baselined:
         print(

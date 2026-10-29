@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.ListDecodability
-import ArkLib.Data.CodingTheory.HammingBallVolume
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 import Mathlib
 
 /-!
@@ -215,7 +215,7 @@ theorem ghsz02_rs_averaging_core
           = hammingBallVolume (Fintype.card F) δ (Fintype.card ι) from rfl, hb]
     unfold ballVolF; rw [← Set.ncard_coe_finset]; congr 1; ext y
     simp only [Finset.coe_filter, Finset.mem_univ, true_and,
-      Set.mem_setOf_eq, ListDecodable.hammingBall]
+      Set.mem_setOf_eq, Code.mem_hammingBall_iff]
     constructor
     · intro h; rw [hr_def, hn_def] at h; convert h using 2
     · intro h; rw [hr_def, hn_def]; convert h using 2

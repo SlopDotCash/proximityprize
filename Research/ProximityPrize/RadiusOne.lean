@@ -4,15 +4,16 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ArkLib.Data.Probability.Notation
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 import Research.ProximityPrize.Collapse
 
 /-!
 # The radius-one MCA error `ε_mca(C, 1)` and the formal §1 MCA prize predicate
 
 `GrandChallengeCollapse.lean` reduced the formal §1 Grand-MCA-Challenge prize predicate
-`GrandChallenges.mcaPrize` to four **radius-one** bounds `ε_mca(RS, 1) ≤ ε*`
+`GrandChallenges.continuousMcaPrize` to four **radius-one** bounds `ε_mca(RS, 1) ≤ ε*`
 (`mcaPrize_iff_forall_epsMCA_one`). This file **computes the radius-one MCA error**
 `ε_mca(C, 1)` tightly enough to *decide* that predicate in every field-size regime.
 
@@ -69,9 +70,9 @@ theorem prob_uniform_ge_inv_of_holds (P : F → Prop) {x₀ : F} (hx₀ : P x₀
   rw [prob_tsum_form_singleton]
   calc (Fintype.card F : ENNReal)⁻¹
       = ($ᵖ F) x₀ * (if P x₀ then (1 : ENNReal) else 0) := by
-        rw [if_pos hx₀, mul_one, PMF.uniformOfFintype_apply]
+        rw [if_pos hx₀, mul_one, ProximityPrize.Compatibility.uniformOfFintype_apply]
     _ ≤ ∑' r, ($ᵖ F) r * (if P r then (1 : ENNReal) else 0) :=
-        ENNReal.le_tsum x₀
+        ENNReal.le_tsum (f := fun r : F => ($ᵖ F) r * (if P r then (1 : ENNReal) else 0)) x₀
 
 /-- **THEOREM A (lower bound).** For a linear code given as a `Submodule MC` that is a proper
 subset of all words, `ε_mca(MC, 1) ≥ 1/|F|`. -/
@@ -424,7 +425,7 @@ theorem mcaPrize_of_large_field (domain : ι ↪ F)
     (hbound : ∀ j : Fin 4,
       (Nat.choose (Fintype.card ι) (⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ + 1) : ENNReal)
         / (Fintype.card F : ENNReal) ≤ (epsStar : ENNReal)) :
-    GrandChallenges.mcaPrize domain := by
+    GrandChallenges.continuousMcaPrize domain := by
   rw [mcaPrize_iff_forall_epsMCA_one]
   intro j
   exact le_trans (epsMCA_one_le_choose_div domain _) (hbound j)
@@ -436,7 +437,7 @@ bound the prize collapses to. -/
 theorem not_mcaPrize_of_small_field (domain : ι ↪ F)
     (hsmall : (epsStar : ENNReal) < (Fintype.card F : ENNReal)⁻¹)
     (hι : 2 ≤ Fintype.card ι) :
-    ¬ GrandChallenges.mcaPrize domain := by
+    ¬ GrandChallenges.continuousMcaPrize domain := by
   rw [mcaPrize_iff_forall_epsMCA_one]
   intro hprize
   -- rate j = 0 is ρ = 1/2, giving k = ⌊n/2⌋ with 0 < k < n.
@@ -460,7 +461,7 @@ theorem not_mcaPrize_of_small_field (domain : ι ↪ F)
           < 1 * (Fintype.card ι : ℝ≥0) := by
             apply mul_lt_mul_of_pos_right _ hpos; norm_num
         _ = (Fintype.card ι : ℝ≥0) := one_mul _
-    exact (Nat.floor_lt (zero_le _)).mpr
+    exact (Nat.floor_lt (by positivity)).mpr
       (show (1 / 2 : ℝ≥0) * (Fintype.card ι : ℝ≥0) < ((Fintype.card ι : ℕ) : ℝ≥0) from hlt)
   -- proper subset ⇒ lower bound 1/|F|
   have hproper := rsCode_ne_univ domain hk_pos hk_lt

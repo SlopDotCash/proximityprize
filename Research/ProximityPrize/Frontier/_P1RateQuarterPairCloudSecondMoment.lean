@@ -150,7 +150,7 @@ theorem six_near_full_sets_impossible
   have hCS : (∑ i, d i) ^ 2 ≤ N * ∑ i, d i ^ 2 := by
     have h := sq_sum_le_card_mul_sum_sq
       (s := (Finset.univ : Finset (Fin N))) (f := fun i => d i)
-    simpa [Finset.card_univ] using h
+    simpa [Finset.card_univ, N] using h
   -- assemble: S² ≤ N·S + 30N(k−1) with S ≥ 6(T−5)
   have hS0 : 3556769766 ≤ ∑ i, d i := by
     rw [hswap]

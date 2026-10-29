@@ -75,7 +75,7 @@ theorem bad_card_le_uniform {Γ solo : Finset F} {z : F}
   have hsum : (∑ K ∈ classes, (fun _ => c) K) ≤ t * c := by
     rw [Finset.sum_const, smul_eq_mul]
     exact Nat.mul_le_mul_right c ht
-  omega
+  exact h.trans (Nat.add_le_add_right (Nat.add_le_add_left hsum 1) solo.card)
 
 end SummationScaffold
 

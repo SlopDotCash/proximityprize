@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
-import ArkLib.Data.Fin.BigOperators
+import ProximityPrize.Extensions.Data.Fin.BigOperators
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Algebra.Order.Ring.Star
 import Mathlib.Data.Nat.Bitwise
@@ -340,7 +340,7 @@ lemma sum_eq_xor_plus_twice_and (n : Nat) : ∀ m : ℕ, n + m = (n ^^^ m) + 2 *
     rw [zero_add, Nat.zero_and, mul_zero, add_zero, Nat.zero_xor]
   | bit bn n2 ih =>
     intro m
-    let resDiv2M := Nat.boddDiv2 m
+    let resDiv2M := (Nat.bodd m, Nat.div2 m)
     let bm := resDiv2M.fst
     let m2 := resDiv2M.snd
     have h_m2 : m2 = Nat.div2 m := by

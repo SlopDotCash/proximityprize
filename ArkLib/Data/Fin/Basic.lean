@@ -3,21 +3,25 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao, František Silváši
 -/
+module
 
-import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Algebra.Order.Ring.Nat
-import Mathlib.Algebra.Order.Sub.Basic
-import Mathlib.Algebra.Polynomial.Eval.Defs
-import Mathlib.Data.Fin.Tuple.Take
-import Mathlib.Tactic.FinCases
-import Batteries.Data.Fin.Fold
-import CompPoly.Data.Classes.DCast
+public import Mathlib.Algebra.BigOperators.Fin
+public import Mathlib.Algebra.Order.BigOperators.Group.List
+public import Mathlib.Algebra.Order.Ring.Nat
+public import Mathlib.Algebra.Order.Sub.Basic
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Data.Fin.Tuple.Take
+public import Mathlib.Tactic.FinCases
+public import Batteries.Data.Fin.Fold
+public import CompPoly.Data.Classes.DCast
 
 /-!
   # Lemmas on `Fin` and `Fin`-indexed tuples
 
   We define operations on `Fin` and `Fin`-indexed tuples that are needed for ArkLib.
 -/
+
+@[expose] public section
 
 universe u v w
 
@@ -96,6 +100,7 @@ theorem induction_two' {motive : Fin 3 → Sort*} {zero : motive 0}
     {succ : ∀ i : Fin 2, motive i.castSucc → motive i.succ} :
       induction (motive := motive) zero succ (2 : Fin 3) = succ 1 (succ 0 zero) := by rfl
 
+/-- Three-step unfolding of `Fin.induction`, matching the `induction_two` pair. -/
 @[simp]
 theorem induction_three {motive : Fin 4 → Sort*} {zero : motive 0}
     {succ : ∀ i : Fin 3, motive i.castSucc → motive i.succ} :
@@ -105,20 +110,7 @@ theorem induction_three {motive : Fin 4 → Sort*} {zero : motive 0}
 @[simp]
 theorem induction_three' {motive : Fin 4 → Sort*} {zero : motive 0}
     {succ : ∀ i : Fin 3, motive i.castSucc → motive i.succ} :
-      induction (motive := motive) zero succ (3 : Fin 4) = succ 2 (succ 1 (succ 0 zero)) := by rfl
-
-@[simp]
-theorem induction_four {motive : Fin 5 → Sort*} {zero : motive 0}
-    {succ : ∀ i : Fin 4, motive i.castSucc → motive i.succ} :
-      induction (motive := motive) zero succ (last 4) =
-        succ 3 (succ 2 (succ 1 (succ 0 zero))) := rfl
-
-/-- Alternate version of `Fin.induction_four` that uses `4 : Fin 5` instead of `last 4`. -/
-@[simp]
-theorem induction_four' {motive : Fin 5 → Sort*} {zero : motive 0}
-    {succ : ∀ i : Fin 4, motive i.castSucc → motive i.succ} :
-      induction (motive := motive) zero succ (4 : Fin 5) =
-        succ 3 (succ 2 (succ 1 (succ 0 zero))) := by rfl
+      induction (motive := motive) zero succ (3 : Fin 4) = succ 2 (succ 1 (succ 0 zero)) := rfl
 
 /-- Heterogeneous equality on `Fin.induction` -/
 theorem induction_heq {n n' : ℕ} {motive : Fin (n + 1) → Sort u} {motive' : Fin (n' + 1) → Sort u}
@@ -137,19 +129,21 @@ theorem induction_init {n : ℕ} {motive : Fin (n + 2) → Sort*} {zero : motive
       induction (motive := motive) zero succ i.castSucc =
         induction (motive := Fin.init motive) zero (fun j x => succ j.castSucc x) i := by
   induction i using Fin.induction with
-  | zero => simp
-  | succ i _ =>
-    have : i.succ.castSucc = i.castSucc.succ := rfl
-    rw! (castMode := .all) [this]
-    simp only [induction_succ]
-    congr
+  | zero =>
+    have h : (0 : Fin (n + 1)).castSucc = (0 : Fin (n + 2)) := Fin.ext rfl
+    rw! (castMode := .all) [h]
+    rfl
+  | succ i ih =>
+    have h : i.succ.castSucc = i.castSucc.succ := Fin.ext rfl
+    rw! (castMode := .all) [h]
+    exact congrArg (succ i.castSucc) ih
 
 theorem induction_tail {n : ℕ} {motive : Fin (n + 2) → Sort*} {zero : motive 0}
     {succ : ∀ i : Fin (n + 1), motive i.castSucc → motive i.succ} {i : Fin (n + 1)} :
       induction (motive := motive) zero succ i.succ =
         induction (motive := Fin.tail motive) (succ 0 zero) (fun j x => succ j.succ x) i := by
   induction i using Fin.induction with
-  | zero => simp only [succ_zero_eq_one, induction_zero]; rfl
+  | zero => simp only [succ_zero_eq_one]; rfl
   | succ i ih =>
     simp
     have : i.succ.castSucc = i.castSucc.succ := rfl
@@ -162,12 +156,12 @@ theorem induction_append_left {m n : ℕ} {motive : Fin (m + n + 1) → Sort*} {
       induction (motive := motive) zero succ ⟨i, by omega⟩ =
         @induction m (fun j => motive ⟨j, by omega⟩) zero (fun j x => succ ⟨j, by omega⟩ x) i := by
   induction i using Fin.induction with
-  | zero => simp [induction_zero]
+  | zero => rfl
   | succ i ih =>
-    simp only [val_succ, val_castSucc, induction_succ] at ih ⊢
-    have : (⟨i.1 + 1, by omega⟩ : Fin (m + n + 1)) = (⟨i, by omega⟩ : Fin (m + n)).succ := rfl
-    rw! (castMode := .all) [this, induction_succ]
-    simp_all only [succ_mk, castSucc_mk]
+    have h : (⟨i.succ, by omega⟩ : Fin (m + n + 1)) =
+        (⟨i, by omega⟩ : Fin (m + n)).succ := Fin.ext rfl
+    rw! (castMode := .all) [h]
+    exact congrArg (succ ⟨i, by omega⟩) ih
 
 /-- `Fin.induction` on `m + n` for `m + i` steps is equivalent to `Fin.induction` on `n` on `i`
   steps on the result of `Fin.induction` on `m`. -/
@@ -181,24 +175,22 @@ theorem induction_append_right {m n : ℕ} {motive : Fin (m + n + 1) → Sort*} 
   induction i using Fin.induction with
   | zero =>
     simp only [natAdd, coe_ofNat_eq_mod, Nat.zero_mod, Nat.add_zero, Nat.add_eq, castAdd,
-      castLE, cast_mk, val_castSucc, last, induction_zero]
+      castLE, cast_mk, val_castSucc, last]
     rw [induction_append_left (i := ⟨m, by omega⟩)]
     rfl
   | succ i ih =>
-    simp only [Nat.add_eq, induction_succ, ← ih]
-    have : natAdd m i.succ = (natAdd m i).succ := rfl
-    rw! (castMode := .all) [this, induction_succ]
-    rfl
+    have h : natAdd m i.succ = (natAdd m i).succ := Fin.ext rfl
+    rw! (castMode := .all) [h]
+    rw! (castMode := .all) [Fin.induction_succ]
+    exact congrArg (succ (natAdd m i)) ih
 
 /-- `Fin.insertNth 0` is equivalent to `Fin.cases`. -/
 theorem insertNth_zero_eq_cases {n : ℕ} {α : Fin (n + 1) → Sort u} :
     insertNth 0 = cases (motive := α) := by
   funext x p j
   induction j using Fin.cases with
-  | zero => simp only [insertNth, succAboveCases, ↓reduceDIte, cases_zero]
-  | succ j =>
-    simp only [insertNth, succAboveCases, not_lt_zero, ↓reduceDIte, cases_succ, Fin.succ_ne_zero]
-    congr
+  | zero => rfl
+  | succ j => rfl
 
 section Append
 
@@ -309,47 +301,25 @@ theorem addCases'_right {m n : ℕ} {α : Fin m → Sort u} {β : Fin n → Sort
 
 section Sum
 
--- Append multiple `Fin` tuples?
-
-/-- Embed `Fin (l.get k)` into `Fin l.sum` at the `k`-th block. Indexing is **positional**
-(`k : Fin l.length`): the previous membership-based design (`n ∈ l`) collapsed duplicate
-lengths (e.g. for `l = [2, 2]` both occurrences embedded into the head block, leaving the
-tail block unreachable), which did not support the accompanying eliminator. -/
-def castSum : (l : List ℕ) → (k : Fin l.length) → Fin (l.get k) → Fin l.sum
-  | _ :: l', ⟨0, _⟩, i => castAdd l'.sum i
-  | n' :: l', ⟨k + 1, hk⟩, i =>
-      natAdd n' (castSum l' ⟨k, Nat.succ_lt_succ_iff.mp hk⟩ i)
+/-- Embed into the first summand whose size is `n`. Membership by value does not
+distinguish repeated occurrences, so these embeddings do not in general cover
+`Fin l.sum` and cannot provide unrestricted dependent case analysis. -/
+def castSum (l : List ℕ) {n : ℕ} (h : n ∈ l) : Fin n → Fin l.sum := fun i =>
+  match l with
+  | [] => by contradiction
+  | n' :: l' => by
+    simp only [List.sum_cons]
+    by_cases hi : n = n'
+    · exact castAdd l'.sum (Fin.cast hi i)
+    · exact natAdd n' (castSum l' (List.mem_of_ne_of_mem hi h) i)
 
 theorem castSum_castLT {l' : List ℕ} {i : ℕ} (j : Fin i) :
-    castSum (i :: l') ⟨0, by simp⟩ j =
+    castSum (i :: l') (by simp) j =
       castLT j (Nat.lt_of_lt_of_le j.isLt (List.le_sum_of_mem (by simp))) := by
   simp [castSum, castAdd, castLE, castLT]
 
-theorem castSum_castAdd {n m : ℕ} (i : Fin n) :
-    castSum [n, m] ⟨0, by simp⟩ i = castAdd m i := by
+theorem castSum_castAdd {n m : ℕ} (i : Fin n) : castSum [n, m] (by simp) i = castAdd m i := by
   simp [castSum]
-
-/-- Dependent elimination for `Fin l.sum`: every index lies in exactly one positional block
-`castSum l k i`. -/
-def sumCases {l : List ℕ} {motive : Fin l.sum → Sort*}
-    (cases : ∀ (k : Fin l.length) (i : Fin (l.get k)), motive (castSum l k i))
-    (i : Fin l.sum) : motive i :=
-  match l, motive, cases, i with
-  | [], _, _, i => elim0 i
-  | n' :: l', motive, cases, i =>
-    if hi : i.val < n' then
-      have heq : castSum (n' :: l') ⟨0, by simp⟩ ⟨i.val, hi⟩ = i := Fin.ext rfl
-      heq ▸ cases ⟨0, by simp⟩ ⟨i.val, hi⟩
-    else
-      have hsum : i.val < n' + l'.sum := by
-        have h := i.isLt; simp only [List.sum_cons] at h; exact h
-      have hj' : i.val - n' < l'.sum := by omega
-      have ih := sumCases (l := l') (motive := fun j => motive (natAdd n' j))
-        (fun k j => cases ⟨k.val + 1, Nat.succ_lt_succ k.isLt⟩ j)
-        ⟨i.val - n', hj'⟩
-      have heq : natAdd n' (⟨i.val - n', hj'⟩ : Fin l'.sum) = i := by
-        apply Fin.ext; simp [natAdd]; omega
-      heq ▸ ih
 
 end Sum
 

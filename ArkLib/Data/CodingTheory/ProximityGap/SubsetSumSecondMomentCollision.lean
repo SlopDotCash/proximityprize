@@ -124,7 +124,7 @@ theorem N2_total [Fintype F] (G : Finset F) (a : ℕ) :
             (fun S => (∑ x ∈ S, x, ∑ x ∈ S, x ^ 2) = p)).card := by
     refine Finset.sum_congr rfl (fun p _ => ?_)
     unfold N2
-    congr 1
+    apply congrArg Finset.card
     apply Finset.filter_congr
     intro S _
     constructor

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.CodingTheory.ProximityCA
-import ArkLib.Data.CodingTheory.Basic.RelativeDistance
+import ProximityPrize.Extensions.Data.CodingTheory.Basic.RelativeDistance
 
 /-!
 # Half-Threshold Correlated Agreement (Theorem 5)

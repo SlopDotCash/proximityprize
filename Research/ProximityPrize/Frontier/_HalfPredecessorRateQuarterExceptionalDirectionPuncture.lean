@@ -154,7 +154,15 @@ theorem directionCoreTraceSubtype_card
   have hmap : (directionCoreTraceSubtype family r gamma).map e =
       directionCoreTrace family r gamma := by
     ext i
-    simp [directionCoreTraceSubtype, directionCoreTrace, e]
+    simp only [directionCoreTraceSubtype, directionCoreTrace, Finset.mem_inter, Finset.mem_map,
+      Finset.mem_filter, Finset.mem_univ, true_and]
+    constructor
+    · rintro ⟨⟨j, hj⟩, hfull, heq⟩
+      change j = i at heq
+      subst i
+      exact ⟨hfull, hj⟩
+    · rintro ⟨hi, hj⟩
+      exact ⟨⟨i, hj⟩, hi, rfl⟩
   calc
     (directionCoreTraceSubtype family r gamma).card =
         ((directionCoreTraceSubtype family r gamma).map e).card := by
@@ -176,7 +184,15 @@ theorem directionFreshTraceSubtype_card
       fullAgreement dom (u 0) (u 1) gamma (family.q gamma) \
         directionAgreement dom (u 1) r := by
     ext i
-    simp [directionFreshTraceSubtype, e]
+    simp only [directionFreshTraceSubtype, Finset.mem_sdiff, Finset.mem_map,
+      Finset.mem_filter, Finset.mem_univ, true_and]
+    constructor
+    · rintro ⟨⟨j, hj⟩, hfull, heq⟩
+      change j = i at heq
+      subst i
+      exact ⟨hfull, hj⟩
+    · rintro ⟨hi, hj⟩
+      exact ⟨⟨i, hj⟩, hi, rfl⟩
   calc
     (directionFreshTraceSubtype family r gamma).card =
         ((directionFreshTraceSubtype family r gamma).map e).card := by

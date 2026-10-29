@@ -81,7 +81,8 @@ theorem depthSeven_moment_noGo (G : Finset F)
 
 /-- The prize field cardinality is below `2¹⁵⁹`: `productionQ < 2¹⁵⁹`. Kernel arithmetic. -/
 theorem productionQ_lt : productionQ < 2 ^ 159 := by
-  norm_num [productionQ, productionN]
+  unfold productionQ productionN
+  decide +kernel
 
 /-- **Depth-9 Wick closes the nine bits.** If the depth-9 energy obeys the Wick law
 `E_9 ≤ 17‼·|G|⁹` (`17‼ = 34459425`), then at `|G| = 2³⁰`, `q ≤ 2¹⁵⁹` every nonzero frequency

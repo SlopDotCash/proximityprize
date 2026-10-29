@@ -382,7 +382,6 @@ theorem thirdMoment_upper_rat_seventeenThirtyTwo
         10 * (23 * (m : ℚ) / 2 - 1) *
           family.G.card * (family.G.card - 1) := by
     gcongr
-    linarith
   calc
     6 * ∑ i, ((incidenceMultiplicity family i).choose 3 : ℚ) ≤ _ := hcast
     _ ≤ (2 * (m : ℚ) - 1) * family.G.card *

@@ -93,6 +93,9 @@ open ProximityPrize.BCIKS20.GammaGenuine BCIKS20.HenselNumerator
 open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame
 open scoped BigOperators ENNReal ProbabilityTheory
 
+private noncomputable local instance {F : Type} [Field F] [Fintype F] :
+    SampleableType F := SampleableType.ofFintype F
+
 namespace ArkLib
 
 namespace Threshold304

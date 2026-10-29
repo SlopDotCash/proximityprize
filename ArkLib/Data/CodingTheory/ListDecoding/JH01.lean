@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 import ArkLib.Data.CodingTheory.ProximityLeaves2
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 import Mathlib.Algebra.IsPrimePow
 import Mathlib.Tactic.Choose
 import Mathlib.Tactic.FieldSimp

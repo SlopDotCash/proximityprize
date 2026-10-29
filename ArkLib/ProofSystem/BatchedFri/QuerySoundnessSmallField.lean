@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.ProofSystem.BatchedFri.Security
+import ProximityPrize.Extensions.ProofSystem.BatchedFri.Security
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CorrelatedAgreementSmallField
 
 /-!
@@ -31,6 +31,7 @@ open OracleComp OracleSpec ProtocolSpec ReedSolomon Domain
 open NNReal Finset Function ProbabilityTheory
 
 variable {𝔽 : Type} [NonBinaryField 𝔽] [Fintype 𝔽] [DecidableEq 𝔽] [Nontrivial 𝔽]
+private noncomputable local instance : SampleableType 𝔽 := SampleableType.ofFintype 𝔽
 variable (n : ℕ) {k : ℕ}
 variable (s : Fin (k + 1) → ℕ+) (d : ℕ+)
 variable {ω : SmoothCosetFftDomain n 𝔽}
@@ -76,7 +77,7 @@ theorem fri_query_soundness_of_card_le_affineLine
   classical
   haveI : NeZero (2 ^ n) := ⟨pow_ne_zero n (by norm_num)⟩
   exact
-    fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndAffineLineCA
+    fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndAffineLineCA
       (n := n) (s := s) (d := d) (ω := ω)
       (f := f) h_agreement m_ge_3 G δ queries l domain_size_cond
       (ε := ProximityGap.errorBound
@@ -124,7 +125,7 @@ theorem fri_query_soundness_of_card_le_curve
   classical
   haveI : NeZero (2 ^ n) := ⟨pow_ne_zero n (by norm_num)⟩
   exact
-    fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndCurveCA
+    fri_query_soundness_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndCurveCA
       (n := n) (s := s) (d := d) (ω := ω)
       (f := f) h_agreement m_ge_3 G δ queries l domain_size_cond
       (ε := ProximityGap.errorBound
@@ -190,7 +191,7 @@ theorem friSoundnessQueryLift_of_card_le_curve
   classical
   haveI : NeZero (2 ^ n) := ⟨pow_ne_zero n (by norm_num)⟩
   exact
-    friSoundnessQueryLift_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndCurveCA
+    friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndCurveCA
       (n := n) (s := s) (d := d) (ω := ω)
       f m_ge_3 G δ_query queries l domain_size_cond h_agreement
       (ε_ca := ProximityGap.errorBound
@@ -208,13 +209,13 @@ theorem friSoundnessQueryLift_of_card_le_curve
       h_prob
 
 open ENNReal in
-/-- **Claim 8.3 residual (`fri_soundness`) discharged in the small-field regime (curve case).**
+/-- **Claim 8.3 residual (`fri_soundness_canonicalIndependent`) discharged in the small-field regime (curve case).**
 
 The end-to-end Claim 8.3 conditional statement for Batched FRI with the correlated-agreement
 bridge supplied by the unconditional small-field curves instance.  Remaining inputs: the FRI
 radius side condition `hδ`, the field-size bound `hq`, the density bound `h_agreement` on the
 reindexed batch, and the curve probability trigger `h_prob`. -/
-theorem fri_soundness_of_card_le_curve
+theorem fri_soundness_canonicalIndependent_of_card_le_curve
     {t l m : ℕ}
     (f : Fin t.succ → (ω → 𝔽))
     (m_ge_3 : m ≥ 3)
@@ -257,10 +258,10 @@ theorem fri_soundness_of_card_le_curve
         t *
           ProximityGap.errorBound δ_fri (2 ^ n)
             (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽)) :
-    fri_soundness (n := n) (s := s) (d := d) (ω := ω) (l := l)
+    fri_soundness_canonicalIndependent (n := n) (s := s) (d := d) (ω := ω) (l := l)
       (domain_size_cond := domain_size_cond) f m_ge_3 := by
   exact
-    fri_soundness_of_queryLift
+    fri_soundness_canonicalIndependent_of_queryLift
       (n := n) (s := s) (d := d) (ω := ω) (domain_size_cond := domain_size_cond)
       f m_ge_3
       (friSoundnessQueryLift_of_card_le_curve
@@ -277,4 +278,4 @@ end Fri
 #print axioms Fri.fri_query_soundness_of_card_le_affineLine
 #print axioms Fri.fri_query_soundness_of_card_le_curve
 #print axioms Fri.friSoundnessQueryLift_of_card_le_curve
-#print axioms Fri.fri_soundness_of_card_le_curve
+#print axioms Fri.fri_soundness_canonicalIndependent_of_card_le_curve

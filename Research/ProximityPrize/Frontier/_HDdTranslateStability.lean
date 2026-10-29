@@ -189,9 +189,9 @@ theorem translateD_monomial_mem_span [Nontrivial F] (d : ℕ) (α y : F)
   classical
   rw [as_sum (translateD d α y (monomial μ c))]
   refine sum_mem fun ν hν => ?_
-  rw [show (monomial ν (coeff ν (translateD d α y (monomial μ c))) :
+  rw [show (monomial ν ((translateD d α y (monomial μ c)).coeff ν) :
       MvPolynomial (Fin (d + 2)) F) =
-      (coeff ν (translateD d α y (monomial μ c))) • monomial ν (1 : F) from by
+      ((translateD d α y (monomial μ c)).coeff ν) • monomial ν (1 : F) from by
     rw [smul_monomial, smul_eq_mul, mul_one]]
   exact smul_mem _ _ (subset_span
     ⟨ν, support_translateD_monomial d α y μ c ν hν, rfl⟩)

@@ -1,0 +1,132 @@
+{
+  "method": "Canonical source unchanged; distinguish genuine legacy conventions and consolidate byte-normalized identical completed theorem commands.",
+  "groups": [
+    {
+      "public_name": "Spartan.Spec.Bricks.secondSumcheckWithTarget_perfectCompleteness_enrichedBinding",
+      "implementation_owner": "ArkLib/ProofSystem/Spartan/TightSecondBinding.lean",
+      "owner_sha256": "b7585ef9ea78559216e3e3ebc669722c272452ce45b5f01de79b001ecda17869",
+      "consumers": [
+        {
+          "file": "ArkLib/ProofSystem/Spartan/TightFinalCompleteness.lean",
+          "before_sha256": "3b35433b44122ce4056e623e0de3f84b95aa87eecb4bf1ca7fdaa6709fc9d62b",
+          "after_sha256": "ddd5bda25b882479027696ff4003a9e1a9a5d12442cf78688d4e926c861b73a4",
+          "removed_command_sha256": "af3bdd228b918154edddafa1bb59e156ec14bf73783e677f35cf4b2fd129c04d",
+          "identical_normalized_command": true,
+          "current_source_sha256": "3f28b03e7729fa5a9a8a900b2109dcd768a2b3c5821c09e6347aa3c432457695",
+          "validation_receipt": "/tmp/arklib-TightFinalCompleteness-owner-native1.receipt.json"
+        },
+        {
+          "file": "ArkLib/ProofSystem/Spartan/TightComposedComplete.lean",
+          "before_sha256": "cbb10fb683a059ae795713a3c18beb6904e9fb8734f07f4e22a77ba07cbdd0bf",
+          "after_sha256": "fef7afe53377744e42c5d3540af17805e9f027a32b4edd387c4b84ceaf7d7c1a",
+          "removed_command_sha256": "fe7037d8260e449e61581cf011610c7b3410cacb2e350c4fb775308b666fc19c",
+          "identical_normalized_command": true,
+          "current_source_sha256": "f2bf6814e1bb5a2b707591dab7048202534b43091546210b9116077a02496898"
+        }
+      ],
+      "current_owner_sha256": "c4cf86c4d6ecdf25f999c31276e0a595d107cd53f2930314e6363434612a19e1",
+      "validation": {
+        "kind": "temporary-overlay current compiled owner; not a Lake package build",
+        "receipt": "/tmp/arklib-TightFinalCompleteness-owner-native1.receipt.json",
+        "original_contract_preserved": true,
+        "axiom_audit": "All printed headline anchors use only propext, Classical.choice, Quot.sound."
+      }
+    },
+    {
+      "public_name": "Spartan.Spec.Bricks.finalCheckTight_perfectCompleteness",
+      "canonical_identity_owner": "ArkLib/ProofSystem/Spartan/FinalCheckTightComplete.lean",
+      "retained_distinct_name": "Spartan.Spec.Bricks.finalCheckTight_perfectCompleteness_of_enrichedBinding",
+      "owner": "ArkLib/ProofSystem/Spartan/TightFinalCompleteness.lean",
+      "reason": "The retained theorem transports enriched+binding input into tightFinalRelOut with NeverFail init; the identity theorem preserves tightFinalRelOut without that premise. Distinct contracts are preserved under distinct names."
+    },
+    {
+      "public_name": "Binius.BinaryBasefold.preTensorCombine_jointProximityNat_of_fiberwiseClose",
+      "canonical_owner": "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/Lift.lean",
+      "legacy_owner": "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/PreTensorMetric.lean",
+      "retained_distinct_name": "Binius.BinaryBasefold.preTensorCombine_WordStack_jointProximityNat_of_fiberwiseClose",
+      "before_sha256": "07fd7ae6ee997592b46a76d95709616177504e0bf253a76ffa67a7b188a80ad3",
+      "after_sha256": "65271ee75fb0babacd2224eeb3e1d1765e178c573db8b66fd2baa26ef1983dc0",
+      "reason": "Legacy theorem uses the independent low-row-bit preTensorCombine_WordStack and lowercase fiberwiseClose; canonical theorem uses preTensorCombine and FiberwiseClose. Preserve the distinct convention explicitly.",
+      "routed_consumers": [
+        {
+          "file": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/Incremental.lean",
+          "before_sha256": "457aefb7c5585cc42abf36b18f820431d241021b7c60af8095f18a9c67d8a1f7",
+          "after_sha256": "a3dc116948670934a891d68f1c41d7e0f8c6e7ae481f51ae0a1538549fb09e78"
+        }
+      ],
+      "current_owner_sha256": "22a8580a5c336f2b1616a743e19bda91bfbec06da01fad0198fcf2cb08e3a15a",
+      "validation": {
+        "kind": "temporary-overlay isolated source and compiled import boundary; not a package build",
+        "source_check_receipt": "/tmp/arklib-PreTensorMetric-overlay-native2.receipt.json",
+        "owner_receipt": "/tmp/arklib-PreTensorMetric-owner-build.receipt.json",
+        "transitive_axiom_audit": "/tmp/arklib-binius-incremental-second-complete-axioms.receipt.json: current imported owner theorem uses only propext, Classical.choice, Quot.sound"
+      }
+    },
+    {
+      "public_name": "Binius.BinaryBasefold.foldMatrix_det_ne_zero",
+      "canonical_owner": "ArkLib/ProofSystem/Binius/BinaryBasefold/Prelude/Folding.lean",
+      "consumer": "ArkLib/ProofSystem/Binius/BinaryBasefold/FoldDetDischarge.lean",
+      "after_sha256": "19a6580b06b20e78c0beaf576810d7b402df4b10f316019c2e785f8f9bd4918a",
+      "removed_duplicate_reason": "The current canonical foldMatrix determinant already has a completed proof. The old duplicate incorrectly rewrote canonical foldMatrix as the independent low-row-bit foldMatrixNat.",
+      "retained_distinct_name": "Binius.BinaryBasefold.foldMatrixNat_det_ne_zero",
+      "validation": "Actual-import strict pg-iterate 10s; no new holes. The base case uses the canonical one-element determinant lemma.",
+      "matrix_semantics": "No entrywise equality between legacy foldMatrixNat and canonical foldMatrix is asserted. The retained low-row-bit determinant theorem is a separate result."
+    }
+  ],
+  "pending_actual_import_boundaries": [],
+  "incremental_case1_port": {
+    "file": "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/IncrementalCase1.lean",
+    "source_sha256": "7afc5f8dc90bc7575d8c768f68f8f804ae410a3dd9e059db823f5f10cf227b25",
+    "source_check_receipt": "/tmp/arklib-IncrementalCase1-overlay-native5.receipt.json",
+    "owner_receipt": "/tmp/arklib-IncrementalCase1-owner-build.receipt.json",
+    "meaning": "Original probability event, None mass and bound preserved; native PMF identities and bounded quotient-fiber destination equality normalize the existing proof.",
+    "transitive_axiom_audit": "/tmp/arklib-binius-incremental-second-complete-axioms.receipt.json: current imported theorem uses only propext, Classical.choice, Quot.sound"
+  },
+  "incremental_legacy_view_port": {
+    "file": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/Incremental.lean",
+    "source_sha256": "72470593363d6a3c182a38861e8959a38832aad676fce281324f5001a6672f27",
+    "owner_receipt": "/tmp/arklib-Incremental-owner-build-final.receipt.json",
+    "elapsed_seconds": 149.138,
+    "validation_kind": "temporary-overlay source/import families stable; compiler0 and admission0; not a package build",
+    "guarantees": [
+      "Retain legacy WordStack/low-row-bit fold models under their explicit distinct names.",
+      "Preserve the PMF event, None mass, affine-line/fiberwise-closeness claims and all original incremental bounds.",
+      "Bridge only finite uniform PMF/native events through the proved uniformProbability theorem; local SampleableType follows existing Fintype without a new public premise.",
+      "All ten live printed headline anchors use only standard kernel axioms."
+    ]
+  },
+  "tight_completeness_fold_consolidation": {
+    "retained_implementation_owner": "ArkLib/ProofSystem/Spartan/TightComposedCompleteness.lean",
+    "delegating_owner": "ArkLib/ProofSystem/Spartan/TightComposedComplete.lean",
+    "source_sha256": "f2bf6814e1bb5a2b707591dab7048202534b43091546210b9116077a02496898",
+    "pre_consolidation_candidate_archive": "scripts/integration/retired/tight-composed-complete-duplicate-fold.lean.txt",
+    "archive_sha256": "4a58c7e697b643628630ae313a3b676f51295db8dec62cc8f4d7d762d167c81a",
+    "preserved_public_interfaces": [
+      "Spartan.Spec.Bricks.composedPIOPTightFull_perfectCompleteness_of_leaves",
+      "Spartan.Spec.Bricks.composedTightFull_perfectCompleteness"
+    ],
+    "semantic_basis": "After migration, finalCheckPure delegates finalCheckTight; both use the same canonical CheckClaim pure pass-through. The full/Pure eight-phase chains are definitionally equal, so their relation-generic completeness folds share the same seven-seam implementation.",
+    "policy": "Original honest init/support/stateless/lossless hypotheses and carried terminal relations retained. No equivalence to a predicate-checking verifier is asserted.",
+    "validation": {
+      "kind": "temporary-overlay current compiled owner; not a Lake package build",
+      "primary_owner_receipt": "/tmp/arklib-TightComposedCompleteness-owner-native2.receipt.json",
+      "delegating_and_apex_receipt": "/tmp/arklib-Tight-completeness-final-owners-native2.receipt.json",
+      "source_sha256": "f2bf6814e1bb5a2b707591dab7048202534b43091546210b9116077a02496898",
+      "axiom_audit": "All five printed Full wrapper anchors and both Pure apex anchors use only propext, Classical.choice, Quot.sound."
+    },
+    "primary_owner_sha256": "761ce75214d7bc454a2c813ce09391d8660c3cf4561c4003a93d95e3e1a8ce2a"
+  },
+  "required_final_validation": "The full Lake package build of all four libraries must succeed on the final source snapshot; temporary-overlay receipts do not replace it.",
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [
+      "/required_final_validation"
+    ],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

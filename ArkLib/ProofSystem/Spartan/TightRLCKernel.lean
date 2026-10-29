@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Spartan.ShortPhaseRbrKnowledgeLeaves
+import ArkLib.ToMathlib.SpartanBricks
+import VCVio.OracleComp.Constructions.SampleableType.Measure
 
 /-!
 # The tight RLC kernel bound (issue #329, brick B1)
@@ -149,11 +150,10 @@ fixed nonzero claim-error vector `d` with probability exactly `1 / |R|`. Stated 
 `Pr[_ | $ᵗ C]` form consumed by `Verifier.rbrKnowledgeSoundness_singleChallenge_pure`
 (`C := LinearCombinationChallenge R = R1CS.MatrixIdx → R`). -/
 theorem probEvent_linearForm_kernel (d : R1CS.MatrixIdx → R) (hd : d ≠ 0) :
-    Pr[fun r : R1CS.MatrixIdx → R => (∑ idx, r idx * d idx) = 0
-      | $ᵗ (R1CS.MatrixIdx → R)]
+    Pr{let r ← $ᵗ (R1CS.MatrixIdx → R)}[(∑ idx, r idx * d idx) = 0]
       = 1 / (Fintype.card R : ENNReal) := by
   classical
-  rw [probEvent_uniformSample, card_filter_linearForm_kernel d hd, Fintype.card_fun,
+  rw [SampleableType.prEvent_uniformSample, card_filter_linearForm_kernel d hd, Fintype.card_fun,
     card_matrixIdx]
   have hq0 : ((Fintype.card R : ℕ) : ENNReal) ≠ 0 := by
     exact_mod_cast Fintype.card_pos.ne'
@@ -171,8 +171,7 @@ theorem probEvent_linearForm_kernel (d : R1CS.MatrixIdx → R) (hd : d ≠ 0) :
 is the tightness certificate for hypothesis A3: the flip probability is *equal* to, not merely
 bounded by, the claimed per-round error. -/
 theorem probEvent_linearForm_kernel_coe (d : R1CS.MatrixIdx → R) (hd : d ≠ 0) :
-    Pr[fun r : R1CS.MatrixIdx → R => (∑ idx, r idx * d idx) = 0
-      | $ᵗ (R1CS.MatrixIdx → R)]
+    Pr{let r ← $ᵗ (R1CS.MatrixIdx → R)}[(∑ idx, r idx * d idx) = 0]
       = (((1 : ℝ≥0) / (Fintype.card R : ℝ≥0) : ℝ≥0) : ENNReal) := by
   rw [probEvent_linearForm_kernel d hd,
     ENNReal.coe_div (by exact_mod_cast Fintype.card_pos.ne' :
@@ -183,17 +182,14 @@ theorem probEvent_linearForm_kernel_coe (d : R1CS.MatrixIdx → R) (hd : d ≠ 0
 `Verifier.rbrKnowledgeSoundness_singleChallenge_pure` with per-round error
 `fun _ => (1 : ℝ≥0) / (Fintype.card R : ℝ≥0)`. -/
 theorem probEvent_linearForm_kernel_le (d : R1CS.MatrixIdx → R) (hd : d ≠ 0) :
-    Pr[fun r : R1CS.MatrixIdx → R => (∑ idx, r idx * d idx) = 0
-      | $ᵗ (R1CS.MatrixIdx → R)]
+    Pr{let r ← $ᵗ (R1CS.MatrixIdx → R)}[(∑ idx, r idx * d idx) = 0]
       ≤ (((1 : ℝ≥0) / (Fintype.card R : ℝ≥0) : ℝ≥0) : ENNReal) :=
   le_of_eq (probEvent_linearForm_kernel_coe d hd)
 
 /-- **The affine corollary.** If the claimed evaluations `a` differ from the true ones `b`,
 a uniform RLC challenge produces matching combined claims with probability exactly `1 / |R|`. -/
 theorem probEvent_linearForm_eq (a b : R1CS.MatrixIdx → R) (hab : a ≠ b) :
-    Pr[fun r : R1CS.MatrixIdx → R =>
-        (∑ idx, r idx * a idx) = (∑ idx, r idx * b idx)
-      | $ᵗ (R1CS.MatrixIdx → R)]
+    Pr{let r ← $ᵗ (R1CS.MatrixIdx → R)}[(∑ idx, r idx * a idx) = (∑ idx, r idx * b idx)]
       = 1 / (Fintype.card R : ENNReal) := by
   have hsum : ∀ r : R1CS.MatrixIdx → R,
       ∑ idx, r idx * (a - b) idx
@@ -212,9 +208,7 @@ theorem probEvent_linearForm_eq (a b : R1CS.MatrixIdx → R) (hab : a ≠ b) :
 
 /-- The affine corollary in `≤` form with the `ℝ≥0`-coerced leaf error. -/
 theorem probEvent_linearForm_eq_le (a b : R1CS.MatrixIdx → R) (hab : a ≠ b) :
-    Pr[fun r : R1CS.MatrixIdx → R =>
-        (∑ idx, r idx * a idx) = (∑ idx, r idx * b idx)
-      | $ᵗ (R1CS.MatrixIdx → R)]
+    Pr{let r ← $ᵗ (R1CS.MatrixIdx → R)}[(∑ idx, r idx * a idx) = (∑ idx, r idx * b idx)]
       ≤ (((1 : ℝ≥0) / (Fintype.card R : ℝ≥0) : ℝ≥0) : ENNReal) := by
   rw [probEvent_linearForm_eq a b hab,
     ENNReal.coe_div (by exact_mod_cast Fintype.card_pos.ne' :

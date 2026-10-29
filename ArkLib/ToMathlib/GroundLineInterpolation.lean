@@ -94,9 +94,9 @@ theorem groundLine_of_eval_groundLine
     intro y hy
     obtain ⟨x, hx, rfl⟩ := Finset.mem_image.mp hy
     have he₀ : v₀.eval x = u₀ x := by
-      simpa using Lagrange.eval_interpolate_at_node u₀ (Function.injective_id.injOn) hx
+      simpa only [v₀, id_eq] using Lagrange.eval_interpolate_at_node u₀ (Function.injective_id.injOn) hx
     have he₁ : v₁.eval x = u₁ x := by
-      simpa using Lagrange.eval_interpolate_at_node u₁ (Function.injective_id.injOn) hx
+      simpa only [v₁, id_eq] using Lagrange.eval_interpolate_at_node u₁ (Function.injective_id.injOn) hx
     have hsplit : δ.eval (algebraMap F A x)
         = γ.eval (algebraMap F A x)
           - (algebraMap F A (v₀.eval x) + ζ * algebraMap F A (v₁.eval x)) := by

@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "repository": "SlopDotCash/proximityprize",
+  "validation_wrapper": {
+    "command": [
+      "./scripts/validate.sh",
+      "--axioms"
+    ],
+    "environment": {
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit_code": 0,
+    "seconds": 377.31,
+    "started_at_utc": "2026-10-29T07:25:32.827542+00:00",
+    "completed_at_utc": "2026-10-29T07:31:50.137329+00:00",
+    "before": {
+      "head": "7483975d251b3549313243ea9d5ada700af121f9",
+      "status": "",
+      "source_count": 7778,
+      "source_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3"
+    },
+    "after": {
+      "head": "7483975d251b3549313243ea9d5ada700af121f9",
+      "status": "",
+      "source_count": 7778,
+      "source_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3"
+    },
+    "source_stable": true,
+    "log": "/tmp/arklib-final-validator-wave26.log",
+    "log_sha256": "027590c7cd602d83114da8f031f51378f4952a1709a6f8e40479a3ea9e336c61"
+  },
+  "source_snapshot": {
+    "head": "7483975d251b3549313243ea9d5ada700af121f9",
+    "status": "",
+    "source_count": 7778,
+    "source_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "scope": "git ls-files -- '*.lean' lakefile.toml lake-manifest.json lean-toolchain; existing files only",
+    "algorithm": "SHA256 of json.dumps({path: SHA256(file_bytes).hexdigest()}, sort_keys=True, separators=(',', ':'), ensure_ascii=True).encode('utf-8'); no trailing newline."
+  },
+  "canonical_inventory": {
+    "revision": "78835bdb3a4d24ea9dd2977db4c46029eb8de5db",
+    "modules": 1099,
+    "reviewed_adaptations": 4,
+    "sha256": "35fa6caa45f9f234d2c8d1ae2a21c3efd30147a8442c97cffdba43b7af59f8d1"
+  },
+  "gate_input_sha256": {
+    "scripts/arklib-upstream.json": "35fa6caa45f9f234d2c8d1ae2a21c3efd30147a8442c97cffdba43b7af59f8d1",
+    "scripts/upstream-source-policy.json": "b5956f1d19a650c13686633e53a4dd171d956f7a0ac27c054f85c806848db243",
+    "scripts/sorry_baseline.json": "e108391e5215de7efe2617f1f862faee3deb144d96e1d29940e1daf19ef83be8",
+    "scripts/flagship_axioms.txt": "bad6a69897a710f172ef612be111eb3e2d1aa29bcb5e2e329e159a733e0a2ffe",
+    "scripts/axiom_baseline.json": "6cb7bd1889a669c2ba16f3a3618072d5c265618e02199d0184d2f926d58e4db1",
+    "scripts/validate.sh": "295db16258ea1f64eb6aeaf09db110052fdb36d29f7413d9a4867190998ea3ae",
+    ".github/workflows/ci.yml": "02e2eba4725cba77a096a0a045a325f479088e6f4dc49823454ae2c6faf681d9"
+  },
+  "merge_ancestors_verified": [
+    "94fb4cdd70c2ea061037bf6337611300d71c4e88",
+    "78835bdb3a4d24ea9dd2977db4c46029eb8de5db",
+    "4451cab2832a89ae59310cf9124c7ad27644a8a6"
+  ],
+  "checks": {
+    "python_regressions": {
+      "status": "passed",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts/tests"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper",
+      "tests_run": 305,
+      "skipped": 2
+    },
+    "provenance_and_imports": {
+      "status": "passed",
+      "command": [
+        "./scripts/check-imports.sh"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "source_and_admission_policy": {
+      "status": "passed",
+      "command": [
+        "python3 scripts/forbidden_tokens.py",
+        "python3 scripts/sorry_census.py --fail-on-holes"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper",
+      "inherited_hole_tokens": 33,
+      "inherited_hole_declarations": 28,
+      "inherited_true_stubs": 10,
+      "files_with_holes": 11,
+      "custom_axioms": 0,
+      "new_holes": 0
+    },
+    "default_libraries": {
+      "status": "passed",
+      "command": [
+        "./scripts/lake-locked.sh",
+        "build"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper",
+      "targets": [
+        "ArkLib",
+        "ArkLibExtensions",
+        "ResearchProximityPrize",
+        "ProximityPrizeExtensions"
+      ],
+      "jobs": 17789
+    },
+    "acceptance": {
+      "status": "passed",
+      "command": [
+        "./scripts/lake-locked.sh",
+        "test"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "acceptance_warning_budget": {
+      "status": "passed",
+      "command": [
+        "python3",
+        "scripts/check-warning-log.py",
+        "<build-log>",
+        "--path-prefix",
+        "ArkLibTest/"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper",
+      "warnings": 0
+    },
+    "canonical_warning_budget": {
+      "status": "passed",
+      "command": [
+        "python3",
+        "scripts/check-warning-log.py",
+        "<build-log>",
+        "--source-inventory",
+        "scripts/arklib-upstream.json"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper",
+      "non_sorry_warnings": 0
+    },
+    "native_probability_retirement": {
+      "status": "passed",
+      "command": [
+        "./scripts/test-retiredsweep.sh",
+        "./scripts/lake-locked.sh exe retiredsweep --require-empty"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "lean_source_policy": {
+      "status": "passed",
+      "command": [
+        "./scripts/lake-locked.sh",
+        "exe",
+        "lint-style"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "source_policy_plugin_fixtures": {
+      "status": "passed",
+      "command": [
+        "./scripts/test-lint-plugin.sh"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "toyproblem-runtime": {
+      "status": "passed",
+      "command": [
+        "./scripts/lake-locked.sh",
+        "exe",
+        "toyproblem-runtime"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "hachi-runtime": {
+      "status": "passed",
+      "command": [
+        "./scripts/lake-locked.sh",
+        "exe",
+        "hachi-runtime"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "sumcheck-runtime": {
+      "status": "passed",
+      "command": [
+        "./scripts/lake-locked.sh",
+        "exe",
+        "sumcheck-runtime"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "fri-extractor-runtime": {
+      "status": "passed",
+      "command": [
+        "./scripts/lake-locked.sh",
+        "exe",
+        "fri-extractor-runtime"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "flagship_axioms": {
+      "status": "passed",
+      "command": [
+        "python3",
+        "scripts/axiom_audit.py"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper",
+      "declarations": 57,
+      "manifest_sha256": "bad6a69897a710f172ef612be111eb3e2d1aa29bcb5e2e329e159a733e0a2ffe",
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "timing_fixtures": {
+      "status": "passed",
+      "command": [
+        "./scripts/test-build-timing-report.sh"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "documentation_integrity": {
+      "status": "passed",
+      "command": [
+        "python3",
+        "scripts/check-docs-integrity.py"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "knowledge_base": {
+      "status": "passed",
+      "command": [
+        "python3 scripts/kb/check_generated.py",
+        "python3 scripts/kb/lint.py --strict-cited-pages"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "kernel_audit_fixtures": {
+      "status": "passed",
+      "command": [
+        "./scripts/test-axiomsweep.sh"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper"
+    },
+    "kernel_axiom_baseline": {
+      "status": "passed",
+      "command": [
+        "./scripts/lake-locked.sh",
+        "exe",
+        "axiomsweep",
+        "--check"
+      ],
+      "exit_code": 0,
+      "evidence_scope": "Successful set -euo pipefail validation-wrapper stage",
+      "wrapper_log": "validation_wrapper",
+      "roots": [
+        "ArkLib"
+      ],
+      "declarations": 20334,
+      "modules": 1100,
+      "sorry_tainted_declarations": 45,
+      "solicited_declarations": 5,
+      "scope": "Canonical ArkLib environment only. Downstream flagship auditing is recorded separately. Kernel taint propagates through dependencies, so these 45 tainted declarations are not the 33 source-hole tokens in 28 declarations across 11 files.",
+      "summary": [
+        "axiomsweep: 20334 declarations across 1100 modules under #[ArkLib]",
+        "axiomsweep: check passed (no new axiom/sorry taint)."
+      ]
+    },
+    "public_declarations": {
+      "status": "passed",
+      "public_named_records": 71790,
+      "duplicate_names": 0,
+      "parse_failures": 0,
+      "source_inventory_sha256": "b4715ac6af45fc53695c9440351294645e0ebac2e3c75f5a8ce6317de9f49389",
+      "report_sha256": "a99e1a935bc8a37cd6ccc1e353714d8d9b07ddbbb098a2818d657fc4929d6f14",
+      "scope": "Lexical candidate audit; exports, syntax and generated names require actual Lean compilation."
+    },
+    "blueprint_library": {
+      "status": "passed",
+      "command": [
+        "./scripts/lake-locked.sh",
+        "build",
+        "ArkLibBlueprint"
+      ],
+      "exit_code": 0,
+      "jobs": 2142,
+      "module_seconds": 3.3,
+      "log_sha256": "13d136d21d72b614d79f95c602357bc8cdae6bbcfcb185eb730ef5790f53dde9",
+      "provenance": "Prior actual process exit 0; no contemporaneous Git-head receipt was captured. This is separate from the final wrapper run."
+    },
+    "blueprint_declarations": {
+      "status": "passed",
+      "command": [
+        "./scripts/lake-locked.sh",
+        "exe",
+        "checkdecls",
+        "blueprint/lean_decls"
+      ],
+      "environment": {
+        "LEAN_NUM_THREADS": "1"
+      },
+      "exit_code": 0,
+      "references": 230,
+      "unique_references": 223,
+      "checked_commit": "e4e9e22e3af00dd7a6eefb754817128793c6d881",
+      "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+      "log_sha256": "5e7a28fac4de4c8ea9bf689d45c734197c4c38e8090c3334615f88e278084d0b",
+      "declaration_list_sha256": "2235f00e060832329553be2f98a4c59e0da0e1a0cc3e7319ab997f6f1ae88385"
+    },
+    "api_documentation_rendering": {
+      "status": "not_run",
+      "scope": "No local rendering or remote CI success is claimed by this receipt."
+    },
+    "site_blueprint_rendering": {
+      "status": "not_run",
+      "scope": "No local rendering or remote CI success is claimed by this receipt."
+    },
+    "github_actions": {
+      "status": "not_run",
+      "scope": "No local rendering or remote CI success is claimed by this receipt."
+    }
+  },
+  "historical_receipts_policy": "Per-port source/proof hashes, failed attempts, and temporary-overlay/composition receipts remain unchanged. Current package validation supersedes only listed pending statuses.",
+  "ledger_reconciliation": {
+    "resolved_pending_flags": 30,
+    "ledgers_with_pending_flags": 14,
+    "ledgers_with_current_validation_references": 35,
+    "files": [
+      "scripts/integration/batched-fri-tail-migration.json",
+      "scripts/integration/binius-challenge-order-migration.json",
+      "scripts/integration/binius-decoder-consolidation.json",
+      "scripts/integration/binius-query-execution-consolidation.json",
+      "scripts/integration/binius-query-folding-migration.json",
+      "scripts/integration/binius-spartan-final-fqn-consolidation.json",
+      "scripts/integration/fribinius-core-native-migration.json",
+      "scripts/integration/full12-binius-fri-caller-migration.json",
+      "scripts/integration/full16-research-graph-ports.json",
+      "scripts/integration/full16-research-syndrome-ports.json",
+      "scripts/integration/full17-research-api-ports.json",
+      "scripts/integration/full17-research-syndrome-sliced-ports.json",
+      "scripts/integration/full18-research-api-ports.json",
+      "scripts/integration/full19-logup-completeness-support-ports.json",
+      "scripts/integration/full20-logup-outer-malicious-native-port.json",
+      "scripts/integration/full21-incidence-evaluation-code-ports.json",
+      "scripts/integration/full21-logup-native-probability-ports.json",
+      "scripts/integration/full22-logup-outer-rbr-native-port.json",
+      "scripts/integration/full23-low-rate-evaluation-code-port.json",
+      "scripts/integration/full24-grand-refutation-proof-consolidation.json",
+      "scripts/integration/g87-syndrome-symbolic-migration.json",
+      "scripts/integration/native-foundation-ports.json",
+      "scripts/integration/prize-shape-rate-half-code-bridge-migration.json",
+      "scripts/integration/probability-api-migration.json",
+      "scripts/integration/public-fqn-consolidation.json",
+      "scripts/integration/pure-knowledge-consolidation.json",
+      "scripts/integration/research-locator-consolidation.json",
+      "scripts/integration/ringswitching-conventions.json",
+      "scripts/integration/sequential-output-api-migration.json",
+      "scripts/integration/spartan-completeness-consolidation.json",
+      "scripts/integration/spartan-scalar-oracle-migration.json",
+      "scripts/integration/stir-repetition-native-migration.json",
+      "scripts/integration/sumcheck-message-semantics-retirements.json",
+      "scripts/integration/syz66-symbolic-strip-budget-migration.json",
+      "scripts/integration/whir-stir-proof-consolidation.json"
+    ]
+  }
+}

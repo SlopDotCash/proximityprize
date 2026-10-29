@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Spartan.Basic
+import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
 import ArkLib.ProofSystem.Sumcheck.Spec.General
-import ArkLib.ProofSystem.Sumcheck.Domain
-import ArkLib.OracleReduction.LiftContext.OracleReduction
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Domain
+import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
 
 /-!
 # The Spartan second sum-check oracle reduction (issue #114)
@@ -15,7 +15,7 @@ import ArkLib.OracleReduction.LiftContext.OracleReduction
 Constructs Spartan's second sum-check oracle reduction by lifting the proven full sum-check oracle
 reduction (`Sumcheck.Spec.oracleReduction`) onto Spartan's virtual polynomial
 `M(Y) = sum_idx r_idx * M_idx(r_x, Y) * Z(Y)` (`secondSumCheckVirtualPolynomial`), via
-`OracleReduction.liftContext` -- the pattern `oracleReduction.firstChallenge` uses for `RandomQuery`.
+`OracleReduction.liftContextLegacy` -- the pattern `oracleReduction.firstChallenge` uses for `RandomQuery`.
 
 The inner sum-check input `Sumcheck.Spec.StatementRound R l_n 0` has a `target` field equal to the
 random-linear-combination of the bundled eval-claims -- an oracle-dependent value, which
@@ -170,6 +170,7 @@ noncomputable def secondSumcheckOracleLens :
     | ⟨_, point⟩ => ReaderT.mk fun ⟨_t, stmt⟩ => secondSumcheckEvalFromOracles pp oSpec stmt point
   embedOStmt := Function.Embedding.inl
   hEqOStmt := fun _ => rfl
+  outputInterface_heq := fun _ => HEq.rfl
 
 /-- The value-level oracle context lens for the second sum-check. -/
 noncomputable def secondSumcheckContextLens :
@@ -190,18 +191,8 @@ noncomputable def secondSumcheckReduction :
       (R × Statement.AfterLinearCombination R pp) (OracleStatement.AfterLinearCombination R pp) Unit
       (Statement.AfterSecondSumcheck R pp) (OracleStatement.AfterSecondSumcheck R pp) Unit
       (Sumcheck.Spec.pSpec R 2 pp.ℓ_n) :=
-  (Sumcheck.Spec.oracleReduction R 2 (boolEmbedding R) pp.ℓ_n oSpec).liftContext
+  (Sumcheck.Spec.oracleReduction R 2 (boolEmbedding R) pp.ℓ_n oSpec).liftContextLegacy
     (secondSumcheckContextLens pp) (secondSumcheckOracleLens pp oSpec)
-
-instance instSecondSumcheckVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (secondSumcheckReduction (R := R) pp oSpec).verifier where
-  hCohInl i k h := by
-    simp only [secondSumcheckReduction, OracleVerifier.liftContext, Function.Embedding.inl_apply] at h
-    obtain rfl := Sum.inl.inj h
-    rfl
-  hCohInr i k h := by
-    simp only [secondSumcheckReduction, OracleVerifier.liftContext, Function.Embedding.inl_apply] at h
-    cases h
 
 #print axioms secondSumcheckReduction
 

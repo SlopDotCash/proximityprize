@@ -1,0 +1,54 @@
+{
+  "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+  "module": "ArkLib/ToVCVio/LazyPermBridge.lean",
+  "canonical_probability_owner": "VCVio 6214f907760776ceab8b1f828c9015f549e66e31",
+  "native_observer_migrations": [
+    {
+      "old": "LazyPermBridge.evalDist_sampleUnused_run",
+      "new": "LazyPermBridge.evalDist_sampleUnused",
+      "contract": "The native measure of the nonempty duplicate-free list sample equals uniformOfFinset.toMeasure. The old completed-SPMF run field is retired."
+    },
+    {
+      "old": "LazyPermBridge.toPMF_overlay",
+      "new": "LazyPermBridge.evalDist_overlay",
+      "contract": "The native overlay measure is the finite uniform-permutation PMF pushforward, followed by toMeasure."
+    },
+    {
+      "old": "LazyPermBridge.toPMF_sampleUnused",
+      "new": "LazyPermBridge.evalDist_sampleUnused_values",
+      "contract": "The native fresh-output measure is the uniform unused-values PMF measure."
+    },
+    {
+      "old": "LazyPermBridge.toPMF_sampleUnusedKeys",
+      "new": "LazyPermBridge.evalDist_sampleUnused_keys",
+      "contract": "The native fresh-input measure is the uniform unused-keys PMF measure."
+    }
+  ],
+  "retained_guarantees": [
+    "All pure cache, overlay, permutation-counting, and PMF absorption statements are retained.",
+    "The master evalDist_simulateQ_lazyPermImpl_run' remains equality of the lazy and eager output distributions for arbitrary outputs; native observation makes MeasurableSpace explicit, without Countable output or discrete output assumptions.",
+    "The event-count and landing bounds retain their numerical statements using native Pr events."
+  ],
+  "finite_measure_bridges": [
+    "ProximityPrize.Compatibility.evalDist_uniformSample_eq_toMeasure",
+    "ProximityPrize.Compatibility.evalDist_uniform_map_eq_toMeasure",
+    "ProximityPrize.Compatibility.evalDist_bind_finitePMF"
+  ],
+  "removed_private_helper": "pmf_bind_elim_congr was only for the retired Option.elim/SPMF proof route; the native finite-mixture induction has no optional failure branch.",
+  "proof_boundary": "Finite prefix models and existing PMF absorption are mapped through PMF.toMeasure. No alternate probability interpreter or global EvalDistSemantics instance is introduced.",
+  "combined_duplex_bridge": {
+    "module": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/EagerLazyDS.lean",
+    "observer_migration": {
+      "old": "DuplexSpongeFS.EagerLazyDS.toPMF_two_sample",
+      "new": "DuplexSpongeFS.EagerLazyDS.evalDist_two_sample",
+      "contract": "The native two-sample measure is the nested finite uniform PMF model followed by toMeasure."
+    },
+    "retained_guarantees": [
+      "The combined eager-lazy equality and D_DS experiment equality keep arbitrary measurable output types; only native output observation makes MeasurableSpace explicit.",
+      "The event transfer still quantifies every predicate without an output-space hypothesis, using the canonical all-events observer.",
+      "Permutation miss cases reuse existing PMF spectator absorption through the proved finite-prefix/native-measure bridge; hash replacement and independent sample commutation delegate to canonical VCVio laws.",
+      "The flavored cache forgetting and capacity-fiber cardinality statements are unchanged."
+    ],
+    "import_consolidation": "Removed the ProductMarginalBound dependency, whose sole use was a vector-cardinality wrapper; the existing vector equivalence and canonical Fintype cardinality theorems prove that geometric step directly."
+  }
+}

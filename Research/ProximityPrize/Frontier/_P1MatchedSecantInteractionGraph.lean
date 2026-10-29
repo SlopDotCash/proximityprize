@@ -149,9 +149,9 @@ noncomputable def interactionGraph
     {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
     (M : Finset (J × J)) : SimpleGraph M where
   Adj p q := p ≠ q ∧ PairInteracts witness p.1 q.1
-  symm := by
+  symm := ⟨by
     intro p q h
-    exact ⟨h.1.symm, h.2.symm⟩
+    exact ⟨h.1.symm, h.2.symm⟩⟩
   loopless := ⟨fun p h => h.1 rfl⟩
 
 /-- The complement interaction graph is `K₅`-free. -/
@@ -192,8 +192,8 @@ theorem interactionGraph_compl_cliqueFree_five
       T ≤ (witness (endpoint pair z)).card := by
     rintro ⟨i, e⟩
     fin_cases e
-    · simpa only [endpoint_zero] using (hsize (pair i) (hpairM i)).1
-    · simpa only [endpoint_one] using (hsize (pair i) (hpairM i)).2
+    · exact (hsize (pair i) (hpairM i)).1
+    · exact (hsize (pair i) (hpairM i)).2
   obtain ⟨i, j, hij, hpij, hinteract⟩ :=
     exists_interacting_pair_of_five witness pair hendpoint hendpointSize
   let vi : M := ⟨pair i, hpairM i⟩
@@ -324,12 +324,12 @@ theorem pairInteracts_exists_crossSecant_core
   let beta := endpointAt q f
   have hgamma : gamma ∈ family.G := by
     fin_cases e
-    · simpa only [gamma, endpointAt_zero] using hp.1
-    · simpa only [gamma, endpointAt_one] using hp.2
+    · exact hp.1
+    · exact hp.2
   have hbeta : beta ∈ family.G := by
     fin_cases f
-    · simpa only [beta, endpointAt_zero] using hq.1
-    · simpa only [beta, endpointAt_one] using hq.2
+    · exact hq.1
+    · exact hq.2
   have hne : gamma ≠ beta := hcross e f
   let line := secantParameter family gamma beta
   have hgammaOn : gamma ∈ pointsOn family line :=
@@ -352,9 +352,9 @@ noncomputable def fixedEndpointGraph
     (M : Finset (J × J)) (e : Fin 2) : SimpleGraph M where
   Adj p q := p ≠ q ∧
     K ≤ (witness (endpointAt p.1 e) ∩ witness (endpointAt q.1 e)).card
-  symm := by
+  symm := ⟨by
     intro p q h
-    exact ⟨h.1.symm, by simpa only [Finset.inter_comm] using h.2⟩
+    exact ⟨h.1.symm, by simpa only [Finset.inter_comm] using h.2⟩⟩
   loopless := ⟨fun p h => h.1 rfl⟩
 
 /-- Each fixed-endpoint graph separately has independence number at most four. -/

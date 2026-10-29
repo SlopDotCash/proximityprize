@@ -1,242 +1,275 @@
-% Copyright (c) 2025 ZKLib Contributors. All rights reserved.
+% Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 % Released under Apache 2.0 license as described in the file LICENSE.
 
-\section{FRI}\label{sec:fri}
+\section{FRI soundness}
 
-FRI (Fast Reed--Solomon Interactive Oracle Proof of Proximity) tests whether an oracle
-$f : \evaldomain \to \field$ is close to a Reed--Solomon code.  The ArkLib formalization
-follows the generalized FRI low-degree-test presentation in \cite{FRI1216} and the
-proximity-gap and Batched-FRI analysis of \cite{BCIKS20}.  It uses the usual two-phase structure:
-a folding phase, implemented as a sequential composition of single-round oracle reductions, and a
-query phase checking round-to-round consistency.  The main formal design point is that protocol
-assembly, completeness, and soundness accounting are expressed through the generic
-oracle-reduction composition infrastructure from
-Chapter~\ref{chap:oracle_reductions}.
+We follow the March 27, 2026 revision of~\cite{GMW25}. The earlier
+\href{https://github.com/zksecurity/simple-rbr-fri}{zkSecurity formalization}, by
+Yoichi Hirai and Harmonic's Aristotle, with subsequent work by Pietro Monticone,
+also informed the argument. ArkLib reuses its existing Reed--Solomon codes,
+word-folding operations, mutual correlated agreement (MCA), and probability theory.
 
-\subsection{Protocol specification}\label{sec:fri_spec}
+Let $D$ be a multiplicative coset of size $2^n$, let $m=2^k$ be a folding factor,
+and let $D'=D^m$. Write $C=\mathrm{RS}(D,md)$ and
+$C'=\mathrm{RS}(D',d)$, with $d>0$. For a word $f$ on $D$, write $f_j$ for the
+coefficient words of its block interpolants, so that
+$\operatorname{Fold}_\alpha(f)=\sum_{j<m}\alpha^j f_j$.
 
-\begin{definition}[FRI input relation]\label{def:fri_input_relation}
-\lean{Fri.Spec.inputRelation}
-\uses{def:distance_from_code,def:reed_solomon_code}
-    The input relation asserts that the initial oracle statement is $\distance$-close to the
-    Reed--Solomon code determined by the initial evaluation domain and degree bound.
-\end{definition}
-
-\begin{definition}[FRI output relation]\label{def:fri_output_relation}
-\lean{Fri.Spec.outputRelation}
-\uses{def:fri_input_relation}
-    The output relation is the query-round relation on the final folded statement and witness.
-    It is the endpoint of both the folding phase and the full FRI reduction.
-\end{definition}
-
-\begin{definition}[Folding-phase protocol]\label{def:fri_folding_protocol}
-\lean{Fri.Spec.pSpecFold,Fri.Spec.reductionFold}
-\uses{def:fri_input_relation,def:fri_output_relation}
-    The folding phase sequentially composes the non-final folding reductions and appends the
-    final-fold reduction.  In Lean this is the oracle reduction
-    \texttt{Fri.Spec.reductionFold}.
-\end{definition}
-
-\begin{definition}[Full FRI reduction]\label{def:fri_reduction}
-\lean{Fri.Spec.reduction}
-\uses{def:fri_folding_protocol}
-    The full FRI reduction appends the query-round oracle reduction to the folding phase.  This
-    definitional append is exposed by \texttt{Fri.Spec.reduction\_verifier\_eq\_append} on the
-    soundness side.
-\end{definition}
-
-\subsection{Perfect completeness}\label{sec:fri_completeness}
-
-Completeness is layered.  Per-round honest-protocol obligations were originally named as
-bricks; as of 2026-06-11 every fold-side brick is a proved theorem, and the query-round brick
---- which was \emph{false as stated} (the query verifier checks round consistency for every
-round, while the chained relation constrained only the last fold) --- has been repaired and
-proved against the full-chain consistency invariant.
-
-\begin{theorem}[Fold-side completeness, discharged]\label{thm:fri_fold_completeness}
-\lean{Fri.Spec.Completeness.foldRoundPerfectCompletenessResidual_holds,Fri.Spec.Completeness.finalFoldRoundPerfectCompletenessResidual_holds,Fri.Spec.Completeness.foldPhasePerfectCompletenessResidual_holds,Fri.Spec.Completeness.reductionPerfectCompletenessResidual_holds}
-\uses{def:fri_reduction}
-    The non-final fold rounds, the final fold round, the assembled folding phase, and the
-    reduction-level composition are each perfectly complete; all four former residuals carry
-    axiom-clean \texttt{\_holds} theorems, assembled through the generic append and
-    sequential-composition keystones.
-\end{theorem}
-
-\begin{definition}[Query-round chain invariant]\label{def:fri_query_chain_invariant}
-\lean{Fri.Spec.Completeness.queryCheckerAccepts,Fri.Spec.Completeness.queryRoundChainRelation}
-\uses{def:fri_output_relation}
-    The full-chain consistency invariant, stated in the checker's own currency: the compiled
-    query verifier never fails on the statement, at any transcript.  Conjoining it onto the
-    base relation makes a relation/check mismatch impossible by design.
-\end{definition}
-
-\begin{theorem}[Query-round completeness, repaired]\label{thm:fri_query_completeness}
-\lean{Fri.Spec.Completeness.queryRound_perfectCompleteness_repaired}
-\uses{def:fri_query_chain_invariant}
-    The query-round oracle reduction is perfectly complete from the chain relation to the base
-    relation.  The original residual statement
-    (\texttt{queryRoundPerfectCompletenessResidual}) is retained, documented as false as
-    stated, with a pointer to this repair.
-\end{theorem}
-
-\begin{definition}[Chain-delivery residual]\label{def:fri_chain_delivery_residual}
-\lean{Fri.Spec.Completeness.queryRoundChainDeliveryResidual}
-\uses{thm:fri_fold_completeness,def:fri_query_chain_invariant}
-    The single remaining completeness obligation: the folding phase delivers the chain
-    invariant (honest folding produces oracles the query checker accepts).  Unlike the
-    original query residual this is true by design for honest runs; the proof route is the
-    proved fold-phase completeness strengthened on the honest-run support.
-\end{definition}
-
-\subsection{Soundness accounting}\label{sec:fri_soundness}
-
-The FRI soundness file now contains both the error-budget definitions and the compositional
-theorems tying those budgets to the verifier, conditional on the expected per-round and
-per-phase soundness obligations.
-
-\begin{definition}[Per-round and total error]\label{def:fri_error}
-\lean{Fri.Spec.roundError,Fri.Spec.queryRoundError,Fri.Spec.queryError,Fri.Spec.totalError}
-\uses{def:proximity_gap}
-    $\mathsf{roundError}_i$ is the BCIKS20-style proximity-gap error for folding round $i$.
-    $\mathsf{queryRoundError}_i$ is the query-consistency contribution for one query check,
-    $\mathsf{queryError}$ sums those contributions over all query checks, and
-    $\mathsf{totalError}$ adds the fold-phase and query-phase budgets.
-\end{definition}
-
-\begin{lemma}[Budget projections]\label{lem:fri_error_projections}
-\lean{Fri.Spec.roundError_sum_le_totalError,Fri.Spec.roundError_le_totalError,Fri.Spec.queryError_le_totalError}
-\uses{def:fri_error}
-    The summed fold-round budget, each individual fold-round budget, and the whole query budget
-    are each bounded by $\mathsf{totalError}$.
+\begin{lemma}\label{lem:fri-coefficient-lift}
+\lean{Fri.exists_codeword_agree_of_coefficients}
+\leanok
+If every $f_j$ agrees with a codeword in $C'$ on $T\subseteq D'$, then a single
+codeword in $C$ agrees with $f$ on the whole preimage of $T$ under $x\mapsto x^m$.
 \end{lemma}
+\begin{proof}
+\leanok
+Choose degree-$<d$ polynomials $p_j$ witnessing agreement on $T$ and recombine them
+as $p(X)=\sum_{j<m}X^j p_j(X^m)$. This polynomial has degree less than $md$.
+Evaluation on every block above $T$ recovers its interpolant and hence the word.
+\end{proof}
 
-\begin{theorem}[Composed FRI soundness]\label{thm:fri_soundness_total_error}
-\lean{Fri.Spec.reduction_soundness_of_phases,Fri.Spec.reduction_soundness_totalError,Fri.Spec.reduction_soundness_totalError_of_rounds}
-\uses{def:fri_reduction,def:fri_error}
-    If the folding phase is sound with the sum of the per-round errors and the query phase is
-    sound with $\mathsf{queryError}$, then the appended FRI verifier is sound with error
-    $\mathsf{totalError}$.  The round-level theorem further assembles this from individual
-    fold-round soundness facts, final-fold soundness, query-round soundness, and the named
-    sequential-composition and append residuals.
-\end{theorem}
-
-\begin{remark}[Status of the FRI soundness theorem]\label{rem:fri_soundness_status}
-    The theorem above is a real composition theorem about the FRI verifier and the
-    $\mathsf{totalError}$ budget.  It is not an unconditional low-degree-testing theorem:
-    callers still supply the per-round folding soundness, query-round soundness, and generic
-    composition residuals.
-\end{remark}
-
-\begin{remark}[Discharging $\mathsf{roundError}_i$ above the Johnson bound via threshold
-  halving]\label{rem:fri_threshold_halving}
-    The per-round $\mathsf{roundError}_i$ of Definition~\ref{def:fri_error} is a
-    \emph{below-Johnson} proximity-gap budget: \cite{BCIKS20} (and the zero-loss refinement
-    \cite{BCHKS25}) bound it only for $\delta \le \delta_J = 1-\sqrt{\rho}$.  In the deployed
-    \emph{open zone} $\delta \in (\delta_J, 1-\rho)$ the up-to-capacity correlated-agreement
-    conjecture that earlier analyses relied on was disproved in late 2025, leaving every
-    above-Johnson FRI deployment without a proven per-round budget.
-
-    \cite{ChaiFan26} closes this gap unconditionally.  For $\mathrm{RS}[F,L,k]$ with $k=2^m$ and
-    $L$ admitting a fixed-point-free involution, for every $\delta \in (\delta_J, 1-\rho)$:
-    \[ \Pr[\text{FRI accepts a $\delta$-far word}] \;\le\; \frac{nR}{|F|} \;+\; \bigl(1-\tfrac{\delta}{2}\bigr)^{q}. \]
-    The mechanism is \emph{threshold halving} (Rothblum--Vadhan--Wigderson): the soundness is
-    analysed at the halved radius $\delta/2$.  The half-threshold correlated-agreement lemma
-    (at most one random combination is $\delta/2$-close to a linear code; formally verified in
-    Lean~4 in \cite{ChaiFan26}) places the analysis, after the first fold, strictly below the
-    \emph{unique-decoding} radius $(1-\rho)/2$ --- since $\delta/2 < (1-\rho)/2 \iff \delta < 1-\rho$
-    --- where \cite{BCIKS20} locks the distance round by round.  The commit term $\mathsf{roundError}_i$
-    is thereby discharged in the open zone (summing to $O(nR/|F|)$); the cost is a query-parameter
-    recalibration ($\sim 2\times$ more queries, the source of the $(1-\delta/2)^q$ query term).
-
-    \textbf{Scope (what this does \emph{not} give).}  This is a \emph{lossy} (half-threshold)
-    soundness theorem: it does not establish the zero-loss / equal-threshold proximity gap (ABF
-    Open Problem~1).  \cite{ChaiFan26} shows the equal-threshold correlated-agreement bound is
-    $\binom{n}{w}/|F|$, vacuous at FRI code lengths, and that the $\sim2\times$ overhead is intrinsic
-    to any proof factoring through a correlated-agreement lemma.  Thus the deployed above-Johnson
-    soundness budget is now proven, while a complete zero-loss pin of the proximity-gap threshold
-    in the prize regime remains open.
-\end{remark}
-
-\subsection{Batched FRI}\label{sec:batched_fri}
-
-Batched FRI reduces a batch of polynomial oracles to the base FRI protocol through a batching
-round and a virtual oracle lens.  Its security development is where ArkLib connects the FRI
-query phase to the correlated-agreement and proximity-gap statements from
-Section~\ref{sec:proximity_gap_defs}.
-
-\begin{definition}[Batched FRI reduction]\label{def:batched_fri_reduction}
-\lean{BatchedFri.Spec.BatchingRound.batchOracleReduction,BatchedFri.Spec.batchedFRIOracleLens,BatchedFri.Spec.liftedFRI,BatchedFri.Spec.batchedFRIreduction}
-\uses{def:fri_reduction,def:reed_solomon_code}
-    The single batched round forms a random linear combination of the batch and feeds it to a
-    lifted base FRI reduction.  The oracle lens routes the lifted FRI oracle queries back to the
-    batch oracles.
+\begin{definition}\label{def:fri-folding-failure}
+\lean{Fri.FoldingAgreementFailure}
+\leanok
+For a tradeoff parameter $\theta$, a challenge $\alpha$ is bad if there exists
+$T\subseteq D'$ of size at least $(1-\theta)|D'|$ such that the folded word agrees
+with $C'$ on $T$, but no codeword in $C$ agrees with $f$ on the whole preimage of $T$.
+The parameter $\theta$ is independent of the input distance.
 \end{definition}
 
-\begin{definition}[Batched FRI structural lens package]\label{def:batched_fri_lens_package}
-\lean{Fri.batchedFRIOracleLensReduction,Fri.batchedFRIOracleLensReduction_holds}
-\uses{def:batched_fri_reduction}
-    The structural part of the batching-to-base-FRI reduction is proved definitionally: the
-    constructed lens and lifted reduction have the advertised shape.
+\begin{theorem}\label{thm:fri-folding-error}
+\lean{Fri.foldingAgreementFailure_prob_le_powers,
+Fri.foldingAgreementFailure_prob_le_generalizedJohnson}
+\leanok
+\uses{def:fri-folding-failure,lem:fri-coefficient-lift}
+For every fixed word $f$, the probability of a bad uniform challenge is at most
+the MCA error of the powers generator $(1,\alpha,\ldots,\alpha^{m-1})$ for $C'$
+at radius $\theta$.
+\end{theorem}
+\begin{proof}
+\leanok
+A bad challenge is an MCA failure for the coefficient words: if every coefficient
+word agreed on the same $T$, Lemma~\ref{lem:fri-coefficient-lift} would lift the
+agreement. No union bound over subsets is needed. The generalized-Johnson
+specialization instantiates the existing powers-MCA bound from~\cite{BCGM25},
+retaining all its field-size, slack, and radius assumptions.
+\end{proof}
+
+\begin{theorem}\label{thm:fri-query-error}
+\lean{Fri.FoldTrace.query_soundness_distance}
+\leanok
+\uses{def:fri-folding-failure}
+Fix a commitment trace with no bad folding challenge and let $\delta$ be the
+initial word's relative distance from its Reed--Solomon code. The probability of
+acceptance on $t$ independent uniform initial-domain queries is at most
+$(1-\min\{\theta,\delta\})^t$.
+\end{theorem}
+\begin{proof}
+\leanok
+If the final word is not in its code, acceptance is impossible. Otherwise any
+set of accepting initial positions of density at least $1-\theta$ agrees with
+one original codeword: project the positions through each fold, observe that
+density cannot decrease, and lift agreement backwards. Thus the accepting
+density is at most $1-\min\{\theta,\delta\}$. Independent repetitions raise this
+density to the $t$th power.
+\end{proof}
+
+\begin{theorem}\label{thm:fri-binding}
+\lean{Fri.FoldTrace.exists_codeword_of_query_probability,
+Fri.FoldTrace.exists_unique_codeword_agree_of_query_probability,
+Fri.FoldTrace.interpolate_accepting_agrees,Fri.FoldTrace.not_accepts_of_disagreement}
+\leanok
+\uses{thm:fri-query-error}
+For a safe trace with positive degree bound $d$ and $t>0$, suppose
+$\delta\leq\theta$ and $\delta\leq 1-d/|D|$.
+Acceptance probability at least $(1-\delta)^t$ implies that the initial word is
+within relative distance $\delta$ of its code. A unique codeword agrees with it
+on every accepting position. Interpolation on any $d$ accepting positions
+recovers this codeword, and a query at a disagreement position forces rejection.
+\end{theorem}
+\begin{proof}
+\leanok
+The rate condition and $d>0$ give $\delta<1$, so positive acceptance implies a
+valid final word. Positive $t$ gives accepting density at least $1-\delta$.
+Since $\delta\leq\theta$, agreement lifts to an initial codeword within distance
+$\delta$. Since $\delta\leq 1-d/|D|$, the accepting set has at least $d$ positions,
+giving uniqueness. Lagrange interpolation supplies algebraic recovery on any
+$d$ accepting positions. No extraction running-time bound is asserted.
+\end{proof}
+
+\begin{theorem}\label{thm:fri-soundness}
+\lean{Fri.Spec.soundness,Fri.Spec.soundness_proximity,Fri.Spec.rbr_soundness}
+\leanok
+\uses{thm:fri-folding-error,thm:fri-query-error}
+The specified FRI oracle reduction has round-by-round error equal to the
+powers-MCA error at each folding challenge and $(1-\min\{\theta,\delta\})^t$
+at its final query-vector challenge. Its ordinary soundness error is the sum of
+these errors, against every adaptive prover. More strongly, this bounds any
+acceptance when the input has distance at least $\delta$ from its initial code.
+\end{theorem}
+\begin{proof}
+\leanok
+Use the actual protocol transcript, including the retained committed words and
+the terminal polynomial. A persistent state records that the input is valid or
+a bad challenge has occurred. Prover messages cannot create this state.
+The conditional probability of each fresh bad event is bounded by the appropriate
+folding or query theorem. The executable verifier accepts exactly the final
+query event, including the terminal degree guard, so it rejects whenever the
+persistent state is false. This supplies round-by-round soundness through ArkLib's
+worst-case-prefix interface. Separately, induction over the actual stateful prover
+execution accumulates the conditional errors and proves ordinary soundness,
+without invoking unfinished general composition or implication theorems.
+\end{proof}
+
+\paragraph{Executable specification and scope.}
+The executable local consistency check is related to ArkLib's word fold by
+\texttt{RoundConsistency.roundConsistencyCheck\_eq\_foldValue}, for arbitrary
+oracle words. The specification retains all prior words, and checks the final
+polynomial's degree before the query phase.
+\texttt{Fri.Spec.reduction\_run} identifies the exact acceptance event of
+\texttt{Fri.Spec.reduction}; the input-language bridge uses its original
+computational-polynomial witness relation. The result concerns the interactive
+oracle protocol, not Fiat--Shamir compilation or a concrete commitment scheme.
+
+\subsection{Certified straightline extraction}
+
+Write $N=2^n$, $b_i=2^{s_i}$, and $M=(\prod_i b_i)d$ for the initial
+polynomial dimension, where all folding exponents and $d$ are positive and
+$\sum_i s_i\leq n$.
+The retained history contains arbitrary committed words, the folding challenges,
+and a final computational polynomial. No intermediate honesty assumption is made.
+
+\begin{definition}\label{def:fri-measured-extractor}
+\lean{Fri.Spec.Extractor.extract,Fri.Spec.Extractor.extractProgram,
+Fri.Spec.Extractor.extractHistory,Fri.Spec.Extractor.extractHistory_eq_profile}
+\leanok
+The named straightline extractor reads only the transcript prefix preceding the
+query-vector challenge. It first rejects if the final polynomial has degree at
+least $d$, before coefficient, domain, challenge, or word accesses. Otherwise it
+scans every initial-domain position in order and applies the actual local checks.
+It counts all accepting positions and caches the first $M$ nodes and initial-word
+values. Fewer than $M$ acceptances yield failure. Otherwise it interpolates these
+cached samples and returns the polynomial if its degree is less than $M$.
+Its public result is the literal first projection of this measured program.
 \end{definition}
 
-\begin{lemma}[Batched FRI query-round probability and density]\label{lem:batched_fri_query_round_probability}
-\lean{Fri.queryRoundAcceptanceBound,Fri.queryRoundAcceptanceBound_holds,Fri.queryRoundAcceptanceBound_of_density,Fri.queryRoundDensityBound,Fri.queryRoundDensityBound_holds,Fri.QueryRound.probabilityAcceptanceBound,Fri.QueryRound.probabilityAcceptanceBound_holds,Fri.QueryRound.probabilityDetectionBound,Fri.QueryRound.probabilityDetectionBound_holds,Fri.Spec.QueryRound.getChallenge_probOutput_uniform_eq_Pr}
-\uses{def:batched_fri_lens_package}
-    The local query-round analysis is no longer a placeholder.  ArkLib proves both a normalized
-    density route, bounding the probability that all repeated queries land in a good set by
-    $(1-\delta)^t$, and a probability-space route for the verifier's independent-uniform query
-    tuple.  The latter includes the bridge from the concrete FRI query challenge oracle to the
-    product PMF used in the standalone probability theorem.
-\end{lemma}
-
-\begin{definition}[Batched FRI Claim 8.2 frontier]\label{def:batched_fri_claim82_frontier}
-\lean{Fri.fri_query_soundness,Fri.FriQuerySoundnessParts,Fri.fri_query_soundness_of_parts,Fri.fri_query_soundness_of_jointProximity}
-\uses{lem:batched_fri_query_round_probability,def:batched_fri_lens_package,lem:joint_proximity_bridges}
-    Claim 8.2 of \cite{BCIKS20} is represented as a faithful residual frontier rather than as a
-    vacuous theorem.  The split fields isolate the proved query-round bound, the proved
-    batching/oracle-lens reduction, and the coding-theoretic bridge from correlated agreement to
-    joint agreement.
-\end{definition}
-
-\begin{theorem}[Batched FRI Claim 8.2 adapters]\label{thm:batched_fri_query_soundness}
-\lean{Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLens,Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens,Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSAffineLine,Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSAffineLine,Fri.fri_query_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndRSCurve,Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve}
-\uses{def:batched_fri_claim82_frontier,thm:bciks_rs_gap}
-    The density and probability adapters reassemble Claim 8.2 once the remaining
-    correlated-agreement bridge is supplied.  Specialized affine-line and polynomial-curve front
-    doors package the BCIKS20 Reed--Solomon inputs, including the strict coefficient-polynomial,
-    boundary, radius, and probability-trigger obligations.
+\begin{theorem}\label{thm:fri-extractor-recovery}
+\lean{Fri.Spec.Extractor.extractHistory_eq_some_of_safeHistory,
+Fri.Spec.Extractor.extractHistory_eq_some_of_density}
+\leanok
+\uses{def:fri-measured-extractor,lem:fri-coefficient-lift}
+Fix a safe retained history at threshold $\theta$, whose final polynomial has
+degree less than $d$. Let $A$ be its accepting initial-domain positions. If
+$N(1-\theta)\leq |A|$ and $M\leq |A|$, the named extractor returns a
+polynomial of degree less than $M$ agreeing with the initial word on all of $A$.
+Consequently, if $\tau\leq\theta$, $\tau\leq 1-M/N$, and
+$N(1-\tau)\leq |A|$, the returned witness has relative distance at most $\tau$.
 \end{theorem}
+\begin{proof}
+\leanok
+Safe-history agreement lifting supplies one degree-bounded codeword agreeing on
+$A$. The first $M$ cached nodes are distinct accepting positions, so polynomial
+uniqueness identifies their measured interpolant with that codeword. The final
+degree guard therefore succeeds. Disagreements are confined to the complement
+of $A$, giving relative distance at most $1-|A|/N$.
+\end{proof}
 
-\begin{definition}[Batched FRI Claim 8.3 frontier]\label{def:batched_fri_claim83_frontier}
-\lean{Fri.fri_soundness,Fri.FriSoundnessParts,Fri.fri_soundness_of_parts,Fri.friSoundnessQueryLift,Fri.friSoundnessSequentialComposition,Fri.friSoundnessTotalErrorAccounting,Fri.friBatchPhaseErrorBound,Fri.friTailPhaseErrorBound}
-\uses{thm:batched_fri_query_soundness,def:fri_reduction}
-    Claim 8.3 is the end-to-end Batched-FRI soundness residual.  ArkLib splits it into a
-    query-soundness lift from Claim 8.2, the sequential composition of the batching round with the
-    lifted FRI tail, and total-error accounting for the
-    $\epsilon_C + \alpha^\ell$ budget.
-\end{definition}
-
-\begin{theorem}[Batched FRI Claim 8.3 assembly]\label{thm:batched_fri_claim83_assembly}
-\lean{Fri.batchedFRIreduction_verifier_eq_append,Fri.batchedFRISequentialCompositionSoundness_of_append,Fri.friSoundnessSequentialComposition_of_append,Fri.friSoundnessTotalErrorAccounting_of_phase_bounds,Fri.friSoundnessTotalErrorAccounting_of_named_phase_bounds,Fri.fri_soundness_of_queryRoundDensityBoundAndBatchedFRIOracleLensAndSequentialCompositionAndPhaseErrorBounds}
-\uses{def:batched_fri_claim83_frontier}
-    The current Claim 8.3 assembly proves the structural append seam, exposes the generic
-    sequential-composition theorem for the concrete Batched-FRI reduction, and reduces the
-    total-error field to named batching-phase and FRI-tail phase bounds.  The remaining obligations
-    are explicit inputs, not hidden assumptions.
+\begin{theorem}\label{thm:fri-knowledge-soundness}
+\lean{Fri.Spec.knowledge_soundness_with,Fri.Spec.knowledge_soundness}
+\leanok
+\uses{thm:fri-folding-error,thm:fri-extractor-recovery}
+Suppose $M\leq N$, $\delta\geq0$, and
+$\min\{\theta,\delta\}\leq1-M/N$, including equality.
+For every input statement, every adaptive prover, and every query count $l$, the
+actual FRI reduction has straightline knowledge soundness with the named
+extractor and error
+\[
+  \operatorname{soundnessError}
+  =\sum_i\varepsilon_i(\theta)
+    +\bigl(\max\{0,1-\min\{\theta,\delta\}\}\bigr)^l,
+\]
+where $\varepsilon_i(\theta)$ is the existing powers-MCA folding error.
+The failure event includes both extraction failure and a returned witness outside
+the original closed-ball input relation, when the accepted output witness is valid.
 \end{theorem}
+\begin{proof}
+\leanok
+Use fresh folding-failure events with the empty input language, so the adaptive
+accumulation covers all inputs. For $0\leq\min\{\theta,\delta\}$,
+conditional on a safe prefix, a failed extraction
+and a valid final polynomial imply that the accepting density is less than
+$1-\min\{\theta,\delta\}$, by Theorem~\ref{thm:fri-extractor-recovery}.
+The query-vector probability is bounded by the corresponding $l$th power.
+The logged-game bridge preserves private and shared oracle state and treats the
+optional extraction result as a value, counting failure rather than aborting it.
+If $\min\{\theta,\delta\}<0$, the query term is at least one and the bound is
+vacuous. If $l=0$, this term is one as well. Neither case needs an additional
+public assumption. Numerical estimates for the MCA terms retain their separate
+field-size, slack, and radius hypotheses.
+\end{proof}
 
-\begin{theorem}[Small-field batched FRI query soundness]\label{thm:batched_fri_small_field}
-\lean{Fri.fri_query_soundness_of_card_le_affineLine,Fri.fri_query_soundness_of_card_le_curve,Fri.fri_soundness_of_card_le_curve}
-\uses{thm:batched_fri_query_soundness,thm:bciks_rs_gap}
-    In small-field or vacuous regimes, ArkLib discharges the BCIKS20 residual hypotheses using
-    the in-tree unconditional correlated-agreement instances, yielding concrete batched FRI
-    query-soundness consequences.
+\paragraph{Resource model.}
+The arithmetic and immutable-input instruction handlers execute the very program
+whose result defines the extractor. Field nodes are generated from at most two
+domain reads by explicit measured powers; word-read addresses carry those nodes.
+The profiles count repeated word, domain, challenge, coefficient, and cached-array
+accesses; field addition, subtraction, multiplication, equality, and inversion;
+and designated source-level control ticks. An inverse is one algebraic primitive.
+Erased certificates carry the reference-domain and polynomial identities.
+These counts exclude receipt or deserialization of retained functions, the cost
+of evaluating those functions, allocation, machine index arithmetic, and field
+bit complexity. Complete index enumeration prevents a claim of total $O(M)$
+workspace here. The algebraic interpolation theorem above remains a separate
+statement from these explicit measured programs.
+
+\begin{theorem}\label{thm:fri-extractor-resources}
+\lean{Fri.Spec.Extractor.profile_extractProgram_word_le,
+Fri.Spec.Extractor.profile_extractProgram_apply_le,
+Fri.Spec.Extractor.profile_extractProgram_inv_le,
+Fri.Spec.Extractor.profile_extractProgram_domainRead_le,
+Fri.Spec.Extractor.profile_extractProgram_challengeRead_le,
+Fri.Spec.Extractor.profile_extractProgram_finalPolynomialRead,
+Fri.Spec.Extractor.profile_extractProgram_add_sub_le,
+Fri.Spec.Extractor.profile_extractProgram_mul_le,
+Fri.Spec.Extractor.profile_extractProgram_eq_le}
+\leanok
+\uses{def:fri-measured-extractor}
+Put $I(m)=100(m+1)^3$, $E(m)=(m+1)^2$, and
+\[
+  G=2(n+2)+\sum_i(4b_i+8)(n+1),\qquad
+  J=1+\sum_i(n-s_i).
+\]
+For every retained history with $\sum_i s_i\leq n$, including rejected
+histories, the measured extractor performs at most
+\[
+  N\left(\sum_i b_i+k\right)+M
+  \quad\text{word reads},\qquad
+  1+N\sum_i b_i(b_i-1)+M(M-1)
+  \quad\text{inversions}.
+\]
+It performs at most two original-domain reads, at most $k+1$ folding-challenge
+reads, and exactly one final-polynomial retrieval. Each of the combined
+addition/subtraction count, the multiplication count, and the field-equality
+count is bounded by
+\[
+  B=N\left[G+\sum_i\bigl(I(b_i)+E(b_i)+1\bigr)+E(d)\right]+I(M)+J.
+\]
+Every coefficient, node-cache, value-cache, and designated metadata coordinate
+also obeys the explicit whole-program profile envelope.
 \end{theorem}
+\begin{proof}
+\leanok
+Add the initialization envelope, all $N$ scan-cell envelopes, and the final
+interpolation envelope. The selected cache contributes at most $M$ extra word
+reads. Every interpolation of size $m$ uses exactly $m(m-1)$ inverse requests.
+Its combined additions/subtractions fit one $I(m)$ budget, as do its
+multiplications and equality tests separately. Power-sum evaluation fits $E(m)$.
+Only the final round evaluates the transmitted polynomial, giving one $E(d)$
+per position. Explicit squaring and binary-power bounds fit $G$; initialization
+multiplications fit $J$. All branches, including the initial degree rejection,
+are included. No safe-history, honesty, radius, or $M\leq N$ premise is used.
+\end{proof}
 
-\begin{remark}[Status of Batched FRI]\label{rem:batched_fri_status}
-    The blueprint separates proved protocol plumbing from the still-hard coding-theory fronts.
-    Query counting/probability, the structural oracle lens, and several specialized
-    Reed--Solomon adapters are proved.  General correlated agreement at the target radius,
-    virtual-oracle preservation for every tail context, and the per-phase error bounds needed for
-    a fully unconditional Claim 8.3 remain named obligations.
-\end{remark}
+Under the actual reduction's $M\leq N$ constraint, these envelopes are
+polynomial in $N$, rather than in $\log N$. The unit-access model above does
+not bound bit complexity or cryptographic polynomial running time.

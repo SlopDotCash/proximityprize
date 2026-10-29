@@ -4,8 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
 
-import ArkLib.OracleReduction.Security.RoundByRound
-import ArkLib.ProofSystem.ConstraintSystem.Plonk
+import ProximityPrize.Compatibility.DiscreteProbability
+import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
+import ProximityPrize.Extensions.ProofSystem.ConstraintSystem.Plonk
 
 /-!
 
@@ -181,25 +182,17 @@ theorem permCheck_perfectCompleteness :
       OracleComp.liftComp_pure, pure_bind, map_pure, bind_pure_comp, monadLift_pure,
       OptionT.run_pure, Option.getM]; rfl
   simp only [hrun]
-  rw [ge_iff_le, one_le_probEvent_iff, probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · rw [OptionT.probFailure_eq, OptionT.run_mk]
-    simp only [probFailure_eq_zero, zero_add]
-    apply probOutput_eq_zero_of_not_mem_support
-    simp only [support_bind, Set.mem_iUnion, not_exists]
-    intro s _
-    erw [simulateQ_pure]
-    rw [StateT.run'_eq, StateT.run_pure]
-    simp [map_pure, support_pure]
-  · intro x hx
-    rw [OptionT.mem_support_iff] at hx
-    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
-    obtain ⟨s, _, hx⟩ := hx
-    erw [simulateQ_pure] at hx
-    rw [StateT.run'_eq, StateT.run_pure] at hx
-    simp only [map_pure, support_pure, Set.mem_singleton_iff] at hx
-    cases hx
-    exact ⟨hIn, rfl⟩
+  apply le_of_eq
+  symm
+  rw [OptionT.prEvent_mk_eq_one_iff]
+  intro out hout
+  simp only [support_bind, Set.mem_iUnion] at hout
+  obtain ⟨s, _, hout⟩ := hout
+  erw [simulateQ_pure] at hout
+  rw [StateT.run'_eq, StateT.run_pure] at hout
+  simp only [map_pure, support_pure, Set.mem_singleton_iff] at hout
+  cases hout
+  exact ⟨_, rfl, hIn, rfl⟩
 
 omit [CommRing 𝓡] in
 /-- The permutation-check verifier has zero-error round-by-round soundness for the language of
@@ -209,35 +202,32 @@ theorem permCheckVerifier_rbrSoundness :
     (permCheckVerifier (𝓡 := 𝓡) (numWires := numWires)
       (numGates := numGates)).rbrSoundness init impl
         permCheckLangIn permCheckLangOut 0 := by
+  let : NeZero (Fin.last 1).val := ⟨by decide⟩
   refine ⟨{
     toFun := fun _ cs _ => cs ∈ permCheckLangIn
-    toFun_empty := fun _ => Iff.rfl
+    toFun_empty := fun _ h => h
     toFun_next := fun _ _ _ _ h _ => h
     toFun_full := fun cs tr hcs => ?_
   }, ?_⟩
-  · rw [probEvent_eq_zero_iff]
+  · rw [ProximityPrize.Compatibility.DiscreteSupportSemantics.prEvent_eq_zero_iff]
     intro out hout houtLang
     rw [OptionT.mem_support_iff] at hout
     simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hout
     obtain ⟨s, _, hout⟩ := hout
     simp only [Verifier.run, permCheckVerifier_verify_eq] at hout
-    by_cases hAccept : CopyConstraintsSatisfied (tr ⟨0, by simp⟩) cs.perm
-    · exact hcs ⟨tr ⟨0, by simp⟩, hAccept⟩
+    by_cases hAccept : CopyConstraintsSatisfied (tr 0) cs.perm
+    · exact hcs ⟨tr 0, hAccept⟩
     · have hrun :
           (simulateQ impl
             ((permCheckVerifier (𝓡 := 𝓡) (numWires := numWires)
               (numGates := numGates)).run cs tr)).run' s =
             pure none := by
-        simp only [Verifier.run, permCheckVerifier_verify_eq]
-        split_ifs with h
-        · exact False.elim (hAccept (by simpa using h))
+        simp [Verifier.run, permCheckVerifier, guard_eq, hAccept, StateT.run'_eq]
         change (simulateQ impl (pure none : OracleComp []ₒ
-          (Option (Plonk.ConstraintSystem 𝓡 numWires numGates ×
-            (Fin (3 * numGates) → 𝓡))))).run' s = pure none
+          (Option (Plonk.ConstraintSystem 𝓡 numWires numGates × (Fin (3 * numGates) → 𝓡))))).run' s = pure none
         rw [simulateQ_pure]
         change Prod.fst <$> (pure none : StateT σ ProbComp
-          (Option (Plonk.ConstraintSystem 𝓡 numWires numGates ×
-            (Fin (3 * numGates) → 𝓡)))).run s = pure none
+          (Option (Plonk.ConstraintSystem 𝓡 numWires numGates × (Fin (3 * numGates) → 𝓡)))).run s = pure none
         rw [StateT.run_pure]
         simp [map_pure]
       simp only [Verifier.run, permCheckVerifier_verify_eq] at hrun
@@ -256,7 +246,7 @@ theorem permCheckVerifier_soundness :
         permCheckLangIn permCheckLangOut 0 := by
   unfold Verifier.soundness
   intro WitIn WitOut witIn prover cs hcs
-  simp only [ENNReal.coe_zero, nonpos_iff_eq_zero, probEvent_eq_zero_iff]
+  simp only [ENNReal.coe_zero, nonpos_iff_eq_zero, ProximityPrize.Compatibility.DiscreteSupportSemantics.prEvent_eq_zero_iff]
   intro x hx hxLang
   apply hcs
   rw [OptionT.mem_support_iff] at hx
@@ -319,21 +309,21 @@ copy constraints whenever the verifier can output a related statement. -/
 lemma permCheckVerifier_rbrKnowledgeSoundness :
     (permCheckVerifier (𝓡 := 𝓡) (numWires := numWires)
       (numGates := numGates)).rbrKnowledgeSoundness init impl permCheckRelIn permCheckRelOut 0 := by
+  let : NeZero (Fin.last 1).val := ⟨by decide⟩
   refine ⟨fun _ => Fin (3 * numGates) → 𝓡, {
-    eqIn := rfl
+    extractIn := fun _ wit => wit
     extractMid := fun ⟨0, _⟩ _stmt _tr witMid => witMid
-    extractOut := fun _stmt tr _ => tr ⟨0, by omega⟩
+    extractOut := fun _stmt tr _ => tr 0
   }, {
     toFun := fun _ stmt _tr wit => (stmt, wit) ∈ permCheckRelIn
-    toFun_empty := fun _ _ => by simp
+    toFun_empty := fun _ _ h => h
     toFun_next := fun ⟨0, _⟩ _ _stmt _tr _msg _witMid h => h
     toFun_full := fun stmt tr _witOut hpr => by
-      rw [gt_iff_lt, probEvent_pos_iff] at hpr
+      rw [gt_iff_lt, OptionT.prEvent_mk_pos_iff] at hpr
       obtain ⟨_x, hx, _hrel⟩ := hpr
-      rw [OptionT.mem_support_iff] at hx
       simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
       obtain ⟨s, _, hx⟩ := hx
-      by_cases hAccept : CopyConstraintsSatisfied (tr ⟨0, by simp⟩) stmt.perm
+      by_cases hAccept : CopyConstraintsSatisfied (tr 0) stmt.perm
       · simpa [permCheckRelIn] using hAccept
       · exfalso
         have hrun :
@@ -341,16 +331,12 @@ lemma permCheckVerifier_rbrKnowledgeSoundness :
               ((permCheckVerifier (𝓡 := 𝓡) (numWires := numWires)
                 (numGates := numGates)).run stmt tr)).run' s =
               pure none := by
-          simp only [Verifier.run, permCheckVerifier_verify_eq]
-          split_ifs with h
-          · exact False.elim (hAccept (by simpa using h))
+          simp [Verifier.run, permCheckVerifier, guard_eq, hAccept, StateT.run'_eq]
           change (simulateQ impl (pure none : OracleComp []ₒ
-            (Option (Plonk.ConstraintSystem 𝓡 numWires numGates ×
-              (Fin (3 * numGates) → 𝓡))))).run' s = pure none
+            (Option (Plonk.ConstraintSystem 𝓡 numWires numGates × (Fin (3 * numGates) → 𝓡))))).run' s = pure none
           rw [simulateQ_pure]
           change Prod.fst <$> (pure none : StateT σ ProbComp
-            (Option (Plonk.ConstraintSystem 𝓡 numWires numGates ×
-              (Fin (3 * numGates) → 𝓡)))).run s = pure none
+            (Option (Plonk.ConstraintSystem 𝓡 numWires numGates × (Fin (3 * numGates) → 𝓡)))).run s = pure none
           rw [StateT.run_pure]
           simp [map_pure]
         rw [hrun] at hx

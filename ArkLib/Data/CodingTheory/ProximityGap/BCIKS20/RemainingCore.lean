@@ -88,7 +88,7 @@ def BCIKS20RemainingCore (k deg : ℕ) (domain : ι ↪ F) (δ δ' : ℝ≥0) : 
 omit [Nonempty ι] [DecidableEq ι] in
 /-- `δ_ε_correlatedAgreementCurves` is antitone in the error parameter: weakening `ε` upward
 only strengthens the probability premise. -/
-theorem correlatedAgreementCurves_mono_eps {k : ℕ} {C : Set (ι → F)} {δ ε ε' : ℝ≥0}
+theorem correlatedAgreementCurves_mono_eps [SampleableType F] {k : ℕ} {C : Set (ι → F)} {δ ε ε' : ℝ≥0}
     (hε : ε ≤ ε')
     (hCA : δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι) C δ ε) :
     δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι) C δ ε' :=
@@ -100,7 +100,7 @@ theorem correlatedAgreementCurves_mono_eps {k : ℕ} {C : Set (ι → F)} {δ ε
 boundary residual is vacuous there (its branch hypothesis `¬ δ < 1 − √ρ` is unreachable, cf.
 `ArkLib.FaithfulCurveExtraction.RoundConsumers.boundaryProbabilityResidual_of_strict`), so the
 O70 front door fires on the large-sector residual alone. -/
-theorem correlatedAgreementCurves_strict_of_remainingCore {k deg : ℕ} [NeZero deg]
+theorem correlatedAgreementCurves_strict_of_remainingCore [SampleableType F] {k deg : ℕ} [NeZero deg]
     {domain : ι ↪ F} {δ δ' : ℝ≥0}
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hCore : BCIKS20RemainingCore k deg domain δ δ') :
@@ -118,7 +118,7 @@ door produces the §5 statement at `δ'` (boundary residual vacuous at strict ra
 O76 step-function transport carries it across the floor cell.  Taking `δ = 1 − √ρ` non-lattice
 and `δ' = ⌊δ·n⌋/n`, this is the honest closed-boundary export — never the refuted
 `errorBound (1 − √ρ) = 0` shape. -/
-theorem correlatedAgreementCurves_floorMatched_of_remainingCore {k deg : ℕ} [NeZero deg]
+theorem correlatedAgreementCurves_floorMatched_of_remainingCore [SampleableType F] {k deg : ℕ} [NeZero deg]
     {domain : ι ↪ F} {δ δ' : ℝ≥0}
     (hδ' : δ' < 1 - ReedSolomon.sqrtRate deg domain)
     (hfloor : Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι))
@@ -146,7 +146,7 @@ Side hypotheses are jointly satisfiable at every non-lattice boundary with the c
 `δ' = ⌊δ·n⌋/n` (probed over 8,255 grid points, 0 violations:
 `scripts/probes/probe_remaining_core_wiring.py`); lattice boundaries admit no strict
 floor-matched radius and honestly remain behind the `BoundaryCardLatticeData` branch. -/
-theorem correlatedAgreement_of_remainingCore {k deg : ℕ} [NeZero deg]
+theorem correlatedAgreement_of_remainingCore [SampleableType F] {k deg : ℕ} [NeZero deg]
     {domain : ι ↪ F} {δ δ' : ℝ≥0}
     (hδ' : δ' < 1 - ReedSolomon.sqrtRate deg domain)
     (hfloor : Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι))

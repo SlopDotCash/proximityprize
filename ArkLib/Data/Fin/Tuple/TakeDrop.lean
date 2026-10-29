@@ -3,9 +3,10 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
+module
 
-import ArkLib.Data.Fin.Tuple.Notation
-import Mathlib.Data.List.DropRight
+public import ArkLib.Data.Fin.Tuple.Notation
+public import Mathlib.Data.List.DropRight
 
 /-!
 # Lemmas for Take and Drop for `Fin` tuples
@@ -13,6 +14,8 @@ import Mathlib.Data.List.DropRight
 This file contains some properties of `Fin.{r}take` and `Fin.{r}drop`, which are already defined in
 `ArkLib.Data.Fin.Tuple.Defs` (except `Fin.take` which is already in mathlib).
 -/
+
+@[expose] public section
 
 universe u v
 
@@ -43,6 +46,19 @@ theorem take_addCases'_left {n' : ℕ} {β : Fin n' → Sort u} (m : ℕ) (h : m
       (append_left α β (castLE h i)) ▸ (take m h u i) := by
   have : i < n := Nat.lt_of_lt_of_le i.isLt h
   simp [take_apply, addCases', addCases, this, cast_eq_iff_heq, castLE]
+
+-- theorem take_addCases'_right {n' : ℕ} {β : Fin n' → Sort u} (m : ℕ) (h : m ≤ n')
+--     (u : (i : Fin n) → α i) (v : (j : Fin n') → β j) (i : Fin (n + m)) :
+--       take (n + m) (Nat.add_le_add_left h n) (addCases' u v) i =
+--         addCases' u (take m h v) i := by
+--   have : i < n := Nat.lt_of_lt_of_le i.isLt h
+--   simp [take_apply, addCases', addCases, this, cast_eq_iff_heq, castLT, castLE]
+--   have {i : Fin m} : castLE (Nat.le_add_right_of_le h) i = natAdd n (castLE h i) := by congr
+--   refine (Fin.heq_fun_iff' rfl (fun i => ?_)).mpr (fun i => ?_)
+--   · sorry
+--     simp only [append_right, cast_eq_self]
+--   · rw [take, this]
+--     simp [addCases_right]
 
 @[simp]
 theorem rtake_apply (v : (i : Fin n) → α i) (m : ℕ) (h : m ≤ n)
@@ -121,15 +137,19 @@ theorem ofFn_rtake_get {α : Type*} {m : ℕ} (l : List α) (h : m ≤ l.length)
 /-- `Fin.rtake` intertwines with `List.rtake` via `List.get`. -/
 theorem get_rtake_eq_rtake_get_comp_cast {α : Type*} {m : ℕ} (l : List α) (h : m ≤ l.length) :
     (l.rtake m).get = rtake m h l.get ∘ Fin.cast (by simp [List.rtake]; omega) := by
-  ext i
-  simp [List.rtake, natAdd, Fin.cast]
+  rw! (castMode := .all) [← ofFn_rtake_get l h]
+  funext i
+  rw [List.get_ofFn]
+  rfl
 
 /-- Alternative version with `v : Fin n → α` instead of `l : List α`. -/
 theorem get_rtake_ofFn_eq_rtake_comp_cast {α : Type*} {m : ℕ} (v : Fin n → α) (h : m ≤ n) :
     ((List.ofFn v).rtake m).get =
       rtake m h v ∘ Fin.cast (by simp [List.rtake]; omega) := by
-  ext i
-  simp [List.rtake, natAdd, Fin.cast]
+  rw! (castMode := .all) [← ofFn_rtake_eq_rtake_ofFn h v]
+  funext i
+  rw [List.get_ofFn]
+  rfl
 
 /-
 * `Fin.drop`: Given `h : m ≤ n`, `Fin.drop m h v` for a `n`-tuple `v = (v 0, ..., v (n - 1))` is the
@@ -200,7 +220,8 @@ theorem drop_update_of_lt (m : ℕ) (h : m ≤ n) (v : (i : Fin n) → α i) (i 
   simp only [Fin.cast, val_addNat, drop_apply, update, dite_eq_right_iff]
   intro h'
   subst h'
-  simp_all only [add_lt_iff_neg_right, not_lt_zero']
+  simp_all only [add_lt_iff_neg_right]
+  omega
 
 /-- `drop` commutes with `update` for indices at or after the drop point. -/
 @[simp]
@@ -218,12 +239,23 @@ theorem drop_update_of_ge (m : ℕ) (h : m ≤ n) (v : (i : Fin n) → α i) (i 
   next h_1 =>
     subst h_1
     simp_all only [add_tsub_cancel_right, Fin.eta, ↓reduceDIte]
-    rw [eqRec_eq_cast, dcast_eq_root_cast, _root_.cast_cast, _root_.cast_eq]
+    simp only [dcast, eqRec_eq_cast]
+    rw [_root_.cast_cast]
+    exact (cast_eq _ x).symm
   next h_1 =>
     simp_all only [right_eq_dite_iff]
     intro h_2
     subst h_2
     simp_all only [Nat.sub_add_cancel, Fin.eta, not_true_eq_false]
+
+-- /-- Dropping the first `m ≤ n` elements of an `addCases u v`, where `u` is a `n`-tuple,
+-- is the same as dropping the first `m` elements of `u` and then adding `v` to the result. -/
+-- theorem drop_addCases_left {n' : ℕ} {motive : Fin (n + n') → Sort*} (m : ℕ) (h : m ≤ n)
+--     (u : (i : Fin n) → motive (castAdd n' i)) (v : (i : Fin n') → motive (natAdd n i)) :
+--       drop m (Nat.le_add_right_of_le h) (addCases u v) =
+--         fun i : Fin (n + n' - m) =>
+--           dcast (by simp)
+--             (addCases (m := n - m) (n := n') (drop m h u) v (i.cast (by omega))) := sorry
 
 /-- Version of `drop_addCases_left` that specializes `addCases` to `append`. -/
 theorem drop_append_left {n' : ℕ} {α : Sort*} (m : ℕ) (h : m ≤ n) (u : (i : Fin n) → α)
@@ -333,7 +365,8 @@ theorem take_drop_addCases' (m : ℕ) (h : m ≤ n) (v : (i : Fin n) → α i) :
   · simp
   · have : i.val - m + m = i.val := by omega
     rw! [this]
-    simp only [eqRec_eq_cast, _root_.cast_cast]
+    simp only [eqRec_eq_cast]
+    rw [_root_.cast_cast]
 
 /-- The concatenation of the first `m` elements and the last `n - m` elements of a tuple is the
 same as the original tuple. -/

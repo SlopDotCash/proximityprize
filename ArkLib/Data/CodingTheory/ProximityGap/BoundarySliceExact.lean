@@ -95,7 +95,7 @@ theorem boundary_slice_badSet_eq (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k)
     have hPdeg' : P.natDegree < k := by
       by_cases hP0 : P = 0
       · subst hP0
-        simpa using hk
+        simpa only [Polynomial.natDegree_zero] using (show 0 < k by omega)
       · exact (Polynomial.natDegree_lt_iff_degree_lt hP0).mpr hPdeg
     have hlinezero : residual dom k t (fun i => u₀ i + γ * u₁ i) = 0 := by
       refine residual_eq_zero_of_extends dom k t hPdeg' fun a => ?_

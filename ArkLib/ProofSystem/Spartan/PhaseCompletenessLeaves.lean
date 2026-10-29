@@ -56,7 +56,7 @@ def sendEvalClaimRelOutHonest :
         (∀ i, OracleStatement.AfterSendEvalClaim R pp i)) × Unit) :=
   { x | R1CS.relation R pp.toSizeR1CS x.1.1.2.2
         (fun idx => x.1.2 (.inr (.inl idx))) (x.1.2 (.inr (.inr 0)))
-      ∧ x.1.2 (.inl 0) = evalClaimValue R pp x.1.1 (fun i => x.1.2 (.inr i)) }
+      ∧ (fun idx => x.1.2 (.inl idx)) = evalClaimValue R pp x.1.1 (fun i => x.1.2 (.inr i)) }
 
 /-- Output relation of the `linearCombination` phase: same content as `sendEvalClaimRelOutHonest`, with
 the freshly-sampled RLC challenge `γ` prepended to the statement (the relation does not constrain
@@ -66,20 +66,21 @@ def linearCombinationRelOutHonest :
         (∀ i, OracleStatement.AfterLinearCombination R pp i)) × Unit) :=
   { x | R1CS.relation R pp.toSizeR1CS x.1.1.2.2.2
         (fun idx => x.1.2 (.inr (.inl idx))) (x.1.2 (.inr (.inr 0)))
-      ∧ x.1.2 (.inl 0) = evalClaimValue R pp x.1.1.2 (fun i => x.1.2 (.inr i)) }
+      ∧ (fun idx => x.1.2 (.inl idx)) = evalClaimValue R pp x.1.1.2 (fun i => x.1.2 (.inr i)) }
 
 /-! ## `firstMessage` -/
 
+omit [IsDomain R] [Fintype R] [DecidableEq R] [SampleableType R] in
 /-- **`firstMessage` phase perfect completeness.** The generic `SendSingleWitness` completeness,
 re-pointed at the Spartan seam relations: from the R1CS input relation `spartanRelIn` (witness as
 witness) to `firstChallengeRelIn` (witness moved into the oracle family). -/
-theorem firstMessage_perfectCompleteness (hInit : NeverFail init) :
+theorem firstMessage_perfectCompleteness (_hInit : NeverFail init) :
     (oracleReduction.firstMessage R pp oSpec).perfectCompleteness init impl
       (Bricks.spartanRelIn R pp) (firstChallengeRelIn (R := R) pp) := by
   have h := SendSingleWitness.oracleReduction_completeness
     (oSpec := oSpec) (Statement := Statement R pp) (OStatement := OracleStatement R pp)
     (Witness := Witness R pp) (init := init) (impl := impl)
-    (oRelIn := Bricks.spartanRelIn R pp) hInit
+    (oRelIn := Bricks.spartanRelIn R pp)
   exact Reduction.completeness_relOut_mono init impl (fun x hx => hx) h
 
 end Spartan.Spec

@@ -3,76 +3,79 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
+module
 
-import ArkLib.Data.CodingTheory.ReedSolomon.Folded
-import ArkLib.Data.CodingTheory.ReedSolomon.AdmissibleDischarge
-import ArkLib.Data.CodingTheory.ProximityGap.GK16DegreeBudget
-import ArkLib.Data.CodingTheory.ProximityGap.GK16Lemma12
-import ArkLib.Data.CodingTheory.ProximityGap.GK16FrsTransport
-import ArkLib.Data.CodingTheory.ProximityGap.GK16Admissible
-import ArkLib.ToMathlib.GK16Claim16Witness
-import ArkLib.ToMathlib.GK16Structural
-import Mathlib.FieldTheory.Finiteness
-import Mathlib.Algebra.Polynomial.HasseDeriv
+public import ArkLib.Data.CodingTheory.ReedSolomon.Folded
+public import ArkLib.Data.CodingTheory.ReedSolomon.Multiplicity
+public import ArkLib.Data.Polynomial.ClassicalWronskian
+public import ArkLib.Data.Polynomial.FoldedWronskian
+public import ArkLib.ToMathlib.LinearAlgebra.FiniteDimensional
+public import ArkLib.ToMathlib.Polynomial.RootMultiplicity
 
 /-!
-# Subspace-design codes (ABF26 §2.5)
+# Subspace designs
 
-ABF26 Definition 2.16 [GX13]: the τ-subspace-design property for an F-additive code
-`C : F^k → (F^s)^n`. Lemma 2.17 [GG25] is **proven** (with a statement repair: the
-paper-faithful rate over the block alphabet `F^s` is `k/(s·n)`, see the docstring).
-Theorem 2.18 [GK16] (FRS half) is now **proven modulo a single named residual**
-(`GK16DegreeBudget`, the GK16 §4 degree budget bundling the two deep gaps); its `τ` was
-**repaired for the same `s`-factor rate bug** as L2.17.
+A code over the alphabet `F^s`, presented as an `F`-subspace `C` of `ι → Fin s → F`, is a
+*`τ`-subspace design* when every subspace `A ≤ C` of dimension at most `r` satisfies
+
+  `(∑ i, dim {a ∈ A | a i = 0}) / n ≤ dim A * τ r` ,
+
+where `n = |ι|` is the block length. Equivalently: no low-dimensional subspace of `C` can
+have many of its codewords vanish at many positions.
 
 ## Main definitions
 
-- `CodingTheory.IsSubspaceDesign` — ABF26 Definition 2.16.
-- `CodingTheory.GK16DegreeBudget` — the GK16 §4 degree-budget residual
-  `∑_i dim A_i ≤ (dim A)·(k-1)` (packages the two deep gaps ①② of T2.18).
+* `CodingTheory.IsSubspaceDesign` — the design property, for a profile `τ : ℕ → ℝ`.
 
 ## Main statements
 
-- `CodingTheory.ker_proj_eq_vanish_at` — bridge between `ker(proj i)` and `{a | a i = 0}`.
-- `CodingTheory.subspaceDesign_tau_lower` — ABF26 Lemma 2.17 [GG25] (**proven**, statement
-  repaired): a nontrivial τ-subspace-design code of rate `ρ = k/(s·n)` has
-  `min_{r∈[s]} τ(r) ≥ ρ - 1/n`, via the 1-dimensional-span instantiation + the Singleton
-  bound over the block alphabet.
-- `CodingTheory.frs_is_subspaceDesign_gk16` — ABF26 Theorem 2.18 [GK16], FRS half
-  (**proven** given `GK16DegreeBudget`; rate-arithmetic reduction is axiom-clean). The `τ`
-  is repaired to the paper-rate-consistent `τ(r) = (k-1)/n` on `[s]` — the pre-repair
-  `s·k/(n·(s-r+1))` inherited the same `s`-factor inflation as the pre-repair L2.17. See
-  the theorem docstring for the repair and the two residual gaps.
-- `CodingTheory.um_is_subspaceDesign_gk16` — ABF26 Theorem 2.18, UM half.
+* `CodingTheory.subspaceDesign_tau_lower` — every subspace-design profile obeys
+  `τ r ≥ ρ - 1/n` for `r ≥ 1`, where `ρ` is the alphabet-normalized rate.
+* `CodingTheory.sum_finrank_inf_ker_le` — a nonzero subspace loses a dimension at some
+  block, `(∑ i, dim Aᵢ) + 1 ≤ n * dim A`. This is the slack that separates the two profile
+  levels below.
+* `CodingTheory.isSubspaceDesign_frsCode_sub_one` and
+  `CodingTheory.isSubspaceDesign_umCode_sub_one` — folded Reed-Solomon codes and univariate
+  multiplicity codes are subspace designs for the `(k-1)`-level profile
+  `τ r = (s * ρ - 1/n) / (s - r + 1)` on `1 ≤ r ≤ s`, which is [CZ25, Definition B.2]'s and
+  what the Wronskian count actually proves.
+* `CodingTheory.isSubspaceDesign_frsCode` and `CodingTheory.isSubspaceDesign_umCode` — the
+  `1/n`-relaxations at [ABF26] Theorem 2.18's printed profile `τ r = s * ρ / (s - r + 1)`,
+  each a one-line `mono_tau` corollary of the sharp form. **Consumers proving list
+  decodability up to capacity need the sharp form**: at the relaxed level
+  [CZ25, Theorem B.5] is false, see `CodingTheory.subspaceDesign_lambda_le`.
+
+The two code-family results are proved by a Wronskian root count, using
+`Polynomial.foldedWronskian` and `Polynomial.classicalWronskian` respectively.
 
 ## References
 
-- [ABF26] Arnon-Boneh-Fenzi. *Open Problems in List Decoding and Correlated Agreement*.
-  2026. §2.5 Definition 2.16, Lemma 2.17, Theorem 2.18.
-- [GX13] Guruswami-Xing. (Original subspace-design definition.)
-- [GG25] Goyal-Guruswami. (Cited for L2.17.)
-- [GK16] Guruswami-Kopparty. (Cited for T2.18.)
+* [Guruswami, V., and Xing, C., *List decoding Reed-Solomon, Algebraic-Geometric, and
+    Gabidulin subcodes up to the Singleton bound*][GX13]
+* [Goyal, R., and Guruswami, V., *Optimal Proximity Gaps for Subspace-Design Codes and
+    (Random) Reed-Solomon Codes*][GG25]
+* [Guruswami, V., and Kopparty, S., *Explicit subspace designs*][GK16]
+* [Guruswami, V., and Rudra, A., *Explicit Codes Achieving List Decoding Capacity:
+    Error-Correction With Optimal Redundancy*][GR08]
+* [Arnon, G., Boneh, D., and Fenzi, G., *Open Problems in List Decoding and Correlated
+    Agreement*][ABF26]
 -/
 
-set_option linter.unusedFintypeInType false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedSectionVars false
+@[expose] public section
 
 namespace CodingTheory
 
 open scoped NNReal
 
-/-- **ABF26 Definition 2.16 [GX13].** A code `C : F^k → (F^s)^n` (here represented as a
-subspace of `(ι → Fin s → F)` over `F`) is **τ-subspace-design** if for every `r ∈ ℕ`
-and every F-linear subspace `A` of `C` with `dim A ≤ r`,
+/-- A code `C` over the alphabet `F^s`, presented as an `F`-subspace of `ι → Fin s → F`, is
+`τ`-**subspace design** if for every `r` and every subspace `A ≤ C` with `dim A ≤ r`,
 
-  `(Σ_{i ∈ [n]} dim A_i) / n ≤ dim A · τ(r)`
+  `(∑ i, dim Aᵢ) / n ≤ dim A * τ r` ,
 
-where `A_i := { a ∈ A : a_i = 0^s }` is the subspace of `A` whose codewords vanish at
-position `i`. Here `A_i` is realised as `A ⊓ ker(eval_i)`, the intersection of `A`
-with the kernel of the linear map evaluating the `i`-th coordinate. -/
-def IsSubspaceDesign {ι : Type} [Fintype ι]
-    {F : Type} [Field F] (s : ℕ) (τ : ℕ → ℝ)
+where `n = |ι|` and `Aᵢ := {a ∈ A | a i = 0}` is the subspace of `A` vanishing at position
+`i`, realised as `A ⊓ ker (LinearMap.proj i)` (see `ker_proj_eq_vanish_at`). -/
+def IsSubspaceDesign {ι : Type*} [Fintype ι]
+    {F : Type*} [Field F] (s : ℕ) (τ : ℕ → ℝ)
     (C : Submodule F (ι → Fin s → F)) : Prop :=
   ∀ r : ℕ, ∀ A : Submodule F (ι → Fin s → F), A ≤ C →
     Module.finrank F A ≤ r →
@@ -84,26 +87,35 @@ def IsSubspaceDesign {ι : Type} [Fintype ι]
         Fintype.card ι ≤
       Module.finrank F A * τ r
 
-/-- A τ-profile can be weakened pointwise: a τ-subspace-design is also a τ'-subspace-design
-whenever `τ r ≤ τ' r` for every `r`. -/
-theorem IsSubspaceDesign.mono_tau {ι : Type} [Fintype ι]
-    {F : Type} [Field F] {s : ℕ} {τ τ' : ℕ → ℝ}
+/-- A `τ₁`-subspace design is a `τ₂`-subspace design for every pointwise-larger profile
+`τ₂`: the design bound is monotone in `τ r`, since `dim A ≥ 0`. -/
+theorem IsSubspaceDesign.mono_tau {ι : Type*} [Fintype ι]
+    {F : Type*} [Field F] {s : ℕ} {τ₁ τ₂ : ℕ → ℝ}
     {C : Submodule F (ι → Fin s → F)}
-    (h : IsSubspaceDesign s τ C) (hτ : ∀ r, τ r ≤ τ' r) :
-    IsSubspaceDesign s τ' C := by
-  intro r A hA hA_rank
-  have hrank_nonneg : 0 ≤ (Module.finrank F A : ℝ) := Nat.cast_nonneg _
-  exact le_trans (h r A hA hA_rank)
-    (mul_le_mul_of_nonneg_left (hτ r) hrank_nonneg)
+    (h : IsSubspaceDesign s τ₁ C) (hτ : ∀ r, τ₁ r ≤ τ₂ r) :
+    IsSubspaceDesign s τ₂ C := fun r A hAC hAr =>
+  (h r A hAC hAr).trans (mul_le_mul_of_nonneg_left (hτ r) (Nat.cast_nonneg _))
 
-/-- **Bridge: kernel of the `i`-th projection equals the comprehension `{a | a i = 0}`.**
+/-- A nonzero subspace-design code has a nonnegative profile at every positive dimension. -/
+theorem IsSubspaceDesign.profile_nonneg {ι : Type*} [Fintype ι]
+    {F : Type*} [Field F] {s : ℕ} {τ : ℕ → ℝ}
+    {C : Submodule F (ι → Fin s → F)}
+    (h : IsSubspaceDesign s τ C) (hC : C ≠ ⊥) {r : ℕ} (hr : 0 < r) :
+    0 ≤ τ r := by
+  classical
+  obtain ⟨a, haC, ha0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hC
+  let A : Submodule F (ι → Fin s → F) := Submodule.span F {a}
+  have hA1 : Module.finrank F A = 1 := finrank_span_singleton ha0
+  have hdes := h r A ((Submodule.span_singleton_le_iff_mem a C).mpr haC)
+    (by rw [hA1]; exact hr)
+  have hleft : (0 : ℝ) ≤
+      (∑ i : ι, (Module.finrank F ↥(A ⊓ LinearMap.ker
+        (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) : ℝ)) /
+          Fintype.card ι := by positivity
+  simpa [hA1] using hleft.trans hdes
 
-The subspace `A_i := {a ∈ A : a_i = 0^s}` from the paper's `IsSubspaceDesign` definition
-is `A ⊓ ker(LinearMap.proj i)`. This lemma confirms the underlying set: a word
-`a : ι → Fin s → F` lies in `ker(proj i)` iff `a i = 0`. Combined with `Submodule.inf_*`
-this lets downstream proofs rewrite freely between the technical `ker(proj i)` form (used
-in the `IsSubspaceDesign` definition for type-class reasons) and the paper's
-comprehension form. -/
+/-- The kernel of the `i`-th projection is the set of words vanishing at `i`. This is the
+comprehension form of the subspace `Aᵢ` appearing in `IsSubspaceDesign`. -/
 lemma ker_proj_eq_vanish_at {ι : Type*} {F : Type*} [Semiring F] {s : ℕ} (i : ι) :
     (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i) :
         Set (ι → Fin s → F)) =
@@ -111,1081 +123,973 @@ lemma ker_proj_eq_vanish_at {ι : Type*} {F : Type*} [Semiring F] {s : ℕ} (i :
   ext a
   simp [LinearMap.mem_ker, LinearMap.proj_apply]
 
-/-- The 1-dimensional subspace `span{a}` meets `ker(proj i)` in itself when `a i = 0`. -/
-private lemma span_inf_ker_proj_of_eq_zero {ι : Type} [Fintype ι] [DecidableEq ι]
-    {F : Type} [Field F] {s : ℕ} {a : ι → Fin s → F} {i : ι} (hai : a i = 0) :
-    (Submodule.span F {a}) ⊓
-        LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i) =
-      Submodule.span F {a} :=
-  inf_eq_left.mpr <| Submodule.span_le.mpr <| Set.singleton_subset_iff.mpr <| by
-    simp [LinearMap.mem_ker, LinearMap.proj_apply, hai]
+/-- **A nonzero subspace loses a dimension at some block.** For `A ≠ ⊥`,
 
-/-- The 1-dimensional subspace `span{a}` meets `ker(proj i)` trivially when `a i ≠ 0`. -/
-private lemma span_inf_ker_proj_of_ne_zero {ι : Type} [Fintype ι] [DecidableEq ι]
-    {F : Type} [Field F] {s : ℕ} {a : ι → Fin s → F} {i : ι} (hai : a i ≠ 0) :
-    (Submodule.span F {a}) ⊓
-        LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i) = ⊥ := by
-  rw [eq_bot_iff]
-  intro x hx
-  obtain ⟨hx_span, hx_ker⟩ := Submodule.mem_inf.mp hx
-  obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hx_span
-  have h0 : c • a i = 0 := by
-    simpa [LinearMap.mem_ker, LinearMap.proj_apply] using hx_ker
-  rcases smul_eq_zero.mp h0 with hc | h
-  · simp [hc]
-  · exact absurd h hai
+  `(∑ i, dim Aᵢ) + 1 ≤ n * dim A` ,
 
-/-- **ABF26 Lemma 2.17 [GG25]** (statement repaired — see below). For any *nontrivial*
-τ-subspace-design code `C : F^k → (F^s)^n` of rate `ρ := k/(s·n)`, the profile `τ` is
-lower-bounded by `ρ - 1/n` over the paper's range `r ∈ [s] = {1, …, s}`:
+where `Aᵢ = A ⊓ ker (proj i)`: the trivial bound `dim Aᵢ ≤ dim A` is strict at any block where some
+nonzero element of `A` does not vanish, and such a block exists.
 
-  `min_{r ∈ [s]} τ(r) ≥ ρ - 1/n` .
-
-**Statement repair (2026-06-04).** The previous (admitted) form used `ρ := k/n`.
-ABF26 Definition 2.5 fixes the rate of a code over alphabet `Σ` as `log_|Σ| |C| / n`;
-for an F-additive code over `Σ = F^s` with `|C| = |F|^k` this is `k/(s·n)`, not `k/n`.
-The `k/n` form is **false for `s ≥ 2`**: the full code `C = (F^s)^n` is
-`(1 - 1/n)`-subspace-design — for any `A ≤ C`,
-`Σ_i dim A_i = n·dim A - Σ_i rank(eval_i) ≤ (n-1)·dim A` because
-`⋂_i ker(eval_i) = ⊥` forces `Σ_i rank(eval_i) ≥ dim A` — yet the `k/n` form would
-demand `τ(r) ≥ s - 1/n > 1 - 1/n`. At the corrected rate the full code is instead the
-tightness witness: `k/(s·n) - 1/n = 1 - 1/n`.
-
-**Nontriviality `C ≠ ⊥`** is paper-implicit (a code is a map `F^k → (F^s)^n` with
-`k ≥ 1`): for `C = ⊥` the design property constrains nothing (the only subspace is
-`A = ⊥`, giving `0 ≤ 0`), while the conclusion would still assert `τ(r) ≥ -1/n`,
-which fails for e.g. `τ ≡ -1`.
-
-The quantifier is restricted to `r ∈ Finset.Icc 1 s` to match the paper's `[s]`
-notation: outside this range the `IsSubspaceDesign` predicate places no
-constraint on `τ`, so the bound is vacuous for `r = 0` (where `A ≤ C` with
-`finrank A ≤ 0` forces `A = ⊥`, making the design inequality `0 ≤ 0 · τ(0)`
-trivially satisfied by any `τ(0)` including ones violating the lower bound).
-
-**Proof sketch.** Take a minimum-weight nonzero codeword `a` (the minimum distance
-`d` of `C` is achieved by a pair `u ≠ v`; set `a := u - v`). Instantiate the design
-property at the 1-dimensional `A := span{a}` (`dim A = 1 ≤ r`): then `A_i = A` iff
-`a i = 0` and `A_i = ⊥` otherwise, so `Σ_i dim A_i = n - wt(a) = n - d`, giving
-`τ(r) ≥ (n-d)/n`. The Singleton bound over the block alphabet `F^s`
-(`q^k ≤ (q^s)^{n-d+1}`) gives `k ≤ s·(n-d+1)`, hence `(n-d)/n ≥ k/(s·n) - 1/n`. -/
-theorem subspaceDesign_tau_lower
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
-    (s : ℕ) (τ : ℕ → ℝ) (C : Submodule F (ι → Fin s → F))
-    (h : IsSubspaceDesign s τ C) (h_nontriv : C ≠ ⊥) :
-    ∀ r ∈ Finset.Icc 1 s,
-      τ r ≥ (Module.finrank F C : ℝ) / ((s : ℝ) * Fintype.card ι) -
-        1 / Fintype.card ι := by
-  intro r hr
-  obtain ⟨hr1, hrs⟩ := Finset.mem_Icc.mp hr
-  have hn_pos : 0 < Fintype.card ι := Fintype.card_pos
-  -- ① A nonzero codeword exists, so the minimum distance is achieved by some pair.
-  obtain ⟨a₀, ha₀C, ha₀ne⟩ := (Submodule.ne_bot_iff C).mp h_nontriv
-  have hSne : {d | ∃ u ∈ (C : Set (ι → Fin s → F)), ∃ v ∈ (C : Set (ι → Fin s → F)),
-      u ≠ v ∧ hammingDist u v = d}.Nonempty :=
-    ⟨hammingDist a₀ 0, a₀, ha₀C, 0, C.zero_mem, ha₀ne, rfl⟩
-  have hd_mem : Code.minDist (C : Set (ι → Fin s → F)) ∈
-      {d | ∃ u ∈ (C : Set (ι → Fin s → F)), ∃ v ∈ (C : Set (ι → Fin s → F)),
-        u ≠ v ∧ hammingDist u v = d} := by
-    rw [Code.minDist]
-    exact Nat.sInf_mem hSne
-  obtain ⟨u, huC, v, hvC, huv_ne, huv_d⟩ := hd_mem
-  -- The minimum-weight nonzero codeword `a := u - v`.
-  have haC : u - v ∈ C := C.sub_mem huC hvC
-  have ha_ne : u - v ≠ 0 := sub_ne_zero.mpr huv_ne
-  have ha_norm : hammingNorm (u - v) = Code.minDist (C : Set (ι → Fin s → F)) := by
-    rw [← neg_add_eq_sub, ← hammingDist_eq_hammingNorm, hammingDist_comm]
-    exact huv_d
-  have hd_pos : 1 ≤ Code.minDist (C : Set (ι → Fin s → F)) :=
-    Nat.one_le_iff_ne_zero.mpr fun h0 =>
-      huv_ne (hammingDist_eq_zero.mp (huv_d.trans h0))
-  have hd_le_n : Code.minDist (C : Set (ι → Fin s → F)) ≤ Fintype.card ι := by
-    rw [← huv_d]
-    exact hammingDist_le_card_fintype
-  -- ② Instantiate the design property at the 1-dimensional `A := span{a}`.
-  have hA_le : Submodule.span F {u - v} ≤ C :=
-    Submodule.span_le.mpr (Set.singleton_subset_iff.mpr haC)
-  have hA_rank : Module.finrank F (Submodule.span F {u - v}) = 1 :=
-    finrank_span_singleton ha_ne
-  have hdesign := h r (Submodule.span F {u - v}) hA_le (by rw [hA_rank]; exact hr1)
-  rw [hA_rank] at hdesign
-  -- ③ Per-coordinate ranks: `dim A_i = 1` iff the block `(u-v) i` vanishes.
-  have hterm : ∀ i : ι,
-      (Module.finrank F (↥((Submodule.span F {u - v}) ⊓
-          (LinearMap.ker
-            (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
-          Submodule F (ι → Fin s → F))) : ℝ) =
-        if (u - v) i = 0 then 1 else 0 := by
-    intro i
-    by_cases hai : (u - v) i = 0
-    · rw [span_inf_ker_proj_of_eq_zero hai, hA_rank, if_pos hai]
-      norm_num
-    · rw [span_inf_ker_proj_of_ne_zero hai, if_neg hai]
-      simp
-  -- ④ The design sum is the number of vanishing blocks, `n - d`.
-  have hsum : (∑ i : ι,
-      (Module.finrank F (↥((Submodule.span F {u - v}) ⊓
-          (LinearMap.ker
-            (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
-          Submodule F (ι → Fin s → F))) : ℝ)) =
-      (Fintype.card ι : ℝ) - Code.minDist (C : Set (ι → Fin s → F)) := by
-    rw [Finset.sum_congr rfl fun i _ => hterm i]
-    rw [Finset.sum_boole]
-    have hsplit : ({i | (u - v) i = 0} : Finset ι).card +
-        ({i | (u - v) i ≠ 0} : Finset ι).card = Fintype.card ι := by
-      simpa using Finset.card_filter_add_card_filter_not
-        (s := Finset.univ) (p := fun i : ι => (u - v) i = 0)
-    have hnorm_card : ({i | (u - v) i ≠ 0} : Finset ι).card =
-        Code.minDist (C : Set (ι → Fin s → F)) := by
-      rw [← ha_norm]; rfl
-    have hzero_card : ({i | (u - v) i = 0} : Finset ι).card =
-        Fintype.card ι - Code.minDist (C : Set (ι → Fin s → F)) := by omega
-    rw [hzero_card]
-    push_cast [Nat.cast_sub hd_le_n]
-    ring
-  have hkey : ((Fintype.card ι : ℝ) - Code.minDist (C : Set (ι → Fin s → F))) /
-      (Fintype.card ι : ℝ) ≤ τ r := by
-    calc ((Fintype.card ι : ℝ) - Code.minDist (C : Set (ι → Fin s → F))) /
-        (Fintype.card ι : ℝ)
-        = (∑ i : ι,
-            (Module.finrank F (↥((Submodule.span F {u - v}) ⊓
-                (LinearMap.ker
-                  (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
-                Submodule F (ι → Fin s → F))) : ℝ)) / (Fintype.card ι : ℝ) := by
-          rw [hsum]
-      _ ≤ (1 : ℕ) * τ r := hdesign
-      _ = τ r := by norm_num
-  -- ⑤ Singleton bound over the block alphabet `F^s`: `k ≤ s·(n - d + 1)`.
-  have hsingleton : Module.finrank F C ≤
-      s * (Fintype.card ι - Code.minDist (C : Set (ι → Fin s → F)) + 1) := by
-    haveI : Fintype ↥(C : Set (ι → Fin s → F)) := Fintype.ofFinite _
-    have hsb := singleton_bound (C : Set (ι → Fin s → F))
-    rw [Subsingleton.elim (Fintype.ofFinite ↥(C : Set (ι → Fin s → F)))
-      ‹Fintype ↥(C : Set (ι → Fin s → F))›,
-      Subsingleton.elim (Fintype.ofFinite (Fin s → F)) inferInstance] at hsb
-    have hcardC : Fintype.card ↥(C : Set (ι → Fin s → F)) =
-        Fintype.card F ^ Module.finrank F C := by
-      rw [Module.card_eq_pow_finrank (K := F)]
-      rfl
-    have hcardA : Fintype.card (Fin s → F) = Fintype.card F ^ s := by
-      rw [Fintype.card_fun, Fintype.card_fin]
-    rw [hcardC, hcardA, Code.dist_eq_minDist] at hsb
-    have hq : 1 < Fintype.card F := Fintype.one_lt_card
-    have hexp : Fintype.card ι - (Code.minDist (C : Set (ι → Fin s → F)) - 1) =
-        Fintype.card ι - Code.minDist (C : Set (ι → Fin s → F)) + 1 := by omega
-    rw [hexp, ← pow_mul] at hsb
-    exact (Nat.pow_le_pow_iff_right hq).mp hsb
-  -- ⑥ Final arithmetic: `k/(s·n) - 1/n ≤ (n-d)/n ≤ τ r`.
-  have hs_pos : (0 : ℝ) < s := by
-    have h1s : 1 ≤ s := le_trans hr1 hrs
-    exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one h1s
-  have hn_posR : (0 : ℝ) < Fintype.card ι := by exact_mod_cast hn_pos
-  rw [ge_iff_le]
-  have hcast : (Module.finrank F C : ℝ) ≤
-      (s : ℝ) * ((Fintype.card ι : ℝ) -
-        Code.minDist (C : Set (ι → Fin s → F)) + 1) := by
-    calc (Module.finrank F C : ℝ)
-        ≤ ((s * (Fintype.card ι -
-            Code.minDist (C : Set (ι → Fin s → F)) + 1) : ℕ) : ℝ) := by
-          exact_mod_cast hsingleton
-      _ = (s : ℝ) * ((Fintype.card ι : ℝ) -
-            Code.minDist (C : Set (ι → Fin s → F)) + 1) := by
-          push_cast [Nat.cast_sub hd_le_n]
-          ring
-  have hs0 : (s : ℝ) ≠ 0 := ne_of_gt hs_pos
-  have hn0 : (Fintype.card ι : ℝ) ≠ 0 := ne_of_gt hn_posR
-  calc (Module.finrank F C : ℝ) / ((s : ℝ) * Fintype.card ι) - 1 / Fintype.card ι
-      ≤ ((s : ℝ) * ((Fintype.card ι : ℝ) -
-          Code.minDist (C : Set (ι → Fin s → F)) + 1)) /
-          ((s : ℝ) * Fintype.card ι) - 1 / Fintype.card ι := by
-        gcongr
-    _ = ((Fintype.card ι : ℝ) - Code.minDist (C : Set (ι → Fin s → F))) /
-          (Fintype.card ι : ℝ) := by
-        field_simp
-        ring
-    _ ≤ τ r := hkey
-
-/-- **The GK16 §4 degree-budget residual.** For a subspace `A` of the folded RS code,
-the *folded-Wronskian degree budget* of GK16 §4 (Theorem 14): the per-coordinate
-vanishing dimensions `dim A_i := dim (A ⊓ ker(eval_i))` sum to at most `(dim A)·(k-1)`.
-
-This is the GK16 §4 spine line on p. 9,
-`∑_i dim A_i ≤ ∑_i rootMultiplicity (domain i) L ≤ natDegree L ≤ (dim A)·(k-1)`, whose
-last two `≤` are proven axiom-clean in ArkLib
-(`ArkLib.FRS.GK16.sum_rootMultiplicity_foldedWronskian_le`) and whose first `≤` (plus the
-`L ≠ 0` it needs) are the deep gaps ①② documented on `frs_is_subspaceDesign_gk16`. The
-predicate names that combined residual so the rate arithmetic can be discharged from it. -/
-def GK16DegreeBudget {ι : Type} [Fintype ι]
-    {F : Type} [Field F] (k s : ℕ)
-    (C : Submodule F (ι → Fin s → F)) : Prop :=
-  ∀ A : Submodule F (ι → Fin s → F), A ≤ C →
-    (∑ i : ι, Module.finrank F (↥(A ⊓
-        (LinearMap.ker
-          (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
-        Submodule F (ι → Fin s → F)))) ≤ Module.finrank F A * (k - 1)
-
-/-- **GK16 Claim 16 witness (named residual ②, with structural transport).** For a
-subspace `A ≤ C = frsCode`, this packages exactly the data of GK16 Claims 15–16 plus the
-encoder-isomorphism transport, in the precise shape the degree-budget reduction consumes:
-
-* an indexed family `P : Fin (dim A) → F[X]` of the underlying polynomials (a basis of the
-  polynomial space `U` with `A = U.map encoder`), each of degree `< k`;
-* the folded Wronskian `L := foldedWronskian P ω` is **nonzero** (GK16 Lemma 12, hard
-  direction — now an unconditional theorem, `gk16Lemma12HardResidual_holds`, modulo the
-  admissibility of `ω`, which `Admissible` supplies);
-* **Claim 16**: at each evaluation point `domain i`, the root multiplicity of `L` is at
-  least `dim A_i = dim (A ⊓ ker(eval_i))`.
-
-Everything *after* this witness — the chaining `∑_i dim A_i ≤ ∑_i mult ≤ deg L ≤
-(dim A)(k-1)` — is **proven, axiom-clean** in `gk16DegreeBudget_of_claim16Witness`. The
-witness isolates precisely the two deep gaps ①② (Lemma 12 nonvanishing is now closed;
-Claim 16 + the transport remain) so that `GK16DegreeBudget` follows from it by a routine
-root-counting argument. -/
-def GK16Claim16Witness {ι : Type} [Fintype ι] [DecidableEq ι]
-    {F : Type} [Field F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (C : Submodule F (ι → Fin s → F)) : Prop :=
-  ∀ A : Submodule F (ι → Fin s → F), A ≤ C →
-    ∃ P : Fin (Module.finrank F A) → Polynomial F,
-      (∀ j, (P j).natDegree ≤ k - 1) ∧
-      ArkLib.FRS.GK16.foldedWronskian P ω ≠ 0 ∧
-      (∀ i : ι, Module.finrank F (↥(A ⊓
-          (LinearMap.ker
-            (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
-          Submodule F (ι → Fin s → F)))
-        ≤ Polynomial.rootMultiplicity (domain i) (ArkLib.FRS.GK16.foldedWronskian P ω))
-
-/-- **GK16 Claim 16 witness, Lemma-12-discharged form (residual ② only).** Identical to
-`GK16Claim16Witness` except that the *nonvanishing* clause `foldedWronskian P ω ≠ 0` is
-**replaced** by its now-proven cause: the underlying family `P` is `F`-linearly
-independent, together with the order/degree-separation admissibility of `ω` (`hω_sep`, exactly
-the hypothesis of `ArkLib.FRS.GK16.foldedWronskian_ne_zero_of_linearIndependent`).
-
-Since GK16 Lemma 12 (hard direction) is now an unconditional theorem in ArkLib
-(`ArkLib.FRS.GK16.foldedWronskian_ne_zero_of_linearIndependent`,
-`…gk16Lemma12HardResidual_holds`), this witness carries *strictly less* than
-`GK16Claim16Witness`: it no longer assumes the folded Wronskian is nonzero — that is
-*derived*. The only remaining content is genuinely residual ② (GK16 Claim 16: the
-per-coordinate root-multiplicity lower bound + the encoder-isomorphism transport supplying
-the independent polynomial family `P` of degrees `< k`). The reduction
-`gk16Claim16Witness_of_indep` proves `GK16Claim16Witness` from this. -/
-def GK16Claim16WitnessIndep {ι : Type} [Fintype ι] [DecidableEq ι]
-    {F : Type} [Field F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (C : Submodule F (ι → Fin s → F)) : Prop :=
-  ∀ A : Submodule F (ι → Fin s → F), A ≤ C →
-    ∃ P : Fin (Module.finrank F A) → Polynomial F,
-      (∀ j, (P j).natDegree ≤ k - 1) ∧
-      LinearIndependent F P ∧
-      (∀ Q : Fin (Module.finrank F A) → Polynomial F, (∀ j, Q j ≠ 0) →
-          Function.Injective (fun j => (Q j).natDegree) →
-          Function.Injective (fun j => ω ^ (Q j).natDegree)) ∧
-      (∀ i : ι, Module.finrank F (↥(A ⊓
-          (LinearMap.ker
-            (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
-          Submodule F (ι → Fin s → F)))
-        ≤ Polynomial.rootMultiplicity (domain i) (ArkLib.FRS.GK16.foldedWronskian P ω))
-
-/-- **Proven silver reduction: the Lemma-12-discharged witness implies the original
-witness.** `GK16Claim16WitnessIndep → GK16Claim16Witness`. The only nontrivial step is
-deriving `foldedWronskian P ω ≠ 0`, which is now the *theorem*
-`ArkLib.FRS.GK16.foldedWronskian_ne_zero_of_linearIndependent` (GK16 Lemma 12, hard
-direction) applied to the independent family `P` under the admissibility separation
-`hω_sep`. Everything else is transported verbatim. This is axiom-clean and `sorry`-free;
-it certifies that residual ① (Lemma 12 nonvanishing) is fully closed and no longer part of
-the Theorem-2.18 residual. -/
-theorem gk16Claim16Witness_of_indep
-    {ι : Type} [Fintype ι] [DecidableEq ι]
-    {F : Type} [Field F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (C : Submodule F (ι → Fin s → F))
-    (hwit : GK16Claim16WitnessIndep domain k s ω C) :
-    GK16Claim16Witness domain k s ω C := by
-  intro A hA_le
-  obtain ⟨P, hP_deg, hP_indep, hω_sep, hClaim16⟩ := hwit A hA_le
-  refine ⟨P, hP_deg, ?_, hClaim16⟩
-  exact ArkLib.FRS.GK16.foldedWronskian_ne_zero_of_linearIndependent P ω hP_indep hω_sep
-
-/-- **Proven reduction: the Claim-16 witness implies the degree budget.** Given the
-`GK16Claim16Witness` data (per-coordinate root-multiplicity lower bounds, a nonzero folded
-Wronskian, and the degree bound on the underlying polynomials), the GK16 §4 degree budget
-`∑_i dim A_i ≤ (dim A)·(k-1)` follows by chaining
-
-  `∑_i dim A_i ≤ ∑_i mult(L, domain i) ≤ ∑_{a ∈ image domain} mult(L, a) ≤ deg L ≤ (dim A)(k-1)`,
-
-where the middle two `≤` are the verified spine
-`ArkLib.FRS.GK16.sum_rootMultiplicity_foldedWronskian_le` (root multiplicities over distinct
-points are bounded by the degree, itself `≤ (dim A)(k-1)`). The reduction is **axiom-clean**;
-it does not use the Lemma-12 / Claim-16 internals, only the witness interface. -/
-theorem gk16DegreeBudget_of_claim16Witness
-    {ι : Type} [Fintype ι] [DecidableEq ι]
-    {F : Type} [Field F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (C : Submodule F (ι → Fin s → F))
-    (hwit : GK16Claim16Witness domain k s ω C) :
-    GK16DegreeBudget k s C := by
+This is exactly the slack that separates the two design levels in play. The bound
+`∑ i, dim Aᵢ ≤ n * dim A` is enough for [ABF26] Theorem 2.18's profile
+`s * ρ / (s - r + 1)`, but one short of the `(k-1)`-level profile of [CZ25, Definition B.2] at
+`τ r = 1 - 1/(n * s)`; see `isSubspaceDesign_frsCode_sub_one`. -/
+theorem sum_finrank_inf_ker_le {ι : Type*} [Fintype ι] {F : Type*} [Field F] {s : ℕ}
+    (A : Submodule F (ι → Fin s → F)) (hA : A ≠ ⊥) :
+    (∑ i : ι, Module.finrank F (↥(A ⊓ (LinearMap.ker
+        (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
+          Submodule F (ι → Fin s → F)))) + 1
+      ≤ Fintype.card ι * Module.finrank F A := by
   classical
-  intro A hA_le
-  obtain ⟨P, hP_deg, hL_ne, hClaim16⟩ := hwit A hA_le
-  set L := ArkLib.FRS.GK16.foldedWronskian P ω with hL
-  -- ① `∑_i dim A_i ≤ ∑_i mult(L, domain i)` by Claim 16, termwise.
-  have hstep1 :
-      (∑ i : ι, Module.finrank F (↥(A ⊓
-        (LinearMap.ker
-          (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
-        Submodule F (ι → Fin s → F))))
-      ≤ ∑ i : ι, Polynomial.rootMultiplicity (domain i) L :=
-    Finset.sum_le_sum (fun i _ => hClaim16 i)
-  -- ② `∑_i mult(L, domain i) = ∑_{a ∈ image domain} mult(L, a)` (domain injective).
-  have hstep2 :
-      (∑ i : ι, Polynomial.rootMultiplicity (domain i) L)
-      = ∑ a ∈ (Finset.univ.image domain), Polynomial.rootMultiplicity a L := by
-    rw [Finset.sum_image (fun i _ j _ h => domain.injective h)]
-  -- ③ The verified spine bounds the sum over distinct points by `(dim A)·(k-1)`.
-  have hstep3 :
-      (∑ a ∈ (Finset.univ.image domain), Polynomial.rootMultiplicity a L)
-      ≤ (Module.finrank F A) * (k - 1) :=
-    ArkLib.FRS.GK16.sum_rootMultiplicity_foldedWronskian_le P ω hP_deg hL_ne _
-  calc (∑ i : ι, Module.finrank F (↥(A ⊓
-        (LinearMap.ker
-          (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
-        Submodule F (ι → Fin s → F))))
-      ≤ ∑ i : ι, Polynomial.rootMultiplicity (domain i) L := hstep1
-    _ = ∑ a ∈ (Finset.univ.image domain), Polynomial.rootMultiplicity a L := hstep2
-    _ ≤ (Module.finrank F A) * (k - 1) := hstep3
+  set σ := Module.finrank F A with hσ
+  obtain ⟨a, haA, ha0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hA
+  obtain ⟨i₀, hi₀⟩ : ∃ i₀ : ι, a i₀ ≠ 0 := by
+    by_contra h
+    push Not at h
+    exact ha0 (funext h)
+  have hle : ∀ i : ι, Module.finrank F (↥(A ⊓ (LinearMap.ker
+      (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
+        Submodule F (ι → Fin s → F))) ≤ σ :=
+    fun i => Submodule.finrank_mono inf_le_left
+  have hlt : Module.finrank F (↥(A ⊓ (LinearMap.ker
+      (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i₀)) :
+        Submodule F (ι → Fin s → F))) + 1 ≤ σ := by
+    have hne : A ⊓ (LinearMap.ker
+        (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i₀)) ≠ A := by
+      intro heq
+      have hmem : a ∈ A ⊓ LinearMap.ker
+          (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i₀) := by
+        rw [heq]; exact haA
+      exact hi₀ (by simpa using hmem.2)
+    have := Submodule.finrank_lt_finrank_of_lt (lt_of_le_of_ne inf_le_left hne)
+    omega
+  have hsplit := Finset.add_sum_erase (Finset.univ : Finset ι)
+    (fun i => Module.finrank F (↥(A ⊓ (LinearMap.ker
+      (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
+        Submodule F (ι → Fin s → F)))) (Finset.mem_univ i₀)
+  have hrest : ∑ i ∈ (Finset.univ : Finset ι).erase i₀,
+      Module.finrank F (↥(A ⊓ (LinearMap.ker
+        (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
+          Submodule F (ι → Fin s → F))) ≤ (Fintype.card ι - 1) * σ := by
+    calc ∑ i ∈ (Finset.univ : Finset ι).erase i₀, _
+        ≤ ∑ _i ∈ (Finset.univ : Finset ι).erase i₀, σ := Finset.sum_le_sum fun i _ => hle i
+      _ = (Fintype.card ι - 1) * σ := by
+          rw [Finset.sum_const, Finset.card_erase_of_mem (Finset.mem_univ i₀),
+            Finset.card_univ, smul_eq_mul]
+  have hn1 : 1 ≤ Fintype.card ι := Fintype.card_pos_iff.mpr ⟨i₀⟩
+  have hcard : (Fintype.card ι - 1) * σ + σ = Fintype.card ι * σ := by
+    have hsub : Fintype.card ι - 1 + 1 = Fintype.card ι := Nat.sub_add_cancel hn1
+    calc (Fintype.card ι - 1) * σ + σ = (Fintype.card ι - 1 + 1) * σ := by ring
+      _ = Fintype.card ι * σ := by rw [hsub]
+  omega
 
-/-- **Composed reduction: the Lemma-12-discharged witness implies the degree budget.**
-`GK16Claim16WitnessIndep → GK16DegreeBudget`, via `gk16Claim16Witness_of_indep` followed by
-`gk16DegreeBudget_of_claim16Witness`. With this, the GK16 §4 degree budget — and hence
-`frs_is_subspaceDesign_gk16` — reduces to residual ② alone (Claim 16 + transport), Lemma 12
-having been discharged. Axiom-clean. -/
-theorem gk16DegreeBudget_of_claim16WitnessIndep
-    {ι : Type} [Fintype ι] [DecidableEq ι]
-    {F : Type} [Field F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
+/-- The profile of a nontrivial `τ`-subspace design of alphabet-normalized rate `ρ` is
+bounded below by `ρ - 1/n` at every `r ≥ 1`.
+
+Here `ρ = dim_F C / (s * n)`, the rate relative to the alphabet `F^s`; the subtracted
+term `1/n` divides by the block length alone.
+
+The range `1 ≤ r` is sharp: at `r = 0` the design condition only ever compares `0 ≤ 0`,
+since `A ≤ C` and `dim A ≤ 0` force `A = ⊥`, so `τ 0` is unconstrained. Some
+non-degeneracy hypothesis is likewise unavoidable, since for `C = ⊥` every design
+inequality also reads `0 ≤ 0`: at `n = 2` the profile `τ ≡ -1` is a design profile for
+`⊥` yet violates the conclusion. Here that hypothesis is `C ≠ ⊥`; see
+`subspaceDesign_tau_lower` for the variant that guards the profile instead.
+
+The proof applies the design condition to `span {u - v}` for a distance-attaining pair
+`u ≠ v` in `C`, which has at least `n - d` vanishing blocks, and then converts `d` into
+`ρ` with the module-alphabet Singleton bound `LinearCode.singleton_bound_module`. -/
+theorem subspaceDesign_tau_lower_of_ne_bot
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    {F : Type*} [Field F] [Finite F]
+    (s : ℕ) (τ : ℕ → ℝ) (C : Submodule F (ι → Fin s → F))
+    (h_design : IsSubspaceDesign s τ C) (hs : 1 ≤ s) (hCne : C ≠ ⊥) :
+    ∀ r, 1 ≤ r →
+      τ r ≥ (Module.finrank F C : ℝ) / (s * Fintype.card ι) - 1 / Fintype.card ι := by
+  classical
+  intro r hr1
+  have hn_pos : (0 : ℝ) < Fintype.card ι := by exact_mod_cast Fintype.card_pos
+  have hs_pos : (0 : ℝ) < s := by exact_mod_cast hs
+  -- Run the GG25 argument at the span of a distance-attaining word.
+  -- Step 1: a distance-attaining pair, hence a nonzero codeword `a` of block-weight ≤ d.
+  obtain ⟨x, hxC, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hCne
+  set d := Code.dist (C : Set (ι → Fin s → F)) with hd
+  have hS_ne : {m | ∃ u ∈ (C : Set (ι → Fin s → F)), ∃ v ∈ (C : Set (ι → Fin s → F)),
+      u ≠ v ∧ hammingDist u v ≤ m}.Nonempty :=
+    ⟨hammingDist x 0, x, hxC, 0, C.zero_mem, hx0, le_rfl⟩
+  obtain ⟨u, huC, v, hvC, huv, hΔ⟩ : ∃ u ∈ (C : Set (ι → Fin s → F)),
+      ∃ v ∈ (C : Set (ι → Fin s → F)), u ≠ v ∧ hammingDist u v ≤ d :=
+    Nat.sInf_mem hS_ne
+  set a := u - v with ha_def
+  have haC : a ∈ C := C.sub_mem huC hvC
+  have ha0 : a ≠ 0 := sub_ne_zero.mpr huv
+  -- Block-weight of `a` equals `hammingDist u v` (which is `≤ d`).
+  have hwt : (Finset.univ.filter (fun i => a i ≠ 0)).card = hammingDist u v := by
+    unfold hammingDist
+    congr 1
+    ext i
+    simp [ha_def, sub_eq_zero]
+  -- Step 2: the design inequality at `A := span {a}` (1-dimensional, and `1 ≤ r`).
+  set A : Submodule F (ι → Fin s → F) := Submodule.span F {a} with hA
+  have hAC : A ≤ C := (Submodule.span_singleton_le_iff_mem a C).mpr haC
+  have hA1 : Module.finrank F A = 1 := finrank_span_singleton ha0
+  have hdesign := h_design r A hAC (by rw [hA1]; exact hr1)
+  -- Step 3: per-position dimension of `A ⊓ ker (proj i)` is the zero-block indicator.
+  have hper : ∀ i : ι,
+      Module.finrank F (↥(A ⊓
+          (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
+          Submodule F (ι → Fin s → F))) = if a i = 0 then 1 else 0 := by
+    intro i
+    by_cases hai : a i = 0
+    · rw [ite_eq_left hai]
+      have hle : A ≤ LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i) := by
+        rw [hA, Submodule.span_le, Set.singleton_subset_iff]
+        simpa [LinearMap.mem_ker] using hai
+      rw [inf_eq_left.mpr hle]
+      exact hA1
+    · rw [ite_eq_right hai]
+      have hbot : A ⊓ LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)
+          = ⊥ := by
+        rw [eq_bot_iff]
+        rintro y ⟨hyA, hyk⟩
+        obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hyA
+        change c • a i = 0 at hyk
+        have hc0 : c • a i = 0 := hyk
+        rcases smul_eq_zero.mp hc0 with hc | hzero
+        · simp [hc]
+        · exact absurd hzero hai
+      rw [hbot]
+      exact finrank_bot F _
+  -- Step 4: the design sum counts the zero blocks of `a`.
+  have hsum : (∑ i : ι,
+      (Module.finrank F (↥(A ⊓
+          (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
+          Submodule F (ι → Fin s → F))) : ℝ)) =
+      ((Finset.univ.filter (fun i => a i = 0)).card : ℝ) := by
+    rw [← Finset.sum_boole]
+    exact Finset.sum_congr rfl fun i _ => by
+      rw [hper i]; by_cases hai : a i = 0 <;> simp [hai]
+  -- Step 5: Singleton bound at the block alphabet: `k ≤ s · (n − (d − 1))`.
+  have hsingleton := LinearCode.singleton_bound_module (F := F) (C := C)
+  rw [Module.finrank_fintype_fun_eq_card, Fintype.card_fin] at hsingleton
+  -- Numeric bookkeeping over ℕ.
+  have hwt_le_d : (Finset.univ.filter (fun i => a i ≠ 0)).card ≤ d := hwt ▸ hΔ
+  have hwt_le_n : (Finset.univ.filter (fun i => a i ≠ 0)).card ≤ Fintype.card ι :=
+    Finset.card_filter_le _ _
+  have hd1 : 1 ≤ d := by
+    rcases Nat.eq_zero_or_pos d with h0 | h
+    · exact absurd (hammingDist_eq_zero.mp (Nat.le_zero.mp (h0 ▸ hΔ))) huv
+    · exact h
+  have hd_le_n : d ≤ Fintype.card ι := by
+    have hmem : hammingDist u v ∈ {m | ∃ u ∈ (C : Set (ι → Fin s → F)),
+        ∃ v ∈ (C : Set (ι → Fin s → F)), u ≠ v ∧ hammingDist u v ≤ m} :=
+      ⟨u, huC, v, hvC, huv, le_rfl⟩
+    exact le_trans (Nat.sInf_le hmem) (hwt ▸ hwt_le_n)
+  have hcards : (Finset.univ.filter (fun i => a i = 0)).card
+      = Fintype.card ι - (Finset.univ.filter (fun i => a i ≠ 0)).card := by
+    have h := Finset.card_filter_add_card_filter_not
+      (s := (Finset.univ : Finset ι)) (p := fun i => a i = 0)
+    simp only [Finset.card_univ, ne_eq] at h ⊢
+    omega
+  -- Step 6: cast the Singleton bound to ℝ: `k ≤ s (n − d + 1)`.
+  have hcast : (Module.finrank F C : ℝ) ≤ s * ((Fintype.card ι : ℝ) - d + 1) := by
+    have h1 : d - 1 ≤ Fintype.card ι := le_trans (Nat.sub_le d 1) hd_le_n
+    calc (Module.finrank F C : ℝ)
+        ≤ ((s * (Fintype.card ι - (d - 1)) : ℕ) : ℝ) := by exact_mod_cast hsingleton
+      _ = s * ((Fintype.card ι : ℝ) - d + 1) := by
+          rw [Nat.cast_mul, Nat.cast_sub h1, Nat.cast_sub hd1]
+          push_cast
+          ring
+  -- Step 7: chain everything over ℝ.
+  have hτ_ge : ((Finset.univ.filter (fun i => a i = 0)).card : ℝ) / Fintype.card ι ≤ τ r := by
+    calc ((Finset.univ.filter (fun i => a i = 0)).card : ℝ) / Fintype.card ι
+        ≤ Module.finrank F A * τ r := by rw [← hsum]; exact hdesign
+      _ = τ r := by rw [hA1]; push_cast; ring
+  have hzeros : ((Fintype.card ι : ℝ) - d) ≤
+      ((Finset.univ.filter (fun i => a i = 0)).card : ℝ) := by
+    rw [hcards, Nat.cast_sub hwt_le_n]
+    have : ((Finset.univ.filter (fun i => a i ≠ 0)).card : ℝ) ≤ d := by exact_mod_cast hwt_le_d
+    linarith only [this]
+  have hkey : (Module.finrank F C : ℝ) / (s * Fintype.card ι) - 1 / Fintype.card ι ≤
+      ((Fintype.card ι : ℝ) - d) / Fintype.card ι := by
+    have hdiv : (Module.finrank F C : ℝ) / (s * Fintype.card ι) ≤
+        ((Fintype.card ι : ℝ) - d + 1) / Fintype.card ι := by
+      rw [div_le_div_iff₀ (by positivity) hn_pos]
+      calc (Module.finrank F C : ℝ) * Fintype.card ι
+          ≤ (s * ((Fintype.card ι : ℝ) - d + 1)) * Fintype.card ι :=
+            mul_le_mul_of_nonneg_right hcast hn_pos.le
+        _ = ((Fintype.card ι : ℝ) - d + 1) * (s * Fintype.card ι) := by ring
+    have hsplit : ((Fintype.card ι : ℝ) - d + 1) / Fintype.card ι - 1 / Fintype.card ι =
+        ((Fintype.card ι : ℝ) - d) / Fintype.card ι := by
+      rw [div_sub_div_same]
+      ring_nf
+    linarith only [hdiv, hsplit]
+  calc (Module.finrank F C : ℝ) / (s * Fintype.card ι) - 1 / Fintype.card ι
+      ≤ ((Fintype.card ι : ℝ) - d) / Fintype.card ι := hkey
+    _ ≤ ((Finset.univ.filter (fun i => a i = 0)).card : ℝ) / Fintype.card ι := by gcongr
+    _ ≤ τ r := hτ_ge
+
+/-- The profile of a `τ`-subspace design of alphabet-normalized rate `ρ` with `τ ≥ 0` is
+bounded below by `ρ - 1/n` at every `r ≥ 1`.
+
+This is `subspaceDesign_tau_lower_of_ne_bot` with the non-degeneracy hypothesis moved from
+the code to the profile, making the statement total in `C`. Since a design profile bounds
+a ratio of dimensions, `0 ≤ τ` holds for every profile arising from a construction; use
+the `_of_ne_bot` form when the profile is unknown but the code is known to be nontrivial.
+See that declaration for the rate convention and for why `r ≥ 1` is needed. -/
+theorem subspaceDesign_tau_lower
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    {F : Type*} [Field F] [Finite F]
+    (s : ℕ) (τ : ℕ → ℝ) (C : Submodule F (ι → Fin s → F))
+    (h_design : IsSubspaceDesign s τ C) (hs : 1 ≤ s)
+    (hτ_nonneg : ∀ r, 0 ≤ τ r) :
+    ∀ r, 1 ≤ r →
+      τ r ≥ (Module.finrank F C : ℝ) / (s * Fintype.card ι) - 1 / Fintype.card ι := by
+  intro r hr1
+  by_cases hCne : C = ⊥
+  · -- Degenerate code: the bound is `-1/n ≤ 0 ≤ τ r`.
+    have hC0 : Module.finrank F C = 0 := by rw [hCne]; exact finrank_bot F _
+    rw [hC0]
+    have hb : ((0 : ℕ) : ℝ) / (s * Fintype.card ι) - 1 / Fintype.card ι ≤ 0 := by
+      simp only [Nat.cast_zero, zero_div, zero_sub]
+      exact neg_nonpos.mpr (by positivity)
+    exact le_trans hb (hτ_nonneg r)
+  · exact subspaceDesign_tau_lower_of_ne_bot s τ C h_design hs hCne r hr1
+
+private lemma mul_sub_add_one_le_of_le
+    {S s σ r bound : ℝ} (hS : 0 ≤ S) (hσr : σ ≤ r)
+    (hbound : (s - σ + 1) * S ≤ bound) :
+    S * (s - r + 1) ≤ bound := by
+  have hfactor : s - r + 1 ≤ s - σ + 1 :=
+    by simpa only [add_comm] using add_le_add_right (sub_le_sub_left hσr s) 1
+  calc S * (s - r + 1) ≤ S * (s - σ + 1) :=
+      mul_le_mul_of_nonneg_left hfactor hS
+    _ = (s - σ + 1) * S := mul_comm _ _
+    _ ≤ bound := hbound
+
+/-- The bookkeeping shared by the Wronskian proofs of `isSubspaceDesign_frsCode_sub_one` and
+`isSubspaceDesign_umCode_sub_one`. A code of dimension `min k (s * n)` is a subspace design for
+the `(k-1)`-level profile once every nonzero `A ≤ C` of dimension `σ ≤ s` satisfies the root
+count `(s - σ + 1) * ∑ i, dim Aᵢ ≤ σ * (k - 1)` in the regime `1 ≤ k ≤ s * n`. For
+`k > s * n` the rate saturates at `1` and the sharper block count `sum_finrank_inf_ker_le`
+suffices; `k = 0` forces `A = ⊥`. -/
+private lemma isSubspaceDesign_sub_one_of_count
+    {ι : Type*} [Fintype ι] [Nonempty ι] {F : Type*} [Field F] {k s : ℕ}
     (C : Submodule F (ι → Fin s → F))
-    (hwit : GK16Claim16WitnessIndep domain k s ω C) :
-    GK16DegreeBudget k s C :=
-  gk16DegreeBudget_of_claim16Witness domain k s ω C
-    (gk16Claim16Witness_of_indep domain k s ω C hwit)
+    (hdim : Module.finrank F C = min k (s * Fintype.card ι))
+    (hcount : ∀ A ≤ C, 1 ≤ Module.finrank F A → Module.finrank F A ≤ s → 1 ≤ k →
+      k ≤ s * Fintype.card ι →
+      (s - Module.finrank F A + 1) * ∑ i : ι, Module.finrank F ↥(A ⊓
+          (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i))) ≤
+        Module.finrank F A * (k - 1)) :
+    IsSubspaceDesign s (fun r ↦
+      if r ∈ Finset.Icc 1 s then
+        (s * (LinearCode.alphabetRate C : ℝ) - 1 / Fintype.card ι) / (s - r + 1)
+      else 1) C := by
+  intro r A hAC hAr
+  beta_reduce
+  have hn_pos : (0 : ℝ) < Fintype.card ι := by exact_mod_cast Fintype.card_pos
+  set σ := Module.finrank F ↥A with hσdef
+  set S : ℝ := ∑ i : ι, (Module.finrank F ↥(A ⊓
+    (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i))) : ℝ) with hSdef
+  -- Every block dimension is at most `σ`, hence the design sum is at most `σ`.
+  have hsum_le : S / Fintype.card ι ≤ σ := by
+    rw [div_le_iff₀ hn_pos]
+    calc S ≤ ∑ _i : ι, (σ : ℝ) := Finset.sum_le_sum fun i _ => by
+          exact_mod_cast Submodule.finrank_mono (inf_le_left : A ⊓ _ ≤ A)
+      _ = σ * Fintype.card ι := by
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_comm]
+  -- Trivial branch 0: `A = ⊥`.
+  by_cases hσ0 : σ = 0
+  · exact hsum_le.trans (le_of_eq (by rw [hσ0, Nat.cast_zero, zero_mul]))
+  -- Outside `[1, s]` the profile is `1`, which `hsum_le` already discharges.
+  by_cases hrmem : r ∈ Finset.Icc 1 s
+  case neg =>
+    rw [ite_eq_right hrmem, mul_one]
+    exact hsum_le
+  rw [ite_eq_left hrmem]
+  obtain ⟨hr1, hrs⟩ := Finset.mem_Icc.mp hrmem
+  have hσs : σ ≤ s := le_trans hAr hrs
+  have hs_pos : (0 : ℝ) < s := by exact_mod_cast (show 0 < s by omega)
+  have hb_pos : (0 : ℝ) < (s : ℝ) - r + 1 := by
+    have : (r : ℝ) ≤ s := by exact_mod_cast hrs
+    linarith only [this]
+  have hA_ne : A ≠ ⊥ := fun h => hσ0 (by rw [hσdef, h]; exact finrank_bot F _)
+  by_cases hk_le : k ≤ s * Fintype.card ι
+  · -- Main regime: the root count, with `σ ≤ r`.
+    have hk1 : 1 ≤ k := by
+      by_contra hk
+      have hC : Module.finrank F C = 0 := by rw [hdim]; omega
+      exact hσ0 (Nat.eq_zero_of_le_zero (hC ▸ Submodule.finrank_mono hAC))
+    have hτval : (s : ℝ) * (LinearCode.alphabetRate C : ℝ) - 1 / Fintype.card ι =
+        ((k : ℝ) - 1) / Fintype.card ι := by
+      rw [LinearCode.alphabetRate_cast_eq, hdim, min_eq_left hk_le, mul_div_assoc',
+        mul_div_mul_left _ _ hs_pos.ne', sub_div]
+    have hS_real : ((s : ℝ) - σ + 1) * S ≤ σ * ((k : ℝ) - 1) := by
+      have h2 : (((s - σ + 1 : ℕ)) : ℝ) * ((∑ i : ι, Module.finrank F ↥(A ⊓
+          (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i))) : ℕ) : ℝ)
+          ≤ (σ : ℝ) * (((k - 1 : ℕ)) : ℝ) := by
+        exact_mod_cast hcount A hAC (by omega) hσs hk1 hk_le
+      rwa [Nat.cast_add, Nat.cast_sub hσs, Nat.cast_one, Nat.cast_sub hk1, Nat.cast_one,
+        Nat.cast_sum] at h2
+    have hSb : S * ((s : ℝ) - r + 1) ≤ σ * ((k : ℝ) - 1) :=
+      mul_sub_add_one_le_of_le (Finset.sum_nonneg fun i _ => Nat.cast_nonneg _)
+        (by exact_mod_cast hAr) hS_real
+    rw [hτval, show (σ : ℝ) * (((k : ℝ) - 1) / Fintype.card ι / ((s : ℝ) - r + 1)) =
+      σ * ((k : ℝ) - 1) / ((s : ℝ) - r + 1) / Fintype.card ι by ring]
+    exact div_le_div_of_nonneg_right ((le_div_iff₀ hb_pos).2 hSb) hn_pos.le
+  · -- Saturated regime: the rate is `1`, and a nonzero `A` loses a dimension at some block.
+    have hρ : (LinearCode.alphabetRate C : ℝ) = 1 := by
+      rw [LinearCode.alphabetRate_cast_eq, hdim, min_eq_right (by omega), Nat.cast_mul]
+      exact div_self (mul_pos hs_pos hn_pos).ne'
+    have hsum_le' : S / Fintype.card ι ≤ (σ : ℝ) - 1 / Fintype.card ι := by
+      have hcast : S + 1 ≤ (Fintype.card ι : ℝ) * σ := by
+        rw [hSdef, ← Nat.cast_sum]
+        exact_mod_cast sum_finrank_inf_ker_le A hA_ne
+      rw [div_le_iff₀ hn_pos, sub_mul, div_mul_cancel₀ _ hn_pos.ne']
+      linarith only [hcast]
+    have hinv_le : 1 / (Fintype.card ι : ℝ) ≤ 1 :=
+      div_le_one_of_le₀ (by exact_mod_cast Fintype.card_pos) hn_pos.le
+    have hnum : (0 : ℝ) ≤ s - 1 / Fintype.card ι := by
+      have hs1 : (1 : ℝ) ≤ s := by exact_mod_cast (show 1 ≤ s by omega)
+      linarith only [hinv_le, hs1]
+    have hb_le : (s : ℝ) - r + 1 ≤ s := by
+      have : (1 : ℝ) ≤ r := by exact_mod_cast hr1
+      linarith only [this]
+    have hσ_div : (σ : ℝ) * (1 / Fintype.card ι / s) ≤ 1 / Fintype.card ι :=
+      calc (σ : ℝ) * (1 / Fintype.card ι / s) = σ / s * (1 / Fintype.card ι) := by ring
+        _ ≤ 1 * (1 / Fintype.card ι) := mul_le_mul_of_nonneg_right
+            (div_le_one_of_le₀ (by exact_mod_cast hσs) hs_pos.le) (by positivity)
+        _ = 1 / Fintype.card ι := one_mul _
+    rw [hρ, mul_one]
+    calc S / Fintype.card ι ≤ (σ : ℝ) - 1 / Fintype.card ι := hsum_le'
+      _ ≤ σ - σ * (1 / Fintype.card ι / s) := by linarith only [hσ_div]
+      _ = σ * ((s - 1 / Fintype.card ι) / s) := by
+          rw [sub_div, div_self hs_pos.ne', mul_sub, mul_one]
+      _ ≤ σ * ((s - 1 / Fintype.card ι) / (s - r + 1)) :=
+          mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_left hnum hb_pos hb_le)
+            (Nat.cast_nonneg _)
 
-/-- **GK16 Claim 16, structural-transport residual (the genuinely-unwritten gap).** For a
-subspace `A ≤ C = frsCode`, this packages exactly the *structural encoder-isomorphism +
-adapted-basis* data that the column-divisibility proof of Claim 16 consumes — the part the
-original `frs_is_subspaceDesign_gk16` docstring already named as "routine but unwritten".
-Per `A`, it provides:
+/-- Base change for the folded Wronskian: replacing the polynomials by the `F`-linear
+combinations with coefficient matrix `U` multiplies the folded Wronskian by `det U`. -/
+private lemma foldedWronskian_of_linearComb {F : Type*} [Field F] {σ : ℕ} {ω : F}
+    (P c : Fin σ → Polynomial F) (U : Matrix (Fin σ) (Fin σ) F)
+    (hc : ∀ j, c j = ∑ i, U i j • P i) :
+    Polynomial.foldedWronskian σ ω c
+      = Polynomial.foldedWronskian σ ω P * Polynomial.C U.det := by
+  classical
+  have hM : (Matrix.of fun i j : Fin σ =>
+        (c j).comp (Polynomial.C (ω ^ (i : ℕ)) * Polynomial.X))
+      = (Matrix.of fun i j : Fin σ => (P j).comp (Polynomial.C (ω ^ (i : ℕ)) * Polynomial.X))
+        * ((Polynomial.C : F →+* Polynomial F).mapMatrix U) := by
+    refine Matrix.ext fun i j => ?_
+    simp only [Matrix.of_apply, Matrix.mul_apply, RingHom.mapMatrix_apply, Matrix.map_apply]
+    rw [hc j, Polynomial.sum_comp]
+    exact Finset.sum_congr rfl fun i' _ => by
+      rw [Polynomial.smul_comp, Polynomial.smul_eq_C_mul, mul_comm]
+  unfold Polynomial.foldedWronskian
+  rw [hM, Matrix.det_mul, ← RingHom.map_det]
 
-* a realizing family `P : Fin (dim A) → F[X]` of degrees `< k` (a basis of the polynomial
-  space `U` with `A = U.map encoder`), `F`-linearly **independent** (encoder injectivity);
-* the order/degree-separation admissibility of `ω` (`hω_sep`, exactly the hypothesis of
-  `foldedWronskian_ne_zero_of_linearIndependent` — so `L ≠ 0` is *derived*, not assumed);
-* per coordinate `i`, an **adapted basis** of `U`: an *invertible* `F`-linear recombination
-  `Q^{(i)}` of `P` (`Q^{(i)} l = ∑ m, c m l • P m`, `det c ≠ 0`) and a `dim A_i`-element index
-  set `T_i ⊆ Fin (dim A)` whose members `Q^{(i)} l` vanish on the *whole orbit*
-  `{domain i · ω^b : b : Fin (dim A)}`. (Orbit-vanishing over the `dim A` dilation rows is
-  the image, under the encoder isomorphism `A_i ≅ U_i`, of `A_i`-membership; it presupposes
-  the design-range side condition `dim A ≤ s`, under which the `dim A` dilation exponents are
-  genuine fold indices `< s`.)
+/-- If every polynomial in a subspace `N ≤ B` has all of its `ω`-twists divisible by
+`X - C p`, then `(X - C p) ^ dim N` divides the folded Wronskian of any basis of `B`.
 
-This is the *only* remaining content of GK16 Claim 16: the multiplicity-counting **engine**
-(column divisibility `(X − domain i)^{dim A_i} ∣ det [Q^{(i)} l (ω^b X)]` ⟹ the root-
-multiplicity bound, transported across the nonzero change-of-basis constant) is **proven,
-axiom-clean** in `ArkLib.FRS.GK16.claim16_rootMultiplicity_ge`. The reduction
-`gk16Claim16WitnessIndep_of_structuralData` turns this data into `GK16Claim16WitnessIndep`. -/
-def GK16Claim16StructuralData {ι : Type} [Fintype ι] [DecidableEq ι]
-    {F : Type} [Field F] [DecidableEq F]
+Passing to a basis of `B` adapted to `N` makes `dim N` whole columns of the folded
+Wronskian matrix divisible by `X - C p`; base change only rescales the determinant by a
+nonzero constant. -/
+private lemma pow_dvd_foldedWronskian {F : Type*} [Field F] {σ : ℕ} {ω : F}
+    (B : Submodule F (Polynomial F)) (bas : Module.Basis (Fin σ) F B)
+    (N : Submodule F (Polynomial F)) (hN : N ≤ B) (p : F)
+    (hcol : ∀ q ∈ N, ∀ i : Fin σ, (Polynomial.X - Polynomial.C p) ∣
+        q.comp (Polynomial.C (ω ^ (i : ℕ)) * Polynomial.X)) :
+    (Polynomial.X - Polynomial.C p) ^ (Module.finrank F N)
+      ∣ Polynomial.foldedWronskian σ ω (fun j => (bas j : Polynomial F)) := by
+  classical
+  have : Module.Finite F B := Module.Finite.of_basis bas
+  have hrkB : Module.finrank F B = σ := by
+    rw [Module.finrank_eq_card_basis bas, Fintype.card_fin]
+  set N' : Submodule F B := N.comap B.subtype with hN'
+  have hmap : N'.map B.subtype = N := by
+    ext x
+    simp only [hN', Submodule.mem_map, Submodule.mem_comap, Submodule.coe_subtype,
+      Subtype.exists]
+    exact ⟨by rintro ⟨y, hy, hyx, rfl⟩; exact hyx, fun hx => ⟨x, hN hx, hx, rfl⟩⟩
+  have hrkN' : Module.finrank F N' = Module.finrank F N := by
+    rw [← hmap, Submodule.finrank_map_subtype_eq]
+  obtain ⟨cb, hcb⟩ := N'.exists_adapted_basis hrkB
+  set t := Module.finrank F N with htdef
+  have hts : t ≤ σ := by
+    rw [← hrkN', ← hrkB]
+    exact Submodule.finrank_le N'
+  set U : Matrix (Fin σ) (Fin σ) F := bas.toMatrix (⇑cb) with hU
+  set c : Fin σ → Polynomial F := fun j => ((cb j : B) : Polynomial F) with hc
+  have hcomb : ∀ j, c j = ∑ i, U i j • ((bas i : B) : Polynomial F) := by
+    intro j
+    have h1 : ∑ i, U i j • bas i = cb j :=
+      Module.Basis.sum_toMatrix_smul_self bas (⇑cb) j
+    have h2 : B.subtype (∑ i, U i j • bas i) = B.subtype (cb j) := by rw [h1]
+    rw [map_sum] at h2
+    simp only [map_smul, Submodule.coe_subtype] at h2
+    exact h2.symm
+  have hdetU : U.det ≠ 0 := by
+    have h := congrArg Matrix.det (Module.Basis.toMatrix_mul_toMatrix_flip bas cb)
+    rw [Matrix.det_mul, Matrix.det_one] at h
+    intro h0
+    rw [h0, zero_mul] at h
+    exact zero_ne_one h
+  have hW := foldedWronskian_of_linearComb (ω := ω) (fun j => ((bas j : B) : Polynomial F)) c U
+    hcomb
+  set T : Finset (Fin σ) := Finset.image (Fin.castLE hts) Finset.univ with hT
+  have hTcard : T.card = t := by
+    rw [hT, Finset.card_image_of_injective _ (fun a b hab => Fin.ext (by
+      simpa using congrArg Fin.val hab)), Finset.card_univ, Fintype.card_fin]
+  have hdvd : (Polynomial.X - Polynomial.C p) ^ t ∣ Polynomial.foldedWronskian σ ω c := by
+    rw [← hTcard]
+    refine Matrix.pow_dvd_det_of_forall_mem_col_dvd _ _ T ?_
+    intro j hj i
+    obtain ⟨j', -, rfl⟩ := Finset.mem_image.mp hj
+    have hjlt : ((Fin.castLE hts j' : Fin σ) : ℕ) < Module.finrank F N' := by
+      rw [hrkN']; simp
+    exact hcol _ (by simpa [hc, hN'] using hcb _ hjlt) i
+  rw [hW] at hdvd
+  exact (IsUnit.dvd_mul_right (Polynomial.isUnit_C.mpr (isUnit_iff_ne_zero.mpr hdetU))).mp hdvd
+
+/-- If every polynomial in a subspace `N ≤ B` has a root of multiplicity at least `s` at
+`p`, then the classical Wronskian of a `σ`-element basis of `B` has a root at `p` of
+multiplicity at least `(s - σ + 1) * dim N`.
+
+After changing to a basis adapted to `N`, the entries in each of the `dim N` distinguished
+columns are iterated derivatives, hence divisible by the common factor
+`(X - C p) ^ (s - σ + 1)`; determinant divisibility and the inverse base change conclude. -/
+private lemma pow_dvd_classicalWronskian {F : Type*} [Field F] {σ s : ℕ}
+    (B : Submodule F (Polynomial F)) (bas : Module.Basis (Fin σ) F B)
+    (N : Submodule F (Polynomial F)) (hN : N ≤ B) (p : F) (hσs : σ ≤ s)
+    (hcol : ∀ q ∈ N, (Polynomial.X - Polynomial.C p) ^ s ∣ q) :
+    (Polynomial.X - Polynomial.C p) ^
+        ((s - σ + 1) * Module.finrank F N) ∣
+      Polynomial.classicalWronskian σ (fun j => (bas j : Polynomial F)) := by
+  classical
+  have : Module.Finite F B := Module.Finite.of_basis bas
+  have hrkB : Module.finrank F B = σ := by
+    rw [Module.finrank_eq_card_basis bas, Fintype.card_fin]
+  set N' : Submodule F B := N.comap B.subtype with hN'
+  have hmap : N'.map B.subtype = N := by
+    ext x
+    simp only [hN', Submodule.mem_map, Submodule.mem_comap, Submodule.coe_subtype,
+      Subtype.exists]
+    exact ⟨by rintro ⟨y, hy, hyx, rfl⟩; exact hyx,
+      fun hx => ⟨x, hN hx, hx, rfl⟩⟩
+  have hrkN' : Module.finrank F N' = Module.finrank F N := by
+    rw [← hmap, Submodule.finrank_map_subtype_eq]
+  obtain ⟨cb, hcb⟩ := N'.exists_adapted_basis hrkB
+  set t := Module.finrank F N with htdef
+  have htσ : t ≤ σ := by
+    rw [← hrkN', ← hrkB]
+    exact Submodule.finrank_le N'
+  set U : Matrix (Fin σ) (Fin σ) F := bas.toMatrix (⇑cb) with hU
+  set c : Fin σ → Polynomial F := fun j => ((cb j : B) : Polynomial F) with hc
+  have hcomb : ∀ j, c j = ∑ i, U i j • ((bas i : B) : Polynomial F) := by
+    intro j
+    have h1 : ∑ i, U i j • bas i = cb j :=
+      Module.Basis.sum_toMatrix_smul_self bas (⇑cb) j
+    have h2 : B.subtype (∑ i, U i j • bas i) = B.subtype (cb j) := by rw [h1]
+    rw [map_sum] at h2
+    simp only [map_smul, Submodule.coe_subtype] at h2
+    exact h2.symm
+  have hdetU : U.det ≠ 0 := by
+    have h := congrArg Matrix.det (Module.Basis.toMatrix_mul_toMatrix_flip bas cb)
+    rw [Matrix.det_mul, Matrix.det_one] at h
+    intro h0
+    rw [h0, zero_mul] at h
+    exact zero_ne_one h
+  have hW := Polynomial.classicalWronskian_of_linearComb
+    (fun j => ((bas j : B) : Polynomial F)) c U hcomb
+  set T : Finset (Fin σ) := Finset.image (Fin.castLE htσ) Finset.univ with hT
+  have hTcard : T.card = t := by
+    rw [hT, Finset.card_image_of_injective _ (fun a b hab => Fin.ext (by
+      simpa using congrArg Fin.val hab)), Finset.card_univ, Fintype.card_fin]
+  have hdvd : (Polynomial.X - Polynomial.C p) ^ ((s - σ + 1) * t) ∣
+      Polynomial.classicalWronskian σ c := by
+    have hdetdvd := Matrix.pow_dvd_det_of_forall_mem_col_dvd
+      (Matrix.of fun i j : Fin σ => Polynomial.derivative^[i.val] (c j))
+      ((Polynomial.X - Polynomial.C p) ^ (s - σ + 1)) T (by
+        intro j hj i
+        obtain ⟨j', -, rfl⟩ := Finset.mem_image.mp hj
+        have hjlt : ((Fin.castLE htσ j' : Fin σ) : ℕ) < Module.finrank F N' := by
+          rw [hrkN']; simp
+        have hcN : c (Fin.castLE htσ j') ∈ N := by
+          simpa [hc, hN'] using hcb _ hjlt
+        have hder := Polynomial.pow_sub_dvd_iterate_derivative_of_pow_dvd
+          i.val (hcol _ hcN)
+        exact (pow_dvd_pow (Polynomial.X - Polynomial.C p) (by omega)).trans hder)
+    simpa [Polynomial.classicalWronskian, hTcard, pow_mul] using hdetdvd
+  rw [hW] at hdvd
+  exact (IsUnit.dvd_mul_right
+    (Polynomial.isUnit_C.mpr (isUnit_iff_ne_zero.mpr hdetU))).mp hdvd
+
+/-- Folded Reed-Solomon codes are subspace designs for the profile
+
+  `τ r = s * ρ / (s - r + 1)` for `1 ≤ r ≤ s`, and `τ r = 1` otherwise,
+
+where `ρ` is the alphabet-normalized rate `LinearCode.alphabetRate (frsCode domain k s ω)`.
+Note `τ 1 = ρ` and `τ s = s * ρ`.
+
+Since `dim (frsCode domain k s ω) = min k (s * n)`, the profile reads
+`τ r = (k / n) / (s - r + 1)` in the intended regime `k ≤ s * n`. Beyond it the rate
+saturates at `ρ = 1`, and the statement becomes vacuous: a profile that is at least `1`
+throughout `[1, s]` is a design profile for every code.
+
+Both hypotheses on `ω` are necessary.
+
+* `hω_gen`, that `ω` generates `Fˣ`, is used once, through
+  `Polynomial.foldedWronskian_ne_zero_of_linearIndependent`. Without an order condition the
+  statement fails: over `𝔽₁₀₁` with `s = 2`, `ω = -1`, `k = 3` and evaluation points
+  `{1, …, 7}`, admissibility still holds, but the encodings of `1` and `X²` span a subspace
+  with `∑ i, dim Aᵢ = 7 > 6 = dim A * τ 2 * n`, since `(-x)² = x²`.
+* Admissibility of `ω` is used to make `(i, m) ↦ domain i * ω ^ m` injective. Its
+  intra-orbit clause `α * ω ^ i ≠ α` for `0 < i < s` forces `0 ∉ L` once `s ≥ 2`, and this
+  is needed even under `hω_gen`: over `ZMod 5` with `domain = (0, 1)`, `s = 3`, `k = 2`,
+  `ω = 2`, the `s`-orbit of `0` collapses to `{0}`, so the encoding of `X` spans a subspace
+  with `(∑ i, dim Aᵢ) / n = 1/2 > 1/3 = dim A * τ 1`.
+
+Admissibility is hypothesised at the canonical point set `Finset.univ.map domain`, as in
+the other `frsCode` statements; restrict it from a larger ambient point set with
+`ReedSolomon.Folded.Admissible.subset`.
+
+The proof is a Wronskian root count. Outside `1 ≤ r ≤ s`, and for `A = ⊥`, the bound
+follows from `dim (A ⊓ ker (proj i)) ≤ σ := dim A`. When `k > s * n` the rate is `1`, and it
+follows from `sum_finrank_inf_ker_le`. This bookkeeping is shared with
+`isSubspaceDesign_umCode_sub_one`. In the remaining regime `1 ≤ r ≤ s` and `1 ≤ k ≤ s * n`,
+the `n * s` folded evaluation points are distinct and nonzero, the encoder is injective on
+`degreeLT F k`, and `A` together with each `A ⊓ ker (proj i)` lifts to message-side
+subspaces `B` and `Nᵢ ≤ B` of the same dimension, the latter consisting of polynomials
+vanishing on the whole orbit `{domain i * ω ^ j | j < s}`. The `ω`-folded Wronskian `W` of a
+basis of `B` is nonzero and has `deg W ≤ σ * (k - 1)`, while each of the `n * (s - σ + 1)`
+distinct points `domain i * ω ^ m` with `m ≤ s - σ` is a root of `W` of multiplicity at least
+`dim Nᵢ`.
+Comparing the two gives `(s - σ + 1) * ∑ i, dim (A ⊓ ker (proj i)) ≤ σ * (k - 1)`, and
+`σ ≤ r` turns this into the design bound. -/
+theorem isSubspaceDesign_frsCode_sub_one
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    {F : Type*} [Field F] [Fintype F]
     (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (C : Submodule F (ι → Fin s → F)) : Prop :=
-  ∀ A : Submodule F (ι → Fin s → F), A ≤ C →
-    ∃ P : Fin (Module.finrank F A) → Polynomial F,
-      (∀ j, (P j).natDegree ≤ k - 1) ∧
-      LinearIndependent F P ∧
-      (∀ Q : Fin (Module.finrank F A) → Polynomial F, (∀ j, Q j ≠ 0) →
-          Function.Injective (fun j => (Q j).natDegree) →
-          Function.Injective (fun j => ω ^ (Q j).natDegree)) ∧
-      (∀ i : ι, ∃ (Q : Fin (Module.finrank F A) → Polynomial F)
-          (c : Fin (Module.finrank F A) → Fin (Module.finrank F A) → F)
-          (T : Finset (Fin (Module.finrank F A))),
-        (Matrix.of c).det ≠ 0 ∧
-        (∀ l, Q l = ∑ m, c l m • P m) ∧
-        T.card = Module.finrank F (↥(A ⊓
-            (LinearMap.ker
-              (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) :
-            Submodule F (ι → Fin s → F))) ∧
-        (∀ l ∈ T, ∀ b : Fin (Module.finrank F A),
-            (Q l).eval (domain i * ω ^ (b : ℕ)) = 0))
+    (hFn : Fintype.card ι < Fintype.card F)
+    (hω_adm : ReedSolomon.Folded.Admissible (Finset.univ.map domain) s ω)
+    (hω_gen : orderOf ω = Fintype.card F - 1) :
+    let τ : ℕ → ℝ := fun r ↦
+      if r ∈ Finset.Icc 1 s then
+        (s * (LinearCode.alphabetRate (ReedSolomon.Folded.frsCode domain k s ω) : ℝ)
+            - 1 / Fintype.card ι) /
+          (s - r + 1)
+      else 1
+    IsSubspaceDesign s τ (ReedSolomon.Folded.frsCode domain k s ω) := by
+  classical
+  have hω0 : ω ≠ 0 := by
+    intro hzero
+    rw [hzero, orderOf_zero] at hω_gen
+    have hcard2 : 2 ≤ Fintype.card F := by
+      have hn1 : 1 ≤ Fintype.card ι := Fintype.card_pos
+      omega
+    omega
+  have hadm : ReedSolomon.Folded.Admissible (Finset.univ.map domain) s ω := hω_adm
+  intro τ
+  refine isSubspaceDesign_sub_one_of_count _
+    (ReedSolomon.Folded.dim_frsCode_eq_min domain k s ω hadm hω0)
+    fun A hAC hσ1 hσs hk1 hk_le ↦ ?_
+  set σ := Module.finrank F ↥A with hσdef
+  have hpt_inj := ReedSolomon.Folded.admissible_foldedPoints_injective domain ω hadm hω0
+  have : NeZero k := ⟨by omega⟩
+  -- `k ≤ q − 1`: the `n·s` folded points are distinct and nonzero (for `s ≥ 2`);
+  -- for `s = 1` this is `hFn` directly.
+  have hns_q : Fintype.card ι * s ≤ Fintype.card F - 1 := by
+    rcases Nat.lt_or_ge s 2 with hs2 | hs2
+    · have hs1 : s = 1 := by omega
+      rw [hs1, Nat.mul_one]
+      omega
+    · have hzero : ∀ x : ι, domain x ≠ 0 := by
+        intro x hx
+        -- The two side conditions of the intra-orbit clause are `0 < 1` and `1 < s`;
+        -- both are discharged by `omega`, so this is insensitive to their order.
+        exact hω_adm.2 (domain x) (Finset.mem_map_of_mem _ (Finset.mem_univ x)) 1
+          (by omega) (by omega) (by rw [hx]; ring)
+      have himg : (Finset.univ : Finset (ι × Fin s)).image
+          (fun xi => domain xi.1 * ω ^ (xi.2 : ℕ)) ⊆ Finset.univ.erase 0 := by
+        intro y hy
+        obtain ⟨xi, -, rfl⟩ := Finset.mem_image.mp hy
+        exact Finset.mem_erase.mpr ⟨mul_ne_zero (hzero _) (pow_ne_zero _ hω0),
+          Finset.mem_univ _⟩
+      have hcard := Finset.card_le_card himg
+      rw [Finset.card_image_of_injective _ hpt_inj, Finset.card_univ, Fintype.card_prod,
+        Fintype.card_fin, Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ]
+        at hcard
+      exact hcard
+  have hk_ns : k ≤ Fintype.card ι * s := by rw [Nat.mul_comm]; exact hk_le
+  have hkq : k ≤ Fintype.card F - 1 := by omega
+  -- The FRS encoder and its injectivity on `degreeLT F k`.
+  set enc := ReedSolomon.Folded.frsEvalOnPoints domain s ω with henc
+  have hencinj := ReedSolomon.Folded.frsEvalOnPoints_domRestrict_injective
+    (k := k) (s := s) domain ω hadm hω0 hk_le
+  have hker : ∀ p ∈ Polynomial.degreeLT F k, enc p = 0 → p = 0 := by
+    intro p hp hp0
+    have h : (⟨p, hp⟩ : ↥(Polynomial.degreeLT F k)) = 0 := by
+      apply hencinj
+      simp only [LinearMap.domRestrict_apply, map_zero]
+      exact hp0
+    exact congrArg Subtype.val h
+  -- The message-side lift `B` of `A`.
+  set B : Submodule F (Polynomial F) :=
+    Polynomial.degreeLT F k ⊓ Submodule.comap enc A with hBdef
+  have hBmem : ∀ p : Polynomial F, p ∈ B ↔ (p ∈ Polynomial.degreeLT F k ∧ enc p ∈ A) := by
+    intro p
+    simp only [hBdef, Submodule.mem_inf, Submodule.mem_comap]
+  have hBmap : Submodule.map enc B = A := by
+    ext a
+    simp only [Submodule.mem_map]
+    constructor
+    · rintro ⟨p, hp, rfl⟩
+      exact ((hBmem p).mp hp).2
+    · intro ha
+      have haC := hAC ha
+      rw [ReedSolomon.Folded.frsCode, ← henc, Submodule.mem_map] at haC
+      obtain ⟨p, hp, hpa⟩ := haC
+      exact ⟨p, (hBmem p).mpr ⟨hp, by rw [hpa]; exact ha⟩, hpa⟩
+  have hrkB : Module.finrank F ↥B = σ := by
+    rw [hσdef]
+    exact LinearMap.finrank_eq_of_map_eq enc B A
+      (fun p hp h0 => hker p ((hBmem p).mp hp).1 h0) hBmap
+  have : FiniteDimensional F ↥(Polynomial.degreeLT F k) :=
+    FiniteDimensional.of_injective (Polynomial.degreeLTEquiv F k).toLinearMap
+      (Polynomial.degreeLTEquiv F k).injective
+  have : FiniteDimensional F ↥B := Submodule.finiteDimensional_of_le
+      (S₂ := Polynomial.degreeLT F k) (by rw [hBdef]; exact inf_le_left)
+  -- A basis of `B`, viewed as a family of low-degree polynomials.
+  set bas : Module.Basis (Fin σ) F ↥B := (Module.finBasis F ↥B).reindex (finCongr hrkB) with hbas
+  set P : Fin σ → Polynomial F := fun j => ((bas j : ↥B) : Polynomial F) with hPdef
+  have hPdeg : ∀ j, P j ∈ Polynomial.degreeLT F k := fun j => ((hBmem _).mp (bas j).2).1
+  have hPind : LinearIndependent F P :=
+    bas.linearIndependent.map' B.subtype (Submodule.ker_subtype B)
+  -- The folded Wronskian of that basis.
+  set W := Polynomial.foldedWronskian σ ω P with hWdef
+  have hWne : W ≠ 0 :=
+    Polynomial.foldedWronskian_ne_zero_of_linearIndependent hω_gen hkq P hPdeg hPind
+  have hWdegle : W.natDegree ≤ σ * (k - 1) :=
+    Polynomial.natDegree_foldedWronskian_le σ ω P (k - 1) (fun j => by
+      have := ReedSolomon.natDegree_lt_of_mem_degreeLT (hPdeg j)
+      omega)
+  -- The message-side lift of the block subspaces `A ⊓ ker (proj i)`.
+  set N : ι → Submodule F (Polynomial F) := fun i =>
+    B ⊓ Submodule.comap enc
+      (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) with hNdef
+  have hNle : ∀ i, N i ≤ B := fun i => inf_le_left
+  have hNmem : ∀ (i : ι) (p : Polynomial F), p ∈ N i ↔
+      (p ∈ B ∧ ∀ j : Fin s, p.eval (domain i * ω ^ (j : ℕ)) = 0) := by
+    intro i p
+    constructor
+    · intro hp
+      obtain ⟨h1, h2⟩ := Submodule.mem_inf.mp hp
+      exact ⟨h1, fun j => congrFun (LinearMap.mem_ker.mp (Submodule.mem_comap.mp h2)) j⟩
+    · rintro ⟨h1, h2⟩
+      refine Submodule.mem_inf.mpr ⟨h1, Submodule.mem_comap.mpr (LinearMap.mem_ker.mpr ?_)⟩
+      funext j
+      exact h2 j
+  have hNmap : ∀ i : ι, Submodule.map enc (N i) =
+      A ⊓ (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) := by
+    intro i
+    ext a
+    simp only [Submodule.mem_map, Submodule.mem_inf]
+    constructor
+    · rintro ⟨p, hp, rfl⟩
+      obtain ⟨h1, h2⟩ := Submodule.mem_inf.mp hp
+      exact ⟨((hBmem p).mp h1).2, Submodule.mem_comap.mp h2⟩
+    · rintro ⟨haA, hak⟩
+      rw [← hBmap] at haA
+      obtain ⟨p, hpB, hpa⟩ := Submodule.mem_map.mp haA
+      exact ⟨p, Submodule.mem_inf.mpr ⟨hpB, Submodule.mem_comap.mpr (by rw [hpa]; exact hak)⟩, hpa⟩
+  have hNrk : ∀ i : ι, Module.finrank F ↥(N i) = Module.finrank F ↥(A ⊓
+      (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i))) :=
+    fun i => LinearMap.finrank_eq_of_map_eq enc (N i) _
+      (fun p hp h0 => hker p ((hBmem p).mp ((hNmem i p).mp hp).1).1 h0) (hNmap i)
+  -- Each block contributes a root of multiplicity `≥ dim` at each of `s − σ + 1` points.
+  have hmult : ∀ (i : ι) (m : ℕ), m < s - σ + 1 →
+      (Polynomial.X - Polynomial.C (domain i * ω ^ m)) ^ (Module.finrank F ↥(A ⊓
+        (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)))) ∣ W := by
+    intro i m hm
+    rw [← hNrk i, hWdef]
+    refine pow_dvd_foldedWronskian B bas (N i) (hNle i) _ ?_
+    intro Q hQ i'
+    rw [Polynomial.dvd_iff_isRoot, Polynomial.IsRoot.def, Polynomial.eval_comp]
+    simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X]
+    have hidx : (i' : ℕ) + m < s := by have := i'.isLt; omega
+    have hv := ((hNmem i Q).mp hQ).2 ⟨(i' : ℕ) + m, hidx⟩
+    rw [show ω ^ ((i' : ℕ)) * (domain i * ω ^ m) = domain i * ω ^ ((i' : ℕ) + m) by
+      rw [pow_add]; ring]
+    exact hv
+  -- Count: the `n(s − σ + 1)` distinct roots against `deg W ≤ σ(k − 1)`.
+  set T : Finset (ι × ℕ) := Finset.univ ×ˢ Finset.range (s - σ + 1) with hTdef
+  have hTmem : ∀ x ∈ T, x.2 < s - σ + 1 := by
+    intro x hx
+    exact Finset.mem_range.mp (Finset.mem_product.mp hx).2
+  have hfinj : Set.InjOn (fun x : ι × ℕ => domain x.1 * ω ^ x.2) ↑T := by
+    rintro ⟨a, m⟩ ha ⟨b, m'⟩ hb hab
+    have hm := hTmem (a, m) (Finset.mem_coe.mp ha)
+    have hm' := hTmem (b, m') (Finset.mem_coe.mp hb)
+    have hms : m < s := by simp only at hm; omega
+    have hms' : m' < s := by simp only at hm'; omega
+    have h := hpt_inj (a₁ := (a, (⟨m, hms⟩ : Fin s))) (a₂ := (b, (⟨m', hms'⟩ : Fin s)))
+      (by simpa using hab)
+    simp only [Prod.mk.injEq, Fin.mk.injEq] at h
+    exact Prod.ext h.1 h.2
+  have hcount : ∑ x ∈ T, Module.finrank F ↥(A ⊓
+      (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) x.1))) ≤
+      W.natDegree := by
+    calc ∑ x ∈ T, Module.finrank F ↥(A ⊓
+          (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) x.1)))
+        ≤ ∑ x ∈ T, W.rootMultiplicity (domain x.1 * ω ^ x.2) := by
+          refine Finset.sum_le_sum fun x hx => ?_
+          exact (Polynomial.le_rootMultiplicity_iff hWne).mpr (hmult x.1 x.2 (hTmem x hx))
+      _ = ∑ a ∈ T.image (fun x : ι × ℕ => domain x.1 * ω ^ x.2), W.rootMultiplicity a :=
+          (Finset.sum_image (f := fun a : F => W.rootMultiplicity a)
+            (g := fun x : ι × ℕ => domain x.1 * ω ^ x.2) (s := T) hfinj).symm
+      _ ≤ W.natDegree := Polynomial.sum_rootMultiplicity_le_natDegree _
+  have hprod : ∑ x ∈ T, Module.finrank F ↥(A ⊓
+      (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) x.1))) =
+      (s - σ + 1) * ∑ i : ι, Module.finrank F ↥(A ⊓
+        (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i))) := by
+    rw [hTdef, Finset.sum_product, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    change (∑ _y ∈ Finset.range (s - σ + 1), Module.finrank F ↥(A ⊓
+        (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)))) = _
+    rw [Finset.sum_const, Finset.card_range, smul_eq_mul]
+  rw [← hprod]
+  exact le_trans hcount hWdegle
 
-/-- **Proven reduction: the structural data discharges the (Lemma-12-free) Claim-16
-witness.** `GK16Claim16StructuralData → GK16Claim16WitnessIndep`. The per-coordinate
-multiplicity bound `dim A_i ≤ rootMultiplicity (domain i) (foldedWronskian P ω)` is exactly
-the proven Claim-16 engine `ArkLib.FRS.GK16.claim16_rootMultiplicity_ge` applied to the
-adapted recombination `Q^{(i)}` and index set `T_i`: column divisibility by
-`(X − domain i)` factors `(X − domain i)^{|T_i|}` out of the folded Wronskian, and
-`|T_i| = dim A_i`. The realizing family, its independence, and the `ω`-separation are passed
-through verbatim. The folded Wronskian's nonvanishing (Lemma 12) is *not* needed here as a
-hypothesis — it is supplied internally to the engine from independence + `hω_sep`.
-Axiom-clean, `sorry`-free. -/
-theorem gk16Claim16WitnessIndep_of_structuralData
-    {ι : Type} [Fintype ι] [DecidableEq ι]
-    {F : Type} [Field F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
+/-- The `1/n`-relaxation from the `(k-1)`-level profile to [ABF26] Theorem 2.18's printed
+profile `τ r = s * ρ / (s - r + 1)`, shared by `isSubspaceDesign_frsCode` and
+`isSubspaceDesign_umCode`. -/
+private lemma isSubspaceDesign_of_sub_one
+    {ι : Type*} [Fintype ι] [Nonempty ι] {F : Type*} [Field F] {s : ℕ}
     (C : Submodule F (ι → Fin s → F))
-    (hdata : GK16Claim16StructuralData domain k s ω C) :
-    GK16Claim16WitnessIndep domain k s ω C := by
-  intro A hA_le
-  obtain ⟨P, hP_deg, hP_indep, hω_sep, hcoord⟩ := hdata A hA_le
-  refine ⟨P, hP_deg, hP_indep, hω_sep, ?_⟩
-  intro i
-  obtain ⟨Q, c, T, hc_det, hQ_rec, hT_card, hT_vanish⟩ := hcoord i
-  -- The folded Wronskian of `P` is nonzero (Lemma 12 hard direction, discharged).
-  have hL_ne : ArkLib.FRS.GK16.foldedWronskian P ω ≠ 0 :=
-    ArkLib.FRS.GK16.foldedWronskian_ne_zero_of_linearIndependent P ω hP_indep hω_sep
-  -- Apply the proven Claim-16 engine to the adapted recombination at coordinate `i`.
-  have hbound :=
-    ArkLib.FRS.GK16.claim16_rootMultiplicity_ge P Q ω (domain i) c hc_det hQ_rec hL_ne T
-      hT_vanish
-  rw [hT_card] at hbound
-  exact hbound
+    (h : IsSubspaceDesign s (fun r ↦
+      if r ∈ Finset.Icc 1 s then
+        (s * (LinearCode.alphabetRate C : ℝ) - 1 / Fintype.card ι) / (s - r + 1)
+      else 1) C) :
+    IsSubspaceDesign s (fun r ↦
+      if r ∈ Finset.Icc 1 s then
+        s * (LinearCode.alphabetRate C : ℝ) / (s - r + 1)
+      else 1) C := by
+  refine h.mono_tau fun r => ?_
+  by_cases hr : r ∈ Finset.Icc 1 s
+  · rw [ite_eq_left hr, ite_eq_left hr, sub_div]
+    have hb_pos : (0 : ℝ) < (s : ℝ) - r + 1 := by
+      have : (r : ℝ) ≤ s := by exact_mod_cast (Finset.mem_Icc.mp hr).2
+      linarith only [this]
+    have hdrop : (0 : ℝ) ≤ (1 / (Fintype.card ι : ℝ)) / ((s : ℝ) - r + 1) :=
+      div_nonneg (by positivity) hb_pos.le
+    linarith only [hdrop]
+  · rw [ite_eq_right hr, ite_eq_right hr]
 
-/-- **Composed reduction: the structural data discharges the degree budget.**
-`GK16Claim16StructuralData → GK16DegreeBudget`, via
-`gk16Claim16WitnessIndep_of_structuralData` followed by
-`gk16DegreeBudget_of_claim16WitnessIndep`. With the multiplicity engine and Lemma 12 both
-proven, the entire GK16 §4 degree budget — hence `frs_is_subspaceDesign_gk16` — reduces to
-the single structural-transport residual `GK16Claim16StructuralData` (encoder isomorphism +
-adapted basis). Axiom-clean. -/
-theorem gk16DegreeBudget_of_structuralData
-    {ι : Type} [Fintype ι] [DecidableEq ι]
-    {F : Type} [Field F] [DecidableEq F]
+/-- Folded Reed-Solomon codes are subspace designs for [ABF26] Theorem 2.18's printed profile
+
+  `τ r = s * ρ / (s - r + 1)` for `1 ≤ r ≤ s`, and `τ r = 1` otherwise.
+
+This is the `1/n`-relaxation of `isSubspaceDesign_frsCode_sub_one`, which is what the Wronskian
+count actually proves. **Consumers proving list-decodability up to capacity need the sharp
+version**: [CZ25, Theorem B.5] assumes the design property at the `(k-1)` level and its proof
+derives a contradiction from a design sum of exactly `ℓk/(s-ℓ+1)`, so at this profile there is no
+contradiction to derive — see `CodingTheory.subspaceDesign_lambda_le`. -/
+theorem isSubspaceDesign_frsCode
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    {F : Type*} [Field F] [Fintype F]
     (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (C : Submodule F (ι → Fin s → F))
-    (hdata : GK16Claim16StructuralData domain k s ω C) :
-    GK16DegreeBudget k s C :=
-  gk16DegreeBudget_of_claim16WitnessIndep domain k s ω C
-    (gk16Claim16WitnessIndep_of_structuralData domain k s ω C hdata)
-
-/-- **Residual ② CLOSED — the structural-transport residual is now a theorem.** The named
-residual `GK16Claim16StructuralData domain k s ω (frsCode …)` is **discharged** (built, not
-assumed) under the genuine, documented side conditions:
-
-* `hinj` — the FRS-encoder isomorphism hypothesis (injectivity of `frsEvalOnPoints`, the
-  `dim_frsCode` hypothesis; for `(L, s)`-admissible `ω` use its restricted form, see
-  `frs_is_subspaceDesign_gk16_of_admissible`);
-* `hω_sep` — the `ω`-degree-separation admissibility (the genuinely-necessary hypothesis of
-  GK16 Lemma 12, `foldedWronskian_ne_zero_of_linearIndependent`);
-* `hCs : finrank C ≤ s` — the design-range side condition `dim A ≤ s` (here pushed onto the
-  whole code so that *every* subspace `A ≤ C` is in range; on the live design path this is
-  the per-`A` range `dim A ≤ r ≤ s` of the `r ∈ [s]` branch, cf.
-  `frs_is_subspaceDesign_gk16_of_injective`).
-
-The per-`A` construction is `ArkLib.FRS.GK16.gk16Claim16StructuralData_at`
-(`ToMathlib/GK16Structural.lean`): the realizing family is a basis of the polynomial
-pre-image `A' := comap encoder A ⊓ degreeLT F k` (encoder isomorphism `A' ≃ A`), and per
-coordinate the adapted invertible recombination extends a basis of the pre-image
-`A'_i := comap encoder (A ⊓ ker(eval_i)) ⊓ degreeLT F k` to a basis of `A'`, whose
-`dim A_i = dim A'_i` distinguished members vanish on the whole `s`-fold orbit of `domain i`
-(`dim A ≤ s` makes the `dim A` dilation exponents genuine fold indices `< s`). Axiom-clean,
-`sorry`-free. Composed with `gk16DegreeBudget_of_structuralData` this discharges the entire
-`GK16DegreeBudget` residual on the design range. -/
-theorem gk16Claim16StructuralData_holds
-    {ι : Type} [Fintype ι] [DecidableEq ι]
-    {F : Type} [Field F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (hinj : Function.Injective (ReedSolomon.Folded.frsEvalOnPoints domain s ω))
-    (hk : 1 ≤ k)
-    (hω_sep : ∀ {n : ℕ} (Q : Fin n → Polynomial F), (∀ j, Q j ≠ 0) →
-        Function.Injective (fun j => (Q j).natDegree) →
-        Function.Injective (fun j => ω ^ (Q j).natDegree))
-    (hCs : Module.finrank F (ReedSolomon.Folded.frsCode domain k s ω) ≤ s) :
-    GK16Claim16StructuralData domain k s ω (ReedSolomon.Folded.frsCode domain k s ω) := by
-  intro A hA_le
-  have hAs : Module.finrank F A ≤ s := le_trans (Submodule.finrank_mono hA_le) hCs
-  exact ArkLib.FRS.GK16.gk16Claim16StructuralData_at domain k s ω hinj hk A hA_le hAs
-    (fun Q => hω_sep Q)
-
-/-- **ABF26 Theorem 2.18 [GK16], FRS half** (reduced to the GK16 §4 degree-budget
-residual `GK16DegreeBudget`; `s`-factor rate bug repaired). Folded Reed-Solomon codes are
-τ-subspace-design for
-
-  `τ(r) := (k-1)/n`   for `r ∈ [s] = {1, …, s}`,   and   `τ(r) := 1`   otherwise,
-
-*given* the residual `GK16DegreeBudget k s (frsCode …)` (which packages the two deep gaps
-①② below). The rate-arithmetic reduction itself is **fully proven, axiom-clean**: the
-`r ∈ [s]` branch divides the degree budget by `n`; the `r ∉ [s]` branch (`τ = 1`) holds
-**unconditionally** from `A_i ≤ A`.
-
-**Statement repair (2026-06-05, `s`-factor rate bug).** The pre-repair statement used
-`τ(r) := s·k / n / (s - r + 1)`, inheriting the **same `s`-factor inflation** as the
-pre-repair L2.17 (cf. `subspaceDesign_tau_lower`). ABF26 Definition 2.5 fixes the rate of
-a code over alphabet `Σ = F^s` as `ρ = log_|Σ| |C| / n = k/(s·n)`, so the paper's
-`τ(r) = s·ρ/(s-r+1) = k/(n·(s-r+1))`. The old Lean formula `s·k/(n·(s-r+1))` is `s` times
-that — false for `s ≥ 2` by the same countermodel that refuted L2.17 (the full code
-`(F^s)^n`, genuine profile `≤ 1 - 1/n`). The old docstring's claim "`τ(1) = ρ`" was itself
-inconsistent with the written formula (which gives `τ(1) = k/n = s·ρ`).
-
-**What `τ` the formalized spine supports.** The verified GK16 §4 spine bounds
-`∑_i dim A_i ≤ (dim A)·(k-1)`, which justifies exactly `τ(r) ≥ (k-1)/n` — independent of
-`r`. We therefore state the **provable** repaired profile `τ(r) = (k-1)/n` on `[s]`. This
-already implies the L2.17 lower bound `τ(r) ≥ ρ - 1/n = k/(s·n) - 1/n` (since
-`(k-1)/n ≥ k/(s·n) - 1/n` for `s ≥ 1`). The paper's finer `(s-r+1)` denominator is **not**
-justified by the crude degree budget alone; recovering it needs the sharper per-point
-bound `rootMultiplicity ≤ s - dim A_i` of GK16 Claim 15 (a strengthening of residual ②),
-tracked separately.
-
-**The residual `GK16DegreeBudget k s (frsCode …)` packages two genuine, deep gaps**
-(both pinned precisely; neither faked). The spine's verified tail
-`∑_i rootMultiplicity (domain i) L ≤ (dim A)·(k-1)` is **proven, axiom-clean**:
-`ArkLib.FRS.GK16.sum_rootMultiplicity_foldedWronskian_le` (file `GK16DegreeBudget.lean`),
-which chains `ArkLib.FRS.GK16.natDegree_foldedWronskian_le` (`deg L ≤ s·(k-1)`,
-`ProximityPrizeLeaves.lean`) with `Polynomial.sum_rootMultiplicity_le_natDegree`
-(`∑ over distinct points of rootMultiplicity ≤ natDegree`, `GK16RootCounting.lean`).
-
-**Both deep gaps are now closed.** Residual ① (GK16 Lemma 12) and residual ② (GK16 Claim 16,
-including the structural encoder-isomorphism + adapted-basis transport) are both proven,
-axiom-clean — so the FRS half is unconditional on the residual via the `_of_*` theorems below.
-Residual ① (GK16 Lemma 12) is **fully closed**:
-
-① **GK16 Lemma 12, hard direction** — `LinearIndependent F P → foldedWronskian P ω ≠ 0`,
-   needed to know `L ≠ 0`. **NOW A THEOREM** (`GK16Lemma12.lean`, all axiom-clean,
-   `[propext, Classical.choice, Quot.sound]` only):
-   `ArkLib.FRS.GK16.foldedWronskian_ne_zero_of_linearIndependent` — for any linearly
-   independent `P` over a field, if `ω` separates the degrees of every nonzero
-   distinct-degree family (the genuinely-necessary admissibility hypothesis `hω_sep`),
-   then `foldedWronskian P ω ≠ 0`. The unconditional engine is
-   `ArkLib.FRS.GK16.foldedWronskian_ne_zero_of_distinct_natDegree` (top-coefficient
-   extraction: the coefficient of `X ^ (∑ d j)` is
-   `(∏ leadingCoeff (P j)) · det (vandermonde (ω ^ d ·)) ≠ 0`, see
-   `coeff_foldedWronskian_sum_natDegree`), reduced to the general case by the
-   *Gaussian-elimination-on-degrees* echelon step
-   `ArkLib.FRS.GK16.gk16Lemma12HardResidual_holds` (every independent family is an
-   invertible recombination of a distinct-degree one;
-   `exists_distinctDegree_recombination` in `ToMathlib/GK16Finish.lean`) composed with
-   the change-of-basis identity `ArkLib.FRS.GK16.foldedWronskian_change_basis`.
-   Supporting facts:
-   - **Statement-bug found and kernel-refuted.** The *bare* statement (no hypothesis on
-     `ω`) is **false**: at `ω = 1` all dilation rows coincide so the folded Wronskian
-     vanishes for `s ≥ 2` even for independent `P`
-     (`ArkLib.FRS.GK16.foldedWronskian_eq_zero_of_one`,
-     `ArkLib.FRS.GK16.not_lemma12_bare`). A multiplicative-order hypothesis on `ω`
-     (admissibility) is genuinely required, and is exactly the `hω_sep` input above.
-   - **Vandermonde base case** (`foldedWronskian_monomial_ne_zero`) and **change-of-basis
-     F-linearity** (`foldedWronskian_change_basis`) feed the engine above.
-   This `L ≠ 0` clause is discharged from independence + `hω_sep` in
-   `gk16Claim16Witness_of_indep` / `gk16DegreeBudget_of_claim16WitnessIndep`, so the
-   Theorem-2.18 residual no longer contains Lemma 12.
-   The *easy* direction (`≠ 0 → LinearIndependent`) is in
-   `ArkLib.FRS.GK16.gk16_folded_wronskian_nonvanishing` (`GK16Wronskian.lean`).
-
-② **GK16 Claim 16** — `rootMultiplicity (domain i) L ≥ dim (A ⊓ ker(eval_i))`: the link
-   from a vanishing subspace to a high-multiplicity root of `L`. **The mathematical core is
-   now proven, axiom-clean** (`ArkLib.FRS.GK16.claim16_rootMultiplicity_ge`): pass to an
-   `A_i`-adapted basis (an invertible recombination `Q^{(i)}` of `P`), where each of the
-   `dim A_i` adapted columns of the folded Wronskian is `(X − domain i)`-divisible
-   (orbit-vanishing), so the column-divisibility determinant lemma
-   `ArkLib.FRS.GK16.pow_dvd_det_of_col_dvd` factors `(X − domain i)^{dim A_i}` out of
-   `det [Q^{(i)} l (ω^b X)] = foldedWronskian Q^{(i)} ω`; transporting across the nonzero
-   change-of-basis constant (`foldedWronskian_change_basis`, `rootMultiplicity_C_mul`)
-   yields the bound for `foldedWronskian P ω`.
-
-The last structural gap — the **encoder-isomorphism + adapted-basis transport**
-(`A ≤ frsCode ↔ U ⊆ degreeLT F k`, carrying `finrank (A ⊓ ker(eval_i)) = dim (U ∩ H_{domain
-i})` and supplying, per `i`, the adapted invertible recombination `Q^{(i)}` with its
-`dim A_i`-element orbit-vanishing index set, presupposing the design-range side condition
-`dim A ≤ s`) — is now **CLOSED** (written, axiom-clean), in two independent forms:
-
-* `ArkLib.FRS.GK16.gk16Claim16StructuralData_at` (`ToMathlib/GK16Structural.lean`) constructs,
-  for each `A ≤ frsCode` with `dim A ≤ s`, exactly the per-`A` existential body of the named
-  residual `GK16Claim16StructuralData` (realizing family = basis of the polynomial pre-image
-  `A' := comap encoder A ⊓ degreeLT F k`; per coordinate, the adapted recombination extends a
-  basis of the pre-image `A'_i` to a basis of `A'`, with orbit-vanishing on the `dim A ≤ s`
-  dilation range), under the two documented side conditions (encoder injectivity `hinj`,
-  design range `dim A ≤ s`) and the genuinely-necessary `ω`-degree separation `hω_sep`.
-* `ReedSolomon.Folded.frs_degreeBudget_of_finrank_le` /
-  `…frs_degreeBudget_of_finrank_le_admissible` (`GK16FrsTransport.lean`, `GK16Admissible.lean`)
-  package the same transport directly into the per-`A` budget `∑_i dim A_i ≤ (dim A)(k-1)` on
-  the `dim A ≤ s` range, feeding the proven Claim-16 engine `claim16_rootMultiplicity_ge`.
-
-Consequently the budget hypothesis is **no longer needed** on the design range and the FRS
-half is **unconditional on the residual**: `frs_is_subspaceDesign_gk16_of_injective` (under
-restricted encoder injectivity + bounded `hω_sep`) and `frs_is_subspaceDesign_gk16_of_admissible`
-(under `Admissible L s ω` + `ω ≠ 0` + `k ≤ s·|ι|` + `k ≤ orderOf ω`) prove `IsSubspaceDesign`
-with the budget supplied from the transport above on the `r ∈ [s]` (i.e. `dim A ≤ s`) branch
-and `τ = 1` unconditionally off `[s]`. This `frs_is_subspaceDesign_gk16` theorem retains the
-abstract residual hypothesis `GK16DegreeBudget` for callers that wish to supply it directly;
-for the discharged statements use the two `_of_*` theorems. The abstract reduction chain
-`GK16Claim16StructuralData → GK16DegreeBudget` (via `gk16DegreeBudget_of_structuralData`) and
-the intermediate witness `GK16Claim16WitnessIndep` (discharged by
-`gk16Claim16WitnessIndep_of_structuralData`) remain available. -/
-theorem frs_is_subspaceDesign_gk16
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (L : Finset F) (_hL_dom : ∀ i : ι, domain i ∈ L)
-    (_hω : ReedSolomon.Folded.Admissible L s ω)
-    (h_residual : GK16DegreeBudget k s (ReedSolomon.Folded.frsCode domain k s ω)) :
+    (hFn : Fintype.card ι < Fintype.card F)
+    (hω_adm : ReedSolomon.Folded.Admissible (Finset.univ.map domain) s ω)
+    (hω_gen : orderOf ω = Fintype.card F - 1) :
     let τ : ℕ → ℝ := fun r ↦
-      if r ∈ Finset.Icc 1 s then (k - 1 : ℝ) / Fintype.card ι else 1
+      if r ∈ Finset.Icc 1 s then
+        s * (LinearCode.alphabetRate (ReedSolomon.Folded.frsCode domain k s ω) : ℝ) /
+          (s - r + 1)
+      else 1
     IsSubspaceDesign s τ (ReedSolomon.Folded.frsCode domain k s ω) := by
-  intro τ r A hA_le _hA_rank
-  have hn_pos : 0 < Fintype.card ι := Fintype.card_pos
-  have hn_posR : (0 : ℝ) < Fintype.card ι := by exact_mod_cast hn_pos
-  haveI : FiniteDimensional F (ι → Fin s → F) := inferInstance
-  -- The per-coordinate vanishing subspaces `A_i := A ⊓ ker(eval_i)`.
-  set Ai : ι → Submodule F (ι → Fin s → F) := fun i =>
-    A ⊓ (LinearMap.ker
-      (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) with hAi
-  -- Each `A_i ≤ A`, so `dim A_i ≤ dim A` (the ambient space is finite-dimensional).
-  have hAi_rank_le : ∀ i, Module.finrank F (Ai i) ≤ Module.finrank F A := fun i =>
-    Submodule.finrank_mono (inf_le_left)
-  by_cases hr : r ∈ Finset.Icc 1 s
-  · -- Range `r ∈ [s]`: divide the GK16 §4 budget `∑_i dim A_i ≤ (dim A)·(k-1)` by `n`.
-    simp only [τ, if_pos hr]
-    have hbudget : (∑ i : ι, Module.finrank F (Ai i)) ≤ Module.finrank F A * (k - 1) :=
-      h_residual A hA_le
-    have hbudgetR :
-        (∑ i : ι, (Module.finrank F (Ai i) : ℝ)) ≤
-          (Module.finrank F A : ℝ) * ((k : ℝ) - 1) := by
-      by_cases hk0 : k = 0
-      · -- `k = 0`: the code is `⊥`, so `A = ⊥` and every `dim A_i = 0`.
-        subst hk0
-        have hC0 : ReedSolomon.Folded.frsCode domain 0 s ω = ⊥ := by
-          have hdLT : Polynomial.degreeLT F 0 = ⊥ := by
-            rw [eq_bot_iff]
-            intro p hp
-            rw [Polynomial.mem_degreeLT] at hp
-            rw [Submodule.mem_bot, ← Polynomial.degree_eq_bot]
-            exact Nat.WithBot.lt_zero_iff.mp (by simpa using hp)
-          unfold ReedSolomon.Folded.frsCode
-          rw [hdLT, Submodule.map_bot]
-        have hAbot : A = ⊥ := le_bot_iff.mp (hA_le.trans hC0.le)
-        have hzero : ∀ i, Module.finrank F (Ai i) = 0 := by
-          intro i
-          have : Ai i = ⊥ := by rw [hAi, hAbot]; simp
-          rw [this]; simp
-        have hAr : Module.finrank F A = 0 := by rw [hAbot]; simp
-        simp [hzero, hAr]
-      · have hk1 : 1 ≤ k := Nat.one_le_iff_ne_zero.mpr hk0
-        calc (∑ i : ι, (Module.finrank F (Ai i) : ℝ))
-            = ((∑ i : ι, Module.finrank F (Ai i) : ℕ) : ℝ) := by push_cast; rfl
-          _ ≤ ((Module.finrank F A * (k - 1) : ℕ) : ℝ) := by exact_mod_cast hbudget
-          _ = (Module.finrank F A : ℝ) * ((k : ℝ) - 1) := by
-                push_cast [Nat.cast_sub hk1]; ring
-    rw [div_le_iff₀ hn_posR]
-    calc (∑ i : ι, (Module.finrank F (Ai i) : ℝ))
-        ≤ (Module.finrank F A : ℝ) * ((k : ℝ) - 1) := hbudgetR
-      _ = (Module.finrank F A : ℝ) * ((k - 1 : ℝ) / Fintype.card ι) * Fintype.card ι := by
-            field_simp
-  · -- Range `r ∉ [s]`: `τ(r) = 1`, proven unconditionally from `A_i ≤ A`.
-    simp only [τ, if_neg hr, mul_one]
-    rw [div_le_iff₀ hn_posR]
-    calc (∑ i : ι, (Module.finrank F (Ai i) : ℝ))
-        ≤ (∑ _i : ι, (Module.finrank F A : ℝ)) := by
-          refine Finset.sum_le_sum (fun i _ => ?_)
-          exact_mod_cast hAi_rank_le i
-      _ = (Module.finrank F A : ℝ) * Fintype.card ι := by
-          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_comm]
+  exact isSubspaceDesign_of_sub_one _
+    (isSubspaceDesign_frsCode_sub_one domain k s ω hFn hω_adm hω_gen)
 
-/-- **ABF26 Theorem 2.18 [GK16], FRS half — structural residual form.**
-This packages the current proof frontier into the single residual
-`GK16Claim16StructuralData`: the structural encoder-isomorphism/adapted-basis transport
-discharges `GK16DegreeBudget` by `gk16DegreeBudget_of_structuralData`, and the
-rate-arithmetic theorem `frs_is_subspaceDesign_gk16` then gives the repaired
-`τ(r) = (k-1)/n` profile on `[s]` (and `1` off `[s]`). -/
-theorem frs_is_subspaceDesign_gk16_of_structuralData
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (L : Finset F) (hL_dom : ∀ i : ι, domain i ∈ L)
-    (hω : ReedSolomon.Folded.Admissible L s ω)
-    (hdata : GK16Claim16StructuralData domain k s ω
-      (ReedSolomon.Folded.frsCode domain k s ω)) :
+/-- Univariate multiplicity codes are subspace designs for the profile
+
+  `τ r = s * ρ / (s - r + 1)` for `1 ≤ r ≤ s`, and `τ r = 1` otherwise,
+
+where `ρ` is the alphabet-normalized rate `LinearCode.alphabetRate (umCode domain k s)`.
+
+As in `isSubspaceDesign_frsCode`, `dim (umCode domain k s) = min k (s * n)`, so the
+statement stays exact in the saturated regime `k > s * n`, where `ρ = 1` makes it vacuous.
+
+The characteristic hypothesis is what makes `d !` a unit for every `d < k`, so that the
+classical Wronskian of a basis of a space of polynomials of degree `< k` is nonzero. It is
+phrased as the disjunction `ringChar F = 0 ∨ k ≤ ringChar F` so that characteristic zero,
+where the argument is unchanged, is not excluded by `ringChar F = 0` forcing `k = 0`.
+
+No relation between `s` and `k` is needed: if `s > k` then every polynomial of degree `< k`
+with a root of multiplicity at least `s` is zero, so every lifted block kernel is `⊥` and
+the design sum vanishes.
+
+This is the `(k-1)`-level profile of [CZ25, Definition B.2] — one notch sharper than [ABF26]
+Theorem 2.18's printed `s * ρ / (s - r + 1)`, which `isSubspaceDesign_umCode` derives from it
+by `mono_tau`. The Wronskian root count below produces the sharp bound directly, and
+[CZ25, Theorem B.5] needs exactly it: see `CodingTheory.subspaceDesign_lambda_le`, which is
+false at the relaxed level.
+
+The proof lifts a test subspace and each of its block kernels through the injective
+multiplicity encoder. The classical Wronskian `W` of a basis of the resulting polynomial
+space is nonzero, and a lifted block kernel of dimension `t` contributes a root of `W` at
+its block point of multiplicity at least `(s - σ + 1) * t`, by
+`pow_dvd_classicalWronskian`. Summing over the distinct evaluation points and comparing
+with `deg W ≤ σ * (k - 1)` gives the design bound. -/
+theorem isSubspaceDesign_umCode_sub_one
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    {F : Type*} [Field F]
+    (domain : ι ↪ F) (k s : ℕ) (hchar : ringChar F = 0 ∨ k ≤ ringChar F) :
     let τ : ℕ → ℝ := fun r ↦
-      if r ∈ Finset.Icc 1 s then (k - 1 : ℝ) / Fintype.card ι else 1
-    IsSubspaceDesign s τ (ReedSolomon.Folded.frsCode domain k s ω) :=
-  frs_is_subspaceDesign_gk16 domain k s ω L hL_dom hω
-    (gk16DegreeBudget_of_structuralData domain k s ω
-      (ReedSolomon.Folded.frsCode domain k s ω) hdata)
+      if r ∈ Finset.Icc 1 s then
+        (s * (LinearCode.alphabetRate
+          (ReedSolomon.Multiplicity.umCode domain k s) : ℝ) - 1 / Fintype.card ι) / (s - r + 1)
+      else 1
+    IsSubspaceDesign s τ (ReedSolomon.Multiplicity.umCode domain k s) := by
+  classical
+  intro τ
+  refine isSubspaceDesign_sub_one_of_count _
+    (ReedSolomon.Multiplicity.dim_umCode_eq_min domain k s hchar)
+    fun A hAC hσ1 hσs hk1 hk_le ↦ ?_
+  set σ := Module.finrank F ↥A with hσdef
+  have : NeZero k := ⟨by omega⟩
+  set enc := ReedSolomon.Multiplicity.umEvalOnPoints domain s with henc
+  have hencinj := ReedSolomon.Multiplicity.umEvalOnPoints_domRestrict_injective
+    (k := k) (s := s) domain hchar hk_le
+  have hker : ∀ p ∈ Polynomial.degreeLT F k, enc p = 0 → p = 0 := by
+    intro p hp hp0
+    have h : (⟨p, hp⟩ : ↥(Polynomial.degreeLT F k)) = 0 := by
+      apply hencinj
+      simp only [LinearMap.domRestrict_apply, map_zero]
+      exact hp0
+    exact congrArg Subtype.val h
+  set B : Submodule F (Polynomial F) :=
+    Polynomial.degreeLT F k ⊓ Submodule.comap enc A with hBdef
+  have hBmem : ∀ p : Polynomial F, p ∈ B ↔
+      (p ∈ Polynomial.degreeLT F k ∧ enc p ∈ A) := by
+    intro p
+    simp only [hBdef, Submodule.mem_inf, Submodule.mem_comap]
+  have hBmap : Submodule.map enc B = A := by
+    ext a
+    simp only [Submodule.mem_map]
+    constructor
+    · rintro ⟨p, hp, rfl⟩
+      exact ((hBmem p).mp hp).2
+    · intro ha
+      have haC := hAC ha
+      rw [ReedSolomon.Multiplicity.umCode, ← henc, Submodule.mem_map] at haC
+      obtain ⟨p, hp, hpa⟩ := haC
+      exact ⟨p, (hBmem p).mpr ⟨hp, by rw [hpa]; exact ha⟩, hpa⟩
+  have hrkB : Module.finrank F ↥B = σ := by
+    rw [hσdef]
+    exact LinearMap.finrank_eq_of_map_eq enc B A
+      (fun p hp h0 => hker p ((hBmem p).mp hp).1 h0) hBmap
+  have : FiniteDimensional F ↥(Polynomial.degreeLT F k) :=
+    FiniteDimensional.of_injective (Polynomial.degreeLTEquiv F k).toLinearMap
+      (Polynomial.degreeLTEquiv F k).injective
+  have : FiniteDimensional F ↥B := Submodule.finiteDimensional_of_le
+      (S₂ := Polynomial.degreeLT F k) (by rw [hBdef]; exact inf_le_left)
+  set bas : Module.Basis (Fin σ) F ↥B :=
+    (Module.finBasis F ↥B).reindex (finCongr hrkB) with hbas
+  set P : Fin σ → Polynomial F := fun j => ((bas j : ↥B) : Polynomial F) with hPdef
+  have hPdeg : ∀ j, P j ∈ Polynomial.degreeLT F k :=
+    fun j => ((hBmem _).mp (bas j).2).1
+  have hPnatDegree : ∀ j, (P j).natDegree < k :=
+    fun j => ReedSolomon.natDegree_lt_of_mem_degreeLT (hPdeg j)
+  set W := Polynomial.classicalWronskian σ P with hWdef
+  have hWne : W ≠ 0 := by
+    rw [hWdef, hPdef]
+    exact Polynomial.classicalWronskian_ne_zero_of_basis bas
+      (fun j => hPnatDegree j) hchar
+  have hWdegle : W.natDegree ≤ σ * (k - 1) :=
+    Polynomial.natDegree_classicalWronskian_le σ P (k - 1) (fun j => by
+      have := hPnatDegree j
+      omega)
+  set N : ι → Submodule F (Polynomial F) := fun i =>
+    B ⊓ Submodule.comap enc
+      (LinearMap.ker (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) with hNdef
+  have hNle : ∀ i, N i ≤ B := fun i => inf_le_left
+  have hNmem : ∀ (i : ι) (p : Polynomial F), p ∈ N i ↔
+      (p ∈ B ∧ ∀ j : Fin s, (Polynomial.derivative^[j.val] p).eval (domain i) = 0) := by
+    intro i p
+    constructor
+    · intro hp
+      obtain ⟨h1, h2⟩ := Submodule.mem_inf.mp hp
+      exact ⟨h1, fun j => congrFun (LinearMap.mem_ker.mp (Submodule.mem_comap.mp h2)) j⟩
+    · rintro ⟨h1, h2⟩
+      refine Submodule.mem_inf.mpr ⟨h1, Submodule.mem_comap.mpr (LinearMap.mem_ker.mpr ?_)⟩
+      funext j
+      exact h2 j
+  have hNmap : ∀ i : ι, Submodule.map enc (N i) =
+      A ⊓ (LinearMap.ker
+        (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) := by
+    intro i
+    ext a
+    simp only [Submodule.mem_map, Submodule.mem_inf]
+    constructor
+    · rintro ⟨p, hp, rfl⟩
+      obtain ⟨h1, h2⟩ := Submodule.mem_inf.mp hp
+      exact ⟨((hBmem p).mp h1).2, Submodule.mem_comap.mp h2⟩
+    · rintro ⟨haA, hak⟩
+      rw [← hBmap] at haA
+      obtain ⟨p, hpB, hpa⟩ := Submodule.mem_map.mp haA
+      exact ⟨p, Submodule.mem_inf.mpr
+        ⟨hpB, Submodule.mem_comap.mpr (by rw [hpa]; exact hak)⟩, hpa⟩
+  have hNrk : ∀ i : ι, Module.finrank F ↥(N i) = Module.finrank F ↥(A ⊓
+      (LinearMap.ker (LinearMap.proj (R := F)
+        (φ := fun _ : ι ↦ Fin s → F) i))) :=
+    fun i => LinearMap.finrank_eq_of_map_eq enc (N i) _
+      (fun p hp h0 => hker p ((hBmem p).mp ((hNmem i p).mp hp).1).1 h0) (hNmap i)
+  have hmult : ∀ i : ι,
+      (Polynomial.X - Polynomial.C (domain i)) ^
+        ((s - σ + 1) * Module.finrank F ↥(A ⊓
+          (LinearMap.ker (LinearMap.proj (R := F)
+            (φ := fun _ : ι ↦ Fin s → F) i)))) ∣ W := by
+    intro i
+    rw [← hNrk i, hWdef]
+    refine pow_dvd_classicalWronskian B bas (N i) (hNle i) _ hσs ?_
+    intro q hq
+    apply ReedSolomon.Multiplicity.pow_dvd_of_eval_iterate_derivative_eq_zero
+      ((hBmem q).mp ((hNmem i q).mp hq).1).1 hchar
+    exact ((hNmem i q).mp hq).2
+  have hcount : ∑ i : ι, (s - σ + 1) * Module.finrank F ↥(A ⊓
+      (LinearMap.ker (LinearMap.proj (R := F)
+        (φ := fun _ : ι ↦ Fin s → F) i))) ≤ W.natDegree := by
+    calc ∑ i : ι, (s - σ + 1) * Module.finrank F ↥(A ⊓
+          (LinearMap.ker (LinearMap.proj (R := F)
+            (φ := fun _ : ι ↦ Fin s → F) i)))
+        ≤ ∑ a ∈ Finset.univ.map domain, W.rootMultiplicity a := by
+          rw [Finset.sum_map]
+          refine Finset.sum_le_sum fun i _ => ?_
+          exact (Polynomial.le_rootMultiplicity_iff hWne).mpr (hmult i)
+      _ ≤ W.natDegree := Polynomial.sum_rootMultiplicity_le_natDegree _
+  rw [Finset.mul_sum]
+  exact hcount.trans hWdegle
 
-/-- **ABF26 Theorem 2.18 [GK16], FRS half — residual `GK16DegreeBudget` discharged.**
-The folded RS code is τ-subspace-design for `τ(r) = (k-1)/n` on `[s]` (and `1` off `[s]`),
-*unconditionally on the degree-budget residual*, given only:
+/-- Univariate multiplicity codes are subspace designs for [ABF26] Theorem 2.18's printed
+profile
 
-* `hEinj` — injectivity of the FRS encoder `frsEvalOnPoints domain s ω` on `degreeLT F k`
-  (the encoder-isomorphism side condition; holds for `(L, s)`-admissible `ω` with
-  `k ≤ s·|L|`);
-* `hω_sep` — the degree-separation admissibility of `ω` (exactly the genuinely-necessary
-  hypothesis of GK16 Lemma 12, `foldedWronskian_ne_zero_of_linearIndependent`).
+  `τ r = s * ρ / (s - r + 1)` for `1 ≤ r ≤ s`, and `τ r = 1` otherwise.
 
-In contrast to `frs_is_subspaceDesign_gk16` (which assumes the bundled residual
-`GK16DegreeBudget`), here the budget is **proven**: for every `A ≤ frsCode` in the design
-range `finrank A ≤ s` (which is exactly the `r ∈ [s]` branch, since there
-`finrank A ≤ r ≤ s`), the encoder-transport theorem
-`ReedSolomon.Folded.frs_degreeBudget_of_finrank_le` supplies
-`∑_i dim A_i ≤ (dim A)·(k-1)` by realizing `A` as an independent degree-`< k` polynomial
-family and feeding the proven Claim-16 multiplicity engine an adapted recombination per
-coordinate. The `r ∉ [s]` branch (`τ = 1`) is unconditional. -/
-theorem frs_is_subspaceDesign_gk16_of_injective
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (hEinj : Function.Injective (ReedSolomon.Folded.frsEvalOnPoints domain s ω))
-    (hω_sep : ∀ {n : ℕ} (Q : Fin n → Polynomial F), (∀ j, Q j ≠ 0) →
-        Function.Injective (fun j => (Q j).natDegree) →
-        Function.Injective (fun j => ω ^ (Q j).natDegree)) :
+This is the `1/n`-relaxation of `isSubspaceDesign_umCode_sub_one`, which is what the Wronskian
+count actually proves; consumers proving list-decodability up to capacity need the sharp
+version. See `isSubspaceDesign_frsCode` for the folded Reed-Solomon counterpart. -/
+theorem isSubspaceDesign_umCode
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    {F : Type*} [Field F]
+    (domain : ι ↪ F) (k s : ℕ) (hchar : ringChar F = 0 ∨ k ≤ ringChar F) :
     let τ : ℕ → ℝ := fun r ↦
-      if r ∈ Finset.Icc 1 s then (k - 1 : ℝ) / Fintype.card ι else 1
-    IsSubspaceDesign s τ (ReedSolomon.Folded.frsCode domain k s ω) := by
-  intro τ r A hA_le hA_rank
-  have hn_pos : 0 < Fintype.card ι := Fintype.card_pos
-  have hn_posR : (0 : ℝ) < Fintype.card ι := by exact_mod_cast hn_pos
-  haveI : FiniteDimensional F (ι → Fin s → F) := inferInstance
-  set Ai : ι → Submodule F (ι → Fin s → F) := fun i =>
-    A ⊓ (LinearMap.ker
-      (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) with hAi
-  have hAi_rank_le : ∀ i, Module.finrank F (Ai i) ≤ Module.finrank F A := fun i =>
-    Submodule.finrank_mono (inf_le_left)
-  by_cases hr : r ∈ Finset.Icc 1 s
-  · -- Range `r ∈ [s]`: `finrank A ≤ r ≤ s`, so the proven encoder budget applies.
-    simp only [τ, if_pos hr]
-    obtain ⟨_, hrs⟩ := Finset.mem_Icc.mp hr
-    have hAs : Module.finrank F A ≤ s := le_trans hA_rank hrs
-    have hbudget : (∑ i : ι, Module.finrank F (Ai i)) ≤ Module.finrank F A * (k - 1) :=
-      ReedSolomon.Folded.frs_degreeBudget_of_finrank_le A hEinj hA_le hAs
-        (fun Q => hω_sep Q)
-    have hbudgetR :
-        (∑ i : ι, (Module.finrank F (Ai i) : ℝ)) ≤
-          (Module.finrank F A : ℝ) * ((k : ℝ) - 1) := by
-      by_cases hk0 : k = 0
-      · subst hk0
-        have hC0 : ReedSolomon.Folded.frsCode domain 0 s ω = ⊥ := by
-          have hdLT : Polynomial.degreeLT F 0 = ⊥ := by
-            rw [eq_bot_iff]
-            intro p hp
-            rw [Polynomial.mem_degreeLT] at hp
-            rw [Submodule.mem_bot, ← Polynomial.degree_eq_bot]
-            exact Nat.WithBot.lt_zero_iff.mp (by simpa using hp)
-          unfold ReedSolomon.Folded.frsCode
-          rw [hdLT, Submodule.map_bot]
-        have hAbot : A = ⊥ := le_bot_iff.mp (hA_le.trans hC0.le)
-        have hzero : ∀ i, Module.finrank F (Ai i) = 0 := by
-          intro i
-          have : Ai i = ⊥ := by rw [hAi, hAbot]; simp
-          rw [this]; simp
-        have hAr : Module.finrank F A = 0 := by rw [hAbot]; simp
-        simp [hzero, hAr]
-      · have hk1 : 1 ≤ k := Nat.one_le_iff_ne_zero.mpr hk0
-        calc (∑ i : ι, (Module.finrank F (Ai i) : ℝ))
-            = ((∑ i : ι, Module.finrank F (Ai i) : ℕ) : ℝ) := by push_cast; rfl
-          _ ≤ ((Module.finrank F A * (k - 1) : ℕ) : ℝ) := by exact_mod_cast hbudget
-          _ = (Module.finrank F A : ℝ) * ((k : ℝ) - 1) := by
-                push_cast [Nat.cast_sub hk1]; ring
-    rw [div_le_iff₀ hn_posR]
-    calc (∑ i : ι, (Module.finrank F (Ai i) : ℝ))
-        ≤ (Module.finrank F A : ℝ) * ((k : ℝ) - 1) := hbudgetR
-      _ = (Module.finrank F A : ℝ) * ((k - 1 : ℝ) / Fintype.card ι) * Fintype.card ι := by
-            field_simp
-  · -- Range `r ∉ [s]`: `τ(r) = 1`, proven unconditionally from `A_i ≤ A`.
-    simp only [τ, if_neg hr, mul_one]
-    rw [div_le_iff₀ hn_posR]
-    calc (∑ i : ι, (Module.finrank F (Ai i) : ℝ))
-        ≤ (∑ _i : ι, (Module.finrank F A : ℝ)) := by
-          refine Finset.sum_le_sum (fun i _ => ?_)
-          exact_mod_cast hAi_rank_le i
-      _ = (Module.finrank F A : ℝ) * Fintype.card ι := by
-          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_comm]
-
-/-- **ABF26 Theorem 2.18 [GK16], FRS half — from `Admissible` + minimal arithmetic.**
-The folded RS code is τ-subspace-design for `τ(r) = (k-1)/n` on `[s]` (and `1` off `[s]`),
-*unconditionally on the degree-budget residual*, given only the standard
-`ReedSolomon.Folded.Admissible L s ω` structure (`domain i ∈ L`) plus the **genuinely-minimal
-arithmetic side conditions**:
-
-* `hω0 : ω ≠ 0` — needed for fold-point injectivity (the `Admissible` conjuncts alone do
-  **not** give it: with `ω = 0, s ≥ 2` all higher folds collapse to `0`; see
-  `ReedSolomon.Folded.mulPow_injective_of_admissible`);
-* `hkLs : k ≤ s · |ι|` — enough distinct fold points for the encoder to be injective on
-  `degreeLT F k` (`ReedSolomon.Folded.frsEvalOnPoints_injOn_degreeLT`);
-* `hkord : k ≤ orderOf ω` — keeps every realizing/recombined degree `< k` strictly below
-  `orderOf ω`, which is exactly what makes the GK16 Lemma-12 degree separation hold
-  (`ReedSolomon.Folded.pow_natDegree_injective_of_lt_orderOf`).
-
-This replaces the two *unsatisfiable* side conditions of `frs_is_subspaceDesign_gk16_of_injective`
-— the global encoder injectivity `hEinj` (false: source is infinite-dimensional, see
-`ReedSolomon.Folded.frsEvalOnPoints_not_injective`) and the *arbitrary-degree* `hω_sep`
-(false in any finite field) — with their genuinely-true restricted forms, all discharged from
-`Admissible` plus the arithmetic above. The budget on the `finrank A ≤ s` range is supplied by
-`ReedSolomon.Folded.frs_degreeBudget_of_finrank_le_admissible`; the `r ∉ [s]` branch is
-unconditional. -/
-theorem frs_is_subspaceDesign_gk16_of_admissible
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (L : Finset F) (hL_dom : ∀ i : ι, domain i ∈ L)
-    (hω0 : ω ≠ 0) (hadm : ReedSolomon.Folded.Admissible L s ω)
-    (hkLs : k ≤ s * Fintype.card ι) (hkord : k ≤ orderOf ω) :
-    let τ : ℕ → ℝ := fun r ↦
-      if r ∈ Finset.Icc 1 s then (k - 1 : ℝ) / Fintype.card ι else 1
-    IsSubspaceDesign s τ (ReedSolomon.Folded.frsCode domain k s ω) := by
-  intro τ r A hA_le hA_rank
-  have hn_pos : 0 < Fintype.card ι := Fintype.card_pos
-  have hn_posR : (0 : ℝ) < Fintype.card ι := by exact_mod_cast hn_pos
-  haveI : FiniteDimensional F (ι → Fin s → F) := inferInstance
-  set Ai : ι → Submodule F (ι → Fin s → F) := fun i =>
-    A ⊓ (LinearMap.ker
-      (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) with hAi
-  have hAi_rank_le : ∀ i, Module.finrank F (Ai i) ≤ Module.finrank F A := fun i =>
-    Submodule.finrank_mono (inf_le_left)
-  by_cases hr : r ∈ Finset.Icc 1 s
-  · -- Range `r ∈ [s]`: `finrank A ≤ r ≤ s`, so the `Admissible` encoder budget applies.
-    simp only [τ, if_pos hr]
-    obtain ⟨_, hrs⟩ := Finset.mem_Icc.mp hr
-    have hAs : Module.finrank F A ≤ s := le_trans hA_rank hrs
-    have hbudget : (∑ i : ι, Module.finrank F (Ai i)) ≤ Module.finrank F A * (k - 1) :=
-      ReedSolomon.Folded.frs_degreeBudget_of_finrank_le_admissible A
-        hL_dom hω0 hadm hkLs hkord hA_le hAs
-    have hbudgetR :
-        (∑ i : ι, (Module.finrank F (Ai i) : ℝ)) ≤
-          (Module.finrank F A : ℝ) * ((k : ℝ) - 1) := by
-      by_cases hk0 : k = 0
-      · subst hk0
-        have hC0 : ReedSolomon.Folded.frsCode domain 0 s ω = ⊥ := by
-          have hdLT : Polynomial.degreeLT F 0 = ⊥ := by
-            rw [eq_bot_iff]
-            intro p hp
-            rw [Polynomial.mem_degreeLT] at hp
-            rw [Submodule.mem_bot, ← Polynomial.degree_eq_bot]
-            exact Nat.WithBot.lt_zero_iff.mp (by simpa using hp)
-          unfold ReedSolomon.Folded.frsCode
-          rw [hdLT, Submodule.map_bot]
-        have hAbot : A = ⊥ := le_bot_iff.mp (hA_le.trans hC0.le)
-        have hzero : ∀ i, Module.finrank F (Ai i) = 0 := by
-          intro i
-          have : Ai i = ⊥ := by rw [hAi, hAbot]; simp
-          rw [this]; simp
-        have hAr : Module.finrank F A = 0 := by rw [hAbot]; simp
-        simp [hzero, hAr]
-      · have hk1 : 1 ≤ k := Nat.one_le_iff_ne_zero.mpr hk0
-        calc (∑ i : ι, (Module.finrank F (Ai i) : ℝ))
-            = ((∑ i : ι, Module.finrank F (Ai i) : ℕ) : ℝ) := by push_cast; rfl
-          _ ≤ ((Module.finrank F A * (k - 1) : ℕ) : ℝ) := by exact_mod_cast hbudget
-          _ = (Module.finrank F A : ℝ) * ((k : ℝ) - 1) := by
-                push_cast [Nat.cast_sub hk1]; ring
-    rw [div_le_iff₀ hn_posR]
-    calc (∑ i : ι, (Module.finrank F (Ai i) : ℝ))
-        ≤ (Module.finrank F A : ℝ) * ((k : ℝ) - 1) := hbudgetR
-      _ = (Module.finrank F A : ℝ) * ((k - 1 : ℝ) / Fintype.card ι) * Fintype.card ι := by
-            field_simp
-  · -- Range `r ∉ [s]`: `τ(r) = 1`, proven unconditionally from `A_i ≤ A`.
-    simp only [τ, if_neg hr, mul_one]
-    rw [div_le_iff₀ hn_posR]
-    calc (∑ i : ι, (Module.finrank F (Ai i) : ℝ))
-        ≤ (∑ _i : ι, (Module.finrank F A : ℝ)) := by
-          refine Finset.sum_le_sum (fun i _ => ?_)
-          exact_mod_cast hAi_rank_le i
-      _ = (Module.finrank F A : ℝ) * Fintype.card ι := by
-          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_comm]
-
-/-- **ABF26 Theorem 2.18 [GK16], FRS half — from order bound + inter-orbit
-separation.** This caller-facing wrapper composes the discharged intra-orbit side of
-`ReedSolomon.Folded.Admissible` with the existing admissible T2.18 theorem. Thus T2.18
-call sites need only provide:
-
-* `0 ∉ L`, the nonzero-domain condition;
-* `s ≤ orderOf ω`, the order-theoretic no-repeat condition inside each fold;
-* the genuine inter-orbit/coset-separation clause for distinct domain points.
-
-The resulting subspace-design profile is the repaired GK16 profile
-`τ(r) = (k - 1)/n` on `[s]` and `1` off `[s]`. -/
-theorem frs_is_subspaceDesign_gk16_of_orderOf_ge_of_inter
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (L : Finset F) (hL_dom : ∀ i : ι, domain i ∈ L)
-    (hL_zero : (0 : F) ∉ L) (hω0 : ω ≠ 0) (hs_order : s ≤ orderOf ω)
-    (hinter : ∀ α ∈ L, ∀ β ∈ L, α ≠ β → ∀ i : ℕ, i < s → α * ω ^ i ≠ β)
-    (hkLs : k ≤ s * Fintype.card ι) (hkord : k ≤ orderOf ω) :
-    let τ : ℕ → ℝ := fun r ↦
-      if r ∈ Finset.Icc 1 s then (k - 1 : ℝ) / Fintype.card ι else 1
-    IsSubspaceDesign s τ (ReedSolomon.Folded.frsCode domain k s ω) :=
-  frs_is_subspaceDesign_gk16_of_admissible domain k s ω L hL_dom hω0
-    (ReedSolomon.Folded.admissible_of_orderOf_ge_of_inter L s ω hL_zero hs_order hinter)
-    hkLs hkord
-
-/-- **Profile bridge for C3.5.** The repaired GK16/FRS profile
-`τ(r) = (k - 1)/n` on `[s]` is pointwise no larger than the CZ25 capacity-reduction profile
-`τ(r) = s·k/(n·(s-r+1))` on `[s]` (and both profiles are `1` off `[s]`). Hence any FRS
-subspace-design theorem stated with the repaired GK16 profile can feed the existing C3.5
-reduction, which consumes the CZ25 profile. -/
-theorem frs_is_subspaceDesign_cz25Profile_of_gk16Profile
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (h : IsSubspaceDesign s
-      (fun r ↦ if r ∈ Finset.Icc 1 s then (k - 1 : ℝ) / Fintype.card ι else 1)
-      (ReedSolomon.Folded.frsCode domain k s ω)) :
-    IsSubspaceDesign s
-      (fun r ↦ if r ∈ Finset.Icc 1 s then
-          (s : ℝ) * (k : ℝ) / Fintype.card ι / ((s : ℝ) - r + 1) else 1)
-      (ReedSolomon.Folded.frsCode domain k s ω) := by
-  apply IsSubspaceDesign.mono_tau h
-  intro r
-  by_cases hr : r ∈ Finset.Icc 1 s
-  · simp only [hr, if_true]
-    obtain ⟨hr1, hrs⟩ := Finset.mem_Icc.mp hr
-    have hn_pos : (0 : ℝ) < Fintype.card ι := by exact_mod_cast Fintype.card_pos
-    have hden_pos : 0 < (s : ℝ) - r + 1 := by
-      have hrsR : (r : ℝ) ≤ s := by exact_mod_cast hrs
-      linarith
-    have hratio : 1 ≤ (s : ℝ) / ((s : ℝ) - r + 1) := by
-      rw [le_div_iff₀ hden_pos]
-      have hr1R : (1 : ℝ) ≤ r := by exact_mod_cast hr1
-      linarith
-    calc ((k : ℝ) - 1) / Fintype.card ι
-        ≤ (k : ℝ) / Fintype.card ι := by
-            exact div_le_div_of_nonneg_right (by linarith) (le_of_lt hn_pos)
-      _ ≤ ((k : ℝ) / Fintype.card ι) * ((s : ℝ) / ((s : ℝ) - r + 1)) := by
-            exact le_mul_of_one_le_right
-              (div_nonneg (Nat.cast_nonneg k) (le_of_lt hn_pos)) hratio
-      _ = (s : ℝ) * (k : ℝ) / Fintype.card ι / ((s : ℝ) - r + 1) := by
-            ring
-  · simp only [hr, if_false]
-    exact le_rfl
-
-/-- C3.5-compatible FRS subspace-design profile from the injective GK16 bridge. -/
-theorem frs_is_subspaceDesign_cz25Profile_of_injective
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (hEinj : Function.Injective (ReedSolomon.Folded.frsEvalOnPoints domain s ω))
-    (hω_sep : ∀ {n : ℕ} (Q : Fin n → Polynomial F), (∀ j, Q j ≠ 0) →
-        Function.Injective (fun j => (Q j).natDegree) →
-        Function.Injective (fun j => ω ^ (Q j).natDegree)) :
-    IsSubspaceDesign s
-      (fun r ↦ if r ∈ Finset.Icc 1 s then
-          (s : ℝ) * (k : ℝ) / Fintype.card ι / ((s : ℝ) - r + 1) else 1)
-      (ReedSolomon.Folded.frsCode domain k s ω) :=
-  frs_is_subspaceDesign_cz25Profile_of_gk16Profile domain k s ω
-    (frs_is_subspaceDesign_gk16_of_injective domain k s ω hEinj hω_sep)
-
-/-- C3.5-compatible FRS subspace-design profile from the admissible GK16 bridge. -/
-theorem frs_is_subspaceDesign_cz25Profile_of_admissible
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (L : Finset F) (hL_dom : ∀ i : ι, domain i ∈ L)
-    (hω0 : ω ≠ 0) (hadm : ReedSolomon.Folded.Admissible L s ω)
-    (hkLs : k ≤ s * Fintype.card ι) (hkord : k ≤ orderOf ω) :
-    IsSubspaceDesign s
-      (fun r ↦ if r ∈ Finset.Icc 1 s then
-          (s : ℝ) * (k : ℝ) / Fintype.card ι / ((s : ℝ) - r + 1) else 1)
-      (ReedSolomon.Folded.frsCode domain k s ω) :=
-  frs_is_subspaceDesign_cz25Profile_of_gk16Profile domain k s ω
-    (frs_is_subspaceDesign_gk16_of_admissible domain k s ω L hL_dom hω0 hadm hkLs hkord)
-
-
-/-! ## Univariate Multiplicity Codes (ABF26 DA.7) -/
-
-/-- Univariate multiplicity evaluation function `D_ux` (derivative-of-x):
-Evaluates the Hasse derivatives up to order `s-1` of a polynomial at `x`.
-This is the derivative-coded operation for `UM[F, L, k, s]`. -/
-noncomputable def D_ux {ι : Type} [Fintype ι]
-    {F : Type} [CommSemiring F]
-    (domain : ι ↪ F) (s : ℕ) : Polynomial F →ₗ[F] (ι → Fin s → F) where
-  toFun p := fun x j ↦ (Polynomial.hasseDeriv j.val p).eval (domain x)
-  map_add' p q := by ext; simp
-  map_smul' c p := by ext; simp
-
-/-- **ABF26 DA.7 (Univariate Multiplicity codes)**.
-The UM code `UM[F, L, k, s]`:
-
-  `UM[F, L, k, s] := { f : L → F^s | ∃ f̂ ∈ F^{<k}[X],`
-  `                          ∀ x ∈ L, f(x) = (f̂(x), f̂'(x), ..., f̂^{(s-1)}(x)) }`
-
-where derivatives are Hasse derivatives. -/
-noncomputable def umCode {ι : Type} [Fintype ι] [DecidableEq ι]
-    {F : Type} [Field F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ) : Submodule F (ι → Fin s → F) :=
-  (Polynomial.degreeLT F k).map (D_ux domain s)
-
-/-- **ABF26 Theorem 2.18, UM half — abstract residual form.**
-The Univariate Multiplicity code is τ-subspace-design for `τ(r) = (k-1)/n` on `[s]`,
-conditional on the UM degree-budget residual. This matches the FRS half exactly
-and connects the UM result to the repaired GK16/vector-space statements. -/
-theorem um_is_subspaceDesign_gk16
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
-    (domain : ι ↪ F) (k s : ℕ)
-    (h_residual : GK16DegreeBudget k s (umCode domain k s)) :
-    let τ : ℕ → ℝ := fun r ↦
-      if r ∈ Finset.Icc 1 s then (k - 1 : ℝ) / Fintype.card ι else 1
-    IsSubspaceDesign s τ (umCode domain k s) := by
-  intro τ r A hA_le _hA_rank
-  have hn_pos : 0 < Fintype.card ι := Fintype.card_pos
-  have hn_posR : (0 : ℝ) < Fintype.card ι := by exact_mod_cast hn_pos
-  haveI : FiniteDimensional F (ι → Fin s → F) := inferInstance
-  -- The per-coordinate vanishing subspaces `A_i := A ⊓ ker(eval_i)`.
-  set Ai : ι → Submodule F (ι → Fin s → F) := fun i =>
-    A ⊓ (LinearMap.ker
-      (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i)) with hAi
-  -- Each `A_i ≤ A`, so `dim A_i ≤ dim A` (the ambient space is finite-dimensional).
-  have hAi_rank_le : ∀ i, Module.finrank F (Ai i) ≤ Module.finrank F A := fun i =>
-    Submodule.finrank_mono (inf_le_left)
-  by_cases hr : r ∈ Finset.Icc 1 s
-  · -- Range `r ∈ [s]`: divide the degree budget `∑_i dim A_i ≤ (dim A)·(k-1)` by `n`.
-    simp only [τ, if_pos hr]
-    have hbudget : (∑ i : ι, Module.finrank F (Ai i)) ≤ Module.finrank F A * (k - 1) :=
-      h_residual A hA_le
-    have hbudgetR :
-        (∑ i : ι, (Module.finrank F (Ai i) : ℝ)) ≤
-          (Module.finrank F A : ℝ) * ((k : ℝ) - 1) := by
-      by_cases hk0 : k = 0
-      · -- `k = 0`: the code is `⊥`, so `A = ⊥` and every `dim A_i = 0`.
-        subst hk0
-        have hC0 : umCode domain 0 s = ⊥ := by
-          have hdLT : Polynomial.degreeLT F 0 = ⊥ := by
-            rw [eq_bot_iff]
-            intro p hp
-            rw [Polynomial.mem_degreeLT] at hp
-            rw [Submodule.mem_bot, ← Polynomial.degree_eq_bot]
-            exact Nat.WithBot.lt_zero_iff.mp (by simpa using hp)
-          unfold umCode
-          rw [hdLT, Submodule.map_bot]
-        have hAbot : A = ⊥ := le_bot_iff.mp (hA_le.trans hC0.le)
-        have hzero : ∀ i, Module.finrank F (Ai i) = 0 := by
-          intro i
-          have : Ai i = ⊥ := by rw [hAi, hAbot]; simp
-          rw [this]; simp
-        have hAr : Module.finrank F A = 0 := by rw [hAbot]; simp
-        simp [hzero, hAr]
-      · have hk1 : 1 ≤ k := Nat.one_le_iff_ne_zero.mpr hk0
-        calc (∑ i : ι, (Module.finrank F (Ai i) : ℝ))
-            = ((∑ i : ι, Module.finrank F (Ai i) : ℕ) : ℝ) := by push_cast; rfl
-          _ ≤ ((Module.finrank F A * (k - 1) : ℕ) : ℝ) := by exact_mod_cast hbudget
-          _ = (Module.finrank F A : ℝ) * ((k : ℝ) - 1) := by
-                push_cast [Nat.cast_sub hk1]; ring
-    rw [div_le_iff₀ hn_posR]
-    calc (∑ i : ι, (Module.finrank F (Ai i) : ℝ))
-        ≤ (Module.finrank F A : ℝ) * ((k : ℝ) - 1) := hbudgetR
-      _ = (Module.finrank F A : ℝ) * ((k - 1 : ℝ) / Fintype.card ι) * Fintype.card ι := by
-            field_simp
-  · -- Range `r ∉ [s]`: `τ(r) = 1`, proven unconditionally from `A_i ≤ A`.
-    simp only [τ, if_neg hr, mul_one]
-    rw [div_le_iff₀ hn_posR]
-    calc (∑ i : ι, (Module.finrank F (Ai i) : ℝ))
-        ≤ (∑ _i : ι, (Module.finrank F A : ℝ)) := by
-          refine Finset.sum_le_sum (fun i _ => ?_)
-          exact_mod_cast hAi_rank_le i
-      _ = (Module.finrank F A : ℝ) * Fintype.card ι := by
-          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_comm]
+      if r ∈ Finset.Icc 1 s then
+        s * (LinearCode.alphabetRate
+          (ReedSolomon.Multiplicity.umCode domain k s) : ℝ) / (s - r + 1)
+      else 1
+    IsSubspaceDesign s τ (ReedSolomon.Multiplicity.umCode domain k s) := by
+  exact isSubspaceDesign_of_sub_one _ (isSubspaceDesign_umCode_sub_one domain k s hchar)
 
 end CodingTheory
-
-/- Axiom audit:
-`CodingTheory.um_is_subspaceDesign_gk16` and the C3.5-compatible FRS profile bridges depend
-only on `propext`, `Classical.choice`, and `Quot.sound`. -/
-#print axioms CodingTheory.um_is_subspaceDesign_gk16
-#print axioms CodingTheory.IsSubspaceDesign.mono_tau
-#print axioms CodingTheory.frs_is_subspaceDesign_cz25Profile_of_gk16Profile
-#print axioms CodingTheory.frs_is_subspaceDesign_cz25Profile_of_injective
-#print axioms CodingTheory.frs_is_subspaceDesign_cz25Profile_of_admissible
-#print axioms CodingTheory.frs_is_subspaceDesign_gk16_of_orderOf_ge_of_inter

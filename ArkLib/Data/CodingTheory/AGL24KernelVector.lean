@@ -110,19 +110,19 @@ theorem RIM_eval_row_dot {t k : ℕ} (e : ι → Finset (Fin (t + 1))) (α : ι 
     by_cases hj1 : j.castSucc = jmin
     · rw [if_pos hj1]
       refine Finset.sum_congr rfl fun m _ => ?_
-      rw [RIM_apply_min F e _ (j, m) hj1]
+      rw [RIM_apply_min F e ⟨i, ⟨ju, hmem, hnonmin⟩⟩ (j, m) hj1]
       rw [map_pow, eval_X, hj1]
     · rw [if_neg hj1]
       by_cases hj2 : j.castSucc = ju
       · rw [if_pos hj2]
         rw [← Finset.sum_neg_distrib]
         refine Finset.sum_congr rfl fun m _ => ?_
-        rw [RIM_apply_self F e _ (j, m) hj1 hj2]
+        rw [RIM_apply_self F e ⟨i, ⟨ju, hmem, hnonmin⟩⟩ (j, m) hj1 hj2]
         rw [map_neg, map_pow, eval_X, hj2]
         ring
       · rw [if_neg hj2]
         refine Finset.sum_eq_zero fun m _ => ?_
-        rw [RIM_apply_other F e _ (j, m) hj1 hj2, map_zero, zero_mul]
+        rw [RIM_apply_other F e ⟨i, ⟨ju, hmem, hnonmin⟩⟩ (j, m) hj1 hj2, map_zero, zero_mul]
   rw [Finset.sum_congr rfl fun j _ => hinner j]
   by_cases hju_last : ju = Fin.last t
   · rw [if_pos hju_last]

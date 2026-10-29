@@ -4,9 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.Composition.Sequential.Append
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
 import ArkLib.ToMathlib.OracleCompEvalDistBindComm
 import ArkLib.OracleReduction.Composition.Sequential.EmptyAppend
+import Batteries.Tactic.OpenPrivate
+
+open private simulateQ_secondQueryImpl from
+  ArkLib.OracleReduction.Composition.Sequential.Append.Basic
 
 /-!
 # Sequential append run distributions and verifier routing
@@ -15,20 +19,33 @@ Distributional factoring and message/challenge seam proofs for appended provers,
 with the verifier routing identities used by sequential composition.
 -/
 
+-- This legacy mathematical API specified finite uniform answers before native measures.
+-- Keep that choice local; concrete executable sampler instances remain authoritative elsewhere.
+noncomputable local instance (priority := low) finiteUniformAnswers
+    {ι : Type} {spec : OracleSpec ι}
+    [∀ q, Fintype (spec.Range q)] [∀ q, Inhabited (spec.Range q)] :
+    OracleSpec.UniformAnswerMeasure spec :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty spec
+
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
 section
 
 
 /-!
 # Distributional (`evalDist`-level) run-factoring for the appended prover
 
-The syntactic run-factoring keystone `Prover.append_run` is proven *conditional* on
+The retained `Prover.append_run_of_right_residual` wrapper is conditional on
 `Prover.appendRunRightResidual`, a **syntactic** `OracleComp` equality between the appended run and
 the sequential `P₁.run ≫ P₂.run`. That syntactic residual is **false** when the first `pSpec₂` round
 is a challenge: the appended prover samples the seam `getChallenge` *before* consuming `P₁.output`
 (see `Prover.append_continueFromTo_seam_step_challenge`), whereas the factored form runs `P₁.output`
 *first*. The two are different free-monad trees, hence unequal syntactically — but **equal as
 distributions**, because `getChallenge` (a uniform sample) is independent of `P₁.output` (a
-computation in `oSpec`), and `SPMF` is commutative (`OracleComp.evalDist_bind_comm`).
+computation in `oSpec`), and canonical uniform-answer semantics validates independent bind commutation
+(`OracleComp.evalDist_bind_comm`).
 
 This section states the residual and the keystone at the `evalDist` level, the form actually consumed
 by completeness/soundness proofs (which only ever compare `evalDist`s). `appendRunRightDistResidual`
@@ -62,8 +79,8 @@ variable {ι : Type} {oSpec : OracleSpec ι} {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt
 `P₁.run ≫ P₂.run` distribution. Unlike the syntactic residual, this holds even when the seam round
 is a challenge, since the `getChallenge`/`P₁.output` reordering at the seam is a *distributional*
 commutation (`OracleComp.evalDist_bind_comm`), not a syntactic one. -/
-def appendRunRightDistResidual [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+def appendRunRightDistResidual [∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
     (stmt : Stmt₁) (wit : Wit₁) : Prop :=
   evalDist
       (((do
@@ -92,8 +109,8 @@ syntactic `append_run` (`run_eq_runToRound_last` then `runToRound_eq_bind_contin
 round `⟨m⟩`), reducing to the distribution-level residual `appendRunRightDistResidual`. This is the
 form the completeness/soundness proofs consume; it sidesteps the syntactic
 `getChallenge`/`P₁.output` non-commutation that blocks the syntactic `appendRunRightResidual`. -/
-theorem append_run_evalDist [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+theorem append_run_evalDist [∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
     (stmt : Stmt₁) (wit : Wit₁)
     (hRight : appendRunRightDistResidual (P₁ := P₁) (P₂ := P₂) stmt wit) :
       evalDist ((P₁.append P₂).run stmt wit)
@@ -114,8 +131,8 @@ is a prover message, the *syntactic* residual `appendRunRightResidual` already h
 (`appendRunRightResidual_holds_msg`), so its `evalDist` image — the distributional residual — holds
 by `congrArg evalDist`. No distributional commutation is needed in this case. -/
 theorem appendRunRightDistResidual_holds_msg
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
     (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V) :
@@ -129,8 +146,8 @@ Combines the conditional `append_run_evalDist` with the message-seam discharge
 completeness/soundness composition consumes (LogUp's embedded sumcheck opens with a prover message,
 so its seam is a message seam). No residual hypothesis required. -/
 theorem append_run_evalDist_msg
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
     (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V) :
@@ -196,8 +213,8 @@ canonical "message-shaped" boundary that runs `P₁.output` *first* and then `P�
 distributional step, discharged by `OracleComp.evalDist_bind_comm`.  This is the challenge analogue
 of `append_continueFromTo_seam_start_message_processRound`, stated at `evalDist`. -/
 theorem append_continueFromTo_seam_start_challenge_evalDist
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
     (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P)
@@ -251,9 +268,6 @@ theorem append_continueFromTo_seam_start_challenge_evalDist
   -- statement's `liftM (P₁.output)` (composed instance) is `liftComp (P₁.output) (full spec)` via
   -- `liftM_via_leftChallenge_eq_liftComp`; normalize the RHS bound to that so both sides share the
   -- exact `liftComp (P₁.output) (full spec)` term, then commute distributionally.
-  rw [liftM_via_leftChallenge_eq_liftComp
-    (pSpec₁ := pSpec₁) (pSpec₂ := pSpec₂)
-    (X := P₁.output (cast (append_PrvState_seam_castSucc hn) rSeam.2))]
   exact (OracleComp.evalDist_bind_comm
     (liftM (pSpec₂.getChallenge ⟨⟨0, hn⟩, hDir₂⟩) :
       OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (pSpec₂.Challenge ⟨⟨0, hn⟩, hDir₂⟩))
@@ -369,8 +383,8 @@ genuine distributional content is the seam `getChallenge`/`P₁.output` reorder,
 `append_continueFromTo_seam_start_challenge_evalDist`; the rest mirrors `append_continueFromTo_right_msg`
 under `congrArg evalDist`. -/
 theorem append_continueFromTo_right_challenge_evalDist
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
     (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P)
@@ -400,9 +414,9 @@ theorem append_continueFromTo_right_challenge_evalDist
     (by rw [Fin.le_def, Fin.val_succ, Fin.val_last]; omega) rSeam]
   -- Push `evalDist` through the seam/interior bind, swap the seam factor for the msg-shaped boundary
   -- `B` (the one distributional step), then re-fuse the bind and fold via the syntactic helper.
-  rw [evalDist_bind,
+  rw [evalDist_bind_of_discrete,
     append_continueFromTo_seam_start_challenge_evalDist stmt wit hn hDir hDir₂ T₁ rSeam hT,
-    ← evalDist_bind]
+    ← evalDist_bind_of_discrete]
   exact congrArg evalDist (eq_of_heq
     (append_right_block_from_seam_boundary_heq stmt wit hn T₁ rSeam))
 
@@ -412,8 +426,8 @@ The analogue of `appendRunRightDistResidual_holds_msg`; the syntactic `appendRun
 *false* here, so this genuinely needs `evalDist_bind_comm` (inside
 `append_continueFromTo_right_challenge_evalDist`). -/
 theorem appendRunRightDistResidual_holds_challenge
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
     (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P) :
@@ -428,14 +442,14 @@ theorem appendRunRightDistResidual_holds_challenge
   -- each, via `append_continueFromTo_right_challenge_evalDist`).  This rewrites the appended LHS into
   -- the exact shape the message discharge produces.
   conv_lhs =>
-    rw [evalDist_bind]
+    rw [evalDist_bind_of_discrete]
     enter [2, rSeam]
-    rw [evalDist_bind,
+    rw [evalDist_bind_of_discrete,
       append_continueFromTo_right_challenge_evalDist stmt wit hn hDir hDir₂
         (cast (append_Transcript_seam_castSucc hn) rSeam.1) rSeam
         (seam_transcript_appendRight hn rSeam.1),
-      ← evalDist_bind]
-  rw [← evalDist_bind]
+      ← evalDist_bind_of_discrete]
+  rw [← evalDist_bind_of_discrete]
   -- The appended LHS is now the message-discharge LHS; close by `congrArg evalDist` of the same
   -- syntactic factoring used by `appendRunRightResidual_holds_msg`.
   refine congrArg evalDist ?_
@@ -461,18 +475,24 @@ theorem appendRunRightDistResidual_holds_challenge
   apply heq_of_eq
   simp only [OracleComp.liftComp_eq_liftM, append_output_last hn, Transcript.appendRight_full,
     cast_cast, cast_eq]
-  refine bind_congr fun x_1 => bind_congr fun a => ?_
-  simp only [← OracleComp.liftComp_eq_liftM]
-  rw [Prover.liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₂.Challenge]ₒ)
-    (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)]
+  erw [liftM_liftM_via_comp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
+    (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
+    (P₁.output x.2) (fun _ => rfl)]
+  refine bind_congr fun ctx => ?_
+  refine bind_congr fun a => ?_
+  erw [liftM_liftM_via_comp (spec := oSpec) (midSpec := oSpec + [pSpec₂.Challenge]ₒ)
+    (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
+    (P₂.output a.2) (fun _ => rfl)]
+  simp only [← OracleComp.liftComp_eq_liftM, Prod.mk.eta]
+  erw [Transcript.appendRight_full]
 
 /-- **Sequential-composition run-factoring at `evalDist`, for a challenge-first `P₂`.**  Combines the
 conditional `append_run_evalDist` with the challenge-seam discharge
 `appendRunRightDistResidual_holds_challenge`.  This is the distribution-level keystone for inter-phase
 Spartan composition where a phase opens with a verifier challenge. -/
 theorem append_run_evalDist_challenge
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
     (stmt : Stmt₁) (wit : Wit₁) (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P) :
@@ -493,8 +513,8 @@ distributional residual holds for *every* pair of provers — the syntactic
 `appendRunRightResidual` remains genuinely FALSE at challenge seams (see the challenge
 discharge's docstring), so the distributional form is the honest live statement. -/
 theorem appendRunRightDistResidual_holds
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
+    [∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
+    [∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)]
     (stmt : Stmt₁) (wit : Wit₁) :
     appendRunRightDistResidual (P₁ := P₁) (P₂ := P₂) stmt wit := by
   rcases Nat.eq_zero_or_pos n with hn | hn
@@ -513,6 +533,7 @@ end Prover
 
 -- Axiom audit (seam-agnostic total): only [propext, Classical.choice, Quot.sound].
 #print axioms Prover.appendRunRightDistResidual_holds
+#print axioms Prover.append_run_evalDist_challenge
 
 end
 
@@ -531,8 +552,8 @@ composite `V₂.toVerifier ∘ V₁.toVerifier`. With the universal-fold fusion 
 `(fun q => simulateQ S (routerᵢ q)) = simOracle2 …`.
 
 This section proves the **first** of those (`router₁_handler_eq`) outright, together with the per-query
-routing facts it rests on: simulating the `emitMessageQuery` / `emitOStmtQuery{Inl}` routers through
-`simOracle2` yields the corresponding in-the-clear oracle answer. The message case uses the
+routing facts it rests on: message queries and direct input-oracle queries are answered through
+`simOracle2` from their actual values. The message case uses the
 transcript seam-split `ProtocolSpec.messages_inl`.
 -/
 
@@ -567,22 +588,6 @@ lemma simulateQ_emitMessageQuery
     QueryImpl.id]
   rfl
 
-/-- Simulating `emitOStmtQueryInl` through `simOracle2` yields the `OStmt₁`-answer (the query is
-routed straight into `[OStmt₁]ₒ` at index `k`). -/
-lemma simulateQ_emitOStmtQueryInl
-    {T : Type} (O : OracleInterface T) (k : ιₛ₁) (hSt : OStmt₁ k = T)
-    (hO : O = cast (congrArg OracleInterface hSt) (Oₛ₁ k)) (q : O.Query)
-    (oStmt : ∀ i, OStmt₁ i) (msgs : ∀ j, (pSpec₁ ++ₚ pSpec₂).Message j) :
-    simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
-        (emitOStmtQueryInl (oSpec := oSpec) (pSpec₂ := pSpec₂) O k hSt hO q)
-      = (pure (O.answer (hSt ▸ oStmt k) q) : OracleComp oSpec _) := by
-  subst hSt
-  subst hO
-  simp only [emitOStmtQueryInl, simulateQ_spec_query, OracleInterface.simOracle2,
-    OracleInterface.simOracle0, QueryImpl.add, QueryImpl.addLift, QueryImpl.liftTarget,
-    QueryImpl.id]
-  rfl
-
 /-- **router₁ handler equality.** Routing `V₁`'s queries via `router₁` and answering through the
 joint-transcript `simOracle2` (which knows the appended messages) equals answering directly through
 the first-half `simOracle2`. The `oSpec` and `[OStmt₁]ₒ` cases are passthrough; the message case
@@ -611,18 +616,12 @@ section
 
 
 /-!
-# Verifier-fusion bedrock: `simulateQ` of the V₂-side oracle-statement router
+# Native second-stage output-query semantics
 
-This section supplies the per-query obligation at the heart of the oracle-level append
-perfect-completeness keystone: simulating the appended verifier's `emitOStmt₂Query` (which routes a
-query to one of `V₁`'s output oracle statements `OStmt₂ i`) under the combined `simOracle2` answers
-exactly from the reconstructed oracle statement `mkVerifierOStmtOut V₁.embed V₁.hEq oStmt tr.fst i`.
-
-The single subtlety is that `emitOStmt₂Query` is *tactic-built* (`by cases h : V₁.embed i …`), so a
-naive `split` does not fire on its elaborated `Sum.casesOn`; the proof must mirror the definition with
-`cases h : V₁.embed i`, then discharge each branch via the proven per-query simulators
-(`emitOStmtQueryInl_simulateQ` / `emitOStmtQueryInr_simulateQ`) and the `mkVerifierOStmtOut`
-characterizations, with the residual dependent casts collapsed by `eq_of_heq` over `eqRec_heq`.
+The second-stage router delegates to the first verifier's `simulateOutputQuery`, then transports
+its computation through the first-stage query implementation. The canonical query/materialization
+law proves the answer is read from the actual `materializeOutput`, for both embedded and computed
+outputs. Former embedding-only helper statements are recorded in the migration audit.
 -/
 
 open OracleComp OracleSpec ProtocolSpec
@@ -637,17 +636,25 @@ variable {ι : Type} {oSpec : OracleSpec ι}
   {ιₛ₂ : Type} {OStmt₂ : ιₛ₂ → Type} [Oₛ₂ : ∀ i, OracleInterface (OStmt₂ i)]
   {Stmt₁ Stmt₂ : Type}
 
-/-- **The V₂-side per-query routing simulates to the reconstructed oracle statement.** -/
-theorem simulateQ_emitOStmt₂Query_core
+/-- The canonical second-stage router answers an intermediate output query from the actual
+materialized first-stage output, including computed outputs. -/
+theorem simulateQ_outputQuery_core
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [coh : AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
     (oStmt : ∀ i, OStmt₁ i) (tr : FullTranscript (pSpec₁ ++ₚ pSpec₂))
     (i : ιₛ₂) (q : (Oₛ₂ i).Query) :
-    simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages) (emitOStmt₂Query V₁ i q)
-      = pure ((Oₛ₂ i).answer (mkVerifierOStmtOut V₁.embed V₁.hEq oStmt tr.fst i) q) :=
-  -- The `cases h : V₁.embed i` route fails (`generalize` on the tactic-built `Sum.casesOn` motive);
-  -- delegate to the `split`-based proof in `Append.lean`.
-  simulateQ_emitOStmt₂Query V₁ oStmt tr i q
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages)
+        (secondQueryImpl V₁
+          (Challenges.fst (pSpec₁ := pSpec₁) (pSpec₂ := pSpec₂) tr.challenges)
+          (.inr (.inl ⟨i, q⟩))) =
+      pure ((Oₛ₂ i).answer
+        (V₁.materializeOutput
+          (Challenges.fst (pSpec₁ := pSpec₁) (pSpec₂ := pSpec₂) tr.challenges) oStmt
+          (Messages.fst (pSpec₁ := pSpec₁) (pSpec₂ := pSpec₂) tr.messages) i) q) := by
+  exact simulateQ_secondQueryImpl V₁
+    (Challenges.fst (pSpec₁ := pSpec₁) (pSpec₂ := pSpec₂) tr.challenges) oStmt tr.messages
+    (.inr (.inl ⟨i, q⟩))
+
+#print axioms simulateQ_outputQuery_core
 
 end OracleVerifier.Append
 

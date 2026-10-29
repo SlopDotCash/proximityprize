@@ -59,7 +59,6 @@ theorem weierstrass_one_sub_prod (m : ℕ) (a : Fin m → ℝ) (ha0 : ∀ i, 0 �
       Finset.prod_nonneg (fun i _ => by have := ha1 i.castSucc; linarith)
     have hl0 := ha0 (Fin.last m)
     have hl1 := ha1 (Fin.last m)
-    simp only at hih
     have hsumnn : 0 ≤ ∑ i : Fin m, a i.castSucc :=
       Finset.sum_nonneg (fun i _ => ha0 i.castSucc)
     -- ∏(1−l) ≥ (1−∑)(1−l) ≥ 1−∑−l

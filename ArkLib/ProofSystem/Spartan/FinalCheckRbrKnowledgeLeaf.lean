@@ -28,10 +28,10 @@ namespace Spartan.Spec.Bricks
 variable {R : Type} [CommRing R] [IsDomain R] [Fintype R] [DecidableEq R] [Inhabited R]
   [SampleableType R]
   (pp : Spartan.PublicParams)
-  {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype] [oSpec.Inhabited]
+  {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] [Inhabited R] [SampleableType R]
-  [oSpec.Fintype] [oSpec.Inhabited] in
+  [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)] in
 /-- The compiled terminal `finalCheck` verifier is the identity verifier on the bundled
 statement/oracle-statement pair.  The oracle predicate is simulated and discarded. -/
 theorem finalCheck_toVerifier_id :
@@ -40,14 +40,10 @@ theorem finalCheck_toVerifier_id :
         (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)
         (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i) !p[]) := by
   ext ⟨stmt, oStmt⟩ tr
-  simp only [finalCheck, CheckClaim.oracleReduction, CheckClaim.oracleVerifier,
-    OracleVerifier.toVerifier, Verifier.id]
-  unfold finalPredicate
-  simp only [bind_pure_comp]
   rfl
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] [Inhabited R] [SampleableType R]
-  [oSpec.Fintype] [oSpec.Inhabited] in
+  [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)] in
 /-- Relation-preserving RBR-KS for the zero-round terminal `finalCheck`. -/
 theorem finalCheck_rbrKnowledgeSoundness_any
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
@@ -57,7 +53,8 @@ theorem finalCheck_rbrKnowledgeSoundness_any
   rw [finalCheck_toVerifier_id (R := R) pp oSpec]
   exact Verifier.id_rbrKnowledgeSoundness init impl (rel := rel)
 
-omit [Fintype R] [Inhabited R] [SampleableType R] [oSpec.Fintype] [oSpec.Inhabited] in
+omit [Fintype R] [Inhabited R] [∀ q, Fintype (oSpec.Range q)]
+  [∀ q, Inhabited (oSpec.Range q)] in
 /-- The relation-preserving terminal leaf at the second sum-check's transported RBR output
 relation. -/
 theorem finalCheck_rbrKnowledgeSoundness_secondSumcheckRbrRelOut

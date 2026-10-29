@@ -3,18 +3,19 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Ilia Vlasov, Aristotle (Harmonic)
 -/
+module
 
-import Mathlib.Data.Finset.Defs
-import Mathlib.Data.Finset.Empty
-import Mathlib.Data.Finset.Dedup
+public import Mathlib.Data.Finset.Defs
+public import Mathlib.Data.Finset.Empty
+public import Mathlib.Data.Finset.Dedup
 
 /-!
-# Converting a `Finset` to a list of proof-carrying members
+# ArkLib.ToMathlib.Finset.ToListWithProof
 
-This file provides `Finset.toListWithProof`, which turns a `Finset α` into a `List s` whose
-elements are the members of the finset bundled with proofs of membership, together with the
-basic lemmas `toListWithProof_empty` and `toListWithProof_mem` characterizing it.
+Definitions and results for this component of ArkLib.
 -/
+
+@[expose] public section
 
 namespace Finset
 

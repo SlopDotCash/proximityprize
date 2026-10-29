@@ -20,6 +20,7 @@ two gauge anchors cover every singleton exception.
 -/
 
 set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
 
 open Polynomial
 
@@ -241,10 +242,10 @@ theorem twoPencils_eval_eq_of_two_labels_each_agree
     (hdelta₀ : (b + C delta₀ * s).eval x = u₀ + delta₀ * u₁)
     (hdelta₁ : (b + C delta₁ * s).eval x = u₀ + delta₁ * u₁) :
     a.eval x = b.eval x ∧ r.eval x = s.eval x := by
-  have hA := ProximityGap.affine_eq_of_two_smul_points hgamma
+  have hA := ProximityGap.affine_eq_of_two_smul_points (A := F) (F := F) hgamma
     (by simpa only [eval_add, eval_mul, eval_C, smul_eq_mul] using hgamma₀)
     (by simpa only [eval_add, eval_mul, eval_C, smul_eq_mul] using hgamma₁)
-  have hB := ProximityGap.affine_eq_of_two_smul_points hdelta
+  have hB := ProximityGap.affine_eq_of_two_smul_points (A := F) (F := F) hdelta
     (by simpa only [eval_add, eval_mul, eval_C, smul_eq_mul] using hdelta₀)
     (by simpa only [eval_add, eval_mul, eval_C, smul_eq_mul] using hdelta₁)
   exact ⟨hA.1.trans hB.1.symm, hA.2.trans hB.2.symm⟩

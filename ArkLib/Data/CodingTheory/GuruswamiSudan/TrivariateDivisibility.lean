@@ -7,7 +7,7 @@ import ArkLib.Data.CodingTheory.GuruswamiSudan.TrivariateInterpolation
 import ArkLib.Data.CodingTheory.GuruswamiSudan.MultiplicityInterpolation
 import ArkLib.Data.CodingTheory.GuruswamiSudan.DictionaryHasse
 import ArkLib.Data.CodingTheory.GuruswamiSudan.ToPolyDegree
-import ArkLib.Data.CodingTheory.GuruswamiSudan.Basic
+import ProximityPrize.Extensions.Data.CodingTheory.GuruswamiSudan.Basic
 import ArkLib.Data.CodingTheory.GuruswamiSudan.BivariateVanishing
 
 /-!

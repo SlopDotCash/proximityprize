@@ -135,7 +135,7 @@ theorem not_dualRowsFromNonsingularEval {ι : Type*} [Fintype ι] [DecidableEq �
 This shows the countermodel is inhabited (not a vacuous statement). Axiom-clean. -/
 theorem not_dualRowsFromNonsingularEval_fin2 :
     ¬ DualRowsFromNonsingularEval (Fin 2) (ZMod 2) 1 := by
-  have φ : (Fin 2) ↪ (ZMod 2) := ⟨fun i => (i : ZMod 2), by decide⟩
+  have φ : (Fin 2) ↪ (ZMod 2) := ⟨fun i => (i : ZMod 2), fun _ _ h => h⟩
   exact not_dualRowsFromNonsingularEval φ (by decide)
 
 /-! ## The repaired residual

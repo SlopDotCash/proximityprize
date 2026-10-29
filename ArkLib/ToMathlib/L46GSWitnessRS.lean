@@ -132,10 +132,18 @@ theorem gsWitnessLowerBound_rs_holds (domain : ι ↪ F) (deg : ℕ) (δ : ℝ�
     rfl
   refine ⟨![w0, w1], (Finset.univ).image g, ?_, ?_, ?_⟩
   · -- ¬ jointProximity: the stack is far from every interleaved codeword.
-    rw [jointProximity]
     intro hclose
-    rw [relCloseToCode_iff_relCloseToCodeword_of_minDist] at hclose
-    obtain ⟨V, hVmem, hVdist⟩ := hclose
+    have heq : (Matrix.transpose (![w0, w1] : Matrix (Fin 2) ι F)) =
+        (fun i => ![w0 i, w1 i]) := by
+      ext i j
+      fin_cases j <;> rfl
+    unfold Code.jointProximity at hclose
+    erw [interleave_wordStack_eq (u := (![w0, w1] : Matrix (Fin 2) ι F))] at hclose
+    erw [heq] at hclose
+    have hcode := (relCloseToCode_iff_relCloseToCodeword_of_minDist
+      (u := fun i => ![w0 i, w1 i])
+      (C := Code.interleavedCodeSet (ReedSolomon.code domain deg).carrier) δ).mp hclose
+    obtain ⟨V, hVmem, hVdist⟩ := hcode
     rw [relCloseToWord_iff_exists_agreementCols] at hVdist
     obtain ⟨S, hScard, hSagree⟩ := hVdist
     -- Row 1 of the stack agrees with `V`'s column 1 on `S`.
@@ -152,7 +160,7 @@ theorem gsWitnessLowerBound_rs_holds (domain : ι ↪ F) (deg : ℕ) (δ : ℝ�
       intro i
       have hT1 : Matrix.transpose V 1 i = q.eval (domain i) := by
         rw [hqeval]; simp [ReedSolomon.evalOnPoints]
-      simpa [Matrix.transpose_apply] using hT1
+      exact hT1
     -- `q` vanishes on the (large) part of `S` off the support.
     have hTcard : ((Finset.univ).image e).card
         = Nat.floor (δ * (Fintype.card ι : ℝ≥0)) + 1 := by

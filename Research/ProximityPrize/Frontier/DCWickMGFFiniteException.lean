@@ -66,12 +66,11 @@ noncomputable def gaussTerm (G : Finset F) (y : ℝ) (r : ℕ) : ℝ :=
 
 theorem summable_dcTerm {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F) (y : ℝ) :
     Summable (dcTerm G y) := by
-  simpa [dcTerm] using summable_dcMoment hψ G y
+  exact summable_dcMoment hψ G y
 
 set_option linter.unusedSectionVars false in
 theorem summable_gaussTerm (G : Finset F) (y : ℝ) : Summable (gaussTerm G y) := by
-  simpa [gaussTerm] using
-    summable_gaussianTerms (Fintype.card F : ℝ) (G.card : ℝ) y
+  exact summable_gaussianTerms (Fintype.card F : ℝ) (G.card : ℝ) y
 
 set_option linter.unusedSectionVars false in
 /-- `∑' gaussTerm = q·exp(n y²/2)`. -/
@@ -112,7 +111,7 @@ theorem dcMGF_le_of_dcWick_except_finite {ψ : AddChar F ℂ} (hψ : ψ.IsPrimit
         + (if r ∈ s then dcTerm G y r - gaussTerm G y r else 0) := by
       funext r; by_cases hr : r ∈ s <;> simp [hcap, hr]
     rw [this]
-    refine hsumG.add (summable_of_finite_support ?_)
+    refine hsumG.add (summable_of_hasFiniteSupport ?_)
     apply Set.Finite.subset s.finite_toSet
     intro r hr
     simp only [Function.mem_support, ne_eq, ite_eq_right_iff, not_forall] at hr
@@ -137,7 +136,7 @@ theorem dcMGF_le_of_dcWick_except_finite {ψ : AddChar F ℂ} (hψ : ψ.IsPrimit
     rw [hrw]
     have hsumCorr : Summable
         (fun r : ℕ => if r ∈ s then dcTerm G y r - gaussTerm G y r else 0) := by
-      refine summable_of_finite_support ?_
+      refine summable_of_hasFiniteSupport ?_
       apply Set.Finite.subset s.finite_toSet
       intro r hr
       simp only [Function.mem_support, ne_eq, ite_eq_right_iff, not_forall] at hr

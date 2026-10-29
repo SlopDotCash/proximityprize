@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.EntropyVolumeListSize
+import ArkLib.Data.CodingTheory.ProximityGap.ListDecodingCapacityOverflow
 
 /-!
 # The up-to-capacity list-decoding bound is FALSE in the prize regime (#232, negative side)
@@ -41,14 +42,6 @@ namespace CodingTheory
 open Real ListDecodable
 open scoped NNReal ENNReal
 
-/-- **`rpow` overflow bridge.** For `q > 1`, `0 < n1`, `0 < εq`, `logb q (n1·εq) < E → εq < q^E/n1`. -/
-theorem threshold_lt_pow_div (q : ℝ) (hq : 1 < q) (n1 : ℝ) (hn1 : 0 < n1)
-    (εq : ℝ) (hεq : 0 < εq) (E : ℝ) (hE : Real.logb q (n1 * εq) < E) :
-    εq < q ^ E / n1 := by
-  have hA : 0 < n1 * εq := mul_pos hn1 hεq
-  have hlt : n1 * εq < q ^ E := (Real.logb_lt_iff_lt_rpow hq hA).mp hE
-  rw [lt_div_iff₀ hn1]; nlinarith [hlt]
-
 /-- **Closed form of the capacity exponent at rate `1/2`.** -/
 theorem capExp_half_mul_log (q : ℕ) (hq : 2 ≤ q) (n : ℝ) :
     ((n : ℝ) * qEntropy q (1/2) - n/2) * Real.log q
@@ -61,7 +54,7 @@ theorem capExp_half_mul_log (q : ℕ) (hq : 2 ≤ q) (n : ℝ) :
     Real.log_div hq0.ne' hq1.ne'
   have hhalf : Real.log ((1:ℝ)/2) = -Real.log 2 := by
     rw [Real.log_div one_ne_zero two_ne_zero, Real.log_one]; ring
-  unfold qEntropy
+  rw [qEntropy_eq_logb_form]
   simp only [Real.logb, show (1:ℝ) - 1/2 = 1/2 from by ring, hhalf, hlogdiv]
   field_simp
   ring

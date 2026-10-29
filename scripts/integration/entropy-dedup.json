@@ -1,0 +1,39 @@
+{
+  "original_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+  "entries": [
+    {
+      "declaration": "CodingTheory.qEntropy_strictMonoOn",
+      "canonical_owner": "ArkLib.Data.CodingTheory.Basic.Entropy",
+      "former_owner": "ArkLib.Data.CodingTheory.QEntropyMonotone",
+      "disposition": "Remove duplicate downstream implementation and resolve canonical declaration",
+      "relation": "identical signature",
+      "original_command_sha256": "c7a33509537023d3f17500a802a6b5a3d33d676fc1a298ddf37c3b3540ecad20"
+    },
+    {
+      "declaration": "CodingTheory.qEntropy_le_one",
+      "canonical_owner": "ArkLib.Data.CodingTheory.Basic.Entropy",
+      "former_owner": "ArkLib.Data.CodingTheory.QEntropyMonotone",
+      "disposition": "Remove duplicate downstream implementation and resolve canonical declaration",
+      "relation": "canonical theorem is stronger: all q and x in [0,1], no below-capacity hypothesis",
+      "original_command_sha256": "77404e2c458eed82e7383ab4768fb809fd094dbdd817b94f5ce250f2f50de3f5"
+    },
+    {
+      "declaration": "CodingTheory.qEntropy_pos",
+      "canonical_owner": "ArkLib.Data.CodingTheory.Basic.Entropy",
+      "former_owner": "ArkLib.Data.CodingTheory.QEntropyMonotone",
+      "disposition": "Remove duplicate downstream implementation and resolve canonical declaration",
+      "relation": "identical signature",
+      "original_command_sha256": "011bc078726e90b07e8d147d266833b13a528fe9361c6644e5cf3ed643f59089"
+    }
+  ],
+  "migrated_callers": [
+    {
+      "declaration": "CodingTheory.qEntropy_floor_mul_div_le_one",
+      "former_application": "qEntropy_le_one hq h\u03b40 h\u03b4",
+      "canonical_application": "qEntropy_le_one h\u03b40 (h\u03b4.trans (sub_le_self _ (by positivity)))",
+      "meaning": "The original below-capacity assumption implies x\u22641; all original hypotheses and conclusions remain."
+    }
+  ],
+  "lookup_audit": "No other noncanonical explicit callers of the former qEntropy_le_one signature were found under ArkLib, Research, ProximityPrize or ArkLibTest. strictMonoOn and pos resolve their canonical owners without argument changes.",
+  "new_admissions": false
+}

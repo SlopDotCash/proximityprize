@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Spartan.Basic
+import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
 import ArkLib.OracleReduction.LiftContext.Coherence
 
 /-!

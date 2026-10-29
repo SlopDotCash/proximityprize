@@ -53,11 +53,12 @@ theorem stirChainProof_rbrKnowledgeSoundness_indicator
     (φ : ι ↪ F) (deg : ℕ) (M : ℕ) (δ : ℝ≥0) :
     OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
       (stirChainRelIn φ deg δ)
-      ((stirChainProof φ deg M).verifier)
+      ((stirChainProof φ deg M).toOracleVerifier)
       (fun i => if i = stirChainFinalChallengeIdx M then 1 else 0) := by
   unfold OracleProof.rbrKnowledgeSoundness OracleVerifier.rbrKnowledgeSoundness
   exact ThresholdKSF.rbrKnowledgeSoundness_indicator (pure ()) isEmptyElim
-    ((stirChainProof φ deg M).verifier.toVerifier)
+    ((stirChainProof φ deg M).toOracleVerifier.toVerifier
+      (Oₛₒ := fun i : Empty => nomatch i))
     (stirChainRelIn φ deg δ) acceptRejectOracleRel
     (fun _ stmtIn _ => (stmtIn, ()) ∈ stirChainRelIn φ deg δ)
     (stirChainFinalChallengeIdx M)

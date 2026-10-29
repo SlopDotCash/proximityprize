@@ -36,14 +36,15 @@ set -eo pipefail
 
 touch scripts/style-exceptions.txt
 
-# The standalone repository's maintained surface is the Proximity Prize cone.
-# Unrelated ArkLib sources are retained as transitive substrate and historical
-# context, but are outside the default build and style-baseline target.
-{
-	printf '%s\n' ArkLib/Data/CodingTheory/ProximityGap.lean
-	git ls-files 'ArkLib/Data/CodingTheory/ProximityGap/*.lean' 'Research/ProximityPrize/*.lean'
-} | sort -u | xargs ./scripts/lint-style.py "$@"
-# git ls-files 'Examples/*.lean' | xargs ./scripts/lint-style.py "$@"
+# Canonical module style is enforced by the Lean-native upstream linter.
+# This compatibility check keeps the existing baseline for classic extensions.
+python3 - <<'PYTHON' | xargs ./scripts/lint-style.py "$@"
+import json
+import subprocess
+canonical = set(json.load(open("scripts/arklib-upstream.json"))["files"])
+paths = subprocess.check_output(["git", "ls-files", "--", "ArkLib/*.lean", "Research/*.lean", "ProximityPrize/*.lean"], text=True).splitlines()
+print("\n".join(sorted(set(paths) - canonical)))
+PYTHON
 
 # 2.1 Check for executable bit on Lean files
 

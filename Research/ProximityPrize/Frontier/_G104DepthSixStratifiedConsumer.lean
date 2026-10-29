@@ -159,14 +159,14 @@ theorem quadCount_split (S : Finset G) (x : G) :
         fun t => HasAntipodal t).card +
       ((((S ×ˢ S) ×ˢ (S ×ˢ S)).filter fun t => qsum t = x).filter
         fun t => ¬HasAntipodal t).card :=
-    (Finset.filter_card_add_filter_neg_card_eq_card _).symm
+    (Finset.card_filter_add_card_filter_not _).symm
   have h2 : ((((S ×ˢ S) ×ˢ (S ×ˢ S)).filter fun t => qsum t = x).filter
         fun t => ¬HasAntipodal t).card =
       (((((S ×ˢ S) ×ˢ (S ×ˢ S)).filter fun t => qsum t = x).filter
         fun t => ¬HasAntipodal t).filter fun t => HasZeroTriple t).card +
       (((((S ×ˢ S) ×ˢ (S ×ˢ S)).filter fun t => qsum t = x).filter
         fun t => ¬HasAntipodal t).filter fun t => ¬HasZeroTriple t).card :=
-    (Finset.filter_card_add_filter_neg_card_eq_card _).symm
+    (Finset.card_filter_add_card_filter_not _).symm
   rw [h1, h2]
   congr 1
   · rw [Finset.filter_filter]

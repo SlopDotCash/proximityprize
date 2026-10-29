@@ -17,15 +17,22 @@ proof lets both public import paths coexist without duplicate declarations.
 open OracleComp OracleSpec ProtocolSpec OptionTStateT
 open scoped ENNReal NNReal
 
+-- Preserve historical PMF equality contracts with private all-subsets observations.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : MeasurableSpace (Option A) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
   {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}
 
+omit [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] in
 /-- **Discharged `hTot`.** The appended simulated honest game never *samples* a failure: its only
 failure mode is the explicit `none` output (folded into the bad event). With a non-failing
 initializer `init`, the bind `init >>= fun s => (…).run' s` is failure-free by
@@ -35,18 +42,17 @@ theorem append_game_neverFail
     (R₁ : Reduction oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁)
     (R₂ : Reduction oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂)
     (stmt : Stmt₁) (wit : Wit₁)
-    (hInit : Pr[⊥ | init] = 0)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0) :
-    Pr[⊥ | gameOf init impl (R₁.append R₂) stmt wit] = 0 := by
-  show Pr[⊥ | init >>= fun s =>
+    (hInit : prFail (init) = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0) :
+    prFail (gameOf init impl (R₁.append R₂) stmt wit) = 0 := by
+  show prFail (init >>= fun s =>
       StateT.run' (simulateQ (impl.addLift challengeQueryImpl)
-        (OptionT.run ((R₁.append R₂).run stmt wit))) s] = 0
-  rw [probFailure_bind_eq_add_tsum, hInit, zero_add, ENNReal.tsum_eq_zero]
-  intro s
-  rw [mul_eq_zero]
-  right
-  rw [StateT.run'_eq, probFailure_map]
-  exact simulateQ_run_neverFail _ (addLift_neverFail impl himplNF) _ s
+        (OptionT.run ((R₁.append R₂).run stmt wit))) s) = 0
+  rw [ProximityPrize.Compatibility.prFail_bind_eq_zero_iff]
+  refine ⟨hInit, ?_⟩
+  intro s _
+  simpa only [probFailure, StateT.run'_eq, prFail_map] using
+    (simulateQ_run_neverFail _ (addLift_neverFail impl himplNF) _ s)
 
 /-- Compatibility wrapper retaining the explicit non-failing-initializer hypothesis.
 The canonical message-seam theorem proves the result without needing that extra hypothesis. -/
@@ -59,10 +65,10 @@ theorem append_completeness_msg_of_neverFail
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (hInit : Pr[⊥ | init] = 0)
+    (_hInit : prFail (init) = 0)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (R₁.append R₂).completeness init impl rel₁ rel₃ (e₁ + e₂) :=

@@ -4,17 +4,28 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SpartanSendEvalClaim
+import ProximityPrize.Compatibility.SpartanLinearCombination
+import ProximityPrize.Compatibility.SpartanFirstChallenge
+import ProximityPrize.Compatibility.SumcheckKnowledge
 import ArkLib.ProofSystem.Spartan.RbrKnowledgeWiring
 import ArkLib.ProofSystem.Spartan.FirstSumcheckRelComplete
 import Mathlib.Algebra.MvPolynomial.SchwartzZippel
 
+import ProximityPrize.Compatibility.PureKnowledge
+
 /-!
+
+Canonical-message integration: the degree-2/degree-3 round knowledge bounds remain explicit
+hypotheses of the `_of_sumcheck_rounds` constructions below. Former unconditional zero-flip
+completion claims are retired; exact names, commands and added obligations are recorded in
+`scripts/integration/sumcheck-message-semantics-retirements.json`.
+
 # Short-phase RBR knowledge-soundness leaves for the composed Spartan PIOP (#114)
 
-This module discharges the five remaining non-sum-check leaf hypotheses of
-`composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves`, producing the first
-**unconditional** end-to-end composed RBR knowledge-soundness theorem for the in-tree Spartan
-PIOP (`composedRbrKnowledgeSoundnessPreserving_unconditional`).
+This module proves the five non-sum-check phase bounds and assembles the in-tree Spartan
+PIOP's end-to-end bound. The assembly retains explicit degree-two and degree-three knowledge
+bounds for the actual canonical sum-check messages; it does not discharge those obligations.
 
 The relation chain (`relB`/`relE`/`relF` were free in the wiring layer; here they are pinned):
 
@@ -42,261 +53,21 @@ The five leaves:
   pullback of the pinned `secondSumcheckRbrRelIn` by the `prependRLCTarget` seam, the
   false-to-true flip probability at this round is unbounded, and the only honest per-round
   error is `1`. Binding the evaluation claims requires the target-carrying (`WithClaim`)
-  protocol line, where the terminal `CheckClaim` enforces the real cross-phase identity; that
-  line is tracked separately.
+  protocol line, whose terminal semantic relation retains the cross-phase identity. Canonical
+  `CheckClaim` itself passes statements through and does not execute a rejecting predicate;
+  that relation-carrying line is tracked separately.
 * `h₆` (`prependRLCTarget`): zero-round pullback transport (error `0`).
 
-The file also provides three *generic* pure-verifier rbr-KS combinators (zero-round,
-single-message-round, single-challenge-round), which subsume `Verifier.id_rbrKnowledgeSoundness`
-and should migrate to `OracleReduction/Security` on upstreaming.
+The three generic pure-verifier rbr-KS combinators (zero-round, single-message-round and
+single-challenge-round) are shared by `ProximityPrize.Compatibility.PureKnowledge`.
 -/
 
 open OracleComp OracleSpec ProtocolSpec
 open scoped NNReal
 
-/-! ## Generic pure-verifier rbr knowledge-soundness combinators -/
+/-! Generic pure-verifier combinators are imported from `Compatibility.PureKnowledge`. -/
 
-namespace Verifier
 
-variable {ι : Type} {oSpec : OracleSpec ι} {σ : Type}
-
-section ZeroRoundPure
-
-variable {StmtIn StmtOut : Type}
-
-/-- The trivial rbr extractor for a zero-round reduction with `Unit` witnesses. -/
-def zeroRoundPureExtractor :
-    Extractor.RoundByRound oSpec StmtIn Unit Unit !p[] (fun _ => Unit) where
-  eqIn := rfl
-  extractMid := fun i => Fin.elim0 i
-  extractOut := fun _ _ _ => ()
-
-/-- Knowledge state function for a zero-round pure verifier `pure ∘ v`, along a relation
-transport `relOut ∘ v ⊆ relIn`. -/
-def zeroRoundPureKSF (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
-    (v : StmtIn → StmtOut)
-    {relIn : Set (StmtIn × Unit)} {relOut : Set (StmtOut × Unit)}
-    (hdoom : ∀ stmtIn, (v stmtIn, ()) ∈ relOut → (stmtIn, ()) ∈ relIn) :
-    (⟨fun p _tr => pure (v p)⟩ :
-      Verifier oSpec StmtIn StmtOut !p[]).KnowledgeStateFunction init impl relIn relOut
-      zeroRoundPureExtractor where
-  toFun := fun _ stmtIn _ _ => (stmtIn, ()) ∈ relIn
-  toFun_empty := fun stmtIn witMid => by simp
-  toFun_next := fun i => Fin.elim0 i
-  toFun_full := fun stmtIn tr witOut h => by
-    simp only [Verifier.run] at h
-    rw [gt_iff_lt, probEvent_pos_iff] at h
-    obtain ⟨x, hx, hrel⟩ := h
-    rw [OptionT.mem_support_iff] at hx
-    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
-    obtain ⟨s, _, hx⟩ := hx
-    have key : (simulateQ impl (pure (v stmtIn) : OptionT (OracleComp oSpec) StmtOut)).run' s =
-        pure (some (v stmtIn)) := by
-      change (simulateQ impl
-        (pure (some (v stmtIn)) : OracleComp oSpec (Option StmtOut))).run' s = _
-      rw [simulateQ_pure]
-      change Prod.fst <$> (pure (some (v stmtIn)) : StateT σ ProbComp _).run s = _
-      rw [StateT.run_pure]; simp [map_pure]
-    rw [key] at hx
-    simp only [support_pure, Set.mem_singleton_iff] at hx
-    cases (Option.some.inj hx)
-    exact hdoom stmtIn hrel
-
-/-- **Zero-round pure verifiers are perfectly rbr knowledge-sound along a relation transport.**
-Generalizes `Verifier.id_rbrKnowledgeSoundness` from `v = id`, `relIn = relOut` to any
-deterministic-total verifier with `relOut ∘ v ⊆ relIn`. -/
-theorem rbrKnowledgeSoundness_zeroRound_pure
-    (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
-    (v : StmtIn → StmtOut)
-    {relIn : Set (StmtIn × Unit)} {relOut : Set (StmtOut × Unit)}
-    (hdoom : ∀ stmtIn, (v stmtIn, ()) ∈ relOut → (stmtIn, ()) ∈ relIn) :
-    (⟨fun p _tr => pure (v p)⟩ :
-      Verifier oSpec StmtIn StmtOut !p[]).rbrKnowledgeSoundness init impl relIn relOut 0 :=
-  ⟨fun _ => Unit, zeroRoundPureExtractor, zeroRoundPureKSF init impl v hdoom,
-    fun _ _ _ i => Fin.elim0 i.1⟩
-
-end ZeroRoundPure
-
-section SingleMessagePure
-
-variable {StmtIn StmtOut M : Type}
-
-/-- The trivial rbr extractor for a single-message-round reduction with `Unit` witnesses. -/
-def singleMessagePureExtractor :
-    Extractor.RoundByRound oSpec StmtIn Unit Unit ⟨!v[.P_to_V], !v[M]⟩ (fun _ => Unit) where
-  eqIn := rfl
-  extractMid := fun _ _ _ _ => ()
-  extractOut := fun _ _ _ => ()
-
-/-- Knowledge state function for a single-message-round pure verifier: the input-relation
-membership is carried unchanged through the (adversarial) message, and `hdoom` recovers it from
-any output landing in `relOut`. -/
-def singleMessagePureKSF (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
-    (v : StmtIn → M → StmtOut)
-    {relIn : Set (StmtIn × Unit)} {relOut : Set (StmtOut × Unit)}
-    (hdoom : ∀ stmtIn msg, (v stmtIn msg, ()) ∈ relOut → (stmtIn, ()) ∈ relIn) :
-    (⟨fun p tr => pure (v p (tr.messages ⟨0, rfl⟩))⟩ :
-      Verifier oSpec StmtIn StmtOut ⟨!v[.P_to_V], !v[M]⟩).KnowledgeStateFunction init impl
-      relIn relOut singleMessagePureExtractor where
-  toFun := fun _ stmtIn _ _ => (stmtIn, ()) ∈ relIn
-  toFun_empty := fun stmtIn witMid => by simp
-  toFun_next := fun _ _ _ _ _ _ h => h
-  toFun_full := fun stmtIn tr witOut h => by
-    simp only [Verifier.run] at h
-    rw [gt_iff_lt, probEvent_pos_iff] at h
-    obtain ⟨x, hx, hrel⟩ := h
-    rw [OptionT.mem_support_iff] at hx
-    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
-    obtain ⟨s, _, hx⟩ := hx
-    have key : ∀ out : StmtOut,
-        (simulateQ impl (pure out : OptionT (OracleComp oSpec) StmtOut)).run' s =
-          pure (some out) := by
-      intro out
-      change (simulateQ impl (pure (some out) :
-        OracleComp oSpec (Option StmtOut))).run' s = _
-      rw [simulateQ_pure]
-      change Prod.fst <$> (pure (some out) : StateT σ ProbComp _).run s = _
-      rw [StateT.run_pure]; simp [map_pure]
-    rw [key] at hx
-    simp only [support_pure, Set.mem_singleton_iff] at hx
-    cases (Option.some.inj hx)
-    exact hdoom stmtIn _ hrel
-
-/-- **Single-message-round pure verifiers are perfectly rbr knowledge-sound along a relation
-transport.** There is no challenge round, so the error is `0`. -/
-theorem rbrKnowledgeSoundness_singleMessage_pure
-    (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
-    (v : StmtIn → M → StmtOut)
-    {relIn : Set (StmtIn × Unit)} {relOut : Set (StmtOut × Unit)}
-    (hdoom : ∀ stmtIn msg, (v stmtIn msg, ()) ∈ relOut → (stmtIn, ()) ∈ relIn) :
-    (⟨fun p tr => pure (v p (tr.messages ⟨0, rfl⟩))⟩ :
-      Verifier oSpec StmtIn StmtOut ⟨!v[.P_to_V], !v[M]⟩).rbrKnowledgeSoundness init impl
-      relIn relOut 0 := by
-  refine ⟨fun _ => Unit, singleMessagePureExtractor,
-    singleMessagePureKSF init impl v hdoom, ?_⟩
-  intro _stmtIn _witIn _prover ⟨⟨0, _⟩, hdir⟩
-  exact absurd hdir (by simp)
-
-end SingleMessagePure
-
-section SingleChallengePure
-
-variable {StmtIn StmtOut C : Type} [SampleableType C]
-
-/-- The trivial rbr extractor for a single-challenge-round reduction with `Unit` witnesses. -/
-def singleChallengePureExtractor :
-    Extractor.RoundByRound oSpec StmtIn Unit Unit ⟨!v[.V_to_P], !v[C]⟩ (fun _ => Unit) where
-  eqIn := rfl
-  extractMid := fun _ _ _ _ => ()
-  extractOut := fun _ _ _ => ()
-
-/-- Knowledge state function for a single-challenge-round pure verifier: before the challenge,
-input-relation membership; after the challenge, output-relation membership of the deterministic
-output. -/
-def singleChallengePureKSF (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
-    (v : StmtIn → C → StmtOut)
-    (relIn : Set (StmtIn × Unit)) (relOut : Set (StmtOut × Unit)) :
-    (⟨fun p tr => pure (v p (tr.challenges ⟨0, rfl⟩))⟩ :
-      Verifier oSpec StmtIn StmtOut ⟨!v[.V_to_P], !v[C]⟩).KnowledgeStateFunction init impl
-      relIn relOut singleChallengePureExtractor where
-  toFun
-  | ⟨0, _⟩ => fun stmtIn _ _ => (stmtIn, ()) ∈ relIn
-  | ⟨1, _⟩ => fun stmtIn tr _ => (v stmtIn (tr.challenges ⟨0, rfl⟩), ()) ∈ relOut
-  toFun_empty := fun stmtIn witMid => by simp
-  toFun_next := fun m hdir => by
-    exfalso
-    have hm : m = 0 := by omega
-    subst hm
-    simp at hdir
-  toFun_full := fun stmtIn tr witOut h => by
-    simp only [Verifier.run] at h
-    rw [gt_iff_lt, probEvent_pos_iff] at h
-    obtain ⟨x, hx, hrel⟩ := h
-    rw [OptionT.mem_support_iff] at hx
-    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
-    obtain ⟨s, _, hx⟩ := hx
-    have key : ∀ out : StmtOut,
-        (simulateQ impl (pure out : OptionT (OracleComp oSpec) StmtOut)).run' s =
-          pure (some out) := by
-      intro out
-      change (simulateQ impl (pure (some out) :
-        OracleComp oSpec (Option StmtOut))).run' s = _
-      rw [simulateQ_pure]
-      change Prod.fst <$> (pure (some out) : StateT σ ProbComp _).run s = _
-      rw [StateT.run_pure]; simp [map_pure]
-    rw [key] at hx
-    simp only [support_pure, Set.mem_singleton_iff] at hx
-    cases (Option.some.inj hx)
-    exact hrel
-
-/-- **Single-challenge-round pure verifiers are rbr knowledge-sound at the false-to-true flip
-probability of the challenge.** The per-round error is any bound on the probability, over a
-uniform challenge, that a doomed input statement (`∉ relIn`) is mapped into `relOut`. -/
-theorem rbrKnowledgeSoundness_singleChallenge_pure
-    (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
-    (v : StmtIn → C → StmtOut)
-    (relIn : Set (StmtIn × Unit)) (relOut : Set (StmtOut × Unit))
-    (err : ℝ≥0)
-    (hflip : ∀ stmtIn, (stmtIn, ()) ∉ relIn →
-      Pr[fun c : C => (v stmtIn c, ()) ∈ relOut | $ᵗ C] ≤ err) :
-    (⟨fun p tr => pure (v p (tr.challenges ⟨0, rfl⟩))⟩ :
-      Verifier oSpec StmtIn StmtOut ⟨!v[.V_to_P], !v[C]⟩).rbrKnowledgeSoundness init impl
-      relIn relOut (fun _ => err) := by
-  refine ⟨fun _ => Unit, singleChallengePureExtractor,
-    singleChallengePureKSF init impl v relIn relOut, ?_⟩
-  intro stmtIn witIn prover i
-  have : i = ⟨0, by simp⟩ := by aesop
-  subst this
-  simp [Prover.runWithLogToRound, Prover.runToRound, singleChallengePureExtractor,
-    singleChallengePureKSF]
-  erw [simulateQ_bind]
-  simp only [MonadLift.monadLift, liftM, monadLift, MonadLiftT.monadLift]
-  simp only [pure_bind, bind_assoc, map_pure, StateT.run'_eq, StateT.run_bind, map_bind]
-  erw [simulateQ_pure]
-  simp only [loggingOracle, simulateQ_pure, WriterT.run_pure, pure_bind, map_pure,
-    StateT.run_pure, StateT.run_bind, QueryImpl.simulateQ_add_liftComp_right]
-  erw [simulateQ_bind, QueryImpl.simulateQ_add_liftComp_right]
-  erw [simulateQ_spec_query]
-  simp only [QueryImpl.liftTarget_apply, challengeQueryImpl, StateT.run_bind, map_bind, pure_bind]
-  classical
-  rw [probEvent_bind_eq_tsum]
-  refine le_trans (ENNReal.tsum_le_tsum
-    (g := fun s => Pr[= s | init] * (err : ENNReal))
-    fun s => mul_le_mul' le_rfl ?_) ?_
-  · rw [probEvent_bind_eq_tsum]
-    have hc2 : ∀ (x : C × σ),
-        ((fun y => y.1) <$> (simulateQ
-            (impl + QueryImpl.liftTarget (StateT σ ProbComp)
-              (challengeQueryImpl (pSpec := (⟨!v[.V_to_P], !v[C]⟩ : ProtocolSpec 1))))
-            (pure (default, x.1, ∅))).run x.2)
-        = (pure (default, x.1, ∅) :
-            ProbComp (Transcript 0 (⟨!v[.V_to_P], !v[C]⟩ : ProtocolSpec 1) × C ×
-              (oSpec + [(⟨!v[.V_to_P], !v[C]⟩ : ProtocolSpec 1).Challenge]ₒ'
-                challengeOracleInterface).QueryLog)) := by
-      intro x
-      erw [simulateQ_pure]
-      rw [StateT.run_pure, map_pure]
-    apply le_trans (le_of_eq (tsum_congr fun x =>
-      congrArg (fun mz => _ * probEvent mz _) (hc2 x)))
-    rw [← probEvent_bind_eq_tsum]
-    erw [StateT.run_lift]
-    simp only [bind_assoc, pure_bind]
-    show (probEvent ((fun x => (default, x, ∅)) <$> ($ᵗ _)) _) ≤ _
-    rw [probEvent_map]
-    simp only [Function.comp_def, ProtocolSpec.Transcript.concat, Fin.snoc]
-    by_cases hmem : (stmtIn, ()) ∈ relIn
-    · refine le_trans (le_of_eq (probEvent_eq_zero_iff.mpr ?_)) (zero_le _)
-      intro c _ hc
-      exact hc.1 hmem
-    · refine le_trans (probEvent_mono ?_) (hflip stmtIn hmem)
-      intro c _ hc
-      exact hc.2
-  · rw [ENNReal.tsum_mul_right]
-    exact le_trans (mul_le_mul' tsum_probOutput_le_one le_rfl) (by rw [one_mul])
-
-end SingleChallengePure
-
-end Verifier
 
 /-! ## The Spartan short-phase leaves -/
 
@@ -324,7 +95,7 @@ def firstMessageRbrRelB :
   SendSingleWitness.toORelOut (spartanRelIn R pp)
 
 /-- `relE`: the first sum-check's transported output relation, recovered through
-`sendEvalClaim`'s statement/oracle pass-through (the bundled evaluation-claim oracle is
+`sendEvalClaim`'s statement/oracle pass-through (the scalar evaluation-claim family is
 unconstrained). -/
 @[reducible]
 def sendEvalClaimRbrRelE :
@@ -339,7 +110,7 @@ RLC-target computation performed by `prependRLCTarget`. -/
 def prependRLCTargetRbrRelF :
     Set ((Statement.AfterLinearCombination R pp ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i) × Unit) :=
-  { x | (((∑ idx, x.1.1.1 idx * x.1.2 (.inl 0) idx, x.1.1), x.1.2), ()) ∈
+  { x | (((∑ idx, x.1.1.1 idx * (show R from x.1.2 (.inl idx)), x.1.1), x.1.2), ()) ∈
       Spartan.Spec.secondSumcheckRbrRelIn (R := R) pp oSpec }
 
 /-! ### Closed-form compiled verifiers for the pure phases -/
@@ -348,60 +119,52 @@ omit [IsDomain R] [Fintype R] [DecidableEq R] [Inhabited R] in
 /-- The compiled `firstChallenge` verifier, in closed form: it returns the sampled challenge
 paired with the input statement and passes every oracle through. -/
 theorem firstChallenge_toVerifier_closed :
-    (oracleReduction.firstChallenge R pp oSpec).verifier.toVerifier
+    (oracleReduction.completedFirstChallenge R pp oSpec).verifier.toVerifier
       = ⟨fun p tr => pure ((fun p (c : FirstChallenge R pp) => ((c, p.1), p.2)) p
           (tr.challenges ⟨0, rfl⟩))⟩ := by
   rw [OracleVerifier.toVerifier_eq_pure_of_collapse
-    (oracleReduction.firstChallenge R pp oSpec).verifier
+    (oracleReduction.completedFirstChallenge R pp oSpec).verifier
     (fun p tr => (tr.challenges ⟨0, rfl⟩, p.1))
     (fun _ _ _ => by
-      simp only [oracleReduction.firstChallenge, firstChallengeVerifier]
+      simp only [oracleReduction.completedFirstChallenge, firstChallengeVerifier]
       exact simulateQ_pure _ _)]
   rfl
 
 /-- The closed-form output map of the compiled `sendEvalClaim` verifier: forward the statement,
-route the bundled claim oracle from the message, pass the remaining oracles through. -/
+route each scalar claim oracle from the bundled message, pass the remaining oracles through. -/
 def sendEvalClaimRouteMap
     (p : Statement.AfterFirstSumcheck R pp × ∀ i, OracleStatement.AfterFirstSumcheck R pp i)
     (m : ∀ i, EvalClaim R i) :
     Statement.AfterSendEvalClaim R pp × ∀ i, OracleStatement.AfterSendEvalClaim R pp i :=
   (p.1, fun i => match i with
-    | .inl _ => m
+    | .inl idx => m idx
     | .inr j => p.2 j)
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] [Inhabited R] in
 /-- The compiled `sendEvalClaim` verifier, in closed form: it forwards the statement, routes the
-bundled claim oracle from the message, and passes the remaining oracles through. -/
+scalar claim family from the bundled message, and passes the remaining oracles through. -/
 theorem sendEvalClaim_toVerifier_closed :
-    (oracleReduction.sendEvalClaim R pp oSpec).verifier.toVerifier
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.toVerifier
       = ⟨fun p tr => pure (sendEvalClaimRouteMap (R := R) pp p (tr.messages ⟨0, rfl⟩))⟩ := by
   rw [OracleVerifier.toVerifier_eq_pure_of_collapse
-    (oracleReduction.sendEvalClaim R pp oSpec).verifier (fun p _ => p.1)
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier (fun p _ => p.1)
     (fun _ _ _ => by
-      simp only [oracleReduction.sendEvalClaim, sendEvalClaimVerifier]
+      simp only [oracleReduction.completedSendEvalClaim, sendEvalClaimVerifier]
       exact simulateQ_pure _ _)]
   congr 1
-  funext p tr
-  congr 1
-  unfold sendEvalClaimRouteMap
-  congr 1
-  funext i
-  cases i with
-  | inl j => rfl
-  | inr j => rfl
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] [Inhabited R] in
 /-- The compiled `linearCombination` verifier, in closed form: it returns the sampled RLC
 challenge paired with the input statement and passes every oracle through. -/
 theorem linearCombination_toVerifier_closed :
-    (oracleReduction.linearCombination R pp oSpec).verifier.toVerifier
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.toVerifier
       = ⟨fun p tr => pure ((fun p (c : LinearCombinationChallenge R) => ((c, p.1), p.2)) p
           (tr.challenges ⟨0, rfl⟩))⟩ := by
   rw [OracleVerifier.toVerifier_eq_pure_of_collapse
-    (oracleReduction.linearCombination R pp oSpec).verifier
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier
     (fun p tr => (tr.challenges ⟨0, rfl⟩, p.1))
     (fun _ _ _ => by
-      simp only [oracleReduction.linearCombination, linearCombinationVerifier]
+      simp only [oracleReduction.completedLinearCombination, linearCombinationVerifier]
       exact simulateQ_pure _ _)]
   rfl
 
@@ -446,9 +209,8 @@ theorem zeroCheck_flip_prob_le (hm : 0 < pp.ℓ_m)
     (𝕩 : Statement.AfterFirstMessage R pp)
     (oStmt : ∀ i, OracleStatement.AfterFirstMessage R pp i)
     (hbad : ¬ R1CS.relation R pp.toSizeR1CS 𝕩 (fun idx => oStmt (.inl idx)) (oStmt (.inr 0))) :
-    Pr[fun τ : FirstChallenge R pp =>
-        MvPolynomial.eval τ (zeroCheckVirtualPolynomial R pp 𝕩 oStmt) = 0
-      | $ᵗ (FirstChallenge R pp)]
+    probEvent (fun τ : FirstChallenge R pp =>
+        MvPolynomial.eval τ (zeroCheckVirtualPolynomial R pp 𝕩 oStmt) = 0) ($ᵗ (FirstChallenge R pp))
       ≤ (((pp.ℓ_m : ℝ≥0) / (Fintype.card R : ℝ≥0) : ℝ≥0) : ENNReal) := by
   classical
   -- `𝒢 ≠ 0`: it fails to vanish at some Boolean point.
@@ -496,7 +258,7 @@ theorem zeroCheck_flip_prob_le (hm : 0 < pp.ℓ_m)
             rw [div_mul_cancel₀]
             exact ne_of_gt hqpow
         _ ≤ ((pp.ℓ_m : ℚ≥0) / (q : ℚ≥0)) * (q : ℚ≥0) ^ pp.ℓ_m :=
-            mul_le_mul_right' (le_trans hSZ hRHS) _
+            mul_le_mul_of_nonneg_right (le_trans hSZ hRHS) (by positivity)
     calc (Z.card : ℚ≥0) ≤ ((pp.ℓ_m : ℚ≥0) / (q : ℚ≥0)) * (q : ℚ≥0) ^ pp.ℓ_m := hZQ
       _ = (pp.ℓ_m : ℚ≥0) * (q : ℚ≥0) ^ (pp.ℓ_m - 1) := by
           rw [div_mul_eq_mul_div, mul_comm ((pp.ℓ_m : ℚ≥0)) _, mul_comm ((pp.ℓ_m : ℚ≥0)) _]
@@ -506,7 +268,8 @@ theorem zeroCheck_flip_prob_le (hm : 0 < pp.ℓ_m)
             mul_comm]
   have hcardN : Z.card ≤ pp.ℓ_m * q ^ (pp.ℓ_m - 1) := by exact_mod_cast hcard
   -- Transfer to the probability.
-  rw [probEvent_uniformSample]
+  simp only [probEvent]
+  rw [SampleableType.prEvent_uniformSample]
   rw [← hZ]
   have hcardC : (Fintype.card (FirstChallenge R pp)) = q ^ pp.ℓ_m := by
     simp [FirstChallenge, hq]
@@ -535,7 +298,7 @@ theorem mem_firstSumcheckRbrRelIn_iff_zeroCheckEval
         Spartan.Spec.firstSumcheckRbrRelIn (R := R) pp oSpec)
       ↔ MvPolynomial.eval τ (zeroCheckVirtualPolynomial R pp 𝕩 oStmt) = 0 := by
   simp only [Spartan.Spec.firstSumcheckRbrRelIn, Extractor.Lens.Honest.pullbackRelIn,
-    Set.mem_setOf_eq, Sumcheck.Spec.relationRound]
+    Set.mem_ofPred_eq, Sumcheck.Spec.relationRound]
   have hsum : (∑ x ∈ (Finset.univ.map (boolEmbedding R)) ^ᶠ (pp.ℓ_m - 0),
       (firstSumCheckVirtualPolynomial pp τ 𝕩 oStmt) ⸨(Fin.elim0 : Fin 0 → R), x⸩)
       = MvPolynomial.eval τ (zeroCheckVirtualPolynomial R pp 𝕩 oStmt) := by
@@ -554,7 +317,7 @@ omit [Inhabited R] in
 from `relB` (R1CS satisfiability of the sent witness) to the first sum-check's honest input
 relation, with per-round error `ℓ_m / |R|`. -/
 theorem firstChallenge_rbrKnowledgeSoundness_schwartzZippel (hm : 0 < pp.ℓ_m) :
-    (oracleReduction.firstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (firstMessageRbrRelB (R := R) pp)
       (Spartan.Spec.firstSumcheckRbrRelIn (R := R) pp oSpec)
       (fun _ => (pp.ℓ_m : ℝ≥0) / (Fintype.card R : ℝ≥0)) := by
@@ -570,8 +333,8 @@ theorem firstChallenge_rbrKnowledgeSoundness_schwartzZippel (hm : 0 < pp.ℓ_m) 
   have hbad' : ¬ R1CS.relation R pp.toSizeR1CS 𝕩
       (fun idx => oStmt (.inl idx)) (oStmt (.inr 0)) := by
     intro h
-    exact hbad (by simpa [SendSingleWitness.toORelOut, spartanRelIn] using h)
-  refine le_trans (probEvent_mono ?_) (zeroCheck_flip_prob_le pp hm 𝕩 oStmt hbad')
+    exact hbad h
+  refine le_trans (prEvent_mono_of_support _ _ _ ?_) (zeroCheck_flip_prob_le pp hm 𝕩 oStmt hbad')
   intro τ _ hτ
   exact (mem_firstSumcheckRbrRelIn_iff_zeroCheckEval pp oSpec τ 𝕩 oStmt).mp hτ
 
@@ -582,7 +345,7 @@ sum-check's transported output relation to its pass-through reading `relE`: the 
 the matrix/witness oracles are forwarded unchanged, so input membership is recovered from any
 output in `relE` regardless of the adversarial claim message. -/
 theorem sendEvalClaim_rbrKnowledgeSoundness_leaf :
-    (oracleReduction.sendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (Spartan.Spec.firstSumcheckRbrRelOut (R := R) pp oSpec)
       (sendEvalClaimRbrRelE (R := R) pp oSpec) 0 := by
   unfold OracleVerifier.rbrKnowledgeSoundness
@@ -599,7 +362,7 @@ docstring — a prover sending the true evaluation claims defeats any smaller bo
 sum-check's doom. The trivial bound keeps the composed theorem honest rather than laundering an
 unprovable per-round error. -/
 theorem linearCombination_rbrKnowledgeSoundness_leaf :
-    (oracleReduction.linearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (sendEvalClaimRbrRelE (R := R) pp oSpec)
       (prependRLCTargetRbrRelF (R := R) pp oSpec)
       (fun _ => 1) := by
@@ -613,7 +376,7 @@ theorem linearCombination_rbrKnowledgeSoundness_leaf :
     (sendEvalClaimRbrRelE (R := R) pp oSpec)
     (prependRLCTargetRbrRelF (R := R) pp oSpec) _ ?_
   intro stmtIn _
-  exact le_trans probEvent_le_one (by simp)
+  exact le_trans (prEvent_le_one _) (by simp)
 
 /-! ### Leaf `h₆` — `prependRLCTarget` (zero-round pullback, error `0`) -/
 
@@ -628,21 +391,17 @@ theorem prependRLCTarget_rbrKnowledgeSoundness_pullbackLeaf :
   exact Verifier.rbrKnowledgeSoundness_zeroRound_pure init impl _
     (fun stmtIn h => h)
 
-/-! ### The unconditional composed theorem -/
+/-! ### The composed theorem with explicit round bounds -/
 
-/-- **Unconditional composed RBR knowledge soundness for the Spartan PIOP (#114).**
-
-All five short-phase leaves are discharged, so the relation-preserving composed rbr-KS theorem
-holds with no leaf hypotheses: from `spartanRelIn` to `secondSumcheckRbrRelOut`, with per-round
-errors `0` (message/adapter rounds), `ℓ_m/|R|` (`firstChallenge`, Schwartz–Zippel),
-`3/|R|` per first-sum-check round, `1` (`linearCombination` — see the module docstring for why
-this is the honest bound on this relation chain), and `2/|R|` per second-sum-check round. -/
-theorem composedRbrKnowledgeSoundnessPreserving_unconditional [Subsingleton σ]
+/-- The completed Spartan composition construction, conditional on the actual canonical
+sumcheck degree-2, degree-3 per-round knowledge bounds. The former unconditional zero-flip
+completion is retired; exact source and the added obligations are recorded in the migration audit. -/
+theorem composedRbrKnowledgeSoundnessPreserving_of_sumcheck_rounds [Subsingleton σ]
     (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)
     [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]
     [Inhabited (Statement.AfterFirstSumcheck R pp ×
       ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×
       ∀ i, OracleStatement.AfterFirstMessage R pp i))
     (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×
@@ -652,7 +411,10 @@ theorem composedRbrKnowledgeSoundnessPreserving_unconditional [Subsingleton σ]
     (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i))
     (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×
-      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :
+      ∀ i, OracleStatement.AfterLinearCombination R pp i))
+    (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
+    (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
+    :
     (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (spartanRelIn R pp) (Spartan.Spec.secondSumcheckRbrRelOut (R := R) pp oSpec)
       (composedRbrError pp
@@ -664,7 +426,8 @@ theorem composedRbrKnowledgeSoundnessPreserving_unconditional [Subsingleton σ]
         (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)
         (fun _ => (2 : ℝ≥0) / (Fintype.card R))
         (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)) :=
-  composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves pp oSpec hm hn
+  composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves_of_sumcheck_rounds (hRound2 :=
+    hRound2) (hRound3 := hRound3) pp oSpec hm hn
     (firstMessage_rbrKnowledgeSoundness_spartanRelIn pp oSpec)
     (firstChallenge_rbrKnowledgeSoundness_schwartzZippel pp oSpec hm)
     (sendEvalClaim_rbrKnowledgeSoundness_leaf pp oSpec)
@@ -685,4 +448,4 @@ end Spartan.Spec.Bricks
 #print axioms Spartan.Spec.Bricks.sendEvalClaim_rbrKnowledgeSoundness_leaf
 #print axioms Spartan.Spec.Bricks.linearCombination_rbrKnowledgeSoundness_leaf
 #print axioms Spartan.Spec.Bricks.prependRLCTarget_rbrKnowledgeSoundness_pullbackLeaf
-#print axioms Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessPreserving_unconditional
+#print axioms Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessPreserving_of_sumcheck_rounds

@@ -27,9 +27,16 @@ the general error-carrying append residuals from `Append.lean`.
 open OracleComp OracleSpec ProtocolSpec OptionTStateT
 open scoped NNReal
 
+attribute [local instance] finiteUniformAnswers
+
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : MeasurableSpace (Option A) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec 0}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -48,7 +55,7 @@ theorem append_game_factor_empty
     (stmt : Stmt₁) (wit : Wit₁)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0) :
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0) :
     evalDist (gameOf init impl (R₁.append R₂) stmt wit)
       = evalDist (init >>= fun s =>
           StateT.run' (simulateQ (impl.addLift challengeQueryImpl)
@@ -57,7 +64,8 @@ theorem append_game_factor_empty
     (spec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) init
     (impl.addLift (challengeQueryImpl))
     (addLift_state_preserving impl himplSP)
-    (liftM (R₁.prover.run stmt wit)) (fun x => liftM (R₂.prover.run x.2.1 x.2.2))
+    (liftAppendLeft pSpec₂ (R₁.prover.run stmt wit))
+    (fun x => liftAppendRight pSpec₁ (R₂.prover.run x.2.1 x.2.2))
     (fun x => (MonadLift.monadLift (R₁.verifier.verify stmt x.1) :
         OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) Stmt₂))
     (fun x a s₂ => (MonadLift.monadLift (R₂.verifier.verify s₂ a.1) :
@@ -66,13 +74,12 @@ theorem append_game_factor_empty
     (fun x s' => simulateQ_run_neverFail _ (addLift_neverFail impl himplNF) _ s')
   simp only [gameOf, appendStage₁, appendStage₂]
   refine Eq.trans ?_ hswap
-  simp only [gameOf]
-  rw [evalDist_bind, evalDist_bind]
-  refine bind_congr fun s => ?_
+  rw [evalDist_bind_of_discrete, evalDist_bind_of_discrete]
+  congr 1
+  funext s
   rw [append_run_eq_seamChain R₁ R₂ stmt wit]
   -- The appended prover run factors SYNTACTICALLY at the empty seam.
-  rw [Prover.append_run stmt wit
-    (Prover.appendRunRightResidual_holds_empty (P₁ := R₁.prover) (P₂ := R₂.prover) stmt wit)]
+  rw [Prover.append_run_empty (P₁ := R₁.prover) (P₂ := R₂.prover) stmt wit]
   simp only [OptionT.run_bind, Option.elimM, lift_run_elim, OptionT.run_pure]
   refine congrArg (fun X => evalDist (StateT.run'
       (simulateQ (impl.addLift challengeQueryImpl :
@@ -83,7 +90,7 @@ end Reduction
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m : ℕ} {pSpec₁ : ProtocolSpec m}
   [∀ i, SampleableType (pSpec₁.Challenge i)]
@@ -107,7 +114,7 @@ theorem append_completeness_empty_err
     (hn0 : n = 0)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s'))
     (hInit : NeverFail init) :
@@ -141,7 +148,7 @@ theorem append_completeness_total
     (hInit : NeverFail init)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (R₁.append R₂).completeness init impl rel₁ rel₃ (e₁ + e₂) := by
@@ -163,7 +170,7 @@ theorem reductionAppendCompletenessResidual_holds
     (hInit : NeverFail init)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     reductionAppendCompletenessResidual R₁ R₂ h₁ h₂ :=
@@ -185,7 +192,7 @@ set_option maxHeartbeats 2000000 in
 additive error): definitionally the `toReduction` statement, collapsed by the unconditional
 verifier-fusion bridge and closed by the error-ful seam-agnostic total. -/
 theorem appendCompletenessResidual_holds
-    {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+    {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type}
     [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)] {Wit₁ : Type}
     {Stmt₂ : Type} {ιₛ₂ : Type} {OStmt₂ : ιₛ₂ → Type}
@@ -201,7 +208,7 @@ theorem appendCompletenessResidual_holds
     {rel₂ : Set ((Stmt₂ × ∀ i, OStmt₂ i) × Wit₂)}
     {rel₃ : Set ((Stmt₃ × ∀ i, OStmt₃ i) × Wit₃)}
     (R₁ : OracleReduction oSpec Stmt₁ OStmt₁ Wit₁ Stmt₂ OStmt₂ Wit₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) R₁.verifier]
+
     (R₂ : OracleReduction oSpec Stmt₂ OStmt₂ Wit₂ Stmt₃ OStmt₃ Wit₃ pSpec₂)
     {e₁ e₂ : ℝ≥0}
     (h₁ : R₁.completeness init impl rel₁ rel₂ e₁)
@@ -209,7 +216,7 @@ theorem appendCompletenessResidual_holds
     (hInit : NeverFail init)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     appendCompletenessResidual R₁ R₂ h₁ h₂ := by

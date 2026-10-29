@@ -6,8 +6,8 @@ Authors: ArkLib Contributors
 
 import Mathlib
 import ArkLib.ToMathlib.BKR06FiberCount
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 
 /-!
 # BKR06 §3 Construction: Subspace Polynomials and Reed–Solomon Code Closeness

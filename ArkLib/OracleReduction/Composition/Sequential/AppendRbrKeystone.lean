@@ -30,13 +30,13 @@ and `Extractor.RoundByRound.append`. With those added, the residue is the **per-
   partial run `prover.runToRound (inl i₁).castSucc` factors through `Prover.fst` via
   `fst_runToRound_heq`, and the combined challenge-oracle sampling transfers to `pSpec₁`'s own oracle
   via `evalDist_run'_challengeSeam_left`. The bound is then exactly `h₁` applied at `i₁`.
-* Phase-2 (`i = ChallengeIdx.inr i₂`): the appended flip event collapses (via the `dif_neg` branch,
-  `StateFunction.append_toFun_gt`) to `S₂`'s flip event at `i₂`, but evaluated at the *random*
-  seam-crossing statement `verify stmtIn transcript.fst`. The inner bounds `h₁`/`h₂` are silent on the
-  positive-probability event `verify stmtIn transcript.fst ∈ lang₂`, so phase 2 is **not** a
-  consequence of `h₁`/`h₂` and the phase-1 seam reduction alone — it is a *genuine residual* (see
-  `appendRbrSoundnessPhase2Residual`). The keystones below isolate that residual as a single typed
-  hypothesis, keeping every theorem axiom-clean (no `sorry`).
+* Phase-2 (`i = ChallengeIdx.inr i₂`): the canonical appended state predicate is the disjunction
+  of the completed first state and the second phase's current state. The completed first state is
+  carried through every later round (`StateFunction.append_toFun_gt_eq_or`); it cannot be erased
+  from the event equation. The conditional keystones retain the explicit
+  `appendRbrSoundnessPhase2Residual`. Its completed consumer must account for that carry branch,
+  the realized intermediate statement and the second phase's bound.
+
 
 ## Status
 
@@ -52,6 +52,10 @@ open OracleComp OracleSpec ProtocolSpec SubSpec
 open scoped ENNReal NNReal
 
 universe u v
+
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
 
 namespace Verifier
 
@@ -92,10 +96,16 @@ theorem transcript_concat_fst {j : Fin (m + n)} (hj : m ≤ (j : ℕ))
   have halt : (a : ℕ) < (j : ℕ) := by have := a.isLt; simp only [Fin.val_mk] at this; omega
   simp only [ProtocolSpec.Transcript.fst, ProtocolSpec.Transcript.concat]
   refine HEq.trans (cast_heq _ _) (HEq.trans ?_ (cast_heq _ _).symm)
-  rw [Fin.snoc, dif_pos (show ((⟨a.val, by omega⟩ : Fin ((j : ℕ) + 1)) : ℕ) < (j : ℕ) from by
-    simp only [Fin.val_mk]; exact halt)]
-  exact (Fin.ext (by simpa using hva) : ((⟨a.val, by omega⟩ : Fin ((j : ℕ) + 1)).castLT
-    (by simp only [Fin.val_mk]; exact halt)) = ⟨a'.val, by omega⟩) ▸ HEq.rfl
+  simp only [Fin.snoc, dite_eq_left (show ((⟨a.val, by omega⟩ : Fin ((j : ℕ) + 1)) : ℕ) <
+    (j : ℕ) from halt)]
+  have hidx : ((⟨a.val, by omega⟩ : Fin ((j : ℕ) + 1)).castLT
+      (by simp only [Fin.val_mk]; exact halt)) = (⟨a'.val, by omega⟩ : Fin (j : ℕ)) :=
+    Fin.ext hva
+  have htr : ∀ (i j : Fin (j : ℕ)), i = j → HEq (tr i) (tr j) := by
+    intro i k hk
+    cases hk
+    rfl
+  exact (cast_heq _ _).trans (htr _ _ hidx)
 
 /-- **Projection of a product type-cast (first component).** Casting `(a, b)` along a product of
 type equalities and projecting commutes with `a` (heterogeneously). With the type equalities as
@@ -128,8 +138,10 @@ theorem evalDist_init_run'_heq_of_body_heq {α β : Type} (h : α = β)
   subst h
   rw [eq_of_heq hbody]
   apply heq_of_eq
-  rw [evalDist_bind, evalDist_bind]
-  exact bind_congr fun s => OracleReduction.evalDist_run'_challengeSeam_left impl oa s
+  rw [evalDist_bind_of_discrete, evalDist_bind_of_discrete]
+  congr 1
+  funext s
+  exact OracleReduction.evalDist_run'_challengeSeam_left impl oa s
 
 /-- **Phase-1 per-round experiment body HEq.** The appended rbr experiment body at a phase-1
 challenge index `inl i₁` — the appended prover's partial run `runToRound (inl i₁).castSucc` followed
@@ -238,25 +250,26 @@ theorem StateFunction.append_toFun_le
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩) (hInit : ∃ s, s ∈ support init)
     {roundIdx : Fin (m + n + 1)} (h : roundIdx.val ≤ m) (stmt₁ : Stmt₁)
     (transcript : (pSpec₁ ++ₚ pSpec₂).Transcript roundIdx) :
-    (StateFunction.append init impl V₁ V₂ S₁ S₂ verify hVerify hInit).toFun roundIdx stmt₁ transcript
+    (StateFunction.append init impl V₁ V₂ S₁ S₂ verify hVerify).toFun roundIdx stmt₁ transcript
       = S₁.toFun ⟨roundIdx, by omega⟩ stmt₁ (by simpa [h] using transcript.fst) := by
   simp only [StateFunction.append, dif_pos h]
 
-/-- **Phase-2 projection of the appended state function.** On a round index lying in the second
-protocol (`¬ roundIdx.val ≤ m`), `StateFunction.append` is definitionally `S₂` on the `verify`-fed
-intermediate statement and the transcript's phase-2 tail — the `dif_neg` branch of its `toFun`. -/
-theorem StateFunction.append_toFun_gt
+/-- In the second phase, the canonical append state preserves a win already reached in the
+first phase, as well as a win reached in the second phase. -/
+theorem StateFunction.append_toFun_gt_eq_or
     (V₁ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     (S₁ : V₁.StateFunction init impl lang₁ lang₂) (S₂ : V₂.StateFunction init impl lang₂ lang₃)
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
-    (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩) (hInit : ∃ s, s ∈ support init)
+    (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
     {roundIdx : Fin (m + n + 1)} (h : ¬ roundIdx.val ≤ m) (stmt₁ : Stmt₁)
     (transcript : (pSpec₁ ++ₚ pSpec₂).Transcript roundIdx) :
-    (StateFunction.append init impl V₁ V₂ S₁ S₂ verify hVerify hInit).toFun roundIdx stmt₁ transcript
-      = S₂.toFun ⟨roundIdx - m, by omega⟩
-          (verify stmt₁ (by simp at h; simpa [min_eq_right_of_lt h] using transcript.fst))
-          (by simpa [h] using transcript.snd) := by
-  simp only [StateFunction.append, dif_neg h]
+    (StateFunction.append init impl V₁ V₂ S₁ S₂ verify hVerify).toFun roundIdx stmt₁ transcript =
+      (let transcript₁ : pSpec₁.FullTranscript := fun i =>
+        transcript.fst ⟨i, by simp [min_eq_right_of_lt (show m < roundIdx.val by omega)]⟩
+       S₁.toFun ⟨m, by omega⟩ stmt₁ transcript₁ ∨
+       S₂.toFun ⟨roundIdx - m, by omega⟩ (verify stmt₁ transcript₁)
+         (by simpa [h] using transcript.snd)) := by
+  simp only [StateFunction.append, dite_eq_right h]
 
 /-- **Phase-2 per-round residual of the round-by-round soundness append keystone.**
 
@@ -290,19 +303,18 @@ def appendRbrSoundnessPhase2Residual
   ∀ stmtIn ∉ lang₁, ∀ WitIn WitOut : Type, ∀ witIn : WitIn,
   ∀ prover : Prover oSpec Stmt₁ WitIn Stmt₃ WitOut (pSpec₁ ++ₚ pSpec₂),
   ∀ i₂ : pSpec₂.ChallengeIdx,
-    Pr[fun ⟨transcript, challenge⟩ =>
-      ¬ (StateFunction.append init impl V₁ V₂ S₁ S₂ verify hVerify hInit).toFun
+    probEvent (fun ⟨transcript, challenge⟩ =>
+      ¬ (StateFunction.append init impl V₁ V₂ S₁ S₂ verify hVerify).toFun
           (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc stmtIn transcript ∧
-        (StateFunction.append init impl V₁ V₂ S₁ S₂ verify hVerify hInit).toFun
-          (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.succ stmtIn (transcript.concat challenge)
-    | do
+        (StateFunction.append init impl V₁ V₂ S₁ S₂ verify hVerify).toFun
+          (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.succ stmtIn (transcript.concat challenge)) (do
       (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
         (do
           let ⟨transcript, _⟩ ←
             prover.runToRound (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc stmtIn witIn
           let challenge ←
             liftComp ((pSpec₁ ++ₚ pSpec₂).getChallenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)) _
-          return (transcript, challenge))).run' (← init)] ≤
+          return (transcript, challenge))).run' (← init)) ≤
       rbrSoundnessError₂ i₂
 
 /-- **Round-by-round soundness append keystone, deterministic-`V₁` message-seam case.**
@@ -324,14 +336,13 @@ theorem append_rbrSoundness_keystone
     (S₁ : V₁.StateFunction init impl lang₁ lang₂)
     (hS₁ : ∀ stmtIn ∉ lang₁, ∀ WitIn WitOut : Type, ∀ witIn : WitIn,
       ∀ prover : Prover oSpec Stmt₁ WitIn Stmt₂ WitOut pSpec₁, ∀ i : pSpec₁.ChallengeIdx,
-        Pr[fun ⟨transcript, challenge⟩ =>
-          ¬ S₁ i.1.castSucc stmtIn transcript ∧ S₁ i.1.succ stmtIn (transcript.concat challenge)
-        | do
+        probEvent (fun ⟨transcript, challenge⟩ =>
+          ¬ S₁ i.1.castSucc stmtIn transcript ∧ S₁ i.1.succ stmtIn (transcript.concat challenge)) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨transcript, _⟩ ← prover.runToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec₁.getChallenge i) _
-              return (transcript, challenge))).run' (← init)] ≤ rbrSoundnessError₁ i)
+              return (transcript, challenge))).run' (← init)) ≤ rbrSoundnessError₁ i)
     (S₂ : V₂.StateFunction init impl lang₂ lang₃)
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
@@ -340,7 +351,7 @@ theorem append_rbrSoundness_keystone
       verify hVerify hInit (rbrSoundnessError₂ := rbrSoundnessError₂)) :
       (V₁.append V₂).rbrSoundness init impl lang₁ lang₃
         (Sum.elim rbrSoundnessError₁ rbrSoundnessError₂ ∘ ChallengeIdx.sumEquiv.symm) := by
-  refine ⟨StateFunction.append init impl V₁ V₂ S₁ S₂ verify hVerify hInit, ?_⟩
+  refine ⟨StateFunction.append init impl V₁ V₂ S₁ S₂ verify hVerify, ?_⟩
   intro stmtIn hStmtIn WitIn WitOut witIn prover i
   -- Case split on phase-1 / phase-2 of the appended challenge index.
   rcases hi : ChallengeIdx.sumEquiv.symm i with i₁ | i₂
@@ -475,19 +486,18 @@ theorem append_rbrKnowledgeSoundness_keystone
     (hBound : ∀ stmtIn : Stmt₁, ∀ witIn : Wit₁,
       ∀ prover : Prover oSpec Stmt₁ Wit₁ Stmt₃ Wit₃ (pSpec₁ ++ₚ pSpec₂),
       ∀ i : (pSpec₁ ++ₚ pSpec₂).ChallengeIdx,
-        Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+        probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
           ∃ witMid,
             ¬ kSF.toFun i.1.castSucc stmtIn transcript
               ((Extractor.RoundByRound.append E₁ E₂ verify).extractMid i.1 stmtIn
                 (transcript.concat challenge) witMid) ∧
-              kSF.toFun i.1.succ stmtIn (transcript.concat challenge) witMid
-        | do
+              kSF.toFun i.1.succ stmtIn (transcript.concat challenge) witMid) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp ((pSpec₁ ++ₚ pSpec₂).getChallenge i) _
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤
           (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) i) :
       (V₁.append V₂).rbrKnowledgeSoundness init impl rel₁ rel₃
         (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) :=

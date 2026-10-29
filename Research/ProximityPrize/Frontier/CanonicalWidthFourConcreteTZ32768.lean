@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.ToMathlib.NatPrimeCheckpoint
 import Research.ProximityPrize.Frontier.E2W4CyclotomicConcreteWitnesses
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZaman
 
@@ -24,7 +25,7 @@ open ArkLib.ProximityGap.KKH26
 namespace ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ32768
 
 local instance fact_prime_1073872897_concrete_tz32768 :
-    Fact (Nat.Prime 1073872897) := ⟨by norm_num⟩
+    Fact (Nat.Prime 1073872897) := ⟨by prime_checkpoint⟩
 
 /-- Fully explicit β=2 witness: `1073872897 ∈ [32768^2, 2 * 32768^2]` refutes the
 canonical `n = 32768` width-four budget. -/
@@ -39,7 +40,7 @@ theorem exists_tzWindow_mu32768_width4_refuter_zmod1073872897_beta2 :
     norm_num
   have hpW : 1073872897 ∈ tzWindow 32768 (2 : ℝ) := by
     rw [mem_tzWindow]
-    exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+    exact ⟨Fact.out, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   obtain ⟨ζ, hζ32768, hnot⟩ := exists_mu32768_width4_refuter_zmod1073872897
   exact ⟨ζ, hpW, hζ32768, hnot⟩
 

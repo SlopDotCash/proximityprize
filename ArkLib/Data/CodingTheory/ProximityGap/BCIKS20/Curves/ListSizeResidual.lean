@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.Pigeonhole
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.GoodCoeffs
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # Strict-Johnson RS proximity gap, reduced to a single curve list-size residual ([BCIKS20] §5–6)

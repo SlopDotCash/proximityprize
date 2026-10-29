@@ -56,7 +56,7 @@ theorem natDegree_univariateSlice_le (p : MvPolynomial ι F) (α : ι → F) (i�
   have hsum : univariateSlice p α i₀
       = ∑ m ∈ p.support, (MvPolynomial.aeval
           (fun i => if i = i₀ then Polynomial.X else Polynomial.C (α i)))
-          (MvPolynomial.monomial m (MvPolynomial.coeff m p)) := by
+          (MvPolynomial.monomial m (p.coeff m)) := by
     unfold univariateSlice
     conv_lhs => rw [← MvPolynomial.support_sum_monomial_coeff p]
     rw [map_sum]
@@ -68,8 +68,8 @@ theorem natDegree_univariateSlice_le (p : MvPolynomial ι F) (α : ι → F) (i�
   -- Each monomial's slice is C·X^{m i₀}.
   rw [MvPolynomial.aeval_monomial]
   refine le_trans (Polynomial.natDegree_mul_le) ?_
-  rw [show (algebraMap F (Polynomial F)) (MvPolynomial.coeff m p)
-      = Polynomial.C (MvPolynomial.coeff m p) from rfl]
+  rw [show (algebraMap F (Polynomial F)) (p.coeff m)
+      = Polynomial.C (p.coeff m) from rfl]
   rw [Polynomial.natDegree_C, zero_add]
   -- The finsupp product: split the i₀ factor out.
   have hprod : (m.prod fun i k =>

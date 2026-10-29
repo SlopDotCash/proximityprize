@@ -532,7 +532,7 @@ theorem shape21 (x y : F)
         rw [Finset.mem_image] at hyin; obtain ⟨i, _, hi⟩ := hyin
         exact absurd (Finset.card_pos.mpr ⟨i, Finset.mem_filter.mpr ⟨Finset.mem_univ i, hi⟩⟩) (by rw [hy0]; exact lt_irrefl 0)
   -- card arithmetic: |img=4set| = |A| - |¬img=4set| = 400 - 40 = 360
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := A) (p := fun c => Finset.image c Finset.univ = ({x, -x, y, -y} : Finset F))
   rw [hcompl, Finset.card_union_of_disjoint hdisjxy, hx20, hy20, hAcard] at hsplit
   omega

@@ -213,7 +213,7 @@ theorem simulateQ_outerVerify_eq (stmt : StmtIn F n M) (oStmt : ∀ i, OStmtIn F
   · -- forIn body collapse: the table query collapses to `pure (answer …)`.
     intro u _
     symm
-    rw [simulateQ_optionT_bind]
+    erw [simulateQ_optionT_bind]
     erw [simulateQ_simOracle2_leftQuery_optionT' (T₁ := OStmtIn F n M)
       (T₂ := (outerPSpec F n params).Message) (oSpec := oSpec) oStmt msgs
       (⟨InputOracleIdx.table, signPoint F u⟩ : [OStmtIn F n M]ₒ.Domain)]

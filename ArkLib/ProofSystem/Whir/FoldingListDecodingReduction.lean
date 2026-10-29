@@ -48,7 +48,7 @@ Axiom-clean: `[propext, Classical.choice, Quot.sound]` (see `#print axioms` at E
 
 namespace Fold
 
-open BlockRelDistance MutualCorrAgreement ListDecodable NNReal ReedSolomon
+open BlockRelDistance.Generic MutualCorrAgreement ListDecodable NNReal ReedSolomon
      ProbabilityTheory Finset
 
 variable {F : Type} [Field F] [DecidableEq F] {ι : Type} [Pow ι ℕ]

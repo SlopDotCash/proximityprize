@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.ProofSystem.Spartan.FirstSumcheckWithTarget
-import ArkLib.ProofSystem.Spartan.ShortPhaseRbrKnowledgeLeaves
+import ArkLib.ProofSystem.Spartan.Composition
+import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeOracleLift
 
 /-!
 # Target-carrying mid-chain rounds for the tight Spartan composition (issue #329, X-lane)
@@ -23,7 +24,8 @@ forwarded untouched:
   `(T, (r, (e₁, (r_x, τ, 𝕩))))` with `T = ∑ idx, r idx * v idx` read from the bundled claim
   oracle.
 
-Each round comes with its `AppendCoherent` instance and its compiled-verifier closed form
+Each round uses the same proved canonical output routing as its completed uncarried phase,
+and has a compiled-verifier closed form
 (mirroring `sendEvalClaim_toVerifier_closed` / `linearCombination_toVerifier_closed` /
 `prependRLCTarget_toVerifier_pure`), which the tight leaves (`TightMidLeaves.lean`) consume.
 
@@ -77,34 +79,20 @@ noncomputable def sendEvalClaimWithTargetProver :
   output := fun st => pure
     (⟨st.1.1,
       fun i => match i with
-        | .inl _ => st.2
+        | .inl idx => st.2 idx
         | .inr j => st.1.2 j⟩,
      ())
 
 /-- The oracle verifier for the carried `sendEvalClaim`: forwards the carried statement
-unchanged, routes the bundled claim output oracle from the `P_to_V` message and the rest from
-the inputs. Clone of `sendEvalClaimVerifier`. -/
+unchanged, materializes each scalar claim from the bundled `P_to_V` message and forwards the
+remaining input oracles. Clone of `sendEvalClaimVerifier`. -/
 def sendEvalClaimWithTargetVerifier :
     OracleVerifier oSpec
       (Statement.AfterFirstSumcheckWithTarget R pp) (OracleStatement.AfterFirstSumcheck R pp)
       (Statement.AfterSendEvalClaimWithTarget R pp) (OracleStatement.AfterSendEvalClaim R pp)
       ⟨!v[.P_to_V], !v[∀ i, EvalClaim R i]⟩ where
   verify := fun stmt _challenges => pure stmt
-  embed := {
-    toFun := fun
-      | .inl _ => .inr default
-      | .inr j => .inl j
-    inj' := by
-      intro a b h
-      match a, b with
-      | .inl _, .inl _ => congr 1; exact Subsingleton.elim _ _
-      | .inl _, .inr _ => simp at h
-      | .inr _, .inl _ => simp at h
-      | .inr _, .inr _ => simpa using h
-  }
-  hEq := fun i => match i with
-    | .inl _ => rfl
-    | .inr _ => rfl
+  outputOracle := (sendEvalClaimVerifier R pp oSpec).outputOracle
 
 /-- The carried `sendEvalClaim` oracle reduction. -/
 noncomputable def sendEvalClaimWithTarget :
@@ -116,17 +104,6 @@ noncomputable def sendEvalClaimWithTarget :
       ⟨!v[.P_to_V], !v[∀ i, EvalClaim R i]⟩ where
   prover := sendEvalClaimWithTargetProver pp oSpec
   verifier := sendEvalClaimWithTargetVerifier pp oSpec
-
-instance instSendEvalClaimWithTargetVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (sendEvalClaimWithTargetVerifier (R := R) pp oSpec) where
-  hCohInl i k h := by
-    dsimp [sendEvalClaimWithTargetVerifier] at h
-    cases i <;> cases h <;> rfl
-  hCohInr i k h := by
-    dsimp [sendEvalClaimWithTargetVerifier] at h
-    cases i <;> cases h <;> rfl
-
-/-! ## The carried `linearCombination` round -/
 
 /-- The oracle prover for the carried `linearCombination`: receives the RLC challenge and
 prepends it onto the carried statement. Clone of `linearCombinationProver`. -/
@@ -159,8 +136,7 @@ def linearCombinationWithTargetVerifier :
   verify := fun stmt chal => do
     let r : LinearCombinationChallenge R := chal ⟨0, rfl⟩
     pure (r, stmt)
-  embed := Function.Embedding.inl
-  hEq := fun _ => rfl
+  outputOracle := (linearCombinationVerifier R pp oSpec).outputOracle
 
 /-- The carried `linearCombination` oracle reduction. -/
 def linearCombinationWithTarget :
@@ -173,22 +149,9 @@ def linearCombinationWithTarget :
   prover := linearCombinationWithTargetProver pp oSpec
   verifier := linearCombinationWithTargetVerifier pp oSpec
 
-instance instLinearCombinationWithTargetVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (linearCombinationWithTargetVerifier (R := R) pp oSpec) where
-  hCohInl i k h := by
-    simp only [linearCombinationWithTargetVerifier, Function.Embedding.inl_apply] at h
-    obtain rfl := Sum.inl.inj h
-    rfl
-  hCohInr i k h := by
-    simp only [linearCombinationWithTargetVerifier, Function.Embedding.inl_apply] at h
-    cases h
-
-/-! ## The carried honest RLC-target adapter -/
-
 /-- The 0-round honest RLC-target oracle prover at the carried statement: emits
 `∑ idx, r idx * v idx` (the RLC challenge is the *outer* slot `st.1.1.1` of the carried
-statement), reading the bundled eval-claim oracle `.inl 0`. Clone of
+statement), reading each canonical scalar claim oracle `.inl idx`. Clone of
 `prependRLCTargetProver`. -/
 noncomputable def prependRLCTargetWithTargetProver :
     OracleProver oSpec
@@ -203,7 +166,7 @@ noncomputable def prependRLCTargetWithTargetProver :
   sendMessage := fun i => nomatch i
   receiveChallenge := fun i => nomatch i
   output := fun st =>
-    pure (((∑ idx, st.1.1 idx * st.2 (.inl 0) idx, st.1), st.2), ())
+    pure (((∑ idx, st.1.1 idx * (show R from st.2 (.inl idx)), st.1), st.2), ())
 
 /-- The honest RLC-target verifier at the carried statement: queries the bundled claim oracle
 for each matrix index and emits `(∑ idx, r idx * v idx, stmt)`. Clone of
@@ -221,8 +184,7 @@ noncomputable def prependRLCTargetWithTargetVerifier :
       OptionT (OracleComp _) (List (R1CS.MatrixIdx × R)))
     let rlc : R := (claims.map (fun p => stmt.1 p.1 * p.2)).sum
     pure (rlc, stmt)
-  embed := Embedding.inl
-  hEq := by intro i; simp
+  outputOracle := (Bricks.prependRLCTargetVerifier pp oSpec).outputOracle
 
 /-- The carried honest RLC-target oracle reduction between `linearCombinationWithTarget` and
 the carried second sum-check. -/
@@ -235,26 +197,13 @@ noncomputable def prependRLCTargetWithTarget :
   prover := prependRLCTargetWithTargetProver pp oSpec
   verifier := prependRLCTargetWithTargetVerifier pp oSpec
 
-instance instPrependRLCTargetWithTargetVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (prependRLCTargetWithTargetVerifier (R := R) pp oSpec) where
-  hCohInl i k h := by
-    simp only [prependRLCTargetWithTargetVerifier] at h
-    obtain rfl := Sum.inl.inj h
-    rfl
-  hCohInr i k h := by
-    simp only [prependRLCTargetWithTargetVerifier] at h
-    cases h
-
-/-! ## Compiled-verifier closed forms -/
-
 section ClosedForms
 
 variable [Inhabited R]
 
 /-- The closed-form output map of the compiled carried `sendEvalClaim` verifier: forward the
-carried statement, route the bundled claim oracle from the message, pass the remaining oracles
-through. Clone of `sendEvalClaimRouteMap`. -/
+carried statement, materialize the indexed scalar claim from the bundled message, and pass the
+remaining input oracles through. Clone of `sendEvalClaimRouteMap`. -/
 def sendEvalClaimWithTargetRouteMap
     (p : Statement.AfterFirstSumcheckWithTarget R pp ×
       ∀ i, OracleStatement.AfterFirstSumcheck R pp i)
@@ -262,7 +211,7 @@ def sendEvalClaimWithTargetRouteMap
     Statement.AfterSendEvalClaimWithTarget R pp ×
       ∀ i, OracleStatement.AfterSendEvalClaim R pp i :=
   (p.1, fun i => match i with
-    | .inl _ => m
+    | .inl idx => m idx
     | .inr j => p.2 j)
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] [SampleableType R] [Inhabited R] in
@@ -277,14 +226,6 @@ theorem sendEvalClaimWithTarget_toVerifier_closed :
       simp only [sendEvalClaimWithTarget, sendEvalClaimWithTargetVerifier]
       exact simulateQ_pure _ _)]
   congr 1
-  funext p tr
-  congr 1
-  unfold sendEvalClaimWithTargetRouteMap
-  congr 1
-  funext i
-  cases i with
-  | inl j => rfl
-  | inr j => rfl
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] [SampleableType R] [Inhabited R] in
 /-- The compiled carried `linearCombination` verifier, in closed form: it returns the sampled

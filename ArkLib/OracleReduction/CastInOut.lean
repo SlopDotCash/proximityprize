@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao, Chung Thai Nguyen
 -/
 
-import ArkLib.OracleReduction.Cast
-import ArkLib.OracleReduction.Composition.Sequential.Append
+import ProximityPrize.Extensions.OracleReduction.Cast
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
 
 /-!
   # Statement-level casts for oracle reductions and oracle verifiers
@@ -46,6 +46,7 @@ def castInOut
     -- 2. Output Types
     {StmtOut₁ StmtOut₂ : Type}
     {ιₛₒ₁ ιₛₒ₂ : Type} {OStmtOut₁ : ιₛₒ₁ → Type} {OStmtOut₂ : ιₛₒ₂ → Type}
+    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)] [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
     {WitOut₁ WitOut₂ : Type}
     -- 3. Reduction
     (R : OracleReduction oSpec StmtIn₁ OStmtIn₁ WitIn₁ StmtOut₁ OStmtOut₁ WitOut₁ pSpec)
@@ -59,11 +60,12 @@ def castInOut
     (h_ostmtIn : HEq OStmtIn₁ OStmtIn₂)     -- Heterogeneous equality
     (h_ostmtOut : HEq OStmtOut₁ OStmtOut₂)  -- Heterogeneous equality
     -- 5. Instance Compatibility
-    (h_Oₛᵢ : HEq Oₛᵢ₁ Oₛᵢ₂) :               -- Heterogeneous equality
+    (h_Oₛᵢ : HEq Oₛᵢ₁ Oₛᵢ₂)
+    (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂) :               -- Heterogeneous equality
     -- Return type uses destination types 2
     @OracleReduction ι oSpec StmtIn₂ ιₛᵢ₂ OStmtIn₂ WitIn₂ StmtOut₂ ιₛₒ₂ OStmtOut₂ WitOut₂ n pSpec
       (by exact Oₛᵢ₂) -- Use destination instance
-      Oₘ := by
+      Oₘ Oₛₒ₂ := by
   -- 1. Unify Indices
   subst h_idxIn h_idxOut
   -- 2. Convert HEq to Eq for statements & instances
@@ -74,6 +76,7 @@ def castInOut
   -- 4. Unify Instances
   have h_inst : Oₛᵢ₂ = Oₛᵢ₁ := h_Oₛᵢ.symm
   subst h_inst
+  cases h_Oₛₒ
   exact R
 
 @[simp]
@@ -81,9 +84,10 @@ theorem castInOut_id
     {StmtIn : Type} {ιₛᵢ : Type} {OStmtIn : ιₛᵢ → Type} [Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)]
     {WitIn : Type}
     {StmtOut : Type} {ιₛₒ : Type} {OStmtOut : ιₛₒ → Type}
+    [∀ i, OracleInterface (OStmtOut i)]
     {WitOut : Type}
     (R : OracleReduction oSpec StmtIn OStmtIn WitIn StmtOut OStmtOut WitOut pSpec) :
-    R.castInOut rfl rfl rfl rfl rfl rfl (HEq.rfl) (HEq.rfl) (HEq.rfl) = R := rfl
+    R.castInOut rfl rfl rfl rfl rfl rfl (HEq.rfl) (HEq.rfl) (HEq.rfl) (HEq.rfl) = R := rfl
 
 /-- Cast only the output types of an OracleReduction, keeping the protocol spec and input types
     unchanged. This is useful when you need to transport outputs through type equalities without
@@ -96,18 +100,19 @@ def castOutSimple
     {WitIn : Type}
     {StmtOut₁ StmtOut₂ : Type}
     {ιₛₒ : Type} {OStmtOut₁ OStmtOut₂ : ιₛₒ → Type}
-    [∀ i, OracleInterface (OStmtOut₁ i)] [∀ i, OracleInterface (OStmtOut₂ i)]
+    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)] [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
     {WitOut₁ WitOut₂ : Type}
     [∀ i, OracleInterface (pSpec.Message i)]
     (R : OracleReduction oSpec StmtIn OStmtIn WitIn StmtOut₁ OStmtOut₁ WitOut₁ pSpec)
     (h_stmt : StmtOut₁ = StmtOut₂)
     (h_ostmt : OStmtOut₁ = OStmtOut₂)
-    (h_wit : WitOut₁ = WitOut₂) :
+    (h_wit : WitOut₁ = WitOut₂)
+    (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂) :
     OracleReduction oSpec StmtIn OStmtIn WitIn StmtOut₂ OStmtOut₂ WitOut₂ pSpec :=
   -- Call castInOut directly with rfl for indices and inputs
   castInOut (R := R) (h_stmtIn := rfl) (h_stmtOut := h_stmt) (h_witIn := rfl) (h_witOut := h_wit)
     (h_idxIn := rfl) (h_idxOut := rfl) (h_ostmtIn := HEq.rfl) (h_ostmtOut := heq_iff_eq.mpr h_ostmt)
-    (h_Oₛᵢ := HEq.rfl)
+    (h_Oₛᵢ := HEq.rfl) (h_Oₛₒ := h_Oₛₒ)
 
 @[simp]
 theorem castOutSimple_id {oSpec : OracleSpec ι} {n : ℕ} {pSpec : ProtocolSpec n}
@@ -117,7 +122,7 @@ theorem castOutSimple_id {oSpec : OracleSpec ι} {n : ℕ} {pSpec : ProtocolSpec
     {WitOut : Type}
     [∀ i, OracleInterface (pSpec.Message i)]
     (R : OracleReduction oSpec StmtIn OStmtIn WitIn StmtOut OStmtOut WitOut pSpec) :
-    R.castOutSimple rfl rfl rfl = R := rfl
+    R.castOutSimple rfl rfl rfl HEq.rfl = R := rfl
 
 @[simp]
 theorem castOutSimple_perfectCompleteness
@@ -126,7 +131,7 @@ theorem castOutSimple_perfectCompleteness
     {WitIn : Type}
     {StmtOut₁ StmtOut₂ : Type}
     {ιₛₒ : Type} {OStmtOut₁ OStmtOut₂ : ιₛₒ → Type}
-    [∀ i, OracleInterface (OStmtOut₁ i)] [∀ i, OracleInterface (OStmtOut₂ i)]
+    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)] [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
     {WitOut₁ WitOut₂ : Type}
     [∀ i, OracleInterface (pSpec.Message i)]
     [∀ i, SampleableType (pSpec.Challenge i)]
@@ -138,9 +143,10 @@ theorem castOutSimple_perfectCompleteness
     (h_stmt : StmtOut₁ = StmtOut₂)
     (h_ostmt : OStmtOut₁ = OStmtOut₂)
     (h_wit : WitOut₁ = WitOut₂)
+    (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂)
     (h_rel : relOut₁ = cast (by subst_vars; rfl) relOut₂)
     (hPC : R.perfectCompleteness init impl relIn relOut₁) :
-    (R.castOutSimple h_stmt h_ostmt h_wit).perfectCompleteness init impl relIn relOut₂ := by
+    (R.castOutSimple h_stmt h_ostmt h_wit h_Oₛₒ).perfectCompleteness init impl relIn relOut₂ := by
   subst_vars
   exact hPC
 
@@ -151,7 +157,7 @@ theorem castOutSimple_completeness
     {WitIn : Type}
     {StmtOut₁ StmtOut₂ : Type}
     {ιₛₒ : Type} {OStmtOut₁ OStmtOut₂ : ιₛₒ → Type}
-    [∀ i, OracleInterface (OStmtOut₁ i)] [∀ i, OracleInterface (OStmtOut₂ i)]
+    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)] [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
     {WitOut₁ WitOut₂ : Type}
     [∀ i, OracleInterface (pSpec.Message i)]
     [∀ i, SampleableType (pSpec.Challenge i)]
@@ -163,10 +169,11 @@ theorem castOutSimple_completeness
     (h_stmt : StmtOut₁ = StmtOut₂)
     (h_ostmt : OStmtOut₁ = OStmtOut₂)
     (h_wit : WitOut₁ = WitOut₂)
+    (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂)
     (ε : ℝ≥0)
     (h_rel : relOut₁ = cast (by subst_vars; rfl) relOut₂)
     (hC : R.completeness init impl relIn relOut₁ ε) :
-    (R.castOutSimple h_stmt h_ostmt h_wit).completeness init impl relIn relOut₂ ε := by
+    (R.castOutSimple h_stmt h_ostmt h_wit h_Oₛₒ).completeness init impl relIn relOut₂ ε := by
   subst_vars
   exact hC
 
@@ -183,6 +190,7 @@ theorem castInOut_perfectCompleteness
     -- 2. Generalized Outputs
     {StmtOut₁ StmtOut₂ : Type}
     {ιₛₒ₁ ιₛₒ₂ : Type} {OStmtOut₁ : ιₛₒ₁ → Type} {OStmtOut₂ : ιₛₒ₂ → Type}
+    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)] [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
     {WitOut₁ WitOut₂ : Type}
     -- 3. Context
     [∀ i, SampleableType (pSpec.Challenge i)]
@@ -202,6 +210,7 @@ theorem castInOut_perfectCompleteness
     (h_ostmtIn : HEq OStmtIn₁ OStmtIn₂)
     (h_ostmtOut : HEq OStmtOut₁ OStmtOut₂)
     (h_Oₛᵢ : HEq Oₛᵢ₁ Oₛᵢ₂)
+    (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂)
     -- 5. Relation HEqs (Must be HEq because OStmt types change)
     (h_relIn : HEq relIn₁ relIn₂)
     (h_relOut : HEq relOut₁ relOut₂)
@@ -212,7 +221,7 @@ theorem castInOut_perfectCompleteness
       (OStmtOut := OStmtOut₂) (WitOut := WitOut₂) (n := n) (pSpec := pSpec)
       (Oₛᵢ := Oₛᵢ₂) (init := init) (impl := impl) (relIn := relIn₂) (relOut := relOut₂)
       (R.castInOut h_stmtIn h_stmtOut h_witIn h_witOut h_idxIn h_idxOut h_ostmtIn
-        h_ostmtOut h_Oₛᵢ) := by
+        h_ostmtOut h_Oₛᵢ h_Oₛₒ) := by
   subst_vars
   exact hPC
 
@@ -229,6 +238,7 @@ theorem castInOut_completeness
     -- 2. Generalized Outputs
     {StmtOut₁ StmtOut₂ : Type}
     {ιₛₒ₁ ιₛₒ₂ : Type} {OStmtOut₁ : ιₛₒ₁ → Type} {OStmtOut₂ : ιₛₒ₂ → Type}
+    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)] [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
     {WitOut₁ WitOut₂ : Type}
     -- 3. Context
     [∀ i, SampleableType (pSpec.Challenge i)]
@@ -248,6 +258,7 @@ theorem castInOut_completeness
     (h_ostmtIn : HEq OStmtIn₁ OStmtIn₂)
     (h_ostmtOut : HEq OStmtOut₁ OStmtOut₂)
     (h_Oₛᵢ : HEq Oₛᵢ₁ Oₛᵢ₂)
+    (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂)
     (ε : ℝ≥0)
     (h_relIn : HEq relIn₁ relIn₂)
     (h_relOut : HEq relOut₁ relOut₂)
@@ -257,7 +268,7 @@ theorem castInOut_completeness
       (OStmtOut := OStmtOut₂) (WitOut := WitOut₂) (n := n) (pSpec := pSpec) (Oₛᵢ := Oₛᵢ₂)
       (init := init) (impl := impl) (relIn := relIn₂) (relOut := relOut₂) (completenessError := ε)
       (R.castInOut h_stmtIn h_stmtOut h_witIn h_witOut h_idxIn h_idxOut h_ostmtIn
-        h_ostmtOut h_Oₛᵢ) := by
+        h_ostmtOut h_Oₛᵢ h_Oₛₒ) := by
   subst_vars
   exact hC
 
@@ -282,6 +293,7 @@ def castInOut
     {StmtOut₁ StmtOut₂ : Type}
     {ιₛₒ₁ ιₛₒ₂ : Type}
     {OStmtOut₁ : ιₛₒ₁ → Type} {OStmtOut₂ : ιₛₒ₂ → Type}
+    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)] [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
     -- 3. The Verifier (using source types 1)
     (V : OracleVerifier oSpec StmtIn₁ OStmtIn₁ StmtOut₁ OStmtOut₁ pSpec)
     -- 4. Equalities
@@ -292,11 +304,12 @@ def castInOut
     (h_ostmtIn : HEq OStmtIn₁ OStmtIn₂)   -- HEq required due to type change
     (h_ostmtOut : HEq OStmtOut₁ OStmtOut₂) -- HEq required due to type change
     -- 5. Instance Compatibility
-    (h_Oₛᵢ : HEq Oₛᵢ₁ Oₛᵢ₂) :             -- HEq required due to type change
+    (h_Oₛᵢ : HEq Oₛᵢ₁ Oₛᵢ₂)
+    (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂) :             -- HEq required due to type change
     -- Return type uses destination types 2
     @OracleVerifier ι oSpec StmtIn₂ ιₛᵢ₂ OStmtIn₂ StmtOut₂ ιₛₒ₂ OStmtOut₂ n pSpec
       (by exact Oₛᵢ₂) -- Use destination instance
-      Oₘ := by
+      Oₘ Oₛₒ₂ := by
   -- 1. Unify Index Types
   subst h_idxIn h_idxOut
   -- 2. Convert HEq to Eq (now that types are unified)
@@ -308,14 +321,16 @@ def castInOut
   -- h_Oₛᵢ is now `Oₛᵢ₁ = Oₛᵢ₂`
   have h_inst : Oₛᵢ₂ = Oₛᵢ₁ := h_Oₛᵢ.symm
   subst h_inst
+  cases h_Oₛₒ
   exact V
 
 @[simp]
 theorem castInOut_id
     {StmtIn : Type} {ιₛᵢ : Type} {OStmtIn : ιₛᵢ → Type} [Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)]
     {StmtOut : Type} {ιₛₒ : Type} {OStmtOut : ιₛₒ → Type}
+    [∀ i, OracleInterface (OStmtOut i)]
     (V : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec) :
-    V.castInOut rfl rfl rfl rfl (HEq.rfl) (HEq.rfl) (HEq.rfl) = V := rfl
+    V.castInOut rfl rfl rfl rfl (HEq.rfl) (HEq.rfl) (HEq.rfl) (HEq.rfl) = V := rfl
 
 theorem castInOut_rbrKnowledgeSoundness
     {ι : Type} {oSpec : OracleSpec ι} {n : ℕ} {pSpec : ProtocolSpec n}
@@ -329,6 +344,7 @@ theorem castInOut_rbrKnowledgeSoundness
     -- 2. Generalized Outputs
     {StmtOut₁ StmtOut₂ : Type}
     {ιₛₒ₁ ιₛₒ₂ : Type} {OStmtOut₁ : ιₛₒ₁ → Type} {OStmtOut₂ : ιₛₒ₂ → Type}
+    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)] [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
     {WitOut₁ WitOut₂ : Type}
     -- 3. Context
     [∀ i, SampleableType (pSpec.Challenge i)]
@@ -348,6 +364,7 @@ theorem castInOut_rbrKnowledgeSoundness
     (h_witIn : WitIn₁ = WitIn₂)
     (h_witOut : WitOut₁ = WitOut₂)
     (h_Oₛᵢ : HEq Oₛᵢ₁ Oₛᵢ₂)
+    (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂)
     (ε : pSpec.ChallengeIdx → ℝ≥0)
     -- 5. Relation HEqs (Must be HEq because OStmt types change)
     (h_relIn : HEq relIn₁ relIn₂)
@@ -359,7 +376,7 @@ theorem castInOut_rbrKnowledgeSoundness
       (OStmtOut := OStmtOut₂) (n := n) (pSpec := pSpec) (WitIn := WitIn₂) (WitOut := WitOut₂)
       (Oₛᵢ := Oₛᵢ₂) (init := init) (impl := impl) (relIn := relIn₂) (relOut := relOut₂)
       (rbrKnowledgeError := ε)
-      (V.castInOut h_stmtIn h_stmtOut h_idxIn h_idxOut h_ostmtIn h_ostmtOut h_Oₛᵢ) := by
+      (V.castInOut h_stmtIn h_stmtOut h_idxIn h_idxOut h_ostmtIn h_ostmtOut h_Oₛᵢ h_Oₛₒ) := by
   subst_vars
   exact hRbrKs
 
@@ -369,13 +386,15 @@ def castOutSimple
     {StmtIn : Type} {ιₛᵢ : Type} {OStmtIn : ιₛᵢ → Type} [∀ i, OracleInterface (OStmtIn i)]
     {StmtOut₁ StmtOut₂ : Type}
     {ιₛₒ : Type} {OStmtOut₁ OStmtOut₂ : ιₛₒ → Type}
-    [∀ i, OracleInterface (OStmtOut₁ i)] [∀ i, OracleInterface (OStmtOut₂ i)]
+    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)] [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
     [∀ i, OracleInterface (pSpec.Message i)]
     (V : OracleVerifier oSpec StmtIn OStmtIn StmtOut₁ OStmtOut₁ pSpec)
     (h_stmt : StmtOut₁ = StmtOut₂)
-    (h_ostmt : OStmtOut₁ = OStmtOut₂) :
+    (h_ostmt : OStmtOut₁ = OStmtOut₂)
+    (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂) :
     OracleVerifier oSpec StmtIn OStmtIn StmtOut₂ OStmtOut₂ pSpec := by
   subst h_stmt h_ostmt
+  cases h_Oₛₒ
   exact V
 
 @[simp]
@@ -385,7 +404,7 @@ theorem castOutSimple_id
     {StmtOut : Type} {ιₛₒ : Type} {OStmtOut : ιₛₒ → Type} [∀ i, OracleInterface (OStmtOut i)]
     [∀ i, OracleInterface (pSpec.Message i)]
     (V : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec) :
-    V.castOutSimple rfl rfl = V := rfl
+    V.castOutSimple rfl rfl HEq.rfl = V := rfl
 
 theorem castOutSimple_rbrKnowledgeSoundness
     {oSpec : OracleSpec ι} {n : ℕ} {pSpec : ProtocolSpec n}
@@ -393,7 +412,7 @@ theorem castOutSimple_rbrKnowledgeSoundness
     {WitIn : Type}
     {StmtOut₁ StmtOut₂ : Type}
     {ιₛₒ : Type} {OStmtOut₁ OStmtOut₂ : ιₛₒ → Type}
-    [∀ i, OracleInterface (OStmtOut₁ i)] [∀ i, OracleInterface (OStmtOut₂ i)]
+    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)] [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
     {WitOut₁ WitOut₂ : Type}
     [∀ i, OracleInterface (pSpec.Message i)]
     [∀ i, SampleableType (pSpec.Challenge i)]
@@ -405,10 +424,11 @@ theorem castOutSimple_rbrKnowledgeSoundness
     (h_stmt : StmtOut₁ = StmtOut₂)
     (h_ostmt : OStmtOut₁ = OStmtOut₂)
     (h_wit : WitOut₁ = WitOut₂)
+    (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂)
     (ε : pSpec.ChallengeIdx → ℝ≥0)
     (h_rel : relOut₁ = cast (by subst_vars; rfl) relOut₂)
     (hRbrKs : V.rbrKnowledgeSoundness init impl relIn relOut₁ ε) :
-    (V.castOutSimple h_stmt h_ostmt).rbrKnowledgeSoundness init impl relIn relOut₂ ε := by
+    (V.castOutSimple h_stmt h_ostmt h_Oₛₒ).rbrKnowledgeSoundness init impl relIn relOut₂ ε := by
   subst_vars
   exact hRbrKs
 
@@ -421,57 +441,3 @@ end OracleVerifier
 #print axioms OracleVerifier.castInOut_rbrKnowledgeSoundness
 #print axioms OracleVerifier.castOutSimple_rbrKnowledgeSoundness
 
-/-- Casting preserves append coherence when both oracle interfaces agree. -/
-theorem OracleVerifier.castInOut_appendCoherent
-    {ι : Type} {oSpec : OracleSpec ι} {n : ℕ} {pSpec : ProtocolSpec n}
-    [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
-    {StmtIn₁ StmtIn₂ StmtOut₁ StmtOut₂ : Type}
-    {ιₛᵢ₁ ιₛᵢ₂ ιₛₒ₁ ιₛₒ₂ : Type}
-    {OStmtIn₁ : ιₛᵢ₁ → Type} {OStmtIn₂ : ιₛᵢ₂ → Type}
-    {OStmtOut₁ : ιₛₒ₁ → Type} {OStmtOut₂ : ιₛₒ₂ → Type}
-    [Oₛᵢ₁ : ∀ i, OracleInterface (OStmtIn₁ i)]
-    [Oₛᵢ₂ : ∀ i, OracleInterface (OStmtIn₂ i)]
-    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)]
-    [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
-    (V : OracleVerifier oSpec StmtIn₁ OStmtIn₁ StmtOut₁ OStmtOut₁ pSpec)
-    [Append.AppendCoherent V]
-    (h_stmtIn : StmtIn₁ = StmtIn₂) (h_stmtOut : StmtOut₁ = StmtOut₂)
-    (h_idxIn : ιₛᵢ₁ = ιₛᵢ₂) (h_idxOut : ιₛₒ₁ = ιₛₒ₂)
-    (h_ostmtIn : HEq OStmtIn₁ OStmtIn₂) (h_ostmtOut : HEq OStmtOut₁ OStmtOut₂)
-    (h_Oₛᵢ : HEq Oₛᵢ₁ Oₛᵢ₂) (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂) :
-    Append.AppendCoherent
-      (V.castInOut h_stmtIn h_stmtOut h_idxIn h_idxOut h_ostmtIn h_ostmtOut h_Oₛᵢ) := by
-  subst h_idxIn h_idxOut
-  simp only [heq_iff_eq] at h_ostmtIn h_ostmtOut
-  subst h_stmtIn h_stmtOut h_ostmtIn h_ostmtOut
-  simp only [heq_iff_eq] at h_Oₛᵢ h_Oₛₒ
-  subst Oₛᵢ₂ Oₛₒ₂
-  simpa only [castInOut_id] using (inferInstance : Append.AppendCoherent V)
-
-/-- Casting preserves append coherence when both oracle interfaces agree. -/
-theorem OracleReduction.castInOut_verifier_appendCoherent
-    {ι : Type} {oSpec : OracleSpec ι} {n : ℕ} {pSpec : ProtocolSpec n}
-    [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
-    {StmtIn₁ StmtIn₂ StmtOut₁ StmtOut₂ WitIn₁ WitIn₂ WitOut₁ WitOut₂ : Type}
-    {ιₛᵢ₁ ιₛᵢ₂ ιₛₒ₁ ιₛₒ₂ : Type}
-    {OStmtIn₁ : ιₛᵢ₁ → Type} {OStmtIn₂ : ιₛᵢ₂ → Type}
-    {OStmtOut₁ : ιₛₒ₁ → Type} {OStmtOut₂ : ιₛₒ₂ → Type}
-    [Oₛᵢ₁ : ∀ i, OracleInterface (OStmtIn₁ i)]
-    [Oₛᵢ₂ : ∀ i, OracleInterface (OStmtIn₂ i)]
-    [Oₛₒ₁ : ∀ i, OracleInterface (OStmtOut₁ i)]
-    [Oₛₒ₂ : ∀ i, OracleInterface (OStmtOut₂ i)]
-    (R : OracleReduction oSpec StmtIn₁ OStmtIn₁ WitIn₁ StmtOut₁ OStmtOut₁ WitOut₁ pSpec)
-    [OracleVerifier.Append.AppendCoherent R.verifier]
-    (h_stmtIn : StmtIn₁ = StmtIn₂) (h_stmtOut : StmtOut₁ = StmtOut₂)
-    (h_witIn : WitIn₁ = WitIn₂) (h_witOut : WitOut₁ = WitOut₂)
-    (h_idxIn : ιₛᵢ₁ = ιₛᵢ₂) (h_idxOut : ιₛₒ₁ = ιₛₒ₂)
-    (h_ostmtIn : HEq OStmtIn₁ OStmtIn₂) (h_ostmtOut : HEq OStmtOut₁ OStmtOut₂)
-    (h_Oₛᵢ : HEq Oₛᵢ₁ Oₛᵢ₂) (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂) :
-    OracleVerifier.Append.AppendCoherent
-      (R.castInOut h_stmtIn h_stmtOut h_witIn h_witOut h_idxIn h_idxOut h_ostmtIn h_ostmtOut h_Oₛᵢ).verifier := by
-  subst h_idxIn h_idxOut
-  simp only [heq_iff_eq] at h_ostmtIn h_ostmtOut
-  subst h_stmtIn h_stmtOut h_ostmtIn h_ostmtOut h_witIn h_witOut
-  simp only [heq_iff_eq] at h_Oₛᵢ h_Oₛₒ
-  subst Oₛᵢ₂ Oₛₒ₂
-  simpa only [castInOut_id] using (inferInstance : OracleVerifier.Append.AppendCoherent R.verifier)

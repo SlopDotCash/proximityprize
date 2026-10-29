@@ -62,13 +62,13 @@ Proof: `OracleVerifier.rbrSoundness` is definitionally `toVerifier`-level; rewri
 Protocol-level keystone. -/
 theorem append_rbrSoundness_subsingleton [Subsingleton σ]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {rbrSoundnessError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrSoundnessError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : (Stmt₁ × ∀ i, OStmt₁ i) → pSpec₁.FullTranscript → (Stmt₂ × ∀ i, OStmt₂ i))
     (hVerify : V₁.toVerifier = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty (Stmt₂ × ∀ i, OStmt₂ i))
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
@@ -90,13 +90,13 @@ residual's conclusion is precisely the keystone's, so this is definitional from
 needs an unproved hypothesis in the stateless regime. -/
 theorem appendRbrSoundnessResidual_msg_subsingleton [Subsingleton σ]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {rbrSoundnessError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrSoundnessError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : (Stmt₁ × ∀ i, OStmt₁ i) → pSpec₁.FullTranscript → (Stmt₂ × ∀ i, OStmt₂ i))
     (hVerify : V₁.toVerifier = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty (Stmt₂ × ∀ i, OStmt₂ i))
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)

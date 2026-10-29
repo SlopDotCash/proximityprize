@@ -56,7 +56,7 @@ theorem graded_count {NC DY cW : ℕ} (h : NC < cW) :
 `1 < k`: from `a + (k-1)·b ≤ D` we get `(k-1)·b ≤ D`, i.e. `b ≤ D/(k-1)`. -/
 theorem snd_le_div_of_mem_weigthBoundIndices {k D : ℕ} (hk : 1 < k) {p : ℕ × ℕ}
     (hp : p ∈ weigthBoundIndices k D) : p.2 ≤ D / (k - 1) := by
-  simp only [weigthBoundIndices, mem_filter] at hp
+  simp only [weigthBoundIndices, weightBoundIndices, mem_filter] at hp
   refine (Nat.le_div_iff_mul_le (Nat.sub_pos_of_lt hk)).mpr ?_
   calc p.2 * (k - 1) = (k - 1) * p.2 := Nat.mul_comm _ _
     _ ≤ p.1 + (k - 1) * p.2 := Nat.le_add_left _ _

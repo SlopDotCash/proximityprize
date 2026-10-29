@@ -7,6 +7,8 @@ Authors: ArkLib Contributors
 import ArkLib.ProofSystem.Spartan.MidChainWithTarget
 import ArkLib.ProofSystem.Spartan.TightRLCKernel
 import ArkLib.ProofSystem.Spartan.SumcheckPhaseRbr
+import ArkLib.ProofSystem.Spartan.ComposedCompletenessLeaves
+import ProximityPrize.Compatibility.PureKnowledge
 
 /-!
 # The tight mid-chain rbr knowledge-soundness leaves (issue #329, X-lane)
@@ -20,9 +22,10 @@ proven-forced `err₅ = 1` of the target-dropping chain.
 With `e₁` carried (`FirstSumcheckWithTarget`), define over the carried statements:
 
 * `evalClaimBindingRel` — the *first-terminal identity over the sent claims*:
-  `e₁ = eq̃(τ)(r_x) · (v_A·v_B − v_C)`, with `v` read from the bundled claim oracle. This is the
-  pass-through invariant that the final guard checks; conjoining it is what defeats the
-  true-claims attack (the v=t attack of #114) — its flip is challenge-independent.
+  `e₁ = eq̃(τ)(r_x) · (v_A·v_B − v_C)`, with `v` read from the scalar claim oracles. This is a
+  relational invariant carried through the canonical terminal pass-through. Its binding
+  restriction supplies the challenge-independent condition in the kernel argument; the
+  terminal `CheckClaim` does not execute a predicate or establish this invariant.
 * `tightRelE` — the carried first sum-check transported output relation (read back through the
   claim-oracle split) **and** the binding identity.
 * `tightRelF` — the *RLC match* (`∑ r·v^sent = ∑ r·v^true`) **and** the binding identity.
@@ -142,14 +145,14 @@ theorem relationRound_last_iff {n : ℕ}
 
 /-- **The first-terminal binding identity over the *sent* claims** (the conjoined invariant of
 the tight chain): the carried target `e₁` equals `eq̃(τ)(r_x) · (v_A·v_B − v_C)`, with the claims
-read from the bundled claim oracle `.inl 0`. Statement format: after `sendEvalClaimWithTarget`,
-i.e. `(e₁, (r_x, τ, 𝕩))` with the bundled-claim oracle family. -/
+read from the scalar claim oracles `.inl idx`. Statement format: after `sendEvalClaimWithTarget`,
+i.e. `(e₁, (r_x, τ, 𝕩))` with the scalar-claim oracle family. -/
 @[reducible]
 def evalClaimBindingRel :
     Set (Statement.AfterSendEvalClaimWithTarget R pp ×
       (∀ i, OracleStatement.AfterSendEvalClaim R pp i)) :=
   { x | x.1.1 = MvPolynomial.eval x.1.2.1 (MvPolynomial.eqPolynomial x.1.2.2.1) *
-      (x.2 (.inl 0) .A * x.2 (.inl 0) .B - x.2 (.inl 0) .C) }
+      ((show R from x.2 (.inl .A)) * (show R from x.2 (.inl .B)) - (show R from x.2 (.inl .C))) }
 
 /-- **`relE` of the tight chain**: the carried first sum-check transported output relation, read
 back through the claim-oracle split, *and* the binding identity. -/
@@ -168,7 +171,7 @@ identity. The sum-check conjunct is deliberately dropped: under the binding, its
 def tightRelF :
     Set ((Statement.AfterLinearCombinationWithTarget R pp ×
       (∀ i, OracleStatement.AfterLinearCombination R pp i)) × Unit) :=
-  { x | (∑ idx, x.1.1.1 idx * x.1.2 (.inl 0) idx
+  { x | (∑ idx, x.1.1.1 idx * (show R from x.1.2 (.inl idx))
         = ∑ idx, x.1.1.1 idx *
             evalClaimValue R pp x.1.1.2.2 (fun j => x.1.2 (.inr j)) idx)
       ∧ (x.1.1.2, x.1.2) ∈ evalClaimBindingRel (R := R) pp }
@@ -196,7 +199,7 @@ theorem sent_ne_true_of_binding_of_not_transported
     (hbind : x ∈ evalClaimBindingRel (R := R) pp)
     (hnotD : ¬ (((x.1, fun j => x.2 (.inr j)), ())
         ∈ firstSumcheckWithTargetRbrRelOut (R := R) pp oSpec)) :
-    (fun idx => x.2 (.inl 0) idx)
+    (fun idx => (show R from x.2 (.inl idx)))
       ≠ (fun idx => evalClaimValue R pp x.1.2 (fun j => x.2 (.inr j)) idx) := by
   -- Constructive contraposition: if the claims were true, the transported relation would hold.
   intro hclaims
@@ -216,7 +219,7 @@ theorem sent_ne_true_of_binding_of_not_transported
   -- The terminal identity `eval r_x' F̂ = t'`, from the product factorization, the binding
   -- identity, and the truth of the claims — everything at value level in `x`-language.
   have hb : x.1.1 = MvPolynomial.eval x.1.2.1 (MvPolynomial.eqPolynomial x.1.2.2.1) *
-      (x.2 (.inl 0) .A * x.2 (.inl 0) .B - x.2 (.inl 0) .C) := hbind
+      ((show R from x.2 (.inl .A)) * (show R from x.2 (.inl .B)) - (show R from x.2 (.inl .C))) := hbind
   have he : t' = x.1.1 := congrArg (fun p => p.1) h1
   have hr : r_x' = x.1.2.1 := congrArg (fun p => p.2.1) h1
   have hst : stmtIn = x.1.2.2 := congrArg (fun p => p.2.2) h1
@@ -225,7 +228,6 @@ theorem sent_ne_true_of_binding_of_not_transported
   have hA := congrFun hclaims R1CS.MatrixIdx.A
   have hB := congrFun hclaims R1CS.MatrixIdx.B
   have hC := congrFun hclaims R1CS.MatrixIdx.C
-  simp only at hA hB hC
   show MvPolynomial.eval r_x'
       (firstSumCheckVirtualPolynomial pp stmtIn.1 stmtIn.2 oStmtIn) = t'
   rw [hr, hst, h2, he]
@@ -237,7 +239,7 @@ theorem sent_ne_true_of_binding_of_not_transported
 
 omit [IsDomain R] [SampleableType R] in
 /-- The carried honest RLC-target verifier, simulated against the true oracle, deterministically
-emits `(∑ idx, r idx · oStmt(.inl 0) idx, stmt)`. Clone of
+emits `(∑ idx, r idx · oStmt(.inl idx), stmt)`. Clone of
 `simulateQ_prependRLCTargetVerifier` at the carried statement (the verifier body reads only
 `stmt.1`, which is still the RLC challenge). -/
 theorem simulateQ_prependRLCTargetWithTargetVerifier
@@ -248,35 +250,31 @@ theorem simulateQ_prependRLCTargetWithTargetVerifier
     simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
       ((prependRLCTargetWithTargetVerifier (R := R) pp oSpec).verify stmt chals
         : OracleComp _ (Option (R × Statement.AfterLinearCombinationWithTarget R pp)))
-      = pure (some (∑ idx, stmt.1 idx * oStmt (.inl 0) idx, stmt)) := by
-  show simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
-      ((liftM ((Finset.univ : Finset R1CS.MatrixIdx).toList.mapM (rlcStep pp oSpec)) >>=
-        fun claims => (pure ((claims.map (fun p => stmt.1 p.1 * p.2)).sum, stmt) :
-          OptionT (OracleComp _) (R × Statement.AfterLinearCombinationWithTarget R pp))) :
-        OptionT (OracleComp _)
-          (R × Statement.AfterLinearCombinationWithTarget R pp)).run = _
-  rw [simulateQ_optionT_bind']
-  rw [show ((liftM ((Finset.univ : Finset R1CS.MatrixIdx).toList.mapM (rlcStep pp oSpec)) :
-      OptionT (OracleComp _) (List (R1CS.MatrixIdx × R)))) =
-      ((Finset.univ : Finset R1CS.MatrixIdx).toList.mapM (rlcStep pp oSpec)) from rfl]
+      = pure (some (∑ idx, stmt.1 idx * (show R from oStmt (.inl idx)), stmt)) := by
+  change simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
+    (((Finset.univ : Finset R1CS.MatrixIdx).toList.mapM (rlcStep pp oSpec) >>= fun claims =>
+      pure ((claims.map (fun p => stmt.1 p.1 * p.2)).sum, stmt) :
+        OptionT (OracleComp _) (R × Statement.AfterLinearCombinationWithTarget R pp)).run) = _
+  rw [OptionT.run_bind, Option.elimM, simulateQ_bind]
   erw [simulateQ_optionT_list_mapM_pure (OracleInterface.simOracle2 oSpec oStmt msgs)
       (rlcStep pp oSpec)
-      (fun idx => ((idx, oStmt (.inl 0) idx) : R1CS.MatrixIdx × R)) _
+      (fun idx => ((idx, (show R from oStmt (.inl idx))) : R1CS.MatrixIdx × R)) _
       (fun idx => simulateQ_rlcStep pp oSpec oStmt msgs idx)]
-  simp only [OptionT.run_pure, simulateQ_pure]
-  refine Eq.trans (pure_bind _ _) (congrArg (fun z => pure (some (z, stmt))) ?_)
+  simp only [pure_bind, Option.elim_some, OptionT.run_pure, simulateQ_pure]
+  congr 1
+  congr 1
   rw [List.map_map,
-    ← Finset.sum_map_toList Finset.univ (fun idx => stmt.1 idx * oStmt (.inl 0) idx)]
+    ← Finset.sum_map_toList Finset.univ (fun idx => stmt.1 idx * (show R from oStmt (.inl idx)))]
   rfl
 
 omit [IsDomain R] [SampleableType R] in
 /-- The compiled carried RLC-target adapter verifier is pure. -/
 theorem prependRLCTargetWithTarget_toVerifier_pure :
     (prependRLCTargetWithTarget (R := R) pp oSpec).verifier.toVerifier
-      = ⟨fun p _tr => pure ((∑ idx, p.1.1 idx * p.2 (.inl 0) idx, p.1), p.2)⟩ := by
+      = ⟨fun p _tr => pure ((∑ idx, p.1.1 idx * (show R from p.2 (.inl idx)), p.1), p.2)⟩ := by
   have h := OracleVerifier.toVerifier_eq_pure_of_collapse
     (prependRLCTargetWithTarget (R := R) pp oSpec).verifier
-    (fun p _tr => (∑ idx, p.1.1 idx * p.2 (.inl 0) idx, p.1))
+    (fun p _tr => (∑ idx, p.1.1 idx * (show R from p.2 (.inl idx)), p.1))
     (fun stmt oStmt tr => by
       exact_mod_cast simulateQ_prependRLCTargetWithTargetVerifier (R := R) pp oSpec stmt oStmt
         tr.messages tr.challenges)
@@ -331,13 +329,13 @@ theorem linearCombinationWithTarget_rbrKnowledgeSoundness_leaf :
       intro hD
       exact hnotE ⟨hD, hbind⟩
     have hne := sent_ne_true_of_binding_of_not_transported pp oSpec stmtIn hbind hnotD
-    refine le_trans (probEvent_mono ?_) (probEvent_linearForm_eq_le
-      (fun idx => stmtIn.2 (.inl 0) idx)
+    refine le_trans (prEvent_mono _ _ _ ?_) (probEvent_linearForm_eq_le
+      (fun idx => (show R from stmtIn.2 (.inl idx)))
       (fun idx => evalClaimValue R pp stmtIn.1.2 (fun j => stmtIn.2 (.inr j)) idx) hne)
-    intro c _ hc
+    intro c hc
     exact hc.1
   · -- The binding identity fails: it is challenge-independent, so no output lands in `relF`.
-    refine le_trans (le_of_eq (probEvent_eq_zero_iff.mpr ?_)) (zero_le _)
+    refine le_trans (le_of_eq ((OracleComp.prEvent_eq_zero_iff _ _).mpr ?_)) _root_.zero_le
     intro c _ hc
     exact hbind hc.2
 

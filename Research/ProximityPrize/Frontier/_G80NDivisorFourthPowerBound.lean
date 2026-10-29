@@ -152,7 +152,7 @@ theorem card_divisors_pow_four_le {y : ℕ} (hy : y ≠ 0) :
     exact pow_four_le_cpr_mul hprime hpos
   have hprod : ∏ p ∈ y.primeFactors, p ^ (y.factorization p) = y := by
     rw [← Nat.support_factorization]
-    exact Nat.factorization_prod_pow_eq_self hy
+    exact Nat.prod_factorization_pow_eq_self hy
   calc ∏ p ∈ y.primeFactors, (y.factorization p + 1) ^ 4
       ≤ ∏ p ∈ y.primeFactors, cpr p * p ^ (y.factorization p) :=
         Finset.prod_le_prod' hfac

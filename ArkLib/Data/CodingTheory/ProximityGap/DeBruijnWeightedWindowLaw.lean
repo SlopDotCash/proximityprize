@@ -365,7 +365,6 @@ lemma weightedLevel_prime_pow [CharZero L] {p c : ℕ} (hp : p.Prime)
     have hcast : ((y : ZMod (p ^ (c + 1))) + ((p ^ c : ℕ) : ZMod (p ^ (c + 1))))
         = ((y + p ^ c : ℕ) : ZMod (p ^ (c + 1))) := by push_cast; ring
     have h := hper (y : ZMod (p ^ (c + 1)))
-    dsimp only at h
     rw [hcast] at h
     rw [ZMod.val_cast_of_lt hy, ZMod.val_cast_of_lt (by omega : y < p ^ (c + 1))]
       at h

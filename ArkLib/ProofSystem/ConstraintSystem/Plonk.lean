@@ -3,14 +3,18 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
-import CompPoly.Data.MvPolynomial.Notation
-import Mathlib.GroupTheory.Perm.List
+module
+
+public import CompPoly.Data.MvPolynomial.Notation
+public import Mathlib.GroupTheory.Perm.List
 
 /-! # The Plonk relation
 
 We first define the initial relation of Plonk. The paper first defines a constraint system, then
 define what it means for the constraint system to be satisfied. This forms the core relation of
 Plonk. -/
+
+@[expose] public section
 
 namespace Plonk
 
@@ -108,12 +112,8 @@ end Gate
 
 /-- A Plonk constraint system is a vector of `numGates` gates, each parametrized by the underlying
   ring `𝓡` and `numWires`, the number of wires.
-
-  Marked `protected` so that bare `ConstraintSystem` inside `namespace Plonk` refers to the
-  universal `ConstraintSystem` in `ArkLib.ProofSystem.ConstraintSystem.Basic`. Users access
-  this definition as `Plonk.ConstraintSystem`.
 -/
-protected def ConstraintSystem (𝓡 : Type) (numWires numGates : ℕ) := Fin numGates → Gate 𝓡 numWires
+def ConstraintSystem (𝓡 : Type) (numWires numGates : ℕ) := Fin numGates → Gate 𝓡 numWires
 
 variable {𝓡 : Type} [CommRing 𝓡] {numWires numGates : ℕ}
 
@@ -127,7 +127,7 @@ namespace ConstraintSystem
 
 /-- A constraint system accepts an input vector `x` if all of its gates accept `x`. -/
 def accepts (x : Fin numWires → 𝓡)
-    (cs : Plonk.ConstraintSystem 𝓡 numWires numGates) : Prop :=
+    (cs : ConstraintSystem 𝓡 numWires numGates) : Prop :=
   ∀ i : Fin numGates, (cs i).accepts x
 
 /-- The partition induced by a constraint system as defined in the Plonk paper.
@@ -135,7 +135,7 @@ def accepts (x : Fin numWires → 𝓡)
 For `i ∈ [numWires]`, let `T_i ⊆ [3*numGates]` be the set of indices `j` such that `V_j = i`,
 where `V` is the flattened vector of all wire indices `(a,b,c)` from all gates.
 This creates a partition of `[3 * numGates]` based on which gates use each wire index. -/
-def partition (cs : Plonk.ConstraintSystem 𝓡 numWires numGates) :
+def partition (cs : ConstraintSystem 𝓡 numWires numGates) :
     Fin numWires → Finset (Fin (3 * numGates)) :=
   -- We first cast via the equivalence `Fin (3 * numGates) ≃ Fin 3 × Fin numGates`,
   -- then filter by matching on the first coordinate `j.1`, which determines which wire we are
@@ -146,43 +146,18 @@ def partition (cs : Plonk.ConstraintSystem 𝓡 numWires numGates) :
       else if j.1 = 1 then (cs j.2).b = i else (cs j.2).c = i)
     (Finset.univ : Finset (Fin 3 × Fin numGates)))
 
-/-- The permutation corresponding to the partition induced by a constraint system.
-
-For each wire index `i`, the positions in `Fin (3 * numGates)` referencing wire `i` form a
-partition block. The permutation cycles through each block (sorted by position), ensuring that
-copy constraints can be enforced: all positions in the same block must carry the same wire value. -/
-def perm (cs : Plonk.ConstraintSystem 𝓡 numWires numGates) : Equiv.Perm (Fin (3 * numGates)) :=
+/-- The permutation corresponding to the partition induced by a constraint system. -/
+def perm (cs : ConstraintSystem 𝓡 numWires numGates) : Equiv.Perm (Fin (3 * numGates)) :=
   (List.finRange numWires).foldr
     (fun i acc => ((cs.partition i).sort (· ≤ ·)).formPerm * acc) 1
 
 /-- A constraint system is prepared for `ℓ` public inputs, for some `ℓ ≤ numGates, numWires`,
   if for all `i ∈ [ℓ]`, the `i`-th gate constrains the `i`-th wire to be some public value. -/
 def isPreparedFor (ℓ : ℕ) (hℓ : ℓ ≤ numGates) (hℓ' : ℓ ≤ numWires)
-    (cs : Plonk.ConstraintSystem 𝓡 numWires numGates) : Prop :=
+    (cs : ConstraintSystem 𝓡 numWires numGates) : Prop :=
   ∀ i : Fin ℓ, ∃ c, cs (Fin.castLE hℓ i) = Gate.eq (Fin.castLE hℓ' i) c
 
 end ConstraintSystem
-
-section CopyConstraints
-
-variable {n : ℕ} {𝓡 : Type} [CommRing 𝓡]
-
-/-- Copy constraints are satisfied when the wire assignment is constant on orbits of
-the permutation: every position that references the same wire carries the same value. -/
-def CopyConstraintsSatisfied (f : Fin n → 𝓡) (σ : Equiv.Perm (Fin n)) : Prop :=
-  ∀ i, f (σ i) = f i
-
-/-- The grand product identity: when copy constraints hold, the product with permuted
-indices equals the product with identity indices. This is the completeness direction of
-the Plonk permutation argument — the honest prover's accumulator telescopes to 1. -/
-theorem prod_eq_of_copyConstraints (f g : Fin n → 𝓡) (σ : Equiv.Perm (Fin n)) (β γ : 𝓡)
-    (hf : CopyConstraintsSatisfied f σ) :
-    ∏ i : Fin n, (f i + β * g (σ i) + γ) =
-    ∏ i : Fin n, (f i + β * g i + γ) := by
-  conv_lhs => arg 2; ext i; rw [← hf i]
-  exact Equiv.prod_comp σ (fun j => f j + β * g j + γ)
-
-end CopyConstraints
 
 -- Finally, we define the Plonk relation.
 
@@ -190,7 +165,7 @@ end CopyConstraints
 - A natural number `ℓ ≤ m` representing the number of public inputs
 - A subset `ℐ ⊂ [m]` of "public inputs" (assumed to be `{1,...,ℓ}` without loss of generality)
 -/
-def relation (cs : Plonk.ConstraintSystem 𝓡 numWires numGates) (ℓ : ℕ) (hℓ : ℓ ≤ numWires) :
+def relation (cs : ConstraintSystem 𝓡 numWires numGates) (ℓ : ℕ) (hℓ : ℓ ≤ numWires) :
     (publicInputs : Fin ℓ → 𝓡) → (privateWitness : Fin (numWires - ℓ) → 𝓡) → Prop :=
   fun (x : Fin ℓ → 𝓡) (ω : Fin (numWires - ℓ) → 𝓡) =>
     let combined := Fin.append x ω ∘ Fin.cast (by omega)

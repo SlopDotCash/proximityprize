@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.ToyProblem.Spec.SimplifiedIOR
+import ProximityPrize.Extensions.ProofSystem.ToyProblem.Spec.SimplifiedIOR
 
 /-!
 # Rewinding knowledge soundness for the toy IOR: kernel-dependency audit & usage

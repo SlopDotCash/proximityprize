@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eliza
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingCounting
 import Research.ProximityPrize.Hab25Core
 import Research.ProximityPrize.GrandChallenges
@@ -220,7 +220,7 @@ theorem line_witness_unique_udr
     exact le_trans h1 h2
   have h_lt : Δ₀(w₁, w₂) < Code.dist C := by
     have he_le : (e : ℝ≥0) ≤ δ * (Fintype.card ι : ℝ≥0) := by
-      rw [he]; exact Nat.floor_le (zero_le _)
+      rw [he]; exact Nat.floor_le (by positivity)
     have h2e : (2 * e : ℝ≥0) ≤ 2 * δ * (Fintype.card ι : ℝ≥0) := by
       have : (2 : ℝ≥0) * (e : ℝ≥0) ≤ 2 * (δ * (Fintype.card ι : ℝ≥0)) := by gcongr
       simpa [mul_assoc] using this
@@ -380,7 +380,7 @@ theorem epsMCAgs_restricted_le_epsCA
       if jointProximity (C := C) (u := u) δ then (0 : ENNReal)
       else Pr_{let γ ← $ᵖ F}[mcaEventGSrow (L u) C δ (u 0) (u 1) γ]) ≤
     epsCA (F := F) C δ δ := by
-  unfold epsCA
+  rw [epsCA_eq_pmf]
   apply iSup_mono
   intro u
   by_cases hjp : jointProximity (C := C) (u := u) δ

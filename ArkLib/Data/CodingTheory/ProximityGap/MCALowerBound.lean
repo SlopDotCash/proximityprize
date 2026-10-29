@@ -3,8 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
-import ArkLib.Data.Probability.Instances
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.Probability.Instances
 import Mathlib.Data.ZMod.Basic
 import Mathlib.FieldTheory.Finite.Basic
 
@@ -95,7 +95,7 @@ fires. With `epsMCA_C0_ge_half` this brackets the MCA error across the structura
 theorem epsMCA_univ_eq_zero (δ : ℝ≥0) :
     epsMCA (F := F) (A := A) (Set.univ : Set (ι → A)) δ = 0 := by
   unfold epsMCA
-  refine le_antisymm (iSup_le fun u => ?_) (zero_le _)
+  refine le_antisymm (iSup_le fun u => ?_) (by positivity)
   rw [mcaEvent_prob_univ_eq_zero (F := F) (A := A) δ u]
 
 #print axioms ProximityGap.not_mcaEvent_univ
@@ -115,7 +115,7 @@ theorem epsMCA_eq_zero_iff (C : Set (ι → A)) (δ : ℝ≥0) :
     rw [prob_uniform_eq_card_filter_div_card] at hle
     have hz : ((Finset.filter (fun γ : F => mcaEvent C δ (u 0) (u 1) γ) Finset.univ).card : ℝ≥0)
         / (Fintype.card F : ℝ≥0) = 0 := by
-      have := le_antisymm (by exact_mod_cast hle) (zero_le _)
+      have := le_antisymm (by exact_mod_cast hle) (by positivity)
       exact_mod_cast this
     have hcard0 : (Finset.filter (fun γ : F => mcaEvent C δ (u 0) (u 1) γ) Finset.univ).card = 0 := by
       rcases (div_eq_zero_iff.mp hz) with h1 | h2
@@ -128,7 +128,7 @@ theorem epsMCA_eq_zero_iff (C : Set (ι → A)) (δ : ℝ≥0) :
     simp at hmem
   · intro h
     unfold epsMCA
-    refine le_antisymm (iSup_le fun u => ?_) (zero_le _)
+    refine le_antisymm (iSup_le fun u => ?_) (by positivity)
     rw [prob_uniform_eq_card_filter_div_card, Finset.filter_false_of_mem (fun γ _ => h u γ)]
     simp
 

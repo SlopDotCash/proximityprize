@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Basic
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Basic
 
 /-!
 ## Binary expansion of an index as a challenge vector
@@ -22,8 +22,8 @@ variable {L : Type} [Field L]
 
 /-- Coordinate form of `bitsOfIndex`. -/
 theorem bitsOfIndex_apply {n : ℕ} (k : Fin (2 ^ n)) (j : Fin n) :
-    bitsOfIndex (L := L) k j = if Nat.getBit j.val k.val = 1 then 1 else 0 :=
-  rfl
+    bitsOfIndex (L := L) k j = if Nat.getBit j.val k.val = 1 then 1 else 0 := by
+  simp only [bitsOfIndex, ← Nat.testBit_true_eq_getBit_eq_1]
 
 /-- Coordinate form of `statementOrderBitsOfIndex`. -/
 theorem statementOrderBitsOfIndex_apply {n : ℕ} (k : Fin (2 ^ n)) (j : Fin n) :
@@ -34,13 +34,13 @@ theorem statementOrderBitsOfIndex_apply {n : ℕ} (k : Fin (2 ^ n)) (j : Fin n) 
 theorem bitsOfIndex_apply_of_getBit_eq_one {n : ℕ}
     (k : Fin (2 ^ n)) (j : Fin n) (h : Nat.getBit j.val k.val = 1) :
     bitsOfIndex (L := L) k j = 1 := by
-  simp [bitsOfIndex, h]
+  simp only [bitsOfIndex_apply, h, ↓reduceIte]
 
 /-- If the corresponding natural-number bit is not `1`, then `bitsOfIndex` returns `0`. -/
 theorem bitsOfIndex_apply_of_getBit_ne_one {n : ℕ}
     (k : Fin (2 ^ n)) (j : Fin n) (h : Nat.getBit j.val k.val ≠ 1) :
     bitsOfIndex (L := L) k j = 0 := by
-  simp [bitsOfIndex, h]
+  simp only [bitsOfIndex_apply, h, ↓reduceIte]
 
 /-- Every coordinate of `bitsOfIndex` is Boolean-valued. -/
 theorem bitsOfIndex_apply_eq_zero_or_one {n : ℕ}
@@ -79,14 +79,7 @@ theorem bitsOfIndex_apply_eq_zero_iff {n : ℕ}
 `finFunctionFinEquiv.symm`. -/
 theorem bitsOfIndex_eq_finFunctionFinEquiv_symm {n : ℕ} (k : Fin (2 ^ n)) :
     bitsOfIndex (L := L) k = fun j : Fin n => (finFunctionFinEquiv.symm k j : L) := by
-  funext j
-  simp [bitsOfIndex, Nat.getBit, Nat.shiftRight_eq_div_pow, Nat.and_one_is_mod]
-  by_cases h : k.val / 2 ^ j.val % 2 = 1
-  · simp [h]
-  · have hzero : k.val / 2 ^ j.val % 2 = 0 := by
-      have hlt : k.val / 2 ^ j.val % 2 < 2 := Nat.mod_lt _ (by decide)
-      omega
-    simp [hzero]
+  exact (coe_fin_pow_two_eq_bitsOfIndex (L := L) k).symm
 
 /-- The equality kernel at a fold-order Boolean index is the tensor-product
 `multilinearWeight` at that index. -/
@@ -121,28 +114,7 @@ theorem multilinear_eval_eq_sum_bitsOfIndex {n : ℕ}
     (t : MultilinearPoly L n) (r : Fin n → L) :
     t.val.eval r =
       ∑ k : Fin (2 ^ n), multilinearWeight r k * t.val.eval (bitsOfIndex (L := L) k) := by
-  classical
-  have h_mle : MvPolynomial.MLE t.val.toEvalsZeroOne = t.val :=
-    MvPolynomial.is_multilinear_iff_eq_evals_zeroOne.mp t.property
-  calc
-    t.val.eval r = MvPolynomial.eval r (MvPolynomial.MLE t.val.toEvalsZeroOne) := by
-      rw [h_mle]
-    _ = ∑ x : Fin n → Fin 2,
-        eqTilde r (fun i => (x i : L)) * t.val.toEvalsZeroOne x := by
-      rw [MvPolynomial.MLE_eval_eq_sum_eqTilde]
-    _ = ∑ k : Fin (2 ^ n),
-        eqTilde r (fun i => (finFunctionFinEquiv.symm k i : L)) *
-          t.val.toEvalsZeroOne (finFunctionFinEquiv.symm k) := by
-      rw [← Equiv.sum_comp finFunctionFinEquiv.symm
-        (fun x : Fin n → Fin 2 =>
-          eqTilde r (fun i => (x i : L)) *
-            t.val.toEvalsZeroOne x)]
-    _ = ∑ k : Fin (2 ^ n), multilinearWeight r k * t.val.eval (bitsOfIndex (L := L) k) := by
-      apply Finset.sum_congr rfl
-      intro k _
-      unfold MvPolynomial.toEvalsZeroOne
-      rw [← bitsOfIndex_eq_finFunctionFinEquiv_symm (L := L) k]
-      rw [eqTilde_bitsOfIndex_eq_multilinearWeight]
+  exact multilinear_eval_eq_sum_bool_hypercube r t
 
 /-- The equality kernel at a statement-order Boolean index is the tensor-product weight for the
 fold-order view of the same challenge vector. -/

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.MCAJohnsonClustering
 import ArkLib.Data.CodingTheory.ProximityGap.BCKHS25.Interpolation
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # MCA degree-one decoding curve: existence keystone (#232, BCIKS20 Theorem 4.1)

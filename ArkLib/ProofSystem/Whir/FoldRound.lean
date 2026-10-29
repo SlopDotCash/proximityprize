@@ -39,9 +39,16 @@ proven folding lemma `Fold.foldf_step_mem_smoothCode`.
   the MCA conjecture, as recorded in `RBRSoundness.lean`).
 -/
 
+-- The retained finite-oracle API chooses uniform answer measures locally.
+private noncomputable local instance (priority := low) whirFoldUniformAnswers
+    {κ : Type} {spec : OracleSpec κ}
+    [∀ q, Fintype (spec.Range q)] [∀ q, Inhabited (spec.Range q)] :
+    OracleSpec.UniformAnswerMeasure spec :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty spec
+
 namespace WhirIOP.FoldRound
 
-open OracleSpec OracleComp ProtocolSpec NNReal Fold BlockRelDistance ReedSolomon
+open OracleSpec OracleComp ProtocolSpec NNReal Fold BlockRelDistance.Generic ReedSolomon
 
 noncomputable section
 
@@ -53,12 +60,12 @@ oracle), so we prove the analogous explicit-`liftComp` unrolling here, by the sa
 (generic `n`-message unroll + `runToRound` unfolding with the round directions swapped). -/
 section UnrollVP
 
-variable {ιₒ : Type} {oSpec : OracleSpec ιₒ} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ιₒ : Type} {oSpec : OracleSpec ιₒ} [oSpec.UniformAnswerMeasure]
   {StmtIn WitIn StmtOut WitOut : Type}
   {ιₛᵢ ιₛₒ : Type} {OStmtIn : ιₛᵢ → Type} {OStmtOut : ιₛₒ → Type}
-  [∀ i, OracleInterface (OStmtIn i)]
+  [∀ i, OracleInterface (OStmtIn i)] [∀ i, OracleInterface (OStmtOut i)]
   {pSpecVP : ProtocolSpec 2} [∀ i, SampleableType (pSpecVP.Challenge i)]
-  [[pSpecVP.Challenge]ₒ.Fintype] [[pSpecVP.Challenge]ₒ.Inhabited]
+  [[pSpecVP.Challenge]ₒ.UniformAnswerMeasure]
   [∀ i, OracleInterface (pSpecVP.Message i)]
   {σ : Type}
 
@@ -74,9 +81,8 @@ theorem unroll_2_message_VP
     OracleReduction.perfectCompleteness init impl relIn relOut reduction ↔
     ∀ (stmtIn : StmtIn) (oStmtIn : ∀ i, OStmtIn i) (witIn : WitIn),
       ((stmtIn, oStmtIn), witIn) ∈ relIn →
-      Pr[fun ((prvStmt, prvOStmt), (verStmt, verOStmt), witOut) =>
-          ((verStmt, verOStmt), witOut) ∈ relOut ∧ prvStmt = verStmt ∧ prvOStmt = verOStmt
-        | ((do
+      probEvent (fun ((prvStmt, prvOStmt), (verStmt, verOStmt), witOut) =>
+          ((verStmt, verOStmt), witOut) ∈ relOut ∧ prvStmt = verStmt ∧ prvOStmt = verOStmt) (((do
           let r0 ← liftComp (pSpecVP.getChallenge ⟨0, hDir0⟩) (oSpec + [pSpecVP.Challenge]ₒ)
           let receiveChallengeFn ← liftComp (reduction.prover.receiveChallenge ⟨0, hDir0⟩
             (reduction.prover.input ((stmtIn, oStmtIn), witIn))) (oSpec + [pSpecVP.Challenge]ₒ)
@@ -91,8 +97,7 @@ theorem unroll_2_message_VP
             (oSpec + [pSpecVP.Challenge]ₒ)
           pure ((prvStmtOut, prvOStmtOut), verifierStmtOut, witOut)
         ) : OptionT (OracleComp (oSpec + [pSpecVP.Challenge]ₒ))
-            ((StmtOut × ((i : ιₛₒ) → OStmtOut i)) × (StmtOut × ((i : ιₛₒ) → OStmtOut i)) × WitOut))
-      ] = 1 := by
+            ((StmtOut × ((i : ιₛₒ) → OStmtOut i)) × (StmtOut × ((i : ιₛₒ) → OStmtOut i)) × WitOut))) = 1 := by
   rw [OracleReduction.unroll_n_message_reduction_perfectCompleteness (n := 2)
     (reduction := reduction) relIn relOut init impl hInit hImplSupp]
   apply forall_congr'; intro stmtIn
@@ -194,8 +199,10 @@ def foldVerifier :
       Unit (OStmtOut (S := S) (φ := φ) (j := j))
       (pSpec (S := S) (φ := φ) (j := j)) where
   verify := fun _ _ => pure ()
-  embed := ⟨fun _ => Sum.inr ⟨1, by simp⟩, by intro a b _; rfl⟩
-  hEq := by intro u; unfold OStmtOut pSpec ProtocolSpec.Message; rfl
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inr ⟨1, by simp⟩, by intro a b _; rfl⟩
+    hEq := by intro u; unfold OStmtOut pSpec ProtocolSpec.Message; rfl
+    outputInterface_heq := by intro u; cases u; rfl }
 
 /-- The honest WHIR fold round as an oracle reduction. -/
 def foldOracleReduction :
@@ -219,15 +226,10 @@ def outputRelation :
 
 /-! ### Perfect completeness -/
 
-/-- The empty oracle spec is vacuously inhabited (its query index type is empty). -/
-instance : []ₒ.Inhabited where
-  inhabited_B := fun i => i.elim
-
 /-- Finiteness of the challenge oracle spec. Its query domain is `(i : ChallengeIdx) × Unit` and the
 response at index `i` is `Challenge i`; the only challenge index is `0`, of finite type `F`. -/
-instance : [(pSpec (S := S) (φ := φ) (j := j)).Challenge]ₒ.Fintype where
-  fintype_B
-  | ⟨⟨iv, hiv⟩, _⟩ => by
+instance : ∀ t, Fintype (([(pSpec (S := S) (φ := φ) (j := j)).Challenge]ₒ).Range t)
+  | ⟨⟨iv, hiv⟩, ()⟩ => by
     have h0 : iv = 0 := by
       cases iv using Fin.cases with
       | zero => rfl
@@ -235,13 +237,12 @@ instance : [(pSpec (S := S) (φ := φ) (j := j)).Challenge]ₒ.Fintype where
         | zero => simp [pSpec] at hiv
         | succ k => exact k.elim0
     subst h0
-    simpa [pSpec, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
-      OracleInterface.Response, OracleInterface.toOC] using (inferInstance : Fintype F)
+    change Fintype F
+    infer_instance
 
 /-- Inhabitedness of the challenge oracle spec (response type `F` at the only index `0`). -/
-instance : [(pSpec (S := S) (φ := φ) (j := j)).Challenge]ₒ.Inhabited where
-  inhabited_B
-  | ⟨⟨iv, hiv⟩, _⟩ => by
+instance : ∀ t, Inhabited (([(pSpec (S := S) (φ := φ) (j := j)).Challenge]ₒ).Range t)
+  | ⟨⟨iv, hiv⟩, ()⟩ => by
     have h0 : iv = 0 := by
       cases iv using Fin.cases with
       | zero => rfl
@@ -249,8 +250,8 @@ instance : [(pSpec (S := S) (φ := φ) (j := j)).Challenge]ₒ.Inhabited where
         | zero => simp [pSpec] at hiv
         | succ k => exact k.elim0
     subst h0
-    simpa [pSpec, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
-      OracleInterface.Response, OracleInterface.toOC] using (⟨(0 : F)⟩ : Inhabited F)
+    change Inhabited F
+    exact ⟨0⟩
 
 variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp))
 
@@ -286,40 +287,27 @@ theorem foldOracleReduction_perfectCompleteness (hInit : NeverFail init)
     OStmtIn, OStmtOut, inputRelation, outputRelation]
   simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,
     Prod.mk.eta, bind_assoc, map_pure, liftComp_pure, liftM_pure]
-  rw [probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · -- SAFETY: the run is `getChallenge >>= fun α => ↑(never-failing OracleComp)`. The challenge
-    -- sample never fails, and the (no-`guard`) verifier body is `liftComp` of an `OptionT` whose
-    -- `.run` is a lifted, always-`some` `OracleComp` — so the whole run never fails, without ever
-    -- evaluating the verifier's `simulateQ`.
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun α _hα => ?_⟩
-    · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-        Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
-        probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
-        Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero, zero_add]
-      intro x hx
-      erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-      simp only [support_pure, Set.mem_singleton_iff] at hx
-      subst hx
-      simp only [Option.map_some, reduceCtorEq, not_false_eq_true]
-  · -- CORRECTNESS: with `α` extracted the verifier's `simulateQ (simOracle2 …) (pure ())` is at the
-    -- top level, where `OptionT.simulateQ_pure`/`run_pure` reduce it to `pure (some ())`; the unique
-    -- reachable output's oracle is the honest fold, which lands in `relOut` via `h_fold_mem`.
-    intro x hx
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨α, _hα, hx⟩ := hx
-    rw [OptionT.mem_support_iff] at hx
-    erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-    simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-      Function.comp_apply, Option.map_some, support_map, support_pure, Set.mem_image,
-      Set.mem_singleton_iff, Option.some.injEq, exists_eq_left, exists_eq_right] at hx
-    subst hx
-    exact ⟨h_fold_mem α, trivial, by funext u; rfl⟩
+  apply (OptionT.prEvent_mk_eq_one_iff _ _).2
+  intro value hvalue
+  have hopt {κ : Type} {spec : OracleSpec κ} {β : Type} (mx : OracleComp spec β) :
+      (liftM mx : OptionT (OracleComp spec) β) = some <$> mx := by
+    change (mx >>= fun x => pure (some x)) = some <$> mx
+    rw [map_eq_bind_pure_comp]
+    rfl
+  obtain ⟨α, hα, hvalue⟩ := OracleComp.mem_support_bind_peel _ _ hvalue
+  erw [hopt] at hα
+  obtain ⟨a, _, ha⟩ := OracleComp.mem_support_map_peel _ _ hα
+  subst α
+  simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure,
+    simulateQ_pure, map_pure, Option.map_some, liftComp_pure] at hvalue
+  have heq := OracleComp.eq_of_mem_support_pure _ hvalue
+  subst value
+  exact ⟨_, rfl, h_fold_mem a, trivial, by funext u; rfl⟩
+
 
 end
 
 end WhirIOP.FoldRound
+
+#print axioms WhirIOP.FoldRound.unroll_2_message_VP
+#print axioms WhirIOP.FoldRound.foldOracleReduction_perfectCompleteness

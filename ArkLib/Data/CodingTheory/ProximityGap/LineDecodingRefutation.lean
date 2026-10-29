@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecoding
+import ArkLib.Data.Probability.Notation
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.LineDecoding
 import Mathlib.Algebra.Field.ZMod
 
 /-!
@@ -156,7 +157,7 @@ theorem epsMCA_Czero_pos :
     rw [ProbabilityTheory.Pr_eq_tsum_indicator]
     -- the `γ = 0` term contributes `($ᵖ F) 0 * 1 = 1/|F|`.
     refine le_trans ?_ (ENNReal.le_tsum (0 : F))
-    rw [if_pos mcaEvent_ubad_zero, mul_one, PMF.uniformOfFintype_apply, one_div]
+    rw [if_pos mcaEvent_ubad_zero, mul_one, ProximityPrize.Compatibility.uniformOfFintype_apply, one_div]
   -- `1/|F| > 0` and the body is `≤ ε_mca`.
   have hbody_le : Pr_{let γ ← $ᵖ F}[mcaEvent (F := F) ((Czero : Set (ι → A))) (0 : ℝ≥0)
         (ubad 0) (ubad 1) γ] ≤ epsMCA (F := F) ((Czero : Set (ι → A))) (0 : ℝ≥0) := by

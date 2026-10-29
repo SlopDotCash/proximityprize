@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import Research.ProximityPrize.Lattice
 import ArkLib.Data.CodingTheory.InterleavedListSize
-import ArkLib.Data.CodingTheory.JohnsonBound.Family
+import ProximityPrize.Extensions.Data.CodingTheory.JohnsonBound.Family
 
 /-!
 # Value bounds for the genuine list-decoding threshold (ABF26 §1, faithful form)
@@ -158,7 +158,7 @@ theorem mem_listLatticeSet_of_Lambda_le
 
 /-- **Johnson-side lower witness for the list-decoding challenge.**  A lattice
 radius `j/n` with a budget-clearing Johnson cap is immediately a
-`ListLowerWitness`, not only a member of the faithful lattice set. -/
+`ContinuousListLowerWitness`, not only a member of the faithful lattice set. -/
 noncomputable def listLowerWitness_of_johnson
     (C : Set (ι → F)) {m j : ℕ} (hjn : j ≤ Fintype.card ι)
     {ℓ : ℕ} {β : ℝ} (hq : 0 < Fintype.card F) (hβ : 0 ≤ β)
@@ -176,7 +176,7 @@ noncomputable def listLowerWitness_of_johnson
         + β ^ 2 * (Fintype.card ι : ℝ) * (1 - 1 / (Fintype.card F : ℝ))) < 0)
     {ε_star : ℝ≥0}
     (hpow : ((ℓ : ENNReal)) ^ m ≤ (ε_star : ENNReal) * (Fintype.card F : ENNReal)) :
-    GrandChallenges.ListLowerWitness C m ε_star := by
+    GrandChallenges.ContinuousListLowerWitness C m ε_star := by
   classical
   let δ : ℝ≥0 := (j : ℝ≥0) / (Fintype.card ι : ℝ≥0)
   have hδ_le : δ ≤ 1 := by
@@ -190,7 +190,7 @@ noncomputable def listLowerWitness_of_johnson
   have hmem := mem_listLatticeSet_of_johnson
     (C := C) (m := m) (j := j) hjn (ℓ := ℓ) (β := β) hq hβ hcond hpow
   rw [GrandChallenges.listLatticeSet, Finset.mem_filter, Finset.mem_range] at hmem
-  exact GrandChallenges.ListLowerWitness.ofLe (C := C) (m := m)
+  exact GrandChallenges.ContinuousListLowerWitness.ofLe (C := C) (m := m)
     (ε_star := ε_star) (δ := δ) hδ_le hmem.2
 
 /-- **Johnson-side lower bound on the genuine threshold.**  Any lattice radius `j/n`
@@ -233,14 +233,14 @@ theorem le_listLatticeThreshold_of_Lambda_le
 /-- **Generic lower witness from a base `Λ` cap.**  This is the witness-valued version of
 `mem_listLatticeSet_of_Lambda_le`: once a base-code list-size bound
 `Λ(C, j/n) ≤ ℓ` clears the interleaved prize budget, it produces the public
-`ListLowerWitness` consumed by the faithful list-prize lattice API. -/
+`ContinuousListLowerWitness` consumed by the faithful list-prize lattice API. -/
 noncomputable def listLowerWitness_of_Lambda_le
     (C : Set (ι → F)) {m j ℓ : ℕ} (hjn : j ≤ Fintype.card ι)
     (hLambda :
       Lambda C (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) ≤ (ℓ : ℕ∞))
     {ε_star : ℝ≥0}
     (hpow : ((ℓ : ENNReal)) ^ m ≤ (ε_star : ENNReal) * (Fintype.card F : ENNReal)) :
-    GrandChallenges.ListLowerWitness C m ε_star := by
+    GrandChallenges.ContinuousListLowerWitness C m ε_star := by
   classical
   let δ : ℝ≥0 := (j : ℝ≥0) / (Fintype.card ι : ℝ≥0)
   have hδ_le : δ ≤ 1 := by
@@ -254,7 +254,7 @@ noncomputable def listLowerWitness_of_Lambda_le
   have hmem := mem_listLatticeSet_of_Lambda_le
     (C := C) (m := m) (j := j) (ℓ := ℓ) hjn hLambda hpow
   rw [GrandChallenges.listLatticeSet, Finset.mem_filter, Finset.mem_range] at hmem
-  exact GrandChallenges.ListLowerWitness.ofLe (C := C) (m := m)
+  exact GrandChallenges.ContinuousListLowerWitness.ofLe (C := C) (m := m)
     (ε_star := ε_star) (δ := δ) hδ_le hmem.2
 
 #print axioms ProximityGap.listLowerWitness_of_Lambda_le

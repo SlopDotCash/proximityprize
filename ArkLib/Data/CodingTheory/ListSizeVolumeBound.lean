@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.HammingBallVolume
+import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
 import ArkLib.Data.CodingTheory.HammingBallVolumeBasics
-import ArkLib.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 import ArkLib.Data.CodingTheory.EntropyVolumeUpperBall
 
 /-!
@@ -37,7 +37,6 @@ theorem closeCodewordsRel_ncard_le_hammingBallVolume
   simp only [relHammingBall, Set.mem_setOf_eq, Code.relHammingDist] at hball
   push_cast at hball
   rw [div_le_iff₀ hn] at hball
-  simp only [hammingBall, Set.mem_setOf_eq]
   exact Nat.le_floor hball
 
 /-- **Maximised Elias bound `|Λ(C,δ)| ≤ Vol_q(δ,n)`.** -/

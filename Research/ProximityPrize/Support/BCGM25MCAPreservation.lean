@@ -31,12 +31,16 @@ lemmas that do **not** assume the external BCGM25 polynomial-generator theorem; 
   `polynomialGenerator_isMCAGenerator_bcgm25_of_native` (Brick B) — the **front-door transfer**.
   The canonical statement surface
   `CodingTheory.polynomialGenerator_isMCAGenerator_bcgm25` is, by construction, the native
-  predicate `CoreDefinitions.IsMCAGenerator G ε_mca LC`.  Brick B records that definitional
+  predicate `CoreDefinitions.IsMCAGenerator G (unitInterval.toNNReal ∘ ε_mca) LC`.  Brick B records that definitional
   bridge as a checked `Iff` and a transfer lemma, so the public BCGM25 surface is *anchored to
   the proved native predicate* (the one Brick A's preservation lemmas manipulate) rather than
   restated externally.  This does **not** prove the external polynomial-generator construction;
   it shows that whenever the native MCA predicate is established (e.g. transported through the
   Brick A preservation lemmas), the front-door Prop holds verbatim.
+
+The public error profile remains `I → I`; the native predicate receives its explicit
+`unitInterval.toNNReal` image. Existing finite, nonempty seed assumptions supply the canonical
+uniform sampler locally, with low priority so explicit samplers remain preferred.
 
 ## References
 
@@ -50,6 +54,11 @@ open NNReal ENNReal unitInterval LinearCode CoreDefinitions Matrix LinearTransfo
 open scoped ProbabilityTheory
 
 set_option maxHeartbeats 1600000
+
+private noncomputable abbrev finiteSeedUniform {T : Type} [Fintype T] [Nonempty T] :
+    SampleableType T := SampleableType.ofFintype T
+
+attribute [local instance 10] finiteSeedUniform
 
 variable {ι : Type} [Fintype ι]
          {F : Type} [Field F]
@@ -66,12 +75,13 @@ error `ε_mca`.  This composes Lemma 4.1 (`pseudoinverseGen`) and Corollary 4.2
 lemma isMCAGenerator_projected_rightMul
     [DecidableEq ℓ'] [Nonempty S]
     (G : Generator S ℓ F) (ε_mca : I → I) (LC : LinearCode ι F)
-    (hGMCA : IsMCAGenerator G ε_mca LC)
+    (hGMCA : IsMCAGenerator G (unitInterval.toNNReal ∘ ε_mca) LC)
     (A : Matrix ℓ ℓ' F) (hA : HasLeftPseudoInverse A)
     (κ : Set ℓ') [Fintype κ] :
-    IsMCAGenerator (projectedGenerator (generatorByRightMul G A) κ) ε_mca LC :=
-  generatorSubset (generatorByRightMul G A) ε_mca LC
-    (pseudoinverseGen G ε_mca LC hGMCA A hA) κ
+    IsMCAGenerator (projectedGenerator (generatorByRightMul G A) κ)
+      (unitInterval.toNNReal ∘ ε_mca) LC :=
+  generatorSubset (generatorByRightMul G A) (unitInterval.toNNReal ∘ ε_mca) LC
+    (pseudoinverseGen G (unitInterval.toNNReal ∘ ε_mca) LC hGMCA A hA) κ
 
 /-- **MCA preservation under iterated right-multiplication.**
 
@@ -83,16 +93,16 @@ lemma isMCAGenerator_iterate_rightMul
     [DecidableEq ℓ] [Nonempty S]
     (ε_mca : I → I) (LC : LinearCode ι F)
     (A : Matrix ℓ ℓ F) (hA : HasLeftPseudoInverse A) :
-    ∀ (n : ℕ) (G : Generator S ℓ F), IsMCAGenerator G ε_mca LC →
+    ∀ (n : ℕ) (G : Generator S ℓ F), IsMCAGenerator G (unitInterval.toNNReal ∘ ε_mca) LC →
       IsMCAGenerator
-        (Nat.iterate (fun H => generatorByRightMul H A) n G) ε_mca LC := by
+        (Nat.iterate (fun H => generatorByRightMul H A) n G) (unitInterval.toNNReal ∘ ε_mca) LC := by
   intro n
   induction n with
   | zero => intro G hG; simpa using hG
   | succ m ih =>
       intro G hG
-      have hstep : IsMCAGenerator (generatorByRightMul G A) ε_mca LC :=
-        pseudoinverseGen G ε_mca LC hG A hA
+      have hstep : IsMCAGenerator (generatorByRightMul G A) (unitInterval.toNNReal ∘ ε_mca) LC :=
+        pseudoinverseGen G (unitInterval.toNNReal ∘ ε_mca) LC hG A hA
       have := ih (generatorByRightMul G A) hstep
       simpa [Function.iterate_succ', Function.comp] using this
 
@@ -102,8 +112,9 @@ variable {seedDim : ℕ}
 
 /-- **Brick B (definitional bridge).** The canonical BCGM25 statement surface
 `CodingTheory.polynomialGenerator_isMCAGenerator_bcgm25` is, by construction, exactly the native
-predicate `CoreDefinitions.IsMCAGenerator G ε_mca LC`.  This `Iff` records that the public
-front-door Prop and the proved native predicate are interchangeable, so the BCGM25 surface is
+predicate `CoreDefinitions.IsMCAGenerator G (unitInterval.toNNReal ∘ ε_mca) LC`. This `Iff` records
+that the public front-door Prop and the proved native predicate are interchangeable, so the
+BCGM25 surface is
 anchored to the generator-native vocabulary that the preservation lemmas above manipulate.  The
 polynomial-generator witness `hPoly` is data the front door carries but does not affect the
 underlying MCA claim. -/
@@ -113,11 +124,11 @@ lemma polynomialGenerator_isMCAGenerator_bcgm25_iff
     (G : Generator (∀ i, Ssub i) ℓ F) (ε_mca : I → I) (LC : LinearCode ι F)
     (hPoly : CoreDefinitions.IsPolynomialGenerator Ssub G) :
     CodingTheory.polynomialGenerator_isMCAGenerator_bcgm25 Ssub G ε_mca LC hPoly
-      ↔ IsMCAGenerator G ε_mca LC :=
+      ↔ IsMCAGenerator G (unitInterval.toNNReal ∘ ε_mca) LC :=
   Iff.rfl
 
-/-- **Brick B (transfer).** From the proved native MCA predicate `IsMCAGenerator G ε_mca LC`
-(the form produced by the Brick A preservation lemmas) and a polynomial-generator witness, the
+/-- **Brick B (transfer).** From the native MCA predicate with the explicitly
+converted error profile (the form produced by Brick A) and a polynomial-generator witness, the
 canonical front-door Prop `polynomialGenerator_isMCAGenerator_bcgm25` holds verbatim.  This wires
 the generator-native preservation bricks to the public BCGM25 statement surface without assuming
 the external polynomial-generator construction. -/
@@ -126,7 +137,7 @@ lemma polynomialGenerator_isMCAGenerator_bcgm25_of_native
     [Nonempty (∀ i, Ssub i)] [Fintype (∀ i, Ssub i)]
     (G : Generator (∀ i, Ssub i) ℓ F) (ε_mca : I → I) (LC : LinearCode ι F)
     (hPoly : CoreDefinitions.IsPolynomialGenerator Ssub G)
-    (hMCA : IsMCAGenerator G ε_mca LC) :
+    (hMCA : IsMCAGenerator G (unitInterval.toNNReal ∘ ε_mca) LC) :
     CodingTheory.polynomialGenerator_isMCAGenerator_bcgm25 Ssub G ε_mca LC hPoly :=
   (polynomialGenerator_isMCAGenerator_bcgm25_iff Ssub G ε_mca LC hPoly).mpr hMCA
 

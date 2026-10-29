@@ -230,7 +230,7 @@ strict square-root Johnson regime (`hδ : δ < 1 − √rate`) given:
 
 The list-decoding branch is supplied by the satisfiable `BetaCurveInputFin` via
 `section5Concrete_of_close_word`, so the keystone consumes a **real `β`**.  No `sorry`/`axiom`. -/
-theorem correlatedAgreement_affine_curves_johnson_concrete {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
+theorem correlatedAgreement_affine_curves_johnson_concrete [SampleableType F] {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     [NeZero deg]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (b : GSFactorData.Bundle (F := F) (0 : F))

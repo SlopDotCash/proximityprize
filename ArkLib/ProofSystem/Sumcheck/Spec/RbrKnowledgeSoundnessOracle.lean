@@ -4,35 +4,17 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Sumcheck.Spec.General
-import ArkLib.ProofSystem.Sumcheck.Spec.SingleRoundCohWired
 import ArkLib.OracleReduction.Composition.Sequential.SeqComposeRbrKnowledgeProof
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 /-!
-# Oracle-level multi-round rbr KNOWLEDGE soundness of the generic sum-check (#114)
+# Sumcheck deterministic execution and conditional knowledge composition
 
-The knowledge mirror of `SeqComposeRbrSoundness.lean`'s plain-soundness assembly, fully
-unconditional:
-
-* `SingleRound.oracleVerifier_rbrKnowledgeSoundness_indexed` — the `i`-th-round oracle verifier
-  (the `liftContext` of the `Simple` oracle verifier through the virtual-routing
-  `sumcheckOracleLens`) is rbr knowledge sound on the canonical relation chain
-  `relationRound i.castSucc → relationRound i.succ` with per-round error `deg/|R|`: the proven
-  `Simple.oracleVerifier_rbrKnowledgeSoundness` transported through
-  `Verifier.liftContext_rbr_knowledgeSoundness` at the proven lens-knowledge instance
-  `extractorLens_rbr_knowledge_soundness`, with the verifier-conversion commute supplied by the
-  proven `coh_proven_inst`.
-
-* `Simple.oracleVerifier_toVerifier_failingDet` / `SingleRound.oracleVerifier_toVerifier_failingDet`
-  — the compiled single-round (oracle) verifiers are failing-deterministic: the `simulateQ`
-  collapse `simulateQ_oracleVerify_eq` put in `Option`-verdict form, then lifted through
-  `Verifier.liftContext` (which preserves failing-determinism, `Verifier.liftContext_failingDet`).
-
-* `oracleVerifier_rbrKnowledgeSoundness` — **the full multi-round sum-check oracle verifier is
-  rbr knowledge sound**, by the n-ary `OracleVerifier.seqCompose_rbrKnowledgeSoundness_failingDet`
-  fold at the per-round facts and failing-determinism witnesses, on the canonical relation chain
-  `relationRound 0 → relationRound (Fin.last n)`, with error `deg/|R|` at every round.
-
-No `sorry`/axioms; `#print axioms` must report exactly `[propext, Classical.choice, Quot.sound]`.
+The failing-deterministic verdict reads the prover's message polynomial, matching canonical
+`Simple.oracleVerifier`. The completed lens and n-ary composition constructions retain explicit
+simple/per-round knowledge premises. The former unconditional wrappers used an input-query
+constant-knowledge proof and are retired with exact source records in
+`scripts/integration/sumcheck-message-semantics-retirements.json`. No admitted theorem supplies
+these new conditional premises.
 -/
 
 open OracleComp OracleSpec ProtocolSpec Polynomial Finset
@@ -75,14 +57,14 @@ variable {R : Type} [CommSemiring R] [DecidableEq R] [SampleableType R]
 namespace SingleRound
 
 /-- The failing-deterministic verdict of the compiled `Simple` sum-check oracle verifier: guard the
-ORACLE's `D`-sum against the target, emit the oracle's evaluation at the challenge (the output
+MESSAGE polynomial's `D`-sum against the target, emit the message's evaluation at the challenge (the output
 oracle is the unchanged input oracle, `embed = inl`). -/
 noncomputable def simpleOracleVerify? (deg : ℕ) (D : Fin m ↪ R) :
     (Simple.StmtIn R × ∀ i, Simple.OStmtIn R deg i) → (SingleRound.pSpec R deg).FullTranscript →
       Option (Simple.StmtOut R × ∀ i, Simple.OStmtOut R deg i) :=
   fun p tr =>
-    if ((Vector.finRange m).map (fun i => (p.2 ()).val.eval (D i))).sum = p.1
-      then some (((p.2 ()).val.eval (tr.challenges default), tr.challenges default),
+    if (∑ x ∈ univ.map D, (tr 0).val.eval x) = p.1
+      then some (((tr 0).val.eval (tr 1), tr 1),
         fun _ => p.2 ())
       else none
 
@@ -92,24 +74,10 @@ noncomputable def simpleOracleVerify? (deg : ℕ) (D : Fin m ↪ R) :
 theorem simple_oracleVerifier_toVerifier_failingDet :
     (Simple.oracleVerifier R deg D oSpec).toVerifier
       = ⟨fun p tr => OptionT.mk (pure (simpleOracleVerify? deg D p tr))⟩ := by
-  have h := OracleVerifier.toVerifier_eq_failingDet_of_collapse
-    (Simple.oracleVerifier R deg D oSpec)
-    (fun p tr =>
-      if ((Vector.finRange m).map (fun i => (p.2 ()).val.eval (D i))).sum = p.1
-        then some ((p.2 ()).val.eval (tr.challenges default), tr.challenges default)
-        else none)
-    (fun stmt oStmt tr => by
-      rw [Simple.simulateQ_oracleVerify_eq R deg D oSpec]
-      by_cases hc : ((Vector.finRange m).map (fun i => (oStmt ()).val.eval (D i))).sum = stmt
-      · simp only [if_pos hc]; rfl
-      · simp only [if_neg hc]; rfl)
-  rw [h]
-  congr 1
-  funext p tr
-  by_cases hc : ((Vector.finRange m).map (fun i => (p.2 ()).val.eval (D i))).sum = p.1
-  · simp only [simpleOracleVerify?, if_pos hc, Option.map_some]
-    rfl
-  · simp only [simpleOracleVerify?, if_neg hc, Option.map_none]
+  rw [Simple.oracleVerifier_eq_verifier]
+  ext p tr
+  simp only [Simple.verifier, simpleOracleVerify?, OracleComp.guard_eq]
+  split <;> simp_all
 
 /-- **The compiled `i`-th-round sum-check oracle verifier is failing-deterministic**: the
 `Verifier.liftContext` of the failing-deterministic compiled `Simple` oracle verifier, via the
@@ -119,53 +87,41 @@ theorem oracleVerifier_toVerifier_failingDet (i : Fin n) :
       = ⟨fun s tr => OptionT.mk (pure
           ((simpleOracleVerify? deg D ((oStmtLens R n deg D i).proj s) tr).map
             ((oStmtLens R n deg D i).lift s)))⟩ := by
-  letI coh : OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)
-      (Simple.oracleVerifier R deg D oSpec) := by
-    change OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)
-      (Simple.oracleReduction R deg D oSpec).verifier
-    exact coh_proven_inst i
-  show ((Simple.oracleVerifier R deg D oSpec).liftContext
-    (sumcheckOracleLens R n deg D oSpec i)).toVerifier = _
-  rw [OracleVerifier.liftContext_toVerifier_comm]
-  exact Verifier.liftContext_failingDet _ _ _
-    (simple_oracleVerifier_toVerifier_failingDet (R := R) (deg := deg) (D := D) (oSpec := oSpec))
+  rw [oracleVerifier_eq_verifier]
+  exact Verifier.liftContext_failingDet (oStmtLens R n deg D i)
+    (Simple.verifier R deg D oSpec) _ (by
+      rw [← Simple.oracleVerifier_eq_verifier]
+      exact simple_oracleVerifier_toVerifier_failingDet)
 
-/-- **Per-round rbr knowledge soundness of the `i`-th-round sum-check oracle verifier** on the
-canonical relation chain `relationRound i.castSucc → relationRound i.succ`, error `deg/|R|`:
-the proven `Simple.oracleVerifier_rbrKnowledgeSoundness` transported through
-`Verifier.liftContext_rbr_knowledgeSoundness` at the proven
-`extractorLens_rbr_knowledge_soundness`. -/
-theorem oracleVerifier_rbrKnowledgeSoundness_indexed [Fintype R] [Inhabited R] (i : Fin n) :
+/-- The canonical executable round lens transfers a supplied simple-round knowledge bound.
+The premise is explicit because the canonical message-checking Simple bound is an inherited
+upstream open proof. This preserves the completed transfer independently of that obligation. -/
+theorem oracleVerifier_rbrKnowledgeSoundness_indexed_of_simple
+    [Fintype R] (i : Fin n)
+    (hSimple : (Simple.oracleVerifier R deg D oSpec).rbrKnowledgeSoundness init impl
+      (Simple.inputRelation R deg D) (Simple.outputRelation R deg)
+      (fun _ => (deg : ℝ≥0) / (Fintype.card R))) :
     (oracleVerifier R n deg D oSpec i).rbrKnowledgeSoundness init impl
       (relationRound R n deg D i.castSucc) (relationRound R n deg D i.succ)
       (fun _ => (deg : ℝ≥0) / (Fintype.card R)) := by
-  letI : Inhabited (Simple.StmtOut R) := ⟨(default, default)⟩
-  letI : Inhabited (Simple.StmtOut R × ∀ j, Simple.OStmtOut R deg j) :=
-    ⟨((default, default), fun _ => ⟨0, by
-      rw [Polynomial.mem_degreeLE]; exact le_trans (le_of_eq degree_zero) bot_le⟩)⟩
-  letI coh : OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)
-      (Simple.oracleVerifier R deg D oSpec) := by
-    change OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)
-      (Simple.oracleReduction R deg D oSpec).verifier
-    exact coh_proven_inst i
-  show ((oracleVerifier R n deg D oSpec i).toVerifier).rbrKnowledgeSoundness init impl _ _ _
-  show (((Simple.oracleVerifier R deg D oSpec).liftContext
-    (sumcheckOracleLens R n deg D oSpec i)).toVerifier).rbrKnowledgeSoundness init impl _ _ _
-  rw [OracleVerifier.liftContext_toVerifier_comm]
-  exact Verifier.liftContext_rbr_knowledgeSoundness
-    (stmtLens := oStmtLens R n deg D i) (witLens := Witness.InvLens.trivial)
-    ((Simple.oracleVerifier R deg D oSpec).toVerifier)
-    (lensKS := extractorLens_rbr_knowledge_soundness i)
-    (Simple.oracleVerifier_rbrKnowledgeSoundness R deg D oSpec)
+  letI : Inhabited (Simple.StmtOut R) := ⟨(0, 0)⟩
+  exact OracleVerifier.liftContext_rbr_knowledgeSoundness
+    (stmtLens := oStmtExecutableLens R n deg D i)
+    (witLens := Witness.InvLens.trivial)
+    (Simple.oracleVerifier R deg D oSpec) (liftContextOutput R n deg D oSpec i)
+    (lensKS := by simpa using extractorLens_rbr_knowledge_soundness (oSpec := oSpec) i)
+    hSimple
 
 end SingleRound
 
-/-- **The full multi-round sum-check ORACLE verifier is round-by-round knowledge sound** on the
-canonical relation chain `relationRound 0 → relationRound (Fin.last n)`, with per-round error
-`deg/|R|`, by the n-ary failing-deterministic `seqCompose` fold (issue #114). Fully unconditional:
-both the per-round facts and the failing-determinism witnesses are proven above. -/
-theorem oracleVerifier_rbrKnowledgeSoundness [Fintype R] [Inhabited R] [Subsingleton σ]
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :
+/-- The completed failing-deterministic n-ary knowledge composition, supplied with the actual
+canonical per-round knowledge bounds. This construction does not discharge those bounds. -/
+theorem oracleVerifier_rbrKnowledgeSoundness_failingDet_of_round
+    [Fintype R] [Inhabited R] [Subsingleton σ]
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail init = 0)
+    (hRound : ∀ i : Fin n, (SingleRound.oracleVerifier R n deg D oSpec i).rbrKnowledgeSoundness
+      init impl (relationRound R n deg D i.castSucc) (relationRound R n deg D i.succ)
+      (fun _ => (deg : ℝ≥0) / (Fintype.card R))) :
     (oracleVerifier R deg D n oSpec).rbrKnowledgeSoundness init impl
       (relationRound R n deg D 0) (relationRound R n deg D (Fin.last n))
       (fun _ => (deg : ℝ≥0) / (Fintype.card R)) := by
@@ -184,7 +140,7 @@ theorem oracleVerifier_rbrKnowledgeSoundness [Fintype R] [Inhabited R] [Subsingl
     (fun _ => ⟨by omega, rfl⟩)
     (fun _ => ⟨()⟩)
     hInit hInitNF
-    (fun i => SingleRound.oracleVerifier_rbrKnowledgeSoundness_indexed (impl := impl) i)
+    hRound
   exact h
 
 end Sumcheck.Spec
@@ -193,5 +149,5 @@ end Sumcheck.Spec
 #print axioms Verifier.liftContext_failingDet
 #print axioms Sumcheck.Spec.SingleRound.simple_oracleVerifier_toVerifier_failingDet
 #print axioms Sumcheck.Spec.SingleRound.oracleVerifier_toVerifier_failingDet
-#print axioms Sumcheck.Spec.SingleRound.oracleVerifier_rbrKnowledgeSoundness_indexed
-#print axioms Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness
+#print axioms Sumcheck.Spec.SingleRound.oracleVerifier_rbrKnowledgeSoundness_indexed_of_simple
+#print axioms Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness_failingDet_of_round

@@ -220,7 +220,7 @@ private theorem fitDom_subsets_card_le_aux {n : ℕ} (dom : Fin n ↪ F) :
         with hFdef
       have hsplit : (Ffam.filter (fun T => x₀ ∈ T)).card
           + (Ffam.filter (fun T => ¬ x₀ ∈ T)).card = Ffam.card :=
-        Finset.filter_card_add_filter_neg_card_eq_card (s := Ffam) (p := fun T => x₀ ∈ T)
+        Finset.card_filter_add_card_filter_not (s := Ffam) (p := fun T => x₀ ∈ T)
       have havoid : Ffam.filter (fun T => ¬ x₀ ∈ T)
           = ((S.erase x₀).powersetCard (d + 2)).filter (fun T => polyFitOnDom dom d T u) := by
         ext T
@@ -361,7 +361,7 @@ theorem unfitDom_subsets_card_ge {n : ℕ} (dom : Fin n ↪ F)
   have hsplit : ((S.powersetCard (d + 2)).filter (fun T => polyFitOnDom dom d T u)).card
       + ((S.powersetCard (d + 2)).filter (fun T => ¬ polyFitOnDom dom d T u)).card
       = (S.powersetCard (d + 2)).card :=
-    Finset.filter_card_add_filter_neg_card_eq_card
+    Finset.card_filter_add_card_filter_not
       (s := S.powersetCard (d + 2)) (p := fun T => polyFitOnDom dom d T u)
   have htotal : (S.powersetCard (d + 2)).card = S.card.choose (d + 2) :=
     Finset.card_powersetCard _ _
