@@ -11,6 +11,17 @@ Drop-in starting points for the actionable open targets. Each file:
 lane state, not throwaway); start a new lane from a nearby minimal file with the same substrate.
 Read the parent `CLAUDE.md` (build/concurrency/honesty rules) before touching anything.
 
+## G139 production arithmetic
+
+[`_G139ArithmeticCertificate.lean`](_G139ArithmeticCertificate.lean) certifies the exact
+modulus `P = 2^30 * (2^128 + 263) + 1` and published generator used by
+`scripts/probes/verify_g139_n2e30_arithmetic_contract.py`. Its `prime_P` and `orderOf_g`
+theorems discharge primality and exact order `2^30` in the Lean kernel.
+`accidents_card_eq_zero_of_phiWindowInjective` instantiates the existing G139 bridge at
+those constants, with only `PhiWindowInjective g (2^30)` remaining as a hypothesis.
+It does not establish that injectivity, an unconditional energy bound, or production delta-star.
+The three declarations are included in `scripts/flagship_axioms.txt` for the standard axiom audit.
+
 ## Live targets (standalone refresh 2026-08-16)
 
 **The current campaign is
