@@ -86,7 +86,7 @@ PROVIDER_KINDS = {"theorem", "lemma", "def", "instance"}
 CAMPAIGN_ADDENDUM_PREFIX = "> **Campaign addendum"
 
 
-def strip_comments(text: str) -> str:
+def strip_comments(text: str, *, mask_literals: bool = False) -> str:
     """Blank out line comments, block comments, and docstrings (newlines kept).
 
     String literals in live code are not comments: a ``"/-"`` or ``"--"``
@@ -97,17 +97,45 @@ def strip_comments(text: str) -> str:
     """
     out = list(text)
     i, n, depth = 0, len(text), 0
+
+    def blank_literal(start: int, end: int) -> None:
+        if mask_literals:
+            for index in range(start, end):
+                if text[index] != "\n":
+                    out[index] = " "
+
     while i < n:
+        if depth == 0 and text[i] == "«":
+            # Comment markers and quotes in escaped identifiers are name text.
+            end = text.find("»", i + 1)
+            i = n if end < 0 else end + 1
+            continue
+        if depth == 0 and text[i] == "r" and (
+            i == 0 or not (text[i - 1].isalnum() or text[i - 1] in "_'")
+        ):
+            quote = i + 1
+            while quote < n and text[quote] == "#":
+                quote += 1
+            if quote < n and text[quote] == '"':
+                delimiter = '"' + text[i + 1:quote]
+                end = text.find(delimiter, quote + 1)
+                end = n if end < 0 else end + len(delimiter)
+                blank_literal(i, end)
+                i = end
+                continue
         if depth == 0 and text[i] == "'":
             # Char literal: 'x' or an escaped char such as '\n'. Skip it
             # whole so a '"' char literal is not mistaken for a string.
             if i + 2 < n and text[i + 2] == "'":
+                blank_literal(i, i + 3)
                 i += 3
                 continue
             if i + 3 < n and text[i + 1] == "\\" and text[i + 3] == "'":
+                blank_literal(i, i + 4)
                 i += 4
                 continue
         if depth == 0 and text[i] == '"':
+            start = i
             i += 1
             while i < n and text[i] != '"':
                 if text[i] == "\\" and i + 1 < n:
@@ -116,6 +144,7 @@ def strip_comments(text: str) -> str:
                     i += 1
             if i < n:
                 i += 1
+            blank_literal(start, i)
             continue
         if depth == 0 and text.startswith("--", i):
             j = text.find("\n", i)
@@ -461,7 +490,9 @@ def lower_first(name: str) -> str:
 def parse_file(path: Path, root: Path) -> list[dict]:
     """All top-level-ish declarations in one file, with parsed signatures."""
     text = path.read_text(encoding="utf-8", errors="replace")
-    code = strip_comments(text)
+    # Literal examples can contain entire declaration/namespace lines. Keep
+    # their newlines for locations but never inventory those lines as source.
+    code = strip_comments(text, mask_literals=True)
     lines = code.splitlines(keepends=True)
 
     line_starts: list[int] = []
