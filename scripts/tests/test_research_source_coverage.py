@@ -65,6 +65,15 @@ class ResearchCoverage(unittest.TestCase):
             'import all Research.C\nmeta import ArkLib.Basic\n'),
             [(2, 'Research.A'), (3, 'Research.B'), (4, 'Research.C')])
 
+    def test_boundary_rejects_escaped_research_root(self):
+        # Lean 4.30 resolves `«Research».A` to the module `Research.A`; a single
+        # escaped component `«Research.A»` names a different module.
+        self.assertEqual(boundary.research_imports(
+            'import «Research».A\nimport «Research».«B»\n'
+            'import ArkLib.Basic «Research»\nimport «Research.C»\n'
+            'import «ResearchD».E\n'),
+            [(1, '«Research».A'), (2, '«Research».«B»'), (3, '«Research»')])
+
     def test_boundary_ignores_nested_comments(self):
         self.assertEqual(boundary.research_imports(
             '/- outer\n/- nested -/\nimport Research.Hidden\n-/\n'
