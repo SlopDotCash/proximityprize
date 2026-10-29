@@ -126,9 +126,11 @@ def parse_axioms(output: str) -> dict[str, set[str]]:
     reported: dict[str, set[str]] = {}
     for match in DEP_RE.finditer(output):
         axioms = {item.strip() for item in match.group(2).split(",") if item.strip()}
-        reported[match.group(1)] = axioms
+        # Retain every observed dependency when imported diagnostics repeat a
+        # report; a clean line must not overwrite a forbidden dependency.
+        reported.setdefault(match.group(1), set()).update(axioms)
     for match in NODEP_RE.finditer(output):
-        reported[match.group(1)] = set()
+        reported.setdefault(match.group(1), set())
     return reported
 
 
