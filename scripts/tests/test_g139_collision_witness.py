@@ -3,6 +3,7 @@
 """Collision certificates must contradict injectivity, not just repeat an input."""
 
 import json
+from decimal import Decimal
 from pathlib import Path
 import subprocess
 import sys
@@ -108,6 +109,62 @@ class G139CollisionWitness(unittest.TestCase):
                     result = self.cli("--witness-json", str(path), optimized=optimized)
                     self.assertNotEqual(result.returncode, 0)
                     self.assertEqual(result.stdout, "")
+
+    def test_fractional_certificate_fields_are_not_truncated(self):
+        fields = ("n", "p", "generator", "r", "s", "u", "u_exponent")
+        for field in fields:
+            record = dict(self.retained[0])
+            record[field] = Decimal(record[field]) + Decimal("0.5")
+            with self.subTest(field=field):
+                with self.assertRaises(ValueError):
+                    verifier.verify_from_record(record)
+
+    def test_boolean_certificate_fields_are_not_integers(self):
+        for field in ("n", "p", "generator", "r", "s", "u", "u_exponent"):
+            with self.subTest(field=field):
+                with self.assertRaises(ValueError):
+                    verifier.verify_from_record(dict(self.retained[0], **{field: True}))
+
+    def test_nonfinite_certificate_fields_are_rejected(self):
+        for value in (float("nan"), float("inf"), Decimal("NaN"), Decimal("Infinity")):
+            with self.subTest(value=str(value)):
+                with self.assertRaises(ValueError):
+                    verifier.verify_from_record(dict(self.retained[0], r=value))
+
+    def test_json_cli_rejects_fractional_and_rounded_collision_inputs(self):
+        record = self.retained[0]
+        original = f'"r": {record["r"]}'
+        # The second fraction rounds to the retained integer under json's
+        # default float decoder, so checking is_integer() alone is insufficient.
+        cases = (
+            (original, f'"r": {record["r"]}.5'),
+            (original, f'"r": {record["r"]}.00000000000000000001'),
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "witness.json"
+            for before, after in cases:
+                contents = json.dumps(record)
+                self.assertIn(before, contents)
+                malformed = contents.replace(before, after)
+                for records in (malformed, f'[{json.dumps(record)}, {malformed}]'):
+                    path.write_text(records, encoding="utf-8")
+                    for optimized in (False, True):
+                        with self.subTest(value=after, batch=records.startswith("["),
+                                          optimized=optimized):
+                            result = self.cli("--witness-json", str(path), optimized=optimized)
+                            self.assertNotEqual(result.returncode, 0)
+                            self.assertEqual(result.stdout, "")
+
+    def test_exact_numeric_encodings_preserve_collision_witness(self):
+        fields = ("n", "p", "generator", "r", "s", "u", "u_exponent")
+        for converter in (int, str, float, Decimal):
+            record = dict(self.retained[0])
+            for field in fields:
+                record[field] = converter(record[field])
+            with self.subTest(encoding=converter.__name__):
+                result = verifier.verify_from_record(record)
+                self.assertTrue(result.verified)
+                self.assertEqual(result.r, self.retained[0]["r"])
 
 
 if __name__ == "__main__":
