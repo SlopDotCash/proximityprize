@@ -153,7 +153,7 @@ def build():
 def main():
     full = "--full" in sys.argv
     xs, u0, u1, lines, cores = build()
-    wit, _ = witness_census(P, xs, T, lines, cores, u0, u1)
+    wit, _ = witness_census(P, xs, T, lines, cores, u0, u1, k=K)
     print(f"[m10] witness-level badCount = {len(wit)} "
           f"(lower bound only; budget n = {N})")
     eng = Census(P, N, K, T, xs)
