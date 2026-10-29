@@ -17,7 +17,8 @@ Executable cross-check of ``Frontier/_G330SpectrumExactBoundary.lean``:
    ``spectrum_card_eq_forty``; the scan is a redundant executable witness and
    deliberately extends past the G328 scan bound 10000.)
 
-Stdlib only; exact integer arithmetic; every check is a hard assert.
+Stdlib only; exact integer arithmetic; every check raises explicitly, so the
+certificate gates stay active under ``python -O``/``PYTHONOPTIMIZE``.
 """
 
 from itertools import combinations
@@ -25,6 +26,12 @@ from itertools import combinations
 OK_SET = {2, 4, 8, 16, 18, 32, 34, 36, 50, 64, 68, 98, 144}
 MOD8_DIVISORS = {1, 9, 17, 25, 49}
 LIMIT = 20_000
+
+
+def require(condition, detail):
+    """Certificate checks must survive python -O and PYTHONOPTIMIZE."""
+    if not condition:
+        raise AssertionError(detail)
 
 
 # ---------------------------------------------------------------- data
@@ -93,23 +100,25 @@ def quartic_norm_det(d):
 
 def main():
     data = spectrum_data()
-    assert len(data) == 40 and len(set(data)) == 40
+    require(len(data) == 40 and len(set(data)) == 40,
+            "spectrum data must have 40 distinct elements")
 
     norms = set()
     for a, b in combinations(data, 2):
         d = tuple(x - y for x, y in zip(a, b))
         n_ladder = quartic_norm_ladder(*d)
         n_det = quartic_norm_det(d)
-        assert n_ladder == n_det, (d, n_ladder, n_det)
+        require(n_ladder == n_det,
+                ("norm methods disagree", d, n_ladder, n_det))
         norms.add(abs(n_ladder))
-    assert norms == OK_SET, sorted(norms)
+    require(norms == OK_SET, sorted(norms))
 
     divisors_1mod8 = {q for n in OK_SET for q in range(1, n + 1)
                       if n % q == 0 and q % 8 == 1}
-    assert divisors_1mod8 == MOD8_DIVISORS, sorted(divisors_1mod8)
+    require(divisors_1mod8 == MOD8_DIVISORS, sorted(divisors_1mod8))
     primes_among = {q for q in MOD8_DIVISORS
                     if q > 1 and all(q % r for r in range(2, q))}
-    assert primes_among == {17}, primes_among
+    require(primes_among == {17}, primes_among)
 
     # consistency scan past the G328 bound
     sieve = bytearray(b"\x01") * (LIMIT + 1)
@@ -125,9 +134,9 @@ def main():
         images = {(c[0] + c[1] * g + c[2] * g * g + c[3] * g * g * g) % p
                   for c in data}
         profile[p] = len(images)
-    assert profile[17] == 16
-    assert all(profile[p] == 40 for p in primes if p != 17), \
-        {p: v for p, v in profile.items() if p != 17 and v != 40}
+    require(profile[17] == 16, ("collapse at p=17", profile[17]))
+    require(all(profile[p] == 40 for p in primes if p != 17),
+            {p: v for p, v in profile.items() if p != 17 and v != 40})
 
     print("G330 exact-boundary certificate")
     print(f"norm value set (780 pairs, two methods agree): {sorted(norms)}")
