@@ -13,6 +13,7 @@ bridge:
 
 It intentionally does not read the 128 retained chunk binaries; that remains
 the job of the release verifier.
+Certificate checks remain active under Python optimization.
 """
 
 from __future__ import annotations
@@ -95,17 +96,23 @@ def is_prime_u64(n: int) -> bool:
     return True
 
 
+def _require(condition: bool, message: str) -> None:
+    if not condition:
+        raise ValueError(message)
+
+
 def verify_pocklington_prime(
     n: int, factors: tuple[int, ...], witnesses: dict[int, int]
 ) -> None:
     """Verify primality from a complete factorization of n - 1."""
-    assert prod(factors) == n - 1, "factorization does not multiply to n - 1"
+    _require(prod(factors) == n - 1, "factorization does not multiply to n - 1")
     for q in set(factors):
-        assert q in witnesses, f"missing Pocklington witness for factor {q}"
+        _require(q in witnesses, f"missing Pocklington witness for factor {q}")
         a = witnesses[q]
-        assert pow(a, n - 1, n) == 1, f"Fermat witness failed for factor {q}"
-        assert gcd(pow(a, (n - 1) // q, n) - 1, n) == 1, (
-            f"Pocklington gcd witness failed for factor {q}"
+        _require(pow(a, n - 1, n) == 1, f"Fermat witness failed for factor {q}")
+        _require(
+            gcd(pow(a, (n - 1) // q, n) - 1, n) == 1,
+            f"Pocklington gcd witness failed for factor {q}",
         )
 
 
@@ -133,13 +140,16 @@ class ContractResult:
 
 
 def verify_arithmetic() -> tuple[bool, bool, bool]:
-    assert N == 2**30
-    assert P - 1 == N * Q
-    assert Q == prod(Q_FACTORS)
-    assert LARGE_Q_FACTOR - 1 == prod(LARGE_Q_FACTOR_FACTORS)
+    _require(N == 2**30, "production order differs from 2^30")
+    _require(P - 1 == N * Q, "production p - 1 differs from n * q")
+    _require(Q == prod(Q_FACTORS), "q factorization does not multiply to q")
+    _require(
+        LARGE_Q_FACTOR - 1 == prod(LARGE_Q_FACTOR_FACTORS),
+        "large q factor certificate has the wrong factorization",
+    )
     for factor in set(Q_FACTORS) | set(LARGE_Q_FACTOR_FACTORS):
         if factor != LARGE_Q_FACTOR:
-            assert is_prime_u64(factor), factor
+            _require(is_prime_u64(factor), f"composite certificate factor: {factor}")
 
     verify_pocklington_prime(
         LARGE_Q_FACTOR,
@@ -151,7 +161,7 @@ def verify_arithmetic() -> tuple[bool, bool, bool]:
     g_pow_n = pow(G, N, P) == 1
     g_pow_half = pow(G, N // 2, P) == P - 1
     exact_order = g_pow_n and g_pow_half
-    assert exact_order
+    _require(exact_order, "generator does not have the required exact order")
     return g_pow_n, g_pow_half, exact_order
 
 
@@ -175,16 +185,31 @@ def verify_result_json(
         return False, None, None, None, None, None
 
     data = json.loads(path.read_text(), parse_float=Decimal)
-    assert certificate_integer(data["n"], "n") == N
-    assert certificate_integer(data["p"], "p") == P
-    assert certificate_integer(data["q"], "q") == Q
-    assert certificate_integer(data["generator"], "generator") == G
-    assert certificate_integer(data["domain_size"], "domain_size") == DOMAIN_SIZE
-    assert certificate_integer(data["merged_count"], "merged_count") == DOMAIN_SIZE
-    assert certificate_integer(data["collision_count"], "collision_count") == 0
-    assert data["injective"] is True
-    assert data["phi_image_sha256"] == PHI_IMAGE_SHA256
-    assert data["sorted_record_stream_sha256"] == SORTED_RECORD_STREAM_SHA256
+    _require(certificate_integer(data["n"], "n") == N, "n differs from the production row")
+    _require(certificate_integer(data["p"], "p") == P, "p differs from the production row")
+    _require(certificate_integer(data["q"], "q") == Q, "q differs from the production row")
+    _require(
+        certificate_integer(data["generator"], "generator") == G,
+        "generator differs from the production row",
+    )
+    _require(
+        certificate_integer(data["domain_size"], "domain_size") == DOMAIN_SIZE,
+        "incorrect half-window domain size",
+    )
+    _require(
+        certificate_integer(data["merged_count"], "merged_count") == DOMAIN_SIZE,
+        "incomplete merged record count",
+    )
+    _require(
+        certificate_integer(data["collision_count"], "collision_count") == 0,
+        "result contains a collision",
+    )
+    _require(data["injective"] is True, "result is not injective")
+    _require(data["phi_image_sha256"] == PHI_IMAGE_SHA256, "Phi image hash does not match")
+    _require(
+        data["sorted_record_stream_sha256"] == SORTED_RECORD_STREAM_SHA256,
+        "sorted record stream hash does not match",
+    )
 
     return (
         True,
@@ -201,27 +226,43 @@ def verify_independent_json(path: Path | None) -> tuple[bool, str | None]:
         return False, None
 
     data = json.loads(path.read_text(), parse_float=Decimal)
-    assert data["status"] == "verified"
-    assert data["mismatches"] == {}
-    assert certificate_integer(data["n"], "n") == N
-    assert certificate_integer(data["p"], "p") == P
-    assert certificate_integer(data["q"], "q") == Q
-    assert certificate_integer(data["generator"], "generator") == G
-    assert certificate_integer(data["domain_size"], "domain_size") == DOMAIN_SIZE
-    assert certificate_integer(data["chunk_records_sum"], "chunk_records_sum") == DOMAIN_SIZE
+    _require(data["status"] == "verified", "independent verifier did not report verified")
+    _require(data["mismatches"] == {}, "independent verifier reported mismatches")
+    _require(certificate_integer(data["n"], "n") == N, "n differs from the production row")
+    _require(certificate_integer(data["p"], "p") == P, "p differs from the production row")
+    _require(certificate_integer(data["q"], "q") == Q, "q differs from the production row")
+    _require(
+        certificate_integer(data["generator"], "generator") == G,
+        "generator differs from the production row",
+    )
+    _require(
+        certificate_integer(data["domain_size"], "domain_size") == DOMAIN_SIZE,
+        "incorrect half-window domain size",
+    )
+    _require(
+        certificate_integer(data["chunk_records_sum"], "chunk_records_sum") == DOMAIN_SIZE,
+        "incomplete chunk record count",
+    )
 
     recomputed = data["recomputed"]
     expected = data["expected"]
     for section, summary in (("recomputed", recomputed), ("expected", expected)):
-        assert certificate_integer(
-            summary["merged_count"], f"{section}.merged_count"
-        ) == DOMAIN_SIZE
-        assert certificate_integer(summary["collision_count"], f"{section}.collision_count") == 0
-    assert recomputed == expected
-    assert recomputed["first_collision"] is None
-    assert recomputed["injective"] is True
-    assert recomputed["phi_image_sha256"] == PHI_IMAGE_SHA256
-    assert recomputed["sorted_record_stream_sha256"] == SORTED_RECORD_STREAM_SHA256
+        _require(
+            certificate_integer(summary["merged_count"], f"{section}.merged_count") == DOMAIN_SIZE,
+            f"{section}: incomplete merged record count",
+        )
+        _require(
+            certificate_integer(summary["collision_count"], f"{section}.collision_count") == 0,
+            f"{section}: report contains a collision",
+        )
+    _require(recomputed == expected, "recomputed and expected summaries differ")
+    _require(recomputed["first_collision"] is None, "recomputed report contains a first collision")
+    _require(recomputed["injective"] is True, "recomputed report is not injective")
+    _require(recomputed["phi_image_sha256"] == PHI_IMAGE_SHA256, "Phi image hash does not match")
+    _require(
+        recomputed["sorted_record_stream_sha256"] == SORTED_RECORD_STREAM_SHA256,
+        "sorted record stream hash does not match",
+    )
     return True, str(data["status"])
 
 
