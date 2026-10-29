@@ -163,19 +163,25 @@ def build(pop, timeout_s):
 
 
 def verify(sigs):
+    # Certificate checks must survive python -O and PYTHONOPTIMIZE.
+    def require(condition, detail):
+        if not condition:
+            raise AssertionError(detail)
+
     n = len(sigs)
     for t, e in sigs:
-        assert len(t) == len(set(t)) == 3, "root set must have three distinct coordinates"
-        assert len(e) == len(set(e)) == 3, "missed set must have three distinct coordinates"
-        assert set(t) <= set(range(7)), "root coordinate outside source"
-        assert set(e) <= set(range(9)), "missed coordinate outside complement"
+        require(len(t) == len(set(t)) == 3, "root set must have three distinct coordinates")
+        require(len(e) == len(set(e)) == 3, "missed set must have three distinct coordinates")
+        require(set(t) <= set(range(7)), "root coordinate outside source")
+        require(set(e) <= set(range(9)), "missed coordinate outside complement")
     fs = [(frozenset(t), frozenset(e)) for t, e in sigs]
-    assert len(set(fs)) == n, "duplicate signatures"
+    require(len(set(fs)) == n, "duplicate signatures")
     for i, j in itertools.combinations(range(n), 2):
-        assert len(fs[i][0] & fs[j][0]) + len(fs[i][1] & fs[j][1]) <= 4
+        require(len(fs[i][0] & fs[j][0]) + len(fs[i][1] & fs[j][1]) <= 4,
+                "pair intersection cap exceeded")
     from collections import Counter
     fib = Counter(t for t, _ in fs)
-    assert all(v <= 3 for v in fib.values())
+    require(all(v <= 3 for v in fib.values()), "root fiber cap exceeded")
 
     def balanced(i, j, k):
         return len(fs[i][1] | fs[j][1] | fs[k][1]) <= 5 + \
@@ -192,24 +198,24 @@ def verify(sigs):
             tij = fs[i][0] & fs[j][0]
             tik = fs[i][0] & fs[k][0]
             tjk = fs[j][0] & fs[k][0]
-            assert tij == tik == tjk, (i, j, k)
+            require(tij == tik == tjk, (i, j, k))
             uij = fs[i][1] | fs[j][1]
             uik = fs[i][1] | fs[k][1]
             ujk = fs[j][1] | fs[k][1]
-            assert uij == uik == ujk, (i, j, k)
+            require(uij == uik == ujk, (i, j, k))
             s = len(tij) + len(fs[i][1] & fs[j][1])
-            assert s in (3, 4), (i, j, k, s)
+            require(s in (3, 4), (i, j, k, s))
     maxw = max(wit.values()) if wit else 0
     # closure check
     for i, j in itertools.combinations(range(n), 2):
         others = [c for c in range(n) if c not in (i, j)]
         for k, l in itertools.combinations(others, 2):
             if balanced(i, j, k) and balanced(i, j, l):
-                assert balanced(i, k, l) and balanced(j, k, l)
+                require(balanced(i, k, l) and balanced(j, k, l), (i, j, k, l))
                 for a, b in itertools.combinations((i, j, k, l), 2):
                     aa, bb = min(a, b), max(a, b)
-                    assert len(fs[aa][0] & fs[bb][0]) + \
-                        len(fs[aa][1] & fs[bb][1]) == 4
+                    require(len(fs[aa][0] & fs[bb][0]) +
+                            len(fs[aa][1] & fs[bb][1]) == 4, (aa, bb))
     print(f"  VERIFY OK: balanced={nbal} max_witnesses={maxw}")
 
 
