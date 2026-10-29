@@ -1,6 +1,7 @@
 """Regression coverage for the Pocklington contract and its JSON CLI inputs."""
 import json
 import math
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -79,15 +80,86 @@ class ArithmeticContractJsonCLI(unittest.TestCase):
                     yield record[section], key
 
     @staticmethod
-    def run_cli(flag, record):
+    def run_cli(flag, record, *, python_flags=(), env=None):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "synthetic-certificate.json"
             contents = record if isinstance(record, str) else json.dumps(record)
             path.write_text(contents, encoding="utf-8")
             return subprocess.run(
-                [sys.executable, "-X", "utf8", "-B", contract.__file__, flag, str(path)],
-                capture_output=True, text=True, encoding="utf-8", timeout=10,
+                [sys.executable, *python_flags, "-X", "utf8", "-B",
+                 contract.__file__, flag, str(path)],
+                capture_output=True, text=True, encoding="utf-8", timeout=10, env=env,
             )
+
+    @staticmethod
+    def execution_modes():
+        return (
+            ((), None),
+            (("-O",), None),
+            ((), {**os.environ, "PYTHONOPTIMIZE": "1"}),
+        )
+
+    def test_valid_certificates_have_identical_output_with_optimization(self):
+        for flag, factory in (("--result-json", self.result_record),
+                              ("--verify-json", self.independent_record)):
+            record = factory()
+            expected = self.run_cli(flag, record)
+            self.assertEqual(expected.returncode, 0, expected.stderr)
+            for python_flags, env in self.execution_modes():
+                with self.subTest(
+                    flag=flag, python_flags=python_flags, environment=env is not None,
+                ):
+                    completed = self.run_cli(flag, record, python_flags=python_flags, env=env)
+                    self.assertEqual(completed.returncode, 0, completed.stderr)
+                    self.assertEqual(completed.stdout, expected.stdout)
+
+    def test_invalid_release_reports_are_rejected_with_optimization(self):
+        result = self.result_record()
+        independent = self.independent_record()
+        cases = (
+            ("--result-json", "wrong production row", {**result, "n": contract.N + 1}),
+            ("--result-json", "collision found", {
+                **result, "collision_count": 1, "injective": False,
+            }),
+            ("--result-json", "wrong image hash", {**result, "phi_image_sha256": "0" * 64}),
+            ("--verify-json", "failed verifier", {**independent, "status": "failed"}),
+            ("--verify-json", "reported mismatch", {
+                **independent, "mismatches": {"collision_count": [0, 1]},
+            }),
+            ("--verify-json", "noninjective recomputation", {
+                **independent,
+                "recomputed": {
+                    **independent["recomputed"], "collision_count": 1, "injective": False,
+                },
+            }),
+            ("--verify-json", "incomplete chunks", {
+                **independent, "chunk_records_sum": contract.DOMAIN_SIZE - 1,
+            }),
+        )
+        for python_flags, env in self.execution_modes():
+            for flag, label, record in cases:
+                with self.subTest(
+                    label=label, python_flags=python_flags, environment=env is not None,
+                ):
+                    completed = self.run_cli(flag, record, python_flags=python_flags, env=env)
+                    self.assertNotEqual(completed.returncode, 0)
+                    self.assertEqual(completed.stdout, "")
+
+    def test_composite_pocklington_certificate_is_rejected_with_optimization(self):
+        # 1 passes Fermat for 9, but the required gcd is 9, not 1.
+        code = (
+            "import verify_g139_n2e30_arithmetic_contract as contract\n"
+            "contract.verify_pocklington_prime(9, (2, 2, 2), {2: 1})\n"
+        )
+        for python_flags, env in self.execution_modes():
+            with self.subTest(python_flags=python_flags, environment=env is not None):
+                completed = subprocess.run(
+                    [sys.executable, *python_flags, "-B", "-c", code],
+                    cwd=Path(contract.__file__).parent, env=env,
+                    capture_output=True, text=True, encoding="utf-8", timeout=10,
+                )
+                self.assertNotEqual(completed.returncode, 0)
+                self.assertEqual(completed.stdout, "")
 
     def assert_accepted(self, flag, record):
         completed = self.run_cli(flag, record)
