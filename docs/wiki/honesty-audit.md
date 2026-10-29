@@ -13,6 +13,10 @@ undocumented `axiom` — `forbidden_tokens.py`), flagship-theorem axiom drift
 
 The optional post-build `python3 scripts/proximity_prize_cleanroom_audit.py` checks
 the apex declarations listed in `scripts/proximity_prize_cleanroom_targets.txt`.
+The manifest pins fully qualified predicate names, and the Lean probe enables
+`pp.fullNames`. Only a whole matching name counts: a theorem about
+`Counterfeit.mcaPrize` does not establish
+`ProximityGap.GrandChallenges.mcaPrize`, even if its axiom report is clean.
 It locates the declaration's result after binders and top-level arrow premises
 before looking for the expected predicate. A signature such as
 `(h : mcaPrize domain) : True` or `mcaPrize domain → True` fails even when its
@@ -27,7 +31,11 @@ source no longer exists; pending future entries remain permitted.
 Delimiter and predicate searches ignore quoted identifiers, strings and character literals,
 so quoted arrows cannot split the result and literal brackets cannot hide a premise.
 Run its regression and independent Lean-output fixture with
-`python3 -m unittest discover -s scripts/tests -p 'test_cleanroom_conclusion.py'`.
+`python3 -m unittest discover -s scripts/tests -p 'test_cleanroom*.py'`.
+Set `LEAN_TEST_EXECUTABLE` to the pinned Lean binary to also replay the independent
+proof fixtures, including proofs of unrelated namesake predicates while the
+intended predicates are false. These fixtures do not import the research library;
+full validation of the actual apex declarations still requires its built modules.
 
 `forbidden_tokens.py` also enforces one declaration per `scripts/residual_axioms.txt` entry: the
 allowlist stores simple names, so an entry would otherwise transfer to a second `axiom` declared
