@@ -52,9 +52,12 @@ TOKEN_RE = re.compile(r"\b(sorry|admit|sorryAx)\b")
 # Lean core `stop` is `macro "stop" tacticSeq : tactic => `(tactic| repeat sorry)`:
 # it closes every remaining goal with `sorryAx` without a `sorry` token. `stop` is
 # also an ordinary identifier, so only match it where a tactic can start and it
-# is not followed by an operator, binder colon or closing delimiter.
+# is not followed by an operator, binder colon or closing delimiter. A single
+# `|` starts an alternative in `first`/`solve`; `<|` and `|||` are term operators.
+# A same-line `=>` instead identifies a case/equation pattern (e.g. `| stop n => n`).
 STOP_RE = re.compile(
-    r"(?:^[ \t]*(?:[·.][ \t]*)?|\bby[ \t]+|;[ \t]*|<;>[ \t]*|=>[ \t]*|\([ \t]*)"
+    r"(?:^[ \t]*(?:[·.][ \t]*)?|\bby[ \t]+|;[ \t]*|<;>[ \t]*|=>[ \t]*|\([ \t]*"
+    r"|(?<![<|])\|[ \t]*(?!stop\b[^|\n]*=>))"
     r"(stop)\b(?![ \t]*(?:[≤<≥>=:),\]⟧+*/|-]))",
     re.M,
 )
