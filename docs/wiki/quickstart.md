@@ -22,6 +22,11 @@ For a convenient routine check, run:
 ./scripts/validate.sh
 ```
 
+For pull requests, CI also runs the validation wrapper when a gate input is
+deleted or moved into a documentation path. The scope comparison includes both
+sides of renames. If Git cannot compare the pull-request base with the checkout,
+the scope step fails instead of classifying the change as documentation-only.
+
 On a cold clone, fetch precompiled dependencies first:
 
 ```bash
