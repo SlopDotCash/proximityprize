@@ -44,6 +44,21 @@ provided, scans only those Lean files/directories. Fails if live
     foo_holds : <security Prop>` asserts the obligation with no proof and slips
     past the `axiom` check above. (`opaque foo : T := v`, with a real body, is
     fine and is *not* flagged.)
+  - a Lean debug option that disables the kernel check or replaces proofs
+    with `sorryAx` without any `sorry` token in the source:
+    `debug.skipKernelTC` (`set_option debug.skipKernelTC true in theorem t :
+    1 = 2 := by <tactic assigning True.intro>` elaborates and `#print axioms t`
+    reports *no axioms at all*), `debug.byAsSorry`, `debug.proofAsSorry` and
+    `debug.terminalTacticsAsSorry` (the proof becomes `sorryAx` with only a
+    warning, so `sorry_census.py` sees no hole). The option names are matched
+    as bare identifier components in comment-stripped source, with string and
+    char literals kept live because a metaprogram can build the option name
+    from `"skipKernelTC"` and set it on the command scope. `«debug».«skipKernelTC»`
+    is the same option and is matched too. The full-tree scan also rejects the
+    names in `lakefile.toml` (`[leanOptions]` applies them to every `lake
+    build`, and the flagship axiom audit reads the resulting oleans). A name
+    assembled from string pieces (`"skipKernel" ++ "TC"`) or a `-D` command-line
+    flag is outside this scan.
 
 Comment and docstring occurrences are ignored. Comments, string/raw-string/char
 literals and guillemet-quoted identifiers are lexed together (see `lex_lean`),
@@ -174,6 +189,26 @@ OPAQUE_KINDS = {"opaque", "constant"}
 
 ALLOWLIST_PATH = Path(__file__).resolve().parent / "residual_axioms.txt"
 
+# Lean debug options that defeat the proof gates without a `sorry`/`axiom` token
+# (Lean v4.30.0-rc2): `debug.skipKernelTC` (src/Lean/Environment.lean) adds the
+# declaration with `addDeclWithoutChecking`, so an elaborator-level assignment
+# such as `mvarId.assign (mkConst ``True.intro)` proves `1 = 2` and `#print
+# axioms` reports nothing; `debug.byAsSorry` (src/Lean/Elab/Term/TermElabM.lean),
+# `debug.proofAsSorry` (src/Lean/Elab/MutualDef.lean) and
+# `debug.terminalTacticsAsSorry` (src/Lean/Meta/Tactic/Util.lean) replace the
+# proof, the `by` block or the terminal tactic with `sorryAx`. The final name
+# component is distinctive, so it is matched on its own with Lean identifier
+# boundaries: that covers `set_option debug.skipKernelTC true [in]`, the
+# term-level `set_option … in`, the quoted `«debug».«skipKernelTC»`, a name
+# literal `` `debug.skipKernelTC `` and a string component `"skipKernelTC"`
+# passed to `Options.setBool`. No live source in this repository mentions any of
+# them.
+DEBUG_OPTION_NAMES = ("skipKernelTC", "byAsSorry", "proofAsSorry", "terminalTacticsAsSorry")
+DEBUG_OPTION_RE = re.compile(
+    "(?<![" + ID_REST + "])(" + "|".join(DEBUG_OPTION_NAMES) + ")(?![" + ID_REST + "])"
+)
+LAKEFILE_NAME = "lakefile.toml"
+
 # Heads of proof-carrying declarations whose statement type must never be the
 # vacuous `True`. The live `theorem`/`lemma` keyword starts a declaration
 # anywhere on a line; an in-proof `have … : True` has no such keyword.
@@ -217,7 +252,7 @@ def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
         if path.is_file():
             if path.suffix == ".lean":
                 files.add(path)
-            else:
+            elif path.name != LAKEFILE_NAME:  # a lakefile is scanned by `lakefile_paths`
                 errors.append(f"{path}: expected a .lean file")
             continue
 
@@ -232,6 +267,46 @@ def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
                 full_arklib_scan = True
 
     return sorted(files), full_arklib_scan, errors
+
+
+def lakefile_paths(args: list[str]) -> list[Path]:
+    """Lakefiles to scan for debug options: the checkout root's on a full scan,
+    the root of any directory argument that contains `ArkLib/`, and any
+    `lakefile.toml` named explicitly."""
+    roots = [Path(".")] if not args else []
+    for raw in args:
+        path = Path(raw)
+        if path.is_file() and path.name == LAKEFILE_NAME:
+            roots.append(path.parent)
+        elif path.is_dir() and (path / "ArkLib").is_dir():
+            roots.append(path)
+    found = {root / LAKEFILE_NAME for root in roots if (root / LAKEFILE_NAME).is_file()}
+    return sorted(found)
+
+
+def lakefile_debug_option_hits(text: str) -> list[tuple[int, str]]:
+    """`(line, option)` for every debug option named outside a TOML comment.
+
+    `[leanOptions]` (and `moreServerOptions`/`moreLeanArgs`) hand the option to
+    every `lake build` of the package, so `debug.skipKernelTC = true` here makes
+    the build skip the kernel for the whole tree, and the oleans the flagship
+    axiom audit later imports carry no axiom report of it. A quoted key
+    (`"debug.skipKernelTC" = true`) or a `weak.` prefix name the same option,
+    so the match ignores TOML quoting. Only a `#` outside a basic string starts
+    a comment."""
+    hits: list[tuple[int, str]] = []
+    for number, line in enumerate(text.splitlines(), start=1):
+        in_string = False
+        live = []
+        for ch in line:
+            if ch == '"':
+                in_string = not in_string
+            elif ch == "#" and not in_string:
+                break
+            live.append(ch)
+        for m in DEBUG_OPTION_RE.finditer("".join(live)):
+            hits.append((number, m.group(1)))
+    return hits
 
 
 # --- Lean lexing ------------------------------------------------------------
@@ -806,6 +881,15 @@ def main() -> int:
                     f"(adds a kernel declaration, e.g. an axiom, without an `axiom` "
                     f"keyword; state residuals as `def ...Residual : Prop`)"
                 )
+        for m in DEBUG_OPTION_RE.finditer(text):
+            if not mask[m.start()]:
+                line = text.count("\n", 0, m.start()) + 1
+                failures.append(
+                    f"{path}:{line}: forbidden Lean debug option `debug.{m.group(1)}` "
+                    f"(skips the kernel type checker or replaces the proof with `sorryAx` "
+                    f"without a `sorry` token, so neither the sorry census nor "
+                    f"`#print axioms` can see the hole)"
+                )
         scopes = TrueScopes(live_text, lexed.quoted)
         for m in UNSAFE_DECL_RE.finditer(live_text):
             if not outside_quoted(m.start(), lexed.quoted):
@@ -869,6 +953,16 @@ def main() -> int:
                 f"statement or track it by its GitHub issue, not a `True` theorem."
             )
 
+    for lakefile in lakefile_paths(sys.argv[1:]):
+        for line, option in lakefile_debug_option_hits(
+            lakefile.read_text(encoding="utf-8", errors="replace")
+        ):
+            failures.append(
+                f"{lakefile}:{line}: forbidden Lean debug option `debug.{option}` in the "
+                f"Lake configuration (a `leanOptions` entry applies it to every `lake build`, "
+                f"so the built oleans skip the kernel check or carry `sorryAx` proofs)"
+            )
+
     for name, sites in sorted(allow_sites.items()):
         unique_sites = sorted(set(sites))
         if len(unique_sites) > 1:
@@ -898,7 +992,8 @@ def main() -> int:
     print(
         "forbidden-token precheck: clean (no native_decide / bv_decide / "
         "unsafe declaration / unsafeCast / implemented_by / "
-        "undocumented custom axiom / vacuous `: True` placebo; "
+        "undocumented custom axiom / vacuous `: True` placebo / "
+        "kernel-skip or proof-as-sorry debug option; "
         f"{len(allowed_hits)} allowlisted residual axiom(s))"
     )
     return 0

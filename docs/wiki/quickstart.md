@@ -267,7 +267,8 @@ python3 -m pip install leanblueprint
   CI logs active Lean workers and memory usage every 30 seconds so an
   interrupted build can be traced to its in-flight module.
   It also enforces the issue #47 verification gates: a fast precheck rejecting
-  `native_decide`/`bv_decide`/custom `axiom` declarations in live source
+  `native_decide`/`bv_decide`/custom `axiom` declarations and the
+  `debug.skipKernelTC`/`debug.*AsSorry` options (in live source or `lakefile.toml`)
   (`scripts/forbidden_tokens.py`), a comment-stripped sorry census requiring
   zero live holes (`scripts/sorry_census.py --fail-on-holes`), and a
   `#print axioms` sweep over the pinned flagship list
