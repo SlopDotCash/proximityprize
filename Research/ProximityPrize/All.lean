@@ -500,6 +500,7 @@ import Research.ProximityPrize.Frontier._AntipodalAgreementScope
 import Research.ProximityPrize.Frontier._AntipodalDyadicSymmetric
 import Research.ProximityPrize.Frontier._AntipodalEvenOddDescent
 import Research.ProximityPrize.Frontier._AntipodalInvariantWeightKernel
+import Research.ProximityPrize.Frontier._AntipodalMixedCosetCounterexample
 import Research.ProximityPrize.Frontier._AntipodalPlotkinHalfCap
 import Research.ProximityPrize.Frontier._AntipodalTransversalFintypeFree
 import Research.ProximityPrize.Frontier._AntitoneCrossExcessDecomp
