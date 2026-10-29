@@ -69,9 +69,11 @@ def main() -> int:
     reported: dict[str, set[str]] = {}
     for m in DEP_RE.finditer(out):
         axioms = {a.strip() for a in m.group(2).split(",") if a.strip()}
-        reported[m.group(1)] = axioms
+        # Imported diagnostics can repeat a declaration's report. No later
+        # report, including a no-dependency line, may erase a forbidden axiom.
+        reported.setdefault(m.group(1), set()).update(axioms)
     for m in NODEP_RE.finditer(out):
-        reported[m.group(1)] = set()
+        reported.setdefault(m.group(1), set())
 
     failures: list[str] = []
     for _, decl in entries:
