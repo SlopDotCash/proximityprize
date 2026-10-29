@@ -241,13 +241,14 @@ def conclusion_boundary(signature: str) -> int | None:
 
 
 def in_conclusion_position(live: str, position: int) -> bool:
-    """Reject an occurrence nested in an arrow premise or binder type of the result.
+    """Reject premises, binder types, and weakened logical result positions.
 
     `live` is the quote-masked result text. Walking outward from `position`
     through each enclosing bracket group, the occurrence is a premise if an arrow
     follows it at that level, and a binder type if a `:` precedes it at that
     level with no `,`, `=>` or `↦` in between. For example `True ∧ (P → True)`
-    and `∀ (h : P), True` do not certify `P`.
+    and `∀ (h : P), True` do not certify `P`. Nor do a disjunction or a
+    relation mentioning `P`, such as `True ∨ P` or the tautology `P ↔ P`.
     """
     brackets = {"(": ")", "{": "}", "[": "]", "⦃": "⦄", "⟨": "⟩"}
     owner: list[int] = []
@@ -269,6 +270,27 @@ def in_conclusion_position(live: str, position: int) -> bool:
     while True:
         direct = [index for index, gid in enumerate(owner) if gid == group]
         if any(index > anchor and live.startswith("→", index) for index in direct):
+            return False
+        # A preceding arrow or quantifier comma starts a new body. A later
+        # quantifier comma puts the remaining text in a different body (as in
+        # `P ∧ ∀ n, Q n ∨ R n`), not in the connective containing this P.
+        start = max((index for index in direct if index < anchor
+                     and live[index] in "→,"), default=-1)
+        end = min((index for index in direct if index > anchor
+                   and live[index] == ","), default=len(live))
+        scope = [index for index in direct if start < index < end]
+        if any(live[index] in "∨↔" for index in scope):
+            return False
+        # Equality binds more tightly than conjunction. An equality in another
+        # conjunct, e.g. `0 = 0 ∧ P`, must not hide a real prize conclusion.
+        left = max((index for index in scope if index < anchor
+                    and live[index] == "∧"), default=start)
+        right = min((index for index in scope if index > anchor
+                     and live[index] == "∧"), default=end)
+        if any(live[index] == "≠" or (live[index] == "="
+               and (index == 0 or live[index - 1] != ":")
+               and not live.startswith("=>", index))
+               for index in scope if left < index < right):
             return False
         for index in reversed([index for index in direct if index < anchor]):
             if live[index] == "," or live.startswith("=>", index) or live[index] == "↦":
