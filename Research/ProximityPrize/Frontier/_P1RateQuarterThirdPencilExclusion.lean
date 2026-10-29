@@ -570,10 +570,13 @@ theorem p0fun_mem (hg : orderOf g = 2 ^ 30) (hg0 : g ≠ 0) :
   · intro i
     have hxm : xm g i = (g ^ ((i : Fin N) : ℕ)) ^ ((2 : ℕ) ^ 25) := rfl
     show xm g i ^ 2 + xm g i = _
-    rw [Polynomial.eval_add, Polynomial.eval_pow, Polynomial.eval_pow,
-      Polynomial.eval_X, hxm, ← pow_mul,
+    have key : ∀ (a b : ℕ) (x : F),
+        ((Polynomial.X : F[X]) ^ a + (Polynomial.X : F[X]) ^ b).eval x = x ^ a + x ^ b :=
+      fun a b x => by simp
+    rw [key, hxm, ← pow_mul,
       show (2 : ℕ) ^ 25 * 2 = 2 ^ 26 by norm_num]
-    rfl
+    have hpd : (powDomain g hg hg0) i = g ^ ((i : Fin N) : ℕ) := rfl
+    rw [hpd]
 
 theorem pPfun_mem (hg : orderOf g = 2 ^ 30) (hg0 : g ≠ 0) (j : Fin 3) :
     pPfun g j ∈ predecessorCode (powDomain g hg hg0) := by
@@ -594,10 +597,13 @@ theorem pPfun_mem (hg : orderOf g = 2 ^ 30) (hg0 : g ≠ 0) (j : Fin 3) :
   · intro i
     have hxm : xm g i = (g ^ ((i : Fin N) : ℕ)) ^ ((2 : ℕ) ^ 25) := rfl
     show xm g i ^ 2 + gamP j = _
-    rw [Polynomial.eval_add, Polynomial.eval_pow, Polynomial.eval_X,
-      Polynomial.eval_C, hxm, ← pow_mul,
+    have key : ∀ (a : ℕ) (c x : F),
+        ((Polynomial.X : F[X]) ^ a + Polynomial.C c).eval x = x ^ a + c :=
+      fun a c x => by simp
+    rw [key, hxm, ← pow_mul,
       show (2 : ℕ) ^ 25 * 2 = 2 ^ 26 by norm_num]
-    rfl
+    have hpd : (powDomain g hg hg0) i = g ^ ((i : Fin N) : ℕ) := rfl
+    rw [hpd]
 
 theorem onefun_mem (hg : orderOf g = 2 ^ 30) (hg0 : g ≠ 0) :
     (fun _ : Fin N => (1 : F)) ∈ predecessorCode (powDomain g hg hg0) := by

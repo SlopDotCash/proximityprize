@@ -336,7 +336,7 @@ theorem regularOutsideLine_card_eq_eight_of_quotient_generic
       span F ({C0.mkQ v0, C0.mkQ v1} : Set ((↑V → F) ⧸ C0)) := by
     simpa only [V, C0, v0, v1] using hnoColumn
   have hMDS4 : IndependentUpTo (F := F) (quotientColumn C0) 4 := by
-    simpa only [C0, sourceComplementCode, domV] using
+    exact
       reedSolomon_eight_four_quotientColumns_independentUpTo_four
         domV hVcard
   have hrepr : ∀ gamma ∈ G,
@@ -402,7 +402,7 @@ theorem regularOutsideLine_card_eq_eight_or_quotient_degenerate
           span F ({C0.mkQ v0, C0.mkQ v1} : Set ((↑V → F) ⧸ C0)) := by
         simpa only [not_exists] using hcolumn
       have hMDS4 : IndependentUpTo (F := F) (quotientColumn C0) 4 := by
-        simpa only [C0, sourceComplementCode, domV] using
+        exact
           reedSolomon_eight_four_quotientColumns_independentUpTo_four
             domV hVcard
       have hrepr : ∀ gamma ∈ G,
@@ -470,7 +470,7 @@ theorem uniqueEightCoreResidual_quotient_degenerate
         span F ({C0.mkQ v0, C0.mkQ v1} : Set ((↑V → F) ⧸ C0)) := by
       simpa only [not_exists] using hcolumn
     have hMDS4 : IndependentUpTo (F := F) (quotientColumn C0) 4 := by
-      simpa only [C0, sourceComplementCode, domV] using
+      exact
         reedSolomon_eight_four_quotientColumns_independentUpTo_four
           domV hVcard
     have hrepr : ∀ gamma ∈ G,

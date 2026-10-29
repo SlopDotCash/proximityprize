@@ -491,23 +491,34 @@ theorem base_sum_at_eleven (hg : orderOf gen = 2 ^ 30) (e : Fin N) (h : (e : ℕ
 `2^23 + 2^24 + 2^25 + 3·2^26 = 31·2^23 < k = 2^28`. -/
 theorem Dffun_mem (hg : orderOf gen = 2 ^ 30) (hg0 : gen ≠ 0) :
     Dffun gen ∈ predecessorCode (powDomain gen hg hg0) := by
-  refine ReedSolomon.mem_code_of_polynomial_of_degree_lt_of_eval
+  -- Lean 4.34: rewriting `degree_X_pow_sub_C` at the literal exponents `2 ^ 23, …` sends the
+  -- kernel into a deep `npow` unfolding, so the degree bound is proved at abstract exponents.
+  have key : ∀ a b c d : ℕ, 0 < a → 0 < b → 0 < c → 0 < d →
+      a + (b + c) + (d + (d + d)) < k →
+        (((Polynomial.X : F[X]) ^ a - Polynomial.C (w128 gen ^ 15)) *
+          (((Polynomial.X : F[X]) ^ b - Polynomial.C (w64 gen ^ 14)) *
+            ((Polynomial.X : F[X]) ^ c - Polynomial.C (w32 gen ^ 12))) *
+          (((Polynomial.X : F[X]) ^ d - Polynomial.C 1) *
+            (((Polynomial.X : F[X]) ^ d - Polynomial.C (w16 gen)) *
+              ((Polynomial.X : F[X]) ^ d - Polynomial.C (w16 gen ^ 8))))).degree < (k : WithBot ℕ) := by
+    intro a b c d ha0 hb0 hc0 hd0 h
+    rw [degree_mul, degree_mul, degree_mul, degree_mul, degree_mul,
+          degree_X_pow_sub_C ha0 (w128 gen ^ 15),
+          degree_X_pow_sub_C hb0 (w64 gen ^ 14),
+          degree_X_pow_sub_C hc0 (w32 gen ^ 12),
+          degree_X_pow_sub_C hd0 (1 : F),
+          degree_X_pow_sub_C hd0 (w16 gen),
+          degree_X_pow_sub_C hd0 (w16 gen ^ 8)]
+    exact_mod_cast h
+  have hdeg :
     (((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 23) - Polynomial.C (w128 gen ^ 15)) *
       (((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 24) - Polynomial.C (w64 gen ^ 14)) *
         ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 25) - Polynomial.C (w32 gen ^ 12))) *
       (((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) - Polynomial.C 1) *
         (((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) - Polynomial.C (w16 gen)) *
-          ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) - Polynomial.C (w16 gen ^ 8)))))
-    ?_ ?_
-  · rw [degree_mul, degree_mul, degree_mul, degree_mul, degree_mul,
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 23) (w128 gen ^ 15),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 24) (w64 gen ^ 14),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 25) (w32 gen ^ 12),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 26) (1 : F),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 26) (w16 gen),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 26) (w16 gen ^ 8)]
-    exact_mod_cast (by norm_num [k] :
-      (2 : ℕ) ^ 23 + (2 ^ 24 + 2 ^ 25) + (2 ^ 26 + (2 ^ 26 + 2 ^ 26)) < k)
+          ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) - Polynomial.C (w16 gen ^ 8))))).degree < (k : WithBot ℕ) :=
+    key _ _ _ _ (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num [k])
+  refine ReedSolomon.mem_code_of_polynomial_of_degree_lt_of_eval _ hdeg ?_
   · intro i
     have hdom : (powDomain gen hg hg0) i = gen ^ ((i : Fin N) : ℕ) := rfl
     simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_pow,
@@ -518,28 +529,40 @@ theorem Dffun_mem (hg : orderOf gen = 2 ^ 30) (hg0 : gen ≠ 0) :
 /-- **RS membership of `Dg`.** -/
 theorem Dgfun_mem (hg : orderOf gen = 2 ^ 30) (hg0 : gen ≠ 0) :
     Dgfun gen ∈ predecessorCode (powDomain gen hg hg0) := by
-  refine ReedSolomon.mem_code_of_polynomial_of_degree_lt_of_eval
+  -- Lean 4.34: rewriting `degree_X_pow_sub_C` at the literal exponents `2 ^ 23, …` sends the
+  -- kernel into a deep `npow` unfolding, so the degree bound is proved at abstract exponents.
+  have key : ∀ a b c d : ℕ, 0 < a → 0 < b → 0 < c → 0 < d →
+      a + (b + c) + (d + (d + d)) < k →
+        (Polynomial.C (-(w16 gen ^ 2)) *
+          (((Polynomial.X : F[X]) ^ a - Polynomial.C (w128 gen ^ 15)) *
+            (((Polynomial.X : F[X]) ^ b - Polynomial.C (w64 gen ^ 14)) *
+              ((Polynomial.X : F[X]) ^ c - Polynomial.C (w32 gen ^ 12))) *
+            (((Polynomial.X : F[X]) ^ d - Polynomial.C (w16 gen ^ 2)) *
+              (((Polynomial.X : F[X]) ^ d - Polynomial.C (w16 gen ^ 9)) *
+                ((Polynomial.X : F[X]) ^ d - Polynomial.C (w16 gen ^ 10)))))).degree < (k : WithBot ℕ) := by
+    intro a b c d ha0 hb0 hc0 hd0 h
+    have hlam : (-(w16 gen ^ 2) : F) ≠ 0 :=
+      neg_ne_zero.mpr (pow_ne_zero _ (w16_ne_zero gen hg0))
+    rw [degree_mul, degree_mul, degree_mul, degree_mul, degree_mul, degree_mul,
+          Polynomial.degree_C hlam,
+          degree_X_pow_sub_C ha0 (w128 gen ^ 15),
+          degree_X_pow_sub_C hb0 (w64 gen ^ 14),
+          degree_X_pow_sub_C hc0 (w32 gen ^ 12),
+          degree_X_pow_sub_C hd0 (w16 gen ^ 2),
+          degree_X_pow_sub_C hd0 (w16 gen ^ 9),
+          degree_X_pow_sub_C hd0 (w16 gen ^ 10)]
+    rw [zero_add]
+    exact_mod_cast h
+  have hdeg :
     (Polynomial.C (-(w16 gen ^ 2)) *
       (((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 23) - Polynomial.C (w128 gen ^ 15)) *
         (((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 24) - Polynomial.C (w64 gen ^ 14)) *
           ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 25) - Polynomial.C (w32 gen ^ 12))) *
         (((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) - Polynomial.C (w16 gen ^ 2)) *
           (((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) - Polynomial.C (w16 gen ^ 9)) *
-            ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) - Polynomial.C (w16 gen ^ 10))))))
-    ?_ ?_
-  · have hlam : (-(w16 gen ^ 2) : F) ≠ 0 :=
-      neg_ne_zero.mpr (pow_ne_zero _ (w16_ne_zero gen hg0))
-    rw [degree_mul, degree_mul, degree_mul, degree_mul, degree_mul, degree_mul,
-      Polynomial.degree_C hlam,
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 23) (w128 gen ^ 15),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 24) (w64 gen ^ 14),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 25) (w32 gen ^ 12),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 26) (w16 gen ^ 2),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 26) (w16 gen ^ 9),
-      degree_X_pow_sub_C (by norm_num : 0 < (2 : ℕ) ^ 26) (w16 gen ^ 10)]
-    rw [zero_add]
-    exact_mod_cast (by norm_num [k] :
-      (2 : ℕ) ^ 23 + (2 ^ 24 + 2 ^ 25) + (2 ^ 26 + (2 ^ 26 + 2 ^ 26)) < k)
+            ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) - Polynomial.C (w16 gen ^ 10)))))).degree < (k : WithBot ℕ) :=
+    key _ _ _ _ (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num [k])
+  refine ReedSolomon.mem_code_of_polynomial_of_degree_lt_of_eval _ hdeg ?_
   · intro i
     have hdom : (powDomain gen hg hg0) i = gen ^ ((i : Fin N) : ℕ) := rfl
     simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_pow,

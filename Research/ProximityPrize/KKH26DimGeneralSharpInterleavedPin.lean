@@ -36,6 +36,7 @@ namespace ArkLib.ProximityGap.KKH26DimGeneralSharp
 
 section Concrete4294967377
 
+set_option maxRecDepth 65536 in
 local instance fact_prime_4294967377' : Fact (Nat.Prime 4294967377) := ⟨by norm_num⟩
 
 /-- **The interleaved sharp `δ*` pin at the dimension-four past-the-wall rung.** For every fold

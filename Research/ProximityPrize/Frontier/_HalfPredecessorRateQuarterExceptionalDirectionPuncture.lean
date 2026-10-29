@@ -150,11 +150,11 @@ theorem directionCoreTraceSubtype_card
     (directionCoreTraceSubtype family r gamma).card =
       (directionCoreTrace family r gamma).card := by
   let e : {i : I // i ∈ directionAgreement dom (u 1) r} ↪ I :=
-    ⟨fun i => i.1, fun _ _ h => Subtype.ext h⟩
+    Function.Embedding.subtype _
   have hmap : (directionCoreTraceSubtype family r gamma).map e =
       directionCoreTrace family r gamma := by
     ext i
-    simp [directionCoreTraceSubtype, directionCoreTrace, e]
+    simp [directionCoreTraceSubtype, directionCoreTrace, e, Function.Embedding.subtype_apply]
   calc
     (directionCoreTraceSubtype family r gamma).card =
         ((directionCoreTraceSubtype family r gamma).map e).card := by
@@ -171,12 +171,12 @@ theorem directionFreshTraceSubtype_card
       (fullAgreement dom (u 0) (u 1) gamma (family.q gamma) \
         directionAgreement dom (u 1) r).card := by
   let e : {i : I // i ∉ directionAgreement dom (u 1) r} ↪ I :=
-    ⟨fun i => i.1, fun _ _ h => Subtype.ext h⟩
+    Function.Embedding.subtype _
   have hmap : (directionFreshTraceSubtype family r gamma).map e =
       fullAgreement dom (u 0) (u 1) gamma (family.q gamma) \
         directionAgreement dom (u 1) r := by
     ext i
-    simp [directionFreshTraceSubtype, e]
+    simp [directionFreshTraceSubtype, e, Function.Embedding.subtype_apply]
   calc
     (directionFreshTraceSubtype family r gamma).card =
         ((directionFreshTraceSubtype family r gamma).map e).card := by

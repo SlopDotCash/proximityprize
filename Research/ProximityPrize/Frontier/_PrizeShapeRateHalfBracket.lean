@@ -326,9 +326,10 @@ theorem firstPrime_rateHalf_ladder_floor :
           Submodule (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)
             (Fin (2 ^ 30) -> ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) :
           Set (Fin (2 ^ 30) -> ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) := by
-    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 <= 2 ^ 29)] using
-      (ProximityGap.Ownership.evalCode_eq_rsCode
-        ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (2 ^ 29 - 1))
+    have h := ProximityGap.Ownership.evalCode_eq_rsCode
+      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (2 ^ 29 - 1)
+    rw [Nat.sub_add_cancel (by norm_num : 1 <= 2 ^ 29)] at h
+    exact h
   rw [← hcode] at hlower
   convert hlower using 1 <;> norm_num
 
@@ -363,9 +364,10 @@ theorem secondPrime_rateHalf_ladder_floor :
           Submodule (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)
             (Fin (2 ^ 30) -> ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)) :
           Set (Fin (2 ^ 30) -> ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)) := by
-    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 <= 2 ^ 29)] using
-      (ProximityGap.Ownership.evalCode_eq_rsCode
-        ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g (2 ^ 29 - 1))
+    have h := ProximityGap.Ownership.evalCode_eq_rsCode
+      ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g (2 ^ 29 - 1)
+    rw [Nat.sub_add_cancel (by norm_num : 1 <= 2 ^ 29)] at h
+    exact h
   rw [← hcode] at hlower
   convert hlower using 1 <;> norm_num
 

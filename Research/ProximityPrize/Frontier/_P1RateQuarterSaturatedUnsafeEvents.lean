@@ -53,13 +53,11 @@ theorem saturatedHoleCoord_injective : Function.Injective saturatedHoleCoord := 
     exact (selectedCoordEmbedding 13).injective h
   · exfalso
     have hsnd : (13 : Fin 16) = 15 := by
-      simpa only [saturatedHoleCoord, selectedCoordEmbedding, hole] using
-        congrArg Prod.snd h
+      exact congrArg Prod.snd h
     exact (by decide : (13 : Fin 16) ≠ 15) hsnd
   · exfalso
     have hsnd : (15 : Fin 16) = 13 := by
-      simpa only [saturatedHoleCoord, selectedCoordEmbedding, hole] using
-        congrArg Prod.snd h
+      exact congrArg Prod.snd h
     exact (by decide : (15 : Fin 16) ≠ 13) hsnd
   · exact congrArg Sum.inr (Subsingleton.elim a b)
 
@@ -113,6 +111,7 @@ theorem saturatedHole_domain_pow_m (h : SaturatedHoleIndex) :
   · rw [domain_pow_m]
     simp [saturatedHoleCoord, saturatedHoleKind, holeFibreValue,
       selectedCoordEmbedding]
+    rfl
   · rw [domain_pow_m]
     simp [saturatedHoleCoord, saturatedHoleKind, holeFibreValue, hole]
 
@@ -136,9 +135,9 @@ theorem direction_eval_saturatedHole (i : Fin 3) (h : SaturatedHoleIndex) :
           newHoleValue i := by
       apply direction_eval_newHole i
       exact (mem_selectedCoords_iff 13 _).2 ⟨q, rfl⟩
-    simpa only [saturatedHoleKind, saturatedHoleValue] using hdir
+    simpa only [saturatedHoleKind, saturatedHoleValue, Matrix.cons_val_zero] using hdir
   · simpa only [saturatedHoleCoord, saturatedHoleKind, saturatedHoleValue,
-      hole] using direction_eval_hole_fibre i (Sum.inr 0)
+      hole, Matrix.cons_val_one, Matrix.cons_val_fin_one] using direction_eval_hole_fibre i (Sum.inr 0)
 
 theorem saturatedHoleConstant_cross (a : Fin 2) (i : Fin 3) :
     holeConstant a i * (2 - saturatedHoleValue a i) =

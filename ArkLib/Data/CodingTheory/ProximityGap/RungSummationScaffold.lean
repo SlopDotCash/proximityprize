@@ -72,7 +72,7 @@ theorem bad_card_le_uniform {Γ solo : Finset F} {z : F}
     Γ.card ≤ 1 + t * c + solo.card := by
   classical
   have h := bad_card_le_partition (cap := fun _ => c) hcover hcap
-  have hsum : (∑ K ∈ classes, (fun _ => c) K) ≤ t * c := by
+  have hsum : (∑ _K ∈ classes, c) ≤ t * c := by
     rw [Finset.sum_const, smul_eq_mul]
     exact Nat.mul_le_mul_right c ht
   omega

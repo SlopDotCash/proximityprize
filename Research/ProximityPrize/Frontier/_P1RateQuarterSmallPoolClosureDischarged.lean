@@ -471,13 +471,10 @@ theorem smallPool_budget (dom : Fin N ↪ F) (u₀ u₁ : Fin N → F)
     have := Finset.mem_Ico.mp hm
     exact hlev3 m (Finset.mem_Icc.mpr (by omega))
   have hcard : (Finset.Ico 3 75018134).card = 75018131 := by rw [Nat.card_Ico]
-  have htail : ∑ m ∈ Finset.Ico 3 75018134, (P.filter (fun π => m ≤
-      ((G.erase γ₀).filter (fun γ => pencilOf pf γ₀ γ = π)).card)).card ≤
-      75018131 * 5 := by
-    calc ∑ m ∈ Finset.Ico 3 75018134, (P.filter (fun π => m ≤
-          ((G.erase γ₀).filter (fun γ => pencilOf pf γ₀ γ = π)).card)).card
-        ≤ (Finset.Ico 3 75018134).card • 5 := Finset.sum_le_card_nsmul _ _ 5 hb
-      _ = 75018131 * 5 := by rw [hcard, smul_eq_mul]
+  -- (Lean 4.34: the `calc` form of this tail bound hangs in elaboration; the `have ... at`
+  -- form below keeps the width-`F₀` interval symbolic.)
+  have htail := Finset.sum_le_card_nsmul _ _ 5 hb
+  rw [hcard, smul_eq_mul] at htail
   omega
 
 /-! ## The discharge and the upgraded consumer -/
