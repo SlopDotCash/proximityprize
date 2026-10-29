@@ -77,7 +77,7 @@ The description should include:
 
 ## Style and Naming Guidelines
 We aim to adhere to the [Lean community's contribution guidelines](https://github.com/leanprover-community/leanprover-community.github.io/tree/lean4/templates/contribute).
-Our [linting script](`./scripts/lint-style.sh`) helps enforce some aspects of these guidelines.
+Our [linting script](scripts/lint-style.sh) helps enforce some aspects of these guidelines.
 
 ### Naming Conventions
 
