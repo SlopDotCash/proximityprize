@@ -1403,6 +1403,7 @@ import Research.ProximityPrize.Frontier._G136UnitCircleMann
 import Research.ProximityPrize.Frontier._G137MannPairingCensusConsumer
 import Research.ProximityPrize.Frontier._G138CyclotomicLiftHandoff
 import Research.ProximityPrize.Frontier._G139AccidentQuantizationConsumer
+import Research.ProximityPrize.Frontier._G139ArithmeticCertificate
 import Research.ProximityPrize.Frontier._G139NoAccidentEntropyObstruction
 import Research.ProximityPrize.Frontier._G139PhiInjectiveSidonBridge
 import Research.ProximityPrize.Frontier._G139SidonModNegClean

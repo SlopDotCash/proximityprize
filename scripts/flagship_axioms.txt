@@ -100,3 +100,8 @@ Research.ProximityPrize.Frontier._IncidenceCanonicalConstant ProximityGap.Incide
 
 # Full-owner linear received pair at the production P1 predecessor.
 Research.ProximityPrize.Frontier._P1RateQuarterLinearOwnerBudget ArkLib.ProximityGap.Frontier.P1RateQuarterLinearOwnerBudget.Production.badFamilyData_linear_owner_card_le
+
+# Exact G139 arithmetic and its conditional zero-accident consumer.
+Research.ProximityPrize.Frontier._G139ArithmeticCertificate ArkLib.ProximityGap.Frontier.G139ArithmeticCertificate.prime_P
+Research.ProximityPrize.Frontier._G139ArithmeticCertificate ArkLib.ProximityGap.Frontier.G139ArithmeticCertificate.orderOf_g
+Research.ProximityPrize.Frontier._G139ArithmeticCertificate ArkLib.ProximityGap.Frontier.G139ArithmeticCertificate.accidents_card_eq_zero_of_phiWindowInjective
