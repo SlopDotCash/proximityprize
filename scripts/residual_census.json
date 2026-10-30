@@ -1,9 +1,9 @@
 {
  "summary": {
   "total": 89,
-  "open": 40,
+  "open": 41,
   "discharged": 35,
-  "refuted": 14,
+  "refuted": 13,
   "by_top_dir": {
    "(root)": {
     "total": 1,
@@ -13,9 +13,9 @@
    },
    "Data": {
     "total": 24,
-    "open": 8,
+    "open": 9,
     "discharged": 3,
-    "refuted": 13
+    "refuted": 12
    },
    "OracleReduction": {
     "total": 39,
@@ -483,7 +483,7 @@
      "name": "CodingTheory.randomLinearLambdaLowerFirstMomentResidual_of_exists_event",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean",
-     "line": 217,
+     "line": 245,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hG"
@@ -497,7 +497,7 @@
      "name": "CodingTheory.randomLinearLambdaLowerFirstMomentResidual_of_combinatorialWitness",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean",
-     "line": 448,
+     "line": 476,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "h"
@@ -508,18 +508,7 @@
      "specialised_arguments": []
     }
    ],
-   "refutations": [
-    {
-     "name": "CodingTheory.not_randomLinearLambdaLowerFirstMomentResidual_zero",
-     "kind": "theorem",
-     "file": "ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean",
-     "line": 181,
-     "conditional_on_residuals": [],
-     "extra_explicit_binders": [],
-     "ambiguous_name_match": false
-    }
-   ],
-   "status": "refuted"
+   "status": "open"
   },
   {
    "name": "StrictCoeffPolysResidual",

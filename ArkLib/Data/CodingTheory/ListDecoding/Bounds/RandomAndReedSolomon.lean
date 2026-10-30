@@ -175,13 +175,16 @@ theorem exists_randomLinearLambdaLowerEvent_of_probability_pos
   rw [hzero] at hprob
   exact (lt_irrefl (0 : ENNReal)) hprob
 
-/-- The unconstrained first-moment residual is false for degenerate dimension parameters:
-when `k = 0` and `ρ > 0`, any generator matrix generates the zero submodule of dimension 0,
-so the rate condition `dim(C) / |ι| ≥ ρ` cannot hold. -/
-theorem not_randomLinearLambdaLowerFirstMomentResidual_zero :
-    ¬ randomLinearLambdaLowerFirstMomentResidual (ZMod 2) (Fin 1) 2 0 0 0 1 := by
-  intro h
-  obtain ⟨G, hG⟩ := exists_randomLinearLambdaLowerEvent_of_probability_pos h
+/-- Boundary lemma: for degenerate dimension `k = 0` with positive rate target `ρ > 0`,
+no generator matrix can satisfy the GLMRSW22 lower-bound rate condition `dim(C) / |ι| ≥ ρ`
+because any matrix with 0 rows generates a code of dimension 0.
+
+This documents the degenerate boundary regime without altering the open status
+of `randomLinearLambdaLowerFirstMomentResidual` for non-degenerate dimensions `k ≥ 1`. -/
+theorem not_exists_randomLinearLambdaLowerEvent_of_dim_zero :
+    ¬ ∃ G : Matrix (Fin 0) (Fin 1) (ZMod 2),
+        randomLinearLambdaLowerEvent (F := ZMod 2) (ι := Fin 1) 2 0 0 0 1 G := by
+  rintro ⟨G, hG⟩
   have hdim : LinearCode.dim (randomLinearCodeOfGeneratorMatrix G) = 0 := by
     change LinearCode.dim (LinearCode.fromRowGenMat G) = 0
     rw [LinearCode.dim_fromRowGenMat]
@@ -191,6 +194,31 @@ theorem not_randomLinearLambdaLowerFirstMomentResidual_zero :
   rw [hdim] at hrate
   simp only [Fintype.card_fin, Nat.cast_zero, Nat.cast_one, div_one] at hrate
   linarith
+
+/-- Degenerate dimension boundary probability: when `k = 0` and `ρ > 0`, the GLMRSW22
+success probability is zero. -/
+theorem randomLinearLambdaLowerProbability_eq_zero_of_dim_zero :
+    randomLinearLambdaLowerProbability (ZMod 2) (Fin 1) 2 0 0 0 1 = 0 := by
+  classical
+  unfold randomLinearLambdaLowerProbability
+  have hEventFalse :
+      (fun G : Matrix (Fin 0) (Fin 1) (ZMod 2) =>
+        randomLinearLambdaLowerEvent (F := ZMod 2) (ι := Fin 1) 2 0 0 0 1 G) =
+        fun _ => False := by
+    funext G
+    refine propext (iff_false_intro ?_)
+    intro hG
+    exact not_exists_randomLinearLambdaLowerEvent_of_dim_zero ⟨G, hG⟩
+  change
+    (PMF.map
+        (fun G : Matrix (Fin 0) (Fin 1) (ZMod 2) =>
+          randomLinearLambdaLowerEvent (F := ZMod 2) (ι := Fin 1) 2 0 0 0 1 G)
+        (uniformRandomLinearGeneratorMatrix (ZMod 2) 0 (Fin 1))) True = 0
+  rw [hEventFalse]
+  change (PMF.map (Function.const (Matrix (Fin 0) (Fin 1) (ZMod 2)) False)
+      (uniformRandomLinearGeneratorMatrix (ZMod 2) 0 (Fin 1))) True = 0
+  rw [PMF.map_const]
+  simp [PMF.pure_apply]
 
 /-- Conversely, one good generator matrix gives positive success probability.
 
@@ -895,3 +923,5 @@ end CodingTheory
 #print axioms CodingTheory.randomLinearLambdaLowerEvent_of_combinatorial
 #print axioms CodingTheory.randomLinearLambdaLowerFirstMomentResidual_of_combinatorialWitness
 #print axioms CodingTheory.combinatorialWitness_of_randomLinearLambdaLowerFirstMomentResidual
+#print axioms CodingTheory.not_exists_randomLinearLambdaLowerEvent_of_dim_zero
+#print axioms CodingTheory.randomLinearLambdaLowerProbability_eq_zero_of_dim_zero
