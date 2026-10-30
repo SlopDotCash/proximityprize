@@ -12,7 +12,9 @@ which remains the research entry point. The default single-root build follows
 imports instead of an all-submodules glob, preserving the explicit lane exclusions. Its generated `All.lean`
 contains 3,084 imports, preserving the four existing expensive-lane exclusions and
 excluding the scratch checker and root itself. `ArkLib.lean` contains 1,900 imports
-after this slice. Generate both roots after staging added or moved Lean files:
+after this slice. Generate both roots after staging added or moved Lean files.
+`update-research-lib.py` refuses to rewrite `All.lean` while an untracked
+`Research/ProximityPrize/**/*.lean` file is present, matching `update-lib.sh`.
 
 ```sh
 ./scripts/update-lib.sh

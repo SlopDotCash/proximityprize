@@ -121,7 +121,7 @@ package recovery; the only source of truth for the mathlib revision is the `math
 ./scripts/validate.sh
 ```
 
-### Added, renamed, or deleted files under `ArkLib/`
+### Added, renamed, or deleted files under `ArkLib/` or `Research/ProximityPrize/`
 
 ```bash
 git add path/to/newfile.lean
@@ -129,7 +129,10 @@ git add path/to/newfile.lean
 ```
 
 `./scripts/update-lib.sh` only considers tracked files, and now fails fast if untracked
-`ArkLib/**/*.lean` files are present.
+`ArkLib/**/*.lean` files are present. `python3 scripts/update-research-lib.py` does the
+same for `Research/ProximityPrize/**/*.lean`: an untracked research module is an error,
+so `./scripts/check-imports.sh` cannot report a fresh `All.lean` while that module is
+absent from the default build. Stage the file before regenerating the umbrella.
 
 ### Lean-heavy refactors or cleanup
 
