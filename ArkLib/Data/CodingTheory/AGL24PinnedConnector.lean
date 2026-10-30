@@ -156,10 +156,16 @@ FieldLargeForMinor ⟹ GMMDSDualZeroPatternTheoremPinned` introduces no impossib
   `RIMKernelTrivialFromLovett` is the recognized hard #389 GM-MDS algebra, not a vacuous or
   circular obligation.
 
-So after this file the pinned target is reduced to the **single named open mathematical core**
-`RIMKernelTrivialFromLovett` (the ring-change transfer) plus the dimensionally faithful dual
-move `DualRowsFromNonsingularEvalPinned` and the explicit field-size regime — none refuted, none
-in-tree, the honest localization. -/
+**Correction (field-size regime).** `FieldLargeForMinor ι F k` bounds the minor degree by `|F|`
+uniformly over every vertex count `t`, but a nonzero minor's degree grows with `t`.
+`ArkLib.GMMDS.not_fieldLargeForMinor` proves `¬ FieldLargeForMinor ι F k` for every finite
+field `F` and `2 ≤ k ≤ |ι|`, so `gmmDsDualZeroPatternTheoremPinned_via_lovett` and
+`symbolicFullRank_via_lovett_pinned` are vacuous there.
+
+So after this file the pinned target is reduced to `RIMKernelTrivialFromLovett` (the ring-change
+transfer) plus the dimensionally faithful dual move `DualRowsFromNonsingularEvalPinned` and the
+field-size regime. The field-size regime must be restated per instance (for the `t` and minor
+being specialized) before this localization holds at `k ≥ 2`. -/
 
 omit [Nonempty ι] [Fintype F] in
 /-- **The pinned dual residual's conclusion is dimensionally consistent.** Under the pin
