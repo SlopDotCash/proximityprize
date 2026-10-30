@@ -172,6 +172,47 @@ def split_signature(window: str) -> tuple[str, str]:
     return window[:sig_colon], window[sig_colon + 1 : end]
 
 
+# Lean spells these connectives either way (`unicode(" ∧ ", " /\\ ")`,
+# `unicode(" ∨ ", " \\/ ")`, `" <-> "` and `unicodeSymbol " → " " -> "` in
+# Lean v4.30.0-rc2).  `<->` must be rewritten before `->`.
+ASCII_CONNECTIVES = (("<->", "↔"), ("->", "→"), ("/\\", "∧"), ("\\/", "∨"))
+
+
+def unicode_connectives(text: str) -> str:
+    """Spell Lean's ASCII connectives `<->`, `->`, `/\\`, `\\/` as `↔`, `→`, `∧`, `∨`.
+
+    Every connective check below matches the Unicode tokens, so without this a
+    result such as `R -> False` reads as a bare application of `R` and counts
+    as a discharge.  String literals and «quoted» names are copied unchanged.
+    """
+    out: list[str] = []
+    i = 0
+    while i < len(text):
+        c = text[i]
+        if c == '"':
+            j = i + 1
+            while j < len(text) and text[j] != '"':
+                j += 2 if text[j] == "\\" else 1
+            out.append(text[i : j + 1])
+            i = j + 1
+            continue
+        if c == "«":
+            j = text.find("»", i + 1)
+            j = len(text) - 1 if j == -1 else j
+            out.append(text[i : j + 1])
+            i = j + 1
+            continue
+        for ascii_form, symbol in ASCII_CONNECTIVES:
+            if text.startswith(ascii_form, i):
+                out.append(symbol)
+                i += len(ascii_form)
+                break
+        else:
+            out.append(c)
+            i += 1
+    return "".join(out)
+
+
 def strip_forall_prefix(result: str) -> str:
     """Strip leading `∀ ...,` binders from a result type."""
     s = result.strip()
@@ -504,6 +545,7 @@ def parse_file(path: Path, root: Path) -> list[dict]:
     for i, h in enumerate(headers):
         window_end = headers[i + 1]["start"] if i + 1 < len(headers) else len(code)
         binders, result = split_signature(code[h["sig_from"] : window_end])
+        binders, result = unicode_connectives(binders), unicode_connectives(result)
         name = h["name"]
         fq = f"{h['namespace']}.{name}" if h["namespace"] else name
         decls.append(
