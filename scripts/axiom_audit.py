@@ -26,8 +26,10 @@ from pathlib import Path
 ALLOWED = {"propext", "Classical.choice", "Quot.sound"}
 MANIFEST = Path(__file__).resolve().parent / "flagship_axioms.txt"
 
-DEP_RE = re.compile(r"'([^']+)' depends on axioms: \[([^\]]*)\]")
-NODEP_RE = re.compile(r"'([^']+)' does not depend on any axioms")
+# Lean prints `#print axioms foo'` as `'foo'' depends on ...`: a name may end in
+# primes, so take the shortest same-line name before the closing quote.
+DEP_RE = re.compile(r"(?<!\S)'([^\n]+?)' depends on axioms: \[([^\]]*)\]")
+NODEP_RE = re.compile(r"(?<!\S)'([^\n]+?)' does not depend on any axioms")
 
 
 def main() -> int:

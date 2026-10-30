@@ -33,8 +33,10 @@ ALLOWED_AXIOMS = {"propext", "Classical.choice", "Quot.sound"}
 DEFAULT_MANIFEST = Path(__file__).resolve().parent / "proximity_prize_cleanroom_targets.txt"
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-DEP_RE = re.compile(r"'([^']+)' depends on axioms: \[([^\]]*)\]")
-NODEP_RE = re.compile(r"'([^']+)' does not depend on any axioms")
+# Lean prints `#print axioms foo'` as `'foo'' depends on ...`: a name may end in
+# primes, so take the shortest same-line name before the closing quote.
+DEP_RE = re.compile(r"(?<!\S)'([^\n]+?)' depends on axioms: \[([^\]]*)\]")
+NODEP_RE = re.compile(r"(?<!\S)'([^\n]+?)' does not depend on any axioms")
 
 RESIDUAL_PATTERNS = [
     re.compile(r"\b[A-Za-z0-9_.']*[Rr]esidual[A-Za-z0-9_.']*\b"),
