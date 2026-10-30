@@ -1,6 +1,7 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under both MIT and Apache-2.0 licenses as described in LICENSE.
+Released under the MIT and Apache 2.0 licenses as described in
+LICENSE-MIT and LICENSE.
 Authors: danghuy174
 -/
 import Research.ProximityPrize.Frontier._AntipodalEvenOddDescent

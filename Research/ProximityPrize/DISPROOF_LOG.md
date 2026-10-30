@@ -54490,6 +54490,11 @@ close #164.
 Reproduction at the final PR commit:
 
 ```
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IsolatedNonCosetCountResidualRefuted.lean
+scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedNonCosetCountResidualRefuted
+```
+
+Evidence class: Lean proof certificate; the declaration uses only `propext`,
 scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IsolatedCountResidualRefuted.lean
 scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountResidualRefuted
 ```
