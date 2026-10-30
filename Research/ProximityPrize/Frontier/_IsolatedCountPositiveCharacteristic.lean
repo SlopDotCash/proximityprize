@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
+Released under both MIT and Apache-2.0 licenses as described in LICENSE.
 Authors: danghuy174
 -/
 import Research.ProximityPrize.Frontier._AntipodalEvenOddDescent
@@ -123,11 +123,11 @@ theorem not_isolatedCountResidual_of_char_zero
     ¬ IsolatedCountResidual F 1 := by
   exact not_isolatedCountResidual_of_small_primes_ne_zero F
     (by norm_num) (by norm_num)
-
-#print axioms witnessE_three_isolated_roots
-#print axioms card_zero_one_two
-#print axioms not_isolatedCountResidual_of_small_primes_ne_zero
-#print axioms not_isolatedCountResidual_of_char_gt_three
-#print axioms not_isolatedCountResidual_of_char_zero
-
 end ProximityGap.Frontier.IsolatedCountPositiveCharacteristic
+
+#print axioms ProximityGap.Frontier.IsolatedCountPositiveCharacteristic.witnessE_three_isolated_roots
+#print axioms ProximityGap.Frontier.IsolatedCountPositiveCharacteristic.card_zero_one_two
+#print axioms ProximityGap.Frontier.IsolatedCountPositiveCharacteristic.not_isolatedCountResidual_of_small_primes_ne_zero
+#print axioms ProximityGap.Frontier.IsolatedCountPositiveCharacteristic.not_isolatedCountResidual_of_char_gt_three
+#print axioms ProximityGap.Frontier.IsolatedCountPositiveCharacteristic.not_isolatedCountResidual_of_char_zero
+
