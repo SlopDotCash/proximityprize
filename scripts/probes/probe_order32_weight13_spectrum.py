@@ -27,10 +27,10 @@ Findings at h = 16 (|D| = 4512):
     2^30 = -2^14 mod p) collides a weight-1 with a weight-3 datum.
   * At the prize-scale Proth primes k*2^128 + 1 (k = 21, 111, 123) the map is
     injective: exactly 4512 values.
-  * Over all p = 1 (mod 32) in [97, 200000] the exact count 4512 is attained at
-    only a handful of primes; every other prime above the saturation threshold
-    4512 is genuinely deficient.  The n = 16 exception set (largest 4049) is
-    therefore NOT the model for n = 32.
+  * Over all p = 1 (mod 32) in [33, 200000] the exact count 4512 is attained at
+    532 primes (of 1073 primes with p > 4512); the other 541 are genuinely
+    deficient.  The n = 16 exception set (largest 4049) is therefore NOT the
+    model for n = 32.
 
 What this does NOT do: no field-uniform theorem, no statement about weight sets
 other than {1,3}, no production n = 2^30 claim, no delta* movement.  The
