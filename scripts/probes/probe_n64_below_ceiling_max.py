@@ -38,7 +38,9 @@ Affine rows.  For ``b < 2`` the second word is affine on every witness, so the
 pair-joint exclusion fires for every gamma and the bad set is empty.  For
 ``a < 2`` with ``b >= 2`` the condition is exact and gives exactly ``{0}``:
 ``gamma = 0`` is bad with the whole domain as witness, because ``u0`` is a
-codeword while ``x^b`` is not affine on any 4-subset.
+codeword while ``x^b`` is not affine on the whole domain.  No other ``gamma``
+survives: if ``u0 + gamma*u1`` were affine on a witness, then so would be
+``u1 = ((u0 + gamma*u1) - u0)/gamma``, and the pair-joint exclusion would fire.
 
 Reproduced first (published integers, same code path):
   n = 8  (G310/G328): (3,2) t=3 count 16 at p=17 and 40 at p=41,257; t=4
@@ -191,7 +193,7 @@ def bad_sets(determinants, second_inverse, quads, triples, a, b, p):
         # also one for u0 and the pair-joint exclusion always fires.  For
         # a < 2 and b >= 2 the general path below is exact and returns {0}:
         # gamma = 0 is bad with the whole domain as witness, since u0 is a
-        # codeword but u1 = x^b is not affine on any 4-subset.
+        # codeword but u1 = x^b is not affine on the whole domain.
         return set(), set()
     first = determinants[a]
     second = determinants[b]
