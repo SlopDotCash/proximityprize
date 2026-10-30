@@ -54501,3 +54501,42 @@ scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountResi
 
 Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
 `Classical.choice` and `Quot.sound`.
+
+---
+
+### [uniform-supply-sharp-obstruction] The all-word supply is exactly the trivial binomial budget
+
+Date: 2026-10-30. Targets: `ProximityGap.Ownership.ExplainableCoreSupply` and
+`SubJohnsonListBound`, consumed by `production_badSet_gated_on_open_core`.
+
+`explainableCoreSupply_iff` in `ArkLib/Data/CodingTheory/ProximityGap/DeepBandMultiplicity.lean`
+proves, for every evaluation domain and every `k,m,B`,
+`ExplainableCoreSupply dom k m B ↔ n.choose (k+m+1) ≤ B`. The zero codeword
+explains every core, so this is a sharp classification, including thresholds
+above the length. It formalizes the degenerate-stratum observation in that
+module's header without requiring a special subgroup or a finite-field search.
+
+In `SubJohnsonListSupply.lean`, `subJohnsonListBound_agreement_cap` proves that
+`SubJohnsonListBound dom k m L A` requires `n ≤ A` whenever `k+m+1 ≤ n`.
+`subJohnsonListBound_supply_budget` carries the obstruction through the actual
+list-bound-to-supply consumer: `n.choose (k+m+1) ≤ L * A.choose (k+m+1)`.
+At `m=0` the displayed production consumer therefore cannot force more than one
+bad scalar from its count inequality. A stronger route must restrict received
+words or bound actual coherent fibers, rather than improve this all-word supply.
+
+Assumptions: the existing field, finite-field, decidable-equality and nonzero-length
+contexts; the agreement-cap lemma additionally assumes a nonempty threshold band.
+The proofs use the zero member of `rsCode`, finite subset counting, and the existing
+consumer. No definition is weakened, no new axiom or admitted fact is added, and
+no new list-size bound, production counterexample or prize closure is claimed.
+
+Reproduce with the pinned Lean toolchain:
+
+```text
+scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/DeepBandMultiplicity.lean
+scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/SubJohnsonListSupply.lean
+scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonListSupply
+```
+
+Evidence class: Lean proof certificates; the three new declarations depend only
+on `propext`, `Classical.choice` and `Quot.sound`. Production Delta Star remains open.

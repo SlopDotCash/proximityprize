@@ -8,8 +8,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.DeepBandCoherence
 /-!
 # Deep-band multiplicity (#371): the per-scalar fiber, reduced and named
 
-The single open quantity of the deep-band programme — the per-scalar
-multiplicity of coherent cores — is here given its exact structural reduction:
+The per-scalar multiplicity of coherent cores is reduced here to an
+unrestricted all-word supply. That uniform supply has the sharp trivial budget:
 
 * `fiber_subset_explainable` — the coherent cores sharing a value `γ` all
   explain ONE word, the line `Q∘dom + γ·x^k`; the fiber of `γ` is contained in
@@ -17,9 +17,11 @@ multiplicity of coherent cores — is here given its exact structural reduction:
 * `ExplainableCoreSupply B` — the named residual: every word admits at most
   `B` explainable `(k+m+1)`-cores.  This is the multiplicity number in its
   final isolated form (the degenerate stratum — words ON the code — shows a
-  uniform small `B` cannot be free: `B = C(n,k+m+1)` is attained there, so a
-  useful supply must come from second-moment or list-geometry input; that is
-  the precise remaining mathematics).
+  uniform small `B` is impossible: `B = C(n,k+m+1)` is attained there).
+* `explainableCoreSupply_iff` — the unrestricted supply is equivalent to
+  `C(n,k+m+1) ≤ B`. A useful smaller budget therefore requires a restricted
+  word family or a different multiplicity interface; extra domain structure
+  cannot improve this all-word predicate.
 * `deep_band_badSet_card_of_supply` — **the reduction theorem**: given the
   supply, at every band radius,
 
@@ -65,6 +67,21 @@ theorem explainableCoreSupply_trivial (dom : Fin n ↪ F) (k m : ℕ) :
         Finset.card_filter_le _ _
     _ = n.choose (k + m + 1) := by
         rw [Finset.card_powersetCard, Finset.card_univ, Fintype.card_fin]
+
+/-- The all-word supply has the sharp trivial budget on every domain: the zero
+codeword explains every core. This also covers thresholds above the length,
+when the binomial coefficient vanishes. -/
+theorem explainableCoreSupply_iff (dom : Fin n ↪ F) (k m B : ℕ) :
+    ExplainableCoreSupply dom k m B ↔ n.choose (k + m + 1) ≤ B := by
+  classical
+  constructor
+  · intro h
+    have hzero (T : Finset (Fin n)) : ExplainableOn dom k (0 : Fin n → F) T :=
+      ⟨0, Submodule.zero_mem _, fun _ _ => rfl⟩
+    simpa only [hzero, Finset.filter_true, Finset.card_powersetCard,
+      Finset.card_univ, Fintype.card_fin] using h 0
+  · intro h w
+    exact (explainableCoreSupply_trivial dom k m w).trans h
 
 open Classical in
 /-- **The fiber structure**: a coherent core explains the line of its pinned
@@ -170,5 +187,6 @@ theorem deep_band_badSet_card_of_supply (dom : Fin n ↪ F) {k m : ℕ}
 end ProximityGap.Ownership
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
+#print axioms ProximityGap.Ownership.explainableCoreSupply_iff
 #print axioms ProximityGap.Ownership.coherent_explains_line
 #print axioms ProximityGap.Ownership.deep_band_badSet_card_of_supply

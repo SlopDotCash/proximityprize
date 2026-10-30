@@ -9,6 +9,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSubJohnsonSharpRate
 /-!
 # Production deep-band bad-set count is gated solely on the open core (#389)
 
+**Uniform-interface limitation.** `subJohnsonListBound_supply_budget` proves
+`C(n,k+1) ≤ L·C(A,k+1)` for every input to this consumer. At `m=0` its
+displayed count inequality therefore cannot force more than one bad scalar.
+The historical "sole remaining input" description below concerns the formal
+conditional chain; it does not establish a feasible small uniform supply.
+A stronger route needs a restricted word family or a coherent-fiber bound.
+
 The boundary-pinning files (`DeepBandProductionSubJohnson`,
 `…General`, `…SharpRate`) proved the in-tree above-Johnson discharge provably
 inapplicable across the production regime — but those vacuity statements were

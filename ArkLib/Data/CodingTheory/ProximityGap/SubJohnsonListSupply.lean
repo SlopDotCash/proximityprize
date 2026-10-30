@@ -8,18 +8,15 @@ import ArkLib.Data.CodingTheory.ProximityGap.DeepBandMultiplicity
 /-!
 # The sub-Johnson list bound ⟹ the supply (#389, the open-core wiring)
 
-This file names the genuinely-open core of #389 as a single clean hypothesis — a
-**sub-Johnson list bound** — and proves *elementarily* that it implies the
+This file packages a **sub-Johnson list bound** hypothesis and proves that it implies the
 top-level `ExplainableCoreSupply`.  This is the project's named-residual
 convention: the open mathematics is isolated into one `Prop`, and everything
 downstream of it is proven.
 
 The named residual (`SubJohnsonListBound`): for every word `w`, the codewords of
 `rsCode dom k` whose agreement with `w` is `≥ k+m+1` number at most `L`, and each
-agrees on at most `A` points.  Research (this session, posted to #389) reduces
-this to a **structural-Sidon worst-case incidence bound** over `μ_n` — the
-recognized open problem; the additive Frobenius blowup shows it is *false* without
-the domain's Sidon/non-grid structure, so any proof must use it.
+agrees on at most `A` points. The proposed small agreement cap is obstructed
+by codeword received words, independently of any Sidon/non-grid structure.
 
 The wiring theorem (`explainableCoreSupply_of_listBound`): every explainable
 `(k+m+1)`-core has a *unique* explaining codeword (two degree-`<k` codewords
@@ -29,8 +26,13 @@ agreeing on `k+m+1 > k−1` points coincide), so the cores inject into
   `#cores ≤ Σ_{c : agree ≥ k+m+1} C(agree(c,w), k+m+1) ≤ L · C(A, k+m+1)`.
 
 Hence `SubJohnsonListBound dom k m L A ⟹ ExplainableCoreSupply dom k m (L·C(A,k+m+1))`,
-which is **polynomial when `L` is polynomial and `A` is at the Johnson scale** —
-exactly the deployed-supply target.  Only the list bound is open.
+The uniform quantifier matters: `subJohnsonListBound_agreement_cap` proves
+`n ≤ A` whenever `k+m+1 ≤ n`, by taking the received word to be the zero
+codeword. In particular, an all-word cap below `n` cannot hold even on a
+smooth subgroup. `subJohnsonListBound_supply_budget` makes the consequence
+explicit: the resulting budget `L · C(A,k+m+1)` is at least `C(n,k+m+1)`.
+This interface therefore cannot supply a smaller uniform multiplicity budget.
+Worst-case polynomial list bounds below Johnson remain a separate open question.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
@@ -60,8 +62,8 @@ noncomputable def bigAgreeCodewords (dom : Fin n ↪ F) (k m : ℕ) (w : Fin n �
 open Classical in
 /-- **The named-open residual: the sub-Johnson list bound.**  For every word `w`,
 the codewords agreeing with `w` on `≥ k+m+1` points number `≤ L`, and each agrees
-on `≤ A` points.  This is the recognized open core of #389 (the structural-Sidon
-worst-case list bound over `μ_n`); everything below it is proven. -/
+on `≤ A` points. The agreement-cap constraint is necessary even when the
+list-size bound is small: see `subJohnsonListBound_agreement_cap`. -/
 def SubJohnsonListBound (dom : Fin n ↪ F) (k m L A : ℕ) : Prop :=
   ∀ w : Fin n → F,
     (bigAgreeCodewords dom k m w).card ≤ L
@@ -75,6 +77,18 @@ and stays the single explicit open obligation in the strictly sub-Johnson band �
 recognized 25-year explicit-RS-beyond-Johnson problem. -/
 def SubJohnsonListResidual (dom : Fin n ↪ F) (k m L A : ℕ) : Prop :=
   SubJohnsonListBound dom k m L A
+
+/-- An all-word agreement cap must include full agreement with a codeword.
+Thus a cap below the length is impossible in every nonempty threshold band,
+independently of the evaluation domain's additive structure. -/
+theorem subJohnsonListBound_agreement_cap (dom : Fin n ↪ F) {k m L A : ℕ}
+    (hthreshold : k + m + 1 ≤ n) (h : SubJohnsonListBound dom k m L A) :
+    n ≤ A := by
+  classical
+  have hz : (0 : Fin n → F) ∈ bigAgreeCodewords dom k m 0 := by
+    simp [bigAgreeCodewords, listAgreeSet]
+    omega
+  simpa [listAgreeSet] using (h 0).2 0 hz
 
 open Classical in
 /-- **Uniqueness of the explaining codeword.**  Two degree-`<k` codewords agreeing
@@ -167,8 +181,18 @@ theorem explainableCoreSupply_of_listBound (dom : Fin n ↪ F) {k m L A : ℕ}
         rw [Finset.sum_const, smul_eq_mul]
     _ ≤ L * A.choose (k + m + 1) := Nat.mul_le_mul_right _ hLcard
 
+/-- The list-bound-to-supply consumer cannot improve the uniform trivial
+budget. This is a limitation of the all-word interface, not a counterexample
+to the production proximity theorem or the worst-case list-size conjecture. -/
+theorem subJohnsonListBound_supply_budget (dom : Fin n ↪ F) {k m L A : ℕ}
+    (h : SubJohnsonListBound dom k m L A) :
+    n.choose (k + m + 1) ≤ L * A.choose (k + m + 1) :=
+  (explainableCoreSupply_iff dom k m _).mp (explainableCoreSupply_of_listBound dom h)
+
 end ProximityGap.Ownership
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
+#print axioms ProximityGap.Ownership.subJohnsonListBound_agreement_cap
+#print axioms ProximityGap.Ownership.subJohnsonListBound_supply_budget
 #print axioms ProximityGap.Ownership.explainer_unique
 #print axioms ProximityGap.Ownership.explainableCoreSupply_of_listBound

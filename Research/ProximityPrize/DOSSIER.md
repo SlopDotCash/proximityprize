@@ -21,6 +21,21 @@ The [disproof log](DISPROOF_LOG.md) preserves the detailed anti-repeat record.
 - [Standalone snapshot, 2026-08-16](#standalone-snapshot-2026-08-16)
 - [Campaign dossier through 2026-07-11](#campaign-dossier-through-2026-07-11)
 
+## Source correction: all-word supply has the exact trivial budget
+
+`ExplainableCoreSupply dom k m B` quantifies over every received word, including
+the zero codeword. That word explains every `(k+m+1)`-subset. The theorem
+`ProximityGap.Ownership.explainableCoreSupply_iff` therefore identifies this
+predicate exactly with `n.choose (k+m+1) ≤ B`, on every evaluation domain.
+
+The related `SubJohnsonListBound` requires `n ≤ A` whenever its agreement
+threshold is at most `n`; its all-word agreement cap cannot sit below the block
+length. The theorem `subJohnsonListBound_supply_budget` shows that the existing
+list-bound consumer yields a budget at least `n.choose (k+m+1)`. Domain structure
+cannot improve this unrestricted interface. A useful stronger route must restrict
+the received words or bound the actual coherent fibers instead. These results
+do not refute a worst-case list-size bound or the production proximity conjecture.
+
 ## Source correction: the binder-floor route remains conditional
 
 The retained campaign §9 says the binder obstruction is gone “at every scale” and
