@@ -24,7 +24,7 @@ def main() -> int:
     root = Path(__file__).resolve().parents[1]
     failures = []
     for path in [root / 'ArkLib.lean', *sorted((root / 'ArkLib').rglob('*.lean'))]:
-        failures.extend(f'{path.relative_to(root)}:{line}: forbidden import {module}'
+        failures.extend(f'{path.relative_to(root).as_posix()}:{line}: forbidden import {module}'
                         for line, module in research_imports(path.read_text()))
     if failures:
         print('\n'.join(failures))

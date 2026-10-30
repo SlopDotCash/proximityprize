@@ -44,7 +44,7 @@ def expected_citations(keys: list[str]) -> dict[str, object]:
     """Build the expected Lean citation payload."""
 
     payload = extract_citations(DEFAULT_LEAN_ROOTS, keys)
-    payload["reference_source"] = str(DEFAULT_REFERENCES_JSON.relative_to(REPO_ROOT))
+    payload["reference_source"] = DEFAULT_REFERENCES_JSON.relative_to(REPO_ROOT).as_posix()
     return payload
 
 
