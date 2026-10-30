@@ -262,7 +262,7 @@ class Census:
         if len(support) <= self.k:
             return True
         q = interpolate([(self.xs[i], row[i]) for i in support[:self.k]], self.p)
-        return all(peval(q, self.xs[i], self.p) == row[i] for i in support)
+        return all(peval(q, self.xs[i], self.p) == row[i] % self.p for i in support)
 
     def gamma_report(self, u0, u1, gamma):
         p = self.p
