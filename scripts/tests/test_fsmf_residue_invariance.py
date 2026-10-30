@@ -1,3 +1,7 @@
+# Copyright (c) 2026 Oz-0s. All rights reserved.
+# Released under the MIT and Apache 2.0 licenses. See LICENSE-MIT and LICENSE.
+# Authors: Oz-0s
+
 """The P1 decoder's MCA clause must depend only on finite-field row values."""
 import contextlib
 import io
