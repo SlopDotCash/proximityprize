@@ -17,6 +17,8 @@ provided, scans only those Lean files/directories. Fails if live
     residual (see scripts/residual_axioms.txt), with any modifiers (including
     `public`/`meta` in `module` files) and with the name on a later line or
     after a comment, or
+  - an `axiom` keyword followed by an antiquotation (`axiom $n` in a syntax
+    quotation), which lets a macro declare an axiom under any name, or
   - a second declaration of an allowlisted residual name. The allowlist stores
     simple names, so an entry matches an `axiom` declared inside any namespace;
     without this rule a clone such as
@@ -142,6 +144,13 @@ _NAME = _COMP + r"(?:\." + _COMP + r")*"
 # `\s*` also spans newlines and blanked comments: `axiom\n  foo`,
 # `axiom/- c -/foo`, `axiom/- c\n-/foo` and `axiom«foo»` are all seen.
 AXIOM_RE = re.compile(_ID_START + r"axiom" + _ID_END + r"\s*(" + _NAME + r")")
+# A syntax quotation can splice the declared name in with an antiquotation:
+# `macro "launder " n:ident : command => `(axiom $n : False)` followed by
+# `launder w` declares the axiom `w`, and `$(mkIdent `w)` does the same without
+# a macro argument. `AXIOM_RE` needs a literal name after the keyword, so a live
+# `axiom` keyword followed by `$` is rejected on its own: the real name is only
+# known after elaboration, so it can never be matched against the allowlist.
+AXIOM_ANTIQUOT_RE = re.compile(_ID_START + r"axiom" + _ID_END + r"\s*\$")
 # Text inside a guillemet-quoted identifier (`«an axiom counterfeit'»`) is part
 # of a name, not a command, so an `axiom` match that starts inside one is not a
 # declaration. Quoted-identifier spans come from `lex_lean`, which also lexes
@@ -420,6 +429,12 @@ def declaration_heads(code: str, res: LexResult) -> list[re.Match]:
 def axiom_hits(code: str, res: LexResult) -> list[tuple[int, str]]:
     """Live `axiom` declarations: offset and declared name."""
     return [(m.start(), m.group(1)) for m in AXIOM_RE.finditer(code)
+            if outside_quoted(m.start(), res.quoted)]
+
+
+def antiquoted_axiom_hits(code: str, res: LexResult) -> list[int]:
+    """Live `axiom $…` heads in syntax quotations: the name comes from elaboration."""
+    return [m.start() for m in AXIOM_ANTIQUOT_RE.finditer(code)
             if outside_quoted(m.start(), res.quoted)]
 
 
@@ -860,6 +875,14 @@ def main() -> int:
                     f"(add to scripts/residual_axioms.txt only if it is a documented, "
                     f"tracked residual)"
                 )
+
+        for am_start in antiquoted_axiom_hits(live_text, lexed):
+            idx = live_text.count("\n", 0, am_start) + 1
+            failures.append(
+                f"{path}:{idx}: forbidden custom axiom declaration with an antiquoted "
+                f"name (`axiom $…` in a syntax quotation lets a macro or elaborator "
+                f"declare an axiom whose name the allowlist never sees)"
+            )
 
         for line_no, name in find_true_placebos(text, lexed):
             failures.append(
