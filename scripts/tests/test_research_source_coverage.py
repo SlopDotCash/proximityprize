@@ -65,6 +65,20 @@ class ResearchCoverage(unittest.TestCase):
             'import all Research.C\nmeta import ArkLib.Basic\n'),
             [(2, 'Research.A'), (3, 'Research.B'), (4, 'Research.C')])
 
+    def test_boundary_rejects_quoted_research_imports(self):
+        # Lean resolves a «quoted» module component to the same module, so
+        # `import «Research».Foo` brings Research into the library exactly
+        # like the plain spelling (verified on the pinned Lean 4.30.0-rc2:
+        # the quoted import elaborates, and «Research».Bar errors on the
+        # missing Research/Bar.olean). Quoting a later component names a
+        # different root module and stays allowed.
+        self.assertEqual(boundary.research_imports(
+            'import «Research».Foo\nimport «Research»\n'
+            'import all «Research».Bar\nmeta import «Research».Baz\n'
+            'import Foo.«Research».Bar\n'),
+            [(1, '«Research».Foo'), (2, '«Research»'),
+             (3, '«Research».Bar'), (4, '«Research».Baz')])
+
     def test_boundary_ignores_nested_comments(self):
         self.assertEqual(boundary.research_imports(
             '/- outer\n/- nested -/\nimport Research.Hidden\n-/\n'

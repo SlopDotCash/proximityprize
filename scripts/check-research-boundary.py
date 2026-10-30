@@ -5,6 +5,13 @@ import re
 from forbidden_tokens import comment_mask
 
 
+def _module_name(token: str) -> str:
+    # A module component may be a «quoted» identifier; the quoting is only
+    # spelling, not a different module: Lean resolves `import «Research».Foo`
+    # to the module Research.Foo. Compare the unquoted name.
+    return token.replace('«', '').replace('»', '')
+
+
 def research_imports(text: str) -> list[tuple[int, str]]:
     if "Research" not in text:
         return []
@@ -15,8 +22,10 @@ def research_imports(text: str) -> list[tuple[int, str]]:
     for number, line in enumerate(live.splitlines(), 1):
         match = re.match(r'\s*(?:(?:public|meta)\s+)*import\s+(?:all\s+)?(.+)', line)
         if match:
-            found.extend((number, module) for module in match[1].split()
-                         if module == 'Research' or module.startswith('Research.'))
+            for module in match[1].split():
+                name = _module_name(module)
+                if name == 'Research' or name.startswith('Research.'):
+                    found.append((number, module))
     return found
 
 
