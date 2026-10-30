@@ -5,6 +5,42 @@
 #include <functional>
 
 int main() {
+  {
+    const Context ctx{65537};
+    const int generator = ctx.primitive_root();
+    std::array<int, 16> mu{};
+    for (int i = 0; i < 16; ++i) mu[i] = ctx.power(generator, (65536 / 16) * i);
+    const Poly split = ctx.scale(65536, ctx.locator({0, 1, 2}, mu));
+    // Reconstruct the different polynomial with the old overflowing key.
+    std::uint64_t packed = 0;
+    for (int i = 3; i >= 0; --i) packed = packed * 65537 + split[i];
+    Poly nonsplit{};
+    for (int i = 0; i < 4; ++i) {
+      nonsplit[i] = packed % 65537;
+      packed /= 65537;
+    }
+    if (split == nonsplit) throw std::runtime_error("collision fixture is not distinct");
+    int split_count = 0, other_count = 0;
+    for (int x : mu) {
+      split_count += ctx.eval(split, x) == 0;
+      other_count += ctx.eval(nonsplit, x) == 0;
+    }
+    if (split_count != 3 || other_count != 0)
+      throw std::runtime_error("independent root census mismatch");
+    SplitRoots index{{split, {0, 1, 2}}};
+    if (!index.count(split) || index.count(nonsplit))
+      throw std::runtime_error("polynomial lookup confuses distinct root sets");
+    // The new ordering retains the old high-coefficient-first order without
+    // relying on an integer encoding that may overflow.
+    if (!polynomial_less(nonsplit, split))
+      throw std::runtime_error("coefficient ordering mismatch");
+  }
+  {
+    const Context ctx{2147483647};
+    const Poly a{2147483646, 0, 1, 2147483646};
+    if (ctx.add(a, a) != Poly{2147483645, 0, 2, 2147483645})
+      throw std::runtime_error("coefficient addition overflow");
+  }
   const std::vector<Pattern> patterns = {
       {{15}}, {{1, 14}}, {{3, 12}}, {{1, 2, 12}}, {{1, 2, 4, 8}}};
   int checked = 0;
