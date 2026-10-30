@@ -30,8 +30,8 @@ def normalize_repo_path(raw_path: str) -> str:
 
     path = Path(raw_path)
     if path.is_absolute():
-        return str(path.resolve().relative_to(REPO_ROOT))
-    return str(path)
+        return path.resolve().relative_to(REPO_ROOT).as_posix()
+    return path.as_posix()
 
 
 def infer_keys_from_files(file_paths: list[str], citations_payload: dict[str, object]) -> set[str]:

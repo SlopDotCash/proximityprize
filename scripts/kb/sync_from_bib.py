@@ -17,7 +17,7 @@ def build_payload(bib_path: Path) -> dict[str, object]:
     return {
         "count": len(entries),
         "entries": entries_json,
-        "source_bib": str(bib_path.relative_to(REPO_ROOT)),
+        "source_bib": bib_path.relative_to(REPO_ROOT).as_posix(),
     }
 
 

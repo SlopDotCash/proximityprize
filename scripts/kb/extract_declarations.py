@@ -266,12 +266,12 @@ def extract_declarations(roots: list[Path]) -> dict[str, object]:
         root_count = 0
         root_decls = 0
         for path in lean_files_under(root):
-            rel = str(path.relative_to(REPO_ROOT))
+            rel = path.relative_to(REPO_ROOT).as_posix()
             decls = parse_file(path)
             files[rel] = {"declarations": decls}
             root_count += 1
             root_decls += len(decls)
-        stats[str(root.relative_to(REPO_ROOT))] = {
+        stats[root.relative_to(REPO_ROOT).as_posix()] = {
             "files": root_count,
             "declarations": root_decls,
         }

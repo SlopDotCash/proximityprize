@@ -137,13 +137,13 @@ def check_markdown_links() -> list[str]:
             if resolved is None:
                 continue
             if not resolved.exists():
-                rel_doc = doc_file.relative_to(REPO_ROOT)
+                rel_doc = doc_file.relative_to(REPO_ROOT).as_posix()
                 errors.append(f"Broken link in {rel_doc}: {raw_target}")
     return errors
 
 
 def check_lean_tree_markdown() -> list[str]:
-    return [f"Markdown belongs outside ArkLib: {p.relative_to(REPO_ROOT)}"
+    return [f"Markdown belongs outside ArkLib: {p.relative_to(REPO_ROOT).as_posix()}"
             for p in sorted((REPO_ROOT / "ArkLib").rglob("*.md"))]
 
 

@@ -352,7 +352,7 @@ def census(root: Path) -> list[dict]:
                     break
             rows.append(
                 {
-                    "file": str(f.relative_to(root)),
+                    "file": f.relative_to(root).as_posix(),
                     "line": line_no + 1,
                     "token": token,
                     "kind": "doc" if in_comment else "hole",

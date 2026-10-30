@@ -44,13 +44,16 @@ def extract_citations(lean_roots: Path | list[Path], keys: list[str]) -> dict[st
     file_map: dict[str, list[str]] = {}
     key_map: dict[str, list[str]] = {key: [] for key in keys}
 
-    files = sorted((lean_file, root.parent) for root in roots for lean_file in root.rglob("*.lean"))
+    files = sorted(
+        ((lean_file, root.parent) for root in roots for lean_file in root.rglob("*.lean")),
+        key=lambda item: item[0].parts,
+    )
     for lean_file, base in files:
         text = lean_file.read_text(encoding="utf-8")
         citations = sorted(set(match.group(1) for match in pattern.finditer(text)))
         if not citations:
             continue
-        rel_path = str(lean_file.relative_to(base))
+        rel_path = lean_file.relative_to(base).as_posix()
         file_map[rel_path] = citations
         for key in citations:
             key_map[key].append(rel_path)
@@ -111,9 +114,9 @@ def main() -> int:
     keys = load_reference_keys(references_json, bib_path)
     payload = extract_citations(lean_roots, keys)
     payload["reference_source"] = (
-        str(references_json.relative_to(REPO_ROOT))
+        references_json.relative_to(REPO_ROOT).as_posix()
         if references_json.exists()
-        else str(bib_path.relative_to(REPO_ROOT))
+        else bib_path.relative_to(REPO_ROOT).as_posix()
     )
     write_json(args.output.resolve(), payload)
     print(
