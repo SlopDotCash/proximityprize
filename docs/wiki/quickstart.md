@@ -393,6 +393,12 @@ The R387 Z3 probe uses exit 0 only for all searched branches returning unsat, ex
 
 The R387 MILP probe uses the same unresolved exit 2. Exit 0 means the numerical solver reported every requested branch infeasible; it is not an independently verified infeasibility certificate, and a subset of pivots does not cover all directions. Exit 1 indicates a checked MCA witness.
 
+The source-seven signature probe's `--heuristic-restarts` path searches only
+all-regular signatures. It rejects a different `--regular-count` and all
+`--second-*-intersection` slices instead of silently ignoring them. Omit
+`--heuristic-restarts` to send those constraints to the exact Z3 backend. A
+heuristic miss is not an UNSAT certificate.
+
 G87V’s default census uses batches of at most 4,096 rows and retains one modular row basis per field instead of the full census matrix. It still enumerates every support/sign pattern. Run `python3 -m unittest discover -s scripts/tests -p test_g87v_streaming.py` to compare streamed summaries with materialized small cases. This storage change does not remove the combinatorial runtime cost.
 
 The transfer skeptic probe scans its stage C maximum in batches of at most 32,768 coset representatives, also capping phase matrices at four million entries. Stages A/B retain their full arrays. The calculation remains floating point and still visits every coset. Run `python3 -m unittest discover -s scripts/tests -p test_transfer_streaming.py` for comparisons with materialized sums on small fields.
