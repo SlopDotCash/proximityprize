@@ -175,6 +175,23 @@ theorem exists_randomLinearLambdaLowerEvent_of_probability_pos
   rw [hzero] at hprob
   exact (lt_irrefl (0 : ENNReal)) hprob
 
+/-- The unconstrained first-moment residual is false for degenerate dimension parameters:
+when `k = 0` and `ρ > 0`, any generator matrix generates the zero submodule of dimension 0,
+so the rate condition `dim(C) / |ι| ≥ ρ` cannot hold. -/
+theorem not_randomLinearLambdaLowerFirstMomentResidual_zero :
+    ¬ randomLinearLambdaLowerFirstMomentResidual (ZMod 2) (Fin 1) 2 0 0 0 1 := by
+  intro h
+  obtain ⟨G, hG⟩ := exists_randomLinearLambdaLowerEvent_of_probability_pos h
+  have hdim : LinearCode.dim (randomLinearCodeOfGeneratorMatrix G) = 0 := by
+    change LinearCode.dim (LinearCode.fromRowGenMat G) = 0
+    rw [LinearCode.dim_fromRowGenMat]
+    have hle := Matrix.rank_le_height G
+    omega
+  have hrate := hG.1
+  rw [hdim] at hrate
+  simp only [Fintype.card_fin, Nat.cast_zero, Nat.cast_one, div_one] at hrate
+  linarith
+
 /-- Conversely, one good generator matrix gives positive success probability.
 
 This uses only the full support of the uniform generator-matrix distribution; it is the
