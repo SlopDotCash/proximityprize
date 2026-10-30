@@ -32,6 +32,5 @@ weighted_correlated_agreement_for_parameterized_curves  # https://github.com/Slo
 weighted_correlated_agreement_for_parameterized_curves'  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) upstream-inherited BCIKS20 weighted curve agreement proof debt
 weighted_correlated_agreement_over_affine_spaces  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) upstream-inherited BCIKS20 weighted affine-space agreement proof debt
 weighted_correlated_agreement_over_affine_spaces'  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) upstream-inherited BCIKS20 weighted affine-space agreement proof debt
-no_selfReciprocal_factor  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) Hachi subfield root-orbit factor-swap proof debt
 foldKnowledgeStateFunction_toFun_full  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) Binius fold RBR toFun_full support-normalization proof debt
 foldOracleVerifier_rbrKnowledgeSoundness  # https://github.com/SlopDotCash/proximityprize/issues/2 (§3.1; historical ArkLib #470) Binius fold RBR soundness probability-normalization proof debt

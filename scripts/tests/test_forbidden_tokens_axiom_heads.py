@@ -106,7 +106,7 @@ class AxiomHeadForms(unittest.TestCase):
 
     def test_allowlisted_residual_axiom_still_passes(self) -> None:
         # A name from scripts/residual_axioms.txt must remain installable.
-        self.assert_clean("axiom no_selfReciprocal_factor : False\n")
+        self.assert_clean("axiom foldKnowledgeStateFunction_toFun_full : False\n")
 
     def test_commented_out_axiom_stays_invisible(self) -> None:
         self.assert_clean(

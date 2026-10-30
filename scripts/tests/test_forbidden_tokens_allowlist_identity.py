@@ -14,7 +14,7 @@ from pathlib import Path
 
 SCRIPT = Path(__file__).resolve().parents[1] / "forbidden_tokens.py"
 ALLOWLISTED = "foldOracleVerifier_rbrKnowledgeSoundness"
-OTHER_ALLOWLISTED = "no_selfReciprocal_factor"
+OTHER_ALLOWLISTED = "foldKnowledgeStateFunction_toFun_full"
 
 
 def scan(*paths: Path) -> "subprocess.CompletedProcess[str]":

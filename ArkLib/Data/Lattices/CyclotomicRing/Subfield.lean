@@ -94,12 +94,11 @@ The Section 3 results:
   proven) trace formula and closes bijectivity by the cardinality match. Eq. 9's coefficient
   analysis instead underlies `vElt_coeff` and the Lemma 6 proof plan.
 
-## Open items (`sorry`)
+## Former open items
 
-* `no_selfReciprocal_factor` (`Subfield/Field.lean`) — reversal swaps the two irreducible
-  factors of `X^d + 1`. Everything downstream of it in the Lemma 5 chain is proven.
-* `cInfNorm_psi_le` (`Subfield/NormBound.lean`) — Lemma 6; statement formalized, proof plan
-  in its docstring.
+* `no_selfReciprocal_factor` (`Subfield/Field.lean`) is proved: reversal swaps the two
+  irreducible factors of `X^d + 1`, so the Lemma 5 field isomorphism has no residual axiom.
+* `cInfNorm_psi_le` (`Subfield/NormBound.lean`) is proved: Lemma 6, `‖ψ(a)‖∞ ≤ 2β`.
 
 ## File map
 
