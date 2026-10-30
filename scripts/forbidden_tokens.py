@@ -70,8 +70,11 @@ TOKEN_RE = re.compile(r"\b(native_decide|bv_decide|unsafeCast|implemented_by)\b"
 # Meta code can add a kernel declaration without the `axiom` keyword, e.g.
 # `run_cmd liftCoreM <| addDecl (.axiomDecl { name := `w, type := mkConst ``False, .. })`.
 # ArkLib/Research proofs never need to add declarations from metaprograms.
+# `run_tac` (tactic) and `by_elab` (term) run the same inline metaprograms inside a
+# proof and can close a goal with `sorryAx` built from a string name, which no
+# `sorry` token reveals.
 META_DECL_RE = re.compile(
-    r"(?<![\w.'])(run_cmd|run_elab|run_meta)\b"
+    r"(?<![\w.'])(run_cmd|run_elab|run_meta|run_tac|by_elab)\b"
     r"|\b(add(?:Decl\w*|AndCompile)|axiomDecl)\b"
 )
 # `native_decide` is a synonym for `decide +native`; both forms, the config form
