@@ -18,16 +18,50 @@ NATIVE = {
     "bv_check": 'theorem f (x : BitVec 8) : x + 0 = x := by bv_check "f.lrat"\n',
 }
 
+# `elabConfig` evaluates the term (`Lean.Elab.Tactic.Config` on v4.30.0-rc2),
+# so these are the same `native := true` the flat scan missed. A nested `)`
+# also used to truncate the scan and drop a following `+native`.
+NESTED = {
+    "paren_true": "theorem t : 3 * 7 = 21 := by decide (native := (true))\n",
+    "double_paren": "theorem t : 3 * 7 = 21 := by decide (native := ((true)))\n",
+    "spaced_paren": "theorem t : 3 * 7 = 21 := by decide ( native := ( true ) )\n",
+    "comment_in_paren": "theorem t : 3 * 7 = 21 := by decide (native := (/- keep -/ true))\n",
+    "config_value_paren": "theorem t : 3 * 7 = 21 := by decide (config := { native := (true) })\n",
+    "config_wrapped": "theorem t : 3 * 7 = 21 := by decide (config := ({ native := (true) }))\n",
+    "false_then_plus": "theorem t : 3 * 7 = 21 := by decide (native := (false)) +native\n",
+    "bool_true": "theorem t : 3 * 7 = 21 := by decide (native := Bool.true)\n",
+    "flag": "theorem t : 3 * 7 = 21 := by decide (native := flag)\n",
+    "cfg_name": "theorem t : 3 * 7 = 21 := by decide (config := cfg)\n",
+    "with_inherit": "theorem t : 3 * 7 = 21 := by decide (config := { cfg with kernel := true })\n",
+    "spread": "theorem t : 3 * 7 = 21 := by decide (config := { ..cfg })\n",
+    "quoted_true": "theorem t : 3 * 7 = 21 := by decide (native := «true»)\n",
+}
+
 # Kernel-checked forms and prose: none of these is a native evaluation.
 CLEAN = """\
 theorem k1 : 3 * 7 = 21 := by decide
 theorem k2 : 3 * 7 = 21 := by decide +kernel
 theorem k3 : 3 * 7 = 21 := by decide (kernel := true)
 theorem k4 : 3 * 7 = 21 := by decide (native := false)
+theorem k6 : 3 * 7 = 21 := by decide (native := (false))
+theorem k7 : 3 * 7 = 21 := by decide (native := ((false)))
+theorem k8 : 3 * 7 = 21 := by decide (config := { kernel := true })
+theorem k9 : 3 * 7 = 21 := by decide (config := { native := (false) })
+theorem k10 : 3 * 7 = 21 := by decide (config := ({ native := (false), kernel := true }))
+theorem k11 : 3 * 7 = 21 := by decide +native (native := (false))
+theorem k12 : 3 * 7 = 21 := by decide (native := (true)) (native := false)
+theorem k13 : 3 * 7 = 21 := by decide +native (config := { kernel := true })
+theorem k14 : 3 * 7 = 21 := by decide (config := { cfg with native := (false) })
+theorem k15 : 3 * 7 = 21 := by decide (config := { native := (false), ..cfg })
 /-- Proved by kernel `decide`, not `decide +native` or `bv_check`. -/
 theorem k5 : 2 = 2 := rfl
--- no decide (native := true) here
-def s : String := "decide +native"
+-- no decide (native := (true)) here
+def s : String := "decide (native := (true))"
+def msg := "decide +native"
+theorem propDecide : Bool := decide (1 = 1)
+def αdecide (native : Bool) : Bool := native
+theorem notTactic : Bool := αdecide (true)
+def «decide (native := (true))» : Nat := 0
 """
 
 
@@ -46,6 +80,13 @@ def run(text: str) -> subprocess.CompletedProcess:
 class NativeForms(unittest.TestCase):
     def test_native_forms_are_rejected(self) -> None:
         for label, text in NATIVE.items():
+            with self.subTest(label=label):
+                result = run(text)
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                self.assertIn("forbidden native evaluation", result.stderr)
+
+    def test_nested_and_computed_native_forms_are_rejected(self) -> None:
+        for label, text in NESTED.items():
             with self.subTest(label=label):
                 result = run(text)
                 self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
