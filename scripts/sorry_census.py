@@ -18,8 +18,11 @@ A token is classified as:
          `sorryAx` is the kernel axiom both `sorry` and `admit` elaborate to
          (Lean `Init/Prelude.lean`); writing it directly is a hole and must not
          slip past the `sorry` word-boundary match.
-         The core `stop` tactic (`macro "stop" tacticSeq => repeat sorry`)
-         in tactic position is also a hole: it yields `sorryAx` with no token.
+         The core `stop` tactic (`macro "stop" tacticSeq => repeat sorry`,
+         `Init/Tactics.lean`) in tactic position is also a hole: it yields
+         `sorryAx` with no `sorry` token. That includes a `stop` nested under
+         a combinator or inside a `{...}` block (`by all_goals stop done`,
+         `by { stop done }`), not only a `stop` written immediately after `by`.
   doc  — inside a docstring `/-- ... -/`, block comment `/- ... -/`,
          line comment `-- ...`, raw-string literal, or the literal
          (non-splice) text of a string (includes prose words containing 'admit')
@@ -49,12 +52,34 @@ DECL_RE = re.compile(
     r"(theorem|lemma|def|instance|example|abbrev|opaque)\s+([^\s({\[:]+)"
 )
 TOKEN_RE = re.compile(r"\b(sorry|admit|sorryAx)\b")
-# Lean core `stop` is `macro "stop" tacticSeq : tactic => `(tactic| repeat sorry)`:
-# it closes every remaining goal with `sorryAx` without a `sorry` token. `stop` is
-# also an ordinary identifier, so only match it where a tactic can start and it
-# is not followed by an operator, binder colon or closing delimiter.
+# Lean core `stop` is `macro "stop" tacticSeq : tactic => `(tactic| repeat sorry)`
+# (`Init/Tactics.lean`): the sequence is discarded and the tactic becomes
+# `repeat sorry`, so a successful use closes the goal with `sorryAx` and no
+# `sorry` token. `stop` is also an ordinary identifier, so only match it where
+# a tactic can start, and not when it is followed by an operator, a binder
+# colon or a closing delimiter (`stop :=`, `stop :`, `stop ≤`).
+# The introducer may be `by` / `;` / `<;>` / `=>` / `(`/`{`, a `·` or `.`
+# bullet, or a core combinator that runs a `tacticSeq` (`all_goals`, `try`,
+# `focus`, `with_reducible`, `classical`, `set_option … in`, …). `{ tacs }`
+# is `tacticSeqBracketed`, an alternative to `· tacs`. A line that is only
+# the singleton `{stop}` would also match; binders and structure fields do
+# not, because `stop :` and `stop :=` are excluded.
+_STOP_INTRO = (
+    r"^[ \t]*(?:[·.][ \t]*)?"
+    r"|\bby[ \t]+(?:[·.][ \t]*)?"
+    r"|;[ \t]*"
+    r"|<;>[ \t]*"
+    r"|=>[ \t]*"
+    r"|\([ \t]*"
+    r"|\b(?:all_goals|any_goals|focus|try"
+    r"|repeat1'|repeat'|repeat"
+    r"|with_reducible_and_instances|with_reducible"
+    r"|with_unfolding_all|with_unfolding_none"
+    r"|classical|unhygienic|show_term)[ \t]+"
+    r"|\bin[ \t]+"
+)
 STOP_RE = re.compile(
-    r"(?:^[ \t]*(?:[·.][ \t]*)?|\bby[ \t]+|;[ \t]*|<;>[ \t]*|=>[ \t]*|\([ \t]*)"
+    rf"(?:{_STOP_INTRO})(?:\{{[ \t]*)?"
     r"(stop)\b(?![ \t]*(?:[≤<≥>=:),\]⟧+*/|-]))",
     re.M,
 )
