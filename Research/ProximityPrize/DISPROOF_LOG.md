@@ -54501,3 +54501,34 @@ scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountResi
 
 Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
 `Classical.choice` and `Quot.sound`.
+
+### [164-isolated-count-positive-characteristic] Positive characteristic does not repair the unrestricted isolated count residual
+
+Date: 2026-10-30. Target:
+`ProximityGap.Frontier.AntipodalEvenOddDescent.IsolatedCountResidual`, declared in
+`Frontier/_AntipodalEvenOddDescent.lean`. This extends the rational witness in
+`Frontier/_IsolatedCountResidualRefuted.lean` to positive characteristic and general
+fields; it does not claim production Delta Star closure.
+
+`Frontier/_IsolatedCountPositiveCharacteristic.lean` verifies that for the interpolant
+`E(u) = -u²/6 + 7u/6` and `O = 1` at `k = 1`, the three elements `0, 1, 2` are isolated
+roots of `E(X²) - X·O(X²)` whenever `2` and `3` are nonzero in `F`. The set `{0, 1, 2}`
+has cardinality 3, contradicting the claimed cap `k + 1 = 2`.
+
+The theorem `not_isolatedCountResidual_of_char_gt_three` specializes this to every field
+of prime characteristic `p > 3` (which includes both sponsor fields), while
+`not_isolatedCountResidual_of_char_zero` covers characteristic zero. Therefore merely
+restricting the unrestricted residual to positive characteristic cannot repair it.
+The intended halved-subgroup domain restriction and degree/head bounds on `E` remain
+outside this statement and are not refuted.
+
+Reproduction:
+
+```
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IsolatedCountPositiveCharacteristic.lean
+scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountPositiveCharacteristic
+```
+
+Evidence class: Lean proof certificate; all declarations use only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
