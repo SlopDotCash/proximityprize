@@ -1,3 +1,7 @@
+# Copyright (c) 2026 Oz-0s. All rights reserved.
+# Released under the MIT and Apache 2.0 licenses. See LICENSE-MIT and LICENSE.
+# Authors: Oz-0s
+
 """Check the R387 linear-algebra certificates using unbounded integer arithmetic."""
 from pathlib import Path
 import sys
