@@ -2427,9 +2427,11 @@ witness incomparability, absorption dichotomy, collinear two-cover boost
 ≥ 352,321,537 ≥ k = 2^28) → `_P1RateQuarterNonCollinearTriple.lean`
 (`triple_pencil_rigidity`, `shared_triple_dichotomy`; collapse-to-collinear
 refuted by an explicit RS[32,8]/F₃₇ non-collinear triple) →
-`_P1RateQuarterSharedFreshTripleP1Refuted.lean`
-(`sharedFreshTripleFree_canonicalDomain_refuted`: the residual is FALSE at
-the literal canonical P1 domain, generator-symbolic μ₁₆-coset certificate)
+`_P1RateQuarterSharedFreshTripleRefuted.lean`
+(`not_sharedFreshTripleFree`: the residual is FALSE on every injective P1
+domain, via a 480,946,859-scalar shared-fresh family; the canonical-domain
+generator-symbolic μ₁₆-coset certificate
+`_P1RateQuarterSharedFreshTripleP1Refuted.lean` is an alternative witness)
 — per-coordinate escape charges DEAD. Counting arc:
 `_P1RateQuarterPencilCountCharge.lean` (exact rider caps, alignment ladder,
 ten-rider Johnson crossover at A ≥ 539,356,427) →

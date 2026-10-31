@@ -11,8 +11,9 @@ import ArkLib.ToMathlib.CurveFamilyHensel
 
 ## Why this file exists
 
-`OffcentreKeystone.Section5StrictDataOffcentreFin` is the satisfiable off-centre per-`P` §5
-bundle — γ-free, `hsubst`-free, with `htailDeg` derivable from `hrep` — but its `hPz` field still
+`OffcentreKeystone.Section5StrictDataOffcentreFin` is the off-centre per-`P` §5 bundle (legacy at
+`d_H ≥ 2`: its `hrep` field is F6-Ω-empty there,
+`LocalSeriesCorrected.section5DataOffcentreFin_natDegree_eq_one`) — γ-free, `hsubst`-free, with `htailDeg` derivable from `hrep` — but its `hPz` field still
 carries the **transposed** linear-representative conclusion
 
 ```
@@ -146,6 +147,10 @@ structure Section5StrictDataOffcentreFaithful {k deg : ℕ} {domain : ι ↪ F} 
   htailDeg : ∀ t, T < t → BetaToCurveCoeffPolys.αFromBeta x₀ R H hHyp Bcoeff t = 0
   /-- the Prop-5.5 polynomial representative of the **local** Hensel series. -/
   Ppoly : F[X][Y]
+  /-- the Prop-5.5 local representative identity. This field is unsatisfiable whenever
+  `2 ≤ H.natDegree`, for every `Bcoeff`
+  (`LocalSeriesCorrected.not_hrep_gammaLocal_of_two_le_natDegree`); every inhabitant of this
+  structure has `d_H = 1` (`LocalSeriesCorrected.section5DataOffcentreFaithful_natDegree_eq_one`). -/
   hrep : polyToPowerSeries𝕃 H Ppoly = BetaToCurveCoeffPolys.gammaLocal x₀ R H hHyp Bcoeff
   hdegX : Polynomial.Bivariate.degreeX Ppoly ≤ 1
   /-- the number of curve coefficients (at most `k + 1`). -/
@@ -298,7 +303,11 @@ from: the GS factor bundle, the Prop-5.5 local representative (`hrep` against `g
 per-point matching data, the finite-range cardinality bound, the curve data `(n, hn, c)`, and the
 per-`z` curve-Hensel root datum — with the truncation index fixed at `T := Ppoly.natDegree`,
 `htailDeg` **derived** from `hrep`, and the faithful `hPz` **derived** from the curve-Hensel
-datum by Hensel uniqueness.  No transposed linear representative appears in the `hPz` lane. -/
+datum by Hensel uniqueness.  No transposed linear representative appears in the `hPz` lane.
+
+The `hrep` input is unsatisfiable whenever `2 ≤ H.natDegree`, for every `Bcoeff`
+(`LocalSeriesCorrected.not_hrep_gammaLocal_of_two_le_natDegree`); every inhabitant of the produced
+structure has `d_H = 1` (`LocalSeriesCorrected.section5DataOffcentreFaithful_natDegree_eq_one`). -/
 noncomputable def section5DataOffcentreFaithful_of_producers
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}

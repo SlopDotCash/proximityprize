@@ -15,7 +15,8 @@ control the prize sup
 
   `M(n) = max_b |η_b| ≤ C·√(n·log(p/n))`
 
-via extreme-value theory for the *proven* integrable (Poisson, level-repulsion-free) spacing law.
+via extreme-value theory for the *measured* integrable (Poisson, level-repulsion-free) spacing law
+(the Poisson spacing is an empirical observation, not a theorem; audit CW-B18-23).
 
 ## Why the question is well-posed (the in-tree D8 / probe input)
 
@@ -40,8 +41,8 @@ order-preserving reparametrisation that fixes the bulk and only stretches the to
 (probe T2): take the real spectrum and multiply its single largest value by `K` (a "structured bad
 coset" resonance). The sorted order is unchanged and **all but one** gap-ratio is unchanged, so
 `⟨r⟩` moves by `O(1/m)` — it stays Poisson — while the **max moves by exactly `K`**. Hence a
-family can be Poisson-spaced with an arbitrarily inflated max: *the proven spacing law puts no
-bound on the sup.* The sup is a **single-event tail** quantity; the spacing is a **bulk** one.
+family can be Poisson-spaced with an arbitrarily inflated max: *a spacing law, even if proven,
+puts no bound on the sup.* The sup is a **single-event tail** quantity; the spacing is a **bulk** one.
 This is fence **F0** in the spacing-statistics dialect: 2nd-order / bulk arithmetic is blind to
 the rare-event tail, and the gap-ratio is precisely such a bulk functional.
 
@@ -72,15 +73,17 @@ survives: the spacing law is genuine but carries no tail information.
 * `tail_warp_inflates_max` — the same warp multiplies the max by exactly `K`: the sup is unbounded
   along the warp family.
 * `spacing_blind_to_sup` (MAIN, F0) — the assembled obstruction: there is a one-parameter family
-  (indexed by `K ≥ 1`) of spectra with **identical bulk gap-ratios** but max `= K·(old max)`. Hence
+  (indexed by `K ≥ 1`) of spectra with **identical lower-level gaps** (hence identical bulk
+  gap-ratios among the lower levels; `spacingRatio` itself is defined but not used in any theorem,
+  so equality of the full `⟨r⟩` is not proved) but max `= K·(old max)`. Hence
   no function of the bulk spacing statistic can bound the max; the Poisson spacing law is blind to
   the prize sup.
 * `evt_threshold_depth_is_logm` (F12 link) — the EVT threshold `uₙ = √(2n log m)` sits at tail-depth
   `t = uₙ/√n = √(2 log m)`, and the moment order `r = t²/2 = log m` it requires is the depth of the
   open energy/CLT input (F12). (Pure algebra of the threshold; the reduction statement.)
 
-NONE of these is a bound on `M(n)`. Together they show: the Berry–Tabor/Poisson spacing is real and
-proven, but it is a bulk statistic blind to the tail sup (F0), and the only route from it to the max
+NONE of these is a bound on `M(n)`. Together they show: the Berry–Tabor/Poisson spacing (measured,
+`⟨r⟩ ≈ 0.387`, not proven) is a bulk statistic blind to the tail sup (F0), and the only route from it to the max
 needs the dead threshold-depth energy control (F12).
 
 Issue #444 (lane K3). Probe: `scripts/probes/rust/probe_wfH_K3_berry_tabor_evt.rs`,
@@ -88,7 +91,7 @@ Issue #444 (lane K3). Probe: `scripts/probes/rust/probe_wfH_K3_berry_tabor_evt.r
 
 Distinct from K2 (`_wfHK2_katz_sarnak_extreme_value.lean`): K2 ruled out the *log-correlation /
 FHK* refinement of the iid-Gaussian max (white-noise ⇒ no FHK gain). K3 rules out the *Berry–Tabor
-spacing* as an independent handle: even with the spacing law proven, it is a bulk invariant blind to
+spacing* as an independent handle: even if the (measured) spacing law were proven, it is a bulk invariant blind to
 the tail sup. K2's gate is on the covariance structure; K3's is on the spacing/value-distribution
 distinction.
 -/
@@ -189,7 +192,7 @@ sorted spectrum `lv` with a positive top level. For every threshold `B`, there i
   * max top value `> B` (`tailWarp_top_unbounded`).
 
 Therefore a family of spectra with *identical bulk spacing statistics* can have an *arbitrarily
-large* maximum. No functional of the bulk gap-ratio (the proven Poisson `⟨r⟩ ≈ 0.387`) can bound the
+large* maximum. No functional of the bulk gap-ratio (the measured Poisson `⟨r⟩ ≈ 0.387`) can bound the
 sup. The Berry–Tabor spacing law is a bulk statistic, blind to the single-event tail that IS the
 prize object `M(n)`. (Fence F0 in spacing-statistics form.) -/
 theorem spacing_blind_to_sup {k : ℕ} (lv : Fin (k + 2) → ℝ)
@@ -226,7 +229,7 @@ theorem evt_threshold_depth_is_logm (n m : ℝ) (hn : 0 < n) (hm : 1 ≤ m) :
 /-! ### 7. The lane verdict, one implication. -/
 
 /--
-**K3 verdict (single statement).** Granting the proven Poisson spacing (`⟨r⟩ ≈ 0.387`, integrable,
+**K3 verdict (single statement).** Granting the measured Poisson spacing (`⟨r⟩ ≈ 0.387`, integrable,
 no level repulsion) and the prize threshold scaling, the Berry–Tabor route yields exactly:
 
   * a bulk-spacing-preserving family with unbounded max (`spacing_blind_to_sup`): the spacing law is
@@ -234,7 +237,7 @@ no level repulsion) and the prize threshold scaling, the Berry–Tabor route yie
   * its only rigorous EVT upgrade lives at moment-depth `r = log m` (`evt_threshold_depth_is_logm`):
     the dead energy/CLT input (F12).
 
-So the proven Poisson spacing gives NO non-reducing handle on `M(n)`. -/
+So the Poisson spacing (measured, and even if proven) gives NO non-reducing handle on `M(n)`. -/
 theorem k3_route_blind_and_reduces {k : ℕ} (lv : Fin (k + 2) → ℝ)
     (hpos : 0 < lv (Fin.last (k + 1))) (B : ℝ) (n m : ℝ) (hn : 0 < n) (hm : 1 ≤ m) :
     (∃ K : ℝ, 1 ≤ K ∧

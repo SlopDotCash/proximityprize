@@ -24,8 +24,10 @@ bridge hypothesis, and no vacuity**.
 identity fold, ONE challenge-derived point per binding check) is degenerate relative to
 paper-STIR — and in it, the checking verifier's soundness analysis does not need the
 BCIKS20 proximity gap at all.  The proximity gap is needed only when folding genuinely
-reduces degree (paper-STIR; the #304 `UnifiedProducer` lane remains the route for the
-Johnson-regime CA core and the L5.4 budgets, which require the `t`-repetition wire model).
+reduces degree (paper-STIR). The #304 `UnifiedProducer` is only a conditional count-triggered
+interface, false in general inside the Johnson window (the counterexample in
+`UnifiedExtractionTarget`); the Johnson-regime CA core needs probability-triggered producers, and
+the L5.4 budgets require the `t`-repetition wire model.
 
 Contents:
 1. **`ThresholdKSF.predKSF` / `ThresholdKSF.rbrKnowledgeSoundness_of_flipBounds`** — the
@@ -920,8 +922,10 @@ theorem stirCheckingRbrSoundness_genuine :
 rbr soundness residual holds outright (`stirCheckingRbrSoundness_genuine`), the implication
 from the correlated-agreement residuals is true a fortiori.  In the degenerate single-domain
 identity-fold wire model, the protocol-level soundness needs NO proximity-gap input: the
-proximity gap is only needed when folding genuinely reduces degree (paper-STIR; the #304
-`UnifiedProducer` lane). -/
+proximity gap is only needed when folding genuinely reduces degree (paper-STIR). The #304
+`UnifiedProducer` is a conditional count-triggered interface that is false in general inside the
+Johnson window (counterexample in `UnifiedExtractionTarget`); the Johnson-regime CA core needs
+probability-triggered producers. -/
 theorem stirCheckingCABridge_genuine (e ProxGapBound : Fin (M + 1) → ℝ≥0) :
     stirCheckingCABridge M φ deg δ (stirEpsStar (F := F) (ι := ι) M δ) e ProxGapBound :=
   fun _ _ => stirCheckingRbrSoundness_genuine M φ deg δ

@@ -564,8 +564,9 @@ character sum (the AVERAGE direction), but the floor's worst case is the *struct
 extremizer, whose list `N_fib` is `≫` generic. So the floor is NOT a character-sum cancellation
 bound — it is the combinatorial optimality of the antipodal subset-sum fibre, which the Shaw
 operator encodes as its top moment `E_{ρn}` (R6/R7), not its gap. The gap `B` (W4, §8) controls the
-generic stratum; the floor's open content is the optimality of the top moment — and the two are the
-SAME wall (BCHKS Thm 1.9: worst-case incidence ⟺ explicit-RS beyond-Johnson list size).
+generic stratum; the floor's open content is the optimality of the top moment.  Heuristically the
+two are the same wall (cf. the external BCHKS 2025/169 Thm 1.9 relating worst-case incidence to
+explicit-RS beyond-Johnson list size); no such equivalence is formalized in this file.
 
 **§8c — THE MOMENT-PROBLEM FRAMING + the floor's HEALTH (2026-06-13, convergent across agents).**
 The floor is a *constrained Chebyshev–Markov moment problem*. The agreement profile `{a_c}` of EVERY
@@ -841,7 +842,6 @@ prevent disproved finite laws from being reused as exact inputs.
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourLongOutsiderCollapse.outsideLineAtLeast_ten_card_le_one_of_card_gt_sixteen
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourPopulation.offBothPoints_card_le_ten_of_relevant_core_cap
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourPopulation.card_le_sixteen_of_equal_slope_overlap_three_core_cap
-#check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourUnequalResidual.overlap_three_core_cap_saturation_of_sixteen_lt_card
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourUnequalClosure.offBothPoints_card_le_nine_of_unequal_slope
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourUnequalClosure.card_le_sixteen_of_overlap_three_core_cap
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterCoreBandSynthesis.lineDeterminant_eq_zero_of_three_relevant_half_core_lines

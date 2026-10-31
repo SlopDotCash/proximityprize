@@ -113,11 +113,15 @@ variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 
 /-! ### Substrate copied from `Frontier/_W17CurveDecodStitching.lean`
 
-The stitching brick `_W17CurveDecodStitching.lean` is a new file with no olean, so it cannot
-be imported under lock-free verification.  The three lemmas below are copied VERBATIM from
-it (namespace `ProximityGap.W17Stitching`), with provenance noted per lemma; they are
-`private` here so that the eventual consolidation pass can dedupe against the W17 originals
-without a public-name conflict. -/
+The four lemmas below are copied VERBATIM from `_W17CurveDecodStitching.lean` (namespace
+`ProximityGap.W17Stitching`; `lagrangeCurve_comb_eq_of_agree` and `close_seed_dist_le` are public
+there), with provenance noted per lemma, and kept `private` to avoid a public-name conflict.
+**Known duplication (audit CW-B17-16):** the intended fix is to
+`import Research.ProximityPrize.Frontier._W17CurveDecodStitching` and delete these copies.  That
+is currently blocked because W17's import chain
+(`SubspaceDesignListSize` → `ProximityPrize/Extensions/Data/CodingTheory/SubspaceDesign.lean`)
+fails to elaborate on this tree (call to `ArkLib.FRS.GK16.gk16Claim16StructuralData_at` with a
+mismatched injectivity hypothesis); importing W17 here would make this file unbuildable too. -/
 
 -- PROVENANCE: verbatim copy of `ProximityGap.W17Stitching.sum_basis_eval_mul_pow`
 -- (`Frontier/_W17CurveDecodStitching.lean`).

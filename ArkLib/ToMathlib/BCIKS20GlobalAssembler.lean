@@ -44,6 +44,13 @@ each a single named fact about the global GS objects (the exact output shape of 
 SectionFactor / FactorPigeonhole / branch-collapse lane).  `glue_split_of_prod` connects the
 irreducible-factorization form `evalX (C x₀) R = ∏ᵢ Hᵢ` to `hsplit`.
 
+**Scope caveat (F7).** The global producer route (`Section5StrictDataFinOn.ofProducersOn_global`,
+`hcoeffPoly_witness_of_producersOn_global`, and the uses of
+`DecodedRootSupply.mpFin_of_decoded_roots`) consumes the branch certificate `hbr` / `hbranch`,
+which `BranchSeparationUnsat.branchCert_eq_zero` refutes for `2 ≤ H.natDegree`. That route can
+therefore be non-vacuous only for linear `H`; higher-degree callers must supply pointwise roots
+(`DecodedProximateRoot` / `PerZProximateRoot`).
+
 NOTE on imports: an earlier version re-elaborated the needed declarations of
 `ArkLib.ToMathlib.XiCertReduction` and `ArkLib.ToMathlib.BCIKS20BundleAssembler` verbatim here
 (as "Parts 0a/0b"), under the same fully qualified names, because their `.olean`s were missing in

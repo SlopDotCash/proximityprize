@@ -219,7 +219,14 @@ theorem natDegree_eq_pred_of_rootSupport_card_eq_pred
       (ArkLib.CS25.card_domain_roots_le dom p hp0)
   omega
 
-/-- Locator polynomial of a finite evaluation-coordinate set. -/
+/-- Locator polynomial of a finite evaluation-coordinate set.
+
+This is the canonical Frontier locator API (nonzero, monic, `natDegree = card`, vanishing on
+`S`, nonvanishing off `S`, divisibility of every polynomial vanishing on `S`); other Frontier
+files (e.g. `_P1RateQuarterBelowJohnsonLocatorListRefuted`, `_P1RateQuarterCrossPencilVoteReuse`)
+delegate to it.  `domainLocator_dvd_of_eval_eq_zero` generalizes
+`ProximityGap.WBPencil.vanishing_prod_dvd` to an arbitrary index type without a nonzero
+premise. -/
 noncomputable def domainLocator
     {iota F : Type} [DecidableEq iota] [Field F]
     (dom : iota ↪ F) (S : Finset iota) : F[X] :=
@@ -239,6 +246,20 @@ theorem domainLocator_natDegree
     (fun i _ => X_sub_C_ne_zero (dom i))]
   simp only [Polynomial.natDegree_X_sub_C, Finset.sum_const,
     nsmul_eq_mul, mul_one]
+  simp
+
+theorem domainLocator_monic
+    {iota F : Type} [DecidableEq iota] [Field F]
+    (dom : iota ↪ F) (S : Finset iota) :
+    (domainLocator dom S).Monic :=
+  monic_prod_of_monic _ _ fun i _ => monic_X_sub_C (dom i)
+
+theorem domainLocator_eval_eq_zero_of_mem
+    {iota F : Type} [DecidableEq iota] [Field F]
+    (dom : iota ↪ F) (S : Finset iota) {i : iota} (hi : i ∈ S) :
+    (domainLocator dom S).eval (dom i) = 0 := by
+  rw [domainLocator, eval_prod]
+  apply Finset.prod_eq_zero hi
   simp
 
 /-- Split a locator into the coordinates shared with `T` and the remaining
@@ -1252,6 +1273,31 @@ theorem commonBase_secants_form_collapsed_cluster
   exact three_commonBase_secants_lineDeterminant_eq_zero
     family gamma0 beta0 beta1 beta
 
+/-! ## Direct Möbius-label charge no-go -/
+
+/-- Direction value carried at one common-base mismatch coordinate. -/
+noncomputable def mobiusDirectionValue
+    {F : Type} [Field F] (gamma0 u1 mismatch gamma : F) : F :=
+  u1 + (gamma - gamma0)⁻¹ * mismatch
+
+/-- At a nonzero base mismatch, the direction value at one fixed coordinate
+is injective in the nonbase rider.  Consequently a coordinate can carry many
+different riders with distinct direction labels; forgetting the label cannot
+give a coordinate-only injection. -/
+theorem mobiusDirectionValue_injOn_nonbase
+    {F : Type} [Field F] (gamma0 u1 mismatch : F)
+    (hmismatch : mismatch ≠ 0) :
+    Set.InjOn (mobiusDirectionValue gamma0 u1 mismatch)
+      {gamma : F | gamma ≠ gamma0} := by
+  intro gamma hgamma beta hbeta heq
+  simp only [Set.mem_setOf_eq] at hgamma hbeta
+  simp only [mobiusDirectionValue] at heq
+  have hinv : (gamma - gamma0)⁻¹ = (beta - gamma0)⁻¹ := by
+    apply mul_right_cancel₀ hmismatch
+    linear_combination heq
+  have hsub : gamma - gamma0 = beta - gamma0 := inv_injective hinv
+  linear_combination hsub
+
 /-! ## Pointwise transversality -/
 
 /-- **Common-base secant slopes separate at a base mismatch.**  If two
@@ -1270,17 +1316,18 @@ theorem commonBase_secantSlope_eval_ne_of_baseMismatch
     (slopePolynomial gamma0 beta q0 q).eval x ≠
       (slopePolynomial gamma0 beta' q0 q').eval x := by
   intro heq
-  simp only [slopePolynomial, eval_mul, eval_C, eval_sub] at heq
-  rw [hq, hq'] at heq
-  have hd : q0.eval x - (u0 + gamma0 * u1) ≠ 0 :=
-    sub_ne_zero.mpr hmiss
-  have hb : gamma0 - beta ≠ 0 := sub_ne_zero.mpr hbeta
-  have hb' : gamma0 - beta' ≠ 0 := sub_ne_zero.mpr hbeta'
-  have hfactor :
-      (beta - beta') * (q0.eval x - (u0 + gamma0 * u1)) = 0 := by
-    field_simp [hb, hb'] at heq
-    linear_combination heq
-  exact (mul_ne_zero (sub_ne_zero.mpr hbb') hd) hfactor
+  have hval : ∀ {b : F} {q : F[X]}, gamma0 ≠ b → q.eval x = u0 + b * u1 →
+      (slopePolynomial gamma0 b q0 q).eval x =
+        mobiusDirectionValue gamma0 u1 (u0 + gamma0 * u1 - q0.eval x) b := by
+    intro b q hb hqb
+    have hb' : b - gamma0 ≠ 0 := sub_ne_zero.mpr hb.symm
+    have hb'' : gamma0 - b ≠ 0 := sub_ne_zero.mpr hb
+    simp only [slopePolynomial, mobiusDirectionValue, eval_mul, eval_C, eval_sub, hqb]
+    field_simp
+    ring
+  rw [hval hbeta hq, hval hbeta' hq'] at heq
+  exact hbb' (mobiusDirectionValue_injOn_nonbase gamma0 u1 _
+    (sub_ne_zero.mpr hmiss.symm) (Ne.symm hbeta) (Ne.symm hbeta') heq)
 
 /-- Family-facing `href` adapter for the collapsed-cluster injection.  Two
 distinct common-base canonical secants are pointwise transverse at every
@@ -1348,31 +1395,6 @@ theorem commonLift_no_transverse_pairEquation
   intro hequation
   exact htrans (commonLift_pairEquation_forces_direction_eval_eq
     gamma0 gamma x q0 source target hgamma hsource htarget hequation)
-
-/-! ## Direct Möbius-label charge no-go -/
-
-/-- Direction value carried at one common-base mismatch coordinate. -/
-noncomputable def mobiusDirectionValue
-    {F : Type} [Field F] (gamma0 u1 mismatch gamma : F) : F :=
-  u1 + (gamma - gamma0)⁻¹ * mismatch
-
-/-- At a nonzero base mismatch, the direction value at one fixed coordinate
-is injective in the nonbase rider.  Consequently a coordinate can carry many
-different riders with distinct direction labels; forgetting the label cannot
-give a coordinate-only injection. -/
-theorem mobiusDirectionValue_injOn_nonbase
-    {F : Type} [Field F] (gamma0 u1 mismatch : F)
-    (hmismatch : mismatch ≠ 0) :
-    Set.InjOn (mobiusDirectionValue gamma0 u1 mismatch)
-      {gamma : F | gamma ≠ gamma0} := by
-  intro gamma hgamma beta hbeta heq
-  simp only [Set.mem_setOf_eq] at hgamma hbeta
-  simp only [mobiusDirectionValue] at heq
-  have hinv : (gamma - gamma0)⁻¹ = (beta - gamma0)⁻¹ := by
-    apply mul_right_cancel₀ hmismatch
-    linear_combination heq
-  have hsub : gamma - gamma0 = beta - gamma0 := inv_injective hinv
-  linear_combination hsub
 
 /-! ## External-line determinant factorization -/
 

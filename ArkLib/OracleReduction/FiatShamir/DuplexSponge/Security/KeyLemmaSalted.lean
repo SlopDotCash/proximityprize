@@ -698,7 +698,11 @@ F1 falsifier (challenge-free vs per-round verifier logs): a `Hyb₃ˢ` verifier 
 key the prover queried first still leaves that key absent from the separately
 canonicalized verifier log, while `Hyb₄ˢ`'s verifier logs it. Whether this residual is
 true therefore remains open on two counts: that log-observation question (no salted
-refutation has been constructed) and the CO25 §5.8 replay analysis. -/
+refutation has been constructed) and the CO25 §5.8 replay analysis.
+
+**Boundary caveat (`L = 0`).** Independently of the open question above, the residual is false
+for zero-permutation protocols (`pSpec.totalNumPermQueries = 0`): the guard then admits `L = 0`,
+where `claim5_24Bound U tₕ tₚ tₚᵢ 0 < 0` (`claim5_24Bound_neg_of_L_eq_zero`). -/
 def Hyb34StepResidualS [SampleableType U]
     (T_H T_P : Type) [LawfulTraceNablaImpl T_H T_P StmtIn U] (δ : ℕ)
     (Salt : Type) [SaltCodec U δ Salt] [VCVCompatible Salt]

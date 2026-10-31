@@ -53,33 +53,36 @@ which rearranges to the **sharpest second-moment floor**:
         M² ≥ meanA + SpectralVar / meanA.                              (`prize_bhatiaDavis_floor`)
 ```
 This is STRICTLY sharper than the bare Parseval floor `M² ≥ meanA` (`ParsevalFloor`): it adds the
-full second-moment term `SpectralVar/meanA`.  For `μ_n` in the prize regime it gives
+full second-moment term `SpectralVar/meanA`.  For `μ_n`, *informally* (asymptotic arithmetic on
+the closed form, **not** formalized here: no theorem in this file states `M² ≥ 3n(1−o(1))`), it gives
 ```
-        M² ≥ n·(1−o(1)) + 2n²/n·(1−o(1)) = 3n·(1−o(1)),   i.e.   M ≥ √3·√n,
+        M² ≥ n·(1−o(1)) + 2n²/n·(1−o(1)) = 3n·(1−o(1)),   i.e.   M ≳ √3·√n,
 ```
-recovering the known `√3√n` floor through a **new exact-variance route** that needs ONLY the exact
-4th moment `E_2 = 3n²−3n` — no Lam–Leung half-basis, no Wick ladder.  At finite `n` it is exact and
-non-asymptotic (`M²/n ≥ 2.809` at `n = 16`, `→ 3` as `n → ∞`).
+a heuristic route to the known `√3√n` floor via the exact 4th moment `E_2 = 3n²−3n`.  CAVEAT: the
+exact value `E_2(μ_n) = 3n²−3n` (hence `specVar_mu_n_eq`) is proven in-tree only under
+`p > 2^n`; for `n ≥ 32` that excludes the prize window `p ≈ n⁴`, so the `√3√n` reading in the prize
+regime is not covered by any theorem here.  (Probe value: `M²/n ≥ 2.809` at `n = 16`.)
 
-## §4 — The genuinely-provable char-0 Form-D pieces
+## §4 — Char-0 Gaussian bookkeeping (definitional only)
 
-The directive flags two char-0 statements as GENUINELY PROVABLE and asks to land them:
-* the **char-0 Hermite recurrence `b_k² = n·k`** — the orthonormal-polynomial three-term recurrence
-  of the Gaussian `N(0,n)` whose `2r`-th moments are the char-0 Wick moments `(2r−1)‼·n^r`;
-* the **exact-sup identity `M = 2·max_k b_k`** — for the Gaussian/semicircle edge.
-We land the *exact recurrence law* `b_k² = n·k` as the Hankel-determinant / Hermite content (the
-content that the period moments equal the `N(0,n)` moments to depth `log p`), axiom-clean.
+§4 records the Gaussian `N(0,n)` even-moment sequence `gMom n r = (2r−1)‼·n^r` with its step
+recurrence, and the *label* `hermiteB2 n k := n·k` for the Hermite off-diagonal coefficients.  These
+are definitional facts: nothing in this file links `hermiteB2` or `gMom` to the Gauss periods, to
+Hankel determinants, or to `M` (no `M = 2·max_k b_k` statement is made).  The genuine Hankel/Jacobi
+Hermite content lives in `_FormDExactSupHermiteRecurrence` (`jacobiOffDiagSq_eq`, with the exact-sup
+identity as the explicit hypothesis `TopEigIdentity`).
 
 ## Honest scope
 
 PROVEN axiom-clean: the abstract spectral variance König–Huygens identity; the Bhatia–Davis
 inequality for nonnegative bounded finite sequences; the exact closed-form `A_1`/`A_2` instantiation
 on the real Gauss periods; the Bhatia–Davis floor `M² ≥ meanA + SpectralVar/meanA` on the genuine
-`prizeRadiusSq`; the exact `μ_n` spectral-variance value via `mu_n_rEnergy_two_eq`; the char-0
-Hermite recurrence `b_k² = n·k`.
+`prizeRadiusSq`; the exact `μ_n` spectral-variance value via `mu_n_rEnergy_two_eq` (under
+`p > 2^n`); the definitional char-0 Gaussian moment step `gMom_step`.  NOT formalized: the
+asymptotic `M ≥ √3√n` reading (informal, see above).
 
 This does NOT close the face.  The variance over the *frequency index* `b` is fully computable and
-gives only the *floor* (`M ≥ √3√n`); it does NOT bound the wraparound `W_r` at depth `r ≈ log p`
+gives only a *floor* (informally `M ≳ √3√n`); it does NOT bound the wraparound `W_r` at depth `r ≈ log p`
 (that is the variance over the *prime family*, `_CreateWraparoundVariance`'s OPEN
 `OffDiagonalPairCancellation`).  The exact residual is stated in `residual_note`.
 -/
@@ -297,10 +300,11 @@ theorem prize_bhatiaDavis_floor {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G :
   exact max_ge_mean_add_var_div (univ.erase (0 : F)) (aEta ψ G) (erase_zero_nonempty)
     (fun b _ => aEta_nonneg ψ G b) hmax hmeanpos
 
-/-! ## §3b The EXACT `μ_n` spectral variance and the asymptotic `√3√n` floor
+/-! ## §3b The EXACT `μ_n` spectral variance (exact-energy regime `p > 2^n`)
 
-Feeding `mu_n_rEnergy_two_eq` (`E_2(μ_n) = 3n²−3n`) into `specVar_eta_eq` pins the spectral variance
-of `μ_n` exactly.  We package the closed form. -/
+Feeding `mu_n_rEnergy_two_eq` (`E_2(μ_n) = 3n²−3n`, proven for `p > 2^n`) into `specVar_eta_eq` pins
+the spectral variance of `μ_n` exactly in that regime.  We package the closed form.  The asymptotic
+`√3√n` floor is NOT stated as a theorem; `p > 2^n` excludes `p ≈ n⁴` once `n ≥ 32`. -/
 
 open ArkLib.ProximityGap.REnergyTwoExact (mu_n_rEnergy_two_eq)
 open ArkLib.ProximityGap.EnergyEqualitySidonModNeg (muN)
@@ -311,8 +315,8 @@ variable {p : ℕ} [Fact p.Prime] {n mm : ℕ}
 ```
     SpectralVar(μ_n) = (p·(3n²−3n) − n⁴)/(p−1) − ((p·n − n²)/(p−1))²,
 ```
-fully pinned (no open input) for `n = 2^mm` (`mm ≥ 1`), `p > 2^n`.  This is the genuinely-new exact
-closed-form second-moment object of the thin subgroup. -/
+pinned (no open input) for `n = 2^mm` (`mm ≥ 1`) under the exact-energy hypothesis `p > 2^n` only;
+for `n ≥ 32` this hypothesis excludes the prize window `p ≈ n⁴`. -/
 theorem specVar_mu_n_eq (hn2 : n = 2 ^ mm) (hm : 1 ≤ mm) (hp : 2 ^ n < p)
     {ω : ZMod p} (hω : IsPrimitiveRoot ω n)
     {ψ : AddChar (ZMod p) ℂ} (hψ : ψ.IsPrimitive) :
@@ -327,21 +331,15 @@ theorem specVar_mu_n_eq (hn2 : n = 2 ^ mm) (hm : 1 ≤ mm) (hp : 2 ^ n < p)
 
 end ArkLib.ProximityGap.Frontier.SpectralVariance
 
-/-! ## §4 The char-0 Hermite recurrence `b_k² = n·k` (Form-D, genuinely provable)
+/-! ## §4 Char-0 Gaussian moment bookkeeping (definitional)
 
-The char-0 (Bessel/Wick) period moments are the moments of a centered Gaussian `N(0, n)`:
-`m_{2r} = (2r−1)‼·n^r`, `m_{2r+1} = 0`.  The orthonormal-polynomial three-term recurrence of
-`N(0, σ²)` is the (rescaled) Hermite recurrence with off-diagonal coefficients `b_k² = σ²·k`.  With
-`σ² = n` this is `b_k² = n·k` — the EXACT char-0 Form-D recurrence law (and `M = 2·max_k b_k` is the
-semicircle/Gaussian edge identity).
-
-We land TWO things axiom-clean:
-1. the **recurrence law `b_k² = n·k`** as the arithmetic-progression ladder `b_{k+1}² = b_k² + n`,
-   `b_0² = 0` (the cleanest, subtraction-free form — `b_k² = nk` ⟺ AP with common difference `n`);
-2. the **Gaussian even-moment recurrence `m_{2(r+1)} = (2r+1)·n·m_{2r}`** (the double-factorial step
-   `(2(r+1)−1)‼ = (2r+1)·(2r−1)‼` for `r ≥ 1`), which is the moment relation whose Hankel
-   determinants produce the Hermite coefficients `b_k² = n·k`.  This is the in-tree `wick_succ`
-   recurrence (`CharPWickConditionalPin.wick_succ`), recorded here in the Form-D / Hermite language. -/
+The char-0 Wick moments `m_{2r} = (2r−1)‼·n^r` are the even moments of `N(0, n)`.  We record the
+sequence `gMom` and its step recurrence `m_{2(r+1)} = (2r+1)·n·m_{2r}` (valid for all `r`, including
+`r = 0`; it is the real-valued analogue of `CharPWickConditionalPin.wick_succ`, which carries a
+superfluous `1 ≤ r` hypothesis).  `hermiteB2 n k := n·k` is only a *name* for the Hermite
+off-diagonal coefficients of `N(0,n)`; its lemmas below are definitional arithmetic.  NOTHING here
+links `hermiteB2`/`gMom` to the Gauss periods, Hankel determinants or `M`; for the genuine
+Jacobi/Hankel content see `_FormDExactSupHermiteRecurrence.jacobiOffDiagSq_eq`. -/
 
 namespace ArkLib.ProximityGap.Frontier.HermiteRecurrence
 
@@ -352,42 +350,25 @@ even-moment sequence `gMom n r = (2r−1)‼·n^r`.  (Same `Wick_r` as `CharPWic
 over `ℝ`.) -/
 noncomputable def gMom (n : ℝ) (r : ℕ) : ℝ := ((2 * r - 1)‼ : ℝ) * n ^ r
 
-/-- The **Hermite off-diagonal recurrence coefficient squared** for `N(0,n)`: `b_k² := n·k`.  This is
-the EXACT char-0 Form-D recurrence law (the orthonormal-polynomial three-term recurrence of the
-Gaussian whose moments are `gMom`). -/
+/-- A *label* for the Hermite off-diagonal recurrence coefficient squared of `N(0,n)`: `b_k² := n·k`.
+This is a definition, not a derived result; it is not connected to the Gauss periods in this file. -/
 noncomputable def hermiteB2 (n : ℝ) (k : ℕ) : ℝ := n * k
 
-/-- **`hermiteB2_eq`** — the recurrence law in closed form: `b_k² = n·k`.  (Definitional; stated as a
-named theorem so it is a first-class, citable result.) -/
-theorem hermiteB2_eq (n : ℝ) (k : ℕ) : hermiteB2 n k = n * k := rfl
-
-/-- **`hermiteB2_zero`** — `b_0² = 0` (the recurrence starts at `k = 0` with no off-diagonal). -/
+/-- **`hermiteB2_zero`** — `b_0² = 0` (definitional). -/
 theorem hermiteB2_zero (n : ℝ) : hermiteB2 n 0 = 0 := by simp [hermiteB2]
 
-/-- **`hermiteB2_succ`** — the additive step `b_{k+1}² = b_k² + n`: each off-diagonal coefficient
-squared increases by exactly `n`.  This is the Hermite ladder (`b_k² = n·k` ⟺ arithmetic progression
-with common difference `n`), the cleanest, subtraction-free form of the recurrence. -/
+/-- **`hermiteB2_succ`** — the additive step `b_{k+1}² = b_k² + n` (definitional arithmetic). -/
 theorem hermiteB2_succ (n : ℝ) (k : ℕ) : hermiteB2 n (k + 1) = hermiteB2 n k + n := by
   simp only [hermiteB2]; push_cast; ring
 
-/-- **`hermiteB2_ratio`** — the Hermite-law content `b_k²/k = n` for `k ≥ 1` (the ratio
-`b_k²/(n·k) = 1` EXACTLY in char-0).  This is the identity the char-p wraparound `W_r` PERTURBS at
-depth `r ≈ log p` (the Form-D turnover); in char-0 it holds for all `k`. -/
+/-- **`hermiteB2_ratio`** — `b_k²/k = n` for `k ≥ 1` (definitional arithmetic). -/
 theorem hermiteB2_ratio (n : ℝ) (k : ℕ) (hk : 1 ≤ k) : hermiteB2 n k / (k : ℝ) = n := by
   have hkne : (k : ℝ) ≠ 0 := by
     exact_mod_cast Nat.one_le_iff_ne_zero.mp hk
   rw [hermiteB2, mul_div_assoc, div_self hkne, mul_one]
 
-/-- **`hermiteB2_closed`** — `b_k² = n·k` from the ladder `b_0² = 0`, `b_{k+1}² = b_k² + n` by
-induction (the AP closed form).  Confirms the additive ladder integrates to the exact Hermite law. -/
-theorem hermiteB2_closed (n : ℝ) (k : ℕ) : hermiteB2 n k = n * k := by
-  induction k with
-  | zero => simp [hermiteB2]
-  | succ j ih => rw [hermiteB2_succ, ih]; push_cast; ring
-
 /-- **`doubleFactorial_step`** — the odd double-factorial step `(2(r+1)−1)‼ = (2r+1)·(2r−1)‼` for
-`r ≥ 1` (for `r ≥ 1`, `2r−1 ≥ 1` so `2(r+1)−1 = (2r−1)+2` with no nat-subtraction anomaly).  The
-algebraic backbone of the Gaussian moment recurrence. -/
+`r ≥ 1` (for `r ≥ 1`, `2r−1 ≥ 1` so `2(r+1)−1 = (2r−1)+2` with no nat-subtraction anomaly). -/
 theorem doubleFactorial_step (r : ℕ) (hr : 1 ≤ r) :
     ((2 * (r + 1) - 1)‼ : ℝ) = (2 * r + 1 : ℝ) * ((2 * r - 1)‼ : ℝ) := by
   have h1 : 2 * (r + 1) - 1 = (2 * r - 1) + 2 := by omega
@@ -397,15 +378,16 @@ theorem doubleFactorial_step (r : ℕ) (hr : 1 ≤ r) :
   push_cast
   rw [h2]
 
-/-- **`gMom_step`** — the char-0 even-moment recurrence `m_{2(r+1)} = (2r+1)·n·m_{2r}` (for `r ≥ 1`),
-i.e. `gMom n (r+1) = (2r+1)·n·gMom n r`.  This is the in-tree `wick_succ` recurrence over `ℝ`, the
-moment relation whose Hankel determinants give the Hermite coefficients `b_k² = n·k`.  THE Form-D
-char-0 content: the period moments equal the `N(0,n)` Gaussian moments, with this exact recurrence. -/
-theorem gMom_step (n : ℝ) (r : ℕ) (hr : 1 ≤ r) :
+/-- **`gMom_step`** — the char-0 even-moment recurrence `m_{2(r+1)} = (2r+1)·n·m_{2r}` for every
+`r` (at `r = 0` both sides equal `n`).  A real-valued restatement of the Wick double-factorial step;
+it says nothing about the Gauss periods. -/
+theorem gMom_step (n : ℝ) (r : ℕ) :
     gMom n (r + 1) = (2 * r + 1 : ℝ) * n * gMom n r := by
-  unfold gMom
-  rw [doubleFactorial_step r hr, pow_succ]
-  ring
+  rcases Nat.eq_zero_or_pos r with rfl | hr
+  · simp [gMom]
+  · unfold gMom
+    rw [doubleFactorial_step r hr, pow_succ]
+    ring
 
 /-- **`gMom_one`** — `m_2 = n` (the char-0 second moment is exactly `n`, matching `E_1 = n`). -/
 theorem gMom_one (n : ℝ) : gMom n 1 = n := by simp [gMom]
@@ -418,8 +400,8 @@ namespace ArkLib.ProximityGap.Frontier.SpectralVariance
 
 /- **Residual note (the EXACT residual, recorded as documentation only — NOT a theorem).**
 This file pins the variance of the squared periods over the FREQUENCY index `b` exactly (closed form,
-no open input), and gives the Bhatia–Davis floor `M² ≥ meanA + SpectralVar/meanA` (`= 3n` asymptotically,
-`M ≥ √3√n`) — the LOWER side of Face V, unconditional, witnessed by the proven `specVar_eq_centered`,
+no open input), and gives the Bhatia–Davis floor `M² ≥ meanA + SpectralVar/meanA` (informally `≈ 3n`
+asymptotically, not formalized; the `μ_n` pin needs `p > 2^n`) — the LOWER side of Face V, unconditional, witnessed by the proven `specVar_eq_centered`,
 `specVar_nonneg`, `bhatiaDavis`, `max_ge_mean_add_var_div`, `specMean_eta_eq` below. It does NOT bound
 the wraparound `W_r` at depth `r ≈ log p` — that is the variance over the PRIME family
 (`_CreateWraparoundVariance.OffDiagonalPairCancellation`, the open Sato–Tate pair-equidistribution).
@@ -443,7 +425,6 @@ end ArkLib.ProximityGap.Frontier.SpectralVariance
 #print axioms ArkLib.ProximityGap.Frontier.SpectralVariance.specVar_mu_n_eq
 #print axioms ArkLib.ProximityGap.Frontier.HermiteRecurrence.hermiteB2_succ
 #print axioms ArkLib.ProximityGap.Frontier.HermiteRecurrence.hermiteB2_ratio
-#print axioms ArkLib.ProximityGap.Frontier.HermiteRecurrence.hermiteB2_closed
 #print axioms ArkLib.ProximityGap.Frontier.HermiteRecurrence.doubleFactorial_step
 #print axioms ArkLib.ProximityGap.Frontier.HermiteRecurrence.gMom_step
 #print axioms ArkLib.ProximityGap.Frontier.HermiteRecurrence.gMom_one

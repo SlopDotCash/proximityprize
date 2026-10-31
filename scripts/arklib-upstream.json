@@ -1155,6 +1155,70 @@
       ],
       "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
       "reason": "Generalize only the coefficient universe while retaining the upstream weighted-degree proof, so the arbitrary-universe downstream bound reuses the canonical declaration without a duplicate implementation; canonical source and downstream consumers directly checked."
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/DegreeConflict.lean",
+      "upstream_blob": "064b0015a46ab38ecacdd8218d670fd719972c6d",
+      "sha256": "072335829d180b2ec5fe522942536d6200e0d0a5527b2374294571bffd596f0d",
+      "declarations": [
+        "KZG.CommitmentScheme.findA",
+        "KZG.CommitmentScheme.findABase",
+        "KZG.CommitmentScheme.findACandidates",
+        "KZG.CommitmentScheme.findACandidates_length_le",
+        "KZG.CommitmentScheme.find_a_successful"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Audit L26: replace full (n+1)-subset enumeration in findA by a fixed n-point base plus one-point extensions (at most |U| interpolations), preserving the subset/card/degree specs."
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/EvaluationBindingConflict.lean",
+      "upstream_blob": "866bd9f273db46e40526ecb347310ef87d0a2a9e",
+      "sha256": "dcf2a8228c2e33d0075aafb97929631af1636b1e51ed5c1926eb3057b33b9755",
+      "declarations": [
+        "KZG.CommitmentScheme.chooseSConflict",
+        "KZG.CommitmentScheme.filter_map_conflict_length",
+        "KZG.CommitmentScheme.chooseSConflict_scan_size"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Audit L26: bounded (n+2)-prefix scan instead of full-field Array.range p scan."
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/Basic.lean",
+      "upstream_blob": "112bbd0df6a8477caaa9f490de1107265adbe27f",
+      "sha256": "11330c9c18c81225c4f127d7561a07b54f48105a44559599890cde6d6c6e9ff1",
+      "declarations": [
+        "KZG.CommitmentScheme.function_binding"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Docstring-only (audit L25): state that function_binding covers the cached-coin randomOracle experiment on unifSpec, not fresh private coins."
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
+      "upstream_blob": "6d42f4c498926acf532448106486cd570b6c0948",
+      "sha256": "f137306fd98e13bd5dc16993381196b1aeeb3c488880b6bf4321730abb4fed25",
+      "declarations": [
+        "Code.possibleDistsToCode",
+        "Code.distToCode",
+        "Code.distToCode_singleton_self",
+        "Code.possibleDistsToCodeIncl",
+        "Code.possibleDistsToCode_subset_incl",
+        "Code.distToCodeIncl",
+        "Code.distToCodeIncl_eq_zero_of_mem"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Audit L90: document that possibleDistsToCode/distToCode exclude the queried word (distance to C \\ {w}, top at C = {w}) instead of calling distToCode a generalisation of distFromCode; add the genuine inclusive generic distance distToCodeIncl with singleton/in-code boundary lemmas; correct stale header numeric-type claims for Code.dist / dist'. Upstream declarations unchanged in content; standard axioms only."
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/Binding.lean",
+      "upstream_blob": "e75d066fd73f564300faa014c02efd48254d3e00",
+      "sha256": "373382209aaf2611a95fcc49d54a07adad75d5a02216704c877075251c871d5c",
+      "declarations": [
+        "KZG.CommitmentScheme.binding",
+        "KZG.CommitmentScheme.binding_order_of_eq_prime_of_ne_one",
+        "KZG.CommitmentScheme.binding_exists_zmod_power_of_generator"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Docstring (audit L25): state that binding covers the cached-coin randomOracle experiment on unifSpec, not fresh private coins (unifFwdImpl). Also carries the earlier dedup that turns the two prime-order group helpers into compatibility aliases of the shared Groups lemmas in KZG/Algebra.lean (statements unchanged)."
     }
   ]
 }

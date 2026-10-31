@@ -40,22 +40,17 @@ ArkLib's `OracleReduction` framework, following the conventions used by
 * `accepts` — the §6.1 decision predicate (extracted for use by the
   verifier and by completeness proofs).
 
-The `prover` / `verifier` / `oracleReduction` triple is complete. The
-soundness lemmas `protocol62_knowledgeSound` (L6.6) and
-`protocol62_rbrKnowledgeSound` (L6.8) carry the **concrete** paper error
-terms (`max (ε_mca(C,δ) + |Λ(C^{≡2},δ)|/|F|) ((1-δ)^t)` and the
-per-round split). These lemmas are **2-special-soundness** arguments whose
-extractor must *rewind* the prover, which the in-tree straightline
-`Verifier.knowledgeSoundness` interface cannot express (the documented wall in
-`research/proximity-prize/dispositions/oraclereduction-leftovers.md`). The genuine
-mathematical content — the 2-special-sound rewinding extractor — is supplied
-**fully proven** as `protocol62_knowledgeSoundnessViaRewinding` (the framework
-predicate `Extractor.knowledgeSoundnessViaRewinding`), and each straightline
-lemma is reduced to a single **named bridge residual**
-`Bridge.StraightlineOfRewinding` (taken as an explicit hypothesis),
-discharged by `Bridge.knowledgeSound_of_rewinding`. There are **no**
-`sorry`/`axiom` terms: the residual is a named, documented interface gap, not an
-admitted proof. The IOR scaffolding is exactly what is needed downstream.
+The `prover` / `verifier` / `oracleReduction` triple is complete. The real
+ABF26 Lemma 6.6 / 6.8 theorems are the canonical
+`ToyProblem.Spec.oracleVerifier_knowledgeSoundness_winningSetUpperBound`
+(`Spec/KnowledgeSoundness.lean`) and
+`ToyProblem.Spec.oracleVerifier_rbrKnowledgeSoundnessWorstCase` (canonical
+`Spec/General.lean`). The rewinding section of this extension is only the 2×2
+reconstruction algebra for the abstract predicate `toyAccepts`, and the legacy
+aliases `protocol62_knowledgeSound` / `protocol62_rbrKnowledgeSound` are **not**
+L6.6 / L6.8: their types contain no verifier, spot-check count `t`, encoder,
+MCA/list error or knowledge-state function, and no theorem here takes an
+`hBridge` hypothesis.
 
 ## Protocol description
 
@@ -248,6 +243,12 @@ def outputRelation (C : Set (ι → F)) (δ : ℝ≥0) :
     ToyProblem.relaxedRelation (k := k) (ℓ := 2) C δ input.1.1.1
       ![input.1.1.2.1, input.1.1.2.2] input.1.2
 
+/-- `outputRelation` reads only the statement: its witness component is unused. -/
+theorem outputRelation_witness_irrelevant (C : Set (ι → F)) (δ : ℝ≥0)
+    (x : Statement (F := F) k × (∀ i, OracleStatement ι F i)) (w w' : Witness (F := F) k) :
+    (x, w) ∈ outputRelation k C δ ↔ (x, w') ∈ outputRelation k C δ :=
+  Iff.rfl
+
 -- The 1-arity relaxed relation `R̃¹_{C,δ}` lives in
 -- `Spec/SimplifiedIOR.lean :: outputRelation` (the C6.9 output relation).
 -- We expose it from the simplified-IOR file rather than here so its
@@ -272,10 +273,9 @@ interfaces. This is the documented wall in
 `research/proximity-prize/dispositions/oraclereduction-leftovers.md` (residual (1)+(2)) and in the
 `ArkLib/ToMathlib/RewindingExtractor.lean` module docstring.
 
-We therefore supply the genuine mathematical content — the 2-special-sound rewinding extractor for
-the toy protocol — as a **fully-proven** `Extractor.knowledgeSoundnessViaRewinding` witness (the
-rewinding-flavoured analogue of `Verifier.knowledgeSoundness`), and reduce the straightline holes
-below to a single named bridge residual `Bridge.StraightlineOfRewinding`. -/
+We record the 2×2 reconstruction algebra as an `Extractor.knowledgeSoundnessViaRewinding` witness
+for the abstract acceptance predicate `toyAccepts` below; this is not a statement about the actual
+verifier. -/
 
 variable {k}
 
@@ -346,7 +346,13 @@ prefix-indexed decoded message pair `decode` held invariant by the fork (a singl
 to the `γ` round from a *recorded prover state*, so the prover's internal message pair is fixed
 across both completions — only `γ` is resampled). Completion `(γ, g)` at prefix `pre` is accepting
 iff `g` is the honest `γ`-combination of `decode pre` and that pair places the input in
-`outputRelation C δ` (the per-prefix MCA decode of ABF26 Remark 6.7). -/
+`outputRelation C δ` (the per-prefix MCA decode of ABF26 Remark 6.7).
+
+This is **not** verifier acceptance: its first conjunct already assumes the target membership
+`(pre, decode pre) ∈ outputRelation C δ`, and `outputRelation` reads only the statement (its witness
+component `input.2` is unused, `outputRelation_witness_irrelevant`), so any extractor meets the
+target whenever `toyAccepts` holds; no spot checks, MCA decoding, or decoder validity are
+derived. -/
 def toyAccepts (C : Set (ι → F)) (δ : ℝ≥0)
     (decode : ToyPrefix ι F k → (Fin k → F) × (Fin k → F)) :
     ToyPrefix ι F k → Extractor.Accepts F (Fin k → F) :=
@@ -358,8 +364,9 @@ def toyAccepts (C : Set (ι → F)) (δ : ℝ≥0)
 /-- **2-special-soundness of the toy rewinding extractor.** From any two accepting completions on
 distinct challenges `γ₁ ≠ γ₂`, `toyRewindingExtractor` recovers a witness in `outputRelation`.
 Both accepting completions are honest `γ`-combinations of the *same* prefix-fixed pair `decode pre`;
-the 2×2 solve recovers exactly that pair via `toySolve_combine`, and membership transfers by
-`rfl`. -/
+the 2×2 solve recovers exactly that pair via `toySolve_combine`, and membership is the assumed
+conjunct of `toyAccepts` (returned as `hmem`); the solve is valid algebra but not needed for
+membership, because `outputRelation` ignores the witness. -/
 theorem toyRewindingExtractor_twoSpecialSound (C : Set (ι → F)) (δ : ℝ≥0)
     (decode : ToyPrefix ι F k → (Fin k → F) × (Fin k → F)) :
     (toyRewindingExtractor (ι := ι) (F := F) (k := k)).TwoSpecialSound
@@ -376,13 +383,10 @@ theorem toyRewindingExtractor_twoSpecialSound (C : Set (ι → F)) (δ : ℝ≥0
   rw [hg₁', hg₂', toySolve_combine hγ' (decode pre).1 (decode pre).2]
   exact hmem
 
-/-- **Knowledge soundness via rewinding for Construction 6.2 (proven).** The toy protocol admits a
-2-special-sound rewinding extractor, hence satisfies the framework's
-`Extractor.knowledgeSoundnessViaRewinding` predicate against `outputRelation`. This is the
-rewinding-flavoured analogue of `Verifier.knowledgeSoundness` whose absence blocked
-`protocol62_knowledgeSound`. By `Extractor.knowledgeSoundnessViaRewinding.extracts`, whenever a
-prover beats the 2-special-sound knowledge error `1/|F|` at a prefix, a valid witness is
-extractable — no `sorry`, no `axiom`. -/
+/-- Abstract 2-special-sound rewinding witness for the relation-assuming predicate `toyAccepts`.
+Not knowledge soundness of Construction 6.2: see the canonical
+`oracleVerifier_knowledgeSoundness_winningSetUpperBound` /
+`oracleVerifier_rbrKnowledgeSoundnessWorstCase`. -/
 theorem protocol62_knowledgeSoundnessViaRewinding [Fintype F] [Nonempty F]
     (C : Set (ι → F)) (δ : ℝ≥0)
     (decode : ToyPrefix ι F k → (Fin k → F) × (Fin k → F)) :
@@ -709,47 +713,10 @@ theorem accepts_of_inputRelation {k t : ℕ}
     rw [hg_eq, map_add, map_smul, hf 0, hf 1]
     simp [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
 
-/-- **Lemma 6.6 of [ABF26]** (knowledge soundness of Construction 6.2).
-
-For any `δ ∈ (0, δ_min(C))`, the toy-problem IOR has knowledge
-soundness against the relaxed relation `R̃_{C,δ}^2` with error
-
-  `max { ε_mca(C, δ) + |Λ(C^{≡2}, δ)| / |F|, (1 − δ)^t }`.
-
-Stated against ArkLib's `Verifier.knowledgeSoundness` (cf.
-`OracleReduction/Security/Basic.lean :: Verifier.knowledgeSoundness`).
-
-**Naming convention — paper vs API.** The ArkLib API's
-`Verifier.knowledgeSoundness` takes `(relIn, relOut)` where `relIn`
-is the relation the extracted witness satisfies and `relOut` is the
-relation the verifier's output must satisfy. In this file `relIn` is
-*our* `outputRelation` (paper's `R̃²_{C,δ}`, what the extractor
-extracts to) and `relOut` is `Set.univ` (paper's C6.2 has trivial
-output `Unit`). The name `outputRelation` reflects the **paper's**
-"this is the protocol's output relation" perspective; do not be misled
-by the API parameter named `relIn`.
-
-The proof exhibits an extractor that (i) erasure-decodes `(f₁, f₂)`
-against the largest agreement set, (ii) outputs the recovered messages,
-and (iii) bounds the failure event by the union of the MCA failure and
-the list-decoding cardinality bound (cf. Remark 6.7).
-
-**Statement-level finding & repair (2026-06).** ABF26 L6.6 is a 2-special-soundness argument whose
-extractor must **rewind** the prover (two accepting transcripts at distinct `γ`, solve a 2×2 linear
-system), but ArkLib's `Verifier.knowledgeSoundness` quantifies only over a single-run
-`Extractor.Straightline` with no re-invocation handle, so the rewinding extractor is not expressible
-against it (the wall recorded in `oraclereduction-leftovers.md` residual (1)+(2)). We prove the
-genuine content as `protocol62_knowledgeSoundnessViaRewinding` (the framework predicate
-`Extractor.knowledgeSoundnessViaRewinding`, fully proven above) and reduce the straightline
-statement to the **single named bridge residual** below — the precise straightline↔rewinding
-interface translation, the smallest missing piece.
-
-The residual is `Bridge.StraightlineOfRewinding` from the *proven* rewinding witness to
-the straightline conclusion, so the theorem `protocol62_knowledgeSound` discharges the conclusion by
-feeding the proven witness through the residual (no `sorry`, no `axiom`).
-
-**Named bridge residual.** The named L6.6 bridge residual is carried as the explicit hypothesis
-`hBridge`; no global axiom is introduced. -/
+/-- **Legacy alias, not Lemma 6.6.** Definitionally `protocol62_knowledgeSoundnessViaRewinding`;
+its type mentions no verifier, spot-check count, encoder, error term, or bridge hypothesis. The real
+L6.6 is `ToyProblem.Spec.oracleVerifier_knowledgeSoundness_winningSetUpperBound`. Do not cite this
+as L6.6. -/
 theorem protocol62_knowledgeSound
     [SampleableType F] [SampleableType ι] [Nonempty ι] [Nonempty F]
     (C : Set (ι → F)) (δ : ℝ≥0)
@@ -769,29 +736,10 @@ decomposes as `u = u₁ + γ·u₂` for some
 provides exactly this decomposition with probability `≥ 1 − ε_mca`. -/
 def remark67 : Unit := ()
 
-/-- **Lemma 6.8 of [ABF26]** (round-by-round knowledge soundness of
-Construction 6.2).
-
-For any `δ ∈ (0, δ_min(C))`, the IOR has round-by-round knowledge
-soundness (paper Definition A.5 ≡ ArkLib's
-`Verifier.rbrKnowledgeSoundness`) against `R̃_{C,δ}^2`, with per-round
-errors
-
-  * `ε_mca(C, δ) + |Λ(C^{≡2}, δ)| / |F|` after the γ round,
-  * `(1 − δ)^t` after the spot-check round.
-
-The `KnowledgeStateFunction` tracks the largest current agreement set;
-the extractor erasure-decodes against it.
-
-**Statement-level finding & repair (2026-06).** Same wall as L6.6: `Verifier.rbrKnowledgeSoundness`
-(`OracleReduction/Security/RoundByRound.lean`, line 811) quantifies only over a single-run
-`Extractor.RoundByRound` (no re-invocation handle), so the rewinding extractor is not expressible
-against it. We reduce to the **named bridge residual** below from the *proven* rewinding witness
-`protocol62_knowledgeSoundnessViaRewinding` (same 2-special-sound rewinding extractor; the rbr
-accounting splits its failure across the `γ` and spot-check rounds). No `sorry`, no `axiom`.
-
-**Named bridge residual.** The named L6.8 bridge residual is carried as the explicit hypothesis
-`hBridge`; no global axiom is introduced. -/
+/-- **Legacy alias, not Lemma 6.8.** Definitionally `protocol62_knowledgeSoundnessViaRewinding`;
+its type mentions no verifier, spot-check count, encoder, error term, knowledge-state function, or
+bridge hypothesis. The real L6.8 is
+`ToyProblem.Spec.oracleVerifier_rbrKnowledgeSoundnessWorstCase`. Do not cite this as L6.8. -/
 theorem protocol62_rbrKnowledgeSound
     [SampleableType F] [SampleableType ι] [Nonempty ι] [Nonempty F]
     (C : Set (ι → F)) (δ : ℝ≥0)
@@ -808,8 +756,9 @@ end Spec
 
 end ToyProblem
 
-/-! ### Axiom audit (issue #18 ToyProblem bridge residual frontiers) -/
+/-! ### Axiom audit (legacy rewinding-algebra aliases; not L6.6/L6.8 proofs) -/
 
 #print axioms ToyProblem.Spec.protocol62_knowledgeSoundnessViaRewinding
 #print axioms ToyProblem.Spec.protocol62_knowledgeSound
 #print axioms ToyProblem.Spec.protocol62_rbrKnowledgeSound
+#print axioms ToyProblem.Spec.outputRelation_witness_irrelevant

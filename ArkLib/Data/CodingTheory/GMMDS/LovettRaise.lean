@@ -101,25 +101,10 @@ theorem pVanish_raiseVec_self {V : Fin m → (Fin n → ℕ)} (hn : 1 ≤ n) (i�
 
 /-! ## `V*(k)` is preserved by the witness raise -/
 
-/-- The weight of `oneVec` is `n − 1` (re-derivation; matches `LovettLemma2456`). -/
-theorem vAbs_oneVec (hn : 1 ≤ n) : vAbs (oneVec n hn) = n - 1 := by
-  classical
-  unfold vAbs oneVec
-  rw [Finset.sum_ite, Finset.sum_const, Finset.sum_const]
-  simp only [smul_eq_mul, mul_one, mul_zero, add_zero]
-  have hcard : (Finset.univ.filter (fun x : Fin n => (x : ℕ) < n - 1)).card = n - 1 := by
-    rw [show (n-1) = (Finset.range (n-1)).card from (Finset.card_range _).symm]
-    apply Finset.card_bij (fun (x : Fin n) _ => (x : ℕ))
-    · intro a ha
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ha ⊢
-      simpa using ha
-    · intro a _ b _ h; exact Fin.val_injective h
-    · intro b hb
-      simp only [Finset.mem_range] at hb
-      refine ⟨⟨b, by omega⟩, ?_, rfl⟩
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-      simpa using hb
-  rw [hcard]
+/-- The weight of `oneVec` is `n − 1` (compatibility alias of `oneVec_vAbs` in
+`LovettLemma2456`). -/
+theorem vAbs_oneVec (hn : 1 ≤ n) : vAbs (oneVec n hn) = n - 1 :=
+  oneVec_vAbs hn
 
 /-- **The raise preserves `V*(k)`** (Lovett Lemma 2.6, "V' satisfies V*(k)").  Raising the
 witness `vᵢ₀ = (1,…,1,0)` to `(1,…,1,1)` keeps every property: weights stay `≤ k−1` (since

@@ -65,13 +65,14 @@ The arithmetic core of the split decomposition, representation-agnostic:
   boolean `p ∣ N ⟺ ∃ ω, p ∣ T(ω)`.
 * **`vp_le_card`** : when each local valuation is `≤ 1` (the measured generic regime away from the
   smallest prime), `v_p(N) ≤ d = #factors`, with equality iff every factor is divisible exactly
-  once — the `v_p ∈ {0,1}` squarefree-mass statement bounding the total `p`-adic concentration.
+  once — a bound on the total `p`-adic valuation. (This is not a squarefreeness statement: `v_p ≤ d`
+  allows `v_p(N)` up to `d`; audit CW-B18-23.)
 * **`spurfree_of_all_units`** : if no split residue annihilates (every `T(ω)` a `p`-unit), the
   config is spur-free — the consumer for the measured prize-regime "char-0 transfers" verdict.
 
 These say nothing the archimedean S7 floor says: S7 bounds the *magnitude* of the whole norm; S9
 decomposes the *divisibility* into a sum of `d` independent local contributions, each `≤ 1`
-generically, giving the SHARPER count `v_p ≤ d` and the perfectly-spread (squarefree) verdict.
+generically, giving the count `v_p ≤ d` (a total-valuation bound, not squarefreeness of `N`).
 
 ## Honest scope (the OBSTRUCTION this localizes)
 
@@ -113,7 +114,7 @@ theorem vp_prod_eq_sum {ι : Type*} (s : Finset ι) (f : ι → ℤ) {p : ℤ} (
     emultiplicity p (∏ k ∈ s, f k) = ∑ k ∈ s, emultiplicity p (f k) :=
   Finset.emultiplicity_prod hp s f
 
-/-- **The bounded-by-card count (squarefree-mass `v_p ≤ d`).** If every split residue's local
+/-- **The bounded-by-card count (`v_p ≤ d`).** If every split residue's local
 valuation is `≤ 1` (the MEASURED generic regime: `v_p ∈ {0,1}` per prime away from the smallest
 prime), then the total `p`-adic valuation of the norm is at most the number of split primes
 `d = s.card`. This is the `p`-adic concentration cap: the spurious mass of one config is spread over
@@ -170,8 +171,9 @@ def AllResiduesUnit {ι : Type*} (p : ℤ) (s : Finset ι) (f : ι → ℤ) : Pr
 
 /-- **The named local-valuation cap (checked vs the measured `v_p ≤ 2` global cap).**
 `LocalValuationAtMostOne p s f` asserts each split prime divides its residue at most once — the
-MEASURED generic regime away from the smallest prime (`probe_wfS9_vp_cap`: global `v_p ≤ 2`, `=2`
-only sub-prize). Under it `vp_le_card` gives `v_p(N) ≤ d`, the perfectly-spread bound. -/
+MEASURED generic regime away from the smallest prime. This per-residue hypothesis is NOT the
+measured global cap (`probe_wfS9_vp_cap`: global `v_p ≤ 2`, `=2` only sub-prize), which is a
+different statement and is not formalized here. Under it `vp_le_card` gives `v_p(N) ≤ d`. -/
 def LocalValuationAtMostOne {ι : Type*} (p : ℤ) (s : Finset ι) (f : ι → ℤ) : Prop :=
   ∀ k ∈ s, emultiplicity p (f k) ≤ 1
 
@@ -191,7 +193,7 @@ theorem transfer_iff_all_residues_unit {ι : Type*} (s : Finset ι) (f : ι → 
   spurfree_iff_all_units s f hp
 
 /-- **S9 squarefree-mass consumer.** Under `LocalValuationAtMostOne` the total `p`-adic valuation is
-bounded by the number of split primes `d`; the spurious mass is `p`-adically squarefree-bounded. -/
+bounded by the number of split primes `d` (a total-valuation bound; not squarefreeness). -/
 theorem vp_bound_of_local_cap {ι : Type*} (s : Finset ι) (f : ι → ℤ) {p : ℤ} (hp : Prime p)
     (h : LocalValuationAtMostOne p s f) :
     emultiplicity p (∏ k ∈ s, f k) ≤ s.card :=

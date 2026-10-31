@@ -434,8 +434,8 @@ the spot-check term dominates `max(2^(-71.5), 2^(-64))`). -/
 /-! ## The RBR upper-bound vehicle (full protocol C6.2; Lemmas 6.6 / 6.8)
 
 `toySoundnessError` reuses the per-round error terms of ABF26 Lemmas 6.6 / 6.8
-(the terms named in the docstrings of `Spec.General.protocol62_knowledgeSound` /
-`protocol62_rbrKnowledgeSound`): the `γ`-round error
+(the error terms of the canonical `Spec.oracleVerifier_knowledgeSoundness_winningSetUpperBound` /
+`Spec.oracleVerifier_rbrKnowledgeSoundnessWorstCase`): the `γ`-round error
 `ε_mca(C,δ) + |Λ(C^{≡2},δ)| / |F|` and the spot-check error `(1-δ)^t`. In the
 paper, Lemma 6.10 makes the `γ`-round error an upper bound on the fixed-encoding
 simplified-IOR error, so this is the X-side vehicle. For the existential scalar

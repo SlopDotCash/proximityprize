@@ -266,9 +266,10 @@ lemma card_ker_eq (φ : (ι → F) →ₗ[F] F) (hφ : φ ≠ 0) :
   have hker : Module.finrank F (LinearMap.ker φ) = Fintype.card ι - 1 := by omega
   rw [Module.card_eq_pow_finrank (K := F) (V := LinearMap.ker φ), hker]
 
-/-- **Bad-set cardinality bound.** For each pair of distinct subsets, the set of words on which
-the two functionals agree has cardinality `q^{n-1}`. Translating to the filter `Finset`. -/
-lemma card_agree_le (domain : ι ↪ F) {k : ℕ} {T T' : Finset ι}
+/-- **Bad-set cardinality (exact).** For each pair of distinct subsets, the set of words on which
+the two functionals agree has cardinality exactly `q^{n-1}`. Translating to the filter `Finset`.
+(Formerly misnamed `card_agree_le`; it proves an equality.) -/
+lemma card_agree_eq (domain : ι ↪ F) {k : ℕ} {T T' : Finset ι}
     (hT : T.card = k + 1) (hT' : T'.card = k + 1) (hne : T ≠ T') :
     (Finset.univ.filter (fun u : ι → F => cT domain k T u = cT domain k T' u)).card
       = Fintype.card F ^ (Fintype.card ι - 1) := by
@@ -293,6 +294,9 @@ lemma card_agree_le (domain : ι ↪ F) {k : ℕ} {T T' : Finset ι}
   · exact card_ker_eq φ hφ
   · rw [Nat.card_eq_fintype_card]
     exact Fintype.card_congr (Equiv.subtypeEquivRight (fun u => by rw [LinearMap.mem_ker]))
+
+@[deprecated card_agree_eq (since := "2026-10-31")]
+alias card_agree_le := card_agree_eq
 
 /-- **Hyperplane avoidance.** If `q > C(C(n, k+1), 2)`, there is a first word `u₀` for which the
 functionals `c_T` (over `(k+1)`-subsets `T`) take pairwise distinct values: the union of the
@@ -370,7 +374,7 @@ lemma exists_u0_injOn_cT (domain : ι ↪ F) {k : ℕ} (hk : k + 1 ≤ Fintype.c
       · exact absurd (hSa.trans hSb.symm) hSne
     calc _ ≤ (Finset.univ.filter (fun u : ι → F =>
             cT domain k T u = cT domain k T' u)).card := Finset.card_le_card hsub
-      _ = Fintype.card F ^ (n - 1) := card_agree_le domain hTmem.2 hT'mem.2 hTne
+      _ = Fintype.card F ^ (n - 1) := card_agree_eq domain hTmem.2 hT'mem.2 hTne
   -- assemble the union bound
   have hbad_card : bad.card ≤ ((Nat.choose n (k + 1)).choose 2) * Fintype.card F ^ (n - 1) := by
     calc bad.card ≤ (Pairs.biUnion _).card := Finset.card_le_card hbad_sub

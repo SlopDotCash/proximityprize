@@ -19,6 +19,11 @@ and each used fine-profile fiber has a chosen bad-scalar maximizer, then the uni
 bound is equivalent to bounding those fine-profile maximizers, grouped over the used coarse
 profiles.  This is the exact output type for an iterative classification search: split a hard
 coarse fiber into finer fibers, then prove the maximizer in each fine fiber is within budget.
+
+Note on the coarse layer: by `not_refinedProfileMaxesBounded_iff_exists_usedFineProfile_budget_lt`,
+under `ProfileRefines` the grouped condition `RefinedProfileMaxesBounded` is just "every used fine
+representative is `≤ B`"; the coarse profile and `project` only organize the bookkeeping and add no
+mathematical content.
 -/
 
 set_option autoImplicit false
@@ -75,13 +80,6 @@ def FineFiberMaxReps (K : Type) [Field K] [Fintype K] [DecidableEq K]
       ∧ ∀ u : WordStack A (Fin 2) ι, fine u = q →
         StackBadCount K C δ u ≤ StackBadCount K C δ (rep q)
 
-/-- Fine-profile representatives lying over a coarse profile value. -/
-noncomputable def fineRepsOver {P Q : Type} [Fintype Q] [DecidableEq P]
-    (project : Q -> P) (rep : Q -> WordStack A (Fin 2) ι) (p : P) :
-    Finset (WordStack A (Fin 2) ι) := by
-  classical
-  exact (Finset.univ.filter (fun q : Q => project q = p)).image rep
-
 /-- The fine-profile maximizers over one coarse profile are all within budget. -/
 def FineRepsOverBounded (K : Type) [Field K] [Fintype K] [DecidableEq K]
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
@@ -110,28 +108,6 @@ theorem stackBadCount_le_fineFiberMaxRep
     (u : WordStack A (Fin 2) ι) :
     StackBadCount F C δ u ≤ StackBadCount F C δ (rep (fine u)) := by
   exact (hmax (fine u) ⟨u, rfl⟩).2 u rfl
-
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedFintypeInType false
-
-/-- The fine representative of any stack belongs to the finite representative set over its coarse
-profile. -/
-theorem fineRep_mem_fineRepsOver_of_coarse
-    {P Q : Type} [Fintype Q] [DecidableEq P]
-    {fine : WordStack A (Fin 2) ι -> Q}
-    {coarse : WordStack A (Fin 2) ι -> P} {project : Q -> P}
-    {rep : Q -> WordStack A (Fin 2) ι}
-    (hrefine : ProfileRefines fine coarse project)
-    (u : WordStack A (Fin 2) ι) :
-    rep (fine u) ∈ fineRepsOver (A := A) project rep (coarse u) := by
-  classical
-  exact Finset.mem_image.mpr
-    ⟨fine u, by simp [hrefine u], rfl⟩
-
-set_option linter.unusedSectionVars true
-set_option linter.unusedDecidableInType true
-set_option linter.unusedFintypeInType true
 
 /-- If the fine representatives over a coarse profile are bounded, then every stack in that coarse
 profile is bounded. -/
@@ -497,13 +473,12 @@ theorem not_refinedProfileMaxesBounded_of_counterStack
       C δ hrefine hmax hbounded uWitness
   exact (not_lt_of_ge hle) hgt
 
-/-- A used fine profile whose selected representative exceeds the budget refutes the universal
-incidence hypothesis at that budget. -/
+/-- A fine profile whose selected representative exceeds the budget refutes the universal
+incidence hypothesis at that budget (no `UsedProfile` hypothesis is needed: `rep q` is itself a
+stack, so the universal bound applies to it directly). -/
 theorem not_worstCaseIncidenceBounded_of_fineProfile_budget_lt
     (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
-    {Q : Type} {fine : WordStack A (Fin 2) ι -> Q}
-    {rep : Q -> WordStack A (Fin 2) ι} {q : Q}
-    (_hused : UsedProfile fine q)
+    {Q : Type} {rep : Q -> WordStack A (Fin 2) ι} {q : Q}
     (hgt : B < StackBadCount F C δ (rep q)) :
     ¬ ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
         (F := F) (A := A) C δ B := by
@@ -529,7 +504,6 @@ end ArkLib.ProximityGap.Frontier.StackProfileRefinement
 namespace ArkLib.ProximityGap.Frontier.StackProfileRefinement
 
 #print axioms stackBadCount_le_fineFiberMaxRep
-#print axioms fineRep_mem_fineRepsOver_of_coarse
 #print axioms stackBounded_of_fineRepsOverBounded
 #print axioms worstCaseIncidenceBounded_of_refinedProfileMaxesBounded
 #print axioms refinedProfileMaxesBounded_of_worstCaseIncidenceBounded

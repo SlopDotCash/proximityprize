@@ -151,11 +151,12 @@ theorem oscillation_ceiling_is_linear
 At the prize regime the floor is `√(n·log(p/n)) = √(n·(β−1)·ln n)`. The oscillation ceiling `n + 2`
 (taking `g = κ = 1`, the most favourable normalisation) satisfies `n + 2 > √(n·(β−1)·ln n)` for ALL
 `n ≥ 2` at `β = 4` (so `(β−1)·ln n = 3 ln n`), because `(n+2)² = n² + 4n + 4 > 3 n ln n` whenever
-`n + 4 + 4/n > 3 ln n`, which holds for every `n ≥ 1` (`n ≥ 3 ln n`). Hence the oscillation/
+`n + 4 + 4/n > 3 ln n`, which holds for every `n ≥ 1` (since `3 ln n ≤ n + 3.3` for all `n ≥ 1`;
+note the stronger `n ≥ 3 ln n` FAILS at `n = 2, 3, 4`, e.g. `3 ln 4 ≈ 4.16`; audit CW-B18-22). Hence the oscillation/
 singular-point bound is LARGER than the prize floor it must beat — it does not even reach the trivial
 sup `M ≤ n`, so it certifies nothing. We prove the clean integer form `(n+2)² > 3·n·⌈ln n⌉`-surrogate
 via `n ≥ 3·(Nat.log 2 n)` style; here in real form: `(n:ℝ)+2 > Real.sqrt (n * (3 * Real.log n))`
-for `n ≥ 2`, by squaring (`(n+2)² > 3 n ln n` since `n ≥ 3 ln n`). -/
+for `n ≥ 2`, by squaring (`(n+2)² > 3 n ln n` since `n + 4 > 3 ln n`). -/
 theorem oscillation_ceiling_exceeds_floor_prize
     (n : ℕ) (hn : 2 ≤ n) :
     Real.sqrt ((n : ℝ) * (3 * Real.log n)) < (n : ℝ) + 2 := by

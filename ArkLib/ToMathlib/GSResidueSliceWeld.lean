@@ -79,6 +79,11 @@ requires a `T`-aware polynomial representative (`hrepT`), a global factorization
 (`hsplit`, `hdvd`, with `hdeg`), and branch/`ξ` nonvanishing at the chosen branch (`hbr`,
 `hxi`). These are structural inputs, not numeric side conditions.
 
+**Scope caveat (F7).** The decoded-roots and global residue capstones keep the branch-separation
+inputs `hbranch` / `hbr`, which `BranchSeparationUnsat.matchingSet_eq_empty_of_hbranch` /
+`BranchSeparationUnsat.branchCert_eq_zero` refute for `2 ≤ H.natDegree`. Those capstones can
+therefore be non-vacuous only for linear `H`.
+
 ## References
 * [BCIKS20] §5–§6, Appendix A; the F-series ledger on issue #304.
 -/

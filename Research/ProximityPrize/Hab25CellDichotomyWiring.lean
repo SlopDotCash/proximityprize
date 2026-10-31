@@ -19,7 +19,15 @@ stack's bad scalars into a degenerate cell (explicitly bounded) plus per-irreduc
 cells with uniform decode families.  This file converts that cell structure into a
 `Hab25JohnsonDichotomyData` bundle — the residual shape of the dichotomy funnel — given
 exactly one per-cell input: **each factor cell is small or admits an improving affine
-pair** ([Hab25] Claim 1, the K4/Hensel dichotomy).
+pair** (modelled on [Hab25] Claim 1, the K4/Hensel dichotomy).
+
+**Honesty note (audit CW-B19-04).** In this interface the improving pair `d₀ d₁` is
+existentially free, not bound to the stack or to an affine-captured degree-`<k` pair, so the
+disjunct is equivalent to `E.card ≤ n` (`exists_improvingPair_iff_card_le`) and the per-cell
+input `himpr` is equivalent to the plain cardinality bound `E.card ≤ max T n`
+(`small_or_improvingPair_iff_card_le`). The Claim 1 / Hensel content is *not* present in this
+input; it is supplied only where `himpr` is actually proved (e.g. `cell_improvement_of_window`,
+via the pencil and affine capture).
 
 The degenerate cell takes the small branch outright (its explicit bound is below the
 threshold `T` by hypothesis); factor cells take whichever branch the per-cell input
@@ -44,9 +52,45 @@ open scoped NNReal ENNReal
 
 variable {F₀ : Type} [Field F₀] [Fintype F₀] [DecidableEq F₀]
 
+omit [Fintype F₀] in
+/-- **The "improving pair" disjunct is a pure cardinality condition (audit CW-B19-04).**
+With `d₀ d₁` existentially free (not tied to the stack or to any affine-captured degree-`<k`
+pair), `∃ d₀ d₁, ∀ z ∈ E, ∃ x ∈ disagreeSet d₀ d₁, affineGap d₀ d₁ z x = 0` holds iff
+`E.card ≤ |ι|`. The forward direction is `factorImprove_card_le_n`; for the converse inject
+`E` into the coordinates and set `d₁ ≡ 1`, `d₀ (x_z) = -z`. Consequently every `himpr`
+hypothesis in this file (small branch `E.card ≤ T` *or* improving pair) is equivalent to
+`E.card ≤ max T n`: it carries no [Hab25] Claim 1 / Hensel content of its own. -/
+theorem exists_improvingPair_iff_card_le {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (E : Finset F₀) :
+    (∃ d₀ d₁ : ι → F₀, ∀ z ∈ E, ∃ x ∈ disagreeSet d₀ d₁, affineGap d₀ d₁ z x = 0) ↔
+      E.card ≤ Fintype.card ι := by
+  classical
+  constructor
+  · rintro ⟨d₀, d₁, h⟩
+    exact factorImprove_card_le_n d₀ d₁ E h
+  · intro hcard
+    have hcard' : Fintype.card E ≤ Fintype.card ι := by
+      simpa using hcard
+    obtain ⟨f⟩ := Function.Embedding.nonempty_of_card_le hcard'
+    refine ⟨fun x => -(Function.extend f (fun w : E => (w : F₀)) 0 x),
+      fun _ => 1, fun z hz => ⟨f ⟨z, hz⟩, ?_, ?_⟩⟩
+    · simp [disagreeSet]
+    · simp only [affineGap, f.injective.extend_apply, mul_one, neg_add_cancel]
+
+omit [Fintype F₀] in
+/-- The small-or-improving disjunct used as `himpr` below is equivalent to the plain
+cardinality bound `E.card ≤ max T |ι|`. -/
+theorem small_or_improvingPair_iff_card_le {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (E : Finset F₀) (T : ℕ) :
+    (E.card ≤ T ∨ ∃ d₀ d₁ : ι → F₀, ∀ z ∈ E,
+        ∃ x ∈ disagreeSet d₀ d₁, affineGap d₀ d₁ z x = 0) ↔
+      E.card ≤ max T (Fintype.card ι) := by
+  rw [exists_improvingPair_iff_card_le, le_max_iff]
+
 open Classical in
 /-- **Cells to dichotomy bundle.**  The in-tree cell production, together with the
-per-factor-cell dichotomy (small or improving pair — [Hab25] Claim 1), yields a
+per-factor-cell dichotomy (small or improving pair, equivalent to `E.card ≤ max T n` by
+`small_or_improvingPair_iff_card_le`), yields a
 `Hab25JohnsonDichotomyData` bundle whose disagreement set is exactly the stack's bad
 scalars and whose threshold is `T`. -/
 theorem exists_dichotomyData_of_cell_improvement
@@ -510,8 +554,9 @@ theorem johnsonNumericBound_of_window_closed
 
 open Classical in
 /-- **The tight numeric count from the per-cell disjunct** — day-22's dichotomy route
-merged with day-28's live-index bound: under `himpr` (small-or-improving, the
-[Hab25] Claim 1 shape), every stack's bad scalars number at most
+merged with day-28's live-index bound: under `himpr` (small-or-improving, modelled on the
+[Hab25] Claim 1 shape, but equivalent to the per-cell bound `E.card ≤ max T n` by
+`small_or_improvingPair_iff_card_le`), every stack's bad scalars number at most
 `(D/(k-1)+1) · max T n`. -/
 theorem badCount_le_numeric_tight_of_himpr
     {n k m : ℕ} [NeZero n] (domain : Fin n ↪ F₀)
@@ -634,7 +679,7 @@ open Classical in
 /-- **Per-pair factor data from the GS cells.**  The in-tree GS cell production already
 provides the factor index family, cover, decode family, degenerate cell, and per-factor
 divisibility surface.  Given the single remaining per-cell small-or-improving disjunct
-(`himpr`), this packages those cells into the current `PerPairFactorData` consumer shape
+(`himpr`, equivalent to the per-cell bound `E.card ≤ max T n`), this packages those cells into the current `PerPairFactorData` consumer shape
 with the tight live-index bound `D/(k-1)+1`. -/
 theorem exists_perPairFactorData_of_cell_improvement
     {n k m : ℕ} [NeZero n] (domain : Fin n ↪ F₀)
@@ -741,7 +786,8 @@ theorem exists_perPairFactorData_of_cell_improvement
 
 open Classical in
 /-- **The gate-shaped conditional.**  Modulo the single per-cell disjunct production
-(the [BCIKS20] Claim 5.7 assembly), the numeric edge holds at the canonical tight
+(the [BCIKS20] Claim 5.7 assembly; note the disjunct is equivalent to the per-cell bound
+`E.card ≤ max T n`, see `small_or_improvingPair_iff_card_le`), the numeric edge holds at the canonical tight
 parameters with the arithmetic fully discharged — the unconditional
 `johnsonNumericBound_holds` is this theorem with `himpr` replaced by the assembly. -/
 theorem johnsonNumericBound_holds_of_himpr
@@ -784,6 +830,8 @@ theorem johnsonNumericBound_holds_of_himpr
 end CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame
 
 /-! ## Axiom audit -/
+#print axioms CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.exists_improvingPair_iff_card_le
+#print axioms CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.small_or_improvingPair_iff_card_le
 #print axioms CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.exists_dichotomyData_of_cell_improvement
 #print axioms CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.badCount_le_of_cell_improvement
 #print axioms CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.cell_improvement_of_window

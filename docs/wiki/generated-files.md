@@ -31,7 +31,7 @@ Edit the source of truth, not the output.
 | --- | --- | --- | --- |
 | `ArkLib.lean`, `ProximityPrize.lean`, `ProximityPrize/Extensions.lean`, generated Lake ownership block | canonical and classic production module surfaces | No | `./scripts/update-lib.sh`; verify with `./scripts/check-imports.sh` |
 | `Research/ProximityPrize/All.lean` | research import surface | No | `python3 scripts/update-research-lib.py` |
-| `scripts/residual_census.json`, `docs/wiki/residual-census.md` | strict production residual classification and source locations | No | `python3 scripts/residual_census.py --wiki-out docs/wiki/residual-census.md`; scans `ArkLib/` and `ProximityPrize/`, preserving historical campaign addenda |
+| `scripts/residual_census.json`, `docs/wiki/residual-census.md` | syntactic strict production residual inventory of `ArkLib/` and `ProximityPrize/` with source locations (heuristic labels, not a verified completion ledger) | Only the `> **Campaign addendum` blocks of the wiki page, which regeneration carries forward | `python3 scripts/residual_census.py --wiki-out docs/wiki/residual-census.md` |
 | `.lake/` | build artifacts and cache | No | `./scripts/lake-locked.sh build`, `./scripts/lake-locked.sh exe cache get` |
 | `blueprint/lean_decls` | referenced Lean declarations | No | official Lean blueprint post-parse callback over `blueprint/src/`; `leanblueprint web` refreshes it in CI |
 | `blueprint/web/`, `blueprint/print/` | generated blueprint output | No | `leanblueprint web`, `leanblueprint pdf`, or `./scripts/build-web.sh` |
@@ -43,7 +43,6 @@ Edit the source of truth, not the output.
 | `docs/kb/_generated/lean-citations.json` | generated map from Lean files to cited keys | No | `python3 ./scripts/kb/extract_lean_citations.py` |
 | `docs/kb/_generated/declarations.json` | local declaration catalog across `ArkLib/`, `Research/`, and `ProximityPrize/` (file, line, kind, namespace, name, brief signature, docstring head) | No | `python3 ./scripts/kb/extract_declarations.py` |
 | `docs/kb/_generated/dedup-report.md` | duplicate-candidate review aid (same-short-name groups + cross-file near-duplicate docstrings) derived from the catalog | No | `python3 ./scripts/kb/find_dedup_candidates.py` |
-| `scripts/residual_census.json`, `docs/wiki/residual-census.md` | syntactic residual inventory of `ArkLib/` only (heuristic labels, not a verified completion ledger) | Only the `> **Campaign addendum` blocks of the wiki page, which regeneration carries forward | `python3 scripts/residual_census.py --wiki-out docs/wiki/residual-census.md` |
 
 ## Important Notes
 

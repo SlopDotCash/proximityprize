@@ -22,11 +22,16 @@ the proven single-function Guruswami–Sudan list-decoding substrate
 The companion `Hab25Core.lean` already records the Johnson-range MCA bound as a *monolithic*
 reduction whose single residual `Hab25GSInterpolation` is definitionally the in-tree
 `rs_epsMCA_johnson_range_bchks25` — i.e. the entire deep content is renamed, not derived.
-**This file refines that.** It splits the deep GS content into its *named sub-steps*, and
-**proves** every step the substrate supports today (the per-factor "improving scalar" count
-and the Theorem-2 union bookkeeping), isolating only the genuinely-deep nodes
-(GS interpolation degree bounds over `F(Z)`, discriminant non-vanishing, the Hensel lift)
-as explicitly-named hypotheses. No `sorry`, no `admit`, no `axiom`.
+This file splits the GS content into *named sub-steps* and **proves** the combinatorial ones
+the substrate supports today (the per-factor "improving scalar" count and the Theorem-2 union
+bookkeeping, giving an integer bound `|Edis| ≤ ℓ·n`). **Caveat (audit CW-B19-03):** this does
+*not* yet refine the monolithic residual. The final `ε_mca` statement
+`mca_johnson_of_residuals` is proved directly from the field `hNumeric : JohnsonNumericBound`,
+which is definitionally the conclusion itself; the algebraic fields (`Index`, `d₀`/`d₁`,
+`Edis`, `hcover`, `hImprove`) are never used for it, and `Edis` is not tied to
+`hab25McaBadScalars` (empty data inhabits the algebraic structure). Connecting `Edis` to the
+bad-scalar set and deriving the numeric edge from `disagree_card_le` remains open.
+No `sorry`, no `admit`, no `axiom`.
 
 ## The full §3 derivation, in ≤15 named steps
 
@@ -106,9 +111,10 @@ S3/S4 (`hYbound`/factor index set), S5 (`DiscriminantNonVanishing`),
 S6 (`HenselUniqueness`, exposed as the unique affine pair), S10-cover
 (`MutualDisagreeCover`), S11-numeric (`JohnsonNumericBound`).
 
-This is the honest refinement: the monolithic `Hab25GSInterpolation` of `Hab25Core` is here
-*opened up*, its combinatorial half **proven**, its algebraic half left as precisely-named
-residuals.
+Honesty note: the combinatorial half is proven as a standalone integer bound, but it is
+*not* wired into the `ε_mca` conclusion. Because `JohnsonNumericBound` is literally the
+target inequality, `mca_johnson_of_residuals` carries the same deep content as the monolithic
+`Hab25GSInterpolation` of `Hab25Core`; it is a repackaging, not a refinement.
 -/
 
 set_option linter.unusedSectionVars false
@@ -230,17 +236,14 @@ theorem claim1_theorem2_integer {Idx : Type*} [DecidableEq Idx]
 /-! ## The named DEEP residuals and the conditional MCA theorem
 
 We now bundle the genuinely-deep algebraic nodes (S2–S6, S10-cover, S11-numeric) as a single
-structure `Hab25JohnsonResiduals` whose *fields are exactly the unproven steps*. The
-conditional theorem `mca_johnson_of_residuals` consumes it and the **proven** integer endgame
-`claim1_theorem2_integer` to land on the in-tree Johnson-range MCA bound shape
-`epsMCA C δ ≤ ENNReal.ofReal (johnsonBoundReal …)`.
+structure `Hab25JohnsonResiduals`. The conditional theorem `mca_johnson_of_residuals` lands
+on the in-tree Johnson-range MCA bound shape `epsMCA C δ ≤ ENNReal.ofReal (johnsonBoundReal …)`.
 
-Compared to `Hab25Core.Hab25GSInterpolation` (a single monolithic rename of
-`rs_epsMCA_johnson_range_bchks25`), this structure is *opened up*: its combinatorial obligations
-(`hcover` shape, `hImprove`, `hℓ`) are discharged **internally** by the proven endgame, and only
-the algebraic data (the unique affine pairs, the factor index set with `card < ℓ`, the cover,
-and the final integer→real numeric edge) remain as fields.  No field is `sorry`/`axiom`; each is
-a precisely-named hypothesis pointing at a DEEP GS node. -/
+**Honesty note (audit CW-B19-03).** The `ε_mca` conclusion is obtained *only* from the field
+`hNumeric : JohnsonNumericBound`, which is definitionally that conclusion. The algebraic fields
+and the proven integer bound `disagree_card_le` play no role in it, and `Edis` is not tied to
+the bad-scalar set, so this bundle does **not** refine `Hab25Core.Hab25GSInterpolation`; it
+carries the same deep content plus unused algebraic data. No field is `sorry`/`axiom`. -/
 
 section Reduction
 
@@ -264,7 +267,7 @@ internally. Fields:
 * `Edis`, `hcover` — the mutual disagreement set and its per-factor cover `E = ⋃ E_{i,j}` (S4);
 * `hImprove` — the Hensel-uniqueness consequence: every exceptional scalar of a factor matches
   the fold at a coordinate of that factor's disagreement set  (S6 → S8 hypothesis);
-* `hNumeric` — the separately named integer→real numeric edge S11:
+* `hNumeric` — the full `ε_mca` Johnson bound (named "numeric edge" S11, but it is the conclusion):
   `JohnsonNumericBound`.
 -/
 
@@ -330,9 +333,9 @@ structure Hab25JohnsonResiduals
     (domain : ι₀ ↪ F₀) (k : ℕ) (η δ : ℝ≥0)
     (hη : 0 < η) (hδ : InJohnsonRange domain k η δ)
     extends Hab25JohnsonAlgebraicData domain k η δ hη hδ where
-  /-- The integer→real numeric edge (S11): the scaled disagreement count is within the
-      closed-form Johnson bound, and that closed form bounds `ε_mca`. Residual: this is the
-      in-tree `rs_epsMCA_johnson_range_bchks25` numeric shape, not re-derived here. -/
+  /-- The `ε_mca` Johnson bound itself (S11). Despite the "numeric edge" name this is the
+      full target inequality `epsMCA ≤ ofReal johnsonBoundReal` (the in-tree
+      `rs_epsMCA_johnson_range_bchks25` shape); it is not derived from the algebraic fields. -/
   hNumeric : JohnsonNumericBound domain k η δ
 
 /-- Build the full residual bundle from algebraic Hab25 data plus the final numeric edge. -/
@@ -377,8 +380,8 @@ def Hab25JohnsonResiduals.toAlgebraicData
 
 The combinatorial heart: from the residual bundle's algebraic data (factor index set, unique
 affine pairs, cover) the **proven** endgame `claim1_theorem2_integer` gives
-`|E| ≤ ℓ · n` with *zero* additional assumptions. This is the concrete witness that the
-combinatorial half of Hab25 §3 is genuinely discharged, not assumed. -/
+`|E| ≤ ℓ · n` with *zero* additional assumptions. Note that `Edis` is an unconstrained field
+(not tied to the bad-scalar set), and this bound is not consumed by `mca_johnson_of_residuals`. -/
 theorem Hab25JohnsonAlgebraicData.disagree_card_le
     {domain : ι₀ ↪ F₀} {k : ℕ} {η δ : ℝ≥0}
     {hη : 0 < η} {hδ : InJohnsonRange domain k η δ}
@@ -404,20 +407,17 @@ correlated-agreement bound
 
   `ε_mca(RS[F, D, k], δ) ≤ ENNReal.ofReal (johnsonBoundReal domain k η δ)`.
 
-**Honest decomposition.** The hypotheses are *exactly* the unproven steps (the fields of
-`Hab25JohnsonResiduals`: GS interpolation/factorisation/degree/discriminant/Hensel data plus the
-final numeric edge). The combinatorial skeleton (S7–S10, the `|E| ≤ ℓ·n` union-and-count
-argument) is **proven** inside `disagree_card_le` and does not appear as a hypothesis. Thus this
-theorem strictly refines `Hab25Core.hab25_mca_johnson_bound`, whose single residual
-`Hab25GSInterpolation` had swallowed the entire argument. -/
+**Honest decomposition (audit CW-B19-03).** The proof is `R.hNumeric`: the field
+`JohnsonNumericBound` is definitionally the conclusion. The algebraic fields and the proven
+integer bound `disagree_card_le` (S7–S10) are not used, so this theorem does **not** refine
+`Hab25Core.hab25_mca_johnson_bound`; it has the same deep content, repackaged. -/
 theorem mca_johnson_of_residuals
     (domain : ι₀ ↪ F₀) (k : ℕ) (η δ : ℝ≥0)
     (hη : 0 < η) (hδ : InJohnsonRange domain k η δ)
     (R : Hab25JohnsonResiduals domain k η δ hη hδ) :
     epsMCA (F := F₀) (A := F₀) ((ReedSolomon.code domain k : Set (ι₀ → F₀))) δ ≤
       ENNReal.ofReal (johnsonBoundReal domain k η δ) :=
-  -- The combinatorial bound `|E| ≤ ℓ·n` is proven (`R.disagree_card_le`); the final
-  -- integer→real numeric edge is the named residual `R.hNumeric`.
+  -- The conclusion is the field `R.hNumeric` verbatim; `R.disagree_card_le` is not used.
   R.hNumeric
 
 /-- **Bridge to the Grand-MCA `MCALowerWitness` (silver).**
@@ -435,9 +435,9 @@ def mcaLowerWitness_of_residuals
   MCALowerWitness.ofLe hδ_le_one
     (le_trans (mca_johnson_of_residuals domain k η δ hη hδ R) hle)
 
-/-- **Refined Hab25 residual bundle ⟹ faithful MCA lattice threshold exists.**
+/-- **Hab25 residual bundle ⟹ faithful MCA lattice threshold exists.**
 
-This is the lattice-threshold analogue of `mcaLowerWitness_of_residuals`: once the opened-up
+This is the lattice-threshold analogue of `mcaLowerWitness_of_residuals`: once the repackaged
 Hab25 §3 residual bundle supplies the Johnson-radius `MCALowerWitness`, the generic
 `GrandChallengesLattice` machinery rounds it to a Hamming-lattice point and constructs the
 faithful threshold. -/
@@ -452,7 +452,7 @@ theorem mcaThresholdExists_of_residuals
     (ReedSolomon.code domain k : Set (ι₀ → F₀)) ε_star
     (mcaLowerWitness_of_residuals domain k η δ ε_star hη hδ hδ_le_one R hle)
 
-/-- The faithful MCA threshold created from the refined Hab25 residual bundle satisfies the
+/-- The faithful MCA threshold created from the Hab25 residual bundle satisfies the
 `ε_mca ≤ ε*` lattice predicate. -/
 theorem mcaThreshold_spec_of_residuals
     (domain : ι₀ ↪ F₀) (k : ℕ) (η δ ε_star : ℝ≥0)
@@ -471,9 +471,9 @@ theorem mcaThreshold_spec_of_residuals
 /-- **Refined Hab25 lower witness + capacity-side `ε_ca` lower bound brackets the faithful
 MCA lattice threshold.**
 
-This is the opened-up Hab25 analogue of
+This is the Hab25-bundle analogue of
 `Hab25Core.Hab25Johnson.mcaThresholdLattice_bracketed_ofHab25Johnson_and_epsCAGt`, but it uses
-the refined `Hab25JohnsonResiduals` bundle as the Johnson-side lower witness. -/
+the `Hab25JohnsonResiduals` bundle as the Johnson-side lower witness. -/
 theorem mcaThresholdLattice_bracketed_of_residuals_and_epsCAGt
     (domain : ι₀ ↪ F₀) (k : ℕ) (η δ_lo δ_hi ε_star : ℝ≥0)
     (hη : 0 < η) (hδ : InJohnsonRange domain k η δ_lo) (hδlo_le_one : δ_lo ≤ 1)
@@ -526,9 +526,9 @@ theorem mcaThresholdLattice_bracketed_of_residuals_and_upperWitness
       (C := (ReedSolomon.code domain k : Set (ι₀ → F₀))) (ε_star := ε_star)
       wlo whi hδhi)
 
-/-- **Adjacent upper witness closes the refined Hab25 lower bound to an exact lattice
+/-- **Adjacent upper witness closes the Hab25 lower bound to an exact lattice
 threshold.** If a capacity-side upper witness lands on the lattice point immediately above the
-refined Hab25 lower witness, the faithful MCA threshold is exactly the Hab25 lower lattice point. -/
+Hab25 lower witness, the faithful MCA threshold is exactly the Hab25 lower lattice point. -/
 theorem mcaThreshold_eq_latticeIndexOf_residuals_and_upperWitness_adjacent
     (domain : ι₀ ↪ F₀) (k : ℕ) (η δ_lo ε_star : ℝ≥0)
     (hη : 0 < η) (hδ : InJohnsonRange domain k η δ_lo) (hδlo_le_one : δ_lo ≤ 1)
@@ -551,7 +551,7 @@ theorem mcaThreshold_eq_latticeIndexOf_residuals_and_upperWitness_adjacent
       (C := (ReedSolomon.code domain k : Set (ι₀ → F₀))) (ε_star := ε_star)
       wlo whi hδhi hadj)
 
-/-- **Adjacent `ε_ca` upper witness closes the refined Hab25 lower bound to an exact lattice
+/-- **Adjacent `ε_ca` upper witness closes the Hab25 lower bound to an exact lattice
 threshold.**
 
 This is the direct capacity-side form of
@@ -587,12 +587,12 @@ theorem mcaThreshold_eq_latticeIndexOf_residuals_and_epsCAGt_adjacent
     (mcaThreshold_eq_latticeIndexOf_residuals_and_upperWitness_adjacent
       domain k η δ_lo ε_star hη hδ hδlo_le_one R hle whi hδhi' hadj')
 
-/-- Per-rate refined Hab25 lower witnesses and adjacent MCA upper witnesses resolve the
+/-- Per-rate Hab25 lower witnesses and adjacent MCA upper witnesses resolve the
 faithful four-rate MCA lattice prize directly.
 
 This is the prize-facing wrapper for
 `mcaThreshold_eq_latticeIndexOf_residuals_and_upperWitness_adjacent`: at each prize rate, the
-opened Hab25 residual bundle supplies the lower witness and the supplied upper witness lands on
+Hab25 residual bundle supplies the lower witness and the supplied upper witness lands on
 the next lattice point. -/
 theorem mcaPrizeLatticeResolved_of_residuals_and_upperWitness_adjacent
     (domain : ι₀ ↪ F₀)

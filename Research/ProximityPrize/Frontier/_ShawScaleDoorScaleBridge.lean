@@ -15,7 +15,7 @@ stated against different scales*:
 * the **reduction half** (`_ShawValueCapstone`) normalizes by
   `shawScale q n = √(n · log(q/n))` — the BGK-shaped target;
 * the **no-fifth-door half** (`_NoFifthDoorTetrachotomy`) separates
-  `prizeScale n = √n` (the genuine prize floor) from `bgkScale n L = √(n·L)` (the door-(i)/(ii)/(iii)
+  `prizeScale n = √n` (the √n floor — a STRONGER target than the prize, see below) from `bgkScale n L = √(n·L)` (the door-(i)/(ii)/(iii)
   ceiling), with the closed ratio `bgkScale n L / prizeScale n = √L` (`bgkScale_div_prizeScale`).
 
 `_ShawGrandSynthesis` explicitly leaves the *relationship between these two scales* unformalized:
@@ -26,7 +26,7 @@ stated against different scales*:
 This file supplies the **bookkeeping bridge** that was left as prose: it identifies the reduction-half
 scale with the door-half BGK scale at the concrete thinness index `L = log(q/n)`, and therefore pins
 the synthesis's "open `√L`-gap" to a single kernel-checked closed form — the factor by which the
-reduction's normalization target `shawScale` exceeds the genuine prize floor `prizeScale` is *exactly*
+reduction's normalization target `shawScale` exceeds the stronger `√n` floor `prizeScale` is *exactly*
 `√(log(q/n))`.
 
 ## Honesty
@@ -34,10 +34,18 @@ This is PURE DEFINITIONAL/ALGEBRAIC BOOKKEEPING.  `shawScale q n` and `bgkScale 
 SAME real number by definition (`√(n · log(q/n))`); the gap-factor corollary is an immediate instance
 of the already-proven `bgkScale_div_prizeScale`.  It introduces **NO new mathematical content**: no
 CORE / cancellation / completion / moment / anti-concentration / capacity / asymptotic claim, and it
-makes **no claim that the gap factor is bounded** (i.e. it does NOT identify the two scales — closing
-the `√(log(q/n))` gap is exactly the open door-(iv) problem).  It only renders the synthesis's prose
+makes **no claim that the gap factor is bounded** (i.e. it does NOT identify the two scales; closing
+the `√(log(q/n))` gap would give a `√n`-floor bound, which is STRICTLY STRONGER than the prize).  It only renders the synthesis's prose
 "`√L`-gap" as a kernel-checked identity so a referee can cite the gap as a precise quantity rather
 than narrative.  CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays **OPEN**.
+
+## Target labelling (read before citing)
+The prize CORE `M ≤ C·√(n·log(p/n))` is EXACTLY `Sh = M/shawScale = O(1)`, i.e. the reduction-half
+target. The `√n` scale `prizeScale` (historically called "the genuine prize floor" here) is a
+STRONGER target: a bound `M ≤ C·√n` implies the prize, not conversely. Wherever this file speaks of the
+"prize floor", "genuine" ratio `M/√n`, "floor-scale prize theorem", or of absorbing the `√(log(q/n))`
+gap as "the open door-(iv) problem/content", read it as the stronger `√n`-floor target, NOT as the
+prize. Closing the `√log` gap is not required for the prize.
 -/
 
 namespace ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge
@@ -54,14 +62,14 @@ theorem shawScale_eq_bgkScale (q n : ℝ) :
 
 /-- **The synthesis gap factor is `√(log(q/n))` (closed form).**  In the prize regime `q > n > 0`
 (so the thinness index `log(q/n) ≥ 0`), the reduction-half normalization target `shawScale q n`
-exceeds the genuine prize floor `prizeScale n = √n` by *exactly* the factor `√(log(q/n))`:
+exceeds the stronger `√n` floor `prizeScale n = √n` by *exactly* the factor `√(log(q/n))`:
 `shawScale q n / prizeScale n = √(log(q/n))`.
 
 This pins `_ShawGrandSynthesis`'s prose "open `√L`-gap" (`L = log(q/n)`) to a single kernel-checked
 quantity.  It is an immediate instance of the door-half ratio `bgkScale_div_prizeScale` under the
 definitional identification `shawScale_eq_bgkScale`.  It asserts NOTHING about whether this factor is
-bounded — that the `√(log(q/n))` factor can be absorbed (i.e. the two scales identified) is exactly
-the open door-(iv) problem this file makes NO claim about. -/
+bounded — absorbing the `√(log(q/n))` factor (i.e. identifying the two scales) would be a `√n`-floor
+result STRONGER than the prize, and this file makes NO claim about it. -/
 theorem shawScale_div_prizeScale (q n : ℝ) (hn : 0 < n) (hqn : 0 ≤ Real.log (q / n)) :
     shawScale q n / prizeScale n = Real.sqrt (Real.log (q / n)) := by
   rw [shawScale_eq_bgkScale]
@@ -79,7 +87,7 @@ theorem shawScale_div_prizeScale_of_pos_lt (q n : ℝ) (hn : 0 < n) (hnq : n < q
 
 /-- **The gap is genuine in the thin regime `log(q/n) > 1`.**  When the logarithmic thinness index
 exceeds `1` (i.e. `q/n > e`, the regime where the BGK normalization is nontrivial), the reduction
-target `shawScale q n` strictly exceeds the genuine prize floor `prizeScale n = √n`, so there is a
+target `shawScale q n` strictly exceeds the stronger `√n` floor `prizeScale n = √n`, so there is a
 genuine (strictly positive `√(log(q/n))`) gap to close.  This is the door-half separation
 `prizeScale_lt_bgkScale` transported across the scale identification.
 
@@ -132,7 +140,7 @@ factor `√(log(q/n))`:
 This is the *consumer* form of the scale bridge and the precise reason the reduction half and the door
 half are not the same statement: bounding the Shaw value by an absolute constant (`Sh = O(1)`, the
 reduction) does NOT bound the genuine cancellation ratio `M/√n` unless the `√(log(q/n))` gap factor is
-absorbed — which is exactly the open door-(iv) content.  Pure algebra over the definitional bridge; no
+absorbed — which would be the stronger `√n`-floor target, not the prize (the prize is `Sh = O(1)`).  Pure algebra over the definitional bridge; no
 claim that either side is bounded. -/
 theorem prizeFloorRatio_eq_shawValue_mul_gap (q n M : ℝ) (hn : 0 < n) (hnq : n < q) :
     M / prizeScale n
@@ -283,8 +291,8 @@ theorem prizeFloorRatio_familyBound_iff_gapAmplifiedShaw_familyBound {ι : Type*
 /-- **Exact boundedness equivalence for the gap-amplified Shaw value.**  Over a prize-regime family,
 uniform boundedness of the genuine prize-floor ratios `Mᵢ/√nᵢ` is exactly uniform boundedness of the
 Shaw values after multiplying by the displayed synthesis gap `√(log(qᵢ/nᵢ))`.  This is the boundedness
-form of `prizeFloorRatio_eq_shawValue_mul_gap`: the reduction's `Sh=O(1)` is not the same as a
-floor-scale prize theorem unless the gap-amplified quantity is bounded.  Pure normalization algebra;
+form of `prizeFloorRatio_eq_shawValue_mul_gap`: the reduction's `Sh=O(1)` (which IS the prize CORE)
+is not the same as the stronger `√n`-floor theorem unless the gap-amplified quantity is bounded.  Pure normalization algebra;
 no CORE/cancellation claim. -/
 theorem prizeFloorRatio_bddAbove_iff_gapAmplifiedShaw_bddAbove {ι : Type*} {q n M : ι → ℝ}
     (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) :

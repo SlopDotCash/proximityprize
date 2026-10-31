@@ -36,7 +36,7 @@ duplicate** — keep both:
   (`Finset.range (n+1) |>.filter …`) and lives in namespace `ProximityGap.GrandChallenges`.
   Its `listLatticeSet` / `listLatticeThreshold` are the **canonical objects the
   downstream Grand-Challenge LD-threshold files consume**
-  (`GrandChallengeLDThreshold`, `…Elias`, `…JohnsonSq`, `…HalfDist`): those files prove
+  (`LDThreshold`, `…Elias`, `…JohnsonSq`, `…HalfDist`): those files prove
   capacity/Johnson/Elias/half-distance brackets on `GrandChallenges.listLatticeThreshold`
   by `rw [GrandChallenges.listLatticeSet, Finset.mem_filter, Finset.mem_range]`, i.e. they
   depend on the `Finset ℕ` representation here.

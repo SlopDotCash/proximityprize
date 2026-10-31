@@ -7,7 +7,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.DyadicEnergyK1
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodOptimizedBound
 
 /-!
-# L3: the FULL char-0 prize moment bound as ONE unconditional theorem (#444, lane wf-L3)
+# L3: a char-0 scalar saddle lemma, conditional on a moment hypothesis (#444, lane wf-L3)
 
 ## What this lane assembles
 
@@ -20,8 +20,15 @@ The char-0 face of the Proximity-Prize per-frequency core is **essentially prove
   `GaussPeriodOptimizedBound.{doubleFactorial_le_pow, rpow_inv_le_exp_one}` that turns a per-frequency
   `2r`-th moment bound into the prize square-root shape with the explicit constant `√(2e)`.
 
-This file *welds those into a single named unconditional theorem*, `char0_prize_moment_bound`, so that
-"the char-0 prize is proven" becomes one citable statement rather than a chain the reader must reconstruct.
+This file welds those into a single named theorem, `char0_prize_moment_bound`: a SCALAR SADDLE LEMMA.
+For free reals `M ≥ 0`, `Q > 0` satisfying the entered hypothesis `hmoment : M^{2r} ≤ Q·E_r(G)`, it
+concludes `M ≤ √(2e·|G|·r)`.  All of the per-frequency content sits in `hmoment`.
+
+**Correction (audit 2026-10-28, CW-B18-10).**  An earlier version said this makes "the char-0 prize is
+proven" citable and that "everything is proven".  That overclaims: no Gauss period over a char-0 field
+`L` is defined or instantiated here, `M` and `Q` are free reals, and the cited finite-field
+instantiation (`subgroup_gaussSum_moment` with `G ⊆ F_q`) CANNOT supply `hmoment` because `F_q` is not
+`[CharZero]`.  So the theorem does not prove any per-frequency cancellation, in char 0 or char `p`.
 
 ## What "char-0" means here (the formal complex period model — read this before citing)
 
@@ -31,24 +38,24 @@ field** `L` (concretely `L = ℂ ⊇ ℤ[ζ_{2^k}]`; NO mod-`p` reduction). In t
 * the additive energy `E_r(G)` is the genuine integer count of zero-sum `2r`-tuples
   (`NegationClosedWalk.zeroSumCount G (2r)`), and the Lam–Leung bound holds *unconditionally*
   (this is what `zeroSumCount_le_doubleFactorial_dyadic` proves — no Sidon/repThree hypothesis);
-* a **formal period vector** has some count `Q ≥ 1` of frequencies and its sup `M := max_b‖η_b‖`
-  obeys the moment-to-sup inequality `M^{2r} ≤ Q · E_r(G)` — this is the *definition* of the model,
-  the single term ≤ the full `2r`-th moment `Σ_b‖η_b‖^{2r} = Q·E_r`. (In the finite-field instantiation
-  `L = F_q`, `Q = q` and this inequality is the PROVEN `SubgroupGaussSumMoment.subgroup_gaussSum_moment`
-  composed with `Finset.single_le_sum`; it carries no open content — it is field-independent counting.)
+* a **formal period vector** is NOT defined in Lean: the theorem simply takes reals `M`, `Q` and the
+  hypothesis `M^{2r} ≤ Q · E_r(G)`.  (In a finite field `F_q`, `subgroup_gaussSum_moment` composed with
+  `Finset.single_le_sum` gives the analogous inequality with the CHAR-`p` energy, which is not the
+  char-0 `zeroSumCount` this theorem bounds; with `[CharZero L]` the theorem cannot be applied to
+  `F_q` at all.  The char-`p` energy equals the char-0 count only below the cyclotomic girth — see
+  `_wfS5L3NoSpurPrizeTransfer.lean`.)
 
 Under exactly these two ingredients the saddle yields `M ≤ √(2e · n · r)`, and at the optimal depth
 `r = ⌈ln Q⌉` this is the prize bound `M ≤ √(2e) · √(n · ⌈ln Q⌉)` — the Gaussian/Ramanujan
 per-frequency target up to the constant `√(2e)` (the sharp `√2` needs Stirling for `(2r−1)‼`).
 
-## The SOLE gap to the full prize
+## What remains open
 
-The ONLY thing this theorem does NOT cover is the **char-`p` transfer**: replaying the Lam–Leung
+Besides supplying `hmoment` for an actual period object, the central gap is the **char-`p` transfer**: replaying the Lam–Leung
 energy bound in `F_q` (`q = p = Θ(n^β)`) at depth `r ≈ ln q`. The char-0 energy bound transfers to
 `F_p` only while `p` exceeds the cyclotomic-norm threshold `p > (2r)^{φ(n)} = (2r)^{n/2}` (no short
 `±1`-relation of `2^μ`-th roots vanishes mod `p`); this holds for `n < 2 log q / log log q ≈ 40` but
-is OPEN at the prize scale `n = 2^30`, `q = 2^158`. That single transfer is the entire BGK wall; every
-other ingredient of the per-frequency prize is proven here in char 0.
+is OPEN at the prize scale `n = 2^30`, `q = 2^158` (the BGK wall).
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom. Issue #444.
 -/
@@ -128,20 +135,20 @@ theorem char0_energy_bound {k r : ℕ} (hk : 1 ≤ k) (G : Finset L)
       ≤ (((2 * r - 1)‼ * G.card ^ r : ℕ) : ℝ) := by exact_mod_cast hnat
     _ = (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r := by push_cast; ring
 
-/-! ## THE ASSEMBLY: the full char-0 prize moment bound, one unconditional theorem -/
+/-! ## The assembly: the char-0 scalar saddle lemma (conditional on `hmoment`) -/
 
-/-- **THE CHAR-0 PRIZE MOMENT BOUND (squared form), UNCONDITIONAL.**
+/-- **Char-0 scalar saddle lemma (squared form), conditional on `hmoment`.**
 
 In the formal complex period model (char 0, `G ⊆ μ_{2^k}`, `k ≥ 1`, no mod-`p` reduction), let `M` be
-the sup of a formal period vector with `Q ≥ 1` frequencies. The SOLE structural input is the
-formal-period moment identity `M^{2r} ≤ Q · E_r(G)` (= the model's definition: one term ≤ the full
-`2r`-th moment; field-independent counting, instantiated by `subgroup_gaussSum_moment` in `F_q`). Then,
+any nonnegative real and `Q > 0` any real. The entered hypothesis is `hmoment : M^{2r} ≤ Q · E_r(G)`
+(no period object is defined; `subgroup_gaussSum_moment` lives in `F_q` and cannot instantiate this
+`[CharZero]` statement). Then,
 at the optimal depth `r ≥ max(1, log Q)`, the char-0 Lam–Leung energy bound (discharged internally via
 `char0_energy_bound`) gives the prize square-root shape
 
   `M² ≤ 2e · |G| · r`.
 
-Everything is proven; the char-`p` transfer of the energy bound is the only gap to the full prize. -/
+This is a scalar consequence of `hmoment` plus Lam–Leung; it proves no per-frequency cancellation. -/
 theorem char0_prize_moment_bound_sq {k r : ℕ} (hk : 1 ≤ k) (G : Finset L)
     (hG : ∀ z ∈ G, z ^ (2 ^ k) = 1)
     {M Q : ℝ} (hM : 0 ≤ M) (hQ : 0 < Q) (hr : 1 ≤ r) (hrQ : Real.log Q ≤ r)
@@ -158,15 +165,14 @@ theorem char0_prize_moment_bound_sq {k r : ℕ} (hk : 1 ≤ k) (G : Finset L)
       _ = Q * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r := by ring
   exact moment_to_prize_sq hM (by positivity) hQ hr hrQ hbound
 
-/-- **THE CHAR-0 PRIZE MOMENT BOUND (norm form), UNCONDITIONAL.** Square-root of
-`char0_prize_moment_bound_sq`: the formal period sup obeys the prize bound
+/-- **Char-0 scalar saddle lemma (norm form), conditional on `hmoment`.** Square-root of
+`char0_prize_moment_bound_sq`: any `M ≥ 0` satisfying `hmoment` obeys
 
   `M ≤ √(2e · |G| · r)`,
 
-with explicit constant `√(2e)`. At `r = ⌈log Q⌉` this is `M ≤ √(2e)·√(|G|·log Q)` — the
-Gaussian/Ramanujan per-frequency target. The char-0 energy bound is discharged internally
-(`char0_energy_bound` ← Lam–Leung); the SOLE gap to the prize is the char-`p` transfer at the prize
-scale `n = 2^30` (the BGK wall). -/
+with explicit constant `√(2e)`. At `r = ⌈log Q⌉` this has the shape `M ≤ √(2e)·√(|G|·log Q)`. The
+char-0 energy bound is discharged internally (`char0_energy_bound` ← Lam–Leung); `hmoment` is entered,
+and the char-`p` transfer at the prize scale `n = 2^30` (the BGK wall) remains open. -/
 theorem char0_prize_moment_bound {k r : ℕ} (hk : 1 ≤ k) (G : Finset L)
     (hG : ∀ z ∈ G, z ^ (2 ^ k) = 1)
     {M Q : ℝ} (hM : 0 ≤ M) (hQ : 0 < Q) (hr : 1 ≤ r) (hrQ : Real.log Q ≤ r)

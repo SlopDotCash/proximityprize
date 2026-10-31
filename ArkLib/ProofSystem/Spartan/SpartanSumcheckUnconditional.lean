@@ -42,9 +42,9 @@ verifier fusion is proved (`binaryVerifierFusion_proof` in `OracleCompletenessUn
 lifts to `seqCompose` (`OracleVerifier.seqCompose_toVerifier_of_binary`), so
 `Sumcheck.Spec.oracleReductionToReductionResidual_of_binary` reduces `hBridge` to the per-round
 equation `(SingleRound.oracleReduction i).toReduction = SingleRound.reduction i`. That per-round
-equation is the documented suspected-false `oracleReduction_eq_reduction` (the oracle and plain
-verifiers check different objects; see the `oracleReductionToReductionResidual` docstring), so
-`hBridge` should not be expected to be supplied. The live, bridge-free result is
+equation holds under the canonical message-reading round verifiers
+(`Sumcheck.Spec.SingleRound.oracleReduction_toReduction_eq_reduction`), so `hBridge` is supplied
+by `Sumcheck.Spec.oracleReductionToReductionResidual_holds`. The live, bridge-free result is
 `FirstSumcheckBridgeFree.firstSumcheck_perfectCompleteness_bridgeFree`, which needs only
 `hInit`/`hImplSupp` (via `Sumcheck.Spec.oracleReduction_perfectCompleteness_unconditional`). The
 relations, lens-completeness instance and transfer proof below duplicate those of
@@ -125,8 +125,8 @@ The inner multi-round sum-check oracle perfect completeness `h_inner` is supplie
 `Sumcheck.Spec.oracleReduction_perfectCompleteness_of_bridge` specialized at `deg = 3`,
 `D = boolEmbedding R`,
 `n = pp.ℓ_m`. It remains stated modulo the explicit bridge `hBridge`
-(`oracleReductionToReductionResidual`, a legacy hypothesis whose per-round form is suspected
-false; see the module docstring) plus the execution-model side conditions `hInit`/`hImplSupp`.
+(`oracleReductionToReductionResidual`, which holds as
+`Sumcheck.Spec.oracleReductionToReductionResidual_holds`) plus the execution-model side conditions `hInit`/`hImplSupp`.
 Use `firstSumcheck_perfectCompleteness_bridgeFree` (`FirstSumcheckBridgeFree.lean`) for the
 bridge-free statement. -/
 theorem firstSumcheck_perfectCompleteness_unconditional

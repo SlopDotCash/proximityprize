@@ -49,8 +49,8 @@ jointAgreement
    the ingredient-C per-point matching data `(matchingSet, root, mp, hcard)`, the substitution
    validity `hsubst`, the Claim-5.9 form `hγ`, the Prop-5.5 representative `(Ppoly, hrep, hdegX)`,
    and the specialisation bridge `hPz`.  This is *exactly* the input bundle of
-   `curveCoeffPolys_of_betaRec`; it is the genuine §5 list-decoding extraction, NOT the conclusion
-   (the per-coefficient identity `(P z).coeff j = Bj.eval z` is *derived*, never assumed).
+   `curveCoeffPolys_of_betaRec`; it is a restricted (codeword-affine) rendering of the §5
+   list-decoding extraction, NOT the conclusion (the per-coefficient identity `(P z).coeff j = Bj.eval z` is *derived*, never assumed).
 
 2. `hBoundary` — the closed square-root boundary discharge (`¬δ < 1 - sqrtRate`).  In-tree this
 gives
@@ -86,10 +86,17 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
 `Section5StrictData u P` bundles *exactly* the input arguments that
 `BetaToCurveCoeffPolys.curveCoeffPolys_of_betaRec` consumes, specialised to the good set
-`RS_goodCoeffsCurve … u δ`.  It is the genuine §5 list-decoding extraction for the decoding `P`:
+`RS_goodCoeffsCurve … u δ`.  It is a restricted (codeword-affine) rendering of the §5 list-decoding extraction for the
+decoding `P`:
 the App-A.4 `betaRec` setup, the ingredient-C matching data, the Prop-5.5 representative, and the
 specialisation bridge.  Crucially, the per-coefficient conclusion `(P z).coeff j = Bj.eval z` is
-**not** part of the datum — it is *proven* from it by `curveCoeffPolys_of_betaRec`. -/
+**not** part of the datum — it is *proven* from it by `curveCoeffPolys_of_betaRec`.
+
+**Restricted scope (issue #304).** The `hPz` field uses the transposed linear representative,
+which is affine in the codeword variable (`FaithfulCurveExtraction.natDegree_linRep_eval_le_one`);
+by `FaithfulCurveExtraction.no_linRep_of_nonaffine` it cannot hold for any decoded family with a
+member of degree ≥ 2 on a good point, so this bundle is not the general [BCIKS20] Prop. 5.5
+conclusion. General consumers should use `FaithfulCurveExtraction.CurveFamilyData`. -/
 structure Section5StrictData {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (u : WordStack F (Fin (k + 1)) ι) (P : F → Polynomial F) : Type where
   /-- centre / curve data of [BCIKS20] §5. -/

@@ -667,3 +667,53 @@ index 39905a0..ff8005d 100644
    | forceClose (s : St Rep)
        (hlive : s.closed = false) :
        Step Cmax D s .forceClose
+diff --git a/Spec.md b/Spec.md
+index 8279bbe..a737793 100644
+--- a/Spec.md
++++ b/Spec.md
+@@ -398,6 +398,9 @@
+   responds in time — it monitors the ledger for its $cm$ (§1) and
+   $\tau > \Delta$ guarantees its response lands — so forfeit only
+   transfers value from payers that abandoned the protocol.
++  The Lean refund machine (`Zkpc/Refund/State.lean`) does not model this
++  window: its `forceClose` is enabled from every open state, so it proves
++  settlement arithmetic only, not honest-payer protection (audit SM03).
+   **B slash path (rev-3 R3-2; scoped to identity-slashes in rev-10,
+   F9-1b):** a *slashed* B channel is frozen and never closes, so
+   close-time netting cannot settle it. For an **identity-slash**
+@@ -988,7 +991,12 @@
+   its T3-floor amount by $t + \Delta + \tau$ exactly (inclusion by
+   $t+\Delta$, window $\tau$, settlement automatic at expiry — §2 pins the
+   automatic execution, so there is no second transaction and no $O(\cdot)$
+-  slack; rev-1 finding: "$O(\Delta)$" is not a formal statement). An
++  slack; rev-1 finding: "$O(\Delta)$" is not a formal statement).
++  The Lean theorem `Core.T5_payer_close_liveness` proves only that such a
++  settled state is reachable; weak fairness gives eventual settlement, not
++  this exact clock, so the exact deadline additionally needs a scheduling
++  rule that processes due automatic settlements before time advances (not
++  modelled; audit SM02). An
+   honest closer's window admits no valid dispute in A (MC20: its
+   claimed-unused nullifiers are PRF-hidden pre-close, so no pre-close
+   checkpoint contains them; its double-sign evidence cannot exist per
+@@ -1052,7 +1060,9 @@
+ signals (same $nf$, different $x$) are both accepted by honest gateways,
+ the member is slashed — evicted fleet-wide — within $L$ of the second
+ acceptance. The fleet's uncompensated exposure is bounded by $f(L)$
+-unconditionally, and is recoverable through the `Dispute` window's
++on the event that no two relevant gateway-bound messages collide under
++$H_x$ (collision resistance, assumption 3; a ROM bridge must charge that
++probability), and is recoverable through the `Dispute` window's
+ documented-conflict claims (MC16/MC19) **up to the member's remaining
+ deposit at slash time, for acceptances checkpointed pre-slash** (rev-2
+ NEW-3, rev-3 R3-3: recovery is remainder-capped and checkpoint-gated — an
+@@ -1072,7 +1082,9 @@
+ 
+ **Why the bound has this shape.** Gateway-bound messages make every
+ cross-gateway reuse of an index a *conflicting* pair (different gateway ⇒
+-different $m$ ⇒ different $x$), and within one gateway a reused index is
++different $m$ ⇒ different $x$ except on an $H_x$ collision, which the
++symbolic Lean `Fleet.Conflict` does not track; see audit SM09), and
++within one gateway a reused index is
+ either bit-identical (reject-duplicate, no value) or conflicting. So all
+ value beyond the solvency entitlement $\lfloor D/C \rfloor \cdot C$ comes
+ from conflicting acceptances. From the first conflicting acceptance, the

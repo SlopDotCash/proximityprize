@@ -11,8 +11,9 @@ import Mathlib.Algebra.Polynomial.Eval.Degree
 /-!
 # Hensel lifting in the BCIKS20-application shape (series-coefficient polynomials)
 
-`HenselExistence.lean` proves abstract Hensel for a polynomial `P : R[X]` whose coefficients
-are *constants* in `R`, lifting a simple root `c : R` to a root `γ : R⟦X⟧`. The BCIKS20
+`HenselExistence.lean` treats the scalar-coefficient case `P : R[X]`, where an exact root `c`
+lifts as the constant series `C c` (unique under the simple-root hypothesis); genuine Hensel
+lifting needs the series-coefficient shape below. The BCIKS20
 quotienting argument (App. A.4) requires the **application shape**: the polynomial whose root we
 lift already has **power-series coefficients**,
 
@@ -46,14 +47,14 @@ Comparing two series `γ₁, γ₂` that agree below order `t` (`0 < t`): trunca
 (`coeff_pow_sub_below`) makes `coeff b (γ₁^i) = coeff b (γ₂^i)` for every `b < t`, so **only the
 `b = t` (hence `a = 0`) corner of each convolution survives the difference**. The surviving
 `a = 0` factor is `coeff 0 (Q.coeff i) = constantCoeff (Q.coeff i) = Q₀.coeff i`, a *constant*.
-Thus the convolution collapses to exactly the constant-coefficient linearization of
-`HenselExistence`, but against `Q₀`:
+Thus the convolution collapses to exactly the constant-coefficient linearization
+`NewtonLinearization.coeff_aeval_sub_at`, but against `Q₀`:
 
   `coeff t (eval γ₁ Q) − coeff t (eval γ₂ Q) = eval c (derivative Q₀) · (coeff t γ₁ − coeff t γ₂)`.
 
-From there the Newton recursion and order-by-order vanishing are *verbatim* those of
-`HenselExistence` (the linear response `eval c (derivative Q₀)` is a unit by hypothesis, and the
-order-0 coefficient is `eval c Q₀ = 0`), so the same construction lifts `c` to a root of `Q`.
+From there the Newton recursion below gives order-by-order vanishing (the linear response
+`eval c (derivative Q₀)` is a unit by hypothesis, and the order-0 coefficient is
+`eval c Q₀ = 0`), so it lifts `c` to a root of `Q`.
 
 **Self-containment.** `HenselExistence` / `NewtonLinearization` are stated for `R[X]` (constant
 coefficients), not the `R⟦X⟧[X]` shape, so the two power-only lemmas that transfer unchanged —
@@ -195,7 +196,8 @@ the corner `(0, t)`:
 
 LEMMA B (`coeff_pow_sub_at`) evaluates the power difference to `i • (c^{i-1} δ)`, and the sum
 `∑ᵢ (Q₀.coeff i) · i · c^{i-1} = eval c (derivative Q₀)` by `derivative_eval` + `sum_over_range'`.
-This is exactly the constant-coefficient finish of `HenselExistence`, but against `Q₀`. -/
+This is exactly the constant-coefficient finish of `NewtonLinearization.coeff_aeval_sub_at`, but
+against `Q₀`. -/
 theorem coeff_eval_sub_at {γ₁ γ₂ : R⟦X⟧} {t : ℕ} (ht : 0 < t)
     (h : ∀ j < t, coeff j γ₁ = coeff j γ₂) :
     coeff t (Polynomial.eval γ₁ Q) - coeff t (Polynomial.eval γ₂ Q) =
@@ -258,7 +260,7 @@ theorem constantCoeff_eval (γ : R⟦X⟧) :
     Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le (natDegree_Q₀_le Q))]
   exact Finset.sum_congr rfl fun i _ => by rw [map_mul, map_pow, coeff_Q₀]
 
-/-! ## The Newton partial-sum sequence and its diagonal (mirrors `HenselExistence`) -/
+/-! ## The Newton partial-sum sequence and its diagonal -/
 
 variable (c : R)
 
@@ -365,7 +367,7 @@ order-0 reduction `Q₀ := Q.map constantCoeff` has a *simple* root `c : R`
 lifting `c` (`constantCoeff γ = c`) with `Polynomial.eval γ Q = 0`.
 
 This is the application-shaped analogue of `HenselExistence.exists_powerSeries_root`: there the
-polynomial had *constant* coefficients in `R`; here its coefficients already live in `R⟦X⟧`, and
+polynomial had constant coefficients (and the root is just `C c`); here its coefficients already live in `R⟦X⟧`, and
 the root data is prescribed only at order 0. -/
 theorem exists_powerSeries_root_seriesCoeff :
     ∃ γ : R⟦X⟧, constantCoeff γ = c ∧ Polynomial.eval γ Q = 0 :=

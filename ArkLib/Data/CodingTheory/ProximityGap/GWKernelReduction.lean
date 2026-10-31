@@ -191,10 +191,16 @@ def GWAgreeForcesDirection
 
 /-- **BRICK-W conclusion (direction space affine, dim ≤ s − 1) — orchestrator-wired Prop.**
 
-The GW direction submodule `A` produced by BRICK-V has `F`-dimension `≤ s − 1`.  Lane `GWBrickW`
-*proves* this from the proven GK16 folded-Wronskian engine
-(`foldedWronskian_ne_zero_of_linearIndependent`); here it enters as a named hypothesis, stated
-*per* solution submodule `A ≤ C`. -/
+Intended content: the GW direction submodule `A` produced by BRICK-V has `F`-dimension `≤ s − 1`.
+Lane `GWBrickW` proves such a bound (via the GK16 folded-Wronskian engine
+`foldedWronskian_ne_zero_of_linearIndependent`) **only for the single designated solution
+submodule**, not for this Prop.
+
+**Refuted as stated.**  This Prop quantifies over *every* submodule `A ≤ C`; taking `A := C`
+forces `finrank C ≤ s − 1`, so it is false for every code of dimension `≥ s`
+(`GWDirectionScopedWiring.gwDirectionFinrankLe_refuted`).  Use the scoped replacements
+`GWDirectionScopedWiring.GWAgreeForcesDirectionScoped` and
+`GWDirectionScopedWiring.cz25CoordFiberCap_of_interp_and_multiplicity_scoped` instead. -/
 def GWDirectionFinrankLe
     (s : ℕ) (C : Submodule F (ι → Fin s → F)) : Prop :=
   ∀ A : Submodule F (ι → Fin s → F), A ≤ C → Module.finrank F A ≤ s - 1
@@ -344,9 +350,8 @@ theorem cz25CoordFiberCap_of_interp_and_multiplicity
     (hW : GWDirectionFinrankLe s C)
     (hL : GWAffineFiberCharge s τ C h η hη) :
     CZ25CoordFiberCap s τ C h η hη := by
-  -- BRICK-I/V/W feed BRICK-L's charge `hL`; the cap follows by the arithmetic collapse.
-  -- We exercise `{hI, hV, hW}` to certify they are the genuine source of the charge `hL`, then
-  -- discharge the cap purely from `hL` and `hτ`.
+  -- The cap follows from `hL` and `hτ` alone by the arithmetic collapse. The `_chain` below
+  -- merely type-checks that `{hI, hV, hW}` compose; it is unused and does NOT derive `hL`.
   classical
   -- Record the analytic chain `{I → V → W}` is consumable (non-degenerate regime witness).
   have _chain : ∀ f c₀ : ι → Fin s → F, 0 ≤ 1 - τ (Nat.floor (1 / η)) - η →

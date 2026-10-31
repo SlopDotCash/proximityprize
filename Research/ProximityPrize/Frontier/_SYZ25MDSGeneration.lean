@@ -20,7 +20,7 @@ probe's "over-budget ⟹ generation" pattern is a theorem.
 
 This file settles the characterization.
 
-## The exact criterion (duality; probe-validated, field-independent)
+## The exact criterion (duality; probe-validated)
 
 Take perps inside `F^U`.  For a core `C`,
   `Aᶜᗮ  =  { p : U → F  |  p|_C  is (the restriction of) a degree-`<k` polynomial }`
@@ -34,8 +34,10 @@ rigidity**:
 Equivalently `⨆ Aᵢ = span { g_T : T a (k+1)-subset with T ⊆ some Cᵢ }`, `g_T` the (unique up to
 scale) minimum-weight dual codeword supported on `T`.  `scripts/probes/probe_syz25_mds_generation.py`
 verifies the two computations of the deficiency `d := (|U|−k) − finrank(⨆ Aᵢ)` agree exactly
-(direct span rank vs. `|U| − dim{local polys}`) on every family, and that `d` is a
-**field-independent** matroid invariant (identical over `p ∈ {31,101,65537}`).
+(direct span rank vs. `|U| − dim{local polys}`) on every family.  The probe fixes the evaluation
+points `α = (0,1,…,n−1)` and varies only the prime `p ∈ {31,101,65537}`; `d` agreeing across those
+primes is **not** evidence that `d` is a matroid invariant of the cover, and it is not one: `d`
+depends on the evaluation points `α` (see the counterexample caveat below).
 
 ## The over-budget corollary is REFUTED
 
@@ -46,7 +48,14 @@ over-budget families of *distinct* cores that fail to generate.  The smallest is
   `C = { {0,1,4,5}, {0,2,3,5}, {1,2,3,4} }`,  `∑(|Cᵢ|−k) = 3 = |U|−k`,  yet  `finrank(⨆ Aᵢ) = 2`
   (`d = 1`): the three min-weight dual lines are **coplanar** in the 3-dim `W`.
 
-So generation is *strictly stronger* than over-budget: it is a genuine incidence/rigidity fact, not
+**Caveat (evaluation-point dependence, audit CW-B13-01).**  This rank drop holds for the probe's
+evaluation points `α = (0,1,2,3,4,5)`; it is *not* a generic Reed–Solomon fact.  An exact
+recomputation over `ℚ` of the rank of `g_T(i) = 1/∏_{j∈T, j≠i}(αᵢ − αⱼ)` for these three cores
+gives rank `2` at `α = (0,…,5)` but rank `3` (`d = 0`, the cover generates) at, e.g.,
+`α = (−20,14,−11,21,−9,86)` or `α = (0,1,2,3,4,7)`.  So the cover refutes "over-budget ⟹
+generation" only for that specific `RS[α,k]`, not for generic evaluation points.
+
+So generation is *strictly stronger* than over-budget (for some evaluation sets): it is a genuine incidence/rigidity fact, not
 a dimension count.  This sharpens SYZ24 in the honest direction.
 
 ## What is proven here (all axiom-clean, abstract linear algebra over `SYZ23.partialSup`)
@@ -73,14 +82,16 @@ over-budget does **not** force generation even for *distinct* cores.
 ### (4) THE CONCRETE RS COUNTEREXAMPLE COVER — `syz25Counterexample`, `counterexample_overbudget`.
 The `n=6, k=3` cover `{ {0,1,4,5}, {0,2,3,5}, {1,2,3,4} }` recorded combinatorially: full-cover,
 over-budget arithmetic `∑(|Cᵢ|−k) = |U|−k = 3` by `decide`.  The probe supplies `finrank(⨆) = 2`
-(`d = 1`); the field-independent rank drop is the residual the abstract §3 realizes.
+(`d = 1`) at `α = (0,…,5)` only — the rank drop is evaluation-point dependent (it disappears for
+generic `α`, see the caveat above); the abstract §3 realizes its linear-algebra shape.
 
 ## Honest δ\* verdict
 
 The residual is now **pinned exactly**: cross-core generation is local-to-global polynomial
 rigidity (§1), equivalently "every minimum-weight generator of `W` is core-supported" (§2).  It is
-**strictly stronger** than the over-budget count — refuted in §3/§4 by an explicit distinct-core
-family.  So the strip does **not** close from any counting hypothesis; the honest remaining input is
+**strictly stronger** than the over-budget count — refuted abstractly in §3 and, for the specific
+evaluation points `α = (0,…,5)`, by the explicit distinct-core family of §4 (probe-only; that family
+generates for generic `α`).  So the strip does **not** close from any counting hypothesis; the honest remaining input is
 the incidence-geometric fact that the actual over-budget stacks arising from SYZ18 sunflower
 realizability *do* place their cores in generating position (probe: every real GRS stack generates;
 the incremental-`≥k`-overlap orderable families provably do, `probe_syz25` S1).  Unconditional δ\*
@@ -257,8 +268,10 @@ section ConcreteCover
 
 /-- The `n=6, k=3` counterexample cover found by the exhaustive `probe_syz25` search: three
 `4`-cores of `{0,…,5}`.  Over-budget (`∑(|Cᵢ|−k) = |U|−k = 3`) yet `finrank(⨆ Aᵢ) = 2` (probe:
-`d = 1`) — the three minimum-weight dual lines are coplanar.  Combinatorial record; the rank drop
-is realized abstractly by §3. -/
+`d = 1`, for the evaluation points `α = (0,…,5)` only) — the three minimum-weight dual lines are
+coplanar.  The rank drop is evaluation-point dependent (for generic `α` the cover generates), so
+this is not a generic-RS obstruction.  Combinatorial record; the rank drop is realized abstractly
+by §3. -/
 def syz25Counterexample : List (List ℕ) :=
   [[0, 1, 4, 5], [0, 2, 3, 5], [1, 2, 3, 4]]
 
@@ -272,7 +285,8 @@ def ceSumExcess : ℕ := (syz25Counterexample.map (fun C => C.length - ceK)).sum
 def ceCeiling : ℕ := 6 - ceK
 
 /-- **The counterexample cover is over-budget.**  `∑(|Cᵢ|−k) = 3 = |U|−k`, so the additive budget
-*reaches* the ceiling — yet the family provably fails to generate (`d = 1`, probe + §3). -/
+*reaches* the ceiling — yet at `α = (0,…,5)` the family fails to generate (`d = 1`, probe-only;
+not formalized here, and false for generic `α`). -/
 theorem counterexample_overbudget : ceCeiling ≤ ceSumExcess := by decide
 
 /-- The exact figures: `∑(|Cᵢ|−k) = 3` and `|U|−k = 3`. -/

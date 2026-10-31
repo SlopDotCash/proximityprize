@@ -93,6 +93,12 @@ remaining consumer either (a) only needs the subset direction, or (b) is a bad-e
 definition where shrinking the set weakens nothing downstream. *Prior art:* migration
 already started by the fleet (bad events migrated). *Disposition:* verify during #313
 closeout sweep; no new math expected.
+*Status (resolved):* after the ArkLib consolidation the canonical `fiberwiseDisagreementSet`
+is the per-fiber set, and `fiberwiseDisagreementSetPerFiber` is definitionally equal to it. The
+coarse all-or-empty surface is retained only as
+`Compatibility.globalDisagreementDestinations` (`Soundness/FoldDistance.lean`; no locality claim),
+and Compliance `fold_error_containment_all` now proves true per-fiber locality. The K4 migration
+hypothesis is therefore resolved.
 
 ### K5 — #327 relation-out completes from the landed final-codeword bridges
 *Constraints:* the issue-owner lane landed `getMidCodewords_last_apply_eq_eval`,

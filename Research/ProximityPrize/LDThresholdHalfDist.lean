@@ -10,7 +10,7 @@ import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 /-!
 # Unconditional half-distance floor for the genuine list-decoding threshold
 
-`GrandChallengeLDThreshold.lean` gives the genuine lattice threshold a Johnson-side floor
+`LDThreshold.lean` gives the genuine lattice threshold a Johnson-side floor
 *parameterized* by the radical-free Johnson condition.  This file complements it with a
 fully *unconditional* floor from the unique-decoding regime: below half the minimum
 distance every list has at most one element, so every grid radius `j/n` with
@@ -155,7 +155,7 @@ theorem listLatticeSet_nonempty_rs
 
 omit [DecidableEq ι] in
 /-- **Unconditional half-distance floor on the genuine threshold**: combined with the
-capacity ceiling of `GrandChallengeLDThreshold.lean`, every Reed–Solomon instance has
+capacity ceiling of `LDThreshold.lean`, every Reed–Solomon instance has
 
   `⌊(n - deg)/2⌋ ≤ listLatticeThreshold ≤ n - deg`
 

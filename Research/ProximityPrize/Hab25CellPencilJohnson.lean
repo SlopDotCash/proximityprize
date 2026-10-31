@@ -39,6 +39,12 @@ linear-factor slice only; the remaining #348 item-1 inputs (the §5 package legs
 `exists_pinning_pair_of_heavy_agreement` — centre/branch/heavy-set selection, the GK1+GK3
 composition) are not supplied here.
 
+**Strength of the `himpr` conclusion (audit CW-B19-04).**  The "improving pair" disjunct
+`∃ d₀ d₁, ∀ z ∈ E, ∃ x ∈ disagreeSet d₀ d₁, affineGap d₀ d₁ z x = 0` leaves `d₀ d₁` free, so it
+is equivalent to `E.card ≤ n` (`exists_improvingPair_iff_card_le` in `Hab25CellDichotomyWiring`).
+The theorems here prove more than their stated conclusion needs; the conclusion itself carries
+only a cardinality bound, not the affine-capture structure used to prove it.
+
 Axiom-clean: `[propext, Classical.choice, Quot.sound]` (audited at end of file).
 -/
 

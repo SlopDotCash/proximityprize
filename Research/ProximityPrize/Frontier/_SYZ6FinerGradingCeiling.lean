@@ -36,19 +36,25 @@ complement carries the bad scalars.  Three subsets give
 
 distinct `mcaEvent`-bad scalars at radius `predecessorRadius (2^30) (342·2^20) = 358612991/2^30`.
 
-**Why `1024` and not `64`.**  Minimizing the radius over the feasible core size `C` and region
-size `R = (B − C)/3` (with `B` the block count) subject to the degree cap `C·blk < 2^29`
-(i.e. `C < B/2`) and the over-budget constraint `3R > C` gives, at each grading, the largest
-`C < B/2` with `B − C ≡ 0 mod 3`, and radius `= (2R·blk − 1)/2^30`.  At `B = 1024`: `C = 511`,
-`R = 171`, radius `358612991/2^30`.  The domain is fixed at `2^30`, so the grading is **finite**:
-equal blocks force `B = 2^j` with `j ≤ 30`, and `B` cannot be sent to `∞`.  Over all admissible
-gradings the template radius is minimized at `B = 2^30` (`blk = 1`, `C = 2^29 − 1`,
-`R = 178956971`), giving `357913941/2^30 = 1/3 − 1/(3·2^30)`.  That is slightly *below* `1/3`
-because of the `−1` predecessor offset; no Lean proof finer than `B = 1024` exists.  Hence the
-`D = 3` value `(1−ρ)/(2−ρ) = 1/3` at `ρ = 1/2` is an asymptotic (growing-domain) reference value,
-not an unattained fixed-domain infimum.  The remaining gap to the template minimum is **pure
-lattice** (a finer grading closes it); the conceptual gap `[Johnson 1 − √(1/2) ≈ 0.2929, 1/3]` is
-untouched.  Johnson remains strictly below — no contradiction.
+**Why `1024` and not `64`.**  Minimizing the radius over the feasible core size `C` and the three
+region sizes `R₀ + R₁ + R₂ = B − C` (with `B` the block count, `blk = 2^30/B`) subject to the degree
+cap and the over-budget constraint `2(B − C)·blk > 2^30` (i.e. `C < B/2`).  The degree cap is
+`C·blk + 1 < 2^29`, not `C·blk < 2^29`: the row-0 codeword is `Z_N(X)·X` (`znxX_degree_lt`), one
+degree above `Z_N`.  For `blk ≥ 2` this coincides with `C < B/2`; at `blk = 1` it forces
+`C ≤ 2^29 − 2`.  The radius is `(max_j (B − C − R_j)·blk − 1)/2^30`, so one takes `C` as large as the
+cap allows and the regions as equal as possible.  At `B = 1024`: `C = 511`, `R = 171` each, radius
+`358612991/2^30`.  The domain is fixed at `2^30`, so the grading is **finite**: equal blocks force
+`B = 2^j` with `j ≤ 30`, and `B` cannot be sent to `∞`.  Over all admissible gradings the template
+radius is minimized at `B = 2^30` (`blk = 1`, `C = 2^29 − 2`, regions
+`(178956971, 178956971, 178956972)`, maximal complement `357913943`), giving
+`357913942/2^30 = 1/3 + 2/(3·2^30)`, still strictly *above* `1/3`.  (An earlier ledger instance
+used `C = 2^29 − 1` at `blk = 1`; that violates the cap — `deg v₀ = 2^29 = k` is not a codeword — and
+its sub-`1/3` radius `357913941/2^30` is not realized by this template.)  No Lean proof finer than
+`B = 1024` exists.  Hence the `D = 3` value `(1−ρ)/(2−ρ) = 1/3` at `ρ = 1/2` is an asymptotic
+(growing-domain) reference value, not attained by this fixed-domain template.  The remaining gap
+to the template minimum is **pure lattice** (a finer grading closes it); the conceptual gap
+`[Johnson 1 − √(1/2) ≈ 0.2929, 1/3]` is untouched.  Johnson remains strictly below — no
+contradiction.
 
 **Untouched.**  The unconditional good-side floor `178956971/2^30 ≈ 0.1667` is unchanged, and the
 CORE (pinning `δ*` exactly) remains OPEN: sharpening the *ceiling* says nothing about `δ*` itself.

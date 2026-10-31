@@ -34,9 +34,10 @@ where
 `WeightedSlopeMass = sum_{realized b} agree(u1,b) * (cap_a(b)-1)`.
 
 This is an exact bad-count upper lens, not a solution of the good side.  Its remaining
-input is a weighted list-mass bound for the realized nearby codewords `b`.  The final
-coarse consumer shows that replacing this mass by an ordinary list-size bound recovers
-the familiar doubled-radius/list-decoding wall.
+input is a weighted list-mass bound for the realized nearby codewords `b`.  (Heuristically,
+replacing this mass by an ordinary list-size bound recovers the familiar
+doubled-radius/list-decoding wall; no such list-size consumer is formalized in this file —
+the last theorem is `badScalar_card_mul_sq_le_length_sq_add_weightedSlopeMass`.)
 -/
 
 set_option autoImplicit false

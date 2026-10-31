@@ -154,7 +154,10 @@ theorem affine_rows_fill_pairwise_disjoint_misses
 
 /-! ## Regular signatures -/
 
-/-- The three source-core roots carried by a regular outsider. -/
+/-- The three source-core roots carried by a regular outsider.  This is definitionally the
+canonical `overlapRootBlock dom (u 0) (u 1) gamma (family.q gamma) line`
+(`regularRootTriple_eq_overlapRootBlock`); the local name is kept because many downstream proofs
+unfold it directly. -/
 noncomputable def regularRootTriple
     {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
     (family : BadScalarRichPointFamily dom 4 delta u)
@@ -162,13 +165,25 @@ noncomputable def regularRootTriple
   fullAgreement dom (u 0) (u 1) gamma (family.q gamma) ∩
     jointCore dom (u 0) (u 1) line.1 line.2
 
-/-- The coordinates outside the source core missed by a regular outsider. -/
+/-- The coordinates outside the source core missed by a regular outsider.  This is the canonical
+missed-set definition; `NoEightSixRootSupport.sourceMissedSet` and
+`NoEightSevenRootSupport.sourceSevenMissedSet` are definitionally equal to it (see the `rfl`
+bridges `sourceMissedSet_eq_regularMissedEdge` and `sourceSevenMissedSet_eq_regularMissedEdge`). -/
 noncomputable def regularMissedEdge
     {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
     (family : BadScalarRichPointFamily dom 4 delta u)
     (line : LineParameter F) (gamma : F) : Finset I :=
   (Finset.univ \ jointCore dom (u 0) (u 1) line.1 line.2) \
     sourceFreshAgreement family line gamma
+
+/-- `regularRootTriple` is the canonical overlap root block. -/
+theorem regularRootTriple_eq_overlapRootBlock
+    {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
+    (family : BadScalarRichPointFamily dom 4 delta u)
+    (line : LineParameter F) (gamma : F) :
+    regularRootTriple family line gamma =
+      overlapRootBlock dom (u 0) (u 1) gamma (family.q gamma) line :=
+  rfl
 
 theorem sourceFreshAgreement_subset_coreComplement
     {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}

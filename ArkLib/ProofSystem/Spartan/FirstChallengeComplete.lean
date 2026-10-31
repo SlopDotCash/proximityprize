@@ -28,7 +28,7 @@ phase's completeness is **unconditional**: it takes no `h_inner` hypothesis.
   is exactly `zeroCheckVirtualPolynomial_eq_zero_of_satisfied`: an R1CS-satisfying instance makes the
   zero-check polynomial `𝒢` vanish, so the two `RandomQuery` virtual oracles `(𝒢, 0)` agree
   (`RandomQuery.relIn`). Its `lift_complete` is the R1CS pass-through.
-* `firstChallenge_perfectCompleteness` — a direct run proof for the one-round challenge adapter:
+* `completedFirstChallenge_perfectCompleteness` — a direct run proof for the one-round challenge adapter:
   the verifier samples `τ`, the prover records it, and the statement/oracles/witness are carried
   through unchanged.
 -/

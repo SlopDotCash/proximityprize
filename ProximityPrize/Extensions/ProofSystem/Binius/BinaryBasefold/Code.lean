@@ -460,6 +460,10 @@ lemma mem_fiberwiseDisagreementSetPerFiber
     exact (eq_iteratedQuotientMap_of_mem_quotientFiber_range 𝔽q β i steps
       h_destIdx h_destIdx_le _ y ⟨idx, rfl⟩).symm
 
+/-- Historical name. After the upstream consolidation the canonical `fiberwiseDisagreementSet`
+*is* the per-fiber image set (the old positive-step all-or-empty filter survives only as
+`Compatibility.globalDisagreementDestinations` in `Soundness/FoldDistance.lean`), so this
+inclusion is definitional equality; `h_steps` is unused. -/
 lemma fiberwiseDisagreementSetPerFiber_subset_legacy_of_ne_zero
     (i : Fin r) {destIdx : Fin r} (steps : ℕ) (h_steps : steps ≠ 0)
     (h_destIdx : destIdx = i.val + steps) (h_destIdx_le : destIdx ≤ ℓ)
@@ -472,8 +476,12 @@ lemma fiberwiseDisagreementSetPerFiber_subset_legacy_of_ne_zero
 
 abbrev pair_fiberwiseDistance := @Binius.BinaryBasefold.pairFiberwiseDistance
 
-/-- Fiberwise closeness : f^(i) is fiberwise close to C^(i) if
-2 * d^(i)(f^(i), C^(i)) < d_{i+steps} -/
+/-- Fiberwise closeness: `f^(i)` is fiberwise close to `C^(i)` if BOTH
+* ordinary UDR closeness holds, `2 * Δ₀(f^(i), C^(i)) < d_i`, AND
+* `2 * d^(i)(f^(i), C^(i)) < d_{i+steps}` (fiberwise distance).
+
+Redundancy of the first conjunct (that the fiberwise bound alone implies UDR closeness) is not
+proved here. -/
 def fiberwiseClose (i : Fin r) {destIdx : Fin r} (steps : ℕ) [NeZero steps] (h_destIdx : destIdx = i.val + steps) (h_destIdx_le : destIdx ≤ ℓ)
     (f : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       i) : Prop :=
@@ -1171,7 +1179,8 @@ lemma fold_preserves_BBF_Code_membership (i : Fin r) {destIdx : Fin r}
     exact (congrFun hP_eval x)
 
 -/
-/-- Fiberwise closeness is exposed as the corresponding UDR-close precondition. -/
+/-- Projection of the explicit UDR conjunct of `fiberwiseClose` (`h.1`); this is not a proof that
+fiberwise closeness alone implies UDR closeness. -/
 theorem UDRClose_of_fiberwiseClose (i : Fin r) {destIdx : Fin r}
     (steps : ℕ) [NeZero steps] (h_destIdx : destIdx = i.val + steps)
     (h_destIdx_le : destIdx ≤ ℓ)

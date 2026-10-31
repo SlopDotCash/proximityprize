@@ -32,7 +32,9 @@ actual over-budget stack.  The band Venn model (SYZ27/28/37/G172) forces, at rat
 **Question A — is `{balanced interior} ∩ {band-realizable, rate 1/2}` empty?**  **NO — it is
 NONEMPTY.**  Exhaustive integer enumeration (`k ≤ 40`) finds **65 982** balanced-interior
 band-realizable profiles; the smallest is `n = 14`, `k = 7`, `(a,b,c) = (4,4,4)`, `t = 2`
-(cores of size `s = a+b+t = 10`, radius `δ = 4/14 = 2/7 ∈ (1/4,1/3)`, interior band).  **So the
+(cores of size `s = a+b+t = 10`, radius `δ = 4/14 = 2/7 ∈ (1/4,1/3)`, i.e. the `2n/3 < s < 3n/4`
+core band — but **below** the
+Johnson radius `1 − √(1/2) ≈ 0.293`, so outside the decisive strip `(Johnson, 1/3)`).  **So the
 counting/Venn overflow is *not* a global closing argument**: the balanced interior does meet the
 realizable polytope at rate `1/2`.
 
@@ -60,9 +62,9 @@ over-budget stack (the SYZ42 syndrome-configuration existence) is the unchanged 
 ## Honest verdict
 
 The polytope intersection is **nonempty**, so `ι ≤ 1` at rate `1/2` is **not** closed by a
-pure counting/overflow argument.  What *is* newly pinned: on its whole-subgroup domain `n = 12` the SYZ49
-`μ₁₂` witness is **not** band-realizable (`n = 3d` short of the band's `n ≥ 3d + 1`; on a larger
-domain such as `μ₃₆` the profile does pass the `Realizable` relaxation),
+pure counting/overflow argument.  What *is* newly pinned: on its whole-subgroup domain `n = 12` the
+SYZ49 `μ₁₂` witness is **not** band-realizable (`n = 3d` short of the band's `n ≥ 3d + 1`; on a
+larger domain such as `μ₃₆` the profile does pass the `Realizable` relaxation),
 and the genuine gate is neither domain-membership (SYZ48/49) nor Venn-counting (this file) but
 the **over-budget-stack lift** (SYZ42 existence core / SYZ28 pencil yield).  CORE remains OPEN /
 ON-BGK — with the shield now correctly located one level deeper than SYZ49 left it.

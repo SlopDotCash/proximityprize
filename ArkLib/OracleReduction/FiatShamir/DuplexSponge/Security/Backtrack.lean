@@ -340,10 +340,16 @@ theorem BacktrackSequence.index_perm_no_prior_of_lt
       simpa using hfalse
     exact hnot (Or.inr (by simpa [entryB, outputIdx] using hentry))
 
-/-- The backtracking sequence family $S_{\mathrm{BT}}(\mathrm{tr}, s)$ (CO25, Definition 5.3).
-This represents the set of all maximal backtracking sequences starting from some statement and
-terminating at the target state $s$, where maximality prevents one sequence from being a strict
-subsequence of another. -/
+/-- An interface for the backtracking sequence family $S_{\mathrm{BT}}(\mathrm{tr}, s)$ (CO25,
+Definition 5.3): a supplied finite set of backtracking sequences terminating at the target state
+$s$ whose members are pairwise non-contained (same statement and unordered list-membership
+inclusion of both state lists).
+
+**Scope.** This only records an internal antichain condition. It does not require exhaustiveness
+(every globally maximal chain is a member) nor maximality against admissible extensions outside the
+family, so the empty family and non-maximal singletons satisfy it; it is not a characterisation of
+the paper's $S_{\mathrm{BT}}$. No theorem in this module relates the backward scan to an exhaustive
+canonical family or bounds premature forks by the relevant bad event. -/
 structure BacktrackSequenceFamily (trace : QueryLog (duplexSpongeChallengeOracle StmtIn U))
     (state : CanonicalSpongeState U) where
   /-- `S_BT(tr, s)` — finite set of backtrack sequences (CO25 Def 5.3). -/
@@ -649,7 +655,12 @@ At each step:
   $\mathrm{tr}_{\nabla}.h$ to complete the sequence.
 - If a unique predecessor is found, we extend the accumulator and recurse.
 - If multiple candidates are found at any lookup, or a cycle/loop is detected, the scan aborts with
-  `.forkErr`. -/
+  `.forkErr`. Multi-step capacity cycles are detected via the visited-capacity list `vCap`; the
+  per-step capacity-change condition on sequences alone does not exclude them.
+
+Cost: each recursive step enumerates and filters all permutation-table entries, so a scan of up to
+`N` steps over `N` entries is `O(N²)`; "linear" refers to following a single chain, not to the
+running time. No refinement theorem relates this scan to an exhaustive maximal family. -/
 private def linearScanBackwards
     (trace : QueryLog (duplexSpongeChallengeOracle StmtIn U))
     (trΔ : TraceNabla T_H T_P StmtIn U)
@@ -941,7 +952,15 @@ private def BacktrackSequence.constructCandidateSalt
 
 /-- Parses the protocol rounds over a reconstructed backtracking sequence to extract and validate
 the entire sequence of prover messages and verify the consistency of the squeeze windows
-(CO25, Section 5.2, Step 4). -/
+(CO25, Section 5.2, Step 4).
+
+**Status.** Conformance with the paper's parser is not proved. Known limitations: only the
+`lastMessageBefore? i` message is parsed per challenge round, so protocol shapes with consecutive
+prover messages are not fully handled, and absent accumulator entries are filled with zero vectors
+(no invariant shows every required message was parsed); `messageIdxListBefore` /
+`challengeIdxList` are `Finset.toList` enumerations whose order is not specified, so "last" and the
+round iteration order are not guaranteed to follow protocol order. No theorem shows that a
+well-formed exact-fit chain is extracted or that the returned messages match the recorded blocks. -/
 private def BacktrackSequence.extractCandidate
     (state : CanonicalSpongeState U)
     (trace : QueryLog (duplexSpongeChallengeOracle StmtIn U))
@@ -958,12 +977,15 @@ private def BacktrackSequence.extractCandidate
   for i in challengeIdxList (pSpec := pSpec) do
     let L_P_before := sumMessageBlocksBefore (pSpec := pSpec) i
     let L_V_before := sumChallengeBlocksBefore (pSpec := pSpec) i
-    -- Step 4(a).i — block pointer at round `i`:
-    --   `L_ptr(i) := L_δ + Σ_{j<i} L_P(j) + Σ_{j<i} L_V(j)`  (CO25 Eq. 6/7).
-    let L_ptr := Lδ (δ := δ) + L_P_before + L_V_before
     let msgIdx? := lastMessageBefore? (pSpec := pSpec) i
     -- `L_P(i) := ⌈ℓ_P(i) / r⌉` — permutation blocks needed for the i-th prover message.
     let lpCur := msgIdx?.elim 0 (fun msgIdx => pSpec.Lₚᵢ msgIdx)
+    -- Step 4(a).i — block pointer at round `i`: the *start* of the current message window,
+    --   `L_ptr(i) := L_δ + Σ_{earlier messages} L_P(j) + Σ_{j<i} L_V(j)`  (CO25 Eq. 6/7).
+    -- `sumMessageBlocksBefore i` already includes the current message `msgIdx?` (it sums every
+    -- message index `< i`), so its own `L_P` is subtracted here; otherwise the window
+    -- `[L_ptr, L_ptr + L_P(i))` would start *after* the current message and count it twice.
+    let L_ptr := Lδ (δ := δ) + (L_P_before - lpCur) + L_V_before
     -- `ℓ_P(i) := messageSize msgIdx` — char-length of the i-th prover message in `Σ`.
     let msgSizeUnits := msgIdx?.elim 0 (fun msgIdx => messageSize msgIdx)
     -- Step 4(a).ii — guard `L_ptr(i) + L_P(i) ≤ m_k + 1`.
@@ -988,13 +1010,23 @@ private def BacktrackSequence.extractCandidate
     --   `z_i^(k)  ?=  s_{R,out,L_ptr(i)+L_P(i)-1}[ℓ_P(i) mod r : r]`.
     -- (CO25 Step 4(a).iii.C remainder check; in chars, the unused tail of the in/out rate
     -- blocks must agree, since the permutation only XORs the first `ℓ_P(i) mod r` chars.)
+    --
+    -- Indexing: input state `j` is produced from the *predecessor* output state `j - 1`
+    -- (`inputState.length = outputState.length + 1`; cf. the salt check, which compares input
+    -- `Lδ - 1` with output `Lδ - 2`). So the unused tail of input block `msgEndIdx` is compared
+    -- with output block `msgEndIdx - 1`. Comparing with output `msgEndIdx` (as an earlier version
+    -- did) is out of range exactly at the exact-fit endpoint `L_ptr + L_P(i) = m_k + 1`, which made
+    -- every positive-block exact fit return `none`. The number of message chars in the last block
+    -- is `ℓ_P(i) - (L_P(i) - 1)·r ∈ (0, r]`, so a full last block leaves an empty tail.
     if 0 < lpCur then
       let msgEndIdx := L_ptr + lpCur - 1
-      if h_bounds : msgEndIdx < m_plus_1 ∧ msgEndIdx < seq.outputState.length then
-        let z_i := (seq.inputState.get ⟨msgEndIdx, h_bounds.1⟩).rateSegment.toList.drop
-          (msgSizeUnits % SpongeSize.R)
-        let outSuffix := (seq.outputState.get ⟨msgEndIdx, h_bounds.2⟩).rateSegment.toList.drop
-          (msgSizeUnits % SpongeSize.R)
+      let usedInLast := msgSizeUnits - (lpCur - 1) * SpongeSize.R
+      if h_bounds : 0 < msgEndIdx ∧ msgEndIdx < m_plus_1 ∧
+          msgEndIdx - 1 < seq.outputState.length then
+        let z_i := (seq.inputState.get ⟨msgEndIdx, h_bounds.2.1⟩).rateSegment.toList.drop
+          usedInLast
+        let outSuffix :=
+          (seq.outputState.get ⟨msgEndIdx - 1, h_bounds.2.2⟩).rateSegment.toList.drop usedInLast
         if z_i ≠ outSuffix then
           return none -- B/C remainder check failed ⇒ remove from S_BT
       else

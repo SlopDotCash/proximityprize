@@ -241,7 +241,7 @@ Tags appear in the bracketed prefix of each docstring. The main ones:
   `E_r ≤ (2r-1)‼·n^r` is a theorem). These do NOT by themselves resolve the prize (which needs the
   char-`p` transfer at `r ≈ ln q`).
 * **obstruction** / **constraint** — an axiom-clean statement that a *named candidate lever* does
-  not reach the prize floor (a countermodel / no-go / budget constraint). The strength varies: some
+  not reach the prize scale (a countermodel / no-go / budget constraint). The strength varies: some
   are about the actual period object, many are about an abstract scalar or sequence model of the
   lever; read the statement, not only the tag.
 * **prize-bridge** / **reduction** / **conditional reduction** — a named-conditional reduction
@@ -461,9 +461,9 @@ theorem cumulant_sign_route_refuted {κ : ℕ → ℝ} (h8 : 0 < κ 4) :
 
 /-! ## G2 / G3 / G4 — the late-campaign lever obstructions (resonance / coefficient / roughness).
 Scope: **obstruction**. Each is an axiom-clean proof that a named candidate lever cannot reach the
-prize floor `√(n·log(p/n))`. -/
+prize scale `√(n·log(p/n))`. -/
 
-/-- **[obstruction, G2]** The Parseval/RMS resonance certificate is strictly below the prize floor
+/-- **[obstruction, G2]** The Parseval/RMS resonance certificate is strictly below the prize scale
 in the thin prize regime: `c·√n < √(n·L)` whenever `0 < n`, `0 ≤ c`, `c² < L`. With the measured
 resonance constant `c ≤ 2` and the prize index `L = log(p/n) = log m ≫ c²`, the resonance route
 gives NO Ω-disproof of `C = O(1)`. -/
@@ -595,7 +595,7 @@ theorem doorIVCorridor_one_eq_singleton_export (n : ℝ) :
   _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.doorIVCorridor_one_eq_singleton n
 
 /-- **[capstone, DoorIVCorridorIcc]** Corridor monotonicity in the thinness parameter: increasing
-`L` only widens the BGK ceiling while leaving the prize floor fixed. -/
+`L` only widens the BGK ceiling while leaving the √n floor target fixed. -/
 theorem doorIVCorridor_subset_of_le_export {n L₁ L₂ : ℝ} (hn : 0 ≤ n) (hL : L₁ ≤ L₂) :
     _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.doorIVCorridor n L₁ ⊆
       _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.doorIVCorridor n L₂ :=
@@ -644,8 +644,8 @@ theorem noFifthDoor_forces_doorIV_ceilingRespecting_export
     hLnn hL hC hδ
 
 /-- **[capstone/obstruction, NoFifthDoor]** Local contrapositive of the discharged classical side:
-past the SOTA threshold, a classical mechanism that certifies the prize scale must violate its own
-proven door-scale (`√q` for completion, `C·n^{1−δ}` for moment/EVT). This blocks the degenerate
+past the SOTA threshold, a classical mechanism that certifies the √n floor target must violate its
+own proven door-scale (`√q` for completion, `C·n^{1−δ}` for moment/EVT). This blocks the degenerate
 `certScale` loophole without assuming every mechanism globally respects its ceiling. -/
 theorem noFifthDoor_classical_prize_certificate_violates_provenScale_export
     {L q C δ : ℝ} (hLnn : 0 ≤ L) (hL : 1 < L) (hC : 0 < C) (hδ : δ < 1 / 2) :
@@ -658,8 +658,9 @@ theorem noFifthDoor_classical_prize_certificate_violates_provenScale_export
     hLnn hL hC hδ
 
 /-- **[capstone, NoFifthDoor]** Local no-fifth-door alternative: past the SOTA threshold, any
-prize-scale certificate is either a genuine door-(iv) mechanism, or it violates the proven scale of
-its own classical door. This is the discharged, single-mechanism form of the no-fifth-door capstone. -/
+√n-floor-target certificate is either a genuine door-(iv) mechanism, or it violates the proven scale
+of its own classical door. This is the discharged, single-mechanism form of the no-fifth-door
+capstone. -/
 theorem noFifthDoor_prize_certificate_doorIV_or_violates_provenScale_export
     {L q C δ : ℝ} (hLnn : 0 ≤ L) (hL : 1 < L) (hC : 0 < C) (hδ : δ < 1 / 2) :
     ∃ N₀ : ℝ, ∀ n : ℝ, max N₀ 1 ≤ n → n * L ≤ q →
@@ -672,10 +673,11 @@ theorem noFifthDoor_prize_certificate_doorIV_or_violates_provenScale_export
 
 /-! ## ShawGrandSynthesis — the composed Lane-2/Lane-3 headline. Scope: **capstone**.
 These exports make permanent the newly landed synthesis module: the prize is exactly Shaw boundedness,
-and any proof at the prize floor must pass through door (iv). Pure composition, no CORE bound. -/
+and (in the abstract mechanism model) any certificate of the √n floor target — stronger than
+the prize — must pass through door (iv). Pure composition, no CORE bound. -/
 
 /-- **[capstone, ShawGrandSynthesis]** Conjoined headline: `ShawOOneOn ↔ CorePrizeBoundOn` and,
-at a proven-scale mechanism instance, a prize-floor certificate forces door (iv). -/
+at a proven-scale mechanism instance, a √n-floor-target certificate forces door (iv). -/
 theorem shawGrand_prize_reduces_to_doorIV_export
     {ι : Type*} {q n M : ι → ℝ}
     (hscale : ∀ i : ι,
@@ -714,7 +716,8 @@ theorem shawGrand_prize_reduces_to_doorIV_of_pos_lt_export
     hn hnq hn₀ hL₀ hq₀ hsota hatScale
 
 /-- **[capstone, ShawGrandSynthesis]** Eventual family headline: Shaw boundedness is exactly the
-CORE prize bound, and past the SOTA threshold every proven-scale prize-floor certificate is door (iv). -/
+CORE prize bound, and past the SOTA threshold every proven-scale √n-floor-target certificate is door
+(iv). -/
 theorem shawGrand_prize_reduces_to_doorIV_eventually_export
     {ι : Type*} {q n M : ι → ℝ}
     (hscale : ∀ i : ι,
@@ -1808,9 +1811,9 @@ theorem doorIV_remaining_gap_is_sqrtL_factor_doorIV_only_export
   ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.remaining_gap_is_sqrtL_factor_doorIV_only
     hnref hLref hclassicalOvershoots
 
-/-- **[constraint, DoorIVPrizeShawTetrachotomySynthesis]** Any floor-scale prize constant must be
-at least one: the Plancherel floor `√n ≤ M` and a putative certificate `M ≤ K√n` force `1 ≤ K`.
-This makes the floor-unit baseline citable from the campaign index. -/
+/-- **[scalar bookkeeping, DoorIVPrizeShawTetrachotomySynthesis]** Any constant in a √n-floor-target
+bound (stronger than the prize) must be at least one: the Plancherel floor `√n ≤ M` and a putative
+certificate `M ≤ K√n` force `1 ≤ K`. -/
 theorem doorIV_floorPrizeConstant_ge_one_export
     {M n K : ℝ} (hn : 0 < n)
     (hfloor : NoFifthDoorTetrachotomy.prizeScale n ≤ M)
@@ -5543,7 +5546,7 @@ theorem doorIV_not_family_coherence_and_halfMass_caps_of_exists_normFloor_gt_pro
 
 /-- **[Lane 3 coset-half zero-order budget obstruction, HalfMassFactorization]** Any period-norm
 floor `T ≤ ‖A+B‖` is already a half-mass floor `T ≤ ‖A‖+‖B‖`, before any coherence cap is considered.
-Thus a Door-IV split certificate cannot hide the original prize floor inside the split; the `L¹`
+Thus a Door-IV split certificate cannot hide the original norm floor inside the split; the `L¹`
 half-mass budget must cover the floor first. NO CORE / cancellation / capacity claim. -/
 theorem doorIV_halfMass_normFloor_le_halfMass_export
     {E : Type*} [SeminormedAddCommGroup E] {A B : E} {T : ℝ}
@@ -6292,8 +6295,9 @@ theorem doorIV_below_floor_target_forces_width_or_floor_break_export
 /-- **The single generic telescope** (canonical index entry): a per-level bound
 `M (k+1) ≤ c·M k` with `0 ≤ c` iterates to `M a ≤ c^a·M 0`. Pure induction. In the dilation route
 the proven factor is `2`, so the recursion reproduces the trivial `2^a = n` ceiling rather than the
-prize `2^(a/2)` scale. The factor-2, base-one and `1 ≤ c` variants below are special cases kept only
-as deprecated entries. No CORE upper bound or cancellation claim. -/
+`√n = 2^(a/2)` floor-target scale (the prize itself allows a further `√log` factor). The factor-2,
+base-one and `1 ≤ c` variants below are special cases kept only as deprecated entries. No CORE upper
+bound or cancellation claim. -/
 theorem doorIV_descent_tower_le_export {M : ℕ → ℝ} {c : ℝ} (hc : 0 ≤ c)
     (hstep : ∀ k, M (k + 1) ≤ c * M k) :
     ∀ a, M a ≤ c ^ a * M 0 :=
@@ -7916,7 +7920,8 @@ theorem doorIV_kernelSpectrum_ne_zero_of_phaseSpectrum_succ_ne_zero_export
 #print axioms doorIV_kernelSpectrum_ne_zero_of_phaseSpectrum_succ_ne_zero_export
 
 /-- Door-IV Lane-2 capstone export: the dimensionless Shaw bound is equivalent to the raw
-prize-floor scalar bound, with the same constant, whenever the floor is positive. -/
+prize-scale scalar bound `M ≤ C·√(n·log m)`, with the same constant, whenever that scale is
+positive. -/
 theorem doorIV_shawValueBound_iff_prizeScalarBound_export {C M n m : ℝ}
     (hn : 0 < n) (hm : 1 < m) :
     ArkLib.ProximityGap.Frontier.ShawValueScalarEquivalence.ShawValueBound C M n m ↔
@@ -7924,8 +7929,8 @@ theorem doorIV_shawValueBound_iff_prizeScalarBound_export {C M n m : ℝ}
   ArkLib.ProximityGap.Frontier.ShawValueScalarEquivalence.shawValueBound_iff_prizeScalarBound
     hn hm
 
-/-- Door-IV Lane-2 family capstone export: a uniform raw prize-floor constant is equivalent to
-`Sh(n)=O(1)` for any positive-floor family.  This is normalization only; the open monomial-sum
+/-- Door-IV Lane-2 family capstone export: a uniform raw prize-scale constant is equivalent to
+`Sh(n)=O(1)` for any positive-scale family.  This is normalization only; the open monomial-sum
 anti-concentration theorem is not discharged here. -/
 theorem doorIV_shawFamilyBound_iff_prizeFamilyBound_export {ι : Type*} (M n m : ι → ℝ)
     (hn : ∀ i : ι, 0 < n i) (hm : ∀ i : ι, 1 < m i) :
@@ -8013,13 +8018,13 @@ theorem doorIV_shawValueRefinedWindowWidth_export {n L : ℝ} (hn : 0 < n) (hL :
 #print axioms doorIV_shawValueSuperDiagonalFloor_export
 #print axioms doorIV_shawValueRefinedWindowWidth_export
 
-/-- Door-IV Lane-2 SHARPENED FLOOR-UNIT CORRIDOR export: lifts the floor-normalized (`√n`-unit) prize
+/-- Door-IV Lane-2 SHARPENED FLOOR-UNIT CORRIDOR export: lifts the floor-normalized (`√n`-unit)
 corridor lower end from the bare Plancherel `1` to the proven super-diagonal constant
-`c₀ = (5/4)^{1/4} > 1`.  Given the proven super-diagonal period floor `c₀·√n ≤ M`, a classical-door
-BGK ceiling `M ≤ √(n·L)`, and the classical-overshoot refutations, the floor-normalized ratio `M/√n`
-lives in `[c₀, √L]` (strictly narrower at the bottom than the bare `[1, √L]`), and any prize-floor
-certifying mechanism is door-(iv) `newEvaluation`.  This is the `√n`-unit sibling of the sharpened
-Shaw bracket `[c₀/√L, √(n/L)]`.  Normalization rung; CORE not discharged. -/
+`c₀ = (5/4)^{1/4} > 1`.  Given the super-diagonal period floor `c₀·√n ≤ M` and an *entered* ceiling
+`M ≤ √(n·L)` (which is already the prize bound with `C = 1`), the floor-normalized ratio `M/√n`
+lives in `[c₀, √L]`.  The third conjunct (every √n-floor-target certifying mechanism is door-(iv))
+rests on the all-records classical-overshoot hypothesis, which is unsatisfiable (`⟨moment, 0⟩`
+violates it), so that conjunct is vacuous.  Scale bookkeeping; CORE not discharged. -/
 theorem doorIV_sharpenedFloorUnitCorridor_export
     {M nref Lref : ℝ} (hnref : 0 < nref) (hLref : 1 < Lref)
     (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt nref ≤ M)
@@ -8039,12 +8044,12 @@ theorem doorIV_sharpenedFloorUnitCorridor_export
 
 #print axioms doorIV_sharpenedFloorUnitCorridor_export
 
-/-- Door-IV Lane-3 PRIZE-CONSTANT lower-bound export: any achievable floor-scale prize constant `K`
-must clear the proven super-diagonal floor `c₀ = (5/4)^{1/4} ≈ 1.0574 > 1`.  Sharpens the bare
-`1 ≤ K` baseline (`doorIV_floorPrizeConstant_ge_one_export`): if `c₀·√n ≤ M` (proven super-diagonal
-period floor) and `M ≤ K·√n`, then `c₀ ≤ K`.  A floor-normalized certificate cannot have a constant
-below `c₀`; the prize must clear a constant strictly above the bare Plancherel `1`.  Constraint rung on
-the achievable prize constant itself; CORE not discharged. -/
+/-- Door-IV Lane-3 √n-FLOOR-TARGET constant lower-bound export: any constant `K` in a
+√n-floor-target bound `M ≤ K·√n` (stronger than the prize `M ≤ C·√(n·L)`) must clear the
+super-diagonal floor `c₀ = (5/4)^{1/4} ≈ 1.0574 > 1`. Sharpens the bare `1 ≤ K` baseline
+(`doorIV_floorPrizeConstant_ge_one_export`): if `c₀·√n ≤ M` and `M ≤ K·√n`, then `c₀ ≤ K`.  Scalar
+bookkeeping on the floor-target constant; it says nothing about the prize constant `C`.  CORE not
+discharged. -/
 theorem doorIV_prizeFloorConstant_ge_superDiagonal_export
     {M n K : ℝ} (hn : 0 < n)
     (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt n ≤ M)
@@ -8122,11 +8127,12 @@ theorem doorIV_floorUnitCorridorStrictNesting_export {M n L : ℝ} (hn : 0 < n)
 average-deficit converse into a per-level structural statement.  If the `a = log₂n` dilation levels
 split into good levels (coherence deficit `δ_k ≤ ε`, `ε < (log2)/2`) and an exceptional set `E` of deep
 spikes (`δ_k ≤ 1`) whose count respects the positive-density floor `(1−ε)·|E| ≤ ((log2)/2 − ε)·a`,
-then the exp-relaxed dilation budget bound stays AT/ABOVE the `√(2^a)·M₀` Plancherel/prize scale.
-Mechanism: a thin (sublinear) set of deep deficit spikes cannot drag the dilation budget down to the
-√n prize scale — the route needs `Ω(a)`-many `Ω(1)`-deficit levels, which the same-ray-at-`b*`
-geometry (measured `δ_k ≈ 0` on the dominant top levels) does not supply.  Constraint lemma; CORE
-`M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+then the exp-relaxed dilation budget bound stays AT/ABOVE the `√(2^a)·M₀` Plancherel (√n
+floor-target) scale. Mechanism: a thin (sublinear) set of deep deficit spikes cannot drag the
+dilation budget down to the √n floor-target scale (stronger than the prize) — the route needs
+`Ω(a)`-many `Ω(1)`-deficit levels, which the same-ray-at-`b*` geometry (measured `δ_k ≈ 0` on the
+dominant top levels) does not supply. Constraint lemma; CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains
+OPEN. -/
 theorem doorIV_deficitBudgetBoundedExceptions_export {a : ℕ} {ε M0 : ℝ}
     (δ : ℕ → ℝ) (E : Finset ℕ) (hE : E ⊆ Finset.range a)
     (hgood : ∀ k ∈ Finset.range a, k ∉ E → δ k ≤ ε)
@@ -8147,9 +8153,9 @@ leading block of `T` zero-deficit levels (coset halves exactly same-ray, `δ_k =
 `a − T` levels.  Specialising the bounded-exception floor at `ε = 0`: if the leading zero block is large
 enough that the tail fits the budget threshold `(a : ℝ) − T ≤ ((log2)/2)·a` (i.e. `T ≥ (1−(log2)/2)·a
 ≈ 0.6534·a`, satisfied with room to spare by the measured `a−T = O(1)`), then the exp-relaxed dilation
-budget stays AT/ABOVE the `√(2^a)·M₀` Plancherel/prize scale.  A descent whose coherence saving is
-confined to a sub-`((log2)/2)·a` tail cannot reach the `√n` prize scale.  Constraint lemma; CORE
-`M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+budget stays AT/ABOVE the `√(2^a)·M₀` Plancherel (√n floor-target) scale. A descent whose coherence
+saving is confined to a sub-`((log2)/2)·a` tail cannot reach the `√n` floor-target scale (stronger
+than the prize). Constraint lemma; CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
 theorem doorIV_leadingZeroDeficitBlockFloor_export {a T : ℕ} {M0 : ℝ}
     (δ : ℕ → ℝ) (hT : T ≤ a)
     (hzero : ∀ k, k < T → δ k = 0)
@@ -8166,12 +8172,13 @@ theorem doorIV_leadingZeroDeficitBlockFloor_export {a T : ℕ} {M0 : ℝ}
 /-- Door-IV Lane-3 SCATTERED-deficit sum floor export (structure-free, strict measured form): if the
 RAW total coherence deficit `S = ∑_{k<a} δ_k` over the `a`-level 2-dilation descent is strictly below
 the linear-in-`a` threshold `S < (log 2 / 2)·a` (with `a ≥ 1`), then for `M₀ ≥ 0` the exp-relaxed
-deficit-budget bound stays AT/ABOVE the `√(2^a)·M₀` Plancherel/prize scale.  Unlike the leading-zero-
-block floor, NO assumption is made on how the deficit is distributed: no leading block, contiguity, or
-per-level cap — only the total `S`.  This is the invariant that survives in the measured worst-`b`
-descent, where the nonzero deficits are SCATTERED (a=8: levels 4,5,7 with zeros interspersed, NOT a
-leading block), yet `S < (log2/2)·a` holds with slack at a=5..8 (S = 0, 0.88, 1.62, 1.03 vs threshold
-1.73, 2.08, 2.43, 2.77).  Constraint lemma; CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+deficit-budget bound stays AT/ABOVE the `√(2^a)·M₀` Plancherel (√n floor-target) scale. Unlike the
+leading-zero-block floor, NO assumption is made on how the deficit is distributed: no leading
+block, contiguity, or per-level cap — only the total `S`. This is the invariant that survives in the
+measured worst-`b` descent, where the nonzero deficits are SCATTERED (a=8: levels 4,5,7 with zeros
+interspersed, NOT a leading block), yet `S < (log2/2)·a` holds with slack at a=5..8 (S = 0, 0.88,
+1.62, 1.03 vs threshold 1.73, 2.08, 2.43, 2.77). Constraint lemma; CORE `M(μ_n) ≤ C·√(n·log(p/n))`
+remains OPEN. -/
 theorem doorIV_deficitSumScatteredFloor_export {S M0 : ℝ} (a : ℕ)
     (ha : 1 ≤ a) (hS : S < Real.log 2 / 2 * a) (hM0 : 0 ≤ M0) :
     (Real.sqrt 2) ^ a * M0 ≤ 2 ^ a * Real.exp (-S) * M0 :=
@@ -8480,7 +8487,7 @@ theorem prizeFloorRatio_le_shawBound_mul_gap_export (q n M C : ℝ) (hn : 0 < n)
 #print axioms prizeFloorRatio_le_shawBound_mul_gap_export
 
 /-- Synthesis-gap FAMILY BOUND export: a uniform Shaw-value bound over a prize-regime family transports
-to pointwise prize-floor ratios with the exact logarithmic envelope
+to pointwise √n-floor-target ratios with the exact logarithmic envelope
 `Mᵢ/√nᵢ ≤ C·√(log(qᵢ/nᵢ))`.  No CORE/cancellation claim is made; this records exactly what the
 reduction (= the prize) gives for the stronger √n-floor ratio. -/
 theorem prizeFloorRatio_family_le_of_uniformShawBound_export {ι : Type*} {q n M : ι → ℝ} {C : ℝ}
@@ -8596,8 +8603,8 @@ theorem shawValue_family_le_prizeFloorBound_div_gap_export {ι : Type*} {q n M :
 
 /-- Synthesis-gap INVERSE NO-GO export: if a prize-regime instance has a positive Shaw-value floor
 `c ≤ shawValue q n M` and a √n-floor-target ratio bound `M/√n ≤ B`, then the gap factor itself is
-bounded by `√(log(q/n)) ≤ B/c`.  Thus any constant prize-floor bound with nonvanishing Shaw value has
-already absorbed the `√log` factor separating the prize from the √n floor target. -/
+bounded by `√(log(q/n)) ≤ B/c`. Thus any constant √n-floor-target ratio bound with nonvanishing Shaw
+value has already absorbed the `√log` factor separating the prize from the √n floor target. -/
 theorem gap_le_prizeFloorBound_div_shawFloor_export (q n M B c : ℝ) (hn : 0 < n) (hnq : n < q)
     (hc : 0 < c) (hfloor : _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue q n M ≥ c)
     (hPrize : M / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n ≤ B) :
@@ -8624,9 +8631,9 @@ theorem gap_family_le_prizeFloorBound_div_shawFloor_export {ι : Type*} {q n M :
 /-- Synthesis-gap UNBOUNDED-DRIFT export: if the exact gap factors `√(log(qᵢ/nᵢ))` drift past every
 rescaled target and every Shaw value stays above a fixed positive floor `c`, then the √n-floor-target
 ratios `Mᵢ/√nᵢ` also drift past every target.  This is the explicit contrapositive
-pressure behind the gap no-go: a constant prize-floor bound with nonvanishing Shaw value already
-requires controlling the open door-(iv) `√log` gap.  Pure algebra over `M/√n = Sh·√log`; no CORE or
-cancellation claim. -/
+pressure behind the gap no-go: a constant √n-floor-target ratio bound with nonvanishing Shaw value
+already requires bounding the `√log` gap factor (which the prize itself does not ask for). Pure
+algebra over `M/√n = Sh·√log`; no CORE or cancellation claim. -/
 theorem prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor_export {ι : Type*}
     {q n M : ι → ℝ} {c : ℝ}
     (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hc : 0 < c)
@@ -8642,8 +8649,8 @@ theorem prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor_export {ι : Ty
 /-- Synthesis-gap BOUNDEDNESS NO-GO export: if √n-floor-target ratios are uniformly bounded and
 every Shaw value stays above a fixed positive floor `c`, then the exact `√log` gap factors are uniformly
 bounded too.  This existential wrapper is the boundedness-form companion to the pointwise inverse no-go;
-it makes explicit that an `O(1)` prize-floor theorem with nonvanishing Shaw value already controls the
-`√log` gap between the prize scale and the √n floor target. -/
+it makes explicit that an `O(1)` √n-floor-target theorem with nonvanishing Shaw value already
+controls the `√log` gap between the prize scale and the √n floor target. -/
 theorem gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor_export {ι : Type*}
     {q n M : ι → ℝ} {c : ℝ}
     (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hc : 0 < c)
@@ -9045,10 +9052,11 @@ scale never drops below the L²/Plancherel rms floor. Concretely, for a finite r
 (1) `E_1/card ≤ (max_c |η_c|)²` — the sup sits ABOVE rms (the wrong-side Plancherel floor); and
 (2) `(E_1/card)² ≤ E_2/card` — the normalized L⁴ energy moment dominates the squared normalized L²
 moment, i.e. the energy-moment scale a moment mechanism extracts is itself ABOVE rms. Hence the
-energy/moment route is confined to `[rms, max|η|]`: it OVERSHOOTS the prize floor `√n = rms` and is
-dominated by the sup. The moment door cannot certify a sup bound below `rms` — a kernel-proven overshoot
-from `η` being REAL, with NO SOTA exponent cited. Constraint capstone — NO CORE / cancellation /
-completion / anti-concentration / capacity claim; CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+energy/moment route is confined to `[rms, max|η|]`: it sits AT/ABOVE the √n floor target `√n = rms`
+and is dominated by the sup. The moment door cannot certify a sup bound below `rms` — a
+kernel-proven overshoot from `η` being REAL, with NO SOTA exponent cited. Constraint capstone — NO
+CORE / cancellation / completion / anti-concentration / capacity claim; CORE
+`M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
 theorem doorIV_momentDoor_overshoots_rms_export
     {ι : Type*} (f : ι → ℝ) (s : Finset ι) (hs : s.Nonempty) :
     ((∑ c ∈ s, (f c) ^ (2 * 1)) / (s.card : ℝ) ≤ (s.sup' hs (fun c => |f c|)) ^ 2) ∧
@@ -9060,18 +9068,19 @@ theorem doorIV_momentDoor_overshoots_rms_export
 #print axioms doorIV_momentDoor_overshoots_rms_export
 
 /-- Door-IV Lane-3 BRIDGE export: the INTERNAL moment-energy floor wired into the no-fifth-door
-tetrachotomy's `Mechanism`/`prizeScale`/`bgkScale` vocabulary AT THE PRIZE FLOOR (not the BGK ceiling).
-The tetrachotomy previously discharged door (i) only from the third-party SOTA exponent `δ<1/2` (a moment
-mechanism `RespectsProvenScale` certifies `C·n^{1−δ}`, which eventually exceeds `√(n·L)`).  This export
-gives the SOTA-FREE half: for a real period field `η = f` with Plancherel normalization `E_1/card = n`,
-a real moment mechanism (certifying at least its accessible rms scale `√(E_1/card)`) has certified scale
-`≥ prizeScale n = √n` — the moment door cannot descend BELOW the prize floor, derived from `η` being
-REAL (energy-moment domination), with NO SOTA exponent.  The bundle ALSO records the honest gap
-`prizeScale n < bgkScale n L` (`L>1`): the internal floor sits at `√n`, a strict `√L` factor BELOW the
-BGK ceiling `√(n·L)` that `OvershootsBGK` requires — so it does NOT discharge `OvershootsBGK` and does
-NOT replace the SOTA citation; that residual `√L` factor IS the open door-(iv) gap.  Honest
-connector/constraint capstone — NO CORE / cancellation / anti-concentration / completion / capacity
-claim; CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+tetrachotomy's `Mechanism`/`prizeScale`/`bgkScale` vocabulary AT THE √n FLOOR TARGET (not the
+BGK/prize scale). The tetrachotomy previously discharged door (i) only from the third-party SOTA
+exponent `δ<1/2` (a moment mechanism `RespectsProvenScale` certifies `C·n^{1−δ}`, which eventually
+exceeds `√(n·L)`). This export gives the SOTA-FREE half: for a real period field `η = f` with
+Plancherel normalization `E_1/card = n`, a real moment mechanism (certifying at least its accessible
+rms scale `√(E_1/card)`) has certified scale `≥ prizeScale n = √n` — the moment door cannot descend
+BELOW the √n floor target, derived from `η` being REAL (energy-moment domination), with NO SOTA
+exponent. The bundle ALSO records the honest gap `prizeScale n < bgkScale n L` (`L>1`): the internal
+floor sits at `√n`, a strict `√L` factor BELOW the BGK ceiling `√(n·L)` that `OvershootsBGK`
+requires — so it does NOT discharge `OvershootsBGK` and does NOT replace the SOTA citation; that
+residual `√L` factor is the gap between the √n floor target and the prize scale (the prize itself
+permits it). Honest connector/constraint capstone — NO CORE / cancellation / anti-concentration /
+completion / capacity claim; CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
 theorem doorIV_momentFloorTetrachotomyBridge_export
     {ι : Type*} (f : ι → ℝ) (s : Finset ι) {n L : ℝ}
     (m : ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism)
@@ -9330,10 +9339,11 @@ theorem doorIV_worstPeriodChain_saturates_trivial_export {F : Type*} [Field F] [
 
 #print axioms doorIV_worstPeriodChain_saturates_trivial_export
 
-/-- Door-IV Lane-3 prize-scale forcing export: if a fixed per-level factor `c` were enough for the
-iterated tower to reach the prize `2^(a/2)` scale at depth `a`, then the finite witness inequality
-`c^a ≤ (K * 2^(a/2)) / M0` is forced.  This is the quantitative form of why any successful tower
-recursion must average near `√2`, not `2`.  Constraint only; no asymptotic or CORE claim. -/
+/-- Door-IV Lane-3 √n-floor-target forcing export: if a fixed per-level factor `c` were enough for
+the iterated tower to reach the `√n = 2^(a/2)` floor-target scale (stronger than the prize) at depth
+`a`, then the finite witness inequality `c^a ≤ (K * 2^(a/2)) / M0` is forced. This is the
+quantitative form of why any successful tower recursion must average near `√2`, not `2`. Constraint
+only; no asymptotic or CORE claim. -/
 theorem doorIV_tower_reaches_prizeScale_forces_c_le_export {c K M0 : ℝ} {a : ℕ}
     (hM0 : 0 < M0) (hreach : c ^ a * M0 ≤ K * 2 ^ (a / 2 : ℝ)) :
     c ^ a ≤ (K * 2 ^ (a / 2 : ℝ)) / M0 :=
@@ -9342,9 +9352,10 @@ theorem doorIV_tower_reaches_prizeScale_forces_c_le_export {c K M0 : ℝ} {a : �
 
 #print axioms doorIV_tower_reaches_prizeScale_forces_c_le_export
 
-/-- Door-IV Lane-3 prize-scale overshoot export: when the forced factor-`2` tower budget exceeds
-`K * 2^(a/2)` after normalizing by base mass, the iterated factor-`2` descent cannot be a prize-scale
-argument at that depth.  This is the contrapositive no-√-saving lock for the dyadic recursion. -/
+/-- Door-IV Lane-3 √n-floor-target overshoot export: when the forced factor-`2` tower budget exceeds
+`K * 2^(a/2)` after normalizing by base mass, the iterated factor-`2` descent cannot certify the
+`K·√n` floor-target scale at that depth. This is the contrapositive no-√-saving lock for the dyadic
+recursion. -/
 theorem doorIV_dilation_tower_overshoots_prizeScale_export {K M0 : ℝ} {a : ℕ}
     (hM0 : 0 < M0) (hover : (K * 2 ^ (a / 2 : ℝ)) / M0 < 2 ^ a) :
     K * 2 ^ (a / 2 : ℝ) < 2 ^ a * M0 :=

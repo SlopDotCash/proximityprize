@@ -31,16 +31,24 @@ line `(u₀, deepHole)`. Hence
 
   `ε_mca(RS, 1) ≥ (M' - M'²/q)/q`           (`epsMCA_one_ge_second_moment`)
 
-for every `M' ≤ C(n, k+1)`. Optimizing `M' ≈ q/2^{127}` decides the formal §1 MCA prize:
+for every `M' ≤ C(n, k+1)`. Wiring this into the collapsed prize predicate gives
 
-  `not_mcaPrize_of_second_moment` — for `n ≥ 2` and
-  `2^{129} ≤ q ≤ 2^{127}·C(n, ⌊n/2⌋+1)` the formal prize predicate is **false**.
+  `not_mcaPrize_of_second_moment` — at any prize-rate index `j`, if some `M' ≤ C(n, k_j+1)`
+  satisfies the numeric hypotheses `hle : M'² ≤ M'·q` and `hnum : q² < 2^{128}·(M'q - M'²)`,
+  the formal prize predicate is **false**.
 
-Combined with `mcaPrize_of_large_field` (`q ≥ 2^{128}·C(n, k_j+1) ∀j ⟹ TRUE`, already in
-tree) the formal prize is now decided for **all** field sizes except the knife-edge band
-`q ∈ (2^{127}·C(n, k₀+1), 2^{128}·C(n, k₀+1))` — a single bit of `q`, where the truth
-depends on the exact extremal distinct-value count (relative width of the genuinely
-undecided sliver after optimizing constants is `~2^{-127}`).
+*Heuristic range (not formalized).* Choosing `M' ≈ q/2^{127}` makes `hnum` hold whenever
+`2^{129} ≤ q ≲ 2^{127}·C(n, k_j+1)`; no theorem in this file states that range — the formal
+statement takes `M'`, `hle`, `hnum` as explicit numeric inputs.
+
+Combined with `mcaPrize_of_large_field` (`q ≥ 2^{128}·C(n, k_j+1)` for **every** `j` ⟹ TRUE,
+already in tree), and since the negative side may use whichever `j` is best, the formal prize is
+decided for all field sizes outside (roughly) the band
+`q ∈ (2^{127}·max_j C(n, k_j+1), 2^{128}·max_j C(n, k_j+1))`. The maximum over `j` matters: the
+binomial is not always maximal at `j = 0` (e.g. `n = 2` gives `[1, 2, 2, 2]` and `n = 4` gives
+`[4, 6, 4, 4]` across the four rates). The undecided band is a factor-`2` window in `q` (one bit of
+`q`), where the truth depends on the exact extremal distinct-value count; it is not a `~2^{-127}`
+relative sliver.
 
 ## References
 

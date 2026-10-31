@@ -149,7 +149,9 @@ abbrev perIndexQueryBoundedFamily
 Caveat: the underlying `Verifier.failureProbability` measures a raw `OracleComp`, whose queries
 receive independent fresh uniform answers (a memoryless oracle), not answers from a cached random
 function or an ideal permutation. It matches the paper's definition only once an interpretation
-bridge to the intended oracle model is supplied (see `Security/Rewinding.lean`). -/
+bridge to the intended oracle model is supplied (see
+`ProximityPrize/Extensions/OracleReduction/Security/Rewinding.lean`, section "Oracle semantics
+of the non-interactive (NARG) predicates"). -/
 abbrev failureProbability
     {Message : Type}
     [OracleSpec.UniformAnswerMeasure oSpec]
@@ -182,7 +184,9 @@ Caveat: the underlying `Verifier.rewindingKnowledgeSoundness` is a memoryless-or
 `OracleComp` semantics: every query, including repeated ones, gets a fresh uniform answer; no
 random-function cache or ideal-permutation interpreter is shared across prover, verifier and
 extractor), and its time clause bounds expected oracle cost only. It does not by itself express the
-paper's ideal-permutation / random-oracle notion; see `Security/Rewinding.lean`. -/
+paper's ideal-permutation / random-oracle notion; see
+`ProximityPrize/Extensions/OracleReduction/Security/Rewinding.lean` (section "Oracle semantics
+of the non-interactive (NARG) predicates"). -/
 abbrev rewindingKnowledgeSoundness
     {Message : Type}
     [OracleSpec.UniformAnswerMeasure oSpec]

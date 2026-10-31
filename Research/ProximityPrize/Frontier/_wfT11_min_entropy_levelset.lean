@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
+import ArkLib.Data.CodingTheory.ProximityGap.I031SubGaussianMaxBridge
 
 /-!
 # T11 — Spectral min-entropy / level-set count transfer (#444): REDUCES-TO-WALL (F0/F7)
@@ -98,11 +99,9 @@ def MinEntropyLevelSetDecay (S : Finset ℝ) (c₀ n cardP : ℝ) : Prop :=
     ((S.filter (fun v => lam * Real.sqrt n < v)).card : ℝ)
       ≤ cardP * Real.exp (-(c₀ * lam ^ 2))
 
-/-- **The existing in-tree open Prop, re-stated** (matches
-`I031SubGaussianMaxBridge.SubGaussianTailBound` byte-for-byte).  Restated here so the reduction is
-self-contained / import-light; the real bridge is the named version. -/
-def SubGaussianTailBound (S : Finset ℝ) (C m : ℝ) : Prop :=
-  ∀ s : ℝ, 0 < s → ((S.filter (fun v => s < v)).card : ℝ) ≤ m * Real.exp (-(s ^ 2) / (2 * C))
+/- The existing in-tree open Prop `I031SubGaussianMaxBridge.SubGaussianTailBound` and its bridge
+`subgaussian_max_le` are used directly (earlier revisions restated both here; audit CW-B18-20). -/
+open ArkLib.ProximityGap.I031SubGaussianMaxBridge (SubGaussianTailBound subgaussian_max_le)
 
 /-! ## 2. THE REDUCTION MAP (machine-checked): T11's hypothesis = the existing open Prop. -/
 
@@ -145,54 +144,10 @@ theorem minEntropyDecay_iff_subGaussianTail
       field_simp
     rwa [hexp] at key
 
-/-! ## 3. The forward bridge (the only free / provable part), self-contained.
+/-! ## 3. The forward bridge (the only free / provable part).
 
-This is `subgaussian_max_le` re-proven directly for the min-entropy phrasing: a clean contrapositive
-"push past `s*`" argument, no `ε`-fudge.  It is the STANDARD `max of m sub-Gaussian values ≤
-√(2C log m)` union bound (MIT 18.S997 Ch.1), nothing novel — it is the architect's "provable forward
-direction", and it is exactly what the codebase already proves. -/
-
-theorem subgaussian_max_le
-    {S : Finset ℝ} {C m : ℝ} (hC : 0 < C) (hm : 1 ≤ m)
-    (h : SubGaussianTailBound S C m) :
-    ∀ v ∈ S, v ≤ Real.sqrt (2 * C * Real.log m) := by
-  intro v hv
-  by_contra hlt
-  rw [not_le] at hlt
-  set sstar := Real.sqrt (2 * C * Real.log m) with hsstar
-  have hlogm : 0 ≤ Real.log m := Real.log_nonneg hm
-  have h2C : 0 < 2 * C := by linarith
-  have hrad : 0 ≤ 2 * C * Real.log m := by positivity
-  have hsstar_nonneg : 0 ≤ sstar := Real.sqrt_nonneg _
-  set s := (sstar + v) / 2 with hs
-  have hs_lo : sstar < s := by rw [hs]; linarith
-  have hs_hi : s < v := by rw [hs]; linarith
-  have hs_pos : 0 < s := lt_of_le_of_lt hsstar_nonneg hs_lo
-  have hsstar_sq : sstar ^ 2 = 2 * C * Real.log m := by
-    rw [hsstar, Real.sq_sqrt hrad]
-  have hs_sq_gt : 2 * C * Real.log m < s ^ 2 := by
-    rw [← hsstar_sq]
-    nlinarith [hsstar_nonneg, hs_lo, sq_nonneg (s - sstar)]
-  have hexp_arg : -(s ^ 2) / (2 * C) < -Real.log m := by
-    rw [div_lt_iff₀ h2C]
-    nlinarith [hs_sq_gt, h2C]
-  have hexp_lt : Real.exp (-(s ^ 2) / (2 * C)) < Real.exp (-Real.log m) :=
-    Real.exp_lt_exp.mpr hexp_arg
-  have hm_pos : 0 < m := lt_of_lt_of_le one_pos hm
-  have hexp_neglog : Real.exp (-Real.log m) = m⁻¹ := by
-    rw [Real.exp_neg, Real.exp_log hm_pos]
-  have hbound : m * Real.exp (-(s ^ 2) / (2 * C)) < 1 := by
-    have hh : m * Real.exp (-(s ^ 2) / (2 * C)) < m * Real.exp (-Real.log m) :=
-      mul_lt_mul_of_pos_left hexp_lt hm_pos
-    rw [hexp_neglog, mul_inv_cancel₀ (ne_of_gt hm_pos)] at hh
-    exact hh
-  have htail := h s hs_pos
-  have hcard_lt : ((S.filter (fun w => s < w)).card : ℝ) < 1 := lt_of_le_of_lt htail hbound
-  have hv_mem : v ∈ S.filter (fun w => s < w) := by
-    rw [Finset.mem_filter]; exact ⟨hv, hs_hi⟩
-  have hcard_pos : 1 ≤ (S.filter (fun w => s < w)).card := Finset.card_pos.mpr ⟨v, hv_mem⟩
-  have hc1 : (1 : ℝ) ≤ ((S.filter (fun w => s < w)).card : ℝ) := by exact_mod_cast hcard_pos
-  linarith
+This is the in-tree `I031SubGaussianMaxBridge.subgaussian_max_le`: the STANDARD
+`max of m sub-Gaussian values ≤ √(2C log m)` union bound (MIT 18.S997 Ch.1), nothing novel. -/
 
 /-- **T11's forward implication, in T11's own min-entropy language (PROVEN, axiom-clean).**
 From the min-entropy level-set decay (`0 < c₀`, `0 < n`, `1 ≤ cardP`), every magnitude `v ∈ S`
@@ -226,6 +181,5 @@ end ArkLib.ProximityGap.Frontier.WfT11
 
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.Frontier.WfT11.minEntropyDecay_iff_subGaussianTail
-#print axioms ArkLib.ProximityGap.Frontier.WfT11.subgaussian_max_le
 #print axioms ArkLib.ProximityGap.Frontier.WfT11.minEntropy_prize_bound
 #print axioms ArkLib.ProximityGap.Frontier.WfT11.minEntropy_prize_bound_clean

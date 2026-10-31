@@ -18,7 +18,9 @@ triples — provable, à la a resultant/determinant that factors into root-diffe
 squarefreeness + coprimality forces non-degeneracy and hence `ι ≤ 1`.
 
 **This file records the decisive finding: that hope is false, and pins the honest content of the
-bound.**  Concretely (probe `probe_syz45_imbalance_bound.py`, and the char-0 witness below):
+bound.**  Concretely (probe `probe_syz45_imbalance_bound.py`, and the char-0 witness in the next
+bullet; its linear dependence is formalized as `rat_witness_const_syzygy` in §3 — squarefreeness and
+pairwise coprimality of the `ℚ` witness are probe-checked, not formalized):
 
 * **`ι ≤ 1` is NOT a consequence of squarefree + pairwise-coprime + the band *degree* profile.**
   There are pairwise-coprime squarefree triples of **balanced** band degrees `(4,4,4)` with `ι = 2`,
@@ -76,8 +78,13 @@ The two *pure* halves that survive the analysis and are genuine theorems:
    equivalent to the geometric statement "no low-degree linear dependence among band overlaps".
 
 3. **A nonzero constant linear combination of polynomials is a genuine syzygy of product-degree
-   `≤ max deg`** (`const_dep_is_syzygy`, polynomial), the bridge from "linear dependence" to
-   "low-degree syzygy".
+   `≤ max deg`** (`const_dep_is_syzygy`, polynomial): it repackages the dependence hypothesis and
+   adds only that the constant cofactors `C cᵢ` are not all zero.  `rat_witness_const_syzygy`
+   instantiates it on the explicit `ℚ` quartics `f = 3g − 2h`.
+
+Note: §4's `imbalance_bound_requires_geometry` is a pure-`ℕ` skeleton with a free `δ₁`; it does not
+itself mention any polynomial witness.  The refutation's polynomial content is the (probe-checked)
+existence of the `(4,4,4)` dependent triples.
 
 ## Honest residual after this file
 
@@ -156,6 +163,28 @@ theorem const_dep_is_syzygy
              by simpa using congrArg (fun p => p.coeff 0) h1,
              by simpa using congrArg (fun p => p.coeff 0) h2⟩
 
+/-- The `ℚ` witness quartic `g = X(X−1)(X−2)(X−3)` (roots `{0,1,2,3}`). -/
+noncomputable def ratG : ℚ[X] := X * (X - 1) * (X - 2) * (X - 3)
+
+/-- The `ℚ` witness quartic `h = (X−4)(X−5)(X−6)(X−7)` (roots `{4,5,6,7}`). -/
+noncomputable def ratH : ℚ[X] := (X - 4) * (X - 5) * (X - 6) * (X - 7)
+
+/-- The `ℚ` witness quartic `f = 3g − 2h` (monic; squarefree and coprime to `g`, `h` by probe,
+not formalized here). -/
+noncomputable def ratF : ℚ[X] := 3 * ratG - 2 * ratH
+
+/-- **The explicit char-0 constant syzygy.**  `1·f − 3·g + 2·h = 0` for the `ℚ` witness, with
+nonzero constant cofactors — the linear dependence behind the `(4,4,4)`, `ι = 2` example. -/
+theorem rat_witness_const_syzygy :
+    (C (1 : ℚ) * ratF + C (-3) * ratG + C 2 * ratH = 0) ∧
+      ¬ (C (1 : ℚ) = 0 ∧ C (-3 : ℚ) = 0 ∧ C (2 : ℚ) = 0) :=
+  const_dep_is_syzygy ratF ratG ratH 1 (-3) 2
+    (by
+      have h3 : (C (-3 : ℚ)) = -3 := by rw [map_neg]; rfl
+      have h2 : (C (2 : ℚ)) = 2 := rfl
+      rw [h3, h2, map_one, ratF]; ring)
+    (by norm_num)
+
 /-- **Product-degree of a constant cofactor.**  `deg (C c * f) ≤ deg f` (equality when `c ≠ 0`), so
 a constant syzygy never exceeds the max degree of `f, g, h`: its product-degree is `≤ max deg`. -/
 theorem const_cofactor_natDegree_le
@@ -204,5 +233,6 @@ end ArkLib.ProximityGap.SYZ45
 #print axioms ArkLib.ProximityGap.SYZ45.equal_degree_dependence_forces_imbalance_ge_two
 #print axioms ArkLib.ProximityGap.SYZ45.const_dep_is_syzygy
 #print axioms ArkLib.ProximityGap.SYZ45.const_cofactor_natDegree_le
+#print axioms ArkLib.ProximityGap.SYZ45.rat_witness_const_syzygy
 #print axioms ArkLib.ProximityGap.SYZ45.imbalance_bound_requires_geometry
 #print axioms ArkLib.ProximityGap.SYZ45.geometric_imbalance_feeds_syz44

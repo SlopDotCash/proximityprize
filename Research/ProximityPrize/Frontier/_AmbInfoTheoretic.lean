@@ -164,13 +164,11 @@ theorem compression_count_bound (η : Fin m → ℝ) (T : ℝ) (hT : 0 < T) :
 Scalar Chernoff-exponent algebra: the exponent `λ²σ²/2 − λt` is minimized at `λ = t/σ²` with value
 `−t²/(2σ²)`.  (These are real-arithmetic identities; no MGF or tail appears in their statements.) -/
 
-/-- **`subgaussian_tail_of_mgf` — Chernoff from a sub-Gaussian MGF.**  If a nonnegative random
-quantity (modeled by its tail-control constant) has MGF `Φ` with `Φ(λ) ≤ exp(λ² σ² / 2)` for all
-`λ ≥ 0`, and Markov gives `P(η ≥ t) ≤ exp(−λ t) · Φ(λ)`, then at the optimal `λ = t/σ²`,
-`P(η ≥ t) ≤ exp(−t² / (2 σ²))`.  We encode this as the real-arithmetic inequality on the exponent:
-for `σ² > 0`, `t ≥ 0`, the Chernoff exponent minimized over `λ ≥ 0` is `−t²/(2σ²)`, achieved at
-`λ = t/σ²`.  Concretely: `λ²σ²/2 − λ t ≥ −t²/(2σ²)` with equality at `λ = t/σ²` (a perfect square),
-so the *best* Chernoff bound is exactly `exp(−t²/(2σ²))`. -/
+/-- **`chernoff_exponent_optimal` — the Chernoff exponent at `λ = t/σ²` (scalar algebra only).**
+Motivation: if an MGF satisfied `Φ(λ) ≤ exp(λ² σ² / 2)` and Markov gave
+`P(η ≥ t) ≤ exp(−λ t) · Φ(λ)`, the optimal `λ = t/σ²` would yield `exp(−t² / (2 σ²))`.  This
+theorem states only the real identity `λ²σ²/2 − λ t = −t²/(2σ²)` at `λ = t/σ²` (for `σ² > 0`);
+no MGF, probability or tail appears in the statement. -/
 theorem chernoff_exponent_optimal (σ2 t : ℝ) (hσ : 0 < σ2) :
     let lam := t / σ2
     lam ^ 2 * σ2 / 2 - lam * t = - (t ^ 2 / (2 * σ2)) := by

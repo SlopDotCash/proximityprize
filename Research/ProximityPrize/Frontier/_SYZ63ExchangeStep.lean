@@ -410,17 +410,11 @@ theorem exists_muBasisData (d : Fin 3 → ℕ) (N : Submodule K[X] (Fin 3 → K[
       rw [hq]; exact mul_ne_zero (by simpa using hcne) (pow_ne_zero _ X_ne_zero)
     have hqnd : q.natDegree = n₂ - n₁ := by
       rw [hq, natDegree_C_mul (by simpa using hcne), natDegree_X_pow]
-    have hqlead : q.leadingCoeff = c := by
-      rw [hq, leadingCoeff_mul, leadingCoeff_X_pow, mul_one, leadingCoeff_C]
     have hpdq : pdeg d (q • e₁) = (n₂ : WithBot ℕ) := by
       rw [pdeg_smul, hpd₁, degree_eq_natDegree hqne, hqnd, ← Nat.cast_add]
       congr 1; omega
     have hlvq : lv d n₂ (q • e₁) = c • lc₁ := by
-      have := lv_smul_top (d := d) (q := q) hqne hpd₁
-      rw [hqnd] at this
-      have hidx : n₂ - n₁ + n₁ = n₂ := by omega
-      rw [hidx] at this
-      rw [this, hqlead, hlc₁]
+      rw [hq, lv_C_mul_X_pow_smul c hn₁₂ hpd₁, hlc₁]
     set e₂' : Fin 3 → K[X] := e₂ - q • e₁ with he₂'
     have he₂'N : e₂' ∈ N := N.sub_mem he₂N (N.smul_mem _ he₁N)
     have he₂'out : e₂' ∉ Submodule.span K[X] ({e₁} : Set (Fin 3 → K[X])) := by

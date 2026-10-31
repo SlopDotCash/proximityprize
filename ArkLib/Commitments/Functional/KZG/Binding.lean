@@ -23,6 +23,17 @@ from the probabilistic game transformations.
 * `bindingGameExt` records the sampled secret and proof elements used by the reduction.
 * `mapBindingToTsdh` maps extended binding outputs to `t`-SDH instances.
 
+## Interpretation of the adversary's coins (cached-coin experiment)
+
+`binding` is stated for the game interpreted by `impl := randomOracle =
+uniformSampleImpl.withCaching` on `unifSpec`, the only oracle available to the adversary.
+Because `unifSpec` has a single unit-input query per sample size, this interpreter caches the
+adversary's *private* uniform draws by size: every later draw from the same `Fin (k + 1)`
+returns the value of the first one (e.g. two `Fin 2` draws always agree). The bound therefore
+concerns this cached-coin experiment, not ordinary randomized-adversary execution with fresh
+private coins (`unifFwdImpl`) plus a separate public hash oracle. Transporting the reduction to
+the fresh-coin interpretation is open work in this formalization.
+
 ## References
 
 This proof follows the extended version of the KZG paper, which has all the security proofs.
@@ -744,7 +755,9 @@ lemma t_sdh_error_bound {n : ℕ} {AuxState : Type} [SampleableType G₁]
     adversary)
 
 omit [DecidableEq G₁] in
-/-- The KZG scheme satisfies evaluation binding provided `t`-SDH holds. -/
+/-- The KZG scheme satisfies evaluation binding provided `t`-SDH holds, in the cached-coin
+experiment `impl := randomOracle` on `unifSpec` (see the module docstring); the fresh-coin
+`unifFwdImpl` game is not covered. -/
 theorem binding {g₁ : G₁} {g₂ : G₂} (hg₁ : g₁ ≠ 1)
     (hpair : pairing g₁ g₂ ≠ 0) [SampleableType G₁] (tSdhError : ℝ≥0)
     (htSdh : Groups.tSdhAssumption (p := p) (G₁ := G₁) (G₂ := G₂) (g₁ := g₁)

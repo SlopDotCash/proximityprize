@@ -31,6 +31,14 @@ their used profile fibers, and prove a one-sided same-profile oscillation estima
 implies the slack-domination certificate while exposing a more diagnostic refutation surface:
 the representative missed its fiber, a same-profile pair has too much bad-count oscillation, or a
 used representative-plus-slack allowance is above budget.
+
+**Scope note (no extra strength).**  Slack domination is *definitionally* the interface's
+`StackProfileDominationInterface.ProfileCaps` for the induced cap `slackCap rep slack p =
+StackBadCount (rep p) + slack p` (`profileCaps_slackCap_iff_profileFiberSlackDominates` and
+`usedProfileBudgeted_slackCap_iff_profileFiberSlackBudgeted` are `Iff.rfl`), and the identity /
+injective-profile specializations reproduce `WorstCaseIncidenceBounded` exactly.  Most remaining
+declarations are `¬`/`↔` restatements and bundled copies of that API kept for existing callers;
+they add no mathematical content beyond `ProfileCaps` + `UsedProfileBudgeted`.
 -/
 
 set_option autoImplicit false

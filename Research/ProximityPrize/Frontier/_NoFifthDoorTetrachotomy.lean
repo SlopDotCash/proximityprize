@@ -33,9 +33,8 @@ number `certScale`).  What is kernel-checked:
 * `prizeScale_lt_bgkScale` — the strict scale separation `√n < √(n·L)` for `L > 1`, `n > 0`.
 * `DoorType` / `Mechanism` — a finite classification of bound mechanisms by door.
 * `Mechanism.OvershootsBGK` — the door-(i)/(ii)/(iii) obstruction: the certified bound is `≥ bgkScale`.
-* `prizeScale_not_certified_of_overshoot` — an overshooting mechanism cannot certify a prize-scale
-  bound: if it certifies `M ≤ certScale`, and `certScale ≥ bgkScale`, then it does **not** witness
-  `M ≤ prizeScale` once `M` actually sits at the prize floor with slack, in the regime `L > 1`.
+* `not_certifies_prizeScale_of_overshoot` — a mechanism whose `certScale ≥ bgkScale` has
+  `¬ (certScale ≤ prizeScale)` in the regime `L > 1`, `n > 0`.
 * `forces_doorIV_of_self_overshoot` — a single mechanism that overshoots `bgkScale` if classical,
   and certifies a prize-scale bound, is door (iv).
 * the discharged single-mechanism facts (`completion_not_certifies_prizeScale`,
@@ -119,10 +118,10 @@ structure Mechanism where
   certScale : ℝ
 
 /-- The door-(i)/(ii)/(iii) obstruction made into a predicate: the mechanism's certified scale is no
-smaller than the BGK scale.  This is the formal content of Shaw's Lever refutations A-D (each named
-non-door-(iv) lever was shown to bottom out at or above `bgkScale n L`); see the per-lever
-obstruction theorems (`resonance_ceiling_below_prize_floor`, `coeff_route_loose`, etc.) in
-`CampaignProvenIndex`. -/
+smaller than the BGK scale.  It is the scalar shape of the conclusion Shaw's Lever refutations A-D
+argue for; the per-lever statements are not formally connected to this predicate here (see the
+per-lever obstruction theorems (`resonance_ceiling_below_prize_floor`, `coeff_route_loose`, etc.) in
+`CampaignProvenIndex`). -/
 def Mechanism.OvershootsBGK (m : Mechanism) (n L : ℝ) : Prop :=
   bgkScale n L ≤ m.certScale
 
@@ -162,8 +161,8 @@ theorem certScale_gt_prizeScale_of_overshoot {m : Mechanism} {n L : ℝ}
     prizeScale n < m.certScale :=
   lt_of_lt_of_le (prizeScale_lt_bgkScale hn hL) hover
 
-/-- **No classical door certifies a prize-scale bound.**  If a mechanism overshoots BGK (the proven
-fate of every door-(i)/(ii)/(iii) lever) in the regime `L > 1`, then its certified scale cannot be
+/-- **No classical door certifies a prize-scale bound.**  If a mechanism overshoots BGK (proved here only
+for the specific completion and moment/EVT mechanisms below, not for every door-(i)/(ii)/(iii) lever) in the regime `L > 1`, then its certified scale cannot be
 `≤ prizeScale n`: the prize-scale certificate is impossible through that mechanism. -/
 theorem not_certifies_prizeScale_of_overshoot {m : Mechanism} {n L : ℝ}
     (hn : 0 < n) (hL : 1 < L) (hover : m.OvershootsBGK n L) :
@@ -216,12 +215,12 @@ theorem prizeCertifying_subset_doorIV {n L : ℝ}
 
 /-! ## The door-(iv) target corridor `[√n, √(n·L)]`
 
-The exclusion above says doors (i)-(iii) bottom out at the BGK ceiling `bgkScale n L = √(n·L)`, while
-the Plancherel/RMS lower bound pins `prizeScale n = √n ≤ M` from below.  Hence the worst-frequency sup
-`M` lives in the corridor `[√n, √(n·L)]`, and the *entire remaining door-(iv) content* is to shave the
-multiplicative `√L` factor from the BGK ceiling down to the prize floor.  This differs from the trivial
-`[√n, n]` Shaw-value bracket: here the ceiling is the BGK scale (what doors (i)-(iii) actually deliver),
-not the trivial `n`. -/
+*Informally* (the essay's claim, not proved here), doors (i)-(iii) bottom out at the scalar
+`bgkScale n L = √(n·L)`, while a Plancherel/RMS lower bound would pin `prizeScale n = √n ≤ M` from
+below.  Under both of those assumptions the worst-frequency sup `M` lies in the corridor
+`[√n, √(n·L)]`, and door (iv) would have to shave the multiplicative `√L` factor.  Neither the
+floor nor the ceiling is proved in this module; the lemmas below only package the scalar corridor
+and prove that it has positive width. -/
 
 /-- **Door-(iv) target corridor (tautological packaging).**  This is literally `A → B → A ∧ B`: both
 the floor `√n ≤ M` and the ceiling `M ≤ √(n·L)` are hypotheses, neither is proved here.  It only
@@ -239,8 +238,8 @@ theorem doorIV_corridor_width_pos {n L : ℝ} (hn : 0 < n) (hL : 1 < L) :
   prizeScale_lt_bgkScale hn hL
 
 /-- **The BGK ceiling is exactly the prize floor scaled by `√L`.**  Pins the door-(iv) obligation
-quantitatively: door (iv) must remove precisely the factor `√L = √(log(p/n))` separating the BGK
-ceiling that doors (i)-(iii) deliver from the prize floor.  (`bgkScale n L = √L · prizeScale n`.) -/
+quantitatively: `bgkScale n L = √L · prizeScale n`, so the corridor ratio is exactly
+`√L = √(log(p/n))`.  (Scalar identity only; it says nothing about what doors (i)-(iii) deliver.) -/
 theorem bgkScale_eq_sqrtL_mul_prizeScale {n L : ℝ} (hn : 0 ≤ n) (hL : 0 ≤ L) :
     bgkScale n L = Real.sqrt L * prizeScale n := by
   unfold bgkScale prizeScale

@@ -23,10 +23,12 @@ The radius `1/n` is the first nonzero MCA lattice point, `mcaLatticePoint n 1`.
 
 ## The two directions
 
-* **Upper bound `ε_mca(C, 1/n) ≤ 2/q`** — the new content.  Via the exact extremal form
+* **Upper bound `ε_mca(C, 1/n) ≤ 2/q`.**  Via the exact extremal form
   `ε_mca(C, δ) = (⨆ u, mcaBadCount C δ (u 0) (u 1)) / q` (`epsMCA_eq_iSup_mcaBadCount`) this
-  reduces to the finite cap `mcaBadCount C (1/n) u₀ u₁ ≤ 2`, which we re-derive here through
-  the **resultant route** the research note specifies:
+  reduces to the finite cap `mcaBadCount C (1/n) u₀ u₁ ≤ 2`, which is the unconditional
+  `mcaBadCount_j1_le_two` of `J1Cap.lean` (window-collision argument).  The research note's
+  **resultant route** is recorded here only as a remark, because its degenerate branch falls back
+  on the very same window-collision cap:
 
   - **Lemma HIGH / LINE** (imported from `GrandChallengesLattice`).  Every MCA-bad scalar `γ`
     at radius `1/n` is a J1 ratio constraint (`mcaEvent_j1_exists_window_ratio_constraints`),
@@ -34,14 +36,15 @@ The radius `1/n` is the first nonzero MCA lattice point, `mcaLatticePoint n 1`.
     (`cT_vanish_on_j1_window_full_top_coeff_equations`) eliminate the omitted coordinate.
   - **Lemma QUAD** (this file: `j1FullTopQuadratic_natDegree_le_two`,
     `j1RatioConstraintBadScalars_subset_quadratic_roots`,
-    `j1RatioConstraintBadScalars_card_le_two_via_quadratic`).  The eliminant is the universal
+    `j1RatioConstraintBadScalars_card_le_two_of_quadratic_ne_zero`).  The eliminant is the universal
     degree-`≤ 2` polynomial `Q := j1FullTopQuadratic domain u₀ u₁`; every constrained scalar is
     a root of it (`j1RatioConstraint_eval_j1FullTopQuadratic_eq_zero`).  When `Q ≠ 0`, a nonzero
     degree-`≤ 2` polynomial over a field has `≤ 2` roots (`card_le_degree_of_subset_roots`), so
     the constrained set has `≤ 2` elements.
-  - **Lemma DEGEN** (imported `j1RatioConstraintBadScalars_card_le_two`).  When `Q ≡ 0` the
-    resultant carries no information; the cap is instead closed by the joint-extendability
-    window-collision argument (`not_three_j1_ratioConstraints`), which is unconditional.
+  - **Lemma DEGEN.**  When `Q ≡ 0` the resultant carries no information; the cap then needs the
+    joint-extendability window-collision argument (`not_three_j1_ratioConstraints`), which is
+    unconditional and already proves the full cap on its own
+    (`j1RatioConstraintBadScalars_card_le_two`, `mcaBadCount_j1_le_two`).
 
 * **Lower bound `2/q ≤ ε_mca(C, 1/n)`** — the explicit `2`-spike plant
   (`epsMCA_ge_spike` with `t = 2`), the in-tree two-window construction.  At radius `1/n` its
@@ -52,8 +55,8 @@ The radius `1/n` is the first nonzero MCA lattice point, `mcaLatticePoint n 1`.
 ## Main results
 
 * `j1FullTopQuadratic_natDegree_le_two` — the QUAD eliminant has degree `≤ 2`.
-* `j1RatioConstraintBadScalars_card_le_two_via_quadratic` — the resultant-route finite cap.
-* `mcaBadCount_j1_le_two_via_quadratic` — the radius-`1/n` bad-count cap via the resultant.
+* `j1RatioConstraintBadScalars_card_le_two_of_quadratic_ne_zero` — the non-degenerate QUAD
+  branch (a remark; the unconditional cap is `J1Cap.mcaBadCount_j1_le_two`).
 * `epsMCA_interiorJ1_le` — `ε_mca(C, 1/n) ≤ 2/q` (upper bound; SILVER).
 * `epsMCA_interiorJ1_ge` — `2/q ≤ ε_mca(C, 1/n)` (lower bound; spike plant).
 * `epsMCA_interiorJ1_eq` — `ε_mca(C, 1/n) = 2/q` (GOLD).
@@ -148,49 +151,29 @@ theorem j1RatioConstraintBadScalars_subset_quadratic_roots
   rw [mem_roots hQ]
   exact j1RatioConstraint_eval_j1FullTopQuadratic_eq_zero domain hk hγc
 
-/-- **Lemma QUAD + Lemma DEGEN — the finite cap via the resultant route.**
+/-- **Lemma QUAD (non-degenerate branch only) — remark on the resultant route.**
 
-The set of scalars cut out by the J1 window ratio constraints has at most two elements.
+When the eliminant `Q := j1FullTopQuadratic domain u₀ u₁` is not the zero polynomial, the set of
+scalars cut out by the J1 window ratio constraints injects into the root multiset of `Q`, so it
+has at most `deg Q ≤ 2` elements.
 
-This is a *new proof* of `j1RatioConstraintBadScalars_card_le_two`, structured as the research
-note's resultant argument:
-
-* **non-degenerate (`Q ≠ 0`):** the constrained set injects into the root multiset of the
-  degree-`≤ 2` eliminant `Q`, so its cardinality is `≤ deg Q ≤ 2`;
-* **degenerate (`Q ≡ 0`):** the resultant is vacuous, and the cap is closed by the
-  joint-extendability window-collision argument `not_three_j1_ratioConstraints` (Lemma DEGEN). -/
-theorem j1RatioConstraintBadScalars_card_le_two_via_quadratic
-    (domain : ι ↪ F) {k : ℕ} (hk : k + 3 ≤ Fintype.card ι) (u₀ u₁ : ι → F) :
-    (j1RatioConstraintBadScalars domain k u₀ u₁).card ≤ 2 := by
-  classical
-  by_cases hQ : j1FullTopQuadratic domain u₀ u₁ = 0
-  · -- Lemma DEGEN: `Q ≡ 0`, close by window collision.
-    exact j1RatioConstraintBadScalars_card_le_two domain hk u₀ u₁
-  · -- Lemma QUAD: bad scalars are roots of the degree-`≤ 2` eliminant.
-    refine le_trans (card_le_degree_of_subset_roots
-      (j1RatioConstraintBadScalars_subset_quadratic_roots domain hk u₀ u₁ hQ)) ?_
-    exact j1FullTopQuadratic_natDegree_le_two domain u₀ u₁
-
-/-- **Radius-`1/n` bad-count cap via the resultant route.**  Every stack `(u₀, u₁)` has at most
-two MCA-bad scalars at the interior lattice radius `1/n`, proved through the QUAD eliminant +
-DEGEN window collision. -/
-theorem mcaBadCount_j1_le_two_via_quadratic
-    (domain : ι ↪ F) {k : ℕ} (hk : k + 3 ≤ Fintype.card ι) (u₀ u₁ : ι → F) :
-    mcaBadCount (F := F)
-      (ReedSolomon.code domain k : Set (ι → F))
-      (mcaLatticePoint (Fintype.card ι)
-        (⟨1, by
-          have hn : 0 < Fintype.card ι := Fintype.card_pos
-          omega⟩ : Fin (Fintype.card ι + 1)))
-      u₀ u₁ ≤ 2 :=
-  mcaBadCount_j1_le_two_of_ratioConstraint_card_le_two domain u₀ u₁
-    (j1RatioConstraintBadScalars_card_le_two_via_quadratic domain hk u₀ u₁)
+This is a *remark*, not a new proof of the J1 cap: the degenerate branch `Q ≡ 0` carries no
+information, and the unconditional cap `j1RatioConstraintBadScalars_card_le_two` (and its
+bad-count form `mcaBadCount_j1_le_two`, `J1Cap.lean`) is proved directly by the
+joint-extendability window-collision argument, without the resultant. -/
+theorem j1RatioConstraintBadScalars_card_le_two_of_quadratic_ne_zero
+    (domain : ι ↪ F) {k : ℕ} (hk : k + 3 ≤ Fintype.card ι) (u₀ u₁ : ι → F)
+    (hQ : j1FullTopQuadratic domain u₀ u₁ ≠ 0) :
+    (j1RatioConstraintBadScalars domain k u₀ u₁).card ≤ 2 :=
+  le_trans (card_le_degree_of_subset_roots
+      (j1RatioConstraintBadScalars_subset_quadratic_roots domain hk u₀ u₁ hQ))
+    (j1FullTopQuadratic_natDegree_le_two domain u₀ u₁)
 
 /-! ## The interior radius-`1/n` MCA error -/
 
 /-- **Upper bound (SILVER): `ε_mca(C, 1/n) ≤ 2/q`.**  The exact extremal identity
-`ε_mca = (⨆ u, mcaBadCount)/q` (`epsMCA_eq_iSup_mcaBadCount`) turns the per-stack resultant cap
-`mcaBadCount_j1_le_two_via_quadratic` into the error bound. -/
+`ε_mca = (⨆ u, mcaBadCount)/q` (`epsMCA_eq_iSup_mcaBadCount`) turns the per-stack cap
+`mcaBadCount_j1_le_two` (`J1Cap.lean`, window-collision argument) into the error bound. -/
 theorem epsMCA_interiorJ1_le
     (domain : ι ↪ F) {k : ℕ} (hk : k + 3 ≤ Fintype.card ι) :
     epsMCA (F := F) (A := F) (ReedSolomon.code domain k : Set (ι → F))
@@ -203,7 +186,7 @@ theorem epsMCA_interiorJ1_le
   rw [epsMCA_eq_iSup_mcaBadCount]
   apply ENNReal.div_le_div_right
   refine iSup_le fun u => ?_
-  have := mcaBadCount_j1_le_two_via_quadratic domain hk (u 0) (u 1)
+  have := mcaBadCount_j1_le_two domain hk (u 0) (u 1)
   exact_mod_cast this
 
 /-- The size hypothesis of the `2`-spike construction at radius `1/n`: `(1 - 1/n)·n ≤ n - 2 + 1`.
@@ -736,6 +719,11 @@ end ProximityGap
 `[propext, Classical.choice, Quot.sound]`, no `sorry`/`admit`/`axiom`/`native_decide`. -/
 section AxiomAudit
 open ProximityGap.GrandChallengesLattice
+#print axioms j1FullTopQuadratic_natDegree_le_two
+#print axioms j1RatioConstraintBadScalars_card_le_two_of_quadratic_ne_zero
+#print axioms epsMCA_interiorJ1_le
+#print axioms epsMCA_interiorJ1_ge
+#print axioms epsMCA_interiorJ1_eq
 #print axioms mcaSatisfies_interiorJ1_of_two_div_card_le
 #print axioms not_mcaSatisfies_interiorJ1_of_interiorJ1_gt
 #print axioms mcaPrizeLattice_satisfies_one_of_interiorJ1

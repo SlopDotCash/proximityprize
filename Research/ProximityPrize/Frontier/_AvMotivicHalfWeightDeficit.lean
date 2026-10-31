@@ -32,7 +32,7 @@ Two cohomological dimension counts compete (the `O(1)`-vs-`O(n)`-vs-`exp` questi
 * **RIGHT variety (toric / Adolphson–Sperber).** `V_corr` lives in the torus `𝔾_m^{2r}` cut by the
   single DEGREE-1 form `∑ ε_i x_i`; by Adolphson–Sperber / Bombieri–Katz its total Betti is the
   Newton-polytope count `b_toric = C(2r, r) ≤ 4^r` — **independent of `d`, `n`, AND `p`**
-  (`_wfS6` `toricBetti_dfree`, `toricBetti_le_four_pow`). So the cohomological dimension is `O(1)`
+  (`_wfS6` `toricBetti_le_four_pow`; `toricBetti` simply has no `d` argument). So the cohomological dimension is `O(1)`
   in `n` (depends only on the depth `r`), the FAVORABLE `K^r` shape.
 
 So the motivic reframe genuinely succeeds at making the dimension small. The deficit is NOT in the

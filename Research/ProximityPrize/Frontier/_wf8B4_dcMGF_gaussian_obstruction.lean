@@ -6,69 +6,56 @@ Authors: ArkLib Contributors
 import Mathlib.Tactic
 
 /-!
-# wf8-B4: the DC-subtracted cosh-MGF Gaussian bound `Φ_p^{nz}(y) ≤ exp(n y²/2)` is FALSE — and is
-*not* an independent route (it is the generating function of the W3 moment family). (#444, lane wf-B4)
+# wf8-B4: the `r = 2` coefficient of the DC-subtracted cosh-MGF overflows its Gaussian value at
+some sub-prize (`β ≈ 3`) primes — so the termwise route to `Φ_p^{nz}(y) ≤ exp(n y²/2)` fails there.
+(#444, lane wf-B4)
 
 ## The target
 
 `W1-MGF`:   `Φ_p^{nz}(y) := (1/q) ∑_{b≠0} cosh(η_b y)  ≤  exp(n y²/2)`   for all `y ≥ 0`,
 
 where `η_b = ∑_{x∈μ_n} e_p(b x)` are the (real, since `μ_n = −μ_n`) Gauss periods of the dyadic
-subgroup `μ_n ⊂ F_p^*` (`n = 2^μ`), `q = p`. Lane B4 was asked to **prove** this directly — the hope
-being a "slick" convexity / Jensen / sub-Gaussian-domination argument closing all moment orders at once.
+subgroup `μ_n ⊂ F_p^*` (`n = 2^μ`), `q = p`. Lane B4 was asked to **prove** this directly.
 
-## The verdict (CLOSED-OBSTRUCTION): there is NO independent route, and the bound is FALSE
+## What is established (and what is NOT)
 
-Two rigorously established facts, both in this file:
-
-1. **`W1-MGF` is the generating function of the W3 per-`r` moment family — no shortcut.**
-   Both sides are even power series with nonnegative coefficients:
-   `Φ_p^{nz}(y) = ∑_r a_r · y^{2r}/(2r)!`  with  `a_r = (q·E_r − n^{2r})/q  = ((q−1)/q)·M(r)`,
+1. **Coefficient dominance is sufficient for `W1-MGF`.** Both sides are even power series with
+   nonnegative coefficients:
+   `Φ_p^{nz}(y) = ∑_r a_r · y^{2r}/(2r)!`  with  `a_r = (q·E_r − n^{2r})/q`,
    `exp(n y²/2) = ∑_r W_r · y^{2r}/(2r)!`  with  `W_r = (2r−1)‼·n^r`  (the Wick numbers).
-   The clean direction `mgf_of_coeff` (PROVEN, axiom-clean) is `(∀ r, a_r ≤ W_r) → W1-MGF`: the
-   per-order moment bound `a_r ≤ W_r` (≈ the W3 family `m_r ≤ 1`) **implies** the MGF bound termwise.
-   So `W1-MGF` is *no easier than* W3; the convex-order domination `E[cosh(η y)] ≤ E[cosh(N(0,n) y)]`
-   one would invoke for a "slick" proof is *literally* `W1-MGF` itself — circular.
+   `mgf_of_coeff` (PROVEN) is `(∀ r, a_r ≤ W_r) → ` partial-sum domination.  Coefficient
+   dominance is only SUFFICIENT, not necessary: since `a_0 = (q−1)/q < 1 = W_0`, `Φ < exp` for
+   small `y` even when some higher coefficient overflows.  So a coefficient overflow does NOT by
+   itself show `W1-MGF` is false.
 
-2. **`W1-MGF` is FALSE**, because its `r = 2` Taylor coefficient bound `a_2 ≤ W_2` is the char-`p`
-   second-energy cap `E_2 ≤ 3n² + n⁴/q`, broken by the additive-energy spur. The coefficient bound
-   `a_2 ≤ W_2` clears (over `q > 0`) to `q·E_2 − n⁴ ≤ 3n²·q`, i.e. `E_2 ≤ 3n² + n⁴/q`. The char-`p`
-   spur (`E_2 = 3n²−3n + spur`, `spur ≥ 1` existing at prize scale: B1 `spur_mechanism_exists`,
-   `1+ζ+ζ³=0` in `F_9`, Chebotarev persistence) pushes `E_2` above this whenever `spur > 3n + n⁴/q`
-   — true at prize scale once `spur` is even modestly large (measured smallest spur `≈ 12n ≫ 3n`).
+2. **The `r = 2` coefficient overflows when the additive-energy spur is large.** `a_2 ≤ W_2`
+   clears (over `q > 0`) to `E_2 ≤ 3n² + n⁴/q`.  Writing `E_2 = 3n²−3n + spur`,
+   `coeffTwo_overflow_of_spur` proves the overflow for `n ≥ 2`, `q ≥ n⁴`, `spur ≥ 4n` — a
+   CONDITIONAL statement: no prime `q ≥ n⁴` with such a spur is exhibited in this file.
 
-## The decisive numerics (probe `scripts/probes/rust/probe_wf8B4_*.rs`, exact `E_2` + transcendental fn)
+## Numerics (probe `scripts/probes/rust/probe_wf8B4_*.rs`) — SUB-PRIZE primes only
 
-Summing over **all** `b ≠ 0` (the periods are NOT coset-constant — an earlier "n-copies" shortcut was
-a bug that spuriously reported violations; corrected here):
-
-* "Good" primes (small spur), `β ≈ 4`: `max_y Φ_nz/exp(ny²/2) ≤ 1.0000` (holds), every `a_r/W_r ≤ 1`.
-* **Spur primes** `n = 32`:
-  - `p = 32993` (`E_2 = 3744`, spur `768`): `a_2/W_2 = 1.208`, **`max_y Φ_nz/Gauss = 4.13`** near `y*`.
-  - `p = 65537` (`E_2 = 3360`, spur `384`): `a_2/W_2 = 1.089`, **`max_y = 5.58`** at `y = 0.77 ≈ y*`.
-  - `p = 37217, 50177`: ratios `1.44, 1.42`. All `> 1` — **`W1-MGF` FALSE**.
-
-`spur = 384 = 12n`, `768 = 24n`, both `> 3n = 96`, so the cleared cap `E_2 ≤ 3n² + n⁴/q` is violated.
-B1's Chebotarev persistence carries the spur to the prize regime `β ≈ 4`.
+At `n = 32` the probe reports spur primes `p = 32993` (`E_2 = 3744`), `65537`, `37217`, `50177`
+(`E_2 = 3360`), with `a_2/W_2 > 1` and probe function ratios `max_y Φ_nz/exp(ny²/2) > 1` near the
+saddle.  All four primes are `< 32⁴ = 1048576` (`β ≈ 3`), so they do NOT satisfy the `q ≥ n⁴`
+hypothesis of `coeffTwo_overflow_of_spur`.  An independent exact recomputation (audit
+2026-10-28) of `E_2(μ_32)` for all primes `p ≡ 1 (mod 32)` in the prize window `[32⁴, 2·32⁴]`
+found `E_2 = 2976 = 3n² − 3n`, i.e. spur `0`, throughout.  So nothing here shows `W1-MGF` fails at
+prize scale; the function-level violations are probe data at sub-prize primes.
 
 ## What this file proves (axiom-clean: `propext, Classical.choice, Quot.sound`)
 
 * `dcCoeff r q Er n := (q·E_r − n^{2r})/q`, `wick2 n := 3 n²` — the `r=2` MGF / Gaussian coefficients.
-* `mgf_of_coeff` — the clean TRUE direction: coefficient dominance `(∀ r ∈ S, a r ≤ W r)` ⇒ partial-sum
-  MGF domination. `W1-MGF` is implied by the W3 family; no convexity shortcut exists.
+* `mgf_of_coeff` — coefficient dominance `(∀ r ∈ S, a r ≤ W r)` ⇒ partial-sum MGF domination.
 * `coeffTwo_le_iff_cleared` — `dcCoeff 2 q E₂ n ≤ wick2 n ↔ q·E₂ − n⁴ ≤ 3n²·q` (clear `q > 0`).
-* `coeffTwo_overflow_of_spur` — **THE OBSTRUCTION (general):** for `n ≥ 2`, `q ≥ n⁴`, spur `≥ 4n`
-  (measured spurs `12n`, `24n`), the `r=2` coefficient strictly exceeds Wick:
-  `wick2 n < dcCoeff 2 q ((3n²−3n)+spur) n`.
-* `w1mgf_coeffTwo_FALSE_n32_p32993` — the exact integer witness (`norm_num`): at `n=32, p=32993,
-  E₂=3744` the `r=2` coefficient overflows, so `W1-MGF` fails termwise there.
-* `exists_prizeScale_w1mgf_coeff_overflow` — existential prize-scale overflow, citing B1's spur.
-
-This is the **same BCHKS/BGK wall** as B1 (face 3 of the open core): the char-`p` spur in the additive
-energy. The cosh-MGF reformulation gives no new leverage. CLOSED-OBSTRUCTION. Issue #444, lane wf-B4.
+* `coeffTwo_overflow_of_spur` — conditional: for `n ≥ 2`, `q ≥ n⁴`, spur `≥ 4n`, the `r=2`
+  coefficient strictly exceeds Wick.
+* `coeffTwo_overflow_n32_p32993` — the exact integer instance (`norm_num`): at `n=32, q=32993,
+  E₂=3744` (the probe value; the prime is sub-prize, `q < n⁴`) the `r=2` coefficient overflows.
 
 ## References
-- B1: `_wf8B1_kurtosis_cap_obstruction.lean` (`spur_mechanism_exists`, the spur existence).
+- `_wf8B1_kurtosis_cap.lean` (B1; note it proves the kurtosis cap `mu_n_kurtosis_cap`, it does not
+  establish a prize-scale spur).
 - `Frontier/DCSubtractedCoshMGF.lean` (the in-tree DC-subtracted cosh-MGF identity + consumer).
 - [ABF26] ePrint 2026/680, §5.0. #444.
 - Probes: `scripts/probes/rust/probe_wf8B4_v2.rs`, `probe_wf8B4_spurhunt.rs`,
@@ -94,8 +81,8 @@ def wick2 (n : ℝ) : ℝ := 3 * n ^ 2
 /-- **`W1-MGF` is implied by the per-`r` W3 moment family.** If every coefficient is at most its Wick
 value, `a r ≤ W r`, then every partial sum of the DC-subtracted cosh-MGF is dominated by the Gaussian's:
 `∑_{r∈S} a r · y^{2r}/(2r)! ≤ ∑_{r∈S} W r · y^{2r}/(2r)!`. (The full `tsum` bound follows by
-`tsum_le_tsum` given summability; the content is that **no convexity trick is needed** — and that
-`W1-MGF` is *no weaker* than the W3 family, killing the "slick independent route".) -/
+`tsum_le_tsum` given summability.  This direction is sufficient only: `W1-MGF` can hold even when
+some coefficient overflows.) -/
 theorem mgf_of_coeff (S : Finset ℕ) (a W : ℕ → ℝ) (y : ℝ)
     (hcoeff : ∀ r ∈ S, a r ≤ W r)
     (hpos : ∀ r ∈ S, (0 : ℝ) ≤ y ^ (2 * r) / ((2 * r).factorial : ℝ)) :
@@ -115,17 +102,15 @@ theorem coeffTwo_le_iff_cleared (q E₂ n : ℝ) (hq : 0 < q) :
 
 /-! ## (3) THE OBSTRUCTION: the char-`p` spur breaks the `r = 2` coefficient -/
 
-/-- **THE OBSTRUCTION (general).** At prize scale (`n ≥ 2`, `q ≥ n⁴`), any char-`p` additive-energy
-spur of size at least `4n` (`4n ≤ spur` — the *measured* spurs are `12n`, `24n`, comfortably above)
-makes the `r = 2` coefficient of the DC-subtracted cosh-MGF strictly exceed its Gaussian value:
+/-- **Conditional `r = 2` overflow.** If `n ≥ 2`, `q ≥ n⁴`, and the char-`p` additive-energy
+spur is at least `4n` (no such prime is exhibited here; the probe's spur primes are all `< n⁴`),
+then the `r = 2` coefficient of the DC-subtracted cosh-MGF strictly exceed its Gaussian value:
 `wick2 n < dcCoeff 2 q ((3n²−3n)+spur) n`.
 
 Indeed `dcCoeff 2 ≤ wick2 ⟺ q·E₂ − n⁴ ≤ 3n²q ⟺ q·spur ≤ 3n³ + n⁴` (substitute `E₂ = 3n²−3n+spur`).
 With `4n ≤ spur` and `q ≥ n⁴`, `q·spur ≥ 4nq = 3nq + nq ≥ 3nq + n·n⁴ = 3nq + n⁵ > 3n³ + n⁴` (the last
-step uses `n ≥ 2`). So the cap is broken and the coefficient overflows. The smallest *measured* spur is
-`≈ 12n ≥ 4n` (`probe_wf8B1_kurtosis_cap.rs`); it persists at prize scale by B1's Chebotarev density.
-Hence `W1-MGF` cannot hold termwise, and (probe) fails as a function near the saddle
-(`Φ_nz/Gauss = 4.1`–`5.6`). -/
+step uses `n ≥ 2`). So the cap is broken and the coefficient overflows.  Coefficient overflow
+blocks the termwise route only; it does not by itself refute `W1-MGF`. -/
 theorem coeffTwo_overflow_of_spur {n q spur : ℤ}
     (hn : 2 ≤ n) (hq : n ^ 4 ≤ q) (hspur : 4 * n ≤ spur) :
     wick2 (n : ℝ) < dcCoeff 2 (q : ℝ) (((3 * n ^ 2 - 3 * n) + spur : ℤ) : ℝ) (n : ℝ) := by
@@ -154,26 +139,16 @@ theorem coeffTwo_overflow_of_spur {n q spur : ℤ}
     rw [coeffTwo_le_iff_cleared (q:ℝ) _ (n:ℝ) hqR]; linarith [key]
   exact lt_of_not_ge hnotle
 
-/-- **Exact integer witness (no spur abstraction): `n = 32`, `p = 32993`, `E₂ = 3744`.** The measured
-char-`p` second additive energy at this prime is `E₂ = 3744` (char-`0` value would be `3·32² − 3·32 =
-2976`, spur `768 = 24n`). The `r = 2` coefficient of `Φ_p^{nz}` strictly exceeds the Gaussian's:
-`wick2 32 < dcCoeff 2 32993 3744 32` (probe `probe_wf8B4_v2.rs`: `a_2/W_2 = 1.208`, function ratio
-`4.13`). Hence `W1-MGF` is FALSE at this prime. Closed integers, `norm_num`. -/
-theorem w1mgf_coeffTwo_FALSE_n32_p32993 :
+/-- **Exact integer instance: `n = 32`, `q = 32993`, `E₂ = 3744`.** The probe-measured char-`p`
+second additive energy at this prime is `E₂ = 3744` (char-`0` value `3·32² − 3·32 = 2976`, spur
+`768 = 24n`).  The `r = 2` coefficient strictly exceeds the Gaussian's:
+`wick2 32 < dcCoeff 2 32993 3744 32`.  Note `32993 < 32⁴`, so this is a sub-prize (`β ≈ 3`) prime,
+and coefficient overflow alone does not refute `W1-MGF`.  Closed integers, `norm_num`. -/
+theorem coeffTwo_overflow_n32_p32993 :
     wick2 (32 : ℝ) < dcCoeff 2 (32993 : ℝ) (3744 : ℝ) (32 : ℝ) := by
   unfold wick2 dcCoeff
   rw [lt_div_iff₀ (by norm_num : (0 : ℝ) < 32993)]
   norm_num
-
-/-- **Existential prize-scale overflow.** There exist prize-scale parameters (`n ≥ 1`, `q ≥ n⁴`) with a
-char-`p` spur `> 3n` — realized by B1's `spur_mechanism_exists` and persisting at prize scale by
-Chebotarev — for which the `r = 2` cosh-MGF coefficient overflows Wick, so `W1-MGF` is false. The
-concrete `n = 32, p = 32993` witness instantiates it (spur `768 > 96 = 3n`). -/
-theorem exists_prizeScale_w1mgf_coeff_overflow :
-    ∃ (n q spur : ℤ), 2 ≤ n ∧ n ^ 4 ≤ q ∧ 4 * n ≤ spur ∧
-      wick2 (n : ℝ) < dcCoeff 2 (q : ℝ) (((3 * n ^ 2 - 3 * n) + spur : ℤ) : ℝ) (n : ℝ) := by
-  refine ⟨32, 32 ^ 4, 768, by norm_num, le_refl _, by norm_num, ?_⟩
-  exact coeffTwo_overflow_of_spur (by norm_num) (le_refl _) (by norm_num)
 
 end ArkLib.ProximityGap.Frontier.WF8B4
 
@@ -181,5 +156,4 @@ end ArkLib.ProximityGap.Frontier.WF8B4
 #print axioms ArkLib.ProximityGap.Frontier.WF8B4.mgf_of_coeff
 #print axioms ArkLib.ProximityGap.Frontier.WF8B4.coeffTwo_le_iff_cleared
 #print axioms ArkLib.ProximityGap.Frontier.WF8B4.coeffTwo_overflow_of_spur
-#print axioms ArkLib.ProximityGap.Frontier.WF8B4.w1mgf_coeffTwo_FALSE_n32_p32993
-#print axioms ArkLib.ProximityGap.Frontier.WF8B4.exists_prizeScale_w1mgf_coeff_overflow
+#print axioms ArkLib.ProximityGap.Frontier.WF8B4.coeffTwo_overflow_n32_p32993

@@ -116,6 +116,8 @@ theorem exists_outside_secantPetal_card_gt_of_rankin_budget
     V A 324359511 p (by norm_num) hAsub hAsize hpair hVbudget
   simp only [K, Fintype.card_coe] at houtside
   have hpartition := pointsOn_card_add_outsideLine_card family line
+  have hDle : D.card ≤ N := by
+    simpa only [Finset.card_univ, Fintype.card_fin] using Finset.card_le_univ D
   rw [hVcard] at houtside
   omega
 

@@ -3,22 +3,21 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import Research.ProximityPrize.Frontier._W14JacobiWindowMomentEquivalence
 
 /-!
 # ZW14 — DISCHARGE of the named open input `MomentsDetermineWindow` (#466)
 
-**Target socket** (verbatim from
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W14JacobiWindowMomentEquivalence.lean`,
-lines 204–210, namespace `ArkLib.ProximityGap.Frontier.W14WindowMoment`):
+**Target socket** (`Research/ProximityPrize/Frontier/_W14JacobiWindowMomentEquivalence.lean`,
+namespace `ArkLib.ProximityGap.Frontier.W14WindowMoment`):
 
 > `MomentsDetermineWindow (N K : ℕ) : Prop` — two Jacobi-normalized (symmetric tridiagonal,
 > positive-subdiagonal) `N × N` real matrices with equal `(·^r)₀₀` for all `r ≤ 2K+1` agree
 > on the `(K+1) × (K+1)` corner.
 
-**This file PROVES the socket unconditionally** (`momentsDetermineWindow_holds`): the
-classical Lanczos / Gram–Schmidt uniqueness direction, done here as a direct induction on the
-corner depth `j`:
+**This file PROVES the socket unconditionally** (`momentsDetermineWindow_holds`, stated directly
+as `W14WindowMoment.MomentsDetermineWindow N K`): the classical Lanczos / Gram–Schmidt uniqueness
+direction, done here as a direct induction on the corner depth `j`:
 
 1. *b-step*: `m_{2j+2} = ∑_k v_k²` with `v = A^{j+1} e₀` supported on `{0,…,j+1}`
    (Krylov support growth).  Off-tip entries of `v` are already determined by the depth-`j`
@@ -34,21 +33,14 @@ The degenerate regimes (`j + 1 ≥ N`, where the corner saturates the whole matr
 `N = 0/1`) are handled inside the induction, so the theorem holds for ALL `N, K` with no side
 conditions — exactly the socket's statement.
 
-## Integration note (definitional-equality bridge)
+## Integration
 
-`_W14JacobiWindowMomentEquivalence.lean` is a new lane file with no compiled olean, so this
-file cannot import it under lock-free `lake env lean` iteration.  Instead the socket's
-definition and its three vocabulary definitions (`IsTridiagonal`, `CornerAgree`,
-`PosSubdiag`) are copied VERBATIM below (provenance markers inline), together with the
-support/propagation lemmas of that file that this proof consumes
-(`pow_firstcol_eq_zero_of_lt`, `pow_firstcol_agree`, and the forward direction
-`window_determines_moments`, all proven there and re-proven here by the same scripts).
-Since the definitions are syntactically identical, the integration step is a definitional
-`rfl`-bridge: `W14WindowMoment.MomentsDetermineWindow N K` and
-`ZW14MomentsDischarge.MomentsDetermineWindow N K` are the same `Prop` term, so
-`momentsDetermineWindow_holds` instantiates the W14 file's conditional theorems
-(`cornerAgree_iff_moments_agree`, `truncation_invariant_is_lowMoment_functional`) directly.
-Both are also restated and proven UNCONDITIONALLY at the end of this file.
+This file imports the W14 file and uses its vocabulary (`IsTridiagonal`, `CornerAgree`,
+`PosSubdiag`, `MomentsDetermineWindow`) and its proven support/propagation lemmas
+(`pow_firstcol_eq_zero_of_lt`, `pow_firstcol_agree`, `window_determines_moments`) directly; no
+copies.  The unconditional consumers at the end instantiate W14's conditional theorems
+(`cornerAgree_iff_moments_agree`, `truncation_invariant_is_lowMoment_functional`) with
+`momentsDetermineWindow_holds`.
 
 ## Honesty contract
 
@@ -68,90 +60,14 @@ open Matrix
 
 variable {N : ℕ}
 
-/-! ## Vocabulary — VERBATIM copies from `_W14JacobiWindowMomentEquivalence.lean` -/
+open ArkLib.ProximityGap.Frontier.W14WindowMoment
 
-/-- `A` is tridiagonal: zero outside the three central diagonals.
-(Verbatim from `_W14JacobiWindowMomentEquivalence.lean`, lines 88–89.) -/
-def IsTridiagonal (A : Matrix (Fin N) (Fin N) ℝ) : Prop :=
-  ∀ i j : Fin N, ((i : ℕ) + 1 < (j : ℕ) ∨ (j : ℕ) + 1 < (i : ℕ)) → A i j = 0
-
-/-- `A` and `A'` agree on the leading `(K+1) × (K+1)` corner block — the depth-`K` Jacobi
-window `a_0, …, a_K, b_1, …, b_K`.
-(Verbatim from `_W14JacobiWindowMomentEquivalence.lean`, lines 93–94.) -/
-def CornerAgree (A A' : Matrix (Fin N) (Fin N) ℝ) (K : ℕ) : Prop :=
-  ∀ i j : Fin N, (i : ℕ) ≤ K → (j : ℕ) ≤ K → A i j = A' i j
-
-/-- Strictly positive superdiagonal (the Jacobi normalization `b_k > 0`; with symmetry this
-covers the subdiagonal).
-(Verbatim from `_W14JacobiWindowMomentEquivalence.lean`, lines 98–99.) -/
-def PosSubdiag (A : Matrix (Fin N) (Fin N) ℝ) : Prop :=
-  ∀ i j : Fin N, (i : ℕ) + 1 = (j : ℕ) → 0 < A i j
-
-/-- **THE TARGET SOCKET** (verbatim from `_W14JacobiWindowMomentEquivalence.lean`,
-lines 204–210, where it is the named open input): the moments to order `2K+1` determine the
-depth-`K` window. -/
-def MomentsDetermineWindow (N K : ℕ) : Prop :=
-  ∀ A A' : Matrix (Fin N) (Fin N) ℝ,
-    IsTridiagonal A → IsTridiagonal A' → A.IsSymm → A'.IsSymm →
-    PosSubdiag A → PosSubdiag A' →
-    ∀ i0 : Fin N, (i0 : ℕ) = 0 →
-    (∀ r : ℕ, r ≤ 2 * K + 1 → (A ^ r) i0 i0 = (A' ^ r) i0 i0) →
-    CornerAgree A A' K
-
-/-! ## Support and propagation lemmas
-(re-proven verbatim from `_W14JacobiWindowMomentEquivalence.lean`, lines 101–158, since that
-file has no olean to import against) -/
+/-! ## Local helpers (the W14 versions are `private`) -/
 
 /-- `A^(s+1) = A * A^s` (robust local form, no name dependence on `pow_succ'`). -/
 private theorem pow_succ_left (A : Matrix (Fin N) (Fin N) ℝ) (s : ℕ) :
     A ^ (s + 1) = A * A ^ s := by
   conv_lhs => rw [show s + 1 = 1 + s by omega, pow_add, pow_one]
-
-/-- **Krylov support growth.** The first column of `A^s` is supported on coordinates `≤ s`. -/
-theorem pow_firstcol_eq_zero_of_lt {A : Matrix (Fin N) (Fin N) ℝ}
-    (htri : IsTridiagonal A) {i0 : Fin N} (h0 : (i0 : ℕ) = 0) :
-    ∀ s : ℕ, ∀ i : Fin N, s < (i : ℕ) → (A ^ s) i i0 = 0 := by
-  intro s
-  induction s with
-  | zero =>
-    intro i hi
-    have hne : i ≠ i0 := by
-      intro h
-      rw [h, h0] at hi
-      omega
-    simp [Matrix.one_apply_ne hne]
-  | succ s ih =>
-    intro i hi
-    rw [pow_succ_left, Matrix.mul_apply]
-    apply Finset.sum_eq_zero
-    intro k _
-    by_cases hk : s < (k : ℕ)
-    · rw [ih k hk, mul_zero]
-    · have hlt : (k : ℕ) + 1 < (i : ℕ) := by omega
-      rw [htri i k (Or.inr hlt), zero_mul]
-
-/-- **Corner-agreement propagation.** If `A, A'` agree on the `(K+1) × (K+1)` corner, their
-`A^s`-first-columns agree on all coordinates `≤ K`, for every `s ≤ K + 1`. -/
-theorem pow_firstcol_agree {A A' : Matrix (Fin N) (Fin N) ℝ}
-    (htri : IsTridiagonal A) (htri' : IsTridiagonal A')
-    {K : ℕ} (hagree : CornerAgree A A' K)
-    {i0 : Fin N} (h0 : (i0 : ℕ) = 0) :
-    ∀ s : ℕ, s ≤ K + 1 → ∀ i : Fin N, (i : ℕ) ≤ K → (A ^ s) i i0 = (A' ^ s) i i0 := by
-  intro s
-  induction s with
-  | zero => intro _ i _; rfl
-  | succ s ih =>
-    intro hsK i hi
-    have hs : s ≤ K := by omega
-    rw [pow_succ_left, pow_succ_left, Matrix.mul_apply, Matrix.mul_apply]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    by_cases hk : (k : ℕ) ≤ K
-    · rw [hagree i k hi hk, ih (by omega) k hk]
-    · have hz : (A ^ s) k i0 = 0 :=
-        pow_firstcol_eq_zero_of_lt htri h0 s k (by omega)
-      have hz' : (A' ^ s) k i0 = 0 :=
-        pow_firstcol_eq_zero_of_lt htri' h0 s k (by omega)
-      rw [hz, hz', mul_zero, mul_zero]
 
 /-- Powers of a symmetric matrix are symmetric. -/
 private theorem pow_transpose_eq {A : Matrix (Fin N) (Fin N) ℝ} (hsym : A.IsSymm) (s : ℕ) :
@@ -421,43 +337,11 @@ theorem momentsDetermineWindow_holds (N K : ℕ) : MomentsDetermineWindow N K :=
 
 /-! ## The W14 consumers, now UNCONDITIONAL
 
-The forward direction below is the (already-proven) `window_determines_moments` of the W14
-file, re-proven verbatim (lines 165–196 there) so that the two-way information-content
-identity and the seam-collapse verdict can be stated here with NO named input at all. -/
-
-/-- Forward direction (verbatim re-proof of
-`_W14JacobiWindowMomentEquivalence.window_determines_moments`): the depth-`K` window
-determines the moments to order `2K+1`. -/
-theorem window_determines_moments {A A' : Matrix (Fin N) (Fin N) ℝ}
-    (htri : IsTridiagonal A) (htri' : IsTridiagonal A')
-    (hsym : A.IsSymm) (hsym' : A'.IsSymm)
-    {K : ℕ} (hagree : CornerAgree A A' K)
-    {i0 : Fin N} (h0 : (i0 : ℕ) = 0)
-    {r : ℕ} (hr : r ≤ 2 * K + 1) :
-    (A ^ r) i0 i0 = (A' ^ r) i0 i0 := by
-  obtain ⟨s, t, hst, hsK, htK1⟩ :
-      ∃ s t : ℕ, s + t = r ∧ s ≤ K ∧ t ≤ K + 1 :=
-    ⟨r - min r (K + 1), min r (K + 1), by omega, by omega, by omega⟩
-  have hA : A ^ r = A ^ s * A ^ t := by rw [← pow_add, hst]
-  have hA' : A' ^ r = A' ^ s * A' ^ t := by rw [← pow_add, hst]
-  rw [hA, hA', Matrix.mul_apply, Matrix.mul_apply]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  have e1 : (A ^ s) i0 k = (A ^ s) k i0 := pow_entry_symm hsym s i0 k
-  have e1' : (A' ^ s) i0 k = (A' ^ s) k i0 := pow_entry_symm hsym' s i0 k
-  by_cases hk : (k : ℕ) ≤ K
-  · rw [e1, e1',
-      pow_firstcol_agree htri htri' hagree h0 s (by omega) k hk,
-      pow_firstcol_agree htri htri' hagree h0 t htK1 k hk]
-  · have hz : (A ^ s) k i0 = 0 :=
-      pow_firstcol_eq_zero_of_lt htri h0 s k (by omega)
-    have hz' : (A' ^ s) k i0 = 0 :=
-      pow_firstcol_eq_zero_of_lt htri' h0 s k (by omega)
-    rw [e1, e1', hz, hz', zero_mul, zero_mul]
+W14's conditional theorems instantiated with `momentsDetermineWindow_holds`. -/
 
 /-- **The exact information-content identity, now with NO named input**: for Jacobi-normalized
-matrices, depth-`K` corner agreement holds IFF all moments to order `2K+1` agree.  (In the W14
-file this is `cornerAgree_iff_moments_agree`, conditional on the socket; here the socket is a
-theorem.) -/
+matrices, depth-`K` corner agreement holds IFF all moments to order `2K+1` agree.  (W14's
+`cornerAgree_iff_moments_agree` with the socket discharged.) -/
 theorem cornerAgree_iff_moments_agree_unconditional
     {A A' : Matrix (Fin N) (Fin N) ℝ}
     (htri : IsTridiagonal A) (htri' : IsTridiagonal A')
@@ -465,16 +349,14 @@ theorem cornerAgree_iff_moments_agree_unconditional
     (hpos : PosSubdiag A) (hpos' : PosSubdiag A')
     {K : ℕ} {i0 : Fin N} (h0 : (i0 : ℕ) = 0) :
     CornerAgree A A' K ↔
-      (∀ r : ℕ, r ≤ 2 * K + 1 → (A ^ r) i0 i0 = (A' ^ r) i0 i0) := by
-  constructor
-  · intro hagree r hr
-    exact window_determines_moments htri htri' hsym hsym' hagree h0 hr
-  · intro hmom
-    exact momentsDetermineWindow_holds N K A A' htri htri' hsym hsym' hpos hpos' i0 h0 hmom
+      (∀ r : ℕ, r ≤ 2 * K + 1 → (A ^ r) i0 i0 = (A' ^ r) i0 i0) :=
+  cornerAgree_iff_moments_agree (momentsDetermineWindow_holds N K)
+    htri htri' hsym hsym' hpos hpos' h0
 
-/-- **Seam collapse, now with NO named input** (unconditional form of the W14
-`truncation_invariant_is_lowMoment_functional`): every corner-functional invariant of the
-Jacobi data at depth `K` is a functional of the moments `m_0, …, m_{2K+1}` alone. -/
+/-- **Seam collapse, now with NO named input** (W14's
+`truncation_invariant_is_lowMoment_functional` with the socket discharged): every
+corner-functional invariant of the Jacobi data at depth `K` is a functional of the moments
+`m_0, …, m_{2K+1}` alone. -/
 theorem truncation_invariant_is_lowMoment_functional_unconditional
     {X : Type} (Φ : Matrix (Fin N) (Fin N) ℝ → X) {K : ℕ}
     (hΦ : ∀ A A' : Matrix (Fin N) (Fin N) ℝ, CornerAgree A A' K → Φ A = Φ A')
@@ -485,13 +367,13 @@ theorem truncation_invariant_is_lowMoment_functional_unconditional
     {i0 : Fin N} (h0 : (i0 : ℕ) = 0)
     (hmom : ∀ r : ℕ, r ≤ 2 * K + 1 → (A ^ r) i0 i0 = (A' ^ r) i0 i0) :
     Φ A = Φ A' :=
-  hΦ A A' (momentsDetermineWindow_holds N K A A' htri htri' hsym hsym' hpos hpos' i0 h0 hmom)
+  truncation_invariant_is_lowMoment_functional (momentsDetermineWindow_holds N K)
+    Φ hΦ htri htri' hsym hsym' hpos hpos' h0 hmom
 
 #print axioms pow_firstcol_tip_succ
 #print axioms pow_firstcol_tip_pos
 #print axioms cornerAgree_succ
 #print axioms momentsDetermineWindow_holds
-#print axioms window_determines_moments
 #print axioms cornerAgree_iff_moments_agree_unconditional
 #print axioms truncation_invariant_is_lowMoment_functional_unconditional
 

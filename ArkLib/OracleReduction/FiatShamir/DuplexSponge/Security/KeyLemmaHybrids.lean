@@ -779,7 +779,13 @@ def Hyb23StepResidual [SampleableType U]
 verifier rederives challenges through `D2SQuery` (and can abort on parse failure), `Hyb₄`'s
 standard FS verifier replays the transcript directly against `f`. Open: requires the
 verifier-replay analysis of CO25 §5.8 (the event `E_𝒱` that the replayed transcript diverges
-from the simulator's committed one). -/
+from the simulator's committed one).
+
+**Boundary caveat (`L = 0`).** For protocols with `pSpec.totalNumPermQueries = 0` the guard
+admits `L = 0`, where `claim5_24Bound U tₕ tₚ tₚᵢ 0 < 0`
+(`claim5_24Bound_neg_of_L_eq_zero`), so this residual is unsatisfiable for zero-permutation
+protocols. A `1 ≤ L` guard would repair it, but must then be threaded through
+`keyLemmaEager_of_steps` and `VerifierReplay.hyb34Step_of_strictSplit`; that is not done here. -/
 def Hyb34StepResidual [SampleableType U]
     [∀ i, Fintype (pSpec.Challenge i)] [∀ i, DecidableEq (pSpec.Challenge i)]
     (T_H T_P : Type) [LawfulTraceNablaImpl T_H T_P StmtIn U] (δ : ℕ)

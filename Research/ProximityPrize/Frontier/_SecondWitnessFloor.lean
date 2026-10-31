@@ -31,7 +31,11 @@ extremal cases, not a coincidence:
   sharing an `a ≥ k`-subset of the SAME line word are equal.  This strengthens the
   scalar-count ceiling (`FirstInteriorLevelDirectionBlind.levelBadScalars_card_le_choose`,
   stated for `a = k+1` in the KKH26 vocabulary) to the full incidence multiset, at every
-  level `a ≥ k`, in the production (`Ownership`) vocabulary.
+  level `a ≥ k`, in the production (`Ownership`) vocabulary.  **Endpoint caveat:** at `a = k`
+  (with `k ≤ n`) the guard `AgreementFarDirection dom k k u₁` is UNSATISFIABLE — Lagrange
+  interpolation of `u₁` on any `k` coordinates gives a codeword agreeing with `u₁` on `≥ k`
+  points — so every `hfar`-guarded result here is vacuous at `a = k`; real content starts at
+  `a ≥ k+1`.
 
 * **The defect-forcing law** (`two_mul_lineBadScalars_card_le_choose_add_singletonDefect`):
   `2·#bad ≤ C(n,a) + defect` — the singleton defect grows at least linearly once `#bad`
@@ -87,7 +91,12 @@ variable {n : ℕ} [NeZero n]
 coordinates (the probe's `agreemax < a` eligibility guard; same shape as the in-flight
 `_SpreadExcessLaw.FarDirection`, restated so this file depends only on landed substrate).
 Note this is about the DIRECTION `u₁`, not the offset: it is the exact hypothesis making the
-per-`a`-subset scalar unique. -/
+per-`a`-subset scalar unique.
+
+**Vacuity at `a ≤ k`:** when `k ≤ n` (and `dom` is injective, as an embedding), interpolating `u₁`
+on any `k` coordinates yields a codeword of degree `< k` agreeing with `u₁` on `≥ k` points, so this
+predicate is FALSE for every `u₁` at `a = k`. The theorems below that take `hka : k ≤ a` together
+with `hfar` are therefore vacuously true at the endpoint `a = k`; their content is for `a ≥ k+1`. -/
 def AgreementFarDirection (dom : Fin n ↪ F) (k a : ℕ) (u₁ : Fin n → F) : Prop :=
   ∀ c ∈ (rsCode dom k : Submodule F (Fin n → F)), (agreeSet c u₁).card < a
 

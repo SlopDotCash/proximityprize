@@ -159,7 +159,7 @@ theorem listPrizeLattice_bracketed_of_johnson_sq_and_elias
 
 The Johnson/Elias bracket above is the sharpest current route but still needs
 per-rate numeric certificates.  The half-distance floor and capacity ceiling from
-`GrandChallengeLDThresholdHalfDist.lean` are weaker but unconditional once the
+`LDThresholdHalfDist.lean` are weaker but unconditional once the
 degree side conditions and the prize budget are in force.  The next theorem exposes
 that completely discharged sandwich directly on the four ABF26 prize rates.
 -/

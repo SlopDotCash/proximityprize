@@ -6,6 +6,7 @@ Authors: ArkLib Contributors (#444, TASK Shaw-A)
 import Mathlib.Tactic
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Research.ProximityPrize.Frontier._CharZeroEnergyClosedForm
+import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 
 /-!
 # The **Shaw Depletion Theorem** — additive energy is depleted below Gaussian (#444, Shaw-A)
@@ -31,7 +32,8 @@ statement that the energy is genuinely **depleted** below Gaussian; the theorem 
 
 ## The Shaw Depletion Theorem (statement)
 
-> **Theorem (Shaw Depletion).** For `n = 2^μ ≥ 2` and `1 ≤ r`, the char-0 additive energy of `μ_n`
+> **Theorem (Shaw Depletion).** For `n = 2^μ ≥ 2` and `2 ≤ r ≤ 6`, the char-0 additive energy of
+`μ_n`
 > is **bracketed** by two multiplicative depletions of the Gaussian ceiling:
 > ```
 >     (2r−1)‼ · n^{r−1} · (n − C(r,2))   ≤   E_r(ℂ)(n)   ≤   (2r−1)‼ · n^{r−1} · (n − 1) .
@@ -43,6 +45,10 @@ statement that the energy is genuinely **depleted** below Gaussian; the theorem 
 > with the lower edge `1/n` *attained* at `r = 2` (where `E_2 = (2·2−1)‼·(n)_2 = 3n(n−1)` **exactly**)
 > and the upper edge `C(r,2)/n` *asymptotically tight* as `n → ∞` (the leading deficit coefficient is
 > exactly `C(r,2)·(2r−1)‼`, so `δ_r(n)·n → C(r,2)`).
+>
+> Scope (audit CW-B14-05): only `r = 2..6` is proved, from the closed forms `E_2 … E_6`.  The
+> statement is **false at `r = 1`**: `E_1(μ_n) = n` while the upper edge is `(1)‼·n⁰·(n−1) = n − 1`
+> (so also `δ_1 = 0`).  No general-`r` theorem is claimed.
 
 The two reference values are the two natural depletions:
 * the **upper** bracket `(2r−1)‼·n^{r−1}(n−1) = Wick·(1 − 1/n)` removes one descent step — the energy
@@ -52,9 +58,10 @@ The two reference values are the two natural depletions:
   by replacing `n^r` (with-replacement Wick) by `(n)_r` (without-replacement) and reading off the
   `n^{r−1}` coefficient `−C(r,2)`.
 
-So the energy lives strictly inside the window `[Wick·(1−C(r,2)/n), Wick·(1−1/n)]`: never as large as
-Gaussian (upper, the depletion is real), never depleted by more than the `C(r,2)/n` pairwise-collision
-budget (lower).
+So for `2 ≤ r ≤ 6` the energy lives in the window `[Wick·(1−C(r,2)/n), Wick·(1−1/n)]`: never as
+large as Gaussian (upper, the depletion is real), never depleted by more than the `C(r,2)/n`
+pairwise-collision budget (lower).  The window is degenerate at `r = 2` (both edges equal
+`3n(n−1)`), so it is not strict in general.
 
 ## Why this is the *mechanism* (the falling-factorial signature)
 
@@ -84,8 +91,11 @@ exact-verified `r ≤ 8` there; its full `Polynomial.cyclotomic` formalization i
 * `shaw_depletion_two_exact` — at `r = 2` the lower bracket is **tight**: `E_2 = (2·2−1)‼·(n)_2`
   exactly (`δ_2 = 1/n` exactly, the attained lower edge);
 * `depletion_defect_pos_r` (`r = 2..6`) — `δ_r > 0` strictly (the depletion never vanishes in char 0);
-* `depletion_leading_rate_r` (`r = 2..6`) — the leading deficit coefficient is exactly
-  `C(r,2)·(2r−1)‼` (so `δ_r·n → C(r,2)`, the upper rate is asymptotically tight).
+* `depletion_leading_rate_r` (`r = 2..6`) — the defect `δ̂_r = Wick − E_r` equals
+  `C(r,2)·(2r−1)‼·n^{r−1}` plus an explicit lower-order polynomial (so `δ_r·n → C(r,2)`);
+* `shaw_depletion_implies_gaussian_r` (`r = 2..6`) — the corollary `E_r ≤ Wick`;
+* `ShawDepletionCharP` (an inequality on a bare real `E`) and `ShawDepletionCharPEnergy` (the same
+  edge for the genuine finite-field energy `rEnergy G r`) — named, not discharged.
 
 ## Application to the single-depth prize bound
 
@@ -99,15 +109,17 @@ char-0 input that the single-depth bound consumes.
 
 ## Honest scope (the open residual, NAMED not hidden)
 
-This theorem is **char 0**. The depletion bracket — *both* edges — is a statement about the energy of
-`μ_n` over `ℂ` (equivalently `F_q` with `q` large enough that no short `±1`-relation of `2^μ`-th roots
-vanishes mod `p`, the "char-`p`-safe" regime `q > (2r)^{n/2}`). At the prize depth `r* ≈ log p` and
+This theorem is **char 0**, and its `E_r` is the closed-form polynomial of
+`_CharZeroEnergyClosedForm` (the energy ⇔ polynomial identity is cited there, not proved here).  The
+bracket is a statement about the energy of `μ_n` over `ℂ` (heuristically also `F_q` with `q` large
+enough that no short `±1`-relation of `2^μ`-th roots vanishes mod `p`; that transfer is not
+proved). At the prize depth `r* ≈ log p` and
 size `n = 2^30`, the char-`p` transfer of *even the bare upper edge* `E_{r*}(F_p) ≤ Wick·(1−1/n)` is
 the SAME open core as `GaussianEnergyBound` over `F_q`: the **wraparound** solutions (zero-sum tuples
 no antipodal matching pairs) can push `E_{r*}(F_p)` **above** Wick, refuting even the loose ceiling at
 `n ≥ 64`, `r ≈ log q` (see `_ShawMatchingInjection.lean` / `DCEnergyEssential`). The named open
-hypothesis carrying that transfer is `ShawDepletionCharP` below; the depletion theorem **proves its
-char-0 instance** and **reduces** the prize input to the single char-`p` transfer of the *upper edge*.
+hypothesis carrying that transfer is `ShawDepletionCharPEnergy` below (`ShawDepletionCharP` is its
+bare-real shape); the char-0 polynomial instance for `r = 2..6` is `shaw_depletion_upper_r`.
 
 Issue #444.
 -/
@@ -123,12 +135,17 @@ open ProximityGap.Frontier.CharZeroEnergy
 /-! ## The named objects: Gaussian ceiling, depletion brackets, depletion defect -/
 
 /-- The real-Gaussian **"Wick" ceiling** `Wick_r(n) := (2r−1)‼·n^r` — the `2r`-th moment of a real
-Gaussian of variance `n`, i.e. sampling the `r` matched pairs **with** replacement. (Same `wick` as
-`_CharZeroEnergyClosedForm`; re-stated here for `r = 1..6` so this file is self-contained.) -/
+Gaussian of variance `n`, i.e. sampling the `r` matched pairs **with** replacement. (Same
+definition as
+`CharZeroEnergy.wick` of `_CharZeroEnergyClosedForm`, see `wick_eq_charZero`; kept as a separate
+name because downstream `simp only` calls unfold `ShawDepletion.wick`.) -/
 def wick (r : ℕ) (n : ℤ) : ℤ := (Nat.doubleFactorial (2 * r - 1) : ℤ) * n ^ r
 
 @[simp] theorem wick_def (r : ℕ) (n : ℤ) :
     wick r n = (Nat.doubleFactorial (2 * r - 1) : ℤ) * n ^ r := rfl
+
+/-- The local `wick` is definitionally the canonical `CharZeroEnergy.wick`. -/
+theorem wick_eq_charZero : wick = ProximityGap.Frontier.CharZeroEnergy.wick := rfl
 
 /-- The **lower depletion bracket** `(2r−1)‼·n^{r−1}·(n − C(r,2))` = `Wick·(1 − C(r,2)/n)`: the
 leading-order falling-factorial value (replace `n^r` by `(n)_r`, keep the `n^{r−1}` coefficient
@@ -260,8 +277,8 @@ theorem shaw_depletion_lower_six (n : ℤ) (hn : 2 ≤ n) : wickLower 6 n ≤ E6
 
 /-! ## The bundled TWO-SIDED Shaw Depletion bracket -/
 
-/-- **Shaw Depletion Theorem (`r = 2`).** `Wick·(1−1/n) ≤ E_2 ≤ Wick·(1−1/n)` — exact (lower = upper
-at `r = 2`, both equal `3n(n−1)`). -/
+/-- **Shaw Depletion Theorem (`r = 2`).** `Wick·(1−1/n) ≤ E_2 ≤ Wick·(1−1/n)` — a degenerate
+window (lower = upper at `r = 2`, both equal `3n(n−1)`). -/
 theorem shaw_depletion_bracket_two (n : ℤ) (hn : 2 ≤ n) :
     wickLower 2 n ≤ E2 n ∧ E2 n ≤ wickUpper 2 n :=
   ⟨shaw_depletion_lower_two n hn, shaw_depletion_upper_two n hn⟩
@@ -312,13 +329,29 @@ theorem depletion_defect_pos_six (n : ℤ) (hn : 2 ≤ n) : 0 < depletionDefect 
 /-! ## The leading depletion rate `δ_r·n → C(r,2)` (the upper bracket is asymptotically tight)
 
 The exact deficit `δ̂_r = Wick − E_r` has leading coefficient exactly `C(r,2)·(2r−1)‼`, so the
-relative depletion `δ_r = δ̂_r/Wick → C(r,2)/n`. We record the leading-coefficient identities. -/
+relative depletion `δ_r = δ̂_r/Wick → C(r,2)/n`.  Each identity below is stated on the defect
+`depletionDefect E_r r n` itself: leading term `C(r,2)·(2r−1)‼·n^{r−1}` plus the explicit
+remainder. -/
 
-theorem depletion_leading_rate_two : (3 : ℤ) = (Nat.choose 2 2 : ℤ) * 3 := by decide
-theorem depletion_leading_rate_three : (45 : ℤ) = (Nat.choose 3 2 : ℤ) * 15 := by decide
-theorem depletion_leading_rate_four : (630 : ℤ) = (Nat.choose 4 2 : ℤ) * 105 := by decide
-theorem depletion_leading_rate_five : (9450 : ℤ) = (Nat.choose 5 2 : ℤ) * 945 := by decide
-theorem depletion_leading_rate_six : (155925 : ℤ) = (Nat.choose 6 2 : ℤ) * 10395 := by decide
+theorem depletion_leading_rate_two (n : ℤ) :
+    depletionDefect E2 2 n = (Nat.choose 2 2 : ℤ) * (Nat.doubleFactorial 3 : ℤ) * n := by
+  rw [defect_two]; simp [Nat.doubleFactorial]
+theorem depletion_leading_rate_three (n : ℤ) :
+    depletionDefect E3 3 n = (Nat.choose 3 2 : ℤ) * (Nat.doubleFactorial 5 : ℤ) * n ^ 2
+      - 40 * n := by
+  rw [defect_three]; simp [Nat.doubleFactorial, Nat.choose]
+theorem depletion_leading_rate_four (n : ℤ) :
+    depletionDefect E4 4 n = (Nat.choose 4 2 : ℤ) * (Nat.doubleFactorial 7 : ℤ) * n ^ 3
+      - 1435 * n ^ 2 + 1155 * n := by
+  rw [defect_four]; simp [Nat.doubleFactorial, Nat.choose]
+theorem depletion_leading_rate_five (n : ℤ) :
+    depletionDefect E5 5 n = (Nat.choose 5 2 : ℤ) * (Nat.doubleFactorial 9 : ℤ) * n ^ 4
+      - 39375 * n ^ 3 + 77175 * n ^ 2 - 57456 * n := by
+  rw [defect_five]; simp [Nat.doubleFactorial, Nat.choose]
+theorem depletion_leading_rate_six (n : ℤ) :
+    depletionDefect E6 6 n = (Nat.choose 6 2 : ℤ) * (Nat.doubleFactorial 11 : ℤ) * n ^ 5
+      - 1022175 * n ^ 4 + 3534300 * n ^ 3 - 6246471 * n ^ 2 + 4370520 * n := by
+  rw [defect_six]; simp [Nat.doubleFactorial, Nat.choose]
 
 /-! ## Application to the single-depth prize bound
 
@@ -329,6 +362,10 @@ stronger char-0 input than the one the single-depth bound is transferred from. -
 /-- **Corollary (Shaw Depletion ⟹ Gaussian, char-0).** `E_r(ℂ) ≤ Wick_r(n)` for `r = 2..6`, `n ≥ 2`,
 *as a consequence of* the sharper upper bracket `E_r ≤ Wick·(1−1/n)`. (The `(1−1/n)` factor is the
 honest cushion the char-`p` transfer at the prize depth must preserve.) -/
+theorem shaw_depletion_implies_gaussian_two (n : ℤ) (hn : 2 ≤ n) : E2 n ≤ wick 2 n := by
+  have := depletion_defect_pos_two n hn
+  simp only [depletionDefect] at this; linarith
+
 theorem shaw_depletion_implies_gaussian_three (n : ℤ) (hn : 2 ≤ n) : E3 n ≤ wick 3 n := by
   refine (shaw_depletion_upper_three n hn).trans ?_
   simp only [wickUpper, wick, Nat.doubleFactorial]; norm_num
@@ -339,6 +376,10 @@ theorem shaw_depletion_implies_gaussian_four (n : ℤ) (hn : 2 ≤ n) : E4 n ≤
   simp only [wickUpper, wick, Nat.doubleFactorial]; norm_num
   nlinarith [hn, pow_nonneg (by linarith : (0:ℤ) ≤ n) 3,
     mul_nonneg (by linarith : (0:ℤ) ≤ n) (pow_nonneg (by linarith : (0:ℤ) ≤ n) 3)]
+
+theorem shaw_depletion_implies_gaussian_five (n : ℤ) (hn : 2 ≤ n) : E5 n ≤ wick 5 n := by
+  have := depletion_defect_pos_five n hn
+  simp only [depletionDefect] at this; linarith
 
 theorem shaw_depletion_implies_gaussian_six (n : ℤ) (hn : 2 ≤ n) : E6 n ≤ wick 6 n := by
   refine (shaw_depletion_upper_six n hn).trans ?_
@@ -353,13 +394,22 @@ The depletion theorem above is **char 0**. The prize needs its char-`p` instance
 open core as `GaussianEnergyBound` over `F_q`, with the additional honest content that even the
 *depleted* ceiling `Wick·(1−1/n)` is the target). -/
 
-/-- **The named open hypothesis `ShawDepletionCharP`.** Abstractly: an `ℝ`-valued energy `E` at depth
-`r` over a field of characteristic `p` obeys the *depleted* Gaussian upper edge
-`E ≤ (2r−1)‼·n^{r−1}·(n−1)`. Over `ℂ` (char 0) this is `shaw_depletion_upper_r` (PROVEN above); over
-`F_q` at the prize depth it is OPEN (wraparound solutions can push `E` above even the bare `Wick`;
-see `_ShawMatchingInjection.lean`). This `Prop` is the cleanest carrier of the residual. -/
+/-- **The depleted upper edge, as a bare real inequality.**  `ShawDepletionCharP E r n` says
+`E ≤ (2r−1)‼·n^{r−1}·(n−1)` for an **arbitrary** real `E`; it is not tied to any energy (audit
+CW-B14-05).  The energy-tied residual is `ShawDepletionCharPEnergy`.  Over `ℂ` with `E` the
+closed-form polynomial this is `shaw_depletion_upper_r` (`r = 2..6`); for the finite-field energy at
+the prize depth it is OPEN (wraparound solutions can push it above even the bare `Wick`; see
+`_ShawMatchingInjection.lean`). -/
 def ShawDepletionCharP (E : ℝ) (r : ℕ) (n : ℝ) : Prop :=
   E ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) * n ^ (r - 1) * (n - 1)
+
+/-- **The named open residual, tied to the genuine energy.**  For a finite field `F` and node set
+`G` (the prize: `G = μ_n ⊂ F_q`), the `r`-fold additive energy `rEnergy G r` obeys the depleted
+upper edge `(2r−1)‼·|G|^{r−1}·(|G|−1)`.  Not discharged here; note it is false at `r = 1` for any
+nonempty `G` (`E_1 = |G| > |G| − 1`). -/
+def ShawDepletionCharPEnergy {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (G : Finset F) (r : ℕ) : Prop :=
+  ShawDepletionCharP (ArkLib.ProximityGap.SubgroupGaussSumMoment.rEnergy G r : ℝ) r (G.card : ℝ)
 
 /-- The char-`p` depletion edge **implies** the bare Gaussian ceiling `E ≤ (2r−1)‼·n^r` whenever
 `n ≥ 1` and `r ≥ 1` — i.e. discharging `ShawDepletionCharP` would discharge `GaussianEnergyBound`'s
@@ -391,4 +441,7 @@ end ProximityGap.Frontier.ShawDepletion
 #print axioms ProximityGap.Frontier.ShawDepletion.shaw_depletion_bracket_six
 #print axioms ProximityGap.Frontier.ShawDepletion.depletion_defect_pos_six
 #print axioms ProximityGap.Frontier.ShawDepletion.shaw_depletion_implies_gaussian_six
+#print axioms ProximityGap.Frontier.ShawDepletion.shaw_depletion_implies_gaussian_two
+#print axioms ProximityGap.Frontier.ShawDepletion.shaw_depletion_implies_gaussian_five
+#print axioms ProximityGap.Frontier.ShawDepletion.depletion_leading_rate_six
 #print axioms ProximityGap.Frontier.ShawDepletion.gaussian_of_shawDepletionCharP

@@ -32,16 +32,22 @@ instance.
 > `‖(𝓢 r)(b)‖ ≤ S`.
 
 For the prize kernel the *trivial* (Cauchy–Schwarz, no cancellation) value is `S = m` (the number of
-characters): `‖Σ_χ χ̄(b) r(χ)‖ ≤ Σ_χ |χ̄(b)| · |r(χ)| = m`. The **Shaw Cancellation Law as a prize
-principle** asserts the operator has *spectral radius* down at the square-root-with-log scale:
+characters): `‖Σ_χ χ̄(b) r(χ)‖ ≤ Σ_χ |χ̄(b)| · |r(χ)| = m`.
 
-> `S ≤ √(n · log m) · √(p) / (something)` — concretely, transporting through the
-> `(n√p/(p−1))` prefactor, `M(n) = max_b ‖η_b‖ ≤ √(2 n log m)`.
-
-That is exactly the BGK / near-Ramanujan prize target restated as a single operator-norm bound. This
-file proves the **provable half** of the law (the unconditional Cauchy–Schwarz ceiling and the exact
-Parseval/second-moment floor) and isolates the **one open input** — the genuine sub-Cauchy–Schwarz
-cancellation — as a single named `Prop`, then *applies* it: the law `⟹` the prize `M`-bound.
+**Audit correction (2026-10-28, CW-B14-01).**  The law *as quantified above* — over **every**
+unit-modulus sequence `r` — is equivalent to `S ≥ m` for a unit-modulus kernel: the aligned-phase
+sequence `r χ = conj (w b χ)` makes `(𝓢 r)(b) = m` exactly (`cancellationLaw_ge_card`).  So no
+sub-trivial bound can hold in that form, and the earlier "prize principle"
+`ShawSubGaussianCancellation` is **false** whenever `√(2 n log m) < m` and the base is nonempty
+(`not_shawSubGaussianCancellation`; minimal instance `Idx = Fin 2`, `w = 1`, `n = 1`:
+`‖𝓢 1‖ = 2 > √(2 ln 2)`).  The honest prize-shaped statement fixes the input sequence: the law
+`ShawCancellationAt w r S` for the **specific** normalized Gauss-sum sequence `r χ = g(χ)/√p`.
+That sequence is only unit-modulus on non-trivial characters (`g(χ₀) = −1`), so the prize
+instance also needs the trivial-character term `−n/(p−1)` split off; this file does not
+construct that instance.  Prefactor bookkeeping: with `c = n√p/(p−1)` and `m = (p−1)/n` one has
+`c · m = √p` (not `n√p`), and the prize target `M ≤ √(2 n log m)` corresponds to
+`S ≈ √(2 n log m) / c ≈ √(2 m log m)` (using `p ≈ n·m`), the random-walk scale in the `m`
+summands — not `S = √(2 n log m)`.
 
 ## What is proven here (axiom-clean) vs. what is named-open
 
@@ -51,15 +57,14 @@ cancellation — as a single named `Prop`, then *applies* it: the law `⟹` the 
   `‖(𝓢 r)(b)‖² ≤ (Σ_χ ‖w b χ‖²) · (Σ_χ ‖r χ‖²)`; for unit-modulus `r` over `m` indices `= (Σ‖w‖²)·m`.
 * `shaw_secondMoment_eq` — the **exact** second moment of `𝓢 r` over an orthonormal kernel family
   (`Σ_b ‖(𝓢 r)(b)‖² = Σ_χ ‖r χ‖²`); the √-floor / average side, no cancellation hypothesis.
-* `ShawCancellationLaw` — the named principle (operator-norm `≤ S`), and
-  `prizeBound_of_cancellationLaw` — **the application**: the law transports through the `η_b`
-  prefactor to the prize sup-norm bound `M ≤ S · (n √p / (p−1))`.
-* `ShawSubGaussianCancellation` — the **single open input**: the sub-Cauchy–Schwarz gain
-  `S = √(2 n log m)` for the prize character kernel. This is the BGK / Paley-graph wall, now stated
-  as one operator-norm hypothesis. Named-open; no `sorry`, no fake `axiom`.
+* `ShawCancellationLaw` — the all-sequences law, with `cancellationLaw_ge_card` showing it forces
+  `S ≥ m` (unit kernel), and `not_shawSubGaussianCancellation` refuting its sub-Gaussian form.
+* `ShawCancellationAt` / `ShawSubGaussianCancellationAt` — the fixed-sequence law, and
+  `prizeBound_of_cancellationAt` / `prize_M_bound_of_subGaussianAt` — the transport through the
+  `η_b` prefactor `M ≤ c · S`.  `ShawSubGaussianCancellationAt` for the Gauss-sum root numbers is a
+  named open input (not instantiated here); no `sorry`, no fake `axiom`.
 
-All proofs are axiom-clean (`propext, Classical.choice, Quot.sound`). The mathematical content of
-the prize is concentrated into `ShawSubGaussianCancellation`; everything else is unconditional.
+All proofs are axiom-clean (`propext, Classical.choice, Quot.sound`).
 -/
 
 set_option linter.style.longLine false
@@ -97,7 +102,8 @@ def IsRootNumberSeq (r : Idx → ℂ) : Prop := ∀ χ : Idx, ‖r χ‖ = 1
 
 /-- **The L¹ ceiling (trivial bound, no cancellation).** For a unit-modulus root-number sequence,
 `‖(𝓢 r)(b)‖ ≤ Σ_χ ‖w b χ‖`. For the prize kernel `w b χ = χ̄(b)` (each of modulus 1) this is the
-*trivial* bound `‖η_b‖ ≤ (n√p/(p−1)) · m`, i.e. `M ≤ n√p` with no cancellation whatsoever. -/
+*trivial* bound `‖η_b‖ ≤ (n√p/(p−1)) · m = √p` (`m = (p−1)/n`; up to the trivial-character
+correction), with no cancellation whatsoever. -/
 theorem shaw_norm_le_l1 (w : B → Idx → ℂ) {r : Idx → ℂ} (hr : IsRootNumberSeq r) (b : B) :
     ‖shaw w r b‖ ≤ ∑ χ : Idx, ‖w b χ‖ := by
   rw [shaw_apply]
@@ -143,7 +149,7 @@ theorem shaw_sq_le_cauchySchwarz (w : B → Idx → ℂ) (r : Idx → ℂ) (b : 
 /-- **The Cauchy–Schwarz value for a unit-modulus root-number sequence.** With `‖r χ‖ = 1` over
 `m = |Idx|` indices, the Cauchy–Schwarz ceiling specializes to
 `‖(𝓢 r)(b)‖² ≤ m · (Σ_χ ‖w b χ‖²)`. For the prize character kernel (`‖w b χ‖ = 1`) this is `m²`,
-recovering the trivial `‖η_b‖ ≤ n√p` bound: **Cauchy–Schwarz alone gives no cancellation.** -/
+recovering the trivial `‖η_b‖ ≤ √p` bound: **Cauchy–Schwarz alone gives no cancellation.** -/
 theorem shaw_sq_le_card (w : B → Idx → ℂ) {r : Idx → ℂ} (hr : IsRootNumberSeq r) (b : B) :
     ‖shaw w r b‖ ^ 2 ≤ (Fintype.card Idx : ℝ) * (∑ χ : Idx, ‖w b χ‖ ^ 2) := by
   refine le_trans (shaw_sq_le_cauchySchwarz w r b) ?_
@@ -243,36 +249,46 @@ theorem exists_shaw_sq_ge_average [Fintype B] [Nonempty B] (w : B → Idx → �
 
 /-! ## The Shaw Cancellation Law as a named principle, and its application -/
 
-/-- **The Shaw Cancellation Law (named principle).** The Shaw operator `𝓢` with kernel `w` *satisfies
-the cancellation law with operator-norm bound `S`* if every unit-modulus root-number sequence is
+/-- **The Shaw Cancellation Law over all root-number sequences.** The Shaw operator `𝓢` with kernel
+`w` *satisfies the cancellation law with operator-norm bound `S`* if every unit-modulus sequence is
 synthesized to within `S` at every base point:
 
 `∀ r, IsRootNumberSeq r → ∀ b, ‖(𝓢 r)(b)‖ ≤ S`.
 
-The trivial (Cauchy–Schwarz) value is `S = m` (`shaw_norm_le_card`). The prize asserts the law holds
-at the *square-root-with-log* scale `S = √(2 n log m)` — genuine sub-Cauchy–Schwarz cancellation. -/
+Because `r` ranges over **all** unit-modulus sequences, the aligned phases `r = conj (w b ·)` are
+allowed, so for a unit-modulus kernel this law holds iff `S ≥ m` (`shawCancellationLaw_card`,
+`cancellationLaw_ge_card`): it cannot express sub-trivial cancellation.  See `ShawCancellationAt`
+for the fixed-sequence form. -/
 def ShawCancellationLaw (w : B → Idx → ℂ) (S : ℝ) : Prop :=
   ∀ r : Idx → ℂ, IsRootNumberSeq r → ∀ b : B, ‖shaw w r b‖ ≤ S
 
 /-- **The trivial cancellation law always holds at `S = m`.** Every Shaw operator with a
 unit-modulus kernel (`‖w b χ‖ = 1`, the prize character case) satisfies the cancellation law at the
-no-cancellation scale `S = |Idx|`. This is the baseline the prize must beat from `m` down to
-`√(2 n log m)`. -/
+no-cancellation scale `S = |Idx|`. -/
 theorem shawCancellationLaw_card (w : B → Idx → ℂ) (hw : ∀ b : B, ∀ χ : Idx, ‖w b χ‖ = 1) :
     ShawCancellationLaw w (Fintype.card Idx : ℝ) :=
   fun _r hr b => shaw_norm_le_card w hr hw b
 
-/-- **The Shaw Cancellation Law, applied to the prize sup-norm `M`.** Suppose the period is the
-synthesized Shaw operator scaled by a real prefactor `c ≥ 0`,
-`η b = (c : ℂ) • shaw w r b`, with `r` a root-number sequence. Then the cancellation law at bound
-`S` transports verbatim to the prize sup-norm:
+/-- **The all-sequences law forces the trivial bound (audit CW-B14-01).**  For a unit-modulus
+kernel, the aligned-phase sequence `r χ = conj (w b χ)` is a root-number sequence with
+`(𝓢 r)(b) = m`, so any `S` for which `ShawCancellationLaw w S` holds satisfies `m ≤ S`. -/
+theorem cancellationLaw_ge_card (w : B → Idx → ℂ) (hw : ∀ b : B, ∀ χ : Idx, ‖w b χ‖ = 1)
+    {S : ℝ} (hlaw : ShawCancellationLaw w S) (b : B) :
+    (Fintype.card Idx : ℝ) ≤ S := by
+  have hr : IsRootNumberSeq (fun χ => (starRingEnd ℂ) (w b χ)) := fun χ => by
+    rw [Complex.norm_conj, hw b χ]
+  have hval : shaw w (fun χ => (starRingEnd ℂ) (w b χ)) b = (Fintype.card Idx : ℂ) := by
+    rw [shaw_apply, Finset.sum_congr rfl (fun χ _ => by
+      rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hw b χ]), Finset.sum_const,
+      Finset.card_univ, nsmul_eq_mul]
+    push_cast; ring
+  have h := hlaw _ hr b
+  rwa [hval, Complex.norm_natCast] at h
 
-`∀ b, ‖η b‖ ≤ c · S`.
-
-For the prize, `c = n √p / (p−1)` and `S = √(2 n log m)`, giving
-`M(n) = max_b ‖η_b‖ ≤ (n √p / (p−1)) · √(2 n log m) ≈ √(2 n log m)` after the prefactor (`p ≈ n·m`),
-i.e. the BGK / near-Ramanujan prize bound. This is the **application** of the law: it is the precise
-sense in which the cancellation law *gives* the prize. -/
+/-- **The Shaw Cancellation Law applied to the prize sup-norm `M` (all-sequences form).**  If
+`η b = c · (𝓢 r)(b)` with `c ≥ 0` and `r` a root-number sequence, the law at bound `S` gives
+`‖η b‖ ≤ c · S`.  (By `cancellationLaw_ge_card` the hypothesis forces `S ≥ m` for a unit kernel,
+so this transport only ever yields the trivial bound; use `prizeBound_of_cancellationAt`.) -/
 theorem prizeBound_of_cancellationLaw {η : B → ℂ} (w : B → Idx → ℂ) {r : Idx → ℂ}
     (hr : IsRootNumberSeq r) {c : ℝ} (hc : 0 ≤ c) (hη : ∀ b : B, η b = (c : ℂ) * shaw w r b)
     {S : ℝ} (hlaw : ShawCancellationLaw w S) (b : B) :
@@ -282,9 +298,8 @@ theorem prizeBound_of_cancellationLaw {η : B → ℂ} (w : B → Idx → ℂ) {
 
 /-- **Lower bound on any valid cancellation bound (the Parseval obstruction).** For an orthonormal
 kernel over a nonempty base, *any* `S` for which the cancellation law holds must satisfy
-`S² ≥ m/|B|`: the law cannot be true below the Parseval √-floor. (The witness is the constant
-root-number sequence `r ≡ 1`.) This pins the law's bound from *below* at the √-floor while the prize
-target `√(2 n log m)` sits a `√log` factor above it — the entire open content. -/
+`S² ≥ m/|B|`.  (The witness is the constant root-number sequence `r ≡ 1`.)  For a unit kernel the
+sharper `cancellationLaw_ge_card` already gives `S ≥ m`. -/
 theorem cancellationLaw_lower_bound [Fintype B] [Nonempty B] (w : B → Idx → ℂ)
     (hw : OrthonormalKernel w) {S : ℝ} (hlaw : ShawCancellationLaw w S) :
     (Fintype.card Idx : ℝ) / (Fintype.card B : ℝ) ≤ S ^ 2 := by
@@ -298,49 +313,74 @@ theorem cancellationLaw_lower_bound [Fintype B] [Nonempty B] (w : B → Idx → 
     nlinarith [hlaw (fun _ : Idx => (1 : ℂ)) hr b, hnn, hS0]
   exact le_trans hb hsq
 
-/-! ## The single open input — the prize wall as one named hypothesis -/
+/-! ## The refuted all-sequences sub-Gaussian law -/
 
-/-- **The Shaw sub-Gaussian cancellation law — THE single open prize input.** The Shaw operator with
-the prize character kernel `w` over `m = |Idx|` characters satisfies the cancellation law at the
-*square-root-with-log* scale
-
-`S = √(2 · n · log m)`,
-
-where `n` is the subgroup size. By `shaw_norm_le_card` the law trivially holds at `S = m`; this
-hypothesis is the assertion of **genuine sub-Cauchy–Schwarz cancellation** all the way down to the
-near-Ramanujan scale. It is the BGK / Paley-graph / thin-subgroup-equidistribution wall, restated as
-a single operator-norm bound on the root-number synthesis. It is **named-open**: best proven is
-`n^{1−o(1)}` (BGK), the prize needs this `√(n log m)`. No `sorry`, no fake `axiom`; this is the honest
-open core, and `prizeBound_of_cancellationLaw` shows it suffices for `M`. -/
+/-- **The all-sequences sub-Gaussian law (REFUTED in the prize regime).**  The cancellation law at
+scale `S = √(2 · n · log m)` over **every** unit-modulus sequence.  Kept for the record:
+`not_shawSubGaussianCancellation` shows it is false whenever `√(2 n log m) < m`, the base is
+nonempty and the kernel is unit-modulus — exactly the regime where it was advertised as the prize
+input.  The scale is also mis-calibrated (see the module docstring). -/
 def ShawSubGaussianCancellation (w : B → Idx → ℂ) (n : ℝ) : Prop :=
   ShawCancellationLaw w (Real.sqrt (2 * n * Real.log (Fintype.card Idx : ℝ)))
 
-/-- **The open law gives the prize `M`-bound (the end-to-end application).** If the prize period is
-the prefactor-scaled Shaw operator and the Shaw sub-Gaussian cancellation law holds, then the prize
-structural constant is bounded at the near-Ramanujan scale:
+/-- **Refutation of `ShawSubGaussianCancellation` (audit CW-B14-01).**  For a unit-modulus kernel
+over a nonempty base, if `√(2 n log m) < m` then the all-sequences sub-Gaussian law fails. -/
+theorem not_shawSubGaussianCancellation [Nonempty B] {w : B → Idx → ℂ}
+    (hw : ∀ b : B, ∀ χ : Idx, ‖w b χ‖ = 1) {n : ℝ}
+    (hlt : Real.sqrt (2 * n * Real.log (Fintype.card Idx : ℝ)) < (Fintype.card Idx : ℝ)) :
+    ¬ ShawSubGaussianCancellation w n := fun hlaw =>
+  absurd (cancellationLaw_ge_card w hw hlaw (Classical.arbitrary B)) (not_le.mpr hlt)
 
-`max_b ‖η_b‖ ≤ c · √(2 n log m)`.
+/-! ## The fixed-sequence law — the honest prize-shaped open input -/
 
-For the prize instance (`c = n√p/(p−1)`, `m` characters, `p ≈ n·m`) this is the BGK target
-`M ≤ √(2 n log m)` after the prefactor. This theorem is *unconditional given the named law* — it
-contains no further residual; the entire prize content is in the single hypothesis
-`ShawSubGaussianCancellation`. -/
-theorem prize_M_bound_of_subGaussian {η : B → ℂ} (w : B → Idx → ℂ) {r : Idx → ℂ}
-    (hr : IsRootNumberSeq r) {c : ℝ} (hc : 0 ≤ c) (hη : ∀ b : B, η b = (c : ℂ) * shaw w r b)
-    {n : ℝ} (hlaw : ShawSubGaussianCancellation w n) (b : B) :
-    ‖η b‖ ≤ c * Real.sqrt (2 * n * Real.log (Fintype.card Idx : ℝ)) :=
-  prizeBound_of_cancellationLaw w hr hc hη hlaw b
+/-- **The Shaw cancellation law for a fixed sequence.**  `‖(𝓢 r)(b)‖ ≤ S` at every base point, for
+the given `r` only.  For the prize, `r` is the normalized Gauss-sum sequence `g(χ)/√p` (with the
+trivial character split off); unlike `ShawCancellationLaw`, this is not refuted by aligned
+phases. -/
+def ShawCancellationAt (w : B → Idx → ℂ) (r : Idx → ℂ) (S : ℝ) : Prop :=
+  ∀ b : B, ‖shaw w r b‖ ≤ S
 
-/-- **The law genuinely beats the trivial bound (consistency check).** Whenever the near-Ramanujan
-scale undershoots the trivial scale — `√(2 n log m) < m`, true in the prize regime where
-`n = 2^30 ≪ m ≈ n·2^128` — the sub-Gaussian law is a *strictly stronger* statement than the
-unconditional `shawCancellationLaw_card`. This records that the open input is non-vacuous: it asserts
-real cancellation, not a tautology. -/
-theorem subGaussian_strengthens_trivial {w : B → Idx → ℂ} {n : ℝ}
-    (hlt : Real.sqrt (2 * n * Real.log (Fintype.card Idx : ℝ)) < (Fintype.card Idx : ℝ))
-    (hlaw : ShawSubGaussianCancellation w n) (r : Idx → ℂ) (hr : IsRootNumberSeq r) (b : B) :
+/-- The all-sequences law implies the fixed-sequence law for every root-number sequence. -/
+theorem ShawCancellationLaw.toAt {w : B → Idx → ℂ} {S : ℝ} (hlaw : ShawCancellationLaw w S)
+    {r : Idx → ℂ} (hr : IsRootNumberSeq r) : ShawCancellationAt w r S :=
+  hlaw r hr
+
+/-- **Transport of the fixed-sequence law to the prize sup-norm.**  If `η b = c · (𝓢 r)(b)` with
+`c ≥ 0`, then `ShawCancellationAt w r S` gives `‖η b‖ ≤ c · S` for every `b`. -/
+theorem prizeBound_of_cancellationAt {η : B → ℂ} (w : B → Idx → ℂ) {r : Idx → ℂ}
+    {c : ℝ} (hc : 0 ≤ c) (hη : ∀ b : B, η b = (c : ℂ) * shaw w r b)
+    {S : ℝ} (hlaw : ShawCancellationAt w r S) (b : B) :
+    ‖η b‖ ≤ c * S := by
+  rw [hη b, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hc]
+  exact mul_le_mul_of_nonneg_left (hlaw b) hc
+
+/-- **The fixed-sequence sub-Gaussian law (named open input, not instantiated here).**  The
+synthesis of the specific sequence `r` stays within the random-walk scale `√(2 m log m)` of its
+`m = |Idx|` summands.  With the prize prefactor `c = n√p/(p−1)` and `p ≈ n·m`,
+`c · √(2 m log m) ≈ √(2 n log m)`, the near-Ramanujan target.  For `r` the Gauss-sum root numbers
+this is the BGK / thin-subgroup wall; this file neither proves it nor builds that instance. -/
+def ShawSubGaussianCancellationAt (w : B → Idx → ℂ) (r : Idx → ℂ) : Prop :=
+  ShawCancellationAt w r
+    (Real.sqrt (2 * (Fintype.card Idx : ℝ) * Real.log (Fintype.card Idx : ℝ)))
+
+/-- **The fixed-sequence law gives the prefactor-scaled `M`-bound.**  If `η b = c · (𝓢 r)(b)`
+(`c ≥ 0`) and `ShawSubGaussianCancellationAt w r` holds, then
+`‖η b‖ ≤ c · √(2 m log m)` for every `b`.  Pure transport; the open content is the hypothesis. -/
+theorem prize_M_bound_of_subGaussianAt {η : B → ℂ} (w : B → Idx → ℂ) {r : Idx → ℂ}
+    {c : ℝ} (hc : 0 ≤ c) (hη : ∀ b : B, η b = (c : ℂ) * shaw w r b)
+    (hlaw : ShawSubGaussianCancellationAt w r) (b : B) :
+    ‖η b‖ ≤ c * Real.sqrt (2 * (Fintype.card Idx : ℝ) * Real.log (Fintype.card Idx : ℝ)) :=
+  prizeBound_of_cancellationAt w hc hη hlaw b
+
+/-- **The fixed-sequence law beats the trivial bound when its scale does.**  If
+`√(2 m log m) < m` then `ShawSubGaussianCancellationAt w r` gives `‖(𝓢 r)(b)‖ < m`, strictly below
+the unconditional ceiling `shaw_norm_le_card`. -/
+theorem subGaussianAt_strengthens_trivial {w : B → Idx → ℂ} {r : Idx → ℂ}
+    (hlt : Real.sqrt (2 * (Fintype.card Idx : ℝ) * Real.log (Fintype.card Idx : ℝ))
+      < (Fintype.card Idx : ℝ))
+    (hlaw : ShawSubGaussianCancellationAt w r) (b : B) :
     ‖shaw w r b‖ < (Fintype.card Idx : ℝ) :=
-  lt_of_le_of_lt (hlaw r hr b) hlt
+  lt_of_le_of_lt (hlaw b) hlt
 
 end ArkLib.ProximityGap.Frontier.ShawCancellationLaw
 
@@ -355,5 +395,8 @@ end ArkLib.ProximityGap.Frontier.ShawCancellationLaw
 #print axioms ArkLib.ProximityGap.Frontier.ShawCancellationLaw.shawCancellationLaw_card
 #print axioms ArkLib.ProximityGap.Frontier.ShawCancellationLaw.prizeBound_of_cancellationLaw
 #print axioms ArkLib.ProximityGap.Frontier.ShawCancellationLaw.cancellationLaw_lower_bound
-#print axioms ArkLib.ProximityGap.Frontier.ShawCancellationLaw.prize_M_bound_of_subGaussian
-#print axioms ArkLib.ProximityGap.Frontier.ShawCancellationLaw.subGaussian_strengthens_trivial
+#print axioms ArkLib.ProximityGap.Frontier.ShawCancellationLaw.cancellationLaw_ge_card
+#print axioms ArkLib.ProximityGap.Frontier.ShawCancellationLaw.not_shawSubGaussianCancellation
+#print axioms ArkLib.ProximityGap.Frontier.ShawCancellationLaw.prizeBound_of_cancellationAt
+#print axioms ArkLib.ProximityGap.Frontier.ShawCancellationLaw.prize_M_bound_of_subGaussianAt
+#print axioms ArkLib.ProximityGap.Frontier.ShawCancellationLaw.subGaussianAt_strengthens_trivial

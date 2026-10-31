@@ -11,12 +11,14 @@ import Research.ProximityPrize.Frontier._SYZ68GeneratorGapParity
 /-!
 # SYZ69 — the **parity-corrected two-class classification** of the μ-basis generator gap
 
-## Context: four unconditional inputs, one crisp classification
+## Context: four inputs, one crisp classification
 
 The μ-basis lane has, as of SYZ68, four ingredients that together pin the shape of the generator
 gap `g = δ₂ − δ₁` on a realizable interior band triple `(W_AB, W_AC, W_BC)` over `μ_n`:
 
-* **degree-sum law** (SYZ44 `degree_sum_of_hilbert`, made *unconditional* by SYZ61→SYZ65):
+* **degree-sum law** (SYZ44 `degree_sum_of_hilbert`; SYZ64/SYZ65 discharge its inputs for the
+  windowed syzygy-kernel dimension `windowKD` at the μ-basis degrees `n₁, n₂` they select, see
+  SYZ65 `degree_sum_unconditional`; this file takes the law as a hypothesis on `δ₁, δ₂`):
   `δ₁ + δ₂ = a + b + c =: S`;
 * **the floor** (SYZ47 `syzygy_product_degree_ge_max`): `δ₁ ≥ max(a,b,c)`;
 * **parity** (SYZ68 `gap_parity`): `g ≡ S (mod 2)` — zero field content, forced by the degree-sum;
@@ -61,7 +63,7 @@ statement is the per-parity `g ≤ 2` (even) — recorded here as the corrected 
 ## Scope honesty
 
 Combinatorial classification only.  All theorems here are pure `ℕ` / `decide`, axiom-clean, and
-consume only the (now-unconditional) degree-sum law, the SYZ47 floor hypothesis, SYZ68 parity, and
+consume only the degree-sum law (as a hypothesis on `δ₁, δ₂`), the SYZ47 floor hypothesis, SYZ68 parity, and
 the SYZ59 empty-middle hypothesis `¬ middleBand`.  The file does **not** prove that a realizable triple actually
 lands outside the middle band (that is the open geometric residual, restated minimally).  `ι ≤ 1`
 closes SYZ44 `uniformSylvester` only at rate `1/2`; production δ* still needs SYZ18 supports,
@@ -226,10 +228,15 @@ theorem open_exclusion_gap_form
 /-! ## 5. Packaged end-to-end from SYZ44's Hilbert–Burch structural inputs -/
 
 /-- **Packaged two-class classification (from Hilbert inputs).**  From SYZ44's two structural inputs
-(`RankNullity`, `TwoRamp`) — both now *unconditional* via SYZ61→SYZ65 — plus `δ₁ ≤ δ₂`, the SYZ47
+(`RankNullity`, `TwoRamp`), taken here as hypotheses for an arbitrary `hilb` and arbitrary
+`δ₁, δ₂` — plus `δ₁ ≤ δ₂`, the SYZ47
 floor, and the empty-middle hypothesis `¬ middleBand`, conclude the two-class law: every realizable
 interior band triple is floor-attained or near-balance.  End-to-end from Hilbert–Burch structure to
-the parity-corrected classification. -/
+the parity-corrected classification.  Scope: this theorem is not instantiated here at SYZ64's
+`windowKD` or at the SYZ64/SYZ65 μ-basis degrees; SYZ64 `twoRamp_windowKD` / SYZ65
+`rankNullity_windowKD` discharge the inputs only for that specific Hilbert function and those
+existentially selected degrees, so linking `δ₁, δ₂` to a given band triple's μ-basis remains the
+caller's obligation. -/
 theorem classification_of_hilbert
     (hilb : ℕ → ℕ) (a b c δ₁ δ₂ D₀ : ℕ)
     (hRankNull : SYZ44.RankNullity hilb a b c D₀)

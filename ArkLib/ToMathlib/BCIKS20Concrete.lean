@@ -60,6 +60,14 @@ Two independent obstructions remain:
   the bundle carries the further obstructions listed in the `KeystoneStrictResidual` module
   docstring.
 
+Interface note (audit L58): the `perWord` field `root : (z : F) → rationalRoot (H_tilde' b.H) z`
+is a *total* section. It is read only at matching-set members (`mpFin`), yet it cannot exist once
+any fibre is empty, even at a point outside the matching set
+(`ArkLib.IngredientC.not_exists_total_matchingVanishes_of_isEmpty`). The membership-dependent
+`rootOn` form (`ArkLib.IngredientC.MatchingVanishesOn`) is the honest shape; threading it through
+`section5Concrete_of_close_word` and `correlatedAgreement_affine_curves_johnson_concrete` is open
+#304 interface debt.
+
 ## What stays a named residual
 
 Per the honest-fallback discipline, the deepest construction steps that touch live-session-owned

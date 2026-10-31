@@ -5,11 +5,12 @@ Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._ConstantWeightPlotkinBound
 import Research.ProximityPrize.Frontier._HalfPredecessorSecantLines
+import Research.ProximityPrize.Frontier._P1RateQuarterForcedSecantMatching
 import ArkLib.Data.CodingTheory.Connections.GCXK25SecondMoment
 import Mathlib.Combinatorics.SimpleGraph.Extremal.Turan
 
 /-!
-# P1 rate-quarter predecessor: the agreement-overlap graph has independence at most five
+# P1 rate-quarter predecessor: the agreement-overlap graph has independence at most four
 
 At the immediate predecessor of the saturated rate-quarter construction, every explanation
 agrees on at least
@@ -19,15 +20,23 @@ t = 592794966
 ```
 
 of the `N = 2^30` coordinates.  Put an edge between two explanations when their agreement sets
-overlap on at least `k = 2^28` coordinates.  This file proves that every six vertices contain an
-edge.  Equivalently, the large-overlap graph has independence number at most five.
+overlap on at least `k = 2^28` coordinates.  This file proves that every **five** vertices
+contain an edge (`exists_pair_inter_card_ge_K_of_five`, `largeOverlapGraph_compl_cliqueFree_five`).
+Equivalently, the large-overlap graph has independence number at most four.
 
-The proof trims six agreement sets to constant weight `t` and applies the exact-diagonal Plotkin
-bound with `lambda = k-1`.  Its divided bound is exactly five:
+The proof is an integral five-set Johnson inequality (`fiveSet_integral_johnson`): the integer
+multiplicity correction `5s ≤ s² + 6` (for `s ≤ 5`) improves on the real-valued exact-diagonal
+Plotkin bound with `lambda = k-1`, whose divided bound is only five:
 
 ```text
 N * (t - (k-1)) / (t^2 - N*(k-1)) = 5.
 ```
+
+That Plotkin bound alone would give independence at most five.  The six-set statements
+(`exists_pair_inter_card_ge_K_of_six`, `exists_pair_large_secant_core_of_six`,
+`exists_large_secant_core_of_six_le_card`, `largeOverlapGraph_compl_cliqueFree_six`) and the
+five-part Turán bound are retained for downstream API compatibility, but they are now derived
+from (or strictly weaker than) the five-set forcing and the four-part Turán bound.
 
 For Reed--Solomon explanations, an overlap of at least `k` coordinates uniquely determines the
 polynomial source pencil through the two decoded points.  Thus this is a global forcing input for
@@ -163,7 +172,8 @@ theorem exists_pair_inter_card_ge_K_of_five
 /-! ## Global four-line cap at the near-saturated core scale -/
 
 /-- Distinct degree-`<k` polynomial lines have joint cores meeting in at most `k-1`
-coordinates. -/
+coordinates.  Alias of the canonical
+`P1RateQuarterForcedSecantMatching.jointCore_inter_card_le_of_ne`. -/
 theorem jointCore_inter_card_le_of_line_ne
     {I E : Type} [Fintype I] [DecidableEq I]
     [Field E] [Fintype E] [DecidableEq E]
@@ -172,28 +182,9 @@ theorem jointCore_inter_card_le_of_line_ne
     (hadeg : a.natDegree < k) (hrdeg : r.natDegree < k)
     (hadeg' : a'.natDegree < k) (hrdeg' : r'.natDegree < k)
     (hne : a ≠ a' ∨ r ≠ r') :
-    (jointCore dom u₀ u₁ a r ∩ jointCore dom u₀ u₁ a' r').card ≤ k - 1 := by
-  rcases hne with hne | hne
-  · have hp0 : a - a' ≠ 0 := sub_ne_zero.mpr hne
-    have hpdeg : (a - a').natDegree < k :=
-      lt_of_le_of_lt (natDegree_sub_le _ _) (max_lt hadeg hadeg')
-    refine le_trans (Finset.card_le_card ?_)
-      (domain_root_card_le_pred dom hk _ hp0 hpdeg)
-    intro i hi
-    simp only [Finset.mem_inter, jointCore, Finset.mem_filter,
-      Finset.mem_univ, true_and] at hi
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and, eval_sub]
-    rw [hi.1.1, hi.2.1, sub_self]
-  · have hp0 : r - r' ≠ 0 := sub_ne_zero.mpr hne
-    have hpdeg : (r - r').natDegree < k :=
-      lt_of_le_of_lt (natDegree_sub_le _ _) (max_lt hrdeg hrdeg')
-    refine le_trans (Finset.card_le_card ?_)
-      (domain_root_card_le_pred dom hk _ hp0 hpdeg)
-    intro i hi
-    simp only [Finset.mem_inter, jointCore, Finset.mem_filter,
-      Finset.mem_univ, true_and] at hi
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and, eval_sub]
-    rw [hi.1.2, hi.2.2, sub_self]
+    (jointCore dom u₀ u₁ a r ∩ jointCore dom u₀ u₁ a' r').card ≤ k - 1 :=
+  P1RateQuarterForcedSecantMatching.jointCore_inter_card_le_of_ne dom u₀ u₁ hk
+    hadeg hrdeg hadeg' hrdeg' hne
 
 /-- Five pairwise-distinct degree-`<K` polynomial lines cannot all have cores of size at least
 `FourLineCoreFloor = 590558003`, which is `2236961` coordinates below `T-2`.  The proof is
@@ -316,37 +307,39 @@ theorem lines_with_216_points_card_le_four
 cardinality at least the predecessor agreement threshold, two distinct sets overlap in at least
 the Reed--Solomon dimension `K`.
 
-In the decoded-point geometry this says that every six explanations contain a pair determining a
-source pencil on at least `K` common coordinates. -/
+This is the (real-valued) Plotkin-level statement; it is implied by the five-set forcing
+`exists_pair_inter_card_ge_K_of_five` applied to the first five sets, and is kept as a
+corollary for API compatibility. -/
 theorem exists_pair_inter_card_ge_K_of_six
     (S : Fin 6 → Finset (Fin N))
     (hsize : ∀ i, T ≤ (S i).card) :
     ∃ i j : Fin 6, i ≠ j ∧ K ≤ (S i ∩ S j).card := by
-  classical
-  by_contra hnot
-  push Not at hnot
-  let S' : Fin 6 → Finset (Fin N) := fun i =>
-    Classical.choose (Finset.exists_subset_card_eq (hsize i))
-  have hS'sub : ∀ i, S' i ⊆ S i := by
-    intro i
-    exact (Classical.choose_spec
-      (Finset.exists_subset_card_eq (hsize i))).1
-  have hS'card : ∀ i, (S' i).card = T := by
-    intro i
-    exact (Classical.choose_spec
-      (Finset.exists_subset_card_eq (hsize i))).2
-  have hpair : ∀ i j, i ≠ j → (S' i ∩ S' j).card ≤ K - 1 := by
-    intro i j hij
-    have hsmall : (S i ∩ S j).card < K := hnot i j hij
-    have hsub : S' i ∩ S' j ⊆ S i ∩ S j :=
-      Finset.inter_subset_inter (hS'sub i) (hS'sub j)
-    have hle := Finset.card_le_card hsub
-    omega
-  have hplot := constantWeight_plotkin S' T (K - 1) hS'card hpair
-  simp only [Fintype.card_fin] at hplot
-  norm_num [N, K, T] at hplot
+  obtain ⟨i, j, hij, h⟩ :=
+    exists_pair_inter_card_ge_K_of_five (fun i => S i.castSucc) (fun i => hsize _)
+  exact ⟨i.castSucc, j.castSucc, fun h' => hij (Fin.castSucc_injective _ h'), h⟩
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
+
+/-- **Secant-core connector.**  For two distinct selected scalars, the overlap of their full
+agreement sets is exactly the joint core of their canonical secant pencil
+(`fullAgreement_inter_eq_jointCore` specialised to `secantParameter`). -/
+theorem fullAgreement_inter_eq_jointCore_secantParameter
+    {dom : Fin N ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom K delta u)
+    {gamma beta : F} (hgamma : gamma ∈ family.G) (hbeta : beta ∈ family.G)
+    (hne : gamma ≠ beta) :
+    fullAgreement dom (u 0) (u 1) gamma (family.q gamma) ∩
+        fullAgreement dom (u 0) (u 1) beta (family.q beta) =
+      jointCore dom (u 0) (u 1)
+        (secantParameter family gamma beta).1
+        (secantParameter family gamma beta).2 := by
+  have hgammaLine := ((mem_pointsOn_iff family _ gamma).mp
+    (first_point_mem_pointsOn_secant family (beta := beta) hgamma)).2
+  have hbetaLine := ((mem_pointsOn_iff family _ beta).mp
+    (second_point_mem_pointsOn_secant family hbeta hne)).2
+  rw [hgammaLine, hbetaLine]
+  exact fullAgreement_inter_eq_jointCore dom (u 0) (u 1) _ _ hne
 
 /-- **Geometric connector.**  Six distinct selected explanations at the P1 predecessor contain
 two whose canonical secant pencil has a joint core of size at least `K`.
@@ -371,18 +364,10 @@ theorem exists_pair_large_secant_core_of_six
     fullAgreement dom (u 0) (u 1) (label i) (family.q (label i))
   obtain ⟨i, j, hij, hoverlap⟩ :=
     exists_pair_inter_card_ge_K_of_six S hsize
-  have hscalar : label i ≠ label j := hinjective.ne hij
-  let line := secantParameter family (label i) (label j)
-  have hiOn : label i ∈ pointsOn family line :=
-    first_point_mem_pointsOn_secant family (beta := label j) (hlabel i)
-  have hjOn : label j ∈ pointsOn family line :=
-    second_point_mem_pointsOn_secant family (gamma := label i) (hlabel j) hscalar
-  have hiLine := (mem_pointsOn_iff family line (label i)).mp hiOn |>.2
-  have hjLine := (mem_pointsOn_iff family line (label j)).mp hjOn |>.2
   refine ⟨i, j, hij, ?_⟩
-  rw [← fullAgreement_inter_eq_jointCore
-    dom (u 0) (u 1) line.1 line.2 hscalar]
-  simpa only [S, line, hiLine, hjLine] using hoverlap
+  rw [← fullAgreement_inter_eq_jointCore_secantParameter family (hlabel i) (hlabel j)
+    (hinjective.ne hij)]
+  exact hoverlap
 
 /-- **Finite-family form.**  Every selected predecessor family with at least six explanations
 contains two distinct scalars whose canonical secant has a `K`-coordinate joint core.
@@ -437,43 +422,6 @@ noncomputable def largeOverlapGraph
   ⟩
   loopless := ⟨fun x h => h.1 rfl⟩
 
-/-- **Global graph form of six-point forcing.**  At the P1 predecessor, the complement of the
-large-overlap graph contains no six-clique.  Equivalently, the large-overlap graph has
-independence number at most five.
-
-This is stronger operationally than merely producing one secant from one chosen six-tuple: it
-allows extremal graph and matching arguments to be applied to the entire bad-scalar family. -/
-theorem largeOverlapGraph_compl_cliqueFree_six
-    {dom : Fin N ↪ F} {delta : NNReal}
-    {u : WordStack F (Fin 2) (Fin N)}
-    (family : BadScalarRichPointFamily dom K delta u)
-    (hsize : ∀ gamma ∈ family.G, T ≤
-      (fullAgreement dom (u 0) (u 1) gamma (family.q gamma)).card) :
-    (largeOverlapGraph family)ᶜ.CliqueFree 6 := by
-  classical
-  intro G6 hG6
-  have he : G6 ≃ Fin 6 := by
-    rw [← hG6.card_eq]
-    exact G6.equivFin
-  let vertex : Fin 6 → family.G := fun i => (he.symm i).1
-  let S : Fin 6 → Finset (Fin N) := fun i =>
-    fullAgreement dom (u 0) (u 1) (vertex i).1 (family.q (vertex i).1)
-  have hSsize : ∀ i, T ≤ (S i).card := by
-    intro i
-    exact hsize (vertex i).1 (vertex i).2
-  obtain ⟨i, j, hij, hoverlap⟩ := exists_pair_inter_card_ge_K_of_six S hSsize
-  have hvertex_ne : vertex i ≠ vertex j := by
-    intro h
-    apply hij
-    apply he.symm.injective
-    exact Subtype.ext h
-  have hadj : (largeOverlapGraph family).Adj (vertex i) (vertex j) := by
-    exact ⟨hvertex_ne, by simpa only [S] using hoverlap⟩
-  have hi : vertex i ∈ G6 := (he.symm i).2
-  have hj : vertex j ∈ G6 := (he.symm j).2
-  have hcompl := hG6.isClique hi hj hvertex_ne
-  exact ((SimpleGraph.compl_adj _ _ _).mp hcompl).2 hadj
-
 /-- **Sharp global graph form.**  The complement of the predecessor large-overlap graph is
 already `K₅`-free.  Equivalently, the large-overlap graph has independence number at most four.
 
@@ -511,6 +459,20 @@ theorem largeOverlapGraph_compl_cliqueFree_five
   have hcompl := hG5.isClique hi hj hvertex_ne
   exact ((SimpleGraph.compl_adj _ _ _).mp hcompl).2 hadj
 
+/-- **Global graph form of six-point forcing.**  At the P1 predecessor, the complement of the
+large-overlap graph contains no six-clique (independence number at most five).
+
+Superseded by `largeOverlapGraph_compl_cliqueFree_five` (independence at most four), from which
+it is derived; kept for API compatibility. -/
+theorem largeOverlapGraph_compl_cliqueFree_six
+    {dom : Fin N ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom K delta u)
+    (hsize : ∀ gamma ∈ family.G, T ≤
+      (fullAgreement dom (u 0) (u 1) gamma (family.q gamma)).card) :
+    (largeOverlapGraph family)ᶜ.CliqueFree 6 :=
+  (largeOverlapGraph_compl_cliqueFree_five family hsize).mono (by norm_num)
+
 /-- Every graph edge is exactly a large-core polynomial secant.  This is the edgewise geometric
 interface: extremal information about `largeOverlapGraph` can be counted in the source-pencil
 geometry without losing the sharp threshold `K`. -/
@@ -526,16 +488,29 @@ theorem jointCore_card_ge_K_of_largeOverlapGraph_adj
   have hscalar : gamma.1 ≠ beta.1 := by
     intro h
     exact hadj.1 (Subtype.ext h)
-  let line := secantParameter family gamma.1 beta.1
-  have hgammaOn : gamma.1 ∈ pointsOn family line :=
-    first_point_mem_pointsOn_secant family gamma.2
-  have hbetaOn : beta.1 ∈ pointsOn family line :=
-    second_point_mem_pointsOn_secant family beta.2 hscalar
-  have hgammaLine := (mem_pointsOn_iff family line gamma.1).mp hgammaOn |>.2
-  have hbetaLine := (mem_pointsOn_iff family line beta.1).mp hbetaOn |>.2
-  rw [← fullAgreement_inter_eq_jointCore
-    dom (u 0) (u 1) line.1 line.2 hscalar]
-  simpa only [line, hgammaLine, hbetaLine] using hadj.2
+  rw [← fullAgreement_inter_eq_jointCore_secantParameter family gamma.2 beta.2 hscalar]
+  exact hadj.2
+
+/-- Edge partition of the complete graph: a graph and its complement together have
+`choose(|V|, 2)` edges.  Shared by both Turán consequences below. -/
+theorem card_edgeFinset_add_card_edgeFinset_compl
+    {V : Type} [Fintype V] [DecidableEq V] (G : SimpleGraph V)
+    [DecidableRel G.Adj] [Fintype G.edgeSet] [Fintype Gᶜ.edgeSet] :
+    #G.edgeFinset + #Gᶜ.edgeFinset = (Fintype.card V).choose 2 := by
+  classical
+  calc
+    #G.edgeFinset + #Gᶜ.edgeFinset = #(G.edgeFinset ∪ Gᶜ.edgeFinset) := by
+      rw [Finset.card_union_of_disjoint]
+      simp only [SimpleGraph.disjoint_edgeFinset, disjoint_compl_right]
+    _ = #((⊤ : SimpleGraph V).edgeFinset) := by
+      congr 1
+      have hset : G.edgeSet ∪ Gᶜ.edgeSet = (⊤ : SimpleGraph V).edgeSet := by
+        rw [← SimpleGraph.edgeSet_sup, sup_compl_eq_top]
+      ext e
+      simpa only [Finset.mem_union, SimpleGraph.mem_edgeFinset, Set.mem_union] using
+        (Set.ext_iff.mp hset e)
+    _ = (Fintype.card V).choose 2 :=
+      SimpleGraph.card_edgeFinset_top_eq_card_choose_two (V := V)
 
 /-- **Quantitative overlap abundance.**  Write `m` for the number of selected explanations.
 At the P1 predecessor, the number of large-core secant pairs is at least the complement of the
@@ -546,7 +521,9 @@ choose(m,2) - [((m²-(m mod 5)²)·4)/10 + choose(m mod 5,2)].
 ```
 
 The bracket is the maximum possible number of *small*-overlap pairs.  Thus the local Plotkin
-forcing statement yields a global quadratic supply of large-core secants. -/
+forcing statement yields a global quadratic supply of large-core secants.  This five-part bound
+is weaker than `turan_fourPart_lower_bound_largeOverlap_edges` (which uses the five-set forcing)
+and is kept only for API compatibility. -/
 theorem turan_lower_bound_largeOverlap_edges
     {dom : Fin N ↪ F} {delta : NNReal}
     {u : WordStack F (Fin 2) (Fin N)}
@@ -569,22 +546,8 @@ theorem turan_lower_bound_largeOverlap_edges
     simpa only [m, SimpleGraph.turanNumber_eq, Nat.reduceAdd, Nat.reduceSub, Nat.reduceMul] using
       (SimpleGraph.CliqueFree.card_edgeFinset_le (G := Gᶜ) (r := 5) hfree)
   have hpartition :
-      #G.edgeFinset + #Gᶜ.edgeFinset = m.choose 2 := by
-    calc
-      #G.edgeFinset + #Gᶜ.edgeFinset = #(G.edgeFinset ∪ Gᶜ.edgeFinset) := by
-        rw [Finset.card_union_of_disjoint]
-        simp only [SimpleGraph.disjoint_edgeFinset, disjoint_compl_right]
-      _ = #((⊤ : SimpleGraph family.G).edgeFinset) := by
-        congr 1
-        have hset : G.edgeSet ∪ Gᶜ.edgeSet =
-            (⊤ : SimpleGraph family.G).edgeSet := by
-          rw [← SimpleGraph.edgeSet_sup, sup_compl_eq_top]
-        ext e
-        simpa only [Finset.mem_union, SimpleGraph.mem_edgeFinset, Set.mem_union] using
-          (Set.ext_iff.mp hset e)
-      _ = m.choose 2 := by
-        simpa only [m] using
-          (SimpleGraph.card_edgeFinset_top_eq_card_choose_two (V := family.G))
+      #G.edgeFinset + #Gᶜ.edgeFinset = m.choose 2 :=
+    card_edgeFinset_add_card_edgeFinset_compl G
   dsimp only
   change m.choose 2 -
       ((m ^ 2 - (m % 5) ^ 2) * 4 / 10 + (m % 5).choose 2) ≤ #G.edgeFinset
@@ -614,22 +577,8 @@ theorem turan_fourPart_lower_bound_largeOverlap_edges
     simpa only [m, SimpleGraph.turanNumber_eq, Nat.reduceAdd, Nat.reduceSub, Nat.reduceMul] using
       (SimpleGraph.CliqueFree.card_edgeFinset_le (G := Gᶜ) (r := 4) hfree)
   have hpartition :
-      #G.edgeFinset + #Gᶜ.edgeFinset = m.choose 2 := by
-    calc
-      #G.edgeFinset + #Gᶜ.edgeFinset = #(G.edgeFinset ∪ Gᶜ.edgeFinset) := by
-        rw [Finset.card_union_of_disjoint]
-        simp only [SimpleGraph.disjoint_edgeFinset, disjoint_compl_right]
-      _ = #((⊤ : SimpleGraph family.G).edgeFinset) := by
-        congr 1
-        have hset : G.edgeSet ∪ Gᶜ.edgeSet =
-            (⊤ : SimpleGraph family.G).edgeSet := by
-          rw [← SimpleGraph.edgeSet_sup, sup_compl_eq_top]
-        ext e
-        simpa only [Finset.mem_union, SimpleGraph.mem_edgeFinset, Set.mem_union] using
-          (Set.ext_iff.mp hset e)
-      _ = m.choose 2 := by
-        simpa only [m] using
-          (SimpleGraph.card_edgeFinset_top_eq_card_choose_two (V := family.G))
+      #G.edgeFinset + #Gᶜ.edgeFinset = m.choose 2 :=
+    card_edgeFinset_add_card_edgeFinset_compl G
   dsimp only
   change m.choose 2 -
       ((m ^ 2 - (m % 4) ^ 2) * 3 / 8 + (m % 4).choose 2) ≤ #G.edgeFinset
@@ -667,3 +616,7 @@ end ArkLib.ProximityGap.Frontier.P1RateQuarterAgreementOverlapGraph
   ArkLib.ProximityGap.Frontier.P1RateQuarterAgreementOverlapGraph.turan_lower_bound_largeOverlap_edges
 #print axioms
   ArkLib.ProximityGap.Frontier.P1RateQuarterAgreementOverlapGraph.turan_fourPart_lower_bound_largeOverlap_edges
+#print axioms
+  ArkLib.ProximityGap.Frontier.P1RateQuarterAgreementOverlapGraph.fullAgreement_inter_eq_jointCore_secantParameter
+#print axioms
+  ArkLib.ProximityGap.Frontier.P1RateQuarterAgreementOverlapGraph.card_edgeFinset_add_card_edgeFinset_compl

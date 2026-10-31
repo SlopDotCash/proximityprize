@@ -435,8 +435,17 @@ theorem iterConvEnergyWick_three_of_lagCorrelation_bound_and_zeroBoundary_budget
     (tripleConvEnergyBound_of_lagCorrelation_bound_and_zeroBoundary_budget
       J q hB0 hJ hJsq hlag hbudget) hC
 
+/-! ### The zero-mode-free branch `J 0 = 0`
+
+The `_of_zero` consumers below assume `hJ0 : J 0 = 0`.  They can **not** be instantiated with the
+Jacobi coefficient sequence that motivates this file: `jacobiCoeff_zero_eq_neg_one` shows
+`jacobiCoeff χ lam 0 = -1` whenever `χ 1 = 1`.  For Jacobi coefficients use the
+zero-boundary / coefficient-envelope forms (and the `…twoCharacterWeilInput…` bridges further
+below), which carry the `‖J 0‖` boundary term explicitly. -/
+
 /-- Under `J 0 = 0`, a pointwise lag-correlation bound controls the R21 punctured
-self-convolution energy. -/
+self-convolution energy.  (Not applicable to Jacobi coefficients, whose zero term is `-1`; see
+the section note above.) -/
 theorem selfConv_energy_bound_of_lagCorrelation_bound_of_zero (J : ZMod m → ℂ)
     (hJ0 : J 0 = 0) {B : ℝ} (hB : ∀ t : ZMod m, ‖fullLagCorrelation J t‖ ≤ B) :
     ∑ c : ZMod m, ‖selfConv J c‖ ^ 2 ≤ (m : ℝ) * B ^ 2 := by
@@ -532,6 +541,46 @@ theorem norm_jacobiCoeff_zero_eq_one (hχ : IsMulCharC χ) (hχ1 : χ 1 = 1)
   rw [jacobiCoeff_zero_eq_neg_one hχ hχ1 hfam]
   norm_num
 
+/-- **Uniform Jacobi lag envelope from the two-character Weil input.**  R31's
+`lag_correlation_bound` controls every nonzero lag; the zero lag is the explicit input `hzero`.
+This is the shared lag bound behind the Jacobi/Weil bridges below. -/
+theorem jacobi_fullLagCorrelation_le_of_twoCharacterWeilInput
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {C : ℝ} (hweil : TwoCharacterWeilInput χ lam G C)
+    (hzero : ‖lagCorrelation χ lam (0 : ZMod m)‖
+      ≤ (m : ℝ) * (G.card : ℝ) * C * Real.sqrt (Fintype.card F)) :
+    ∀ t : ZMod m, ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖
+      ≤ (m : ℝ) * (G.card : ℝ) * C * Real.sqrt (Fintype.card F) := by
+  intro t
+  by_cases ht : t = 0
+  · subst ht
+    simpa [fullLagCorrelation, lagCorrelation] using hzero
+  · have h := lag_correlation_bound hfam hgrp hweil ht
+    simpa [fullLagCorrelation, lagCorrelation] using h
+
+/-- **Uniform Jacobi lag envelope, `hzero`-free form.**  The zero lag is bounded by
+`m * B²` from the coefficient envelope `‖J_c‖ ≤ B`; the nonzero lags come from R31.  The uniform
+lag budget is the max of the two. -/
+theorem jacobi_fullLagCorrelation_le_max_of_twoCharacterWeilInput
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {Cweil B : ℝ} (hB0 : 0 ≤ B)
+    (hJ : ∀ c : ZMod m, ‖jacobiCoeff χ lam c‖ ≤ B)
+    (hweil : TwoCharacterWeilInput χ lam G Cweil) :
+    ∀ t : ZMod m, ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖
+      ≤ max ((m : ℝ) * B ^ 2)
+          ((m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)) := by
+  intro t
+  by_cases ht : t = 0
+  · subst ht
+    exact (norm_fullLagCorrelation_zero_le_card_mul_sq
+      (J := fun i : ZMod m => jacobiCoeff χ lam i) hB0 hJ).trans (le_max_left _ _)
+  · have h := lag_correlation_bound hfam hgrp hweil ht
+    have hoff :
+        ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖
+          ≤ (m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F) := by
+      simpa [fullLagCorrelation, lagCorrelation] using h
+    exact hoff.trans (le_max_right _ _)
+
 /-- Abstract sextic-face consumer from a full-lag envelope and coefficient envelope.  This is
 the R35 bridge in the exact R22/R23 face-moment shape, without specializing `J` to Jacobi
 coefficients. -/
@@ -570,7 +619,8 @@ theorem sup_pureFace_of_lagCorrelation_bound_and_coeffEnvelope_budget
     (tripleConvEnergyBound_of_lagCorrelation_bound_and_coeffEnvelope_budget
       J (Fintype.card F) hB0 hJ hBsq hlag hbudget) hs
 
-/-- Abstract sextic consumer in the zero-mode-free case `J 0 = 0`. -/
+/-- Abstract sextic consumer in the zero-mode-free case `J 0 = 0`.  (Not applicable to Jacobi
+coefficients, whose zero term is `-1` by `jacobiCoeff_zero_eq_neg_one`.) -/
 theorem sextic_moment_of_lagCorrelation_bound_of_zero_coeffEnvelope_budget
     (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
     (J : ZMod m → ℂ) (hJ0 : J 0 = 0) {B L C : ℝ}
@@ -614,13 +664,8 @@ theorem fullJacobiConv_energy_bound_of_twoCharacterWeilInput
   classical
   let B : ℝ := (m : ℝ) * (G.card : ℝ) * C * Real.sqrt (Fintype.card F)
   have hB : ∀ t : ZMod m,
-      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ B := by
-    intro t
-    by_cases ht : t = 0
-    · subst ht
-      simpa [fullLagCorrelation, lagCorrelation, B] using hzero
-    · have h := lag_correlation_bound hfam hgrp hweil ht
-      simpa [fullLagCorrelation, lagCorrelation, B] using h
+      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ B :=
+    jacobi_fullLagCorrelation_le_of_twoCharacterWeilInput hfam hgrp hweil hzero
   simpa [B] using
     (fullConv_energy_bound_of_lagCorrelation_bound
       (J := fun i : ZMod m => jacobiCoeff χ lam i) hB)
@@ -645,13 +690,8 @@ theorem tripleConvEnergyBound_of_twoCharacterWeilInput_and_zeroBoundary_budget
   classical
   let L : ℝ := (m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)
   have hlag : ∀ t : ZMod m,
-      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ L := by
-    intro t
-    by_cases ht : t = 0
-    · subst ht
-      simpa [fullLagCorrelation, lagCorrelation, L] using hzero
-    · have h := lag_correlation_bound hfam hgrp hweil ht
-      simpa [fullLagCorrelation, lagCorrelation, L] using h
+      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ L :=
+    jacobi_fullLagCorrelation_le_of_twoCharacterWeilInput hfam hgrp hweil hzero
   exact tripleConvEnergyBound_of_lagCorrelation_bound_and_zeroBoundary_budget
     (J := fun i : ZMod m => jacobiCoeff χ lam i) (q := Fintype.card F)
     (L := L) (B := B) (C := Ctriple) hB0 hJ hJsq hlag (by simpa [L] using hbudget)
@@ -674,13 +714,8 @@ theorem tripleConvEnergyBound_of_twoCharacterWeilInput_and_coeffEnvelope_budget
   classical
   let L : ℝ := (m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)
   have hlag : ∀ t : ZMod m,
-      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ L := by
-    intro t
-    by_cases ht : t = 0
-    · subst ht
-      simpa [fullLagCorrelation, lagCorrelation, L] using hzero
-    · have h := lag_correlation_bound hfam hgrp hweil ht
-      simpa [fullLagCorrelation, lagCorrelation, L] using h
+      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ L :=
+    jacobi_fullLagCorrelation_le_of_twoCharacterWeilInput hfam hgrp hweil hzero
   exact tripleConvEnergyBound_of_lagCorrelation_bound_and_coeffEnvelope_budget
     (J := fun i : ZMod m => jacobiCoeff χ lam i) (q := Fintype.card F)
     (L := L) (B := B) (C := Ctriple) hB0 hJ hBsq hlag (by simpa [L] using hbudget)
@@ -726,18 +761,8 @@ theorem tripleConvEnergyBound_of_twoCharacterWeilInput_and_coeffEnvelope_maxBudg
   let L : ℝ := max ((m : ℝ) * B ^ 2)
     ((m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F))
   have hlag : ∀ t : ZMod m,
-      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ L := by
-    intro t
-    by_cases ht : t = 0
-    · subst ht
-      exact (norm_fullLagCorrelation_zero_le_card_mul_sq
-        (J := fun i : ZMod m => jacobiCoeff χ lam i) hB0 hJ).trans (le_max_left _ _)
-    · have h := lag_correlation_bound hfam hgrp hweil ht
-      have hoff :
-          ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖
-            ≤ (m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F) := by
-        simpa [fullLagCorrelation, lagCorrelation] using h
-      exact hoff.trans (le_max_right _ _)
+      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ L :=
+    jacobi_fullLagCorrelation_le_max_of_twoCharacterWeilInput hfam hgrp hB0 hJ hweil
   refine tripleConvEnergyBound_of_lagCorrelation_bound_and_coeffEnvelope_budget
     (J := fun i : ZMod m => jacobiCoeff χ lam i) (q := Fintype.card F)
     (L := L) (B := B) (C := Ctriple) hB0 hJ hBsq hlag ?_
@@ -761,13 +786,8 @@ theorem iterConvEnergyWick_two_of_twoCharacterWeilInput_and_coeffEnvelope_budget
   classical
   let L : ℝ := (m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)
   have hlag : ∀ t : ZMod m,
-      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ L := by
-    intro t
-    by_cases ht : t = 0
-    · subst ht
-      simpa [fullLagCorrelation, lagCorrelation, L] using hzero
-    · have h := lag_correlation_bound hfam hgrp hweil ht
-      simpa [fullLagCorrelation, lagCorrelation, L] using h
+      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ L :=
+    jacobi_fullLagCorrelation_le_of_twoCharacterWeilInput hfam hgrp hweil hzero
   exact iterConvEnergyWick_two_of_lagCorrelation_bound_and_zeroBoundary_budget
     (J := fun i : ZMod m => jacobiCoeff χ lam i) (q := Fintype.card F)
     (L := L) (B := B) (C₂ := Ctwo) hB0 hJ hlag (by simpa [L] using hbudget) hC
@@ -810,18 +830,8 @@ theorem iterConvEnergyWick_two_of_twoCharacterWeilInput_and_coeffEnvelope_maxBud
   let L : ℝ := max ((m : ℝ) * B ^ 2)
     ((m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F))
   have hlag : ∀ t : ZMod m,
-      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ L := by
-    intro t
-    by_cases ht : t = 0
-    · subst ht
-      exact (norm_fullLagCorrelation_zero_le_card_mul_sq
-        (J := fun i : ZMod m => jacobiCoeff χ lam i) hB0 hJ).trans (le_max_left _ _)
-    · have h := lag_correlation_bound hfam hgrp hweil ht
-      have hoff :
-          ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖
-            ≤ (m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F) := by
-        simpa [fullLagCorrelation, lagCorrelation] using h
-      exact hoff.trans (le_max_right _ _)
+      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ L :=
+    jacobi_fullLagCorrelation_le_max_of_twoCharacterWeilInput hfam hgrp hB0 hJ hweil
   refine iterConvEnergyWick_two_of_lagCorrelation_bound_and_zeroBoundary_budget
     (J := fun i : ZMod m => jacobiCoeff χ lam i) (q := Fintype.card F)
     (L := L) (B := B) (C₂ := Ctwo) hB0 hJ hlag ?_ hC

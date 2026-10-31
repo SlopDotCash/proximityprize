@@ -8,7 +8,17 @@ import Research.ProximityPrize.Frontier._CharZeroLamLeungSlackLower
 /-!
 # Discharging the char-`0` Lam–Leung ceiling hypothesis at `r ∈ {2,3}` (OT4 residual census, #444)
 
-## What this discharges (the residual-census action)
+## Correction (audit 2026-10-28, CW-B18-08)
+
+The "discharge" framing below is wrong and is retained only as history.  The slack residual
+`(P2-Slack) : Spur ≤ ceiling − Z` ALONE gives `Z + Spur ≤ ceiling` by `linarith`;
+`WF6P2.slack_domination_implies_SM1` never used `hZceiling`, which has now been dropped from
+`WF6P2.slack_route_full`.  So `SM1_two_of_slack` / `SM1_three_of_slack` below do NOT use the
+proven ceilings (their bodies are the residual rearranged; `h`, `hm` are unused).  The meaningful
+content of this file is the ceilings `charzero_ceiling_{two,three}` themselves and the strict slack
+positivity, which certifies that `(P2-Slack)` is non-vacuous.
+
+## What this discharges (the residual-census action) — historical framing, see correction above
 
 The slack route `Frontier/_wf6P2_charp_lamleung_slack.lean` carries the char-`0` Lam–Leung ceiling
 as a **free hypothesis** `hZceiling : Z ≤ ceiling` (its docstring: *"the char-`0` ceiling on `Z`…
@@ -85,22 +95,20 @@ theorem charzero_ceiling_three_value (n : ℤ) (hn : 1 ≤ n) :
     15 * n ^ 3 - 45 * n ^ 2 + 40 * n ≤ 15 * n ^ 3 :=
   le_of_lt (slack_three_pos_value n hn)
 
-/-- **`(S-M1)` at `r = 2` with the char-`0` ceiling DISCHARGED.** Decompose the char-`p` energy
-`A_2 = E_2 + Spur = B 4 m + Spur`. The slack route's `slack_domination_implies_SM1` needs
-`Spur ≤ ceiling − E_2` (the open `(P2-Slack)` residual) AND `E_2 ≤ ceiling` (formerly the free
-`hZceiling`). The latter is now PROVEN (`charzero_ceiling_two`), so this consumes ONLY the open
-residual: `(P2-Slack) at r=2 ⟹ A_2 ≤ 3·(2m)²`. -/
+/-- **`(P2-Slack) ⟹ (S-M1)` at `r = 2`.** Decompose the char-`p` energy
+`A_2 = E_2 + Spur = B 4 m + Spur`.  `(P2-Slack) at r=2 ⟹ A_2 ≤ 3·(2m)²`.  This is a rearrangement of
+the residual `hresid` alone; it does NOT use the char-`0` ceiling `charzero_ceiling_two` (and `h`,
+`hm` are unused) — see the module correction (CW-B18-08). -/
 theorem SM1_two_of_slack (h : BalancedCount B) (m : ℕ) (hm : 1 ≤ m)
     (Spur : ℤ) (hspur : 0 ≤ Spur)
     (hresid : Spur ≤ 3 * (2 * (m : ℤ)) ^ 2 - B 4 m) :
     B 4 m + Spur ≤ 3 * (2 * (m : ℤ)) ^ 2 :=
-  -- ceiling input is PROVEN (charzero_ceiling_two), not assumed; only `hresid` is open.
   P2Slack_residual_implies_energy_le (B 4 m + Spur) (B 4 m) Spur (3 * (2 * (m : ℤ)) ^ 2)
     rfl hspur hresid
 
-/-- **`(S-M1)` at `r = 3` with the char-`0` ceiling DISCHARGED.** Same shape at depth 3:
-`(P2-Slack) at r=3 ⟹ A_3 = B 6 m + Spur ≤ 15·(2m)³`. The ceiling input `charzero_ceiling_three`
-is PROVEN; only the spurious-domination residual is consumed. -/
+/-- **`(P2-Slack) ⟹ (S-M1)` at `r = 3`.** Same shape at depth 3:
+`(P2-Slack) at r=3 ⟹ A_3 = B 6 m + Spur ≤ 15·(2m)³`.  Again a rearrangement of `hresid` alone; the
+ceiling `charzero_ceiling_three` is not used (CW-B18-08). -/
 theorem SM1_three_of_slack (h : BalancedCount B) (m : ℕ) (hm : 1 ≤ m)
     (Spur : ℤ) (hspur : 0 ≤ Spur)
     (hresid : Spur ≤ 15 * (2 * (m : ℤ)) ^ 3 - B 6 m) :

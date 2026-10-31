@@ -24,16 +24,17 @@ Against the *genuine* [BCIKS20] App-A.2 / L10 weight bound this is **OVER-STRONG
 same structural reason as the earlier F3 `htele` trap:
 
 * The proven L10 weight bound (`RationalFunctions.β_regular`, in the shape
-  `weight_Λ_over_𝒪 hH β D ≤ (2*t+1) * Bivariate.natDegreeY R * D`) **grows linearly and
-  unboundedly in `t`**.  The genuine `betaRec … t` numerator is a sum of products of `t`
-  earlier `betaRec` factors with powers of `W` and `ξ`, so the `X`-degree of its canonical
-  representative — and hence its `Λ`-weight — increases without bound as `t → ∞`.
+  `weight_Λ_over_𝒪 hH β D ≤ (2*t+1) * Bivariate.natDegreeY R * D`) is only an **upper**
+  bound, and that upper bound grows in `t`.  It gives no lower bound on the actual weight of
+  `betaRec … t`: cancellation is possible (e.g. `Bcoeff = 0` gives `betaRec (t+1) = 0` for
+  all `t`, see `betaRec_succ_of_zero_coeff` below), so it does **not** show that the
+  infinite-range `hcard` is unsatisfiable for genuine families.
 * `matchingSet : Finset F` is **fixed** (it is the §5 agreement set `S_β`, of size
   `≈ (1-δ)·|domain|`, independent of `t`).
-* A fixed finite cardinality cannot dominate an unbounded sequence: there is **no**
-  `matchingSet` for which `#matchingSet > weight(betaRec t)·d_H` holds for *all* `t ≥ k`
-  once the weight bound is taken at face value.  Hence `hcard` is not satisfiable from the
-  §5 largeness hypothesis `hlarge` alone — it would require a (false) uniform-in-`t` bound.
+* What is true is that the infinite-range `hcard` cannot be **discharged** from the linear
+  upper bound plus a fixed finite `matchingSet`: the sufficient budget `(2t+1)·d·D·d_H`
+  eventually exceeds any fixed cardinality.  The finite-range counting interface below is the
+  honest replacement for that discharge route.
 
 The Lemma-A.1 counting argument is genuinely available only for the **finite range**
 `k ≤ t ≤ T`, where `T` is the largest index with `weight(betaRec T)·d_H < #matchingSet`
@@ -72,8 +73,8 @@ tail vanishing into its two honest sources and recombine:
 4. `hcoeffPoly_witness_of_section5DataFin` — the front-door `∃ B` witness for the corrected
    bundle.
 
-The point: with the corrected interface, `hcard` is **satisfiable** (the finite-range
-counting bound *can* be discharged from `hlarge`), and the previously hidden
+The point: with the corrected interface, the finite-range concrete budget can be met by a
+single bound at `T` (the finite-range counting bound *can* be discharged from `hlarge`), and the previously hidden
 unbounded-in-`t` obligation is surfaced as the explicit, honest algebraic-degree hypothesis
 `htailDeg`.
 
@@ -188,7 +189,7 @@ replaced by:
 All other fields are carried over verbatim. -/
 
 /-- **The corrected §5 per-decoding extraction datum** (the replacement for
-`Section5StrictData` whose `hcard` field is no longer unsatisfiable).  See the file header for the
+`Section5StrictData` with a finite-range `hcard` field).  See the file header for the
 F5 satisfiability verdict.  The infinite-range `hcard` is replaced by `T`/`hcardFin`/`htailDeg`.
 
 **Restricted scope (issue #304).** The F5 repair concerns only the counting fields.  The `hPz`
@@ -220,13 +221,13 @@ structure Section5StrictDataFin {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
   /-- ingredient-C per-point matching data over the **finite** counting range `k ≤ t ≤ T`. -/
   mpFin : ∀ t, k ≤ t → t ≤ T → ∀ z ∈ matchingSet,
     BetaMatchingVanishes.MatchingPoint x₀ R H hHyp Bcoeff t z (root z)
-  /-- the L9/L10 weight bound over the **finite** counting range `k ≤ t ≤ T` (the satisfiable
+  /-- the L9/L10 weight bound over the **finite** counting range `k ≤ t ≤ T` (the finite-range
   form of `hcard`: a fixed large `matchingSet` *can* dominate the weight for `t ≤ T`). -/
   hcardFin : ∀ t, k ≤ t → t ≤ T → (↑matchingSet.card : WithBot ℕ)
       > weight_Λ_over_𝒪 hH (betaRec x₀ R H hHyp Bcoeff t) D * H.natDegree
   /-- the **algebraic-degree datum**: beyond the truncation index `T`, the Hensel-lift coefficients
   vanish for the bounded-`Z`-degree reason (Prop 5.5: `γ` is linear in `Z`, hence its power-series
-  numerator has finite degree).  This is the genuine §5 content that *replaces* the unsatisfiable
+  numerator has finite degree).  This is the genuine §5 content that *replaces* the undischargeable
   unbounded-in-`t` counting obligation — isolated explicitly, never equal to the goal. -/
   htailDeg : ∀ t, T < t → αFromBeta x₀ R H hHyp Bcoeff t = 0
   /-- validity of the BCIKS substitution `X ↦ X − x₀`. -/
@@ -259,7 +260,11 @@ infinite-range `hcard`.  Everything downstream of `htail` is unchanged §5 algeb
 omit [Nonempty ι] [DecidableEq ι] in
 /-- The corrected §5 datum yields the per-coefficient curve-polynomial datum on the good set,
 routing the α-tail vanishing through `tail_zero_of_finite_card_and_degree` (the F5-repaired,
-satisfiable interface).  `betaRec` is genuinely consumed. -/
+finite-range interface).  `betaRec` is genuinely consumed.
+
+Note (audit L13): the final representative argument (`hlin`, `hPz`,
+`curveCoeffPolys_of_linear_representative`) does not use `htrunc`; the per-coefficient conclusion
+comes from `hrep`/`hdegX`/`hPz` alone. -/
 theorem curveCoeffPolys_of_section5DataFin {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
     (d : Section5StrictDataFin (k := k) (deg := deg) (domain := domain) (δ := δ) u P) :
@@ -292,7 +297,7 @@ theorem curveCoeffPolys_of_section5DataFin {k deg : ℕ} {domain : ι ↪ F} {δ
 
 omit [Nonempty ι] [DecidableEq ι] in
 /-- The corrected §5 datum yields the bundled `hcoeffPoly` existential the front door consumes
-(identical statement to `hcoeffPoly_witness_of_section5Data`, but from the satisfiable bundle). -/
+(identical statement to `hcoeffPoly_witness_of_section5Data`, but from the finite-range bundle). -/
 theorem hcoeffPoly_witness_of_section5DataFin {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
     (d : Section5StrictDataFin (k := k) (deg := deg) (domain := domain) (δ := δ) u P) :
@@ -306,17 +311,17 @@ theorem hcoeffPoly_witness_of_section5DataFin {k deg : ℕ} {domain : ι ↪ F} 
 /-! ## Step 5 — bridge: the original over-strong bundle refines into the corrected one
 
 For completeness/back-compatibility: any `Section5StrictData` (the over-strong bundle) trivially
-yields a `Section5StrictDataFin` (the satisfiable bundle) — choose any `T`, restrict `mp`/`hcard`
+yields a `Section5StrictDataFin` (the finite-range bundle) — choose any `T`, restrict `mp`/`hcard`
 to `[k,T]`, and take `htailDeg` from the original infinite-range vanishing (which the original
-bundle *does* prove, via `tail_zero_of_betaRec_embedding_zero`).  This shows the corrected
-interface is **weaker** (hence strictly more honest): it asks for less.  The converse fails — that
-is precisely the F5 finding. -/
+bundle *does* prove, via `tail_zero_of_betaRec_embedding_zero`).  This only proves the
+implication old bundle → finite bundle; no converse failure (strict weakness) is formalized
+here. -/
 
 omit [Nonempty ι] [DecidableEq ι] in
-/-- The over-strong `Section5StrictData` refines into the satisfiable `Section5StrictDataFin`
+/-- The over-strong `Section5StrictData` refines into the finite-range `Section5StrictDataFin`
 (taking `T := k`, so the counting range is the single index `k` and `htailDeg` covers `t > k` from
-the original infinite-range vanishing).  Demonstrates the corrected interface asks for strictly
-less. -/
+the original infinite-range vanishing).  This only proves the implication old bundle → finite
+bundle; no converse failure (strict weakness) is formalized here. -/
 noncomputable def section5DataFin_of_section5Data {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
     (d : Section5StrictData (k := k) (deg := deg) (domain := domain) (δ := δ) u P) :
@@ -337,6 +342,19 @@ noncomputable def section5DataFin_of_section5Data {k deg : ℕ} {domain : ι ↪
     hsubst := d.hsubst, hγ := d.hγ, Ppoly := d.Ppoly, hrep := d.hrep, hdegX := d.hdegX,
     hPz := d.hPz }
 
+omit [Fintype F] [DecidableEq F] in
+/-- Audit L74 regression: the generic `betaRec` interface admits cancellation — with the zero
+numerator family every successor value vanishes, so the growing upper weight budget is not a lower
+bound on the actual weight. -/
+theorem betaRec_succ_of_zero_coeff (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
+    [Fact (Irreducible H)] [Fact (0 < H.natDegree)] (hHyp : Hypotheses x₀ R H) (t : ℕ) :
+    ArkLib.betaRec x₀ R H hHyp (fun _ {_} _ => (0 : 𝒪 H)) (t + 1) = 0 := by
+  rw [ArkLib.betaRec_succ]
+  refine Finset.sum_eq_zero fun _ _ => Finset.sum_eq_zero fun _ _ => ?_
+  split_ifs
+  · rfl
+  · ring
+
 end HcardDischarge
 
 end ArkLib
@@ -349,3 +367,4 @@ end ArkLib
 #print axioms ArkLib.HcardDischarge.curveCoeffPolys_of_section5DataFin
 #print axioms ArkLib.HcardDischarge.hcoeffPoly_witness_of_section5DataFin
 #print axioms ArkLib.HcardDischarge.section5DataFin_of_section5Data
+#print axioms ArkLib.HcardDischarge.betaRec_succ_of_zero_coeff

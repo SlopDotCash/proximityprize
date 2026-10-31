@@ -19,21 +19,35 @@ and collapses the four redundant base/separability legs to a single certificate.
 This file **lifts that reduction to the supply level.**  It introduces:
 
 * `DiscLocusCellData` — a structure bundling exactly the inputs of
-  `CellPackage.ofSurfaceRootDiscLocus`; a strictly *smaller* surface than `CellPackage`
-  (no free `truncSet`; no `hcover`; base/separability given once over the disc locus, not
-  four times over the matching/heavy loci).
+  `CellPackage.ofSurfaceRootDiscLocus` (no free `truncSet`; no `hcover`; base/separability
+  given once over the disc locus, not four times over the matching/heavy loci).  It is a
+  *different*, not a smaller, surface: it adds obligations `CellPackage` does not have
+  (`hrepG`, `hbig`, the disc-locus containment fields), and since it rebuilds a `CellPackage`
+  it is at least as strong a per-cell requirement.
 * `CellPackage.ofDiscLocusData` — rebuilds the full `CellPackage` from that data.
 * `CellPackageSupplyDiscLocus` — the disc-locus form of the supply Prop: every large cell
   carries `DiscLocusCellData` (rather than a full `CellPackage`).
 * `cellPackageSupply_of_discLocus` — **the reduction**: disc-locus supply ⟹ `CellPackageSupply`.
-* `johnsonDischargeStatement_of_discLocusSupply` — the Johnson discharge off the *smaller*
-  residual.
+* `johnsonDischargeStatement_of_discLocusSupply` — the Johnson discharge off the disc-locus
+  (sufficient) residual.
 * `production_good_johnson_of_discLocusSupply` — the production floor jump
   `δ ≤ δ*` in the Johnson range, now conditional on `CellPackageSupplyDiscLocus` instead of
   `CellPackageSupply`.
 
-Net effect: the named residual on the Johnson floor lane can be replaced verbatim by its
-strictly-smaller disc-locus form.  This does **not** discharge the residual — the [BCIKS20]
+Net effect: the named residual on the Johnson floor lane can be replaced by its disc-locus
+form, which is a **sufficient (logically at least as strong)** condition —
+`cellPackageSupply_of_discLocus`
+proves `CellPackageSupplyDiscLocus ⟹ CellPackageSupply`, not the converse — so this re-targets
+the residual rather than shrinking it (audit CW-B13-22).  Caveats: (i) the ground-line field
+`hrepG` is unsatisfiable for `2 ≤ H.natDegree` (`not_hrepG_of_two_le_natDegree`; see
+`_SYZ15TLoadedInterfaceRepair.lean` for the satisfiable T-loaded twin), so the literal
+`CellPackageSupplyDiscLocus` can only hold through its small-cell branch at those curves;
+(ii) the parameters `domain`, `k`, `δ`, `u` of `DiscLocusCellData` (inherited from
+`CellPackage`) occur in none of its fields — `u₀`, `u₁` are free fields not tied to `u` — so
+the data is not constrained by the stack it is indexed by; whether this makes the downstream
+`CellPackage` consumer weaker than advertised is an upstream question about
+`Hab25JohnsonPackageSupply.lean`, not settled here.  This does **not** discharge the residual — the
+[BCIKS20]
 Claim 5.7 surface production (produce, over a large cell, the place curve `H`, the centre
 `x₀`, the Y-root divisor `w`, and the disc-non-vanishing matching/heavy loci) remains the
 genuine open mathematics.  It sharpens *what must be produced*.
@@ -59,9 +73,11 @@ variable {F₀ : Type} [Field F₀]
 /-- **The disc-locus per-cell data.**  Exactly the inputs consumed by
 `CellPackage.ofSurfaceRootDiscLocus`: the GS surface facts, the Y-root divisor `w`, a
 discriminant `disc` with a single base + separability certificate over its non-vanishing
-locus, and the matching/heavy loci sitting inside that locus.  This is a strictly smaller
-surface than `CellPackage` — the four redundant base/separability legs and the free
-truncation set are gone. -/
+locus, and the matching/heavy loci sitting inside that locus.  Compared with `CellPackage`
+the four redundant base/separability legs and the free truncation set are gone, but new
+obligations (`hrepG`, `hbig`, disc-locus containment) are added; it is a sufficient, not a
+weaker, per-cell requirement.  The indices `domain`, `k`, `δ`, `u` appear in no field (as in
+`CellPackage`): `u₀`, `u₁` are free. -/
 structure DiscLocusCellData [Fintype F₀] [DecidableEq F₀] {n : ℕ} [NeZero n]
     (domain : Fin n ↪ F₀) (k : ℕ) (δ : ℝ≥0) (u : WordStack F₀ (Fin 2) (Fin n))
     (R : (F₀[X])[X][Y])
@@ -112,8 +128,8 @@ structure DiscLocusCellData [Fintype F₀] [DecidableEq F₀] {n : ℕ} [NeZero 
   hS₀ : max Bw 1 < S₀.card
 
 /-- **Rebuild a full `CellPackage` from disc-locus data.**  Pure field-by-field feed into
-`CellPackage.ofSurfaceRootDiscLocus`; witnesses that `DiscLocusCellData` is a faithful,
-strictly-smaller presentation of the per-cell package. -/
+`CellPackage.ofSurfaceRootDiscLocus`; witnesses that `DiscLocusCellData` is a sufficient
+presentation of the per-cell package (data ⟹ package; the converse is not claimed). -/
 noncomputable def CellPackage.ofDiscLocusData [Fintype F₀] [DecidableEq F₀] {n : ℕ}
     [NeZero n] {domain : Fin n ↪ F₀} {k : ℕ} {δ : ℝ≥0}
     {u : WordStack F₀ (Fin 2) (Fin n)} {R : (F₀[X])[X][Y]}
@@ -126,8 +142,9 @@ noncomputable def CellPackage.ofDiscLocusData [Fintype F₀] [DecidableEq F₀] 
     d.hBw d.hS₀
 
 /-- **The disc-locus form of the supply residual.**  Every cell is small (`≤ T`) or carries
-disc-locus data.  Strictly smaller than `CellPackageSupply`: the per-cell obligation is
-`DiscLocusCellData` (single disc-locus certificate) rather than a full `CellPackage`. -/
+disc-locus data.  A sufficient form of `CellPackageSupply` (at least as strong): the per-cell
+obligation is `DiscLocusCellData` (single disc-locus certificate) rather than a full `CellPackage`.
+-/
 def CellPackageSupplyDiscLocus [Fintype F₀] [DecidableEq F₀] {n : ℕ} [NeZero n]
     (domain : Fin n ↪ F₀) (k : ℕ) (δ : ℝ≥0) (T : ℕ) : Prop :=
   ∀ (u : WordStack F₀ (Fin 2) (Fin n)) (R : (F₀[X])[X][Y]) (E : Finset F₀)
@@ -143,7 +160,8 @@ def CellPackageSupplyDiscLocus [Fintype F₀] [DecidableEq F₀] {n : ℕ} [NeZe
 
 /-- **The reduction.**  Disc-locus supply ⟹ the named `CellPackageSupply` residual, by
 rebuilding each cell's package with `CellPackage.ofDiscLocusData`.  This lets every consumer
-of `CellPackageSupply` be re-based on the strictly-smaller disc-locus form. -/
+of `CellPackageSupply` be re-based on the disc-locus form (a sufficient, logically stronger
+hypothesis). -/
 theorem cellPackageSupply_of_discLocus [Fintype F₀] [DecidableEq F₀]
     {n k : ℕ} [NeZero n] {domain : Fin n ↪ F₀} {δ : ℝ≥0} {T : ℕ}
     (h : CellPackageSupplyDiscLocus domain k δ T) :
@@ -153,7 +171,7 @@ theorem cellPackageSupply_of_discLocus [Fintype F₀] [DecidableEq F₀]
   · exact Or.inl hsmall
   · exact Or.inr ⟨H, h1, h2, hdata.map (fun d => CellPackage.ofDiscLocusData d)⟩
 
-/-- **The Johnson discharge off the smaller residual.**  If disc-locus supply holds at every
+/-- **The Johnson discharge off the disc-locus residual.**  If disc-locus supply holds at every
 instance in the discharge range, the full `JohnsonDischargeStatement` follows — the
 `CellPackageSupply` in `johnsonDischargeStatement_of_packageSupply` is replaced verbatim by
 its disc-locus form. -/
@@ -185,8 +203,8 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : ℕ} [NeZero n]
 
 /-- **The conditional production Johnson floor, off the disc-locus residual.**  Identical to
-`production_good_johnson_of_packageSupply` but conditioned on the strictly-smaller
-`CellPackageSupplyDiscLocus`: every Johnson-range radius is good, i.e. `δ ≤ δ*` for every
+`production_good_johnson_of_packageSupply` but conditioned on the (sufficient, at least as
+strong) `CellPackageSupplyDiscLocus`: every Johnson-range radius is good, i.e. `δ ≤ δ*` for every
 `δ < 1 − √ρ₊ − η` in the discharge regime.  Landing this floor jump `(1−ρ)/3 → 1−√ρ` now
 requires only the disc-locus [BCIKS20] Claim 5.7 production. -/
 theorem production_good_johnson_of_discLocusSupply

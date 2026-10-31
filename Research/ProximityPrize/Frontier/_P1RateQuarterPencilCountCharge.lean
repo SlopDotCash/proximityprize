@@ -8,8 +8,11 @@ import Research.ProximityPrize.Frontier._P1RateQuarterSharedFreshCoordinate
 /-!
 # The pencil-count charge at the P1 predecessor
 
-Successor of `_P1RateQuarterSharedFreshTripleP1Refuted.lean`.  With the fixed-witness
-escape-charge branch dead (shared-fresh triples exist at literal P1), the surviving counting
+Successor of the shared-fresh-triple refutation
+(`P1RateQuarterSharedFreshTripleRefuted.not_sharedFreshTripleFree`, valid on every injective P1
+domain; `_P1RateQuarterSharedFreshTripleP1Refuted.lean` is an alternative power-domain
+certificate).  With the fixed-witness escape-charge branch dead (shared-fresh triples exist at
+literal P1), the surviving counting
 route charges bad scalars to the divided-difference pencils their witnesses ride.
 
 For a fixed pencil `(w₀, w₁)` of codewords, a scalar `γ` *rides* it when its witness codeword

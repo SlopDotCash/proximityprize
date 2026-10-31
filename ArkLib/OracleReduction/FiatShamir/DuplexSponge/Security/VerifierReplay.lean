@@ -940,7 +940,11 @@ the replay path) and the strict-to-`Hyb₄` collapse cost (`εB`: pure replay eq
 basic-FS verifier, on the hit path) sum to at most `claim5_24Bound`, then the full
 `Hyb34StepResidual` holds. The two hypotheses are the genuinely open probabilistic core of
 Claim 5.24 (they require the §5.6 trace analysis applied to the verifier's replayed trace);
-the deterministic bricks of this module are the toolkit for `hB`. -/
+the deterministic bricks of this module are the toolkit for `hB`.
+
+For zero-permutation protocols (`pSpec.totalNumPermQueries = 0`), `hA`/`hB`/`hsum` cannot all
+hold at `L = 0`, since `claim5_24Bound U tₕ tₚ tₚᵢ 0 < 0` (`claim5_24Bound_neg_of_L_eq_zero`)
+while the two distances are nonnegative. -/
 theorem hyb34Step_of_strictSplit [SampleableType U]
     (T_H T_P : Type) [LawfulTraceNablaImpl T_H T_P StmtIn U] (δ : ℕ)
     (Salt : Type) [SaltCodec U δ Salt]

@@ -272,6 +272,26 @@ knowledge-soundness variants for a guarded first verifier are proved.
     \uses{def:round_by_round_knowledge_soundness, def:verifier_append}
 \end{theorem}
 
+\begin{remark}[Restricted Round-by-Round Soundness under Append]
+    The generic \texttt{append\_rbrSoundness} contract is admitted, and the unqualified statement
+    fails for arbitrary shared stateful oracles: the composite schedules $P_1, P_2, V_1, V_2$,
+    while the phases schedule $P_1, V_1, P_2, V_2$. A restricted binary version is proved as
+    \texttt{Verifier.append\_rbrSoundness\_keystone\_subsingleton\_unconditional}
+    (\texttt{ArkLib/OracleReduction/Composition/Sequential/AppendRbrSoundnessPhase2Proof.lean}).
+    It requires a deterministic pure first verifier ($V_1 = \mathsf{pure} \circ \mathsf{verify}$),
+    a \texttt{Subsingleton} oracle state, an initial distribution with nonempty support and no
+    failure, a nonempty intermediate statement type, a nonempty second protocol whose first round
+    is a prover message, and component round-by-round soundness from the same initial
+    distribution. Seam-agnostic plain append soundness for a nonempty second protocol is also
+    proved, as \texttt{Verifier.append\_soundness\_total\_pos}
+    (\texttt{AppendSoundnessTotal.lean}). It needs finite inhabited oracle ranges, an inhabited
+    intermediate statement type, and an oracle implementation that preserves state, never fails,
+    and has a state-independent answer law. Residual projectors such as
+    \texttt{appendSoundnessResidual} and \texttt{appendRbrSoundnessResidual} in
+    \texttt{ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean} are
+    conditional interfaces that return their hypothesis.
+\end{remark}
+
 \begin{theorem}[Worst-Case Round-by-Round Knowledge Soundness under a Guarded First Verifier]
     \label{thm:rbr_knowledge_soundness_append_guarded}
     Suppose $V_1$ is guarded: it returns a deterministic verdict when its check passes and aborts

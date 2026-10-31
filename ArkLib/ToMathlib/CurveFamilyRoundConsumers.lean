@@ -32,9 +32,9 @@ small-field hypothesis.  This file routes that front door into every in-tree per
   replacement for the vacuous `perRound_epsCA_le_roundError_of_card_le`, which needs
   `|F| ≤ κ · 2^(n−N)`).
 * **STIR fold-budget accounting** (`Stir/ErrorAccumulation.lean`):
-  `stir_perRound_foldBudget_of_curveFamilyData` — the genuine in-tree
-  `PerRoundProximityGap` hypothesis family is discharged with the keystone-supplied
-  `errorBound` values, the fold budget is bounded via `foldBudget_le_of_keystone`, AND each
+  `stir_perRound_foldBudget_of_curveFamilyData` — the `PerRoundProximityGap` budget
+  identification (`e i = errorBound …`, an equation between chosen numbers, not a soundness
+  fact) is supplied by `he`, the fold budget is bounded via `foldBudget_le_of_keystone`, AND each
   accounting error is certified non-vacuously by the faithful per-round CA bound.
 
 Honest residual: the per-`(u, P)` producer (`CurveFamilyProducer`) — i.e. the BCIKS20 §5
@@ -199,9 +199,9 @@ theorem perRound_epsPG_bound_of_curveFamilyData {deg : ℕ} {domain : ι ↪ F} 
 /-! ## §3. Brick 3b — the genuine STIR accounting hypothesis, faithful entrance -/
 
 /-- **STIR `PerRoundProximityGap` + fold budget + non-vacuity, from the faithful front door.**
-Discharges the genuine in-tree STIR accounting hypothesis family
-(`ArkLib.ProofSystem.Stir.ErrorAccumulation.PerRoundProximityGap`) with the keystone-supplied
-`errorBound` values, bounds the fold budget via the PROVEN `foldBudget_le_of_keystone`, and —
+Supplies the STIR budget identification
+(`ArkLib.ProofSystem.Stir.ErrorAccumulation.PerRoundProximityGap`, i.e. `e i = errorBound …`, by
+`he`), bounds the fold budget via the PROVEN `foldBudget_le_of_keystone`, and —
 the non-vacuous certificate — proves each accounting error genuinely dominates (up to `kᵢ`) the
 round's curve CA error via the faithful keystone. -/
 theorem stir_perRound_foldBudget_of_curveFamilyData {n : ℕ}

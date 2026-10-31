@@ -81,11 +81,14 @@ The rigorous mechanism (pure combinatorics + wiring to SYZ25):
    witness**, `n=12, k=6`, three cores of size `8 = ⌈2·12/3⌉` (`δ=1/3`, excluded edge), full cover,
    over-budget `∑(|Cᵢ|−k)=6=|U|−k`, with pairwise floor `2s−n=4 < k=6` so (1)/(2) are inapplicable —
    the hypothesis is **tight** and the field-independent `d=1` (probe) survives here. `decide`.
-4. `generation_realizes_budget`, `overbudget_not_imp_generation_strip` — **verdict wired to SYZ25**:
-   generation (the probe-forced `d=0` for `δ<1/3`) delivers the ceiling span = SYZ22 realizability =
-   budget; and the abstract non-lift certificate (over-budget ⇏ generation) re-exported from SYZ25 §3.
+4. `generation_realizes_budget`, `overbudget_not_imp_generation_abstract` (renamed from
+   `overbudget_not_imp_generation_strip`, audit CW-B13-19) — `generation_realizes_budget` is the
+   trivial rewrite "generation ⟹ span = ceiling" (the `d=0` hypothesis for `δ<1/3` is probe-only);
+   the second is SYZ25 §3's abstract `ℚ³` over-budget ⇏ generation example, not built from strip
+   cores.
 
-The genuinely rigorous end covers `δ ≤ 1/4` (`s ≥ 3n/4`) via overlap counting. The strip interior
+The genuinely rigorous end proves only the overlap condition S1 for `δ ≤ 1/4` (`s ≥ 3n/4`) via
+overlap counting; S1 ⟹ generation is probe-validated, not formalized. The strip interior
 `1/4 < δ < 1/3` is deficiency-free by exhaustive-random probe; its polynomial-gluing proof is the
 unchanged **honest named residual** (same status as SYZ24/SYZ25 realizability).
 

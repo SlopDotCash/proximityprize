@@ -271,7 +271,8 @@ At `μ = 6` (`h = 2^5 = 32`) the KKH26 collision envelope is `4^{h−1}·(4h)^h 
 
 /-- The `μ = 6` collision envelope equals `2^{286}`. -/
 theorem mu6_landau_envelope_eq : 4 ^ (2 ^ 5 - 1) * (4 * 2 ^ 5) ^ 2 ^ 5 = 2 ^ 286 := by
-  norm_num
+  rw [show (4 : ℕ) ^ (2 ^ 5 - 1) = 2 ^ 62 by norm_num,
+    show ((4 : ℕ) * 2 ^ 5) ^ 2 ^ 5 = 2 ^ 224 by norm_num, ← pow_add]
 
 /-- **The envelope does not clear the `r = 2` band.**  Every `P` below the band's upper end
 `1984·2^{128}` has `P² < 4^{31}·128^{32} = 2^{286}`, so the generic Landau envelope cannot show

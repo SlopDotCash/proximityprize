@@ -255,7 +255,13 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_T218_prop
   frs_list_decoding_capacity_cz25_of_coordFiberCap_T218
     domain k s ω hs_pos η hη_pos hη_lt_s hT218 hCap hηnat
 
-/-- Prop-level C3.5 endpoint from coordinate-fiber cap plus the injective GK16 FRS bridge. -/
+/-- Prop-level C3.5 endpoint from coordinate-fiber cap plus the injective GK16 FRS bridge.
+
+**Legacy, vacuous interface.** `hEinj` (injectivity of `frsEvalOnPoints` on all of `F[X]`) is
+unsatisfiable by `ReedSolomon.Folded.frsEvalOnPoints_not_injective`, and `hω_sep` over
+arbitrary-degree families is false over every finite field. Callers should use the admissible
+variants (`frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible_prop` /
+`frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible_eta_eq_one_div_nat_prop`). -/
 theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_injective_prop
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -322,7 +328,13 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_T218_eta_eq_one_div_nat
     domain k s ω hs_pos η hm hη hms hT218 hCap
 
 /-- Prop-level C3.5 endpoint from coordinate-fiber cap plus the injective GK16 FRS bridge, using
-the reciprocal-natural slack convention `η = 1 / m` to discharge the floor side condition. -/
+the reciprocal-natural slack convention `η = 1 / m` to discharge the floor side condition.
+
+**Legacy, vacuous interface.** `hEinj` (injectivity of `frsEvalOnPoints` on all of `F[X]`) is
+unsatisfiable by `ReedSolomon.Folded.frsEvalOnPoints_not_injective`, and `hω_sep` over
+arbitrary-degree families is false over every finite field. Callers should use the admissible
+variants (`frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible_prop` /
+`frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible_eta_eq_one_div_nat_prop`). -/
 theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_injective_eta_eq_one_div_nat_prop
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {F : Type} [Field F] [Fintype F] [DecidableEq F]

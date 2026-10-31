@@ -21,8 +21,8 @@ named residuals (lemma 3 was closed as a case split in SYZ32 by the cluster-merg
      polynomial rigidity, *strictly stronger* than the over-budget count (the counting corollary
      is REFUTED), with the clean overlap route covering only `δ ≤ 1/4`.
 
-This file **closes lemma 1** to a crisp, honest support hypothesis and proves the linear-algebra
-that discharges it in full, then **assembles the strip case split** at abstract `(n,k)`, `n`-uniform,
+This file **reduces lemma 1** to a crisp, honest support hypothesis (the resulting bound is no
+stronger than direct counting; see the caveat below) and proves the linear algebra of that reduction, then **assembles the strip case split** at abstract `(n,k)`, `n`-uniform,
 and instantiates it at `n ∈ {32,64}`.
 
 ## Lemma 1 — reduced to two crisp, named inputs (no stronger than a counting bound)
@@ -86,7 +86,7 @@ SYZ22 `SuperadditiveUnion` realizability filled; and (iv) the `MCAThresholdLedge
 count bound `#bad ≤ n − 1` to the `δ*` floor.  None of (i)–(iv) is a *cheap* wire — the ledger
 consumes a **lower** bound on `mcaDeltaStar` (the BGK/incidence floor, `_PrizeFloorOfBGK`), whereas
 the strip supplies the **union/count** ceiling; joining them is the SYZ22 realizability step, still
-open.  So SYZ33 does **not** deliver a new unconditional `δ*` statement; it closes lemma 1 and
+open.  So SYZ33 does **not** deliver a new unconditional `δ*` statement; it reduces lemma 1 and
 assembles the merged branch, leaving lemma 2 as the lone open analytic residual.
 
 All results axiom-clean (`propext`/`Classical.choice`/`Quot.sound`); no `sorry`, no

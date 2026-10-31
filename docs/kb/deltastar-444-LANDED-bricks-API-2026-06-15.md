@@ -307,12 +307,11 @@ theorem orbit_closed_dir_forces_monomial (μ c) (f) (h : f.comp (C μ*X) = C c*f
 theorem multiterm_not_eigen (μ) (f) (hmulti : 2 ≤ f.support.card) (hdistinct : …) : ¬ ∃ c, f.comp (C μ*X) = C c*f
 def badSet {V}[AddCommGroup V][Module F V] (W : Submodule F V) (a b : V) : Set F := {γ | a + γ•b ∈ W}
 theorem badSet_subsingleton_far {V}{W}{a b} (hb : b ∉ W) : (badSet W a b).Subsingleton
-theorem badSet_closed_under_reparam (W) (a b) (r : F→F) (hr : …) : ∀ γ ∈ badSet W a b, r γ ∈ badSet W a b
-def MonomialIsWorstFarDirection (I) (IsFar IsMonomialDir) : Prop      -- named open quantitative core
-def TwoTermNotBetterThanMonomial (I) (IsFar IsMonomialDir) : Prop     -- named open 2-term comparison
+def MonomialIsWorstFarDirection (I) (IsFar IsMonomialDir) : Prop      -- schematic: I is an arbitrary F[X]→ℕ
+def TwoTermNotBetterThanMonomial (I) (IsFar IsMonomialDir) : Prop     -- schematic: I is an arbitrary F[X]→ℕ
 ```
-*Proves:* only a monomial f=X^b is a dilation eigenvector, so only its bad-γ set carries the ⟨μ^{b−a}⟩-orbit alignment; multi-term dirs lose it AND pay the subsingleton over-det bound. Anchor (exact, p-indep): n=16,k=4,r=10 worst monomial a=10,b=4 has I=89 orbit-closed; every 2-term dir I≤89, no nontrivial orbit. Residual I(2-term)≤I(monomial) left as named open Props.
-*Consume:* `import Research.ProximityPrize.Frontier._wf3D4_monomial_worst_orbit`. `multiterm_not_eigen` discharges "no scalar c with f∘D_μ=c·f"; `badSet_subsingleton_far hb` bounds a far witness's γ-set by ≤1; `badSet_closed_under_reparam` (r = ·*μ^{b−a}) asserts monomial orbit-closure. The two open Props are the obligations a δ* worst-direction proof must discharge.
+*Proves:* only a monomial f=X^b is a dilation eigenvector (given distinct μ^j on the support); the exact-membership badSet is a subsingleton for every far b (monomials included), so it carries no orbit structure. The radius-w orbit closure for monomial pencils is `ActionOrbitFRI.badSet_orbit_closed`, not this file; "only the monomial is orbit-aligned" is heuristic. Anchor (exact, p-indep): n=16,k=4,r=10 worst monomial a=10,b=4 has I=89 orbit-closed; every 2-term dir I≤89, no nontrivial orbit. Residual I(2-term)≤I(monomial) left as named open Props.
+*Consume:* `import Research.ProximityPrize.Frontier._wf3D4_monomial_worst_orbit`. `multiterm_not_eigen` discharges "no scalar c with f∘D_μ=c·f"; `badSet_subsingleton_far hb` bounds a far witness's γ-set by ≤1. (The former `badSet_closed_under_reparam` was a tautology — conclusion = hypothesis — and was removed.) The two Props become meaningful obligations only once I is instantiated with the actual radius-r incidence.
 *Reproduce:* `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_wf3D4_monomial_worst_orbit.lean`. Anchor: `probe_wf3D4_orbit_asymmetry.py`.
 
 **wf3D5 Lam-Leung cyclotomic orbit backbone** — I(n) = 1 + (n/2)·O(n) free-action divisibility atom.

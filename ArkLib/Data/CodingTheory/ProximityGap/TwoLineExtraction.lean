@@ -40,35 +40,38 @@ open scoped NNReal
 
 variable {ι : Type*} [DecidableEq ι] {F : Type*} [Field F]
 
-/-- **Two-line linear extraction.**  For a linear code `C` (a submodule), if codewords `w, w'`
-agree with the affine-line words `u₀ + z • u₁` and `u₀ + z' • u₁` on `S` and `S'` respectively
-(with `z ≠ z'`), then there are codewords `v₀, v₁ ∈ C` agreeing with `u₀` and `u₁` on `S ∩ S'`. -/
+/-- **Two-line linear extraction.**  For a linear code `C` (a submodule of `ι → A` for any
+`F`-module alphabet `A`, in particular `A = F`), if codewords `w, w'` agree with the affine-line
+words `u₀ + z • u₁` and `u₀ + z' • u₁` on `S` and `S'` respectively (with `z ≠ z'`), then there are
+codewords `v₀, v₁ ∈ C` agreeing with `u₀` and `u₁` on `S ∩ S'`. -/
 theorem exists_joint_codewords_of_two_lines
-    (C : Submodule F (ι → F)) {u₀ u₁ : ι → F} {z z' : F} (hzz' : z ≠ z')
-    {w w' : ι → F} (hw : w ∈ C) (hw' : w' ∈ C) {S S' : Finset ι}
+    {A : Type*} [AddCommGroup A] [Module F A]
+    (C : Submodule F (ι → A)) {u₀ u₁ : ι → A} {z z' : F} (hzz' : z ≠ z')
+    {w w' : ι → A} (hw : w ∈ C) (hw' : w' ∈ C) {S S' : Finset ι}
     (hwS : ∀ i ∈ S, w i = u₀ i + z • u₁ i)
     (hw'S : ∀ i ∈ S', w' i = u₀ i + z' • u₁ i) :
     ∃ v₀ ∈ C, ∃ v₁ ∈ C, ∀ i ∈ S ∩ S', v₀ i = u₀ i ∧ v₁ i = u₁ i := by
-  set v₁ : ι → F := (z - z')⁻¹ • (w - w') with hv₁def
-  set v₀ : ι → F := w - z • v₁ with hv₀def
+  set v₁ : ι → A := (z - z')⁻¹ • (w - w') with hv₁def
+  set v₀ : ι → A := w - z • v₁ with hv₀def
   have hsub : z - z' ≠ 0 := sub_ne_zero.mpr hzz'
   have hv₁mem : v₁ ∈ C := C.smul_mem _ (C.sub_mem hw hw')
   have hv₀mem : v₀ ∈ C := C.sub_mem hw (C.smul_mem z hv₁mem)
   refine ⟨v₀, hv₀mem, v₁, hv₁mem, ?_⟩
   intro i hi
   rw [Finset.mem_inter] at hi
-  have e1 : w i = u₀ i + z * u₁ i := by simpa [smul_eq_mul] using hwS i hi.1
-  have e2 : w' i = u₀ i + z' * u₁ i := by simpa [smul_eq_mul] using hw'S i hi.2
-  -- on `S ∩ S'`, `w i - w' i = (z - z') u₁ i`
-  have hwdiff : w i - w' i = (z - z') * u₁ i := by rw [e1, e2]; ring
-  -- v₁ i = (z - z')⁻¹ (w i - w' i) = (z - z')⁻¹ (z - z') u₁ i = u₁ i
+  have e1 : w i = u₀ i + z • u₁ i := hwS i hi.1
+  have e2 : w' i = u₀ i + z' • u₁ i := hw'S i hi.2
+  -- on `S ∩ S'`, `w i - w' i = (z - z') • u₁ i`
+  have hwdiff : (w - w') i = (z - z') • u₁ i := by
+    rw [Pi.sub_apply, e1, e2, sub_smul]
+    abel
+  -- v₁ i = (z - z')⁻¹ • (w - w') i = u₁ i
   have hv₁i : v₁ i = u₁ i := by
-    simp only [hv₁def, Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
-    rw [hwdiff, inv_mul_cancel_left₀ hsub]
-  -- v₀ i = w i - z · v₁ i = (u₀ i + z u₁ i) - z u₁ i = u₀ i
+    rw [hv₁def, Pi.smul_apply, hwdiff, smul_smul, inv_mul_cancel₀ hsub, one_smul]
+  -- v₀ i = w i - z • v₁ i = u₀ i
   have hv₀i : v₀ i = u₀ i := by
-    simp only [hv₀def, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, hv₁i, e1]
-    ring
+    rw [hv₀def, Pi.sub_apply, Pi.smul_apply, hv₁i, e1]
+    abel
   exact ⟨hv₀i, hv₁i⟩
 
 section JointAgreement

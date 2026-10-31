@@ -47,7 +47,8 @@ proves it, and `lovettThm17_unconditional` (same file) proves Lovett's Theorem 1
 unconditionally. The unconditional route does **not** go through `MergeContradiction`, which
 asks for the stronger "witness `(1,…,1,0)` exists" conclusion; merge candidates also occur in
 independent systems without such a witness (the `mcV` system of `LovettMergeReduction.lean`).
-Treat `MergeContradiction` as a historical interface, not as open debt of Theorem 1.7.
+Treat `MergeContradiction` as a historical, refuted interface (`not_mergeContradiction`), not as
+open debt of Theorem 1.7.
 
 Issue #389.
 -/
@@ -125,7 +126,8 @@ the common-factor-free dependence minimization closed by `sub_X_dvd_of_subst_eq_
 
 **Status:** `LovettThm17` is now proved unconditionally (`lovettThm17_unconditional` in
 `LovettMergeIndepProof.lean`) through the corrected residual `LovettMergeIndep`, not through this
-definition; this `Prop` itself is not proved anywhere and is not on the live route.
+definition; this `Prop` is false (`not_mergeContradiction`, `LovettMergeIndepProof.lean`) and is
+not on the live route.
 
 It is **definitionally equal** to `MergeBranchImpossible`; it is kept to document the historical
 residual. -/
@@ -135,9 +137,10 @@ def MergeContradiction (F : Type*) [Field F] : Prop := MergeBranchImpossible F
 theorem mergeBranchImpossible_iff_mergeContradiction :
     MergeContradiction F ↔ MergeBranchImpossible F := Iff.rfl
 
-/-- **Non-vacuity** of `MergeContradiction`'s conclusion (it is satisfiable, not contradictory):
-on the concrete `LovettWitnessCounterexample` system the witness is present, exactly as for
-`MergeBranchImpossible` (`mergeBranchImpossible_conclusion_cexV`). -/
+/-- The `MergeContradiction` conclusion on the one witness-bearing system `cexV` (via
+`mergeBranchImpossible_conclusion_cexV`). This is a single instance of the conclusion, not a
+satisfiability certificate: `MergeContradiction` is false (`not_mergeContradiction` in
+`LovettMergeIndepProof.lean`, via the zero-vector system `mcV`). -/
 theorem mergeContradiction_conclusion_cexV
     (i : Fin 2) (j : Fin 2) (hjlt : (j : ℕ) < 2 - 1)
     (hj0 : cexV i j = 0) (hlast : cexV i (lastCoord 2 (by norm_num)) = 0) :

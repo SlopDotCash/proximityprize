@@ -25,8 +25,8 @@ in `Frontier/_SYZ2PredecessorCapRefutationCore.lean`, SYZ3 over-budget stack in
 degenerate codewords on a `33`-block subset, whose complement (`31` blocks per subset) carried the
 bad scalars — a radius of `predecessorRadius (2^30) (31·2^24) ≈ 31/64`.  There the `33` agreement
 blocks were `31` *vanishing-core* blocks (`Z_N` kills them, so agreement is free) plus a `2`-block
-distinguishing pair; the core is capped at `31` blocks because the codeword degree `|N|·2^24` must
-stay below the RS dimension `2^29` (`32·2^24 = 2^29` is already too big).  To reach a *smaller*
+distinguishing pair; the core is capped at `31` blocks because the row-0 codeword `Z_N(X)·X` has degree
+`|N|·2^24 + 1`, which must stay below the RS dimension `2^29` (`32·2^24 = 2^29` is already too big).  To reach a *smaller*
 radius one needs *larger* agreement subsets, which the vanishing core cannot supply.
 
 SYZ4 instead grows agreement by *zero-multiplier* blocks: the codeword keeps degree `31·2^24 < 2^29`
@@ -48,7 +48,9 @@ Since `1107296256 = 2^30 + 2^25` and `2^30·192 + 1 < 2^25·2^128`, we have
 **The optimum, and why `1/3` is the (unattained) infimum.**  With block granularity `2^24`
 (`64` blocks) and `D = 3` subsets, minimizing the radius over feasible agreement sizes gives exactly
 `42` agreement blocks: `43` blocks would leave only `3·21·2^24 = 63·2^24 < 2^30` bad scalars.  As the
-block granularity is refined the optimum `radius → 1/3⁺`: the general `D = 3` bound is
+block granularity is refined the optimum radius decreases toward `1/3⁺` (on the fixed `2^30` domain
+the finest grading `blk = 1` bottoms out at `357913942/2^30 > 1/3`, with the cap `C·blk + 1 < 2^29`;
+see SYZ6): the general `D = 3` bound is
 `(1−ρ)/(2−ρ) = 1/3` at `ρ = 1/2`, approached but **not attained**, the obstruction being precisely
 the degree cap `ρ_core < 1/2` on the vanishing core.  `11/32 ≈ 0.34375` is the concrete rung landed
 here; Johnson `1 − √(1/2) ≈ 0.2929` remains strictly below — no contradiction.

@@ -28,8 +28,8 @@ correctly normalized sharp form is `N_t ≤ m·e^{−(1/2−o(1))t²}`.
 ## Verdict: REDUCES-TO-WALL (F1; terminal F0). No refutation of the sharp form.
 
 Two machine-faithful probes (`scripts/probes/rust/probe_wfT24_affine_koopman_density.rs`,
-`probe_wfT24_density_overshoot.rs`, exact `F_p`, `p` prime, `n | p−1`, `m > 1`, `β = log_p n = 0.25`
-exactly, full `p−1` nonzero-frequency sweep) give the following (all EMPIRICAL, `n ∈ {8,16,32}`):
+`probe_wfT24_density_overshoot.rs`, exact `F_p`, `p` prime, `n | p−1`, `m > 1`, `log_n p ≈ 4` (`p ≈ n^4`),
+full `p−1` nonzero-frequency sweep) give the following (all EMPIRICAL, `n ∈ {8,16,32}`):
 
 **(M0) The affine Koopman wrapping is COSMETIC — the density count is over the SAME multiset `{η_b}`
 as the abelian Cayley graph.** Restricting `U` to the translation subgroup `F_p ⊴ G_aff` decomposes

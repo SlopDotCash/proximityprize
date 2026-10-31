@@ -327,6 +327,30 @@ noncomputable def section5DataFin_of_centered_concrete_matchingDvd {k deg : ℕ}
       HenselDatumProducer.henselDatum_of_matchingDvdInput (hMatchingDvd v₀ v₁ hlin))
     hdeg
 
+/-- Audit L74: the infinite-range concrete budget `hcardConcrete` is uninhabitable whenever all
+three factors are ≥ 1 (take `t = max k n`). -/
+theorem not_forall_card_gt_linear (n k a b c : ℕ) (ha : 1 ≤ a) (hb : 1 ≤ b) (hc : 1 ≤ c) :
+    ¬ ∀ t, k ≤ t → (n : WithBot ℕ) > (((2 * t + 1) * a * b * c : ℕ) : WithBot ℕ) := by
+  intro h
+  have h1 := h (max k n) (le_max_left _ _)
+  have h1' : (2 * max k n + 1) * a * b * c < n := WithBot.coe_lt_coe.mp h1
+  have h2 : n ≤ (2 * max k n + 1) * a * b * c := by
+    have : n ≤ 2 * max k n + 1 := by omega
+    have h3 : 2 * max k n + 1 ≤ (2 * max k n + 1) * a * b * c := by
+      have := Nat.mul_le_mul (Nat.mul_le_mul (Nat.mul_le_mul (le_refl (2 * max k n + 1)) ha) hb) hc
+      simpa only [Nat.mul_one] using this
+    omega
+  omega
+
+omit [Fintype F] [DecidableEq F] in
+/-- Audit L74: under `hd1`/`hH`/`hdH_D` the `hcardConcrete` hypothesis of
+`betaCurveInput_of_section5` is uninhabitable. -/
+theorem not_hcardConcrete {R : F[X][X][Y]} {H : F[X][Y]} {D k : ℕ} {matchingSet : Finset F}
+    (hd1 : 1 ≤ R.natDegree) (hH : 0 < H.natDegree) (hdH_D : H.natDegree ≤ D) :
+    ¬ ∀ t, k ≤ t → (↑matchingSet.card : WithBot ℕ)
+        > (((2 * t + 1) * R.natDegree * D * H.natDegree : ℕ) : WithBot ℕ) :=
+  not_forall_card_gt_linear _ _ _ _ _ hd1 (by omega) hH
+
 /-! ## The assembly: `betaCurveInput_of_section5`
 
 We assemble `BetaCurveInput u` from the reduced, per-field primitive data.  The remaining named
@@ -358,7 +382,11 @@ Discharged / reduced fields:
   `hPz_of_matchingDvdInput`.
 
 Conclusion: the full `BetaCurveInput u P` bundle for the decoded family `P` (conditional on all of
-the inputs above; nothing in-tree supplies them). -/
+the inputs above; nothing in-tree supplies them).
+
+**Vacuous (audit L74).** Under `hd1`/`hH`/`hdH_D` the hypothesis `hcardConcrete` is uninhabitable
+(`not_hcardConcrete`), so this builder is vacuous; use `betaCurveInputFin_of_section5`. This is a
+fact about the concrete sufficient budget, not about the actual `betaRec` weights. -/
 noncomputable def betaCurveInput_of_section5 {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
     -- §5 function-field setup (carried through):
@@ -530,5 +558,7 @@ end ArkLib
 #print axioms ArkLib.BetaInputSupply.hcardFin_of_concrete
 #print axioms ArkLib.BetaInputSupply.section5DataFin_of_centered_concrete
 #print axioms ArkLib.BetaInputSupply.section5DataFin_of_centered_concrete_matchingDvd
+#print axioms ArkLib.BetaInputSupply.not_forall_card_gt_linear
+#print axioms ArkLib.BetaInputSupply.not_hcardConcrete
 #print axioms ArkLib.BetaInputSupply.betaCurveInput_of_section5
 #print axioms ArkLib.BetaInputSupply.betaCurveInputFin_of_section5
