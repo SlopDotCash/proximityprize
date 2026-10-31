@@ -192,7 +192,7 @@ theorem lt_two_mul_add_three_of_fieldBand (domain : ι ↪ F) {k : ℕ}
   classical
   by_contra hn
   push_neg at hn
-  have hΣ : (subsetSumsKplus1 domain k).card ≤ (Fintype.card ι).choose (k + 1) := by
+  have hSig : (subsetSumsKplus1 domain k).card ≤ (Fintype.card ι).choose (k + 1) := by
     unfold subsetSumsKplus1
     refine (Finset.card_image_le).trans ?_
     rw [Finset.card_powersetCard, Finset.card_univ]
@@ -200,5 +200,5 @@ theorem lt_two_mul_add_three_of_fieldBand (domain : ι ↪ F) {k : ℕ}
     rcases Nat.lt_or_ge (2 * k + 3) (Fintype.card ι) with h | h
     · exact Nat.choose_le_succ_of_lt_half_left (by omega)
     · exact (Nat.choose_symm_of_eq_add (by omega)).le
-  have := Nat.mul_le_mul_left (2 ^ (128 : ℕ)) (hΣ.trans hch)
+  have := Nat.mul_le_mul_left (2 ^ (128 : ℕ)) (hSig.trans hch)
   omega

@@ -414,10 +414,8 @@ theorem logicalProximityChecksSpec_of_mem_support_verifier_run
 
 open scoped NNReal
 
-/-- The round-by-round extractor for the query phase. The query phase's witness types are all
-`Unit`, so this extractor simply transports `Unit` (`extractMid` passes the witness through and
-`extractOut` returns `()`); it does **not** invoke `extractMlp` (an earlier version of this
-docstring said it did). -/
+/-- The round-by-round extractor for the query phase.
+Since f^(0) is always available, we can invoke the extractMlp function directly. -/
 noncomputable def queryRbrExtractor :
   Extractor.RoundByRound []ₒ
     (StmtIn := (FinalSumcheckStatementOut (L:=L) (ℓ:=ℓ))

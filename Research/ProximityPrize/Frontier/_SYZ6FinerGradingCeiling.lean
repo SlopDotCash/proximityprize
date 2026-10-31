@@ -997,7 +997,8 @@ theorem firstPrime_rateHalf_mcaDeltaStar_le_exact :
   norm_num
 
 /-- The achieved ceiling is strictly below the SYZ4 rung `11/32 − 2^-30` (a fortiori below
-`11/32`), while remaining above Johnson `1 − √(1/2)`. -/
+`11/32`).  That it stays above Johnson `1 − √(1/2) ≈ 0.2929` is a numerical remark, not part
+of this theorem. -/
 theorem syz6_radius_lt_syz4 :
     predecessorRadius (2 ^ 30) (342 * 2 ^ 20)
       < predecessorRadius (2 ^ 30) (22 * 2 ^ 24) := by

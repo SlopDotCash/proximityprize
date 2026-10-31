@@ -146,14 +146,6 @@ over a family `𝒯` of subsets. -/
 noncomputable def collCount (domain : ι ↪ F) (k : ℕ) (𝒯 : Finset (Finset ι)) (u₀ : ι → F) : ℕ :=
   (𝒯.offDiag.filter (fun p => cT domain k p.1 u₀ = cT domain k p.2 u₀)).card
 
-/-- **Per-pair kernel count.** For a fixed pair `(T, T')` of distinct `(k+1)`-subsets, the
-number of words `u₀` with `c_T(u₀) = c_{T'}(u₀)` is `q^{n-1}`. -/
-lemma card_filter_pair_eq (domain : ι ↪ F) {k : ℕ} {T T' : Finset ι}
-    (hT : T.card = k + 1) (hT' : T'.card = k + 1) (hne : T ≠ T') :
-    (Finset.univ.filter (fun u₀ : ι → F => cT domain k T u₀ = cT domain k T' u₀)).card
-      = Fintype.card F ^ (Fintype.card ι - 1) :=
-  card_agree_le domain hT hT' hne
-
 /-- **Second moment.** Summing the collision count over all `q^n` first words gives exactly
 `|𝒯.offDiag|·q^{n-1}`. -/
 lemma sum_collCount (domain : ι ↪ F) {k : ℕ} {𝒯 : Finset (Finset ι)}
@@ -172,7 +164,8 @@ lemma sum_collCount (domain : ι ↪ F) {k : ℕ} {𝒯 : Finset (Finset ι)}
   rw [Finset.sum_congr rfl (fun p hp => ?_)]
   · rw [Finset.sum_const, smul_eq_mul]
   · rw [Finset.mem_offDiag] at hp
-    exact card_filter_pair_eq domain (h𝒯 p.1 hp.1) (h𝒯 p.2 hp.2.1) hp.2.2
+    -- per-pair kernel count `q^{n-1}` (`RadiusOneExact.card_agree_eq`)
+    exact card_agree_eq domain (h𝒯 p.1 hp.1) (h𝒯 p.2 hp.2.1) hp.2.2
 
 /-- **Existence of a low-collision first word.** Some first word `u₀` has at most
 `|𝒯.offDiag|/q` ordered collisions: `q·coll(u₀) ≤ |𝒯.offDiag|`. -/

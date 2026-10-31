@@ -68,13 +68,13 @@ theorem l1_rotZ (hm : 0 < m) (z : Fin m → ℤ) :
   by_cases hj : j = Fin.last m'
   · rw [hj, finRotate_last]
     rw [show ((0 : Fin (m' + 1))) = ⟨0, hm⟩ from rfl]
-    rw [rotZ_head m hm]
+    rw [rotZ_head (m' + 1) hm]
     rw [show (⟨m' + 1 - 1, by omega⟩ : Fin (m' + 1)) = Fin.last m' from
       Fin.ext (by simp)]
     rw [abs_neg]
   · have hne : ((finRotate (m' + 1)) j : ℕ) = (j : ℕ) + 1 :=
       coe_finRotate_of_ne_last hj
-    rw [rotZ_tail m hm _ _ (by rw [hne]; omega)]
+    rw [rotZ_tail (m' + 1) hm _ _ (by rw [hne]; omega)]
     congr 1
     apply congrArg
     apply Fin.ext

@@ -426,78 +426,22 @@ theorem badCount_le_numeric_tight_of_window
       exact_mod_cast h
     have h1 := GuruswamiSudan.natDegree_le_of_natWeightedDegree (by omega) hnat
     rwa [Polynomial.natDegree_map_eq_of_injective hφinj] at h1
-  -- the live index: degenerate cell plus nonempty factor cells
-  set Index' : Finset (Option ((F₀[X])[X][Y])) :=
-    Index.filter (fun ij => ij = none ∨ (Ecell ij).Nonempty) with hI'
-  have hcover' : (Finset.univ.filter (fun γ : F₀ =>
-      mcaEvent ((ReedSolomon.code domain k : Set (Fin n → F₀)))
-        δ (u 0) (u 1) γ)) ⊆ Index'.biUnion Ecell := by
-    intro γ hγ
-    obtain ⟨ij, hij, hγcell⟩ := Finset.mem_biUnion.mp (hcover hγ)
-    exact Finset.mem_biUnion.mpr
-      ⟨ij, Finset.mem_filter.mpr ⟨hij, Or.inr ⟨γ, hγcell⟩⟩, hγcell⟩
-  have hI'card : Index'.card ≤ gs_degree_bound k n m / (k - 1) + 1 := by
-    have hsub : Index' ⊆ insert none
-        (((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-          (fun q => 1 ≤ q.natDegree)).image some) := by
-      intro ij hij
-      obtain ⟨hijIdx, hcase⟩ := Finset.mem_filter.mp hij
-      match ij with
-      | none => exact Finset.mem_insert_self _ _
-      | some R =>
-        rcases hcase with h | hne
-        · exact absurd h (by simp)
-        · refine Finset.mem_insert_of_mem (Finset.mem_image.mpr ⟨R, ?_, rfl⟩)
-          obtain ⟨hRfac, hRdata⟩ := hfactor R hijIdx
-          refine Finset.mem_filter.mpr ⟨hRfac, ?_⟩
-          obtain ⟨γ, hγ⟩ := hne
-          obtain ⟨hQγ, hdvdγ⟩ := hRdata γ hγ
-          have hRdvd : R ∣ Q₀ :=
-            UniqueFactorizationMonoid.dvd_of_mem_factors (Multiset.mem_toFinset.mp hRfac)
-          have hRγ0 : R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 := by
-            intro habs
-            obtain ⟨S, hS⟩ := hRdvd
-            apply hQγ
-            rw [hS, Polynomial.map_mul, habs, zero_mul]
-          have h1 := Polynomial.natDegree_le_of_dvd hdvdγ hRγ0
-          rw [Polynomial.natDegree_X_sub_C] at h1
-          exact le_trans h1 (Polynomial.natDegree_map_le)
-    calc Index'.card
-        ≤ (insert none
-            (((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-              (fun q => 1 ≤ q.natDegree)).image some)).card :=
-          Finset.card_le_card hsub
-      _ ≤ (((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-              (fun q => 1 ≤ q.natDegree)).image some).card + 1 :=
-          Finset.card_insert_le _ _
-      _ ≤ ((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-              (fun q => 1 ≤ q.natDegree)).card + 1 :=
-          Nat.add_le_add_right Finset.card_image_le 1
-      _ ≤ Q₀.natDegree + 1 := Nat.add_le_add_right (card_posDegree_factors_le h0) 1
-      _ ≤ gs_degree_bound k n m / (k - 1) + 1 := Nat.add_le_add_right hydeg 1
-  -- every live cell is small
-  have hcell : ∀ ij ∈ Index', (Ecell ij).card ≤ T := by
-    intro ij hij
-    have hijIdx := (Finset.mem_filter.mp hij).1
-    match ij with
-    | none => exact le_trans hnonecard hT
-    | some R =>
-        obtain ⟨hRfac, hRdata⟩ := hfactor R hijIdx
-        have hRirr : Irreducible R :=
-          UniqueFactorizationMonoid.irreducible_of_factor R
-            (Multiset.mem_toFinset.mp hRfac)
-        exact hK4_of_window (lt_trans Nat.zero_lt_one hk1) hwin hTn
-          (Ecell (some R)) P R hRirr
-          (fun γ hγ => hdec (some R) hijIdx γ hγ)
-          (fun γ hγ => (hRdata γ hγ).2)
-  calc (Finset.univ.filter (fun γ : F₀ =>
-        mcaEvent ((ReedSolomon.code domain k : Set (Fin n → F₀)))
-          δ (u 0) (u 1) γ)).card
-      ≤ (Index'.biUnion Ecell).card := Finset.card_le_card hcover'
-    _ ≤ ∑ ij ∈ Index', (Ecell ij).card := Finset.card_biUnion_le
-    _ ≤ ∑ _ij ∈ Index', T := Finset.sum_le_sum hcell
-    _ = Index'.card * T := by rw [Finset.sum_const, smul_eq_mul]
-    _ ≤ (gs_degree_bound k n m / (k - 1) + 1) * T := Nat.mul_le_mul_right T hI'card
+  -- count the live cells (`card_le_of_live_factor_cells`), each bounded by `T`
+  refine card_le_of_live_factor_cells h0 hydeg Index Ecell _ hcover
+    (fun R hR => ⟨(hfactor R hR).1, fun γ hγ =>
+      ⟨((hfactor R hR).2 γ hγ).1, P γ, ((hfactor R hR).2 γ hγ).2⟩⟩) ?_
+  intro ij hijIdx
+  match ij with
+  | none => exact le_trans hnonecard hT
+  | some R =>
+      obtain ⟨hRfac, hRdata⟩ := hfactor R hijIdx
+      have hRirr : Irreducible R :=
+        UniqueFactorizationMonoid.irreducible_of_factor R
+          (Multiset.mem_toFinset.mp hRfac)
+      exact hK4_of_window (lt_trans Nat.zero_lt_one hk1) hwin hTn
+        (Ecell (some R)) P R hRirr
+        (fun γ hγ => hdec (some R) hijIdx γ hγ)
+        (fun γ hγ => (hRdata γ hγ).2)
 
 open Classical in
 /-- **The tight window numeric edge.**  `JohnsonNumericBound` through the complete GS
@@ -600,80 +544,24 @@ theorem badCount_le_numeric_tight_of_himpr
       exact_mod_cast h
     have h1 := GuruswamiSudan.natDegree_le_of_natWeightedDegree (by omega) hnat
     rwa [Polynomial.natDegree_map_eq_of_injective hφinj] at h1
-  set Index' : Finset (Option ((F₀[X])[X][Y])) :=
-    Index.filter (fun ij => ij = none ∨ (Ecell ij).Nonempty) with hI'
-  have hcover' : (Finset.univ.filter (fun γ : F₀ =>
-      mcaEvent ((ReedSolomon.code domain k : Set (Fin n → F₀)))
-        δ (u 0) (u 1) γ)) ⊆ Index'.biUnion Ecell := by
-    intro γ hγ
-    obtain ⟨ij, hij, hγcell⟩ := Finset.mem_biUnion.mp (hcover hγ)
-    exact Finset.mem_biUnion.mpr
-      ⟨ij, Finset.mem_filter.mpr ⟨hij, Or.inr ⟨γ, hγcell⟩⟩, hγcell⟩
-  have hI'card : Index'.card ≤ gs_degree_bound k n m / (k - 1) + 1 := by
-    have hsub : Index' ⊆ insert none
-        (((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-          (fun q => 1 ≤ q.natDegree)).image some) := by
-      intro ij hij
-      obtain ⟨hijIdx, hcase⟩ := Finset.mem_filter.mp hij
-      match ij with
-      | none => exact Finset.mem_insert_self _ _
-      | some R =>
-        rcases hcase with h | hne
-        · exact absurd h (by simp)
-        · refine Finset.mem_insert_of_mem (Finset.mem_image.mpr ⟨R, ?_, rfl⟩)
-          obtain ⟨hRfac, hRdata⟩ := hfactor R hijIdx
-          refine Finset.mem_filter.mpr ⟨hRfac, ?_⟩
-          obtain ⟨γ, hγ⟩ := hne
-          obtain ⟨hQγ, hdvdγ⟩ := hRdata γ hγ
-          have hRdvd : R ∣ Q₀ :=
-            UniqueFactorizationMonoid.dvd_of_mem_factors (Multiset.mem_toFinset.mp hRfac)
-          have hRγ0 : R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 := by
-            intro habs
-            obtain ⟨S, hS⟩ := hRdvd
-            apply hQγ
-            rw [hS, Polynomial.map_mul, habs, zero_mul]
-          have h1 := Polynomial.natDegree_le_of_dvd hdvdγ hRγ0
-          rw [Polynomial.natDegree_X_sub_C] at h1
-          exact le_trans h1 (Polynomial.natDegree_map_le)
-    calc Index'.card
-        ≤ (insert none
-            (((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-              (fun q => 1 ≤ q.natDegree)).image some)).card :=
-          Finset.card_le_card hsub
-      _ ≤ (((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-              (fun q => 1 ≤ q.natDegree)).image some).card + 1 :=
-          Finset.card_insert_le _ _
-      _ ≤ ((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-              (fun q => 1 ≤ q.natDegree)).card + 1 :=
-          Nat.add_le_add_right Finset.card_image_le 1
-      _ ≤ Q₀.natDegree + 1 := Nat.add_le_add_right (card_posDegree_factors_le h0) 1
-      _ ≤ gs_degree_bound k n m / (k - 1) + 1 := Nat.add_le_add_right hydeg 1
-  have hcell : ∀ ij ∈ Index', (Ecell ij).card ≤ max T (Fintype.card (Fin n)) := by
-    intro ij hij
-    have hijIdx := (Finset.mem_filter.mp hij).1
-    match ij with
-    | none => exact le_trans (le_trans hnonecard hT0) (le_max_left _ _)
-    | some R =>
-        obtain ⟨hRfac, hRdata⟩ := hfactor R hijIdx
-        have hRirr : Irreducible R :=
-          UniqueFactorizationMonoid.irreducible_of_factor R
-            (Multiset.mem_toFinset.mp hRfac)
-        rcases himpr R (Ecell (some R)) P hRirr
-          (fun γ hγ => hdec (some R) hijIdx γ hγ)
-          (fun γ hγ => (hRdata γ hγ).2) with hsmall | ⟨d₀, d₁, himp⟩
-        · exact le_trans hsmall (le_max_left _ _)
-        · exact le_trans (factorImprove_card_le_n d₀ d₁ (Ecell (some R)) himp)
-            (le_max_right _ _)
-  calc (Finset.univ.filter (fun γ : F₀ =>
-        mcaEvent ((ReedSolomon.code domain k : Set (Fin n → F₀)))
-          δ (u 0) (u 1) γ)).card
-      ≤ (Index'.biUnion Ecell).card := Finset.card_le_card hcover'
-    _ ≤ ∑ ij ∈ Index', (Ecell ij).card := Finset.card_biUnion_le
-    _ ≤ ∑ _ij ∈ Index', max T (Fintype.card (Fin n)) := Finset.sum_le_sum hcell
-    _ = Index'.card * max T (Fintype.card (Fin n)) := by
-        rw [Finset.sum_const, smul_eq_mul]
-    _ ≤ (gs_degree_bound k n m / (k - 1) + 1) * max T (Fintype.card (Fin n)) :=
-        Nat.mul_le_mul_right _ hI'card
+  -- count the live cells (`card_le_of_live_factor_cells`), each bounded by `max T n`
+  refine card_le_of_live_factor_cells h0 hydeg Index Ecell _ hcover
+    (fun R hR => ⟨(hfactor R hR).1, fun γ hγ =>
+      ⟨((hfactor R hR).2 γ hγ).1, P γ, ((hfactor R hR).2 γ hγ).2⟩⟩) ?_
+  intro ij hijIdx
+  match ij with
+  | none => exact le_trans (le_trans hnonecard hT0) (le_max_left _ _)
+  | some R =>
+      obtain ⟨hRfac, hRdata⟩ := hfactor R hijIdx
+      have hRirr : Irreducible R :=
+        UniqueFactorizationMonoid.irreducible_of_factor R
+          (Multiset.mem_toFinset.mp hRfac)
+      rcases himpr R (Ecell (some R)) P hRirr
+        (fun γ hγ => hdec (some R) hijIdx γ hγ)
+        (fun γ hγ => (hRdata γ hγ).2) with hsmall | ⟨d₀, d₁, himp⟩
+      · exact le_trans hsmall (le_max_left _ _)
+      · exact le_trans (factorImprove_card_le_n d₀ d₁ (Ecell (some R)) himp)
+          (le_max_right _ _)
 
 open Classical in
 /-- **Per-pair factor data from the GS cells.**  The in-tree GS cell production already

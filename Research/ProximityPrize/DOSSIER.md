@@ -224,6 +224,10 @@ for every common-tail length `m`, by iterating the exact characteristic-`p` recu
 depth-three cyclic floor. It also proves strict improvement over the adjacent-swap floor for
 nontrivial support. This is an unconditional reusable **lower** bound. It is not an upper energy
 bound, characteristic transfer, capacity result, or CORE closure.
+It is also not the strongest known lower bound: the cyclic floors are weaker than the
+permutation-matching floor `rEnergy_ge_perm` (`|G|.descFactorial r * r! ≤ rEnergy G r`,
+`_LowerBoundPermMatchingFloor.lean`) except for `|G| ≤ 5` at depth three and `|G| ≤ 4` at
+depth four.
 
 ### 4.4 G330 order-eight spectrum boundary
 
@@ -247,7 +251,7 @@ mathematical claims to unconditional ones.
 
 ## 5. Residual census versus production completion
 
-`scripts/residual_census.py` is a syntactic inventory of `ArkLib/**/*.lean` only: it counts strict
+`scripts/residual_census.py` is a syntactic inventory of `ArkLib/**/*.lean` and `ProximityPrize/**/*.lean` only: it counts strict
 `def ...Residual ... : Prop` declarations and triages their providers from source text, without
 elaborating Lean. Residuals under `Research/` (including migrated campaign residuals) and named
 `Prop`/structure hypotheses are outside its scope, and its `discharged` label marks a candidate

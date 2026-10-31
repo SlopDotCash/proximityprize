@@ -45,8 +45,9 @@ comparison is **not** re-derived: the proven pair comparison
   curve numeric residual at `η := μ(δ)`;
 * **`mca_johnson_bound_CONJECTURE_ellary_of_claim1_cells`** — the same from per-`δ`,
   per-stack ℓ-ary Claim-1 cell data alone (capture above `(L−1)·n` — the ℓ-ary
-  BCIKS20 Steps 5–7 output, the single remaining deep input, converging with the pair
-  case's);
+  BCIKS20 Steps 5–7 output shape; as in the pair case, this cell data is equivalent to the
+  bare per-stack count bound `#bad ≤ Lc·(L−1)·n`, since a bad set that small chunks into
+  `≤ Lc` cells of size `≤ (L−1)·n`, making the capture clause vacuous — audit CW-B22-06);
 * sanity at `L = 2`: `curveJohnsonNumericBound_two_iff` identifies the ℓ-ary deep input
   with the pair `JohnsonNumericBound`, and
   `mca_johnson_bound_CONJECTURE_pair_via_ellary` re-derives the
@@ -311,8 +312,9 @@ open Classical in
 /-- **The literal ℓ-ary Johnson conjecture from per-stack Claim-1 cells alone.** For
 every admissible `δ` and every `L`-row word stack, suppose the `mcaEventCurve` bad
 scalars decompose into `≤ Lc` cells satisfying the capture-above-`(L−1)·n` dichotomy (the
-ℓ-ary BCIKS20 Steps 5–7 output — the same remaining deep input as the pair case, in its
-curve-tuple form), with `Lc` within the per-`δ` GS list-size shape. Then
+ℓ-ary BCIKS20 Steps 5–7 output shape, in its curve-tuple form; this hypothesis is equivalent
+to the bare per-stack count bound `#bad ≤ Lc·(L−1)·n`, audit CW-B22-06), with `Lc` within the
+per-`δ` GS list-size shape. Then
 `mca_johnson_bound_CONJECTURE` holds **verbatim** at `parℓ = Fin L`, for every `L ≥ 2`:
 nothing between the capture data and the literal conjecture statement remains unproven. -/
 theorem mca_johnson_bound_CONJECTURE_ellary_of_claim1_cells

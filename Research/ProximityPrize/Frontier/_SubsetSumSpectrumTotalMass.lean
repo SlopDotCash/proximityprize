@@ -165,7 +165,8 @@ private theorem spectrumCount_as_filter (m r : ℕ) (hr : r ≤ 2 * m) :
     spectrumCount m r
       = ∑ k ∈ (range (2 * m + 1)).filter (fun k => admDepth m k r),
           m.choose k * 2 ^ k := by
-  unfold spectrumCount
+  rw [spectrumCount_eq_raw hr]
+  unfold spectrumCountRaw
   apply Finset.sum_congr
   · apply Finset.ext
     intro k

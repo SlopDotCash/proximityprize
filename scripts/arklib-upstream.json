@@ -1219,6 +1219,33 @@
       ],
       "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
       "reason": "Docstring (audit L25): state that binding covers the cached-coin randomOracle experiment on unifSpec, not fresh private coins (unifFwdImpl). Also carries the earlier dedup that turns the two prime-order group helpers into compatibility aliases of the shared Groups lemmas in KZG/Algebra.lean (statements unchanged)."
+    },
+    {
+      "path": "ArkLib/OracleReduction/Execution.lean",
+      "upstream_blob": "1160163811477a9ba4b934be93fa80a993a260ed",
+      "sha256": "79f2f6d9c42c03e774d9451d8d372bbb15e7c442dda450898e150fa6ecf65cf7",
+      "declarations": [
+        "OracleReduction.runWithLog_eq_runWithLog_reduction",
+        "OracleVerifier.run",
+        "OracleReduction.run",
+        "OracleReduction.runWithLog"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Mathematical correction: upstream runWithLog_eq_runWithLog_reduction restated run_eq_run_reduction (about run, not runWithLog); it now relates OracleReduction.runWithLog to toReduction.runWithLog up to tuple reassociation. Docstrings of OracleVerifier.run / OracleReduction.run / runWithLog corrected (no query log from run; verifier log records shared-oracle oSpec queries only). Directly checked under Lean 4.35; no callers of the corrected theorem."
+    },
+    {
+      "path": "ArkLib/OracleReduction/OracleInterface.lean",
+      "upstream_blob": "ec81e0a83fe4ae007d4aaf79579bf8dc66f71d25",
+      "sha256": "b5f3d4d18c9774d9525ebd94ddb22888d5b596c336ee7f3e07eceda2b6b00838",
+      "declarations": [
+        "distanceLE_polynomial_degreeLE",
+        "distanceLE_polynomial_degreeLT_le",
+        "OracleInterface.distanceLE",
+        "OracleInterface.instTensorForall",
+        "OracleInterface.instProdForall"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Mathematical correction: upstream distanceLE_polynomial_degreeLE was stated for the degree-less-than interface; that statement is kept as distanceLE_polynomial_degreeLT_le and distanceLE_polynomial_degreeLE now proves the bound for instPolynomialDegreeLE (at most d agreements via root counting). Docstrings of distanceLE (agreement-count bound) and instTensorForall/instProdForall (sum-indexed queries; tensor instance identical to product) corrected. Directly checked under Lean 4.35, standard axioms; no in-repo callers of the renamed lemma."
     }
   ]
 }

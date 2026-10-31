@@ -327,18 +327,9 @@ theorem pairInteracts_exists_crossSecant_core
     · exact hq.1
     · exact hq.2
   have hne : gamma ≠ beta := hcross e f
-  let line := secantParameter family gamma beta
-  have hgammaOn : gamma ∈ pointsOn family line :=
-    first_point_mem_pointsOn_secant family hgamma
-  have hbetaOn : beta ∈ pointsOn family line :=
-    second_point_mem_pointsOn_secant family hbeta hne
-  have hgammaLine := (mem_pointsOn_iff family line gamma).mp hgammaOn |>.2
-  have hbetaLine := (mem_pointsOn_iff family line beta).mp hbetaOn |>.2
   refine ⟨e, f, ?_⟩
-  show K ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card
-  rw [← fullAgreement_inter_eq_jointCore
-    dom (u 0) (u 1) line.1 line.2 hne]
-  simpa only [familyWitness, gamma, beta, line, hgammaLine, hbetaLine] using hoverlap
+  rw [← fullAgreement_inter_eq_jointCore_secantParameter family hgamma hbeta hne]
+  exact hoverlap
 
 /-! ## Two-sided endpoint domination -/
 

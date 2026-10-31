@@ -295,9 +295,6 @@ lemma card_agree_eq (domain : ι ↪ F) {k : ℕ} {T T' : Finset ι}
   · rw [Nat.card_eq_fintype_card]
     exact Fintype.card_congr (Equiv.subtypeEquivRight (fun u => by rw [LinearMap.mem_ker]))
 
-@[deprecated card_agree_eq (since := "2026-10-31")]
-alias card_agree_le := card_agree_eq
-
 /-- **Hyperplane avoidance.** If `q > C(C(n, k+1), 2)`, there is a first word `u₀` for which the
 functionals `c_T` (over `(k+1)`-subsets `T`) take pairwise distinct values: the union of the
 `C(C(n,k+1),2)` "agreement hyperplanes" `{u | c_T u = c_{T'} u}` (each of size `q^{n-1}`) does

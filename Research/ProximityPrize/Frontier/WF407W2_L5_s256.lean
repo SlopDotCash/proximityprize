@@ -160,6 +160,9 @@ theorem haloFree_s256 (hPB : ParsevalCensusResultantBound 8)
 
 section Refutation5
 
+-- The kernel replay of the `norm_num` primality certificate exceeds the default recursion
+-- depth on Lean 4.35, so it is raised for this one declaration.
+set_option maxRecDepth 10000 in
 local instance fact_prime_412876481 : Fact (Nat.Prime 412876481) := ⟨by norm_num⟩
 
 /-- `7881733` has multiplicative order `32` in `𝔽_412876481`. -/

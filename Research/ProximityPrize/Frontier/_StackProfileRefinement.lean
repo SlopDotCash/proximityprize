@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
+import Research.ProximityPrize.Frontier._StackProfileDominationInterface
 
 /-!
 # Refining stack profiles
@@ -39,13 +40,9 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 
-/-- The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`. -/
-noncomputable def StackBadCount (K : Type) [Field K] [Fintype K] [DecidableEq K]
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module K A]
-    (C : Set (ι -> A)) (δ : ℝ≥0) (u : WordStack A (Fin 2) ι) : ℕ := by
-  classical
-  exact (Finset.univ.filter (fun γ : K => mcaEvent (F := K) C δ (u 0) (u 1) γ)).card
+/- The bad-scalar count `StackBadCount` and the attained-profile predicate `UsedProfile` are the
+shared definitions from `_StackProfileDominationInterface` (formerly verbatim local copies). -/
+export ArkLib.ProximityGap.Frontier.StackProfileDominationInterface (StackBadCount UsedProfile)
 
 /-- A one-stack incidence budget for the actual MCA bad-scalar count. -/
 def StackBounded (K : Type) [Field K] [Fintype K] [DecidableEq K]
@@ -54,11 +51,6 @@ def StackBounded (K : Type) [Field K] [Fintype K] [DecidableEq K]
     (C : Set (ι -> A)) (δ : ℝ≥0)
     (u : WordStack A (Fin 2) ι) (B : ℕ) : Prop :=
   StackBadCount K C δ u ≤ B
-
-/-- The profile value is actually attained by at least one stack. -/
-def UsedProfile {P : Type}
-    (profile : WordStack A (Fin 2) ι -> P) (p : P) : Prop :=
-  ∃ u : WordStack A (Fin 2) ι, profile u = p
 
 /-- `fine` refines `coarse` through `project` if `project` sends the fine label of every stack to
 its coarse label. -/

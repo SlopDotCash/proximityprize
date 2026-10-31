@@ -41,7 +41,9 @@ every version of that hope at bounded window depth:
 1. **Every truncation-level invariant at depth `K` is a functional of the corner `J_{K+1}`**
    (definitionally), hence — by `MomentsDetermineWindow` — a functional of the moments
    `m_0..m_{2K+1}` alone (`truncation_invariant_is_lowMoment_functional`).  Conversely
-   (THIS file, unconditional) the corner is recoverable from those moments' data content:
+   (THIS file, unconditional, `window_determines_moments`) the low moments are functionals of
+   the corner (corner ⟹ moments); the converse moments ⟹ corner is the named input
+   `MomentsDetermineWindow` (discharged in `_ZW14MomentsDetermineWindowDischarge.lean`):
    no window invariant sees anything the low moments do not.
 2. Low-moment functionals are already dead three independent ways: they are
    **ensemble-deterministic** (read `(n, p)` only, not the instance —
@@ -200,9 +202,9 @@ theorem window_determines_moments {A A' : Matrix (Fin N) (Fin N) ℝ}
       pow_firstcol_eq_zero_of_lt htri' h0 s k (by omega)
     rw [e1, e1', hz, hz', zero_mul, zero_mul]
 
-/-- **NAMED INPUT (classical OP theory, converse direction; discharged downstream).**  The moments to order
-`2K+1` determine the depth-`K` window: two Jacobi-normalized (symmetric tridiagonal,
-positive-subdiagonal) matrices with equal `(·^r)₀₀` for all `r ≤ 2K+1` agree on the
+/-- **NAMED INPUT (classical OP theory, converse direction; discharged downstream).**  The
+moments to order `2K+1` determine the depth-`K` window: two Jacobi-normalized (symmetric
+tridiagonal, positive-subdiagonal) matrices with equal `(·^r)₀₀` for all `r ≤ 2K+1` agree on the
 `(K+1) × (K+1)` corner.  This is the Lanczos / Gram–Schmidt uniqueness — equivalently the
 Hankel-double-ratio formulas `b_k² = D_{k−1}D_{k+1}/D_k²` (in-tree in hypothesis form as
 `_AvJB_TodaStringHankelExact`) — not proven in this file (consumed visibly below as `hconv`);

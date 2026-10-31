@@ -187,7 +187,10 @@ phase is linear, no degree reduction occurs. Diagonal `n`, off-diagonal `(n−1)
 terms nonnegative — the positive-definite second moment, phase-blind. We record the off-diagonal
 growth abstractly (the autocorrelation of a size-`n` set has total `n²` = `n × diagonal n`). -/
 
-/-- **Weyl-differencing off-diagonal GROWS as `(n−1)·diagonal`.** For the van der Corput square
+/-- **Ring identity `n·d − d = (n−1)·d` (notation only; audit CW-B18-19).** The Lean statement is
+this one-line identity in `ℝ` (closed by `ring`); it does not formalize the autocorrelation
+profile, the van der Corput square, or any growth statement below, which are prose motivation.
+Intended reading, with `d` the diagonal: for the van der Corput square
 `|η_b|² = ∑_h A_n(h)e_p(bh)`, the autocorrelation profile `A_n` of a size-`n` set has diagonal
 `A_n(0) = n` and total mass `∑_h A_n(h) = n²` (the `n²` ordered pairs). Hence the off-diagonal total
 is `n² − n = (n−1)·n = (n−1)·diagonal`: the differenced object is dominated by a `(n−1)`-fold

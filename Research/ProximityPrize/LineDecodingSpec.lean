@@ -24,6 +24,16 @@ conclusions, proved via `mcaPrizeLatticeResolved_of_adjacent_frontier`) and the
 `τ j := latticeIndexOf (δ j)` their lower bracket `latticeIndexOf (δ j) ≤ τ j` is `le_rfl` and
 their strict upper bracket `τ j < latticeIndexOf (whi j).δ` is just the hypothesis `hadj`, so
 they carried no content beyond the `_with_spec` theorems plus `hadj`.
+
+## Honest scope — vacuous at every prize rate
+
+The prize-rate hypotheses consumed here (`MCAForallDoubleCover`, per-bad-scalar double cover,
+`mcaBadCount = 0`, `∀ γ, ¬ mcaEvent`, `epsMCA = 0` for `RS[domain, ⌊prizeRates j · n⌋]`) are all
+**false**: see `not_MCAForallDoubleCover_prizeRateRS`,
+`not_forall_badScalarDoubleCover_prizeRateRS`, `not_forall_mcaBadCount_eq_zero_prizeRateRS`, `not_forall_not_mcaEvent_prizeRateRS` and
+`epsMCA_prizeRateRS_ne_zero` in `Research.ProximityPrize.LineDecoding3` (audit 2026-10-28,
+CW-B21-01).  Every prize-rate declaration in this module therefore has an unsatisfiable hypothesis
+and a vacuous conclusion; it is kept only as API shape, not as a prize-facing result.
 -/
 
 namespace ProximityGap

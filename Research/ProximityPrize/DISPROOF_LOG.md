@@ -1131,7 +1131,8 @@ or refutation: the floor `M≤C√(n log(p/n))` stays OPEN on the BGK/Paley wall
 (`_wfHL1_circle_method_supform.lean`, axiom-clean `⊆{propext,Classical.choice,Quot.sound}`, no sorry):
 `major_arc_value` (η_0^{2r}=n^{2r}), `circle_major_minor_pow` (the arc split), `sup_le_total_pow`
 (sup ≤ total = energy), `circle_sup_bound_ge_card` / `circle_method_sup_dead` (the induced sup estimate
-is ≥ n, dead), `weyl_offdiag_growing` (off-diag = (n−1)·diag).
+is ≥ n, dead), `weyl_offdiag_growing` (only the ring identity `n·d − d = (n−1)·d`; the off-diag = (n−1)·diag
+reading is prose, audit CW-B18-19).
 
 ---
 
@@ -14702,7 +14703,11 @@ pinning which IS the open under-det/BGK wall. No free Johnson-side lower bound e
   distinct-γ count ≤ B with B/q ≤ ε*). UNCONDITIONAL bridge.
 - `epsMCA_gt_of_stack_over_budget` — a single over-budget stack ⟹ `ε* < epsMCA` (the machine
   shape of the probe refutation).
-- `OverDetIncidenceSuppliesBudgetAtBinding` — documented refuted `Prop` (probe-refuted at n∈{8,12}).
+- ~~`OverDetIncidenceSuppliesBudgetAtBinding` — documented refuted `Prop` (probe-refuted at n∈{8,12}).~~
+  **[REMOVED, audit 2026-10-28 CW-B17-01]** the Prop was stated over `ZMod 2`, where every per-stack
+  count is `≤ 2 ≤ n`, so it was vacuously TRUE, not refuted; it has been deleted from
+  `_wf4OFG_overdet_floor_bridge.lean`. The refutation of `OverDetFloorGood@δbind` rests on the
+  probe table only.
 `result_type = refuted(OverDetFloorGood@δbind) + reduced(D3-lower-side ⟶ PerStackBadScalarBudget,
 which is the under-det/BGK wall, NOT the over-det count)`.
 
@@ -16163,6 +16168,11 @@ VERIFIED but never a theorem. Distinct from the pow2dip entry above: pow2dip ref
 INPUT on the tower (m*(32)=5!=7); THIS entry refutes the OBJECT SWITCH (w_LL=4 != w=2 != m*=5) that
 lets any one angle's growth law masquerade as another's. The Lam-Leung object switch w_LL=4 vs w=2
 is NOT covered by pow2dip.
+
+> **[AUDIT NOTE 2026-10-28, CW-DL03b-03]** O192 below records m*(32) as DISPUTED ∈ {4,5}. The
+> pairwise distinctness above uses m*(32)=5; if m*(32)=4 then m*(32) = w_LL(32) = 4 and the n=32
+> witness for m* ≠ w_LL disappears (only w=2 vs w_LL=4 remains distinct). The Lean lookup tables in
+> `_PlateauObjectDisentangle.lean` hard-code m*(32)=5.
 
 PROBE scripts/probes/probe_plateau_object_disentangle.py (exact integers; the recorded char-0 GPU
 cascade rho4.out + orbit data from _Close27_PlateauWidthDecision's authoritative table; p == 1 mod
@@ -18172,7 +18182,7 @@ the union scale. The route lands ON W4.
 
 **Kill 2 — the sup-defining rare event is invisible to the average entropy (F0).** Measured
 (`probe_wfT15_tower_conditional_entropy.rs` + rare-event probe, β=4, n=256, p=4294968833, m≈1.68·10⁷):
-the near-max set (`Z ≥ 0.95 M`) is `7` of `2·10⁶` coset reps = `2.3·10⁻⁶` fraction; deleting it
+the near-max set (`Z ≥ 0.95 M`) is `7` of `2·10⁶` coset reps = `3.5·10⁻⁶` fraction (corrected from `2.3·10⁻⁶`, audit 2026-10-28); deleting it
 changes the Shannon entropy of the value distribution by `3.8·10⁻⁵` bits while removing the ENTIRE
 prize signal `M`. Proven abstractly (`rareEvent_entropy_insensitive`): the entropy perturbation from
 deleting a probability-`ε` event → 0 as `ε → 0` (`entropyPerturbBound ε L → 0`), so no
@@ -18325,7 +18335,8 @@ THE KILL (the architect's own "honest crux #2", decided by one arithmetic fact):
     dilation-only handle (eta_norm_const_on_coset) — F11 OBJECT-CHANGE: the "Frobenius covering count"
     IS the dilation quotient count; no improvement (covering_no_better_than_I031). Orbit count × orbit
     size = (p−1)/n × n = p−1 = total frequencies (conservation), so Parseval-over-orbits is the plain
-    second moment, F1/F0 (covering_size_count_conservation).
+    second moment, F1/F0 (former `covering_size_count_conservation`, an `h ⊢ h` restatement —
+    REMOVED, audit 2026-10-28 CW-B18-19).
 
 REDUCTION TO F0 (terminal): the ONLY spectrum symmetry that survives beyond dilation is the
 cyclotomic power-map group (Z/n)^* of order φ(n) — a function of n ALONE, p-INDEPENDENT (the SAME for
@@ -18474,7 +18485,18 @@ Verdict: REDUCES-TO-WALL F0 (separation step also REFUTED at scale). No prize ga
 
 ---
 
-## T24 (architect G5-4): affine-Koopman Sarnak–Xue DENSITY (non-tempered count) — REDUCES-TO-WALL (F1; terminal F0); sharp closing form REFUTED at beta=4
+## T24 (architect G5-4): affine-Koopman Sarnak–Xue DENSITY (non-tempered count) — REDUCES-TO-WALL (F1; terminal F0); ~~sharp closing form REFUTED at beta=4~~ (WITHDRAWN, audit 2026-10-28 CW-DL08a-02)
+
+> **[WITHDRAWN 2026-10-28, CW-DL08a-02 / CW-B19-09]** The (M2/M3) "REFUTED" verdict below tested the
+> measured tail against `m·e^{−t²}`, but `η_b/√n` has unit variance, so the correctly normalized
+> Gaussian tail is `m·e^{−t²/2}` (threshold `c_eff ≥ 1/2`, matching `E_r ≤ (2r−1)‼ n^r` and the edge
+> `√(2 log m)`). The measured `c_eff ≈ 0.65–0.73 > 1/2`, and the measured edges `2.58, 3.32, 4.06`
+> sit BELOW `√(2 log m) ≈ 3.53, 4.08, 4.56`: the small-`n` data are CONSISTENT with the prize shape
+> (and prove nothing about `n = 2^30`). There is no "BGK excess". The REDUCES-TO-WALL (F1) reading
+> stands. The Lean items were renamed: `sharp_density_iff_gaussian_energy` →
+> `exp_neg_mul_sq_le_exp_neg_mul_sq_iff`, `refuted_sharp_gaussian_density` →
+> `mul_exp_neg_mul_sq_lt_of_lt`, `edge_exceeds_gaussian` → `log_lt_mul_sq_of_edge` (scalar lemmas;
+> none mentions `E_r`), and the `rfl` identity `affine_count_eq_abelian_count` was removed.
 
 **Claim.** `U` = Koopman op of the affine `ax+b` action on `L^2(F_p)`, decomposed over the principal
 series of `G_aff = F_p ⋊ μ_n`; periods are matrix coefficients `<U_b ξ,ξ> = η_b`; `b` is
@@ -18518,8 +18540,8 @@ transfer), `refuted_sharp_gaussian_density` (`c<1 ⟹ m e^{−t²} < m e^{−c t
 `affine_count_eq_abelian_count` (M0, cosmetic identity).
 
 **Verdict: REDUCES-TO-WALL — primary F1 (Parseval/Markov level-set duality), terminal F0
-(conservation law); the prize-closing SHARP Gaussian-density form additionally REFUTED at beta=4
-(measured c_eff≈0.66<1). No prize gain. Confidence high.** Honest survivor: NONE — the only well-posed
+(conservation law); ~~the prize-closing SHARP Gaussian-density form additionally REFUTED at beta=4
+(measured c_eff≈0.66<1)~~ [WITHDRAWN, see note above: miscalibrated `e^{−t²}` test]. No prize gain. Confidence high.** Honest survivor: NONE — the only well-posed
 non-refuted residual is the WEAK `p^{1−2s+o(1)}` form whose `o(1)` is the char-p `E_r` transfer = the wall.
 
 ---
@@ -18535,9 +18557,9 @@ finite dilation ⟹ pure-point ⟹ a.c. claim VACUOUS ⟹ REFUTED.
 **Two decisive kills (probe `scripts/probes/rust/probe_wfT25_rajchman_density.rs`, beta=4 cells n=8,16):**
 - **(R0) REFUTED at the root.** `ℓ²(F_p)` is FINITE-dimensional (`dim p`); a finite-dim unitary is
   diagonalizable with eigenvalues on the circle, so `μ_V` is a FINITE SUM OF DIRAC ATOMS — NO a.c.
-  part exists. Concretely `V` is the dilation permutation of `F_p` (one `(p−1)`-cycle on `F_p^*` + fixed
-  `0`); eigenvalues = all `(p−1)`-th roots of unity (once each) + `1`; `μ_V` = uniform ATOMIC measure on
-  `μ_{p−1}∪{1}`. So `ρ_max := sup(a.c. density)` is VACUOUS/UNDEFINED at every prize prime. (Confirmed:
+  part exists. Concretely `V` is the dilation permutation of `F_p`: `m = (p−1)/n` disjoint `n`-cycles (the cosets
+  of `μ_n`) plus the fixed point `0` [corrected, audit 2026-10-28 CW-DL08a-03; was "one `(p−1)`-cycle"];
+  eigenvalues = the `n`-th roots of unity, each with multiplicity `m`, + `1`; `μ_V` is ATOMIC on `μ_n`. So `ρ_max := sup(a.c. density)` is VACUOUS/UNDEFINED at every prize prime. (Confirmed:
   WebSearch — finite-dim unitary ⟹ pure-point, no a.c. part.)
 - **(R1) On `H_η`: `μ̂_V(k)≡1`** (probe `all == 1? YES` at every n) because `μ_n` is `g`-closed
   (`x↦g^k x` bijects `μ_n→μ_n`). A measure with all Fourier coeffs `=1` is `δ_1` — a SINGLE ATOM and the
@@ -18556,6 +18578,8 @@ cells. Same funnel as T24 (affine Koopman density), T11/T12 (level set / rate fu
 `koopmanFourierCoeff_eq_one` (`μ̂_V≡1` on `H_η` ⟹ `δ_1`), `finite_koopman_spectral_mass_is_atomic`
 (total mass exhausted by atoms), `acDensity_does_not_bound_M` (a.c. mass forced `=0` ⟹ `ρ_max` empty),
 `density_surrogate_is_energy` (Wiener `|μ̂|²` mass `= p·E_r − n^{2r}`), `T25_refuted_and_reduces` (synthesis).
+[Audit 2026-10-28 CW-DL08a-03: these are arithmetic placeholders that restate definitions
+(`koopmanFourierCoeff := n/n`, `wienerDensityMass := p·E_r − n^{2r}`), not spectral computations.]
 
 **Verdict: REFUTED (finite-dim ⇒ pure-point ⇒ a.c. density does not exist) + the only well-posed surrogate
 REDUCES-TO-WALL F1. No prize gain. Confidence high.** Survivor: NONE.
@@ -19160,11 +19184,12 @@ hypothesis is unmet, whose non-arch prong is `p`-blind, and whose product-formul
 the sign reversal. The BGK/Paley `sqrt(log)` wall is untouched and OPEN.
 
 **Brick (axiom-clean `[propext, Classical.choice, Quot.sound]`, no sorryAx, `pg-iterate` OK):**
-`Frontier/_wfHL3_berkovich_chambertloir_equidist.lean` — `T_secondmoment_exact` (exact-int 2nd
-moment), `smallpoint_hypothesis_unmet` + `avg2_exceeds_one` (premise FALSE: avg sq modulus `>1`),
+`Frontier/_wfHL3_berkovich_chambertloir_equidist.lean` — ~~`T_secondmoment_exact` (exact-int 2nd
+moment)~~ (REMOVED, CW-B18-19: it was `X = X` by `rfl`), `smallpoint_hypothesis_unmet` + `avg2_exceeds_one` (premise FALSE: avg sq modulus `>1`),
 `house_unbounded_under_weakstar_rate` + `W2_outlier_cost` (F0: any weak-*/`W_2` rate admits
 arbitrarily large House), `coupled_energy_is_lower_bound` (F11 survives the coupling),
-`berkovich_maxmod_is_nonarch` (F3), `Req_assertion_is_circular` (F0). Probe:
+~~`berkovich_maxmod_is_nonarch` (F3)~~ (REMOVED, CW-B18-19: it returned its hypothesis `∧ True`),
+`Req_assertion_is_circular` (F0). Probe:
 `scripts/probes/rust/probe_wfH_L3_berkovich_equidist.rs` (exact-int; House/bulk growing in n).
 
 ---
@@ -28364,7 +28389,8 @@ from cheap boundary data, no deep-row arithmetic needed.
 
 G300 kills that hope. The centered covariance `A_r = p·∑ₓ W_G(x)R_r(x) - (∑W_G)(∑R_r)`,
 `R_r = dp_r ⋆ dp_{r-1}`, is NOT sign-constant on the window. On the exact sponsor cell
-`(p,n) = (113,8)`, `G = ⟨15⟩ ≤ F₁₁₃^*` (order 8):
+`(p,n) = (113,8)`, `G = ⟨18⟩ = {1,15,18,44,69,95,98,112} ≤ F₁₁₃^*` (order 8; `⟨15⟩` has order 4 — corrected, audit
+2026-10-28):
 `A = [A_1..A_7] = [392, 128, -7240, -13128, -13128, -7240, 128]`, signs `[+,+,-,-,-,-,+]`. So
 `A_2 = 128 > 0` (shallow), `A_4 = -13128 < 0` (deeper), `A_7 = 128 > 0` (deepest in-window rank
 `n-1`): the sign flips `+ → - → +` strictly inside `[2, n-1] = [2, 7]`. The covariance is not

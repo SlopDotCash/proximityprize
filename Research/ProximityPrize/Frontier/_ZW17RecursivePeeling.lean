@@ -8,6 +8,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Jo26CurveInterpolationRegime
 import ArkLib.Data.CodingTheory.ProximityGap.GG25CurveDecodFromListSize
 import ArkLib.Data.CodingTheory.ProximityGap.GG25MCAFromCurveDecodability
 import ArkLib.Data.CodingTheory.ProximityGap.CS25RSMinDistance
+import Research.ProximityPrize.Frontier._W17CurveDecodStitching
 
 /-!
 # B2 brick ZW17 — the recursive multi-curve peeling of [JLR26] Lemma 5.10 (#334 B2, #466)
@@ -41,9 +42,9 @@ peeling core, proven here:
 
 1. `comb_mem` / `comb_eq_comb_of_agree` / `card_agree_le_of_ne` — curve values are
    codewords; **curve value rigidity** (two degree-`≤ ℓ` curves whose value functions agree
-   at `ℓ+1` seeds agree at every seed, from the W17 stitching identity, copied verbatim
-   below with provenance), and the collision cap (value-distinct curves collide at `≤ ℓ`
-   seeds).
+   at `ℓ+1` seeds agree at every seed, from the W17 stitching identity
+   `W17Stitching.lagrangeCurve_comb_eq_of_agree`), and the collision cap (value-distinct
+   curves collide at `≤ ℓ` seeds).
 2. `spread_mul_le` — **the [JLR26] Lemma 5.4 spread, exact-match form**: a codeword-curve
    exactly matching `f` on a set `B` of `> ℓ` close seeds is close to the tested stack at
    EVERY seed: `(|B| − ℓ)·Δ(comb u γ, comb cs γ) ≤ |B|·⌊δn⌋`, i.e. relative radius
@@ -111,111 +112,13 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 
-/-! ### Substrate copied from `Frontier/_W17CurveDecodStitching.lean`
+/-! ### Substrate from `Frontier/_W17CurveDecodStitching.lean`
 
-The four lemmas below are copied VERBATIM from `_W17CurveDecodStitching.lean` (namespace
-`ProximityGap.W17Stitching`; `lagrangeCurve_comb_eq_of_agree` and `close_seed_dist_le` are public
-there), with provenance noted per lemma, and kept `private` to avoid a public-name conflict.
-**Known duplication (audit CW-B17-16):** the intended fix is to
-`import Research.ProximityPrize.Frontier._W17CurveDecodStitching` and delete these copies.  That
-is currently blocked because W17's import chain
-(`SubspaceDesignListSize` → `ProximityPrize/Extensions/Data/CodingTheory/SubspaceDesign.lean`)
-fails to elaborate on this tree (call to `ArkLib.FRS.GK16.gk16Claim16StructuralData_at` with a
-mismatched injectivity hypothesis); importing W17 here would make this file unbuildable too. -/
+The stitching identity `lagrangeCurve_comb_eq_of_agree` and the close-seed distance bound
+`close_seed_dist_le` are imported from `ProximityGap.W17Stitching` (formerly private verbatim
+copies here; deduplicated per audit CW-B17-16). -/
 
--- PROVENANCE: verbatim copy of `ProximityGap.W17Stitching.sum_basis_eval_mul_pow`
--- (`Frontier/_W17CurveDecodStitching.lean`).
-/-- **Monomial reproduction.** Lagrange interpolation at the nodes `B` reproduces the monomial
-`γ^k` for every `k < |B|`: `∑_{α ∈ B} (basisₐ).eval γ · α^k = γ^k`.  (Uniqueness of degree-`<|B|`
-interpolation, `Lagrange.eq_interpolate` at `f = X^k`.) -/
-private lemma sum_basis_eval_mul_pow {B : Finset F} {k : ℕ} (hk : k < B.card) (γ : F) :
-    ∑ α ∈ B, (Lagrange.basis B id α).eval γ * α ^ k = γ ^ k := by
-  classical
-  have hinj : Set.InjOn (id : F → F) B := fun _ _ _ _ h => h
-  have hdeg : (Polynomial.X ^ k : Polynomial F).degree < B.card := by
-    rw [Polynomial.degree_X_pow]
-    exact_mod_cast hk
-  have h := Lagrange.eq_interpolate (v := id) hinj hdeg
-  have hev := congrArg (Polynomial.eval γ) h
-  rw [Lagrange.interpolate_apply] at hev
-  simp only [Polynomial.eval_finset_sum, Polynomial.eval_mul, Polynomial.eval_C,
-    Polynomial.eval_pow, Polynomial.eval_X, id_eq] at hev
-  -- hev : γ ^ k = ∑ α ∈ B, α ^ k * (basis B id α).eval γ
-  calc ∑ α ∈ B, (Lagrange.basis B id α).eval γ * α ^ k
-      = ∑ α ∈ B, α ^ k * (Lagrange.basis B id α).eval γ :=
-        Finset.sum_congr rfl fun α _ => mul_comm _ _
-    _ = γ ^ k := hev.symm
-
--- PROVENANCE: verbatim copy of `ProximityGap.W17Stitching.basis_eval_eq_fin_sum`
--- (`Frontier/_W17CurveDecodStitching.lean`).
-/-- The Lagrange basis evaluation as its `Fin (ℓ+1)`-truncated coefficient sum (the basis
-polynomial has degree `|B| − 1 = ℓ`). -/
-private lemma basis_eval_eq_fin_sum {B : Finset F} {ℓ : ℕ} (hB : B.card = ℓ + 1)
-    {α : F} (hα : α ∈ B) (γ : F) :
-    ∑ j : Fin (ℓ + 1), (Lagrange.basis B id α).coeff (j : ℕ) * γ ^ (j : ℕ)
-      = (Lagrange.basis B id α).eval γ := by
-  have hinj : Set.InjOn (id : F → F) B := fun _ _ _ _ h => h
-  have hdeg : (Lagrange.basis B id α).natDegree < ℓ + 1 := by
-    rw [Lagrange.natDegree_basis hinj hα, hB]
-    omega
-  rw [Polynomial.eval_eq_sum_range' hdeg γ]
-  exact Fin.sum_univ_eq_sum_range (fun k => (Lagrange.basis B id α).coeff k * γ ^ k) (ℓ + 1)
-
--- PROVENANCE: verbatim copy of `ProximityGap.W17Stitching.lagrangeCurve_comb_eq_of_agree`
--- (`Frontier/_W17CurveDecodStitching.lean`), demoted to `private`.
-/-- **The stitching identity ([JLR26] 5.7 mechanism, coordinate form).**  If the `ℓ+1`
-interpolated values agree with the tested curve at coordinate `i` (`f α i = comb u α i` for all
-`α ∈ B`), then the Lagrange codeword-curve through them coincides with the tested curve at `i`
-**for every seed `γ`**: two degree-`≤ ℓ` `A`-valued polynomials agreeing at the `ℓ+1` points of
-`B` are equal. -/
-private theorem lagrangeCurve_comb_eq_of_agree {B : Finset F} {ℓ : ℕ} (hB : B.card = ℓ + 1)
-    {u : Fin (ℓ + 1) → ι → A} {f : F → ι → A} {i : ι}
-    (hagree : ∀ α ∈ B, f α i = comb u α i) (γ : F) :
-    comb (fun j : Fin (ℓ + 1) => lagrangeCurve B f (j : ℕ)) γ i = comb u γ i := by
-  classical
-  have hstep1 : comb (fun j : Fin (ℓ + 1) => lagrangeCurve B f (j : ℕ)) γ i
-      = ∑ α ∈ B, (Lagrange.basis B id α).eval γ • f α i := by
-    rw [comb]
-    calc ∑ j : Fin (ℓ + 1), γ ^ (j : ℕ) • lagrangeCurve B f (j : ℕ) i
-        = ∑ j : Fin (ℓ + 1), ∑ α ∈ B,
-            ((Lagrange.basis B id α).coeff (j : ℕ) * γ ^ (j : ℕ)) • f α i := by
-          refine Finset.sum_congr rfl fun j _ => ?_
-          unfold lagrangeCurve
-          rw [Finset.smul_sum]
-          refine Finset.sum_congr rfl fun α _ => ?_
-          rw [smul_smul, mul_comm]
-      _ = ∑ α ∈ B, ∑ j : Fin (ℓ + 1),
-            ((Lagrange.basis B id α).coeff (j : ℕ) * γ ^ (j : ℕ)) • f α i := Finset.sum_comm
-      _ = ∑ α ∈ B, (Lagrange.basis B id α).eval γ • f α i := by
-          refine Finset.sum_congr rfl fun α hα => ?_
-          rw [← Finset.sum_smul, basis_eval_eq_fin_sum hB hα]
-  have hstep2 : ∑ α ∈ B, (Lagrange.basis B id α).eval γ • f α i
-      = ∑ k : Fin (ℓ + 1), γ ^ (k : ℕ) • u k i := by
-    calc ∑ α ∈ B, (Lagrange.basis B id α).eval γ • f α i
-        = ∑ α ∈ B, ∑ k : Fin (ℓ + 1),
-            ((Lagrange.basis B id α).eval γ * α ^ (k : ℕ)) • u k i := by
-          refine Finset.sum_congr rfl fun α hα => ?_
-          rw [hagree α hα, comb, Finset.smul_sum]
-          exact Finset.sum_congr rfl fun k _ => by rw [smul_smul]
-      _ = ∑ k : Fin (ℓ + 1), ∑ α ∈ B,
-            ((Lagrange.basis B id α).eval γ * α ^ (k : ℕ)) • u k i := Finset.sum_comm
-      _ = ∑ k : Fin (ℓ + 1), γ ^ (k : ℕ) • u k i := by
-          refine Finset.sum_congr rfl fun k _ => ?_
-          rw [← Finset.sum_smul, sum_basis_eval_mul_pow (by rw [hB]; exact k.isLt) γ]
-  rw [hstep1, hstep2, comb]
-
--- PROVENANCE: verbatim copy of `ProximityGap.W17Stitching.close_seed_dist_le`
--- (`Frontier/_W17CurveDecodStitching.lean`), demoted to `private`.
-/-- Every close seed has integer distance `≤ ⌊δn⌋` between its codeword and the tested curve. -/
-private theorem close_seed_dist_le {δ : ℝ≥0} {ℓ : ℕ}
-    {u : Fin (ℓ + 1) → ι → A} {f : F → ι → A} {α : F}
-    (hα : α ∈ curveCloseSet δ u f) :
-    hammingDist (f α) (comb u α) ≤ ⌊δ * (Fintype.card ι : ℝ≥0)⌋₊ := by
-  simp only [curveCloseSet, Finset.mem_filter, Finset.mem_univ, true_and] at hα
-  have h2 := hammingDist_le_floor_of_relHam_le hα
-  calc hammingDist (f α) (comb u α)
-      = hammingDist (comb u α) (f α) := hammingDist_comm _ _
-    _ ≤ ⌊δ * (Fintype.card ι : ℝ≥0)⌋₊ := h2
+open _root_.ProximityGap.W17Stitching (lagrangeCurve_comb_eq_of_agree close_seed_dist_le)
 
 /-! ### Curve values, rigidity, and the collision cap -/
 
