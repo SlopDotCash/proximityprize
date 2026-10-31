@@ -13,6 +13,10 @@ provided, scans only those Lean files/directories. Fails if live
   - a metaprogram that adds kernel declarations (`run_cmd` / `run_elab` /
     `run_meta`, `addDecl`, `addAndCompile`, `axiomDecl`), which can declare an
     axiom without the `axiom` keyword, or
+  - the kernel's native-reduction primitives `Lean.ofReduceBool`,
+    `Lean.ofReduceNat`, `Lean.reduceBool` and `Lean.reduceNat`, which a proof
+    term can call directly to get a `native_decide` result without the tactic
+    (the kernel trusts the compiled code; `Lean.trustCompiler`), or
   - a custom `axiom` declaration whose name is not an allowlisted, documented
     residual (see scripts/residual_axioms.txt), with any modifiers (including
     `public`/`meta` in `module` files) and with the name on a later line or
@@ -66,7 +70,10 @@ import re
 import sys
 from pathlib import Path
 
-TOKEN_RE = re.compile(r"\b(native_decide|bv_decide|unsafeCast|implemented_by)\b")
+TOKEN_RE = re.compile(
+    r"\b(native_decide|bv_decide|unsafeCast|implemented_by"
+    r"|ofReduceBool|ofReduceNat|reduceBool|reduceNat)\b"
+)
 # Meta code can add a kernel declaration without the `axiom` keyword, e.g.
 # `run_cmd liftCoreM <| addDecl (.axiomDecl { name := `w, type := mkConst ``False, .. })`.
 # ArkLib/Research proofs never need to add declarations from metaprograms.
