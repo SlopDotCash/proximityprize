@@ -693,7 +693,6 @@ theorem slot_injective {j j' : Fin 3} {i i' : Fin (2 ^ 30)}
         * g ^ (i' : ℕ) := by
     have e1 := congrArg (fun z => ((nd j' (lb i')).2 : ZMod P) * z) hden
     have e2 := congrArg (fun z => ((nd j (lb i)).2 : ZMod P) * z) hden'
-    simp only at e1 e2
     have e3 : ((nd j' (lb i')).2 : ZMod P)
           * -(((nd j (lb i)).1 : ZMod P) * g ^ (i : ℕ))
         = ((nd j (lb i)).2 : ZMod P)
@@ -818,8 +817,9 @@ theorem overBudget_degenerate_stack_exists : OverBudgetDegenerateStackExists := 
       = ((rsCode (smoothDom g (2 ^ 30) orderOf_g) (2 ^ 29) :
           Submodule (ZMod P) (Fin (2 ^ 30) → ZMod P)) :
           Set (Fin (2 ^ 30) → ZMod P)) := by
-    simpa only [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using
-      (evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1))
+    have h := evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1)
+    rw [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] at h
+    exact h
   simp only [hbridge, if_neg (by decide : (1 : Fin 2) ≠ 0)]
   have := badScalar_count_over_budget
   rw [prodCode] at this
@@ -867,8 +867,9 @@ theorem firstPrime_predecessor_mcaDeltaStar_le :
   have hbridge : evalCode g (2 ^ 30) (2 ^ 29 - 1)
       = ((prodCode : Submodule (ZMod P) (Fin (2 ^ 30) → ZMod P)) :
           Set (Fin (2 ^ 30) → ZMod P)) := by
-    simpa only [prodCode, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using
-      (evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1))
+    have h := evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1)
+    rw [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] at h
+    exact h
   rw [hbridge]
   let u : WordStack (ZMod P) (Fin 2) (Fin (2 ^ 30)) :=
     fun r => if r = 0 then u0 else u1

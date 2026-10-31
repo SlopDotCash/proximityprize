@@ -309,8 +309,18 @@ theorem exists_bridge_functionals (C : Submodule F (ι → F)) {r t : ℕ}
       apply LinearMap.ext
       intro v
       have := congrArg (fun f => f ((C.mkQ v, 0) : SyndromePair C)) ha
-      simpa [LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.add_apply,
-        LinearMap.comp_apply, hlbar_mk] using this
+      have key : ∀ j, (((lbar i j).comp (LinearMap.fst F _ _) +
+          γ i • (lbar i j).comp (LinearMap.snd F _ _) : Module.Dual F (SyndromePair C))
+            ((C.mkQ v, 0) : SyndromePair C)) = ℓ i j v := by
+        intro j
+        rw [LinearMap.add_apply, LinearMap.smul_apply, LinearMap.comp_apply,
+          LinearMap.comp_apply, LinearMap.fst_apply, LinearMap.snd_apply, map_zero,
+          smul_zero, add_zero]
+        exact hlbar_mk i j v
+      simp only [LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.zero_apply] at this
+      rw [LinearMap.sum_apply, LinearMap.zero_apply]
+      simp only [LinearMap.smul_apply]
+      simpa only [key] using this
     exact Fintype.linearIndependent_iff.mp (hℓli i) a hzero
 
 /-! ## The bridge theorem: G86 applies verbatim -/
@@ -478,16 +488,29 @@ theorem wall_syzygy_of_sixtyFour_bad_scalars
   rcases hdich with hcap | hsyz
   · -- the generic cap is numerically impossible at the production shape
     exfalso
-    have hkle : Module.finrank (ZMod P) wallCode ≤ 536870912 :=
+    have hkle0 : Module.finrank (ZMod P) wallCode ≤ 536870912 :=
       le_trans finrank_wallCode_le (by norm_num)
-    have hcard : Fintype.card (Fin (2 ^ 30)) = 1073741824 := by
-      rw [Fintype.card_fin]; norm_num
-    generalize hK : Module.finrank (ZMod P) ↥wallCode = K at hcap hkle
-    generalize hN : Fintype.card (Fin (2 ^ 30)) = N at hcap hcard
-    have h64 : 64 * (553648129 - K) ≤ r * (553648129 - K) :=
-      Nat.mul_le_mul_right _ hr
-    have hcap' := le_trans (Nat.add_le_add_right h64 1) hcap
-    omega
+    -- `hkle0` is elaborated with the `ZMod`-module instance on the additive subgroup,
+    -- while `hcap` uses `Submodule.module`; bridge them via `Subsingleton` rather than
+    -- by (expensive) definitional unfolding of the `ZMod P` scalar action.
+    have hfin : ∀ m₁ m₂ : Module (ZMod P) wallCode,
+        @Module.finrank (ZMod P) wallCode _ _ m₁ = @Module.finrank (ZMod P) wallCode _ _ m₂ :=
+      fun m₁ m₂ => by rw [Subsingleton.elim m₁ m₂]
+    have hkle : @Module.finrank (ZMod P) wallCode _ _ (Submodule.module wallCode) ≤
+        536870912 :=
+      (hfin _ _).trans_le hkle0
+    have harith : ∀ K N : ℕ, K ≤ 536870912 → N = 1073741824 →
+        r * (553648129 - K) + 1 ≤ 2 * (N - K) → False := by
+      intro K N hK hN hc
+      subst hN
+      have h64 : 64 * (553648129 - K) ≤ r * (553648129 - K) :=
+        Nat.mul_le_mul_right _ hr
+      have hc' := le_trans (Nat.add_le_add_right h64 1) hc
+      clear hc h64 hcap hkle hkle0 hfin hstack hwit hbad' hbad hann hblock
+      omega
+    refine harith _ _ hkle ?_ hcap
+    rw [Fintype.card_fin]
+    norm_num
   · exact hsyz
 
 /-- Equivalent impossibility form: the witness functionals of `64` bad scalars at the
