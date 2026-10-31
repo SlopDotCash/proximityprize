@@ -1054,7 +1054,7 @@ lemma distToCodeIncl_eq_zero_of_mem {α : Type*} [LinearOrder α] [Zero α] {ι 
     (h : (possibleDistsToCodeIncl w C δf).Finite) (hw : w ∈ C) (hww : δf w w = 0)
     (hnonneg : ∀ c ∈ C, 0 ≤ δf w c) :
     distToCodeIncl w C δf h = ((0 : α) : WithTop α) := by
-  letI := @Fintype.ofFinite _ h
+  let := @Fintype.ofFinite _ h
   unfold distToCodeIncl
   refine le_antisymm (Finset.min_le ?_) (Finset.le_min fun d hd => ?_)
   · exact Set.mem_toFinset.mpr ⟨w, hw, hww⟩

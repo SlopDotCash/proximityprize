@@ -1195,7 +1195,7 @@
     {
       "path": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
       "upstream_blob": "6d42f4c498926acf532448106486cd570b6c0948",
-      "sha256": "f137306fd98e13bd5dc16993381196b1aeeb3c488880b6bf4321730abb4fed25",
+      "sha256": "1eae6b8b9b242ea2737e8719096dae65a8e9b8a9d762545cc8e2eff0d969b2cf",
       "declarations": [
         "Code.possibleDistsToCode",
         "Code.distToCode",
