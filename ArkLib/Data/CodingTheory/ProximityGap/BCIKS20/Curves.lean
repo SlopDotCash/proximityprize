@@ -2975,8 +2975,8 @@ axiom large_agreement_set_on_curve_implies_correlated_agreement {l : ℕ}
 
 /-- Johnson regime; Theorem 6.2 of [BCIKS20]. As in the unique-decoding companion
 `large_agreement_set_on_curve_implies_correlated_agreement`, `V` must be an actual Reed-Solomon
-code (of rate `ρ`) rather than an arbitrary set of words. If the set of points on the curve
-defined by `u` close to `V` has more than
+code, of rate `ρ > 0` as the cited theorem assumes (see `CurvesDegenerate`), rather than an
+arbitrary set of words. If the set of points on the curve defined by `u` close to `V` has more than
 `((1 + 1 / (2 * m)) ^ 7 * m ^ 7) / (3 * (Real.rpow ρ (3 / 2 : ℚ))) * n ^ 2 * (l - 1)`
 points, then there exist vectors `v` from `V` that are `(1 - δ) * n` close to `u`. -/
 axiom large_agreement_set_on_curve_implies_correlated_agreement' {l : ℕ}
@@ -2985,7 +2985,7 @@ axiom large_agreement_set_on_curve_implies_correlated_agreement' {l : ℕ}
     {deg : ℕ}
     {domain : Fin n ↪ F}
     {δ : ℚ≥0}
-    (hm : 3 ≤ m)
+    (hm : 3 ≤ m) (hrate : 0 < ρ (ReedSolomon.code domain deg))
     (hδ : δ ≤ δ₀ (ρ (ReedSolomon.code domain deg)) m)
     {u : Fin l → Fin n → F}
     (hS : ((1 + 1 / (2 * m)) ^ 7 * m ^ 7) /
