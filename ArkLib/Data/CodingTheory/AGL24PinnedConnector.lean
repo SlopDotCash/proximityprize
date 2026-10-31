@@ -162,10 +162,15 @@ uniformly over every vertex count `t`, but a nonzero minor's degree grows with `
 field `F` and `2 ≤ k ≤ |ι|`, so `gmmDsDualZeroPatternTheoremPinned_via_lovett` and
 `symbolicFullRank_via_lovett_pinned` are vacuous there.
 
-So after this file the pinned target is reduced to `RIMKernelTrivialFromLovett` (the ring-change
-transfer) plus the dimensionally faithful dual move `DualRowsFromNonsingularEvalPinned` and the
-field-size regime. The field-size regime must be restated per instance (for the `t` and minor
-being specialized) before this localization holds at `k ≥ 2`. -/
+**Correction (ring-change core).** The third bullet above shows only that the *conclusion* is
+reachable on a WPC witness. The residual as stated is false:
+`ArkLib.GMMDS.not_rimKernelTrivialFromLovett` refutes `RIMKernelTrivialFromLovett ι F k` for
+every `ι`, `F` and `k ≥ 1` (empty edges, `δ ≡ 0`, `t = 1`). So the pinned route is vacuous for
+every `k ≥ 1`, independently of the field-size regime.
+
+So this file does not reduce the pinned target to a satisfiable ledger: the ring-change premise
+needs a nondegeneracy hypothesis (as in `RIMKernelTrivialFromLovettWPC`) and the field-size
+regime must be stated per instance before the localization holds. -/
 
 omit [Nonempty ι] [Fintype F] in
 /-- **The pinned dual residual's conclusion is dimensionally consistent.** Under the pin

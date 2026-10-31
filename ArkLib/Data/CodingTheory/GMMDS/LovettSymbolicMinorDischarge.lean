@@ -10,6 +10,12 @@ import ArkLib.Data.CodingTheory.AGL24NonzeroMinor
 /-!
 # `SymbolicMinorFromLovett` via the direct ring-change transfer (#389)
 
+> **Correction.** `RIMKernelTrivialFromLovett` and `SymbolicMinorFromLovett` are false for
+> every `ι`, `F` and `k ≥ 1` (`not_rimKernelTrivialFromLovett`, `not_symbolicMinorFromLovett`
+> in `GMMDS/LovettPremisesRefutation.lean`): `GZPCondition e 0 k` holds vacuously for the empty
+> edge family, whose matrix has no rows. The "satisfiable" claims below concern only the
+> conclusion on a WPC witness, not the residual as stated.
+
 `LovettDualSpanConnector.lean` leaves `SymbolicMinorFromLovett` as residual 1 (the *encoding*
 move): from Lovett's Theorem 1.7 (`LovettThm17`, **proven** unconditionally, see
 `lovettThm17_unconditional`) and a generic zero pattern `(e, δ)` with `GZPCondition e δ k`, the
