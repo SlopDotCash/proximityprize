@@ -12,7 +12,7 @@ class ProbeLocalDependencies(unittest.TestCase):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', SyntaxWarning)
             for source in sorted(root.glob('*.py')):
-                tree = ast.parse(source.read_text(), filename=str(source))
+                tree = ast.parse(source.read_text(encoding="utf-8"), filename=str(source))
                 for node in ast.walk(tree):
                     if isinstance(node, ast.ImportFrom) and node.module:
                         modules = [node.module]

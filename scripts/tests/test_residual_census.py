@@ -21,7 +21,7 @@ class ResidualCensusTests(unittest.TestCase):
     def statuses(self, body):
         folder = self.root / "ArkLib" / "Data"
         folder.mkdir(parents=True, exist_ok=True)
-        (folder / "A.lean").write_text(HEADER + body + FOOTER)
+        (folder / "A.lean").write_text(HEADER + body + FOOTER, encoding="utf-8")
         decls, residuals, _ = self.census.collect(self.root)
         self.census.find_providers(decls, residuals)
         return {r["name"]: r["status"] for r in residuals}
