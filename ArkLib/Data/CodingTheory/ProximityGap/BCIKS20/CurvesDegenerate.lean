@@ -1,7 +1,8 @@
 /-
-Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ArkLib Contributors
+Copyright (c) 2026 William4711. All rights reserved.
+Released under the MIT and Apache 2.0 licenses as described in
+LICENSE-MIT and LICENSE.
+Authors: William4711
 -/
 
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
