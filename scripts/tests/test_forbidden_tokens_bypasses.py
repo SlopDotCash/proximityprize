@@ -3,6 +3,7 @@
 Each source below is accepted by Lean 4 and introduces an unproven axiom or a
 vacuous `: True` placebo, so the precheck must reject it.
 """
+import os
 import subprocess
 import sys
 import tempfile
@@ -16,8 +17,10 @@ def run_precheck(source: str) -> subprocess.CompletedProcess:
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "Probe.lean"
         path.write_text(source, encoding="utf-8")
+        env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
         return subprocess.run([sys.executable, str(SCRIPT), str(path)],
-                              capture_output=True, text=True)
+                              capture_output=True, text=True, encoding="utf-8",
+                              env=env)
 
 
 DECOY = 'namespace Decoy\ndef True : Prop := False\nend Decoy\n'
