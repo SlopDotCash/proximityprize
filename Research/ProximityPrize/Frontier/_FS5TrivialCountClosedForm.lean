@@ -193,7 +193,7 @@ theorem coeff_pp_eq_count (hm : 0 < m) (hprim : IsPrimitiveRoot ζ (2 * m))
     rw [Fin.sum_univ_six]
     simp only [cvec_0, cvec_1, cvec_2, cvec_3, cvec_4, cvec_5]
     push_cast
-    ring
+    rfl
   rw [hcount (ζ ^ r), hcount (-ζ ^ r)]
   -- neg-side items: −ζ^a = ζ^r ↔ ζ^a = −ζ^r, and −ζ^a = −ζ^r ↔ ζ^a = ζ^r
   have hnegflip : ∀ a : ℕ, ((-ζ ^ a = ζ ^ r) ↔ (ζ ^ a = -ζ ^ r)) := by

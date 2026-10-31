@@ -301,7 +301,7 @@ theorem alphaOne_preimage_forced (hH : 0 < myH.natDegree) (a : 𝒪 myH)
   rw [hstep, hβ1, neg_mul, ← map_mul, ← map_neg]
   congr 1
   rw [show Polynomial.C (Polynomial.X : K[X]) = Polynomial.monomial 0 (Polynomial.X : K[X]) from
-      (Polynomial.monomial_zero_left _).symm, Polynomial.monomial_mul_X,
+      (Polynomial.monomial_zero_left (a := (Polynomial.X : K[X]))).symm, Polynomial.monomial_mul_X,
     ← Polynomial.monomial_neg]
 
 /-- **The X-degree budget is FALSE on the witness at the pinned `D = 2`** — the exact budget

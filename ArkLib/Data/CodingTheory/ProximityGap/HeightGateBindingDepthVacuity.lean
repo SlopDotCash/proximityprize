@@ -92,20 +92,19 @@ theorem gate_vacuous_at_prize_binding_depth :
   unfold prizeExp realizedDepthExp bindingDepthLog
   norm_num
 
-/-- **Integer-scale form: `2^158 < 256^(2^28)`.**  The realized worst-case binding-depth norm
-`256^{n/4} = 256^{2^28}` exceeds the prize prime `p ≤ 2^158` by `≈ 2^{2·10^9}`.  Proof:
-`256^{2^28} = (2^8)^{2^28} = 2^{8·2^28} = 2^{2^31}`, and `158 < 2^31`. -/
+/-- Compare the exponents before specializing to the enormous binding-depth norm. -/
+private theorem pow_158_lt_pow_256 (n : ℕ) (hn : 158 < 8 * n) :
+    (2 : ℕ) ^ 158 < 256 ^ n := by
+  calc
+    (2 : ℕ) ^ 158 < 2 ^ (8 * n) := Nat.pow_lt_pow_right (by decide) hn
+    _ = (2 ^ 8) ^ n := pow_mul 2 8 n
+    _ = 256 ^ n := congrArg (fun b : ℕ => b ^ n) (by norm_num)
+
+/-- **Integer-scale form: `2^158 < 256^(2^28)`.** The realized binding-depth norm
+exceeds the prize prime bound. Only the exponents need to be compared. -/
 theorem prize_prime_lt_realized_binding_norm :
-    (2 : ℕ) ^ 158 < 256 ^ (2 ^ 28) := by
-  have h256 : (256 : ℕ) = 2 ^ 8 := by norm_num
-  rw [h256, ← pow_mul]
-  refine Nat.pow_lt_pow_right (by norm_num) ?_
-  -- 158 < 8 * 2^28.  Since 2^28 ≥ 2^5 = 32, we have 8 * 2^28 ≥ 8 * 32 = 256 > 158.
-  have h32 : (32 : ℕ) ≤ 2 ^ 28 := by
-    calc (32 : ℕ) = 2 ^ 5 := by norm_num
-      _ ≤ 2 ^ 28 := Nat.pow_le_pow_right (by norm_num) (by norm_num)
-  have hmul : (8 : ℕ) * 32 ≤ 8 * 2 ^ 28 := Nat.mul_le_mul_left 8 h32
-  omega
+    (2 : ℕ) ^ 158 < 256 ^ (2 ^ 28) :=
+  pow_158_lt_pow_256 (2 ^ 28) (by norm_num)
 
 /-! ## Monotone vacuity: the prize is far on the vacuous side -/
 

@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import Mathlib.NumberTheory.LegendreSymbol.Complex
 import Research.ProximityPrize.Frontier._PrizeShapePrimeP30
 import Research.ProximityPrize.Frontier._PrizeShapePrimeP30Second
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumWorstCase
@@ -61,6 +62,12 @@ def productionP1 : Nat := productionN * (2 ^ 128 + 192) + 1
 /-- Second certified production prime. -/
 def productionP2 : Nat := productionN * (2 ^ 129 + 13) + 1
 
+private theorem productionN_value : productionN = 1073741824 := by decide +kernel
+private theorem productionP1_value :
+    productionP1 = 365375409332725729550921208179070755120141565953 := by decide +kernel
+private theorem productionP2_value :
+    productionP2 = 730750818665451459101842416358141509841924915201 := by decide +kernel
+
 /-! ## Exact production colour separation -/
 
 /-- Colour `j` is the field multiplier `j+1`. -/
@@ -99,9 +106,9 @@ theorem productionP2_colourPowers_injective :
 /-- Both named moduli are prime. -/
 theorem production_prime_certificates : productionP1.Prime ∧ productionP2.Prime := by
   constructor
-  · simpa [productionP1, productionN, ArkLib.ProximityGap.PrizeShapePrimeP30.P] using
+  · simpa [productionP1_value, productionN_value, ArkLib.ProximityGap.PrizeShapePrimeP30.P] using
       ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P
-  · simpa [productionP2, productionN, ArkLib.ProximityGap.PrizeShapePrimeP30Second.P] using
+  · simpa [productionP2_value, productionN_value, ArkLib.ProximityGap.PrizeShapePrimeP30Second.P] using
       ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P
 
 local instance productionP1Prime : Fact productionP1.Prime :=
@@ -780,7 +787,7 @@ theorem production_firstStep_defect_forces_midpoint_gt_two_pow_59
   have ht := (firstStepOneUnitDefectLedger_iff_midpointThreshold
     (productionP1 : Int) productionN A M).mp hdefect
   have hq : (0 : Int) < productionP1 := by
-    norm_num [productionP1, productionN]
+    norm_num [productionP1_value, productionN_value]
   have hmono :
       (productionP1 : Int) *
           ((3 * (productionN : Int) ^ 2 - 3 * productionN) + productionN) -
@@ -797,7 +804,7 @@ theorem production_firstStep_defect_forces_midpoint_gt_two_pow_59
               ((productionN : Int) ^ 2 + 2 * (productionP1 - productionN)) := by
         nlinarith
       _ ≤ 2 * productionP1 * M := ht
-  norm_num [productionP1, productionN] at hmono ⊢
+  norm_num [productionP1_value, productionN_value] at hmono ⊢
   omega
 
 /-- The favorable classical shifted-intersection scale `2^22` would give at most
@@ -810,32 +817,28 @@ theorem production_firstStep_no_oneUnitDefect_of_shiftedCap
     ¬ FirstStepOneUnitDefectLedger productionP1 productionN A M := by
   intro hdefect
   have hlarge := production_firstStep_defect_forces_midpoint_gt_two_pow_59 A M hA hdefect
-  norm_num [productionN] at hM
+  norm_num [productionN_value] at hM
   omega
 
 end FirstTransition
 
 /-! ## The two production Gram matrices -/
 
+private theorem card_torsion_zmod {p d : Nat} [Fact p.Prime]
+    (hd : d ∣ p - 1) (hd0 : 0 < d) : (torsion (ZMod p) d).card = d := by
+  apply card_torsion (F := ZMod p)
+  · simpa only [ZMod.card] using hd
+  · exact hd0
+
 /-- The first production torsion subgroup has exactly `2^30` elements. -/
 theorem productionP1_torsion_card :
     (torsion (ZMod productionP1) productionN).card = productionN := by
-  apply card_torsion
-  · change productionN ∣ Fintype.card (ZMod productionP1) - 1
-    simp only [ZMod.card]
-    refine ⟨2 ^ 128 + 192, ?_⟩
-    simp [productionP1]
-  · norm_num [productionN]
+  apply card_torsion_zmod <;> decide +kernel
 
 /-- The second production torsion subgroup also has exactly `2^30` elements. -/
 theorem productionP2_torsion_card :
     (torsion (ZMod productionP2) productionN).card = productionN := by
-  apply card_torsion
-  · change productionN ∣ Fintype.card (ZMod productionP2) - 1
-    simp only [ZMod.card]
-    refine ⟨2 ^ 129 + 13, ?_⟩
-    simp [productionP2]
-  · norm_num [productionN]
+  apply card_torsion_zmod <;> decide +kernel
 
 /-- The antipodal pairing floor used in the first-transition audit is unconditional for the
 actual first production torsion subgroup. -/
@@ -851,18 +854,18 @@ theorem productionP1_pairAdditiveCollision_floor :
     intro hzero
     have hdvd : productionP1 ∣ 2 :=
       (ZMod.natCast_eq_zero_iff 2 productionP1).mp hzero
-    norm_num [productionP1, productionN] at hdvd
+    norm_num [productionP1_value, productionN_value] at hdvd
   have h0 : (0 : ZMod productionP1) ∉ G := by
     intro hzero
     exact ne_zero_of_mem_torsion (F := ZMod productionP1)
-      (by norm_num [productionN]) hzero rfl
+      (by norm_num [productionN_value]) hzero rfl
   have hneg : ∀ x ∈ G, -x ∈ G := by
     intro x hx
     rw [mem_torsion] at hx ⊢
     rw [neg_pow]
     have heven : Even productionN := by
       refine ⟨2 ^ 29, ?_⟩
-      norm_num [productionN, pow_succ]
+      norm_num [productionN_value, pow_succ]
     rw [Even.neg_one_pow heven, one_mul, hx]
   have hfloor :=
     ArkLib.ProximityGap.AdditiveEnergySidonModNeg.additiveEnergy_ge_of_negClosed
@@ -894,21 +897,21 @@ theorem productionP1_midpointResonance_le_of_nonzeroRepCap
       · intro hzero
         have hdvd : productionP1 ∣ 2 :=
           (ZMod.natCast_eq_zero_iff 2 productionP1).mp hzero
-        norm_num [productionP1, productionN] at hdvd
-      · exact ne_zero_of_mem_torsion (by norm_num [productionN]) hz
+        norm_num [productionP1_value, productionN_value] at hdvd
+      · exact ne_zero_of_mem_torsion (by norm_num [productionN_value]) hz
     _ = productionN * 2 ^ 22 := by rw [productionP1_torsion_card]
 
 theorem productionP1_colour_ne_zero (j : Fin 7) :
     (colourMultiplier j : ZMod productionP1) ≠ 0 := by
   fin_cases j <;>
     simp only [colourMultiplier, ne_eq, ZMod.natCast_eq_zero_iff] <;>
-    norm_num [productionP1, productionN]
+    norm_num [productionP1_value, productionN_value]
 
 theorem productionP2_colour_ne_zero (j : Fin 7) :
     (colourMultiplier j : ZMod productionP2) ≠ 0 := by
   fin_cases j <;>
     simp only [colourMultiplier, ne_eq, ZMod.natCast_eq_zero_iff] <;>
-    norm_num [productionP2, productionN]
+    norm_num [productionP2_value, productionN_value]
 
 /-- Exact seven-colour regular-simplex Gram law at the first production prime. -/
 theorem productionP1_actual_seven_colour_gram
@@ -953,19 +956,18 @@ def productionP1PairCorrelation : Rat := productionN / (productionP1 - productio
 def productionP2PairCorrelation : Rat := productionN / (productionP2 - productionN)
 
 theorem requiredLeakage_exact : requiredLeakage = 65663244 := by
-  norm_num [requiredLeakage, productionN]
+  decide +kernel
 
 /-- The needed correlated-placement saving is between `1/17` and `1/16` of all units. -/
 theorem requiredLeakageFraction_window :
     (1 : Rat) / 17 < requiredLeakageFraction ∧ requiredLeakageFraction < (1 : Rat) / 16 := by
-  norm_num [requiredLeakageFraction, requiredLeakage, productionN]
+  decide +kernel
 
 /-- Pairwise colour correlation is below `2^-128` at P1 and below `2^-129` at P2. -/
 theorem productionPairCorrelation_bit_windows :
     productionP1PairCorrelation < (1 : Rat) / 2 ^ 128 ∧
       productionP2PairCorrelation < (1 : Rat) / 2 ^ 129 := by
-  norm_num [productionP1PairCorrelation, productionP2PairCorrelation,
-    productionP1, productionP2, productionN]
+  decide +kernel
 
 /-- **Pairwise-moment scale boundary.**  The actual coefficient saving is more than `2^123`
 times the P1 pair-correlation ratio and more than `2^124` times the P2 ratio.  Thus the exact
@@ -975,8 +977,7 @@ from `sum_prod_dilated_eta_mul_conj_eq_collisionCount` must do the quantitative 
 theorem production_pairCorrelation_misses_leakage_by_123_124_bits :
     (2 ^ 123 : Rat) * productionP1PairCorrelation < requiredLeakageFraction ∧
       (2 ^ 124 : Rat) * productionP2PairCorrelation < requiredLeakageFraction := by
-  norm_num [productionP1PairCorrelation, productionP2PairCorrelation,
-    requiredLeakageFraction, requiredLeakage, productionP1, productionP2, productionN]
+  decide +kernel
 
 /-! ## Axiom audit -/
 

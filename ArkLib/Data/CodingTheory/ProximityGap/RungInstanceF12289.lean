@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.RungThresholdRouter
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26WitnessSpread
+import Mathlib.Tactic.NormNum.Prime
 
 /-!
 # The level-1 rung instance (#371): F₁₂₂₈₉, n = 16, the 5/8 band

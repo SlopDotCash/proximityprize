@@ -127,6 +127,7 @@ lemma mem_subdomain_0_iff_mem :
              CosetFftDomainClass.subdomain_embed,
              mkSubgroupUnit,
              mem_def,
+             CosetFftDomain.subgroupUnit,
              CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain])
 
 /-- The zeroth subdomain has the same finite set of field points as the ambient domain. -/
@@ -159,6 +160,7 @@ lemma mem_subdomain_n_iff_eq_pow_generator :
     , CosetFftDomainClass.subdomain_embed
     , mkSubgroupUnit
     , mem_def
+    , CosetFftDomain.subgroupUnit
     , CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain])
 
 omit [DecidableEq F] in
@@ -294,8 +296,8 @@ lemma mem_subdomain_of_le_of_mem_subdomain {i j : ℕ} (h : j ≤ i) (hx : x ∈
   simp only [subdomain, inv_pow, mem_def] at hx
   obtain ⟨k, hx⟩ := hx
   simp only [mkSubgroupUnit, CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain,
-    MonoidHom.coe_mk, OneHom.coe_mk] at hx
-  have ⟨l, hl⟩ := CosetFftDomainClass.subdomain_embed_of_le _ _ h (Multiplicative.toAdd k)
+    CosetFftDomain.subgroupUnit, toAdd_ofAdd, MonoidHom.coe_mk, OneHom.coe_mk] at hx
+  have ⟨l, hl⟩ := CosetFftDomainClass.subdomain_embed_of_le _ _ h k
   rw [hl] at hx
   rw [hx, ←mul_assoc, mul_assoc (ω 0 ^ 2 ^ j)]
   aesop (add simp [CosetFftDomain.mem_iff_exists_mul])
@@ -337,10 +339,10 @@ private lemma subdomain_eval_pow' {i j : ℕ} (hij : i + j ≤ n)
     (fun x : Fin (2 ^ n) => mkSubgroupUnit ω x)
     h_subdomain_embedding using 1
   simp only [CosetFftDomain.eval_coset_fft_domain_eq_eval_generator_mul_domain, MonoidHom.coe_mk,
+    CosetFftDomain.subgroupUnit, toAdd_ofAdd,
     OneHom.coe_mk, mul_pow, mkSubgroupUnit_pow, pow_mul, mul_eq_mul_left_iff, ne_eq,
     Nat.pow_eq_zero, OfNat.ofNat_ne_zero, false_and, not_false_eq_true, pow_eq_zero_iff, ne_zero,
     or_false, ← Units.val_inj]
-  convert Iff.rfl
 
 private lemma card_fin_filter_mod_eq {a j : ℕ} (hj : j ≤ a) (c : ℕ) (hc : c < 2 ^ (a - j)) :
   (Finset.univ.filter (fun k : Fin (2 ^ a) => k.val % 2 ^ (a - j) = c)).card = 2 ^ j := by

@@ -323,7 +323,7 @@ theorem RS_jointAgreement_of_prob_gt_strict_johnson_share
             ring
     rw [hkey]
     calc (S : ℝ≥0) ≤ (k : ℝ≥0) * (S : ℝ≥0) :=
-          le_mul_of_one_le_left (zero_le _) hk1
+          le_mul_of_one_le_left (zero_le) hk1
       _ ≤ (k : ℝ≥0) * errorBound δ deg domain * qn + (k : ℝ≥0) * (S : ℝ≥0) :=
           le_add_self
   have hη :

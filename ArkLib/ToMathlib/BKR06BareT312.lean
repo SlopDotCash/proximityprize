@@ -34,6 +34,10 @@ external `Prop` ("genuinely external — LOWER bound") — as an in-tree theorem
 * **trivial regime** — for `α ≤ β²` the target is `≤ 1` and
   `rs_close_codewords_card_ge_trivial_regime` suffices at every index (no threshold).
 
+This proves the native natural-logarithm statement. It does not prove upstream PR #737's
+stronger `Real.logb 2` variant in the hard regime `β² < α`; its good-rounding-window
+obligation must not be treated as discharged by the log-2-widened band argument here.
+
 All declarations compile `sorry`/`axiom`-free and are axiom-clean
 (`[propext, Classical.choice, Quot.sound]`).
 -/

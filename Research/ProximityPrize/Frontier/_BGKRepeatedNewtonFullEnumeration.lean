@@ -100,12 +100,6 @@ theorem SparseTerm.eval_eq_factorList (t : SparseTerm) (p : Fin 7 → ℂ) :
   unfold SparseTerm.eval SparseTerm.factorList
   norm_num [List.finRange_succ, List.map_flatMap, List.prod_append,
     List.prod_replicate, Fin.succ]
-  have h2 : (⟨2, by omega⟩ : Fin 7) = 2 := by rfl
-  have h3 : (⟨3, by omega⟩ : Fin 7) = 3 := by rfl
-  have h4 : (⟨4, by omega⟩ : Fin 7) = 4 := by rfl
-  have h5 : (⟨5, by omega⟩ : Fin 7) = 5 := by rfl
-  have h6 : (⟨6, by omega⟩ : Fin 7) = 6 := by rfl
-  rw [h2, h3, h4, h5, h6]
   ring
 
 /-- Complete normalized expansion of `p₁¹⁴-D₇²`.  Terms are ordered by decreasing block count.
@@ -561,8 +555,8 @@ theorem production_fixed_padding_budget
       apply mul_le_mul
       · exact_mod_cast hcard
       · exact productionFixedPaddingScale_pow_fourteen_le
-      · exact zero_le _
-      · exact zero_le _
+      · exact zero_le
+      · exact zero_le
     _ = productionMomentTarget F := rfl
 
 /-- **Exact rational replacement for the irrational production coefficient audit.**  Grouping the

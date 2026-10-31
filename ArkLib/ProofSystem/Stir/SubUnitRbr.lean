@@ -609,7 +609,7 @@ theorem stirFlip_le_zero
               (((stirMultiVSpec M ι).toProtocolSpec F).getChallenge i) _
             return (transcript, challenge, proveQueryLog))).run' (← init)]
       ≤ (0 : ℝ≥0∞) := by
-  refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
   rintro ⟨tr, ch, lg⟩ _ ⟨hn, hy⟩
   exact hn (stirCheckingPred_concat_zero M φ deg δ stmtIn tr ch hi hy)
 
@@ -655,7 +655,7 @@ theorem stirFlip_le_round2
   -- case analysis at the fixed prefix
   by_cases hno : stirCheckingPred M φ deg δ i.1.castSucc stmtIn tr
   · -- the state is already good: no flip possible
-    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
     rintro x hx ⟨hn, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx
@@ -694,7 +694,7 @@ theorem stirFlip_le_round2
                 mul_lt_mul_of_pos_right hδrel hn
             _ = (D.card : ℝ≥0) := div_mul_cancel₀ _ (ne_of_gt hn)
         have hfloor : ⌊δ * (Fintype.card ι : ℝ≥0)⌋₊ + 1 ≤ D.card := by
-          have := (Nat.floor_lt (zero_le _)).mpr hcard
+          have := (Nat.floor_lt (zero_le)).mpr hcard
           omega
         -- the agreement set of challenge values
         set L : Set F := {r : F | inputAns stmtIn.2 (queryPoint φ r)
@@ -743,7 +743,7 @@ theorem stirFlip_le_round2
             omega
           exact ENNReal.div_le_div_right (by exact_mod_cast hcardL) _
       · -- the first message is not a codeword: the flip event is impossible
-        refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+        refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
         rintro x hx ⟨hn, hy⟩
         simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
           exists_prop] at hx
@@ -786,7 +786,7 @@ theorem stirFlip_le_out
   simp only [simulateQ_pure, StateT.run'_pure_lib]
   rw [← probEvent_bind_eq_tsum]
   by_cases hno : stirCheckingPred M φ deg δ i.1.castSucc stmtIn tr
-  · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
     rintro x hx ⟨hn, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx
@@ -796,7 +796,7 @@ theorem stirFlip_le_out
     have hB : 3 * (j + 1) + 1 < (i.1.castSucc : ℕ) := by simp only [Fin.val_castSucc]; omega
     by_cases hAB : ∀ x : ι, trMsgF tr j hA x = trMsgF tr (j + 1) hB x
     · -- the pair is locked: no flip is possible (the source state would be winnable)
-      refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+      refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
       rintro x hx ⟨hn, hy⟩
       simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
         exists_prop] at hx

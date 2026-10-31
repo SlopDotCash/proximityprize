@@ -105,6 +105,7 @@ theorem badNeighborhoodCount_clusterSpike_clusterRelation [DecidableEq α]
               scoreBad (fun c : α => if c ∈ cluster then S else 0) T b))
         = cluster := by
     ext b
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
     by_cases hb : b ∈ cluster
     · simp [clusterRelation, scoreBad, ha, hb, hTS]
     · simp [clusterRelation, scoreBad, hb, not_le.mpr hT]

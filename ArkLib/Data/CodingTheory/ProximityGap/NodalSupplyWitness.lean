@@ -101,7 +101,6 @@ theorem nodal_word_agreement_le (dom : Fin n ↪ F) {γ : F}
       have hx0 := h0 i
       have hag' : dom i ^ 3 + γ = P.eval (dom i) * dom i := by
         have h := congrArg (· * dom i) hag.symm
-        simp only at h
         field_simp at h
         linear_combination h
       rw [IsRoot, hQ]

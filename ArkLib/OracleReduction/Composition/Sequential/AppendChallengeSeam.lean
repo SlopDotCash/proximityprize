@@ -14,7 +14,7 @@ This file attacks the deep distributional challenge-seam residual that is shared
 error-bearing completeness append (`Reduction.append_completeness_msg_proof`, whose
 `hGameFactor`/`hStage1Bridge`/`hStage2Bridge` are taken as named hypotheses) and the soundness
 append. The genuinely-deep content is the **run-factoring of the simulated appended honest game at a
-message seam, at the `evalDist` (distributional) level**: that
+message seam, at the `evalSPMF` (distributional) level**: that
 `gameOf init impl (R₁.append R₂) stmt wit` equals the two-stage composite game where stage 1 runs
 `R₁` (prover₁ then verifier₁) and stage 2 runs `R₂` (prover₂ then verifier₂), with transcript
 concatenation, in exactly the `mx >>= my` shape `OracleReduction.probComp_seam_completeness` consumes.
@@ -29,7 +29,7 @@ concatenation, in exactly the `mx >>= my` shape `OracleReduction.probComp_seam_c
 
 * `Reduction.append_game_factor_msg` — the **fully proven** distributional run-factoring of the
   simulated appended game (the core of `hGameFactor`). Running the natural-order game under the honest
-  interactive implementation `impl.addLift challengeQueryImpl` has the same `evalDist` as running the
+  interactive implementation `impl.addLift challengeQueryImpl` has the same `evalSPMF` as running the
   **union-bound order** `appendStage₁ ; appendStage₂ = (P₁ → V₁) ; (P₂ → V₂)` — the two-stage
   `R₁.run ; R₂.run` shape. The swap of the `P₂` prover stage past the `V₁` verifier stage is the
   proven distributional commutation `OptionTStateT.seam_swap_evalDist_eq`, whose `hso`/`hB`
@@ -57,7 +57,7 @@ open scoped ENNReal NNReal
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -145,10 +145,10 @@ def appendStage₂
         OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) Stmt₃) >>= fun s₃ =>
       pure ((p.1.1 ++ₜ a.1, a.2.1, a.2.2), s₃)
 
-/-- **The simulated appended honest game factors at the seam (`evalDist`-level, message seam).** The
+/-- **The simulated appended honest game factors at the seam (`evalSPMF`-level, message seam).** The
 distributional core of completeness `hGameFactor`. The simulated honest game of `R₁.append R₂` —
 running the natural order `P₁ → P₂ → V₁ → V₂` under the honest interactive implementation
-`impl.addLift challengeQueryImpl` — has the same `evalDist` as the **union-bound order**
+`impl.addLift challengeQueryImpl` — has the same `evalSPMF` as the **union-bound order**
 `appendStage₁ ; appendStage₂` (= `(P₁→V₁) ; (P₂→V₂)`), in exactly the `mx >>= my` shape
 `OracleReduction.probComp_seam_completeness` consumes.
 
@@ -168,8 +168,8 @@ theorem append_game_factor_msg
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0) :
-    evalDist (gameOf init impl (R₁.append R₂) stmt wit)
-      = evalDist (init >>= fun s =>
+    evalSPMF (gameOf init impl (R₁.append R₂) stmt wit)
+      = evalSPMF (init >>= fun s =>
           StateT.run' (simulateQ (impl.addLift challengeQueryImpl)
             ((appendStage₁ R₁ R₂ stmt wit) >>= (appendStage₂ R₁ R₂)).run) s) := by
   -- The natural-order chain is `seam_swap_evalDist_eq`'s LHS; the union-bound order (`appendStage₁ ;
@@ -185,7 +185,7 @@ theorem append_game_factor_msg
     (fun x s' => simulateQ_run_neverFail _ (addLift_neverFail impl himplNF) _ s')
   -- Rewrite the appended honest run as the natural-order seam chain (`seam_swap`'s LHS).
   have hrun := append_run_natural_msg R₁ R₂ stmt wit hn hDir hDir₂
-  show evalDist (init >>= fun s =>
+  show evalSPMF (init >>= fun s =>
       StateT.run' (simulateQ (impl.addLift challengeQueryImpl)
         ((R₁.append R₂).run stmt wit).run) s) = _
   rw [hrun]
@@ -196,7 +196,7 @@ theorem append_game_factor_msg
 The `hGameFactor` distributional run-factoring residual of `append_completeness_msg_proof` is
 *discharged here* (`append_game_factor_msg`): the concrete two-stage decomposition is
 `so := impl.addLift challengeQueryImpl`, `mx := appendStage₁` (`P₁ → V₁`), `my := appendStage₂`
-(`P₂ → V₂`), and the appended simulated honest game equals (as an `evalDist`) the two-stage
+(`P₂ → V₂`), and the appended simulated honest game equals (as an `evalSPMF`) the two-stage
 `mx >>= my` game by the proven `append_run_natural_msg` + `seam_swap_evalDist_eq`. Hence this theorem
 needs only the per-phase **challenge-oracle seam relabels** `hStage1Bridge` / `hStage2Bridge` (each
 phase's appended-game run under the *combined* challenge oracle agrees distributionally with its own
@@ -223,10 +223,10 @@ theorem append_completeness_msg_via_seamFactor
     -- `evalDist_run'_challengeSeam_left/right`): the stage-`i` game over the *combined* challenge
     -- oracle agrees distributionally with `gameOf Rᵢ` over `pSpecᵢ`'s own challenge oracle.
     (hStage1Bridge : ∀ stmt wit, (stmt, wit) ∈ rel₁ →
-      evalDist (Prod.fst <$> (init >>= fun s =>
+      evalSPMF (Prod.fst <$> (init >>= fun s =>
           StateT.run (simulateQ (impl.addLift challengeQueryImpl)
             (OptionT.run (appendStage₁ R₁ R₂ stmt wit))) s))
-        = evalDist (gameOf init impl R₁ stmt wit))
+        = evalSPMF (gameOf init impl R₁ stmt wit))
     (hStage2Bridge : ∀ stmt wit, (stmt, wit) ∈ rel₁ →
       ∀ a s', (some a, s') ∈ support
             (init >>= fun s =>

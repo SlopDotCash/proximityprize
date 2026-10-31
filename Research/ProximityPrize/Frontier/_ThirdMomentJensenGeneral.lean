@@ -84,7 +84,8 @@ theorem thirdMoment_jensen_lower_real_general
     calc
       (descPochhammer ℝ 3).eval avg / 6
           ≤ ∑ i, w i * ((m i).choose 3 : ℝ) := by
-            simpa only [Nat.factorial, Nat.cast_ofNat] using hjensen
+            norm_num [Nat.factorial] at hjensen
+            exact hjensen
       _ = (∑ i, ((m i).choose 3 : ℝ)) / den := by
         simp only [w, one_div_mul_eq_div, Finset.sum_div]
   change den * a * (a - 1) * (a - 2) ≤

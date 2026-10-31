@@ -347,15 +347,15 @@ theorem badScalarSet_demo_ge_four :
     (a := 3) (c := 4) (by decide) (by decide) w₀_eigen w₁_eigen
     mcaEvent_demo_g1 (by decide)
   have hord : orderOf (Units.mk0 ((3 : F5)⁻¹ * 4)
-      (mul_ne_zero (inv_ne_zero (by decide)) (by decide))) = 4 := by
+      (mul_ne_zero (inv_ne_zero (by decide +kernel)) (by decide +kernel))) = 4 := by
     rw [orderOf_eq_iff (by norm_num)]
-    refine ⟨by decide, ?_⟩
+    refine ⟨by decide +kernel, ?_⟩
     intro m hm hm0
     rcases m with _ | _ | _ | _ | m
     · omega
-    · decide
-    · decide
-    · decide
+    · decide +kernel
+    · decide +kernel
+    · decide +kernel
     · omega
   rwa [hord] at h
 

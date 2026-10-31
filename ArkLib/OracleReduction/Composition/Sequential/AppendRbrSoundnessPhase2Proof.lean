@@ -188,9 +188,19 @@ theorem StateFunction.appendDoomed_toFun_gt
     {roundIdx : Fin (m + n + 1)} (h : ¬ roundIdx.val ≤ m) (stmt₁ : Stmt₁)
     (transcript : (pSpec₁ ++ₚ pSpec₂).Transcript roundIdx) :
     (StateFunction.appendDoomed V₁ V₂ S₁ S₂ verify hVerify hInit).toFun roundIdx stmt₁ transcript
-      = (verify stmt₁ (by simp at h; simpa [min_eq_right_of_lt h] using transcript.fst) ∈ lang₂ ∨
+      = (verify stmt₁ (by
+          simp at h
+          have ht := transcript.fst
+          dsimp only [Transcript, FullTranscript, Fin.val_succ] at ht
+          rw! (castMode := .all) [min_eq_right_of_lt h] at ht
+          exact ht) ∈ lang₂ ∨
           S₂.toFun ⟨roundIdx - m, by omega⟩
-            (verify stmt₁ (by simp at h; simpa [min_eq_right_of_lt h] using transcript.fst))
+            (verify stmt₁ (by
+          simp at h
+          have ht := transcript.fst
+          dsimp only [Transcript, FullTranscript, Fin.val_succ] at ht
+          rw! (castMode := .all) [min_eq_right_of_lt h] at ht
+          exact ht))
             (by simpa [h] using transcript.snd)) :=
   StateFunction.append_toFun_gt V₁ V₂ S₁ (S₂.doom) verify hVerify hInit h stmt₁ transcript
 
@@ -571,7 +581,7 @@ theorem appendRbrSoundnessPhase2_doomed_subsingleton [Subsingleton σ]
   by_cases hmem : verify stmtIn ctx.1 ∈ lang₂
   · -- In-language: the doomed flip event is pointwise false (the escape disjunct holds at
     -- `castSucc`, contradicting the negation), so the probability is `0`.
-    refine le_trans (le_of_eq ?_) (zero_le _)
+    refine le_trans (le_of_eq ?_) (zero_le)
     rw [probEvent_eq_zero_iff]
     rintro x _ ⟨hneg, _⟩
     exact hneg (Or.inl hmem)

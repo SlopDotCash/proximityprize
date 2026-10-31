@@ -412,9 +412,12 @@ theorem knowledgeSoundness.mono_relations
 class Extractor.Straightline.IsMonotone
     (relIn : Set (StmtIn × WitIn))
     (E : Extractor.Straightline oSpec StmtIn WitIn WitOut pSpec)
-    [oSpec.Fintype] [oSpec.Inhabited]
+    [∀ i, Fintype (oSpec.Range i)] [∀ i, Inhabited (oSpec.Range i)]
     where
-  is_monotone : ∀ witOut stmtIn transcript, ∀ proveQueryLog₁ proveQueryLog₂ : oSpec.QueryLog,
+  -- Preserve the legacy uniform-answer interpretation explicitly.
+  is_monotone :
+    letI : IsUniformSpec oSpec := IsUniformSpec.ofFintypeInhabited oSpec
+    ∀ witOut stmtIn transcript, ∀ proveQueryLog₁ proveQueryLog₂ : oSpec.QueryLog,
     ∀ verifyQueryLog₁ verifyQueryLog₂ : oSpec.QueryLog,
     proveQueryLog₁.Sublist proveQueryLog₂ →
     verifyQueryLog₁.Sublist verifyQueryLog₂ →

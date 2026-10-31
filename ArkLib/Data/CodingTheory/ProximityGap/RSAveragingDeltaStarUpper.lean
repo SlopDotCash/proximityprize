@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import Mathlib.Algebra.Polynomial.Degree.Operations
+import Mathlib.Algebra.Polynomial.Eval.Defs
+import Mathlib.Data.Finset.Powerset
+import Mathlib.Data.Fintype.Pi
+import Mathlib.Data.ZMod.Basic
+import Mathlib.Tactic
 
 /-!
 # Averaging crossover as an explicit `delta*` UPPER bound for a parameterized RS-like family
@@ -107,7 +112,6 @@ lemma tupleToPoly_injective {k : ℕ} : Function.Injective (tupleToPoly (F := F)
   intro c d h
   funext j
   have hc := congrArg (fun p => Polynomial.coeff p (j : ℕ)) h
-  simp only at hc
   rw [tupleToPoly_coeff c j j.isLt, tupleToPoly_coeff d j j.isLt] at hc
   simpa using hc
 

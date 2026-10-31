@@ -47,6 +47,8 @@ When `x + 0 = x` definitionally in `α`, we have the following definitional equa
 def vprod [CommMonoid α] {n : ℕ} (a : Fin n → α) : α :=
   Fin.dfoldr' n (fun _ => α) (fun i acc => a i * acc) 1
 
+attribute [implicit_reducible] vprod vsum
+
 variable {n : ℕ}
 
 @[to_additive (attr := simp) vsum_zero]
@@ -85,6 +87,7 @@ variable {m : ℕ} {n : Fin m → ℕ}
 
 /-- Embed nested indices `(i : Fin m, j : Fin (n i))` into a single index `Fin (vsum n)`. This
   converts from nested indexing to indexing into the vector sum, preserving lexicographic order. -/
+@[implicit_reducible]
 def embedSum {m : ℕ} {n : Fin m → ℕ} (i : Fin m) (j : Fin (n i)) : Fin (vsum n) := match m with
   | 0 => i
   | _ + 1 => match i with
@@ -109,6 +112,7 @@ theorem embedSum_succ_succ {n : Fin (m + 1) → ℕ} {i : Fin m} (j : Fin (n i.s
 
 /-- Split a vector sum index `k : Fin (vsum n)` into nested indices `(i : Fin m) × Fin (n i)`.
 This converts from indexing into the vector sum back to nested indexing, inverse of `embedSum`. -/
+@[implicit_reducible]
 def splitSum {m : ℕ} {n : Fin m → ℕ} (k : Fin (vsum n)) : (i : Fin m) × Fin (n i) := match m with
   | 0 => Fin.elim0 k
   | _ + 1 => Fin.dappend
@@ -134,11 +138,11 @@ theorem embedSum_splitSum {m : ℕ} {n : Fin m → ℕ} (k : Fin (vsum n)) :
   | succ m ih =>
     induction k using Fin.addCases with
     | left j =>
-      rw [splitSum_succ]
+      erw [splitSum_succ]
       erw [dappend_left]
       rw [embedSum_succ_zero]
     | right j =>
-      rw [splitSum_succ]
+      erw [splitSum_succ]
       erw [dappend_right]
       rw [embedSum_succ_succ]
       congr 1
@@ -152,11 +156,11 @@ theorem splitSum_embedSum {m : ℕ} {n : Fin m → ℕ} (i : Fin m) (j : Fin (n 
   | succ m ih =>
     induction i using Fin.cases with
     | zero =>
-      rw [embedSum_succ_zero, splitSum_succ, dappend_left]
+      erw [embedSum_succ_zero, splitSum_succ, dappend_left]
     | succ i =>
       have key : (embedSum i j).splitSum = (⟨i, j⟩ : (a : Fin m) × Fin ((n ∘ Fin.succ) a)) :=
         ih (n := n ∘ Fin.succ) i j
-      rw [embedSum_succ_succ, splitSum_succ]
+      erw [embedSum_succ_succ, splitSum_succ]
       erw [dappend_right]
       have hfst := congrArg Sigma.fst key
       have hsnd := (Sigma.ext_iff.mp key).2
@@ -188,7 +192,7 @@ variable {α : Sort*}
 `(k : Fin (vsum n)) → motive k`, preserving element order.
 
 This is meant to replace nested iteration for dependent families with a unified motive. -/
-@[elab_as_elim]
+@[elab_as_elim, implicit_reducible]
 def dflatten {m : ℕ} {n : Fin m → ℕ} {motive : (k : Fin (vsum n)) → Sort*}
     (v : (i : Fin m) → (j : Fin (n i)) → motive (embedSum i j)) (k : Fin (vsum n)) : motive k :=
   match m with
@@ -230,7 +234,7 @@ theorem dflatten_splitSum {m : ℕ} {n : Fin m → ℕ} {motive : (k : Fin (vsum
     induction k using Fin.addCases with
     | left j =>
       beta_reduce
-      rw [dappend_left]
+      erw [dappend_left]
       rfl
     | right j =>
       beta_reduce
@@ -245,7 +249,9 @@ theorem dflatten_embedSum {m : ℕ} {n : Fin m → ℕ} {motive : (k : Fin (vsum
   | zero => exact Fin.elim0 i
   | succ m ih =>
     induction i using induction with
-    | zero => simp
+    | zero =>
+      simp only [embedSum_succ_zero, dflatten_succ]
+      erw [dappend_left]
     | succ i ih' =>
       simp only [embedSum_succ_succ, dflatten_succ]
       erw [dappend_right]
@@ -277,17 +283,23 @@ theorem vflatten_eq_vappend_last {m : ℕ} {n : Fin (m + 1) → ℕ}
     {v : (i : Fin (m + 1)) → Fin (n i) → α} :
     vflatten v =
       vappend (vflatten (fun i => v i.castSucc)) (v (last _)) ∘ Fin.cast vsum_castSucc := by
+  have append_cast {a b c : ℕ} (h : b = c) (u : Fin a → α) (w : Fin c → α) :
+      Fin.append u (w ∘ Fin.cast h) =
+        Fin.append u w ∘ Fin.cast (congrArg (a + ·) h) := by
+    subst c
+    rfl
   induction m with
-  | zero => ext i; simp
+  | zero =>
+    ext i
+    simp
+    congr 1
   | succ m ih =>
     rw [vflatten_succ, ih, vflatten_succ]
+    simp only [vappend_eq_append]
+    erw [append_cast, Fin.append_assoc]
     ext i
-    simp only [vappend_eq_append, Function.comp_apply]
-    symm
-    let u := v 0
-    let vv := vflatten fun i => v i.castSucc.succ
-    let w := v (last (m + 1))
-    simpa [Function.comp_apply] using congr_fun (Fin.append_assoc u vv w) (Fin.cast _ i)
+    dsimp only [Function.comp_def]
+    congr 1
 
 @[simp]
 theorem vflatten_splitSum {m : ℕ} {n : Fin m → ℕ} (v : (k : Fin (vsum n)) → α) (k : Fin (vsum n)) :
@@ -561,7 +573,9 @@ theorem sum_le_of_divSum?_eq_some {m : ℕ} {n : Fin m → ℕ} {k : Fin (∑ j,
       simpa [divSum?] using hmem
     have hmin := (Fin.mem_find?_iff.mp hfind).2
       (j := ⟨i.val - 1, by omega⟩) (Fin.lt_def.mpr (by simp only; omega))
-    exact not_lt.mp (by simpa using hmin)
+    simp only [decide_eq_true_eq, not_lt] at hmin
+    convert hmin using 1
+    congr 1
 
 def modSum {m : ℕ} {n : Fin m → ℕ} (k : Fin (∑ j, n j)) : Fin (n (divSum k)) :=
   ⟨k - ∑ j, n (Fin.castLE (divSum k).isLt.le j), by

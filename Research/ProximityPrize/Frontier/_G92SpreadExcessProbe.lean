@@ -446,7 +446,7 @@ theorem farDirection_monoDir (dom : Fin n ↪ F) {k a j : ℕ} (hkj : k ≤ j) (
       ⊆ Q.roots.toFinset := by
     intro x hx
     obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
-    simp only [agreeSet, Finset.mem_filter, Finset.mem_univ, true_and, monoDir] at hi
+    have hi : P.eval (dom i) = dom i ^ j := (Finset.mem_filter.mp hi).2
     rw [Multiset.mem_toFinset, Polynomial.mem_roots hQne]
     show Q.eval (dom i) = 0
     rw [hQ]
@@ -531,7 +531,6 @@ theorem worstBad_not_subadditive (dom : Fin n ↪ F) {k a j : ℕ}
     funext i
     simp
   have h := hsub (monoDir dom j) (fun i => -monoDir dom j i)
-  simp only [] at h
   rw [hzero, worstBad_zero dom han, worstBad_neg dom k a (monoDir dom j)] at h
   omega
 

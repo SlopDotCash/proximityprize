@@ -413,7 +413,7 @@ theorem awayMoment_two_mul_le_of_chiDecomp
   refine (Finset.sum_le_sum hpt).trans ?_
   have hcard : ((Finset.univ \ D).card : ℝ) ≤ q := by
     have := Finset.card_le_card (Finset.subset_univ (Finset.univ \ D))
-    simpa [hq, Finset.card_univ] using (Nat.cast_le.mpr this : _)
+    simpa [hq, Finset.card_univ] using (Nat.cast_le.mpr this : ((Finset.univ \ D).card : ℝ) ≤ (Finset.univ : Finset F).card)
   have hT : ∑ χ ∈ X, ∑ s₀ ∈ Finset.univ \ D, ‖twistedThinSum χ G s₀‖ ^ 4
       ≤ (X.card : ℝ) * (Cw * n ^ 2 * q) := by
     calc ∑ χ ∈ X, ∑ s₀ ∈ Finset.univ \ D, ‖twistedThinSum χ G s₀‖ ^ 4

@@ -45,7 +45,7 @@ theorem relDistFromCode_row_le_interleaved {κ ι A : Type*} [Fintype κ] [Finty
       ≤ hammingDist (Matrix.transpose u) V := by
     have h := hammingDist_comp_le_hammingDist (fun (_ : ι) (col : κ → A) => col k)
                 (x := Matrix.transpose u) (y := V)
-    simpa [Matrix.transpose_apply] using h
+    exact h
   have hrel : relHammingDist (u k) (Matrix.transpose V k)
       ≤ relHammingDist (Matrix.transpose u) V := by
     unfold relHammingDist

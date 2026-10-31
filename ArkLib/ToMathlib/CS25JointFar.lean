@@ -101,7 +101,9 @@ theorem deepHoleJointFar_holds
   rw [DeepHoleJointFar, jointProximity]
   intro hclose
   -- Extract an interleaved codeword `V` within distance `δ` of the interleaved deep-hole word.
-  rw [relCloseToCode_iff_relCloseToCodeword_of_minDist] at hclose
+  rw [relCloseToCode_iff_relCloseToCodeword_of_minDist
+    (C := interleavedCodeSet (ReedSolomon.code domain k : Set (ι → F)))
+    (fun j => (⋈|dhStack domain u a : InterleavedWord F (Fin 2) ι) j)] at hclose
   obtain ⟨V, hVmem, hVdist⟩ := hclose
   -- The agreement set `S`: columns of `⋈|(dhStack …)` and `V` agree on `S`, `|S| ≥ n − ⌊δ·n⌋`.
   rw [relCloseToWord_iff_exists_agreementCols] at hVdist
@@ -148,12 +150,12 @@ theorem deepHoleJointFar_holds
       -- `(⋈|dhStack) i 1 = (dhStack).transpose i 1 = dhStack 1 i = dhWord1 domain a i`.
       have hlhs : (Interleavable.interleave (dhStack domain u a) : Matrix ι (Fin 2) F) i 1
           = dhWord1 domain a i := by
-        simp [interleave_wordStack_eq, Matrix.transpose_apply, dhStack, dhWord1]
+        rfl
       -- `V i 1 = V.transpose 1 i = h.eval (domain i)`.
       have hrhs : V i 1 = h.eval (domain i) := by
         have hT : Matrix.transpose V 1 i = h.eval (domain i) := by
           rw [hheval]; simp [ReedSolomon.evalOnPoints]
-        simpa [Matrix.transpose_apply] using hT
+        exact hT
       have := congrFun hcol 1
       rw [hlhs] at this
       rw [this, hrhs]

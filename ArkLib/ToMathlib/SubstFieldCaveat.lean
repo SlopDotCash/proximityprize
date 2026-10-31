@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import Mathlib.Tactic
 import ArkLib.Data.Polynomial.RationalFunctions
 
 /-!
@@ -85,6 +85,7 @@ theorem constantCoeff_shiftSeries (x₀ : F) (H : F[X][Y]) :
     PowerSeries.constantCoeff (shiftSeries x₀ H) = fieldTo𝕃 (-x₀) := by
   unfold shiftSeries
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_mk]
+  rfl
 
 /-- Injectivity of the canonical embedding into the function field. -/
 theorem fieldTo𝕃_injective {H : F[X][Y]} [Fact (Irreducible H)] [Fact (0 < H.natDegree)] :

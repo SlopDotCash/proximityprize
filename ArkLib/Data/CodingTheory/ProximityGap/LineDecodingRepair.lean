@@ -121,7 +121,7 @@ theorem mcaProb_Czero_le_half (u : WordStack A (Fin 2) ι) :
   · rw [if_neg hb0, mul_zero, zero_add]
     by_cases hb1 : mcaEvent (F := F) ((Czero : Set (ι → A))) (0 : ℝ≥0) (u 0) (u 1) (1 : F)
     · rw [if_pos hb1, mul_one]
-    · rw [if_neg hb1, mul_zero]; exact zero_le _
+    · rw [if_neg hb1, mul_zero]; exact zero_le
 
 /-- **Sharp lower bound `1/|F| ≤ ε_mca(Czero, 0)`** (sharper than the in-tree `0 < ε_mca`). -/
 theorem epsMCA_Czero_ge_half :

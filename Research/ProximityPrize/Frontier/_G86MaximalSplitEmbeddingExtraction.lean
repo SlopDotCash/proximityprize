@@ -66,7 +66,7 @@ theorem exists_coreEmbedding_of_split {r s : ℕ}
       let is : Fin s := ⟨i, hi⟩
       let ic : Fin core.length := (finCongr hcoreLen.symm) is
       have hget := get_coreEmbedding hperm ic
-      simpa [coreAt, e, endpoint, is, ic] using hget
+      simpa [coreAt, e, endpoint, is, ic, Fin.cast] using hget
   rw [hwords]
   exact Multiset.coe_toList coreBag
 

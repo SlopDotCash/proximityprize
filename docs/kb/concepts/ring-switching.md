@@ -72,3 +72,18 @@ and soundness requires `[IsDomain L]` (Schwartz–Zippel).
 - Soundness reuse across instances is weaker than data-layer reuse: the `[IsDomain L]` theorems fit
   field instances (Binius) but not non-domain rings (Hachi `R_q`), whose soundness is a sibling
   theorem with a different error.
+
+## Independent coordinate algebra
+
+The [packing umbrella](../../../ArkLib/ProofSystem/RingSwitching/Packing.lean) exposes the
+framework-independent algebra adapted from upstream PR #1256. Packing and opening use
+independent bases over a common commutative ring. Polynomial round trips and opening/slice
+relations work even with zero divisors; randomized power and equality batching require a
+finite domain. Singleton separation needs no domain assumption.
+
+The public multiplier is evaluated by one matrix layer per retained variable, followed by a
+linear observation. The equality proof does not treat this observation as a ring map. Prefix
+and suffix layouts preserve source-coordinate order; Flock's quirky layout retains the
+`(skipped index, extra bit)` order and reconstructs through Lagrange and equality weights.
+See [BRW26](../papers/BRW26.md) and [RSG](../papers/RSG.md). These algebraic results do not
+establish Binius, Hachi or Flock protocol conformance.

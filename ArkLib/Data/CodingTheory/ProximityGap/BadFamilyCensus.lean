@@ -382,7 +382,7 @@ theorem pencil_rung_epsMCA_lower_bound {p n : ℕ} [Fact p.Prime] [NeZero n] {h 
         have hpos : (0 : ℕ) < 2 * h := by omega
         exact_mod_cast hpos.ne'
       have hle1 : ((h + s : ℕ) : ℝ≥0) / ((2 * h : ℕ) : ℝ≥0) ≤ 1 := by
-        rw [div_le_one (lt_of_le_of_ne (zero_le _) (Ne.symm hn0))]
+        rw [div_le_one (lt_of_le_of_ne (zero_le) (Ne.symm hn0))]
         exact_mod_cast (by omega : h + s ≤ 2 * h)
       have h1δ : (1 : ℝ≥0) - (1 - ((h + s : ℕ) : ℝ≥0) / ((2 * h : ℕ) : ℝ≥0))
           = ((h + s : ℕ) : ℝ≥0) / ((2 * h : ℕ) : ℝ≥0) := tsub_tsub_cancel_of_le hle1
@@ -511,7 +511,7 @@ theorem two_deviation_epsMCA_lower_bound {p n : ℕ} [Fact p.Prime] [NeZero n] {
       have : (0 : ℕ) < n := by omega
       exact_mod_cast this.ne'
     have hle1 : ((n - 1 : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0) ≤ 1 := by
-      rw [div_le_one (lt_of_le_of_ne (zero_le _) (Ne.symm hn0))]
+      rw [div_le_one (lt_of_le_of_ne (zero_le) (Ne.symm hn0))]
       exact_mod_cast (by omega : n - 1 ≤ n)
     have h1δ : (1 : ℝ≥0) - (1 - ((n - 1 : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0))
         = ((n - 1 : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0) := tsub_tsub_cancel_of_le hle1
@@ -697,7 +697,7 @@ theorem simplex_epsMCA_lower_bound {p n : ℕ} [Fact p.Prime] [NeZero n] {d e : 
       have hn0' : ((n : ℕ) : ℝ≥0) ≠ 0 := by
         exact_mod_cast hn0.ne'
       have hle1 : ((n - e : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0) ≤ 1 := by
-        rw [div_le_one (lt_of_le_of_ne (zero_le _) (Ne.symm hn0'))]
+        rw [div_le_one (lt_of_le_of_ne (zero_le) (Ne.symm hn0'))]
         exact_mod_cast (by omega : n - e ≤ n)
       have h1δ : (1 : ℝ≥0) - (1 - ((n - e : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0))
           = ((n - e : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0) := tsub_tsub_cancel_of_le hle1
@@ -858,7 +858,7 @@ theorem bisimplex_epsMCA_lower_bound {p n : ℕ} [Fact p.Prime] [NeZero n] {d e 
     intro S hS
     have hn0' : ((n : ℕ) : ℝ≥0) ≠ 0 := by exact_mod_cast hn0.ne'
     have hle1 : ((n - e : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0) ≤ 1 := by
-      rw [div_le_one (lt_of_le_of_ne (zero_le _) (Ne.symm hn0'))]
+      rw [div_le_one (lt_of_le_of_ne (zero_le) (Ne.symm hn0'))]
       exact_mod_cast (by omega : n - e ≤ n)
     have h1δ : (1 : ℝ≥0) - (1 - ((n - e : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0))
         = ((n - e : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0) := tsub_tsub_cancel_of_le hle1

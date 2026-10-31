@@ -57,7 +57,7 @@ def agree (c w : ι → Sigma) : ℕ := (Finset.univ.filter (fun i => c i = w i)
 theorem agree_add_hammingDist (c w : ι → Sigma) :
     agree c w + hammingDist c w = Fintype.card ι := by
   classical
-  have h := Finset.filter_card_add_filter_neg_card_eq_card
+  have h := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset ι)) (p := fun i => c i = w i)
   simpa only [agree, hammingDist, Finset.card_univ, ne_eq] using h
 

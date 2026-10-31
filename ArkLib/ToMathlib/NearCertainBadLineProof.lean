@@ -70,12 +70,12 @@ theorem not_jointProximity_zero_of_row_not_mem
   -- Unfold `jointProximity` and convert the relative-distance bound to a membership.
   rw [jointProximity, interleave_wordStack_eq] at hjp
   -- `hjp : δᵣ(u.transpose, interleavedCodeSet C) ≤ (0 : ℝ≥0)`
-  rw [relDistFromCode_le_iff_distFromCode_le] at hjp
+  have hjp := (relDistFromCode_le_iff_distFromCode_le
+    (C := interleavedCodeSet C) (Matrix.transpose u) 0).mp hjp
   simp only [zero_mul, Nat.floor_zero, Nat.cast_zero, nonpos_iff_eq_zero] at hjp
-  rw [distFromCode_eq_zero_iff_mem] at hjp
-  -- `hjp : u.transpose ∈ interleavedCodeSet C`, i.e. every row of `u` is in `C`.
-  simp only [interleavedCodeSet] at hjp
-  exact hk (hjp k)
+  have hmem := (distFromCode_eq_zero_iff_mem (interleavedCodeSet C) (Matrix.transpose u)).mp hjp
+  -- Every row of `u` belongs to the base code.
+  exact hk (hmem k)
 
 /-- **All-but-one producer for `NearCertainBadLine`.**
 If a stack is not jointly close and every scalar except one distinguished bad scalar makes the

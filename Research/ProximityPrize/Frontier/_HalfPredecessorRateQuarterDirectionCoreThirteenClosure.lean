@@ -62,8 +62,9 @@ theorem directionSupportSet_translatedDirectionWord
     directionSupportSet (translatedDirectionWord dom u1 r) =
       Finset.univ \ directionAgreement dom u1 r := by
   ext i
-  simp only [directionSupportSet, translatedDirectionWord, directionAgreement,
+  simp only [directionSupportSet, directionAgreement,
     Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_sdiff]
+  simp only [translatedDirectionWord]
   constructor
   · intro h hEq
     apply h
@@ -92,10 +93,10 @@ theorem directionZeroAgreementSet_translatedInterceptWord
         (translatedDirectionWord dom (u 1) r) =
       directionCoreTrace family r gamma := by
   ext i
-  simp only [directionZeroAgreementSet, directionZeroSet,
-    translatedDirectionWord, translatedInterceptWord, directionCoreTrace,
-    directionAgreement, fullAgreement, translatedIntercept,
-    Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_inter,
+  simp only [directionZeroAgreementSet, directionZeroSet, directionCoreTrace,
+    directionAgreement, fullAgreement,
+    Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_inter]
+  simp only [translatedDirectionWord, translatedInterceptWord, translatedIntercept,
     eval_sub, eval_mul, eval_C]
   constructor
   · rintro ⟨hzero, hbase⟩

@@ -352,6 +352,7 @@ theorem tzPrimeSupply_256_three : TZPrimeSupply 256 (3 : ℝ) 12 := by
           16790273, 16793089, 16795393, 16796161} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 256 (3 : ℝ)).card := Finset.card_le_card hsub
 
+set_option maxRecDepth 65536 in
 /-- **Concrete discharge for `n = 128, β = 4`.**  The window `[128⁴, 2·128⁴] =
 `[268435456, 536870912]` contains the twelve primes listed below, all `≡ 1 (mod 128)`. -/
 theorem tzPrimeSupply_128_four : TZPrimeSupply 128 (4 : ℝ) 12 := by
@@ -372,6 +373,7 @@ theorem tzPrimeSupply_128_four : TZPrimeSupply 128 (4 : ℝ) 12 := by
     _ ≤ (tzWindow 128 (4 : ℝ)).card := Finset.card_le_card hsub
 
 set_option maxHeartbeats 1600000 in
+set_option maxRecDepth 65536 in
 /-- **Concrete discharge for `n = 256, β = 4`.**  The window `[256⁴, 2·256⁴] =
 `[4294967296, 8589934592]` contains the eight primes listed below, all `≡ 1 (mod 256)`.
 This completes the `n ≤ 256` concrete ladder at every exponent `β ∈ {2, 3, 4}`. -/

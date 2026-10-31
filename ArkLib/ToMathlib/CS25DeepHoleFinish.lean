@@ -307,6 +307,7 @@ theorem not_deepHoleProbResidual_negativeEpsilon_zmod2 :
     norm_num [Code.relHammingDist, hammingDist_self]
   have hsample : (1 : ZMod 2) ∈ sampleSet zmod2SingletonDomain := by
     simp [sampleSet, zmod2SingletonDomain]
+    exact fun h => absurd h (by decide)
   have hbad := h hdeg hclose (1 : ZMod 2) hsample
   norm_num [numDistinct] at hbad
 

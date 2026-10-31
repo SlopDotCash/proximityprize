@@ -258,7 +258,7 @@ theorem overlap_packing_epsMCA_lower_bound {p n : ℕ} [Fact p.Prime] [NeZero n]
     intro S hS
     have hn0' : ((n : ℕ) : ℝ≥0) ≠ 0 := by exact_mod_cast hn0.ne'
     have hle1 : ((t : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0) ≤ 1 := by
-      rw [div_le_one (lt_of_le_of_ne (zero_le _) (Ne.symm hn0'))]
+      rw [div_le_one (lt_of_le_of_ne (zero_le) (Ne.symm hn0'))]
       exact_mod_cast htn
     have h1δ : (1 : ℝ≥0) - (1 - ((t : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0))
         = ((t : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0) := tsub_tsub_cancel_of_le hle1

@@ -227,7 +227,6 @@ theorem at_most_one_of_high_t {s t : Fin 8} (ht : 2 ≤ (t : ℕ))
     have h1 := hline l (Finset.mem_inter.mp hl).1
     have h2 := hline' l (Finset.mem_inter.mp hl).2
     have := congrArg₂ (· - ·) h1 h2
-    simp only at this
     linear_combination this
   rcases Nat.lt_or_ge (t : ℕ) 4 with ht4 | ht4
   · -- 2 ≤ t ≤ 3: direct degree count
@@ -311,7 +310,6 @@ theorem at_most_one_of_high_t {s t : Fin 8} (ht : 2 ≤ (t : ℕ))
       rw [this]
       exact dom8_pow_eight l
     have hmul := congrArg (· * dom8 l ^ (8 - (t : ℕ))) hkey
-    simp only at hmul
     have hlhs : (lam - lam') * dom8 l ^ (t : ℕ) * dom8 l ^ (8 - (t : ℕ))
         = lam - lam' := by
       rw [mul_assoc, hpow, mul_one]

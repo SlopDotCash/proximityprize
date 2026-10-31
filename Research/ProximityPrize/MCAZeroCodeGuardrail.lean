@@ -75,7 +75,7 @@ theorem GrandMCAResolution_bot_deltaStar_eq_zero_of_lt_inv_card (ε_star : ℝ�
   have hle : R.δStar ≤ 0 := by
     change R.δStar ≤ w.δ
     exact w.δStar_le R
-  exact le_antisymm hle (zero_le _)
+  exact le_antisymm hle (zero_le)
 
 /-- `epsStar` specialization: any supplied zero-code MCA resolution below `1 / |F|` has
 threshold exactly `0`. -/

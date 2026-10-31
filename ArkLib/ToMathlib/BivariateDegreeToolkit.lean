@@ -150,9 +150,7 @@ theorem natWeightedDegree_mul_le (f g : F[X][Y]) (u v : ℕ) :
       ⟨(0, k), by simp⟩ (fun x => (f.coeff x.1 * g.coeff x.2).natDegree)
   have hnd_le : (∑ x ∈ Finset.antidiagonal k, f.coeff x.1 * g.coeff x.2).natDegree ≤
       (f.coeff x₀.1 * g.coeff x₀.2).natDegree := by
-    rw [← hx₀deg]
-    exact Polynomial.natDegree_sum_le_of_forall_le _ _
-      (fun x hx => Finset.le_sup (f := fun x => (f.coeff x.1 * g.coeff x.2).natDegree) hx)
+    exact (Polynomial.natDegree_sum_le _ _).trans_eq hx₀deg
   calc u * (∑ x ∈ Finset.antidiagonal k, f.coeff x.1 * g.coeff x.2).natDegree + v * k
       ≤ u * (f.coeff x₀.1 * g.coeff x₀.2).natDegree + v * k :=
         Nat.add_le_add_right (Nat.mul_le_mul_left u hnd_le) (v * k)

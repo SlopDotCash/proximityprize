@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.Algebra.Order.Chebyshev
+import Mathlib.Data.Finset.Powerset
+import Mathlib.Data.Nat.Choose.Central
+import Mathlib.Data.ZMod.Basic
+import Mathlib.Tactic
 
 /-!
 # Round 15 (Issue #232, Proximity Prize) — the PRIZE-SCALE TWO-SIDED BRACKET
@@ -490,14 +495,15 @@ def codeW : Finset (Fin (2 ^ 20) → ZMod pW) :=
     Finset.univ
 
 /-- The difference polynomial of two coefficient vectors. -/
-noncomputable def diffPolyW (c c' : Fin (2 ^ 19) → ZMod pW) : Polynomial (ZMod pW) :=
-  ∑ i : Fin (2 ^ 19), Polynomial.C (c i - c' i) * Polynomial.X ^ (i : ℕ)
+noncomputable def diffPolyW {n : ℕ} (c c' : Fin n → ZMod pW) : Polynomial (ZMod pW) :=
+  ∑ i : Fin n, Polynomial.C (c i - c' i) * Polynomial.X ^ (i : ℕ)
 
-theorem coeffW (c c' : Fin (2 ^ 19) → ZMod pW) (j : Fin (2 ^ 19)) :
+/-- The coefficient identity for any vector length, including the prize parameters. -/
+theorem coeffW {n : ℕ} (c c' : Fin n → ZMod pW) (j : Fin n) :
     (diffPolyW c c').coeff (j : ℕ) = c j - c' j := by
   unfold diffPolyW
   rw [Polynomial.finset_sum_coeff]
-  have hterm : ∀ i : Fin (2 ^ 19),
+  have hterm : ∀ i : Fin n,
       (Polynomial.C (c i - c' i) * Polynomial.X ^ (i : ℕ)).coeff (j : ℕ)
         = if j = i then c i - c' i else 0 := by
     intro i

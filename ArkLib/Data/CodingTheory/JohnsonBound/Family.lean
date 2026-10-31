@@ -1728,7 +1728,7 @@ theorem mds_johnson_lambda_le
   · -- Radius negative: every close list is empty, so `Lambda = 0`.
     have hzero : Lambda ((C : Set (ι → F))) δ = 0 := by
       unfold Lambda
-      apply le_antisymm _ (zero_le _)
+      apply le_antisymm _ (zero_le)
       refine iSup_le fun f => ?_
       have hempty : closeCodewordsRel ((C : Set (ι → F))) f δ = ∅ := by
         ext c

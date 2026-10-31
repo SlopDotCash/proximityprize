@@ -96,7 +96,7 @@ lemma myH_separable : myH.Separable := by
   simp only [Polynomial.derivative_add, Polynomial.derivative_monomial,
     one_mul, Nat.cast_ofNat, Nat.cast_zero, mul_zero, Polynomial.monomial_zero_right, add_zero]
   rw [Polynomial.X_mul_monomial, show (2 - 1 + 1 : ℕ) = 2 from rfl, add_right_comm,
-    ← Polynomial.monomial_add, show (1 : K[X]) + 2 = 3 from by ring, h3,
+    ← map_add, show (1 : K[X]) + 2 = 3 from by ring, h3,
     Polynomial.monomial_zero_right, zero_add, hm2, Polynomial.monomial_zero_left, map_one]
 
 lemma myHyp : ClaimA2.Hypotheses (0 : K) myR myH where
@@ -182,7 +182,7 @@ theorem weight_refuted (hH : 0 < myH.natDegree) :
     rw [hstep, hβ1, neg_mul, ← map_mul, ← map_neg]
     congr 1
     rw [show Polynomial.C (Polynomial.X : K[X]) = Polynomial.monomial 0 (Polynomial.X : K[X]) from
-        (Polynomial.monomial_zero_left _).symm, Polynomial.monomial_mul_X,
+        (Polynomial.monomial_zero_left (a := (Polynomial.X : K[X]))).symm, Polynomial.monomial_mul_X,
       ← Polynomial.monomial_neg]
   have hdeg : (Polynomial.monomial 1 (-(Polynomial.X : K[X]))).degree < (H_tilde' myH).degree := by
     rw [H_tilde'_eq_self_of_monic myH myH_leadingCoeff,

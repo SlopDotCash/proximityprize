@@ -87,7 +87,7 @@ theorem half_le_mcaDeltaStar_of_predecessor_good
         rwa [hhalfMul] at hm
       have hfloorDelta :
           Nat.floor (delta * (Fintype.card (Fin n) : ℝ≥0)) = w := by
-        rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le _)]
+        rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le)]
         constructor
         · exact hlowerFloor
         · dsimp only [w]

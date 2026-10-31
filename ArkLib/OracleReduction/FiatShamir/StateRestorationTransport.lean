@@ -3359,7 +3359,7 @@ theorem fiatShamir_knowledgeSoundnessTransferResidual_canonical
   refine probEvent_stateT_bind_mono_hetero _ _ _ _ _ _ (fun o s4 _ => ?_)
   cases o with
   | none =>
-      refine le_trans (le_of_eq ?_) (zero_le _)
+      refine le_trans (le_of_eq ?_) (zero_le)
       simp [probEvent_pure]
   | some stmtOut =>
       conv_rhs => erw [simulateQ_map]

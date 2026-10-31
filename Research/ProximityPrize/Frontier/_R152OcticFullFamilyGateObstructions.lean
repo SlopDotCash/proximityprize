@@ -29,6 +29,9 @@ set_option linter.style.longLine false
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
+noncomputable local instance localInstance_R152OcticFullFamilyGateObstructions_1 :
+    DecidableEq (MulChar F ℂ) := Classical.decEq _
+
 /-- The full `chiFamily χ` normalized exact-rung gate cannot fire for the octic constant
 `4 + Cmax`, as soon as `4 + Cmax ≥ 1`.  This is exactly the `chiFamily` specialization of
 R24's full-family audit theorem. -/

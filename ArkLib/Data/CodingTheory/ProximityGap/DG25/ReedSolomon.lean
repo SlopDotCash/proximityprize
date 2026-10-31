@@ -112,7 +112,9 @@ theorem ReedSolomon_ProximityGapAffineLines_UniqueDecoding [Nontrivial (ReedSolo
   let jointProximity₂_u₀_u₁ := jointProximity₂_affineShift_implies_jointProximity₂ (ι := ι)
     (MC := CRS) (u₀ := u₀) (u₁ := u₁) (δ := δ) (h_jointProximity₂)
   unfold jointProximity₂ jointProximity at jointProximity₂_u₀_u₁
-  rw [relDistFromCode_le_iff_distFromCode_le] at jointProximity₂_u₀_u₁
+  dsimp only at jointProximity₂_u₀_u₁
+  replace jointProximity₂_u₀_u₁ :=
+    (relDistFromCode_le_iff_distFromCode_le _ _).mp jointProximity₂_u₀_u₁
   rw [h_δ_mul_n_eq_e] at jointProximity₂_u₀_u₁
   exact jointProximity₂_u₀_u₁
 
@@ -210,7 +212,8 @@ theorem reedSolomon_multilinearCorrelatedAgreement [Nontrivial (ReedSolomon.code
   )
   rw [jointAgreement_iff_jointProximity]
   unfold jointProximity
-  rw [relDistFromCode_le_iff_distFromCode_le]
+  dsimp only
+  refine (relDistFromCode_le_iff_distFromCode_le _ _).mpr ?_
   unfold jointProximityNat at h_CA_Nat
   exact h_CA_Nat
 

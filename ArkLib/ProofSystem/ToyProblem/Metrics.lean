@@ -217,7 +217,7 @@ theorem epsCA_le_winningSetSoundness {k : ℕ} [Nonempty ι] (C : Set (ι → F)
   refine iSup_le (fun u => ?_)
   by_cases hjp : jointProximity C (u := u) δ
   · -- Trivial branch: the term is `0`.
-    simp only [hjp, if_true]; exact zero_le _
+    simp only [hjp, if_true]; exact zero_le
   · -- Non-trivial branch: build the `ViolatingInstance` and bound `Pr · 1 ≤ winningSetSoundness`.
     simp only [hjp, if_false]
     -- Violation certificate via the bridge's contrapositive at `v = 0`, `μ = (0,0)`.
@@ -454,7 +454,7 @@ theorem ToyParams.soundnessError_le_one (p : ToyParams) :
 /-- The bundled simplified-IOR soundness error lies in the probability interval `[0, 1]`. -/
 theorem ToyParams.soundnessError_mem_Icc (p : ToyParams) :
     p.soundnessError ∈ Set.Icc 0 1 :=
-  ⟨zero_le _, p.soundnessError_le_one⟩
+  ⟨zero_le, p.soundnessError_le_one⟩
 
 /-- Real-valued form of `ToyParams.soundnessError_mem_Icc`. -/
 theorem ToyParams.coe_soundnessError_mem_Icc (p : ToyParams) :

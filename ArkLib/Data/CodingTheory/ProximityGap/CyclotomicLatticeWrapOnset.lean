@@ -173,7 +173,7 @@ Completes the Surface-5 wrap-around face; does NOT cover the prize depth. -/
 theorem minkowski_of_norm_bound {d : ℕ} (p L : ℕ) (a : Fin d → ℕ)
     (hbound : ∀ j, a j ≤ L) (hnorm : p ≤ ∏ j, a j) : p ≤ L ^ d := by
   calc p ≤ ∏ j, a j := hnorm
-    _ ≤ ∏ _j : Fin d, L := Finset.prod_le_prod' (fun j _ => hbound j)
+    _ ≤ ∏ _j : Fin d, L := Finset.prod_le_prod (fun j _ => hbound j)
     _ = L ^ d := by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
 
 end ArkLib.ProximityGap.CyclotomicLatticeWrapOnset

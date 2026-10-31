@@ -544,7 +544,7 @@ theorem composedTightRbrError_unconditional_le
   simp only [Function.comp_apply]
   rcases ChallengeIdx.sumEquiv.symm i with j₁ | i₁
   · simp only [Sum.elim_inl, Pi.zero_apply]
-    exact zero_le _
+    exact zero_le
   · simp only [Sum.elim_inr, Function.comp_apply]
     rcases ChallengeIdx.sumEquiv.symm i₁ with j₂ | i₂
     · simp only [Sum.elim_inl]
@@ -558,7 +558,7 @@ theorem composedTightRbrError_unconditional_le
       · simp only [Sum.elim_inr, Function.comp_apply]
         rcases ChallengeIdx.sumEquiv.symm i₃ with j₄ | i₄
         · simp only [Sum.elim_inl, Pi.zero_apply]
-          exact zero_le _
+          exact zero_le
         · simp only [Sum.elim_inr, Function.comp_apply]
           rcases ChallengeIdx.sumEquiv.symm i₄ with j₅ | i₅
           · simp only [Sum.elim_inl]

@@ -121,7 +121,7 @@ theorem ell0_ne_zero_on_shore (i : Fin 36) :
 /-- Direct evaluation of the two chart coordinates. -/
 theorem affineGamma_eq_table (i : Fin 36) :
     affineGamma (shore i) = gammaTable i := by
-  fin_cases i <;> decide
+  fin_cases i <;> decide +kernel
 
 theorem gammaTable_injective : Function.Injective gammaTable := by
   decide

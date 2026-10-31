@@ -242,7 +242,7 @@ theorem directionSupportSet_card_eq (u₁ : Fin n → F) :
     (directionSupportSet u₁).card = n - (directionZeroSet u₁).card := by
   have h : (directionZeroSet u₁).card + (directionSupportSet u₁).card = n := by
     rw [directionZeroSet, directionSupportSet,
-      Finset.filter_card_add_filter_neg_card_eq_card]
+      Finset.card_filter_add_card_filter_not]
     simp
   omega
 

@@ -7,6 +7,7 @@ Authors: František Silváši, Ilia Vlasov, Aristotle (Harmonic)
 import Mathlib.Algebra.MvPolynomial.Monad
 import Mathlib.Tactic.IntervalCases
 import Mathlib.Algebra.CharP.Basic
+import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
 
 import CompPoly.Data.MvPolynomial.Notation
 import ArkLib.Data.MvPolynomial.Interpolation
@@ -84,7 +85,7 @@ private lemma substMinus_mem_restrictDegree
       apply le_trans (MvPolynomial.degreeOf_mul_le _ _ _) _
       simp_all only [degreeOf_C, zero_add]
       apply le_trans (MvPolynomial.degreeOf_prod_le _ _ _) _
-      rw [Finset.sum_eq_add_sum_diff_singleton i _ (by aesop)]
+      rw [Finset.sum_eq_add_sum_sdiff_singleton i _ (by aesop)]
       rw [Finset.sum_equiv
             (t := m.support \ {i})
             (Equiv.refl _)
@@ -160,7 +161,7 @@ private lemma formula_for_monomial
       have hsup : 0 ∈ m.support := by simp [h0]
       have : (X 0 : R[X (Fin n)]) = X 0 ^ (m 0) := by simp [show m 0 = 1 by grind]
       rw [this,
-          ←Finset.prod_eq_mul_prod_diff_singleton (s := m.support) 0
+          ←Finset.prod_eq_mul_prod_sdiff_singleton (s := m.support) 0
             (f := fun i ↦ X i ^ m i) (by aesop)]
       aesop
     aesop
@@ -260,10 +261,10 @@ private lemma aeval_shift_monomial_nonzero_case
     map_prod, map_pow, bind₁_X_right, dite_pow, pow_zero, mem_support_iff, coeff_C_mul, ne_eq,
     mul_eq_zero, not_or, not_and, not_not]
   have h_coeff :
-    coeff s (∏ x : Fin n,
+    (∏ x : Fin n,
       if h : x = 0
       then 1
-      else (MvPolynomial.X ⟨↑x - 1, by omega⟩ : MvPolynomial (Fin (n - 1)) R) ^ m x) = 0 := by
+      else (MvPolynomial.X ⟨↑x - 1, by omega⟩ : MvPolynomial (Fin (n - 1)) R) ^ m x).coeff s = 0 := by
     have h_coeff :
       ∀ (t : Fin n → ℕ),
         (∏ x : Fin n,
@@ -336,9 +337,18 @@ lemma even_and_odd_eval
   p.1.aeval
     (fun i ↦ if h : i = 0 then C α else (X ⟨i.val - 1, by omega⟩ :  R[X (Fin (n - 1))])) =
     (even_pred p).1 + C α * (odd_pred p).1 := by
-  conv_lhs => rw [←even_and_odd_formula' hchar]
-  aesop
-    (add safe [(by erw [MvPolynomial.aeval_bind₁])])
+  let evalAt : Fin n → R[X (Fin (n - 1))] := fun i ↦
+    if h : i = 0 then C α else X ⟨i.val - 1, by omega⟩
+  let shiftUp : Fin (n - 1) → R[X (Fin n)] := fun i ↦ X ⟨i.val + 1, by omega⟩
+  have hcomp (q : R[X (Fin (n - 1))]) : (q.aeval shiftUp).aeval evalAt = q := by
+    erw [MvPolynomial.aeval_bind₁]
+    have hvars : (fun i ↦ (shiftUp i).aeval evalAt) = fun i ↦ X i := by
+      funext i
+      simp [evalAt, shiftUp]
+    rw [hvars, aeval_X_left_apply]
+  change p.1.aeval evalAt = _
+  rw [← even_and_odd_formula' hchar, map_add, map_mul, hcomp, hcomp]
+  simp [evalAt]
 
 noncomputable def shiftedPowAlgHom :
     MvPolynomial (Fin (n - 1)) R →ₐ[R] Polynomial R :=

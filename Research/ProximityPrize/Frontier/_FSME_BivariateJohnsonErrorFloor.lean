@@ -169,7 +169,7 @@ theorem errorBound_eval :
   rw [if_neg (by
     intro hmem
     exact absurd hmem.2 (not_le.mpr udr_lt_deltaPred))]
-  rw [if_pos ⟨udr_lt_deltaPred, deltaPred_lt_half⟩]
+  erw [if_pos ⟨udr_lt_deltaPred, deltaPred_lt_half⟩]
   have hq : ((Fintype.card Fq : ℕ) : ℝ) ≠ 0 := ne_of_gt hqpos
   apply NNReal.coe_injective
   show (((k : ℝ≥0) ^ 2 : ℝ≥0) : ℝ) /

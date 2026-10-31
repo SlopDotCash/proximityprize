@@ -25,7 +25,9 @@ noncomputable def π_hat_z {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R
 theorem π_hat_z_comp {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H)
     (z : F) (root : rationalRoot (H_tilde' H) z)
     (hx : (π_z z root) (ξ x₀ R H hHyp) ≠ 0) (a : 𝒪 H) :
-    π_hat_z hHyp z root hx (algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp)) a)
+    π_hat_z hHyp z root hx
+      (@algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp))
+        inferInstance inferInstance inferInstance a)
       = (π_z z root) a := by
   unfold π_hat_z
   exact IsLocalization.lift_eq _ a

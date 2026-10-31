@@ -87,7 +87,7 @@ theorem pairSums_pair (c d : G) : pairSums {c, d} = {c + d} := by
   have h1 : pairSums ({d} : Multiset G) = 0 := by
     unfold pairSums
     rw [show ({d} : Multiset G) = d ::ₘ 0 from rfl, powersetCard_cons]
-    simp
+    simp [powersetCard_zero_right]
   rw [h1]
   simp
 

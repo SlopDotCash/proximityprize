@@ -79,11 +79,16 @@ lemma not_jointProximity :
       (31 / 40 : ℝ≥0) := by
   unfold jointProximity
   intro h
-  rw [relDistFromCode_le_iff_distFromCode_le] at h
+  dsimp only at h
+  rw [relDistFromCode_le_iff_distFromCode_le
+    (C := interleavedCodeSet (ReedSolomon.code dom 1 : Set (ZMod 5 → ZMod 5)))
+    (fun j => (⋈|u : InterleavedWord (ZMod 5) (Fin 2) (ZMod 5)) j)] at h
   have h3 : Nat.floor ((31 / 40 : ℝ≥0) * (Fintype.card (ZMod 5) : ℝ≥0)) = 3 := by
     rw [ZMod.card]
     norm_num [Nat.floor_eq_iff]
-  rw [h3, closeToCode_iff_closeToCodeword_of_minDist] at h
+  rw [h3, closeToCode_iff_closeToCodeword_of_minDist
+    (C := interleavedCodeSet (ReedSolomon.code dom 1 : Set (ZMod 5 → ZMod 5)))
+    (fun j => (⋈|u : InterleavedWord (ZMod 5) (Fin 2) (ZMod 5)) j)] at h
   obtain ⟨V, hV, hd⟩ := h
   have h0 := eq_const_of_mem (hV 0)
   have h1 := eq_const_of_mem (hV 1)

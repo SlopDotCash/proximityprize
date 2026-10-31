@@ -53,8 +53,10 @@ theorem gcd_injOn_aux (Z w : F[X]) {k a : ℕ} (hka : k ≤ a)
     (hgcd : EuclideanDomain.gcd (w - c) Z = EuclideanDomain.gcd (w - c') Z) :
     c = c' := by
   set D := EuclideanDomain.gcd (w - c) Z with hD
-  have hDc : D ∣ (w - c) := gcd_dvd_left _ _
-  have hDc' : D ∣ (w - c') := hgcd ▸ gcd_dvd_left (w - c') Z
+  have hDc : D ∣ (w - c) := EuclideanDomain.gcd_dvd_left _ _
+  have hDc' : D ∣ (w - c') := by
+    rw [hgcd]
+    exact EuclideanDomain.gcd_dvd_left _ _
   have hDdiff : D ∣ (c' - c) := by
     have hrw : (w - c) - (w - c') = c' - c := by ring
     rw [← hrw]; exact dvd_sub hDc hDc'
@@ -77,7 +79,7 @@ theorem list_card_le_gcdImage (Z w : F[X]) {k a : ℕ} (hka : k ≤ a)
     L.card = (L.image (fun c => EuclideanDomain.gcd (w - c) Z)).card
       ∧ (∀ c ∈ L, EuclideanDomain.gcd (w - c) Z ∣ Z
           ∧ a ≤ (EuclideanDomain.gcd (w - c) Z).natDegree) := by
-  refine ⟨(Finset.card_image_of_injOn ?_).symm, fun c hc => ⟨gcd_dvd_right _ _, (hL c hc).2⟩⟩
+  refine ⟨(Finset.card_image_of_injOn ?_).symm, fun c hc => ⟨EuclideanDomain.gcd_dvd_right _ _, (hL c hc).2⟩⟩
   intro c hc c' hc' he
   exact gcd_injOn_aux Z w hka (hL c hc).1 (hL c' hc').1 (hL c hc).2 he
 

@@ -197,7 +197,7 @@ theorem _root_.Verifier.rbrKnowledgeSoundness_empty_relOut
       exact hx
   }, ?_⟩
   intro stmtIn witIn prover i
-  refine le_trans (le_of_eq ?_) (zero_le _)
+  refine le_trans (le_of_eq ?_) (zero_le)
   rw [probEvent_eq_zero_iff]
   rintro ⟨transcript, challenge, log⟩ _ ⟨witMid, _, hyes, _⟩
   exact Fin.succ_ne_zero i.1 hyes
@@ -230,7 +230,7 @@ theorem stirFinalVerifier_rbrKnowledgeSoundness_pending (P : Set F) :
       exact hrel
   }, ?_⟩
   intro stmtIn witIn prover i
-  refine le_trans (le_of_eq ?_) (zero_le _)
+  refine le_trans (le_of_eq ?_) (zero_le)
   rw [probEvent_eq_zero_iff]
   rintro ⟨transcript, challenge, log⟩ _ ⟨witMid, hnot, hyes⟩
   exact hnot hyes

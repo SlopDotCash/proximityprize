@@ -33,7 +33,7 @@ This file closes the seam split for plain append *soundness*, mirroring what
 
 All side conditions are the standard honest-implementation facts already required by the two
 seam keystones (`himplSP`/`himplNF`/`himplVB`; vacuous for `oSpec = []ₒ`), plus the
-`[oSpec.Fintype] [oSpec.Inhabited]` instances inherited from the challenge-seam toolkit.
+`[∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]` instances inherited from the challenge-seam toolkit.
 -/
 
 open OracleComp OracleSpec ProtocolSpec
@@ -54,7 +54,7 @@ regardless of the direction of the seam round: the seam direction is read off
 (`Prover.append_dir_natAdd`) and the proof defers to the message-seam
 (`append_soundness_msg`) or challenge-seam (`append_soundness_challenge`) keystone. -/
 theorem append_soundness_total_pos
-    [oSpec.Fintype] [oSpec.Inhabited] [Inhabited Stmt₂]
+    [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)] [Inhabited Stmt₂]
     (V₁ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁)
     (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     {lang₁ : Set Stmt₁} {lang₂ : Set Stmt₂} {lang₃ : Set Stmt₃} {ε₁ ε₂ : ℝ≥0}
@@ -65,7 +65,7 @@ theorem append_soundness_total_pos
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
     (V₁.append V₂).soundness init impl lang₁ lang₃ (ε₁ + ε₂) := by
   have hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n))
       = pSpec₂.dir (⟨0, hn⟩ : Fin n) := by
@@ -83,7 +83,7 @@ theorem append_soundness_total_pos
 (`Append.lean`) for every nonempty trailing protocol, under the standard
 honest-implementation side conditions. -/
 theorem appendSoundnessResidual_total_pos
-    [oSpec.Fintype] [oSpec.Inhabited] [Inhabited Stmt₂]
+    [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)] [Inhabited Stmt₂]
     (V₁ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁)
     (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     {lang₁ : Set Stmt₁} {lang₂ : Set Stmt₂} {lang₃ : Set Stmt₃} {ε₁ ε₂ : ℝ≥0}
@@ -94,7 +94,7 @@ theorem appendSoundnessResidual_total_pos
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
     Verifier.appendSoundnessResidual (init := init) (impl := impl)
       (lang₁ := lang₁) (lang₂ := lang₂) (lang₃ := lang₃) V₁ V₂ h₁ h₂ :=
   append_soundness_total_pos V₁ V₂ h₁ h₂ hn himplSP himplNF himplVB
@@ -128,7 +128,7 @@ Proof: `OracleVerifier.soundness` is definitionally `toVerifier`-level; rewrite 
 `toVerifier` via the proven binary fusion `oracleVerifier_append_toVerifier`, then apply the
 unconditional plain challenge-seam keystone `Verifier.append_soundness_challenge`. -/
 theorem append_soundness_challenge
-    [oSpec.Fintype] [oSpec.Inhabited] [Inhabited (Stmt₂ × ∀ i, OStmt₂ i)]
+    [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)] [Inhabited (Stmt₂ × ∀ i, OStmt₂ i)]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
     [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
@@ -142,7 +142,7 @@ theorem append_soundness_challenge
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
       (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).soundness
         init impl lang₁ lang₃ (soundnessError₁ + soundnessError₂) := by
   unfold OracleVerifier.soundness at h₁ h₂ ⊢
@@ -155,7 +155,7 @@ theorem append_soundness_challenge
 `OracleVerifier.append_soundness` no longer needs an unproved hypothesis at either seam
 direction. -/
 theorem appendSoundnessResidual_challenge
-    [oSpec.Fintype] [oSpec.Inhabited] [Inhabited (Stmt₂ × ∀ i, OStmt₂ i)]
+    [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)] [Inhabited (Stmt₂ × ∀ i, OStmt₂ i)]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
     [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
@@ -169,7 +169,7 @@ theorem appendSoundnessResidual_challenge
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
     appendSoundnessResidual (init := init) (impl := impl) V₁ V₂ h₁ h₂ :=
   append_soundness_challenge V₁ V₂ h₁ h₂ hn hDir hDir₂ himplSP himplNF himplVB
 
@@ -177,7 +177,7 @@ theorem appendSoundnessResidual_challenge
 oracle-level analogue of `Verifier.append_soundness_total_pos`: case on the seam direction
 and defer to the message-seam or challenge-seam oracle keystone. -/
 theorem append_soundness_total_pos
-    [oSpec.Fintype] [oSpec.Inhabited] [Inhabited (Stmt₂ × ∀ i, OStmt₂ i)]
+    [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)] [Inhabited (Stmt₂ × ∀ i, OStmt₂ i)]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
     [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
@@ -189,7 +189,7 @@ theorem append_soundness_total_pos
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
       (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).soundness
         init impl lang₁ lang₃ (soundnessError₁ + soundnessError₂) := by
   have hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n))
@@ -209,7 +209,7 @@ for every nonempty trailing protocol.  This is the drop-in provider for the `h_r
 hypotheses of the Batched-FRI security tower and the FRI top seam: no seam-direction
 inspection needed at the call site. -/
 theorem appendSoundnessResidual_total_pos
-    [oSpec.Fintype] [oSpec.Inhabited] [Inhabited (Stmt₂ × ∀ i, OStmt₂ i)]
+    [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)] [Inhabited (Stmt₂ × ∀ i, OStmt₂ i)]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
     [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
@@ -221,7 +221,7 @@ theorem appendSoundnessResidual_total_pos
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
     appendSoundnessResidual (init := init) (impl := impl) V₁ V₂ h₁ h₂ :=
   append_soundness_total_pos V₁ V₂ h₁ h₂ hn himplSP himplNF himplVB
 

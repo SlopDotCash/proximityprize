@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 -- ([propext, Classical.choice, Quot.sound] per decl; verified 2026-06-10 via
 -- `lake env lean /tmp/a2_prodmarginal.lean`).
 import ArkLib.Data.Probability.MarginalBound
+import ArkLib.OracleReduction.Prelude
 
 /-!
 # Issue #335 (A2) — PRODUCT-marginal domination for one uniformly-drawn vector challenge
@@ -64,7 +65,8 @@ end Counting
 
 section VectorMarginal
 
-variable {α β : Type u} {m : Type u → Type v} [Monad m] [HasEvalSPMF m]
+variable {α β : Type u} {m : Type u → Type v} [Monad m] [MonadAttach m]
+    [MonadLiftT m SPMF] [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
 variable {F : Type u} [Fintype F] {t : ℕ}
 
 /-- **Product-marginal domination (card form, direct).**  If the first stage's output

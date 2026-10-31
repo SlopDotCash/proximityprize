@@ -692,7 +692,7 @@ theorem card_S (j : Fin 3) : (S j).card = 715128832 := by
 
 theorem card_E (j : Fin 3) : (E j).card = 358612992 := by
   have hcount : ((Finset.range 1024).filter fun b => b ∉ SLab j).card = 342 := by
-    have hkey := Finset.filter_card_add_filter_neg_card_eq_card
+    have hkey := Finset.card_filter_add_card_filter_not
       (s := Finset.range 1024) (p := fun b => b ∈ SLab j)
     rw [filter_mem_SLab, card_SLab, Finset.card_range] at hkey
     omega
@@ -798,7 +798,6 @@ theorem slot_injective {j j' : Fin 3} {i i' : Fin (2 ^ 30)}
         * g ^ (i' : ℕ) := by
     have e1 := congrArg (fun z => ((nd j' (lb i')).2 : ZMod P) * z) hden
     have e2 := congrArg (fun z => ((nd j (lb i)).2 : ZMod P) * z) hden'
-    simp only at e1 e2
     have e3 : ((nd j' (lb i')).2 : ZMod P)
           * -(((nd j (lb i)).1 : ZMod P) * g ^ (i : ℕ))
         = ((nd j (lb i)).2 : ZMod P)
@@ -953,8 +952,9 @@ theorem firstPrime_rateHalf_mcaDeltaStar_le_syz6 :
   have hbridge : evalCode g (2 ^ 30) (2 ^ 29 - 1)
       = ((prodCode : Submodule (ZMod P) (Fin (2 ^ 30) → ZMod P)) :
           Set (Fin (2 ^ 30) → ZMod P)) := by
-    simpa only [prodCode, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using
-      (evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1))
+    have h := evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1)
+    rw [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] at h
+    simpa only [prodCode] using h
   rw [hbridge]
   have hbad : ∀ γ ∈ badSet,
       mcaEvent (prodCode : Set (Fin (2 ^ 30) → ZMod P)) δnew (ustack 0) (ustack 1) γ := by

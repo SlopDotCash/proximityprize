@@ -590,9 +590,8 @@ theorem stackBadCount_smul_right
         =
       (Finset.univ.filter (fun γ : F =>
           mcaEvent (F := F) (C : Set (ι -> F)) δ u₀ u₁ (γ * s))) := by
-    ext γ
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and,
-      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+    apply Finset.filter_congr
+    intro γ _
     exact mcaEvent_smul_right C hs γ
   rw [hset]
   exact card_filter_comp_equiv
@@ -616,9 +615,8 @@ theorem stackBadCount_shift
         =
       (Finset.univ.filter (fun γ : F =>
           mcaEvent (F := F) (C : Set (ι -> F)) δ u₀ u₁ (β + γ))) := by
-    ext γ
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and,
-      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+    apply Finset.filter_congr
+    intro γ _
     exact mcaEvent_shift C β γ
   rw [hset]
   exact card_filter_comp_equiv
@@ -634,9 +632,8 @@ theorem stackBadCount_smul_both
   classical
   unfold StackBadCount
   congr 1
-  ext γ
-  simp only [Finset.mem_filter, Finset.mem_univ, true_and,
-    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+  apply Finset.filter_congr
+  intro γ _
   exact mcaEvent_smul_both C hs γ
 
 /-- Code-preserving coordinate permutations preserve the actual bad-scalar count. -/
@@ -649,9 +646,8 @@ theorem stackBadCount_comp_perm
   classical
   unfold StackBadCount
   congr 1
-  ext γ
-  simp only [Finset.mem_filter, Finset.mem_univ, true_and,
-    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+  apply Finset.filter_congr
+  intro γ _
   exact mcaEvent_comp_perm_iff C σ hσ hσ' (γ := γ)
 
 /-- The combined affine-rotation stack transform used by the A5 orbit probes. -/

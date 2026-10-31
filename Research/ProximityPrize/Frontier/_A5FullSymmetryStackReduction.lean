@@ -73,6 +73,7 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
 /-! ## The missing generator: count-level codeword-translation invariance -/
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Codeword translation preserves the actual bad-scalar count.** Translating a stack by a pair
 of codewords `(u₀,u₁) ↦ (u₀+c₀, u₁+c₁)`, `c₀,c₁ ∈ C`, leaves `StackBadCount` unchanged.  This is
 the count-level analogue of `prob_mcaEvent_translate`; it was the one symmetry generator absent at

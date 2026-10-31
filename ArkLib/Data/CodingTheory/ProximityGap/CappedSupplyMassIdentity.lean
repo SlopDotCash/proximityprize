@@ -164,7 +164,8 @@ theorem sum_g_agreeSet_card (c : Fin n → F) (g : ℕ → ℕ) :
       agreeSet_fiber_card]
   rw [Finset.sum_congr rfl hinner]
   -- group the powerset by cardinality
-  rw [Finset.powerset_card_disjiUnion, Finset.sum_disjiUnion]
+  rw [Finset.powerset_card_disjiUnion]
+  erw [Finset.sum_disjiUnion]
   rw [Finset.card_univ, Fintype.card_fin]
   refine Finset.sum_congr rfl fun j _ => ?_
   have hcardS : ∀ S ∈ (Finset.univ : Finset (Fin n)).powersetCard j,
@@ -378,13 +379,12 @@ theorem absorb_choose_sum (q n' t : ℕ) (hq : 1 ≤ q) (htn : t ≤ n') :
       simp only [Finset.mem_filter, Finset.mem_range]; omega
     · intro j hj
       simp only [Finset.mem_filter, Finset.mem_range] at hj
-      simp only []; omega
+      omega
     · intro i hi
       simp only [Finset.mem_range] at hi
-      simp only []; omega
+      omega
     · intro j hj
       simp only [Finset.mem_filter, Finset.mem_range] at hj
-      simp only []
       have hjt : t + (j - t) = j := by omega
       have hexp : n' - t - (j - t) = n' - j := by omega
       rw [hjt, hexp]

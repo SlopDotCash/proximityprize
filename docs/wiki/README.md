@@ -8,6 +8,8 @@ For reusable cross-cutting workflows that are not tied to one repo area, see
 
 ## Start Here
 
+- [`upstream-proof-transfer.md`](upstream-proof-transfer.md) - pinned external proof packages, native backports, and verification boundaries.
+
 - [`research-site.md`](research-site.md) - research website sources, CI, deployment, and readback.
 
 - [`quickstart.md`](quickstart.md) - canonical agent command and validation playbook.

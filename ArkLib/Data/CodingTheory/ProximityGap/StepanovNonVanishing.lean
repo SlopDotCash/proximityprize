@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import Mathlib.FieldTheory.RatFunc.Basic
+import Mathlib.FieldTheory.KummerPolynomial
+import Mathlib.FieldTheory.Finite.Basic
+import Mathlib.RingTheory.Polynomial.UniqueFactorization
+import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
+import Mathlib.Tactic
 
 /-!
 # Issue #232 — the Stepanov non-vanishing, PROVEN (squarefree / integrally-closed argument).

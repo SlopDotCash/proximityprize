@@ -394,12 +394,10 @@ instance : ∀ i, VCVCompatible ((pSpecFinalSumcheckStep (L:=L)).Challenge i)
       toInhabited := ⟨(0 : L)⟩
       type_decidableEq' := inferInstanceAs (DecidableEq L) }
 
-instance : OracleSpec.Fintype [(pSpecFinalSumcheckStep (L:=L)).Challenge]ₒ where
-  fintype_B
+instance : ∀ t, Fintype ([(pSpecFinalSumcheckStep (L:=L)).Challenge]ₒ.Range t)
   | ⟨⟨⟨0, _⟩, _⟩, _⟩ => inferInstanceAs (Fintype L)
 
-instance : OracleSpec.Inhabited [(pSpecFinalSumcheckStep (L:=L)).Challenge]ₒ where
-  inhabited_B
+instance : ∀ t, Inhabited ([(pSpecFinalSumcheckStep (L:=L)).Challenge]ₒ.Range t)
   | ⟨⟨⟨0, _⟩, _⟩, _⟩ => ⟨(0 : L)⟩
 
 instance : ∀ i, SampleableType ((pSpecCoreInteraction 𝔽q β (ϑ:=ϑ)

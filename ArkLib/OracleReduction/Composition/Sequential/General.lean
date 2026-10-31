@@ -16,6 +16,9 @@ import ArkLib.OracleReduction.Composition.Sequential.Append
   from the case of composing two reductions.
 -/
 
+-- Allow the dependent Fin indices to unfold during Lean 4.34 elaboration.
+set_option backward.isDefEq.respectTransparency false
+
 open ProtocolSpec OracleComp
 
 universe u v
@@ -457,7 +460,7 @@ theorem seqCompose_perfectCompleteness_of_append {m : ℕ}
   induction m with
   | zero =>
     rw [seqCompose_zero]
-    simpa using
+    exact
       (Reduction.id_perfectCompleteness (init := init) (impl := impl) (rel := rel 0))
   | succ m ih =>
     change ((R 0).append
@@ -495,7 +498,8 @@ theorem seqCompose_completeness_of_append {m : ℕ}
   induction m with
   | zero =>
     rw [seqCompose_zero, Fin.sum_univ_zero]
-    simpa [Reduction.perfectCompleteness] using
+    change (Reduction.id).perfectCompleteness init impl (rel 0) (rel 0)
+    exact
       (Reduction.id_perfectCompleteness (init := init) (impl := impl) (rel := rel 0))
   | succ m ih =>
     rw [Fin.sum_univ_succ]

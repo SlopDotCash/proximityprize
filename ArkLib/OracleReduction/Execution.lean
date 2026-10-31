@@ -7,6 +7,7 @@ Authors: ArkLib Contributors
 import ArkLib.OracleReduction.Basic
 import ArkLib.Data.Fin.Basic
 import ArkLib.ToVCVio.OracleComp.EvalDist
+import VCVio.OracleComp.QueryTracking.LoggingOracle
 
 /-!
   # Execution Semantics of Interactive Oracle Reductions
@@ -840,7 +841,8 @@ variable {α : Type} {pSpec : ProtocolSpec 1}
 lemma oracleComp_toOptionT_eq_lift (mx : OracleComp oSpec α) :
     ((mx : OptionT (OracleComp oSpec) α)) = OptionT.lift mx := by
   rw [OptionT.ext_iff]
-  rw [show OptionT.lift mx = OptionT.mk (some <$> mx) by rfl]
+  rw [show OptionT.lift mx = OptionT.mk (some <$> mx) by
+    simp only [OptionT.lift, map_eq_pure_bind]]
   rw [show ((mx : OptionT (OracleComp oSpec) α)).run =
       some <$> (monadLift mx : OracleComp oSpec α) by
         change (monadLift mx : OptionT (OracleComp oSpec) α).run = _
@@ -861,7 +863,8 @@ lemma liftM_optionT_lift_eq_monadLift_liftM (mx : OracleComp oSpec α) :
         OracleComp (oSpec + [pSpec.Challenge]ₒ) _)) (OptionT.lift mx).run) =
       (monadLift (liftM mx : OracleComp (oSpec + [pSpec.Challenge]ₒ) α) :
         OptionT (OracleComp (oSpec + [pSpec.Challenge]ₒ)) α).run
-  rw [show OptionT.lift mx = OptionT.mk (some <$> mx) by rfl]
+  rw [show OptionT.lift mx = OptionT.mk (some <$> mx) by
+    simp only [OptionT.lift, map_eq_pure_bind]]
   rw [show (monadLift (liftM mx : OracleComp (oSpec + [pSpec.Challenge]ₒ) α) :
       OptionT (OracleComp (oSpec + [pSpec.Challenge]ₒ)) α).run =
       some <$> (monadLift (liftM mx : OracleComp (oSpec + [pSpec.Challenge]ₒ) α) :
@@ -958,7 +961,7 @@ theorem Prover.runToRound_one_of_prover_first [ProverOnly pSpec] (stmt : StmtIn)
     contradiction
   · congr; funext a; congr; simp [default, Transcript.concat]; funext i
     have : i = 0 := by aesop
-    rw [this]; simp [Fin.snoc]
+    rw [this]; simp [Fin.snoc]; rfl
 
 @[simp]
 theorem Prover.runToRound_one_of_verifier_first [VerifierOnly pSpec] (stmt : StmtIn) (wit : WitIn)
@@ -976,13 +979,14 @@ theorem Prover.runToRound_one_of_verifier_first [VerifierOnly pSpec] (stmt : Stm
     funext challenge
     congr 1
     funext f
-    simp only [default, Transcript.concat, Prod.mk.injEq]
-    constructor
+    simp only [default, Transcript.concat]
+    apply Prod.ext
     · funext ⟨i, hi⟩
       have h : i = 0 := by omega
       subst h
       simp [Fin.snoc]
-    · trivial
+      rfl
+    · rfl
   · -- P_to_V case: contradiction
     have : Direction.V_to_P = .P_to_V := by rw [← this, hDir]
     contradiction

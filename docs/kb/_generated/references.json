@@ -1,5 +1,5 @@
 {
-  "count": 58,
+  "count": 60,
   "entries": {
     "ACFY24": {
       "authors": [
@@ -376,6 +376,28 @@
       "url": "https://eprint.iacr.org/2018/962",
       "venue": "",
       "year": "2018"
+    },
+    "BRW26": {
+      "authors": [
+        "Benedikt B\u00fcnz",
+        "Ron D. Rothblum",
+        "William Wang"
+      ],
+      "authors_text": "Benedikt B\u00fcnz and Ron D. Rothblum and William Wang",
+      "doi": "",
+      "entry_type": "misc",
+      "fields": {
+        "author": "Benedikt B\u00fcnz and Ron D. Rothblum and William Wang",
+        "howpublished": "Cryptology {ePrint} Archive, Paper 2026/1329",
+        "title": "Flock: Fast Proving for Batch Boolean Computations",
+        "url": "https://eprint.iacr.org/2026/1329",
+        "year": "2026"
+      },
+      "key": "BRW26",
+      "title": "Flock: Fast Proving for Batch Boolean Computations",
+      "url": "https://eprint.iacr.org/2026/1329",
+      "venue": "",
+      "year": "2026"
     },
     "BSS08": {
       "authors": [
@@ -1126,6 +1148,23 @@
       "url": "https://eprint.iacr.org/2023/323",
       "venue": "",
       "year": "2023"
+    },
+    "RSG": {
+      "authors": [],
+      "authors_text": "",
+      "doi": "",
+      "entry_type": "misc",
+      "fields": {
+        "howpublished": "Note, leanEthereum/leanVM-b repository",
+        "note": "Undated note; separately based packing and evaluation extensions",
+        "title": "Ring switching, generalized",
+        "url": "https://github.com/leanEthereum/leanVM-b/blob/main/misc/ring-switching-generalized.pdf"
+      },
+      "key": "RSG",
+      "title": "Ring switching, generalized",
+      "url": "https://github.com/leanEthereum/leanVM-b/blob/main/misc/ring-switching-generalized.pdf",
+      "venue": "",
+      "year": ""
     },
     "STIR2005": {
       "authors": [

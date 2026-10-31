@@ -247,6 +247,7 @@ noncomputable def overlapGraph
     K ≤ (fullAgreement dom (u 0) (u 1) x (family.q x) ∩
       fullAgreement dom (u 0) (u 1) y (family.q y)).card
   symm := by
+    refine ⟨?_⟩
     rintro x y ⟨hne, hx, hy, hcard⟩
     exact ⟨hne.symm, hy, hx, by
       simpa only [Finset.inter_comm] using hcard⟩

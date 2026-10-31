@@ -266,31 +266,28 @@ theorem second_weil_collision_ceiling_gap :
   norm_num [inversionFloor, secondWeilNumerator, productionN, secondR, secondP,
     ArkLib.ProximityGap.PrizeShapePrimeP30Second.P]
 
+-- Keep the enormous class-size exponent symbolic during kernel checking.
+private theorem cyclotomic_threshold_fails_of_bounds (p n : ℕ)
+    (hp : p < 2 ^ 160) (hn : 320 < n) : p ^ 2 < 14 ^ n := by
+  calc
+    p ^ 2 < (2 ^ 160) ^ 2 := Nat.pow_lt_pow_left hp (by decide)
+    _ = 2 ^ 320 := by rw [← pow_mul]
+    _ < 2 ^ n := Nat.pow_lt_pow_right (by decide) hn
+    _ < 14 ^ n := Nat.pow_lt_pow_left (by decide) (by omega)
+
 /-- The Do Duc--Leung--Schmidt sufficient threshold fails in the opposite direction at the first
 production prime.  Since `P = 1 mod firstClassSize`, `ord_firstClassSize(P)=1`; squaring their
 condition would require `14^firstClassSize < P^2`. -/
 theorem first_cyclotomicNumber_threshold_fails : firstP ^ 2 < 14 ^ firstClassSize := by
-  calc
-    firstP ^ 2 < (2 ^ 160) ^ 2 := Nat.pow_lt_pow_left (by
-      norm_num [firstP, ArkLib.ProximityGap.PrizeShapePrimeP30.P]) (by norm_num)
-    _ = 2 ^ (160 * 2) := by rw [pow_mul]
-    _ = 2 ^ 320 := by norm_num
-    _ < 2 ^ firstClassSize := Nat.pow_lt_pow_right (by norm_num) (by
-      norm_num [firstClassSize])
-    _ < 14 ^ firstClassSize := Nat.pow_lt_pow_left (by norm_num) (by
-      norm_num [firstClassSize])
+  apply cyclotomic_threshold_fails_of_bounds
+  · norm_num [firstP, ArkLib.ProximityGap.PrizeShapePrimeP30.P]
+  · norm_num [firstClassSize]
 
 /-- The same cyclotomic-number threshold is astronomically false at the second production prime. -/
 theorem second_cyclotomicNumber_threshold_fails : secondP ^ 2 < 14 ^ secondClassSize := by
-  calc
-    secondP ^ 2 < (2 ^ 160) ^ 2 := Nat.pow_lt_pow_left (by
-      norm_num [secondP, ArkLib.ProximityGap.PrizeShapePrimeP30Second.P]) (by norm_num)
-    _ = 2 ^ (160 * 2) := by rw [pow_mul]
-    _ = 2 ^ 320 := by norm_num
-    _ < 2 ^ secondClassSize := Nat.pow_lt_pow_right (by norm_num) (by
-      norm_num [secondClassSize])
-    _ < 14 ^ secondClassSize := Nat.pow_lt_pow_left (by norm_num) (by
-      norm_num [secondClassSize])
+  apply cyclotomic_threshold_fails_of_bounds
+  · norm_num [secondP, ArkLib.ProximityGap.PrizeShapePrimeP30Second.P]
+  · norm_num [secondClassSize]
 
 end ArkLib.ProximityGap.Frontier.ANT46ProjectedCharacterNoGo
 

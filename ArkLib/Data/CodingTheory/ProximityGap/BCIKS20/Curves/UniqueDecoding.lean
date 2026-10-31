@@ -69,6 +69,7 @@ theorem RS_correlatedAgreement_curves_uniqueDecodingRegime {k deg : ℕ}
   exact RS_jointAgreement_of_goodCoeffsCurve_card_gt (k := k) (deg := deg)
     (domain := domain) (δ := δ) hk hδ u hS
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The `k = 0` corner of curves correlated agreement: a degree-0 "curve" is the
 constant word `u 0`, so any positive probability of closeness gives the plain
 closeness fact, and joint agreement follows from unique decoding. -/
@@ -79,10 +80,13 @@ theorem RS_correlatedAgreement_curves_k_zero {deg : ℕ} {domain : ι ↪ F} {δ
   classical
   unfold δ_ε_correlatedAgreementCurves
   intro u hprob
+  change (Fin (0 + 1) → ι → F) at u
   -- the curve is constant: ∑ t : Fin 1, r^t • u t = u 0
   have hconst : ∀ r : F, (∑ t : Fin (0 + 1), (r ^ (t : ℕ)) • u t) = u 0 := by
     intro r
-    simp
+    calc
+      _ = (r ^ (0 : ℕ)) • u 0 := Fin.sum_univ_one _
+      _ = u 0 := by simp only [pow_zero, one_smul]
   -- positive probability ⇒ nonempty good set (bridge at k = 0) ⇒ the constant fact
   have hS := card_RS_goodCoeffsCurve_gt_of_prob_gt_kn_div_q (k := 0) (deg := deg)
     (domain := domain) (δ := δ) u (by simpa using hprob)
@@ -91,10 +95,8 @@ theorem RS_correlatedAgreement_curves_k_zero {deg : ℕ} {domain : ι ↪ F} {δ
       rw [← Finset.card_pos]
       omega
     obtain ⟨z, hz⟩ := hne
-    have hz' := hz
-    simp only [RS_goodCoeffsCurve] at hz'
-    by_contra hp
-    simp [hp] at hz'
+    have hz' := (Finset.mem_filter.mp hz).2
+    simpa only [hconst z] using hz'
   -- unique-decode and collect the agreement set
   set e : ℕ := Nat.floor (δ * Fintype.card ι) with he
   have hdist : Δ₀(u 0, (ReedSolomon.code domain deg : Set (ι → F))) ≤ (e : ℕ∞) := by

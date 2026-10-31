@@ -27,7 +27,7 @@ union bound shared across issues #13 / #25 / #62 / #433.
    natural order; that proven theorem commutes the `snd` prover stage past the `V₁` verifier stage
    (state-preserving ⇒ distributionally independent) and bounds the bad event `stmtOut ∈ lang₃` —
    which factors through the intermediate `stmt₂ ∈ lang₂` — by `ε₁ + ε₂`.
-3. **Stage bounds** (the two remaining `sorry`s — the genuine per-phase soundness content). Each is
+3. **Stage bounds** (proved below). Each is
    `Vᵢ.soundness εᵢ` applied to the phase-`i` seam soundness prover (`prover.fstSound` /
    `prover.sndSound`), modulo the challenge-oracle-seam reconciliation (the appended game runs each
    phase's rounds under the *combined* challenge oracle, whereas `Vᵢ.soundness` runs them under
@@ -148,7 +148,7 @@ theorem liftM_optionT_run_eq_seam {α : Type}
 /-- **Phase-1 challenge-seam transfer, at `probEvent`.** Any event `P` on the appended phase-1 game
 (`liftM g` simulated under the *combined* challenge oracle) has the same probability as on `g`
 simulated under `pSpec₁`'s own challenge oracle. Lifts `evalDist_run'_challengeSeam_left` (a per-state
-`evalDist` equality on the `OracleComp` run) through the `init`-bind and `liftM`/`OptionT.run`
+`evalSPMF` equality on the `OracleComp` run) through the `init`-bind and `liftM`/`OptionT.run`
 coherence (`liftM_optionT_run_eq_seam`) to the full soundness game. -/
 theorem probEvent_seam_transfer_left {α : Type}
     (g : OptionT (OracleComp (oSpec + [pSpec₁.Challenge]ₒ)) α)
@@ -160,14 +160,14 @@ theorem probEvent_seam_transfer_left {α : Type}
     = Pr[P | init >>= fun s => (simulateQ
         (impl.addLift (challengeQueryImpl (pSpec := pSpec₁)) :
           QueryImpl _ (StateT σ ProbComp)) g.run).run' s] := by
-  have hed : evalDist (init >>= fun s => (simulateQ
+  have hed : evalSPMF (init >>= fun s => (simulateQ
         (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂)) :
           QueryImpl _ (StateT σ ProbComp))
         ((liftM g : OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) α)).run).run' s)
-      = evalDist (init >>= fun s => (simulateQ
+      = evalSPMF (init >>= fun s => (simulateQ
         (impl.addLift (challengeQueryImpl (pSpec := pSpec₁)) :
           QueryImpl _ (StateT σ ProbComp)) g.run).run' s) := by
-    rw [evalDist_bind, evalDist_bind]
+    rw [evalSPMF_bind, evalSPMF_bind]
     refine bind_congr fun s => ?_
     rw [liftM_optionT_run_eq_seam]
     exact OracleReduction.evalDist_run'_challengeSeam_left impl g.run s
@@ -211,11 +211,11 @@ theorem probEvent_seam_transfer_right {α : Type}
     = Pr[P | (simulateQ
         (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) :
           QueryImpl _ (StateT σ ProbComp)) g.run).run' s'] := by
-  have hed : evalDist ((simulateQ
+  have hed : evalSPMF ((simulateQ
         (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂)) :
           QueryImpl _ (StateT σ ProbComp))
         ((liftM g : OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) α)).run).run' s')
-      = evalDist ((simulateQ
+      = evalSPMF ((simulateQ
         (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) :
           QueryImpl _ (StateT σ ProbComp)) g.run).run' s') := by
     rw [liftM_optionT_run_eq_seam_right]
@@ -240,7 +240,7 @@ theorem append_soundness_msg'
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
     (V₁.append V₂).soundness init impl lang₁ lang₃ (ε₁ + ε₂) := by
   unfold Verifier.soundness
   intro WitIn WitOut witIn prover stmtIn hstmtIn
@@ -314,7 +314,7 @@ theorem append_soundness_msg'
     -- The seam factoring lifts the `fst` prover's `Prover.run` *across `OracleComp`* first; reconcile
     -- that with `X`'s `OptionT`-first lift via `lift_oc_optionT_coh`, then push the lawful `OptionT`
     -- lift through the bind/pure and cross the `V₁`-leg seam with `OracleReduction.hcoh`.
-    -- Transport the body through `ho` at the `evalDist` level (a body `rw`/`simp` trips the
+    -- Transport the body through `ho` at the `evalSPMF` level (a body `rw`/`simp` trips the
     -- `FreeM.mapM` whnf blow-up), then transfer the combined game over `liftM X` to the
     -- `pSpec₁`-oracle game over `X` via `probEvent_seam_transfer_left`.
     refine Eq.trans ?_ (probEvent_seam_transfer_left (pSpec₂ := pSpec₂)
@@ -323,11 +323,11 @@ theorem append_soundness_msg'
           (pure (x, s₂) : OptionT (OracleComp (oSpec + [pSpec₁.Challenge]ₒ)) _))
       (fun o => o.elim False fun p => p.2 ∈ lang₂))
     apply probEvent_congr' (fun _ _ => Iff.rfl)
-    rw [evalDist_bind, evalDist_bind]
+    rw [evalSPMF_bind, evalSPMF_bind]
     refine bind_congr fun s => ?_
     rw [show pImpl = (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂)) : QueryImpl _ (StateT σ ProbComp)) from rfl]
     apply congrArg (fun (oa : OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) _) =>
-        evalDist ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂)) : QueryImpl _ (StateT σ ProbComp)) oa.run).run' s))
+        evalSPMF ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂)) : QueryImpl _ (StateT σ ProbComp)) oa.run).run' s))
     rw [lift_oc_optionT_coh, liftM_bind]
     refine bind_congr fun x => ?_
     simp only [liftM_bind]
@@ -374,7 +374,7 @@ theorem append_soundness_msg'
         rw [probEvent_optionT_mk] at h2_bound
         exact h2_bound
       refine le_trans (le_of_eq ?_) h2_init
-      -- The per-state game `(...).run' s'` has the same `evalDist` as `(...).run' s` for every `s`
+      -- The per-state game `(...).run' s'` has the same `evalSPMF` as `(...).run' s` for every `s`
       -- (state independence), so the `init`-averaged game equals the `s'`-pinned one at `probEvent`.
       have heq : Pr[fun o => Option.elim o False (fun d => d.2 ∈ lang₃) |
             init >>= fun s => (simulateQ
@@ -384,13 +384,13 @@ theorem append_soundness_msg'
             init >>= fun _ => (simulateQ
               (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) : QueryImpl _ (StateT σ ProbComp))
               (Reduction.run p.2 p.1.2.1 { prover := Prover.sndSound prover, verifier := V₂ }).run).run' s'] := by
-        have hed : evalDist (init >>= fun s => (simulateQ
+        have hed : evalSPMF (init >>= fun s => (simulateQ
               (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) : QueryImpl _ (StateT σ ProbComp))
               (Reduction.run p.2 p.1.2.1 { prover := Prover.sndSound prover, verifier := V₂ }).run).run' s)
-            = evalDist (init >>= fun _ => (simulateQ
+            = evalSPMF (init >>= fun _ => (simulateQ
               (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) : QueryImpl _ (StateT σ ProbComp))
               (Reduction.run p.2 p.1.2.1 { prover := Prover.sndSound prover, verifier := V₂ }).run).run' s') := by
-          rw [evalDist_bind, evalDist_bind]
+          rw [evalSPMF_bind, evalSPMF_bind]
           refine bind_congr fun s => ?_
           exact evalDist_simulateQ_run'_state_indep _ (addLift_state_preserving impl himplSP)
             (addLift_value_blind impl himplVB) _ s s'
@@ -417,7 +417,7 @@ theorem append_soundness_msg'
     apply probEvent_congr' (fun _ _ => Iff.rfl)
     rw [show pImpl = (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂)) : QueryImpl _ (StateT σ ProbComp)) from rfl]
     apply congrArg (fun (oa : OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) _) =>
-        evalDist ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂)) : QueryImpl _ (StateT σ ProbComp)) oa.run).run' s'))
+        evalSPMF ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂)) : QueryImpl _ (StateT σ ProbComp)) oa.run).run' s'))
     rw [lift_oc_optionT_coh_right, liftM_bind]
     refine bind_congr fun a => ?_
     simp only [liftM_bind]
@@ -451,7 +451,7 @@ theorem append_soundness_msg_residual
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
     Verifier.appendSoundnessResidual (init := init) (impl := impl)
       (lang₁ := lang₁) (lang₂ := lang₂) (lang₃ := lang₃) V₁ V₂ h₁ h₂ :=
   append_soundness_msg' V₁ V₂ h₁ h₂ hn hDir hDir₂ himplSP himplNF himplVB
@@ -475,7 +475,7 @@ theorem append_soundness_msg
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
     (V₁.append V₂).soundness init impl lang₁ lang₃ (ε₁ + ε₂) :=
   Verifier.append_soundness V₁ V₂ h₁ h₂
     (append_soundness_msg_residual V₁ V₂ h₁ h₂ hn hDir hDir₂ himplSP himplNF himplVB)

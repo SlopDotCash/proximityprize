@@ -493,7 +493,7 @@ theorem mcaThresholdLattice_bracketed_of_residuals_and_epsCAGt
         GrandChallengesLattice.latticeIndexOf (ι := ι₀) δ_hi hδhi := by
   let wlo := mcaLowerWitness_of_residuals domain k η δ_lo ε_star
     hη hδ hδlo_le_one R hle
-  simpa [wlo, mcaThresholdExists_of_residuals] using
+  exact
     (GrandChallengesLattice.mcaThresholdLattice_bracketed_of_lowerWitness_and_epsCAGt
       (MC := ReedSolomon.code domain k) (ε_star := ε_star) (δ_hi := δ_hi)
       wlo hhi hδhi)
@@ -521,7 +521,7 @@ theorem mcaThresholdLattice_bracketed_of_residuals_and_upperWitness
         GrandChallengesLattice.latticeIndexOf (ι := ι₀) whi.δ hδhi := by
   let wlo := mcaLowerWitness_of_residuals domain k η δ_lo ε_star
     hη hδ hδlo_le_one R hle
-  simpa [wlo, mcaThresholdExists_of_residuals] using
+  exact
     (GrandChallengesLattice.mcaThresholdLattice_bracketed_of_witnesses
       (C := (ReedSolomon.code domain k : Set (ι₀ → F₀))) (ε_star := ε_star)
       wlo whi hδhi)
@@ -546,7 +546,7 @@ theorem mcaThreshold_eq_latticeIndexOf_residuals_and_upperWitness_adjacent
       GrandChallengesLattice.latticeIndexOf (ι := ι₀) δ_lo hδlo_le_one := by
   let wlo := mcaLowerWitness_of_residuals domain k η δ_lo ε_star
     hη hδ hδlo_le_one R hle
-  simpa [wlo, mcaThresholdExists_of_residuals] using
+  exact
     (GrandChallengesLattice.mcaThreshold_eq_latticeIndexOf_lowerWitness_of_adjacent
       (C := (ReedSolomon.code domain k : Set (ι₀ → F₀))) (ε_star := ε_star)
       wlo whi hδhi hadj)
@@ -578,12 +578,12 @@ theorem mcaThreshold_eq_latticeIndexOf_residuals_and_epsCAGt_adjacent
     MCAUpperWitness.ofEpsCAGt
       (MC := ReedSolomon.code domain k) (ε_star := ε_star) (δ := δ_hi) hhi
   have hδhi' : whi.δ ≤ 1 := by
-    simpa [whi] using hδhi
+    exact hδhi
   have hadj' :
       (GrandChallengesLattice.latticeIndexOf (ι := ι₀) whi.δ hδhi').val =
         (GrandChallengesLattice.latticeIndexOf (ι := ι₀) δ_lo hδlo_le_one).val + 1 := by
-    simpa [whi] using hadj
-  simpa [whi, hδhi'] using
+    exact hadj
+  exact
     (mcaThreshold_eq_latticeIndexOf_residuals_and_upperWitness_adjacent
       domain k η δ_lo ε_star hη hδ hδlo_le_one R hle whi hδhi' hadj')
 

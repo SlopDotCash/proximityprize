@@ -25,6 +25,9 @@ import ArkLib.OracleReduction.Security.RoundByRound
 
 set_option linter.style.longFile 4500
 
+-- Preserve unfolding of dependent transcript types during Lean 4.34 elaboration.
+set_option backward.isDefEq.respectTransparency false
+
 open OracleComp OracleSpec SubSpec
 
 universe u v
@@ -761,7 +764,11 @@ def RoundByRound.append
         -- peel one phase-2 round to `WitMid₂ 0`, then cross via `E₁.extractOut`
         have hwit₂ : WitMid₂ (⟨0, by omega⟩ : Fin n).castSucc :=
           E₂.extractMid ⟨0, by omega⟩
-            (verify stmt₁ (by simpa [show min ((idx : ℕ) + 1) m = m from by omega] using tr.fst))
+            (verify stmt₁ (by
+              have ht := tr.fst
+              dsimp only [Transcript, FullTranscript, Fin.val_succ] at ht
+              rw! (castMode := .all) [show min ((idx : ℕ) + 1) m = m from by omega] at ht
+              exact ht))
             (by simpa [hidx] using tr.snd) h1
         have hcs0eq : WitMid₂ (⟨0, by omega⟩ : Fin n).castSucc = Wit₂ := by
           rw [show (⟨0, by omega⟩ : Fin n).castSucc = (0 : Fin (n + 1)) from by ext; simp]
@@ -769,7 +776,11 @@ def RoundByRound.append
         have hwit₂' : Wit₂ := cast hcs0eq hwit₂
         have hout : WitMid₁ (Fin.last m) :=
           E₁.extractOut stmt₁
-            (by simpa [show min ((idx : ℕ) + 1) m = m from by omega] using tr.fst) hwit₂'
+            (by
+              have ht := tr.fst
+              dsimp only [Transcript, FullTranscript, Fin.val_succ] at ht
+              rw! (castMode := .all) [show min ((idx : ℕ) + 1) m = m from by omega] at ht
+              exact ht) hwit₂'
         -- the output slot is `WitMid₁ m` (`idx < m+1` since `idx = m`)
         rw [dif_pos (show (idx : ℕ) < m + 1 from by omega)]
         exact cast (congrArg WitMid₁ (Fin.ext (by
@@ -785,7 +796,11 @@ def RoundByRound.append
           simpa [show ¬ (idx : ℕ) + 1 < m + 1 from by omega] using h
         have hout : WitMid₂ (⟨(idx : ℕ) - m, by omega⟩ : Fin n).castSucc :=
           E₂.extractMid ⟨(idx : ℕ) - m, by omega⟩
-            (verify stmt₁ (by simpa [show min ((idx : ℕ) + 1) m = m from by omega] using tr.fst))
+            (verify stmt₁ (by
+              have ht := tr.fst
+              dsimp only [Transcript, FullTranscript, Fin.val_succ] at ht
+              rw! (castMode := .all) [show min ((idx : ℕ) + 1) m = m from by omega] at ht
+              exact ht))
             (by simpa [show (idx : ℕ) - m + 1 = (idx : ℕ).succ - m from by omega] using tr.snd) hin
         -- output slot is the phase-2 leg `WitMid₂ (idx - m)` (`¬ idx < m+1`)
         rw [dif_neg (show ¬ (idx : ℕ) < m + 1 from by omega)]
@@ -1262,11 +1277,11 @@ private theorem StateFunction.verify_not_mem_lang_of_toFun_full_neg
   have hrun : (V₁.run stmt tr) = (pure (verify stmt tr) : OptionT (OracleComp oSpec) Stmt₂) := by
     subst hVerify; rfl
   rw [hrun]
-  change some (verify stmt tr) ∈ _root_.support
+  change some (verify stmt tr) ∈ MonadAttach.support
     (StateT.run' (simulateQ impl (pure (some (verify stmt tr)) :
       OracleComp oSpec (Option Stmt₂))) s)
   rw [simulateQ_pure]
-  change some (verify stmt tr) ∈ _root_.support
+  change some (verify stmt tr) ∈ MonadAttach.support
     (Prod.fst <$> (pure (some (verify stmt tr)) : StateT σ ProbComp _).run s)
   rw [StateT.run_pure]
   simp [map_pure]
@@ -1308,15 +1323,20 @@ def StateFunction.append
     -- NOT conjoin `S₁(last)`: doomed-ness is carried by `verify … ∉ lang₂` through the language
     -- (see the statement-repair note above), which is exactly what makes `toFun_full` true.
       S₂ ⟨roundIdx - m, by omega⟩ (verify stmt₁
-        (by simp at h; simpa [min_eq_right_of_lt h] using transcript.fst))
+        (by
+          simp at h
+          have ht := transcript.fst
+          dsimp only [Transcript, FullTranscript, Fin.val_succ] at ht
+          rw! (castMode := .all) [min_eq_right_of_lt h] at ht
+          exact ht))
         (by simpa [h] using transcript.snd)
   toFun_empty := by
     intro stmt
     split
     · constructor <;> intro h
       · have h' := (S₁.toFun_empty stmt).mp h
-        convert h' using 2; exact funext fun i => i.elim0
-      · exact (S₁.toFun_empty stmt).mpr (by convert h using 2; exact funext fun i => i.elim0)
+        convert h' using 2 <;> first | rfl | exact funext fun i => i.elim0
+      · exact (S₁.toFun_empty stmt).mpr (by convert h using 2 <;> first | rfl | exact funext fun i => i.elim0)
     · exact absurd (Nat.zero_le m) ‹_›
   toFun_next := by
     intro roundIdx hDir stmt₁ tr hPrev msg
@@ -1336,7 +1356,7 @@ def StateFunction.append
         show Fin.vappend pSpec₁.Type pSpec₂.Type roundIdx = pSpec₁.Type ⟨roundIdx, hlt⟩
         rw [Fin.vappend_left_of_lt _ _ _ hlt]
       have key := S₁.toFun_next ⟨roundIdx, hlt⟩ hDir₁ stmt₁ _ hPrev (cast hmsgty msg)
-      convert key using 2
+      convert key using 2 <;> try rfl
       apply eq_of_heq
       apply HEq.trans (b := (Transcript.concat msg tr).fst)
       · exact cast_heq _ _
@@ -1412,7 +1432,9 @@ def StateFunction.append
       -- `roundIdx ≥ m`). All the `verify stmt₁ …` arguments below are this same transcript.
       have hmin : min (roundIdx : ℕ) m = m := by omega
       let trFst : pSpec₁.FullTranscript :=
-        (by simpa [hmin] using tr.fst : pSpec₁.FullTranscript)
+        cast (congrArg (fun k : Fin (m + 1) => pSpec₁.Transcript k)
+          (show (⟨min ((roundIdx : Fin (m + n)).castSucc : ℕ) m, by omega⟩ : Fin (m + 1))
+            = Fin.last m from Fin.ext hmin)) tr.fst
       have htrFst_heq : (trFst : pSpec₁.FullTranscript) ≍ tr.fst := cast_heq _ _
       -- The "clean" second-segment falsity:
       -- `¬ S₂ ((roundIdx - m).succ) (verify … trFst) (tr.snd ∘ msg₂)`.
@@ -1433,8 +1455,12 @@ def StateFunction.append
             intro hc; apply hPrev
             convert hc using 2 <;>
               first
+                | rfl
+                | (simpa only [Fin.val_last] using hrm')
                 | (ext; simp only [Fin.val_castSucc, Fin.val_last]; omega)
+                | omega
                 | exact HEq.trans (cast_heq _ _) htrFst_heq.symm
+                | exact eq_of_heq (HEq.trans (cast_heq _ _) htrFst_heq.symm)
           -- `verify stmt₁ trFst ∉ lang₂`
           have hNotMem := StateFunction.verify_not_mem_lang_of_toFun_full_neg
             init impl S₁ verify hVerify hInit _ _ hS1neg
@@ -1462,7 +1488,9 @@ def StateFunction.append
               intro hc; apply hS20
               convert hc using 2 <;>
                 first
+                  | rfl
                   | exact hcs0.symm
+                  | (funext i; exact i.elim0)
                   | (apply Function.hfunext (by congr 1; exact hcs0); intro a _ _; exact a.elim0)
           -- Transport `hcross` to the `⟨roundIdx - m, _⟩.succ` index (numerically equal to
           -- `0.succ`).
@@ -1487,8 +1515,11 @@ def StateFunction.append
             -- `hPrev`'s verify-argument is `tr.fst` massaged; it agrees with `trFst`
             convert hc using 2 <;>
               first
+                | rfl
                 | (ext; simp only [Fin.val_castSucc]; omega)
+                | omega
                 | exact HEq.trans (cast_heq _ _) htrFst_heq.symm
+                | exact eq_of_heq (HEq.trans (cast_heq _ _) htrFst_heq.symm)
           exact S₂.toFun_next ⟨(roundIdx : ℕ) - m, by omega⟩ hDir₂ _ tr.snd hPrev' (cast hmsgty₂ msg)
       -- Transport `hClean` to the actual goal `hS2` (fst unchanged, snd gains the new message).
       -- Rewrite `hClean`'s `⟨roundIdx - m, _⟩.succ` index to the goal's `⟨roundIdx.succ - m, _⟩`
@@ -1576,6 +1607,7 @@ def StateFunction.append
         intro hc; apply hNeg
         convert hc using 2 <;>
           first
+            | rfl
             | (ext; simp only [Fin.val_last]; omega)
             | (congr 1; exact eq_of_heq (HEq.trans (cast_heq _ _) (htFstHeq tr)))
       have hNotMem := StateFunction.verify_not_mem_lang_of_toFun_full_neg
@@ -1587,6 +1619,7 @@ def StateFunction.append
         refine (S₂.toFun_empty _).mpr ?_
         convert hc using 2 <;>
           first
+            | rfl
             | (apply Fin.ext; simp)
             | (funext i; exact i.elim0)
       have hPr := S₂.toFun_full (verify stmt₁ trFst) (FullTranscript.snd tr) hS2neg
@@ -1595,8 +1628,7 @@ def StateFunction.append
           = V₂.run (verify stmt₁ trFst) (FullTranscript.snd tr) := by
         subst hVerify
         show (do return ← V₂.verify (← (pure (verify stmt₁ trFst))) (FullTranscript.snd tr)) = _
-        rw [pure_bind]
-        simp only [Verifier.run, bind_pure]
+        simp only [pure_bind, Verifier.run, bind_pure]
       rw [hrun]; exact hPr
     · -- `n > 0`: last round index `m + n > m`, so `toFun (last) = S₂ (last) (verify …) tr.snd`.
       rw [dif_neg (show ¬ ((Fin.last (m + n)) : ℕ) ≤ m from by simp only [Fin.val_last]; omega)]
@@ -1608,6 +1640,7 @@ def StateFunction.append
         intro hc; apply hNeg
         convert hc using 2 <;>
           first
+            | rfl
             | (simp only [Fin.val_last]; omega)
             | -- `verify` on the two notions of phase-1 prefix agree
               (congr 1; exact eq_of_heq (HEq.trans (cast_heq _ _) (htFstHeq tr)))
@@ -1622,8 +1655,7 @@ def StateFunction.append
           = V₂.run (verify stmt₁ (FullTranscript.fst tr)) (FullTranscript.snd tr) := by
         subst hVerify
         show (do return ← V₂.verify (← (pure (verify stmt₁ (FullTranscript.fst tr)))) _) = _
-        rw [pure_bind]
-        simp only [Verifier.run, bind_pure]
+        simp only [pure_bind, Verifier.run, bind_pure]
       rw [hrun]; exact hPr
 
 end Verifier
@@ -2161,7 +2193,10 @@ theorem append_processRound_left_message (i : Fin m) (hDir₁ : pSpec₁.dir i =
         OracleComp (oSpec + [pSpec₁.Challenge]ₒ) _) :
         OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _)
       = liftM (P₁.sendMessage ⟨i, hDir₁⟩ s' : OracleComp oSpec _) := by
-    rfl
+    simpa only [liftComp_eq_liftM] using
+      (liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
+        (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
+        (fun t => rfl) (P₁.sendMessage ⟨i, hDir₁⟩ s'))
   rw [hcollapse]
   -- Normalize the RHS continuation `liftM (pure _) = pure _`.
   simp only [liftM_pure]
@@ -2175,7 +2210,7 @@ theorem append_processRound_left_message (i : Fin m) (hDir₁ : pSpec₁.dir i =
     (α' := pSpec₁.Message ⟨i, hDir₁⟩ × P₁.PrvState i.succ)
     (by rw [append_Message_castLE i hDir hDir₁, append_PrvState_succ i])
     (by rw [append_Transcript_succ i, append_PrvState_succ i])
-  · -- `sendMessage` HEq (lifted): both sides are oSpec→S lifts (direct vs transitive, defeq) of
+  · -- `sendMessage` HEq (lifted): both sides are the same direct oSpec→S lift of
     -- HEq-equal `sendMessage` computations (`append_sendMessage_left` + `s ≍ s'`).
     have hαeq : ((pSpec₁ ++ₚ pSpec₂).Message ⟨i.castLE (by omega), hDir⟩
           × (P₁.append P₂).PrvState (i.castLE (by omega)).succ)
@@ -2185,35 +2220,8 @@ theorem append_processRound_left_message (i : Fin m) (hDir₁ : pSpec₁.dir i =
         (P₁.sendMessage ⟨i, hDir₁⟩ s') :=
       (append_sendMessage_left i hDir hDir₁ s).trans
         (sendMessage_heq_congr rfl ((cast_heq _ _).trans hs))
-    -- Lift the base `sendMessage` HEq (`hbase`) through the lift to `S`.
-    --
-    -- The goal's two `liftM`s both lift `OracleComp oSpec → S`, but via DIFFERENT `MonadLiftT`
-    -- instances: the goal's RHS (`liftM_bind`-pushed `P₁.processRound` side) uses the *transitive*
-    -- instance `instMonadLiftTOfMonadLift oSpec (oSpec + [pSpec₁.Challenge]ₒ) S`, whereas the
-    -- appended-prover side and `liftM_heq_congr` use the *direct* instance
-    -- `instMonadLiftTOfMonadLift oSpec oSpec S`.  These two `monadLift`s are EQUAL as functions
-    -- (`liftComp_liftComp`: the transitive lift `liftComp (liftComp · mid) super` equals the direct
-    -- `liftComp · super`, the single-query coherence being `rfl` for the canonical `+` instances),
-    -- but they are NOT defeq at the `OracleComp` structure level.  We bridge them via
-    -- `liftComp_liftComp` and then apply `liftM_heq_congr` on the (common) direct instance.
-    -- The goal is `liftM (appended.sendMessage ..) ≍ liftM (P₁.sendMessage ..)`, where the LHS
-    -- lifts `OracleComp oSpec → S` via the DIRECT instance and the RHS via the TRANSITIVE instance
-    -- `oSpec → oSpec+[pSpec₁.Challenge]ₒ → S`.  Definitionally the transitive RHS unfolds to the
-    -- nested `liftComp (liftComp (P₁.sendMessage ..) (oSpec+[pSpec₁.Challenge]ₒ)) S`; expose that
-    -- via
-    -- `show`, collapse it to the direct `liftComp (P₁.sendMessage ..) S` via `liftComp_liftComp`,
-    -- and likewise expose the LHS as the direct `liftComp (appended.sendMessage ..) S`.
-    show HEq (OracleComp.liftComp ((P₁.append P₂).sendMessage ⟨i.castLE (by omega), hDir⟩ s)
-            (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-        (OracleComp.liftComp
-          (OracleComp.liftComp (P₁.sendMessage ⟨i, hDir₁⟩ s') (oSpec + [pSpec₁.Challenge]ₒ))
-          (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-    rw [liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
-      (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)
-      (P₁.sendMessage ⟨i, hDir₁⟩ s')]
-    -- Both sides are now `liftComp · (oSpec+[(pSpec₁++pSpec₂).Challenge]ₒ)` on the (HEq) base
-    -- `sendMessage` computations; close via the query-level `liftComp` HEq congruence.
-    exact liftComp_heq_congr (spec := oSpec)
+    -- Both computations now use the same direct lift after the collapse above.
+    exact liftM_heq_congr (spec := oSpec)
       (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) hαeq hbase
   · rintro ⟨msg, ns⟩ ⟨msg', ns'⟩ hmsg
     refine pure_heq_pure (spec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
@@ -2278,7 +2286,11 @@ theorem append_processRound_left_challenge (i : Fin m) (hDir₁ : pSpec₁.dir i
     have hcollapse : (liftM (liftM (P₁.receiveChallenge ⟨i, hDir₁⟩ s') :
           OracleComp (oSpec + [pSpec₁.Challenge]ₒ) _) :
           OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _)
-        = liftM (P₁.receiveChallenge ⟨i, hDir₁⟩ s' : OracleComp oSpec _) := by rfl
+        = liftM (P₁.receiveChallenge ⟨i, hDir₁⟩ s' : OracleComp oSpec _) := by
+      simpa only [liftComp_eq_liftM] using
+        (liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
+          (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
+          (fun t => rfl) (P₁.receiveChallenge ⟨i, hDir₁⟩ s'))
     rw [hcollapse]
     -- `receiveChallenge` returns `Challenge → State`; the bind result `f` is applied to the
     -- challenge.  HEq of the receiveChallenge computations:
@@ -2300,15 +2312,7 @@ theorem append_processRound_left_challenge (i : Fin m) (hDir₁ : pSpec₁.dir i
             → (P₁.append P₂).PrvState (i.castLE (by omega)).succ)
           = (pSpec₁.Challenge ⟨i, hDir₁⟩ → P₁.PrvState i.succ) := by
         rw [hChalEq, append_PrvState_succ i]
-      show HEq (OracleComp.liftComp ((P₁.append P₂).receiveChallenge ⟨i.castLE (by omega), hDir⟩ s)
-              (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-          (OracleComp.liftComp
-            (OracleComp.liftComp (P₁.receiveChallenge ⟨i, hDir₁⟩ s') (oSpec + [pSpec₁.Challenge]ₒ))
-            (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-      rw [liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
-        (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)
-        (P₁.receiveChallenge ⟨i, hDir₁⟩ s')]
-      exact liftComp_heq_congr (spec := oSpec)
+      exact liftM_heq_congr (spec := oSpec)
         (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) hαeq hrecvBase
     · -- `pure (concat chal t, f chal)`: concat + function-application HEq.
       rintro fA f₁ hf
@@ -2637,29 +2641,12 @@ theorem append_processRound_seam_message (hn : 0 < n)
     (β' := (pSpec₁ ++ₚ pSpec₂).Transcript (⟨m, by omega⟩ : Fin (m + n)).succ
       × (P₁.append P₂).PrvState (⟨m, by omega⟩ : Fin (m + n)).succ)
     (by rw [append_Message_seam hn hDir hDir₂, append_PrvState_seam_succ hn]) rfl ?_ ?_
-  · -- the (lifted) seam `sendMessage` HEq.  The LHS lifts `OracleComp oSpec → appended` via the
-    -- DIRECT instance; the RHS via the TRANSITIVE instance `oSpec → oSpec+[pSpec₁.Challenge]ₒ →
-    -- appended` (the default `MonadLiftT`).  Bridge the diamond via `liftComp_liftComp` (the two
-    -- are equal as functions, `rfl` single-query coherence), then close with `liftComp_heq_congr`
-    -- on the
-    -- (HEq) base `sendMessage` computations (`append_sendMessage_seam`).
+  · -- Transport the seam computation through the common direct lift.
     have hαeq : ((pSpec₁ ++ₚ pSpec₂).Message ⟨⟨m, by omega⟩, hDir⟩
           × (P₁.append P₂).PrvState (⟨m, by omega⟩ : Fin (m + n)).succ)
         = (pSpec₂.Message ⟨⟨0, hn⟩, hDir₂⟩ × P₂.PrvState (⟨0, hn⟩ : Fin n).succ) := by
       rw [append_Message_seam hn hDir hDir₂, append_PrvState_seam_succ hn]
-    show HEq (OracleComp.liftComp ((P₁.append P₂).sendMessage ⟨⟨m, by omega⟩, hDir⟩ rSeam.2)
-            (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-        (OracleComp.liftComp
-          (OracleComp.liftComp
-            (do
-              let ctxIn₂ ← P₁.output (cast (append_PrvState_seam_castSucc hn) rSeam.2)
-              P₂.sendMessage ⟨⟨0, hn⟩, hDir₂⟩ (P₂.input ctxIn₂) :
-              OracleComp oSpec (pSpec₂.Message ⟨⟨0, hn⟩, hDir₂⟩ × P₂.PrvState (⟨0, hn⟩ : Fin n).succ))
-            (oSpec + [pSpec₁.Challenge]ₒ))
-          (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-    rw [liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
-      (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)]
-    exact liftComp_heq_congr (spec := oSpec)
+    exact liftM_heq_congr (spec := oSpec)
       (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) hαeq
       (append_sendMessage_seam hn hDir hDir₂ rSeam.2)
   · -- trailing `pure (concat p.1, p.2)`: the appended seam `msg`/`ns` and the back-cast `pSpec₂`
@@ -2800,21 +2787,7 @@ theorem append_processRound_seam_challenge (hn : 0 < n)
             → (P₁.append P₂).PrvState (⟨m, by omega⟩ : Fin (m + n)).succ)
           = (pSpec₂.Challenge ⟨⟨0, hn⟩, hDir₂⟩ → P₂.PrvState (⟨0, hn⟩ : Fin n).succ) := by
         rw [hChalEq, append_PrvState_seam_succ hn]
-      show HEq (OracleComp.liftComp
-              ((P₁.append P₂).receiveChallenge ⟨⟨m, by omega⟩, hDir⟩ rSeam.2)
-              (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-          (OracleComp.liftComp
-            (OracleComp.liftComp
-              (do
-                let ctxIn₂ ← P₁.output (cast (append_PrvState_seam_castSucc hn) rSeam.2)
-                P₂.receiveChallenge ⟨⟨0, hn⟩, hDir₂⟩ (P₂.input ctxIn₂) :
-                OracleComp oSpec
-                  (pSpec₂.Challenge ⟨⟨0, hn⟩, hDir₂⟩ → P₂.PrvState (⟨0, hn⟩ : Fin n).succ))
-              (oSpec + [pSpec₁.Challenge]ₒ))
-            (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-      rw [liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
-        (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)]
-      exact liftComp_heq_congr (spec := oSpec)
+      exact liftM_heq_congr (spec := oSpec)
         (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) hαeq
         (append_receiveChallenge_seam hn hDir hDir₂ rSeam.2)
     · -- `pure (concat chal, f chal)`: concat + function-application HEq.
@@ -2997,16 +2970,7 @@ theorem append_processRound_natAdd_message (k : Fin n) (hk : 0 < (k : ℕ))
           × (P₁.append P₂).PrvState (Fin.natAdd m k).succ)
         = (pSpec₂.Message ⟨k, hDir₂⟩ × P₂.PrvState k.succ) := by
       rw [append_Message_natAdd k hDir hDir₂, append_PrvState_natAdd_interior_succ k hk]
-    show HEq (OracleComp.liftComp ((P₁.append P₂).sendMessage ⟨Fin.natAdd m k, hDir⟩ rInt.2)
-            (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-        (OracleComp.liftComp
-          (OracleComp.liftComp (P₂.sendMessage ⟨k, hDir₂⟩
-              (cast (append_PrvState_natAdd_castSucc (P₁ := P₁) (P₂ := P₂) k hk) rInt.2))
-            (oSpec + [pSpec₁.Challenge]ₒ))
-          (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-    rw [liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
-      (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)]
-    exact liftComp_heq_congr (spec := oSpec) (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
+    exact liftM_heq_congr (spec := oSpec) (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
       hαeq (append_sendMessage_natAdd k hk hDir hDir₂ rInt.2)
   · rintro ⟨msg, ns⟩ ⟨msg', ns'⟩ hmsg
     obtain ⟨hm, hns⟩ :=
@@ -3068,16 +3032,7 @@ theorem append_processRound_natAdd_challenge (k : Fin n) (hk : 0 < (k : ℕ))
             → (P₁.append P₂).PrvState (Fin.natAdd m k).succ)
           = (pSpec₂.Challenge ⟨k, hDir₂⟩ → P₂.PrvState k.succ) := by
         rw [hChalEq, append_PrvState_natAdd_interior_succ k hk]
-      show HEq (OracleComp.liftComp ((P₁.append P₂).receiveChallenge ⟨Fin.natAdd m k, hDir⟩ rInt.2)
-              (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-          (OracleComp.liftComp
-            (OracleComp.liftComp (P₂.receiveChallenge ⟨k, hDir₂⟩
-                (cast (append_PrvState_natAdd_castSucc (P₁ := P₁) (P₂ := P₂) k hk) rInt.2))
-              (oSpec + [pSpec₁.Challenge]ₒ))
-            (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
-      rw [liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
-        (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)]
-      exact liftComp_heq_congr (spec := oSpec)
+      exact liftM_heq_congr (spec := oSpec)
         (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) hαeq
         (append_receiveChallenge_natAdd k hk hDir hDir₂ rInt.2)
     · rintro fA f₂ hf
@@ -3181,9 +3136,6 @@ theorem append_processRound_natAdd_message_threaded (k : Fin n) (hk : 0 < (k : �
   · funext a_1
     refine Prod.ext ?_ rfl
     exact (eq_of_heq (ProtocolSpec.Transcript.appendRight_concat T₁ a_1.1 a.1)).symm
-  · exact Prover.liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
-      (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)
-      (P₂.sendMessage ⟨k, hDir₂⟩ a.2)
 
 /-- **Threaded right interior-round `processRound` (challenge branch).**  The `V_to_P` analogue of
 `append_processRound_natAdd_message_threaded`: same `appendRight`-bridge invariant, via the challenge
@@ -3228,9 +3180,6 @@ theorem append_processRound_natAdd_challenge_threaded (k : Fin n) (hk : 0 < (k :
     · funext a_1
       refine Prod.ext ?_ rfl
       exact (eq_of_heq (ProtocolSpec.Transcript.appendRight_concat T₁ ch a.1)).symm
-    · exact Prover.liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
-        (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)
-        (P₂.receiveChallenge ⟨k, hDir₂⟩ a.2)
 
 /-- **Right-block interior run characterization (folded).**  The appended prover's `continueFromTo`
 over the *interior* right rounds (`k₀ .. k₀+j`, `k₀ ≥ 1`, no seam) is the `appendRight`-bridged image
@@ -3294,7 +3243,7 @@ theorem append_continueFromTo_right_interior
         (⟨m + ((k₀ : ℕ) + i), by omega⟩ : Fin (m + n)) hne
         (Transcript.appendRight T₁ r₂.1,
           cast (append_PrvState_natAdd_castSucc (P₁ := P₁) (P₂ := P₂) k₀ hk₀).symm r₂.2)
-      convert h using 2 <;> (ext; simp; omega)
+      convert h using 2 <;> first | rfl | omega | (ext; simp; omega)
     rw [hstep]
     have ihi := ih (by omega)
     rw [eq_of_heq ihi]
@@ -3308,7 +3257,7 @@ theorem append_continueFromTo_right_interior
         intro h; have := congrArg Fin.val h; simp at this; omega
       have h := Prover.continueFromTo_succ_of_ne P₂ stmt₂ wit₂ k₀.castSucc
         (⟨(k₀:ℕ)+i, by omega⟩ : Fin n) hne2 r₂
-      convert h using 2 <;> (ext; simp; omega)
+      convert h using 2 <;> first | rfl | omega | (ext; simp; omega)
     rw [hP2, bind_pure_comp]
     have hdir0 : (pSpec₁ ++ₚ pSpec₂).dir (Fin.natAdd m (⟨(k₀:ℕ)+i, by omega⟩ : Fin n))
         = pSpec₂.dir (⟨(k₀:ℕ)+i, by omega⟩ : Fin n) := append_dir_natAdd _
@@ -3726,9 +3675,6 @@ theorem append_continueFromTo_seam_start_message_processRound (hn : 0 < n)
   rw [liftM_bind, bind_assoc]
   congr 1
   funext ctxIn₂
-  rw [liftM_via_leftChallenge_eq_liftComp
-    (pSpec₁ := pSpec₁) (pSpec₂ := pSpec₂)
-    (X := P₂.sendMessage ⟨⟨0, hn⟩, hDir₂⟩ (P₂.input ctxIn₂))]
   simpa [OracleComp.liftComp_eq_liftM] using
     (liftComp_processRound_zero_message_appendRight
       (P₁ := P₁) (P₂ := P₂) hn hDir₂ T₁ ctxIn₂).symm
@@ -3775,14 +3721,7 @@ theorem append_continueFromTo_seam_start_challenge_split (hn : 0 < n)
   congr 1
   funext challenge
   rw [liftM_bind, bind_assoc]
-  rw [liftM_via_leftChallenge_eq_liftComp
-    (pSpec₁ := pSpec₁) (pSpec₂ := pSpec₂)
-    (X := P₁.output (cast (append_PrvState_seam_castSucc (P₁ := P₁) (P₂ := P₂) hn) rSeam.2))]
   congr 1
-  funext ctxIn₂
-  rw [liftM_via_leftChallenge_eq_liftComp
-    (pSpec₁ := pSpec₁) (pSpec₂ := pSpec₂)
-    (X := P₂.receiveChallenge ⟨⟨0, hn⟩, hDir₂⟩ (P₂.input ctxIn₂))]
 
 /-- Seam transcript type equality: the appended transcript at the seam round `⟨m⟩.castSucc`
 (covering only `pSpec₁`'s rounds) is `pSpec₁`'s full transcript. -/
@@ -3991,8 +3930,13 @@ theorem appendRunRightResidual_holds_msg (stmt : Stmt₁) (wit : Wit₁) (hn : 0
   apply heq_of_eq
   simp only [OracleComp.liftComp_eq_liftM, append_output_last hn, Transcript.appendRight_full,
     cast_cast, cast_eq]
-  refine bind_congr fun x_1 => bind_congr fun a => ?_
   simp only [← OracleComp.liftComp_eq_liftM]
+  rw [Prover.liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
+    (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)]
+  apply bind_congr
+  intro x_1
+  apply bind_congr
+  intro a
   rw [Prover.liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₂.Challenge]ₒ)
     (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)]
 

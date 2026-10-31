@@ -877,7 +877,7 @@ theorem mcaPrizeLatticeResolved_ofDoubleCoverAdjacentFrontier
         (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
     mcaPrizeLatticeResolved domain
       (fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)) := by
-  simpa using
+  exact
     mcaPrizeLatticeResolved_of_adjacent_frontier domain
       (mcaPrizeAdjacentWitnessFrontier_ofDoubleCover_and_upperWitnesses
         domain δ hδ_le_one hcov whi hδhi hadj)
@@ -931,7 +931,7 @@ theorem mcaPrizeLatticeResolved_ofBadScalarDoubleCoverAdjacentFrontier
         (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
     mcaPrizeLatticeResolved domain
       (fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)) := by
-  simpa using
+  exact
     mcaPrizeLatticeResolved_of_adjacent_frontier domain
       (mcaPrizeAdjacentWitnessFrontier_ofBadScalarDoubleCover_and_upperWitnesses
         domain δ hδ_le_one hcov whi hδhi hadj)
@@ -987,7 +987,7 @@ theorem mcaPrizeLatticeResolved_of_mcaBadCount_zeroAdjacentFrontier
         (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
     mcaPrizeLatticeResolved domain
       (fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)) := by
-  simpa using
+  exact
     mcaPrizeLatticeResolved_of_adjacent_frontier domain
       (mcaPrizeAdjacentWitnessFrontier_of_mcaBadCount_zero_and_upperWitnesses
         domain δ hδ_le_one hzero whi hδhi hadj)
@@ -1043,7 +1043,7 @@ theorem mcaPrizeLatticeResolved_of_forall_not_mcaEventAdjacentFrontier
         (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
     mcaPrizeLatticeResolved domain
       (fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)) := by
-  simpa using
+  exact
     mcaPrizeLatticeResolved_of_adjacent_frontier domain
       (mcaPrizeAdjacentWitnessFrontier_of_forall_not_mcaEvent_and_upperWitnesses
         domain δ hδ_le_one hno whi hδhi hadj)

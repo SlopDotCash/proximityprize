@@ -207,7 +207,7 @@ theorem sum_card_le_doubleHit (Z : Finset F) (S : F → Finset ι) :
           rw [Finset.sum_const, smul_eq_mul]
   have hcompl : (Finset.univ.filter (fun i => 2 ≤ c i)).card
       + (Finset.univ.filter (fun i => ¬ 2 ≤ c i)).card = Fintype.card ι := by
-    rw [Finset.filter_card_add_filter_neg_card_eq_card, Finset.card_univ]
+    rw [Finset.card_filter_add_card_filter_not, Finset.card_univ]
   have hpart2 : (∑ i ∈ Finset.univ.filter (fun i => ¬ 2 ≤ c i), c i)
       ≤ Fintype.card ι - (doubleHitSet Z S).card := by
     have hle : (∑ i ∈ Finset.univ.filter (fun i => ¬ 2 ≤ c i), c i)

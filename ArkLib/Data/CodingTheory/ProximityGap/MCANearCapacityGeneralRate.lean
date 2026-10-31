@@ -166,7 +166,7 @@ theorem mcaEvent_of_window [NeZero n] (domain : Fin n ↪ F) (k : ℕ) (hk : 1 �
             rw [natDegree_X_pow]
             have hQn : Q.natDegree < k := by
               rcases eq_or_ne Q 0 with rfl | hQ0
-              · simpa using hk
+              · simpa only [natDegree_zero] using (show 0 < k by omega)
               · exact (natDegree_lt_iff_degree_lt hQ0).mpr hQdeg
             omega
     have hQk : Q = X ^ k :=

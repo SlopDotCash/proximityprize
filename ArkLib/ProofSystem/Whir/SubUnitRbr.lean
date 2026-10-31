@@ -935,7 +935,7 @@ theorem probEvent_salvage_game_le
       exact hch heq
     · exact ENNReal.div_le_div_right (by exact_mod_cast hL tr) _
   · -- the chains agree as polynomials: the event is empty at this prefix
-    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
     rintro x hx ⟨hne, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx

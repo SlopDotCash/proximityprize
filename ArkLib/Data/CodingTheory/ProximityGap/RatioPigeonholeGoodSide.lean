@@ -654,7 +654,7 @@ private lemma hwit_of_exact {n t : ℕ} (hn0 : 0 < n) (htn : t ≤ n)
       * (Fintype.card (Fin n) : ℝ≥0)) : t ≤ S.card := by
   have hn0' : ((n : ℕ) : ℝ≥0) ≠ 0 := by exact_mod_cast hn0.ne'
   have hle1 : (t : ℝ≥0) / (n : ℝ≥0) ≤ 1 := by
-    rw [div_le_one (lt_of_le_of_ne (zero_le _) (Ne.symm hn0'))]
+    rw [div_le_one (lt_of_le_of_ne (zero_le) (Ne.symm hn0'))]
     exact_mod_cast htn
   have h1δ : (1 : ℝ≥0) - (1 - (t : ℝ≥0) / (n : ℝ≥0)) = (t : ℝ≥0) / (n : ℝ≥0) :=
     tsub_tsub_cancel_of_le hle1
@@ -668,7 +668,7 @@ private lemma hwit_of_band {n t : ℕ} (hn0 : 0 < n) (ht1 : 1 ≤ t) (htn : t �
     (h : (S.card : ℝ≥0) ≥ (1 - δ) * (Fintype.card (Fin n) : ℝ≥0)) : t ≤ S.card := by
   have hn0' : ((n : ℕ) : ℝ≥0) ≠ 0 := by exact_mod_cast hn0.ne'
   have hn0lt : (0 : ℝ≥0) < ((n : ℕ) : ℝ≥0) :=
-    lt_of_le_of_ne (zero_le _) (Ne.symm hn0')
+    lt_of_le_of_ne (zero_le) (Ne.symm hn0')
   -- (t−1)/n < 1 − δ
   have hkey : ((t - 1 : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0) < 1 - δ := by
     rw [lt_tsub_iff_right]
@@ -778,7 +778,7 @@ theorem fiveThirds_deltaStar_pin {p n : ℕ} [Fact p.Prime] [NeZero n]
   have hn0 : 0 < n := Nat.pos_of_ne_zero (NeZero.ne n)
   have hn0' : ((n : ℕ) : ℝ≥0) ≠ 0 := by exact_mod_cast hn0.ne'
   have hradle1 : ((n - t + 1 : ℕ) : ℝ≥0) / ((n : ℕ) : ℝ≥0) ≤ 1 := by
-    rw [div_le_one (lt_of_le_of_ne (zero_le _) (Ne.symm hn0'))]
+    rw [div_le_one (lt_of_le_of_ne (zero_le) (Ne.symm hn0'))]
     exact_mod_cast (by omega : n - t + 1 ≤ n)
   refine le_antisymm ?_ ?_
   · -- bad side: the simplex floor at threshold t − 1 carries n − t + 2 scalars

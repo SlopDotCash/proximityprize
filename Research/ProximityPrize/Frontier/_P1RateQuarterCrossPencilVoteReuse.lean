@@ -228,7 +228,6 @@ theorem exists_coordinate_petalLoad_ge_60118358
           subNine_witnessVotePetal_card_floor u0 u1 (w0 j) (w1 j) (S j)
             (hS j) (hA j)
   have heq := sum_petalLoad_eq_sum_card (Finset.univ : Finset ι) V
-  simp at heq
   rw [heq] at hupp
   have hpos : 0 < 60118357 := by norm_num
   omega
@@ -266,7 +265,6 @@ theorem exists_coordinate_petalLoad_ge_60118357_of_card_N
           subNine_witnessVotePetal_card_floor u0 u1 (w0 j) (w1 j) (S j)
             (hS j) (hA j)
   have heq := sum_petalLoad_eq_sum_card (Finset.univ : Finset ι) V
-  simp at heq
   rw [heq] at hupp
   have hNpos : 0 < N := by norm_num [N]
   omega
@@ -899,7 +897,6 @@ theorem exists_coordinate_petalLoad_ge_55924056_of_card_N
           johnsonLight_witnessVotePetal_card_floor u0 u1 (w0 j) (w1 j) (S j)
             (hS j) (hA j)
   have heq := sum_petalLoad_eq_sum_card (Finset.univ : Finset ι) V
-  simp at heq
   rw [heq] at hupp
   have hNpos : 0 < N := by norm_num [N]
   omega

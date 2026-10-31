@@ -54,7 +54,6 @@ theorem nat_cube_sum_le_card_sq_mul_sum_cube
     (∑ i, d i) ^ 3 ≤ (Fintype.card I) ^ 2 * ∑ i, (d i) ^ 3 := by
   have h := cube_sum_le_card_sq_mul_sum_cube
     (fun i => (d i : ℝ)) (fun i => Nat.cast_nonneg (d i))
-  dsimp only at h
   exact_mod_cast h
 
 theorem sum_card_triple_inter_eq_sum_degree_cube

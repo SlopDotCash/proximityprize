@@ -113,7 +113,7 @@ theorem thirdMoment_jensen_lower_rat_of_average_two
     calc
       (descPochhammer ℝ 3).eval avg / 6 ≤
           ∑ i, weight i * ((mult i).choose 3 : ℝ) := by
-            simpa only [Nat.factorial, Nat.cast_ofNat] using hjensen
+            simpa only [show Nat.factorial 3 = 6 from rfl, Nat.cast_ofNat] using hjensen
       _ = (∑ i, ((mult i).choose 3 : ℝ)) / den := by
         simp only [weight, one_div_mul_eq_div, Finset.sum_div]
   have hreal :

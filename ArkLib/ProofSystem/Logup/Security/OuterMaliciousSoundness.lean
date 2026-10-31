@@ -373,7 +373,7 @@ theorem outerVerifier_rbrSoundness_mid :
     by_cases hguard : ∀ u : Hypercube n,
         x + evalOnHypercube (tableOracle stmtIn.2) u ≠ 0
     case neg =>
-      refine le_trans (le_of_eq ?_) (zero_le _)
+      refine le_trans (le_of_eq ?_) (zero_le)
       rw [ENNReal.tsum_eq_zero]
       intro c
       rw [mul_eq_zero]
@@ -392,7 +392,7 @@ theorem outerVerifier_rbrSoundness_mid :
     case pos =>
       by_cases hxbad : x ∈ outerBadChallenges params stmtIn.2 mult
       case pos =>
-        refine le_trans (le_of_eq ?_) (zero_le _)
+        refine le_trans (le_of_eq ?_) (zero_le)
         rw [ENNReal.tsum_eq_zero]
         intro c
         rw [mul_eq_zero]

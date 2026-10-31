@@ -163,7 +163,7 @@ theorem oracleReduction_completeness :
     Challenge, ofPFunctor_toPFunctor, QueryImpl.liftTarget_self, MessageIdx, OStmtIn,
     Message, bind_map_left, StateT.run'_eq, StateT.run_bind, map_bind, OptionT.mk_bind,
     Set.mem_setOf_eq, probEvent_eq_one_iff, probFailure_bind_eq_zero_iff,
-    OptionT.probFailure_liftM, HasEvalPMF.probFailure_eq_zero, OptionT.support_liftM,
+    OptionT.probFailure_liftM, probFailure_eq_zero, OptionT.support_liftM,
     Prod.forall, true_and, support_bind, Set.mem_iUnion, OptionT.mem_support_iff,
     OptionT.run_mk, support_map, Set.mem_image, Prod.exists, exists_and_right,
     exists_eq_right, exists_prop, forall_exists_index, and_imp, Prod.mk.injEq]
@@ -211,9 +211,9 @@ def transcriptSimulator :
 distribution. -/
 theorem honestTranscriptDist_oracleReduction_evalDist
     (stmtIn : StmtIn × (∀ i, OStmtIn OStatement i)) :
-    evalDist (Reduction.honestTranscriptDist init impl
+    evalSPMF (Reduction.honestTranscriptDist init impl
         (oracleReduction.{0} oSpec OStatement).toReduction stmtIn ()) =
-      evalDist (transcriptSimulator (oSpec := oSpec) (OStatement := OStatement)
+      evalSPMF (transcriptSimulator (oSpec := oSpec) (OStatement := OStatement)
         (init := init) (impl := impl) stmtIn) := rfl
 
 /-- `RandomQuery` is perfectly HVZK as an oracle reduction: it has no private witness, and the
@@ -264,12 +264,13 @@ theorem oracleReduction_isStatHVZK (ε : NNReal) :
 -- def langOut : Set ((Query OStatement) × (∀ _ : Fin 2, OStatement)) := setOf fun ⟨q, oracles⟩ =>
 --   answer (oracles 0) q = answer (oracles 1) q
 
+set_option backward.isDefEq.respectTransparency false in
 def stateFunction [Inhabited OStatement] : (oracleVerifier oSpec OStatement).StateFunction init impl
     (relIn OStatement).language (relOut OStatement).language where
   toFun
   | 0 => fun ⟨_, oracles⟩ _ => oracles 0 = oracles 1
   | 1 => fun ⟨_, oracles⟩ chal =>
-    let q : Query OStatement := by simpa [pSpec] using chal ⟨0, by aesop⟩
+    let q : Query OStatement := by exact chal ⟨0, by aesop⟩
     answer (oracles 0) q = answer (oracles 1) q
   toFun_empty := fun stmt => by simp
   toFun_next | 0 => fun hDir ⟨stmt, oStmt⟩ tr h => by simp_all
@@ -293,7 +294,8 @@ def stateFunction [Inhabited OStatement] : (oracleVerifier oSpec OStatement).Sta
     simp only [Set.language, relOut, Set.mem_image, Set.mem_setOf_eq, Prod.exists, exists_const,
       exists_eq_right]
     intro hrel
-    exact h (by simpa [FullTranscript.challenges, pSpec] using hrel)
+    exact h (by simpa [FullTranscript.challenges, pSpec, Function.Embedding.inl,
+      Function.Embedding.coeFn_mk] using hrel)
 
 /-- The round-by-round extractor is trivial since the output witness is `Unit`. -/
 def rbrExtractor : Extractor.RoundByRound oSpec
@@ -302,6 +304,7 @@ def rbrExtractor : Extractor.RoundByRound oSpec
   extractMid := fun _ _ _ _ => ()
   extractOut := fun _ _ _ => ()
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The knowledge state function for the `RandomQuery` oracle reduction. -/
 def knowledgeStateFunction :
     (oracleVerifier oSpec OStatement).KnowledgeStateFunction init impl
@@ -309,7 +312,7 @@ def knowledgeStateFunction :
   toFun
   | 0 => fun ⟨_, oracles⟩ _ _ => oracles 0 = oracles 1
   | 1 => fun ⟨_, oracles⟩ chal _ =>
-    let q : Query OStatement := by simpa [pSpec] using chal ⟨0, by aesop⟩
+    let q : Query OStatement := by exact chal ⟨0, by aesop⟩
     answer (oracles 0) q = answer (oracles 1) q
   toFun_empty := fun stmt => by simp
   toFun_next | 0 => fun hDir ⟨stmt, oStmt⟩ tr h => by simp_all
@@ -332,7 +335,8 @@ def knowledgeStateFunction :
     subst x
     -- `hrel` is the output relation membership; the goal is the `toFun` body for the last round.
     simp only [relOut, Set.mem_setOf_eq] at hrel
-    simpa [FullTranscript.challenges, pSpec] using hrel
+    simpa [FullTranscript.challenges, pSpec, Function.Embedding.inl,
+      Function.Embedding.coeFn_mk] using hrel
 
 variable [Fintype (Query OStatement)] [∀ q, DecidableEq (O.toOC.spec q)]
 
@@ -341,6 +345,7 @@ instance : Fintype ((pSpec OStatement).Challenge ⟨0, by simp⟩) := by
 
 open NNReal
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The `RandomQuery` oracle reduction is round-by-round knowledge sound.
 
   The key fact governing the soundness of this reduction is a property of the form
@@ -361,9 +366,9 @@ theorem oracleVerifier_rbrKnowledgeSoundness [Nonempty (Query OStatement)]
   have : i = ⟨0, by simp⟩ := by aesop
   subst i
   dsimp at oracles
-  simp [Prover.runWithLogToRound, Prover.runToRound, rbrExtractor, knowledgeStateFunction]
+  simp only [Prover.runWithLogToRound, Prover.runToRound, rbrExtractor, knowledgeStateFunction,
+    Fin.castSucc_zero, Fin.succ_zero_eq_one, exists_const]
   erw [simulateQ_bind]
-  simp only [MonadLift.monadLift, liftM, monadLift, MonadLiftT.monadLift]
   simp only [pure_bind, bind_assoc, map_pure, StateT.run'_eq, StateT.run_bind, map_bind]
   erw [simulateQ_pure]
   simp only [loggingOracle, simulateQ_pure, WriterT.run_pure, pure_bind, map_pure,
@@ -390,12 +395,14 @@ theorem oracleVerifier_rbrKnowledgeSoundness [Nonempty (Query OStatement)]
       rw [StateT.run_pure, map_pure]
     apply le_trans (le_of_eq (tsum_congr fun x =>
       congrArg (fun mz => _ * probEvent mz _) (hc2 x)))
-    rw [← probEvent_bind_eq_tsum]
+    erw [← probEvent_bind_eq_tsum]
     erw [StateT.run_lift]
     simp only [bind_assoc, pure_bind]
-    show (probEvent ((fun x => (default, x, ∅)) <$> ($ᵗ _)) _) ≤ _
-    rw [probEvent_map]
+    erw [bind_pure_comp, probEvent_map]
     simp only [Function.comp_def, ProtocolSpec.Transcript.concat, Fin.snoc]
+    change (probEvent ($ᵗ (Query OStatement)) (fun q =>
+      ¬oracles 0 = oracles 1 ∧ answer (oracles 0) q = answer (oracles 1) q)) ≤
+        (d : ENNReal) / Fintype.card (Query OStatement)
     rw [probEvent_uniformSample]
     rcases Classical.em (oracles 0 = oracles 1) with h01 | h01
     · simp [h01]
@@ -404,9 +411,10 @@ theorem oracleVerifier_rbrKnowledgeSoundness [Nonempty (Query OStatement)]
         (Nat.cast_le.mpr (hDist (oracles 0) (oracles 1) h01))
       intro q hq
       simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hq ⊢
-      simpa using hq.2
+      exact hq.2
   · rw [ENNReal.tsum_mul_right]
-    exact le_trans (mul_le_mul' tsum_probOutput_le_one le_rfl) (by rw [one_mul])
+    exact le_trans (mul_le_mul' tsum_probOutput_le_one le_rfl)
+      (by simp [ENNReal.coe_div, Fintype.card_ne_zero])
 
 end RandomQuery
 

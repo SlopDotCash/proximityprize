@@ -828,7 +828,8 @@ square-root-of-minus-one closed form. -/
 theorem cyclotomic_two_pow_mod113_factor {m : ℕ} (hm : 2 ≤ m) :
     cyclotomic (2 ^ m) (ZMod 113) =
       (X ^ (2 ^ (m - 2)) + 15) * (X ^ (2 ^ (m - 2)) - 15) := by
-  simpa using cyclotomic_two_pow_factor_of_sq_eq_neg_one (R := ZMod 113) hm
+  simpa only [Polynomial.C_ofNat] using
+    cyclotomic_two_pow_factor_of_sq_eq_neg_one (R := ZMod 113) hm
     (ι := (15 : ZMod 113)) (by decide)
 
 /-- **Fifteenth explicit uniform candidate-bad-prime tower: `Φ_{2^m}` is reducible over `F_113` for every
@@ -847,7 +848,8 @@ square-root-of-minus-one closed form. -/
 theorem cyclotomic_two_pow_mod137_factor {m : ℕ} (hm : 2 ≤ m) :
     cyclotomic (2 ^ m) (ZMod 137) =
       (X ^ (2 ^ (m - 2)) + 37) * (X ^ (2 ^ (m - 2)) - 37) := by
-  simpa using cyclotomic_two_pow_factor_of_sq_eq_neg_one (R := ZMod 137) hm
+  simpa only [Polynomial.C_ofNat] using
+    cyclotomic_two_pow_factor_of_sq_eq_neg_one (R := ZMod 137) hm
     (ι := (37 : ZMod 137)) (by decide)
 
 /-- **Sixteenth explicit uniform candidate-bad-prime tower: `Φ_{2^m}` is reducible over `F_137` for every

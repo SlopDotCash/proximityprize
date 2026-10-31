@@ -87,7 +87,7 @@ theorem two_pow_mul_descFactorial_le {n a : ℕ} (hle : 2 * a ≤ n) (j : ℕ) :
       = ∏ i ∈ Finset.range j, 2 * (a - i) := by
         rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_range]
     _ ≤ ∏ i ∈ Finset.range j, (n - i) :=
-        Finset.prod_le_prod' hfac
+        Finset.prod_le_prod hfac
 
 /-- **The binomial form.**  If `2·a ≤ n` then `2^j · C(a,j) ≤ C(n,j)`: cancel the common `j!`
 from the falling-factorial engine via `descFactorial = j! · choose`. -/

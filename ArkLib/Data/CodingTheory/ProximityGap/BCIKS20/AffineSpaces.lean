@@ -52,7 +52,7 @@ theorem exists_of_weighted_avg_gt {α : Type} (p : PMF α) (f : α → ENNReal) 
     exact le_of_not_gt this
   have hmul : ∀ a, p a * f a ≤ p a * ε := by
     intro a
-    exact mul_le_mul_of_nonneg_left (hle a) (zero_le (p a))
+    exact mul_le_mul_of_nonneg_left (hle a) zero_le
   have htsum : (∑' a, p a * f a) ≤ ∑' a, p a * ε := by
     exact ENNReal.tsum_le_tsum hmul
   have htsum' : (∑' a, p a * f a) ≤ ε := by
@@ -952,7 +952,6 @@ private theorem exists_large_of_finset_cover' {α : Type}
       _ = L * B := by simp [Finset.sum_const]
   exact absurd hle (not_le.mpr hLB)
 
-
 section Bucketing
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
@@ -1100,7 +1099,7 @@ theorem bucket_exists_common_codeword
       exact (Submodule.mem_bot F).mp this
     set j₀ : Fin k := ⟨0, NeZero.pos k⟩
     refine ⟨v_pair j₀ 0, S_j j₀, (hv_pair j₀ 0).1, hS_j j₀, ?_, ?_⟩
-    · convert (hv_pair j₀ 0).2 using 2
+    · exact (hv_pair j₀ 0).2
     · intro j
       refine ⟨0, V.zero_mem, ?_⟩
       intro c _
@@ -1472,6 +1471,7 @@ private lemma gs_degree_bound_le_inv_mu
 set_option maxHeartbeats 800000 in
 -- The low-degree branch performs several real/NNReal casts and arithmetic normalizations.
 omit [DecidableEq ι] [DecidableEq F] in
+set_option backward.isDefEq.respectTransparency false in
 /-- Construct a GS multiplicity `m` satisfying both the Johnson radius bound and the degree
 bound. Witness: `m = ⌈√ρ/(2η)⌉ + 1` where `η = 1 - √ρ - δ`. -/
 lemma exists_gs_multiplicity {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
@@ -1636,7 +1636,7 @@ lemma exists_gs_multiplicity {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
         · -- Otherwise: impossible since δ > 0 and δ < 1 - sqrtRate
           exfalso
           have h1 : ¬(δ ≤ (1 - (↑(LinearCode.rate (ReedSolomon.code domain deg)) : ℝ≥0)) / 2) :=
-            fun hle => h_ud (Set.mem_Icc.mpr ⟨zero_le _, hle⟩)
+            fun hle => h_ud (Set.mem_Icc.mpr ⟨zero_le, hle⟩)
           have h2 : (1 - (↑(LinearCode.rate (ReedSolomon.code domain deg)) : ℝ≥0)) / 2 < δ :=
             not_le.mp h1
           have h3 : δ < 1 - NNReal.sqrt ↑(LinearCode.rate (ReedSolomon.code domain deg)) := by
@@ -2222,7 +2222,8 @@ theorem correlatedAgreement_affine_spaces {k : ℕ} [NeZero k]
       ext z; constructor
       · exact fun _ => Finset.mem_univ _
       · intro _
-        simp only [finMapTwoWords, Finset.mem_filter, Finset.mem_univ, true_and]
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+        change δᵣ(u_star + z • dir, (V : Set (ι → F))) ≤ ↑δ_star
         have hx_mem := h_line_in_U z
         have hx_le_div := DivergenceOfSets.relDistFromCode'_le_divergence
           (U := U) (V := (V : Set (ι → F))) _ hx_mem
@@ -2281,7 +2282,7 @@ theorem correlatedAgreement_affine_spaces {k : ℕ} [NeZero k]
           (fun v hv => ⟨(hclose v hv).1, (hclose v hv).2⟩)
       · -- δ_star = 0: only w itself can be at distance 0, so |closeWords| ≤ 1 < |F|
         push Not at hδs_pos
-        have hδs_eq : δ_star = 0 := le_antisymm hδs_pos (zero_le _)
+        have hδs_eq : δ_star = 0 := le_antisymm hδs_pos (zero_le)
         have hclose_eq : ∀ v ∈ close, v = w := by
           intro v hv
           have hd := (hclose v hv).2

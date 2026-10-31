@@ -65,7 +65,10 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterScaleConstruction
 open ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate
 open _root_.ProximityGap.KKH26RegimeSplit
 
-local instance localInstance_P1RateQuarterSharedFreshTripleP1Refuted_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+-- Reuse the exact `Fact (Nat.Prime P)` instance that `predecessorCode` was elaborated with:
+-- a syntactically different (proof-irrelevant) instance makes the Lean 4.34 kernel hit deep
+-- recursion when checking the polynomial-evaluation rewrites in `pfun_mem`.
+attribute [local instance] localInstance_P1RateQuarterSharedFreshCoordinate_1
 local instance localInstance_P1RateQuarterSharedFreshTripleP1Refuted_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 

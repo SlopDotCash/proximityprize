@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 
 import Mathlib.RingTheory.IntegralDomain
-import VCVio
+import VCVio.OracleComp.Constructions.SampleableType
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.NormNum
 
 /-!
 # Exact level-set counting for linear forms over finite rings (issue #329)

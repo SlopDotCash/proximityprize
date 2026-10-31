@@ -224,7 +224,7 @@ theorem cross_surplus_eq {H : Finset F} {ζ : F} (hζ : ζ ≠ 0) (r : ℕ)
       = crossCell H K r ∅
         + ∑ T ∈ (Finset.univ.filter (fun T : Finset (Fin r) => T ≠ ∅)),
             crossCell H K r T := by
-    rw [Finset.sum_eq_sum_diff_singleton_add (i := (∅ : Finset (Fin r)))
+    rw [Finset.sum_eq_sum_sdiff_singleton_add (i := (∅ : Finset (Fin r)))
           (Finset.mem_univ _)]
     rw [add_comm]
     congr 1
@@ -241,7 +241,7 @@ theorem cross_surplus_eq {H : Finset F} {ζ : F} (hζ : ζ ≠ 0) (r : ℕ)
     have hmem : (Finset.univ : Finset (Fin r))
         ∈ (Finset.univ.filter (fun T : Finset (Fin r) => T ≠ ∅)) :=
       Finset.mem_filter.mpr ⟨Finset.mem_univ _, huniv_ne⟩
-    rw [Finset.sum_eq_sum_diff_singleton_add hmem]
+    rw [Finset.sum_eq_sum_sdiff_singleton_add hmem]
     rw [add_comm]
     congr 1
     apply Finset.sum_congr _ (fun _ _ => rfl)

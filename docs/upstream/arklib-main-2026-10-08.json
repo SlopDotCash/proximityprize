@@ -1,0 +1,4626 @@
+{
+  "commit": "745e77939ac4cecf0333af8410a2463c5c7cb655",
+  "native_comparison_commit": "c5846e1d8ace7df60f0c1b057cfbe55cf91b353c",
+  "scope": "Byte/path discovery only; differences include native adaptations and module visibility. Not a semantic integration or proof-validation census.",
+  "counts": {
+    "different": 306,
+    "missing": 617
+  },
+  "files": [
+    {
+      "path": "ArkLib/AGM/Basic.lean",
+      "status": "different",
+      "source_sha256": "e9467209a3b4cf6c8140f2f3691d9ee1140671613af9d4f8044bca51b1521680"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Basic.lean",
+      "status": "different",
+      "source_sha256": "0985e5c8a59fbbe427968fef317ec238ff1f29d5270323d085fa4e608752c9af"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Basic.lean",
+      "status": "missing",
+      "source_sha256": "c3b03326174c440d26036bc425b7d1f445768a86260cc6a376b11e36a3687be2"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Commitment.lean",
+      "status": "missing",
+      "source_sha256": "136d2fd6f99605bf22d81fcc6ed277c551e4a7302607af7b553e3eb4356e23a7"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Composition.lean",
+      "status": "missing",
+      "source_sha256": "2e31c558a7594aa60241debceaffc8efb7311ba5bc6a45e2037439e7e291e8ac"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Concrete.lean",
+      "status": "missing",
+      "source_sha256": "8773fa0b7968e7ed901279140565ee100ddf0a2d84677059ff6f351b233020d2"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Correctness.lean",
+      "status": "missing",
+      "source_sha256": "60620c3034dae479f453f951e5ce7a7aea612f9b3c414002af0d829e2bae9652"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/EndPiece/Basic.lean",
+      "status": "missing",
+      "source_sha256": "a4a9396733d7665fd958351ee769694e8e359788902ab52f5f3c1fe4a3e5720e"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/EndPiece/Reduction.lean",
+      "status": "missing",
+      "source_sha256": "b95afd683c8d69c5939924dc47368eac4f67f2ac916ee97d1441c03600932828"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/EvalSplit.lean",
+      "status": "missing",
+      "source_sha256": "40984fe292e5ccec549d84e0cb97c90ae353db9a553b158ebc5eaf6d17884faf"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Gadget/Basic.lean",
+      "status": "missing",
+      "source_sha256": "90b2428876edcd1d4188a0f01094c07d76776f82fa0cf6a4d80a55fe3702dde2"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Gadget/Core.lean",
+      "status": "missing",
+      "source_sha256": "b088f6dd1ead2167c96c2676957ba35d40783f41ff1e3908ec8bf5ded5738513"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Gadget/Norms.lean",
+      "status": "missing",
+      "source_sha256": "b2e34740bb1bd97895a513562769d6d84ffade53b146552aa9c057338513b6aa"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/HonestChain.lean",
+      "status": "missing",
+      "source_sha256": "6e078a080e768e23365467371d18a03e6b0e31b7cd9244526bdfe314be277c98"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean",
+      "status": "different",
+      "source_sha256": "d94ec3e1e3e0d3c7b557c3b36126dfe9972be3b00717cb838ddf31d4782ce4f5"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/InnerOuter/Basic.lean",
+      "status": "missing",
+      "source_sha256": "c0d9b95f390da9c25812b31d32584fc39aa546ee5468286eb39dabf0992f23f8"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/InnerOuter/Correctness.lean",
+      "status": "different",
+      "source_sha256": "e285ae598b3e641f400ce48974433e598b7cb237ca0f57125525f651ce4cd474"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/InnerOuter/Scheme.lean",
+      "status": "different",
+      "source_sha256": "8512d6a19fd3e2de4fcb0ceee238e90fa677514c62c344565e474850b50b8af3"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/InnerOuter/Security.lean",
+      "status": "different",
+      "source_sha256": "46efaa4700d9b32af6eb0ae922bc32814e6554f23b2fbda58745a0758467e264"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Params.lean",
+      "status": "missing",
+      "source_sha256": "13e9a8aca7cf94980ce6a14dd858db8a9a5c92c00e6a2fc90312289c2f99bdce"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/QuadEval/Basic.lean",
+      "status": "missing",
+      "source_sha256": "04b4a7eef9bc5cf673236001342df160e7361f94f6d50942705ba1e8e1c251e3"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/QuadEval/Bridge.lean",
+      "status": "missing",
+      "source_sha256": "81b5743e0820c496b850994449e96a719d751185483093af10ca5484754be5f5"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/QuadEval/Completeness.lean",
+      "status": "missing",
+      "source_sha256": "046ba2d35565b05af7ea7133ffa6f71d103fdbaa3f7da9092021d14f46d20990"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/QuadEval/Gadgets.lean",
+      "status": "missing",
+      "source_sha256": "94de2a502bba9fdd25327cd8e8e2e95d18c8cb80dc22ebc0e067febadb2083f5"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/QuadEval/Reduction.lean",
+      "status": "missing",
+      "source_sha256": "16e1d1a42a037809877ed1239247e5df2ffebccfd153c8f2e6c453fed8495b94"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/QuadEval/Soundness.lean",
+      "status": "missing",
+      "source_sha256": "b7eca95deee227c3c96b72af9a44feb42a7f9235054c355e8e5e8d4ab5cd027a"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Recursion/Basic.lean",
+      "status": "missing",
+      "source_sha256": "7cc63c01cf520483046601948d53b62da4cbf601c6baf12343a4f000f50fee26"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Recursion/PartialEval.lean",
+      "status": "missing",
+      "source_sha256": "4dfa9c3ce1d5b6ba2619fc8e4e9a828e0f7335c4244a8a3c19056a925f1b442d"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Recursion/TraceHandoff.lean",
+      "status": "missing",
+      "source_sha256": "a4b716c0ee6313cecf5f79b7ed45fec1328088e8423cf2e575d03d9a9b34038e"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Recursion/ZBatchBridge.lean",
+      "status": "missing",
+      "source_sha256": "b760d449360b2be26ed7e87d4c3c41ce5a8b23b11ca8ad000ade826339e76073"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/RingSwitch/Basic.lean",
+      "status": "missing",
+      "source_sha256": "7bd00832ab81af1a8bb06fa96b0846aa431471aa565da3f1f28bfd06ea3ee403"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/RingSwitch/Completeness.lean",
+      "status": "missing",
+      "source_sha256": "039df199b16e0e79fc3a44b3367ff0d965e479bae616230ab52a53a8cf60aeb7"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/RingSwitch/ComputableWitness.lean",
+      "status": "missing",
+      "source_sha256": "e063ccf7f8f6aae49d284c39354607329d70b136ede5eaf5dd3ed503a9c18b7b"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/RingSwitch/QuotientNorms.lean",
+      "status": "missing",
+      "source_sha256": "2effbf205feb50e98979425c9111f5e3d70d4dece6eba5d1b2f4bc7aa53fb5d3"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/RingSwitch/Reduction.lean",
+      "status": "missing",
+      "source_sha256": "b7453da27f9a2c8900fc3b2608991835970c087f9d49885d4ae4defadf2ebc76"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/RingSwitch/RhoDigits.lean",
+      "status": "missing",
+      "source_sha256": "239c5675ea3e059a35360c4ca7a11df8dd9bec1fbd7f2cdf6fa9430e9e3126e3"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/RingSwitch/Rlin.lean",
+      "status": "missing",
+      "source_sha256": "adea4ceb919eeb43d232573d2688aef194e929cd870c4446361ca96ccb764245"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Sumcheck/Basic.lean",
+      "status": "missing",
+      "source_sha256": "6a84f32b7ed0f53da1414392fd62d7e039667f6f4c880b4ac3261a7aac917ae4"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Sumcheck/Bridge.lean",
+      "status": "missing",
+      "source_sha256": "e689429458ceab84620859fca9ea39b190f498727f0336bbd548bc8848559cfe"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Sumcheck/Completeness.lean",
+      "status": "missing",
+      "source_sha256": "4cde362a3c78b999ea689b0a8f7d394e9dc07b90dc21f24892bbe4f835a15f39"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Sumcheck/FinalEval.lean",
+      "status": "missing",
+      "source_sha256": "e07b6a4c7115a3f491eab1864e161899cfcc52b21d0bc285cda11104f7b41d13"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Sumcheck/RoundPoly.lean",
+      "status": "missing",
+      "source_sha256": "fe9e5f567806f798d8397ae9317b1fa4f6c0b1790ab222a2f98d8bdb73eeedfb"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Sumcheck/Rounds.lean",
+      "status": "missing",
+      "source_sha256": "37d3cea70678b8426e754e7c516db437d0edaf0946c897b1ffb5cc08917e3042"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/ZeroCheck/Basic.lean",
+      "status": "missing",
+      "source_sha256": "e9bfc4e8d5b38bebac5702865980e7322c58a0a14c3af9193895c06054305728"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/ZeroCheck/Batch.lean",
+      "status": "missing",
+      "source_sha256": "8c10978535c3a587d8c174af706859fef6bd679d54794d74d03a80f470ca90e9"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/ZeroCheck/Completeness.lean",
+      "status": "missing",
+      "source_sha256": "08b634c4b0c7216fe586a4af1cd8ff7db18ac71a405ccdef1fe641c7f8bacbae"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/ZeroCheck/Constraints.lean",
+      "status": "missing",
+      "source_sha256": "40bca3c4c38695f8984e21f3307fe082b7b04a0ea0c2141d883f5c02322e2d55"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/ZeroCheck/Reduction.lean",
+      "status": "missing",
+      "source_sha256": "24f3e6c11a51abd6080d0be2325f0abafb33dda414a809822d477c60756009c4"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/Algebra.lean",
+      "status": "different",
+      "source_sha256": "c6afcd74a41c3509509cde5ed113b338305f8d7b35c78d622be127858768a38f"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/Basic.lean",
+      "status": "different",
+      "source_sha256": "1098c8b3f05f394a51b44102a062338ae01c60ddadb06460170718f542fc44ce"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/Binding.lean",
+      "status": "different",
+      "source_sha256": "83f10174b72a73c7acb28128ecf8a286b9bc6be75ce9212b9853f2ca23b95552"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/Correctness.lean",
+      "status": "different",
+      "source_sha256": "bb58c1b028f44fdac63174a33dea742c9de58aa59047a17aa45aefdf729e730b"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/Basic.lean",
+      "status": "different",
+      "source_sha256": "f018bd08c6d3b88d1e554f87149d075a4e7cd5c4e0df8b3f1555283cd922c648"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/DegreeConflict.lean",
+      "status": "different",
+      "source_sha256": "7e82e37e83de4b4756bd5d09a2bae597ced941e2dd7cc645f17755d2f4c76cdb"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/EvaluationBindingConflict.lean",
+      "status": "different",
+      "source_sha256": "c86b92fc7cd8ef74ea34efa83adcc1dede7c6d8407fc34ad44d8c5b380eb47b4"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/Support.lean",
+      "status": "different",
+      "source_sha256": "06c3772fa177e9ff4554ff08dc6ddb638a3110161d1410ce3cc169cea148016d"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/TauInQueries.lean",
+      "status": "different",
+      "source_sha256": "f1efe415c2b439a383b7176b97db66cce9ed9e955cd84cd8b01227e297b3dc9d"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/HardnessAssumptions.lean",
+      "status": "different",
+      "source_sha256": "ce5cff21e5e5a52f6e4f03733f422825e8d7c9683bb16fb1415d6421624c1abb"
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/Sampling.lean",
+      "status": "different",
+      "source_sha256": "3072e2f9e2e61c16f039b856c31fc58a6604ed6cbcadfef4cb0f6bda3cf0399f"
+    },
+    {
+      "path": "ArkLib/Commitments/Ordinary/Ajtai/Simple.lean",
+      "status": "different",
+      "source_sha256": "ee733c6ea56bc79369af059b8b2518c7e1a24ab82efc7728091cb2eae09123f9"
+    },
+    {
+      "path": "ArkLib/Commitments/Ordinary/Ajtai/Simple/Correctness.lean",
+      "status": "different",
+      "source_sha256": "2f814cac2d5bb4c343ce2848194fe2fc6c3b229ba710275f414d86db12bff1d2"
+    },
+    {
+      "path": "ArkLib/Commitments/Ordinary/Ajtai/Simple/Scheme.lean",
+      "status": "different",
+      "source_sha256": "80dd2f7d5ee0d37fd94610320867ff8cd2eba5d3673e46f6a0cb29f012853311"
+    },
+    {
+      "path": "ArkLib/Commitments/Ordinary/Ajtai/Simple/Security.lean",
+      "status": "different",
+      "source_sha256": "8b64c223d40bccadfd67b8173d2a44bd97972cdb26302cca77742f04c976fcbd"
+    },
+    {
+      "path": "ArkLib/Commitments/Ordinary/Basic.lean",
+      "status": "different",
+      "source_sha256": "83dcce12c4fd153a16b08776349f035733c126e01e8367c686c71d01dd3f8bf5"
+    },
+    {
+      "path": "ArkLib/Commitments/Ordinary/SimpleRO.lean",
+      "status": "different",
+      "source_sha256": "d141c5d89df913d8bc72a0b1784f3fbd8a2196c03c614cd5eb968a853ab3a3de"
+    },
+    {
+      "path": "ArkLib/Data/Classes/CloseToUniform.lean",
+      "status": "missing",
+      "source_sha256": "997fa591488be3c676ed868d03202ac58d5722311446fd7f57ba9a2f9f68efe2"
+    },
+    {
+      "path": "ArkLib/Data/Classes/FunEquiv.lean",
+      "status": "different",
+      "source_sha256": "2d050831f7479b6e9588730d71efb725e9be217131254d828f7e89260d58cc59"
+    },
+    {
+      "path": "ArkLib/Data/Classes/Initialize.lean",
+      "status": "different",
+      "source_sha256": "aac1e04b1432adc893b7fec8f668cd48d9ee5394cd9a4b86cbbdeb3d991e52da"
+    },
+    {
+      "path": "ArkLib/Data/Classes/Slice.lean",
+      "status": "different",
+      "source_sha256": "065130818654da024dcbd58abcede39967d2d33a2ad3668bd0c2873fc146629c"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Basic/BlockRelDistance.lean",
+      "status": "missing",
+      "source_sha256": "cd3c0ad524e4c32e45648e93f414940bc02ff9fc04d34447c404802fb57f164e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Basic/DecodingRadius.lean",
+      "status": "different",
+      "source_sha256": "1746ef688e5de127f667651424e8af2dacad5aca45b4e7b60d9b0b8bc50fcc6d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
+      "status": "different",
+      "source_sha256": "92d655650ec7a3d2f112d4990b12c6b5ba63b80c402c8c5a0ed398baccba4e09"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Basic/Entropy.lean",
+      "status": "different",
+      "source_sha256": "4654741bc37f78833da83c216c764674c010e1938573f5ccd8c24d75b3c58f5b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Basic/LinearCode.lean",
+      "status": "different",
+      "source_sha256": "fd227220b9efed55d7c5df13225d4c79d0abc77a63597168b37899baeded2c0d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Basic/MDSCode.lean",
+      "status": "different",
+      "source_sha256": "7c27d1fb1e3af8bdeabb28871d9f84f7a81e1d94fddec662fafa95e715dbc562"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Basic/RelativeDistance.lean",
+      "status": "different",
+      "source_sha256": "f8245f83eeac7b1ad84931a9633d3ecb06941103abe51040d4abee4b26dabf48"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/BerlekampWelch/BerlekampWelch.lean",
+      "status": "different",
+      "source_sha256": "9600832ed7001f773cf334fd82c0c736f47805b28e825c38462f428b997d3fb9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/BerlekampWelch/Condition.lean",
+      "status": "different",
+      "source_sha256": "6db8477cd44e7290fde4df7add6426e6318ee17eb5e4741fef82ec01cd677cf2"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/BerlekampWelch/ElocPoly.lean",
+      "status": "different",
+      "source_sha256": "9df5e956e272298881ed49fd059f78847d1891ea27d407e38f35f6f559ba8f41"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/BerlekampWelch/Existence.lean",
+      "status": "different",
+      "source_sha256": "bcedae5292707ffb04f85fa2d7da051fd27a82dc5c0956e0d7b1db5d1e380953"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/BerlekampWelch/Sorries.lean",
+      "status": "different",
+      "source_sha256": "75cae272a7383c44114d00b43847803f43536cea7a91edeec5501615666f8644"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
+      "status": "different",
+      "source_sha256": "f9e037bd62c4dbd6d346976769caf81f8e9c9d90fa8fd4078e822955e33601f4"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA/BCHKS25.lean",
+      "status": "missing",
+      "source_sha256": "e3044619dd4450cecd5a2afed3ba14a0920264b474c761c798db35937570cf6b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA/CS25.lean",
+      "status": "missing",
+      "source_sha256": "39f9d97090fb0f0d581c1ea87d89f6160a3985f1105804750aa13a8c67824c04"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA/GCXK25.lean",
+      "status": "missing",
+      "source_sha256": "a2aa9f4d7a1cf0b77f70e4a0de668994bc88b44c2b2727b2dc719a24dffa80ab"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/DivergenceOfSets.lean",
+      "status": "different",
+      "source_sha256": "7e4ead54c6a692648e1b0681532788cf054cab5df886da08e3283dd1eb5418dc"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Erasure.lean",
+      "status": "different",
+      "source_sha256": "ee2e81ee4149c7563c868a6e392ce1fb5d4d2cc232425f2c5e97a2a9fb06cc79"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ExtensionCodes.lean",
+      "status": "different",
+      "source_sha256": "2a45efe0c2b313be9a2f4857aa7c3c6b8e321def025455e40c781318dc1bda8c"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/GuruswamiSudan.lean",
+      "status": "different",
+      "source_sha256": "6e357177fe9e3b5a7b05d2293f6d6ec22d658e57636f1a4efa59ab629e894cd5"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/GuruswamiSudan/Basic.lean",
+      "status": "different",
+      "source_sha256": "fe4470a2cee0727c52d6a2e8211f5f4e224acb4c87802313d878a455b087146c"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/GuruswamiSudan/Correctness.lean",
+      "status": "missing",
+      "source_sha256": "cc01437abdab3437bb5a6ef458ee0bbcfd4e71a7a87572a08e0bf89260c86acf"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/GuruswamiSudan/Executable.lean",
+      "status": "missing",
+      "source_sha256": "445b6060da42d63f2ec35b1e28ed5af968d9e5c134fb934ccd071bf47a25070e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "status": "different",
+      "source_sha256": "4b57370c036e74c3c870f16946726678995a84256b5816f85a8967e1a5dd3f8a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HammingBallVolume.lean",
+      "status": "different",
+      "source_sha256": "a68c0adb34871077cc210549442a53be22067f1f0941b588e91f32e8fded7665"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Certificates.lean",
+      "status": "missing",
+      "source_sha256": "bb7baa19dac8057c5a2fba2daff7e7a520bde0eabd1201b9959bd6cdea286aa4"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Counting.lean",
+      "status": "missing",
+      "source_sha256": "fc96c3390887a04ca38acf97a1cf4dfff97588740e24d134a12ca4b50f3faca8"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Dimension.lean",
+      "status": "missing",
+      "source_sha256": "abe5d9cfb09761fd447b17732104e4d22635ec2bbdd5c5837382686848a93411"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder/CurveCertificate.lean",
+      "status": "missing",
+      "source_sha256": "97235052b3ac31b9ab7fff8c4a1a6ba472f4f2c089fcf5b4b64fbd83636f448d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder/CurveHeightCounting.lean",
+      "status": "missing",
+      "source_sha256": "1a15382f356ab3c213c3d5ccae3025f4267a682690c8bda1601973fdd262b642"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder/CurveRank.lean",
+      "status": "missing",
+      "source_sha256": "c44cae3ae7e91c189647b9b0361aa148e5343e2e46d5f9b34d37d81e3aa9431a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder/Dimension.lean",
+      "status": "missing",
+      "source_sha256": "0013b56c8392d97736f9443dedb1a1d44ab7d7399b05ea08a36447ee3b0c9739"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder/HeightCounting.lean",
+      "status": "missing",
+      "source_sha256": "7129ff114d11b270f09370153fbb2b745dd18770e7e2ef1171f9d09066c26c72"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder/Interpolant.lean",
+      "status": "missing",
+      "source_sha256": "1c1839e35eb5de8da278a915f63120ff81d7eec8a9387c041a2352d3345d6142"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder/ListBound.lean",
+      "status": "missing",
+      "source_sha256": "f2cb4f7a6cf2b62e9983e6c5113d8c43bef5f0859a93dd2c022c46ee70d2e854"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder/Profile.lean",
+      "status": "missing",
+      "source_sha256": "25ff9ce94cb1965061b4232a6148a6b081610e7a2c487331fd2282c11c5a90b8"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder/RateCertificate.lean",
+      "status": "missing",
+      "source_sha256": "d7cef2682511518bbd4fb584b49ad5027b8eef32bd574423fe50ddacadda440f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder/Space.lean",
+      "status": "missing",
+      "source_sha256": "e4d8e4b197dd5c25b35edff35af493e4d085836f14797eba77003af76e5f2342"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder/Symbolic.lean",
+      "status": "missing",
+      "source_sha256": "9700da6718470eee8359bddfa7ceabe045c20cb162aef49ffb01988931b10184"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder/SymbolicRank.lean",
+      "status": "missing",
+      "source_sha256": "527d1b466cde0c0f69bca636fddf077937177245f9b9c70f0619622bb419beee"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/FreeOrderDimension.lean",
+      "status": "missing",
+      "source_sha256": "8cf5ba84db551aaecea548ebb9de378933bd7a786749c36e00237db8d929fb41"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Global/Interpolation.lean",
+      "status": "missing",
+      "source_sha256": "f1aa54efb29a81dc98aa278e6525581779e96e089509b0b0e7a33ad508b1474f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Global/Multiplicity.lean",
+      "status": "missing",
+      "source_sha256": "05c54d47f9504dd27cb9391f66dd477529bb70cd397e4f12d27d0b01b4d7ff76"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Index.lean",
+      "status": "missing",
+      "source_sha256": "040e4319f90fd4c2633b24aa826e5f9f86b34a0c549a6225d22b5b279f425c0d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/CertifiedRankBound.lean",
+      "status": "missing",
+      "source_sha256": "4edaec06db022af2a48670eb91a625b28de1a6fe0e96d36696895fe30f343a2a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/ConstraintKernel.lean",
+      "status": "missing",
+      "source_sha256": "8c94f3950061885077c085a771ec4b84434afef4c32a470e4aeedd69abbdc8da"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/ConstraintMap.lean",
+      "status": "missing",
+      "source_sha256": "6e033596fe99f3b90079bd7197bd74096566962925af6c933c19f0130778c370"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/Contact.lean",
+      "status": "missing",
+      "source_sha256": "087697e101335c29683ae359cb38a8f0e95e29c31f2d3f8a53946aeb8927ef70"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/Coordinates.lean",
+      "status": "missing",
+      "source_sha256": "89889d745b6427303a0c5d453dcedd7265538196f64129c6f0842fff755b5165"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/GradedRank.lean",
+      "status": "missing",
+      "source_sha256": "01b6404576f841ca5de545c4e7b696abd00882b667703495d735a1de3d766b76"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/Identity.lean",
+      "status": "missing",
+      "source_sha256": "d226d5822f85e11332027ae9fff3cbcf24a50ad3c5a9d576e99f6b6140ecc248"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/IntermediateSpace.lean",
+      "status": "missing",
+      "source_sha256": "017543ab40ef94fb53fbf8047f999b734e9a4c3fe5f842f3628415584150f1da"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/KernelSliceIndependence.lean",
+      "status": "missing",
+      "source_sha256": "a93f82a6e32f020f51b96df591b5f3112e446fd08d353623c77fd78c50cf29da"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/Rank.lean",
+      "status": "missing",
+      "source_sha256": "07ab38728683a3299de3b4dfa0d64acbc60cdf7ae028f344e73410b66170c1f5"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/RankBudget.lean",
+      "status": "missing",
+      "source_sha256": "280d688a55288ac1b061743875d34368d3eeba46965b4295e5d38a90ce21f7c5"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/RemainderMap.lean",
+      "status": "missing",
+      "source_sha256": "8272aeabec9c55ed2cbe6a396c744870928ec951df3846768a5203bfc2453136"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/Translation.lean",
+      "status": "missing",
+      "source_sha256": "0bba303ba7daaa383e107514b13a2a90a59be93e60cd85077144b841f9ab18ab"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Local/ZeroOrder.lean",
+      "status": "missing",
+      "source_sha256": "31ec17007c21f91db6901b2cd297d03ea90cc719c3adc2c1746a1a17f2264286"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport/Basic.lean",
+      "status": "missing",
+      "source_sha256": "8db46ddc709503bb5a6902ccf2afceb83a3bcbfbfe762584b822d810a45d8cf2"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport/Counting.lean",
+      "status": "missing",
+      "source_sha256": "fba24003f734047a6fa489a14cdd6fcd470f0a16b3733bfb70cdb46094130a36"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport/CurveCertificate.lean",
+      "status": "missing",
+      "source_sha256": "9a8e88d76b2a91ddd3373e9ef8597b2bffaf950d84071a9f44596a8de3358d2a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport/Dimension.lean",
+      "status": "missing",
+      "source_sha256": "93efae127817524a265b4e89260347700e39f5ef2151950c3191577a3fcf3475"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport/FiniteSurplus.lean",
+      "status": "missing",
+      "source_sha256": "f1f9ebfb9a1681e774043dd3ce10154ab6cd519e32a37df71db090b0c7e9ba07"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport/FloorTransfer.lean",
+      "status": "missing",
+      "source_sha256": "7b542eda4750a4ead2aeaa22ca358a6b8976e8b621230301522e40e91e5f22be"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport/LocalRank.lean",
+      "status": "missing",
+      "source_sha256": "dca7574146dd7e009c7ed7c26b1620749317416053a4dade4083b4b391611836"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport/MomentSource.lean",
+      "status": "missing",
+      "source_sha256": "470272735c7bdf59f7393c752c7c9982aa8752375227462228d8e189c2677b16"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport/RateBound.lean",
+      "status": "missing",
+      "source_sha256": "5799fb49c916c7ed266e427880852b2964d557e581909878c3a51ef65583a093"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport/RateCertificate.lean",
+      "status": "missing",
+      "source_sha256": "1abfac344870e5c139981032da459fac01b7ccff2beac357f973bb8282c476f0"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/SolutionEmbedding.lean",
+      "status": "missing",
+      "source_sha256": "5a1372c28cc431292a5c6b8bb1bb9dcaebe649a12e65b84c926be23250b09553"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/SourceMonomial.lean",
+      "status": "missing",
+      "source_sha256": "de0c2ec07dc33162b03a853905ebd24b24bb2b7efb3971c94e70f2a8ea48eee9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Space.lean",
+      "status": "missing",
+      "source_sha256": "1a154b63e6891d16df191d36e144c7b50bf949ba001f5358d90e6da365f2a535"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/SpecializationDegree.lean",
+      "status": "missing",
+      "source_sha256": "f9324ef4dc98e3292e9b6318ba7739e2d29797d5420db0535504ea1103eb466a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/ChallengeDegree.lean",
+      "status": "missing",
+      "source_sha256": "5d9bbfb62b4a105221cc0ec63fa9bbf496b52237b79fa57c7937af85ebb52863"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/ColumnHeight.lean",
+      "status": "missing",
+      "source_sha256": "35c20469ae5a6128a757933ac62af89b7ab3adc074dff7a383b1d53ce2255fa6"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/ConstraintMatrix.lean",
+      "status": "missing",
+      "source_sha256": "4702272168a29cfea5e3455e49da678f7b051b8c5efb8a7cfd317800963bf729"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/CurveCertificate.lean",
+      "status": "missing",
+      "source_sha256": "27c59b88c6278f920571a79dd3a3ecad019797e07286bd40eab29c6f99e4a84d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/CurveHeight.lean",
+      "status": "missing",
+      "source_sha256": "7b2ff2a9bcffca7fd3aff1cb0d59631cbb24689373b9872143c795b9c13fa1e8"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/CurveSupportCertificate.lean",
+      "status": "missing",
+      "source_sha256": "4b4e38d5ec5540868c0f311f4c85b3d0c30f623f5819e4f1da1e66dda87006a6"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/JohnsonCertificate.lean",
+      "status": "missing",
+      "source_sha256": "c325b19c6cb118254101a67f833990c2435ba9c0f17867efc5d962f8a8fd8192"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/LocalRank.lean",
+      "status": "missing",
+      "source_sha256": "7f442c0cc81d16131585f9e2196b65a71de91e3dfbabe7a2a45dd4d1a2ca0e65"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/PartitionRank.lean",
+      "status": "missing",
+      "source_sha256": "4af02ba8910a4203d6ce8bd1deac541a2f33916fe50c6e478a0200969809b5ef"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/ReceivedCurve.lean",
+      "status": "missing",
+      "source_sha256": "265b0494359f252653ffcf97f4ee57ccf302240207baa4b0764fc0c1efc62729"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/Soundness.lean",
+      "status": "missing",
+      "source_sha256": "ceb050b81dc74b6d0f7aa485ada9ed50fa25dbc32ae019ed120e9a414faf8c55"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/SourceColumn.lean",
+      "status": "missing",
+      "source_sha256": "c91dcccca2f649d8dad68418cac706da7a929f6bc4f4ba90a95359609b06c190"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/WeightedJohnsonCertificate.lean",
+      "status": "missing",
+      "source_sha256": "9edfdc44d376af5df9ff9756c19ba99263e746d50f4c233ff7d1fe29c828fe75"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/WeightedSupport.lean",
+      "status": "missing",
+      "source_sha256": "0bf733c2fa01c62e62905e714b2b382533de4cc639d7614563b8874538a96f94"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/WeightedSupportCertificate.lean",
+      "status": "missing",
+      "source_sha256": "b879fd891167b3186cd4c6409d7f4540a8c1002b5e8678691d3f5e2d05210277"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/WeightedSupport/Basic.lean",
+      "status": "missing",
+      "source_sha256": "f9648142f39fc319aea9c9dde77a6a39b7f4dede68472366393a9e61a1ee283d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/WeightedSupport/Dimension.lean",
+      "status": "missing",
+      "source_sha256": "3d81fd5631c069433dd985203ce90c1704f5c0359ebb5cd2d275899975c8015b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/WeightedSupport/Estimate.lean",
+      "status": "missing",
+      "source_sha256": "073feb2315e75488cc66b072078bd752764697cf7f96be9f1ce81da8dfa896a1"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/WeightedSupport/FloorTransfer.lean",
+      "status": "missing",
+      "source_sha256": "3b6c35c52515fd4407556778840bcdc485195c236cb8db80b751bdc9d9f08f27"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/WeightedSupport/Interpolation.lean",
+      "status": "missing",
+      "source_sha256": "ee662fae55de1f152184d89d3684f5770a501bf04d72cabdff29d2dea65cc815"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/WeightedSupport/LocalRank.lean",
+      "status": "missing",
+      "source_sha256": "57224c74ae9d212e97ff6561c1c2119df20be0f1e6aa209320c874603e78e8b9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/WeightedSupport/Margin.lean",
+      "status": "missing",
+      "source_sha256": "2562a2c2b671e35707249c342b2e23e063800c658b82e425f355b813cc9a48b8"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/WeightedSupport/MomentBounds.lean",
+      "status": "missing",
+      "source_sha256": "3fba424bc2aea4ebd0c643dd66a0b6a8f7903dad4d866cb12831682b9bff9a35"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/WeightedSupport/Moments.lean",
+      "status": "missing",
+      "source_sha256": "00d50300298dff3696e650cfd09fe7c5e8f83df1bd69ceca22c928be1f43dd30"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/WeightedSupport/NormalizedRank.lean",
+      "status": "missing",
+      "source_sha256": "eddc160db3754c1f05e79672d9b5fcb95aa9278281a45a82f904dfdf1ab3a4ec"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/WeightedSupport/RankBound.lean",
+      "status": "missing",
+      "source_sha256": "067caf8447a02044aa75cd7ce566422514341ed4cc0b7920f6b1eb73c342d75f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/WeightedSupport/RankIntegral.lean",
+      "status": "missing",
+      "source_sha256": "d8a50c24ed4bce93e95e403d9d6cf72bd4bd15950dc8f5efc4051c9a263ca975"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/NormalizedSubstitution.lean",
+      "status": "missing",
+      "source_sha256": "52ded973e326c4f9be5b0ae817f5fbff3ce82875197686fd27192080fc144b9f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/Basic.lean",
+      "status": "missing",
+      "source_sha256": "ec5d9b6cc7e36dc33e5784969771f81f3a65a52d7da42d88dcb1b7017cc9ff94"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/ExactCharacteristicBudget.lean",
+      "status": "missing",
+      "source_sha256": "8dd7b4e59cf65efb2f5f93ae5090ffbc18656cbb13fe1dab535cdedd772a27b6"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/AgreementCounting.lean",
+      "status": "missing",
+      "source_sha256": "4ece69471b78ec658bba212c9de21a88d4d7ec65c86e3ba5a39a5b7fcc4e8746"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/AutomaticBounds.lean",
+      "status": "missing",
+      "source_sha256": "6dc6ecdf88d0a60d3be6be5119c36b7214abe27cb0cd5e58d47d0d883a4fe230"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/AutomaticParameters.lean",
+      "status": "missing",
+      "source_sha256": "31d047228f27c97f82c7b8d43ac6e048ffba4e6aced2da8348b3071d2a722080"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/BranchwiseRate.lean",
+      "status": "missing",
+      "source_sha256": "8e91b8cc70842a60dec738bf08622e773297e587263a5a9f802545fef49966ea"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/DerivativeCappedCounting.lean",
+      "status": "missing",
+      "source_sha256": "ad745389c8847ca2686052485d40fa9424ac01a27aef7095084747d9e76c86fb"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/FiniteRateParameters.lean",
+      "status": "missing",
+      "source_sha256": "6fab6a18f2d31f1bb238d64ed989add2fd0cf7a83505cd4a753deb2a9eaa335a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/HybridAgreementCounting.lean",
+      "status": "missing",
+      "source_sha256": "d465353a0da32e2d5c8999e5954a45d2550c8086a7ca4d4143326ca736c241ad"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/HybridConstants.lean",
+      "status": "missing",
+      "source_sha256": "3c49c156225abc1a6be0f1fd00bfded0e621c0aebb873444a038b636db6bbe63"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/HybridRateEnvelope.lean",
+      "status": "missing",
+      "source_sha256": "9c1921f0890c7cf584cbb662868886fb30f04ea32f661b19876bece7104525fe"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/LowRateStationary.lean",
+      "status": "missing",
+      "source_sha256": "3806f7bd802a873a5b0f16d106859927d88a1879809f78c809544bd24243958d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/RateBound.lean",
+      "status": "missing",
+      "source_sha256": "79d97f75dd9aa7a4440c9a1b61d102b0af927c482b1c67ce5b791a798d28e759"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/RoundedCounts.lean",
+      "status": "missing",
+      "source_sha256": "819db58da76b461daef8f37f8b377132b2a5a02f91661082e823a05b1395d5c0"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/StageCharges.lean",
+      "status": "missing",
+      "source_sha256": "edee39ffbe6adfb07f0ac5d648524009975c1b60f4ea2aedf7b2d07ab83e3272"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/StageComparison.lean",
+      "status": "missing",
+      "source_sha256": "518d168a27593d668dbc5e92748bf88d4534df365a7e1e705aa3fdcc6751b082"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/StageSum.lean",
+      "status": "missing",
+      "source_sha256": "12be9eac53841f52d0a518ef2715848741f13464b7aa901e736533edf17bd711"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/Uniform.lean",
+      "status": "missing",
+      "source_sha256": "364c34b075ce48e7a2929eac040f132ae53f1311ca75be221b52ba5159e2cb5a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/UniformMca.lean",
+      "status": "missing",
+      "source_sha256": "9b7926d8eb4419d82298470f6999a1d0a8363241a208bad0a8128e707187c120"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FreeOrder.lean",
+      "status": "missing",
+      "source_sha256": "a89991fdd8b0c0ae197f8542a0c8b46c598b89ea993b3c73d54df9e0c300afd0"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/Johnson/FiniteBounds.lean",
+      "status": "missing",
+      "source_sha256": "cae97029b320b85707a341a32f0589c8b824dd5e29b39645d918ff8a86d994cc"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/Johnson/InterpolationBounds.lean",
+      "status": "missing",
+      "source_sha256": "09779d4070c66597dcf1f6054d5bd94bf1713b18d379b979d11b5bef24a0c189"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/Johnson/WeightedCertificate.lean",
+      "status": "missing",
+      "source_sha256": "c10ea6bf60b34b700dfcd83fd563363a65b2052e3753b9926fdca0719789e8ad"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RankRounding.lean",
+      "status": "missing",
+      "source_sha256": "9345fc2662410dce8cb8f1b32840497acdd474cbdb0f6de29251bfdb835cc0a7"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition/BlockLength.lean",
+      "status": "missing",
+      "source_sha256": "908c80693379af18cba8750561ba8638cd9fb230d55f1726e762459fcd799553"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition/ClosedMultiplicity.lean",
+      "status": "missing",
+      "source_sha256": "6546d088264674dec29829396aac0638766fa5eedb81ce995786a53eb38bc551"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition/FiniteRatio.lean",
+      "status": "missing",
+      "source_sha256": "85cd534d00aa2ba1ae52fbb0e2ffcc19e2fd05881e54f8dcc52fba17afcf89a0"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition/FixedRateGate.lean",
+      "status": "missing",
+      "source_sha256": "1b9dc9b6b70f5d7390e9aa8d6848e74de95735659082ec5a6380ffd733c45577"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition/Gate.lean",
+      "status": "missing",
+      "source_sha256": "a1a8eaf3f539e3302f2cc89ea1ebdac40c436e75abd1e719d1b1e243ca47e507"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition/MathematicalUniform.lean",
+      "status": "missing",
+      "source_sha256": "fa70b5b96bf455bb71c27f78dffd88c186b0e5cb3ff492abb7f00cdcdfe5be11"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition/Moment.lean",
+      "status": "missing",
+      "source_sha256": "407e5213d7d4a124f1222ba47fab28b3c7edd87c01b2978ec9a4ebb62b6c330b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition/Recipe.lean",
+      "status": "missing",
+      "source_sha256": "01fd2e85d8d09be02f04820dd4706d72be24e0fc1c4f4544c93763f39fd93ca9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition/UniformEnvelope.lean",
+      "status": "missing",
+      "source_sha256": "7ef346c124a7822f5a46210b5e141bb071951035d59af6d17d10e60871a89383"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition/UniformGamma.lean",
+      "status": "missing",
+      "source_sha256": "2fd6b642526ce19bb3c17041ceb0ec9a4ea0d6d0a49085dc49334f960f53b41a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition/UniformParameters.lean",
+      "status": "missing",
+      "source_sha256": "f281f01962c52f4da0158fb77a6b30189d72dcbe501caadce5a99eb914c4d34b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/WeightedSupport/Block.lean",
+      "status": "missing",
+      "source_sha256": "360bdbab6ef5f9ae06986f15837180db0e11a194610dd1bc46fc2bf6a4808f5c"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/WeightedSupport/Capacity.lean",
+      "status": "missing",
+      "source_sha256": "26c3aade9f7f1b3fe7e3a25c32c999004cda4a8443c11a39cbee2dbd5afe3d23"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/WeightedSupport/DimensionInputs.lean",
+      "status": "missing",
+      "source_sha256": "56f5ce0ce6569dd7d532e92f722b9dc31388a950506c9e701ce88a47112e0e39"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/WeightedSupport/Endpoints.lean",
+      "status": "missing",
+      "source_sha256": "2e54ea4697c494e8d27a0b720ec8855f1629ba6256af93788da162518602c920"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/WeightedSupport/Rounding.lean",
+      "status": "missing",
+      "source_sha256": "2b612d1d9fdb1fdcf6bb935bcf2edf153ecc4ce7be59d3d69c4e2bbbcf890744"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/WeightedSupport/ScalarParameters.lean",
+      "status": "missing",
+      "source_sha256": "aadcd68cdd5548fbc6d6c45fc4b9fae2dcc3ec3803cfb49bd5d253f050d4fac2"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/WeightedSupport/Surplus.lean",
+      "status": "missing",
+      "source_sha256": "a39e48311a7a6f02b2407b94fb272f6cb7a9135767ac59d954c28767e4208894"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Substitution.lean",
+      "status": "missing",
+      "source_sha256": "b101e8d1d2133b71e9ecba5c05d8d085893daeaf336480ff0e934d4aeace9dfb"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/HiddenDerivative/Variables.lean",
+      "status": "missing",
+      "source_sha256": "3dc52d8d5d44bd636a43b7d50d8c7317278b72004203f2333f4a2a1c279259f7"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/InterleavedCode.lean",
+      "status": "different",
+      "source_sha256": "d0403a00d3738e584ce6e65cc0ee55f70d93e972c1f526f473322b91333339d3"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/InterleavedCode/ExactAgreement.lean",
+      "status": "missing",
+      "source_sha256": "f3ba118fd0fd690b5bfa3f63c4976677d58bfdc00aa24b2a773b32435c0d3710"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/InterleavedCode/Projection.lean",
+      "status": "missing",
+      "source_sha256": "427a39b57533ab596aad51d96b648685a269dcb3f79f8dfd012186e06b31f95c"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/JohnsonBound/Basic.lean",
+      "status": "different",
+      "source_sha256": "4d6b8ef9d49657c4fd75240da5f80639ef5d29366a1c689252234a1bc24531b0"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/JohnsonBound/Choose2.lean",
+      "status": "different",
+      "source_sha256": "0b2395798b6b864cef63e8df4ec9b48651c86510b6049bef7ad0f40eed6f219d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/JohnsonBound/Expectations.lean",
+      "status": "different",
+      "source_sha256": "9a0605d878be9ac9d565b30ef322b8dc05ef224e886de3ba1991766a3710f90b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/JohnsonBound/Family.lean",
+      "status": "different",
+      "source_sha256": "4b30008900c469e8175cca5311937d72116fe87bf3a77063943349232a86ede0"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/JohnsonBound/Lemmas.lean",
+      "status": "different",
+      "source_sha256": "b7d6ce256e3559ae3f91f0dd6f750afa412d36dfaaac9edc2b6cf064203015f8"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/JohnsonBound/Pairwise.lean",
+      "status": "missing",
+      "source_sha256": "589c03d38684ca6bf718b2851e4d372a4774a0aa73792f2ddf7b2309a720f344"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability.lean",
+      "status": "different",
+      "source_sha256": "a1be94bed541531b58e44c72b80bc3fd26f2c37e0b12b651e28aad63b20482a9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/AgreementBound.lean",
+      "status": "missing",
+      "source_sha256": "6095d6c0fdd3282d7b90653b281aefafae2283dfba8b487b4665757d408eadb2"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/AgreementRadius.lean",
+      "status": "missing",
+      "source_sha256": "5d40d1ae5892ac6351836012e9a51b3ede17e01a7693e8524f0f2f8cd8a63709"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds.lean",
+      "status": "missing",
+      "source_sha256": "ce0f1b452b6b208bca2d716d7791611d1c25b384d1e1918191252efaa90c93a8"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/AgreementHypergraph.lean",
+      "status": "missing",
+      "source_sha256": "b436acb3875d4674c66670144babb846aac0bf71db986d04d7026cc205c1205b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/Basic.lean",
+      "status": "missing",
+      "source_sha256": "a027d8730381f0c1ba5582b1112af3c415b67b22e182d426154cca734c7abd5f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/Interleaved.lean",
+      "status": "missing",
+      "source_sha256": "2ac0b6d93f8a72564554b821d2031e48597355edbc347124fe1406235e1a6c8c"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/KKH26.lean",
+      "status": "missing",
+      "source_sha256": "a8366a28a9d0704652fdab35e15c026eb33f44a7070eb377988249bc5c4e0d1c"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/KKH26Asymptotic.lean",
+      "status": "missing",
+      "source_sha256": "1ae5ff81ea0aa31a7dd2c63bac78098c440a489f605e942bc8792266df31f95d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/KKH26SumSet.lean",
+      "status": "missing",
+      "source_sha256": "7d472e59e11648adbb8e781a599079a77731c32e990ce108317f079421e41842"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/LargeAlphabet.lean",
+      "status": "missing",
+      "source_sha256": "1492e40f104434daf7a4a0c4c5d03470c295fd45bcf19919bada25e3caaafda5"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/LargeAlphabet/Barrier.lean",
+      "status": "missing",
+      "source_sha256": "4a30848d9517d8ad22977bb82e55e805c46a007040e4c1b4e447b25e7ff1070f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/LargeAlphabet/Basic.lean",
+      "status": "missing",
+      "source_sha256": "b8c03b8cea60dc7a8804c07acd6edd8a876cb6c5259623ef2f3f467dc505065c"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/LargeAlphabet/Centers.lean",
+      "status": "missing",
+      "source_sha256": "e6b9b6aa4a40f6fef5405c6340b720c4ca57dbc16f79bc8a0db1b4ed98531a2a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/LargeAlphabet/Pigeonhole.lean",
+      "status": "missing",
+      "source_sha256": "2944a03cee36e2f8a2e23fbd335341ea1020e7e061ed23dc41f56baf5eb4f4b4"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/Linear.lean",
+      "status": "missing",
+      "source_sha256": "4a86066ef5f3171711679e61010c5b9643dcff22be772b92eff50dfc2549529d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/ReedSolomon.lean",
+      "status": "missing",
+      "source_sha256": "ce174ba4ffa8b75e684aa5f0d7793d09250a7722e9008cda66fad1f26b3b1bdf"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/SubspaceDesign.lean",
+      "status": "missing",
+      "source_sha256": "05cb451e63aaa30d27d87ce19c82154d73ea7f4b3d7471bb23499e8a359e1ccd"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/PairAgreementBound.lean",
+      "status": "missing",
+      "source_sha256": "c93e784ca654fcee35853021b801e3b93620cbbde3cbd6ff991f4e15da24630f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/SampleIncidence.lean",
+      "status": "missing",
+      "source_sha256": "596d60d7c5022752b563c02f445d05ab472d689f7def16b572ea980c38fa798b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecodability/SymbolMap.lean",
+      "status": "missing",
+      "source_sha256": "42eeb8c0a69e5880fa962aaac62dabb61670ab492ca0de9391fd43fee519f378"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/PolishchukSpielman.lean",
+      "status": "different",
+      "source_sha256": "7500401b8dc5d0f0a03bf65532ba2ba815f4a9a9bfa47a0fca5ec83f771317a6"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/PolishchukSpielman/Degrees.lean",
+      "status": "different",
+      "source_sha256": "ebd7b003a81da574036707ff8e0c26cff6cacabf13bbd626e683b90c5a6ed367"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/PolishchukSpielman/Existence.lean",
+      "status": "different",
+      "source_sha256": "4c1bc671e7a2b8cc48e6eed6f920a8339153bd7f0c9b83ebd175afbdbfd1a2ed"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/PolishchukSpielman/PolishchukSpielman.lean",
+      "status": "different",
+      "source_sha256": "defe5a7ab43fcee305976280c827122f1eb0e331d54727eb1fb7dea74130ed45"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/PolishchukSpielman/Resultant.lean",
+      "status": "different",
+      "source_sha256": "e13e83f7c6e96c7f2cd460c81b56a22185c5a61c95478b2f818ded33fe5fab04"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Prelims.lean",
+      "status": "different",
+      "source_sha256": "cd56d57ab6845640591fc11abf3dd77a013e85a1d1c9ed681586cdd6535f1dc1"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean",
+      "status": "different",
+      "source_sha256": "806dfd83f2c78369840b9f6820c4544a173c8cdc59d4c87f8d21526bbedea37e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/AHIV22Support.lean",
+      "status": "different",
+      "source_sha256": "1d750cc805d345951a44f3b294d94820b3ee6b3c3d961c2a6ab722b79582683a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/BWMatrix.lean",
+      "status": "different",
+      "source_sha256": "e27b8b6f91ff139438a80278c39c9f8ad63a458287e83a89d768ca0f41320656"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/GoodCoeffs.lean",
+      "status": "different",
+      "source_sha256": "7e446d005b681e6eadb88901d0459d2713d9e53b564fcbca4d6ba14cf30fe8fb"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/JointAgreement.lean",
+      "status": "different",
+      "source_sha256": "515fbbaa96c33fabb836e8bf6cd58781b641c3e938749a5f277cfd57e2f60d07"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean",
+      "status": "different",
+      "source_sha256": "b789b2603bc9be9d2fd3847fdabd9764acf48f75c9106f5aa8876b91db04c332"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/UniqueDecoding.lean",
+      "status": "different",
+      "source_sha256": "1565075d2dcb7ab62528d5e8aa04a842c8af2853e68a7b10307ee8a47a7855d5"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineSpaces.lean",
+      "status": "different",
+      "source_sha256": "5add3b3123dcd89082c00731799030380f74355b16649e87f4468b7ba3c30b86"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineSpaces/Basic.lean",
+      "status": "missing",
+      "source_sha256": "bbf958fbc6ad0366d4f20073c713ce409e2025514a70988f03d5b2bb111310b9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean",
+      "status": "different",
+      "source_sha256": "8ef8ceb848ad709cbcc3035ba4e2332ca77d6890e80a8a02bf75c2308ab92a5e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/EpsCa.lean",
+      "status": "missing",
+      "source_sha256": "8e3331cb0be4f3cc4b51a567344ccbd571bf00fbe73f6d7ffe4555164d9f08fc"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ErrorBound.lean",
+      "status": "different",
+      "source_sha256": "6d98663b9754a4a349af7df4c861d54a0fe335a4207695a017ec9335f73a5192"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Agreement.lean",
+      "status": "different",
+      "source_sha256": "485a7142adb51a206eb1aeb36199f0edbdf8380a9125011250842f2bfcb31b59"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Extraction.lean",
+      "status": "different",
+      "source_sha256": "05d05092dd00560210a423fe71e5a2f9b8d4b5d134b740a0bdfe3c6e203a2932"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Guruswami.lean",
+      "status": "different",
+      "source_sha256": "dca2bca01fc0a856b10621ba5d24cea10037bc482d1e7892f6b8283ced65c32f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Prelude.lean",
+      "status": "different",
+      "source_sha256": "3a61dcbe6f5fa06b9ee172508bb2c478e9c049650ff14ec2367bd5d0dcf4413e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ReedSolomonGap.lean",
+      "status": "different",
+      "source_sha256": "68174bb1eb605e8b6c798dd3ab6856c151b2f86ea4147fd3d5ff2f845459dddf"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreement.lean",
+      "status": "different",
+      "source_sha256": "f05048add5d9469474b01cc30339cde57de92ff896f3d79f900b07a0f1bfafd6"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/Basic.lean",
+      "status": "different",
+      "source_sha256": "827ae40712706572ecf4b3d9a82a17b23c13d6de663ce793414b980066e4e19c"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean",
+      "status": "missing",
+      "source_sha256": "0bfaa57b62241dc441f0f95315a9ac9aed13f177ad94187afe9689b449eb0054"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/Entropy.lean",
+      "status": "missing",
+      "source_sha256": "0a6848988b4367a14e392b55d5eb1504425ca0974c80fddfa65cfd200406c697"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/Entropy/Counting.lean",
+      "status": "missing",
+      "source_sha256": "9982c03b8a4383b36acc8bdeae56ab22ef238bf14d333889092a3fe460a0983e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/Frs.lean",
+      "status": "missing",
+      "source_sha256": "452375c21ec414b540941ac1f52b5bc706ae88b4003715489ac73a036774ac35"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/Frs/LineDecoding.lean",
+      "status": "missing",
+      "source_sha256": "7527a7fea0755951a6cfbbe5aae7e0ffa3034c3e17d2abdf3f2d35899c61b9ea"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/Frs/Pinning.lean",
+      "status": "missing",
+      "source_sha256": "e14c07e26c3d9f5bfa21c8ae7686dd151f008be460da7204398b85e793b39c57"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/JohnsonCa.lean",
+      "status": "missing",
+      "source_sha256": "1870c091cf134a7bfa47eaf619dc67310e488bf965d12c52a0abde8fad9b943f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/JohnsonLower.lean",
+      "status": "missing",
+      "source_sha256": "71305325fd40f0b713c47b89abbcad80724144458000dce81ab55fa580385f09"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/JohnsonLower/BinaryBasics.lean",
+      "status": "missing",
+      "source_sha256": "01f543dff388d3c7f3a67300adb24b7d355dc19c5a84c3f49dc6d07a5618fb85"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/JohnsonMca.lean",
+      "status": "missing",
+      "source_sha256": "4c53e749a6ed8591f0469441494296aa8ee52a2c0d634615aafe3f5c36ecc3ec"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/Powers.lean",
+      "status": "missing",
+      "source_sha256": "8f102b6767581f3b64412b541838df999a5b89c5e33bcd2da393fa2dc82c1803"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/Powers/Incidence.lean",
+      "status": "missing",
+      "source_sha256": "6490460f71dae67a85a61d08aeb4761a864cea5b251b155abbfb1522b6e14c38"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/Sampling.lean",
+      "status": "missing",
+      "source_sha256": "9030367972e8901faa149d53ca529bb3726036871d824fa035fd0f58dd006677"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/Subfield.lean",
+      "status": "missing",
+      "source_sha256": "d941551490a5ee13e0187d540e23a9c4754f613830a5faacf1d7fd92a99b6aed"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/Subfield/Algebra.lean",
+      "status": "missing",
+      "source_sha256": "3a534e6a746e1b9b675b7be1ccaf8508b37b180bb154d38ba711058c0fec3eb1"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/Subfield/Moments.lean",
+      "status": "missing",
+      "source_sha256": "3ce6497455e6da734fcd52263dcb9a596c2d0b034c10c1d73aac2bcc8ca6e85e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/UniqueDecoding.lean",
+      "status": "missing",
+      "source_sha256": "75d48e004a1767551ce78505da8d26c4fe37ef7296734f5ef46ca3709e02a471"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/UniqueDecoding/Internal.lean",
+      "status": "missing",
+      "source_sha256": "c48074aa5d6d4593b025be441400c3f22460d44b62d3fa7d9877d91160f61fc6"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/DG25/Basic.lean",
+      "status": "different",
+      "source_sha256": "b67ae6320c45fc00937fafe6290037697690e5e39eab222d1aa3db7e6ccb3a15"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/DG25/MainResults.lean",
+      "status": "different",
+      "source_sha256": "fdbd5438e1666ae30cc3a88423533f1c1b6336dbf6480c266eabe400fa4bf90d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/DG25/ReedSolomon.lean",
+      "status": "different",
+      "source_sha256": "174c160c311aa438269e1706e57088800a97c3b18129f42fe25c1b900dc65274"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/Errors.lean",
+      "status": "different",
+      "source_sha256": "91643fd94626b218da220fcab8118fdcc629cb700350542b701ab8071548d77b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/Folding.lean",
+      "status": "different",
+      "source_sha256": "f18c54fafe2969843136a931cda4c33e302dc237e2d188cb4b16d5e97a8ab4bd"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/Folding/FoldingContext.lean",
+      "status": "missing",
+      "source_sha256": "5dfb22d8f690fa2c5e75dbcb4bd1996e781a34363dbfad8a486093ccbcdd9827"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/Folding/ListDecodability.lean",
+      "status": "missing",
+      "source_sha256": "7b2f83250f3162359e59e8578cd5997821ba9436ce873e8cdf202bfc2c08b679"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/Folding/Multilinear.lean",
+      "status": "different",
+      "source_sha256": "302f206af812e0f42a50ad6e039933739cf59bac3495c322cdd28116e5187ede"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean",
+      "status": "missing",
+      "source_sha256": "93de60089340aec34b204cc407f3478d79497250406c1cd0eb510d8e599e38a3"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges/CapacityBounds.lean",
+      "status": "missing",
+      "source_sha256": "383ce34c4af640a2da6bcd1cdd21abd17fb27c29cb0c7f7a138ef643e9d0e7f0"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges/UniqueDecoding.lean",
+      "status": "missing",
+      "source_sha256": "7af7b1ffa7a742ae82f49e94791d0c3afc7202b2249638b3bd887b6a867ed6cf"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/InformationSetLowerBound.lean",
+      "status": "missing",
+      "source_sha256": "ad8fd48b940c82446e6a8264fa5e76d4bcad19bc1c5e9eee7a2f362635d09229"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/LineDecoding.lean",
+      "status": "different",
+      "source_sha256": "96ab28dacb2a888ab8a90fe6a5879206e660b6f410d876f448cd8e18b9e85ed6"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/Separation.lean",
+      "status": "missing",
+      "source_sha256": "88f05d0003e9c0101b0ddabe7391f684ef044d36eacf6d1d035f0a2c520e6436"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGenerator/AffineGenerator.lean",
+      "status": "missing",
+      "source_sha256": "698c77fa330db2521a15f210658c6a5e357dcfa91247fdcbc6764a028629cf56"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGenerator/Basic.lean",
+      "status": "missing",
+      "source_sha256": "d65ca7b3d7225333460f359149953f9923b0cec6f24ee1ffc092b3686db4a3f2"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGenerator/BinaryTensorFoldAgreement.lean",
+      "status": "missing",
+      "source_sha256": "1fbd6913790cac9fe52efa6998ae4f589980ce2f24e5200cdc407f9deee475c0"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGenerator/BinaryTensorFoldProbability.lean",
+      "status": "missing",
+      "source_sha256": "716bde66b9e88abf15f4bedc4c7d2e444a4e255c8fc0a51a94e5714b37e900f9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGenerator/ExceptionalSet.lean",
+      "status": "missing",
+      "source_sha256": "6a84af0daba685d819bb823f888bcc6b7dd228a6c10dc5f11af0514df2a62ecc"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGenerator/Interleaving.lean",
+      "status": "missing",
+      "source_sha256": "0ff4d240e5341dc395b485c641364bf65daca681942d094f348e063e2fb9f04b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGenerator/MCAGenerator.lean",
+      "status": "missing",
+      "source_sha256": "5885632d72492f4d094b9fd8bdeb300369ebbd9c0ecfb77d8cfff2fa8beebaf2"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGenerator/MDSGenerator.lean",
+      "status": "missing",
+      "source_sha256": "d72208e32507c3518b3116588cf3e0b56b975b3d4bcb7cd201493c00c281a8fd"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGenerator/PolynomialGenerator.lean",
+      "status": "missing",
+      "source_sha256": "35d74cf4ccc2fb2aeeeb5dd68a4c9711b4565bd591891ec6f75186de81b3fde4"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGenerator/TensorGenerator.lean",
+      "status": "missing",
+      "source_sha256": "e70c81c062c6e39ec22277f4d00bab1fceb7eb4e0fface71a9a135880f6755f0"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon.lean",
+      "status": "different",
+      "source_sha256": "886958e1ef452035bf124732627b70a2b9fbd13a87e3bce8d11cd8b8e64c22cf"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Agreement.lean",
+      "status": "missing",
+      "source_sha256": "9e5ed6dc2db1ccb3c2dec1179636caaa8388df7c7bf717334dbbc686d60b7875"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/AgreementList.lean",
+      "status": "missing",
+      "source_sha256": "ec5603e604eb029939b621adf997cd1e801bc2a1b838c4b55daebd6399c2a9c8"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/AgreementThreshold.lean",
+      "status": "missing",
+      "source_sha256": "268a74458cab810edc290d408174f3e99dc3b21a39fc0ef8af99d48406032e59"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Binary/TraceAgreement.lean",
+      "status": "missing",
+      "source_sha256": "314b20bcddfbaeedef6306bbb9e6fcb2d5ae7cd6e1b588f8fb5b40c33d575337"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Binary/TraceLine.lean",
+      "status": "missing",
+      "source_sha256": "6750489a405ad9205f476fa1bd8e96dc24cf1dfc5f6f02218cf2c735bdc88b81"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Constrained.lean",
+      "status": "missing",
+      "source_sha256": "2573a9187b113c22544a8a6f955bbd334b81c412df8f176bd19a2878df02d666"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Folded.lean",
+      "status": "different",
+      "source_sha256": "407499f8452e8d2ac0f3d77cd400ec7918e1453826d948f6ec91c2b81b08b753"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Interleaved.lean",
+      "status": "different",
+      "source_sha256": "5ec7a0f9fdf904da1b49821699c211ac12085b6e50ba2d8ad72732b51a42e756"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Interleaved/AgreementBounds.lean",
+      "status": "missing",
+      "source_sha256": "7ec2fa3b5db64711eba9ae6c592250939ebf31bd778ab6b9c7b1644913a455f5"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Interleaved/AnchoredAgreement.lean",
+      "status": "missing",
+      "source_sha256": "514685f7e9385d4b52837206484728dfa4710c776cc1e7ef2007f9ab30792aad"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Interleaved/AnchoredReconstruction.lean",
+      "status": "missing",
+      "source_sha256": "3a1677cb56f7a5afb04436572c8dbb6942e4ca3f2560cf7b2d725045ca0e630b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Interleaved/PowerAgreement.lean",
+      "status": "missing",
+      "source_sha256": "1ad3c39bc4c2b1987d09597ed5b3fbaa21f9e3676fc515abe284cbf1e82bd3d5"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Interleaved/TensorFoldAgreement.lean",
+      "status": "missing",
+      "source_sha256": "6b1bac145012c4cd4dbd01751b58e243d4bf99c7bcd1608898f8a4d0c65de07e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability.lean",
+      "status": "missing",
+      "source_sha256": "58096b8aba082c80f18390d45184ab646e2a4d6eab443781e9cb7f20dd67e804"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/Basic.lean",
+      "status": "missing",
+      "source_sha256": "d6210460c2dc7cc38bdc4a50beeedd0f24119b8d8b2ad7342bb40e58270645e9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/CodewordBound.lean",
+      "status": "missing",
+      "source_sha256": "1c568e3b5628723f80f5905236873d0f54eded57720ea38519161f989f6b362b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/CurveCertificate.lean",
+      "status": "missing",
+      "source_sha256": "b421a50644a151f583b00c64e5b783eb32895103a8fe1370f634550bf32b2798"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/ExactLists.lean",
+      "status": "missing",
+      "source_sha256": "5afe27bc61191daa0759cfd30086d6c173032d73b5451fe766d1f8ef40dd21a7"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/FiniteField.lean",
+      "status": "missing",
+      "source_sha256": "ae38cebbd0a678712f9e8ea4931e1ad03a919d94bef36bb963d32913055fb0f9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/FixedRateExplicitGate.lean",
+      "status": "missing",
+      "source_sha256": "e57963f3ec6f2b4a56db932d2b3d031a6e2e9c17e71f141f3c121803cbbefd01"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/GeometricBound.lean",
+      "status": "missing",
+      "source_sha256": "b700ca3b221f0abb9b2a3ed68159445085b6cc1c1bf50904761d3798483e9a7d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/MathematicalUniformRate.lean",
+      "status": "missing",
+      "source_sha256": "18ee5f091f97f70dedabdb84c946c2f4117348c271e0a5de10dfa534a53f962a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/QuarterGap.lean",
+      "status": "missing",
+      "source_sha256": "d031bd45237ad71e43b33a94c1bc95fcb024af9eef7b26f0ce214f8a00a58330"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/RatePartition.lean",
+      "status": "missing",
+      "source_sha256": "18f801ea9fa655037ae9db0f2ad2483f52b58872794a12f92b3159ebc9095a88"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/UniformRate.lean",
+      "status": "missing",
+      "source_sha256": "41ea25e9ae89d7559b76114f33098ab6fb7a1c0297ae51d9f479a32017c8f330"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/WeightedSupport.lean",
+      "status": "missing",
+      "source_sha256": "9647dcbae61b6ce698470f427ed86d14dde75c9d1e5024b7cc21bcd89bcd356d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/WeightedSupportInterpolant.lean",
+      "status": "missing",
+      "source_sha256": "503daa167a67c35fc7d949fdffc8cd864cdcc48f5c0d7325acb8c5c5f5e1ba81"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/DirectJetList.lean",
+      "status": "missing",
+      "source_sha256": "644a6abe94e086b1330df3622e620fc2b7689fb6f6dde40ca5857b5bff7b24bc"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder/Bounds.lean",
+      "status": "missing",
+      "source_sha256": "140e6e462db3697f9c9d519a389dae96a7174d797ccc574427aa4d056f29b8d8"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder/FiniteLengthParameters.lean",
+      "status": "missing",
+      "source_sha256": "962b792661400cfa7a244d498ca9abb144686531e74febd75e880852367d7766"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder/FiniteLengthSelectors.lean",
+      "status": "missing",
+      "source_sha256": "3e0afde3f96468ab2362e535fda21910f3c25d0224eda339c45b32fc1ffcfb0e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder/LowRateFiniteLength.lean",
+      "status": "missing",
+      "source_sha256": "e94bf96eb0d20d7f1fe000b08e441f8a3b0c7d5f92b2b3eca6947bcaa41a5855"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder/LowRateFiniteLengthBounds.lean",
+      "status": "missing",
+      "source_sha256": "57933a54f62bdc5f4255828ad6a3b099c3b02e86c3fa2989d7517411723e594d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder/Profile.lean",
+      "status": "missing",
+      "source_sha256": "ac25caada9e0417adcca8f3173546079f5cf195e10c40cfd0d3f5ef2b5ab7b1d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder/Uniform.lean",
+      "status": "missing",
+      "source_sha256": "7d2f3eae57c572a0078d6e5f1ca660f0c801070defcf5e7c84841bb9673d8a98"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/HiddenDerivativeBound.lean",
+      "status": "missing",
+      "source_sha256": "1ce26023485bb6c58840c495bdf4c9c8e50abc09939de8ecc0f28e1fac86457f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/PairwiseJohnson.lean",
+      "status": "missing",
+      "source_sha256": "48e0a30706c040c33bdd1fa6386fc3dfdefc05c4ffd0b09be841e5fa1ce78290"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ListSpecification.lean",
+      "status": "missing",
+      "source_sha256": "62f980fcbb81add13220b98e08689dac9009ad2cf4d11103d25d29b1028b8314"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Multilinear.lean",
+      "status": "different",
+      "source_sha256": "f739180da8b78d768b7890c152913f39176e6d6106a887fffd3abdfa770da29f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/Multiplicity.lean",
+      "status": "different",
+      "source_sha256": "f7b35fda327c23f7ad72612fbfbb7c615a3d5b7fd16d6120ec1c3e0a52ba7892"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity.lean",
+      "status": "missing",
+      "source_sha256": "a70b2252b4d9a4d63258d005506df088bfb32b62ac7fa1c69fd07318d4653abb"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/CertificateBound.lean",
+      "status": "missing",
+      "source_sha256": "ce4d2f542de75a21b53230604e6b0648a8d7e08e88ba0264d1f763445fdbec49"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/FixedRateExplicitGate.lean",
+      "status": "missing",
+      "source_sha256": "d6ebc9988227c0a52c8fd125820105adc68678a4bce6444add001b97b29b530d"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/MathematicalUniformRate.lean",
+      "status": "missing",
+      "source_sha256": "cc34b059c62c156d834ef4d20ef31ab2f95e18ddbdbeba8ab653330795ba8a97"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/Midpoint.lean",
+      "status": "missing",
+      "source_sha256": "6e509e9098e504808f2055ba8a8e31a4dac53261854d07dc373374c923b3fac9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/Parameters.lean",
+      "status": "missing",
+      "source_sha256": "e60b8d9d27494c537a29ee2099fc098fb3a633c5cb7ad0d7111331fb9458d82a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/PrescribedCurve.lean",
+      "status": "missing",
+      "source_sha256": "952e165a4edeb81e5f544634ebadd8af9e671668d87ed7edb3c20c92a0c36f21"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/PrescribedLine.lean",
+      "status": "missing",
+      "source_sha256": "38d80ac0f1113e9212e477f2b84571269b7aceee126168b860c5df0334302801"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/ProductBounds.lean",
+      "status": "missing",
+      "source_sha256": "4278c1fed9ed51adc5e7f3dfed96d9a2a6eca766a27ac97fc1ea549d45369ca6"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/ProductCounting.lean",
+      "status": "missing",
+      "source_sha256": "3939ca46bd992203f5f17a8e57b34d9e2d6d036dca71a4e4dfcd57a938ebd8e8"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/RatePartition.lean",
+      "status": "missing",
+      "source_sha256": "cd3dedeca66c89a1afc06ef64e53e269784603902c47d6917606c258367c21da"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/SharpCountingBound.lean",
+      "status": "missing",
+      "source_sha256": "a41c132e5bfc6a88a0e7b9cf15614f04ac99e568cf76378ae65fcb4c7e69268e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/UniformRate.lean",
+      "status": "missing",
+      "source_sha256": "7bd5b7743a5e11574110f9acd06faa06021296016db3e7e405a5ab379b9267a3"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/ComponentDimension.lean",
+      "status": "missing",
+      "source_sha256": "75dd6693cc5fb92a25bb393f794d691db5cc90fc306c1d75c867c5c6234897f9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/EquationDescent.lean",
+      "status": "missing",
+      "source_sha256": "56c0adfe33d724ad500bfad7ba5820e7e972aeda948aff403c85041fa61f819e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/ExtensionDescent.lean",
+      "status": "missing",
+      "source_sha256": "09a2f3be4b2adba7e622d18ed959d2b5d8f27c4f7b5bc49f058f11147d82eb6f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/AutomaticHybrid.lean",
+      "status": "missing",
+      "source_sha256": "d83d9eba3e0368b5efb0fbac24481fa8794b7b7b7a73a554156e968695eb695b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/AutomaticMcaError.lean",
+      "status": "missing",
+      "source_sha256": "0d410c59639e93be410e5460d98a430288ec609e2e97226af1f9cf67d19e9c53"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/Branchwise.lean",
+      "status": "missing",
+      "source_sha256": "9fb96c377fb5a8647b00c69750e3b082dce9c896842daab6b91e08044fbd3020"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/CurveAgreement.lean",
+      "status": "missing",
+      "source_sha256": "b434c8c6c0ba6b272f9c3da91e3aafcab02537887281ef030e988bd22fdbe5c3"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/FiniteLengthMca.lean",
+      "status": "missing",
+      "source_sha256": "ac4a7003ccb19ff31cdfbf1a6dea93b775ae48f0e2e9b64e4672f40d4ba5fcdb"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/FiniteLengthRateBounds.lean",
+      "status": "missing",
+      "source_sha256": "51b719fb239488abb69f1e6ea8ab053e4f54164ae49f742fb559330af03f19c9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/HybridCurveProfile.lean",
+      "status": "missing",
+      "source_sha256": "6d632d96b2deb53c71c18d26bd3f8f2126ab2d93e246ae4b1ca7bbd0f5b670c1"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/HybridCurveRecovery.lean",
+      "status": "missing",
+      "source_sha256": "e96b2eb805d3f32548bb2690893b83ddd579d5fa5ef170062f7029538286fbac"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/HybridCurveTransfer.lean",
+      "status": "missing",
+      "source_sha256": "85507fb82d3536b5b0f4418f6cdcb84bd1607ac8a8947f2677f218454c0cf7ae"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/HybridTransfer.lean",
+      "status": "missing",
+      "source_sha256": "0d018e94a44fa2f3ba86fcf9791c04b5fe8f517ac46935645c9446005e20cf01"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/LowRateSemantics.lean",
+      "status": "missing",
+      "source_sha256": "c03b7ad126dfff18f31374d962648c376676be0cd249f258aa05dadba3aaffed"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/OrdinaryTail.lean",
+      "status": "missing",
+      "source_sha256": "34210ed000bd8430f1cfe474c8fb33903d54a82b6be674553a71efbf8a45d220"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/Profile.lean",
+      "status": "missing",
+      "source_sha256": "53a09d7b2e3fdfa9a792d2c94a3028b57e5e376538e8492c4f692b8bbaf8682e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/RateBounds.lean",
+      "status": "missing",
+      "source_sha256": "57d90a051e23eb3a182bd8535dff7d69d1bd8f5cde05117898adeb6a51408a2f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/Squarefree/Certificates.lean",
+      "status": "missing",
+      "source_sha256": "0e77fd7da284f080983af09b8a10d490d824d4045c0d0a0f4bd1dc6582d0f98c"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/Squarefree/CurveMCA.lean",
+      "status": "missing",
+      "source_sha256": "3a75b724718b841403616b94c501a616eb066bfda1c481feeb9276372528b7b9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/Squarefree/Factorwise.lean",
+      "status": "missing",
+      "source_sha256": "ebb3d0870500a0d0c9a0cddec3b280f46edddc8131921207b79e8ab5a7513c64"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/Squarefree/RetainedTail.lean",
+      "status": "missing",
+      "source_sha256": "0d24726b9fef3a8e0c0c30e92d3115cad7c36f13ee6f389f2f93a835cbbc37ec"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/Squarefree/SharpCurve.lean",
+      "status": "missing",
+      "source_sha256": "ee8cecd7ccf94d36694c873f1990e9755f2ca62a168213096f9e7ddd11d7ae1b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/Squarefree/TailBound.lean",
+      "status": "missing",
+      "source_sha256": "1741253fbbd3a6990da37f3fdfbb0df0ffd600c73f62f9defdbb3047df374b6c"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/UniformLineMca.lean",
+      "status": "missing",
+      "source_sha256": "d2905b35fdc6b1d013382dbf93d44239457a2d489254a28afd309f24c8d3c1d8"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FrobeniusAdmissibility.lean",
+      "status": "missing",
+      "source_sha256": "83cac5d7ab43965e2ab34e881faf2ec56f6e42f164f70b5edbccd85c72a3185a"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FrobeniusComponentRecognition.lean",
+      "status": "missing",
+      "source_sha256": "111195fb17df6a22d9a835a52d11690a227cfda24343919b16ae54c7c1f0f90f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FrobeniusIncidence.lean",
+      "status": "missing",
+      "source_sha256": "ad6da12fdb93a382ee9600fcbf1f52bf52f5ed377500990fc434c754f76909ef"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FrobeniusRetainedFamily.lean",
+      "status": "missing",
+      "source_sha256": "826e49912534e892bff1f132a554f0b3a2f014f1442dbb44f6d54ce1f8f7f5c0"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FullAgreement.lean",
+      "status": "missing",
+      "source_sha256": "246e2961aaf075130e64b906e4d0235acc2ee0e37853cf1d8f3037b658d87028"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FullDimension.lean",
+      "status": "missing",
+      "source_sha256": "6c41dc89f3486811d9e28f629cec975dc12922beb37d23bcf8c79558a5712c23"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/GraphLine.lean",
+      "status": "missing",
+      "source_sha256": "a53f230bf6c1c7954b85359e4a48a74d93d06aff7a2a9292938edebe764de109"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/GraphLineComponent.lean",
+      "status": "missing",
+      "source_sha256": "2438036a099cf75f60e5e4db2989ef8a64225cb4fca5daeef9e6bcc9bf0d9389"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/HalfGap/Line.lean",
+      "status": "missing",
+      "source_sha256": "c78f3633053a0c485fac9d3f3a67e1ea939dd4744a8dddabba596ad98ab78bcb"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Johnson/Agreement.lean",
+      "status": "missing",
+      "source_sha256": "eb7f69e1b737e2c22be33a47cfdd047d35caab99c6c4f26eb4ce579d192f0fe2"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Johnson/FullCode.lean",
+      "status": "missing",
+      "source_sha256": "316cd03e13b53b9ff7286e56b292bf4c5db9f6aac9a7d3acb7c2a33039de4e55"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Johnson/Probability.lean",
+      "status": "missing",
+      "source_sha256": "a9bbb4e6bcbdd96bdadbc6452dfe7a0c415d4be8269a6dff3b3711614c1458a9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/LineToAffine.lean",
+      "status": "missing",
+      "source_sha256": "444bfca0d22111b4cb51c23a31537fce7444fe774460e3d11b7f31fec91b206f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/BaseEquation.lean",
+      "status": "missing",
+      "source_sha256": "87a478996782be51310e46138d0b71e655da95550c25eb47493ec60fe6a5c280"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/Equation.lean",
+      "status": "missing",
+      "source_sha256": "2597b1b545069e54c5ad8e0d94f3f134088ee608b851e6e74637ed7c12bd8608"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/FactorAssembly.lean",
+      "status": "missing",
+      "source_sha256": "cb3645226ed1f8a7243a6cae700f21edcde360ce6f07bac794f4d23b4bc96b17"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/FactorBudget.lean",
+      "status": "missing",
+      "source_sha256": "4359d1b23c6e13355f3a5ec5609062572b43d5498cd75783c6c85e92f419ef07"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/IrreducibleEquation.lean",
+      "status": "missing",
+      "source_sha256": "7d13abe58365b36285648cfb1e67599248804938023212bd915f8e56094c315e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Pairs/ExceptionalSet.lean",
+      "status": "missing",
+      "source_sha256": "88387771349ebde3a65fae774095e554d35683edf9c9a955f94fff1af8aa9e23"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Pairs/Family.lean",
+      "status": "missing",
+      "source_sha256": "136bee10b7751ad79fff2b22aaf53dc870f0cd2ee0537879f8a2c0f21d97ed51"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedAdmissibility.lean",
+      "status": "missing",
+      "source_sha256": "96e39b9a38bd638e35896d9c58663f37f47941d39b300563c5358d5ca909c159"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedCertificate.lean",
+      "status": "missing",
+      "source_sha256": "e371981ddfb29307c2a0591ed71634c4357c3e152e61b5a3bfb04b968bd67f2b"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedComponentAgreement.lean",
+      "status": "missing",
+      "source_sha256": "badf046da95d81fc2061a31938ea3eb530de574cec799fae9eadbcaefcfc1e17"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedComponentRecognition.lean",
+      "status": "missing",
+      "source_sha256": "c51b00d2b3d5e360dc85f3b4f50cc15ecb9799120dbbabfeb0aff242a358b51e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedDerivativeImage.lean",
+      "status": "missing",
+      "source_sha256": "8df8ff71688b91335582a125be7b29eeeccbeba091c06de4b45aacb28e3762ac"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedExceptionalChallenges.lean",
+      "status": "missing",
+      "source_sha256": "5acd5f70e164452bb6f0be029313af962a2c5382182c987c9daa3bfdcbb980de"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedFrobeniusFamily.lean",
+      "status": "missing",
+      "source_sha256": "c47ce53509e3220228d2c4b5bd7a3aea3379567f6e65c5bdd16ca0abf6d8c777"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedGeometricTransfer.lean",
+      "status": "missing",
+      "source_sha256": "3c56bc9b6c27ad4400ece554737eb1de5a46c73ac0c242ad941e2cf71b118bf1"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedGraphCounting.lean",
+      "status": "missing",
+      "source_sha256": "5839a60d6c09464be21fcc37c3aa58ff436d65d6edf2ea1ab1971ca65221fd68"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedIncidence.lean",
+      "status": "missing",
+      "source_sha256": "c428cce984d1b23209f42159e933b793ba2ec9f1fdd132112b77beff8ed959cb"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedPointRecognition.lean",
+      "status": "missing",
+      "source_sha256": "6cd6e0e8accdce2c85958382d14ac7972aa41cc59026afa40323b3351cb1c147"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedRegularEquation.lean",
+      "status": "missing",
+      "source_sha256": "ff67ea8e682df541da68807b515ded776c6f932e19369cfc4bee5754c17c27bd"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerBatchedSharpRegularAgreement.lean",
+      "status": "missing",
+      "source_sha256": "cf1550e565d86ac2f013af75e1de5a768f6ecad48fdc69e49a596f943da0c05f"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerToLine.lean",
+      "status": "missing",
+      "source_sha256": "73533990bec1770dc6ff49e583956dbfef161d5f12f2e7b889a5569e9b61db48"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerTupleCounting.lean",
+      "status": "missing",
+      "source_sha256": "5b76d13e4adf2341d4a815b06870aad28409305202b651df2bb0398a0a1edd31"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerTupleIncidence.lean",
+      "status": "missing",
+      "source_sha256": "a007a45e83137041b3cf02fef21dd151afbee7c3b911e56c6d7cab9bfd6f887e"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerTupleRegularBound.lean",
+      "status": "missing",
+      "source_sha256": "6ea5d070deb6c407869c21989d824eeebc1776a22f23ab3f9ee69b5d6b2d0274"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/PowerTupleSeparableBound.lean",
+      "status": "missing",
+      "source_sha256": "383bc5548be04a7b3f9efdaa2b0b2ae9fe20364cf8e171f2dd5357e7b4ca2620"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/SingularTail.lean",
+      "status": "missing",
+      "source_sha256": "4da3e7f3829ea33160cb64e1dcb1463e4e3a4b246045b2ff2d181e95b4bc7e58"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/DerivativeTupleCounting.lean",
+      "status": "missing",
+      "source_sha256": "329a6c00a99fe777be849e9cf9226bd93601ac80f62b07e2196f10fc252dad72"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/ExceptionalChallenges.lean",
+      "status": "missing",
+      "source_sha256": "c952be8e847b56755938f8fba87845cb7e23ebdddc138e69adb4bf1307b28e64"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/Incidence.lean",
+      "status": "missing",
+      "source_sha256": "75357154f583dd9ae600d0b708a7af495f0403856a3de7c6eb9f26ba22de8fec"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/PairCounting.lean",
+      "status": "missing",
+      "source_sha256": "f64137f225f2b49b1bcd00c8e1a10764bff9bc979c874a3647034b556c0900e4"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/PointRecognition.lean",
+      "status": "missing",
+      "source_sha256": "12981f8a05e834b8ce753716ab7b81de958164dffebb6cb3cbaf92aa5dc864ee"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/RegularEquation.lean",
+      "status": "missing",
+      "source_sha256": "9e194629d4a7cd195162e18cc2ac9e3b3fb79dbd352f98852692fc910be01bb9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TupleSpecialization.lean",
+      "status": "missing",
+      "source_sha256": "d5606cf8c7af48e44b6d7ac0bc816f42d8e13a7e95eeedd6ae9362c3e5f719a9"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/PowerAgreement.lean",
+      "status": "missing",
+      "source_sha256": "92ddcf7822dd2eef9e729a21577ff550646f4c06b696f8ddd3e9dfbb7f428bb2"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/PowerAgreement/ConstantCode.lean",
+      "status": "missing",
+      "source_sha256": "c7f62cc0841c07819fbb99db099df3acd5252475d93fe30f7bda7c6eeb44dfbb"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ReedSolomon/ReciprocalWord.lean",
+      "status": "missing",
+      "source_sha256": "022b308d7f922f5d9a79efffe41a227003661296acac993e0c4cb256adf420bd"
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/SubspaceDesign.lean",
+      "status": "different",
+      "source_sha256": "38542871466b00780c8aade76904f3973dedd8db1791d64bba8780456d22a7a4"
+    },
+    {
+      "path": "ArkLib/Data/Domain/CosetFftDomain/Block.lean",
+      "status": "missing",
+      "source_sha256": "0b23992fe653bb03970fb13103d877bbfce5cb68e4cb25ae09df2991f8e1ea4f"
+    },
+    {
+      "path": "ArkLib/Data/Domain/CosetFftDomain/Defs.lean",
+      "status": "different",
+      "source_sha256": "1dbb881b4ef0f79524729d115e80f78e93fb52668c9ab51cae06c5255bbb9628"
+    },
+    {
+      "path": "ArkLib/Data/Domain/CosetFftDomain/Log.lean",
+      "status": "different",
+      "source_sha256": "6880968075dd7e8fd90d29fdc776229e5fa43e693e92ff6eaaf4178fd44d97de"
+    },
+    {
+      "path": "ArkLib/Data/Domain/CosetFftDomain/Mem.lean",
+      "status": "different",
+      "source_sha256": "fd46c45e34a267157ff0d6679ff4193cd80905d3c543d3d5b354da5f95ff2b9d"
+    },
+    {
+      "path": "ArkLib/Data/Domain/CosetFftDomain/Ops.lean",
+      "status": "different",
+      "source_sha256": "768218ccb4e7c4e0ccb0e8a2cc98f14539d7e5eb0c833369d332c7cf64463003"
+    },
+    {
+      "path": "ArkLib/Data/Domain/CosetFftDomain/Pullback.lean",
+      "status": "missing",
+      "source_sha256": "4c26644afe1b7e20a858c71574e72c8e14d5cb169849a1549c7805de7a3d119e"
+    },
+    {
+      "path": "ArkLib/Data/Domain/CosetFftDomain/Subdomain.lean",
+      "status": "different",
+      "source_sha256": "4b4d2d95756c60f762ddf44a39d3db2731806bb3e8502a0a275a7ea0da61319a"
+    },
+    {
+      "path": "ArkLib/Data/Domain/CosetFftDomain/ToFftDomain.lean",
+      "status": "different",
+      "source_sha256": "5dca36d20c1fbcb98b2ec1d0d0b11d306e8be6ef1253dfb74abd10775e931ed6"
+    },
+    {
+      "path": "ArkLib/Data/Domain/CosetFftDomain/ToList.lean",
+      "status": "different",
+      "source_sha256": "15e85ce95877d5a0c584acb60344bb1caf475e3e9aaadf9f21e3ef09fa5a602f"
+    },
+    {
+      "path": "ArkLib/Data/Domain/FftDomain/Defs.lean",
+      "status": "different",
+      "source_sha256": "faab39f49bd225a60485d20cdc554b62f8fd1917cfd52126fd26eb2564b4d5a5"
+    },
+    {
+      "path": "ArkLib/Data/Domain/FftDomain/Mem.lean",
+      "status": "different",
+      "source_sha256": "7125476a4d9b3bb7754b7644fe2d58ad8e89e48720f1b9c4ec8e76a0db86ba11"
+    },
+    {
+      "path": "ArkLib/Data/Domain/FftDomain/Ops.lean",
+      "status": "different",
+      "source_sha256": "c07d4d7fa1c7d8358a3596f459d10ff0712650654b89faa632c1f25033394b61"
+    },
+    {
+      "path": "ArkLib/Data/Domain/FftDomain/Subdomain.lean",
+      "status": "different",
+      "source_sha256": "f8aed51c7038d8c91148492979abbe32f82903a22cd97f62e041611d89e4ee4a"
+    },
+    {
+      "path": "ArkLib/Data/Domain/FftDomain/ToSubgroup.lean",
+      "status": "different",
+      "source_sha256": "80bfd6373f94f9360ec4e6067f84caca27f5c43ea4956429ffa9fe453f7ab426"
+    },
+    {
+      "path": "ArkLib/Data/EllipticCurve/BN254.lean",
+      "status": "different",
+      "source_sha256": "29d8657e256eba11f9b733321c9c77668d8ccc0a78935377bcb2101a689fc70d"
+    },
+    {
+      "path": "ArkLib/Data/FieldTheory/BinaryTrace.lean",
+      "status": "missing",
+      "source_sha256": "31773148564495d45f0454edbf83b3c68878da9cc8abfefbfd8e098778b8cdce"
+    },
+    {
+      "path": "ArkLib/Data/Fin/Basic.lean",
+      "status": "different",
+      "source_sha256": "53e98b3b54720db8671720c5d4478f6dffa1d023bea2bb446395884b979d3e2a"
+    },
+    {
+      "path": "ArkLib/Data/Fin/Fold.lean",
+      "status": "different",
+      "source_sha256": "51b6b31e7475ddea2ec17cc0eafc228ab8e6a37d378949548e3723445280ebe3"
+    },
+    {
+      "path": "ArkLib/Data/Fin/Lift.lean",
+      "status": "different",
+      "source_sha256": "00b996f86d79ccdb36f45c3ea67000c04fd64e256a5a9d834944cc4918b7b34a"
+    },
+    {
+      "path": "ArkLib/Data/Fin/Sigma.lean",
+      "status": "different",
+      "source_sha256": "0871bbbd3ff9488f6acd0f70818feae7220cf4a13314c1d0f1ea13cbf941ec38"
+    },
+    {
+      "path": "ArkLib/Data/Fin/Tuple/Defs.lean",
+      "status": "different",
+      "source_sha256": "20cdcec75371269b9387edcdcd395511dda3e6d38b2570cef07aba19dc67fdcd"
+    },
+    {
+      "path": "ArkLib/Data/Fin/Tuple/Lemmas.lean",
+      "status": "different",
+      "source_sha256": "afbbb19bab40e63998b920eb4cd0fe43ec10da103c5032486c1ad47d12acd888"
+    },
+    {
+      "path": "ArkLib/Data/Fin/Tuple/Notation.lean",
+      "status": "different",
+      "source_sha256": "0b4634760587c817946ced970781e076c5280c9bf1f48e0d819b7593b8a89ccc"
+    },
+    {
+      "path": "ArkLib/Data/Fin/Tuple/TakeDrop.lean",
+      "status": "different",
+      "source_sha256": "44a5e4fbc698b574bcf34293f904b325937bda1d908923b42deae499e832789f"
+    },
+    {
+      "path": "ArkLib/Data/Finset/Enumeration.lean",
+      "status": "missing",
+      "source_sha256": "64c1679412f71c609a6baaf73ed2f42f431321c6e6eef6d39966b11d3075200f"
+    },
+    {
+      "path": "ArkLib/Data/Finset/PairwiseIntersection.lean",
+      "status": "different",
+      "source_sha256": "6641cbb095fb39a54535cfc11f58077891b9485ed6fb2e187747b372beab7eab"
+    },
+    {
+      "path": "ArkLib/Data/Finset/PickSubset.lean",
+      "status": "different",
+      "source_sha256": "4a97079f4b1ea91abd8de3c507b7c42f47cbc584f04e6f9b0530fd950dac523e"
+    },
+    {
+      "path": "ArkLib/Data/Finset/SampleIncidence.lean",
+      "status": "different",
+      "source_sha256": "95fe92e05aa8a333f58712936f646b89ef21dff43d9ba58198cc2feb573e5a5a"
+    },
+    {
+      "path": "ArkLib/Data/Finset/Staircase.lean",
+      "status": "missing",
+      "source_sha256": "71ca149d437c6e55a3df2c1b96cce038be46a54da09f7401528be03463485273"
+    },
+    {
+      "path": "ArkLib/Data/Finset/WeightedSimplex.lean",
+      "status": "missing",
+      "source_sha256": "715ecd2902b2efd76ba7d74fb636d99be2722dfa03e6445758036cb5c72fd656"
+    },
+    {
+      "path": "ArkLib/Data/Finset/WeightedSimplex/FloorTransfer.lean",
+      "status": "missing",
+      "source_sha256": "bd8648e1f5a3b3ecbc8e10e53fa1e08d4a1cc02fc0fb79e02cefda9f40df40d5"
+    },
+    {
+      "path": "ArkLib/Data/Finset/WeightedSimplex/Moments.lean",
+      "status": "missing",
+      "source_sha256": "58b34c968543793bb5791fbaf324f9068719a0d2d6e30f0580b8e1653abd3749"
+    },
+    {
+      "path": "ArkLib/Data/Finset/WeightedSimplex/RankIntegral.lean",
+      "status": "missing",
+      "source_sha256": "14f9625a794c9febe124703307e61589107ac8eac76e647dd935a41838fba4b1"
+    },
+    {
+      "path": "ArkLib/Data/Finset/WeightedSimplex/Variance.lean",
+      "status": "missing",
+      "source_sha256": "5e79b43bb6be536e68de41d5f06fc9b4ee04f9cf085c5530b20c209268cf3102"
+    },
+    {
+      "path": "ArkLib/Data/GroupTheory/PrimeOrder.lean",
+      "status": "different",
+      "source_sha256": "dd1c06ed3db0cf974bc13162818af8a187e21d1b8edf57a9283899f0e8c3bb06"
+    },
+    {
+      "path": "ArkLib/Data/Hash/DomainSep.lean",
+      "status": "different",
+      "source_sha256": "3dfc3993757185b78d208505176d4f301619a786e8eba2a5c8a66a5cc10f2529"
+    },
+    {
+      "path": "ArkLib/Data/Hash/DuplexSponge.lean",
+      "status": "different",
+      "source_sha256": "1b852be4ebbdca056aa41c939e7b5d0c358c5325cd0028ebc7131deb39e84eb2"
+    },
+    {
+      "path": "ArkLib/Data/Hash/Poseidon2.lean",
+      "status": "different",
+      "source_sha256": "e809dbde25e8cf81520437d810e6b2260595fb2f0aabaa5f417e40f9a641f7cf"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Core.lean",
+      "status": "different",
+      "source_sha256": "28a7928259bad27c75fc1de621ae8e68faecf7ab078be3ca83d21aeb3da0fca0"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Core/Basic.lean",
+      "status": "different",
+      "source_sha256": "d9d5de3090a4123b1be3bb5eeec8bc813558d5f79d370455dc618fe2f3451761"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Core/Modulus.lean",
+      "status": "different",
+      "source_sha256": "0bd6d3703e4ba074974d3d0463f960989f69984fe0980c2bc144d10032ada281"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Galois.lean",
+      "status": "different",
+      "source_sha256": "c8f2468d57b1b3d56a465ec0248ede4ead14c95cc9dc0f17884450d060139985"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Galois/Automorphism.lean",
+      "status": "different",
+      "source_sha256": "3537b595e03c108f2a91751508b20ed672254b0c7d34c7183cf7e010cdc2f723"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Galois/FixedSubring.lean",
+      "status": "different",
+      "source_sha256": "8c58409760e16a2771a09ae855437ee272b407a476b0911cae36588e333debb1"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Galois/Group.lean",
+      "status": "different",
+      "source_sha256": "0e4f818577dbd52bd96ee92bd0b2fb9879f60fb09bc78c98d41febb0e362b57a"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Galois/Order.lean",
+      "status": "different",
+      "source_sha256": "d2bb70a64f01b67f5fe084f7c5c5d22c824ab963e34ef392e22bfb50f7126768"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Galois/Trace.lean",
+      "status": "different",
+      "source_sha256": "ee1042351b27f2ac0079808e6eb783fef8d4c2e1016e5c3bc3dff9375a34f748"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Inverse.lean",
+      "status": "missing",
+      "source_sha256": "2c23954ad66cd82adb4240e6019dffacaee6810438fb9176e9093a221552049b"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/NormBounds.lean",
+      "status": "different",
+      "source_sha256": "58b600074d5b6fc24d15560009b8d3d2a0ee53a756a86304138d2b5fdcfa1de5"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/NormBounds/Basic.lean",
+      "status": "different",
+      "source_sha256": "714a11a3f0c9b2c5209b6cdc99c426f19e392c6bd96d9e2ccc550c72ee6fe2e6"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/NormBounds/LsCore.lean",
+      "status": "different",
+      "source_sha256": "106ea22f71a1bad2f1576618c3e47dd03889a00440fc8ff2793c2e91f4b877ef"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/NormBounds/LyubashevskySeiler.lean",
+      "status": "different",
+      "source_sha256": "d030b2f02e67c7f4c319aab388d1ce85278ac028c5ea2a7002af1ccb15105666"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/NormBounds/MicciancioYoung.lean",
+      "status": "different",
+      "source_sha256": "671e1615ab2982ef9660e863c02041757c779ef2d68611522fdddc8576a53a47"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Norms.lean",
+      "status": "different",
+      "source_sha256": "9d25a7076538b8551640a29c4d007db1917834e5515cac99f4324663a190b5a9"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/PowTwo.lean",
+      "status": "different",
+      "source_sha256": "4d5ce41321449321632ed185ca4978ae03512f6c82af7d4f0ccb06a0a381400b"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/QuotientLift.lean",
+      "status": "missing",
+      "source_sha256": "4656b357e6695a950b6a1fa4bf2e1f09f35dd0e45c96bc9da88c5a200d73cf4d"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean",
+      "status": "different",
+      "source_sha256": "61fe3c75e3285de4b59b25b1c3afa8e0ceb23ea00a31f9a7c4234e010c69bc98"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Subfield.lean",
+      "status": "different",
+      "source_sha256": "e99b16c11d0e4d2da7337ba7d5084aee4aa1c4251755a98cd775ac4ca31bd79e"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/Basis.lean",
+      "status": "different",
+      "source_sha256": "228fd5ed987ba6956f59e76e97913eba6ed0ca406401780696b2cbcf9bb9dbe3"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/Bijectivity.lean",
+      "status": "different",
+      "source_sha256": "4a3bf7171ec69ac27d25bdf1ad2571e5f05a924ad341d165064113e562ff9efa"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/Cardinality.lean",
+      "status": "different",
+      "source_sha256": "acc65e747d7eff47083cb7e3ec6b3243b616e4289faf8e7f81a98bc92f2ed1c3"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/Factorization.lean",
+      "status": "different",
+      "source_sha256": "ac244ecc6b035c0e09d998054a52fdb2216c5783a0ae4e280ae54ba4bb2b53b8"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/Field.lean",
+      "status": "different",
+      "source_sha256": "0fe678933cf683ca8878b5e756ba6fd2c94415803963c0ba952e173ddf2046ae"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/NormBound.lean",
+      "status": "different",
+      "source_sha256": "f8058762f360dc6461a573bfb108110d979eb8d6ce948eb8eca80a37cca13d74"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/Packing.lean",
+      "status": "different",
+      "source_sha256": "ead4704cf2c9774d6a1f674069a8b0ea6d962f462313a5cf2f37ccc2f96f99cd"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/TraceInnerProduct.lean",
+      "status": "different",
+      "source_sha256": "1911d153992c0acc4de66c4a327e13a2a520d4c7ab428b0130fd937a76e27742"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/TraceVanishing.lean",
+      "status": "different",
+      "source_sha256": "38ac2ac4493f0fb81cad1170ce897be902211f6c09056226f45ffd739331a4b9"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/ModuleSIS.lean",
+      "status": "different",
+      "source_sha256": "eba581c1600430071b9af89b1deb63ecc7af2c0cc3a9da7de41bbe6742b74467"
+    },
+    {
+      "path": "ArkLib/Data/Lattices/Vectors.lean",
+      "status": "different",
+      "source_sha256": "66b0bedbfe534c9e8906c0b97afaa14698e17ef1a12410ae011cb170601b39b8"
+    },
+    {
+      "path": "ArkLib/Data/Matrix/Basic.lean",
+      "status": "different",
+      "source_sha256": "49c09daaf2fea8fb474e35b93c9648e2c767988f2eb14bee2d80fd5496fcf825"
+    },
+    {
+      "path": "ArkLib/Data/Matrix/Sparse.lean",
+      "status": "different",
+      "source_sha256": "1f2a1d937bd5707acc168858edc1cc587c3393a51bac9355679a2f05f114df0b"
+    },
+    {
+      "path": "ArkLib/Data/Matrix/Vandermonde.lean",
+      "status": "different",
+      "source_sha256": "a6f1625eb22a77217576a1d6c79b63d1d5f1cce1142c3e4643bafba023f9b403"
+    },
+    {
+      "path": "ArkLib/Data/Misc/Basic.lean",
+      "status": "different",
+      "source_sha256": "ccd06b1d1e37b9f2c84e51727aa370acf6f06cbf3039008fee0230ba55678590"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/Degrees.lean",
+      "status": "different",
+      "source_sha256": "f0ad981fcf478c4119d6572e06d4879f8f960c3bd10e5859bf2cb7a7e7ca4a7d"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/EvenAndOdd.lean",
+      "status": "different",
+      "source_sha256": "cfa2e453a79e8929f0d3bf10155b9c4d577fd45cda7a96d87c230d7bca092bcf"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/FrobeniusContraction.lean",
+      "status": "missing",
+      "source_sha256": "a3e000689810ccf291720c9691a0e65ff0169a56ba2ba06f82a07482ce3005ee"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/Interpolation.lean",
+      "status": "different",
+      "source_sha256": "208f0b425b70ada0ba3fa7ce20911d3b266addd4675a11e7cf3e3f11c6d9f3e2"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/JointDegree.lean",
+      "status": "missing",
+      "source_sha256": "3b0b35afdc132f4f8aa5e86c0f14a1729228e63d508c6fb84cf1dcae874ba777"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/LinearMvExtension.lean",
+      "status": "different",
+      "source_sha256": "986800a09bfd9342ffe12e1ded81171c6b6fb10498f248724191e803673e6abb"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/MapExponents.lean",
+      "status": "missing",
+      "source_sha256": "df6a72391c8c981ebe11399516d9de5009d2574def5458c794ac617c191c9967"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/Multilinear.lean",
+      "status": "different",
+      "source_sha256": "1d6982797e200c59397f23e54e61c6c47a1d16871d9544a742de7e65764e1692"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/NestedEvaluationTree.lean",
+      "status": "missing",
+      "source_sha256": "0ca8f1f3967b9f088db419a32377fa5cfbfaa1d251d35604ae7251d205d6b072"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/RadicalSplit/Separable.lean",
+      "status": "missing",
+      "source_sha256": "4927c2fcd3201e382bc715277f6e7a709632fa0450ca63a08daca8138c49a0c2"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/RestrictDegree.lean",
+      "status": "different",
+      "source_sha256": "a0370ef2fb24ecacfa4acd3ccb440b7c863b41cad8a99e69213a19ad5df7b4f6"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/RestrictDegreeVar.lean",
+      "status": "different",
+      "source_sha256": "080b31af0a4b010c2021c09378d83c20803f03128d6fc2aa00100e49797d14fe"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/SchwartzZippelCounting.lean",
+      "status": "different",
+      "source_sha256": "adbd65b90836a0558dd496e0ded96e859989d2fca84995ff291271c396a81833"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/WeightAtMost.lean",
+      "status": "missing",
+      "source_sha256": "bb643c7c0a3715b6a5fd4f455f867a70dea7054f04225326744439b35bc8d503"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/WeightedDegree.lean",
+      "status": "missing",
+      "source_sha256": "42c4e7ca2182373a0882b408189c0086af8b9804ad2c2addb614d02dc991acdd"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/WeightedDegree/Products.lean",
+      "status": "missing",
+      "source_sha256": "aa5dd49cbf9a0d0e66e0295742b9f63492470dec951e35ac6b0a7b4cf95f8128"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/WeightedHomogeneous.lean",
+      "status": "missing",
+      "source_sha256": "cd3ea46adc9286100fcf3e12850bc7d70665d83f9ea635d5452a082488dba522"
+    },
+    {
+      "path": "ArkLib/Data/MvPolynomial/WeightedOrder.lean",
+      "status": "missing",
+      "source_sha256": "7e56d49df457c8f258f6715b702df41bd2fe731178d08c49b3241d9b0f41b60c"
+    },
+    {
+      "path": "ArkLib/Data/OracleComp/QueryBounds.lean",
+      "status": "missing",
+      "source_sha256": "33bd0b3b468a5ddb626fb326c5cdbe549ec64101b92c44274e9e44f35bfc8b43"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/BinaryTrace.lean",
+      "status": "missing",
+      "source_sha256": "ae17c9c7c6dc67f2f9a8fe10bd2973e9448eebc603c12f416e9ee9fd3d31bed1"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/BinaryTraceQuotient.lean",
+      "status": "missing",
+      "source_sha256": "e156a722e27fd1e3fbf62976cd73f922cf8b3dc4836a2c752072e0bda1474582"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Bivariate.lean",
+      "status": "different",
+      "source_sha256": "c6950d2eba3d92c70590e3b28d6296a23dc92ca962cb43973c1377f4732ade67"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/BivariateFactorDegrees.lean",
+      "status": "missing",
+      "source_sha256": "96773591c5dcec758535284acc1d330e50c9b3b3564336f505bd53f2793a4617"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/ClassicalWronskian.lean",
+      "status": "missing",
+      "source_sha256": "3ced5d76af8c22f16e5cba4f7940c138843498442003b137298e7dcc0ebba2d0"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/BaseChange.lean",
+      "status": "missing",
+      "source_sha256": "fb4d594cfe42cc6d92f806210e1ede9ca6a610567ca7d28cf908c4d77bbf7027"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/Basic.lean",
+      "status": "missing",
+      "source_sha256": "b61ee881affc8874c4ba7a774b8309582b93d5e964296885a8f81b6311d15f73"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/ChainWitness.lean",
+      "status": "missing",
+      "source_sha256": "c7d50fcd8c4db7945c9ea4ea55c109640843f704b9f6140390fadce6d60c19d5"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/ContentExceptions.lean",
+      "status": "missing",
+      "source_sha256": "6f0d2eaab4b6c6bc478c8a339c78f671323bf994ea8f9ca63c681e5027956d5d"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/DerivativeDescent.lean",
+      "status": "missing",
+      "source_sha256": "ad8fb11d3954a3c8e3a7ec7644c9b5df9bec9011e115618d06a9cc696894bc52"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/DirectRegularLift.lean",
+      "status": "missing",
+      "source_sha256": "642148066baed41d5b4080b0bdcb382e1000b15015ba8593c4dfed0dae89f120"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/FirstOrderStageSum.lean",
+      "status": "missing",
+      "source_sha256": "afafc1008bb2b018fae3f6d8f7c8d380548d1d915dd55f9366ef44e714142261"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/FrobeniusEquation.lean",
+      "status": "missing",
+      "source_sha256": "cc7c364b2346cb4b29018ffe272d58b8af5e31d38c24a2127b258d05a71a1662"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/FrobeniusTaylorWitness.lean",
+      "status": "missing",
+      "source_sha256": "cd5af17d4a3c7ba921096de9f6079cc442c72e5be86bc09117e9a70d407796d4"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/JetDegree.lean",
+      "status": "missing",
+      "source_sha256": "3737831016418bd00625d527876b873d0f716f8db9ea8156a676fea8c88ea6cc"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/JetPrefix.lean",
+      "status": "missing",
+      "source_sha256": "a19aad4121526b2205eaa839431066187369e1dfe0f666dcfa0e55e3a6aafe6e"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/JetPrefixPresentation.lean",
+      "status": "missing",
+      "source_sha256": "45e3cfac7338f1ba851fe24c9fcbb3b597e6f50a3fdebd126b8e853039294635"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/OrderZeroPresentation.lean",
+      "status": "missing",
+      "source_sha256": "6e6e9e18a9fe0819b35594f441f78be13818ccd6ccfed4cc76c0f9d8d06e09bd"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/RationalTaylor.lean",
+      "status": "missing",
+      "source_sha256": "80344f615810e3a102d50aacd90a3717e39be359fc2e8c30fa7864ec722f2c82"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/RationalTaylorAlgebra.lean",
+      "status": "missing",
+      "source_sha256": "2b5269edeeabaa174a52fa94970957ed7e5e65a54bdcfdcc2a26fb12b075a234"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/RationalTaylorBidegree.lean",
+      "status": "missing",
+      "source_sha256": "769945372a012f13dba4d9cc031aae5a29bc5be03efaafc6d79af93d936a1009"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/RationalTaylorDerivativeDegree.lean",
+      "status": "missing",
+      "source_sha256": "b25a744e7717f832665fac1c456f60f41ce95be138f95b958e2650111e1dec30"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/RationalTaylorJointDegree.lean",
+      "status": "missing",
+      "source_sha256": "69b41d97665eed3577e61bd01f78f92b5b6d0dd5c4e2f552b474af44bc7cd8cc"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/RecursiveCount.lean",
+      "status": "missing",
+      "source_sha256": "22c110ab1a1e97be016b25895bd8011b055d652306e5d1c70d09df402368bca1"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/RegularIteration.lean",
+      "status": "missing",
+      "source_sha256": "d79c84dbf0f201c878325aa1040fd33260e579f1123cb083c44d20c5efe42d57"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/RegularJetCount.lean",
+      "status": "missing",
+      "source_sha256": "801df5032c0f4b7ab59e434431fa93423e156476ebb07c7078e5962707db961a"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/RegularLift.lean",
+      "status": "missing",
+      "source_sha256": "3b3fc4235d1289a175332033301b3f2653fd9242369be0c1d105098de9c1bb7c"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/RetainedCurve.lean",
+      "status": "missing",
+      "source_sha256": "f7a4583206a013feea9f2833e29d90c9ea9e9ef880aa9182c2710c5f9180437e"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/RootPresentation.lean",
+      "status": "missing",
+      "source_sha256": "7a992fdfce2cda1000025776f90e0e26463eb8f569bd5cc5675acb93d43b6c99"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/SeparantChain.lean",
+      "status": "missing",
+      "source_sha256": "1daa69a24f5d35590187ff5a63efbb77ef45b649fc24465eafb36b11b25277e5"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/ShiftedJet.lean",
+      "status": "missing",
+      "source_sha256": "c1f2f618628b81553bfbed974dd9a7954f2d48387e90d9873ca9ef345a46e06a"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/SingularRecursion.lean",
+      "status": "missing",
+      "source_sha256": "86024b331a5c30aa02b6ca14919de018fd7266c98f3d233bff4a95567c205933"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/TaylorChart.lean",
+      "status": "missing",
+      "source_sha256": "614b45553364dee14e4edc6d5ad8e9cc05ec65143b2d75ee21f05f9ccac7cc14"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/TaylorChartAlgebra.lean",
+      "status": "missing",
+      "source_sha256": "495baa1118dbd429a23b98e36f405270781c11c2592bddae6d889fff22b3f8e6"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/TaylorChartBaseChange.lean",
+      "status": "missing",
+      "source_sha256": "99c934d8ef9fe60b3655e299e1a879ae3c1be00f0393321ef81256d59ff547b1"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/TaylorChartGeometry.lean",
+      "status": "missing",
+      "source_sha256": "86babb62e25a670006da0ef548cca9fb69208614acc5895e4bb52cca279065c9"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/TaylorChartIncidence.lean",
+      "status": "missing",
+      "source_sha256": "8505e9c7526d480a964514f740c38e921c4867efad1cbe7a2ded679396a5d704"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/TaylorIndexWeight.lean",
+      "status": "missing",
+      "source_sha256": "b94d0f61967ce822edc90a1b4a8b1479a0b752022c63848a82bc5c928913da5e"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/TaylorResidual.lean",
+      "status": "missing",
+      "source_sha256": "b9fc933a8c72f9c00484b80a722f99b9e32021a9071895ada28092ab45872107"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/TotalJetDegreeCount.lean",
+      "status": "missing",
+      "source_sha256": "935b52ee69d180b1144c1f832a6336d4f32780351a4ee3eba55d716b5bd3071b"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/Types.lean",
+      "status": "missing",
+      "source_sha256": "0b166758b97d8857311613c1c968f72a5aac88d3110f1a5128f31bc705b50642"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Differential/WitnessCount.lean",
+      "status": "missing",
+      "source_sha256": "34043780c84382edba9308a667ff5153e901bbb3aaba8427fbfb06106204a148"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/DivisorReconstruction.lean",
+      "status": "missing",
+      "source_sha256": "0084816c12f020137619f0bde9298c45b40ecc692165222070c7275d521dc40c"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/FoldedWronskian.lean",
+      "status": "missing",
+      "source_sha256": "c162eb63a85f6208c8ee8e66b7ef81870b92c8a2ae76b2c7c4660fd9d6cc95f1"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/FoldingPolynomial.lean",
+      "status": "different",
+      "source_sha256": "4d0ccc16f8c40880200c8f175b2ddf0bce30995d9801b0fb5fee3db21958834c"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/FractionFieldExpand.lean",
+      "status": "missing",
+      "source_sha256": "eeb3c4781c14f321255b3b4ff6d5ef99ace1f31b586cff1d4461170f488312bc"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/FractionFieldFactorization.lean",
+      "status": "missing",
+      "source_sha256": "5172bf15a1ac4e867bc98a26c2d399b4d233b5b7a3b57fd7fe657f4ea1e6add7"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/FractionFieldResultant.lean",
+      "status": "missing",
+      "source_sha256": "a2fb231b94af2fabe822a5649fa71d793f8dfa72ba0778f941d53cced120ea44"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/FractionFieldRoots.lean",
+      "status": "missing",
+      "source_sha256": "4f566365aceeea8ebc9873e9bcdeb0280d97cf5fa62666036b5518205ec07229"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/FrobeniusContraction.lean",
+      "status": "missing",
+      "source_sha256": "7b5e4f9c1dc2bdc7026ddea9e3afb0eed1d69007c358bf03922dd36b24a2a921"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Indicator.lean",
+      "status": "different",
+      "source_sha256": "59b950055a1eb0e0a914cf6df74f17216d0578dbbfade12260ee20c78fe3e25e"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Interface.lean",
+      "status": "different",
+      "source_sha256": "54bc973eb9b4608ee43ab6d7d4859514a9f12bd3fe3201a19bbf93aaf9fc1be7"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/PointCollision.lean",
+      "status": "missing",
+      "source_sha256": "78dbbcf5432370566aa408b3d39c193b57978b5303cbb3bff8b2b40aeee85054"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/PointCollisionProbability.lean",
+      "status": "missing",
+      "source_sha256": "3696a2ae1655bd40e84571cc4fb2c68b87feec858cad3e79afbedf05235ac147"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Prelims.lean",
+      "status": "different",
+      "source_sha256": "90831430d362f5f18b149f52d0a1a3109f4bee8638c186682694ce5a88f50e33"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/RationalFunctions.lean",
+      "status": "different",
+      "source_sha256": "b5dcbe6fe2ef30a6ef8a0af8b95bd1e96274a9547d3050155262875012c7b845"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/RationalFunctions/FunctionField.lean",
+      "status": "missing",
+      "source_sha256": "33a0a1efcd0cfc186b0a6914f7811e76531f7ead35140c10d39c36498e6c6ac5"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/RationalFunctions/HenselNumerators/FractionField.lean",
+      "status": "missing",
+      "source_sha256": "6fbf4acf95438556520221af163b00c3bad1a17ab71245434ad46b41f6f86f81"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/RationalFunctions/HenselNumerators/Hensel.lean",
+      "status": "missing",
+      "source_sha256": "710e5cb464ec2aa338084a75a0288d6f20e33d5e3f5e3efe5ac9e87335ffb63f"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/RationalFunctions/HenselNumerators/Sequence.lean",
+      "status": "missing",
+      "source_sha256": "3aa1b44a43c460211f1ad26fa43e20e600064873b2ae3d444177b1dad6a67c78"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/RationalFunctions/HenselNumerators/Setup.lean",
+      "status": "missing",
+      "source_sha256": "902deb44c05cef7d5f4a45299109cbc6a909d98fc121d7697d89c498e17b10df"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/RationalFunctions/HenselNumerators/Weight.lean",
+      "status": "missing",
+      "source_sha256": "b02b3339b284f7d927d275a0bc2b710b81f96dff44353c3def1a66bc4951763c"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/RationalFunctions/Lifts.lean",
+      "status": "missing",
+      "source_sha256": "4111b80f4f6bec0f69d6c8faa40904d00cf9f002e08b3696fbffcf5d7803c329"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/RationalFunctions/RationalRootVanishing.lean",
+      "status": "missing",
+      "source_sha256": "e43b6b88060031b6bf349036b6787f8e20afcd11801019ba53fb30f236fa1016"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/RationalFunctions/Weight.lean",
+      "status": "missing",
+      "source_sha256": "1542dc2e2670cd30e592639032059f1ef000cf013c4ade6ba59d06272014ec23"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/ResultantDegree.lean",
+      "status": "different",
+      "source_sha256": "69b425b3ddc1fd1edb43d124b1948b37008822e7c2e9b261fb1845d606fafc8c"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/ResultantSpecialization.lean",
+      "status": "missing",
+      "source_sha256": "ec022007bafb063ecef6e5c51d3e68492659141de6a09c457032eb1607fb2938"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/SpecializationAvoidance.lean",
+      "status": "missing",
+      "source_sha256": "2e126ae0548f0f8ec4cfec28b39216ef84af053ad6b4eb2a30d416aaddd2443e"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/SplitFold.lean",
+      "status": "different",
+      "source_sha256": "4bc12ac02c597af01109e8188b6c7d4a040e69f912afd0bc47aa7d3793a7cb33"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/SymbolicInterpolationParameters.lean",
+      "status": "missing",
+      "source_sha256": "b2947bb0098485972e0ba89718a593fbe4fad594acb1b2d76e0eb2b3031bf079"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/SymbolicInterpolationSupport.lean",
+      "status": "missing",
+      "source_sha256": "08d192e61db156afad2ba190555f57abdaf061ae519fcd996b239def1e496f80"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/SymbolicInterpolationSurplus.lean",
+      "status": "missing",
+      "source_sha256": "5244ccad59445e59ecbaa578c57df9a0479b6449c2814340907cb53586646b57"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/TaylorPrefix.lean",
+      "status": "missing",
+      "source_sha256": "f4a5bc074a9f6c11a09a373f336eb939e019fcd9cf8e29c7b035510769268791"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/Trivariate.lean",
+      "status": "different",
+      "source_sha256": "d8f569de3a5984919cfe9f46d47939e0496d8d15bd9bb8f94ce0ceaf9e718b14"
+    },
+    {
+      "path": "ArkLib/Data/Polynomial/UniversalHenselNumerator.lean",
+      "status": "missing",
+      "source_sha256": "c76fbc727d83355d2097858e3f6d16d81673caab74a5680484350cfc0286dfc8"
+    },
+    {
+      "path": "ArkLib/Data/Probability/Combinatorial.lean",
+      "status": "different",
+      "source_sha256": "e2d2487ff17d45520a307af3e90d375601b199300b3bf737b65f6358ce569444"
+    },
+    {
+      "path": "ArkLib/Data/Probability/Instances.lean",
+      "status": "different",
+      "source_sha256": "7b2ac69ec9ec063608dc37fc7a20b91aa990490df21c5b67ba9366a94a049077"
+    },
+    {
+      "path": "ArkLib/Data/Probability/KoalaBear.lean",
+      "status": "missing",
+      "source_sha256": "ccf0384d5cb89b115e89ea1d4626d7d588d7c7f80c08b9a09daa9e106bf9d12a"
+    },
+    {
+      "path": "ArkLib/Data/Probability/Sequential.lean",
+      "status": "different",
+      "source_sha256": "7aae3d91ca45b65fc87a79afe8943f92811ab92c20240ad9a927ee01b0fea93e"
+    },
+    {
+      "path": "ArkLib/Data/Probability/Uniform.lean",
+      "status": "missing",
+      "source_sha256": "c70cea2559d481f11ab6609fd35b7322dc17f530f1b9fafe7358db5be7010083"
+    },
+    {
+      "path": "ArkLib/Interaction/CompositionSoundness.lean",
+      "status": "different",
+      "source_sha256": "b8d82ee9151aab2dbe1f6df20cceacc5ac614a1e86c914e1acf4c7baf36a80a6"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Access.lean",
+      "status": "different",
+      "source_sha256": "84ca04cbb7870eb325c6c71578a1965d98f69ae6489a398f478f433ae6dec3f4"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Claim.lean",
+      "status": "different",
+      "source_sha256": "266c030f29adeab70d4f03d83f6fb47310e6f080fdc3ad7d93a8f75d2ca85129"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Composition.lean",
+      "status": "different",
+      "source_sha256": "818b7f8f913df85d5afb57f6cdf0c0723fa284d2419c90c46f6422bd000be93c"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/CompositionSoundness.lean",
+      "status": "different",
+      "source_sha256": "ec1a7b3ce105841607d6c2bdbcdb4d3324ba8068e6c9a41bcefe2de5c745366c"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/CoreRun.lean",
+      "status": "different",
+      "source_sha256": "7aa53ddbf8677bbe0c344e98e47c680463bc81f21970722299bb8df70fe9e376"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Execution.lean",
+      "status": "different",
+      "source_sha256": "c4f4b1f8f45cbfa0dcc3b5c6ed8fdec902cf6592a81469051aa69d537b652de1"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/LoggedExecution.lean",
+      "status": "different",
+      "source_sha256": "ab05668260ef5f69e6dc44611b70f21a7ec4e3ca2daef216cd7e79b16f8313fc"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/LoggedRun.lean",
+      "status": "different",
+      "source_sha256": "f777dd0bce3626c625ec859b9e837b28819435e7014625c66a71aebbb63ec202"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/PhasedExecution.lean",
+      "status": "different",
+      "source_sha256": "0515eb286b8e82ef8e8fe0198e5811f2144f07d1cff95817d979be67ea7ee93a"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/PhasedRun.lean",
+      "status": "different",
+      "source_sha256": "c8157a167686078b2de3e1b180396814677e1cfc706af1c764275a794bb0b9a8"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Prefix.lean",
+      "status": "different",
+      "source_sha256": "06ef610ace630eaad220a5b9cf8fea616f89ed43200d5ece05fb1c1eabe48c63"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Protocol.lean",
+      "status": "different",
+      "source_sha256": "a08255b21d59e1a6925a341c5de55bb613f746c7237a3d8066bf140815813eca"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Resource.lean",
+      "status": "different",
+      "source_sha256": "a6ba7a8611167aae2cc22c979e252d9e141110fc9317ece434a844469f312bfa"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/RunSources.lean",
+      "status": "different",
+      "source_sha256": "002d79191a9933e0ada6df34b2a7b660b8f521e7e43996c3cbaf5c29fee89b01"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Runtime.lean",
+      "status": "different",
+      "source_sha256": "3a7e2970eb434ab696a2584f3b39a97fe3fc6e39d1f850c3b94a749f0fc63173"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/RuntimeSoundness.lean",
+      "status": "different",
+      "source_sha256": "27c7e8ee4e15839d8c6764085e6d332994fdc8d03a8fcffa89b244efa36eaa66"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Security/Knowledge.lean",
+      "status": "different",
+      "source_sha256": "803dbe0bc24e46178b9384d9a0fc5ed87c90b6f4e24971f2bcc46fb5e39cd22b"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Security/KnowledgeAppend.lean",
+      "status": "different",
+      "source_sha256": "6a4d3e049e2d4ecea73c6ed1f27305633ce06964f10e6685dcbd8f95c56583f7"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Security/KnowledgeComposition.lean",
+      "status": "different",
+      "source_sha256": "4b69328390432ecc6ad185783107985861aa414100406b259ca75a47aee44495"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Sequential.lean",
+      "status": "different",
+      "source_sha256": "3ca9f3f007240e29fb2dfc2f6bd3cf384f14d25d58d0836971a178499f09efe2"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Source.lean",
+      "status": "different",
+      "source_sha256": "19f982241b6837b8d27d247d62915fc78b710b562e44b641efbc790818379795"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/SourceRouting.lean",
+      "status": "different",
+      "source_sha256": "9e77ffd3dc1ce0fef3d1140e8a5b69ee6e91053e7dea6064c607523f164d22ce"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Terminal.lean",
+      "status": "different",
+      "source_sha256": "429fa7298d0efb11bd09c1c1882938dd80ecb448b03d6d85a0fe04c75f6a2e89"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/TerminalMeasure.lean",
+      "status": "different",
+      "source_sha256": "675ed07506c213e736183cfcc370502437618d4c2bd7b1a7fd1a8db4a122b580"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/TerminalRun.lean",
+      "status": "different",
+      "source_sha256": "b4168c04add4828a2828e2dfa47955abacd989417341b9d82bfb5e285ef6f636"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/TypeTree.lean",
+      "status": "different",
+      "source_sha256": "84c4cc573a5e4e06b7e8d9c643e6292a38d5b6620f7bdfebaa64d22963a765d7"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/TypeTree/Decoration.lean",
+      "status": "different",
+      "source_sha256": "8debe5e16dd3aacc5d4190579e4b54c10d98d778be5e22640031b8e0832450b1"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/Virtual.lean",
+      "status": "different",
+      "source_sha256": "a64340a82802be0bbf55aca1a42ffb90850055314c3054f929a1cc10f549451e"
+    },
+    {
+      "path": "ArkLib/Interaction/Oracle/WorldSegments.lean",
+      "status": "different",
+      "source_sha256": "3ca2c814447cd0a8132aab0dff21687edce0d83b4e09dd67ca0975211eaab950"
+    },
+    {
+      "path": "ArkLib/Interaction/Reduction.lean",
+      "status": "different",
+      "source_sha256": "8f7df3543a42110ac6d6fdc9cc2440186073f27a88e315a17e7f4c28a4116f7b"
+    },
+    {
+      "path": "ArkLib/OracleReduction/BCS/Basic.lean",
+      "status": "different",
+      "source_sha256": "feb1fdd0f51e722a15067a0705ba182d437f61f24bb6e1807aac5ed49a7400f1"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Basic.lean",
+      "status": "different",
+      "source_sha256": "14702af7ce587e5c3f3d2cbea15c7702804dadccda2e56745f00519c3635b9b6"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Cast.lean",
+      "status": "different",
+      "source_sha256": "daebdc608e780d5cc7cc642980e2e78c4f8ab46b4111f8a79b1e8c3beb47a0b6"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Parallel/Basic.lean",
+      "status": "different",
+      "source_sha256": "c348ba11b11d9aa210527e3862395376c5fc2000de85032e6960c27095095fca"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
+      "status": "different",
+      "source_sha256": "aab59615217c32124b6932039a36d69d514a6bbe5c8e00649d5322600d4c6345"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/Append/Basic.lean",
+      "status": "missing",
+      "source_sha256": "889220f7d319789708f9a3998e0566ac108b7474185fd2c9d260c7eaee44f582"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/Append/Completeness.lean",
+      "status": "missing",
+      "source_sha256": "32545001ea9221e682bedc09c38b45d4bdb1cff582ad9a40db5eb86b3a396feb"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/Append/Execution.lean",
+      "status": "missing",
+      "source_sha256": "3bc7665602e5056ceb15c7dffc92f1dda720b5e49046fd2716f0d26102c990b1"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/Append/OneMessage.lean",
+      "status": "missing",
+      "source_sha256": "b71a0f965c2b08fe3f46f4370258e714440723c79957390b68bf23e9f23c56cc"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/Append/RoundByRound.lean",
+      "status": "missing",
+      "source_sha256": "f3df9c7b25d885f115f20a7c028d32f6b589aed9b5fc8f012a29097e1f1395a3"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/Append/Security.lean",
+      "status": "missing",
+      "source_sha256": "40524a1f9732687e3364c5bc73feabbc11725c59b0e56651539342344ecbefc9"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/Append/Simulation.lean",
+      "status": "missing",
+      "source_sha256": "664e16c358ef3574d69f9c0591d18dcf3fedfad86c75a2983f495bbf76c09b91"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/Append/StateFunction.lean",
+      "status": "missing",
+      "source_sha256": "0c7695ca1b39c9e50f6fa11c72c65344695ac5e8dd6fdd424b49b739f1624d3f"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/Completeness.lean",
+      "status": "missing",
+      "source_sha256": "21d7b03cf93b784ba82f0c823a2d88458d895530b8e612be0a642365db40ef6e"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/General.lean",
+      "status": "different",
+      "source_sha256": "3689dbb3b50eb60ec169b5976d934a23744e77488102580023723fd6e77033b7"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/GuardedCompleteness.lean",
+      "status": "missing",
+      "source_sha256": "2746458c33dfc01ef03f404eb909468522b4461be247ed08cdc6b3516509b31f"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/GuardedNary.lean",
+      "status": "missing",
+      "source_sha256": "8e6b4ee10ec654d33c9a330e54de345adccfac85bdc23294d23d584a59ab9963"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/IsPure.lean",
+      "status": "missing",
+      "source_sha256": "8fd556cab655a2ef544271603dbe28a67b50f6c2c2b1a566816736c07b1c427d"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/NoAmbient.lean",
+      "status": "missing",
+      "source_sha256": "fd3dfba2e48aee5e5f5517f3109ba879326afb8500297f12bdbd47fefc495c79"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Composition/Sequential/OracleCompleteness.lean",
+      "status": "missing",
+      "source_sha256": "d3864a63c5febbdbfd08bc1e18462e2ce88b51d8246e192e8a9974ce440677ed"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Equiv.lean",
+      "status": "different",
+      "source_sha256": "4d6b01f400c452b2e44aa1a7a9d04aa01a38e906d71545eab5dad01247b3fdb9"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Execution.lean",
+      "status": "different",
+      "source_sha256": "9d4671c80dece54678d88f02f9a7699d395998e8df7bd02c71c0d8ca36950cb2"
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/Basic.lean",
+      "status": "different",
+      "source_sha256": "5fb9387029a467e7f6bac0c4e1b39d45811bc06ac1d9bd0f7ae8202a91c6e603"
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Defs.lean",
+      "status": "different",
+      "source_sha256": "fbc335d1296c678531f103c0837bef1a92279d00b932e8568ed5c36275958c0b"
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/AbortAnalysis.lean",
+      "status": "different",
+      "source_sha256": "91b05a1521aa124f03395a59c51713f3dec838a161d8d4296ec55f29b940d392"
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Backtrack.lean",
+      "status": "different",
+      "source_sha256": "0b3330e334f379ecf5730f1d95de278dd88dc9e94c906150a7e78b59c29a03b6"
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/BadEvents.lean",
+      "status": "different",
+      "source_sha256": "0424889915a34f1108095e0b33dbee7df168833a54dd6099c8d97cdf5a8b25e6"
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Completeness.lean",
+      "status": "different",
+      "source_sha256": "5f2211e663bde48f82dd3f4120869d85c60522f6d0852145ced93d8387b471f9"
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemma.lean",
+      "status": "different",
+      "source_sha256": "5a45278ac4520a9cc6f0f8a657703641c7a9f0f4b1449a80b41d7086d30c643a"
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lookahead.lean",
+      "status": "different",
+      "source_sha256": "f6b2f6c15b9ec59e4874445da5924674374dbc1ed72f005c25eb8729166c6fec"
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/ProverTransform.lean",
+      "status": "different",
+      "source_sha256": "488eafcf94cbc8a5ffbe1cffce2037a6c3ad9757d6e76237e631fe05239afb5d"
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Soundness.lean",
+      "status": "different",
+      "source_sha256": "bc60ef157a53786cc08be6348a3ec1c196643a7e1ca0b45abaa0f15a0a3fd3ca"
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/TraceTransform.lean",
+      "status": "different",
+      "source_sha256": "ea397c6b6dabed0c93cbdef55ffa2d1c6d61b6b7814ef71e5759bd60905dab6b"
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/State.lean",
+      "status": "different",
+      "source_sha256": "b72d19f89f5a872114abc7f28949a4c415b1adc176b74211cded96070ee3bc8e"
+    },
+    {
+      "path": "ArkLib/OracleReduction/LiftContext/Lens.lean",
+      "status": "different",
+      "source_sha256": "fba860b77277f2be777bbdb3d08276ca250610e7a8d3583d1aa7332cca8daf23"
+    },
+    {
+      "path": "ArkLib/OracleReduction/LiftContext/OracleReduction.lean",
+      "status": "different",
+      "source_sha256": "14795e364b095c1fc30936ff690c459c0262f0b419d526f93c637ca199b1ddeb"
+    },
+    {
+      "path": "ArkLib/OracleReduction/LiftContext/Purity.lean",
+      "status": "missing",
+      "source_sha256": "86e70171ea514063c05a2e7219c627a31286d85b8597514bad06adb326a0cd75"
+    },
+    {
+      "path": "ArkLib/OracleReduction/LiftContext/Reduction.lean",
+      "status": "different",
+      "source_sha256": "e628e6137845de221fa9e1b3877abd8e42d6936c842799a0c8db9da5ad5d9f55"
+    },
+    {
+      "path": "ArkLib/OracleReduction/OracleInterface.lean",
+      "status": "different",
+      "source_sha256": "5ca1faa14d1eac3d3b8569558125e325f43e9ed1b9298f0a8082058fb37eed5f"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Prelude.lean",
+      "status": "different",
+      "source_sha256": "6a7d072fd0a2c70bbc2b89b8da840001a43165cd6fb32fc14c478ce787cd7010"
+    },
+    {
+      "path": "ArkLib/OracleReduction/ProtocolSpec/Basic.lean",
+      "status": "different",
+      "source_sha256": "b93bb8c0a57d0017fb8cba99098aa5f0131634b259aaeb357cc91f9c9ec75aff"
+    },
+    {
+      "path": "ArkLib/OracleReduction/ProtocolSpec/Cast.lean",
+      "status": "different",
+      "source_sha256": "8465de3a8b57b7614be14dc2d65effc01742ddcd8af74550955f5c5aa5671a3a"
+    },
+    {
+      "path": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
+      "status": "different",
+      "source_sha256": "9d4d805d8e43a7301c88aee2ca6c3dfb51d7d520ad446701fdefc5860174328c"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Salt.lean",
+      "status": "different",
+      "source_sha256": "26b28395a9dc9238842c923cb2e35943136df8ed4ece8fff9700537d7c1ff968"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/Basic.lean",
+      "status": "different",
+      "source_sha256": "2c8177e35c931d160df8658dc6f2636c71a6e05a9f1318387fcf3e7c9a743a91"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness.lean",
+      "status": "different",
+      "source_sha256": "feb3e7e55463798abe53d4aa023be849fec3b446840c768ba3b419f86b990110"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Basic.lean",
+      "status": "different",
+      "source_sha256": "e1e94af21c7260e076262f06cb85a54b628970e9c979a5fa88c83845920475d9"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/CommittedScalar.lean",
+      "status": "missing",
+      "source_sha256": "fc3fcfed94bb8939593b97b29ca5b82a58da7c1373afbbc42acab676e4102f30"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Composition.lean",
+      "status": "different",
+      "source_sha256": "979f7b3187949d362c12721a696a417250da186755e85256d4ef750e7c6c82d7"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Escape.lean",
+      "status": "missing",
+      "source_sha256": "43b212b35360ba9e5cbbf742b91a9906fc9f57c99706ab38d50275b5c850ee5a"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Guarded.lean",
+      "status": "missing",
+      "source_sha256": "9132c2f30d9886b8a14a5ad344e0a5924c71da020654f6080d6c10df247d9463"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/NoChallenge.lean",
+      "status": "missing",
+      "source_sha256": "c8ac43b9d17f48ad7c0d193bd50f78106004f34ea60406946e4ec939f130b84e"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Package.lean",
+      "status": "missing",
+      "source_sha256": "2458b8cd497923711a1df3af2d61994d75f26dc56d6e165c947895edaa552fef"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/ScalarRound.lean",
+      "status": "missing",
+      "source_sha256": "4d3e25374fd3af7170740841b344bdf3348e862e1cf60795e684ee928194eeff"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/SingleRound.lean",
+      "status": "missing",
+      "source_sha256": "08cc427927288c795eb1f706d4fc0a686cdda74cd2358a6f9c19e0abc6005eb3"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/Implications.lean",
+      "status": "different",
+      "source_sha256": "b2e8e3c0dbfbe35f519fbf254041b712dc5bdc0ea401ec271c80b14426ba84e5"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/RbrGame.lean",
+      "status": "missing",
+      "source_sha256": "14bfa10bc9def692ff2978e5ab6d626856a35c803a0d1ebe9a5bd0dc3d3cb452"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/Rewinding.lean",
+      "status": "different",
+      "source_sha256": "3ea0e4497f91413f07972d7ae409140a4154a57c9c31d2d8e1ffc33dd436a93d"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/RoundByRound.lean",
+      "status": "different",
+      "source_sha256": "247f3d502a16ea312ca3fbbdd863e7015c5172f96e5616cbb4efc3b8044e8581"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/SpecialSoundness.lean",
+      "status": "different",
+      "source_sha256": "549426dc96d0fee6ad40ce4e0f8a8c328e708b2570a0ed9d83ded4313d734586"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/StateRestoration.lean",
+      "status": "different",
+      "source_sha256": "bde3d30a0a45c4d580cd66e77807e9f869425c6f9e2a696cfd68d634e1e4bed1"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/TranscriptTree.lean",
+      "status": "different",
+      "source_sha256": "fc7a1a15ef8c0c4ad8322abf16f13a0f91be67ba90c8b88bb1472a86662d5849"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/TranscriptTree/Basic.lean",
+      "status": "different",
+      "source_sha256": "67f8b10513ccd0fa7ac8191c3cd2acb32b5a0b82aa8edf9965baddba4429adc3"
+    },
+    {
+      "path": "ArkLib/OracleReduction/Security/TranscriptTree/Composition.lean",
+      "status": "different",
+      "source_sha256": "8eecfab7e0bf940a7f2b98e98aa8a68bcc63036c1a227a948a6f7bf9d2b4369b"
+    },
+    {
+      "path": "ArkLib/OracleReduction/VectorIOR.lean",
+      "status": "different",
+      "source_sha256": "9993f8ce11016825cc16e6fbc3d5f5bf90cb77592ad96e15a24f624cc78efc9b"
+    },
+    {
+      "path": "ArkLib/ProofSystem/BatchedFri/Security.lean",
+      "status": "different",
+      "source_sha256": "b4ab00211dd83ae8b6a640ceb664d07348887fc0e201ca8dc53318244ace9525"
+    },
+    {
+      "path": "ArkLib/ProofSystem/BatchedFri/Spec/General.lean",
+      "status": "different",
+      "source_sha256": "644a159cb3c4787e52d02c788a80a261112e4ddc189b91479040375eec923c37"
+    },
+    {
+      "path": "ArkLib/ProofSystem/BatchedFri/Spec/SingleRound.lean",
+      "status": "different",
+      "source_sha256": "1bf2206570a6c7c4bee93a3e6c1d2a82f4021920511c3d19e99072cebe6a462e"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Basic.lean",
+      "status": "different",
+      "source_sha256": "136db0b522f76a31441b8b5320b88293470c4abb7a793932b1a44cd78376eaef"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/CoreInteractionPhase.lean",
+      "status": "different",
+      "source_sha256": "5de59a81d75c97e228ccdd47283d3cb4af53c7c31ba0cd141746696b083dc702"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/General.lean",
+      "status": "different",
+      "source_sha256": "73fb76a1afe767ee7dca9e51d302082363f6cf61cbfd73324f8b51148e02178e"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Prelude.lean",
+      "status": "different",
+      "source_sha256": "8736fc58910667a5170445235ce0cb40f50bc60a10675caafba89acb6c97fbf8"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/QueryPhase.lean",
+      "status": "different",
+      "source_sha256": "de6bf4ab997da52ec7b0000034f2d5c9087c4d2018e9e9b8ad8be4c500c4abcf"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/SoundnessTools.lean",
+      "status": "missing",
+      "source_sha256": "3d530537b5fb7ac01c883c14bdb5b98a7eb311969e4de20be0055021a5b9acb9"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Spec.lean",
+      "status": "different",
+      "source_sha256": "c4037a9947687b04e622d95eba1f9083fa65a7cac2c6cf3492db11a409a8851c"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Steps.lean",
+      "status": "different",
+      "source_sha256": "85c05430907b7ee1e7c6500c0a578cc202d72a1974b9bbfaa06e4e71daae33bc"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/FRIBinius/CoreInteractionPhase.lean",
+      "status": "different",
+      "source_sha256": "411d7b9dec457c077ad3086a4016faeddcd60de5790752270a577f225a91ca37"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/FRIBinius/General.lean",
+      "status": "different",
+      "source_sha256": "14539194897076090e2cc1f763f70b9d3b4a63cab7a3171e831a45277951b4ce"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/FRIBinius/Prelude.lean",
+      "status": "different",
+      "source_sha256": "cd1c86d4e84a4f8d3950355fe7cef2a9ff543dd0820027bedc15725ff615c288"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Component/CheckClaim.lean",
+      "status": "different",
+      "source_sha256": "9b4de6b21ca23aae3e878f6d7115a88fbfe97dccc88934e43207a1b911ef4581"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Component/DoNothing.lean",
+      "status": "different",
+      "source_sha256": "bc2a8c8e045763cc95f287e78d798d01a3c721d6497f9147d5559b25edfa78de"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Component/NoInteraction.lean",
+      "status": "different",
+      "source_sha256": "0f87566baa1aaa30924925ed47440177830d1847ee28db9b21eed6a198e69065"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Component/RandomQuery.lean",
+      "status": "different",
+      "source_sha256": "6f733ac99efc8d2c59c9dc79d3eb6cd04b0616f142a8cef24e1bdef6f0998dc6"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Component/ReduceClaim.lean",
+      "status": "different",
+      "source_sha256": "64fdd23464c3a65075b182e023f0512538c34c28ac79339224e9e0a1798fdd27"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Component/SendChallenge.lean",
+      "status": "missing",
+      "source_sha256": "51cb9fcaa1c8d5169e6c1090772a403972d0cdbc7dd079dbabaa6544f204c31e"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Component/SendClaim.lean",
+      "status": "different",
+      "source_sha256": "b94b43d8fbb98c0b8c2ebba7f26d6c95198997c798f78e9b37a7cbb92d61e5d7"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Component/SendWitness.lean",
+      "status": "different",
+      "source_sha256": "a5e1603667964950ad09e5f8ad89de900ec6ca0bd069176d7a260eb53b2b733a"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ConstraintSystem/Lookup.lean",
+      "status": "different",
+      "source_sha256": "de7e6854b8e802de37322fd0bcb78e10181b9be6df5f24194b9e494d6c0cb91d"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ConstraintSystem/MemoryChecking.lean",
+      "status": "different",
+      "source_sha256": "22a6ad3595ff4d6e7970be5d745fa8894d67a32df0e4eedaa92fdba2da4871fc"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ConstraintSystem/Plonk.lean",
+      "status": "different",
+      "source_sha256": "1f54af52f20a6dd767b6d552a7763e02145c1d167a16a715a0e4ebe63835c505"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ConstraintSystem/R1CS.lean",
+      "status": "different",
+      "source_sha256": "9b606b47a47cc798ec972ff53ee5a96a8fd322616fa8979b6e567e959745a792"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Fri/RoundConsistency.lean",
+      "status": "different",
+      "source_sha256": "cf9e7ca5ee3f0d2852954364be031496f8ffff4603f00941246d1c1e64fc8183"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Fri/Spec/General.lean",
+      "status": "different",
+      "source_sha256": "83d20f02d03467dbf0ccb6958b9c8977c6ff0e8f9380872ce29cc3fab4af04fa"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
+      "status": "different",
+      "source_sha256": "56d8b5af5e48d475aa984770025df4fea40e37b02a6479393b3fd8ff809ec27c"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Plonk/Basic.lean",
+      "status": "different",
+      "source_sha256": "f15b316beac47f9ca8f2128177fdf6d63fd3fd9181601bc63a7e5f71b361af46"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Basic.lean",
+      "status": "missing",
+      "source_sha256": "984641bd75c6c20bd3b124b8d552820fdc0f30e8dadb42d2f805bd89107f74a8"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Lift.lean",
+      "status": "missing",
+      "source_sha256": "9b5058665b62fd6ccdce23fffc744d810551b38b01d657352628cba8f8c1019e"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Lift/Presentation.lean",
+      "status": "missing",
+      "source_sha256": "ec1f13f5ed3c130764e0d16a3e6b146e145636975c031f64e16f7182e0dbd974"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Lift/Reduction.lean",
+      "status": "missing",
+      "source_sha256": "0f6a1a93a52948be4ce5d8115ce63a28e9a1f5a204a2d8035bdede0f1528487a"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Packing.lean",
+      "status": "different",
+      "source_sha256": "fc22ef3b43f70d70db64e1d1afb9e116d5a296cfaad331f2848f0ee9abb299b1"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Packing/BatchingPhase.lean",
+      "status": "missing",
+      "source_sha256": "afe0e67ae1d8a26a6ec30cb009f1cf51823271f8a982526a6d979a014a94e94f"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Packing/General.lean",
+      "status": "missing",
+      "source_sha256": "604d35e7bfc6d9a989ea7d3340af1f1a87e1f14be91f50801ae5adbf556e838d"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Packing/Prelude.lean",
+      "status": "missing",
+      "source_sha256": "ae0f80a8f61cfa6be528427afaacd6226a502ee512e9aabe3f3d9ac8fd9ca222"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Packing/Profile.lean",
+      "status": "missing",
+      "source_sha256": "1ebefb7479b8a6f52470174968a72059e65a510ae7e647297b6f03d3fd3c2597"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Packing/Spec.lean",
+      "status": "missing",
+      "source_sha256": "57b413a01e6fe6c4f4bb5d2059c7fdf3a071d9f3f7693d2b01aacc9943f47587"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Packing/SumcheckPhase.lean",
+      "status": "missing",
+      "source_sha256": "a5353bd2571cfbdab92e983fd41a4a098d104734661acc754496f708cfd55031"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/RoundVerifiers.lean",
+      "status": "missing",
+      "source_sha256": "f5b926a72ead968e52baba449a33e69c5096bfbdfe9a12fbf028d83b97261bec"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Transport.lean",
+      "status": "missing",
+      "source_sha256": "1012e2dc4d9ea16ea9abef913af025235f9cc9ee7d49e2a99df5e2bd16c4df72"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Transport/Coeffs.lean",
+      "status": "different",
+      "source_sha256": "07c726813c8a2aa7358fdc2a036f2d4ec2cb5a2c6e2aeca1ec72cd07352c4da1"
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Transport/Eval.lean",
+      "status": "missing",
+      "source_sha256": "e7a51c879a8c320b159b7142a4ebd5e56e44a06bd0e6dc22cd992711eca25f30"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Spartan/Basic.lean",
+      "status": "different",
+      "source_sha256": "690fa846d88b68ec40fb19ebef74ec41bab4a62b0369c313a903ac35638af55d"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Stir/Combine.lean",
+      "status": "different",
+      "source_sha256": "9744a98466d549f7577c1509da64cfa9311b20954d388d90f449e8081b3a1ab1"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Stir/MainThm.lean",
+      "status": "different",
+      "source_sha256": "af644355c2244080fe8e44efbd791ffa1fb895294b4f067783f093409fad3549"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Stir/OutOfDomSmpl.lean",
+      "status": "different",
+      "source_sha256": "8275c5a38057575f7975e6b7cf669bfe4535aeba84e16ffa2f09212534f50be6"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Stir/ProximityBound.lean",
+      "status": "different",
+      "source_sha256": "5de0c0e2a1738076cd16daee06bdaa3e3bf4a020dc1f4c9bed52fbcd7b58b2b6"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Stir/ProximityGap.lean",
+      "status": "different",
+      "source_sha256": "32f2bedd5ab20b85c5cfe0516e17d2feb6143886252e66ac03a5ac1dd445f4af"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Stir/Quotienting.lean",
+      "status": "different",
+      "source_sha256": "6f1684c6293a4be544dc5dd3f52dc9bd227da9d742887f0a08e501ef89dd4124"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Domain.lean",
+      "status": "different",
+      "source_sha256": "61498206b4af27b9b9e2ae8bf998d1d285537c1bc552ff6046247ccdec41beac"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Impl/Basic.lean",
+      "status": "different",
+      "source_sha256": "eec72c0bcf20314ff13387e30ac15a551091829e88ea1f30c717a018a9a4540c"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Impl/Projection.lean",
+      "status": "missing",
+      "source_sha256": "05aff2e781e96e013be270764abee3885bc3f4a4563d43c12a6647031c3713f7"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Impl/Representation.lean",
+      "status": "missing",
+      "source_sha256": "87255ef1b91cdddcb2a30744bb300ee1311d878066ffce12cb039842678a1b9c"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/ArbitraryCompleteness.lean",
+      "status": "missing",
+      "source_sha256": "bed376a1d62f1aa66605ab52ab38d2362c70b0bec19fe039a8618e073237a01d"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/ArbitraryRounds.lean",
+      "status": "missing",
+      "source_sha256": "28223ac6e28dd957adb955ea068c7480638ce02215d8d27778dffce2b775c9c7"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/Closing.lean",
+      "status": "missing",
+      "source_sha256": "32ff49c1abe8144f38e27d8e63ec1c3afd34b0d8ab7e6ee256c74c14af842e9e"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/Composition.lean",
+      "status": "missing",
+      "source_sha256": "74f8aa72c33dd9321dde966fff003f9a3375dc8d92ef7c3a5e134381fb5bf303"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/Computable.lean",
+      "status": "missing",
+      "source_sha256": "21047cb3098728c67c3e894e47a62078441397e4b6412e8d0ecff28b20cf72fc"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/ComputableCompleteness.lean",
+      "status": "missing",
+      "source_sha256": "4b626a7768fbe96136e9717581b3bb8fde625e3b82ac3c8f51d319e94cf4e073"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/ComputableSoundness.lean",
+      "status": "missing",
+      "source_sha256": "9025289727ac014239108993705bb4748195710ed8a7ee1da57d75d13887de3d"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/Legacy.lean",
+      "status": "missing",
+      "source_sha256": "3cbe79cf0e64fa4f179ed91d6c7f665283d1c67b73022e6d48e10408e368f6f9"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/MultivariateRound.lean",
+      "status": "missing",
+      "source_sha256": "bbaad43992ae246db786cee06b35264d2cc0afd9c5843db1bf14fc98b94d0f56"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/MultivariateSoundness.lean",
+      "status": "missing",
+      "source_sha256": "65b1eca714bfe0c437d4352e4c542e5dabf526bbec1d80241e7348d6e88d864a"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/Projection.lean",
+      "status": "missing",
+      "source_sha256": "0550d949aac11f98b324ce96aa81d7f6e178acc7065d759a82c792db06e07bb4"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/ProjectionTransport.lean",
+      "status": "missing",
+      "source_sha256": "584f84a5d7ad5a89b28eb60c93fc3746594f7bcdb3cf2b19986edb100aa4098c"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/Protocol.lean",
+      "status": "missing",
+      "source_sha256": "40df30c4340ac57f4258a306e8e81e659b5f4353fe6bcc6f4f3a13c9ca40997c"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/ProtocolCompleteness.lean",
+      "status": "missing",
+      "source_sha256": "825568d7bae05a1c0e6065afd80f1623c51a97c1e887215b9ff61ff8618f00e6"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/ProtocolSoundness.lean",
+      "status": "missing",
+      "source_sha256": "46fd30ad38ce23f445b73a3765bd23f396aff7a0c52c04a1427eb12883846407"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/Sequential.lean",
+      "status": "missing",
+      "source_sha256": "719f6b2965e2fe03760a150bb3fef318176b736e317f29f47677379016d7af06"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/SingleRound.lean",
+      "status": "missing",
+      "source_sha256": "80ed93ca2570ff6d29c40cb0f884d8945204ec9d59e45f2bd29818d1f11bc445"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Interaction/Soundness.lean",
+      "status": "missing",
+      "source_sha256": "9c07a32703a9676f05a50006f665288e8867015742f9c048b29c1007e3bd4607"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Spec/General.lean",
+      "status": "different",
+      "source_sha256": "d6a7785859f73d42f124b6a0a7c073177c0ee3c04da5607276f355bfe6ae3920"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRound.lean",
+      "status": "different",
+      "source_sha256": "ed03b056a0fde16b9dad1ce6d22f19af5cdffc2912d6cf85892f4c6947bda820"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Structured.lean",
+      "status": "different",
+      "source_sha256": "4cf7ad3b51503c33d72f97ccd5de72b9252e029f75befae5678f1f7712f9b5ce"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Structured/Prismalinear.lean",
+      "status": "different",
+      "source_sha256": "e4024f3d7fe1cdefbd50990f50dc9c6616b7cf52a2f741e8e982ed9328e25b69"
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Structured/SingleRound.lean",
+      "status": "different",
+      "source_sha256": "d10b63eab81c0c0e41fb6c3f67ab8609b81c8e7a48f8da99efb2f43d44227e57"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ToyProblem/Codegen.lean",
+      "status": "missing",
+      "source_sha256": "cc5f05300dcb2c66309bae086010f5a63c652a90c28bc1fe1974ff6935ee0070"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ToyProblem/ConstrainedCode.lean",
+      "status": "missing",
+      "source_sha256": "534871e3f17181af47a59bce48aa2676a3ac5fe80cc495e237ea64175cf39dc3"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ToyProblem/Definitions.lean",
+      "status": "different",
+      "source_sha256": "debeb3d1459ff9e87aff939a529be5d26d4cfa227b1e6d6356dd07fb746f4764"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ToyProblem/Impl/FRS.lean",
+      "status": "missing",
+      "source_sha256": "d859499844977a274ee0034f08f9955db0e39669947cbc16a2992784c113b43d"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ToyProblem/Impl/IRS.lean",
+      "status": "different",
+      "source_sha256": "87bfab57f44e842a51e5b1f66cbde70e690d10ea33668b2475f0057e857aaf04"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ToyProblem/Leaderboard.lean",
+      "status": "missing",
+      "source_sha256": "35125ea5746767461b5cc1b02ff3d69b0a9bfe1cae02bfa4dedd58b7b6bc9a54"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ToyProblem/SoundnessBounds.lean",
+      "status": "different",
+      "source_sha256": "b4c09ad6c9f711c6804dff171bc249d722fdcdcd6684fc6ea0c15045fdf1c72d"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ToyProblem/Spec/Completeness.lean",
+      "status": "missing",
+      "source_sha256": "2ad0a4aa9b83302eeee592dc0d36292532d2906286241009acfb204af5fc9038"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ToyProblem/Spec/ErasureDecoder.lean",
+      "status": "missing",
+      "source_sha256": "1d194b7de5573ef33709843bb6e1e57db953bac32b0f82787dc2ed3a6b49551f"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ToyProblem/Spec/General.lean",
+      "status": "different",
+      "source_sha256": "2f1b0727995c3ddd064c43b65232fab1ad0f4e759e42ca0a624097c59acede75"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ToyProblem/Spec/KnowledgeSoundness.lean",
+      "status": "missing",
+      "source_sha256": "75578fea87b93a2012d91811745ff6481ea5d8f69eaacee87b7685f83a91ca0d"
+    },
+    {
+      "path": "ArkLib/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean",
+      "status": "different",
+      "source_sha256": "47eeb52a832743b9af2e8c27f5e8206ae912f27be46c1d5805c61183d4a36ec4"
+    },
+    {
+      "path": "ArkLib/ToCompPoly/Multilinear/Basic.lean",
+      "status": "different",
+      "source_sha256": "bf76c90be20bed734e88fc766df61a57e294d4ad7b6ec58320459c48fc2e01ef"
+    },
+    {
+      "path": "ArkLib/ToCompPoly/Multilinear/NestedEvaluationTree.lean",
+      "status": "missing",
+      "source_sha256": "7ee164ffdd56272aa5f8665e6120ab0f4f9f062231673893bff27f0776697431"
+    },
+    {
+      "path": "ArkLib/ToCompPoly/Multivariate/Eval.lean",
+      "status": "missing",
+      "source_sha256": "e1d214c98aac514f15b177fcd82b1c854f29b0f0229af6fe60821ae1758d7686"
+    },
+    {
+      "path": "ArkLib/ToCompPoly/Univariate/Basic.lean",
+      "status": "different",
+      "source_sha256": "1df3069170576f7102e929043156ffa2ea3647a99b31beb07468e8fe1356088d"
+    },
+    {
+      "path": "ArkLib/ToCompPoly/Univariate/Lagrange.lean",
+      "status": "different",
+      "source_sha256": "9d78e456f66b329ff0476514241269c95f5f01d1e762572874689568ede818d5"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Algebra/Order/Floor/Ratio.lean",
+      "status": "missing",
+      "source_sha256": "6aad1f58a9c24299c33d30ad2b38f67e8ccce9b0f7c954c1d76a428f79a92bf2"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Algebra/Order/Floor/RelativeError.lean",
+      "status": "missing",
+      "source_sha256": "f8a2fb247d364b9d0514284a917ee2dc436ca7b12e12cac650f3cc3b663b11db"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Algebra/Order/Floor/Semiring.lean",
+      "status": "missing",
+      "source_sha256": "3853791dc9a2652d637a8edff50c22f7bbd246fda6fb466842da50d08117ca25"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Analysis/ExponentialStaircase.lean",
+      "status": "missing",
+      "source_sha256": "9490fd0e020611cf7366771a46ed20109a9664cf806427dc39f7864a88931540"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Analysis/Simplex/CenteredMoments.lean",
+      "status": "missing",
+      "source_sha256": "267498a2e4179bdc912fc1f618f4940ef1cd5cfc013f2c68337ca85001c1f3d4"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Analysis/Simplex/MaxCoordinate.lean",
+      "status": "missing",
+      "source_sha256": "c415662d7041d7c7744a43408bbe47053483a8e0bc95184b93281d3fe44f8e2b"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Analysis/Simplex/Moments.lean",
+      "status": "missing",
+      "source_sha256": "9e3f355162b8b682a7cda749bed03beeec4d26dd4136ba8d6d62c3aba35c4dd9"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Analysis/Simplex/MonomialIntegral.lean",
+      "status": "missing",
+      "source_sha256": "df7bb6da1e1892754d04bb5026cad43d9ce4f36647b43ed62f3f3edf085b6a12"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Analysis/Simplex/OrderedSimplex.lean",
+      "status": "missing",
+      "source_sha256": "5a4619b0f31a4b3d4158d0335152d9a5702d2a5179dbf2f345f4c737333204df"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Analysis/Simplex/VolumeIntegral.lean",
+      "status": "missing",
+      "source_sha256": "039afa267e39b4e22d585cba6059eb7a32928af5134efb155b1b8b9c175577df"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Analysis/Simplex/WeightedVolume.lean",
+      "status": "missing",
+      "source_sha256": "f8c3eb5e7975305653513b218f3911fc85cde2c65e6e1cfbf7415ee42eaccf6e"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Analysis/SpecialFunctions/ExpLogRpow.lean",
+      "status": "missing",
+      "source_sha256": "1464649e9a4b9b77b0bf9b8384264afcba7f6fb2ea0cf22504b712ad4d2a59d4"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Analysis/SpecificLimits/GeometricBounds.lean",
+      "status": "missing",
+      "source_sha256": "4b933570aef548b2ca624f9b080113896f1fc75306346306101e2a893b74e69d"
+    },
+    {
+      "path": "ArkLib/ToMathlib/BigOperators/Fin.lean",
+      "status": "different",
+      "source_sha256": "eb10d65c7897b8a4cad1b2d3939de3152ff47849e6b4267bb9c6408437649260"
+    },
+    {
+      "path": "ArkLib/ToMathlib/BigOperators/Intervals.lean",
+      "status": "missing",
+      "source_sha256": "89ec2c13a1705144e9e69ca83f1b7e214ce57e92ea949e15612c946ba9a5ac6f"
+    },
+    {
+      "path": "ArkLib/ToMathlib/BigOperators/LinearBudget.lean",
+      "status": "different",
+      "source_sha256": "237deb10e6ccd5608749f85e0793e949f54883d4924410b48906a728662c6763"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Combinatorics/CubicStaircase.lean",
+      "status": "missing",
+      "source_sha256": "4b14cd12d619bb4f76176fac3d2b90d344a61cb026a4be4b3a0d6d6dc7299c46"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Combinatorics/Enumerative/DoubleCounting.lean",
+      "status": "missing",
+      "source_sha256": "6b63ec26e20a3d85e0dd55460c8344ec7dec60864b9d33d95b1ff643f675737c"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Combinatorics/Enumerative/IncidenceProduct.lean",
+      "status": "missing",
+      "source_sha256": "0830c6c89a24d02ce8d92d905780327303abfa54041852de348c481e909a5394"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Combinatorics/Enumerative/MonomialCount.lean",
+      "status": "missing",
+      "source_sha256": "e4c0ee253f2bd5fc7d13c2ebd0f6a4ee8202eee29d2e9d029da9bcd84289a575"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Combinatorics/QuadraticStaircase.lean",
+      "status": "missing",
+      "source_sha256": "8dbf9c8904d01434f66c62eb026d8c0b21540ac0ecad79b66162ea00ae444154"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Control/MonadLift.lean",
+      "status": "missing",
+      "source_sha256": "f2369aa71b30cbbb5ddac549bfd962ba258f62a892f5e7a76c8b70bf1130508d"
+    },
+    {
+      "path": "ArkLib/ToMathlib/FieldTheory/Kummer.lean",
+      "status": "missing",
+      "source_sha256": "5568f5ffb8c0cf764e30ef97e15157eaa6da17ee75fbcf48f518949e675c29df"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Finset/Basic.lean",
+      "status": "different",
+      "source_sha256": "c5b17a0b9f19d4b8ce8b07d50229a1e7d3276b72f3c7232845d417634dacf674"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Finset/LineAgreement.lean",
+      "status": "missing",
+      "source_sha256": "62e41e743f19339732c19b9b204350839f65ae1a906bc698e6f67cf6f0a82024"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Finset/SumRangeFrom.lean",
+      "status": "missing",
+      "source_sha256": "4256e288003e168a7498817209e99626341ebfd175954357e208d35fd904d226"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Finset/ToListWithProof.lean",
+      "status": "different",
+      "source_sha256": "3d94fab4740fc205763b6e972c7b3f0fe07e7eb8416d8320ec978b3bb6390d34"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Finsupp/Weight.lean",
+      "status": "missing",
+      "source_sha256": "7e9d152444a40f8630d6d1bcc1420b40465f9cfe0c3bf0186cae2e8d3c9b9488"
+    },
+    {
+      "path": "ArkLib/ToMathlib/InformationTheory/Hamming.lean",
+      "status": "different",
+      "source_sha256": "4399a348eaf89e665f49ab946635ace378439608adbd49721d0eaffa63bc4af4"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/FiniteDimensional.lean",
+      "status": "missing",
+      "source_sha256": "0d247e557e5697565378b9344d9a786a36a4288da7a51b94eb63817c88382fc9"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/LagrangeLine.lean",
+      "status": "missing",
+      "source_sha256": "d6e1e6b41b9b28a00bcabef2afb01339ebb8db9422ea37598cc066641f713032"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/LineInjectivity.lean",
+      "status": "different",
+      "source_sha256": "185b422fe1f1668e89ade3d301cb27bb4e74618d02281f461d86fcc72064f94d"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/Matrix/Determinant.lean",
+      "status": "missing",
+      "source_sha256": "3f48054f4591f67e345e906e7a81fe5d48f4f362615b919280f1d0f644e4fefc"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/Matrix/InvertibleCombination.lean",
+      "status": "missing",
+      "source_sha256": "4eda017160843ba3d19fc1b363cb89c3d3f4e3334a38026f1922955e19a38781"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/Matrix/PrimitiveKernel.lean",
+      "status": "missing",
+      "source_sha256": "46b273c9bf4f0992131d6413ddbab0e215a88c78743d217814bc458d846ceb8f"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/Matrix/Rank.lean",
+      "status": "missing",
+      "source_sha256": "effb05c243ad0ac510fae90a5d5f23ad140e94443e50aea84777329fa7ca5da1"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/Matrix/RowBasis.lean",
+      "status": "missing",
+      "source_sha256": "5bff47eb4ebac06a4afd4b1b63d36b61823470e5fbae4b196eceb6afa6fa5ddb"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/Matrix/SupportedRows.lean",
+      "status": "missing",
+      "source_sha256": "fe3f60d693b9ab265556ec10be3b1fbd1de31a747fc315267b4fe923213860c9"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/PolynomialKernelHeight.lean",
+      "status": "missing",
+      "source_sha256": "a66933f32637270792f312874135456f7fbdf4003fcbdb6a690e036adcfbf79e"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/ShiftedPolynomialKernelHeight.lean",
+      "status": "missing",
+      "source_sha256": "c36043ec17ec58d3a352524e6a51ac084ee54b524a1a5ab8a51f87bfb88cc475"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/Submodule/Union.lean",
+      "status": "missing",
+      "source_sha256": "6e743789587636a99c2ba975877a4f34e1a635bfa0316814f3f60a2a61969ee5"
+    },
+    {
+      "path": "ArkLib/ToMathlib/LinearAlgebra/TriangularInjective.lean",
+      "status": "missing",
+      "source_sha256": "d8eaa24f2e67093ff1c897345f67639471c3f58bc30e490360e4592f29509736"
+    },
+    {
+      "path": "ArkLib/ToMathlib/List/Basic.lean",
+      "status": "different",
+      "source_sha256": "70b6664ec45f667a5e3d9e236e23098c9781ac57cd13cbec39b2fc1eaa9fd56d"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Logic/HEq.lean",
+      "status": "missing",
+      "source_sha256": "28155fefe2ca1b594fa3ceb28627fc535be24ea9a9503fdcca07c3388e1735df"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MeasureTheory/Integral/NatFloorCells.lean",
+      "status": "missing",
+      "source_sha256": "c687ee2049fb5c8a435e3719b68bf29e56ecba9905bd655c543745715a304622"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MeasureTheory/Integral/PositivePart.lean",
+      "status": "missing",
+      "source_sha256": "14a8406b581baf1218b1f9088888e2e87bcebe89240b11c9f6e39427f204fe5b"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/ClearedSubstitution.lean",
+      "status": "missing",
+      "source_sha256": "ab167060e714a38a4c89d71567a2863ef673a3275f57732b9bdbd4dfb77cd521"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/CompleteHomogeneous.lean",
+      "status": "missing",
+      "source_sha256": "49636b8270bcf435f6c1e9ae2c84ceffa0943a132d41a8649d874029c45657bd"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/FirstOrderTaylor.lean",
+      "status": "missing",
+      "source_sha256": "2163c2009a7d8e1a7a64c7918972b0eef4c5d2b730986ccb95cdb6f0116c2b4c"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/FrobeniusPullback.lean",
+      "status": "missing",
+      "source_sha256": "aa71b5defb2e5d380d82f4cdd3b5d2f5630766d3ed7559f7a72f25d2a4d13371"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/OptionRoots.lean",
+      "status": "missing",
+      "source_sha256": "163e463c0592a80ebf9f410ce70af1be913da26b8f98bb8d8ec1caab7681ff61"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/OptionWeightedDegree.lean",
+      "status": "missing",
+      "source_sha256": "fb1954830cbef57c8f62cc3b5788825a27f0c413171d886fb0a453f2f92c7029"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/PDeriv.lean",
+      "status": "missing",
+      "source_sha256": "11f4bc38727bde7957101eea6905202d26c957767264aed7fe44e725ddebfc22"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/PolynomialCoefficients.lean",
+      "status": "missing",
+      "source_sha256": "fb8230e8f6cb6fede49a8b9ca1bf2e4f6e99c180510e2d54a28adb0f5e1e8c00"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/PowerMomentGeometry.lean",
+      "status": "missing",
+      "source_sha256": "5cb3a27979063c1b6c80f7447e81eb138d9619ed420d7289fe40bd2339b4ef6d"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/PowerMomentLift.lean",
+      "status": "missing",
+      "source_sha256": "7573487d8ea873c9ccab2d49407b4ba024c8615520b5c7c77956d983abf18c70"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/RadicalSplit.lean",
+      "status": "missing",
+      "source_sha256": "9d06d4e5db95f4dce656c8bcd1db62b5ec50517d746de933998e9d7ccc321999"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/RootContraction.lean",
+      "status": "missing",
+      "source_sha256": "30cc62d01f9f6b9a11ba48e898d109a75d42d75ddb6d7b3e0925fcd094fdc792"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/SchwartzZippel.lean",
+      "status": "missing",
+      "source_sha256": "53757da18838aaee781044a55b1a0e25a98599818499ffbde9cda02297ca21d5"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/SupportWeight.lean",
+      "status": "missing",
+      "source_sha256": "d9c385ff79c2f216884ac5f93e7ebfb4f240eb7cc3e03ac0a2899e4fafcf1920"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/SupportWeightOffset.lean",
+      "status": "missing",
+      "source_sha256": "d75506fcbe40d08c9ef64e56ec30aeb2fff490cc9a1d72e93a2327267e20b783"
+    },
+    {
+      "path": "ArkLib/ToMathlib/MvPolynomial/UnivariateSpecialization.lean",
+      "status": "missing",
+      "source_sha256": "d2dfe947a735740ac47e4229045827f975ba3db6e966b604b6c8c0e9782e1751"
+    },
+    {
+      "path": "ArkLib/ToMathlib/NumberTheory/Harmonic/Bounds.lean",
+      "status": "missing",
+      "source_sha256": "fd740c9b571373cce91205f5feb939e0b328fc1b86967c13951e56e88961daec"
+    },
+    {
+      "path": "ArkLib/ToMathlib/NumberTheory/Harmonic/Thresholds.lean",
+      "status": "missing",
+      "source_sha256": "324995b53a8f48c6ef3a868a33b128f33b23cdb1237e21516324b5c96750fd21"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Order/FloorHalf.lean",
+      "status": "missing",
+      "source_sha256": "bf31a6a0c1011c9e9899e08e708d0792db116b7466642182bddce3cf8d06f738"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/AevalXPow.lean",
+      "status": "different",
+      "source_sha256": "f779e60bc349938e30f15852ec17206bddabd9562340b9da894fc7c1e37cdf92"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/CompositionDegree.lean",
+      "status": "missing",
+      "source_sha256": "e07c2217f848a24b2ac57163d37964b989f7c1e781c0974c3422fc7f2b29d2a2"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/DegreeLT.lean",
+      "status": "different",
+      "source_sha256": "80bc39fe530198223339a65ba0ee7074c4d059961b35935ced99043ee45acf07"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/DivByXPowAddOne.lean",
+      "status": "missing",
+      "source_sha256": "9dc74834056ac9f0796ef9b47cd1d275f124ca82c618303878770a66c2306337"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/EvalExt.lean",
+      "status": "different",
+      "source_sha256": "68167aa3ca3c3415dd72d8f7c77b2a06b5a043c28d1ecb1be1930caa30b66748"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/EventualGrowth.lean",
+      "status": "missing",
+      "source_sha256": "c3b987276a86605b6a1309d866c03b0ae376c374d1bedea921764eedf15b809b"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/FrobeniusTaylor.lean",
+      "status": "missing",
+      "source_sha256": "7088b47a16b0abaddabffb48b489ec9bd82bf4cc6f63bedf5646c01f5a0a287b"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/HasseTaylor.lean",
+      "status": "missing",
+      "source_sha256": "e61cbe6ae11c3ed149a525472631a297e0d8db7720ef1765b0b71d60ab47e9a8"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/HasseTaylor/FiniteJet.lean",
+      "status": "missing",
+      "source_sha256": "a4f0da553945eb11c8ae876d4266b7f31800628bd88167a0e818f81051432922"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/HasseTaylor/Forward.lean",
+      "status": "missing",
+      "source_sha256": "26472895afe39e9ea84b7cfeab3f20139c332cd890dd3757cbc3d71a01039ef0"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/HasseTaylor/JetDivisibility.lean",
+      "status": "missing",
+      "source_sha256": "f9e28d70bcf5925a02eb18c0b47209e87edd41bfec473c696146dd5383806e85"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/HasseTaylor/Lifting.lean",
+      "status": "missing",
+      "source_sha256": "cb84dd115caa6dfc91e62cec12bd3272078db5fb9133bf1aed9f1c9ad6150fcd"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/HasseTaylor/Shift.lean",
+      "status": "missing",
+      "source_sha256": "20de275f304d894bce02fe26f7a8924a5463aba527301ce61b924558e3244005"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/NatDegreeOfSum.lean",
+      "status": "different",
+      "source_sha256": "7dce76cc16e3c450b596bc1ee0f5ef9f91b4db97de3e9057bdb05337bd08a136"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/RectangleDifference.lean",
+      "status": "missing",
+      "source_sha256": "4804d47ceba29e32931fcbff8f50fdbf7eadb793f2ccd65fcb66fd164ed3e82f"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/RootMultiplicity.lean",
+      "status": "missing",
+      "source_sha256": "f0ed80d5c7a20d0f7dbc8d06b07544683ca4836ede823cbe7b3754eb87b0c080"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Polynomial/SparseContraction.lean",
+      "status": "missing",
+      "source_sha256": "ae01df5bcb06e06cba0e0bc65907f284f0ef5c670f51066c029f9c445b88c7f9"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Ideal/CutFamily.lean",
+      "status": "missing",
+      "source_sha256": "cbd9ab72b66e4deacbc6666736ca6c5ca4b896fbfdcb30de1bad1aa87ebcf35e"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Ideal/HeightUnder.lean",
+      "status": "missing",
+      "source_sha256": "bb42d4bf7de2e3cf6b8b77cf924a14f9c89b4d51f254f38e5d9a918679cc73aa"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Ideal/MinimalPrime/Noetherian.lean",
+      "status": "missing",
+      "source_sha256": "7aee04e257b88bf9045880ad9509a3ce7b3f8bbbbf2e70c979db543e6bbd7070"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Ideal/PrincipalCut.lean",
+      "status": "missing",
+      "source_sha256": "c95514d5ace8d249e9b289f2f62f7c71b49ba2614489e81d66ae6254e4adb5e4"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Ideal/Separator.lean",
+      "status": "missing",
+      "source_sha256": "edb93b2dee725e9dbe7f83bc209b59c53465fdf45f01cd879925948fcdcd393e"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Ideal/SurjectiveMap.lean",
+      "status": "missing",
+      "source_sha256": "db8778bcf38e42b888aab341c6ebd440c979c61d92c048004944cec749562a29"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AffineDegree.lean",
+      "status": "missing",
+      "source_sha256": "8680f15d4c1e1dce81a7e0d6d8aab63e2e493ac2d60ff0e59736ba791b4ba6ff"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AffineHilbert.lean",
+      "status": "missing",
+      "source_sha256": "9df31849f46c07b8e1ee9e76d9bac47ebab47a7fc7f34ae3953bf3a1d0896899"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AffineHilbertAlgHom.lean",
+      "status": "missing",
+      "source_sha256": "274e57dfc825299eaf7338e8ec7fc87823ba90e760f678359a831fbe8cbfc3f7"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AffineHilbertBidegree.lean",
+      "status": "missing",
+      "source_sha256": "289107ae19ff03a0f9acce582d5fe9078f8ad1563f30274b95966b227e50d882"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AffineHilbertCappedBidegree.lean",
+      "status": "missing",
+      "source_sha256": "fa865df35503d6d31a77d5d3080319bdaedc74d9c1ff14f08481dea9a1010991"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AffineHilbertCappedDegree.lean",
+      "status": "missing",
+      "source_sha256": "d716655d8df054aa61e3e33f84b17adff0399496ab6eeb0a8e8d08c3d46c7ccd"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AffineHilbertComap.lean",
+      "status": "missing",
+      "source_sha256": "a409c79b20f30b3a53209753cdc98f2c3e60e2dff5771acc7c6f6abc1ba4f429"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AffineHilbertComponents.lean",
+      "status": "missing",
+      "source_sha256": "ef9ba820f25fe00c19919794e2186b1fb85f13962cbbc82918fe3e57d7ca6f74"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AffineHilbertCutFamily.lean",
+      "status": "missing",
+      "source_sha256": "46b9945a1aaaf797e2ffaf1f9a4628dae05c206b62fb8af3517102f51fbe743b"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AffineHilbertPolynomial.lean",
+      "status": "missing",
+      "source_sha256": "e8eefaa6c56d526a1cde1eaa7afbe92fc57ab8b192981ee3925ff32b6ab09ede"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AffineHilbertPurity.lean",
+      "status": "missing",
+      "source_sha256": "9ae5472f84aa19ebc21d96764e60872fccd96149841f09d0735a947431cc24dd"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AffineHilbertRadical.lean",
+      "status": "missing",
+      "source_sha256": "d8e910ef194a13f0ad00477235b5270b9956459896ebccd57049f2e44abbef27"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/AwayPresentation.lean",
+      "status": "missing",
+      "source_sha256": "6ad63661383a327dca74f7e34da51bfb18ae4da363d0d47277cc0098d6275661"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/Bidegree.lean",
+      "status": "missing",
+      "source_sha256": "e9278bd1c20704a3b1270f1d8c3e8ffdf9d60e814b88d41040772faca69e4b65"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/CappedBidegree.lean",
+      "status": "missing",
+      "source_sha256": "9f8d2abc3c11d51fc07d6e365ae80350d7b9dfdce0b89f7de76163f9e4037365"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/CappedDegree.lean",
+      "status": "missing",
+      "source_sha256": "7dc8007f1cdba180bce987808625d555969b6f88689fc0336f9aaa17af3b3338"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/CoefficientEvaluation.lean",
+      "status": "missing",
+      "source_sha256": "75c497733baeeda077f92ecbb3fba08105ce28c22aa779880b93088a329d07fc"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/MonomialMap.lean",
+      "status": "missing",
+      "source_sha256": "02e2cbbb247360a6e85a965598e2eaf8657c9354a49a21932fadff7a703ea36e"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/MvPolynomial/StandardMonomials.lean",
+      "status": "missing",
+      "source_sha256": "fd4029403f657f91c55f39725fa5b259dab001fee48ec1e6b6844aacaac38e41"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Nullstellensatz.lean",
+      "status": "missing",
+      "source_sha256": "73fc7ec8db31b04a0d08ab16545961b2326cf3ec33f46126d683950702d28e95"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Nullstellensatz/AffineHilbertPolynomial.lean",
+      "status": "missing",
+      "source_sha256": "817470d6fb8de1568cbe9f2a1206a4f520778942d2fbdf0d8afe3dc8299f47de"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Nullstellensatz/AgreementIncidence.lean",
+      "status": "missing",
+      "source_sha256": "0688f1e192b6136969ec7cfe07653197aa18d309f249fc179ecaa456e2590159"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Nullstellensatz/BidegreeIncidence.lean",
+      "status": "missing",
+      "source_sha256": "17f2cbcb9ee2f2bc32098211fd310438c1dcf5b990dda89edad55374eb329b11"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Nullstellensatz/CappedBidegreeIncidence.lean",
+      "status": "missing",
+      "source_sha256": "6b05843e4f2758f4571d7baa569f4cae28768ffb8c98463ed97c66a94f79852f"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Nullstellensatz/CappedDegreeIncidence.lean",
+      "status": "missing",
+      "source_sha256": "26558ba307ba870553cb792abab6125e8f98fbf5696e1dbafb92073a869184f6"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Nullstellensatz/CutFamily.lean",
+      "status": "missing",
+      "source_sha256": "175fd9ae0e1f558f2032dbef5a1d5ebe55887bd4b1f38daa4dd148c702e4b343"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Nullstellensatz/DimensionSensitiveIncidence.lean",
+      "status": "missing",
+      "source_sha256": "67740b3a1f1937455a8a4d4d5bfcdab80f09e2172dea4a20cb6b21a860348b23"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Nullstellensatz/FiniteQuotient.lean",
+      "status": "missing",
+      "source_sha256": "99a9d46a16f68260d6a3f3741fa080b2c03887093040ec8bb873b124f4a4fb72"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Nullstellensatz/FiniteZeroLocus.lean",
+      "status": "missing",
+      "source_sha256": "cc41f05754f887f8fcf832362d0bd5af7fb7c04d66a137dae45f7bf8300a4379"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Nullstellensatz/PrincipalOpen.lean",
+      "status": "missing",
+      "source_sha256": "b055f79f300e1514a5bbc2203dd2e36d39d0bd3e2a7442d4b3dd17b05961f215"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Nullstellensatz/PrincipalOpenParametrization.lean",
+      "status": "missing",
+      "source_sha256": "ac68107796284de2d7973a811a8c7afd256173731cf6770114dc65defbae3f7b"
+    },
+    {
+      "path": "ArkLib/ToMathlib/RingTheory/Radical/Representative.lean",
+      "status": "missing",
+      "source_sha256": "465970c8b9f30501c39d461dd8d8e74f9265d386ed23e1a5070fd047e2c0eaa8"
+    },
+    {
+      "path": "ArkLib/ToMathlib/Set/Finite.lean",
+      "status": "different",
+      "source_sha256": "121b4489d1f96647e69908641b2b77b486b03f391e0e9cea1df0a508f6244715"
+    }
+  ]
+}

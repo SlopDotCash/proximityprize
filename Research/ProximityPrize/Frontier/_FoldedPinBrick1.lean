@@ -152,7 +152,7 @@ theorem card_surv_ge_of_vanishBudget {s : ℕ} {θ θ' : ℝ}
         have hsplit : (T.filter (fun i₀ : ι => H ≤ LinearMap.ker
             (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i₀))).card + Tsupp.card = T.card := by
           rw [hTsupp]
-          exact Finset.filter_card_add_filter_neg_card_eq_card
+          exact Finset.card_filter_add_card_filter_not
             (fun i₀ : ι => H ≤ LinearMap.ker
               (LinearMap.proj (R := F) (φ := fun _ : ι ↦ Fin s → F) i₀))
         have hsub2 : ((T.filter (fun i₀ : ι => H ≤ LinearMap.ker

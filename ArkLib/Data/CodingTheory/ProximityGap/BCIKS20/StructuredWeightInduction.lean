@@ -60,7 +60,7 @@ theorem βHensel_weight_bound_zero_structured (x₀ : F) (R : F[X][X][Y])
   refine le_trans (weight_Λ_over_𝒪_le_of_mk_eq hDH hH rfl) ?_
   have hweq : weight_Λ (Polynomial.X : F[X][Y]) H D
       = WithBot.some (D + 1 - Bivariate.natDegreeY H) := by
-    rw [weight_Λ, Polynomial.support_X (by norm_num)]
+    rw [weight_Λ, Polynomial.support_X]
     simp
   rw [hweq]
   refine WithBot.coe_le_coe.mpr ?_
@@ -89,7 +89,7 @@ theorem βHensel_weight_bound_zero_rebased (x₀ : F) (R : F[X][X][Y])
   refine le_trans (weight_Λ_over_𝒪_le_of_mk_eq hDH hH rfl) ?_
   have hweq : weight_Λ (Polynomial.X : F[X][Y]) H D
       = WithBot.some (D + 1 - Bivariate.natDegreeY H) := by
-    rw [weight_Λ, Polynomial.support_X (by norm_num)]
+    rw [weight_Λ, Polynomial.support_X]
     simp
   rw [hweq]
   refine WithBot.coe_le_coe.mpr ?_

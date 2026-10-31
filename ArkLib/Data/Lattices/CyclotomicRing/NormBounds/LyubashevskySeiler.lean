@@ -133,6 +133,7 @@ theorem isUnit_mk_of_isCoprime {a f : (ZMod q)[X]} (h : IsCoprime a f) :
   rw [map_add, map_mul, map_mul, hf, mul_zero, add_zero, map_one] at hkey
   rw [mul_comm]; exact hkey
 
+set_option backward.isDefEq.respectTransparency false in
 set_option maxHeartbeats 1600000 in
 -- This combined assembly proof exceeds the default heartbeat budget.
 omit [NeZero q] in
@@ -200,7 +201,7 @@ theorem q_dvd_l2NormSq_of_not_isUnit (hq5 : q % 8 = 5) {c : Rq Φ} (hc : ¬ IsUn
         (Ideal.span {(powTwoCyclotomic (R := ZMod q) α).φ.toPoly}) ct) := by
       have hh := Rq.not_isUnit_toQuotientHom_of_not_isUnit
         (powTwoCyclotomic (R := ZMod q) α) hc
-      rw [Rq.toQuotientHom] at hh
+      change ¬ IsUnit (Rq.toQuotient (powTwoCyclotomic (R := ZMod q) α) c) at hh
       simpa only [Rq.toQuotient, quotientHom_apply, modIdeal, hct] using hh
     have hdvd : g1 ∣ ct ∨ g2 ∣ ct := by
       by_contra hcon

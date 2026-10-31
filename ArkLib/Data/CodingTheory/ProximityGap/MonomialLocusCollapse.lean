@@ -197,7 +197,7 @@ theorem epsMCA_locusCollapse_floor (dom : Fin n ↪ F) {k a : ℕ}
           / (Fintype.card F : ℝ≥0∞) := by
     rw [hGcard]
     have hle := card_locus_le dom ha2 c
-    have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+    have hsplit := Finset.card_filter_add_card_filter_not
       (s := (Finset.univ : Finset (Fin n)))
       (p := fun i : Fin n => (dom i) ^ (a - 1) = c)
     rw [Finset.card_univ, Fintype.card_fin] at hsplit

@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.StepanovNonVanishing
 import ArkLib.Data.CodingTheory.ProximityGap.StepanovHasseInterface
+import Mathlib.RingTheory.Polynomial.DegreeLT
 
 /-!
 # Issue #232/#389 — the Stepanov–Weil engine for the obstruction-form auxiliary.

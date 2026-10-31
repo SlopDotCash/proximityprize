@@ -180,7 +180,7 @@ theorem pi_z_xi_ne_zero_of_monic {x₀ : F} {R : F[X][X][Y]}
 
 /-- `𝒪 H` is nontrivial: `H̃'` has positive degree, so its span is proper. -/
 theorem nontrivial_𝒪 : Nontrivial (𝒪 H) := by
-  refine Ideal.Quotient.nontrivial ?_
+  refine Ideal.Quotient.nontrivial_iff.mpr ?_
   rw [Ne, Ideal.span_singleton_eq_top]
   intro hu
   have hdeg := Polynomial.natDegree_eq_zero_of_isUnit hu

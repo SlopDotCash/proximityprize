@@ -126,7 +126,7 @@ theorem linearCombination_rbrKnowledgeSoundness_tight
     -- the output relation is challenge-independent and false, so the flip probability is `0`.
     have hrelE : (stmtIn, ()) ∉ sendEvalClaimRbrRelE (R := R) pp oSpec :=
       fun h => hbad ⟨h, hclaims⟩
-    refine le_trans (le_of_eq (probEvent_eq_zero_iff.mpr ?_)) (zero_le _)
+    refine le_trans (le_of_eq (probEvent_eq_zero_iff.mpr ?_)) (zero_le)
     intro c _ hc
     obtain ⟨-, h2, -⟩ := hc
     exact hrelE h2

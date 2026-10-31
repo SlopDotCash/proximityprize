@@ -192,7 +192,7 @@ lemma le_length_unusedValuesList (cp : List (X × X)) :
     refine le_trans (Finset.card_le_card
       (fun b hb => List.mem_toFinset.mpr (Finset.mem_filter.mp hb).2)) ?_
     exact le_trans (List.toFinset_card_le _) (by simp)
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset X)) (p := fun b : X => b ∈ cp.map Prod.snd)
   rw [Finset.card_univ] at hsplit
   omega
@@ -210,7 +210,7 @@ lemma le_length_unusedKeysList (cp : List (X × X)) :
     refine le_trans (Finset.card_le_card
       (fun a ha => List.mem_toFinset.mpr (Finset.mem_filter.mp ha).2)) ?_
     exact le_trans (List.toFinset_card_le _) (by simp)
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset X)) (p := fun a : X => a ∈ cp.map Prod.fst)
   rw [Finset.card_univ] at hsplit
   omega
@@ -279,7 +279,7 @@ private lemma div_card_pow_C_le_stepBound {A m : ℕ} (hA : A ≤ 2 * m) :
   rw [hcss]
   refine ENNReal.div_le_div ?_ tsub_le_self
   rw [mul_comm]
-  refine mul_le_mul_right' ?_ _
+  refine mul_le_mul_left ?_ _
   exact_mod_cast le_trans hA (Nat.le_succ _)
 
 /-- The permutation-arm arithmetic: `A / len ≤ stepBound` for `A` below the numerator and
@@ -336,7 +336,7 @@ theorem lazyDSImplFlagged_step_bad
         exact div_card_pow_C_le_stepBound hslot
     · -- hash hit: never flags
       rw [QueryImpl.withCaching_run_some _ hcq]
-      refine le_trans (le_of_eq (probEvent_eq_zero fun z hz hbad => ?_)) (zero_le _)
+      refine le_trans (le_of_eq (probEvent_eq_zero fun z hz hbad => ?_)) (zero_le)
       rw [support_pure, Set.mem_singleton_iff] at hz
       subst hz
       have h' : fl ∨ (ch q = none ∧
@@ -385,7 +385,7 @@ theorem lazyDSImplFlagged_step_bad
     · -- forward hit: never flags
       rw [lazyDSImpl_run_fwd, LazyPermBridge.lazyPermImpl_run_inl_some cp hcfind,
         map_pure]
-      refine le_trans (le_of_eq (probEvent_eq_zero fun z hz hbad => ?_)) (zero_le _)
+      refine le_trans (le_of_eq (probEvent_eq_zero fun z hz hbad => ?_)) (zero_le)
       have hz' : z ∈ support ((pure ((w.2 : CanonicalSpongeState U),
           ((ch, cp) : DSCache StmtIn U)) : ProbComp _)) := hz
       rw [support_pure] at hz'
@@ -438,7 +438,7 @@ theorem lazyDSImplFlagged_step_bad
     · -- inverse hit: never flags
       rw [lazyDSImpl_run_inv, LazyPermBridge.lazyPermImpl_run_inr_some cp hcfind,
         map_pure]
-      refine le_trans (le_of_eq (probEvent_eq_zero fun z hz hbad => ?_)) (zero_le _)
+      refine le_trans (le_of_eq (probEvent_eq_zero fun z hz hbad => ?_)) (zero_le)
       have hz' : z ∈ support ((pure ((w.1 : CanonicalSpongeState U),
           ((ch, cp) : DSCache StmtIn U)) : ProbComp _)) := hz
       rw [support_pure] at hz'
@@ -557,7 +557,7 @@ theorem probEvent_flag_final_toReal_le_lemma5_8Bound {α : Type}
     have h0 : Pr[ fun xs : α × (DSCache StmtIn U × Prop) => xs.2.2 |
         (simulateQ lazyDSImplFlagged oa).run
           ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U))), False)] = 0 :=
-      le_antisymm (by simpa using probEvent_flag_final_le_sum oa 0 hT) (zero_le _)
+      le_antisymm (by simpa using probEvent_flag_final_le_sum oa 0 hT) (zero_le)
     rw [h0]
     simp [lemma5_8Bound]
   rcases Nat.le_total (2 * T) (Fintype.card (CanonicalSpongeState U)) with h2T | h2T

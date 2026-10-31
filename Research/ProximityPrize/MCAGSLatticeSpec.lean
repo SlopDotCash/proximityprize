@@ -744,7 +744,7 @@ theorem mcaPrizeLatticeResolved_of_GSMassAdjacentFrontier
         (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
     mcaPrizeLatticeResolved domain
       (fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)) := by
-  simpa using
+  exact
     mcaPrizeLatticeResolved_of_adjacent_frontier domain
       (mcaPrizeAdjacentWitnessFrontier_of_GSMassFrontiers_and_upperWitnesses
         domain δ hδ_le_one frontier whi hδhi hadj)
@@ -800,7 +800,7 @@ theorem mcaPrizeLatticeResolved_of_GSPivotAdjacentFrontier
         (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
     mcaPrizeLatticeResolved domain
       (fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)) := by
-  simpa using
+  exact
     mcaPrizeLatticeResolved_of_adjacent_frontier domain
       (mcaPrizeAdjacentWitnessFrontier_of_GSPivotFrontiers_and_upperWitnesses
         domain δ hδ_le_one frontier whi hδhi hadj)

@@ -15,7 +15,8 @@ The following status is based on the checked source, principally
 [`Spec.md`](../../external/zk-payments-confetti/Spec.md),
 [`OPEN-PROOFS.md`](../../external/zk-payments-confetti/OPEN-PROOFS.md), and the
 Lean modules named below.  The submodule has its own Lean/VCV-io dependency
-graph and pins Lean `v4.30.0`; ArkLib is currently pinned to `v4.30.0-rc2`.
+graph and pins Lean `v4.30.0`. The native repository is being migrated to
+Lean `v4.34.0`; see [the transfer and migration ledger](upstream-proof-transfer.md).
 Do not merge their Lake configurations without a deliberate version-alignment
 task.
 

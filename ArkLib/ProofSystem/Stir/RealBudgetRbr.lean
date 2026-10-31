@@ -509,7 +509,7 @@ theorem probEvent_spotGame_le
       rw [hfilter]
       exact hB tr hP
   · -- the prefix predicate fails: the event is empty at this prefix
-    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
     rintro x hx ⟨hPx, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx
@@ -644,7 +644,7 @@ theorem stirFinalVectorVerifierChecked_toVerifier_rbrKnowledgeSoundness {σ : Ty
               push_cast
               ring
           _ ≤ ((1 - δ) * (Fintype.card ι : ℝ≥0)) * (stirSpotMaxFiber ι F : ℝ≥0) :=
-              mul_le_mul_right' hAnn _
+              mul_le_mul_left hAnn _
           _ = (1 - δ) * ((Fintype.card ι * stirSpotMaxFiber ι F : ℕ) : ℝ≥0) := by
               push_cast
               ring

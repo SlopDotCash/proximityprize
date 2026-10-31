@@ -50,7 +50,7 @@ open scoped ENNReal NNReal
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -104,7 +104,7 @@ def goodOf {StmtOut WitOut : Type} (N : ℕ) (pSpec : ProtocolSpec N)
     (FullTranscript pSpec × StmtOut × WitOut) × StmtOut → Prop :=
   fun r => (r.2, r.1.2.2) ∈ relOut ∧ r.1.2.1 = r.2
 
-omit [oSpec.Fintype] [oSpec.Inhabited] in
+omit [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)] in
 /-- **NON-PERFECT (error-bearing) message-seam append completeness — discharged modulo the named
 two-stage seam factoring.**
 
@@ -147,14 +147,14 @@ theorem append_completeness_msg_proof
       OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))
         ((FullTranscript (pSpec₁ ++ₚ pSpec₂) × Stmt₃ × Wit₃) × Stmt₃)}
     (hGameFactor : ∀ stmt wit, (stmt, wit) ∈ rel₁ →
-      evalDist (gameOf init impl (R₁.append R₂) stmt wit)
-        = evalDist (init >>= fun s =>
+      evalSPMF (gameOf init impl (R₁.append R₂) stmt wit)
+        = evalSPMF (init >>= fun s =>
             (simulateQ so ((mx (stmt, wit)) >>= (my (stmt, wit))).run).run' s))
-    -- Stage-1 evalDist bridge: the (fst-marginal of the) state-threaded phase-1 stage game is the
+    -- Stage-1 evalSPMF bridge: the (fst-marginal of the) state-threaded phase-1 stage game is the
     -- phase-1 completeness game `gameOf R₁`. Lets `h₁` supply the stage-1 bad bound.
     (hStage1Bridge : ∀ stmt wit, (stmt, wit) ∈ rel₁ →
-      evalDist (Prod.fst <$> (init >>= fun s => (simulateQ so (mx (stmt, wit)).run).run s))
-        = evalDist (gameOf init impl R₁ stmt wit))
+      evalSPMF (Prod.fst <$> (init >>= fun s => (simulateQ so (mx (stmt, wit)).run).run s))
+        = evalSPMF (gameOf init impl R₁ stmt wit))
     -- Stage-2 bad-event bridge: from a phase-1 success `a` with `goodOf rel₂ a` (so its statement
     -- pair `(a.2, a.1.2.2) ∈ rel₂`), the phase-2 stage game's bad event (over the *combined*
     -- transcript) is dominated by the phase-2 completeness game's bad event (over `pSpec₂`'s

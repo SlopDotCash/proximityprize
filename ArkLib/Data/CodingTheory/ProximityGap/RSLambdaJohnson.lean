@@ -91,7 +91,7 @@ theorem reedSolomon_Lambda_le_johnson
     have hae : agree c f + hammingDist c f = Fintype.card ι := by
       simp only [ArkLib.CodingTheory.JohnsonSimplex.agree, hammingDist, ne_eq]
       rw [← Finset.card_univ (α := ι)]
-      exact Finset.filter_card_add_filter_neg_card_eq_card _
+      exact Finset.card_filter_add_card_filter_not _
     omega
   -- second-moment Johnson bound (real-valued) and conversion to a ℕ list-size cap
   have hreal := reedSolomon_johnson_list_bound (D := α) (k := k) (w := f) L a hpoly hclose

@@ -179,7 +179,6 @@ theorem besselCoeff_one (d : ℕ) : besselCoeff d 1 = (d : ℚ) := by
       intro i _ j _ hij
       by_contra hne
       have hval := congrFun hij i
-      dsimp only at hval
       rw [Pi.single_eq_same, Pi.single_eq_of_ne hne] at hval
       exact one_ne_zero hval
     · -- surjective: any tuple summing to 1 is a unit vector

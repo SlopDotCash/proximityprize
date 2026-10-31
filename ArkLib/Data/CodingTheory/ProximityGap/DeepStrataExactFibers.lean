@@ -66,7 +66,7 @@ theorem deep_fiber_at_level (dom : Fin n ↪ F) {k m : ℕ} {T T' : Finset (Fin 
   have hsub : (T ∩ T').card - k = d := by omega
   rw [hsub] at h
   -- pred is definitionally the filter body of deep_fiber_eq
-  convert h using 3
+  convert h using 3 <;> rfl
 
 /-- The deep stratum at a fixed overlap level `k+d`. -/
 noncomputable def deepLevel (dom : Fin n ↪ F) (k m d : ℕ) :
@@ -133,7 +133,7 @@ theorem deepS_eq_biUnion_levels (dom : Fin n ↪ F) (k m : ℕ) :
 open Classical in
 /-- The overlap levels are pairwise disjoint (an overlap card determines `d`). -/
 theorem deepLevels_pairwiseDisjoint (dom : Fin n ↪ F) (k m : ℕ) :
-    (Finset.Icc 1 m : Finset ℕ).toSet.PairwiseDisjoint
+    (↑(Finset.Icc 1 m) : Set ℕ).PairwiseDisjoint
       (fun d => deepLevel dom k m d) := by
   intro d₁ _ d₂ _ hne
   simp only [Function.onFun, Finset.disjoint_left, deepLevel, Finset.mem_filter]

@@ -172,12 +172,10 @@ instance instChallengeOIPSpecFold :
     ∀ i : (pSpecFold (L := L)).ChallengeIdx, OracleInterface ((pSpecFold (L := L)).Challenge i) :=
   fun i => challengeOracleInterface i
 
-instance : OracleSpec.Fintype [(pSpecFold (L := L)).Challenge]ₒ where
-  fintype_B
+instance : ∀ t, Fintype ([(pSpecFold (L := L)).Challenge]ₒ.Range t)
   | ⟨⟨⟨1, _⟩, _⟩, _⟩ => inferInstanceAs (Fintype L)
 
-instance : OracleSpec.Inhabited [(pSpecFold (L := L)).Challenge]ₒ where
-  inhabited_B
+instance : ∀ t, Inhabited ([(pSpecFold (L := L)).Challenge]ₒ.Range t)
   | ⟨⟨⟨1, _⟩, _⟩, _⟩ => ⟨(0 : L)⟩
 
 open Classical in

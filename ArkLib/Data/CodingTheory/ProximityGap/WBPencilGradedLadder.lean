@@ -562,8 +562,8 @@ theorem badScalars_card_le_of_graded (dom : Fin n ↪ F) {k w : ℕ} (hk : 1 ≤
               ((finsetEnum C₀ s : ↥C₀) : WCol n k w)
               ((finsetEnum T (finCongr hTcard.symm r) : ↥T) : Fin n)).eval γ)) = 0 :=
           (Matrix.exists_mulVec_eq_zero_iff).mp ⟨x, hx0, hxker⟩
-        rw [gradedCoinc, dif_pos hTcard, ← Polynomial.coe_evalRingHom,
-          RingHom.map_det]
+        rw [gradedCoinc, dif_pos hTcard, ← Polynomial.coe_evalRingHom]
+        erw [(Polynomial.evalRingHom γ).map_det]
         exact hdet0
       refine Finset.mem_biUnion.mpr ⟨T, ?_, ?_⟩
       · exact Finset.mem_powersetCard.mpr ⟨Finset.subset_univ _, hTcard⟩

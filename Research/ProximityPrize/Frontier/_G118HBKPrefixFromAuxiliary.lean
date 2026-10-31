@@ -53,8 +53,8 @@ theorem production_card_le_degreeQuotient_of_auxiliary
   let D := roundedD (2 ^ 30) B
   have hA : 32 ≤ A := production_roundedA_ge_thirtyTwo hTle
   have hD : 0 < D := by
-    have : 0 < A - 1 := by omega
-    simpa [D, roundedD] using this
+    change 0 < A - 1
+    omega
   have hcount : E.card ≤ (A + 2 * (2 ^ 30) * B - 1) / D :=
     stepanov_card_le_of_aux E hD hex
   simpa [degreeQuotient, A, D, B, roundedD] using hcount

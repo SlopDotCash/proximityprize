@@ -93,7 +93,7 @@ theorem dyadicTailMGF_of_gaussPeriod_reindexed_quarter_sum
         ≤ 2 * (Fintype.card F : ℝ)) :
     DyadicTailMGFBound (Finset.univ : Finset F) parent := by
   exact dyadicTailMGF_of_gaussPeriod_reindexed_quarter ψ G hζ parent hparent
-    (by simpa [DyadicQuarterMGFBound] using hLeft)
+    (by simpa [DyadicQuarterMGFBound, WFS11.MGFBound] using hLeft)
 
 /-- Prize-square endpoint for the concrete full-frequency Gauss-period shift
 consumer. -/
@@ -175,7 +175,7 @@ theorem prize_sq_of_gaussPeriod_reindexed_quarter_sum
       Q * (n ^ r * ((∑ b : F, (parent b) ^ r) / (Fintype.card F : ℝ)))) :
     Mmax ^ 2 ≤ 2 * Real.exp 1 * (2 / (1 / 8 : ℝ)) * n * (r : ℝ) := by
   exact prize_sq_of_gaussPeriod_reindexed_quarter ψ G hζ parent hparent
-    (by simpa [DyadicQuarterMGFBound] using hLeft)
+    (by simpa [DyadicQuarterMGFBound, WFS11.MGFBound] using hLeft)
     hMmax hn hQ ht hP hr hrQ hmoment
 
 end ArkLib.ProximityGap.Frontier.R205GaussPeriodShiftPrizeConsumer

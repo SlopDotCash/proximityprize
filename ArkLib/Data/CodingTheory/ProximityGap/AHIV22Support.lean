@@ -267,7 +267,7 @@ lemma dist_interleaved_code_to_code_lb
       have h2 : Δ₀((v + w : ι → F), dec v + dec w) ≤ 2 * e := by
         have hv :
             Δ₀((v + w : ι → F), (v : ι → F) + dec w) = Δ₀((w : ι → F), dec w) := by
-          simpa [Pi.add_apply] using
+          exact
             (hammingDist_comp (f := fun i ↦ fun t : F ↦ (v : ι → F) i + t)
               (x := (w : ι → F)) (y := dec w)
               (hf := fun _ ↦ by
@@ -275,7 +275,7 @@ lemma dist_interleaved_code_to_code_lb
                 exact add_left_cancel hab))
         have hw :
             Δ₀((v : ι → F) + dec w, dec v + dec w) = Δ₀((v : ι → F), dec v) := by
-          simpa [Pi.add_apply] using
+          exact
             (hammingDist_comp (f := fun i ↦ fun t : F ↦ t + dec w i)
               (x := (v : ι → F)) (y := dec v)
               (hf := fun _ ↦ by
@@ -343,7 +343,7 @@ lemma dist_interleaved_code_to_code_lb
     refine (Code.mem_moduleInterleavedCode_iff (F := F) (A := F) (κ := κ) (ι := ι) (MC := L)
       (v := (⋈|V))).2 ?_
     intro k
-    simpa [V] using hdec_mem ⟨U_star k, h_row_in_span k⟩
+    exact hdec_mem ⟨U_star k, h_row_in_span k⟩
   have h_dist_rows : ∀ k j, j ∉ D → U_star k j = V k j := by
     intro k j hj
     have hz :
@@ -364,7 +364,7 @@ lemma dist_interleaved_code_to_code_lb
     apply hj
     funext k
     have := h_dist_rows k j hjD
-    simpa [V] using this
+    exact this
   have h_dist_to_code : Δ₀(⋈|U_star, (L^⋈κ)) ≤ e := by
     exact le_trans
       (Code.distFromCode_le_dist_to_mem (C := (L^⋈κ)) (u := (⋈|U_star)) (v := (⋈|V))

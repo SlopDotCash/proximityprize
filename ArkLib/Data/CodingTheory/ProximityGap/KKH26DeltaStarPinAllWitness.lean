@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.AllWitnessFloorGeneric
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarReduction
 import ArkLib.Data.CodingTheory.ProximityGap.CensusDominationWeld
+import Mathlib.Tactic.NormNum.Prime
 
 /-!
 # Issue #389 — the δ* pin, UNCONDITIONALLY, for the bulk parameter range (no `CensusDomination`)

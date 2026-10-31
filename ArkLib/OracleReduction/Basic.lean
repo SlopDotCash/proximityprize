@@ -716,13 +716,13 @@ def toOracleVerifier
       (fun q => do
         let resp ← liftM <|
           query (spec := [OStmtIn]ₒ) (m := OracleComp oc) q
-        return ⟨q.1, ⟨q.2, by simpa only using resp⟩⟩)
+        return ⟨q.1, ⟨q.2, by exact resp⟩⟩)
     let queryResponsesOMsg : List ((i : pSpec.MessageIdx) × ((q : (Oₘ i).Query) × (Oₘ i).Response q)) ←
       (naVerifier.queryMsg stmt challenges).mapM
       (fun q => do
         let resp ← liftM <|
           query (spec := [pSpec.Message]ₒ) (m := OracleComp oc) q
-        return ⟨q.1, ⟨q.2, by simpa only using resp⟩⟩)
+        return ⟨q.1, ⟨q.2, by exact resp⟩⟩)
     let stmtOut ← liftM <| naVerifier.verify stmt challenges queryResponsesOStmt queryResponsesOMsg
     return stmtOut
 
@@ -1042,9 +1042,9 @@ theorem FullTranscript.mk2_eq_snoc_snoc {pSpec : ProtocolSpec 2} (msg0 : pSpec.�
   simp only [default, Fin.isValue]
   funext i
   by_cases hi : i = 0
-  · subst hi; simp [Fin.snoc]
+  · subst hi; simp [Fin.snoc]; rfl
   · have : i = 1 := by omega
-    subst this; simp [Fin.snoc]
+    subst this; simp [Fin.snoc]; rfl
 
 end ProtocolSpec
 

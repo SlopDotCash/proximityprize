@@ -258,7 +258,7 @@ theorem norm_nonDistStratum_le {J : ZMod m → ℂ} {B : ℝ} (hB0 : 0 ≤ B)
           have hle : (Finset.univ \ {(0 : ZMod m)}).card
               ≤ (Finset.univ : Finset (ZMod m)).card :=
             Finset.card_le_card (fun j _ => Finset.mem_univ j)
-          simpa [ZMod.card] using (Nat.cast_le.mpr hle : _)
+          rw [Finset.card_univ, ZMod.card] at hle; exact_mod_cast hle
         exact mul_le_mul_of_nonneg_right hcard (by positivity)
     _ = (m : ℝ) * ((6 + 3 * k₂ : ℕ) : ℝ) * B ^ 3 := by ring
 
@@ -409,7 +409,7 @@ theorem distStratumEnergyBound_trivial
             have hle : (Finset.univ \ {(0 : ZMod m)}).card
                 ≤ (Finset.univ : Finset (ZMod m)).card :=
               Finset.card_le_card (fun j _ => Finset.mem_univ j)
-            simpa [ZMod.card] using (Nat.cast_le.mpr hle : _)
+            rw [Finset.card_univ, ZMod.card] at hle; exact_mod_cast hle
           exact mul_le_mul_of_nonneg_right hcard (by positivity)
       _ = (m : ℝ) * ((m : ℕ) : ℝ) * (Real.sqrt (q : ℝ)) ^ 3 := by ring
   calc ∑ d : ZMod m, ‖distStratum J u d‖ ^ 2

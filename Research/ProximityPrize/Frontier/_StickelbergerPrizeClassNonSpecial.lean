@@ -93,7 +93,8 @@ theorem transfer_threshold_collapses (β : ℝ) :
     Filter.Tendsto (fun n : ℝ => Real.exp (2 * β * Real.log n / n)) Filter.atTop (nhds 1) := by
   have h := collapse_exponent_tendsto_zero β
   have := (Real.continuous_exp.tendsto 0).comp h
-  simpa [Function.comp, Real.exp_zero] using this
+  rw [Real.exp_zero] at this
+  exact this
 
 /-- **The certified band is eventually trivial (weight `< 2`).**  Threshold `→ 1 < 2` ⟹ eventually
 `exp(2β ln n / n) < 2`: at prize scale the certificate covers only weight `< 2`, i.e. NOTHING in

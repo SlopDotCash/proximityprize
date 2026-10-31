@@ -98,10 +98,10 @@ theorem floor_lt_of_lt_of_lattice (n : ℕ) {δ δ' : ℝ≥0} (hn : 0 < n)
   have hmul_lt : δ' * (n : ℝ≥0) < δ * (n : ℝ≥0) :=
     mul_lt_mul_of_pos_right hlt hnpos
   -- `δ'·n < ⌊δ·n⌋` (rewriting the RHS via the lattice hypothesis), so `⌊δ'·n⌋ < ⌊δ·n⌋`.
-  -- Mirrors the in-tree idiom `(Nat.floor_lt (zero_le _)).mpr` (BoundaryCardResidual.lean:161).
+  -- Mirrors the in-tree idiom `(Nat.floor_lt (zero_le)).mpr` (BoundaryCardResidual.lean:161).
   have hlt_floor : δ' * (n : ℝ≥0) < ((Nat.floor (δ * (n : ℝ≥0)) : ℕ) : ℝ≥0) := by
     rw [hlat]; exact hmul_lt
-  exact (Nat.floor_lt (zero_le _)).mpr hlt_floor
+  exact (Nat.floor_lt (zero_le)).mpr hlt_floor
 
 omit [Fintype ι] [Nonempty ι] [DecidableEq ι] [Field F] [Fintype F] [DecidableEq F] in
 /-- **The strict-below same-floor witness set is empty at a lattice point.**  Direct corollary of

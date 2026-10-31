@@ -435,7 +435,7 @@ lemma checkSingleRepetition_probFailure_eq_zero
 /-- Pair-support projection wrapper of `support_simulateQ_run'_eq`.
 `Prod.fst` of the stateful run support matches the spec support. -/
 lemma support_run_simulateQ_run_fst_eq {ι : Type}
-    {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited] {σ α : Type}
+    {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)] {σ α : Type}
     (impl : QueryImpl oSpec (StateT σ ProbComp))
     (oa : OracleComp oSpec (Option α)) (s : σ)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
@@ -1858,7 +1858,7 @@ theorem queryOracleVerifier_rbrKnowledgeSoundness {σ : Type} (init : ProbComp �
         _ = 0 := by
           simp only [PMF.monad_pure_eq_pure, PMF.monad_bind_eq_bind, PMF.bind_const, PMF.pure_apply,
             eq_iff_iff, iff_false, not_true_eq_false, ↓reduceIte]
-        _ ≤ _ := zero_le _
+        _ ≤ _ := zero_le
     case pos =>
       -- P is non-empty: extract preconditions from a witness
       obtain ⟨y₀, h_P_y₀⟩ := h_P_nonempty

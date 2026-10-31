@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CyclotomicSidonLift
+import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # THE CYCLOTOMIC RESULTANT BOUND + NONZERO, AND THE "NO PARALLELOGRAM" THEOREM (#389)
@@ -55,7 +56,7 @@ theorem resultant_cast_eq_prod {n : ℕ} (i j k l : ℕ) :
   set f := fourTerm i j k l
   have hinj : Function.Injective (algebraMap ℤ ℂ) := (algebraMap ℤ ℂ).injective_int
   have hsplit : (cyclotomic n ℂ).Splits := by
-    simpa using IsAlgClosed.splits_codomain (k := ℂ) (f := RingHom.id ℂ) (cyclotomic n ℂ)
+    exact IsAlgClosed.splits (cyclotomic n ℂ)
   have hdeg : (f.map (algebraMap ℤ ℂ)).natDegree ≤ f.natDegree :=
     le_of_eq (natDegree_map_eq_of_injective hinj f)
   have hcd : (cyclotomic n ℤ).natDegree = (cyclotomic n ℂ).natDegree := by
@@ -105,7 +106,7 @@ theorem abs_resultant_le {n : ℕ} (hn : n ≠ 0) (i j k l : ℕ) :
     rw [hmul]
     have hcard : ((cyclotomic n ℂ).roots).card = n.totient := by
       have hs : (cyclotomic n ℂ).Splits := by
-        simpa using IsAlgClosed.splits_codomain (k := ℂ) (f := RingHom.id ℂ) (cyclotomic n ℂ)
+        exact IsAlgClosed.splits (cyclotomic n ℂ)
       rw [← hs.natDegree_eq_card_roots, natDegree_cyclotomic]
     calc ((cyclotomic n ℂ).roots.map (fun ζ => ‖g ζ‖)).prod
         ≤ 4 ^ ((cyclotomic n ℂ).roots.map (fun ζ => ‖g ζ‖)).card := by

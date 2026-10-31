@@ -49,7 +49,7 @@ theorem Lambda_interleaved_fin_one_ge [Fintype F] [Nonempty ι] [DecidableEq F]
     obtain ⟨hcC, hcball⟩ := hc
     refine ⟨?_, ?_⟩
     · intro k
-      have hcol : (φ c).transpose k = c := by funext i; simp [hφ, Matrix.transpose_apply]
+      have hcol : (φ c).transpose k = c := by rfl
       rw [hcol]; exact hcC
     · rw [relHammingBall, Set.mem_setOf_eq] at hcball ⊢
       -- reduce to the (instance-uniform) distance equality inside the `convert` goal

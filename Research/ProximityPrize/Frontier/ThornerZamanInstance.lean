@@ -243,6 +243,7 @@ theorem tzPrimeSupply_8192_two : TZPrimeSupply 8192 (2 : ℝ) 20 := by
           68567041, 68640769, 68681729, 68853761} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 8192 (2 : ℝ)).card := Finset.card_le_card hsub
 
+set_option maxRecDepth 65536 in
 /-- **Concrete discharge for `n = 16384, β = 2`.**  The window `[16384², 2·16384²] =
 `[268435456, 536870912]` contains the twenty primes listed below, all `≡ 1 (mod 16384)`. -/
 theorem tzPrimeSupply_16384_two : TZPrimeSupply 16384 (2 : ℝ) 20 := by
@@ -265,6 +266,7 @@ theorem tzPrimeSupply_16384_two : TZPrimeSupply 16384 (2 : ℝ) 20 := by
         by decide
     _ ≤ (tzWindow 16384 (2 : ℝ)).card := Finset.card_le_card hsub
 
+set_option maxRecDepth 65536 in
 /-- **Concrete discharge for `n = 32768, β = 2`.**  The window `[32768², 2·32768²] =
 `[1073741824, 2147483648]` contains the twenty primes listed below, all `≡ 1 (mod 32768)`. -/
 theorem tzPrimeSupply_32768_two : TZPrimeSupply 32768 (2 : ℝ) 20 := by

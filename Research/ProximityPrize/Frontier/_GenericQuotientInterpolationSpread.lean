@@ -229,7 +229,7 @@ theorem mcaEvent_of_quotient_subset
         apply Finset.card_image_of_injOn
         intro i _ j _ hij
         apply (smoothDom g (s * m) hg).injective
-        simpa [smoothDom] using hij
+        exact hij
       rw [himage, hScard, Nat.mul_comm]
     refine subceiling_ca_failure hm hwindow.2 SH hSHsub hSHcard q1 hq1nat ?_
     intro x hx

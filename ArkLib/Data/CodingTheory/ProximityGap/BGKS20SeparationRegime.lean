@@ -137,12 +137,16 @@ theorem injective_of_not_jointProximity (domain : ι ↪ F) (hι : Fintype.card 
   by_contra hij
   apply hjp
   unfold jointProximity
-  rw [relCloseToCode_iff_relCloseToCodeword_of_minDist]
+  dsimp only
+  rw [relCloseToCode_iff_relCloseToCodeword_of_minDist
+    (C := interleavedCodeSet (ReedSolomon.code domain 1 : Set (ι → F)))
+    (fun j => (⋈|u : InterleavedWord F (Fin 2) ι) j)]
   refine ⟨fun _ k => u k i, ?_, ?_⟩
   · intro k
     exact ReedSolomon.constantCode_mem_code (x := u k i) (α := domain) (n := 1)
   · rw [pairRelDist_le_iff_pairDist_le, hι, floor_three_quarters_mul_eight]
-    have hsub : (Finset.univ.filter fun x => (⋈|u) x ≠ (fun (_ : ι) k => u k i) x) ⊆
+    have hsub : (Finset.univ.filter fun x =>
+        (fun j => (⋈|u : InterleavedWord F (Fin 2) ι) j) x ≠ (fun (_ : ι) k => u k i) x) ⊆
         (Finset.univ.erase i).erase j := by
       intro x hx
       simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx
@@ -190,7 +194,7 @@ theorem epsCA_rs_one_le_two_div (domain : ι ↪ F) (hι : Fintype.card ι = 8) 
   unfold epsCA
   refine iSup_le fun u => ?_
   split_ifs with hjp
-  · exact zero_le _
+  · exact zero_le
   · have hinj := injective_of_not_jointProximity domain hι u hjp
     rw [prob_uniform_eq_card_filter_div_card]
     have hcard : (Finset.univ.filter fun γ : F =>

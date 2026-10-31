@@ -101,7 +101,8 @@ theorem N_pos : 0 < 2 ^ p - 1 := by
   simp only [pow_one] at h
   omega
 
-instance instNeZeroN : NeZero (2 ^ p - 1) := ⟨by have := N_pos hp; omega⟩
+/-- The modulus is nonzero under the explicit exponent bound. -/
+theorem instNeZeroN : NeZero (2 ^ p - 1) := ⟨by have := N_pos hp; omega⟩
 
 /-- `2^i < N` for `i < p`. -/
 theorem two_pow_lt {i : ℕ} (hi : i < p) : 2 ^ i < 2 ^ p - 1 := by
@@ -269,7 +270,7 @@ theorem two_pow_add_ne_zero_all {i j : ℕ} (hi : i < p) (hj : j < p) :
         have : (2 : ℕ) ^ 2 ≤ 2 ^ (p - 1) := by gcongr <;> omega
         simpa using this
       omega
-    · have hb : (2 : ℕ) ^ p ≤ 2 ^ k := by gcongr; omega
+    · have hb : (2 : ℕ) ^ p ≤ 2 ^ k := by gcongr <;> omega
       have h1 : 1 ≤ (2 : ℕ) ^ p := Nat.one_le_two_pow
       omega
   · exact two_pow_add_ne_zero hp hi hj h

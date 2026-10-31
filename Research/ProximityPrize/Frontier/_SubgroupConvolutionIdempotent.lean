@@ -114,7 +114,6 @@ theorem convCount_eq_pow (H : Subgroup G) [Fintype H] {r : ℕ} (hr : 1 ≤ r) {
       intro v hv
       simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hv
       funext i
-      simp only
       refine Fin.lastCases ?_ (fun j => ?_) i
       · -- last coordinate is forced equal to v (last)
         simp only [Fin.snoc_last]

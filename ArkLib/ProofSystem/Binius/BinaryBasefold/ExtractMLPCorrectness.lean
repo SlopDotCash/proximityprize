@@ -615,7 +615,7 @@ lemma UDRClose_of_firstOracleWitnessConsistency
       (u := f) (v := Pcw) (hv := hPmem)
   calc 2 * (Code.distFromCode (u := f)
       (C := BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (0 : Fin r)))
-      ≤ 2 * (hammingDist f Pcw : ℕ∞) := mul_le_mul_left' hle 2
+      ≤ 2 * (hammingDist f Pcw : ℕ∞) := mul_le_mul_right hle 2
     _ = ((2 * hammingDist f Pcw : ℕ) : ℕ∞) := by push_cast; ring
     _ < (BBF_CodeDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (0 : Fin r) : ℕ∞) := by
         rw [hammingDist_comm]

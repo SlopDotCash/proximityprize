@@ -117,7 +117,7 @@ theorem card_clause {S : Finset (Fin 5)} (hS : 3 ≤ S.card) :
   have hsub : ((1 : ℝ≥0) - 2/5) ≤ 3/5 := tsub_le_iff_right.mpr (by norm_num)
   calc ((1 : ℝ≥0) - 2/5) * (Fintype.card (Fin 5) : ℝ≥0)
       ≤ (3/5) * (Fintype.card (Fin 5) : ℝ≥0) :=
-        mul_le_mul_of_nonneg_right hsub (zero_le _)
+        mul_le_mul_of_nonneg_right hsub (zero_le)
     _ = 3 := by rw [Fintype.card_fin]; norm_num
     _ ≤ (S.card : ℝ≥0) := by exact_mod_cast hS
 
@@ -188,7 +188,7 @@ theorem epsMCA_window_eq :
             norm_num)]
           norm_num
         calc ((3 : ℕ) : ℝ≥0) = (3/5) * 5 := by norm_num
-          _ ≤ (1 - 2/5) * 5 := mul_le_mul_of_nonneg_right hsub (zero_le _)
+          _ ≤ (1 - 2/5) * 5 := mul_le_mul_of_nonneg_right hsub (zero_le)
           _ = (1 - 2/5) * ((5 : ℕ) : ℝ≥0) := by norm_num)
       (by rw [Fintype.card_fin]; norm_num)
     have hc : (Fintype.card (Fin 5)).choose 3 = 10 := by decide

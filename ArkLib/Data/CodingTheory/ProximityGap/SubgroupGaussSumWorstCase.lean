@@ -176,7 +176,7 @@ theorem sum_one_mulChar : ∑ y : F, (1 : MulChar F ℂ) y = (Fintype.card F - 1
     rw [Finset.sum_const, nsmul_eq_mul, mul_one]
   rw [h0, h1, zero_add]
   congr 1
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset F)) (p := fun y : F => y = 0)
   have hzero : (Finset.univ.filter (fun y : F => y = 0)).card = 1 := by
     rw [Finset.card_eq_one]
@@ -298,11 +298,8 @@ theorem completion_identity {d : ℕ} (hd : d ∣ Fintype.card F - 1) (hd0 : 0 <
 theorem gaussSum_one_mulShift {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {b : F}
     (hb : b ≠ 0) :
     gaussSum (1 : MulChar F ℂ) (AddChar.mulShift ψ b) = -1 := by
-  have hne0 : AddChar.mulShift ψ b ≠ 0 := by
-    have h1 := hψ hb
-    simpa using h1
   have hsum : ∑ y : F, (AddChar.mulShift ψ b) y = 0 :=
-    AddChar.sum_eq_zero_iff_ne_zero.mpr hne0
+    AddChar.sum_eq_zero_of_ne_one (hψ hb)
   have h1 : ∑ y ∈ Finset.univ.erase (0 : F),
         (1 : MulChar F ℂ) y * (AddChar.mulShift ψ b) y
       = ∑ y ∈ Finset.univ.erase (0 : F), (AddChar.mulShift ψ b) y := by

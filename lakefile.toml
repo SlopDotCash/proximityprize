@@ -14,18 +14,18 @@ linter.style.longFile = 1500
 
 [[require]]
 name = "VCVio"
-git = "https://github.com/lalalune/VCV-io"
-rev = "576766ab24a044af560b05c58d2a1229857c7c07"
+git = "https://github.com/Verified-zkEVM/VCVio"
+rev = "91386ad88ed72292d0f4e3153a444336920fc565"
 
 [[require]]
 name = "PolyFun"
-git = "https://github.com/lalalune/PolyFun"
-rev = "5d3a160ed751b9227af90adb9da41d0eae2e0238"
+git = "https://github.com/Verified-zkEVM/PolyFun"
+rev = "3710d71b28404a151b8d1f0ce080ea448778dec0"
 
 [[require]]
 name = "«doc-gen4»"
 git = "https://github.com/leanprover/doc-gen4"
-rev = "v4.30.0-rc2"
+rev = "v4.34.0"
 
 [[require]]
 name = "checkdecls"
@@ -34,8 +34,8 @@ rev = "lean4.18.0"
 
 [[require]]
 name = "CompPoly"
-git = "https://github.com/lalalune/CompPoly"
-rev = "d8d6609e179fc26c4c56e1dae7c37032d618ad73"
+git = "https://github.com/yudduy/CompPoly"
+rev = "da1e1b5d048d26eca4583ff930f248c5e2bb5d9e"
 
 [[lean_lib]]
 name = "ArkLib"
@@ -43,3 +43,9 @@ name = "ArkLib"
 [[lean_lib]]
 name = "ResearchProximityPrize"
 roots = ["Research.ProximityPrize"]
+
+# Ordinary-import clients for imported native protocol security theorems.
+[[lean_lib]]
+name = "ArkLibTest"
+roots = []
+globs = ["ArkLibTest.+"]

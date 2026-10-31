@@ -60,11 +60,31 @@ open Finset Complex
 
 namespace ProximityGap.Frontier.WrEqMomentIdentity
 
-variable {p : ℕ} [Fact p.Prime]
+variable {p : ℕ}
 
 /-- A primitive `p`-th root of unity in `ℂ` indexes the `p` additive characters of `ZMod p`
 via `χ_b(v) = ζ^{(b·v).val}`. -/
 noncomputable def chi (ζ : ℂ) (b v : ZMod p) : ℂ := ζ ^ ((b * v).val)
+
+variable {T : Type*} [Fintype T]
+
+/-- The character sum (Gauss period at frequency `b`) of the sum-map `S : T → ZMod p`:
+`η_b := Σ_{x ∈ T} χ_b(S x)`. -/
+noncomputable def eta (ζ : ℂ) (S : T → ZMod p) (b : ZMod p) : ℂ :=
+  ∑ x : T, chi ζ b (S x)
+
+/-- **The `b = 0` term is the DC term `(#T)²`.** `χ_0 ≡ 1`, so `η_0 = #T` and
+`η_0·conj(η_0) = (#T)²` (`= n^{2r}` when `T = (Fin r → μ_n)`). -/
+theorem b_zero_term_eq (ζ : ℂ) (S : T → ZMod p) :
+    eta ζ S 0 * (starRingEnd ℂ) (eta ζ S 0) = ((Fintype.card T : ℂ)) ^ 2 := by
+  have h0 : eta ζ S 0 = (Fintype.card T : ℂ) := by
+    simp only [eta, chi, zero_mul, ZMod.val_zero, pow_zero, Finset.sum_const,
+      Finset.card_univ, nsmul_eq_mul, mul_one]
+  rw [h0]
+  rw [Complex.conj_natCast]
+  ring
+
+variable [Fact p.Prime]
 
 /-- **Dual additive orthogonality on `ZMod p`.** For a primitive `p`-th root of unity `ζ`,
 `Σ_{b : ZMod p} ζ^{(b·v).val} = p` if `v = 0`, and `= 0` otherwise. This is the indicator
@@ -153,13 +173,6 @@ theorem chi_mul (ζ : ℂ) (hζ : IsPrimitiveRoot ζ p) (b u v : ZMod p) :
   have h : (b * (u + v)) = (b * u) + (b * v) := by ring
   rw [h, ZMod.val_add, Nat.mod_mod]
 
-variable {T : Type*} [Fintype T]
-
-/-- The character sum (Gauss period at frequency `b`) of the sum-map `S : T → ZMod p`:
-`η_b := Σ_{x ∈ T} χ_b(S x)`. -/
-noncomputable def eta (ζ : ℂ) (S : T → ZMod p) (b : ZMod p) : ℂ :=
-  ∑ x : T, chi ζ b (S x)
-
 /-- **Master orthogonality-count identity (Plancherel for the sum-map).**
 For any finite tuple-type `T` and sum-map `S : T → ZMod p`, the collision count
 `#{(x,y) : S x = S y}` satisfies
@@ -199,18 +212,6 @@ theorem collision_count_eq_moment (ζ : ℂ) (hζ : IsPrimitiveRoot ζ p) (S : T
   rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_comm]
   congr 2
 
-omit [Fact p.Prime] in
-/-- **The `b = 0` term is the DC term `(#T)²`.** `χ_0 ≡ 1`, so `η_0 = #T` and
-`η_0·conj(η_0) = (#T)²` (`= n^{2r}` when `T = (Fin r → μ_n)`). -/
-theorem b_zero_term_eq (ζ : ℂ) (S : T → ZMod p) :
-    eta ζ S 0 * (starRingEnd ℂ) (eta ζ S 0) = ((Fintype.card T : ℂ)) ^ 2 := by
-  have h0 : eta ζ S 0 = (Fintype.card T : ℂ) := by
-    simp only [eta, chi, zero_mul, ZMod.val_zero, pow_zero, Finset.sum_const,
-      Finset.card_univ, nsmul_eq_mul, mul_one]
-  rw [h0]
-  rw [Complex.conj_natCast]
-  ring
-
 /-- **DC-subtracted moment split.** The full character moment splits into the DC term `(#T)²`
 plus the prize `b≠0` moment `Σ_{b≠0} η_b·conj(η_b)`. -/
 theorem moment_split_off_dc (ζ : ℂ) (S : T → ZMod p) :
@@ -219,11 +220,10 @@ theorem moment_split_off_dc (ζ : ℂ) (S : T → ZMod p) :
         + ∑ b ∈ Finset.univ.filter (· ≠ (0 : ZMod p)),
             eta ζ S b * (starRingEnd ℂ) (eta ζ S b) := by
   classical
-  rw [← b_zero_term_eq ζ S]
-  rw [← Finset.sum_filter_add_sum_filter_not Finset.univ (· = (0 : ZMod p))]
-  congr 1
-  · rw [Finset.filter_eq' Finset.univ (0 : ZMod p)]
-    simp
+  have hsplit := Finset.sum_filter_add_sum_filter_not Finset.univ
+    (fun b : ZMod p => b = 0) (fun b => eta ζ S b * (starRingEnd ℂ) (eta ζ S b))
+  simpa only [Finset.filter_eq', Finset.mem_univ, if_pos, Finset.sum_singleton,
+    b_zero_term_eq] using hsplit.symm
 
 /-- **The transfer corollary (the bridge to BGK).** Writing the depth-`r` char-`p` energy as the
 collision count `E_r^{F_p} = #{(x,y) : S x = S y}` and `E_r^{char 0} = E_r^{F_p} − W_r`, the master

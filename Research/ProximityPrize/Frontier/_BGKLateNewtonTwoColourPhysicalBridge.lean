@@ -590,7 +590,7 @@ theorem repeatedTwoFiber_eq_freshThreeFiber
     dsimp only [e0]
     change newtonJoinPhase G 3 (r - 2) (eraseRepeatedMarkedJoin G hr1 z).1 =
       newtonJoinPhase G 2 (r - 1) z.1
-    simpa [Nat.sub_sub] using eraseRepeatedMarkedJoin_phase G hr1 2 z
+    exact eraseRepeatedMarkedJoin_phase G hr1 2 z
   let e : {z : RepeatedMarkedJoin G (r - 1) // repeatedTwoPhase G r z = y} ≃
       {z : FreshMarkedJoin G (r - 2) // freshThreePhase G r z = y} :=
     e0.subtypeEquiv fun z => by rw [hphase z]
@@ -601,7 +601,7 @@ theorem oneFiber_eq_repeated_add_fresh (G : Finset F) (r : Nat) (y : F) :
     phaseFiberCount (newtonJoinPhase G 1 r) y =
       phaseFiberCount (repeatedOnePhase G r) y +
         phaseFiberCount (freshOnePhase G r) y := by
-  simpa only [repeatedOnePhase, freshOnePhase] using
+  exact
     phaseFiberCount_eq_subtype_add_compl (newtonJoinPhase G 1 r)
       (fun z : NewtonJoin G r => z.1 ∈ z.2.1) y
 
@@ -610,7 +610,7 @@ theorem twoFiber_eq_repeated_add_fresh (G : Finset F) (r : Nat) (y : F) :
     phaseFiberCount (newtonJoinPhase G 2 (r - 1)) y =
       phaseFiberCount (repeatedTwoPhase G r) y +
         phaseFiberCount (freshTwoPhase G r) y := by
-  simpa only [repeatedTwoPhase, freshTwoPhase] using
+  exact
     phaseFiberCount_eq_subtype_add_compl (newtonJoinPhase G 2 (r - 1))
       (fun z : NewtonJoin G (r - 1) => z.1 ∈ z.2.1) y
 

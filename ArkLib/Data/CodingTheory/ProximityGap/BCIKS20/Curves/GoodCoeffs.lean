@@ -73,7 +73,7 @@ theorem RS_exists_Pz_of_mem_goodCoeffsCurve {k deg : ℕ} {domain : ι ↪ F} {�
   rcases hvC with ⟨Pz, hPz, rfl⟩
   refine ⟨Pz, ?_, ?_⟩
   · exact ReedSolomon.natDegree_lt_of_mem_degreeLT (deg := deg) hPz
-  · simpa [e] using hvdist
+  · simpa [e, ReedSolomon.evalOnPoints, Function.comp_def] using hvdist
 
 open scoped BigOperators in
 open Polynomial in
@@ -513,7 +513,8 @@ theorem RS_exists_nonzero_kernelVec_BW_homMatrix_of_goodCoeffsCurve_card_gt
         Matrix.det ((L.submatrix rA id) - (R.submatrix rA id) * ⅟D * A21) = 0 := by
       exact (IsUnit.mul_right_eq_zero (a := Matrix.det D)
         (b := Matrix.det ((L.submatrix rA id) - (R.submatrix rA id) * ⅟D * A21)) hdetD).1 hmul
-    simpa [K0, Matrix.submatrix_sub, Matrix.submatrix_mul, Matrix.submatrix_submatrix,
+    simpa [K0, Matrix.submatrix_sub,
+      ← Matrix.submatrix_mul_equiv (e₂ := Equiv.refl _), Matrix.submatrix_submatrix,
       Matrix.mul_assoc, Function.comp, L, R] using hdetSchur
   have hg : ∀ i : ι,
       ((∑ t : Fin (k + 1), Polynomial.C (u t i) * Polynomial.X ^ (t : ℕ) : F[X])).natDegree ≤ k := by

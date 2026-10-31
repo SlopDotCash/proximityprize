@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
+import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
+import Mathlib.Tactic
 
 /-!
 # Issue #232 — the COPRIME packet minimal polynomial: the named gate to three-prime
@@ -104,6 +106,7 @@ theorem minpoly_adjoin_coprime_eq_cyclotomic
     exact Subtype.ext h1
   have hle : finrank ℚ ℚ⟮ξ * η⟯ ≤ finrank ℚ ℚ⟮ξ⟯⟮η⟯ :=
     LinearMap.finrank_le_finrank_of_injective hinj
+  letI : Module.Free ℚ⟮ξ⟯ ℚ⟮ξ⟯⟮η⟯ := Module.Free.of_divisionRing ℚ⟮ξ⟯ ℚ⟮ξ⟯⟮η⟯
   have htower : finrank ℚ ℚ⟮ξ⟯ * finrank ℚ⟮ξ⟯ ℚ⟮ξ⟯⟮η⟯ = finrank ℚ ℚ⟮ξ⟯⟮η⟯ :=
     Module.finrank_mul_finrank ℚ ℚ⟮ξ⟯ ℚ⟮ξ⟯⟮η⟯
   -- the totient tower bound: `φ(r) ≤ natDegree (minpoly ℚ⟮ξ⟯ η)`

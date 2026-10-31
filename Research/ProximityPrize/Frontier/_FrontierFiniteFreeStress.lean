@@ -244,7 +244,7 @@ INFLATE. (Proved for `j ≤ d` so all denominators are positive.) -/
 theorem finiteNFactor_ge_one (d j : ℕ) (hj : j ≤ d) (hd : 1 ≤ d) :
     1 ≤ finiteNFactor d j := by
   unfold finiteNFactor
-  apply Finset.one_le_prod
+  apply Finset.one_le_prod₀
   intro t ht
   rw [Finset.mem_range] at ht
   -- t ≤ j-2 ≤ d-2, so d-1-t ≥ 1 > 0 and d ≥ d-1-t

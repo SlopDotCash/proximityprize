@@ -67,6 +67,7 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
 /-! ## The codeword pullback under the squaring index map -/
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Codeword pullback under squaring.** Let `f : ι → ι'` realize the squaring map on the
 evaluation domains: `domain' (f i) = (domain i)²` for every coordinate `i`. Then precomposing an
 `RS[domain', k]` codeword with `f` yields an `RS[domain, 2k]` codeword.
@@ -83,7 +84,8 @@ theorem code_pullback_sq_mem (domain : ι ↪ F) (domain' : ι' ↪ F) (k : ℕ)
   refine ⟨q.comp (Polynomial.X ^ 2), ?_, ?_⟩
   · -- degree: `deg (q(X²)) = 2 · deg q < 2k`
     rcases eq_or_ne q 0 with rfl | hq0
-    · simpa using (WithBot.bot_lt_coe (2 * k))
+    · simp only [Polynomial.zero_comp, Polynomial.degree_zero]
+      exact bot_lt_iff_ne_bot.mpr (WithBot.coe_ne_bot)
     · -- work with `natDegree`: `natDegree (q.comp (X²)) = natDegree q * 2`
       have hq_nd : q.natDegree < k := (Polynomial.natDegree_lt_iff_degree_lt hq0).mpr hqdeg
       have hcomp0 : q.comp (Polynomial.X ^ 2) ≠ 0 := by

@@ -102,7 +102,7 @@ theorem injEnergy_eq_fiberSquareSum (G : Finset F) (r : ℕ) :
   · exact (Finset.mem_product.mp (Finset.mem_filter.mp q.2).1).1
   · exact (Finset.mem_product.mp (Finset.mem_filter.mp q.2).1).2
   · have hsum := (Finset.mem_filter.mp q.2).2
-    simpa [sumMap] using hsum
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, by simpa [sumMap] using hsum⟩
   · have hmem := q.2
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hmem
     refine Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨q.1.1.2, q.1.2.2⟩, ?_⟩

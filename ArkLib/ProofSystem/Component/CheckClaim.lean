@@ -91,11 +91,11 @@ theorem reduction_completeness [Nonempty σ] [DecidableEq Statement] :
     simp only [support_bind, Set.mem_iUnion, not_exists]
     intro s _ hmem
     -- Unfold OptionT.run on pure, then simulateQ_pure, then StateT
-    change none ∈ _root_.support
+    change none ∈ MonadAttach.support
       (StateT.run' (simulateQ _ (pure (some ((default, stmt, ()), stmt)) :
         OracleComp _ _)) s) at hmem
     rw [simulateQ_pure] at hmem
-    change none ∈ _root_.support
+    change none ∈ MonadAttach.support
       (Prod.fst <$> (pure (some ((default, stmt, ()), stmt)) :
         StateT σ ProbComp _).run s) at hmem
     rw [StateT.run_pure] at hmem
@@ -104,11 +104,11 @@ theorem reduction_completeness [Nonempty σ] [DecidableEq Statement] :
     rw [OptionT.mem_support_iff] at hx
     simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
     obtain ⟨s, _, hx⟩ := hx
-    change some x ∈ _root_.support
+    change some x ∈ MonadAttach.support
       (StateT.run' (simulateQ _ (pure (some ((default, stmt, ()), stmt)) :
         OracleComp _ _)) s) at hx
     rw [simulateQ_pure] at hx
-    change some x ∈ _root_.support
+    change some x ∈ MonadAttach.support
       (Prod.fst <$> (pure (some ((default, stmt, ()), stmt)) :
         StateT σ ProbComp _).run s) at hx
     rw [StateT.run_pure] at hx
@@ -120,10 +120,10 @@ theorem reduction_completeness [Nonempty σ] [DecidableEq Statement] :
 empty transcript. This is the concrete zero-round core used by the HVZK wrappers below. -/
 theorem honestTranscriptDist_reduction_evalDist
     (stmt : Statement) (hpred : pred stmt) :
-    evalDist (Reduction.honestTranscriptDist init impl
+    evalSPMF (Reduction.honestTranscriptDist init impl
         (reduction oSpec Statement pred) stmt ()) =
-      evalDist (pure default : OptionT ProbComp (FullTranscript !p[])) := by
-  apply evalDist_ext
+      evalSPMF (pure default : OptionT ProbComp (FullTranscript !p[])) := by
+  apply evalSPMF_ext
   intro transcript
   classical
   unfold Reduction.honestTranscriptDist
@@ -135,7 +135,7 @@ theorem honestTranscriptDist_reduction_evalDist
   simp only [hrun, map_pure, OptionT.run_pure, simulateQ_pure, StateT.run'_eq,
     StateT.run_pure, bind_pure_comp]
   rw [OptionT.probOutput_eq, OptionT.probOutput_eq]
-  simp [probOutput_map_const, HasEvalPMF.probFailure_eq_zero]
+  simp [probOutput_map_const, probFailure_eq_zero]
 
 /-- `CheckClaim` is perfectly HVZK for the predicate relation. The simulator is the identity
 transcript simulator, since the real protocol has no messages or challenges. -/

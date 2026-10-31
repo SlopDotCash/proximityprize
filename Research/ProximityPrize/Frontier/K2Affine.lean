@@ -42,6 +42,7 @@ theorem affine_mem_rsCode_two (dom : Fin n ↪ F) (a b : F) :
     simp [eval_add, eval_mul, eval_C, eval_X]
 
 omit [DecidableEq F] in
+set_option backward.isDefEq.respectTransparency false in
 /-- A vanishing `k = 2` residual on `![i,j,c]` with distinct domain points forces
 `(dom c, u₁ c)` onto the affine line through `(dom i, u₁ i)` and `(dom j, u₁ j)`. -/
 theorem residual_two_zero_affine (dom : Fin n ↪ F) {i j c : Fin n} (u₁ : Fin n → F)

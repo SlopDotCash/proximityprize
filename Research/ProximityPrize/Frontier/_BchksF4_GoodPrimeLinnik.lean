@@ -298,9 +298,9 @@ theorem countermodel_norm_six_primes : (1026410 : ℕ).primeFactors.card = 6 := 
     Nat.primeFactors_mul (by norm_num) (by norm_num),
     Nat.primeFactors_mul (by norm_num) (by norm_num),
     Nat.primeFactors_mul (by norm_num) (by norm_num),
-    Nat.Prime.primeFactors (by norm_num), Nat.Prime.primeFactors (by norm_num),
-    Nat.Prime.primeFactors (by norm_num), Nat.Prime.primeFactors (by norm_num),
-    Nat.Prime.primeFactors (by norm_num), Nat.Prime.primeFactors (by norm_num)]
+    Nat.Prime.primeFactors (by decide +kernel), Nat.Prime.primeFactors (by decide +kernel),
+    Nat.Prime.primeFactors (by decide +kernel), Nat.Prime.primeFactors (by decide +kernel),
+    Nat.Prime.primeFactors (by decide +kernel), Nat.Prime.primeFactors (by decide +kernel)]
   decide
 
 end ArkLib.ProximityGap.Frontier.BchksF4GoodPrimeLinnik

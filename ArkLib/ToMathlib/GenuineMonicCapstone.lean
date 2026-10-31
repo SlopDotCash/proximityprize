@@ -92,6 +92,7 @@ theorem betaRec_weight_le_graded_signed (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y]
     (bB := fun i₁ {m} p => (d - Multiset.card p.parts) * A + (D - Multiset.card p.parts))
     (wβ := fun t => α * (2 * t - 1) + A) ?_ ?_ ?_ ?_ ?_
   · -- hbW (monic)
+    rw [W_O_eq_W𝒪]
     simpa using
       BCIKS20.HenselNumerator.W𝒪_weight_le_zero_of_monic H hmonic hH hD
   · -- hbξ via weight_ξ_bound
@@ -226,7 +227,7 @@ theorem hcardFin_of_graded_signed (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
       ≤ ((((Bivariate.natDegreeY R * (D - H.natDegree + 1) + D + (D - H.natDegree + 1))
               * (2 * t - 1)
             + (D - H.natDegree + 1)) * H.natDegree : ℕ) : WithBot ℕ) :=
-    withBot_mul_right_le'' (by simpa using hwt)
+    withBot_mul_right_le'' (by push_cast at hwt ⊢; exact hwt)
   exact lt_of_le_of_lt hmul (hconcreteFin t hkt htT)
 
 end GradedSigned

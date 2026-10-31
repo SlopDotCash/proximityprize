@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Tactic
 
 /-!
 # Smooth-domain fiber counts for the power map, by pure root counting

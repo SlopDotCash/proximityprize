@@ -555,7 +555,7 @@ theorem prod_factorial_parts_le_profile {m : ℕ} (c a b : Fin m → ℕ) :
         (c j).factorial * (c j).factorial * ((a j).factorial * (b j).factorial))
       ≤ ∏ j : Fin m,
         ((c j + a j).factorial * (c j + b j).factorial) := by
-  apply Finset.prod_le_prod'
+  apply Finset.prod_le_prod
   intro j _
   have hca : (c j).factorial * (a j).factorial ≤ (c j + a j).factorial :=
     Nat.le_of_dvd (Nat.factorial_pos _) (Nat.factorial_mul_factorial_dvd_factorial_add _ _)

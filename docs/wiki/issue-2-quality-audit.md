@@ -1,7 +1,11 @@
 # Issue #2 quality and upstream audit
 
 Audited against `a6475f7c0` on 2026-09-05. This page records source inspection;
-it does not certify the security of the retained protocol experiments.
+it does not certify the security of the retained protocol experiments. The dependency
+comparison below is historical; the [Lean 4.34 migration ledger](upstream-proof-transfer.md)
+records the current pins and validation status. Publication is restricted to
+`SlopDotCash/proximityprize`; historical upstream preparation does not authorize
+pushing or opening PRs against `Verified-zkEVM/ArkLib`.
 
 [Issue #2](https://github.com/SlopDotCash/proximityprize/issues/2) began as a
 historical ArkLib fork cleanup plan. Its migration note and the repository README

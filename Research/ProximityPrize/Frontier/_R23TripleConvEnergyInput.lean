@@ -119,7 +119,8 @@ theorem norm_selfConv_le_card_mul_bound (J : ZMod m → ℂ) {B : ℝ} (hB0 : 0 
             Finset.card_le_card (by
               intro j hj
               exact Finset.mem_univ j)
-          simpa [ZMod.card] using (Nat.cast_le.mpr hle : _)
+          rw [Finset.card_univ, ZMod.card] at hle
+          exact_mod_cast hle
         exact mul_le_mul_of_nonneg_right hcard (sq_nonneg B)
 
 /-- A uniform coefficient bound gives the elementary pointwise bound
@@ -151,7 +152,8 @@ theorem norm_tripleConv_le_card_sq_mul_bound (J : ZMod m → ℂ) {B : ℝ} (hB0
             Finset.card_le_card (by
               intro j hj
               exact Finset.mem_univ j)
-          simpa [ZMod.card] using (Nat.cast_le.mpr hle : _)
+          rw [Finset.card_univ, ZMod.card] at hle
+          exact_mod_cast hle
         have hnon : 0 ≤ (m : ℝ) * B ^ 3 := by positivity
         calc (((Finset.univ \ {(0 : ZMod m)}).card : ℝ) * ((m : ℝ) * B ^ 3))
             ≤ (m : ℝ) * ((m : ℝ) * B ^ 3) :=

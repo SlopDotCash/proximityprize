@@ -70,3 +70,6 @@ used in `ArkLib/**/*.lean`, including:
 ## Source Metadata
 
 - [`sources/README.md`](sources/README.md) - source artifact policy and metadata layout.
+
+- [BRW26 — Flock](papers/BRW26.md): scalar layouts and matrix multiplier.
+- [RSG — Ring switching, generalized](papers/RSG.md): independent packing/opening bases.

@@ -498,7 +498,7 @@ theorem mcaDeltaStar_eq_zero_of_lt_oneEleven {εstar : ℝ≥0∞}
     (hhi : εstar < 1 / 11) :
     MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
       (C : Set (Fin 5 → F11)) εstar = 0 := by
-  refine le_antisymm ?_ (zero_le _)
+  refine le_antisymm ?_ (zero_le)
   exact MCAThresholdLedger.mcaDeltaStar_le_of_bad _ _
     (lt_of_lt_of_le hhi epsMCA_zero_ge)
 

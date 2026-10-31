@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import Mathlib.Algebra.Polynomial.Basic
+import Mathlib.Algebra.Ring.GeomSum
+import Mathlib.Data.Complex.Basic
+import Mathlib.Data.ZMod.Basic
+import Mathlib.Data.Nat.Choose.Sum
+import Mathlib.Tactic
 
 /-!
 # Dyadic Fourier-uncertainty rigidity of the char-0 lacunary count (Issue #407)
@@ -202,7 +207,7 @@ theorem powerSum_vanish_of_shiftClosed {N : ℕ} (ζpow : ZMod N → R)
       _ = w * powerSum ζpow I j := by rw [powerSum]
   -- (w - 1) · p_j(I) = 0, and (w-1) is a unit, so p_j(I) = 0.
   have : (w - 1) * powerSum ζpow I j = 0 := by
-    have := key; ring_nf; ring_nf at this; linear_combination -this
+    linear_combination -key
   obtain ⟨u, hu⟩ := hwunit
   have := congrArg (fun z => u.inv * z) this
   simp only [mul_zero] at this

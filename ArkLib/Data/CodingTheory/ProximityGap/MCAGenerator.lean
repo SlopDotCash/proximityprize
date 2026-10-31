@@ -60,6 +60,7 @@ lemma pseudoinverseGen [DecidableEq ℓ'] [Nonempty S] (G : Generator S ℓ F) (
   (A : Matrix ℓ ℓ' F) (hA : HasLeftPseudoInverse A) :
     IsMCAGenerator (generatorByRightMul G A) ε_mca LC := by
   intro U γ
+  change Matrix ℓ' ι F at U
   have isMCA_generatorByRightMul_of_isMCA (x : S) :
 IsMCA (generatorByRightMul G A) LC x U γ → IsMCA G LC x (matrixMulCodewords A U) γ := by
     obtain ⟨B, hB⟩ := hA
@@ -67,13 +68,14 @@ IsMCA (generatorByRightMul G A) LC x U γ → IsMCA G LC x (matrixMulCodewords A
     refine ⟨T, hT_card, ?_, ?_⟩
     · convert hT_proj using 1
       ext i
-      simp only [generatorByRightMul, Matrix.vecMul_vecMul]
-      congr! 2
+      change (G x ᵥ* (A * U)) (i : ι) = ((G x ᵥ* A) ᵥ* U) (i : ι)
+      rw [Matrix.vecMul_vecMul]
     · contrapose! hj
       convert LinearCode.projectedCode_linearCombination LC T (fun i => matrixMulCodewords A U i)
         (fun i => B j i) (fun i => hj i) using 1
       ext k
-      simp [matrixMulCodewords, ← Matrix.mul_apply, ← Matrix.mul_assoc, hB]
+      change U j (k : ι) = (B * (A * U)) j (k : ι)
+      rw [← Matrix.mul_assoc, hB, Matrix.one_mul]
   exact le_trans (Pr_le_Pr_of_implies ($ᵖ S) _ _ fun x h => isMCA_generatorByRightMul_of_isMCA x h)
     (hGMCA (matrixMulCodewords A U) γ)
 
@@ -94,7 +96,7 @@ lemma isMCA_projectedGenerator_of_isMCA (LC : LinearCode ι F) [Nonempty S] (G :
     simp only [Matrix.vecMul, dotProduct]
     rw [← Finset.sum_subset (Finset.subset_univ (Set.toFinset κ))]
     · refine Finset.sum_bij (fun j _ => j) ?_ ?_ ?_ ?_ <;>
-        simp [projectedGenerator, zeroExtend]
+        simp [projectedGenerator, zeroExtend, Set.restrict_apply, Set.restrict]
     · intro x _ hx; simp [zeroExtend]; aesop
   have zeroExtend_val (j : κ) : zeroExtend κ U j.val = U j := by
     simp [zeroExtend, j.property]

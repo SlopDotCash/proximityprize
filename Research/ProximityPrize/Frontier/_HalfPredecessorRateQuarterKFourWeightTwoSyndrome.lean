@@ -69,7 +69,7 @@ theorem quotientAffinePoint_ne_zero
     (hrows : QuotientRowsIndependent C u0 u1) (gamma : F) :
     quotientAffinePoint C u0 u1 gamma ≠ 0 := by
   intro hzero
-  have hcoeff := hrows 1 gamma (by simpa only [one_smul] using hzero)
+  have hcoeff := hrows 1 gamma (by rw [one_smul]; exact hzero)
   exact one_ne_zero hcoeff.1
 
 /-- Independent quotient rows give a projectively honest affine chart. -/
@@ -116,8 +116,10 @@ theorem rowPlane_finrank_le_two
       finrank F (span F
         ({C.mkQ u0, C.mkQ u1} : Set ((I -> F) ⧸ C))) ≤
         ({C.mkQ u0, C.mkQ u1} : Finset ((I -> F) ⧸ C)).card := by
-    simpa using finrank_span_finset_le_card (R := F)
+    have h := finrank_span_finset_le_card (R := F)
       ({C.mkQ u0, C.mkQ u1} : Finset ((I -> F) ⧸ C))
+    rw [Finset.coe_pair] at h
+    exact h
   rcases Finset.card_pair_eq_one_or_two
       (a := C.mkQ u0) (b := C.mkQ u1) with hcard | hcard
   · omega

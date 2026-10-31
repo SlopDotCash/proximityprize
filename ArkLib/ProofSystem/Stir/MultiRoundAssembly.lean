@@ -130,18 +130,15 @@ instance : VCVCompatible F := { toFintype := inferInstance, toInhabited := ⟨0�
 /-- Finiteness of the multi-round challenge oracle spec (every challenge range is
 `Vector F len`), pinned to the canonical `challengeOracleInterface` (the interface that the
 completeness machinery elaborates `[pSpec.Challenge]ₒ` with). -/
-instance :
-    ([((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Fintype where
-  fintype_B := fun q => by
+instance (q : ([((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Domain) :
+    Fintype (([((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Range q) := by
     show Fintype (((stirMultiVSpec M ι).toProtocolSpec F).Challenge q.1)
     dsimp
     infer_instance
 
 /-- Inhabitedness of the multi-round challenge oracle spec (pinned as above). -/
-instance :
-    ([((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Inhabited
-    where
-  inhabited_B := fun q => by
+instance (q : ([((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Domain) :
+    Inhabited (([((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Range q) := by
     show Inhabited (((stirMultiVSpec M ι).toProtocolSpec F).Challenge q.1)
     dsimp
     infer_instance
@@ -149,6 +146,8 @@ instance :
 end Instances
 
 section Completeness
+
+attribute [local instance] legacyUniformSpec
 
 open OracleReduction
 
@@ -179,10 +178,10 @@ theorem stirMultiRoundIOP_perfectCompleteness (M : ℕ) (φ : ι ↪ F) (deg : �
     rw [probFailure_bind_eq_zero_iff]
     refine ⟨?_, fun α _hα => ?_⟩
     · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+        _root_.probFailure_liftComp, probFailure_eq_zero]
     · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
       simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-        Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
+        Function.comp_apply, Option.map_some, probFailure_map, probFailure_eq_zero,
         probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
         Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
         zero_add]
@@ -270,18 +269,18 @@ theorem stir_rbr_soundness_of_secure_vectorIOP
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))
       π)
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
-    (hrest : ∀ j : Fin M,
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
+    (hrest : (∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
         ∧
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
         ∧
         ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
@@ -313,18 +312,18 @@ theorem stir_rbr_soundness_of_residuals
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp)))
     -- the open per-round error-bound legs (free-parameter constraints)
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
-    (hrest : ∀ j : Fin M,
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
+    (hrest : (∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
         ∧
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
         ∧
         ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)

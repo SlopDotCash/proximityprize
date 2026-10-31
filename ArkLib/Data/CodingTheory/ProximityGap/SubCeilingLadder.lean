@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26WitnessSpread
+import Mathlib.Tactic.NormNum.Prime
 
 /-!
 # The level-`j` sub-ceiling ladder: bad-line families strictly below the KKH26 ceiling

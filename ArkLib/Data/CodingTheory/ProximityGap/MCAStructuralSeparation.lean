@@ -45,7 +45,7 @@ theorem mcaEvent_ubad_anyδ (δ : ℝ≥0) :
   refine ⟨Finset.univ, ?_, ⟨0, zero_mem_Cbot, ?_⟩, ?_⟩
   · rw [Finset.card_univ]
     have h : (1 - δ) * (Fintype.card ι : ℝ≥0) ≤ 1 * (Fintype.card ι : ℝ≥0) :=
-      mul_le_mul_right' tsub_le_self _
+      mul_le_mul_left tsub_le_self _
     simpa using h
   · intro i _; simp
   · rintro ⟨v₀, _hv₀, v₁, hv₁, hagree⟩

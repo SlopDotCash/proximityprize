@@ -58,7 +58,7 @@ theorem linearIndependent_pow_le (ζ : S) {N : ℕ}
   have hfull : LinearIndependent K (fun i : Fin (minpoly K ζ).natDegree => ζ ^ (i : ℕ)) :=
     _root_.linearIndependent_pow ζ
   have hcomp := hfull.comp (Fin.castLE hN) (Fin.castLE_injective hN)
-  simpa [Function.comp, Fin.val_castLE] using hcomp
+  exact hcomp
 
 /-! ## Part 1.  The general unconditional antipodal theorem.
 

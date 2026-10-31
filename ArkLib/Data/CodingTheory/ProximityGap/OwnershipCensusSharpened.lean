@@ -728,6 +728,7 @@ theorem sharpened_band_at_r5_mu4 :
 
 section Concrete4294967377
 
+set_option maxRecDepth 65536 in
 local instance fact_prime_4294967377 : Fact (Nat.Prime 4294967377) := ⟨by norm_num⟩
 
 /-- **THE FOURTH RUNG (new, unreachable by the landed bound):** `δ* = 11/16` exactly, for

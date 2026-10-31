@@ -382,7 +382,7 @@ theorem Q_vanishes_on_close_codeword_graph [DecidableEq (Polynomial F)]
     rw [hpt, hQz]; exact htr
   have hdeg : (Qz.eval P).natDegree ≤ Bivariate.natWeightedDegree Qz 1 k := by
     have hPdeg : P.natDegree ≤ (k + 1) - 1 := by
-      simpa using (exists_Pz_of_coeffs_of_close_proximity (n := n) (k := k) hS).choose_spec.1
+      simpa [P, Pz] using (exists_Pz_of_coeffs_of_close_proximity (n := n) (k := k) hS).choose_spec.1
     simpa using GuruswamiSudan.degree_eval_le_weightedDegree Qz P (k + 1) hPdeg
   have := gapB_vanish_of_orderM_and_count ωs Qz P (u₀ + z • u₁) m
     (Bivariate.natWeightedDegree Qz 1 k) A hroots hA hdeg hcount
@@ -633,7 +633,7 @@ lemma exists_pg_factors_with_large_common_root_set_of_dvd (δ : ℚ) (x₀ : F)
         H ∈
           UniqueFactorizationMonoid.normalizedFactors
             (Bivariate.evalX (Polynomial.C x₀) R) := by
-    simpa [pg_candidatePairs] using hmem
+    simpa [pg_candidatePairs, UniqueFactorizationMonoid.mem_primeFactors] using hmem
   refine ⟨R, H, hpair.1, ?_, ?_, ?_, ?_, hsep R hpair.1, ?_, hlarge⟩
   · exact pg_Rset_irreducible (F := F) (k := k) h_gs R hpair.1
   · exact UniqueFactorizationMonoid.irreducible_of_normalized_factor

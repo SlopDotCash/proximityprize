@@ -89,6 +89,7 @@ theorem card_close_le_card_mul_vol {F : Type*} [Fintype F] [DecidableEq F] [AddC
         ArkLib.CS25.sum_closeCount_eq 𝒞 r
 
 open Classical in
+set_option backward.isDefEq.respectTransparency false in
 /-- **Jointly-`e`-close stack count bound.** A stack `u` is jointly `e`-close to `C` iff its
 interleaving `⋈|u = uᵀ` is within Hamming distance `e` of some interleaved codeword. By the union
 bound over the interleaved code `C^⋈κ` (`|C|^|κ|` codewords), the number of jointly-`e`-close stacks
@@ -104,12 +105,16 @@ theorem card_jointProximityNat_le (C : Set (ι → A)) [AddCommGroup A] [Fintype
   have hiff : ∀ u : WordStack A κ ι,
       jointProximityNat C (u := u) e ↔ ArkLib.CS25.closeCount 𝒞 e u.transpose ≠ 0 := by
     intro u
-    rw [jointProximityNat_iff_closeToInterleavedCodeword, ArkLib.CS25.closeCount,
-      Finset.card_ne_zero, Finset.filter_nonempty_iff]
+    rw [jointProximityNat_iff_closeToInterleavedCodeword]
+    change (∃ v : interleavedCodeSet (κ := κ) C, hammingDist u.transpose v.val ≤ e) ↔
+      (𝒞.filter (fun c => hammingDist u.transpose c ≤ e)).card ≠ 0
+    rw [Finset.card_ne_zero]
     constructor
     · rintro ⟨v, hv⟩
-      exact ⟨v.val, Finset.mem_image_of_mem _ (Finset.mem_univ v), hv⟩
-    · rintro ⟨c, hcS, hc⟩
+      exact ⟨v.val, Finset.mem_filter.mpr
+        ⟨Finset.mem_image_of_mem _ (Finset.mem_univ v), hv⟩⟩
+    · rintro ⟨c, hc'⟩
+      obtain ⟨hcS, hc⟩ := Finset.mem_filter.mp hc'
       obtain ⟨v, -, rfl⟩ := Finset.mem_image.mp hcS
       exact ⟨v, hc⟩
   have hreindex :
@@ -130,7 +135,8 @@ theorem card_jointProximityNat_le (C : Set (ι → A)) [AddCommGroup A] [Fintype
             ArkLib.CS25.closeCount 𝒞 e w ≠ 0)).card
       ≤ 𝒞.card
           * (Finset.univ.filter (fun w : InterleavedWord A κ ι => hammingDist w 0 ≤ e)).card :=
-        card_close_le_card_mul_vol _ e
+        by simpa only [InterleavedWord, Matrix] using
+          (card_close_le_card_mul_vol (F := κ → A) 𝒞 e)
     _ = (Fintype.card ↥C) ^ (Fintype.card κ)
           * (Finset.univ.filter (fun w : InterleavedWord A κ ι => hammingDist w 0 ≤ e)).card := by
         rw [h𝒞, Finset.card_image_of_injective _ Subtype.val_injective, Finset.card_univ,
@@ -172,12 +178,13 @@ private theorem floor_nnreal_eq_real (δ : ℝ≥0) (n : ℕ) :
   refine le_antisymm (Nat.le_floor ?_) (Nat.le_floor ?_)
   · calc ((⌊δ * (n : ℝ≥0)⌋₊ : ℝ))
         = ((⌊δ * (n : ℝ≥0)⌋₊ : ℝ≥0) : ℝ) := by push_cast; ring
-      _ ≤ ((δ * (n : ℝ≥0) : ℝ≥0) : ℝ) := by exact_mod_cast Nat.floor_le (zero_le _)
+      _ ≤ ((δ * (n : ℝ≥0) : ℝ≥0) : ℝ) := by exact_mod_cast Nat.floor_le (zero_le)
       _ = (δ : ℝ) * (n : ℝ) := hcoe
   · have h : ((⌊(δ : ℝ) * (n : ℝ)⌋₊ : ℝ)) ≤ ((δ * (n : ℝ≥0) : ℝ≥0) : ℝ) := by
       rw [hcoe]; exact Nat.floor_le (by positivity)
     exact_mod_cast h
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The interleaved-ball volume `V'_{⌊δn⌋}` equals `hammingBallVolume (q^|κ|) δ n`, the explicit
 sum `∑_{i≤⌊δn⌋} C(n,i)(q^|κ|-1)^i` over the interleaved alphabet `κ→A`. -/
 theorem interleaved_ball_card_eq_volume [Nonempty ι] [AddCommGroup A] (δ : ℝ≥0) :
@@ -187,9 +194,17 @@ theorem interleaved_ball_card_eq_volume [Nonempty ι] [AddCommGroup A] (δ : ℝ
   have heq := floor_nnreal_eq_real δ (Fintype.card ι)
   rw [CodingTheory.hammingBallVolume_eq_ncard_hammingBall (δ : ℝ) (0 : ι → (κ → A)),
     ← CodingTheory.filter_card_eq_hammingBall_ncard, ← heq]
-  refine Finset.card_nbij' id id ?_ ?_ ?_ ?_ <;> intro w hw <;>
-    simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and, id_eq,
-      hammingDist_comm] at hw ⊢ <;> exact hw
+  refine Finset.card_nbij' id id ?_ ?_ ?_ ?_
+  · intro w hw
+    apply Finset.mem_filter.mpr
+    refine ⟨Finset.mem_univ _, ?_⟩
+    simpa only [id_eq, hammingDist_comm] using (Finset.mem_filter.mp hw).2
+  · intro w hw
+    apply Finset.mem_filter.mpr
+    refine ⟨Finset.mem_univ _, ?_⟩
+    simpa only [id_eq, hammingDist_comm] using (Finset.mem_filter.mp hw).2
+  · intro w _; rfl
+  · intro w _; rfl
 
 open Classical in
 /-- **Explicit (band-ready) `#{jointProx}` bound.** `#{u : jointProximity C u δ} ≤

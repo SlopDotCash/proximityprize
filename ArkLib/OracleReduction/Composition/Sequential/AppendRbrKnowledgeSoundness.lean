@@ -212,7 +212,7 @@ theorem appendRbrKnowledgeSoundnessPerRound_phase1 {WitMid₁ : Fin (m+1)→Type
           × (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inl (pSpec₂ := pSpec₂) i₁))
         = (pSpec₁.Transcript i₁.1.castSucc × pSpec₁.Challenge i₁) := congrArg₂ Prod hTrTy hChTy
   refine probEvent_congr_heq hResTy _ _ _ _ ?hd ?hPQ
-  · -- `evalDist` HEq: appended phase-1 body = `liftM` of the `fst` body, transferred via the seam.
+  · -- `evalSPMF` HEq: appended phase-1 body = `liftM` of the `fst` body, transferred via the seam.
     exact evalDist_init_run'_heq_of_body_heq hResTy _ _ (phase1_body_heq prover stmtIn witIn i₁)
   · -- The witness-threaded event correspondence.
     rintro ⟨tr, ch⟩
@@ -696,27 +696,27 @@ theorem appendRbrKnowledgeSoundnessPhase2_subsingleton [Subsingleton σ]
     congrArg (· × _) hTrTy
   -- STEP 1: transport the appended game to the seam-factored game via `phase2_body_heq`.
   have hbody := phase2_body_heq prover stmtIn witIn i₂ hn hDir hDir₂
-  -- evalDist HEq of the two experiments, from the body HEq.
+  -- evalSPMF HEq of the two experiments, from the body HEq.
   have hd : HEq
-      (𝒟[init >>= fun s =>
+      ((evalSPMF (init >>= fun s =>
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
           (do
             let ⟨transcript, _⟩ ←
               prover.runToRound (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc stmtIn witIn
             let challenge ←
               liftComp ((pSpec₁ ++ₚ pSpec₂).getChallenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)) _
-            return (transcript, challenge))).run' s])
-      (𝒟[init >>= fun s =>
+            return (transcript, challenge))).run' s)))
+      ((evalSPMF (init >>= fun s =>
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
           (do
             let ⟨transcript₁, ctxIn₂⟩ ← liftM ((Prover.fst prover).run stmtIn witIn)
             let r ← liftM ((Prover.snd prover).runToRound i₂.1.castSucc ctxIn₂.1 ctxIn₂.2)
             let challenge ←
               liftComp ((pSpec₁ ++ₚ pSpec₂).getChallenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)) _
-            return (Transcript.appendRight transcript₁ r.1, challenge))).run' s]) := by
-    -- A local `evalDist`-respects-HEq helper.
+            return (Transcript.appendRight transcript₁ r.1, challenge))).run' s))) := by
+    -- A local `evalSPMF`-respects-HEq helper.
     have heq_evalDist : ∀ {A B : Type} (hAB : A = B) (a : ProbComp A) (b : ProbComp B),
-        HEq a b → HEq (𝒟[a]) (𝒟[b]) := by
+        HEq a b → HEq ((evalSPMF (a))) ((evalSPMF (b))) := by
       intro A B hAB a b hab; subst hAB; rw [eq_of_heq hab]
     -- A local `(simulateQ _).run'`-respects-HEq helper (for the shared `s`-state).
     have heq_simrun : ∀ {A B : Type} (s : σ) (hAB : A = B)

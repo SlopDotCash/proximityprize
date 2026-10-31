@@ -204,8 +204,7 @@ theorem latticeIndexOf_le_mcaThreshold_ofDoubleCover
     latticeIndexOf (ι := ι) δ hδ_le_one ≤
       mcaThreshold C ε_star
         (mcaThresholdExists_ofDoubleCover C δ ε_star hδ_le_one hcov) := by
-  simpa [mcaThresholdExists_ofDoubleCover, GrandChallenges.MCALowerWitness.ofDoubleCover]
-    using MCALowerWitness_le_mcaThreshold C ε_star
+  exact MCALowerWitness_le_mcaThreshold C ε_star
       (mcaThresholdExists_ofDoubleCover C δ ε_star hδ_le_one hcov)
       (GrandChallenges.MCALowerWitness.ofDoubleCover C δ ε_star hδ_le_one hcov)
 
@@ -239,9 +238,7 @@ theorem latticeIndexOf_le_mcaThreshold_ofBadScalarDoubleCover
     latticeIndexOf (ι := ι) δ hδ_le_one ≤
       mcaThreshold C ε_star
         (mcaThresholdExists_ofBadScalarDoubleCover C δ ε_star hδ_le_one hcov) := by
-  simpa [mcaThresholdExists_ofBadScalarDoubleCover,
-    GrandChallenges.MCALowerWitness.ofBadScalarDoubleCover]
-    using MCALowerWitness_le_mcaThreshold C ε_star
+  exact MCALowerWitness_le_mcaThreshold C ε_star
       (mcaThresholdExists_ofBadScalarDoubleCover C δ ε_star hδ_le_one hcov)
       (GrandChallenges.MCALowerWitness.ofBadScalarDoubleCover C δ ε_star hδ_le_one hcov)
 
@@ -273,9 +270,7 @@ theorem latticeIndexOf_le_mcaThreshold_of_mcaBadCount_zero
     latticeIndexOf (ι := ι) δ hδ_le_one ≤
       mcaThreshold C ε_star
         (mcaThresholdExists_of_mcaBadCount_zero C δ ε_star hδ_le_one hzero) := by
-  simpa [mcaThresholdExists_of_mcaBadCount_zero,
-    GrandChallenges.MCALowerWitness.of_mcaBadCount_zero]
-    using MCALowerWitness_le_mcaThreshold C ε_star
+  exact MCALowerWitness_le_mcaThreshold C ε_star
       (mcaThresholdExists_of_mcaBadCount_zero C δ ε_star hδ_le_one hzero)
       (GrandChallenges.MCALowerWitness.of_mcaBadCount_zero C δ ε_star hδ_le_one hzero)
 
@@ -308,9 +303,7 @@ theorem latticeIndexOf_le_mcaThreshold_of_forall_not_mcaEvent
     latticeIndexOf (ι := ι) δ hδ_le_one ≤
       mcaThreshold C ε_star
         (mcaThresholdExists_of_forall_not_mcaEvent C δ ε_star hδ_le_one hno) := by
-  simpa [mcaThresholdExists_of_forall_not_mcaEvent,
-    GrandChallenges.MCALowerWitness.of_forall_not_mcaEvent]
-    using MCALowerWitness_le_mcaThreshold C ε_star
+  exact MCALowerWitness_le_mcaThreshold C ε_star
       (mcaThresholdExists_of_forall_not_mcaEvent C δ ε_star hδ_le_one hno)
       (GrandChallenges.MCALowerWitness.of_forall_not_mcaEvent C δ ε_star hδ_le_one hno)
 
@@ -341,9 +334,7 @@ theorem latticeIndexOf_le_mcaThreshold_of_epsMCA_eq_zero
     latticeIndexOf (ι := ι) δ hδ_le_one ≤
       mcaThreshold C ε_star
         (mcaThresholdExists_of_epsMCA_eq_zero C δ ε_star hδ_le_one heps) := by
-  simpa [mcaThresholdExists_of_epsMCA_eq_zero,
-    GrandChallenges.MCALowerWitness.of_epsMCA_eq_zero]
-    using MCALowerWitness_le_mcaThreshold C ε_star
+  exact MCALowerWitness_le_mcaThreshold C ε_star
       (mcaThresholdExists_of_epsMCA_eq_zero C δ ε_star hδ_le_one heps)
       (GrandChallenges.MCALowerWitness.of_epsMCA_eq_zero C δ ε_star hδ_le_one heps)
 

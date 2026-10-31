@@ -146,12 +146,12 @@ lemma exists_gt_le_one_floor_eq (n : ℕ) {δ : ℝ≥0} (hδ : δ < 1) :
         have hup' : ((δ + b) / 2) * (n : ℝ≥0) < ((j + 1 : ℕ) : ℝ≥0) := by
           push_cast
           exact hup
-        have := (Nat.floor_lt (zero_le _)).mpr hup'
+        have := (Nat.floor_lt (zero_le)).mpr hup'
         omega
       -- lower: floor is monotone.
       have hfloor_ge : j ≤ Nat.floor (((δ + b) / 2) * (n : ℝ≥0)) := by
         refine Nat.floor_le_floor ?_
-        exact mul_le_mul_of_nonneg_right hmid_gt.le (zero_le _)
+        exact mul_le_mul_of_nonneg_right hmid_gt.le (zero_le)
       omega
 
 /-- **Collapse of the Grand MCA Challenge encoding (Finding F6a).** Over a finite field
@@ -209,7 +209,7 @@ theorem closeCodewordsRel_eq_of_floor_eq {α : Type}
     intro ρ
     have hcard : (0 : ℝ) < (Fintype.card ι : ℝ) := by
       exact_mod_cast Fintype.card_pos
-    rw [Nat.le_floor_iff (zero_le _)]
+    rw [Nat.le_floor_iff (zero_le)]
     unfold relHammingDist
     push_cast
     rw [div_le_iff₀ hcard]
@@ -321,6 +321,7 @@ lemma card_le_ncard_interleavedCodeSet
   exact_mod_cast h1
 
 open ListDecodable in
+set_option backward.isDefEq.respectTransparency false in
 /-- **The RS Grand List Decoding Challenge encoding is FALSE** whenever `0 < k`, `0 < m`,
 `ε* < 1`: the collapse forces the radius-one bound, where `Λ` is the whole interleaved
 code, which already contains `|F|` constants — more than `ε* · |F|`. -/
@@ -332,8 +333,8 @@ theorem not_grandListDecodingChallengeRS_of_pos
   rw [grandListDecodingChallenge_iff_Lambda_one]
   intro hbound
   -- At radius one, `Λ` is the whole interleaved code …
-  rw [show ((1 : ℝ≥0) : ℝ) = (1 : ℝ) by norm_num,
-    Lambda_one_eq_ncard (α := Fin m → F)] at hbound
+  rw [show ((1 : ℝ≥0) : ℝ) = (1 : ℝ) by norm_num] at hbound
+  erw [Lambda_one_eq_ncard (α := Fin m → F)] at hbound
   -- … which contains at least `|F|` elements.
   have hbig := card_le_ncard_interleavedCodeSet
     (ReedSolomon.code domain k : Set (ι → F)) hm

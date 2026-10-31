@@ -237,6 +237,10 @@ theorem conductor_below_prize_prime :
   rw [hcond] at hlt
   omega
 
+private theorem pow_le_pow_of_exponent_and_base_le {a b n m : ℕ}
+    (ha : 1 ≤ a) (hab : a ≤ b) (hnm : n ≤ m) : a ^ n ≤ b ^ m :=
+  le_trans (Nat.pow_le_pow_right ha hnm) (Nat.pow_le_pow_left hab m)
+
 /-- **ATTACK 2b corollary — the cyclotomic norm route is in √p-vacuity.** The TRUE threshold above
 which `p` fails to divide a short `≤2r`-term relation norm is `p > (2r)^{n/2}` (the norm bound), not
 `p > n^(2r)`. At prize scale `(2r)^{n/2} = 220^{2^29}`, vastly larger than `n^(2r) = 2^6600`, which
@@ -250,11 +254,7 @@ theorem true_norm_threshold_dwarfs_conductor :
   have hcond : ConductorBound (2 ^ 30) 110 = 2 ^ 6600 := by
     unfold ConductorBound; rw [← pow_mul]
   rw [hcond]
-  calc (2 : ℕ) ^ 6600
-      ≤ 2 ^ (2 ^ 29) := Nat.pow_le_pow_right (by norm_num) (by
-        -- 6600 ≤ 2^29 = 536870912
-        norm_num)
-    _ ≤ (2 * 110) ^ (2 ^ 29) := Nat.pow_le_pow_left (by norm_num) _
+  exact pow_le_pow_of_exponent_and_base_le (by norm_num) (by norm_num) (by norm_num)
 
 /-! ## ATTACK 3 — Galois orbit-summing REPLICATES the divisibility (does not reduce it)
 

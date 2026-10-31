@@ -124,7 +124,7 @@ theorem mcaThresholdExists_topCode (ε_star : ℝ≥0) :
   refine ⟨top, ?_⟩
   unfold mcaSatisfies
   rw [epsMCA_top_eq_zero]
-  exact zero_le _
+  exact zero_le
 
 /-- The faithful MCA lattice threshold of the full/top linear code is the top lattice index. -/
 theorem mcaThreshold_topCode_eq_top (ε_star : ℝ≥0) :
@@ -137,7 +137,7 @@ theorem mcaThreshold_topCode_eq_top (ε_star : ℝ≥0) :
   have hsat : mcaSatisfies (((⊤ : LinearCode ι F) : Set (ι → F))) ε_star top := by
     unfold mcaSatisfies
     rw [epsMCA_top_eq_zero]
-    exact zero_le _
+    exact zero_le
   have hmax : ∀ i : Fin (Fintype.card ι + 1),
       mcaSatisfies (((⊤ : LinearCode ι F) : Set (ι → F))) ε_star i → i ≤ top := by
     intro i _hi

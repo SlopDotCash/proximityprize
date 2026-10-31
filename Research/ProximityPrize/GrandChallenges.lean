@@ -400,7 +400,7 @@ theorem GrandMCAResolution.δStar_eq_zero_of_upperWitness {C : Set (ι → F)}
     (hw : w.δ = 0) : R.δStar = 0 := by
   have hle : R.δStar ≤ 0 := by
     simpa [hw] using w.δStar_le R
-  exact le_antisymm hle (zero_le R.δStar)
+  exact le_antisymm hle zero_le
 
 /-- The cutoff radius of a Grand-MCA resolution is unique. -/
 theorem GrandMCAResolution.δStar_eq {C : Set (ι → F)} {ε_star : ℝ≥0}
@@ -1118,7 +1118,7 @@ theorem GrandListResolution.δStar_eq_zero_of_upperWitness {C : Set (ι → F)}
     (w : ListUpperWitness C m ε_star) (hw : w.δ = 0) : R.δStar = 0 := by
   have hle : R.δStar ≤ 0 := by
     simpa [hw] using w.δStar_le R
-  exact le_antisymm hle (zero_le R.δStar)
+  exact le_antisymm hle zero_le
 
 /-- The cutoff radius of a Grand List-Decoding resolution is unique. -/
 theorem GrandListResolution.δStar_eq {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}

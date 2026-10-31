@@ -47,8 +47,7 @@ theorem frob_agreeSet_card_le :
   have h := frob_agreement_card_le (dom := dom) (p := p) P hPdeg
   have hset : agreeSet (fun i => P.eval (dom i)) (frobWord dom p)
       = Finset.univ.filter (fun i => P.eval (dom i) = (dom i) ^ p) := by
-    ext i
-    simp [agreeSet, frobWord]
+    rfl
   rw [hset]
   convert h using 3
 

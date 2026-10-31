@@ -49,7 +49,7 @@ theorem exists_perm_of_valueMultiset_eq {n : ℕ} (left right : Fin n → A)
   funext i
   let ir : Fin rightList.length := (finCongr hr.symm) i
   have hvalue := he ir
-  simpa [leftList, rightList, σ, ir] using hvalue.symm
+  simpa [leftList, rightList, σ, ir, Fin.cast] using hvalue.symm
 
 /-- **Exact maximal-cancellation assembly representation.**  If the left maximal residual has
 depth `s`, both endpoints are assembled from ordered depth-`s` core words and one common ordered

@@ -84,7 +84,7 @@ theorem witness_eq_univ_of_small_radius {δ : ℝ≥0}
     have : (1 : ℝ≥0) ≤ δ * (Fintype.card ι : ℝ≥0) := by
       calc (1 : ℝ≥0) = 1 * 1 := (one_mul 1).symm
         _ ≤ δ * (Fintype.card ι : ℝ≥0) := by
-            exact mul_le_mul hge (by exact_mod_cast hn1) zero_le_one (zero_le δ)
+            exact mul_le_mul hge (by exact_mod_cast hn1) zero_le_one (show 0 ≤ δ from zero_le)
     exact absurd hδ (not_lt.mpr this)
   -- move to ℝ
   have hSR : ((1 - δ : ℝ≥0) : ℝ) * (Fintype.card ι : ℝ) ≤ (S.card : ℝ) := by

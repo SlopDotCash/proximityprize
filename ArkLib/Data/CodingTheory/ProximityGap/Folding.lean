@@ -363,6 +363,7 @@ theorem foldWord_codeword {d : ℕ}
     Embedding.coeFn_mk, codewordToPoly, LinearMap.coe_mk, AddHom.coe_mk,
     FoldingPolynomial.polyFold]
   rw [eval_comm, interpolate_eq_folding_poly_eval hk (by simp)]
+  rfl
 
 private noncomputable def foldWordAuxCoeff (domain : SmoothCosetFftDomain n F)
   (f : Word F (Fin (2 ^ n))) (k : ℕ) (i : Fin k) (x : F) : F :=
@@ -419,7 +420,7 @@ section IndicatedPolynomial
 
 variable {s' : Finset F}
 
-private instance card_ne_zero (hs' : s'.Nonempty) : NeZero (Finset.card s') where
+private theorem card_ne_zero (hs' : s'.Nonempty) : NeZero (Finset.card s') where
   out := by aesop
 
 private lemma indicated_polynomial_degree_x_lt (hs' : s'.Nonempty) :
@@ -890,7 +891,7 @@ theorem folding_preserves_distance
         ∑ j, foldWordAuxCoeff domain f (2 ^ k) j
           (domain.subdomain k x) * a ^ (↑j : ℕ)) := by
       ext x
-      simp only [sum_apply]
+      simp only [Finset.sum_apply]
       exact Fintype.sum_bijective cast bijective_cast _ _ <|
         fun i ↦ by simp [cast, mul_comm]
     specialize correlated_agreement (by {
@@ -925,6 +926,9 @@ theorem folding_preserves_distance
         obtain ⟨j', hj, _⟩ := by simpa using hj
         specialize h' i' hj
         have h_spec := congrFun (a := j') <| Classical.choose_spec (h_rs i') |>.2
+        have h'' : v i' j' =
+            foldWordAuxCoeff domain f (2 ^ k) (cast i') (domain.subdomain k j') :=
+            (Finset.mem_filter.mp h').2
         aesop (add norm evalOnPoints)
       )
       (d := d)

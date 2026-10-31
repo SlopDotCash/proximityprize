@@ -145,7 +145,7 @@ theorem card_bigPrimeFactors_le {N : ℤ} (hN : N ≠ 0) {M x : ℝ}
   have hpow : x ^ S.card ≤ M := by
     calc x ^ S.card = ∏ _q ∈ S, x := (Finset.prod_const x).symm
       _ ≤ ∏ q ∈ S, (q : ℝ) :=
-          Finset.prod_le_prod (fun _ _ => hx0.le)
+          Finset.prod_le_prod₀ (fun _ _ => hx0.le)
             (fun q hq => (Finset.mem_filter.mp hq).2)
       _ = ((∏ q ∈ S, q : ℕ) : ℝ) := by push_cast; rfl
       _ ≤ (N.natAbs : ℝ) := by exact_mod_cast hprod_le

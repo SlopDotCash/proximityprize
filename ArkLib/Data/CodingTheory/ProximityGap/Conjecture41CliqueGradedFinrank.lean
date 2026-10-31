@@ -136,7 +136,7 @@ theorem ker_gradedPairMap (W : Finset F) (γ : ↥W → F) (m : ℕ) :
 @[simp]
 theorem gradedPairMap_apply (W : Finset F) (γ : ↥W → F) (m : ℕ) (v : ↥W → (Fin m → F)) :
     gradedPairMap W γ m v = (∑ i : ↥W, v i, ∑ i : ↥W, γ i • v i) := by
-  simp only [gradedPairMap, LinearMap.prod_apply, Pi.prod, gradedSumMap_apply, gradedTwistMap_apply]
+  simp only [gradedPairMap, LinearMap.prod_apply, Function.prod, gradedSumMap_apply, gradedTwistMap_apply]
 
 /-- **The graded pair map is surjective when `γ` is non-constant on `W`.** Given `a ≠ b ∈ W` with
 `γ a ≠ γ b`, the per-slot `2 × 2` system `(v_a + v_b, γ_a v_a + γ_b v_b) = (s, t)` (all other

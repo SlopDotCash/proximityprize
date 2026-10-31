@@ -40,16 +40,18 @@ end ProtocolSpec
 
 namespace StirIOP.Round3
 
+attribute [local instance] legacyUniformSpec
+
 /-! ### `[P_to_V, V_to_P, V_to_P]` 3-message unroll lemma -/
 
 section Unroll3PVV
 
-variable {ιₒ : Type} {oSpec : OracleSpec ιₒ} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ιₒ : Type} {oSpec : OracleSpec ιₒ} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
   {StmtIn WitIn StmtOut WitOut : Type}
   {ιₛᵢ ιₛₒ : Type} {OStmtIn : ιₛᵢ → Type} {OStmtOut : ιₛₒ → Type}
   [∀ i, OracleInterface (OStmtIn i)]
   {pSpecG : ProtocolSpec 3} [∀ i, SampleableType (pSpecG.Challenge i)]
-  [[pSpecG.Challenge]ₒ.Fintype] [[pSpecG.Challenge]ₒ.Inhabited]
+  [∀ t, Fintype ([pSpecG.Challenge]ₒ.Range t)] [∀ t, Inhabited ([pSpecG.Challenge]ₒ.Range t)]
   [∀ i, OracleInterface (pSpecG.Message i)]
   {σ : Type}
 
@@ -136,32 +138,31 @@ instance : ∀ j, SampleableType ((pSpec3 ι F).Challenge j)
   | ⟨2, _⟩ => (inferInstance : SampleableType F)
 
 /-- Finiteness of the 3-slot block challenge oracle spec (indices `1`, `2`, both of type `F`). -/
-instance : [(pSpec3 ι F).Challenge]ₒ.Fintype where
-  fintype_B
+instance : ∀ t, Fintype ([(pSpec3 ι F).Challenge]ₒ.Range t)
   | ⟨⟨0, _⟩, h⟩ => nomatch h
-  | ⟨⟨1, _⟩, _⟩ => by
-      simpa [pSpec3, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
-        OracleInterface.Response, OracleInterface.toOC] using (inferInstance : Fintype F)
-  | ⟨⟨2, _⟩, _⟩ => by
-      simpa [pSpec3, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
-        OracleInterface.Response, OracleInterface.toOC] using (inferInstance : Fintype F)
+  | ⟨⟨1, hi⟩, _⟩ => by
+      change Fintype F
+      infer_instance
+  | ⟨⟨2, hi⟩, _⟩ => by
+      change Fintype F
+      infer_instance
 
 /-- Inhabitedness of the 3-slot block challenge oracle spec. -/
-instance : [(pSpec3 ι F).Challenge]ₒ.Inhabited where
-  inhabited_B
+instance : ∀ t, Inhabited ([(pSpec3 ι F).Challenge]ₒ.Range t)
   | ⟨⟨0, _⟩, h⟩ => nomatch h
-  | ⟨⟨1, _⟩, _⟩ => by
-      simpa [pSpec3, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
-        OracleInterface.Response, OracleInterface.toOC] using (⟨(0 : F)⟩ : Inhabited F)
-  | ⟨⟨2, _⟩, _⟩ => by
-      simpa [pSpec3, challengeOracleInterface, ProtocolSpec.Challenge, ProtocolSpec.«Type»,
-        OracleInterface.Response, OracleInterface.toOC] using (⟨(0 : F)⟩ : Inhabited F)
+  | ⟨⟨1, hi⟩, _⟩ => by
+      change Inhabited F
+      exact ⟨0⟩
+  | ⟨⟨2, hi⟩, _⟩ => by
+      change Inhabited F
+      exact ⟨0⟩
 
 /-! ### Perfect completeness of the 3-slot STIR blocks -/
 
 variable [Nonempty ι]
 variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp))
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 set_option maxHeartbeats 800000 in
 /-- **Perfect completeness of the uniform-threading 3-slot STIR block**: the honest prover
@@ -173,7 +174,8 @@ theorem stirRound3Reduction'_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ
     OracleReduction.perfectCompleteness init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel F φ deg δ)
       (stirRound3Reduction' φ deg) := by
-  rw [unroll_3_message_reduction_perfectCompleteness_PVV (stirRound3Reduction' φ deg)
+  rw [unroll_3_message_reduction_perfectCompleteness_PVV
+    (oSpec := OracleSpec.emptySpec.{0, 0}) (stirRound3Reduction' φ deg)
     (stirOStmtRel F φ deg δ) (stirOStmtRel F φ deg δ) init impl hInit
     (by rfl) (by rfl) (by rfl)
     (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
@@ -188,22 +190,14 @@ theorem stirRound3Reduction'_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ
     rw [probFailure_bind_eq_zero_iff]
     refine ⟨?_, fun r1 _h1 => ?_⟩
     · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+        _root_.probFailure_liftComp, probFailure_eq_zero]
     · rw [probFailure_bind_eq_zero_iff]
       refine ⟨?_, fun r2 _h2 => ?_⟩
       · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-          _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+          _root_.probFailure_liftComp, probFailure_eq_zero]
       · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-        simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-          Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
-          probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
-          Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
-          zero_add]
-        intro x hx
-        erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-        simp only [support_pure, Set.mem_singleton_iff] at hx
-        subst hx
-        simp only [Option.map_some, reduceCtorEq, not_false_eq_true]
+        erw [OptionT.simulateQ_pure, OptionT.run_map, OptionT.run_pure]
+        simp
   · -- CORRECTNESS
     intro x hx
     simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
@@ -218,8 +212,11 @@ theorem stirRound3Reduction'_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ
     refine ⟨?_, rfl, by funext u; rfl⟩
     have hc : Combine.combine φ deg stmtIn (fun _ : Fin 1 => oStmtIn ()) (fun _ : Fin 1 => deg)
         = oStmtIn () := combine_single_self φ deg stmtIn (oStmtIn ())
-    simpa [hc] using h_relIn
+    change Code.relDistFromCode (oStmtIn ()) (ReedSolomon.code φ deg) ≤ (δ : ENNReal) at h_relIn
+    change Code.relDistFromCode (_ : ι → F) (ReedSolomon.code φ deg) ≤ (δ : ENNReal)
+    simpa [FullTranscript.mk3, FullTranscript.messages, hc] using h_relIn
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 set_option maxHeartbeats 800000 in
 /-- **Perfect completeness of the `(F × F)`-output 3-slot STIR block** (`Round3Block.lean`):
@@ -229,7 +226,8 @@ theorem stirRound3Reduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ 
     OracleReduction.perfectCompleteness init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel (F × F) φ deg δ)
       (stirRound3Reduction φ deg) := by
-  rw [unroll_3_message_reduction_perfectCompleteness_PVV (stirRound3Reduction φ deg)
+  rw [unroll_3_message_reduction_perfectCompleteness_PVV
+    (oSpec := OracleSpec.emptySpec.{0, 0}) (stirRound3Reduction φ deg)
     (stirOStmtRel F φ deg δ) (stirOStmtRel (F × F) φ deg δ) init impl hInit
     (by rfl) (by rfl) (by rfl)
     (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
@@ -244,22 +242,14 @@ theorem stirRound3Reduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ 
     rw [probFailure_bind_eq_zero_iff]
     refine ⟨?_, fun r1 _h1 => ?_⟩
     · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+        _root_.probFailure_liftComp, probFailure_eq_zero]
     · rw [probFailure_bind_eq_zero_iff]
       refine ⟨?_, fun r2 _h2 => ?_⟩
       · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-          _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+          _root_.probFailure_liftComp, probFailure_eq_zero]
       · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-        simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-          Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
-          probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
-          Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
-          zero_add]
-        intro x hx
-        erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-        simp only [support_pure, Set.mem_singleton_iff] at hx
-        subst hx
-        simp only [Option.map_some, reduceCtorEq, not_false_eq_true]
+        erw [OptionT.simulateQ_pure, OptionT.run_map, OptionT.run_pure]
+        simp
   · -- CORRECTNESS
     intro x hx
     simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
@@ -274,7 +264,9 @@ theorem stirRound3Reduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (δ 
     refine ⟨?_, rfl, by funext u; rfl⟩
     have hc : Combine.combine φ deg stmtIn (fun _ : Fin 1 => oStmtIn ()) (fun _ : Fin 1 => deg)
         = oStmtIn () := combine_single_self φ deg stmtIn (oStmtIn ())
-    simpa [hc] using h_relIn
+    change Code.relDistFromCode (oStmtIn ()) (ReedSolomon.code φ deg) ≤ (δ : ENNReal) at h_relIn
+    change Code.relDistFromCode (_ : ι → F) (ReedSolomon.code φ deg) ≤ (δ : ENNReal)
+    simpa [FullTranscript.mk3, FullTranscript.messages, hc] using h_relIn
 
 end StirIOP.Round3
 

@@ -56,6 +56,24 @@ Use `scripts/lake-locked.sh` for builds as described in [quickstart](quickstart.
 
 ## Navigation Notes
 
+- `ArkLib/ProofSystem/RingSwitching/Packing/` contains framework-independent finite-basis
+  coordinates and observations. Its two algebras may have different ranks, with no embedding
+  between them. `CheckedObservation` requires an honest-message premise for readback; it does
+  not assert binding or knowledge soundness. `Relations` preserves the full opening family and
+  derives honest weighted sumcheck claims. `Batching` supplies proved separation bounds; its
+  power and equality strategies require a finite domain, while singleton batching does not.
+  `Multiplier` evaluates the public polynomial through matrix layers; `ScalarHead` provides
+  prefix, suffix and quirky layouts with proved reconstruction. The packing umbrella exports
+  this independent algebra. `Packing/ProfileCoordinates` adapts the existing native `Profile`
+  to its observations, preserving the native row/column orientation and deriving exact carrier
+  cardinality without adding profile assumptions. The native protocol API remains separate.
+- `ArkLib/Data/Probability/SampledPolynomial.lean` transports the native PMF polynomial root
+  bounds to VCVio uniform samples without replacing the existing PMF API.
+
+- General resultant coefficient/total-degree bounds, including padded derivative resultants over
+  commutative rings, live in `ArkLib/Data/Polynomial/ResultantDegree.lean`. The field-specific
+  Polishchuk–Spielman resultant interface delegates to this shared module.
+
 - `ArkLib.lean` is a generated umbrella import file, not a hand-maintained module index.
 - `ArkLib/ToVCVio/` mirrors VCV-io module structure under the importable Lean prefix
   `ArkLib.ToVCVio`; use it for reusable `VCVio` helper lemmas before they are upstreamed.
@@ -124,7 +142,9 @@ Use `scripts/lake-locked.sh` for builds as described in [quickstart](quickstart.
   `Data/CodingTheory/ProximityGap/BCIKS20/...` or `ProofSystem/Binius/...`.
 - Ring switching is a **generic, instantiable compiler** under `ProofSystem/RingSwitching/`, not a
   Binius-only protocol: `Profile.lean` holds the `RingSwitchingProfile` abstraction (packing data +
-  reconstruction laws), `Prelude.lean` the shared defs + the Binius instance `binaryTowerProfile`,
+  reconstruction and atomic laws), `ProfileCoordinates.lean` derives inverse coordinates and
+  base-embedding agreement without new assumptions, `Prelude.lean` contains the shared defs and
+  the Binius instance `binaryTowerProfile`,
   and `General.lean` the full reduction and generic security theorems. Binius instantiates it in
   `ProofSystem/Binius/FRIBinius/` (`biniusProfile`); Hachi (`NOZ26`) is the intended next instance.
   Background: KB concept page `docs/kb/concepts/ring-switching.md`; blueprint section

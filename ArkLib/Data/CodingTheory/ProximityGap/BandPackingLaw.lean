@@ -134,7 +134,7 @@ theorem ladder_badSet_empty_below_boundary (dom : Fin n ↪ F) {k : ℕ}
   have hPdeg' : P.natDegree < k := by
     by_cases hP0 : P = 0
     · subst hP0
-      simpa using hk
+      simp; omega
     · exact (Polynomial.natDegree_lt_iff_degree_lt hP0).mpr hPdeg
   have hpin : ∀ s : Fin (k + 1) → Fin n, Function.Injective s →
       (∀ a, s a ∈ S) → γ = -∑ a, dom (s a) := by
@@ -241,7 +241,7 @@ theorem band_packing_law (dom : Fin n ↪ F) {k m : ℕ} (hk : 1 ≤ k)
     have hPdeg' : P.natDegree < k := by
       by_cases hP0 : P = 0
       · subst hP0
-        simpa using hk
+        simp; omega
       · exact (Polynomial.natDegree_lt_iff_degree_lt hP0).mpr hPdeg
     have hlinezero : residual dom k ts (fun i => u₀ i + γ * u₁ i) = 0 := by
       refine residual_eq_zero_of_extends dom k ts hPdeg' fun a => ?_

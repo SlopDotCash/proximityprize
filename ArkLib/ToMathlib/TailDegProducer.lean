@@ -117,7 +117,9 @@ theorem shiftSeries_eq_X (x₀ : F)
     rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply] at hc0
     rw [Claim59Conditional.shiftSeries, PowerSeries.coeff_mk] at hc0
     exact hc0
-  | 1 => rw [if_pos rfl]
+  | 1 =>
+      rw [if_pos rfl]
+      rfl
   | (n + 2) =>
       rw [if_neg (by omega)]
       rfl

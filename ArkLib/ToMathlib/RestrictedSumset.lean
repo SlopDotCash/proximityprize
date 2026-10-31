@@ -78,7 +78,7 @@ private lemma ehMon_apply_one (a b : ℕ) : ehMon a b 1 = b := by
 
 /-- The coefficient of `X₀^{a} X₁^{b}` in `(X 0 + X 1)^N` (over a field). -/
 private lemma coeff_ehMon_add_pow (a b N : ℕ) (hab : a + b = N) :
-    coeff (ehMon a b) ((X 0 + X 1 : MvPolynomial (Fin 2) F) ^ N) = (N.choose a : F) := by
+    ((X 0 + X 1 : MvPolynomial (Fin 2) F) ^ N).coeff (ehMon a b) = (N.choose a : F) := by
   rw [coeff_add_pow]
   rw [ehMon_apply_zero, ehMon_apply_one]
   rw [if_pos]
@@ -89,13 +89,12 @@ private lemma coeff_ehMon_add_pow (a b N : ℕ) (hab : a + b = N) :
 We prove it for `m = a' + b'` with the relevant exponent bookkeeping. -/
 private lemma coeff_leading
     {n : ℕ} (hn : 3 ≤ n) :
-    coeff (ehMon (n - 1) (n - 2))
-        ((X 1 - X 0 : MvPolynomial (Fin 2) F) * (X 0 + X 1) ^ (2 * (n - 2)))
+    ((X 1 - X 0 : MvPolynomial (Fin 2) F) * (X 0 + X 1) ^ (2 * (n - 2))).coeff (ehMon (n - 1) (n - 2))
       = ((2 * (n - 2)).choose (n - 1) : F) - ((2 * (n - 2)).choose (n - 2) : F) := by
   classical
   set m := 2 * (n - 2) with hm
   rw [sub_mul, coeff_sub]
-  have hX1 : coeff (ehMon (n - 1) (n - 2)) (X 1 * (X 0 + X 1 : MvPolynomial (Fin 2) F) ^ m)
+  have hX1 : (X 1 * (X 0 + X 1 : MvPolynomial (Fin 2) F) ^ m).coeff (ehMon (n - 1) (n - 2))
       = (m.choose (n - 1) : F) := by
     have hsplit : ehMon (n - 1) (n - 2) = Finsupp.single 1 1 + ehMon (n - 1) (n - 3) := by
       rw [ehMon, ehMon]
@@ -106,7 +105,7 @@ private lemma coeff_leading
       abel
     rw [hsplit, coeff_X_mul]
     rw [coeff_ehMon_add_pow (n - 1) (n - 3) m (by omega)]
-  have hX0 : coeff (ehMon (n - 1) (n - 2)) (X 0 * (X 0 + X 1 : MvPolynomial (Fin 2) F) ^ m)
+  have hX0 : (X 0 * (X 0 + X 1 : MvPolynomial (Fin 2) F) ^ m).coeff (ehMon (n - 1) (n - 2))
       = (m.choose (n - 2) : F) := by
     have hsplit : ehMon (n - 1) (n - 2) = Finsupp.single 0 1 + ehMon (n - 2) (n - 2) := by
       rw [ehMon, ehMon]
@@ -222,9 +221,8 @@ private noncomputable def ehQ (Cset : Finset F) : MvPolynomial (Fin 2) F :=
 equals its coefficient in the leading part `(X₁ - X₀)(X₀ + X₁)^{2(n-2)}`. -/
 private lemma coeff_ehQ_eq_leading {Cset : Finset F} {n : ℕ} (hn : 3 ≤ n)
     (hCcard : Cset.card = 2 * (n - 2)) :
-    coeff (ehMon (n - 1) (n - 2)) (ehQ Cset)
-      = coeff (ehMon (n - 1) (n - 2))
-          ((X 1 - X 0 : MvPolynomial (Fin 2) F) * (X 0 + X 1) ^ (2 * (n - 2))) := by
+    (ehQ Cset).coeff (ehMon (n - 1) (n - 2))
+      = ((X 1 - X 0 : MvPolynomial (Fin 2) F) * (X 0 + X 1) ^ (2 * (n - 2))).coeff (ehMon (n - 1) (n - 2)) := by
   classical
   set m := 2 * (n - 2) with hm
   set P' : MvPolynomial (Fin 2) F := ∏ c ∈ Cset, (X 0 + X 1 - C c) with hP'
@@ -254,8 +252,7 @@ private lemma coeff_ehQ_eq_leading {Cset : Finset F} {n : ℕ} (hn : 3 ≤ n)
     rw [Finset.sum_subset hsub (fun i _ hi => Finsupp.notMem_support_iff.mp hi)]
     rw [Fin.sum_univ_two, ehMon_apply_zero, ehMon_apply_one]
     omega
-  have hcoeff0 : coeff (ehMon (n - 1) (n - 2))
-      (ehQ Cset - (X 1 - X 0 : MvPolynomial (Fin 2) F) * (X 0 + X 1) ^ m) = 0 := by
+  have hcoeff0 : (ehQ Cset - (X 1 - X 0 : MvPolynomial (Fin 2) F) * (X 0 + X 1) ^ m).coeff (ehMon (n - 1) (n - 2)) = 0 := by
     apply coeff_eq_zero_of_totalDegree_lt
     rw [htdeg]; exact htd
   rw [coeff_sub, sub_eq_zero] at hcoeff0
@@ -374,7 +371,7 @@ theorem erdos_heilbronn_two {p : ℕ} (hp : p.Prime) (hchar : ringChar F = p)
     set f := MvPolynomial.ehQ C' with hf
     set t := MvPolynomial.ehMon (n - 1) (n - 2) with ht
     -- Verify that the coefficient of the target monomial $t$ in the polynomial $f$ is nonzero.
-    have hcoeff : MvPolynomial.coeff t f ≠ 0 := by
+    have hcoeff : f.coeff t ≠ 0 := by
       rw [hf, ht, MvPolynomial.coeff_ehQ_eq_leading hn3 hC'card,
         MvPolynomial.coeff_leading hn3]
       exact MvPolynomial.leading_coeff_ne_zero hp hchar hn3 (hm ▸ hsmall)

@@ -148,8 +148,10 @@ theorem Lambda_interleavedReedSolomon_one_eq (domain : ι ↪ F) {k : ℕ}
     (hk : k ≤ Fintype.card ι) (m : ℕ) :
     ListDecodable.Lambda ((ReedSolomon.code domain k : Set (ι → F))^⋈ (Fin m))
         ((1 : ℝ≥0) : ℝ) = ((Fintype.card F ^ (k * m) : ℕ) : ℕ∞) := by
-  rw [show ((1 : ℝ≥0) : ℝ) = (1 : ℝ) by norm_num,
-    Lambda_one_eq_ncard (α := Fin m → F)]
+  rw [show ((1 : ℝ≥0) : ℝ) = (1 : ℝ) by norm_num]
+  refine (Lambda_one_eq_ncard (α := Fin m → F)
+    (((ReedSolomon.code domain k : Set (ι → F))^⋈ (Fin m)) :
+      Set (Matrix ι (Fin m) F))).trans ?_
   exact_mod_cast congrArg (Nat.cast : ℕ → ℕ∞)
     (ncard_interleavedReedSolomonCode domain hk m)
 

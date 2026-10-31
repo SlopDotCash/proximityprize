@@ -99,7 +99,7 @@ theorem stirInitVerifier_rbrKnowledgeSoundness (φ : ι ↪ F) (deg : ℕ) (δ :
   -- Per-challenge bound: the event "state false before the challenge, true after" is
   -- pointwise contradictory (the state ignores the transcript), so its probability is 0.
   intro stmtIn witIn prover i
-  refine le_trans (le_of_eq ?_) (zero_le _)
+  refine le_trans (le_of_eq ?_) (zero_le)
   rw [probEvent_eq_zero_iff]
   rintro ⟨transcript, challenge, log⟩ _ ⟨witMid, hnot, hyes⟩
   exact hnot hyes

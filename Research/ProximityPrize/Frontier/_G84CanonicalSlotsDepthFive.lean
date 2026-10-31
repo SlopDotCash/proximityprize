@@ -112,14 +112,13 @@ theorem production_depth_four_sq_to_ceiling {K : ℕ}
   calc
     K ^ 2 ≤ 7600 ^ 2 * productionN ^ 13 := hK
     _ = productionDepthFourCoreCeiling ^ 2 := by
-      norm_num [productionN, productionDepthFourCoreCeiling]
+      decide +kernel
 
 /-- Exact linear production arithmetic for the accepted depth-four ceiling. -/
 theorem production_depth_four_C7600_budget :
     productionDepthFourCoreCeiling * productionDepthFourBase ≤
       productionWickBudget := by
-  norm_num [productionN, productionDepthFourCoreCeiling, productionDepthFourBase,
-    productionWickBudget, Nat.choose, Nat.doubleFactorial]
+  decide +kernel
 
 /-- Canonical slots plus the depth-four energy square bound absorb the actual core family. -/
 theorem production_depth_four_canonical_absorbed
@@ -145,8 +144,7 @@ This refutes the claim that shallow energy plus canonical slots alone closes dep
 theorem production_depth_five_C1_square_envelope_exceeds :
     productionWickBudget <
       productionDepthFiveC1CoreCeiling * productionDepthFiveBase := by
-  norm_num [productionN, productionDepthFiveC1CoreCeiling, productionDepthFiveBase,
-    productionWickBudget, Nat.choose, Nat.doubleFactorial]
+  decide +kernel
 
 end ArkLib.ProximityGap.Frontier.G84CanonicalSlotsDepthFive
 

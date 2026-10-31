@@ -371,8 +371,9 @@ theorem firstPrime_production_singleSubset_badScalar_lower :
       = ((rsCode (smoothDom g (2 ^ 30) orderOf_g) (2 ^ 29) :
           Submodule (ZMod P) (Fin (2 ^ 30) → ZMod P)) :
           Set (Fin (2 ^ 30) → ZMod P)) := by
-    simpa only [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using
-      (evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1))
+    have h := evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1)
+    rw [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] at h
+    exact h
   simp only [hbridge]
   have hmain := badScalar_count_ge_of_constructed_stack
     (rsCode (smoothDom g (2 ^ 30) orderOf_g) (2 ^ 29))

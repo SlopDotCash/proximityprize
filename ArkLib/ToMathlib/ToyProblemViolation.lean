@@ -96,7 +96,7 @@ theorem relaxedRelation_two_zero_imp_jointProximity [Nonempty ι] {k : ℕ}
         exact hcoe
       · -- `δ ≥ 1`: `(1:ℝ≥0) - δ = 0`, so the bound is `0 ≤ |S|`.
         rw [tsub_eq_zero_of_le hδgt, zero_mul]
-        exact zero_le _
+        exact zero_le
     · intro colIdx
       refine ⟨fun hmem => hagree colIdx hmem, ?_⟩
       intro hne

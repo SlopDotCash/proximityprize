@@ -23,8 +23,10 @@ open ArkLib.ProximityGap.KKH26
 
 namespace ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ16384
 
+set_option maxRecDepth 65536 in
 local instance fact_prime_268730369_concrete_tz16384 : Fact (Nat.Prime 268730369) := ⟨by norm_num⟩
 
+set_option maxRecDepth 65536 in
 /-- Fully explicit β=2 witness: `268730369 ∈ [16384^2, 2 * 16384^2]` refutes the canonical
 `n = 16384` width-four budget. -/
 theorem exists_tzWindow_mu16384_width4_refuter_zmod268730369_beta2 :

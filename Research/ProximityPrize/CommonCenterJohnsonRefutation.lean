@@ -91,7 +91,7 @@ lemma line_close (γ : ZMod 5) (δ : ℝ≥0) :
       ≤ (δ : ENNReal) := by
   have hle := Code.relDistFromCode_le_relDist_to_mem
     (uConst 0 + γ • uConst 1) (uConst 0 + γ • uConst 1) (line_mem γ)
-  refine le_trans (le_trans hle (le_of_eq ?_)) (zero_le _)
+  refine le_trans (le_trans hle (le_of_eq ?_)) (zero_le)
   have hz : Code.relHammingDist (uConst 0 + γ • uConst 1) (uConst 0 + γ • uConst 1) = 0 := by
     simp [Code.relHammingDist]
   rw [hz, ENNReal.coe_NNRat_coe_NNReal]

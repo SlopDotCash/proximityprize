@@ -87,7 +87,7 @@ theorem natDegree_specializeD_lt (d w D : ℕ) (hD : 0 < D) (Q : MvPolynomial (F
   rw [specializeD_eq_aeval_specVec]
   rw [MvPolynomial.as_sum Q, map_sum]
   have : (∑ μ ∈ Q.support, MvPolynomial.aeval (specVec d P)
-      (MvPolynomial.monomial μ (MvPolynomial.coeff μ Q))).natDegree ≤ D - 1 := by
+      (MvPolynomial.monomial μ (Q.coeff μ))).natDegree ≤ D - 1 := by
     refine natDegree_sum_le_of_forall_le _ _ fun μ hμ => ?_
     exact (natDegree_monomial_specializeD_le d w P hP _ μ).trans (by have := hQ μ hμ; omega)
   omega
@@ -123,7 +123,7 @@ abbrev LowIdxD (d m : ℕ) : Type := {μ : Fin (d + 2) →₀ ℕ // μ 0 + μ 1
 /-- The linear functional `Q ↦ coeff μ (contactSubstD d α y Q)`. -/
 noncomputable def contactCoeffD (d : ℕ) (α y : F) (μ : Fin (d + 2) →₀ ℕ) :
     MvPolynomial (Fin (d + 2)) F →ₗ[F] F where
-  toFun Q := MvPolynomial.coeff μ (contactSubstD d α y Q)
+  toFun Q := (contactSubstD d α y Q).coeff μ
   map_add' Q₁ Q₂ := by simp [map_add, MvPolynomial.coeff_add]
   map_smul' c Q := by simp [map_smul, MvPolynomial.coeff_smul]
 
@@ -170,7 +170,7 @@ theorem exists_interpolant_d (d w D m A : ℕ) (hD : 0 < D) (hA : D ≤ A * m)
   obtain ⟨q, hq0, hq⟩ := exists_ne_zero_mem_iInf_ker S
     (fun α => (nodeMapD d α (y α) m).domRestrict Qs) hrank
   refine ⟨q, q.2, fun h => hq0 (Subtype.ext h), fun P hP hagree => ?_⟩
-  refine specializeD_eq_zero_of_agreement d w D m hD q (hQs q q.2)
+  refine specializeD_eq_zero_of_agreement (F := F) d w D m hD q (hQs q q.2)
     (S.filter fun α => P.eval α = y α) y ?_ P hP ?_ ?_
   · intro α hα
     have hαS : α ∈ S := (Finset.mem_filter.mp hα).1

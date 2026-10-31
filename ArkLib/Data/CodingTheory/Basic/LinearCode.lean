@@ -106,9 +106,14 @@ theorem projection_injective
     intro x hxd
     solve_by_elim
   have hcard_compl : @card diff (ofFinite diff) = ‖C‖₀ - 1 := by
+    classical
     unfold diff
-    simp only [ge_iff_le, card_coe, Set.coe_setOf, card_subtype_compl] at *
-    rw[hS]
+    rw [← @Nat.card_eq_fintype_card diff (ofFinite diff)]
+    change Nat.card {i : n // i ∉ S} = ‖C‖₀ - 1
+    rw [Nat.card_eq_fintype_card]
+    rw [Fintype.card_subtype_compl (fun i : n ↦ i ∈ S)]
+    rw [Fintype.card_coe] at hS ⊢
+    rw [hS]
     have stronger : ‖C‖₀ ≤ card n := by
       apply Code.dist_le_card
     omega
@@ -281,7 +286,9 @@ lemma projectedCode_linearCombination [Field F] (LC : LinearCode ι F) (T : Fins
     exact ⟨Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (hw j |>.1),
       fun t ht => by simp [show ∀ j, U j t = w j t from
         fun j => congr_fun (hw j |>.2) ⟨t, ht⟩]⟩
-  exact ⟨w, hw.1, funext fun t => by simpa using Eq.symm (hw.2 t t.2)⟩
+  exact ⟨w, hw.1, funext fun t => by
+    change (∑ j, c j * U j t.1) = w t.1
+    exact Eq.symm (hw.2 t t.2)⟩
 
 /-- A linear code is maximum distance separable (MDS) if its parameters meet the singleton bound. -/
 def IsMDS {ι : Type} [Fintype ι] [CommRing F] [DecidableEq F] (LC : LinearCode ι F) : Prop :=
@@ -312,12 +319,15 @@ noncomputable def byCheckMatrix [CommRing F] (H : Matrix ι κ F) : LinearCode �
 Theorem 2.2.7 [GRS25]. -/
 lemma gen_matrix_exists [Field F] (LC : LinearCode ι F) :
     ∃ (G : Matrix (Fin (dim LC)) ι F), LC = fromRowGenMat G := by
+  unfold dim
   unfold fromRowGenMat
   have LC_basis := Module.finBasis F LC
   let G : Matrix (Fin (Module.finrank F ↥LC)) ι F :=
     fun i => LC_basis i
   use G
-  simp only [range_vecMulLinear, G, Matrix.row]
+  change LC = LinearMap.range G.vecMulLinear
+  rw [range_vecMulLinear]
+  change LC = Submodule.span F (Set.range fun i => (LC_basis i : ι → F))
   ext x
   rw [Submodule.mem_span_range_iff_exists_fun]
   constructor
@@ -384,14 +394,8 @@ lemma rank_genMatrix_eq_dim [Field F] (LC : LinearCode ι F) :
 /-- The dimension of the linear code given by a generator matrix is the rank of the matrix. -/
 lemma dim_fromRowGenMat {k n : ℕ} [Field F] {G : Matrix (Fin k) (Fin n) F} :
     dim (fromRowGenMat G) = G.rank := by
-  unfold fromRowGenMat;
-  convert congr_arg (fun s : Submodule F _ => Module.finrank F s) _;
-  rotate_left;
-  · exact Submodule.span F (Set.range (fun i => G i));
-  · ext; simp [Matrix.vecMulLinear];
-    simp +decide [funext_iff, Matrix.vecMul, Submodule.mem_span_range_iff_exists_fun];
-    rfl;
-  · convert Matrix.rank_eq_finrank_span_row G using 1
+  unfold dim fromRowGenMat
+  rw [range_vecMulLinear, Matrix.rank_eq_finrank_span_row]
 
 /-- Given a linear code of length `ι` and dimension `dim` over a field `F`, we define its `ι × dim`
 generator matrix as a matrix whose columns are an `F`-basis of the code. -/
@@ -511,8 +515,8 @@ theorem singletonBound [CommRing F] [StrongRankCondition F]
       have hxS : ∀ i ∈ S, (x : ι → F) i = 0 := by
         intro i hi
         have := congrArg (fun (f : (S → F)) => f ⟨i, hi⟩) (by simpa using hx)
-        -- simp at this
-        simpa using this
+        change (x : ι → F) i = 0 at this
+        exact this
       -- bound the weight of x by |Sᶜ|
       let A : Finset ι := Finset.univ.filter (fun i => (x : ι → F) i ≠ 0)
       have hA_subset_compl : A ⊆ Sᶜ := by

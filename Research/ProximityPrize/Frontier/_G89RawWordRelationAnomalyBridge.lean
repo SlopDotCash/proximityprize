@@ -57,8 +57,8 @@ theorem card_rawShadowOffDiag_fiber
           ((Finset.univ : Finset (Fin r → Fin n)).filter
             (fun u => tupleVec n m r u = p.2)) := by
     ext q
-    simp only [rawShadowOffDiag, shadowPair, Finset.mem_filter, Finset.mem_product,
-      Finset.mem_univ, true_and]
+    rw [Finset.mem_filter, rawShadowOffDiag, Finset.mem_filter]
+    simp only [shadowPair, Finset.mem_filter, Finset.mem_product, Finset.mem_univ, true_and]
     constructor
     · rintro ⟨hne, hpq⟩
       exact ⟨congrArg Prod.fst hpq, congrArg Prod.snd hpq⟩

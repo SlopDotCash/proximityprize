@@ -44,7 +44,7 @@ namespace Commitment.Transparent
 (content-free) message and there are no verifier challenges. -/
 abbrev openingPSpec : ProtocolSpec 1 := ⟨!v[.P_to_V], !v[Unit]⟩
 
-variable {ι : Type} [DecidableEq ι] {oSpec : OracleSpec ι} [oSpec.Fintype]
+variable {ι : Type} [DecidableEq ι] {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)]
     {Data : Type} [O : OracleInterface Data] [∀ q : O.Query, DecidableEq (O.Response q)]
 
 /-- The transparent commitment scheme over data type `Data` with oracle interface `O`.
@@ -75,15 +75,15 @@ def transparentScheme :
     }
   }
 
-omit [DecidableEq ι] [oSpec.Fintype] in
+omit [DecidableEq ι] [∀ t, Fintype (oSpec.Range t)] in
 @[simp] theorem transparentScheme_keygen :
     (transparentScheme (oSpec := oSpec) (Data := Data)).keygen = return ((), ()) := rfl
 
-omit [DecidableEq ι] [oSpec.Fintype] in
+omit [DecidableEq ι] [∀ t, Fintype (oSpec.Range t)] in
 @[simp] theorem transparentScheme_commit (ck : Unit) (data : Data) :
     (transparentScheme (oSpec := oSpec) (Data := Data)).commit ck data = return (data, ()) := rfl
 
-omit [DecidableEq ι] [oSpec.Fintype] in
+omit [DecidableEq ι] [∀ t, Fintype (oSpec.Range t)] in
 /-- The opening verifier accepts `(cm, q, y)` (on any transcript) exactly when re-evaluating the
 oracle on the committed data reproduces the claimed response. This is the algebraic heart of both
 the correctness and the binding arguments. -/
@@ -98,7 +98,7 @@ section Correctness
 
 variable {σ : Type} (s₀ : σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
 
-omit [DecidableEq ι] [oSpec.Fintype] in
+omit [DecidableEq ι] [∀ t, Fintype (oSpec.Range t)] in
 /-- **Perfect correctness of the transparent scheme.** The honest commit-then-open execution is
 accepted with probability one. The scheme makes no oracle queries, so this holds for any ambient
 oracle implementation `impl` and any fixed initial simulator state `s₀` (as with
@@ -116,8 +116,8 @@ theorem transparentScheme_perfectCorrectness :
   obtain ⟨⟨ck, vk⟩, hkeygen, hx⟩ := hx
   rw [mem_support_bind_iff] at hx
   obtain ⟨⟨cm, decomm⟩, hcommit, hx⟩ := hx
-  replace hkeygen := OracleComp.mem_support_of_mem_support_liftComp _ _ hkeygen
-  replace hcommit := OracleComp.mem_support_of_mem_support_liftComp _ _ hcommit
+  replace hkeygen := OracleComp.mem_support_of_mem_support_liftComp _ _ _ hkeygen
+  replace hcommit := OracleComp.mem_support_of_mem_support_liftComp _ _ _ hcommit
   rw [transparentScheme_keygen, mem_support_pure_iff] at hkeygen
   obtain ⟨rfl, rfl⟩ := Prod.mk.inj hkeygen
   rw [transparentScheme_commit, mem_support_pure_iff] at hcommit

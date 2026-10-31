@@ -163,6 +163,7 @@ theorem ePTE_mem_rsCode (hchar : CharGe17 F) :
     exact_mod_cast (by norm_num : (3 : ℕ) < 4)
   · funext i
     simp [ePTE, uniDom, uniDomFun, eval_mul, eval_sub, eval_X, eval_C]
+    rfl
 
 /-- `(24 : F) ≠ 0` under the characteristic hypothesis (`24 = 2·2·2·3`). -/
 theorem twentyFour_ne_zero (hchar : CharGe17 F) : (24 : F) ≠ 0 := by

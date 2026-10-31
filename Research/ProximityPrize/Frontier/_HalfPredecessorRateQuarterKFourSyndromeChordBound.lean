@@ -71,7 +71,7 @@ theorem chordMeets_symm
 /-- The simple graph whose edges are the column chords meeting `P`. -/
 def chordGraph (P : Submodule F V) (v : I -> V) : SimpleGraph I where
   Adj i j := ChordMeets P v i j
-  symm _ _ := chordMeets_symm P v
+  symm := ⟨fun _ _ => chordMeets_symm P v⟩
   loopless := ⟨fun _i h => h.1 rfl⟩
 
 /-- If the first endpoint is not in `P`, incidence of the chord `(i,j)`
@@ -122,8 +122,13 @@ theorem finrank_inf_pairSpan_le_one
     have hspan :
         finrank F (span F ({v i, v j} : Set V)) ≤
           ({v i, v j} : Finset V).card := by
-      simpa using finrank_span_finset_le_card (R := F)
-        ({v i, v j} : Finset V)
+      have hs : (({v i, v j} : Finset V) : Set V) = {v i, v j} := by
+        ext x
+        simp
+      have h := finrank_span_finset_le_card (R := F) ({v i, v j} : Finset V)
+      change finrank F (span F (({v i, v j} : Finset V) : Set V)) ≤ _ at h
+      rw [hs] at h
+      exact h
     rcases Finset.card_pair_eq_one_or_two (a := v i) (b := v j) with hcard | hcard
     · omega
     · omega
@@ -322,7 +327,8 @@ theorem pair_eq_of_chordMeets_of_finrank_le_one
     exact (Finset.card_union_le S C).trans (by omega)
   have hLI' := hMDS4 (S ∪ C) hunionCard
   have hLI : LinearIndepOn F v (((S ∪ C : Finset I) : Set I)) := by
-    simpa only [LinearIndepOn] using hLI'
+    change LinearIndependent F (fun j : ↥(S ∪ C) => v j)
+    exact hLI'
   have hPS : P <= columnSpan (F := F) v S := by
     intro z hz
     have hz' := le_pairSpan_of_finrank_le_one_of_chordMeets
@@ -502,7 +508,7 @@ theorem edgeFinset_card_le_seven_of_card_eq_eight
     simp only [C, Finset.mem_insert, SimpleGraph.mem_neighborFinset] at hy
     rcases hy with hyj | hjy
     · exact hj (hyj ▸ hyCi)
-    · exact hj (hclosed hyCi (G.symm hjy))
+    · exact hj (hclosed hyCi hjy.symm)
   have halphaPos : 0 < Fintype.card alpha := by omega
   obtain ⟨i⟩ := Fintype.card_pos_iff.mp halphaPos
   let R1 : Finset alpha := Finset.univ \ C i
@@ -585,7 +591,7 @@ theorem edgeFinset_card_le_six_of_card_eq_seven
     simp only [C, Finset.mem_insert, SimpleGraph.mem_neighborFinset] at hy
     rcases hy with hyj | hjy
     · exact hj (hyj ▸ hyCi)
-    · exact hj (hclosed hyCi (G.symm hjy))
+    · exact hj (hclosed hyCi hjy.symm)
   have halphaPos : 0 < Fintype.card alpha := by omega
   obtain ⟨i⟩ := Fintype.card_pos_iff.mp halphaPos
   let R1 : Finset alpha := Finset.univ \ C i

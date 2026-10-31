@@ -88,7 +88,7 @@ theorem chebLike_natDegree_le (q : ℝ) (p₀ p₁ : Polynomial ℝ) (a : ℕ)
   induction m using Nat.strong_induction_on with
   | _ m ih =>
     match m with
-    | 0 => simpa using h₀
+    | 0 => simpa only [chebLike, Nat.add_zero] using h₀
     | 1 => exact h₁
     | (k + 2) =>
       have ih1 : (chebLike q p₀ p₁ (k + 1)).natDegree ≤ a + (k + 1) := ih (k + 1) (by omega)

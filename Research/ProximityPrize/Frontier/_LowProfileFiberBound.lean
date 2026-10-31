@@ -312,7 +312,7 @@ theorem threshold_le_of_largeZero
     omega
   have hsum : (directionZeroSet u₁).card + (directionSupportSet u₁).card = n := by
     rw [directionZeroSet, directionSupportSet,
-      Finset.filter_card_add_filter_neg_card_eq_card]
+      Finset.card_filter_add_card_filter_not]
     simp
   omega
 

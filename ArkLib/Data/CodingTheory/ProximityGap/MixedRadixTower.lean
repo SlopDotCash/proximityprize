@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import Mathlib.Tactic
 import ArkLib.Data.CodingTheory.ProximityGap.CRTDoubleSlice
 import ArkLib.Data.CodingTheory.ProximityGap.TopDirectionLineCount
 
@@ -728,7 +728,7 @@ theorem prime_power_tower [DecidableEq F] [CharZero F] {p : ℕ} (hp : p.Prime) 
       have := hroots y hy
       rwa [hMk, show M - k = (M - k - 1) + 1 from by omega] at this
     have hsum : ∑ y ∈ T, y = 0 := by
-      have := hwinT 1 le_rfl (by simp only []; omega)
+      have := hwinT 1 le_rfl (by omega)
       simpa using this
     exact vanishing_sum_mu_p_closed hp hζk hT hsum
 

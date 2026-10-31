@@ -23,6 +23,8 @@ open ArkLib.ProximityGap.KKH26
 
 namespace ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ32768
 
+set_option maxRecDepth 262144
+
 local instance fact_prime_1073872897_concrete_tz32768 :
     Fact (Nat.Prime 1073872897) := ⟨by norm_num⟩
 

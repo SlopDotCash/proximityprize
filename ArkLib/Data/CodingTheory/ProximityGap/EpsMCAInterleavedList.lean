@@ -104,7 +104,7 @@ theorem ceil_doubled_radius_le (n : ℕ) (δ : ℝ≥0) :
   rcases le_total 1 (2 * δ) with hδ | hδ2
   · rw [tsub_eq_zero_of_le hδ, zero_mul]
     simp
-  · have hδ1 : δ ≤ 1 := le_trans (le_mul_of_one_le_left (zero_le δ) one_le_two) hδ2
+  · have hδ1 : δ ≤ 1 := le_trans (le_mul_of_one_le_left (show 0 ≤ δ from zero_le) one_le_two) hδ2
     set t := ⌈(1 - δ) * (n : ℝ≥0)⌉₊ with htdef
     have ht : (1 - δ) * (n : ℝ≥0) ≤ (t : ℝ≥0) := Nat.le_ceil _
     have htR : (1 - (δ : ℝ)) * (n : ℝ) ≤ (t : ℝ) := by

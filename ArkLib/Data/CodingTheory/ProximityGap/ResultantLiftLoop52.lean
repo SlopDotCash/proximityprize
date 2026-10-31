@@ -8,7 +8,7 @@ import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 import Mathlib.Data.ZMod.Basic
 import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.NumberTheory.LSeries.PrimesInAP
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
 
 /-!
 # Loop 52 (O16 kernel) — the resultant heart of the finite-field lifting: a common root mod `p`

@@ -180,7 +180,7 @@ theorem coreJ_of_mcaEvent {lam : F17}
 /-! ## The two sides -/
 
 /-- The nine non-`μ₈` scalars do not satisfy the fit core (kernel `decide`). -/
-theorem notCoreJ : ∀ lam : F17, lam ∉ mu8 → ¬ coreJ lam := by decide
+theorem notCoreJ : ∀ lam : F17, lam ∉ mu8 → ¬ coreJ lam := by decide +kernel
 
 /-- The eight `μ₈` scalars fire the event (probe-extracted certificates through the
 saturation builder, adapted to the `(X⁵, X⁴)` stack at agreement 4). -/

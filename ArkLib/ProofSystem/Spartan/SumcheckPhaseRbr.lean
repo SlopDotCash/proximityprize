@@ -80,7 +80,7 @@ theorem Verifier.rbrSoundness_mono_langOut
   refine ⟨⟨stF.toFun, stF.toFun_empty, stF.toFun_next, fun stmt tr hneg => ?_⟩, hbound⟩
   have h0 := stF.toFun_full stmt tr hneg
   exact le_antisymm
-    (le_trans (probEvent_mono fun x _ hx => hsub hx) (le_of_eq h0)) (zero_le _)
+    (le_trans (probEvent_mono fun x _ hx => hsub hx) (le_of_eq h0)) (zero_le)
 
 end RbrSoundnessMono
 

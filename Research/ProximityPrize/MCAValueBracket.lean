@@ -68,7 +68,7 @@ theorem epsMCA_ge_linear_floor (domain : ι ↪ F) (k : ℕ) (δ : ℝ≥0)
       epsMCA (F := F) (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ := by
   set n := Fintype.card ι with hn
   set fl := ⌊(δ : ℝ≥0) * (n : ℝ≥0)⌋₊ with hfl
-  have hfl_le_dn : (fl : ℝ≥0) ≤ (δ : ℝ≥0) * (n : ℝ≥0) := Nat.floor_le (zero_le _)
+  have hfl_le_dn : (fl : ℝ≥0) ≤ (δ : ℝ≥0) * (n : ℝ≥0) := Nat.floor_le (zero_le)
   have hfl_le_n : fl ≤ n := by omega
   have hspike : ((1 - δ) * (n : ℝ≥0) : ℝ≥0) ≤ ((n - (fl + 1) + 1 : ℕ) : ℝ≥0) := by
     have hnat : n - (fl + 1) + 1 = n - fl := by omega

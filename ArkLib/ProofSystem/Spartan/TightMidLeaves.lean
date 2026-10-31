@@ -337,7 +337,7 @@ theorem linearCombinationWithTarget_rbrKnowledgeSoundness_leaf :
     intro c _ hc
     exact hc.1
   · -- The binding identity fails: it is challenge-independent, so no output lands in `relF`.
-    refine le_trans (le_of_eq (probEvent_eq_zero_iff.mpr ?_)) (zero_le _)
+    refine le_trans (le_of_eq (probEvent_eq_zero_iff.mpr ?_)) (zero_le)
     intro c _ hc
     exact hbind hc.2
 

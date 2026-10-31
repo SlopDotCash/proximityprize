@@ -172,7 +172,7 @@ def projectToNextSumcheckPoly (i : Fin (ℓ)) (Hᵢ : MultiquadraticPoly L (ℓ 
     (H := Hᵢ.val) (challenges := fun _ => rᵢ)
   exact ⟨projectedH, by
     have hp := Hᵢ.property
-    simpa using
+    exact
       (fixFirstVariablesOfMQP_degreeLE (L := L) (ℓ := ℓ - i) (v := ⟨1, by omega⟩)
         (poly := Hᵢ.val) (challenges := fun _ => rᵢ) (deg := 2) hp)
   ⟩

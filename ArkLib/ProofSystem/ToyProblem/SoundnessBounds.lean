@@ -527,7 +527,7 @@ theorem simplified_iop_soundness_listDecoding_lb {k : ℕ} [Nonempty ι]
       simp
     have hz2 : (δᵣ((0 : ι → F), 0) : ℝ≥0) = 0 := by exact_mod_cast hz
     rw [hz2]
-    exact zero_le δ
+    exact zero_le
 
   -- Genuine Step-4: the concrete attack instance `(0, 0, 0, f₁, f₂)`, whose winning set
   -- the distinct challenges `chal` inject into, realises the list-decoding bound.

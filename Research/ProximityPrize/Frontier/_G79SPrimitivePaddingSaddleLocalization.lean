@@ -48,7 +48,7 @@ theorem pow_le_oddWickTail {r s : ℕ} (hrs : 2 * s ≤ r + 1) :
   calc
     r ^ s = ∏ i ∈ Finset.range s, r := by simp
     _ ≤ ∏ i ∈ Finset.range s, (2 * (r - i) - 1) :=
-      Finset.prod_le_prod' (fun i hi => le_oddWickTail_factor hrs hi)
+      Finset.prod_le_prod (fun i hi => le_oddWickTail_factor hrs hi)
     _ = oddWickTail r s := rfl
 
 /-- R369's padded-sector envelope. -/

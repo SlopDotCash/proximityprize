@@ -312,8 +312,9 @@ theorem firstPrime_incidence_at_ladder_boundary :
   have hcode : ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1) =
       ((rsCode dom (2 ^ 29) : Submodule (ZMod sponsorP) (Fin (2 ^ 30) → ZMod sponsorP)) :
         Set (Fin (2 ^ 30) → ZMod sponsorP)) := by
-    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using
-      (evalCode_eq_rsCode ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (2 ^ 29 - 1))
+    have h := evalCode_eq_rsCode ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (2 ^ 29 - 1)
+    rw [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] at h
+    exact h
   intro u
   rw [hcode]
   exact rs_badScalars_card_le_anchor dom (k := 2 ^ 29) (t := 178956971)

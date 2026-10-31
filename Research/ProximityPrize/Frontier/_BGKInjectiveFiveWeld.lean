@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._BGKProductionDepthFiveWeld
+import Mathlib.Data.Fintype.CardEmbedding
 
 /-!
 # The injective five-tuple weld: BGK ⟹ the G112 injective-census envelope — #466

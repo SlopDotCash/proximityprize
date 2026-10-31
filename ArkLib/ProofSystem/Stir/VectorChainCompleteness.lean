@@ -24,6 +24,8 @@ namespace StirIOP
 
 namespace Round3
 
+attribute [local instance] legacyUniformSpec
+
 open OracleSpec OracleComp ProtocolSpec STIR ReedSolomon NNReal StirIOP.Round OracleReduction
 open WhirIOP.Construction (packFiniteFunction unpackFiniteFunction unpack_packFiniteFunction)
 
@@ -78,50 +80,44 @@ instance instStirFinalVChalInhabited :
   fun _ => by dsimp [ProtocolSpec.Challenge]; infer_instance
 
 instance instStirInitVChalSpecFintype :
-    OracleSpec.Fintype
-      ([((stirInitVSpec).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  fintype_B := fun ⟨i, _⟩ => by
+    ∀ t, Fintype (([((stirInitVSpec).toProtocolSpec F).Challenge]ₒ'
+        (fun i => challengeOracleInterface i)).Range t) :=
+  fun ⟨i, _⟩ => by
     show Fintype (((stirInitVSpec).toProtocolSpec F).Challenge i)
     infer_instance
 
 instance instStirInitVChalSpecInhabited :
-    OracleSpec.Inhabited
-      ([((stirInitVSpec).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  inhabited_B := fun ⟨i, _⟩ => by
+    ∀ t, Inhabited (([((stirInitVSpec).toProtocolSpec F).Challenge]ₒ'
+        (fun i => challengeOracleInterface i)).Range t) :=
+  fun ⟨i, _⟩ => by
     show Inhabited (((stirInitVSpec).toProtocolSpec F).Challenge i)
     infer_instance
 
 instance instStirRound3VChalSpecFintype :
-    OracleSpec.Fintype
-      ([((stirRound3VSpec ι F).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  fintype_B := fun ⟨i, _⟩ => by
+    ∀ t, Fintype (([((stirRound3VSpec ι F).toProtocolSpec F).Challenge]ₒ'
+        (fun i => challengeOracleInterface i)).Range t) :=
+  fun ⟨i, _⟩ => by
     show Fintype (((stirRound3VSpec ι F).toProtocolSpec F).Challenge i)
     infer_instance
 
 instance instStirRound3VChalSpecInhabited :
-    OracleSpec.Inhabited
-      ([((stirRound3VSpec ι F).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  inhabited_B := fun ⟨i, _⟩ => by
+    ∀ t, Inhabited (([((stirRound3VSpec ι F).toProtocolSpec F).Challenge]ₒ'
+        (fun i => challengeOracleInterface i)).Range t) :=
+  fun ⟨i, _⟩ => by
     show Inhabited (((stirRound3VSpec ι F).toProtocolSpec F).Challenge i)
     infer_instance
 
 instance instStirFinalVChalSpecFintype :
-    OracleSpec.Fintype
-      ([((stirFinalVSpec ι F).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  fintype_B := fun ⟨i, _⟩ => by
+    ∀ t, Fintype (([((stirFinalVSpec ι F).toProtocolSpec F).Challenge]ₒ'
+        (fun i => challengeOracleInterface i)).Range t) :=
+  fun ⟨i, _⟩ => by
     show Fintype (((stirFinalVSpec ι F).toProtocolSpec F).Challenge i)
     infer_instance
 
 instance instStirFinalVChalSpecInhabited :
-    OracleSpec.Inhabited
-      ([((stirFinalVSpec ι F).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  inhabited_B := fun ⟨i, _⟩ => by
+    ∀ t, Inhabited (([((stirFinalVSpec ι F).toProtocolSpec F).Challenge]ₒ'
+        (fun i => challengeOracleInterface i)).Range t) :=
+  fun ⟨i, _⟩ => by
     show Inhabited (((stirFinalVSpec ι F).toProtocolSpec F).Challenge i)
     infer_instance
 
@@ -129,6 +125,7 @@ instance instStirFinalVChalSpecInhabited :
 
 variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp))
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 set_option maxHeartbeats 800000 in
 /-- **Perfect completeness of the vectorised initial `[C_fold]` block**: the prover reads the
@@ -140,7 +137,7 @@ theorem stirInitVectorReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) 
     OracleReduction.perfectCompleteness init impl
       (stirOStmtRel Unit φ deg δ) (stirOStmtRel F φ deg δ)
       (stirInitVectorReduction (ι := ι) (F := F)) := by
-  rw [OracleReduction.unroll_1_message_reduction_perfectCompleteness_V_to_P
+  rw [OracleReduction.unroll_1_message_reduction_perfectCompleteness_V_to_P (oSpec := OracleSpec.emptySpec.{0, 0})
     (stirInitVectorReduction (ι := ι) (F := F))
     (stirOStmtRel Unit φ deg δ) (stirOStmtRel F φ deg δ) init impl hInit (by rfl)
     (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
@@ -155,10 +152,10 @@ theorem stirInitVectorReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) 
     rw [probFailure_bind_eq_zero_iff]
     refine ⟨?_, fun α _hα => ?_⟩
     · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+        _root_.probFailure_liftComp, probFailure_eq_zero]
     · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
       simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-        Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
+        Function.comp_apply, Option.map_some, probFailure_map, probFailure_eq_zero,
         probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
         Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
         zero_add]
@@ -179,6 +176,7 @@ theorem stirInitVectorReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) 
     subst hx
     exact ⟨h_relIn, rfl, by funext u; rfl⟩
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 set_option maxHeartbeats 800000 in
 /-- **Perfect completeness of the vectorised first 3-slot block** (`OStmt → VOStmt`): the
@@ -191,7 +189,7 @@ theorem stirRound3VectorReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ
     OracleReduction.perfectCompleteness init impl
       (stirOStmtRel F φ deg δ) (stirVOStmtRel F φ deg δ)
       (stirRound3VectorReduction φ deg) := by
-  rw [unroll_3_message_reduction_perfectCompleteness_PVV (stirRound3VectorReduction φ deg)
+  rw [unroll_3_message_reduction_perfectCompleteness_PVV (oSpec := OracleSpec.emptySpec.{0, 0}) (stirRound3VectorReduction φ deg)
     (stirOStmtRel F φ deg δ) (stirVOStmtRel F φ deg δ) init impl hInit
     (by rfl) (by rfl) (by rfl)
     (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
@@ -206,14 +204,14 @@ theorem stirRound3VectorReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ
     rw [probFailure_bind_eq_zero_iff]
     refine ⟨?_, fun r1 _h1 => ?_⟩
     · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+        _root_.probFailure_liftComp, probFailure_eq_zero]
     · rw [probFailure_bind_eq_zero_iff]
       refine ⟨?_, fun r2 _h2 => ?_⟩
       · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-          _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+          _root_.probFailure_liftComp, probFailure_eq_zero]
       · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
         simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-          Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
+          Function.comp_apply, Option.map_some, probFailure_map, probFailure_eq_zero,
           probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
           Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
           zero_add]
@@ -242,6 +240,7 @@ theorem stirRound3VectorReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ
     rw [unpack_packFiniteFunction, combine_single_self]
     exact h_relIn
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 set_option maxHeartbeats 800000 in
 /-- **Perfect completeness of the mid-chain vectorised 3-slot block** (`VOStmt → VOStmt`): the
@@ -253,7 +252,7 @@ theorem stirRound3VectorReductionMid_perfectCompleteness (φ : ι ↪ F) (deg : 
     OracleReduction.perfectCompleteness init impl
       (stirVOStmtRel F φ deg δ) (stirVOStmtRel F φ deg δ)
       (stirRound3VectorReductionMid φ deg) := by
-  rw [unroll_3_message_reduction_perfectCompleteness_PVV (stirRound3VectorReductionMid φ deg)
+  rw [unroll_3_message_reduction_perfectCompleteness_PVV (oSpec := OracleSpec.emptySpec.{0, 0}) (stirRound3VectorReductionMid φ deg)
     (stirVOStmtRel F φ deg δ) (stirVOStmtRel F φ deg δ) init impl hInit
     (by rfl) (by rfl) (by rfl)
     (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
@@ -268,14 +267,14 @@ theorem stirRound3VectorReductionMid_perfectCompleteness (φ : ι ↪ F) (deg : 
     rw [probFailure_bind_eq_zero_iff]
     refine ⟨?_, fun r1 _h1 => ?_⟩
     · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+        _root_.probFailure_liftComp, probFailure_eq_zero]
     · rw [probFailure_bind_eq_zero_iff]
       refine ⟨?_, fun r2 _h2 => ?_⟩
       · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-          _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+          _root_.probFailure_liftComp, probFailure_eq_zero]
       · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
         simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-          Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
+          Function.comp_apply, Option.map_some, probFailure_map, probFailure_eq_zero,
           probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
           Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
           zero_add]
@@ -305,6 +304,7 @@ theorem stirRound3VectorReductionMid_perfectCompleteness (φ : ι ↪ F) (deg : 
     rw [unpack_packFiniteFunction, combine_single_self]
     exact h_relIn
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 set_option maxHeartbeats 800000 in
 /-- **Perfect completeness of the mid-chain vectorised final `[p, C_fin]` block**
@@ -317,7 +317,7 @@ theorem stirFinalVectorReductionMid_perfectCompleteness (φ : ι ↪ F) (deg : �
     OracleReduction.perfectCompleteness init impl
       (stirVOStmtRel F φ deg δ) (stirVOStmtRel (F × F) φ deg δ)
       (stirFinalVectorReductionMid (ι := ι) (F := F)) := by
-  rw [OracleReduction.unroll_2_message_reduction_perfectCompleteness
+  rw [OracleReduction.unroll_2_message_reduction_perfectCompleteness (oSpec := OracleSpec.emptySpec.{0, 0})
     (stirFinalVectorReductionMid (ι := ι) (F := F))
     (stirVOStmtRel F φ deg δ) (stirVOStmtRel (F × F) φ deg δ) init impl hInit
     (by rfl) (by rfl)
@@ -333,10 +333,10 @@ theorem stirFinalVectorReductionMid_perfectCompleteness (φ : ι ↪ F) (deg : �
     rw [probFailure_bind_eq_zero_iff]
     refine ⟨?_, fun α _hα => ?_⟩
     · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
+        _root_.probFailure_liftComp, probFailure_eq_zero]
     · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
       simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-        Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
+        Function.comp_apply, Option.map_some, probFailure_map, probFailure_eq_zero,
         probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
         Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
         zero_add]
@@ -391,6 +391,7 @@ noncomputable def stirVectorTailReduction (φ : ι ↪ F) (deg : ℕ) (M : ℕ) 
         ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F)) :=
   OracleReduction.append (stirVectorBlocksReduction φ deg M) stirFinalVectorReductionMid
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 set_option maxHeartbeats 2000000 in
 /-- **Perfect completeness of the blocks∘finalMid tail** of the vectorised STIR chain, via the
@@ -404,8 +405,8 @@ theorem stirVectorTailReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) 
         = support (liftM q : OracleComp []ₒ β)) :
     (stirVectorTailReduction φ deg M).perfectCompleteness init impl
       (stirVOStmtRel F φ deg δ) (stirVOStmtRel (F × F) φ deg δ) := by
-  haveI : (([]ₒ : OracleSpec PEmpty)).Inhabited := { inhabited_B := fun i => nomatch i }
-  haveI : (([]ₒ : OracleSpec PEmpty)).Fintype := { fintype_B := fun i => nomatch i }
+  haveI : ∀ t, Inhabited ([]ₒ.Range t) := fun t => nomatch t
+  haveI : ∀ t, Fintype ([]ₒ.Range t) := fun t => nomatch t
   haveI := ProtocolSpec.appendCombinedOracle_fintype []ₒ
     (ProtocolSpec.seqCompose (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
     ((stirFinalVSpec ι F).toProtocolSpec F)
@@ -456,6 +457,7 @@ noncomputable def stirVectorHeadReduction (φ : ι ↪ F) (deg : ℕ) (M : ℕ) 
           ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F))) :=
   OracleReduction.append (stirRound3VectorReduction φ deg) (stirVectorTailReduction φ deg M)
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 set_option maxHeartbeats 2000000 in
 /-- **Perfect completeness of the firstBlock∘tail head** of the vectorised STIR chain: the
@@ -470,8 +472,8 @@ theorem stirVectorHeadReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) 
         = support (liftM q : OracleComp []ₒ β)) :
     (stirVectorHeadReduction φ deg M).perfectCompleteness init impl
       (stirOStmtRel F φ deg δ) (stirVOStmtRel (F × F) φ deg δ) := by
-  haveI : (([]ₒ : OracleSpec PEmpty)).Inhabited := { inhabited_B := fun i => nomatch i }
-  haveI : (([]ₒ : OracleSpec PEmpty)).Fintype := { fintype_B := fun i => nomatch i }
+  haveI : ∀ t, Inhabited ([]ₒ.Range t) := fun t => nomatch t
+  haveI : ∀ t, Fintype ([]ₒ.Range t) := fun t => nomatch t
   -- per-index challenge instances for the tail spec
   haveI hTF : ∀ j, Fintype (((ProtocolSpec.seqCompose
       (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
@@ -488,16 +490,16 @@ theorem stirVectorHeadReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) 
     ((stirRound3VSpec ι F).toProtocolSpec F)
     ((ProtocolSpec.seqCompose (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
       ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F))
-  haveI : ([]ₒ + [((ProtocolSpec.seqCompose
+  haveI : ∀ t, Fintype (([]ₒ + [((ProtocolSpec.seqCompose
       (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
-      ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F)).Challenge]ₒ).Fintype := by
+      ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F)).Challenge]ₒ).Range t) := by
     haveI := challengeOracle_fintype ((ProtocolSpec.seqCompose
       (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
       ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F))
     infer_instance
-  haveI : ([]ₒ + [((ProtocolSpec.seqCompose
+  haveI : ∀ t, Inhabited (([]ₒ + [((ProtocolSpec.seqCompose
       (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
-      ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F)).Challenge]ₒ).Inhabited := by
+      ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F)).Challenge]ₒ).Range t) := by
     haveI := challengeOracle_inhabited ((ProtocolSpec.seqCompose
       (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
       ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F))
@@ -557,6 +559,7 @@ theorem stirVectorHeadReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) 
 
 /-! ### Seam C: the full vectorised chain -/
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 set_option maxHeartbeats 2000000 in
 /-- **FULL vectorised chain perfect completeness (#301)**: `stirFullVectorReduction` — the
@@ -571,8 +574,8 @@ theorem stirFullVectorReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) 
         = support (liftM q : OracleComp []ₒ β)) :
     (stirFullVectorReduction φ deg M).perfectCompleteness init impl
       (stirOStmtRel Unit φ deg δ) (stirVOStmtRel (F × F) φ deg δ) := by
-  haveI : (([]ₒ : OracleSpec PEmpty)).Inhabited := { inhabited_B := fun i => nomatch i }
-  haveI : (([]ₒ : OracleSpec PEmpty)).Fintype := { fintype_B := fun i => nomatch i }
+  haveI : ∀ t, Inhabited ([]ₒ.Range t) := fun t => nomatch t
+  haveI : ∀ t, Fintype ([]ₒ.Range t) := fun t => nomatch t
   -- per-index challenge instances for the tail and head++tail specs
   haveI hTF : ∀ j, Fintype (((ProtocolSpec.seqCompose
       (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
@@ -595,16 +598,16 @@ theorem stirFullVectorReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) 
     (((stirRound3VSpec ι F).toProtocolSpec F) ++ₚ
       ((ProtocolSpec.seqCompose (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
         ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F)))
-  haveI : ([]ₒ + [((((stirRound3VSpec ι F).toProtocolSpec F) ++ₚ
+  haveI : ∀ t, Fintype (([]ₒ + [((((stirRound3VSpec ι F).toProtocolSpec F) ++ₚ
       ((ProtocolSpec.seqCompose (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
-        ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F)))).Challenge]ₒ).Fintype := by
+        ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F)))).Challenge]ₒ).Range t) := by
     haveI := challengeOracle_fintype (((stirRound3VSpec ι F).toProtocolSpec F) ++ₚ
       ((ProtocolSpec.seqCompose (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
         ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F)))
     infer_instance
-  haveI : ([]ₒ + [((((stirRound3VSpec ι F).toProtocolSpec F) ++ₚ
+  haveI : ∀ t, Inhabited (([]ₒ + [((((stirRound3VSpec ι F).toProtocolSpec F) ++ₚ
       ((ProtocolSpec.seqCompose (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
-        ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F)))).Challenge]ₒ).Inhabited := by
+        ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F)))).Challenge]ₒ).Range t) := by
     haveI := challengeOracle_inhabited (((stirRound3VSpec ι F).toProtocolSpec F) ++ₚ
       ((ProtocolSpec.seqCompose (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))
         ++ₚ ((stirFinalVSpec ι F).toProtocolSpec F)))

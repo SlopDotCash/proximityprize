@@ -31,7 +31,7 @@ open scoped NNReal
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -54,10 +54,10 @@ theorem append_perfectCompleteness_total
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited] :
+    [∀ t, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] :
     (R₁.append R₂).perfectCompleteness init impl rel₁ rel₃ := by
   rcases Nat.eq_zero_or_pos n with hn | hn
   · subst hn
@@ -87,10 +87,10 @@ theorem reductionAppendPerfectCompletenessResidual_holds
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited] :
+    [∀ t, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] :
     reductionAppendPerfectCompletenessResidual R₁ R₂ h₁ h₂ :=
   append_perfectCompleteness_total R₁ R₂ h₁ h₂ hInit hImplSupp himplSP himplNF
 
@@ -98,7 +98,7 @@ end Reduction
 
 namespace OracleReduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
     {m n : ℕ}
     {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type}
     [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)]
@@ -134,10 +134,10 @@ theorem append_perfectCompleteness_total
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited] :
+    [∀ t, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] :
     (R₁.append R₂).perfectCompleteness init impl rel₁ rel₃ := by
   rcases Nat.eq_zero_or_pos n with hn | hn
   · subst hn
@@ -168,10 +168,10 @@ theorem appendPerfectCompletenessResidual_holds
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Fintype]
-    [(oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₁.Challenge]ₒ).Fintype] [(oSpec + [pSpec₁.Challenge]ₒ).Inhabited]
-    [(oSpec + [pSpec₂.Challenge]ₒ).Fintype] [(oSpec + [pSpec₂.Challenge]ₒ).Inhabited] :
+    [∀ t, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range t)]
+    [∀ t, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] [∀ t, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range t)] :
     appendPerfectCompletenessResidual R₁ R₂ h₁ h₂ :=
   append_perfectCompleteness_total R₁ R₂ h₁ h₂ hInit hImplSupp himplSP himplNF
 
@@ -185,7 +185,7 @@ end OracleReduction
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited (oSpec.Range t)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -211,7 +211,7 @@ theorem append_completeness_total_pos
       x ∈ support ((impl t).run s) → x.2 = s)
     (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
+      evalSPMF ((impl t).run' s) = evalSPMF ((impl t).run' s')) :
     (R₁.append R₂).completeness init impl rel₁ rel₃ (e₁ + e₂) := by
   have hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n))
       = pSpec₂.dir (⟨0, hn⟩ : Fin n) := by

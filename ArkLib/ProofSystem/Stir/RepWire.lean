@@ -1148,7 +1148,7 @@ theorem stirFlipRep_le_zero
               (((stirMultiVSpecRep M ι t).toProtocolSpec F).getChallenge i) _
             return (transcript, challenge, proveQueryLog))).run' (← init)]
       ≤ (0 : ℝ≥0∞) := by
-  refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
   rintro ⟨tr, ch, lg⟩ _ ⟨hn, hy⟩
   exact hn (stirCheckingPredRep_concat_zero M φ deg δ t stmtIn tr ch hi hy)
 
@@ -1192,7 +1192,7 @@ theorem stirFlipRep_le_round2
   simp only [simulateQ_pure, StateT.run'_pure_lib]
   rw [← probEvent_bind_eq_tsum]
   by_cases hno : stirCheckingPredRep M φ deg δ t i.1.castSucc stmtIn tr
-  · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
     rintro x hx ⟨hn, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx
@@ -1229,7 +1229,7 @@ theorem stirFlipRep_le_round2
                 mul_lt_mul_of_pos_right hδrel hn
             _ = (D.card : ℝ≥0) := div_mul_cancel₀ _ (ne_of_gt hn)
         have hfloor : ⌊δ * (Fintype.card ι : ℝ≥0)⌋₊ + 1 ≤ D.card := by
-          have := (Nat.floor_lt (zero_le _)).mpr hcard
+          have := (Nat.floor_lt (zero_le)).mpr hcard
           omega
         -- the per-coordinate agreement set
         set L : Set F := {r : F | inputAns stmtIn.2 (queryPoint φ r)
@@ -1282,7 +1282,7 @@ theorem stirFlipRep_le_round2
                   / (Fintype.card F : ℝ≥0∞)) ^ t := by
                 refine pow_le_pow_left' ?_ t
                 exact ENNReal.div_le_div_right (by exact_mod_cast hcardL) _
-      · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+      · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
         rintro x hx ⟨hn, hy⟩
         simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
           exists_prop] at hx
@@ -1327,7 +1327,7 @@ theorem stirFlipRep_le_out
   simp only [simulateQ_pure, StateT.run'_pure_lib]
   rw [← probEvent_bind_eq_tsum]
   by_cases hno : stirCheckingPredRep M φ deg δ t i.1.castSucc stmtIn tr
-  · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
     rintro x hx ⟨hn, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx
@@ -1336,7 +1336,7 @@ theorem stirFlipRep_le_out
   · have hA : 3 * j + 1 < (i.1.castSucc : ℕ) := by simp only [Fin.val_castSucc]; omega
     have hB : 3 * (j + 1) + 1 < (i.1.castSucc : ℕ) := by simp only [Fin.val_castSucc]; omega
     by_cases hAB : ∀ x : ι, trMsgFRep tr j hA x = trMsgFRep tr (j + 1) hB x
-    · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+    · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
       rintro x hx ⟨hn, hy⟩
       simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
         exists_prop] at hx
@@ -1503,7 +1503,7 @@ theorem stirEpsStarRep_le_pow_max (i : ((stirMultiVSpecRep M ι t).toProtocolSpe
     by_cases hm : (i.1 : ℕ) % 3 = 2
     · rw [if_pos hm]
     · rw [if_neg hm]
-      exact zero_le _
+      exact zero_le
 
 /-- **Theorem 5.1 through the t-repetition checking IOPP** (#335 A1): `stir_main` with the
 soundness leg PROVEN at the `(·)^t` budget; the `hε` leg is satisfiable for every `secpar`

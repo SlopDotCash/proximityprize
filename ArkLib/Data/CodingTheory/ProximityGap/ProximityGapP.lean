@@ -172,7 +172,6 @@ theorem mcaEventP_val_iff_mcaEventCurve {parℓ : ℕ}
     (C : Set (ι → A)) (δ : ℝ≥0) (u : WordStack A (Fin parℓ) ι) (γ : F) :
     mcaEventP C (fun j : Fin parℓ => (j : ℕ)) δ u γ ↔
       ProximityGap.mcaEventCurve C δ u γ := by
-  rw [mcaEventP, ProximityGap.mcaEventCurve]
   rfl
 
 open Classical in
@@ -213,7 +212,7 @@ theorem epsMCAP_mono {parℓ : ℕ} (C : Set (ι → A)) (exp : Fin parℓ → �
   apply Pr_le_Pr_of_implies
   intro γ h_event
   obtain ⟨S, hS_card, hcurve, hpair⟩ := h_event
-  exact ⟨S, le_trans (mul_le_mul_of_nonneg_right (tsub_le_tsub_left h 1) (zero_le _)) hS_card,
+  exact ⟨S, le_trans (mul_le_mul_of_nonneg_right (tsub_le_tsub_left h 1) (zero_le)) hS_card,
     hcurve, hpair⟩
 
 open Classical in

@@ -186,7 +186,7 @@ theorem gon_no_improvement {φ : ℕ} (hφ : 0 < φ) (c : Fin φ → ℝ) (maxC 
     p ≤ maxC ^ φ := by
   have hmax_nonneg : 0 ≤ maxC := le_trans (le_trans zero_le_one (hfloor ⟨0, hφ⟩)) (hdom ⟨0, hφ⟩)
   calc p ≤ ∏ _i : Fin φ, maxC :=
-            le_trans hprod (Finset.prod_le_prod
+            le_trans hprod (Finset.prod_le_prod₀
               (fun i _ => le_trans zero_le_one (hfloor i)) (fun i _ => hdom i))
     _ = maxC ^ φ := by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
 

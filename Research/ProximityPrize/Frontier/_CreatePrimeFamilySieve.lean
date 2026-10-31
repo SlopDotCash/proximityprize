@@ -167,7 +167,7 @@ theorem two_pow_card_le_norm
   -- 2^card ≤ ∏ p  (each factor ≥ 2)
   have hpow : 2 ^ S.card ≤ ∏ p ∈ S, p := by
     have hle : ∏ _p ∈ S, (2 : ℕ) ≤ ∏ p ∈ S, p :=
-      Finset.prod_le_prod' (fun p hp => (hprime p (hsub hp)).two_le)
+      Finset.prod_le_prod (fun p hp => (hprime p (hsub hp)).two_le)
     calc 2 ^ S.card = ∏ _p ∈ S, (2 : ℕ) := by rw [Finset.prod_const]
       _ ≤ ∏ p ∈ S, p := hle
   exact le_trans hpow (Nat.le_of_dvd D.hNzero hprod_dvd)
@@ -307,7 +307,7 @@ theorem goodPrimes_card_ge (P : Finset ℕ) (R : Finset Relation) :
   classical
   have hsplit :
       (P.filter (fun p => IsGood p R)).card + (P.filter (fun p => ¬ IsGood p R)).card = P.card :=
-    Finset.filter_card_add_filter_neg_card_eq_card (p := fun p => IsGood p R)
+    Finset.card_filter_add_card_filter_not (p := fun p => IsGood p R)
   have hbad := badPrimes_card_le_count P R
   omega
 

@@ -131,7 +131,7 @@ theorem tripleCount_split (S : Finset G) (a : G) :
       (fun t => ¬IsDeg t),
     ← Finset.filter_filter (fun t : G × G × G => t.1 + t.2.1 + t.2.2 = a)
       (fun t => IsDeg t),
-    add_comm, Finset.filter_card_add_filter_neg_card_eq_card]
+    add_comm, Finset.card_filter_add_card_filter_not]
 
 /-! ## The degenerate mass is at most `3n²` in total -/
 

@@ -119,7 +119,7 @@ theorem probEvent_simulateQ_stateT_le_sum_of_step
   induction oa using OracleComp.inductionOn generalizing T s₀ with
   | pure x =>
       simp only [simulateQ_pure, StateT.run_pure]
-      refine le_trans (le_of_eq (probEvent_eq_zero fun z hz hbad => ?_)) (zero_le _)
+      refine le_trans (le_of_eq (probEvent_eq_zero fun z hz hbad => ?_)) (zero_le)
       rw [support_pure, Set.mem_singleton_iff] at hz
       subst hz
       exact h₀ hbad

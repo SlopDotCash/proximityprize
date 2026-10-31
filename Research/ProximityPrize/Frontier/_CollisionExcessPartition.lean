@@ -128,7 +128,7 @@ theorem zeroSumCount_eq_pairable_add_excess (G : Finset F) (r : ℕ) :
   classical
   unfold zeroSumCount pairableCount genuineExcessCount pairableSet genuineExcessSet
   -- both pieces re-filter the zero-sum set by a decidable predicate and its negation
-  rw [← Finset.filter_card_add_filter_neg_card_eq_card
+  rw [← Finset.card_filter_add_card_filter_not
         (s := (Fintype.piFinset (fun _ : Fin (2 * r) => G)).filter (fun c => ∑ i, c i = 0))
         (p := fun c => IsAntipodallyPairable c)]
   congr 1

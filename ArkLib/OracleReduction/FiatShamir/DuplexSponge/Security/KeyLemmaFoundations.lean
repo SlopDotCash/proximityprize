@@ -52,7 +52,7 @@ stable statement surface.
 - The repaired eager statement surface (F10–F12): `basicFiatShamirGameEagerRand`,
   `duplexSpongeFiatShamirGameRemappedEager`, `D_DS` (CO25 Def. 4.2 — one `Equiv.Perm`
   answering both `p` and `p⁻¹`), `KeyLemmaStatementEager`. The in-tree `KeyLemmaStatement`
-  resamples repeated oracle queries i.i.d. (`𝒟[·]` semantics) and demands a coinless witness;
+  resamples repeated oracle queries i.i.d. (`(evalSPMF (·))` semantics) and demands a coinless witness;
   the eager surface samples each oracle **once** and equips the witness with `unifSpec` coins,
   matching the paper's experiment.
 - The witness construction (M1): `simulatedProverImpl` / `simulatedProverSalted` — CO25's
@@ -149,17 +149,17 @@ lemma isQueryBoundP_deAbort {ι' : Type} {spec : OracleSpec ι'} {α : Type} [In
 computation and the sub-probability original is bounded by the abort probability. Consumed by
 the Hyb₄ → witness bridge together with the §5.7 abort analysis (`Pr[abort] ≤ Pr[E]`). -/
 lemma tvDist_deAbort_le_probFailure {ι' : Type} {spec : OracleSpec ι'}
-    [spec.Fintype] [spec.Inhabited] {α : Type} [Inhabited α]
+    [∀ t, Fintype (spec.Range t)] [∀ t, Inhabited (spec.Range t)] {α : Type} [Inhabited α]
     (oa : AbortComp spec α) :
-    SPMF.tvDist 𝒟[deAbort oa] 𝒟[oa] ≤ (Pr[⊥ | oa]).toReal := by
+    SPMF.tvDist (evalSPMF (deAbort oa)) (evalSPMF (oa)) ≤ (Pr[⊥ | oa]).toReal := by
   classical
-  set μ : PMF (Option (Option α)) := (𝒟[oa.run]).toPMF with hμ
-  have h₁ : (𝒟[deAbort oa]).toPMF = μ.map (Option.map (fun o => o.getD default)) := by
-    rw [deAbort, evalDist_map, SPMF.toPMF_map, hμ]
+  set μ : PMF (Option (Option α)) := ((evalSPMF (oa.run))).toPMF with hμ
+  have h₁ : ((evalSPMF (deAbort oa))).toPMF = μ.map (Option.map (fun o => o.getD default)) := by
+    rw [deAbort, evalSPMF_map, SPMF.toPMF_map, hμ]
     rfl
-  have h₂ : (𝒟[oa]).toPMF = μ.map (fun z => z.bind id) := by
-    have hbind : (𝒟[oa] : SPMF α)
-        = (𝒟[oa.run] >>= fun y => match y with | some a => pure a | none => failure) := rfl
+  have h₂ : ((evalSPMF (oa))).toPMF = μ.map (fun z => z.bind id) := by
+    have hbind : ((evalSPMF (oa)) : SPMF α)
+        = ((evalSPMF (oa.run)) >>= fun y => match y with | some a => pure a | none => failure) := rfl
     rw [hbind, SPMF.toPMF_bind, ← PMF.bind_pure_comp]
     unfold Option.elimM
     rw [PMF.monad_bind_eq_bind]
@@ -716,7 +716,7 @@ noncomputable def sampleableTypePermCanonicalSpongeState
 
 /-- F11a — `D_𝔖` rebuilt (CO25 Def. 4.2): eager random-function + random-permutation carrier
 for the duplex-sponge challenge oracle. `p` and `p⁻¹` answer through **one** `Equiv.Perm`, so
-repeated and inverse queries are mutually consistent — the property the i.i.d. `𝒟[·]`
+repeated and inverse queries are mutually consistent — the property the i.i.d. `(evalSPMF (·))`
 surface lacks. -/
 noncomputable def D_DS (StmtIn U : Type) [SpongeUnit U] [SpongeSize] [Fintype U]
     [DecidableEq U]
@@ -814,7 +814,7 @@ def isSharedCoinIdx {ι₁ κ : Type} [DecidableEq ι₁] (i : ι₁) : ((ι₁ 
 
 /-- F12 — **repaired** key-lemma surface (per-prover): eager-sampled oracles on both sides,
 coin-equipped witness prover, paper-exponent error bound. This is the statement the CO25
-§5.8 hybrid chain proves; the in-tree `KeyLemmaStatement` (i.i.d. `𝒟[·]` oracles, coinless
+§5.8 hybrid chain proves; the in-tree `KeyLemmaStatement` (i.i.d. `(evalSPMF (·))` oracles, coinless
 `P'`, `C+1` exponent) does **not** match it — see the module docstring. -/
 def KeyLemmaStatementEager
     [DecidableEq ι] [SampleableType U]
@@ -831,8 +831,8 @@ def KeyLemmaStatementEager
     (∀ i : ι, IsQueryBoundP P' (fun j => isSharedCoinIdx i j = true) (tₒ i)) ∧
     IsQueryBoundP P' (fun j => isFSChallengeCoinIdx j = true) (θStar tₕ tₚ tₚᵢ) ∧
     SPMF.tvDist
-        𝒟[basicFiatShamirGameEagerRand Df oImpl V P']
-        𝒟[duplexSpongeFiatShamirGameRemappedEager (T_H := T_H) (T_P := T_P) δ Dds oImpl V P]
+        (evalSPMF (basicFiatShamirGameEagerRand Df oImpl V P'))
+        (evalSPMF (duplexSpongeFiatShamirGameRemappedEager (T_H := T_H) (T_P := T_P) δ Dds oImpl V P))
       ≤ ηStarPaper (pSpec := pSpec) U tₕ tₚ tₚᵢ L codec.decodingBias
 
 section Witness

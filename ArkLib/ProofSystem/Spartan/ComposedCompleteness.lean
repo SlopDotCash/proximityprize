@@ -84,7 +84,7 @@ theorem challenge_hStage2Bridge_perfect_114
   -- `R₂`'s completeness game has bad probability `0` (perfect completeness).
   have hRHS : Pr[fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)
       | gameOf init impl R₂ a.2 a.1.2.2] = 0 := by
-    refine le_antisymm ?_ (zero_le _)
+    refine le_antisymm ?_ (zero_le)
     have hbad₂ := bad_le_of_optionT_mk_ge (gameOf init impl R₂ a.2 a.1.2.2)
       (goodOf n pSpec₂ rel₃) ((0 : ℝ≥0) : ℝ≥0∞) (h₂ a.2 a.1.2.2 hrel₂)
     simpa using hbad₂

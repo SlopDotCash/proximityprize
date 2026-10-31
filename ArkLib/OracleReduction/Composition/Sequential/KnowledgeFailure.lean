@@ -170,7 +170,7 @@ theorem optionLift_rbrKnowledgeSoundness [Inhabited Stmt₂]
   cases s? with
   | none =>
     -- the flip event's second conjunct is `False` at a `none` statement: probability `0`.
-    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le)
     rintro ⟨tr, ch, log⟩ _
     rintro ⟨wm, -, hsucc⟩
     exact hsucc

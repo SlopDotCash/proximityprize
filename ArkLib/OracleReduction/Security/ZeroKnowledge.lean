@@ -5,13 +5,14 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.OracleReduction.Security.Basic
+import VCVio.EvalDist.TVDist
 
 /-!
   # Honest-Verifier Zero-Knowledge for Reductions
 
   This file defines transcript-level honest-verifier zero-knowledge for `Reduction`s, stated against
   the existing `Reduction.run` execution semantics and the existing probability vocabulary
-  (`evalDist`, `tvDist`, `probEvent`).
+  (`evalSPMF`, `tvDist`, `probEvent`).
 
   The honest interaction produces, for a given `(stmtIn, witIn)`, a full transcript
   `FullTranscript pSpec` together with prover and verifier outputs. We interpret that computation
@@ -21,7 +22,7 @@ import ArkLib.OracleReduction.Security.Basic
   A `TranscriptSimulator` produces a transcript distribution from the input statement alone. The
   predicates below compare that simulator distribution with the honest transcript distribution:
 
-  - `perfectHVZK`: equality of `evalDist`s for every related statement-witness pair.
+  - `perfectHVZK`: equality of `evalSPMF`s for every related statement-witness pair.
   - `statisticalHVZK`: total-variation distance at most `ε`.
 
   The file also records the zero-round identity reduction as the first concrete perfect-HVZK
@@ -72,7 +73,7 @@ def perfectHVZK
     (reduction : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec)
     (sim : TranscriptSimulator oSpec StmtIn pSpec) : Prop :=
   ∀ stmtIn : StmtIn, ∀ witIn : WitIn, (stmtIn, witIn) ∈ rel →
-    evalDist (sim stmtIn) = evalDist (honestTranscriptDist init impl reduction stmtIn witIn)
+    evalSPMF (sim stmtIn) = evalSPMF (honestTranscriptDist init impl reduction stmtIn witIn)
 
 /-- A reduction satisfies statistical honest-verifier zero-knowledge with error `ε` if the
   simulator's transcript distribution is within total-variation distance `ε` of the honest
@@ -334,21 +335,21 @@ def idTranscriptSimulator :
 
 /-- The honest transcript distribution of the zero-round identity reduction is distributionally
   equal to `pure default`. The computation still samples and discards the ambient initialization
-  state, so this is intentionally an `evalDist` equality rather than a raw term equality. -/
+  state, so this is intentionally an `evalSPMF` equality rather than a raw term equality. -/
 theorem honestTranscriptDist_id_evalDist
     (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (stmtIn : StmtIn) (witIn : WitIn) :
-    evalDist (honestTranscriptDist init impl
+    evalSPMF (honestTranscriptDist init impl
         (Reduction.id : Reduction oSpec StmtIn WitIn StmtIn WitIn !p[]) stmtIn witIn) =
-      evalDist (pure default : OptionT ProbComp (FullTranscript !p[])) := by
-  apply evalDist_ext
+      evalSPMF (pure default : OptionT ProbComp (FullTranscript !p[])) := by
+  apply evalSPMF_ext
   intro transcript
   classical
   unfold honestTranscriptDist
   simp only [Reduction.id_run, map_pure, OptionT.run_pure, simulateQ_pure, StateT.run'_eq,
     StateT.run_pure, bind_pure_comp]
   rw [OptionT.probOutput_eq, OptionT.probOutput_eq]
-  simp [probOutput_map_const, HasEvalPMF.probFailure_eq_zero]
+  simp [probOutput_map_const, probFailure_eq_zero]
 
 /-- The zero-round identity reduction satisfies perfect honest-verifier zero-knowledge for any
   input relation. -/

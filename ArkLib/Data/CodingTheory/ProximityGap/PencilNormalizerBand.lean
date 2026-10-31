@@ -195,7 +195,6 @@ theorem negationPairCount_eq {m : ℕ} (hm : 0 < m) (h2 : (2 : F) ≠ 0) {ζ : F
     have h2' : q.2 = -q.1 := by linear_combination hq.2.1
     rw [h1, h2', hpq']
   · intro x hx
-    simp only [Finset.mem_coe] at hx
     have hxn : x ^ (2 * m) = 1 := (mem_nthRootsFinset h2m (1 : F)).mp hx
     have hx0 : x ≠ 0 := ne_zero_of_mem_nthRoots h2m hx
     have hneg : -x ∈ nthRootsFinset (2 * m) (1 : F) := by

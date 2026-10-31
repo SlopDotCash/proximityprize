@@ -37,8 +37,8 @@ variable {R : Type*} [CommRing R]
 `U * T * U⁻¹` and the original `T` have the SAME characteristic polynomial. -/
 theorem twist_preserves_charpoly
     (U : (Matrix n n R)ˣ) (T : Matrix n n R) :
-    (U.val * T * U⁻¹.val).charpoly = T.charpoly :=
-  charpoly_units_conj U T
+    (U.val * T * U⁻¹.val).charpoly = T.charpoly := by
+  simpa only [Matrix.coe_units_inv] using charpoly_units_conj U T
 
 /-- ANY functional `Φ` of the char poly -- in particular the spectral radius
 `M = ρ(1)` -- is EQUAL on `T` and its Drinfeld twist `U * T * U⁻¹`. Hence
@@ -54,7 +54,7 @@ theorem twist_invariant_of_charpoly_functional'
     {β : Type*} (Φ : Polynomial R → β)
     (U : (Matrix n n R)ˣ) (T : Matrix n n R) :
     Φ (U⁻¹.val * T * U.val).charpoly = Φ T.charpoly := by
-  rw [charpoly_units_conj' U T]
+  rw [Matrix.coe_units_inv, charpoly_units_conj' U T]
 
 #print axioms twist_preserves_charpoly
 #print axioms twist_invariant_of_charpoly_functional

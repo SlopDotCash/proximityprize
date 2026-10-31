@@ -77,7 +77,7 @@ noncomputable def wick (n : ℝ) (r : ℕ) : ℝ := wickFactor r * n ^ r
 /-- **Fact F: `r! ≤ (2r−1)‼`.** Termwise `j+1 ≤ 2j+1` over `range r`, both nonneg factors. -/
 theorem factFactor_le_wickFactor (r : ℕ) : factFactor r ≤ wickFactor r := by
   unfold factFactor wickFactor
-  apply Finset.prod_le_prod
+  apply Finset.prod_le_prod₀
   · intro j _; positivity
   · intro j _
     have : (0 : ℝ) ≤ (j : ℝ) := by positivity
@@ -139,7 +139,7 @@ theorem fallingProd_le_gaussianTail {n : ℝ} (hn : 0 < n) {r : ℕ} (hr : (r : 
     unfold fallingProd
     calc ∏ j ∈ range r, (1 - (j : ℝ) / n)
         ≤ ∏ j ∈ range r, Real.exp (-((j : ℝ) / n)) := by
-          apply Finset.prod_le_prod
+          apply Finset.prod_le_prod₀
           · intro j hj; exact fallingProd_factor_nonneg hn hr hj
           · intro j _
             have h := Real.add_one_le_exp (-((j : ℝ) / n))

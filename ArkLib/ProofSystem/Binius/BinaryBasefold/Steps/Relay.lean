@@ -170,11 +170,11 @@ theorem relayOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : F
   letI : ∀ j, Fintype (pSpecRelay.Challenge j) := by
     intro j
     exact j.1.elim0
-  letI : [pSpecRelay.Challenge]ₒ.Fintype := ProtocolSpec.challengeOracle_fintype _
+  letI : ∀ t, Fintype ([pSpecRelay.Challenge]ₒ.Range t) := ProtocolSpec.challengeOracle_fintype _
   letI : ∀ j, Inhabited (pSpecRelay.Challenge j) := by
     intro j
     exact j.1.elim0
-  letI : [pSpecRelay.Challenge]ₒ.Inhabited := ProtocolSpec.challengeOracle_inhabited _
+  letI : ∀ t, Inhabited ([pSpecRelay.Challenge]ₒ.Range t) := ProtocolSpec.challengeOracle_inhabited _
   -- must use `ProtocolSpec.challengeOracleInterface`
   rw [OracleReduction.unroll_0_message_reduction_perfectCompleteness (oSpec := []ₒ)
     (pSpec := pSpecRelay) (init := init) (impl := impl) (hInit := hInit)

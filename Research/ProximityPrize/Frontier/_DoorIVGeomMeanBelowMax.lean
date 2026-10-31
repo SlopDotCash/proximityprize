@@ -56,7 +56,7 @@ theorem prod_le_max_pow_card (s : Finset ι) (lam : ι → ℝ)
     ∏ i ∈ s, lam i ≤ M ^ s.card := by
   calc
     ∏ i ∈ s, lam i ≤ ∏ _i ∈ s, M :=
-      Finset.prod_le_prod hnn (fun i hi => hM i hi)
+      Finset.prod_le_prod₀ hnn (fun i hi => hM i hi)
     _ = M ^ s.card := by rw [Finset.prod_const]
 
 /-- **Sum of a max-bounded family ≤ card times max.**  If every `lam i ≤ M` on `s`, then

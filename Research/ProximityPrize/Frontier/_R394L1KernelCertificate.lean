@@ -214,12 +214,12 @@ theorem n8_r3_p1409_shortKernelFree :
       5184 * (((c 2 : ℕ) : ℤ) - 6) + 373248 * (((c 3 : ℕ) : ℤ) - 6) : ℤ) : ZMod 1409) = 0 := by
     push_cast
     norm_num [evalVec, Fin.sum_univ_succ, zsmul_eq_mul] at heval ⊢
-    rw [hidx] at heval
+    try rw [hidx] at heval
     linear_combination heval
   have hd := (ZMod.intCast_zmod_eq_zero_iff_dvd _ 1409).mp hv
   have hm := Int.emod_eq_zero_of_dvd hd
   norm_num [Fin.sum_univ_succ] at hl1
-  rw [hidx] at hl1
+  try rw [hidx] at hl1
   change |((c 0 : ℕ) : ℤ) - 6| + (|((c 1 : ℕ) : ℤ) - 6| +
     (|((c 2 : ℕ) : ℤ) - 6| + |((c 3 : ℕ) : ℤ) - 6|)) ≤ 6 at hl1
   -- Enumerate bounded integer coefficients after transporting the field equation.

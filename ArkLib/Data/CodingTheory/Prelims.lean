@@ -272,7 +272,6 @@ lemma AffSpanSet.instFinite [Finite F] [NeZero k] (u : Fin k → ι → F) :
   unfold AffSpanSet
   exact Set.toFinite _
 
-attribute [instance] AffSpanSet.instFinite
 
 /-- The affine span as a `Finset`, using `AffSpanFinite` to convert from the set. -/
 noncomputable def AffSpanFinset [NeZero k] (U : Fin k → ι → F) : Finset (ι → F) :=
@@ -360,9 +359,10 @@ namespace sInf
 lemma sInf_UB_of_le_UB {S : Set ℕ} {i : ℕ} : (∀ s ∈ S, s ≤ i) → sInf S ≤ i := fun h ↦ by
   by_cases S_empty : S.Nonempty
   · classical
-    rw [Nat.sInf_def S_empty, Nat.find_le_iff]
-    choose s hs using S_empty
-    aesop
+    rcases S_empty with ⟨s, hs⟩
+    have hne : ∃ n, n ∈ S := ⟨s, hs⟩
+    rw [Nat.sInf_def hne]
+    exact (Nat.find_le_iff hne i).2 ⟨s, h s hs, hs⟩
   · aesop (add simp (show S = ∅ by aesop (add simp Set.Nonempty)))
 
 /-- If `i` is a lower bound for all elements in a nonempty set, then `i` is at most the infimum. -/

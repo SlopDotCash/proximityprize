@@ -140,7 +140,7 @@ lemma frsVanish_map_eq {A : Submodule F (ι → Fin s → F)}
     have hz : evalAtCoord domain s ω i p = 0 := (LinearMap.mem_ker).mp hpV
     funext j
     have := congrFun hz j
-    simpa [evalAtCoord_apply] using this
+    exact this
   · -- A ⊓ ker(proj i) ⊆ image
     intro a ha_mem
     obtain ⟨ha, hker⟩ := Submodule.mem_inf.mp ha_mem
@@ -153,7 +153,7 @@ lemma frsVanish_map_eq {A : Submodule F (ι → Fin s → F)}
       rwa [LinearMap.proj_apply] at hk
     funext j
     have := congrFun hi j
-    simpa [evalAtCoord_apply] using this
+    exact this
 
 /-- **Orbit-vanishing preserves dimension.**
 `finrank (frsVanish … i) = finrank (A ⊓ ker(proj i))`. -/

@@ -509,7 +509,7 @@ theorem polynomial_eq_28_sq_pow32_zmod97 :
 /-- Equivalently, the canonical ratio for `ζ = 28` is itself a 32-th root in `F_97`. -/
 theorem invariantRatio_28_sq_pow32_eq_one_zmod97 :
     invariantRatio (28 : ZMod 97) ((28 : ZMod 97) ^ 2) ^ 32 = 1 := by
-  decide
+  decide +kernel
 
 /-- A primitive 32-th root in `F_641` at which the canonical denominator-free obstruction
 vanishes. -/
@@ -535,7 +535,7 @@ theorem polynomial_eq_25_sq_pow32_zmod641 :
 /-- Equivalently, the canonical ratio for `ζ = 25` is itself a 32-th root in `F_641`. -/
 theorem invariantRatio_25_sq_pow32_eq_one_zmod641 :
     invariantRatio (25 : ZMod 641) ((25 : ZMod 641) ^ 2) ^ 32 = 1 := by
-  decide
+  decide +kernel
 
 /-- A primitive 32-th root in `F_673` at which the canonical denominator-free obstruction
 vanishes. -/
@@ -561,7 +561,7 @@ theorem polynomial_eq_149_sq_pow32_zmod673 :
 /-- Equivalently, the canonical ratio for `ζ = 149` is itself a 32-th root in `F_673`. -/
 theorem invariantRatio_149_sq_pow32_eq_one_zmod673 :
     invariantRatio (149 : ZMod 673) ((149 : ZMod 673) ^ 2) ^ 32 = 1 := by
-  decide
+  decide +kernel
 
 /-- A primitive 32-th root in `F_1153` at which the canonical denominator-free obstruction
 vanishes. -/
@@ -588,7 +588,7 @@ theorem polynomial_eq_439_sq_pow32_zmod1153 :
 /-- Equivalently, the canonical ratio for `ζ = 439` is itself a 32-th root in `F_1153`. -/
 theorem invariantRatio_439_sq_pow32_eq_one_zmod1153 :
     invariantRatio (439 : ZMod 1153) ((439 : ZMod 1153) ^ 2) ^ 32 = 1 := by
-  decide
+  decide +kernel
 
 /-- The four finite exceptions in the `n = 32` canonical obstruction theorem are genuine:
 each characteristic supports a primitive 32-th root at which the denominator-free canonical

@@ -41,7 +41,7 @@ theorem agreementSet_card_le {vWord vIn : Fin (Fintype.card ι) → F} {δ : ℝ
       + (Finset.univ.filter (fun k => vWord k ≠ vIn k)).card
       = Fintype.card ι := by
     rw [agreementSet]
-    rw [Finset.filter_card_add_filter_neg_card_eq_card
+    rw [Finset.card_filter_add_card_filter_not
       (p := fun k : Fin (Fintype.card ι) => vWord k = vIn k)]
     exact Fintype.card_fin _
   have h1 : ((agreementSet (ι := ι) vWord vIn).card : ℝ)

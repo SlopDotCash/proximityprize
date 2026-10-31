@@ -13,6 +13,9 @@ This module contains the main interleaved and tensor proximity-gap lemmas from t
 formalization, up to the generic tensor-gap lifting theorem.
 -/
 
+-- Interleaved words and their row functions use reducible Matrix aliases.
+set_option backward.isDefEq.respectTransparency false
+
 noncomputable section
 
 open Code LinearCode InterleavedCode ReedSolomon ProximityGap ProbabilityTheory Filter
@@ -111,7 +114,7 @@ lemma dist_row_le_dist_ToInterleavedCode (U : InterleavedWord A (Fin m) ι) :
   have h_dist_row_le_dist_interleaved : Δ₀(Uᵢ, Mᵢ) ≤ Δ₀(U, M) := by
     simp only [Uᵢ, Mᵢ]
     simp only [getRow]
-    convert dist_row_le_dist_ToInterleavedWord U M i
+    convert dist_row_le_dist_ToInterleavedWord U M i <;> rfl
   calc
     (Δ₀(Uᵢ, Mᵢ): ℕ∞) ≤ (Δ₀(U, M): ℕ∞) :=
       ENat.coe_le_coe.mpr h_dist_row_le_dist_interleaved
@@ -463,17 +466,14 @@ lemma D_card_le_e_implies_interleaved_correlatedAgreement₂
     simp only [eq_iff_iff]
     constructor
     · intro hleft
-      simp only at hleft ⊢
       by_contra h_fun_eq
       rw [funext_iff] at h_fun_eq
       by_cases h_left_1: ¬U₀ colIdx = V₀.val colIdx
       · simp only [h_left_1, not_false_eq_true, true_or] at hleft
         have h_U₀_eq_V₀ := h_fun_eq 0
-        simp only at h_U₀_eq_V₀
         exact h_left_1 h_U₀_eq_V₀
       · simp only [h_left_1, false_or] at hleft
         have h_U₁_eq_V₁ := h_fun_eq 1
-        simp only at h_U₁_eq_V₁
         exact h_left_1 fun a ↦ hleft h_U₁_eq_V₁
     · intro h_fun_ne
       rw [funext_iff] at h_fun_ne
@@ -502,7 +502,7 @@ lemma D_card_le_e_implies_interleaved_correlatedAgreement₂
   · exact hD_card_le_e
 
 omit [Nonempty ι] [NoZeroDivisors F] [DecidableEq F] [Fintype A] [Module.Free F A]
-[Nontrivial ↥MC] in
+    [Nontrivial ↥MC] in
 /-- **Lemma 3.3 (Part 1): Bound on agreeing cells outside D**
     The set of agreeing cells `(r, j)` where `j ∉ D` is exactly the
     Cartesian product of `R*` and `Dᶜ` (the columns not in D).

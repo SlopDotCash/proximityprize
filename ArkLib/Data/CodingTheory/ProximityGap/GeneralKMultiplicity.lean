@@ -575,7 +575,7 @@ theorem badScalars_card_mul_le_of_agreement_sharp (dom : Fin n ↪ F) {k : ℕ} 
       rw [h𝒯, Finset.mem_filter]
       exact ⟨Finset.mem_univ _, ⟨htinj, htmem⟩, htres⟩
     -- assemble
-    have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+    have hsplit := Finset.card_filter_add_card_filter_not
       (s := I) (p := fun t => residual dom k t u₁ ≠ 0)
     have hkTge : (n - w).descFactorial k ≤ kT.card := by
       refine le_trans ?_ (injective_tuples_card_ge_descFactorial (W γ))

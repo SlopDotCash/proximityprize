@@ -224,7 +224,7 @@ theorem rbrKnowledgeSoundness_implies_knowledgeSoundness
     (rbrKnowledgeError : pSpec.ChallengeIdx → ℝ≥0) :
     verifier.rbrKnowledgeSoundness init impl relIn relOut rbrKnowledgeError →
       verifier.knowledgeSoundness init impl relIn relOut (∑ i, rbrKnowledgeError i) :=
-  fun _ => knowledgeSoundness_error_mono init impl (zero_le _)
+  fun _ => knowledgeSoundness_error_mono init impl (zero_le)
     (knowledgeSoundness_vacuous init impl relIn relOut verifier)
 
 end Verifier

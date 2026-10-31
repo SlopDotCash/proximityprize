@@ -212,8 +212,10 @@ theorem card_agreeIdx (j : LineIdx K) : (agreeIdx K j).card = Fintype.card K := 
     obtain ⟨s, c⟩ := sc
     have himg2 : (Finset.univ.filter (fun p : K × K => onLine K (Sum.inl (s, c)) p))
         = Finset.univ.image (fun a : K => (a, s * a + c)) := by
-      ext ⟨a, b⟩
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_image, onLine]
+      apply Finset.ext
+      rintro ⟨a, b⟩
+      rw [Finset.mem_filter, Finset.mem_image]
+      simp only [onLine, Finset.mem_univ, true_and]
       constructor
       · intro h
         exact ⟨a, by rw [h]⟩
@@ -226,8 +228,10 @@ theorem card_agreeIdx (j : LineIdx K) : (agreeIdx K j).card = Fintype.card K := 
   | inr a₀ =>
     have himg2 : (Finset.univ.filter (fun p : K × K => onLine K (Sum.inr a₀) p))
         = Finset.univ.image (fun b : K => (a₀, b)) := by
-      ext ⟨a, b⟩
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_image, onLine]
+      apply Finset.ext
+      rintro ⟨a, b⟩
+      rw [Finset.mem_filter, Finset.mem_image]
+      simp only [onLine, Finset.mem_univ, true_and]
       constructor
       · intro h
         exact ⟨b, by rw [h]⟩

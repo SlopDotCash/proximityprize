@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.GeneralGapCensusLaw
+import Mathlib.Tactic.NormNum.Prime
 
 /-!
 # The first exact monomial-slice census: the half-pair at the unique-decoding radius

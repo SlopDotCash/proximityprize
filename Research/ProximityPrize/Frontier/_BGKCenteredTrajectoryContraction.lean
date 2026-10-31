@@ -201,15 +201,12 @@ theorem injectiveSevenTransform_eq_sum_deletedDiagonalTerm
     injectiveSevenTransform w = ∑ j : Fin 7, deletedDiagonalTerm w j := by
   classical
   have h7 := ArkLib.ProximityGap.MomentCollisionRigidity.multiset_newton w 7
-  have ha7 : (Finset.antidiagonal 7).filter (fun a => a.1 < 7) =
+  have ha7 : (Finset.HasAntidiagonal.antidiagonal 7).filter (fun a => a.1 < 7) =
       {(0, 7), (1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)} := by
     decide
   rw [ha7] at h7
-  have he0 : (Finset.univ.val.map w).esymm 0 = (1 : Complex) := by
-    simp [Multiset.esymm]
   norm_num [Finset.sum_insert, ArkLib.ProximityGap.MomentCollisionRigidity.psumMs,
     phasePowerSum] at h7
-  rw [he0] at h7
   norm_num at h7
   have huniv : (Finset.univ : Finset (Fin 7)) = {0, 1, 2, 3, 4, 5, 6} := by decide
   unfold injectiveSevenTransform
@@ -651,6 +648,10 @@ def productionN : Nat := 2 ^ 30
 
 def productionQ : Nat := productionN * (2 ^ 128 + 192) + 1
 
+private theorem productionN_value : productionN = 1073741824 := by decide +kernel
+private theorem productionQ_value :
+    productionQ = 365375409332725729550921208179070755120141565953 := by decide +kernel
+
 def injectiveCoefficient : Nat := 126871
 
 /-- The normalized depth-two lower envelope forced solely by the `n/2` antipodal zero-sum
@@ -683,7 +684,7 @@ theorem normalizedSubsetDeviation_two_ge_antipodalLower
 theorem production_antipodal_first_transition_arithmetic :
     3 * ((productionQ : Real) * (productionQ - productionN) / productionN) <
       (productionN : Real) * antipodalDepthTwoLower productionQ productionN := by
-  norm_num [antipodalDepthTwoLower, productionQ, productionN, Nat.choose_two_right]
+  norm_num [antipodalDepthTwoLower, productionQ_value, productionN_value, Nat.choose_two_right]
 
 /-- Quantitative form: the forced antipodal contribution exceeds Wick `3` by more than
 `2^-29` (and less than `2^-28` at the level of the lower envelope). -/
@@ -694,7 +695,7 @@ theorem production_antipodal_first_ratio_window :
       (productionN : Real) * antipodalDepthTwoLower productionQ productionN /
           ((productionQ : Real) * (productionQ - productionN) / productionN) <
         3 + (2 : Real) ^ (-28 : Int) := by
-  norm_num [antipodalDepthTwoLower, productionQ, productionN, Nat.choose_two_right,
+  norm_num [antipodalDepthTwoLower, productionQ_value, productionN_value, Nat.choose_two_right,
     zpow_neg]
 
 /-- The forced antipodal excess itself lies well inside the `501/500` ordinary-Wick tolerance,
@@ -719,8 +720,8 @@ theorem production_first_transition_strictly_gt_three
     3 * normalizedSubsetDeviation G 1 <
       (G.card : Real) * normalizedSubsetDeviation G 2 := by
   have hlower := normalizedSubsetDeviation_two_ge_antipodalLower G hG hnegOne h2
-    hq hn (by norm_num [productionN])
-  have hone := normalizedSubsetDeviation_one G (by rw [hn]; norm_num [productionN])
+    hq hn (by norm_num [productionN_value])
+  have hone := normalizedSubsetDeviation_one G (by rw [hn]; norm_num [productionN_value])
   rw [hn, hq] at hone
   calc
     3 * normalizedSubsetDeviation G 1 =
@@ -741,12 +742,12 @@ theorem production_first_transition_ratio_gt_three_plus_two_neg29
       (G.card : Real) * normalizedSubsetDeviation G 2 /
         normalizedSubsetDeviation G 1 := by
   have hlower := normalizedSubsetDeviation_two_ge_antipodalLower G hG hnegOne h2
-    hq hn (by norm_num [productionN])
-  have hone := normalizedSubsetDeviation_one G (by rw [hn]; norm_num [productionN])
+    hq hn (by norm_num [productionN_value])
+  have hone := normalizedSubsetDeviation_one G (by rw [hn]; norm_num [productionN_value])
   rw [hn, hq] at hone
   have honepos : 0 < normalizedSubsetDeviation G 1 := by
     rw [hone]
-    norm_num [productionQ, productionN]
+    norm_num [productionQ_value, productionN_value]
   have harith := production_antipodal_first_ratio_window.1
   calc
     3 + (2 : Real) ^ (-29 : Int) <
@@ -794,7 +795,7 @@ production contraction by strictly between `157` and `158` bits. -/
 theorem six_independent_halvings_miss_by_157_158_bits :
     2 ^ 157 * (2 ^ 6 * injectiveCoefficient) < productionN ^ 6 ∧
       productionN ^ 6 < 2 ^ 158 * (2 ^ 6 * injectiveCoefficient) := by
-  norm_num [productionN, injectiveCoefficient]
+  norm_num [productionN_value, injectiveCoefficient]
 
 #print axioms normalizedSubsetDeviation_nonneg
 #print axioms subsetSumCount_one

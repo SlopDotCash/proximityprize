@@ -60,7 +60,7 @@ theorem card_split_fixedPoint (B : Finset ι) (fp : ι) :
       (B.filter (fun a => a = fp)).card ≤ 1 := by
   classical
   refine ⟨?_, fixedPoint_card_le_one B fp⟩
-  have := Finset.filter_card_add_filter_neg_card_eq_card
+  have := Finset.card_filter_add_card_filter_not
     (s := B) (p := fun a => a = fp)
   simpa using this.symm
 

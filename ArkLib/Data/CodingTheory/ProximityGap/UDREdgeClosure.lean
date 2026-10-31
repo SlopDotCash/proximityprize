@@ -73,7 +73,7 @@ theorem le_mcaDeltaStar_subset_law_w (hg : orderOf g = n) {d w : ℕ}
     have : w ≤ n := by omega
     exact_mod_cast this
   refine le_mcaDeltaStar_subset_law hg ?_ ?_ hbudget
-  · exact div_le_one_of_le₀ hwle (zero_le _)
+  · exact div_le_one_of_le₀ hwle (zero_le)
   · have hmul : ((1 : ℝ≥0) - (w : ℝ≥0) / (n : ℝ≥0)) * (Fintype.card (Fin n) : ℝ≥0)
         = (n : ℝ≥0) - (w : ℝ≥0) := by
       rw [Fintype.card_fin, tsub_mul, one_mul, div_mul_cancel₀ _ hn0]

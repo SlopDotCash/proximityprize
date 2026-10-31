@@ -318,7 +318,7 @@ theorem sharp_error_le_outerSoundnessError
     ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0)
       ≤ outerSoundnessError F n M params := by
   unfold outerSoundnessError
-  refine le_trans ?_ (le_add_of_nonneg_right (zero_le _))
+  refine le_trans ?_ (le_add_of_nonneg_right (zero_le))
   rw [card_hypercube]
   have hden : (0 : ℝ≥0) < ((Fintype.card F - 2 ^ n : ℕ) : ℝ≥0) := by
     exact_mod_cast Nat.sub_pos_of_lt hcard

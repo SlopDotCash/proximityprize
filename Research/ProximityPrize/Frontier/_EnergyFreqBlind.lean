@@ -78,7 +78,7 @@ theorem addEnergyVariety_freq_card_eq (G : Finset F) {b : F} (hb : b ≠ 0) :
   constructor
   · intro h
     -- b·x₁ + b·x₂ = b·x₃ + b·x₄  ⟹  b·(x₁+x₂) = b·(x₃+x₄)  ⟹  x₁+x₂ = x₃+x₄
-    have h' : b * (x.1.1 + x.1.2) = b * (x.2.1 + x.2.2) := by ring_nf; ring_nf at h; linear_combination h
+    have h' : b * (x.1.1 + x.1.2) = b * (x.2.1 + x.2.2) := by ring_nf; linear_combination h
     have := mul_left_cancel₀ hb h'
     simpa using this
   · intro h

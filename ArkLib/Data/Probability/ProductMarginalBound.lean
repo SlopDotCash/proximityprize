@@ -76,7 +76,8 @@ end Counting
 
 section ProductMarginal
 
-variable {β : Type u} {m : Type u → Type v} [Monad m] [HasEvalSPMF m]
+variable {β : Type u} {m : Type u → Type v} [Monad m] [MonadAttach m]
+    [MonadLiftT m SPMF] [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
 
 /-- **Product-marginal domination.**  If the first stage's output distribution on `Vector F t`
 is dominated by the uniform one (`Pr[= v] ≤ 1/|F|^t`, true in particular for `t` independent
@@ -130,7 +131,7 @@ lemma probEvent_bind_le_pow_uniform_marginal {F : Type u} [Fintype F] [Decidable
     (probEvent_bind_le_uniform_marginal_product mx k q L hunif hsupp) ?_
   calc ∏ i, ((L i).card : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)
       ≤ ∏ _i : Fin t, (s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) :=
-        Finset.prod_le_prod' (fun i _ =>
+        Finset.prod_le_prod (fun i _ =>
           ENNReal.div_le_div_right (Nat.cast_le.mpr (hL i)) _)
     _ = ((s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t := by
         rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
@@ -139,7 +140,8 @@ end ProductMarginal
 
 section PowMatrix
 
-variable {α β : Type u} {m : Type u → Type v} [Monad m] [HasEvalSPMF m]
+variable {α β : Type u} {m : Type u → Type v} [Monad m] [MonadAttach m]
+    [MonadLiftT m SPMF] [LawfulMonadLiftT m SPMF] [EvalDistCompatible m]
 variable {F : Type u} [Fintype F] {t : ℕ}
 
 private lemma prod_filter_le_pow (L : Fin t → Set F) [∀ i, DecidablePred (· ∈ L i)] (s : ℕ)
@@ -148,7 +150,7 @@ private lemma prod_filter_le_pow (L : Fin t → Set F) [∀ i, DecidablePred (·
       ≤ ((s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t :=
   calc ∏ i : Fin t, (((Finset.univ.filter (· ∈ L i)).card : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞))
       ≤ ∏ _i : Fin t, (s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) :=
-        Finset.prod_le_prod' (fun i _ =>
+        Finset.prod_le_prod (fun i _ =>
           ENNReal.div_le_div_right (Nat.cast_le.mpr (hL i)) _)
     _ = ((s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t := by
         rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
