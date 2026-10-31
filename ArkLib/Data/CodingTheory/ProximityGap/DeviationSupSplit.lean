@@ -116,8 +116,8 @@ theorem deviationBounded_of_half_le (C : Submodule F (ι → A)) {δ : ℝ≥0} 
   have hV : (1 - (δ + δ) - δ : ℝ≥0) = 0 := by rw [tsub_eq_zero_of_le h2, zero_tsub]
   have h0 : (0 : ι → A) ∈ (C : Set (ι → A)) := SetLike.mem_coe.mpr C.zero_mem
   refine ⟨⟨0, h0, ∅, ?_, fun i hi => by simp at hi⟩, ⟨0, h0, ∅, ?_, fun i hi => by simp at hi⟩⟩
-  · rw [hW, zero_mul]; exact zero_le _
-  · rw [hV, zero_mul]; exact zero_le _
+  · rw [hW, zero_mul]; exact zero_le
+  · rw [hV, zero_mul]; exact zero_le
 
 omit [Nonempty ι] [DecidableEq ι] [DecidableEq F] [Fintype A] [DecidableEq A] in
 open Classical in

@@ -1305,8 +1305,15 @@ theorem βHensel_weight_bound_of_cell_budgets (x₀ : F) (R : F[X][X][Y])
     (fun k hIH i1 hi1 lam hlam => by
       by_cases hzero : Bivariate.natDegreeY R < sigmaLambda lam
       · -- the vanished cell: `B = 0` kills the whole term
-        rw [B_coeff_eq_zero_of_natDegreeY_lt x₀ R i1 lam hzero, mul_zero, zero_mul,
-          weight_Λ_over_𝒪_zero]
+        rw [B_coeff_eq_zero_of_natDegreeY_lt x₀ R i1 lam hzero]
+        have hterm : W𝒪 H ^ (i1 + deltaSave i1 - 1) *
+            ClaimA2.ξ x₀ R H hHyp ^ (2 * i1 + sigmaLambda lam - 2) * 0 *
+            partitionProd lam
+              (fun l => if _h : l < k + 1 then βHensel H x₀ R hHyp l else 0) = 0 :=
+          (congrArg (fun z : 𝒪 H => z *
+            partitionProd lam (fun l => if _h : l < k + 1 then βHensel H x₀ R hHyp l else 0))
+              (mul_zero _)).trans (zero_mul _)
+        rw [hterm, weight_Λ_over_𝒪_zero]
         exact bot_le
       · obtain ⟨nB, hB, hred⟩ := hbudget k i1 hi1 lam hlam (not_lt.mp hzero)
         exact rebasedSuccTermBound_of_B_budget x₀ R hHyp hH hDH k hIH i1 hi1 lam hlam

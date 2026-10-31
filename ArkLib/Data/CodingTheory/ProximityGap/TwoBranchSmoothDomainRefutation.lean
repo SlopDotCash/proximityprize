@@ -88,7 +88,9 @@ theorem smoothDomainTwoRegimeLaw_two_false : ¬ SmoothDomainTwoRegimeLaw 2 := by
       (((Finset.univ : Finset (Fin 32)).powersetCard (14 + 1 + 1)).filter
         (fun T => ∃ c ∈ (rsCode dom 14 : Submodule (ZMod 65537) (Fin 32 → ZMod 65537)),
           ∀ i ∈ T, c i = w i)).card := by
-    simpa [dom, w] using hlower
+    refine Nat.le_trans (show 70 ≤ Nat.choose 8 4 by decide) ?_
+    simp only [map_one, one_mul, add_zero, Polynomial.eval_pow, Polynomial.eval_X] at hlower
+    convert hlower using 3
   have hnum : (32 : ℕ).choose 16 = 601080390 := by
     rw [Nat.choose_eq_factorial_div_factorial (by decide : 16 ≤ 32)]
     norm_num [Nat.factorial]

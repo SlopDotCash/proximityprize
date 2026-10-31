@@ -261,7 +261,7 @@ theorem not_forall_rowCloseSpans_card (C : Submodule F (ι → A)) (δ : ℝ≥0
     intro lam
     refine ⟨Finset.univ, ?_, 0, C.zero_mem, fun i _ => by simp⟩
     rw [Finset.card_univ]
-    exact mul_le_of_le_one_left (zero_le _) tsub_le_self
+    exact mul_le_of_le_one_left zero_le tsub_le_self
   -- the `q + 1` lines of `F²`, indexed by `Option F`
   let v : Option F → Fin 2 → F := fun o => o.elim ![0, 1] (fun β => ![1, β])
   have hv0 : ∀ o, v o ≠ 0 := by

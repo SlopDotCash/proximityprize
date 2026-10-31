@@ -292,8 +292,7 @@ theorem widthFourCounter97_card : widthFourCounter97.card = 4 := by decide
 theorem widthFourCounter97_e2 : e2 widthFourCounter97 = 0 := by
   have h1 : e1 widthFourCounter97 = 91 := by decide
   have h2 : p2 widthFourCounter97 = 36 := by decide
-  rw [e2_eq, h1, h2]
-  decide
+  rw [e2_eq, h1, h2, show (91 : ZMod 97) ^ 2 - 36 = 0 by decide, zero_div]
 
 theorem widthFourCounter97_no_antipode :
     ¬ ∃ x ∈ widthFourCounter97, x ≠ 0 ∧ -x ∈ widthFourCounter97 := by decide

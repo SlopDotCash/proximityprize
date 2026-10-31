@@ -233,9 +233,9 @@ theorem converseRealizer_refuted :
     omega
   refine ⟨zero_le_one, by simp, ?_, ?_⟩
   · intro hconv
-    exact hbad (hconv (zero_le _))
+    exact hbad (hconv zero_le)
   · intro hequiv
-    exact hbad (hequiv.mpr (zero_le _))
+    exact hbad (hequiv.mpr zero_le)
 
 end ProximityGap.PrizeEquivalence
 
