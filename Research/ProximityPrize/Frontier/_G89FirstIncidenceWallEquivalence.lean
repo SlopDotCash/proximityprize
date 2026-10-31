@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._R378SignedDifferenceRotationInvariance
+import Research.ProximityPrize.Frontier._R381SignedRotationOrbitBlock
 import Research.ProximityPrize.Frontier._G75RawDeviationVsRelationAnomaly
 import Research.ProximityPrize.Frontier._G77FRelationAnomalyFourierGauge
 
@@ -22,6 +23,15 @@ across distinct orbits.  Could a bound on THAT functional be a strictly weaker s
 condition for `DCEnergyBound` than the BGK/Paley wall itself?
 
 ## Answer: no — and the constant is exactly 1
+
+**What kind of result this is.**  The core identity is a *bookkeeping (regrouping)
+identity*: for any orbit-constant summand `f` on an orbit-closed family `D` and any
+transversal `T`, `∑_{t ∈ T} |orbit t| · f t = ∑_{d ∈ D} f d` simply by partitioning `D` into
+the orbits of the transversal.  The work in this file is establishing orbit-constancy,
+orbit-closure and the transversal structure for the negacyclic action; once those hold, the
+equality with the anomaly is immediate.  The no-go below is accordingly narrow: it concerns
+*this* orbit-size-weighted first-incidence functional (and its uniform-orbit-size unweighted
+rescaling), not every conceivable first-incidence-based certificate.
 
 This file constructs the full negacyclic orbit structure on the signed difference family and
 proves the equivalence as an exact identity, not an estimate:
@@ -52,26 +62,29 @@ proves the equivalence as an exact identity, not an estimate:
    — the production BGK/Paley wall statement (via G75's exact calibration).  More generally
    (`firstIncidence_le_iff_relationAnomaly_le`) the sets of sufficient thresholds for the
    first-incidence functional and for the centered relation anomaly are IDENTICAL: no
-   strictly weaker sufficient condition can be phrased through first incidences.
+   strictly weaker sufficient condition can be phrased through THIS weighted first-incidence
+   functional (other first-incidence-based functionals are not analysed here).
 5. **Fourier form** (`firstIncidence_eq_dcMoment_sub_floor`): the first-incidence value IS
    the DC-subtracted moment minus the characteristic-zero floor — literally the wall object,
    via G77's gauge.
 6. **Unweighted variant** (`relationAnomaly_eq_orbitSize_mul_rawFirstIncidence`,
-   `rawFirstIncidence_le_iff_wall_scaled`): dropping the orbit-size weights rescales the wall
-   by EXACTLY the (uniform) orbit size — again no slack, only a known constant.
+   `rawFirstIncidence_le_iff_wall_scaled`): IF all orbits through the transversal have one
+   common size `c` (taken as a hypothesis `hc`, not proved here — orbit sizes need not be
+   uniform in general), dropping the orbit-size weights rescales the wall by exactly `c`.
 7. **No hidden cancellation** (`abs_sum_negacyclicOrbit_eq_sum_abs`): the R382
    no-cancellation identity extends from the half-orbit to the FULL `2m`-orbit — each
    first-incidence block is phase-coherent, so the compression neither loses nor gains.
 
 ## Honest scope
 
-This is a quantitative-identity pin (a no-go for the "weaker first-incidence sufficient
-condition" hope), not a bound on the wall: `DCEnergyBound` itself remains OPEN.  Together with
+This is a quantitative-identity pin (a no-go for the hope that the orbit-weighted
+first-incidence functional gives a weaker sufficient condition; at bottom a regrouping
+identity), not a bound on the wall: `DCEnergyBound` itself remains OPEN.  Together with
 G77 (total value = gauge), G78 (embedding slack = 0), G80 (`l1` certificate = `M`), and this
 file (first-incidence cross-orbit = wall, constant exactly 1), every recorded formulation of
 the signed relation route is now formally pinned to the BGK/Paley face.  CORE remains
-OPEN / ON-BGK.  The small rotation-dynamics lemmas duplicated from R395 are re-derived locally
-to keep the import surface minimal (R395 pulls the decidable-certificate chain).
+OPEN / ON-BGK.  The rotation-dynamics lemmas are shared with R395 through their owner R371,
+and the shadow-difference rotation lemmas are R381's.
 
 Issues #505 / #466.  Target axiom set: `[propext, Classical.choice, Quot.sound]`;
 no `sorry`, no `native_decide`.
@@ -105,48 +118,8 @@ open ArkLib.ProximityGap.Frontier.G77RelationAnomalyFourierGauge
 
 /-! ### 1. Full-period rotation dynamics: `rotZ^[m] = −id`, `rotZ^[2m] = id`
 
-The two coordinate-tracking lemmas are local re-derivations of R395's
-`iterate_rotZ_apply`/`iterate_rotZ_head` (kept local to avoid importing the
-decidable-certificate chain). -/
-
-/-- The head coordinate after one rotation: wrap with a sign flip. -/
-theorem rotZ_head (m : ℕ) (hm : 0 < m) (w : Fin m → ℤ) :
-    rotZ m hm w ⟨0, hm⟩ = -w ⟨m - 1, by omega⟩ := by
-  unfold rotZ
-  rw [if_pos rfl]
-
-/-- A tail coordinate after one rotation: shift down by one slot, no sign. -/
-theorem rotZ_tail (m : ℕ) (hm : 0 < m) (w : Fin m → ℤ) (j : Fin m) (hj : (j : ℕ) ≠ 0) :
-    rotZ m hm w j = w ⟨(j : ℕ) - 1, by have := j.isLt; omega⟩ := by
-  unfold rotZ
-  rw [if_neg hj]
-
-/-- Rotation dynamics without wrap: after `k` steps, coordinate `j` sits at `j + k`. -/
-theorem iterate_rotZ_coord (m : ℕ) (hm : 0 < m) (z : Fin m → ℤ) (k j : ℕ)
-    (hjk : j + k < m) :
-    ((rotZ m hm)^[k] z) ⟨j + k, hjk⟩ = z ⟨j, by omega⟩ := by
-  induction k with
-  | zero => rfl
-  | succ k ih =>
-      rw [Function.iterate_succ_apply']
-      rw [rotZ_tail m hm _ ⟨j + (k + 1), hjk⟩ (by show j + (k + 1) ≠ 0; omega)]
-      rw [show (⟨((⟨j + (k + 1), hjk⟩ : Fin m) : ℕ) - 1, by
-          have := (⟨j + (k + 1), hjk⟩ : Fin m).isLt
-          omega⟩ : Fin m)
-        = ⟨j + k, by omega⟩ from Fin.ext (show j + (k + 1) - 1 = j + k from by omega)]
-      exact ih (by omega)
-
-/-- After `m − j` steps, coordinate `j` arrives at the head with a sign flip. -/
-theorem iterate_rotZ_head (m : ℕ) (hm : 0 < m) (z : Fin m → ℤ) (j : ℕ) (hj : j < m) :
-    ((rotZ m hm)^[m - j] z) ⟨0, hm⟩ = -z ⟨j, hj⟩ := by
-  have hstep : m - j = (m - 1 - j) + 1 := by omega
-  rw [hstep, Function.iterate_succ_apply', rotZ_head m hm]
-  have harr : ((rotZ m hm)^[m - 1 - j] z) ⟨m - 1, by omega⟩ = z ⟨j, hj⟩ := by
-    have h0 := iterate_rotZ_coord m hm z (m - 1 - j) j (by omega)
-    rw [show (⟨j + (m - 1 - j), by omega⟩ : Fin m) = ⟨m - 1, by omega⟩ from
-      Fin.ext (show j + (m - 1 - j) = m - 1 from by omega)] at h0
-    exact h0
-  rw [harr]
+The coordinate-tracking lemmas `rotZ_head`, `rotZ_tail`, `iterate_rotZ_apply` and
+`iterate_rotZ_head` are owned by R371 (shared with R395). -/
 
 /-- **Half-period sign flip**: `m` negacyclic rotations negate the vector exactly
 (the shadow-basis avatar of `ζ^m = −1`). -/
@@ -157,7 +130,7 @@ theorem iterate_rotZ_m (m : ℕ) (hm : 0 < m) (z : Fin m → ℤ) :
   have hsplit : (i : ℕ) + (m - (i : ℕ)) = m := by have := i.isLt; omega
   have h1 : ((rotZ m hm)^[(i : ℕ)] ((rotZ m hm)^[m - (i : ℕ)] z)) ⟨0 + (i : ℕ), hik⟩
       = ((rotZ m hm)^[m - (i : ℕ)] z) ⟨0, hm⟩ :=
-    iterate_rotZ_coord m hm _ (i : ℕ) 0 hik
+    iterate_rotZ_apply m hm _ (i : ℕ) 0 hik
   have h2 : ((rotZ m hm)^[m - (i : ℕ)] z) ⟨0, hm⟩ = -z ⟨(i : ℕ), i.isLt⟩ :=
     iterate_rotZ_head m hm z (i : ℕ) i.isLt
   have h3 : (rotZ m hm)^[m] z
@@ -271,30 +244,8 @@ theorem negacyclicOrbit_disjoint_of_not_mem (m : ℕ) (hm : 0 < m) {d e : Fin m 
 
 /-! ### 3. The signed difference family is orbit-closed and the summand is orbit-constant -/
 
-/-- Rotation commutes with taking a shadow difference (local re-derivation of R381's lemma,
-kept here to keep the import surface minimal). -/
-theorem rotZ_shadowDifference (m : ℕ) (hm : 0 < m)
-    (p : (Fin m → ℤ) × (Fin m → ℤ)) :
-    rotZ m hm (shadowDifference p) =
-      shadowDifference (rotZ m hm p.1, rotZ m hm p.2) := by
-  funext j
-  unfold rotZ shadowDifference
-  by_cases hj : (j : ℕ) = 0 <;> simp [hj] <;> ring
-
-/-- One rotation preserves membership in the full shadow-difference family
-(local re-derivation of R381's `allShadowDifferences_rotZ`). -/
-theorem allShadowDifferences_rotZ_mem (m r : ℕ) (hm : 0 < m) {d : Fin m → ℤ}
-    (hd : d ∈ allShadowDifferences (2 * m) m r) :
-    rotZ m hm d ∈ allShadowDifferences (2 * m) m r := by
-  classical
-  rw [allShadowDifferences, Finset.mem_image] at hd ⊢
-  obtain ⟨p, hp, rfl⟩ := hd
-  refine ⟨(rotZ m hm p.1, rotZ m hm p.2), ?_, (rotZ_shadowDifference m hm p).symm⟩
-  rw [Finset.mem_offDiag] at hp ⊢
-  refine ⟨keysR_rotZ (2 * m) m r hm rfl p.1 hp.1,
-    keysR_rotZ (2 * m) m r hm rfl p.2 hp.2.1, ?_⟩
-  intro heq
-  exact hp.2.2 ((rotZ_bijective m hm).1 heq)
+-- `rotZ_shadowDifference` / `allShadowDifferences_rotZ` are R381's
+-- (`R381SignedRotationOrbitBlock`), reused here.
 
 /-- Every iterate of a shadow difference remains a shadow difference. -/
 theorem iterate_mem_allShadowDifferences (m r : ℕ) (hm : 0 < m) {d : Fin m → ℤ}
@@ -304,7 +255,7 @@ theorem iterate_mem_allShadowDifferences (m r : ℕ) (hm : 0 < m) {d : Fin m →
   | zero => simpa using hd
   | succ t ih =>
       rw [Function.iterate_succ_apply']
-      exact allShadowDifferences_rotZ_mem m r hm ih
+      exact ArkLib.ProximityGap.Frontier.R381SignedRotationOrbitBlock.allShadowDifferences_rotZ m r hm ih
 
 /-- **Orbit closure**: the full negacyclic orbit of a shadow difference stays inside the
 shadow-difference family. -/
@@ -527,7 +478,7 @@ theorem firstIncidenceDiscrepancy_transversal_independent
 /-- **Threshold identity.**  For every transversal and EVERY threshold `W`, the
 first-incidence bound and the anomaly bound are the same inequality: the sets of sufficient
 thresholds coincide EXACTLY, so no strictly weaker sufficient condition for the anomaly
-budget can be phrased through the first-incidence functional. -/
+budget can be phrased through this (orbit-weighted) first-incidence functional. -/
 theorem firstIncidence_le_iff_relationAnomaly_le
     (g : F) (m r : ℕ) (hm : 0 < m) (hg : g ^ m = -1) (hg0 : g ≠ 0)
     {T : Finset (Fin m → ℤ)}
@@ -540,7 +491,8 @@ theorem firstIncidence_le_iff_relationAnomaly_le
 first-incidence cross-orbit bound at the Wick budget is EQUIVALENT to `DCEnergyBound` on the
 power-root set — the production BGK/Paley-wall-scale statement.  The remaining single-embedding
 first-incidence cross-orbit formulation of the signed relation route is quantitatively
-IDENTICAL to the wall; it admits no weaker sufficient condition. -/
+IDENTICAL to the wall (by regrouping); this functional admits no weaker sufficient
+condition. -/
 theorem firstIncidence_bound_iff_wall
     (g : F) (n m r : ℕ)
     (hg0 : g ≠ 0) (hord : orderOf g = n) (hm : 0 < m) (hn : n = 2 * m) (hg : g ^ m = -1)
@@ -586,7 +538,8 @@ theorem firstIncidence_eq_dcMoment_sub_floor
 /-! ### 7. The unweighted variant: dropping the weights rescales the wall exactly -/
 
 /-- **Exact rescaling of the unweighted first-incidence sum.**  If the orbits through a
-transversal share one size `c` (uniform orbit size), the full anomaly is EXACTLY `c` times the
+transversal share one size `c` (uniform orbit size — a HYPOTHESIS here, not a proved fact),
+the full anomaly is EXACTLY `c` times the
 raw (unweighted) first-incidence sum — the sandwich constant is precisely the orbit size, as
 predicted by orbit rigidity (R382 + orbit constancy), with zero analytic slack. -/
 theorem relationAnomaly_eq_orbitSize_mul_rawFirstIncidence
@@ -601,8 +554,8 @@ theorem relationAnomaly_eq_orbitSize_mul_rawFirstIncidence
   exact Finset.sum_congr rfl (fun t ht => by rw [hc t ht])
 
 /-- The unweighted first-incidence bound is the wall bound rescaled by exactly the orbit
-size: even discarding the orbit weights yields no weaker sufficient condition, only the same
-condition at a known exact scale. -/
+size, under the uniform-orbit-size hypothesis `hc`: in that case discarding the orbit weights
+yields no weaker sufficient condition, only the same condition at the exact scale `c`. -/
 theorem rawFirstIncidence_le_iff_wall_scaled
     (g : F) (m r : ℕ) (hm : 0 < m) (hg : g ^ m = -1) (hg0 : g ≠ 0)
     {T : Finset (Fin m → ℤ)}

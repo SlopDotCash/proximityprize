@@ -37,37 +37,40 @@ GM-MDS matrix construction (Lovett §1, AGL24 Appendix A / [9, Thm A.2]).
 
 1. **`RIMKernelTrivialFromLovett`** — the precisely-stated **ring-change transfer residual**:
    `(∀ m, LovettThm17 F m) → GZPCondition e δ k → ((RIM F e).mulVec v = 0 → v = 0)` over
-   `MvPolynomial ι F`.  This isolates *exactly* the open core: transporting Lovett's
-   independence across the two polynomial rings to the RIM's trivial kernel.  It is the genuine
-   replacement for the dead WPC hypothesis `WeaklyPartitionConnected`, stated directly at the
-   object the minor extractor wants (no WPC, no `SymbolicFullRankResidual`).
+   `MvPolynomial ι F`.  It was intended to isolate the transport of Lovett's independence
+   across the two polynomial rings to the RIM's trivial kernel, dropping the WPC hypothesis.
+   Dropping WPC makes it **false** (see "Status of the residual" below).
 
 2. **`symbolicMinorFromLovett_of_ringChange`** — the **discharge**: from
    `RIMKernelTrivialFromLovett` the connector residual `SymbolicMinorFromLovett` follows by the
    same fraction-field extraction + `RingHom.map_det` descent that proves
    `exists_nonzero_poly_minor` (here re-run without the WPC detour).  Axiom-clean.
 
-3. **Satisfiability of the residual** (`ringChange_of_symbolicFullRank_wpc`,
-   `ringChange_inhabited_of_goal`-style facts): `RIMKernelTrivialFromLovett` is *not* `False` —
-   it follows from the proven `exists_nonzero_poly_minor` machinery whenever a WPC witness is
-   available, and from the AGL24 goal interface.  So the decomposition introduces no impossible
-   obligation; it is the honest localization of the GM-MDS construction.
+3. **A WPC-guarded companion** (`rimKernelTrivial_conclusion_of_symbolicFullRank_wpc`): the
+   residual's *conclusion* follows from `SymbolicFullRankResidual` under the stronger WPC and
+   `1 ≤ t` premises. This does **not** show the universally quantified residual is satisfiable —
+   and in fact it is not: `RIMKernelTrivialFromLovett` is **refuted**
+   (`rimKernelTrivialFromLovett_refuted`, and for every `1 ≤ k`
+   `not_rimKernelTrivialFromLovett`, in `LovettRIMKernelTrivial.lean`; the 14th false-residual
+   catch: at `e ≡ ∅`, `δ ≡ 0` the bare `GZPCondition` holds but the RIM has no rows).
 
 4. **The column-index bijection brick** (`rimCols_equiv_pFamUnion_index_of_shape`): the AGL24
    RIM column index `Fin t × Fin k` is in bijection with Lovett's family index
    `Σᵢ Fin(k − |vᵢ|)` exactly when the `V*(k)` system has the *generic shape*
    `∑ᵢ (k − |vᵢ|) = t · k` (Lovett Def 1.4's `m`-rows-of-the-`k×n`-MDS-matrix normalization).
-   This is the field-independent index identification step (3) of the genuine path, reusable by
-   any future formalization of the ring-change transfer itself.
+   This is only a cardinality identification (any two finite types of equal size are in
+   bijection); it carries no ring-change content and certifies nothing about the transfer.
 
-## The remaining open core (precisely stated, satisfiable)
+## Status of the residual (corrected)
 
-`RIMKernelTrivialFromLovett` is the one named residual carrying the full GM-MDS matrix
-construction (steps (2),(4) of the genuine path: Lovett's `pFamUnion`-independence over
-`MvPolynomial (Fin n) F` ⟹ `RIM`-kernel-triviality over `MvPolynomial ι F`).  It is the
-recognized hard #389 core; it is **not** circular (it does not route through `GMMDSResidual`)
-and **not** vacuous (the satisfiability lemmas exhibit witnesses).  Discharging it is the GM-MDS
-algebra of AGL24 Appendix A.
+`RIMKernelTrivialFromLovett` was intended to carry the full GM-MDS matrix construction (Lovett's
+`pFamUnion`-independence over `MvPolynomial (Fin n) F` ⟹ `RIM`-kernel-triviality over
+`MvPolynomial ι F`). It is not circular, but **as stated it is FALSE** for every `1 ≤ k`
+(`not_rimKernelTrivialFromLovett`): a bare `GZPCondition` admits degenerate, row-free edge
+families. An earlier version of this docstring called it "not vacuous" on the strength of the
+WPC-guarded companion lemma, which proves a different statement. The corrected residual is
+`RIMKernelTrivialFromLovettWPC` (`LovettRIMKernelTrivial.lean`). The conditional determinant
+descent `symbolicMinorFromLovett_of_ringChange` itself is correct.
 
 Issue #389.
 -/
@@ -79,8 +82,8 @@ namespace ArkLib.GMMDS
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 variable {F : Type*} [Field F]
 
-/-- **The ring-change transfer residual** — the genuine #389 core, stated directly at the RIM
-kernel (no `WeaklyPartitionConnected`, no `SymbolicFullRankResidual`, no `GMMDSResidual`).
+/-- **The ring-change transfer residual** (refuted as stated; see below), stated directly at
+the RIM kernel (no `WeaklyPartitionConnected`, no `SymbolicFullRankResidual`, no `GMMDSResidual`).
 
 From Lovett's Theorem 1.7 (proven unconditionally) and a generic zero pattern `(e, δ)` with
 `GZPCondition e δ k`, the reduced intersection matrix `RIM F e` has **trivial kernel over the
@@ -90,9 +93,11 @@ Mathematically this is the GM-MDS matrix construction: Lovett's `pFamUnion V k` 
 independent over the *dual-variable* ring `MvPolynomial (Fin n) F`, and the GM-MDS
 correspondence transports that independence — across the column-index bijection
 `Fin t × Fin k ≃ Σᵢ Fin(k − |vᵢ|)` and the ring change — to the RIM's full column rank, i.e.
-its trivial polynomial kernel.  This `Prop` isolates *exactly* that transport; it replaces the
-dead `WeaklyPartitionConnected` hypothesis of `exists_nonzero_poly_minor` with the genuine GZP
-hypothesis. -/
+its trivial polynomial kernel.  **As stated this `Prop` is FALSE** for every `1 ≤ k`
+(`not_rimKernelTrivialFromLovett`, `LovettRIMKernelTrivial.lean`): replacing the
+`WeaklyPartitionConnected` hypothesis of `exists_nonzero_poly_minor` by a bare `GZPCondition`
+loses the nondegeneracy (`e ≡ ∅`, `δ ≡ 0` satisfies `GZPCondition` with a zero-row RIM). The
+corrected form is `RIMKernelTrivialFromLovettWPC`. -/
 def RIMKernelTrivialFromLovett (ι : Type*) [Fintype ι] [DecidableEq ι]
     (F : Type*) [Field F] (k : ℕ) : Prop :=
   (∀ m : ℕ, LovettThm17 (F := F) m) →
@@ -142,25 +147,22 @@ theorem symbolicMinorFromLovett_of_ringChange {k : ℕ}
     rw [← RingHom.mapMatrix_apply, ← RingHom.map_det]]
   rw [hzero, map_zero]
 
-/-! ## Satisfiability of the ring-change residual (non-vacuity)
+/-! ## A WPC-guarded companion (not a satisfiability proof)
 
-The transfer residual is *not* `False`.  Whenever a `WeaklyPartitionConnected` witness is
-available (the regime in which the proven `exists_nonzero_poly_minor` machinery applies) and the
-symbolic full-rank interface holds, the RIM kernel is trivial — exactly
-`RIMKernelTrivialFromLovett`'s conclusion.  This records that the residual's conclusion is
-inhabited; it does **not** close the residual (a bare `GZPCondition` does not supply WPC — that
-is the refuted shortcut), it only certifies the residual is satisfiable. -/
+Whenever a `WeaklyPartitionConnected` witness is available and the symbolic full-rank interface
+holds, the RIM kernel is trivial — the conclusion shape of `RIMKernelTrivialFromLovett`. This
+does **not** show the residual is satisfiable: the residual quantifies over all bare-GZP
+families, and it is refuted (`not_rimKernelTrivialFromLovett`). -/
 
 omit [DecidableEq ι] in
-/-- **The ring-change conclusion is satisfiable from the symbolic full-rank interface + a WPC
+/-- **The ring-change conclusion under the symbolic full-rank interface + a WPC
 witness.**  If `SymbolicFullRankResidual F k` holds and the edge family is weakly partition
 connected, then `RIM F e` has trivial polynomial kernel — the conclusion shape of
 `RIMKernelTrivialFromLovett`.  Axiom-clean.
 
-This is the honest non-vacuity certificate: the conclusion is reachable on the WPC regime where
-`SymbolicFullRankResidual` is the named (paper Appendix-A) input.  The residual proper asks for
-the same conclusion from the *strictly weaker* `GZPCondition` hypothesis via Lovett — that
-strengthening of the hypothesis class is the GM-MDS content still to be formalized. -/
+This is not a non-vacuity certificate for `RIMKernelTrivialFromLovett`: the residual asks for
+the same conclusion from the strictly weaker bare `GZPCondition`, and that strengthening is
+false (`not_rimKernelTrivialFromLovett`). -/
 theorem rimKernelTrivial_conclusion_of_symbolicFullRank_wpc {k : ℕ}
     (hsym : AGL24.SymbolicFullRankResidual (ι := ι) F k)
     {t : ℕ} (ht : 1 ≤ t) (e : ι → Finset (Fin (t + 1)))
@@ -197,8 +199,8 @@ omit [DecidableEq ι] in
 `V*(k)`-shaped system over `m = t` rows has `∑ᵢ (k − |vᵢ|) = t · k`, so the column-index
 bijection is inhabited at the generic shape.  (This is a *shape* witness for the bijection, not
 a claim that the all-zero system is `V*(k)` — `IsVStar` fails for `t ≥ 2`; the genuine `vᵢ`
-encode the edge structure.  The point is only that the cardinality identity `∑(k−|vᵢ|)=t·k` is
-satisfiable, so `rimCols_equiv_pFamUnion_index_of_shape` is non-vacuous.)  Axiom-clean. -/
+encode the edge structure.  It shows only that the cardinality identity `∑(k−|vᵢ|)=t·k` is
+satisfiable; it certifies nothing about the ring-change transfer.)  Axiom-clean. -/
 theorem rimCols_shape_satisfiable (t k : ℕ) :
     ∑ _i : Fin t, (k - vAbs (Function.const (Fin (Fintype.card ι)) (0 : ℕ)))
       = t * k := by

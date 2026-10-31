@@ -38,6 +38,13 @@ The side conditions `himplSP` (state-preserving `impl`) and `himplNF` (never-fai
 soundness analogue of the completeness proof's `hImplSupp` / `hInit`; they are discharged for the
 honest interactive implementation `impl.addLift challengeQueryImpl` by `addLift_state_preserving` /
 `addLift_neverFail`.
+
+**Scope of the residual-free theorem.** `append_soundness_msg` / `append_soundness_msg'` assume,
+besides the component soundness facts, state preservation (`himplSP`), never-failing (`himplNF`),
+a state-independent response law (`himplVB`: the answer distribution of `impl` does not depend on
+the state), and a message-first right seam (`hn`, `hDir`, `hDir₂`). They are therefore **not**
+theorems for arbitrary mutating or cache-based oracle implementations, nor for challenge-first
+seams.
 -/
 
 open OracleComp OracleSpec ProtocolSpec OptionTStateT

@@ -58,9 +58,10 @@ theorem shawOOne_endpoint_of_orderedWalkMajorant {ι E : Type*} [SeminormedAddCo
     hscale hdom hR
 
 /-- Contrapositive-facing obstruction form: if the endpoint periods do not satisfy the raw prize bound,
-then no dominating ordered-walk radius can satisfy that prize bound either.  Thus DIR9 is an exact
-reformulation target: a successful Doob/vdC bound for `R` would have to be as strong as the original
-Paley/BGK wall. -/
+then no dominating ordered-walk radius can satisfy that prize bound either.  Thus a successful
+Doob/vdC bound for `R` would be at least as strong as the original Paley/BGK wall. This is a
+*sufficient* majorant transfer, not an exact reformulation: the converse fails in general, since
+bounded endpoints need not bound every prefix of the walk (audit 2026-10-28, R-213). -/
 theorem not_corePrizeBoundOn_radius_of_endpoint_not_core {ι E : Type*} [SeminormedAddCommGroup E]
     {q n : ι → ℝ} {endpoint : ι → E} {R : ι → ℝ}
     (hdom : EndpointDominated endpoint R)

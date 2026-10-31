@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
 
 /-!
-# The CUMULANT moment-method Gauss-period bound for the smooth domain (#407)
+# The principal-erased ("cumulant") moment-method Gauss-period bound (#407)
 
 This file SHARPENS the moment-method consumer of `GaussPeriodMomentBound.lean` to the **tight**
 identity, fixing a provable looseness that is exactly the content of the in-tree
@@ -22,23 +22,33 @@ DOMINATED by exactly this principal/equidistribution mass for `r > log_n p`
 (`E_r ≈ |G|^{2r}/q`), so the named input `GaussianEnergyBound : E_r ≤ (2r-1)‼·|G|^r` is
 **provably false** past `r ≈ log_n p` — precisely the regime the prize needs (`r ≈ ln q`).
 
-The fix is to subtract the principal term and bound the worst FAR period by the **cumulant**
+The fix is to subtract the principal term and bound the worst FAR period by the
+**principal-erased moment**
 
   `∑_{b ≠ 0} ‖η_b‖^{2r}  =  q·E_r(G) − |G|^{2r}`   (`cumulant_eq`),
 
-whose Wick bound `CumulantEnergyBound : ∑_{b≠0}‖η_b‖^{2r} ≤ q·(2r-1)‼·|G|^r` is the genuinely-open
-object.  The principal `|G|^{2r}` cancels — the prize is the *connected/cumulant* part, never the
-raw moment.
+whose Wick-type bound `CumulantEnergyBound : ∑_{b≠0}‖η_b‖^{2r} ≤ q·(2r-1)‼·|G|^r` is the
+genuinely-open object.  The principal `|G|^{2r}` cancels — the prize concerns the far-frequency
+mass, never the raw moment.
+
+**Terminology caveat.** The names `cumulant_eq`, `CumulantEnergyBound`, … are historical: the
+quantity `∑_{b≠0}‖η_b‖^{2r}` is an even moment with the single principal Fourier term erased,
+**not** a statistical cumulant. A genuine fourth/sixth cumulant also subtracts the lower-moment
+partition contributions (e.g. `M₄ − 3M₂²` for a centred real variable), and those are not
+computed here. Nothing in this file therefore justifies claims about connected diagrams,
+Gaussian cumulants or monodromy beyond the displayed identity. The raw-moment DC obstruction
+recorded in the cumulant note above, and the known conditional failures of exact Wick
+equalities, are pre-existing knowledge this file builds on.
 
 ## What is proven here (axiom-clean)
 
-* `cumulant_eq` — the exact cumulant identity (principal term subtracted).
+* `cumulant_eq` — the exact principal-erased moment identity (principal term subtracted).
 * `eta_pow_le_of_cumulantBound` — the tight single-frequency bound from the cumulant input.
 * `worstCaseIncompleteSumBound_of_cumulantBound` — discharges the in-tree open residual
   `WorstCaseIncompleteSumBound` at the SAME scale `M_r = (q·(2r-1)‼·|G|^r)^{1/r}` as the
   raw-moment consumer, but from the tight (genuinely-open) cumulant input.  Minimising over `r`
   (optimum `r* ≈ ln q`) still gives `B ≤ √(2 n ln q)`.
-* `cumulantBound_iff_random_plus_diagonal` — the cumulant bound is EXACTLY the "random + diagonal"
+* `cumulantBound_iff_le_diag_add_principal` — the bound is EXACTLY the "random + diagonal"
   energy budget `E_r ≤ (2r-1)‼·|G|^r + |G|^{2r}/q`, with the random baseline `|G|^{2r}/q`
   identified as the (subtracted) principal contribution.  This makes the abstract `random`/`diag`
   split of `Frontier/_ConstantIndexMomentGate.lean` concrete.
@@ -52,7 +62,8 @@ raw moment.
 
 **Honest scope.**  This does NOT close the prize: the cumulant bound for `r ≈ ln q` is the
 recognized open core (second-order equidistribution of the Gauss-period family = Paley-graph /
-BGK).  The contribution is to (1) name the *correct* open object (cumulant, not raw moment),
+BGK).  The contribution is to (1) name the *correct* open object (principal-erased moment, not
+raw moment),
 (2) prove the tight consumer feeding it into δ\*, and (3) record that the bound is provably
 non-uniform (Fermat-refuted), so any pin must be conditioned on a checkable genericity invariant of
 `p`.  Axiom-clean (`propext, Classical.choice, Quot.sound`).  Issue #407.
@@ -72,11 +83,12 @@ theorem eta_zero (ψ : AddChar F ℂ) (G : Finset F) : eta ψ G 0 = (G.card : �
   unfold eta
   simp [AddChar.map_zero_eq_one]
 
-/-- **The cumulant identity (#407).** The far-frequency mass is the full `2r`-th moment with the
-principal term removed:
+/-- **The principal-erased moment identity (#407; historical name `cumulant_eq`).** The
+far-frequency mass is the full `2r`-th moment with the principal term removed:
   `∑_{b ≠ 0} ‖η_b‖^{2r} = q·E_r(G) − |G|^{2r}`.
-The prize quantity `max_{b≠0}‖η_b‖` is controlled by this connected/cumulant part; the principal
-`|G|^{2r}` is exactly the equidistribution mass that dominates the raw moment and CANCELS here. -/
+The prize quantity `max_{b≠0}‖η_b‖` is controlled by this far-frequency mass; the principal
+`|G|^{2r}` is exactly the equidistribution mass that dominates the raw moment and CANCELS here.
+(This is not a statistical cumulant: no lower-moment partition terms are subtracted.) -/
 theorem cumulant_eq {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F) (r : ℕ) :
     ∑ b ∈ Finset.univ.erase (0 : F), ‖eta ψ G b‖ ^ (2 * r)
       = (Fintype.card F : ℝ) * (rEnergy G r : ℝ) - (G.card : ℝ) ^ (2 * r) := by
@@ -84,7 +96,8 @@ theorem cumulant_eq {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F) (
   congr 1
   rw [eta_zero, Complex.norm_natCast]
 
-/-- **The cumulant energy bound** — the genuinely-open prize input at order `r`: the far-frequency
+/-- **The principal-erased energy bound** (historical name `CumulantEnergyBound`; not a
+statistical cumulant) — the genuinely-open prize input at order `r`: the far-frequency
 mass is bounded by the real-Gaussian (Wick) value,
   `∑_{b ≠ 0} ‖η_b‖^{2r} = q·E_r − |G|^{2r} ≤ q·(2r-1)‼·|G|^r`.
 Weaker than `GaussianEnergyBound` (which omits the `−|G|^{2r}` subtraction); this is the honest

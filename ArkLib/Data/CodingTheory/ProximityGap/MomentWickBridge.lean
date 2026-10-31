@@ -21,16 +21,18 @@ Two independent in-tree reductions of the prize per-frequency core
 This file proves the **elementary moment-method bridge** that unifies them: the Wick energy bound at
 level `r` (Route B's hypothesis) implies the *uniform per-frequency ceiling* `‖η_b‖^{2r} ≤ q·(2r−1)‼·nʳ`
 for every `b≠0` — i.e. `M^{2r} ≤ q·(2r−1)‼·nʳ`, the `2r`-th-power input that feeds Route A's
-amplification (`eta_sq_le_total` is exactly the `r=1` case).  So Route B ⟹ Route A: a single scalar, two
-faces.  The bridge step is `single_le_sum` (a max term is at most the sum of nonnegative terms) — fully
-proven.  The `r=1` Wick bound is also **proven** here (`wickEnergyBound_one`, from the exact second
-moment), so the conditional chain is non-vacuous; the open content is exactly the bound at `r ∼ log q`
-(the BGK / Paley √-cancellation wall — kept as the named Prop `WickEnergyBound`, never discharged at log
-depth).
+amplification (`eta_sq_le_total` is exactly the `r=1` case).  So Route B ⟹ Route A (one direction
+only: the pointwise ceiling does not imply the summed Wick bound — see the counterexample in the
+docstring of `eta_sq_le_qn_unconditional`).  The bridge step is `single_le_sum` (a max term is
+at most the sum of nonnegative terms) — fully proven.  The `r=1` Wick bound is also **proven**
+here (`wickEnergyBound_one`, from the exact second moment), so the conditional chain is
+non-vacuous; the open content is exactly the bound at `r ∼ log q` (the BGK / Paley √-cancellation
+wall — kept as the named Prop `WickEnergyBound`, never discharged at log depth).
 
 Cross-validated numerically (`scripts/probes`): the moment bound `(q·A_r)^{1/2r}` minimised over `r`
-reproduces the true `M(n)` to within ≈1.1×, with the optimal depth `r ∼ ln q` — confirming the two
-routes compute the same scalar.
+reproduces the true `M(n)` to within ≈1.1×, with the optimal depth `r ∼ ln q` — numerical evidence
+that the moment route is not lossy on the probed instances, not a proof that the two routes are
+equivalent.
 
 Axiom-clean.  Issue #444.
 -/
@@ -85,11 +87,18 @@ theorem eta_pow_le_of_wick {ψ : AddChar F ℂ} (G : Finset F) (r : ℕ)
     Finset.single_le_sum hnonneg hbs
   exact hle.trans hwick
 
-/-- **Unification corollary (the scalar, both ways).**  Combining the bridge with the proven `r=1` base
-case: every nonzero frequency obeys the second-moment ceiling `‖η_b‖² ≤ q·n` *unconditionally*, and obeys
-the depth-`r` ceiling `‖η_b‖^{2r} ≤ q·(2r−1)‼·nʳ` *iff* the Wick bound holds at `r`.  So the prize floor
-`M ≤ √(c·n·log q)` is exactly Route B's Wick bound at `r ∼ log q`, which is Route A's amplification
-`C = c·log q` — one open scalar, two equivalent faces. -/
+/-- **Unconditional `r=1` corollary.**  Combining the bridge with the proven `r=1` base case: every
+nonzero frequency obeys the second-moment ceiling `‖η_b‖² ≤ q·n` *unconditionally*.
+
+Only one direction is available in general: the depth-`r` Wick bound *implies* the depth-`r`
+per-frequency ceiling `‖η_b‖^{2r} ≤ q·(2r−1)‼·nʳ` (`eta_pow_le_of_wick`).  The converse is **false**
+even for actual character sums: over `F₃₁` with `G = {0,…,6}`, a primitive additive character
+and `r = 2`, the triangle inequality gives `‖η_b‖⁴ ≤ 7⁴ = 2401 < 31·3·7² = 4557` for every
+`b ≠ 0`, while the interval's additive energy `E = (2·7³ + 7)/3 = 231` and orthogonality give
+`∑_{b≠0} ‖η_b‖⁴ = 31·231 − 7⁴ = 4760 > 4557`.  So the pointwise prize ceiling
+`M ≤ √(c·n·log q)` is *implied by* (not equivalent to) the summed Wick bound at `r ∼ log q`; the
+trivial reverse comparison (summing the pointwise bound) loses a factor `q − 1`, and any sharper
+converse would need separately derived constants and hypotheses. -/
 theorem eta_sq_le_qn_unconditional {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
     {b : F} (hb : b ≠ 0) :
     ‖eta ψ G b‖ ^ 2 ≤ (Fintype.card F : ℝ) * (G.card : ℝ) := by

@@ -12,10 +12,13 @@ import Mathlib.Tactic
   COLLAPSE. The tool-shape doctrine's one surviving chaining shape was "generic chaining
   (Talagrand γ₂) under a metric the Jacobi cocycle could conceivably supply, different from the
   Euclidean one that G70 proved BGK-tight." This lane CONSTRUCTS the candidate metrics, probes
-  them, and proves the door closed **metric-independently**: for a deterministic field, the
-  sub-Gaussian-increment certificate collapses to a diameter bound, and every metric satisfying
-  it has chaining gauge γ₂ ≥ spread/(2√(log 2)) ≥ (sup)/(2√(log 2)) − ε. No Jacobi-cocycle (or
-  any other) metric can place γ₂ below the sup it is supposed to certify.
+  them, and proves a **metric-independent reduction**: for a deterministic field, the
+  sub-Gaussian-increment certificate collapses to a domination-plus-diameter bound, and every
+  metric satisfying it has chaining gauge γ₂ ≥ spread/(2√(log 2)). So chaining adds nothing
+  beyond the diameter: a Jacobi-cocycle (or any other) metric certifies the sup exactly when it
+  dominates the increments (`|Δ| ≤ √(log 2)·d`) and has diameter at the target scale. This is a
+  REDUCTION of the chaining route to a domination/diameter problem, not a proof that the route
+  is closed: a dominating metric of small diameter would prove the target bound.
 
 ## The candidates constructed and probed (`probe_g94_jacobi_cocycle_metric.py`)
 
@@ -48,7 +51,7 @@ NO metric with sub-Gaussian increments places γ₂ below `√(n log p)`-scale: 
 branch is empty, and the best case `γ₂ ≍ √(n log p) ≍ M` is exactly the G69/G70 BGK-tight
 tautology (the certificate reproduces the sup).
 
-## What this file PROVES (the metric-independent no-go)
+## What this file PROVES (the metric-independent reduction)
 
 For a DETERMINISTIC field `X : T → ℝ` the honest reading of the chaining tail condition
 `P(|X_b − X_{b'}| > t) ≤ 2·exp(−t²/d(b,b')²)` is: for every `t` below the realized increment
@@ -65,9 +68,11 @@ the right side must be ≥ 1 (a deterministic event has probability 1). We prove
    admissible sequences) is bounded BELOW by half the diameter — the standard first-level γ₂
    estimate, formalized, r-uniform in the truncation depth `K`.
 5. **HEADLINE `no_subSpread_gamma2_certificate`**: sub-Gaussian increments w.r.t. ANY metric
-   `d` (nonneg + symmetric + triangle) force `spread(X) ≤ 2√(log 2)·γ₂(T,d)`. Contrapositive:
-   γ₂ can NEVER sit below `spread/(2√(log 2))`; on the period field `spread ≥ M`, so no metric
-   — Jacobi-cocycle-derived or otherwise — yields a sub-sup chaining certificate.
+   `d` (nonneg + symmetric + triangle) force `spread(X) ≤ 2√(log 2)·γ₂(T,d)`. This is precisely
+   the bound a chaining certificate is meant to deliver; read contrapositively, γ₂ can never sit
+   below `spread/(2√(log 2))`, so a chaining certificate is never STRONGER than the sup it
+   certifies (no metric yields a sub-sup γ₂), but a metric with γ₂ at the target scale would
+   prove the target.
 6. `gamma2_certificate_is_conclusion`: any hoped-for certificate `γ₂ ≤ B` + sub-Gaussianity
    IMPLIES `spread ≤ 2√(log 2)·B` — i.e. the certificate already contains the conclusion; the
    chaining step adds nothing (the route is circular at the deterministic level).
@@ -84,10 +89,14 @@ the right side must be ≥ 1 (a deterministic event has probability 1). We prove
 
 ## HONEST SCOPE
 
-This is a NO-GO map, not a prize step. It closes the "Jacobi cocycle supplies a DIFFERENT
-chaining metric" door in the only reading available for the deterministic period field at fixed
-`(p, n)`: sub-Gaussianity-as-tail-bound degenerates to domination, and then chaining is
-redundant and γ₂ is pinned at/above the sup. It does NOT close (and explicitly names) the one
+This is a REDUCTION map plus a probe, not a prize step. It reduces the "Jacobi cocycle supplies
+a DIFFERENT chaining metric" route, in the only reading available for the deterministic period
+field at fixed `(p, n)`, to a domination/diameter problem: sub-Gaussianity-as-tail-bound
+degenerates to domination, chaining is then redundant, and γ₂ is pinned at/above the spread.
+The route is not refuted by this file — exhibiting a dominating metric of diameter
+`O(√(n log p))` would prove the target — but the probe found no cocycle candidate beating the
+plain value metric, for which the problem is the target itself. It does NOT address (and
+explicitly names) the one
 surviving formulation: increment sub-Gaussianity over GENUINE randomness (a probabilistic model
 of the field certified by moments to depth ~log p) — that is exactly the open Wick atom /
 independence form (dossier §2.4), untouched here. It does not re-derive G70 (which is the
@@ -330,13 +339,14 @@ theorem metricDiam_le_two_mul_gamma2Net
 
 /-- **HEADLINE — no sub-spread γ₂ certificate exists, for ANY metric.** If a deterministic
 field has sub-Gaussian increments (honest tail reading) with respect to a metric `d`, then the
-chaining gauge is pinned ABOVE the field spread: `spread(X) ≤ 2√(log 2)·γ₂(T, d)`. On the
-Gauss-period field `spread ≥ M − o(M)`, so no metric — in particular no metric manufactured
-from the Jacobi cocycle (transfer products, projective directions, m-functions, Lyapunov data,
-CD-kernel embeddings, orbit paths) — can carry a chaining certificate `γ₂ ≪ M`. The one door
-the tool-shape doctrine left ajar ("the Jacobi cocycle could conceivably supply a DIFFERENT
-metric") closes metric-independently at the deterministic level; what survives is only
-sub-Gaussianity over genuine randomness = the open Wick atom, named and untouched. -/
+chaining gauge is pinned ABOVE the field spread: `spread(X) ≤ 2√(log 2)·γ₂(T, d)`. This is the
+chaining conclusion itself (see `gamma2_certificate_is_conclusion`): no metric — in particular
+none manufactured from the Jacobi cocycle (transfer products, projective directions,
+m-functions, Lyapunov data, CD-kernel embeddings, orbit paths) — can carry a certificate
+`γ₂ ≪ spread`, but a dominating metric with `γ₂` (equivalently, by §3, diameter) at the target
+scale WOULD prove the target. At the deterministic level the "DIFFERENT metric" route thus
+reduces, metric-independently, to a domination/diameter problem; sub-Gaussianity over genuine
+randomness (the open Wick atom) is a separate formulation, named and untouched. -/
 theorem no_subSpread_gamma2_certificate
     (X : T → ℝ) (d : T → T → ℝ) (K : ℕ)
     (hd0 : ∀ b b', 0 ≤ d b b') (hsymm : ∀ b b', d b b' = d b' b)
@@ -454,13 +464,6 @@ theorem valueFactored_domination_descends {d : T → T → ℝ} {X : T → ℝ} 
   rw [← hfac b b']
   exact abs_le_of_detSubGaussianPair (hd0 b b') (hsub b b')
 
-/-! ## §7 Honesty marker -/
-
-/-- This lane is a no-go map plus a probe; it is NOT a prize closure. -/
-def isPrizeClosure : Prop := False
-
-theorem not_prizeClosure : ¬ isPrizeClosure := id
-
 end
 
 /-! ## Axiom audit
@@ -482,6 +485,5 @@ Every declaration below must report exactly `[propext, Classical.choice, Quot.so
 #print axioms loneSpike_defeats_every_gauge
 #print axioms valueFactored_null_on_equal_periods
 #print axioms valueFactored_domination_descends
-#print axioms not_prizeClosure
 
 end ArkLib.CodingTheory.ProximityGap.Frontier.G94JacobiCocycleMetric

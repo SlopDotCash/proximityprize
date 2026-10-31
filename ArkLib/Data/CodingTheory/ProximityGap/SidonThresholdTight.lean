@@ -32,39 +32,52 @@ square root of unity, hence `= -1`, so `1 - ζ^{n/2} = 2`; and `ζ^{n/4}` is a p
 hence `(ζ^{n/4})² = -1`, so `‖1 + ζ^{n/4}‖² = 2`.  Thus `‖f(ζ)‖² = 2² · 2 = 8` at **every** root — the
 Parseval budget `∑‖s_a‖² = 4` per root is spread *uniformly* (`= 2` per term), the equality case of
 AM-GM.  Composing with the in-tree complex product formula (`resultant_cast_eq_prod`) this yields
-`|Res(Φ_n, f_balanced)|² = ∏_ζ 8 = 8^{φ(n)}` — the cap **attained**, so the threshold `p > 2^{3n/4}`
-is the *sharp* guaranteed no-(distinct-)parallelogram threshold; no resultant-level sharpening exists.
+`|Res(Φ_n, f_balanced)|² = ∏_ζ 8 = 8^{φ(n)}` — the archimedean cap is **attained**, so the
+*magnitude* bound `8^{φ(n)}` on distinct-four-term resultants cannot be sharpened, and the
+*sufficient* condition `p > 2^{3n/4}` cannot be improved by a better uniform bound on `|Res|` alone.
+
+This does **not** make `p > 2^{3n/4}` a *necessary* (sharp) threshold for the absence of
+parallelograms.  An odd prime `p` creates a parallelogram only if it divides some resultant; the
+balanced extremizer has `|Res| = 2^{3φ(n)/2}`, a pure power of `2` with **no odd prime divisor at
+all**, and attaining the archimedean maximum says nothing about which odd primes divide the other
+resultants.  Determining the actual bad-prime support is a separate arithmetic question.
 
 ## Honest scope (rules 1, 3, 6 + asymptotic guard)
 
-This is a **wall-mapping** result, NOT a CORE closure (rule 4: a precisely-mapped wall is a result).
-It does NOT improve the threshold (it proves the threshold is *already sharp*), and crucially the sharp
-threshold `2^{3n/4}` is **exponential** in `n`, whereas the prize regime has `p ≈ n^β` (`β ≈ 4-5`),
-i.e. `p` *polynomial* in `n` and thus *exponentially below* the threshold.  So `μ_n` is provably
-**not** Sidon-mod-negation in the prize regime by this method, and the additive-energy/Sidon route is
-confirmed structurally non-proving for the prize (the `E(μ_n) = 3n²-3n` char-0 value
-`RootsOfUnityAdditiveEnergyExact` lifts to `F_p` only above `2^{3n/4}`, far above the prize `p`).
+This is a **wall-mapping** result for the resultant-magnitude method, NOT a CORE closure.  It does
+NOT improve the threshold; it shows that the *resultant-magnitude* argument cannot reach below
+`2^{3n/4}`, which is **exponential** in `n`, whereas the prize regime has `p ≈ n^β`
+(`β ≈ 4-5`), i.e. `p` *polynomial* in `n`.  So this method gives no Sidon-mod-negation conclusion in the prize regime.
+It does **not** prove that `μ_n` fails to be Sidon there: failure of a sufficient condition is not a
+negation of Sidon.  Concretely, for `n = 32`, `p = 1048609` (prime, `≈ 32^4`, below `2^{24}`) and
+`g = 415330` (`g^{16} = p - 1`, `g^{32} = 1`), the subgroup `H = {g^j : 0 ≤ j < 32}` has every
+nonzero pair-sum fibre of size `≤ 2` and additive energy `E = 2976 = 3·32² - 3·32`, i.e. it *is*
+Sidon mod negation (audit PG-208; reproduce with
+`Counter((a+b)%p for a in H for b in H)`).  The `E(μ_n) = 3n²-3n` char-0 value
+(`RootsOfUnityAdditiveEnergyExact`) is guaranteed to lift to `F_p` by this argument only above
+`2^{3n/4}`; below it the value may or may not lift.
 No capacity / beyond-Johnson / cliff-at-`n/2` claim.  CORE `M(μ_n) ≤ C√(n log(p/n))` OPEN.
 
-## Companion: the DOUBLED (`S=6`) cap `12^{φ(n)}` is NOT tight — improvable to `10^{φ(n)}`
+## Companion: a DOUBLED (`S=6`) tuple attaining `10^{φ(n)}` (lower bound only)
 
 The doubled bound `SidonDoubledBound.abs_resultant_doubled_sq_le` gives `|Res(Φ_n, 2X^i-X^k-X^l)|²
-≤ 12^{φ(n)}` (threshold `p > 12^{n/4}`).  Unlike the distinct case, this is **NOT tight**:
+≤ 12^{φ(n)}` (sufficient threshold `p > 12^{n/4}`).  This file proves only a lower bound on the
+doubled maximum:
 
-  **`normSq_eval_doubled_extremizer_eq_ten`** — the doubled extremizer `2 - X^{n/4} - X^{n/2}` has
+  **`normSq_eval_doubled_extremizer_eq_ten`** — the doubled tuple `2 - X^{n/4} - X^{n/2}` has
   constant squared modulus `10` at every primitive root (it `= 3 - ζ^{n/4}` there, and `‖3-w‖²=10`
-  for `w²=-1`).  So the doubled resultant attains `|Res|² = 10^{φ(n)} < 12^{φ(n)}` — the bound is
-  loose by `(6/5)^{φ(n)}`, and the doubled threshold `p > 12^{n/4}` is improvable to `p > 10^{n/4}`
-  (the true sharp doubled value is `10`, not `12`).  Probe `probe_step_doubled_extremizer.py`: the
-  max doubled `|Res|` over all distinct `(i,k,l)` is `10^{φ(n)/2}` exactly (`a∈{2,3,4}`,
-  `match=True`) — `10`, never `12`.
+  for `w²=-1`).  So this tuple attains `|Res|² = 10^{φ(n)}`, i.e. the doubled maximum is
+  `≥ 10^{φ(n)}`.  It does **not** show that the cap `12^{φ(n)}` is loose: an attained value is a
+  lower bound on the maximum and does not exclude another tuple attaining any value up to
+  `12^{φ(n)}`.  Probe `probe_step_doubled_extremizer.py` *observed* that the max doubled `|Res|`
+  over all distinct `(i,k,l)` is `10^{φ(n)/2}` for `a ∈ {2,3,4}` (`match=True`) — a finite-probe
+  observation, not a proof.  Should the universal upper bound `≤ 10^{φ(n)}` be proved, it would
+  give the improved *sufficient* threshold `p > 10^{n/4}`; it would still not be a necessary
+  threshold (see above).
 
-  *(Note: the per-root sup over ALL doubled tuples does exceed `10` at some individual roots, so the
-  `10^{φ(n)}` resultant cap is a genuine product-optimization fact — it cannot come from a per-root
-  bound; the constant-`10` extremizer is the resultant-maximizer because tuples peaking above `10`
-  at one root dip below it at another.  This file proves the **attainment** `= 10^{φ(n)}`, pinning the
-  true doubled value from below and certifying `12^{φ(n)}` loose; the matching upper bound
-  `≤ 10^{φ(n)}` remains open.)*
+  *(Note: the per-root sup over ALL doubled tuples does exceed `10` at some individual roots, so a
+  `10^{φ(n)}` resultant cap, if true, would be a genuine product-optimization fact — it cannot come
+  from a per-root bound.  The matching universal upper bound `≤ 10^{φ(n)}` remains **open**.)*
 
 Probe `scripts/probes/probe_step_worstcase_res_exact.py` (exact integer cyclotomic resultants,
 `n = 2^a`, `a ∈ {2,3,4,5}`): the balanced four-term `(1+X^{n/4})(1-X^{n/2})` has
@@ -178,11 +191,12 @@ theorem normSq_eval_balanced_eq_eight {m : ℕ} (hm : 2 ≤ m) {ζ : ℂ}
 root** (`m ≥ 2`).  The doubled four-term `2X^0 - X^{n/4} - X^{n/2} = 2 - X^{n/4} - X^{n/2}`
 evaluates at a primitive `2^m`-th root to `3 - ζ^{n/4}` (since `ζ^{n/2} = -1`), and `‖3 - w‖² = 10`
 whenever `w² = -1` (`‖w‖=1`, `Re w = 0` ⟹ `9 - 6·Re w + 1 = 10`).  Since this is **constant** `= 10`
-across all `φ(n)` primitive roots, the doubled resultant attains `|Res(Φ_n, ·)|² = 10^{φ(n)}` — which
-is **strictly below** the in-tree doubled cap `12^{φ(n)}` (`SidonDoubledBound.abs_resultant_doubled_sq_le`)
-by a factor `(6/5)^{φ(n)}`.  So the in-tree doubled bound `12^{φ(n)}` is **NOT tight**, and the
-doubled threshold `p > 12^{n/4}` (`SidonDoubledThreshold.prime_sq_le_doubled`) is improvable to
-`p > 10^{n/4}` (the true sharp doubled threshold lives at `10`, not `12`). -/
+across all `φ(n)` primitive roots, this doubled tuple attains `|Res(Φ_n, ·)|² = 10^{φ(n)}`, a
+**lower bound** on the doubled maximum, below the in-tree doubled cap `12^{φ(n)}`
+(`SidonDoubledBound.abs_resultant_doubled_sq_le`).  This does not by itself show that the cap is
+loose or that the sufficient threshold `p > 12^{n/4}` (`SidonDoubledThreshold.prime_sq_le_doubled`)
+can be lowered to `p > 10^{n/4}`: that would need the universal upper bound `≤ 10^{φ(n)}`, which is
+open (and would still yield only a sufficient threshold). -/
 theorem normSq_eval_doubled_extremizer_eq_ten {m : ℕ} (hm : 2 ≤ m) {ζ : ℂ}
     (hζ : IsPrimitiveRoot ζ (2 ^ m)) :
     ‖(2 : ℂ) * ζ ^ (0 : ℕ) - ζ ^ (2 ^ m / 4) - ζ ^ (2 ^ m / 2)‖ ^ 2 = 10 := by

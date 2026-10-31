@@ -170,18 +170,6 @@ noncomputable def regularMissedEdge
   (Finset.univ \ jointCore dom (u 0) (u 1) line.1 line.2) \
     sourceFreshAgreement family line gamma
 
-theorem eval_domainRootProduct_eq_zero_iff_mem
-    (dom : I ↪ F) (S : Finset I) (i : I) :
-    (domainRootProduct dom S).eval (dom i) = 0 ↔ i ∈ S := by
-  rw [domainRootProduct, eval_prod, Finset.prod_eq_zero_iff]
-  constructor
-  · rintro ⟨j, hj, hzero⟩
-    simp only [eval_sub, eval_X, eval_C] at hzero
-    have hij : i = j := dom.injective (sub_eq_zero.mp hzero)
-    exact hij ▸ hj
-  · intro hi
-    exact ⟨i, hi, by simp⟩
-
 theorem sourceFreshAgreement_subset_coreComplement
     {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
     (family : BadScalarRichPointFamily dom 4 delta u)

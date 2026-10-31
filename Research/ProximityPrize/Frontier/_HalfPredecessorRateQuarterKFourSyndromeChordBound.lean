@@ -29,8 +29,12 @@ incidence is transitive up to equality, so every closed neighborhood would
 then be a disjoint triangle.  Eight columns cannot be partitioned into such
 three-element blocks, improving the concrete ceiling from eight to seven.
 
-For the eight-coordinate complement this gives the sharp ceiling of seven
-regular weight-two syndrome supports.  The excluded case where `P` contains
+For the eight-coordinate complement this gives an upper bound of seven
+regular weight-two syndrome supports.  (The bound is attained by the abstract
+chord-graph count — an exact `F_13` search finds eight four-wise independent
+columns and a column-avoiding plane with exactly seven chord edges — but no
+theorem here shows that seven regular outsiders realize it; the downstream
+consumer only uses the bound to exclude `≥ 8`.)  The excluded case where `P` contains
 a column is a genuine sparse-direction/long-outsider branch and must be
 handled separately.
 -/
@@ -437,6 +441,115 @@ theorem chordGraph_degree_le_two
       _ ≤ 3 := by omega
   omega
 
+/-! ### Generic graph facts: maximum degree two, transitive up to the diagonal
+
+A graph of maximum degree two that is transitive up to the diagonal is a disjoint union of
+cliques of size at most three.  We only need the counting consequence: `|E| ≤ |V|`, and
+equality forces every closed neighbourhood to be a three-element block, so `3 ∣ |V|`.
+Hence `|E| ≤ |V| − 1` whenever `3 ∤ |V|`. -/
+
+/-- Handshake bound: maximum degree two gives `|E| ≤ |V|`. -/
+theorem edgeFinset_card_le_card_of_degree_le_two
+    {alpha : Type*} [Fintype alpha]
+    (G : SimpleGraph alpha)
+    (hdegree : forall i, G.degree i <= 2) :
+    G.edgeFinset.card <= Fintype.card alpha := by
+  classical
+  have hsumLe : (∑ i : alpha, G.degree i) <= ∑ _i : alpha, 2 :=
+    Finset.sum_le_sum fun i _ => hdegree i
+  rw [G.sum_degrees_eq_twice_card_edges] at hsumLe
+  simp only [Finset.sum_const, Finset.card_univ, smul_eq_mul] at hsumLe
+  omega
+
+/-- Handshake rigidity: with maximum degree two, `|E| = |V|` forces every degree to be
+exactly two. -/
+theorem degree_eq_two_of_edgeFinset_card_eq
+    {alpha : Type*} [Fintype alpha]
+    (G : SimpleGraph alpha)
+    (hdegree : forall i, G.degree i <= 2)
+    (hedges : G.edgeFinset.card = Fintype.card alpha)
+    (i : alpha) :
+    G.degree i = 2 := by
+  classical
+  have hsumEq : (∑ i : alpha, G.degree i) = ∑ _i : alpha, 2 := by
+    rw [G.sum_degrees_eq_twice_card_edges, hedges]
+    simp only [Finset.sum_const, Finset.card_univ, smul_eq_mul, Nat.mul_comm]
+  exact (Finset.sum_eq_sum_iff_of_le fun j _ => hdegree j).mp hsumEq
+    i (Finset.mem_univ i)
+
+/-- Equality in the handshake bound for a maximum-degree-two graph that is transitive up to
+the diagonal forces `3 ∣ |V|`: the closed neighbourhoods are three-element blocks that
+partition the vertex set. -/
+theorem three_dvd_card_of_edgeFinset_card_eq
+    {alpha : Type*} [Fintype alpha]
+    (G : SimpleGraph alpha)
+    (hdegree : forall i, G.degree i <= 2)
+    (htrans : forall {i j k : alpha}, G.Adj i j -> G.Adj j k ->
+      i = k \/ G.Adj i k)
+    (hedges : G.edgeFinset.card = Fintype.card alpha) :
+    3 ∣ Fintype.card alpha := by
+  classical
+  have hdegreeEq := degree_eq_two_of_edgeFinset_card_eq G hdegree hedges
+  let C : alpha -> Finset alpha := fun i => insert i (G.neighborFinset i)
+  have hCcard (i : alpha) : (C i).card = 3 := by
+    dsimp only [C]
+    rw [Finset.card_insert_of_notMem]
+    · rw [SimpleGraph.card_neighborFinset_eq_degree, hdegreeEq i]
+    · simpa only [SimpleGraph.mem_neighborFinset] using G.loopless.irrefl i
+  have hclosed {i x y : alpha} (hx : x ∈ C i) (hxy : G.Adj x y) :
+      y ∈ C i := by
+    simp only [C, Finset.mem_insert, SimpleGraph.mem_neighborFinset] at hx ⊢
+    rcases hx with hxi | hix
+    · subst x
+      exact Or.inr hxy
+    · rcases htrans hix hxy with hiy | hiy
+      · exact Or.inl hiy.symm
+      · exact Or.inr hiy
+  have hself (i : alpha) : i ∈ C i := Finset.mem_insert_self _ _
+  have hCeq {i x : alpha} (hx : x ∈ C i) : C x = C i := by
+    apply Finset.eq_of_subset_of_card_le
+    · intro y hy
+      simp only [C, Finset.mem_insert, SimpleGraph.mem_neighborFinset] at hy
+      rcases hy with hyx | hxy
+      · exact hyx ▸ hx
+      · exact hclosed hx hxy
+    · rw [hCcard, hCcard]
+  let B : Finset (Finset alpha) := (Finset.univ : Finset alpha).image C
+  have hdisj : ∀ s ∈ B, ∀ t ∈ B, s ≠ t -> Disjoint s t := by
+    intro s hs t ht hst
+    obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hs
+    obtain ⟨j, -, rfl⟩ := Finset.mem_image.mp ht
+    rw [Finset.disjoint_left]
+    intro y hyi hyj
+    exact hst ((hCeq hyi).symm.trans (hCeq hyj))
+  have hunion : B.biUnion id = Finset.univ := by
+    apply Finset.eq_univ_of_forall
+    intro y
+    exact Finset.mem_biUnion.mpr ⟨C y, Finset.mem_image_of_mem _ (Finset.mem_univ y), hself y⟩
+  have hcardU : (B.biUnion id).card = ∑ s ∈ B, (id s).card :=
+    Finset.card_biUnion hdisj
+  rw [hunion, Finset.card_univ] at hcardU
+  rw [hcardU]
+  apply Finset.dvd_sum
+  intro s hs
+  obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hs
+  rw [id, hCcard]
+
+/-- **General strict ceiling.**  A maximum-degree-two graph that is transitive up to the
+diagonal on a vertex set whose size is not divisible by three has at most `|V| − 1` edges. -/
+theorem edgeFinset_card_le_pred_of_not_three_dvd
+    {alpha : Type*} [Fintype alpha]
+    (G : SimpleGraph alpha)
+    (hn : ¬ 3 ∣ Fintype.card alpha)
+    (hdegree : forall i, G.degree i <= 2)
+    (htrans : forall {i j k : alpha}, G.Adj i j -> G.Adj j k ->
+      i = k \/ G.Adj i k) :
+    G.edgeFinset.card <= Fintype.card alpha - 1 := by
+  have hle := edgeFinset_card_le_card_of_degree_le_two G hdegree
+  have hne : G.edgeFinset.card ≠ Fintype.card alpha := fun h =>
+    hn (three_dvd_card_of_edgeFinset_card_eq G hdegree htrans h)
+  omega
+
 /-- **Syndrome-chord edge bound.**  A two-dimensional projective syndrome
 line avoiding all columns meets at most one chord per column on average. -/
 theorem chordGraph_edgeFinset_card_le
@@ -444,22 +557,12 @@ theorem chordGraph_edgeFinset_card_le
     (hP : finrank F P ≤ 2)
     (hMDS4 : IndependentUpTo (F := F) v 4)
     (hnoColumn : ∀ i, v i ∉ P) :
-    (chordGraph P v).edgeFinset.card ≤ Fintype.card I := by
-  classical
-  let G := chordGraph P v
-  change G.edgeFinset.card ≤ Fintype.card I
-  have hdegree : ∀ i, G.degree i ≤ 2 :=
-    chordGraph_degree_le_two P v hP hMDS4 hnoColumn
-  have hsum : (∑ i : I, G.degree i) ≤ ∑ _i : I, 2 :=
-    Finset.sum_le_sum fun i _ => hdegree i
-  rw [G.sum_degrees_eq_twice_card_edges] at hsum
-  simp only [Finset.sum_const, Finset.card_univ, smul_eq_mul] at hsum
-  omega
+    (chordGraph P v).edgeFinset.card ≤ Fintype.card I :=
+  edgeFinset_card_le_card_of_degree_le_two (chordGraph P v)
+    (chordGraph_degree_le_two P v hP hMDS4 hnoColumn)
 
 /-- A transitive-up-to-diagonal graph on eight vertices with maximum degree
-two has at most seven edges.  Equality in the handshake bound would force
-degree two everywhere, while transitivity makes every closed neighborhood a
-three-vertex block; two such blocks leave only two vertices. -/
+two has at most seven edges (`edgeFinset_card_le_pred_of_not_three_dvd`, `3 ∤ 8`). -/
 theorem edgeFinset_card_le_seven_of_card_eq_eight
     {alpha : Type*} [Fintype alpha]
     (G : SimpleGraph alpha)
@@ -468,81 +571,11 @@ theorem edgeFinset_card_le_seven_of_card_eq_eight
     (htrans : forall {i j k : alpha}, G.Adj i j -> G.Adj j k ->
       i = k \/ G.Adj i k) :
     G.edgeFinset.card <= 7 := by
-  classical
-  have hsumLe : (∑ i : alpha, G.degree i) <= ∑ _i : alpha, 2 :=
-    Finset.sum_le_sum fun i _ => hdegree i
-  rw [G.sum_degrees_eq_twice_card_edges] at hsumLe
-  simp only [Finset.sum_const, Finset.card_univ, smul_eq_mul, hcard] at hsumLe
-  have hedgeLe : G.edgeFinset.card <= 8 := by omega
-  by_contra hedgeNot
-  have hedgeEq : G.edgeFinset.card = 8 := by omega
-  have hsumEq : (∑ i : alpha, G.degree i) = ∑ _i : alpha, 2 := by
-    rw [G.sum_degrees_eq_twice_card_edges]
-    simp only [Finset.sum_const, Finset.card_univ, smul_eq_mul, hedgeEq, hcard]
-  have hdegreeEq : forall i, G.degree i = 2 := by
-    exact fun i =>
-      (Finset.sum_eq_sum_iff_of_le fun j _ => hdegree j).mp hsumEq
-        i (Finset.mem_univ i)
-  let C : alpha -> Finset alpha := fun i => insert i (G.neighborFinset i)
-  have hCcard (i : alpha) : (C i).card = 3 := by
-    dsimp only [C]
-    rw [Finset.card_insert_of_notMem]
-    · rw [SimpleGraph.card_neighborFinset_eq_degree, hdegreeEq i]
-    · simpa only [SimpleGraph.mem_neighborFinset] using G.loopless.irrefl i
-  have hclosed {i x y : alpha} (hx : x ∈ C i) (hxy : G.Adj x y) :
-      y ∈ C i := by
-    simp only [C, Finset.mem_insert, SimpleGraph.mem_neighborFinset] at hx ⊢
-    rcases hx with hxi | hix
-    · subst x
-      exact Or.inr hxy
-    · rcases htrans hix hxy with hiy | hiy
-      · exact Or.inl hiy.symm
-      · exact Or.inr hiy
-  have hCsubset_compl {i j : alpha} (hj : j ∉ C i) :
-      C j ⊆ (Finset.univ : Finset alpha) \ C i := by
-    intro y hy
-    rw [Finset.mem_sdiff]
-    refine ⟨Finset.mem_univ y, ?_⟩
-    intro hyCi
-    simp only [C, Finset.mem_insert, SimpleGraph.mem_neighborFinset] at hy
-    rcases hy with hyj | hjy
-    · exact hj (hyj ▸ hyCi)
-    · exact hj (hclosed hyCi (G.symm.symm _ _ hjy))
-  have halphaPos : 0 < Fintype.card alpha := by omega
-  obtain ⟨i⟩ := Fintype.card_pos_iff.mp halphaPos
-  let R1 : Finset alpha := Finset.univ \ C i
-  have hR1card : R1.card = 5 := by
-    dsimp only [R1]
-    rw [Finset.card_sdiff_of_subset (Finset.subset_univ _),
-      Finset.card_univ, hcard, hCcard]
-  obtain ⟨j, hjR1⟩ := Finset.card_pos.mp (show 0 < R1.card by omega)
-  have hjNotCi : j ∉ C i := (Finset.mem_sdiff.mp hjR1).2
-  have hCjR1 : C j ⊆ R1 := by
-    simpa only [R1] using hCsubset_compl hjNotCi
-  let R2 : Finset alpha := R1 \ C j
-  have hR2card : R2.card = 2 := by
-    dsimp only [R2]
-    rw [Finset.card_sdiff_of_subset hCjR1, hR1card, hCcard]
-  obtain ⟨k, hkR2⟩ := Finset.card_pos.mp (show 0 < R2.card by omega)
-  have hkR1 : k ∈ R1 := (Finset.mem_sdiff.mp hkR2).1
-  have hkNotCj : k ∉ C j := (Finset.mem_sdiff.mp hkR2).2
-  have hkNotCi : k ∉ C i := (Finset.mem_sdiff.mp hkR1).2
-  have hCkR1 : C k ⊆ R1 := by
-    simpa only [R1] using hCsubset_compl hkNotCi
-  have hCkR2 : C k ⊆ R2 := by
-    intro y hyCk
-    change y ∈ R1 \ C j
-    rw [Finset.mem_sdiff]
-    refine ⟨hCkR1 hyCk, ?_⟩
-    exact (Finset.mem_sdiff.mp (hCsubset_compl hkNotCj hyCk)).2
-  have hcardMono := Finset.card_le_card hCkR2
-  rw [hCcard, hR2card] at hcardMono
+  have h := edgeFinset_card_le_pred_of_not_three_dvd G (by rw [hcard]; decide) hdegree htrans
   omega
 
-/-- The seven-vertex companion to
-`edgeFinset_card_le_seven_of_card_eq_eight`.  Closed three-vertex blocks can
-cover at most six of seven vertices, so the handshake ceiling is again
-strict. -/
+/-- The seven-vertex companion to `edgeFinset_card_le_seven_of_card_eq_eight`
+(`edgeFinset_card_le_pred_of_not_three_dvd`, `3 ∤ 7`). -/
 theorem edgeFinset_card_le_six_of_card_eq_seven
     {alpha : Type*} [Fintype alpha]
     (G : SimpleGraph alpha)
@@ -551,75 +584,7 @@ theorem edgeFinset_card_le_six_of_card_eq_seven
     (htrans : forall {i j k : alpha}, G.Adj i j -> G.Adj j k ->
       i = k \/ G.Adj i k) :
     G.edgeFinset.card <= 6 := by
-  classical
-  have hsumLe : (∑ i : alpha, G.degree i) <= ∑ _i : alpha, 2 :=
-    Finset.sum_le_sum fun i _ => hdegree i
-  rw [G.sum_degrees_eq_twice_card_edges] at hsumLe
-  simp only [Finset.sum_const, Finset.card_univ, smul_eq_mul, hcard] at hsumLe
-  have hedgeLe : G.edgeFinset.card <= 7 := by omega
-  by_contra hedgeNot
-  have hedgeEq : G.edgeFinset.card = 7 := by omega
-  have hsumEq : (∑ i : alpha, G.degree i) = ∑ _i : alpha, 2 := by
-    rw [G.sum_degrees_eq_twice_card_edges]
-    simp only [Finset.sum_const, Finset.card_univ, smul_eq_mul, hedgeEq, hcard]
-  have hdegreeEq : forall i, G.degree i = 2 := by
-    exact fun i =>
-      (Finset.sum_eq_sum_iff_of_le fun j _ => hdegree j).mp hsumEq
-        i (Finset.mem_univ i)
-  let C : alpha -> Finset alpha := fun i => insert i (G.neighborFinset i)
-  have hCcard (i : alpha) : (C i).card = 3 := by
-    dsimp only [C]
-    rw [Finset.card_insert_of_notMem]
-    · rw [SimpleGraph.card_neighborFinset_eq_degree, hdegreeEq i]
-    · simpa only [SimpleGraph.mem_neighborFinset] using G.loopless.irrefl i
-  have hclosed {i x y : alpha} (hx : x ∈ C i) (hxy : G.Adj x y) :
-      y ∈ C i := by
-    simp only [C, Finset.mem_insert, SimpleGraph.mem_neighborFinset] at hx ⊢
-    rcases hx with hxi | hix
-    · subst x
-      exact Or.inr hxy
-    · rcases htrans hix hxy with hiy | hiy
-      · exact Or.inl hiy.symm
-      · exact Or.inr hiy
-  have hCsubset_compl {i j : alpha} (hj : j ∉ C i) :
-      C j ⊆ (Finset.univ : Finset alpha) \ C i := by
-    intro y hy
-    rw [Finset.mem_sdiff]
-    refine ⟨Finset.mem_univ y, ?_⟩
-    intro hyCi
-    simp only [C, Finset.mem_insert, SimpleGraph.mem_neighborFinset] at hy
-    rcases hy with hyj | hjy
-    · exact hj (hyj ▸ hyCi)
-    · exact hj (hclosed hyCi (G.symm.symm _ _ hjy))
-  have halphaPos : 0 < Fintype.card alpha := by omega
-  obtain ⟨i⟩ := Fintype.card_pos_iff.mp halphaPos
-  let R1 : Finset alpha := Finset.univ \ C i
-  have hR1card : R1.card = 4 := by
-    dsimp only [R1]
-    rw [Finset.card_sdiff_of_subset (Finset.subset_univ _),
-      Finset.card_univ, hcard, hCcard]
-  obtain ⟨j, hjR1⟩ := Finset.card_pos.mp (show 0 < R1.card by omega)
-  have hjNotCi : j ∉ C i := (Finset.mem_sdiff.mp hjR1).2
-  have hCjR1 : C j ⊆ R1 := by
-    simpa only [R1] using hCsubset_compl hjNotCi
-  let R2 : Finset alpha := R1 \ C j
-  have hR2card : R2.card = 1 := by
-    dsimp only [R2]
-    rw [Finset.card_sdiff_of_subset hCjR1, hR1card, hCcard]
-  obtain ⟨k, hkR2⟩ := Finset.card_pos.mp (show 0 < R2.card by omega)
-  have hkR1 : k ∈ R1 := (Finset.mem_sdiff.mp hkR2).1
-  have hkNotCj : k ∉ C j := (Finset.mem_sdiff.mp hkR2).2
-  have hkNotCi : k ∉ C i := (Finset.mem_sdiff.mp hkR1).2
-  have hCkR1 : C k ⊆ R1 := by
-    simpa only [R1] using hCsubset_compl hkNotCi
-  have hCkR2 : C k ⊆ R2 := by
-    intro y hyCk
-    change y ∈ R1 \ C j
-    rw [Finset.mem_sdiff]
-    refine ⟨hCkR1 hyCk, ?_⟩
-    exact (Finset.mem_sdiff.mp (hCsubset_compl hkNotCj hyCk)).2
-  have hcardMono := Finset.card_le_card hCkR2
-  rw [hCcard, hR2card] at hcardMono
+  have h := edgeFinset_card_le_pred_of_not_three_dvd G (by rw [hcard]; decide) hdegree htrans
   omega
 
 /-- The concrete eight-column specialization used by the remaining
@@ -664,7 +629,7 @@ theorem chordGraph_edgeFinset_card_le_six
     exact chordGraph_adj_trans_or_eq P v hMDS4 hnoColumn hij hjk
 
 /-- Equality in the chord bound is rigid: every column has chord degree
-exactly two. -/
+exactly two (`degree_eq_two_of_edgeFinset_card_eq`). -/
 theorem chordGraph_degree_eq_two_of_edge_card_eq_vertex_card
     (P : Submodule F V) (v : I -> V)
     (hP : finrank F P ≤ 2)
@@ -672,40 +637,9 @@ theorem chordGraph_degree_eq_two_of_edge_card_eq_vertex_card
     (hnoColumn : ∀ i, v i ∉ P)
     (hedges : (chordGraph P v).edgeFinset.card = Fintype.card I)
     (i : I) :
-    (chordGraph P v).degree i = 2 := by
-  classical
-  let G := chordGraph P v
-  change G.degree i = 2
-  have hdegree : ∀ j, G.degree j ≤ 2 :=
-    chordGraph_degree_le_two P v hP hMDS4 hnoColumn
-  have hIpos : 1 ≤ Fintype.card I :=
-    Fintype.card_pos_iff.mpr ⟨i⟩
-  apply Nat.le_antisymm (hdegree i)
-  by_contra hnot
-  have hi : G.degree i ≤ 1 := by omega
-  have hrest :
-      (∑ j ∈ (Finset.univ : Finset I).erase i, G.degree j) ≤
-        2 * (Fintype.card I - 1) := by
-    calc
-      (∑ j ∈ (Finset.univ : Finset I).erase i, G.degree j) ≤
-          ∑ _j ∈ (Finset.univ : Finset I).erase i, 2 :=
-        Finset.sum_le_sum fun j _ => hdegree j
-      _ = 2 * (Fintype.card I - 1) := by
-        simp [Finset.card_erase_of_mem, Nat.mul_comm]
-  have hsplit := Finset.sum_erase_add (Finset.univ : Finset I)
-    (fun j => G.degree j) (Finset.mem_univ i)
-  have hsum := G.sum_degrees_eq_twice_card_edges
-  have hedges' : G.edgeFinset.card = Fintype.card I := by
-    simpa only [G] using hedges
-  have htotal :
-      (∑ j ∈ (Finset.univ : Finset I).erase i, G.degree j) +
-          G.degree i = 2 * Fintype.card I := by
-    calc
-      (∑ j ∈ (Finset.univ : Finset I).erase i, G.degree j) +
-          G.degree i = ∑ j : I, G.degree j := hsplit
-      _ = 2 * G.edgeFinset.card := hsum
-      _ = 2 * Fintype.card I := by rw [hedges']
-  omega
+    (chordGraph P v).degree i = 2 :=
+  degree_eq_two_of_edgeFinset_card_eq (chordGraph P v)
+    (chordGraph_degree_le_two P v hP hMDS4 hnoColumn) hedges i
 
 /-- A projectively honest finite family of nonzero points in `P`, each
 carried by an indexed column chord, injects into the chord graph. -/

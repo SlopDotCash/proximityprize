@@ -8,25 +8,34 @@ import ArkLib.Data.CodingTheory.ProximityGap.GVRepBoundFromEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergySidonModNeg
 
 /-!
-# Under the Sidon hypothesis the GV rep bound closes at `√(3n)` (#389)
+# Under the Sidon hypothesis: a coarse energy-only GV rep bound `√(3n)` (#389)
 
 Composing the coset-concentration `repCount_sq_card_le_energy` (`n·r(c)² ≤ E(G)`) with
 the sibling's *sharp Sidon-modulo-negation energy* `additiveEnergy_eq_of_sidonModNeg`
 (`E(G) = 3n²−3n` when `G` is Sidon-mod-negation), the additive representation count of
-a root-of-unity subgroup is pinned to the optimal `√(3n)` scale:
+a root-of-unity subgroup is bounded by `√(3n)`.  This is a **deliberately coarse, energy-only**
+estimate, NOT the sharp conditional bound: Sidon modulo negation directly forces every nonzero
+sum `c` to have at most one unordered representing pair, hence `r(c) ≤ 2`
+(`SidonGVClosure.repCount_le_two_of_sidonModNeg`; conversely `r(c) ≤ 2` for all `c ≠ 0` implies
+Sidon modulo negation, `SidonRepCountCharacterization.sidonModNeg_iff_repCount_le_two`).
+The energy route only gives:
 
 > **`repCount_sq_lt_of_sidonModNeg`** — under `SidonModNeg G`, every `c ≠ 0` has
 > `r(c)² < 3n`, i.e. `r(c) < √(3n)`.
 > **`gvRepBound_of_sidonModNeg`** — hence `GVRepBound G M` whenever `3n ≤ M²` and
 > `M³ ≤ 64n²` (e.g. `M = ⌈√(3n)⌉`, valid since `(3n)^{3/2} ≤ 64n²` for all `n ≥ 1`).
 
-This is a genuine **conditional closure**: *if* `μ_n` were Sidon-modulo-negation
-(minimal additive energy), the Garcia–Voloch obligation — and with it the entire supply
-wall — would close with `M = O(√n)`, strictly better than the `n^{2/3}` Stepanov target.
-It isolates the *sole* obstruction precisely: `μ_n` over `F_p` is **not** Sidon (its
-additive energy exceeds `3n²−3n` by the multiplicative–additive interaction), and
-bounding that excess is exactly the open Stepanov/sum-product kernel.  The reduction
-"excess energy ↦ rep bound" is now machine-checked and `√n`-optimal.
+This is a **conditional** statement: *if* `G` is Sidon-modulo-negation (minimal additive
+energy), the Garcia–Voloch obligation `GVRepBound` holds with `M = O(√n)` by this energy
+route — and in fact with the constant `M = 2` by the direct Sidon argument above.  Whether
+`μ_n ⊆ F_p` is Sidon modulo negation depends on the prime regime: for even `n` and
+`p > 4^{φ(n)}` it IS, unconditionally (`SidonLiftDevacuated.sidonModNeg_rootsOfUnity`; for
+`n = 2^m` this is `p > 2^n`, `SidonSubgroupClosed.sidonModNeg_mu_n`), giving
+`GVRepBound μ_n 2` (`SidonGVClosure.gvRepBound_rootsOfUnity_two`).  For smaller primes, e.g. the
+deployed regime with `p` polynomial in `n`, it can fail — e.g. `μ_16 ⊆ F₂₅₇` has energy
+`912 > 720 = 3·16² − 3·16` (`SubgroupAdditiveEnergyFermat257.energy_H16`) — and bounding that
+excess energy is the open Stepanov/sum-product kernel.  The machine-checked content here is the
+coarse reduction "energy `3n²−3n` ↦ `r(c)² < 3n`"; it is not `√n`-optimal (the sharp value is `2`).
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
@@ -39,8 +48,9 @@ open ArkLib.ProximityGap.AdditiveEnergyRepBound
 
 variable {F : Type*} [Field F] [DecidableEq F]
 
-/-- **The Sidon rep bound.**  Under `SidonModNeg G` (sharp energy `3n²−3n`), the
-coset-concentration `n·r(c)² ≤ E(G)` forces `r(c)² < 3n` for every `c ≠ 0`. -/
+/-- **The coarse energy-only Sidon rep bound.**  Under `SidonModNeg G` (sharp energy `3n²−3n`),
+the coset-concentration `n·r(c)² ≤ E(G)` forces `r(c)² < 3n` for every `c ≠ 0`.  Weaker than the
+direct consequence `r(c) ≤ 2` (`SidonGVClosure.repCount_le_two_of_sidonModNeg`). -/
 theorem repCount_sq_lt_of_sidonModNeg {G : Finset F} {n : ℕ} (hn : 1 ≤ n)
     (hGmem : ∀ z, z ∈ G ↔ z ^ n = 1) (hcard : G.card = n) (h2 : (2 : F) ≠ 0)
     (h0 : (0 : F) ∉ G) (hneg : ∀ x ∈ G, -x ∈ G) (hS : SidonModNeg G)

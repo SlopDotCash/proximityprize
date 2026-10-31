@@ -283,14 +283,14 @@ straightline knowledge soundness at the union-bound error `∑ i, ε i`, **witne
 genuine extractor** `E.toStraightline` (the fold of `extractMid` along the realized transcript,
 seeded by `extractOut`).
 
-The proof is real (not vacuous): the literal knowledge game is rewritten as a pure
-post-processing of the logged run (`knowledgeBaseRun`); on any accepting run whose extracted
-input witness is bad, the knowledge state function is false at round `0` (by `toFun_empty`,
-since the extracted witness is the round-`0` chain witness), true at the last round (by the
-fresh-init seam residual `hAccept`), and cannot flip at prover rounds (by `toFun_next` and
-`chainWit_castSucc`), so it must flip at some challenge round (`chainWit_crossing`); the union
-bound (`probEvent_le_sum_of_imp_exists`) and the per-round transport residual `hTransport` then
-bound the bad-event probability by `∑ i, ε i`. -/
+The proof is real: the knowledge game is rewritten as a pure post-processing of the logged run
+(`knowledgeBaseRun`), since the genuine extractor never fails (its extraction is always observed
+as `some`); on any accepting run whose extracted input witness is bad, the knowledge state
+function is false at round `0` (by `toFun_empty`, since the extracted witness is the round-`0`
+chain witness), true at the last round (by the fresh-init seam residual `hAccept`), and cannot
+flip at prover rounds (by `toFun_next` and `chainWit_castSucc`), so it must flip at some
+challenge round (`chainWit_crossing`); the union bound (`probEvent_le_sum_of_imp_exists`) and the
+per-round transport residual `hTransport` then bound the bad-event probability by `∑ i, ε i`. -/
 theorem rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal
     (E : Extractor.RoundByRound oSpec StmtIn WitIn WitOut pSpec WitMid)
     (kSF : verifier.KnowledgeStateFunction init impl relIn relOut E)
@@ -323,8 +323,8 @@ theorem rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal
             (E.toStraightline stmtIn witOut transcript proveQueryLog.fst verifyQueryLog).run
           return (stmtIn, extractedWitIn, stmtOut, witOut)))).run' (← init)) ≤ _
   rw [StateFunction.probEvent_optionT_mk_eq_elim]
-  -- Step 1: the literal knowledge game is the deterministic extraction post-processing of the
-  -- logged base run.
+  -- Step 1: the knowledge game is the deterministic extraction post-processing of the logged
+  -- base run (the genuine extractor never fails, so its extraction is observed as `some`).
   have hexec : (do
         let ⟨⟨⟨transcript, ⟨_, witOut⟩⟩, stmtOut⟩, proveQueryLog, verifyQueryLog⟩
           ← (Reduction.mk prover verifier).runWithLog stmtIn witIn
@@ -485,6 +485,17 @@ theorem rbrSoundness_implies_soundness_of_marginal
   rw [ENNReal.ofNNReal_finsetSum]
   exact Finset.sum_le_sum fun i _ => hPerRound stmtIn hStmtIn WitIn WitOut witIn prover i
 
+/-! ## `knowledgeSoundness → soundness` is not provided
+
+No implication from (straightline) knowledge soundness to plain soundness is stated here. The
+earlier vacuity obstruction (extractor failures being discarded) no longer applies: the canonical
+game scores an extraction failure as bad. The remaining obstruction is a witness/language
+mismatch: the knowledge game's bad event tests the prover's *own* output witness
+(`(stmtOut, witOut) ∈ relOut`), whereas the soundness event only tests
+`stmtOut ∈ relOut.language`, so an accepting soundness run need not trigger the knowledge bad
+event. An honest variant would assume
+`∀ stmtOut witOut, stmtOut ∈ relOut.language → (stmtOut, witOut) ∈ relOut`
+(e.g. accept/reject output relations with a trivial witness); it is not proved in this file. -/
 
 end Verifier
 

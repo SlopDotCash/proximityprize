@@ -26,7 +26,19 @@ tail index `max (deg P₀) (deg P₁)`:
   branch separation;
 * `gammaGenuine_eq_trunc_global_corrected` — **the global form**: matching set constructed
   from the two certificate polynomials; every hypothesis a single global finite fact, and the
-  representative input now genuinely satisfiable.
+  representative input `hrepT` now individually satisfiable.
+
+**Scope caveat (F7, `BranchSeparationUnsat`).**  Satisfiability of the corrected representative
+does **not** make the whole hypothesis bundle jointly satisfiable in the target regime.  The
+second and third capstones still take rational branch separation (`hbranch` / `hbr`), and
+`BranchSeparationUnsat.branchCert_eq_zero` / `matchingSet_eq_empty_of_hbranch` prove that for
+`2 ≤ H.natDegree` the certificate `G.eval (w.eval (C x₀))` is identically zero and any matching
+set carrying `hbranch` is empty.  Since `hrepT` is produced only at monic `d_H ≤ 2`, the global
+corrected capstone can be non-vacuously instantiated only at `d_H = 1`, and the decoded-roots
+capstone only with an empty matching set (incompatible with `hcover`/`hbig`) for `d_H ≥ 2`.
+The conditional proofs are valid; higher-degree consumers must use the first capstone
+(`gammaGenuine_eq_trunc_of_decoded_corrected`), whose per-place `root`/`hbase` inputs carry the
+pointwise `H`-branch content, rather than global rational branch separation.
 
 ## References
 * [BCIKS20] §5–§6, Appendix A; the F6 finding and the corrected shape are documented in
@@ -81,7 +93,11 @@ theorem gammaGenuine_eq_trunc_of_decoded_corrected {x₀ : F} {R : F[X][X][Y]}
 
 /-- **The decoded-roots capstone on the corrected representative.**  As
 `DecodedRootSupply.gammaGenuine_eq_trunc_of_decoded_roots` (roots PRODUCED from the GS split
-+ branch separation), with `hrepG` replaced by the satisfiable `hrepT`. -/
++ branch separation), with `hrepG` replaced by the satisfiable `hrepT`.
+
+F7 caveat: for `2 ≤ H.natDegree` the `hbranch` family forces `matchingSet = ∅`
+(`BranchSeparationUnsat.matchingSet_eq_empty_of_hbranch`), so this capstone has no nonempty
+instantiation in the higher-degree regime. -/
 theorem gammaGenuine_eq_trunc_of_decoded_roots_corrected {x₀ : F} {R : F[X][X][Y]}
     (hHyp : Hypotheses x₀ R H)
     (hξ : ξ x₀ R H hHyp ≠ 0)
@@ -114,11 +130,15 @@ theorem gammaGenuine_eq_trunc_of_decoded_roots_corrected {x₀ : F} {R : F[X][X]
       hbranch hR (max P₀.natDegree P₁.natDegree) hx)
     hdisc hcover hbig
 
-/-- **THE GLOBAL CAPSTONE, F6-REPAIRED: Claim 5.8′ from purely global, jointly satisfiable
-data.**  As `BranchCertificates.gammaGenuine_eq_trunc_global` — matching set constructed from
-the two certificate polynomials, zero per-place hypotheses — with the representative input
-now the satisfiable corrected `hrepT` (producible at monic `d_H ≤ 2` by
-`exists_corrected_representative_of_monic_natDegree_le_two` from the truncation itself). -/
+/-- **THE GLOBAL CAPSTONE, F6-REPAIRED: Claim 5.8′ from purely global data.**  As
+`BranchCertificates.gammaGenuine_eq_trunc_global` — matching set constructed from the two
+certificate polynomials, zero per-place hypotheses — with the representative input now the
+satisfiable corrected `hrepT` (producible at monic `d_H ≤ 2` by
+`exists_corrected_representative_of_monic_natDegree_le_two` from the truncation itself).
+
+The bundle is **not** jointly satisfiable for `2 ≤ H.natDegree`: the branch certificate `hbr`
+is refuted there by `BranchSeparationUnsat.branchCert_eq_zero` (F7).  Combined with the
+`d_H ≤ 2` production of `hrepT`, the only regime in which this theorem can be non-vacuous is `d_H = 1`. -/
 theorem gammaGenuine_eq_trunc_global_corrected {x₀ : F} {R : F[X][X][Y]}
     (hHyp : Hypotheses x₀ R H)
     (hξ : ξ x₀ R H hHyp ≠ 0)

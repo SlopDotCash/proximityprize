@@ -17,9 +17,13 @@ invariant `AlphaGenuineRegularWeightLe` is **provably false** for non-monic `H`
 (`BCIKS20.AlphaWeightClearedObstruction.not_alphaGenuineRegularWeightLe`, axiom-clean), so no honest
 proof of it exists. The laundering theorem and the asserting `axiom` are removed.
 
-`alphaGenuineRegularWeightLe_residual` is now a non-asserting `def : Prop` open residual
-(`ArkLib.ResidualAxioms`). The genuine, *true* order-0 statement is the **cleared** invariant,
+**Current status.** No declaration named `alphaGenuineRegularWeightLe_residual` exists any more,
+in `ArkLib.ResidualAxioms` or elsewhere; the name survives only in this historical note. The
+un-cleared invariant is refuted for non-monic `H` (above), so it must not be revived or cited as
+a viable open residual. The genuine, *true* order-0 statement is the **cleared** invariant,
 already proven on `main`:
 `BCIKS20.HenselNumerator.AlphaWeight.alphaWeight_zero_cleared_fixed` (witness `βHensel 0`,
-weight `≤ 1`). Closing all orders is the open #138 P1 obligation.
+weight `≤ 1`). For successor orders, `AlphaGenuineRegularWeightLe_succ_cleared.of_lift` (in
+`BCIKS20/AlphaWeight.lean`) reduces the cleared target to the lift identity plus a `Λ_𝒪`-weight
+bound on `βHensel (t+1)`; that weight bound for `t ≥ 1` is the open #138 P1 obligation.
 -/

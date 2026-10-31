@@ -39,6 +39,16 @@ Inner univariate evaluation queries to `ℱ` at a point `pt : Fin ℓ_m → R` a
 oracles (reusing the proven inner fold `matVecRowSum_simOracle`), and the three are combined with the
 `eqPolynomial(τ)` weight. Faithfulness is `firstSCEvalFromOracles_simOracle`, and the
 `LiftContextCoherent` gate is discharged by `firstSumcheckCoherent` (mirroring `secondSumcheckCoherent`).
+
+**Query cost and scope.** The reconstruction is a correct reference definition, not a constant-cost
+oracle read. `matVecMLEEvalFromOracles` enumerates all `2 ^ ℓ_m` rows and, for each row, all
+`2 ^ ℓ_n` columns, making one matrix query per entry (`matVecSummandFromOracles`) plus a witness
+query for each non-public column. One virtual evaluation `firstSCEvalFromOracles` does this for all
+three matrices, so it alone makes at least `3 * 2 ^ (ℓ_m + ℓ_n)` matrix queries. The lifted
+`Sumcheck.Spec.oracleReduction` round verifiers read only the prover messages (three message
+queries per Boolean round: the two domain points and the challenge) and make no query to `ℱ`
+themselves. The reconstruction cost is paid on every query that reaches `ℱ`, for example a final
+evaluation check. A succinct-verifier claim must account for that cost.
 -/
 
 open MvPolynomial Matrix OracleComp OracleSpec OracleInterface OracleVerifier.LiftContext
@@ -59,7 +69,11 @@ private theorem foldl_add_eq_sum' {S : Type} [AddCommMonoid S] {β : Type} (g : 
 /-- The verifier-side oracle reconstruction of `eval point M̃`, the multilinear-extension factor of
 the first sum-check virtual polynomial. An outer `x`-hypercube fold weights each row `(M *ᵥ 𝕫)(x)`
 (reconstructed by the inner `y`-hypercube fold `matVecSummandFromOracles`) by the equality kernel
-`eq(point, x)`. -/
+`eq(point, x)`.
+
+Query cost: one `matVecSummandFromOracles` call for each of the `2 ^ ℓ_m * 2 ^ ℓ_n` (row, column)
+pairs, i.e. `2 ^ (ℓ_m + ℓ_n)` matrix queries plus one witness query per non-public column per row.
+This is exponential in the instance dimensions. -/
 noncomputable def matVecMLEEvalFromOracles
     (𝕩 : Statement.AfterFirstMessage R pp) (point : Fin pp.ℓ_m → R) (idx : R1CS.MatrixIdx) :
     OracleComp (oSpec + [OracleStatement.AfterFirstMessage R pp]ₒ) R :=
@@ -103,7 +117,8 @@ theorem matVecMLEEvalFromOracles_simOracle
 
 /-- The verifier-side oracle reconstruction of `eval point ℱ` for the first sum-check virtual
 polynomial: reconstruct each matrix factor `M̃(point)` via `matVecMLEEvalFromOracles` and combine
-with the `eqPolynomial(τ)` weight. -/
+with the `eqPolynomial(τ)` weight. Each call runs three such reconstructions, so it makes at least
+`3 * 2 ^ (ℓ_m + ℓ_n)` matrix queries. -/
 noncomputable def firstSCEvalFromOracles
     (stmt : Statement.AfterFirstChallenge R pp) (point : Fin pp.ℓ_m → R) :
     OracleComp (oSpec + [OracleStatement.AfterFirstChallenge R pp]ₒ) R := do

@@ -16,16 +16,22 @@ The elementary route (`PolyRootGradedBound`, `PowerSeriesNewton`) needs, at the 
 `(x₀, v)`, the **slice-derivative reading** `ξ̄ := (∂_T Q).eval v ∈ F[Z]` of the slice
 `Q := evalX (C x₀) R ∈ F[Z][T]` to be nonzero — i.e. `v` a *simple* root of `Q` — plus its
 per-place nonvanishing `ξ̄(z) ≠ 0` off a counted exceptional set.  Crucially this must NOT go
-through `ClaimA2.Hypotheses.separable_evalX` (`F[Z]`-level `Separable`), which is
-**unsatisfiable** at every multi-branch slice (F13, `SliceSeparabilityBoundary`): there `ξ̄`
-is forced to be a unit, which fails at real GS data.  This file supplies the honest weak
-forms:
+through `ClaimA2.Hypotheses.separable_evalX` (`F[Z]`-level `Separable`, a Bézout identity in
+`F[Z][T]`), which forces `ξ̄` to be a *unit* of `F[Z]` and forces any two section branches to
+have unit (constant) difference (F13, `SliceSeparabilityBoundary`).  It is therefore
+**unsatisfiable at every slice with two sections whose difference is a non-unit** (e.g.
+`T·(T − Z)`, whose branch separation `Z` is not a unit), which is the generic shape of real
+GS data.  It is *not* unsatisfiable at every multi-branch slice: a constant-separated slice
+such as `T·(T − 1)` is separable over `F[Z]` in this strong sense (its derivative takes the
+unit values `−1`, `1` at the roots `0`, `1`).  This file supplies the honest weak forms,
+which need only `Squarefree`/nonvanishing and so avoid that premise entirely:
 
 * `derivative_eval_eq_of_eq_X_sub_C_mul` — the `ξ̄` value identity: for `Q = (T − C v)·G`,
   `ξ̄ = G.eval v` (the branch-separation reading).
 * `derivative_eval_ne_zero_of_squarefree_of_dvd` — **simple root of squarefree at a
   section**: `Squarefree Q` and `(T − C v) ∣ Q` give `ξ̄ ≠ 0` — mere nonvanishing, exactly
-  the gap between `Squarefree` (true for radicals) and `Separable` over `F[Z]` (false, F13).
+  the gap between `Squarefree` (true for radicals) and `Separable` over `F[Z]` (false at
+  slices with non-unit branch separation, F13).
 * `section_dvd_radical_slice` + `xiBar_radical_ne_zero` — the **unconditional** radical
   route: for ANY nonzero slice `Q` with the section divisor, the radical keeps the section
   (`T − C v` is prime) and its `ξ̄` is nonzero, with no hypothesis beyond `Q ≠ 0`.

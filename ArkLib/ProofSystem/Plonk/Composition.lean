@@ -510,9 +510,10 @@ theorem plonkCheckVerifier_soundness :
             simp at hrunOpt
 
 /-- The composed two-message Plonk verifier has ordinary zero-error straightline knowledge
-soundness. The extractor is deterministic: it reads the input witness from the first prover message
-of the full transcript. Any supported accepting run then forces the verifier output to be exactly
-`(cs, transcript.fst 0)`, so output-relation validity cannot coexist with extractor failure. -/
+soundness. The extractor is deterministic and never fails: it reads the input witness from the first
+prover message of the full transcript. Any supported accepting run forces the verifier to have
+checked that this witness satisfies the input relation, so a valid output can never coexist with an
+invalid (or failed) extraction. -/
 theorem plonkCheckVerifier_knowledgeSoundness :
     (plonkCheckVerifier (𝓡 := 𝓡) (numWires := numWires)
       (numGates := numGates)).knowledgeSoundness init impl
@@ -561,6 +562,7 @@ theorem plonkCheckVerifier_knowledgeSoundness :
       have hstmt : stmtIn = cs := congrArg Prod.fst hexecOpt
       have hextracted : some (runLog.1.1.1.fst ⟨0, by simp⟩) = extracted :=
         congrArg (fun y => y.2.1) hexecOpt
+      -- The extraction never fails; the bad event then demands an invalid extracted witness.
       apply hbad.1 _ (by rw [← hextracted]; rfl)
       rw [← hstmt]
       have hrunSupport :

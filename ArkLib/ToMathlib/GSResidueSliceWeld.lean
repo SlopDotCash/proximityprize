@@ -71,9 +71,13 @@ and the global capstone folds the leading-coefficient factor into the branch/ξ 
   `c56_evalC_bad_set_card_le`).
 
 Net effect on the open-node ledger: Node B's relocated open content (per-place residue
-separability) is **closed** — it was contained in `hHyp` all along, and the residue
-computation is what exposes it.  What the capstone now consumes beyond `hHyp` is purely
-counted/numeric: centre degree preservation + the enlarged avoidance budget.
+separability) is **closed relative to the strong hypothesis `hHyp`** — it was contained in `hHyp`
+all along, and the residue computation is what exposes it.  The capstone's remaining inputs
+beyond `hHyp` are **not** all counted/numeric: besides centre degree preservation (`hcdeg`, with
+a counted derivation in the primed variant) and the enlarged avoidance budget (`hbig`), it still
+requires a `T`-aware polynomial representative (`hrepT`), a global factorization/divisor
+(`hsplit`, `hdvd`, with `hdeg`), and branch/`ξ` nonvanishing at the chosen branch (`hbr`,
+`hxi`). These are structural inputs, not numeric side conditions.
 
 ## References
 * [BCIKS20] §5–§6, Appendix A; the F-series ledger on issue #304.

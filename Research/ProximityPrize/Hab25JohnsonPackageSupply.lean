@@ -133,7 +133,7 @@ theorem himpr_of_cellPackageSupply [Fintype F₀] [DecidableEq F₀]
     haveI := h2
     obtain ⟨pkg⟩ := hpkg
     exact cell_improvement_of_pinning_package' hn hT hk R hRirr E P hdec hdvdR
-      pkg.x₀ pkg.hHyp h2.out pkg.hmonic pkg.htail pkg.e pkg.he pkg.u₀ pkg.u₁ pkg.hD
+      pkg.x₀ pkg.hHyp pkg.hmonic pkg.htail pkg.e pkg.he pkg.u₀ pkg.u₁ pkg.hD
       pkg.matchingSet pkg.root pkg.hwdeg pkg.hwdvd pkg.hbaseA pkg.hsepA pkg.hfold
       pkg.hweight pkg.hcard pkg.S₀ pkg.hbase₀ pkg.hsep₀ pkg.hBw pkg.hS₀
 

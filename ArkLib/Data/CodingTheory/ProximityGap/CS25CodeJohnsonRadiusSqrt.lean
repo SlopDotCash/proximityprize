@@ -16,6 +16,11 @@ condition `A² > T·B`; here it is re-expressed in the explicit square-root form
 with `A = (n−e) − n/q`, `B = (n−d) − n/q`, `T = n(1−1/q)`.  Any code with minimum distance `≥ d` is
 list-decodable at every radius below this explicit Johnson radius.  The bridge is `Real.sqrt_lt'`
 (`√y < x ↔ y < x²` for `0 < x`).  `sorry`/`axiom`-free.
+
+"List-decodable" here means only the existential `∃ ℓ, ∀ w, closeCount 𝒞 e w ≤ ℓ`, which every
+finite code satisfies at every radius (`ℓ = 𝒞.card`). The quantitative Johnson content — the bound
+`⌊(T² − A²)/(A² − T·B)⌋₊ + 1` — is `code_johnson_radius_explicit`, whose hypothesis `A² > T·B`
+is exactly what `hradius` yields via `Real.sqrt_lt'`.
 -/
 
 namespace ArkLib.CS25

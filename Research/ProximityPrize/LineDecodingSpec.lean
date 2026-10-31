@@ -12,9 +12,19 @@ import Research.ProximityPrize.LineDecoding3
 
 This module packages the repaired line-decoding double-cover route with the faithful
 satisfy/maximality specification for the four selected MCA prize lattice thresholds.
--/
 
-set_option linter.style.longFile 2100
+## Adjacent-upper-witness route
+
+For explicit adjacent upper witnesses the canonical resolution theorems are
+`mcaPrizeLatticeResolved_<route>_and_adjacent_upperWitnesses` in
+`Research.ProximityPrize.LineDecoding3`; this module only adds their `_with_spec` and
+`mcaPrizeLatticeSpec_` projections. Earlier `...AdjacentFrontier` copies (identical binders and
+conclusions, proved via `mcaPrizeLatticeResolved_of_adjacent_frontier`) and the
+`..._with_spec_and_(lower_)brackets_..._and_adjacent_upperWitnesses` wrappers were removed: with
+`τ j := latticeIndexOf (δ j)` their lower bracket `latticeIndexOf (δ j) ≤ τ j` is `le_rfl` and
+their strict upper bracket `τ j < latticeIndexOf (whi j).δ` is just the hypothesis `hadj`, so
+they carried no content beyond the `_with_spec` theorems plus `hadj`.
+-/
 
 namespace ProximityGap
 
@@ -858,35 +868,6 @@ noncomputable def mcaPrizeAdjacentWitnessFrontier_ofDoubleCover_and_upperWitness
     intro j
     exact hadj j
 
-/-- Repaired double-cover adjacent frontiers resolve the four-rate MCA prize via the generic
-adjacent-frontier API. -/
-theorem mcaPrizeLatticeResolved_ofDoubleCoverAdjacentFrontier
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hcov : ∀ j : Fin 4, MCAForallDoubleCover (F := F) (A := F)
-      (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-      (δ j))
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    mcaPrizeLatticeResolved domain
-      (fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)) := by
-  simpa [mcaPrizeAdjacentWitnessFrontier_ofDoubleCover_and_upperWitnesses,
-    GrandChallenges.MCALowerWitness.ofLe,
-    GrandChallenges.MCALowerWitness.ofDoubleCover,
-    GrandChallenges.MCALowerWitness.ofBadScalarDoubleCover,
-    GrandChallenges.MCALowerWitness.of_mcaBadCount_zero,
-    GrandChallenges.MCALowerWitness.of_forall_not_mcaEvent] using
-    mcaPrizeLatticeResolved_of_adjacent_frontier domain
-      (mcaPrizeAdjacentWitnessFrontier_ofDoubleCover_and_upperWitnesses
-        domain δ hδ_le_one hcov whi hδhi hadj)
-
 /-- Package named bad-scalar double-cover frontiers and explicit adjacent upper witnesses into the
 generic four-rate adjacent-witness frontier. -/
 noncomputable def mcaPrizeAdjacentWitnessFrontier_ofBadScalarDoubleCover_and_upperWitnesses
@@ -915,36 +896,6 @@ noncomputable def mcaPrizeAdjacentWitnessFrontier_ofBadScalarDoubleCover_and_upp
   adjacent := by
     intro j
     exact hadj j
-
-/-- Named bad-scalar double-cover adjacent frontiers resolve the four-rate MCA prize via the
-generic adjacent-frontier API. -/
-theorem mcaPrizeLatticeResolved_ofBadScalarDoubleCoverAdjacentFrontier
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hcov : ∀ j : Fin 4, ∀ (u : Code.WordStack F (Fin 2) ι) (γ : F),
-      MCABadScalarDoubleCover (F := F) (A := F)
-        (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) γ)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    mcaPrizeLatticeResolved domain
-      (fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)) := by
-  simpa [mcaPrizeAdjacentWitnessFrontier_ofBadScalarDoubleCover_and_upperWitnesses,
-    GrandChallenges.MCALowerWitness.ofLe,
-    GrandChallenges.MCALowerWitness.ofDoubleCover,
-    GrandChallenges.MCALowerWitness.ofBadScalarDoubleCover,
-    GrandChallenges.MCALowerWitness.of_mcaBadCount_zero,
-    GrandChallenges.MCALowerWitness.of_forall_not_mcaEvent] using
-    mcaPrizeLatticeResolved_of_adjacent_frontier domain
-      (mcaPrizeAdjacentWitnessFrontier_ofBadScalarDoubleCover_and_upperWitnesses
-        domain δ hδ_le_one hcov whi hδhi hadj)
 
 /-- Package zero bad-scalar count frontiers and explicit adjacent upper witnesses into the generic
 four-rate adjacent-witness frontier. -/
@@ -976,37 +927,6 @@ noncomputable def mcaPrizeAdjacentWitnessFrontier_of_mcaBadCount_zero_and_upperW
     intro j
     exact hadj j
 
-/-- Zero bad-scalar count adjacent frontiers resolve the four-rate MCA prize via the generic
-adjacent-frontier API. -/
-theorem mcaPrizeLatticeResolved_of_mcaBadCount_zeroAdjacentFrontier
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hzero : ∀ j : Fin 4, ∀ u : Code.WordStack F (Fin 2) ι,
-      mcaBadCount (F := F)
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) = 0)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    mcaPrizeLatticeResolved domain
-      (fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)) := by
-  simpa [mcaPrizeAdjacentWitnessFrontier_of_mcaBadCount_zero_and_upperWitnesses,
-    GrandChallenges.MCALowerWitness.ofLe,
-    GrandChallenges.MCALowerWitness.ofDoubleCover,
-    GrandChallenges.MCALowerWitness.ofBadScalarDoubleCover,
-    GrandChallenges.MCALowerWitness.of_mcaBadCount_zero,
-    GrandChallenges.MCALowerWitness.of_forall_not_mcaEvent] using
-    mcaPrizeLatticeResolved_of_adjacent_frontier domain
-      (mcaPrizeAdjacentWitnessFrontier_of_mcaBadCount_zero_and_upperWitnesses
-        domain δ hδ_le_one hzero whi hδhi hadj)
-
 /-- Package direct no-bad-event frontiers and explicit adjacent upper witnesses into the generic
 four-rate adjacent-witness frontier. -/
 noncomputable def mcaPrizeAdjacentWitnessFrontier_of_forall_not_mcaEvent_and_upperWitnesses
@@ -1036,178 +956,6 @@ noncomputable def mcaPrizeAdjacentWitnessFrontier_of_forall_not_mcaEvent_and_upp
   adjacent := by
     intro j
     exact hadj j
-
-/-- Direct no-bad-event adjacent frontiers resolve the four-rate MCA prize via the generic
-adjacent-frontier API. -/
-theorem mcaPrizeLatticeResolved_of_forall_not_mcaEventAdjacentFrontier
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hno : ∀ j : Fin 4, ∀ (u : Code.WordStack F (Fin 2) ι) (γ : F),
-      ¬ mcaEvent (F := F)
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) γ)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    mcaPrizeLatticeResolved domain
-      (fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)) := by
-  simpa [mcaPrizeAdjacentWitnessFrontier_of_forall_not_mcaEvent_and_upperWitnesses,
-    GrandChallenges.MCALowerWitness.ofLe,
-    GrandChallenges.MCALowerWitness.ofDoubleCover,
-    GrandChallenges.MCALowerWitness.ofBadScalarDoubleCover,
-    GrandChallenges.MCALowerWitness.of_mcaBadCount_zero,
-    GrandChallenges.MCALowerWitness.of_forall_not_mcaEvent] using
-    mcaPrizeLatticeResolved_of_adjacent_frontier domain
-      (mcaPrizeAdjacentWitnessFrontier_of_forall_not_mcaEvent_and_upperWitnesses
-        domain δ hδ_le_one hno whi hδhi hadj)
-
-/-- Repaired double-cover adjacent frontiers resolve the four-rate MCA prize through the generic
-adjacent-frontier API and expose the satisfy/maximality specification for those concrete
-thresholds. -/
-theorem mcaPrizeLatticeResolved_with_spec_ofDoubleCoverAdjacentFrontier
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hcov : ∀ j : Fin 4, MCAForallDoubleCover (F := F) (A := F)
-      (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-      (δ j))
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      ∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j := by
-  let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-    fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-  have hτ : mcaPrizeLatticeResolved domain τ :=
-    mcaPrizeLatticeResolved_ofDoubleCoverAdjacentFrontier
-      domain δ hδ_le_one hcov whi hδhi hadj
-  exact ⟨hτ, (mcaPrizeLatticeResolved_iff domain τ).mp hτ⟩
-
-/-- Named bad-scalar double-cover adjacent frontiers resolve the four-rate MCA prize through the
-generic adjacent-frontier API and expose the satisfy/maximality specification for those concrete
-thresholds. -/
-theorem mcaPrizeLatticeResolved_with_spec_ofBadScalarDoubleCoverAdjacentFrontier
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hcov : ∀ j : Fin 4, ∀ (u : Code.WordStack F (Fin 2) ι) (γ : F),
-      MCABadScalarDoubleCover (F := F) (A := F)
-        (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) γ)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      ∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j := by
-  let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-    fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-  have hτ : mcaPrizeLatticeResolved domain τ :=
-    mcaPrizeLatticeResolved_ofBadScalarDoubleCoverAdjacentFrontier
-      domain δ hδ_le_one hcov whi hδhi hadj
-  exact ⟨hτ, (mcaPrizeLatticeResolved_iff domain τ).mp hτ⟩
-
-/-- Zero bad-scalar count adjacent frontiers resolve the four-rate MCA prize through the generic
-adjacent-frontier API and expose the satisfy/maximality specification for those concrete
-thresholds. -/
-theorem mcaPrizeLatticeResolved_with_spec_of_mcaBadCount_zeroAdjacentFrontier
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hzero : ∀ j : Fin 4, ∀ u : Code.WordStack F (Fin 2) ι,
-      mcaBadCount (F := F)
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) = 0)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      ∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j := by
-  let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-    fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-  have hτ : mcaPrizeLatticeResolved domain τ :=
-    mcaPrizeLatticeResolved_of_mcaBadCount_zeroAdjacentFrontier
-      domain δ hδ_le_one hzero whi hδhi hadj
-  exact ⟨hτ, (mcaPrizeLatticeResolved_iff domain τ).mp hτ⟩
-
-/-- Direct no-bad-event adjacent frontiers resolve the four-rate MCA prize through the generic
-adjacent-frontier API and expose the satisfy/maximality specification for those concrete
-thresholds. -/
-theorem mcaPrizeLatticeResolved_with_spec_of_forall_not_mcaEventAdjacentFrontier
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hno : ∀ j : Fin 4, ∀ (u : Code.WordStack F (Fin 2) ι) (γ : F),
-      ¬ mcaEvent (F := F)
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) γ)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      ∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j := by
-  let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-    fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-  have hτ : mcaPrizeLatticeResolved domain τ :=
-    mcaPrizeLatticeResolved_of_forall_not_mcaEventAdjacentFrontier
-      domain δ hδ_le_one hno whi hδhi hadj
-  exact ⟨hτ, (mcaPrizeLatticeResolved_iff domain τ).mp hτ⟩
 
 /-- Adjacent repaired double-cover frontiers resolve the four-rate MCA prize at the repaired
 lower-frontier lattice indices and expose the satisfy/maximality specification for those concrete
@@ -1350,346 +1098,6 @@ theorem mcaPrizeLatticeResolved_with_spec_of_forall_not_mcaEvent_and_adjacent_up
       domain δ hδ_le_one hno whi hδhi hadj
   exact ⟨hτ, (mcaPrizeLatticeResolved_iff domain τ).mp hτ⟩
 
-set_option linter.style.longLine false in
-/-- Adjacent repaired double-cover frontiers resolve the four-rate MCA prize, expose the exact
-threshold specification, and package the lower bracket at the same concrete lower lattice index. -/
-theorem mcaPrizeLatticeResolved_with_spec_and_lower_brackets_ofDoubleCover_and_adjacent_upperWitnesses
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hcov : ∀ j : Fin 4, MCAForallDoubleCover (F := F) (A := F)
-      (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-      (δ j))
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      (∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j) ∧
-      ∀ j : Fin 4,
-        latticeIndexOf (ι := ι) (δ j) (hδ_le_one j) ≤ τ j := by
-  let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-    fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-  have hspec :=
-    mcaPrizeLatticeResolved_with_spec_ofDoubleCover_and_adjacent_upperWitnesses
-      domain δ hδ_le_one hcov whi hδhi hadj
-  exact ⟨hspec.1, hspec.2, fun _ => le_rfl⟩
-
-set_option linter.style.longLine false in
-/-- Adjacent named bad-scalar double-cover frontiers resolve the four-rate MCA prize, expose the
-exact threshold specification, and package the lower bracket at the same concrete lower index. -/
-theorem
-    mcaPrizeLatticeResolved_with_spec_and_lower_brackets_ofBadScalarDoubleCover_and_adjacent_upperWitnesses
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hcov : ∀ j : Fin 4, ∀ (u : Code.WordStack F (Fin 2) ι) (γ : F),
-      MCABadScalarDoubleCover (F := F) (A := F)
-        (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) γ)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      (∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j) ∧
-      ∀ j : Fin 4,
-        latticeIndexOf (ι := ι) (δ j) (hδ_le_one j) ≤ τ j := by
-  let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-    fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-  have hspec :=
-    mcaPrizeLatticeResolved_with_spec_ofBadScalarDoubleCover_and_adjacent_upperWitnesses
-      domain δ hδ_le_one hcov whi hδhi hadj
-  exact ⟨hspec.1, hspec.2, fun _ => le_rfl⟩
-
-set_option linter.style.longLine false in
-/-- Adjacent zero bad-scalar count frontiers resolve the four-rate MCA prize, expose the exact
-threshold specification, and package the lower bracket at the same concrete lower lattice index. -/
-theorem
-    mcaPrizeLatticeResolved_with_spec_and_lower_brackets_of_mcaBadCount_zero_and_adjacent_upperWitnesses
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hzero : ∀ j : Fin 4, ∀ u : Code.WordStack F (Fin 2) ι,
-      mcaBadCount (F := F)
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) = 0)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      (∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j) ∧
-      ∀ j : Fin 4,
-        latticeIndexOf (ι := ι) (δ j) (hδ_le_one j) ≤ τ j := by
-  let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-    fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-  have hspec :=
-    mcaPrizeLatticeResolved_with_spec_of_mcaBadCount_zero_and_adjacent_upperWitnesses
-      domain δ hδ_le_one hzero whi hδhi hadj
-  exact ⟨hspec.1, hspec.2, fun _ => le_rfl⟩
-
-set_option linter.style.longLine false in
-/-- Adjacent direct no-bad-event frontiers resolve the four-rate MCA prize, expose the exact
-threshold specification, and package the lower bracket at the same concrete lower lattice index. -/
-theorem
-    mcaPrizeLatticeResolved_with_spec_and_lower_brackets_of_forall_not_mcaEvent_and_adjacent_upperWitnesses
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hno : ∀ j : Fin 4, ∀ (u : Code.WordStack F (Fin 2) ι) (γ : F),
-      ¬ mcaEvent (F := F)
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) γ)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      (∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j) ∧
-      ∀ j : Fin 4,
-        latticeIndexOf (ι := ι) (δ j) (hδ_le_one j) ≤ τ j := by
-  let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-    fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-  have hspec :=
-    mcaPrizeLatticeResolved_with_spec_of_forall_not_mcaEvent_and_adjacent_upperWitnesses
-      domain δ hδ_le_one hno whi hδhi hadj
-  exact ⟨hspec.1, hspec.2, fun _ => le_rfl⟩
-
-/-- Add the immediate lower and adjacent upper lattice brackets to a concrete adjacent
-`mcaPrizeLatticeResolved ∧ spec` witness. -/
-private theorem mcaPrizeLatticeResolved_with_spec_and_adjacent_brackets_of_with_spec
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1)
-    (hspec :
-      let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-        fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-      mcaPrizeLatticeResolved domain τ ∧
-        ∀ j : Fin 4,
-          let C : Set (ι → F) :=
-            ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-          ∃ _ : mcaThresholdExists C epsStar,
-            mcaSatisfies C epsStar (τ j) ∧
-              ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      ∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            (∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j) ∧
-              latticeIndexOf (ι := ι) (δ j) (hδ_le_one j) ≤ τ j ∧
-                τ j < latticeIndexOf (ι := ι) (whi j).δ (hδhi j) := by
-  let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-    fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-  refine ⟨hspec.1, ?_⟩
-  intro j
-  rcases hspec.2 j with ⟨hne, hsat, hmax⟩
-  refine ⟨hne, hsat, hmax, le_rfl, ?_⟩
-  have hval :
-      (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val <
-        (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val := by
-    have h := hadj j
-    omega
-  simpa [τ] using (Fin.lt_def.mpr hval)
-
-/-- Adjacent repaired double-cover frontiers expose the exact threshold specification together
-with both lattice brackets for the concrete lower-index threshold family. -/
-theorem mcaPrizeLatticeResolved_with_spec_and_brackets_ofDoubleCover_and_adjacent_upperWitnesses
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hcov : ∀ j : Fin 4, MCAForallDoubleCover (F := F) (A := F)
-      (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-      (δ j))
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      ∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            (∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j) ∧
-              latticeIndexOf (ι := ι) (δ j) (hδ_le_one j) ≤ τ j ∧
-                τ j < latticeIndexOf (ι := ι) (whi j).δ (hδhi j) :=
-  mcaPrizeLatticeResolved_with_spec_and_adjacent_brackets_of_with_spec
-    domain δ hδ_le_one whi hδhi hadj
-    (mcaPrizeLatticeResolved_with_spec_ofDoubleCover_and_adjacent_upperWitnesses
-      domain δ hδ_le_one hcov whi hδhi hadj)
-
-set_option linter.style.longLine false in
-/-- Adjacent named bad-scalar double-cover frontiers expose the exact threshold specification
-together with both lattice brackets for the concrete lower-index threshold family. -/
-theorem mcaPrizeLatticeResolved_with_spec_and_brackets_ofBadScalarDoubleCover_and_adjacent_upperWitnesses
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hcov : ∀ j : Fin 4, ∀ (u : Code.WordStack F (Fin 2) ι) (γ : F),
-      MCABadScalarDoubleCover (F := F) (A := F)
-        (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) γ)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      ∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            (∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j) ∧
-              latticeIndexOf (ι := ι) (δ j) (hδ_le_one j) ≤ τ j ∧
-                τ j < latticeIndexOf (ι := ι) (whi j).δ (hδhi j) :=
-  mcaPrizeLatticeResolved_with_spec_and_adjacent_brackets_of_with_spec
-    domain δ hδ_le_one whi hδhi hadj
-    (mcaPrizeLatticeResolved_with_spec_ofBadScalarDoubleCover_and_adjacent_upperWitnesses
-      domain δ hδ_le_one hcov whi hδhi hadj)
-
-set_option linter.style.longLine false in
-/-- Adjacent zero bad-scalar count frontiers expose the exact threshold specification together
-with both lattice brackets for the concrete lower-index threshold family. -/
-theorem mcaPrizeLatticeResolved_with_spec_and_brackets_of_mcaBadCount_zero_and_adjacent_upperWitnesses
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hzero : ∀ j : Fin 4, ∀ u : Code.WordStack F (Fin 2) ι,
-      mcaBadCount (F := F)
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) = 0)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      ∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            (∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j) ∧
-              latticeIndexOf (ι := ι) (δ j) (hδ_le_one j) ≤ τ j ∧
-                τ j < latticeIndexOf (ι := ι) (whi j).δ (hδhi j) :=
-  mcaPrizeLatticeResolved_with_spec_and_adjacent_brackets_of_with_spec
-    domain δ hδ_le_one whi hδhi hadj
-    (mcaPrizeLatticeResolved_with_spec_of_mcaBadCount_zero_and_adjacent_upperWitnesses
-      domain δ hδ_le_one hzero whi hδhi hadj)
-
-set_option linter.style.longLine false in
-/-- Adjacent direct no-bad-event frontiers expose the exact threshold specification together
-with both lattice brackets for the concrete lower-index threshold family. -/
-theorem mcaPrizeLatticeResolved_with_spec_and_brackets_of_forall_not_mcaEvent_and_adjacent_upperWitnesses
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hno : ∀ j : Fin 4, ∀ (u : Code.WordStack F (Fin 2) ι) (γ : F),
-      ¬ mcaEvent (F := F)
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) γ)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    mcaPrizeLatticeResolved domain τ ∧
-      ∀ j : Fin 4,
-        let C : Set (ι → F) :=
-          ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-        ∃ _ : mcaThresholdExists C epsStar,
-          mcaSatisfies C epsStar (τ j) ∧
-            (∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j) ∧
-              latticeIndexOf (ι := ι) (δ j) (hδ_le_one j) ≤ τ j ∧
-                τ j < latticeIndexOf (ι := ι) (whi j).δ (hδhi j) :=
-  mcaPrizeLatticeResolved_with_spec_and_adjacent_brackets_of_with_spec
-    domain δ hδ_le_one whi hδhi hadj
-    (mcaPrizeLatticeResolved_with_spec_of_forall_not_mcaEvent_and_adjacent_upperWitnesses
-      domain δ hδ_le_one hno whi hδhi hadj)
-
 /-- Project the exact threshold specification from adjacent repaired double-cover frontiers. -/
 theorem mcaPrizeLatticeSpec_ofDoubleCover_and_adjacent_upperWitnesses
     (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
@@ -1804,123 +1212,6 @@ theorem mcaPrizeLatticeSpec_of_forall_not_mcaEvent_and_adjacent_upperWitnesses
   (mcaPrizeLatticeResolved_with_spec_of_forall_not_mcaEvent_and_adjacent_upperWitnesses
     domain δ hδ_le_one hno whi hδhi hadj).2
 
-/-- Project the exact threshold specification from the generic repaired double-cover adjacent
-frontier route. -/
-theorem mcaPrizeLatticeSpec_ofDoubleCoverAdjacentFrontier
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hcov : ∀ j : Fin 4, MCAForallDoubleCover (F := F) (A := F)
-      (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-      (δ j))
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    ∀ j : Fin 4,
-      let C : Set (ι → F) :=
-        ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-      ∃ _ : mcaThresholdExists C epsStar,
-        mcaSatisfies C epsStar (τ j) ∧
-          ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j :=
-  (mcaPrizeLatticeResolved_with_spec_ofDoubleCoverAdjacentFrontier
-    domain δ hδ_le_one hcov whi hδhi hadj).2
-
-/-- Project the exact threshold specification from the generic named bad-scalar double-cover
-adjacent frontier route. -/
-theorem mcaPrizeLatticeSpec_ofBadScalarDoubleCoverAdjacentFrontier
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hcov : ∀ j : Fin 4, ∀ (u : Code.WordStack F (Fin 2) ι) (γ : F),
-      MCABadScalarDoubleCover (F := F) (A := F)
-        (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) γ)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    ∀ j : Fin 4,
-      let C : Set (ι → F) :=
-        ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-      ∃ _ : mcaThresholdExists C epsStar,
-        mcaSatisfies C epsStar (τ j) ∧
-          ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j :=
-  (mcaPrizeLatticeResolved_with_spec_ofBadScalarDoubleCoverAdjacentFrontier
-    domain δ hδ_le_one hcov whi hδhi hadj).2
-
-/-- Project the exact threshold specification from the generic zero bad-scalar count adjacent
-frontier route. -/
-theorem mcaPrizeLatticeSpec_of_mcaBadCount_zeroAdjacentFrontier
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hzero : ∀ j : Fin 4, ∀ u : Code.WordStack F (Fin 2) ι,
-      mcaBadCount (F := F)
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) = 0)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    ∀ j : Fin 4,
-      let C : Set (ι → F) :=
-        ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-      ∃ _ : mcaThresholdExists C epsStar,
-        mcaSatisfies C epsStar (τ j) ∧
-          ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j :=
-  (mcaPrizeLatticeResolved_with_spec_of_mcaBadCount_zeroAdjacentFrontier
-    domain δ hδ_le_one hzero whi hδhi hadj).2
-
-/-- Project the exact threshold specification from the generic direct no-bad-event adjacent
-frontier route. -/
-theorem mcaPrizeLatticeSpec_of_forall_not_mcaEventAdjacentFrontier
-    (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
-    (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
-    (hno : ∀ j : Fin 4, ∀ (u : Code.WordStack F (Fin 2) ι) (γ : F),
-      ¬ mcaEvent (F := F)
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        (δ j) (u 0) (u 1) γ)
-    (whi : ∀ j : Fin 4,
-      GrandChallenges.MCAUpperWitness
-        (ReedSolomon.code domain
-          ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
-        epsStar)
-    (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
-    (hadj : ∀ j : Fin 4,
-      (latticeIndexOf (ι := ι) (whi j).δ (hδhi j)).val =
-        (latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)).val + 1) :
-    let τ : Fin 4 → Fin (Fintype.card ι + 1) :=
-      fun j => latticeIndexOf (ι := ι) (δ j) (hδ_le_one j)
-    ∀ j : Fin 4,
-      let C : Set (ι → F) :=
-        ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
-      ∃ _ : mcaThresholdExists C epsStar,
-        mcaSatisfies C epsStar (τ j) ∧
-          ∀ i : Fin (Fintype.card ι + 1), mcaSatisfies C epsStar i → i ≤ τ j :=
-  (mcaPrizeLatticeResolved_with_spec_of_forall_not_mcaEventAdjacentFrontier
-    domain δ hδ_le_one hno whi hδhi hadj).2
-
 end LineDecodingPrizeSpec
 
 set_option linter.style.longLine false in
@@ -1982,27 +1273,11 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms ProximityGap.GrandChallengesLattice.mcaPrizeAdjacentWitnessFrontier_ofDoubleCover_and_upperWitnesses
 set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_ofDoubleCoverAdjacentFrontier
-set_option linter.style.longLine false in
 #print axioms ProximityGap.GrandChallengesLattice.mcaPrizeAdjacentWitnessFrontier_ofBadScalarDoubleCover_and_upperWitnesses
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_ofBadScalarDoubleCoverAdjacentFrontier
 set_option linter.style.longLine false in
 #print axioms ProximityGap.GrandChallengesLattice.mcaPrizeAdjacentWitnessFrontier_of_mcaBadCount_zero_and_upperWitnesses
 set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_of_mcaBadCount_zeroAdjacentFrontier
-set_option linter.style.longLine false in
 #print axioms ProximityGap.GrandChallengesLattice.mcaPrizeAdjacentWitnessFrontier_of_forall_not_mcaEvent_and_upperWitnesses
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_of_forall_not_mcaEventAdjacentFrontier
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_ofDoubleCoverAdjacentFrontier
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_ofBadScalarDoubleCoverAdjacentFrontier
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_of_mcaBadCount_zeroAdjacentFrontier
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_of_forall_not_mcaEventAdjacentFrontier
 set_option linter.style.longLine false in
 #print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_ofDoubleCover_and_adjacent_upperWitnesses
 set_option linter.style.longLine false in
@@ -2012,22 +1287,6 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_of_forall_not_mcaEvent_and_adjacent_upperWitnesses
 set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_and_lower_brackets_ofDoubleCover_and_adjacent_upperWitnesses
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_and_lower_brackets_ofBadScalarDoubleCover_and_adjacent_upperWitnesses
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_and_lower_brackets_of_mcaBadCount_zero_and_adjacent_upperWitnesses
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_and_lower_brackets_of_forall_not_mcaEvent_and_adjacent_upperWitnesses
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_and_brackets_ofDoubleCover_and_adjacent_upperWitnesses
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_and_brackets_ofBadScalarDoubleCover_and_adjacent_upperWitnesses
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_and_brackets_of_mcaBadCount_zero_and_adjacent_upperWitnesses
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_and_brackets_of_forall_not_mcaEvent_and_adjacent_upperWitnesses
-set_option linter.style.longLine false in
 #print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeSpec_ofDoubleCover_and_adjacent_upperWitnesses
 set_option linter.style.longLine false in
 #print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeSpec_ofBadScalarDoubleCover_and_adjacent_upperWitnesses
@@ -2035,14 +1294,6 @@ set_option linter.style.longLine false in
 #print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeSpec_of_mcaBadCount_zero_and_adjacent_upperWitnesses
 set_option linter.style.longLine false in
 #print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeSpec_of_forall_not_mcaEvent_and_adjacent_upperWitnesses
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeSpec_ofDoubleCoverAdjacentFrontier
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeSpec_ofBadScalarDoubleCoverAdjacentFrontier
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeSpec_of_mcaBadCount_zeroAdjacentFrontier
-set_option linter.style.longLine false in
-#print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeSpec_of_forall_not_mcaEventAdjacentFrontier
 
 end GrandChallengesLattice
 

@@ -1,5 +1,19 @@
 # Direct attack: the rigorous Markov bridge + exact reduction to BCHKS Conj 1.12 (2026-06-13)
 
+> **Correction (2026-10-28 audit, T48).** §1 is right to remove frequency `0`, and the one-way
+> bound of §2 is right: `B^{2r} ≤ M_r`, so Gaussian-scale nonzero moments up to `r ≈ ln p` would
+> imply `B ≤ √(2n ln p)`. The following overstatements are withdrawn.
+> - **Not an iff.** "The prize closes **iff** the `b≠0` moments stay Gaussian" upgrades a sufficient
+>   condition to an equivalence. A sup bound does not imply Gaussian moments.
+> - **Support size is not a moment bound.** In §4, a large sumset `r·μ_n` (BCHKS 1.12-type growth
+>   `|G^{(+ℓ)}| ≥ q/10`) gives no upper bound on concentration or on the energy `E_r`. Large support
+>   is compatible with heavy collision mass on a few values. Markov's inequality does not supply the
+>   missing distributional estimate, so "non-collision ⟺ large sumset ⟺ BCHKS 1.12" is not a valid
+>   chain.
+> - **Not a closure condition.** §5's "the prize closes the instant BCHKS 1.12 is proven" also
+>   relies on the exact `δ*` formula and the "verified extremality". Both are unproved inputs, not
+>   in-tree theorems. The data in §3 are finite observations.
+
 Genuine structural progress from attacking `B(μ_n) ≤ C√(n log p)` directly. The Markov mechanism is
 now **rigorous**, the obstruction is pinned to a **named conjecture (BCHKS 1.12)**, and the threshold
 `r ≈ ln p` is data-confirmed. (Still open — the named conjecture — but this is the cleanest reduction.)

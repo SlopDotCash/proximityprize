@@ -21,13 +21,21 @@ where nu_d = pushforward of Lebesgue on R_{>=0}^d under (sum c, sum j c).  Both 
 mu_d are computed by ray convolutions (direction (1, j), density dt), one per derivative
 order — COST LINEAR IN d, so the d -> infinity limit is directly computable.
 
-rho*IQ - IR is convex in o (IR is an inf of linear functionals), so optima are bang-bang;
-solved by iterated marginal pricing: include cell (S,J) iff its dimension value
-rho (beta-S)^2/2 exceeds its rank price integral over cols-binding blocks it feeds.
+rho*IQ - IR is convex in o (IR is an inf of linear functionals), so a maximizer exists at an
+extreme (bang-bang) occupancy.  The probe SEARCHES for one by iterated marginal pricing from a
+few selected starts: include cell (S,J) iff its dimension value rho (beta-S)^2/2 exceeds its
+rank price integral over cols-binding blocks it feeds.  This is a local heuristic, not a
+global maximizer (maximizing a convex function is not solved by local iteration), so:
+  * a positive margin exhibits a feasible occupancy (an upper bound on the discretized
+    threshold beta at that h);
+  * a stalled or nonpositive best margin is UNRESOLVED, not an infeasibility certificate, so
+    the bisection's lower side and "infeasible"/None outcomes are not certified.
 
 delta = 1 - rho*beta; Johnson beta = 1/sqrt(rho); capacity beta = 1 (any rate).
-The discretization uses midpoint cell centers and windows of exact scaled length 1; the
-remaining bias is removed by Richardson extrapolation over the h-ladder.
+The discretization uses midpoint cell centers and windows of exact scaled length 1.  The
+reported beta* is a two-grid Richardson extrapolation over the h-ladder, assuming an O(h) bias;
+no remainder/error bound is proved, so it is an extrapolated ESTIMATE, not a rigorous continuum
+threshold.
 
 Validation: d=1 must reproduce hd1_continuum_limit.py (0.97566 at rate 1/2 etc.); the
 counting bound equals the exact rank at d=1.
@@ -137,7 +145,9 @@ MARGIN_TOL = 1e-10  # a positive margin below this is a numerical artifact, not 
 
 
 def feasible(rho, beta, grid, nu, R, iters=40, o0=None):
-    """max_o [rho IQ - IR] > 0?  Returns (best margin, best occupancy).
+    """Heuristic search for an occupancy with rho IQ - IR > 0.  Returns (best margin found,
+    its occupancy).  A positive margin is a genuine exhibited occupancy; a nonpositive one only
+    means the local search from the selected starts found none (not infeasibility).
     Cap mass is restricted to J <= -g2min so every column window lies on-grid
     (mass beyond leaks rank cost off the gamma2 boundary and fakes feasibility)."""
     h = grid.h
@@ -212,8 +222,10 @@ def beta_star_at_h(rho, d, h, jmax, blo, bhi, bits=20, o_seed=None):
 
 def beta_star(rho, d, jmax=None, hs=(0.02, 0.01, 0.005), blo=1.0, bhi=None,
               verbose=False, o_seed=None):
-    """h-ladder plus Richardson extrapolation (bias is O(h)).  Returns
-    (extrapolated beta, ladder, final occupancy at the finest h)."""
+    """h-ladder plus two-grid Richardson extrapolation (assumes an O(h) bias; no error bound is
+    proved).  Returns (extrapolated beta estimate, ladder, final occupancy at the finest h), or
+    (None, None, None) when the heuristic search found no feasible occupancy at bhi on some
+    grid (unresolved, not infeasible)."""
     bhi = bhi or 1.0 / math.sqrt(rho) + 0.02
     jmax = jmax or max(4.0, min(1.5 * d, 12.0))
     vals = []
@@ -239,6 +251,10 @@ def validate():
     fails = 0
     for rho, ref in tgt.items():
         b, vals, _ = beta_star(rho, 1, jmax=4.0, verbose=True)
+        if b is None:
+            fails += 1
+            print(f"  rho={rho}: UNKNOWN (no feasible occupancy found) MISMATCH", flush=True)
+            continue
         ratio = b * math.sqrt(rho)
         ok = abs(ratio - ref) < 0.0015
         fails += 0 if ok else 1
@@ -258,7 +274,8 @@ def sweep(rho, ds_list, hs=(0.02, 0.01, 0.005), jmax=None):
     for d in ds_list:
         b, vals, o_last = beta_star(rho, d, hs=hs, jmax=jmax, o_seed=seed)
         if b is None:
-            print(f"  d={d}: infeasible", flush=True)
+            print(f"  d={d}: UNKNOWN (heuristic search found no feasible occupancy at "
+                  f"beta_hi; not an infeasibility certificate)", flush=True)
             continue
         ratio = b * math.sqrt(rho)
         ladder = " ".join(f"{bb:.5f}" for _, bb in vals)
@@ -284,7 +301,10 @@ if __name__ == "__main__":
         sys.exit(1 if validate() else 0)
     elif args.cmd == "solve":
         b, vals, _ = beta_star(args.rho, args.d, hs=hs, jmax=args.jmax, verbose=True)
-        print(f"beta*={b} ratio={b * math.sqrt(args.rho):.6f} "
-              f"delta={1 - args.rho * b:.6f}")
+        if b is None:
+            print("beta*: UNKNOWN (heuristic search found no feasible occupancy; unresolved)")
+        else:
+            print(f"beta*~{b} (Richardson estimate) ratio={b * math.sqrt(args.rho):.6f} "
+                  f"delta={1 - args.rho * b:.6f}")
     else:
         sweep(args.rho, [int(x) for x in args.ds.split(",")], hs=hs, jmax=args.jmax)

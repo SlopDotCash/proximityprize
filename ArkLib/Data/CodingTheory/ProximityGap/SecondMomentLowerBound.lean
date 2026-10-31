@@ -6,18 +6,24 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SecondMomentExact
 
 /-!
-# The `M ≥ √n` sup-norm lower bound (#407)
+# The Parseval sup-norm lower bound `M² ≥ n(q−n)/(q−1)` (#407)
 
 The DC-subtracted second moment `∑_{b≠0}‖η_b‖² = q·|G| − |G|²` (`SecondMomentExact.sum_nonzero_sq`) is
 spread over `q−1` non-trivial frequencies, so some non-trivial frequency attains at least the average:
 
 > **`exists_nonzero_frequency_ge`** — `∃ b ≠ 0` with `‖η_b‖² ≥ (q·|G| − |G|²)/(q−1)`.
 
-For `q > |G|` the right side is `≈ |G|`, so `M = max_{b≠0}‖η_b‖ ≥ √(|G|)·(1−o(1))`. Combined with the
-conditional upper bound `M ≤ √(2|G|·ln q)` (`GaussPeriodOptimizedBound`), this **brackets the prize
-sup-norm**: `√n · (1−o(1)) ≤ M ≤ √(2n ln q)`. The lower bound is unconditional and elementary
-(Parseval / averaging); the upper bound is the open BGK content. The whole open question is the
-`√(ln q)` gap between them.
+With `n = |G|` and `M = max_{b≠0}‖η_b‖` this is exactly `M² ≥ n(q−n)/(q−1)`. For `n > 1` the right
+side is strictly less than `n`, so it does **not** give `M ≥ √n`: e.g. over `F_3` with
+`G = {1,2}` both nonzero periods are `−1`, so `M = 1 < √2` (and `G = F` gives `M = 0`). Only in the
+sparse regime `n/q → 0` is this `M ≥ √n·(1−o(1))`; `q > n` alone does not give that.
+
+Combined with the conditional upper bound `M² ≤ 2e·n·r` at any `r ≥ max(1, ln q)` (so
+`M ≤ √(2e·n·⌈ln q⌉)`; `DCOptimized.eta_sq_le_dcOptimized` under `DCEnergyBound`, assembled in
+`SupNormBracket`), this brackets the prize sup-norm. The sharp-constant form `√(2n ln q)` is only
+an asymptotic target, not the proved constant. The lower bound is unconditional and elementary
+(Parseval / averaging); the upper bound's input is the open BGK content. In the sparse regime the
+open question is the `√(ln q)` gap between them.
 
 Issue #407.
 -/
@@ -29,7 +35,8 @@ namespace ArkLib.ProximityGap.SecondMomentLowerBound
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
 /-- **Non-trivial sup-norm lower bound.** Some `b ≠ 0` has `‖η_b‖² ≥ (q·|G| − |G|²)/(q−1)` — the average
-of the DC-subtracted second moment over the `q−1` non-trivial frequencies. Hence `M ≥ √n·(1−o(1))`. -/
+of the DC-subtracted second moment over the `q−1` non-trivial frequencies. Hence
+`M² ≥ n(q−n)/(q−1)`, which is `M ≥ √n·(1−o(1))` only when `n/q → 0`. -/
 theorem exists_nonzero_frequency_ge {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
     (hq : 1 < Fintype.card F) :
     ∃ b ∈ univ.erase (0 : F),

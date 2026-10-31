@@ -167,23 +167,9 @@ theorem stackBadCountImage_card_le_budget_add_one_of_profileSlackClosureAtField
     {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
     (hcert : ProfileSlackClosureAtField (F := F) (A := A)
       FloorBad a C δ profile rep slack B) :
-    (ProfileFiberSlackDominance.StackBadCountImage F C δ).card ≤ B + 1 := by
-  have hsubset :
-      ProfileFiberSlackDominance.StackBadCountImage F C δ ⊆ Finset.Icc 0 B := by
-    intro b hb
-    change b ∈ (Finset.univ : Finset (WordStack A (Fin 2) ι)).image
-      (fun u => ProfileFiberSlackDominance.StackBadCount F C δ u) at hb
-    rcases Finset.mem_image.mp hb with ⟨u, _hu, hu⟩
-    rw [← hu]
-    exact Finset.mem_Icc.mpr
-      ⟨Nat.zero_le _,
-        le_trans (hcert.2.1 u) (hcert.2.2 (profile u) ⟨u, rfl⟩)⟩
-  calc
-    (ProfileFiberSlackDominance.StackBadCountImage F C δ).card ≤ (Finset.Icc 0 B).card :=
-      Finset.card_le_card hsubset
-    _ = B + 1 := by
-      rw [Nat.card_Icc]
-      omega
+    (ProfileFiberSlackDominance.StackBadCountImage F C δ).card ≤ B + 1 :=
+  ProfileFiberSlackDominance.stackBadCountImage_card_le_budget_add_one_of_profileFiberSlack
+    C δ hcert.2.1 hcert.2.2
 
 /-- Image-size refuter for field-level slack closure: no closure certificate with budget `B` can
 explain more than `B + 1` distinct realized bad-count values. -/

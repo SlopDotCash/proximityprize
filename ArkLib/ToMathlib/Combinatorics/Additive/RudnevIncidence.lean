@@ -9,6 +9,9 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.FieldTheory.Finite.Basic
 import ArkLib.ToMathlib.Combinatorics.Additive.HigherEnergy
+import Mathlib.Data.ZMod.Basic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Linarith
 
 /-!
 # Rudnev's point–plane incidence bound over `Fᵍ³`
@@ -19,50 +22,61 @@ Bourgain–Glibichuk–Konyagin–type bounds consumed by the proximity-gap form
 
 ## The theorem (Rudnev, *Combinatorica* 2018)
 
-Let `F` be a finite field with `q := #F` elements and characteristic `p`. Let `P` be a set of `m`
-points in the affine space `F³` and `Π` a set of `n` planes, with `m ≤ n` and `n ≤ p · m` (a
-non-degeneracy condition ruling out a single pencil dominating). Then the number of incidences
+Rudnev's point–plane theorem ([arXiv:1407.0426](https://arxiv.org/abs/1407.0426), Theorem 3) is
+stated over any field `F` of characteristic `p ≠ 2`: for a set `P` of `m` points and a set `Π` of
+`n` planes with `m ≥ n`, and `n = O(p²)` when `p > 0`,
 
-  `I(P, Π) = #{(x, π) ∈ P × Π : x lies on π}`
+  `I(P, Π) = #{(x, π) ∈ P × Π : x lies on π} = O(m · √n + m · k)`,
 
-satisfies
+where `k` is the **maximum number of collinear planes** of `Π` (planes through one common line).
+The collinearity term `m · k` cannot be dropped: a pencil of planes through a line containing all
+points has `I = m · n`. The bound has implicit absolute constants (`C` for the `O`, and `c₀` in
+`n ≤ c₀ · p²`); a statement about a *single* finite field with free constants would be trivially
+true, so the faithful formal target `RudnevIncidenceTheorem` quantifies the constants outside all
+finite fields.
 
-  `I(P, Π) ≤ m · n / q + C · √(m · n · q) + C · n`
+### Correction of an earlier encoding (audit L57)
 
-for an absolute constant `C` (one may take `C = 1` in the leading sharp form, with the `n` term
-allowing for a single high-multiplicity pencil of planes through a line).
+An earlier version of this file carried as its "core" the bound
+`I(P, Π) ≤ m·n/q + √(m·n·q) + n` under only the cardinality guards `m ≤ n ≤ q·m` (the header then
+claimed that these guards rule out a dominating pencil). That predicate is **false**: over `F₅` the
+five points `(t, 0, 0)` and the six distinct normalized planes `y + a·z = 0` (`a ∈ F₅`) and `z = 0`
+all contain the `x`-axis, giving `I = 30 > 12 + √150`. It is kept below only under the explicit name
+`NaiveIncidenceBound`, together with the kernel-checked refutation
+`not_naiveIncidenceBound_zmod5`; the named core is now `RudnevIncidenceCore`, which carries
+Rudnev's collinearity parameter, characteristic restriction and genuine-plane condition.
 
 ## What is proved here, and what is carried as a named core
 
-The proof of the `√(m n q)` saving genuinely requires algebraic geometry — the **Klein quadric /
+The proof of the `m · √n` saving genuinely requires algebraic geometry — the **Klein quadric /
 Cayley–Klein correspondence** that turns lines in `F³` into points of a quadric in `P⁵`, followed
-by a flag count on that quadric. That algebraic-geometric heart is **not in Mathlib** and is carried
-here as a clearly named open predicate `RudnevIncidenceCore` (a `def ... : Prop`, never a hidden
-`sorry`).
+by an incidence count on that quadric. That heart is **not in Mathlib** and is carried here as the
+named predicate `RudnevIncidenceCore C c₀ F` (a `def ... : Prop`, never a hidden `sorry`); the
+published theorem is `RudnevIncidenceTheorem := ∃ C c₀, 0 < c₀ ∧ ∀ finite F, RudnevIncidenceCore
+C c₀ F` (restricted here to finite fields).
 
 Everything **elementary** is proved axiom-clean:
 
 * `Rudnev.incidences_eq_sum_pointDeg` / `incidences_eq_sum_planeDeg` — the **flag double-count**:
   `I(P,Π) = ∑_{x∈P} deg(x) = ∑_{π∈Π} deg(π)`, where `deg(x)` is the number of planes through `x`
   and `deg(π)` the number of points on `π`. Pure `sum_card_fiberwise`.
-* `Rudnev.sq_incidences_le` — the **Cauchy–Schwarz reduction**: `I(P,Π)² ≤ m · ∑_x deg(x)²`, the
-  bridge from incidences to the second moment (the quantity the AG core actually bounds).
-* `Rudnev.planesThrough_card` — the **main-term `q`-divisibility**: a *fixed* affine point lies on
-  exactly the planes whose coefficient `(a,b,c)` is anything and `d` is then forced; this pins the
-  `m·n/q` main term combinatorially.
-* `Rudnev.incidence_bound` — the **conditional main theorem**: assuming `RudnevIncidenceCore`, the
-  incidence bound holds.
+* `Rudnev.sq_incidences_le` — the **Cauchy–Schwarz reduction**: `I(P,Π)² ≤ m · ∑_x deg(x)²`.
+* `Rudnev.planesThrough_card` — over **all** coefficient vectors `F⁴`, a fixed point lies on
+  exactly `q³` of them.
+* `Rudnev.incidence_bound` — the **conditional main theorem**: assuming `RudnevIncidenceCore C c₀ F`
+  the bound `I ≤ C · (m·√n + m·k)` holds under Rudnev's hypotheses.
+* `Rudnev.not_naiveIncidenceBound_zmod5` — the refutation of the earlier (false) encoding.
 
 ## Status
 
-`PARTIAL-PROVEN-PLUS-NAMED-CORE`. The flag double-count, the Cauchy–Schwarz reduction, and the
-fixed-point planes count are fully proven and axiom-clean. The `√(m n q)` saving — the Klein-quadric
-flag count — is the named open core `RudnevIncidenceCore`.
+`PARTIAL-PROVEN-PLUS-NAMED-CORE`. The elementary lemmas are proven; the incidence saving is the
+named core `RudnevIncidenceCore`, whose content is Rudnev's published theorem (not formalized).
 
 ## References
 
 * M. Rudnev, *On the number of incidences between points and planes in three dimensions*,
   Combinatorica 38 (2018), 219–254.
+* M. Rudnev, arXiv:1407.0426 (Theorem 3 and abstract).
 * B. Murphy, G. Petridis, O. Roche-Newton, M. Rudnev, I. D. Shkredov, *New results on sum-product
   type growth over fields*, Mathematika 65 (2019).
 -/
@@ -197,34 +211,118 @@ theorem planesThrough_card (x : Point F) :
 
 /-! ### The deep core (algebraic geometry — Klein quadric), as a named predicate -/
 
-/-- **DEEP CORE (Klein-quadric flag count).** The algebraic-geometric heart of Rudnev's theorem.
+/-- A coefficient vector `π = (a, b, c, d)` is a **normalized genuine plane** if its normal
+`(a, b, c)` is nonzero and its first nonzero normal coordinate equals `1`. Distinct normalized
+vectors represent distinct affine planes, so a `Finset` of them is a genuine set of planes (this
+excludes the zero vector, the empty "planes" `(0, 0, 0, d)` and scalar duplicates). -/
+def IsNormalizedPlane (π : Plane F) : Prop :=
+  π 0 = 1 ∨ (π 0 = 0 ∧ π 1 = 1) ∨ (π 0 = 0 ∧ π 1 = 0 ∧ π 2 = 1)
 
-For finite sets `P` of points and `Pl` of planes in `F³` over a field `F` with `#F = q`, subject to
-the non-degeneracy conditions `#P ≤ #Pl` and `#Pl ≤ q · #P`, the incidence count obeys
+instance (π : Plane F) : Decidable (IsNormalizedPlane π) := by
+  unfold IsNormalizedPlane; infer_instance
 
-  `I(P, Pl) ≤ #P · #Pl / q + √(#P · #Pl · q) + #Pl`.
+/-- The plane `π` contains the affine line `{a + t·v : t ∈ F}` (for a direction `v ≠ 0`): the base
+point lies on `π` and the direction is orthogonal to the normal of `π`. -/
+def ContainsLine (π : Plane F) (a v : Point F) : Prop :=
+  Inc a π ∧ π 0 * v 0 + π 1 * v 1 + π 2 * v 2 = 0
 
-This statement encapsulates the part of the proof — the Cayley–Klein lifting of lines in `F³` to
-points on the Klein quadric `Q ⊂ P⁵`, and the flag count on `Q` — that is **not** available in
-Mathlib. It is recorded as an open hypothesis (`def ... : Prop`), never as a `sorry` inside a
-theorem. -/
-def RudnevIncidenceCore (F : Type*) [Field F] [Fintype F] [DecidableEq F] : Prop :=
+instance (π : Plane F) (a v : Point F) : Decidable (ContainsLine π a v) := by
+  unfold ContainsLine; infer_instance
+
+/-- **Rudnev's collinearity parameter** `k`: the maximum number of planes of `Pl` containing a
+common affine line (lines given by a base point and a nonzero direction). -/
+def maxCollinearPlanes (Pl : Finset (Plane F)) : ℕ :=
+  ((Finset.univ : Finset (Point F × Point F)).filter (fun av => av.2 ≠ 0)).sup
+    (fun av => #{π ∈ Pl | ContainsLine π av.1 av.2})
+
+/-- **DEEP CORE (Rudnev's point–plane incidence bound, with constants `C`, `c₀`).**
+
+Over the finite field `F` of characteristic `p = ringChar F ≠ 2`: for every finite set `P` of
+points and every finite set `Pl` of normalized genuine planes with `#Pl ≤ #P` and
+`#Pl ≤ c₀ · p²`,
+
+  `I(P, Pl) ≤ C · (#P · √#Pl + #P · k)`, where `k = maxCollinearPlanes Pl`.
+
+This is the finite-field instance of [Rudnev 2018, Theorem 3]. For a *fixed* finite field and free
+`C` it is trivially satisfiable, so the meaningful target is `RudnevIncidenceTheorem`, which fixes
+`C` and `c₀` uniformly over all finite fields. The Klein-quadric proof is **not** available in
+Mathlib; this is recorded as a hypothesis (`def ... : Prop`), never as a `sorry`. -/
+def RudnevIncidenceCore (C c₀ : ℝ) (F : Type*) [Field F] [Fintype F] [DecidableEq F] : Prop :=
+  ringChar F ≠ 2 →
+  ∀ (P : Finset (Point F)) (Pl : Finset (Plane F)),
+    (∀ π ∈ Pl, IsNormalizedPlane π) →
+    #Pl ≤ #P → (#Pl : ℝ) ≤ c₀ * (ringChar F : ℝ) ^ 2 →
+      (incidences P Pl : ℝ)
+        ≤ C * ((#P : ℝ) * Real.sqrt (#Pl : ℝ) + (#P : ℝ) * (maxCollinearPlanes Pl : ℝ))
+
+/-- **Rudnev's theorem over finite fields (uniform constants).** There are absolute constants
+`C` and `c₀ > 0` such that `RudnevIncidenceCore C c₀ F` holds for every finite field `F`
+(in `Type`). This is the published result (restricted to finite fields); it is not formalized. -/
+def RudnevIncidenceTheorem : Prop :=
+  ∃ C c₀ : ℝ, 0 < c₀ ∧
+    ∀ (F : Type) [Field F] [Fintype F] [DecidableEq F], RudnevIncidenceCore C c₀ F
+
+/-- **Rudnev's point–plane incidence theorem (conditional form).** Assuming the named core
+`RudnevIncidenceCore C c₀ F`, the incidence count between `#P ≥ #Pl` points and normalized planes
+satisfies `I(P, Pl) ≤ C · (#P · √#Pl + #P · k)` under Rudnev's characteristic restriction. -/
+theorem incidence_bound {C c₀ : ℝ} (h : RudnevIncidenceCore C c₀ F) (hchar : ringChar F ≠ 2)
+    (P : Finset (Point F)) (Pl : Finset (Plane F)) (hPl : ∀ π ∈ Pl, IsNormalizedPlane π)
+    (hnm : #Pl ≤ #P) (hp : (#Pl : ℝ) ≤ c₀ * (ringChar F : ℝ) ^ 2) :
+    (incidences P Pl : ℝ)
+      ≤ C * ((#P : ℝ) * Real.sqrt (#Pl : ℝ) + (#P : ℝ) * (maxCollinearPlanes Pl : ℝ)) :=
+  h hchar P Pl hPl hnm hp
+
+/-! ### The earlier (false) encoding, kept with its refutation (audit L57) -/
+
+/-- **The earlier, false encoding of the core.** `I(P, Pl) ≤ #P·#Pl/q + √(#P·#Pl·q) + #Pl`
+under only `#P ≤ #Pl ≤ q·#P`. It omits Rudnev's collinearity parameter and is refuted over `F₅` by
+`not_naiveIncidenceBound_zmod5`. Kept only as a documented counterexample target; do **not** use it
+as a residual. -/
+def NaiveIncidenceBound (F : Type*) [Field F] [Fintype F] [DecidableEq F] : Prop :=
   ∀ (P : Finset (Point F)) (Pl : Finset (Plane F)),
     #P ≤ #Pl → #Pl ≤ q F * #P →
       (incidences P Pl : ℝ)
         ≤ (#P : ℝ) * (#Pl : ℝ) / (q F : ℝ)
           + Real.sqrt ((#P : ℝ) * (#Pl : ℝ) * (q F : ℝ)) + (#Pl : ℝ)
 
-/-- **Rudnev's point–plane incidence theorem (conditional form).** Assuming the named Klein-quadric
-core `RudnevIncidenceCore F`, the incidence count between `#P ≤ #Pl` points and planes satisfies the
-sharp bound `I(P,Pl) ≤ #P·#Pl/q + √(#P·#Pl·q) + #Pl`. -/
-theorem incidence_bound (h : RudnevIncidenceCore F)
-    (P : Finset (Point F)) (Pl : Finset (Plane F))
-    (hmn : #P ≤ #Pl) (hdeg : #Pl ≤ q F * #P) :
-    (incidences P Pl : ℝ)
-      ≤ (#P : ℝ) * (#Pl : ℝ) / (q F : ℝ)
-        + Real.sqrt ((#P : ℝ) * (#Pl : ℝ) * (q F : ℝ)) + (#Pl : ℝ) :=
-  h P Pl hmn hdeg
+section NaiveRefutation
+
+private instance fact_prime_five : Fact (Nat.Prime 5) := ⟨by decide⟩
+
+/-- The five points `(t, 0, 0)` of the `x`-axis over `F₅`. -/
+def naiveCounterPoints : Finset (Point (ZMod 5)) :=
+  Finset.univ.image (fun t : ZMod 5 => ![t, 0, 0])
+
+/-- Six distinct normalized planes through the `x`-axis over `F₅`: `y + a·z = 0` and `z = 0`. -/
+def naiveCounterPlanes : Finset (Plane (ZMod 5)) :=
+  insert ![0, 0, 1, 0] (Finset.univ.image (fun a : ZMod 5 => ![0, 1, a, 0]))
+
+theorem naiveCounter_counts :
+    naiveCounterPoints.card = 5 ∧ naiveCounterPlanes.card = 6 ∧
+      incidences naiveCounterPoints naiveCounterPlanes = 30 := by
+  decide
+
+theorem naiveCounterPlanes_normalized :
+    ∀ π ∈ naiveCounterPlanes, IsNormalizedPlane π := by
+  intro π hπ
+  simp only [naiveCounterPlanes, Finset.mem_insert, Finset.mem_image, Finset.mem_univ,
+    true_and] at hπ
+  rcases hπ with rfl | ⟨a, rfl⟩
+  · right; right; simp
+  · right; left; simp
+
+/-- **Refutation of the earlier encoding (audit L57).** `NaiveIncidenceBound (ZMod 5)` is false:
+five collinear points and six normalized planes through their line give `30` incidences, while the
+claimed right side is `6 + √150 + 6 < 30`. -/
+theorem not_naiveIncidenceBound_zmod5 : ¬ NaiveIncidenceBound (ZMod 5) := by
+  intro h
+  have hb := h naiveCounterPoints naiveCounterPlanes (by decide) (by decide)
+  rw [naiveCounter_counts.1, naiveCounter_counts.2.1, naiveCounter_counts.2.2] at hb
+  norm_num [q] at hb
+  have hs : Real.sqrt (150 : ℝ) ^ 2 = 150 := Real.sq_sqrt (by norm_num)
+  nlinarith [Real.sqrt_nonneg (150 : ℝ)]
+
+end NaiveRefutation
 
 /-! ### A fully-proven *trivial* incidence bound (unconditional sanity baseline)
 
@@ -261,3 +359,4 @@ end Rudnev
 #print axioms Rudnev.planesThrough_card
 #print axioms Rudnev.incidence_bound
 #print axioms Rudnev.incidences_le_trivial
+#print axioms Rudnev.not_naiveIncidenceBound_zmod5

@@ -35,14 +35,23 @@ the critical bookkeeping question: does `C(d)` growth break the rung at prize sc
    dimension count pays per class, NOT an extra `d²` from the folding itself.
 5. `tripleVal_zero_fiber_card_le_three` — the zero fiber of the triple-linear kernel is ≤ 3
    (unconditional, every tuple, every χ).
-6. `DStepanovOutput` (the d-analogue of `S2Output`: one aux polynomial PER FIBER CLASS) +
-   `classCount_le_of_dStepanovOutput` + `tripleLinearHasseC_of_dStepanovOutput` — the full
-   conditional pipeline `DStepanovOutput → TripleLinearHasseC C → QuarticWeilInputC (C+1) →
-   FourthMomentTwistBound (4 + Cmax)` with every constant explicit.
+6. `DStepanovOutputOn` (the d-analogue of `S2Output`: one aux polynomial PER FIBER CLASS,
+   required only on the nondegenerate tuples of `G⁴` consumed by the Hasse target) +
+   `tripleLinearHasseC_of_dStepanovOutputOn` + `fourthMomentTwistBound_of_dStepanovOn_pipeline`
+   — the full conditional pipeline `DStepanovOutputOn → TripleLinearHasseC C →
+   QuarticWeilInputC (C+1) → FourthMomentTwistBound (4 + Cmax)` with every constant explicit.
+   The older universal interface `DStepanovOutput` (every tuple `u, v, w`) and its pipeline
+   are kept as corollaries, but **audit R-136**: at `u = v = w = 0` the kernel is the constant
+   `1`, so the universal interface forces `Dtot ≥ m·q`
+   (`dStepanovOutput_forces_trivial_budget`) and with the fold arithmetic `C√q ≥ q + 3` — it
+   cannot be met at any fixed small constant.  Degenerate tuples belong to the separately
+   accounted trivial layer.
 7. **`fullFamily_gate_impossible`** — THE AUDIT THEOREM: the normalized full-family rung
    gate `32(Cw·(m−1)⁴+1)/m²/3 ≤ 1` (the `hC` hypothesis of the round-19
    `*_of_chiFamily_of_constant_le_one` consumers, with `|chiFamily χ| = m−1`) is
    IMPOSSIBLE for every `m ≥ 2` and every `Cw ≥ 1` — including the sharp Weil `Cw = 6`.
+   `subfamily_gate_depends_on_Cw` records that the proper-subfamily gates, by contrast,
+   do depend on `Cw`.
 
 ## THE HONEST CONSTANT ACCOUNTING (the lane's main deliverable)
 
@@ -57,21 +66,27 @@ Weil `Cw = 6`: `K = Θ(m²)`.  With elementary `Cw = Θ(m)`: `K = Θ(m³)`.  The
 dominates EITHER WAY — the rung inequality `S₂ ≤ K·q·Σ²` holds parametrically at any
 finite `K`, and no in-tree consumer of the parametric form requires `K = O(1)`.
 
-**(iii) The decisive fact (theorem 7).** The only consumers that demand a small constant —
-the normalized gate `K/3 ≤ 1` full-family consumers — are ALREADY impossible at the sharp
-Weil constant `Cw = 6` (indeed at every `Cw ≥ 1`), for every `m ≥ 2`.  In-tree this was
-half-known (`not_fifteen_chiFamily_card_sq_le_order`); here it is pinned at the gate
-itself.  CONSEQUENCE: **polynomial growth of the elementary `C(d)` does not change which
-consumers fire.**  Everything that fires with Weil's uniform 2 fires with elementary
-`C(d) = poly(d)`; everything that needs the normalized full-family gate fails for both.
-The elementary route is NOT disqualified by its constants.
+**(iii) The full-family fact (theorem 7).** The normalized gate `K/3 ≤ 1` full-family
+consumers are ALREADY impossible at the sharp Weil constant `Cw = 6` (indeed at every
+`Cw ≥ 1`), for every `m ≥ 2`.  In-tree this was half-known
+(`not_fifteen_chiFamily_card_sq_le_order`); here it is pinned at the gate itself.
+CONSEQUENCE, **scoped to the full family**: constant growth does not change whether the
+full-family normalized consumers fire — they fire for neither.  **Correction (audit R-139,
+2026-10-28):** this does NOT imply that "everything that fires with Weil's constant fires with
+any polynomial elementary constant".  The proper-subfamily gates `32(Cw·|Y|⁴+1)/m²/3 ≤ 1`
+still depend on `Cw` (`subfamily_gate_depends_on_Cw`: at `m = 256`, `|Y| = 4` the gate holds
+at `Cw = 6` and fails at `Cw = 32`).  Whether the elementary route is disqualified by its
+constants on the subfamily route is therefore **not settled here**.
 
-**(iv) The live consumers at scale.** The gate consumers that CAN fire use a subfamily
+**(iv) The candidate consumers at scale.** The gate consumers that can fire use a subfamily
 `Y ⊆ chiFamily χ` with `15·|Y|² ≤ m` (so `|Y| ≤ √(m/15)`), where the needed moment bound
-is only over `Y` — and in the 2-power tower there are exactly `~√(m/15)` characters of
-order `≤ √(m/15)`, so `Y` can be chosen with `sup_{χ'∈Y} C(order χ') = C(O(√m))` — the
-elementary growth is SQUARE-ROOTED on the live route.  (The `ChiDecompositionOff` for a
-proper subfamily is that route's own named input; not discharged here.)
+is only over `Y`.  Restricting to characters of order `O(√m)` replaces `sup C(d)` by
+`C(O(√m))`; this does **not** eliminate growth, establish a small gate constant, or preserve a
+previously chosen `Y`: with `Cw = 4 + C(O(√m))` the admissible `|Y|` must satisfy
+`32(Cw·|Y|⁴+1) ≤ 3m²`, i.e. roughly `|Y| ≲ (3m²/(32·Cw))^{1/4}`, which shrinks as `Cw` grows,
+and the decomposition and downstream strength for the smaller `Y` must be re-established.
+(The `ChiDecompositionOff` for a proper subfamily is that route's own named input; not
+discharged here.)
 
 **(v) What completing `TripleLinearHasse` buys.**  It completes the r = 2 rung of the
 corrected-B tower — the FIRST rung only.  The δ*-interchange to `approxB` at depth
@@ -350,7 +365,11 @@ every tuple and every class value `c ∈ T` (the d-th roots of unity hit by the 
 a NONZERO auxiliary polynomial vanishing to Hasse-order `m` on the class fiber with
 total degree `≤ Dtot`.  The S2-lane machinery (`_R22StepanovS2`) is the `d = 2`,
 `T = {1, −1}`-adjacent instance; the norm-fold construction mapped in
-`_R22SuperellipticIndependence` is the route to producing this for 2-power `d ≥ 4`. -/
+`_R22SuperellipticIndependence` is the route to producing this for 2-power `d ≥ 4`.
+
+**Over-strong (audit R-136):** quantifying EVERY `u, v, w` includes the degenerate constant
+kernel at `u = v = w = 0`, forcing `Dtot ≥ m·q` (`dStepanovOutput_forces_trivial_budget`); the
+consumable interface is the guarded `DStepanovOutputOn`. -/
 def DStepanovOutput (χ : MulChar F ℂ) (T : Finset ℂ) (m Dtot : ℕ) : Prop :=
   ∀ u v w : F, ∀ c ∈ T,
     ∃ P : F[X], P ≠ 0 ∧
@@ -365,6 +384,41 @@ theorem classCount_le_of_dStepanovOutput {T : Finset ℂ} {m Dtot : ℕ}
   obtain ⟨P, hP0, hvan, hdeg⟩ := hS u v w c hc
   exact le_trans (hasseDeriv_stepanov_degree_count hP0 hvan) hdeg
 
+/-- At the degenerate tuple `u = v = w = 0` the kernel is identically `1`. -/
+theorem tripleVal_zero_zero_zero (χ : MulChar F ℂ) (s : F) : tripleVal χ 0 0 0 s = 1 := by
+  simp [tripleVal]
+
+/-- **The universal interface is over-strong (audit R-136).**  `DStepanovOutput` quantifies
+EVERY tuple, including the degenerate `u = v = w = 0`, where the kernel is the constant `1`
+(`tripleVal_zero_zero_zero`).  If `1 ∈ T` (forced by the value cover), its budget must satisfy
+`m·q ≤ Dtot`, so `Dtot/m ≥ q` and the fold arithmetic `|T|·(Dtot/m) − q + 3 ≤ C√q` (with
+`|T| ≥ 2`) forces `C√q ≥ q + 3`: no fixed small constant.  Use `DStepanovOutputOn`. -/
+theorem dStepanovOutput_forces_trivial_budget {T : Finset ℂ} {m Dtot : ℕ}
+    (χ : MulChar F ℂ) (hS : DStepanovOutput χ T m Dtot) (h1 : (1 : ℂ) ∈ T) :
+    m * Fintype.card F ≤ Dtot := by
+  have h := classCount_le_of_dStepanovOutput χ hS 0 0 0 h1
+  have hfull : NClassT χ 0 0 0 1 = Finset.univ :=
+    Finset.filter_true_of_mem fun s _ => tripleVal_zero_zero_zero χ s
+  rwa [hfull, Finset.card_univ] at h
+
+/-- **THE GUARDED d-STEPANOV INTERFACE** (audit R-136 repair): the auxiliary-polynomial
+supply is required only on exactly the tuples consumed by `TripleLinearHasseC` — the shapes
+`(y₂−x₁, y₂−x₂, y₂−y₁)` of NONdegenerate quadruples `z ∈ G⁴`.  Degenerate tuples (such as the
+constant kernel at `u = v = w = 0`) belong to the separately accounted trivial layer and are
+not asked for a square-root-scale count. -/
+def DStepanovOutputOn (χ : MulChar F ℂ) (G : Finset F) (T : Finset ℂ) (m Dtot : ℕ) : Prop :=
+  ∀ z ∈ (G ×ˢ G) ×ˢ (G ×ˢ G), ¬ IsDegenerate z → ∀ c ∈ T,
+    ∃ P : F[X], P ≠ 0 ∧
+      (∀ a ∈ NClassT χ (z.2.2 - z.1.1) (z.2.2 - z.1.2) (z.2.2 - z.2.1) c, ∀ k < m,
+        (Polynomial.hasseDeriv k P).eval a = 0) ∧
+      P.natDegree ≤ Dtot
+
+/-- The universal interface implies the guarded one. -/
+theorem dStepanovOutputOn_of_dStepanovOutput {χ : MulChar F ℂ} (G : Finset F)
+    {T : Finset ℂ} {m Dtot : ℕ} (hS : DStepanovOutput χ T m Dtot) :
+    DStepanovOutputOn χ G T m Dtot :=
+  fun _ _ _ c hc => hS _ _ _ c hc
+
 /-- **The per-tuple order-d Stepanov bound**: class values (`T` unit-modulus, sum 0,
 kernel values in `{0} ∪ T` — the character-order facts, supplied by the FACES lane),
 `DStepanovOutput`, and the budget arithmetic
@@ -372,17 +426,21 @@ kernel values in `{0} ∪ T` — the character-order facts, supplied by the FACE
 
 With per-class `Dtot/m = q/d + E` (`|T| = d`) the budget reads `d·E + 3 ≤ C√q`:
 **the elementary order-d constant is `C(d) = d·E/√q + o(1)` — linear in `d` times the
-per-class excess coefficient.  The fold itself costs no `d²`.** -/
-theorem tripleLinearHasseC_of_dStepanovOutput
+per-class excess coefficient.  The fold itself costs no `d²`.**
+
+Guarded form (audit R-136): the Stepanov supply `hS` is only required on the nondegenerate
+tuples the Hasse target consumes; the guard is carried through the fold. -/
+theorem tripleLinearHasseC_of_dStepanovOutputOn
     (χ : MulChar F ℂ) (G : Finset F) (T : Finset ℂ) {m Dtot : ℕ} {C : ℝ}
     (hm : 0 < m)
     (hT1 : ∀ c ∈ T, ‖c‖ = 1) (hT0 : (∑ c ∈ T, c) = 0)
     (hvals : ∀ u v w s : F, tripleVal χ u v w s = 0 ∨ tripleVal χ u v w s ∈ T)
-    (hS : DStepanovOutput χ T m Dtot)
+    (hS : DStepanovOutputOn χ G T m Dtot)
     (harith : (T.card : ℝ) * ((Dtot : ℝ) / (m : ℝ)) - (Fintype.card F : ℝ) + 3
       ≤ C * Real.sqrt (Fintype.card F)) :
     TripleLinearHasseC χ G C := by
-  intro z _hz _hnd
+  intro z hz hnd
+  have hSz := hS z hz hnd
   obtain ⟨⟨a₁, a₂⟩, ⟨b₁, b₂⟩⟩ := z
   set u : F := b₂ - a₁
   set v : F := b₂ - a₂
@@ -391,7 +449,11 @@ theorem tripleLinearHasseC_of_dStepanovOutput
   have hBc : ∀ c ∈ T, (((Finset.univ.filter fun s => tripleVal χ u v w s = c).card : ℝ))
       ≤ (Dtot : ℝ) / (m : ℝ) := by
     intro c hc
-    have h := classCount_le_of_dStepanovOutput χ hS u v w hc
+    obtain ⟨P, hP0, hvan, hdeg⟩ := hSz c hc
+    have hvan' : ∀ a ∈ NClassT χ u v w c, ∀ k < m,
+        (Polynomial.hasseDeriv k P).eval a = 0 := hvan
+    have h : m * (NClassT χ u v w c).card ≤ Dtot :=
+      le_trans (hasseDeriv_stepanov_degree_count hP0 hvan') hdeg
     have hR : (m : ℝ) * (((NClassT χ u v w c).card : ℝ)) ≤ (Dtot : ℝ) := by
       exact_mod_cast h
     rw [le_div_iff₀ hm']
@@ -405,17 +467,33 @@ theorem tripleLinearHasseC_of_dStepanovOutput
     _ ≤ (T.card : ℝ) * ((Dtot : ℝ) / (m : ℝ)) - (Fintype.card F : ℝ) + 3 := hfold
     _ ≤ C * Real.sqrt (Fintype.card F) := harith
 
+/-- Universal-interface form, kept for compatibility; it is a corollary of the guarded
+`tripleLinearHasseC_of_dStepanovOutputOn`.  NOTE (audit R-136): its universal hypothesis
+`DStepanovOutput` forces `Dtot ≥ m·q` (`dStepanovOutput_forces_trivial_budget`), so it cannot be
+met with a small constant `C`; producers should target `DStepanovOutputOn`. -/
+theorem tripleLinearHasseC_of_dStepanovOutput
+    (χ : MulChar F ℂ) (G : Finset F) (T : Finset ℂ) {m Dtot : ℕ} {C : ℝ}
+    (hm : 0 < m)
+    (hT1 : ∀ c ∈ T, ‖c‖ = 1) (hT0 : (∑ c ∈ T, c) = 0)
+    (hvals : ∀ u v w s : F, tripleVal χ u v w s = 0 ∨ tripleVal χ u v w s ∈ T)
+    (hS : DStepanovOutput χ T m Dtot)
+    (harith : (T.card : ℝ) * ((Dtot : ℝ) / (m : ℝ)) - (Fintype.card F : ℝ) + 3
+      ≤ C * Real.sqrt (Fintype.card F)) :
+    TripleLinearHasseC χ G C :=
+  tripleLinearHasseC_of_dStepanovOutputOn χ G T hm hT1 hT0 hvals
+    (dStepanovOutputOn_of_dStepanovOutput G hS) harith
+
 /-! ## 7. THE AUDIT THEOREM: the normalized full-family gate is impossible -/
 
 /-- **THE CONSTANT-ACCOUNTING AUDIT**: the normalized rung gate
 `32(Cw·(m−1)⁴+1)/m²/3 ≤ 1` — the `hC` hypothesis of every full-family
 (`|X| = |chiFamily χ| = m−1`) `*_of_constant_le_one` consumer in
 `_R19ExplicitCharacterRung` — is IMPOSSIBLE for every `m ≥ 2` and every `Cw ≥ 1`,
-INCLUDING the sharp Weil `Cw = 6`.  Consequence: polynomial growth of the elementary
-per-order constant `C(d)` does not change which rung consumers fire — everything that
-fires at Weil's uniform constant fires at any `poly(d)` elementary constant, and the
-normalized full-family gate fires for neither.  The live gate consumers are the
-subfamily-`Y` route (`15|Y|² ≤ m`), where the sup is over orders `≤ √(m/15)`. -/
+INCLUDING the sharp Weil `Cw = 6`.  Consequence (scoped, audit R-139): for the
+**full-family** normalized consumers, constant growth is irrelevant — they fire for neither
+the Weil nor any elementary constant.  This does NOT extend to the proper-subfamily gates
+`32(Cw·|Y|⁴+1)/m²/3 ≤ 1` (`15|Y|² ≤ m`), which still depend on `Cw`: see
+`subfamily_gate_depends_on_Cw`. -/
 theorem fullFamily_gate_impossible (m : ℕ) (hm : 2 ≤ m) {Cw : ℝ} (hCw : 1 ≤ Cw) :
     ¬ (32 * (Cw * (((m - 1 : ℕ) : ℝ)) ^ 4 + 1) / ((m : ℝ)) ^ 2 / 3 ≤ 1) := by
   intro h
@@ -438,14 +516,56 @@ theorem fullFamily_gate_impossible (m : ℕ) (hm : 2 ≤ m) {Cw : ℝ} (hCw : 1 
     nlinarith [pow_nonneg (by linarith : (0 : ℝ) ≤ x - 1) 4]
   linarith
 
+/-- **Proper-subfamily gates DO depend on the constant (audit R-139).**  At `m = 256`,
+`|Y| = 4` (admissible: `15·|Y|² = 240 ≤ 256`), the subfamily gate
+`32(Cw·|Y|⁴+1)/m²/3 ≤ 1` holds at the Weil-scale `Cw = 6` (`49184 ≤ 196608`) but fails at
+`Cw = 32` (`262176 > 196608`).  So replacing a uniform constant by a larger (e.g.
+order-dependent elementary) one can change which subfamily consumer fires; the full-family
+impossibility `fullFamily_gate_impossible` gives no constant-insensitivity here. -/
+theorem subfamily_gate_depends_on_Cw :
+    15 * (4 : ℝ) ^ 2 ≤ 256 ∧
+      32 * ((6 : ℝ) * 4 ^ 4 + 1) / (256 : ℝ) ^ 2 / 3 ≤ 1 ∧
+      ¬ (32 * ((32 : ℝ) * 4 ^ 4 + 1) / (256 : ℝ) ^ 2 / 3 ≤ 1) := by
+  norm_num
+
 /-! ## 8. END-TO-END: the assembled conditional pipeline (all constants explicit) -/
 
-/-- **THE PIPELINE (the lane deliverable)**: per-character `DStepanovOutput` supplies
+/-- **THE GUARDED PIPELINE** (audit R-136 repair): per-character `DStepanovOutputOn` —
+auxiliary polynomials only on the nondegenerate tuples of `G⁴` — supplies (with class-value
+facts and budget arithmetic) the whole family's `FourthMomentTwistBound G X (4 + Cmax)`. -/
+theorem fourthMomentTwistBound_of_dStepanovOn_pipeline
+    (G : Finset F) (X : Finset (MulChar F ℂ))
+    (T : MulChar F ℂ → Finset ℂ) (msteps Dtot : MulChar F ℂ → ℕ)
+    (Cd : MulChar F ℂ → ℝ) {Cmax : ℝ}
+    (hm : ∀ χ ∈ X, 0 < msteps χ)
+    (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
+    (hT0 : ∀ χ ∈ X, (∑ c ∈ T χ, c) = 0)
+    (hvals : ∀ χ ∈ X, ∀ u v w s : F,
+      tripleVal χ u v w s = 0 ∨ tripleVal χ u v w s ∈ T χ)
+    (hS : ∀ χ ∈ X, DStepanovOutputOn χ G (T χ) (msteps χ) (Dtot χ))
+    (harith : ∀ χ ∈ X,
+      ((T χ).card : ℝ) * ((Dtot χ : ℝ) / (msteps χ : ℝ)) - (Fintype.card F : ℝ) + 3
+        ≤ Cd χ * Real.sqrt (Fintype.card F))
+    (hCd0 : ∀ χ ∈ X, 0 ≤ Cd χ)
+    (hCdmax : ∀ χ ∈ X, Cd χ ≤ Cmax)
+    (hp : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound
+      G X (4 + Cmax) := by
+  refine fourthMomentTwistBound_of_tripleLinearHasseC_family G X Cd hCd0 hCdmax
+    (fun χ hχ => ?_) hp
+  exact tripleLinearHasseC_of_dStepanovOutputOn χ G (T χ) (hm χ hχ)
+    (hT1 χ hχ) (hT0 χ hχ) (hvals χ hχ) (hS χ hχ) (harith χ hχ)
+
+/-- **THE PIPELINE (universal-interface form)**: per-character `DStepanovOutput` supplies
 (with class-value facts and budget arithmetic) the whole family's
 `FourthMomentTwistBound G X (4 + Cmax)` — the r=2 rung at explicit weakened constant
 `Cw = 4 + Cmax`, `Cmax = sup` of the per-character fold constants.  Every downstream
-rung consumer takes `Cw` parametrically (r22 audit); the normalized full-family gate is
-impossible at ANY `Cw ≥ 1` (`fullFamily_gate_impossible`), so nothing is lost. -/
+rung consumer takes `Cw` parametrically (r22 audit).  The normalized full-family gate is
+impossible at ANY `Cw ≥ 1` (`fullFamily_gate_impossible`), but proper-subfamily gates still
+depend on `Cw` (see the header, (iii)–(iv)).  NOTE (audit R-136): the universal `DStepanovOutput`
+hypothesis forces `Dtot ≥ m·q` on the degenerate constant kernel
+(`dStepanovOutput_forces_trivial_budget`), so this form cannot be fed with small constants;
+it is a corollary of the guarded `fourthMomentTwistBound_of_dStepanovOn_pipeline`. -/
 theorem fourthMomentTwistBound_of_dStepanov_pipeline
     (G : Finset F) (X : Finset (MulChar F ℂ))
     (T : MulChar F ℂ → Finset ℂ) (msteps Dtot : MulChar F ℂ → ℕ)
@@ -464,10 +584,9 @@ theorem fourthMomentTwistBound_of_dStepanov_pipeline
     (hp : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ)) :
     ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound
       G X (4 + Cmax) := by
-  refine fourthMomentTwistBound_of_tripleLinearHasseC_family G X Cd hCd0 hCdmax
-    (fun χ hχ => ?_) hp
-  exact tripleLinearHasseC_of_dStepanovOutput χ G (T χ) (hm χ hχ)
-    (hT1 χ hχ) (hT0 χ hχ) (hvals χ hχ) (hS χ hχ) (harith χ hχ)
+  exact fourthMomentTwistBound_of_dStepanovOn_pipeline G X T msteps Dtot Cd hm hT1 hT0
+    hvals (fun χ hχ => dStepanovOutputOn_of_dStepanovOutput G (hS χ hχ)) harith hCd0
+    hCdmax hp
 
 end ArkLib.ProximityGap.Frontier.R24FullRungAssembly
 
@@ -487,3 +606,10 @@ end ArkLib.ProximityGap.Frontier.R24FullRungAssembly
 #print axioms ArkLib.ProximityGap.Frontier.R24FullRungAssembly.fullFamily_gate_impossible
 #print axioms
   ArkLib.ProximityGap.Frontier.R24FullRungAssembly.fourthMomentTwistBound_of_dStepanov_pipeline
+#print axioms
+  ArkLib.ProximityGap.Frontier.R24FullRungAssembly.dStepanovOutput_forces_trivial_budget
+#print axioms
+  ArkLib.ProximityGap.Frontier.R24FullRungAssembly.tripleLinearHasseC_of_dStepanovOutputOn
+#print axioms
+  ArkLib.ProximityGap.Frontier.R24FullRungAssembly.fourthMomentTwistBound_of_dStepanovOn_pipeline
+#print axioms ArkLib.ProximityGap.Frontier.R24FullRungAssembly.subfamily_gate_depends_on_Cw

@@ -6,12 +6,23 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.EsymmFiber
 
 /-!
-# The monomial word has unconditionally polynomial supply (#389)
+# The monomial word has an unconditional binomial supply bound (#389)
 
-The whole #389 supply wall is about the worst-case ARBITRARY word.  This file proves the
-**monomial** word `x ↦ (dom x)^{k+m+1}` is NOT part of the wall: its explainable-core count
-is unconditionally polynomial in `n`, on **any** domain, with no Garcia–Voloch/Stepanov
-input.
+The whole #389 supply wall is about the worst-case ARBITRARY word.  This file proves an
+unconditional packing bound `#cores ≤ C(n,k)/C(k+m+1,k)` for the explainable cores of the
+**monomial** word `x ↦ (dom x)^{k+m+1}` (and of any degree-exactly-`(k+m+1)` polynomial word),
+on **any** domain, with no Garcia–Voloch/Stepanov input.  This is polynomial in `n` **only
+when `k` (and `m`) are fixed**; at growing dimension (e.g. constant rate) it allows, and the
+monomial word actually attains, exponential growth — so the bound does **not** remove monomial
+words from the supply wall in production growing-`k` regimes.
+
+Exponential monomial families at constant rate (on `μ_n`, `n` dyadic, any compatible odd field):
+* band `m = 0`: `4 ∣ n`, `k = n/2 − 1`, `W = X^{n/2}`.  For any choice of `n/4` antipodal pairs
+  `{x, −x}` the union `T` has size `n/2` and element sum `0`, so `V_T` has zero
+  `X^{n/2−1}` coefficient and `W − V_T` has degree `≤ n/2 − 2 < k`: `T` is explainable.  This
+  gives at least `C(n/2, n/4)` cores, exponential in `n`.
+* band `m = 1`: `8 ∣ n`, `k = n/2 − 2`, unions of `n/8` cosets of `μ_4`: `V_T` is a product of
+  `X^4 − a`, so `W − V_T` has degree `≤ n/2 − 4 < k`, giving at least `C(n/4, n/8)` cores.
 
 Mechanism (polynomial division).  A `(k+m+1)`-subset `T` is explainable for the monomial
 word iff its vanishing polynomial `V_T = ∏_{i∈T}(X − dom i)` satisfies `(V_T − X^{k+m+1})`
@@ -28,8 +39,9 @@ incidences `(T, S)` gives:
   `#cores ≤ C(n,k)/C(k+m+1,k)`, unconditional, any domain, every band.
 
 This generalizes `CubicSupplyExact`/`QuarticPowerSumFiber` to all bands and removes the
-GV-conditionality for the monomial family — sharply isolating the supply wall to genuinely
-NON-monomial (arbitrary `u₀`) words.
+GV-conditionality of the binomial bound for the monomial family.  For fixed `k` it isolates
+the polynomial-supply question to NON-monomial words; for growing `k` the binomial expression
+must be retained as is (it is not `poly(n)`, see the families above).
 -/
 
 open Finset Polynomial
@@ -153,8 +165,9 @@ theorem monomial_core_determined_by_ksubset (dom : Fin n ↪ F) {k m : ℕ}
 open Classical in
 /-- **The unconditional monomial supply bound**: `#cores · C(k+m+1, k) ≤ C(n, k)`, where
 `#cores` is the number of explainable `(k+m+1)`-cores of the monomial word `x ↦ (dom x)^{k+m+1}`.
-Any domain, no Garcia–Voloch/Stepanov input — polynomial supply for the monomial family at
-every band. -/
+Any domain, no Garcia–Voloch/Stepanov input, every band.  The right side is polynomial in `n`
+only for fixed `k`; at growing `k` the monomial family can have exponentially many cores (module
+docstring). -/
 theorem monomial_supply_choose_le (dom : Fin n ↪ F) {k m : ℕ} :
     (((Finset.univ : Finset (Fin n)).powersetCard (k + m + 1)).filter
         (fun T => ∃ c ∈ (rsCode dom k : Submodule F (Fin n → F)),
@@ -233,8 +246,9 @@ degree-EXACTLY-`(k+m+1)` polynomial `W` — in particular the monomial `X^t`, th
 `X^t + λ·X^{t−2}`, or any single fixed polynomial — the explainable-core count satisfies
 `#cores · C(k+m+1, k) ≤ C(n, k)`, UNCONDITIONALLY, any domain, every band.
 
-This subsumes `monomial_supply_choose_le` and, crucially, gives the **ladder words an
-unconditional polynomial supply bound** with no resultant/Mann threshold — the forced top
+This subsumes `monomial_supply_choose_le` and gives the **ladder words the same unconditional
+binomial supply bound** (polynomial in `n` for fixed `k`) with no resultant/Mann threshold — the
+forced top
 part of `V_T` is fixed by `W`, so any two explainable cores' vanishing polynomials differ in
 degree `< k`, and `coreVanish_eq_of_ksubset` applies. -/
 theorem polyEval_supply_choose_le (dom : Fin n ↪ F) {k m : ℕ} (W : Polynomial F)

@@ -23,10 +23,17 @@ This probe DECIDES that caveat structurally.  Two distinct antipode notions:
      ANY realizable centered profile at the same prime -- across ranks, across the
      coordinate-antipode reindexing x->-x, and across the multiplicative dilations
      x -> a*x for a in G that act on the sponsor (the natural symmetry group of the
-     subgroup covariance).  If -r is NOT realizable by any sponsor symmetry, Fable's cone
-     is antipode-free and the odd-certificate escape hatch is structurally LIVE.  If -r IS
-     realizable, the same involution kills the sponsor-specific certificate too, closing
-     the last quadratic-certificate hatch and forcing a genuinely non-quadratic mechanism.
+     subgroup covariance).  If -r IS realizable, the same involution kills the
+     sponsor-specific certificate too.  If -r is NOT found, that is a finite absence on the
+     tested carrier only (see SCOPE), not a proof that the cone is antipode-free.
+
+SCOPE (audit 2026-10-28, L103).  The exact tested carrier is: the listed (n, p) cells and
+their listed ranks r; the realizable set consists of the centered profiles of those ranks,
+their coordinate antipodes x -> -x, and their dilations x -> a*x for a in G only (NOT general
+field dilations a in F_p^* outside G); the shift check additionally composes with translations
+x -> x + b.  Absence of a pairwise antipode in these finite orbits does not show that the
+convex/conic closure of ALL realizable profiles is antipode-free, and does not by itself
+supply a useful separating normal.
 
 Conventions match G269 EXACTLY (double-shift sponsor, dp_r*dp_{r-1}).  Pure int, no floats.
 SystemExit(1) on any internal inconsistency.
@@ -202,10 +209,9 @@ def main() -> None:
                     break
             if hit_tag is not None:
                 q2_hits += 1
-            q2_records.append((n, p, r, is_even, hit_tag))
-            # Also record: is -c even reachable if we allow the FULL affine group
-            # x -> a*x + b (b any shift)?  Shift changes which coordinate is DC; a
-            # genuine centered subset profile has a fixed DC structure, so test shifts too.
+            # Also record: is -c reachable after composing with a translation x -> x + b?
+            # Together with the dilations by a in G above this tests x -> a*x + b for a in G
+            # only (not the full affine group of F_p: no dilations outside G).
             found_shift = None
             if hit_tag is None:
                 cset = None
@@ -220,6 +226,7 @@ def main() -> None:
                     if negshift in cset:
                         found_shift = b
                         break
+            q2_records.append((n, p, r, is_even, hit_tag, found_shift))
             print(f"  cell n={n:>2} p={p:>5} r={r}: R_r coord-even={is_even}  "
                   f"-c realizable(dihedral+dilation)={hit_tag}  affine-shift-hit={found_shift}")
 
@@ -231,22 +238,25 @@ def main() -> None:
     # ---- Structural interpretation asserts ----
     # Claim A (to verify): R_r is NEVER coordinate-even at genuine wraparound cells
     #   (n=16 sponsors).  Evenness would make the centered profile a symmetric vector.
-    # Claim B (the decisive one): -c is NOT realizable by ANY sponsor symmetry
-    #   (dilation orbit, antipode, or affine shift) at genuine cells.  => cone antipode-free
-    #   => Fable's odd-certificate escape hatch is structurally LIVE, not vacuous.
+    # Claim B: -c is NOT found in the tested carrier (G-dilation orbit, antipode, and
+    #   translations composed with them) at the recorded cells.  This is a finite absence; it
+    #   does not prove the conic/convex closure of all realizable profiles is antipode-free.
 
     # We assert the empirical finding as hard invariants so drift fails the gate.
-    any_neg_realizable = any(tag is not None for (_, _, _, _, tag) in q2_records)
-    print(f"any -c realizable across all cells: {any_neg_realizable}")
+    any_neg_realizable = any(tag is not None for (_, _, _, _, tag, _) in q2_records)
+    any_shift_hit = any(sh is not None for (*_, sh) in q2_records)
+    print(f"any -c realizable across all cells: {any_neg_realizable}  "
+          f"any translated -c hit: {any_shift_hit}")
 
     # ---- HARD ASSERTIONS (SystemExit(1) on drift) ----
     # (A1) -1 in G forces R_r coordinate-even at EVERY recorded cell.
     if q1_even != q1_total:
         raise SystemExit(f"FAIL A1: R_r not coord-even in all cells ({q1_even}/{q1_total})")
-    # (A2) The sponsor cone is antipode-free: -c is NEVER realizable by dilation/
-    #      antipode/affine-shift at any recorded cell.
-    if q2_hits != 0 or any_neg_realizable:
-        raise SystemExit(f"FAIL A2: -c realizable in {q2_hits} cells (cone NOT antipode-free)")
+    # (A2) On the tested carrier, -c is never hit by G-dilation / antipode / translation at
+    #      any recorded cell (both the orbit check AND the translation check are enforced).
+    if q2_hits != 0 or any_neg_realizable or any_shift_hit:
+        raise SystemExit(f"FAIL A2: -c hit in {q2_hits} cells (orbit) or by a translation "
+                         f"(shift hit={any_shift_hit}) on the tested carrier")
 
     # (A3) EXACT-INTEGER real-Fourier / signed-inner-product certificate.
     #   -1 in G => both W_G and R_r coord-even => B = p*<W,R> - SW*SR equals the
@@ -274,7 +284,7 @@ def main() -> None:
             signs.add(1 if B_direct > 0 else (-1 if B_direct < 0 else 0))
     if 1 not in signs or -1 not in signs:
         raise SystemExit(f"FAIL A3: B did not exhibit both signs across sponsors: {signs}")
-    print(f"A1 coord-even: PASS  A2 antipode-free cone: PASS  "
+    print(f"A1 coord-even: PASS  A2 no antipode in tested carrier: PASS  "
           f"A3 real signed-inner-product both signs: PASS (signs={sorted(signs)})")
 
     # Emit machine-readable summary
@@ -283,9 +293,12 @@ def main() -> None:
         "q1_even": q1_even, "q1_total": q1_total,
         "q2_hits": q2_hits, "q2_total": q2_total,
         "any_neg_realizable": any_neg_realizable,
+        "any_shift_hit": any_shift_hit,
+        "tested_carrier": "listed ranks; x->-x; x->a*x for a in G; translations x->x+b",
         "records": [
-            {"n": n, "p": p, "r": r, "coord_even": ev, "neg_realizable_tag": tag}
-            for (n, p, r, ev, tag) in q2_records
+            {"n": n, "p": p, "r": r, "coord_even": ev, "neg_realizable_tag": tag,
+             "shift_hit": sh}
+            for (n, p, r, ev, tag, sh) in q2_records
         ],
     }
     print("JSON " + json.dumps(summary, sort_keys=True))

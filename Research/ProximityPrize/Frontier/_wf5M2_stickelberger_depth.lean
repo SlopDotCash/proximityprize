@@ -97,7 +97,10 @@ the depth-`R` norm bound `p^R ≤ √(∏ aᵢ)` (`NT1`, from `p^R ∣ N(β)`), 
 degree-to-depth relation `M = 2·R·t`.  Conclusion: `p ≤ b^t` — i.e. a genuine config vanishing at
 the **first `R` odd power sums** forces `p ≤ |B|^{(n/2)/(2R)} = |B|^{n/(4R)}`.
 
-Recovers `_BadPrimeBoundCore.badPrimeBound_core` at `t = 1`, `R = n/8` (full window).  The prize
+At the full window `R = n/8` with `M = n/2`, the relation `M = 2·R·t` gives `t = n/(4R) = 2`
+(an earlier docstring said `t = 1`; audit 2026-10-28, R-216). This file proves only the scalar
+implication from the entered trace/norm bounds; realizing it by an actual depth-`R` splitting
+additionally needs the `R` odd embeddings to be distinct (so `R ≤ φ(n)`), not shown here.  The prize
 gap is precisely that the deep-moment depth gives only `R ~ β ln n` so `t = n/(4R)` is large and
 the bound is vacuous; this is the quantitative form of the second-moment conservation law. -/
 theorem stickelberger_depth_bound {M R t : ℕ} (hR : 0 < R) (ht : 0 < t) (hMRt : M = 2 * R * t)

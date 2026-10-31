@@ -11,7 +11,8 @@ import Mathlib
 **Lane G98 [virgin angle].** Transfer of the Guth–Maynard (arXiv 2405.20552, "New large value
 estimates for Dirichlet polynomials") large-values machinery to the Gauss-period sup problem
 
-  `M(μ_n) = max_{b ≠ 0} |η_b|`, `η_b = Σ_{x∈μ_n} e_p(bx)`, target `M ≤ C√(n log(p/n))`, `p ≈ n⁴`.
+  `M(μ_n) = max_{b ≠ 0} |η_b|`, `η_b = Σ_{x∈μ_n} e_p(bx)`, target `M ≤ C√(n log(p/n))` (toy probes below use `p ≈ n⁴`; the certified production prime
+of `_PrizeShapePrimeP30` has `p ≈ 2^158 ≈ n^{5.27}` at `n = 2^30`).
 
 GM's innovation for Dirichlet polynomials `Σ b_n n^{it}` is to reformulate large values as a
 matrix problem: for a set `B` of `r` frequencies where the polynomial is `≥ V`, study the
@@ -49,12 +50,22 @@ sup `M`, the large-value count `r`, and the field at difference frequencies.
    measured `f(V) = √(n²/r + nM')` sits at 8.0–8.5 (n=8, target 7.07), 15.1–15.4 (n=16, target
    11.5), 27.7–30.9 (n=32, target 18.2), 47.2–50.9 (n=64, target 28.3) — strictly ABOVE the
    `√(n log(p/n))` scale and drifting toward the trivial `n`. NOT at √(n log p) scale.
-3. **Count-vs-sup: the Gram route certifies emptiness only above the trivial level.** The HM
-   count cap `r ≤ n(n−M')/(V²−nM')` drops below 1 **iff `V > n`** — for any off-diagonal bound
-   `M'` whatsoever (`hm_certifies_empty_iff_above_trivial`, `hm_count_ge_one_below_trivial`).
-   Composed with the recorded F0 fence (`_wfH47_SelbergLargerSieveLargeValues.lean`,
+3. **Count-vs-sup: what the Gram route certifies, and at what price.** The naive HM count cap
+   `r ≤ n(n−M')/(V²−nM')` drops below 1 **iff `V > n`**, for any off-diagonal bound `M'`
+   (`hm_certifies_empty_iff_above_trivial`, `hm_count_ge_one_below_trivial`). But this naive
+   reading ignores a forced multiplicity: `η` is constant on dilate cosets `b·μ_n` (G99
+   `eta_mul_mem`, G95 `value_fiber_card`), so every NONEMPTY level set has `r ≥ n`. The
+   relevant test is therefore cap `< n`, which holds **iff `V² > n + (n−1)·M'`**
+   (`hm_count_lt_coset_size_iff`, `hm_excludes_coset_level_set`). Hence an EXTERNAL
+   off-diagonal bound `M'` does certify a nontrivial sup bound `M ≲ √(n·M')` (e.g.
+   `M' ≈ C√n` would give `M ≲ n^{3/4}`), and reaching the `√(n log(p/n))` target needs
+   `M' = O(log(p/n))` — an off-diagonal bound at the target scale, i.e. essentially the open
+   problem at difference frequencies. Only the self-referential choice `M' = V` degenerates to
+   the trivial level (`hm_coset_selfref_needs_trivial`: `V² > n + (n−1)V ↔ V > n`). With the
+   recorded F0 fence (`_wfH47_SelbergLargerSieveLargeValues.lean`,
    `sup_le_iff_levelset_card_zero`: only an EMPTY level set bounds the sup), the GM/HM count
-   machinery cannot bound `M` below the trivial `n`. Moreover the truth itself has a LARGE
+   machinery is thus a conditional reduction to an off-diagonal sup bound, not a stand-alone
+   route. Moreover the truth itself has a LARGE
    level set at the target scale (measured: 3/13/26/77 cosets ≥ `√(n log(p/n))` at n = 8/16/32/64,
    growing with n, since C ≈ 1.07–1.36 > 1) — a count argument can never operate at the target.
 4. **GM's matrix-cancellation IS present but already priced in.** The extremal Gram has near-total
@@ -100,16 +111,22 @@ again (the Gram IS the field), i.e. the open core itself: circular, per (4).
   measured off-diagonal mass (`M' ≥ V²/n`) the inequality is vacuous, and the self-referential
   bootstrap `M ≤ f(M)` admits the whole trivial interval `[0, n]` as fixed points.
 * `hm_certifies_empty_iff_above_trivial`, `hm_count_ge_one_below_trivial`,
-  `hm_empty_certificate_needs_trivial_level` — the count route certifies an empty level set only
-  above the trivial level `V > n`, for EVERY off-diagonal bound `M'`.
+  `hm_empty_certificate_needs_trivial_level` — the NAIVE count test (cap `< 1`) certifies an empty
+  level set only above the trivial level `V > n`, for every off-diagonal bound `M'`.
+* `hm_count_lt_coset_size_iff`, `hm_excludes_coset_level_set`, `hm_coset_selfref_needs_trivial`
+  — the multiplicity-aware test (cap `< n`, since nonempty level sets are unions of `μ_n`-cosets)
+  excludes the level `V` iff `V² > n + (n−1)·M'`; nontrivial for an external `M' ≪ n`, trivial
+  (`V > n`) exactly in the self-referential case `M' = V`.
 * `period_quadratic_form_floor`, `no_independent_spectral_handle` — the spectral saturation pin:
   the Gram quadratic form at the extremal weights is `≥ (Σ|η_b|²)²/n`, so any spectral handle
   tight enough to help must already bound the field.
 
 ## Verdict
 
-`REDUCES-TO-FENCE F0` (count-vs-sup; the GM large-values output type is a cardinality cap, blind
-to the pointwise sup below the trivial level) **and** `VACUOUS-AT-PRIZE` (the measured extremal
+`REDUCES-TO-FENCE F0` (count-vs-sup; the GM large-values output type is a cardinality cap, which
+bounds the sup only through an external off-diagonal bound `M'` — `M ≲ √(n·M')` with the forced
+`μ_n`-coset multiplicity — so it is a conditional reduction to an off-diagonal sup bound, trivial
+in the self-referential case) **and** `VACUOUS-AT-PRIZE` (the measured extremal
 Gram off-diagonal mass `M' ≈ 2–3.5·√n ≫ log(p/n) = V²_target/n` sits far above the
 informativeness threshold; the Gram of the extremizers is the field at near-extremal
 frequencies — the self-reference saturates rather than bootstraps). The positive bricks
@@ -311,7 +328,10 @@ variable {Rg : Type*} [CommRing Rg]
 frequency `d`: for `Rg = ZMod p`, `e = e_p`, `s = μ_n` this is the Gauss period `η_d`. -/
 noncomputable def period (e : Rg → ℂ) (s : Finset Rg) (d : Rg) : ℂ := ∑ x ∈ s, e (d * x)
 
-/-- A multiplicative-on-addition, unimodular map sends `0` to `1`. -/
+/-- A multiplicative-on-addition, unimodular map sends `0` to `1`. (For a bundled `AddChar` this
+is `AddChar.map_zero_eq_one`; it is re-derived here because `e` is a bare map whose `e 0 = 1` is
+not part of the input — this is what lets `gram_eq_period_diff` take an unbundled character on an
+arbitrary, possibly infinite, `CommRing`.) -/
 theorem char_map_zero (e : Rg → ℂ) (he : ∀ y z, e (y + z) = e y * e z)
     (hnorm : ∀ y, ‖e y‖ = 1) : e 0 = 1 := by
   have hne : e 0 ≠ 0 := by
@@ -322,7 +342,8 @@ theorem char_map_zero (e : Rg → ℂ) (he : ∀ y z, e (y + z) = e y * e z)
   have h : e 0 * e 0 = e 0 * 1 := by rw [mul_one, ← he, add_zero]
   exact mul_left_cancel₀ hne h
 
-/-- For a unimodular character, `e(−y) = conj(e y)`. -/
+/-- For a unimodular character, `e(−y) = conj(e y)`. (Mathlib's `AddChar.map_neg_eq_conj`
+needs a bundled character on a finite group; this bare-map form uses unimodularity instead.) -/
 theorem char_neg_eq_conj (e : Rg → ℂ) (he : ∀ y z, e (y + z) = e y * e z)
     (hnorm : ∀ y, ‖e y‖ = 1) (y : Rg) : e (-y) = conj (e y) := by
   have h1 : e y * e (-y) = 1 := by
@@ -468,8 +489,9 @@ theorem hm_count_bound_of_informative {n V M' r : ℝ} (hden : n * M' < V ^ 2)
 /-- **The count route certifies an empty level set only above the trivial level.** The HM count
 cap drops below `1` (the only way a count bound can force `A_V = ∅`, hence — by the F0 fence,
 `_wfH47_SelbergLargerSieveLargeValues.sup_le_iff_levelset_card_zero` — the only way it can bound
-the sup) **iff `V² > n²`**, i.e. only above the trivial bound, for EVERY off-diagonal level
-`M'`. -/
+the sup) **iff `V² > n²`**, i.e. only above the trivial bound, for every off-diagonal level
+`M'`. Caveat: for the period family a nonempty level set is a union of `μ_n`-cosets, so `r ≥ n`
+and the sharper test is cap `< n` (`hm_count_lt_coset_size_iff`). -/
 theorem hm_certifies_empty_iff_above_trivial {n V M' : ℝ} (hden : n * M' < V ^ 2) :
     n * (n - M') / (V ^ 2 - n * M') < 1 ↔ n ^ 2 < V ^ 2 := by
   rw [div_lt_one (by linarith)]
@@ -485,14 +507,46 @@ theorem hm_count_ge_one_below_trivial {n V M' : ℝ} (hden : n * M' < V ^ 2)
   rw [le_div_iff₀ (by linarith)]
   nlinarith
 
-/-- Certifying emptiness through the HM count forces `V > n`: the Gram/GM route cannot bound the
-period sup below the trivial level, regardless of how strong an off-diagonal estimate `M'` is
-fed to it. -/
+/-- Certifying emptiness through the NAIVE HM count test (cap `< 1`) forces `V > n`. This ignores
+the forced `μ_n`-coset multiplicity of nonempty level sets (`r ≥ n`); the multiplicity-aware test
+`hm_count_lt_coset_size_iff` is nontrivial for an external off-diagonal bound `M' ≪ n`. -/
 theorem hm_empty_certificate_needs_trivial_level {n V M' : ℝ} (hn0 : 0 ≤ n) (hV0 : 0 ≤ V)
     (hden : n * M' < V ^ 2)
     (hcert : n * (n - M') / (V ^ 2 - n * M') < 1) : n < V := by
   have h2 : n ^ 2 < V ^ 2 := (hm_certifies_empty_iff_above_trivial hden).mp hcert
   nlinarith
+
+/-- **Multiplicity-aware count test.** For the period family, `η` is constant on dilate cosets
+`b·μ_n`, so any nonempty level set has `r ≥ n`. The HM count cap falls below this forced size
+`n` iff `V² > n + (n−1)·M'`. -/
+theorem hm_count_lt_coset_size_iff {n V M' : ℝ} (hn : 0 < n) (hden : n * M' < V ^ 2) :
+    n * (n - M') / (V ^ 2 - n * M') < n ↔ n + (n - 1) * M' < V ^ 2 := by
+  rw [div_lt_iff₀ (by linarith)]
+  constructor <;> intro h <;> nlinarith
+
+/-- **The HM count excludes a coset-saturated level set** as soon as `V² > n + (n−1)·M'`: a set
+`B` of `r ≥ n` frequencies satisfying the HM inequality at level `V` is impossible. With an
+external off-diagonal bound `M' ≪ n` this is a nontrivial sup certificate `M ≲ √(n·M')`. -/
+theorem hm_excludes_coset_level_set {n V M' r : ℝ} (hn : 0 < n) (hden : n * M' < V ^ 2)
+    (hV : n + (n - 1) * M' < V ^ 2) (hhm : r * V ^ 2 ≤ n * (n + (r - 1) * M'))
+    (hr : n ≤ r) : False := by
+  have h1 := hm_count_bound_of_informative hden hhm
+  have h2 := (hm_count_lt_coset_size_iff hn hden).mpr hV
+  linarith
+
+/-- **Self-referential degeneration of the multiplicity-aware test.** With `M' = V` (the
+extremizers' differences are themselves near-extremal), the test `V² > n + (n−1)·V` holds iff
+`V > n`: only here does the count route collapse to the trivial level. -/
+theorem hm_coset_selfref_needs_trivial {n V : ℝ} (hV0 : 0 ≤ V) :
+    n + (n - 1) * V < V ^ 2 ↔ n < V := by
+  have hfac : V ^ 2 - (n + (n - 1) * V) = (V - n) * (V + 1) := by ring
+  constructor
+  · intro h
+    by_contra hle
+    have hle' : V ≤ n := not_lt.mp hle
+    nlinarith
+  · intro h
+    nlinarith
 
 end ProximityGap.Frontier.G98LargeValuesGramBootstrap
 
@@ -520,3 +574,6 @@ end ProximityGap.Frontier.G98LargeValuesGramBootstrap
 #print axioms ProximityGap.Frontier.G98LargeValuesGramBootstrap.hm_certifies_empty_iff_above_trivial
 #print axioms ProximityGap.Frontier.G98LargeValuesGramBootstrap.hm_count_ge_one_below_trivial
 #print axioms ProximityGap.Frontier.G98LargeValuesGramBootstrap.hm_empty_certificate_needs_trivial_level
+#print axioms ProximityGap.Frontier.G98LargeValuesGramBootstrap.hm_count_lt_coset_size_iff
+#print axioms ProximityGap.Frontier.G98LargeValuesGramBootstrap.hm_excludes_coset_level_set
+#print axioms ProximityGap.Frontier.G98LargeValuesGramBootstrap.hm_coset_selfref_needs_trivial

@@ -472,6 +472,7 @@ theorem mca_johnson_bound_CONJECTURE_ellary_of_curveJohnsonNumericBound
     exact mul_le_mul_of_nonneg_left
       (johnsonBoundReal_le_errStar_real φ m hk δ hδB) (by linarith)
   unfold mca_johnson_bound_CONJECTURE
+  intro _
   exact hmca
 
 open Classical in

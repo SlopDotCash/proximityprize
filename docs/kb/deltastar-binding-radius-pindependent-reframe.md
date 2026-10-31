@@ -1,5 +1,16 @@
 # δ* at the binding radius: a p-INDEPENDENT combinatorial incidence (possible decoupling from BGK) — #407
 
+> **Scope correction (2026-10-28 audit, T48).**
+> - **A few primes do not establish field independence.** "p-INDEPENDENT" here means the counts
+>   agreed at the two or three primes tested at `n = 16`. Being an exact finite algebraic count
+>   does not make the value independent of the field: coefficient reductions, determinants and
+>   collisions can change with the prime. A characteristic-transfer claim needs a norm or
+>   finite-bad-prime exclusion, and thin-field exceptions to energy transfer exist elsewhere
+>   (for example `n = 64`, `p = 17318209`).
+> - **`9/16` is not the universal MCA value.** The 198-direction search is explicitly not
+>   exhaustive, so `9/16` is the value for the searched directions. It is not yet the MCA `δ*` of
+>   `RS[μ_16, 1/4]`, which would need the maximum over all stacks.
+
 **Status: genuine structural reframe, NOT a closure, with limited evidence and a clear open test.**
 
 ## The observation

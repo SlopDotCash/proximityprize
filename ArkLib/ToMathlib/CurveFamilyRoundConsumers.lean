@@ -39,9 +39,14 @@ small-field hypothesis.  This file routes that front door into every in-tree per
 
 Honest residual: the per-`(u, P)` producer (`CurveFamilyProducer`) — i.e. the BCIKS20 §5
 statement that every good decoded family lies on a polynomial curve — remains the open core
-(issue #304); everything downstream of it is PROVEN here.  Unlike the small-field route, this
-hypothesis is *satisfiable* in the deployed large-field regime
-(`curveFamilyData_self` / `curveFamilyData_const` anti-vacuity witnesses).
+(issue #304); everything downstream of it is PROVEN here.  Anti-vacuity, with its exact
+quantifier scope: `curveFamilyData_self` / `curveFamilyData_const` (`CurveFamilyLines.lean`)
+construct `CurveFamilyData` for *particular* families (built from a given curve, resp. a constant
+family), so the data interface itself is inhabitable. They do **not** prove that the universal
+producer exists — a function supplying data for *every* qualifying decoded family in the
+large-field regime — so they are not a satisfiability proof of `CurveFamilyProducer`. That
+universal producer is the retained open hypothesis; it is not known to be false either (the
+refuted count-only producer is a different interface).
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon

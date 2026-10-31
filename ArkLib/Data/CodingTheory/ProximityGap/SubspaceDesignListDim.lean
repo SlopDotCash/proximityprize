@@ -19,10 +19,17 @@ The linear-algebraic core of list decoding from subspace designs, assembling
 `≥ (r+1)a − r·n` coordinates; independent differences would cap it at `τ(r)·n`
 (`subspaceDesign_jointAgree_card_le`), contradicting the threshold.
 
-Consequence: the close codewords span a subspace of dimension `< r`, so iterating (down to the first
-`r` with `τ(r)·n + r·n ≥ (r+1)·a`) pins the entire list inside a low-dimensional affine subspace —
-the structural step the curve-decodability producer needs before the `exists_separating`-based
-pruning finishes the count.  Axiom-clean.
+Consequence: the `r` differences `c_{j+1} − c₀` span a *linear* subspace of dimension `< r`, i.e.
+the `r+1` close codewords lie in the **affine** subspace `c₀ + span{c_{j+1} − c₀}` of affine
+dimension `< r` (equivalently, the list translated by the chosen codeword `c₀` spans a linear
+subspace of dimension `< r`).  This does **not** say the codewords themselves linearly span a
+subspace of dimension `< r`: the linear span can be one dimension larger than the affine span
+(e.g. `r = 1`, `c₁ = c₀ ≠ 0`: affine dimension `0`, linear-span dimension `1`).  A linear-span bound
+needs an extra dimension of slack or a hypothesis placing `0` in the affine hull.  Iterating
+(down to the first `r` with `τ(r)·n + r·n ≥ (r+1)·a`) would pin the entire list inside a
+low-dimensional affine subspace — the structural step the curve-decodability producer needs
+before the `exists_separating`-based pruning finishes the count; that iteration is not
+formalized in this file.  Axiom-clean.
 -/
 open Finset CodingTheory
 
@@ -35,8 +42,10 @@ design each agree with a word `y` on `≥ a` coordinates, and `a` is large enoug
 `τ(r)·n + r·n < (r+1)·a`, then their differences `c_{j+1} − c₀` are linearly **dependent**.
 By inclusion–exclusion the common agreement set has `≥ (r+1)a − r·n` coordinates; if the differences
 were independent the joint-agreement bound would cap it at `τ(r)·n`, contradicting the threshold.
-Hence the list of close codewords spans a subspace of dimension `< r` — the linear-algebraic core of
-list decoding from subspace designs (iterating pins the list inside a low-dimensional subspace). -/
+Hence the close codewords lie in an affine subspace `c₀ + V` with `dim V < r` (the list translated
+by `c₀` spans a linear subspace of dimension `< r`; the untranslated linear span may have dimension
+`r`) — the linear-algebraic core of list decoding from subspace designs (iterating, which is not
+formalized here, pins the list inside a low-dimensional affine subspace). -/
 theorem subspaceDesign_list_dim_bound {s : ℕ} {τ : ℕ → ℝ}
     {C : Submodule F (ι → Fin s → F)} (h : IsSubspaceDesign s τ C)
     {r : ℕ} (hr : 1 ≤ r) (c : Fin (r + 1) → (ι → Fin s → F)) (hc : ∀ j, c j ∈ C)

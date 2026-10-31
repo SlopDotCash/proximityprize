@@ -20,12 +20,20 @@ residual consumer:
 
 So over the Proximity Prize's finite field `F_q`, the additive energy of the `2^k`-subgroup `G` — the
 single quantity the deep-interior question was reduced to (`SubgroupGaussSumFourthMoment`:
-`∑_b ‖η_b‖⁴ = q·E(G)`) — is `≤ 3|G|²` **the moment one proves the representation bound `r(t) ≤ 2`**.
-That representation bound `r(t) = #{c∈G : c+t∈G} ≤ 2` for the `2^k`-subgroup over `F_q` is *exactly* the
-open Weil-type / sum-product input: `c` and `c+t` both being `2^k`-th roots of unity is a curve-point
-count over `F_q`, which Mathlib's elementary toolkit cannot bound (it holds for "generic" `q` but is a
-genuine RH-for-curves statement). This file makes the reduction `r(t)≤M ⟹ E≤(1+M)|G|²` a theorem,
-pinning the *entire* remaining gap to that one curve-point bound. All `sorry`-free and axiom-clean.
+`∑_b ‖η_b‖⁴ = q·E(G)`) — is `≤ (1+M)|G|²` whenever every nonzero `t` has `r(t) ≤ M`.
+
+**The uniform bound `r(t) ≤ 2` is false for finite dyadic subgroups in general**, so it is not an
+open input that could be supplied: `SubgroupRepCountFiniteFieldCounterexample.lean` proves
+`r(1) = 3` for `G = μ₈ ⊆ F₁₇` (`repCount_F17_eighthRoots_eq_three`), and
+`SubgroupAdditiveEnergyF17.lean` proves `E(μ₈) = 264 > 3·8²` there.  Over `F_q`, `r(t)` counts
+points `c ∈ G` with `c + t ∈ G`, a curve-point count; Weil-type estimates give a main term of
+about `|G|²/q` plus an error of order `√q`, not a uniform constant `2`.  The general
+theorem `additiveEnergy_le_of_repBound` therefore needs whatever bound `M` is actually proved for
+the subgroup at hand; `additiveEnergy_le_three_of_repTwo` is the conditional special case
+`M = 2`, whose hypothesis fails at `μ₈ ⊆ F₁₇`.  All `sorry`-free and axiom-clean.
+
+The same inequality over an arbitrary `AddCommGroup` is `AddEnergyGroupRepBound.lean`, which
+repeats this proof; consolidating the two is a pending simplification.
 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
@@ -95,9 +103,10 @@ theorem additiveEnergy_le_of_repBound (G : Finset F) (M : ℕ)
     _ = (1 + M) * G.card ^ 2 := by
         rw [Finset.sum_const, smul_eq_mul]; ring
 
-/-- **Specialization: representation bound `2` ⟹ minimal additive energy `E(G) ≤ 3|G|²`.** This is the
-finite-field form of the roots-of-unity minimal-energy statement: it holds over `F_q` *the moment* one
-proves `r(t) ≤ 2` for the `2^k`-subgroup (the open curve-point / Weil input). -/
+/-- **Specialization: representation bound `2` ⟹ minimal additive energy `E(G) ≤ 3|G|²`.** This is
+the finite-field form of the roots-of-unity minimal-energy statement, conditional on `r(t) ≤ 2` for
+every nonzero `t`.  That hypothesis is not a universal fact for `2^k`-subgroups over `F_q`: it fails
+for `μ₈ ⊆ F₁₇` (`SubgroupRepCountFiniteFieldCounterexample.repCount_F17_eighthRoots_eq_three`). -/
 theorem additiveEnergy_le_three_of_repTwo (G : Finset F)
     (hrep : ∀ t : F, t ≠ 0 → repCount G t ≤ 2) :
     additiveEnergy G ≤ 3 * G.card ^ 2 := by

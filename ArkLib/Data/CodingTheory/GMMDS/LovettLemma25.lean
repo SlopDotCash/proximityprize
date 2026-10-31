@@ -13,8 +13,16 @@ import Mathlib.Algebra.Polynomial.Basis
 
 This file assembles Lovett's primitive step (`LovettPrimitiveStep`, arXiv:1803.02523 §2) out of
 the landed combinatorial opening (`witness_or_mergeCandidate`), the proven `n < k` / `n = k`
-closures (`lovettHolds_of_witness`), a direct `n = 0` base case, and isolates the one remaining
-algebraic gap as a **precise, machine-checked-satisfiable** residual.
+closures (`lovettHolds_of_witness`), a direct `n = 0` base case, and a merge-branch residual
+`MergeBranchImpossible`.
+
+**Status: `MergeBranchImpossible` is a historical, refuted interface.**  As stated it omits the
+premise that the system is a *dependent* minimal counterexample, and it is false:
+`not_mergeBranchImpossible` (`LovettMergeIndepProof.lean`) refutes it with the independent
+zero-vector system `mcV = [(0,0)]` (`LovettMergeReduction.lean`), which has a merge candidate and
+satisfies all induction hypotheses but contains no `(1,0)`.  The reductions below from it are
+therefore vacuous.  Lovett's Theorem 1.7 is proved unconditionally through the corrected residual
+`LovettMergeIndep` (`lovettMergeIndep`, `lovettThm17_unconditional`).
 
 ## The structure of Lemma 2.5
 
@@ -32,7 +40,9 @@ Lovett's Lemma 2.5 says: a *primitive* `V*(k)` system contains the structured wi
   substitution, hence each divisible by `(a_{j*} − a_{n-1})` (`sub_X_dvd_of_subst_eq_zero`),
   contradicting common-factor-freeness.
 
-The merge branch is therefore *vacuous*: it cannot occur in a minimal counterexample.
+The merge branch therefore cannot occur in a *dependent* minimal counterexample.  It does occur
+in independent primitive systems (e.g. `mcV`), which is why a residual demanding the witness
+without a dependence premise is false.
 
 ## The `n = 0` degeneracy
 
@@ -50,20 +60,19 @@ trivial reason that each block is a set of distinct monomials `{xᵉ : e < k}`
   directly via monomial independence (`Polynomial.basisMonomials`).
 * `emptyDimSystem`, `no_witness_emptyDimSystem` — the explicit witness that `LovettWitnessExists`
   is false at `n = 0` (documenting why we target `LovettPrimitiveStep`).
-* `MergeBranchImpossible` — the **precise statement** of the one remaining gap: in a primitive
-  `V*(k)` system over `Fin n` with `n ≥ 1` and both induction hypotheses, a merge candidate
-  `(i, j)` forces the witness to exist.  This is exactly Lovett's merge argument.
-* `lovettPrimitiveStep_of_mergeBranchImpossible` — **the assembly**: `MergeBranchImpossible`
-  implies `LovettPrimitiveStep`, hence (via `lovettThm17_of_primitiveStep`) the full algebraic
-  GM-MDS theorem `LovettThm17`.  Proven unconditionally and axiom-clean.
-* `mergeBranchImpossible_conclusion_cexV` — a **non-vacuity certificate**: on the explicit
-  `LovettWitnessCounterexample` system the merge-branch conclusion holds (the witness is present),
-  so the residual is satisfiable, not contradictory.
+* `MergeBranchImpossible` — the historical (refuted) merge residual: in a primitive `V*(k)`
+  system over `Fin n` with `n ≥ 1` and both induction hypotheses, a merge candidate `(i, j)`
+  forces the witness to exist.  It is missing the dependence premise under which Lovett's merge
+  argument runs, and is false (`not_mergeBranchImpossible`).
+* `lovettPrimitiveStep_of_mergeBranchImpossible` — the assembly `MergeBranchImpossible →
+  LovettPrimitiveStep` (hence `LovettThm17`).  Valid, but vacuous since its hypothesis is false.
+* `mergeBranchImpossible_conclusion_cexV` — the merge-branch conclusion on one explicit
+  witness-bearing system.  This is a single instance of the conclusion only; it does **not**
+  certify that the universal residual is satisfiable (it is not).
 
-The residual `MergeBranchImpossible` is the genuine remaining mathematical content of Lemma 2.5:
-the coordinate-merge construction over `Fin (n−1)` together with the substitution-divisibility
-contradiction (whose algebraic kernel `sub_X_dvd_of_subst_eq_zero` is already proven in
-`LovettSubstitutionDvd.lean`).
+The genuine mathematical content of Lemma 2.5 (the coordinate-merge construction over `Fin (n−1)`
+and the substitution-divisibility contradiction, kernel `sub_X_dvd_of_subst_eq_zero` in
+`LovettSubstitutionDvd.lean`) is formalized for the corrected residual `LovettMergeIndep`.
 
 Issue #389.
 -/
@@ -159,7 +168,7 @@ theorem no_witness_emptyDimSystem : ¬ LovettWitness F emptyDimSystem 1 := by
 
 /-! ## The merge-branch-impossibility residual and the assembly -/
 
-/-- **The merge-branch-impossibility residual** (the algebraic heart of Lovett's Lemma 2.5).
+/-- **The historical merge-branch-impossibility residual — FALSE as stated.**
 
 For a primitive `V*(k)` system over `Fin n` with `n ≥ 1`, equipped with both minimal-
 counterexample induction hypotheses (the `n−1` coordinate-IH `IHn` and the `d`-IH `IHd`, exactly
@@ -167,9 +176,11 @@ as in `LovettPrimitiveStep`), the *merge branch* of Lemma 2.5 is impossible: the
 merge candidate `(i, j)` (with `j < n−1`, `vᵢ(j) = 0` and `vᵢ(n−1) = 0`) forces the witness
 `vᵢ₀ = (1,…,1,0)` to exist.
 
-Lovett discharges this by building `V'` over `Fin (n−1)` (merging coordinates `j` and `n−1`),
-invoking `IHn` to get `P(k,V')` independent, and contradicting the minimality of `V` via the
-substitution-divisibility kernel `ArkLib.GMMDS.sub_X_dvd_of_subst_eq_zero`. -/
+Lovett's argument (build `V'` over `Fin (n−1)` by merging coordinates `j` and `n−1`, invoke `IHn`
+to get `P(k,V')` independent, and contradict minimality via `sub_X_dvd_of_subst_eq_zero`) needs
+the extra premise that `P(k,V)` is *dependent*, which this definition omits.  Without it the
+statement is refuted by the independent zero-vector system `mcV`: see `not_mergeBranchImpossible`
+in `LovettMergeIndepProof.lean`.  Kept only for historical compatibility; use `LovettMergeIndep`. -/
 def MergeBranchImpossible (F : Type*) [Field F] : Prop :=
   ∀ {n m : ℕ} (V : Fin m → (Fin n → ℕ)) (k : ℕ), 1 ≤ k → (hn : 1 ≤ n) → IsVStar V k →
     (∀ j : Fin n, ∃ i, V i j = 0) →
@@ -183,6 +194,7 @@ def MergeBranchImpossible (F : Type*) [Field F] : Prop :=
       ∃ i₀, V i₀ = oneVec n hn)
 
 /-- **The Lemma 2.5 assembly.**  `MergeBranchImpossible` implies `LovettPrimitiveStep`.
+(Vacuous: the hypothesis is false, `not_mergeBranchImpossible`.)
 
 Branch on the ambient dimension `n`:
 
@@ -191,7 +203,7 @@ Branch on the ambient dimension `n`:
   merge candidate; `MergeBranchImpossible` turns the candidate into the witness.  Either way the
   witness exists, and `lovettHolds_of_witness` (the proven `n < k` / `n = k` closure) finishes.
 
-Unconditional and axiom-clean: it consumes only landed lemmas. -/
+Axiom-clean, consuming only landed lemmas; but see above — the hypothesis is refuted. -/
 theorem lovettPrimitiveStep_of_mergeBranchImpossible (hmerge : MergeBranchImpossible F) :
     LovettPrimitiveStep F := by
   intro n m V k hk hV hprim IHn IHd IHm
@@ -206,22 +218,23 @@ theorem lovettPrimitiveStep_of_mergeBranchImpossible (hmerge : MergeBranchImposs
     exact lovettHolds_of_witness hk hV hwit IHd
 
 /-- **Full Theorem 1.7 from the merge residual.**  Combining the assembly with the master frame
-(`lovettThm17_of_primitiveStep`), `MergeBranchImpossible` yields the full algebraic GM-MDS theorem
-`LovettThm17` unconditionally. -/
+(`lovettThm17_of_primitiveStep`), `MergeBranchImpossible` yields `LovettThm17`.  Vacuous, since
+`MergeBranchImpossible` is false; the proved statement is `lovettThm17_unconditional`. -/
 theorem lovettThm17_of_mergeBranchImpossible (hmerge : MergeBranchImpossible F) {n : ℕ} :
     LovettThm17 F n :=
   lovettThm17_of_primitiveStep (lovettPrimitiveStep_of_mergeBranchImpossible hmerge)
 
-/-! ## Non-vacuity certificate for the residual
+/-! ## The merge-branch conclusion on one witness-bearing system
 
-We certify that `MergeBranchImpossible`'s conclusion is reachable on a concrete primitive `V*(k)`
-system that contains the witness.  On the `LovettWitnessCounterexample` system
-`V = ((1,0),(0,2))` over `ℕ²`, the witness `(1,0) = oneVec 2` is present (`cexV_zero_eq_oneVec`),
-so the merge-branch conclusion holds for *every* candidate `(i, j)` — the witness disjunct fires.
-This shows the residual's conclusion is satisfiable (not contradictory). -/
+On the `LovettWitnessCounterexample` system `V = ((1,0),(0,2))` over `ℕ²`, the witness
+`(1,0) = oneVec 2` is present (`cexV_zero_eq_oneVec`), so the merge-branch conclusion holds for
+every candidate `(i, j)`.  This is one instance of the conclusion only.  It is **not** a
+satisfiability certificate for the universal `MergeBranchImpossible`, which is false
+(`not_mergeBranchImpossible`, via the zero-vector system `mcV`). -/
 
-/-- **Non-vacuity certificate.**  The merge-branch conclusion holds on the concrete counterexample
-system: for any merge candidate `(i, j)`, the witness `oneVec 2` exists (it is `cexV 0`). -/
+/-- The merge-branch conclusion holds on the concrete system `cexV`: for any merge candidate
+`(i, j)`, the witness `oneVec 2` exists (it is `cexV 0`).  A single-instance fact, not evidence
+for `MergeBranchImpossible`. -/
 theorem mergeBranchImpossible_conclusion_cexV
     (i : Fin 2) (j : Fin 2) (_hjlt : (j : ℕ) < 2 - 1)
     (_hj0 : cexV i j = 0) (_hlast : cexV i (lastCoord 2 (by norm_num)) = 0) :

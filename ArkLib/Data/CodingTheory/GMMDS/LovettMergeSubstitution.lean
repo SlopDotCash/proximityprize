@@ -9,8 +9,10 @@ import ArkLib.Data.CodingTheory.GMMDS.LovettSubstitutionDvd
 /-!
 # Lovett's GM-MDS proof: the merge-substitution transport bricks (Lemma 2.6) (#389)
 
-The remaining TRUE residual of Lovett's Theorem 1.7 is `LovettMergeIndep` (the prize route R3):
-a *primitive* `V*(k)` system containing a merge candidate `(i₀, j*)` (with `V i₀ j* = 0`,
+When this file was written, the remaining TRUE residual of Lovett's Theorem 1.7 was
+`LovettMergeIndep` (the prize route R3; it is now proved — see the status note at the end of
+this docstring): a *primitive* `V*(k)` system containing a merge candidate `(i₀, j*)`
+(with `V i₀ j* = 0`,
 `j* < n−1`, `V i₀ (n−1) = 0`) is linearly independent.  Lovett's proof (Lemma 2.6, arXiv:1803.02523
 p.9) substitutes `a_{n−1} ↦ a_{j*}`, collapsing the system to a smaller one handled by the
 induction hypotheses, then uses the substitution-divisibility kernel
@@ -19,18 +21,19 @@ induction hypotheses, then uses the substitution-divisibility kernel
 This file formalizes the **transport machinery** for that argument — the lifted substitution
 `substPoly p q = Polynomial.map (substVar p q)` on `R[X]` (`R = MvPolynomial (Fin n) F`) and how it
 interacts with the vanishing polynomials `pVanish`, working **in fixed dimension `n`** (the merge is
-realized as `mergeVecSameDimension p q`, which moves the `p`-mass onto `q` and zeroes `p`, keeping the variable
-set `Fin n`; the reindexing `Fin n → Fin (n−1)` needed to invoke the `n`-IH, and the final
-minimality contradiction, are NOT in this file — see the residual note below).
+realized as `mergeVecSameDimension p q`, which moves the `p`-mass onto `q` and zeroes `p`, keeping
+the variable set `Fin n`; the reindexing `Fin n → Fin (n−1)` needed to invoke the `n`-IH, and the
+final minimality contradiction, are NOT in this file — see the residual note below).
 
 ## Results (all axiom-clean: `propext`, `Classical.choice`, `Quot.sound` only)
 
 * `substPoly`, `substPoly_X`, `substPoly_C`, `substPoly_xSubC`, `substPoly_xSubA` — the lifted
   substitution and its action on `X`, `C`, and the linear factors `xSubA i`.
-* `mergeVecSameDimension`, `vAbs_mergeVec` — **(S1 core)** the merged multiplicity vector and weight
-  preservation `|mergeVecSameDimension p q v| = |v|` (`p ≠ q`).
-* `substPoly_pVanish` — **(S2 core)** `substPoly p q (pVanish v) = pVanish (mergeVecSameDimension p q v)`: the
-  substitution merges the `(n−1)` and `j*` factors at the polynomial level.
+* `mergeVecSameDimension`, `vAbs_mergeVec` — **(S1 core)** the merged multiplicity vector and
+  weight preservation `|mergeVecSameDimension p q v| = |v|` (`p ≠ q`).
+* `substPoly_pVanish` — **(S2 core)**
+  `substPoly p q (pVanish v) = pVanish (mergeVecSameDimension p q v)`: the substitution merges the
+  `(n−1)` and `j*` factors at the polynomial level.
 * `substPoly_relation_transport` — **(S2)** a vanishing relation `∑ₗ pVanish (V l) · A l = 0`
   transports to `∑ₗ pVanish (mergeVecSameDimension p q (V l)) · substPoly (A l) = 0`.
 * `substPoly_natDegree_le` — **(S3 budget)** the substitution does not raise degree, so a valid
@@ -40,13 +43,20 @@ minimality contradiction, are NOT in this file — see the residual note below).
 * `C_subX_ne_zero`, `cancel_common_factor` — **(S5 cancellation half)** the common factor
   `C (X p − X q)` is nonzero and cancels from a relation in the domain `R[X]`.
 
-## Residual (the recognized-hard kernel, NOT proven here)
+## Historical residual (not proven in this file; now closed elsewhere)
 
-Assembling these into `LovettMergeIndep` still needs: (a) the dimension reindexing
+Assembling these into `LovettMergeIndep` needed: (a) the dimension reindexing
 `Fin n → Fin (n−1)` that lets `substPoly`-transported relations be read as `pFamUnion` combinations
 over the merged dimension and invoke the `n`-IH (`shape (iii)` bookkeeping — `j* < n−1`); and
 (b) the minimal-counterexample / measure-drop contradiction that closes the substitute-back step
-(`cancel_common_factor` is only its domain half).  Those two are the remaining open content.
+(`cancel_common_factor` is only its domain half).  These were the open content when this file was
+written.
+
+**Current status:** both are supplied outside this file — the reindexing by
+`LovettMergeReindex.lean` / `LovettMergeIndepProof.lean` (`renameP (mergeRho j*)`, `mergeSec`) and
+the minimal-degree descent by `LovettMergeIndepProof.lovettMergeIndep`, which proves
+`LovettMergeIndep`; `lovettThm17_unconditional` there gives Theorem 1.7 unconditionally. The
+merge branch is no longer an open core.
 
 Issue #389.
 -/
@@ -86,7 +96,11 @@ theorem substPoly_xSubA (p q i : Fin n) :
   · subst h; rw [substVar_X_self, if_pos rfl]
   · rw [substVar_X_of_ne h, if_neg h]
 
-/-- The merged vector in dimension `n`: move the `p`-mass onto `q`, zero out `p`. -/
+/-- The merged vector in dimension `n`: move the `p`-mass onto `q`, zero out `p`.
+
+Named `mergeVecSameDimension` (formerly `mergeVec`) so that it does not share the fully qualified
+name `ArkLib.GMMDS.mergeVec` with the different `Fin n → Fin (n − 1)` merge of
+`LovettCoordMerge.lean`; the two modules can now be imported together. -/
 def mergeVecSameDimension (p q : Fin n) (v : Fin n → ℕ) : Fin n → ℕ :=
   Function.update (Function.update v p 0) q (v q + v p)
 
@@ -106,9 +120,9 @@ theorem vAbs_mergeVec (p q : Fin n) (hpq : p ≠ q) (v : Fin n → ℕ) :
       Finset.sum_eq_add_sum_sdiff_singleton_of_mem hp_mem v]
   omega
 
-/-- **(S2 core) `pVanish` transport.**  `substPoly p q (pVanish v) = pVanish (mergeVecSameDimension p q v)`:
-the substitution `X_p ↦ X_q` merges the `p`-factor onto the `q`-factor at the level of the
-vanishing polynomial. -/
+/-- **(S2 core) `pVanish` transport.**
+`substPoly p q (pVanish v) = pVanish (mergeVecSameDimension p q v)`: the substitution `X_p ↦ X_q`
+merges the `p`-factor onto the `q`-factor at the level of the vanishing polynomial. -/
 theorem substPoly_pVanish (p q : Fin n) (hpq : p ≠ q) (v : Fin n → ℕ) :
     substPoly (F := F) p q (pVanish v) = pVanish (mergeVecSameDimension p q v) := by
   classical
@@ -134,7 +148,8 @@ theorem substPoly_pVanish (p q : Fin n) (hpq : p ≠ q) (v : Fin n → ℕ) :
   -- f p = (xSubA q)^(v p); g p = (xSubA p)^0 = 1
   have hfp : f p = (xSubA (F := F) q) ^ (v p) := by rw [hf]; simp
   have hgp : g p = 1 := by
-    rw [hg]; simp only [mergeVecSameDimension, Function.update_of_ne hpq, Function.update_self, pow_zero]
+    rw [hg]
+    simp only [mergeVecSameDimension, Function.update_of_ne hpq, Function.update_self, pow_zero]
   -- f q = (xSubA q)^(v q); g q = (xSubA q)^(v q + v p)
   have hfq : f q = (xSubA (F := F) q) ^ (v q) := by rw [hf]; simp [hpq.symm]
   have hgq : g q = (xSubA (F := F) q) ^ (v q + v p) := by
@@ -175,9 +190,9 @@ theorem substPoly_natDegree_le (p q : Fin n) (A : (MvPolynomial (Fin n) F)[X]) :
     Polynomial.natDegree_map_le (f := (substVar (F := F) p q).toRingHom) (p := A)
 
 /-- **(S2) Relation transport.**  Applying the lifted substitution to a vanishing relation
-`∑ₗ pVanish (V l) · A l = 0` yields `∑ₗ pVanish (mergeVecSameDimension p q (V l)) · substPoly (A l) = 0`,
-because `substPoly` is a ring hom (commutes with `∑`, `·`) and `substPoly_pVanish` rewrites each
-factor. -/
+`∑ₗ pVanish (V l) · A l = 0` yields
+`∑ₗ pVanish (mergeVecSameDimension p q (V l)) · substPoly (A l) = 0`, because `substPoly` is a
+ring hom (commutes with `∑`, `·`) and `substPoly_pVanish` rewrites each factor. -/
 theorem substPoly_relation_transport {m : ℕ} (p q : Fin n) (hpq : p ≠ q)
     (V : Fin m → (Fin n → ℕ)) (A : Fin m → (MvPolynomial (Fin n) F)[X])
     (hrel : ∑ l, pVanish (F := F) (V l) * A l = 0) :

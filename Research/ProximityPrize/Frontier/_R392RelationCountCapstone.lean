@@ -91,7 +91,7 @@ theorem orbit_count_of_relationCountBound (g : F) (G : Finset F)
     (hR0 : ∀ b ∈ Rset, b ≠ 0)
     (hdisj : ∀ b ∈ Rset, ∀ b' ∈ Rset, b ≠ b' → ∀ a ∈ G, a * b ≠ b')
     {T : ℝ} (hT : 0 ≤ T)
-    (hbig : ∀ b ∈ Rset, T ≤ |R303GeneralROrbitChebyshev.deviationR G r b|) :
+    (hbig : ∀ b ∈ Rset, T ≤ |R240GeneralRFoldVariance.deviationR G r b|) :
     (Rset.card : ℝ) * ((G.card : ℝ) * T ^ 2)
       ≤ (Fintype.card F : ℝ)
           * ((Fintype.card F : ℝ)

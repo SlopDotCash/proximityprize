@@ -14,10 +14,19 @@ exponent `n·H_q(⌊δn⌋/n) − (n−k)`) with an `rpow`/`logb` overflow bridg
 the capacity exponent exceeds `logb q ((n+1)·ε*·q)`, the RS list size strictly exceeds `ε*·|F|`.
 
 Combined with `CodingTheory.capacityExponent_pos` (the capacity exponent is *positive* at the
-Singleton radius — `QEntropySelfBound.lean`), this is the negative side of the Grand List Decoding
-Challenge: the *up-to-capacity* list-decoding bound is impossible. The remaining input — that the
-positive exponent `E = n·slack` actually *exceeds* `logb q ((n+1)ε*q) ∼ logb_q n + O(1)` — holds
-for large `n` (`n·slack` beats `logb_q n`), and is the only non-formalized (mechanical) step.
+Singleton radius — `QEntropySelfBound.lean`), this gives a **conditional** route to the negative
+side of the Grand List Decoding Challenge: wherever the overflow hypothesis holds, the
+*up-to-capacity* list-decoding bound fails.  Positivity of `E` alone does **not** supply the
+overflow.  The slack `E/n = H_q(δ) − (1 − ρ)` depends on `q` (at `δ = 1 − ρ` it is about
+`h(δ)/ln q`, `h` the natural-log binary entropy), while the budget `logb q ((n+1)·ε*·q)` tends to
+`1` as `q → ∞`.  Since an injective RS domain only forces `n ≤ q`, `q` may grow much faster than
+`n`: e.g. at rate `1/2`, even `n`, `δ = 1/2`, `E ≈ n·ln 2/ln q`, and taking `q > 2^{n²}` makes
+`E < 1/n` (roughly) while the budget is close to `1`, so overflow fails for arbitrarily large `n`.
+Overflow therefore needs a **joint `(n, q)` regime** in which `ln q` is controlled by `n`
+(heuristically `ln q ≲ n·h(δ) − ln(n+1) − ln ε*`); such a regime and its budget inequality are
+**not** proved in this file.  The in-tree concrete instance
+`rs_uptoCapacity_false_rate12_n256` discharges the overflow numerically for `n = 256`, rate `1/2`,
+under the explicit field-size window `2^128 ≤ q ≤ 2^256`.
 
 ## Main results
 - `threshold_lt_pow_div` — `rpow` overflow: `logb q ((n+1)·εq) < E → εq < q^E/(n+1)`.

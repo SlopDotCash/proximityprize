@@ -29,6 +29,16 @@ The construction of the line cover (lines through `p₀`) and the `(|U|−1)/(q�
 affine-geometry inputs; the formalized content is the cover bound (the mathematical core of §6.1).
 
 ## Honest status of GG25 as a whole
+> **Scope correction (2026-10-28 audit, T48; cross T40).** "Essentially fully formalized" and "§6.1
+> closed" overstate what landed. `card_bad_le_of_line_cover` is the generic finite cover union bound:
+> if `bad` is covered by lines with at most `B` close points each, then `|bad| ≤ (#lines)·B`. Its
+> application to §6.1 still takes three things as inputs. These are the construction of the
+> pointed affine-line family through `p₀`, its cardinality `(|U|−1)/(q−1)`, and the per-line bound
+> `B`, which comes from Theorem 5.12 and its curve-selection hypotheses. A valid cover inequality
+> does not discharge those inputs, and the curve-selection hypotheses remain tracked by the PG and
+> Research lanes. Lemma 5.10 is also only partial in the table above. Read the paragraph below as
+> "the cover inequality is formalized", not as "the chain is complete".
+
 **The GG25 combinatorial chain is essentially fully formalized in-tree**, now including the §6.1 lifting core.
 The two remaining genuinely-open inputs are EXTERNAL and correctly cited, not gaps to "prove" here:
 1. **FRS list-decodability at capacity** (PRUNE-based, concurrent work) — a recent hard result; importing its

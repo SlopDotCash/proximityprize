@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import Research.ProximityPrize.Frontier._R24DBlockIndependence
 import Research.ProximityPrize.Frontier._R25FractionRatio
 import Research.ProximityPrize.Frontier._R25QuarticAdjoinRoot
+import Research.ProximityPrize.Frontier._R25D8Descent
 import Mathlib.RingTheory.Localization.FractionRing
 
 /-!
@@ -22,8 +23,19 @@ quartic norm blocks.  This file pins those blocks and proves their degree budget
 is the input shape needed to feed the already-proven `dBlockIndependence_four`.
 
 Current endpoint: the octic descent seam is now discharged from the weighted quartic norm
-descent plus the two fraction-field ratio nonsquare facts, giving the public theorem
-`dBlockIndependence_eight`.  The next norm-fold target is therefore `d = 16`, not `d = 8`.
+descent plus the two fraction-field ratio nonsquare facts.  The next norm-fold target is
+therefore `d = 16`, not `d = 8`.
+
+**Canonical `d = 8` endpoint (2026-10-29 audit CW-B11-03).**  The canonical
+`dBlockIndependence_eight` is `R25D8Descent.dBlockIndependence_eight` in
+`_R25D8Descent.lean`: it needs no `NormalizationMonoid`/`UniqueFactorizationMonoid`/`NeZero 2`
+instances and no `Odd q` hypothesis (oddness follows from `8 ∣ q − 1`), and it is the version
+every downstream consumer (`_R26D16`, `_R147`, `_R148`) imports.  This file's
+`dBlockIndependence_eight` is a thin alias of it, and `blocks_add_le` delegates to the
+`R25D8Descent` copy.  What remains specific to this file is the alternative descent route
+through the weighted quartic norm descent and the fraction-field ratio nonsquares
+(`octicNormForcesTrivial_of_squarefree_natDegree_pos`), which does carry those extra
+instances.
 -/
 
 namespace ArkLib.ProximityGap.Frontier.R25OcticNormFold
@@ -40,10 +52,8 @@ variable {F : Type*} [Field F]
 /-- Blocks of a sum with a common bound. -/
 theorem blocks_add_le {A B : Polynomial (Polynomial F)} {a : ℕ}
     (hA : ∀ j, (A.coeff j).natDegree ≤ a) (hB : ∀ j, (B.coeff j).natDegree ≤ a) :
-    ∀ j, ((A + B).coeff j).natDegree ≤ a := by
-  intro j
-  rw [coeff_add]
-  exact (natDegree_add_le _ _).trans (max_le (hA j) (hB j))
+    ∀ j, ((A + B).coeff j).natDegree ≤ a :=
+  ArkLib.ProximityGap.Frontier.R25D8Descent.blocks_add_le hA hB
 
 /-- Blocks of `2*A*B + 2*C*D`. -/
 theorem blocks_two_mul_add_two_mul_le
@@ -163,8 +173,10 @@ theorem octicNormBlock_blocks_le (g : F[X]) (A : Fin 8 → Polynomial (Polynomia
 /-- The octic norm fold converts an 8-block relation with step `e = (q-1)/8` into a
 4-block relation among the octic norm blocks with step `2e = (q-1)/4`.
 
-This is the relation-algebra half of the `d = 8` norm-fold: the remaining missing piece is
-the descent lemma that zero norm blocks force the original eight blocks to vanish. -/
+This is the relation-algebra half of the `d = 8` norm-fold.  The descent half (zero norm
+blocks force the original eight blocks to vanish) is `OcticNormForcesTrivial`, discharged
+below by `octicNormForcesTrivial_of_squarefree_natDegree_pos` (and, without extra instances,
+by `R25D8Descent.octic_norm_forces_trivial`). -/
 theorem octicNormBlock_fold_relation [Fintype F]
     (g : F[X]) (A : Fin 8 → Polynomial (Polynomial F))
     {q e : ℕ} (hqcard : q = Fintype.card F) (hqe : q = 8 * e + 1)
@@ -377,8 +389,9 @@ theorem octicNormForcesTrivial_of_fractionFieldWeightedOcticDescent
   · exact hψinj (by simpa using hA6)
   · exact hψinj (by simpa using hA7)
 
-/-- Fully composed octic descent seam, pending only the imported concrete proofs of the
-weighted quartic theorem and the ratio nonsquare hypotheses. -/
+/-- Fully composed octic descent seam from the weighted quartic theorem and the two ratio
+nonsquare hypotheses, taken here as arguments.  Both are discharged for squarefree `g` of
+positive degree in `octicNormForcesTrivial_of_squarefree_natDegree_pos`. -/
 theorem octicNormForcesTrivial_of_weightedQuartic_and_ratioNonsquares
     (g : F[X]) (hg : g ≠ 0)
     (hquartic :
@@ -411,8 +424,9 @@ theorem octicNormForcesTrivial_of_squarefree_natDegree_pos
     (fractionFieldWeightedOcticDescent_of_squarefree_natDegree_pos hg0 hgsqf hgdeg)
 
 /-- If an 8-block relation has the explicit octic spacing `e = (q-1)/8`, then the proved
-`d = 4` theorem kills the four octic norm blocks.  The only mathematical residual for a
-full `d = 8` theorem is therefore the descent Prop `OcticNormForcesTrivial`. -/
+`d = 4` theorem kills the four octic norm blocks.  The remaining step to a full `d = 8`
+theorem is the descent Prop `OcticNormForcesTrivial`, which is discharged in this file
+(`octicNormForcesTrivial_of_squarefree_natDegree_pos`). -/
 theorem octicNormBlocks_zero_of_fold [Fintype F]
     (g : F[X]) (hg : Squarefree g) (hdeg : 0 < g.natDegree)
     (hq_odd : Odd (Fintype.card F))
@@ -456,8 +470,9 @@ theorem octicNormBlocks_zero_of_fold [Fintype F]
     (octicNormBlock g A) (octicNormBlock_blocks_le g A hblk) hBrel
 
 /-- Conditional `d = 8` block independence from the explicit octic norm descent lemma.
-This theorem is intentionally honest: it proves all relation algebra and degree accounting,
-and isolates the remaining descent step as `OcticNormForcesTrivial`. -/
+It proves all relation algebra and degree accounting and takes the descent step as the
+hypothesis `OcticNormForcesTrivial` (discharged in this file for squarefree `g` of positive
+degree). -/
 theorem dBlockIndependence_eight_of_octicNormForcesTrivial [Fintype F]
     (g : F[X]) (hg : Squarefree g) (hdeg : 0 < g.natDegree)
     (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
@@ -491,25 +506,15 @@ theorem dBlockIndependence_eight_of_octicNormForcesTrivial [Fintype F]
   have h3 : octicNormBlock3 g A = 0 := by simpa [octicNormBlock] using hBzero 3
   exact hdesc A h0 h1 h2 h3 i
 
-/-- Fully composed `d = 8` block independence over finite fields, with the octic descent
-discharged from squarefreeness and positive degree of `g`.
-
-This is the current R25 endpoint: the relation folding, the quartic weighted norm descent, and
-the two fraction-field ratio nonsquare facts are all composed into the public
-`DBlockIndependence` statement. -/
+/-- **`d = 8` block independence** — a thin alias of the canonical
+`R25D8Descent.dBlockIndependence_eight` (no extra instances; oddness of `q` follows from
+`8 ∣ q − 1`).  Kept under this name for backward compatibility. -/
 theorem dBlockIndependence_eight [Fintype F]
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (g : F[X]) (hg : Squarefree g) (hdeg : 0 < g.natDegree)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     {D : ℕ} (hD : 8 * D + 7 * g.natDegree < Fintype.card F) :
-    DBlockIndependence F 8 (Fintype.card F) D g := by
-  have hg0 : g ≠ 0 := by
-    rintro rfl
-    simp at hdeg
-  exact dBlockIndependence_eight_of_octicNormForcesTrivial g hg hdeg hq_odd h8 hD
-    (octicNormForcesTrivial_of_squarefree_natDegree_pos hg0 hg hdeg)
+    DBlockIndependence F 8 (Fintype.card F) D g :=
+  ArkLib.ProximityGap.Frontier.R25D8Descent.dBlockIndependence_eight g hg hdeg h8 hD
 
 end ArkLib.ProximityGap.Frontier.R25OcticNormFold
 

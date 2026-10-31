@@ -26,6 +26,12 @@ linear branch.  This eliminates the GK1 selection leg of
 `cell_improvement_of_pinning_package'` entirely; the remaining legs are the tail, the
 heavy sets, and the numerics (GK3–GK5).
 
+*Scope (audit 2026-10-28, R-211).* "Free" is conditional on the strong `section_link`
+hypothesis: an irreducible cell divisible by the entered linear section `Y′ − C w` is forced to
+be associate to that section, i.e. **linear** in `Y`. The generic GS cell producer must still
+supply that section link; for an arbitrary nonlinear irreducible cell no such section is
+constructed here, so selection is free only for section-linked (hence linear) cells.
+
 Axiom-clean: `[propext, Classical.choice, Quot.sound]` (audited at end of file).
 -/
 

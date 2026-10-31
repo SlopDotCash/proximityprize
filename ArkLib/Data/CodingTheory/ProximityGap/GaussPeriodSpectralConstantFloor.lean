@@ -17,32 +17,38 @@ the floor to satisfy
 
 > `C² ≥ (q − n) / ((q − 1)·log(q/n))`.
 
-Equivalently `C ≥ √((q−n)/((q−1)·log(q/n)))`. In the thin prize regime (`q/n = 2¹²⁸`,
-`log(q/n) ≈ 128·ln 2 ≈ 88.7`, `q ≫ n`), this gives `C ⪆ 1/√(log(q/n)) ≈ 0.106` — small, but
-**strictly positive and bounded away from 0**: the spectral ceiling can *not* be driven below the
-floor scale, so the frame is genuinely two-sided.
+Equivalently `C ≥ √((q−n)/((q−1)·log(q/n)))`. In the thin prize regime (`q/n ≈ 2¹²⁸`,
+`log(q/n) ≈ 128·ln 2 ≈ 88.7`, `q ≫ n`), this gives `C ⪆ 1/√(log(q/n)) ≈ 0.106` — small but
+strictly positive **for that fixed ratio `q/n`** (the bound tends to `0` as `log(q/n) → ∞`): at
+that ratio the spectral ceiling can *not* be driven below the floor scale, so the frame is
+two-sided there.
 
-## Why this is the honest LA-lane verdict (random-like, no fixed-index handle)
+## Empirical context for lane wf-LA (finite probes, not theorems)
 
-Lane wf-LA's mission was to find an *effective* near-Ramanujan-√log bound from the fixed-index
-structure (`m = (q−1)/n = 2¹²⁸` fixed and odd, `n = 2^μ`). The numerics
-(`scripts/probes/probe_wfLA_*.py`) refute that hope:
+Lane wf-LA's mission was to find an *effective* near-Ramanujan-√log bound from fixed-index
+structure: index `m = (q−1)/n` held fixed (in the prize, `m ≈ 2¹²⁸`, which is **even**) with
+`n = 2^μ`.  The probes (`scripts/probes/probe_wfLA_*.py`) did **not** sample that regime: they
+fixed `β = log_n q` instead, and **fixed `β` is not fixed index** — with `β = 4`, `q ≈ n⁴` and
+`m ≈ n³` grows with `n`.  So the observations below concern a varying-index family over small `n`
+and do not by themselves say anything about a fixed-index mechanism:
 
-* At the exact prize slice `β = log_n q = 4`, the empirical constant
-  `C = M/√(n·log(q/n))` is **not uniform**: it creeps as `≈ 0.46 + 0.43·√(log n)`
-  (residual 0.025 over `n = 4…64`) — the genuine √log creep, not a bounded constant.
+* At `β = log_n q = 4`, the empirical constant `C = M/√(n·log(q/n))` over `n = 4…64` is fitted by
+  `≈ 0.46 + 0.43·√(log n)` (residual 0.025).  A fit over this finite range does not establish that
+  `C` diverges, only that it was not observed to be constant there.
 * `M(μ_n) / 𝔼[M(random n-subset)]` runs `1.02 → 1.15` over `n = 4…32`, and `M(μ_n) ≈
-  max(random)`: the deterministic family is **random-like (slightly worse), never better**. So
-  the Gumbel value `M ≈ √(n·log q) = √(β/(β−1))·√(n·log(q/n))` is *matched*, not beaten — there is
-  no structured cancellation to exploit at fixed index.
-* The argmax frequency `b` shows **no** `gcd(b,m)` / `gcd(b,n)` localization (probe A): the worst
-  frequency is unstructured, so the fixed-index reduction the effective-Katz no-go "missed" does
-  not exist either. The §6 effective-Katz no-go (growing field) and this fixed-index probe
-  agree: the only viable mechanism is char-`p` deep moments (the meta-theorem), not spectra.
+  max(random)`: in these samples the deterministic family looked random-like (slightly worse), and
+  no structured cancellation was observed.
+* The argmax frequency `b` showed no `gcd(b,m)` / `gcd(b,n)` localization in the sampled
+  instances (probe A).
+* **Interpretation (conjectural, not proved):** these observations, together with the §6
+  effective-Katz no-go (growing field), were read as suggesting that char-`p` deep moments, rather
+  than spectral arguments, are the viable mechanism.  Neither the finite fits nor the formal
+  results here prove that no fixed-index spectral mechanism exists.
 
-The rigorous landable kernel is the constant floor below: it makes the spectral frame's lower side
-quantitative and shows the prize constant is `Θ(1/√log)` from the floor alone — consistent with the
-random-like upper side `Θ(√(β/(β−1)))`.
+The rigorous content is the constant floor below: it makes the spectral frame's lower side
+quantitative, giving the **lower bound** `C ≳ 1/√(log(q/n))` from the Parseval floor alone.  It
+supplies no matching upper bound: a `Θ(1/√log)` law for the actual prize constant, or a
+`Θ(√(β/(β−1)))` upper side, is not proved here.
 
 Axiom-clean. Issue #407. Lane wf-LA.
 -/
@@ -59,7 +65,8 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 /-- **Constant floor (squared).** A uniform near-Ramanujan-√log ceiling with constant `C` forces
 `C²·(n·log(q/n)) ≥ (q·n − n²)/(q − 1)`: the floor witness `b` has `‖η_b‖²` at least the Parseval
 floor and at most `C²·n·log(q/n)`, so the ceiling cannot be smaller than the floor. This is the
-quantitative two-sidedness of the spectral frame — the constant `C` cannot be driven to 0. -/
+quantitative two-sidedness of the spectral frame — for given `q` and `n`, the constant `C` cannot
+be driven below the floor value. -/
 theorem nearRamanujan_const_sq_floor {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F) {C : ℝ}
     (hq : 2 ≤ Fintype.card F) (hcard : (G.card : ℝ) ≤ Fintype.card F) (hC : 0 ≤ C)
     (h : NearRamanujanSqrtLog ψ G C) :

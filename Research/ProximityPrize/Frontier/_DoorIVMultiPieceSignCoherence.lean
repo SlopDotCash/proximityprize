@@ -110,6 +110,14 @@ theorem multiPieceCoherence_eq_one_of_sameSign {ι : Type*} [DecidableEq ι]
 
 /-! ## Signed-mass compression
 
+Core API: the compression identities `multiPieceCoherence_eq_abs_signedMass_ratio` and
+`multiPieceCoherence_eq_one_sub_two_mul_min_ratio`, the budget characterization
+`multiPieceCoherence_le_iff_two_mul_minMass_ge` (and its `1 - ε` form
+`multiPieceCoherence_le_one_sub_iff_eps_mass_budget`), and the two-sided characterization
+`multiPieceCoherence_lt_one_iff_two_sided` / `multiPieceCoherence_eq_one_iff_one_side_zero`.  The
+remaining `ε`-slack and contrapositive lemmas are one-line consequences of these, kept only as
+named consumer interfaces.
+
 For real, negation-stable refinements, subdividing the period into more pieces does not by itself
 create a new phase statistic.  Once the pieces are real, the normalized multi-piece coherence is
 controlled entirely by the imbalance between the aggregate positive `L¹` mass and the aggregate
@@ -129,33 +137,6 @@ theorem multiPieceCoherence_eq_abs_signedMass_ratio {ι : Type*} [DecidableEq ι
     multiPieceCoherence s A = |posMass - negMass| / (posMass + negMass) := by
   unfold multiPieceCoherence
   rw [hsum, hden]
-
-/-- A coherence upper bound below `c` is exactly a signed-mass-balance demand: the absolute
-positive/negative imbalance must be at most `c` times the total `L¹` mass.  This is the formal
-constraint behind the probe verdict: to get slack from a multi-piece real refinement, one must prove
-aggregate sign balance at the worst frequency, not merely refine the coset split. -/
-theorem abs_signedMass_le_of_multiPieceCoherence_le {ι : Type*} [DecidableEq ι]
-    (s : Finset ι) (A : ι → ℝ) {posMass negMass c : ℝ}
-    (hsum : (∑ i ∈ s, A i) = posMass - negMass)
-    (hden : (∑ i ∈ s, |A i|) = posMass + negMass)
-    (hpos : 0 < posMass + negMass)
-    (hle : multiPieceCoherence s A ≤ c) :
-    |posMass - negMass| ≤ c * (posMass + negMass) := by
-  rw [multiPieceCoherence_eq_abs_signedMass_ratio s A hsum hden] at hle
-  exact (div_le_iff₀ hpos).mp hle
-
-/-- Conversely, a signed-mass-balance inequality is precisely a coherence bound for the refined
-real pieces.  The door-(iv) multi-piece route is therefore equivalent to proving this balance at the
-adversarial `b`; refinement alone supplies no cancellation. -/
-theorem multiPieceCoherence_le_of_abs_signedMass_le {ι : Type*} [DecidableEq ι]
-    (s : Finset ι) (A : ι → ℝ) {posMass negMass c : ℝ}
-    (hsum : (∑ i ∈ s, A i) = posMass - negMass)
-    (hden : (∑ i ∈ s, |A i|) = posMass + negMass)
-    (hpos : 0 < posMass + negMass)
-    (hbal : |posMass - negMass| ≤ c * (posMass + negMass)) :
-    multiPieceCoherence s A ≤ c := by
-  rw [multiPieceCoherence_eq_abs_signedMass_ratio s A hsum hden]
-  exact (div_le_iff₀ hpos).mpr hbal
 
 /-- A strict coherence slack `c < 1` forces genuine positive mass.  If all real pieces were
 nonpositive (`posMass = 0`), the signed-mass ratio would be exactly `1`, contradicting a strict
@@ -274,30 +255,6 @@ theorem multiPieceCoherence_eq_one_iff_one_side_zero {ι : Type*} [DecidableEq �
   rw [multiPieceCoherence_eq_abs_signedMass_ratio s A hsum hden]
   exact abs_signedMass_ratio_eq_one_iff_one_side_zero hposMass hnegMass htotal
 
-/-- If the positive mass is at least the negative mass, coherence is just the normalized excess
-`(posMass - negMass)/(posMass + negMass)`. -/
-theorem multiPieceCoherence_eq_posExcess_ratio {ι : Type*} [DecidableEq ι]
-    (s : Finset ι) (A : ι → ℝ) {posMass negMass : ℝ}
-    (hsum : (∑ i ∈ s, A i) = posMass - negMass)
-    (hden : (∑ i ∈ s, |A i|) = posMass + negMass)
-    (hge : negMass ≤ posMass) :
-    multiPieceCoherence s A = (posMass - negMass) / (posMass + negMass) := by
-  rw [multiPieceCoherence_eq_abs_signedMass_ratio s A hsum hden]
-  rw [abs_of_nonneg (sub_nonneg.mpr hge)]
-
-/-- If the negative mass is at least the positive mass, coherence is the opposite normalized excess
-`(negMass - posMass)/(posMass + negMass)`. -/
-theorem multiPieceCoherence_eq_negExcess_ratio {ι : Type*} [DecidableEq ι]
-    (s : Finset ι) (A : ι → ℝ) {posMass negMass : ℝ}
-    (hsum : (∑ i ∈ s, A i) = posMass - negMass)
-    (hden : (∑ i ∈ s, |A i|) = posMass + negMass)
-    (hge : posMass ≤ negMass) :
-    multiPieceCoherence s A = (negMass - posMass) / (posMass + negMass) := by
-  rw [multiPieceCoherence_eq_abs_signedMass_ratio s A hsum hden]
-  have hnonpos : posMass - negMass ≤ 0 := sub_nonpos.mpr hge
-  rw [abs_of_nonpos hnonpos]
-  ring
-
 /-- Signed-mass coherence is exactly `1` minus twice the minority-sign mass fraction.  This pins the
 quantitative obligation of a multi-piece real-refinement attack: slack below `1` is not created by
 having many pieces; it is exactly paid for by aggregate mass on the minority sign. -/
@@ -328,22 +285,6 @@ theorem multiPieceCoherence_eq_one_sub_two_mul_min_ratio {ι : Type*} [Decidable
   rw [multiPieceCoherence_eq_abs_signedMass_ratio s A hsum hden]
   exact abs_signedMass_ratio_eq_one_sub_two_mul_min_ratio htotal
 
-/-- A strict upper bound on real multi-piece coherence forces a quantitative minority-sign mass
-floor.  If the compressed statistic is at most `c`, then the minority aggregate must pay at least
-`(1-c)/2` of the total `L¹` mass.  This is the probe-facing obligation for any refined door-(iv)
-sign-balance attack: the slack must be witnessed by actual two-sided mass, not by subdivision. -/
-theorem two_mul_minMass_ge_of_multiPieceCoherence_le {ι : Type*} [DecidableEq ι]
-    (s : Finset ι) (A : ι → ℝ) {posMass negMass c : ℝ}
-    (hsum : (∑ i ∈ s, A i) = posMass - negMass)
-    (hden : (∑ i ∈ s, |A i|) = posMass + negMass)
-    (htotal : 0 < posMass + negMass)
-    (hle : multiPieceCoherence s A ≤ c) :
-    (1 - c) * (posMass + negMass) ≤ 2 * min posMass negMass := by
-  rw [multiPieceCoherence_eq_one_sub_two_mul_min_ratio s A hsum hden htotal] at hle
-  have hmul := mul_le_mul_of_nonneg_right hle (le_of_lt htotal)
-  rw [sub_mul, one_mul, div_mul_cancel₀ _ (ne_of_gt htotal)] at hmul
-  linarith
-
 /-- Exact budget interface for real multi-piece coherence.  A bound `coherence ≤ c` is equivalent to
 paying the denominator-cleared minority-sign budget `(1-c)·total ≤ 2·minority`.  This is the sharp
 constraint form a probe can cite: every claimed `1-c` coherence saving must appear as actual
@@ -366,6 +307,19 @@ theorem multiPieceCoherence_le_iff_two_mul_minMass_ge {ι : Type*} [DecidableEq 
     field_simp [ne_of_gt htotal] at hmul ⊢
     linarith
 
+
+/-- A strict upper bound on real multi-piece coherence forces a quantitative minority-sign mass
+floor.  If the compressed statistic is at most `c`, then the minority aggregate must pay at least
+`(1-c)/2` of the total `L¹` mass.  This is the probe-facing obligation for any refined door-(iv)
+sign-balance attack: the slack must be witnessed by actual two-sided mass, not by subdivision. -/
+theorem two_mul_minMass_ge_of_multiPieceCoherence_le {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (A : ι → ℝ) {posMass negMass c : ℝ}
+    (hsum : (∑ i ∈ s, A i) = posMass - negMass)
+    (hden : (∑ i ∈ s, |A i|) = posMass + negMass)
+    (htotal : 0 < posMass + negMass)
+    (hle : multiPieceCoherence s A ≤ c) :
+    (1 - c) * (posMass + negMass) ≤ 2 * min posMass negMass :=
+  (multiPieceCoherence_le_iff_two_mul_minMass_ge s A hsum hden htotal).mp hle
 
 /-- Exact saving identity for real multi-piece coherence.  After compression to aggregate sign
 masses, the slack below saturation is precisely twice the minority-sign mass divided by the total
@@ -420,20 +374,6 @@ theorem multiPieceCoherence_le_one_sub_iff_eps_mass_budget {ι : Type*} [Decidab
   rw [multiPieceCoherence_le_iff_two_mul_minMass_ge s A hsum hden htotal]
   ring_nf
 
-/-- Contrapositive epsilon-budget form: if the aggregate minority-sign mass is too small for the
-claimed `ε` saving, then the real multi-piece refinement cannot certify coherence `≤ 1 - ε`. -/
-theorem not_multiPieceCoherence_le_one_sub_of_eps_mass_budget_lt {ι : Type*} [DecidableEq ι]
-    (s : Finset ι) (A : ι → ℝ) {posMass negMass ε : ℝ}
-    (hsum : (∑ i ∈ s, A i) = posMass - negMass)
-    (hden : (∑ i ∈ s, |A i|) = posMass + negMass)
-    (htotal : 0 < posMass + negMass)
-    (hfail : 2 * min posMass negMass < ε * (posMass + negMass)) :
-    ¬ multiPieceCoherence s A ≤ 1 - ε := by
-  intro hle
-  have hbudget : ε * (posMass + negMass) ≤ 2 * min posMass negMass :=
-    (multiPieceCoherence_le_one_sub_iff_eps_mass_budget s A hsum hden htotal).mp hle
-  exact not_le_of_gt hfail hbudget
-
 /-- Consumer-facing strict form: any subunit coherence certificate `coherence ≤ c < 1` for a real
 multi-piece refinement forces positive aggregate mass on both signs.  This is the exact obstruction
 for door-(iv) refinements at the adversarial frequency: a strict cap must first prove two-sided
@@ -463,22 +403,6 @@ theorem not_multiPieceCoherence_le_of_one_side_zero {ι : Type*} [DecidableEq ι
   have hone : multiPieceCoherence s A = 1 :=
     (multiPieceCoherence_eq_one_iff_one_side_zero s A hsum hden hposMass hnegMass htotal).mpr hzero
   linarith
-
-/-- Epsilon-slack two-sidedness interface: any advertised positive saving
-`coherence ≤ 1 - ε` for a real multi-piece refinement already forces positive aggregate mass on
-both signs.  This is the direct consumer form of the sign-obstruction constraint: before a
-door-(iv) anti-concentration proof can spend a fixed `ε`, it must exhibit genuine two-sided signed
-mass at the worst frequency. -/
-theorem two_sided_of_multiPieceCoherence_le_one_sub_eps {ι : Type*} [DecidableEq ι]
-    (s : Finset ι) (A : ι → ℝ) {posMass negMass ε : ℝ}
-    (hsum : (∑ i ∈ s, A i) = posMass - negMass)
-    (hden : (∑ i ∈ s, |A i|) = posMass + negMass)
-    (hposMass : 0 ≤ posMass) (hnegMass : 0 ≤ negMass)
-    (htotal : 0 < posMass + negMass)
-    (hε : 0 < ε) (hle : multiPieceCoherence s A ≤ 1 - ε) :
-    0 < posMass ∧ 0 < negMass := by
-  exact two_sided_of_multiPieceCoherence_le_lt_one s A hsum hden hposMass hnegMass htotal hle
-    (by linarith)
 
 /-- Epsilon-slack contrapositive: if one aggregate sign mass vanishes, then no positive `ε`
 coherence saving can be certified by a real multi-piece refinement.  Refining into more real pieces
@@ -537,16 +461,12 @@ open ProximityGap.Frontier.DoorIVMultiPieceSignCoherence
 #print axioms multiPieceCoherence_eq_one_of_nonpos
 #print axioms multiPieceCoherence_eq_one_of_sameSign
 #print axioms multiPieceCoherence_eq_abs_signedMass_ratio
-#print axioms abs_signedMass_le_of_multiPieceCoherence_le
-#print axioms multiPieceCoherence_le_of_abs_signedMass_le
 #print axioms posMass_pos_of_strict_signedMass_balance
 #print axioms negMass_pos_of_strict_signedMass_balance
 #print axioms abs_signedMass_ratio_lt_one_iff_two_sided
 #print axioms abs_signedMass_ratio_eq_one_iff_one_side_zero
 #print axioms multiPieceCoherence_lt_one_iff_two_sided
 #print axioms multiPieceCoherence_eq_one_iff_one_side_zero
-#print axioms multiPieceCoherence_eq_posExcess_ratio
-#print axioms multiPieceCoherence_eq_negExcess_ratio
 #print axioms abs_signedMass_ratio_eq_one_sub_two_mul_min_ratio
 #print axioms multiPieceCoherence_eq_one_sub_two_mul_min_ratio
 #print axioms two_mul_minMass_ge_of_multiPieceCoherence_le
@@ -554,8 +474,6 @@ open ProximityGap.Frontier.DoorIVMultiPieceSignCoherence
 #print axioms one_sub_multiPieceCoherence_eq_two_mul_min_ratio
 #print axioms multiPieceCoherence_eq_one_sub_iff_eps_mass_budget_eq
 #print axioms multiPieceCoherence_le_one_sub_iff_eps_mass_budget
-#print axioms not_multiPieceCoherence_le_one_sub_of_eps_mass_budget_lt
-#print axioms two_sided_of_multiPieceCoherence_le_one_sub_eps
 #print axioms not_multiPieceCoherence_le_one_sub_eps_of_one_side_zero
 #print axioms minMass_ge_half_eps_total_of_multiPieceCoherence_le_one_sub_eps
 #print axioms not_multiPieceCoherence_le_one_sub_eps_of_minMass_lt_half_eps_total

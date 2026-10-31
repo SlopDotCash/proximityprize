@@ -23,8 +23,10 @@ is **vacuous**: every `OracleQuery []ₒ β` carries a domain index in `([]ₒ).
 the empty type `PEmpty`, so there are no queries to constrain.
 
 This file packages that observation into `logup_completeness_emptyOracle`, dropping `hImplSupp` from
-the residual surface at `[]ₒ`. The remaining obligations are the genuinely-deep completeness facts
-`{hInit, hPerRound, hAppend}` — exactly the surface minus the trivial `impl` side condition.
+the residual surface at `[]ₒ`. The remaining obligations are `{hInit, hPerRound, hAppend}` —
+exactly the surface minus the trivial `impl` side condition. Of these, `hPerRound` holds
+(`Sumcheck.Spec.SingleRound.oracleReduction_toReduction_eq_reduction`, see
+`LogupCompletenessUncond.lean`). The bridge-free headline is `logup_completeness_final`.
 
 No `sorry`/`sorryAx`/`admit`. The axiom audit at the bottom confirms axiom-cleanliness.
 -/
@@ -62,9 +64,9 @@ theorem emptyOracle_hImplSupp (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
 /-- **LogUp Protocol 2 completeness over the empty ambient oracle: `hImplSupp` discharged.**
 
 At `oSpec = []ₒ` the support-faithfulness side condition `hImplSupp` of `logup_completeness_uncond`
-is vacuous (no queries), so it is supplied here automatically. The residual surface shrinks to the
-genuinely-deep completeness facts `{hInit, hPerRound, hAppend}`. This mirrors
-`logup_soundness_msgSeam_emptyOracle` on the soundness side. -/
+is vacuous (no queries), so it is supplied here automatically. The residual surface shrinks to
+`{hInit, hPerRound, hAppend}`, where `hPerRound` holds (module docstring). This
+mirrors `logup_soundness_msgSeam_emptyOracle` on the soundness side. -/
 theorem logup_completeness_emptyOracle
     (hInit : NeverFail init)
     (hPerRound : ∀ i,

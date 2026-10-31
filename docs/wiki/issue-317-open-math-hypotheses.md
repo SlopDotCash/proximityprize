@@ -1,5 +1,12 @@
 # Issue #317/#327/#313: Open-Math Hypothesis Ledger (2026-06-10)
 
+> **Historical snapshot (2026-06-10).** This ledger records the state and plans of that date; it
+> is not an authority for current completion status. Module paths it cites (for example
+> `Soundness/Proposition421.lean`) were later consolidated, and the residual classes it lists as
+> remaining have since been retired or replaced by direct theorems. For the current module map
+> see [`issue-317-binius-residuals.md`](issue-317-binius-residuals.md) (Current navigation) and
+> for open residuals see [`residual-census.md`](residual-census.md).
+
 > Companion ledger: a parallel goal-session produced
 > [`docs/kb/audits/issue-317-327-binius-residual-hypothesis-ledger-2026-06-10.md`](../kb/audits/issue-317-327-binius-residual-hypothesis-ledger-2026-06-10.md)
 > (full 9-residual census + H-K/H-A series, committed `a3ea3f485`). The two ledgers were

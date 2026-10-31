@@ -1161,7 +1161,11 @@ def coreInteractionOracleReduction :=
 
 variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ ProbComp)}
 
-/-- Perfect completeness for the core interaction oracle reduction -/
+/-- Perfect completeness for the core interaction oracle reduction — **conditional pass-through**:
+the hypothesis `hAppendPerfectCompleteness` is exactly the conclusion (the theorem returns it), so
+this states no new fact; composed perfect completeness of the core interaction is not proved
+here. (By contrast, the final sum-check step's logic completeness,
+`finalSumcheckStep_is_logic_complete_native` above, is a genuine proof.) -/
 theorem coreInteractionOracleReduction_perfectCompleteness_native (hInit : NeverFail init)
     (hAppendPerfectCompleteness :
       OracleReduction.perfectCompleteness
@@ -1200,7 +1204,9 @@ def coreInteractionOracleRbrKnowledgeError (j : (BinaryBasefold.pSpecCoreInterac
       (g := fun i => finalSumcheckKnowledgeError (L := L) i)
       (ChallengeIdx.sumEquiv.symm j)
 
-/-- Round-by-round knowledge soundness for the core interaction oracle verifier -/
+/-- Round-by-round knowledge soundness for the core interaction oracle verifier — **conditional
+pass-through**: the hypothesis `hAppendRbrKnowledgeSoundness` is exactly the conclusion, so this
+states no new fact; composed rbr knowledge soundness of the core interaction is not proved here. -/
 theorem coreInteractionOracleVerifier_rbrKnowledgeSoundness
     (hAppendRbrKnowledgeSoundness :
       (coreInteractionOracleVerifier κ (L := L) (K := K) (β := β) (ℓ := ℓ) (ℓ' := ℓ')

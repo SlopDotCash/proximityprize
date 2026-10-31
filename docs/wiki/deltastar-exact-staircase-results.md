@@ -13,14 +13,16 @@ Throughout: `C = RS[F, μ_n, k]`, smooth domain `μ_n` (`n = 2^μ` in production
 
 ## 1. The three-regime law (per band, exact where stated)
 
-For every band `b`, the value of `ε_mca·q` as a function of the distance is:
+For a band `b`, the value of `ε_mca·q` as a function of the distance is given below,
+subject to the guards in each row. The strip lower bounds (`strip_eps_ge`) need
+`(b−1) ∣ n`. Bands with `(b−1) ∤ n` have no strip lower bound here.
 
 | distance regime | value | sides | artifacts |
 |---|---|---|---|
 | `d ≥ 3b−2` (deep) | `= b` | both | `UniversalStaircaseCollapse`, `UniversalSpikeFloor`, `MCAStaircaseExact/RS` |
 | `d = 3b−3` (top strip row) | `= n/(b−1)` for `(b−1) ∣ n`, `(b−1)(2b−3) ≤ n` | both | `StripSupExactness.rs_topStrip_epsMCA_eq` ⊕ `MonomialStripExplosion.strip_eps_ge` |
-| `d = 3b−4` (second strip row) | `≥ n/(b−1)`, `≤ n` | bracket | `strip_eps_ge` ⊕ `BoundarySupExactness.nearTop_epsMCA_le` |
-| `2b ≤ d ≤ 3b−5` (lower strip) | `≥ n/(b−1)` | lower only | `strip_eps_ge`; sup side OPEN |
+| `d = 3b−4` (second strip row) | `≥ n/(b−1)` for `(b−1) ∣ n`; `≤ n` | bracket | `strip_eps_ge` ⊕ `BoundarySupExactness.nearTop_epsMCA_le` |
+| `2b ≤ d ≤ 3b−5` (lower strip) | `≥ n/(b−1)` for `(b−1) ∣ n` | lower only | `strip_eps_ge`; sup side OPEN |
 | `b+1 ≤ d ≤ 2b−1` (boundary), `b ∣ n` | `≥ n` | lower | `CosetCliqueBoundary.clique_eps_ge` |
 | `d = 5`, `b = 3`, `3 ∣ n` | `= n` | both | ⊕ `BoundarySupExactness.rs_boundary_epsMCA_eq` |
 | `d = 5`, `b = 3`, `3 ∤ n` | `≤ n−1`; `= n−1` at `n = 8` | both at `n=8` | `BoundaryDefectBound` ⊕ `DeltaStarSecondPinF17Maximal` |
@@ -30,9 +32,12 @@ Structural readings:
   (resp. pairs) of error supports can/cannot carry a codeword; the proofs are support-
   geometry dichotomies (frame absorption + no-joint escape vs disjoint tiling; the clump
   induction at `d = 3e−1`).
-- **Production form**: `n = 2^μ` has `3 ∤ n` and `b ∣ n` for every 2-power band — the
-  boundary rows recur at every halving of the distance budget with cap `n−1` (defect
-  form, `BoundaryDefectBound`), and the strip explosions fire at every band.
+- **Production form**: `n = 2^μ` has `3 ∤ n`, and `b ∣ n` exactly when `b` is a power of 2.
+  The boundary rows recur at every halving of the distance budget with cap `n−1` (defect
+  form, `BoundaryDefectBound`). The strip explosions (`strip_eps_ge`, which needs
+  `(b−1) ∣ n`) fire only on the bands `b = 2^j + 1`. On a fixed dyadic domain they do **not**
+  fire at every band: `b = 4` would need `3 ∣ 2^μ`. Strip sharpness at the remaining bands is
+  not established by this construction.
 
 ## 2. Exact δ\* (closed forms on `ε*`-bands)
 

@@ -75,15 +75,31 @@ abbrev soundness
     (soundnessError : ℝ≥0) : Prop :=
   Proof.soundness init impl langIn verifier soundnessError
 
-/-- Paper-facing alias for CO25 Section 3.4 straightline knowledge soundness. -/
+/-- Paper-facing alias for CO25 Section 3.4 straightline knowledge soundness. The input relation is
+over the proof's input witness type `Witness`; the verifier's Boolean output is checked by the
+accept/reject output relation (output statement `Bool`, output witness `Unit`). -/
 abbrev straightlineKnowledgeSoundness
-    (relation : Set (Statement × Bool))
+    (relation : Set (Statement × Witness))
     (verifier : Verifier oSpec Statement Bool pSpec)
     (knowledgeError : ℝ≥0) : Prop :=
   Proof.knowledgeSoundness init impl relation verifier knowledgeError
 
-/-- Paper-facing alias for the straightline extractor interface used in Section 3.4. -/
-abbrev StraightlineExtractor := Extractor.Straightline oSpec Statement Witness Bool pSpec
+/-- Paper-facing alias for the straightline extractor interface used in Section 3.4: it recovers an
+input witness of type `Witness` from the proof's output witness, which has type `Unit` (a `Proof`
+has output statement `Bool` and output witness `Unit`). -/
+abbrev StraightlineExtractor := Extractor.Straightline oSpec Statement Witness Unit pSpec
+
+omit [∀ i, OracleInterface (pSpec.Message i)] in
+/-- Compatibility check between the two Section 3.4 aliases: an extractor witnessing
+`straightlineKnowledgeSoundness` is a `StraightlineExtractor`. -/
+theorem straightlineKnowledgeSoundness.nonempty_extractor
+    {relation : Set (Statement × Witness)} {verifier : Verifier oSpec Statement Bool pSpec}
+    {knowledgeError : ℝ≥0}
+    (h : straightlineKnowledgeSoundness init impl relation verifier knowledgeError) :
+    Nonempty (StraightlineExtractor (oSpec := oSpec) (Statement := Statement)
+      (Witness := Witness) (pSpec := pSpec)) :=
+  let ⟨extractor, _⟩ := h
+  ⟨extractor⟩
 
 /-- Paper-facing alias for a malicious non-interactive prover used in CO25 Definition 3.7. -/
 abbrev FailureProver (Message : Type) := _root_.Prover.NARG oSpec Statement Message
@@ -128,7 +144,12 @@ abbrev perIndexQueryBoundedFamily
     (queryBound : (secParam : ℕ) → (oracleIdx : ι) → ℕ) : Prop :=
   _root_.Prover.NARG.Family.perIndexQueryBounded prover queryBound
 
-/-- Paper-facing alias for CO25 Definition 3.7 failure probability. -/
+/-- Paper-facing alias for CO25 Definition 3.7 failure probability.
+
+Caveat: the underlying `Verifier.failureProbability` measures a raw `OracleComp`, whose queries
+receive independent fresh uniform answers (a memoryless oracle), not answers from a cached random
+function or an ideal permutation. It matches the paper's definition only once an interpretation
+bridge to the intended oracle model is supplied (see `Security/Rewinding.lean`). -/
 abbrev failureProbability
     {Message : Type}
     [OracleSpec.UniformAnswerMeasure oSpec]
@@ -155,7 +176,13 @@ abbrev failureProbabilityFamily
 abbrev RewindingExtractor (Message : Type) :=
   Extractor.RewindingNARG oSpec Statement Witness Message
 
-/-- Paper-facing alias for CO25 Definition 3.8 rewinding knowledge soundness. -/
+/-- Paper-facing alias for CO25 Definition 3.8 rewinding knowledge soundness.
+
+Caveat: the underlying `Verifier.rewindingKnowledgeSoundness` is a memoryless-oracle notion (raw
+`OracleComp` semantics: every query, including repeated ones, gets a fresh uniform answer; no
+random-function cache or ideal-permutation interpreter is shared across prover, verifier and
+extractor), and its time clause bounds expected oracle cost only. It does not by itself express the
+paper's ideal-permutation / random-oracle notion; see `Security/Rewinding.lean`. -/
 abbrev rewindingKnowledgeSoundness
     {Message : Type}
     [OracleSpec.UniformAnswerMeasure oSpec]

@@ -11,8 +11,10 @@ import Mathlib
 After the algebra (substitute the DFT form `eta_b = (1/m) sum_j chibar^j(b) tau(chi^j)` into the moment
 identity `sum_b |eta_b|^{2r} = p E_r`, cancel `sqrt p` via the **unit phases** `u_l = tau(chi^l)/sqrt p`
 (`‖u_l‖ = 1`, since `tau(chi^l) tau(chibar^l) = chi^l(-1) p`), and collapse the `b`-sum by character
-orthogonality), the entire open core of the prize isolates as a single **manifestly nonnegative,
-pure-phase, sqrt-p-free** object. This file gives it a name, a definition, and the provable facts.
+orthogonality), the *nontrivial-character part* of the open core is heuristically captured by a
+single **manifestly nonnegative, pure-phase, sqrt-p-free** object. This file gives it a name, a
+definition, and the provable elementary facts. The bridge back to the prize maximum is not
+formalized and needs the trivial-character and averaging corrections recorded below (PG-109).
 
 ## The free variable
 
@@ -25,12 +27,34 @@ The open core is the **deep resonance moment**
 The Parseval identity `(1/m) sum_b ‖xi b‖^{2r} = sum_c ‖P r c‖²` makes `T r` **manifestly nonnegative**
 and free of both `sqrt p` and the additive moment `E_r`.
 
-## The bridge and the conjecture (the whole prize, root-free)
+## The bridge and the conjecture (heuristic, NOT an exact equivalence)
 
-`M(n) = max_{b≠0} ‖eta_b‖ = sqrt(n/m) * R`, `R = max_b ‖xi b‖`, and the prize floor `M ≤ sqrt(2 n log m)`
-is **exactly** `R ≤ sqrt(2 m log m)` — equivalently `T r ≤ (2 m log m)^r` at depth `r ≍ log m`. This file
-states that as the named open `Prop` `ResonanceConjecture` and proves the elementary facts. The deep
-inequality (`r ≍ log m`) is the recognized open Gauss-period / BGK content; it is NOT proved here.
+**Correction (audit 2026-10-28, PG-109).** An earlier version of this section asserted the exact
+identity `M(n) = max_{b≠0} ‖eta_b‖ = sqrt(n/m) * R` (`R = max_b ‖xi b‖`) and the exact equivalence
+`M ≤ sqrt(2 n log m) ⟺ R ≤ sqrt(2 m log m) ⟺ T r ≤ (2 m log m)^r`. Neither is correct as stated, and
+none of these bridges is formalized here:
+
+* **The trivial character is omitted.** `phaseSum` ranges over *nonzero* residues only. The exact
+  completion of the Gauss period is `eta_b = (−1 + sqrt(p) * xi_b) / m` (the trivial character
+  contributes `tau(χ^0) = −1`) with `p = m n + 1`, so `M = max_{b≠0} ‖−1 + sqrt(p) xi_b‖ / m`, which
+  equals `sqrt(n/m) R` only up to the `−1` term and the `sqrt(p)` vs `sqrt(m n)` discrepancy. The
+  case `m = 1` is a counterexample to the displayed identity: the nonzero index set is empty,
+  so `xi = R = 0`, while the full multiplicative group has `eta_b = −1` for every `b ≠ 0`, i.e.
+  `M = 1`.
+* **`T r` is an average, so a factor `m` is lost.** `T r = (1/m) sum_b ‖xi_b‖^{2r}` gives only
+  `R^{2r} ≤ m * T r`; conversely `R ≤ B ⟹ T r ≤ B^{2r}`. So
+  `R ≤ sqrt(2 m log m) ⟹ T r ≤ (2 m log m)^r`, but `T r ≤ (2 m log m)^r` only yields
+  `R ≤ m^{1/(2r)} sqrt(2 m log m)` — not the same constant (the loss is `O(1)` at `r ≍ log m`,
+  but it is not an `iff`).
+* The Parseval identity `(1/m) sum_b ‖xi b‖^{2r} = sum_c ‖P r c‖²` (with `xi` the DFT of the
+  nonzero phases) is standard but is **not** proved in this file either.
+
+This file states the moment target as the named open `Prop` `ResonanceConjecture` and proves only
+the elementary facts (nonnegativity and the zero characterization). Relating
+`ResonanceConjecture` to the prize floor requires adding the exact completion (with the
+trivial-character term), the Parseval law and the moment-to-max inequality with its factor `m`;
+until then it is a heuristic proxy for the prize, not an equivalent of it. The deep inequality
+(`r ≍ log m`) is open Gauss-period / BGK-type content.
 
 ## What "Gauss is reducible" gives — and why it does NOT collapse the wall (settled)
 
@@ -91,17 +115,21 @@ theorem resonanceMoment_eq_zero_iff (u : ZMod m → ℂ) (r : ℕ) :
   · intro h c _
     simp [h c]
 
-/-- **The Resonance Conjecture (the prize, root-free).** The deep resonance moment stays sub-`(2m log m)`
-to depth `r ≍ log m`. This is the entire open core after the `sqrt p` and the `max` are cancelled:
-`T r ≤ (2 m log m)^r` ⟺ `R = max_b ‖xi b‖ ≤ sqrt(2 m log m)` ⟺ `M(n) ≤ sqrt(2 n log m)` (the prize floor).
-It is the named, isolated free variable; proving it is the recognized open Gauss-period/BGK problem and is
+/-- **The Resonance Conjecture (a root-free proxy for the prize).** The deep resonance moment
+stays sub-`(2m log m)` to depth `r ≍ log m`: `T r ≤ (2 m log m)^r`. This is **not** proved
+equivalent to the prize floor `M(n) ≤ sqrt(2 n log m)`: the exact completion
+`eta_b = (−1 + sqrt(p) xi_b)/m` carries a trivial-character term omitted by `phaseSum`, and since
+`T r` is an average one only has `R^{2r} ≤ m · T r` (and `R ≤ B ⟹ T r ≤ B^{2r}`), so the constants
+do not match in both directions (PG-109). Proving it is open Gauss-period/BGK-type content and is
 NOT asserted here. -/
 def ResonanceConjecture (u : ZMod m → ℂ) (r : ℕ) : Prop :=
   resonanceMoment u r ≤ (2 * (m : ℝ) * Real.log m) ^ r
 
-/-- **The bridge (the consumer shape).** A bound on the named free variable `T r` is, by definition,
-exactly the Resonance Conjecture — which (composed with the proven `sqrt p`-cancellation `M = sqrt(n/m) R`
-and the moment-to-max inference) is the prize floor `M ≤ sqrt(2 n log m)`. -/
+/-- **Unfolding wrapper (the consumer shape).** This only unfolds the definition: the Resonance
+Conjecture *is* the stated bound on `T r`. Despite the historical name, it proves **no** bridge to
+the prize floor: the identity `M = sqrt(n/m) R` is not proved anywhere here and is false as stated
+(it omits the trivial-character term `−1/m` and the `sqrt(p)` vs `sqrt(m n)` correction), and the
+moment-to-max step loses a factor `m` (`R^{2r} ≤ m · T r`). See the module docstring (PG-109). -/
 theorem resonanceMoment_bound_is_prize {u : ZMod m → ℂ} {r : ℕ}
     (h : ResonanceConjecture u r) :
     resonanceMoment u r ≤ (2 * (m : ℝ) * Real.log m) ^ r := h

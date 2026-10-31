@@ -217,223 +217,50 @@ discoverable**: each load-bearing result below is re-exported under a stable, de
 named theorem in a non-underscore permanent module, carrying a docstring that states its
 **scope** (`char-0` / `obstruction` / `prize-bridge`) and its axiom audit.
 
-This is a **consolidation only** — no mathematics is changed. Every export here is a direct
-alias of a proven theorem; the axiom audit at the bottom confirms the inherited profile is
-`[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
+This is a **consolidation only** — no mathematics is changed. Most exports are direct aliases of a
+proven theorem; a minority have short wrapper proofs (re-instantiating or projecting a source lemma,
+e.g. `doorIV_hd_cocycle_breaks_rerandom_export`), and a few superseded names survive as
+`@[deprecated]` aliases. `#print axioms` commands follow the exports (and an earlier block after the
+first group); they only *print* the profile at build time and assert nothing. The expected profile
+is `[propext, Classical.choice, Quot.sound]` (no `sorryAx`); there is no checked guard in this file.
+
+## Scale convention
+
+The prize (CORE) is `M ≤ C·√(n·L)`, `L = log(q/n)` — the capstone `ShawValueCapstone.prizeScale n L
+= √(n·L)`, equal to `NoFifthDoorTetrachotomy.bgkScale n L` and to `ShawValueCapstone.shawScale q n`
+(`shawScale_eq_bgkScale_export`). The tetrachotomy's `NoFifthDoorTetrachotomy.prizeScale n = √n` is
+a *√n floor target*, strictly stronger than the prize; statements about `certScale ≤ √n` classify
+certificates of that stronger target. The prize is exactly `Sh = O(1)` (the upper side of the
+Shaw-value corridor); it does not require collapsing that corridor's width.
 
 ## Scope tags
 
-* **char-0** — proven unconditionally in characteristic 0 (the regime where the Lam–Leung /
-  Wick energy law `E_r ≤ (2r-1)‼·n^r` is a theorem). These are the substrate the prize bridges
-  consume; they do NOT by themselves resolve the prize (which needs the char-`p` transfer at
-  `r ≈ ln q`).
-* **obstruction** — an axiom-clean proof that a *named candidate lever* cannot reach the prize
-  floor (a countermodel / no-go). These are permanent negative results.
-* **prize-bridge** — an axiom-clean named-conditional reduction: `<named input> ⟹ prize bound`,
-  with the named input the only remaining obligation.
+Tags appear in the bracketed prefix of each docstring. The main ones:
+
+* **char-0** — proven in characteristic 0 (the regime where the Lam–Leung / Wick energy law
+  `E_r ≤ (2r-1)‼·n^r` is a theorem). These do NOT by themselves resolve the prize (which needs the
+  char-`p` transfer at `r ≈ ln q`).
+* **obstruction** / **constraint** — an axiom-clean statement that a *named candidate lever* does
+  not reach the prize floor (a countermodel / no-go / budget constraint). The strength varies: some
+  are about the actual period object, many are about an abstract scalar or sequence model of the
+  lever; read the statement, not only the tag.
+* **prize-bridge** / **reduction** / **conditional reduction** — a named-conditional reduction
+  `<named input> ⟹ <prize-shaped bound>`, with the named input the remaining obligation.
+* **capstone** — a normalization, packaging or composition of the above (e.g. `prize ⟺ Sh=O(1)`);
+  no cancellation estimate is hidden.
+* **descent** / **identity** / **definition export** — exact algebraic identities or definitional
+  unfoldings used by the reductions.
+* **scalar bookkeeping** — a fact about free scalars (order, arithmetic) kept for citation; it
+  mentions no period object and is not an obstruction by itself.
+* Lane-prefixed tags (`Lane 1 …`, `Lane 3 …`) name the campaign lane and are otherwise one of the
+  kinds above.
 
 The remaining open core (`BGKBound(1/2)`, the thin dyadic Gauss-period exponent-1/2
 cancellation) is documented in `PROXIMITY_PRIZE_WORKBENCH.lean` and is NOT discharged by
 anything here; this index does not claim otherwise.
 
-## Index of permanent exports (by scope)
-
-| export | scope | source brick |
-|---|---|---|
-| `char0_stepRatio_antitone_iff_sharpNewton` | char-0 | B2 |
-| `char0_W3anti_of_sharpNewton_export` | char-0 | B2 |
-| `char0_kstability_cross_le_wick` | char-0 | B8 |
-| `char0_prize_moment_bound_unconditional` | char-0 | L3 |
-| `char0_prize_moment_bound_sq_unconditional` | char-0 | L3 |
-| `char0_nonprincipalEnergyBound_discharged` | char-0 | L4 |
-| `char0_eta_pow_le_unconditional` | char-0 | L4 |
-| `gaussian_moment_telescope` | prize-bridge | F1 |
-| `convexOrder_gaussian_iff_wick_export` | prize-bridge | B9 |
-| `prize_of_matchedGaussian_stepLaw_export` | prize-bridge | B9 |
-| `eta_pow_le_of_nonprincipalEnergyBound_export` | prize-bridge | P1 |
-| `moment_problem_does_not_give_wick_bracket` | obstruction | B5 |
-| `cumulant_sign_route_refuted` | obstruction | B6 |
-| `resonance_ceiling_below_prize_floor` | obstruction | G2 |
-| `coeff_route_loose_export` | obstruction | G3 |
-| `roughness_does_not_add_bad_primes_export` | obstruction | G4 |
-| `prizeBound_iff_shawValue_le_export` | capstone | ShawValue |
-| `rawPrizeFamilyBound_iff_shawValueFamilyBound_export` | capstone | ShawValue |
-| `exists_rawPrizeFamilyBound_iff_exists_shawValueFamilyBound_export` | capstone | ShawValue |
-| `not_exists_rawPrizeFamilyBound_iff_not_exists_shawValueFamilyBound_export` | capstone | ShawValue |
-| `exists_nonneg_rawPrizeFamilyBound_iff_exists_nonneg_shawValueFamilyBound_export` | capstone | ShawValue |
-| `not_exists_nonneg_rawPrizeFamilyBound_iff_not_exists_nonneg_shawValueFamilyBound_export` | capstone | ShawValue |
-| `strictPrizeBound_iff_shawValue_lt_export` | capstone | ShawValue |
-| `strictRawPrizeFamilyBound_iff_strictShawValueFamilyBound_export` | capstone | ShawValue |
-| `exists_strictRawPrizeFamilyBound_iff_exists_strictShawValueFamilyBound_export` | capstone | ShawValue |
-| `not_exists_strictRawPrizeFamilyBound_iff_not_exists_strictShawValueFamilyBound_export` | capstone | ShawValue |
-| `exists_nonneg_strictRawPrizeFamilyBound_iff_exists_nonneg_strictShawValueFamilyBound_export` | capstone | ShawValue |
-| `not_exists_nonneg_strictRawPrizeFamilyBound_iff_not_exists_nonneg_strictShawValueFamilyBound_export` | capstone | ShawValue |
-| `shawValue_worstPeriod_clean_corridor_export` | capstone | ShawValue |
-| `shawValue_clean_corridor_width_eq_export` | capstone | ShawValue |
-| `shawValue_bracket_width_eq_sqrt_export` | capstone | ShawValue |
-| `worstPeriod_sharp_bracket_export` | capstone | ConcreteTrivialCeiling |
-| `completion_vacuous_below_trivial_ceiling_export` | obstruction | ConcreteBGKCompletionCorridor |
-| `shawValue_worstPeriod_torsion_full_corridor_export` | capstone | ConcreteShawCompletionCorridorFull |
-| `worstPeriod_torsion_sharp_floor_export` | capstone | ConcreteShawCompletionCorridorFull |
-| `charP_wrap_gap_ge_two_mul_sq_export` | obstruction | CharPWraparoundLogConcaveQ |
-| `charP_wrap_gap_nonneg_of_logConcave_export` | obstruction | CharPWraparoundLogConcaveQ |
-| `charP_transfer_of_dominance_logConcave_export` | obstruction | CharPWraparoundLogConcaveQ |
-| `charP_stepRatioMonotoneAt_iff_gap_nonneg_export` | obstruction | CharPStepRatioFails |
-| `charP_stepRatioMonotone_false_n32_export` | obstruction | CharPStepRatioFails |
-| `charP_no_universal_positive_stepRatioMonotone_export` | obstruction | CharPStepRatioFails |
-| `rho_normalized_antitone_and_ceiling_incompatible_export` | obstruction | RhoAntitoneFails |
-| `rho_antitone_route_not_universal_export` | obstruction | RhoAntitoneFails |
-| `valueShift_nontrivial_forces_flat_histogram_export` | obstruction | DoorIVValueShiftHistogramObstruction |
-| `valueShift_step_zero_of_one_histogram_witness_export` | obstruction | DoorIVValueShiftHistogramObstruction |
-| `valueShift_route_vacuous_of_one_histogram_witness_export` | obstruction | DoorIVValueShiftHistogramObstruction |
-| `wraparound_markov_count_le_export` | obstruction | WraparoundMarkovVacuity |
-| `wraparound_markov_bound_vacuous_below_mean_export` | obstruction | WraparoundMarkovVacuity |
-| `wraparound_average_control_does_not_bound_sup_export` | obstruction | WraparoundMarkovVacuity |
-| `doorIV_naiveIncidenceScale_eq_sqrt_mul_prizeScale_export` | obstruction | DoorIVIndexFactorOvershoot |
-| `doorIV_naiveIncidenceBound_iff_shawValue_le_scaled_export` | obstruction | DoorIVIndexFactorOvershoot |
-| `doorIV_index_le_sq_of_scaledConstant_le_export` | obstruction | DoorIVIndexFactorOvershoot |
-| `doorIV_scaledConstant_le_iff_index_le_sq_export` | obstruction | DoorIVIndexFactorOvershoot |
-| `doorIV_not_scaledConstantFamily_le_uniform_of_exists_index_gt_sq_export` | obstruction | DoorIVIndexFactorOvershoot |
-| `doorIV_prizeScale_lt_naiveIncidenceScale_of_one_lt_m_export` | obstruction | DoorIVIndexFactorOvershoot |
-| `doorIV_constant_lt_scaledConstant_of_one_lt_m_export` | obstruction | DoorIVIndexFactorOvershoot |
-| `doorIV_not_scaledConstant_le_constant_of_one_lt_m_export` | obstruction | DoorIVIndexFactorOvershoot |
-| `doorIV_constant_lt_scaledConstant_iff_one_lt_m_export` | obstruction | DoorIVIndexFactorOvershoot |
-| `doorIV_prizeScale_lt_naiveIncidenceScale_iff_one_lt_m_export` | obstruction | DoorIVIndexFactorOvershoot |
-| `doorIV_cosetInvariant_blind_to_order_export` | obstruction | DoorIVCoherenceOrderBlind |
-| `doorIV_cosetHitting_selector_bound_iff_global_export` | obstruction | DoorIVCoherenceOrderBlind |
-| `doorIV_strict_selector_bound_misses_coset_export` | obstruction | DoorIVCoherenceOrderBlind |
-| `doorIV_additiveEnergyExcess_eq_zero_iff_sidon_export` | obstruction | DoorIVWorstBSidonNoEnergyExcess |
-| `doorIV_no_positive_additiveEnergyExcess_of_subset_sidon_export` | obstruction | DoorIVWorstBSidonNoEnergyExcess |
-| `doorIV_positive_additiveEnergyExcess_iff_not_sidon_export` | obstruction | DoorIVWorstBSidonNoEnergyExcess |
-| `doorIV_prizeFamilyBound_iff_halfMassFamilyBound_export` | capstone | DoorIVHalfMassEquivalence |
-| `doorIV_prizeFamilyBound_iff_normalizedHalfMassFamilyBound_export` | capstone | DoorIVHalfMassEquivalence |
-| `doorIV_prizeFamilyBound_iff_all_halfMassShaw_forms_export` | capstone | DoorIVHalfMassEquivalence |
-| `doorIV_bddAbove_nonneg_normalizedPrize_export` | capstone | DoorIVPrizeBddAbove |
-| `doorIV_bddAbove_nonneg_normalizedHalfMass_export` | capstone | DoorIVPrizeBddAbove |
-| `doorIV_bddAbove_nonneg_rawPrize_export` | capstone | DoorIVPrizeBddAbove |
-| `doorIV_bddAbove_nonneg_rawHalfMass_export` | capstone | DoorIVPrizeBddAbove |
-| `doorIV_bddAbove_prize_iff_nonneg_rawHalfMass_export` | capstone | DoorIVPrizeBddAbove |
-| `doorIV_bddAbove_halfMass_iff_nonneg_rawPrize_export` | capstone | DoorIVPrizeBddAbove |
-| `doorIV_not_nonneg_rawPrize_iff_prizeDrift_export` | capstone | DoorIVPrizeBddAbove |
-| `doorIV_not_nonneg_rawHalfMass_iff_halfMassDrift_export` | capstone | DoorIVPrizeBddAbove |
-| `doorIV_not_bddAbove_prize_iff_not_bddAbove_halfMass_export` | capstone | DoorIVPrizeBddAbove |
-| `doorIV_not_bddAbove_prize_iff_halfMassDrift_export` | capstone | DoorIVPrizeBddAbove |
-| `doorIV_not_bddAbove_halfMass_iff_prizeDrift_export` | capstone | DoorIVPrizeBddAbove |
-| `doorIV_bddAbove_prize_iff_not_halfMassDrift_export` | capstone | DoorIVPrizeBddAbove |
-| `doorIV_bddAbove_halfMass_iff_not_prizeDrift_export` | capstone | DoorIVPrizeBddAbove |
-| `shawOOne_bddAbove_range_shawValue_export` | capstone | ShawValueCapstone |
-| `corePrize_bddAbove_range_shawValue_export` | capstone | ShawValueCapstone |
-| `corePrize_bddAbove_range_shawValue_of_pos_lt_export` | capstone | ShawValueCapstone |
-| `shawOOne_unbounded_shawValue_drift_export` | capstone | ShawValueCapstone |
-| `corePrize_unbounded_shawValue_drift_export` | capstone | ShawValueCapstone |
-| `corePrize_unbounded_shawValue_drift_of_pos_lt_export` | capstone | ShawValueCapstone |
-| `doorIV_prize_iff_shawBounded_nonneg_and_doorIV_only_export` | capstone | DoorIVPrizeShawTetrachotomySynthesis |
-| `doorIV_remaining_gap_is_sqrtL_factor_doorIV_only_export` | capstone | DoorIVPrizeShawTetrachotomySynthesis |
-| `doorIV_floorPrizeConstant_ge_one_export` | constraint | DoorIVPrizeShawTetrachotomySynthesis |
-| `doorIV_prize_iff_shawBounded_nonneg_and_floorPrizeRatio_export` | capstone | DoorIVPrizeShawTetrachotomySynthesis |
-| `doorIV_no_prize_iff_no_shawBound_nonneg_and_floorPrizeRatio_export` | capstone | DoorIVPrizeShawTetrachotomySynthesis |
-| `doorIV_corePrize_of_dominated_majorant_export` | capstone | ShawValueCapstone |
-| `doorIV_shawOOne_of_coreMajorant_export` | capstone | ShawValueCapstone |
-| `doorIV_landau_shaw_of_dominated_majorant_export` | capstone | ShawValueLandauBridge |
-| `doorIV_shawOOne_of_dominated_majorant_export` | capstone | ShawValueLandauBridge |
-| `trivial_cocycle_full_concentration_export` | obstruction | JacobiCocycleDispersion |
-| `trivial_cocycle_offSupport_zero_export` | obstruction | JacobiCocycleDispersion |
-| `jacobiCocycleDispersion_iff_shawValue_le_export` | capstone | JacobiCocycleDispersion |
-| `exists_nonneg_jacobiCocycleDispersionFamilyBound_iff_exists_nonneg_shawValueFamilyBound_pos_export` | capstone | JacobiCocycleDispersion |
-| `not_exists_nonneg_jacobiCocycleDispersionFamilyBound_iff_not_exists_nonneg_shawValueFamilyBound_pos_export` | capstone | JacobiCocycleDispersion |
-| `exists_jacobiCocycleDispersionFamilyBound_iff_rawSandwich_export` | capstone | JacobiCocycleDispersion |
-| `doorIV_arithMean_le_max_export` | obstruction | DoorIVGeomMeanBelowMax |
-| `doorIV_weightedMean_le_max_export` | obstruction | DoorIVGeomMeanBelowMax |
-| `doorIV_weightedSubmean_le_max_export` | obstruction | DoorIVGeomMeanBelowMax |
-| `doorIV_radialSum_invariant_under_unit_twist_export` | obstruction | DoorIVPhaseBlindRadialStats |
-| `doorIV_stepanov_bstar_bound_export` | obstruction | StepanovAtBstar |
-| `doorIV_bstar_saving_iff_degenerate_export` | obstruction | StepanovAtBstar |
-| `doorIV_orderedWalk_endpoint_le_maximalExcursion_export` | obstruction | DoorIVOrderedWalkMajorant |
-| `doorIV_orderedWalk_endpoint_bound_of_maximal_bound_export` | obstruction | DoorIVOrderedWalkMajorant |
-| `doorIV_avDIR9Reflection_endpoint_le_R_export` | obstruction | AvDIR9Reflection |
-| `doorIV_avDIR9Reflection_endpoint_id_export` | obstruction | AvDIR9Reflection |
-| `doorIV_avDIR9Reflection_endpoint_norm_le_two_R1_export` | obstruction | AvDIR9Reflection |
-| `doorIV_avDIR9Reflection_half_norm_ge_endpoint_half_export` | obstruction | AvDIR9Reflection |
-| `doorIV_avDIR9Reflection_bound_two_R1_export` | obstruction | AvDIR9Reflection |
-| `doorIV_avDIR9Reflection_reduces_export` | obstruction | AvDIR9Reflection |
-| `doorIV_abs_signed_le_abs_moment_export` | obstruction | DoorIVSignedDeepSumAbsLeak |
-| `doorIV_leak_nonneg_export` | obstruction | DoorIVSignedDeepSumAbsLeak |
-| `doorIV_abs_moment_bound_transfers_export` | obstruction | DoorIVSignedDeepSumAbsLeak |
-| `trivial_cocycle_overshoots_thin_export` | obstruction | JacobiCocycleTrivialOvershoot |
-| `trivial_overshoot_gap_pos_export` | obstruction | JacobiCocycleTrivialOvershoot |
-| `allDefect_cs_floor_vacuous_export` | obstruction | JacobiCocycleAllDefectCSVacuous |
-| `gaussEnergyStep_incrementOne_lt_two_n_export` | capstone | AvGR_GaussSumEnergyStep |
-| `gaussEnergyStep_step_of_increments_le_export` | capstone | AvGR_GaussSumEnergyStep |
-| `dilationEnergy_step_iff_offdiagonal_export` | capstone | AvDil_MultEnergyStepDiagonal |
-| `dilationEnergy_deep_step_of_depth2K_energy_export` | obstruction | AvDil_MultEnergyStepDiagonal |
-| `dilationEnergy_not_deep_step_of_offdiagonal_gt_export` | obstruction | AvDil_MultEnergyStepDiagonal |
-| `dilationEnergy_not_depth2K_energy_of_cs_and_offdiagonal_gt_export` | obstruction | AvDil_MultEnergyStepDiagonal |
-| `coreReduction_mStar_gt_of_BCHKS_fails_export` | capstone | CoreReductionNecessity |
-| `coreReduction_mStar_le_iff_BCHKS_export` | capstone | CoreReductionNecessity |
-| `coreReduction_clears_johnson_iff_BCHKS_at_prev_fold_export` | capstone | CoreReductionNecessity |
-| `doorIV_decomposition_block_sum_common_ray_export` | obstruction | DoorIVDecompositionInvariantCoherence |
-| `doorIV_decomposition_partition_invariant_coherence_export` | obstruction | DoorIVDecompositionInvariantCoherence |
-| `doorIV_decomposition_no_partition_beats_one_export` | obstruction | DoorIVDecompositionInvariantCoherence |
-| `doorIV_multiPiece_coherence_mem_Icc_export` | obstruction | DoorIVMultiPieceSignCoherence |
-| `doorIV_multiPiece_exact_saving_export` | obstruction | DoorIVMultiPieceSignCoherence |
-| `doorIV_multiPiece_eps_budget_eq_export` | obstruction | DoorIVMultiPieceSignCoherence |
-| `doorIV_multiPiece_eps_budget_iff_export` | obstruction | DoorIVMultiPieceSignCoherence |
-| `doorIV_multiPiece_no_eps_slack_one_side_zero_export` | obstruction | DoorIVMultiPieceSignCoherence |
-| `doorIV_multiWindow_budget_forces_card_le_export` | obstruction | DoorIVWindowConcentrationTrivial |
-| `doorIV_no_multiWindow_split_rhs_le_strict_budget_export` | obstruction | DoorIVWindowConcentrationTrivial |
-| `doorIV_argmaxDecoupled_const_ge_ratio_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_no_control_below_ratio_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_uniformControl_iff_ratio_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_exists_ratio_gt_no_control_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_uniformControlOn_iff_ratio_on_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_exists_ratio_gt_no_controlOn_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_candidate_pos_on_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_positive_support_on_subset_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_no_nonpos_candidate_controlOn_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_no_zero_candidate_controlOn_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_control_constant_pos_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_no_nonpos_candidate_control_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_no_zero_candidate_control_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_candidate_pos_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_positive_support_subset_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_argmaxDecoupled_no_absolute_const_export` | obstruction | DoorIVArgmaxDecouplingNoControl |
-| `doorIV_collision_defect_eq_zero_iff_injOn_export` | obstruction | DoorIVCollisionExcessPigeonhole |
-| `doorIV_collision_defect_pos_iff_not_injOn_export` | obstruction | DoorIVCollisionExcessPigeonhole |
-| `doorIV_tripleCorrelation_sixPoint_zero_export` | obstruction | DoorIVTripleCorrelationVanishes |
-| `doorIV_tripleCorrelation_sixPoint_vacuous_export` | obstruction | DoorIVTripleCorrelationVanishes |
-| `doorIV_tripleCorrelation_m33_eq_wick_export` | obstruction | DoorIVTripleCorrelationVanishes |
-| `doorIV_crossHalf_norm_add_eq_halfMass_export` | obstruction | DoorIVCrossHalfPhaseUnstructured |
-| `doorIV_crossHalf_fixed_multiplier_forces_ratio_le_export` | obstruction | DoorIVCrossHalfPhaseUnstructured |
-| `doorIV_crossHalf_fixed_multiplier_fails_of_ratio_gt_export` | obstruction | DoorIVCrossHalfPhaseUnstructured |
-| `doorIV_halfMassBalance_single_half_pays_floor_export` | obstruction | DoorIVHalfMassBalanceAtArgmax |
-| `doorIV_halfMassBalance_descent_loss_eq_two_export` | obstruction | DoorIVHalfMassBalanceAtArgmax |
-| `doorIV_halfMassBalance_descent_loss_le_two_export` | obstruction | DoorIVHalfMassBalanceAtArgmax |
-| `doorIV_worstB_coherent_imbalance_breaks_symmetric_descent_export` | obstruction | DoorIVWorstBCoherentImbalance |
-| `doorIV_halfMass_eta_image_smul_eq_eta_dilate_export` | capstone | DoorIVHalfMassDilationForm |
-| `doorIV_halfMass_eta_index_two_split_dilate_export` | capstone | DoorIVHalfMassDilationForm |
-| `doorIV_halfMass_norm_eta_le_two_dilate_export` | capstone | DoorIVHalfMassDilationForm |
-| `doorIV_halfMass_eq_two_dilate_export` | capstone | DoorIVHalfMassDilationForm |
-| `doorIV_halfMass_norm_eta_eq_two_dilate_of_coherent_export` | capstone | DoorIVHalfMassDilationForm |
-| `doorIV_sign_positiveMass_eq_negativeMass_export` | obstruction | DoorIVSignCocycleMassBalance |
-| `doorIV_sign_not_all_nonneg_of_positiveMass_pos_export` | obstruction | DoorIVSignCocycleMassBalance |
-| `doorIV_sign_exists_negative_cross_of_positiveMass_pos_export` | obstruction | DoorIVSignCocycleMassBalance |
-| `doorIV_sign_exists_positive_cross_of_negativeMass_pos_export` | obstruction | DoorIVSignCocycleMassBalance |
-| `doorIV_sign_positiveMass_le_half_card_export` | obstruction | DoorIVSignCocycleMassBalance |
-| `doorIV_sign_negativeMass_le_half_card_export` | obstruction | DoorIVSignCocycleMassBalance |
-| `doorIV_sign_positiveMass_eq_half_total_doublingMass_export` | obstruction | DoorIVSignCocycleMassBalance |
-| `doorIV_sign_negativeMass_eq_half_total_doublingMass_export` | obstruction | DoorIVSignCocycleMassBalance |
-| `doorIV_gappedMinor125_159_eq_zero_export` | obstruction | DoorIVAlgebraicFloorCyclotomicWall |
-| `doorIV_not_gappedMinor125_159_ne_zero_export` | obstruction | DoorIVAlgebraicFloorCyclotomicWall |
-| `doorIV_eighthCumulant_mixed_sign_forbids_fixed_sign_export` | obstruction | DoorIVEighthCumulantSignUnstable |
-| `doorIV_eighthCumulant_no_fixedSignCertificate_export` | obstruction | DoorIVEighthCumulantSignUnstable |
-| `doorIV_levelWorst_step_of_levelRatioBoundNZ_export` | capstone | DoorIVXGatedTelescopeBridge |
-| `doorIV_levelWorst_le_sqrt2_pow_mul_of_levelRatioBoundNZ_export` | capstone | DoorIVXGatedTelescopeBridge |
-| `doorIV_levelWorst_le_sqrt_two_pow_mul_of_xGatedRatio_export` | capstone | DoorIVXGatedPrizeReduction |
-| `doorIV_levelWorst_le_prize_budget_of_xgate_export` | capstone | DoorIVXGatePrizeBudget |
-| `doorIV_gateThreshold_split_telescope_sqrt2_export` | obstruction | DoorIVXGatedBaseThreshold |
-| `doorIV_gateThreshold_strictly_above_clean_export` | obstruction | DoorIVXGatedBaseThreshold |
-| `doorIV_levelWorst_base_step_two_export` | obstruction | DoorIVXGatedBaseThresholdConcrete |
-| `doorIV_levelWorst_base_corrected_of_gate_export` | obstruction | DoorIVXGatedBaseThresholdConcrete |
+There is no hand-maintained table of exports (an earlier one covered under a third of the
+declarations); list them with `grep -n '^theorem\|^alias' <this file>`.
 
 ## Lane-2 capstone (the `prize ⟺ Sh(n)=O(1)` normalization)
 
@@ -442,12 +269,14 @@ Shaw-value essay 2026-06-18): the axiom-clean reduction of the prize inequality 
 normalized *Shaw value* `Sh(M) = M / √(n·L)`, together with the proven two-sided corridor
 `1/√(2L) ≤ Sh(M(μ_n)) ≤ √(n/L)` on the REAL Gauss-period worst frequency `M(μ_n)`. The floor is
 unconditional (thin-regime Parseval, `q ≥ 2n`); the ceiling is unconditional (triangle
-inequality); the open prize is *exactly* the demand to collapse this `√n`-wide corridor to an
-absolute constant. These are normalization/consolidation only — no anti-concentration, completion,
-moment, or capacity claim is hidden, and CORE stays OPEN.
+inequality). The open prize is exactly the demand that the *upper* side be an absolute constant,
+`Sh = O(1)`; it does not require the corridor's width to collapse (the lower endpoint `1/√(2L)`
+tends to `0`, so e.g. `M = √(n·L)` has `Sh = 1` while the width ratio stays unbounded). These are
+normalization/consolidation only — no anti-concentration, completion, moment, or capacity claim is
+hidden, and CORE stays OPEN.
 -/
 
-set_option linter.style.longFile 9900
+set_option linter.style.longFile 9500
 
 
 open scoped Nat
@@ -497,17 +326,21 @@ theorem char0_kstability_cross_le_wick {r : ℕ} (hr : 1 ≤ r) {h Eμn : ℝ} (
     Eμn - 2 * E r ≤ ((2 * r - 1)‼ : ℝ) * ((2 * h) ^ r - 2 * h ^ r) :=
   W5KStabilityChar0.cross_le_wick_cross hr hh E hE0 hEnonneg hconv hwick
 
-/-! ## L3 — the FULL char-0 prize moment bound as ONE *unconditional* theorem (no Sidon /
-no antipodal-pairing hypothesis; the char-0 Lam–Leung energy bound is discharged internally via
-`DyadicEnergyK1`). Scope: **char-0**. This is the strongest single proven statement of the
-campaign: in characteristic 0 the per-frequency prize cancellation is a *theorem*, with the only
-remaining gap being the char-`p` transfer at the prize scale `n = 2^30` (the BGK wall). -/
+/-! ## L3 — the char-0 moment-to-sup scalar bound, with the char-0 Lam–Leung energy bound
+discharged internally via `DyadicEnergyK1` (no Sidon / no antipodal-pairing hypothesis).
+Scope: **char-0**. The theorem is *conditional on the moment hypothesis* `hmoment`: `M` is an
+arbitrary nonnegative real satisfying `M^{2r} ≤ Q·E_r(G)`; no period object, frequency set or
+Gauss sum appears in the statement. So this is the char-0 energy bound turned into a scalar
+square-root bound, not a theorem that any per-frequency Gauss-period cancellation holds; the
+char-`p` energy/moment input at the prize scale (the BGK wall) remains open. The `unconditional`
+in the export names refers only to the absence of a Sidon/pairing side hypothesis. -/
 
-/-- **[char-0, L3]** THE char-0 prize moment bound (norm form), UNCONDITIONAL. For `G ⊆ μ_{2^k}`
-(`k ≥ 1`) in a characteristic-zero field, a formal period sup `M` with `Q ≥ 1` frequencies and the
-formal-period moment identity `M^{2r} ≤ Q·E_r(G)` obeys, at optimal depth `r ≥ max(1, log Q)`, the
-prize square-root shape `M ≤ √(2e·|G|·r)`. The Lam–Leung energy bound `E_r ≤ (2r-1)‼·|G|^r` is
-proven *inside* the theorem (char-0); there is no Sidon/`repThree`/pairing side hypothesis. -/
+/-- **[char-0, L3]** The char-0 moment-to-sup scalar bound (norm form), conditional on the moment
+hypothesis. For `G ⊆ μ_{2^k}` (`k ≥ 1`) in a characteristic-zero field, any real `M ≥ 0` and any
+real `Q > 0` with `M^{2r} ≤ Q·E_r(G)` obey, at every depth `r ≥ 1` with `log Q ≤ r`, the
+square-root shape `M ≤ √(2e·|G|·r)`. The Lam–Leung energy bound `E_r ≤ (2r-1)‼·|G|^r` is
+proven *inside* the theorem (char-0); there is no Sidon/`repThree`/pairing side hypothesis, but
+`hmoment` itself is an entered hypothesis relating the free real `M` to the energy. -/
 theorem char0_prize_moment_bound_unconditional {L : Type*} [Field L] [CharZero L] [DecidableEq L]
     {k r : ℕ} (hk : 1 ≤ k) (G : Finset L)
     (hG : ∀ z ∈ G, z ^ (2 ^ k) = 1)
@@ -525,29 +358,41 @@ theorem char0_prize_moment_bound_sq_unconditional {L : Type*} [Field L] [CharZer
     M ^ 2 ≤ 2 * Real.exp 1 * (G.card : ℝ) * (r : ℝ) :=
   WFL3.char0_prize_moment_bound_sq hk G hG hM hQ hr hrQ hmoment
 
-/-! ## L4 — char-0 discharge of the nonprincipal-energy named hypothesis `(S-M1')` and the
-per-frequency sup bound wired through the P1 bridge. Scope: **char-0** (the char-0 energy bound is
-the proven `DyadicEnergyK1` value). -/
+/-! ## L4 — the nonprincipal-energy named hypothesis `(S-M1')` and the per-frequency sup bound,
+*conditional on* the Wick-shape energy bound `E_r(G) ≤ (2r-1)‼·|G|^r`. Scope: **prize-bridge**.
+These are stated over a finite field `[Field F] [Fintype F]`, which always has positive
+characteristic, and they take the energy bound `henergy` as a hypothesis. The char-0 theorem
+`DyadicEnergyK1` does not discharge `henergy` here: transferring the Wick energy bound to
+characteristic `p` at the prize depth is exactly the open BGK input. (Earlier names
+`char0_nonprincipalEnergyBound_discharged` / `char0_eta_pow_le_unconditional` overstated this and
+are kept only as deprecated aliases.) -/
 
-/-- **[char-0, L4]** Under the char-0 additive-energy bound `E_r(G) ≤ (2r-1)‼·|G|^r`, the named
-nonprincipal-energy hypothesis `NonprincipalEnergyBound` holds with `doubleFact = (2r-1)‼` (`K=1`):
-`q·E_r − n^{2r} ≤ q·(2r-1)‼·n^r`. Discharges `(S-M1')` from the char-0 substrate. -/
-theorem char0_nonprincipalEnergyBound_discharged {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+/-- **[prize-bridge, L4]** Under the entered additive-energy bound `E_r(G) ≤ (2r-1)‼·|G|^r`, the
+named nonprincipal-energy hypothesis `NonprincipalEnergyBound` holds with `doubleFact = (2r-1)‼`
+(`K=1`): `q·E_r − n^{2r} ≤ q·(2r-1)‼·n^r`. This reduces `(S-M1')` to the energy bound; it does not
+discharge it. -/
+theorem nonprincipalEnergyBound_of_energyR_le_export {F : Type*} [Field F] [Fintype F] [DecidableEq F]
     (G : Finset F) (r : ℕ)
     (henergy : (energyR G r : ℝ) ≤ ((2 * r - 1)‼ : ℝ) * (G.card : ℝ) ^ r) :
     WF6P1.NonprincipalEnergyBound (F := F) G r ((2 * r - 1)‼ : ℝ) :=
   WFL4.nonprincipalEnergyBound_of_energyR_le G r henergy
 
-/-- **[char-0, L4]** Composing the char-0 discharge with the P1 bridge: under the char-0 energy
-bound, every nontrivial frequency obeys the Gaussian/Wick sup bound
-`‖η_b‖^{2r} ≤ q·(2r-1)‼·|G|^r`. In characteristic 0 the hypothesis is the proven `DyadicEnergyK1`
-value, so this is an unconditional per-frequency bound there. -/
-theorem char0_eta_pow_le_unconditional {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+@[deprecated nonprincipalEnergyBound_of_energyR_le_export (since := "2026-10-29")]
+alias char0_nonprincipalEnergyBound_discharged := nonprincipalEnergyBound_of_energyR_le_export
+
+/-- **[prize-bridge, L4]** Composing the energy-to-`(S-M1')` reduction with the P1 bridge: under
+the entered energy bound `E_r(G) ≤ (2r-1)‼·|G|^r`, every nontrivial frequency obeys the
+Gaussian/Wick sup bound `‖η_b‖^{2r} ≤ q·(2r-1)‼·|G|^r`. Conditional on `henergy`; `F` is a finite
+field, so this is not a characteristic-0 statement. -/
+theorem eta_pow_le_of_energyR_le_export {F : Type*} [Field F] [Fintype F] [DecidableEq F]
     {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F) (r : ℕ)
     (henergy : (energyR G r : ℝ) ≤ ((2 * r - 1)‼ : ℝ) * (G.card : ℝ) ^ r)
     (b : F) (hb : b ≠ 0) :
     ‖eta ψ G b‖ ^ (2 * r) ≤ (Fintype.card F : ℝ) * (((2 * r - 1)‼ : ℝ) * (G.card : ℝ) ^ r) :=
   WFL4.char0_eta_pow_le_of_energyR_le hψ G r henergy b hb
+
+@[deprecated eta_pow_le_of_energyR_le_export (since := "2026-10-29")]
+alias char0_eta_pow_le_unconditional := eta_pow_le_of_energyR_le_export
 
 /-! ## F1 — the sub-Gaussian moment telescope (the consumer that turns a per-step Gaussian
 step-law into the full Wick even-moment bound). Scope: **prize-bridge**. -/
@@ -605,13 +450,14 @@ theorem moment_problem_does_not_give_wick_bracket :
       ¬ _root_.ProximityGap.Frontier.MomentProblemB5.UltraSubGaussianStep M W 1 :=
   _root_.ProximityGap.Frontier.MomentProblemB5.ultraSubGaussian_not_free
 
-/-- **[obstruction, B6]** The cumulant-sign sufficiency criterion is refuted at the actual
-period law: no cumulant sequence with `κ₄ < 0` can have `κ₈ > 0` and still meet the
-nonpositive-higher-cumulant envelope. The period law's cumulants are sign-indefinite, so the
-cumulant route cannot drive the prize bound. -/
-theorem cumulant_sign_route_refuted {κ : ℕ → ℝ} (h4 : κ 2 < 0) (h8 : 0 < κ 4) :
-    ¬ (∀ r, 2 ≤ r → κ r ≤ 0) :=
-  CumulantSigns.subWick_positivity_refuted h4 h8
+/-- **[scalar bookkeeping, B6]** If the (indexed) cumulant `κ 4` is positive, the envelope
+"`κ r ≤ 0` for every `r ≥ 2`" fails — an instance of `¬ (κ 4 ≤ 0)`. The statement mentions no
+period law; it records only the logic of the cumulant-sign criterion, which the measured
+sign-indefinite period cumulants (probe evidence, not formalized here) would violate. (The
+upstream lemma also takes an unused `κ 2 < 0`; this export drops it.) -/
+theorem cumulant_sign_route_refuted {κ : ℕ → ℝ} (h8 : 0 < κ 4) :
+    ¬ (∀ r, 2 ≤ r → κ r ≤ 0) := fun hall =>
+  absurd (hall 4 (by norm_num)) (not_le.mpr h8)
 
 /-! ## G2 / G3 / G4 — the late-campaign lever obstructions (resonance / coefficient / roughness).
 Scope: **obstruction**. Each is an axiom-clean proof that a named candidate lever cannot reach the
@@ -665,17 +511,27 @@ theorem two_faces_are_one_wall_export {F : Type*} [Field F] [Fintype F] [Decidab
   _root_.ArkLib.ProximityGap.Frontier.BridgeOneWall.pincer_is_one_wall hψ G r hM hsup
 
 /-! ## NoFifthDoor — the Lane-2/3 tetrachotomy capstone (Shaw's "Shaw Value" essay, #444).
-Scope: **capstone**. The headline citable statement of the campaign: there is NO fifth door, every
-prize-scale certificate must pass through door (iv) (a genuinely new monomial-sum evaluation), and the
-remaining obligation is exactly to shave the `√L = √log(p/n)` factor separating the BGK ceiling
-`√(n·L)` that doors (i)-(iii) deliver from the prize floor `√n`. Pure scale algebra over the
-abstract `Mechanism`/`DoorType` model; the classical-overshoot hypothesis is the formal content of the
-proven Lever A-D refutations (indexed above as the obstruction-scope exports). -/
+Scope: **capstone**. Pure scale algebra over the abstract `Mechanism`/`DoorType` model.
 
-/-- **[capstone, NoFifthDoor]** No fifth door: if every classical door (moment/completion/extreme-value)
-overshoots the BGK scale (the proven Lever A-D fate) in the regime `L > 1`, then any mechanism `m`
-certifying a prize-scale bound `m.certScale ≤ √n` has door `newEvaluation` — door (iv) is the ONLY
-door through which a prize-scale certificate can pass. -/
+**Scale convention.** The prize (CORE, and the capstone `ShawValueCapstone.prizeScale n L`) is the
+bound `M ≤ C·√(n·L)` with `L = log(q/n)`, i.e. the scale `bgkScale n L = √(n·L)` up to an absolute
+constant. The tetrachotomy's `NoFifthDoorTetrachotomy.prizeScale n = √n` is **not** the prize: it is
+the Plancherel/RMS *floor target* `√n`, which is strictly stronger than the prize by the factor
+`√L`. Every statement below that speaks of "`certScale ≤ prizeScale n`" therefore classifies
+certificates of the *√n floor target*, a stronger property than the prize; none of them says
+anything about certificates at the actual prize scale `C·√(n·L)`.
+
+`OvershootsBGK n L` means `bgkScale n L ≤ certScale`: the classical doors (i)-(iii) are modelled as
+certifying at or *above* `√(n·L)`, so they do not deliver the prize at constant `C = 1`. The
+undischarged forms assume `hclassicalOvershoots` for *every* classical record, which is refuted by a
+record such as `⟨moment, 0⟩`; the discharged forms restrict to records respecting their proven
+door scales. -/
+
+/-- **[capstone, NoFifthDoor]** No fifth door (√n floor-target form): if every classical door record
+(moment/completion/extreme-value) overshoots the BGK scale in the regime `L > 1`, then any mechanism
+`m` certifying the √n floor target `m.certScale ≤ √n` has door `newEvaluation`. The hypothesis
+quantifies over all classical records and is unsatisfiable (e.g. `⟨moment, 0⟩` fails it), so this is
+a statement about the abstract model only; see the discharged `..._ceilingRespecting_...` forms. -/
 theorem noFifthDoor_forces_doorIV_export
     {m : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism} {n L : ℝ}
     (hn : 0 < n) (hL : 1 < L)
@@ -687,9 +543,8 @@ theorem noFifthDoor_forces_doorIV_export
   _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.forces_doorIV hn hL
     hclassicalOvershoots hcert
 
-/-- **[capstone, NoFifthDoor]** Existential form: under the classical-overshoot hypothesis, the set of
-prize-certifying mechanisms is contained in the door-(iv) mechanisms. Every prize-scale certificate is
-a door-(iv) certificate. -/
+/-- **[capstone, NoFifthDoor]** Set form: under the (unsatisfiable, all-records) classical-overshoot
+hypothesis, every mechanism certifying the √n floor target is a door-(iv) mechanism. -/
 theorem prizeCertifying_subset_doorIV_export {n L : ℝ} (hn : 0 < n) (hL : 1 < L)
     (hclassicalOvershoots :
       ∀ m' : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism,
@@ -700,9 +555,10 @@ theorem prizeCertifying_subset_doorIV_export {n L : ℝ} (hn : 0 < n) (hL : 1 < 
   _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeCertifying_subset_doorIV hn hL
     hclassicalOvershoots
 
-/-- **[capstone, NoFifthDoor]** The door-(iv) target corridor: the worst-frequency sup `M` lives in
-`[√n, √(n·L)]` — the prize floor (Plancherel/RMS) below and the BGK ceiling (what doors (i)-(iii)
-deliver) above. The entire remaining door-(iv) content is to descend from the ceiling to the floor. -/
+/-- **[capstone, NoFifthDoor]** Corridor membership: a real `M` with `√n ≤ M ≤ √(n·L)` lies between
+the √n floor target (Plancherel/RMS) and the BGK scale `√(n·L)`. This is a conjunction of the two
+hypotheses. Note `M ≤ √(n·L)` already *is* the prize with `C = 1`; descending further to `√n` is a
+stronger goal than the prize. -/
 theorem doorIV_corridor_export {M n L : ℝ}
     (hfloor : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n ≤ M)
     (hceil : M ≤ _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.bgkScale n L) :
@@ -710,8 +566,8 @@ theorem doorIV_corridor_export {M n L : ℝ}
       M ≤ _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.bgkScale n L :=
   _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.mem_doorIV_corridor hfloor hceil
 
-/-- **[capstone, NoFifthDoor]** The corridor has positive width in the prize regime `L > 1`: the
-floor is strictly below the ceiling, so the door-(iv) shave is a real `√L`-factor gap, not a point. -/
+/-- **[capstone, NoFifthDoor]** The corridor has positive width when `L > 1`: the √n floor target
+is strictly below the BGK scale `√(n·L)`, by the factor `√L`. -/
 theorem doorIV_corridor_width_pos_export {n L : ℝ} (hn : 0 < n) (hL : 1 < L) :
     _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n
       < _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.bgkScale n L :=
@@ -750,8 +606,8 @@ theorem doorIVCorridor_subset_of_le_export {n L₁ L₂ : ℝ} (hn : 0 ≤ n) (h
 #print axioms doorIVCorridor_one_eq_singleton_export
 #print axioms doorIVCorridor_subset_of_le_export
 
-/-- **[capstone, NoFifthDoor]** The exact factor door (iv) must remove: the BGK ceiling equals the
-prize floor scaled by `√L`, i.e. `√(n·L) = √L · √n`. Pins the door-(iv) obligation quantitatively. -/
+/-- **[capstone, NoFifthDoor]** Scale identity `√(n·L) = √L · √n`: the BGK/prize scale is the √n
+floor target scaled by `√L`. (Removing this `√L` would go beyond the prize, which allows it.) -/
 theorem bgkScale_eq_sqrtL_mul_prizeScale_export {n L : ℝ} (hn : 0 ≤ n) (hL : 0 ≤ L) :
     _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.bgkScale n L
       = Real.sqrt L * _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n :=
@@ -772,8 +628,10 @@ theorem noFifthDoor_ceilingRespecting_classical_overshoots_export
 
 /-- **[capstone, NoFifthDoor]** Discharged no-fifth-door capstone: past the SOTA threshold, if
 classical mechanisms are real instances of their doors (they respect the proven completion/moment/EVT
-scales), then any prize-scale certificate is forced through door (iv). The classical overshoot input is
-proved from the concrete ceilings, not assumed. -/
+scales), then any certificate of the √n floor target (stronger than the prize) is forced through door (iv). The
+classical overshoot input is proved from the concrete ceilings, not assumed; note the inner guard
+"every classical record respects its proven scale" is itself false for records such as
+`⟨moment, 0⟩`, so this form is only informative for a mechanism family satisfying it. -/
 theorem noFifthDoor_forces_doorIV_ceilingRespecting_export
     {L q C δ : ℝ} (hLnn : 0 ≤ L) (hL : 1 < L) (hC : 0 < C) (hδ : δ < 1 / 2) :
     ∃ N₀ : ℝ, ∀ n : ℝ, max N₀ 1 ≤ n → n * L ≤ q →
@@ -907,7 +765,8 @@ theorem noTighterBound_from_symmetric_or_L2_export :
 /-! ## ShawValue — the Lane-2 `prize ⟺ Sh(n)=O(1)` capstone (the citable normalization).
 Scope: **capstone**. The prize inequality `M ≤ C·√(n·L)` is exactly a bound on the normalized
 Shaw value `Sh(M) = M/√(n·L)`; the proven two-sided corridor `1/√(2L) ≤ Sh(M(μ_n)) ≤ √(n/L)` on
-the REAL Gauss-period worst frequency brackets the open prize at multiplicative width `√n`. -/
+the REAL Gauss-period worst frequency has multiplicative width `√(2n)`; the open prize is the
+uniform upper bound `Sh = O(1)` only (not a collapse of that width). -/
 
 /-- **[capstone, ShawValue]** The prize normalization equivalence: under a positive prize scale,
 the raw prize-shaped bound `M ≤ C·√(n·L)` is *exactly* the statement that the normalized Shaw
@@ -1056,11 +915,12 @@ theorem not_exists_nonneg_strictRawPrizeFamilyBound_iff_not_exists_nonneg_strict
   _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.not_exists_nonneg_strictRawPrizeFamilyBound_iff_not_exists_nonneg_strictShawValueFamilyBound hs
 
 /-- **[capstone, ShawValue]** THE Lane-2 corridor. For the actual primitive-character Gauss-period
-worst frequency `M(μ_n) = worstPeriod ψ G` in the thin prize regime `q ≥ 2n` (automatic at
-`q = n^β`, `β > 1`), the normalized Shaw value is sandwiched
+worst frequency `M(μ_n) = worstPeriod ψ G` in the thin prize regime `q ≥ 2n` (at `q = n^β`,
+`β > 1`, this holds once `n ≥ 2^{1/(β-1)}`; it fails e.g. at `n = 2`, `β = 3/2`), the normalized
+Shaw value is sandwiched
 `1/√(2L) ≤ Sh(M(μ_n)) ≤ √(n/L)`, both endpoints in closed form. The lower endpoint is the
 `n`-independent thin-regime Parseval floor `1/√(2L)`; the upper is the trivial-ceiling scale
-`√(n/L)`. The open prize `Sh(M(μ_n)) = O(1)` lives strictly inside this proven corridor.
+`√(n/L)`. The open prize is the uniform upper bound `Sh(M(μ_n)) = O(1)` inside this corridor.
 
 (All identifiers in the statement are FULLY QUALIFIED: restating them unqualified in this
 heavily-`open`ed index context resolves `worstPeriod`/`shawValue` to a different overload, so we pin
@@ -1081,9 +941,9 @@ theorem shawValue_worstPeriod_clean_corridor_export
   _root_.ProximityGap.Frontier.ConcreteShawValueThinFloor.shawValue_worstPeriod_clean_corridor
     hψ G hne hn1 hq2n hL hs
 
-/-- **[capstone, ShawValue]** The corridor width is exactly `√n`: the ratio of the trivial-ceiling
-endpoint to the Plancherel-floor endpoint equals `√n`. So the open prize is precisely the demand to
-collapse this `√n`-wide normalized bracket to an absolute constant. -/
+/-- **[capstone, ShawValue]** Scalar arithmetic: the ratio of the trivial-ceiling endpoint
+`n/√(nL)` to the Plancherel-floor endpoint `√n/√(nL)` equals `√n`. The prize asks only for the upper
+side `Sh = O(1)`, not for this width ratio to be bounded. -/
 theorem shawValue_bracket_width_eq_sqrt_export {n L : ℝ} (hn : 0 < n) (hL : 0 < L) :
     (n / prizeScale n L) / (Real.sqrt n / prizeScale n L) = Real.sqrt n :=
   bracket_width_eq_sqrt hn hL
@@ -1141,7 +1001,7 @@ theorem concreteShawFamily_shawValue_floor_uniform_export {ι : Type*}
 
 /-- **[Lane 2 concrete family reduction]** A uniform raw prize bound for the real worst-period family
 forces each normalized Shaw value into the concrete sandwich `1/√(2Lᵢ) ≤ Shᵢ ≤ C`. This records the
-exact Shaw-value corridor the open CORE bound must collapse. -/
+Shaw-value sandwich implied by a CORE bound (the upper side is `C`; the width need not shrink). -/
 theorem concreteShawFamily_corePrizeBound_forces_sandwich_export {ι : Type*}
     (T : ι → _root_.ProximityGap.Frontier.ConcreteShawFamilyReduction.ThinInstance) {C : ℝ}
     (hC : _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.rawPrizeFamilyBound
@@ -1911,9 +1771,11 @@ theorem corePrize_unbounded_shawValue_drift_of_pos_lt_export {ι : Type*} {q n M
     hn hnq
 
 
-/-- **[capstone, DoorIVPrizeShawTetrachotomySynthesis]** Single citable Lane-2 synthesis: the
-nonnegative-constant prize-family reduction is exactly the nonnegative Shaw-value `O(1)` reduction,
-and, under the classical-overshoot refutations, every prize-certifying mechanism is door (iv). -/
+/-- **[capstone, DoorIVPrizeShawTetrachotomySynthesis]** Conjunction of two independent facts: (1)
+for the free family `M n L`, the nonnegative-constant prize-family bound is exactly the nonnegative
+Shaw-value `O(1)` bound; (2) for unrelated scalars `nref Lref`, under the all-records
+classical-overshoot hypothesis (unsatisfiable: `⟨moment, 0⟩` violates it), every mechanism
+certifying the √n floor target is door (iv). The two conjuncts share no variables. -/
 theorem doorIV_prize_iff_shawBounded_nonneg_and_doorIV_only_export
     {ι : Type*} {M n L : ι → ℝ}
     (hs : ∀ i, 0 < ShawValueCapstone.prizeScale (n i) (L i))
@@ -1929,9 +1791,9 @@ theorem doorIV_prize_iff_shawBounded_nonneg_and_doorIV_only_export
   ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.prize_iff_shawBounded_nonneg_and_doorIV_only
     hs hnref hLref hclassicalOvershoots
 
-/-- **[capstone, DoorIVPrizeShawTetrachotomySynthesis]** The remaining quantitative gap is exactly
-`√L` between the prize floor and BGK scale, and the no-fifth-door theorem routes any certificate for
-that gap to door (iv). -/
+/-- **[capstone, DoorIVPrizeShawTetrachotomySynthesis]** Scale identity `√(n·L) = √L·√n` between the
+BGK/prize scale and the √n floor target, conjoined with the abstract no-fifth-door routing of
+√n-floor certificates under the (unsatisfiable, all-records) classical-overshoot hypothesis. -/
 theorem doorIV_remaining_gap_is_sqrtL_factor_doorIV_only_export
     {nref Lref : ℝ} (hnref : 0 < nref) (hLref : 1 < Lref)
     (hclassicalOvershoots :
@@ -2175,158 +2037,18 @@ theorem doorIV_object_moment_trapped_iff_export {iidSup realSup δ Δ : ℝ} :
       (iidSup ≤ realSup ∧ (0 ≤ δ ∧ δ ≤ Δ)) :=
   _root_.ArkLib.ProximityGap.Frontier.DoorIVObjectMomentTrappedCapstone.moment_trapped_iff
 
-/-- **[capstone, DoorIVObject]** The grand three-pillar statement of the #444 structural result: from
-the standard thin-instance positivity, the proven classical-overshoot refutations, and the two measured
-facts about the door-(iv) object, ALL THREE pillars hold simultaneously — (1) the prize ⇔ `Sh=O(1)`
-reduction, (2) the door-(iv)-only mechanism exclusion, and (3) the object moment-corridor
-`[iidSup, iidSup + Δ]`. The single citable statement: the prize is a bounded Shaw value, deliverable
-only through door (iv), whose open object is moment-trapped. CORE stays open. -/
-theorem prize_iff_shawBounded_doorIV_only_and_object_moment_trapped_export
-    {ι : Type*} {M n L : ι → ℝ}
-    (hs : ∀ i, 0 < _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.prizeScale (n i) (L i))
-    {nref Lref : ℝ} (hnref : 0 < nref) (hLref : 1 < Lref)
-    (hclassicalOvershoots :
-      ∀ m' : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism,
-        m'.door.isClassical → m'.OvershootsBGK nref Lref)
-    {iidSup realSup Δ : ℝ}
-    (hEdge : _root_.ArkLib.ProximityGap.Frontier.DoorIVCocycleNoRandomEdge.SurrogateLeReal
-      iidSup realSup)
-    (hExcess :
-      _root_.ArkLib.ProximityGap.Frontier.DoorIVObjectMomentCorridor.gap iidSup realSup ≤ Δ) :
-    ((∃ C, 0 ≤ C ∧
-        _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.rawPrizeFamilyBound M n L C) ↔
-        (∃ C, 0 ≤ C ∧
-          _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.shawValueFamilyBound M n L C)) ∧
-      (∀ m : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism,
-        m.certScale ≤ _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale nref →
-        m.door =
-          _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.DoorType.newEvaluation) ∧
-      (iidSup ≤ realSup ∧ realSup ≤ iidSup + Δ) :=
-  _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone.prize_iff_shawBounded_doorIV_only_and_object_moment_trapped
-    hs hnref hLref hclassicalOvershoots hEdge hExcess
-
-/-- **[capstone, DoorIVObject]** The grand FOUR-pillar statement: the three pillars above PLUS the
-unconditional floor envelope `[c₀, √nref]` (`c₀ = (5/4)^{1/4}`).  From the proven super-diagonal period
-floor `c₀·√nref ≤ Mref` and the trivial cardinality ceiling `Mref ≤ nref` — with NO door hypothesis —
-the floor-normalized worst-frequency ratio `Mref/√nref` lives in `[c₀, √nref]`.  This records, in the
-single citable statement, the bracket inside which the entire open problem lives: the prize is the
-demand to collapse the unconditional `√nref` ceiling to an absolute constant, with the conditional
-door ceiling `√L` sitting strictly inside.  Packaging extension; CORE stays open. -/
-theorem prize_iff_shawBounded_doorIV_only_object_trapped_and_floor_bracketed_export
-    {ι : Type*} {M n L : ι → ℝ}
-    (hs : ∀ i, 0 < _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.prizeScale (n i) (L i))
-    {nref Lref : ℝ} (hnref : 0 < nref) (hLref : 1 < Lref)
-    (hclassicalOvershoots :
-      ∀ m' : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism,
-        m'.door.isClassical → m'.OvershootsBGK nref Lref)
-    {iidSup realSup Δ : ℝ}
-    (hEdge : _root_.ArkLib.ProximityGap.Frontier.DoorIVCocycleNoRandomEdge.SurrogateLeReal
-      iidSup realSup)
-    (hExcess :
-      _root_.ArkLib.ProximityGap.Frontier.DoorIVObjectMomentCorridor.gap iidSup realSup ≤ Δ)
-    {Mref : ℝ}
-    (hfloor : _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.superDiagonalFloorConst *
-      Real.sqrt nref ≤ Mref)
-    (hceil : Mref ≤ nref) :
-    ((∃ C, 0 ≤ C ∧
-        _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.rawPrizeFamilyBound M n L C) ↔
-        (∃ C, 0 ≤ C ∧
-          _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.shawValueFamilyBound M n L C)) ∧
-      (∀ m : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism,
-        m.certScale ≤ _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale nref →
-        m.door =
-          _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.DoorType.newEvaluation) ∧
-      (iidSup ≤ realSup ∧ realSup ≤ iidSup + Δ) ∧
-      (_root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.superDiagonalFloorConst ≤
-          _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio
-            Mref nref ∧
-        _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio
-            Mref nref ≤ Real.sqrt nref) :=
-  _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone.prize_iff_shawBounded_doorIV_only_object_trapped_and_floor_bracketed
-    hs hnref hLref hclassicalOvershoots hEdge hExcess hfloor hceil
-
-/-- **[capstone, DoorIVObject]** The DISCHARGED grand four-pillar statement: pillars (1) reduction and
-(2) door-(iv)-only exclusion are the THEOREM-BACKED discharged form (no abstract overshoot hypothesis;
-the classical-overshoot input is discharged from the SOTA eventual-domination theorem past a threshold
-`N₀`, with only the honest anti-degenerate `RespectsProvenScale` guard surviving), fused with (3) the
-object moment-corridor and (4) the unconditional floor envelope `[c₀, √nref]`.  The first single
-citable statement combining the discharged reduction+exclusion with both object-trap and floor
-envelope.  CORE stays open. -/
-theorem prize_reduction_dischargedDoorIV_object_trapped_and_floor_bracketed_export
-    {ι : Type*} {M n L : ι → ℝ}
-    (hs : ∀ i, 0 < _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.prizeScale (n i) (L i))
-    {Lref q C δ : ℝ} (hLnn : 0 ≤ Lref) (hLref : 1 < Lref) (hC : 0 < C) (hδ : δ < 1 / 2)
-    {iidSup realSup Δ : ℝ}
-    (hEdge : _root_.ArkLib.ProximityGap.Frontier.DoorIVCocycleNoRandomEdge.SurrogateLeReal
-      iidSup realSup)
-    (hExcess :
-      _root_.ArkLib.ProximityGap.Frontier.DoorIVObjectMomentCorridor.gap iidSup realSup ≤ Δ)
-    {Mref nref : ℝ} (hnref : 0 < nref)
-    (hfloor : _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.superDiagonalFloorConst *
-      Real.sqrt nref ≤ Mref)
-    (hceil : Mref ≤ nref) :
-    ∃ N₀ : ℝ,
-      ((∃ K, 0 ≤ K ∧
-          _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.rawPrizeFamilyBound M n L K) ↔
-          (∃ K, 0 ≤ K ∧
-            _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.shawValueFamilyBound M n L K)) ∧
-        (∀ nref' : ℝ, max N₀ 1 ≤ nref' → nref' * Lref ≤ q →
-          (∀ m' : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism,
-            m'.door.isClassical → m'.RespectsProvenScale q C δ nref') →
-          ∀ m : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism,
-            m.certScale ≤
-              _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale nref' →
-            m.door =
-              _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.DoorType.newEvaluation) ∧
-        (iidSup ≤ realSup ∧ realSup ≤ iidSup + Δ) ∧
-        (_root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.superDiagonalFloorConst ≤
-            _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio
-              Mref nref ∧
-          _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio
-              Mref nref ≤ Real.sqrt nref) :=
-  _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone.prize_reduction_dischargedDoorIV_object_trapped_and_floor_bracketed
-    hs hLnn hLref hC hδ hEdge hExcess hnref hfloor hceil
-
-/-- **[capstone, DoorIVObject]** The WALL-FACING (contrapositive) discharged grand four-pillar
-statement: (1') the negated reduction `¬ prizeBound ↔ ¬ shawBound` (the prize is impossible iff the
-Shaw value is unbounded), with (2) the theorem-backed discharged door-(iv)-only exclusion past `N₀`,
-(3) the object moment-corridor, and (4) the unconditional floor envelope `[c₀, √nref]`.  The
-contrapositive companion of `..._reduction_dischargedDoorIV_..._export`, suitable for the "why the
-prize is hard" citation.  CORE stays open. -/
-theorem no_prizeBound_dischargedDoorIV_object_trapped_and_floor_bracketed_export
-    {ι : Type*} {M n L : ι → ℝ}
-    (hs : ∀ i, 0 < _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.prizeScale (n i) (L i))
-    {Lref q C δ : ℝ} (hLnn : 0 ≤ Lref) (hLref : 1 < Lref) (hC : 0 < C) (hδ : δ < 1 / 2)
-    {iidSup realSup Δ : ℝ}
-    (hEdge : _root_.ArkLib.ProximityGap.Frontier.DoorIVCocycleNoRandomEdge.SurrogateLeReal
-      iidSup realSup)
-    (hExcess :
-      _root_.ArkLib.ProximityGap.Frontier.DoorIVObjectMomentCorridor.gap iidSup realSup ≤ Δ)
-    {Mref nref : ℝ} (hnref : 0 < nref)
-    (hfloor : _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.superDiagonalFloorConst *
-      Real.sqrt nref ≤ Mref)
-    (hceil : Mref ≤ nref) :
-    ∃ N₀ : ℝ,
-      (¬ (∃ K, 0 ≤ K ∧
-          _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.rawPrizeFamilyBound M n L K) ↔
-          ¬ (∃ K, 0 ≤ K ∧
-            _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.shawValueFamilyBound M n L K)) ∧
-        (∀ nref' : ℝ, max N₀ 1 ≤ nref' → nref' * Lref ≤ q →
-          (∀ m' : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism,
-            m'.door.isClassical → m'.RespectsProvenScale q C δ nref') →
-          ∀ m : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism,
-            m.certScale ≤
-              _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale nref' →
-            m.door =
-              _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.DoorType.newEvaluation) ∧
-        (iidSup ≤ realSup ∧ realSup ≤ iidSup + Δ) ∧
-        (_root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.superDiagonalFloorConst ≤
-            _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio
-              Mref nref ∧
-          _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio
-              Mref nref ≤ Real.sqrt nref) :=
-  _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone.no_prizeBound_dischargedDoorIV_object_trapped_and_floor_bracketed
-    hs hLnn hLref hC hδ hEdge hExcess hnref hfloor hceil
+/- The former "grand three/four-pillar" bundles
+(`prize_iff_shawBounded_doorIV_only_and_object_moment_trapped_export`,
+`prize_iff_shawBounded_doorIV_only_object_trapped_and_floor_bracketed_export`,
+`prize_reduction_dischargedDoorIV_object_trapped_and_floor_bracketed_export`,
+`no_prizeBound_dischargedDoorIV_object_trapped_and_floor_bracketed_export`) were removed from this
+index: they conjoined pillars about unrelated variables (a free family `M n L`, mechanism records
+at an unrelated `nref`, free reals `iidSup realSup Δ`, and an unrelated `Mref`), with each pillar
+restating its own hypotheses, under classical-overshoot guards that are unsatisfiable (the record
+`⟨moment, 0⟩` violates them). They are not a single statement about one instance. Cite the
+individual pillars instead (`exists_nonneg_rawPrizeFamilyBound_iff_exists_nonneg_shawValueFamilyBound_export`,
+`noFifthDoor_prize_certificate_doorIV_or_violates_provenScale_export`,
+`doorIV_object_moment_corridor_export`). -/
 
 /-! ## DoorIVSignedDeepSumAbsLeak — the absolute-value leak made permanent.
 Scope: **obstruction / positive localization**. The signed deep period-power probe found the
@@ -2736,7 +2458,6 @@ theorem doorIV_argmaxDecoupled_exists_ratio_gt_no_controlOn_export {ι : Type*}
     hFpos hwit
 
 
-
 /-- **[obstruction, DoorIVArgmaxDecouplingNoControl]** Finite-support sign hygiene: if a measured
 support control holds at one point where both target and candidate are positive, then the control
 constant is itself positive. -/
@@ -3041,9 +2762,6 @@ theorem doorIV_nonTensor_tensor_dilution_strict_export
 #print axioms doorIV_nonTensor_tensor_dilution_strict_export
 
 
-
-
-
 /-- **[Lane 2 Door-IV Jacobi-cocycle capstone]** Bundles the three proven faces of the localized
 Jacobi-cocycle gap into one permanent citable theorem: the exact cancellation factor, the forced
 non-alignment mechanism under a flat prize budget, and the exclusion of the Fermat closed-form corner.
@@ -3070,16 +2788,18 @@ theorem doorIV_jacobiCocycle_characterization_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
 
-/-! ## Cone axiom audit — every permanent export above is axiom-clean
-(`[propext, Classical.choice, Quot.sound]`, no `sorryAx`). -/
+/-! ## Axiom-print block for the first group of exports above.
+These commands only print each profile at build time (expected `[propext, Classical.choice,
+Quot.sound]`, no `sorryAx`); they assert nothing and do not cover the exports below this block,
+which carry their own `#print axioms` lines. -/
 namespace ArkLib.ProximityGap.Frontier.CampaignProvenIndex
 #print axioms char0_stepRatio_antitone_iff_sharpNewton
 #print axioms char0_W3anti_of_sharpNewton_export
 #print axioms char0_kstability_cross_le_wick
 #print axioms char0_prize_moment_bound_unconditional
 #print axioms char0_prize_moment_bound_sq_unconditional
-#print axioms char0_nonprincipalEnergyBound_discharged
-#print axioms char0_eta_pow_le_unconditional
+#print axioms nonprincipalEnergyBound_of_energyR_le_export
+#print axioms eta_pow_le_of_energyR_le_export
 #print axioms gaussian_moment_telescope
 #print axioms convexOrder_gaussian_iff_wick_export
 #print axioms prize_of_matchedGaussian_stepLaw_export
@@ -3173,10 +2893,6 @@ namespace ArkLib.ProximityGap.Frontier.CampaignProvenIndex
 #print axioms doorIV_object_moment_trapped_no_slack_export
 #print axioms doorIV_candidate_bound_forced_through_dead_doors_export
 #print axioms doorIV_object_moment_trapped_iff_export
-#print axioms prize_iff_shawBounded_doorIV_only_and_object_moment_trapped_export
-#print axioms prize_iff_shawBounded_doorIV_only_object_trapped_and_floor_bracketed_export
-#print axioms prize_reduction_dischargedDoorIV_object_trapped_and_floor_bracketed_export
-#print axioms no_prizeBound_dischargedDoorIV_object_trapped_and_floor_bracketed_export
 #print axioms doorIV_abs_signed_le_abs_moment_export
 #print axioms doorIV_leak_nonneg_export
 #print axioms doorIV_abs_moment_bound_transfers_export
@@ -3192,7 +2908,6 @@ namespace ArkLib.ProximityGap.Frontier.CampaignProvenIndex
 #print axioms coreReduction_mStar_gt_of_BCHKS_fails_export
 #print axioms coreReduction_mStar_le_iff_BCHKS_export
 #print axioms coreReduction_clears_johnson_iff_BCHKS_at_prev_fold_export
-
 
 
 /-! ## Door-IV odd signed moment census bridge. Scope: **obstruction/capstone**.
@@ -3341,9 +3056,9 @@ through the connected-correlation hierarchy through sixth order factors through 
 any finite set of higher cumulant rungs. This is a no-new-correlation-lever statement only; it does
 not prove CORE. -/
 
-/-- **[obstruction, DoorIVCorrelationHierarchy]** If the connected triple correlation vanishes,
-the canonical signed six-point functional `|κ₃|²` is exactly zero. Thus the first phase-sensitive
-sixth-order object supplies no door-(iv) lower-bound content. -/
+/-- **[scalar bookkeeping, DoorIVCorrelationHierarchy]** `κ₃ = 0 → |κ₃|² = 0` for a free complex
+number `κ₃`. The statement mentions no correlation or period object; it only records that, *if* the
+connected triple correlation were zero, the six-point functional `|κ₃|²` would be zero too. -/
 theorem doorIV_sixPoint_lever_vacuous_export {κ₃ : ℂ} (hzero : κ₃ = 0) :
     Complex.normSq κ₃ = 0 :=
   _root_.ProximityGap.Frontier.DoorIVCorrelationHierarchyCapstone.sixPoint_lever_vacuous hzero
@@ -3374,16 +3089,14 @@ theorem doorIV_correlation_hierarchy_closed_through_six_export
   _root_.ProximityGap.Frontier.DoorIVCorrelationHierarchyCapstone.correlation_hierarchy_closed_through_six
     hctrl4 hctrl6 hdec4 hcum4 hdec6 hcum6 htriple
 
-/-- **[obstruction, DoorIVTripleCorrelationVanishes]** If the connected triple correlation `κ₃`
-vanishes, the signed six-point functional `|κ₃|²` is exactly zero. This is the direct indexed form of
-the 6-point connected-correlation wall. -/
-theorem doorIV_tripleCorrelation_sixPoint_zero_export {κ₃ : ℂ} (hzero : κ₃ = 0) :
-    Complex.normSq κ₃ = 0 :=
-  _root_.ProximityGap.Frontier.DoorIVTripleCorrelationVanishes.sixPoint_functional_zero_of_triple_zero
-    hzero
+/-- Duplicate of `doorIV_sixPoint_lever_vacuous_export` (identical statement, from
+`_DoorIVTripleCorrelationVanishes`); kept only as a deprecated alias. -/
+@[deprecated doorIV_sixPoint_lever_vacuous_export (since := "2026-10-29")]
+alias doorIV_tripleCorrelation_sixPoint_zero_export := doorIV_sixPoint_lever_vacuous_export
 
-/-- **[obstruction, DoorIVTripleCorrelationVanishes]** A six-point lever routed through the signed
-triple-correlation functional is vacuous when `κ₃ = 0`: it only supplies `0 ≤ ‖M‖²`. -/
+/-- **[scalar bookkeeping, DoorIVTripleCorrelationVanishes]** `0 ≤ |M|²` (true for every complex
+`M`; the hypotheses `|κ₃|² ≤ |M|²` and `κ₃ = 0` are not needed for the conclusion). Records that a
+bound of the shape `|κ₃|² ≤ |M|²` carries no information once `κ₃ = 0`. -/
 theorem doorIV_tripleCorrelation_sixPoint_vacuous_export {M κ₃ : ℂ}
     (hbound : Complex.normSq κ₃ ≤ Complex.normSq M) (hzero : κ₃ = 0) :
     (0 : ℝ) ≤ Complex.normSq M :=
@@ -4573,8 +4286,6 @@ theorem shawValue_bracket_center_between_export {n L : ℝ} (hn : 1 ≤ n) (hL :
 #print axioms doorIV_multiPiece_eps_budget_eq_export
 #print axioms doorIV_multiPiece_eps_budget_iff_export
 #print axioms doorIV_multiPiece_no_eps_slack_one_side_zero_export
-#print axioms doorIV_multiWindow_budget_forces_card_le_export
-#print axioms doorIV_no_multiWindow_split_rhs_le_strict_budget_export
 #print axioms doorIV_argmaxDecoupled_const_ge_ratio_export
 #print axioms doorIV_argmaxDecoupled_no_control_below_ratio_export
 #print axioms doorIV_argmaxDecoupled_uniformControl_iff_ratio_export
@@ -4606,7 +4317,6 @@ theorem shawValue_bracket_center_between_export {n L : ℝ} (hn : 1 ≤ n) (hL :
 #print axioms doorIV_sixPoint_lever_vacuous_export
 #print axioms doorIV_correlation_hierarchy_no_lever_export
 #print axioms doorIV_correlation_hierarchy_closed_through_six_export
-#print axioms doorIV_tripleCorrelation_sixPoint_zero_export
 #print axioms doorIV_tripleCorrelation_sixPoint_vacuous_export
 #print axioms doorIV_tripleCorrelation_m33_eq_wick_export
 #print axioms doorIV_ladder_control_passes_through_wick_export
@@ -4856,47 +4566,14 @@ theorem doorIV_avFloorLadder_energy_moment_floor_general_export
 #print axioms doorIV_avFloorLadder_energy_moment_floor_general_export
 
 
-/-! ## Door-IV Lane 3 sum-product/incidence census-stall exports.
-Scope: **obstruction/capstone**.
-
-These exports make the beta-four incidence-threshold obstruction permanent. They record that
-newer sum-product and incidence levers either point in the wrong direction, sit on the `θ = 1/4`
-boundary at beta four, or deliver only the best-case `κ = 1/15`, far short of the prize `κ = 1`.
--/
-
-/-- **[obstruction, SumProductCensusStall]** The Stevens-de Zeeuw best-case exponent saving is
-`κ = 1/15`, positive but strictly below the prize saving `κ = 1`. -/
-theorem doorIV_sumProduct_sdz_does_not_reach_prize_export :
-    (0 : ℝ) < 1 / 15 ∧ (1 : ℝ) / 15 < 1 :=
-  _root_.ArkLib.ProximityGap.SP0Scratch.sdz_does_not_reach_prize
-
-/-- **[obstruction, SumProductCensusStall]** At beta four the point-plane/SdZ threshold is exactly
-met, not strictly exceeded: `¬ (1/4 > 1/4)`. Thus the strict-saving incidence engine is boundary
-blocked in the prize regime. -/
-theorem doorIV_sumProduct_pointplane_boundary_beta4_export :
-    ¬ ((1 : ℝ) / 4 > 1 / 4) :=
-  _root_.ArkLib.ProximityGap.SP0Scratch.pointplane_threshold_boundary_at_beta4
-
-/-- **[obstruction, SumProductCensusStall]** The census-stall capstone: all `0 ≤ κ < 1` savings are
-vacuous for the prize target, `κ = 1/15` is in that vacuous range, and the prize `κ = 1` is not
-delivered by the cluster. -/
-theorem doorIV_sumProduct_census_stall_confirmed_export :
-    (∀ κ : ℝ, 0 ≤ κ → κ < 1 →
-        _root_.ArkLib.ProximityGap.SP0Scratch.SumProductEnergyVacuousAtBeta4 κ) ∧
-      _root_.ArkLib.ProximityGap.SP0Scratch.SumProductEnergyVacuousAtBeta4 (1 / 15) ∧
-      ¬ _root_.ArkLib.ProximityGap.SP0Scratch.SumProductEnergyVacuousAtBeta4 1 :=
-  _root_.ArkLib.ProximityGap.SP0Scratch.census_stall_confirmed
-
-/-- **[obstruction, SumProductCensusStall]** Kurihara-style valuation data does not determine the
-archimedean energy count: the same total count can be compatible with energies `T` and `T²`, and for
-`T ≥ 2` these differ strictly. -/
-theorem doorIV_kurihara_valuation_not_count_export (T : ℝ) (hT : 2 ≤ T) : T < T ^ 2 :=
-  _root_.ArkLib.ProximityGap.SP0Scratch.kurihara_is_valuation_not_count T hT
-
-#print axioms doorIV_sumProduct_sdz_does_not_reach_prize_export
-#print axioms doorIV_sumProduct_pointplane_boundary_beta4_export
-#print axioms doorIV_sumProduct_census_stall_confirmed_export
-#print axioms doorIV_kurihara_valuation_not_count_export
+/- The former Lane-3 sum-product/incidence "census-stall" exports
+(`doorIV_sumProduct_sdz_does_not_reach_prize_export`: `0 < 1/15 < 1`;
+`doorIV_sumProduct_pointplane_boundary_beta4_export`: `¬ (1/4 > 1/4)`;
+`doorIV_sumProduct_census_stall_confirmed_export`, over the predicate `κ ≤ 0 ∨ κ < 1`;
+`doorIV_kurihara_valuation_not_count_export`: `T < T^2`) were removed from this index: they are
+numeral or scalar facts that mention no sum-product, incidence or period object, so they are not
+obstructions. The underlying scratch file `_SumProductCensusStallBeta4` still records them as
+bookkeeping. -/
 
 
 /-! ## Door-IV Lane 3 every-angle failure-step exports.
@@ -5196,7 +4873,8 @@ theorem doorIV_hd_selfSimilarity_is_linear_in_phases_export
 
 /-- **[conditional reduction, HDCocycle]** A per-level cocycle contraction telescopes down the
 2-adic tower: if every `S (a+1) ≤ theta*S a` and `S` is nonnegative, then
-`S a ≤ theta^a*S 0`. This is the transfer-operator spectral-radius shape of the proposed route. -/
+`S a ≤ theta^a*S 0`. This is the transfer-operator spectral-radius shape of the proposed route; it is
+the generic telescope `doorIV_descent_tower_le_export` repackaged through `CocycleContraction`. -/
 theorem doorIV_hd_doubling_defect_telescope_export
     {theta : ℝ} {S : ℕ → ℝ} (hS : ∀ a, 0 ≤ S a)
     (hc : _root_.ArkLib.ProximityGap.Frontier.HDCocyclePhaseCoupling.CocycleContraction theta S) :
@@ -5322,11 +5000,6 @@ theorem doorIV_saddle_target_budget_not_vanishing_export
   _root_.ArkLib.ProximityGap.Frontier.WraparoundSaddleCreditForced.saddle_target_is_budget_not_vanishing
     hp hW hbudget
 
-/-- **[capstone, OnsetToSaddleCreditChain]** The count-positivity bridge as a stable named
-index predicate: failure of `OnsetSavesSaddle` at depth `r` implies strictly positive real-valued
-wraparound count `W r`. This remains an explicit hypothesis, not an asserted theorem. -/
-def doorIV_wraparoundCountPositive_export (m : ℕ) {p : ℕ} (g : ZMod p) (W : ℕ → ℝ) : Prop :=
-  _root_.ArkLib.ProximityGap.Frontier.OnsetToSaddleCreditChain.WraparoundCountPositive m g W
 
 /-- **[capstone, OnsetToSaddleCreditChain]** Pigeonhole below the saddle plus the explicit
 count-positivity bridge gives positive wraparound at depth `r`. The bridge is a hypothesis, not
@@ -5350,7 +5023,8 @@ theorem doorIV_credit_pos_of_pigeonhole_chain_export
     (S : Finset (Fin m → ℤ))
     (hSw : ∀ a ∈ S, _root_.ProximityGap.Frontier.A2OnsetLatticeMinimum.l1 a ≤ w)
     (hcard : p < S.card) (W : ℕ → ℝ)
-    (hbridge : doorIV_wraparoundCountPositive_export m g W)
+    (hbridge : _root_.ArkLib.ProximityGap.Frontier.OnsetToSaddleCreditChain.WraparoundCountPositive
+      m g W)
     {pp credit : ℝ} (hpp : 0 < pp) (hbudget : pp * (W r) ≤ credit) :
     0 < credit :=
   _root_.ArkLib.ProximityGap.Frontier.OnsetToSaddleCreditChain.credit_pos_of_pigeonhole_chain
@@ -5378,7 +5052,6 @@ theorem doorIV_onset_chain_saddle_spends_credit_export
 #print axioms doorIV_A2_not_onsetSavesSaddle_of_card_gt_export
 #print axioms doorIV_saddle_credit_pos_of_budget_wrap_pos_export
 #print axioms doorIV_saddle_target_budget_not_vanishing_export
-#print axioms doorIV_wraparoundCountPositive_export
 #print axioms doorIV_onset_chain_wrap_pos_of_pigeonhole_export
 #print axioms doorIV_credit_pos_of_pigeonhole_chain_export
 
@@ -5403,14 +5076,6 @@ theorem doorIV_orbitCountWall_def_export
       n * orbitCount r ≤ Wick r := by
   rfl
 
-/-- **[capstone, OrbitCountWallDichotomy]** Boolean saddle dichotomy: either onset saves the saddle
-(no short relation at depth `r`) or onset fails and the burden passes to the orbit-count branch. -/
-theorem doorIV_orbit_saddle_obligation_dichotomy_export
-    (m : ℕ) {p : ℕ} (g : ZMod p) (r : ℕ) :
-    _root_.ProximityGap.Frontier.A2OnsetLatticeMinimum.OnsetSavesSaddle m g r ∨
-      ¬ _root_.ProximityGap.Frontier.A2OnsetLatticeMinimum.OnsetSavesSaddle m g r :=
-  _root_.ArkLib.ProximityGap.Frontier.OrbitCountWallDichotomy.saddle_obligation_dichotomy
-    m g r
 
 /-- **[conditional reduction, OrbitCountWallDichotomy]** On the onset-fails branch, a per-shell
 orbit-count wall plus the explicit orbit-to-moment transfer implies the saddle bound. This is the
@@ -5451,7 +5116,6 @@ theorem doorIV_orbit_pigeonhole_routes_to_orbit_wall_export
     p g w r hwr S hSw hcard orbitCount Wick n SaddleBound htransfer hwall
 
 #print axioms doorIV_orbitCountWall_def_export
-#print axioms doorIV_orbit_saddle_obligation_dichotomy_export
 #print axioms doorIV_orbit_saddle_bound_of_onset_fail_and_wall_export
 #print axioms doorIV_orbit_pigeonhole_routes_to_orbit_wall_export
 
@@ -5461,8 +5125,9 @@ Scope: **refuted lever / obstruction**.
 
 These exports make the A10 verdict permanent: the Gross--Koblitz/norm-size route can improve the
 naive house base to an L²/AM--GM base, but the resulting no-wraparound threshold remains inactive at
-the saddle, and the L² datum does not determine the archimedean norm spread. This is not a CORE
-upper bound or a completion estimate; it is a route-elimination brick.
+the saddle. (The scratch file's numeral witnesses `2+2 = 1+3 ∧ 2·2 ≠ 1·3` and `256 < 20736` for
+"L² data do not pin the norm" are not re-exported: they mention no norm or period object.) This is
+not a CORE upper bound or a completion estimate.
 -/
 
 /-- **[A10, AM--GM]** Product of nonnegative conjugate squared moduli is bounded by the L² mean
@@ -5500,23 +5165,11 @@ theorem doorIV_A10_L2_threshold_vacuous_at_saddle_export
   _root_.ArkLib.ProximityGap.Frontier.A10GrossKoblitzSize.L2_threshold_vacuous_at_saddle
     B r e p hB hr hp
 
-/-- **[A10, obstruction]** Equal L² data can have different products: the L²/Ramanujan datum does
-not pin the norm. This is the formal spread-free-degree witness behind the route refutation. -/
-theorem doorIV_A10_L2_does_not_pin_norm_export :
-    (2 : ℝ) + 2 = 1 + 3 ∧ (2 : ℝ) * 2 ≠ 1 * 3 :=
-  _root_.ArkLib.ProximityGap.Frontier.A10GrossKoblitzSize.L2_does_not_pin_norm
-
-/-- **[A10, obstruction]** The exact n=16,r=3 spread interval is nondegenerate, so the archimedean
-norm spread carries information absent from the L² datum. -/
-theorem doorIV_A10_free_spread_nondegenerate_export : (256 : ℝ) < 20736 :=
-  _root_.ArkLib.ProximityGap.Frontier.A10GrossKoblitzSize.free_spread_nondegenerate
 
 #print axioms doorIV_A10_prod_le_mean_pow_card_export
 #print axioms doorIV_A10_norm_sq_le_fourR_pow_export
 #print axioms doorIV_A10_L2_base_le_house_base_export
 #print axioms doorIV_A10_L2_threshold_vacuous_at_saddle_export
-#print axioms doorIV_A10_L2_does_not_pin_norm_export
-#print axioms doorIV_A10_free_spread_nondegenerate_export
 
 /-! ## Door-II/Door-IV boundary phase-coherent resonator non-realizability exports.
 Scope: **obstruction**.
@@ -6228,22 +5881,21 @@ theorem doorIV_signed_value_selector_pm_b_blind_of_conjClosed_export
 #print axioms doorIV_signed_value_selector_pm_b_blind_export
 #print axioms doorIV_signed_value_selector_pm_b_blind_of_conjClosed_export
 
-/-- **[Lane 1 constraint, DoorIVLargestGapEnergyBlind]** The longest-empty-arc / largest-gap small-ball
-functional (the NON-energy small-ball quantity — max single-residue gap / longest empty arc) yields only
-the TRIVIAL linear ceiling `‖∑ z_j‖ ≤ n` for unit-modulus terms: an empty arc has no inside mass, so the
-cardinality split right-hand side is exactly `n`, blind to the gap size. Hence the largest-gap statistic
-cannot supply any √-cancellation — a door-(iv) bound must prove coherence/cancellation among the
-surviving terms, not merely exhibit a hole. NO CORE / cancellation / completion / capacity claim. -/
+/-- **[scalar bookkeeping, DoorIVLargestGapEnergyBlind]** The triangle inequality `‖∑ z_j‖ ≤ n` for
+unit-modulus terms. The source lemma carries an empty-arc set `S = ∅` that its conclusion does not
+use; this export drops it. It records only that the trivial ceiling is what an empty-arc split
+yields; it mentions no gap statistic, so it is not by itself an obstruction to any largest-gap
+method. NO CORE / cancellation / completion / capacity claim. -/
 theorem doorIV_largestGap_yields_only_trivial_ceiling_export
-    {n : ℕ} (z : Fin n → ℂ) (hz : ∀ j, ‖z j‖ = 1) (S : Finset (Fin n)) (hS : S = ∅) :
+    {n : ℕ} (z : Fin n → ℂ) (hz : ∀ j, ‖z j‖ = 1) :
     ‖∑ j, z j‖ ≤ (n : ℝ) :=
   _root_.ProximityGap.Frontier.DoorIVLargestGapEnergyBlind.largestGap_yields_only_trivial_ceiling
-    z hz S hS
+    z hz ∅ rfl
 
-/-- **[Lane 1 constraint, DoorIVLargestGapEnergyBlind]** Strict-budget obstruction: no largest-empty-arc
-split certificate can fit below a strict budget `B < n` (the split RHS is exactly `n`). A √-scale
-door-(iv) bound cannot come from the empty-arc statistic alone. NO CORE / cancellation / completion /
-capacity claim. -/
+/-- **[scalar bookkeeping, DoorIVLargestGapEnergyBlind]** For `S = ∅`, the cardinality split
+`|S| + |Sᶜ| = n` exceeds any strict budget `B < n`. A counting fact about this one split RHS; it does
+not rule out other uses of an empty-arc statistic. NO CORE / cancellation / completion / capacity
+claim. -/
 theorem doorIV_no_emptyArc_split_rhs_le_strict_budget_export
     {n : ℕ} (S : Finset (Fin n)) (hS : S = ∅) {B : ℝ} (hB : B < (n : ℝ)) :
     ¬ (S.card : ℝ) + ((Sᶜ).card : ℝ) ≤ B :=
@@ -6319,11 +5971,11 @@ theorem doorIV_qv_route_recovers_trivial_ceiling_export
   _root_.ProximityGap.Frontier.DoorIVQVCauchySchwarzCircular.qv_route_recovers_trivial_ceiling
     Mtow a hpos hdouble hmono
 
-/-- **[Lane 3 refuted-lever constraint, QVCauchySchwarzCircular — Shaw's Lever B]** No sublinear drift
-from the QV route: any drift bound strictly below the trivial ceiling, `R < a·log 2`, is NOT a
-consequence of the Cauchy-Schwarz + QV combination (which is satisfied by the full ceiling `a·log 2`).
-The Freedman QV lever alone cannot force the sublinear excess `O(log a)` the prize requires; an
-independent mean-drift control is necessary. NO CORE / cancellation / completion / capacity claim. -/
+/-- **[scalar bookkeeping, QVCauchySchwarzCircular]** Order bookkeeping: `R < a·log 2` implies
+`¬ (a·log 2 ≤ R)`. The statement mentions no Cauchy–Schwarz, quadratic-variation or drift object, so
+it does not by itself show that a sublinear drift bound fails to follow from CS + QV; that reading
+rests on the companion `doorIV_qv_route_recovers_trivial_ceiling_export` and the source discussion.
+NO CORE / cancellation / completion / capacity claim. -/
 theorem doorIV_qv_route_no_sublinear_saving_export (a : ℕ) (R : ℝ)
     (hR : R < (a : ℝ) * Real.log 2) :
     ¬ ((a : ℝ) * Real.log 2 ≤ R) :=
@@ -6333,12 +5985,15 @@ theorem doorIV_qv_route_no_sublinear_saving_export (a : ℕ) (R : ℝ)
 #print axioms doorIV_qv_route_no_sublinear_saving_export
 
 
-/-- **[Lane 3 refuted-lever capstone, DoorIVMartingaleInputCeilingCapstone]** The bounded-increment
-martingale input and the predictable-QV input converge to the IDENTICAL trivial tower ceiling
-`S_a ≤ a·log 2`; any target `R < a·log 2` is therefore outside what these inputs certify. The strict
-separation from the prize drift `a·log2/2` is exactly another `a·log2/2`. This is a citable wrapper for
-the martingale/Azuma/Freedman dead lever: no CORE / cancellation / completion / moment / capacity
-claim; a genuinely new mean-drift law is still required. -/
+/-- **[Lane 3 capstone, DoorIVMartingaleInputCeilingCapstone]** Two *deterministic* envelopes for
+a positive doubling sequence (the bounded-increment sum, and the raw squared-increment sum under an
+entered monotonicity hypothesis) both give the trivial tower ceiling `S_a ≤ a·log 2` (the first two
+conjuncts are the same proposition); any target `R < a·log 2` is therefore outside what these two
+envelopes certify. The strict separation from the prize drift slope `a·log2/2` is exactly another
+`a·log2/2`. No probability space, filtration or martingale quadratic variation is formalized, so
+this is not a theorem about Azuma/Freedman or other concentration methods in general. No CORE /
+cancellation / completion / moment / capacity claim; control of the centered excess
+`Σ(Δ_i − ½log 2) = O(log a)` is still required. -/
 theorem doorIV_martingale_inputs_all_trivial_ceiling_export
     (Mtow : ℕ → ℝ) (a : ℕ) (R : ℝ)
     (hpos : ∀ i, 0 < Mtow i) (hdouble : ∀ i, Mtow (i + 1) ≤ 2 * Mtow i)
@@ -6634,9 +6289,22 @@ theorem doorIV_below_floor_target_forces_width_or_floor_break_export
 #print axioms doorIV_below_floor_target_forces_width_or_floor_break_export
 
 
+/-- **The single generic telescope** (canonical index entry): a per-level bound
+`M (k+1) ≤ c·M k` with `0 ≤ c` iterates to `M a ≤ c^a·M 0`. Pure induction. In the dilation route
+the proven factor is `2`, so the recursion reproduces the trivial `2^a = n` ceiling rather than the
+prize `2^(a/2)` scale. The factor-2, base-one and `1 ≤ c` variants below are special cases kept only
+as deprecated entries. No CORE upper bound or cancellation claim. -/
+theorem doorIV_descent_tower_le_export {M : ℕ → ℝ} {c : ℝ} (hc : 0 ≤ c)
+    (hstep : ∀ k, M (k + 1) ≤ c * M k) :
+    ∀ a, M a ≤ c ^ a * M 0 :=
+  _root_.ArkLib.ProximityGap.Frontier.DoorIVDilationTowerSaturates.descent_tower_le hc hstep
+
+#print axioms doorIV_descent_tower_le_export
+
 /-- **[Lane 3 dyadic descent obstruction]** Iterating the per-level dilation descent
 `M (k+1) ≤ 2*M k` through `a` dyadic levels gives only `M a ≤ 2^a * M 0`, the factor-`n` trivial
-ceiling for `n=2^a`. -/
+ceiling for `n=2^a`. Special case of `doorIV_descent_tower_le_export` (deprecated). -/
+@[deprecated doorIV_descent_tower_le_export +typeChanged (since := "2026-10-29")]
 theorem doorIV_dilation_telescope_le_two_pow_mul_export (M : ℕ → ℝ)
     (hpos : ∀ k, 0 ≤ M k) (hstep : ∀ k, M (k + 1) ≤ 2 * M k) (a : ℕ) :
     M a ≤ 2 ^ a * M 0 :=
@@ -6645,7 +6313,8 @@ theorem doorIV_dilation_telescope_le_two_pow_mul_export (M : ℕ → ℝ)
 
 /-- **[Lane 3 dyadic descent obstruction]** With the base period normalized to one, pure factor-2
 recursion gives exactly `M a ≤ 2^a`. This is the trivial `M(μ_n) ≤ n` ceiling, not the prize
-`√(n log)` cancellation scale. -/
+`√(n log)` cancellation scale. Special case of `doorIV_descent_tower_le_export` (deprecated). -/
+@[deprecated doorIV_descent_tower_le_export +typeChanged (since := "2026-10-29")]
 theorem doorIV_dilation_telescope_le_two_pow_of_base_one_export (M : ℕ → ℝ)
     (hpos : ∀ k, 0 ≤ M k) (hstep : ∀ k, M (k + 1) ≤ 2 * M k)
     (hbase : M 0 = 1) (a : ℕ) :
@@ -6655,16 +6324,14 @@ theorem doorIV_dilation_telescope_le_two_pow_of_base_one_export (M : ℕ → ℝ
 
 /-- **[Lane 3 dyadic descent obstruction]** More generally, any descent with per-level factor `c`
 telescopes to `c^a * M 0`. Thus all nontrivial saving must come from a real per-level factor below the
-doubling ceiling, precisely the slack object isolated by the Door-IV probes. -/
+doubling ceiling. Special case of `doorIV_descent_tower_le_export` (deprecated). -/
+@[deprecated doorIV_descent_tower_le_export +typeChanged (since := "2026-10-29")]
 theorem doorIV_dilation_telescope_per_level_factor_export (M : ℕ → ℝ) (hpos : ∀ k, 0 ≤ M k)
     {c : ℝ} (hc1 : 1 ≤ c) (hstep : ∀ k, M (k + 1) ≤ c * M k) (a : ℕ) :
     M a ≤ c ^ a * M 0 :=
   _root_.ArkLib.ProximityGap.Frontier.DoorIVDilationDescentTelescope.telescope_per_level_factor
     M hpos hc1 hstep a
 
-#print axioms doorIV_dilation_telescope_le_two_pow_mul_export
-#print axioms doorIV_dilation_telescope_le_two_pow_of_base_one_export
-#print axioms doorIV_dilation_telescope_per_level_factor_export
 
 
 /-- **[Lane 3 dyadic descent obstruction]** Per-frequency half-subgroup control is exactly bounded by
@@ -7456,8 +7123,9 @@ theorem doorIV_unitPiece_norm_sum_sq_div_le_iff_deficitFraction_ge_export {zs : 
 
 /-- **[Lane 3 floor-route constraint — §9 bad-prime localization]** For the #464 §9 `n=32` defect
 core `S(u) = u⁴ − 196u³ + 4486u² − 21700u + 1` (`disc(S) = 2⁴¹·17²·257²`): the disc-ramification
-set `{17, 257}` (primes dividing the discriminant, where `S`'s mod-`p` root-count drops from the
-generic 4 to 3) is DISJOINT from the §9 floor-bad prime `97 = ` least prime `≡ 1 (mod 32)` (which is
+set `{17, 257}` (odd primes dividing the discriminant, where `S` has a repeated root and 3 distinct
+roots mod `p`; away from them `S` has 4 roots only for some primes — e.g. 31, 47, 79, 97 — and 0
+roots mod 3, 5, 7, 11, 13, 19, 23, 29, 37, …, so 4 is not a generic count) is DISJOINT from the §9 floor-bad prime `97 = ` least prime `≡ 1 (mod 32)` (which is
 unramified — `97 ∤ disc` — with the full 4 roots mod 97, and `17 ≢ 1 mod 32`, `257 ≠ 97`). Hence the
 discriminant / ramification locus of the defect resultant does NOT identify the floor-bad prime: a
 "ramified ⟹ bad" reading of the off-BGK floor route is refuted by explicit finite arithmetic. The
@@ -8050,29 +7718,18 @@ theorem doorIV_descentZ_card_le_natDegree_export {F : Type*} [Field F] [Decidabl
       ≤ (ArkLib.ProximityGap.EvenOddDescent.descentQuadform Pp Qp).natDegree :=
   ArkLib.ProximityGap.EvenOddDescent.descentZ_card_le_natDegree hR B
 
-/-- **[Door-IV/G1 exact incidence bound]** The same `Z` correction is bounded by the explicit word
-exponent envelope `1 + 2 * max deg(Pp) deg(Qp)`.  Thus the descent's non-symmetric branch is governed
-by word degree/exponent, not by an unproved subgroup-root `O(1)` hope. -/
-theorem doorIV_descentZ_card_le_degBound_export {F : Type*} [Field F] [DecidableEq F]
-    {Pp Qp : Polynomial F} (hR : ArkLib.ProximityGap.EvenOddDescent.descentQuadform Pp Qp ≠ 0)
-    (B : Finset F) :
-    (B.filter (fun y => (Pp.eval y) ^ 2 = y * (Qp.eval y) ^ 2)).card
-      ≤ 1 + 2 * max Pp.natDegree Qp.natDegree :=
-  ArkLib.ProximityGap.EvenOddDescent.descentZ_card_le_degBound hR B
+/-- Duplicate of `doorIV_descent_Z_card_le_degBound_export` (same source lemma
+`EvenOddDescent.descentZ_card_le_degBound`); deprecated alias. -/
+@[deprecated doorIV_descent_Z_card_le_degBound_export (since := "2026-10-29")]
+alias doorIV_descentZ_card_le_degBound_export := doorIV_descent_Z_card_le_degBound_export
 
-/-- **[Door-IV/G1 exact incidence bound]** Indicator-sum consumer form of the exponent-controlled
-`Z` bound, matching the summed A+Z descent notation.  This is the usable capstone for downstream
-formal reductions: non-symmetric agreement contributes at most `1 + 2·max(deg Pp, deg Qp)`. -/
-theorem doorIV_descentZ_indicator_sum_le_degBound_export {F : Type*} [Field F] [DecidableEq F]
-    {Pp Qp : Polynomial F} (hR : ArkLib.ProximityGap.EvenOddDescent.descentQuadform Pp Qp ≠ 0)
-    (B : Finset F) :
-    (∑ y ∈ B, (if (Pp.eval y) ^ 2 = y * (Qp.eval y) ^ 2 then 1 else 0))
-      ≤ 1 + 2 * max Pp.natDegree Qp.natDegree :=
-  ArkLib.ProximityGap.EvenOddDescent.descentZ_indicator_sum_le_degBound hR B
+/-- Duplicate of `doorIV_descent_Z_indicator_sum_le_degBound_export` (same source lemma
+`EvenOddDescent.descentZ_indicator_sum_le_degBound`); deprecated alias. -/
+@[deprecated doorIV_descent_Z_indicator_sum_le_degBound_export (since := "2026-10-29")]
+alias doorIV_descentZ_indicator_sum_le_degBound_export :=
+  doorIV_descent_Z_indicator_sum_le_degBound_export
 
 #print axioms doorIV_descentZ_card_le_natDegree_export
-#print axioms doorIV_descentZ_card_le_degBound_export
-#print axioms doorIV_descentZ_indicator_sum_le_degBound_export
 
 /-- **[Lane 1 worst-b selector obstruction]** If the frequency statistic is constant on group
 orbits, then super-level membership is exactly invariant under every orbit move. A worst-`b`
@@ -8398,12 +8055,12 @@ theorem doorIV_prizeFloorConstant_ge_superDiagonal_export
 
 #print axioms doorIV_prizeFloorConstant_ge_superDiagonal_export
 
-/-- Door-IV Lane-2 SHARPENED floor-normalized SYNTHESIS BUNDLE export: the single citable `√n`-unit
-statement with lower end lifted from bare `1` to `c₀ = (5/4)^{1/4}`.  Given the proven super-diagonal
-period floor `c₀·√n ≤ M` and the classical-overshoot refutations: (1) `c₀ ≤ M/√n`; (2) the prize-floor
-bound `M ≤ C·√n` is exactly `M/√n ≤ C`; (3) any prize-floor-certifying mechanism is door-(iv).  The
-`√n`-unit sibling of the sharpened Shaw bracket, one theorem for the prose "the prize must clear `c₀`
-and only door (iv) can cap it."  Capstone bundle; CORE not discharged. -/
+/-- Door-IV Lane-2 SHARPENED floor-normalized bundle export (`√n` floor-target units, lower end
+`c₀ = (5/4)^{1/4}`).  Given the super-diagonal floor `c₀·√n ≤ M` and the all-records
+classical-overshoot hypothesis (unsatisfiable: `⟨moment, 0⟩` violates it): (1) `c₀ ≤ M/√n`; (2) the
+√n-floor-target bound `M ≤ C·√n` (stronger than the prize `M ≤ C·√(n·L)`) is exactly `M/√n ≤ C`;
+(3) any mechanism certifying the √n floor target is door-(iv).  Conjunction of scale bookkeeping
+facts; not a statement about the prize scale.  CORE not discharged. -/
 theorem doorIV_sharpenedFloorRatioBracketedSynthesis_export
     {M nref Lref C : ℝ} (hnref : 0 < nref) (hLref : 1 < Lref)
     (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt nref ≤ M)
@@ -8426,11 +8083,11 @@ theorem doorIV_sharpenedFloorRatioBracketedSynthesis_export
 the proven super-diagonal period floor `c₀·√n ≤ M` (`c₀ = (5/4)^{1/4}`, the sharp Wick-permutation
 4th-moment constant) with the trivial cardinality ceiling `M ≤ n` (triangle inequality on a sum of `n`
 unit phases) to bracket the floor-normalized worst-frequency ratio `M/√n ∈ [c₀, √n]` with NO BGK /
-completion / classical-door hypothesis whatsoever.  This is the bedrock unconditional envelope of the
-conditional `[c₀, √L]` corridor (`doorIV_sharpenedFloorUnitCorridor_export`): the conditional Shaw/BGK
-ceiling `√L` (`< √n` for `1 < L < n`) sits strictly inside, the gap `[√L, √n]` is what a classical
-door buys for free, and the residual `[C, √L]` is the door-(iv)-only frontier.  Isolates the entire
-prize content as collapsing the unconditional `√n` ceiling to an absolute constant.  CORE
+completion / classical-door hypothesis whatsoever.  It is the unconditional envelope of the
+conditional `[c₀, √L]` corridor (`doorIV_sharpenedFloorUnitCorridor_export`), whose upper end
+`M/√n ≤ √L` is an *entered* hypothesis `M ≤ √(n·L)` — which is itself the prize with `C = 1`.  In
+floor units the prize is `M/√n ≤ C·√L`, so no classical door is known to deliver the `[√L, √n]`
+shave, and the prize does not ask for the ratio to collapse to a constant.  CORE
 `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
 theorem doorIV_floorUnitUnconditionalBracket_export {M n : ℝ} (hn : 0 < n)
     (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt n ≤ M)
@@ -8442,13 +8099,13 @@ theorem doorIV_floorUnitUnconditionalBracket_export {M n : ℝ} (hn : 0 < n)
 
 #print axioms doorIV_floorUnitUnconditionalBracket_export
 
-/-- Door-IV Lane-2 STRICT floor-unit corridor nesting export `[c₀,√L] ⊊ [c₀,√n]` in the prize
-regime `1 < L < n`.  Locks the gap decomposition behind the unconditional bracket
-(`doorIV_floorUnitUnconditionalBracket_export`): with the shared proven super-diagonal floor lower end
-`c₀ ≤ M/√n` and the classical-door BGK ceiling `M ≤ √(n·L)` giving the conditional ceiling `M/√n ≤ √L`,
-the strict separation `√L < √n` (`L < n`) certifies that a classical door shaves `[√L, √n]` off the
-unconditional ceiling for free, leaving the residual `[c₀, √L]` (still unbounded as `√L = √log(p/n) → ∞`)
-as the door-(iv)-only frontier.  CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+/-- Door-IV Lane-2 STRICT floor-unit corridor nesting export `[c₀,√L] ⊊ [c₀,√n]` in the regime
+`1 < L < n`, *conditional on* `hceilL : M ≤ √(n·L)`.  From the super-diagonal floor `c₀ ≤ M/√n` and
+the entered ceiling `M ≤ √(n·L)` (which already is the prize bound with `C = 1`), the ratio lies in
+`[c₀, √L]`, and `√L < √n`.  Scale bookkeeping only: it does not show any door delivers `M ≤ √(n·L)`
+(classical doors are modelled as overshooting it), and the remaining `[c₀, √L]` range is not an
+obligation of the prize, which permits `M/√n` up to `C·√L`.  CORE `M(μ_n) ≤ C·√(n·log(p/n))`
+remains OPEN. -/
 theorem doorIV_floorUnitCorridorStrictNesting_export {M n L : ℝ} (hn : 0 < n)
     (hL : 1 < L) (hLn : L < n)
     (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt n ≤ M)
@@ -8724,23 +8381,12 @@ theorem doorIV_perLevelFactorScaledUncompensatedBlockBreaksBudget_export {b r : 
 
 #print axioms doorIV_perLevelFactorScaledUncompensatedBlockBreaksBudget_export
 
-/-- Door-IV Lane-3 PER-LEVEL FACTOR prize-budget export: the corrected `√2` per-level gate is the exact
-factor target singled out by the recursion probe.  Supplying `LevelRatioBoundNZ … √2`, the dyadic tower
-identity `(√2)^μ ≤ √n`, and a base `C√L` estimate yields the citable prize-shaped budget `C√(nL)`.
-The open arithmetic content is precisely the `√2` gate; this theorem only composes the telescope and
-real-algebra budget conversion. -/
-theorem doorIV_perLevelFactorSqrtTwoPrizeBudget_export
-    {F : Type*} [Field F] [Fintype F] [DecidableEq F] [Nontrivial F]
-    {ψ : AddChar F ℂ} {G : Finset F} {ζ : F} {C L n : ℝ} {μ : ℕ}
-    (hr : SubgroupGaussSumSecondMoment.LevelRatioBoundNZ ψ G ζ μ (Real.sqrt 2))
-    (h_dim : (Real.sqrt 2) ^ μ ≤ Real.sqrt n)
-    (h_base : ProximityGap.Frontier.DoorIVXGatedTelescopeBridge.levelWorst ψ G ζ 0 ≤ C * Real.sqrt L)
-    (hC : 0 ≤ C) (hL : 0 ≤ L) (hn : 0 ≤ n) :
-    ProximityGap.Frontier.DoorIVXGatedTelescopeBridge.levelWorst ψ G ζ μ ≤ C * Real.sqrt (n * L) :=
-  ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.prizeBudget_of_sqrtTwo_perLevelFactor
-    hr h_dim h_base hC hL hn
-
-#print axioms doorIV_perLevelFactorSqrtTwoPrizeBudget_export
+/-- Duplicate of `doorIV_levelWorst_le_prize_budget_of_xgate_export` (identical statement; the
+source `DoorIVPerLevelFactorSubTwo.prizeBudget_of_sqrtTwo_perLevelFactor` delegates to
+`DoorIVXGatePrizeBudget.levelWorst_le_prize_budget_of_xgate`); deprecated alias. -/
+@[deprecated doorIV_levelWorst_le_prize_budget_of_xgate_export (since := "2026-10-29")]
+alias doorIV_perLevelFactorSqrtTwoPrizeBudget_export :=
+  doorIV_levelWorst_le_prize_budget_of_xgate_export
 
 /-- Synthesis-scale BRIDGE export: the reduction-half normalization scale `shawScale q n` is the
 door-half BGK scale at the concrete thinness index `L = log(q/n)`, so the two `_ShawGrandSynthesis`
@@ -8753,9 +8399,11 @@ theorem shawScale_eq_bgkScale_export (q n : ℝ) :
 #print axioms shawScale_eq_bgkScale_export
 
 /-- Synthesis-gap CLOSED-FORM export: in the prize regime `q > n > 0`, the reduction target
-`shawScale q n` exceeds the genuine prize floor `prizeScale n = √n` by EXACTLY the factor
+`shawScale q n` (the actual prize scale `√(n·log(q/n))`) exceeds the √n floor target
+`NoFifthDoorTetrachotomy.prizeScale n = √n` by EXACTLY the factor
 `√(log(q/n))` — the kernel-checked form of `_ShawGrandSynthesis`'s prose "open `√L`-gap".  Asserts
-NOTHING about whether the factor is bounded; absorbing it is exactly the open door-(iv) problem. -/
+NOTHING about whether the factor is bounded. The prize itself allows this factor; absorbing it would
+prove the stronger √n floor target, not merely the prize. -/
 theorem shawScale_div_prizeScale_export (q n : ℝ) (hn : 0 < n) (hnq : n < q) :
     ProximityGap.Frontier.ShawValueCapstone.shawScale q n
       / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n
@@ -8765,8 +8413,8 @@ theorem shawScale_div_prizeScale_export (q n : ℝ) (hn : 0 < n) (hnq : n < q) :
 #print axioms shawScale_div_prizeScale_export
 
 /-- Synthesis-gap STRICT-SEPARATION export: in the thin regime `log(q/n)>1`, the Shaw/BGK
-normalization scale strictly exceeds the genuine prize floor.  This is the positive-form guard for the
-open door-(iv) gap: the two scales are not accidentally identical once the logarithmic factor bites.
+normalization scale (the prize scale) strictly exceeds the √n floor target: the two scales are not
+accidentally identical once the logarithmic factor bites.
 Pure scale bookkeeping; no CORE/cancellation claim. -/
 theorem prizeScale_lt_shawScale_of_one_lt_log_export (q n : ℝ) (hn : 0 < n)
     (hL : 1 < Real.log (q / n)) :
@@ -8777,7 +8425,7 @@ theorem prizeScale_lt_shawScale_of_one_lt_log_export (q n : ℝ) (hn : 0 < n)
 
 #print axioms prizeScale_lt_shawScale_of_one_lt_log_export
 
-/-- Synthesis-gap SCALE-BOUND export: comparing the Shaw/BGK scale to the genuine prize floor by a
+/-- Synthesis-gap SCALE-BOUND export: comparing the Shaw/BGK scale to the √n floor target (stronger than the prize) by a
 constant `K` is equivalent to bounding the exact gap factor `√log(q/n)` by `K`.  Scale-only bookkeeping;
 no CORE/cancellation claim. -/
 theorem shawScale_le_const_mul_prizeScale_iff_gap_le_export (q n K : ℝ) (hn : 0 < n)
@@ -8803,11 +8451,11 @@ theorem shawScale_family_le_const_mul_prizeScale_iff_gap_le_export {ι : Type*} 
 
 #print axioms shawScale_family_le_const_mul_prizeScale_iff_gap_le_export
 
-/-- Synthesis-gap CONSUMER export: in the prize regime `q > n > 0`, the genuine cancellation ratio
+/-- Synthesis-gap CONSUMER export: in the prize regime `q > n > 0`, the √n-floor ratio
 `M / prizeScale n = M/√n` equals the campaign Shaw value `shawValue q n M` amplified by EXACTLY the gap
-factor `√(log(q/n))`.  This is the precise reason `Sh = O(1)` (the reduction) does NOT by itself bound
-the genuine `M/√n` cancellation: the `√(log(q/n))` factor must be absorbed, which is the open door-(iv)
-content.  Pure algebra over the definitional bridge; no boundedness claim. -/
+factor `√(log(q/n))`.  So `Sh = O(1)` — which is exactly the prize `M ≤ C·√(n·log(q/n))` — does not
+by itself bound the *stronger* √n-floor ratio `M/√n`; the two differ by the `√(log(q/n))` factor,
+which the prize does not ask to absorb.  Pure algebra over the definitional bridge; no boundedness claim. -/
 theorem prizeFloorRatio_eq_shawValue_mul_gap_export (q n M : ℝ) (hn : 0 < n) (hnq : n < q) :
     M / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n
       = _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue q n M
@@ -8819,7 +8467,7 @@ theorem prizeFloorRatio_eq_shawValue_mul_gap_export (q n M : ℝ) (hn : 0 < n) (
 
 
 /-- Synthesis-gap ONE-SIDED BOUND export: a pointwise Shaw-value bound `shawValue q n M ≤ C` gives a
-genuine prize-floor cancellation bound only after paying the displayed `√(log(q/n))` multiplier.  This
+√n-floor-target cancellation bound only after paying the displayed `√(log(q/n))` multiplier.  This
 is the operational no-go form of the scale bridge: the reduction's constant bound does not silently
 become an `O(1)` bound against `√n`; the exact gap factor remains. -/
 theorem prizeFloorRatio_le_shawBound_mul_gap_export (q n M C : ℝ) (hn : 0 < n) (hnq : n < q)
@@ -8834,7 +8482,7 @@ theorem prizeFloorRatio_le_shawBound_mul_gap_export (q n M C : ℝ) (hn : 0 < n)
 /-- Synthesis-gap FAMILY BOUND export: a uniform Shaw-value bound over a prize-regime family transports
 to pointwise prize-floor ratios with the exact logarithmic envelope
 `Mᵢ/√nᵢ ≤ C·√(log(qᵢ/nᵢ))`.  No CORE/cancellation claim is made; this records exactly what the
-reduction alone buys before the open door-(iv) gap is absorbed. -/
+reduction (= the prize) gives for the stronger √n-floor ratio. -/
 theorem prizeFloorRatio_family_le_of_uniformShawBound_export {ι : Type*} {q n M : ι → ℝ} {C : ℝ}
     (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i)
     (hSh : _root_.ProximityGap.Frontier.ShawValueCapstone.UniformShawBound q n M C) :
@@ -8846,8 +8494,7 @@ theorem prizeFloorRatio_family_le_of_uniformShawBound_export {ι : Type*} {q n M
 #print axioms prizeFloorRatio_family_le_of_uniformShawBound_export
 
 
-
-/-- Synthesis-gap SAME-CONSTANT FAMILY export: for any proposed constant `C`, the genuine floor-scale
+/-- Synthesis-gap SAME-CONSTANT FAMILY export: for any proposed constant `C`, the √n-floor-target
 family bound `Mᵢ/√nᵢ ≤ C` is equivalent to the gap-amplified Shaw bound `Shᵢ·√log(qᵢ/nᵢ) ≤ C` with
 the SAME `C`.  This is the exact constant-preserving form of the Shaw-scale bridge after the open gap
 factor is displayed. -/
@@ -8861,8 +8508,8 @@ theorem prizeFloorRatio_familyBound_iff_gapAmplifiedShaw_familyBound_export {ι 
 
 #print axioms prizeFloorRatio_familyBound_iff_gapAmplifiedShaw_familyBound_export
 
-/-- Synthesis-gap EXACT BOUNDEDNESS export: over a prize-regime family, boundedness of the genuine
-floor-scale ratios `Mᵢ/√nᵢ` is exactly boundedness of the Shaw values after multiplying by the displayed
+/-- Synthesis-gap EXACT BOUNDEDNESS export: over a prize-regime family, boundedness of the √n-floor-target
+ratios `Mᵢ/√nᵢ` is exactly boundedness of the Shaw values after multiplying by the displayed
 `√log` gap factor.  This is the citable boundedness form of `M/√n = Sh·√log`: a Shaw `O(1)` statement
 becomes a floor-scale prize `O(1)` statement only for the gap-amplified Shaw quantity. -/
 theorem prizeFloorRatio_bddAbove_iff_gapAmplifiedShaw_bddAbove_export {ι : Type*}
@@ -8893,7 +8540,7 @@ theorem prizeFloorRatio_unbounded_iff_gapAmplifiedShaw_unbounded_export {ι : Ty
 #print axioms prizeFloorRatio_unbounded_iff_gapAmplifiedShaw_unbounded_export
 
 /-- Synthesis-gap INVERSE CONSUMER export: under positive logarithmic thinness, the Shaw value is the
-genuine prize-floor ratio divided by the exact gap factor.  This is a normalization identity only, not
+√n-floor-target ratio divided by the exact gap factor.  This is a normalization identity only, not
 an upper or lower bound. -/
 theorem shawValue_eq_prizeFloorRatio_div_gap_export (q n M : ℝ) (hn : 0 < n) (hnq : n < q)
     (hL : 0 < Real.log (q / n)) :
@@ -8919,7 +8566,7 @@ theorem shawValue_family_eq_prizeFloorRatio_div_gap_export {ι : Type*} {q n M :
 
 #print axioms shawValue_family_eq_prizeFloorRatio_div_gap_export
 
-/-- Synthesis-gap INVERSE BOUND export: under positive logarithmic thinness, a genuine prize-floor
+/-- Synthesis-gap INVERSE BOUND export: under positive logarithmic thinness, a √n-floor-target
 ratio bound `M/√n ≤ B` gives Shaw-value control only after dividing by the exact gap factor:
 `Sh(q,n,M) ≤ B/√(log(q/n))`.  This is pure normalization bookkeeping and makes no CORE/cancellation
 claim. -/
@@ -8933,7 +8580,7 @@ theorem shawValue_le_prizeFloorBound_div_gap_export (q n M B : ℝ) (hn : 0 < n)
 
 #print axioms shawValue_le_prizeFloorBound_div_gap_export
 
-/-- Synthesis-gap FAMILY INVERSE BOUND export: a uniform genuine prize-floor ratio bound over a
+/-- Synthesis-gap FAMILY INVERSE BOUND export: a uniform √n-floor-target ratio bound over a
 positive-thinness family transports pointwise to `Shᵢ ≤ B/√(log(qᵢ/nᵢ))`.  Together with the forward
 bound consumer this records the exact one-sided `√log` conversion between the two normalizations. -/
 theorem shawValue_family_le_prizeFloorBound_div_gap_export {ι : Type*} {q n M : ι → ℝ} {B : ℝ}
@@ -8948,9 +8595,9 @@ theorem shawValue_family_le_prizeFloorBound_div_gap_export {ι : Type*} {q n M :
 #print axioms shawValue_family_le_prizeFloorBound_div_gap_export
 
 /-- Synthesis-gap INVERSE NO-GO export: if a prize-regime instance has a positive Shaw-value floor
-`c ≤ shawValue q n M` and a genuine prize-floor ratio bound `M/√n ≤ B`, then the gap factor itself is
+`c ≤ shawValue q n M` and a √n-floor-target ratio bound `M/√n ≤ B`, then the gap factor itself is
 bounded by `√(log(q/n)) ≤ B/c`.  Thus any constant prize-floor bound with nonvanishing Shaw value has
-already absorbed the open door-(iv) gap. -/
+already absorbed the `√log` factor separating the prize from the √n floor target. -/
 theorem gap_le_prizeFloorBound_div_shawFloor_export (q n M B c : ℝ) (hn : 0 < n) (hnq : n < q)
     (hc : 0 < c) (hfloor : _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue q n M ≥ c)
     (hPrize : M / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n ≤ B) :
@@ -8960,8 +8607,8 @@ theorem gap_le_prizeFloorBound_div_shawFloor_export (q n M B c : ℝ) (hn : 0 < 
 
 #print axioms gap_le_prizeFloorBound_div_shawFloor_export
 
-/-- Synthesis-gap FAMILY INVERSE NO-GO export: if a prize-regime family has uniformly bounded genuine
-prize-floor ratios and every Shaw value stays above a fixed positive floor `c`, then every gap factor is
+/-- Synthesis-gap FAMILY INVERSE NO-GO export: if a prize-regime family has uniformly bounded √n-floor-target
+ratios and every Shaw value stays above a fixed positive floor `c`, then every gap factor is
 pointwise bounded by the same quotient `B/c`.  This is only algebra over the Shaw-scale bridge; it makes
 no cancellation, anti-concentration, or CORE claim. -/
 theorem gap_family_le_prizeFloorBound_div_shawFloor_export {ι : Type*} {q n M : ι → ℝ} {B c : ℝ}
@@ -8975,8 +8622,8 @@ theorem gap_family_le_prizeFloorBound_div_shawFloor_export {ι : Type*} {q n M :
 #print axioms gap_family_le_prizeFloorBound_div_shawFloor_export
 
 /-- Synthesis-gap UNBOUNDED-DRIFT export: if the exact gap factors `√(log(qᵢ/nᵢ))` drift past every
-rescaled target and every Shaw value stays above a fixed positive floor `c`, then the genuine
-prize-floor ratios `Mᵢ/√nᵢ` also drift past every target.  This is the explicit contrapositive
+rescaled target and every Shaw value stays above a fixed positive floor `c`, then the √n-floor-target
+ratios `Mᵢ/√nᵢ` also drift past every target.  This is the explicit contrapositive
 pressure behind the gap no-go: a constant prize-floor bound with nonvanishing Shaw value already
 requires controlling the open door-(iv) `√log` gap.  Pure algebra over `M/√n = Sh·√log`; no CORE or
 cancellation claim. -/
@@ -8992,11 +8639,11 @@ theorem prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor_export {ι : Ty
 
 #print axioms prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor_export
 
-/-- Synthesis-gap BOUNDEDNESS NO-GO export: if genuine prize-floor ratios are uniformly bounded and
+/-- Synthesis-gap BOUNDEDNESS NO-GO export: if √n-floor-target ratios are uniformly bounded and
 every Shaw value stays above a fixed positive floor `c`, then the exact `√log` gap factors are uniformly
 bounded too.  This existential wrapper is the boundedness-form companion to the pointwise inverse no-go;
 it makes explicit that an `O(1)` prize-floor theorem with nonvanishing Shaw value already controls the
-open door-(iv) gap. -/
+`√log` gap between the prize scale and the √n floor target. -/
 theorem gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor_export {ι : Type*}
     {q n M : ι → ℝ} {c : ℝ}
     (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hc : 0 < c)
@@ -9009,7 +8656,7 @@ theorem gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor_export {ι : Type
 
 #print axioms gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor_export
 
-/-- Synthesis-gap UNBOUNDEDNESS CONTRADICTION export: uniformly bounded genuine prize-floor ratios
+/-- Synthesis-gap UNBOUNDEDNESS CONTRADICTION export: uniformly bounded √n-floor-target ratios
 and a fixed positive Shaw-value floor forbid the exact `√log` gap from drifting past every proposed
 bound.  This is the direct contradiction form of the boundedness no-go; pure scale algebra, no CORE
 claim. -/
@@ -9024,7 +8671,7 @@ theorem not_gap_unbounded_of_prizeFloorRatio_bddAbove_and_shawFloor_export {ι :
     hn hnq hc hfloor hPrizeBdd
 
 #print axioms not_gap_unbounded_of_prizeFloorRatio_bddAbove_and_shawFloor_export
-/-- Synthesis-gap VANISHING-SHAW export: if genuine prize-floor ratios stay bounded by a nonnegative
+/-- Synthesis-gap VANISHING-SHAW export: if √n-floor-target ratios stay bounded by a nonnegative
 constant `B` while the exact gap factors `√(log(qᵢ/nᵢ))` drift past every target, then the Shaw values
 become arbitrarily small along a subsequence.  This is the complementary no-go to the positive-Shaw
 floor drift theorem: over an unbounded `√log` regime, bounded `Mᵢ/√nᵢ` cannot coexist with a
@@ -9041,7 +8688,7 @@ theorem shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound_export 
 
 #print axioms shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound_export
 
-/-- Synthesis-gap POSITIVE-SHAW-FLOOR NO-GO export: if genuine prize-floor ratios stay bounded by a
+/-- Synthesis-gap POSITIVE-SHAW-FLOOR NO-GO export: if √n-floor-target ratios stay bounded by a
 nonnegative constant while the exact gap factors `√(log(qᵢ/nᵢ))` drift past every target, then there is
 no fixed positive constant below all Shaw values.  This is the existential consumer form of the
 arbitrary-small Shaw theorem: bounded `Mᵢ/√nᵢ` over an unbounded synthesis-gap regime forces the Shaw
@@ -9059,7 +8706,7 @@ theorem not_exists_positive_shawFloor_of_gap_unbounded_and_prizeFloorBound_expor
 #print axioms not_exists_positive_shawFloor_of_gap_unbounded_and_prizeFloorBound_export
 
 /-- Synthesis-gap PRIZE-RATIO BOUNDEDNESS NO-GO export: a positive uniform Shaw floor plus unbounded
-exact gap factors forbids any uniform upper bound on the genuine ratios `Mᵢ/√nᵢ`.  This is the
+exact gap factors forbids any uniform upper bound on the √n-floor ratios `Mᵢ/√nᵢ`.  This is the
 existential boundedness consumer of the drift theorem; pure scale algebra, no CORE/cancellation claim. -/
 theorem not_prizeFloorRatio_bddAbove_of_gap_unbounded_and_shawFloor_export {ι : Type*}
     {q n M : ι → ℝ} {c : ℝ}
@@ -9073,8 +8720,19 @@ theorem not_prizeFloorRatio_bddAbove_of_gap_unbounded_and_shawFloor_export {ι :
 
 #print axioms not_prizeFloorRatio_bddAbove_of_gap_unbounded_and_shawFloor_export
 
-/-- Door-IV Lane-2 EXACT SUBGROUP PARSEVAL ENERGY export: for the order-`d` subgroup
-indicator `1_{μ_d}` in `ZMod N`, the full DFT spectral energy is exactly `N·d`.  This is
+/-! ### Additive-kernel indicator exports (`ZModSubgroupSaturation.subgroupIndicator`)
+
+**Scope warning.** `subgroupIndicator d : ZMod N → ℂ` is `j ↦ if d·j = 0 then 1 else 0`, the
+indicator of the *additive* kernel `{j : d·j = 0}` (the order-`d` additive subgroup of `ZMod N` when
+`d ∣ N`). It is **not** the multiplicative subgroup `μ_d ⊆ 𝔽_q^×` whose Gauss periods are the prize
+object. Its DFT is exactly `d` at every frequency `k ≡ 0 (mod d)` and `0` elsewhere (e.g. `N = 12`,
+`d = 3`: magnitudes `3,0,0,3,0,0,…`), so its off-DC peak *equals* `d`, which exceeds
+`C·√(d·log(N/d))` for large `d`. The exports below are therefore exact Parseval/DC bookkeeping for
+this additive-kernel model; for it the "descent to `C·√(d·log(N/d))`" is false, not merely missing,
+and none of them is a statement about the prize object. -/
+
+/-- Door-IV Lane-2 EXACT SUBGROUP PARSEVAL ENERGY export: for the order-`d` additive-kernel
+indicator `subgroupIndicator d` (`j ↦ [d·j = 0]`) in `ZMod N`, the full DFT spectral energy is exactly `N·d`.  This is
 the kernel-checked Plancherel normalization substrate behind the Shaw-value floor, not a
 per-frequency peak bound and not CORE cancellation. -/
 theorem doorIV_subgroupIndicator_total_energy_export {N : ℕ} [NeZero N] {d : ℕ} (hd : d ∣ N) :
@@ -9119,8 +8777,8 @@ theorem doorIV_subgroupIndicator_offDC_mean_le_order_export {N : ℕ} [NeZero N]
 
 
 /-- Door-IV Lane-2 DC VALUE export: for the order-`d` subgroup indicator, the zero-frequency
-coefficient is exactly the subgroup order.  This is the DC term that must be removed before the
-prize object is the off-DC maximum; it is normalization bookkeeping, not cancellation. -/
+coefficient is exactly the subgroup order.  This is the DC term removed before taking the off-DC
+maximum; it is normalization bookkeeping, not cancellation. -/
 theorem doorIV_subgroupIndicator_dc_value_export {N : ℕ} [NeZero N] {d : ℕ} (hd : d ∣ N) :
     (ZMod.dft
       (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
@@ -9131,7 +8789,7 @@ theorem doorIV_subgroupIndicator_dc_value_export {N : ℕ} [NeZero N] {d : ℕ} 
 
 /-- Door-IV Lane-2 DC NORM export: the magnitude of the zero-frequency subgroup-indicator DFT
 coefficient is exactly `d`.  This pins the DC-dominated all-frequency maximum separately from the
-off-DC prize maximum. -/
+off-DC maximum. -/
 theorem doorIV_subgroupIndicator_dc_norm_export {N : ℕ} [NeZero N] {d : ℕ} (hd : d ∣ N) :
     ‖(ZMod.dft
       (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
@@ -9142,7 +8800,7 @@ theorem doorIV_subgroupIndicator_dc_norm_export {N : ℕ} [NeZero N] {d : ℕ} (
 
 /-- Door-IV Lane-2 DC/OFF-DC SPECTRAL GAP export: every off-DC coefficient is bounded by the
 trivial completion gap relative to the DC coefficient, `M² ≤ ((N-d)/d)·|DC|²`.  This formally
-separates the off-DC prize object from the DC term; the factor is the completion fence, not CORE. -/
+separates the off-DC coefficients from the DC term; the factor is the completion fence, not CORE. -/
 theorem doorIV_offDC_peak_sq_le_gap_mul_dc_sq_export {N : ℕ} [NeZero N] {d : ℕ}
     (hd : d ∣ N) {k₀ : ZMod N} (hk₀ : k₀ ∈ (Finset.univ.erase (0 : ZMod N)))
     (hd0 : 0 < d) :
@@ -9178,7 +8836,8 @@ theorem doorIV_offDC_peak_le_sqrt_gap_mul_dc_export {N : ℕ} [NeZero N] {d : �
 /-- Door-IV Lane-2 EXACT OFF-DC PEAK BRACKET export (squared form): there is an off-DC
 frequency whose squared subgroup-indicator DFT magnitude lies between the exact off-DC mean
 `(N·d - d²)/(N - 1)` and the exact off-DC total energy `N·d - d²`.  This is the honest
-Plancherel-floor-to-completion-ceiling bracket on the concrete prize object.
+Plancherel-floor-to-completion-ceiling bracket for the additive-kernel indicator (not the prize
+object).
 It is a floor/ceiling
 substrate only: no CORE upper bound, cancellation, anti-concentration, moment-saving, or capacity
 claim. -/
@@ -9199,8 +8858,9 @@ theorem doorIV_exists_offDC_peak_sq_bracket_export {N : ℕ} [NeZero N] {d : ℕ
 
 /-- Door-IV Lane-2 EXACT OFF-DC PEAK BRACKET export (norm form): the same concrete off-DC
 frequency has norm between `sqrt((N·d - d²)/(N - 1))` and `sqrt(N·d - d²)`.  The lower endpoint is
-only the Plancherel floor and the upper endpoint is only the trivial `√(N·d)` completion fence;
-CORE remains the missing descent to `C·sqrt(d·log(N/d))`. -/
+only the Plancherel floor and the upper endpoint is only the trivial `√(N·d)` completion fence.
+For this additive-kernel indicator the true off-DC peak is exactly `d`, so no descent to
+`C·sqrt(d·log(N/d))` holds; CORE concerns the multiplicative `μ_d` periods instead. -/
 theorem doorIV_exists_offDC_peak_bracket_export {N : ℕ} [NeZero N] {d : ℕ}
     (hd : d ∣ N) (hN1 : 1 < N) :
     ∃ k₀ ∈ (Finset.univ.erase (0 : ZMod N)),
@@ -9262,7 +8922,7 @@ theorem doorIV_exists_offDC_peak_sq_ge_sharpFloor_export {N : ℕ} [NeZero N]
 
 /-- Door-IV Lane-2 SHARP OFF-DC PEAK FLOOR export, norm form: an off-DC DFT coefficient
 has magnitude at least `sqrt(d*(1-(d-1)/(N-1)))`.  This pins the Plancherel floor on
-the prize object in its sharp `sqrt(d*(1-o(1)))` form; no cancellation or CORE
+the additive-kernel indicator in its sharp `sqrt(d*(1-o(1)))` form (not the prize object); no cancellation or CORE
 upper-bound claim. -/
 theorem doorIV_exists_offDC_peak_ge_sqrt_sharpFloor_export {N : ℕ} [NeZero N]
     {d : ℕ} (hd : d ∣ N) (hN1 : 1 < N) :
@@ -9277,8 +8937,8 @@ theorem doorIV_exists_offDC_peak_ge_sqrt_sharpFloor_export {N : ℕ} [NeZero N]
 #print axioms doorIV_exists_offDC_peak_ge_sqrt_sharpFloor_export
 
 
-/-- Door-IV Lane-2 SHARP OFF-DC PEAK BRACKET export, squared form: the concrete off-DC
-prize object lies between the sharp Plancherel floor `d*(1-(d-1)/(N-1))` and the
+/-- Door-IV Lane-2 SHARP OFF-DC PEAK BRACKET export, squared form: some off-DC coefficient of the
+additive-kernel indicator lies between the sharp Plancherel floor `d*(1-(d-1)/(N-1))` and the
 trivial completion ceiling `N*d-d^2`.  This is a floor-to-fence bracket, not CORE. -/
 theorem doorIV_exists_offDC_peak_sq_bracket_sharp_export {N : ℕ} [NeZero N]
     {d : ℕ} (hd : d ∣ N) (hN1 : 1 < N) :
@@ -9297,7 +8957,8 @@ theorem doorIV_exists_offDC_peak_sq_bracket_sharp_export {N : ℕ} [NeZero N]
 
 /-- Door-IV Lane-2 SHARP OFF-DC PEAK BRACKET export, norm form: the off-DC peak is bracketed
 between `sqrt(d*(1-(d-1)/(N-1)))` and `sqrt(N*d-d^2)`.  The upper endpoint is still only the
-completion fence; the missing CORE theorem is the descent to `C*sqrt(d*log(N/d))`. -/
+completion fence. For this additive-kernel indicator the off-DC peak is exactly `d`, so the descent
+to `C*sqrt(d*log(N/d))` is false here; this is not the CORE object. -/
 theorem doorIV_exists_offDC_peak_bracket_sharp_export {N : ℕ} [NeZero N]
     {d : ℕ} (hd : d ∣ N) (hN1 : 1 < N) :
     ∃ k₀ ∈ (Finset.univ.erase (0 : ZMod N)),
@@ -9626,27 +9287,17 @@ theorem doorIV_shawValueFamilySharpenedBGKCorridorPackage_export {ι : Type*} {M
 
 #print axioms doorIV_shawValueFamilySharpenedBGKCorridorPackage_export
 
-/-- Door-IV Lane-3 DILATION-TOWER abstract export: any fixed per-level descent factor `c` iterates as
-`c^a`.  In the dilation route the proven factor is `2`, so the recursion reproduces the trivial
-`2^a = n` ceiling rather than the prize `2^(a/2)` scale.  Constraint packaging only; no CORE upper
-bound or cancellation claim. -/
-theorem doorIV_descent_tower_le_export {M : ℕ → ℝ} {c : ℝ} (hc : 0 ≤ c)
-    (hstep : ∀ k, M (k + 1) ≤ c * M k) :
-    ∀ a, M a ≤ c ^ a * M 0 :=
-  _root_.ArkLib.ProximityGap.Frontier.DoorIVDilationTowerSaturates.descent_tower_le hc hstep
-
-#print axioms doorIV_descent_tower_le_export
-
 /-- Door-IV Lane-3 DILATION-TOWER trivial-saturation export: the factor-`2` recursion plus singleton
 base mass `≤ 1` gives `M a ≤ 2^a`, exactly the trivial cardinality ceiling.  This is the stable citable
-form of the no-√-saving lock for the iterated dyadic descent route. -/
+form of the no-√-saving lock for the iterated dyadic descent route. Special case of
+`doorIV_descent_tower_le_export` (deprecated). -/
+@[deprecated doorIV_descent_tower_le_export +typeChanged (since := "2026-10-29")]
 theorem doorIV_dilation_tower_saturates_trivial_export {M : ℕ → ℝ}
     (hstep : ∀ k, M (k + 1) ≤ 2 * M k) (hbase : M 0 ≤ 1) :
     ∀ a, M a ≤ 2 ^ a :=
   _root_.ArkLib.ProximityGap.Frontier.DoorIVDilationTowerSaturates.dilation_tower_saturates_trivial
     hstep hbase
 
-#print axioms doorIV_dilation_tower_saturates_trivial_export
 
 /-- Door-IV Lane-3 CONCRETE dilation-tower export: along a descending dyadic chain of actual finite
 sets, iterating `worstPeriod ψ (G k) ≤ 2 * worstPeriod ψ (G(k+1))` gives
@@ -9714,23 +9365,5 @@ theorem doorIV_pooledTail_boundedBelow_gives_prizeScale_export
 
 #print axioms doorIV_pooledTail_boundedBelow_gives_prizeScale_export
 
-/-- Door-IV Lane-1/2 pooled-tail probe anchor export: the rational measured pooled-tail model
-`11/20` is strictly below the Gaussian-modulus reference constant `1`, recording the heavier-than-iid
-pooled extreme tail as a kernel-checked numeric comparison. -/
-theorem doorIV_pooledTail_heavier_than_gaussian_export :
-    _root_.ArkLib.ProximityGap.Frontier.DoorIVPooledTail.measuredPooledTailConst <
-      _root_.ArkLib.ProximityGap.Frontier.DoorIVPooledTail.gaussianModulusTailConst :=
-  _root_.ArkLib.ProximityGap.Frontier.DoorIVPooledTail.pooled_tailConst_heavier_than_gaussian
-
-#print axioms doorIV_pooledTail_heavier_than_gaussian_export
-
-/-- Door-IV Lane-1/2 pooled-tail positivity export: the same rational measured pooled-tail model is
-strictly positive, so its associated prize-scale inflation factor is finite.  Numeric probe anchor only;
-it does not prove a uniform lower bound for the real family. -/
-theorem doorIV_measuredPooledTailConst_pos_export :
-    0 < _root_.ArkLib.ProximityGap.Frontier.DoorIVPooledTail.measuredPooledTailConst :=
-  _root_.ArkLib.ProximityGap.Frontier.DoorIVPooledTail.measuredPooledTailConst_pos
-
-#print axioms doorIV_measuredPooledTailConst_pos_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex

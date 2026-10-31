@@ -6,6 +6,26 @@ At the prize rate exactly (`2k = n`), SYZ38's `SylvesterInjective` residual is *
 field-independent**; SYZ39's genuine bad primes are a **rate > 1/2** phenomenon. The mechanism is a
 combinatorial-slack + bounded-μ-basis-imbalance argument, not a resultant nonvanishing.
 
+## Erratum (audit 2026-10)
+
+The probe cover builders previously accepted `|A ∪ B ∪ C| ≤ n` (e.g. three 19-subsets of `[28]`
+covering 27 points), so many "covers" were not ambient covers of `[n]`. With the builders fixed to
+require union `= [n]` (and one fixed integer labeling per cover across primes):
+
+- `probe_466_g172_sylvester_ratehalf_rank.py`: 455 genuine covers, C1 failures 0, positive-kernel
+  instances 0, field flips 0 (sampled primes only; finite evidence).
+- `probe_466_g172_margin_robustness.py`: 65457 triples, max imbalance 1, but **min margin
+  `d1 − budget = 0`** with 141 margin-0 triples, including odd `a+b+c` with imbalance 1 (e.g.
+  `n=28, s=19, t=4, (a,b,c)=(6,6,9)`, `d1 = budget = 9`).
+
+So claims 2 ("`ι = 1` only when `a+b+c` is even") and 4 ("`d1 ≥ budget + 1` across all triples")
+below, and the no-go's "at gap 1 the probe shows imbalance 0", are **not supported** on genuine
+covers; slack + `ι ≤ 1` gives only `d1 ≥ budget`. The margin `d1 − budget` is a proxy, not the
+per-pair Sylvester window, so these margin-0 triples are not themselves SylvesterInjective
+failures, and the direct Sylvester probe still finds none. "Field-independent" throughout means
+agreement at the sampled primes, not a proof. The pure-ℕ Lean skeleton is unaffected; any use of
+the probe-derived μ-basis claims must be rechecked.
+
 ## Context
 
 - SYZ38 reduced the entire rate-1/2 proximity residual to `SylvesterInjective W_AB W_AC W_BC b_AC b_BC`

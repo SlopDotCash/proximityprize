@@ -1,4 +1,10 @@
 
+> **Scope note (2026-10-28 audit, T48).** The "δ*" values below are binding radii over the swept
+> direction family (`j ∈ [k+1, k+5]`). They are not the MCA `δ*`, which needs the maximum over
+> all stacks. The char-uniformity is agreement at the tested primes, which is finite evidence and
+> not a characteristic-transfer theorem; any transfer claim needs a norm or finite-bad-prime
+> exclusion.
+
 ## LARGE-N CONFIRMATION (took over stuck workflow agent; efficient barycentric method)
 Pushed the binding-radius char-uniformity test to n=20,24 with a UNIFIED apples-to-apples barycentric
 method (identical j-range JR=[k+1..k+5] and dedup for char-0 over C and char-p over F_q, q ≫ n³):

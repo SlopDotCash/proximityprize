@@ -18,14 +18,22 @@ a degree-drop family at agreement `a = r·N`, with count `C(M, r)` (`M = n/N` co
 agreement `a = k + t ≥ 2k`, i.e. the radius `δ = 1 − a/n ≤ 1 − 2ρ` is a constant fraction below
 capacity) the budget forces `r ≤ 1`.
 
-This file welds that into **one explicit no-go theorem**: at constant-fraction-or-deeper interior, the
-coset construction's list count is at most `M ≤ n` — *linear* in `n`, not super-polynomial. Combined
-with the prize parameters (`n = |domain| ≤ 2^40`, target `ε* = 2^-128`, field `|F| = q`), a linear-in-`n`
-count is astronomically below the prize threshold `ε*·q` for the relevant fields, so the
-**coset / vanishing-power-sum route provably cannot disprove the prize in the deep interior**. This
-is honest boundary cartography: it closes one entire algebraic attack family at deep interior, matching
-the [ABF26] assessment that the deep interior has "no known technique" — the technique that *does* work
-near capacity (super-poly `C(M,r)`) provably degrades to linear past `δ = 1 − 2ρ`.
+This file welds that into **one explicit count inequality**: when `t ≥ k` (agreement `a ≥ 2k`,
+i.e. radius `δ ≤ 1 − 2ρ`), the coset construction's list count is at most `M ≤ n` — *linear* in
+`n`, not super-polynomial. Given the additional hypothesis that this linear count is at most the
+prize budget `ε*·q` (`hThresh` below), the coset / vanishing-power-sum construction stays within
+the prize budget in that radius range.
+
+**Scope: which part of the beyond-Johnson window this covers.** The radius range reached here is
+`δ ≤ 1 − 2ρ`, while the open beyond-Johnson window is `1 − √ρ < δ < 1 − ρ`. These intersect in
+`1 − √ρ < δ ≤ 1 − 2ρ`, which is nonempty only when `2ρ < √ρ`, i.e. `ρ < 1/4`. For rates
+`ρ ≥ 1/4` one has `1 − 2ρ ≤ 1 − √ρ`, so the "deep interior" of this file lies at or below the
+Johnson radius (at `ρ = 1/2` it is `δ ≤ 0`) and says **nothing** about the beyond-Johnson window.
+So this does not close the coset attack family uniformly across the prize rates: for `ρ < 1/4` it
+constrains the sub-window `(1 − √ρ, 1 − 2ρ]`, and for `ρ ≥ 1/4` it constrains no beyond-Johnson
+radius. The construction's super-polynomial count `C(M,r)` near capacity (`2^r ≤ C(M,r)`) is
+contrasted below with the linear bound at `δ ≤ 1 − 2ρ`; the window `(max(1 − √ρ, 1 − 2ρ), 1 − ρ)`
+is not addressed by this file.
 
 All results are `sorry`-free and axiom-clean.
 
@@ -66,8 +74,9 @@ theorem coset_count_le_n_of_deep_interior
 `|Λ| ≤ ε*·q`. If at constant-fraction-or-deeper interior the coset construction's list count `L` is
 `≤ M` (linear; `coset_count_le_card_of_deep_interior`), and the field is large enough that the prize
 threshold dominates the linear count (`M ≤ thresh`, the prize's `ε*·q` budget), then the coset
-construction stays **within** the prize: `L ≤ thresh`. So no coset / vanishing-power-sum construction
-disproves the prize in the deep interior — its count is provably too small. -/
+construction stays **within** the prize: `L ≤ thresh`. So, under `hThresh`, no coset /
+vanishing-power-sum construction exceeds the budget at radii `δ ≤ 1 − 2ρ`. This range meets the
+beyond-Johnson window only when `ρ < 1/4` (see the module docstring). -/
 theorem coset_within_prize_of_deep_interior
     {M N t a k r L thresh : ℕ} (hM : 1 ≤ M) (hN : t + 1 ≤ N) (hrN : r * N = a) (ha : a = k + t)
     (htk : k ≤ t) (hL : L ≤ M.choose r) (hThresh : M ≤ thresh) :

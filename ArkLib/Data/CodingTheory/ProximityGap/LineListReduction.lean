@@ -78,8 +78,13 @@ def ZeroDirectionSafeLine (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n →
   ∀ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) →
     (directionZeroAgreementSet c u₀ u₁).card < a
 
-/-- Uniform zero-direction safety over all affine lines.  This is a necessary side condition for
-any production bad-scalar budget below the full field size. -/
+/-- Uniform zero-direction safety over **all** affine lines.  Implied by any uniform bad-scalar
+budget below field size, but **unsatisfiable whenever `a ≤ n`** (see
+`not_uniformZeroDirectionSafe_of_le` in `LineListSingletonArithmeticObstruction`): the zero line `u₀ = u₁ = 0` and the zero codeword
+match on all `n` coordinates.  So it has no instances when `0 < a`, `2a ≤ n`; results assuming it
+are vacuous there, and it is not remaining production arithmetic.  Those matches are jointly
+explained (no MCA bad event), so uniform explainable-scalar budgets are not MCA budgets.  Use the
+per-line `ZeroDirectionSafeLine` or restrict to a far/unexplained class of lines. -/
 def UniformZeroDirectionSafe (dom : Fin n ↪ F) (k a : ℕ) : Prop :=
   ∀ u₀ u₁ : Fin n → F, ZeroDirectionSafeLine dom k a u₀ u₁
 

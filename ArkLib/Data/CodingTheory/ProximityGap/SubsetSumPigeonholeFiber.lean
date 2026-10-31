@@ -13,7 +13,7 @@ import Mathlib.Tactic.NormNum.Prime
 
 /-!
 # Round 4 (Issue #232, §7 / O11) — the Newton/Vieta vanishing-power-sum angle on the subgroup
-# subset-sum count `N(t, target)`, and an HONEST NO-GO for the hoped-for upper bound.
+# subset-sum count `N(t, target)`: two exact fiber symmetries and a `/|F|` pigeonhole bound.
 
 The reduced open question of the §7 disproof route asks, for the smooth multiplicative subgroup
 `G = ⟨ω⟩` of order `n = 2^k` in `F_q` (`ω` a primitive `n`-th root of unity), about the **subset-sum
@@ -26,12 +26,14 @@ cancellations into the gap; `ListCapacityFieldIndependent.lean`). The round-4 br
 **Newton/Vieta vanishing power sums** `∑_{x ∈ G} x^j = 0` (`1 ≤ j < n`) force `N(a, ·) ≤ poly(n)` for
 fixed `t`, so the prize would **survive** the §7 route?
 
-## The honest verdict: the power-sum/symmetric structure is provably TOO WEAK (a verified no-go).
+## What is proved: two exact fiber symmetries and the `/|F|` pigeonhole (no upper-bound no-go).
 
 The vanishing power sums are *Vieta* facts about the **elementary symmetric functions** `e_j(G)`,
 which are sums of subset-**products** `∑_{|S|=j} ∏_{x∈S} x` — they say nothing directly about subset-
-**sums**. The *only* genuine constraints they impose on the additive fiber partition
-`{N(a, target)}_{target}` are the **two exact symmetries** they generate:
+**sums**. This file records **two exact symmetries** of the additive fiber partition
+`{N(a, target)}_{target}` (it does *not* claim these are the only constraints; e.g. multiplicative
+dilation `S ↦ ζ·S` by a group element is a further sum-fiber bijection `N(a, t) = N(a, ζ t)`, not
+formalized here):
 
 1. **Negation symmetry** (`subsetSumCount_neg`). `G` is negation-closed (`-G = G`, the ±pairing of
    `2^m`-th roots; `CandidateSubgroupSumsetLoop49.lean`), so `S ↦ -S` is a sum-fiber bijection:
@@ -42,17 +44,21 @@ which are sums of subset-**products** `∑_{|S|=j} ∏_{x∈S} x` — they say n
    of a primitive root) makes `S ↦ G \ S` a sum-fiber bijection onto the complementary size:
    `N(a, target) = N(n − a, −target)`.
 
-These generate a symmetry **group of order at most `4`** acting on the targets
-(`subsetSumCount_symmetry_group`: `N(a,target) = N(a,−target) = N(n−a,target) = N(n−a,−target)`). A
-group of order `≤ 4` can relate the fibers only in **orbits of size `≤ 4`**, so it can pin the
-worst-case fiber no lower than `total / 4`:
+These generate a symmetry **group of order at most `4`** acting on the pairs `(size, target)`
+(`subsetSumCount_symmetry_group`: `N(a,target) = N(a,−target) = N(n−a,target) = N(n−a,−target)`).
+An orbit size of at most `4` does **not** mean there are at most `4` fibers: there are many orbits,
+so it does **not** give `max_target N(a, target) ≥ C(n, a) / 4` (no such theorem exists here). Exact
+counterexample: `F_17`, `G = μ_8 = {1,2,4,8,16,15,13,9}`, `a = 5`: the `56` five-subsets have fiber
+count `4` at targets `1,2,4,8,9,13,15,16`, `3` at targets `3,5,6,7,10,11,12,14` and `0` at `0`, so
+the maximum is `4` and `4 · 4 = 16 < 56`. What *is* proved is the plain pigeonhole over all
+`|F| = q` targets (`max_fiber_ge_total_div_card`):
 
-  `max_target N(a, target)  ≥  C(n, a) / 4`            (`max_fiber_ge_total_div_four`).
+  `∃ target, q · N(a, target)  ≥  C(n, a)`.
 
-Since `C(n, a)` at `a = k + t = n/2 + t` is `≈ 2^n/√n` (super-exponential in `n`, **field-
-independent**), the Newton/Vieta symmetries are **structurally incapable** of delivering a `poly(n)`
-upper bound on `N(a, ·)`. The hoped-for "survival via power-sum concentration" does **not** happen:
-the power-sum constraints are exhausted by a `≤ 4`-element symmetry group.
+This lower bound `C(n, a) / q` is super-polynomial in `n` only when `q` is small compared with
+`C(n, a)`; at cryptographic field sizes it can be below `1`. So the file does **not** prove that
+Newton/Vieta (power-sum) information is incapable of giving a `poly(n)` upper bound on `N(a, ·)`; it
+only records that the two formalized symmetries by themselves do not force concentration.
 
 ## What this *is* and is *not*
 
@@ -60,12 +66,12 @@ the power-sum constraints are exhausted by a `≤ 4`-element symmetry group.
   `N(a, ·)` for `a ≥ k+1` (`t ≥ 1`, into the gap), not a restatement of the `t = 0` endpoint
   `C(n, k)`. The two symmetry bijections (1),(2) are exact identities driven by the negation-closure
   and the vanishing full sum — the precise Newton/Vieta content available.
-- It **is** an UPPER-bound-direction NO-GO: it proves the Newton/Vieta route *cannot* upper-bound
-  `N(a,·)` by `poly(n)`, so this particular "prize-survives" argument fails. It does **not** decide
-  the prize: a `poly(n)` upper bound could still hold for a *different* reason, and the lower-bound
+- It is **not** a proved upper-bound-direction no-go: the only quantitative statement is the
+  `/q` pigeonhole above, which does not rule out a `poly(n)` upper bound on `N(a,·)` at large `q`
+  (from power-sum information or otherwise). It does **not** decide the prize, and the lower-bound
   (disproof) side remains field-capped (Loop53).
-- The honest cartographic payoff: it **closes off** the Newton/Vieta upper-bound attack as a dead
-  end, pinning the residual to a genuinely non-symmetric mechanism.
+- Cartographic payoff: the negation and complementation symmetries alone (orbits of size `≤ 4`)
+  are compatible with spread-out fibers, so any upper-bound argument must use more than them.
 
 All headline results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 
@@ -180,8 +186,8 @@ theorem subsetSumCount_compl {G : Finset F} (hGsum : ∑ x ∈ G, x = 0) {n : �
 
 /-- **The full Newton/Vieta symmetry group of the fibers (order `≤ 4`).** Negation and complementation
 together identify the four fibers `(a, target)`, `(a, −target)`, `(n−a, target)`, `(n−a, −target)` — a
-Klein-four (or smaller) action. This is the **complete** algebraic content the vanishing power sums
-deposit on the additive fiber partition. -/
+Klein-four (or smaller) action. It is not the complete symmetry content: multiplicative dilation by
+a group element also permutes the fibers (`N(a, t) = N(a, ζ t)`), which is not formalized here. -/
 theorem subsetSumCount_symmetry_group {G : Finset F} (hGneg : G.image (fun x => -x) = G)
     (hGsum : ∑ x ∈ G, x = 0) {n : ℕ} (hGcard : G.card = n) (a : ℕ) (ha : a ≤ n) (target : F) :
     subsetSumCount G a target = subsetSumCount G a (-target) ∧
@@ -212,14 +218,12 @@ theorem sum_subsetSumCount_eq_choose [Fintype F] {G : Finset F} {n : ℕ} (hGcar
       (fun S _ => Finset.mem_univ _)
   rw [← hpart, Finset.card_powersetCard, hGcard]
 
-/-- **NO-GO (the round-4 verdict): the Newton/Vieta symmetries cannot upper-bound `N(a, ·)` below
-`C(n, a) / |F|`.** The fibers `{N(a, target)}_{target}` sum to `C(n, a)` over the `|F| = q` targets
-(`sum_subsetSumCount_eq_choose`), so by pigeonhole **some** target has fiber
-`≥ C(n, a) / q`. The negation+complementation symmetries (`subsetSumCount_symmetry_group`) relate
-fibers only in orbits of size `≤ 4` and so **cannot** lower this maximum: there is always a target
-whose subgroup subset-sum count is `≥ C(n, a) / q`. At `a = k + t = n/2 + t` the field-independent
-binomial `C(n, a)` is super-exponential in `n`, so no `poly(n)` upper bound on `N(a, ·)` follows from
-the power-sum structure — the hoped-for "prize survives via power-sum concentration" route is dead. -/
+/-- **Pigeonhole: some fiber has size `≥ C(n, a) / |F|`.** The fibers `{N(a, target)}_{target}` sum
+to `C(n, a)` over the `|F| = q` targets (`sum_subsetSumCount_eq_choose`), so by pigeonhole **some**
+target has `q · N(a, target) ≥ C(n, a)`. This holds for every ground set `G`, independently of the
+symmetries. The bound is super-polynomial in `n` only when `q` is small relative to `C(n, a)`; at
+large `q` it is weak (possibly below `1`), so it does not by itself rule out a `poly(n)` upper bound
+on `N(a, ·)`. (The sharper `C(n, a) / 4` is false in general; see the module docstring.) -/
 theorem max_fiber_ge_total_div_card [Fintype F] {G : Finset F} {n : ℕ} (hGcard : G.card = n)
     (a : ℕ) (hq : 0 < Fintype.card F) :
     ∃ target : F, Fintype.card F * subsetSumCount G a target ≥ n.choose a := by
@@ -256,9 +260,9 @@ theorem max_fiber_ge_total_div_card [Fintype F] {G : Finset F} {n : ℕ} (hGcard
 
 /-- **The no-go bites strictly inside the gap (`t ≥ 1`).** Specialized to the list-decoding agreement
 size `a = k + t` with `t ≥ 1` (strictly past the capacity endpoint `t = 0`), the maximal subgroup
-subset-sum fiber is still `≥ C(n, k+t) / q`. So the Newton/Vieta symmetries do not concentrate the
-interior fibers either; the count `N(k+t, ·)` the prize would need to be `poly(n)` is **not** forced
-small by the power-sum structure. -/
+subset-sum fiber is still `≥ C(n, k+t) / q`. This is only the `/q` pigeonhole; it shows the two
+formalized symmetries do not force the interior fibers to be smaller than average, not that
+`N(k+t, ·)` exceeds `poly(n)` at large `q`. -/
 theorem max_fiber_interior_ge [Fintype F] {G : Finset F} {n : ℕ} (hGcard : G.card = n)
     (k t : ℕ) (ht : 1 ≤ t) (hq : 0 < Fintype.card F) :
     ∃ target : F, Fintype.card F * subsetSumCount G (k + t) target ≥ n.choose (k + t) := by

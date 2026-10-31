@@ -150,7 +150,13 @@ def accepts (encode : (Fin k → F) → (ι → F))
 (Definition 6.1).
 
   `((v, μ₁, μ₂), (f₁, f₂)) ∈ inputRelation k C ↔ ToyProblem.relation
-    C v (μ₁, μ₂) (f₁, f₂)` (modulo `Fin 2`-indexing of the latter). -/
+    C v (μ₁, μ₂) (f₁, f₂)` (modulo `Fin 2`-indexing of the latter).
+
+Like `ToyProblem.relation`, this quantifies the opening encoder existentially,
+per instance, so it is strictly weaker than the paper's fixed-encoding input
+relation (the fixed-encoding forms are `ToyProblem.relationFor` /
+`ToyProblem.relaxedRelationFor`). Completeness is stated against
+`honestInputRelation`, which pins the protocol's encoder. -/
 def inputRelation (C : Set (ι → F)) :
     Set ((Statement (F := F) k × (∀ i, OracleStatement ι F i)) ×
       Witness (F := F) k) :=
@@ -229,7 +235,12 @@ theorem honestInputRelation_subset_inputRelation
 /-- The IOR-shaped *relaxed* output relation derived from
 `ToyProblem.relaxedRelation` (Definition 6.3). The soundness statement
 of L6.6 is with respect to this relation: the verifier's "accept"
-guarantee is that the input is `δ`-close to a valid `relation`-instance. -/
+guarantee is that the input is `δ`-close to a valid `relation`-instance.
+
+It inherits the existential encoding of `ToyProblem.relaxedRelation`, so it is
+weaker than the paper's fixed-encoding `R̃²_{C,δ}` (`ToyProblem.relaxedRelationFor`);
+the fixed-encoding one-row output relation of Construction 6.9 is
+`SimplifiedIOR.outputRelationFor`. -/
 def outputRelation (C : Set (ι → F)) (δ : ℝ≥0) :
     Set ((Statement (F := F) k × (∀ i, OracleStatement ι F i)) ×
       Witness (F := F) k) :=

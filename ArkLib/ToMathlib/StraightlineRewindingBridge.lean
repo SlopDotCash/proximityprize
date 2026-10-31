@@ -9,23 +9,23 @@ import ArkLib.ToMathlib.RewindingExtractor
 /-!
 # The straightline ↔ rewinding bridge (framework)
 
-`ArkLib/ToMathlib/RewindingExtractor.lean` ends with a *documented bridge sketch* whose closing
-prose (that file, near L373/L379) **names** two objects:
+An earlier version of `ArkLib/ToMathlib/RewindingExtractor.lean` and of the ABF26 §6 toy
+docstrings named two objects — `Bridge.knowledgeSound_of_rewinding` (a "shape" lemma) and
+`Bridge.StraightlineOfRewinding` (the claimed straightline↔rewinding residual, carried as a
+hypothesis `hBridge`) — that did not exist in-tree. This file defines and proves them abstractly, in
+the `Extractor.Bridge` namespace, over the same carriers as `RewindingExtractor.lean`.
 
-* `Bridge.knowledgeSound_of_rewinding` — "shows the *shape*: from a rewinding knowledge-soundness
-  witness ... one obtains, at every prefix where the prover beats the error, an extracted witness
-  in `outputRelation`";
-* `Bridge.StraightlineOfRewinding` — "the precise straightline↔rewinding interface translation ...
-  the genuine residual ... the precise, smallest missing piece".
-
-The ABF26 §6 docstrings in `ArkLib/ProofSystem/ToyProblem/Spec/General.lean` (L45/46, L300, L1139)
-likewise reference `Bridge.StraightlineOfRewinding` (as a hypothesis `hBridge`) and
-`Bridge.knowledgeSound_of_rewinding` (as the discharging lemma).
-
-**Before this file those two names did not exist anywhere in-tree** — they were dangling prose
-references, so the claim "discharged by `Bridge.knowledgeSound_of_rewinding`" was vacuous. This file
-makes the prose honest by *actually defining and proving* the bridge framework, in the
-`Extractor.Bridge` namespace, abstractly over the same carriers as `RewindingExtractor.lean`.
+**Scope.** Both objects are *abstract per-prefix repackagings* of
+`knowledgeSoundnessViaRewinding.extracts`; `StraightlineOfRewinding` is a tautology at this level.
+Neither mentions `Verifier.knowledgeSoundness`, a concrete verifier, its transcripts or query logs,
+an error term, or a replay execution, so neither transports anything to protocol security. No
+in-tree toy-protocol theorem takes `hBridge` as a hypothesis; the toy aliases
+`protocol62_knowledgeSound` / `protocol62_rbrKnowledgeSound` / `simplifiedIOR_knowledgeSound`
+restate the abstract rewinding predicate at the relation-assuming acceptance predicate `toyAccepts`
+and are not proofs of ABF26 L6.6 / L6.8 / L6.10 (those are the canonical straightline theorems
+`ToyProblem.Spec.oracleVerifier_knowledgeSoundness_winningSetUpperBound`,
+`ToyProblem.Spec.oracleVerifier_rbrKnowledgeSoundnessWorstCase`, and
+`ToyProblem.SimplifiedIOR.verifier_knowledgeSoundness`).
 
 ## What this file delivers
 
@@ -41,10 +41,9 @@ makes the prose honest by *actually defining and proving* the bridge framework, 
 
 3. `Bridge.StraightlineOfRewinding` — the **named residual**: the precise remaining interface gap,
    the implication `(rewinding witness) → (straightline-shaped per-prefix extraction)` packaged as a
-   single `Prop`. Crucially it is **not** an axiom and **not** a `sorry`: it is *discharged
-   constructively* by `Bridge.straightlineOfRewinding_holds` (proven below from
-   `knowledgeSound_of_rewinding`). So the residual that the ABF26 docstrings carry as the explicit
-   hypothesis `hBridge` is, at this abstract level, a **theorem**, not a hole.
+   single `Prop`. It is *discharged* by `Bridge.straightlineOfRewinding_holds` (proven below from
+   `knowledgeSound_of_rewinding`), i.e. at this abstract level it is a tautology; it is **not** the
+   genuine protocol-level straightline↔rewinding translation, which remains unformalized.
 
 The only thing this framework deliberately does *not* do is identify the abstract carriers
 (`Prefix`, `Challenge`, `Response`) with the concrete `Verifier.knowledgeSoundness` transcript /
@@ -113,14 +112,10 @@ theorem knowledgeSound_of_rewinding
 
 /-- **The named straightline↔rewinding interface residual.**
 
-`Bridge.StraightlineOfRewinding relIn stmtOf accepts` is the precise residual the ABF26 §6
-docstrings carry as the hypothesis `hBridge`: the implication from the rewinding knowledge-soundness
-witness to the straightline-shaped per-prefix extraction conclusion. Packaging it as a single `Prop`
-names the interface gap exactly.
-
-Unlike a `sorry` or an `axiom`, this residual is *constructively discharged* below by
-`straightlineOfRewinding_holds`, so any consumer that took it as a hypothesis can instead obtain it
-as a theorem at this abstract level. -/
+`Bridge.StraightlineOfRewinding relIn stmtOf accepts` is the implication from the rewinding
+knowledge-soundness witness to the per-prefix extraction conclusion. It is discharged below by
+`straightlineOfRewinding_holds`, so it is not a genuine residual: the protocol-level gap (a concrete
+verifier's acceptance event, replay execution, and averaged error bound) is not expressed by it. -/
 def StraightlineOfRewinding
     (relIn : Set (StmtIn × WitIn))
     (stmtOf : Prefix → StmtIn)
@@ -131,9 +126,8 @@ def StraightlineOfRewinding
 /-- **The named residual is a theorem, not a hole.**
 
 `Bridge.StraightlineOfRewinding` holds for *every* relation / prefix-reader / acceptance predicate:
-it is discharged by `knowledgeSound_of_rewinding`. Hence the ABF26 §6 statements that take
-`StraightlineOfRewinding` as the explicit hypothesis `hBridge` can be fed this proof, turning a
-dangling prose reference into an honest, axiom-free interface theorem. -/
+it is discharged by `knowledgeSound_of_rewinding`. This is an abstract tautology; it does not
+transport any rewinding statement to `Verifier.knowledgeSoundness`. -/
 theorem straightlineOfRewinding_holds
     (relIn : Set (StmtIn × WitIn))
     (stmtOf : Prefix → StmtIn)

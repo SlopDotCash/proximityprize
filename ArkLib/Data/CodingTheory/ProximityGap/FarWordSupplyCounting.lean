@@ -36,9 +36,13 @@ averaging argument:
 Honest scope: `1 − 1/|F|` is what the averaging argument yields, not a per-code optimum
 (e.g. the full code `F^ι` supplies far words at every `δ < 1`); some threshold below `1`
 is necessary in general (the zero code — degenerate, excluded by the hypothesis — has no
-far word for `w = 0` at any `δ`).  What matters for the consumers is that
-`1 − 1/|F|` covers the entire capacity range `δ ≤ 1 − ρ` of every Reed–Solomon code at
-cryptographic field sizes, where the previous far-pair route stopped at `1/2`.
+far word for `w = 0` at any `δ`).  What matters for the consumers is that the strict range
+`δ < 1 − 1/|F|` covers the closed capacity range `δ ≤ 1 − ρ` of every Reed–Solomon code with
+rate `ρ > 1/|F|` (in particular every positive fixed-rate code at cryptographic field sizes),
+and the open range `δ < 1 − ρ` always, where the previous far-pair route stopped at `1/2`.  The
+closed endpoint can fail when `ρ = 1/|F|`: for the full domain `n = q` and `k = 1` (repetition
+code) with centre `w(x) = x`, every constant codeword agrees exactly once, at distance exactly
+`1 − 1/q = 1 − ρ`, so no codeword is strictly farther and `FarWordSupply` fails at `δ = 1 − ρ`.
 
 ## References
 * [Jo26] ePrint 2026/891, §5 (Lemma 5.4 / Theorem 5.5).

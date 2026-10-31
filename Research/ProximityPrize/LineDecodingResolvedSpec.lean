@@ -10,7 +10,7 @@ import Research.ProximityPrize.LineDecodingSpec
 # Resolved selected-threshold prize specifications for repaired line-decoding data
 
 This module packages the selected-threshold bracket wrappers from
-`LineDecodingGrandChallengesPrizeSpec` with the faithful MCA lattice-resolution predicate.
+`Research.ProximityPrize.LineDecodingSpec` with the faithful MCA lattice-resolution predicate.
 -/
 
 namespace ProximityGap

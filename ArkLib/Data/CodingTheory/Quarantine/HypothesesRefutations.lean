@@ -9,11 +9,20 @@ import ArkLib.Data.CodingTheory.Quarantine.CounterexampleFixture
 set_option maxRecDepth 4096
 
 /-!
-# Refutations of Interdisciplinary Candidate Hypotheses
+# Tests (and some refutations) of Interdisciplinary Candidate Hypotheses
 
-We use the generic GF(3) counterexample (n=4, k=2) to formally refute
-the candidate bounds from statistical mechanics, quantum information,
-and additive combinatorics.
+We test the candidate bounds of `Quarantine/Hypotheses.lean` on small explicit GF(3) examples.
+The outcomes differ by hypothesis:
+
+* **Statistical mechanics (spin-glass shattering): not refuted.** On the GF(3) example
+  (`n = 4`, two parity checks) the bundle `U = {w0, w1, w2}` has `|U| = 3 > 2` and all pairwise
+  distances equal to `3 > 2`, so `survives_SpinGlass_shattering : ShatteredBundle U` proves the
+  example *satisfies* the shattering conclusion. This example is consistent with the
+  hypothesis; it is not a counterexample.
+* **Quantum information (QLDPC degeneracy):** `refute_QLDPC_degeneracy` exhibits a shifted bundle
+  of three codewords of the same code whose supports share a coordinate (intersection nonempty).
+* **Additive combinatorics (sum-product escape):** `refute_SumProduct_escape` refutes the
+  `n = 3` instance using a separate length-3 code (`H_MDS`), not the `n = 4` example.
 -/
 
 namespace ProximityGap.QuarantineHypotheses.Refutations
@@ -33,9 +42,11 @@ def center : Fin 4 → F := ![0, 1, 0, 0]
 lemma dist_le_e : ∀ u ∈ U, dist u center ≤ 2 := by decide
 
 --------------------------------------------------------------------------------
--- Refuting Hypothesis 1: Statistical Mechanics (Spin-Glass Shattering)
+-- Testing Hypothesis 1: Statistical Mechanics (Spin-Glass Shattering) -- NOT refuted
 -- The hypothesis states that if |U| > n - k, the bundle shatters (dist > 2).
--- Here |U| = 3 > 2, but dist(w1, w2) = 2, not > 2.
+-- Here |U| = 3 > 2 and every pair of distinct bundle words is at distance 3
+-- (dist(w0, w1) = dist(w0, w2) = dist(w1, w2) = 3), so the bundle DOES shatter:
+-- the theorem below proves `ShatteredBundle U`, i.e. this example survives the hypothesis.
 --------------------------------------------------------------------------------
 theorem survives_SpinGlass_shattering :
     ShatteredBundle U := by

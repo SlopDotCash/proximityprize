@@ -11,7 +11,8 @@ with a Lucas witness g (g = 3 first):
     g^(p−1) = 1 (mod p),  g^((p−1)/2) ≠ 1 (mod p),  g^((p−1)/c) ≠ 1 (mod p).
 
 Primality screening at 121 bits uses Miller–Rabin with the fixed 12-base set plus 40
-extra deterministic bases; the fixed set is only PROVEN exact below 3.3e24, so at this
+extra deterministic bases; the fixed set is only PROVEN exact below 318665857834031151167461
+≈ 3.19e23 (Sorenson–Webster Thm 1.1; 3.3e24 is the thirteen-base bound), so at this
 size MR is a (cryptographically strong) screen — the Lean kernel's Lucas certificate is
 the actual proof, and any false positive would simply fail to certify in Lean.  The odd
 cofactor c <= 2^21 is checked with the exact small-range test.
@@ -23,12 +24,16 @@ beta = 4 (120-bit).
 
 _MR_BASES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
 _EXTRA_BASES = tuple(range(41, 200, 4))  # deterministic extra screen bases
+_MR12_DET_LIMIT = 318665857834031151167461  # least strong pseudoprime to bases 2..37
 
 
 def is_prime_exact_small(n: int) -> bool:
-    """Exact for n < 3.3e24 (12-base deterministic Miller-Rabin)."""
+    """Exact for n < 318665857834031151167461 (12-base deterministic Miller-Rabin); refuses
+    larger inputs instead of silently answering outside the proven range."""
     if n < 2:
         return False
+    if n >= _MR12_DET_LIMIT:
+        raise ValueError(f"12-base Miller-Rabin is only proven exact below {_MR12_DET_LIMIT}")
     for p in _MR_BASES:
         if n % p == 0:
             return n == p

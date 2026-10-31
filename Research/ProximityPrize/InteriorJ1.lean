@@ -7,6 +7,7 @@ Authors: ArkLib Contributors
 import Research.ProximityPrize.J1Cap
 import ArkLib.Data.CodingTheory.ProximityGap.MCABadCount
 import Research.ProximityPrize.MCAEndpointLower
+import Research.ProximityPrize.PrizeRateBounds
 
 /-!
 # The exact interior radius-`1/n` MCA error: `ε_mca(C, 1/n) = 2/q`
@@ -621,14 +622,6 @@ theorem epsStar_lt_three_div_card_of_card_lt_three_mul_two_pow
   calc (q : ℝ≥0∞)
       < (((3 : ℕ) * 2 ^ (128 : ℕ) : ℕ) : ℝ≥0∞) := hcast
     _ = (3 : ℝ≥0∞) * (2 ^ (128 : ℕ) : ℝ≥0∞) := by push_cast; ring
-
-/-- Every ABF26 prize rate is at most `1/2`. -/
-lemma prizeRates_le_half (r : Fin 4) : prizeRates r ≤ (1 / 2 : ℝ≥0) := by
-  unfold prizeRates
-  have hpow : (2 : ℝ≥0) ^ (1 : ℕ) ≤ 2 ^ (r.val + 1) :=
-    pow_le_pow_right₀ one_le_two (by omega)
-  rw [pow_one] at hpow
-  exact div_le_div_of_nonneg_left (by norm_num) (by norm_num) hpow
 
 /-- If `6 ≤ n`, then `3 ≤ n/2`. -/
 private lemma three_le_half_mul_of_six_le {n : ℕ} (hn : 6 ≤ n) :

@@ -6,19 +6,30 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Jo26MissingLineSmallSeed
 
 /-!
-# S2(b) endgame (#357): the constrained `MissingLine` is FALSE for `|Ω| > q` — seed forcing
+# S2(b) endgame (#357): a large-seed counterexample to the constrained `MissingLine`
 
 `Jo26MissingLineSmallSeed.lean` proved `MissingLine` for every generator with `|Ω| ≤ q`.
-This file settles the other half: **for `|Ω| > q` the hypothesis is false** — there are
-stacks whose bad seeds are *forced* onto more than `q` pairwise-distinct obstruction
-subspaces, so no admissible family covers them. With this, S2(b) is fully resolved:
+This file shows that this small-seed sufficient condition cannot be dropped in general:
+**for one explicit large-seed generator and stack the hypothesis is false** — the bad seeds
+are *forced* onto more than `q` pairwise-distinct obstruction subspaces, so no admissible
+family covers them. The resulting picture for S2(b):
 
-* `|Ω| ≤ q` — `MissingLine` **holds** (trivial counting; `missingLine_of_card_le`);
-* `|Ω| > q` — `MissingLine` **fails** (this file), hence `ObstructionBound` fails, and the
-  S2(a) obstruction-counting route to interleaving exactness is *not* available for
-  large-seed generators. (Exactness itself is not refuted here — at this toy instance both
-  sides saturate; whether exactness genuinely fails for some large-seed generator remains
-  the open residue, now cleanly separated from the obstruction-family geometry.)
+* `|Ω| ≤ q` — `MissingLine` **holds** for every generator and stack (trivial counting;
+  `missingLine_of_card_le`);
+* `|Ω| > q` — `MissingLine` **can fail**: it fails for the explicit full-plane identity generator
+  (`Ω = F₂²`, `|Ω| = 4 > q = 2`), the constants code and the stack `Uref` below, hence
+  `ObstructionBound` fails there and the S2(a) obstruction-counting route to interleaving
+  exactness is not available for that generator/stack.
+
+**This is not a cardinality characterization.** `|Ω| > q` alone does not force failure for an
+individual generator or stack: a generator taking one constant value on arbitrarily many seeds
+makes every seed see the same folded word, so (if any seed is bad) one chosen witness `T` serves
+every seed and its single proper obstruction subspace covers all bad seeds, and (if none is bad)
+the empty family works. Even for the identity generator here, the zero stack has no bad seeds.
+The small-seed condition is sharp only in the worst case across generators/stacks. (Exactness
+itself is not refuted here — at this toy instance both sides saturate; whether exactness
+genuinely fails for some large-seed generator remains the open residue, separate from the
+obstruction-family geometry.)
 
 **The instance** (found by exhaustive search over all `2^16` stacks at `F₂, n = 4`,
 constants code, `δ = 1/2`, seed space `Ω = F₂²`, generator `G = id` — 9,216 of 65,536
@@ -36,8 +47,9 @@ covering family, but `|Ls| ≤ q = 2`. The forcing is machine-checked by `decide
 This complements the cocycle refutation of the *generous* form
 (`Jo26MissingLineGenerousRefuted.lean`): there the issue was the obstruction-family
 geometry (all `q+1` lines realizable); here the *constrained* form dies because seed
-badness can pin each seed to its own line. Together: the order of quantifiers (`≤ q` seeds
-vs `> q` seeds) is the exact boundary of the missing-line phenomenon.
+badness can pin each seed to its own line. Together: `|Ω| ≤ q` is a sufficient condition for
+every generator, and this explicit `|Ω| = 4 > q = 2` instance shows it cannot be removed in the
+worst case; it is not an iff for individual generators or stacks (see above).
 
 All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 
@@ -247,8 +259,9 @@ open Classical in
 /-- **`MissingLine` is FALSE for the full-plane generator** (`Ω = F₂²`, `|Ω| = 4 > q = 2`):
 the three nonzero seeds of the refuting stack are bad and forced onto three pairwise-distinct
 obstruction lines, but the covering family may hold at most `q = 2` subspaces. Hence
-`ObstructionBound` fails too, and the obstruction-counting route to interleaving exactness
-is unavailable for large-seed generators. -/
+`ObstructionBound` fails too for this generator and stack, and the obstruction-counting route
+to interleaving exactness is unavailable for them. (Other large-seed generators or stacks, e.g.
+a constant generator or the zero stack, can still satisfy `MissingLine`.) -/
 theorem missingLine_bigseed_refuted :
     ¬ MissingLine constC2 (1/2 : ℝ≥0) (fun ω : Fin 2 → F2 => ω) Uref := by
   rintro ⟨Ls, hcard, _hproper, hcover⟩
@@ -302,8 +315,11 @@ theorem missingLine_bigseed_refuted :
   have h2 : Fintype.card F2 = 2 := by rw [ZMod.card]
   omega
 
-/-- The seed space genuinely exceeds the field: `|Ω| = 4 > 2 = q` — so this refutation is
-exactly complementary to `missingLine_of_card_le`, and the `|Ω| ≤ q` bound there is sharp. -/
+/-- The seed space genuinely exceeds the field: `|Ω| = 4 > 2 = q` — so this refutation lies
+outside the range of `missingLine_of_card_le`, showing that its `|Ω| ≤ q` hypothesis cannot be
+dropped for all generators (worst-case sharpness at this instance; the intermediate size
+`|Ω| = q + 1 = 3` is not examined here, and large seeds do not force failure for every
+generator). -/
 theorem seed_space_exceeds_field :
     Fintype.card F2 < Fintype.card (Fin 2 → F2) := by
   rw [ZMod.card]

@@ -39,7 +39,10 @@ literally `#{γ : ratioMult ≥ n − w − z₀}`, the level-set profile of the
 * `ratioMult` summed over all `γ` is **exactly** `#{i : s₁ᵢ ≠ 0}` (the support size) — the
   **first-moment identity** `∑_γ ratioMult = wt(s₁)` (every support coordinate pins one `γ`).  In
   the smooth-domain prize regime where `s₁` is a far direction (support `= n`), this is the exact
-  source of `μ = E[far-line incidence] = n` recorded in the #407 ledger.
+  source of the **unnormalized total** `μ = ∑_γ ratioMult = n` recorded in the #407 ledger.  It
+  is not a uniform expectation: under uniform `γ ∈ 𝔽_q` the mean ratio multiplicity is
+  `wt(s₁)/q` (`= n/q` at full support).  E.g. `n = 1`, `𝔽₅`, `s₀ = 0`, `s₁ = 1`: the
+  multiplicity is `1` only at `γ = 0`, so the total is `1` and the mean is `1/5`.
 * the **level-set / degree bound** consumer `hammingNorm_line_ge_of_card_eq`: at most
   `deg`-many coordinates can share one ratio value when `r` has bounded degree — phrased here as a
   clean monotone lower bound on the weight from any cap on `ratioMult`.
@@ -144,12 +147,13 @@ theorem hammingNorm_line_eq_sub_ratio_mult (s₀ s₁ : ι → F) (γ : F) :
   have h2 := zeroCount_split s₀ s₁ γ
   omega
 
-/-! ### The first-moment identity (μ = E[incidence] = wt(s₁)) -/
+/-! ### The first-moment identity (total `μ = ∑_γ incidence = wt(s₁)`; mean `wt(s₁)/q`) -/
 
 /-- **The first-moment identity.** Summing the ratio multiplicity over *all* scalars `γ` counts
 each support coordinate exactly once: `∑_γ ratioMult s₀ s₁ γ = #{i : s₁ᵢ ≠ 0} = wt(s₁)`.
-For a far direction with full support (`= n`) this is the exact `μ = E[far-line incidence] = n`
-recorded in the #407 ledger. -/
+For a far direction with full support (`= n`) this is the unnormalized total `μ = n` recorded in
+the #407 ledger (counting measure on `γ`); under the uniform measure on `γ ∈ 𝔽_q` the mean
+multiplicity is `wt(s₁)/q`, not `n`. -/
 theorem sum_ratioMult_eq_support [Fintype F] (s₀ s₁ : ι → F) :
     ∑ γ : F, ratioMult s₀ s₁ γ = (univ.filter (fun i => s₁ i ≠ 0)).card := by
   classical
@@ -177,8 +181,8 @@ theorem support_card_eq_card_of_fullSupport (s₁ : ι → F) (hfull : ∀ i, s�
   simp [hfull i]
 
 /-- **Full-support first moment.** For a far direction with no zero coordinates, the total ratio
-multiplicity is exactly the blocklength `n`. This is the `μ = n` specialization used by the
-ratio-census ledger. -/
+multiplicity is exactly the blocklength `n`. This is the `μ = n` (unnormalized total over all
+`γ`, not a uniform mean) specialization used by the ratio-census ledger. -/
 theorem sum_ratioMult_eq_card_of_fullSupport [Fintype F] (s₀ s₁ : ι → F)
     (hfull : ∀ i, s₁ i ≠ 0) :
     ∑ γ : F, ratioMult s₀ s₁ γ = Fintype.card ι := by

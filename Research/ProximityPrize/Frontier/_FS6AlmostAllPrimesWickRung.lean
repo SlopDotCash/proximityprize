@@ -22,7 +22,7 @@ The full composition of the Fable-session arc:
   containing a primitive `n`-th root `ζ`, the EXACT Wick bound `GaussianEnergyBound (μ_n) 3`
   holds (FS5 unconditional decomposition + closed form + r53 weld).
 
-Together: **the depth-3 Wick rung holds at all but `≤ n⁶(L/s)/(45n²−40n+1) ≈ n⁴(k+4)/(45·s)`
+Together: **the depth-3 Wick rung holds at all but `≤ n⁶(L/s)/(45n²−40n+1) ≈ n⁵(k+4)/(45·s)`
 primes of any family of primes `≥ 2^s` splitting `μ_n`** — machine-checked end to end, no
 `sorry`, no named hypotheses.
 

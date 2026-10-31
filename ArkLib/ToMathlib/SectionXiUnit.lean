@@ -25,8 +25,20 @@ representative of an `mk`-class at a fiber-linear modulus is evaluation at the s
 * `xiRep_eq_eval_section` — the canonical `ξ`-representative content is `ξ_pre(s)`.
 * `sectionXiOrder_of_monic_linear` — **the dissolution**: `SectionXiOrder` holds at every
   monic fiber-linear factor.  Combined with the branch-collapse dichotomy (only such factors
-  carry the curve), the `#138`-shaped residual is CLOSED on the faithful path: the deep
+  carry the curve), the `#138`-shaped residual is CLOSED on the faithful path *under the
+  strong `Hypotheses` (see the scope note below)*: the deep
   `+1`-order bookkeeping is unnecessary exactly where the §5 argument routes the proof.
+
+**Scope of the dissolution.**  Everything here is conditional on the *ring-level*
+separability `Hypotheses.separable_evalX` over `F[Z]` (a Bézout identity with the
+derivative in `F[Z][T]`), which is strictly stronger than separability over `F(Z)` or a
+nonzero discriminant — and the unit conclusion shows how much stronger.  For example
+`P(T) = T·(T − Z)` has nonzero discriminant `Z²` (odd characteristic), but `P′(0) = −Z` is
+not a unit of `F[Z]`, so it cannot satisfy this hypothesis; in general the hypothesis fails at
+any slice with two sections of non-unit difference (`SliceSeparabilityBoundary`).  The
+honest good-centre supply (`GSSurfaceRadicalSupply`) only produces `F(Z)`-separability.  So
+"`SectionXiOrder` is closed" means: closed *given* the strong separability input, which
+remains an open producer obligation for honest variable-discriminant GS surfaces.
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon Codes*,

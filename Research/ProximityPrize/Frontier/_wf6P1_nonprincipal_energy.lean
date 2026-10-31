@@ -110,10 +110,12 @@ theorem eta_pow_le_of_nonprincipalEnergyBound {ψ : AddChar F ℂ} (hψ : ψ.IsP
   have h := ArkLib.ProximityGap.SubgroupGaussSumMomentLadder.eta_pow_le_energyR hψ G r b hb
   exact le_trans h hbound
 
-/-- The per-frequency bound is *equivalent* to bounding the nonprincipal energy: the bridge is
-not lossy, so `NonprincipalEnergyBound` is exactly the right named object. (Single-term ≤ sum;
-the sum is the full nonprincipal energy by `nonprincipal_energy_eq`.) Records that no slack is
-hidden in the reduction. -/
+/-- Single-term ≤ sum: each nonzero-frequency `2r`-th power is at most the full nonprincipal
+energy sum (`nonprincipal_energy_eq`). This is one direction only: bounding the nonprincipal
+energy is *sufficient* for the per-frequency bound, not equivalent to it, and the bridge can lose
+up to a factor equal to the number of nonzero frequencies. (An earlier docstring called it
+lossless/equivalent, which is false: on `𝔽_3`, `G = {1}`, `r = 1`, each nonzero period has
+`‖η_b‖² = 1` while the two-term nonzero sum is `2`; audit 2026-10-28, R-220.) -/
 theorem sup_le_nonprincipalEnergy (ψ : AddChar F ℂ) (G : Finset F) (r : ℕ)
     (b : F) (hb : b ≠ 0) :
     ‖eta ψ G b‖ ^ (2 * r)

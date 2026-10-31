@@ -146,11 +146,15 @@ echo ""
 echo "# Running measured FRI extractor runtime checks"
 ./scripts/lake-locked.sh exe fri-extractor-runtime
 
+# CI gate 3: flagship theorems depend only on the standard axioms, and every
+# axiom of an audited ArkLib/Research module is a pinned residual. Build every
+# module the audit imports (flagship and pinned-residual modules) explicitly
+# first, since some sit outside the default `lake build` targets.
 echo ""
-echo "# Checking downstream flagship axioms"
-awk '!/^([[:space:]]*(#|$))/ { print $1 }' scripts/flagship_axioms.txt \
-  | LC_ALL=C sort -u | xargs ./scripts/lake-locked.sh build
-python3 scripts/axiom_audit.py
+echo "# Axiom audit (flagship theorems, residual-axiom inventory)"
+python3 ./scripts/axiom_audit.py --print-modules \
+  | xargs ./scripts/lake-locked.sh build
+python3 ./scripts/axiom_audit.py
 
 echo ""
 echo "# Testing build timing report fixtures"

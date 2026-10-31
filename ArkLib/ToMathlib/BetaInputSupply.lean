@@ -18,8 +18,8 @@ import ArkLib.ToMathlib.SubstFieldCaveat
 
 The keystone front door
 `KeystoneStrictResidual.correlatedAgreement_affine_curves_johnson_of_betaRec`
-consumes, per received curve `u`, the genuine BCIKS20 §5 / App-A.4 *input* bundle
-`KeystoneStrictResidual.BetaCurveInput u` (`KeystoneStrictResidual.lean`).  That bundle has many
+consumes, per received curve `u` and decoded family `P`, the BCIKS20 §5 / App-A.4 *input* bundle
+`KeystoneStrictResidual.BetaCurveInput u P` (`KeystoneStrictResidual.lean`).  That bundle has many
 fields; this file builds it **field by field from more primitive §5 data**, discharging or reducing
 every field that the 28 verified bricks already handle and leaving only the genuine geometric inputs
 as documented named hypotheses.
@@ -44,8 +44,17 @@ as documented named hypotheses.
   cardinality bound `#matchingSet > (2t+1)·d·D·d_H` via the verified weight collapse
   `BetaWeightCollapse.betaRec_weight_le_concrete` (`d = R.natDegree`).  The collapse's App-A budget
   inputs (`hbB`, `hBzero`, `hbξ`) are carried as documented hypotheses.
-* `hPz` — **reduced** (uniformly in the decoded family `P`) from the per-`z` polynomial identity to
-  the per-`z` Hensel root datum via `HPzBridge.hPz_of_henselDatum`.
+* `hPz` — **reduced**, for the one decoded family `P` the bundle is built for, from the per-`z`
+  polynomial identity to the per-`z` matching-divisibility input via `hPz_of_matchingDvdInput`
+  (which goes through the Hensel root datum of `HPzBridge.hPz_of_henselDatum`).
+
+The bundles are per decoded family (audit L72): `BetaCurveInput u P`/`BetaCurveInputFin u P` take
+`P` as a parameter, and the Hensel/degree producers below are stated for that `P` only. Before the
+repair they were quantified over every `P : F → Polynomial F`, which made every produced bundle
+contradictory as soon as the good set is nonempty (see
+`KeystoneStrictResidual.BetaCurveInputFin.not_uniform_hPz`). None of the builders below is
+instantiated in-tree, so they do not show that any bundle is inhabited; see the
+`KeystoneStrictResidual` module docstring for the obstructions the bundles still carry.
 
 The measure of success: the hypothesis list of `betaCurveInput_of_section5` is strictly more
 primitive than the raw `BetaCurveInput` bundle — `hsubst` is gone (discharged), `hγ` is replaced by
@@ -344,12 +353,14 @@ Discharged / reduced fields:
   to build each point from the smallest Hensel inputs);
 * `hcardConcrete` (a *concrete arithmetic* per-`t` cardinality bound) plus the App-A weight budgets
   `hbB`/`hBzero`/`hbξ` produce the genuine `hcard` field via `hcard_of_concrete`;
-* `hHensel`/`hdegPz` (per `P`, per `(v₀,v₁)`: the per-`z` Hensel root datum and the curve-parameter
-  degree bounds) produce the `hPz` field via `HPzBridge.hPz_of_henselDatum`.
+* `hMatchingDvd`/`hdegPz` (for the decoded family `P`, per `(v₀,v₁)`: the per-`z`
+  matching-divisibility input and the curve-parameter degree bounds) produce the `hPz` field via
+  `hPz_of_matchingDvdInput`.
 
-Conclusion: the full `BetaCurveInput` bundle. -/
+Conclusion: the full `BetaCurveInput u P` bundle for the decoded family `P` (conditional on all of
+the inputs above; nothing in-tree supplies them). -/
 noncomputable def betaCurveInput_of_section5 {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
-    {u : WordStack F (Fin (k + 1)) ι}
+    {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
     -- §5 function-field setup (carried through):
     (R : F[X][X][Y]) (H : F[X][Y])
     (hIrr : Fact (Irreducible H)) (hPos : Fact (0 < H.natDegree))
@@ -377,18 +388,19 @@ noncomputable def betaCurveInput_of_section5 {k deg : ℕ} {domain : ι ↪ F} {
         ≤ (WithBot.some ((R.natDegree - 1) * (D - H.natDegree + 1)) : WithBot ℕ))
     (hcardConcrete : ∀ t, k ≤ t → (↑matchingSet.card : WithBot ℕ)
         > (((2 * t + 1) * R.natDegree * D * H.natDegree : ℕ) : WithBot ℕ))
-    -- the §5 specialisation bridge, reduced to the per-`z` matching-divisibility input:
-    (hMatchingDvd : ∀ (P : F → Polynomial F) (v₀ v₁ : F[X]),
+    -- the §5 specialisation bridge for the decoded family `P` (only), reduced to the per-`z`
+    -- matching-divisibility input:
+    (hMatchingDvd : ∀ v₀ v₁ : F[X],
       γ (0 : F) R H hHyp = polyToPowerSeries𝕃 H
         ((Polynomial.map Polynomial.C v₀)
           + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)) →
       HenselDatumProducer.MatchingDvdInput (k := k) (deg := deg) (domain := domain) (δ := δ) u P v₀ v₁)
-    (hdegPz : ∀ (_P : F → Polynomial F) (v₀ v₁ : F[X]),
+    (hdegPz : ∀ v₀ v₁ : F[X],
       γ (0 : F) R H hHyp = polyToPowerSeries𝕃 H
         ((Polynomial.map Polynomial.C v₀)
           + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)) →
       v₀.natDegree < k + 1 ∧ v₁.natDegree < k + 1) :
-    BetaCurveInput (k := k) (deg := deg) (domain := domain) (δ := δ) u where
+    BetaCurveInput (k := k) (deg := deg) (domain := domain) (δ := δ) u P where
   x₀ := (0 : F)
   R := R
   H := H
@@ -411,32 +423,32 @@ noncomputable def betaCurveInput_of_section5 {k deg : ℕ} {domain : ι ↪ F} {
     intro t hkt
     exact hcard_of_concrete (0 : F) R H hHyp Bcoeff hD hH hd1 hdH_le hdH_D
       hbB hBzero hbξ (hcardConcrete t hkt)
-  hPz := by
-    intro P v₀ v₁ hlin
-    exact hPz_of_matchingDvdInput (fun v₀' v₁' hlin' => hMatchingDvd P v₀' v₁' hlin') (hdegPz P) v₀ v₁ hlin
+  hPz := hPz_of_matchingDvdInput hMatchingDvd hdegPz
 
-/-! ## The satisfiable assembly: `betaCurveInputFin_of_section5`
+/-! ## The finite-range assembly: `betaCurveInputFin_of_section5`
 
-The F5-corrected counterpart of `betaCurveInput_of_section5`: builds the *satisfiable*
-`KeystoneStrictResidual.BetaCurveInputFin u` from centered concrete finite-range §5 data.  The
-over-strong infinite-range `hcard`/`mp` of `betaCurveInput_of_section5` are replaced by the
-truncation index `T`, the finite-range concrete cardinality bound `hcardConcreteFin` (converted to
-`hcardFin` via `hcardFin_of_concrete`), the finite-range matching producer `mpFin`, and the explicit
-algebraic-degree datum `htailDeg` (the bounded-`Z`-degree truncation of `γ`, Prop 5.5).  Because the
-cardinality budget is required only on `[k, T]`, the bundle is satisfiable in principle (no
-remaining `∀-t` blowup — see `KeystoneStrictResidual.betaCurveInputFin_hcardFin_satisfiable`). -/
+The F5-corrected counterpart of `betaCurveInput_of_section5`: builds
+`KeystoneStrictResidual.BetaCurveInputFin u P` from centered concrete finite-range §5 data for the
+decoded family `P`.  The infinite-range `hcard`/`mp` of `betaCurveInput_of_section5` are replaced
+by the truncation index `T`, the finite-range concrete cardinality bound `hcardConcreteFin`
+(converted to `hcardFin` via `hcardFin_of_concrete`), the finite-range matching producer `mpFin`,
+and the explicit algebraic-degree datum `htailDeg` (the bounded-`Z`-degree truncation of `γ`,
+Prop 5.5).  The concrete cardinality budget is required only on `[k, T]`, so the arithmetic
+`∀ t` demand of `hcardConcrete` is gone (one bound at `T` suffices:
+`KeystoneStrictResidual.betaCurveInputFin_hcardFin_satisfiable`).  This removes only that
+arithmetic obstruction: the builder is not instantiated in-tree, and the bundle it produces still
+carries the independent obstructions listed in the `KeystoneStrictResidual` module docstring. -/
 
-/-- **The F5-corrected §5 input-bundle instantiation lemma (satisfiable).**
+/-- **The F5-corrected §5 input-bundle instantiation lemma.**
 
 Builds `KeystoneStrictResidual.BetaCurveInputFin (k := k) (deg := deg) (domain := domain) (δ := δ)
-u`
-from the reduced, per-field primitive data, with the finite-range counting interface that makes the
-weight budget satisfiable.  Differs from `betaCurveInput_of_section5` only in:
+u P` for the decoded family `P` from the reduced, per-field primitive data, with the finite-range
+counting interface.  Differs from `betaCurveInput_of_section5` only in:
 * a truncation index `T` with finite-range `mpFin`/`hcardConcreteFin` (vs. infinite-range
 `mp`/`hcardConcrete`);
 * the explicit algebraic-degree datum `htailDeg` covering `t > T`. -/
 noncomputable def betaCurveInputFin_of_section5 {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
-    {u : WordStack F (Fin (k + 1)) ι}
+    {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
     -- §5 function-field setup (carried through):
     (R : F[X][X][Y]) (H : F[X][Y])
     (hIrr : Fact (Irreducible H)) (hPos : Fact (0 < H.natDegree))
@@ -470,18 +482,19 @@ noncomputable def betaCurveInputFin_of_section5 {k deg : ℕ} {domain : ι ↪ F
         > (((2 * t + 1) * R.natDegree * D * H.natDegree : ℕ) : WithBot ℕ))
     -- the algebraic-degree datum: beyond `T` the Hensel coefficients vanish (bounded `Z`-degree):
     (htailDeg : ∀ t, T < t → BetaToCurveCoeffPolys.αFromBeta (0 : F) R H hHyp Bcoeff t = 0)
-    -- the §5 specialisation bridge, reduced to the per-`z` matching-divisibility input:
-    (hMatchingDvd : ∀ (P : F → Polynomial F) (v₀ v₁ : F[X]),
+    -- the §5 specialisation bridge for the decoded family `P` (only), reduced to the per-`z`
+    -- matching-divisibility input:
+    (hMatchingDvd : ∀ v₀ v₁ : F[X],
       γ (0 : F) R H hHyp = polyToPowerSeries𝕃 H
         ((Polynomial.map Polynomial.C v₀)
           + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)) →
       HenselDatumProducer.MatchingDvdInput (k := k) (deg := deg) (domain := domain) (δ := δ) u P v₀ v₁)
-    (hdegPz : ∀ (_P : F → Polynomial F) (v₀ v₁ : F[X]),
+    (hdegPz : ∀ v₀ v₁ : F[X],
       γ (0 : F) R H hHyp = polyToPowerSeries𝕃 H
         ((Polynomial.map Polynomial.C v₀)
           + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)) →
       v₀.natDegree < k + 1 ∧ v₁.natDegree < k + 1) :
-    BetaCurveInputFin (k := k) (deg := deg) (domain := domain) (δ := δ) u where
+    BetaCurveInputFin (k := k) (deg := deg) (domain := domain) (δ := δ) u P where
   x₀ := (0 : F)
   R := R
   H := H
@@ -504,9 +517,7 @@ noncomputable def betaCurveInputFin_of_section5 {k deg : ℕ} {domain : ι ↪ F
   hcardFin := hcardFin_of_concrete (0 : F) R H hHyp Bcoeff hD hH hd1 hdH_le hdH_D
     hbB hBzero hbξ hcardConcreteFin
   htailDeg := htailDeg
-  hPz := by
-    intro P v₀ v₁ hlin
-    exact hPz_of_matchingDvdInput (fun v₀' v₁' hlin' => hMatchingDvd P v₀' v₁' hlin') (hdegPz P) v₀ v₁ hlin
+  hPz := hPz_of_matchingDvdInput hMatchingDvd hdegPz
 
 end BetaInputSupply
 

@@ -93,6 +93,11 @@ P2: one_jacobi_RMS_ratio <= 2^-64.500,
     K_for_10/50/90 >= 2608763565066556416 / 13043817825332781056 / 23478872085599006720
 ```
 
+Audit note (CW-DL09b-02): the P1/P2 values printed above are rounded. Under the stated bound
+`f^2 <= p(m-1)/(m^2 n (m-n))` with exact fractions, `f^2` slightly exceeds `2^-128` (P1) and
+`2^-129` (P2) (by a factor about `1 + 2^-100`), so `<= 2^-64` / `<= 2^-64.5` is not strict. The
+rigorous kernel-checked bounds are G229's `< 2^-63.5` (P1) and `< 2^-64` (P2).
+
 ## Verdict
 
 The analytic Gauss/Jacobi instantiation is real, but it fans out rather than compresses.  Any bounded

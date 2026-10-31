@@ -50,6 +50,16 @@ So `ι ≤ 1` is a **geometric** statement about band-realizable overlap configu
 status as SYZ39's bad-prime confinement and G172's no-go — **not** a determinant identity.  It
 cannot be discharged by symbolic algebra on abstract coprime triples.
 
+**Correction (2026-10-28 audit, L127):** the `62 000+` configurations are a random sample, and the
+claim that proper/full-cover band geometry forces `ι ≤ 1` is **false**.  Over `𝔽₄₁` on the proper
+subgroup `μ₂₀ = ⟨2⟩` (`n = 20`, `k = 10`) the locators `X⁴ − 1, X⁴ − 16, X⁴ − 10` realize a
+full-cover interior-band triple (cores of size `14`, pair overlaps `9 = k − 1`, `t = 5`, degrees
+`(4,4,4)`) with a constant syzygy, so `δ₁ = 4` and `ι = 2` (exact replay: `test_D` in
+`scripts/probes/probe_syz45_imbalance_bound.py`).  This is an exact finite-field geometry
+refutation, not a kernel-checked fixture or a prize bad-scalar counterexample.  What stays proved is
+SYZ47's floor `δ₁ ≥ max(a,b,c)`, giving `ι ≤ 1` only on the strip `max(a,b,c) ≥ ⌊(a+b+c)/2⌋ − 1`;
+the balanced interior needs further, justified hypotheses.  The theorems below are unaffected.
+
 ## What is proved here (axiom-clean)
 
 The two *pure* halves that survive the analysis and are genuine theorems:

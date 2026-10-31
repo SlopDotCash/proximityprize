@@ -16,8 +16,9 @@ nonzero vector has a rotate with NONZERO HEAD (`z 0 ≠ 0`).  So it suffices to 
 head-nonzero slice — a factor-`m` reduction of the certification space, the ideal-lattice
 symmetry cashed out as proof-search savings:
 
-* **`iterate_rotZ_apply` / `iterate_rotZ_head`** :  the rotation dynamics on coordinates —
-  after `m − j` steps, coordinate `j` arrives at the head with a sign;
+* **`iterate_rotZ_apply` / `iterate_rotZ_head`** (now owned by R371, reused here) :  the
+  rotation dynamics on coordinates — after `m − j` steps, coordinate `j` arrives at the head
+  with a sign;
 * **`exists_iterate_head_ne_zero`** :  every nonzero vector has a rotate (≤ m steps) with
   nonzero head;
 * **`l1_rotZ`** :  rotation preserves `ℓ1` exactly;
@@ -47,49 +48,14 @@ open ArkLib.ProximityGap.Frontier.R394L1KernelCertificate
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 variable {m : ℕ}
 
-theorem rotZ_head (hm : 0 < m) (w : Fin m → ℤ) :
-    rotZ m hm w ⟨0, hm⟩ = -w ⟨m - 1, by omega⟩ := by
-  unfold rotZ
-  rw [if_pos rfl]
-
-theorem rotZ_tail (hm : 0 < m) (w : Fin m → ℤ) (j : Fin m) (hj : (j : ℕ) ≠ 0) :
-    rotZ m hm w j = w ⟨(j : ℕ) - 1, by have := j.isLt; omega⟩ := by
-  unfold rotZ
-  rw [if_neg hj]
-
-/-- Rotation dynamics: after `k` steps, coordinate `j` sits at `j + k` (no wrap). -/
-theorem iterate_rotZ_apply (hm : 0 < m) (z : Fin m → ℤ) (k : ℕ) (j : ℕ)
-    (hjk : j + k < m) :
-    ((rotZ m hm)^[k] z) ⟨j + k, hjk⟩ = z ⟨j, by omega⟩ := by
-  induction k with
-  | zero => rfl
-  | succ k ih =>
-      rw [Function.iterate_succ_apply']
-      rw [rotZ_tail hm _ ⟨j + (k + 1), hjk⟩ (by show j + (k + 1) ≠ 0; omega)]
-      rw [show (⟨((⟨j + (k + 1), hjk⟩ : Fin m) : ℕ) - 1, by
-          have := (⟨j + (k + 1), hjk⟩ : Fin m).isLt
-          omega⟩ : Fin m)
-        = ⟨j + k, by omega⟩ from Fin.ext (show j + (k + 1) - 1 = j + k from by omega)]
-      exact ih (by omega)
-
-/-- After `m − j` steps, coordinate `j` arrives at the head with a sign flip. -/
-theorem iterate_rotZ_head (hm : 0 < m) (z : Fin m → ℤ) (j : ℕ) (hj : j < m) :
-    ((rotZ m hm)^[m - j] z) ⟨0, hm⟩ = -z ⟨j, hj⟩ := by
-  have hstep : m - j = (m - 1 - j) + 1 := by omega
-  rw [hstep, Function.iterate_succ_apply', rotZ_head hm]
-  have harr : ((rotZ m hm)^[m - 1 - j] z) ⟨m - 1, by omega⟩ = z ⟨j, hj⟩ := by
-    have h0 := iterate_rotZ_apply hm z (m - 1 - j) j (by omega)
-    rw [show (⟨j + (m - 1 - j), by omega⟩ : Fin m) = ⟨m - 1, by omega⟩ from
-      Fin.ext (show j + (m - 1 - j) = m - 1 from by omega)] at h0
-    exact h0
-  rw [harr]
+-- `rotZ_head`, `rotZ_tail`, `iterate_rotZ_apply`, `iterate_rotZ_head`: owned by R371.
 
 /-- Every nonzero vector has a rotate (at most `m` steps) with nonzero head. -/
 theorem exists_iterate_head_ne_zero (hm : 0 < m) (z : Fin m → ℤ) (hz0 : z ≠ 0) :
     ∃ k ≤ m, ((rotZ m hm)^[k] z) ⟨0, hm⟩ ≠ 0 := by
   obtain ⟨j, hj⟩ := Function.ne_iff.mp hz0
   refine ⟨m - (j : ℕ), by omega, ?_⟩
-  rw [iterate_rotZ_head hm z (j : ℕ) j.isLt]
+  rw [iterate_rotZ_head m hm z (j : ℕ) j.isLt]
   simpa using hj
 
 /-- Rotation preserves `ℓ1` exactly. -/
@@ -102,13 +68,13 @@ theorem l1_rotZ (hm : 0 < m) (z : Fin m → ℤ) :
   by_cases hj : j = Fin.last m'
   · rw [hj, finRotate_last]
     rw [show ((0 : Fin (m' + 1))) = ⟨0, hm⟩ from rfl]
-    rw [rotZ_head hm]
+    rw [rotZ_head m hm]
     rw [show (⟨m' + 1 - 1, by omega⟩ : Fin (m' + 1)) = Fin.last m' from
       Fin.ext (by simp)]
     rw [abs_neg]
   · have hne : ((finRotate (m' + 1)) j : ℕ) = (j : ℕ) + 1 :=
       coe_finRotate_of_ne_last hj
-    rw [rotZ_tail hm _ _ (by rw [hne]; omega)]
+    rw [rotZ_tail m hm _ _ (by rw [hne]; omega)]
     congr 1
     apply congrArg
     apply Fin.ext

@@ -47,22 +47,18 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : ℕ} [NeZero n]
 
 /-- The two Reed--Solomon submodule presentations used by the line-list and canonical-code APIs
-have the same carrier. -/
+have the same carrier.  Local name for the canonical carrier bridge
+`ProximityGap.Ownership.mem_rsCode_iff_mem_code`. -/
 theorem mem_rsCode_iff_mem_reedSolomonCode
     (dom : Fin n ↪ F) (k : ℕ) (w : Fin n → F) :
     w ∈ (rsCode dom k : Submodule F (Fin n → F)) ↔
-      w ∈ ReedSolomon.code dom k := by
-  rw [ReedSolomon.mem_code_iff_exists_polynomial]
-  constructor
-  · rintro ⟨p, hp, rfl⟩
-    exact ⟨p, hp, by funext i; rfl⟩
-  · rintro ⟨p, hp, rfl⟩
-    exact ⟨p, hp, by funext i; rfl⟩
+      w ∈ ReedSolomon.code dom k :=
+  ProximityGap.Ownership.mem_rsCode_iff_mem_code dom k w
 
 open Classical in
 /-- Axiom-clean natural-number Johnson divisor bound for an arbitrary finite family of `rsCode`
-codewords.  This is the local clean replacement for the legacy convenience path through
-`JohnsonSplitSupply`. -/
+codewords: the `rsCode`/`agreeSet` presentation of the shared natural-number Johnson bound
+`reedSolomon_johnson_list_card_le_div`. -/
 theorem rsCodeFinset_card_le_johnson
     (dom : Fin n ↪ F) {k h : ℕ} (hk : 1 ≤ k) (u₀ : Fin n → F)
     (L : Finset (Fin n → F))
@@ -83,17 +79,9 @@ theorem rsCodeFinset_card_le_johnson
       h ≤ ArkLib.CodingTheory.JohnsonSimplex.agree c u₀ := by
     intro c hc
     simpa [ArkLib.CodingTheory.JohnsonSimplex.agree, agreeSet] using hagree c hc
-  have hreal := reedSolomon_johnson_list_bound dom k u₀ L h hpoly hclose
-  have hden :
-      ((h : ℝ) ^ 2 - (n : ℝ) * ((k - 1 : ℕ) : ℝ)) =
-        ((h ^ 2 - n * (k - 1) : ℕ) : ℝ) := by
-    rw [Nat.cast_sub (le_of_lt hgap)]
-    push_cast
-    ring
-  rw [Fintype.card_fin, hden] at hreal
-  have hnat : L.card * (h ^ 2 - n * (k - 1)) ≤ n ^ 2 := by
-    exact_mod_cast hreal
-  exact (Nat.le_div_iff_mul_le (Nat.sub_pos_of_lt hgap)).2 hnat
+  simpa only [Fintype.card_fin] using
+    reedSolomon_johnson_list_card_le_div dom k u₀ L h hpoly hclose
+      (by simpa only [Fintype.card_fin] using hgap)
 
 open Classical in
 /-- Every appearing codeword belongs to one ordinary Johnson list around the offset.  The threshold

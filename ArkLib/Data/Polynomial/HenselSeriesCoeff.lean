@@ -55,11 +55,12 @@ From there the Newton recursion and order-by-order vanishing are *verbatim* thos
 `HenselExistence` (the linear response `eval c (derivative Q₀)` is a unit by hypothesis, and the
 order-0 coefficient is `eval c Q₀ = 0`), so the same construction lifts `c` to a root of `Q`.
 
-**Self-containment.** `HenselExistence` / `NewtonLinearization` are on this branch but their
-`olean`s are not prebuilt here, and they are stated for `R[X]` (constant coefficients), not the
-`R⟦X⟧[X]` shape, so the two power-only lemmas that transfer unchanged — truncation propagation
-(LEMMA A) and the Newton power linearization (LEMMA B) — are **restated and reproven locally**
-(namespace `HenselSeriesCoeff`), and the file depends only on mathlib.
+**Self-containment.** `HenselExistence` / `NewtonLinearization` are stated for `R[X]` (constant
+coefficients), not the `R⟦X⟧[X]` shape, so the two power-only lemmas that transfer unchanged —
+truncation propagation (LEMMA A) and the Newton power linearization (LEMMA B) — are **restated and
+reproven locally** (namespace `HenselSeriesCoeff`), and the file depends only on mathlib. (When
+this file was written, a further reason was that those modules' `olean`s were not prebuilt in
+that session; that build-state remark is historical, not a statement about the current tree.)
 -/
 
 namespace ProximityPrize.HenselSeriesCoeff
@@ -418,9 +419,10 @@ theorem root_unique_seriesCoeff {γ₁ γ₂ : R⟦X⟧}
 
 /-! ## Axiom audit
 
-In-file `#print axioms` (run on a temp copy, then removed — see disposition note) is intended to
-confirm every declaration depends only on `[propext, Classical.choice, Quot.sound]`: no
-`sorryAx`, no `native_decide` / `Lean.ofReduceBool`. -/
+The `#print axioms` commands checked in at the end of this file confirm that every listed
+declaration depends only on `[propext, Classical.choice, Quot.sound]`: no `sorryAx`, no
+`native_decide` / `Lean.ofReduceBool`. (An earlier version ran them on a temporary copy and then
+removed them; they are now part of the file.) -/
 
 end ProximityPrize.HenselSeriesCoeff
 

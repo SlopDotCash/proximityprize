@@ -11,16 +11,19 @@ public import ArkLib.OracleReduction.LiftContext.OracleReduction
 /-!
   # Equivalence / Isomorphism of Oracle Reductions
 
-  We define observational equivalence between provers and verifiers in an I(O)R.
-
-  We also define equivalence between IORs, in the sense that the statements and witnesses are
-  equivalent, and their mapping commute with the reduction (both for the prover and the verifier).
-
-  NOTE: this is now a special case of `liftContext`
+  **What this file currently provides.** Only `ProtocolSpec.Equiv` — equivalence of protocol
+  specifications (equal round counts, matching directions, and a type equivalence for each
+  round) together with `refl`, `symm` and `equivTrans`. Observational equivalence of provers,
+  verifiers or I(O)Rs, and the transfer of security properties along such an equivalence, are
+  **not implemented here**; the commented-out `Relation.equiv` / `Prover.ObsEquiv` sketches below
+  are design notes, not definitions. Transport along statement/witness maps that commute with
+  the reduction is available as a special case of `liftContext`
+  (`ArkLib.OracleReduction.LiftContext`).
 
   -----------------------------------------------------------------------------------------------
 
-  We will also need to convert between specification and executable models.
+  Design notes (not implemented). We will also need to convert between specification and
+  executable models.
 
   In the best case, we have an isomorphism of the datatypes, which also intertwines with the
   implementation of the prover & verifier.
@@ -144,9 +147,3 @@ variable {n : ℕ} {pSpec pSpec' : ProtocolSpec n}
 --   witOutEquiv : WitOut ≃ WitOut'
   -- All prover functions give the same output
   -- proverEquiv : ∀ stmtIn witIn, ...
-
-namespace Reduction
-
-
-
-end Reduction

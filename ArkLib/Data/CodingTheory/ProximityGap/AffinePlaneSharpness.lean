@@ -27,10 +27,13 @@ matching LOWER bound construction showing the route stops there **sharply**:
 
 > **`no_mean_degree_law_at_pole`** — consequently, for EVERY constant `C` there is an
 > instance with `n ≤ t²` where the mass exceeds `C·n`: no constant-`C` mean-degree law
-> holds at the pole.  The deep hypothesis `2n² ≤ t²(t−1)` (equivalently the CS-range
-> `t² ≥ 2n`) cannot be weakened to `t² ≥ n`, and no pairwise-intersection set-system
-> argument alone crosses the Johnson line — sub-Johnson supply bounds MUST couple the
-> word.
+> holds at the pole.  Neither the deep hypothesis `2n² ≤ t²(t−1)` nor the
+> Cauchy–Schwarz range `t² ≥ 2n` can be weakened to `t² ≥ n`, and no
+> pairwise-intersection set-system argument alone crosses the Johnson line —
+> sub-Johnson supply bounds MUST couple the word.  (These two regimes are **not**
+> equivalent: for `n > 0` and `t ≤ n + 1`, `2n² ≤ t²(t−1)` implies `t² ≥ 2n`, but not
+> conversely — e.g. `n = 100`, `t = 15` has `t² = 225 ≥ 200 = 2n` while
+> `t²(t−1) = 3150 < 20000 = 2n²`.)
 
 Probe: `scripts/probes/probe_affine_sharpness_triple_moment.py` (section A, exact at
 `q = 3, 5, 7, 11, 13`).  Issue #389.
@@ -183,9 +186,9 @@ theorem mean_degree_pole_witness (C : ℕ) :
     exact lineFamily_mass_gt C (by rw [hcard]; omega)
 
 /-- **THE POLE IS REAL**: no constant-`C` mean-degree law holds at `t² = n` — the
-mean-degree hypothesis `2n² ≤ t²(t−1)` (and the CS range `2n ≤ t²`) cannot be
-weakened to `n ≤ t²`.  Any sub-Johnson supply bound must use more than sizes and
-pairwise intersections: it must couple the word. -/
+mean-degree hypothesis `2n² ≤ t²(t−1)` and the (weaker, non-equivalent) CS range
+`2n ≤ t²` each cannot be weakened to `n ≤ t²`.  Any sub-Johnson supply bound must use more
+than sizes and pairwise intersections: it must couple the word. -/
 theorem no_mean_degree_law_at_pole (C : ℕ) :
     ¬ (∀ (n t : ℕ) (S : Finset (Finset (Fin n))), 2 ≤ t →
         (∀ A ∈ S, t ≤ A.card) →

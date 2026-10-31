@@ -29,8 +29,17 @@ this yields the **complete, uniform** explicit order-2 Stepanov bound:
 > **`repCount_two_mul_le`** — for `G = μ_n` (`n = 2^μ` even), `2 ≠ 0`, `2^n ≠ 1`, every `c ≠ 0`
 > (diagonal *and* off-diagonal) satisfies `2·r(c) ≤ n+1`.
 
-Unconditional over any field meeting the parity/characteristic side conditions (`2^n ≠ 1` holds
-automatically in the deployed regime `p > 2^n`); axiom-clean.
+Valid over any field meeting the parity/characteristic side conditions `2 ≠ 0` and
+`2^n ≠ 1`, which stay explicit hypotheses; axiom-clean.
+
+**On the side condition `2^n ≠ 1`.**  `p > 2^n` (for `F = F_p`) is a sufficient condition, but
+it describes a different regime from production: at the advertised scale `n = 2^{30}`,
+`q ≈ 2^{158}`, the characteristic satisfies `p ≤ q`, far below `2^n = 2^{2^{30}}`.  Under the
+hypothesis `hGmem` (`G` is exactly the set of `n`-th roots of unity), `2^n ≠ 1` is equivalent to
+`2 ∉ G`; over `F_p` with `n = 2^μ` this says the multiplicative order of `2` mod `p` does not
+divide `n`, i.e. is not a power of two that is at most `n`.  This may well hold for
+particular deployed primes, but it must be checked for each concrete prime (or certified
+arithmetically); it does not follow from the size of `p`.
 -/
 
 open Finset Polynomial

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
+import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingRefutation
 
 /-!
 # The prize COMPLETENESS statement: `δ*` in the window ⟺ the single scalar `B` (#444)
@@ -18,10 +19,12 @@ The two faces are:
 * **`δ*`-side** — the window lower pin `δ ≤ mcaDeltaStar C εstar` (the prize "δ* reaches the
   window radius" statement).
 * **`B`-side** — the worst-case far-line incidence bound `WorstCaseIncidenceBounded C δ B`
-  (`OpenCoreConditionalPin`), which by the exact incidence↔period bridge
-  (`IncidencePeriodBridge.lineIncidence_period_sum`, the `√`-loss-free Fourier identity) is
-  controlled by the single scalar `B`: at a budget `B ≈ q·ε* ≈ n` it is the statement
-  `‖η_b‖ ≤ C√(n log m)` realized into the incidence count.
+  (`OpenCoreConditionalPin`), an integer incidence budget `B`. It is *hoped* to be controlled
+  by the Gauss-period sup-norm, i.e. at a budget `B ≈ q·ε* ≈ n` by `‖η_b‖ ≤ C√(n log m)`. No
+  in-tree theorem proves that dictionary. `IncidencePeriodBridge.lineIncidence_period_sum` is
+  only a one-dimensional `V = F` model, where the incidence is `|G|` for every nonzero direction
+  and only `η₀` survives. It is not the syndrome-ball incidence in the `(n − k)`-dimensional
+  quotient, so the integer budget `B` here is not automatically the real period norm.
 
 ## The completeness biconditional
 
@@ -36,12 +39,17 @@ single scalar `B`": a proven two-way reduction between the `δ*` window pin and 
   `OpenCoreConditionalPin.worstCaseIncidence_pin`. A bound on the worst-case incidence `B` forces
   the `δ*` lower pin.
 
-* **Converse direction** (`δ*`-side ⟹ `B`-side): the **hard new direction**, stated here as ONE
-  named `Prop` `ConverseRealizer C εstar δ B`. It is the *realizer*: a `δ*` window statement must
-  force a worst-case-incidence statement. Honestly, the only way to prove it is a CONSTRUCTIVE
-  worst word whose realized far-line incidence equals (not merely `≤`) a function of `B`, so that
-  `δ ≤ δ*` forces `I(δ) ≤ B`. This realizer is **not proven here** (it is the converse of the open
-  core, and is at least as hard); it is carried as an explicit hypothesis.
+* **Converse direction** (`δ*`-side ⟹ `B`-side): stated here as the named `Prop`
+  `ConverseRealizer C εstar δ B`. **As a generic target it is REFUTED**
+  (`converseRealizer_refuted`): over `F₂` on one coordinate with `C = {0}`, the stack `(0, 1)`
+  has the bad scalar `0` at radius `0`, so at `εstar = 0`, `δ = 0`, `B = 0` the budget holds with
+  equality (`B/q = εstar`) and `δ ≤ mcaDeltaStar` holds trivially (the good-radius set is empty
+  and its `ℝ≥0` supremum is `0`), yet `WorstCaseIncidenceBounded C 0 0` fails. The closed
+  endpoint `δ ≤ δ*` at an unattained supremum cannot force the incidence bound, and with slack
+  `B/q < εstar` an interior good radius need not force the smaller integer budget `B` either. A
+  correct converse would have to be formulated at strict radius `δ < δ*` with a matching integer
+  probability budget (cf. the PG-027 endpoint family); none is proved here. `ConverseRealizer` is
+  therefore only an instance-level hypothesis, false for some `(C, εstar, δ, B)`.
 
 ## What is proven (axiom-clean, no `sorry`)
 
@@ -53,18 +61,23 @@ single scalar `B`": a proven two-way reduction between the `δ*` window pin and 
 * `prizeEquivalence_forward` — the forward leg, fully proven and standalone (= the open-core pin).
 
 * `prizeEquivalence_iff_converseRealizer` — meta-statement: under the budget side condition, the
-  biconditional `PrizeEquivalence` holds **iff** the converse realizer holds. I.e. the *entire*
-  remaining gap between "conditional pin" and "complete biconditional" is exactly the one named
-  `Prop` `ConverseRealizer`, with no other open math.
+  biconditional `PrizeEquivalence` holds **iff** the converse realizer holds (for the given
+  instance). Since the converse realizer is refuted at some instances, so is the biconditional.
+
+* `converseRealizer_refuted` — the checked counterexample above: `ConverseRealizer` and
+  `PrizeEquivalence` both fail at `F₂`, `C = {0}`, `εstar = 0`, `δ = 0`, `B = 0`, although every
+  side condition of the wrapper (`δ ≤ 1`, `B/q ≤ εstar`) holds.
 
 ## Honest scope (the load-bearing self-check)
 
 * **Direction proven: forward only.** The forward `B ⟹ δ*` is proven (the open-core conditional
-  pin). The converse `δ* ⟹ B` is **named, not proven** — it is the converse realizer, strictly the
-  harder direction (it must build the worst word that *saturates* the incidence). The biconditional
-  is therefore `proven modulo ConverseRealizer`, and that residual is isolated as ONE explicit
-  `Prop`. The `B`-side itself (`WorstCaseIncidenceBounded` at window budget, i.e. `B ≤ C√(n log m)`)
-  remains the recognized ~25-year-open BGK/Paley wall — NOT closed here, by anyone.
+  pin). The converse `δ* ⟹ B` is **not** a valid generic statement (`converseRealizer_refuted`);
+  the biconditional is only `proven modulo ConverseRealizer` at instances where that hypothesis
+  happens to hold, and the advertised "prize = exactly the scalar `B`" equivalence is not
+  established. Moreover the integer incidence budget `B` here is not automatically the real
+  Gauss-period sup-norm `max_{b≠0} ‖η_b‖` of the introduction; relating them needs a separate
+  bridge (audit PG-070). The `B`-side itself (`WorstCaseIncidenceBounded` at window budget, i.e.
+  `B ≤ C√(n log m)`) remains the recognized open BGK/Paley wall — NOT closed here.
 * **No wall is smuggled.** `ConverseRealizer` is the *converse* implication only; it does NOT assert
   the open `B` bound. The wrapper `PrizeEquivalence_of_converse` does not discharge the wall, and
   the forward leg `prizeEquivalence_forward` does not depend on the converse at all.
@@ -87,16 +100,18 @@ variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 
 /-! ## The converse realizer — the one named (hard) direction -/
 
-/-- **The converse realizer (`δ*`-side ⟹ `B`-side), as ONE named `Prop`.**
+/-- **The converse realizer (`δ*`-side ⟹ `B`-side), as a named instance-level `Prop`.**
 
-This is the hard new direction of the completeness biconditional: *if* the threshold reaches the
-window radius `δ ≤ mcaDeltaStar C εstar`, *then* the worst-case far-line incidence is bounded,
-`WorstCaseIncidenceBounded C δ B`.
+The converse direction of the would-be completeness biconditional: *if* the threshold reaches
+the window radius `δ ≤ mcaDeltaStar C εstar`, *then* the worst-case far-line incidence is
+bounded, `WorstCaseIncidenceBounded C δ B`.
 
-Proving it requires a **constructive worst word** whose realized far-line incidence equals (not just
-`≤`) a function of the single scalar `B`, so that a `δ*` statement forces a `B` statement (it is the
-converse of the open-core pin and is at least as hard). It is stated here, **not proven** — the only
-residual between the proven conditional pin and a full biconditional. -/
+**Refuted as a generic target** (`converseRealizer_refuted`): at `F₂`, one coordinate, `C = {0}`,
+`εstar = 0`, `δ = 0`, `B = 0` the budget `B/q ≤ εstar` holds with equality and `δ ≤ δ*` holds
+(the good-radius set is empty, its supremum is `0`), but the stack `(0, 1)` has a bad scalar.
+The closed endpoint at an unattained supremum, and any slack `B/q < εstar`, break the
+implication. A usable converse needs a strict radius `δ < δ*` and a matching integer budget; it
+is not stated or proved here. -/
 def ConverseRealizer (C : Set (ι → A)) (εstar : ℝ≥0∞) (δ : ℝ≥0) (B : ℕ) : Prop :=
   δ ≤ mcaDeltaStar (F := F) (A := A) C εstar →
     WorstCaseIncidenceBounded (F := F) (A := A) C δ B
@@ -109,9 +124,10 @@ def ConverseRealizer (C : Set (ι → A)) (εstar : ℝ≥0∞) (δ : ℝ≥0) (
 
   `WorstCaseIncidenceBounded C δ B  ↔  δ ≤ mcaDeltaStar C εstar`.
 
-It says: at the window radius `δ` and budget `B`, the prize "δ* reaches the window" statement is
-*logically equivalent* to the single-scalar far-line incidence bound `B` — i.e. the prize is
-**exactly** the one open scalar `B`, with a two-way reduction. -/
+It is the *proposed* statement that, at the window radius `δ` and budget `B`, the prize "δ*
+reaches the window" statement is logically equivalent to the far-line incidence bound `B`. It is
+NOT valid in general: it fails at the instance of `converseRealizer_refuted`, where all side
+conditions of the wrapper hold. -/
 def PrizeEquivalence (C : Set (ι → A)) (εstar : ℝ≥0∞) (δ : ℝ≥0) (B : ℕ) : Prop :=
   WorstCaseIncidenceBounded (F := F) (A := A) C δ B ↔ δ ≤ mcaDeltaStar (F := F) (A := A) C εstar
 
@@ -137,8 +153,9 @@ Given (a) the budget side condition `B/q ≤ ε*`, (b) `δ ≤ 1`, and (c) the n
 `PrizeEquivalence C εstar δ B` holds. The forward leg is discharged outright by
 `worstCaseIncidence_pin` (proven, axiom-clean); only the converse leg consumes `hconv`.
 
-This is the honest "complete and correct" object: the prize = ONE scalar `B`, provably, with the
-*entire* residual isolated into the single explicit `Prop` `ConverseRealizer`. -/
+The wrapper is a valid conditional theorem, but its hypothesis `hconv` is false at some
+instances satisfying (a) and (b) (`converseRealizer_refuted`), so it does not show that the prize
+is exactly the scalar `B`. -/
 theorem PrizeEquivalence_of_converse (C : Set (ι → A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
     (hδ : δ ≤ 1)
     (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar)
@@ -155,10 +172,10 @@ theorem PrizeEquivalence_of_converse (C : Set (ι → A)) (εstar : ℝ≥0∞) 
 /-- **The completeness biconditional holds IFF the converse realizer holds** (under the budget side
 condition and `δ ≤ 1`).
 
-This pins down *precisely* what is missing: the forward leg being already proven, the full
-biconditional `PrizeEquivalence` is *equivalent* to the single named `Prop` `ConverseRealizer`.
-There is **no other open math** between the proven conditional pin and a complete two-way reduction
-of the prize to the scalar `B` — the entire remaining content is this one converse implication. -/
+The forward leg being proven, the biconditional `PrizeEquivalence` is equivalent (instance by
+instance) to `ConverseRealizer`. Because `ConverseRealizer` is refuted at some instances
+(`converseRealizer_refuted`), this does not reduce the prize to a hard-but-open converse: the
+generic converse is false, and a corrected strict-radius formulation would be needed. -/
 theorem prizeEquivalence_iff_converseRealizer (C : Set (ι → A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
     (hδ : δ ≤ 1)
     (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
@@ -174,8 +191,9 @@ theorem prizeEquivalence_iff_converseRealizer (C : Set (ι → A)) (εstar : ℝ
 /-! ## Budget specialization — the prize's `ε* = B/q` form -/
 
 /-- **Budget specialization of the wrapper.** When `ε* = B/q` is itself the budget ratio (the
-prize's `B ≈ q·ε* ≈ n`), the side condition `hbudget` is automatic, and the completeness
-biconditional `PrizeEquivalence C (B/q) δ B` holds modulo the named converse realizer alone. -/
+prize's `B ≈ q·ε* ≈ n`), the side condition `hbudget` is automatic, and the biconditional
+`PrizeEquivalence C (B/q) δ B` holds modulo the converse realizer at that instance. (The
+refutation `converseRealizer_refuted` is itself of this exact-budget form, `0 = 0/2`.) -/
 theorem PrizeEquivalence_of_converse_budget (C : Set (ι → A)) {δ : ℝ≥0} {B : ℕ}
     (hδ : δ ≤ 1)
     (hconv : ConverseRealizer (F := F) (A := A) C
@@ -185,8 +203,45 @@ theorem PrizeEquivalence_of_converse_budget (C : Set (ι → A)) {δ : ℝ≥0} 
 
 end ProximityGap.PrizeEquivalence
 
+/-! ## The converse realizer is refuted at an unattained-supremum endpoint -/
+
+namespace ProximityGap.PrizeEquivalence
+
+open CodingTheory.LineDecodingRefutation in
+/-- **`ConverseRealizer` (and hence `PrizeEquivalence`) is false as a generic target.**  Over
+`F₂` on one coordinate with `C = {0}`, at `εstar = 0`, `δ = 0`, `B = 0`: the wrapper's side
+conditions hold (`δ ≤ 1`, and `B/q = 0 ≤ εstar` with equality), `δ = 0 ≤ mcaDeltaStar C 0`
+trivially, yet the stack `(0, 1)` has the bad scalar `0` (`mcaEvent_ubad_zero`), so the worst
+bad count is `≥ 1 > B`.  Hence both `ConverseRealizer C 0 0 0` and `PrizeEquivalence C 0 0 0`
+fail. -/
+theorem converseRealizer_refuted :
+    (0 : ℝ≥0) ≤ 1 ∧
+      ((0 : ℕ) : ℝ≥0∞) / (Fintype.card (ZMod 2) : ℝ≥0∞) ≤ 0 ∧
+      ¬ ConverseRealizer (F := ZMod 2) (A := ZMod 2)
+          ((Czero : Submodule (ZMod 2) (Fin 1 → ZMod 2)) : Set (Fin 1 → ZMod 2)) 0 0 0 ∧
+      ¬ PrizeEquivalence (F := ZMod 2) (A := ZMod 2)
+          ((Czero : Submodule (ZMod 2) (Fin 1 → ZMod 2)) : Set (Fin 1 → ZMod 2)) 0 0 0 := by
+  classical
+  have hbad : ¬ WorstCaseIncidenceBounded (F := ZMod 2) (A := ZMod 2)
+      ((Czero : Submodule (ZMod 2) (Fin 1 → ZMod 2)) : Set (Fin 1 → ZMod 2)) 0 0 := by
+    intro h
+    have hle := h ubad
+    have hpos : 0 < (Finset.univ.filter (fun γ : ZMod 2 => mcaEvent (F := ZMod 2)
+        ((Czero : Submodule (ZMod 2) (Fin 1 → ZMod 2)) : Set (Fin 1 → ZMod 2)) 0
+        (ubad 0) (ubad 1) γ)).card :=
+      Finset.card_pos.mpr ⟨0, Finset.mem_filter.mpr ⟨Finset.mem_univ _, mcaEvent_ubad_zero⟩⟩
+    omega
+  refine ⟨zero_le_one, by simp, ?_, ?_⟩
+  · intro hconv
+    exact hbad (hconv (zero_le _))
+  · intro hequiv
+    exact hbad (hequiv.mpr (zero_le _))
+
+end ProximityGap.PrizeEquivalence
+
 /-! ## Axiom audit (expected: propext, Classical.choice, Quot.sound only) -/
 #print axioms ProximityGap.PrizeEquivalence.prizeEquivalence_forward
 #print axioms ProximityGap.PrizeEquivalence.PrizeEquivalence_of_converse
 #print axioms ProximityGap.PrizeEquivalence.prizeEquivalence_iff_converseRealizer
 #print axioms ProximityGap.PrizeEquivalence.PrizeEquivalence_of_converse_budget
+#print axioms ProximityGap.PrizeEquivalence.converseRealizer_refuted

@@ -11,8 +11,9 @@ import ArkLib.ProofSystem.Spartan.SumcheckKnowledgeLeaves
 # Spartan terminal `finalCheck` RBR-KS leaf progress (#114)
 
 The in-tree `finalCheck` is a zero-round oracle `CheckClaim` that forwards the final statement and
-oracle statements unchanged.  Its predicate currently carries no enforced verifier content:
-`finalPredicate` is tautological and `CheckClaim.oracleVerifier` discards the returned `Prop`.
+oracle statements unchanged.  It carries no enforced verifier content: canonical
+`CheckClaim.oracleVerifier` is a pure pass-through that takes no predicate and never rejects, and the
+diagnostic `finalPredicate` is in any case tautological (`combined = combined`).
 
 Consequently the honest RBR-KS fact available without changing protocol semantics is the
 relation-preserving one: if the output is required to remain in the same relation, the zero-round

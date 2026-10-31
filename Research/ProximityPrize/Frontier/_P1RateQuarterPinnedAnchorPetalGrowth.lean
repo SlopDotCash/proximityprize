@@ -40,15 +40,21 @@ open P1RateQuarterScaleArithmetic
 
 attribute [local instance] Classical.propDecidable
 
+/-- Local alias for the literal P1 predecessor agreement threshold `592794966`
+(`predecessorThreshold` in `_P1RateQuarterSharedFreshCoordinate`, which this file does not
+import). -/
 abbrev T : Nat := 592794966
 
 theorem pinnedAnchor_reduced_rankin_budget :
     746469603 * 140942232 ≤ 324359511 ^ 2 - 1 := by norm_num
 
-/-- **Pinned-anchor petal growth.**  In an over-budget P1 family, an isolated
-two-point line with core at least `327272221` forces a fresh outsider secant
-petal of size at least `140942233`. -/
-theorem exists_outside_secantPetal_card_ge_140942233
+/-- **Parametric outsider-petal Rankin bound.**  Let a relevant line in an over-budget P1
+family carry at most `L` selected points and have joint core at least `c ≥ L`.  Every outsider
+contributes at least `T - (k - 1) = 324359511` fresh agreement coordinates in the
+`N - c`-element core complement, so whenever the reduced Rankin budget
+`(N - c) * p ≤ 324359511^2 - 1` holds, two outsiders share a secant petal of size at least
+`p + 1`. -/
+theorem exists_outside_secantPetal_card_gt_of_rankin_budget
     {F : Type} [Field F] [Fintype F] [DecidableEq F]
     {dom : Fin N ↪ F} {delta : NNReal}
     {u : WordStack F (Fin 2) (Fin N)}
@@ -57,12 +63,13 @@ theorem exists_outside_secantPetal_card_ge_140942233
     (hthreshold : T ≤
       ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
     {line : LineParameter F} (hline : line ∈ lineParameters family)
-    (hcore : 327272221 ≤
-      (jointCore dom (u 0) (u 1) line.1 line.2).card)
-    (htwo : (pointsOn family line).card = 2) :
+    {c L p : ℕ} (hLc : L ≤ c)
+    (hcore : c ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card)
+    (hpoints : (pointsOn family line).card ≤ L)
+    (hbudget : (N - c) * p ≤ 324359511 ^ 2 - 1) :
     ∃ gamma ∈ outsideLine family line,
       ∃ beta ∈ outsideLine family line, gamma ≠ beta ∧
-        140942233 ≤ (secantPetal family line gamma beta).card := by
+        p + 1 ≤ (secantPetal family line gamma beta).card := by
   classical
   let D := jointCore dom (u 0) (u 1) line.1 line.2
   let V : Finset (Fin N) := Finset.univ \ D
@@ -72,10 +79,9 @@ theorem exists_outside_secantPetal_card_ge_140942233
   have hVcard : V.card = N - D.card := by
     simp only [V, Finset.card_sdiff, Finset.inter_univ,
       Finset.card_univ, Fintype.card_fin]
-  have hVle : V.card ≤ 746469603 := by
+  have hD : c ≤ D.card := hcore
+  have hVle : V.card ≤ N - c := by
     rw [hVcard]
-    change 327272221 ≤ D.card at hcore
-    have hN : N = 1073741824 := by norm_num [N]
     omega
   have hAsub : ∀ gamma : K, A gamma ⊆ V := by
     intro gamma x hx
@@ -94,29 +100,47 @@ theorem exists_outside_secantPetal_card_ge_140942233
   by_contra hnot
   push_neg at hnot
   have hpair : Pairwise fun gamma beta : K =>
-      (A gamma ∩ A beta).card ≤ 140942232 := by
+      (A gamma ∩ A beta).card ≤ p := by
     intro gamma beta hne
     have hvalue : gamma.1 ≠ beta.1 := fun heq => hne (Subtype.ext heq)
-    have heq : A gamma ∩ A beta = secantPetal family line gamma.1 beta.1 := by
+    rw [show A gamma ∩ A beta = secantPetal family line gamma.1 beta.1 by
       simpa only [A, D] using fresh_inter_eq_secantPetal
         family line
           ((mem_outsideLine_iff family line gamma.1).mp gamma.2).1
-          ((mem_outsideLine_iff family line beta.1).mp beta.2).1 hvalue
-    rw [heq]
+          ((mem_outsideLine_iff family line beta.1).mp beta.2).1 hvalue]
     have hlt := hnot gamma.1 gamma.2 beta.1 beta.2 hvalue
     omega
-  have hbudget : V.card * 140942232 ≤ 324359511 ^ 2 - 1 :=
-    (Nat.mul_le_mul_right 140942232 hVle).trans pinnedAnchor_reduced_rankin_budget
+  have hVbudget : V.card * p ≤ 324359511 ^ 2 - 1 :=
+    (Nat.mul_le_mul_right p hVle).trans hbudget
   have houtside := card_le_finset_of_card_ge_pair_inter_le
-    V A 324359511 140942232 (by norm_num) hAsub hAsize hpair hbudget
-  have houtsideCard : (outsideLine family line).card = family.G.card - 2 := by
-    have hpartition := pointsOn_card_add_outsideLine_card family line
-    omega
+    V A 324359511 p (by norm_num) hAsub hAsize hpair hVbudget
   simp only [K, Fintype.card_coe] at houtside
-  rw [houtsideCard, hVcard] at houtside
-  have hD : 327272221 ≤ D.card := hcore
-  have hN : N = 1073741824 := by norm_num [N]
+  have hpartition := pointsOn_card_add_outsideLine_card family line
+  rw [hVcard] at houtside
   omega
+
+/-- **Pinned-anchor petal growth.**  In an over-budget P1 family, an isolated
+two-point line with core at least `327272221` forces a fresh outsider secant
+petal of size at least `140942233`. -/
+theorem exists_outside_secantPetal_card_ge_140942233
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {dom : Fin N ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hover : N < family.G.card)
+    (hthreshold : T ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
+    {line : LineParameter F} (hline : line ∈ lineParameters family)
+    (hcore : 327272221 ≤
+      (jointCore dom (u 0) (u 1) line.1 line.2).card)
+    (htwo : (pointsOn family line).card = 2) :
+    ∃ gamma ∈ outsideLine family line,
+      ∃ beta ∈ outsideLine family line, gamma ≠ beta ∧
+        140942233 ≤ (secantPetal family line gamma beta).card :=
+  exists_outside_secantPetal_card_gt_of_rankin_budget family hover hthreshold hline
+    (c := 327272221) (L := 2) (p := 140942232) (by norm_num) hcore htwo.le
+    (by rw [show N - 327272221 = 746469603 by norm_num [N]]
+        exact pinnedAnchor_reduced_rankin_budget)
 
 /-- Geometric form: the forced petal is contained in the joint core of a
 distinct relevant outsider secant line. -/
@@ -436,6 +460,30 @@ theorem exists_third_distinctLine_with_newCorePetal_ge_5164920
 
 /-! ## High-core jump or isolated secant -/
 
+/-- **Generic line-multiplicity ladder.**  If a relevant line of a bad rich-point family with
+agreement threshold at least `T₀` carries at least `n` selected points, then
+`n * (T₀ - core) + core ≤ N`.  Each rung of the P1 ladder (`n = 3, 4, ...`) is an arithmetic
+instance of this packing inequality. -/
+theorem le_pointsOn_card_mul_threshold_sub_core_add_core_le
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {dom : Fin N ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u) {T₀ : ℕ}
+    (hthreshold : T₀ ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
+    {line : LineParameter F} (hline : line ∈ lineParameters family)
+    {n : ℕ} (hn : n ≤ (pointsOn family line).card) :
+    n * (T₀ - (jointCore dom (u 0) (u 1) line.1 line.2).card) +
+      (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ N := by
+  have hpack := pointsOn_card_mul_max_add_core_le family hline
+  have hfactor : T₀ - (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ max 1
+      (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
+        (jointCore dom (u 0) (u 1) line.1 line.2).card) :=
+    (Nat.sub_le_sub_right hthreshold _).trans (le_max_right _ _)
+  have hmul := Nat.mul_le_mul hn hfactor
+  simp only [Fintype.card_fin] at hpack hmul
+  omega
+
 /-- Every relevant P1 threshold line either has the exact three-point core
 floor `352,321,537`, or contains exactly its determining pair. -/
 theorem relevantLine_core_ge_352321537_or_card_eq_two
@@ -450,21 +498,8 @@ theorem relevantLine_core_ge_352321537_or_card_eq_two
       (pointsOn family line).card = 2 := by
   by_cases hthree : 3 ≤ (pointsOn family line).card
   · left
-    have hpack := pointsOn_card_mul_max_add_core_le family hline
-    simp only [Fintype.card_fin] at hpack
-    have hfactor : T - (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ max 1
-        (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
-          (jointCore dom (u 0) (u 1) line.1 line.2).card) :=
-      (Nat.sub_le_sub_right hthreshold _).trans (le_max_right _ _)
-    have hmul : 3 * (T - (jointCore dom (u 0) (u 1) line.1 line.2).card) ≤
-        (pointsOn family line).card * max 1
-          (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
-            (jointCore dom (u 0) (u 1) line.1 line.2).card) :=
-      Nat.mul_le_mul hthree hfactor
-    simp only [Fintype.card_fin] at hmul
-    have hbase : 3 * (T - (jointCore dom (u 0) (u 1) line.1 line.2).card) +
-        (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ N :=
-      by omega
+    have hbase :=
+      le_pointsOn_card_mul_threshold_sub_core_add_core_le family hthreshold hline hthree
     norm_num [T, N] at hbase ⊢
     omega
   · right
@@ -509,10 +544,18 @@ theorem exists_thirdLine_with_highCore_or_isolated_branches
 
 /-! ## High-core branch increment and three-core barrier -/
 
-/-- Three independent line-core root caps exhaust the threshold before any
-positive fourth fresh floor is obtained by naive subtraction. -/
-theorem naive_threeCore_fresh_floor_eq_zero : T - 3 * (k - 1) = 0 := by
+/-- Three independent line-core root caps exceed the threshold: `3 * (k - 1) = 805306365`
+overshoots `T = 592794966` by `212511399`, so naive subtraction leaves no positive fourth fresh
+floor (in fact a deficit, not zero slack). -/
+theorem naive_threeCore_caps_exceed_threshold : T + 212511399 = 3 * (k - 1) := by
   norm_num [T, k]
+
+/-- Truncated-subtraction corollary of `naive_threeCore_caps_exceed_threshold`: the naive
+fourth fresh floor `T - 3 * (k - 1)` is `0` in `ℕ` only because `ℕ`-subtraction truncates the
+integer deficit `-212511399`. -/
+theorem naive_threeCore_fresh_floor_eq_zero : T - 3 * (k - 1) = 0 := by
+  have h := naive_threeCore_caps_exceed_threshold
+  omega
 
 /-- A line at the three-point core floor carrying at most three selected points
 forces a stronger P1 outsider petal of size `145,836,060`. -/
@@ -530,61 +573,12 @@ theorem exists_highCore_outside_secantPetal_card_ge_145836060
     (hthree : (pointsOn family line).card ≤ 3) :
     ∃ gamma ∈ outsideLine family line,
       ∃ beta ∈ outsideLine family line, gamma ≠ beta ∧
-        145836060 ≤ (secantPetal family line gamma beta).card := by
-  classical
-  let D := jointCore dom (u 0) (u 1) line.1 line.2
-  let V : Finset (Fin N) := Finset.univ \ D
-  let K := {gamma // gamma ∈ outsideLine family line}
-  let A : K → Finset (Fin N) := fun gamma =>
-    fullAgreement dom (u 0) (u 1) gamma.1 (family.q gamma.1) \ D
-  have hVcard : V.card = N - D.card := by
-    simp only [V, Finset.card_sdiff, Finset.inter_univ,
-      Finset.card_univ, Fintype.card_fin]
-  have hVle : V.card ≤ 721420287 := by
-    rw [hVcard]
-    change 352321537 ≤ D.card at hcore
-    have hN : N = 1073741824 := by norm_num [N]
-    omega
-  have hAsub : ∀ gamma : K, A gamma ⊆ V := by
-    intro gamma x hx
-    exact Finset.mem_sdiff.mpr
-      ⟨Finset.mem_univ _, (Finset.mem_sdiff.mp hx).2⟩
-  have hAsize : ∀ gamma : K, 324359511 ≤ (A gamma).card := by
-    intro gamma
-    have hfresh := threshold_sub_pred_le_fresh_card
-      family line (by norm_num [k]) hline gamma.2
-    have hmono : T - (k - 1) ≤
-        ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - (k - 1) :=
-      Nat.sub_le_sub_right hthreshold (k - 1)
-    have hTk : T - (k - 1) = 324359511 := by norm_num [T, k]
-    rw [hTk] at hmono
-    exact hmono.trans (by simpa only [A, D] using hfresh)
-  by_contra hnot
-  push_neg at hnot
-  have hpair : Pairwise fun gamma beta : K =>
-      (A gamma ∩ A beta).card ≤ 145836059 := by
-    intro gamma beta hne
-    have hvalue : gamma.1 ≠ beta.1 := fun heq => hne (Subtype.ext heq)
-    rw [show A gamma ∩ A beta = secantPetal family line gamma.1 beta.1 by
-      simpa only [A, D] using fresh_inter_eq_secantPetal
-        family line
-          ((mem_outsideLine_iff family line gamma.1).mp gamma.2).1
-          ((mem_outsideLine_iff family line beta.1).mp beta.2).1 hvalue]
-    have hlt := hnot gamma.1 gamma.2 beta.1 beta.2 hvalue
-    omega
-  have hbudget : V.card * 145836059 ≤ 324359511 ^ 2 - 1 := by
-    have harith : 721420287 * 145836059 ≤ 324359511 ^ 2 - 1 := by norm_num
-    exact (Nat.mul_le_mul_right 145836059 hVle).trans harith
-  have houtside := card_le_finset_of_card_ge_pair_inter_le
-    V A 324359511 145836059 (by norm_num) hAsub hAsize hpair hbudget
-  simp only [K, Fintype.card_coe] at houtside
-  have hpartition := pointsOn_card_add_outsideLine_card family line
-  rw [hVcard] at houtside
-  have hD : 352321537 ≤ D.card := hcore
-  have hN : N = 1073741824 := by norm_num [N]
-  omega
+        145836060 ≤ (secantPetal family line gamma beta).card :=
+  exists_outside_secantPetal_card_gt_of_rankin_budget family hover hthreshold hline
+    (c := 352321537) (L := 3) (p := 145836059) (by norm_num) hcore hthree
+    (by norm_num [N])
 
-/-- Four-point packing split, local to this independent lane. -/
+/-- Four-point packing split: the second rung of the generic ladder. -/
 theorem relevantLine_core_ge_432479347_or_card_le_three
     {F : Type} [Field F] [Fintype F] [DecidableEq F]
     {dom : Fin N ↪ F} {delta : NNReal}
@@ -597,21 +591,8 @@ theorem relevantLine_core_ge_432479347_or_card_le_three
       (pointsOn family line).card ≤ 3 := by
   by_cases hfour : 4 ≤ (pointsOn family line).card
   · left
-    have hpack := pointsOn_card_mul_max_add_core_le family hline
-    simp only [Fintype.card_fin] at hpack
-    have hfactor : T - (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ max 1
-        (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
-          (jointCore dom (u 0) (u 1) line.1 line.2).card) :=
-      (Nat.sub_le_sub_right hthreshold _).trans (le_max_right _ _)
-    have hmul : 4 * (T - (jointCore dom (u 0) (u 1) line.1 line.2).card) ≤
-        (pointsOn family line).card * max 1
-          (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
-            (jointCore dom (u 0) (u 1) line.1 line.2).card) :=
-      Nat.mul_le_mul hfour hfactor
-    simp only [Fintype.card_fin] at hmul
-    have hbase : 4 * (T - (jointCore dom (u 0) (u 1) line.1 line.2).card) +
-        (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ N :=
-      by omega
+    have hbase :=
+      le_pointsOn_card_mul_threshold_sub_core_add_core_le family hthreshold hline hfour
     norm_num [T, N] at hbase ⊢
     omega
   · right
@@ -646,6 +627,7 @@ end ArkLib.ProximityGap.Frontier.P1RateQuarterPinnedAnchorPetalGrowth
 open ArkLib.ProximityGap.Frontier.P1RateQuarterPinnedAnchorPetalGrowth
 
 #print axioms pinnedAnchor_reduced_rankin_budget
+#print axioms exists_outside_secantPetal_card_gt_of_rankin_budget
 #print axioms exists_outside_secantPetal_card_ge_140942233
 #print axioms exists_distinct_outsideLine_core_ge_140942233
 #print axioms outsideBothLines_card_ge_140942232
@@ -654,8 +636,10 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterPinnedAnchorPetalGrowth
 #print axioms twoCore_reduced_plotkin_forces_5164920
 #print axioms exists_outsideBoth_secantPetal_card_ge_5164920
 #print axioms exists_third_distinctLine_with_newCorePetal_ge_5164920
+#print axioms le_pointsOn_card_mul_threshold_sub_core_add_core_le
 #print axioms relevantLine_core_ge_352321537_or_card_eq_two
 #print axioms exists_thirdLine_with_highCore_or_isolated_branches
+#print axioms naive_threeCore_caps_exceed_threshold
 #print axioms naive_threeCore_fresh_floor_eq_zero
 #print axioms exists_highCore_outside_secantPetal_card_ge_145836060
 #print axioms relevantLine_core_ge_432479347_or_card_le_three

@@ -46,9 +46,18 @@ The DC-subtracted central moments are `μ_{2r} = E_r` (char-0 limit, since `S_{2
 ## Honest status (NOT a CORE closure)
 `κ₄ = −3n` is UNCONDITIONAL on the two in-tree-proven energy values.  `κ₆ = 40n` and the rung
 `κ₆ ≤ 45n²` are conditional on the **one open input** (the exact char-0 depth-3 energy
-`E₃ = 15n³−45n²+40n`).  That input is the char-0 Lam–Leung count — the SAME wall as the rest of the
-ladder, NOT a new obstruction.  This is ONE rung of the DC-Wick ladder; the prize floor needs the
+`E₃ = 15n³−45n²+40n`).  This is ONE rung of the DC-Wick ladder; the prize floor needs the
 full ladder `r ≤ log m`.  CORE of #444 stays OPEN.
+
+**Scope (audit R-029/R-125/R-133 extension, 2026-10-28).**  Every statement below is algebra on
+real literals standing for **characteristic-zero** energies.  No field size `q`, no actual
+finite-field energy, no centered empirical moment, and no `DCWickBound` predicate occurs in any
+statement, so `kappa6_le_45nsq` is **not** the finite-field DC-subtracted rung `DCWickBound G 3`.
+Passing from these limiting char-0 cumulant identities to that rung requires two further,
+unformalized obligations: the characteristic-`p` transfer (extra mod-`p` collisions beyond the
+char-0 count) and the DC centering at finite `q`.  Those are different questions from the char-0
+enumeration of `E₃`: the char-0 count `E₃` and the char-`p` extra collisions should not be
+conflated as a single "Lam–Leung wall".
 -/
 
 set_option autoImplicit false
@@ -78,7 +87,8 @@ suffices; for the dyadic `n = 2^μ ≥ 2` it is comfortable).  Pure arithmetic. 
 theorem dcWick_r3_rung_budget (n : ℝ) (hn : 1 ≤ n) : 40 * n ≤ 45 * n ^ 2 := by
   nlinarith [hn, sq_nonneg (n - 1)]
 
-/-- **THE r=3 DCWickBound rung (cumulant face): `κ₆ ≤ 45 n²`.**  Assembled from `kappa6_eq`
+/-- **The char-0 cumulant face of the r=3 rung: `κ₆ ≤ 45 n²`** (algebra on char-0 energy literals;
+not the finite-field `DCWickBound G 3` predicate — see the header scope).  Assembled from `kappa6_eq`
 (`κ₆ = 40n`, conditional on the three char-0 energies) and `dcWick_r3_rung_budget` (`40n ≤ 45n²`).
 The slack `45n² − κ₆ = 45n² − 40n` is quadratic-vs-linear: the rung holds with a wide margin.
 The `−3n` 4th cumulant (PROVEN) donates the `−45n²` of `E₃` that this rung needs. -/

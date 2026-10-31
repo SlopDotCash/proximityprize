@@ -19,17 +19,25 @@ Terwilliger module, so the operator norm of the `K_w`-weighted action bounds `|�
 Bose–Mesner element `W := Σ_i K_w(i) Aᵢ`, is **diagonal in the additive-character basis** with
 *Krawtchouk eigenvalues* `λ_j = Σ_i K_w(i) Kᵢ(j)` (Delsarte / MacWilliams duality; verified
 in-tree as `λ_j = q^N·[j=w]`, the Krawtchouk orthogonality relation, probe
-`probe_a5_terwilliger_exact`).  Restricted to the subconstituent module supported on the
-multiplicative domain `μ_n`, the per-frequency value of this operator is the **incomplete
-Gauss period** `η_b = Σ_{y∈μ_n} e_p(b y)`.  Hence the Terwilliger operator norm is
-`max_{b≠0} |η_b| = M(μ_n)` — the BGK/Paley wall.  The "low-dim module" controls only the
-*number of irreducible summands*, never the *per-summand operator norm*, which is the wall.
+`probe_a5_terwilliger_exact`).  The *heuristic* claim of this route was that, restricted to a
+subconstituent module supported on the multiplicative domain `μ_n`, the per-frequency value of
+this operator is the **incomplete Gauss period** `η_b = Σ_{y∈μ_n} e_p(b y)`, so that the
+Terwilliger operator norm would be `max_{b≠0} |η_b| = M(μ_n)` — the BGK/Paley wall.
 
-We encode this as a **collapse theorem**: under the Delsarte diagonalization identity
-(`TerwilligerDiagonalizes`), the Terwilliger operator-norm bound is logically *equivalent* to
-the Gauss-period wall bound.  So route 85 **reduces to the wall** — it does not relocate the
-locus.  (This matches catalogue route 88: "association-scheme eigenvalue = Krawtchouk = the
-same".)  Axiom-clean; no `sorry`.
+**Scope (audit R-026/R-001 extension, 2026-10-28).**  That operator identification is **not
+proved here, and is not an in-tree verified fact**: the file defines no concrete operator,
+invariant/compressed subspace, or norm.  `TerwilligerDiagonalizes` is merely the equality of two
+unconstrained real parameters, and the checked Krawtchouk identity (eigenvalues `0` or `q^N`)
+does not establish it.  Indeed, for ordinary coordinate-support compression the naive reading is
+false: with `N = 1`, `p = 5`, `w = 0` the operator is the all-ones matrix, whose compression to
+`μ_2` has norm `2`, while the nonzero Gauss-period maximum for `μ_2 ⊂ F₅` is
+`(1+√5)/2 < 2`.  So the bridge is missing or misidentified; this is not a contradiction in the
+scalar `iff` below, which is a trivial rewrite.
+
+What the file records is therefore only a **conditional collapse**: *if* some operator norm
+equals the wall (`TerwilligerDiagonalizes`), then bounding it is equivalent to the wall bound.
+Excluding the association-scheme route requires the concrete operator, compressed space and an
+identification theorem, which are open.  Axiom-clean; no `sorry`.
 -/
 
 namespace ProximityGap.A5Terwilliger
@@ -52,11 +60,13 @@ structure TerwData where
   terwNorm : ℝ
   terwNorm_nonneg : 0 ≤ terwNorm
 
-/-- **The Delsarte diagonalization identity (the structural collapse).**
+/-- **The (hypothesized) operator/wall identification.**
 The Krawtchouk-weighted Bose–Mesner operator is diagonal in the additive-character basis with
-Krawtchouk eigenvalues; restricted to the `μ_n`-subconstituent its operator norm is *exactly*
-the Gauss-period wall.  This is the in-tree-verified fact (`λ_j = q^N·[j=w]`,
-`probe_a5_terwilliger_exact`), here stated as the hypothesis that pins the two numbers equal. -/
+Krawtchouk eigenvalues (`λ_j = q^N·[j=w]`, probe `probe_a5_terwilliger_exact`).  The route
+*hypothesizes* that its norm on a suitable `μ_n`-subconstituent equals the Gauss-period wall;
+here that is only the bare equality of two real parameters.  It is NOT an in-tree verified fact
+(no concrete operator or subspace is defined; see the header for a naive-compression
+counterexample). -/
 def TerwilligerDiagonalizes (W : WallData) (T : TerwData) : Prop :=
   T.terwNorm = W.wallM
 
@@ -68,19 +78,19 @@ def TerwillingerOperatorBound (T : TerwData) (W : WallData) : Prop :=
 def WallBound (W : WallData) : Prop :=
   W.wallM ≤ W.floor
 
-/-- **Collapse theorem (route 85 ⇒ the wall).**  Given the Delsarte diagonalization identity
-(`TerwilligerDiagonalizes`, the verified structural fact), the Terwilliger operator-norm bound
-is *logically equivalent* to the Gauss-period wall bound.  Therefore route 85 does **not**
-relocate the cancellation locus: proving it is *exactly as hard* as the wall.  No `sorry`. -/
+/-- **Conditional collapse (route 85 ⇒ the wall, under the hypothesized identification).**
+Given `TerwilligerDiagonalizes` (an unproved hypothesis, not a verified fact), the operator-norm
+bound is *logically equivalent* to the Gauss-period wall bound — a one-line rewrite.  It shows
+route 85 cannot relocate the locus *if* the identification holds; it does not prove that. -/
 theorem terwilliger_reduces_to_wall
     (W : WallData) (T : TerwData) (hdiag : TerwilligerDiagonalizes W T) :
     TerwillingerOperatorBound T W ↔ WallBound W := by
   unfold TerwillingerOperatorBound WallBound TerwilligerDiagonalizes at *
   rw [hdiag]
 
-/-- Consequence: the Terwilliger operator norm carries **no information beyond the wall**.
-If the operator bound holds it is *because* the wall bound holds, and conversely.  The
-"low-dimensional module" hypothesis is silent on the per-summand norm. -/
+/-- Consequence (conditional on `hdiag`): under the hypothesized identification the operator norm
+carries no information beyond the wall.  Without a proved identification this says nothing about
+a concrete Terwilliger operator. -/
 theorem terwilliger_no_independent_gain
     (W : WallData) (T : TerwData) (hdiag : TerwilligerDiagonalizes W T) :
     (TerwillingerOperatorBound T W → WallBound W) ∧

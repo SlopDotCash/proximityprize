@@ -187,9 +187,18 @@ replaced by:
 
 All other fields are carried over verbatim. -/
 
-/-- **The corrected §5 per-decoding extraction datum** (the satisfiable replacement for
-`Section5StrictData`).  See the file header for the F5 satisfiability verdict.  The infinite-range
-`hcard` is replaced by `T`/`hcardFin`/`htailDeg`. -/
+/-- **The corrected §5 per-decoding extraction datum** (the replacement for
+`Section5StrictData` whose `hcard` field is no longer unsatisfiable).  See the file header for the
+F5 satisfiability verdict.  The infinite-range `hcard` is replaced by `T`/`hcardFin`/`htailDeg`.
+
+**Restricted scope (issue #304).** The F5 repair concerns only the counting fields.  The `hPz`
+field still uses the transposed linear representative `((map C v₀) + (C X) * (map C v₁)).eval
+(C z)`, which always has degree `≤ 1` in the codeword variable
+(`FaithfulCurveExtraction.natDegree_linRep_eval_le_one`); by
+`FaithfulCurveExtraction.no_linRep_of_nonaffine` the `hPz` conclusion cannot hold for any
+decoded family with a member of degree `≥ 2` on a good point.  It therefore covers only codeword-affine
+decoded families and is **not** the general [BCIKS20] Prop. 5.5 conclusion; general consumers
+should use the faithful `FaithfulCurveExtraction.CurveFamilyData` interface. -/
 structure Section5StrictDataFin {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (u : WordStack F (Fin (k + 1)) ι) (P : F → Polynomial F) : Type where
   /-- centre / curve data of [BCIKS20] §5. -/

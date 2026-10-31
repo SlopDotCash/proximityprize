@@ -7,16 +7,17 @@ import ArkLib.Data.CodingTheory.ProximityGap.KKH26WitnessSpread
 import ArkLib.Data.CodingTheory.ProximityGap.GranularityLadderRS
 
 /-!
-# The EXACT sub-Johnson list LOWER bound for smooth-domain RS codes (#389)
+# The sub-Johnson list LOWER bound at the char-0 fibre value for smooth-domain RS codes (#389)
 
 The smooth-domain Reed–Solomon sub-Johnson list size is the ABF26 "grand list-decoding
 challenge" (the Ethereum proximity-prize core): pin `max_w |{codewords agreeing with w on
 ≥ a points}|` for `w` a non-codeword and `a` below the Johnson radius.  KKH26 give a
 counterexample (a super-polynomial lower bound); the matching upper bound is open.
 
-This file lands the **achievability (lower-bound) half**, sharpened to the exact
-subset-sum fibre value of `TwoPowerFibreValue.lean`, and **unconditionally** (no
-generic-prime hypothesis):
+This file lands the **achievability (lower-bound) half**, reaching the characteristic-zero
+subset-sum fibre value of `TwoPowerFibreValue.lean` as a lower bound, **unconditionally** (no
+generic-prime hypothesis).  For `r ≥ 3` every theorem here is a LOWER bound only (see the
+correction at the end of this docstring):
 
 > **`monomial_list_card_ge`** — for the explicit smooth domain `H = ⟨g⟩ ⊆ F_p^×` of order
 > `n = 2^μ·m`, the RS code of degree `≤ (r−2)m` (dimension `(r−2)m+1`), and the **monomial
@@ -24,9 +25,10 @@ generic-prime hypothesis):
 >
 >   `|{ codewords c : agreement(c, w) ≥ rm }| ≥ C(2^{μ−1}, r/2)`.
 
-`C(2^{μ−1}, r/2) = N_fib(2^μ, r)` is exactly the maximal subset-sum fibre of `μ_{2^μ}`
-(`TwoPowerFibreValue`).  The construction realizes it by the **antipodal fibre family**:
-for each `(r/2)`-subset `D ⊆ {0,…,2^{μ−1}−1}` of half-system indices, the `r`-set
+`C(2^{μ−1}, r/2) = N_fib(2^μ, r)` is exactly the maximal subset-sum fibre of `μ_{2^μ}` **in
+characteristic zero** (`TwoPowerFibreValue`); over `F_p` it is only a floor.  The
+construction realizes it by the **antipodal fibre family**: for each `(r/2)`-subset
+`D ⊆ {0,…,2^{μ−1}−1}` of half-system indices, the `r`-set
 `T_D = {±ω^j : j ∈ D}` (`ω = g^m`, `ω^{2^{μ−1}} = −1`) has `Σ T_D = 0`, so the bad-line
 codeword `q_{T_D}` (in-tree `badline_pointwise_agreement`) agrees with `x^{rm}` on the
 `rm`-point fibre `S_{T_D}`.  The map `D ↦ q_{T_D}` is injective: equal codewords force
@@ -35,9 +37,20 @@ is `rm` — a contradiction unless `T_D = T_{D'}`.
 
 The matching UPPER bound (no word beats this) is the recognized wall: it is equivalent to
 a small-set Szemerédi–Trotter / additive-energy bound on `μ_n`, and at sub-generic primes
-(`p ≤ s^{s/2}`) words DO beat `N_fib` (extra small-integer collisions).  So this is the
-exact value of the list for the witnessed word, and an unconditional lower bound on the
-maximum.  Issue #389.
+(`p ≤ s^{s/2}`) words DO beat `N_fib` (extra small-integer collisions).  So this is an
+unconditional lower bound on the list of the witnessed word, hence on the maximum.
+
+**Correction (2026-10-28 audit, PG-324): it is NOT unconditionally the exact list of the
+witnessed word.**  Over `F_p` the monomial word's list counts *all* zero-sum `r`-subsets of
+`μ_{2^μ}`, not only the antipodal ones, and extra characteristic-`p` zero sums occur.  Example:
+in `F₉₇`, `28` has order `32`; take `H = μ₃₂` (`μ = 5`, `m = 1`), `r = 4`, degree-`≤ 2` code,
+word `X⁴`.  Exactly `408` codewords agree with `X⁴` on `≥ 4` points (each zero-sum 4-subset
+`S` gives the distinct codeword `X⁴ − ∏_{x∈S}(X − x)`, and conversely), whereas
+`C(16, 2) = 120`: the antipodal unions give `120`, and `288` further zero-sum sets such as
+`{1, 8, 18, 70}` (sum `97 ≡ 0`) give the rest (exhaustive Python replay by the audit, not a
+Lean theorem).  Exactness of the list value is therefore only expected in a proved
+safe-prime / characteristic-zero regime; the `r = 2` constant-code equality and the lower
+bounds proved here are unaffected.  Issue #389.
 -/
 
 set_option linter.unusedSectionVars false
@@ -337,15 +350,17 @@ lemma index_fiber_count {s m : ℕ} {g : ZMod p} (hm : 1 ≤ m) (hs : 1 ≤ s)
 /-! ## The main theorem: the exact list lower bound -/
 
 open Classical in
-/-- **THE EXACT SUB-JOHNSON LIST LOWER BOUND (#389).**  For the explicit smooth domain
+/-- **THE SUB-JOHNSON LIST LOWER BOUND (#389).**  For the explicit smooth domain
 `H = ⟨g⟩ ⊆ F_p^×` of order `n = 2^μ·m`, the Reed–Solomon code of degree `≤ (r−2)m`
 (`r` even, `2 ≤ r ≤ 2^{μ−1}`), and the **monomial word** `w(x) = x^{rm}`, the sub-Johnson
-list at agreement `rm` has size at least the maximal subset-sum fibre
+list at agreement `rm` has size at least the characteristic-zero maximal subset-sum fibre
 
   `C(2^{μ−1}, r/2) = N_fib(2^μ, r)`  (`TwoPowerFibreValue`).
 
 Unconditional in `p` (no generic-prime hypothesis): the antipodal fibre family realizes
-distinct codewords directly.  The matching upper bound is the recognized wall. -/
+distinct codewords directly.  This is a lower bound only: for `r ≥ 4` the list of this word
+can be strictly larger over `F_p` (e.g. `408 > 120` in `F₉₇`, `μ = 5`, `m = 1`, `r = 4`;
+PG-324, see the module docstring).  The matching upper bound is the recognized wall. -/
 theorem monomial_list_card_ge {μ m r : ℕ} (hμ : 1 ≤ μ) (hm : 1 ≤ m) (hr2 : 2 ≤ r)
     (hreven : r % 2 = 0) (hr : r ≤ 2 ^ (μ - 1))
     {g : ZMod p} (hg : orderOf g = 2 ^ μ * m) :

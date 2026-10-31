@@ -6,22 +6,27 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.MCAZeroCodeExact
 
 /-!
-# MCA-error smallness is a genuine structural property (Issues #141 / #171)
+# Zero versus positive MCA error: the two structural extremes (Issues #141 / #171)
 
-The Grand Challenge 1 conjecture asks for a `poly(n)/q` bound on `ε_mca(C, δ)` for Reed–Solomon
-codes. This file records, with full proof, that such smallness is **not** a formal triviality: it
-already separates the two structural extremes.
+This file records, with full proof, a strict **zero-versus-positive** separation of the MCA error
+between the two structural extremes:
 
 * **`epsMCA_bot_ge_inv_card_radius`** — the zero code has `ε_mca(⊥, δ) ≥ 1/|F| > 0` at **every**
   radius `δ` (the firing stack `(0, 𝟙)` always fires at `γ = 0`).
 * The full code has `ε_mca(univ, δ) = 0` (`epsMCA_univ_eq_zero`, fleet).
 * **`epsMCA_univ_lt_epsMCA_bot`** — therefore `ε_mca(univ, δ) < ε_mca(⊥, δ')` strictly, for all
-  radii. Any uniform `ε_mca ≤ poly(n)/q` statement must genuinely use the code's structure: the
-  zero code already violates "smallness is automatic," and (by the exact characterization in
-  `MCAZeroCodeExactRange` and its extension) its error in fact *grows* with `δ` as `⌊δn⌋+1)/|F|`.
+  radii.
 
-This is the honest formal content behind the #171 observation that "smallness needs structure":
-the answer-shaped property is real, not vacuous.
+**What this does NOT show (audit PG-065).**  The Grand Challenge 1 conjecture asks for a
+`poly(n)/q` bound on `ε_mca(C, δ)` for Reed–Solomon codes.  Both examples here *satisfy* such a
+bound: the full code has numerator `0`, and the zero code's exact error
+(`MCAZeroCodeCharacterization.epsMCA_bot_eq_floor_succ_div`, for `δ ≤ 1` and
+`⌊δn⌋+1 ≤ min(n, |F|)`) is `(⌊δn⌋+1)/|F| ≤ (n+1)/q`.
+A lower bound `1/q` is entirely compatible with `poly(n)/q` smallness, so these finite
+examples do **not** show that `poly(n)/q` smallness "requires code structure" or is a non-automatic
+property.  Establishing that would need a code family whose MCA-error numerator exceeds every fixed
+polynomial in `n` in the required parameter regime; no such family is exhibited here.  The valid
+content is the strict zero-versus-positive separation above.
 -/
 
 set_option linter.unusedSectionVars false
@@ -71,10 +76,11 @@ theorem epsMCA_bot_pos_radius (δ : ℝ≥0) :
     (0 : ℝ≥0∞) < epsMCA (F := F) (A := F) (Cbot : Set (ι → F)) δ :=
   lt_of_lt_of_le inv_card_pos (epsMCA_bot_ge_inv_card_radius δ)
 
-/-- **MCA-error smallness requires code structure.** The full code has zero MCA error while the
-zero code has error `≥ 1/|F| > 0` at every radius, so `ε_mca(univ, δ) < ε_mca(⊥, δ')` for all
-radii `δ, δ'`. Hence a uniform `poly(n)/q` bound on `ε_mca` (Grand Challenge 1) is a genuine
-structural property of the code, not an automatic fact. -/
+/-- **Strict zero-versus-positive MCA-error separation.** The full code has zero MCA error while
+the zero code has error `≥ 1/|F| > 0` at every radius, so `ε_mca(univ, δ) < ε_mca(⊥, δ')` for all
+radii `δ, δ'`.  This does NOT separate `poly(n)/q` smallness: both codes satisfy a `poly(n)/q`
+bound (numerators `0` and `⌊δn⌋+1 ≤ n+1`), so it gives no evidence that a uniform `poly(n)/q`
+bound on `ε_mca` (Grand Challenge 1) fails without code structure (audit PG-065). -/
 theorem epsMCA_univ_lt_epsMCA_bot (δ δ' : ℝ≥0) :
     epsMCA (F := F) (A := F) (Set.univ : Set (ι → F)) δ
       < epsMCA (F := F) (A := F) (Cbot : Set (ι → F)) δ' := by

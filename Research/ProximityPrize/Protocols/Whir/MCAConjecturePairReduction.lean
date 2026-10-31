@@ -130,6 +130,7 @@ theorem mca_johnson_bound_CONJECTURE_pair_of_johnsonNumericBound
     exact ENNReal.ofReal_le_ofReal
       (johnsonBoundReal_le_errStar_real φ m hk δ hδB)
   unfold mca_johnson_bound_CONJECTURE
+  intro _
   exact hmca
 
 omit [DecidableEq ι] in

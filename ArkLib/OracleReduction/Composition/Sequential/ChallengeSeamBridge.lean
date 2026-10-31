@@ -23,7 +23,11 @@ support-faithfulness gate (`addLift_challenge_support_faithful`). See
 the deep distributional crux (the concrete #433 monad-commutation). The completeness half of the
 keystone is now **discharged** on top of this file —
 `Reduction.append_perfectCompleteness_msg_proof` in `AppendPerfectCompletenessProof.lean` (axiom-clean)
-— via the support-decomposition route. The `append_soundness` union bound remains.
+— via the support-decomposition route. When this note was written the `append_soundness` union
+bound remained; for the message seam it is now proved as well (`append_soundness_msg` in
+`AppendSoundnessMsgProof.lean`, oracle level in `AppendOracleAdapters.lean`), under the
+honest-implementation side conditions (state preservation, never-failing, state-independent
+answer distribution) and the message-seam direction facts.
 
 Main results:
 * `evalDist_challengeSeam_bridge_left` — `evalDist ((simulateQ pImpl_combined (liftM oa)).run s)
@@ -46,9 +50,14 @@ Supporting facts (all machine-checked, axiom-clean):
 * `simulateQ_addLift_liftM_inl` — the oSpec-query half of the per-query step, an exact computation
   equality.
 
-Remaining for the full keystone (see the audit doc): the `Reduction.run` support-decomposition
-(perfect completeness) and the soundness union-bound over the intermediate statement, built on top
-of these two bridges plus the proven prover-side run factoring (`Prover.append_run_msg`).
+Historically remaining for the full keystone (see the audit doc): the `Reduction.run`
+support-decomposition (perfect completeness) and the soundness union-bound over the intermediate
+statement, built on top of these two bridges plus the proven prover-side run factoring
+(`Prover.append_run_msg`). Both are now proved for the message seam under the guards stated in
+the theorems cited above (perfect completeness: `append_perfectCompleteness_msg_proof`;
+error-bearing completeness: `append_completeness_msg` in `AppendCompletenessMsgKeystone.lean`;
+soundness: `append_soundness_msg`). They are not theorems for arbitrary seams or for arbitrary
+stateful oracle implementations.
 -/
 
 open OracleComp OracleSpec ProtocolSpec SubSpec

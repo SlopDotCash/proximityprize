@@ -579,17 +579,25 @@ theorem twoRamp_windowKD {d : Fin 3 → ℕ} {f g h : K[X]}
 
 /-- **The degree-sum law, conditional on `RankNullity` alone.**  `TwoRamp` is now discharged
 (`twoRamp_windowKD`); granting the remaining Bézout-surjectivity input `RankNullity` for the same
-windowed dimension, the μ-basis degrees satisfy `n₁ + n₂ = d₀ + d₁ + d₂`. -/
+windowed dimension, there is a μ-basis `(e₁, e₂)` of the syzygy kernel — members of the kernel,
+of product-degrees `pdeg d eᵢ = nᵢ` with `n₁ ≤ n₂`, `K`-independent leading vectors, generating
+the kernel — whose degrees satisfy `n₁ + n₂ = d₀ + d₁ + d₂`.  (The μ-basis data is exported so
+that the degree-sum equation is tied to the kernel, not a bare existential over `ℕ`.) -/
 theorem degree_sum_of_rankNullity {d : Fin 3 → ℕ} {f g h : K[X]}
     (hfg : IsCoprime f g) (hfh : IsCoprime f h) (D₀ : ℕ)
     (hRankNull : ArkLib.ProximityGap.SYZ44.RankNullity
       (fun D => finrank K (windowKD d (LinearMap.ker (SYZ61.syzygyMap f g h)) D))
       (d 0) (d 1) (d 2) D₀) :
-    ∃ n₁ n₂ : ℕ, n₁ ≤ n₂ ∧ n₁ + n₂ = d 0 + d 1 + d 2 := by
-  obtain ⟨e₁, e₂, n₁, n₂, _, _, hpd₁, hpd₂, hn₁₂, hpair, hspan⟩ :=
+    ∃ (e₁ e₂ : Fin 3 → K[X]) (n₁ n₂ : ℕ),
+      e₁ ∈ LinearMap.ker (SYZ61.syzygyMap f g h) ∧ e₂ ∈ LinearMap.ker (SYZ61.syzygyMap f g h) ∧
+      pdeg d e₁ = (n₁ : WithBot ℕ) ∧ pdeg d e₂ = (n₂ : WithBot ℕ) ∧ n₁ ≤ n₂ ∧
+      LinearIndependent K ![lv d n₁ e₁, lv d n₂ e₂] ∧
+      LinearMap.ker (SYZ61.syzygyMap f g h) = Submodule.span K[X] ({e₁, e₂} : Set (Fin 3 → K[X])) ∧
+      n₁ + n₂ = d 0 + d 1 + d 2 := by
+  obtain ⟨e₁, e₂, n₁, n₂, he₁, he₂, hpd₁, hpd₂, hn₁₂, hpair, hspan⟩ :=
     exists_muBasisData d (LinearMap.ker (SYZ61.syzygyMap f g h))
       (SYZ61.rank_syzygyKernel hfg hfh)
-  refine ⟨n₁, n₂, hn₁₂, ?_⟩
+  refine ⟨e₁, e₂, n₁, n₂, he₁, he₂, hpd₁, hpd₂, hn₁₂, hpair, hspan, ?_⟩
   have hTwoRamp : ArkLib.ProximityGap.SYZ44.TwoRamp
       (fun D => finrank K (windowKD d (LinearMap.ker (SYZ61.syzygyMap f g h)) D)) n₁ n₂ :=
     ArkLib.ProximityGap.SYZ60.twoRamp_of_muBasisWindowIso K _ n₁ n₂

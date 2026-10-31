@@ -201,10 +201,12 @@ variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [�
 /-- **Seam-agnostic append completeness with additive error, for a nonempty trailing protocol.**
 The error-ful analogue of `append_perfectCompleteness_total` over the message/challenge split
 (`append_completeness_msg_of_neverFail` from `AppendSeamBridges3`, `append_completeness_challenge` from
-`AppendPerfectCompletenessChallenge`). The `n = 0` (empty trailing) error-ful case is NOT yet
-covered: the perfect empty keystone's support-based proof does not generalize, and the empty
-game-factoring for the union-bound engine has not been built — hence the `0 < n` hypothesis
-(every concrete ArkLib consumer to date has a nonempty trailing protocol). -/
+`AppendPerfectCompletenessChallenge`). This theorem itself keeps the `0 < n` hypothesis: the
+perfect empty keystone's support-based proof does not generalize to the error-ful case. The
+`n = 0` (empty trailing) error-ful case is **now covered elsewhere**:
+`AppendCompletenessEmptyErr.lean` builds the empty game factorization
+(`append_game_factor_empty`), proves `append_completeness_empty_err`, and assembles the fully
+seam-agnostic `append_completeness_total` (which needs no `0 < n`). -/
 theorem append_completeness_total_pos
     (R₁ : Reduction oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁)
     (R₂ : Reduction oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂)

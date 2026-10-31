@@ -10,21 +10,31 @@ Setting.  g generates mu_n <= F_p^x (n = 2^mu, p = 1 mod n).  A signed tuple
 Galois dilation a -> c*a (c a unit) is a bijection on tuples with P_{c.t}(g^u) = P_t(g^{uc}), so
   (I1)  E_r^{(u)} = E_r^{(1)} =: E_r for every unit u,
   (I2)  sum_{tuples} Z(P) = sum_u E_r^{(u)} = phi(n) * E_r        (phi(n) = n/2).
+The first equality in (I2) is an exchange of summation and the second is (I1), so (I2) is not
+an independent identity; the probe checks it as an independent RECOUNT (a direct pairwise sum
+of Z(P) over all tuples, on cells with at most DIRECT_I2_MAX_MULTISETS multisets) of the
+quantity that (I1) predicts, and reports it as skipped on larger cells.
 Tuples with Phi_n | P in Z[T] ("char-0 / Lam-Leung relations") have Z(P) = n/2 (all primitive
 roots); all others are SPURIOUS.  For p > 2r the converse holds (Z(P) = n/2  iff  Phi_n | P),
 since P mod (T^{n/2}+1) has integer coefficients of absolute value <= 2r.
 
 What this probe measures (all exact integer arithmetic):
-  (A) the identity (I1)/(I2) on every cell (hard FAIL on violation);
+  (A) the identity (I1) on every cell and the direct (I2) recount where it is enumerated (hard
+      FAIL on violation);
   (B) the converse  Z(P) = n/2  <=>  Phi_n | P  on every enumerated tuple (hard FAIL);
   (C) the full distribution of Z(P) over spurious tuples: histogram, max, and the fraction of
       the spurious mass  S := sum_{spurious} Z(P) = (n/2)(E_r - E_r^0)  carried by Z = 1;
   (D) a structural decomposition of the Z >= 2 spurious tuples:
         'refl'  : the signed multiset is invariant under a -> s - a for some s (self-reciprocal
                   P), which forces the vanishing set to be closed under u -> -u, hence Z even;
-        'tower' : P = Phi_n * A + Q(T^2) for some tuple Q at level n/2 (equivalently the odd-
-                  exponent part of P is Phi_n-divisible) — then Z_n(P) = 2 * Z_{n/2}(Q);
-        'other' : neither (accidental multiple vanishing).
+        'tower' : P = Phi_n * A + T^e * Q(T^2), e in {0,1}, for some tuple Q at level n/2
+                  (equivalently one parity part of P is Phi_n-divisible) — then at every
+                  primitive root P(-x) = (-1)^e P(x) (so P(-x) = -P(x) when the surviving parity
+                  is odd), the ZERO SET is closed under x -> -x, and Z_n(P) = 2 * Z_{n/2}(Q);
+        'other' : not classified by these two tests.  Both are SUFFICIENT tests only ('refl'
+                  fixes the positive and negative multisets separately and can miss a symmetry
+                  that appears only after common-term cancellation), so 'other' means
+                  "unclassified", not "proved accidental".
   (E) the trivial two-sided window  E_r - E_r^0 <= #{spurious : Z >= 1} <= (n/2)(E_r - E_r^0),
       which is the exact content of "per-P root bounds are index-blind" (see KB note).
 
@@ -40,6 +50,9 @@ import sys
 import itertools
 from math import factorial
 from collections import Counter, defaultdict
+
+# the direct (I2) recount is quadratic in the number of r-multisets of Z/n
+DIRECT_I2_MAX_MULTISETS = 1000
 
 
 def first_generator(p, n):
@@ -117,7 +130,8 @@ def is_reflective(a_ms, b_ms, n):
 
 def is_tower(a_ms, b_ms, n):
     """One parity part of P is Phi_n-divisible, i.e. P = Phi_n*A + T^e * Q(T^2) in
-    Z[T]/(T^n-1) with e in {0,1}; then P(x) = P(-x) at every primitive root and
+    Z[T]/(T^n-1) with e in {0,1}; then P(-x) = (-1)^e P(x) at every primitive root (P is odd,
+    not even, when e = 1), so the zero set is closed under x -> -x and
     Z_n(P) = 2 * Z_{n/2}(Q) (tower descent to the level-n/2 tuple Q)."""
     h = n // 2
     for par in (0, 1):
@@ -199,11 +213,21 @@ def run_cell(n, p, r, verbose=True):
                         examples[(Z, lab)] = (X, Y, sorted(vs))
     # identity checks
     ok_I1 = all(e == E1 for e in E_by_u)
-    sumZ_total = sum(z * (phi // z if phi % z == 0 else phi / z) * c
-                     for z, c in hist_fiber.items()) + phi * E0
-    # #{tuples : Z=z} = (phi/z) * #{V_1 tuples : Z = z}; sum_z z*#{Z=z} = phi * sum_z #{V_1: Z=z}
-    sumZ_total = phi * (sum(hist_fiber.values()) + E0)
-    ok_I2 = (sumZ_total == sum(E_by_u))
+    # (I2) as a direct recount: sum of Z(P) over ALL tuples (every pair of multisets, not only
+    # the fiber V_1), compared with phi * E_r.  (The fiber reconstruction
+    # phi * (sum hist_fiber + E0) equals phi * E1 by construction, so it is not a check.)
+    if len(ms) <= DIRECT_I2_MAX_MULTISETS:
+        sumZ_direct = 0
+        for X, wx in ms:
+            px = prof[X]
+            for Y, wy in ms:
+                py = prof[Y]
+                sumZ_direct += wx * wy * sum(1 for k in range(phi) if px[k] == py[k])
+        ok_I2 = (sumZ_direct == phi * E1)
+        I2_status = str(ok_I2)
+    else:
+        ok_I2 = True
+        I2_status = f"skipped ({len(ms)} multisets > {DIRECT_I2_MAX_MULTISETS})"
     spurious_mass = phi * (E1 - E0)                  # sum_{spurious} Z(P)
     # number of spurious tuples with Z >= 1 (union of the fibers)
     n_union = sum((phi * c) // z for z, c in hist_fiber.items())
@@ -218,7 +242,8 @@ def run_cell(n, p, r, verbose=True):
         print(f"cell n={n} p={p} r={r} g={g} phi={phi}")
         print(f"  E_r = {E1}   E_r^0(char0) = {E0}   n^{2*r}/p = {n**(2*r)/p:.3f}"
               f"   Wick (2r-1)!! n^r = {wick * n**r}")
-        print(f"  identity I1 (all E^(u) equal): {ok_I1}   I2 (sum Z = phi*E_r): {ok_I2}"
+        print(f"  identity I1 (all E^(u) equal): {ok_I1}   I2 direct recount (sum Z = phi*E_r):"
+              f" {I2_status}"
               f"   converse Z=n/2<=>char0 violations: {bad_converse}   divisibility ok: {ok_div}")
         print(f"  spurious mass sum Z = {spurious_mass}; #spurious with Z>=1 = {n_union};"
               f"  window [E-E0, phi(E-E0)] = [{E1 - E0}, {spurious_mass}];"
@@ -270,8 +295,8 @@ def main():
         print(f"  ({s['n']:3d},{s['p']:7d},{s['r']}): E={s['E']:>9d} E0={s['E0']:>8d} "
               f"Zmax={s['Zmax']:2d} fracZ1={s['frac_Z1']:.5f} union/(E-E0)={ratio:.4f} {mech}")
     if all_ok:
-        print("PASS: identities I1/I2, the converse Z=n/2<=>Phi_n|P (p>2r), and fiber "
-              "divisibility hold on every cell")
+        print("PASS: identity I1, the direct I2 recount (where enumerated), the converse "
+              "Z=n/2<=>Phi_n|P (p>2r), and fiber divisibility hold on every tested cell")
         sys.exit(0)
     print("FAIL: an identity or the converse was violated on some cell")
     sys.exit(1)

@@ -72,12 +72,156 @@ variable [DecidableEq ι]
   {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
   (scheme : Scheme oSpec Data Commitment Decommitment ComKey VerifKey pSpec)
 
+/-! ### Setup models
+
+The canonical games `Commitment.bindingGame` and `Commitment.functionBindingGame`
+(`ArkLib.Commitments.Functional.Basic`) run key generation from a fresh state `s ← init` with
+`(simulateQ impl scheme.keygen).run' s` and then run the adversary/opening phase with
+`.run' s` again: the oracle state left behind by key generation is **discarded** and the
+security phase restarts from the pre-setup state. They therefore model a *reset* shared oracle,
+whereas `Commitment.correctness` runs setup, commitment, and opening in one pipeline. For a
+stateful shared oracle (e.g. a lazily cached random oracle queried during setup) the two
+models differ.
+
+This file keeps the canonical (reset) games unchanged and adds explicitly named
+**setup-state-threaded** variants (`threadedBindingGame`, `threadedFunctionBindingGame`,
+`publicSetupExtractabilityGame`). These separate the two roles setup queries can play:
+
+* `setupImpl` interprets the queries of `scheme.keygen`. It may interpret private setup
+  randomness (e.g. a KZG trapdoor sampled through `unifSpec`) without recording it in the shared
+  state, so that threading the state does not leak it to the adversary;
+* `impl` interprets the queries of the adversary and the opening verifier;
+* the post-setup state returned by `setupImpl` is passed to the security phase.
+
+Choosing `setupImpl := impl` gives continuous shared-oracle execution. When `setupImpl` never
+changes the state, the threaded games coincide with the canonical reset games
+(`threadedBindingGame_eq_bindingGame_of_setup_preserves_state`). -/
+
+/-- Setup key generation leaves the oracle state unchanged under `setupImpl`: every run from
+state `s` returns state `s`. This is the condition under which the reset and threaded setup
+models agree. -/
+def SetupPreservesState
+    (setupImpl : QueryImpl oSpec (StateT σ ProbComp))
+    (scheme : Scheme oSpec Data Commitment Decommitment ComKey VerifKey pSpec) : Prop :=
+  ∀ s : σ, (simulateQ setupImpl scheme.keygen).run s =
+    (fun keys => (keys, s)) <$> (simulateQ setupImpl scheme.keygen).run' s
+
+/-- The evaluation-binding game in the **setup-state-threaded** model: key generation is
+interpreted by `setupImpl`, and the oracle state it leaves behind is the starting state of the
+adversary/opening phase (interpreted by `impl`). Compare the canonical reset-model
+`Commitment.bindingGame`. -/
+abbrev threadedBindingGame (setupImpl : QueryImpl oSpec (StateT σ ProbComp)) (AuxState : Type)
+    (adversary : BindingAdversary oSpec Data Commitment AuxState pSpec ComKey) :
+    OptionT ProbComp ((query : O.Query) × O.Response query × O.Response query × Bool × Bool) :=
+  let pImpl : QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp) :=
+    QueryImpl.addLift impl (challengeQueryImpl (pSpec := pSpec))
+  OptionT.mk do
+    let s ← init
+    let ⟨⟨ck, vk⟩, s'⟩ ← (simulateQ setupImpl scheme.keygen).run s
+    (simulateQ pImpl <| (show OracleComp _ _ from do
+      let ⟨cm, query, resp₁, resp₂, st₁, st₂⟩ ← liftComp (adversary.claim ck) _
+      let reduction := Reduction.mk (adversary.prover ck) (scheme.opening (ck, vk)).verifier
+      let accept₁ := (← (reduction.verdict
+        (cm, (⟨query, resp₁⟩ : (q : O.Query) × O.Response q)) st₁).run).getD false
+      let accept₂ := (← (reduction.verdict
+        (cm, (⟨query, resp₂⟩ : (q : O.Query) × O.Response q)) st₂).run).getD false
+      pure (some ((⟨query, resp₁, resp₂, accept₁, accept₂⟩ :
+        (query : O.Query) × O.Response query × O.Response query × Bool × Bool)))
+    )).run' s'
+
+/-- Evaluation binding in the setup-state-threaded model (see `threadedBindingGame`). -/
+def threadedBinding (setupImpl : QueryImpl oSpec (StateT σ ProbComp))
+    (bindingError : ℝ≥0) : Prop :=
+  ∀ AuxState : Type,
+  ∀ adversary : BindingAdversary oSpec Data Commitment AuxState pSpec ComKey,
+    Pr{let result ← threadedBindingGame init impl scheme setupImpl AuxState adversary}[
+      bindingCondition (Data := Data) result] ≤ bindingError
+
+omit [DecidableEq ι] [∀ i, VCVCompatible (pSpec.Challenge i)] in
+/-- If key generation does not change the oracle state, the threaded binding game with
+`setupImpl := impl` is the canonical reset-model `Commitment.bindingGame`. -/
+theorem threadedBindingGame_eq_bindingGame_of_setup_preserves_state
+    [∀ t, Fintype (oSpec.Range t)] [∀ t, Inhabited ([pSpec.Challenge]ₒ.Range t)]
+    [∀ t, Fintype ([pSpec.Challenge]ₒ.Range t)]
+    (h : SetupPreservesState impl scheme) (AuxState : Type)
+    (adversary : BindingAdversary oSpec Data Commitment AuxState pSpec ComKey) :
+    threadedBindingGame init impl scheme impl AuxState adversary =
+      bindingGame init impl scheme AuxState adversary := by
+  simp only [threadedBindingGame, bindingGame]
+  congr 1
+  refine bind_congr fun s => ?_
+  rw [h s, bind_map_left]
+
+/-- The function-binding game in the **setup-state-threaded** model; compare the canonical
+reset-model `Commitment.functionBindingGame`. -/
+abbrev threadedFunctionBindingGame {L : ℕ} (hn : n = 1)
+    (setupImpl : QueryImpl oSpec (StateT σ ProbComp)) (AuxState : Type)
+    [∀ i, VCVCompatible ((hn ▸ pSpec).Challenge i)]
+    [∀ i, SampleableType ((hn ▸ pSpec).Challenge i)]
+    (scheme : Scheme oSpec Data Commitment Decommitment ComKey VerifKey (hn ▸ pSpec))
+    (adversary :
+      FunctionBindingAdversary oSpec Data Commitment AuxState L (hn ▸ pSpec) ComKey) :
+    OptionT ProbComp ((queryOf : Fin L → O.Query) ×
+      ((i : Fin L) → O.Response (queryOf i)) × (Fin L → Bool)) :=
+  let pImpl : QueryImpl (oSpec + [(hn ▸ pSpec).Challenge]ₒ) (StateT σ ProbComp) :=
+    QueryImpl.addLift impl (challengeQueryImpl (pSpec := hn ▸ pSpec))
+  OptionT.mk do
+    let s ← init
+    let ⟨⟨ck, vk⟩, s'⟩ ← (simulateQ setupImpl scheme.keygen).run s
+    (simulateQ pImpl <| (show OracleComp _ _ from do
+      let ⟨cm, queryOf, responseOf, stateOf⟩ ← liftComp (adversary.claim ck) _
+      let reduction := Reduction.mk (adversary.prover ck) (scheme.opening (ck, vk)).verifier
+      let (accepts : Option (Fin L → Bool)) ← reduction.allVerdicts
+        (fun i ↦
+          (cm, (⟨queryOf i, responseOf i⟩ : (q : O.Query) × O.Response q)))
+        stateOf
+      pure (accepts.map fun accepts ↦ (⟨queryOf, responseOf, accepts⟩ :
+        (queryOf : Fin L → O.Query) ×
+          ((i : Fin L) → O.Response (queryOf i)) × (Fin L → Bool)))
+    )).run' s'
+
+/-- Function binding in the setup-state-threaded model (see `threadedFunctionBindingGame`). -/
+def threadedFunctionBinding {L : ℕ} (hn : n = 1)
+    (setupImpl : QueryImpl oSpec (StateT σ ProbComp))
+    [∀ i, VCVCompatible ((hn ▸ pSpec).Challenge i)]
+    [∀ i, SampleableType ((hn ▸ pSpec).Challenge i)]
+    (scheme : Scheme oSpec Data Commitment Decommitment ComKey VerifKey (hn ▸ pSpec))
+    (functionBindingError : ℝ≥0) : Prop :=
+  ∀ AuxState : Type,
+  ∀ adversary : FunctionBindingAdversary oSpec Data Commitment AuxState L (hn ▸ pSpec) ComKey,
+    Pr{let result ← threadedFunctionBindingGame init impl hn setupImpl AuxState scheme
+        adversary}[functionBindingCondition (Data := Data) result] ≤ functionBindingError
+
+/-! ### Extractability
+
+The canonical `Commitment.extractability` is an inherited upstream **placeholder**: its body is
+`False` under the quantifiers, so it is unsatisfiable whenever an adversary/prover exists and
+must not be used as a security notion. Its `ExtractabilityAdversary` and `StraightlineExtractor`
+also receive no setup keys.
+
+This file provides two honest, separately named notions:
+
+* `setupObliviousExtractability` (game `setupObliviousExtractabilityGame`): the adversary,
+  malicious prover, and extractor are given **no** setup keys, and the canonical reset setup
+  model is used. This is a *setup-oblivious* notion; it is strictly weaker than public-setup
+  extractability for schemes such as KZG, since an attacker independent of `ck` cannot adapt its
+  claim to the published key.
+* `publicSetupExtractability` (game `publicSetupExtractabilityGame`): the adversary's claim
+  phase, its malicious prover, and the extractor all receive the public keys `(ck, vk)`, and the
+  post-setup oracle state is threaded (see *Setup models* above). This is the notion intended for
+  public-setup schemes. -/
+
+/-- The winning condition of the extractability games: the opening is accepted, yet the
+extracted data answers the query differently from the claimed response. -/
 abbrev extractabilityCondition :
     ((query : O.Query) × O.Response query × O.Response query × Bool) → Prop :=
   fun ⟨_, claimedResponse, extractedResponse, accepted⟩ ↦
     accepted ∧ extractedResponse ≠ claimedResponse
 
-abbrev extractabilityGame (AuxState : Type)
+/-- The **setup-oblivious** extractability game (reset setup model): the adversary, its
+malicious prover, and the extractor never see the setup keys. See
+`publicSetupExtractabilityGame` for the public-setup notion. -/
+abbrev setupObliviousExtractabilityGame (AuxState : Type)
     (scheme : Scheme oSpec Data Commitment Decommitment ComKey VerifKey pSpec)
     (extractor : StraightlineExtractor oSpec Data Commitment)
     (adversary : ExtractabilityAdversary oSpec Data Commitment AuxState)
@@ -100,18 +244,85 @@ abbrev extractabilityGame (AuxState : Type)
         (query : O.Query) × O.Response query × O.Response query × Bool))
     )).run' s
 
-/-- The probability of breaking extractability for a specific extractor/adversary/prover triple. -/
-def extractabilityExperiment (AuxState : Type)
+/-- The probability of breaking setup-oblivious extractability for a specific
+extractor/adversary/prover triple. -/
+def setupObliviousExtractabilityExperiment (AuxState : Type)
     (scheme : Scheme oSpec Data Commitment Decommitment ComKey VerifKey pSpec)
     (extractor : StraightlineExtractor oSpec Data Commitment)
     (adversary : ExtractabilityAdversary oSpec Data Commitment AuxState)
     (prover : Prover oSpec (Commitment × (q : O.Query) × O.Response q) AuxState Bool Unit pSpec) :
     ℝ≥0∞ :=
-  probEvent (extractabilityCondition (Data := Data)) (extractabilityGame init impl AuxState scheme extractor adversary prover)
+  probEvent (extractabilityCondition (Data := Data))
+    (setupObliviousExtractabilityGame init impl AuxState scheme extractor adversary prover)
 
-set_option linter.unusedVariables false
+/-- **Setup-oblivious extractability** (an honest replacement for the canonical placeholder
+`Commitment.extractability`, with the same key-free interfaces). -/
+def setupObliviousExtractability
+    (scheme : Scheme oSpec Data Commitment Decommitment ComKey VerifKey pSpec)
+    (extractabilityError : ℝ≥0) : Prop :=
+  ∃ extractor : StraightlineExtractor oSpec Data Commitment,
+  ∀ AuxState : Type,
+  ∀ adversary : ExtractabilityAdversary oSpec Data Commitment AuxState,
+  ∀ prover : Prover oSpec (Commitment × (q : O.Query) × O.Response q) AuxState Bool Unit pSpec,
+    setupObliviousExtractabilityExperiment init impl AuxState scheme extractor adversary prover ≤
+      extractabilityError
 
-set_option linter.unusedVariables true
+/-- A **public-setup straightline extractor** receives the public keys, the commitment, and the
+log of the adversary's oracle queries made while producing its claim. -/
+abbrev PublicSetupStraightlineExtractor (oSpec : OracleSpec ι)
+    (Data Commitment ComKey VerifKey : Type) :=
+  ComKey → VerifKey → Commitment → QueryLog oSpec → Data
+
+/-- A **public-setup extractability adversary**: both its claim phase and its malicious opening
+prover receive the public setup keys `(ck, vk)`. -/
+structure PublicSetupExtractabilityAdversary (oSpec : OracleSpec ι)
+    (Data Commitment AuxState : Type) [O : OracleInterface Data] {n : ℕ} (pSpec : ProtocolSpec n)
+    (ComKey VerifKey : Type) where
+  claim : ComKey → VerifKey →
+    OracleComp oSpec (Commitment × (q : O.Query) × O.Response q × AuxState)
+  prover : ComKey → VerifKey →
+    Prover oSpec (Commitment × (q : O.Query) × O.Response q) AuxState Bool Unit pSpec
+
+/-- The **public-setup** extractability game: setup queries are interpreted by `setupImpl` and
+the post-setup state is threaded into the security phase; the adversary, its prover, and the
+extractor all receive the public keys. -/
+abbrev publicSetupExtractabilityGame (setupImpl : QueryImpl oSpec (StateT σ ProbComp))
+    (AuxState : Type)
+    (scheme : Scheme oSpec Data Commitment Decommitment ComKey VerifKey pSpec)
+    (extractor : PublicSetupStraightlineExtractor oSpec Data Commitment ComKey VerifKey)
+    (adversary : PublicSetupExtractabilityAdversary oSpec Data Commitment AuxState pSpec
+      ComKey VerifKey) :
+    OptionT ProbComp ((query : O.Query) × O.Response query × O.Response query × Bool) :=
+  let pImpl : QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp) :=
+    QueryImpl.addLift impl (challengeQueryImpl (pSpec := pSpec))
+  OptionT.mk do
+    let s ← init
+    let ⟨⟨ck, vk⟩, s'⟩ ← (simulateQ setupImpl scheme.keygen).run s
+    (simulateQ pImpl <| (show OracleComp _ _ from do
+      let ⟨⟨cm, query, claimedResponse, proverState⟩, queryLog⟩ ←
+        liftComp (WriterT.run (simulateQ loggingOracle (adversary.claim ck vk))) _
+      let extractedData := extractor ck vk cm queryLog
+      let stmt : Commitment × (q : O.Query) × O.Response q :=
+        (cm, ⟨query, claimedResponse⟩)
+      let reduction := Reduction.mk (adversary.prover ck vk) (scheme.opening (ck, vk)).verifier
+      let accepted := (← (reduction.verdict stmt proverState).run).getD false
+      pure (some (⟨query, claimedResponse, O.answer extractedData query, accepted⟩ :
+        (query : O.Query) × O.Response query × O.Response query × Bool))
+    )).run' s'
+
+/-- **Public-setup extractability** with error `extractabilityError`: there is a public-setup
+straightline extractor such that every key-aware adversary/prover wins
+`publicSetupExtractabilityGame` with probability at most `extractabilityError`. -/
+def publicSetupExtractability (setupImpl : QueryImpl oSpec (StateT σ ProbComp))
+    (scheme : Scheme oSpec Data Commitment Decommitment ComKey VerifKey pSpec)
+    (extractabilityError : ℝ≥0) : Prop :=
+  ∃ extractor : PublicSetupStraightlineExtractor oSpec Data Commitment ComKey VerifKey,
+  ∀ AuxState : Type,
+  ∀ adversary : PublicSetupExtractabilityAdversary oSpec Data Commitment AuxState pSpec
+      ComKey VerifKey,
+    probEvent (extractabilityCondition (Data := Data))
+      (publicSetupExtractabilityGame init impl setupImpl AuxState scheme extractor adversary) ≤
+      extractabilityError
 
 end
 

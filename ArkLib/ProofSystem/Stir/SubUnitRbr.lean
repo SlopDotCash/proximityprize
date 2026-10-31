@@ -947,9 +947,7 @@ theorem stir_main_of_checkingIOP_genuine
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / LinearCode.rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     (hε : ∀ i, stirEpsStar (F := F) (ι := ι) M δ i ≤ (1 : ℚ≥0) / (2 ^ secpar))
     (hM : ∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
     (hLen : ∃ cₖ : ℕ → ℝ, proofLen ≤ (Fintype.card ι) + (cₖ k) * (Real.log degree))

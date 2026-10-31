@@ -26,7 +26,10 @@ of the UPPER side, guided by the probe
   `769` at `(29,24,3,5)`): per-scalar lists are nonempty and generic witnesses are
   unexplainable.  Hence **no unconditional `B_near ≤ C·n` theorem exists at those shapes**;
   any linear ceiling must be conditional on a near-code list budget.  Constant multi-base
-  ladders (`M ≤ (a−1)/(k−1)` forced by safety) never beat this and stay `O(n)`.
+  ladders (`M ≤ (a−1)/(k−1)` forced by safety) stay `O(n)` only under an explicit fixed
+  bound on `a/k`: with `k = 2`, `a = M+1`, `n = 2M²`, `q > M³+M` the multi-base ladder is
+  safe and large-zero with `≥ M³ = (n/2)^(3/2)` bad scalars (probe section Q2b; outside the
+  fixed-rate prize regime).
 
 ## What this file proves (axiom-clean, fully general)
 

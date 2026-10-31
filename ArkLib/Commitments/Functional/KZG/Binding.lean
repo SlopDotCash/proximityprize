@@ -156,21 +156,18 @@ lemma t_sdh_denominator_ne_zero_of_opening_equations
 
 omit [DecidableEq G₁] [Group G₂] [PrimeOrderWith G₂ p]
   [Module (ZMod p) (Additive G₁)] [Module (ZMod p) (Additive G₂)] in
-/-- A nontrivial element of a prime-order group has order `p`. -/
-lemma binding_order_of_eq_prime_of_ne_one (x : G₁) (hx : x ≠ 1) : orderOf x = p := by
-  have hdvd := orderOf_dvd_natCard (G := G₁) x
-  rw [PrimeOrderWith.hCard] at hdvd
-  rcases (Nat.dvd_prime Fact.out).1 hdvd with h1 | hp'
-  · exact absurd (orderOf_eq_one_iff.1 h1) hx
-  · exact hp'
+/-- A nontrivial element of a prime-order group has order `p`.
+Compatibility alias of the shared `Groups.orderOf_eq_prime_of_ne_one` (`KZG/Algebra.lean`). -/
+lemma binding_order_of_eq_prime_of_ne_one (x : G₁) (hx : x ≠ 1) : orderOf x = p :=
+  Groups.orderOf_eq_prime_of_ne_one x hx
 
 omit [DecidableEq G₁] [Group G₂] [PrimeOrderWith G₂ p]
   [Module (ZMod p) (Additive G₁)] [Module (ZMod p) (Additive G₂)] in
-/-- Every element of a prime-order group is a `ZMod p` power of a nontrivial generator. -/
+/-- Every element of a prime-order group is a `ZMod p` power of a nontrivial generator.
+Compatibility alias of the shared `Groups.exists_zmod_power_of_generator` (`KZG/Algebra.lean`). -/
 lemma binding_exists_zmod_power_of_generator (hpG1 : Nat.card G₁ = p) (hg₁ : g₁ ≠ 1)
-    (hord : orderOf g₁ = p) (x : G₁) : ∃ a : ZMod p, x = g₁ ^ a.val := by
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, g₁ ^ k = x := mem_powers_of_prime_card hpG1 hg₁
-  exact ⟨(k : ZMod p), by rw [ZMod.val_natCast, ← hk, ← pow_mod_orderOf g₁ k, hord]⟩
+    (hord : orderOf g₁ = p) (x : G₁) : ∃ a : ZMod p, x = g₁ ^ a.val :=
+  Groups.exists_zmod_power_of_generator hpG1 hg₁ hord x
 
 omit [DecidableEq G₁] in
 include g₁ g₂ pairing in

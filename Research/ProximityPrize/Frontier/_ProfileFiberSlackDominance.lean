@@ -48,18 +48,10 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 
-/-- The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`. -/
-noncomputable def StackBadCount (K : Type) [Field K] [Fintype K] [DecidableEq K]
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module K A]
-    (C : Set (ι -> A)) (δ : ℝ≥0) (u : WordStack A (Fin 2) ι) : ℕ := by
-  classical
-  exact (Finset.univ.filter (fun γ : K => mcaEvent (F := K) C δ (u 0) (u 1) γ)).card
-
-/-- A profile value is used when at least one stack has that profile. -/
-def UsedProfile {P : Type}
-    (profile : WordStack A (Fin 2) ι -> P) (p : P) : Prop :=
-  ∃ u : WordStack A (Fin 2) ι, profile u = p
+/-! The bad-scalar count `StackBadCount` and the `UsedProfile` predicate are the canonical
+declarations of `_StackProfileDominationInterface.lean`, re-exported here (this file used to carry
+its own copies, which needed `simpa` bridges to the interface's `ProfileCaps` API). -/
+export StackProfileDominationInterface (StackBadCount UsedProfile)
 
 /-- Approximate fiber domination: every stack is bounded by the representative of its profile plus
 the profile's slack allowance. -/
@@ -1209,14 +1201,8 @@ theorem profileCaps_slackCap_iff_profileFiberSlackDominates
     {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ} :
     StackProfileDominationInterface.ProfileCaps F C δ profile
         (slackCap (F := F) C δ rep slack) ↔
-      ProfileFiberSlackDominates F C δ profile rep slack := by
-  constructor
-  · intro hcap u
-    simpa [slackCap, StackProfileDominationInterface.StackBadCount, StackBadCount]
-      using hcap u
-  · intro hdom u
-    simpa [slackCap, StackProfileDominationInterface.StackBadCount, StackBadCount]
-      using hdom u
+      ProfileFiberSlackDominates F C δ profile rep slack :=
+  Iff.rfl
 
 /-- Slack budgeting is exactly used-profile budgeting for the induced cap
 `bad(rep p) + slack p`. -/
@@ -1225,14 +1211,8 @@ theorem usedProfileBudgeted_slackCap_iff_profileFiberSlackBudgeted
     {P : Type} {profile : WordStack A (Fin 2) ι -> P}
     {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ} {B : ℕ} :
     UsedProfileBudgeted profile (slackCap (F := F) C δ rep slack) B ↔
-      ProfileFiberSlackBudgeted F C δ profile rep slack B := by
-  constructor
-  · intro hbudget p hp
-    simpa [slackCap, StackProfileDominationInterface.StackBadCount, StackBadCount]
-      using hbudget p hp
-  · intro hbudget p hp
-    simpa [slackCap, StackProfileDominationInterface.StackBadCount, StackBadCount]
-      using hbudget p hp
+      ProfileFiberSlackBudgeted F C δ profile rep slack B :=
+  Iff.rfl
 
 /-- The bundled slack-profile certificate is exactly a profile-cap theorem plus a used-profile
 budget theorem for the induced slack cap. -/
@@ -1264,10 +1244,10 @@ theorem profileBudgeted_slackCap_iff_profileFiberSlackBudgeted_of_all_used
       ProfileFiberSlackBudgeted F C δ profile rep slack B := by
   constructor
   · intro hbudget p _hp
-    simpa [slackCap, StackProfileDominationInterface.StackBadCount, StackBadCount]
+    simpa [slackCap]
       using hbudget p
   · intro hbudget p
-    simpa [slackCap, StackProfileDominationInterface.StackBadCount, StackBadCount]
+    simpa [slackCap]
       using hbudget p (hall p)
 
 /-- Failure of slack domination is exactly a stack above its representative-plus-slack allowance. -/

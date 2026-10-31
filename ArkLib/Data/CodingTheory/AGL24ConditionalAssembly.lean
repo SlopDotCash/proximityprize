@@ -24,7 +24,9 @@ rank-deficit probability — **conditional on the named Lemma 3.1 interface**
   re-packaged as an event inclusion into the finite union over weakly-partition-connected
   hypergraphs);
 * `conditional_failure_bound` — **the assembly**: outer-measure monotonicity + finite
-  subadditivity + the per-hypergraph interface bound.
+  subadditivity + the per-hypergraph interface bound;
+* `card_WpcIndex_le_pow`, `conditional_failure_bound_pow` — the union index (hypergraphs on
+  at most `L + 1` vertices) fits the paper's `2^{(L+2)n}` budget for `L + 2 ≤ 2ⁿ`.
 -/
 
 open Finset ListDecodable
@@ -59,17 +61,43 @@ theorem rankDeficitEvent_toOuterMeasure_eq_map (D : PMF (ι ↪ F)) (k : ℕ) {t
     (f := fun φ i => φ i) (e := e)]
   rfl
 
-/-- The (finite) index of the union: a raw vertex-count parameter `t < L + 2` (the chain's
-output `t ≤ L` embeds with **no dependent cast**) together with a weakly-partition-connected
-edge family on `t + 1` vertices. -/
+/-- The (finite) index of the union: a raw parameter `t < L + 1` (the chain's output
+`t ≤ L` embeds with **no dependent cast**) together with a weakly-partition-connected edge
+family on `t + 1 ≤ L + 1` vertices. The index therefore ranges over hypergraphs with at most
+`L + 1` vertices, matching the count in `card_hypergraphs_le` (see `card_WpcIndex_le_pow`). -/
 def WpcIndex (ι : Type*) [Fintype ι] [DecidableEq ι] (k L : ℕ) : Type _ :=
-  Σ t' : Fin (L + 2), {e : ι → Finset (Fin (t'.val + 1)) //
+  Σ t' : Fin (L + 1), {e : ι → Finset (Fin (t'.val + 1)) //
     WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t'.val + 1))) e}
 
 noncomputable instance (k L : ℕ) : Fintype (WpcIndex ι k L) := by
   classical
   unfold WpcIndex
   infer_instance
+
+/-- The union index is at most the number of all `n`-edge hypergraphs on `t + 1` vertices,
+summed over `t ≤ L` (`n = |ι|`); weak partition connectivity only removes families. -/
+theorem card_WpcIndex_le (k L : ℕ) :
+    Fintype.card (WpcIndex ι k L)
+      ≤ ∑ t ∈ Finset.range (L + 1), 2 ^ ((t + 1) * Fintype.card ι) := by
+  classical
+  unfold WpcIndex
+  rw [Fintype.card_sigma, ← Fin.sum_univ_eq_sum_range]
+  refine Finset.sum_le_sum fun t _ => ?_
+  calc Fintype.card {e : ι → Finset (Fin (t.val + 1)) //
+        WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t.val + 1))) e}
+      ≤ Fintype.card (ι → Finset (Fin (t.val + 1))) := Fintype.card_subtype_le _
+    _ = 2 ^ ((t.val + 1) * Fintype.card ι) := by
+        rw [Fintype.card_fun, Fintype.card_finset, Fintype.card_fin, ← pow_mul]
+
+/-- **The paper's union-bound budget for the index**: the union index of
+`conditional_failure_bound` has at most `2^{(L+2)n}` elements whenever `L + 2 ≤ 2ⁿ`
+(`n = |ι|`), via the shared hypergraph count `card_hypergraphs_le`. -/
+theorem card_WpcIndex_le_pow (k L : ℕ) (hL : L + 2 ≤ 2 ^ Fintype.card ι) :
+    Fintype.card (WpcIndex ι k L) ≤ 2 ^ ((L + 2) * Fintype.card ι) := by
+  refine (card_WpcIndex_le k L).trans ?_
+  refine le_trans ?_ (card_hypergraphs_le L (Fintype.card ι) hL)
+  rw [Finset.sum_range_succ' (fun v => 2 ^ (v * Fintype.card ι)) (L + 1)]
+  exact Nat.le_add_right _ _
 
 /-- **The deterministic inclusion**: the `Λ`-failure event is contained in the finite union
 of per-hypergraph rank-deficit events over weakly-partition-connected hypergraphs with at
@@ -83,7 +111,7 @@ theorem failure_subset_union {k L : ℕ} (hL : 1 ≤ L) {r : ℝ} (hr : 0 ≤ r)
   intro φ hφ
   obtain ⟨t, htL, ht1, g, y, hwpc, v, hv, hker⟩ :=
     lambda_gt_gives_wpc_rank_deficit hL φ hr hk hrad hφ
-  -- The chain's t embeds directly: ⟨t, t < L + 2⟩ with t + 1 vertices, no cast.
+  -- The chain's t embeds directly: ⟨t, t < L + 1⟩ with t + 1 vertices, no cast.
   exact Set.mem_iUnion.mpr
     ⟨⟨⟨t, by omega⟩, ⟨agreementEdge y (rsEval (fun i => φ i) g), hwpc⟩⟩, v, hv, hker⟩
 
@@ -124,6 +152,26 @@ theorem conditional_failure_bound {k L : ℕ} (hL : 1 ≤ L) {r : ℝ} (hr : 0 �
   _ = (Fintype.card (WpcIndex ι k L) : ENNReal) * bound := by
         rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
 
+open scoped ENNReal in
+/-- `conditional_failure_bound` with the paper's explicit union-bound budget: when
+`L + 2 ≤ 2ⁿ` (`n = |ι|`), the `Λ`-failure probability is at most `2^{(L+2)n} · bound`.
+Still conditional on the named Lemma 3.1 interface `RIMFullRankFailureProbResidual`. -/
+theorem conditional_failure_bound_pow {k L : ℕ} (hL : 1 ≤ L) {r : ℝ} (hr : 0 ≤ r)
+    (hk : k ≤ Fintype.card ι)
+    (hrad : (L + 1 : ℝ) * r * (Fintype.card ι : ℝ)
+      ≤ ((L * (Fintype.card ι - k) : ℕ) : ℝ))
+    (hLn : L + 2 ≤ 2 ^ Fintype.card ι)
+    (D : PMF (ι ↪ F)) (bound : ENNReal)
+    (hres : ∀ idx : WpcIndex ι k L,
+      RIMFullRankFailureProbResidual (F := F) (k := k)
+        (D.map (fun φ i => φ i)) idx.2.val bound) :
+    D.toOuterMeasure
+        {φ : ι ↪ F | ¬ Lambda (ReedSolomon.code φ k : Set (ι → F)) r ≤ (L : ℕ∞)}
+      ≤ ((2 ^ ((L + 2) * Fintype.card ι) : ℕ) : ENNReal) * bound := by
+  refine (conditional_failure_bound hL hr hk hrad D bound hres).trans ?_
+  gcongr
+  exact_mod_cast card_WpcIndex_le_pow (ι := ι) k L hLn
+
 end AGL24
 
 -- Axiom audit: must report only `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
@@ -131,3 +179,6 @@ end AGL24
 #print axioms AGL24.rankDeficitEvent_toOuterMeasure_eq_map
 #print axioms AGL24.failure_subset_union
 #print axioms AGL24.conditional_failure_bound
+#print axioms AGL24.card_WpcIndex_le
+#print axioms AGL24.card_WpcIndex_le_pow
+#print axioms AGL24.conditional_failure_bound_pow

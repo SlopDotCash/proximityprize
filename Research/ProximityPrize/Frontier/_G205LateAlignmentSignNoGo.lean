@@ -20,8 +20,9 @@ subset-difference profile. The production gate needs `A_5 ≥ 0 ∧ A_6 ≥ 0` a
 
 A **cheap escape** would be any field-uniform *sign* law reducing the two-depth gate to a single
 depth, e.g. joint positivity forced by dyadic structure, or a monotone/one-directional implication
-`A_5 < 0 → A_6 < 0` (then it suffices to certify `A_5 ≥ 0`, a strictly easier one-depth object) or
-its converse. G56's exact four-colour Newton/Gauss-period rewrite and exact integer sweeps, plus
+`A_5 < 0 → A_6 < 0` (equivalently `A_6 ≥ 0 → A_5 ≥ 0`, so certifying `A_6 ≥ 0` alone would suffice)
+or its converse `A_6 < 0 → A_5 < 0` (equivalently `A_5 ≥ 0 → A_6 ≥ 0`, so certifying `A_5 ≥ 0` alone
+would suffice). G56's exact four-colour Newton/Gauss-period rewrite and exact integer sweeps, plus
 Fable's extended sweep, produce **exact integer witnesses in every sign quadrant**. This file
 records those witnesses as axiom-clean ℤ constants and proves, by pure decidable ℤ arithmetic, that
 

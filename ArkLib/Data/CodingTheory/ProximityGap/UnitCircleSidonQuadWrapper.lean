@@ -31,10 +31,17 @@ equality*, and **(ii)** the full `B_4` wrapper for roots of unity.  This file la
 
 **The probe-established picture** (`scripts/probes/probe_b4_sidon_mun.py`, exact roots of unity).
 `μ_n` is NOT `B_4`-additive-Sidon from the sum alone (`138/330` collisions at `n=8`).  Fixing
-`(e₁, e₄)` leaves collisions, but — per the scaffolding's reconciliation probe — **only zero-sum
-ones** (`e₁ = 0`); for `e₁ ≠ 0`, `(e₁, e₄)` already determines `e₂`.  This wrapper takes `e₂` as a
-hypothesis (the uniform statement that also covers the zero-sum branch), giving the clean
-`(e₁, e₂, e₄) ⟹ quadruple` rung; the missing `e₃` then comes free from conjugation.
+`(e₁, e₄)` leaves collisions; in the scaffolding's reconciliation probe at the tested dyadic `n = 8`
+the remaining collisions were **only zero-sum ones** (`e₁ = 0`).  This is a finite dyadic
+observation, **not** a theorem, and it is **false for general `μ_n`**: with `ζ` a primitive complex
+twelfth root of unity, the quadruples `A = (1, i, i, −1)` (exponents `(0,3,3,6)`) and
+`B = (ζ, ζ, ζ⁵, ζ⁵)` (exponents `(1,1,5,5)`) both have sum `e₁ = 2i ≠ 0` (as `ζ + ζ⁵ = i`) and
+product `e₄ = 1`, but `e₂(A) = −2` while `e₂(B) = ζ² + ζ¹⁰ − 4 = 1 − 4 = −3`.  So nonzero `e₁`
+together with `e₄` does **not** determine `e₂` in general; any dyadic strengthening would need its
+own proof, and no finite-field transfer is implied by the probe, this example, or the complex
+theorem below.  This wrapper therefore takes `e₂` as an explicit hypothesis (the uniform statement,
+valid for every `n`), giving the clean `(e₁, e₂, e₄) ⟹ quadruple` rung; the missing `e₃` then comes
+free from conjugation.
 
 **Honest scope.**  NOT a CORE closure and NOT a refutation.  A structural Sidon-depth brick
 completing the `4`-element rung of the `B_h` ladder for `μ_n`, extending the proven scaffolding

@@ -703,8 +703,11 @@ private def linearScanBackwards
               (s_in.capacitySegment :: vCap) acc'
     | .conflict => .forkErr -- `L_p` collision → `E_fork`
 
-/-- BackTrack §5.2 Step 2: A concrete backtrack algorithm to exhausively scan an
-and compute a valid sequence family `S_BT(tr, s)`. -/
+/-- BackTrack §5.2 Step 2: A concrete backtrack algorithm to exhaustively scan and compute a
+sequence family `S_BT(tr, s)`.
+
+This is an unused alternative scan: nothing in the tree consumes it and no theorem relates it to
+the canonical `linearScanBackwards`-based family above. -/
 private def BacktrackSequenceFamily.sequenceScan
     (trΔ : TraceNabla T_H T_P StmtIn U)
     (depthBound : Nat)
@@ -732,7 +735,9 @@ private def BacktrackSequenceFamily.sequenceScan
             match go fuel pred.1 (pred :: stepsRev) with
             | .err => .err
             | .ok childFamilies => collect rest (acc ++ childFamilies)
-        collect preds []
+        -- Recurse only over the self-loop-free predecessors that the emptiness test above
+        -- inspected (an earlier version recursed over the unfiltered `preds`).
+        collect validPreds []
   go depthBound state []
 
 

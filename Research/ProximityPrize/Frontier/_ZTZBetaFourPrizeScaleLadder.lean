@@ -12,8 +12,9 @@ import Mathlib.Tactic.NormNum.Prime
 # Z-lane — the β = 4 Thorner–Zaman rung AT THE PRIZE MODULUS `n = 2^30` + its δ* ceiling (#466)
 
 **Target.**  `Frontier/_W16TZPrizeScaleP30.lean` landed the prize-modulus rung at `β = 2`
-(`[2^60, 2^61]`) and recorded, honestly, that **no** β = 2 ladder can feed the δ* ceiling
-consumer — that consumer needs `β ≥ 3`.  This file lands the **quartic** rung at the literal
+(`[2^60, 2^61]`) and recorded that no β = 2 ladder can feed the δ* ceiling consumer **at
+`μ = 7` (`s = 128`)** — the consumer itself has no β hypothesis, and at small `μ` (e.g. `μ = 2`,
+`r = 2`: budget `0.8 < 20`) the β = 2 rung suffices.  This file lands the **quartic** rung at the literal
 prize modulus, and cashes it:
 
 > **`tzPrimeSupply_two_pow_30_four`** — `TZPrimeSupply 1073741824 (4 : ℝ) 12`: the window

@@ -18,8 +18,9 @@ converges to the ½-agreement (Plotkin-type) threshold.
 
 ## The reconciliation: it is ALL in the budget normalization
 
-The over-determined incidence `I(s)` decays from `I(k+2) ~ cubic ~ n³` (s near k) down to `~1` (s near n/2).
-δ* = (n−s*)/n where `s*` is where `I(s*) =` budget `B`. So the budget SLIDES δ*:
+The over-determined incidence `I(s)` trends down (not necessarily monotonically; see "The decay law" below) from
+`I(k+2) ~ cubic ~ n³` (s near k) to a small plateau (s near n/2). δ* = (n−s*)/n where `s*` is the first `s` with
+`I(s) ≤` budget `B`. So the budget SLIDES δ*:
 
 | budget B | binding s* | δ* |
 |---|---|---|
@@ -38,7 +39,8 @@ So **whether δ* tracks the floor is exactly the question of the prize budget `B
 ## What is established vs open
 
 - **Established (exact, validated):** the budget=n far-line incidence δ* = ½ + (1/(2ρ)−1)/n → ½; the
-  over-det incidence is cubic `~n³` at s=k+2 and decays to ~1 at s~n/2; p-independent in the thin/prize regime.
+  over-det incidence is cubic `~n³` at s=k+2 and trends down (not monotonically; see the decay-law section) to a
+  small plateau near s~n/2; p-independent in the thin/prize regime.
 - **Open (the floor reconciliation):** derive `I(s)` for general s (the decay law), and determine where the
   prize budget `ε*·q` crosses it — i.e. whether `s*−k ~ Θ(n/log n)` (floor) for the prize-regime budget. This is
   now a pure combinatorial decay-vs-budget question (no char-p, no BGK).
@@ -53,8 +55,20 @@ budget normalization, precisely stated above."
 
 ## The decay law I(s) (full curves, validated)
 
-The over-determined incidence `I(s)` (max over far directions) decays GRADUALLY from `~n³` (s=k+2) to a small
-plateau, crossing budget=n at `s* ≈ n/2`:
+The over-determined incidence `I(s)` decays overall from `~n³` (s=k+2) to a small plateau, crossing budget=n at
+`s* ≈ n/2`.
+
+**What each row is a maximum over (threshold-dependent family).** `I(s)` is the maximum, over the far monomial
+directions admissible at threshold `s`, of the number of bad scalars `γ` whose line point agrees with some
+degree-`<k` codeword on at least `s` points of `μ_n`. Both the admissible family (which directions count as far /
+over-determined at agreement `s`) and the per-direction maximizer depend on `s`, so `I` is a maximum over a
+**different family at each `s`**, not one fixed family evaluated at nested thresholds. Consequently `I(s)` need
+**not** be monotone in `s`: the `n=24, k=3` row below increases from `I(9)=16` to `I(10)=19`. The word "decays"
+describes the overall trend only. The binding size is defined by the **first-crossing convention**
+`s* = min { s ≥ k+2 : I(s) ≤ B }`; because the rows are not monotone, a crossing need not be unique in general
+(a later rise above `B` is not excluded by any proof), and every `s*` quoted here uses the first-crossing
+convention. (The engine source, `scripts/rust-pg/`, is not in this tree, so the exact admissibility rule for far
+directions at each `s` could not be re-read here; any reuse of these rows must restate it.)
 
 ```
 n=24,k=2:  s= 4   5   6   7   8   9  10  11  12  13
@@ -63,7 +77,8 @@ n=24,k=3:  s= 5   6   7   8   9  10  11  12  13
            I=143 133  37  37  16  19  12  12   9          (budget 24 crossed at s*=9)
 ```
 
-- `I(k+2) ~ cubic ~ n³` (top of the curve), decays to a constant plateau `~2k+1 = O(ρn)` near `s~n/2`.
+- `I(k+2) ~ cubic ~ n³` (top of the curve), trending down (non-monotonically) to a small plateau near `s~n/2`
+  (`5 = 2k+1` for `k=2`; the `k=3` row is still at `9` at the last listed `s`).
 - **The budget slides s\* through this decay region:** `δ* = 1−ρ` (floor/capacity) needs `s*~k+2` ⟹ budget
   `~ I(k+2) ~ n³`; `δ* → ½` needs `s*~n/2` ⟹ budget `~ n`.
 

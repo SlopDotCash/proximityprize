@@ -15,13 +15,21 @@ multiplicative subgroup `G = μ_n ≤ F_p^*`.
 
 ## What is honest here
 
-This is the **state of the art**, NOT a prize closure. The character-sum bound proven here is
+This is a conditional reduction, NOT a prize closure and NOT by itself the state-of-the-art bound.
+The character-sum bound proven here, from a **raw** energy bound `E_r ≤ n^θ` and `q ≤ n^D`, is
 
-  `B = max_{b≠0} ‖η_b‖ ≤ n^{(θ+D)/(2r)}`,
+  `‖η_b‖ ≤ n^{(θ+D)/(2r)}`  for **every** `b`, including `b = 0`.
 
-which, under the literature energy gain, gives `B ≤ n^{1-c'}` with a *small* `c' > 0`
-(di Benedetto SOTA: `c' = 31/2880 ≈ 1.08·10⁻²`; BGK: `c' = o(1)`). It does **NOT** reach the
-conjectured Gaussian/Ramanujan bound `√(2 n ln q)`. It is the cleanest *proven* bound known.
+**Caveat (no positive gain from these premises).** Because the bound covers `b = 0`, where
+`η_0 = n`, raw moment orthogonality forces `n^{2r} ≤ q·E_r ≤ n^{θ+D}`, i.e. `θ + D ≥ 2r` on every
+nonempty `G` with `n ≥ 2` (and `n = 1` violates `q ≤ n^D` since `q ≥ 2`). So the premises of this
+file can **never** produce a sub-`n` exponent `1 - c'` with `c' > 0`; this is proved below as
+`bgk_gain_nonpos_of_rawEnergy`. The literature sub-`n` bounds `B = max_{b≠0} ‖η_b‖ ≤ n^{1-c'}`
+(di Benedetto SOTA: `c' = 31/2880 ≈ 1.08·10⁻²`; BGK: `c' = o(1)`) are *not* instances of this
+interface: reaching them requires a nonprincipal (DC-subtracted) energy `E_r − n^{2r}/q`, or the
+additional amplification in an actual BGK argument, together with a source bridge stating the
+precise parameter restrictions. Neither is supplied here, and none of this reaches the
+conjectured Gaussian/Ramanujan bound `√(2 n ln q)`.
 
 ## The single deep NAMED input (not fabricated)
 
@@ -46,9 +54,11 @@ The moment substrate (`GaussPeriodMomentBound`, `subgroup_gaussSum_moment`) is i
 * `eta_sq_le_of_sumProduct`  : `‖η_b‖² ≤ (q·n^θ)^{1/r}`            (`r`-th root).
 * `bgk_character_sum_bound`   : in the regime `q ≤ n^D`, `‖η_b‖² ≤ n^{(θ+D)/r}`, hence the
   headline `‖η_b‖ ≤ n^{(θ+D)/(2r)}`.
-* `bgk_subUnit_of_gain`       : the honest non-trivial conclusion `‖η_b‖ ≤ n^{1-c'}` packaged as a
-  hypothesis `(θ+D)/(2r) ≤ 1 - c'` — i.e. the energy gain `κ_r` must beat the field-size exponent
-  `D` (`θ+D < 2r` ⟺ `κ_r > D - 1`); when it does, the per-frequency sum is genuinely sub-`n`.
+* `bgk_subUnit_of_gain`       : the conditional conclusion `‖η_b‖ ≤ n^{1-c'}` from a hypothesis
+  `(θ+D)/(2r) ≤ 1 - c'`. This is a valid implication (it does not even need `c' > 0`), but with
+  raw-energy premises it is only satisfiable for `c' ≤ 0`:
+* `bgk_gain_nonpos_of_rawEnergy` : the premises above force `c' ≤ 0` on every nonempty `G`
+  (apply the chain at `b = 0`). Hence this file yields no genuinely sub-`n` instance.
 
 Only `propext, Classical.choice, Quot.sound`. Issue #407.
 -/
@@ -150,12 +160,12 @@ theorem bgk_character_sum_bound {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G :
         congr 1
         field_simp
 
-/-- **The honest BGK conclusion: `B ≤ n^{1-c'}`.** Packaged with the genuine non-triviality
-hypothesis `(θ+D)/(2r) ≤ 1 - c'` (`c' > 0`), which is exactly the requirement that the
-sum-product energy gain beats the field-size exponent: `θ + D < 2r` ⟺ `κ_r > D - 1`
-(`θ = 2r-1-κ_r`). When the gain is large enough, the per-frequency incomplete subgroup Gauss
-sum is genuinely sub-`n` — the SOTA bound (di Benedetto: `c' = 31/2880`; BGK: `c' = o(1)`),
-short of the conjectured `√(2 n ln q)`. -/
+/-- **Conditional exponent form `‖η_b‖ ≤ n^{1-c'}`.** A valid implication from the exponent
+hypothesis `(θ+D)/(2r) ≤ 1 - c'` (no sign condition on `c'` is used). **It cannot be instantiated
+with `c' > 0`:** the bound holds for every `b`, including `b = 0` where `η_0 = n`, so the raw-energy
+premises force `θ + D ≥ 2r` and `c' ≤ 0` (`bgk_gain_nonpos_of_rawEnergy`). The literature sub-`n`
+bounds for `b ≠ 0` (di Benedetto: `c' = 31/2880`; BGK: `c' = o(1)`) need a nonprincipal
+(DC-subtracted) energy or actual BGK amplification, which this interface does not encode. -/
 theorem bgk_subUnit_of_gain {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G : Finset F} {r : ℕ}
     {θ D c' : ℝ} (hr : 1 ≤ r) (hn : 1 ≤ (G.card : ℝ))
     (hE : SumProductEnergyBound G r θ) (hq : FieldSizePolyBound G D)
@@ -163,6 +173,35 @@ theorem bgk_subUnit_of_gain {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G : Fin
     ‖eta ψ G b‖ ≤ (G.card : ℝ) ^ (1 - c') := by
   refine (bgk_character_sum_bound hψ hr hn hE hq b).trans ?_
   exact Real.rpow_le_rpow_of_exponent_le hn hgain
+
+/-- **The raw-energy premises admit no positive gain (no-go for this interface).** The chain above
+bounds *every* frequency, including the principal one `b = 0`, where `η_0 = n`. Hence for any
+nonempty `G`, the premises `SumProductEnergyBound G r θ` (on the **raw** energy, which includes
+the principal mode), `FieldSizePolyBound G D` and `(θ + D)/(2r) ≤ 1 - c'` force `c' ≤ 0`:
+for `n ≥ 2`, `n = ‖η_0‖ ≤ n^{1-c'}` gives `c' ≤ 0`; for `n = 1` the field regime `q ≤ 1^D = 1`
+is impossible because `q ≥ 2`. Equivalently, raw moment orthogonality gives
+`n^{2r} ≤ q·E_r ≤ n^{θ+D}`, so `θ + D ≥ 2r`. A positive-gain consumer must instead use a
+nonprincipal (DC-subtracted) energy, or the additional amplification of an actual BGK argument. -/
+theorem bgk_gain_nonpos_of_rawEnergy {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G : Finset F}
+    {r : ℕ} {θ D c' : ℝ} (hr : 1 ≤ r) (hn : 1 ≤ (G.card : ℝ))
+    (hE : SumProductEnergyBound G r θ) (hq : FieldSizePolyBound G D)
+    (hgain : (θ + D) / (2 * r) ≤ 1 - c') :
+    c' ≤ 0 := by
+  have h0 := bgk_subUnit_of_gain hψ hr hn hE hq hgain 0
+  have heta0 : eta ψ G 0 = (G.card : ℂ) := by
+    simp only [eta, zero_mul, AddChar.map_zero_eq_one, Finset.sum_const, nsmul_eq_mul, mul_one]
+  rw [heta0, Complex.norm_natCast] at h0
+  rcases eq_or_lt_of_le hn with h1 | h1
+  · exfalso
+    have hq1 : (Fintype.card F : ℝ) ≤ 1 := by
+      have := hq
+      rw [FieldSizePolyBound, ← h1, Real.one_rpow] at this
+      exact this
+    have h2 : (1 : ℝ) < Fintype.card F := by exact_mod_cast Fintype.one_lt_card
+    linarith
+  · have h1' : (G.card : ℝ) ^ (1 : ℝ) ≤ (G.card : ℝ) ^ (1 - c') := by rwa [Real.rpow_one]
+    have := (Real.rpow_le_rpow_left_iff h1).mp h1'
+    linarith
 
 end ArkLib.ProximityGap.BGKEnergyCharacterSum
 
@@ -172,3 +211,4 @@ end ArkLib.ProximityGap.BGKEnergyCharacterSum
 #print axioms ArkLib.ProximityGap.BGKEnergyCharacterSum.eta_sq_le_npow
 #print axioms ArkLib.ProximityGap.BGKEnergyCharacterSum.bgk_character_sum_bound
 #print axioms ArkLib.ProximityGap.BGKEnergyCharacterSum.bgk_subUnit_of_gain
+#print axioms ArkLib.ProximityGap.BGKEnergyCharacterSum.bgk_gain_nonpos_of_rawEnergy

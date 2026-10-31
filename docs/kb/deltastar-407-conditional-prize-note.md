@@ -258,11 +258,21 @@ direction. It is *identically* the following recognized-open problems:
   derivation, `prize-407-exact-deltastar-kambire-conjecture.md`): no nonempty antipodal-free `Y ⊆ μ_n`
   with `|Y| ≤ n/2` and `Σ_{y∈Y} y ≡ Σ_{y∈Y} y³ ≡ 0 (mod p)` — i.e. suppression of short
   char-`p`-genuine `{−1,0,1}`-coefficient two-frequency vanishing sums of dyadic roots of unity.
+  **[2026-10-28 correction (audit L137): this conjecture is FALSE, so it is not identical to the open
+  upper half above.]** Pigeonhole over the `2^{n/2}` subsets of `{ζ^j : j < n/2}` by
+  `(Σζ^j, Σζ^{3j}, parity) ∈ F_p²×F_2` yields such a `Y` whenever `2^{n/2} > 2p²` — e.g. `n = 256`,
+  `p = 4294968833 ≥ 256^4`, and overwhelmingly at the prize scale; see the correction in
+  `prize-407-exact-deltastar-kambire-conjecture.md`. Existence of such `Y` does not refute an energy
+  *count* bound, the Half-Sum value containment, or the prize; only the no-`Y` suppression form is dead.
 
 **Two-route convergence (the structural takeaway).** The coset-saturation/Vieta–sumset route proves the
 **ℂ side completely** (iterated Lam–Leung ⟹ coset-saturation ⟹ `#bad = |H^{(+r)}|` over ℂ, no moments,
 no Weil) and reduces the char-`p` side to "do short genuine vanishing sums exist mod the prize prime?"
-The Gauss-period sup-norm route reduces to "is `E_r` sub-Wick at `r ≈ log q`?" **Both bottom out at the
+The Gauss-period sup-norm route reduces to "is `E_r` sub-Wick at `r ≈ log q`?" [2026-10-28 (L137): the
+first question has answer YES at the prize prime — by pigeonhole such sums exist, already of weight
+`≤ 24` at `n = 2^30`, `q ≈ 2^158` — so the coset route cannot rest on their non-existence; what survives
+there is value containment, and on the energy route a count bound. The "convergence" below should be
+read as both routes needing control of such relations, not their suppression.] **Both bottom out at the
 same object**: suppression of char-`p`-genuine balanced cyclotomic relations of length `O(log q)` in a
 subgroup of size `n ≤ q^{1/4}`. This is the genuine prize-hard core, reached by two independent
 derivations, and it is the BGK wall.
@@ -491,7 +501,9 @@ agreement set, the average, the Plotkin/far-line proxy) rather than the binding 
   `n^{1−o(1)}` at the prize point `n ≤ q^{1/4}`). The conjectured value lives strictly inside.
 
 * The open core is **precisely** `WickEnergyBracket` at `r ≈ log q` = the BGK / Paley-graph / BCHKS-1.12
-  deep-moment problem = the coset-route Dyadic Gap Vanishing-Sum Suppression conjecture. Two independent
+  deep-moment problem (the coset-route Dyadic Gap Vanishing-Sum Suppression conjecture was listed here
+  as identical, but it is FALSE by pigeonhole — audit L137, 2026-10-28; only its weaker Half-Sum value
+  containment form remains open on that route). Two independent
   prize reductions converge on this single object; the char-0 side is proven (`_CharZeroWickEnergy`) and
   the char-`p` transfer at depth is the wall. The sharp `clo = chi = 1` form is false in char-`p`; the
   honest object is the bracketed version with absolute constants.

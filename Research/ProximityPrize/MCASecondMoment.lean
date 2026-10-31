@@ -7,6 +7,7 @@ Authors: ArkLib Contributors
 import Research.ProximityPrize.RadiusOneExact
 import ArkLib.Data.CodingTheory.ProximityGap.MCABadCount
 import Research.ProximityPrize.Collapse
+import Research.ProximityPrize.PrizeRateBounds
 
 /-!
 # A second-moment lower bound on the radius-one MCA error, deciding the §1 prize window
@@ -357,37 +358,6 @@ lemma epsStar_lt_second_moment_value {M' q : ℕ} (hq : 0 < q)
         ENNReal.mul_lt_mul_right hinvne hinvtop hcast
     _ = (D : ℝ≥0∞) := by
         rw [← mul_assoc, ENNReal.inv_mul_cancel hpow_ne_zero hpow_ne_top, one_mul]
-
-/-- Every prize rate is at most `1/2`. -/
-private lemma prizeRates_le_half (j : Fin 4) : prizeRates j ≤ 1 / 2 := by
-  unfold prizeRates
-  have h2 : (2 : ℝ≥0) ^ (1 : ℕ) ≤ 2 ^ (j.val + 1) :=
-    pow_le_pow_right₀ one_le_two (by omega)
-  rw [pow_one] at h2
-  exact div_le_div_of_nonneg_left (by norm_num) (by norm_num) h2
-
-/-- For `n ≥ 2`, every prize-rate degree satisfies `k_j + 1 ≤ n`. -/
-private lemma prizeRate_floor_add_one_le (j : Fin 4) (hn : 2 ≤ Fintype.card ι) :
-    ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ + 1 ≤ Fintype.card ι := by
-  set k := ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ with hk_def
-  have h2 : (2 : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by exact_mod_cast hn
-  have hkr : (k : ℝ≥0) ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) := by
-    rw [hk_def]
-    refine le_trans (Nat.floor_le (by positivity)) ?_
-    gcongr
-    exact prizeRates_le_half j
-  have hcast : ((k + 1 : ℕ) : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by
-    push_cast
-    calc (k : ℝ≥0) + 1
-        ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) + 1 := by gcongr
-      _ ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) + (1 / 2) * (Fintype.card ι : ℝ≥0) := by
-          gcongr
-          calc (1 : ℝ≥0) = (1 / 2) * 2 := by norm_num
-            _ ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) := by gcongr
-      _ = (Fintype.card ι : ℝ≥0) := by
-          rw [← add_mul]
-          norm_num
-  exact_mod_cast hcast
 
 /-- **Second-moment negative decision for the formal MCA prize.**
 At any prize-rate index `j`, if a family size `M' ≤ C(n, k_j+1)` makes the

@@ -636,7 +636,8 @@ set_option maxHeartbeats 3200000 in
 degree-`k` proximate within Hamming distance `e` of the line combination, and
 `S` is large enough relative to the Polishchuk–Spielman ratio, then there is a
 JOINT pair `(p₀, p₁)` of degree-`k` polynomials agreeing with `(u₀, u₁)`
-outside at most `e + h` points. -/
+outside at most `e + h` points.  Note that `hn` (with `h : ℕ`) forces `2e ≤ n − k − 1`, so the
+seed radius `e` is always within the unique-decoding radius of the degree-`≤ k` code (PG-323). -/
 theorem exists_joint_proximate (k e h DZ : ℕ)
     (hn : k + 2 * e + h + 1 = Fintype.card ι)
     (hDZ : e + 1 ≤ (h + 1) * DZ) (hDZ0 : 0 < DZ)
@@ -779,8 +780,9 @@ theorem exists_joint_proximate (k e h DZ : ℕ)
 disagreement set with `(u₀, u₁)` has at most `m` points makes EVERY line
 combination `u₀ + z·u₁` within Hamming distance `m` of `p₀ + z·p₁` (evaluated on
 the domain). This is the direction used to turn the joint proximate of Claim 2.3
-into the list-decoding-regime proximity-gap conclusion: a witness that the whole
-affine line is close, uniformly in `z`.
+into the proximity-gap conclusion of `proximity_gap_listDecoding`: a witness that the whole
+affine line is close, uniformly in `z` (that theorem's seed radii are restricted to unique
+decoding by its `hn`; see its docstring).
 
 Derivation: at any point `x` outside the joint disagreement set we have both
 `p₀.eval (domain x) = u₀ x` and `p₁.eval (domain x) = u₁ x`, hence
@@ -816,12 +818,23 @@ lemma hammingDist_line_le_of_jointDisagreement_le {m : ℕ}
     _ ≤ _ := Finset.card_le_card hsub
     _ ≤ m := hdis
 
-/-- **[BCKHS25] Theorem 2.2 (Hensel-free list-decoding-regime proximity gap,
-assembled).**
+/-- **[BCKHS25] Theorem 2.2 (Hensel-free rectangular Berlekamp–Welch proximity gap,
+assembled; seed radii restricted to unique decoding).**
+
+**Regime caveat (2026-10-28 audit, PG-323).**  The degree budget `hn : k + 2e + h + 1 = n`
+with `h : ℕ` forces `2e ≤ n − k − 1`.  The code (degree `≤ k`) has dimension `k + 1` and
+minimum distance `n − k`, so every per-`z` seed radius `e` admitted here lies within the
+**unique-decoding radius**; only the output radius `e + h` may exceed it.  Seed radii beyond
+UDR (e.g. dimension `4`, `n = 16`, `e = 7`, between UDR `6/16` and Johnson `8/16`) cannot
+instantiate `hn` (it would need `h = −2`).  So, despite the historical name, this theorem does
+not cover the list-decoding regime of per-seed radii; a theorem with post-UDR seed hypotheses
+is still needed for that branch.  The genuine content is the rectangular
+BW/Polishchuk–Spielman tradeoff below.
 
 Let `(u₀, u₁)` be a line word on `domain` and let `S` be a set of `z`-values,
 each admitting a degree-`k` proximate within Hamming distance `e` of the line
-combination `u₀ + z·u₁` (the per-`z` list-decoding hypothesis). If `S` is large
+combination `u₀ + z·u₁` (the per-`z` proximity hypothesis, at a radius `e` that `hn` keeps
+inside unique decoding). If `S` is large
 enough that the Polishchuk–Spielman ratio closes (`hratio`) and the degree
 budget holds (`hn`, `hDZ`), then there is a SINGLE pair `(p₀, p₁)` of degree-`k`
 polynomials that is simultaneously a proximate for EVERY `z`: the line
@@ -829,8 +842,9 @@ polynomials that is simultaneously a proximate for EVERY `z`: the line
 uniformly in `z`. In coding-theoretic terms, the whole affine line lies within
 relative distance `(e + h)/n` of the (curve over the) Reed–Solomon code.
 
-This is the Hensel-free route's lift of the proximity gap into the
-list-decoding regime: Claim 2.3 (`exists_joint_proximate`, itself built from
+This is the Hensel-free route's joint-proximate step with output radius `e + h`
+(possibly beyond UDR) from unique-decoding seed radii `e`: Claim 2.3
+(`exists_joint_proximate`, itself built from
 Lemma 2.1's Berlekamp–Welch pair via Polishchuk–Spielman) produces the joint
 proximate, and the forward distance bridge converts the joint-agreement bound
 into the uniform per-`z` closeness that is the proximity-gap conclusion. -/

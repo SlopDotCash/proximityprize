@@ -16,6 +16,14 @@
 > fixed adversarial instance — THE structural reason the prize is open. Solving needs a genuinely new
 > worst-case-explicit technique absent from the literature; it cannot be fabricated. Sections below are
 > the chronological record; §§17,20,23,25,26 are the no-go cartography, §§10,16 the connections.
+>
+> **Audit corrections (2026-10-28, T48).** The record keeps its own later retractions next to the
+> claims they replace. The audit added inline correction notes at §30(a) and §31: the BGK
+> intersection `M` is not the homogeneous energy count `N`, so `M ≪ √n` is not equivalent to an
+> energy bound. It also added one at §57: the minimal energy `3n² − 3n` is a characteristic-zero
+> value and fails at some finite power-of-two subgroups even above `n³`. The current conditional and
+> refuted status of the energy route is summarized in
+> [`additive-energy-attack.md`](additive-energy-attack.md).
 
 
 > Working research log. The honesty contract of #357 applies: open core stays a named
@@ -969,14 +977,28 @@ exactly my `N`/representation reduction (`AddEnergyMulHomogeneous`: `E(G)=|G|·N
 `N=#{z₁+z₂=z₃+1}`) — the same BGK quantity, rebuilt independently. **The prize is open iff `M` is not
 controlled**, in the regime `|μ| = 2^k ≪ √q`.
 
-**(b) Both standard tools are PROVEN insufficient (the §23/§29 picture, now complete).**
+> **Correction (2026-10-28 audit, T48 / PG-064).** The identification in (a) is wrong at the
+> object level. `M` is a one-shift intersection count (equivalently `tripleZero n / n`, the
+> solutions of `z₁ + z₂ + z₃ = 0`), while `N = #{z₁+z₂ = z₃+1}` is the homogeneous count with
+> `E(G) = |G|·N`. They are different numbers: for `μ₁₆ ⊆ F₉₇`, `M = 0` but `N = 69` and
+> `E = 1104 = n·N` (exact enumeration). Vanishing or smallness of `M` therefore does not bound
+> `E(G)`, and "the prize is open iff `M` is not controlled" does not follow. §36 below already
+> rejects the claimed production reduction (the binding core is the deeper interior, not the `t = 1`
+> cell). Each of the formal identities `tripleZero = |μ_n|·M` and `E = |G|·N` remains valid on its
+> own object.
+
+**(b) The standard tools (the §23/§29 picture; the Stepanov half is corrected below — not proved
+insufficient).**
 - WEIL: in `|μ| ≪ √q`, "full Weil gives no cancellation (Bourgain territory)" — confirms §23
   (Weil recovers only Johnson, here gives nothing).
-- STEPANOV: `StepanovPointCountEngine.stepanov_does_not_bound_e1_fiber` — a sibling PROVED Stepanov
-  does NOT bound the relevant joint fiber count. **This CORRECTS my §29 redirect:** the Stepanov
-  auxiliary-multiplicity construction is also insufficient for the BGK quantity, not just the gcd
-  route. (My Stepanov-engine bricks remain valid infrastructure, but Stepanov is not the tool that
-  closes this.)
+- STEPANOV: `StepanovPointCountEngine.stepanov_does_not_bound_e1_fiber` — *correction (2026-10-28
+  audit, PG-237):* despite its name, that theorem only proves the additive pigeonhole floor for the
+  one-coordinate `e_1` fibre; it is NOT a proof that Stepanov cannot bound the joint `(e_1, e_2)`
+  fibre (a large marginal fibre does not lower-bound the joint fibres, and the joint fibre is
+  generically positive-dimensional, so a multivariate/curve auxiliary construction remains an
+  untested option). The earlier reading "Stepanov is PROVEN insufficient here" is unsupported;
+  what holds is only that the univariate engine does not apply directly. (The Stepanov-engine
+  bricks remain valid infrastructure.)
 
 **(c) The genuine tool is Bourgain's sum-product method.** Controlling `M = #{u∈μ_n : −(1+u)∈μ_n}` for
 a `2^k` multiplicative subgroup in the `≪√q` regime is a **Bourgain–Glibichuk–Konyagin sum-product
@@ -1008,7 +1030,10 @@ shifts staying in the subgroup). Result:
 | 65537|128 | 9 | 11.31| **0.80** | 0.50 |
 
 `M` is **sub-linear**, tracking `√n` (often `0` for smaller `n`, `≈ 0.8√n` at `n=128`) — confirming the
-**Bourgain–Glibichuk–Konyagin prediction `M ≪ n^{1/2}`** (⟺ `E(G) ≪ n^{5/2}`, `N ≪ n^{3/2}`). So the
+**Bourgain–Glibichuk–Konyagin prediction `M ≪ n^{1/2}`** (⟺ `E(G) ≪ n^{5/2}`, `N ≪ n^{3/2}`). *(Correction
+2026-10-28, audit T48 / PG-064: the "⟺" is not valid. `M` and `N` are different counts — see the note
+under §30(a) — so a bound on `M` is not equivalent to a bound on `E(G)` or `N`. The table is four finite
+rows, not a confirmation of an asymptotic law.)* So the
 deployed prize is empirically on the GOOD side: the additive energy of `μ_{2^k}` is near-minimal,
 `M` is small, the threshold pin `δ*` holds. What is open is *proving* `M ≪ √n` — the Bourgain estimate.
 
@@ -1888,3 +1913,13 @@ or minimal still cannot beat Johnson via the 4th-moment no-go). So it strengthen
 δ*=1−ρ−Θ(1/log n) (random-like ⟹ capacity-like) but the deployed pin still needs the worst-case bound.
 Three independent supports now point at the ceiling; the matching worst-case lower bound is the open core.
 No fabrication; the energy value is in-tree and the implication is explicitly heuristic.
+
+> **Correction (2026-10-28 audit, T48; see PG-113 / R-113).** The values above are
+> **characteristic-zero** counts (the cyclotomic `{−1,0,1}^h` reduction computes energy in
+> `Z[ζ_n]`). They do not transfer to finite power-of-two subgroups without a transfer condition.
+> `AdditiveEnergyBridge.addEnergy_eq_of_sidonModNeg` takes `SidonModNeg` as a hypothesis, and that
+> hypothesis can fail in a prime field even above `n³`. For the proper subgroup `μ₃₂ ⊆ F₃₂₉₉₃`
+> (`p > 32³`), exact pair-sum counting gives `E = 3744`, above the char-0 value `2976 = 3n² − 3n`.
+> So "the 2-power multiplicative subgroup has minimal additive energy" is a characteristic-zero
+> statement, and it holds in `F_p` only where a proved transfer (for example a norm threshold)
+> applies. The characteristic-zero identities themselves remain valid.

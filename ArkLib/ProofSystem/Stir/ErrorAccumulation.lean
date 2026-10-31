@@ -2,68 +2,51 @@
 Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 
-SCRATCH FILE for Issue #24 — FRI/STIR soundness accounting + proximity-gap residuals.
+FRI/STIR soundness-error ACCOUNTING for Issue #24: elementary `ℝ≥0` / `ℝ` arithmetic about
+sums of per-round error budgets.
 
-  *** STATUS: SCRATCH ONLY. Not part of the build. Hand-verified against stable
-      mathlib v4.30 / ArkLib API (the .lake/packages/mathlib clone is empty mid-merge,
-      so `lake build` is impossible right now; every step below was checked by reading
-      the exact source signatures cited in the per-step comments). ***
+  STATUS: built as part of the downstream `ArkLibExtensions` library (it is imported by the
+  STIR checking-verifier modules, e.g. `Stir/CheckingVerifier.lean`). No `sorry` / `admit` /
+  `axiom` / `native_decide` is used.
 
-  No `sorry` / `admit` / `axiom` / `native_decide` is used as a *proof step*. The genuine,
-  not-yet-formalized soundness ingredient (the BCIKS20 per-round correlated-agreement /
-  proximity-gap bound, owned by #7/#61/#64 and supplied in-tree by
-  `Combine.combine_theorem` and `STIR.proximity_gap`) is isolated as a single NAMED
-  HYPOTHESIS family (`PerRoundProximityGap` below). Everything else — the
-  error-accumulation arithmetic (the additive / telescoping / geometric sum of the
-  per-round errors) — is elementary `ℝ≥0` analysis and is fully proven here.
+  SCOPE — what this file does and does NOT do. Every theorem here is a statement about
+  abstract per-round numbers `e i : ℝ≥0`. Nothing in this file mentions a code, a received
+  word, a random experiment, or a protocol, so nothing here proves (or isolates) any soundness
+  fact. In particular the predicate `PerRoundProximityGap e B` of §4 is only the
+  BUDGET-IDENTIFICATION equation `∀ i, e i = B i`: it says the accounting uses the numbers `B i`
+  as its per-round budgets. It does NOT state the BCIKS20 correlated-agreement /
+  proximity-gap theorem, and discharging it (e.g. by `PerRoundProximityGap.refl`) says nothing
+  about whether `B i` bounds any protocol probability. The genuine per-round soundness content
+  lives elsewhere and must be carried separately: the BCIKS20 statements
+  `Combine.combine_theorem` / `STIR.proximity_gap` (consuming
+  `ProximityGap.StrictCoeffPolysResidual`), and, for the declared STIR wire model, the
+  round-by-round soundness route in `Stir/SubUnitRbr.lean` (see `docs/wiki/stir-issue-301.md`).
 
-  WHAT THIS FILE ESTABLISHES (the deliverable for #24's "separate accounting from the
-  RS proximity-gap dependency" ask):
+  WHAT THIS FILE ESTABLISHES:
 
-    (A) The FRI/STIR total soundness error is, by construction, the additive budget
-        `totalError = (∑ fold-round errors) + (∑ query-round errors)`.
-        (mirrors `Fri.Spec.totalError`, `Fri/Spec/Soundness.lean:70`.)
+    (A) The FRI/STIR total soundness budget shape
+        `totalBudget = (∑ fold-round errors) + (∑ query-round errors)`
+        (mirrors `Fri.Spec.totalError`, `Fri/Spec/Soundness.lean`).
 
-    (B) ACCUMULATION LEMMA (proven): if every per-round proximity-gap error is ≤ a
-        uniform ε, the fold-phase budget is ≤ (#fold rounds) · ε; likewise for the
-        query phase; hence the whole budget is ≤ ((k) + (k+1)) · ε.  This is the
-        "the soundness error accumulates linearly across rounds" statement, reduced to
-        `Finset.sum_le_card_nsmul`.
+    (B) LINEAR ACCUMULATION: if every per-round error is ≤ a uniform ε, the fold-phase
+        budget is ≤ (#fold rounds) · ε; likewise for the query phase; hence the whole budget
+        is ≤ (k + (k+1)) · ε. Reduced to `Finset.sum_le_card_nsmul`.
 
-    (C) MONOTONE-CONTRACTION / TELESCOPING (proven): if the per-round proximity
-        PARAMETER contracts (δᵢ nonincreasing) and the per-round error is monotone in
-        that parameter, then each round's error is ≤ the first round's, giving the
-        same linear bound with ε = round-0 error — the precise sense in which "each
-        round reduces the proximity parameter and the error accumulates".
+    (C) MONOTONE CONTRACTION: if the per-round proximity PARAMETER is nonincreasing and the
+        per-round error is a monotone function of it, then each round's error is ≤ the first
+        round's, giving the same linear bound with ε = round-0 error.
 
-    (D) GEOMETRIC TAIL (proven): if the per-round errors decay geometrically with
-        ratio q < 1 (the regime where the degree bound halves each round and the
-        domain shrinks, cf. `queryRoundError = (D/N)^l`), the *infinite* budget is
-        bounded by the closed-form geometric sum `e₀/(1-q)`, and every finite prefix
-        is ≤ that closed form. This is the telescoping/geometric refinement of (B).
+    (D) GEOMETRIC PREFIX BOUND: if the per-round errors are bounded by `e₀ · qⁱ` with
+        `q < 1` (an explicit hypothesis `hbound`/`hgeo`; it is not derived here), every
+        FINITE prefix sum is ≤ the closed form `e₀/(1-q)`, uniformly in the prefix length.
+        No infinite-sum (`tsum`) theorem is stated in this file.
 
-    (E) KEYSTONE INTERFACE (named residual, NOT proven here — it is the genuine open
-        math owned by #7/#61/#64): `PerRoundProximityGap` packages exactly the BCIKS20
-        statement that `Combine.combine_theorem` / `STIR.proximity_gap` provide, and the
-        adapter `roundError_eq_proximityGapBound` shows the accounting `roundError`
-        used in (A)–(D) *is* that keystone's `errorBound`, so the accounting consumes
-        the keystone as a black box with no double counting.
+    (E) BUDGET-IDENTIFICATION ADAPTERS: `foldBudget_le_of_keystone` and
+        `prefixBudget_le_of_keystone_geom` rewrite `e i = B i` before applying (B)/(D). They
+        add no probabilistic content.
 
-  All lemma names referenced from mathlib/ArkLib are confirmed present:
-    * `Finset.sum_le_card_nsmul`     — used at ArkLib `ListDecoding/GHSZ02Foundations.lean:160`,
-      `BCIKS20/AffineLines/BWMatrix.lean:831`. Signature:
-      `(s) (f) (n) (h : ∀ a ∈ s, f a ≤ n) : ∑ a∈s, f a ≤ s.card • n`.
-    * `Finset.sum_le_sum`            — used 119× in ArkLib.
-    * `Finset.sum_range_succ`        — used in ArkLib `ToMathlib/EliasVolumeCertificates.lean`.
-    * `geom_sum_eq`                  — used at ArkLib `Stir/Combine.lean:44,71`.
-    * `Finset.sum_const`, `nsmul_eq_mul`, `Finset.card_fin`, `Finset.card_univ` — standard mathlib.
-    * `NNReal`-ordered-semiring `gcongr`/`mul_le_mul'` lemmas — `mul_le_mul'` used 20× in ArkLib.
-    * `tsum_geometric_nnreal` / `NNReal.tsum_geometric` for the closed-form infinite sum.
-
-  The keystone proximity-gap call (the residual) is `Combine.combine_theorem`
-  (`Stir/Combine.lean:551`) and `STIR.proximity_gap` (`Stir/ProximityGap.lean:76`), each
-  consuming `ProximityGap.StrictCoeffPolysResidual` and reducing to
-  `ProximityGap.correlatedAgreement_affine_curves_of_strict_coeff_polys`.
+  Mathlib lemmas used: `Finset.sum_le_card_nsmul`, `Finset.sum_le_sum`, `Finset.mul_sum`,
+  `geom_sum_eq`, `div_le_div_of_nonneg_right`, `NNReal.coe_le_coe`, `NNReal.coe_sub`.
 -/
 
 import Mathlib.Data.Real.Basic
@@ -160,8 +143,8 @@ theorem queryBudget_le {k : ℕ} (q : Fin (k + 1) → ℝ≥0) (ε : ℝ≥0) (h
 
     This is the FRI/STIR sequential-composition accounting result reduced to its
     arithmetic core: the total soundness error is the linear accumulation of the
-    per-round errors. The per-round errors themselves are the BCIKS20 proximity-gap
-    bound, supplied as the named keystone (§4). PROVEN. -/
+    per-round errors. Whether the per-round numbers `e`, `q` actually bound protocol
+    probabilities is NOT addressed here (see the file header). PROVEN. -/
 theorem totalBudget_le {k : ℕ} (e : Fin k → ℝ≥0) (q : Fin (k + 1) → ℝ≥0)
     (εf εq : ℝ≥0) (hf : ∀ i, e i ≤ εf) (hq : ∀ i, q i ≤ εq) :
     totalBudget e q ≤ (k : ℝ≥0) * εf + ((k : ℝ≥0) + 1) * εq := by
@@ -202,21 +185,23 @@ theorem contraction_accumulation {n : ℕ} (δ : Fin (n + 1) → ℝ≥0) (g : �
   have := sum_le_nsmul_of_forall_le (fun i => g (δ i)) (g (δ 0)) hbound
   simpa [Nat.cast_add, Nat.cast_one] using this
 
-/-! ## §3. Geometric decay (telescoping/closed-form tail)
+/-! ## §3. Geometric decay (finite-prefix closed-form bound)
 
-In the regime where the degree bound halves and the domain shrinks each round, the
-per-round query error `queryRoundError = (Dᵢ/Nᵢ)^l` decays geometrically. We prove the
-finite prefix is bounded by the closed-form geometric sum and the infinite budget is
-exactly `e₀/(1-q)`. This is the "telescoping/geometric sum of per-round errors". -/
+If the per-round errors are bounded by a geometric sequence `e₀ · qⁱ` with `q < 1`, every
+finite prefix of the budget is bounded by the closed form `e₀/(1-q)`. The geometric decay is a
+HYPOTHESIS here, not a consequence of the STIR/FRI parameter schedule: halving the degree bound
+while shrinking the domain proportionally keeps the rate `Dᵢ/Nᵢ` (hence `(Dᵢ/Nᵢ)^l`) constant,
+so geometric decay of `queryRoundError` needs a schedule whose rate actually decreases.
+Only finite prefixes are treated; no infinite-sum statement is made. -/
 
 /-- **Finite geometric prefix bound** (over `ℝ`).
     If `e i ≤ e₀ * q^i` for all `i < n` with `0 ≤ q < 1` and `0 ≤ e₀`, then
     `∑_{i<n} e i ≤ e₀ / (1 - q)`.
 
-    This is the telescoping/geometric refinement of §1: when the per-round errors decay
-    geometrically (the regime where the degree bound halves and the domain shrinks each
-    round, cf. `Fri.Spec.queryRoundError = (Dᵢ/Nᵢ)^l`), the whole budget is dominated by
-    the closed-form geometric series, *uniformly in the number of rounds `n`*.
+    This is the geometric refinement of §1: when the per-round errors are dominated by a
+    geometric sequence (supplied as `hbound`; e.g. a schedule along which the rate in
+    `Fri.Spec.queryRoundError = (Dᵢ/Nᵢ)^l` strictly decreases), every finite prefix of the
+    budget is dominated by the closed-form geometric series, *uniformly in `n`*.
 
     Fully PROVEN with confirmed lemmas only:
     * `Finset.sum_le_sum`  — per-term bound (ArkLib uses it 119×);
@@ -286,40 +271,43 @@ theorem geom_prefix_le_nnreal {n : ℕ} (e : ℕ → ℝ≥0) (e₀ q : ℝ≥0)
   push_cast
   exact_mod_cast h
 
-/-! ## §4. Keystone interface: the per-round proximity-gap residual (NAMED, NOT proven here)
+/-! ## §4. Budget identification (an equation between chosen numbers, NOT a soundness fact)
 
-The accumulation results (§1–§3) take the per-round errors `e i` as given and prove the
-total. The genuine open math — what makes `e i` a *sound* per-round bound — is the BCIKS20
-correlated-agreement / proximity-gap statement, owned by #7/#61/#64 and supplied in-tree by
-`Combine.combine_theorem` (`Stir/Combine.lean:551`) and `STIR.proximity_gap`
-(`Stir/ProximityGap.lean:76`). We package it abstractly so the accounting consumes it as a
-black box, with the adapter showing `e i` *is* the keystone's `errorBound`. -/
+The accumulation results (§1–§3) take the per-round errors `e i` as given and bound their sum.
+This section adds only the bookkeeping predicate `PerRoundProximityGap e B := ∀ i, e i = B i`
+("the accounting uses the budgets `B`"), and adapters that rewrite along it. Despite its
+historical name, the predicate contains no code, received word, degree, random experiment, or
+agreement event, and is trivially satisfied by choosing `e := B` (`PerRoundProximityGap.refl`).
+It does NOT encode, isolate, or discharge the BCIKS20 correlated-agreement / proximity-gap
+theorem. That per-round soundness content (`Combine.combine_theorem`, `STIR.proximity_gap`,
+the `ProximityGap.StrictCoeffPolysResidual` family, and the STIR round-by-round route in
+`Stir/SubUnitRbr.lean`) must be supplied and cited separately by any consumer that wants a
+probability bound. -/
 
-/-- The keystone, abstracted. `PerRoundProximityGap e ProxGapBound` says the accounting
-    per-round error `e i` equals the BCIKS20 proximity-gap error `ProxGapBound i` for that
-    round. In the tree, `ProxGapBound i = ProximityGap.errorBound δ degBoundᵢ domᵢ`
-    (= `Fri.Spec.roundError`, `Fri/Spec/Soundness.lean:44-48`), and the *soundness meaning*
-    of `errorBound` is exactly `Combine.combine_theorem` / `STIR.proximity_gap`:
-    `Pr_r[δᵣ(combine …) ≤ δ] > (#terms)·errorBound  ⟹  ∃ large common agreement set`.
+/-- **Budget identification.** `PerRoundProximityGap e ProxGapBound` says only that the
+    accounting per-round error `e i` is *the same number* as the chosen budget
+    `ProxGapBound i`, for every round. In the intended instantiation the budget is
+    `ProximityGap.errorBound δ degBoundᵢ domᵢ` (= `Fri.Spec.roundError`), but the predicate
+    itself carries no information that this number bounds any probability: that is the
+    separate content of `Combine.combine_theorem` / `STIR.proximity_gap`.
 
-    This `def` is the named residual: it is the single interface point through which the
-    proven accounting (§1–§3) depends on the unproven RS proximity-gap frontier. -/
+    The name is historical; read it as "per-round budget identification". -/
 def PerRoundProximityGap {n : ℕ} (e ProxGapBound : Fin n → ℝ≥0) : Prop :=
   ∀ i, e i = ProxGapBound i
 
-/-- Reflexive instance of the per-round proximity-gap keystone. This is the named form of the
-common front-door specialization where the accounting errors are chosen to be the proximity-gap
-bounds themselves. -/
+/-- Reflexive budget identification: choosing the accounting errors to be the budgets
+themselves. This is the specialization used by the STIR front doors; it is discharged by `rfl`
+and carries no soundness content. -/
 theorem PerRoundProximityGap.refl {n : ℕ} (e : Fin n → ℝ≥0) : PerRoundProximityGap e e :=
   fun _ => rfl
 
-/-- **Adapter: accounting bound from the keystone.**
-    Given the named keystone (`PerRoundProximityGap`) and a uniform bound `ε` on the
-    keystone's per-round proximity-gap errors, the *accounting* fold budget is ≤ `n·ε`.
-    PROVEN: rewrite `e i = ProxGapBound i` then apply `sum_le_nsmul_of_forall_le`.
+/-- **Adapter: fold budget from a budget identification.**
+    Given `PerRoundProximityGap e ProxGapBound` (i.e. `e i = ProxGapBound i`) and a uniform
+    bound `ε` on the budgets, the accounting fold budget is ≤ `n·ε`.
+    PROVEN: rewrite `e i = ProxGapBound i`, then apply `sum_le_nsmul_of_forall_le`.
 
-    This is the precise statement that the FRI/STIR error accounting is sound *given* the
-    BCIKS20 keystone: no new probabilistic content, only the arithmetic of §1. -/
+    Pure arithmetic: it says nothing about whether the budgets bound any protocol
+    probability. -/
 theorem foldBudget_le_of_keystone {n : ℕ} (e ProxGapBound : Fin n → ℝ≥0) (ε : ℝ≥0)
     (hkey : PerRoundProximityGap e ProxGapBound)
     (hbound : ∀ i, ProxGapBound i ≤ ε) :
@@ -328,14 +316,14 @@ theorem foldBudget_le_of_keystone {n : ℕ} (e ProxGapBound : Fin n → ℝ≥0)
   refine sum_le_nsmul_of_forall_le e ε (fun i => ?_)
   rw [hkey i]; exact hbound i
 
-/-- **Adapter: keystone + geometric decay ⟹ closed-form total.**
-    If the keystone errors decay geometrically (`ProxGapBound i ≤ e₀ * qⁱ`, `q < 1`),
-    then the accounting budget over any prefix is ≤ `e₀ / (1 - q)`, uniformly in the
-    number of rounds. PROVEN: rewrite via the keystone, then `geom_prefix_le_nnreal`.
+/-- **Adapter: budget identification + geometric decay ⟹ closed-form prefix bound.**
+    If `e i = ProxGapBound i` and the budgets are dominated by a geometric sequence
+    (`hgeo : ProxGapBound i ≤ e₀ * qⁱ`, `q < 1`, an explicit hypothesis), then every finite
+    prefix of the accounting budget is ≤ `e₀ / (1 - q)`, uniformly in the prefix length.
+    PROVEN: rewrite along `hkey`, then `geom_prefix_le_nnreal`.
 
-    This is the version relevant to STIR/FRI where each round contracts the degree bound:
-    even an unbounded number of fold rounds keeps the total proximity-gap budget below the
-    fixed closed form `e₀/(1-q)`. -/
+    The geometric decay is assumed, not derived from a STIR/FRI parameter schedule
+    (proportional degree/domain shrinking keeps the rate constant; see §3). -/
 theorem prefixBudget_le_of_keystone_geom {n : ℕ}
     (e ProxGapBound : ℕ → ℝ≥0) (e₀ q : ℝ≥0)
     (hkey : ∀ i, e i = ProxGapBound i) (hq1 : q < 1)
@@ -346,41 +334,32 @@ theorem prefixBudget_le_of_keystone_geom {n : ℕ}
 
 /-! ## §5. Summary / honest status
 
-  PROVEN (elementary `ℝ≥0` / `ℝ` analysis, hand-verified against confirmed mathlib/ArkLib API):
+  PROVEN (elementary `ℝ≥0` / `ℝ` arithmetic):
     * `queryBudget_le_totalBudget`, `foldBudget_le_totalBudget` — additive-budget projections
       (analogue of `Fri.Spec.queryError_le_totalError`).
     * `sum_le_nsmul_of_forall_le`, `foldBudget_le`, `queryBudget_le`, `totalBudget_le`,
-      `totalBudget_le_uniform` — LINEAR ACCUMULATION: the total soundness error is the
-      linear accumulation of the per-round errors (the FRI/STIR sequential-composition
-      accounting, reduced to its arithmetic core via `Finset.sum_le_card_nsmul`).
-    * `contraction_accumulation` — the "each round contracts the proximity parameter and
-      the error is monotone in it" bound (`Antitone` δ + `Monotone` g).
-    * `geom_prefix_le_real`, `geom_prefix_le_nnreal` — GEOMETRIC/TELESCOPING tail: a
-      geometrically-decaying per-round error accumulates to the closed form `e₀/(1-q)`,
-      uniformly in round count (`geom_sum_eq` + division monotonicity).
-    * `foldBudget_le_of_keystone`, `prefixBudget_le_of_keystone_geom` — the accounting
-      consuming the named keystone as a black box, no double counting.
+      `totalBudget_le_uniform` — linear accumulation of per-round budgets.
+    * `contraction_accumulation` — antitone parameter + monotone error ⟹ every round's error is
+      dominated by round 0's.
+    * `geom_prefix_le_real`, `geom_prefix_le_nnreal` — finite prefixes of a sequence dominated
+      by `e₀ · qⁱ` (`q < 1`, assumed) are ≤ `e₀/(1-q)`.
+    * `PerRoundProximityGap.refl`, `foldBudget_le_of_keystone`,
+      `prefixBudget_le_of_keystone_geom` — budget-identification bookkeeping.
 
-  NAMED RESIDUAL (NOT proven here — the genuine open math, owned by #7/#61/#64):
-    * `PerRoundProximityGap` — the per-round BCIKS20 correlated-agreement / proximity-gap
-      bound. In the tree this is `Combine.combine_theorem` / `STIR.proximity_gap`, each
-      consuming `ProximityGap.StrictCoeffPolysResidual` and reducing to
-      `ProximityGap.correlatedAgreement_affine_curves_of_strict_coeff_polys`. The √ρ Johnson
-      regime and the strict coefficient-polynomial extraction remain open upstream.
+  NOT IN THIS FILE: any per-round soundness statement. `PerRoundProximityGap` is an equation
+  between chosen numbers, not the BCIKS20 proximity-gap theorem, and discharging it does not
+  discharge any proximity-gap or protocol-soundness obligation. The genuine per-round content
+  is `Combine.combine_theorem` / `STIR.proximity_gap` (consuming
+  `ProximityGap.StrictCoeffPolysResidual`, whose Johnson-regime extraction remains a named
+  residual), and the STIR round-by-round soundness route for the declared wire model is
+  `Stir/SubUnitRbr.lean`; the multi-round STIR protocol objects live in
+  `Stir/MultiRound.lean` and the checking-verifier modules. Retained STIR soundness/model
+  debt is tracked in `docs/wiki/stir-issue-301.md` (audit L36); this file does not discharge
+  it.
 
-  SIBLING-OWNED PROTOCOL PLUMBING (correctly NOT attempted here):
-    * the `VectorIOP`/`OracleReduction` construction `π` that `whir_rbr_soundness`
-      (`Whir/RBRSoundness.lean:185`) and `stir_main`/`stir_rbr_soundness` existentially
-      assert — no protocol object is built in-tree (only the one-round
-      `StirIOP.Round.stirRoundReduction` exists); the run-trace `completeness` peeling is
-      blocked on the dependent-`Fin` `processRound` infrastructure
-      (`RoundProtocol.lean:196-230`). These are NOT extractable accounting math.
-
-  CONCLUSION: the FRI/STIR soundness *accounting* (error accumulation across rounds:
-  additive, monotone-contraction, and geometric/telescoping) is genuinely separable from
-  the RS proximity-gap dependency and is fully proven here as elementary analysis, with the
-  proximity-gap keystone isolated as a single named residual interface
-  (`PerRoundProximityGap`). This matches the issue's "separate pure accounting/sequential-
-  composition work from the RS proximity-gap dependency" closure ask. -/
+  CONCLUSION: the FRI/STIR error *accounting* (additive, monotone-contraction, and
+  finite-prefix geometric bounds on sums of per-round budgets) is separable arithmetic and is
+  fully proven here. The connection from these budgets to actual protocol probabilities is
+  NOT made in this file. -/
 
 end ArkLib.ProofSystem.Stir.ErrorAccumulation

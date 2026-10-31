@@ -10,14 +10,30 @@ exhibited a rigidity-deficient (`d>0`) over-budget cover: `n=6, k=3`,
 "`d=0` for every over-budget family" verdict was likewise only measured on minimal (size-`k+1`)
 star/nested covers.
 
-But a bad scalar's witness/core `S` is an **agreement set**: for radius `δ` in the strip at rate
-`1/2`, `|S| = t ≥ (1−δ)n`, so a **strip core has size `s ≥ ⌈2n/3⌉`** (`δ < 1/3`), far larger than
-`k+1 = n/2+1`. Two strip cores overlap `≥ 2s−n ≥ n/3 < k = n/2`, so the SYZ25 sufficient condition
-(incremental-`≥k` overlap S1) is **not** automatically forced. **Does the deficiency survive at
-strip-sized cores?** If yes, a deficiency `d` loosens the SYZ22 budget to `|U| ≤ n−1+d` and
-threatens the strip. If no, generation is forced and the strip is safe.
+A bad scalar's *witness* `S` is a scalar agreement set: for radius `δ` in the strip at rate
+`1/2`, `|S| ≥ t ≥ (1−δ)n`. **That does not make the joint codeword-pair core large** (audit
+2026-10-28, L121): a scalar codeword explains one linear combination `u0 + γ·u1` on `S`, while a
+joint core must explain both rows separately, so "`|S| ≥ t` ⇒ joint core `s ≥ t−1`" is false.
+Exact counterexample in the strict strip: `F_17`, domain `μ_16`, `k = 8`, `δ = 5/16` (`t = 11`),
+`u1 = X⁸`, `u0 = −u1`. At `γ = 1` the line is the zero codeword on all 16 points, every 11-point
+witness is explained (only by zero), and the full set is nonjoint, so `γ = 1` is bad; yet every
+pencil pair through such a witness has `v0 = −v1` and joint core `{v1 = X⁸}` of size `≤ 8 < 10 =
+t−1`. (One exceptional bad scalar only; no over-budget or prize counterexample.) Replay:
+`scripts/tests/test_syz26_scalar_witness_vs_joint_core.py`.
 
-## Verdict: STRIP TRUE-mechanism — the deficiency does NOT lift into the open strip
+So SYZ26 studies only the **large-joint-core sub-case**: *if* the cores have size
+`s ≥ ⌈2n/3⌉` (`δ < 1/3`), far larger than `k+1 = n/2+1`, two cores overlap
+`≥ 2s−n ≥ n/3 < k = n/2`, so the SYZ25 sufficient condition (incremental-`≥k` overlap S1) is
+**not** automatically forced. **Does the deficiency survive at such large cores?** If yes, a
+deficiency `d` loosens the SYZ22 budget to `|U| ≤ n−1+d` for such families. If no, generation is
+forced for such families. Turning either answer into an all-stack strip statement needs a
+separate, proved reduction from arbitrary strip events to large joint cores, not supplied here.
+
+## Verdict (large-joint-core sub-case only): the deficiency was not found to lift to cores of size > 2n/3
+
+Scope: every statement in this section is about families whose joint cores have the stated
+sizes. The phrase "open strip interior" below means "core size `> ⌈2n/3⌉`", not "every strip
+event" (see L121 above).
 
 `scripts/probes/probe_syz26_lifting_test.py`. Sweep the core-size floor `s` at `k=n/2`, over
 `n ∈ {12,16,18,20,24}`, `~3·10⁴` random over-budget distinct full covers per size, deficiency `d`
@@ -75,10 +91,14 @@ unchanged **honest named residual** (same status as SYZ24/SYZ25 realizability).
 
 ## Honest δ\* verdict
 
-**The deficiency does not lift into the open strip.** Field-independent rigidity-deficient
-over-budget covers require `δ ≥ 1/3` (core size `≤ ⌈2n/3⌉`); the open strip forces core size
-`> 2n/3`, which the probe finds always generates (`d=0`). The strip is **not** falsified — SYZ25's
-shape lives on the boundary it excludes. Unconditional δ\* status untouched.
+**Within the large-joint-core sub-case, the deficiency was not found to lift into the open
+strip.** In the probe's random search, field-independent rigidity-deficient over-budget covers
+required `δ ≥ 1/3` (core size `≤ ⌈2n/3⌉`), and covers with core size `> 2n/3` were found to
+generate (`d=0`). The open strip does **not** force joint cores of size `> 2n/3` (L121
+counterexample above), so this is not an all-stack strip result; the "budget `|U| ≤ n−1` is safe"
+and "knapsack closes" readings above hold only for large-joint-core families. The strip is
+**not** falsified — SYZ25's shape lives on the boundary it excludes. Unconditional δ\* status
+untouched.
 
 Axiom-clean (`propext`/`Classical.choice`/`Quot.sound`); no `sorry`, no `native_decide`.
 ```

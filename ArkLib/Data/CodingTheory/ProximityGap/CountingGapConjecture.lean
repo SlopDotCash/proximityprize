@@ -27,9 +27,10 @@ of the answer:
   `badCount = 6 > 5 = 2e+1` at RS(6,2)/GF(7) (`δ = 1/3`), `10 > 9` at RS(16,8)/GF(97)
   (`δ = 1/4` — inside the δ-window `(d/(3n), (d−1)/(2n)]`, at its included right
   endpoint) and at RS(12,4)/GF(13), and `12 > 3` at RS(12,10)/GF(13) (`e = 1, d = 3`:
-  twelve of thirteen scalars bad — **no closed form `f(e)` or `f(n−t)` alone can hold**;
-  the count is governed by the m=2-interleaved list size at radius `2e`, the O74/O85
-  ceiling `1 + 2(n−t)·Λ₂`).
+  twelve of thirteen scalars bad). This finite point refutes the particular numerator
+  `2e+1` on the top slice. It does not by itself rule out every bound `f(e)`; that would need
+  an unbounded family at fixed `e`. Heuristically the count is governed by the m=2-interleaved
+  list size at radius `2e`, the O74/O85 ceiling `1 + 2(n−t)·Λ₂`.
 * **Exhaustively, the top-slice maximum is exactly `2e+2` at the two smallest points**:
   over *all* coset-pair classes of RS(6,2) and RS(7,3) over GF(7) (23,200 affine classes
   each, coverage and invariances machine-checked), the true max badCount is `6 = 2e+2`,
@@ -37,9 +38,12 @@ of the answer:
 * **The interior `2e ≤ d − 2` SURVIVES**: 0 violations of `2(n−t)+1` across 1,263
   adversarial stacks (g-planting, 2-g nesting, two-cancel, random, structured-collapse
   shapes) at `(q,n,k,e)` = (97,16,8,3), (13,12,4,3), (13,12,2,4), the even-`d` top
-  (13,9,4,2), and a non-MDS (hence non-GRS) `[8,3,5]₇` control; the multi-family
-  construction is provably rigid there (the consistency kernel is 1-dimensional, forcing
-  proportional rows and a constant ratio — printed by the probe as it blocks).
+  (13,9,4,2), and a non-MDS (hence non-GRS) `[8,3,5]₇` control. The multi-family
+  construction is blocked at the probed points (the consistency kernel is 1-dimensional,
+  forcing proportional rows and a constant ratio; the probe prints this as it blocks). The
+  general rigidity argument (two families differ by an interleaved codeword of column weight
+  `≤ 2e+2`) forces equality only when `2e+2 < d`. The equality face `2e+2 = d` is not covered,
+  because minimum distance permits nonzero weight exactly `d` (see `InteriorCountingBound`).
 
 This file records that split as named statements:
 
@@ -99,11 +103,16 @@ def GapCountingBoundFullWindow (ι : Type) [Fintype ι] [Nonempty ι] [Decidable
 unique-decoding side.**  Same bound, on the window `2(n−t)+2 ≤ d` — i.e. strictly below
 the unique-decoding radius, `δ`-units `δ < (d−1)/(2n)` away from the included right
 endpoint.  `probe_counting_gap.py`: 0 violations across 1,263 adversarial stacks at four
-RS parameter points plus a non-MDS (non-GRS) `[8,3,5]₇` attack-search control, and the
-only known violation mechanism (coexisting
-`(e+1)`-support decode families) is provably unavailable here, since two such families
-differ by an interleaved codeword of column weight `≤ 2(n−t)+2 ≤ d`, forcing equality
-except on the refuted top slice. -/
+RS parameter points plus a non-MDS (non-GRS) `[8,3,5]₇` attack-search control.
+
+The rigidity heuristic for the only known violation mechanism (coexisting `(e+1)`-support
+decode families) is **not** a proof on this whole window. Two such families differ by an
+interleaved codeword of column weight `≤ 2(n−t)+2`. Minimum distance `d` rules out only
+nonzero weight *strictly below* `d`. So the difference is forced to vanish only when
+`2(n−t)+2 < d`. On the equality face `2(n−t)+2 = d` a nonzero difference of weight exactly `d`
+is allowed. For example, the length-4 repetition code has `d = 4` and the nonzero word
+`(1,1,1,1)` of weight 4; with `e = n − t = 1` this gives `2e+2 = d`. Covering the equality face
+needs a separate argument. This remains an unproved predicate (never assumed). -/
 def InteriorCountingBound (ι : Type) [Fintype ι] [Nonempty ι] [DecidableEq ι]
     (F : Type) [Field F] [Fintype F] [DecidableEq F] : Prop :=
   ∀ (C : Set (ι → F)) (δ : ℝ≥0) (d : ℕ),

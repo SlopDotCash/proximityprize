@@ -17,8 +17,10 @@ import ArkLib.Data.CodingTheory.ProximityGap.AddEnergyCubeBound
   `#{b : ‖η_b‖² ≥ q} ≤ min(|G|, |G|³/q)`.
 
 This is the honest, self-contained endpoint of the average-side ladder: with no open hypotheses, at
-most `min(|G|, |G|³/q)` of the `q` frequencies reach the Johnson scale. (The `|G|` term wins when
-`|G| ≤ √q`; the `|G|³/q` term when `|G| > √q`. The genuine sum-product `E(G) ≪ |G|^{5/2}` would replace
+most `min(|G|, |G|³/q)` of the `q` frequencies reach the Johnson scale. (For `|G| > 0`,
+`|G|³/q < |G|` exactly when `|G|² < q`, so the `|G|³/q` term wins when `|G| < √q`, the `|G|` term
+wins when `|G| > √q`, and the two agree at `|G|² = q`; e.g. `|G| = 8`, `q = 257` gives
+`512/257 < 8`. The genuine sum-product `E(G) ≪ |G|^{5/2}` would replace
 `|G|³/q` by the sharper `|G|^{3/2}/√q · …` — the hard open input, dossier §24.)
 
 **Honest scope (final):** average-side count, provably below Johnson; does NOT pin `δ*` (worst-case

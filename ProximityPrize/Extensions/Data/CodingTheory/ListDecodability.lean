@@ -58,13 +58,24 @@ def closeCodewordsRel (C : Code ι F) (y : ι → F) (r : ℝ) : Set (ι → F) 
    centred around `y` is a real number. The reasoning for this is to accommodate the statement of
    the Johnson Bound Theorem. For simplicity and ease of proving statements, `ℓ` can be considered
    a natural number by taking the floor of the real value. This will not lead to information loss
-   since the cardinality of the set of close codewords is a natural number anyway. -/
+   since the cardinality of the set of close codewords is a natural number anyway.
+
+- Warning (finiteness): the list size is measured with `Set.ncard`, which is `0` on an
+   *infinite* set. Over an infinite alphabet a word with infinitely many close codewords therefore
+   satisfies the bound for every `ℓ ≥ 0` (e.g. `C = Set.univ` over `Fin 1 → ℚ` at radius `1`).
+   This predicate is only faithful when every point list `closeCodewordsRel C y r` is finite,
+   e.g. over a finite alphabet or for a finite code. The canonical `Code.IsListDecodable`
+   (`ArkLib.Data.CodingTheory.ListDecodability`) uses `Set.encard` and has no such gap. -/
 def listDecodable (C : Code ι F) (r : ℝ) (ℓ : ℝ) : Prop :=
   ∀ y : ι → F, (closeCodewordsRel C y r).ncard ≤ ℓ
 
 /-- A code `C` is uniquely decodable up to a relative distance `r` if for any word `y : ι → F`,
 there is at most one codeword in `C` within a relative Hamming distance of `r`.
-This is a special case of list decodability where the list size `ℓ` is `1`. -/
+This is a special case of list decodability where the list size `ℓ` is `1`.
+
+Inherits the `Set.ncard` finiteness caveat of `listDecodable`: an infinite point list has
+`ncard = 0`, so this predicate holds vacuously for such a word. It is faithful only when the point
+lists are finite; the canonical `Code.IsUniquelyDecodable` is the `encard`-based version. -/
 def uniqueDecodable (C : Code ι F) (r : ℝ) : Prop :=
   listDecodable C r 1
 
@@ -90,7 +101,16 @@ section Lambda
 variable {ι : Type*} [Fintype ι] {F : Type*}
 
 /-- **ABF26 Definition 2.8 (maximised list size).** The maximum over words `f` of
-`|Λ(C, δ, f)| = |closeCodewordsRel C f δ|`. Named to match the paper's `|Λ(C, δ)|`. -/
+`|Λ(C, δ, f)| = |closeCodewordsRel C f δ|`. Named to match the paper's `|Λ(C, δ)|`.
+
+**Finiteness caveat.** Each point list is measured by `Set.ncard` *before* casting into `ℕ∞`,
+so an infinite point list contributes `0`, not `⊤` (e.g. `Lambda Set.univ 1 = 0` over
+`Fin 1 → ℚ`, although every point list is infinite). Consequently `Lambda C δ = ⊤` means only
+that the *finite* point-list sizes are unbounded; it does not detect an infinite point list.
+This definition agrees with the canonical `encard`-based `Code.Lambda` exactly when the point
+lists are finite: see `ProximityPrize.Compatibility.legacyLambda_eq_canonical` (finite alphabet),
+`legacyLambda_eq_canonical_of_finite_code` and `legacyLambda_eq_canonical_of_finite_pointLists`.
+Prefer `Code.Lambda` for statements over possibly infinite alphabets. -/
 noncomputable def Lambda (C : Code ι F) (δ : ℝ) : ℕ∞ :=
   ⨆ f : ι → F, ((closeCodewordsRel C f δ).ncard : ℕ∞)
 

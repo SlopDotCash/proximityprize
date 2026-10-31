@@ -11,8 +11,9 @@ import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.SimulatorBudgets
 # The salted + log-canonicalized CO25 §5.8 ladder (`Hyb₀ˢ … Hyb₄ˢ`)
 
 This module rebuilds the §5.8 hybrid ladder of [CO25] on a **salted, log-canonicalized**
-statement surface, repairing the two statement-level refutations of the unsalted eager ladder
-(`KeyLemmaHybrids`) recorded on issue #314 (2026-06-10):
+statement surface, aimed at repairing the two statement-level refutations of the unsalted eager
+ladder (`KeyLemmaHybrids`) recorded on issue #314 (2026-06-10). The F3 repair is structural;
+the F1 repair is only partial (see below):
 
 * **F1 (log-shape, all δ)**: the `tr_i`-memoized bridges of `Hyb₁`–`Hyb₃` are *query-silent*
   on memo hits, so the middle hybrids' verifier logs carry **zero** challenge entries, while
@@ -21,10 +22,19 @@ statement surface, repairing the two statement-level refutations of the unsalted
   are therefore false at every `δ` from log shape alone. Reading CO25 §5.4 (pp. 34–35)
   again: the paper's `D2SQuery` is memoless — the `tr_i` memo lives only in `D2SAlgo` — so
   the paper's per-hybrid line-4 traces carry *repeat* entries, and `QueryLog` multiplicity
-  is an artifact of the in-tree memoization. The repair is **first-occurrence key-dedup**
-  (`canonicalizeChallengeLog`) applied to both output logs of *every* game: a memo-silent
-  log and a repeat-logged log canonicalize identically whenever per-key answers are stable
-  (which is exactly what the memo and the eager tables guarantee).
+  is an artifact of the in-tree memoization. The *attempted* repair is **first-occurrence
+  key-dedup** (`canonicalizeChallengeLog`) applied to both output logs of *every* game. This
+  removes **multiplicity** (repeat entries of one key collapse to the first occurrence), but
+  it does **not** remove **silence**: dedup can only delete entries, never synthesize the
+  first entry a memo hit omitted. For example the empty log and a singleton `[(q, a)]` both
+  satisfy per-key answer stability yet canonicalize to different logs. In
+  `hybGameEagerSalted` the prover and verifier share the `tr_i` memo but their two logs are
+  canonicalized **separately**, so a key first queried by the prover can be absent from the
+  middle hybrids' verifier log (memo hit) while the endpoint verifier logs its first
+  occurrence. Whether the salted step residuals below survive this cross-prover/verifier
+  memo-hit case is **not established**: it needs a joint trace convention, logged memo hits,
+  or a proven distributional invariant equating the observations. No concrete game-level
+  refutation of the salted residuals has been constructed either; the question is open.
 * **F3 (salt erasure, δ ≥ 1)**: the unsalted `Hyb₄` endpoint erased the salt *inside the
   witness's oracle access* (`saltEraseWitnessImpl`), correlating challenges across distinct
   prover-chosen salts that are independent in `Hyb₃` — a deterministic salt-grinding
@@ -61,10 +71,14 @@ a single canonical value `τ̌₀`, the salted FS oracle `fsChallengeOracle (Stm
 restricted to reachable keys is in range-preserving bijection with the unsalted
 `fsChallengeOracle StmtIn` (key map `(i, (x, τ̌₀), msgs) ↦ (i, x, msgs)`), and
 `FSSaltedProof` carries no information beyond `pSpec.Messages`. Pushing both sides of
-`KeyLemmaEagerSaltedResidual` through this bijection (a data-processing map applied to
-*both* games, hence TV-preserving) recovers the unsalted `KeyLemmaEagerResidual` statement
-of `KeyLemmaFoundations` — the bridge back to the original surface, to be formalized as a
-separate brick once the salted ladder's step residuals are discharged.
+`KeyLemmaEagerSaltedResidual` through a common map is a data-processing step, which gives
+only a **nonincrease** of total variation, not preservation. The salt-key bijection may be
+reversible on reachable keys, but `canonicalizeChallengeLog` loses log multiplicity, so
+recovering the original *uncanonicalized* unsalted `KeyLemmaEagerResidual` statement of
+`KeyLemmaFoundations` would need a separate inverse/sufficiency argument (the canonicalized
+salted observation must determine the unsalted one in distribution). No such recovery
+theorem is supplied; this bridge back to the original surface is unformalized and its
+exact form (inequality direction, observation) is part of the open plan.
 
 ## Proven here (no `sorry`, axiom-clean)
 
@@ -105,8 +119,12 @@ challenge (re-)derivation, with repeats; the in-tree `tr_i`-memoized realization
 query-silent on hits. Both shapes have the same *canonical form*: keep `oSpec` entries
 verbatim and in place, and keep a challenge entry iff no earlier entry carries the same
 challenge key (the answer of the first occurrence wins). Under per-key answer stability
-(the memo bricks F6a/F6b + eager tables) the memo-silent and repeat-logged logs of one
-execution canonicalize identically, which kills the F1 multiplicity/silence asymmetry. -/
+(the memo bricks F6a/F6b + eager tables) this removes the F1 **multiplicity** asymmetry
+(repeat entries vs one entry). It does **not** remove the **silence** asymmetry: a log that
+omits a key's first occurrence (memo hit on a key first queried elsewhere, e.g. by the
+prover) still canonicalizes differently from one that logs it (`[]` vs `[(q, a)]`). The
+lemmas below (idempotence, left-projection commutation) are genuine but do not establish
+that memo-silent and repeat-logged executions have equal canonical logs. -/
 
 section Canonicalize
 
@@ -197,6 +215,20 @@ lemma projectLeftQueryLog_canonicalizeChallengeLog (log : QueryLog (spec₁ + sp
   unfold canonicalizeChallengeLog
   exact projectLeftQueryLog_canonicalizeChallengeLogAux log []
 
+/-- **Silence regression (F1 caveat).** Canonicalization cannot synthesize an omitted first
+occurrence: the empty log (a memo hit that logged nothing) and the singleton log of one
+challenge entry (the same key logged at its first occurrence) both trivially satisfy per-key
+answer stability, yet their canonical forms differ. So first-occurrence dedup removes
+multiplicity but not memo-hit silence; see the module docstring. -/
+lemma canonicalizeChallengeLog_nil_ne_singleton (e : QueryLog (spec₁ + spec₂))
+    (q : ι₂) (he : ∃ r, e = [⟨.inr q, r⟩]) :
+    canonicalizeChallengeLog (spec₁ := spec₁) (spec₂ := spec₂) []
+      ≠ canonicalizeChallengeLog e := by
+  obtain ⟨r, rfl⟩ := he
+  letI : DecidableEq ι₂ := Classical.decEq ι₂
+  unfold canonicalizeChallengeLog
+  simp [canonicalizeChallengeLogAux]
+
 end Canonicalize
 
 variable {n : ℕ} {pSpec : ProtocolSpec n} {ι : Type} {oSpec : OracleSpec ι}
@@ -219,7 +251,9 @@ variable {T_H T_P : Type} [LawfulTraceNablaImpl T_H T_P StmtIn U]
 through `d2fRaw` with the per-hybrid `gᵢ`-realization, sharing the `tr_i` memo); line 4
 pushes both projected logs through a per-hybrid trace map landing on the **salted** FS
 surface `fsChallengeOracle (StmtIn × Salt) pSpec` and then applies
-`canonicalizeChallengeLog` to both (F1 repair). The output proof is the salted
+`canonicalizeChallengeLog` to each of the two logs **separately** (the attempted F1 repair;
+this removes repeat entries but not memo-hit silence on keys the prover queried first — see
+the module docstring). The output proof is the salted
 `FSSaltedProof pSpec Salt` with the canonical pre-encoded salt
 `SaltCodec.encode (0^δ)` (see the module docstring's salt convention). -/
 noncomputable def hybGameEagerSalted [SampleableType U]
@@ -278,7 +312,7 @@ noncomputable def hybGameEagerSalted [SampleableType U]
 `KeyLemmaFoundations.duplexSpongeFiatShamirGameRemappedEager`, pushing both logs through
 the **salted** §5.5 trace `d2sTraceSalted` — whose remap keys every synthesized entry at
 `(stmt, SaltCodec.encode τ̂)` with the BackTrack-recovered (prover-chosen) on-sponge salt,
-i.e. the binarized salt stays in the keys — then canonicalizing (F1 repair). Fully
+i.e. the binarized salt stays in the keys — then canonicalizing (the partial F1 repair). Fully
 definitional in terms of the in-tree `d2sTraceSalted`; no re-keying residual was needed. -/
 noncomputable def duplexSpongeFiatShamirGameRemappedEagerSalted
     [SampleableType U] (δ : ℕ) (Salt : Type) [SaltCodec U δ Salt]
@@ -325,7 +359,7 @@ CO25 endpoint (F3 repair). The FS challenge function is keyed at the augmented s
 `(𝕩, τ̌)` and sampled **once**; the prover `P'` outputs a salted proof
 `π̌ = (τ̌, α) : FSSaltedProof pSpec Salt`; the verifier is the single-salt FS transform
 `Verifier.singleSaltFiatShamir` (CO25 Construction 3.17) re-deriving challenges at the
-proof's salt. Both output logs are canonicalized (F1 repair); the witness's private
+proof's salt. Both output logs are canonicalized (the partial F1 repair); the witness's private
 `unifSpec` coins are projected out as in the unsalted game. -/
 noncomputable def basicFiatShamirGameEagerRandSalted
     (Salt : Type) [VCVCompatible Salt]
@@ -590,9 +624,12 @@ variable [∀ i, Fintype (pSpec.Challenge i)] [∀ i, DecidableEq (pSpec.Challen
 /-- CO25 Claim 5.21 residual, salted surface — `Δ(Hyb₀ˢ, Hyb₁ˢ) ≤ (7T² − 3T)/(2|Σ|^c)`,
 `T = tₕ + 1 + tₚ + L + tₚᵢ`: replacing the random permutation by independent encoded
 challenge functions costs at most the Lemma 5.8 birthday bound. Both sides now log on the
-salted surface with canonicalized challenge entries, so the F1 endpoint asymmetry of the
-refuted unsalted `Hyb01StepResidual` (remapped-trace entries vs memo-hit silence) is gone.
-Open: the BackTrack chain coupling of CO25 §5.6 off the bad event `E` (Lemmas 5.8–5.10). -/
+salted surface with canonicalized challenge entries; this removes the *multiplicity* part
+of the F1 endpoint asymmetry of the refuted unsalted `Hyb01StepResidual`, but **not**
+established is that it removes the *silence* part (remapped-trace entries vs verifier
+memo hits on keys the prover queried first, which separate canonicalization cannot
+restore — see the module docstring). Open: that log-observation question, and the
+BackTrack chain coupling of CO25 §5.6 off the bad event `E` (Lemmas 5.8–5.10). -/
 def Hyb01StepResidualS [SampleableType U]
     [SampleableType (StmtIn → Vector U SpongeSize.C)]
     [SampleableType (Equiv.Perm (CanonicalSpongeState U))]
@@ -654,10 +691,14 @@ def Hyb23StepResidualS [SampleableType U]
 **same** uniform salted FS distribution; the gap is the genuine verifier-replay asymmetry
 (CO25 `E_𝒱`) plus the prover-abort collapse — `Hyb₃ˢ`'s verifier rederives challenges
 through `D2SQuery` (and can abort on parse failure), `Hyb₄ˢ`'s single-salt FS verifier
-replays the salted transcript directly against `f`. With the salted endpoint and the
-canonicalized logs, the F1/F3 falsifiers of the refuted unsalted `Hyb34StepResidual`
-(challenge-free vs per-round verifier logs; salt-grinding through `saltEraseWitnessImpl`)
-no longer apply; what remains is the CO25 §5.8 replay analysis. Open. -/
+replays the salted transcript directly against `f`. The salted endpoint removes the F3
+falsifier of the refuted unsalted `Hyb34StepResidual` (salt-grinding through
+`saltEraseWitnessImpl`). The canonicalized logs remove only the *multiplicity* part of the
+F1 falsifier (challenge-free vs per-round verifier logs): a `Hyb₃ˢ` verifier memo hit on a
+key the prover queried first still leaves that key absent from the separately
+canonicalized verifier log, while `Hyb₄ˢ`'s verifier logs it. Whether this residual is
+true therefore remains open on two counts: that log-observation question (no salted
+refutation has been constructed) and the CO25 §5.8 replay analysis. -/
 def Hyb34StepResidualS [SampleableType U]
     (T_H T_P : Type) [LawfulTraceNablaImpl T_H T_P StmtIn U] (δ : ℕ)
     (Salt : Type) [SaltCodec U δ Salt] [VCVCompatible Salt]
@@ -687,8 +728,10 @@ variable [∀ i, Fintype (pSpec.Challenge i)] [∀ i, DecidableEq (pSpec.Challen
 
 /-- The **salted** repaired key-lemma surface (per-prover): eager-sampled salted oracles
 on both sides, coin-equipped salted witness outputting `FSSaltedProof`, canonicalized
-challenge logs, paper-exponent error bound `ηStarPaper`. This is the CO25-faithful
-statement the salted §5.8 hybrid chain proves; it supersedes the unsalted
+challenge logs, paper-exponent error bound `ηStarPaper`. This is the intended target of the
+salted §5.8 hybrid chain; it is derived here only conditionally on the four open salted step
+residuals, and whether its canonicalized-log observation faithfully matches CO25 is itself
+open (memo-hit silence on prover-first keys; see the module docstring). It supersedes the unsalted
 `KeyLemmaStatementEager` endpoints (see the module docstring for why the unsalted surface
 is refutable as a chain target). -/
 def KeyLemmaStatementEagerSalted [SampleableType U]

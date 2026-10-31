@@ -9,7 +9,7 @@ import Research.ProximityPrize.LineDecodingSpec
 /-!
 # Low-output line-decoding prize-threshold wrappers
 
-This companion module keeps `LineDecodingGrandChallengesPrizeSpec.lean` stable while exposing
+This companion module keeps `Research.ProximityPrize.LineDecodingSpec` stable while exposing
 weaker consumers of its concrete-`mcaThreshold` bracket packages. The repaired line-decoding
 hypotheses remain explicit throughout; these declarations only forget the threshold
 satisfy/maximality payload from already-proved wrappers.

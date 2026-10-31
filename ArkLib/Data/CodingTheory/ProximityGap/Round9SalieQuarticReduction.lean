@@ -22,7 +22,14 @@ import Mathlib
 * `norm_sum_quadratic` / `norm_sum_quadratic_linear` — the **untwisted** quadratic additive Gauss
   sum `∑_x ψ(b₂x² + b₁x)` (`b₂ ≠ 0`) has magnitude `√q`, via the square-root count
   `#{x : x² = t} = χ(t) + 1` (`quadraticChar_card_sqrts`) reducing it to `gaussSum χ (mulShift ψ b₂)`,
-  plus completing the square for the linear term. This is the `χ = 1` twisted piece — fully elementary.
+  plus completing the square for the linear term. This is the **complete-field** sum over all of
+  `F`, *not* literally the `χ = 1` twisted piece: that piece runs over `Fˣ` and omits the `x = 0`
+  term `ψ(0) = 1`, so `T₁ = ∑_{x≠0} ψ(b₂x² + b₁x) = S(b₁,b₂) − 1`
+  (`sum_erase_zero_quadratic_linear`). Hence `T₁` only satisfies the enlarged elementary bound
+  `‖T₁‖ ≤ √q + 1` (`norm_sum_erase_zero_quadratic_linear_le`), and the `√q` bound itself does not
+  transfer unchanged: over `F₃` with `b₁ = 0`, `b₂ = 1` and `ψ(1) = ω` a primitive cube root of
+  unity, both nonzero squares equal `1`, so `T₁ = 2ω` has norm `2 > √3`, while `S = 1 + 2ω` has
+  norm `√3`.
 
 ## The Weil residual, isolated exactly
 
@@ -178,8 +185,9 @@ theorem norm_sum_quadratic (hF : ringChar F ≠ 2)
 
 /-- **Untwisted quadratic additive Gauss sum with a linear term.** For `b₂ ≠ 0` and any `b₁`,
 `‖∑_x ψ(b₂x² + b₁x)‖ = √q`. Complete the square `b₂x² + b₁x = b₂(x + b₁/(2b₂))² − b₁²/(4b₂)`, shift,
-factor the magnitude-1 constant, reduce to `norm_sum_quadratic`. The multiplicative twist is trivial
-here — the elementary `χ = 1` piece. -/
+factor the magnitude-1 constant, reduce to `norm_sum_quadratic`. This is the complete-field sum over
+all of `F`; the `χ = 1` twisted piece over `Fˣ` differs from it by the omitted `x = 0` term
+`ψ(0) = 1` (see `sum_erase_zero_quadratic_linear` and `norm_sum_erase_zero_quadratic_linear_le`). -/
 theorem norm_sum_quadratic_linear (hF : ringChar F ≠ 2)
     {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {b2 : F} (hb2 : b2 ≠ 0) (b1 : F) :
     ‖∑ x : F, ψ (b2 * x ^ 2 + b1 * x)‖ = Real.sqrt (Fintype.card F) := by
@@ -204,6 +212,30 @@ theorem norm_sum_quadratic_linear (hF : ringChar F ≠ 2)
     refine Finset.sum_congr rfl (fun y _ => ?_)
     rw [add_comm (b2 * y ^ 2) k, ψ.map_add_eq_mul]
   rw [hsum, norm_mul, AddChar.norm_apply, one_mul, norm_sum_quadratic hF hψ hb2]
+
+/-- **The trivially-twisted piece over `Fˣ` carries a `−1` correction.** Summing over the nonzero
+elements only (the `χ = 1` twisted piece `T₁` of a character expansion over `Fˣ`) drops the `x = 0`
+term `ψ(0) = 1`: `T₁ = ∑_{x≠0} ψ(b₂x² + b₁x) = (∑_x ψ(b₂x² + b₁x)) − 1`. -/
+theorem sum_erase_zero_quadratic_linear (ψ : AddChar F ℂ) (b2 b1 : F) :
+    ∑ x ∈ Finset.univ.erase (0 : F), ψ (b2 * x ^ 2 + b1 * x)
+      = (∑ x : F, ψ (b2 * x ^ 2 + b1 * x)) - 1 := by
+  rw [← Finset.add_sum_erase Finset.univ (fun x : F => ψ (b2 * x ^ 2 + b1 * x))
+    (Finset.mem_univ (0 : F))]
+  simp
+
+/-- **Elementary bound for the trivially-twisted piece over `Fˣ`.** For `b₂ ≠ 0`,
+`‖∑_{x≠0} ψ(b₂x² + b₁x)‖ ≤ √q + 1`. The complete-field `√q` (`norm_sum_quadratic_linear`) does
+**not** transfer unchanged to this piece (over `F₃`, `b₁ = 0`, `b₂ = 1` the piece is `2ω`, of norm
+`2 > √3`); the `+1` accounts for the omitted `x = 0` term. -/
+theorem norm_sum_erase_zero_quadratic_linear_le (hF : ringChar F ≠ 2)
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {b2 : F} (hb2 : b2 ≠ 0) (b1 : F) :
+    ‖∑ x ∈ Finset.univ.erase (0 : F), ψ (b2 * x ^ 2 + b1 * x)‖
+      ≤ Real.sqrt (Fintype.card F) + 1 := by
+  rw [sum_erase_zero_quadratic_linear]
+  calc ‖(∑ x : F, ψ (b2 * x ^ 2 + b1 * x)) - 1‖
+      ≤ ‖∑ x : F, ψ (b2 * x ^ 2 + b1 * x)‖ + ‖(1 : ℂ)‖ := norm_sub_le _ _
+    _ = Real.sqrt (Fintype.card F) + 1 := by
+      rw [norm_sum_quadratic_linear hF hψ hb2 b1, norm_one]
 
 /-- **Salié reduction (exact, the Weil-residual isolation).** The quadratic-character-twisted Salié
 sum equals a quartic additive sum minus the elementary quadratic additive sum:
@@ -244,4 +276,6 @@ end ArkLib.ProximityGap.Round9SalieQuartic
 #print axioms ArkLib.ProximityGap.Round9SalieQuartic.norm_gaussSum_quadratic
 #print axioms ArkLib.ProximityGap.Round9SalieQuartic.norm_sum_quadratic
 #print axioms ArkLib.ProximityGap.Round9SalieQuartic.norm_sum_quadratic_linear
+#print axioms ArkLib.ProximityGap.Round9SalieQuartic.sum_erase_zero_quadratic_linear
+#print axioms ArkLib.ProximityGap.Round9SalieQuartic.norm_sum_erase_zero_quadratic_linear_le
 #print axioms ArkLib.ProximityGap.Round9SalieQuartic.salieSum_eq_quartic_sub_quadratic

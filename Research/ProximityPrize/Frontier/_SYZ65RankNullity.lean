@@ -462,13 +462,21 @@ theorem rankNullity_windowKD {f g h : K[X]} {d : Fin 3 → ℕ}
 
 /-- **The degree-sum law `n₁ + n₂ = d₀ + d₁ + d₂`, unconditional.**  Both structural inputs of
 `SYZ44.degree_sum_of_hilbert` are now discharged theory: `TwoRamp` in SYZ64, `RankNullity` here.  For
-a coprime triple with the generator weights, the μ-basis product-degrees satisfy the classical
-degree-sum law with no remaining named hypothesis. -/
+a coprime triple with the generator weights, there is a μ-basis `(e₁, e₂)` of the syzygy kernel
+(kernel members with `pdeg d eᵢ = nᵢ`, `n₁ ≤ n₂`, `K`-independent leading vectors, generating the
+kernel) whose product-degrees satisfy the classical degree-sum law, with no remaining named
+hypothesis.  The μ-basis data is part of the conclusion, so `n₁, n₂` are the degrees of an actual
+generating pair of the kernel rather than an unconstrained pair of naturals. -/
 theorem degree_sum_unconditional {f g h : K[X]} {d : Fin 3 → ℕ}
     (hf : f ≠ 0) (hg : g ≠ 0) (hh : h ≠ 0)
     (hd0 : d 0 = f.natDegree) (hd1 : d 1 = g.natDegree) (hd2 : d 2 = h.natDegree)
     (hfg : IsCoprime f g) (hfh : IsCoprime f h) :
-    ∃ n₁ n₂ : ℕ, n₁ ≤ n₂ ∧ n₁ + n₂ = d 0 + d 1 + d 2 := by
+    ∃ (e₁ e₂ : Fin 3 → K[X]) (n₁ n₂ : ℕ),
+      e₁ ∈ LinearMap.ker (SYZ61.syzygyMap f g h) ∧ e₂ ∈ LinearMap.ker (SYZ61.syzygyMap f g h) ∧
+      pdeg d e₁ = (n₁ : WithBot ℕ) ∧ pdeg d e₂ = (n₂ : WithBot ℕ) ∧ n₁ ≤ n₂ ∧
+      LinearIndependent K ![lv d n₁ e₁, lv d n₂ e₂] ∧
+      LinearMap.ker (SYZ61.syzygyMap f g h) = Submodule.span K[X] ({e₁, e₂} : Set (Fin 3 → K[X])) ∧
+      n₁ + n₂ = d 0 + d 1 + d 2 := by
   obtain ⟨D₀, hRankNull⟩ := rankNullity_windowKD hf hg hh hd0 hd1 hd2 hfg hfh
   exact SYZ64.degree_sum_of_rankNullity hfg hfh D₀ hRankNull
 

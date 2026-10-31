@@ -16,9 +16,9 @@ families
 hvanish : ∀ t ∈ [k, T], ∀ z ∈ matchingSet,
   ∃ r : rationalRoot (H_tilde' H) z, π_z z r (βHensel H x₀ R hHyp t) = 0
 ```
-This file *produces* that input from the standard §5 currency — per-`(t, z)`
+This file derives that input from the standard §5 currency — per-`(t, z)`
 `BetaMatchingVanishes.MatchingPoint` families at the signed coefficients
-`BcoeffSigned H x₀ R`:
+`BcoeffSigned H x₀ R` (for abstract bundles an equivalent repackaging; see the caveat below):
 
 * a `MatchingPoint x₀ R H hHyp Bcoeff t z root` carries
   `.pi_z_eq_zero : π_z z root (betaRec x₀ R H hHyp Bcoeff t) = 0`
@@ -29,11 +29,11 @@ This file *produces* that input from the standard §5 currency — per-`(t, z)`
 
 Declarations:
 
-* `hvanish_of_mpPoint` — **the `hvanish` producer**: a finite-range `MatchingPoint` family at
+* `hvanish_of_mpPoint` — **the `hvanish` transport**: a finite-range `MatchingPoint` family at
   the signed coefficients yields `GenuineTruncationFin`'s exact `hvanish` shape.
 * `gammaGenuine_eq_trunc_of_mpPoint` — **the composed capstone**: the genuine truncation
-  identity `γ = γ_k` (Claim 5.8′) with `hvanish` eliminated in favour of the `MatchingPoint`
-  family — the currency `MatchingPointFromLocalSeries`/`MpFinSupply` produce.
+  identity `γ = γ_k` (Claim 5.8′) with `hvanish` replaced by the (equivalent, see below)
+  `MatchingPoint` family — the currency `MatchingPointFromLocalSeries`/`MpFinSupply` produce.
 * `hvanish_of_localSeries` — the construction-level producer: `hvanish` directly from the
   GS-side per-place inputs of `matchingPoint_of_localSeries` (proximate root `aP` with root
   membership, order-0 congruence, separability, and index-`t` coefficient vanishing on the
@@ -46,8 +46,16 @@ Declarations:
   (`specialized_separable_of_R_separable`).
 
 Everything is definitional plumbing over proven bricks; no new mathematical content is
-asserted, and no hypothesis is goal-shaped (each producer's inputs are GS-side geometric data
-or `MatchingPoint` bundles, never the vanishing conclusion itself).
+asserted.  No hypothesis is *syntactically* the vanishing conclusion, but for the `MatchingPoint`
+route (Parts 1–2) that is not logical weakness: an abstract `MatchingPoint` is equivalent to its
+per-point conclusion (`BetaMatchingVanishes.MatchingPoint.nonempty_iff_pi_z_eq_zero`), so at the
+signed coefficients the input of `hvanish_of_mpPoint` is equivalent to the requested per-place
+`βHensel` vanishing at the fixed root section `root`, up to the proved recursion transport
+`betaRec_BcoeffSigned_eq_βHensel`.  Parts 1–2 therefore repackage `hvanish` rather than reduce it.
+The local-series producers (Parts 3–4) are different: they fix the matching polynomial to the
+actual specialized surface and the Hensel series to the constructed local series, so their
+GS-side inputs carry actual identities and must be evaluated on their own terms (this note makes
+no claim about their strength).
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
@@ -70,12 +78,17 @@ variable (H : F[X][Y]) [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
 
 /-! ## Part 1 — `hvanish` from a `MatchingPoint` family at the signed coefficients -/
 
-/-- **The `hvanish` producer.**  A finite-range per-`(t, z)` `MatchingPoint` family at the
+/-- **The `hvanish` transport.**  A finite-range per-`(t, z)` `MatchingPoint` family at the
 signed coefficients `BcoeffSigned H x₀ R` yields the exact `hvanish` input of
 `GenuineTruncationFin.SβLargeAtFin_of_graded_disc`: each `MatchingPoint` fires Hensel
 uniqueness (`pi_z_eq_zero`, giving `π_z (betaRec … (BcoeffSigned …) t) = 0`), and the
 recursion bridge `betaRec_BcoeffSigned_eq_βHensel` transports the vanishing to the concrete
-`(A.1)` numerator `βHensel`; the root section is packaged existentially. -/
+`(A.1)` numerator `βHensel`; the root section is packaged existentially.
+
+Since an abstract `MatchingPoint` is equivalent to its per-point conclusion
+(`BetaMatchingVanishes.MatchingPoint.nonempty_iff_pi_z_eq_zero`), the family hypothesis is
+equivalent to the per-place `βHensel` vanishing at the section `root`: this theorem transports
+the vanishing, it does not derive it from weaker data. -/
 theorem hvanish_of_mpPoint {x₀ : F} {R : F[X][X][Y]}
     {hHyp : Hypotheses x₀ R H} {k T : ℕ} {matchingSet : Finset F}
     {root : (z : F) → rationalRoot (H_tilde' H) z}
@@ -98,11 +111,12 @@ variable [Fintype F] [DecidableEq F]
 
 /-- **The genuine truncation identity from `MatchingPoint` families (monic).**  Claim 5.8′
 `gammaGenuine = trunc k gammaGenuine`, with the `hvanish` input of
-`GenuineTruncationFin.gammaGenuine_eq_trunc_of_graded_disc` eliminated in favour of the
-finite-range `MatchingPoint` family at the signed coefficients — the standard §5 currency
-produced by `matchingPoint_of_localSeries` / `MpFinSupply.mpFin_of_close_word`.  All other
-inputs (graded side conditions, the §6 discriminant counting, the genuine Prop-5.5
-representative) are unchanged. -/
+`GenuineTruncationFin.gammaGenuine_eq_trunc_of_graded_disc` replaced by the finite-range
+`MatchingPoint` family at the signed coefficients — the standard §5 currency produced by
+`matchingPoint_of_localSeries` / `MpFinSupply.mpFin_of_close_word`.  An abstract family is
+equivalent to the `hvanish` body at the section `root` (see `hvanish_of_mpPoint`), so this is a
+change of interface, not an elimination of the vanishing input.  All other inputs (graded side
+conditions, the §6 discriminant counting, the genuine Prop-5.5 representative) are unchanged. -/
 theorem gammaGenuine_eq_trunc_of_mpPoint {x₀ : F} {R : F[X][X][Y]}
     (hHyp : Hypotheses x₀ R H)
     {D k : ℕ} (hD : Bivariate.totalDegree H ≤ D) (hH : 0 < H.natDegree)

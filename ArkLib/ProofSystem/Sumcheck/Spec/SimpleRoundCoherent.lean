@@ -17,7 +17,18 @@ residuals: the simple-level base bridge `hSimpleBridge`, and the per-round **rou
   `coh : ∀ i, OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)
                 (Simple.oracleReduction R deg D oSpec).verifier`.                              (★)
 
-**This file discharges the structural part of `(★)` and isolates its one genuinely-deep residual.**
+**Status.** `(★)` is now fully proved: this file builds it from `hRoundFaithful`, and
+`SingleRoundFaithful.coh_proven` proves `hRoundFaithful`, wired as
+`SingleRoundCohWired.coh_proven_inst`. Routing coherence is not the oracle-to-plain bridge,
+though; that bridge is a separate fact about the verifiers. The other residual, `hSimpleBridge`,
+holds: canonical ArkLib's `Simple.oracleVerifier` and `Simple.verifier` both read the prover
+message, and `Simple.oracleReduction_eq_reduction` proves it. The per-round bridge is
+`SingleRound.oracleReduction_toReduction_eq_reduction`
+(`Logup/Security/BridgeAndAppendResiduals.lean`),
+proved from canonical `oracleVerifier_eq_verifier` without this coherence.
+
+**This file discharges the structural part of `(★)` and isolates its value-level core**
+(historically called its one genuinely-deep residual, now proved; see the status above).
 We build the per-round `LiftContextCoherent` instance via the generic framework builder
 `liftContextCoherent_of` (`Coherence.lean`), mirroring the proven LogUp instance
 `Logup.logupSumcheck_liftContextCoherent` (`SumcheckLiftCoherent.lean`) and the Spartan
@@ -31,7 +42,7 @@ We build the per-round `LiftContextCoherent` instance via the generic framework 
   (`sumcheckOracleLens.embedOStmt = Function.Embedding.inl`, `hEqOStmt = rfl`), matching the inner
   `Simple.oracleVerifier`'s `embed = .inl`, so `Prod.ext rfl …` collapses by `rfl`;
 * `hfaith` — the genuinely hard per-inner-query **faithfulness**: under the honest outer oracles, the
-  lens' virtual-oracle reconstruction `sumcheckOracleLens.simOStmt ⟨(), pt⟩` (a `|D|^(n-1)`-fold
+  lens' virtual-oracle reconstruction `sumcheckOracleLens.simOStmt ⟨(), pt⟩` (a `|D|^(n-1-i)`-fold
   `foldlM` of evaluation queries to the *outer* multivariate polynomial at `sumPoint`) simulates to
   the honest *inner* round-polynomial oracle answer `(roundPoly).eval pt`.
 
@@ -42,15 +53,16 @@ genuine point evaluation `(oos ()).1.eval pt` (`simulateQ_spec_query`).
 
 `simOStmt_run_simOracle` — the whole `simOStmt ⟨(), pt⟩` reconstruction, run at the outer input
 statement and simulated under the honest outer oracle, collapses to the deterministic `pure` of the
-fold value `∑ y ∈ (univ.map D)^ᶠ(n-1), (oos ()).1.eval (sumPoint i pt os y)`. Proven via the generic
-fold-collapse brick `simulateQ_simOracle_foldlM` (each step is deterministic under the honest
-oracle).
+fold value `∑ y ∈ (univ.map D)^ᶠ(n-1-i), (oos ()).1.eval (sumPoint i pt os y)`. Proven via the
+generic fold-collapse brick `simulateQ_simOracle_foldlM` (each step is deterministic under the
+honest oracle).
 
-## The one genuinely-deep residual (named hypothesis)
+## The value-level core (a named hypothesis here, proved in `SingleRoundFaithful.lean`)
 
-The remaining content — that this `|D|^(n-1)`-fold summation of the outer multivariate polynomial
+The remaining content — that this `|D|^(n-1-i)`-fold summation of the outer multivariate polynomial
 equals the round univariate polynomial evaluated at `pt` (i.e. the `oStmtLens.toFunA` round-poly
-shape) — is the sum-check round-polynomial identity. It is carried as the explicit named hypothesis
+shape) — is the sum-check round-polynomial identity. In this file it is carried as the explicit
+named hypothesis
 
 * `hRoundFaithful` — the fold value equals `((sumcheckOracleLens.toLens.proj (os, oos)).2 ()).1.eval
   pt`.
@@ -58,8 +70,9 @@ shape) — is the sum-check round-polynomial identity. It is carried as the expl
 This is the direct analogue of LogUp's `logupSumcheckPolynomial_finalEval` and Spartan's
 `zeroCheckEval_simOracle` closed-form identities. No `sorry`/`admit`. The main definition
 `simpleRound_liftContextCoherent` is the per-round `LiftContextCoherent` instance **conditional on
-exactly that one named residual**, and `coh_of` packages the `∀ i`-form consumed by
-`SingleRound.perRound_of`.
+exactly that one named hypothesis**, and `coh_of` packages the `∀ i`-form consumed by
+`SingleRound.perRound_of`. `SingleRoundFaithful.coh_proven` supplies `hRoundFaithful`, so the
+coherence is unconditional (`SingleRoundCohWired.coh_proven_inst`).
 -/
 
 open OracleComp OracleSpec OracleInterface ProtocolSpec Finset
@@ -102,8 +115,8 @@ theorem simulateQ_simOracle_query_sumcheck
 /-- **`simOStmt` reconstruction collapses deterministically.** Under the honest outer oracles, the
 lens' virtual-oracle reconstruction `sumcheckOracleLens.simOStmt ⟨(), pt⟩`, run at the outer input
 statement `os` and simulated under the honest outer oracle, equals the `pure` of the
-`|D|^(n-1)`-fold summation of the outer multivariate polynomial at `sumPoint`. The genuine evaluation
-is deterministic, so no probabilistic content remains. -/
+`|D|^(n-1-i)`-fold summation of the outer multivariate polynomial at `sumPoint`. The genuine
+evaluation is deterministic, so no probabilistic content remains. -/
 theorem simOStmt_run_simOracle (i : Fin n)
     (os : StatementRound R n i.castSucc) (oos : ∀ i, OracleStatement R n deg i) (pt : R) :
     simulateQ (simOracle oSpec oos)
@@ -139,8 +152,14 @@ theorem simOStmt_run_simOracle (i : Fin n)
 
 /-- **`LiftContextCoherent` for the single-round Simple sum-check lens (issue #13, design note
 #433).** The virtual-oracle reconstruction `sumcheckOracleLens.simOStmt` is coherent with the inner
-`Simple.oracleVerifier`'s honest oracle answers, so the proven generic single-round `Sumcheck.Spec`
-`toReduction = reduction` bridge transfers through `oracleReduction = (Simple.oracleReduction).liftContext`.
+`Simple.oracleVerifier`'s honest oracle answers. So the plain-verifier image of the lifted oracle
+verifier `(Simple.oracleReduction).liftContext` is the lift of `(Simple.oracleVerifier).toVerifier`
+along `oStmtLens` (`liftContext_toVerifier_comm`).
+
+This is routing coherence only. It does not by itself relate the oracle verifier to the plain
+`Simple.verifier`. That relation is canonical ArkLib's `Simple.oracleReduction_eq_reduction`
+(both verifiers read the prover message), and the lifted per-round bridge is proved directly as
+`SingleRound.oracleReduction_toReduction_eq_reduction`.
 
 * `hproj` — the non-oracle projection is the round `target`, so `rfl`;
 * `hfaith` — strip the prover-message summand (`simulateQ_simOracle2_liftComp`), collapse the
@@ -148,9 +167,9 @@ theorem simOStmt_run_simOracle (i : Fin n)
   `hRoundFaithful`;
 * `hlift` — the single output oracle is the unchanged input oracle, so `rfl`.
 
-The one genuinely-deep residual `hRoundFaithful` — that the `|D|^(n-1)`-fold summation of the outer
-multivariate polynomial equals the round univariate polynomial evaluated at `pt` — is carried as the
-explicit named hypothesis (no `sorry`). -/
+The value-level core `hRoundFaithful` — that the `|D|^(n-1-i)`-fold summation of the outer
+multivariate polynomial equals the round univariate polynomial evaluated at `pt` — is carried here
+as the explicit named hypothesis (no `sorry`). It is proved as `SingleRoundFaithful.coh_proven`. -/
 @[reducible] def simpleRound_liftContextCoherent (i : Fin n)
     (hRoundFaithful : ∀ (os : StatementRound R n i.castSucc)
         (oos : ∀ i, OracleStatement R n deg i) (pt : R),
@@ -175,11 +194,13 @@ explicit named hypothesis (no `sorry`). -/
     -- hlift: the output-side routing matches definitionally
     (fun _ _ _ _ => rfl)
 
-/-- **The `∀ i`-form `coh`, modulo the one named residual.**
+/-- **The `∀ i`-form `coh`, modulo the named hypothesis `hRoundFaithful`.**
 
 This is the shape consumed by `Sumcheck.Spec.SingleRound.perRound_of` (`SingleRoundBridge.lean`).
 The structural plumbing is fully discharged; the input is exactly the per-round round-polynomial
-faithfulness `hRoundFaithful`. -/
+faithfulness `hRoundFaithful`, which `SingleRoundFaithful.coh_proven` proves. Coherence does not
+supply `perRound_of`'s other premise `hSimpleBridge`; canonical ArkLib proves that separately as
+`Simple.oracleReduction_eq_reduction`. -/
 @[reducible] def coh_of
     (hRoundFaithful : ∀ (i : Fin n) (os : StatementRound R n i.castSucc)
         (oos : ∀ i, OracleStatement R n deg i) (pt : R),

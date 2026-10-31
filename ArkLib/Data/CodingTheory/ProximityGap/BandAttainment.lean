@@ -10,7 +10,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.BandPackingLaw
 
 The two-sided picture of the `δ*(ε*)` curve at every band: the packing law
 (`band_packing_law`) gives `#badSet ≤ C(n,k+1)/C(k+m+1,k+1)`; this file
-proves the matching LOWER construction — the **disjoint-blocks stack**:
+proves a (generally non-matching) LOWER construction — the **disjoint-blocks stack**:
 
   **`∃ u₀ : #badSet(u₀, x^k) ≥ r` whenever `r·(k+m+1) ≤ n` and `r ≤ q`**
 
@@ -22,9 +22,13 @@ joint pair exists since `x^k` is strongly far — so every `γⱼ` is bad.
 
 In particular `r = ⌊n/(k+m+1)⌋` is realizable: the band-`m` sup over stacks is
 sandwiched between `⌊n/(k+m+1)⌋` (this construction) and
-`C(n,k+1)/C(k+m+1,k+1)` (packing); at `m = 0` the two meet the exact solved
-value `C(n,k+1)` from the boundary analysis.  Closing the polynomial gap
-between them at `m ≥ 1` is a design-existence question, isolated from the
+`C(n,k+1)/C(k+m+1,k+1)` (packing).  These two bounds do **not** meet in general,
+not even at the boundary band `m = 0`: there the lower bound is `⌊n/(k+1)⌋` and the
+upper bound is `C(n,k+1)` (e.g. `n = 8`, `k = 1`, `m = 0` gives `4` vs `28`).  Any
+matching equality (at `m = 0` or elsewhere) would need a different construction
+together with its own realizability / field-size guards; it is not supplied by the
+disjoint-block stack, and this file makes no exact-attainment claim.  Closing the
+gap between the two bounds is a design-existence question, isolated from the
 proximity-gap machinery.
 -/
 

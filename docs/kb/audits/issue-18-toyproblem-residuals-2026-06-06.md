@@ -2,6 +2,21 @@
 
 Date: 2026-06-06
 
+> **Superseded (2026-10-29 audit, finding L32).** The L6.12 claims below are
+> withdrawn. `simplified_iop_soundness_listDecoding_lb` was proved by the all-zero
+> *honest* instance (inside the relaxed relation, so every challenge wins), with a
+> constant zero codeword family; it never constructed a violating attack and is not
+> a soundness lower bound. It is now named
+> `ToyProblem.winningSet_zeroInstance_ncard_ge_listDecoding_expr` and documented as a
+> cardinality fact only. The `ToyStep4.lean` bridge requires injective challenges but
+> neither distinct list codewords nor a violation certificate. The genuine Lemma 6.12
+> (violating instance, fixed-encoding relation, bound `N·|F| / (|F| + 2N)`) is the
+> canonical `ToyProblem.exists_winningSetFor_ncard_ge_of_lambda_lt_card` /
+> `ToyProblem.listDecoding_le_winningSetDensity` in
+> `ArkLib/ProofSystem/ToyProblem/SoundnessBounds.lean`. Likewise
+> `additive_code_supports_erasure_correction_grs25` proves only decoder existence
+> (for every set `C`); its correction-time parameter is inert (finding L31).
+
 Scope:
 
 - `ArkLib/ProofSystem/ToyProblem/SoundnessBounds.lean`

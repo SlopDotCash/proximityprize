@@ -24,6 +24,19 @@ split cleanly:
   (`n=13`: `{53, 79, 103, 131, 157, 181, …}` — all `≡ 1 (mod 13)`; `n=16`: `{17, 31}`;
   `n=14`: `{13}`; `n=15`: `∅` beyond `rad(15)`). These are the true injectivity obstruction.
 
+> **Correction (2026-10-28 audit, finding L126).** The "bad primes" above were computed as primes
+> dividing the norm of each of the first 40 nonzero maximal minors. That is only a necessary
+> *candidate* filter: rank loss needs all minors in the **same** prime ideal of `Z[ω]`, and each norm
+> may be divisible through a different prime above `q` (e.g. `(i−2, i+2)ᵀ` over `Z[i]`: both norms
+> are `5`, yet rank is `1` modulo both primes above `5`). The probe now reports three layers:
+> actual `GF(p)` rank failures at the chosen embedding, norm candidates, and common-prime-ideal
+> certified primes (for split `q ≡ 1 mod n`, full-matrix rank at every embedding). Its `n=13` rerun
+> certifies `{53, 79, 131, 157}`; `103` and `181` are `≡ 12 (mod 13)` (not `≡ 1` as stated above)
+> and remain uncertified candidates, as do the `n=14` candidates `{2, 7, 13}`. The minor norm is
+> now reconstructed with a proved Hadamard bound (the former fixed `10^40` CRT cap was not a bound:
+> `Res(X−1, B)` returned `1` for `B = 11992411764462614086353260819346129198106`). Regression:
+> `scripts/tests/test_syz_mu_basis_probes.py`.
+
 **Size bound.** For every fixed small `(n, k)` config, `|N|` is *tiny*: bit-length `≤ 38` (n=13,
 ncols=2), `≤ 45` (ncols=3), `≤ 67` (ncols=4). The largest genuine bad prime seen through `n=16` is
 `181`. So **each fixed configuration is prime-clean at the prize characteristic** (`P ≈ 2^{158} ≫`

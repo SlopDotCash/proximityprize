@@ -10,11 +10,11 @@ import ArkLib.Data.CodingTheory.ProximityGap.RungFrameCensus
 
 The remaining counting side of the level-1 rung.  Subtracting two defect
 identities of a polynomial-pair stack (deg `R₁ = degR`, multipliers within the
-graded budget) gives `(γ₁ − γ₂)·R₁ = g₁·m_{S₁} − g₂·m_{S₂} + (P₂ − P₁)`
+graded budget) gives `(γ₁ − γ₂)·R₁ = g₁·m_{S₁} − g₂·m_{S₂} + (P₁ − P₂)`
 EXACTLY.  Consequences:
 
 * **`pool_pair_span`** — for DISTINCT bad scalars, `R₁` lies in the span of
-  the pair's witness data: `R₁ = c·(g₁·m_{S₁} − g₂·m_{S₂} + (P₂ − P₁))` with
+  the pair's witness data: `R₁ = c·(g₁·m_{S₁} − g₂·m_{S₂} + (P₁ − P₂))` with
   `c = (γ₁ − γ₂)⁻¹` — the direction row is reconstructible from ANY two
   distinct bad scalars.  The witness family of a multi-bad stack is therefore
   a rigid `R₁`-pinned module — the surface on which the small-overlap "pool"

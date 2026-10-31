@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
+import Research.ProximityPrize.Frontier._D2RogersSiegelVarianceGate
 
 /-!
 # D5 random-operator / generic-chaining transfer gate
@@ -18,6 +19,11 @@ smooth instance spikes.
 This file records that gate.  It does not refute chaining itself; it isolates the missing theorem:
 deterministic sub-Gaussian increments/tails for the actual Gauss-period process at the Paley
 saddle.
+
+The pointwise-domination transfer and the no-coupling countermodel are the same generic logic as
+the D2 Rogers/Siegel gate; they are implemented once in
+`_D2RogersSiegelVarianceGate.lean` and only re-exported here under D5 application names, so they
+must not be counted as independent proof progress.
 -/
 
 set_option autoImplicit false
@@ -26,14 +32,15 @@ set_option autoImplicit false
 namespace ArkLib.ProximityGap.Frontier.D5RandomOperatorChainingTransferGate
 
 /-- A uniform bound for an auxiliary random/operator model transfers to the deterministic prize
-statistic only through a pointwise domination map. -/
+statistic only through a pointwise domination map.  Application alias of the generic
+`D2RogersSiegelVarianceGate.uniform_prime_bound_of_pointwise_coupling`. -/
 theorem deterministic_bound_of_pointwise_domination
     {D Ω : Type*} (detStat : D → ℝ) (modelStat : Ω → ℝ) (pull : D → Ω) (B : ℝ)
     (hdom : ∀ d, detStat d ≤ modelStat (pull d))
     (hmodel : ∀ ω, modelStat ω ≤ B) :
-    ∀ d, detStat d ≤ B := by
-  intro d
-  exact le_trans (hdom d) (hmodel (pull d))
+    ∀ d, detStat d ≤ B :=
+  D2RogersSiegelVarianceGate.uniform_prime_bound_of_pointwise_coupling
+    detStat modelStat pull B hdom hmodel
 
 /-- If every deterministic bad instance is covered by a model bad event, then excluding all model
 bad events excludes deterministic bad instances. -/
@@ -47,14 +54,15 @@ theorem no_deterministic_bad_of_bad_event_cover
   exact hnoModelBad ⟨ω, hbad⟩
 
 /-- **No-coupling countermodel.**  The random/operator model can be bounded everywhere while a
-designated deterministic smooth instance is arbitrarily large. -/
+designated deterministic smooth instance is arbitrarily large.  Specialization of the generic
+`D2RogersSiegelVarianceGate.uncoupled_sample_bound_does_not_bound_primes`. -/
 theorem bounded_random_model_does_not_bound_fixed_instance (B : ℝ) :
     ∃ (modelStat : PUnit → ℝ) (detStat : Bool → ℝ) (smooth : Bool),
-      (∀ ω, modelStat ω ≤ B) ∧ B < detStat smooth := by
-  refine ⟨fun _ => B - 1, fun d => if d then B - 1 else B + 1, false, ?_, ?_⟩
-  · intro _
-    simp
-  · simp
+      (∀ ω, modelStat ω ≤ B) ∧ B < detStat smooth :=
+  (D2RogersSiegelVarianceGate.uncoupled_sample_bound_does_not_bound_primes
+      (P := Bool) (Ω := PUnit) B).elim
+    fun modelStat h₁ => h₁.elim fun detStat h₂ => h₂.2.elim fun smooth hsmooth =>
+      ⟨modelStat, detStat, smooth, h₂.1, hsmooth⟩
 
 /-- **No bad-event-cover countermodel.**  A model theorem may exclude every model bad event while
 an uncovered deterministic bad event still exists.  This is the logical shape of using random

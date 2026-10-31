@@ -37,16 +37,74 @@ always check this census before treating a `*Residual` name as open proof debt.
 > CORE. See the dossier v3 §6 SYZ54 addendum and `deltastar-466-syz53-*-2026-07-11.md`. This block
 > is historical evidence, not the current total; preserve it when regenerating the file.
 
-> **Campaign addendum — current audit (2026-08-16 at `b72890393`).** The regenerated strict
-> census contains **117 residuals: 69 open, 47 discharged, and one refuted**, plus 79 residual-like
-> near misses. Those are the current totals in the summary and JSON below. Relative to the
+> **Campaign addendum — historical audit snapshot (2026-08-16 at `b72890393`).** At that commit
+> the regenerated strict census contained **117 residuals: 69 open, 47 discharged, and one
+> refuted**, plus 79 residual-like near misses. Those were the totals of the summary and JSON
+> generated at that commit (an `ArkLib/`-only syntactic classification, before the 2026-10-28
+> classifier change); they are not the current summary below. Relative to the
 > historical 2026-07-11 snapshot, the strict totals changed 108 → 117, open 62 → 69, discharged
 > 45 → 47, refuted 1 → 1, and near misses 76 → 79. The SYZ70/SYZ71 and all-depth cyclic-floor
-> additions introduce no new strict `*Residual` declaration. This syntactic census still does not
+> additions introduced no new strict `*Residual` declaration. This syntactic census still does not
 > count every theorem-facing named `Prop` or structure field: in particular
 > `UniformSylvesterInjective`, `StripSyzygyControlledCeiling`, and `hrank` remain open production
 > obligations outside the strict suffix convention. The production δ* conjecture therefore
-> remains **OPEN / ON-BGK**. Both campaign addenda are deliberately preserved by regeneration.
+> remains **OPEN / ON-BGK**. All campaign addenda are deliberately preserved by regeneration.
+
+> **Campaign addendum — strict coefficient-extraction refutations (2026-10-22).** The strict
+> coefficient-extraction surface is now refuted, not open: two kernel-checked counterexamples in
+> `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CanonicalCoeffExtractionRefutation.lean`
+> kill every form of it at `k = 1`, `deg = 2`, `δ = 3/7` over `GaloisField 2 64` on a
+> seven-point domain. `not_strictCanonicalCoeffPolysResidual` refutes the uniqueness clause of
+> `StrictCanonicalCoeffPolysResidual`; `not_strictCoeffPolysResidual` refutes the broad
+> coefficient-interpolation statement; and `not_strictCoeffPolysLargeResidual` refutes the
+> large-good-set sector, which by `strictCoeffPolysResidual_iff_large` carries its whole content.
+> All three names are classified `refuted` below: since the census precedence fix, a proved
+> negation outranks the vacuous `k = 0` provider
+> `ArkLib.KeystoneStrictResidual.strictCoeffPolysResidual_zero` (whose hypothesis `0 < 0` is
+> unsatisfiable), so `StrictCoeffPolysResidual` is no longer labelled `discharged`. Every
+> conditional adapter
+> that consumes these surfaces — notably
+> `strictCoeffPolysResidual_of_strictCanonicalCoeffPolysResidual` and
+> `correlatedAgreement_affine_curves_of_largeResidual` — is therefore vacuous, and the §5
+> strict-interior targets must repair the statement (fix a canonical decoder, or restrict to the
+> unique-decoding regime) rather than try to discharge it. The δ* conjecture is untouched and
+> remains **OPEN**.
+>
+> **Update (exceptional-set repair, 2026-10-22).** The honest repair `StrictCoeffPolysExcResidual b`
+> (coefficient identity required only outside an exceptional set of size `≤ b`) is refuted too, for
+> every budget `2b + 2 < |F|`: `not_strictCoeffPolysExcResidual_of_two_mul_add_two_lt_card` and its
+> concrete `b = 1` instance `not_strictCoeffPolysExcResidual_one` use a block decoder whose
+> `coeff 1` is the indicator of a `(b + 1)`-point parameter block. That name has no competing
+> provider, so it is classified `refuted` below, and the exceptional-set keystones
+> `correlatedAgreement_affine_curves_of_strict_coeff_polys_exc` /
+> `correlatedAgreement_affine_curves_strict_of_strict_coeff_polys_exc` are conditional reductions
+> from a refuted hypothesis at every meaningful `ε = errorBound + b/|F|`. Budgets
+> `b ≥ (|F| - 2)/2` are not refuted here and no satisfiability claim is made there.
+>
+> **Update (geometric §5 root, 2026-10-22).** `CurveCommonAgreementResidual`
+> (`BCIKS20/Curves/CoeffExtractionResidual.lean`), the geometric form from which the broad algebraic
+> form follows by `strictCoeffPolysResidual_of_commonAgreement`, is refuted at the same witness:
+> `not_curveCommonAgreementResidual`. It is classified `refuted` below, and its three
+> `curveCommonAgreementResidual_of_*` providers are conditional/vacuous adapters. Totals at that
+> merge (2026-10-28), before the classifier hardening recorded in the next addendum: 89 strict
+> residuals, 41 open, 35 discharged, 13 refuted; they are not the current summary below.
+
+> **Campaign addendum — census classifier hardening (2026-10-28 repository review, T04/L11).**
+> The review showed that `scripts/residual_census.py` could label conditional or
+> instance-specific results `discharged`. It ignored section hypotheses added by `include`,
+> instance assumptions such as `[i : Assumed]` with `Assumed : Prop`, proof binders whose names do
+> not start with `h` (for example `(p : False)`), and premises written in the result type; its
+> name-based branch accepted any result that mentioned a residual; and it collapsed specialised
+> instances (fixed sizes, an indicator error, a fixed claimed sum, an empty trailing protocol)
+> into one `discharged` family label. The review also documented four LogUp rows marked
+> `discharged` only through `_iff` equivalence lemmas, which an earlier fix had already
+> reclassified `open`. The classifier now reads conclusion atoms, section variables,
+> `include`/`omit`, instance binders and parameter types, adds the `instance-only` status, and
+> keeps the proved instances of refuted rows listed. No Lean theorem changed, so totals before
+> and after this change are not comparable, and the census remains a syntactic inventory
+> (now of `ArkLib/` and `ProximityPrize/`), not a verified completion ledger. The review's raw rerun at `d1670497f`
+> (89 strict residuals: 44 open, 44 labelled discharged, 1 refuted) was likewise a tool
+> classification, not a certified total.
 
 ## Summary
 

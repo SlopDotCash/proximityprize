@@ -51,7 +51,8 @@ Three independent, decisive failures — the first is the machine-checked arithm
 
 ### (1) Even when ESS applies, its COUNT is vacuous at prize depth `k ≈ log p` (the F9 cap).
 The moment / supply-side route would use a relation-type count `≤ A(k)` at half-length `r`,
-`k = 2r`, optimized at `r ≈ ln q ≈ 172` (prize). The ESS count `A(k) = (k+1)^{3(k+1)^2}` has
+`k = 2r`, optimized at `r ≈ ln q ≈ 83` (prize, `n = 2^30`, `q ≈ n^4 = 2^120`; `≈ 110` for `q ≈ 2^158`; an
+earlier `≈ 172` matched no convention in use and is corrected per audit CW-DL04a-03). The ESS count `A(k) = (k+1)^{3(k+1)^2}` has
 `log₂ A(2r) ≥ 3(2r)² = 12 r²` — *super-quadratic in `r`*, whereas the supply-side budget that a
 useful union bound can spend is `log₂ q ≈ β·μ` = **linear in `r`** at the optimal depth (`r ≈ log q`).
 So `A(k)` overshoots the entire field `𝔽_p` by an astronomical margin and tightens nothing: this is

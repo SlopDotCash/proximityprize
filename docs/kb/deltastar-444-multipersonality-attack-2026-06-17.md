@@ -1,5 +1,18 @@
 # Multi-personality attack on the single-depth energy bound `E_{r*} ≤ (2r*−1)‼·n^{r*}` (#444)
 
+> **Scope correction (2026-10-28 audit, T48; cross T87/T104).**
+> - **The target as written is false at production depth.** The target `E_{r*} ≤ (2r*−1)‼·n^{r*}`
+>   at `r* ≈ log p` uses raw finite-field energy, which the principal-mode floor `E_r ≥ n^(2r)/p`
+>   makes false at production parameters (see `deltastar-444-residual-audit-2026-06-17.md`). Only a
+>   DC-subtracted form can be a live input.
+> - **Finite patterns are not proved identities.** The falling-factorial findings (`c_r = (2r−1)‼`,
+>   `c_{r−1} = 0`, alternating lower coefficients) are exact machine computations at the depths
+>   computed. "EXACTLY (all r)" is a pattern, not a proof, unless backed by the generating function.
+> - **No method is excluded.** "No creative/structural/computational direction escapes" describes
+>   the directions tried; it does not exclude every conceivable method.
+>
+> The characteristic-zero Lam–Leung matching bound itself is not in question.
+
 Attacked the minimal residual from every creative direction/personality. Honest verdict: genuine new
 STRUCTURE found (the exact falling-factorial expansion), but all directions confirm the same wall.
 

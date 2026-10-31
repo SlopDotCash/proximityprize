@@ -88,18 +88,29 @@ theorem incidencePoly_ne_zero_of_monic (hlc : H.leadingCoeff = 1)
 
 section Card
 
-/-- **The incidence bound**: any matching set whose places carry base-point roots has
-cardinality at most the incidence polynomial's degree (monic, `d_H ≥ 2`). -/
+/-- **The incidence bound, restricted-root form (#304 / audit L58)**: any matching set whose
+places carry base-point roots (`rootOn`, demanded only at matching places) has cardinality at most
+the incidence polynomial's degree (monic, `d_H ≥ 2`). -/
+theorem card_le_of_hbase_on (hlc : H.leadingCoeff = 1) (hd2 : 2 ≤ H.natDegree)
+    {v : F[X]} {matchingSet : Finset F}
+    (rootOn : ∀ z ∈ matchingSet, rationalRoot (H_tilde' H) z)
+    (hbase : ∀ z (hz : z ∈ matchingSet), v.eval z = (rootOn z hz).1) :
+    matchingSet.card ≤ ((H_tilde' H).eval v).natDegree := by
+  refine Polynomial.card_le_degree_of_subset_roots (p := (H_tilde' H).eval v) ?_
+  intro z hz
+  have hz' : z ∈ matchingSet := by simpa using hz
+  rw [Polynomial.mem_roots (incidencePoly_ne_zero_of_monic hlc hd2 v)]
+  exact incidencePoly_eval_eq_zero_of_hbase (rootOn z hz') (hbase z hz')
+
+/-- **The incidence bound** (total-root form): the special case `rootOn := fun z _ => root z` of
+`card_le_of_hbase_on`.  The total family `root` demands rational roots at every `z : F`, which is
+impossible if any fibre is empty; only the roots at matching places are used. -/
 theorem card_le_of_hbase (hlc : H.leadingCoeff = 1) (hd2 : 2 ≤ H.natDegree)
     {v : F[X]} {matchingSet : Finset F}
     (root : (z : F) → rationalRoot (H_tilde' H) z)
     (hbase : ∀ z ∈ matchingSet, v.eval z = (root z).1) :
-    matchingSet.card ≤ ((H_tilde' H).eval v).natDegree := by
-  refine Polynomial.card_le_degree_of_subset_roots (p := (H_tilde' H).eval v) ?_
-  intro z hz
-  rw [Polynomial.mem_roots (incidencePoly_ne_zero_of_monic hlc hd2 v)]
-  exact incidencePoly_eval_eq_zero_of_hbase (root z)
-    (hbase z (by simpa using hz))
+    matchingSet.card ≤ ((H_tilde' H).eval v).natDegree :=
+  card_le_of_hbase_on hlc hd2 (fun z _ => root z) hbase
 
 end Card
 
@@ -128,17 +139,18 @@ section Gate
 
 variable [Fintype F] [DecidableEq F]
 
-/-- **The F8 satisfiability gate (kernel-checked necessary condition).**  If a base-point
+/-- **The F8 satisfiability gate, restricted-root form (kernel-checked necessary condition).**
+Roots are demanded only at matching places (#304 / audit L58).  If a base-point
 matching set additionally satisfies the discriminant-counting largeness
 (`|F| − deg disc ≤ |matchingSet|` via a covering discriminant), then the decoded surface's
 place-line degree is forced up: `|F| ≤ deg disc + degreeX H̃′ + d_{H̃′} · natDegree v`.
 Contrapositive: in any regime where the right side is smaller than `|F|`, the root/`hbase`
 hypothesis set of the truncation capstones is **jointly unsatisfiable**. -/
-theorem natDegree_v_lower_bound_of_counting (hlc : H.leadingCoeff = 1)
+theorem natDegree_v_lower_bound_of_counting_on (hlc : H.leadingCoeff = 1)
     (hd2 : 2 ≤ H.natDegree)
     {v : F[X]} {matchingSet : Finset F}
-    (root : (z : F) → rationalRoot (H_tilde' H) z)
-    (hbase : ∀ z ∈ matchingSet, v.eval z = (root z).1)
+    (rootOn : ∀ z ∈ matchingSet, rationalRoot (H_tilde' H) z)
+    (hbase : ∀ z (hz : z ∈ matchingSet), v.eval z = (rootOn z hz).1)
     {disc : F[X]} (hdisc : disc ≠ 0)
     (hcover : ∀ z : F, disc.eval z ≠ 0 → z ∈ matchingSet) :
     Fintype.card F ≤ disc.natDegree
@@ -162,9 +174,23 @@ theorem natDegree_v_lower_bound_of_counting (hlc : H.leadingCoeff = 1)
     omega
   -- the incidence cap
   have hcap : matchingSet.card ≤ ((H_tilde' H).eval v).natDegree :=
-    card_le_of_hbase hlc hd2 root hbase
+    card_le_of_hbase_on hlc hd2 rootOn hbase
   have hdeg := natDegree_eval_le (H_tilde' H) v
   omega
+
+/-- **The F8 satisfiability gate** (total-root form): the special case
+`rootOn := fun z _ => root z` of `natDegree_v_lower_bound_of_counting_on`. -/
+theorem natDegree_v_lower_bound_of_counting (hlc : H.leadingCoeff = 1)
+    (hd2 : 2 ≤ H.natDegree)
+    {v : F[X]} {matchingSet : Finset F}
+    (root : (z : F) → rationalRoot (H_tilde' H) z)
+    (hbase : ∀ z ∈ matchingSet, v.eval z = (root z).1)
+    {disc : F[X]} (hdisc : disc ≠ 0)
+    (hcover : ∀ z : F, disc.eval z ≠ 0 → z ∈ matchingSet) :
+    Fintype.card F ≤ disc.natDegree
+      + (Polynomial.Bivariate.degreeX (H_tilde' H)
+          + (H_tilde' H).natDegree * v.natDegree) :=
+  natDegree_v_lower_bound_of_counting_on hlc hd2 (fun z _ => root z) hbase hdisc hcover
 
 end Gate
 
@@ -180,3 +206,5 @@ end ArkLib
 #print axioms ArkLib.IncidenceBound.card_le_of_hbase
 #print axioms ArkLib.IncidenceBound.natDegree_eval_le
 #print axioms ArkLib.IncidenceBound.natDegree_v_lower_bound_of_counting
+#print axioms ArkLib.IncidenceBound.card_le_of_hbase_on
+#print axioms ArkLib.IncidenceBound.natDegree_v_lower_bound_of_counting_on

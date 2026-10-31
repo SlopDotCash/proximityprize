@@ -28,30 +28,38 @@ radius `1 − √ρ`) while keeping a super-polynomial, `q`-independent count at
 candidate ideas are: **(i) nested subgroup towers** `μ₂ ⊂ μ₄ ⊂ ⋯`; **(ii)** the Frobenius/squaring
 self-map `x ↦ x²` of `μ_n`; **(iv) products / sumsets** of small concentrated families.
 
-This file proves, `sorry`-free and axiom-clean, that **all of these hybrids hit the same wall**: any
-`q`-independent symmetry concentration factors into *one deep-but-small symmetric atom* (size
-`≥ t+1`, the only way to kill `p₁,…,p_t` field-independently) and a *free-but-shallow choice space*
-(at least `2` independent free pieces — anything smaller is only polynomially many subsets), and the
-total size is therefore `≥ 2(t+1)`, giving `t < a/2`. Concretely:
+**Scope (read first).** What is proved is a set of *restricted construction bounds*: under the
+explicit hypotheses that every atom has size `≥ t+1` and that there are `m ≥ 2` atoms (or a free
+factor of size `≥ 2`), the total size is `≥ 2(t+1)`, i.e. `t < a/2`.  These hypotheses are **not**
+proved necessary for every hybrid.  In particular, a disjoint union can kill `pᵢ` through
+cancellation *between* atoms even though no atom kills `pᵢ` by itself: the two order-`1` atoms
+`{1}` and `{−1}` have union with `p₁ = 0` although each atom has `p₁ ≠ 0`
+(`cross_atom_cancellation`, char `≠ 2`).  At `t = 1` each atom has size `1 < t+1` and the union has
+size `2 < 2(t+1) = 4`.  This does not exhibit a super-polynomial family, but it refutes the claim
+that the atom-size hypothesis is forced, so the results below do **not** classify all hybrid
+constructions.  Likewise `m ≥ 2` is not the same as super-polynomial growth: two atoms give a
+family whose size still has to be counted separately (PG233/PG010).  Concretely:
 
-* **`mixed_order_depth_bound`** — the general mixed-order/tower no-go (ideas (i),(ii)): a disjoint
-  union of `m` atoms whose sizes each reach the depth (`sizeᵢ ≥ t+1`) with super-polynomial freedom
-  (`m ≥ 2`) has `a = ∑ sizeᵢ ≥ 2(t+1)`. The depth is gated by the **smallest** atom, so nesting /
-  mixing orders cannot help: every atom must independently reach depth `t`.
-* **`single_atom_count_le`** — the count side that makes `m ≥ 2` a *theorem* not an assumption: a
-  family of pairwise-disjoint nonempty atoms inside an `n`-element ground set has at most `n` members
-  (a single-orbit construction yields only the disjoint cosets — at most `n` of them — a *polynomial*
-  count). Super-polynomial concentration therefore genuinely needs `m ≥ 2`.
+* **`mixed_order_depth_bound`** — the mixed-order/tower bound (ideas (i),(ii)): a disjoint
+  union of `m ≥ 2` atoms whose sizes each reach the depth (`sizeᵢ ≥ t+1`) has
+  `a = ∑ sizeᵢ ≥ 2(t+1)`.  The atom-size and `m ≥ 2` conditions are hypotheses, not consequences.
+* **`single_atom_count_le`** — a family of pairwise-disjoint nonempty atoms inside an
+  `n`-element ground set has at most `n` members, so a family consisting of single disjoint atoms
+  (e.g. the cosets of one subgroup) is only polynomially large.  This shows a super-polynomial
+  family must use something other than single disjoint atoms; it does not show that `m ≥ 2` atoms
+  give super-polynomial growth, nor that the depth-`t` atom-size hypothesis holds.
 * **`prod_powersum_factor`** / **`prod_coset_powersum_zero`** — the product/sumset hybrid (idea (iv)):
   the power sums of a *free* product set `A·B` factor as `pᵢ(A·B) = pᵢ(A)·pᵢ(B)`, so a deep coset
   factor `A` (`pᵢ(A) = 0` for `1 ≤ i ≤ t`) makes `A·B` kill `p₁,…,p_t` for **any** `B`. Varying `B`
   is the free choice space; `prod_hybrid_depth_bound` shows it obeys the *same* `t < a/2` wall
   (`|A·B| = |A|·|B| ≥ (t+1)·|B|`, and super-poly needs `|B| ≥ 2`).
-* **`hybrid_depth_no_go`** — the headline: under the (necessary) deep-atom + super-poly-freedom
-  hypotheses, every hybrid construction obeys `2·(t+1) ≤ a`, i.e. `t < a/2`. The Johnson→capacity
-  interior (which needs `t` comparable to `a`) is provably unreachable by symmetry concentration —
-  matching the in-tree Weil no-go (`SubgroupCharacterSumNoGo.weil_recovers_root_count_not_better`)
-  and the [ABF26] "no known technique past Johnson for explicit RS" assessment.
+* **`hybrid_depth_no_go`** — the packaged bound: under the explicit deep-atom (`size ≥ t+1`)
+  and `m ≥ 2` / `|B| ≥ 2` hypotheses, a construction of either shape obeys `2·(t+1) ≤ a`, i.e.
+  `t < a/2`.  Constructions that kill power sums by cross-atom cancellation, or whose atoms are
+  smaller than `t+1`, are outside its scope, so this is not a proof that the Johnson→capacity
+  interior is unreachable by every symmetry concentration.  Compare the in-tree Weil no-go
+  (`SubgroupCharacterSumNoGo.weil_recovers_root_count_not_better`) and the [ABF26] "no known
+  technique past Johnson for explicit RS" assessment.
 
 All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 
@@ -75,8 +83,9 @@ variable {F : Type*} [Field F] [DecidableEq F]
 
 /-- **Coset power-sum vanishing (the deep atom).** `ζ^h = 1`, `ζ^i ≠ 1` ⟹ the `i`-th power sum over
 the coset `g·{1,ζ,…,ζ^{h−1}}` vanishes: the geometric series in `ζ^i` telescopes. (Re-stated
-self-contained from `CosetPowerSumConcentration.coset_powersum_zero`; this is the *only* way to make
-`pᵢ` vanish `q`-independently — a multiplicative symmetry.) -/
+self-contained from `CosetPowerSumConcentration.coset_powersum_zero`.  It is one mechanism for
+making `pᵢ` vanish `q`-independently; it is not proved to be the only one — see
+`cross_atom_cancellation`.) -/
 theorem coset_powersum_zero {ζ : F} {h : ℕ} (hζ : ζ ^ h = 1) {i : ℕ} (hi : ζ ^ i ≠ 1) (g : F) :
     ∑ l ∈ range h, (g * ζ ^ l) ^ i = 0 := by
   have hrw : ∑ l ∈ range h, (g * ζ ^ l) ^ i = g ^ i * ∑ l ∈ range h, (ζ ^ i) ^ l := by
@@ -114,21 +123,39 @@ theorem coset_finset_powersum_zero {ζ : F} {h : ℕ} (hζ : IsPrimitiveRoot ζ 
     (hζ.injOn_pow_mul hg) (by simpa using ha) (by simpa using hb) (by simpa [mul_comm] using hab))]
   exact coset_powersum_zero_of_lt hζ hi1 hih g
 
+/-- **Cross-atom cancellation (the atom-size hypothesis is not forced).** In any field of
+characteristic `≠ 2`, the order-`1` atoms `{1}` and `{−1}` are disjoint, each has nonzero first
+power sum, and their union has first power sum `0`.  So a union can kill `p₁` although no atom
+does, with atoms of size `1 < t+1` and union size `2 < 2(t+1)` at `t = 1`. -/
+theorem cross_atom_cancellation (h2 : (2 : F) ≠ 0) :
+    Disjoint ({1} : Finset F) {-1} ∧ (∑ x ∈ ({1} : Finset F), x) ≠ 0 ∧
+      (∑ x ∈ ({-1} : Finset F), x) ≠ 0 ∧ (∑ x ∈ ({1, -1} : Finset F), x) = 0 := by
+  have hne : (1 : F) ≠ -1 := by
+    intro h
+    apply h2
+    calc (2 : F) = 1 + 1 := one_add_one_eq_two.symm
+      _ = 1 + -1 := by rw [← h]
+      _ = 0 := add_neg_cancel 1
+  refine ⟨Finset.disjoint_singleton.mpr hne, by simp, by simp, ?_⟩
+  rw [Finset.sum_pair hne, add_neg_cancel]
+
 end CosetEngine
 
 /-! ## 2. The mixed-order / tower no-go (ideas (i),(ii)): depth is gated by the smallest atom. -/
 
-/-- **General mixed-order depth bound.** A concentrated subset of size `a` built as a disjoint union
-of `m` atoms (cosets/orbits, possibly of *different* orders — a nested tower `μ₂ ⊂ μ₄ ⊂ ⋯`, or the
-order-`2^r` orbits from the squaring self-map), each of size at least `t+1`, with super-polynomial
-freedom (`m ≥ 2`), has `2·(t+1) ≤ ∑ sizeᵢ = a`, hence `t < a/2`.
+/-- **Mixed-order depth bound (restricted construction).** A subset of size `a` built as a
+disjoint union of `m ≥ 2` atoms (cosets/orbits, possibly of *different* orders — a nested tower
+`μ₂ ⊂ μ₄ ⊂ ⋯`, or the order-`2^r` orbits from the squaring self-map), each of size at least `t+1`,
+has `2·(t+1) ≤ ∑ sizeᵢ = a`, hence `t < a/2`.
 
-The `sizeᵢ ≥ t+1` hypothesis is *forced*: a union of atoms kills `pᵢ` iff **every** atom kills `pᵢ`
-(power sums are additive over the disjoint union), and an order-`s` coset kills `pᵢ` only for
-`i < s`; so killing `p₁,…,p_t` requires every atom order `s ≥ t+1`. **The depth is gated by the
-smallest atom** — mixing / nesting orders cannot push it past `a/2`, because the count freedom (the
-choice of `m ≥ 2` atoms) multiplies the size by `m ≥ 2`. This *generalizes*
-`CosetPowerSumConcentration.cosetUnion_superpoly_moment_depth` (single fixed order `h`) to arbitrary
+The `sizeᵢ ≥ t+1` hypothesis is an assumption of this restricted construction, **not** a
+necessary condition.  Power sums are additive over a disjoint union, so the union kills `pᵢ`
+whenever every atom does, but the converse fails: atoms can cancel each other.  The order-`1`
+atoms `{1}` and `{−1}` have union with `p₁ = 0` while neither atom kills `p₁`
+(`cross_atom_cancellation`); at `t = 1` the atoms have size `1 < t+1` and the union has size
+`2 < 2(t+1)`.  Likewise `m ≥ 2` is an assumption and does not by itself give super-polynomial
+growth.  Within its hypotheses this generalizes
+`CosetPowerSumConcentration.cosetUnion_superpoly_moment_depth` (single fixed order `h`) to
 mixed-order towers. -/
 theorem mixed_order_depth_bound {m t : ℕ} {sizes : Fin m → ℕ}
     (hsize : ∀ i, t + 1 ≤ sizes i) (hm : 2 ≤ m) :
@@ -144,13 +171,14 @@ theorem mixed_order_depth_bound {m t : ℕ} {sizes : Fin m → ℕ}
 
 variable {α : Type*} [DecidableEq α]
 
-/-- **Single-atom count is polynomial — `m ≥ 2` is a theorem, not an assumption.** A family `𝒜` of
-pairwise-disjoint nonempty atoms, all contained in a ground set `G` of size `n`, has at most `n`
-members. A *single*-orbit symmetry construction yields exactly the distinct cosets of one subgroup,
-which are pairwise-disjoint subsets of `G`; there are at most `n/h ≤ n` of them — a **polynomial**
-count. Hence a super-polynomial (`> n`) concentration genuinely needs `m ≥ 2` independent atoms, the
-hypothesis of `mixed_order_depth_bound`. (Each atom of size `h` makes the bound `n/h`; the general
-statement uses only `size ≥ 1`.) -/
+/-- **Disjoint single-atom families are polynomial.** A family `𝒜` of pairwise-disjoint nonempty
+atoms, all contained in a ground set `G` of size `n`, has at most `n` members.  For example the
+distinct cosets of one subgroup are pairwise-disjoint subsets of `G`, so there are at most
+`n/h ≤ n` of them — a **polynomial** count.  Hence a super-polynomial (`> n`) family cannot consist
+of single disjoint atoms.  This does not prove the converse direction: using `m ≥ 2` atoms is
+necessary for this kind of family but not sufficient for super-polynomial growth, which must be
+counted separately.  (Each atom of size `h` makes the bound `n/h`; the general statement uses only
+`size ≥ 1`.) -/
 theorem single_atom_count_le {G : Finset α} {𝒜 : Finset (Finset α)}
     (hsub : ∀ A ∈ 𝒜, A ⊆ G) (hne : ∀ A ∈ 𝒜, A.Nonempty)
     (hdisj : (𝒜 : Set (Finset α)).PairwiseDisjoint id) :
@@ -220,18 +248,19 @@ theorem prod_hybrid_depth_bound {hA hB t : ℕ} (hAsize : t + 1 ≤ hA) (hBsize 
 
 /-! ## 5. Headline: the unified hybrid depth no-go (`t < a/2` for all symmetry constructions). -/
 
-/-- **HEADLINE — the sharpened, general depth no-go.** Any `q`-independent symmetry concentration of
-the power-sum statistic that kills `p₁,…,p_t` at a single target factors (the only field-independent
-mechanism) into a *deep symmetric atom* of size `≥ t+1` together with a *free choice space* of
-multiplicity `≥ 2` (anything smaller is at most a polynomial — `single_atom_count_le`). Whether the
-combination is a **disjoint union** of `m ≥ 2` mixed-order atoms (`a = ∑ sizeᵢ`, ideas (i),(ii)) or a
-**free product** `A·B` with `|B| ≥ 2` (`a = |A|·|B|`, idea (iv)), the agreement size obeys
+/-- **The packaged restricted depth bound.** For a construction that, by hypothesis, consists of
+*deep symmetric atoms* each of size `≥ t+1` together with a *choice space* of multiplicity `≥ 2`,
+whether the combination is a **disjoint union** of `m ≥ 2` mixed-order atoms (`a = ∑ sizeᵢ`,
+ideas (i),(ii)) or a **free product** `A·B` with `|B| ≥ 2` (`a = |A|·|B|`, idea (iv)), the
+agreement size obeys
 
   `2·(t+1) ≤ a`,    i.e.   **`t < a/2`**.
 
-The deep interior of the Johnson→capacity gap needs moment-depth `t` comparable to the agreement
-size `a` (to push `δ = 1 − a/n` down to the Johnson radius `1 − √ρ`); this is provably out of reach
-of symmetry concentration, in *all* of its hybrid forms. Consistent with the in-tree Weil no-go
+The theorem only proves this `Nat` inequality from those hypotheses.  The hypotheses are not shown
+to be necessary: power sums can vanish by cancellation between atoms that are individually
+shallow (`cross_atom_cancellation`), and `m ≥ 2` is not by itself super-polynomial growth.  So
+this does not prove that the deep interior of the Johnson→capacity gap (moment-depth `t`
+comparable to `a`) is out of reach of every symmetry concentration.  Compare the in-tree Weil no-go
 (`SubgroupCharacterSumNoGo`) and ABF26's "no known technique" for the explicit-RS interior. -/
 theorem hybrid_depth_no_go {m t : ℕ} {sizes : Fin m → ℕ}
     (hsize : ∀ i, t + 1 ≤ sizes i) (hm : 2 ≤ m)
@@ -241,9 +270,10 @@ theorem hybrid_depth_no_go {m t : ℕ} {sizes : Fin m → ℕ}
 
 /-! ## 6. Tightness / non-vacuity: the bound `2(t+1) ≤ a` is achieved, and `t = a/2 − 1` is reached. -/
 
-/-- **The wall is tight.** Two atoms of the minimal depth-`t` size `t+1` realize equality
-`2·(t+1) = a` with `m = 2`: the construction *does* reach moment-depth `t = a/2 − 1`, the near-capacity
-endpoint. So `t < a/2` is the exact frontier of symmetry concentration, neither loose nor vacuous. -/
+/-- **The restricted bound is tight.** Two atoms of the minimal size `t+1` realize equality
+`2·(t+1) = a` with `m = 2`, so within the hypotheses of `mixed_order_depth_bound` the inequality
+`t < a/2` cannot be improved.  (This is tightness of the restricted bound only, not a frontier for
+all symmetry concentrations; see `cross_atom_cancellation`.) -/
 theorem depth_bound_tight (t : ℕ) :
     (2 * (t + 1) ≤ ∑ _i : Fin 2, (t + 1)) ∧ (∑ _i : Fin 2, (t + 1) = 2 * (t + 1)) := by
   constructor
@@ -275,3 +305,4 @@ end ArkLib.ProximityGap.HybridDepthNoGo
 #print axioms ArkLib.ProximityGap.HybridDepthNoGo.hybrid_depth_no_go
 #print axioms ArkLib.ProximityGap.HybridDepthNoGo.depth_bound_tight
 #print axioms ArkLib.ProximityGap.HybridDepthNoGo.single_atom_count_nonvacuous
+#print axioms ArkLib.ProximityGap.HybridDepthNoGo.cross_atom_cancellation

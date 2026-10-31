@@ -8,9 +8,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarPinAllWitness
 /-!
 # A second concrete unconditional δ* pin: `δ* = 5/8` at `r = 3` (#389)
 
-`KKH26DeltaStarPinAllWitness.deltaStar_pin_concrete_F4129` pins `δ* = 3/4` (the `r = 2` rung) for
-the explicit smooth RS code over `ZMod 4129` at the order-8 element `g = 777`.  This file pins the
-**next rung** of the same code — `r = 3` — giving a *different* unconditional δ* value:
+`KKH26DeltaStarPinAllWitness.deltaStar_pin_concrete_F4129` pins `δ* = 3/4` (the `r = 2` member)
+for the explicit smooth evaluation code `evalCode 777 8 ((2-2)*1)` over `ZMod 4129` at the order-8
+element `g = 777` — degree bound 0, i.e. the constant code (dimension 1, rate 1/8).  This file pins
+the **`r = 3` member of the same parameterized family** `evalCode g n ((r-2)m)`, namely
+`evalCode 777 8 ((3-2)*1)` — degree bound 1 (dimension 2, rate 1/4).  The two codes share the
+field and the evaluation domain `⟨777⟩` but are **different codes** (the degree bound grows with
+`r`), and the two pins give *different* unconditional δ* values:
 
 > **`deltaStar_pin_concrete_F4129_r3`** — `δ* = 5/8 = 1 − 3/2³` for the order-8 element `g = 777`
 > over `ZMod 4129`, at `ε* = 18/4129`, with **zero hypotheses** (no `CensusDomination`).
@@ -18,8 +22,11 @@ the explicit smooth RS code over `ZMod 4129` at the order-8 element `g = 777`.  
 It is the same `kkh26_deltaStar_pin_allWitness` engine with `r = 3` (still in the bulk range
 `r ≤ 2^{μ-1} = 4`): the all-witness budget is `C(8,3)/C(3,2) = 56/3 = 18`, strictly below the
 KKH26 supply `2³·C(4,3) = 32`, so the `ε*`-interval `[18/4129, 32/4129)` is non-empty and the
-threshold is pinned.  Together with the `r = 2` pin (`δ* = 3/4`) this exhibits two distinct
-unconditional δ* rungs of one explicit code, confirming the `1 − r/2^μ` rung law concretely.
+threshold is pinned.  Together with the `r = 2` pin (`δ* = 3/4`) this exhibits two
+unconditional δ* values for two members of the parameterized family `evalCode g n ((r−2)m)`
+(degree bounds 0 and 1 on the same domain), instantiating the family-level formula
+`δ* = 1 − r/2^μ` concretely at `r = 2, 3`.  It is **not** a pair of thresholds of one fixed code:
+the code changes with `r`.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`/`native_decide`.
 -/
@@ -31,8 +38,10 @@ open ProximityGap.KKH26DeltaStarReduction ProximityGap.SpikeFloor
 
 namespace ProximityGap.Ownership.KKH26AllWitnessPin
 
-/-- **A second concrete δ* pin (the `r = 3` rung): `δ* = 5/8` over `ZMod 4129`.**  Same explicit
-order-8 code as `deltaStar_pin_concrete_F4129`, next rung; fully discharged, zero hypotheses. -/
+/-- **A second concrete δ* pin (the `r = 3` member): `δ* = 5/8` over `ZMod 4129`.**  Same field
+and order-8 domain as `deltaStar_pin_concrete_F4129`, but the code is `evalCode 777 8 1` (degree
+bound 1, dimension 2, rate 1/4), not that pin's constant code; fully discharged, zero
+hypotheses. -/
 theorem deltaStar_pin_concrete_F4129_r3 :
     mcaDeltaStar (F := ZMod 4129) (A := ZMod 4129)
         (evalCode (777 : ZMod 4129) 8 ((3 - 2) * 1)) ((18 : ℝ≥0∞) / 4129)

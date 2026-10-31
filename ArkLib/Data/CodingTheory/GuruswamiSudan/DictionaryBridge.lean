@@ -9,10 +9,13 @@ The GS multiplicity interpolation (`GSMultInterp`) works with an abstract coeffi
 provides its foundation: the explicit map `toPoly` and the verified coefficient-extraction lemma
 `toPoly_coeff`.
 
-The remaining crux of the full dictionary — matching `GSMultInterp.hasseCoeff k D c a b` to the
+The rest of the full dictionary — matching `GSMultInterp.hasseCoeff k D c a b` to the
 `Polynomial`-side bivariate Hasse derivative of `toPoly c` for *all* orders `(a,b)` (hence
 `GSMultInterp.vanishesToOrder ↔ ArkLib.GS.vanishesToOrder`) — is the order-`(a,b)` Hasse
-correspondence, left for the focused follow-up. The order-`(0,0)` case is plain evaluation
+correspondence. It is **not** open debt: the companion module
+`GuruswamiSudan/DictionaryHasse.lean` proves it (`GSMultInterp.hasseCoeff_eq`, for every order
+and point) together with the vanishing equivalence `GSMultInterp.vanishesToOrder_toPoly_iff`.
+This file keeps only the foundation; the order-`(0,0)` case is plain evaluation
 (`hasseCoeff_zero_zero`). -/
 
 open Polynomial

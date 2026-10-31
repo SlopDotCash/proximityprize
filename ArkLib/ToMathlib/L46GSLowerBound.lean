@@ -23,13 +23,14 @@ The whole hard direction therefore collapses to the **single numeric dominance**
 The previous analysis (`research/proximity-prize/dispositions/pc-w1-L4.6-hard.md`,
 `Errors.lean` S1–S5 wall, `LineDecodingCounting.double_coverage_counterexample`) established that
 (★) is **invisible to the abstract `epsCA`**: a code with no non-jointly-close near-codewords has
-`ε_ca = 0` while the count `⌊δ·n⌋/|F|` can be positive, so the naive route is kernel-refuted, and
-the dominance can only be realised by an **explicit witness pair** `(u₀, u₁)` whose line
+`ε_ca = 0` while the count `⌊δ·n⌋/|F|` can be positive, so the naive route is kernel-refuted. The
+route taken here realises the dominance by an **explicit witness pair** `(u₀, u₁)` whose line
 `u₀ + γ·u₁` is `δ`-close to `C` for `⌊δ·n⌋`-many combiners `γ` — the classical
 [BCIKS20, Prop 1.1] / Guruswami–Sudan "one good `γ` per close codeword in the decoding list" lower
-bound. This is precisely the **statement repair** the disposition calls for: (★) is not a theorem
-about the bare `epsCA`, it is a *consequence of the GS-witness existence statement*, which this
-file names and wires.
+bound. This is the **statement repair** the disposition calls for: (★) is not a theorem about the
+bare `epsCA`; here it is derived as a *consequence of the GS-witness existence statement*, which
+this file names and wires. The witness is a sufficient hypothesis for (★), not a necessary one
+(see "Why `GSWitnessLowerBound` is a sufficient residual" below).
 
 ## The statement repair, made precise
 
@@ -54,16 +55,22 @@ file names and wires.
   direction is thus delivered as a `_of_gsWitness` reduction whose only remaining surface is the
   precise, named GS-witness construction.
 
-## Why `GSWitnessLowerBound` is the honest residual (not a weakening)
+## Why `GSWitnessLowerBound` is a sufficient residual (not a characterization)
 
 `GSWitnessLowerBound C δ ⌊δ·n⌋` is exactly [BCIKS20, Prop 1.1] / [ACFY25, Lemma 4.10]: the
 existence of an interleaved word stack realising the proximity-gap discontinuity with `⌊δ·n⌋`
 good combiners. It is *strictly sharper* than the prior opaque residual
 `diffStackMCAResidualBelowUDR` of `Errors.lean`: that one was a per-stack probability bound on an
-abstract `mcaEvent`; this one is the explicit, constructive witness-existence statement that the
-disposition's kernel-checked walls proved is the *only* faithful route. Discharging it for a
-concrete code family (e.g. the CS25 deep-hole RS construction, whose `δ`-close non-codeword lies
-in a decoding list of `⌊δ·n⌋`-many codewords) closes L4.6 below UDR for that family.
+abstract `mcaEvent`; this one is an explicit, constructive witness-existence statement.
+
+It is a **sufficient** extra hypothesis for (★); no necessity or equivalence with (★) is proved,
+and it is not the only route. It can be strictly stronger than needed: the witness always demands
+a stack that is *not* jointly `δ`-close, even when the requested combiner count is `0`. For the
+whole-space code (e.g. a Reed–Solomon code with `n = deg = 1`) at `δ = 0`, every stack is jointly
+close, so no witness exists, while (★) reads `0 ≤ ε_ca` and holds trivially. Discharging the
+witness for a concrete code family in its intended regime (e.g. the CS25 deep-hole RS
+construction, whose `δ`-close non-codeword lies in a decoding list of `⌊δ·n⌋`-many codewords)
+closes L4.6 below UDR for that family.
 
 ## References
 

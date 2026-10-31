@@ -377,8 +377,13 @@ exhaustiveness suggestive of a matching upper bound on cyclic domains, left open
 Scaling: on `μ_n` with `d ≈ √n`, the bound is `C(√n, w/√n) = exp(Ω(√n))` at `t ≈ √n−1` —
 super-polynomial, field-independent, `t ≫ 2` — strictly deeper than the in-tree `t = 1`
 (`/q`) and `t = 2` (`/q²`) averaging bounds. Honest limits: `t < d` forces
-`t = O(largest proper divisor)`, so pure 2-power domains at threshold `d ∣ w` block the
-construction (`d ∣ w` and `d ∣ n` force `d ∣ t`), and the prize band needs `t = Θ(n)` —
+`t = O(largest proper divisor)`.  On pure 2-power domains with `d ∣ w`, the coding
+dictionary `n = k + t + w` and `d ∣ n` force only `d ∣ (k + t)`; they force `d ∣ t` (and so
+block the construction for `1 ≤ t < d`) only when additionally `d ∣ k` — e.g. at rate one half,
+`k = n/2`, with `d ∣ n/2`.  Without `d ∣ k` the construction is not blocked: `n = 16`, `d = 4`,
+`w = 4`, `k = 10`, `t = 2` satisfies the dictionary with `t < d` and `4 ∤ 2`, and every `μ₄`
+coset in `μ₁₆` gives a support with `e₁ = e₂ = 0` (four such supports from a full transversal;
+2026-10-28 audit, PG-320).  The prize band needs `t = Θ(n)` —
 the gap between `t ≈ √n` and `t = Θ(n)` is the remaining open core. -/
 
 section CosetConstruction

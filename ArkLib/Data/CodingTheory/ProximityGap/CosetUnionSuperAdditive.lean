@@ -10,18 +10,31 @@ import ArkLib.Data.CodingTheory.ProximityGap.GeneralOrchardIdentity
 
 `CosetUnionGrowth.coset_union_growth` lower-bounds the zero-sum-`(d·j)`-subset count by
 `C(|orbits|, j)` from one family of disjoint zero-sum `d`-subsets.  When a domain carries **two**
-independent such structures — e.g. on `6 ∣ n`, both additive antipodal pairs (`d = 2`) and
-multiplicative cube cosets (`d = 3`) — and the two structures produce *distinct* `(d·j)`-subsets,
-the contributions **add**:
+such structures — e.g. on `6 ∣ n`, both additive antipodal pairs (`d = 2`) and
+multiplicative cube cosets (`d = 3`) — and the two structures produce *distinct* `(d·j)`-subsets
+(the explicit hypothesis `hcross` below), the contributions **add**:
 
 > **`coset_union_growth_two`** — `C(|O₁|, j₁) + C(|O₂|, j₂) ≤ #{ zero-sum m-subsets }` whenever
 > `O₁` (zero-sum `d₁`-subsets) and `O₂` (zero-sum `d₂`-subsets) satisfy `d₁·j₁ = d₂·j₂ = m` and no
 > `j₁`-union from `O₁` equals a `j₂`-union from `O₂`.
 
-The cross-disjointness is genuine, not an artifact: a union of cube cosets is *not* closed under
-negation (`−1 ∉ μ₃`), so it can never equal a union of antipodal pairs.  Hence on `6 ∣ n` the
-sextic word `x⁶` has supply `≥ C(n/2, 3) + C(n/3, 2)` — strictly more than either structure alone.
-Issue #389.
+**The cross-disjointness hypothesis `hcross` is a real restriction, and it FAILS for the naive
+antipodal/cube-coset pair.**  A *single* cube coset `aμ₃` is not closed under negation
+(`−1 ∉ μ₃` outside characteristic 2), but a *pair* of cube cosets `aμ₃ ∪ (−a)μ₃ = aμ₆` is
+negation-closed and equals the union of three antipodal pairs.  So on `6 ∣ n` (with
+`O₁` = the `n/2` antipodal pairs, `j₁ = 3`, and `O₂` = the `n/3` cube cosets, `j₂ = 2`) the two
+image families overlap on exactly the `n/6` cosets of `μ₆`, `hcross` does not hold, and the
+displayed sum `C(n/2, 3) + C(n/3, 2)` is **not** a lower bound for the sextic supply.  Concrete
+failure: the order-6 subgroup `⟨4⟩ = {1,3,4,9,10,12} ⊂ F₁₃` is both the union of the cube
+cosets `{1,3,9}, {4,10,12}` and the union of three antipodal pairs; its only `6`-subset is
+itself (sum `0`), so the true count is `1` while `C(3,3) + C(2,2) = 2`.
+
+The correct (inclusion–exclusion) form of the sextic estimate is
+`#{zero-sum 6-subsets} ≥ C(n/2, 3) + C(n/3, 2) − n/6`, obtained by discarding the `n/6`
+overlapping `μ₆`-cosets from the cube-coset image.  That corrected count is **not** formalized
+in this file; to apply `coset_union_growth_two` one must instead choose `O₂` (or restrict the
+`j₂`-subfamilies) so that its unions are genuinely disjoint from the `O₁` unions, as `hcross`
+demands.  Issue #389.
 -/
 
 open Finset

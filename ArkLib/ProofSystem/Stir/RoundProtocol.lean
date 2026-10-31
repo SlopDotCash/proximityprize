@@ -24,13 +24,23 @@ that nothing in the tree constructs.
 This file closes that gap for a single STIR fold round.  It defines a genuine, **sorry-free**
 `OracleReduction` (`stirRoundReduction`) whose prover message is the real STIR `Combine.combine`
 operation (Definition 4.11) applied to the input oracle function and the verifier's folding
-challenge.  The object is real (it is built from the proven STIR operation, not `default` /
-`OracleReduction.id`), and it typechecks with no `sorry`/`admit`/`axiom` in any definition.
+challenge.  The object is built from the proven STIR operation, not `default` /
+`OracleReduction.id`, and it typechecks with no `sorry`/`admit`/`axiom` in any definition.
+Behaviourally, though, the honest message is the input oracle itself: Combine of a single
+function at its own degree is the identity (`combine_single_self`).
 
-This is the category upgrade for STIR: *"no protocol object exists"* → *"a real STIR fold-round
-object exists; its security proofs are owed."*  The full `M+1`-round STIR IOPP (and the
-`stir_main` / `stir_rbr_soundness` security proofs) remain open; what is delivered here is the
-protocol-object scaffolding that those theorems were missing, realised for one round.
+This was the category upgrade for STIR from *"no protocol object exists"* to *"a real STIR
+fold-round object exists"*.  Completeness is proved (`stirRoundReduction_completeness_proved`,
+`RoundCompleteness.lean`).
+
+**Soundness scope (audit 2026-10-28, L36).**  This object is a completeness scaffold, not a
+sound reduction, and no sub-unit soundness theorem for it can be obtained by filling in a proof.
+The verifier performs no check (`verify := pure ()`) and adopts the prover's fresh message as its
+output oracle.  Whenever an input far from the code exists, a malicious prover can send a
+codeword (for instance the zero word) whatever the challenge, and the output relation then holds
+with probability `1`.  Soundness needs consistency checks or a more informative relation; the
+checking verifier of `CheckingVerifier.lean` adds such checks.  The single-domain model also
+folds `RS[F, φ, deg]` into itself, so paper-STIR's multi-domain degree reduction is future work.
 
 ## References
 
@@ -117,7 +127,9 @@ def stirRoundProver (φ : ι ↪ F) (deg : ℕ) :
 
   The verifier forwards its statement and keeps, as output oracle, the prover's freshly-sent
   folded message (index `1` of the protocol).  This is a real (non-trivial) `embed`: the output
-  oracle is the *prover's combine message*, not an input oracle. -/
+  oracle is the *prover's combine message*, not an input oracle.  It performs no consistency
+  check (`verify := pure ()`), so it provides no soundness: a cheating prover may send any
+  codeword as the output oracle (see the module docstring). -/
 def stirRoundVerifier (φ : ι ↪ F) (deg : ℕ) :
     OracleVerifier []ₒ Unit (OStmt ι F) Unit (OStmt ι F) (pSpec ι F) where
   verify := fun _ _ => pure ()

@@ -143,8 +143,9 @@ theorem noncollinear_triple_overlap_le (dom : Fin N ↪ F)
     (predecessor_sep dom) h12 h13 hp₁ hp₂ hp₃ ha₁ ha₂ ha₃ hk)
 
 /-- **The P1 shared-triple dichotomy.**  Every triple of threshold witnesses of distinct bad
-scalars either lies on one pencil that jointly agrees with the stack on at least
-`352321537 ≥ k` coordinates, or has triple overlap at most `k - 1`. -/
+scalars either lies on one pencil (`pᵢ = w₀ + γᵢ • w₁` for codewords `w₀, w₁`) that jointly
+agrees with the stack on at least `352321537 ≥ k` coordinates, or has triple overlap at most
+`k - 1`. -/
 theorem shared_triple_dichotomy (dom : Fin N ↪ F)
     {γ₁ γ₂ γ₃ : F} (h12 : γ₁ ≠ γ₂) (h13 : γ₁ ≠ γ₃) (h23 : γ₂ ≠ γ₃)
     {S₁ S₂ S₃ : Finset (Fin N)} {u₀ u₁ p₁ p₂ p₃ : Fin N → F}
@@ -156,6 +157,7 @@ theorem shared_triple_dichotomy (dom : Fin N ↪ F)
     (ha₂ : ∀ i ∈ S₂, p₂ i = u₀ i + γ₂ • u₁ i)
     (ha₃ : ∀ i ∈ S₃, p₃ i = u₀ i + γ₃ • u₁ i) :
     (∃ w₀ ∈ predecessorCode dom, ∃ w₁ ∈ predecessorCode dom,
+      (p₁ = w₀ + γ₁ • w₁ ∧ p₂ = w₀ + γ₂ • w₁ ∧ p₃ = w₀ + γ₃ • w₁) ∧
       ∃ D : Finset (Fin N), 352321537 ≤ D.card ∧
         ∀ x ∈ D, w₀ x = u₀ x ∧ w₁ x = u₁ x) ∨
     (S₁ ∩ S₂ ∩ S₃).card ≤ k - 1 := by
@@ -167,7 +169,7 @@ theorem shared_triple_dichotomy (dom : Fin N ↪ F)
     obtain ⟨D, hD, _, _, hagr⟩ :=
       collinear_triple_forces_high_joint_agreement dom h12 h13 h23
         hT₁ hT₂ hT₃ hw₀ hw₁ hc₁ hc₂ hc₃ ha₁ ha₂ ha₃
-    exact ⟨w₀, hw₀, w₁, hw₁, D, hD, hagr⟩
+    exact ⟨w₀, hw₀, w₁, hw₁, ⟨hc₁, hc₂, hc₃⟩, D, hD, hagr⟩
   · right
     have hkval : k = 268435456 := by norm_num [k]
     omega

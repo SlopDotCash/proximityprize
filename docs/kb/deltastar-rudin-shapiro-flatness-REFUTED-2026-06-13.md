@@ -25,6 +25,14 @@ this is the equidistribution/BGK statement, NOT a rigid flat construction: the t
 so flat-polynomial theory cannot apply, and the proof of `M ≤ √(n polylog)` genuinely needs
 sub-Gaussian equidistribution of the period family = the recognized open BGK / Paley-graph problem.
 
-**Net:** one more elementary closure route (flat polynomials) ruled out; the random-like CV≈1
-confirms the conjectured value while confirming the open core is the equidistribution wall.
+*Correction (2026-10-28 audit, T48).* The "complex-Gaussian" reading above is wrong. Here `n` is
+even, so `−1 ∈ μ_n` and every period `η_b` is **real**. A sum of two squared real Gaussian variables
+can also have `CV = 1`, and in any case one summary statistic neither identifies the marginal
+distribution nor proves an extreme-value law for the maximum. The measurement remains valid evidence
+that `g` is far from constant, so this exact flatness route fails. It does not certify a Gaussian
+model or confirm the conjectured value of `M`.
+
+**Net:** one more elementary closure route (flat polynomials) ruled out by the measured
+non-flatness (finite evidence, not a theorem). The CV≈1 observation does not confirm the conjectured
+value; the open core remains the equidistribution wall.
 Related: `deltastar-cumulant-dichotomy-2026-06-13.md`, `deltastar-constant-index-sqrt-cancellation-2026-06-13.md`.

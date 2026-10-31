@@ -28,11 +28,17 @@ Rather than treating this bad scalar count monolithically, this file implements 
 decomposition:
 1. We define the set of bad combining scalars associated with a *fixed* codeword $w \in C$
 (`mcaBadWitness`).
-2. We prove that any bad combining scalar in `mcaBad` must be associated with at least one codeword
-$w$
-   in the list of close codewords, establishing the containment `mcaBad ⊆ ⋃_{w ∈ C} mcaBadWitness
-   w`.
-3. We deduce the corresponding union bound and the card-based scaling bounds.
+2. We prove that any bad combining scalar in `mcaBad` is associated with at least one codeword
+   $w \in C$, establishing the containment `mcaBad ⊆ ⋃_{w ∈ T} mcaBadWitness w` for any finite
+   candidate set `T` that contains **every codeword of `C`** (hypothesis `hT : ∀ w ∈ C, w ∈ T`).
+3. We deduce the corresponding union bound and the card-based scaling bound `|T| · b`.
+
+**Scope.** This is generic union-bound counting plumbing. Because `T` must cover all of `C`
+(not merely a short list of codewords close to the line), the factor `T.card` in
+`mcaBad_card_le_of_per_codeword` is at least `|C|` (e.g. `q^k` for a nontrivial
+Reed–Solomon code), not a list size `L` or `L²`. The sharp list-size factor of the displayed
+GCXK25 bound needs a separate theorem producing a small candidate cover across all bad scalars;
+that cover is **not** supplied here, and this file must not be cited as supplying it.
 
 ## References
 * [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*, 2026.
@@ -105,11 +111,10 @@ theorem mcaBad_card_le_sum_mcaBadWitness_card
 
 open Classical in
 /-- Reduction of the bad combining scalar count to a per-codeword bound.
-Assuming the set of candidate witness codewords is bounded by a list size factor $|T|$, and each
-individual
-codeword $w \in T$ yields at most $b$ bad combining scalars, the total number of bad combining
-scalars
-is at most $|T| \cdot b$. -/
+For a finite candidate set $T$ containing every codeword of $C$ (`hT`), if each codeword
+$w \in T$ yields at most $b$ bad combining scalars, the total number of bad combining scalars is
+at most $|T| \cdot b$. Since `hT` forces $|T| \ge |C|$, this is not a short-list (size `L`)
+bound. -/
 theorem mcaBad_card_le_of_per_codeword
     (C : Set (ι → A)) (δ : ℝ≥0) (u₀ u₁ : ι → A)
     (T : Finset (ι → A)) (hT : ∀ w ∈ C, w ∈ T)

@@ -33,9 +33,14 @@ strictly exceed the original by `1`, and the inequality survives iff `I` was *no
 Lemma 2.4, which (as the PDF proof shows) is **not** a standalone combinatorial fact: it is proven
 only within the minimal-counterexample by replacing the `I`-block with its meet (a system of the
 *same* induction measure `d` but fewer vectors) and transferring independence via the equal-span /
-equal-cardinality counting lemma.  See the report attached to this brick for the precise
-architectural prerequisite (an `m`-aware induction hypothesis, absent from the current `(n,k,d)`
-frame).
+equal-cardinality counting lemma.  When this brick was written, that needed an `m`-aware
+induction hypothesis absent from the then-current `(n,k,d)` frame.
+
+**Current status:** that architectural obstruction is resolved. The frame now carries the
+`m`-induction hypothesis `IHm` (it is part of `LovettMergeReduction.LovettMergeIndep`), Lemma 2.4
+is available inside the minimal counterexample (`tight_card_eq_one_or_m`), the tight-subset case
+is handled by `LovettMergeVStar.mergeSys_mds_general`, and the merge branch is closed by
+`LovettMergeIndepProof.lovettMergeIndep`.
 
 Issue #389.
 -/

@@ -41,7 +41,8 @@ prize target `σ√(2 ln N)` for all large `N`, by the polynomial factor `N^{1/(
 * `union_envelope_exceeds_target` — for any fixed depth `r₀ ≥ 1` and any `N` large enough
   (`N^{1/(2 r₀)} > √(2 ln N)`, an explicit threshold), the bounded-depth max-envelope `N^{1/(2 r₀)}`
   strictly exceeds the EVT target `√(2 ln N)`.  Numeric: at the prize `N ≈ 2^158`, the 4-moment
-  (`r₀ = 2`) envelope overshoots the target by `~ 7·10^{10}`.
+  (`r₀ = 2`) envelope overshoots the target by `≈ 5.25·10^{10}` (`2^{39.5}/√(2·158·ln 2)`; an earlier
+  `~ 7·10^{10}` dropped the factor `2` under the root, audit CW-DL04b-06).
 * `bounded_depth_gap_tendsto_top` qualitatively (stated as the explicit witnessable bound): the
   overshoot factor is `≥ N^{1/(2 r₀)} / √(2 ln N)`, unbounded in `N` for every fixed `r₀`.
 

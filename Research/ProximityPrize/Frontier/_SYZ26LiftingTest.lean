@@ -15,13 +15,21 @@ exhibited a rigidity-deficient (`d>0`) over-budget cover — the `n=6, k=3`
 cores).  SYZ24's "`d=0` for every over-budget family" verdict was likewise measured on
 minimal (size-`k+1`) star/nested covers.
 
-**The decisive question this file answers.**  A bad scalar's witness/core `S` in the
-proximity problem is an *agreement set*: for a radius `δ` in the decisive strip
-`(Johnson ≈ 0.293, 1/3)` at rate `1/2`, the threshold obeys `|S| = t ≥ (1−δ)·n`, so a
-**strip core has size `s ≥ ⌈2n/3⌉`** (`δ < 1/3`), *not* `k+1 = n/2+1`.  Does SYZ25's
-deficient shape survive at these much larger, strip-sized cores?  If yes, a deficiency `d`
-would loosen the SYZ22 budget to `|U| ≤ n−1+d` and threaten the strip; if no, generation is
-forced and the strip is safe.
+**The question this file addresses.**  A bad scalar's *witness* `S` in the proximity
+problem is a scalar agreement set: for a radius `δ` in the decisive strip
+`(Johnson ≈ 0.293, 1/3)` at rate `1/2`, `|S| ≥ t ≥ (1−δ)·n`.  **This does not make the joint
+codeword-pair core large** (audit 2026-10-28, L121): a scalar codeword explains one linear
+combination `u₀ + γ•u₁` on `S`, while a joint core must explain both rows separately.  Exact
+counterexample in the strict strip: `F₁₇`, domain `μ₁₆`, `k = 8`, `δ = 5/16` (`t = 11`),
+`u₁ = X⁸`, `u₀ = −u₁`; `γ = 1` is bad (zero line, nonjoint full set), yet every pencil pair
+through its witnesses has joint core `≤ 8 < t − 1` (replayed in
+`scripts/tests/test_syz26_scalar_witness_vs_joint_core.py`; one exceptional bad scalar only, no
+over-budget or prize counterexample).  So this file studies only the **large-joint-core
+sub-case**: *if* the cores have size `s ≥ ⌈2n/3⌉` (`δ < 1/3`), *not* `k+1 = n/2+1`, does SYZ25's
+deficient shape survive?  If yes, a deficiency `d` would loosen the SYZ22 budget to
+`|U| ≤ n−1+d` for such families; if no, generation is forced for such families.  Extending
+either answer to all strip events needs a separate, proved reduction from arbitrary strip
+events to large joint cores, which is not supplied here.
 
 ## The probe verdict (`scripts/probes/probe_syz26_lifting_test.py`): STRIP TRUE-mechanism
 
@@ -74,9 +82,10 @@ combinatorially; the rank drop is realized abstractly by SYZ25 §3 `overbudget_n
 ## Honest δ\* verdict
 
 **Decisive answer: the deficiency does NOT lift into the open strip.**  Field-independent
-rigidity-deficient over-budget covers require `δ ≥ 1/3` (core size `≤ ⌈2n/3⌉`); the open
-strip `(Johnson, 1/3)` forces core size `> 2n/3`, which the probe finds always generates
-(`d = 0`).  The rigorous end (§1/§2) proves generation for `δ ≤ 1/4` from pure overlap counting;
+rigidity-deficient over-budget covers (in the probe's random search) require `δ ≥ 1/3` (core
+size `≤ ⌈2n/3⌉`); covers whose cores have size `> 2n/3` are found to generate (`d = 0`).  This
+is a statement about large-joint-core families only: a strip event does not force a large
+joint core (L121 counterexample above), so it is not an all-stack strip result.  The rigorous end (§1/§2) proves generation for `δ ≤ 1/4` from pure overlap counting;
 the strip interior `1/4 < δ < 1/3` is deficiency-free by exhaustive-random probe but its
 polynomial-gluing proof is the unchanged honest residual.  The strip is **not** falsified — the
 SYZ25 shape sits precisely on the boundary the strip excludes.  Unconditional δ\* status untouched.

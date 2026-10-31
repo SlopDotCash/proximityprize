@@ -702,8 +702,9 @@ incidence, so the prize bound is a bound on `E_r(μ_n)`. Three results this sess
   `∑_b‖η_b‖^{2r}=q·E_r` (pure orthogonality, no Weil). Converts ANY `E_r` bound into a Shaw/η bound.
 
   **(2) The EXACT prize constant √2** (char-0 Wick). For `n=2^μ`, `{ζ^0..ζ^{n/2−1}}` is a ℚ-basis of
-  `ℚ(ζ_n)`, so the char-0 `r`-fold energy is a pure matching count `E_r^ℂ(μ_n)=(2r−1)!!·n^r`
-  (μ_n ≈ complex Gaussian; r=1→n, r=2→3n²−3n in-tree-exact). At the critical `r≈ln q` this yields
+  `ℚ(ζ_n)`, so the char-0 `r`-fold energy is a matching count with leading term
+  `E_r^ℂ(μ_n)≈(2r−1)!!·n^r` (leading order only, not exact: r=1→n, r=2→3n²−3n in-tree-exact;
+  μ_n ≈ complex Gaussian). At the critical `r≈ln q` this yields
   `max‖η_b‖ ≤ √(2·n·ln q)`. The controlled quantity is the EXCESS over the equidistribution baseline,
   `Excess(r):=E_r−n^{2r}/q=(1/q)∑_{b≠0}‖η_b‖^{2r}`; the prize ⟺ `Excess(ln q) ≤ (2r−1)!!·n^r`. The
   `r=2` case is PROVEN in-tree (pinned `E_2=3n²−3n`, `n⁴/q≈2⁻⁹⁶` negligible) but gives only a trivial
@@ -749,8 +750,15 @@ not a proof. Full record: `docs/kb/jlr26-frs-subspace-design-formalization-map-2
 
 ## §R.4  SYNTHESIS 2026-06-13d — δ* is the CAPACITY term (Incidence-Genericity Dichotomy + refutation).
 
-⛔ **CORRECTED (KB §37): this section's "δ* = capacity term" claim is WRONG.** Kambiré
-(arXiv:2604.09724, native to μ_{2^t}) PROVES δ* is the WINDOW EDGE `1−ρ−2/(K·log₂n)`=`1−ρ−Θ(1/log n)`,
+⛔ **CORRECTED (KB §37): this section's "δ* = capacity term" claim is WRONG.**  ⛔ **Second
+correction (audit CW-B20-02):** the KB §37 replacement reading "Kambiré PROVES δ* is the WINDOW
+EDGE `1−ρ−2/(K·log₂n)` = `1−ρ−Θ(1/log n)`" is ALSO contradicted as an equality claim at the literal
+P1 instance (ρ = 1/4): the kernel-checked
+`P1RateQuarterCommonFactorCanonicalBridge.evalCode_commonFactor_mcaDeltaStar_lt_half` and
+`P1RateQuarterScaleFinalConsumer.rateQuarter_mcaDeltaStar_lt_half` give
+`mcaDeltaStar ≤ 43/96 + 1/(3N) < 1/2`, far below `0.75 − Θ(1/30)`.  Only Kambiré's upper-bracket
+construction (bad scalars exist beyond some radius) is unaffected.  The original KB §37 text
+follows: Kambiré (arXiv:2604.09724, native to μ_{2^t}) was read as proving δ* is the window edge,
 NOT the capacity term. The in-tree historical candidate
 `PrizeEntropyDeltaStar.prizeDeltaStar(ρ, q·ε*)` was proposed as that window edge, but its generic
 finite equality and the obvious rate-and-log-unit repair are now refuted in
@@ -1085,9 +1093,6 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check @ProximityGap.ProjectiveMetricUnification.projectiveBallIncidence_eq_lowCosetWeightCount
 #check @ProximityGap.ProjectiveQuotientBall.pencilJointFar_quotientPencil_iff_not_jointProximity
 #check @ProximityGap.ProjectiveQuotientBall.badSlotCount_eq_projectiveBallIncidence_of_not_jointProximity
-#check @ProximityGap.ProjectiveQuotientBall.affineBallIncidence_spectral
-#check @ProximityGap.ProjectiveMetricUnification.mem_quotientSyndromeBall_iff_cosetRelWeight_le
-#check @ProximityGap.ProjectiveMetricUnification.projectiveBallIncidence_eq_lowCosetWeightCount
 #check @ProximityGap.ProjectiveProperQuotientBall.properQuotientBall_subset_quotientSyndromeBall
 #check @ProximityGap.ProjectiveProperQuotientBall.properQuotientBall_eq_quotientSyndromeBall_of_pencilJointFar
 #check @ProximityGap.ProjectiveProperQuotientBall.badSlotCount_eq_properProjectiveBallIncidence
@@ -1312,7 +1317,6 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFour.overlap_three_kfour_constant_quotient_reconciliation
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFour.unique_line_intersection_of_common_factor
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourLongOutsiderCollapse.outsideLineAtLeast_ten_card_le_one_of_card_gt_sixteen
-#check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourLongOutsiderCollapse.eight_le_regularOutsideLine_card_of_card_gt_sixteen
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourPopulation.offBothPoints_card_le_ten_of_relevant_core_cap
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourPopulation.card_le_sixteen_of_equal_slope_overlap_three_core_cap
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourUnequalResidual.overlap_three_core_cap_saturation_of_sixteen_lt_card
@@ -1408,7 +1412,8 @@ example (g : ℕ) (hg : 2 ≤ g) : deepBandBadCount g ≤ deepBandBudget g :=
 /-! §D.2  THE r = 4 RUNG — PROVEN axiom-clean (`DeepBandR4Bound`, O177). 2-adic descent to r=3:
       `deepBandBadCount4 g = g^4 - 2g^3 + 4g + 1 = 1 + n·deepBandBadCount(n/8)` (n=4g).
       `deepBandBadCount4_le_budget` (#bad₄ ≤ K, g≥2) AND `deepBandBadCount4_le_half_budget_of_prize`
-      (#bad₄ ≤ K/2, g≥3, the whole prize domain) — both Lean-proven. Exactness #bad=formula is
+      (#bad₄ ≤ K/2, g≥4; the g≥3 form is `deepBandBadCount4_two_mul_le_budget`) — both
+      Lean-proven. Exactness #bad=formula is
       COMPUTED (descent bijection, n=16/32/64); the ≤K and ≤K/2 bounds are PROVEN. -/
 open ArkLib.ProximityGap.DeepBandR4 in
 example (g : ℕ) (hg : 3 ≤ g) :
@@ -1436,12 +1441,15 @@ example (g : ℕ) (hg : 3 ≤ g) :
 
     WHAT IS KNOWN (calibrate against this — do NOT contradict it):
     · r = 3 is closed all-n (the brick above): `#bad(3) = n·C(n/4,2)+1`, divisor family `x^{n/2}`.
-    · The worst-case monomial family is DIVISOR-DEPENDENT: `x^{n/2}` saturates at r = 3; at r = 4
-      that line degenerates (#bad = 1) and the `x^{n/4}` family takes over. So a SINGLE closed
-      form across r is unlikely — expect a max-over-divisors / per-band statement.
+    · The worst-case monomial family is DIVISOR-DEPENDENT: the order-2 line (`x^{n/2}` family)
+      is the maximizer at r = 3 AND r = 4 (`DeepBandR4Bound`: e.g. line (16,9) at n = 32, #bad =
+      3105), but NOT at r = 5, where the full-order line (x^17, x^31) wins at n = 32 (#bad = 1441
+      vs 33 for the order-2 line). So a SINGLE closed form across r is unlikely — expect a
+      max-over-divisors / per-band statement.
     · #bad is NON-MONOTONE in r (n = 16 faithful: r = 3..8 → 97,145,89,113,225,104 vs
       K = 448,1120,1792,1792,1024,256), but `≤ K` with margin 2.46×–20.1× (n=16), 5.0× (n=32, r=3),
-      33× (n=32, r=4). General-`r ≤ K` is MEASURED only — this is the open analytic core.
+      9.38× (n=32, r=4: 3105 vs K = 29120, `DeepBandR4Bound.rung_n32`). General-`r ≤ K` is MEASURED only — this is the
+      open analytic core.
     · The literal alignable-SETS form is FALSE (O171 lossy overcount: #align ≫ K). The correct
       object is the #bad-SCALAR count (distinct `γ`), via the Vieta pin + distinctness.
     · The count is `q`-independent; production `q` is the worst case (O172 saturating envelope).
@@ -1485,6 +1493,18 @@ theorem deepBandBudget_r_three (g : ℕ) :
     ║   §R.5  SESSION 2026-06-13e — the EXACT δ* (Kambiré window edge) + the      ║
     ║         FACTORIZATION-RIGIDITY proof machinery for the demand-side budget   ║
     ════════════════════════════════════════════════════════════════════════════
+
+    ⛔ **REFUTED / SUPERSEDED (audit CW-B20-02).**  The "exact δ*" formula (★) below is
+    contradicted by kernel-checked results in this tree.  At the literal P1 instance
+    (N = 2^30, k = 2^28 so ρ = 1/4, P = 365375409332725729550921208179070755120141565953,
+    log₂(P·2^-128) = 30), (★) evaluates to ≈ 0.73845, but
+    `P1RateQuarterCommonFactorCanonicalBridge.evalCode_commonFactor_mcaDeltaStar_lt_half` and
+    `P1RateQuarterScaleFinalConsumer.rateQuarter_mcaDeltaStar_lt_half` prove
+    `mcaDeltaStar ≤ 43/96 + 1/(3N) ≈ 0.4479 < 1/2` (see the 2026-07-10 correction above).  At
+    ρ = 1/2, (★) gives exactly the capacity value 1/2, which §1.5 already records as disproven.
+    So neither "(★) is tight" nor "Kambiré proves δ* is the window edge" holds; the factorization-
+    rigidity lemmas (1) below remain valid as standalone Lean facts.  The original text is kept
+    for history only.
 
     **The exact conjecture (worst case included).** For explicit smooth RS[F_q, μ_n, k] in the
     prize regime (n = 2^μ, q = n^β, ρ = k/n, ε* = 2^-128):

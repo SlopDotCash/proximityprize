@@ -15,11 +15,14 @@ character sum `η_b = ∑_{y∈G} ψ(b·y)` is large — is small.
 > **`card_high_frequency_le`** — `#{b : ‖η_b‖² ≥ T} · T ≤ q·|G|`, i.e. at most `q|G|/T`
 > frequencies have `‖η_b‖² ≥ T`.
 
-Taking `T = λ·|G|`: all but a `q/λ` fraction of frequencies obey `‖η_b‖ < √(λ|G|)` — the
-square-root cancellation `|η_b| = O(√|G|)` holds for *almost all* frequencies (the average case).
+Taking `T = λ·|G|`: all but at most `q/λ` of the `q` frequencies — i.e. all but a fraction at most
+`1/λ` — obey `‖η_b‖ < √(λ|G|)`. For a fixed `λ` this is only a fixed error fraction `1/λ`; the
+statement "square-root cancellation `|η_b| = O(√|G|)` for *almost all* frequencies" needs
+`λ → ∞` (with the implied constant `√λ` growing) or a separate stronger estimate, neither of which
+is proved here.
 The δ\* interior residual is precisely the *worst case over all `b≠0`* (the open Bourgain regime,
-CLAUDE.md face #3); this lemma pins that the failure, if any, is confined to a sparse set of
-frequencies. Axiom-clean. Issue #389.
+CLAUDE.md face #3); this lemma only shows that frequencies with `‖η_b‖² ≥ λ|G|` form at most a
+`1/λ` fraction. Axiom-clean. Issue #389.
 -/
 
 open Finset AddChar
@@ -47,8 +50,9 @@ theorem card_high_frequency_le {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : 
     _ ≤ ∑ b : F, ‖eta ψ G b‖ ^ 2 := h3
     _ = (Fintype.card F : ℝ) * G.card := subgroup_gaussSum_secondMoment hψ G
 
-/-- **Almost-all frequencies have `√|G|` cancellation.** For `λ > 0` and `0 < |G|`, the number of
-frequencies with `‖η_b‖² ≥ λ·|G|` is at most `q/λ`. -/
+/-- **Level-set count at threshold `λ·|G|`.** For `λ > 0` and `0 < |G|`, the number of
+frequencies with `‖η_b‖² ≥ λ·|G|` is at most `q/λ`, i.e. at most a `1/λ` fraction of the `q`
+frequencies. ("Almost all" requires letting `λ → ∞`.) -/
 theorem card_high_frequency_le_div {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
     {lam : ℝ} (hlam : 0 < lam) (hG : 0 < G.card) :
     ((Finset.univ.filter (fun b => lam * G.card ≤ ‖eta ψ G b‖ ^ 2)).card : ℝ)

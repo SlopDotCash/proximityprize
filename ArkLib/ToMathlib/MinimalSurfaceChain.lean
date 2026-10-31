@@ -12,7 +12,7 @@ import ArkLib.ToMathlib.FiberSectionCoherence
 /-!
 # The #304 end-to-end chain theorem over the final minimal surface
 
-**GOAL (this file, Part 4)**: `Chain304.correlatedAgreement_of_minimal_surface` — ONE
+**GOAL (this file)**: `Chain304.correlatedAgreement_of_minimal_surface` — ONE
 theorem whose hypothesis list IS the final minimal external surface of #304 and whose
 conclusion is the keystone `δ_ε_correlatedAgreementCurves` ([BCIKS20] Theorem 1.4 /
 Claim A.2 conclusion) in the strict list-decoding regime `δ < 1 − √ρ`.
@@ -35,15 +35,12 @@ underlying `hcoeffPoly_witness_of_producersOn_radical_sep`)
 ∘ `FiberSectionCoherence.section_dvd_global_of_local_coherence` (the fiberwise → global
 section lift, interpolation rigidity + lifting budget).
 
-**Build note (olean gap)**: `ArkLib/ToMathlib/RadicalAssembler.lean` is landed in-tree
-but has NO olean in the current build, so it cannot be imported here; Parts 1–3 below
-are its content inlined VERBATIM (same fully-qualified names, statements and proofs
-unchanged) under its own three imports, which all have oleans
-(`SectionGlobalLift`, `RadicalBranch`, `GSSurfaceMappedSeparability`).  When the tree
-heals, delete Parts 1–3 and `import ArkLib.ToMathlib.RadicalAssembler` instead.
+**Imports.** The radical assembler is imported from its canonical module
+`ArkLib/ToMathlib/RadicalAssembler.lean`. An earlier version of this file inlined that module's
+declarations under the same fully-qualified names because its olean was missing in one local
+build; that copy has been removed, and only the chain theorem is defined here.
 -/
 
-/-! ## Parts 1–3 — `ArkLib/ToMathlib/RadicalAssembler.lean` inlined VERBATIM (no olean; see build note) -/
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false
 
@@ -52,72 +49,7 @@ open ProximityGap Code NNReal Finset Function ProbabilityTheory
 open UniqueFactorizationMonoid
 open scoped BigOperators ENNReal ProbabilityTheory LinearCode
 
-namespace ArkLib
-
-namespace RadicalWire304
-
-/-! ## Part 1 — the canonical radical package at the bundle
-
-`split_canonical_radical` + `hbr_canonical_radical`: the `(hsplit, hbr)` package at
-`radical (evalX (C x₀) b.R)`, with NO separability input — squarefreeness is free on the
-radical; the only consequence of the bundle-internal `separable_evalX` consumed is
-nonzeroness of the fiber. -/
-
-section CanonicalRadical
-
-variable {F : Type} [Field F] [DecidableEq F]
-
-variable [Fintype F]
-
-end CanonicalRadical
-
-/-! ## Part 2 — the radical decoded-root supply
-
-`DecodedRootSupply.rootDecoded` re-run against the radical: the centre-fold linear factor
-`(Y′ − C (w.eval (C x₀)))` is prime, hence divides `radical (evalX (C x₀) R)`; through the
-radical split and per-place branch separation at the RADICAL cofactor, every such place
-decodes a rational root of `H` — no squarefreeness of the fiber anywhere. -/
-
-section DecodedRadical
-
-variable {F : Type} [Field F] [DecidableEq F]
-variable {H : F[X][Y]} [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
-
-open PowerSeries
-open ProximityPrize.BCIKS20.GammaGenuine
-
-section Family
-
-variable [Fintype F]
-
-end Family
-
-end DecodedRadical
-
-end RadicalWire304
-
-/-! ## Part 3 — the assembler re-run against the radical: the front door -/
-
-namespace RootOn304
-
-open CorrelatedAgreementListDecodingClosed
-open BetaToCurveCoeffPolys
-open HcardDischarge
-
-section ProducersRadical
-
-open BetaRecGenuineBridge
-
-variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
-
-end ProducersRadical
-
-end RootOn304
-
-end ArkLib
-
-/-! ## Part 4 — the #304 END-TO-END CHAIN THEOREM over the final minimal surface -/
+/-! ## The #304 END-TO-END CHAIN THEOREM over the final minimal surface -/
 
 namespace ArkLib
 

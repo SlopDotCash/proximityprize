@@ -1,26 +1,31 @@
-# Allowlist of documented, tracked residual `axiom` declarations.
+# Reviewed residual `axiom` declarations: documented assumptions, not proofs.
 #
-# scripts/forbidden_tokens.py rejects every custom `axiom` in live ArkLib, Research, and ProximityPrize
-# source as a laundering token. A *named, deliberately retained* residual —
-# an explicit theorem-scope obligation owed to an open tracking issue, kept as
-# an `axiom` rather than a `sorry` so it is visible and auditable — is listed
-# here to keep CI gate 1 green WITHOUT weakening the gate: any axiom whose
-# declared name is NOT in this file still fails the precheck.
+# scripts/forbidden_tokens.py rejects every custom `axiom` in live ArkLib,
+# Research and ProximityPrize source. A named, deliberately retained residual (an explicit
+# obligation owed to an open tracking issue, kept as an `axiom` rather than a
+# `sorry` so that it is visible and auditable) may be pinned here. A pin keeps
+# CI gate 1 green without weakening it. It records an assumption; it does not
+# establish that the pinned statement is true or even consistent.
 #
-# Format: one entry per line, `<axiom-name>  # #<issue> short note`.
-# The name must be the declared identifier exactly as written at the `axiom`
-# site (the simple name, before namespace prefixing). Comments (`#`) and blank
-# lines are ignored. Keep this list minimal: every entry is a debt. When the
-# owning issue discharges/removes the axiom, delete its line here (the precheck
-# warns on stale entries that match no axiom in the tree).
+# Format: one entry per line,
+#   <fully qualified name>  <defining file>  sha256:<signature digest>  # <issue> note
+# * the fully qualified name is the namespace path plus the declared name
+#   (`_root_.` stripped, redundant «» dropped);
+# * the defining file is relative to the repository root;
+# * the digest covers the declaration's signature (everything after its name up
+#   to the next command, comments dropped, whitespace collapsed) and the
+#   in-scope `variable`, `universe`, `open`, `export`, `include` and `omit`
+#   commands, which change its elaborated type without changing its text.
+# Each entry authorizes exactly ONE declaration. A declaration with the same
+# simple name under another namespace, one in another file, and one whose
+# statement or context changed are all rejected until this file is updated in a
+# reviewed change. Print the current pins with
+#   python3 scripts/forbidden_tokens.py --print-residual-manifest
+# and copy a line here only after reviewing the statement it pins.
 #
-# One entry documents exactly ONE declaration. Because the entry is a simple
-# name, it also matches a declaration inside any namespace, so a second `axiom`
-# that clones the name (`namespace Sneaky` + `axiom <entry> : False`) would
-# otherwise inherit the entry and launder a new axiom under a trusted name. The
-# precheck rejects any allowlisted name declared more than once in the scanned
-# tree; it needs the full-tree scan (as CI and validate.sh run it) to see both
-# declarations.
+# Keep this list minimal: every entry is a debt. When the owning issue
+# discharges the axiom or turns it into an explicit hypothesis, delete its line
+# (a full scan warns about entries that match no live axiom).
 #
 # This is route (a) of #111. Routes (b) "discharge" and (c) "convert to
 # def : Prop / class" remain preferable long-term and are owned by each

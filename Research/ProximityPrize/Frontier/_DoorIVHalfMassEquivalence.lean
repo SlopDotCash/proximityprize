@@ -17,13 +17,21 @@ coset-half split.  Two facts pin `M` and `H` to the same scale:
 
 * `M ≤ H` **always** (coherence ≤ 1, i.e. `‖A+B‖ ≤ ‖A‖+‖B‖` pointwise, so the max transfers) —
   proven in `_DoorIVHalfMassFactorization.norm_le_halfMass`.
-* `H ≤ C·M` for an absolute constant `C ≈ 1` (probe `probe_dooriv_halfmass_equiv.py`: `H/M = 1.00`
-  at `n=16,64` full/near-full scan, `1.11` at `n=32` sampled; `H` and `M` coincide).
+* `H ≤ K·M` for an absolute constant `K ≈ 1` is **only probed, not proven** (probe
+  `probe_dooriv_halfmass_equiv.py`: `H/M = 1.00` at `n=16,64` full/near-full scan, `1.11` at `n=32`
+  sampled; so on these probes `H` and `M` are close, within about 11%, but not identical).
 
-This file records the abstract **reduction**: under those two bounds, a prize-shaped bound on `M`
-is equivalent (up to the constant `C`) to the same-shaped bound on `H`.  So the open door-(iv) target
-can be **restated entirely in terms of the half-mass** `H(n)` — the citable reduction
-`prize ⟺ H(n) = O(√(n·log(p/n)))`.
+This file records the abstract **conditional reduction**: *assuming* a family-wide comparison
+`H ≤ K·M` with one constant `K` (an unproven hypothesis, passed explicitly as `hHM`), a prize-shaped
+bound on `M` is equivalent (up to `K`) to the same-shaped bound on `H`.  So, conditional on that
+comparison, the open door-(iv) target can be restated in terms of the half-mass `H(n)`:
+`prize ⟺ H(n) = O(√(n·log(p/n)))`.  Without `hHM` only the direction `H = O(scale) → prize`
+holds.
+
+The prize-side and half-mass-side predicates (`prizeFamilyBound`/`halfMassFamilyBound`, their
+normalized and unbounded forms) are the same predicate applied to different functions; they are
+abbreviations of the single generic `familyBound`/`normalizedFamilyBound`/`normalizedFamilyUnbounded`,
+and their normalization/negation lemmas are instances of one generic lemma each.
 
 Scope: order arithmetic over `ℝ`.  No CORE/cancellation/capacity claim — this is the reduction wrapper,
 with the analytic content (the bound on `H` itself) left open exactly as before.
@@ -51,7 +59,9 @@ theorem halfMassBound_of_prizeBound {M H K C scale : ℝ}
   have h2 : K * (C * scale) = (K * C) * scale := by ring
   exact le_trans hHM (h2 ▸ h1)
 
-/-- **Prize ⟺ half-mass bound (up to constants).**  Given the always-true `M ≤ H` and the probed
+/-- **Prize ⟺ half-mass bound (up to constants) — content-free pointwise form.**  For a single
+`scale > 0` both sides are trivially true (take `C := M/scale`, resp. `H/scale`), so this statement
+carries no information; it is kept only as the pointwise shape of the family theorem.  Given the always-true `M ≤ H` and the probed
 reverse `H ≤ K·M` (`K ≈ 1`), the existence of an absolute prize constant is equivalent to the existence
 of an absolute half-mass constant: a prize-shaped bound on `M` and the same-shaped bound on `H` imply
 each other up to the factor `K`.  (Pointwise rung: for a single positive scale a `C` can be picked
@@ -92,35 +102,80 @@ theorem normalized_prize_halfMass_sandwich {M H K scale : ℝ}
 The pointwise `prizeBound_iff_halfMassBound` above is, for a single positive scale, satisfiable by a
 pointwise `C` and so does NOT by itself capture an absolute Big-O constant.  The family forms below
 require ONE constant across the whole admissible index family `ι` (the fields / subgroup sizes), which
-IS the `prize ⟺ H(n)=O(scale)` statement. -/
+IS the `prize ⟺ H(n)=O(scale)` statement — conditional, in every two-sided form, on the probed
+family-wide comparison `hHM : ∀ i, H i ≤ K * M i`. -/
 
-/-- A uniform prize-family bound: one constant `C` for every index. -/
-def prizeFamilyBound {ι : Type*} (M scale : ι → ℝ) (C : ℝ) : Prop :=
-  ∀ i, M i ≤ C * scale i
+/-- Generic uniform family bound: one constant `C` with `f i ≤ C * scale i` for every index. -/
+def familyBound {ι : Type*} (f scale : ι → ℝ) (C : ℝ) : Prop :=
+  ∀ i, f i ≤ C * scale i
 
-/-- A uniform half-mass-family bound: one constant `C` for every index. -/
-def halfMassFamilyBound {ι : Type*} (H scale : ι → ℝ) (C : ℝ) : Prop :=
-  ∀ i, H i ≤ C * scale i
+/-- Generic uniform normalized family bound: one constant `C` bounds `f i / scale i`. -/
+def normalizedFamilyBound {ι : Type*} (f scale : ι → ℝ) (C : ℝ) : Prop :=
+  ∀ i, f i / scale i ≤ C
 
+/-- Generic quantified wall-witness form: every proposed constant is beaten somewhere. -/
+def normalizedFamilyUnbounded {ι : Type*} (f scale : ι → ℝ) : Prop :=
+  ∀ C : ℝ, ∃ i, C < f i / scale i
+
+/-- A uniform prize-family bound: one constant `C` for every index (`familyBound` of `M`). -/
+abbrev prizeFamilyBound {ι : Type*} (M scale : ι → ℝ) (C : ℝ) : Prop :=
+  familyBound M scale C
+
+/-- A uniform half-mass-family bound (`familyBound` of `H`; same predicate as the prize one). -/
+abbrev halfMassFamilyBound {ι : Type*} (H scale : ι → ℝ) (C : ℝ) : Prop :=
+  familyBound H scale C
 
 /-- A uniform normalized prize-family bound: one constant `C` bounds `M / scale` for every index.
 This is the Shaw-value form of `prizeFamilyBound` when `scale = √(n log(p/n))`. -/
-def normalizedPrizeFamilyBound {ι : Type*} (M scale : ι → ℝ) (C : ℝ) : Prop :=
-  ∀ i, M i / scale i ≤ C
+abbrev normalizedPrizeFamilyBound {ι : Type*} (M scale : ι → ℝ) (C : ℝ) : Prop :=
+  normalizedFamilyBound M scale C
 
-/-- A uniform normalized half-mass-family bound: one constant `C` bounds `H / scale` for every index. -/
-def normalizedHalfMassFamilyBound {ι : Type*} (H scale : ι → ℝ) (C : ℝ) : Prop :=
-  ∀ i, H i / scale i ≤ C
+/-- A uniform normalized half-mass-family bound: one constant `C` bounds `H / scale`. -/
+abbrev normalizedHalfMassFamilyBound {ι : Type*} (H scale : ι → ℝ) (C : ℝ) : Prop :=
+  normalizedFamilyBound H scale C
 
-/-- Quantified wall-witness form for normalized prize ratios: every proposed absolute constant is
-beaten somewhere in the family.  This is the constructive-facing negation of bounded Shaw value. -/
-def normalizedPrizeFamilyUnbounded {ι : Type*} (M scale : ι → ℝ) : Prop :=
-  ∀ C : ℝ, ∃ i, C < M i / scale i
+/-- Quantified wall-witness form for normalized prize ratios. -/
+abbrev normalizedPrizeFamilyUnbounded {ι : Type*} (M scale : ι → ℝ) : Prop :=
+  normalizedFamilyUnbounded M scale
 
-/-- Quantified wall-witness form for normalized half-mass ratios: every proposed absolute constant is
-beaten somewhere in the family. -/
-def normalizedHalfMassFamilyUnbounded {ι : Type*} (H scale : ι → ℝ) : Prop :=
-  ∀ C : ℝ, ∃ i, C < H i / scale i
+/-- Quantified wall-witness form for normalized half-mass ratios. -/
+abbrev normalizedHalfMassFamilyUnbounded {ι : Type*} (H scale : ι → ℝ) : Prop :=
+  normalizedFamilyUnbounded H scale
+
+/-- The negation of a bounded normalized family constant is exactly the quantified
+counterexample form `∀ C, ∃ i, C < f i / scale i` (pure order logic). -/
+theorem not_exists_normalizedFamilyBound_iff_normalizedFamilyUnbounded {ι : Type*}
+    {f scale : ι → ℝ} :
+    (¬ ∃ C, normalizedFamilyBound f scale C) ↔ normalizedFamilyUnbounded f scale := by
+  constructor
+  · intro h C
+    by_contra hnone
+    have hbound : normalizedFamilyBound f scale C := by
+      intro i
+      exact le_of_not_gt (fun hi => hnone ⟨i, hi⟩)
+    exact h ⟨C, hbound⟩
+  · intro hun h
+    rcases h with ⟨C, hC⟩
+    rcases hun C with ⟨i, hi⟩
+    exact (not_lt_of_ge (hC i)) hi
+
+/-- Raw family bounds are equivalent to normalized-ratio bounds under positive scales, with the
+same constant. -/
+theorem familyBound_iff_normalizedFamilyBound {ι : Type*} {f scale : ι → ℝ} {C : ℝ}
+    (hscale : ∀ i, 0 < scale i) :
+    familyBound f scale C ↔ normalizedFamilyBound f scale C := by
+  constructor
+  · intro h i
+    have hdiv : f i / scale i ≤ (C * scale i) / scale i :=
+      div_le_div_of_nonneg_right (h i) (le_of_lt (hscale i))
+    have hrewrite : (C * scale i) / scale i = C := by
+      rw [mul_div_cancel_right₀ C (ne_of_gt (hscale i))]
+    exact hrewrite ▸ hdiv
+  · intro h i
+    calc
+      f i = (f i / scale i) * scale i := by
+        rw [div_mul_cancel₀ (f i) (ne_of_gt (hscale i))]
+      _ ≤ C * scale i := mul_le_mul_of_nonneg_right (h i) (le_of_lt (hscale i))
 
 /-- The negation of a bounded normalized prize-family constant is exactly the quantified
 counterexample form `∀ C, ∃ i, C < M i / scale i`.  No asymptotics or arithmetic estimate is hidden;
@@ -128,36 +183,16 @@ this is only order logic over the normalized ratios. -/
 theorem not_exists_normalizedPrizeFamilyBound_iff_normalizedPrizeFamilyUnbounded {ι : Type*}
     {M scale : ι → ℝ} :
     (¬ ∃ C, normalizedPrizeFamilyBound M scale C) ↔
-      normalizedPrizeFamilyUnbounded M scale := by
-  constructor
-  · intro h C
-    by_contra hnone
-    have hbound : normalizedPrizeFamilyBound M scale C := by
-      intro i
-      exact le_of_not_gt (fun hi => hnone ⟨i, hi⟩)
-    exact h ⟨C, hbound⟩
-  · intro hun h
-    rcases h with ⟨C, hC⟩
-    rcases hun C with ⟨i, hi⟩
-    exact (not_lt_of_ge (hC i)) hi
+      normalizedPrizeFamilyUnbounded M scale :=
+  not_exists_normalizedFamilyBound_iff_normalizedFamilyUnbounded
 
 /-- The negation of a bounded normalized half-mass-family constant is exactly the quantified
 counterexample form `∀ C, ∃ i, C < H i / scale i`. -/
 theorem not_exists_normalizedHalfMassFamilyBound_iff_normalizedHalfMassFamilyUnbounded {ι : Type*}
     {H scale : ι → ℝ} :
     (¬ ∃ C, normalizedHalfMassFamilyBound H scale C) ↔
-      normalizedHalfMassFamilyUnbounded H scale := by
-  constructor
-  · intro h C
-    by_contra hnone
-    have hbound : normalizedHalfMassFamilyBound H scale C := by
-      intro i
-      exact le_of_not_gt (fun hi => hnone ⟨i, hi⟩)
-    exact h ⟨C, hbound⟩
-  · intro hun h
-    rcases h with ⟨C, hC⟩
-    rcases hun C with ⟨i, hi⟩
-    exact (not_lt_of_ge (hC i)) hi
+      normalizedHalfMassFamilyUnbounded H scale :=
+  not_exists_normalizedFamilyBound_iff_normalizedFamilyUnbounded
 
 /-- Direct normalized transfer from prize to half-mass: if the normalized prize ratios are bounded
 by `C`, then the normalized half-mass ratios are bounded by `K*C` under the comparison `H ≤ K*M`.
@@ -211,42 +246,22 @@ theorem exists_normalizedPrizeFamilyBound_iff_exists_normalizedHalfMassFamilyBou
 with the same constant.  This is the scale-generic analogue of the Shaw-value normalization. -/
 theorem prizeFamilyBound_iff_normalizedPrizeFamilyBound {ι : Type*} {M scale : ι → ℝ} {C : ℝ}
     (hscale : ∀ i, 0 < scale i) :
-    prizeFamilyBound M scale C ↔ normalizedPrizeFamilyBound M scale C := by
-  constructor
-  · intro h i
-    have hdiv : M i / scale i ≤ (C * scale i) / scale i :=
-      div_le_div_of_nonneg_right (h i) (le_of_lt (hscale i))
-    have hrewrite : (C * scale i) / scale i = C := by
-      rw [mul_div_cancel_right₀ C (ne_of_gt (hscale i))]
-    exact hrewrite ▸ hdiv
-  · intro h i
-    calc
-      M i = (M i / scale i) * scale i := by
-        rw [div_mul_cancel₀ (M i) (ne_of_gt (hscale i))]
-      _ ≤ C * scale i := mul_le_mul_of_nonneg_right (h i) (le_of_lt (hscale i))
+    prizeFamilyBound M scale C ↔ normalizedPrizeFamilyBound M scale C :=
+  familyBound_iff_normalizedFamilyBound hscale
 
 /-- Raw half-mass-family bounds are equivalent to normalized half-mass-ratio bounds under positive
 scales, with the same constant. -/
 theorem halfMassFamilyBound_iff_normalizedHalfMassFamilyBound {ι : Type*} {H scale : ι → ℝ} {C : ℝ}
     (hscale : ∀ i, 0 < scale i) :
-    halfMassFamilyBound H scale C ↔ normalizedHalfMassFamilyBound H scale C := by
-  constructor
-  · intro h i
-    have hdiv : H i / scale i ≤ (C * scale i) / scale i :=
-      div_le_div_of_nonneg_right (h i) (le_of_lt (hscale i))
-    have hrewrite : (C * scale i) / scale i = C := by
-      rw [mul_div_cancel_right₀ C (ne_of_gt (hscale i))]
-    exact hrewrite ▸ hdiv
-  · intro h i
-    calc
-      H i = (H i / scale i) * scale i := by
-        rw [div_mul_cancel₀ (H i) (ne_of_gt (hscale i))]
-      _ ≤ C * scale i := mul_le_mul_of_nonneg_right (h i) (le_of_lt (hscale i))
+    halfMassFamilyBound H scale C ↔ normalizedHalfMassFamilyBound H scale C :=
+  familyBound_iff_normalizedFamilyBound hscale
 
 /-- **Uniform-family door-(iv) reduction (the Big-O statement).**  Given, over the whole index family,
 the always-true `M i ≤ H i` and the probed reverse `H i ≤ K · M i` with a SINGLE constant `K ≥ 0`, the
 existence of an absolute prize constant is equivalent to the existence of an absolute half-mass
-constant.  This is the honest `prize ⇔ H(n)=O(scale)`: one constant for all `n`, not pointwise. -/
+constant.  This is `prize ⇔ H(n)=O(scale)` with one constant for all `n`, not pointwise — **conditional** on
+the family-wide comparison `hHM : ∀ i, H i ≤ K * M i`, which is only probed numerically, not
+proven.  Only the direction `H = O(scale) → prize` is unconditional (it uses `hMH` alone). -/
 theorem exists_prizeFamilyBound_iff_exists_halfMassFamilyBound {ι : Type*}
     {M H scale : ι → ℝ} {K : ℝ} (hK : 0 ≤ K)
     (hMH : ∀ i, M i ≤ H i) (hHM : ∀ i, H i ≤ K * M i) :
@@ -265,14 +280,8 @@ constant.  This packages the existential `Sh_M(n)=O(1)` form used by the door-(i
 theorem exists_prizeFamilyBound_iff_exists_normalizedPrizeFamilyBound {ι : Type*}
     {M scale : ι → ℝ} (hscale : ∀ i, 0 < scale i) :
     (∃ C, prizeFamilyBound M scale C) ↔
-      (∃ C, normalizedPrizeFamilyBound M scale C) := by
-  constructor
-  · rintro ⟨C, hC⟩
-    exact ⟨C, (prizeFamilyBound_iff_normalizedPrizeFamilyBound
-      (M := M) (scale := scale) hscale).1 hC⟩
-  · rintro ⟨C, hC⟩
-    exact ⟨C, (prizeFamilyBound_iff_normalizedPrizeFamilyBound
-      (M := M) (scale := scale) hscale).2 hC⟩
+      (∃ C, normalizedPrizeFamilyBound M scale C) :=
+  exists_congr fun _ => familyBound_iff_normalizedFamilyBound hscale
 
 /-- **Half-mass Shaw-value normalization.**  With positive scales, the raw half-mass Big-O statement
 `H ≤ C·scale` is equivalent to bounded normalized half-mass Shaw value `H/scale ≤ C`, with the same
@@ -281,18 +290,12 @@ capstone below. -/
 theorem exists_halfMassFamilyBound_iff_exists_normalizedHalfMassFamilyBound {ι : Type*}
     {H scale : ι → ℝ} (hscale : ∀ i, 0 < scale i) :
     (∃ C, halfMassFamilyBound H scale C) ↔
-      (∃ C, normalizedHalfMassFamilyBound H scale C) := by
-  constructor
-  · rintro ⟨C, hC⟩
-    exact ⟨C, (halfMassFamilyBound_iff_normalizedHalfMassFamilyBound
-      (H := H) (scale := scale) hscale).1 hC⟩
-  · rintro ⟨C, hC⟩
-    exact ⟨C, (halfMassFamilyBound_iff_normalizedHalfMassFamilyBound
-      (H := H) (scale := scale) hscale).2 hC⟩
+      (∃ C, normalizedHalfMassFamilyBound H scale C) :=
+  exists_congr fun _ => familyBound_iff_normalizedFamilyBound hscale
 
 /-- **Mixed Shaw-value capstone.**  Under the same family-wide half-mass comparison and positive prize
 scale, a raw uniform prize Big-O bound is equivalent to a bounded normalized half-mass Shaw-value.
-This is the directly citable form `prize bound ⇔ Sh_H(n)=O(1)`: the left side is the original
+This is the form `prize bound ⇔ Sh_H(n)=O(1)` (conditional on the probed `hHM`): the left side is the original
 `M ≤ C·scale`, while the right side is the normalized door-(iv) half-mass ratio `H/scale ≤ C`. -/
 theorem exists_prizeFamilyBound_iff_exists_normalizedHalfMassFamilyBound {ι : Type*}
     {M H scale : ι → ℝ} {K : ℝ} (hK : 0 ≤ K)
@@ -427,7 +430,8 @@ theorem not_exists_normalizedPrizeFamilyBound_iff_not_exists_normalizedHalfMassF
 
 /-- **Mixed wall-side capstone.**  With positive scales and the family-wide half-mass comparison,
 failure of a raw uniform prize Big-O bound is equivalent to failure of bounded normalized half-mass
-Shaw value. This is the negative form of the citable `prize ⇔ Sh_H(n)=O(1)` reduction. -/
+Shaw value. This is the negative form of the (conditional on `hHM`) `prize ⇔ Sh_H(n)=O(1)`
+reduction. -/
 theorem not_exists_prizeFamilyBound_iff_not_exists_normalizedHalfMassFamilyBound {ι : Type*}
     {M H scale : ι → ℝ} {K : ℝ} (hK : 0 ≤ K)
     (hscale : ∀ i, 0 < scale i)
@@ -469,6 +473,8 @@ theorem normalizedPrizeFamilyUnbounded_iff_normalizedHalfMassFamilyUnbounded {ι
 
 end ArkLib.ProximityGap.Frontier.DoorIVHalfMassEquivalence
 
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVHalfMassEquivalence.familyBound_iff_normalizedFamilyBound
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVHalfMassEquivalence.not_exists_normalizedFamilyBound_iff_normalizedFamilyUnbounded
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVHalfMassEquivalence.prizeBound_of_halfMassBound
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVHalfMassEquivalence.halfMassBound_of_prizeBound
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVHalfMassEquivalence.prizeBound_iff_halfMassBound

@@ -10,7 +10,7 @@ import ArkLib.ToMathlib.GGR11Interleaved
 # The GGR11 Erase-Decode tree datatype — a concrete inductive witness
 
 `ArkLib.ToMathlib.GGR11Interleaved` reduced the ABF26 Lemma 2.10 (GGR11 §3)
-interleaved list-size bound down to a single named external residual,
+interleaved list-size bound down to a named numerical frontier,
 `GGR11TreeStructure`: *there exists a leaf-count function `t : ℕ → ℕ → ℕ∞`
 dominating the close-codeword set and obeying the GGR11 Blue/Red budget
 recursion.*  The abstract residual only ever names `t` as a numeric function; it
@@ -40,11 +40,14 @@ has at most one Blue out-edge and a finite list of Red out-edges).
 
 This makes the abstract `GGR11TreeStructure` residual *constructively witnessed*:
 any actual Erase-Decode tree dominating the close set immediately yields the
-abstract leaf-count function (`treeStructure_of_eraseDecodeTree`).  What remains
-external is only the *construction* of such a tree from the erasure-decoding
-algorithm in the hard `m > r` regime — the list-recovery content with no in-tree
-analogue.  The datatype, its leaf-count budget theorem, and the bridge to the
-named residual are all in-tree here.
+abstract leaf-count function (`treeStructure_of_eraseDecodeTree`).  This file does
+not construct such a tree from the erasure-decoding algorithm.  The GGR11
+construction is instead proved, for finite point lists, in
+`ArkLib.ToMathlib.GGR11TreeConstruction` via concrete erasure/path classes that
+directly define the leaf-count function (without materialising this datatype).
+Note also that the abstract numerical residual `GGR11TreeStructure` is logically
+equivalent to `GGR11PerWordBound` (`treeStructure_iff_perWordBound`, `ArkLib.ToMathlib.GGR11Divergence`); this datatype
+is an optional structural presentation, not needed for the counting proof.
 -/
 
 namespace InterleavedCode.GGR11

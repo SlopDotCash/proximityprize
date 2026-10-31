@@ -328,7 +328,7 @@ a bad second-part point is at least `1−√(1−p+ε)`-close, so its `δ`-agree
 `≥ √(1−p+ε)·n` coordinates) and `B = (1−p)·n` (distinct agreement domains share
 `≤ (1−p)·n` coordinates). Under `0 < ε`, `ε ≤ p < 1`, and `0 < n`,
 
-`|T| · ε < √(1−p+ε) − (1−p) + ε ≤ 1`,
+`|T| · ε ≤ √(1−p+ε) − (1−p) ≤ p < 1`,
 
 i.e. `|T| < 1/ε`. This is exactly the bound `|Bad(π₁,π₂,δ)²| < 1/ε` of GCXK25 Lemma 3,
 packaged abstractly over the agree-domain family `T`. The hypothesis `ε ≤ p` is the same
@@ -373,7 +373,7 @@ theorem card_lt_inv_of_second_moment_rs
     have hcancel := le_of_mul_le_mul_right hmaster hn2
     rw [hrsq, hb_eq] at hcancel
     linarith [hcancel]
-  -- Rearrange to N·ε ≤ r − a + ε, then r − a + ε = r − (1−p) < p ≤ 1.
+  -- Rearrange to N·ε ≤ r − a + ε, then r − a + ε = r − (1−p) ≤ p < 1 (as r ≤ 1).
   have hNε : N * ε ≤ r - a + ε := by nlinarith [hdiv]
   have hbound : r - a + ε < 1 := by rw [hadef]; linarith
   linarith [hNε, hbound]

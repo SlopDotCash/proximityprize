@@ -20,6 +20,15 @@ localises the open kernel to the balanced interior.
   violates the triangle inequality; cosets of a full cyclic group are not proper subsets). `ι ≤ 1`
   is geometric.
 
+> **Correction (2026-10-28 audit, finding L127).** The "only non-band-realizable" reading is false.
+> Over `𝔽₄₁` on the proper subgroup `μ₂₀ = ⟨2⟩` (`n=20`, `k=10`), locators `X⁴−1, X⁴−16, X⁴−10`
+> with `T = {3,8,13,18,4}` and cores `T∪R₀∪R₁∪{9}`, `T∪R₀∪R₂∪{14}`, `T∪R₁∪R₂∪{19}` (`Rᵢ` = exponents
+> `≡ i mod 5`) form a full-cover interior-band triple (cores 14, pair overlaps `9 = k−1`, `t = 5`)
+> with a constant syzygy, `δ₁ = 4` and `ι = 2` (`probe_syz45_imbalance_bound.py` test_D). It lies
+> in the balanced interior, so the triangle bound `δ₁ ≥ max(a,b,c)` below and its `ι ≤ 1` on the
+> covered strip stand, but `ι ≤ 1` in the interior does not follow from band geometry alone. This is
+> an exact finite-field geometry refutation, not a prize bad-scalar counterexample.
+
 ## The band triangle inequalities
 
 Reduced degrees `a=m_AB−t, b=m_AC−t, c=m_BC−t`. Band: each `≤ budget = k−1−t` (SYZ37) and interior

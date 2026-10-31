@@ -26,7 +26,7 @@ variable {F : Type*} [Field F] [DecidableEq F] [Fintype F]
 open ArkLib.ProximityGap.Frontier.E3StrataCount
   (negSymCount image_count_two image_count_six negSymCount_partition_negClosed strata_sum_eq_closed
    balanced_image_neg_closed negClosed_card_even)
-open E3Shape21Scratch (image_count_four)
+open ArkLib.ProximityGap.Frontier.E3Shape21 (image_count_four)
 open E3SubsetCount (negClosed_subset_count)
 
 /-- The per-`S` image-count summand of the strata partition. -/
@@ -122,7 +122,7 @@ theorem count_four (G S : Finset F) (h2 : (2 : F) ≠ 0) (h0 : (0 : F) ∉ G)
           Finset.card_insert_of_notMem (by simp [hmxy, hmxy']),
           Finset.card_insert_of_notMem (by simp [hy]), Finset.card_singleton]
   rw [hSeq]
-  exact image_count_four G x y hxnx hy hxy hxy' hmxy hmxy'
+  exact image_count_four G x y hxnx hy hxy hxy'
     (hSG hxS) (hSG hnxS) (hSG hyS) (hSG hnyS)
 
 /-- **Off-stratum dispatch.** A balanced 6-tuple over `G` (`0 ∉ G`, char ≠ 2) has image of even

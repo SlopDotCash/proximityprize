@@ -7,9 +7,11 @@ import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Linarith
 
 /-!
-# height-gate binding-depth vacuity (#407 — LEVER H / lane wf-LE)
+# height-gate binding-depth envelope arithmetic (#407 — LEVER H / lane wf-LE)
 
-## What this file decides
+(The module name says "vacuity"; what is proved is only envelope arithmetic — see below.)
+
+## Context
 
 The live #407 session pinned the height-gate / LEVER H ceiling from the **worst-case (full
 subset)** angle: the realized worst-case root-sum norm equals `(n/2−1)^{n/4}`, growing `Θ(n log n)`
@@ -18,45 +20,47 @@ bits, so the gate `|N(Σ_S)| ≤ p` over *all* non-antipodal `S` closes only up 
 (`L2MahlerNorm.abs_norm_sum_rootsOfUnity_L2_le`) extended the **low-exponent / bounded-`#S`**
 direction to depth `#S ≤ 7 = log₂ n` at `n = 128`.
 
-This file closes the remaining question for lane wf-LE: **at the actual prize scale
-`n = 2^a` (`a = 30`), what happens to the gate at the BINDING DEPTH the floor needs?**
+This file records the **arithmetic** behind a question for lane wf-LE: **at the actual prize
+scale `n = 2^a` (`a = 30`), how does the natural norm envelope at the BINDING DEPTH compare with
+the prize prime?**  It does **not** settle whether the height gate is vacuous there.
 
 The deep-moment floor (`§3` meta-theorem) requires controlling `±`-relations of length
-`t = 2⌈log₂ m⌉` where `m = (q−1)/n = 2^128` is the (fixed, odd) index — i.e. `t = 256`. This is the
-depth at which the char-`p` transfer must hold. The decisive measured fact (probe
-`probe_wfLE_realized_depth.py`, n=32,64): the **realized worst-case depth-`t` root-sum norm grows
-as `t^{n/4}`** (ratio realized/`t^{n/4}` → `1.00` for `t = 2,3`; `0.92–0.97` for larger `t`, the
-gap being AM-GM/finite-search slack — never larger). Crucially `t^{n/4}` is therefore a valid
-*lower* bound on the worst-case norm at depth `t`.
+`t = 2⌈log₂ m⌉` where `m = (q−1)/n = 2^128` is the (fixed) index — i.e. `t = 256`. (Note that
+`m = 2^128` is **even**; earlier versions of this docstring called it odd.) This is the depth at
+which the char-`p` transfer must hold.
 
-**Verdict (proved here as arithmetic): at the prize `n = 2^30`, binding depth `t = 256`, the
-realized worst-case norm is `≥ 256^{2^28} = 2^{2^31}`, which DWARFS the prize prime
-`p ≤ 2^{a+128} = 2^158` by a factor `2^{2^31−158} ≈ 2^{2·10^9}`.** So at the binding depth the
-height gate is **VACUOUS**: non-antipodal binding-depth subsets whose norm is divisible by the
-prize prime exist in abundance, and the gate cannot exclude spurious mod-`p` vanishing of the
-relations the floor actually needs. This is the binding-depth shadow of the `n = 64` worst-case
-ceiling — it shows LEVER H dies at the prize from the *low-exponent* side too, not only the
-full-subset side, and pins precisely why the residual is the char-`p` transfer (BGK/Paley wall),
-NOT a missing norm estimate.
+**The envelope `t^{n/4}` is an UPPER bound, not a lower bound.** For a non-antipodal support of
+size `t` the coefficient vector in the power basis of `ℚ(ζ_n)` has `t` entries `±1`, so by
+Parseval the conjugates `σ(α)` of the root sum `α` satisfy `avg_σ |σ(α)|² = t`, and AM–GM gives
+`|N(α)| = ∏_{n/4 conjugate pairs} |σ(α)|² ≤ t^{n/4}`. The probe `probe_wfLE_realized_depth.py`
+(`n = 32, 64`) is consistent with this: the realized worst-case ratio realized/`t^{n/4}` is
+`1.00` for `t = 2, 3` and `0.92–0.97` for larger `t` — i.e. realized `≤ t^{n/4}`. Ratios below
+`1` do **not** make `t^{n/4}` a lower bound, and two small-`n` probes cannot supply a universal
+lower bound at `n = 2^30`. A matching lower bound would need an actual construction of a
+depth-`t` subset attaining (a constant power of) the envelope; none is given here.
 
-## What is PROVED here (axiom-clean, pure arithmetic)
+**What the arithmetic does and does not show.** At `n = 2^30`, `t = 256`, the envelope is
+`256^{2^28} = 2^{2^31}`, vastly larger than `p ≤ 2^{a+128} = 2^158`. *If* some binding-depth
+root sum had norm exceeding `p`, the small-norm exclusion "`0 < |N| < p` ⟹ `p ∤ N`" would be
+unavailable for it. That is all: a norm larger than `p` does not imply `p ∣ N`, and nothing here
+shows that binding-depth subsets with `p`-divisible norm exist, let alone in abundance. So this
+file is **not** a machine-checked intrinsic no-go for the height gate at the prize object; it
+only shows that the natural `t^{n/4}` envelope cannot certify the gate at the binding depth.
+Promoting it to a no-go would require (i) a proved lower bound on a realized binding-depth norm
+and (ii) a separate statement about `p`-divisibility.
+
+## What is PROVED here (axiom-clean, pure arithmetic about a numeric proxy)
 
 * `bindingDepth` / `prizeExp` : the floor's binding depth `2⌈log₂ m⌉ = 256` and the prize prime
   bit-budget `a + 128`.
-* `realizedDepthExp` : the realized-worst depth-`t` norm exponent `(n/4)·log₂ t`, here in the
-  exact 2-power form `(n/4)·k` for `t = 2^k` (`= 2^28 · 8 = 2^31` at the prize binding depth).
-* `gate_vacuous_at_prize_binding_depth` : `a + 128 < realizedDepthExp` at `a = 30`, `t = 256`
-  (i.e. `158 < 2^31`) — the worst-case binding-depth norm exponent exceeds the prize budget.
-* `prize_prime_lt_realized_binding_norm` : `2^158 < 256^(2^28)` — the integer-scale statement that
-  the realized worst-case binding-depth norm exceeds the prize prime.
-* `gate_vacuous_above_prize` : for every `a ≥ 1`, the binding-depth norm exponent `2^31`
-  (depth-`256` exponent is `(2^a/4)·8` which is `≥ 2^31` for `a ≥ 30`) exceeds `a + 128` —
-  the vacuity is monotone and the prize is on the far-vacuous side.
-
-The realized-worst lower bound (`realized ≥ t^{n/4}`) is the one probe-established input; it is
-named honestly as the analytic fact (Parseval √-cancellation, ratio → 1) that turns the arithmetic
-into a statement about the *object* rather than a bound artifact, exactly as
-`HeightGateThresholdAnalysis` does for the full-subset case.
+* `depthEnvelopeExp a k = 2^(a-2)·k` : the exponent `(n/4)·log₂ t` of the envelope `t^{n/4}` for
+  `n = 2^a`, `t = 2^k` (`= 2^28 · 8 = 2^31` at the prize binding depth). This is a numeric proxy;
+  no theorem here relates it to an actual root-sum norm.
+* `envelope_exceeds_prize_budget` : `a + 128 < depthEnvelopeExp a 8` at `a = 30`
+  (i.e. `158 < 2^31`).
+* `prize_bound_lt_binding_depth_envelope` : `2^158 < 256^(2^28)`.
+* `envelope_exceeds_prize_budget_of_le` : for every `a ≥ 30`, `a + 128 < depthEnvelopeExp a 8`.
+* `binding_depth_envelope_arith` : the conjunction of the first two facts.
 -/
 
 set_option autoImplicit false
@@ -66,7 +70,7 @@ namespace ArkLib.ProximityGap.HeightGateBindingDepth
 
 /-! ## The three scales (bit-exponent axis) -/
 
-/-- The floor's **binding depth** `t = 2⌈log₂ m⌉` with `m = (q−1)/n = 2^128` the fixed odd index:
+/-- The floor's **binding depth** `t = 2⌈log₂ m⌉` with `m = (q−1)/n = 2^128` the fixed index:
 `t = 2·128 = 256 = 2^8`. (The depth `r ≍ log m` of the deep-moment char-`p` transfer, doubled to a
 `±`-relation length.) -/
 def bindingDepth : ℕ := 256
@@ -77,25 +81,34 @@ def bindingDepthLog : ℕ := 8
 /-- The **prize prime bit-budget** `log₂ p = a + 128` (`p ~ n·2^128`, `ε* = 2^−128`). -/
 def prizeExp (a : ℕ) : ℕ := a + 128
 
-/-- The **realized worst-case depth-`t` norm exponent** for `n = 2^a` and `t = 2^k`:
-`(n/4)·log₂ t = 2^{a-2}·k`.  Probe-established (`probe_wfLE_realized_depth.py`) to be a valid
-*lower* bound on `log₂ max_{#S=t} |N(Σ_S)|` (realized / `t^{n/4}` → 1 from below). -/
-def realizedDepthExp (a k : ℕ) : ℕ := 2 ^ (a - 2) * k
+/-- The exponent of the **depth-`t` norm envelope** `t^{n/4}` for `n = 2^a` and `t = 2^k`:
+`(n/4)·log₂ t = 2^{a-2}·k`.  By Parseval + AM–GM, `t^{n/4}` is an *upper* bound on
+`max_{#S=t} |N(Σ_S)|` over non-antipodal supports (the probe `probe_wfLE_realized_depth.py`
+reports realized / `t^{n/4} ≤ 1`). This is a numeric proxy only: no theorem in this file relates
+it to an actual root-sum norm, and it is not a proved lower bound on the realized maximum. -/
+def depthEnvelopeExp (a k : ℕ) : ℕ := 2 ^ (a - 2) * k
+
+@[deprecated depthEnvelopeExp (since := "2026-10-28")]
+alias realizedDepthExp := depthEnvelopeExp
 
 /-! ## The prize point: a = 30, binding depth t = 256 = 2^8 -/
 
-/-- **At the prize `n = 2^30`, binding depth `t = 256`, the realized worst-case norm exponent
-`2^28 · 8 = 2^31` exceeds the prize budget `158`.**  Hence the gate cannot exclude spurious mod-`p`
-vanishing of binding-depth relations: it is VACUOUS where the floor needs it. -/
-theorem gate_vacuous_at_prize_binding_depth :
-    prizeExp 30 < realizedDepthExp 30 bindingDepthLog := by
-  unfold prizeExp realizedDepthExp bindingDepthLog
+/-- **At the prize `n = 2^30`, binding depth `t = 256`, the envelope exponent `2^28 · 8 = 2^31`
+exceeds the prize budget `158`.**  Pure arithmetic: it shows the `t^{n/4}` envelope cannot
+certify `|N| < p` at the binding depth, not that any realized norm exceeds `p` or is divisible
+by `p`. -/
+theorem envelope_exceeds_prize_budget :
+    prizeExp 30 < depthEnvelopeExp 30 bindingDepthLog := by
+  unfold prizeExp depthEnvelopeExp bindingDepthLog
   norm_num
 
-/-- **Integer-scale form: `2^158 < 256^(2^28)`.**  The realized worst-case binding-depth norm
-`256^{n/4} = 256^{2^28}` exceeds the prize prime `p ≤ 2^158` by `≈ 2^{2·10^9}`.  Proof:
+@[deprecated envelope_exceeds_prize_budget (since := "2026-10-28")]
+alias gate_vacuous_at_prize_binding_depth := envelope_exceeds_prize_budget
+
+/-- **Integer-scale form: `2^158 < 256^(2^28)`.**  The binding-depth envelope
+`256^{n/4} = 256^{2^28}` exceeds the prize-prime bound `2^158` by `≈ 2^{2·10^9}`.  Proof:
 `256^{2^28} = (2^8)^{2^28} = 2^{8·2^28} = 2^{2^31}`, and `158 < 2^31`. -/
-theorem prize_prime_lt_realized_binding_norm :
+theorem prize_bound_lt_binding_depth_envelope :
     (2 : ℕ) ^ 158 < 256 ^ (2 ^ 28) := by
   -- Prove the power comparison before specializing: rewriting the closed target can ask the
   -- kernel to normalize the billions-of-bits result instead of keeping its powers symbolic.
@@ -111,16 +124,19 @@ theorem prize_prime_lt_realized_binding_norm :
   have hmul : (8 : ℕ) * 32 ≤ 8 * 2 ^ 28 := Nat.mul_le_mul_left 8 h32
   omega
 
-/-! ## Monotone vacuity: the prize is far on the vacuous side -/
+@[deprecated prize_bound_lt_binding_depth_envelope (since := "2026-10-28")]
+alias prize_prime_lt_realized_binding_norm := prize_bound_lt_binding_depth_envelope
 
-/-- **For every `a ≥ 30`, the binding-depth (`t = 256`) realized worst-case norm exponent exceeds
-the prize budget `a + 128`.**  The exponent is `2^{a-2}·8`, which for `a ≥ 30` is `≥ 2^28·8 = 2^31`,
-dwarfing `a + 128` (linear in `a`).  So the height gate is vacuous at the binding depth for the
-entire prize regime `n = 2^a`, `a ∈ [30, 43]` and beyond — the obstruction is intrinsic to the
-worst-case binding-depth norm, not the proof technique. -/
-theorem gate_vacuous_above_prize {a : ℕ} (ha : 30 ≤ a) :
-    prizeExp a < realizedDepthExp a bindingDepthLog := by
-  unfold prizeExp realizedDepthExp bindingDepthLog
+/-! ## Monotonicity in `a` -/
+
+/-- **For every `a ≥ 30`, the binding-depth (`t = 256`) envelope exponent exceeds the prize
+budget `a + 128`.**  The exponent is `2^{a-2}·8`, which for `a ≥ 30` is `≥ 2^28·8 = 2^31`,
+dwarfing `a + 128` (linear in `a`).  So across the prize regime `n = 2^a`, `a ∈ [30, 43]` and
+beyond, the `t^{n/4}` envelope cannot certify the height gate at the binding depth. This is a
+statement about the envelope, not a proof that the gate fails for the realized norms. -/
+theorem envelope_exceeds_prize_budget_of_le {a : ℕ} (ha : 30 ≤ a) :
+    prizeExp a < depthEnvelopeExp a bindingDepthLog := by
+  unfold prizeExp depthEnvelopeExp bindingDepthLog
   -- 2^(a-2) * 8 ≥ 2^28 * 8 = 2^31 ≥ a + 128  for a ≥ 30 (and a ≤ huge; the linear side loses).
   -- `a + 128 ≤ 2^(a-2)` for a ≥ 30 (exponential beats linear), then strict via the `*8`.
   have hlin : a + 128 ≤ 2 ^ (a - 2) := by
@@ -140,18 +156,24 @@ theorem gate_vacuous_above_prize {a : ℕ} (ha : 30 ≤ a) :
   have hstrict : 2 ^ (a - 2) < 2 ^ (a - 2) * 8 := by omega
   omega
 
-/-- **Packaged dichotomy for lane wf-LE.**  The height gate's binding-depth shadow:
-(i) at the prize point the realized worst-case depth-`256` norm exponent `2^31` exceeds the prize
-budget `158`, and (ii) the integer-scale gap `2^158 < 256^{2^28}` is genuine.  Together with the
-full-subset ceiling (`HeightGateThresholdAnalysis.leverH_ceiling_is_64`), LEVER H is dead at the
-prize from *both* the full-subset and the binding-depth directions. -/
-theorem leverH_binding_depth_dead_at_prize :
-    prizeExp 30 < realizedDepthExp 30 bindingDepthLog ∧ (2 : ℕ) ^ 158 < 256 ^ (2 ^ 28) :=
-  ⟨gate_vacuous_at_prize_binding_depth, prize_prime_lt_realized_binding_norm⟩
+@[deprecated envelope_exceeds_prize_budget_of_le (since := "2026-10-28")]
+alias gate_vacuous_above_prize := envelope_exceeds_prize_budget_of_le
+
+/-- **Packaged envelope arithmetic for lane wf-LE.**  (i) At the prize point the depth-`256`
+envelope exponent `2^31` exceeds the prize budget `158`, and (ii) `2^158 < 256^{2^28}`.  This
+shows only that the `t^{n/4}` envelope cannot certify the height gate at the binding depth; it
+is not a proof that LEVER H fails for the realized binding-depth norms (that would need a proved
+lower bound on a realized norm and a separate `p`-divisibility statement). -/
+theorem binding_depth_envelope_arith :
+    prizeExp 30 < depthEnvelopeExp 30 bindingDepthLog ∧ (2 : ℕ) ^ 158 < 256 ^ (2 ^ 28) :=
+  ⟨envelope_exceeds_prize_budget, prize_bound_lt_binding_depth_envelope⟩
+
+@[deprecated binding_depth_envelope_arith (since := "2026-10-28")]
+alias leverH_binding_depth_dead_at_prize := binding_depth_envelope_arith
 
 end ArkLib.ProximityGap.HeightGateBindingDepth
 
-#print axioms ArkLib.ProximityGap.HeightGateBindingDepth.gate_vacuous_at_prize_binding_depth
-#print axioms ArkLib.ProximityGap.HeightGateBindingDepth.prize_prime_lt_realized_binding_norm
-#print axioms ArkLib.ProximityGap.HeightGateBindingDepth.gate_vacuous_above_prize
-#print axioms ArkLib.ProximityGap.HeightGateBindingDepth.leverH_binding_depth_dead_at_prize
+#print axioms ArkLib.ProximityGap.HeightGateBindingDepth.envelope_exceeds_prize_budget
+#print axioms ArkLib.ProximityGap.HeightGateBindingDepth.prize_bound_lt_binding_depth_envelope
+#print axioms ArkLib.ProximityGap.HeightGateBindingDepth.envelope_exceeds_prize_budget_of_le
+#print axioms ArkLib.ProximityGap.HeightGateBindingDepth.binding_depth_envelope_arith

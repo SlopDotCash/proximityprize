@@ -1,5 +1,14 @@
 # REFINEMENT: over-determined incidence is p-independent IN THE THIN/PRIZE REGIME (converges to char-0 by p~n^4) — #407
 
+> **Scope correction (2026-10-28 audit, T48).** Only **one** thin cell (`n = 32`,
+> `p = 1048609 ≈ n⁴`) was tested, so "p-independence holds in the THIN / PRIZE regime" is not
+> established as a universal statement. An exact finite algebraic count can still depend on the
+> prime, because coefficient reductions, determinants and collisions change with `p`. A transfer
+> statement therefore needs a norm or finite-bad-prime exclusion, and thin counterexamples to
+> other transfer claims (for example `n = 64`, `p = 17318209`, recorded under T91) show why that
+> exclusion must be retained. Those examples do not by themselves refute the monomial maximum `897`
+> reported for this particular cell. The "cubic in n" law is a fit to finite values.
+
 A precise refinement of `overdet-incidence-pindependence-proof.md` after a full-direction, multi-prime test
 (`probe_407_overdet_thin_convergence.py`). Honest correction of "exactly p-independent for all p".
 

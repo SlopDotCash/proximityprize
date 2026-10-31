@@ -5,9 +5,9 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.BirthdayBound
-import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.Lemma512Paper
-import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.Lemma514Paper
-import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.Lemma516Paper
+import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.ConsistencyPaper
+import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.ForkPaper
+import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.HashPaper
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.EagerLazyDS
 
 /-!
@@ -15,8 +15,8 @@ import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.EagerLazyDS
 
 `BirthdayBound.lean`'s honest-domination and assembly theorems consume the M2 residual
 interfaces (`Lemma5_12/14/16HonestResidual`) over the deviant in-tree `E` — interfaces that
-are refuted or trivialized as stated (`Lemma58EagerFalse`, `Lemma514ForkFalse`,
-`Lemma516TimePFalse`).  This module re-keys the channel on the repaired event
+are refuted or trivialized as stated (`EagerFalse`, `ForkFalse`,
+`TimePFalse`).  This module re-keys the channel on the repaired event
 `DuplexSpongeFS.Paper.EPaper` (CO25 Eq. 27 with the B1/B2 repairs), where the M2 block is
 **proven** (`lemma512Paper`, `lemma514Paper`, `lemma516Paper`):
 
@@ -81,7 +81,7 @@ event**: for any `T`-query adversary against the duplex-sponge challenge oracle 
 by the once-sampled `(h, p, p⁻¹)` carrier `D_DS`, the logged trace realizes `EPaper` with
 probability at most `(7T² − 3T)/(2|Σ|^c)`.
 
-This replaces the refuted `Lemma5_8EagerBirthdayFalseStatement` (see `Lemma58EagerFalse.lean`):
+This replaces the refuted `Lemma5_8EagerBirthdayFalseStatement` (see `EagerFalse.lean`):
 over `EPaper` the B1 self-firing channel is closed, so the K1 single-inverse-query
 countermodel does not apply — an inverse entry contributes only genuine capacity
 coincidences.  Proof plan (CO25 Lemma 5.8): (1) carrier coupling — eager permutation table

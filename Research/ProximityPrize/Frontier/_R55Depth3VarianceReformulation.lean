@@ -8,6 +8,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMarkovWick
 import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyCorrection
 import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyRungThree
 import Research.ProximityPrize.Frontier._R53Depth3ExcessHeadroom
+import Research.ProximityPrize.Frontier._R240GeneralRFoldVariance
 
 /-!
 # LANE B2 (#466 round 55): THE VARIANCE REFORMULATION — the DC-subtracted depth-3 energy IS the
@@ -41,6 +42,12 @@ Two immediate unconditional facts:
 This does NOT close the prize: bounding the flatness deficit at `r ≈ log q` is still the
 Paley / BGK wall.  It is a correct, machine-checked reformulation that sharpens the target and
 opens a new toolset.  Issue #466, round 55, LANE B2.  Axiom-clean.
+
+**Deduplication.**  The depth-3 statements are the `r = 3` instances of the later general-depth
+R240 lemmas (`R240GeneralRFoldVariance.variance_identity`, `dc_floor`): `rep3_eq_repR` and
+`addEnergy3_eq_rEnergy_three` identify `rep3 G = repR G 3` and `addEnergy3 G = rEnergy G 3`
+(unconditionally, no character input), and `variance_identity` / `dc_floor` here are derived
+from R240 rather than re-proved.
 -/
 
 set_option autoImplicit false
@@ -120,46 +127,49 @@ theorem addEnergy3_eq (G : Finset F) : addEnergy3 G = ∑ c : F, (rep3 G c) ^ 2 
   refine Finset.sum_congr rfl (fun c _ => ?_)
   rw [sq]
 
+/-- `rep3` is the `r = 3` case of R240's general `r`-fold representation function. -/
+theorem rep3_eq_repR (G : Finset F) (c : F) :
+    rep3 G c = R240GeneralRFoldVariance.repR G 3 c := by
+  unfold rep3 R240GeneralRFoldVariance.repR
+  rw [← Finset.sum_product', ← Finset.sum_product']
+  refine Finset.sum_nbij' (fun p => ![p.1.1, p.1.2, p.2]) (fun v => ((v 0, v 1), v 2))
+    ?_ ?_ ?_ ?_ ?_
+  · intro p hp
+    simp only [Finset.mem_product] at hp
+    rw [Fintype.mem_piFinset]
+    intro i; fin_cases i <;> simp [hp.1.1, hp.1.2, hp.2]
+  · intro v hv
+    rw [Fintype.mem_piFinset] at hv
+    simp [hv 0, hv 1, hv 2]
+  · intro p _; rfl
+  · intro v _
+    funext i; fin_cases i <;> rfl
+  · intro p _
+    simp [Fin.sum_univ_three]
+
+/-- `addEnergy3` is the depth-3 `rEnergy`, unconditionally (both are the `ℓ²` norm of the
+3-fold representation function). -/
+theorem addEnergy3_eq_rEnergy_three (G : Finset F) : addEnergy3 G = rEnergy G 3 := by
+  rw [addEnergy3_eq, R240GeneralRFoldVariance.rEnergy_eq_sum_repR_sq]
+  simp only [rep3_eq_repR]
+
 /-- **THE VARIANCE IDENTITY (round-55 main theorem).**  The DC-subtracted depth-3 energy is the
 ℓ²-flatness deficit of the representation function:
-`∑_c (q·rep3 G c − |G|³)² = q·(q·addEnergy3 G − |G|⁶)`. -/
+`∑_c (q·rep3 G c − |G|³)² = q·(q·addEnergy3 G − |G|⁶)`.  The `r = 3` case of
+`R240GeneralRFoldVariance.variance_identity`. -/
 theorem variance_identity (G : Finset F) :
     ∑ c : F, ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2
       = (Fintype.card F : ℝ)
           * ((Fintype.card F : ℝ) * (addEnergy3 G : ℝ) - (G.card : ℝ) ^ 6) := by
-  have hsum : ∑ c : F, (rep3 G c : ℝ) = (G.card : ℝ) ^ 3 := by
-    have := sum_rep3 G
-    calc ∑ c : F, (rep3 G c : ℝ) = ((∑ c : F, rep3 G c : ℕ) : ℝ) := by push_cast; rfl
-      _ = ((G.card ^ 3 : ℕ) : ℝ) := by rw [this]
-      _ = (G.card : ℝ) ^ 3 := by push_cast; ring
-  have hsq : ∑ c : F, (rep3 G c : ℝ) ^ 2 = (addEnergy3 G : ℝ) := by
-    have := addEnergy3_eq G
-    calc ∑ c : F, (rep3 G c : ℝ) ^ 2 = ((∑ c : F, (rep3 G c) ^ 2 : ℕ) : ℝ) := by push_cast; rfl
-      _ = ((addEnergy3 G : ℕ) : ℝ) := by rw [← this]
-  have hcard : ∑ _c : F, (1 : ℝ) = (Fintype.card F : ℝ) := by
-    rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one]
-  -- expand the square and collect
-  have hexp : ∀ c : F, ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2
-      = (Fintype.card F : ℝ) ^ 2 * (rep3 G c : ℝ) ^ 2
-        - 2 * (Fintype.card F : ℝ) * (G.card : ℝ) ^ 3 * (rep3 G c : ℝ)
-        + (G.card : ℝ) ^ 6 * 1 := by
-    intro c; ring
-  rw [Finset.sum_congr rfl (fun c _ => hexp c)]
-  rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
-  rw [← Finset.mul_sum, ← Finset.mul_sum, ← Finset.mul_sum]
-  rw [hsq, hsum, hcard]
-  ring
+  simpa [rep3_eq_repR, addEnergy3_eq_rEnergy_three] using
+    R240GeneralRFoldVariance.variance_identity G 3
 
 /-- **THE DC FLOOR (unconditional).**  `|G|⁶ ≤ q·addEnergy3 G` for every field and every `G`:
-the DC term is a genuine lower bound on the energy, not a removable artifact. -/
+the DC term is a genuine lower bound on the energy, not a removable artifact.  The `r = 3` case
+of `R240GeneralRFoldVariance.dc_floor`. -/
 theorem dc_floor (G : Finset F) :
     (G.card : ℝ) ^ 6 ≤ (Fintype.card F : ℝ) * (addEnergy3 G : ℝ) := by
-  have hvar : (0 : ℝ) ≤ (Fintype.card F : ℝ)
-      * ((Fintype.card F : ℝ) * (addEnergy3 G : ℝ) - (G.card : ℝ) ^ 6) := by
-    rw [← variance_identity G]
-    exact Finset.sum_nonneg (fun c _ => sq_nonneg _)
-  have hq : (0 : ℝ) < (Fintype.card F : ℝ) := by exact_mod_cast Fintype.card_pos
-  nlinarith [hvar, hq]
+  simpa [addEnergy3_eq_rEnergy_three] using R240GeneralRFoldVariance.dc_floor G 3
 
 /-- **THE VARIANCE FORM OF THE PRIZE TARGET (round-55 headline).**  The prize's DC-subtracted
 depth-3 energy bound is EQUIVALENT to the representation function being flat to within the Wick

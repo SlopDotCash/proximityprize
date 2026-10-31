@@ -40,3 +40,15 @@ The only load-bearing assumption at this interface is now the nonzero one-child 
 ```
 
 That remains the BGK / bulk-plus-spikes analytic core, not a tower-bookkeeping issue.
+
+**Correction (2026-10-28 audit, T48; see R-079).** Removing DC was the right repair, but this
+particular raw-amplitude bound is not an open core. It is infeasible at the intended growing `n`,
+and no numerical FFT is needed to see it. Since `exp(x/4) ≥ 1 + x²/32` for `x ≥ 0`, and nonzero
+Parseval gives `Σ_{b≠0} ‖η_G(b)‖² = n(q − n)`, the left side is at least
+`(q − 1) + n(q − n)/32`. A bound by `2(q − 1)` therefore forces `n(q − n) ≤ 32(q − 1)`. That fails
+for every `n ≥ 33` with `q ≥ n²`, because then `(n − 32)q − n² + 32 ≥ (n − 33)n² + 32 > 0`. For the
+actual subgroup `μ₆₄ ⊆ F₂₅₇` the two sides are `12352 > 8192`, and the exponential sum is at least
+`642`, above the proposed ceiling `512` (audit evidence `quarter-mgf-normalization-check.json`).
+The normalized-square and nonzero corrected MGF routes (for example R217's carrier) are different
+objects and are not refuted by this. The arbitrary-scale conditional consumers proved here remain
+valid. No production pin follows from this interface.

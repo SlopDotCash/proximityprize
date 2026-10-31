@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.CellPinning
 import Research.ProximityPrize.Hab25CaptureKernel
+import Research.ProximityPrize.Hab25CurveCellStrictExtraction
 
 /-!
 # The Johnson-regime cell pencil (#348): `himpr` from the per-cell §5 package
@@ -16,18 +17,27 @@ mirror** through the landed pinning chain:
 
 * `pencil_of_pinning_and_section` — the **Johnson pencil**: the cell-pinning output
   (every Taylor section of the surface is `v₀ + γ·v₁`) together with the **section link**
-  (`hsec`: each decode IS the surface's Taylor section — the cell-vocabulary reading of
-  `(Y′−C w) ∣ R` + irreducibility, mechanical) yields `(v₀', v₁')` with `natDegree < k`
-  and `∀ γ ∈ E, P γ = v₀' + C γ·v₁'` (degrees recovered by the two-point trick, exactly
-  as in the window pencil);
+  (`hsec`: each decode IS the surface's Taylor section) yields `(v₀', v₁')` with
+  `natDegree < k` and `∀ γ ∈ E, P γ = v₀' + C γ·v₁'` (degrees recovered by the two-point
+  trick, exactly as in the window pencil);
 * **`cell_improvement_of_pinning_package`** — the funnel's `himpr` input discharged from
   the heavy-agreement package + the section link, via `McaDecode.affineCaptured` +
-  `affineCaptured_improve` — the exact mirror of `cell_improvement_of_window`.
+  `affineCaptured_improve` — the mirror of `cell_improvement_of_window`;
+* `section_link` — the section link derived from `Irreducible R` + `(Y′ − C w) ∣ R` +
+  the cell divisibility, by delegating to
+  `BCIKS20.CurveCellStrictExtraction.decode_eq_surface_map` and Taylor-expanding.
 
-After this file, #348 item 1 ≡ producing, per large factor cell: the §5 package legs of
-`exists_pinning_pair_of_heavy_agreement` (centre/branch/heavy-set selection — the GK1+GK3
-composition) and the section link `hsec` (a mechanical monic-linear-divisibility + Taylor
-computation from the cell's own divisibilities).  Every consumer below them is proven.
+**Scope (audit CW-B19-12).**  The section link and `cell_improvement_of_pinning_package'`
+take `Irreducible R` together with `(Y′ − C w) ∣ R`.  These two hypotheses force the
+cofactor to be a unit, so `R` is an associate of `Y′ − C w` and has `Y′`-degree exactly
+`1`.  The derived (primed) route therefore covers only **`Y′`-linear cell factors** — the
+case `Hab25LinearFactorCapture` already calls free — and says nothing about factors with
+`deg_{Y′} R ≥ 2`, which that file names as the open core.  The unprimed package takes
+`hsec` abstractly, but its intended derivation is `section_link`, with the same
+restriction.  The "Johnson-regime mirror" of the window route is thus a mirror on the
+linear-factor slice only; the remaining #348 item-1 inputs (the §5 package legs of
+`exists_pinning_pair_of_heavy_agreement` — centre/branch/heavy-set selection, the GK1+GK3
+composition) are not supplied here.
 
 Axiom-clean: `[propext, Classical.choice, Quot.sound]` (audited at end of file).
 -/
@@ -130,7 +140,7 @@ theorem pencil_of_pinning_and_section {n k : ℕ} (hk : 0 < k) {ι₀ : Type} [F
   exact hP γ hγ
 
 /-- **The funnel's `himpr` input, discharged from the heavy-agreement package + the
-section link** — the Johnson-regime mirror of `cell_improvement_of_window`.  The
+section link** — the Johnson-side mirror of `cell_improvement_of_window`.  The
 heavy-agreement legs produce the pinning pair (`exists_pinning_pair_of_heavy_agreement`);
 the section link converts it into the decode pencil; the landed capture/improvement
 lemmas finish. -/
@@ -142,7 +152,7 @@ theorem cell_improvement_of_pinning_package [Fintype F₀] [DecidableEq F₀]
     (hdec : ∀ γ ∈ E, ∃ d : McaDecode domain k δ u γ, d.P = P γ)
     -- the per-cell §5 package (the GK1+GK3 selection legs)
     (x₀ : F₀) (hHyp : Hypotheses x₀ R H)
-    (hH : 0 < H.natDegree) (hmonic : H.Monic)
+    (hmonic : H.Monic)
     (htail : ∀ t, n ≤ t → αGenuine H x₀ R hHyp t = 0)
     (e : Fin n → F₀) (he : Function.Injective e) (u₀ u₁ : Fin n → F₀)
     {D : ℕ} (hD : D ≥ Bivariate.totalDegree H)
@@ -183,7 +193,8 @@ theorem cell_improvement_of_pinning_package [Fintype F₀] [DecidableEq F₀]
   · right
     -- the pinning pair from the heavy-agreement chain
     obtain ⟨v₀, v₁, hd0n, hd1n, hpin⟩ :=
-      BCIKS20.Claim510CellPinning.exists_pinning_pair_of_heavy_agreement x₀ R hHyp hH
+      BCIKS20.Claim510CellPinning.exists_pinning_pair_of_heavy_agreement x₀ R hHyp
+        (Fact.out (p := 0 < H.natDegree))
         hmonic hn htail e he u₀ u₁ hD matchingSet root hwdeg hwdvd hbaseA hsepA hfold
         hweight hcard S₀ hbase₀ hsep₀ hBw hS₀
     -- the decode pencil with RS degrees
@@ -197,11 +208,13 @@ theorem cell_improvement_of_pinning_package [Fintype F₀] [DecidableEq F₀]
     exact affineCaptured_improve hd0 hd1 hcap
   · exact Or.inl (le_trans (by omega) hT)
 
-/-- **The section link, PROVEN**: cell divisibility + irreducibility + the surface
-divisibility force each decode to be the surface's Taylor section.  Irreducibility makes
-`R` an associate of `Y′ − C w`; the fiber is then a unit times `X − C w_γ`, monic-linear
-divisibility pins `P = w_γ`, and Taylor's formula (mapped along `eval γ`) writes `w_γ` as
-the range-`n` section sum. -/
+/-- **The section link**: cell divisibility + irreducibility + the surface divisibility
+force each decode to be the surface's Taylor section.  The specialization step
+(`P = w_γ`) is the canonical `BCIKS20.CurveCellStrictExtraction.decode_eq_surface_map`;
+Taylor's formula (mapped along `eval γ`) then writes `w_γ` as the range-`n` section sum.
+
+Note: `Irreducible R` and `(Y′ − C w) ∣ R` make `R` an associate of `Y′ − C w`, so this
+lemma only applies to `Y′`-linear cell factors (see the module docstring). -/
 theorem section_link {R : (F₀[X])[X][Y]} {n : ℕ}
     (hRirr : Irreducible R) {w : F₀[X][Y]} (hwdeg : w.natDegree < n)
     (hwdvd : (Polynomial.X - Polynomial.C w) ∣ R)
@@ -212,57 +225,8 @@ theorem section_link {R : (F₀[X])[X][Y]} {n : ℕ}
       Polynomial.C (((Polynomial.taylor (Polynomial.C x₀) w).coeff t).eval γ)
         * (Polynomial.X - Polynomial.C x₀) ^ t := by
   classical
-  -- step 1: `R` is an associate of the surface factor
-  have hXw_nu : ¬ IsUnit (Polynomial.X - Polynomial.C w) := by
-    intro hu
-    have h1 := Polynomial.natDegree_eq_zero_of_isUnit hu
-    rw [Polynomial.natDegree_X_sub_C] at h1
-    exact one_ne_zero h1
-  obtain ⟨c, hc⟩ := hwdvd
-  have hcu : IsUnit c := (hRirr.isUnit_or_isUnit hc).resolve_left hXw_nu
-  -- step 2: the fiber splits as the linear section factor times a unit
-  set φ : (F₀[X])[X] →+* F₀[X] := Polynomial.mapRingHom (Polynomial.evalRingHom γ) with hφ
-  set wγ : F₀[X] := w.map (Polynomial.evalRingHom γ) with hwγ
-  have hfiber : R.map φ = (Polynomial.X - Polynomial.C wγ) * c.map φ := by
-    rw [hc, Polynomial.map_mul, Polynomial.map_sub, Polynomial.map_X, Polynomial.map_C]
-    rfl
-  have hcuγ : IsUnit (c.map φ) := hcu.map (Polynomial.mapRingHom φ)
-  -- step 3: strip the unit
-  have hdvd2 : (Polynomial.X - Polynomial.C P) ∣ (Polynomial.X - Polynomial.C wγ) := by
-    have h := hdvdP
-    rw [hfiber] at h
-    exact (IsUnit.dvd_mul_right hcuγ).mp h
-  -- step 4: monic-linear divisibility pins `P = w_γ`
-  have hPwγ : P = wγ := by
-    obtain ⟨q, hq⟩ := hdvd2
-    have hXw0 : (Polynomial.X - Polynomial.C wγ : F₀[X][Y]) ≠ 0 :=
-      Polynomial.X_sub_C_ne_zero wγ
-    have hq0 : q ≠ 0 := by
-      intro h0
-      rw [h0, mul_zero] at hq
-      exact hXw0 hq
-    have hdegq : q.natDegree = 0 := by
-      have hdegs := congrArg Polynomial.natDegree hq
-      rw [Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero P) hq0,
-        Polynomial.natDegree_X_sub_C, Polynomial.natDegree_X_sub_C] at hdegs
-      omega
-    have ha1 : q.leadingCoeff = 1 := by
-      have hlc := congrArg Polynomial.leadingCoeff hq
-      rw [Polynomial.leadingCoeff_mul, Polynomial.leadingCoeff_X_sub_C,
-        Polynomial.leadingCoeff_X_sub_C, one_mul] at hlc
-      exact hlc.symm
-    have hq1 : q = 1 := by
-      have hC := Polynomial.eq_C_of_natDegree_eq_zero hdegq
-      rw [hC] at ha1 ⊢
-      rw [Polynomial.leadingCoeff_C] at ha1
-      rw [ha1, Polynomial.C_1]
-    rw [hq1, mul_one] at hq
-    have hCC : Polynomial.C wγ = Polynomial.C P := by
-      have h2 := sub_right_inj.mp hq
-      exact h2
-    exact (Polynomial.C_injective hCC).symm
-  -- step 5: Taylor's formula for `w_γ`, mapped along `eval γ`
-  rw [hPwγ, hwγ]
+  rw [BCIKS20.CurveCellStrictExtraction.decode_eq_surface_map hRirr hwdvd γ P hdvdP]
+  -- Taylor's formula for `w_γ`, mapped along `eval γ`
   have htay := Polynomial.sum_taylor_eq w (Polynomial.C x₀)
   rw [Polynomial.sum_def] at htay
   have hmap := congrArg (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) htay
@@ -283,7 +247,8 @@ theorem section_link {R : (F₀[X])[X][Y]} {n : ℕ}
   simp
 
 /-- **`himpr` from the package, section link DERIVED** — the cell-divisibility form: the
-funnel's per-cell input with `hsec` replaced by the cell's own divisibilities. -/
+funnel's per-cell input with `hsec` replaced by the cell's own divisibilities.  Since
+`hRirr` and `hwdvd` force `R ~ Y′ − C w`, this applies only to `Y′`-linear cells. -/
 theorem cell_improvement_of_pinning_package' [Fintype F₀] [DecidableEq F₀]
     {n k : ℕ} (hn : 0 < n) [NeZero n] {domain : Fin n ↪ F₀} {δ : ℝ≥0}
     {u : WordStack F₀ (Fin 2) (Fin n)}
@@ -294,7 +259,7 @@ theorem cell_improvement_of_pinning_package' [Fintype F₀] [DecidableEq F₀]
     (hdvdR : ∀ γ ∈ E, (Polynomial.X - Polynomial.C (P γ)) ∣
       R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)))
     (x₀ : F₀) (hHyp : Hypotheses x₀ R H)
-    (hH : 0 < H.natDegree) (hmonic : H.Monic)
+    (hmonic : H.Monic)
     (htail : ∀ t, n ≤ t → αGenuine H x₀ R hHyp t = 0)
     (e : Fin n → F₀) (he : Function.Injective e) (u₀ u₁ : Fin n → F₀)
     {D : ℕ} (hD : D ≥ Bivariate.totalDegree H)
@@ -325,7 +290,7 @@ theorem cell_improvement_of_pinning_package' [Fintype F₀] [DecidableEq F₀]
     (hS₀ : max Bw 1 < S₀.card) :
     E.card ≤ T ∨ ∃ d₀ d₁ : Fin n → F₀, ∀ z ∈ E,
       ∃ x ∈ disagreeSet d₀ d₁, affineGap d₀ d₁ z x = 0 :=
-  cell_improvement_of_pinning_package hn hT hk R E P hdec x₀ hHyp hH hmonic htail
+  cell_improvement_of_pinning_package hn hT hk R E P hdec x₀ hHyp hmonic htail
     e he u₀ u₁ hD matchingSet root hwdeg hwdvd hbaseA hsepA hfold hweight hcard
     S₀ hbase₀ hsep₀ hBw hS₀
     (fun γ hγ => section_link hRirr hwdeg hwdvd x₀ γ (P γ) (hdvdR γ hγ))

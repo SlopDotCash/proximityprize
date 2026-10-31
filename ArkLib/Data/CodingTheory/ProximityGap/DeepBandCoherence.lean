@@ -17,18 +17,26 @@ line `Q∘dom + γ_T·x^k` is explained on ALL of `T` by a degree-`< k` codeword
 
 Coherence is `m` subtraction-linear conditions on the coefficient space, so by
 the multi-kernel bound (`card_multiKernel_ge`: `m` linear conditions cut the
-space by at most `q^m`) and first-moment averaging:
+space by at most `q^m`) and first-moment averaging over all polynomials of
+degree `< 2k+m+2`, the proof of `deep_band_witness_mass` produces some `Q₀` with
 
-  **`∃ Q₀ : C(n, k+m+1) ≤ #(coherent cores of Q₀) · q^m`** —
+  **`C(n, k+m+1) ≤ #(coherent cores of Q₀) · q^m`**.
 
-the witness-core family of some stack has density `≥ q^{−m}` among ALL
-`(k+m+1)`-cores, at every band radius, with no parameter restrictions
-(`deep_band_witness_mass`).  In production (`C(n,k+m+1) ≫ q^m` for every band
-reachable by the parameters), the certified witness mass is astronomical: the
-band-`m` failure events are everywhere dense in the core geometry.  The
-remaining slack against `#badSet` itself is exactly the per-scalar
-multiplicity of cores — the design question, now isolated with the mass side
-proven.
+**Scope caveat (this existential is not informative).** The conclusion of
+`deep_band_witness_mass` imposes no farness, nonzero, distinctness or degree
+constraint on `Q₀`, and it is satisfied trivially by `Q₀ = 0`: the interpolant
+of `0` on every core is `0`, so every core is coherent, and all certified events
+sit at the single scalar `γ = 0` (`deep_band_witness_mass_zero`). So the
+averaging argument is not needed for the stated output; the meaningful
+strengthening, with a degree-bounded generator certified off-code at every
+shear (at the cost of a factor `2`), is `deep_band_witness_mass_offcode` in
+`JohnsonSplitSupply.lean`. Large core mass alone is not a bad-scalar
+lower bound: the slack against `#badSet` is the per-scalar multiplicity of
+cores (for `Q₀ = 0` all cores share one scalar), a separate open problem.
+
+The ratio `C(n,k+m+1)/q^m` is also **not** large for every band: at
+`m = n−k−1` the binomial is `1` while `q^m` is huge for `m > 0`, and in general
+`C(n,a) ≤ 2^n ≤ q^m` once `m·log₂ q ≥ n`.
 -/
 
 open Finset Polynomial
@@ -203,9 +211,16 @@ theorem mcaEvent_of_coherent (dom : Fin n ↪ F) {k m : ℕ} (hk : 1 ≤ k)
     omega
 
 open Classical in
-/-- **THE DEEP-BAND WITNESS-MASS LAW**: at every band radius, some stack's
+/-- **The deep-band witness-mass statement**: at every band radius, some stack's
 coherent-core family has density `≥ q^{−m}` among all `(k+m+1)`-cores — and
-every coherent core certifies its pinned scalar bad.  Unconditional. -/
+every coherent core certifies its pinned scalar bad.  Unconditional.
+
+Scope: as stated this existential is trivially witnessed by `Q₀ = 0`
+(`deep_band_witness_mass_zero`), where every core is coherent and every certified
+event is at `γ = 0`; the averaging proof below is retained because downstream
+prose describes its generator, but it is not needed for the conclusion. See
+`deep_band_witness_mass_offcode` (`JohnsonSplitSupply.lean`) for the off-code
+strengthening. -/
 theorem deep_band_witness_mass (dom : Fin n ↪ F) {k m : ℕ} (hk : 1 ≤ k)
     {δ : ℝ≥0}
     (hhi : (1 - δ) * (Fintype.card (Fin n) : ℝ≥0) ≤ ((k + m + 1 : ℕ) : ℝ≥0)) :
@@ -308,9 +323,50 @@ theorem deep_band_witness_mass (dom : Fin n ↪ F) {k m : ℕ} (hk : 1 ≤ k)
       (Finset.mem_powersetCard.mp hTmem).2
     exact mcaEvent_of_coherent dom hk hhi hTcard hTcoh
 
+omit [Fintype F] [DecidableEq F] [NeZero n] in
+/-- The core interpolant of the zero polynomial is zero. -/
+theorem coreInterp_zero (dom : Fin n ↪ F) (T : Finset (Fin n)) :
+    coreInterp dom T (0 : F[X]) = 0 := by
+  unfold coreInterp
+  have h0 : (fun i => (0 : F[X]).eval (dom i)) = 0 := by
+    funext i
+    simp
+  rw [h0, map_zero]
+
+open Classical in
+/-- **The witness-mass conclusion is trivially satisfiable by `Q₀ = 0`.** Every
+`(k+m+1)`-core is coherent for the zero polynomial (its interpolant is `0`), so the
+mass inequality `C(n,k+m+1) ≤ C(n,k+m+1)·q^m` holds outright, and every certified
+event is at the single scalar `γ = -coeff_k 0 = 0` with the strongly far direction
+`x^k`. This shows that the conclusion of `deep_band_witness_mass` carries no
+information about many distinct bad scalars or about a nonzero/far generator. -/
+theorem deep_band_witness_mass_zero (dom : Fin n ↪ F) {k m : ℕ} (hk : 1 ≤ k)
+    {δ : ℝ≥0}
+    (hhi : (1 - δ) * (Fintype.card (Fin n) : ℝ≥0) ≤ ((k + m + 1 : ℕ) : ℝ≥0)) :
+    n.choose (k + m + 1)
+        ≤ (((Finset.univ : Finset (Fin n)).powersetCard (k + m + 1)).filter
+            (fun T => IsCoherent dom k m T (0 : F[X]))).card * (Fintype.card F) ^ m
+      ∧ ∀ T ∈ ((Finset.univ : Finset (Fin n)).powersetCard (k + m + 1)).filter
+            (fun T => IsCoherent dom k m T (0 : F[X])),
+          mcaEvent (F := F)
+            ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) δ
+            (fun i => (0 : F[X]).eval (dom i)) (fun i => (dom i) ^ k)
+            (-(coreInterp dom T (0 : F[X])).coeff k) := by
+  have hcoh : ∀ T : Finset (Fin n), IsCoherent dom k m T (0 : F[X]) := by
+    intro T j
+    rw [coreInterp_zero, coeff_zero]
+  refine ⟨?_, fun T hT => ?_⟩
+  · rw [Finset.filter_true_of_mem (fun T _ => hcoh T), Finset.card_powersetCard,
+      Finset.card_univ, Fintype.card_fin]
+    exact Nat.le_mul_of_pos_right _ (pow_pos Fintype.card_pos m)
+  · have hTcard : T.card = k + m + 1 :=
+      (Finset.mem_powersetCard.mp (Finset.mem_filter.mp hT).1).2
+    exact mcaEvent_of_coherent dom hk hhi hTcard (hcoh T)
+
 end ProximityGap.Ownership
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
 #print axioms ProximityGap.Ownership.card_multiKernel_ge
 #print axioms ProximityGap.Ownership.mcaEvent_of_coherent
 #print axioms ProximityGap.Ownership.deep_band_witness_mass
+#print axioms ProximityGap.Ownership.deep_band_witness_mass_zero

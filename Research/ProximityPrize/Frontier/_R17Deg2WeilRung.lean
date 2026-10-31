@@ -34,18 +34,21 @@ INCLUDES the prize scaling `q ≈ n·2¹²⁸` (β ≈ 5.3 at n = 2³⁰). Measu
 ## What this file proves (axiom-clean; Weil stated as a NAMED literature input)
 
 * `sum_qr_psi` / `bridge`: the exact indicator/Gauss-twist collapse of `I_QR` — unconditional.
-* `norm_g_sq`: `‖g‖² = q` for the local Gauss sum — unconditional (pure orthogonality).
+* `norm_gSum_sq`: `‖g‖² = q` for the local Gauss sum — unconditional (pure orthogonality).
 * `sum_W`, `sum_W_sq`: `∑_s W = 0`, `∑_s W² = n(q−n)` EXACTLY — unconditional
   (two-point orthogonality `∑_s χ(s−a)χ(s−b) = −1`).
-* `WeilShiftedCubic` / `WeilQuarticPairs`: the named classical inputs (Weil 1948; the
-  share-a-point quartic subcase is even elementary). NOT proven here — Mathlib lacks Weil —
-  but standard literature, same convention as `TZPrimeSupply`.
-* `sum_W_cubed_bound`, `sum_R_sq_bound`, `sum_W_pow_four_bound`: the moment bounds from the
-  named inputs, with the degenerate coincidence patterns discharged ELEMENTARILY (only
+* `WeilQuarticPairs`: the single named classical input (Weil 1948; the share-a-point quartic
+  subcase is even elementary). NOT proven here — Mathlib lacks Weil — but standard
+  literature, same convention as `TZPrimeSupply`.  (There is no separate cubic Weil `Prop`:
+  the cubic moment bound is derived from `WeilQuarticPairs` by Cauchy–Schwarz.)
+* `sum_W_cubed_bound`, `sum_Rker_sq_bound`, `sum_W_pow_four_bound`: the moment bounds from the
+  named input, with the degenerate coincidence patterns discharged ELEMENTARILY (only
   all-distinct tuples consume Weil).
-* **`wickAwayAt_two_of_weil`**: for `√q ≥ 16n²`, the TRUE (constant-1) r = 2 rung
-  `WickForIncidenceAwayAt ψ G QR ({0}∪G) 2` holds — **the first discharged nontrivial rung of
-  the corrected tower**, conditional only on the classical Weil bound.
+* **`wickAwayAt_two_of_weil_of_subset`**: for `√q ≥ 16n²` and any deleted set `D ⊇ G`, the
+  TRUE (constant-1) r = 2 rung `WickForIncidenceAwayAt ψ G QR D 2` holds — **the first
+  discharged nontrivial rung of the corrected tower**, conditional only on the classical Weil
+  bound.  Specializations: `wickAwayAt_two_of_weil` (`D = {0}∪G`, the historical face) and
+  `wickAwayAt_two_of_weil_diag` (`D = G`; the zero-shift atom need not be deleted).
 
 ## Honest scope
 
@@ -53,8 +56,10 @@ INCLUDES the prize scaling `q ≈ n·2¹²⁸` (β ≈ 5.3 at n = 2³⁰). Measu
   sums of general polynomials. They are unconditionally true mathematics (Weil 1948, standard
   references), and their consumption here is the project's named-residual convention.
 * This does NOT close Problem B: the corrected `B` needs the rung at depth `r ≈ ln q`
-  (all `r ≤ ln q` in fact), while Weil pays `n^{2r}√q` against main `q·(2r−1)‼·(nq/2)^r`… the
-  Weil route survives only while `n^r ≲ √q·n^{r/…}` — i.e. shallow rungs. The structural
+  (all `r ≤ ln q` in fact).  The Weil error for the `2r`-th moment of `W` is of order
+  `n^{2r}·√q` (one `√q` per all-distinct tuple), against the Wick main term of order
+  `(2r−1)‼·n^r·q`; the route therefore survives only while `n^r ≲ √q` up to `r`-dependent
+  constants — i.e. shallow rungs. The structural
   payoff is the exact mirror of Problem A: shallow rungs CLOSED, deep rungs = the wall.
 * deg = 2 only. The general-deg χ-decomposition version (each `T_χ` pair a Weil sum of order
   `deg`) is the natural round-18 lane.
@@ -1043,14 +1048,19 @@ character, `ψ` primitive, and the prize-window size condition `16·n² ≤ √q
 This is the **first discharged nontrivial rung of the corrected (round-16) tower**: at the
 prize scaling (`β ≈ 5.3 > 4`) the deg-2 instance of the diagonal-subtracted fourth-moment
 bound is CLASSICAL, not open.  Probe `probe_r17_deg2_weil_rung.py`: measured `S₂'/Wick ≈
-0.22–0.29` at 18 cells — the true constant is `≈ 1/4`, and this proof certifies `≤ 1`. -/
-theorem wickAwayAt_two_of_weil (hχ : IsRealQuadChar χ)
+0.22–0.29` at 18 cells — the true constant is `≈ 1/4`, and this proof certifies `≤ 1`.
+
+The deleted set `D` only needs to contain `G` (so that the bridge's off-`G` branch applies);
+in particular `D = G` works, so the zero-shift atom `s = 0` need NOT be deleted.  The proof
+bounds the away sum by the full sum over all shifts, so enlarging `D` only loses slack.  The
+historical `{0} ∪ G` face is `wickAwayAt_two_of_weil`. -/
+theorem wickAwayAt_two_of_weil_of_subset (hχ : IsRealQuadChar χ)
     [DecidablePred fun b : F => χ b = 1]
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G D : Finset F) (hGD : G ⊆ D)
     (hweil : WeilQuarticPairs χ)
     (hbig : 16 * (G.card : ℝ) ^ 2 ≤ Real.sqrt (Fintype.card F))
     (hGne : G.Nonempty) :
-    WickForIncidenceAwayAt ψ G (QRset χ) (insert (0:F) G) 2 := by
+    WickForIncidenceAwayAt ψ G (QRset χ) D 2 := by
   classical
   set n : ℝ := (G.card : ℝ) with hn_def
   set q : ℝ := (Fintype.card F : ℝ) with hq_def
@@ -1080,11 +1090,11 @@ theorem wickAwayAt_two_of_weil (hχ : IsRealQuadChar χ)
     have h1 : x ^ 2 ≤ sq ^ 2 := by rw [hsqq]; exact hx2
     nlinarith [sq_abs x, h1, abs_nonneg x, hsq0]
   -- STEP 1: pointwise identity off the diagonal: ‖I(s)‖² = q·W² − 2n·x·W + n²
-  have hIsq : ∀ s : F, s ∉ (insert (0:F) G) →
+  have hIsq : ∀ s : F, s ∉ D →
       ‖incidenceSum ψ G (QRset χ) s‖ ^ 2
         = (q * (Wsum χ G s) ^ 2 - 2 * n * x * Wsum χ G s + n ^ 2) / 4 := by
     intro s hs
-    have hsG : s ∉ G := fun h => hs (Finset.mem_insert_of_mem h)
+    have hsG : s ∉ G := fun h => hs (hGD h)
     have hbr := bridge hχ hψ G s
     rw [if_neg hsG] at hbr
     -- I = (g·W − n)/2
@@ -1112,17 +1122,17 @@ theorem wickAwayAt_two_of_weil (hχ : IsRealQuadChar χ)
     rw [hz]
     norm_num
   -- STEP 2: the away moment is bounded by the full sum of the quartic polynomial in W
-  have hstep2 : incidenceMomentAway ψ G (QRset χ) (insert (0:F) G) 2
+  have hstep2 : incidenceMomentAway ψ G (QRset χ) D 2
       ≤ (∑ s : F, (q * (Wsum χ G s) ^ 2 - 2 * n * x * Wsum χ G s + n ^ 2) ^ 2) / 16 := by
     unfold incidenceMomentAway
-    have hpt : ∀ s ∈ Finset.univ \ (insert (0:F) G),
+    have hpt : ∀ s ∈ Finset.univ \ D,
         ‖incidenceSum ψ G (QRset χ) s‖ ^ (2 * 2)
           = ((q * (Wsum χ G s) ^ 2 - 2 * n * x * Wsum χ G s + n ^ 2) / 4) ^ 2 := by
       intro s hs
-      have hs' : s ∉ (insert (0:F) G) := (Finset.mem_sdiff.mp hs).2
+      have hs' : s ∉ D := (Finset.mem_sdiff.mp hs).2
       rw [pow_mul, hIsq s hs']
     rw [Finset.sum_congr rfl hpt]
-    have hsub : ∑ s ∈ Finset.univ \ (insert (0:F) G),
+    have hsub : ∑ s ∈ Finset.univ \ D,
         ((q * (Wsum χ G s) ^ 2 - 2 * n * x * Wsum χ G s + n ^ 2) / 4) ^ 2
         ≤ ∑ s : F, ((q * (Wsum χ G s) ^ 2 - 2 * n * x * Wsum χ G s + n ^ 2) / 4) ^ 2 :=
       Finset.sum_le_sum_of_subset_of_nonneg (Finset.sdiff_subset)
@@ -1305,7 +1315,7 @@ theorem wickAwayAt_two_of_weil (hχ : IsRealQuadChar χ)
     have k10 : (0:ℝ) ≤ n ^ 4 * sq ^ 2 := by positivity
     nlinarith [k1, k2, k3, k4, k5, k6, k7, k8, k9, k10]
   -- final chain
-  calc incidenceMomentAway ψ G (QRset χ) (insert (0:F) G) 2
+  calc incidenceMomentAway ψ G (QRset χ) D 2
       ≤ (∑ s : F, (q * (Wsum χ G s) ^ 2 - 2 * n * x * Wsum χ G s + n ^ 2) ^ 2) / 16 := hstep2
     _ ≤ (q ^ 2 * (3 * n ^ 2 * q + 2 * n ^ 3 + 3 * n ^ 4 * sq)
           + (4 * n ^ 2 * q + 2 * q * n ^ 2) * (n * q)
@@ -1318,6 +1328,29 @@ theorem wickAwayAt_two_of_weil (hχ : IsRealQuadChar χ)
     _ ≤ q * 3 * (∑ b ∈ QRset χ, ‖eta ψ G b‖ ^ 2) ^ 2 := hwick_lower
     _ = (Fintype.card F : ℝ) * 3 * (∑ b ∈ QRset χ, ‖eta ψ G b‖ ^ 2) ^ 2 := by
         rw [hq_def]
+
+/-- **The r = 2 rung with the historical deleted set `{0} ∪ G`** — the special case
+`D = insert 0 G` of `wickAwayAt_two_of_weil_of_subset`. -/
+theorem wickAwayAt_two_of_weil (hχ : IsRealQuadChar χ)
+    [DecidablePred fun b : F => χ b = 1]
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (hweil : WeilQuarticPairs χ)
+    (hbig : 16 * (G.card : ℝ) ^ 2 ≤ Real.sqrt (Fintype.card F))
+    (hGne : G.Nonempty) :
+    WickForIncidenceAwayAt ψ G (QRset χ) (insert (0:F) G) 2 :=
+  wickAwayAt_two_of_weil_of_subset hχ hψ G (insert (0:F) G) (Finset.subset_insert _ _)
+    hweil hbig hGne
+
+/-- **The r = 2 rung deleting only the diagonal `G`** (`D = G`): the zero-shift atom is not
+needed in the deleted set. -/
+theorem wickAwayAt_two_of_weil_diag (hχ : IsRealQuadChar χ)
+    [DecidablePred fun b : F => χ b = 1]
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (hweil : WeilQuarticPairs χ)
+    (hbig : 16 * (G.card : ℝ) ^ 2 ≤ Real.sqrt (Fintype.card F))
+    (hGne : G.Nonempty) :
+    WickForIncidenceAwayAt ψ G (QRset χ) G 2 :=
+  wickAwayAt_two_of_weil_of_subset hχ hψ G G le_rfl hweil hbig hGne
 
 end ArkLib.ProximityGap.Frontier.R17Deg2WeilRung
 

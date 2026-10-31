@@ -173,7 +173,15 @@ def section5StrictDataOfEqOnGood {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0
 
 The uniqueness field is propositional, but the whole structure lives in `Type`, so it can be used as
 an input hypothesis to wrappers that must construct `Section5StrictData` for arbitrary decoded
-families. -/
+families.
+
+**Scope (uniqueness is a unique-decoding-type assumption).**  The `unique` field identifies
+*every* decoded family that is `δ`-close on the good set with the one canonical family.  This is
+stronger than selecting a suitable common decoding: in a genuine list-decoding regime, where a
+word may have two distinct polynomials of degree `< deg` within relative distance `δ`, the
+structure is uninhabited (see `strictCanonicalSection5Data_isEmpty_of_two_close_decodings`).  It
+is therefore only usable for stacks whose close decodings are pointwise unique on the good set
+(e.g. when the good set is empty, or when `δ` is within the unique-decoding radius). -/
 structure StrictCanonicalSection5Data {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (u : WordStack F (Fin (k + 1)) ι) : Type where
   /-- The canonical decoded family for this word stack. -/
@@ -189,6 +197,55 @@ structure StrictCanonicalSection5Data {k deg : ℕ} {domain : ι ↪ F} {δ : �
           (P z).eval ∘ domain) ≤ δ) →
     ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
       P z = family z
+
+omit [Nonempty ι] [DecidableEq ι] in
+/-- **Obstruction to the canonical-uniqueness inputs in a list-decoding regime.**
+
+If two decoded families `P`, `Q` are both `δ`-close of degree `< deg` on the good set of the
+stack `u` and differ at some good point `z₀`, then no canonical family `P₀` can satisfy the
+uniqueness premise used by the uniform canonical wrappers
+(`correlatedAgreement_affine_curves_listDecoding_closed_canonical`,
+`correlatedAgreement_affine_curves_listDecoding_closed_of_section5_canonical`,
+`canonicalCoeffPolys_of_section5CanonicalData`).  Uniqueness of all close candidates is thus
+strictly stronger than selecting a suitable common decoding. -/
+theorem not_exists_uniqueOnGood_of_two_close_decodings {k deg : ℕ}
+    {domain : ι ↪ F} {δ : ℝ≥0} {u : WordStack F (Fin (k + 1)) ι}
+    (P Q : F → Polynomial F)
+    (hP : ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+      (P z).natDegree < deg ∧
+        δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ)
+    (hQ : ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+      (Q z).natDegree < deg ∧
+        δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t, (Q z).eval ∘ domain) ≤ δ)
+    {z₀ : F} (hz₀ : z₀ ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ)
+    (hne : P z₀ ≠ Q z₀) :
+    ¬ ∃ P₀ : F → Polynomial F,
+      ∀ P' : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+          (P' z).natDegree < deg ∧
+            δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t, (P' z).eval ∘ domain) ≤ δ) →
+        ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+          P' z = P₀ z := by
+  rintro ⟨P₀, hunique⟩
+  exact hne ((hunique P hP z₀ hz₀).trans (hunique Q hQ z₀ hz₀).symm)
+
+omit [Nonempty ι] [DecidableEq ι] in
+/-- `StrictCanonicalSection5Data u` is uninhabited as soon as `u` has two decoded families that
+are `δ`-close on the good set and differ at a good point (the list-decoding situation). -/
+theorem strictCanonicalSection5Data_isEmpty_of_two_close_decodings {k deg : ℕ}
+    {domain : ι ↪ F} {δ : ℝ≥0} {u : WordStack F (Fin (k + 1)) ι}
+    (P Q : F → Polynomial F)
+    (hP : ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+      (P z).natDegree < deg ∧
+        δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ)
+    (hQ : ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+      (Q z).natDegree < deg ∧
+        δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t, (Q z).eval ∘ domain) ≤ δ)
+    {z₀ : F} (hz₀ : z₀ ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ)
+    (hne : P z₀ ≠ Q z₀) :
+    IsEmpty (StrictCanonicalSection5Data (k := k) (deg := deg) (domain := domain) (δ := δ) u) :=
+  ⟨fun c => not_exists_uniqueOnGood_of_two_close_decodings P Q hP hQ hz₀ hne
+    ⟨c.family, c.unique⟩⟩
 
 /-! ## Step 1 — the genuine `betaRec ⟹ CurveCoeffPolys` call
 
@@ -322,7 +379,23 @@ canonical decoded family per received word stack.
 This is the target shape produced by the newer selected-domain/canonical-coefficient
 bridges: the strict branch supplies a single `P₀` with coefficient polynomials and
 uniqueness for each stack, while the closed square-root boundary is reduced to its
-actual data, equality at the boundary plus nonempty good-coefficient set. -/
+actual data, equality at the boundary plus nonempty good-coefficient set.
+
+**Scope caveat — this is not general list-decoding extraction.**  `hStrictCanonicalCoeff` is
+required for *every* word stack, without the probability / strict-Johnson guards of the
+branch-specific variants below, and it asserts that *all* `δ`-close decoded families agree with
+`P₀` on the good set.  Whenever some stack admits two decoded families that are close on the
+good set and differ at a good point, this hypothesis is false
+(`not_exists_uniqueOnGood_of_two_close_decodings`), so the theorem is then vacuous.  Such
+stacks exist inside the declared radius range: the audit (2026-10-28, finding L84) exhibits
+`F = 𝔽₂₃`, domain `i ↦ i` on `Fin 20`, `deg = 2`, `δ = 3/5` (so `δ < 1 - √(1/10)`),
+`k = 1`, `u₀ = w`, `u₁ = 0` with `w i = 0` for `i < 10` and `w i = i` otherwise; the constant
+families `0` and `X` are at relative distance `1/2` and `9/20` from `w` respectively (an exact
+rational check, not a Lean-kernel computation).  This wrapper is therefore only meaningful in a
+regime where close decodings are pointwise unique (e.g. within the unique-decoding radius); for
+the list-decoding regime use the per-decoding keystone
+`correlatedAgreement_affine_curves_listDecoding_closed` or the probability-guarded variants,
+whose uniqueness premises need separate analysis. -/
 theorem correlatedAgreement_affine_curves_listDecoding_closed_canonical {k deg : ℕ}
     {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
@@ -440,9 +513,11 @@ omit [Nonempty ι] [DecidableEq ι] in
 the canonical coefficient-polynomial package consumed by the closed keystone.
 
 The coefficient witnesses are still derived from `Section5StrictData` through
-`curveCoeffPolys_of_betaRec`; the only extra assumption is the expected
+`curveCoeffPolys_of_betaRec`; the only extra assumption is the
 uniqueness statement identifying every good decoding with the chosen canonical
-family `P₀`. -/
+family `P₀`.  That uniqueness premise is a unique-decoding-type assumption: it fails
+for stacks with two distinct close decodings on the good set
+(`not_exists_uniqueOnGood_of_two_close_decodings`). -/
 theorem canonicalCoeffPolys_of_section5CanonicalData {k deg : ℕ}
     {domain : ι ↪ F} {δ : ℝ≥0}
     {u : WordStack F (Fin (k + 1)) ι} {P₀ : F → Polynomial F}
@@ -471,9 +546,16 @@ omit [DecidableEq ι] in
 /-- Closed list-decoding keystone where the strict branch supplies exactly the
 canonical §5 extraction data for one family `P₀` per stack, plus uniqueness.
 
-This is the direct residual target for the current §5 assembly: the betaRec
-extraction datum is still genuine `Section5StrictData`, while the theorem
-packages it into the canonical-coefficient front door automatically. -/
+The betaRec extraction datum is still genuine `Section5StrictData`, and the theorem
+packages it into the canonical-coefficient front door automatically.
+
+**Scope caveat.**  Like `correlatedAgreement_affine_curves_listDecoding_closed_canonical`,
+`hCanonicalExtract` is demanded for *every* word stack with no probability / strict-Johnson
+guard, and includes uniqueness of all `δ`-close decodings on the good set.  It is false whenever
+some stack has two distinct close decodings at a good point
+(`not_exists_uniqueOnGood_of_two_close_decodings`; the audit's `𝔽₂₃`, `deg = 2`, `δ = 3/5`
+model is one such case inside the declared radius range), so this is not a general
+list-decoding extraction target; it is usable only where close decodings are unique. -/
 theorem correlatedAgreement_affine_curves_listDecoding_closed_of_section5_canonical
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
@@ -506,7 +588,13 @@ omit [DecidableEq ι] in
 In the strict Johnson branch, it is enough to provide one canonical decoded family `P₀` carrying
 `Section5StrictData`, plus uniqueness of all good decodings against `P₀`.  The proof transports the
 canonical datum to each decoded family using `section5StrictData_of_eq_on_good`, then calls the
-per-decoding closed keystone. -/
+per-decoding closed keystone.
+
+Unlike the uniform wrappers above, the input is only required under the probability /
+strict-Johnson guards.  Whether those guards actually supply the uniqueness field of
+`StrictCanonicalSection5Data` has not been established here and needs separate analysis: the
+structure is uninhabited for any stack with two distinct close decodings at a good point
+(`strictCanonicalSection5Data_isEmpty_of_two_close_decodings`). -/
 theorem correlatedAgreement_affine_curves_listDecoding_closed_of_strict_section5_canonical
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)

@@ -13,11 +13,13 @@ file passes the sharp five-set overlap theorem to the quotient whose vertices ar
 Two pair-vertices interact when some endpoint witness from the first overlaps some endpoint
 witness from the second on at least `K` coordinates.
 
-Among any five vertex-disjoint pairs, choose (say) endpoint zero from each pair.  Those five
-threshold-size witnesses force a `K`-overlap, hence two of the pair-vertices interact.  Therefore
-the pair-interaction graph has independence number at most four.  This is the first global
-constraint that acts directly on the matched-secant population rather than on individual scalar
-witnesses or core cardinalities.
+Among any five distinct pairs, take endpoint zero from each pair.  Those five threshold-size
+witnesses force a `K`-overlap, hence two of the pair-vertices interact.  Therefore the
+pair-interaction graph has independence number at most four.  This is only the scalar five-set
+theorem applied to first endpoints: the fixed-endpoint graph `fixedEndpointGraph witness M 0` is a
+subgraph of the interaction graph, and the complement-`K₅`-free statement for the interaction
+graph follows from it by monotonicity.  No endpoint-disjointness (matching) hypothesis is needed,
+and the cross-endpoint disjuncts of `PairInteracts` play no role in the forcing.
 -/
 
 set_option autoImplicit false
@@ -105,46 +107,73 @@ theorem interactionOrientation_spec
   exact Classical.choose_spec (Classical.choose_spec
     ((pairInteracts_iff_exists_orientation witness p q).mp h))
 
-/-- **Five-pair interaction forcing.**  Five vertex-disjoint matched pairs with threshold-size
-endpoint witnesses contain two distinct pair-vertices that interact. -/
+/-- **Five-pair interaction forcing.**  Five distinct pairs whose first endpoints have
+threshold-size witnesses contain two distinct pair-vertices that interact.  Only endpoint zero
+and the first disjunct of `PairInteracts` are used: this is the scalar five-set theorem applied to
+first endpoints. -/
 theorem exists_interacting_pair_of_five
     {J : Type} (witness : J → Finset (Fin N))
     (pair : Fin 5 → J × J)
-    (hendpoint : Function.Injective (endpoint pair))
-    (hsize : ∀ z : Fin 5 × Fin 2, T ≤ (witness (endpoint pair z)).card) :
+    (hpair : Function.Injective pair)
+    (hsize : ∀ i : Fin 5, T ≤ (witness (pair i).1).card) :
     ∃ i j : Fin 5, i ≠ j ∧ pair i ≠ pair j ∧
       PairInteracts witness (pair i) (pair j) := by
-  let S : Fin 5 → Finset (Fin N) := fun i => witness (endpoint pair (i, 0))
   obtain ⟨i, j, hij, hoverlap⟩ :=
-    exists_pair_inter_card_ge_K_of_five S (fun i => hsize (i, 0))
-  have hpij : pair i ≠ pair j := by
-    intro hp
-    have he : endpoint pair (i, 0) = endpoint pair (j, 0) := by simp [hp]
-    exact hij (congrArg Prod.fst (hendpoint he))
-  refine ⟨i, j, hij, hpij, Or.inl ?_⟩
-  simpa only [S, endpoint_zero] using hoverlap
+    exists_pair_inter_card_ge_K_of_five (fun i => witness (pair i).1) hsize
+  exact ⟨i, j, hij, fun hp => hij (hpair hp), Or.inl hoverlap⟩
 
-/-- Relation-theoretic form: no five vertex-disjoint pairs can be pairwise noninteracting. -/
+/-- Relation-theoretic form: no five distinct pairs can be pairwise noninteracting. -/
 theorem not_five_pairwise_noninteracting
     {J : Type} (witness : J → Finset (Fin N))
     (pair : Fin 5 → J × J)
-    (hendpoint : Function.Injective (endpoint pair))
-    (hsize : ∀ z : Fin 5 × Fin 2, T ≤ (witness (endpoint pair z)).card) :
+    (hpair : Function.Injective pair)
+    (hsize : ∀ i : Fin 5, T ≤ (witness (pair i).1).card) :
     ¬ ∀ i j : Fin 5, i ≠ j → ¬ PairInteracts witness (pair i) (pair j) := by
   intro hnone
   obtain ⟨i, j, hij, _hpij, hinteract⟩ :=
-    exists_interacting_pair_of_five witness pair hendpoint hsize
+    exists_interacting_pair_of_five witness pair hpair hsize
   exact hnone i j hij hinteract
 
-/-! ## The global interaction graph on an arbitrary matching -/
+/-! ## Fixed-endpoint graphs and the global interaction graph -/
 
-/-- Endpoint-disjointness data carried by a matching of scalar pairs. -/
-def PairMatching {J : Type} (M : Finset (J × J)) : Prop :=
-  (∀ p ∈ M, p.1 ≠ p.2) ∧
-  ∀ p ∈ M, ∀ q ∈ M, p ≠ q →
-    p.1 ≠ q.1 ∧ p.1 ≠ q.2 ∧ p.2 ≠ q.1 ∧ p.2 ≠ q.2
+/-- Fixed-endpoint overlap graph: compare endpoint `e` on both matched pairs. -/
+noncomputable def fixedEndpointGraph
+    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
+    (M : Finset (J × J)) (e : Fin 2) : SimpleGraph M where
+  Adj p q := p ≠ q ∧
+    K ≤ (witness (endpointAt p.1 e) ∩ witness (endpointAt q.1 e)).card
+  symm := ⟨by
+    intro p q h
+    exact ⟨h.1.symm, by simpa only [Finset.inter_comm] using h.2⟩⟩
+  loopless := ⟨fun p h => h.1 rfl⟩
 
-/-- Graph on the matched pairs, with an edge for any cross-endpoint `K`-overlap. -/
+/-- Each fixed-endpoint graph separately has independence number at most four. -/
+theorem fixedEndpointGraph_compl_cliqueFree_five
+    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
+    (M : Finset (J × J)) (e : Fin 2)
+    (hsize : ∀ p ∈ M, T ≤ (witness (endpointAt p e)).card) :
+    (fixedEndpointGraph witness M e)ᶜ.CliqueFree 5 := by
+  classical
+  intro G5 hG5
+  have heq : G5 ≃ Fin 5 := by
+    rw [← hG5.card_eq]
+    exact G5.equivFin
+  let vertex : Fin 5 → M := fun i => (heq.symm i).1
+  let S : Fin 5 → Finset (Fin N) := fun i => witness (endpointAt (vertex i).1 e)
+  obtain ⟨i, j, hij, hoverlap⟩ :=
+    exists_pair_inter_card_ge_K_of_five S (fun i => hsize (vertex i).1 (vertex i).2)
+  have hvij : vertex i ≠ vertex j := by
+    intro h
+    exact hij (heq.symm.injective (Subtype.ext h))
+  have hadj : (fixedEndpointGraph witness M e).Adj (vertex i) (vertex j) :=
+    ⟨hvij, by simpa only [S] using hoverlap⟩
+  have hi : vertex i ∈ G5 := (heq.symm i).2
+  have hj : vertex j ∈ G5 := (heq.symm j).2
+  have hcompl := hG5.isClique hi hj hvij
+  exact ((SimpleGraph.compl_adj _ _ _).mp hcompl).2 hadj
+
+/-- Graph on a finite set of scalar pairs (in applications, the matched pairs), with an edge for
+any cross-endpoint `K`-overlap. -/
 noncomputable def interactionGraph
     {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
     (M : Finset (J × J)) : SimpleGraph M where
@@ -154,58 +183,25 @@ noncomputable def interactionGraph
     exact ⟨h.1.symm, h.2.symm⟩⟩
   loopless := ⟨fun p h => h.1 rfl⟩
 
-/-- The complement interaction graph is `K₅`-free. -/
+/-- The fixed-endpoint graph is a subgraph of the interaction graph. -/
+theorem fixedEndpointGraph_le_interactionGraph
+    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
+    (M : Finset (J × J)) (e : Fin 2) :
+    fixedEndpointGraph witness M e ≤ interactionGraph witness M := by
+  intro p q h
+  exact ⟨h.1, (pairInteracts_iff_exists_orientation witness p.1 q.1).mpr ⟨e, e, h.2⟩⟩
+
+/-- The complement interaction graph is `K₅`-free.  This follows from the endpoint-zero
+statement `fixedEndpointGraph_compl_cliqueFree_five` by subgraph monotonicity; only the first
+endpoints' sizes are used and no matching hypothesis is needed. -/
 theorem interactionGraph_compl_cliqueFree_five
     {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
-    (M : Finset (J × J)) (hmatching : PairMatching M)
-    (hsize : ∀ p ∈ M, T ≤ (witness p.1).card ∧ T ≤ (witness p.2).card) :
-    (interactionGraph witness M)ᶜ.CliqueFree 5 := by
-  classical
-  intro G5 hG5
-  have he : G5 ≃ Fin 5 := by
-    rw [← hG5.card_eq]
-    exact G5.equivFin
-  let pair : Fin 5 → J × J := fun i => (he.symm i).1.1
-  have hpairM : ∀ i, pair i ∈ M := fun i => (he.symm i).1.2
-  have hpairNe : ∀ i j, i ≠ j → pair i ≠ pair j := by
-    intro i j hij hp
-    apply hij
-    apply he.symm.injective
-    apply Subtype.ext
-    apply Subtype.ext
-    exact hp
-  have hendpoint : Function.Injective (endpoint pair) := by
-    rintro ⟨i, e⟩ ⟨j, f⟩ h
-    by_cases hij : i = j
-    · subst j
-      fin_cases e <;> fin_cases f <;> simp only [endpoint_zero, endpoint_one] at h ⊢
-      · exact (hmatching.1 (pair i) (hpairM i) h).elim
-      · exact (hmatching.1 (pair i) (hpairM i) h.symm).elim
-    · have hpq := hmatching.2 (pair i) (hpairM i) (pair j) (hpairM j)
-          (hpairNe i j hij)
-      fin_cases e <;> fin_cases f <;> simp only [endpoint_zero, endpoint_one] at h ⊢
-      · exact (hpq.1 h).elim
-      · exact (hpq.2.1 h).elim
-      · exact (hpq.2.2.1 h).elim
-      · exact (hpq.2.2.2 h).elim
-  have hendpointSize : ∀ z : Fin 5 × Fin 2,
-      T ≤ (witness (endpoint pair z)).card := by
-    rintro ⟨i, e⟩
-    fin_cases e
-    · exact (hsize (pair i) (hpairM i)).1
-    · exact (hsize (pair i) (hpairM i)).2
-  obtain ⟨i, j, hij, hpij, hinteract⟩ :=
-    exists_interacting_pair_of_five witness pair hendpoint hendpointSize
-  let vi : M := ⟨pair i, hpairM i⟩
-  let vj : M := ⟨pair j, hpairM j⟩
-  have hvij : vi ≠ vj := by
-    intro h
-    exact hpij (congrArg Subtype.val h)
-  have hadj : (interactionGraph witness M).Adj vi vj := ⟨hvij, hinteract⟩
-  have hi : vi ∈ G5 := (he.symm i).2
-  have hj : vj ∈ G5 := (he.symm j).2
-  have hcompl := hG5.isClique hi hj hvij
-  exact ((SimpleGraph.compl_adj _ _ _).mp hcompl).2 hadj
+    (M : Finset (J × J))
+    (hsize : ∀ p ∈ M, T ≤ (witness p.1).card) :
+    (interactionGraph witness M)ᶜ.CliqueFree 5 :=
+  (fixedEndpointGraph_compl_cliqueFree_five witness M 0 (fun p hp => by
+    simpa only [endpointAt_zero] using hsize p hp)).anti
+    (compl_le_compl (fixedEndpointGraph_le_interactionGraph witness M 0))
 
 /-- A complement-`K₅`-free finite graph has a dominating independent set of cardinality at most
 four.  This is the maximal-independent-set form of the density input and avoids edge counting. -/
@@ -242,13 +238,13 @@ theorem exists_dominating_indep_card_le_four
 pair-vertices interacts with one of those centres. -/
 theorem exists_four_interaction_centres
     {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
-    (M : Finset (J × J)) (hmatching : PairMatching M)
-    (hsize : ∀ p ∈ M, T ≤ (witness p.1).card ∧ T ≤ (witness p.2).card) :
+    (M : Finset (J × J))
+    (hsize : ∀ p ∈ M, T ≤ (witness p.1).card) :
     ∃ I : Finset M, I.card ≤ 4 ∧
       ∀ p : M, p ∉ I → ∃ q ∈ I, PairInteracts witness p.1 q.1 := by
   obtain ⟨I, hIcard, _hIindep, hdom⟩ :=
     exists_dominating_indep_card_le_four (interactionGraph witness M)
-      (interactionGraph_compl_cliqueFree_five witness M hmatching hsize)
+      (interactionGraph_compl_cliqueFree_five witness M hsize)
   refine ⟨I, hIcard, ?_⟩
   intro p hp
   obtain ⟨q, hq, hadj⟩ := hdom p hp
@@ -263,8 +259,8 @@ every outside matched pair one centre, one endpoint on the outside pair, and one
 centre, with the exact `K`-overlap certificate. -/
 theorem exists_four_centres_with_oriented_routing
     {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
-    (M : Finset (J × J)) (hmatching : PairMatching M)
-    (hsize : ∀ p ∈ M, T ≤ (witness p.1).card ∧ T ≤ (witness p.2).card) :
+    (M : Finset (J × J))
+    (hsize : ∀ p ∈ M, T ≤ (witness p.1).card) :
     ∃ I : Finset M, I.card ≤ 4 ∧
       ∃ centre : OutsideCentres I → I,
       ∃ orient : OutsideCentres I → Fin 2 × Fin 2,
@@ -272,7 +268,7 @@ theorem exists_four_centres_with_oriented_routing
         K ≤ (witness (endpointAt p.1.1 (orient p).1) ∩
           witness (endpointAt (centre p).1.1 (orient p).2)).card := by
   obtain ⟨I, hIcard, hdom⟩ :=
-    exists_four_interaction_centres witness M hmatching hsize
+    exists_four_interaction_centres witness M hsize
   have hex : ∀ p : OutsideCentres I,
       ∃ q : I, PairInteracts witness p.1.1 q.1.1 := by
     intro p
@@ -346,41 +342,6 @@ theorem pairInteracts_exists_crossSecant_core
 
 /-! ## Two-sided endpoint domination -/
 
-/-- Fixed-endpoint overlap graph: compare endpoint `e` on both matched pairs. -/
-noncomputable def fixedEndpointGraph
-    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
-    (M : Finset (J × J)) (e : Fin 2) : SimpleGraph M where
-  Adj p q := p ≠ q ∧
-    K ≤ (witness (endpointAt p.1 e) ∩ witness (endpointAt q.1 e)).card
-  symm := ⟨by
-    intro p q h
-    exact ⟨h.1.symm, by simpa only [Finset.inter_comm] using h.2⟩⟩
-  loopless := ⟨fun p h => h.1 rfl⟩
-
-/-- Each fixed-endpoint graph separately has independence number at most four. -/
-theorem fixedEndpointGraph_compl_cliqueFree_five
-    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
-    (M : Finset (J × J)) (e : Fin 2)
-    (hsize : ∀ p ∈ M, T ≤ (witness (endpointAt p e)).card) :
-    (fixedEndpointGraph witness M e)ᶜ.CliqueFree 5 := by
-  classical
-  intro G5 hG5
-  have heq : G5 ≃ Fin 5 := by
-    rw [← hG5.card_eq]
-    exact G5.equivFin
-  let vertex : Fin 5 → M := fun i => (heq.symm i).1
-  let S : Fin 5 → Finset (Fin N) := fun i => witness (endpointAt (vertex i).1 e)
-  obtain ⟨i, j, hij, hoverlap⟩ :=
-    exists_pair_inter_card_ge_K_of_five S (fun i => hsize (vertex i).1 (vertex i).2)
-  have hvij : vertex i ≠ vertex j := by
-    intro h
-    exact hij (heq.symm.injective (Subtype.ext h))
-  have hadj : (fixedEndpointGraph witness M e).Adj (vertex i) (vertex j) :=
-    ⟨hvij, by simpa only [S] using hoverlap⟩
-  have hi : vertex i ∈ G5 := (heq.symm i).2
-  have hj : vertex j ∈ G5 := (heq.symm j).2
-  have hcompl := hG5.isClique hi hj hvij
-  exact ((SimpleGraph.compl_adj _ _ _).mp hcompl).2 hadj
 
 /-- One fixed endpoint is dominated by at most four centre pairs. -/
 theorem exists_four_fixedEndpoint_centres
@@ -433,6 +394,7 @@ open ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 #print axioms interactionOrientation_spec
 #print axioms exists_interacting_pair_of_five
 #print axioms not_five_pairwise_noninteracting
+#print axioms fixedEndpointGraph_le_interactionGraph
 #print axioms interactionGraph_compl_cliqueFree_five
 #print axioms exists_dominating_indep_card_le_four
 #print axioms exists_four_interaction_centres

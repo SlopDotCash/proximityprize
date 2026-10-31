@@ -1,5 +1,15 @@
 # Subspace-design derandomization route is DEAD for plain RS — caps at Johnson, domain-blind (#444)
 
+> **Scope correction (2026-10-28 audit, T48).** The restricted calculation is correct. In a plain
+> coordinate projection, each kernel `A_i` of a `d`-dimensional polynomial space has dimension
+> `d − 1` except at common roots, so the total `n(d−1) + (k−d)` is attainable for `1 ≤ d ≤ k`. The
+> no-go therefore applies to proofs that go **through this explicit subspace-design invariant**
+> in the parameter regime analysed. It does not follow that every derandomization or proximity
+> proof must use that invariant, or that folding is the only possible mechanism. The claim that all
+> 2026 results "never" treat plain RS also conflicts with the random-RS capacity results cited in
+> the opening paragraph (AGL24/GG25). Read "PROVABLY capped", "no structure of μ_n can change it"
+> and "rigorous impossibility" as statements about this invariant only.
+
 Rigorous route-elimination (RS-list-decoding army, derand-subspace angle, ranked N8/I9/F9). The highest-leverage
 hope — derandomize the random-RS-to-capacity results (AGL24/GG25) to explicit smooth RS via subspace designs —
 is PROVABLY capped at/below Johnson for plain (unfolded) RS, and no structure of μ_n can change it.

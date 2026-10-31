@@ -594,8 +594,13 @@ lemma dist_to_UDRCodeword_le_uniqueDecodingRadius (i : Fin r) (h_i : i ≤ ℓ)
   exact dist_to_uniqueDecodingCodeword_le_uniqueDecodingRadius 𝔽q β i h_i f
     (by exact h_within_radius)
 
-/-- Computational version of `UDRCodeword`, where we use the Berlekamp-Welch decoder to extract
-the closest codeword within the unique decoding radius of a function `f` -/
+/-- The unique-decoding-radius codeword of `f`, under the name intended for a computational
+(Berlekamp–Welch) decoder. **Current implementation: this is not a decoder.** The active body is
+exactly the choice-based `UDRCodeword` (= canonical `uniqueDecodingCodeword`, which returns the
+`Classical.choose`n unique close codeword), so it has no runtime algorithm and no decoder-agreement theorem beyond `UDRCodeword`'s own
+properties. The old Berlekamp–Welch-based implementation is preserved only inside the block
+comment that follows this definition; it is not compiled. This does not affect the choice-based
+existence result. -/
 def extractUDRCodeword
     (i : Fin r) (h_i : i ≤ ℓ)
   (f : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)

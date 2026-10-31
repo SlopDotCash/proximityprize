@@ -35,7 +35,13 @@ at the saddle), whereas the **stronger** `K = 1` form `Φ_p^{nz} ≤ I₀(2y)^{n
 `r` is real, so char-`p` Wick needs `K > 1` — but the Gaussian envelope absorbs it. Hence the
 correct hypothesis fed to this bridge is the **`K`-Wick** per-`r` bound `A_r ≤ K^r(2r−1)‼n^r` with
 an absolute `K`, NOT `K = 1`. This file proves the bridge axiom-clean; the per-`r` `K`-Wick bound
-itself (equivalently `Φ_p^{nz} ≤ exp(Kn y²/2)` directly) is the named open core (the BGK saddle).
+itself is the named open core (the BGK saddle). The bridge is one-directional: coefficientwise
+`K`-Wick domination implies the Gaussian MGF bound, but the MGF bound at the same `K` does not in
+general imply coefficientwise domination (audit 2026-10-28, R-216). Example: `a₀ = 1`, `a₂ = 4`,
+all other `a_r = 0` gives `MGF = 1 + y⁴/6 ≤ exp(y²/2)` for every real `y` (with `t = y²/2 ≥ 0`,
+`exp t ≥ 1 + t + t²/2 + t³/6 ≥ 1 + (2/3)t²`), while `a₂ = 4` exceeds the Gaussian fourth moment `3`.
+So "`Φ_p^{nz} ≤ exp(Kn y²/2)` directly" is a weaker (sufficient-for-sup-bounds) target, not an
+equivalent form of the per-`r` bound.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.  Issue #444 (wf-W1).
 -/

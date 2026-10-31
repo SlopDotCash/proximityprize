@@ -29,7 +29,7 @@ This file machine-checks the refuting instance `RS[F₁₉, μ₁₈ = F₁₉ˣ
 `d = 9 = 2·4 + 1`, `b = 4`, blocks = the six cosets of `μ₃`): the explicit stack below
 carries the six bad scalars `{1, 3, 5, 15, 16, 17}` at `δ = 1/6` (band 4), of which five
 are certified here — already contradicting the `≤ 4` claim of `MDSStaircaseConjecture`
-at its in-hypothesis instance `k + 2b = 18 ≤ n`.
+at its in-hypothesis instance `k + 2b = 18 ≤ n + 1` (i.e. `d = n − k + 1 = 9 ≥ 2b`).
 
 Probe: `scripts/probes/probe_mds_pencil_explosion.py` (exact end-to-end `mcaEvent`
 verification at six instances, T1–T6).  Each certificate's joint-failure runs through
@@ -217,7 +217,7 @@ theorem cert3 : mcaEvent (F := F19) (rsC : Set (Fin 18 → F19)) (1/6) u₀ u₁
 
 open Classical in
 /-- **`MDSStaircaseConjecture` is FALSE.**  At its in-hypothesis instance
-`RS[F₁₉, F₁₉ˣ, k = 10]` (`n = 18`, `k + 2b = 18 ≤ 18`, `b = 4`, `d = 9 = 2b + 1`), the
+`RS[F₁₉, F₁₉ˣ, k = 10]` (`n = 18`, `k + 2b = 18 ≤ n + 1`, `b = 4`, `d = 9 = 2b + 1`), the
 degenerate-pencil stack carries five certified bad scalars `{1, 3, 5, 16, 17}` at
 `δ = 1/6` (band 4, `δ·n = 3 < 4`) — exceeding the conjectured cap `b = 4`.  The
 Reed–Solomon staircase does **not** collapse below the universal `3b − 2` threshold:
@@ -227,7 +227,7 @@ theorem mdsStaircaseConjecture_refuted : ¬ MDSStaircaseConjecture := by
   intro h
   have hLSU : LinearStaircaseUpper (ReedSolomon.code domEmb 10) 4 :=
     h (Fin 18) inferInstance inferInstance inferInstance F19 inferInstance inferInstance
-      inferInstance domEmb 10 4 (by norm_num) (by rw [Fintype.card_fin])
+      inferInstance domEmb 10 4 (by norm_num) (by norm_num)
   have hδ : ((1 : ℝ≥0)/6) * (Fintype.card (Fin 18) : ℝ≥0) < ((4 : ℕ) : ℝ≥0) := by
     rw [Fintype.card_fin, ← NNReal.coe_lt_coe]
     push_cast

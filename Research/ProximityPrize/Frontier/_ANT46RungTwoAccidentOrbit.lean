@@ -86,6 +86,15 @@ noncomputable def accidents (H : Finset F) : Finset (Triple F) := by
   exact (((H ×ˢ H) ×ˢ H).image
     (fun x => Triple.mk x.1.1 x.1.2 x.2)).filter IsAccident
 
+/-! ## Cyclic re-rooting (expository, kernel-cheap route)
+
+`step` is the re-rooting `reRoot` of the later `S₄` section for a 4-cycle of `Fin 4`.  The
+cardinality consequence of this section (`four_le_card_accidents_of_nonempty`, hence
+`card_accidents_le_three_iff_eq_zero`) is subsumed by the full projective classification below:
+`card_projectiveFiber_eq_one_or_two_or_six_of_accident` gives projective orbit sizes `24`, `12`,
+or `4`, all `≥ 4`.  The cyclic section is kept as an elementary, self-contained first derivation
+that needs none of the `S₄` machinery. -/
+
 /-- Cyclically re-root the signed zero-sum quadruple `(a,b,-c,-1)`. -/
 def step (x : Triple F) : Triple F :=
   ⟨-x.b / x.a, x.c / x.a, -1 / x.a⟩
@@ -441,6 +450,20 @@ private theorem binaryPow_eq_pow {M : Type*} [Monoid M] (a : M) (n : ℕ) :
     binaryPow a n = a ^ n := by
   exact binaryPowAux_eq_pow a n (n + 1) (by omega)
 
+/-- Prime-independent form of the production certificates below: if `-3` is not an `N`-th root
+of unity and every support element is one, no supported accident is triple-equal. -/
+theorem no_tripleEqual_accident_of_neg_three_pow_ne_one {H : Finset F} {N : ℕ}
+    (h3pow : (-3 : F) ^ N ≠ 1)
+    (hneg : ∀ z ∈ H, -z ∈ H)
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : F) ∉ H)
+    (hpow : ∀ z ∈ H, z ^ N = 1)
+    {x : Triple F} (hx : x ∈ accidents H) :
+    ¬ HasTripleEqualSigned x := by
+  have h3 : (-3 : F) ∉ H := fun hmem => h3pow (hpow _ hmem)
+  exact not_tripleEqual_of_neg_three_notMem hneg hmul hinv h0 h3 hx
+
 open ArkLib.ProximityGap.PrizeShapePrimeP30
 
 local instance firstPrimeFact : Fact (Nat.Prime P) := ⟨prime_P⟩
@@ -462,11 +485,9 @@ theorem firstPrime_no_tripleEqual_accident {H : Finset (ZMod P)}
     (h0 : (0 : ZMod P) ∉ H)
     (hpow : ∀ z ∈ H, z ^ (2 ^ 30 : ℕ) = 1)
     {x : Triple (ZMod P)} (hx : x ∈ accidents H) :
-    ¬ HasTripleEqualSigned x := by
-  have h3 : (-3 : ZMod P) ∉ H := by
-    intro hmem
-    exact firstPrime_neg_three_pow_ne_one (hpow _ hmem)
-  exact not_tripleEqual_of_neg_three_notMem hneg hmul hinv h0 h3 hx
+    ¬ HasTripleEqualSigned x :=
+  no_tripleEqual_accident_of_neg_three_pow_ne_one firstPrime_neg_three_pow_ne_one
+    hneg hmul hinv h0 hpow hx
 
 /-! The second certified endpoint has the same exclusion, although `-3` is a quadratic
 residue there; the direct `2^30`-th-power certificate is therefore the right invariant. -/
@@ -490,12 +511,9 @@ theorem secondPrime_no_tripleEqual_accident
     (h0 : (0 : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) ∉ H)
     (hpow : ∀ z ∈ H, z ^ (2 ^ 30 : ℕ) = 1)
     {x : Triple (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)}
-    (hx : x ∈ accidents H) : ¬ HasTripleEqualSigned x := by
-  have h3 :
-      (-3 : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) ∉ H := by
-    intro hmem
-    exact secondPrime_neg_three_pow_ne_one (hpow _ hmem)
-  exact not_tripleEqual_of_neg_three_notMem hneg hmul hinv h0 h3 hx
+    (hx : x ∈ accidents H) : ¬ HasTripleEqualSigned x :=
+  no_tripleEqual_accident_of_neg_three_pow_ne_one secondPrime_neg_three_pow_ne_one
+    hneg hmul hinv h0 hpow hx
 
 /-- The signed zero-sum quadruple attached to a normalized solution. -/
 def signed (x : Triple F) : Fin 4 → F := ![x.a, x.b, -x.c, -1]
@@ -1517,6 +1535,18 @@ theorem twelve_le_card_accidents_of_nonempty_of_no_triple
   have hpos : 0 < (accidents H).card := Finset.card_pos.mpr hne
   omega
 
+/-- Prime-independent form of the two production `12`-divisibility theorems below. -/
+theorem twelve_dvd_card_accidents_of_neg_three_pow_ne_one {H : Finset F} {N : ℕ}
+    (h2 : (2 : F) ≠ 0) (h3pow : (-3 : F) ^ N ≠ 1)
+    (hneg : ∀ z ∈ H, -z ∈ H)
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : F) ∉ H)
+    (hpow : ∀ z ∈ H, z ^ N = 1) :
+    12 ∣ (accidents H).card :=
+  twelve_dvd_card_accidents_of_no_triple hneg hmul hinv h0 h2 fun _ hx =>
+    no_tripleEqual_accident_of_neg_three_pow_ne_one h3pow hneg hmul hinv h0 hpow hx
+
 /-- At the first certified production prime, every supported accident set has cardinality
 divisible by `12` as soon as all support elements are `2^30`-th roots of unity. -/
 theorem firstPrime_twelve_dvd_card_accidents {H : Finset (ZMod P)}
@@ -1526,12 +1556,11 @@ theorem firstPrime_twelve_dvd_card_accidents {H : Finset (ZMod P)}
     (h0 : (0 : ZMod P) ∉ H)
     (hpow : ∀ z ∈ H, z ^ (2 ^ 30 : ℕ) = 1) :
     12 ∣ (accidents H).card := by
-  apply twelve_dvd_card_accidents_of_no_triple hneg hmul hinv h0
-  · intro h
-    have hdvd : P ∣ 2 := (ZMod.natCast_eq_zero_iff 2 P).mp h
-    norm_num [P] at hdvd
-  · intro x hx
-    exact firstPrime_no_tripleEqual_accident hneg hmul hinv h0 hpow hx
+  apply twelve_dvd_card_accidents_of_neg_three_pow_ne_one _ firstPrime_neg_three_pow_ne_one
+    hneg hmul hinv h0 hpow
+  intro h
+  have hdvd : P ∣ 2 := (ZMod.natCast_eq_zero_iff 2 P).mp h
+  norm_num [P] at hdvd
 
 /-- Second-certified-production-prime version of `firstPrime_twelve_dvd_card_accidents`. -/
 theorem secondPrime_twelve_dvd_card_accidents
@@ -1542,14 +1571,13 @@ theorem secondPrime_twelve_dvd_card_accidents
     (h0 : (0 : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) ∉ H)
     (hpow : ∀ z ∈ H, z ^ (2 ^ 30 : ℕ) = 1) :
     12 ∣ (accidents H).card := by
-  apply twelve_dvd_card_accidents_of_no_triple hneg hmul hinv h0
-  · intro h
-    have hdvd : ArkLib.ProximityGap.PrizeShapePrimeP30Second.P ∣ 2 :=
-      (ZMod.natCast_eq_zero_iff 2
-        ArkLib.ProximityGap.PrizeShapePrimeP30Second.P).mp h
-    norm_num [ArkLib.ProximityGap.PrizeShapePrimeP30Second.P] at hdvd
-  · intro x hx
-    exact secondPrime_no_tripleEqual_accident hneg hmul hinv h0 hpow hx
+  apply twelve_dvd_card_accidents_of_neg_three_pow_ne_one _ secondPrime_neg_three_pow_ne_one
+    hneg hmul hinv h0 hpow
+  intro h
+  have hdvd : ArkLib.ProximityGap.PrizeShapePrimeP30Second.P ∣ 2 :=
+    (ZMod.natCast_eq_zero_iff 2
+      ArkLib.ProximityGap.PrizeShapePrimeP30Second.P).mp h
+  norm_num [ArkLib.ProximityGap.PrizeShapePrimeP30Second.P] at hdvd
 
 /-! ## Exact quotient by a cyclotomic-unit signature
 
@@ -1765,9 +1793,15 @@ noncomputable def differenceCollisionPairs (H : Finset F) (n : ℕ) : Finset (F 
     differenceSignature n q.1 = differenceSignature n q.2 ∧
       q.2 ≠ q.1 ∧ q.2 ≠ q.1⁻¹
 
-/-- Exact cardinality form of the signature quotient.  In a signature fibre of size `k`, the
-right-hand side contributes `k² - 2k + s`, where `s` records whether the fibre contains `-1`.
-This reduces accident counting from supported triples to ordered pairs in signature fibres. -/
+/-- Exact cardinality form of the signature quotient (valid for every `n`).  This reduces
+accident counting from supported triples to ordered pairs in signature fibres.
+
+Per-fibre bookkeeping (informal, not part of the statement): for an `n`-th root `x`,
+`κ(x⁻¹) = (-1)^n x^{-n} κ(x) = (-1)^n κ(x)`.  So for **even `n`** (or in characteristic `2`)
+signature fibres are inversion-closed, and a fibre of size `k` (inside `H \ {1}`) contributes
+`k² - 2k + s` ordered pairs, where `s ∈ {0,1}` records whether the fibre contains `-1`.  For odd
+`n` in odd characteristic, `x⁻¹` never shares the fibre of `x` (as `κ(x) ≠ 0`), and the fibre
+contributes `k² - k`. -/
 theorem card_accidents_eq_card_differenceCollisionPairs
     {H : Finset F} {n : ℕ}
     (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)

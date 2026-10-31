@@ -16,8 +16,11 @@ This probe asks the sharp joint question that no support statistic answers:
       sign(A_5*A_6) determined -> that would be a genuine joint no-go OR
       a binding lemma.
 
-If sign(A_5)==sign(A_6) is UNIVERSAL, the simultaneous lower bound reduces
-to a single-rank bound (huge simplification, potential prize movement).
+If sign(A_5)==sign(A_6) were UNIVERSAL, the simultaneous SIGN question would reduce to a
+single rank. A simultaneous lower bound on BOTH magnitudes would still need a quantitative
+bridge (e.g. |A_6| >= c*|A_5| on the relevant cells): equality of the two signs alone does not
+turn a lower bound on one magnitude into a lower bound on the other (audit 2026-10-28, L103).
+A sampled-range observation is evidence, not a universal statement.
 If it is violated with a clean arithmetic predictor, that predictor is the
 new joint invariant. Either outcome is theorem-level information.
 """
@@ -132,7 +135,8 @@ def main():
             print(f"    n={k[0]} v2={k[1]}: concord={c} discord={d}")
     else:
         print("*** sign(A5)==sign(A6) UNIVERSAL in sampled range ***")
-        print("    -> simultaneous r=5&6 lower bound may reduce to single-rank")
+        print("    -> the simultaneous SIGN question may reduce to one rank; a lower bound on")
+        print("       both magnitudes additionally needs a quantitative |A5|/|A6| bridge")
     # sign(A5) vs sign(A6) correlation coefficient over sampled primes
     s5v=[r[5] for r in rows]; s6v=[r[6] for r in rows]
     agree=sum(1 for a,b in zip(s5v,s6v) if a==b and a!=0)

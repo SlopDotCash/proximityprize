@@ -16,8 +16,12 @@ Many #464 off-BGK or char-`p` transfer attempts have the same final shape:
 * the prize regime only promises `p ≳ n^4`.
 
 This file records the elementary quantitative obstruction.  If `n^β ≤ B^d`, then the prize lower
-bound `p ≥ n^β` does not force the height gate `B^d < p`: the boundary prime `p = n^β` is a direct
-counter-witness.  In the dyadic prize regime this obstruction appears even for the minimal
+bound `p ≥ n^β` does not force the height gate `B^d < p`: the boundary scale `p = n^β` is a direct
+natural-number counter-witness.  (Audit 2026-10-28, R-217: `n^β` is composite for `n > 1`, so it is
+not a prime and no primality or subgroup compatibility `n ∣ p − 1` enters these witnesses; the
+theorems are height comparisons at the boundary *scale*. A genuine compatible prime example for a
+repaired statement is `n = 64`, `p = 16778497 > 64⁴`, `64 ∣ p − 1`, `p < 2^32`.)  In the dyadic
+prize regime this obstruction appears even for the minimal
 nontrivial base `B = 2`: for `n = 2^μ`, `μ ≥ 6`,
 
 `n^4 ≤ 2^(n/2)`.
@@ -45,7 +49,8 @@ theorem prizeScale_not_force_heightGate
     unfold HeightGateFires
     exact not_lt.mpr hscale⟩
 
-/-- Contrapositive packaging: if the height gate fires already at the boundary prime `p = n^β`,
+/-- Contrapositive packaging: if the height gate fires already at the boundary scale `p = n^β`
+(a natural number, not a prime for `n > 1`),
 then the height ceiling must be strictly sub-prize-scale. -/
 theorem boundary_heightGate_forces_subprize_height
     {n β B d : ℕ} (hgate : HeightGateFires (n ^ β) B d) :
@@ -107,8 +112,8 @@ theorem n64_quartic_below_base_two_height :
     ((2 : ℕ) ^ 6) ^ 4 < 2 ^ (2 ^ (6 - 1)) := by
   norm_num
 
-/-- At `n = 64`, the boundary prime scale `p = n^4` satisfies the prize lower bound but not even the
-minimal base-2 height gate. -/
+/-- At `n = 64`, the boundary scale `p = n^4` (composite) satisfies the prize lower bound but not
+even the minimal base-2 height gate. -/
 theorem n64_prizeScale_not_force_base_two_heightGate :
     ∃ p : ℕ,
       ((2 : ℕ) ^ 6) ^ 4 ≤ p ∧

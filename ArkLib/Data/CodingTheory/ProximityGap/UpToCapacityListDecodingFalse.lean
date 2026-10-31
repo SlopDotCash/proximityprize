@@ -7,20 +7,29 @@ import ArkLib.Data.CodingTheory.EntropyVolumeListSize
 import ArkLib.Data.CodingTheory.ProximityGap.ListDecodingCapacityOverflow
 
 /-!
-# The up-to-capacity list-decoding bound is FALSE in the prize regime (#232, negative side)
+# The up-to-capacity list-decoding bound fails at capacity for prize-range fields (#232)
 
 Capstone of the negative side of the ABF26 Proximity Prize: an **unconditional** counterexample
-(no admit, no open hypothesis) to the *up-to-capacity* list-decoding bound, for a prize-regime
-Reed–Solomon code.
+(no admit, no open hypothesis) to the *up-to-capacity* list-decoding bound at the capacity radius,
+for a Reed–Solomon code with prize rate `1/2` and prize field range, on a domain of size `256`.
 
 > For a rate-`1/2` Reed–Solomon code `RS[F, α, 128]` on a domain of size `256`, over any field with
 > `2^128 ≤ |F| ≤ 2^256`, at the Singleton/capacity radius `δ = 1/2`:
 >
 >   `|Λ(RS, 1/2)|  >  ε*·|F|`,    `ε* = 2^{-128}`     (`rs_uptoCapacity_false_rate12_n256`).
 
-So the list-decoding threshold `δ*` is strictly below capacity `1 − ρ = 1/2`. This refutes the
-up-to-capacity list-decoding conjecture in the deployed regime ([CS25], [KK25], arXiv 2604.09724),
-fully formalized.
+So the capacity radius `1 − ρ = 1/2` itself is **bad** for this code, which refutes the
+up-to-capacity list-decoding bound in its closed form (the one that includes the capacity radius);
+for the literature refutations see [CS25], [KK25], arXiv 2604.09724. For the list-decoding
+threshold `δ*`, taken as the supremum of the good radii, this gives only the non-strict bound
+`δ* ≤ 1/2`.
+
+**Scope (audit correction, 2026-10-28, PG-027 propagation).** An earlier version of this header
+concluded `δ* < 1 − ρ`. That does not follow: a supremum can equal an excluded endpoint, and this
+file proves badness only at `δ = 1/2`, not on any left neighbourhood of `1/2` (the entropy-volume
+estimate used here gives no overflow just below `1/2` when `|F|` is near `2^256`). The instance
+has domain size `n = 256`; nothing here covers other lengths, and whether `n = 256` meets the
+sponsor's minimum production length is not checked.
 
 ## Proof
 
@@ -91,10 +100,11 @@ theorem hover_core_n256 (q : ℝ) (hq1 : (2:ℝ)^128 ≤ q) (hq2 : q ≤ (2:ℝ)
   rw [hsplit]
   nlinarith [hlog257, hlogq, hcorr, hlog2]
 
-/-- **The up-to-capacity list-decoding bound is false (prize regime).** A rate-`1/2`
+/-- **The up-to-capacity list-decoding bound fails at capacity (`n = 256`).** A rate-`1/2`
 Reed–Solomon code on a size-`256` domain over a field with `2^128 ≤ |F| ≤ 2^256` has, at the
-Singleton radius `δ = 1/2`, list size strictly exceeding `ε*·|F|` (`ε* = 2^{-128}`). Hence
-`δ* < 1 − ρ`: the list-decoding threshold cannot reach capacity. -/
+Singleton radius `δ = 1/2`, list size strictly exceeding `ε*·|F|` (`ε* = 2^{-128}`). Hence the
+capacity radius `1 − ρ` is bad and the supremum threshold satisfies `δ* ≤ 1 − ρ`; strictness
+`δ* < 1 − ρ` would need badness on a left neighbourhood of `1/2`, which is not proved here. -/
 theorem rs_uptoCapacity_false_rate12_n256
     {F : Type} [Field F] [Fintype F] [DecidableEq F] (α : Fin 256 ↪ F)
     (hq1 : (2:ℝ)^128 ≤ (Fintype.card F : ℝ)) (hq2 : (Fintype.card F : ℝ) ≤ 2^256) :

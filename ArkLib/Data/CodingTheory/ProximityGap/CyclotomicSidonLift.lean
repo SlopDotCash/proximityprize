@@ -11,16 +11,20 @@ import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 # LIFTING `μ_n` SIDON FROM ℂ TO `F_p` VIA THE CYCLOTOMIC RESULTANT (#389)
 
 The small-subgroup δ* pin needs: for `n = 2^m`, prime `p ≡ 1 (mod n)` with `p > 2^n`, the
-subgroup `μ_n ⊂ F_p` is Sidon (`r(c) ≤ 2`).  The bridge from the ℂ-Sidon fact
+subgroup `μ_n ⊂ F_p` is Sidon **modulo negation** (`r(c) ≤ 2` for every `c ≠ 0`).  It is not
+fully Sidon: since `n` is even, the antipodal pairs give the zero-sum coincidences
+`ω^i + ω^{i+n/2} = 0 = ω^k + ω^{k+n/2}`, so `r(0) = n`.  The bridge from the ℂ fact
 (`unitCircle_sidon`) to the finite field is the **cyclotomic resultant**:
 
-* a parallelogram `ω^i + ω^j = ω^k + ω^l` (`{i,j}≠{k,l}`) at a primitive `n`-th root `ω ∈ F_p`
-  forces `Res(Φ_n, X^i+X^j−X^k−X^l) ≡ 0 (mod p)`, i.e. `p ∣ Res`;
+* a parallelogram `ω^i + ω^j = ω^k + ω^l` (`{i,j}≠{k,l}`, with the four-term polynomial nonzero
+  at primitive `n`-th roots over ℂ — which excludes the antipodal zero-sum case) at a primitive
+  `n`-th root `ω ∈ F_p` forces `Res(Φ_n, X^i+X^j−X^k−X^l) ≡ 0 (mod p)`, i.e. `p ∣ Res`;
 * `Res` is a **nonzero** integer — nonzero because the four-term polynomial does not vanish at a
-  primitive `n`-th root over ℂ (this is `unitCircle_sidon`);
+  primitive `n`-th root over ℂ (this is `unitCircle_sidon`, under its nonvanishing hypotheses);
 * `|Res| ≤ 4^{φ(n)} = 2^n`.
 
-Hence `p > 2^n` is impossible, so no such parallelogram exists.  This file builds the chain.  The
+Hence `p > 2^n` is impossible, so no such non-antipodal parallelogram exists.  This file builds
+the chain.  The
 first brick, `fourTerm_ne_zero_of_pair_ne`, is the ℂ input (the corollary of `unitCircle_sidon`
 that the four-term value is nonzero), which gives the nonzero resultant.  Issue #389.
 -/

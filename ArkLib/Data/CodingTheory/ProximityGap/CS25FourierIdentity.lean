@@ -15,9 +15,22 @@ difference lies in `C` equals a character sum over the quotient `G = Fⁿ⧸C`:
 
   `|G| · #{(w,f) ∈ B² : w - f ∈ C} = ∑_{ψ : Ĝ} Ŝ(ψ)·Ŝ(-ψ)`,  where `Ŝ(ψ) = ∑_{w∈B} ψ(⟦w⟧)`.
 
-This is the MacWilliams/Fourier reduction of the CS25 second-moment off-diagonal: the `ψ = 0` term
-contributes `|B|²`, so the off-diagonal is `q^{k-n} ∑_{ψ≠0} ‖Ŝ(ψ)‖²` — a dual-code character sum,
-the elegant replacement for the ball-intersection multinomial.
+This is the MacWilliams/Fourier reduction of the CS25 second moment. Write `|G| = q^{n-k}` and
+`T = #{(w,f) ∈ B² : w - f ∈ C} = ∑_{c ∈ C} I(c)` with `I(c) = #{(w,f) ∈ B² : w - f = c}`. The
+`ψ = 0` term contributes the principal term `|B|²`, and `Ŝ(-ψ) = conj Ŝ(ψ)`, so
+
+  `T = q^{k-n} |B|² + q^{k-n} ∑_{ψ≠0} ‖Ŝ(ψ)‖²`.
+
+The *codeword off-diagonal* (pairs whose difference is a **nonzero** codeword) also subtracts the
+diagonal `I(0) = |B|`:
+
+  `∑_{c ∈ C, c ≠ 0} I(c) = q^{k-n} |B|² − |B| + q^{k-n} ∑_{ψ≠0} ‖Ŝ(ψ)‖²`.
+
+So the nontrivial-character sum `q^{k-n} ∑_{ψ≠0} ‖Ŝ(ψ)‖²` is the *Fourier discrepancy* from the
+principal term, **not** the codeword off-diagonal by itself (e.g. `C = F₂¹` the full code, `B` the
+whole space: `|G| = 1`, there are no nontrivial characters, yet the off-diagonal is `2`). Only the
+first displayed identity (in its unnormalized form below) is proved in this file; the principal and
+diagonal terms must be retained in any second-moment argument built on it.
 
 The proof uses only the additive-character orthogonality `∑_ψ ψ g = |G|·[g=0]`
 (`AddChar.sum_apply_eq_ite`) and `(-ψ)(a) = ψ(-a)`; no conjugation/`RCLike` norm is needed.

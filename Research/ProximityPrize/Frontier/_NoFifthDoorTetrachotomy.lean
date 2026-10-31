@@ -9,20 +9,26 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 /-!
 # No-fifth-door tetrachotomy capstone for the proximity prize (#444, Lane 3)
 
-Shaw's "Shaw Value" synthesis essay (#444, 2026-06-18) proves a *tetrachotomy with no fifth door*:
-every conceivable mechanism for bounding the worst-frequency monomial-sum sup `M(n)` is one of
+Shaw's "Shaw Value" synthesis essay (#444, 2026-06-18) argues (informally) for a *tetrachotomy with no
+fifth door*: every conceivable mechanism for bounding the worst-frequency monomial-sum sup `M(n)` is
+one of
 
 * **door (i)**   moment / symmetric-function  — caps at the BGK scale,
 * **door (ii)**  `√q`-completion              — overshoots the BGK scale,
 * **door (iii)** extreme-value / equidistribution — caps at the BGK scale,
 * **door (iv)**  a genuinely new evaluation of the monomial sum (the only live door).
 
-Doors (i)-(iii) are *proven dead*: each produces a certified bound no smaller than the **BGK scale**
-`bgkScale n L = √(n·L)` (`L = log(p/n)`), which strictly exceeds the **prize scale**
-`prizeScale n = √n` whenever the thinness index `L > 1` (the prize regime has `L = log(p/n) ≫ 1`).
-Hence no door-(i)/(ii)/(iii) mechanism can certify the prize-scale bound `M = O(√n)`.
+The essay's claim is that each of doors (i)-(iii) produces a certified bound no smaller than the
+scale `bgkScale n L = √(n·L)` (`L = log(p/n)`), which strictly exceeds the **prize scale**
+`prizeScale n = √n` whenever the thinness index `L > 1`.  That claim about *all* mechanisms of a door
+is **not** proved here and is not a kernel-checked fact.
 
-This module locks that prose into **kernel-checked statements**:
+**Naming caveat.** `bgkScale` is a historical name for the scalar `√(n·L)` (the moment /
+symmetric-function benchmark); it is *not* the Bourgain–Glibichuk–Konyagin bound, whose
+state-of-the-art value `C·n^{1−δ}` appears separately in the moment/EVT section below.
+
+This module is **scalar-scale bookkeeping** over a toy `Mechanism` record (a door label plus a real
+number `certScale`).  What is kernel-checked:
 
 * `prizeScale_lt_bgkScale` — the strict scale separation `√n < √(n·L)` for `L > 1`, `n > 0`.
 * `DoorType` / `Mechanism` — a finite classification of bound mechanisms by door.
@@ -30,13 +36,22 @@ This module locks that prose into **kernel-checked statements**:
 * `prizeScale_not_certified_of_overshoot` — an overshooting mechanism cannot certify a prize-scale
   bound: if it certifies `M ≤ certScale`, and `certScale ≥ bgkScale`, then it does **not** witness
   `M ≤ prizeScale` once `M` actually sits at the prize floor with slack, in the regime `L > 1`.
-* `forces_doorIV` — **the no-fifth-door capstone.**  Any mechanism that certifies a prize-scale bound
-  in the regime `L > 1` must be a door-(iv) mechanism; doors (i)-(iii) are excluded by overshoot.
+* `forces_doorIV_of_self_overshoot` — a single mechanism that overshoots `bgkScale` if classical,
+  and certifies a prize-scale bound, is door (iv).
+* the discharged single-mechanism facts (`completion_not_certifies_prizeScale`,
+  `momentEVT_mechanism_overshootsBGK_eventually`, `classicalSide_closed_all`,
+  `prize_certificate_doorIV_or_violates_provenScale`), which are non-vacuous.
 
-Scope: this is the Lane-3 *tetrachotomy backbone*.  It proves the **separation + exclusion** that
-makes "door (iv) is the only live door" a kernel-checked fact rather than prose.  It does **not**
-prove the prize inequality, give any anti-concentration for the monomial phase set, or claim door
-(iv) is achievable — door (iv) being the *only remaining* door is exactly the open problem.
+**Vacuity warning.** `forces_doorIV`, `prizeCertifying_subset_doorIV` and
+`forces_doorIV_ceilingRespecting` take a hypothesis quantified over *every* `Mechanism` record with a
+classical door.  Such guards can never hold: the record `⟨moment, 0⟩` violates them
+(`not_forall_classical_overshootsBGK`, `not_forall_classical_respectsProvenScale`).  Those three
+theorems are therefore vacuously true and are kept only as legacy entry points for downstream files;
+they certify nothing.  `mem_doorIV_corridor` is a tautology (`A ∧ B → A ∧ B`).
+
+Scope: this module does **not** prove that doors (i)-(iii) are dead, does not prove the prize
+inequality, gives no anti-concentration for the monomial phase set, and does not claim door (iv) is
+achievable.
 -/
 
 set_option autoImplicit false
@@ -47,9 +62,10 @@ namespace ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy
 
 open Real
 
-/-- The BGK / symmetric-function scale `√(n·L)`.  Every door-(i)/(ii)/(iii) mechanism produces a
-certified bound no smaller than this.  Here `n` is the subgroup size and `L` the logarithmic
-thinness index (e.g. `log (p / n)`). -/
+/-- The scalar `√(n·L)` (historically named "BGK scale"; it is the moment / symmetric-function
+benchmark, NOT the Bourgain–Glibichuk–Konyagin value `C·n^{1−δ}`).  The informal tetrachotomy claims
+door-(i)/(ii)/(iii) mechanisms cannot certify below this; that claim is not proved here.  Here `n` is
+the subgroup size and `L` the logarithmic thinness index (e.g. `log (p / n)`). -/
 noncomputable def bgkScale (n L : ℝ) : ℝ := Real.sqrt (n * L)
 
 /-- The prize target scale `√n` (square-root cancellation over the thin subgroup). -/
@@ -156,30 +172,41 @@ theorem not_certifies_prizeScale_of_overshoot {m : Mechanism} {n L : ℝ}
   exact absurd (lt_of_lt_of_le (certScale_gt_prizeScale_of_overshoot hn hL hover) hle)
     (lt_irrefl _)
 
-/-- **No-fifth-door capstone.**  Suppose every classical door (moment / completion / extreme-value)
-overshoots BGK in the regime `L > 1` (the proven Lever A-D refutations), and a mechanism `m`
-certifies a prize-scale bound `m.certScale ≤ prizeScale n`.  Then `m` is **not** a classical door —
-its door is `newEvaluation` (door (iv)).  Door (iv) is the only door through which a prize-scale
-certificate can pass; there is no fifth door and no classical door survives. -/
+/-- **Pointwise door-(iv) forcing.**  If the single mechanism `m` overshoots `bgkScale` whenever its
+door is classical, and `m` certifies a prize-scale bound in the regime `L > 1`, then `m` is door (iv).
+The guard concerns only `m` and is satisfiable (e.g. by the discharged completion and moment/EVT
+mechanisms below). -/
+theorem forces_doorIV_of_self_overshoot {m : Mechanism} {n L : ℝ}
+    (hn : 0 < n) (hL : 1 < L)
+    (hmOvershoots : m.door.isClassical → m.OvershootsBGK n L)
+    (hcert : m.certScale ≤ prizeScale n) :
+    m.door = DoorType.newEvaluation :=
+  (Mechanism.not_classical_iff_doorIV m).mp fun hcl =>
+    not_certifies_prizeScale_of_overshoot hn hL (hmOvershoots hcl) hcert
+
+/-- **The universal overshoot guard is unsatisfiable.**  For `n > 0`, `L > 0` the record
+`⟨moment, 0⟩` does not overshoot `bgkScale n L`, so no `(n, L)` in the regime satisfies
+`∀ m', m'.door.isClassical → m'.OvershootsBGK n L`. -/
+theorem not_forall_classical_overshootsBGK {n L : ℝ} (hn : 0 < n) (hL : 0 < L) :
+    ¬ (∀ m' : Mechanism, m'.door.isClassical → m'.OvershootsBGK n L) := by
+  intro h
+  have h0 : bgkScale n L ≤ 0 := h ⟨DoorType.moment, 0⟩ trivial
+  exact absurd (bgkScale_pos hn hL) (not_lt.mpr h0)
+
+/-- **Legacy, VACUOUS capstone.**  The hypothesis `hclassicalOvershoots` quantifies over every
+classical `Mechanism` record and can never hold in the regime (`not_forall_classical_overshootsBGK`),
+so this theorem certifies nothing.  Kept only as an entry point for downstream legacy files; use
+`forces_doorIV_of_self_overshoot` instead. -/
 theorem forces_doorIV {m : Mechanism} {n L : ℝ}
     (hn : 0 < n) (hL : 1 < L)
     (hclassicalOvershoots :
       ∀ m' : Mechanism, m'.door.isClassical → m'.OvershootsBGK n L)
     (hcert : m.certScale ≤ prizeScale n) :
-    m.door = DoorType.newEvaluation := by
-  -- if `m` were classical it would overshoot, contradicting the prize-scale certificate.
-  have hnotClassical : ¬ m.door.isClassical := by
-    intro hcl
-    exact not_certifies_prizeScale_of_overshoot hn hL (hclassicalOvershoots m hcl) hcert
-  cases hd : m.door with
-  | moment => exact absurd (by rw [hd]; trivial) hnotClassical
-  | completion => exact absurd (by rw [hd]; trivial) hnotClassical
-  | extremeValue => exact absurd (by rw [hd]; trivial) hnotClassical
-  | newEvaluation => rfl
+    m.door = DoorType.newEvaluation :=
+  forces_doorIV_of_self_overshoot hn hL (hclassicalOvershoots m) hcert
 
-/-- **No-fifth-door capstone, existential form.**  Under the same classical-overshoot hypothesis, any
-mechanism certifying a prize-scale bound must come from the single live door (iv): the set of
-prize-certifying mechanisms is contained in the door-(iv) mechanisms. -/
+/-- **Legacy, VACUOUS capstone (set form).**  Same unsatisfiable universal guard as `forces_doorIV`
+(`not_forall_classical_overshootsBGK`); it certifies nothing. -/
 theorem prizeCertifying_subset_doorIV {n L : ℝ}
     (hn : 0 < n) (hL : 1 < L)
     (hclassicalOvershoots :
@@ -196,9 +223,9 @@ multiplicative `√L` factor from the BGK ceiling down to the prize floor.  This
 `[√n, n]` Shaw-value bracket: here the ceiling is the BGK scale (what doors (i)-(iii) actually deliver),
 not the trivial `n`. -/
 
-/-- **Door-(iv) target corridor.**  Given the Plancherel floor `√n ≤ M` and any classical door's BGK
-ceiling `M ≤ √(n·L)`, the worst-frequency sup `M` lies in the corridor `[prizeScale n, bgkScale n L]`.
-The prize is exactly the lower endpoint; doors (i)-(iii) only reach the upper endpoint. -/
+/-- **Door-(iv) target corridor (tautological packaging).**  This is literally `A → B → A ∧ B`: both
+the floor `√n ≤ M` and the ceiling `M ≤ √(n·L)` are hypotheses, neither is proved here.  It only
+names the corridor `[prizeScale n, bgkScale n L]`. -/
 theorem mem_doorIV_corridor {M n L : ℝ}
     (hfloor : prizeScale n ≤ M) (hceil : M ≤ bgkScale n L) :
     prizeScale n ≤ M ∧ M ≤ bgkScale n L :=
@@ -260,13 +287,13 @@ theorem completion_not_certifies_prizeScale {n L q : ℝ}
 
 /-! ## Discharging the door-(i)/(iii) (moment / extreme-value) overshoot from the SOTA exponent wall
 
-Doors (i) (moment / symmetric-function) and (iii) (extreme-value / equidistribution) both bottom out
-at the BGK state of the art: a *guaranteed* per-frequency value `C·n^{1−δ}` with sub-prize exponent
+In this model, doors (i) (moment / symmetric-function) and (iii) (extreme-value / equidistribution)
+are assigned the Bourgain–Glibichuk–Konyagin-type state-of-the-art value `C·n^{1−δ}` (note: this,
+not the scalar `bgkScale = √(n·L)`, is the actual BGK-type bound) with sub-prize exponent
 `δ < 1/2` (the in-tree SOTA has `δ ≈ 0.011`, i.e. `n^{0.989}`).  This SOTA scale eventually DOMINATES
 the BGK argument scale `bgkScale n L = √(n·L) = (√L)·n^{1/2}`, because the gap exponent `1/2 − δ > 0`
-drives `n^{1/2−δ} → ∞` past the constant `√L`.  So any moment/EVT mechanism certifies a scale that
-eventually exceeds `bgkScale`, i.e. it `OvershootsBGK` for all large `n` — a discharged consequence of
-the SOTA exponent being `< 1/2`, not a postulate.  (This re-proves, self-contained, the eventual
+drives `n^{1/2−δ} → ∞` past the constant `√L`.  So a moment/EVT mechanism *whose certified scale is
+that SOTA value* eventually exceeds `bgkScale`, i.e. it `OvershootsBGK` for all large `n`.  (This re-proves, self-contained, the eventual
 domination at the heart of `_BGKSOTAInsufficiency.bgk_value_exceeds_prizeTarget_eventually`.) -/
 
 open Filter Topology in
@@ -326,8 +353,8 @@ The three discharges above (`completion_not_certifies_prizeScale` for door (ii);
 `momentEVT_mechanism_overshootsBGK_eventually` + the scale separation for doors (i)/(iii)) are bundled
 here into a single citable statement: at the concrete proven certScales, NO classical door certifies a
 prize-scale bound in the prize regime.  This is the unconditional classical side of the no-fifth-door
-tetrachotomy — the `hclassicalOvershoots` hypothesis of `forces_doorIV` is no longer a postulate for
-the completion / moment-EVT mechanisms, it is a theorem. -/
+tetrachotomy for those specific scales.  (It does not discharge the universal `hclassicalOvershoots`
+hypothesis of `forces_doorIV`, which is unsatisfiable.) -/
 
 /-- **Classical side closed (concrete scales).**  In the prize regime `L > 1`:
 
@@ -381,14 +408,17 @@ m'.OvershootsBGK n L` as a *hypothesis*.  The discharges above (`completionMecha
 certScales `√q` and `C·n^{1−δ}`.  They are not yet fed back into `forces_doorIV`, so the named-lever
 capstone's docstring correctly flagged that the abstract quantifier was still open.
 
-This section closes that gap *honestly*.  We cannot discharge overshoot for an *arbitrary* classical
+This section restricts to mechanisms respecting their proven scale.  We cannot discharge overshoot
+for an *arbitrary* classical
 `Mechanism` (its `certScale` field is unconstrained — a degenerate `Mechanism` with door `completion`
 and `certScale = 0` does not overshoot, but it also violates the proven `M ≤ √q` *floor* on what a
 completion mechanism can certify).  The physically meaningful subclass is the mechanisms that
 *respect their proven ceiling*: a completion mechanism cannot certify anything below the proven `√q`
 ceiling, and a moment/extreme-value mechanism cannot certify below the SOTA `C·n^{1−δ}` value.  For
-that subclass overshoot is a **theorem**, and `forces_doorIV` then forces door (iv) **without** the
-oversho­ot postulate. -/
+that subclass overshoot is a **theorem** (`ceilingRespecting_classical_overshoots`).  However, the
+*global* guard "every classical mechanism respects its proven scale" is again unsatisfiable
+(`not_forall_classical_respectsProvenScale`), so the honest consumer is the local dichotomy
+`prize_certificate_doorIV_or_violates_provenScale`, not `forces_doorIV_ceilingRespecting`. -/
 
 /-- A classical `Mechanism` *respects its proven ceiling* at parameters `(q, C, δ, n)` when its
 certified scale is at least the proven lower bound on what that door can certify:
@@ -450,16 +480,20 @@ theorem ceilingRespecting_classical_overshoots
       -- not classical; the hypothesis `isClassical` is `False`.
       rw [hd] at hcl; exact absurd hcl (by simp [DoorType.isClassical])
 
-/-- **No-fifth-door capstone, overshoot discharged.**  At a fixed `n` past the SOTA threshold, in the
-prize regime (`L > 1`, `n·L ≤ q`, `C > 0`, `δ < 1/2`): if every classical mechanism *respects its
-proven ceiling*, then **any** mechanism `m` certifying a prize-scale bound `m.certScale ≤ √n` must be
-door (iv).  Unlike `forces_doorIV`, the overshoot of the classical doors is here a **theorem**
-(`ceilingRespecting_classical_overshoots`), not a hypothesis — it is discharged from the proven `√q`
-completion ceiling and the SOTA `C·n^{1−δ}` value.  The field-size dominance assumption is threaded at
-the single conclusion index `n` as `n·L ≤ q`, avoiding the vacuous fixed-`q` premise `∀ n, n·L ≤ q`.
-The only remaining hypothesis is the honest structural one that the classical mechanisms are *real*
-instances of their door (respect their proven floor), not degenerate `Mechanism` values with an
-arbitrarily small `certScale` field. -/
+/-- **The universal ceiling-respecting guard is unsatisfiable.**  For `C > 0` and `n > 0` the record
+`⟨moment, 0⟩` does not respect its proven scale (`C·n^{1−δ} > 0`), so
+`∀ m', m'.door.isClassical → m'.RespectsProvenScale q C δ n` never holds. -/
+theorem not_forall_classical_respectsProvenScale {q C δ n : ℝ} (hC : 0 < C) (hn : 0 < n) :
+    ¬ (∀ m' : Mechanism, m'.door.isClassical → m'.RespectsProvenScale q C δ n) := by
+  intro h
+  have h0 : C * n ^ (1 - δ) ≤ 0 := h ⟨DoorType.moment, 0⟩ trivial
+  exact absurd (mul_pos hC (Real.rpow_pos_of_pos hn _)) (not_lt.mpr h0)
+
+/-- **Legacy, VACUOUS capstone.**  Its premise "every classical `Mechanism` respects its proven
+scale" can never hold for `C > 0`, `n ≥ 1` (`not_forall_classical_respectsProvenScale`), so the
+inner implication is vacuously true and this theorem certifies nothing.  Kept only as an entry point
+for downstream legacy files; the honest single-mechanism statement is
+`prize_certificate_doorIV_or_violates_provenScale`. -/
 theorem forces_doorIV_ceilingRespecting
     {L q C δ : ℝ} (hLnn : 0 ≤ L) (hL : 1 < L) (hC : 0 < C) (hδ : δ < 1 / 2) :
     ∃ N₀ : ℝ, ∀ n : ℝ, max N₀ 1 ≤ n → n * L ≤ q →

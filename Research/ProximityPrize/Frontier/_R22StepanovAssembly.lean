@@ -50,8 +50,18 @@ QuarticWeilInputC (quadCharC F) G (k+1)     (generic-constant quartic face)
 ```
 
 So an elementary Stepanov constant `C` (one-sided `S ≤ C√q`) propagates to
-`Cw = C + 4` at the rung — finite for every `C`; the rung tolerates ANY constant.
-At the sharp `C = 2` this recovers exactly the round-18 `Cw = 6`.
+`Cw = C + 4` at the rung — finite for every `C`.  At the sharp `C = 2` this recovers
+exactly the round-18 `Cw = 6`.
+
+⚠️ Scope (2026-10-29 audit CW-B10-08): "any constant is tolerated" holds for the
+constant-carrying faces (`FourthMomentTwistBound G X Cw` and the constant-relaxed rungs,
+whose Wick constant grows with `Cw`).  It does NOT hold for the EXACT (constant-1) rung
+gates of the R18/R19 consumers, which require `32·(Cw·|X|⁴ + 1) / (3m²) ≤ 1`.  For the
+quadratic face this pipeline produces (`m = 2`, `|X| = 1`) that gate reads
+`32·(Cw + 1) ≤ 12`, which fails for every `Cw ≥ 0` — including the sharp `Cw = 6`.  So
+this output feeds only constant-relaxed rungs (Wick constant `32·(k+5)/12 ≥ 16`), never
+the exact rung.  The conclusion "the sharp Hasse constant is not needed anywhere" stays
+true, because the sharp constant does not reach the exact rung either.
 
 ## Small `q` (task (b))
 

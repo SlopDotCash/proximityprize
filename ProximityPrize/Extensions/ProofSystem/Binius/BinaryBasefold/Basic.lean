@@ -928,6 +928,13 @@ def firstOracleWitnessConsistencyProp (t : MultilinearPoly L ℓ)
 /-- The bad folding event of `fᵢ` exists RIGHT AFTER the V's challenge of sumcheck round `i+ϑ-1`,
 this is the last point that `fᵢ` is the last oracle being sent so far and both
 Statement & Witness are advanced to state `i+ϑ`, while oracle is still at state `i+ϑ-1`.
+
+**Semantics of unfinished blocks (read before using the name).**  For a block `j` whose folding
+window has *not* finished at `stmtIdx` (guard `j*ϑ + ϑ ≤ stmtIdx` fails), this predicate is
+defined to be `True`.  Such a block is *pending / unexamined*, not a sampled bad folding event:
+the `True` value is a relaxation device, and no probability bound on genuine folding bad events
+may be inferred from it.  Only when the guard holds does the predicate reduce to the real
+`Binius.BinaryBasefold.foldingBadEvent`.
 -/
 noncomputable def foldingBadEventAtBlock
     (stmtIdx : Fin (ℓ + 1)) (oracleIdx : Fin (ℓ + 1))
@@ -947,6 +954,13 @@ noncomputable def foldingBadEventAtBlock
 attribute [irreducible] foldingBadEventAtBlock
 
 open Classical in
+/-- Existential over the available oracle blocks of `foldingBadEventAtBlock`.
+
+Because unfinished (pending) blocks count as `True`, this existential is *not* the statement that
+a genuine folding bad event occurred: whenever `stmtIdx < ℓ` and the oracle frontier equals the
+statement index it holds for every oracle/challenge tuple (`badEventExistsProp_of_lt`).  It is a
+genuine existential over real `foldingBadEvent`s only when every available block has finished,
+e.g. at `stmtIdx = oracleIdx = ℓ`. -/
 def badEventExistsProp
     (stmtIdx : Fin (ℓ + 1)) (oracleIdx : Fin (ℓ + 1))
     (oStmt : ∀ j, (OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (i := oracleIdx) j))
@@ -1139,6 +1153,17 @@ lemma badEventExistsProp_relay_preserved
 of the `i-th` oracle if any and enable it after the next V's challenge, i.e. one
 round later. This is for the purpose of reasoning its RBR KS properly.
 Formally, = (oracleIdx = stmtIdx)`.
+
+**Relaxed relation (exact scope).**  The core is `badEventExists ∨ oracleWitnessConsistency`.
+When `oracleIdx = stmtIdx < ℓ` the highest available block is unfinished, so
+`badEventExistsProp` holds unconditionally (`badEventExistsProp_of_lt`) and the whole core is
+`True` — the structural witness invariant, sumcheck-target consistency, first-oracle consistency
+and completed-block compliance in `oracleWitnessConsistency` are then *not* enforced.  In
+particular `roundRelationProp i` holds for every input when `i < ℓ` (`roundRelationProp_of_lt`).
+The disjunct is a genuine constraint only once no unfinished block remains (at the final index
+`ℓ`); intermediate RBR knowledge-soundness statements whose input or output relation is such a
+`roundRelationProp i` / `masterKStateCore` therefore do not by themselves maintain those witness
+invariants.
 -/
 def masterKStateCore (stmtIdx : Fin (ℓ + 1))
     (oracleIdx : Fin (ℓ + 1))
@@ -1173,6 +1198,20 @@ def roundRelationProp (i : Fin (ℓ + 1))
   masterKStateCore (mp := mp) (𝓑 := 𝓑) 𝔽q β
     (stmtIdx := i) (oracleIdx := i) (h_le := le_refl i) stmt wit oStmt
 
+/-- **The relaxed intermediate relation is trivial.**  For every interior round `i < ℓ`,
+`roundRelationProp i` holds for every statement / oracle / witness tuple: the bad-event disjunct
+of `masterKStateCore` is discharged by the unfinished top block (`badEventExistsProp_of_lt`).
+Intermediate RBR knowledge-soundness results with `roundRelationProp i` (`i < ℓ`) as input
+relation therefore assume nothing about the witness, and those with it as output relation
+guarantee nothing about it; this records the existing semantics, not a new inconsistency. -/
+lemma roundRelationProp_of_lt (i : Fin (ℓ + 1)) (h_lt : i.val < ℓ)
+    (input : (Statement (L := L) Context i ×
+      (∀ j, OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i j)) ×
+      Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i) :
+    roundRelationProp (mp := mp) (𝓑 := 𝓑) 𝔽q β i input := by
+  unfold roundRelationProp masterKStateCore
+  exact Or.inl (badEventExistsProp_of_lt 𝔽q β i i _ _ h_lt rfl)
+
 open Classical in
 /-- A modified version of roundRelationProp (i+1).
 
@@ -1204,9 +1243,11 @@ otherwise (the two are mutually exclusive). These two consumers need *different*
 
 The owc disjunct is unchanged (`oracleWitnessConsistency (stmtIdx := i.succ) (oracleIdx :=
 i.castSucc)`), matching both consumers via `oracleWitnessConsistency_relay_preserved`. Only
-`foldStepRelOut` (confined to `Basic.lean` + `Steps.lean`) is affected; the fold-step theorems that
-mention it are by-name and their proofs are research-tier `sorry` stubs, so no proven content
-regresses, and the commit path keeps its weak form. -/
+`foldStepRelOut` (confined to `Basic.lean` + `Steps.lean`) is affected; at the time of this
+statement repair the fold-step theorems that mention it were by-name with research-tier `sorry`
+stubs, so no proven content regressed, and the commit path keeps its weak form. (Current status:
+`Steps/Fold.lean` contains no `sorry`; this note describes the repair's history, not open
+debt.) -/
 def foldStepRelOutProp (i : Fin ℓ)
     (input : (Statement (L := L) Context i.succ ×
       (∀ j, OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.castSucc j)) ×

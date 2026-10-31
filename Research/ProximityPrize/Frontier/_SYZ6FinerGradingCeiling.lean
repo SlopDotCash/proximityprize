@@ -38,12 +38,17 @@ distinct `mcaEvent`-bad scalars at radius `predecessorRadius (2^30) (342·2^20) 
 
 **Why `1024` and not `64`.**  Minimizing the radius over the feasible core size `C` and region
 size `R = (B − C)/3` (with `B` the block count) subject to the degree cap `C·blk < 2^29`
-(i.e. `C < B/2`) and the over-budget constraint `3R > C` gives, at each grading, `C = B/2 − 1`
-(as large as the cap allows, with `B − C ≡ 0 mod 3`) and radius `= (2R·blk − 1)/2^30 → 1/3⁺` as
-`B → ∞`.  At `B = 1024`: `C = 511`, `R = 171`, radius `358612991/2^30`.  The remaining gap to the
-`D = 3` infimum `(1−ρ)/(2−ρ) = 1/3` at `ρ = 1/2` is **pure lattice** (finer grading closes it);
-the conceptual gap `[Johnson 1 − √(1/2) ≈ 0.2929, 1/3]` is untouched.  Johnson remains strictly
-below — no contradiction.
+(i.e. `C < B/2`) and the over-budget constraint `3R > C` gives, at each grading, the largest
+`C < B/2` with `B − C ≡ 0 mod 3`, and radius `= (2R·blk − 1)/2^30`.  At `B = 1024`: `C = 511`,
+`R = 171`, radius `358612991/2^30`.  The domain is fixed at `2^30`, so the grading is **finite**:
+equal blocks force `B = 2^j` with `j ≤ 30`, and `B` cannot be sent to `∞`.  Over all admissible
+gradings the template radius is minimized at `B = 2^30` (`blk = 1`, `C = 2^29 − 1`,
+`R = 178956971`), giving `357913941/2^30 = 1/3 − 1/(3·2^30)`.  That is slightly *below* `1/3`
+because of the `−1` predecessor offset; no Lean proof finer than `B = 1024` exists.  Hence the
+`D = 3` value `(1−ρ)/(2−ρ) = 1/3` at `ρ = 1/2` is an asymptotic (growing-domain) reference value,
+not an unattained fixed-domain infimum.  The remaining gap to the template minimum is **pure
+lattice** (a finer grading closes it); the conceptual gap `[Johnson 1 − √(1/2) ≈ 0.2929, 1/3]` is
+untouched.  Johnson remains strictly below — no contradiction.
 
 **Untouched.**  The unconditional good-side floor `178956971/2^30 ≈ 0.1667` is unchanged, and the
 CORE (pinning `δ*` exactly) remains OPEN: sharpening the *ceiling* says nothing about `δ*` itself.

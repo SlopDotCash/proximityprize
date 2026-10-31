@@ -119,8 +119,10 @@ theorem powerSeries_hensel_lift (f : Polynomial (PowerSeries k)) (hf : f.Monic)
 This is the **exact base ring of the [BCIKS20] Appendix-A.4 Hensel lift** used in the §5
 list-decoding argument to extract the curve coefficient polynomials — i.e. the foundation of
 "ingredient D" of the proximity-gap keystone: power series in the lift variable `X` over the
-coefficient field `K = F(Z)`.  It is a free instance of `powerSeries_henselianLocalRing`. -/
-instance ratFunc_powerSeries_henselianLocalRing {F : Type*} [Field F] :
+coefficient field `K = F(Z)`.  It is the `k := RatFunc F` instance of the generic
+`powerSeries_henselianLocalRing`, which instance search already finds, so this is stated as a
+named theorem rather than registered as a second, redundant instance. -/
+theorem ratFunc_powerSeries_henselianLocalRing {F : Type*} [Field F] :
     HenselianLocalRing ((RatFunc F)⟦X⟧) :=
   powerSeries_henselianLocalRing
 

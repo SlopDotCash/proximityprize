@@ -51506,16 +51506,22 @@ zero-sum fiber:
 `q·(2·2−1)!!·n² = 3·q·n²`, so the dyadic kernel floor `q·n²` is EXACTLY one third of the prize
 ceiling for every dyadic `n`, production `n = 2^30` included
 (`probe_oc_dyadic_profile_rigidity.py`, `probe_oc_kernel_formula.py`: `A(n,2) = n`,
-`A(n,4) = 3n(n−1)`, stabilized-`S₀` matches the antipodal count `A(n,r)` for `p > p*`, with `p*`
-the SYZ53 small-field saturation threshold; e.g. `p*(8,4)=73`). This pins WHY the wall is
+`A(n,4) = 3n(n−1)`, stabilized-`S₀` matches the antipodal count `A(n,r)` at the scanned primes
+past an observed SYZ53-type small-field saturation point; e.g. for `(n,r) = (8,4)` every scanned
+prime `p ≡ 1 (mod 8)` from `73` to `8000` matches — a finite-scan observation, not a proved global
+threshold `p*`). This pins WHY the wall is
 genuinely present (a constant-fraction floor) yet NOT self-refuting (`1/3 < 1`): the kernel term
 alone cannot close CORE. The `1/3` ratio is field-independent and depth-`2`-exact.
 
 **Thinness-essential (verified).** The antipodal injection requires `g^m = -1`. For ODD `n`
-(no antipodal partner) the depth-`2` kernel mass is `q`-DEPENDENT and admits no such combinatorial
-floor; the analogous antipodal count is `0` (`probe_oc_kernel_mass_dyadic.py`,
-`probe_oc_kernel_formula.py`: odd-`n` rows). The floor `S₀ ≥ n` is available ONLY to the 2-power
-smooth subgroup — a genuine thinness invariant, not a generic-group fact.
+(no antipodal partner, `-1 ∉ μ_n`) the depth-`2` kernel mass is `S₀ = 0` at every admissible prime,
+so no such combinatorial floor exists; the analogous antipodal count is `0`
+(`probe_oc_kernel_mass_dyadic.py`, `probe_oc_kernel_formula.py`: odd-`n` rows). The floor `S₀ ≥ n`
+is available ONLY to the 2-power smooth subgroup — a genuine thinness invariant, not a
+generic-group fact. *Correction (2026-10-28 audit, L113):* this entry earlier called odd-`n` kernel
+mass `q`-dependent; odd-order zero-sums are instead field-independent cyclotomic relations (e.g.
+`n = 3`, `r = 3`: `S₀ = 6` for every prime `p ≡ 1 (mod 3)`, from `1 + g + g² = 0`), a different
+relation family from antipodal balancing.
 
 **Scope (honest).** This is an unconditional LOWER bound on `centeredShadowMass` (the wall is at
 least a fixed fraction of the prize target); it does NOT provide the UPPER bound the prize needs
@@ -51635,7 +51641,9 @@ to lower bounds on the centered alignments `A_r = q·C₁₂(r) − n²·C(n,r)�
 
 **The cheap escape closed.** A field-uniform sign law would collapse the two-depth gate to one depth:
 joint positivity forced by dyadic structure, or a monotone one-directional rule `A₅ < 0 ⟹ A₆ < 0`
-(then certifying `A₅ ≥ 0` suffices) or its converse. G56's exact four-colour Newton/Gauss-period
+(equivalently `A₆ ≥ 0 ⟹ A₅ ≥ 0`, so certifying `A₆ ≥ 0` would suffice; corrected per audit T43 —
+the original text said `A₅ ≥ 0`, which denies the antecedent) or its converse `A₆ < 0 ⟹ A₅ < 0`
+(equivalently `A₅ ≥ 0 ⟹ A₆ ≥ 0`, so certifying `A₅ ≥ 0` would suffice). G56's exact four-colour Newton/Gauss-period
 rewrite + exact integer sweeps and Fable's extended sweep produce EXACT integer witnesses in EVERY
 sign quadrant. G205 records those witnesses as axiom-clean ℤ constants and proves, by pure decidable
 ℤ arithmetic (ZERO axioms — not even propext/Classical.choice; `#print axioms` = "does not depend on
@@ -51696,18 +51704,21 @@ a statistical probe verdict.
 
 **The cheap escape closed (kernel-checked).** Writing `M_r² = ρ_r²·q`, the exact rational value is
 `M_r² = A_r²·q³ / (Q_W · Q_R)` with the exact integers `A_r = q·Σ_t W_G R_r − n²·C(n,r)·C(n,r−1)`,
-`Q_W = Σ_t (q·W_G(t) − n²)² = q³·Var W_G`, `Q_R = Σ_t (q·R_r(t) − n²·C(n,r)·C(n,r−1))² = q³·Var R_r`.
+`Q_W = Σ_t (q·W_G(t) − n²)² = q³·Var W_G`, `Q_R = Σ_t (q·R_r(t) − C(n,r)·C(n,r−1))² = q³·Var R_r`
+(corrected per audit finding L102: the original entry and probe centered `Q_R` at `n²·C(n,r)·C(n,r−1)`,
+not at the true mean `C(n,r)·C(n,r−1)` of `q·R_r`; the corrected `Q_R` constants are recorded below and
+both comparison directions survive).
 Comparison across cells is a purely decidable integer inequality after cross-multiplying
 (`M_r²(a) > M_r²(b) ↔ A_a²·q_a³·Q_{W,b}·Q_{R,b} > A_b²·q_b³·Q_{W,a}·Q_{R,a}`). G207 records four exact
 `n=8` cells (`2 ∉ G`, non-degenerate `φ₂`) and proves by `norm_num`/`omega`:
 
-- `no_magnitude_suppression` — injective `𝔽_449` (`A₅=449560`, `Q_W=11063360`, `Q_R=27405361854544`)
+- `no_magnitude_suppression` — injective `𝔽_449` (`A₅=449560`, `Q_W=11063360`, `Q_R=21192376144`)
   has STRICTLY LARGER `M₅²` than non-injective `𝔽_41` (`A₅=10536`, ...): injectivity does NOT suppress
-  magnitude (the direction a partial certificate would need). `M₅²(449)≈0.0603 > M₅²(41)≈0.0000413`.
+  magnitude (the direction a partial certificate would need). `M₅²(449)≈78.03 > M₅²(41)≈29.84`.
 - `no_magnitude_separation` — non-injective `𝔽_73` (`A₅=-19616`, ...) has STRICTLY LARGER `M₅²` than
   injective `𝔽_113` (`A₅=-13128`, the same injective cell recorded in G206): the injective and
   non-injective magnitude ranges OVERLAP, so there is no separation law in the reverse direction
-  either. `M₅²(73)≈0.000158 > M₅²(113)≈0.000102`.
+  either. `M₅²(73)≈6.597 > M₅²(113)≈1.420`.
 - `no_magnitude_single_depth_certificate` (calibrated consumer) — for any monotone reading `order`
   of the injectivity flag as a magnitude order, both the injective→smaller and injective→larger
   directions are refuted at exact integer cells; the normalized alignment magnitude is provably NOT
@@ -52037,7 +52048,7 @@ audit to ZERO axioms (`does not depend on any axioms`). The census fractions (6/
 domination + sign census), `scripts/probes/oc_g220_witness_exact.py` (recomputes every Lean constant
 float-free and asserts the match; PASS).
 
-### [466-G224-newton-parity-packet-nogo] The last unexplained Newton regularity (`PAR⁻` constantly negative) is near-definite but NOT sign-definite: a strictly positive exact-integer per-mode contribution exists inside the negative packet, so it carries no forced-sign structural theorem and cannot seed a one-sided estimate on A (2026-07-12)
+### [466-G224-newton-parity-packet-nogo] The last unexplained Newton regularity (`PAR⁻` constantly negative) is not termwise sign-definite: a strictly positive exact quadratic-character (multiplicative-Parseval) mode exists inside each recorded negative packet, so no per-mode certificate explains it (scope corrected per audit L106; no packet-sign theorem is proved or refuted) (2026-07-12)
 
 Fable's coarse-Newton-grouping referee (G223) closed every regrouping of the Newton cycle-index
 decomposition of the CORE covariance `A_r = p·Σ_t W_G(t)R_r(t) − n²·C(n,r)C(n,r−1)` (`r ∈ {5,6}`) as
@@ -52060,30 +52071,33 @@ co-length). Grouping the CORE correlation by `(parity_r, parity_{r−1})` gives
    coefficients cleared by `lcm` of the `z_λ`) gives `PAR⁻ < 0` in ALL 72 cells over
    `n ∈ {8,16,32,64}`, `r ∈ {5,6}`, primes to 3617 — far beyond Fable's 20 float cells — while `A_r`
    realises both signs. Cross-check `PAR⁺ + PAR⁻ = A_r` exact on every cell.
-2. `PAR⁻` is NOT sign-definite: the per-mode integrand `Re k(χ)` takes strictly positive values (the
-   negative mode mass dominates the positive by 5–8 orders of magnitude, so `PAR⁻` is a NEAR-definite
-   form, but strictly positive modes genuinely occur). Confirmed FLOAT-FREE at the only exactly
-   computable non-trivial real mode, the quadratic character `χ₂` (integer Legendre symbol): the
-   exact-integer `χ₂`-mode contribution `k₂` is POSITIVE at (n=16,r=5,p=257) `k₂=+12 734 300 160`
-   while `PAR⁻ < 0` there, and NEGATIVE at (n=16,r=5,p=97) `k₂=−2 477 260 800`, again with `PAR⁻ < 0`.
+2. (Corrected per audit finding L106.) The float FFT census `oc_g224_mode_signs.py` reports
+   additive-character modes `Re k(χ)` of both signs (negative mass dominating by 5–8 orders); that is
+   float evidence, not a certificate. The original entry "confirmed" this float-free with
+   `k₂ = Ŵ(χ₂)(Ê_r(χ₂)Ô_{r−1}(χ₂)+Ô_r(χ₂)Ê_{r−1}(χ₂))` built from SEPARATE Legendre transforms
+   (`+12 734 300 160` at p=257, `−2 477 260 800` at p=97). That identification is WRONG: `χ₂` is a
+   multiplicative character and multiplicative transforms do not diagonalise the additive correlation,
+   so this product is not a mode of `PAR⁻`. The genuine quadratic-character mode of `p⟨W,X⟩`,
+   `X = E_r⋆O_{r−1}+O_r⋆E_{r−1}`, is `p/(p−1)·Ŵ(χ₂)X̂(χ₂)` (multiplicative Parseval on `𝔽_p^×`); the
+   exact pairing `Ŵ(χ₂)X̂(χ₂)` is `+15 408 783 360` at p=257 and `+1 278 443 520` at p=97 — POSITIVE at
+   both, inside packets with `PAR⁻ < 0`. So the exact χ₂ witnesses show a strictly positive mode in the
+   multiplicative-character decomposition of each negative packet; they do NOT show a χ₂ sign
+   disagreement.
 
-CONSEQUENCE. Because the `PAR⁻` integrand realises BOTH exact-integer signs at the quadratic mode,
-`PAR⁻` is NOT a sum of negated squares / not a sign-definite quadratic form: there is no per-mode
-certificate for its negativity, so its constant sign is a near-definite DOMINANCE fact (a huge
-negative bulk with irreducible positive modes), not a structural invariant. The hope Fable left open
-— "if the analytic instantiation explains the `PAR⁻` negativity structurally, that mechanism is the
-first candidate for a one-sided estimate" — is foreclosed at the packet level: the negativity is not
-forced mode by mode, so no manifestly-signed sub-object of `A_r` lives inside `PAR⁻`. Together with
-G214/G217/G220 (sign unforced), G216/G219 (no truncation/phase), G222/G223 (no Newton sector or
-coarse grouping), this closes the Newton-parity regularity as a route. Additionally `PAR⁻ < 0`
-co-exists with an `A_r` sign flip (witness p=113: `A = +4 974 105 600 > 0`, `PAR⁻ < 0`), so the
-packet negativity forecasts nothing about the CORE sign.
+CONSEQUENCE (corrected scope). `PAR⁻`'s constant negativity is not forced termwise in the
+multiplicative-character decomposition (exact), and additive modes of both signs appear in the float
+census. This rules out a per-mode certificate in those decompositions; it does not prove that no other
+structural argument forces `PAR⁻ < 0`, and establishes or refutes no packet-sign theorem. Additionally
+`PAR⁻ < 0` co-exists with an `A_r` sign flip (witness p=113: `A = +4 974 105 600 > 0`, `PAR⁻ < 0`), so
+the packet negativity by itself forecasts nothing about the CORE sign.
 
 Formal payload: `Frontier/_G224NewtonParityPacketNoGo.lean` — axiom-clean INTEGER CERTIFICATE
-(`parity_packet_not_sign_definite`: the `χ₂`-mode integrand is `+` on `w1` and `−` on `w2`, both at
-n=16 r=5 ⇒ not sign-definite; `parity_packet_forecast_free`: `PAR⁻ < 0` on `w2` (A<0) and `w3` (A>0)
-⇒ forecasts nothing; `newton_parity_regularity_is_not_a_route`; plus the seven witness-value
-theorems `w1_k2_pos`, `w2_k2_neg`, `w{1,2,3}_parm_neg`, `w2_A_neg`, `w3_A_pos`). All 10 decls audit
+(corrected per L106: `chi2_mode_positive_in_negative_packet`: the genuine `χ₂` pairing is `+` on
+both `w1` and `w2` while `PAR⁻ < 0`; `parity_packet_forecast_free`: `PAR⁻ < 0` on `w2` (A<0) and `w3`
+(A>0) ⇒ forecasts nothing; `newton_parity_witness_certificate`; plus the witness-value theorems
+`w{1,2}_chi2_pos`, `w{1,2,3}_parm_neg`, `w2_A_neg`, `w3_A_pos`. The earlier
+`parity_packet_not_sign_definite` / `newton_parity_regularity_is_not_a_route` were existentials over a
+plain data structure built on the mis-identified separate-transform product and were removed). All 10 decls audit
 to ZERO axioms (`does not depend on any axioms`). The "72/72 cells negative" census and the 5–8-order
 magnitude domination of the negative mode mass are limiting statistical statements whose computation
 of record is the Python sweep (NOT dressed as Lean theorems, per the G214/G217/G220 lesson).
@@ -53136,10 +53150,13 @@ centered profiles `c^{(r,a)} = (p*R_r(x) - SR)_x` (r=1..n, a in G, exactly the G
 sponsor-faithful cells (`n in {8,16}`, `p in {113,257,97,113,257,433,977,1153}`) shows `0` is
 strictly OUTSIDE the convex hull at every cell: six cells have `0` not even in the affine hull (an
 exact nontrivial separating functional with explicit positive margin is exhibited), and two cells
-(`16,97`; `16,113`) have `0` in the affine hull but out of the convex hull, so `0` is the min-norm
-affine point and NO nontrivial linear separator exists there (only the trivial affine constant).
-So contra a naive reading, `0` is NOT the barycenter here — and convexity alone does not even supply
-a linear separator; parity does the real work.
+(`16,97`; `16,113`) have `0` in the affine hull but out of the convex hull. So contra a naive
+reading, `0` is NOT the barycenter here. **Correction (audit 2026-10-28, L104):** this entry
+previously said the two affine-hull cells admit NO nontrivial linear separator ("0 is the min-norm
+affine point", "only the trivial affine constant") and that convexity alone does not supply one.
+That was false: a finite convex hull missing `0` is always strictly linearly separated from `0`
+(`V={1,2}⊂ℚ`: `0` is affine, `w=1` separates), and the constant "separator" takes the same value at
+`0`. The corrected probe exhibits verified nonzero coordinate-even linear separators at both cells.
 
 But the surviving route asks specifically for an ODD normal, and that is impossible for a sharper
 structural reason. Every realizable centered profile is coordinate-EVEN (`c(-x)=c(x)`, G280 Fact 1,
@@ -53153,18 +53170,21 @@ separation value of any functional depends only on its EVEN part on the even con
 even inner product, polarity-invariant and carrying no binding beyond what is already analysed there.
 
 Net: the "predeclared row-labelled ODD arithmetic normal with positive margin" hatch (named in the
-G56/formalizer handoffs) is self-contradictory on the actual sponsor cone. Any surviving certificate
-must be genuinely NON-LINEAR (odd quadratic or higher). Formal payload
+G56/formalizer handoffs) is self-contradictory on the actual sponsor cone when "odd" means
+coordinate-odd. (The earlier conclusion that any surviving certificate must be non-linear does not
+follow: even linear separators exist at every tested cell, and the coordinate-reflection versus
+global-polarity reading of "odd" is a separate issue, audit crosslink R-253.) Formal payload
 `_G286EvenConeOddSeparatorNoGo.lean`: abstract even-cone/odd-functional dichotomy over any `ℚ`-module
 with a linear involution (`even_vector_odd_functional_zero`, `odd_functional_no_positive_margin`,
 `odd_functional_margin_impossible`, `separation_depends_on_even_part`, `positive_margin_normal_not_odd`;
 axioms `[propext, Classical.choice, Quot.sound]`) plus zero-axiom `decide` witnesses at the exact
 `n=8,p=113` cell (`c 1 = c 112 = 5911`; odd pairing `0`, even pairing `11822`). Probe
-`scripts/probes/g286_hull_zero_probe.py` (pure exact-rational LP): gates A-D (even cone,
-odd-annihilation, even-nonzero pairing, zero out of hull) all hard `SystemExit(1)`; PASS. This closes
-the odd-LINEAR separator route; it does NOT bound the covariance and does not exclude a non-linear
-odd certificate. Surviving object unchanged: the full row-labelled signed sponsor covariance, now
-pinned as requiring a strictly non-linear odd mechanism. CORE OPEN / ON-BGK.
+`scripts/probes/g286_hull_zero_probe.py` (pure exact-rational LP): gates A-E (even cone,
+odd-annihilation, even-nonzero pairing, zero out of hull with a separator certificate, verified
+nonzero even separators; C fallback and E added by the L104 repair) all hard `SystemExit(1)`; PASS.
+This closes the coordinate-odd LINEAR separator route on the tested cells; it does NOT bound the
+covariance and does not exclude a non-linear odd certificate. Surviving object unchanged: the full
+row-labelled signed sponsor covariance. CORE OPEN / ON-BGK.
 ## [466-G285-kernel-domain-character-nogo] canonical low-order input-character normals are row-labelled but sign-unreliable; Jacobi expansion fans out at full sponsor mass (2026-07-13)
 
 After G282 closed carry-histogram Ramanujan normals and G284 showed antipode-freeness does not supply

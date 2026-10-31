@@ -408,7 +408,7 @@ theorem badScalar_orbits_distinct_of_nonCollision … :
 
 ### E. Reduction + list — floor ⟺ explicit-RS list past Johnson
 
-**MCADeltaStarListReduction + SuperCodeListBridge + B1IncidenceBridge** — exact in-regime reduction: proximity-gap floor ⟺ sub-Johnson explicit-RS single-word list (NO √-loss).
+**MCADeltaStarListReduction + SuperCodeListBridge + B1IncidenceBridge** — in-regime reduction ingredients relating the proximity-gap floor to sub-Johnson explicit-RS single-word list sizes (NO √-loss). Audit correction (2026-10-28, PG-049): `MCADeltaStarListReduction` itself proves only two separate one-way statements — a list bound for the single direction `u₁ = xᵏ`, and a `δ*` lower bound from a bad-scalar bound assumed uniformly over all stacks. The first does not discharge the second's uniform hypothesis, and neither gives a converse, so that file does not prove a `⟺`.
 `ArkLib/Data/CodingTheory/ProximityGap/MCADeltaStarListReduction.lean` | `SuperCodeListBridge.lean` | `B1IncidenceBridge.lean` (all fork/main) · namespaces `ProximityGap.Ownership` / `ProximityGap.FarCosetExplosion` / `ProximityGap.WireB1ToIncidence`
 ```lean
 theorem mcaBad_card_le_singleWordList (dom : Fin n ↪ F) {k a} (ha : 1 ≤ a) (hk : k < n) (hdom : ∀ i, dom i ≠ 0)
@@ -427,7 +427,7 @@ theorem epsMCA_le_of_worstCaseFarIncidence … (hB : WorstCaseFarIncidenceBounde
   (#bad-γ : ℝ≥0∞) ≤ (B : ℝ≥0∞)
 ```
 *Proves:* in the BChKS (a<q/(2n)) regime, the floor (epsMCA small for ALL far stacks) is bounded by — and at budget q·ε*=n EQUIVALENT to — the sub-Johnson worst-case single-word list size of explicit smooth RS, NO √-loss (the super-code bridge replaces the Johnson √ with a +1-dimension argument). This is why ONE list-decoding bound closes BOTH grand challenges; worst-case word pinned 2-sparse x^a+γx^b.
-*Consume:* `import ArkLib.Data.CodingTheory.ProximityGap.MCADeltaStarListReduction`. To push δ* up: supply uniform B with `∀ u, (mcaBad C δ (u 0) (u 1)).card ≤ B` + `ENNReal.ofReal(B/|F|) ≤ ε*`, then `mcaDeltaStar_ge_of_uniform_mcaBad` gives `δ ≤ mcaDeltaStar C ε*`; discharge `hcard` via `mcaBad_card_le_singleWordList`. For the √-free far-line→super-code step, `import …SuperCodeListBridge` and apply `explainableScalars_card_le_superList`. Single remaining open obligation: `WorstCaseFarIncidenceBounded` (B1IncidenceBridge) = the BGK char-sum wall.
+*Consume:* `import ArkLib.Data.CodingTheory.ProximityGap.MCADeltaStarListReduction`. To push δ* up: supply uniform B with `∀ u, (mcaBad C δ (u 0) (u 1)).card ≤ B` + `ENNReal.ofReal(B/|F|) ≤ ε*`, then `mcaDeltaStar_ge_of_uniform_mcaBad` gives `δ ≤ mcaDeltaStar C ε*`. `mcaBad_card_le_singleWordList` bounds `mcaBad` only for the direction `u₁ = xᵏ`, so it does not by itself discharge the all-stack `hcard`; an all-direction normalization or bound is still needed. For the √-free far-line→super-code step, `import …SuperCodeListBridge` and apply `explainableScalars_card_le_superList`. Single remaining open obligation: `WorstCaseFarIncidenceBounded` (B1IncidenceBridge) = the BGK char-sum wall.
 *Reproduce:* `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/MCADeltaStarListReduction.lean` (after `scripts/pg-warm.sh`). In-file `#print axioms`. NOTE: files on fork/main, not claude-iid-push (`git show fork/main:<path>`).
 
 **AUDIT-GUARD co-import integrity (MCAGSUniversalReduction)** — restores whole-library build; standing audit harness.

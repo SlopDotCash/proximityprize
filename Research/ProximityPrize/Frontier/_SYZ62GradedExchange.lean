@@ -27,9 +27,13 @@ This file builds the classical apparatus for that refinement, self-contained and
   a monomial shift.
 
 * **The exchange obligation**, stated as a named `Prop` `GradedExchange`, and the reduction
-  `windowed generation ⟸ GradedExchange`: once every kernel element of product-degree `D ≥ δ₂`
-  can be reduced modulo `e₁, e₂` to strictly smaller product-degree, the two principal windows
-  generate the degree-`D` kernel window — the exact hypothesis `SYZ60.MuBasisWindowIso` needs.
+  `generation ⟸ GradedExchange`: once every nonzero element of `N` (of *any* product-degree — the
+  def has no `D ≥ δ₂` restriction) can be reduced modulo `e₁, e₂` to strictly smaller
+  product-degree, `e₁, e₂` generate `N`.  Caveat: the converse also holds (SYZ63
+  `gradedExchange_of_span`: an exact representation leaves remainder `0` of degree `⊥`), so
+  `GradedExchange` is *equivalent* to `N ≤ span {e₁, e₂}`; it carries no degree information.  The
+  windowed count `SYZ60.MuBasisWindowIso` needs, in addition, the degree-minimality and
+  leading-vector independence data (SYZ63 `exists_muBasisData`).
 
 ## Scrupulous honesty — scope
 
@@ -174,7 +178,9 @@ degree-minimal generators `e₁, e₂` to strictly smaller product-degree.  Clas
 leading-vector argument: `lv d D w` lies in the `K`-span of the (shifted) leading vectors of
 `e₁, e₂` — the ≤-2-dimensional leading-vector space forced by the rank-2 freeness (SYZ61) — so a
 suitable combination cancels the top and drops `pdeg`.  Carried as a hypothesis; SYZ61 supplies the
-rank-2 structure the leading-vector independence rests on. -/
+rank-2 structure the leading-vector independence rests on.  Note: as stated (for every nonzero
+`w ∈ N`, with no degree restriction) this is equivalent to `N ≤ span {e₁, e₂}` — see SYZ63
+`gradedExchange_of_span` for the converse of `span_of_gradedExchange`. -/
 def GradedExchange (N : Submodule K[X] (Fin 3 → K[X])) (e₁ e₂ : Fin 3 → K[X]) : Prop :=
   ∀ w ∈ N, w ≠ 0 → ∃ q₁ q₂ : K[X],
     pdeg d (w - (q₁ • e₁ + q₂ • e₂)) < pdeg d w
@@ -183,7 +189,8 @@ def GradedExchange (N : Submodule K[X] (Fin 3 → K[X])) (e₁ e₂ : Fin 3 → 
 graded exchange step, the two degree-minimal generators `e₁, e₂` *generate the whole syzygy module*
 `N`: well-founded recursion on the product-degree (`WithBot ℕ` is well-founded under `<`) reduces any
 `w ∈ N` to `0` modulo `Submodule.span K[X] {e₁, e₂}`.  This is precisely the windowed-generation
-content that `SYZ60.MuBasisWindowIso` requires — the graded refinement of SYZ61's rank-2 freeness. -/
+content that `SYZ60.MuBasisWindowIso` requires, but only the span half: the window count also needs
+the degree-minimality / leading-vector data (SYZ63 `exists_muBasisData`). -/
 theorem span_of_gradedExchange {N : Submodule K[X] (Fin 3 → K[X])} {e₁ e₂ : Fin 3 → K[X]}
     (he₁ : e₁ ∈ N) (he₂ : e₂ ∈ N) (hex : GradedExchange (d := d) N e₁ e₂) :
     ∀ w ∈ N, w ∈ Submodule.span K[X] ({e₁, e₂} : Set (Fin 3 → K[X])) := by

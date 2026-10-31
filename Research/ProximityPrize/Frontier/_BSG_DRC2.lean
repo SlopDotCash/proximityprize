@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._BSG_Reduce
+import Research.ProximityPrize.Frontier._BSG_DRC1
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
@@ -12,7 +13,19 @@ import Mathlib.Tactic.Positivity
 # BSG — dependent random choice (DRC), step 2: the proven averaging core + the irreducible kernel
 
 This file attacks the residual `BareDRC` (the energy-free dependent-random-choice extraction left
-open by `_BSG_Reduce.lean`). We do **two** honest things:
+open by `_BSG_Reduce.lean`).
+
+**Status correction.** `BareDRC` and the `DRCKernel` defined here are both **false for every choice
+of constants** (`bareDRC_false`, `drcKernel_false` in `_BSG_EX_BareDRCExtractFalse.lean`). At
+`K = 1` the complete graph `G = A ×ˢ A` on any nonempty `A` meets the squared-neighbourhood
+premise of `DRCKernel` (`#A² ≤ 16 · #A²`), and a large Sidon set has no constant-fraction subset
+with linear doubling. So `DRCKernel` is not an open residual and no refinement/Plünnecke argument
+can discharge it: it discards the additive-energy information the genuine argument uses. The
+reduction `bareDRC_of_kernel` below is valid but vacuous. The averaging core
+`exists_large_left_neighborhood` is a genuine, reusable lemma. The energy-coupled replacement is
+`DRCKernelEnergy` (`_BSGC_attempt4.lean`), still open.
+
+The original (now superseded) plan of this file was:
 
 1. **PROVE the averaging core of DRC** (`exists_large_left_neighborhood`). This is the genuinely
    provable, constant-explicit heart of dependent random choice: from the *cherry-richness*
@@ -40,16 +53,15 @@ open by `_BSG_Reduce.lean`). We do **two** honest things:
 * `bareDRC_of_kernel : DRCKernel C₁ C₂ c → BareDRC C₁ C₂ c` — the reduction wiring the averaging
   core into `BareDRC`, leaving only `DRCKernel`.
 
-## What remains open (named, NOT a hidden `sorry`)
+## What was left (REFUTED, not open)
 
-* `DRCKernel` — the refinement + Plünnecke–Ruzsa step in isolation. This is the deepest, smallest
-  residual of the entire BSG ladder: given a large neighbourhood vertex, produce the small-doubling
-  constant-fraction subset.
+* `DRCKernel` — intended as the refinement + Plünnecke–Ruzsa step in isolation. It is **false for
+  every choice of constants** (`drcKernel_false`), so it is not a remaining residual.
 
 ## Status
 
-`REDUCES-FURTHER` — `BareDRC` is reduced to the strictly smaller `DRCKernel`, and the averaging
-core of DRC is proven outright. The Plünnecke/refinement kernel remains a named residual.
+The averaging core of DRC is proven outright. `BareDRC` is reduced to `DRCKernel`, but both are
+refuted for all constants, so the reduction carries no content toward `BSGCore`.
 
 ## References
 
@@ -67,9 +79,11 @@ variable {α : Type*} [AddCommGroup α] [DecidableEq α]
 
 /-! ## Definitional bridge: the left-neighbourhood card is the right-degree -/
 
-/-- The **left-neighbourhood** of a right-vertex `b` in `G ⊆ A ×ˢ A`. Its cardinality is `rDeg`. -/
+/-- The **left-neighbourhood** of a right-vertex `b` in `G ⊆ A ×ˢ A`. Its cardinality is `rDeg`.
+Compatibility alias for the canonical `leftNbhd` of `_BSG_DRC1` (kept so existing statements that
+mention `leftNbhdDRC2` are unchanged). -/
 noncomputable def leftNbhdDRC2 (A : Finset α) (G : Finset (α × α)) (b : α) : Finset α :=
-  {a ∈ A | (a, b) ∈ G}
+  leftNbhd A G b
 
 @[simp] lemma card_leftNbhdDRC2 (A : Finset α) (G : Finset (α × α)) (b : α) :
     #(leftNbhdDRC2 A G b) = rDeg A G b := rfl
@@ -112,15 +126,17 @@ theorem exists_large_left_neighborhood (A : Finset α) (K : ℕ) (G : Finset (α
   obtain ⟨b, hbA, hb⟩ := Finset.exists_le_of_sum_le hA hsumle
   exact ⟨b, hbA, hb⟩
 
-/-! ## The irreducible kernel `DRCKernel` (named open residual)
+/-! ## The kernel `DRCKernel` (REFUTED for all constants)
 
-After the energy layer (`_BSG_Reduce`) and the averaging layer (above) are stripped, the *only*
-remaining DRC content is the **refinement + Plünnecke** step. `DRCKernel` packages exactly this:
-it is handed the large-neighbourhood vertex `b` (with the squared-degree bound **already proven**),
-and must produce the small-doubling subset. Its hypothesis is strictly weaker bookkeeping than
-`BareDRC` — no graph density, no cherry sum, no averaging — it is the bare refinement obligation. -/
+`DRCKernel` was meant to package the **refinement + Plünnecke** step left after the energy layer
+(`_BSG_Reduce`) and the averaging layer (above) are stripped: it is handed the large-neighbourhood
+vertex `b` (with the squared-degree bound) and must produce the small-doubling subset. Because its
+hypotheses mention neither additive energy nor any property of `G` beyond one large neighbourhood,
+it is false for every choice of constants (`drcKernel_false`,
+`_BSG_EX_BareDRCExtractFalse.lean`). -/
 
-/-- **The irreducible DRC kernel `DRCKernel` (refinement + Plünnecke, in isolation).**
+/-- **The DRC kernel `DRCKernel` (refinement + Plünnecke, in isolation) — REFUTED for all constants
+by `drcKernel_false`.**
 
 Hypothesis (post-averaging, energy-free *and* graph-sum-free): a graph `G ⊆ A ×ˢ A` and a single
 right-vertex `b ∈ A` whose left-neighbourhood `N(b) = leftNbhdDRC2 A G b` is large
@@ -128,9 +144,8 @@ right-vertex `b ∈ A` whose left-neighbourhood `N(b) = leftNbhdDRC2 A G b` is l
 
 Conclusion: the BSG output — a constant-fraction subset `A'` with a controlled difference set.
 
-This is the deepest residual: the refinement of the large neighbourhood into a small-doubling set
-(via the Plünnecke–Ruzsa inequality applied to `A' = N(b)` after discarding the few badly-connected
-pairs). All the *statistical* layers above it are now proven. -/
+This proposition is unsatisfiable: at `K = 1` the complete graph on a large Sidon set satisfies
+the hypothesis, while no constant-fraction subset of a large Sidon set has linear doubling. -/
 def DRCKernel (C₁ C₂ c : ℕ) : Prop :=
   ∀ {α : Type} [inst : AddCommGroup α] [inst2 : DecidableEq α],
     ∀ (A : Finset α) (K : ℕ) (G : Finset (α × α)) (b : α),
@@ -146,7 +161,8 @@ extraction `BareDRC` follows: the averaging core `exists_large_left_neighborhood
 cherry-richness hypothesis into the single large-neighbourhood vertex that `DRCKernel` consumes.
 
 The edge-density hypothesis of `BareDRC` is not even needed for this wiring — cherry-richness alone
-drives the averaging core — so it is simply not forwarded. -/
+drives the averaging core — so it is simply not forwarded. The implication is valid but vacuous,
+since `DRCKernel` is false for all constants (`drcKernel_false`). -/
 theorem bareDRC_of_kernel {C₁ C₂ c : ℕ} (hker : DRCKernel C₁ C₂ c) :
     BareDRC C₁ C₂ c := by
   intro α _ _ A K G hK hA hGsub _hdense hcherry

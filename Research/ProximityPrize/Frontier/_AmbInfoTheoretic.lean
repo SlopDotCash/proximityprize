@@ -10,28 +10,31 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 /-!
 # A7-info — the INFORMATION-THEORETIC / COMPLEXITY bound on `M` (#444)
 
-**Mandate (maximal ambition).**  Do NOT escape the two #444 obstructions from a new analytic domain.
-ATTACK THE OBSTRUCTION HYPOTHESES.  Both obstructions are statements about *real-analytic magnitude*:
-moment-necessity forecloses a **nonnegative COUNT** reaching the target; `√p`-vacuity forecloses the
-**standard period sheaf**'s eigenvalues from being sub-`√p`.  An *information-theoretic* bound lives
-on a different axis: it bounds `M = max_{b≠0}|η_b|` not by the magnitude of any single period, nor by
-any sheaf weight, but by the **COMPLEXITY / DESCRIPTION LENGTH of the worst-case configuration** —
-the number of bits needed to NAME the worst frequency `b`.  The claim under test:
+**Mandate.**  Test whether an *information-theoretic* bound — one that controls
+`M = max_{b≠0}|η_b|` by the description length `log m` of the worst frequency rather than by the
+magnitude of a single period or a sheaf weight — escapes the two #444 obstructions.  The claim
+under test:
 
 > a large `|η_b|` would let `b` be specified by *fewer* bits than it actually needs — so the
 > achievable correlation is capped by the description budget `log m` (the entropy of the frequency
 > alphabet), giving `M ≤ √(2 n log m)`.
 
-This file BUILDS that machinery in full: the three information-theoretic functionals (a counting /
-compression functional, a phase-entropy / transport functional, and a **union-bound maximal
-inequality** keyed to the description budget), proves the genuinely *complexity-driven* kernel
-axiom-clean, and then states — honestly — exactly which input remains, and against which obstruction
-hypothesis it sits.
+This file builds the machinery (a counting functional, a phase-entropy functional, and the
+deterministic exponential-moment maximal inequality), proves the deterministic kernels
+axiom-clean, and states which input remains.  **Verdict: REDUCES** to the moment ladder.
 
 ## The prize core (recap)
 
-`rEnergy(μ_n, r) = ∑_{b≠0} |∑_{x∈μ_n} e_p(b·x)|^{2r} ≤ (2r−1)‼ · n^r`, at `r ≈ ln p`, `n = 2^30`,
-`p ≈ n·2^128` (`n ≈ p^{0.19}`); equivalently `M = max_{b≠0}|η_b| ≤ √(2 n log m)`, `m = (p−1)/n`.
+Write `η_b = ∑_{x∈μ_n} e_p(b·x)` and `E_r = rEnergy(μ_n, r)` for the `r`-fold additive-energy
+count (`ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumMoment.lean`).  The exact moment
+identity is `∑_b |η_b|^{2r} = p·E_r`, hence (removing the `b = 0` term `η_0 = n`)
+
+  `∑_{b≠0} |η_b|^{2r} = p·E_r − n^{2r}`.
+
+(Exact check at `p = 17`, `n = 8`: `r = 1` gives `72 = 17·8 − 64`; `r = 2` gives
+`392 = 17·264 − 4096`.)  The prize target is a Gaussian-shape bound on these DC-subtracted moments
+at `r ≈ ln p`, `n = 2^30`, `p ≈ n·2^128`, equivalently `M = max_{b≠0}|η_b| ≤ √(2 n log m)`,
+`m = (p−1)/n`.
 
 Two obstructions any approach MUST clear (else REDUCES):
 * **(i) MOMENT-NECESSITY** (`MomentLadderExceedsPrize`): no nonnegative COUNT `c` with `Σ c = n^r`
@@ -42,114 +45,65 @@ Two obstructions any approach MUST clear (else REDUCES):
 ## The three information-theoretic functionals
 
 Index the `m = (p−1)/n` cosets of `μ_n` in `F_p^×` by `Fin m`; on each coset the period `η_b` is
-constant, so `M = max` over an alphabet of size `m`.  Write `η : Fin m → ℝ≥0` for `|η_·|` (one value
-per coset; `M = max_j η j`).  The total `ℓ²`-mass is **frozen by Parseval** at `Σ_{b≠0}|η_b|² = pn`,
-hence `Σ_j (η j)² ≤ p n / n = p` per representative-weighting — equivalently the *average* squared
-period is the variance proxy `σ² = n` (one period is a sum of `n` unit phases).
+constant, so `M = max` over an alphabet of size `m`.  Parseval (the `r = 1` identity above) gives
+`∑_{b≠0}|η_b|² = pn − n²`, hence `∑_j |η_j|² = p − n` over coset representatives, and the average
+squared period is `(p − n)/m = n(p − n)/(p − 1) ≈ n` — the variance proxy `σ² ≈ n`.
 
-* **(F1) The compression / counting functional** `Ncount(T) := #{ j : η j ≥ T }`.  Markov on the
-  frozen `ℓ²`-mass gives `Ncount(T) · T² ≤ Σ_j (η j)²`.  This is the information content of "how many
-  frequencies are `T`-good": a *counting* bound.  **It is a nonnegative count** — inside (i).
+* **(F1) The counting functional** `Ncount(T) := #{ j : η j ≥ T }`.  Markov on the `ℓ²`-mass gives
+  `Ncount(T) · T² ≤ Σ_j (η j)²` (`compression_count_bound`).  It is a nonnegative count — inside
+  (i).
 
-* **(F2) The phase-entropy / transport functional** `Hdef(b) := log p − H(ν_b)`, the entropy deficit
-  of the empirical phase measure `ν_b` of `{b·x : x ∈ μ_n}` on `ℤ/p`.  Since `|supp ν_b| ≤ n`,
-  `H(ν_b) ≤ log n`, so `Hdef(b) ≥ log m`.  Pinsker/transport: `|η_b|/n = |⟨ν_b, e_p⟩| ≤ dTV(ν_b, U)
-  ≤ √(½ KL(ν_b‖U))`.  This is genuinely information-theoretic (entropy, not magnitude) but, run
-  crudely, yields only `M ≤ n·√(½ log m)` — *off by `√n`*, because an `n`-point measure is `Ω(1)`-far
-  from uniform.  Documented as the honest weak rung.
+* **(F2) The phase-entropy functional** `Hdef(b) := log p − H(ν_b)`, the entropy deficit of the
+  empirical phase measure `ν_b` of `{b·x : x ∈ μ_n}` on `ℤ/p`.  Since `|supp ν_b| ≤ n`,
+  `H(ν_b) ≤ log n`, so `Hdef(b) ≥ log m`.  Since `⟨U, e_p⟩ = 0`,
+  `|η_b|/n = |⟨ν_b − U, e_p⟩| ≤ ‖ν_b − U‖₁ = 2·dTV(ν_b, U) ≤ √(2 KL(ν_b‖U))` (Pinsker).  (The
+  factor `2` is needed: for `ν = δ₀`, `|η|/n = 1 > dTV = 1 − 1/p`.)  Run crudely this yields only
+  `M ≤ n·√(2 log m)` — *off by `√n`*, because an `n`-point measure is `Ω(1)`-far from uniform.
+  Prose only; no Lean statement.
 
-* **(F3) The union-bound MAXIMAL inequality keyed to the description budget** (the genuine new
-  kernel).  The number of bits to NAME the worst frequency is `log m`.  IF each period is
-  **sub-Gaussian with variance proxy `σ² = n`** — `E[exp(λ η_j)] ≤ exp(λ²n/2)` per coset — then the
-  *maximum over the size-`m` alphabet* obeys the classical maximal inequality
-  `max_j η_j ≤ √(2 n log m)`, with the `log m` being **exactly the description length / entropy of
-  the frequency alphabet**.  This is the bound the prize asserts.  We PROVE this maximal inequality
-  axiom-clean from the sub-Gaussian MGF hypothesis (the union/Chernoff-over-`m`-events argument), so
-  the *complexity packaging* (`log m` = bits-to-name-`b`) is rigorous; the remaining input is the
-  per-coset sub-Gaussian MGF — and that input is where the wall sits.
+* **(F3) The exponential-moment maximal inequality.**  For ANY real family `η : Fin m → ℝ` and a
+  single `λ > 0`, `Σ_j exp(λ η_j) ≤ m·exp(λ²σ²/2)` implies `max_j η_j ≤ (log m)/λ + λσ²/2`
+  (`max_le_of_empirical_mgf`); at `λ = t/σ²` with `t = √(2σ² log m)` this is
+  `max_j η_j ≤ √(2σ² log m)` (`max_le_sqrt_two_sigma_log_of_empirical_mgf`).  **This is proved in
+  Lean**, deterministically (the only "randomness" is `j` over the alphabet).
 
-## The genuinely-new content (and the honest gap)
+## Where the hypothesis of (F3) sits
 
-The new content is **(F3)**: the bound's right-hand side `√(2 n log m)` is *literally* a
-description-length quantity — `log m` is the entropy of the coset alphabet, the bits needed to
-specify the worst `b`.  The maximal inequality says: **a correlation larger than
-`√(2·variance·#bits)` would let the worst frequency be guessed with fewer than `#bits` of advantage**,
-i.e. would *compress* the frequency index below its entropy.  This is a complexity statement, not a
-magnitude statement, and not a sheaf statement — it sits OUTSIDE both obstruction hypotheses *as a
-packaging*.  We prove the packaging (the maximal inequality) is correct and axiom-clean.
+The maximal inequality CONSUMES an empirical exponential-moment bound
+`Σ_j exp(λ η_j) ≤ m·exp(λ²σ²/2)` at the single optimizing `λ`.  Two caveats about the hypothesis:
 
-**The honest gap.**  The maximal inequality CONSUMES a per-coset **sub-Gaussian MGF** hypothesis
-`E[exp(λ η_j)] ≤ exp(λ² n / 2)`.  Producing that MGF bound for the *actual* period is the
-char-`p` deep-moment problem (`Σ|η_b|^{2r} ≤ (2r−1)‼ n^r`) — i.e. the prize itself.  So **(F3)
-escapes the moment-necessity hypothesis structurally** (the MGF is a signed exponential generating
-functional, NOT a single nonnegative count: it weights signed phase cancellation through `exp(λ·)`),
-and it **escapes `√p`-vacuity** (it never invokes the period sheaf or any `√p` eigenvalue — it is a
-purely combinatorial maximal inequality over the `m`-element alphabet).  But it does NOT yet PRODUCE
-the bound, because the MGF input is unproven — and the MGF input is the prize.  Honest verdict below.
+* It should be stated for **centered real projections** (e.g. `Re(c·η_b)` for unimodular `c`), not
+  for the moduli `|η_b| ≥ 0`.  For nonnegative values with mean `μ₁ > 0`, Jensen gives
+  `(1/m)Σ_j exp(λ η_j) ≥ exp(λ μ₁) = 1 + λμ₁ + O(λ²)`, so a bound `≤ exp(λ²n/2) = 1 + O(λ²)` for
+  *all small* `λ` is impossible unless every `η_j = 0`.  At the single optimizing `λ` the
+  hypothesis is not self-contradictory, but it is not a sub-Gaussian property of the moduli.
+* Producing that exponential-moment bound for the actual periods is the deep-moment problem.
+  Sub-Gaussian control of a real centered family **implies** even-moment bounds
+  `μ_{2r} ≤ C^r (2r−1)‼ σ^{2r}` and conversely even-moment bounds of that shape imply an MGF bound
+  **up to absolute constants** (not an exact equivalence).  In either direction the input is the
+  moment ladder, whose even empirical moments are the nonnegative counts
+  `μ_{2r} = (1/m)Σ_j |η_j|^{2r} = (p·E_r − n^{2r})/(n·m)` (moduli, coset representatives).
 
-## Self-assessment vs the two obstructions
+So the route does **not** escape moment-necessity (`escapesMoment = false`); the deterministic
+maximal inequality never invokes the period sheaf or any `√p` eigenvalue (`escapesVacuity = true`);
+`escapesBoth = false`.
 
-* **escapesMoment?**  **YES (structurally).**  The operative functional is the **MGF**
-  `Φ_j(λ) = E[exp(λ η_j)]` and the maximal inequality built on it.  An MGF is *not* a nonnegative
-  count with fixed total `n^r`: it is an exponential generating functional that, expanded, alternates
-  in sign in the cumulants and captures cancellation (the sub-Gaussian bound `≤ exp(λ²n/2)` is
-  exactly the assertion that odd/high cumulants CANCEL).  `MomentLadderExceedsPrize` forecloses a
-  fixed nonnegative count reaching the target; it does NOT foreclose a maximal inequality whose input
-  is a cancellation-encoding MGF.  So (F3) is outside hypothesis (i).  (We are honest that (F1) is
-  *inside* (i) — and we prove it, to mark the boundary exactly.)
-* **escapesVacuity?**  **YES (structurally).**  (F3) is a combinatorial union/Chernoff bound over the
-  size-`m` alphabet; it never references the period sheaf, its cohomology, or any eigenvalue.  No
-  `√p` quantity appears anywhere in the maximal inequality — the only scales are the variance proxy
-  `n` and the alphabet entropy `log m`.  The vacuity obstruction (sheaf eigenvalues are `√p`) cannot
-  touch an object that does not use the sheaf.  So (F3) is outside hypothesis (ii).
-* **escapesBoth?**  As a *packaging*, **yes** — the maximal inequality is genuinely outside both
-  hypotheses.  As a *complete proof*, **no**, because its sub-Gaussian MGF input is the prize.
+Empirically (out-of-tree, prize regime) the clean `σ² = n` exponential-moment input is even FALSE:
+at structured primes `Σ_{b≠0} cosh(η_b y*) > q²` (e.g. `2.57 q²`, `n = 64`, `v₂(p−1)=8`), so there
+is no uniform variance proxy `n`.
 
-## Honest verdict (after ADVOCATE repair attempt): **REDUCES** (to the moment ladder)
+## What this file PROVES (axiom-clean)
 
-The information-theoretic *packaging* is real and the maximal inequality is proved axiom-clean: the
-prize RHS `√(2 n log m)` is exactly a `variance × description-budget` quantity, and ANY per-coset
-sub-Gaussian MGF (variance proxy `n`) discharges the prize through (F3).  The packaging genuinely
-never touches the period sheaf, so it is outside the `√p`-vacuity hypothesis (`escapesVacuity = true`).
-
-BUT the repair fails to make it escape moment-necessity, and the file now PROVES why:
-
-1. **The MGF is the count in disguise.**  The only randomness is `j` over the `m`-coset alphabet
-   (each `η j` is a fixed deterministic period), so the operative object is the *empirical* MGF
-   `(1/m) Σ_j exp(λ η_j)`.  Its even Taylor coefficients are the energy moments `E_r`, which are
-   NONNEGATIVE counts (`empirical_moment_is_nonneg_count`).  Sub-Gaussianity `≤ exp(λ²n/2)` is
-   *equivalent* to the even-moment ladder `E_r ≤ (2r−1)‼ n^r` — the prize itself, INSIDE hypothesis
-   (i).  At leading order the MGF bound is literally `μ₂ ≤ σ²`, an upper bound on the count
-   `Σ(η_j)²` (`mgf_subgaussian_forces_energy_count_bound`).  The `exp` cannot synthesize cancellation
-   the even counts lack.
-
-2. **In its clean `σ² = n` form the input is even FALSE at the prize regime** (out-of-tree exact
-   computation): at structured primes `Σ_{b≠0} cosh(η_b y*) > q²` (e.g. `2.57 q²`, `n = 64`,
-   `v₂(p−1)=8`), so the achievable constant is `√2`, not `≤ 1`; there is no uniform variance proxy
-   `n`.  No normalization rescues this — enlarging `σ²` only weakens the RHS while still requiring the
-   refuted envelope.
-
-So the route REDUCES: the bridge is correct and `√p`-free, but its single input is the moment ladder,
-and `mgf_is_not_a_count` (the only structural-escape claim) is about the *sign-sensitivity of a single
-`exp(λs)` term*, which does NOT survive averaging over `j` (the even empirical moments are
-Parseval-frozen nonnegative counts).  We do NOT claim the escape; we prove the reduction and pin it.
-
-## What this file PROVES (target: axiom-clean `propext, Classical.choice, Quot.sound`)
-
-* `compression_count_bound` — (F1) Markov/counting: `Ncount(T)·T² ≤ Σ_j (η j)²`.  Marks the
-  count-cone boundary (this rung IS inside moment-necessity, and we say so).
-* `cgf_subgaussian_of_mgf` — the cumulant/Chernoff step: from `Φ(λ) ≤ exp(λ²σ²/2)` and Markov on
-  `exp(λ η)`, `P(η ≥ t) ≤ exp(λ²σ²/2 − λ t)`, optimized at `λ = t/σ²` to `exp(−t²/(2σ²))`.
-* `union_maximal_inequality` — (F3) the maximal inequality: given per-index sub-Gaussian tails
-  `P(η_j ≥ t) ≤ exp(−t²/(2σ²))` over an alphabet of size `m`, the expected/worst max obeys
-  `max_j η_j ≤ √(2 σ² log m)` (the description-budget bound).  This is the prize RHS.
-* `prize_rhs_is_variance_times_entropy` — the identification: `√(2 n log m)` = `√(2 · σ² · Hbits)`
-  with `σ² = n` (variance proxy) and `Hbits = log m` (alphabet entropy / description length).
-* `mgf_is_not_a_count` — the structural escape from the moment cone: the MGF functional takes the
-  exponential of a SIGNED phase sum and is therefore not a fixed nonnegative count; witnessed by the
-  cancellation it encodes.
-* `InfoTheoreticReducesToMGF` — the named verdict Prop: the prize follows from (F3) given a
-  sub-Gaussian MGF, the single missing input, which is outside both obstruction hypotheses.
+* `compression_count_bound` — (F1) Markov/counting: `Ncount(T)·T² ≤ Σ_j (η j)²`.
+* `chernoff_exponent_optimal`, `chernoff_exponent_is_min` — the Chernoff exponent
+  `λ²σ²/2 − λt` is minimized at `λ = t/σ²` with value `−t²/(2σ²)`.
+* `union_threshold_saturation` — the scalar identity `m·exp(−t²/(2σ²)) = 1` at `t² = 2σ² log m`.
+* `max_le_of_empirical_mgf`, `max_le_sqrt_two_sigma_log_of_empirical_mgf` — (F3) the deterministic
+  maximal inequality (single `λ`, any real family).
+* `empirical_moment_is_nonneg_count` — even empirical power sums are nonnegative.
+* `InfoTheoreticReducesToMGF` / `infoTheoreticReducesToMGF_holds` — the named verdict: the
+  `√(2σ² log m)` bound follows from the empirical exponential-moment hypothesis, which is the single
+  missing input (the moment ladder, not discharged here).
 -/
 
 set_option linter.style.longLine false
@@ -207,10 +161,8 @@ theorem compression_count_bound (η : Fin m → ℝ) (T : ℝ) (hT : 0 < T) :
 
 /-! ## 2. The Chernoff/sub-Gaussian tail step.
 
-We abstract the per-coset MGF input as a hypothesis and derive the sub-Gaussian tail, then the
-maximal inequality.  We do NOT prove the MGF (that IS the prize); we prove the BRIDGE from MGF to the
-prize RHS, axiom-clean.  The cumulant/Chernoff content: a sub-Gaussian MGF `≤ exp(λ²σ²/2)` yields a
-Gaussian tail `≤ exp(−t²/(2σ²))`. -/
+Scalar Chernoff-exponent algebra: the exponent `λ²σ²/2 − λt` is minimized at `λ = t/σ²` with value
+`−t²/(2σ²)`.  (These are real-arithmetic identities; no MGF or tail appears in their statements.) -/
 
 /-- **`subgaussian_tail_of_mgf` — Chernoff from a sub-Gaussian MGF.**  If a nonnegative random
 quantity (modeled by its tail-control constant) has MGF `Φ` with `Φ(λ) ≤ exp(λ² σ² / 2)` for all
@@ -244,23 +196,10 @@ theorem chernoff_exponent_is_min (σ2 t lam : ℝ) (hσ : 0 < σ2) :
     rw [hgap]; exact hpos
   linarith [hge]
 
-/-! ## 3. (F3) The union-bound MAXIMAL inequality keyed to the description budget.
 
-THE GENUINE NEW KERNEL.  Given per-index sub-Gaussian tails over an alphabet of size `m`, the maximum
-is controlled by `√(2 σ² log m)` — and `log m` is *exactly* the number of bits to NAME the worst
-index (the alphabet entropy / description length).  We prove the deterministic backbone of the
-maximal inequality: the union bound over `m` events and the threshold algebra that turns
-`m · exp(−t²/(2σ²)) ≤ 1` into `t ≥ √(2 σ² log m)`. -/
-
-/-- **`union_threshold` — the description-budget threshold.**  The union bound over an `m`-element
-alphabet of the sub-Gaussian tail `exp(−t²/(2σ²))` is `< 1` (so the worst index cannot exceed `t`
-w.h.p.) precisely when `t ≥ √(2 σ² log m)`.  Equivalently, the *threshold* `t` at which the
-`m`-fold union saturates is `t² = 2 σ² log m` — variance times the description budget `log m`.
-
-We prove the clean algebraic core: if `t ^ 2 = 2 * σ2 * Real.log m` with `σ2 > 0` and `m ≥ 1`, then
-`(m : ℝ) * Real.exp (- (t ^ 2 / (2 * σ2))) = 1` — the union bound is *exactly* saturated at the
-description-budget threshold.  This is the maximal-inequality identity: the prize RHS is the unique
-`t` where naming the worst frequency costs its full entropy. -/
+/-- **`union_threshold_saturation` — the scalar saturation identity.**  If `t² = 2σ² log m` with
+`σ² > 0` and `m ≥ 1`, then `m · exp(−t²/(2σ²)) = 1`.  This is only the threshold algebra; the
+maximal inequality itself is `max_le_of_empirical_mgf` below. -/
 theorem union_threshold_saturation (σ2 t : ℝ) (mr : ℝ)
     (hσ : 0 < σ2) (hm : 1 ≤ mr) (ht : t ^ 2 = 2 * σ2 * Real.log mr) :
     mr * Real.exp (- (t ^ 2 / (2 * σ2))) = 1 := by
@@ -270,92 +209,66 @@ theorem union_threshold_saturation (σ2 t : ℝ) (mr : ℝ)
   rw [hkey, Real.exp_neg, Real.exp_log (by linarith : (0:ℝ) < mr)]
   field_simp
 
-/-- **`union_maximal_inequality` — (F3) the maximal inequality (description-budget form).**
-Suppose over an alphabet `Fin m` we have, for the threshold `t* = √(2 σ² log m)`, the per-index
-sub-Gaussian tail certificate packaged as: each index `j` with `η j ≥ t*` contributes a tail
-`exp(−(t*)²/(2σ²)) = 1/m` to a union bound, and the union over all `m` indices is `≤ 1`.  Then no
-index can robustly exceed `t*`: `Σ_j [η j ≥ t*] · (1/m) ≤ 1`, i.e. `Ncount(t*) ≤ m`.  At the
-saturation threshold `t* = √(2 σ² log m)` this is the prize: `M ≤ √(2 σ² log m)` whenever the
-sub-Gaussian MGF holds (the `√p`-free, count-free maximal inequality).
+/-! ## 3. (F3) The deterministic exponential-moment maximal inequality.
 
-We prove the deterministic backbone: at `t*² = 2 σ² log m` the per-index tail is exactly `1/m`, so
-the union of `m` such tails is exactly `1` (`union_threshold_saturation`), which is the *boundary*
-case — the maximal inequality's defining equality.  The variance proxy is `σ² = n`; substituting
-gives the prize RHS `√(2 n log m)`. -/
-theorem union_maximal_inequality (σ2 : ℝ) (mr : ℝ)
-    (hσ : 0 < σ2) (hm : 1 ≤ mr) :
-    -- the worst-case threshold and the saturated union bound (the maximal inequality boundary)
-    let tstar := Real.sqrt (2 * σ2 * Real.log mr)
-    mr * Real.exp (- (tstar ^ 2 / (2 * σ2))) = 1 := by
-  intro tstar
-  have hnn : 0 ≤ 2 * σ2 * Real.log mr := by
-    have : 0 ≤ Real.log mr := Real.log_nonneg hm
-    positivity
-  have hsq : tstar ^ 2 = 2 * σ2 * Real.log mr := Real.sq_sqrt hnn
-  exact union_threshold_saturation σ2 tstar mr hσ hm hsq
+Given an empirical exponential-moment bound at a single `λ > 0` over an alphabet of size `m`, the
+maximum is controlled by `(log m)/λ + λσ²/2`, and at the optimizing `λ` by `√(2 σ² log m)`. -/
 
-/-! ## 4. Identification of the prize RHS as `√(variance × entropy)` and the MGF-is-not-a-count fact. -/
+/-- **`max_le_of_empirical_mgf` — the deterministic maximal inequality at a single `λ`.**
+For any real family `η : Fin m → ℝ` (`m ≥ 1`), `λ > 0`, if
+`Σ_j exp(λ η_j) ≤ m · exp(λ²σ²/2)`, then every `η_j ≤ (log m + λ²σ²/2)/λ`. -/
+theorem max_le_of_empirical_mgf (η : Fin m → ℝ) (lam σ2 : ℝ) (hlam : 0 < lam) (hm : 0 < m)
+    (hmgf : ∑ j : Fin m, Real.exp (lam * η j) ≤ (m : ℝ) * Real.exp (lam ^ 2 * σ2 / 2))
+    (j : Fin m) :
+    η j ≤ (Real.log m + lam ^ 2 * σ2 / 2) / lam := by
+  have hsingle : Real.exp (lam * η j) ≤ ∑ i : Fin m, Real.exp (lam * η i) :=
+    Finset.single_le_sum (f := fun i => Real.exp (lam * η i))
+      (fun i _ => (Real.exp_pos _).le) (Finset.mem_univ j)
+  have hmR : (0 : ℝ) < m := by exact_mod_cast hm
+  have hrhs : (m : ℝ) * Real.exp (lam ^ 2 * σ2 / 2)
+      = Real.exp (Real.log m + lam ^ 2 * σ2 / 2) := by
+    rw [Real.exp_add, Real.exp_log hmR]
+  have hexp : Real.exp (lam * η j) ≤ Real.exp (Real.log m + lam ^ 2 * σ2 / 2) :=
+    hrhs ▸ le_trans hsingle hmgf
+  have hlin : lam * η j ≤ Real.log m + lam ^ 2 * σ2 / 2 := Real.exp_le_exp.mp hexp
+  rw [le_div_iff₀ hlam]
+  linarith
 
-/-- **`prize_rhs_is_variance_times_entropy` — the information-theoretic identification.**  The prize
-RHS `√(2 n log m)` equals `√(2 · σ² · Hbits)` with the variance proxy `σ² = n` (one period is a sum
-of `n` unit phases, ℓ²-energy `n`) and the description budget / alphabet entropy `Hbits = log m`
-(bits to name the worst coset among `m`).  This makes the prize a textbook
-`concentration = √(variance · #bits)` statement — purely information-theoretic on its face. -/
-theorem prize_rhs_is_variance_times_entropy (n : ℝ) (mr : ℝ) :
-    let σ2 := n
-    let Hbits := Real.log mr
-    Real.sqrt (2 * n * Real.log mr) = Real.sqrt (2 * σ2 * Hbits) := by
-  intro σ2 Hbits
-  rfl
+/-- **`max_le_sqrt_two_sigma_log_of_empirical_mgf` — (F3) at the optimizing `λ`.**
+With `t = √(2 σ² log m)` (`σ² > 0`, `m ≥ 2`) and `λ = t/σ²`, the empirical exponential-moment bound
+`Σ_j exp(λ η_j) ≤ m · exp(λ²σ²/2)` forces `η_j ≤ √(2 σ² log m)` for every `j`.  This is the
+description-budget bound `max_j η_j ≤ √(2σ² log m)`, proved deterministically. -/
+theorem max_le_sqrt_two_sigma_log_of_empirical_mgf (η : Fin m → ℝ) (σ2 : ℝ) (hσ : 0 < σ2)
+    (hm : 2 ≤ m)
+    (hmgf : ∑ j : Fin m,
+        Real.exp ((Real.sqrt (2 * σ2 * Real.log m) / σ2) * η j)
+      ≤ (m : ℝ) * Real.exp ((Real.sqrt (2 * σ2 * Real.log m) / σ2) ^ 2 * σ2 / 2))
+    (j : Fin m) :
+    η j ≤ Real.sqrt (2 * σ2 * Real.log m) := by
+  set L := Real.log (m : ℝ) with hL
+  set t := Real.sqrt (2 * σ2 * L) with ht
+  have hmR : (1 : ℝ) < m := by exact_mod_cast (show 1 < m by omega)
+  have hLpos : 0 < L := Real.log_pos hmR
+  have hprod : 0 < 2 * σ2 * L := by positivity
+  have htpos : 0 < t := Real.sqrt_pos.mpr hprod
+  have htsq : t ^ 2 = 2 * σ2 * L := Real.sq_sqrt hprod.le
+  have hlam : 0 < t / σ2 := div_pos htpos hσ
+  have hbound := max_le_of_empirical_mgf η (t / σ2) σ2 hlam (by omega) hmgf j
+  have hhalf : (t / σ2) ^ 2 * σ2 / 2 = L := by
+    rw [div_pow, htsq]; field_simp
+  rw [hhalf, le_div_iff₀ hlam] at hbound
+  have hkey : t * (t / σ2) = 2 * L := by
+    rw [mul_div_assoc', ← pow_two, htsq]; field_simp
+  have : η j * (t / σ2) ≤ t * (t / σ2) := by linarith
+  exact le_of_mul_le_mul_right this hlam
 
-/-- **`mgf_is_not_a_count` — the structural escape from the moment cone.**  The operative functional
-of (F3) is the MGF `Φ(λ) = E[exp(λ η)]`, modeled by the exponential `exp (λ * s)` of a SIGNED phase
-sum `s` (the period is a signed/complex sum, `s` ranges over both signs).  Unlike a nonnegative count
-`c ≥ 0` with fixed total, the exponential `exp(λ s)` is sensitive to the SIGN of `s`: for `s < 0` it
-is `< 1`, for `s > 0` it is `> 1`.  We witness this: there exist signed inputs `s` for which the MGF
-weight is below `1` (cancellation is rewarded), so the MGF is NOT a nonnegative count with fixed
-total — it lies outside the `MomentLadderExceedsPrize` hypothesis. -/
-theorem mgf_is_not_a_count :
-    ∃ (lam s : ℝ), 0 < lam ∧ s < 0 ∧ Real.exp (lam * s) < 1 := by
-  refine ⟨1, -1, one_pos, by norm_num, ?_⟩
-  have : (1 : ℝ) * (-1) < 0 := by norm_num
-  calc Real.exp (1 * (-1)) < Real.exp 0 := by
-        apply Real.exp_lt_exp.mpr; norm_num
-    _ = 1 := Real.exp_zero
+/-! ## 4. The even empirical moments are nonnegative counts.
 
-/-! ## 4b. THE DECISIVE REDUCTION — the empirical MGF's even moments ARE the moment ladder.
+The even empirical power sums `Σ_j η_j^{2r}` that control the exponential-moment hypothesis are
+nonnegative; for the coset periods they are `(p·E_r − n^{2r})/n` (see the module docstring), i.e.
+the moment ladder of hypothesis (i). -/
 
-This is the section that settles the ADVOCATE question honestly.  The maximal inequality (F3)
-consumes a *per-coset* sub-Gaussian MGF.  But the only randomness available is `j` ranging over the
-`m`-element coset alphabet (each `η j` is a single fixed deterministic period).  So the operative
-"MGF" is the **empirical MGF** over the alphabet,
-`Φ(λ) = (1/m) Σ_j exp(λ · η j)`.  Expanding the exponential and using linearity,
-`Φ(λ) = Σ_r (λ^r / r!) · ( (1/m) Σ_j (η j)^r )`,
-so its `r`-th Taylor coefficient is the `r`-th **empirical moment** `μ_r := (1/m) Σ_j (η j)^r`.  The
-**even** empirical moments are precisely `μ_{2r} = (1/m) · rEnergy(μ_n, r)` — the *moment ladder*, a
-nonnegative count with total mass `n^r`-scale.  Requiring `Φ(λ) ≤ exp(λ² n / 2)` is therefore
-**equivalent to** the even-moment bounds `μ_{2r} ≤ (2r−1)‼ n^r` — which IS the prize and lives
-*inside* the moment-necessity hypothesis (i).  The MGF does NOT escape: its content is exactly the
-count.  We prove the load-bearing identity (one even Taylor coefficient = the energy count) so the
-reduction is machine-checked, not asserted. -/
-
-/-- **The empirical 2nd moment of the alphabet IS the energy count `E₂ / m`.**  The MGF's `λ²/2!`
-Taylor coefficient is `(1/m) Σ_j (η j)²` — a NONNEGATIVE count (every summand is a square).  This is
-the rung-`r=1` instance of "the even Taylor coefficients of the empirical MGF are the energy moments";
-it exhibits, machine-checked, that the variance proxy the sub-Gaussian MGF asserts (`σ² = n`) is read
-off a nonnegative count `Σ_j (η j)²`, i.e. the moment ladder.  Hence the MGF input REDUCES into the
-moment-necessity hypothesis (i): it is the count in disguise. -/
-theorem empirical_mgf_second_coeff_is_energy_count (η : Fin m → ℝ) :
-    (1 / (m : ℝ)) * ∑ j : Fin m, (η j) ^ 2
-      = (1 / (m : ℝ)) * (∑ j : Fin m, (η j) ^ 2) := rfl
-
-/-- **`empirical_moment_is_nonneg_count` — the even empirical moments are nonnegative counts.**  For
-every `r`, the `2r`-th empirical moment `Σ_j (η j)^{2r}` is `≥ 0` (sum of `2r`-th powers, all even
-powers are nonnegative).  This is the precise statement that the data the sub-Gaussian MGF is built
-from — its even Taylor coefficients — are the nonnegative energy counts `E_r` of
-`MomentLadderExceedsPrize`.  The MGF re-packages these counts through `exp`, but the packaging cannot
-manufacture cancellation the counts do not have: `exp(λ η_j)` averaged over `j` has even-moment
-coefficients pinned to these nonnegative counts.  THIS is why the route reduces. -/
+/-- **`empirical_moment_is_nonneg_count` — even empirical power sums are nonnegative.** -/
 theorem empirical_moment_is_nonneg_count (η : Fin m → ℝ) (r : ℕ) :
     0 ≤ ∑ j : Fin m, (η j) ^ (2 * r) := by
   refine Finset.sum_nonneg ?_
@@ -363,78 +276,42 @@ theorem empirical_moment_is_nonneg_count (η : Fin m → ℝ) (r : ℕ) :
   rw [pow_mul]
   positivity
 
-/-- **`mgf_subgaussian_iff_even_moment_ladder` (real, machine-checked direction).**  The sub-Gaussian
-MGF bound, expanded to second order, forces the empirical 2nd moment to be `≤` the variance proxy.
-Concretely: if the empirical MGF `Φ(λ) := 1 + λ·μ₁ + (λ²/2)·μ₂ + o(λ²)` is `≤ exp(λ² σ²/2) =
-1 + (λ²/2)σ² + o(λ²)`, then matching the `λ²` coefficient (with `μ₁ = 0`, the antipodal mean-zero
-case) gives `μ₂ ≤ σ²`.  We prove the algebraic core: the `λ²`-coefficient comparison `μ₂ ≤ σ²` is a
-bound on the nonnegative count `μ₂ = (1/m)Σ(η j)²`.  Thus the MGF hypothesis, at its leading
-nontrivial order, is *literally* an upper bound on the energy count — inside hypothesis (i). -/
-theorem mgf_subgaussian_forces_energy_count_bound (η : Fin m → ℝ) (σ2 : ℝ)
-    (hbound : (1 / (m : ℝ)) * ∑ j : Fin m, (η j) ^ 2 ≤ σ2) :
-    -- the variance proxy bounds the nonnegative empirical energy count from above
-    (1 / (m : ℝ)) * ∑ j : Fin m, (η j) ^ 2 ≤ σ2 := hbound
-
 /-! ## 5. The named verdict. -/
 
 /-- **`InfoTheoreticReducesToMGF` — the named verdict Prop.**
 
-The information-theoretic route delivers the maximal inequality (F3): if every coset period is
-sub-Gaussian with variance proxy `σ² = n` (the MGF input), then `M = max_j η_j ≤ √(2 n log m)`, the
-prize, where `log m` is the *description length* of the worst frequency.  The maximal inequality is
-proved axiom-clean and references NO period sheaf and NO `√p` eigenvalue (outside vacuity), and its
-operative functional is a cancellation-encoding MGF, NOT a nonnegative count (outside moment-
-necessity).  The SINGLE remaining input is the per-coset sub-Gaussian MGF — which is the char-`p`
-deep-moment ladder, i.e. the prize.  So the route *structurally escapes both obstruction hypotheses*
-as a packaging, and *reduces to the MGF* as a complete proof.
-
-Concretely: the prize RHS is `√(variance · entropy)`, the union bound saturates exactly at that
-threshold, and the bridge from a sub-Gaussian MGF to the prize is rigorous. -/
+For every real family `η : Fin m → ℝ` (`m ≥ 2`) and variance proxy `σ² > 0`, the empirical
+exponential-moment bound at the optimizing `λ = √(2σ² log m)/σ²` implies
+`max_j η_j ≤ √(2σ² log m)`.  The exponential-moment hypothesis itself — for centered real
+projections of the actual coset periods, with `σ² ≈ n` — is the single missing input and is the
+moment ladder (hypothesis (i)); it is NOT discharged here. -/
 def InfoTheoreticReducesToMGF : Prop :=
-  ∀ (σ2 mr : ℝ), 0 < σ2 → 1 ≤ mr →
-    -- (the maximal-inequality boundary: union of m sub-Gaussian tails saturates at the prize RHS)
-    (let tstar := Real.sqrt (2 * σ2 * Real.log mr)
-     mr * Real.exp (- (tstar ^ 2 / (2 * σ2))) = 1)
+  ∀ (m : ℕ) (η : Fin m → ℝ) (σ2 : ℝ), 0 < σ2 → 2 ≤ m →
+    (∑ j : Fin m, Real.exp ((Real.sqrt (2 * σ2 * Real.log m) / σ2) * η j)
+      ≤ (m : ℝ) * Real.exp ((Real.sqrt (2 * σ2 * Real.log m) / σ2) ^ 2 * σ2 / 2)) →
+    ∀ j, η j ≤ Real.sqrt (2 * σ2 * Real.log m)
 
-/-- The verdict holds: the maximal inequality (description-budget form) is a theorem. -/
+/-- The verdict holds: the deterministic maximal inequality is a theorem. -/
 theorem infoTheoreticReducesToMGF_holds : InfoTheoreticReducesToMGF := by
-  intro σ2 mr hσ hm
-  exact union_maximal_inequality σ2 mr hσ hm
+  intro m η σ2 hσ hm hmgf j
+  exact max_le_sqrt_two_sigma_log_of_empirical_mgf η σ2 hσ hm hmgf j
 
-/-! ## 6. Honest verdict booleans (the ADVOCATE concession, machine-pinned).
+/-! ## 6. Honest verdict booleans.
 
-After a real repair attempt, the route is **REDUCES**, not an escape.  The maximal-inequality
-*packaging* is genuinely outside both obstruction hypotheses and is proved axiom-clean — but it is
-inert without its input, and the input (the per-coset sub-Gaussian MGF, variance proxy `σ² = n`) is
-NOT outside the moment cone:
+`escapesMoment = false` (the exponential-moment input is the moment ladder, up to constants),
+`escapesVacuity = true` (the deterministic maximal inequality never touches the sheaf),
+`escapesBoth = false`.  Outcome: **REDUCES**. -/
 
-* The only randomness is `j` over the `m`-coset alphabet, so the operative MGF is the EMPIRICAL MGF
-  `(1/m)Σ_j exp(λ η_j)`, whose even Taylor coefficients are the energy counts `E_r` — a NONNEGATIVE
-  count (`empirical_moment_is_nonneg_count`), summing to `n^r`-scale.  Requiring sub-Gaussianity is
-  *equivalent to* the even-moment ladder `E_r ≤ (2r−1)‼ n^r` = the prize, INSIDE hypothesis (i).
-  The `exp` packaging cannot manufacture cancellation the counts lack: at leading order the bound is
-  literally `μ₂ ≤ σ²`, an upper bound on the count `Σ(η_j)²`
-  (`mgf_subgaussian_forces_energy_count_bound`).
-
-* Empirically (out-of-tree, prize regime), the clean `σ² = n` sub-Gaussian MGF is even FALSE: at
-  structured primes the aggregate `Σ_{b≠0} cosh(η_b y*)` exceeds `q²` (e.g. `2.57 q²`, `n = 64`,
-  `v₂(p−1) = 8`), so the achievable constant is `√2` (not `≤ 1`), and the route cannot deliver a
-  uniform variance proxy `n`.  The input is not merely "the prize"; in its stated form it is refuted.
-
-So `escapesMoment = false` (the MGF input reduces to the count), `escapesVacuity = true` (the
-packaging never touches the sheaf — that half of the structural claim survives), `escapesBoth =
-false`.  Honest outcome: **REDUCES** (to the moment ladder via the empirical MGF). -/
+/-- The exponential-moment input reduces to the moment ladder (hypothesis (i)). -/
 def escapesMoment : Bool := false
 
-/-- The packaging never references the period sheaf or any `√p` eigenvalue — that half of the
-structural claim is real.  But it is not sufficient on its own. -/
+/-- The maximal inequality never references the period sheaf or any `√p` eigenvalue. -/
 def escapesVacuity : Bool := true
 
 /-- Both: false.  The route reduces to the moment ladder. -/
 def escapesBoth : Bool := false
 
-/-- Honesty contract, machine-pinned: the packaging escapes vacuity but the MGF input reduces to the
-moment count, so the route does NOT escape both. -/
+/-- Honesty contract, machine-pinned. -/
 theorem honest_verdict :
     escapesMoment = false ∧ escapesVacuity = true ∧ escapesBoth = false :=
   ⟨rfl, rfl, rfl⟩
@@ -448,10 +325,8 @@ end ArkLib.ProximityGap.Frontier.AmbInfo
 #print axioms ArkLib.ProximityGap.Frontier.AmbInfo.chernoff_exponent_optimal
 #print axioms ArkLib.ProximityGap.Frontier.AmbInfo.chernoff_exponent_is_min
 #print axioms ArkLib.ProximityGap.Frontier.AmbInfo.union_threshold_saturation
-#print axioms ArkLib.ProximityGap.Frontier.AmbInfo.union_maximal_inequality
-#print axioms ArkLib.ProximityGap.Frontier.AmbInfo.prize_rhs_is_variance_times_entropy
-#print axioms ArkLib.ProximityGap.Frontier.AmbInfo.mgf_is_not_a_count
+#print axioms ArkLib.ProximityGap.Frontier.AmbInfo.max_le_of_empirical_mgf
+#print axioms ArkLib.ProximityGap.Frontier.AmbInfo.max_le_sqrt_two_sigma_log_of_empirical_mgf
 #print axioms ArkLib.ProximityGap.Frontier.AmbInfo.empirical_moment_is_nonneg_count
-#print axioms ArkLib.ProximityGap.Frontier.AmbInfo.mgf_subgaussian_forces_energy_count_bound
 #print axioms ArkLib.ProximityGap.Frontier.AmbInfo.infoTheoreticReducesToMGF_holds
 #print axioms ArkLib.ProximityGap.Frontier.AmbInfo.honest_verdict

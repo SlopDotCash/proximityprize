@@ -15,14 +15,24 @@ A corollary of the closed form `qr_additive_energy`:
 Since `|QR| = (p−1)/2`, this is `E(QR) ≳ |QR|³/2` — the additive energy is of *cubic* (i.e.
 maximal, up to a constant) order, the largest possible for a set of size `|QR|`. So the quadratic
 residues (`n = (p−1)/2 > √p`, the large/QR end of the smooth-domain spectrum) are maximally
-additively structured: the exact opposite of a Sidon-like set (energy `~2n`).
+additively structured: the exact opposite of a Sidon-like set.
 
-This rigorously pins the *bad-side extreme* of the δ\* dichotomy. The δ\*-good regime needs the
-smooth multiplicative subgroup to have *near-minimal* energy `E = O(n·polylog)` (so that the
-mutual-correlated-agreement list stays small past the Johnson bound); this theorem proves that the
-large subgroup `QR` fails that by the maximal margin — energy `Θ(n³)` — which is precisely why only
-the *small* smooth subgroups (`n ≤ √p`, the 2-power NTT domains) can possibly land in the prize
-window. Axiom-clean. Issue #389.
+**Units.** `addEnergy` is the *unnormalized* quadruple count `#{(a,b,c,d) ∈ G⁴ : a+b = c+d}`.
+Every `n`-element set has energy `≥ 2n² − n` (the trivial quadruples,
+`E2CharFreeLowerBound.E2_ge_two_card_sq_sub_card`), so the scale floor is `n²`; a Sidon set
+attains `2n² − n`, and a negation-closed Sidon-mod-negation set attains `3n² − 3n`
+(`AdditiveEnergySidonModNeg.additiveEnergy_eq_of_sidonModNeg`). On this scale "Sidon-like"
+means `E = Θ(n²)`, not `~2n` (that is the normalized energy `E/n`).
+
+This pins the *bad-side extreme* of the δ\* dichotomy. The δ\*-good regime asks the smooth
+multiplicative subgroup to have *near-minimal* unnormalized energy `E = n^{2+o(1)}`, e.g.
+`E = O(n²·polylog q)` (equivalently normalized `E/n = O(n·polylog q)`); compare the conditional
+bound `E ≤ n² + 2e·n²·r` of `PrizeEnergyHeadline.prize_addEnergy_of_dcEnergyBound`, which is
+`O(n² log q)` at `r = ⌈ln q⌉` and whose `DCEnergyBound` input is still open. This theorem proves
+that the large subgroup `QR` misses that target by the maximal margin — unnormalized energy
+`Θ(n³)` — consistent with the expectation that only *small* smooth subgroups (`n ≤ √p`, the 2-power
+NTT domains) can land in the prize window. It does not supply the open production upper bound.
+Axiom-clean. Issue #389.
 -/
 
 open Finset AddChar MulChar Complex

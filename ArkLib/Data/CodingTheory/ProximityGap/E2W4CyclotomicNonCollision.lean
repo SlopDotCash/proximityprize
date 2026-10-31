@@ -60,10 +60,17 @@ The allowed `d₀` (forced by `a, b ∉ {x, −x}`, `a ≠ b`, `a + b ≠ 0`) ra
   `t' + t'⁻¹ = -1 * (t + t⁻¹)`. Thus the stated `Cd₀NonCollision` cannot hold in the even
   smooth-domain regime. A corrected bridge must quotient the antipodal sign class before asking
   for non-collision.
-* **char `p`: NOT `q`-independent after the sign quotient.** Collision
-  `c_{d₀'} = ζ^u c_{d₀}` over `F_p`, away from the antipodal class, happens iff
-  `p ∣ Norm_{ℚ(ζ_n)/ℚ}(c_{d₀'} − ζ^u c_{d₀})`, a **nonzero** integer (by the ℂ sign-quotiented
-  result), so its prime divisors are finite. Probe-measured bad primes: `n=16 → {17}`,
+* **char `p`: NOT `q`-independent after the sign quotient.** If the collision
+  `c_{d₀'} = ζ^u c_{d₀}` holds over `F_p` at a primitive `n`-th root `ζ ∈ F_p`, away from the
+  antipodal class, then `p ∣ Norm_{ℚ(ζ_n)/ℚ}(c_{d₀'} − ζ^u c_{d₀})`, a **nonzero** integer (by
+  the ℂ sign-quotiented result), so the primes admitting such a collision are finite (this
+  forward implication is what the resultant theorems below prove). The converse holds only in
+  the weaker form "`p` divides the norm ⟹ the collision holds for SOME primitive residue
+  embedding (some prime ideal above `p`)": norm divisibility does not select the particular
+  primitive root a scanner fixes. Example (audit finding PG-340): `p = 97`, `n = 32`, primitive
+  roots `28` and `19`; for `f(X) = X^4 + 1 − X^28 − X^26`, `f(28) = 0` but `f(19) = 30` mod `97`,
+  so `97` divides the norm while the same exponent collision fails at `ζ = 19`
+  (cf. `polynomial_19_sq_pow32_ne_zmod97`). Probe-measured bad primes: `n=16 → {17}`,
   `n=32 → {97,…,2113}` (largest `2113`).
   **They are real and small but `q`-DEPENDENT.** The crude norm bound
   `|Norm| ≤ 4^{φ(n)} = 2^n` is *vacuous at the prize point* `n = 2^30` (`2^{2^30} ≫ 2^158`), so
@@ -71,7 +78,10 @@ The allowed `d₀` (forced by `a, b ∉ {x, −x}`, `a ≠ b`, `a + b ≠ 0`) ra
   holds for *every prime above the (small, measured) bad-prime threshold*, which is the SAME
   good-prime / bad-prime dichotomy the KB records for the additive-energy kernel. The width-4
   orbit count is therefore `n/4 − 1` for all good primes; pinning that the *specific* prize prime
-  is good is the residual (a primality/PNT-in-APs existence statement, not a coding fact).
+  is good is the residual. For a specified prime this is an arithmetic NON-DIVISIBILITY
+  condition (the prime must not divide the relevant nonzero norms / not admit the collision at
+  the chosen primitive root), not a primality or PNT-in-APs existence statement; prime-existence
+  results would only show that some good primes exist.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 

@@ -1,5 +1,19 @@
 # Literature sweep (fresh, 2026-06-15): the 2026 activity is ALL ceiling/failure; NO positive lever for the floor
 
+> **Source-scope corrections (2026-10-28 audit, T48; cross T62/T87).** This is a historical search
+> report, not proof that contemporary mathematics lacks a positive route, and the audit check below
+> was a primary-abstract check, not a complete new literature search or a full audit of the papers.
+> - **Failure constructions keep their hypotheses.** Primary abstracts confirm that ePrint
+>   2026/782 and arXiv:2604.09724 are failure constructions. Their code-family and radius
+>   hypotheses cannot be erased when applying a ceiling to other codes or radii.
+> - **Date.** arXiv:2604.09724 was submitted on 9 April 2026, not 1 April.
+> - **Rank-2 GAP paper.** arXiv:2509.07765 has a January 2026 revision. Its proper-GAP domain does
+>   not itself supply the desired subgroup bound.
+> - **The addendum overreaches.** A decreasing correlation with one chosen fixed-arc proxy, at
+>   `n = 16, 32, 64`, cannot show that every interval or discrepancy inequality, or every moment
+>   method, is insufficient. "Every single-scale tool … is therefore structurally insufficient" is
+>   withdrawn as a general claim.
+
 ## What the directive asked: find new papers / a new lever for the core M(n) ≤ C√(n log m)
 
 Fresh web search (June 2026). Decisive, honest finding: **the only 2026 papers on the exact prize object

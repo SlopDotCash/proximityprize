@@ -23,9 +23,9 @@ DISPROOF_LOG O136):
 So the bad-scalar set is *exactly* `{−∑ T : T ∈ C(H, r)}` — the construction side
 (`badScalar_of_subsetSum`, from `gap_expansion` at `m = 1`) and the new converse
 (`subsetSum_of_badScalar`): the difference `X^r + λX^{r−1} − q` is **monic of degree exactly
-`r`**, so `≥ r` agreements force *exactly* `r` roots, the agreement set `T` is pinned, the
-polynomial factors as `∏_{x∈T}(X − x)`, and the `X^{r−1}` coefficient (Vieta) pins
-`λ = −∑ T`. Three structural consequences:
+`r`**, so for a *fixed* explainer `q`, `≥ r` agreements force *exactly* `r` roots, the
+agreement set `T` of that `q` has size `r`, the polynomial factors as `∏_{x∈T}(X − x)`, and the
+`X^{r−1}` coefficient (Vieta) pins `λ = −∑ T`. Three structural consequences:
 
 * the census is **domain-agnostic** — the multiplicative-subgroup structure of `H` enters
   only when *counting distinct* subset sums (which is exactly what `kkh26_lemma1` and the
@@ -33,8 +33,15 @@ polynomial factors as `∏_{x∈T}(X − x)`, and the `X^{r−1}` coefficient (V
 * the KKH26 ceiling numerator upgrades from "≥ the constructed family" to "= the number of
   distinct `r`-subset sums" — the stratified count is census-exact whenever it is
   sum-injective;
-* the agreement structure is rigid: a bad scalar's agreement set is *unique* and has size
-  exactly `r` (`agreement_card_eq`), and the explaining polynomial is determined.
+* the agreement structure is rigid *per explainer*: for each degree-`≤ r−2` polynomial `q`
+  the agreement set has at most `r` points (`agreement_card_le`), so a `q` witnessing
+  badness agrees on exactly `r` points, and an `r`-subset `T` determines its explainer
+  (`q = X^r + λX^{r−1} − ∏_{x∈T}(X − x)`).  The scalar `λ` does **not** determine a unique
+  agreement set or explainer: distinct `r`-subsets with the same sum give the same bad `λ`
+  with different explainers.  Example: `H = μ₄ = F₅ˣ`, `r = 2`, `λ = 0`; the word `x²`
+  agrees with the constant `1` on `{1, 4}` and with the constant `4` on `{2, 3}`, and both
+  are genuine threshold-`2` witnesses.  Only the image statement `{bad λ} = {−∑ T}` is
+  exact.
 
 ## References
 
@@ -97,8 +104,9 @@ theorem isRoot_linePoly_of_mem_agree {H : Finset F} {r : ℕ} {lam : F} {q : Pol
   rw [sub_eq_zero]
   exact hx
 
-/-- **Rigidity: the agreement set of a bad scalar has size at most `r`.** The difference is
-monic of degree exactly `r`, hence has at most `r` roots. -/
+/-- **Rigidity: for each explainer `q`, the agreement set has size at most `r`.** The
+difference is monic of degree exactly `r`, hence has at most `r` roots.  (This is per `q`:
+different explainers of the same scalar may have different agreement sets.) -/
 theorem agreement_card_le {H : Finset F} {r : ℕ} (hr2 : 2 ≤ r) (lam : F)
     {q : Polynomial F} (hq : q.natDegree ≤ r - 2) :
     (lineAgreeSet H r lam q).card ≤ r := by

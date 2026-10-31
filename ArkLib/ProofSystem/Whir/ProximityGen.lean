@@ -75,7 +75,16 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
    B(C,parℓ) := √ρ
    err(C,parℓ,δ) :=  (parℓ-1)2ᵐ / ρ * |F| for δ in (0, (1-ρ)/2]
                      (parℓ-1)*2²ᵐ / (|F|(2 min{1-√ρ-δ, √ρ/20})⁷)
-                      for δ in ((1-ρ)/ 2, 1 - B(C,parℓ)) -/
+                      for δ in ((1-ρ)/ 2, 1 - B(C,parℓ))
+
+  CAVEAT (audit L44): `genRSC` is parameterised by an *arbitrary* injective `exp : parℓ ↪ ℕ`,
+  and `Gen` is the image *set* `{(r^(exp j))ⱼ | r ∈ F}` sampled uniformly. The error `err` above
+  depends only on `card parℓ`, so it is the Theorem 4.8 bound only for the consecutive family
+  `exp ≃ {0, …, parℓ − 1}`. For other exponents it can fail (e.g. `(0, |F| − 1)` collapses the
+  image to `{(1,0), (1,1)}` by Fermat), and the image-uniform law can differ from sampling a
+  uniform scalar `r` (multiplicities are erased unless `r ↦ (r^(exp j))ⱼ` is injective, e.g.
+  when some exponent is `1`). Statements about the RS bounds (`mca_rsc`,
+  `mca_johnson_bound_CONJECTURE`) therefore carry the guard `∀ j, exp j < card parℓ`. -/
 noncomputable def genRSC
   [Nonempty F] (parℓ : Type) [hℓ : Fintype parℓ] (φ : ι ↪ F) [Smooth φ]
   (m : ℕ) (exp : parℓ ↪ ℕ) : ProximityGenerator ι F :=

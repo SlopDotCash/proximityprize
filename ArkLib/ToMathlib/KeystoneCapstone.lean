@@ -28,32 +28,34 @@ degree `< k+1` in the curve parameter `z`, over the good set."*
 
 ## What this capstone proves, and what stays an explicit hypothesis
 
-The verified-brick chain (all kernel-clean, `#print axioms = [propext, Classical.choice,
-Quot.sound]`) closes the **abstract function-field core** of §5:
+**Scope (compatibility only).** The theorems here (`hcoeffPoly_witness_of_curveCoeffPolys`,
+`hcoeffPoly_of_johnson_regime`, `jointAgreement_of_johnson_regime`) do not derive the
+per-coefficient curve polynomials from the §5 mathematics. They take the output-shaped
+assumption `Section55CurveCoeffOutput` / `CurveCoeffPolys` (`hCurvePolys`: each coefficient index
+`j` carries a degree-`< k+1` interpolant agreeing on the good set) as a hypothesis, which is
+essentially the front-door `hcoeffPoly` obligation itself, and prove (kernel-clean, no `sorry`)
+that it yields the bundled `hcoeffPoly` witness and hence `jointAgreement`. See also the note
+before `Section55CurveCoeffOutput` below.
+
+**Historical intent (not what is proved here).** The capstone was planned as the end of a
+brick chain for the **abstract function-field core** of §5:
 
   `betaRec` (App-A.4 recursion, defined+terminating+lands-in-𝒪, `BetaRecursion`)
     → `betaRec_weight_le_concrete ≤ (2t+1)·d_R·D`     (`BetaWeightInduction` + `BetaWeightCollapse`)
-    → `betaRec_matchingVanishes` (Hensel uniqueness)      (`BetaMatchingVanishes` + `CoeffExtract`)
+    → `betaRec_matchingVanishes`                         (`BetaMatchingVanishes` + `CoeffExtract`)
     → `embeddingOf𝒪Into𝕃 (betaRec t) = 0`                 (`IngredientCBridge`, ingredient C)
     → curve `γ` is linear-in-`Z`, coeffs per-point   (`Claim59Conditional`/`Claim510Conditional`)
 
-The chain bottoms out, per the grind ledger's authoritative final state, on a **single genuine §5
-math datum** (shared by obligations (1)+(4)): the Guruswami–Sudan interpolant's
-multiplicity-vanishing at the centre, valid in the Johnson radius `δ ≤ δ₀`; plus a handful
-of in-tree degree facts.  The remaining work to *physically* reach Curves.lean:1819 is the
-cross-file `L13`
-drop-in (replacing the trivial in-tree `β_regular` with `betaRec` inside `RationalFunctions.lean`)
-and the `F1` recentering fix — both edits to live-session-owned files, deferred by design.
-
-This capstone therefore packages the §5 list-decoding output as **one explicit bridge hypothesis**
-— the per-coefficient curve-polynomial datum `hCurvePolys` (exactly what the abstract chain
-produces: each coefficient index `j` carries a degree-`< k+1` interpolant agreeing on the
-good set) — and
-*proves*, kernel-clean with no `sorry`, that it yields the bundled `hcoeffPoly` witness and hence
-`jointAgreement`.  The honest measure of "how close the verified-brick composition reaches
-Curves:1819" is precisely: the conclusion is the real front-door goal, and the *only* residual
-hypotheses are the §5 multiplicity datum (`δ ≤ δ₀` regime) + standard degree facts, repackaged as
-`hCurvePolys`.
+Several links of that chain are themselves conditional: `betaRec_matchingVanishes` consumes
+per-point `MatchingPoint` bundles that are equivalent to its conclusion
+(`betaRec_matchingVanishes_iff`), and the ingredient-C bridge consumes the per-point vanishing
+plus a `Λ·d` count. The old ledger claimed that the chain bottoms out on a single §5 datum (the
+Guruswami–Sudan interpolant's multiplicity-vanishing at the centre in the Johnson radius
+`δ ≤ δ₀`) plus in-tree degree facts; that reduction is **not** established in this file, and the
+geometric producer obligations (matching sets, per-point vanishing, counts, degree data) remain
+explicit elsewhere. The current smaller route is `KeystoneAssembly.keystone_of_section5Inputs`,
+whose explicit inputs are the corrected `Section5StrictDataFin` producer bundle and a boundary
+datum.
 
 No part claimed proven contains `sorry`/`admit`/`native_decide`; every genuine gap is an explicit
 hypothesis.

@@ -24,10 +24,20 @@ it: `x^{k−1}·P(−1/x)` is the reversal-twist polynomial of degree `< k`.
   in-tree untwisted engine `mcaEvent_comp_perm_iff`);
 * `reversalTwist` / `reversalTwist_eval` — the polynomial closure;
 * `rsCode_twist_mem` / `rsCode_twist_inv_mem` — RS closure both ways;
-* `mcaEvent_rs_inversion` — the headline: the second PGL₂ generator.  Together with
-  the in-tree rotation equivariance (`mcaEvent_rs_rotate`) this completes the
-  Möbius symmetry of smooth-domain MCA — the formal ground for the σ-descent on
-  the window residual `WindowRationalBounded`.
+* `mcaEvent_rs_inversion` — the headline: equivariance under the inversion
+  `x ↦ −1/x`.  Together with the in-tree rotation equivariance (`mcaEvent_rs_rotate`)
+  this gives the **dihedral** (domain-preserving) part of the Möbius symmetry of
+  smooth-domain MCA — the formal ground for the σ-descent on the window residual
+  `WindowRationalBounded`.
+
+**Scope (not full PGL₂).**  Dilations `x ↦ a·x` and the inversion `x ↦ −1/x` both
+preserve the unordered pair `{0, ∞}`, so every composite has the form `x ↦ b·x` or
+`x ↦ b/x`: they generate a dihedral subgroup of PGL₂(F), not PGL₂(F) itself, and
+in particular never produce a translation `x ↦ x + 1`.  (For `F = 𝔽₅`, the full
+multiplicative domain and generator `2`, this group has 8 elements, whereas
+`|PGL₂(𝔽₅)| = 120`; a translation does not even preserve that domain.)  General
+fractional-linear transformations would need their own transformed-domain and
+weight hypotheses, which this file does not supply.
 -/
 
 open Finset Polynomial
@@ -173,8 +183,9 @@ theorem rsCode_twist_inv_mem (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k)
 /-! ## The headline -/
 
 open Classical in
-/-- **Möbius-inversion equivariance of smooth-domain MCA** — the second PGL₂
-generator: on an inversion-stable domain avoiding `0`, the twisted action
+/-- **Möbius-inversion equivariance of smooth-domain MCA** — the inversion `x ↦ −1/x`
+(which, with dilations, generates only a dihedral subgroup of PGL₂, not all of it):
+on an inversion-stable domain avoiding `0`, the twisted action
 `(T u)(i) = (dom i)^{k−1}·u(σ i)` preserves the MCA event at every scalar. -/
 theorem mcaEvent_rs_inversion (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k)
     (σ : Equiv.Perm (Fin n)) (hdom0 : ∀ i, dom i ≠ 0)

@@ -23,11 +23,27 @@ at **every** band-`m` radius and **every** evaluation domain (no smoothness):
 
   **`ε_mca(RS[F,dom,k], δ) ≥ (q/8)/q`** — constant MCA failure mass,
 
-with the ledger bracket `mcaDeltaStar ≤ δ` for every `ε* < (q/8)/q`.  At `q ≈ n`,
-fixed `k ≥ 2`, the conditions clear through the strip of band radii
-`capacity − O(m+1)/n` with `(m+k+1)! ≲ n^{k−1}`, and the mass is `Θ(1)` —
-against the `poly(n)/q` of every prior construction-based bound, and against
-Round 81's `C(n,k+m+1)/(2q^m·C(n,k))` which is vacuous at high rate.
+with the ledger bracket `mcaDeltaStar ≤ δ` for every `ε* < (q/8)/q` (natural division,
+so the mass is `⌊q/8⌋/q`, about `1/8`).  Where the two guards hold, the mass is `Θ(1)` —
+against the `poly(n)/q` of every prior construction-based bound, and against Round 81's
+`C(n,k+m+1)/(2q^m·C(n,k))` which is vacuous at high rate.
+
+**Which band levels the guards reach (both must be checked; neither follows from a
+factorial criterion alone).**  For fixed `k, m` and `q ≈ n`:
+
+* `H1` reads `8·n^{m+1} ≲ n^{k+m+1}/(k+m+1)!`, i.e. `8·(k+m+1)! ≲ n^k`;
+* `H2` reads `4·C(k+m+1,k+1)·n^{2m+1}/m! ≲ n^{k+m+1}/(k+m+1)!`: its left/right ratio is of
+  order `n^{m−k}`, so `H2` **fails for all large `n` once `m ≥ k`**, and needs `m ≤ k − 1`
+  together with `n^{k−m} ≳ 4·C(k+m+1,k+1)·(k+m+1)!/m!`.
+
+So at `q ≈ n` the reachable band radii are `capacity − (m+1)/n` with `m ≤ k − 1` (a fixed
+number `≤ k` of levels below capacity for fixed `k`), not a strip governed by
+`(m+k+1)! ≲ n^{k−1}`.  Exact example: `q = n = 1009`, `k = 2`, `m = 3` has
+`6! = 720 ≤ 1009` and `H1` holds (`8291911380488 ≤ P = 1443930957825384`), but
+`H2`'s left side is `14028174412778069617600 > P`.  (The sharp successor's factor-`q`
+relaxation of `H2` likewise does not by itself mean a factor-`q` increase in the number of
+reachable band levels.)  The conditional saturation theorems below are valid as stated,
+with both guards as explicit hypotheses.
 
 The optimization: at `L ≈ P/q^{m+1}` (twice the mean coherent count per value)
 the small-overlap strata contribute `P²/q^{m+1}` (brick-1 exact fiber), the

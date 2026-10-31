@@ -12,7 +12,12 @@ bridge:
   expected production-row certificate values.
 
 It intentionally does not read the 128 retained chunk binaries; that remains
-the job of the release verifier.
+the job of the release verifier.  The optional result/independent JSON checks
+only validate the supplied metadata against fixed expected values and hashes;
+they do not recompute the Phi image.  Without JSON inputs the injective and
+collision fields are reported as null.  So this is an arithmetic receipt
+(primality, factorization, generator order), not an independent Phi-image or
+chunk recheck.
 """
 
 from __future__ import annotations

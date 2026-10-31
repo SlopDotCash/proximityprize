@@ -26,7 +26,7 @@ namespace JohnsonBound.JqlRefutation
 
 open ListDecodable JohnsonBound Code
 
-/-- The refuting alphabet/index types: `ι = α = Fin 2` (so `n = 2`, `q = 2`). -/
+/-- The witness alphabet/index types: `ι = α = Fin 2` (so `n = 2`, `q = 2`). -/
 abbrev ι : Type := Fin 2
 abbrev α : Type := Fin 2
 
@@ -35,7 +35,7 @@ def c0 : ι → α := ![0, 0]
 def c1 : ι → α := ![0, 1]
 def c2 : ι → α := ![1, 0]
 
-/-- The explicit refuting code `C = { ![0,0], ![0,1], ![1,0] }`. -/
+/-- The explicit three-word code `C = { ![0,0], ![0,1], ![1,0] }`. -/
 def C : Set (ι → α) := {c0, c1, c2}
 
 /-- The three codewords are pairwise distinct. -/
@@ -105,7 +105,7 @@ theorem closeCodewordsRel_eq_C :
     have hkey := relDist_le_half c ((mem_C_iff c).mp hcC)
     convert hkey using 3
 
-/-- The refuting code has exactly three codewords. -/
+/-- The three-word code has exactly three codewords. -/
 theorem ncard_C : C.ncard = 3 := by
   rw [C, Set.ncard_insert_of_notMem, Set.ncard_insert_of_notMem, Set.ncard_singleton]
   · simp only [Set.mem_singleton_iff]; exact c1_ne_c2

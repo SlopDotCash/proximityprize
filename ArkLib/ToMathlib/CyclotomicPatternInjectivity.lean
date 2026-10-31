@@ -160,7 +160,10 @@ theorem signed_subset_sum_injective {k : ℕ} {ζ : F}
 exactly `2^k`. Composed with `R11.linearIndependent_pow_le` and `R11.antipodal_of_sum_zero`
 (`LamLeungUnconditionalQ.lean`), this discharges the linear-independence hypothesis there
 *unconditionally at every 2-power level* in characteristic zero — upgrading the t = 1
-antipodal rigidity theorem from its `ℚ(i)` instantiation to all FRI domains. -/
+antipodal rigidity theorem from its `ℚ(i)` instantiation to all 2-power cyclotomic domains in
+characteristic zero (`[CharZero F]`). It says nothing about FRI domains over finite fields, where
+the antipodal rigidity statement can fail (e.g. `{1, 2, 14} ⊆ F₁₇ˣ` sums to zero with no antipodal
+pair). -/
 theorem natDegree_minpoly_rat_two_pow {k : ℕ} {ζ : F}
     (hζ : IsPrimitiveRoot ζ (2 ^ (k + 1))) :
     (minpoly ℚ ζ).natDegree = 2 ^ k := by

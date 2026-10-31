@@ -1116,12 +1116,12 @@
     {
       "path": "ArkLib/ProofSystem/Spartan/Basic.lean",
       "upstream_blob": "80f6933b25a79045b3ecb22f757a8581d142a8ae",
-      "sha256": "97ec492e48f459e52955d23e27b0104c7286330f59942830a327bc6ef0e8fbc3",
+      "sha256": "30979abf346fa8f8eed43b535f9e027d2e31c6e147f235235bdb63d0d2078114",
       "declarations": [
         "Spartan.Spec.secondSumCheckVirtualPolynomial"
       ],
       "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
-      "reason": "Preserve the upstream public interface and fill its inherited admission with the downstream multilinear second-sumcheck construction, compiled and checked with only standard Lean axioms."
+      "reason": "Preserve the upstream public interface and fill its inherited admission with the downstream multilinear second-sumcheck construction, compiled and checked with only standard Lean axioms. Docstring-only follow-up: the `Unfolds to` prose of the phase statement types now matches their declared `Fin ℓ_m → R` challenge components and tuple order."
     },
     {
       "path": "ArkLib/Data/Polynomial/SplitFold.lean",

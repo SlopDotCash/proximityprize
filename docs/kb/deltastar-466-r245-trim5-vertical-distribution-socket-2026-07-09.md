@@ -20,11 +20,34 @@ TrimFiveResidualCDF:
   for every theta >= 0.75.
 ```
 
-The live endpoint is equivalent, up to tiny slack, to the first-band cap
+The hypothesis is the universal-threshold envelope above, for every
+`theta >= 0.75`. Its first band (`theta = 0.75`) gives only
+`#{x in R_5 : x >= 0.75} / M <= 0.6012 * exp(-0.375) ~= 0.413198`, which is
+slightly *weaker* than (and so does not by itself imply) the separately
+quoted first-band cap
 
 ```text
 #{x in R_5 : x >= 0.75} / M <= 0.4122.
 ```
+
+Conversely, and more importantly, the first-band cap does **not** imply the
+full envelope at larger `theta`. Correction (2026-10-28 audit, T118): an earlier version of this note
+called the envelope "equivalent, up to tiny slack" to this single cap. Monotonicity
+of a tail count plus mean `1` do not recover exponential decay from one
+percentile. Abstract counterexample using only those scalar facts: take
+`M = 3072` with `1271` entries equal to `2` and `1801` entries equal to
+`530/1801` (mean exactly `1`). Deleting the five largest entries leaves a
+residual tail fraction `1266/3072 = 211/512 ~= 0.412109` at both `theta = 0.75`
+and `theta = 2`, so the first-band cap `0.4122` holds, while the envelope at
+`theta = 2` demands `0.6012/e ~= 0.221169`, which fails. This is not a
+constructed subgroup spectrum and does not refute the open actual-period CDF
+conjecture; it only refutes the claimed reduction. R239/R240's finite probes
+locating the worst ratio at the first band do not supply the missing tail-shape
+property for every permitted spectrum.
+
+So the socket remains the **universal-threshold** `TrimFiveResidualCDF`
+statement. A first-band check would suffice only together with a separately
+proved actual-period tail-shape lemma, which is not available.
 
 ## Why this socket
 

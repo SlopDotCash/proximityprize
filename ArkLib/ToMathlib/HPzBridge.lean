@@ -11,9 +11,11 @@ import ArkLib.ToMathlib.HenselUniqueness
 /-!
 # The §5 specialisation bridge `hPz` — `decoded = lift-specialisation` (BCIKS20 Thm 6.2 core)
 
-This file discharges the **`hPz`** field of
+This file derives the **`hPz`** field of
 `ArkLib.CorrelatedAgreementListDecodingClosed.Section5StrictData`
-(`ArkLib/ToMathlib/CorrelatedAgreementListDecodingClosed.lean`):
+(`ArkLib/ToMathlib/CorrelatedAgreementListDecodingClosed.lean`) from explicit per-`z` Hensel data
+plus degree bounds — a conditional derivation, not an unconditional discharge (the Hensel data
+input is equivalent to the identity it yields; see "The Hensel route" below):
 
 ```
 hPz : ∀ v₀ v₁ : F[X],
@@ -43,11 +45,18 @@ root of the per-`z` Guruswami–Sudan interpolant `Q_z` (the matching factor `Y 
 root** at the matching coordinate (`HenselUniqueness.hensel_root_unique`,
 `IngredientCBridge.specialization_eq_proximate_root_of_hensel`) forces them to coincide.
 
-## The TRUE route, isolated
+## The Hensel route, isolated (an interface, not a producer)
 
-We expose the genuine per-`z` uniqueness datum and prove `hPz` from it.  The datum is **strictly
-weaker than the goal** (it is *not* the polynomial identity — it is the per-`z` Hensel root datum
-that the §5 decoder guarantees):
+We expose a per-`z` Hensel root datum in the shape `hensel_root_unique` consumes and prove `hPz`
+from it.  The datum is **not** strictly weaker than the per-good-place identity
+`P z = lift.eval (C z)`: its matching polynomial `f z` and approximation `a₀ z` are unconstrained
+(nothing ties them to the decoder, to `R` or to `γ`), so once the identity holds one can take
+`f z := Y − C ↑(P z)` and `a₀ z := ↑(P z)` (`henselDatum_of_eval_identity`).  Hence a `HenselDatum`
+exists iff the identity holds on the good set (`nonempty_henselDatum_iff_eval_identity`).  The
+Hensel-uniqueness consumer below is correct and reusable, but an abstract `HenselDatum` is not an
+independent producer of the decoded-specialization identity; that requires constructing the datum
+from the actual decoder geometry.  The degree bounds remain separate explicit assumptions of
+`hPz_of_henselDatum`.
 
 * `decoded_eq_specialization_of_hensel` (the keystone per-`z` step) — at a single `z`, if the
   coordinate power-series lifts `↑(P z)` and `↑(lift.eval (C z))` are both roots of a common
@@ -58,7 +67,9 @@ that the §5 decoder guarantees):
   applied to the two
   competing degree-`< deg` close polynomials.
 
-* `HenselDatum` — bundles the per-`z` Hensel root datum for a *given* representative `(v₀, v₁)`.
+* `HenselDatum` — bundles the per-`z` Hensel root datum for a *given* representative `(v₀, v₁)`;
+  `henselDatum_of_eval_identity` / `nonempty_henselDatum_iff_eval_identity` — the converse
+  construction and the resulting equivalence with the per-good-place identity.
 
 * `hPz_of_henselDatum` — assembles the full `hPz` field from `HenselDatum` + the degree bounds.
 
@@ -70,9 +81,13 @@ that the §5 decoder guarantees):
   per-`z` *single-root* witness (the matching factor is `Y − g` with one root in the relevant class)
   yields the equality.  This records the divisibility route alongside the Hensel route.
 
-None of these is `≡` `hPz`: each takes a per-`z` *root/uniqueness* hypothesis and *derives* the
-per-`z` polynomial identity.  The `γ`-hypothesis of `hPz` is a side input (the §5 consistency fact);
-the equality is pinned per-`z` by the matching/Hensel datum, exactly as in [BCIKS20] §6.2.
+None of these is syntactically `hPz`: each takes a per-`z` *root/uniqueness* hypothesis and
+*derives* the per-`z` polynomial identity.  That is not logical weakness: the `HenselDatum` input is
+equivalent to the per-good-place identity (`nonempty_henselDatum_iff_eval_identity`), and the
+`MatchesGraph`-route hypotheses are likewise met by `Q_z := Y − C Pz` whenever `Pz = Qz`.  The
+`γ`-hypothesis of `hPz` is a side input (the §5 consistency fact); in [BCIKS20] §6.2 the equality is
+pinned per-`z` by the actual matching/Hensel geometry, which these consumers assume rather than
+construct.
 
 Everything is kernel-clean — `#print axioms` at the bottom rests only on
 `propext / Classical.choice / Quot.sound`.
@@ -148,14 +163,15 @@ theorem decoded_eq_specialization_of_matchesGraph_unique
 
 /-! ## The per-`z` Hensel datum and the assembly of `hPz` -/
 
-/-- **The genuine per-`z` uniqueness datum**, bundled for a *given* linear representative
-`(v₀, v₁)`. For every good `z`, it provides the matching polynomial `f z`, the approximation
-`a₀ z`, the two
-root facts (for `P z` and for the specialised lift `lift.eval (C z)`), the two congruences, and the
+/-- **A per-`z` Hensel root datum**, bundled for a *given* linear representative `(v₀, v₁)`.
+For every good `z`, it provides a polynomial `f z`, an approximation `a₀ z`, the two root facts
+(for `P z` and for the specialised lift `lift.eval (C z)`), the two congruences, and the
 unit-derivative — exactly the input of `decoded_eq_specialization_of_hensel`.
 
-This is the §5 decoder's per-`z` Hensel guarantee (`π_z(γ) = P_z`), NOT the per-`z` polynomial
-identity (which is *derived* below).
+Intended reading: the §5 decoder's per-`z` Hensel guarantee (`π_z(γ) = P_z`).  But `f z` and
+`a₀ z` are unconstrained data with no defining link to the decoder, so the datum is *equivalent* to
+the per-good-place identity it is used to derive (`henselDatum_of_eval_identity`,
+`nonempty_henselDatum_iff_eval_identity`); it is not an independent producer of that identity.
 
 It carries the per-`z` matching polynomial and approximation as data (hence a `Type`, not a `Prop`),
 exactly as `IngredientCBridge.specialization_eq_proximate_root_of_hensel` consumes them. -/
@@ -201,6 +217,40 @@ theorem eval_identity_of_henselDatum {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ
   exact decoded_eq_specialization_of_hensel (f := d.f z) (a₀ := d.a₀ z)
     (d.hProot z hz) (d.hQroot z hz) (d.hPapprox z hz) (d.hQapprox z hz) (d.hderiv z hz)
 
+omit [Nonempty ι] [DecidableEq ι] in
+/-- **Converse construction: a `HenselDatum` from the per-good-place identity.**  The matching
+polynomial and the approximation of `HenselDatum` are unconstrained, so once
+`P z = lift.eval (C z)` holds on the good set, `f z := Y − C ↑(P z)` and `a₀ z := ↑(P z)` satisfy
+both root fields, both congruences and the unit-derivative field (the derivative is `1`). -/
+noncomputable def henselDatum_of_eval_identity {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
+    {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F} {v₀ v₁ : F[X]}
+    (hEval : ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+      P z = ((Polynomial.map Polynomial.C v₀)
+          + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)).eval
+          (Polynomial.C z)) :
+    HenselDatum (k := k) (deg := deg) (domain := domain) (δ := δ) u P v₀ v₁ where
+  f z := Polynomial.X - Polynomial.C ((P z : F[X]) : PowerSeries F)
+  a₀ z := ((P z : F[X]) : PowerSeries F)
+  hProot z _ := by simp
+  hQroot z hz := by rw [← hEval z hz]; simp
+  hPapprox z _ := by simp
+  hQapprox z hz := by rw [← hEval z hz]; simp
+  hderiv z _ := by simp
+
+omit [Nonempty ι] [DecidableEq ι] in
+/-- **Interface equivalence.**  For a fixed representative `(v₀, v₁)`, a `HenselDatum` exists iff
+the per-good-place identity `P z = lift.eval (C z)` holds: forward by
+`eval_identity_of_henselDatum`, backward by `henselDatum_of_eval_identity`.  So the datum is not
+strictly weaker than the identity it is used to derive. -/
+theorem nonempty_henselDatum_iff_eval_identity {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
+    {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F} {v₀ v₁ : F[X]} :
+    Nonempty (HenselDatum (k := k) (deg := deg) (domain := domain) (δ := δ) u P v₀ v₁) ↔
+      ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+        P z = ((Polynomial.map Polynomial.C v₀)
+            + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)).eval
+            (Polynomial.C z) :=
+  ⟨fun ⟨d⟩ => eval_identity_of_henselDatum d, fun h => ⟨henselDatum_of_eval_identity h⟩⟩
+
 /-! ## The deliverable: building the `hPz` field
 
 `hPz` quantifies over *all* `(v₀, v₁)` with the `γ`-hypothesis, and demands the per-`z`
@@ -212,14 +262,17 @@ representative) gets exactly the `hPz` field. -/
 
 /-- **`hPz` from the per-`z` Hensel datum (the deliverable).**
 
-Residual hypotheses (none is `≡` the goal; each is the genuine §5 per-`z` datum):
-* `hHensel` — for every `(v₀, v₁)` consistent with the `γ`-hypothesis, the per-`z` Hensel root datum
-  `HenselDatum u P v₀ v₁` (the §5 decoder's `π_z(γ) = P_z` guarantee — root membership + Hensel
-  congruence, NOT the polynomial identity);
-* `hdeg` — for every such `(v₀, v₁)`, the §5 degree bound `vⱼ.natDegree < k + 1`.
+Residual hypotheses:
+* `hHensel` — for every `(v₀, v₁)` consistent with the `γ`-hypothesis, a per-`z` Hensel root datum
+  `HenselDatum u P v₀ v₁` (intended: the §5 decoder's `π_z(γ) = P_z` guarantee).  Since the datum's
+  `f` and `a₀` are unconstrained, this input is equivalent, representative by representative, to
+  the identity part of the conclusion (`nonempty_henselDatum_iff_eval_identity`), so it is not
+  logically weaker than that identity;
+* `hdeg` — for every such `(v₀, v₁)`, the §5 degree bound `vⱼ.natDegree < k + 1` (a separate
+  explicit assumption).
 
-Conclusion: the full `hPz` field — the per-`z` identity (DERIVED via Hensel uniqueness) plus the
-degree bounds. -/
+Conclusion: the full `hPz` field — the per-`z` identity (derived via Hensel uniqueness from the
+datum) plus the degree bounds. -/
 theorem hPz_of_henselDatum {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {x₀ : F} {R : F[X][X][Y]} {H : F[X][Y]} [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
     {hHyp : BCIKS20AppendixA.ClaimA2.Hypotheses x₀ R H}
@@ -284,5 +337,7 @@ end ArkLib
 #print axioms ArkLib.HPzBridge.decoded_eq_specialization_of_hensel
 #print axioms ArkLib.HPzBridge.decoded_eq_specialization_of_matchesGraph_unique
 #print axioms ArkLib.HPzBridge.eval_identity_of_henselDatum
+#print axioms ArkLib.HPzBridge.henselDatum_of_eval_identity
+#print axioms ArkLib.HPzBridge.nonempty_henselDatum_iff_eval_identity
 #print axioms ArkLib.HPzBridge.hPz_of_henselDatum
 #print axioms ArkLib.HPzBridge.hPz_of_eval_identity

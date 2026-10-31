@@ -48,8 +48,9 @@ Pipeline:
 **Read the error vector before citing this** (same caveat as `ComposedRbrKnowledgeFinal.lean`):
 per-round errors are `0 / ℓ_m·|R|⁻¹ / 3·|R|⁻¹ / 0 / 1 / 0 / 2·|R|⁻¹ / 0 / (empty)`. The
 knowledge content is the rbr-KS of the prefix up to `linearCombination`. The *tight* WithClaim
-statement — `err₅ = O(1/|R|)` via a terminal `CheckClaim` that actually binds the carried
-target — is issue #329 and is **not** claimed here: the in-tree `prependClaim` emits the `0`
+statement — `err₅ = O(1/|R|)` with the carried target actually bound (canonical `CheckClaim`
+is a non-rejecting pass-through, so this binding must come from a relation obligation or a
+separate terminal guard, not from `CheckClaim` itself) — is issue #329 and is **not** claimed here: the in-tree `prependClaim` emits the `0`
 target slot (the D1 design gap), so the carried target is not yet bound to the second
 sum-check endpoint.
 -/

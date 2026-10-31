@@ -11,10 +11,14 @@ import ArkLib.Data.CodingTheory.GMMDS.LovettSeparateStep
 import ArkLib.Data.CodingTheory.GMMDS.LovettLemma2456
 
 /-!
-# Lovett's GM-MDS proof: the witness-raise and the `n < k` closure (#389)
+# Lovett's GM-MDS proof: the witness-raise construction for the `n < k` closure (#389)
 
-This file carries the `n < k` branch of Lovett's primitive-case closure (arXiv:1803.02523,
-Lemma 2.6 + final contradiction), as a *direct* independence proof.
+**Scope of this file.** This file provides the *raise construction* used by the `n < k` branch of
+Lovett's primitive-case closure (arXiv:1803.02523, Lemma 2.6 + final contradiction): `raiseVec`
+and its basic lemmas, ending with `raiseVec_isVStar`. The independence closure itself is **not**
+in this file; it is assembled in the separate consumer `LovettNLtK.lean`
+(`lovettHolds_nLtK`, and `lovettHolds_of_witness` combining the `n < k` and `n = k` cases). The
+outline below describes the whole argument, of which only the first bullet is proved here.
 
 Given a primitive `V*(k)` system with a witness `vᵢ₀ = (1,…,1,0)` (Lemma 2.5) and `n < k`, define
 the **raised** system `V'` that equals `V` except at `i₀`, where the last coordinate is set to `1`
