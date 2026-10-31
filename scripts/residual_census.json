@@ -1,9 +1,9 @@
 {
  "summary": {
-  "total": 89,
+  "total": 90,
   "open": 41,
   "discharged": 35,
-  "refuted": 13,
+  "refuted": 14,
   "by_top_dir": {
    "(root)": {
     "total": 1,
@@ -12,10 +12,10 @@
     "refuted": 0
    },
    "Data": {
-    "total": 24,
+    "total": 25,
     "open": 9,
     "discharged": 3,
-    "refuted": 12
+    "refuted": 13
    },
    "OracleReduction": {
     "total": 39,
@@ -38,6 +38,33 @@
   }
  },
  "residuals": [
+  {
+   "name": "RIMFailureProbUniformResidual",
+   "fq_name": "AGL24.RIMFailureProbUniformResidual",
+   "file": "ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean",
+   "line": 198,
+   "providers": [
+    {
+     "name": "AGL24.rimFailureProbUniformResidual_of_symbolic",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean",
+     "line": 209,
+     "conditional_on_residuals": [
+      "SymbolicFullRankResidual"
+     ],
+     "extra_explicit_binders": [
+      "hsym",
+      "ht",
+      "hwpc"
+     ],
+     "ambiguous_name_match": false,
+     "equivalence": false,
+     "reduction_only": false,
+     "specialised_arguments": []
+    }
+   ],
+   "status": "open"
+  },
   {
    "name": "FrankUncrossingResidual",
    "fq_name": "AGL24.FrankUncrossingResidual",
@@ -322,7 +349,7 @@
    "name": "RIMFullRankFailureProbResidual",
    "fq_name": "AGL24.RIMFullRankFailureProbResidual",
    "file": "ArkLib/Data/CodingTheory/AGL24UnionBound.lean",
-   "line": 88,
+   "line": 97,
    "providers": [
     {
      "name": "AGL24.rimFailureProb_of_rootedOutCut_and_dualZeroPattern",
@@ -361,7 +388,27 @@
      "specialised_arguments": []
     }
    ],
-   "status": "open"
+   "refutations": [
+    {
+     "name": "AGL24.not_RIMFullRankFailureProbResidual_empty_family",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean",
+     "line": 72,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "AGL24.not_RIMFullRankFailureProbResidual_wpc_point_mass",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean",
+     "line": 178,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "refuted"
   },
   {
    "name": "GKL24FirstMomentResidual",

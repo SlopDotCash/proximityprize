@@ -84,7 +84,16 @@ probability that the evaluated reduced intersection matrix fails full column ran
 `bound`. The §3 proof (certificates, online matrix sequences, the symmetry classes of
 Remark 2.9) discharges this with
 `bound = C(n,r)·(t^r·2^{(t−1)k}·(q−n)⁻¹)^r`, `r = ⌊εn/2⌋`; downstream consumers (the
-Theorem 1.1 assembly) take it as a hypothesis in exactly this shape. -/
+Theorem 1.1 assembly) take it as a hypothesis in exactly this shape.
+
+The written Lean form omits every side condition of the prose, and is refuted as written
+by `AGL24FailureProbGuard.not_RIMFullRankFailureProbResidual_empty_family` (the empty
+family fails under the paper's own uniform distribution at `bound = 1/2`) and
+`AGL24FailureProbGuard.not_RIMFullRankFailureProbResidual_wpc_point_mass` (a genuinely
+2-WPC family fails at a point-mass distribution). The guarded repair for downstream
+consumers is `AGL24FailureProbGuard.RIMFailureProbUniformResidual`, whose conditional
+provider `rimFailureProbUniformResidual_of_symbolic` isolates the remaining
+`SymbolicFullRankResidual` input exactly as issue #354 records. -/
 def RIMFullRankFailureProbResidual (D : PMF (ι → F)) {t k : ℕ}
     (e : ι → Finset (Fin (t + 1))) (bound : ENNReal) : Prop :=
   D.toOuterMeasure (RIMRankDeficitSet (F := F) (k := k) e) ≤ bound

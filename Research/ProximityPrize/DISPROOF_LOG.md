@@ -54501,3 +54501,60 @@ scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountResi
 
 Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
 `Classical.choice` and `Quot.sound`.
+
+---
+
+### [agl24-rim-failure-prob-interface-unrefuted-form] The unguarded Lemma 3.1 probability interface is false as written; both missing guards are load-bearing
+
+Date: 2026-11-01. Target: `AGL24.RIMFullRankFailureProbResidual` in
+`ArkLib/Data/CodingTheory/AGL24UnionBound.lean` — the [AGL24] §3 "Lemma 3.1 interface" of
+issue #354. This is a statement-integrity refutation of the recorded residual; it does not
+claim production closure, and it does not affect the §3 conditional discharge route, which
+was always taken through hypotheses.
+
+The residual's docstring states the paper's side conditions ("under the evaluation-point
+distribution, for every weakly-partition-connected `n`-edge hypergraph on `t+1 ≥ 2`
+vertices"), but the written Lean form quantifies over `D`, `e` and `bound` with none of
+them. Two kernel-checked instances in
+`ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean` show both omissions are load-bearing:
+
+- `not_RIMFullRankFailureProbResidual_empty_family`: at the empty one-slot family
+  (`F = ZMod 2`, `t = k = 1`) the reduced intersection matrix has no rows, so the deficit
+  set is everything, and the bound fails under the paper's own uniform distribution
+  `PMF.uniformOfFintype` already at `bound = 1/2`. The WPC / nonempty-edge / `1 ≤ t` guard
+  is necessary.
+- `not_RIMFullRankFailureProbResidual_wpc_point_mass`: at the complete two-slot family on
+  two vertices (`F = ZMod 2`, `t = 1`, `k = 2`), which is genuinely 2-weakly-partition-
+  connected (`wpc_two_complete_family`), the all-zero evaluation is a deficit point with
+  kernel witness `(0, 1)` (`zero_eval_mem_rimRankDeficitSet_complete_family`), so a
+  point-mass distribution on it gives measure `1` against `bound = 1/2`. The distribution
+  guard — the uniform evaluation distribution exactly as `rimFailureProb_of_symbolic`
+  instantiates it — is necessary.
+
+The guarded repair for downstream consumers is `AGL24.RIMFailureProbUniformResidual`
+(same file): the paper's side conditions as premises, the uniform evaluation distribution
+baked in, `bound` kept as a parameter for the §3 value.
+`rimFailureProbUniformResidual_of_symbolic` discharges it at the Schwartz–Zippel bound
+`tk(k−1)/|F|` conditional only on `SymbolicFullRankResidual` — exactly the input issue
+#354 left open, so the guarded census status stays open-with-conditional-providers. The
+unguarded form is retained verbatim: `conditional_failure_bound`
+(AGL24ConditionalAssembly) quantifies over arbitrary mapped evaluation PMFs, so its
+hypothesis instantiates at the refuted shape as an unusable side condition, never as a
+proof.
+
+Scope and honesty: the census-classified route-map change is that the unguarded
+`RIMFullRankFailureProbResidual` flips open → refuted at the two recorded instances; the
+AGL24 §3 content itself (the Schwartz–Zippel discharge under `SymbolicFullRankResidual`)
+is untouched and remains exactly as open as before. The production Delta Star problem is
+not advanced by this entry.
+
+Reproduction at the final PR commit:
+
+```
+scripts/pg-iterate.sh ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean
+scripts/lake-locked.sh build ArkLib.Data.CodingTheory.AGL24FailureProbGuard
+```
+
+Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
+`Classical.choice` and `Quot.sound`. Full repository and hosted gates must be reported
+separately.
