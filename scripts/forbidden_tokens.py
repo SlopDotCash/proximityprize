@@ -5,6 +5,9 @@ By default, scans every .lean file under ArkLib/ and Research/. If one or more p
 provided, scans only those Lean files/directories. Fails if live
 (non-comment) code contains (`axiom` text inside a string literal is data):
   - `native_decide` / `bv_decide` (kernel-bypassing decision procedures), or
+  - the kernel native-reduction primitives `Lean.ofReduceBool`,
+    `Lean.ofReduceNat`, `Lean.reduceBool` and `Lean.reduceNat` (same
+    compiler-trust axioms as `native_decide`, without the tactic), or
   - an `unsafe` declaration modifier, live `unsafeCast`, or `implemented_by`
     attribute (repository policy: block unsafe decls, unsafeCast, and
     evaluator-diverging `implemented_by`; this is a fast precheck, not a claim
@@ -62,7 +65,10 @@ import re
 import sys
 from pathlib import Path
 
-TOKEN_RE = re.compile(r"\b(native_decide|bv_decide|unsafeCast|implemented_by)\b")
+TOKEN_RE = re.compile(
+    r"\b(native_decide|bv_decide|unsafeCast|implemented_by"
+    r"|ofReduceBool|ofReduceNat|reduceBool|reduceNat)\b"
+)
 # Lean declaration-modifier `unsafe` (not aesop's `(add unsafe …)` tactic hint).
 # Allow the same modifiers before or after `unsafe` (Lean accepts e.g.
 # `unsafe nonrec def`), then require a declaration keyword so
