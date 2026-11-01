@@ -70,6 +70,18 @@ class ResearchCoverage(unittest.TestCase):
             '/- outer\n/- nested -/\nimport Research.Hidden\n-/\n'
             '-- import Research.Hidden\nimport ArkLib.Basic\n'), [])
 
+    def test_boundary_handles_unicode_content(self):
+        content = (
+            '/- Mathematical notation: ∀ ε > 0, ∃ δ > 0, λ x, x ∈ ℝ ∧ x ∉ ℤ -/\n'
+            '-- Note: α → β ↔ γ\n'
+            'import ArkLib.Basic\n'
+            'public import Research.UnicodeModule\n'
+        )
+        self.assertEqual(
+            boundary.research_imports(content),
+            [(4, 'Research.UnicodeModule')]
+        )
+
 
 if __name__ == '__main__':
     unittest.main()
