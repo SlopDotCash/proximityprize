@@ -21,7 +21,7 @@ jobs:
       LEAN_NUM_THREADS: "1"
     steps:
       - uses: actions/checkout@v7
-      - uses: leanprover/lean-action@v1.6.0
+      - uses: leanprover/lean-action@v1.7.0
         with:
           auto-config: false
           build: false
