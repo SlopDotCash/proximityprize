@@ -107,7 +107,7 @@ def missing_local_modules(entries: list[Entry], root: Path = REPO_ROOT) -> list[
 
 
 def run_lean(src: str, timeout: int) -> tuple[int, str]:
-    with tempfile.NamedTemporaryFile("w", suffix=".lean", delete=False) as tf:
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".lean", delete=False) as tf:
         tf.write(src)
         tmp = Path(tf.name)
     try:
@@ -115,6 +115,7 @@ def run_lean(src: str, timeout: int) -> tuple[int, str]:
             ["lake", "env", "lean", str(tmp)],
             capture_output=True,
             text=True,
+            encoding="utf-8",
             timeout=timeout,
         )
         return proc.returncode, proc.stdout + proc.stderr
