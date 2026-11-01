@@ -1,57 +1,54 @@
 /-
-Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ArkLib Contributors
+Copyright (c) 2026 Khang. All rights reserved.
+Released under the MIT and Apache 2.0 licenses as described in
+LICENSE-MIT and LICENSE.
+Authors: Khang
 -/
 
 import Mathlib
-import ArkLib.Data.CodingTheory.AGL24ProbDischarge
+import ArkLib.Data.CodingTheory.AGL24UnionBound
 import ArkLib.Data.CodingTheory.AGL24WeakPartition
 
 /-!
-# [AGL24] §3: guarding the Lemma 3.1 failure-probability interface
+# [AGL24] §3: boundary instances of the failure-probability interface
 
-`RIMFullRankFailureProbResidual` (AGL24UnionBound) records the [AGL24] Lemma 3.1
-interface: *the probability that the evaluated reduced intersection matrix fails full
-column rank is at most `bound`*. Its docstring states the paper's side conditions —
-"under the evaluation-point distribution, for every
-`(k + ⌈εn⌉)`-weakly-partition-connected `n`-edge hypergraph on `t + 1 ≥ 2` vertices" —
-but the Lean definition quantifies over its three parameters with none of them.
+`AGL24.RIMFullRankFailureProbResidual` (AGL24UnionBound) is the recorded [AGL24] §3
+"Lemma 3.1 interface" of issue #354 — a plug-in predicate in its three parameters
+(`D`, `e`, `bound`), proved at the paper's arguments by
+`AGL24.rimFailureProb_of_symbolic` and
+`AGL24.rimFailureProb_of_rootedOutCut_and_dualZeroPattern` (uniform evaluation
+distribution, WPC family, the Schwartz–Zippel bound) and consumed only through
+hypotheses that carry those side conditions (`AGL24.conditional_failure_bound`). It
+is not a universal claim, so nothing in this file refutes it and no census status
+changes.
 
-This file kernel-checks that both omissions are load-bearing, and states the guarded
-repair:
+What this file adds are two kernel-checked *boundary* facts delimiting where the
+interface predicate fails to hold, making explicit why every consumer must carry the
+side conditions:
 
-* `not_RIMFullRankFailureProbResidual_empty_family` — at the empty one-slot family the
-  reduced intersection matrix has no rows, so *every* evaluation lies in the deficit set,
-  and the bound fails under the paper's own uniform distribution
-  (`PMF.uniformOfFintype`) already at `bound = 1/2`. The WPC / nonempty-edge / `1 ≤ t`
-  guard of the prose is necessary.
-* `not_RIMFullRankFailureProbResidual_wpc_point_mass` — at a genuinely
-  `2`-weakly-partition-connected family (both slots the complete edge on two vertices;
-  see `wpc_two_complete_family`) the bound still fails at a point-mass distribution:
-  the all-zero evaluation lies in the deficit set with kernel witness `(0, 1)`, so the
-  mass is `1` while `bound = 1/2`. The distribution hypothesis — the uniform one used
-  by the conditional provider `rimFailureProb_of_symbolic` — is necessary.
-* `RIMFailureProbUniformResidual` — the guarded repair: the paper's side conditions as
-  premises, the uniform evaluation distribution baked in, `bound` kept as a parameter
-  for the §3 value.
-* `rimFailureProbUniformResidual_of_symbolic` — the guarded interface holds at the
-  Schwartz–Zippel bound conditional only on `SymbolicFullRankResidual`, exactly the
-  input that issue #354 left open.
+* at a non-WPC family — the empty one-slot family — the reduced intersection matrix
+  has no rows, the deficit set is everything, and its outer measure under the paper's
+  own uniform distribution `PMF.uniformOfFintype` is `1`
+  (`rimRankDeficitSet_empty_family`, `toOuterMeasure_deficit_empty_family_eq_one`);
+* at a genuinely 2-WPC family — both slots the complete edge on two vertices
+  (`wpc_two_complete_family`) — a point-mass (non-injective-evaluation-image)
+  distribution on a deficit point gives the deficit set measure `1`
+  (`zero_eval_mem_rimRankDeficitSet_complete_family`,
+  `toOuterMeasure_deficit_complete_family_pure_eq_one`). No evaluation-embedding-mapped
+  PMF is a point mass (embeddings are injective: `Fin 2 ↪ ZMod 2` takes two distinct
+  values), so this shape is outside every consumer's reach; it documents the
+  distribution hypothesis of the providers, it does not weaken the interface.
 
-The unguarded `RIMFullRankFailureProbResidual` is retained untouched for the historical
-record: the Theorem 1.1 conditional assembly (`AGL24ConditionalAssembly`) quantifies
-over arbitrary mapped evaluation PMFs, so its hypothesis instantiates at the unguarded
-interface as an unprovable side condition, never as a proof. The census records the
-unguarded form as refuted at the two instances above; downstream consumers use the
-guarded form.
+The distribution bridge that `AGL24.conditional_failure_bound`'s hypothesis actually
+needs — from the uniform-over-tuples bound to the embedding-mapped evaluation PMF —
+is tracked in PR #338 and deliberately out of scope here.
 -/
 
 open Finset
 
 namespace AGL24
 
-/-! ## The unguarded interface: two kernel-checked refutations -/
+/-! ## Boundary instance 1: a non-WPC family under the paper's own distribution -/
 
 /-- The deficit set at the empty one-slot family is everything: the reduced
 intersection matrix has no rows, so `mulVec` is vacuously zero. -/
@@ -64,25 +61,18 @@ theorem rimRankDeficitSet_empty_family :
   · funext r
     exact absurd r.2.2.1 (by simp)
 
-/-- **The unguarded interface fails at the empty family under the paper's own uniform
-distribution.** The written residual has no WPC / nonempty-edge / `1 ≤ t` guard, and
-this family satisfies none of them: the deficit set is everything
-(`rimRankDeficitSet_empty_family`), so the uniform evaluation distribution gives it
-measure `1` while `bound = 1/2`. -/
-theorem not_RIMFullRankFailureProbResidual_empty_family :
-    ¬ RIMFullRankFailureProbResidual (F := ZMod 2) (k := 1)
-        (PMF.uniformOfFintype (Fin 1 → ZMod 2))
-        (fun _ : Fin 1 => (∅ : Finset (Fin 2)))
-        ((1 : ENNReal) / 2) := by
-  intro h
-  unfold RIMFullRankFailureProbResidual at h
-  have hone : (PMF.uniformOfFintype (Fin 1 → ZMod 2)).toOuterMeasure Set.univ = 1 :=
-    (PMF.toOuterMeasure_apply_eq_one_iff (PMF.uniformOfFintype (Fin 1 → ZMod 2))
-      Set.univ).2 (Set.subset_univ _)
-  rw [rimRankDeficitSet_empty_family, hone] at h
-  exact absurd h (by norm_num)
+/-- The uniform evaluation distribution — the paper's own `D` — gives the empty-family
+deficit set full measure `1`: without the WPC guard, no small bound can hold for an
+interface consumer, so the guard is load-bearing exactly where the providers carry it. -/
+theorem toOuterMeasure_deficit_empty_family_eq_one :
+    (PMF.uniformOfFintype (Fin 1 → ZMod 2)).toOuterMeasure
+      (RIMRankDeficitSet (F := ZMod 2) (k := 1) (fun _ : Fin 1 => (∅ : Finset (Fin 2))))
+      = 1 := by
+  rw [rimRankDeficitSet_empty_family]
+  exact (PMF.toOuterMeasure_apply_eq_one_iff (PMF.uniformOfFintype (Fin 1 → ZMod 2))
+    Set.univ).2 (Set.subset_univ _)
 
-/-! ### A genuinely 2-WPC family -/
+/-! ## Boundary instance 2: a genuinely 2-WPC family at a point-mass distribution -/
 
 /-- The complete two-slot family on two vertices is genuinely
 `2`-weakly-partition-connected: a partition of two vertices has at most two cells
@@ -124,12 +114,10 @@ theorem wpc_two_complete_family :
       simp
     rw [show (2 : ℕ) * (P.parts.card - 1) = 2 from by omega, hsum]
 
-/-! ### The point-mass refutation -/
-
 /-- The all-zero evaluation lies in the deficit set of the complete two-slot family at
 `k = 2`: the minimal vertex of the complete edge is `0`, so every column's vertex is the
-minimal one and the evaluated matrix entries are `0 ^ c.2.val`; the kernel column
-vector `v = fun c => c.2.val` annihilates both rows (`0 ^ 0 * 0 = 0` and
+minimal one (`RIM_apply_min`) and the evaluated entries are `0 ^ c.2.val`; the kernel
+column vector `v = fun c => c.2.val` annihilates both rows (`0 ^ 0 * 0 = 0` and
 `0 ^ 1 * 1 = 0`). -/
 theorem zero_eval_mem_rimRankDeficitSet_complete_family :
     (fun _ : Fin 2 => (0 : ZMod 2)) ∈
@@ -169,58 +157,23 @@ theorem zero_eval_mem_rimRankDeficitSet_complete_family :
     · have hc21 : c.2.val = 1 := by omega
       simp [hc21]
 
-/-- **Even a genuinely `2`-WPC family fails the unguarded interface at a point-mass
-distribution**: the all-zero evaluation is a deficit point
-(`zero_eval_mem_rimRankDeficitSet_complete_family`), so the point-mass distribution on it
-gives the deficit set measure `1` while `bound = 1/2`. The distribution guard — the
-uniform evaluation distribution, exactly as the conditional provider
-`rimFailureProb_of_symbolic` instantiates it — is load-bearing. -/
-theorem not_RIMFullRankFailureProbResidual_wpc_point_mass :
-    ¬ RIMFullRankFailureProbResidual (F := ZMod 2) (k := 2)
-        (PMF.pure (fun _ : Fin 2 => (0 : ZMod 2)))
-        (fun _ : Fin 2 => (Finset.univ : Finset (Fin 2)))
-        ((1 : ENNReal) / 2) := by
-  intro h
-  unfold RIMFullRankFailureProbResidual at h
+/-- A point-mass distribution on the all-zero evaluation gives the complete-family
+deficit set measure `1`. Point-mass distributions have non-injective evaluation images,
+so they are unreachable from any evaluation-embedding PMF (`Fin 2 ↪ ZMod 2` takes two
+distinct values): the distribution hypothesis of the providers is load-bearing exactly
+where they carry it. -/
+theorem toOuterMeasure_deficit_complete_family_pure_eq_one :
+    (PMF.pure (fun _ : Fin 2 => (0 : ZMod 2))).toOuterMeasure
+      (RIMRankDeficitSet (F := ZMod 2) (k := 2)
+        (fun _ : Fin 2 => (Finset.univ : Finset (Fin 2)))) = 1 := by
   rw [PMF.toOuterMeasure_pure_apply,
-    if_pos zero_eval_mem_rimRankDeficitSet_complete_family] at h
-  exact absurd h (by norm_num)
-
-/-! ## The guarded repair -/
-
-/-- **[AGL24] Lemma 3.1 interface, guarded** — the honest repair of
-`RIMFullRankFailureProbResidual` for downstream consumers: under the uniform evaluation
-distribution on `ι → F`, a family with nonempty edges on `t + 1 ≥ 2` vertices that is
-`k`-weakly-partition-connected has deficit probability at most `bound`. The premises are
-the paper's own side conditions, omitted by the unguarded form (see the two refutations
-above); `bound` stays a parameter for the §3 value, discharged by
-`rimFailureProbUniformResidual_of_symbolic` at the Schwartz–Zippel bound. -/
-def RIMFailureProbUniformResidual (F : Type*) [Field F] [Fintype F] [DecidableEq F]
-    {ι : Type*} [Fintype ι] [DecidableEq ι] {t k : ℕ}
-    (e : ι → Finset (Fin (t + 1))) (bound : ENNReal) : Prop :=
-  1 ≤ t → (∀ i, (e i).Nonempty) →
-    WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t + 1))) e →
-    (PMF.uniformOfFintype (ι → F)).toOuterMeasure
-      (RIMRankDeficitSet (F := F) (k := k) e) ≤ bound
-
-/-- The guarded interface holds at the Schwartz–Zippel bound conditional only on
-`SymbolicFullRankResidual` — the single remaining input of issue #354, exactly as the
-census records. -/
-theorem rimFailureProbUniformResidual_of_symbolic {ι : Type*} [Fintype ι] [Nonempty ι]
-    [DecidableEq ι] {F : Type*} [Field F] [Fintype F] [DecidableEq F] {k : ℕ}
-    (hsym : SymbolicFullRankResidual (ι := ι) F k)
-    {t : ℕ} (ht : 1 ≤ t) (e : ι → Finset (Fin (t + 1)))
-    (hwpc : WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t + 1))) e) :
-    RIMFailureProbUniformResidual (F := F) (k := k) e
-      ((t * k * (k - 1) : ℕ) / (Fintype.card F : ENNReal)) :=
-  fun _ _ _ => rimFailureProb_of_symbolic hsym ht e hwpc
+    if_pos zero_eval_mem_rimRankDeficitSet_complete_family]
 
 end AGL24
 
 -- Axiom audit: must report only `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
 #print axioms AGL24.rimRankDeficitSet_empty_family
-#print axioms AGL24.not_RIMFullRankFailureProbResidual_empty_family
+#print axioms AGL24.toOuterMeasure_deficit_empty_family_eq_one
 #print axioms AGL24.wpc_two_complete_family
 #print axioms AGL24.zero_eval_mem_rimRankDeficitSet_complete_family
-#print axioms AGL24.not_RIMFullRankFailureProbResidual_wpc_point_mass
-#print axioms AGL24.rimFailureProbUniformResidual_of_symbolic
+#print axioms AGL24.toOuterMeasure_deficit_complete_family_pure_eq_one

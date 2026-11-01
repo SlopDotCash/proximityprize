@@ -86,14 +86,17 @@ Remark 2.9) discharges this with
 `bound = C(n,r)·(t^r·2^{(t−1)k}·(q−n)⁻¹)^r`, `r = ⌊εn/2⌋`; downstream consumers (the
 Theorem 1.1 assembly) take it as a hypothesis in exactly this shape.
 
-The written Lean form omits every side condition of the prose, and is refuted as written
-by `AGL24FailureProbGuard.not_RIMFullRankFailureProbResidual_empty_family` (the empty
-family fails under the paper's own uniform distribution at `bound = 1/2`) and
-`AGL24FailureProbGuard.not_RIMFullRankFailureProbResidual_wpc_point_mass` (a genuinely
-2-WPC family fails at a point-mass distribution). The guarded repair for downstream
-consumers is `AGL24FailureProbGuard.RIMFailureProbUniformResidual`, whose conditional
-provider `rimFailureProbUniformResidual_of_symbolic` isolates the remaining
-`SymbolicFullRankResidual` input exactly as issue #354 records. -/
+The Lean form is a plug-in predicate in `D`, `e` and `bound`, not a universal claim: it
+is proved at the paper's arguments by `rimFailureProb_of_symbolic` and
+`rimFailureProb_of_rootedOutCut_and_dualZeroPattern` (uniform evaluation distribution,
+WPC family, the Schwartz–Zippel bound) and consumed only through hypotheses carrying
+those side conditions (`conditional_failure_bound`). Two boundary facts in
+`ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean` (`AGL24.rimRankDeficitSet_empty_family`,
+`AGL24.zero_eval_mem_rimRankDeficitSet_complete_family`) show where the predicate does
+*not* hold — a non-WPC (empty) family under the very uniform distribution, and a
+point-mass distribution on a genuinely 2-WPC family — so every consumer must carry the
+side conditions exactly as the providers do. The distribution bridge to the
+embedding-mapped evaluation PMF that `conditional_failure_bound` consumes is PR #338. -/
 def RIMFullRankFailureProbResidual (D : PMF (ι → F)) {t k : ℕ}
     (e : ι → Finset (Fin (t + 1))) (bound : ENNReal) : Prop :=
   D.toOuterMeasure (RIMRankDeficitSet (F := F) (k := k) e) ≤ bound
