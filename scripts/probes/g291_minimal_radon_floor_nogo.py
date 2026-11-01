@@ -9,9 +9,18 @@ exactly d+1 (a positive Radon partition). We verify, in exact rationals:
       positive sub-circuit -> the circuit is minimal (at the Radon floor);
   (3) r-uniformity: the support uses BOTH ranks r in {5,6}.
 Data (rawFeat, gate, weight) copied EXACTLY from landed _G289CountingMirageNoGo.lean.
+
+Every check raises explicitly, so the gates stay active under ``python -O`` /
+``PYTHONOPTIMIZE``.
 """
 from fractions import Fraction as F
 from itertools import combinations
+
+
+def require(condition, detail):
+    """Certificate checks must survive python -O and PYTHONOPTIMIZE."""
+    if not condition:
+        raise AssertionError(detail)
 
 rawFeat = [
  [-309168, -683424, 2610752, 3312256],
@@ -34,8 +43,8 @@ signed = [[gate[i]*rawFeat[i][j] for j in range(d)] for i in range(N)]
 
 for j in range(d):
     s = sum(F(weight[i]) * F(signed[i][j]) for i in range(N))
-    assert s == 0, "coord %d nonzero: %s" % (j, s)
-assert all(w > 0 for w in weight)
+    require(s == 0, "coord %d nonzero: %s" % (j, s))
+require(all(w > 0 for w in weight), "weights must be strictly positive")
 print("(1) positive circuit verified: support size %d = d+1 = %d -> MINIMAL (Radon floor) OK" % (N, d + 1))
 
 
@@ -68,11 +77,11 @@ for combo in combinations(range(N), d):
     if rk < d:
         all_indep = False
         print("   sub-support %s has rank %d < %d: NOT minimal" % (combo, rk, d))
-assert all_indep, "found a smaller dependence -> circuit not minimal"
+require(all_indep, "found a smaller dependence -> circuit not minimal")
 print("(2) every %d-subset is full-rank -> NO proper positive sub-circuit: MINIMAL OK" % d)
 
 present = set(ranks)
-assert present == {5, 6}, "ranks in support: %s" % present
+require(present == {5, 6}, "ranks in support: %s" % present)
 print("(3) r-uniform: support uses BOTH ranks %s -> not a per-rank artifact OK" % sorted(present))
 
 print("\nALL PASS: minimal r-uniform positive Radon circuit at the d+1 pigeonhole floor.")
