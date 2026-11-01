@@ -31,7 +31,7 @@ jobs:
         run: |
           python3 scripts/probes/probe_incidence_full_scale_cores.py
           python3 scripts/probes/probe_sponsor_finite_audit.py
-      - uses: leanprover/lean-action@v1.6.0
+      - uses: leanprover/lean-action@v1.7.0
         with:
           auto-config: false
           build: false
