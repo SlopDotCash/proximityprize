@@ -322,7 +322,7 @@
    "name": "RIMFullRankFailureProbResidual",
    "fq_name": "AGL24.RIMFullRankFailureProbResidual",
    "file": "ArkLib/Data/CodingTheory/AGL24UnionBound.lean",
-   "line": 88,
+   "line": 100,
    "providers": [
     {
      "name": "AGL24.rimFailureProb_of_rootedOutCut_and_dualZeroPattern",
