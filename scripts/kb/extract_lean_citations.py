@@ -50,7 +50,7 @@ def extract_citations(lean_roots: Path | list[Path], keys: list[str]) -> dict[st
         citations = sorted(set(match.group(1) for match in pattern.finditer(text)))
         if not citations:
             continue
-        rel_path = str(lean_file.relative_to(base))
+        rel_path = lean_file.relative_to(base).as_posix()
         file_map[rel_path] = citations
         for key in citations:
             key_map[key].append(rel_path)
