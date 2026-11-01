@@ -4,14 +4,19 @@
 By default, scans every .lean file under ArkLib/ and Research/. If one or more paths are
 provided, scans only those Lean files/directories. Fails if live
 (non-comment) code contains (`axiom` text inside a string literal is data):
-  - `native_decide` / `bv_decide` (kernel-bypassing decision procedures), or
-  - the kernel native-reduction primitives `Lean.ofReduceBool`,
-    `Lean.ofReduceNat`, `Lean.reduceBool` and `Lean.reduceNat` (same
-    compiler-trust axioms as `native_decide`, without the tactic), or
+  - `native_decide` / `bv_decide` (kernel-bypassing decision procedures), the
+    equivalent `decide +native` / `decide (native := true)` forms and `bv_check`, or
   - an `unsafe` declaration modifier, live `unsafeCast`, or `implemented_by`
     attribute (repository policy: block unsafe decls, unsafeCast, and
     evaluator-diverging `implemented_by`; this is a fast precheck, not a claim
     that Lean accepts unsafe theorems as axiom-clean proofs), or
+  - a metaprogram that adds kernel declarations (`run_cmd` / `run_elab` /
+    `run_meta`, `addDecl`, `addAndCompile`, `axiomDecl`), which can declare an
+    axiom without the `axiom` keyword, or
+  - the kernel's native-reduction primitives `Lean.ofReduceBool`,
+    `Lean.ofReduceNat`, `Lean.reduceBool` and `Lean.reduceNat`, which a proof
+    term can call directly to get a `native_decide` result without the tactic
+    (the kernel trusts the compiled code; `Lean.trustCompiler`), or
   - a custom `axiom` declaration whose name is not an allowlisted, documented
     residual (see scripts/residual_axioms.txt), with any modifiers (including
     `public`/`meta` in `module` files) and with the name on a later line or
@@ -68,6 +73,23 @@ from pathlib import Path
 TOKEN_RE = re.compile(
     r"\b(native_decide|bv_decide|unsafeCast|implemented_by"
     r"|ofReduceBool|ofReduceNat|reduceBool|reduceNat)\b"
+)
+# Meta code can add a kernel declaration without the `axiom` keyword, e.g.
+# `run_cmd liftCoreM <| addDecl (.axiomDecl { name := `w, type := mkConst ``False, .. })`.
+# ArkLib/Research proofs never need to add declarations from metaprograms.
+META_DECL_RE = re.compile(
+    r"(?<![\w.'])(run_cmd|run_elab|run_meta)\b"
+    r"|\b(add(?:Decl\w*|AndCompile)|axiomDecl)\b"
+)
+# `native_decide` is a synonym for `decide +native`; both forms, the config form
+# `decide (native := true)` / `(config := { native := true })` and `bv_check`
+# prove the goal by native evaluation and add a compiler-trust axiom. Matched
+# against comment/string-blanked code, so a comment between the parts does not
+# hide the form.
+NATIVE_FORM_RE = re.compile(
+    r"\bdecide(?:\s*(?:[+-]\w+|\([^)]*\)))*?\s*"
+    r"(?:\+native\b|\([^)]*\bnative\s*:=\s*true\b[^)]*\))"
+    r"|\bbv_check\b"
 )
 # Lean declaration-modifier `unsafe` (not aesop's `(add unsafe …)` tactic hint).
 # Allow the same modifiers before or after `unsafe` (Lean accepts e.g.
@@ -777,6 +799,20 @@ def main() -> int:
             if not mask[m.start()]:
                 line = text.count("\n", 0, m.start()) + 1
                 failures.append(f"{path}:{line}: forbidden token {m.group(1)}")
+        for m in NATIVE_FORM_RE.finditer(live_text):
+            if not outside_quoted(m.start(), lexed.quoted):
+                continue
+            line = text.count("\n", 0, m.start()) + 1
+            form = " ".join(m.group(0).split())
+            failures.append(f"{path}:{line}: forbidden native evaluation `{form}`")
+        for m in META_DECL_RE.finditer(text):
+            if not mask[m.start()]:
+                line = text.count("\n", 0, m.start()) + 1
+                failures.append(
+                    f"{path}:{line}: forbidden metaprogram declaration `{m.group(0)}` "
+                    f"(adds a kernel declaration, e.g. an axiom, without an `axiom` "
+                    f"keyword; state residuals as `def ...Residual : Prop`)"
+                )
         scopes = TrueScopes(live_text, lexed.quoted)
         for m in UNSAFE_DECL_RE.finditer(live_text):
             if not outside_quoted(m.start(), lexed.quoted):
