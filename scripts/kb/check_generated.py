@@ -44,7 +44,7 @@ def expected_citations(keys: list[str]) -> dict[str, object]:
     """Build the expected Lean citation payload."""
 
     payload = extract_citations(DEFAULT_LEAN_ROOTS, keys)
-    payload["reference_source"] = str(DEFAULT_REFERENCES_JSON.relative_to(REPO_ROOT))
+    payload["reference_source"] = DEFAULT_REFERENCES_JSON.relative_to(REPO_ROOT).as_posix()
     return payload
 
 
@@ -64,7 +64,7 @@ def refresh_untracked_catalog(path: Path, content: str) -> None:
     """Materialize a local catalog only when it is intentionally untracked."""
 
     tracked = subprocess.run(
-        ["git", "ls-files", "--error-unmatch", "--", str(path.relative_to(REPO_ROOT))],
+        ["git", "ls-files", "--error-unmatch", "--", path.relative_to(REPO_ROOT).as_posix()],
         cwd=REPO_ROOT, capture_output=True, check=False,
     )
     if tracked.returncode == 0:
