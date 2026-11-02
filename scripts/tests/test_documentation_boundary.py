@@ -97,6 +97,34 @@ class DocumentationBoundaryTests(unittest.TestCase):
             self.assertEqual(self.checker.check_markdown_links(),
                              ["Broken link in example.md: missing.md"])
 
+    def test_claude_symlink_checks(self):
+        # Missing AGENTS.md
+        self.assertEqual(self.checker.check_claude_symlink(), ["Missing AGENTS.md"])
+
+        self.checker.AGENTS_PATH.write_text("# Agents\n", encoding="utf-8")
+        # Missing CLAUDE.md
+        self.assertEqual(self.checker.check_claude_symlink(), ["Missing CLAUDE.md"])
+
+        # Checked out as text pointer to AGENTS.md (e.g. Windows without core.symlinks)
+        self.checker.CLAUDE_PATH.write_text("AGENTS.md\n", encoding="utf-8")
+        self.assertEqual(self.checker.check_claude_symlink(), [])
+
+        # Non-matching pointer
+        self.checker.CLAUDE_PATH.write_text("OTHER.md\n", encoding="utf-8")
+        self.assertEqual(self.checker.check_claude_symlink(), ["CLAUDE.md must be a symlink to AGENTS.md"])
+
+        # Pointer with UTF-8 BOM + CRLF (Windows Notepad save)
+        self.checker.CLAUDE_PATH.write_bytes(b"\xef\xbb\xbfAGENTS.md\r\n")
+        self.assertEqual(self.checker.check_claude_symlink(), [])
+
+        # Pointer with UTF-16 LE + BOM (Windows PowerShell Set-Content)
+        self.checker.CLAUDE_PATH.write_bytes("\ufeffAGENTS.md\r\n".encode("utf-16-le"))
+        self.assertEqual(self.checker.check_claude_symlink(), [])
+
+        # Non-decodable binary bytes must return error instead of raising UnicodeDecodeError
+        self.checker.CLAUDE_PATH.write_bytes(b"\x00\x01\x02")
+        self.assertEqual(self.checker.check_claude_symlink(), ["CLAUDE.md must be a symlink to AGENTS.md"])
+
 
 if __name__ == "__main__":
     unittest.main()
