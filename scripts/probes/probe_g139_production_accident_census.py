@@ -15,6 +15,10 @@ arithmetic; floating point is used only to print the diagnostic log value.
 
 Honest scope: finite exact-arithmetic evidence only.  This is not a proof at
 n = 2^30 and not a prize closure.
+
+Certificate gates (subgroup order / antipode, lawful+accident partition identity,
+independent sum-count cross-check, and the G173 retained accident witness) use
+`require()` so they stay active under `python -O` / `-OO` / `PYTHONOPTIMIZE`.
 """
 
 from __future__ import annotations
@@ -25,6 +29,12 @@ from math import log
 
 BETA_NUM = 158
 BETA_DEN = 30
+
+
+def require(condition: bool, detail: str) -> None:
+    """Raise when a certificate gate fails; survives python -O."""
+    if not condition:
+        raise AssertionError(detail)
 
 
 @dataclass(frozen=True)
@@ -153,10 +163,10 @@ def subgroup_mu_n(p: int, n: int) -> list[int]:
     for _ in range(n):
         h.append(x)
         x = (x * omega) % p
-    assert x == 1
-    assert len(set(h)) == n
-    assert pow(omega, n, p) == 1
-    assert pow(omega, n // 2, p) == p - 1
+    require(x == 1, "mu_n generator power did not close after n steps")
+    require(len(set(h)) == n, "mu_n subgroup missed a residue class")
+    require(pow(omega, n, p) == 1, "omega does not have order dividing n")
+    require(pow(omega, n // 2, p) == p - 1, "omega^(n/2) must be -1")
     return h
 
 
@@ -195,10 +205,12 @@ def census_row(n: int) -> CensusRow:
     h = subgroup_mu_n(p, n)
     total, accidents = census(h, p)
     lawful = 3 * n - 3
-    assert total == lawful + len(accidents)
+    require(total == lawful + len(accidents),
+            "total solutions must equal lawful Mann families plus accidents")
     total_by_sums = solution_count_by_sums(h, p)
-    assert total_by_sums == total
-    assert total_by_sums - lawful == len(accidents)
+    require(total_by_sums == total, "independent sum-count disagrees with census total")
+    require(total_by_sums - lawful == len(accidents),
+            "accident count disagrees with total minus lawful families")
     return CensusRow(
         n=n,
         p=p,
@@ -214,13 +226,14 @@ def census_row(n: int) -> CensusRow:
 def check_g173_witness() -> None:
     p, n, omega = 17318209, 64, 7937154
     h = [pow(omega, i, p) for i in range(n)]
-    assert len(set(h)) == n
-    assert pow(omega, n, p) == 1
-    assert pow(omega, n // 2, p) == p - 1
+    require(len(set(h)) == n, "G173 subgroup missed a residue class")
+    require(pow(omega, n, p) == 1, "G173 omega does not have order dividing n")
+    require(pow(omega, n // 2, p) == p - 1, "G173 omega^(n/2) must be -1")
     total, accidents = census(h, p)
     witness = (pow(omega, 52, p), pow(omega, 57, p), pow(omega, 58, p))
-    assert witness == (5663213, 17079628, 5424631)
-    assert witness in accidents
+    require(witness == (5663213, 17079628, 5424631),
+            "G173 retained witness coordinates drifted")
+    require(witness in accidents, "G173 retained witness missing from accidents")
     print(
         "G173 cross-check: "
         f"n={n} p={p} total_solutions={total} accidents={len(accidents)} "
