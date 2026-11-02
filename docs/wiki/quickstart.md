@@ -385,6 +385,15 @@ when the process emits no diagnostic text. A successful file with no
 `#print axioms` output is still a successful type check; absence of that
 output does not itself perform an axiom audit.
 
+`pg-iterate.sh` also runs CI gate 1 (`scripts/forbidden_tokens.py`) on the same
+file and audits every reported axiom set against `{propext, Classical.choice,
+Quot.sound}` plus the documented residuals of `scripts/residual_axioms.txt`. It
+exits 1 when gate 1 rejects the file and 2 when a reported axiom is unapproved,
+so ✅ now means both checks passed rather than only that Lean elaborated the
+file. A reported list that opens without closing is exit 2: an unreadable audit
+certifies nothing. A file that prints no `#print axioms` line still receives
+only gate 1; nothing audits the transitive axioms it never reports.
+
 ## Retained probe dependencies
 
 Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
