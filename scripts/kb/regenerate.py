@@ -72,7 +72,7 @@ def main() -> int:
 
     keys = sorted(references["entries"])
     citations = extract_citations(DEFAULT_LEAN_ROOTS, keys)
-    citations["reference_source"] = str(DEFAULT_REFERENCES_JSON.relative_to(REPO_ROOT))
+    citations["reference_source"] = DEFAULT_REFERENCES_JSON.relative_to(REPO_ROOT).as_posix()
     write_json(DEFAULT_CITATIONS_JSON, citations)
 
     declarations = extract_declarations(DEFAULT_LEAN_ROOTS)
