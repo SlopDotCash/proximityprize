@@ -29,6 +29,11 @@ class DependencyAnalysisTests(unittest.TestCase):
             gdg.normalize_module_name(full_backward, str(root)),
             "ArkLib.Data.Basic",
         )
+        # Sibling directory sharing prefix must not be truncated into a false module name
+        sibling_file = str(root) + "Lib/Data/Basic.lean"
+        sibling_norm = gdg.normalize_module_name(sibling_file, str(root))
+        self.assertNotEqual(sibling_norm, "Data.Basic")
+        self.assertTrue(sibling_norm.startswith(".."))
 
     def test_parse_imports(self):
         with tempfile.TemporaryDirectory() as td:

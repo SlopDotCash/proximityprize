@@ -8,7 +8,7 @@ of the dependency relationships between modules.
 import os
 import re
 import json
-from pathlib import Path
+from pathlib import Path, PurePath
 from collections import defaultdict, deque
 from typing import Dict, List, Set, Tuple
 import argparse
@@ -52,10 +52,9 @@ def normalize_module_name(file_path: str, root_dir: str) -> str:
     try:
         rel_path = norm_file.resolve().relative_to(norm_root.resolve()).as_posix()
     except ValueError:
-        rel_path = norm_file.as_posix()
-        root_posix = norm_root.as_posix()
-        if rel_path.startswith(root_posix):
-            rel_path = rel_path[len(root_posix):].lstrip('/')
+        rel_path = PurePath(os.path.relpath(
+            str(norm_file.resolve()), str(norm_root.resolve())
+        )).as_posix()
     if rel_path.endswith('.lean'):
         rel_path = rel_path[:-5]
     return rel_path.replace('/', '.')
