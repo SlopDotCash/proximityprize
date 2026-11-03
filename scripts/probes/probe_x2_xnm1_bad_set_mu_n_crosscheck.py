@@ -44,9 +44,17 @@ LADDER = (8, 16, 32, 64, 128, 256, 512, 1024)
 LITERAL_RUNGS = (8, 16, 32, 64)
 LIMIT = 20_000
 
-# Merged PR #267 anchor values used by Route D.
-MERGED_N16 = {17: 17, 97: 96, 113: 112, 193: 192, 241: 240, 257: 224,
-              337: 272, 353: 272, 401: 320, 65537: 464}
+# Merged PR #267 anchor values used by Route D.  This is the complete published
+# 34-prime CEILING_EXCEPTIONS table of scripts/probes/probe_n16_below_ceiling_max.py,
+# transcribed unchanged.
+MERGED_N16 = {17: 17, 97: 96, 113: 112, 193: 192, 241: 240, 257: 224, 337: 272,
+              353: 272, 401: 320, 433: 352, 449: 336, 577: 304, 593: 416, 641: 368,
+              673: 416, 769: 416, 881: 416, 929: 416, 977: 416, 1153: 448,
+              1217: 448, 1249: 448, 1297: 416, 1361: 416, 1409: 416, 1489: 416,
+              1777: 448, 2129: 448, 2273: 448, 2689: 448, 2833: 448, 3089: 448,
+              4001: 448, 4049: 448}
+# Published anchors outside the [17, LIMIT] scan range, computed separately.
+MERGED_N16_OUTSIDE = {65537: 464}
 N512_65537_CELL = 512
 
 
@@ -358,14 +366,30 @@ def main():
               f"remainder 0, certificate re-expanded and matched term by term "
               f"({len(proof['delta'])} terms in the difference)", flush=True)
 
+    sixteen = primes_one_mod(16, LIMIT)
+    profile = {p: triple_sum_count(16, p)[0] for p in sixteen}
     cells_d = 0
+    table = []
     for p, expected in sorted(MERGED_N16.items()):
-        count, sums = triple_sum_count(16, p)
-        assert count == expected, (p, count, expected)
+        assert p in profile, ("published anchor prime outside the scan", p)
+        assert profile[p] == expected, (p, profile[p], expected)
+        table.append((p, profile[p]))
         cells_d += 1
-    print(f"route D: the merged PR #267 n=16 (x^3,x^2) ceiling integers "
-          f"{sorted(MERGED_N16.items())[:3]}... reproduced by the literal negated "
-          f"triple-sum set at {cells_d} primes (shape engine agrees on the same cells "
+    outside = []
+    for p, expected in sorted(MERGED_N16_OUTSIDE.items()):
+        count, _ = triple_sum_count(16, p)
+        assert count == expected, (p, count, expected)
+        outside.append((p, count))
+    computed = sorted((p, c) for p, c in profile.items() if c != 464)
+    assert computed == sorted(table), ("exception set differs", computed, sorted(table))
+    print(f"route D: the merged PR #267 n=16 (x^3,x^2) ceiling integers are reproduced "
+          f"entry by entry by the literal negated triple-sum set at every one of the "
+          f"{cells_d} published exception primes "
+          f"{table}; scanning all {len(sixteen)} primes p = 1 (mod 16) in [17, {LIMIT}] "
+          f"the computed exception set EQUALS that published table as a set "
+          f"({len(computed)} entries), with {len(sixteen) - len(computed)} primes at 464; "
+          f"outside the scan range {outside} at the primes of "
+          f"{sorted(MERGED_N16_OUTSIDE)} (shape engine agrees on the same cells "
           f"in the main probe)", flush=True)
     n8_primes = primes_one_mod(8, LIMIT)
     split = []
@@ -381,7 +405,9 @@ def main():
     print(f"PASS: independent routes agree -- literal-triple set equality at "
           f"{cells_a} cells, discrete-log index sets at {cells_b} cells, exact "
           f"polynomial certificates at {len(LADDER)} rungs, merged anchors at "
-          f"{cells_d + len(n8_primes)} cells; every count is n, matching the main probe "
+          f"{len(n8_primes) + len(sixteen) + len(outside)} distinct (n, p) cells "
+          f"({len(n8_primes)} at n=8, {len(sixteen)} at n=16 inside the scan range, "
+          f"{len(outside)} at n=16 outside it); every count is n, matching the main probe "
           f"cell for cell", flush=True)
     print(f"elapsed {time.time() - start:.1f}s", flush=True)
 
