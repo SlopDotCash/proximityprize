@@ -39,7 +39,13 @@ if sigma(n, rstar) < 2:
     fail("sigma(n,r*) < 2 would mean escape; must NOT hold at production")
 if not in_window(n, sigma(n, rstar)):
     fail(f"reflection sigma(n,r*)={sigma(n,rstar)} not in window")
-assert sigma(n, rstar) == n + 1 - 89 == 2**30 - 88
+# Certificate identity must survive python -O / -OO / PYTHONOPTIMIZE (bare assert is stripped).
+expected_sigma = n + 1 - 89
+if sigma(n, rstar) != expected_sigma or expected_sigma != 2**30 - 88:
+    fail(
+        f"sigma(n,r*) identity failed: got {sigma(n, rstar)}, "
+        f"expected {expected_sigma} == 2^30-88"
+    )
 print(f"[1] r*={rstar} in W, reflection sigma={sigma(n,rstar)}=2^30-88 in W. r*<n by margin {n-rstar}.")
 
 # --- (2) general r-uniform integer content: Nat.log_n q <= n for all q <= n^n ---
