@@ -53,9 +53,15 @@ CERT_RUNGS = tuple(2 ** k for k in range(2, 11))
 LIMIT = 20_000
 FERMAT = 65537
 
-# Merged PR #267 anchors used by ROUTE D.
+# Merged PR #267 anchors used by ROUTE D.  This is the complete published
+# 34-prime ceiling-exception table of scripts/probes/probe_n16_below_ceiling_max.py
+# (CEILING_EXCEPTIONS), transcribed unchanged.
 MERGED_N16 = {17: 17, 97: 96, 113: 112, 193: 192, 241: 240, 257: 224, 337: 272,
-              353: 272, 401: 320, 433: 352, 449: 336, 577: 304, 65537: 464}
+              353: 272, 401: 320, 433: 352, 449: 336, 577: 304, 593: 416, 641: 368,
+              673: 416, 769: 416, 881: 416, 929: 416, 977: 416, 1153: 448,
+              1217: 448, 1249: 448, 1297: 416, 1361: 416, 1409: 416, 1489: 416,
+              1777: 448, 2129: 448, 2273: 448, 2689: 448, 2833: 448, 3089: 448,
+              4001: 448, 4049: 448}
 N8_CEILING = {17: 16, 41: 40, 257: 40}
 
 
@@ -479,16 +485,24 @@ def merged_anchor_route():
         domain = {pow(generator, u, p) for u in range(16)}
         sums = {(-(x + y + z)) % p for x, y, z in combinations(sorted(domain), 3)}
         profile16[p] = len(sums)
-    for p, expected in MERGED_N16.items():
-        if p in profile16:
-            assert profile16[p] == expected, (p, profile16[p], expected)
+    for p, expected in sorted(MERGED_N16.items()):
+        assert p in profile16, ("published anchor prime outside the scan", p)
+        assert profile16[p] == expected, (p, profile16[p], expected)
     exceptions = sorted(p for p, count in profile16.items() if count != 464)
-    assert len(exceptions) == 34, len(exceptions)
+    assert exceptions == sorted(MERGED_N16), (exceptions, sorted(MERGED_N16))
+    fermat_generator = order_element(FERMAT, 16)
+    fermat_domain = {pow(fermat_generator, u, FERMAT) for u in range(16)}
+    above = len({(-(x + y + z)) % FERMAT
+                 for x, y, z in combinations(sorted(fermat_domain), 3)})
+    assert above == 464, above
     print(f"route D: merged anchors from literal negated triple sums -- n=8 gives 40 at "
           f"every one of the {len(eight)} primes p = 1 (mod 8) in [17, {LIMIT}] except "
           f"p=17 ({profile8[17]}); n=16 gives 464 at {len(sixteen) - len(exceptions)} of "
-          f"the {len(sixteen)} primes p = 1 (mod 16), with the {len(exceptions)} "
-          f"exception primes matching the merged table ({exceptions[:3]}...)", flush=True)
+          f"the {len(sixteen)} primes p = 1 (mod 16) in [17, {LIMIT}], and the full "
+          f"{len(exceptions)}-prime exception set EQUALS the published merged table as a "
+          f"set, entry by entry: "
+          f"{[(p, profile16[p]) for p in exceptions]}; at n=16, p={FERMAT} the same "
+          f"literal route gives {above}", flush=True)
     return profile8, profile16
 
 
