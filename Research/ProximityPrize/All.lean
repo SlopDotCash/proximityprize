@@ -1247,6 +1247,7 @@ import Research.ProximityPrize.Frontier._DstarGrowthLaw
 import Research.ProximityPrize.Frontier._DyadicCocycleLargeDeviation
 import Research.ProximityPrize.Frontier._DyadicDeviationDecayEnvelope
 import Research.ProximityPrize.Frontier._DyadicJacobiCocycleNonContraction
+import Research.ProximityPrize.Frontier._DyadicNonCosetCountCertificate
 import Research.ProximityPrize.Frontier._DyadicParallelogramInvariant
 import Research.ProximityPrize.Frontier._DyadicPhaseChaining
 import Research.ProximityPrize.Frontier._DyadicPhaseChainingSubmaxRefuted
