@@ -65,7 +65,7 @@ theorem split_identity (t : F) (x : F) :
 theorem residual_factorization (t : F) :
     isoPoly (evenPoly t) (oddPoly t) =
       -(∏ i ∈ range 5, (X - C (t ^ (2 * i)))) := by
-  norm_num [isoPoly, evenPoly, oddPoly, Finset.prod_range_succ]
+  norm_num [isoPoly, evenPoly, oddPoly, C_ofNat, Finset.prod_range_succ]
   ring
 
 /-- The factorization identifies the complete root set over the ambient field. -/
@@ -73,7 +73,9 @@ theorem isRoot_iff_mem (t u : F) :
     (isoPoly (evenPoly t) (oddPoly t)).IsRoot u ↔ u ∈ rootSet t := by
   classical
   rw [residual_factorization]
-  simp [IsRoot, eval_prod, Finset.prod_eq_zero_iff, rootSet, eq_comm]
+  simp only [IsRoot, eval_neg, eval_prod, eval_sub, eval_X, eval_C, neg_eq_zero,
+    Finset.prod_eq_zero_iff]
+  simp [rootSet, sub_eq_zero, eq_comm]
 
 private theorem pow_half (t : F) (ht : IsPrimitiveRoot t 32) : t ^ 16 = -1 :=
   (IsPrimitiveRoot.pow (by norm_num : 0 < 32) ht
