@@ -74,8 +74,8 @@ theorem isRoot_iff_mem (t u : F) :
   classical
   rw [residual_factorization]
   simp only [IsRoot, eval_neg, eval_prod, eval_sub, eval_X, eval_C, neg_eq_zero,
-    Finset.prod_eq_zero_iff]
-  simp [rootSet, sub_eq_zero, eq_comm]
+    Finset.prod_eq_zero_iff, sub_eq_zero]
+  simp [rootSet, eq_comm]
 
 private theorem pow_half (t : F) (ht : IsPrimitiveRoot t 32) : t ^ 16 = -1 :=
   (IsPrimitiveRoot.pow (by norm_num : 0 < 32) ht
