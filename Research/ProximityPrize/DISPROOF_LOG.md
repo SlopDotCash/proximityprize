@@ -54440,6 +54440,28 @@ The production threshold and the completion contract in #164 remain open.
 Reproduce with `python3 scripts/probes/probe_antipodal_subgroup_obstructions.py`.
 The output records both fields, the sparse-head witness, all five residual
 roots, their nonzero odd-part values, and the complete factorization coefficients.
+
+**Lean verification upgrade, 2026-11-05.**
+[`_DyadicNonCosetCountCertificate.lean`](Frontier/_DyadicNonCosetCountCertificate.lean)
+formalizes the five-root construction over any field with a primitive 32nd root.
+`residual_factorization` and `isRoot_iff_mem` identify the complete root set.
+`rootSet_card`, `oddPoly_eval_ne_zero`, and `no_complete_dyadic_coset` prove its size,
+isolation, and exclusion of complete nontrivial dyadic root cosets.
+`not_isolatedNonCosetCountResidual` refutes the recorded cap at `k = 3`.
+`production_generator_certificate` places the roots in `mu_(2^29)` from an explicit
+primitive order-`2^30` generator hypothesis. No concrete sponsor-field endpoint is added.
+The original high-head/low-tail decoded family and the production threshold remain open.
+
+Reproduce with:
+
+```
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsoSparsityMasonStothers
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_DyadicNonCosetCountCertificate.lean
+```
+
+The five printed axiom audits cover factorization, isolation, coset exclusion, residual
+refutation, and the generator corollary. They must contain only `propext`,
+`Classical.choice`, and `Quot.sound`.
 ---
 
 ### [164-isolated-noncoset-residual-refuted] Five isolated roots beat the `k + 1` cap at `k = 3`
