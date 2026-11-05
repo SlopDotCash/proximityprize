@@ -822,7 +822,23 @@ def main() -> int:
             next_decl_start = decls[decl_index + 1].start() if decl_index + 1 < len(decls) else None
             if kind in OPAQUE_KINDS:
                 limit = next_decl_start if next_decl_start is not None else len(live_text)
-                if live_text.find(":=", dm.end(), limit) == -1:
+                # Only a top-level `:=` is a definition body: a binder default
+                # such as `(k : Nat := 0)` supplies a `:=` inside brackets but
+                # leaves the declaration bodyless (same depth idiom as
+                # find_true_placebos).
+                depth, i, has_body = 0, dm.end(), False
+                while i < limit - 1:
+                    ch = live_text[i]
+                    if ch in _BRACKET_OPEN:
+                        depth += 1
+                    elif ch in _BRACKET_CLOSE:
+                        if depth:
+                            depth -= 1
+                    elif depth == 0 and ch == ":" and live_text[i + 1] == "=":
+                        has_body = True
+                        break
+                    i += 1
+                if not has_body:
                     line = text.count("\n", 0, dm.start()) + 1
                     failures.append(
                         f"{path}:{line}: bodyless {kind} declaration {name} introduces an "
