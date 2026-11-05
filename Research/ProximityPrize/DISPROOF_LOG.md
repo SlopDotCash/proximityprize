@@ -17963,11 +17963,12 @@ Conditional `M(n) ≤ C√(n log(p/n))`.
 bound (any finite p) on the empirical conjugate measure does NOT bound the House (sup of support)
 from above — the sup is `W_p`-discontinuous. Reduction map (machine-checked, axiom-clean
 `Frontier/_wfTT09_adelic_equidist_house_nogo.lean`): moving ONE atom (mass 1/φ) from bulk radius
-`R₀` out to `R` raises House by `R−R₀` (`house_jump_eq`) but contributes only `(R−R₀)·φ^{-1/2}` to
-`W₂` (`W2_contribution_vanishes`). Hence `house_unbounded_under_Wp_rate`: for ANY fixed rate ε>0
-and ANY target House H there is a config meeting the rate (`(R−R₀)φ^{-1/2} ≤ ε`) with House ≥ H —
-a `W₂`-rate places NO finite ceiling on the House. The `√log` excess is the rare-event tail F0 says
-2nd-order/bulk statistics cannot see.
+`R₀` out to `R` raises House by `R−R₀` (`house_jump_eq`) but its normalized transport cost is
+`(R−R₀)^p/φ`, whose p-th root is `(R−R₀)·φ^{-1/p}` for every positive p
+(`Wp_contribution_vanishes`). Hence `house_unbounded_under_Wp_rate`: for ANY finite p, fixed rate
+ε>0, and target House H there is a configuration meeting the rate with House ≥ H. No finite
+`W_p`-rate places a ceiling on the House. The `√log` excess is the rare-event tail F0 says
+second-order/bulk statistics cannot see.
 
 **Circularity (F0/F1) + blindness (F3).** `R_eq = House − W₂-err` (`R_eq_assertion_is_circular`), so
 asserting `R_eq = √(log(p/n))` IS the prize conclusion, not an input. The proposed input `h(u_b) =
@@ -43230,11 +43231,12 @@ Conditional `M(n) ≤ C√(n log(p/n))`.
 bound (any finite p) on the empirical conjugate measure does NOT bound the House (sup of support)
 from above — the sup is `W_p`-discontinuous. Reduction map (machine-checked, axiom-clean
 `Frontier/_wfTT09_adelic_equidist_house_nogo.lean`): moving ONE atom (mass 1/φ) from bulk radius
-`R₀` out to `R` raises House by `R−R₀` (`house_jump_eq`) but contributes only `(R−R₀)·φ^{-1/2}` to
-`W₂` (`W2_contribution_vanishes`). Hence `house_unbounded_under_Wp_rate`: for ANY fixed rate ε>0
-and ANY target House H there is a config meeting the rate (`(R−R₀)φ^{-1/2} ≤ ε`) with House ≥ H —
-a `W₂`-rate places NO finite ceiling on the House. The `√log` excess is the rare-event tail F0 says
-2nd-order/bulk statistics cannot see.
+`R₀` out to `R` raises House by `R−R₀` (`house_jump_eq`) but its normalized transport cost is
+`(R−R₀)^p/φ`, whose p-th root is `(R−R₀)·φ^{-1/p}` for every positive p
+(`Wp_contribution_vanishes`). Hence `house_unbounded_under_Wp_rate`: for ANY finite p, fixed rate
+ε>0, and target House H there is a configuration meeting the rate with House ≥ H. No finite
+`W_p`-rate places a ceiling on the House. The `√log` excess is the rare-event tail F0 says
+second-order/bulk statistics cannot see.
 
 **Circularity (F0/F1) + blindness (F3).** `R_eq = House − W₂-err` (`R_eq_assertion_is_circular`), so
 asserting `R_eq = √(log(p/n))` IS the prize conclusion, not an input. The proposed input `h(u_b) =

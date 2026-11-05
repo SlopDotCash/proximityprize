@@ -72,9 +72,10 @@ height gate is vacuous.
 
 The load-bearing **insufficiency theorem** isolated as exact `ℝ`-arithmetic:
 
-* `house_jump_eq` / `Wp_perturb_eq` — the exact perturbation arithmetic: moving one atom of mass
-  `1/φ` from `R₀` to `R` raises the House by `R − R₀` while the `Wᵖ` transport cost contributed is
-  only `(R − R₀)ᵖ / φ` (so the `Wₚ`-distance contribution is `(R−R₀)·φ^{-1/p}`).
+* `house_jump_eq` / `Wp_perturb_eq` / `Wp_contribution_vanishes` — the exact perturbation
+  arithmetic: moving one atom of mass `1/φ` from `R₀` to `R` raises the House by `R − R₀` while the
+  `Wᵖ` transport cost contributed is only `(R − R₀)ᵖ / φ`. For every positive exponent `p`, the
+  resulting `Wₚ` contribution is exactly `(R−R₀)·φ^{-1/p}`.
 * `house_unbounded_under_Wp_rate` — **the F0 reduction as a theorem**: for ANY fixed
   equidistribution rate `ε > 0` and ANY target House `H`, there is a configuration with bulk
   radius `R₀`, atom count `φ`, and outlier radius `R` whose `Wₚ`-contribution is `≤ ε` yet whose
@@ -114,77 +115,94 @@ theorem house_jump_eq (R0 R : ℝ) (h : R0 ≤ R) :
 /-- **Single-atom `Wᵖ` transport cost.** In the empirical measure each conjugate carries mass
 `1/φ` (`φ = φ(n)`). Moving ONE atom from `R₀` to `R` is a transport plan of cost (raised to the
 `p`) `(R − R₀)ᵖ · (1/φ)`. Hence the `Wₚ`-distance contributed by that single outlier is
-`(R − R₀) · φ^{-1/p}` — suppressed by `φ^{-1/p}`. We record the `p = 2` ( `W₂` ) form: the squared
-`W₂`-contribution is `(R − R₀)² / φ`. -/
-theorem Wp_perturb_eq (R0 R phi : ℝ) (hphi : 0 < phi) :
-    ((R - R0) ^ 2) * (1 / phi) = (R - R0) ^ 2 / phi := by
+`(R − R₀) · φ^{-1/p}` — suppressed by `φ^{-1/p}`. We record the normalized transport cost
+`(R − R₀)ᵖ / φ` for an arbitrary exponent. -/
+theorem Wp_perturb_eq (R0 R phi p : ℝ) :
+    ((R - R0) ^ p) * (1 / phi) = (R - R0) ^ p / phi := by
   rw [mul_one_div]
 
-/-- **The `W₂`-contribution of one outlier as an explicit function of `φ`.** Moving one atom from
-`R₀` to `R` contributes `W₂`-distance `(R − R₀)·φ^{-1/2}` (square root of the squared cost). For
-fixed displacement `R − R₀` this `→ 0` as the orbit size `φ → ∞`: a single rare conjugate is
-invisible to `W₂`. -/
+/-- **The `Wₚ` contribution of one outlier vanishes for every positive exponent `p`.** The
+single-atom transport cost raised to the `p`-th power is `(R − R₀)^p / φ`; its `p`-th root is
+exactly `(R − R₀) · φ^(-1/p)`. For fixed displacement, this tends to zero as the orbit size
+`φ → ∞`, independently of the finite Wasserstein exponent. -/
+theorem Wp_contribution_vanishes (R0 R phi p : ℝ)
+    (hR : R0 ≤ R) (hphi : 0 < phi) (hp : 0 < p) :
+    (((R - R0) ^ p) / phi) ^ (1 / p) =
+      (R - R0) * phi ^ (-(1 / p)) := by
+  have hd : 0 ≤ R - R0 := sub_nonneg.mpr hR
+  calc
+    (((R - R0) ^ p) / phi) ^ (1 / p)
+        = ((R - R0) ^ p * phi⁻¹) ^ (1 / p) := by rw [div_eq_mul_inv]
+    _ = ((R - R0) ^ p) ^ (1 / p) * (phi⁻¹) ^ (1 / p) :=
+          Real.mul_rpow (Real.rpow_nonneg hd p) (inv_nonneg.mpr (le_of_lt hphi))
+    _ = (R - R0) * (phi⁻¹) ^ (1 / p) := by
+          rw [one_div, Real.rpow_rpow_inv hd (ne_of_gt hp)]
+    _ = (R - R0) * phi ^ (-(1 / p)) := by
+          rw [Real.inv_rpow (le_of_lt hphi), ← Real.rpow_neg (le_of_lt hphi)]
+
+/-- The `p = 2` specialization used by the quadratic House argument. -/
 theorem W2_contribution_vanishes (R0 R phi : ℝ) (hR : R0 ≤ R) (hphi : 0 < phi) :
-    Real.sqrt ((R - R0) ^ 2 / phi) = (R - R0) * phi ^ (-(1:ℝ)/2) := by
-  have hnn : 0 ≤ R - R0 := sub_nonneg.mpr hR
-  rw [Real.sqrt_div' _ (by positivity), Real.sqrt_sq hnn]
-  rw [neg_div, Real.rpow_neg (le_of_lt hphi), ← Real.sqrt_eq_rpow]
-  rw [div_eq_mul_inv]
+    Real.sqrt ((R - R0) ^ 2 / phi) = (R - R0) * phi ^ (-(2:ℝ)⁻¹) := by
+  have h := Wp_contribution_vanishes R0 R phi 2 hR hphi (by norm_num)
+  simpa [Real.sqrt_eq_rpow] using h
 
 /-! ### The F0 reduction, as a theorem: a `Wₚ`-rate cannot bound the House -/
 
 /-- **`house_unbounded_under_Wp_rate` — the decisive insufficiency (F0 in metric form).**
 
 Fix ANY equidistribution rate `ε > 0` (the candidate's `(h + Σ localmass)^{1/2}/φ^c`), ANY bulk
-radius `R₀ ≥ 0`, and ANY target House `H`. Then there exists an orbit size `φ > 0` and an outlier
-radius `R` such that:
+radius `R₀ ≥ 0`, ANY target House `H`, and ANY positive Wasserstein exponent `p`. Then there exists
+an orbit size `φ > 0` and an outlier radius `R` such that:
 
-* the single-outlier `W₂`-contribution is `≤ ε`  (`(R − R₀)·φ^{-1/2} ≤ ε`, the rate is met), **yet**
+* the single-outlier `Wₚ`-contribution is `≤ ε`
+  (`((R − R₀)^p/φ)^(1/p) ≤ ε`, the rate is met), **yet**
 * the resulting House is `≥ H`  (`R ≥ H`).
 
-So knowing the `W₂`-rate `ε` bounds the House from above by NOTHING: the House can be pushed past
+So knowing any finite `Wₚ`-rate `ε` bounds the House from above by NOTHING: it can be pushed past
 any `H` while keeping the rate satisfied, by taking the orbit large enough. This is exactly the F0
-statement that the `√log` House excess is a rare-event phenomenon invisible to the (bulk) `W₂`
-discrepancy. Concretely we exhibit the witness `R = max R₀ H` (forces House `≥ H`) and `φ` large
-enough that `(R − R₀)·φ^{-1/2} ≤ ε`. -/
+statement that the `√log` House excess is a rare-event phenomenon invisible to every bulk
+Wasserstein discrepancy. Concretely we exhibit the witness `R = max R₀ H` (forces House `≥ H`) and
+`φ` large enough that `((R − R₀)^p/φ)^(1/p) ≤ ε`. -/
 theorem house_unbounded_under_Wp_rate
-    (ε R0 H : ℝ) (hε : 0 < ε) (hR0 : 0 ≤ R0) :
+    (ε R0 H p : ℝ) (hε : 0 < ε) (hR0 : 0 ≤ R0) (hp : 0 < p) :
     ∃ (phi R : ℝ), 0 < phi ∧ R0 ≤ R ∧ H ≤ R ∧
-      (R - R0) * phi ^ (-(1:ℝ)/2) ≤ ε := by
+      (((R - R0) ^ p) / phi) ^ (1 / p) ≤ ε := by
   -- outlier at R = max R0 H : forces House ≥ H and ≥ R0
-  refine ⟨((max R0 H - R0) / ε) ^ 2 + 1, max R0 H, ?_, le_max_left _ _, le_max_right _ _, ?_⟩
-  · positivity
-  · -- (R - R0) * φ^{-1/2} ≤ ε  with φ = ((R-R0)/ε)^2 + 1
-    set d := max R0 H - R0 with hd
-    have hdnn : 0 ≤ d := by rw [hd]; exact sub_nonneg.mpr (le_max_left _ _)
-    set phi := (d / ε) ^ 2 + 1 with hphi
+  set d := max R0 H - R0 with hd
+  have hdnn : 0 ≤ d := by rw [hd]; exact sub_nonneg.mpr (le_max_left _ _)
+  refine ⟨(d / ε) ^ p + 1, max R0 H, ?_, le_max_left _ _, le_max_right _ _, ?_⟩
+  · have hquot : 0 ≤ d / ε := div_nonneg hdnn (le_of_lt hε)
+    have hrpow : 0 ≤ (d / ε) ^ p := Real.rpow_nonneg hquot p
+    linarith
+  · set phi := (d / ε) ^ p + 1 with hphi
     have hphipos : (0:ℝ) < phi := by rw [hphi]; positivity
-    -- φ^{-1/2} = 1 / √φ  and  √φ ≥ √((d/ε)^2) = d/ε  ⟹  (R-R0)/√φ ≤ ε
-    have hsqrt_eq : phi ^ (-(1:ℝ)/2) = 1 / Real.sqrt phi := by
-      have h1 : phi ^ (-(1:ℝ)/2) = (phi ^ ((1:ℝ)/2))⁻¹ := by
-        rw [neg_div, Real.rpow_neg (le_of_lt hphipos)]
-      rw [h1, ← Real.sqrt_eq_rpow, one_div]
-    rw [hsqrt_eq, mul_one_div]
-    rw [div_le_iff₀ (Real.sqrt_pos.mpr hphipos)]
-    -- need: d ≤ ε * √φ.  √φ ≥ d/ε since φ ≥ (d/ε)^2.
-    have hge : (d / ε) ≤ Real.sqrt phi := by
-      have hle : (d / ε) ^ 2 ≤ phi := by rw [hphi]; linarith
-      calc d / ε = Real.sqrt ((d / ε) ^ 2) := by
-            rw [Real.sqrt_sq (by positivity)]
-        _ ≤ Real.sqrt phi := Real.sqrt_le_sqrt hle
+    rw [Wp_contribution_vanishes R0 (max R0 H) phi p (le_max_left _ _) hphipos hp]
+    rw [Real.rpow_neg (le_of_lt hphipos), ← div_eq_mul_inv]
+    rw [div_le_iff₀ (Real.rpow_pos_of_pos hphipos (1 / p))]
+    have hge : d / ε ≤ phi ^ (1 / p) := by
+      have hquot : 0 ≤ d / ε := div_nonneg hdnn (le_of_lt hε)
+      have hle : (d / ε) ^ p ≤ phi := by rw [hphi]; linarith
+      calc
+        d / ε = ((d / ε) ^ p) ^ (1 / p) := by
+          rw [one_div]
+          exact (Real.rpow_rpow_inv hquot (ne_of_gt hp)).symm
+        _ ≤ phi ^ (1 / p) :=
+          Real.rpow_le_rpow (Real.rpow_nonneg hquot p) hle
+            (one_div_nonneg.mpr (le_of_lt hp))
     calc d = ε * (d / ε) := by field_simp
-      _ ≤ ε * Real.sqrt phi := by
+      _ ≤ ε * phi ^ (1 / p) := by
             apply mul_le_mul_of_nonneg_left hge (le_of_lt hε)
 
 /-- **Contrapositive packaging: no `Wₚ`-rate certifies a finite House ceiling.** For every claimed
-ceiling `B` and every rate `ε > 0`, there is a witnessing configuration meeting the rate whose
-House exceeds `B`. Direct corollary of `house_unbounded_under_Wp_rate` with `H = B + 1`. -/
+ceiling `B`, every rate `ε > 0`, and every positive exponent `p`, there is a witnessing
+configuration meeting the rate whose House exceeds `B`. Direct corollary of
+`house_unbounded_under_Wp_rate` with `H = B + 1`. -/
 theorem no_Wp_rate_bounds_house
-    (ε R0 B : ℝ) (hε : 0 < ε) (hR0 : 0 ≤ R0) :
+    (ε R0 B p : ℝ) (hε : 0 < ε) (hR0 : 0 ≤ R0) (hp : 0 < p) :
     ∃ (phi R : ℝ), 0 < phi ∧ R0 ≤ R ∧ B < R ∧
-      (R - R0) * phi ^ (-(1:ℝ)/2) ≤ ε := by
+      (((R - R0) ^ p) / phi) ^ (1 / p) ≤ ε := by
   obtain ⟨phi, R, hphi, hR0R, hHR, hrate⟩ :=
-    house_unbounded_under_Wp_rate ε R0 (B + 1) hε hR0
+    house_unbounded_under_Wp_rate ε R0 (B + 1) p hε hR0 hp
   exact ⟨phi, R, hphi, hR0R, by linarith, hrate⟩
 
 /-! ### The equilibrium radius is the wall (F0 circularity) -/
@@ -214,3 +232,9 @@ theorem mahler_height_is_energy_aggregate (h arch nonarch : ℝ)
   linarith
 
 end ProximityGap.Frontier.T09
+
+/-! ## Axiom audit (expected: `propext`, `Classical.choice`, `Quot.sound`) -/
+#print axioms ProximityGap.Frontier.T09.Wp_contribution_vanishes
+#print axioms ProximityGap.Frontier.T09.W2_contribution_vanishes
+#print axioms ProximityGap.Frontier.T09.house_unbounded_under_Wp_rate
+#print axioms ProximityGap.Frontier.T09.no_Wp_rate_bounds_house
