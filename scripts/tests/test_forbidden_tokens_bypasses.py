@@ -416,6 +416,22 @@ class ForbiddenTokenBypasses(unittest.TestCase):
         self.assert_rejected("def keep : Nat := 1 opaque hidden_opaque : True\n",
                              "bodyless opaque declaration hidden_opaque")
 
+    def test_bodyless_opaque_with_binder_default_is_rejected(self):
+        # A binder default `(k : Nat := 0)` is not a definition body: the
+        # declaration is still bodyless and axiom-equivalent.
+        self.assert_rejected("opaque foo (k : Nat := 0) : Nat\n",
+                             "bodyless opaque declaration foo")
+        self.assert_rejected("opaque foo (k : Nat := (0)) : Nat\n",
+                             "bodyless opaque declaration foo")
+        self.assert_rejected("opaque foo {k : Nat := 0} : Nat\n",
+                             "bodyless opaque declaration foo")
+        self.assert_rejected("constant foo (k : Nat := 0) : Nat\n",
+                             "bodyless constant declaration foo")
+
+    def test_opaque_with_binder_default_and_body_stays_clean(self):
+        self.assert_clean("opaque foo (k : Nat := 0) : Nat := 1\n")
+        self.assert_clean("opaque foo (k : Nat := 0) (j : Nat := 1) : Nat := k + j\n")
+
     def test_mid_line_non_declarations_stay_clean(self):
         # An in-proof `have … : True` and an identifier named `constant` are
         # not declaration heads.
