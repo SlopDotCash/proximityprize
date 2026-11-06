@@ -46,7 +46,8 @@ over `b∈F_p^*` is the *maximally NON-simple* object: every atom has multiplici
 `n` — it is `n × #{cosets with η_i > t√n}`. A point configuration whose every point has multiplicity
 `n` admits no repulsion (`ρ_2` on the diagonal is `~ n²`, the opposite sign of a DPP's `0`). The
 determinantal hypothesis with log-variance rigidity is therefore *false by construction* of the
-spectrum, not "likely to fail". Formalized below as `exceedance_count_dvd_fiberSize` +
+spectrum, not "likely to fail". Formalized below as
+`exceedanceCount_eq_fiberSize_mul_card`, `exceedance_count_dvd_fiberSize`, and
 `degenerate_not_simple`.
 
 ## Obstruction 2 — the surviving sup-deduction is the energy/Markov count = fence F1
@@ -91,22 +92,16 @@ has multiplicity `n = (p−1)/k` among the `b ∈ F_p^*`). -/
 def UniformFiberSize (c : ι → κ) (n : ℕ) : Prop :=
   ∀ y, (Finset.univ.filter (fun i => c i = y)).card = n
 
-/-- **CORE REFUTATION (the degeneracy).** If the periods factor through a coset map whose every
-fiber has exactly `n` elements, then the exceedance count `N(T)` is a MULTIPLE of `n` for every
-threshold `T`. So `N(T) ∈ {0, n, 2n, …}` — it can never be `1`, and the underlying point
-configuration is `n`-fold atomic, hence NOT simple, hence NOT a determinantal point process with a
-Christoffel–Darboux projection kernel (those are a.s. simple, with `ρ_2 = 0` on the diagonal). -/
-theorem exceedance_count_dvd_fiberSize
+/-- **Exact `n`-fold multiplicity of the exceedance count.** If the periods factor through a coset
+map whose every fiber has exactly `n` elements, then for every threshold `T`, `N(T)` is exactly
+`n` times the number of coset labels whose value exceeds `T`. -/
+theorem exceedanceCount_eq_fiberSize_mul_card
     (η : ι → ℝ) (c : ι → κ) (val : κ → ℝ) (n : ℕ)
     (hfac : FactorsThroughCoset η c val) (hfib : UniformFiberSize c n) (T : ℝ) :
-    n ∣ exceedanceCount η T := by
+    exceedanceCount η T = n * ((Finset.univ.image c).filter (fun y => T < val y)).card := by
   classical
-  -- The exceedance set is a disjoint union over the labels `y` with `val y > T` of the fibers `c⁻¹ y`;
-  -- partition `{i : T < η i}` by the value of `c i`.
   unfold exceedanceCount
-  -- Set of "exceeding labels"
   set good : Finset κ := (Finset.univ.image c).filter (fun y => T < val y) with hgood
-  -- The exceedance set equals the bunion over `good` of the fibers.
   have hset :
       (Finset.univ.filter (fun i => T < η i))
         = good.biUnion (fun y => Finset.univ.filter (fun i => c i = y)) := by
@@ -119,18 +114,24 @@ theorem exceedance_count_dvd_fiberSize
     · rintro ⟨y, ⟨_, hval⟩, hcy⟩
       rw [hfac i, hcy]; exact hval
   rw [hset]
-  -- The fibers are pairwise disjoint, so the card is the sum of fiber cards, each `= n`.
   rw [Finset.card_biUnion]
-  · -- ∑_{y ∈ good} (fiber y).card = ∑_{y ∈ good} n = good.card * n
-    have hcard : ∀ y ∈ good, (Finset.univ.filter (fun i => c i = y)).card = n :=
-      fun y _ => hfib y
-    rw [Finset.sum_congr rfl hcard, Finset.sum_const, smul_eq_mul]
-    exact Dvd.intro_left _ rfl
-  · -- pairwise disjoint fibers
-    intro x _ y _ hxy
+  · rw [Finset.sum_congr rfl (fun y hy => hfib y), Finset.sum_const, smul_eq_mul, Nat.mul_comm]
+  · intro x _ y _ hxy
     simp only [Finset.disjoint_left, Finset.mem_filter, Finset.mem_univ, true_and]
     intro i hix hiy
     exact hxy (hix ▸ hiy ▸ rfl)
+
+/-- **CORE REFUTATION (the degeneracy).** If the periods factor through a coset map whose every
+fiber has exactly `n` elements, then the exceedance count `N(T)` is a multiple of `n` for every
+threshold `T`. So `N(T) ∈ {0, n, 2n, …}` — it can never be `1`, and the underlying point
+configuration is `n`-fold atomic, hence NOT simple, hence NOT a determinantal point process with a
+Christoffel–Darboux projection kernel (those are a.s. simple, with `ρ_2 = 0` on the diagonal). -/
+theorem exceedance_count_dvd_fiberSize
+    (η : ι → ℝ) (c : ι → κ) (val : κ → ℝ) (n : ℕ)
+    (hfac : FactorsThroughCoset η c val) (hfib : UniformFiberSize c n) (T : ℝ) :
+    n ∣ exceedanceCount η T := by
+  rw [exceedanceCount_eq_fiberSize_mul_card η c val n hfac hfib T]
+  exact dvd_mul_right n _
 
 /-- **The degenerate family is not simple at any positive multiplicity `n ≥ 2`.** A determinantal
 point process with a projection (Christoffel–Darboux) kernel is a.s. simple: its exceedance counts
@@ -241,6 +242,7 @@ end ProximityGap.Frontier.WfT22DeterminantalCountRigidity
 
 /-! ## Axiom audit -/
 #print axioms ProximityGap.Frontier.WfT22DeterminantalCountRigidity.exceedance_count_dvd_fiberSize
+#print axioms ProximityGap.Frontier.WfT22DeterminantalCountRigidity.exceedanceCount_eq_fiberSize_mul_card
 #print axioms ProximityGap.Frontier.WfT22DeterminantalCountRigidity.degenerate_not_simple
 #print axioms ProximityGap.Frontier.WfT22DeterminantalCountRigidity.forall_le_of_sum_pow_lt
 #print axioms ProximityGap.Frontier.WfT22DeterminantalCountRigidity.tMax_le_of_moment
