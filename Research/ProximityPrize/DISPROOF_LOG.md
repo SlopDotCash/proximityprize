@@ -54501,3 +54501,46 @@ scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountResi
 
 Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
 `Classical.choice` and `Quot.sound`.
+
+---
+
+### [164-isolated-noncoset-sharp-bound] The degree-only cap is exactly `2k - 1`
+
+Date: 2026-11-06. Target:
+`IsoSparsityMasonStothers.IsolatedNonCosetCountResidual`, on the antipodal
+isolated-root path. The earlier rational certificate refutes the recorded cap at
+`k = 3`; this result classifies its rational instances for every `k`.
+
+[`_IsolatedNonCosetSharpBound.lean`](Frontier/_IsolatedNonCosetSharpBound.lean)
+proves `isolated_roots_card_le`: over any field, if `deg A, deg O < k`, every
+finite set of roots of `A² - X O²` at which `O` is nonzero has at most `2k - 1`
+elements. Nonvanishing of `O` at a selected root makes `O` nonzero; the odd degree
+of `X O²` prevents its cancellation with the even-degree square `A²`.
+
+`exists_sharp_isolated_roots` attains this bound over `ℚ` for every positive `k`.
+Split `Q(T) = product_{i=1}^{2k-1}(T-i)` as `A(T²) - T O(T²)` using the existing
+`Polynomial.splitNth` API. The distinct squares `1², ..., (2k-1)²` are roots of
+`A² - X O²`. At each positive lift `i`, `Q(i) = 0` but `Q(-i) ≠ 0`, which proves
+`O(i²) ≠ 0`. Both halves have degree below `k`.
+At `k = 3`, this gives the common negatives of the earlier rational witnesses;
+the five-root example itself is existing work.
+
+Consequently `isolatedNonCosetCountResidual_rat_iff` proves
+`IsolatedNonCosetCountResidual ℚ k ↔ k ≤ 2`. In particular, no degree-only
+universal replacement bound smaller than `2k - 1` can hold at a positive `k`.
+The original residual is unchanged. This does not impose a halved-subgroup
+domain or realize the high-head/low-tail decoded family. Those structural
+restrictions, the Kelley/BGK input and the production threshold remain open.
+
+Reproduce with the pinned toolchain:
+
+```sh
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsoSparsityMasonStothers ArkLib.Data.Polynomial.SplitFold
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IsolatedNonCosetSharpBound.lean
+./scripts/validate.sh
+```
+
+The four public declarations print their complete axiom dependencies; only
+`propext`, `Classical.choice` and `Quot.sound` are permitted. No new axiom or
+named residual is introduced. This is a degree-only classification, not a
+production counterexample or a closure of #164.
