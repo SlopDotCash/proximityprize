@@ -5,6 +5,7 @@ Authors: Kevaundray Wedderburn
 -/
 
 import ArkLib.Data.Fin.Basic
+import ProximityPrize.Extensions.Data.Fin.Basic
 
 /-! `castSum` indexes summands by their value, not by an occurrence in the list.
 Repeated summand sizes therefore cannot support unrestricted dependent elimination.
@@ -30,6 +31,19 @@ theorem no_unrestricted_sumCases_for_duplicate_summands :
   have hfalse := h (fun i => i.val = 0) hcases ⟨1, by decide⟩
   exact Nat.one_ne_zero hfalse
 
+-- Positive positional regression cases from #216.
+theorem castSum_duplicate_blocks_distinct :
+    castSumAt [1, 1] ⟨0, by decide⟩ ⟨0, by decide⟩ ≠
+      castSumAt [1, 1] ⟨1, by decide⟩ ⟨0, by decide⟩ := by
+  decide
+
+theorem sumCases_duplicate_second_block :
+    sumCases (l := [1, 1]) (motive := fun _ => ℕ) (fun k _ => k.val) ⟨1, by decide⟩ = 1 := by
+  rfl
+
 end Fin
 
 #print axioms Fin.no_unrestricted_sumCases_for_duplicate_summands
+
+#print axioms Fin.castSum_duplicate_blocks_distinct
+#print axioms Fin.sumCases_duplicate_second_block
