@@ -28,7 +28,7 @@ side conditions:
 
 * at a non-WPC family — the empty one-slot family — the reduced intersection matrix
   has no rows, the deficit set is everything, and its outer measure under the
-  uniform tuple distribution `PMF.uniformOfFintype` is `1`
+  uniform tuple distribution `ProximityPrize.Compatibility.uniformOfFintype` is `1`
   (`rimRankDeficitSet_empty_family`, `toOuterMeasure_deficit_empty_family_eq_one`);
 * at a genuinely 2-WPC family — both slots the complete edge on two vertices
   (`wpc_two_complete_family`) — a point mass at the all-zero tuple gives the
@@ -63,12 +63,11 @@ theorem rimRankDeficitSet_empty_family :
 /-- The uniform tuple distribution gives the empty-family deficit set full measure
 `1`. The weak partition-connectivity hypothesis excludes this family. -/
 theorem toOuterMeasure_deficit_empty_family_eq_one :
-    (PMF.uniformOfFintype (Fin 1 → ZMod 2)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin 1 → ZMod 2)).toOuterMeasure
       (RIMRankDeficitSet (F := ZMod 2) (k := 1) (fun _ : Fin 1 => (∅ : Finset (Fin 2))))
       = 1 := by
   rw [rimRankDeficitSet_empty_family]
-  exact (PMF.toOuterMeasure_apply_eq_one_iff (PMF.uniformOfFintype (Fin 1 → ZMod 2))
-    Set.univ).2 (Set.subset_univ _)
+  exact (PMF.toOuterMeasure_apply_eq_one_iff _ Set.univ).2 (Set.subset_univ _)
 
 /-! ## Boundary instance 2: a genuinely 2-WPC family at a point-mass distribution -/
 
@@ -164,7 +163,7 @@ theorem toOuterMeasure_deficit_complete_family_pure_eq_one :
       (RIMRankDeficitSet (F := ZMod 2) (k := 2)
         (fun _ : Fin 2 => (Finset.univ : Finset (Fin 2)))) = 1 := by
   rw [PMF.toOuterMeasure_pure_apply,
-    if_pos zero_eval_mem_rimRankDeficitSet_complete_family]
+    ite_eq_left zero_eval_mem_rimRankDeficitSet_complete_family]
 
 end AGL24
 
