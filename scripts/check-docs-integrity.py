@@ -2,7 +2,7 @@
 """Check ArkLib documentation integrity.
 
 Checks:
-1. `CLAUDE.md` exists and is a symlink to `AGENTS.md`
+1. `CLAUDE.md` is a symlink to `AGENTS.md`, including Git text checkouts
 2. Local markdown links in maintained documentation and Research resolve
 3. No Markdown files remain under ArkLib
 
@@ -12,6 +12,7 @@ Exit code 0 if all checks pass, 1 otherwise.
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -91,6 +92,34 @@ def tracked_markdown_files() -> list[Path]:
     ]
 
 
+def is_git_symlink_checkout() -> bool:
+    """Recognize Git's text representation of a tracked symlink."""
+    if not CLAUDE_PATH.is_file():
+        return False
+    try:
+        if CLAUDE_PATH.read_bytes() != b"AGENTS.md":
+            return False
+        config = subprocess.run(
+            ["git", "config", "--type=bool", "--get", "core.symlinks"],
+            cwd=REPO_ROOT, capture_output=True, check=False,
+        )
+        if config.returncode != 0 or config.stdout.strip() != b"false":
+            return False
+        index = subprocess.run(
+            ["git", "ls-files", "--stage", "-z", "--", "CLAUDE.md"],
+            cwd=REPO_ROOT, capture_output=True, check=False,
+        )
+    except OSError:
+        return False
+
+    records = index.stdout.split(b"\0")
+    if index.returncode != 0 or len(records) != 2:
+        return False
+    metadata, _, filename = records[0].partition(b"\t")
+    fields = metadata.split()
+    return len(fields) == 3 and fields[0] == b"120000" and fields[2] == b"0" and filename == b"CLAUDE.md"
+
+
 def check_claude_symlink() -> list[str]:
     errors: list[str] = []
     if not AGENTS_PATH.exists():
@@ -100,26 +129,8 @@ def check_claude_symlink() -> list[str]:
         errors.append("Missing CLAUDE.md")
         return errors
     if not CLAUDE_PATH.is_symlink():
-        # When git clones on Windows without core.symlinks enabled, symlinks
-        # are materialized as text files containing the relative target path.
-        if CLAUDE_PATH.is_file():
-            try:
-                raw = CLAUDE_PATH.read_bytes()
-            except OSError:
-                raw = b""
-            pointer = ""
-            for enc in ("utf-8-sig", "utf-16"):
-                try:
-                    pointer = raw.decode(enc).strip()
-                    break
-                except UnicodeDecodeError:
-                    continue
-            if pointer == AGENTS_PATH.name:
-                try:
-                    if (CLAUDE_PATH.parent / pointer).resolve().samefile(AGENTS_PATH):
-                        return errors
-                except OSError:
-                    pass
+        if is_git_symlink_checkout():
+            return errors
         errors.append("CLAUDE.md must be a symlink to AGENTS.md")
         return errors
 

@@ -15,6 +15,23 @@ import generate_top_level_graph as gtlg
 
 
 class DependencyAnalysisTests(unittest.TestCase):
+    def test_module_name_preserves_a_symlink_alias(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            package = root / "ArkLib"
+            package.mkdir()
+            (package / "Real.lean").write_text("import ArkLib.Core\n", encoding="utf-8")
+            alias = package / "Alias.lean"
+            try:
+                alias.symlink_to("Real.lean")
+            except OSError:
+                self.skipTest("Creating a symlink requires platform support")
+            self.assertEqual(gdg.normalize_module_name(str(alias), str(root)), "ArkLib.Alias")
+            self.assertEqual(
+                gdg.build_dependency_graph([str(alias)], str(root)),
+                {"ArkLib.Core": ["ArkLib.Alias"]},
+            )
+
     def test_normalize_module_name_cross_platform(self):
         root = SCRIPTS_DIR.parent
         # Native and forward slash

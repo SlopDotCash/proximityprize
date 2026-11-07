@@ -8,7 +8,7 @@ of the dependency relationships between modules.
 import os
 import re
 import json
-from pathlib import Path, PurePath
+from pathlib import Path
 from collections import defaultdict, deque
 from typing import Dict, List, Set, Tuple
 import argparse
@@ -47,17 +47,10 @@ def parse_imports(file_path: str) -> List[str]:
 
 def normalize_module_name(file_path: str, root_dir: str) -> str:
     """Convert file path to normalized module name."""
-    norm_file = Path(str(file_path).replace('\\', '/'))
-    norm_root = Path(str(root_dir).replace('\\', '/'))
-    try:
-        rel_path = norm_file.resolve().relative_to(norm_root.resolve()).as_posix()
-    except ValueError:
-        rel_path = PurePath(os.path.relpath(
-            str(norm_file.resolve()), str(norm_root.resolve())
-        )).as_posix()
-    if rel_path.endswith('.lean'):
-        rel_path = rel_path[:-5]
-    return rel_path.replace('/', '.')
+    # Module identity follows the path Lean imports, including a symlink alias.
+    relative = os.path.relpath(file_path.replace("\\", "/"), root_dir.replace("\\", "/"))
+    return relative.replace("\\", "/").removesuffix(".lean").replace("/", ".")
+
 
 def build_dependency_graph(lean_files: List[str], root_dir: str) -> Dict[str, List[str]]:
     """Build dependency graph from Lean files."""
