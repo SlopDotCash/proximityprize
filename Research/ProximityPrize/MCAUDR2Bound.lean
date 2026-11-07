@@ -178,7 +178,8 @@ theorem epsMCA_rs_udr2_le (α : ι ↪ F) (k : ℕ) [NeZero k] (hk : k ≤ Finty
   -- branch on goodCoeffs size
   by_cases hcase : (RS_goodCoeffs (deg := k) (domain := α) u δ).card > Fintype.card ι
   · -- jointAgreement gives the global pair
-    have hja := RS_jointAgreement_of_goodCoeffs_card_gt (deg := k) (domain := α) hδ_udr u hcase
+    have hja := RS_jointAgreement_of_goodCoeffs_card_gt (deg := k) (domain := α) hδ_udr u _
+      (fun _ hz => mem_RS_goodCoeffs.1 hz) hcase
     obtain ⟨S₀, hS₀card, v, hv⟩ := hja
     have hv₀ : v 0 ∈ (ReedSolomon.code α k : Submodule F (ι → F)) := (hv 0).1
     have hv₁ : v 1 ∈ (ReedSolomon.code α k : Submodule F (ι → F)) := (hv 1).1

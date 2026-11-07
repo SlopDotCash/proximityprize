@@ -50,6 +50,10 @@ ArkLib, then extensions, then Research. A canonical module must not import downs
 Run the surface generators after staging added or removed Lean files; do not edit generated
 umbrellas or library-glob blocks by hand.
 
+The Research arithmetic certificates share the verified square-and-multiply implementation in
+[`Support/BinaryPower.lean`](../../Research/ProximityPrize/Support/BinaryPower.lean). Certificate
+statements continue to use ordinary monoid powers. The W16 rung generator imports the shared proof.
+
 At this pin, `rbrSoundness` and `rbrKnowledgeSoundness` use the fixed-prefix games. Downstream
 proofs of the distinct prover-averaged games use the explicit `Averaged` contracts and their
 compatibility modules. The [security migration](../../scripts/integration/nov07-rbr-migration.json)

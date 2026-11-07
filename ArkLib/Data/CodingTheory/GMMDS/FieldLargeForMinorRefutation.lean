@@ -80,12 +80,17 @@ theorem rim_fullRows_apply {t k : ℕ} (emb : Fin k ↪ ι) (p q : Fin t × Fin 
       if q.1.val = 0 then (X (emb p.2) : MvPolynomial ι F) ^ (q.2 : ℕ)
       else if q.1 = p.1 then -((X (emb p.2) : MvPolynomial ι F) ^ (q.2 : ℕ))
       else 0 := by
-  simp only [AGL24.RIM, fullRows, univ_min'_eq_zero]
+  have huniv : (univ : Finset (Fin (t + 1))).Nonempty := ⟨0, mem_univ _⟩
+  change (if q.1.castSucc = univ.min' huniv then
+      (X (emb p.2) : MvPolynomial ι F) ^ (q.2 : ℕ)
+    else if q.1.castSucc = blockVertex p.1 then -((X (emb p.2) : MvPolynomial ι F) ^ (q.2 : ℕ))
+    else 0) = _
+  rw [univ_min'_eq_zero]
   have h0 : q.1.castSucc = (0 : Fin (t + 1)) ↔ q.1.val = 0 := by
     rw [Fin.ext_iff]; simp
   by_cases hq : q.1.val = 0
-  · rw [if_pos (h0.2 hq), if_pos hq]
-  · rw [if_neg (fun h => hq (h0.1 h)), if_neg hq]
+  · rw [ite_eq_left (h0.2 hq), ite_eq_left hq]
+  · rw [ite_eq_right (fun h => hq (h0.1 h)), ite_eq_right hq]
     have hv : q.1.castSucc = blockVertex p.1 ↔ q.1 = p.1 := by
       unfold blockVertex
       split_ifs with hp
@@ -96,8 +101,8 @@ theorem rim_fullRows_apply {t k : ℕ} (emb : Fin k ↪ ι) (p q : Fin t × Fin 
           exact absurd (h ▸ hp) hq
       · exact Fin.castSucc_inj
     by_cases hqp : q.1 = p.1
-    · rw [if_pos (hv.2 hqp), if_pos hqp]
-    · rw [if_neg (fun h => hqp (hv.1 h)), if_neg hqp]
+    · rw [ite_eq_left (hv.2 hqp), ite_eq_left hqp]
+    · rw [ite_eq_right (fun h => hqp (hv.1 h)), ite_eq_right hqp]
 
 omit [Fintype ι] [DecidableEq ι] in
 /-- The selected minor is block triangular for the block map `p ↦ p.1.rev`: an entry is
@@ -111,7 +116,7 @@ theorem fullRowsMinor_blockTriangular {t k : ℕ} (emb : Fin k ↪ ι) :
   have hq : q.1.val ≠ 0 := by
     have := Fin.lt_def.1 hpq
     omega
-  rw [if_neg hq, if_neg (ne_of_gt hpq)]
+  rw [ite_eq_right hq, ite_eq_right (ne_of_gt hpq)]
 
 /-- The rows of block `a` (under `p ↦ p.1.rev`) are indexed by `Fin k`. -/
 def blockEquiv {t k : ℕ} (a : Fin t) : Fin k ≃ {p : Fin t × Fin k // p.1.rev = a} where

@@ -94,9 +94,9 @@
   },
   "new_compatibility_sources": {
     "ProximityPrize/Compatibility/AveragedRbr/Security/Execution.lean": "e71c24c19008f58da0810c7ab3e7d8bc345993b69e2ecc8d5317943a152f11fc",
-    "ProximityPrize/Compatibility/AveragedRbr/Security/Implications.lean": "48e67ea7358e07a5fe1cca21cde6d4caa417f62d5ce3b49636a890e92bcef1c4",
-    "ProximityPrize/Compatibility/AveragedRbr/Security/RbrGame.lean": "8591e763782fd2f7da98f2d97876b28cfaf0975e131c34c04f2dac7fd2f732c0",
-    "ProximityPrize/Compatibility/AveragedRbr/Security/RoundByRound.lean": "7207700cfcea1412dc0a82d77457839755c60f4cd45557e16d829f82c6845030"
+    "ProximityPrize/Compatibility/AveragedRbr/Security/Implications.lean": "b4db451d2a1df5eeb27884810043fe6dcf68dc22a7ae646d22db975e72044d98",
+    "ProximityPrize/Compatibility/AveragedRbr/Security/RbrGame.lean": "32538eb85ca42b946bc6f82f1bd38b8ae0e8145e59ff28aee926a938811bcb36",
+    "ProximityPrize/Compatibility/AveragedRbr/Security/RoundByRound.lean": "085a3d92639dcf22b2c74188c5e0f3d9a2eabfb5386f4fad08f55c3afc6c34bb"
   },
   "caller_migrations": {
     "ArkLib/OracleReduction/CastInOut.lean": {
@@ -984,6 +984,18 @@
       "canonical_replacement": "Native RoundByRound owns StateFunction and KnowledgeStateFunction coercions. The removed OneShot coercion has no theorem consumers."
     }
   ],
+  "removed_audit_pins": {
+    "path": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/General.lean",
+    "declarations": [
+      "Verifier.seqCompose_rbrSoundness",
+      "Verifier.seqCompose_rbrKnowledgeSoundness",
+      "OracleVerifier.seqCompose_rbrSoundness",
+      "OracleVerifier.seqCompose_rbrKnowledgeSoundness"
+    ],
+    "before_sha256": "0fe2fcf093bdeb5ba332e1818590253a7a300088b2a43c88cd04c7c686d0c3f8",
+    "after_sha256": "a87244a41ef0b7f6ae48e2e6a0b2f1e9be375eb79e110dec09544fad85c127b4",
+    "reason": "Upstream retired these four composition declarations. Their prior downstream variants assumed the complete conclusion, and the four audit commands were the only Lean command references."
+  },
   "one_shot": "No theorem consumer in downstream sources. The only live reference was its orphan CoeFun instance. Neither its game nor its machinery is restored.",
   "canonical_delegations": [
     {
@@ -1000,7 +1012,19 @@
   "focused_validation": {
     "historical_axiom_reports": 17,
     "historical_axiom_output_sha256": "ee64109def07f9107f587a5b84bd103b8f632ede4f219d700c543b44c99bd6e5",
+    "historical_module_linters": ["linter.style.missingEnd", "linter.style.emptyLine"],
     "standard_axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "sequential_composition_dependency_cone": {
+      "modules_compiled": 63,
+      "standard_axiom_reports": 200,
+      "targets": [
+        "ArkLib.OracleReduction.Composition.Sequential.AppendResidualDischargesSeams",
+        "ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeChallengeOracleLift",
+        "ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeStateCollapse",
+        "ArkLib.OracleReduction.Composition.Sequential.AppendRbrSoundnessOracleLift",
+        "ArkLib.OracleReduction.Composition.Sequential.SeqComposeRbrKnowledgeProof"
+      ]
+    },
     "additional_compiled_modules_and_axiom_report_counts": {
       "ArkLib.OracleReduction.CastInOut": 6,
       "ArkLib.OracleReduction.Security.ImplicationsCore": 9,
@@ -1008,6 +1032,7 @@
       "ArkLib.OracleReduction.Security.RbrKnowledgeTruncate": 3,
       "ProximityPrize.Extensions.OracleReduction.Cast": 0,
       "ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append": 4,
+      "ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General": 10,
       "ProximityPrize.Extensions.OracleReduction.Security.Basic": 1,
       "ProximityPrize.Extensions.OracleReduction.Security.RoundByRound": 0
     }

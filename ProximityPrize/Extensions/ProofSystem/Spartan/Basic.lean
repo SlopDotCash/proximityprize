@@ -396,9 +396,7 @@ noncomputable def evalClaimValue
   letI r_x : Fin pp.ℓ_m → R := stmt.1
   letI 𝕩 : Statement.AfterFirstMessage R pp := stmt.2.2
   letI 𝕫 := R1CS.𝕫 𝕩 (oStmt (.inr 0))
-  fun idx =>
-    MvPolynomial.eval r_x
-      (MvPolynomial.MLE ((Matrix.mulVec (oStmt (.inl idx)) 𝕫) ∘ finFunctionFinEquiv))
+  fun idx => MvPolynomial.eval r_x (Algebra.rowProduct (oStmt (.inl idx)) 𝕫)
 
 /-- The oracle prover for `sendEvalClaim`: it forwards the input oracle family `A, B, C, 𝕨`
 unchanged and sends the bundled evaluation claim `(v_A, v_B, v_C)` (computed via `evalClaimValue`)

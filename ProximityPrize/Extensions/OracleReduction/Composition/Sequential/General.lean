@@ -341,16 +341,11 @@ end OracleVerifier
 #print axioms Verifier.seqCompose_soundness
 #print axioms Verifier.seqCompose_knowledgeSoundness
 #print axioms Verifier.seqComposeError_eq_append
-#print axioms Verifier.seqCompose_rbrSoundness
-#print axioms Verifier.seqCompose_rbrKnowledgeSoundness
 #print axioms OracleReduction.seqCompose_completeness
 #print axioms OracleReduction.seqCompose_perfectCompleteness
 #print axioms OracleVerifier.seqCompose_soundness
 #print axioms OracleVerifier.seqCompose_knowledgeSoundness
-#print axioms OracleVerifier.seqCompose_rbrSoundness
-#print axioms OracleVerifier.seqCompose_rbrKnowledgeSoundness
 
 end Security
 
--- The new structural output theorem is independent of the inherited RBR proof debt above.
 #print axioms OracleVerifier.seqCompose_materializeOutput_eq_input

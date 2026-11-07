@@ -1412,7 +1412,8 @@ lemma plotkin_d_le (B : Finset (Fin n → F)) (h_B : 2 ≤ B.card) (hq : 0 < Fin
   have hM1pos : (0:ℚ) < (B.card:ℚ) - 1 := by linarith
   have key : 2 * JohnsonBound.choose_2 (B.card:ℚ) * JohnsonBound.d B
       ≤ (n:ℚ) * (B.card:ℚ)^2 * (1 - 1 / (Fintype.card F : ℚ)) := by
-    rw [JohnsonBound.d_eq_sum h_B]; exact sum_disagree_le B hq
+    rw [JohnsonBound.d_eq_sum]
+    exact sum_disagree_le B hq
   have hch : 2 * JohnsonBound.choose_2 (B.card:ℚ) = (B.card:ℚ) * ((B.card:ℚ) - 1) := by
     simp [JohnsonBound.choose_2]; ring
   have key2 : (B.card:ℚ) * ((B.card:ℚ) - 1) * JohnsonBound.d B

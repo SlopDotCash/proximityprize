@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.NumberTheory.LucasPrimality
 import Mathlib.Tactic.NormNum.Prime
+import Research.ProximityPrize.Support.BinaryPower
 
 /-!
 # A second concrete prize-shaped prime with a smooth subgroup of order `2^30`
@@ -14,9 +15,8 @@ This file certifies
 `P = 2^30 * (2 * 2^128 + 13) + 1`
 
 and the explicit element obtained from the Lucas witness `37`.  The primality proof uses the
-complete factorization of `P - 1`.  As in `_PrizeShapePrimeP30.lean`, `binaryPow` is a locally
-verified square-and-multiply implementation used only to make the certificate computations
-kernel-cheap.
+complete factorization of `P - 1`.  The shared, verified `binaryPow` makes the certificate
+computations kernel-cheap.
 -/
 
 namespace ArkLib.ProximityGap.PrizeShapePrimeP30Second
@@ -27,48 +27,7 @@ set_option maxRecDepth 100000
 /-- The second concrete prize-shaped modulus. -/
 abbrev P : ℕ := 730750818665451459101842416358141509841924915201
 
-/-- Structurally recursive fuel wrapper for kernel-cheap square-and-multiply exponentiation. -/
-private def binaryPowAux {M : Type*} [Monoid M] (a : M) (n : ℕ) : ℕ → M
-  | 0 => 1
-  | fuel + 1 =>
-      if n = 0 then 1
-      else if n % 2 = 0 then
-        binaryPowAux (a * a) (n / 2) fuel
-      else
-        a * binaryPowAux (a * a) (n / 2) fuel
-
-/-- Kernel-cheap square-and-multiply exponentiation. -/
-private def binaryPow {M : Type*} [Monoid M] (a : M) (n : ℕ) : M :=
-  binaryPowAux a n (n + 1)
-
-private theorem binaryPowAux_eq_pow {M : Type*} [Monoid M] (a : M) (n fuel : ℕ)
-    (hnfuel : n < fuel) : binaryPowAux a n fuel = a ^ n := by
-  induction fuel generalizing a n with
-  | zero => omega
-  | succ fuel ih =>
-      rw [binaryPowAux]
-      split_ifs with h0 heven
-      · subst n
-        simp
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul]
-        have hdvd : 2 ∣ n := (Nat.dvd_iff_mod_eq_zero).2 heven
-        have htwo : 2 * (n / 2) = n := Nat.mul_div_cancel' hdvd
-        congr 1
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul, ← pow_succ']
-        have hnmod : n % 2 = 1 := by omega
-        have hdecomp := Nat.mod_add_div n 2
-        congr 1
-        omega
-
-private theorem binaryPow_eq_pow {M : Type*} [Monoid M] (a : M) (n : ℕ) :
-    binaryPow a n = a ^ n := by
-  exact binaryPowAux_eq_pow a n (n + 1) (by omega)
+open ArkLib.ProximityGap.BinaryPower (binaryPow_eq_pow)
 
 /-! ## Prime factors below the two large factors of `P - 1` -/
 

@@ -68,12 +68,9 @@ theorem mcaEvent_decoded_data {n k m : ℕ}
   obtain ⟨S, hScard, ⟨w, hwC, hwS⟩, hnj⟩ := hev
   set p : ReedSolomon.code ωs k := ⟨w, hwC⟩ with hp
   -- node evaluations of the interpolant recover the codeword
-  have hxinj : Set.InjOn ωs.toFun (Finset.univ : Finset (Fin n)) :=
-    fun a _ b _ h => ωs.injective h
   have heval : ∀ i : Fin n, (ReedSolomon.codewordToPoly p).eval (ωs i) = w i := by
     intro i
-    rw [ReedSolomon.codewordToPoly]
-    exact Lagrange.eval_interpolate_at_node _ hxinj (Finset.mem_univ i)
+    exact ReedSolomon.toPolynomial_eval_at_domain (c := p)
   -- the fold agreement on `S`, in eval form
   have hSagree : ∀ i ∈ S, (ReedSolomon.codewordToPoly p).eval (ωs i)
       = f₀ i + γ * f₁ i := by

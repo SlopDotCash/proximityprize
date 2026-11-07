@@ -131,6 +131,8 @@ end Implications
 
 end Verifier
 
+end
+
 /-! ## Coordinate-wise special soundness generalizes special soundness
 
 Both `Verifier.specialSound` (`Security.SpecialSoundness`) and

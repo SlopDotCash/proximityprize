@@ -7,6 +7,7 @@ Authors: ArkLib Contributors, lucascantship
 import Mathlib.NumberTheory.LucasPrimality
 import Mathlib.Tactic.NormNum.Prime
 import Research.ProximityPrize.Frontier._G139PhiInjectiveSidonBridge
+import Research.ProximityPrize.Support.BinaryPower
 
 /-!
 # G139: kernel-checked production arithmetic
@@ -15,10 +16,9 @@ Certifies the exact modulus and generator used by
 `scripts/probes/verify_g139_n2e30_arithmetic_contract.py`, not either of the two different
 moduli in `_PrizeShapePrimeP30.lean` and `_PrizeShapePrimeP30Second.lean`.
 
-The complete factorizations of the predecessors give three Lucas certificates, with witnesses
-`7`, `7`, and `10`. Every modular identity is checked by the Lean kernel. The private
-square-and-multiply implementation and correctness proof below are adapted from
-`_PrizeShapePrimeP30Second.lean` (ArkLib Contributors, Apache 2.0).
+The complete factorizations give five nested Lucas certificates, with witnesses `2`, `11`, `7`,
+`7`, and `10`. The shared square-and-multiply implementation lets the Lean kernel check every
+modular identity.
 
 The final theorem instantiates the existing G139 zero-accident bridge at these exact constants.
 Its sole remaining hypothesis is `PhiWindowInjective g (2 ^ 30)`. This file does not prove that
@@ -33,48 +33,7 @@ namespace ArkLib.ProximityGap.Frontier.G139ArithmeticCertificate
 /-- The exact modulus in the G139 production certificate. -/
 abbrev P : ℕ := 365375409332725729550921208179070755196377235457
 
-/-- Structurally recursive square-and-multiply, following `_PrizeShapePrimeP30Second`. -/
-private def binaryPowAux {M : Type*} [Monoid M] (a : M) (n : ℕ) : ℕ → M
-  | 0 => 1
-  | fuel + 1 =>
-      if n = 0 then 1
-      else if n % 2 = 0 then
-        binaryPowAux (a * a) (n / 2) fuel
-      else
-        a * binaryPowAux (a * a) (n / 2) fuel
-
-/-- Kernel-cheap exponentiation used only to check the arithmetic certificates. -/
-private def binaryPow {M : Type*} [Monoid M] (a : M) (n : ℕ) : M :=
-  binaryPowAux a n (n + 1)
-
-private theorem binaryPowAux_eq_pow {M : Type*} [Monoid M] (a : M) (n fuel : ℕ)
-    (hnfuel : n < fuel) : binaryPowAux a n fuel = a ^ n := by
-  induction fuel generalizing a n with
-  | zero => omega
-  | succ fuel ih =>
-      rw [binaryPowAux]
-      split_ifs with h0 heven
-      · subst n
-        simp
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul]
-        have hdvd : 2 ∣ n := (Nat.dvd_iff_mod_eq_zero).2 heven
-        have htwo : 2 * (n / 2) = n := Nat.mul_div_cancel' hdvd
-        congr 1
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul, ← pow_succ']
-        have hnmod : n % 2 = 1 := by omega
-        have hdecomp := Nat.mod_add_div n 2
-        congr 1
-        omega
-
-private theorem binaryPow_eq_pow {M : Type*} [Monoid M] (a : M) (n : ℕ) :
-    binaryPow a n = a ^ n :=
-  binaryPowAux_eq_pow a n (n + 1) (by omega)
+open ArkLib.ProximityGap.BinaryPower (binaryPow_eq_pow)
 
 /-! ## The recursive prime-factor certificates -/
 

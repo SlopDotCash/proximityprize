@@ -91,7 +91,7 @@ theorem RS_goodCoeffs_card_dichotomy {deg : ℕ} {domain : ι ↪ F} {δ : ℝ�
   classical
   by_cases h : (RS_goodCoeffs (deg := deg) (domain := domain) u δ).card > Fintype.card ι
   · exact Or.inr (RS_jointAgreement_imp_goodCoeffs_eq_univ u
-      (RS_jointAgreement_of_goodCoeffs_card_gt hδ u h))
+      (RS_jointAgreement_of_goodCoeffs_card_gt hδ u _ (fun _ hz => mem_RS_goodCoeffs.1 hz) h))
   · exact Or.inl (not_lt.mp h)
 
 end CoreResults

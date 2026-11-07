@@ -106,6 +106,7 @@ theorem oracleVerifier_rbrKnowledgeSoundness_indexed_of_simple
       (relationRound R n deg D i.castSucc) (relationRound R n deg D i.succ)
       (fun _ => (deg : ℝ≥0) / (Fintype.card R)) := by
   letI : Inhabited (Simple.StmtOut R) := ⟨(0, 0)⟩
+  rw [oracleVerifier_eq_liftContext]
   exact OracleVerifier.liftContext_rbrKnowledgeSoundnessAveraged
     (stmtLens := oStmtExecutableLens R n deg D i)
     (witLens := Witness.InvLens.trivial)
@@ -142,6 +143,8 @@ theorem oracleVerifier_rbrKnowledgeSoundness_failingDet_of_round
     (fun _ => ⟨()⟩)
     hInit hInitNF
     hRound
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged at h ⊢
+  rw [oracleVerifier_toVerifier_eq_seqCompose]
   exact h
 
 end Sumcheck.Spec

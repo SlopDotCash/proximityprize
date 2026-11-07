@@ -857,15 +857,12 @@ theorem pg_card_normalizedFactors_toFinset_le_natDegree (p : F[Z][X]) (hp : p.Se
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
 theorem pg_evalX_eq_map_evalRingHom (x₀ : F) (R : F[Z][X][Y]) :
-    Bivariate.evalX (Polynomial.C x₀) R = R.map (Polynomial.evalRingHom (Polynomial.C x₀)) := by
-  classical
-  ext n n'
-  · simp [Bivariate.evalX, Polynomial.coeff_map]
-    simp [Polynomial.coeff]
+    Bivariate.evalX (Polynomial.C x₀) R = R.map (Polynomial.evalRingHom (Polynomial.C x₀)) :=
+  Trivariate.evalAtX_eq_map_evalRingHom x₀ R
 
 open scoped Polynomial.Bivariate in
 noncomputable def pg_eval_on_Z (p : F[Z][X][Y]) (z : F) : Polynomial (Polynomial F) :=
-  p.map (Polynomial.mapRingHom (Polynomial.evalRingHom z))
+  Trivariate.evalAtZ z p
 
 omit [DecidableEq (RatFunc F)] in
 theorem pg_exists_H_of_R_eval_zero (δ : ℚ) (x₀ : F)

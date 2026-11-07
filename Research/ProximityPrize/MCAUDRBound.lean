@@ -269,7 +269,8 @@ theorem epsMCA_rs_udr_le_full (α : ι ↪ F) (k : ℕ) [NeZero k] (hk : k ≤ F
     (Fintype.card ι)
   intro u
   by_cases hgt : (RS_goodCoeffs (deg := k) (domain := α) u δ).card > Fintype.card ι
-  · have hja := RS_jointAgreement_of_goodCoeffs_card_gt (deg := k) (domain := α) hδ u hgt
+  · have hja := RS_jointAgreement_of_goodCoeffs_card_gt (deg := k) (domain := α) hδ u _
+      (fun _ hz => mem_RS_goodCoeffs.1 hz) hgt
     obtain ⟨S₀, hS₀card, v, hv⟩ := hja
     have hS₀t : t ≤ S₀.card := by
       rw [htdef]; exact Nat.ceil_le.mpr (by exact_mod_cast hS₀card)

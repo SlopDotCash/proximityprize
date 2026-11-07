@@ -47,7 +47,7 @@ variable {F : Type*} {ι : Type*} (domain : ι ↪ F)
 noncomputable def codewordToPoly
   [Fintype ι] [Field F] [DecidableEq ι]
   {deg : ℕ} {domain : ι ↪ F} (f : code domain deg) : F[X] :=
-  Lagrange.interpolate Finset.univ domain.toFun f
+  toPolynomial f
 
 open Polynomial Matrix Code LinearCode
 

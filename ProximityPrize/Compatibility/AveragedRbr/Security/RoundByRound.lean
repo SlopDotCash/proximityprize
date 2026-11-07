@@ -243,7 +243,6 @@ def rbrKnowledgeSoundnessAveraged
     relIn acceptRejectOracleRel verifier rbrKnowledgeError
 
 variable {init impl} in
-
 /-- Round-by-round knowledge soundness of an oracle proof implies its prover-averaged variant
 `OracleProof.rbrKnowledgeSoundnessAveraged`, with the same error. -/
 theorem rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged
@@ -285,3 +284,7 @@ lemma OracleVerifier.id_rbrKnowledgeSoundnessAveraged
   exact Verifier.id_rbrKnowledgeSoundnessAveraged init impl (rel := rel)
 
 end Trivial
+
+end
+
+end

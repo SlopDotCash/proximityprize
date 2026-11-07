@@ -78,9 +78,9 @@ theorem firstVirtual_eval_eq_product
       (firstSumCheckVirtualPolynomial pp stmt.2.1 stmt.2.2 oStmt)
       = MvPolynomial.eval stmt.1 (MvPolynomial.eqPolynomial stmt.2.1) *
         (evalClaimValue R pp stmt oStmt .A * evalClaimValue R pp stmt oStmt .B
-          - evalClaimValue R pp stmt oStmt .C) := by
-  simp only [firstSumCheckVirtualPolynomial, matVecMLE, evalClaimValue,
-    MvPolynomial.eval_mul, MvPolynomial.eval_sub]
+          - evalClaimValue R pp stmt oStmt .C) :=
+  Algebra.firstVirtual_eval (fun i => oStmt (.inl i))
+    (R1CS.𝕫 stmt.2.2 (oStmt (.inr 0))) stmt.2.1 stmt.1
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] [Inhabited R] [SampleableType R] in
 /-- Evaluating at the full-challenge concatenation with an empty tail is evaluation at the

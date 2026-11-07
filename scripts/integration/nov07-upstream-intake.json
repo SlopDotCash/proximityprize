@@ -44,7 +44,7 @@
   ],
   "downstream_prime_port": {
     "source": "Research/ProximityPrize/Frontier/_G139ArithmeticCertificate.lean",
-    "source_sha256": "ddf924420a1fe55f54f663fcbaed2f158c8bb5cecc99ba34734b28001b53a69f",
+    "source_sha256": "56d3b59d6a903c162141833f6b55c1f7b8e7d6f8be64535d8540c6a38b6cdb3d",
     "declarations": [
       "prime_1370701",
       "prime_1052698369"
@@ -58,7 +58,16 @@
         "Classical.choice",
         "Quot.sound"
       ],
-      "log_sha256": "caeb17c9126a74a71934be0a8483a42bb64e2a05347c0ef7739c5ecb502d8d1e"
+      "log_sha256": "caeb17c9126a74a71934be0a8483a42bb64e2a05347c0ef7739c5ecb502d8d1e",
+      "source_sha256": "ddf924420a1fe55f54f663fcbaed2f158c8bb5cecc99ba34734b28001b53a69f"
     }
+  },
+  "arithmetic_power_consolidation": {
+    "owner": "Research/ProximityPrize/Support/BinaryPower.lean",
+    "original_source": "Research/ProximityPrize/Frontier/_PrizeShapePrimeP30Second.lean",
+    "original_revision": "0306d4422",
+    "migrated_clients": 20,
+    "generated_client_emitter": "scripts/probes/probe_w16_tz_emit_lean.py",
+    "disposition": "The certificates share the same square-and-multiply computation and correctness theorem; their public statements still use ordinary monoid powers."
   }
 }

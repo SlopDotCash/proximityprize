@@ -270,7 +270,6 @@ variable {F : Type} [Field F]
 theorem natWeightedDegree_eval_on_Z_le (Q : F[Z][X][Y]) (z : F) (u v : ℕ) :
     natWeightedDegree (Trivariate.eval_on_Z Q z) u v ≤ natWeightedDegree Q u v := by
   classical
-  simp only [Trivariate.eval_on_Z]
   rw [Trivariate.eval_on_Z_eq]
   unfold natWeightedDegree
   refine Finset.sup_le fun k hk => ?_
@@ -321,19 +320,16 @@ the `Agreement` module. -/
 /-- `eval_on_Z` sends `1` to `1`. -/
 @[simp]
 lemma eval_on_Z_one (z : F) : Trivariate.eval_on_Z (1 : F[Z][X][Y]) z = 1 := by
-  simp only [Trivariate.eval_on_Z]
   rw [Trivariate.eval_on_Z_eq]; simp
 
 /-- `eval_on_Z` commutes with powers. -/
 lemma eval_on_Z_pow (p : F[Z][X][Y]) (z : F) (n : ℕ) :
     Trivariate.eval_on_Z (p ^ n) z = (Trivariate.eval_on_Z p z) ^ n := by
-  simp only [Trivariate.eval_on_Z]
   rw [Trivariate.eval_on_Z_eq, Trivariate.eval_on_Z_eq, Polynomial.map_pow]
 
 /-- `eval_on_Z` commutes with finite sums. -/
 lemma eval_on_Z_sum {ι : Type*} (s : Finset ι) (g : ι → F[Z][X][Y]) (z : F) :
     Trivariate.eval_on_Z (∑ i ∈ s, g i) z = ∑ i ∈ s, Trivariate.eval_on_Z (g i) z := by
-  simp only [Trivariate.eval_on_Z]
   rw [Trivariate.eval_on_Z_eq, Polynomial.map_sum]
   exact Finset.sum_congr rfl (fun i _ => (Trivariate.eval_on_Z_eq (g i) z).symm)
 
@@ -344,7 +340,6 @@ theorem dvd_eval_on_Z {p q : F[Z][X][Y]} (z : F) (h : p ∣ q) :
     Trivariate.eval_on_Z p z ∣ Trivariate.eval_on_Z q z := by
   obtain ⟨c, rfl⟩ := h
   refine ⟨Trivariate.eval_on_Z c z, ?_⟩
-  simp only [Trivariate.eval_on_Z]
   rw [Trivariate.eval_on_Z_eq, Trivariate.eval_on_Z_eq, Trivariate.eval_on_Z_eq,
     Polynomial.map_mul]
 

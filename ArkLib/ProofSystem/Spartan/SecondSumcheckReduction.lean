@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
+import ArkLib.ProofSystem.Spartan.SumcheckDegreeBound
 import ArkLib.ProofSystem.Sumcheck.Spec.General
 import ProximityPrize.Extensions.ProofSystem.Sumcheck.Domain
 import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
@@ -15,7 +15,7 @@ import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
 Constructs Spartan's second sum-check oracle reduction by lifting the proven full sum-check oracle
 reduction (`Sumcheck.Spec.oracleReduction`) onto Spartan's virtual polynomial
 `M(Y) = sum_idx r_idx * M_idx(r_x, Y) * Z(Y)` (`secondSumCheckVirtualPolynomial`), via
-`OracleReduction.liftContextLegacy` -- the pattern `oracleReduction.firstChallenge` uses for `RandomQuery`.
+`OracleReduction.liftContextLegacy`.
 
 The inner sum-check input `Sumcheck.Spec.StatementRound R l_n 0` has a `target` field equal to the
 random-linear-combination of the bundled eval-claims -- an oracle-dependent value, which
@@ -38,67 +38,12 @@ variable {R : Type} [CommRing R] [IsDomain R] [Fintype R] [DecidableEq R] [Sampl
   (pp : Spartan.PublicParams) {ι : Type} (oSpec : OracleSpec ι)
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] [SampleableType R] in
-private theorem eqPoly_evalC_eq_C_eval {m n : ℕ} (xBits : Fin m → Fin 2) (r_x : Fin m → R) :
-    eval ((C : R →+* MvPolynomial (Fin n) R) ∘ r_x)
-        (eqPolynomial (fun i => ((xBits i : Fin 2) : MvPolynomial (Fin n) R)))
-      = C (eval r_x (eqPolynomial (fun i => ((xBits i : Fin 2) : R)))) := by
-  classical
-  simp only [eqPolynomial, map_prod, singleEqPolynomial, Function.comp_apply, map_add, map_mul,
-    map_sub, map_one, eval_X, map_natCast]
-
-omit [IsDomain R] [Fintype R] [DecidableEq R] [SampleableType R] in
-private theorem toMLE_evalC_eq_sum {m n : ℕ} (M : Matrix (Fin (2 ^ m)) (Fin (2 ^ n)) R)
-    (r_x : Fin m → R) :
-    eval ((C : R →+* MvPolynomial (Fin n) R) ∘ r_x) M.toMLE
-      = ∑ xBits : Fin m → Fin 2,
-          C (eval r_x (eqPolynomial (fun i => ((xBits i : Fin 2) : R)))) *
-            MLE' (M (finFunctionFinEquiv xBits)) := by
-  classical
-  show eval ((C : R →+* MvPolynomial (Fin n) R) ∘ r_x) (MLE ((MLE' ∘ M) ∘ finFunctionFinEquiv)) = _
-  rw [MLE, map_sum]; refine Finset.sum_congr rfl fun xBits _ => ?_
-  rw [eval_mul, eval_C, eqPoly_evalC_eq_C_eval]; rfl
-
-omit [IsDomain R] [Fintype R] [DecidableEq R] [SampleableType R] in
-private theorem toMLE_evalC_mem_restrictDegree {m n : ℕ} (M : Matrix (Fin (2 ^ m)) (Fin (2 ^ n)) R)
-    (r_x : Fin m → R) :
-    eval ((C : R →+* MvPolynomial (Fin n) R) ∘ r_x) M.toMLE ∈ R⦃≤ 1⦄[X Fin n] := by
-  classical
-  rw [toMLE_evalC_eq_sum, mem_restrictDegree_iff_degreeOf_le]; intro j
-  refine le_trans (degreeOf_sum_le j _ _) (Finset.sup_le fun xBits _ => ?_)
-  refine le_trans (degreeOf_mul_le j _ _) ?_
-  rw [degreeOf_C]
-  have h1 : degreeOf j (MLE' (M (finFunctionFinEquiv xBits))) ≤ 1 :=
-    (mem_restrictDegree_iff_degreeOf_le _ _).mp (MLE_mem_restrictDegree _) j
-  omega
-
-omit [IsDomain R] [Fintype R] [DecidableEq R] [SampleableType R] in
 /-- The second sum-check virtual polynomial has degree `<= 2` per variable. -/
 theorem secondSCVP_mem_restrictDegree
     (stmt : Statement.AfterLinearCombination R pp)
     (oStmt : ∀ i, OracleStatement.AfterLinearCombination R pp i) :
-    secondSumCheckVirtualPolynomial R pp stmt oStmt ∈ R⦃≤ 2⦄[X Fin pp.ℓ_n] := by
-  classical
-  rw [mem_restrictDegree_iff_degreeOf_le]; intro j
-  have hM : ∀ idx : R1CS.MatrixIdx,
-      degreeOf j (eval (fun i => (C : R →+* MvPolynomial (Fin pp.ℓ_n) R) (stmt.2.1 i))
-        (oStmt (.inr (.inl idx))).toMLE) ≤ 1 :=
-    fun idx => (mem_restrictDegree_iff_degreeOf_le _ _).mp
-      (toMLE_evalC_mem_restrictDegree _ stmt.2.1) j
-  simp only [secondSumCheckVirtualPolynomial_eq_terms, Function.comp_def, Fin.cast_eq_self]
-  refine le_trans (degreeOf_add_le j _ _)
-    (max_le (le_trans (degreeOf_add_le j _ _) (max_le ?_ ?_)) ?_)
-  · refine le_trans (degreeOf_mul_le j _ _) (le_trans (add_le_add (degreeOf_mul_le j _ _) le_rfl) ?_)
-    rw [degreeOf_C]
-    exact Nat.add_le_add (Nat.add_le_add (le_refl 0) (hM .A))
-      ((mem_restrictDegree_iff_degreeOf_le _ _).mp (MLE_mem_restrictDegree _) j)
-  · refine le_trans (degreeOf_mul_le j _ _) (le_trans (add_le_add (degreeOf_mul_le j _ _) le_rfl) ?_)
-    rw [degreeOf_C]
-    exact Nat.add_le_add (Nat.add_le_add (le_refl 0) (hM .B))
-      ((mem_restrictDegree_iff_degreeOf_le _ _).mp (MLE_mem_restrictDegree _) j)
-  · refine le_trans (degreeOf_mul_le j _ _) (le_trans (add_le_add (degreeOf_mul_le j _ _) le_rfl) ?_)
-    rw [degreeOf_C]
-    exact Nat.add_le_add (Nat.add_le_add (le_refl 0) (hM .C))
-      ((mem_restrictDegree_iff_degreeOf_le _ _).mp (MLE_mem_restrictDegree _) j)
+    secondSumCheckVirtualPolynomial R pp stmt oStmt ∈ R⦃≤ 2⦄[X Fin pp.ℓ_n] :=
+  Spartan.secondSCVP_mem_restrictDegree pp stmt oStmt
 
 /-- The value-level oracle-statement lens for the second sum-check. -/
 noncomputable def secondSumcheckStmtLens :

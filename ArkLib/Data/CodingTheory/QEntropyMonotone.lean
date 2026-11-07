@@ -78,7 +78,8 @@ theorem qEntropy_floor_mul_card_div_card_le (hq : 2 ≤ q) {ι : Type}
 theorem qEntropy_floor_mul_div_le_one (hq : 2 ≤ q) {n : ℕ} {δ : ℝ}
     (hn : 0 < n) (hδ0 : 0 ≤ δ) (hδ : δ ≤ 1 - 1 / (q : ℝ)) :
     qEntropy q ((Nat.floor (δ * n) : ℝ) / n) ≤ 1 :=
-  le_trans (qEntropy_floor_mul_div_le hq hn hδ0 hδ) (qEntropy_le_one hδ0 (hδ.trans (sub_le_self _ (by positivity))))
+  le_trans (qEntropy_floor_mul_div_le hq hn hδ0 hδ)
+    (qEntropy_le_one (hδ.trans (sub_le_self _ (by positivity))))
 
 /-- Finite-domain specialization of `qEntropy_floor_mul_div_le_one`. -/
 theorem qEntropy_floor_mul_card_div_card_le_one (hq : 2 ≤ q) {ι : Type}

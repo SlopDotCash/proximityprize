@@ -57,3 +57,5 @@ theorem prEvent_simulateQ_addLift_getChallenge_bind_le
     Functor.map_map, monadLift_self] using h x.1
 
 end ProtocolSpec
+
+end

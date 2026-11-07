@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import ArkLib.Data.CodingTheory.ProximityGap.MomentCountSupBound
 
 /-!
 # T22 (G5-2): determinantal repulsion → log-rigidity of the period exceedance COUNT — REFUTED
@@ -152,39 +153,10 @@ theorem degenerate_not_simple
 
 /-! ### Obstruction 2 — the surviving sup-deduction depends ONLY on the energy moment (fence F1) -/
 
-/-- **The energy-Markov count bound (this IS `MomentCountSupBound.forall_le_of_sum_pow_lt`).** If the
-`r`-th power-sum of the non-negative family `a` (`a_b = (η_b/√n)²`) is `< T^r`, then no index
-exceeds `T`. Restated here so the reduction map is explicit and self-contained. -/
+/-- The energy-Markov count bound for `a_b = (η_b/√n)²`, from `MomentCountSupBound`. -/
 theorem forall_le_of_sum_pow_lt (a : ι → ℝ) (ha : ∀ i, 0 ≤ a i) (T : ℝ) (hT : 0 < T) (r : ℕ)
-    (hbound : ∑ b, (a b) ^ r < T ^ r) : ∀ b, a b ≤ T := by
-  classical
-  set s := Finset.univ.filter (fun b => T < a b) with hs
-  have hTr : (0 : ℝ) < T ^ r := by positivity
-  -- Markov: (s.card) * T^r ≤ ∑_{s} (a b)^r ≤ ∑ (a b)^r
-  have hmarkov : (s.card : ℝ) * T ^ r ≤ ∑ b, (a b) ^ r := by
-    have hlow : (s.card : ℝ) * T ^ r ≤ ∑ b ∈ s, (a b) ^ r := by
-      have : ∑ _b ∈ s, T ^ r ≤ ∑ b ∈ s, (a b) ^ r := by
-        refine Finset.sum_le_sum ?_
-        intro b hb
-        have hb' : T < a b := (Finset.mem_filter.mp hb).2
-        exact pow_le_pow_left₀ hT.le hb'.le r
-      simpa [Finset.sum_const, nsmul_eq_mul, mul_comm] using this
-    have hmid : ∑ b ∈ s, (a b) ^ r ≤ ∑ b, (a b) ^ r :=
-      Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _)
-        (fun i _ _ => pow_nonneg (ha i) r)
-    exact le_trans hlow hmid
-  have hlt : (s.card : ℝ) * T ^ r < 1 * T ^ r := by
-    rw [one_mul]; exact lt_of_le_of_lt hmarkov hbound
-  have hcard1 : (s.card : ℝ) < 1 := lt_of_mul_lt_mul_right hlt hTr.le
-  have hcard0 : s.card = 0 := by
-    have : s.card < 1 := by exact_mod_cast hcard1
-    omega
-  intro b
-  by_contra hb
-  push Not at hb
-  have hbs : b ∈ s := Finset.mem_filter.mpr ⟨Finset.mem_univ b, hb⟩
-  have : 0 < s.card := Finset.card_pos.mpr ⟨b, hbs⟩
-  omega
+    (hbound : ∑ b, (a b) ^ r < T ^ r) : ∀ b, a b ≤ T :=
+  ArkLib.ProximityGap.MomentCountSupBound.forall_le_of_sum_pow_lt a ha T hT r hbound
 
 /-- **The largest exceeded threshold is bounded by the energy moment ALONE.** Package the deduction
 `t_max ≤ …`: from a moment certificate `Σ_b a_b^r ≤ B < T^r` we get `∀ b, a_b ≤ T`, i.e. the largest

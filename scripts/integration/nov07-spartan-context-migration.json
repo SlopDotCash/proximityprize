@@ -13,7 +13,19 @@
   "delegation": {
     "Spartan.Spec.oracleReduction.firstMessage": "SendSingleWitness.oracleReduction for an already padded instance",
     "Spartan.Spec.zeroCheckVirtualPolynomial": "Spartan.Algebra.residualMLE, with zeroCheckVirtualPolynomial_eq_sum for historical integer-row proofs",
-    "Spartan.Spec.secondSumCheckVirtualPolynomial": "Spartan.Algebra.secondVirtual, with secondSumCheckVirtualPolynomial_eq_terms for historical distributed-term proofs"
+    "Spartan.Spec.secondSumCheckVirtualPolynomial": "Spartan.Algebra.secondVirtual, with secondSumCheckVirtualPolynomial_eq_terms for historical distributed-term proofs",
+    "Spartan.Spec.zeroCheckVirtualPolynomial_eq_zero_of_relation": "Spartan.Algebra.residualMLE_zero_iff_matrix_relation",
+    "Spartan.toMLE_evalC_mem_restrictDegree": "Matrix.toMLE_rowSlice_degreeOf",
+    "Spartan.secondSCVP_mem_restrictDegree": "Spartan.Algebra.secondVirtual_degree_le_two, shared by the historical Spartan.Spec alias",
+    "Spartan.Spec.evalClaimValue": "Spartan.Algebra.rowProduct",
+    "Spartan.Spec.matVecMLE": "Spartan.Algebra.rowProduct",
+    "Spartan.Spec.firstSumCheckVirtualPolynomial": "Spartan.Algebra.firstVirtual",
+    "Spartan.Spec.firstSumCheckVirtualPolynomial_mem_restrictDegree": "Spartan.Algebra.firstVirtual_degree_le_three",
+    "Spartan.Spec.firstSumCheckVirtualPolynomial_hypercubeSum_eq_zeroCheckEval": "Spartan.Algebra.firstVirtual_cubeSum_eq_residualMLE",
+    "Spartan.Spec.Bricks.firstVirtual_eval_eq_product": "Spartan.Algebra.firstVirtual_eval",
+    "Spartan.Spec.Bricks.matrix_toMLE_eval_row_boolColumn": "Matrix.toMLE_rowSlice_eval_zeroOne",
+    "Spartan.Spec.Bricks.secondSumCheckVirtualPolynomial_hypercubeSum_eq_evalClaimValue": "Spartan.Algebra.secondVirtual_cubeSum_eq",
+    "Spartan.Spec.Bricks.secondSumCheckVirtualPolynomial_eval_eq_finalExpectedClaimValue": "Spartan.Algebra.secondVirtual_eval"
   },
   "prior_second_polynomial_construction": {
     "source_revision": "91519a5b257876d2668f012fb34100a8a22b04e6",
@@ -29,7 +41,7 @@
   "validation": {
     "lexical_header_comparison": "passed",
     "canonical_blob_comparison": "passed",
-    "lean_validation": "pending"
+    "lean_validation": "Focused Lean checks passed for the context owner, first challenge completeness, both sumcheck reductions, and SpartanBricks. Full downstream validation is tracked separately."
   },
   "security_predicate_names": {
     "legacy_owner": "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound",

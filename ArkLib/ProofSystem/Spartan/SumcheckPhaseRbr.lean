@@ -7,7 +7,6 @@ Authors: ArkLib Contributors
 import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
 import ArkLib.ProofSystem.Sumcheck.Spec.General
-import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
 
 /-!
 # Round-by-round soundness transport for lifted sum-check phases (issue #114)
@@ -41,14 +40,9 @@ Contents:
   language contained in the transported one, via the proven
   `OracleVerifier.liftContextLegacy_rbr_soundness` + the two pieces above.
 
-* `OracleVerifier.seqCompose'_embed_inl` / `Sumcheck.Spec.oracleVerifier_embed` /
-  `Sumcheck.Spec.mem_support_oracleVerifier_run_oStmt` — the **oracle pass-through facts** for the
-  concrete sum-check verifier: the sequentially-composed sum-check oracle verifier routes its
-  single output oracle from its single input oracle (`embed () = .inl ()`, by induction over the
-  rounds using `append_embed_eq`), hence any reachable verifier output carries the *unchanged*
-  input polynomial oracle. This is what pins the inner output oracle in the transported output
-  language to the (projected) virtual polynomial, making the concrete Spartan phase output
-  languages (`ℱ(r_x) = t'`-shaped) provably contained in the transported ones.
+* `Sumcheck.Spec.mem_support_oracleVerifier_run_oStmt` identifies the unchanged input polynomial
+  oracle in each reachable output of the canonical sum-check verifier. The transported language
+  can therefore use the projected virtual polynomial for its Spartan phase claim `ℱ(r_x) = t'`.
 
 The Spartan-specific phase lemmas consuming this machinery live in `FirstSumcheckComplete.lean`
 and `SecondSumcheckComplete.lean`. The generic pieces are candidates for upstreaming into
@@ -162,10 +156,6 @@ theorem OracleVerifier.liftContext_rbrSoundness_pullback
 
 end LiftContextPullback
 
--- The old `seqCompose'_embed_inl` metadata lemma was specific to embedded outputs.
--- Native composition preserves the actual oracle values through the stronger extensional
--- `OracleVerifier.seqCompose_materializeOutput_eq_input` theorem imported above.
-
 namespace Sumcheck.Spec
 
 open Sumcheck.Spec
@@ -180,11 +170,8 @@ theorem oracleVerifier_materializeOutput_eq_input
     (chals : (pSpec R deg n).Challenges)
     (oStmt : ∀ i, OracleStatement R n deg i)
     (messages : (pSpec R deg n).Messages) :
-    (oracleVerifier R deg D n oSpec).materializeOutput chals oStmt messages = oStmt := by
-  exact OracleVerifier.seqCompose_materializeOutput_eq_input
-    (StatementRound R n) (OracleStatement R n deg)
-    (SingleRound.oracleVerifier R n deg D oSpec)
-    (fun _ _ _ _ => rfl) chals oStmt messages
+    (oracleVerifier R deg D n oSpec).materializeOutput chals oStmt messages = oStmt :=
+  oracleVerifier_materializeOutput R deg D n oSpec chals oStmt messages
 
 /-- **Reachable outputs of the (plain-verifier view of the) sum-check oracle verifier carry the
 unchanged input polynomial oracle.** Any statement in the support of

@@ -3334,6 +3334,7 @@ import Research.ProximityPrize.SubsetSumErdosHeilbronn
 import Research.ProximityPrize.SubsetSumRadiusOne
 import Research.ProximityPrize.Support.AxiomSweep
 import Research.ProximityPrize.Support.BCGM25MCAPreservation
+import Research.ProximityPrize.Support.BinaryPower
 import Research.ProximityPrize.Support.EliasVolumeCertificates
 import Research.ProximityPrize.Support.GG25RandomRSMCAProof
 import Research.ProximityPrize.Support.KK25NearCapacityProof
