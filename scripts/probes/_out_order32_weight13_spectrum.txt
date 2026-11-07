@@ -1,0 +1,24 @@
+=== method validation against the two pinned rungs ===
+h=4: 40 values; exceptions != 40: [(17, 16)]  (G330: only p=17, count 16)
+h=8: 464 values; 34 exceptions <= 4999, largest 4049  (#264: 34 exceptions, largest 4049)
+h=8: p=65537 -> 464 values (injective at n=16)
+
+=== n = 32 census (h = 16) ===
+[n32] h=16 (order 32), |D|=4512, 1109 primes p=1 (mod 32) in [33,200000]
+   p <= 4512 (saturation admissible): 36 primes, never 4512
+   p >  4512 (genuine test):          1073 primes
+     exact 4512: 532 primes -> [16033, 25153, 25889, 27361, 29921, 30689, 30977, 31649, 32801, 32833, 33377, 33857] ...
+     deficient: 541 primes, worst deficiency (2368, 5857)
+
+  spot p=65537: 3264 values, deficiency 1248
+  spot p=714592...*2^128+1: 4512 values, deficiency 0
+  spot p=377713...*2^128+1: 4512 values, deficiency 0
+  spot p=418547...*2^128+1: 4512 values, deficiency 0
+
+=== collision structure at p = 65537 (h = 16) ===
+  g = 65529 = -8 mod p;  (-8)^16 mod p = 65536
+  values 3264; fiber sizes {1: 2144, 2: 992, 3: 128}; colliding pairs 1376
+  minimal-exponent weight-1/weight-3 collision at value 49153: ((10,), (1,)) == ((0, 5, 10), (1, -1, -1))
+  identity: g^5 + 2*g^10 - 1 = 0
+
+PASS
