@@ -205,6 +205,13 @@ Landed by [PR #5](https://github.com/SlopDotCash/proximityprize/pull/5), merge
   on-domain `F_41`, `μ_20` occupant. The explicit finite-field witness is not replayed as a Lean
   theorem.
 
+**SYZ72 addendum (2026-10-30).** The PR #5 probe's rank-`< 4` test also accepts floor-attained
+constant-syzygy triples, so it is not by itself a certificate; it has been hardened, the recorded
+`F_41` witness still passes, and the mandated prime sweep confines the occupancy to `p ≤ 101`
+(`scripts/probes/probe_syz72_middle_band_sweep.py`). The consequence sentence below therefore holds
+at the algebraic/domain-counting level and in the small-field analogue regime only, not at
+production scale. See `DISPROOF_LOG.md` `[SYZ72-middle-band-occupancy-is-small-p]`.
+
 **Consequence:** the first middle slot is not empty at the algebraic/domain-counting level. This
 refutes an emptiness route and narrows F1 to the over-budget-stack lift. It does **not** discharge
 `UniformSylvesterInjective`, `ι ≤ 1`, or production δ*.
