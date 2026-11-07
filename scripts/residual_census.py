@@ -28,10 +28,16 @@ each as:
                or namespace affinity; if it stays ambiguous it is recorded but
                does not discharge.
   refuted    — a concrete declaration proves a negated instance of the residual
-               (for example `theorem ..._false : ¬ FooResidual ...`).  This is
-               not a discharge; it means the statement surface is known false
-               or too broad and should be repaired/retired rather than carried
-               as open proof debt.
+               (for example `theorem ..._false : ¬ FooResidual ...`).  The
+               negation must refute the residual outright: `¬ R ∧ Q` parses as
+               `(¬ R) ∧ Q` and refutes `R`, `¬ (Q ∨ R)` refutes both disjuncts
+               and `¬ (Q → R)` refutes `R`; `¬ R → Q`, `¬ (R ∧ Q)`,
+               `¬ (R ↔ Q)`, `¬ R = Q`, a residual under another head
+               (`¬ IsEmpty R`) and a negated existential (`¬ ∃ h : P, R`)
+               do not establish a refutation by source inspection.
+               This is not a discharge; it means the statement surface is
+               known false or too broad and should be repaired/retired rather
+               than carried as open proof debt.
   open       — everything else.
 
 A residual name appearing only in hypothesis position (`(h : <Name>Residual
@@ -483,6 +489,112 @@ def top_level_connective(result: str) -> str | None:
     return min(found, key=CONNECTIVE_PRECEDENCE.__getitem__)
 
 
+def _closes_at_end(s: str) -> bool:
+    """True when the bracket opened by `s[0]` closes at the last character."""
+    depth = 0
+    for i, c in enumerate(s):
+        if c in OPEN_BRACKETS:
+            depth += 1
+        elif c in CLOSE_BRACKETS:
+            depth -= 1
+            if depth == 0:
+                return i == len(s) - 1
+    return False
+
+
+def _top_level_tokens(s: str) -> list[tuple[int, str]]:
+    """Depth-0 connectives and relations of `s`, as (index, token).
+
+    Relations include `=` (also in `==`), `≠`, `∈`, `∉` and comparisons.
+    The `=` of `:=` and `=>` is ignored.  Scanning stops at a
+    depth-0 `∀`, `∃`, `λ` or `fun`, whose body runs to the end of `s`.
+    """
+    out: list[tuple[int, str]] = []
+    depth = 0
+    for i, c in enumerate(s):
+        if c in OPEN_BRACKETS:
+            depth += 1
+        elif c in CLOSE_BRACKETS:
+            depth = max(0, depth - 1)
+        elif depth == 0:
+            if c in "∀∃λ" or (
+                s.startswith("fun", i)
+                and (i == 0 or not is_ident_char(s[i - 1]))
+                and s[i + 3 : i + 4].isspace()
+            ):
+                break
+            if c in "↔→∨∧≠∈∉<>≤≥":
+                out.append((i, c))
+            elif c == "=" and s[i - 1 : i] != ":" and s[i + 1 : i + 2] != ">":
+                out.append((i, c))
+    return out
+
+
+def _refuted_by_not(p: str, fuel: int) -> list[str]:
+    """Heads that `¬ (p)` refutes outright, where `p` is the whole negated proposition."""
+    p = p.strip()
+    if fuel == 0:
+        return []
+    if p.startswith("(") and _closes_at_end(p):
+        return _refuted_by_not(p[1:-1], fuel - 1)
+    if p.startswith("∃"):
+        # A source scan cannot show that the quantified type has a witness.
+        # For example, `¬ ∃ p : False, R` holds even when R is true.
+        return []
+    if p.startswith("∀"):
+        split = split_top_level_once(p, ",")
+        return _refuted_by_not(split[1], fuel - 1) if split else []
+    tokens = _top_level_tokens(p)
+    kinds = {t for _, t in tokens}
+    if "↔" in kinds:
+        return []
+    if "→" in kinds:
+        # `→` is right-associative and `¬ (A → B)` proves `A ∧ ¬ B`.
+        cut = next(i for i, t in tokens if t == "→")
+        return _refuted_by_not(p[cut + 1 :], fuel - 1)
+    if "∨" in kinds:
+        # `¬ (A ∨ B)` proves `¬ A ∧ ¬ B`.
+        cuts = [i for i, t in tokens if t == "∨"]
+        parts = [p[a + 1 : b] for a, b in zip([-1] + cuts, cuts + [len(p)])]
+        return [h for part in parts for h in _refuted_by_not(part, fuel - 1)]
+    if kinds:
+        return []  # `¬ (A ∧ B)` and `¬ (a = b)`-style relations refute neither side.
+    m = HEAD_IDENT_RE.match(p)
+    return [m.group(0).lstrip("@")] if m else []
+
+
+def negation_targets(negated: str, fuel: int = 16) -> list[str]:
+    """Heads that a result `¬ <negated>` refutes outright.
+
+    `¬` takes its argument at precedence 40, so it binds tighter than `∧`, `∨`,
+    `→` and `↔` and looser than relations: `¬ R ∧ Q` is `(¬ R) ∧ Q` and refutes
+    `R` (a later conjunct `¬ Q` refutes `Q` too); `¬ R → Q`, `¬ R ∨ Q` and
+    `¬ R ↔ Q` refute nothing; `¬ R = Q` is `¬ (R = Q)`.  Within the negated
+    proposition, `¬ (Q ∨ R)` refutes both disjuncts, `¬ (Q → R)` refutes `R`,
+    and `¬ (R ∧ Q)`, `¬ (R ↔ Q)`, `¬ ∃! x, R x`, a residual under another head
+    (`¬ IsEmpty R`) and negated existentials do not establish a refutation
+    by source inspection.
+    """
+    s = negated.strip()
+    if fuel == 0:
+        return []
+    if s.startswith(("∀", "∃")):
+        return _refuted_by_not(s, fuel)  # a binder body runs to the end
+    tokens = _top_level_tokens(s)
+    if any(t in "→∨↔" for _, t in tokens):
+        return []
+    cuts = [i for i, t in tokens if t == "∧"]
+    first, *rest = [s[a + 1 : b] for a, b in zip([-1] + cuts, cuts + [len(s)])]
+    heads = _refuted_by_not(first, fuel)
+    for conjunct in rest:
+        c = strip_forall_prefix(conjunct)
+        while c.startswith("(") and _closes_at_end(c):
+            c = strip_forall_prefix(c[1:-1])
+        if c.startswith("¬"):
+            heads += negation_targets(c[1:], fuel - 1)
+    return heads
+
+
 NUMERAL_RE = re.compile(
     r"(?:-?\s*(?:[0-9](?:[0-9_]*[0-9])?|0[bB][01_]*[01]|0[oO][0-7_]*[0-7]|"
     r"0[xX][0-9a-fA-F_]*[0-9a-fA-F])|∅|\[\])"
@@ -758,19 +870,13 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
                     }
                 )
 
-        refuted_targets: set[str] = set()
         if result_no_forall.startswith("¬"):
-            negated = result_no_forall[1:].strip()
-            neg_head_full = result_head(negated)
-            neg_head_last = neg_head_full.rsplit(".", 1)[-1]
-            if neg_head_last in by_name:
-                refuted_targets.add(neg_head_last)
-            for rname in census_names:
-                if mentions_word(negated, rname):
-                    refuted_targets.add(rname)
-            for rname in refuted_targets:
-                head_for_resolution = neg_head_full if neg_head_last == rname else ""
-                rows, ambiguous = _resolve(by_name[rname], head_for_resolution, provider_ns)
+            targets_full = negation_targets(result_no_forall[1:])
+            for neg_head_full in dict.fromkeys(targets_full):
+                neg_head_last = neg_head_full.rsplit(".", 1)[-1]
+                if neg_head_last not in by_name:
+                    continue
+                rows, ambiguous = _resolve(by_name[neg_head_last], neg_head_full, provider_ns)
                 for row in rows:
                     row["refutations"].append(
                         {
@@ -964,9 +1070,9 @@ def write_wiki_markdown(path: Path, summary: dict, residuals: list[dict], near_m
         "remain **open** until their side conditions are proved. An equivalence (`R ↔ Q`), a",
         "result whose loosest top-level connective after the residual is `→`, `∨` or `=`, or an",
         "instance with a parameter fixed to a numeral (`R 0` or `R (k := 0)`) is not a provider.",
-        "A residual",
-        "is **refuted** when the tree contains a concrete theorem of a negated residual instance,",
-        "and a proved negation outranks any apparent provider.",
+        "A residual is **refuted** when a concrete theorem entails a negated residual instance.",
+        "The census leaves negated existentials unclassified because it does not establish that",
+        "their binder types have witnesses. A proved refutation outranks any apparent provider.",
         "",
         "The named-residual convention is a modularity pattern, not an incompleteness marker:",
         "always check this census before treating a `*Residual` name as open proof debt.",
