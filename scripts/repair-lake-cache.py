@@ -9,13 +9,18 @@ import tempfile
 
 def git_output(package: Path, *args: str) -> str | None:
     result = subprocess.run(['git', '-C', str(package), *args],
-                            capture_output=True, text=True)
+                            capture_output=True, text=True, encoding="utf-8")
     return result.stdout.strip() if result.returncode == 0 else None
 
 
 def repair(root: Path) -> list[str]:
-    manifest = json.loads((root / 'lake-manifest.json').read_text())
+    manifest_path = root / 'lake-manifest.json'
+    if not manifest_path.is_file():
+        return []
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     packages = root / manifest.get('packagesDir', '.lake/packages')
+    if not packages.is_dir():
+        return []
     repaired = []
     quarantine = None
     for entry in manifest['packages']:
