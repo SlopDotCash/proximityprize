@@ -208,7 +208,7 @@ drift.
 
 ## Refuted Residuals
 
-- `AGL24.GMMDSResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:54` — refuted by `not_gmmdsResidual_fin3_zmod2` (ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:96) at `ι := (Fin 3)`, `F := (ZMod 2)`
+- `AGL24.GMMDSResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:54` — refuted by `not_gmmdsResidual_fin3_zmod2` (ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:97) at `ι := (Fin 3)`, `F := (ZMod 2)`
 - `ProximityGap.CurveCommonAgreementResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CoeffExtractionResidual.lean:43` — refuted by `ProximityGap.StrictCanonicalCoeffPolysRefutation.not_curveCommonAgreementResidual` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CanonicalCoeffExtractionRefutation.lean:530) at `k := 1`, `deg := 2`, `domain := domain7`, `δ := (3 / 7 : ℝ≥0)`
 - `ProximityGap.RSCurveListSizeResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/ListSizeResidual.lean:50` — refuted by `ProximityGap.RSCurveListSizeRefutation.not_rsCurveListSizeResidual` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/ListSizeResidualRefutation.lean:154) at `k := 1`, `deg := 1`, `domain := domain`, `δ := (1 : ℝ≥0) / 2`, `e := 2`
 - `BCIKS20.HenselNumerator.FaaDiBrunoSuccSumZeroResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:2542` — refuted by `BCIKS20.HenselNumerator.Witness.faaDiBrunoSuccSumZeroResidual_false` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2OrderZeroRefutationWitness.lean:175) at `H := myH`, `x₀ := (0 : ℚ)`, `R := myR`, `hHyp := myHyp`

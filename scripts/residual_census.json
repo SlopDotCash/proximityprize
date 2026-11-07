@@ -239,7 +239,7 @@
      "name": "not_gmmdsResidual_fin3_zmod2",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean",
-     "line": 96,
+     "line": 97,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
