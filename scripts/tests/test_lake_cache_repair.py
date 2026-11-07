@@ -21,15 +21,15 @@ class CacheRepair(unittest.TestCase):
             packages.mkdir(parents=True)
             names = ['good', 'bad', 'missing', 'no-git']
             (root / 'lake-manifest.json').write_text(json.dumps({
-                'packages': [{'type': 'git', 'name': name} for name in names]}))
+                'packages': [{'type': 'git', 'name': name} for name in names]}), encoding="utf-8")
             for name in ['good', 'bad']:
                 path = packages / name
                 subprocess.run(['git', 'init', '-q', str(path)], check=True)
                 subprocess.run(['git', '-C', str(path), '-c', 'user.name=Test',
                                 '-c', 'user.email=test@example.invalid', 'commit',
                                 '--allow-empty', '-qm', 'test'], check=True)
-                (path / 'artifact.olean').write_text('cached artifact')
-            (packages / 'bad/.git/HEAD').write_text('ref: refs/heads/nonexistent\n')
+                (path / 'artifact.olean').write_text('cached artifact', encoding="utf-8")
+            (packages / 'bad/.git/HEAD').write_text('ref: refs/heads/nonexistent\n', encoding="utf-8")
             (packages / 'no-git').mkdir()
             # A parent Git repository must not make no-git look healthy.
             subprocess.run(['git', 'init', '-q', str(root)], check=True)
@@ -37,9 +37,17 @@ class CacheRepair(unittest.TestCase):
                                             return_value=str(root / 'quarantine')):
                 (root / 'quarantine').mkdir()
                 self.assertEqual(repair.repair(root), ['bad', 'no-git'])
-            self.assertEqual((packages / 'good/artifact.olean').read_text(), 'cached artifact')
+            self.assertEqual((packages / 'good/artifact.olean').read_text(encoding="utf-8"), 'cached artifact')
             self.assertFalse((packages / 'bad').exists())
-            self.assertEqual((root / 'quarantine/bad/artifact.olean').read_text(), 'cached artifact')
+            self.assertEqual((root / 'quarantine/bad/artifact.olean').read_text(encoding="utf-8"), 'cached artifact')
+            self.assertEqual(repair.repair(root), [])
+
+    def test_missing_manifest_or_packages_dir_returns_empty(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.assertEqual(repair.repair(root), [])
+            (root / 'lake-manifest.json').write_text(
+                json.dumps({'packages': []}), encoding="utf-8")
             self.assertEqual(repair.repair(root), [])
 
 

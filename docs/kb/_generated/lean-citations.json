@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 1384,
+    "files_with_citations": 1385,
     "keys_cited": 80,
-    "total_citation_edges": 1767
+    "total_citation_edges": 1768
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -1044,6 +1044,9 @@
       "BCIKS20"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/UniqueDecoding.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/CurvesDegenerate.lean": [
       "BCIKS20"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/EndToEnd.lean": [
@@ -5229,6 +5232,7 @@
       "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/SudanY2.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/UniqueDecoding.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/CurvesDegenerate.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/EndToEnd.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/EpsCa.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Finding14Countermodel.lean",

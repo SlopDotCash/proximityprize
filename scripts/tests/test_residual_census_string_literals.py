@@ -102,7 +102,8 @@ class ResidualCensusStringLiteralTests(unittest.TestCase):
             source.write_text(
                 "def CurveCommonAgreementResidual : Prop := True\n"
                 'def s : String := "/-"\n'
-                "theorem curve_provider : CurveCommonAgreementResidual := by trivial\n"
+                "theorem curve_provider : CurveCommonAgreementResidual := by trivial\n",
+                encoding="utf-8",
             )
             decls = rc.parse_file(source, root)
         names = [d["name"] for d in decls]

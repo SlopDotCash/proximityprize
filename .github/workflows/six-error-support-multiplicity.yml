@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 0
       - name: Check downstream proof-source policy
         run: python3 scripts/forbidden_tokens.py
-      - uses: leanprover/lean-action@v1.6.0
+      - uses: leanprover/lean-action@v1.7.0
         with:
           auto-config: false
           build: false

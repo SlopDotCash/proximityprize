@@ -20,7 +20,7 @@ each as:
                whose explicit non-instance binders are extra assumptions not
                appearing in the provided residual instance, are recorded but do
                NOT count as a discharge (a conditional reduction is not a
-               proof).  A result that is an equivalence (`R ↔ Q`), whose first
+               proof).  A result that is an equivalence (`R ↔ Q`), whose loosest
                top-level connective after the head is `→`, `∨` or `=`, or that
                fixes a named argument to a numeral (`R (k := 0)`) is likewise
                recorded but does not discharge.  When several census residuals
@@ -172,8 +172,9 @@ def split_signature(window: str) -> tuple[str, str]:
     return window[:sig_colon], window[sig_colon + 1 : end]
 
 
-def strip_forall_prefix(result: str) -> str:
-    """Strip leading `∀ ...,` binders from a result type."""
+def split_forall_prefix(result: str) -> tuple[str, str]:
+    """Retain leading universal binders separately from the result body."""
+    binders: list[str] = []
     s = result.strip()
     for _ in range(8):
         if not s.startswith("∀"):
@@ -185,11 +186,20 @@ def strip_forall_prefix(result: str) -> str:
             elif c in CLOSE_BRACKETS:
                 depth = max(0, depth - 1)
             elif c == "," and depth == 0:
+                binder = s[1:i].strip()
+                if not binder.startswith(tuple("({[⦃")):
+                    binder = "(" + binder + ")"
+                binders.append(binder)
                 s = s[i + 1 :].strip()
                 break
         else:
-            return ""
-    return s
+            return " ".join(binders), ""
+    return " ".join(binders), s
+
+
+def strip_forall_prefix(result: str) -> str:
+    """Strip leading `∀ ...,` binders from a result type."""
+    return split_forall_prefix(result)[1]
 
 
 def result_head(result: str) -> str:
@@ -288,7 +298,7 @@ def binder_names_and_type(content: str) -> tuple[list[str], str] | None:
     for tok in re.findall(r"[^\s,]+", names):
         tok = tok.strip()
         tok = tok.strip("(){}[]⦃⦄")
-        if not tok or tok == "_" or tok.startswith("_"):
+        if not tok or tok == "_":
             continue
         if any(ch in tok for ch in ":=<>|\\/"):
             continue
@@ -316,7 +326,8 @@ def is_proposition_shaped(typ: str) -> bool:
     if "//" in typ:
         return False
     return bool(
-        BARE_EQUAL_RE.search(typ)
+        re.fullmatch(r"(?:_root_\.)?(?:True|False)", typ.strip())
+        or BARE_EQUAL_RE.search(typ)
         or COMPARISON_RE.search(typ)
         or any(marker in typ for marker in PROPOSITION_MARKERS)
     )
@@ -365,6 +376,8 @@ def extra_explicit_binders(binders: str, result: str) -> list[str]:
         names, typ = parsed
         if not looks_like_proof_assumption(names, typ):
             continue
+        if not names:
+            extras.append("<anonymous>")
         for name in names:
             if not mentions_word(result, name):
                 extras.append(name)
@@ -389,19 +402,28 @@ def has_top_level(text: str, token: str) -> bool:
 
 TOP_LEVEL_CONNECTIVES = ("↔", "→", "∧", "∨", "=")
 REDUCTION_CONNECTIVES = frozenset({"→", "∨", "="})
+# Lean 4 precedences: a lower number binds more loosely.
+CONNECTIVE_PRECEDENCE = {"↔": 20, "→": 25, "∨": 30, "∧": 35, "=": 50}
 
 
 def top_level_connective(result: str) -> str | None:
-    """First depth-0 connective after the result head application, if any.
+    """The depth-0 connective that decides the shape of the result after its head.
 
     A top-level `∧` still proves the residual when it is the left conjunct,
     while `→`, `∨` and `=` only relate the residual to another proposition
-    (`R → Q` assumes `R`; `R ∨ Q` and `R = Q` prove neither side).
+    (`R → Q` assumes `R`; `R ∨ Q` and `R = Q` prove neither side).  `=` binds
+    tighter than the logical connectives, so a first `=` decides
+    (`R = Q ∧ P` is `(R = Q) ∧ P`); otherwise the loosest connective does, so
+    `R ∧ Q → P` is `(R ∧ Q) → P` and reports `→`.  When the result starts with
+    an identifier, scanning stops at a depth-0 `∀`, `∃`, `λ` or `fun`, whose
+    body runs to the end of the result (`R ∧ ∀ x, P x → Q x` reports `∧`).
     """
     s = strip_forall_prefix(result)
     m = HEAD_IDENT_RE.match(s)
     if not m:
         return None
+    stop_at_binders = is_ident_char(s[0]) or s[0] in "@«"
+    found: list[str] = []
     depth = 0
     i = m.end()
     while i < len(s):
@@ -411,11 +433,25 @@ def top_level_connective(result: str) -> str | None:
         elif c in CLOSE_BRACKETS:
             depth = max(0, depth - 1)
         elif depth == 0:
+            if stop_at_binders and (
+                c in "∀∃λ"
+                or (
+                    s.startswith("fun", i)
+                    and not is_ident_char(s[i - 1])
+                    and s[i + 3 : i + 4].isspace()
+                )
+            ):
+                break
             for conn in TOP_LEVEL_CONNECTIVES:
                 if s.startswith(conn, i):
-                    return conn
+                    found.append(conn)
+                    break
         i += 1
-    return None
+    if not found:
+        return None
+    if found[0] == "=":
+        return "="
+    return min(found, key=CONNECTIVE_PRECEDENCE.__getitem__)
 
 
 NUMERAL_RE = re.compile(r"^(?:\d+|0x[0-9a-fA-F]+|∅|\[\])$")
@@ -629,8 +665,9 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
         last = d["name"].rsplit(".", 1)[-1]
         head_full = result_head(d["result"])
         head_last = head_full.rsplit(".", 1)[-1]
-        result_no_forall = strip_forall_prefix(d["result"])
-        extra_binders = extra_explicit_binders(d["binders"], d["result"])
+        forall_binders, result_no_forall = split_forall_prefix(d["result"])
+        all_binders = d["binders"] + " " + forall_binders
+        extra_binders = extra_explicit_binders(all_binders, result_no_forall)
 
         targets: set[str] = set()
         if head_last in by_name:
@@ -642,7 +679,7 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
                     # result type, else it is about something adjacent.
                     if mentions_word(d["result"], rname):
                         targets.add(rname)
-        consumed = [n for n in census_names if mentions_word(d["binders"], n)]
+        consumed = [n for n in census_names if mentions_word(all_binders, n)]
         # `P ↔ Q` states an equivalence; it proves nothing about `P` itself.
         is_equivalence = has_top_level(result_no_forall, "↔")
         # `R → Q`, `R ∨ Q`, `R = Q` relate `R` to something else; not a proof of `R`.
@@ -875,7 +912,7 @@ def write_wiki_markdown(path: Path, summary: dict, residuals: list[dict], near_m
         "provider has no residual dependencies, no extra proof-like explicit binders, and no",
         "ambiguous namespace match. Conditional reductions are useful proof plumbing, but they",
         "remain **open** until their side conditions are proved. An equivalence (`R ↔ Q`), a",
-        "result whose first top-level connective after the residual is `→`, `∨` or `=`, or an",
+        "result whose loosest top-level connective after the residual is `→`, `∨` or `=`, or an",
         "instance with a parameter fixed to a numeral (`R (k := 0)`) is not a provider. A residual",
         "is **refuted** when the tree contains a concrete theorem of a negated residual instance,",
         "and a proved negation outranks any apparent provider.",

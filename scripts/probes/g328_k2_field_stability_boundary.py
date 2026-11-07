@@ -9,7 +9,10 @@ order-eight subgroup of every prime field ``F_p`` with ``p = 1 mod 8`` and
 * the maximum over all 64 monomial pencils at agreement threshold four.
 
 All arithmetic is exact Python integer arithmetic.  There are no third-party
-dependencies and every asserted result fails closed.
+dependencies and every certificate check fails closed.
+
+Certificate checks raise explicitly, so they stay active under ``python -O`` /
+``PYTHONOPTIMIZE``.
 """
 
 from itertools import combinations
@@ -17,6 +20,12 @@ from math import isqrt
 
 LIMIT = 10_000
 EXPECTED_MAXIMIZERS = ((4, 3), (4, 7), (5, 2), (5, 6))
+
+
+def require(condition, detail):
+    """Certificate checks must survive python -O and PYTHONOPTIMIZE."""
+    if not condition:
+        raise AssertionError(detail)
 
 
 def primes_one_mod_eight(limit: int) -> list[int]:
@@ -36,7 +45,7 @@ def order_eight_generator(p: int) -> int:
     for candidate in range(2, p):
         generator = pow(candidate, (p - 1) // 8, p)
         if pow(generator, 4, p) == p - 1:
-            assert pow(generator, 8, p) == 1
+            require(pow(generator, 8, p) == 1, (p, generator))
             return generator
     raise AssertionError(f"no order-eight generator found modulo {p}")
 
@@ -45,7 +54,7 @@ def scan_prime(p: int) -> tuple[int, int, tuple[tuple[int, int], ...]]:
     """Return the ceiling count, below-ceiling maximum, and all maximizers."""
     generator = order_eight_generator(p)
     domain = [pow(generator, exponent, p) for exponent in range(8)]
-    assert len(set(domain)) == 8
+    require(len(set(domain)) == 8, (p, domain))
 
     def is_affine_on(values: list[int], indices: list[int]) -> bool:
         first, second = indices[:2]
@@ -124,13 +133,16 @@ def scan_prime(p: int) -> tuple[int, int, tuple[tuple[int, int], ...]]:
 
 def main() -> None:
     primes = primes_one_mod_eight(LIMIT)
-    assert primes[0] == 17
+    require(primes[0] == 17, primes[:5])
     results = {p: scan_prime(p) for p in primes}
 
-    assert results[17] == (16, 9, EXPECTED_MAXIMIZERS)
+    require(results[17] == (16, 9, EXPECTED_MAXIMIZERS), results[17])
     stable_primes = primes[1:]
-    assert stable_primes[0] == 41
-    assert all(results[p] == (40, 9, EXPECTED_MAXIMIZERS) for p in stable_primes)
+    require(stable_primes[0] == 41, stable_primes[:5])
+    require(
+        all(results[p] == (40, 9, EXPECTED_MAXIMIZERS) for p in stable_primes),
+        {p: results[p] for p in stable_primes if results[p] != (40, 9, EXPECTED_MAXIMIZERS)},
+    )
 
     print("G328 exact order-eight dimension-two scan")
     print(f"tested_primes={len(primes)} range={primes[0]}..{primes[-1]}")

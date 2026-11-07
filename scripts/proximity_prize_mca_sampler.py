@@ -40,8 +40,19 @@ from pathlib import Path
 import numpy as np
 
 
+def validate_parameters(q: int, n: int, k: int, pairs_per_family: int | None = None) -> None:
+    """Require the prime-field RS model before allocating or reporting samples."""
+    if q < 2 or any(q % divisor == 0 for divisor in range(2, math.isqrt(q) + 1)):
+        raise ValueError("q must be prime; integer arithmetic modulo q is not an extension field")
+    if not 1 <= k <= n <= q:
+        raise ValueError("require 1 <= k <= n <= q for an injective RS evaluation domain")
+    if pairs_per_family is not None and pairs_per_family <= 0:
+        raise ValueError("pairs-per-family must be positive to report a sampled lower bound")
+
+
 def vandermonde_codewords(q: int, n: int, k: int) -> np.ndarray:
     """All q^k RS codewords as a (q^k, n) int array, domain = 0..n-1."""
+    validate_parameters(q, n, k)
     xs = np.arange(n) % q
     powers = np.stack([pow_mat(xs, j, q) for j in range(k)], axis=0)  # (k, n)
     coeffs = np.indices((q,) * k).reshape(k, -1).T  # (q^k, k)
@@ -84,6 +95,9 @@ def bad_gammas_for_pair(
     f1: np.ndarray, f2: np.ndarray, C: np.ndarray, q: int, n: int, k: int, radius: int
 ) -> int:
     """Exact count of gammas where the mca bad event fires for (f1, f2)."""
+    validate_parameters(q, n, k)
+    if not 0 <= radius <= n:
+        raise ValueError("radius must be between zero and n")
     bad = 0
     for gamma in range(q):
         w = (f1 + gamma * f2) % q
@@ -148,6 +162,10 @@ def main() -> int:
     args = ap.parse_args()
 
     q, n, k = args.q, args.n, args.k
+    try:
+        validate_parameters(q, n, k, args.pairs_per_family)
+    except ValueError as error:
+        ap.error(str(error))
     rng = random.Random(args.seed)
     C = vandermonde_codewords(q, n, k)
     rate = k / n

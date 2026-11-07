@@ -16,6 +16,12 @@ has only the three lawful Mann families.
 This is a finite exact-arithmetic probe, not a production n=2^30 closure and
 not a proof that the first prime after round(n^(158/30)) always works.
 
+Certificate gates (primality, generator order, Phi injectivity of the first
+eight diagonal rows, and the two accident collision counts) use `require()`
+so they survive `python -O` / `-OO` / `PYTHONOPTIMIZE`. Bare `assert` is
+stripped under optimization and would let a noninjective or miscounted
+certificate print and exit 0.
+
 The first three diagonal cells are found by exact first-prime search below
 3317044064679887385961981, where Miller-Rabin with bases 2,3,5,...,41 is
 deterministic.  The larger cells are explicit diagonal-scale primes whose
@@ -27,6 +33,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 import json
+
+
+def require(condition: bool, detail: str) -> None:
+    """Certificate checks must survive python -O and PYTHONOPTIMIZE."""
+    if not condition:
+        raise AssertionError(detail)
+
 
 BETA_NUM = 158
 BETA_DEN = 30
@@ -146,7 +159,7 @@ def is_prime(n: int) -> bool:
 
 def verify_prime_factorization(factors: tuple[int, ...]) -> None:
     for factor in set(factors):
-        assert is_prime(factor), factor
+        require(is_prime(factor), f"composite factor in p-1 factorization: {factor}")
 
 
 def verify_pocklington_prime(p: int, factors: tuple[int, ...]) -> None:
@@ -155,8 +168,8 @@ def verify_pocklington_prime(p: int, factors: tuple[int, ...]) -> None:
     product = 1
     for factor in factors:
         product *= factor
-    assert product == p - 1
-    assert product * product > p
+    require(product == p - 1, "factor product must equal p - 1")
+    require(product * product > p, "Pocklington needs (p-1) factorization product^2 > p")
 
     for q in set(factors):
         for a in range(2, 200):
@@ -198,7 +211,7 @@ def order_n_generator(p: int, n: int) -> int:
 
 
 def phi_certificate(n: int, p: int, label: str) -> PhiRow:
-    assert (p - 1) % n == 0
+    require((p - 1) % n == 0, "p-1 must be divisible by n")
     g = order_n_generator(p, n)
 
     powers = [1]
@@ -206,8 +219,8 @@ def phi_certificate(n: int, p: int, label: str) -> PhiRow:
     for _ in range(1, n):
         x = (x * g) % p
         powers.append(x)
-    assert (x * g) % p == 1
-    assert len(set(powers)) == n
+    require((x * g) % p == 1, "generator does not have exact order n")
+    require(len(set(powers)) == n, "subgroup powers missed a residue class")
 
     phi_items: list[tuple[int, int]] = []
     seen: dict[int, int] = {}
@@ -250,13 +263,13 @@ def main() -> None:
     rows: list[PhiRow] = []
     for n in (8192, 16384, 32768):
         p = first_diagonal_prime(n)
-        assert is_prime(p)
+        require(is_prime(p), f"diagonal first-prime search returned composite p={p}")
         rows.append(phi_certificate(n, p, f"diagonal-n{n}"))
     for n, p, factors in CERTIFIED_DIAGONAL_CELLS:
         verify_pocklington_prime(p, factors)
         rows.append(phi_certificate(n, p, f"diagonal-n{n}"))
-    assert is_prime(17318209)
-    assert is_prime(138027521)
+    require(is_prime(17318209), "G173-accident modulus must be prime")
+    require(is_prime(138027521), "n512-offdiag-accident modulus must be prime")
     rows.append(phi_certificate(64, 17318209, "G173-accident"))
     rows.append(phi_certificate(512, 138027521, "n512-offdiag-accident"))
 
@@ -268,8 +281,10 @@ def main() -> None:
     for row in rows:
         emit_row(row)
 
-    assert all(row.injective for row in rows[:8])
-    assert [row.collision_count for row in rows[8:]] == [3, 3]
+    require(all(row.injective for row in rows[:8]),
+            "expected first eight Phi rows injective")
+    require([row.collision_count for row in rows[8:]] == [3, 3],
+            "expected accident collision counts [3, 3]")
 
 
 if __name__ == "__main__":

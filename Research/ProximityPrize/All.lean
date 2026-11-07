@@ -1247,6 +1247,7 @@ import Research.ProximityPrize.Frontier._DstarGrowthLaw
 import Research.ProximityPrize.Frontier._DyadicCocycleLargeDeviation
 import Research.ProximityPrize.Frontier._DyadicDeviationDecayEnvelope
 import Research.ProximityPrize.Frontier._DyadicJacobiCocycleNonContraction
+import Research.ProximityPrize.Frontier._DyadicNonCosetCountCertificate
 import Research.ProximityPrize.Frontier._DyadicParallelogramInvariant
 import Research.ProximityPrize.Frontier._DyadicPhaseChaining
 import Research.ProximityPrize.Frontier._DyadicPhaseChainingSubmaxRefuted
@@ -1403,6 +1404,7 @@ import Research.ProximityPrize.Frontier._G136UnitCircleMann
 import Research.ProximityPrize.Frontier._G137MannPairingCensusConsumer
 import Research.ProximityPrize.Frontier._G138CyclotomicLiftHandoff
 import Research.ProximityPrize.Frontier._G139AccidentQuantizationConsumer
+import Research.ProximityPrize.Frontier._G139ArithmeticCertificate
 import Research.ProximityPrize.Frontier._G139NoAccidentEntropyObstruction
 import Research.ProximityPrize.Frontier._G139PhiInjectiveSidonBridge
 import Research.ProximityPrize.Frontier._G139SidonModNegClean
@@ -1801,6 +1803,7 @@ import Research.ProximityPrize.Frontier._IsolatedCountKelley
 import Research.ProximityPrize.Frontier._IsolatedCountResidualRefuted
 import Research.ProximityPrize.Frontier._IsolatedNonCosetCountResidualRefuted
 import Research.ProximityPrize.Frontier._IsolatedNonCosetPositiveCharacteristic
+import Research.ProximityPrize.Frontier._IsolatedNonCosetSharpBound
 import Research.ProximityPrize.Frontier._JacAutocorrL2SupGap
 import Research.ProximityPrize.Frontier._JacAutocorrWeilDescentToCurveSum
 import Research.ProximityPrize.Frontier._JacKatzBoundedConductorFamily

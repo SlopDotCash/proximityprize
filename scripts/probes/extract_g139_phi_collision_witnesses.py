@@ -15,6 +15,9 @@ has `u^n = 1`, and therefore gives the additive relation
 
 inside the generated order-`n` subgroup.  This companion makes failed
 `PhiWindowInjective` checks auditable as compact exact witnesses.
+
+Certificate checks raise explicitly, so they stay active under ``python -O`` /
+``PYTHONOPTIMIZE``.
 """
 
 from __future__ import annotations
@@ -24,6 +27,12 @@ from dataclasses import asdict, dataclass
 import json
 
 import probe_g139_phi_certificate as phi
+
+
+def require(condition: bool, detail: str) -> None:
+    """Certificate checks must survive python -O and PYTHONOPTIMIZE."""
+    if not condition:
+        raise AssertionError(detail)
 
 
 CONTROL_CELLS = (
@@ -76,8 +85,8 @@ def subgroup_table(g: int, n: int, p: int) -> dict[int, int]:
     for exponent in range(n):
         table[x] = exponent
         x = (x * g) % p
-    assert x == 1
-    assert len(table) == n
+    require(x == 1, "generator does not have exact order n")
+    require(len(table) == n, "subgroup table missed a residue class")
     return table
 
 
@@ -85,15 +94,15 @@ def extract_witness(row: phi.PhiRow, r: int, s: int) -> CollisionWitness:
     p = row.p
     n = row.n
     g = row.generator
-    assert 1 <= r <= n // 2
-    assert 1 <= s <= n // 2
+    require(1 <= r <= n // 2, "r is outside the half-window")
+    require(1 <= s <= n // 2, "s is outside the half-window")
     powers = subgroup_table(g, n, p)
 
     gr = pow(g, r, p)
     gs = pow(g, s, p)
     numerator = (gr - 1) % p
     denominator = (gs - 1) % p
-    assert denominator != 0
+    require(denominator != 0, "g^s - 1 vanishes")
 
     u = numerator * pow(denominator, -1, p) % p
     u_exponent = powers[u]
@@ -178,14 +187,17 @@ def main() -> None:
         ]
 
     for (row, collisions), expect_nonlawful in rows_and_collisions:
-        assert collisions
+        require(bool(collisions), "expected at least one Phi collision")
         for r, s in collisions:
             witness = extract_witness(row, r, s)
-            assert witness.relation_holds
-            assert witness.phi_collision_holds
-            assert witness.u_is_root
+            require(witness.relation_holds, "additive Sidon relation failed")
+            require(witness.phi_collision_holds, "Phi collision identity failed")
+            require(witness.u_is_root, "quotient is not an n-th root of unity")
             if expect_nonlawful:
-                assert not witness.normalized_g139_lawful
+                require(
+                    not witness.normalized_g139_lawful,
+                    "control collision lies in a lawful Mann family",
+                )
             witnesses.append(witness)
 
     print(json.dumps([asdict(witness) for witness in witnesses], sort_keys=True, indent=2))

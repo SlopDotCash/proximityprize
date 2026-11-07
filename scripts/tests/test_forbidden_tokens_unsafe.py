@@ -110,6 +110,44 @@ class ForbiddenTokensUnsafeTests(unittest.TestCase):
             "native_decide",
         )
 
+    def test_open_in_unsafe_def_is_rejected(self) -> None:
+        # The gate must not depend on the declaration starting a line:
+        # command prefixes such as `open … in` put `unsafe` mid-line.
+        self.assert_rejected(
+            "open Foo in unsafe def bar : Nat := 1\n",
+            "unsafe",
+        )
+
+    def test_set_option_in_unsafe_def_is_rejected(self) -> None:
+        self.assert_rejected(
+            "set_option maxRecDepth 1000 in unsafe def bar : Nat := 1\n",
+            "unsafe",
+        )
+
+    def test_omit_in_unsafe_def_is_rejected(self) -> None:
+        # `omit […] in theorem …` is already used in the repository, so
+        # the same combinator must not launder an unsafe declaration.
+        self.assert_rejected(
+            "omit [DecidableEq F] in unsafe def bar : Nat := 1\n",
+            "unsafe",
+        )
+
+    def test_mutual_unsafe_def_is_rejected(self) -> None:
+        self.assert_rejected(
+            "mutual unsafe def bar : Nat := 1\nend\n",
+            "unsafe",
+        )
+
+    def test_mid_line_unsafe_def_is_rejected(self) -> None:
+        self.assert_rejected(
+            "def keep : Nat := 1 unsafe def bar : Nat := 2\n",
+            "unsafe",
+        )
+        self.assert_rejected(
+            "def foo : Nat := bar where unsafe def bar : Nat := 1\n",
+            "unsafe",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

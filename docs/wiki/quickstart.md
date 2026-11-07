@@ -89,6 +89,8 @@ For focused checks, prefer `lake build ArkLib.Path.To.Module`. A direct `lake en
 does not inherit the package's Lean options or build-time source-policy plugin. In particular,
 a probe using default `autoImplicit` can accept an undeclared parameter that the project rejects.
 `pg-iterate.sh` passes `-DautoImplicit=false` explicitly to match the package policy.
+It checks the file against the source policy and audits any axiom reports it emits.
+Compilation failures, admission warnings, and unapproved reported axioms fail the check.
 Treat such a probe as provisional until the source passes the project build.
 
 When agents are running a shared shell script, replace that script atomically through a temporary
@@ -127,15 +129,16 @@ ArkLib declaration types and bodies, without a baseline exception. See
 ./scripts/validate.sh
 ```
 
-### Added, renamed, or deleted files under `ArkLib/`
+### Added, renamed, or deleted files under `ArkLib/` or `Research/ProximityPrize/`
 
 ```bash
 git add path/to/newfile.lean
 ./scripts/validate.sh
 ```
 
-`./scripts/update-lib.sh` only considers tracked files, and fails fast if untracked
-`ArkLib/**/*.lean` files are present.
+`./scripts/update-lib.sh` and `python3 scripts/update-research-lib.py` require new Lean
+files in their source trees to be staged. `./scripts/check-imports.sh` runs both generators
+and verifies that the committed import surfaces match the tracked source.
 
 ### Compile-time acceptance tests
 

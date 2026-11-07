@@ -10,6 +10,13 @@ import ArkLib.Data.CodingTheory.AGL24FrankInterface
 /-!
 # [AGL24] Theorem 2.11 with Lovett's algebraic core discharged (#389 / r3_thm211)
 
+> **Correction.** Two premises of `symbolicFullRank_lovett_free` cannot be supplied:
+> `not_symbolicMinorFromLovett` (`GMMDS/LovettPremisesRefutation.lean`) refutes
+> `SymbolicMinorFromLovett ι F k` for every `k ≥ 1`, and `not_fieldLargeForMinor`
+> (`GMMDS/FieldLargeForMinorRefutation.lean`) refutes `FieldLargeForMinor ι F k` for
+> `2 ≤ k ≤ |ι|`. The theorem below is therefore vacuous for every `k ≥ 1`; the ledger stated
+> here does not localize `SymbolicFullRankResidual`.
+
 This file states the **sharpest honest residual ledger** for `AGL24.SymbolicFullRankResidual`
 — the consolidated GM-MDS open core (AGL24 Theorem 2.11, the GM-MDS-line full-column-rank
 theorem that sits below the whole AGL24 list-decoding tower).

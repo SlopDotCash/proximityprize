@@ -302,3 +302,5 @@ python3 scripts/module_times.py update .lake/build/arklib-module-times.json \
   want to run or debug one piece in isolation
 - `validate.sh` enforces a zero non-`sorry` warning budget across canonical ArkLib modules
 - New `ArkLib/**/*.lean` files must be staged before `update-lib.sh` or `check-imports.sh`
+- New `Research/ProximityPrize/**/*.lean` files must be staged before
+  `update-research-lib.py` or `check-imports.sh`; untracked files are an error, not an omission
