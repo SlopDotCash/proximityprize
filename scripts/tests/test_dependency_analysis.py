@@ -26,7 +26,7 @@ class DependencyAnalysisTests(unittest.TestCase):
                 alias.symlink_to("Real.lean")
             except OSError:
                 self.skipTest("Creating a symlink requires platform support")
-            self.assertEqual(gdg.normalize_module_name(str(alias), str(root)), "ArkLib.Alias")
+            self.assertEqual(gdg.normalize_module_name(alias, root), "ArkLib.Alias")
             self.assertEqual(
                 gdg.build_dependency_graph([str(alias)], str(root)),
                 {"ArkLib.Core": ["ArkLib.Alias"]},

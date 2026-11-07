@@ -48,7 +48,7 @@ def parse_imports(file_path: str) -> List[str]:
 def normalize_module_name(file_path: str, root_dir: str) -> str:
     """Convert file path to normalized module name."""
     # Module identity follows the path Lean imports, including a symlink alias.
-    relative = os.path.relpath(file_path.replace("\\", "/"), root_dir.replace("\\", "/"))
+    relative = os.path.relpath(str(file_path).replace("\\", "/"), str(root_dir).replace("\\", "/"))
     return relative.replace("\\", "/").removesuffix(".lean").replace("/", ".")
 
 
