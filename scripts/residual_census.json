@@ -3271,7 +3271,9 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "positional := 0"
+     ]
     }
    ],
    "status": "discharged"
