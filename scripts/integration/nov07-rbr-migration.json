@@ -356,6 +356,7 @@
     "ArkLib/ProofSystem/Binius/FRIBinius/General.lean": {
       "before_sha256": "0836c224a4e63ebdbd4179256ec3a582446774604faa010895a477bc56dacc0c",
       "after_sha256": "3de902e9345c7acbc68227bc29a97ce2636bcbc98bba921a81d95baad3011f87",
+      "followup_after_sha256": "89f038def59491b69697b7462ed889ff49e1989f81bc2861ff2103aca5cadd7c",
       "renames": {
         "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
       },
@@ -868,6 +869,7 @@
     "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/General.lean": {
       "before_sha256": "edd93577528be02c21b6a1f5bf6a7d71191f087f6e1412ba7d7aaa29b452592f",
       "after_sha256": "0286582b7ddb9cb8f5c66729e38db40dc2273d79d7c54910a9acf7cd376f3536",
+      "followup_after_sha256": "75803baf046086a04d13da711795b0f9417704bad418d02e4ef1eff624682136",
       "renames": {
         "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
       },
@@ -1027,6 +1029,15 @@
     },
     "axiom_reports": 8,
     "axiom_output_sha256": "4b10221d45185ee2d677afdaaf3248f990227d67cad8f06060d538f072a4b24f"
+  },
+  "binius_query_transport": {
+    "source_declaration": "Verifier.rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged",
+    "downstream_callers": {
+      "ArkLib/ProofSystem/Binius/FRIBinius/General.lean": "Binius.FRIBinius.FullFRIBinius.fullOracleVerifier_rbrKnowledgeSoundness_wired",
+      "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/General.lean": "Binius.BinaryBasefold.FullBinaryBasefold.fullOracleVerifier_rbrKnowledgeSoundness_wired"
+    },
+    "axiom_reports": 2,
+    "axiom_output_sha256": "dda5eb711e5fe2494da69a27cfb572f271b3618bfbc60734c8ca9a4c43fc27a7"
   },
   "one_shot": "No theorem consumer in downstream sources. The only live reference was its orphan CoeFun instance. Neither its game nor its machinery is restored.",
   "canonical_delegations": [
