@@ -9,9 +9,10 @@ provider has no residual dependencies, no extra proof-like explicit binders, and
 ambiguous namespace match. Conditional reductions are useful proof plumbing, but they
 remain **open** until their side conditions are proved. An equivalence (`R ↔ Q`), a
 result whose loosest top-level connective after the residual is `→`, `∨` or `=`, or an
-instance with a parameter fixed to a numeral (`R (k := 0)`) is not a provider. A residual
-is **refuted** when the tree contains a concrete theorem of a negated residual instance,
-and a proved negation outranks any apparent provider.
+instance with a parameter fixed to a numeral (`R 0` or `R (k := 0)`) is not a provider.
+A residual is **refuted** when a concrete theorem entails a negated residual instance.
+The census leaves negated existentials unclassified because it does not establish that
+their binder types have witnesses. A proved refutation outranks any apparent provider.
 
 `Research/` stays outside this production census; this is not a research-completion ledger.
 
