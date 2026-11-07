@@ -2933,6 +2933,7 @@ import Research.ProximityPrize.Frontier._TwoAdicParityGate
 import Research.ProximityPrize.Frontier._TwoAdicStallLocator
 import Research.ProximityPrize.Frontier._TwoAdicTropicalFloor
 import Research.ProximityPrize.Frontier._TwoAnchorBootstrapFirstStepNoGo
+import Research.ProximityPrize.Frontier._TwoPowerCyclotomicTrace
 import Research.ProximityPrize.Frontier._TwoPowerRootDescent
 import Research.ProximityPrize.Frontier._TwoSidedCapstone
 import Research.ProximityPrize.Frontier._TwoSidedUpperSumProductExponent
