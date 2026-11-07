@@ -6,8 +6,9 @@ provided, scans only those Lean files/directories. Fails if live
 (non-comment) code contains (`axiom` text inside a string literal is data):
   - `native_decide` / `bv_decide` (kernel-bypassing decision procedures), the
     equivalent `decide +native` / `decide (native := true)` forms and `bv_check`,
-    or direct use of the compiler-trust axioms they rely on (`Lean.ofReduceBool`,
-    `Lean.ofReduceNat`, `Lean.trustCompiler`), or
+    or direct use of the compiler-trust axioms and native reduction primitives
+    they rely on (`Lean.ofReduceBool`, `Lean.ofReduceNat`, `Lean.trustCompiler`,
+    `Lean.reduceBool`, `Lean.reduceNat`), or
   - an `unsafe` declaration modifier, live `unsafeCast`, or `implemented_by`
     attribute (repository policy: block unsafe decls, unsafeCast, and
     evaluator-diverging `implemented_by`; this is a fast precheck, not a claim
@@ -23,6 +24,8 @@ provided, scans only those Lean files/directories. Fails if live
     residual (see scripts/residual_axioms.txt), with any modifiers (including
     `public`/`meta` in `module` files) and with the name on a later line or
     after a comment, or
+  - an `axiom` keyword followed by an antiquotation (`axiom $n` in a syntax
+    quotation), which lets a macro declare an axiom under any name, or
   - a second declaration of an allowlisted residual name. The allowlist stores
     simple names, so an entry matches an `axiom` declared inside any namespace;
     without this rule a clone such as
@@ -72,12 +75,10 @@ import re
 import sys
 from pathlib import Path
 
-# `Lean.ofReduceBool` / `Lean.ofReduceNat` applied directly as terms add the same
-# compiler-trust axioms (`Lean.ofReduceBool`, `Lean.trustCompiler`) as
-# `native_decide`, without any tactic spelling.
+# Native reduction primitives can be called directly without a tactic spelling.
 TOKEN_RE = re.compile(
     r"\b(native_decide|bv_decide|unsafeCast|implemented_by"
-    r"|ofReduceBool|ofReduceNat|trustCompiler)\b"
+    r"|ofReduceBool|ofReduceNat|trustCompiler|reduceBool|reduceNat)\b"
 )
 # Meta code can add a kernel declaration without the `axiom` keyword, e.g.
 # `run_cmd liftCoreM <| addDecl (.axiomDecl { name := `w, type := mkConst ``False, .. })`.
@@ -169,6 +170,13 @@ _NAME = _COMP + r"(?:\." + _COMP + r")*"
 # `\s*` also spans newlines and blanked comments: `axiom\n  foo`,
 # `axiom/- c -/foo`, `axiom/- c\n-/foo` and `axiom«foo»` are all seen.
 AXIOM_RE = re.compile(_ID_START + r"axiom" + _ID_END + r"\s*(" + _NAME + r")")
+# A syntax quotation can splice the declared name in with an antiquotation:
+# `macro "launder " n:ident : command => `(axiom $n : False)` followed by
+# `launder w` declares the axiom `w`, and `$(mkIdent `w)` does the same without
+# a macro argument. `AXIOM_RE` needs a literal name after the keyword, so a live
+# `axiom` keyword followed by `$` is rejected on its own: the real name is only
+# known after elaboration, so it can never be matched against the allowlist.
+AXIOM_ANTIQUOT_RE = re.compile(_ID_START + r"axiom" + _ID_END + r"\s*\$")
 # Text inside a guillemet-quoted identifier (`«an axiom counterfeit'»`) is part
 # of a name, not a command, so an `axiom` match that starts inside one is not a
 # declaration. Quoted-identifier spans come from `lex_lean`, which also lexes
@@ -450,6 +458,12 @@ def axiom_hits(code: str, res: LexResult) -> list[tuple[int, str]]:
             if outside_quoted(m.start(), res.quoted)]
 
 
+def antiquoted_axiom_hits(code: str, res: LexResult) -> list[int]:
+    """Live `axiom $…` heads in syntax quotations: the name comes from elaboration."""
+    return [m.start() for m in AXIOM_ANTIQUOT_RE.finditer(code)
+            if outside_quoted(m.start(), res.quoted)]
+
+
 def exit_hits(code: str, res: LexResult) -> list[int]:
     """Offsets of live `#exit` commands."""
     return [m.start() for m in EXIT_RE.finditer(code) if outside_quoted(m.start(), res.quoted)]
@@ -461,7 +475,8 @@ def command_view(text: str, res: LexResult) -> tuple:
     return (axiom_hits(code, res),
             [(m.start(), m.group(1), m.group(2)) for m in declaration_heads(code, res)],
             find_true_placebos(text, res),
-            exit_hits(code, res))
+            exit_hits(code, res),
+            antiquoted_axiom_hits(code, res))
 
 
 def comment_mask(text: str) -> list[bool]:
@@ -901,6 +916,14 @@ def main() -> int:
                     f"tracked residual)"
                 )
 
+        for am_start in antiquoted_axiom_hits(live_text, lexed):
+            idx = live_text.count("\n", 0, am_start) + 1
+            failures.append(
+                f"{path}:{idx}: forbidden custom axiom declaration with an antiquoted "
+                f"name (`axiom $…` in a syntax quotation lets a macro or elaborator "
+                f"declare an axiom whose name the allowlist never sees)"
+            )
+
         for line_no, name in find_true_placebos(text, lexed):
             failures.append(
                 f"{path}:{line_no}: forbidden vacuous placebo "
@@ -937,7 +960,7 @@ def main() -> int:
         print("\n".join(allowed_hits))
     print(
         "forbidden-token precheck: clean (no native_decide / bv_decide / "
-        "ofReduceBool / ofReduceNat / trustCompiler / "
+        "ofReduceBool / ofReduceNat / trustCompiler / reduceBool / reduceNat / "
         "unsafe declaration / unsafeCast / implemented_by / "
         "undocumented custom axiom / vacuous `: True` placebo; "
         f"{len(allowed_hits)} allowlisted residual axiom(s))"
