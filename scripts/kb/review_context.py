@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from common import DEFAULT_CITATIONS_JSON, DEFAULT_REFERENCES_JSON, REPO_ROOT
 
@@ -30,8 +30,8 @@ def normalize_repo_path(raw_path: str) -> str:
 
     path = Path(raw_path)
     if path.is_absolute():
-        return str(path.resolve().relative_to(REPO_ROOT))
-    return str(path)
+        return path.resolve().relative_to(REPO_ROOT).as_posix()
+    return PurePosixPath(raw_path.replace("\\", "/")).as_posix()
 
 
 def infer_keys_from_files(file_paths: list[str], citations_payload: dict[str, object]) -> set[str]:
@@ -56,10 +56,10 @@ def build_repo_refs(keys: list[str]) -> list[str]:
     for key in keys:
         paper_page = Path("docs/kb/papers") / f"{key}.md"
         if (REPO_ROOT / paper_page).exists():
-            refs.append(str(paper_page))
+            refs.append(paper_page.as_posix())
         metadata = Path("docs/kb/sources") / key / "metadata.yml"
         if (REPO_ROOT / metadata).exists():
-            refs.append(str(metadata))
+            refs.append(metadata.as_posix())
     return refs
 
 
