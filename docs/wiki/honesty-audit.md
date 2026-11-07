@@ -11,6 +11,13 @@ a "PROVEN" issue comment, or a grant-completion claim.
 undocumented `axiom` — `forbidden_tokens.py`), flagship-theorem axiom drift
 (`axiom_audit.py`). An auditor's job is everything those *cannot* see.
 
+The build also rejects Lean's `stop` tactic, which admits open goals. The
+end-of-module syntax check runs in all four default Lake libraries and in
+`ArkLibTest`, including inside `#guard_msgs` and when `warn.sorry` is false.
+The text census continues to cover explicit admission tokens in unbuilt source.
+For a `stop` check in an optional module owned by one of these libraries, build
+that module explicitly with Lake.
+
 The optional post-build `python3 scripts/proximity_prize_cleanroom_audit.py` checks
 the apex declarations listed in `scripts/proximity_prize_cleanroom_targets.txt`.
 It locates the declaration's result after binders and top-level arrow premises
