@@ -211,10 +211,8 @@ theorem knowledgeSoundness.mono_error
     {knowledgeError₁ knowledgeError₂ : ℝ≥0}
     (hSound : knowledgeSoundness init impl relIn relOut verifier knowledgeError₁)
     (hle : knowledgeError₁ ≤ knowledgeError₂) :
-    knowledgeSoundness init impl relIn relOut verifier knowledgeError₂ := by
-  obtain ⟨extractor, hSound⟩ := hSound
-  exact ⟨extractor, fun Aux stmtIn aux prover =>
-    le_trans (hSound Aux stmtIn aux prover) (ENNReal.coe_le_coe.mpr hle)⟩
+    knowledgeSoundness init impl relIn relOut verifier knowledgeError₂ :=
+  Verifier.knowledgeSoundness_error_mono init impl hle hSound
 
 /-- Straightline knowledge soundness is monotone in the input and output relations.
 

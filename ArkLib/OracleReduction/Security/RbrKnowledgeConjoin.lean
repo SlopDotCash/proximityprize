@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
 
 /-!
@@ -77,12 +78,12 @@ theorem rbrKnowledgeSoundness_conjoin
     {relIn : Set (StmtIn × WitIn)} {relOut : Set (StmtOut × WitOut)}
     {V : Verifier oSpec StmtIn StmtOut pSpec}
     {err : pSpec.ChallengeIdx → ℝ≥0}
-    (hKS : V.rbrKnowledgeSoundness init impl relIn relOut err)
+    (hKS : V.rbrKnowledgeSoundnessAveraged init impl relIn relOut err)
     (P_in : Set StmtIn) (P_out : Set StmtOut)
     (hPres : ∀ stmtIn tr,
       probEvent (fun stmtOut => stmtOut ∈ P_out) (OptionT.mk do (simulateQ impl (V.run stmtIn tr)).run' (← init)) > 0 →
       stmtIn ∈ P_in) :
-    V.rbrKnowledgeSoundness init impl
+    V.rbrKnowledgeSoundnessAveraged init impl
       (relIn ∩ {x | x.1 ∈ P_in}) (relOut ∩ {y | y.1 ∈ P_out}) err := by
   obtain ⟨WitMid, E, kSF, hbound⟩ := hKS
   refine ⟨WitMid, E, kSF.conjoin P_in P_out hPres, ?_⟩

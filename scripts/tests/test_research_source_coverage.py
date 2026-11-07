@@ -52,6 +52,23 @@ class ResearchCoverage(unittest.TestCase):
                              ['ArkLib/Citation.lean', 'ProximityPrize/Citation.lean', 'Research/Citation.lean'])
             self.assertEqual(payload['lean_roots'], ['ArkLib', 'Research', 'ProximityPrize'])
 
+    def test_citation_catalog_deterministic_posix_sort_order(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'ArkLib'
+            source.mkdir()
+            (source / 'Curves.lean').write_text('/- [Example] -/\n', encoding='utf-8')
+            (source / 'Curves').mkdir()
+            (source / 'Curves' / 'AgreementCount.lean').write_text('/- [Example] -/\n', encoding='utf-8')
+            (source / '_B2.lean').write_text('/- [Example] -/\n', encoding='utf-8')
+            (source / 'Basic.lean').write_text('/- [Example] -/\n', encoding='utf-8')
+            payload = extract_citations([source], ['Example'])
+            self.assertEqual(payload['keys']['Example'],
+                             ['ArkLib/Basic.lean',
+                              'ArkLib/Curves/AgreementCount.lean',
+                              'ArkLib/Curves.lean',
+                              'ArkLib/_B2.lean'])
+
     def test_boundary_rejects_each_live_research_import(self):
         self.assertEqual(boundary.research_imports(
             'import ArkLib.Basic Research.ProximityPrize.All\npublic import Research.Other\n'),
@@ -65,10 +82,31 @@ class ResearchCoverage(unittest.TestCase):
             'import all Research.C\nmeta import ArkLib.Basic\n'),
             [(2, 'Research.A'), (3, 'Research.B'), (4, 'Research.C')])
 
+    def test_boundary_rejects_escaped_research_root(self):
+        # Lean 4.30 resolves `«Research».A` to the module `Research.A`; a single
+        # escaped component `«Research.A»` names a different module.
+        self.assertEqual(boundary.research_imports(
+            'import «Research».A\nimport «Research».«B»\n'
+            'import ArkLib.Basic «Research»\nimport «Research.C»\n'
+            'import «ResearchD».E\n'),
+            [(1, '«Research».A'), (2, '«Research».«B»'), (3, '«Research»')])
+
     def test_boundary_ignores_nested_comments(self):
         self.assertEqual(boundary.research_imports(
             '/- outer\n/- nested -/\nimport Research.Hidden\n-/\n'
             '-- import Research.Hidden\nimport ArkLib.Basic\n'), [])
+
+    def test_boundary_handles_unicode_content(self):
+        content = (
+            '/- Mathematical notation: ∀ ε > 0, ∃ δ > 0, λ x, x ∈ ℝ ∧ x ∉ ℤ -/\n'
+            '-- Note: α → β ↔ γ\n'
+            'import ArkLib.Basic\n'
+            'public import Research.UnicodeModule\n'
+        )
+        self.assertEqual(
+            boundary.research_imports(content),
+            [(4, 'Research.UnicodeModule')]
+        )
 
 
 if __name__ == '__main__':

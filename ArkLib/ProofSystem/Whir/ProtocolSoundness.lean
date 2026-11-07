@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Whir.Protocol
 import ArkLib.ProofSystem.Whir.ProtocolCompleteness
 import ArkLib.ProofSystem.Whir.ThresholdKSF
@@ -127,8 +128,8 @@ theorem whirVectorIOP_rbrKnowledgeSoundness_dummy_holds
         (m0 := m0) :=
     whirVectorIOP_rbrKnowledgeSoundness_indicator P d δ
   unfold whirVectorIOP_rbrKnowledgeSoundness_dummy
-  unfold whirVectorIOP_rbrKnowledgeSoundness OracleProof.rbrKnowledgeSoundness
-    OracleVerifier.rbrKnowledgeSoundness at hIndicator ⊢
+  unfold whirVectorIOP_rbrKnowledgeSoundness OracleProof.rbrKnowledgeSoundnessAveraged
+    OracleVerifier.rbrKnowledgeSoundnessAveraged at hIndicator ⊢
   rcases hIndicator with ⟨WitMid, extractor, kSF, hbound⟩
   refine ⟨WitMid, extractor, kSF, ?_⟩
   intro stmtIn witIn prover i
@@ -194,7 +195,7 @@ def whirCheckedVectorIOP_rbrKnowledgeSoundness
     (εRbr : (_root_.WhirIOP.Construction.whirPaperTranscriptVectorSpec P d).ChallengeIdx →
       ℝ≥0) :
     Prop :=
-  OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+  OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
     (whirRelation m0 (P.φ 0) δ)
     (_root_.WhirIOP.Construction.paperTranscriptOracleVerifier P d
       (Whir302Checked.whirVerifyChecked P d))

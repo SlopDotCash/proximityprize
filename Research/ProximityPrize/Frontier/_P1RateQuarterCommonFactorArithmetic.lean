@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._P1RateQuarterScaleArithmetic
+import Research.ProximityPrize.Support.BinaryPower
 
 /-!
 # Exact P1 arithmetic for the rate-quarter common-factor amplifier
@@ -91,47 +92,7 @@ theorem agreement_mass_eq_amplifiedThreshold :
 
 /-! ## Kernel-cheap field certificates -/
 
-private def binaryPowAux {M0 : Type*} [Monoid M0] (a : M0) (n : ℕ) : ℕ → M0
-  | 0 => 1
-  | fuel + 1 =>
-      if n = 0 then 1
-      else if n % 2 = 0 then
-        binaryPowAux (a * a) (n / 2) fuel
-      else
-        a * binaryPowAux (a * a) (n / 2) fuel
-
-private def binaryPow {M0 : Type*} [Monoid M0] (a : M0) (n : ℕ) : M0 :=
-  binaryPowAux a n (n + 1)
-
-private theorem binaryPowAux_eq_pow {M0 : Type*} [Monoid M0]
-    (a : M0) (n fuel : ℕ) (hnfuel : n < fuel) :
-    binaryPowAux a n fuel = a ^ n := by
-  induction fuel generalizing a n with
-  | zero => omega
-  | succ fuel ih =>
-      rw [binaryPowAux]
-      split_ifs with h0 heven
-      · subst n
-        simp
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul]
-        have hdvd : 2 ∣ n := (Nat.dvd_iff_mod_eq_zero).2 heven
-        have htwo : 2 * (n / 2) = n := Nat.mul_div_cancel' hdvd
-        congr 1
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul, ← pow_succ']
-        have hnmod : n % 2 = 1 := by omega
-        have hdecomp := Nat.mod_add_div n 2
-        congr 1
-        omega
-
-private theorem binaryPow_eq_pow {M0 : Type*} [Monoid M0] (a : M0) (n : ℕ) :
-    binaryPow a n = a ^ n := by
-  exact binaryPowAux_eq_pow a n (n + 1) (by omega)
+open ArkLib.ProximityGap.BinaryPower (binaryPow_eq_pow)
 
 /-- Base-factor values on the new isolated-hole fibre `z^13`. -/
 def newHoleValue : Fin 3 → F := ![

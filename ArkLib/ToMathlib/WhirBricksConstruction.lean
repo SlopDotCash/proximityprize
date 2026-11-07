@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eliza
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.OracleReduction.Basic
 import ProximityPrize.Extensions.OracleReduction.VectorIOR
 import ProximityPrize.Extensions.OracleReduction.Security.Basic
@@ -629,7 +630,7 @@ theorem paperTranscriptVectorIOP_isSecureWithGap_of_complete_and_rbr {M : ℕ}
       (paperTranscriptVectorIOP P d makeTranscript verify).perfectCompleteness
         (pure ()) isEmptyElim completeRelation)
     (hRbr :
-      OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim soundRelation
+      OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim soundRelation
         (paperTranscriptOracleVerifier P d verify) ε_rbr) :
     VectorIOP.IsSecureWithGap completeRelation soundRelation ε_rbr
       (paperTranscriptVectorIOP P d makeTranscript verify) where

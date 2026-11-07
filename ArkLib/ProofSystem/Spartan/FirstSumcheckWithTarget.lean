@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.SumcheckKnowledge
 import ArkLib.ProofSystem.Spartan.FirstSumcheckReduction
 import ArkLib.ProofSystem.Spartan.FirstSumcheckRelComplete
@@ -320,11 +321,11 @@ theorem firstSumcheckWithTarget_rbrKnowledgeSoundness_honest
     (rbrKnowledgeError : (Sumcheck.Spec.pSpec R 3 pp.ℓ_m).ChallengeIdx → ℝ≥0)
     (h_inner :
       (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier
-        |>.rbrKnowledgeSoundness init impl
+        |>.rbrKnowledgeSoundnessAveraged init impl
         (Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (0 : Fin (pp.ℓ_m + 1)))
         (Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (Fin.last pp.ℓ_m))
         rbrKnowledgeError) :
-    (firstSumcheckReductionWithTarget pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (firstSumcheckReductionWithTarget pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstSumcheckWithTargetRbrRelIn pp oSpec)
       (firstSumcheckWithTargetRbrRelOut pp oSpec)
       rbrKnowledgeError := by
@@ -359,7 +360,7 @@ theorem firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full_of_sumcheck_ro
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
     :
-    (firstSumcheckReductionWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (firstSumcheckReductionWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstSumcheckWithTargetRbrRelIn (R := R) pp oSpec)
       (firstSumcheckWithTargetRbrRelOut (R := R) pp oSpec)
       (fun _ => (3 : ℝ≥0) / (Fintype.card R)) :=

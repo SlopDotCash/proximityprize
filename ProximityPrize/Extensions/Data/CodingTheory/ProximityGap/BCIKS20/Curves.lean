@@ -296,7 +296,7 @@ theorem weighted_list_agreement_on_curves_implies_correlated_agreement {l : ℕ}
     WeightedAgreement.mu_set μ { x : ι | ∀ i, u i x = v i x } ≥ α := by
   exact WeightedAgreement.sufficiently_large_list_agreement_on_curve_implies_correlated_agreement
     (u := u) (μ := μ) (α := α) (v := v)
-    hμ hS'_card hS'_card₁ hS'_agree
+    hμ hS'_card₁ hS'_agree
 
 omit [DecidableEq ι] [Fintype F] in
 /-- The unit weight function used to view ordinary coordinate density as a
@@ -2663,8 +2663,7 @@ theorem correlatedAgreement_affine_curves_of_boundary_probability
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) := by
   refine correlatedAgreement_affine_curves_of_list_decoding_obligations hδ ?_ hBoundary
   intro _hk u hprob hJ hstrict
-  apply correlatedAgreement_affine_curves (Nat.pos_of_neZero deg)
-    (lt_of_le_of_lt bot_le hJ) hstrict u
+  apply correlatedAgreement_affine_curves (Nat.pos_of_neZero deg) hstrict u
   rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native]
   exact hprob
 

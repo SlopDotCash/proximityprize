@@ -4,12 +4,15 @@ We enthusiastically welcome contributions to ArkLib!
 
 Whether you are fixing bugs, improving documentation, or adding new formalizations, your input is valuable. We particularly encourage contributions that address:
 
-* **Active formalizations:** Please see the list of active formalization efforts and their blueprints.
-* **Open Issues:** Please see the list of open issues for bugs, requested features, and specific formalization tasks. Issues tagged as `good first issue` or `help wanted` are great places to start.
-* **Roadmap Goals:** We maintain a [ROADMAP](ROADMAP.md) outlining the planned direction and major goals for the library.
-* **Documentation:** Documentation is actively being worked and will be available as soon as possible.
+* **Active formalizations:** The [ROADMAP](ROADMAP.md) lists what is complete, what is in progress, and the planned directions, with links to the tracking issues.
+* **Open Issues:** Please see the [list of open issues](https://github.com/Verified-zkEVM/ArkLib/issues) for bugs, requested features, and specific formalization tasks. Issues tagged as `good first issue` or `help wanted` are great places to start.
+* **Solicited proofs:** Some true external results are stated in the library with their proofs deliberately left open for contributors; see [issue #1352](https://github.com/Verified-zkEVM/ArkLib/issues/1352).
+* **Documentation:** Start with [AGENTS.md](AGENTS.md) for the one-screen guide, then the [wiki](docs/wiki/README.md) for commands, conventions and workflows.
 
 If you are interested in contributing but unsure where to begin, please get in touch.
+
+For Python check prerequisites and commands, see
+[Python tooling](docs/wiki/quickstart.md#python-tooling).
 
 ### Large Contributions
 
@@ -88,10 +91,17 @@ pinned source from any newly introduced debt. Preserve their provenance and audi
 never use a baseline update to hide a new downstream admission. The
 [integration guide](docs/wiki/upstream-integration.md) defines the source boundary.
 
+The baseline's `sorry` list is empty. Its only admitted entries are *solicited proofs*: true,
+faithfully stated external results whose research-sized proofs are left open for contributors.
+A solicited entry is added only after review, names a tracking issue that its docstring links,
+and must stay a leaf: no declaration outside the solicited list may depend on it. A PR that proves
+one removes its entry. [`scripts/README.md`](scripts/README.md) states the exact rules that
+`lake exe axiomsweep --check` enforces.
+
 New declarations may depend only on a subset of Lean's three standard axioms:
 `propext`, `Classical.choice`, and `Quot.sound`. Do not introduce custom axioms, `sorryAx`,
-or native-compiler trust dependencies. The legacy admission baseline is not an exception for
-new declarations.
+or native-compiler trust dependencies. Solicited proofs are not an exception for new
+declarations.
 
 Merge readiness also requires `./scripts/validate.sh` to pass: resolve all linter/style issues,
 all production non-`sorry` warnings, and all test warnings. Fix the source rather than suppressing
@@ -104,11 +114,13 @@ We aim to adhere to the [Lean community's contribution guidelines](https://githu
 The default validation command runs ArkLib's Lean-native source-policy gate. You can run its
 text-and-import checks directly with `lake exe lint-style`. The normal `lake build` also loads a
 Lean syntax-tree plugin that rejects linter suppressions; neither gate supports exceptions. The
-text gate is an independent, fail-closed backstop: forbidden `set_option` spellings are reserved
-across the entire production source, while `nolint` attribute heads are also reserved in active code
-and literal bodies. Put policy examples in `scripts/LintStyleFixtures`, which is outside the
-library-source closure; policy-like quoted identifiers and syntax quotations are reserved for the
-same reason.
+text gate is an independent, fail-closed backstop. It rejects `set_option` for the `linter`, `pp`,
+`profiler` and `trace` option families and for the elaboration budgets `maxHeartbeats`,
+`maxRecDepth` and `synthInstance.*`, anywhere in the source, including comments. If a proof needs a
+larger budget, make it cheaper instead (see [Tactic Mode & Performance](#tactic-mode--performance)).
+`nolint` attribute heads are also reserved in active code and literal bodies. Put policy examples
+in `scripts/LintStyleFixtures`, which is outside the library-source closure; policy-like quoted
+identifiers and syntax quotations are reserved for the same reason.
 
 ### Acceptance Tests
 
@@ -187,7 +199,8 @@ namespace structure rather than introducing local synonyms.
 * **Match the mathematical contract**: distinguish preservation (`map_add`, `map_smul`) from
   commutativity, and a `≤` bound from a `<` bound. For inverse laws, check the composition order;
   a name describing the composed operations often makes a round-trip identity clearer than a
-  left/right-inverse label. Apply the deprecation policy when improving an existing public name.
+  left/right-inverse label. When improving an existing public name, update every caller (see the
+  [compatibility policy](#compatibility-policy)).
 
 ### Variable Conventions
 
@@ -252,6 +265,16 @@ When translating theorem statements into names, we use standard mappings for sym
   LICENSE-MIT and LICENSE.
   Authors: Author Name
   -/
+  module
+
+  public import ArkLib.Data.Foo
+  public import Mathlib.Bar
+
+  /-!
+  # Module docstring
+  -/
+
+  @[expose] public section
   ```
 * **Imports**: Group imports at the top of the file.
 * **Module system**: canonical ArkLib files use Lean's module system (issue #795), so a new
@@ -318,17 +341,16 @@ We aim for consistent representations of equivalent statements:
 * **Abbreviations (`abbrev`)**: Creates `reducible` definitions that are always unfolded. Use this for type synonyms or lightweight aliases where the underlying term should be exposed.
 * **Irreducible**: Use `irreducible` (or `structure` wrappers) to seal API boundaries when the internal implementation details should not leak.
 
-### Deprecation Policy
+### Compatibility Policy
 
-* **Renaming**: If you rename a declaration, please ensure you fix any breakage this causes. If that is not possible, keep the old name as a deprecated alias to avoid breaking downstream code immediately.
-  ```lean
-  @[deprecated (since := "YYYY-MM-DD")] alias oldName := newName
-  ```
-* **Removal**: For removals, provide a message explaining the transition.
-  ```lean
-  @[deprecated "Use `better_theorem` instead" (since := "YYYY-MM-DD")]
-  theorem old_theorem ...
-  ```
+ArkLib makes no backward-compatibility guarantees and does not promise deprecation periods. This
+holds in particular until the [migration](ROADMAP.md#priority-replace-the-legacy-layer) from the
+legacy layer (`ArkLib/OracleReduction/`) to the interaction layer (`ArkLib/Interaction/`) is
+complete; [README.md](README.md#two-layers) describes both layers.
+
+When you rename or remove a declaration, update every caller in the same PR. Keeping the old name
+as a `@[deprecated]` alias is discouraged: add one only with a concrete reason, such as a
+downstream project that needs time to migrate, and say so in the PR.
 
 ### Documentation Standards
 

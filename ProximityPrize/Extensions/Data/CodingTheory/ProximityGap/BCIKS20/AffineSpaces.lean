@@ -306,7 +306,7 @@ theorem correlatedAgreement_affine_spaces_johnson_of_betaRec [SampleableType F] 
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
   -- The canonical theorem is stronger; the retained legacy residual input is unused.
   correlatedAgreement_affine_spaces (ι := ι) (F := F) (k := k) (deg := deg)
-    (domain := domain) (δ := δ) hdeg hδ_pos hδ hRS hε
+    (domain := domain) (δ := δ) hdeg hδ hε
 
 /-- Theorem 1.7 front door with the strict Johnson residual split at the boundary.
 
@@ -343,7 +343,7 @@ theorem correlatedAgreement_affine_spaces_johnson_of_betaRec_strict_boundary [Sa
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
   -- The canonical theorem is stronger; the retained legacy residual input is unused.
   correlatedAgreement_affine_spaces (ι := ι) (F := F) (k := k) (deg := deg)
-    (domain := domain) (δ := δ) hdeg hδ_pos hδ hRS hε
+    (domain := domain) (δ := δ) hdeg hδ hε
 
 /-- Theorem 1.7 front door with the affine-line Johnson residual supplied by the finite-range
 verified `betaRec` capsule at every radius `δ' ≤ δ` used internally by the affine-space proof. -/
@@ -372,7 +372,7 @@ theorem correlatedAgreement_affine_spaces_johnson_of_betaRecFin [SampleableType 
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
   -- The canonical theorem is stronger; the retained legacy residual input is unused.
   correlatedAgreement_affine_spaces (ι := ι) (F := F) (k := k) (deg := deg)
-    (domain := domain) (δ := δ) hdeg hδ_pos hδ hRS hε
+    (domain := domain) (δ := δ) hdeg hδ hε
 
 /-- Theorem 1.7 front door with the finite-range strict Johnson residual split at the boundary.
 
@@ -406,7 +406,7 @@ theorem correlatedAgreement_affine_spaces_johnson_of_betaRecFin_strict_boundary 
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
   -- The canonical theorem is stronger; the retained legacy residual input is unused.
   correlatedAgreement_affine_spaces (ι := ι) (F := F) (k := k) (deg := deg)
-    (domain := domain) (δ := δ) hdeg hδ_pos hδ hRS hε
+    (domain := domain) (δ := δ) hdeg hδ hε
 
 end CoreResults
 

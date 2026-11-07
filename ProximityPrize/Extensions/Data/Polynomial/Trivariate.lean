@@ -19,18 +19,8 @@ import Mathlib.FieldTheory.RatFunc.AsPolynomial
 /-!
 # Short interface on Trivariate Polynomials
 
-We define trivariate polynomials to match their representation in statements and proofs
-of [BCIKS20].
-
-## Main Definitions
-
-### Notation for trivariate polynomials and evaluation homomorphisms
-- `eval_on_Z₀`: Evaluate a rational function on a point.
-- `eval_on_Z`: Ring homomorphism evaluating the `Z` variable of a trivariate polynomial.
-- `toRatFuncPoly`: Maps a trivariate polynomial to a bivariate polynomial over the rational
-  function field.
-- `D_Y`: The `Y`-degree of a trivariate polynomial.
-- `D_YZ`: The `YZ`-degree of a trivariate polynomial.
+The historical argument order for the `Z`-specialization in [BCIKS20] delegates to the
+canonical `evalAtZ`.
 
 ## References
 
@@ -43,14 +33,17 @@ of [BCIKS20].
 
 namespace Trivariate
 
-variable {F : Type} [Field F] [DecidableEq (RatFunc F)]
+variable {F : Type} [Field F]
 
 open Polynomial Bivariate
 
-omit [DecidableEq (RatFunc F)] in
-/-- Definitional equation for `eval_on_Z` (the de-sealed body). -/
+/-- Canonical `Z`-specialization with the historical polynomial-first argument order. -/
+noncomputable abbrev eval_on_Z (p : F[Z][X][Y]) (z : F) : F[X][Y] :=
+  evalAtZ z p
+
+/-- Coefficient-map equation for the historical `Z`-specialization. -/
 lemma eval_on_Z_eq (p : F[Z][X][Y]) (z : F) :
-    evalAtZ z p = p.map (Polynomial.mapRingHom (Polynomial.evalRingHom z)) :=
+    eval_on_Z p z = p.map (Polynomial.mapRingHom (Polynomial.evalRingHom z)) :=
   evalAtZ_eq_map_map_evalRingHom z p
 
 end Trivariate

@@ -237,7 +237,7 @@ at every good parameter. -/
 theorem RS_BW_homMatrix_det_submatrix_eq_zero_of_goodCoeffsCurve_card_gt
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
     (u : WordStack F (Fin (k + 1)) ι)
-    (hdeg : deg ≤ Fintype.card ι)
+    (_hdeg : deg ≤ Fintype.card ι)
     (hδ : δ ≤ relativeUniqueDecodingRadius (ι := ι) (F := F)
       (C := ReedSolomon.code domain deg))
     (hS : (RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ).card
@@ -278,7 +278,7 @@ theorem RS_BW_homMatrix_det_submatrix_eq_zero_of_goodCoeffsCurve_card_gt
   have he1_le : e + 1 ≤ Fintype.card ι := by
     simpa [e] using
       (RS_floor_mul_card_ι_add_one_le_card_ι_of_le_relUDR (deg := deg) (domain := domain)
-        (δ := δ) (hdeg := hdeg) (hδ := hδ))
+        (δ := δ) hδ)
   have hk_le : k * (e + 1) ≤ k * Fintype.card ι := Nat.mul_le_mul_left k he1_le
   have hS' : k * Fintype.card ι < S.card := by
     simpa [S] using hS
@@ -558,7 +558,7 @@ theorem RS_exists_nonzero_kernelVec_BW_homMatrix_of_goodCoeffsCurve_card_gt
     intro i j
     simpa [hD] using
       (RS_natDegree_inv_neg_vandermonde_C_eq_zero
-        (F := F) n (fun t : Fin n => domain (rB t)) hvB i j)
+        (F := F) n (fun t : Fin n => domain (rB t)) i j)
   have hdegInvDA21 : ∀ i j, ((⅟D * A21) i j).natDegree ≤ k := by
     intro i j
     classical
@@ -609,7 +609,7 @@ theorem RS_exists_nonzero_kernelVec_BW_homMatrix_of_goodCoeffsCurve_card_gt
   have hcard_m : m ≤ Fintype.card ι := by
     simpa [m, e, he] using
       (RS_floor_mul_card_ι_add_one_le_card_ι_of_le_relUDR (deg := deg) (domain := domain)
-        (δ := δ) hdeg hδ)
+        (δ := δ) hδ)
   obtain ⟨a, ha0, ha_deg, haKer⟩ :=
     RS_exists_nonzero_kernelVec_of_det_submatrix_eq_zero_natDegree_le (ι := ι) (F := F) e k K0
       (by simpa [m] using hcard_m) hdegK0 (by

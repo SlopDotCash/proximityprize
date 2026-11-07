@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.RingSwitching.General
 import ArkLib.ProofSystem.RingSwitching.RbrKnowledgeWiring
 import ArkLib.ProofSystem.RingSwitching.BatchingDeterminism
@@ -66,7 +67,7 @@ the core-interaction side supplied by `coreInteraction_rbrKnowledgeSoundness_wir
 theorem batchingCore_rbrKnowledgeSoundness_wired [IsDomain L] [IsDomain K] [Subsingleton σ]
     [Inhabited (∀ j, mlIOPCS.toAbstractOStmtIn.OStmtIn j)]
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail init = 0) :
-    (batchingCoreVerifier κ L K P ℓ ℓ' h_l mlIOPCS).rbrKnowledgeSoundness
+    (batchingCoreVerifier κ L K P ℓ ℓ' h_l mlIOPCS).rbrKnowledgeSoundnessAveraged
       (init := init) (impl := impl)
       (relIn := fullInputRelation κ L K P ℓ ℓ' h_l mlIOPCS)
       (relOut := mlIOPCS.toRelInput)
@@ -121,7 +122,7 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [IsDomain L] [IsDomain K]
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail init = 0)
     (hMlnPos : 0 < mlIOPCS.numRounds)
     (hMlnDir : mlIOPCS.pSpec.dir ⟨0, hMlnPos⟩ = .P_to_V) :
-    (fullOracleVerifier κ L K P ℓ ℓ' h_l mlIOPCS).rbrKnowledgeSoundness
+    (fullOracleVerifier κ L K P ℓ ℓ' h_l mlIOPCS).rbrKnowledgeSoundnessAveraged
       (Oₛₒ := fun i : Empty => nomatch i)
       (init := init) (impl := impl)
       (relIn := fullInputRelation κ L K P ℓ ℓ' h_l mlIOPCS)
@@ -141,7 +142,7 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [IsDomain L] [IsDomain K]
       mlIOPCS hMlnPos hMlnDir)
     (hDir₂ := hMlnDir)
     (h₁ := batchingCore_rbrKnowledgeSoundness_wired κ L K P ℓ ℓ' h_l mlIOPCS init hInit hInitNF)
-    (h₂ := mlIOPCS.rbrKnowledgeSoundness)
+    (h₂ := mlIOPCS.rbrKnowledgeSoundnessAveraged)
   have herr : (fun i => fullRbrKnowledgeError κ L K P ℓ' mlIOPCS i)
       = (Sum.elim (batchingCoreRbrKnowledgeError κ L K P ℓ') mlIOPCS.rbrKnowledgeError
           ∘ ⇑ChallengeIdx.sumEquiv.symm) := rfl

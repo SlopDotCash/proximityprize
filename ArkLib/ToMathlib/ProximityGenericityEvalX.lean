@@ -84,7 +84,6 @@ specialized fibre. -/
 lemma eval_on_Z_separable_of_separable {z : F}
     {p : Polynomial (Polynomial (Polynomial F))} (h : p.Separable) :
     (Trivariate.eval_on_Z p z).Separable := by
-  simp only [Trivariate.eval_on_Z]
   rw [Trivariate.eval_on_Z_eq]
   exact h.map
 

@@ -159,7 +159,7 @@ theorem secondSumcheckEvalFromOracles_simOracle
           (oos (.inr (.inl .C))).toMLE))
       * eval point (MLE (R1CS.𝕫 stmt.2.2.2 (oos (.inr (.inr 0))) ∘ finFunctionFinEquiv))
       = eval point (secondSumCheckVirtualPolynomial R pp stmt oos)
-  simp only [secondSumCheckVirtualPolynomial, eval_add, eval_mul, eval_C, Function.comp_def,
+  simp only [secondSumCheckVirtualPolynomial_eq_terms, eval_add, eval_mul, eval_C, Function.comp_def,
     Fin.cast_eq_self]
   ring
 

@@ -6,6 +6,7 @@ Checked-in source owns later API ports. Generate separate review candidates with
 scripts/integration/extract_downstream_extensions.py --output-dir <directory>.
 -/
 import ArkLib.OracleReduction.LiftContext.Reduction
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 
 /-
 Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
@@ -462,6 +463,56 @@ variable
 end Reduction
 
 namespace Verifier
+
+/-- Context lifting preserves averaged round-by-round soundness with the same error. -/
+theorem liftContext_rbrSoundnessAveraged [Inhabited InnerStmtOut]
+    {outerLangIn : Set OuterStmtIn} {outerLangOut : Set OuterStmtOut}
+    {innerLangIn : Set InnerStmtIn} {innerLangOut : Set InnerStmtOut}
+    {rbrSoundnessError : pSpec.ChallengeIdx → ℝ≥0}
+    {lens : Statement.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut}
+    (V : Verifier oSpec InnerStmtIn InnerStmtOut pSpec)
+    [lensSound : lens.IsSound outerLangIn outerLangOut innerLangIn innerLangOut
+      (V.compatStatement lens)]
+    (h : V.rbrSoundnessAveraged init impl innerLangIn innerLangOut rbrSoundnessError) :
+      (V.liftContext lens).rbrSoundnessAveraged init impl outerLangIn outerLangOut rbrSoundnessError := by
+  obtain ⟨S, hbound⟩ := h
+  refine ⟨S.liftContext lens V outerLangIn outerLangOut innerLangIn innerLangOut, ?_⟩
+  intro x hx Aux OW a P i
+  have hinner := hbound (lens.proj x) (lensSound.proj_sound x hx) Aux OW a
+    (P.frozen x a (default : InnerStmtOut) id) i
+  rw [Prover.frozen_runToRound] at hinner
+  refine le_trans (prEvent_mono _ _ _ ?_) hinner
+  intro z hz
+  simpa only [StateFunction.liftContext, hx, false_or] using hz
+
+/-- Context lifting preserves averaged round-by-round knowledge soundness with the same error. -/
+theorem liftContext_rbrKnowledgeSoundnessAveraged [Inhabited InnerStmtOut] [Inhabited InnerWitIn]
+    {outerRelIn : Set (OuterStmtIn × OuterWitIn)} {outerRelOut : Set (OuterStmtOut × OuterWitOut)}
+    {innerRelIn : Set (InnerStmtIn × InnerWitIn)} {innerRelOut : Set (InnerStmtOut × InnerWitOut)}
+    {rbrKnowledgeError : pSpec.ChallengeIdx → ℝ≥0}
+    {stmtLens : Statement.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut}
+    {witLens : Witness.InvLens OuterStmtIn OuterWitIn OuterWitOut InnerWitIn InnerWitOut}
+    (V : Verifier oSpec InnerStmtIn InnerStmtOut pSpec)
+    [lensKS : Extractor.Lens.IsKnowledgeSound outerRelIn innerRelIn outerRelOut innerRelOut
+      (V.compatStatement stmtLens) (fun _ _ => True) ⟨stmtLens, witLens⟩]
+    (h : V.rbrKnowledgeSoundnessAveraged init impl innerRelIn innerRelOut rbrKnowledgeError) :
+      (V.liftContext stmtLens).rbrKnowledgeSoundnessAveraged init impl outerRelIn outerRelOut
+        rbrKnowledgeError := by
+  obtain ⟨WitMid, E, K, hbound⟩ := h
+  let lens : Extractor.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut
+      OuterWitIn OuterWitOut InnerWitIn InnerWitOut := ⟨stmtLens, witLens⟩
+  refine ⟨(fun k => OuterWitOut × WitMid k), E.liftContext lens,
+    K.liftContext lens V outerRelIn innerRelIn outerRelOut innerRelOut E, ?_⟩
+  intro x a P i
+  have hinner := hbound (stmtLens.proj x) default
+    (P.frozen x a (default : InnerStmtOut) (fun w => witLens.proj (x, w))) i
+  rw [Prover.runWithLogToRound, Prover.frozen_runToRound] at hinner
+  refine le_trans (prEvent_mono _ _ _ ?_) hinner
+  rintro z ⟨⟨w, v⟩, hprev, hnext⟩
+  change ¬ (K _ _ _ _ ∨ _) at hprev
+  change K _ _ _ v ∨ _ at hnext
+  exact ⟨v, (fun hv => hprev (Or.inl hv)),
+    hnext.resolve_right (fun hs => hprev (Or.inr hs))⟩
 
 end Verifier
 

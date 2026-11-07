@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.RealBudgetRbr
 import ArkLib.ProofSystem.Stir.InitAppendRbr
 
@@ -116,7 +117,7 @@ and both relations are the statement-independent δ-positivity gate, so the cons
 state function survives every round, the trivial `Unit` extractor works, and the
 per-challenge error is `0` (the `stirInitVerifier_rbrKnowledgeSoundness` proof shape). -/
 theorem stirInitVerifierPacked_rbrKnowledgeSoundness (δ : ℝ≥0) :
-    (stirInitVerifierPacked (ι := ι) (F := F)).toVerifier.rbrKnowledgeSoundness init impl
+    (stirInitVerifierPacked (ι := ι) (F := F)).toVerifier.rbrKnowledgeSoundnessAveraged init impl
       (stirSeamRelInit ι F δ) (stirSpotRelIn ι F δ) 0 := by
   refine ⟨fun _ => Unit, {
     extractIn := fun _ _ => ()
@@ -166,7 +167,7 @@ theorem stirInitPacked_append_rbrKnowledgeSoundness
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (δ : ℝ≥0)
     (hInit : ∃ s, s ∈ support init)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl (stirSpotRelIn ι F δ) rel₃ rbrKnowledgeError₂)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl (stirSpotRelIn ι F δ) rel₃ rbrKnowledgeError₂)
     (hPhase2 : ∀ {WitMid₁ : Fin (1 + 1) → Type} {WitMid₂ : Fin (n + 1) → Type}
       {E₁ : Extractor.RoundByRound []ₒ (Unit × ∀ i, VOStmt ι F i) Unit Unit
         (pSpecInit F) WitMid₁}
@@ -178,7 +179,7 @@ theorem stirInitPacked_append_rbrKnowledgeSoundness
         (stirInitVerifierPacked (ι := ι) (F := F)).toVerifier V₂ kSF₁ kSF₂
         stirInitVerifyPacked stirInitVerifierPacked_toVerifier_eq hInit
         (rbrKnowledgeError₂ := rbrKnowledgeError₂)) :
-    @Verifier.rbrKnowledgeSoundness PEmpty.{1} []ₒ (Unit × ((i : Unit) → VOStmt ι F i)) Unit
+    @Verifier.rbrKnowledgeSoundnessAveraged PEmpty.{1} []ₒ (Unit × ((i : Unit) → VOStmt ι F i)) Unit
       Stmt₃ Wit₃ (1 + n) (pSpecInit F ++ₚ pSpec₂)
       (fun i => instSampleableTypeChallengeAppend i) σ init impl
       (stirSeamRelInit ι F δ) rel₃
@@ -228,7 +229,7 @@ theorem stirSeam_initPacked_append_checkedFinal_rbrKnowledgeSoundness
         stirInitVerifyPacked stirInitVerifierPacked_toVerifier_eq hInit
         (rbrKnowledgeError₂ := fun i =>
           if i = ⟨1, stirFinalVSpec_dir_one⟩ then stirSpotBudget ι F δ else 0)) :
-    @Verifier.rbrKnowledgeSoundness PEmpty.{1} []ₒ (Unit × ((i : Unit) → VOStmt ι F i)) Unit
+    @Verifier.rbrKnowledgeSoundnessAveraged PEmpty.{1} []ₒ (Unit × ((i : Unit) → VOStmt ι F i)) Unit
       ((F × F) × ∀ i, VOStmt ι F i) Unit (1 + 2)
       (pSpecInit F ++ₚ (stirFinalVSpec ι F).toProtocolSpec F)
       (fun i => instSampleableTypeChallengeAppend i) σ init impl
@@ -268,7 +269,7 @@ theorem stirSeam_initPacked_append_checkedFinal_rbrKnowledgeSoundness_of_dvd
         stirInitVerifyPacked stirInitVerifierPacked_toVerifier_eq hInit
         (rbrKnowledgeError₂ := fun i =>
           if i = ⟨1, stirFinalVSpec_dir_one⟩ then stirSpotBudget ι F δ else 0)) :
-    @Verifier.rbrKnowledgeSoundness PEmpty.{1} []ₒ (Unit × ((i : Unit) → VOStmt ι F i)) Unit
+    @Verifier.rbrKnowledgeSoundnessAveraged PEmpty.{1} []ₒ (Unit × ((i : Unit) → VOStmt ι F i)) Unit
       ((F × F) × ∀ i, VOStmt ι F i) Unit (1 + 2)
       (pSpecInit F ++ₚ (stirFinalVSpec ι F).toProtocolSpec F)
       (fun i => instSampleableTypeChallengeAppend i) σ init impl

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeChallenge
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessTotal
@@ -65,8 +66,8 @@ theorem appendRbrKnowledgeSoundnessResidual_challenge_subsingleton [Subsingleton
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P)
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂) :
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂) :
     appendRbrKnowledgeSoundnessResidual V₁ V₂ h₁ h₂ :=
   append_rbrKnowledgeSoundness_keystone_subsingleton_challenge V₁ V₂ verify hVerify
     hInit hInitNF hNE₂ hNEW₂ hn hDir hDir₂ h₁ h₂
@@ -96,9 +97,9 @@ theorem appendRbrKnowledgeSoundnessResidual_failingDet_subsingleton
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : Verifier.rbrKnowledgeSoundness init impl rel₁ rel₂
+    (h₁ : Verifier.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂
       (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) err₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ err₂) :
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ err₂) :
     appendRbrKnowledgeSoundnessResidual
       (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁)
       V₂ h₁ h₂ :=
@@ -118,9 +119,9 @@ theorem appendRbrKnowledgeSoundnessResidual_failingDet_empty
     {err₁ : pSpec₁.ChallengeIdx → ℝ≥0} {err₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (hInit : ∃ s, s ∈ support init)
     (hNEW₂ : Nonempty Wit₂)
-    (h₁ : Verifier.rbrKnowledgeSoundness init impl rel₁ rel₂
+    (h₁ : Verifier.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂
       (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) err₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ err₂) :
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ err₂) :
     appendRbrKnowledgeSoundnessResidual
       (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁)
       V₂ h₁ h₂ :=

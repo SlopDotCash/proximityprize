@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeSoundness
 import ArkLib.OracleReduction.Composition.Sequential.AppendRightPartialProjections
 
@@ -614,9 +615,9 @@ theorem append_rbrSoundness_keystone_subsingleton_unconditional [Subsingleton σ
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : V₁.rbrSoundness init impl lang₁ lang₂ rbrSoundnessError₁)
-    (h₂ : V₂.rbrSoundness init impl lang₂ lang₃ rbrSoundnessError₂) :
-      (V₁.append V₂).rbrSoundness init impl lang₁ lang₃
+    (h₁ : V₁.rbrSoundnessAveraged init impl lang₁ lang₂ rbrSoundnessError₁)
+    (h₂ : V₂.rbrSoundnessAveraged init impl lang₂ lang₃ rbrSoundnessError₂) :
+      (V₁.append V₂).rbrSoundnessAveraged init impl lang₁ lang₃
         (Sum.elim rbrSoundnessError₁ rbrSoundnessError₂ ∘ ChallengeIdx.sumEquiv.symm) := by
   obtain ⟨S₁, hS₁⟩ := h₁
   obtain ⟨S₂, hS₂⟩ := h₂
@@ -640,8 +641,8 @@ theorem appendRbrSoundnessResidual_msg_subsingleton [Subsingleton σ]
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : V₁.rbrSoundness init impl lang₁ lang₂ rbrSoundnessError₁)
-    (h₂ : V₂.rbrSoundness init impl lang₂ lang₃ rbrSoundnessError₂) :
+    (h₁ : V₁.rbrSoundnessAveraged init impl lang₁ lang₂ rbrSoundnessError₁)
+    (h₂ : V₂.rbrSoundnessAveraged init impl lang₂ lang₃ rbrSoundnessError₂) :
     appendRbrSoundnessResidual (init := init) (impl := impl) V₁ V₂ h₁ h₂ :=
   append_rbrSoundness_keystone_subsingleton_unconditional V₁ V₂ verify hVerify hInit hInitNF
     hNE hn hDir hDir₂ h₁ h₂

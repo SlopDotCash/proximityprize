@@ -12,14 +12,9 @@ import ProximityPrize.Extensions.ProofSystem.Component.RandomQuery
 /-!
 # The Spartan `firstChallenge` phase is (unconditionally) perfectly complete (issue #114)
 
-Spartan's `firstChallenge` phase (`oracleReduction.firstChallenge`) is the `liftContext` of the
-generic `RandomQuery` oracle reduction onto the virtual zero-check polynomial `𝒢` (compared against
-the zero polynomial). This module assembles the **completeness transfer** for that lift.
-
-Unlike the two sum-check phases — whose inner multi-round sum-check completeness is the
-sequential-composition keystone still being assembled in the framework layer — the inner
-`RandomQuery.oracleReduction_completeness` is already a *closed, unconditional* theorem. Hence this
-phase's completeness is **unconditional**: it takes no `h_inner` hypothesis.
+The padded first challenge uses the canonical random query to record a sampled point and carry the
+R1CS context through the stage. The virtual-polynomial lens has its own completeness proof for the
+historical paired-oracle view.
 
 * `firstChallengeRelIn` / `firstChallengeRelOut` — the outer relations, both "R1CS is satisfied".
   The challenge `τ` produced by the phase is recorded in the output statement but is irrelevant to
@@ -27,7 +22,7 @@ phase's completeness is **unconditional**: it takes no `h_inner` hypothesis.
 * `firstChallengeLensComplete` — the `OracleContext.Lens.IsComplete` instance. Its `proj_complete`
   is exactly `zeroCheckVirtualPolynomial_eq_zero_of_satisfied`: an R1CS-satisfying instance makes the
   zero-check polynomial `𝒢` vanish, so the two `RandomQuery` virtual oracles `(𝒢, 0)` agree
-  (`RandomQuery.relIn`). Its `lift_complete` is the R1CS pass-through.
+  (`RandomQuery.Historical.relIn`). Its `lift_complete` is the R1CS pass-through.
 * `completedFirstChallenge_perfectCompleteness` — a direct run proof for the one-round challenge adapter:
   the verifier samples `τ`, the prover records it, and the statement/oracles/witness are carried
   through unchanged.
@@ -72,15 +67,17 @@ def firstChallengeRelOut :
 instance firstChallengeLensComplete :
     (firstChallengeContextLens R pp).toContext.IsComplete
       (firstChallengeRelIn pp)
-      (RandomQuery.relIn (MvPolynomial (Fin pp.ℓ_m) R))
+      (RandomQuery.Historical.relIn (MvPolynomial (Fin pp.ℓ_m) R))
       (firstChallengeRelOut pp)
-      (RandomQuery.relOut (MvPolynomial (Fin pp.ℓ_m) R))
-      ((RandomQuery.oracleReduction oSpec (MvPolynomial (Fin pp.ℓ_m) R)).toReduction.compatContext
+      (RandomQuery.Historical.relOut (MvPolynomial (Fin pp.ℓ_m) R))
+      ((RandomQuery.Historical.oracleReduction oSpec
+        (MvPolynomial (Fin pp.ℓ_m) R)).toReduction.compatContext
         (firstChallengeContextLens R pp).toContext) where
   proj_complete := by
     rintro ⟨𝕩, oStmt⟩ ⟨⟩ hRelIn
     simp only [firstChallengeRelIn, Set.mem_ofPred_eq] at hRelIn
-    simp only [firstChallengeContextLens, firstChallengeStmtLens, RandomQuery.relIn, Set.mem_ofPred_eq]
+    simp only [firstChallengeContextLens, firstChallengeStmtLens, RandomQuery.Historical.relIn,
+      RandomQuery.relIn, Set.mem_ofPred_eq]
     exact zeroCheckVirtualPolynomial_eq_zero_of_satisfied pp 𝕩 oStmt hRelIn
   lift_complete := by
     rintro ⟨𝕩, oStmt⟩ ⟨⟩ ⟨q, innerO⟩ ⟨⟩ _hCompat hRelIn _hRelOut
@@ -89,8 +86,7 @@ instance firstChallengeLensComplete :
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] in
 /-- The completed downstream `Unit`-witness challenge phase preserves the R1CS relation and
-honest prover/verifier agreement on every raw run outcome. It makes no completion claim about
-the inherited canonical admitted constructor. -/
+honest prover/verifier agreement on every raw run outcome. -/
 theorem completedFirstChallenge_perfectCompleteness
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)} :
     (oracleReduction.completedFirstChallenge R pp oSpec).perfectCompleteness init impl
@@ -101,7 +97,8 @@ theorem completedFirstChallenge_perfectCompleteness
   rintro ⟨stmt, oStmt⟩ ⟨⟩ hRelIn z hz
   simp only [oracleReduction.completedFirstChallenge, OracleReduction.toReduction, Reduction.run,
     Prover.run_of_verifier_first, firstChallengeProver, firstChallengeVerifier,
-    OracleVerifier.toVerifier, Verifier.run] at hz
+    RandomQuery.oracleProver, RandomQuery.oracleVerifier, OracleVerifier.toVerifier,
+    Verifier.run] at hz
   simp only [OptionT.run_bind, OptionT.run_mk, OptionT.run_pure, OptionT.run_monadLift,
     simulateQ_pure, pure_bind, map_pure, liftM_pure,
     Option.elimM, Option.getM_some, Option.map_some] at hz

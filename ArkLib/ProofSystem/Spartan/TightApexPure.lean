@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.SpartanFirstChallenge
 import ProximityPrize.Compatibility.SumcheckKnowledge
 import ArkLib.ProofSystem.Spartan.TightComposedFull
@@ -96,7 +97,7 @@ theorem composedTightPure_rbrKnowledgeSoundness_of_sumcheck_rounds [Subsingleton
     (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
     (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
     :
-    (composedPIOPTightPure_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (composedPIOPTightPure_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (spartanRelIn R pp) (tightFinalRelOut (R := R) pp)
       (composedRbrError pp
         (0 : (⟨!v[.P_to_V], !v[Witness R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)
@@ -110,7 +111,7 @@ theorem composedTightPure_rbrKnowledgeSoundness_of_sumcheck_rounds [Subsingleton
   obtain ⟨verify₁, hV₁⟩ := firstMessage_toVerifier_pure (R := R) pp oSpec
   obtain ⟨verify₃?, hV₃⟩ := firstSumcheckWithTarget_toVerifier_isFailingDet (R := R) pp oSpec
   obtain ⟨verify₇?, hV₇⟩ := secondSumcheckWithTarget_toVerifier_isFailingDet (R := R) pp oSpec
-  have h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness
+  have h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged
       init impl
       (firstMessageRbrRelB (R := R) pp)
       (firstSumcheckWithTargetRbrRelIn (R := R) pp oSpec)

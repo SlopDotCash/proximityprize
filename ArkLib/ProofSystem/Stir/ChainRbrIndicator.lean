@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.ChainProof
 import ArkLib.ProofSystem.Stir.BlockCompleteness
 import ArkLib.ProofSystem.Whir.ThresholdKSF
@@ -51,11 +52,11 @@ threshold knowledge-state-function, RBR knowledge soundness of `stirChainProof`'
 the indicator budget concentrated at the final repetition challenge. -/
 theorem stirChainProof_rbrKnowledgeSoundness_indicator
     (φ : ι ↪ F) (deg : ℕ) (M : ℕ) (δ : ℝ≥0) :
-    OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+    OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
       (stirChainRelIn φ deg δ)
       ((stirChainProof φ deg M).toOracleVerifier)
       (fun i => if i = stirChainFinalChallengeIdx M then 1 else 0) := by
-  unfold OracleProof.rbrKnowledgeSoundness OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleProof.rbrKnowledgeSoundnessAveraged OracleVerifier.rbrKnowledgeSoundnessAveraged
   exact ThresholdKSF.rbrKnowledgeSoundness_indicator (pure ()) isEmptyElim
     ((stirChainProof φ deg M).toOracleVerifier.toVerifier
       (Oₛₒ := fun i : Empty => nomatch i))

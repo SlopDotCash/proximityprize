@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.SumcheckKnowledge
 import ArkLib.ProofSystem.Spartan.SumcheckDeterminismWitnesses
 import ArkLib.ProofSystem.Spartan.SecondSumcheckWithTarget
@@ -77,7 +78,7 @@ theorem secondSumcheckWithTarget_conjoined_rbrKnowledgeSoundness_of_sumcheck_rou
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
     :
-    (secondSumcheckReductionWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (secondSumcheckReductionWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       ((secondSumcheckWithTargetRbrRelIn (R := R) pp oSpec)
         ∩ {x | x.1 ∈ bindingAtSecondIn (R := R) pp})
       ((secondSumcheckWithTargetRbrRelOut (R := R) pp oSpec)
@@ -86,7 +87,7 @@ theorem secondSumcheckWithTarget_conjoined_rbrKnowledgeSoundness_of_sumcheck_rou
   have hbase := secondSumcheckWithTarget_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds
     (hRound2 := hRound2)
     (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF
-  unfold OracleVerifier.rbrKnowledgeSoundness at hbase ⊢
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged at hbase ⊢
   refine Verifier.rbrKnowledgeSoundness_conjoin hbase
     (bindingAtSecondIn (R := R) pp) (bindingAtSecondOut (R := R) pp) ?_
   -- `hPres`: a positively-probable output satisfying the output binding forces the input binding.

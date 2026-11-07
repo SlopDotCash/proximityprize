@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.CheckingVerifier
 
 /-!
@@ -363,7 +364,7 @@ Ledger status (#351): the genuine open soundness target of #301 at repetition pa
 noncomputable def stirCheckingRbrSoundnessResidualT
     (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (t : ℕ) (δ : ℝ≥0)
     (ε_rbr : ((stirMultiVSpecT M ι t).toProtocolSpec F).ChallengeIdx → ℝ≥0) : Prop :=
-  OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+  OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
     (stirRelation deg φ δ) (stirCheckingIOPT M φ deg t).toOracleVerifier ε_rbr
 
 end CheckingT

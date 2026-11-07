@@ -7,6 +7,8 @@ cd "$repo_root"
 fixture_tmp="$(mktemp -d)"
 trap 'rm -rf "$fixture_tmp"' EXIT
 
+./scripts/lake-locked.sh exe lint-style --self-test
+
 plugin_path="$(./scripts/lake-locked.sh query ArkLibLintPlugin:shared)"
 allowed="scripts/LintStyleFixtures/PluginAllowed.lean"
 rejected="scripts/LintStyleFixtures/PluginRejected.lean"

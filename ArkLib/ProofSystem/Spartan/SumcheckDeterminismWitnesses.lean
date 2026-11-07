@@ -34,8 +34,9 @@ variable {ι : Type} (oSpec : OracleSpec ι)
 /-- **The full multi-round sum-check oracle verifier compiles failing-deterministically**
 (any degree, any round count): n-ary composition of the per-round failing-det collapses. -/
 theorem sumcheckFull_toVerifier_isFailingDet (deg : ℕ) {m : ℕ} (D : Fin m ↪ R) (n : ℕ) :
-    (Sumcheck.Spec.oracleVerifier R deg D n oSpec).toVerifier.IsFailingDet :=
-  OracleVerifier.seqCompose_toVerifier_isFailingDet
+    (Sumcheck.Spec.oracleVerifier R deg D n oSpec).toVerifier.IsFailingDet := by
+  rw [Sumcheck.Spec.oracleVerifier_toVerifier_eq_seqCompose]
+  exact OracleVerifier.seqCompose_toVerifier_isFailingDet
     (Stmt := Sumcheck.Spec.StatementRound R n)
     (OStmt := fun _ => Sumcheck.Spec.OracleStatement R n deg)
     (Sumcheck.Spec.SingleRound.oracleVerifier R n deg D oSpec)

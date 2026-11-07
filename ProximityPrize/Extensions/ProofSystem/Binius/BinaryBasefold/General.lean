@@ -5,6 +5,7 @@ Shared declarations come from the canonical ArkLib modules.
 Checked-in source owns later API ports. Generate separate review candidates with:
 scripts/integration/extract_downstream_extensions.py --output-dir <directory>.
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Binius.BinaryBasefold.General
 
 /-
@@ -147,7 +148,7 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [Subsingleton σ]
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑)).toVerifier
       = ⟨fun p tr => OptionT.mk (pure (verify? p tr))⟩)
     (hCoreInteractionRbrKnowledgeSoundness :
-      (coreInteractionOracleVerifier 𝔽q β (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl
+      (coreInteractionOracleVerifier 𝔽q β (𝓑 := 𝓑)).rbrKnowledgeSoundnessAveraged init impl
         (pSpec := pSpecCoreInteraction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
         (relIn := roundRelation (multpoly := multiplier) 𝔽q β (ϑ:=ϑ)
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑) 0)
@@ -155,7 +156,7 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [Subsingleton σ]
         (rbrKnowledgeError := coreInteractionOracleRbrKnowledgeError 𝔽q β (ϑ:=ϑ)
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate))) :
     (fullOracleVerifier 𝔽q β γ_repetitions (ϑ:=ϑ) (𝓑 := 𝓑)
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).rbrKnowledgeSoundness init impl (Oₛₒ := fun i : Empty => nomatch i)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).rbrKnowledgeSoundnessAveraged init impl (Oₛₒ := fun i : Empty => nomatch i)
       (relIn := roundRelation (multpoly := multiplier) 𝔽q β (ϑ:=ϑ)
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑) 0)
       (relOut := acceptRejectOracleRel)

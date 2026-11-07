@@ -1,0 +1,128 @@
+name: Lean prebuild
+
+on:
+  workflow_call:
+    inputs:
+      phase:
+        required: true
+        type: string
+      clean_build:
+        type: boolean
+        default: false
+    outputs:
+      dependency_cache_hit:
+        value: ${{ jobs.prebuild.outputs.dependency_cache_hit }}
+      dependency_cache_key:
+        value: ${{ jobs.prebuild.outputs.dependency_cache_key }}
+      dependency_cache_matched_key:
+        value: ${{ jobs.prebuild.outputs.dependency_cache_matched_key }}
+
+jobs:
+  prebuild:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    permissions:
+      contents: read
+    env:
+      LEAN_NUM_THREADS: '1'
+      PREBUILD_PHASE: ${{ inputs.phase }}
+    outputs:
+      dependency_cache_hit: ${{ steps.deps-cache.outputs.cache-hit }}
+      dependency_cache_key: ${{ steps.deps-cache.outputs.cache-primary-key }}
+      dependency_cache_matched_key: ${{ steps.deps-cache.outputs.cache-matched-key }}
+    steps:
+      - name: Cleanup to free disk space
+        uses: jlumbroso/free-disk-space@v2.0.0
+        with:
+          tool-cache: false
+          android: true
+          dotnet: false
+          haskell: false
+          large-packages: false
+          docker-images: false
+          swap-storage: false
+
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.13.6"
+          enable-cache: false
+
+      - name: Check downstream proof-source policy before prebuilding
+        if: inputs.phase == 'canonical'
+        run: uv run --no-project --python 3.12 python scripts/forbidden_tokens.py
+
+      # Only the canonical job restores cross-run caches; subsequent jobs take
+      # the verified output of the preceding job in this run.
+      - name: Restore dependency cache
+        if: inputs.phase == 'canonical'
+        uses: actions/cache/restore@v6
+        id: deps-cache
+        with:
+          path: |
+            .lake/packages
+            !.lake/packages/**/*.setup.json
+          key: ${{ runner.os }}-lean-deps-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}
+          restore-keys: |
+            ${{ runner.os }}-lean-deps-
+
+      - name: Restore build cache
+        if: inputs.phase == 'canonical' && !inputs.clean_build
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            .lake/build
+            !.lake/build/**/*.setup.json
+          key: ${{ runner.os }}-arklib-build-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-arklib-build-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}-
+            ${{ runner.os }}-arklib-build-
+
+      - name: Restore this run's canonical prebuild
+        if: inputs.phase == 'extensions'
+        uses: ./.github/actions/lean-prebuild-bundle
+        with:
+          phase: canonical
+          operation: restore
+
+      - name: Set up Lean environment
+        uses: leanprover/lean-action@v1.7.0
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+
+      - name: Fetch dependency cache
+        if: inputs.phase == 'canonical'
+        run: lake exe cache get
+
+      - name: Build and time the prebuild targets
+        run: |
+          bundle="$RUNNER_TEMP/arklib-lean-$PREBUILD_PHASE"
+          mkdir -p "$bundle"
+          case "$PREBUILD_PHASE" in
+            canonical) targets=(ArkLib) ;;
+            extensions)
+              targets=(ArkLibExtensions ProximityPrizeExtensions)
+              cp "$RUNNER_TEMP/arklib-lean-canonical/"canonical.{jsonl,log} "$bundle/"
+              ;;
+            *) echo "Unknown Lean prebuild phase: $PREBUILD_PHASE" >&2; exit 1 ;;
+          esac
+          BUILD_TIMING_LOG_DIR="$bundle" bash scripts/build_timing_report.sh run \
+            library_build "$bundle/$PREBUILD_PHASE.jsonl" -- \
+            timeout --signal=INT --kill-after=2m 280m lake build "${targets[@]}"
+          mv "$bundle/library_build.log" "$bundle/$PREBUILD_PHASE.log"
+
+      - name: Transfer completed prebuild to dependent jobs
+        uses: ./.github/actions/lean-prebuild-bundle
+        with:
+          phase: ${{ inputs.phase }}
+          operation: save

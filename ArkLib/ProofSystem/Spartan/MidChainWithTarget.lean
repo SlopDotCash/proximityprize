@@ -14,8 +14,7 @@ import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeOracleLif
 The tight relation chain of #329 threads the first sum-check's terminal target `e₁` from the
 landed `firstSumcheckReductionWithTarget` (`FirstSumcheckWithTarget.lean`) through the short
 middle rounds to the final guard. This file provides the **carried variants** of the three
-middle rounds, cloned from `Basic.lean` / `Composition.lean` with the extra leading `R` slot
-forwarded untouched:
+middle rounds with the extra leading `R` slot forwarded untouched:
 
 * `sendEvalClaimWithTarget` — the bundled-eval-claim message round at statement
   `(e₁, (r_x, τ, 𝕩))`;
@@ -113,33 +112,24 @@ def linearCombinationWithTargetProver :
       Unit
       (Statement.AfterLinearCombinationWithTarget R pp)
       (OracleStatement.AfterLinearCombination R pp) Unit
-      ⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ where
-  PrvState
-  | 0 => (Statement.AfterSendEvalClaimWithTarget R pp ×
-      (∀ i, OracleStatement.AfterSendEvalClaim R pp i)) × Unit
-  | 1 => (Statement.AfterSendEvalClaimWithTarget R pp ×
-      (∀ i, OracleStatement.AfterSendEvalClaim R pp i)) × (LinearCombinationChallenge R)
-  input := fun x => x
-  sendMessage | ⟨0, h⟩ => nomatch h
-  receiveChallenge | ⟨0, _⟩ => fun st => pure fun r => (st.1, r)
-  output := fun ⟨⟨stmt, oStmt⟩, r⟩ => pure (((r, stmt), oStmt), ())
+      ⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ :=
+  RandomQuery.oracleProver oSpec
+    (Statement.AfterSendEvalClaimWithTarget R pp) (OracleStatement.AfterSendEvalClaim R pp)
+    (LinearCombinationChallenge R)
 
-/-- The oracle verifier for the carried `linearCombination`: returns the challenge prepended
-onto the carried statement, identity-routing every oracle. Clone of
-`linearCombinationVerifier`. -/
-def linearCombinationWithTargetVerifier :
+/-- The canonical random-query verifier on the carried statement and scalar-claim oracles. -/
+noncomputable def linearCombinationWithTargetVerifier :
     OracleVerifier oSpec
       (Statement.AfterSendEvalClaimWithTarget R pp) (OracleStatement.AfterSendEvalClaim R pp)
       (Statement.AfterLinearCombinationWithTarget R pp)
       (OracleStatement.AfterLinearCombination R pp)
-      ⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ where
-  verify := fun stmt chal => do
-    let r : LinearCombinationChallenge R := chal ⟨0, rfl⟩
-    pure (r, stmt)
-  outputOracle := (linearCombinationVerifier R pp oSpec).outputOracle
+      ⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ :=
+  RandomQuery.oracleVerifier oSpec
+    (Statement.AfterSendEvalClaimWithTarget R pp) (OracleStatement.AfterSendEvalClaim R pp)
+    (LinearCombinationChallenge R)
 
 /-- The carried `linearCombination` oracle reduction. -/
-def linearCombinationWithTarget :
+noncomputable def linearCombinationWithTarget :
     OracleReduction oSpec
       (Statement.AfterSendEvalClaimWithTarget R pp) (OracleStatement.AfterSendEvalClaim R pp)
       Unit
@@ -238,7 +228,7 @@ theorem linearCombinationWithTarget_toVerifier_closed :
     (linearCombinationWithTarget (R := R) pp oSpec).verifier
     (fun p tr => (tr.challenges ⟨0, rfl⟩, p.1))
     (fun _ _ _ => by
-      simp only [linearCombinationWithTarget, linearCombinationWithTargetVerifier]
+      simp only [linearCombinationWithTarget, linearCombinationWithTargetVerifier, RandomQuery.oracleVerifier]
       exact simulateQ_pure _ _)]
   rfl
 

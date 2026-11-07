@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.SpartanSendEvalClaim
 import ProximityPrize.Compatibility.SpartanLinearCombination
 import ProximityPrize.Compatibility.SpartanFirstChallenge
@@ -313,11 +314,11 @@ private theorem rbrStep8
     (hV₇ : (secondSumcheckReduction pp oSpec).verifier.toVerifier
       = ⟨fun p tr => OptionT.mk (pure (verify₇? p tr))⟩)
     (hInit : ∃ s, s ∈ support init)
-    (h₇ : (secondSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₇ : (secondSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relG relH err₇)
-    (h₈ : (finalCheck R pp oSpec).verifier.rbrKnowledgeSoundness init impl relH relI err₈) :
+    (h₈ : (finalCheck R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl relH relI err₈) :
     ((secondSumcheckReduction pp oSpec).append
-        (finalCheck R pp oSpec)).verifier.rbrKnowledgeSoundness init impl relG relI
+        (finalCheck R pp oSpec)).verifier.rbrKnowledgeSoundnessAveraged init impl relG relI
       (Sum.elim err₇ err₈ ∘ ChallengeIdx.sumEquiv.symm) :=
   OracleVerifier.append_rbrKnowledgeSoundness_failingDet_empty
     (secondSumcheckReduction pp oSpec).verifier (finalCheck R pp oSpec).verifier
@@ -338,11 +339,11 @@ private theorem rbrStep7 [Subsingleton σ] (hn : 0 < pp.ℓ_n)
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE : Nonempty ((R × Statement.AfterLinearCombination R pp) ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i))
-    (h₆ : (prependRLCTargetKS pp oSpec).verifier.rbrKnowledgeSoundness init impl relF relG err₆)
+    (h₆ : (prependRLCTargetKS pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl relF relG err₆)
     (hRest : ((secondSumcheckReduction pp oSpec).append
-        (finalCheck R pp oSpec)).verifier.rbrKnowledgeSoundness init impl relG relI errRest) :
+        (finalCheck R pp oSpec)).verifier.rbrKnowledgeSoundnessAveraged init impl relG relI errRest) :
     ((prependRLCTargetKS pp oSpec).append ((secondSumcheckReduction pp oSpec).append
-        (finalCheck R pp oSpec))).verifier.rbrKnowledgeSoundness init impl relF relI
+        (finalCheck R pp oSpec))).verifier.rbrKnowledgeSoundnessAveraged init impl relF relI
       (Sum.elim err₆ errRest ∘ ChallengeIdx.sumEquiv.symm) := by
   have hv : 0 < Fin.vsum (fun _ : Fin pp.ℓ_n => 2) := vsum_two_pos hn
   exact OracleVerifier.append_rbrKnowledgeSoundness_subsingleton
@@ -366,13 +367,13 @@ private theorem rbrStep6 [Subsingleton σ] (hn : 0 < pp.ℓ_n)
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE : Nonempty (Statement.AfterLinearCombination R pp ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i))
-    (h₅ : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₅ : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relE relF err₅)
     (hRest : ((prependRLCTargetKS pp oSpec).append ((secondSumcheckReduction pp oSpec).append
-        (finalCheck R pp oSpec))).verifier.rbrKnowledgeSoundness init impl relF relI errRest) :
+        (finalCheck R pp oSpec))).verifier.rbrKnowledgeSoundnessAveraged init impl relF relI errRest) :
     ((oracleReduction.completedLinearCombination R pp oSpec).append
         ((prependRLCTargetKS pp oSpec).append ((secondSumcheckReduction pp oSpec).append
-          (finalCheck R pp oSpec)))).verifier.rbrKnowledgeSoundness init impl relE relI
+          (finalCheck R pp oSpec)))).verifier.rbrKnowledgeSoundnessAveraged init impl relE relI
       (Sum.elim err₅ errRest ∘ ChallengeIdx.sumEquiv.symm) := by
   have hv : 0 < Fin.vsum (fun _ : Fin pp.ℓ_n => 2) := vsum_two_pos hn
   exact OracleVerifier.append_rbrKnowledgeSoundness_subsingleton
@@ -397,15 +398,15 @@ private theorem rbrStep5 [Subsingleton σ] (hn : 0 < pp.ℓ_n)
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE : Nonempty (Statement.AfterSendEvalClaim R pp ×
       ∀ i, OracleStatement.AfterSendEvalClaim R pp i))
-    (h₄ : (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₄ : (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relD relE err₄)
     (hRest : ((oracleReduction.completedLinearCombination R pp oSpec).append
         ((prependRLCTargetKS pp oSpec).append ((secondSumcheckReduction pp oSpec).append
-          (finalCheck R pp oSpec)))).verifier.rbrKnowledgeSoundness init impl relE relI errRest) :
+          (finalCheck R pp oSpec)))).verifier.rbrKnowledgeSoundnessAveraged init impl relE relI errRest) :
     ((oracleReduction.completedSendEvalClaim R pp oSpec).append
         ((oracleReduction.completedLinearCombination R pp oSpec).append
           ((prependRLCTargetKS pp oSpec).append ((secondSumcheckReduction pp oSpec).append
-            (finalCheck R pp oSpec))))).verifier.rbrKnowledgeSoundness init impl relD relI
+            (finalCheck R pp oSpec))))).verifier.rbrKnowledgeSoundnessAveraged init impl relD relI
       (Sum.elim err₄ errRest ∘ ChallengeIdx.sumEquiv.symm) := by
   have hv : 0 < Fin.vsum (fun _ : Fin pp.ℓ_n => 2) := vsum_two_pos hn
   exact OracleVerifier.append_rbrKnowledgeSoundness_subsingleton_challenge
@@ -431,17 +432,17 @@ private theorem rbrStep4 [Subsingleton σ]
     (hV₃ : (firstSumcheckReduction pp oSpec).verifier.toVerifier
       = ⟨fun p tr => OptionT.mk (pure (verify₃? p tr))⟩)
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
-    (h₃ : (firstSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₃ : (firstSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relC relD err₃)
     (hRest : ((oracleReduction.completedSendEvalClaim R pp oSpec).append
         ((oracleReduction.completedLinearCombination R pp oSpec).append
           ((prependRLCTargetKS pp oSpec).append ((secondSumcheckReduction pp oSpec).append
-            (finalCheck R pp oSpec))))).verifier.rbrKnowledgeSoundness init impl
+            (finalCheck R pp oSpec))))).verifier.rbrKnowledgeSoundnessAveraged init impl
       relD relI errRest) :
     ((firstSumcheckReduction pp oSpec).append ((oracleReduction.completedSendEvalClaim R pp oSpec).append
         ((oracleReduction.completedLinearCombination R pp oSpec).append
           ((prependRLCTargetKS pp oSpec).append ((secondSumcheckReduction pp oSpec).append
-            (finalCheck R pp oSpec)))))).verifier.rbrKnowledgeSoundness init impl relC relI
+            (finalCheck R pp oSpec)))))).verifier.rbrKnowledgeSoundnessAveraged init impl relC relI
       (Sum.elim err₃ errRest ∘ ChallengeIdx.sumEquiv.symm) := by
   exact OracleVerifier.append_rbrKnowledgeSoundness_failingDet_subsingleton
     (firstSumcheckReduction pp oSpec).verifier
@@ -466,19 +467,19 @@ private theorem rbrStep3 [Subsingleton σ] (hm : 0 < pp.ℓ_m)
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE : Nonempty (Statement.AfterFirstChallenge R pp ×
       ∀ i, OracleStatement.AfterFirstChallenge R pp i))
-    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relB relC err₂)
     (hRest : ((firstSumcheckReduction pp oSpec).append
         ((oracleReduction.completedSendEvalClaim R pp oSpec).append
           ((oracleReduction.completedLinearCombination R pp oSpec).append
             ((prependRLCTargetKS pp oSpec).append ((secondSumcheckReduction pp oSpec).append
-              (finalCheck R pp oSpec)))))).verifier.rbrKnowledgeSoundness init impl
+              (finalCheck R pp oSpec)))))).verifier.rbrKnowledgeSoundnessAveraged init impl
       relC relI errRest) :
     ((oracleReduction.completedFirstChallenge R pp oSpec).append ((firstSumcheckReduction pp oSpec).append
         ((oracleReduction.completedSendEvalClaim R pp oSpec).append
           ((oracleReduction.completedLinearCombination R pp oSpec).append
             ((prependRLCTargetKS pp oSpec).append ((secondSumcheckReduction pp oSpec).append
-              (finalCheck R pp oSpec))))))).verifier.rbrKnowledgeSoundness init impl relB relI
+              (finalCheck R pp oSpec))))))).verifier.rbrKnowledgeSoundnessAveraged init impl relB relI
       (Sum.elim err₂ errRest ∘ ChallengeIdx.sumEquiv.symm) := by
   have hv : 0 < Fin.vsum (fun _ : Fin pp.ℓ_m => 2) := vsum_two_pos hm
   exact OracleVerifier.append_rbrKnowledgeSoundness_subsingleton
@@ -556,20 +557,20 @@ theorem composedPIOP_Rc_rbrKnowledgeSoundness_of_leaves [Subsingleton σ]
     (hV₇ : (secondSumcheckReduction pp oSpec).verifier.toVerifier
       = ⟨fun p tr => OptionT.mk (pure (verify₇? p tr))⟩)
     -- the eight per-phase rbr knowledge-soundness leaves
-    (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relA relB err₁)
-    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relB relC err₂)
-    (h₃ : (firstSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₃ : (firstSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relC relD err₃)
-    (h₄ : (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₄ : (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relD relE err₄)
-    (h₅ : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₅ : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relE relF err₅)
-    (h₆ : (prependRLCTargetKS pp oSpec).verifier.rbrKnowledgeSoundness init impl relF relG err₆)
-    (h₇ : (secondSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₆ : (prependRLCTargetKS pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl relF relG err₆)
+    (h₇ : (secondSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relG relH err₇)
-    (h₈ : (finalCheck R pp oSpec).verifier.rbrKnowledgeSoundness init impl relH relI err₈)
+    (h₈ : (finalCheck R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl relH relI err₈)
     -- side conditions and nonemptiness
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×
@@ -582,7 +583,7 @@ theorem composedPIOP_Rc_rbrKnowledgeSoundness_of_leaves [Subsingleton σ]
       ∀ i, OracleStatement.AfterLinearCombination R pp i))
     (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i)) :
-    (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl relA relI
+    (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl relA relI
       (composedRbrError pp err₁ err₂ err₃ err₄ err₅ err₆ err₇ err₈) := by
   have hS8 := rbrStep8 pp oSpec verify₇? hV₇ hInit h₇ h₈
   have hS7 := rbrStep7 pp oSpec hn verify₆ hV₆ hInit hInitNF hNE_G h₆ hS8
@@ -662,20 +663,20 @@ theorem composedRbrKnowledgeSoundnessStatement_of_leaves [Subsingleton σ]
       Option (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i))
     (hV₇ : (secondSumcheckReduction pp oSpec).verifier.toVerifier
       = ⟨fun p tr => OptionT.mk (pure (verify₇? p tr))⟩)
-    (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (spartanRelIn R pp) relB err₁)
-    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relB relC err₂)
-    (h₃ : (firstSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₃ : (firstSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relC relD err₃)
-    (h₄ : (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₄ : (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relD relE err₄)
-    (h₅ : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₅ : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relE relF err₅)
-    (h₆ : (prependRLCTargetKS pp oSpec).verifier.rbrKnowledgeSoundness init impl relF relG err₆)
-    (h₇ : (secondSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₆ : (prependRLCTargetKS pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl relF relG err₆)
+    (h₇ : (secondSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relG relH err₇)
-    (h₈ : (finalCheck R pp oSpec).verifier.rbrKnowledgeSoundness init impl relH
+    (h₈ : (finalCheck R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl relH
       (finalCheckRelOut R pp) err₈)
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×
@@ -713,17 +714,16 @@ theorem firstMessage_toVerifier_pure :
         (⟨!v[.P_to_V], !v[Witness R pp]⟩ : ProtocolSpec 1).FullTranscript →
         (Statement.AfterFirstMessage R pp × ∀ i, OracleStatement.AfterFirstMessage R pp i),
       (oracleReduction.firstMessage R pp oSpec).verifier.toVerifier
-        = ⟨fun p tr => pure (verify p tr)⟩ :=
-  ⟨_, OracleVerifier.toVerifier_eq_pure_of_collapse
-    (oracleReduction.firstMessage R pp oSpec).verifier (fun p _ => p.1)
-    (fun _ _ _ => by
-      simp only [oracleReduction.firstMessage, SendSingleWitness.oracleReduction,
-        SendSingleWitness.oracleVerifier]
-      exact simulateQ_pure _ _)⟩
+        = ⟨fun p tr => pure (verify p tr)⟩ := by
+  refine ⟨fun p tr => ⟨p.1, Sum.rec p.2 (fun i => match i with | 0 => tr 0)⟩, ?_⟩
+  apply Verifier.ext
+  funext p tr
+  exact SendSingleWitness.oracleVerifier_toVerifier_run
+    (oSpec := oSpec) (Statement := Statement R pp) (OStatement := OracleStatement R pp)
+    (Witness := Witness R pp) (stmt := p.1) (oStmt := p.2) (tr := tr)
 
-/-- The `firstChallenge` (lifted `RandomQuery`) verifier compiles to a pure-deterministic
-verifier: the inner `RandomQuery` verify is `pure (chal 0)`, and the lens routing is query-free.
-Supplies `verify₂`/`hV₂` of the fold. -/
+/-- The first-challenge verifier uses canonical `RandomQuery` to return the sampled query and
+the input context. Supplies `verify₂`/`hV₂` of the fold. -/
 theorem firstChallenge_toVerifier_pure :
     ∃ verify : (Statement.AfterFirstMessage R pp ×
         ∀ i, OracleStatement.AfterFirstMessage R pp i) →
@@ -767,7 +767,8 @@ theorem linearCombination_toVerifier_pure :
     (oracleReduction.completedLinearCombination R pp oSpec).verifier
     (fun p tr => (tr.challenges ⟨0, rfl⟩, p.1))
     (fun _ _ _ => by
-      simp only [oracleReduction.completedLinearCombination, linearCombinationVerifier]
+      simp only [oracleReduction.completedLinearCombination, linearCombinationVerifier,
+        RandomQuery.oracleVerifier]
       exact simulateQ_pure _ _)⟩
 
 end

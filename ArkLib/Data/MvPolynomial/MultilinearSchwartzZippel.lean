@@ -5,12 +5,12 @@ Authors: ArkLib Contributors
 -/
 
 import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
-import ProximityPrize.Extensions.Data.MvPolynomial.SchwartzZippelCounting
+import ArkLib.Data.MvPolynomial.LowDegreeAgreement
 
 /-!
 # Multilinear Schwartz–Zippel bound (sum-check round soundness)
 
-Specialising `MvPolynomial.schwartz_zippel_counting` to **multilinear** polynomials via the
+Specialising the low-degree agreement bounds to **multilinear** polynomials via the
 total-degree bound `totalDegree_le_card_of_mem_restrictDegree_one` (a multilinear polynomial in
 `s` variables has total degree `≤ s`):
 
@@ -33,23 +33,8 @@ theorem multilinear_zeros_card_mul_le
     {p : MvPolynomial (Fin s) F} (hp : p ∈ F⦃≤ 1⦄[X (Fin s)]) (hp0 : p ≠ 0) :
     (Finset.univ.filter (fun x : Fin s → F => eval x p = 0)).card * Fintype.card F
       ≤ s * (Fintype.card F) ^ s := by
-  classical
-  have hFpos : 0 < Fintype.card F := Fintype.card_pos
-  -- total degree of a multilinear polynomial is ≤ s
-  have hdeg : p.totalDegree ≤ s := by
-    have := totalDegree_le_card_of_mem_restrictDegree_one (σ := Fin s) (R := F) hp
-    simpa using this
-  -- Schwartz–Zippel over the full grid `S i = univ`
-  have hsz := schwartz_zippel_counting p hp0 (fun _ => (Finset.univ : Finset F))
-    s (Fintype.card F) hdeg hFpos (fun i => by simp)
-  -- `piFinset (fun _ => univ) = univ` and `∏ i, |univ| = |F|^s`
-  have hpi : (Fintype.piFinset (fun _ : Fin s => (Finset.univ : Finset F)))
-      = (Finset.univ : Finset (Fin s → F)) := by
-    ext x; simp
-  have hprod : (∏ _i : Fin s, (Finset.univ : Finset F).card) = (Fintype.card F) ^ s := by
-    simp [Finset.card_univ]
-  rw [hpi, hprod] at hsz
-  exact hsz
+  exact lowDegree_zeros_card_mul_le
+    (by simpa using totalDegree_le_card_of_mem_restrictDegree_one hp) hp0
 
 /-- **Multilinear identity testing.**  Two distinct multilinear polynomials over `Fin s` agree at
 at most `s · |F|^{s-1}` points: `|{x : eval x p = eval x q}| · |F| ≤ s · |F|^s`. -/
@@ -58,18 +43,9 @@ theorem multilinear_agree_card_mul_le
     (hp : p ∈ F⦃≤ 1⦄[X (Fin s)]) (hq : q ∈ F⦃≤ 1⦄[X (Fin s)]) (hpq : p ≠ q) :
     (Finset.univ.filter (fun x : Fin s → F => eval x p = eval x q)).card * Fintype.card F
       ≤ s * (Fintype.card F) ^ s := by
-  classical
-  have hsub : p - q ∈ F⦃≤ 1⦄[X (Fin s)] := Submodule.sub_mem _ hp hq
-  have hne : p - q ≠ 0 := sub_ne_zero.mpr hpq
-  have hmain := multilinear_zeros_card_mul_le hsub hne
-  -- `eval x p = eval x q ↔ eval x (p - q) = 0`
-  have hfilter : (Finset.univ.filter (fun x : Fin s → F => eval x p = eval x q))
-      = (Finset.univ.filter (fun x : Fin s → F => eval x (p - q) = 0)) := by
-    apply Finset.filter_congr
-    intro x _
-    simp [map_sub, sub_eq_zero]
-  rw [hfilter]
-  exact hmain
+  exact lowDegree_agree_card_mul_le
+    (by simpa using totalDegree_le_card_of_mem_restrictDegree_one hp)
+    (by simpa using totalDegree_le_card_of_mem_restrictDegree_one hq) hpq
 
 /-- **Multilinear identity testing, probability-ratio form.**  Two distinct multilinear
 polynomials over `Fin s` agree at a uniformly random point with probability at most `s/|F|`:
@@ -81,17 +57,8 @@ theorem multilinear_agree_prob_le
     ((Finset.univ.filter (fun x : Fin s → F => eval x p = eval x q)).card : ℝ)
         / (Fintype.card F : ℝ) ^ s
       ≤ (s : ℝ) / Fintype.card F := by
-  have hFpos : (0 : ℝ) < Fintype.card F := by exact_mod_cast Fintype.card_pos
-  have hcount := multilinear_agree_card_mul_le hp hq hpq
-  have hcountR :
-      ((Finset.univ.filter (fun x : Fin s → F => eval x p = eval x q)).card : ℝ)
-          * Fintype.card F
-        ≤ (s : ℝ) * (Fintype.card F) ^ s := by exact_mod_cast hcount
-  rw [div_le_div_iff₀ (by positivity) hFpos]
-  -- |agree| · |F| ≤ s · |F|^s  ⟹  |agree| · |F| ≤ s · |F|^s  (rearranged)
-  calc ((Finset.univ.filter (fun x : Fin s → F => eval x p = eval x q)).card : ℝ)
-        * Fintype.card F
-      ≤ (s : ℝ) * (Fintype.card F) ^ s := hcountR
-    _ = (s : ℝ) * (Fintype.card F) ^ s := rfl
+  exact lowDegree_agree_prob_le
+    (by simpa using totalDegree_le_card_of_mem_restrictDegree_one hp)
+    (by simpa using totalDegree_le_card_of_mem_restrictDegree_one hq) hpq
 
 end MvPolynomial

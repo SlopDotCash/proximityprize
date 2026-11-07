@@ -7,6 +7,9 @@ more paths are provided, scans only those Lean files/directories. Fails if live 
   - `native_decide` / `bv_decide` (kernel-bypassing decision procedures), the
     equivalent `decide +native` / `decide (native := true)` forms and `bv_check`,
     including inside the `{…}` hole of an interpolated string, or
+    direct use of the compiler-trust axioms and native reduction primitives
+    they rely on (`Lean.ofReduceBool`, `Lean.ofReduceNat`, `Lean.trustCompiler`,
+    `Lean.reduceBool`, `Lean.reduceNat`), or
   - an `unsafe` declaration modifier, live `unsafeCast`, or `implemented_by`
     attribute (repository policy: block unsafe decls, unsafeCast, and
     evaluator-diverging `implemented_by`; this is a fast precheck, not a claim
@@ -14,6 +17,10 @@ more paths are provided, scans only those Lean files/directories. Fails if live 
   - a metaprogram that adds kernel declarations (`run_cmd` / `run_elab` /
     `run_meta`, `addDecl`, `addAndCompile`, `axiomDecl`), which can declare an
     axiom without the `axiom` keyword, or
+  - a `#exit` command. Lean stops elaborating the file there, so nothing after
+    it is checked or even declared, while text-based gates still read it: the
+    residual census counts an unelaborated `theorem foo_holds : FooResidual`
+    after `#exit` as a discharge, or
   - a custom `axiom` declaration that is not a reviewed residual pinned in
     scripts/residual_axioms.txt, with any modifiers (including `public`/`meta`
     in `module` files), with the name on a later line or after a comment, and
@@ -26,6 +33,8 @@ more paths are provided, scans only those Lean files/directories. Fails if live 
     the statement or that context fails until the manifest entry is updated in
     a reviewed change (`--print-residual-manifest` prints the current pins).
     Pinning a residual records a documented assumption; it proves nothing, or
+  - an `axiom` keyword followed by an antiquotation (`axiom $n` in a syntax
+    quotation), which lets a macro declare an axiom under any name, or
   - a `theorem`/`lemma` whose statement type is `True`, or any bracketing /
     `∧` `∨` `→` `↔` combination built only from `True` (e.g. `(True)`,
     `True ∧ (True)`), which is equally vacuous, unless `True` is rebound by a
@@ -84,14 +93,27 @@ from typing import NamedTuple
 import lean_lexer
 from lean_lexer import COMMENT, CODE, ID_FIRST, ID_REST, Reading
 
-TOKEN_RE = re.compile(r"\b(native_decide|bv_decide|unsafeCast|implemented_by)\b")
+# Native reduction primitives can be called directly without a tactic spelling.
+TOKEN_RE = re.compile(
+    r"\b(native_decide|bv_decide|unsafeCast|implemented_by"
+    r"|ofReduceBool|ofReduceNat|trustCompiler|reduceBool|reduceNat)\b"
+)
 # Meta code can add a kernel declaration without the `axiom` keyword, e.g.
 # `run_cmd liftCoreM <| addDecl (.axiomDecl { name := `w, type := mkConst ``False, .. })`.
 # ArkLib/Research proofs never need to add declarations from metaprograms.
+# `run_tac` (tactic) and `by_elab` (term) run the same inline metaprograms inside a
+# proof and can close a goal with `sorryAx` built from a string name, which no
+# `sorry` token reveals.
 META_DECL_RE = re.compile(
-    r"(?<![\w.'])(run_cmd|run_elab|run_meta)\b"
+    r"(?<![\w.'])(run_cmd|run_elab|run_meta|run_tac|by_elab)\b"
     r"|\b(add(?:Decl\w*|AndCompile)|axiomDecl)\b"
 )
+# `#exit` ends elaboration of the file: later text is never checked or declared,
+# but text-based gates (residual_census.py, sorry_census.py) still read it. `#` is
+# not an identifier character and Lean's tokenizer takes the longest token with
+# no boundary check, so `rfl#exit` and `#exit_foo` also start a real `#exit`;
+# match the bare text.
+EXIT_RE = re.compile(r"#exit")
 # `native_decide` is a synonym for `decide +native`; both forms, the config form
 # `decide (native := true)` / `(config := { native := true })` and `bv_check`
 # prove the goal by native evaluation and add a compiler-trust axiom. Matched
@@ -103,16 +125,14 @@ NATIVE_FORM_RE = re.compile(
     r"|\bbv_check\b"
 )
 # Lean declaration-modifier `unsafe` (not aesop's `(add unsafe …)` tactic hint).
-# Allow the same modifiers before or after `unsafe` (Lean accepts e.g.
-# `unsafe nonrec def`), then require a declaration keyword so
-# `aesop (add unsafe …)` and `attribute [aesop unsafe 50%]` stay allowed.
-UNSAFE_DECL_RE = re.compile(
-    r"(?m)^[ \t]*(?:@\[[^\]]*\]\s*)*"
-    r"(?:(?:public|protected|private|scoped|noncomputable|partial|nonrec|meta|local)\s+)*"
-    r"unsafe\s+"
-    r"(?:(?:public|protected|private|scoped|noncomputable|partial|nonrec|meta|local)\s+)*"
-    r"(?:theorem|lemma|def|abbrev|opaque|constant|axiom|instance|structure|inductive|class|example)\b"
-)
+# `unsafe` is matched as a keyword wherever it appears, like the `axiom`
+# check below: Lean's command parser does not care about line breaks, so a
+# line-anchored match missed `open Foo in unsafe def …`, `set_option … in
+# unsafe def …`, `omit […] in unsafe def …`, `mutual unsafe def …` and
+# mid-line `… unsafe def …` forms. Allow the same modifiers after `unsafe`
+# (Lean accepts e.g. `unsafe nonrec def`), then require a declaration
+# keyword so `aesop (add unsafe …)` and `attribute [aesop unsafe 50%]`
+# stay allowed.
 
 
 # --- Lean identifier characters ---------------------------------------------
@@ -124,6 +144,14 @@ _COMP = lean_lexer.COMP
 _ID_START = lean_lexer.ID_START
 _ID_END = lean_lexer.ID_END
 _NAME = lean_lexer.NAME
+# Lean declaration-modifier `unsafe`, matched as a keyword (see the comment
+# where the old line-anchored form lived). Defined here because it needs
+# `_ID_START` / `_ID_END` above.
+UNSAFE_DECL_RE = re.compile(
+    _ID_START + r"unsafe" + _ID_END + r"\s+"
+    r"(?:(?:public|protected|private|scoped|noncomputable|partial|nonrec|meta|local)\s+)*"
+    r"(?:theorem|lemma|def|abbrev|opaque|constant|axiom|instance|structure|inductive|class|example)\b"
+)
 # `axiom` is a reserved keyword in Lean 4, so any live (non-comment) `axiom`
 # token starts an axiom declaration, whatever modifiers, attributes or docstring
 # precede it. Matching the keyword itself (rather than a line-anchored modifier
@@ -136,6 +164,13 @@ _NAME = lean_lexer.NAME
 # `\s*` also spans newlines and blanked comments: `axiom\n  foo`,
 # `axiom/- c -/foo`, `axiom/- c\n-/foo` and `axiom«foo»` are all seen.
 AXIOM_RE = re.compile(_ID_START + r"axiom" + _ID_END + r"\s*(" + _NAME + r")")
+# A syntax quotation can splice the declared name in with an antiquotation:
+# `macro "launder " n:ident : command => `(axiom $n : False)` followed by
+# `launder w` declares the axiom `w`, and `$(mkIdent `w)` does the same without
+# a macro argument. `AXIOM_RE` needs a literal name after the keyword, so a live
+# `axiom` keyword followed by `$` is rejected on its own: the real name is only
+# known after elaboration, so it can never be matched against the allowlist.
+AXIOM_ANTIQUOT_RE = re.compile(_ID_START + r"axiom" + _ID_END + r"\s*\$")
 # Text inside a guillemet-quoted identifier (`«an axiom counterfeit'»`) is part
 # of a name, not a command, so an `axiom` match that starts inside one is not a
 # declaration. Quoted-identifier spans come from the shared lexer, which also
@@ -424,12 +459,25 @@ def axiom_hits(code: str, reading: Reading) -> list[re.Match]:
     return [m for m in AXIOM_RE.finditer(code) if outside_quoted(m.start(), reading.quoted)]
 
 
+def antiquoted_axiom_hits(code: str, reading: Reading) -> list[int]:
+    """Live `axiom $…` heads in syntax quotations: the name comes from elaboration."""
+    return [m.start() for m in AXIOM_ANTIQUOT_RE.finditer(code)
+            if outside_quoted(m.start(), reading.quoted)]
+
+
+def exit_hits(code: str, reading: Reading) -> list[int]:
+    """Offsets of live `#exit` commands."""
+    return [m.start() for m in EXIT_RE.finditer(code) if outside_quoted(m.start(), reading.quoted)]
+
+
 def command_view(reading: Reading, code: str | None = None) -> tuple:
-    """What the checks see under one reading: axiom, declaration and placebo hits."""
+    """What the checks see under one reading: axiom, declaration, placebo and `#exit` hits."""
     code = reading.code_text() if code is None else code
     return ([(m.start(), m.group(1)) for m in axiom_hits(code, reading)],
             [(m.start(), m.group(1), m.group(2)) for m in declaration_heads(code, reading)],
-            find_true_placebos(reading, code))
+            find_true_placebos(reading, code),
+            exit_hits(code, reading),
+            antiquoted_axiom_hits(code, reading))
 
 
 def disagreeing_readings(readings: list[Reading], base_code: str) -> list[Reading]:
@@ -1063,6 +1111,13 @@ def main() -> int:
                 f"(adds a kernel declaration, e.g. an axiom, without an `axiom` "
                 f"keyword; state residuals as `def ...Residual : Prop`)"
             )
+        for off in exit_hits(any_live, base):
+            line = text.count("\n", 0, off) + 1
+            failures.append(
+                f"{path}:{line}: forbidden `#exit` (Lean stops checking the file here, "
+                f"but text-based gates such as the residual census still read what "
+                f"follows; delete the unchecked tail or move it to a scratch file)"
+            )
         scopes = TrueScopes(live_text, base.quoted)
         for m in UNSAFE_DECL_RE.finditer(live_text):
             if not outside_quoted(m.start(), base.quoted):
@@ -1116,6 +1171,14 @@ def main() -> int:
             allowed_hits.append(f"{where}: allowed documented residual axiom {site.fqn} "
                                 f"(pinned assumption, not a proof)")
 
+        for am_start in antiquoted_axiom_hits(any_live, base):
+            idx = text.count("\n", 0, am_start) + 1
+            failures.append(
+                f"{path}:{idx}: forbidden custom axiom declaration with an antiquoted "
+                f"name (`axiom $…` in a syntax quotation lets a macro or elaborator "
+                f"declare an axiom whose name the allowlist never sees)"
+            )
+
         for line_no, name in find_true_placebos(base, live_text):
             if inherited.allows(path, name, "vacuous_true_theorem"):
                 inherited_hits.append(f"{path}:{line_no}: inherited upstream True stub {name} "
@@ -1158,6 +1221,7 @@ def main() -> int:
         print("\n".join(inherited_hits))
     print(
         "forbidden-token precheck: clean (no native_decide / bv_decide / "
+        "ofReduceBool / ofReduceNat / trustCompiler / reduceBool / reduceNat / "
         "unsafe declaration / unsafeCast / implemented_by / "
         "undocumented custom axiom / new vacuous `: True` placebo; "
         f"{len(allowed_hits)} allowlisted residual axiom(s), "

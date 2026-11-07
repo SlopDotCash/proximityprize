@@ -168,8 +168,14 @@ residuals are "none refuted". That is wrong for the first one:
   `DualRowsFromNonsingularEvalPinned` true;
 * `FieldLargeForMinor` is an explicit field-size regime, not a theorem over all fields.
 
-Also, `not_lovettSystemToDualSpan` below records that the step-2 bridge residual
-`ArkLib.GMMDS.LovettSystemToDualSpan` (whose conclusion is the unpinned target) is false for
+The field-size regime `FieldLargeForMinor ι F k` bounds the minor degree by `|F|`
+uniformly over every vertex count `t`. The degree grows with `t` for a nonzero minor.
+`ArkLib.GMMDS.not_fieldLargeForMinor` refutes this uniform premise over finite fields when
+`2 ≤ k ≤ |ι|`. The ring-change premise already fails for every `k ≥ 1`, independently of
+the field size. A per-instance field-size bound and a nondegenerate ring-change premise
+such as `RIMKernelTrivialFromLovettWPC` are needed for this approach.
+
+`not_lovettSystemToDualSpan` below refutes the step-2 bridge to the unpinned target for
 `1 ≤ k < card ι`. -/
 
 omit [Fintype F] in

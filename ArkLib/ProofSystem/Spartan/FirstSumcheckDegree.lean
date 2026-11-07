@@ -29,7 +29,7 @@ theorem zeroCheckVirtualPolynomial_mem_restrictDegree
     (𝕩 : Statement.AfterFirstMessage R pp)
     (oStmt : ∀ i, OracleStatement.AfterFirstMessage R pp i) :
     zeroCheckVirtualPolynomial R pp 𝕩 oStmt ∈ R⦃≤ 1⦄[X Fin pp.ℓ_m] := by
-  unfold zeroCheckVirtualPolynomial
+  rw [zeroCheckVirtualPolynomial_eq_sum]
   apply Submodule.sum_mem
   intro x _
   rw [mul_comm, C_mul']

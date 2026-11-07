@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Spartan.MidChainWithTarget
 import ArkLib.ProofSystem.Spartan.TightRLCKernel
 import ArkLib.ProofSystem.Spartan.SumcheckPhaseRbr
@@ -77,9 +78,9 @@ theorem firstVirtual_eval_eq_product
       (firstSumCheckVirtualPolynomial pp stmt.2.1 stmt.2.2 oStmt)
       = MvPolynomial.eval stmt.1 (MvPolynomial.eqPolynomial stmt.2.1) *
         (evalClaimValue R pp stmt oStmt .A * evalClaimValue R pp stmt oStmt .B
-          - evalClaimValue R pp stmt oStmt .C) := by
-  simp only [firstSumCheckVirtualPolynomial, matVecMLE, evalClaimValue,
-    MvPolynomial.eval_mul, MvPolynomial.eval_sub]
+          - evalClaimValue R pp stmt oStmt .C) :=
+  Algebra.firstVirtual_eval (fun i => oStmt (.inl i))
+    (R1CS.𝕫 stmt.2.2 (oStmt (.inr 0))) stmt.2.1 stmt.1
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] [Inhabited R] [SampleableType R] in
 /-- Evaluating at the full-challenge concatenation with an empty tail is evaluation at the
@@ -293,10 +294,10 @@ the statement and matrix/witness oracles are forwarded, so the transported conju
 output in `tightRelE` *is* input membership; the (adversarial) claim message only feeds the
 binding conjunct, which is discarded. -/
 theorem sendEvalClaimWithTarget_rbrKnowledgeSoundness_leaf :
-    (sendEvalClaimWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (sendEvalClaimWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstSumcheckWithTargetRbrRelOut (R := R) pp oSpec)
       (tightRelE (R := R) pp oSpec) 0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [sendEvalClaimWithTarget_toVerifier_closed]
   exact Verifier.rbrKnowledgeSoundness_singleMessage_pure init impl _
     (fun stmtIn msg h => h.1)
@@ -308,11 +309,11 @@ challenge-independent: probability 0) or fails the transported sum-check conjunc
 (then the sent claims provably differ from the true ones and the RLC-match is the kernel event
 of a nonzero linear form: probability exactly `1/|R|`). -/
 theorem linearCombinationWithTarget_rbrKnowledgeSoundness_leaf :
-    (linearCombinationWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (linearCombinationWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (tightRelE (R := R) pp oSpec)
       (tightRelF (R := R) pp)
       (fun _ => (1 : ℝ≥0) / (Fintype.card R : ℝ≥0)) := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [linearCombinationWithTarget_toVerifier_closed]
   refine Verifier.rbrKnowledgeSoundness_singleChallenge_pure
     (C := LinearCombinationChallenge R)
@@ -343,10 +344,10 @@ theorem linearCombinationWithTarget_rbrKnowledgeSoundness_leaf :
 knowledge-sound from `tightRelF` to `tightRelG`: it emits `T = ∑ r·v^sent`, so `tightRelG`'s
 target equation *is* the RLC-match, and the binding conjunct forwards. -/
 theorem prependRLCTargetWithTarget_rbrKnowledgeSoundness_leaf :
-    (prependRLCTargetWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (prependRLCTargetWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (tightRelF (R := R) pp)
       (tightRelG (R := R) pp) 0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [prependRLCTargetWithTarget_toVerifier_pure]
   exact Verifier.rbrKnowledgeSoundness_zeroRound_pure init impl _
     (fun stmtIn h => ⟨h.1, h.2⟩)

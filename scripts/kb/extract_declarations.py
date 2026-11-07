@@ -9,8 +9,8 @@ documentation coverage reports, and review context.
 
 Usage::
 
-    python3 ./scripts/kb/extract_declarations.py
-    python3 ./scripts/kb/extract_declarations.py \
+    uv run --no-project --python 3.12 python ./scripts/kb/extract_declarations.py
+    uv run --no-project --python 3.12 python ./scripts/kb/extract_declarations.py \
         --root ArkLib/Data/CodingTheory --out /tmp/ct-decls.json
 
 The output is a JSON document with two top-level keys:
@@ -251,7 +251,7 @@ def lean_files_under(root: Path) -> list[Path]:
         return sorted(root.rglob("*.lean"))
 
     result = subprocess.run(
-        ["git", "ls-files", "-z", "--", str(root_rel)],
+        ["git", "ls-files", "-z", "--", root_rel.as_posix()],
         cwd=REPO_ROOT,
         check=True,
         stdout=subprocess.PIPE,
@@ -273,12 +273,12 @@ def extract_declarations(roots: list[Path]) -> dict[str, object]:
         root_count = 0
         root_decls = 0
         for path in lean_files_under(root):
-            rel = str(path.relative_to(REPO_ROOT))
+            rel = path.relative_to(REPO_ROOT).as_posix()
             decls = parse_file(path)
             files[rel] = {"declarations": decls}
             root_count += 1
             root_decls += len(decls)
-        stats[str(root.relative_to(REPO_ROOT))] = {
+        stats[root.relative_to(REPO_ROOT).as_posix()] = {
             "files": root_count,
             "declarations": root_decls,
         }

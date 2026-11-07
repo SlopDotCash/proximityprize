@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.InitRbrSoundness
 import ProximityPrize.Extensions.ProofSystem.Component.SendWitness
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeSoundness
@@ -52,7 +53,7 @@ theorem stirInit_append_rbrKnowledgeSoundness
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (hInit : ∃ s, s ∈ support init)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl (stirOStmtRel F φ deg δ) rel₃ rbrKnowledgeError₂)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl (stirOStmtRel F φ deg δ) rel₃ rbrKnowledgeError₂)
     (hPhase2 : ∀ {WitMid₁ : Fin (1 + 1) → Type} {WitMid₂ : Fin (n + 1) → Type}
       {E₁ : Extractor.RoundByRound []ₒ (Unit × ∀ i, OStmt ι F i) Unit Unit
         (pSpecInit F) WitMid₁}
@@ -64,7 +65,7 @@ theorem stirInit_append_rbrKnowledgeSoundness
         (stirInitVerifier (ι := ι) (F := F)).toVerifier V₂ kSF₁ kSF₂
         stirInitVerify stirInitVerifier_toVerifier_eq hInit
         (rbrKnowledgeError₂ := rbrKnowledgeError₂)) :
-    @Verifier.rbrKnowledgeSoundness PEmpty.{1} []ₒ (Unit × ((i : Unit) → OStmt ι F i)) Unit
+    @Verifier.rbrKnowledgeSoundnessAveraged PEmpty.{1} []ₒ (Unit × ((i : Unit) → OStmt ι F i)) Unit
       Stmt₃ Wit₃ (1 + n) (pSpecInit F ++ₚ pSpec₂)
       (fun i => instSampleableTypeChallengeAppend i) σ init impl
       (stirOStmtRel Unit φ deg δ) rel₃

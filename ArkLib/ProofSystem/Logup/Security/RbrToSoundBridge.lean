@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Logup.Security.SumcheckSoundnessLift
 
 /-!
@@ -188,7 +189,7 @@ theorem rbrSoundness_imp_soundness_of_marginal
     {langIn : Set StmtIn} {langOut : Set StmtOut}
     {verifier : Verifier oSpec StmtIn StmtOut pSpec}
     {rbrSoundnessError : pSpec.ChallengeIdx → ℝ≥0}
-    (hRbr : rbrSoundness init impl langIn langOut verifier rbrSoundnessError)
+    (hRbr : rbrSoundnessAveraged init impl langIn langOut verifier rbrSoundnessError)
     (hMarginal : MarginalBridge init impl langIn langOut verifier rbrSoundnessError) :
     soundness init impl langIn langOut verifier (∑ i : pSpec.ChallengeIdx, rbrSoundnessError i) := by
   classical
@@ -255,7 +256,7 @@ theorem sumcheckRbrToSound
     (hMarginal : Verifier.MarginalBridge init impl
       (midLanguage F n M params) outputRelation.language
       (sumcheckVerifier oSpec F n M params).toVerifier rbrSoundnessError) :
-    (sumcheckVerifier oSpec F n M params).rbrSoundness init impl
+    (sumcheckVerifier oSpec F n M params).rbrSoundnessAveraged init impl
         (midLanguage F n M params) outputRelation.language rbrSoundnessError →
       (sumcheckVerifier oSpec F n M params).soundness init impl
         (midLanguage F n M params) outputRelation.language sumcheckSoundnessError := by
@@ -290,7 +291,7 @@ theorem sumcheckSoundnessResidual_holds_of_rbr
     (hProj : SumcheckLensProjSound oSpec F n M params innerLangIn)
     (hInnerRbr :
       (logupConcreteSumcheckOracleReduction oSpec F n M params
-          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundness init impl
+          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundnessAveraged init impl
         innerLangIn (Set.univ) rbrSoundnessError)
     (hMarginal : Verifier.MarginalBridge init impl
       (midLanguage F n M params) outputRelation.language

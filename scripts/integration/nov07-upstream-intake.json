@@ -1,0 +1,97 @@
+{
+  "old_upstream": "78835bdb3a4d24ea9dd2977db4c46029eb8de5db",
+  "new_upstream": "31ff7ddf9bc209ffaeab516359cd17f47d9bd6f1",
+  "downstream_base": "85be740aed919904456ebe6c1b8bce1cd2b133ac",
+  "superseded": [
+    {
+      "source": "ArkLib/ProofSystem/ConstraintSystem/Basic.lean",
+      "archive": "scripts/integration/retired/nov07-ProofSystem-ConstraintSystem-Basic.lean.txt",
+      "sha256": "8d957418d1ccadd84f7e57a1dc37332426d909867628a25779c0133094656dca",
+      "reason": "The upstream owner defines ConstraintSystem using the canonical claim-dependent relation API. The earlier classic bundle had no external importers."
+    },
+    {
+      "source": "ArkLib/ProofSystem/ConstraintSystem/Examples.lean",
+      "archive": "scripts/integration/retired/nov07-ProofSystem-ConstraintSystem-Examples.lean.txt",
+      "sha256": "176aa40df26394c97d2f1653c4a8edebac0a7a6fec2b7693f24931bdf58b2d99",
+      "reason": "The upstream examples exercise the canonical constraint-system API. The earlier examples had no downstream importers."
+    },
+    {
+      "source": "ArkLib/ProofSystem/ConstraintSystem/Plonk.lean",
+      "archive": "scripts/integration/retired/nov07-ProofSystem-ConstraintSystem-Plonk.lean.txt",
+      "sha256": "d6a677cd96308dc9b25014a0a68917561ebf7fa2f50a282a42c16d9c15e07081",
+      "reason": "The upstream wiring permutation now uses the proved fiber-cycle implementation."
+    },
+    {
+      "source": "ArkLib/Data/Polynomial/Bivariate.lean",
+      "archive": "scripts/integration/retired/nov07-Data-Polynomial-Bivariate.lean.txt",
+      "sha256": "313a46525771d5a7f26c8dcd2fe0f885bea2d67999bff3621883c22921a1ad87",
+      "reason": "Upstream generalized the coefficient universe, including degreeX_le_natWeightedDegree."
+    }
+  ],
+  "consolidations": [
+    {
+      "source": "ProximityPrize/Extensions/Commitments/Functional/Basic.lean",
+      "archive": "scripts/integration/retired/nov07-ProximityPrize-Extensions-Commitments-Functional-Basic.lean.txt",
+      "sha256": "13bd1d5fb82e3d008fa6ca50800393b02f6c6a1b42da2b39f539a7f8c19fd601",
+      "reason": "Canonical extractability logs the commitment phase and threads post-setup and post-commitment state. The old reset-state experiment had no external declaration callers."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Sumcheck/Spec/OracleCompletenessThreaded.lean",
+      "archive": "scripts/integration/retired/nov07-ArkLib-ProofSystem-Sumcheck-Spec-OracleCompletenessThreaded.lean.txt",
+      "sha256": "ccff72f4a7c23fef3bac9a98087232da5af37bc643ed665d6e9ae0e5628c7964",
+      "reason": "Canonical Sumcheck.Spec.oracleReduction_perfectCompleteness proves the same conclusion without the old per-round coherence and support premises. The distinct single-round compatibility wrapper stays live."
+    }
+  ],
+  "downstream_prime_port": {
+    "source": "Research/ProximityPrize/Frontier/_G139ArithmeticCertificate.lean",
+    "source_sha256": "56d3b59d6a903c162141833f6b55c1f7b8e7d6f8be64535d8540c6a38b6cdb3d",
+    "declarations": [
+      "prime_1370701",
+      "prime_1052698369"
+    ],
+    "reason": "Replace kernel-deep trial division by Lucas certificates using the existing modular exponentiation proof.",
+    "focused_validation": {
+      "scope": "Two primality lemmas and their square-and-multiply support, with the same Mathlib imports as the Research owner.",
+      "exit_code": 0,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "log_sha256": "caeb17c9126a74a71934be0a8483a42bb64e2a05347c0ef7739c5ecb502d8d1e",
+      "source_sha256": "ddf924420a1fe55f54f663fcbaed2f158c8bb5cecc99ba34734b28001b53a69f"
+    },
+    "whole_module_validation": {
+      "scope": "The current Research module, using the checked shared binary-power implementation and the existing G139 bridge artifacts.",
+      "exit_code": 0,
+      "source_sha256": "56d3b59d6a903c162141833f6b55c1f7b8e7d6f8be64535d8540c6a38b6cdb3d",
+      "log_sha256": "158cfadb9d00df2c470df9efbeb21e6e294f28c8a809ba1ef71b638d04d1ed7f",
+      "flagship_axiom_reports": 3
+    }
+  },
+  "arithmetic_power_consolidation": {
+    "owner": "Research/ProximityPrize/Support/BinaryPower.lean",
+    "original_source": "Research/ProximityPrize/Frontier/_PrizeShapePrimeP30Second.lean",
+    "original_revision": "0306d4422",
+    "migrated_clients": 20,
+    "generated_client_emitter": "scripts/probes/probe_w16_tz_emit_lean.py",
+    "disposition": "The certificates share the same square-and-multiply computation and correctness theorem; their public statements still use ordinary monoid powers."
+  },
+  "upstream_tree_review": {
+    "tracked_upstream_blobs": 1749,
+    "tracked_in_downstream": 1746,
+    "lean_sources": 1435,
+    "byte_identical_lean_sources": 1433,
+    "reviewed_lean_adaptations": {
+      "ArkLib/Data/Polynomial/SplitFold.lean": "Generalize coefficient universes while delegating the upstream polynomial construction.",
+      "scripts/LintStyle.lean": "Enforce the module policy using the canonical inventory so the separate classic library keeps its ownership."
+    },
+    "downstream_documentation_policy": {
+      "ArkLib/ToMathlib/README.md": "The existing README and repo-map describe this directory outside the Lean source tree.",
+      "docs/kb/_generated/declarations.json": "Local generated declaration catalog.",
+      "docs/kb/_generated/dedup-report.md": "Local generated review aid."
+    }
+  },
+  "initial_november_upstream": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
+  "latest_downstream_base": "1482c50b3e3a047cbe696224342d9b1855bd4883"
+}

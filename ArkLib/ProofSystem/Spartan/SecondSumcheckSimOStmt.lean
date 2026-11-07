@@ -87,7 +87,7 @@ theorem secondSCEvalPure_simOracle0 [DecidableEq R]
           (oStmt (.inr (.inl .C))).toMLE))
       * eval point (MLE (R1CS.𝕫 stmt.2.2.2 (oStmt (.inr (.inr 0))) ∘ finFunctionFinEquiv))
       = eval point (secondSumCheckVirtualPolynomial R pp stmt oStmt)
-  simp only [secondSumCheckVirtualPolynomial, eval_add, eval_mul, eval_C, Function.comp_def,
+  simp only [secondSumCheckVirtualPolynomial_eq_terms, eval_add, eval_mul, eval_C, Function.comp_def,
     Fin.cast_eq_self]
   ring
 

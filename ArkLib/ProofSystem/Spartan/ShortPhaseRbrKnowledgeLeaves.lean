@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.SpartanSendEvalClaim
 import ProximityPrize.Compatibility.SpartanLinearCombination
 import ProximityPrize.Compatibility.SpartanFirstChallenge
@@ -126,7 +127,8 @@ theorem firstChallenge_toVerifier_closed :
     (oracleReduction.completedFirstChallenge R pp oSpec).verifier
     (fun p tr => (tr.challenges ⟨0, rfl⟩, p.1))
     (fun _ _ _ => by
-      simp only [oracleReduction.completedFirstChallenge, firstChallengeVerifier]
+      simp only [oracleReduction.completedFirstChallenge, firstChallengeVerifier,
+        RandomQuery.oracleVerifier]
       exact simulateQ_pure _ _)]
   rfl
 
@@ -164,7 +166,8 @@ theorem linearCombination_toVerifier_closed :
     (oracleReduction.completedLinearCombination R pp oSpec).verifier
     (fun p tr => (tr.challenges ⟨0, rfl⟩, p.1))
     (fun _ _ _ => by
-      simp only [oracleReduction.completedLinearCombination, linearCombinationVerifier]
+      simp only [oracleReduction.completedLinearCombination, linearCombinationVerifier,
+        RandomQuery.oracleVerifier]
       exact simulateQ_pure _ _)]
   rfl
 
@@ -173,7 +176,7 @@ theorem linearCombination_toVerifier_closed :
 /-- **Leaf `h₁`.** The `firstMessage` (`SendSingleWitness`) phase is perfectly rbr
 knowledge-sound from `spartanRelIn` to `relB`. -/
 theorem firstMessage_rbrKnowledgeSoundness_spartanRelIn :
-    (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (spartanRelIn R pp) (firstMessageRbrRelB (R := R) pp) 0 :=
   SendSingleWitness.oracleReduction_rbr_knowledge_soundness (oSpec := oSpec)
     (init := init) (impl := impl) (oRelIn := spartanRelIn R pp)
@@ -188,7 +191,7 @@ theorem zeroCheckVirtualPolynomial_degreeOf_le
     (oStmt : ∀ i, OracleStatement.AfterFirstMessage R pp i) (j : Fin pp.ℓ_m) :
     (zeroCheckVirtualPolynomial R pp 𝕩 oStmt).degreeOf j ≤ 1 := by
   classical
-  unfold zeroCheckVirtualPolynomial
+  rw [zeroCheckVirtualPolynomial_eq_sum]
   refine le_trans (MvPolynomial.degreeOf_sum_le _ _ _) ?_
   rw [Finset.sup_le_iff]
   intro x _
@@ -317,11 +320,11 @@ omit [Inhabited R] in
 from `relB` (R1CS satisfiability of the sent witness) to the first sum-check's honest input
 relation, with per-round error `ℓ_m / |R|`. -/
 theorem firstChallenge_rbrKnowledgeSoundness_schwartzZippel (hm : 0 < pp.ℓ_m) :
-    (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstMessageRbrRelB (R := R) pp)
       (Spartan.Spec.firstSumcheckRbrRelIn (R := R) pp oSpec)
       (fun _ => (pp.ℓ_m : ℝ≥0) / (Fintype.card R : ℝ≥0)) := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [firstChallenge_toVerifier_closed]
   refine Verifier.rbrKnowledgeSoundness_singleChallenge_pure (C := FirstChallenge R pp)
     init impl
@@ -345,10 +348,10 @@ sum-check's transported output relation to its pass-through reading `relE`: the 
 the matrix/witness oracles are forwarded unchanged, so input membership is recovered from any
 output in `relE` regardless of the adversarial claim message. -/
 theorem sendEvalClaim_rbrKnowledgeSoundness_leaf :
-    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (Spartan.Spec.firstSumcheckRbrRelOut (R := R) pp oSpec)
       (sendEvalClaimRbrRelE (R := R) pp oSpec) 0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [sendEvalClaim_toVerifier_closed]
   exact Verifier.rbrKnowledgeSoundness_singleMessage_pure init impl _
     (fun stmtIn msg h => h)
@@ -362,11 +365,11 @@ docstring — a prover sending the true evaluation claims defeats any smaller bo
 sum-check's doom. The trivial bound keeps the composed theorem honest rather than laundering an
 unprovable per-round error. -/
 theorem linearCombination_rbrKnowledgeSoundness_leaf :
-    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (sendEvalClaimRbrRelE (R := R) pp oSpec)
       (prependRLCTargetRbrRelF (R := R) pp oSpec)
       (fun _ => 1) := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [linearCombination_toVerifier_closed]
   refine Verifier.rbrKnowledgeSoundness_singleChallenge_pure
     (C := LinearCombinationChallenge R)
@@ -383,10 +386,10 @@ theorem linearCombination_rbrKnowledgeSoundness_leaf :
 /-- **Leaf `h₆`.** The zero-round `prependRLCTarget` adapter is perfectly rbr knowledge-sound
 from the pullback relation `relF` to the second sum-check's honest input relation. -/
 theorem prependRLCTarget_rbrKnowledgeSoundness_pullbackLeaf :
-    (prependRLCTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (prependRLCTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (prependRLCTargetRbrRelF (R := R) pp oSpec)
       (Spartan.Spec.secondSumcheckRbrRelIn (R := R) pp oSpec) 0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [prependRLCTarget_toVerifier_pure]
   exact Verifier.rbrKnowledgeSoundness_zeroRound_pure init impl _
     (fun stmtIn h => h)
@@ -415,7 +418,7 @@ theorem composedRbrKnowledgeSoundnessPreserving_of_sumcheck_rounds [Subsingleton
     (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
     (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
     :
-    (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (spartanRelIn R pp) (Spartan.Spec.secondSumcheckRbrRelOut (R := R) pp oSpec)
       (composedRbrError pp
         (0 : (⟨!v[.P_to_V], !v[Witness R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)

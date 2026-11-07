@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.SpartanSendEvalClaim
 import ProximityPrize.Compatibility.SpartanLinearCombination
 import ProximityPrize.Compatibility.SpartanFirstChallenge
@@ -149,10 +150,10 @@ def withClaimCarrierRelOut :
 second-sum-check transported terminal relation to its carrier reading. -/
 theorem prependClaim_rbrKnowledgeSoundness_carrier
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)} :
-    (prependClaim (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (prependClaim (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (Spartan.Spec.secondSumcheckRbrRelOut (R := R) pp oSpec)
       (withClaimCarrierRelOut pp oSpec) 0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [prependClaim_toVerifier_pure (R := R) pp oSpec]
   exact Verifier.rbrKnowledgeSoundness_zeroRound_pure init impl _ (fun stmtIn h => h)
 
@@ -215,7 +216,7 @@ theorem composedWithClaim_rbrKnowledgeSoundness_base_of_sumcheck_rounds [Subsing
     (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
     :
     ((composedPIOP_Rc (R := R) pp oSpec).append
-        (prependClaim (R := R) pp oSpec)).verifier.rbrKnowledgeSoundness init impl
+        (prependClaim (R := R) pp oSpec)).verifier.rbrKnowledgeSoundnessAveraged init impl
       (spartanRelIn R pp) (withClaimCarrierRelOut pp oSpec)
       (composedWithClaimApexError (R := R) pp) := by
   obtain ⟨verify?, hV⟩ := composedPIOP_Rc_toVerifier_isFailingDet (R := R) pp oSpec

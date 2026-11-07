@@ -10,14 +10,14 @@ import ArkLib.Data.CodingTheory.AGL24FrankInterface
 /-!
 # [AGL24] Theorem 2.11 with Lovett's algebraic core discharged (#389 / r3_thm211)
 
-**Status correction (#389):** the ledger below is *vacuous as stated*. Its GM-MDS premises
-`SymbolicMinorFromLovett` (refuted for `1 ≤ k`, `not_symbolicMinorFromLovett`) and
-`DualRowsFromNonsingularEval` (refuted for `k < card ι`, `not_dualRowsFromNonsingularEval`, the
-12th catch) cannot be supplied, so `symbolicFullRank_lovett_free` is a valid but inapplicable
-conditional. The narrative below is retained as the historical design record; the live route is
-the pinned capstone `AGL24.symbolicFullRank_of_classical_imports_pinned`.
+**Status correction (#389).** The historical Lovett route is vacuous as stated.
+`not_symbolicMinorFromLovett` refutes its minor premise for every `k ≥ 1`.
+`not_dualRowsFromNonsingularEval` refutes its dual-row premise when `k < |ι|`, and
+`not_fieldLargeForMinor` refutes its uniform field-size premise for `2 ≤ k ≤ |ι|`.
+The conditional `symbolicFullRank_lovett_free` therefore leaves the live pinned capstone
+`AGL24.symbolicFullRank_of_classical_imports_pinned` as a separate route.
 
-This file was intended to state the residual ledger for `AGL24.SymbolicFullRankResidual`
+This file records the historical residual ledger for `AGL24.SymbolicFullRankResidual`
 — the consolidated GM-MDS open core (AGL24 Theorem 2.11, the GM-MDS-line full-column-rank
 theorem that sits below the whole AGL24 list-decoding tower).
 

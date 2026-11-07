@@ -411,6 +411,47 @@ def split_top_level(text: str, sep: str) -> list[str]:
     return parts
 
 
+# Lean spells these connectives either way (`unicode(" ∧ ", " /\\ ")`,
+# `unicode(" ∨ ", " \\/ ")`, `" <-> "` and `unicodeSymbol " → " " -> "` in
+# Lean v4.30.0-rc2).  `<->` must be rewritten before `->`.
+ASCII_CONNECTIVES = (("<->", "↔"), ("->", "→"), ("/\\", "∧"), ("\\/", "∨"))
+
+
+def unicode_connectives(text: str) -> str:
+    """Spell Lean's ASCII connectives `<->`, `->`, `/\\`, `\\/` as `↔`, `→`, `∧`, `∨`.
+
+    Every connective check below matches the Unicode tokens, so without this a
+    result such as `R -> False` reads as a bare application of `R` and counts
+    as a discharge.  String literals and «quoted» names are copied unchanged.
+    """
+    out: list[str] = []
+    i = 0
+    while i < len(text):
+        c = text[i]
+        if c == '"':
+            j = i + 1
+            while j < len(text) and text[j] != '"':
+                j += 2 if text[j] == "\\" else 1
+            out.append(text[i : j + 1])
+            i = j + 1
+            continue
+        if c == "«":
+            j = text.find("»", i + 1)
+            j = len(text) - 1 if j == -1 else j
+            out.append(text[i : j + 1])
+            i = j + 1
+            continue
+        for ascii_form, symbol in ASCII_CONNECTIVES:
+            if text.startswith(ascii_form, i):
+                out.append(symbol)
+                i += len(ascii_form)
+                break
+        else:
+            out.append(c)
+            i += 1
+    return "".join(out)
+
+
 def strip_forall_prefix(result: str) -> str:
     """Strip leading `∀ ...,` binders from a result type."""
     s = result.strip()
@@ -574,7 +615,8 @@ def is_proposition_shaped(typ: str) -> bool:
     if "//" in typ:
         return False
     return bool(
-        BARE_EQUAL_RE.search(typ)
+        re.fullmatch(r"(?:_root_\.)?(?:True|False)", typ.strip())
+        or BARE_EQUAL_RE.search(typ)
         or COMPARISON_RE.search(typ)
         or any(marker in typ for marker in PROPOSITION_MARKERS)
     )
@@ -663,19 +705,29 @@ def has_top_level(text: str, token: str) -> bool:
 
 
 TOP_LEVEL_CONNECTIVES = ("↔", "→", "∧", "∨", "=")
+REDUCTION_CONNECTIVES = frozenset({"→", "∨", "="})
+# Lean 4 precedences: a lower number binds more loosely.
+CONNECTIVE_PRECEDENCE = {"↔": 20, "→": 25, "∨": 30, "∧": 35, "=": 50}
 
 
 def top_level_connective(result: str) -> str | None:
-    """First depth-0 connective after the result head application, if any.
+    """The depth-0 connective that decides the shape of the result after its head.
 
     A top-level `∧` still proves the residual when it is the left conjunct,
     while `→`, `∨` and `=` only relate the residual to another proposition
-    (`R → Q` assumes `R`; `R ∨ Q` and `R = Q` prove neither side).
+    (`R → Q` assumes `R`; `R ∨ Q` and `R = Q` prove neither side).  `=` binds
+    tighter than the logical connectives, so a first `=` decides
+    (`R = Q ∧ P` is `(R = Q) ∧ P`); otherwise the loosest connective does, so
+    `R ∧ Q → P` is `(R ∧ Q) → P` and reports `→`.  When the result starts with
+    an identifier, scanning stops at a depth-0 `∀`, `∃`, `λ` or `fun`, whose
+    body runs to the end of the result (`R ∧ ∀ x, P x → Q x` reports `∧`).
     """
     s = strip_forall_prefix(result)
     m = HEAD_IDENT_RE.match(s)
     if not m:
         return None
+    stop_at_binders = is_ident_char(s[0]) or s[0] in "@«"
+    found: list[str] = []
     depth = 0
     i = m.end()
     while i < len(s):
@@ -685,11 +737,25 @@ def top_level_connective(result: str) -> str | None:
         elif c in CLOSE_BRACKETS:
             depth = max(0, depth - 1)
         elif depth == 0:
+            if stop_at_binders and (
+                c in "∀∃λ"
+                or (
+                    s.startswith("fun", i)
+                    and not is_ident_char(s[i - 1])
+                    and s[i + 3 : i + 4].isspace()
+                )
+            ):
+                break
             for conn in TOP_LEVEL_CONNECTIVES:
                 if s.startswith(conn, i):
-                    return conn
+                    found.append(conn)
+                    break
         i += 1
-    return None
+    if not found:
+        return None
+    if found[0] == "=":
+        return "="
+    return min(found, key=CONNECTIVE_PRECEDENCE.__getitem__)
 
 
 BOUNDED_BINDER_OPS = ("∈", "∉", "⊆", "⊂", "⊇", "⊃", "≠", "≤", "≥", "<", ">")
@@ -1090,6 +1156,7 @@ def parse_file(path: Path, root: Path) -> list[dict]:
         else:
             binders, result, body = split_declaration(window)
             body = body_until_next_command(body)
+        binders, result = unicode_connectives(binders), unicode_connectives(result)
         name = h["name"]
         fq = f"{h['namespace']}.{name}" if h["namespace"] else name
         decls.append(
@@ -1869,7 +1936,7 @@ def write_wiki_markdown(path: Path, summary: dict, residuals: list[dict], near_m
         [
             "## Summary",
             "",
-            f"- **Total strict residuals (`ArkLib/` only):** {summary['total']}",
+            f"- **Total strict residuals (`ArkLib/` and `ProximityPrize/`):** {summary['total']}",
             f"- **Open:** {summary['open']}",
             f"- **Instance-only:** {summary['instance_only']}",
             f"- **Discharged (syntactic candidates):** {summary['discharged']}",

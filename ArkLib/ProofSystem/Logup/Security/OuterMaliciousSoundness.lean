@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Logup.Security.OuterVerifierSupport
 import ArkLib.ProofSystem.Logup.Security.OuterMaliciousClaim
 import ArkLib.ProofSystem.Logup.Security.Soundness
@@ -284,7 +285,7 @@ noncomputable def outerMidRbrError : (outerPSpec F n params).ChallengeIdx â†’ â„
 set_option backward.isDefEq.respectTransparency false in
 /-- **Outer RBR soundness at `midLanguage`.** -/
 theorem outerVerifier_rbrSoundness_mid :
-    ((outerVerifier oSpec F n M params).toVerifier).rbrSoundness init impl
+    ((outerVerifier oSpec F n M params).toVerifier).rbrSoundnessAveraged init impl
       (inputRelation F n M).language (midLanguage F n M params)
       (outerMidRbrError F n M params) := by
   classical

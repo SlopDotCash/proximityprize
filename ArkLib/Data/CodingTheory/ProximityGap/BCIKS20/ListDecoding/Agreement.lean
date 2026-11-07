@@ -40,12 +40,11 @@ variable {m : ℕ} (k : ℕ) {δ : ℚ} {x₀ : F} {u₀ u₁ : Fin n → F} {Q 
 set_option linter.unusedDecidableInType false
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
-/-- The per-`z` specialization used by the retained Claim-5.7 machinery has the same
-map body as canonical `Trivariate.eval_on_Z`. The canonical specialization is transparent;
-`c57_eval_on_Z_eq_pg` below records the equality between the two API names. -/
+/-- The per-`z` specialization in Claim 5.7 uses the coefficient map from
+`Trivariate.evalAtZ`. -/
 lemma c57_pg_eval_on_Z_body (p : F[Z][X][Y]) (z : F) :
     pg_eval_on_Z (F := F) p z = p.map (Polynomial.mapRingHom (Polynomial.evalRingHom z)) :=
-  rfl
+  Trivariate.evalAtZ_eq_map_map_evalRingHom z p
 
 /-! ### GAP ANALYSIS for the §5 list-decoding agreement claims (5.7 – 5.11)
 
@@ -122,28 +121,19 @@ Closing any of these honestly requires first landing (i) an `#S` lower-bound hyp
 present in the current tree. -/
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
-/-- *De-sealed `eval_on_Z` agrees with its accessible twin* (Gap-A resolution, cf. the obstruction
-note on `exists_factors_with_large_common_root_set`). `Trivariate.eval_on_Z` is no longer `opaque`
-(it is a transparent `def` with equation lemma `eval_on_Z_eq`), so its body
-`p.map (mapRingHom (evalRingHom z))` is now definitionally exposed; in particular it is *equal* to
-the accessible twin `pg_eval_on_Z`. Under the old `opaque` declaration this equality failed `rfl`
-despite identical bodies — that is precisely the (now-resolved) Gap A. -/
+/-- Both historical specializations delegate to `Trivariate.evalAtZ`. -/
 lemma c57_eval_on_Z_eq_pg (p : F[Z][X][Y]) (z : F) :
-    Trivariate.eval_on_Z p z = pg_eval_on_Z (F := F) p z := by
-  unfold Trivariate.eval_on_Z
-  rw [Trivariate.eval_on_Z_eq]; rfl
+    Trivariate.eval_on_Z p z = pg_eval_on_Z (F := F) p z := rfl
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
 /-- `eval_on_Z` sends `0` to `0` (now provable — was inaccessible under the old `opaque`). -/
 lemma c57_eval_on_Z_zero (z : F) : Trivariate.eval_on_Z (0 : F[Z][X][Y]) z = 0 := by
-  unfold Trivariate.eval_on_Z
   rw [Trivariate.eval_on_Z_eq]; simp
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
 /-- `eval_on_Z` is additive (now provable — was inaccessible under the old `opaque`). -/
 lemma c57_eval_on_Z_add (p q : F[Z][X][Y]) (z : F) :
     Trivariate.eval_on_Z (p + q) z = Trivariate.eval_on_Z p z + Trivariate.eval_on_Z q z := by
-  unfold Trivariate.eval_on_Z
   rw [Trivariate.eval_on_Z_eq, Trivariate.eval_on_Z_eq, Trivariate.eval_on_Z_eq,
     Polynomial.map_add]
 
@@ -153,7 +143,6 @@ Together with `c57_eval_on_Z_zero`/`c57_eval_on_Z_add` this is the divisibility-
 ingredient the residual GS-multiplicity → graph-vanishing bridge (Gap B) will consume. -/
 lemma c57_eval_on_Z_mul (p q : F[Z][X][Y]) (z : F) :
     Trivariate.eval_on_Z (p * q) z = Trivariate.eval_on_Z p z * Trivariate.eval_on_Z q z := by
-  unfold Trivariate.eval_on_Z
   rw [Trivariate.eval_on_Z_eq, Trivariate.eval_on_Z_eq, Trivariate.eval_on_Z_eq,
     Polynomial.map_mul]
 
@@ -634,7 +623,7 @@ lemma exists_pg_factors_with_large_common_root_set_of_dvd (δ : ℚ) (x₀ : F)
   · exact pg_candidatePairs_snd_natDegree_pos (F := F) (k := k) (x₀ := x₀)
       (h_gs := h_gs) hsep hmem
   · exact UniqueFactorizationMonoid.dvd_of_mem_normalizedFactors hpair.2
-  · simpa [c57_eval_on_Z_eq_pg] using hcard_pg
+  · exact hcard_pg
 
 omit [DecidableEq (RatFunc F)] in
 /-- Candidate-pair extraction from the `pg_eval_on_Z` divisibility hypothesis

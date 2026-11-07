@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Sumcheck.Spec.RbrKnowledgeSoundnessOracle
 import ArkLib.ProofSystem.Sumcheck.Spec.General
 
@@ -62,9 +63,9 @@ theorem verifier_rbrKnowledgeSoundness_of_perRound [Subsingleton σ]
       Set ((StatementRound R n i × (∀ j, OracleStatement R n deg j)) × Wit i))
     (rbrKnowledgeError : ∀ _ : Fin n, (SingleRound.pSpec R deg).ChallengeIdx → ℝ≥0)
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail init = 0)
-    (h : ∀ i : Fin n, (SingleRound.verifier (R := R) (n := n) (deg := deg) D oSpec i).rbrKnowledgeSoundness
+    (h : ∀ i : Fin n, (SingleRound.verifier (R := R) (n := n) (deg := deg) D oSpec i).rbrKnowledgeSoundnessAveraged
       init impl (rel i.castSucc) (rel i.succ) (rbrKnowledgeError i)) :
-    (verifier (R := R) (n := n) (deg := deg) (D := D) oSpec).rbrKnowledgeSoundness init impl
+    (verifier (R := R) (n := n) (deg := deg) (D := D) oSpec).rbrKnowledgeSoundnessAveraged init impl
       (rel 0) (rel (Fin.last n))
       (fun combinedIdx =>
         letI ij := seqComposeChallengeIdxToSigma combinedIdx

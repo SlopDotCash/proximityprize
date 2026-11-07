@@ -205,6 +205,8 @@ section SZSoundness
 variable {F : Type} [Field F] [DecidableEq F] {n M : ℕ}
 variable (params : ProtocolParams M)
 
+-- Keep `hm_pos` for callers of the existing LogUp theorem.
+set_option linter.unusedVariables false in
 /-- **SZ soundness bound for LogUp, reduced to the in-tree degree bound + ArkLib's
 `prob_eval_zero_le_div`.**
 
@@ -238,7 +240,7 @@ theorem logup_SZ_soundness
   letI : SampleableType (∀ i, ↥(S i)) := SampleableType.piOfFintype _
   rw [ProximityPrize.Compatibility.pmf_uniform_probability_eq_native]
   exact prob_eval_zero_le_div
-    (logupQPolynomial F n M params stmt oStmt) hQ_ne (n * (M + 3)) m hTotalDeg hm_pos hm
+    (logupQPolynomial F n M params stmt oStmt) hQ_ne (n * (M + 3)) m hTotalDeg hm
 
 /-- **The per-variable degree bound is fully in-tree** (recorded here so the only genuine residual in
 `logup_SZ_soundness` is the `totalDegree` aggregation `hTotalDeg`, not the degree analysis itself).

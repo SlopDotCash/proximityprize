@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.CheckClaimPassThrough
 import ArkLib.ToMathlib.SpartanBricks
 
@@ -146,9 +147,9 @@ theorem oracleVerifier_rbrKnowledgeSoundness_transport {σ : Type} (init : ProbC
     (impl : QueryImpl oSpec (StateT σ ProbComp))
     {relIn relOut : Set ((Statement × (∀ i, OStatement i)) × Unit)}
     (hdoom : ∀ p, (p, ()) ∈ relOut → (p, ()) ∈ relIn) :
-    (oracleVerifier oSpec Statement OStatement).rbrKnowledgeSoundness init impl
+    (oracleVerifier oSpec Statement OStatement).rbrKnowledgeSoundnessAveraged init impl
       relIn relOut 0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   refine ⟨fun _ => Unit, extractor oSpec (Statement × (∀ i, OStatement i)),
     oracleVerifier_knowledgeStateFunction pred init impl hdoom, ?_⟩
   intro _ _ _ i
@@ -217,7 +218,7 @@ theorem finalCheckWithClaim_rbrKnowledgeSoundness_transport {σ : Type}
     {relIn relOut : Set ((FinalClaimStatement R pp ×
       (∀ i, FinalOracleStatement R pp i)) × Unit)}
     (hdoom : ∀ p, (p, ()) ∈ relOut → (p, ()) ∈ relIn) :
-    (finalCheckWithClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (finalCheckWithClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relIn relOut 0 :=
   CheckClaim.oracleVerifier_rbrKnowledgeSoundness_transport (finalClaimPredicate R pp)
     init impl hdoom
@@ -227,7 +228,7 @@ terminal relation** `finalCheckWithClaimValueRelIn` (carried target `=` algebrai
 value) — **not** at the tautological `Set.univ` front doors. Zero rounds, zero error. -/
 theorem finalCheckWithClaim_rbrKnowledgeSoundness {σ : Type}
     (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp)) :
-    (finalCheckWithClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (finalCheckWithClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (finalCheckWithClaimValueRelIn R pp) (finalCheckWithClaimValueRelIn R pp) 0 :=
   finalCheckWithClaim_rbrKnowledgeSoundness_transport pp oSpec init impl (fun _ h => h)
 
@@ -236,7 +237,7 @@ theorem finalCheckWithClaim_rbrKnowledgeSoundness {σ : Type}
 reassembly). -/
 theorem finalCheckWithClaim_rbrKnowledgeSoundness_secondSumcheckEval [DecidableEq R] {σ : Type}
     (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp)) :
-    (finalCheckWithClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (finalCheckWithClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (finalCheckWithClaimSecondSumcheckEvalRelOut R pp)
       (finalCheckWithClaimSecondSumcheckEvalRelOut R pp) 0 := by
   rw [finalCheckWithClaimSecondSumcheckEvalRelOut_eq_valueRelIn]

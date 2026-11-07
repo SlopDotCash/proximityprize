@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.MultiRoundAssembly
 import ArkLib.ProofSystem.Stir.ErrorAccumulation
 import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
@@ -976,7 +977,7 @@ whose final message is not a codeword, and bounding its flip probability is exac
 per-round proximity-gap analysis. NOT proven here; consumed as a hypothesis. -/
 def stirCheckingRbrSoundnessResidual (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0) : Prop :=
-  OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+  OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
     (stirRelation deg φ δ) (stirCheckingIOP M φ deg).toOracleVerifier ε_rbr
 
 /-- **The CA bridge residual**: the implication from the EXISTING Johnson-regime

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.SpartanLinearCombination
 import ArkLib.ProofSystem.Spartan.TightRLCKernel
 import ArkLib.ProofSystem.Spartan.ShortPhaseRbrKnowledgeLeaves
@@ -109,11 +110,11 @@ kernel event, which `TightRLCKernel.probEvent_linearForm_eq_le` bounds by `1/|R|
 theorem linearCombination_rbrKnowledgeSoundness_tight
     (trueV : Statement.AfterSendEvalClaim R pp ×
       (∀ i, OracleStatement.AfterSendEvalClaim R pp i) → R1CS.MatrixIdx → R) :
-    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (linearCombinationRelE_pinned (R := R) pp oSpec trueV)
       (linearCombinationRelF_pinned (R := R) pp oSpec trueV)
       (fun _ => (1 : ℝ≥0) / (Fintype.card R : ℝ≥0)) := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [linearCombination_toVerifier_closed]
   refine Verifier.rbrKnowledgeSoundness_singleChallenge_pure
     (C := LinearCombinationChallenge R)

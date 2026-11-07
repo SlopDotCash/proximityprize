@@ -210,8 +210,7 @@ private lemma mVdecode_eval_pow {φ : ι ↪ F} [Smooth φ] {m : ℕ} (u : smoot
       simp
     rw [hhom, hg, MvPolynomial.eval₂_id]
   have h2 : powAlgHom (mVdecode u) = ((decodeLT u : Polynomial F)) := by
-    have := powContraction_is_right_inverse_to_linearMvExtension (decodeLT u)
-    exact this
+    exact powAlgHom_linearMvExtension (decodeLT u)
   rw [← h1, h2]
 
 end CountingBridge

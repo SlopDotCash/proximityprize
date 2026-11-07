@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
       - name: Check exact triple budget arithmetic
         run: python3 scripts/probes/probe_incidence_triple_budget.py
-      - uses: leanprover/lean-action@v1.6.0
+      - uses: leanprover/lean-action@v1.7.0
         with:
           auto-config: false
           build: false
@@ -32,7 +32,7 @@ jobs:
           use-mathlib-cache: false
       - name: Restore checked dependency build
         id: dependencies
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: |
             .lake
@@ -66,13 +66,12 @@ jobs:
               assert set(x.strip() for x in names.split(','))<= {'propext','Classical.choice','Quot.sound'}
           print('Research cube lemma axiom audit clean')
           PY
-      - uses: actions/setup-python@v7
+      - name: Set up uv
         if: github.event_name == 'workflow_dispatch' && inputs.full_validation
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
-          python-version: "3.12"
-      - name: Install Python validation dependencies
-        if: github.event_name == 'workflow_dispatch' && inputs.full_validation
-        run: python3 -m pip install -r scripts/requirements-validation.txt
+          version: "0.13.6"
+          enable-cache: false
       - name: Full repository validation
         if: github.event_name == 'workflow_dispatch' && inputs.full_validation
         run: |
@@ -93,7 +92,7 @@ jobs:
         run: bash scripts/ci-stop-lean.sh
       - name: Preserve completed build artifacts
         if: always() && !cancelled() && steps.stop-lean.outcome == 'success' && steps.dependencies.outputs.cache-primary-key != ''
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: |
             .lake

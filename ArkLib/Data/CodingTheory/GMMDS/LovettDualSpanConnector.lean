@@ -109,7 +109,12 @@ def DualRowsFromNonsingularEval (ι : Type*) [Fintype ι] [DecidableEq ι] [None
 /-- A uniform field-size hypothesis: at every relevant nonzero symbolic minor the field is
 large enough for the Schwartz–Zippel step (`|F| > totalDegree + C(|ι|,2)`).  Stated as a
 predicate over the data so it can be supplied per parameter point.  This is the explicit
-`|F| ≥ n + k − 1`-style regime Lovett requires (p. 3). -/
+`|F| ≥ n + k − 1`-style regime Lovett requires (p. 3).
+
+**Unsatisfiable for `2 ≤ k ≤ |ι|`.** The bound is uniform over all `t`, while a nonzero
+minor's degree grows with `t`: `not_fieldLargeForMinor`
+(`GMMDS/FieldLargeForMinorRefutation.lean`) proves `¬ FieldLargeForMinor ι F k` for every
+finite field `F` and `2 ≤ k ≤ |ι|`. -/
 def FieldLargeForMinor (ι : Type*) [Fintype ι] [DecidableEq ι]
     (F : Type*) [Field F] [Fintype F] (k : ℕ) : Prop :=
   ∀ {t : ℕ}, ∀ e : ι → Finset (Fin (t + 1)),
@@ -128,9 +133,11 @@ discharges `LovettSystemToDualSpan` (step 2 of the bridge).  Axiom-clean.
 
 The middle Schwartz–Zippel layer is **not** a residual here — it is the proven lemma — so this
 strictly sharpens the ledger: step 2 is now `SymbolicMinorFromLovett` ∧
-`DualRowsFromNonsingularEval` (plus the field-size regime). Both hypotheses are refuted as
-stated (see the module docstring), so this is a valid but vacuous conditional; its conclusion
-`LovettSystemToDualSpan` carries the same unpinned, refuted dual-span target. -/
+`DualRowsFromNonsingularEval` (plus the field-size regime). The unpinned minor and
+dual-row premises have the refutations described in the module docstring.
+`not_fieldLargeForMinor` also refutes the uniform field-size premise for `2 ≤ k ≤ |ι|`.
+The conditional yields the unpinned target `LovettSystemToDualSpan`, which is refuted for
+`1 ≤ k < |ι|`. -/
 theorem lovettSystemToDualSpan_of_connector {k : ℕ}
     (hminor : SymbolicMinorFromLovett ι F k)
     (hdual : DualRowsFromNonsingularEval ι F k)

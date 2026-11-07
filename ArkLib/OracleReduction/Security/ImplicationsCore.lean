@@ -3,6 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.Implications
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
 import ArkLib.OracleReduction.Security.Implications
 import ArkLib.OracleReduction.Security.GuardedBridges
@@ -12,9 +14,9 @@ import ArkLib.OracleReduction.Security.GuardedBridges
 
 The canonical security definitions count extractor failure as a bad event and allow arbitrary
 private prover inputs. The former `knowledgeSoundness_vacuous` claim and its unconditional
-round-by-round corollary relied on the retired convention that discarded extraction failure;
-they are intentionally retired. `Security.Implications` owns the round-by-round knowledge to
-plain soundness implication, and `Security.GuardedBridges` owns the guarded worst-case bridge.
+round-by-round corollary relied on the retired convention that discarded extraction failure.
+`Security.Implications` and `Security.GuardedBridges` own the canonical fixed-prefix implications.
+The compatibility import supplies the distinct prover-averaged implication.
 
 The additional full-run seam and marginal transport predicates below remain explicit hypotheses.
 They quantify over arbitrary private prover inputs, matching canonical knowledge soundness. Their
@@ -68,25 +70,6 @@ private lemma bind_fst_map_eq {m' : Type → Type} [Monad m'] [LawfulMonad m']
   simp only [bind_map_left]
 
 end Plumbing
-
-namespace Verifier
-
-/-! ## Error monotonicity (consumed by `ProofSystem/Binius/FRIBinius/General.lean`) -/
-
-/-- **Knowledge-soundness error monotonicity** (hypothesis-first restatement of
-`Verifier.knowledgeSoundness.mono_error`, in the argument order consumed by
-`ProofSystem/Binius/FRIBinius/General.lean`). -/
-theorem knowledgeSoundness_error_mono
-    {relIn : Set (StmtIn × WitIn)} {relOut : Set (StmtOut × WitOut)}
-    {verifier : Verifier oSpec StmtIn StmtOut pSpec}
-    {knowledgeError₁ knowledgeError₂ : ℝ≥0}
-    (hε : knowledgeError₁ ≤ knowledgeError₂)
-    (h : verifier.knowledgeSoundness init impl relIn relOut knowledgeError₁) :
-    verifier.knowledgeSoundness init impl relIn relOut knowledgeError₂ :=
-  knowledgeSoundness.mono_error init impl h hε
-
-
-end Verifier
 
 /-! ## The genuine straightline extractor from a round-by-round extractor -/
 
@@ -278,7 +261,7 @@ conditional on the two named transport residuals.
 
 Given a round-by-round extractor `E` and knowledge state function `kSF` whose per-round flip
 probabilities are bounded by `ε` (`hBound` — this is exactly the inner content of
-`Verifier.rbrKnowledgeSoundness` for the data `(WitMid, E, kSF)`), the verifier satisfies
+the prover-averaged contract for the data `(WitMid, E, kSF)`), the verifier satisfies
 straightline knowledge soundness at the union-bound error `∑ i, ε i`, **witnessed by the
 genuine extractor** `E.toStraightline` (the fold of `extractMid` along the realized transcript,
 seeded by `extractOut`).
@@ -367,9 +350,9 @@ sum of the round budgets. Unlike the retired fixed-private-input formulation, th
 execution guard and fixed-prefix bound required by the canonical security game. -/
 theorem rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine
     (G : verifier.GuardedForm) {ε : pSpec.ChallengeIdx → ℝ≥0}
-    (h : verifier.rbrKnowledgeSoundnessWorstCase init impl relIn relOut ε) :
+    (h : verifier.rbrKnowledgeSoundness init impl relIn relOut ε) :
     verifier.knowledgeSoundness init impl relIn relOut (∑ i, ε i) :=
-  G.knowledgeSoundness_of_rbrKnowledgeSoundnessWorstCase h
+  G.knowledgeSoundness_of_rbrKnowledgeSoundness h
 
 end GenuineKnowledge
 
@@ -387,9 +370,8 @@ needed to produce *some* output witness; the output is never consulted by the ro
 adapter serves).  The interaction behaviour (`sendMessage`, `receiveChallenge`, hence every
 `runToRound` / `runWithLogToRound`) is unchanged.
 
-This is the adapter needed because `Verifier.rbrSoundness` quantifies over provers with
-*arbitrary* witness types inside the definition, while `Verifier.rbrKnowledgeSoundness` fixes
-the witness types to those of the relations. -/
+The averaged soundness game quantifies over arbitrary prover witness types. The averaged
+knowledge-soundness game fixes those types from its relations. -/
 def deWitness {WitIn' WitOut' : Type}
     (P : Prover oSpec StmtIn WitIn' StmtOut WitOut' pSpec) (witIn' : WitIn')
     (WitIn WitOut : Type) [Nonempty WitOut] :
@@ -427,8 +409,7 @@ end Prover
 
 namespace Verifier
 
-/-! The round-by-round knowledge-to-soundness theorem is imported from the canonical
-`Security.Implications` owner; the prover adapters above remain available to downstream callers. -/
+/-! The averaged knowledge-to-soundness theorem comes from the compatibility import above. -/
 
 /-! ## I2: `rbrSoundness → soundness`, conditional on the marginal-domination residual -/
 
@@ -459,7 +440,7 @@ theorem rbrSoundness_implies_soundness_of_marginal
     {langIn : Set StmtIn} {langOut : Set StmtOut}
     {verifier : Verifier oSpec StmtIn StmtOut pSpec}
     {rbrSoundnessError : pSpec.ChallengeIdx → ℝ≥0}
-    (hRbr : verifier.rbrSoundness init impl langIn langOut rbrSoundnessError)
+    (hRbr : verifier.rbrSoundnessAveraged init impl langIn langOut rbrSoundnessError)
     (hMarginal : ∀ sf : verifier.StateFunction init impl langIn langOut,
       ∀ (WitIn WitOut : Type) (witIn : WitIn)
         (prover : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec),
@@ -512,7 +493,7 @@ end Verifier
 #print axioms Verifier.rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine
 #print axioms Prover.deWitness_runToRound
 #print axioms Prover.deWitness_runWithLogToRound
-#print axioms Verifier.rbrKnowledgeSoundness_implies_rbrSoundness
+#print axioms Verifier.rbrKnowledgeSoundnessAveraged_implies_rbrSoundnessAveraged
 #print axioms Verifier.rbrSoundness_implies_soundness_of_marginal
 
 end

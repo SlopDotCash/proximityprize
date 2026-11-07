@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Logup.Security.OuterVerifierSupport
 import ArkLib.ProofSystem.Logup.Security.MarginalBridgeProof
 import ArkLib.ProofSystem.Logup.Security.OuterCompleteness
@@ -129,7 +130,7 @@ noncomputable def outerRbrError : (outerPSpec F n params).ChallengeIdx → ℝ�
 
 /-- **Outer RBR soundness at the sharp language.** -/
 theorem outerVerifier_rbrSoundness_sharp :
-    ((outerVerifier oSpec F n M params).toVerifier).rbrSoundness init impl
+    ((outerVerifier oSpec F n M params).toVerifier).rbrSoundnessAveraged init impl
       (inputRelation F n M).language
       (midSoundnessProtocolLanguageSharp F n M params)
       (outerRbrError F n M params) := by
@@ -312,7 +313,7 @@ theorem issue13_soundness_sharp_outerDischarged [∀ q, Fintype (oSpec.Range q)]
         (midSoundnessProtocolLanguageSharp F n M params) (lang 0))
     (hRound : ∀ i : Fin n,
       (Sumcheck.Spec.SingleRound.oracleVerifier F n (logupSumcheckDegree M params)
-          (signDomain F (Fact.out : (-1 : F) ≠ 1)) oSpec i).rbrSoundness init impl
+          (signDomain F (Fact.out : (-1 : F) ≠ 1)) oSpec i).rbrSoundnessAveraged init impl
         (lang i.castSucc) (lang i.succ) (rbrSoundnessError i))
     (hAppend : ∀ {S₁ S₂ S₃ : Type} {k₁ k₂ : ℕ}
         {p₁ : ProtocolSpec k₁} {p₂ : ProtocolSpec k₂}
@@ -320,8 +321,8 @@ theorem issue13_soundness_sharp_outerDischarged [∀ q, Fintype (oSpec.Range q)]
         (V₁ : Verifier oSpec S₁ S₂ p₁) (V₂ : Verifier oSpec S₂ S₃ p₂)
         {l₁ : Set S₁} {l₂ : Set S₂} {l₃ : Set S₃}
         {e₁ : p₁.ChallengeIdx → ℝ≥0} {e₂ : p₂.ChallengeIdx → ℝ≥0},
-        V₁.rbrSoundness init impl l₁ l₂ e₁ → V₂.rbrSoundness init impl l₂ l₃ e₂ →
-        (V₁.append V₂).rbrSoundness init impl l₁ l₃
+        V₁.rbrSoundnessAveraged init impl l₁ l₂ e₁ → V₂.rbrSoundnessAveraged init impl l₂ l₃ e₂ →
+        (V₁.append V₂).rbrSoundnessAveraged init impl l₁ l₃
           (Sum.elim e₁ e₂ ∘ ChallengeIdx.sumEquiv.symm))
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)

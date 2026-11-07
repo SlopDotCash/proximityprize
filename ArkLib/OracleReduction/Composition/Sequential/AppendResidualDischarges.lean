@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.AppendCompletenessMsgKeystone
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgePhase2ReconcileProof
 
@@ -107,8 +108,8 @@ theorem appendRbrKnowledgeSoundnessResidual_msg_subsingleton [Subsingleton σ]
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂) :
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂) :
     appendRbrKnowledgeSoundnessResidual V₁ V₂ h₁ h₂ :=
   append_rbrKnowledgeSoundness_keystone_subsingleton_unconditional V₁ V₂ verify hVerify
     hInit hInitNF hNE₂ hNEW₂ hn hDir hDir₂ h₁ h₂

@@ -105,7 +105,8 @@ theorem matVecMLEEvalFromOracles_simOracle
   · -- collapse the outer fold to a `Finset.sum`, then identify it with `eval point M̃`
     congr 1
     rw [foldl_add_eq_sum', zero_add, Finset.sum_map_toList]
-    rw [matVecMLE, MLE_eval_eq_sum_eqTilde, ← Equiv.sum_comp finFunctionFinEquiv]
+    unfold matVecMLE Algebra.rowProduct MLE'
+    rw [MLE_eval_eq_sum_eqTilde, ← Equiv.sum_comp finFunctionFinEquiv]
     refine Finset.sum_congr rfl fun xBits _ => ?_
     have hb : boolPoint R (finFunctionFinEquiv xBits) = (fun i => ((xBits i : Fin 2) : R)) := by
       funext j; simp [boolPoint, Equiv.symm_apply_apply]
@@ -138,7 +139,8 @@ theorem firstSCEvalFromOracles_simOracle
   unfold firstSCEvalFromOracles
   simp only [simulateQ_bind, matVecMLEEvalFromOracles_simOracle, pure_bind, simulateQ_pure]
   refine congrArg pure ?_
-  simp only [firstSumCheckVirtualPolynomial, map_mul, map_sub]
+  exact (Algebra.firstVirtual_eval (fun i => oos (.inl i))
+    (R1CS.𝕫 stmt.2 (oos (.inr 0))) stmt.1 point).symm
 
 omit [SampleableType R] in
 /-- **`hfaith` for the first sum-check lens.** The lens' reconstruction lifted into the verifier's

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.SubUnitRbr
 import ArkLib.ProofSystem.Stir.SwitchAttack
 import ArkLib.Data.Probability.ProductMarginal
@@ -1426,7 +1427,7 @@ noncomputable def stirEpsStarRep (M : ℕ) (δ : ℝ≥0) (t : ℕ) :
 `stirCheckingRepRbrSoundness_genuine` below. -/
 def stirCheckingRepRbrSoundnessStatement (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) (t : ℕ)
     (ε_rbr : ((stirMultiVSpecRep M ι t).toProtocolSpec F).ChallengeIdx → ℝ≥0) : Prop :=
-  OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+  OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
     (stirRelation deg φ δ) (stirCheckingIOPRep M φ deg t).toOracleVerifier ε_rbr
 
 /-- **T1-rep — genuine rbr knowledge soundness of the t-repetition checking verifier at the

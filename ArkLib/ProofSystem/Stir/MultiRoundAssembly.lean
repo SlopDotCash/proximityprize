@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.ProofSystem.Stir.MainThm
 import ArkLib.ProofSystem.Stir.MultiRoundSpec
 import ArkLib.ProofSystem.Stir.RoundVector
@@ -169,7 +170,7 @@ is retained only because `stirMultiRoundIOP_isSecureWithGap` below is general wi
 do not try to discharge it at a sub-1 budget.  Consumed as a hypothesis below; NOT fabricated. -/
 def stirMultiRoundRbrSoundnessResidual (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0) : Prop :=
-  OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+  OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
     (stirRelation deg φ δ) (OracleProof.toOracleVerifier (stirMultiRoundIOP M φ deg)) ε_rbr
 
 /-- The assembled multi-round STIR IOPP is `IsSecureWithGap`, given the (open) rbr-soundness

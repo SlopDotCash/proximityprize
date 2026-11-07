@@ -1,0 +1,176 @@
+{
+  "upstream_revision": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
+  "prior_integration_revision": "91519a5b257876d2668f012fb34100a8a22b04e6",
+  "canonical_owner": {
+    "path": "ArkLib/ProofSystem/Spartan/Basic.lean",
+    "blob": "b4567e12f3b644cf2a7a246c568a108e4b26b92e"
+  },
+  "historical_owner": "ProximityPrize/Extensions/ProofSystem/Spartan/Basic.lean",
+  "historical_scope": "Spartan.Spec retains the padded tuple and scalar-oracle proof contexts. Spartan.Protocol and Spartan.Security own the seven-stage protocol on original R1CS instances.",
+  "shared_layout": "Spartan.PublicParams and toSizeR1CS are the canonical layout definitions.",
+  "restored_context_aliases": 21,
+  "existing_public_headers_preserved": 17,
+  "delegation": {
+    "Spartan.Spec.oracleReduction.firstMessage": "SendSingleWitness.oracleReduction for an already padded instance",
+    "Spartan.Spec.zeroCheckVirtualPolynomial": "Spartan.Algebra.residualMLE, with zeroCheckVirtualPolynomial_eq_sum for historical integer-row proofs",
+    "Spartan.Spec.secondSumCheckVirtualPolynomial": "Spartan.Algebra.secondVirtual, with secondSumCheckVirtualPolynomial_eq_terms for historical distributed-term proofs",
+    "Spartan.Spec.zeroCheckVirtualPolynomial_eq_zero_of_relation": "Spartan.Algebra.residualMLE_zero_iff_matrix_relation",
+    "Spartan.toMLE_evalC_mem_restrictDegree": "Matrix.toMLE_rowSlice_degreeOf",
+    "Spartan.secondSCVP_mem_restrictDegree": "Spartan.Algebra.secondVirtual_degree_le_two, shared by the historical Spartan.Spec alias",
+    "Spartan.Spec.evalClaimValue": "Spartan.Algebra.rowProduct",
+    "Spartan.Spec.matVecMLE": "Spartan.Algebra.rowProduct",
+    "Spartan.Spec.firstSumCheckVirtualPolynomial": "Spartan.Algebra.firstVirtual",
+    "Spartan.Spec.firstSumCheckVirtualPolynomial_mem_restrictDegree": "Spartan.Algebra.firstVirtual_degree_le_three",
+    "Spartan.Spec.firstSumCheckVirtualPolynomial_hypercubeSum_eq_zeroCheckEval": "Spartan.Algebra.firstVirtual_cubeSum_eq_residualMLE",
+    "Spartan.Spec.Bricks.firstVirtual_eval_eq_product": "Spartan.Algebra.firstVirtual_eval",
+    "Spartan.Spec.Bricks.matrix_toMLE_eval_row_boolColumn": "Matrix.toMLE_rowSlice_eval_zeroOne",
+    "Spartan.Spec.Bricks.secondSumCheckVirtualPolynomial_hypercubeSum_eq_evalClaimValue": "Spartan.Algebra.secondVirtual_cubeSum_eq",
+    "Spartan.Spec.Bricks.secondSumCheckVirtualPolynomial_eval_eq_finalExpectedClaimValue": "Spartan.Algebra.secondVirtual_eval"
+  },
+  "prior_second_polynomial_construction": {
+    "source_revision": "91519a5b257876d2668f012fb34100a8a22b04e6",
+    "path": "ArkLib/ProofSystem/Spartan/Basic.lean",
+    "sha256": "8975e6fd63f545edc6645ef428db0d968969237e05ea0140b7705fe0e9a7abfb",
+    "source": "def secondSumCheckVirtualPolynomial\n    (stmt : Statement.AfterLinearCombination R pp)\n    (oStmt : ∀ i, OracleStatement.AfterLinearCombination R pp i) :\n      MvPolynomial (Fin pp.ℓ_n) R :=\n  let r := stmt.1\n  let r_x := stmt.2.1\n  let x := stmt.2.2.2\n  let z := R1CS.𝕫 x (oStmt (.inr (.inr 0)))\n  let zMLE : MvPolynomial (Fin pp.ℓ_n) R := MvPolynomial.MLE (z ∘ finFunctionFinEquiv)\n  let matrixEval (idx : R1CS.MatrixIdx) : MvPolynomial (Fin pp.ℓ_n) R :=\n    (oStmt (.inr (.inl idx))).toMLE\n      ⸨(MvPolynomial.C ∘ r_x : Fin pp.ℓ_m → MvPolynomial (Fin pp.ℓ_n) R)⸩\n  let scalar (a : R) : MvPolynomial (Fin pp.ℓ_n) R := MvPolynomial.C a\n  scalar (r .A) * matrixEval .A * zMLE +\n  scalar (r .B) * matrixEval .B * zMLE +\n  scalar (r .C) * matrixEval .C * zMLE\n"
+  },
+  "retired_admitted_constructors": [
+    "Spartan.Spec.oracleReduction.firstChallenge",
+    "Spartan.Spec.oracleReduction.sendEvalClaim",
+    "Spartan.Spec.oracleReduction.linearCombination"
+  ],
+  "validation": {
+    "lexical_header_comparison": "passed",
+    "canonical_blob_comparison": "passed",
+    "lean_validation": "81 direct classic targets passed Lean and the axiom audit against db91471f, including all 76 classic Spartan modules."
+  },
+  "security_predicate_names": {
+    "legacy_owner": "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound",
+    "upstream_rename_revision": "2befd24ba5433ebbfdfdedd6a1e9275f7ffd4950",
+    "retirement_revision": "2f8942cc0",
+    "mapping": {
+      "rbrSoundness": "rbrSoundnessAveraged",
+      "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged",
+      "rbrKnowledgeSoundnessWith": "rbrKnowledgeSoundnessAveragedWith",
+      "rbrSoundnessWorstCase": "rbrSoundness",
+      "rbrKnowledgeSoundnessWorstCase": "rbrKnowledgeSoundness",
+      "rbrKnowledgeSoundnessWorstCaseWith": "rbrKnowledgeSoundnessWith",
+      "id_rbrKnowledgeSoundness": "id_rbrKnowledgeSoundnessAveraged"
+    },
+    "changed_active_token_counts": {
+      "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeSoundness.lean": {
+        "rbrKnowledgeSoundness": 35
+      },
+      "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeWithClaimFinal.lean": {
+        "rbrKnowledgeSoundness": 3
+      },
+      "ArkLib/ProofSystem/Spartan/ComposedTightRbrKnowledge.lean": {
+        "rbrKnowledgeSoundness": 13
+      },
+      "ArkLib/ProofSystem/Spartan/FinalCheckRbrKnowledgeLeaf.lean": {
+        "rbrKnowledgeSoundness": 3,
+        "id_rbrKnowledgeSoundness": 1
+      },
+      "ArkLib/ProofSystem/Spartan/FinalCheckWithClaimLeaf.lean": {
+        "rbrKnowledgeSoundness": 5
+      },
+      "ArkLib/ProofSystem/Spartan/FirstSumcheckComplete.lean": {
+        "rbrSoundness": 2,
+        "rbrKnowledgeSoundness": 2
+      },
+      "ArkLib/ProofSystem/Spartan/FirstSumcheckWithTarget.lean": {
+        "rbrKnowledgeSoundness": 3
+      },
+      "ArkLib/ProofSystem/Spartan/LinearCombinationTightLeaf.lean": {
+        "rbrKnowledgeSoundness": 2
+      },
+      "ArkLib/ProofSystem/Spartan/RLCKernelBound.lean": {
+        "rbrKnowledgeSoundness": 2
+      },
+      "ArkLib/ProofSystem/Spartan/RbrKnowledgeWiring.lean": {
+        "rbrKnowledgeSoundness": 12
+      },
+      "ArkLib/ProofSystem/Spartan/SecondSumcheckComplete.lean": {
+        "rbrSoundness": 2
+      },
+      "ArkLib/ProofSystem/Spartan/SecondSumcheckWithTarget.lean": {
+        "rbrKnowledgeSoundness": 3
+      },
+      "ArkLib/ProofSystem/Spartan/ShortPhaseKnowledgeLeaves.lean": {
+        "rbrKnowledgeSoundness": 23
+      },
+      "ArkLib/ProofSystem/Spartan/ShortPhaseRbrKnowledgeLeaves.lean": {
+        "rbrKnowledgeSoundness": 10
+      },
+      "ArkLib/ProofSystem/Spartan/SpartanRBRProof.lean": {
+        "rbrKnowledgeSoundness": 1
+      },
+      "ArkLib/ProofSystem/Spartan/SpartanRBRWithClaimProof.lean": {
+        "rbrKnowledgeSoundness": 1
+      },
+      "ArkLib/ProofSystem/Spartan/SumcheckKnowledgeLeaves.lean": {
+        "rbrKnowledgeSoundness": 6
+      },
+      "ArkLib/ProofSystem/Spartan/SumcheckPhaseRbr.lean": {
+        "rbrSoundness": 5
+      },
+      "ArkLib/ProofSystem/Spartan/TightApexPure.lean": {
+        "rbrKnowledgeSoundness": 2
+      },
+      "ArkLib/ProofSystem/Spartan/TightComposedFull.lean": {
+        "rbrKnowledgeSoundness": 29
+      },
+      "ArkLib/ProofSystem/Spartan/TightConjoinedSecondLeaf.lean": {
+        "rbrKnowledgeSoundness": 2
+      },
+      "ArkLib/ProofSystem/Spartan/TightFinalLeaf.lean": {
+        "rbrKnowledgeSoundness": 1
+      },
+      "ArkLib/ProofSystem/Spartan/TightFinalTrivial.lean": {
+        "rbrKnowledgeSoundness": 1
+      },
+      "ArkLib/ProofSystem/Spartan/TightMidLeaves.lean": {
+        "rbrKnowledgeSoundness": 6
+      },
+      "ArkLib/ProofSystem/Spartan/TightSeamBridge.lean": {
+        "rbrKnowledgeSoundness": 1
+      },
+      "ArkLib/ToMathlib/SpartanBricks.lean": {
+        "rbrKnowledgeSoundness": 8
+      }
+    },
+    "semantic_contract": "Historical Spartan security statements keep the prover-averaged predicate and its original premises. Canonical Spartan.Security uses fixed-prefix predicates."
+  },
+  "canonical_random_query": {
+    "execution": [
+      "Spartan.Spec.firstChallengeProver",
+      "Spartan.Spec.firstChallengeVerifier",
+      "Spartan.Spec.linearCombinationProver",
+      "Spartan.Spec.linearCombinationVerifier",
+      "Spartan.Spec.linearCombinationWithTargetProver",
+      "Spartan.Spec.linearCombinationWithTargetVerifier"
+    ],
+    "proof_lens_owner": "RandomQuery.Historical",
+    "preserved_pair_view": [
+      "Spartan.Spec.firstChallengeStmtLens",
+      "Spartan.Spec.firstChallengeOracleLens",
+      "Spartan.Spec.firstChallengeContextLens",
+      "Spartan.Spec.firstChallenge_liftContextCoherent",
+      "Spartan.Spec.firstChallengeLensComplete"
+    ],
+    "interface": "Both executable stages sample their existing challenge types and preserve the padded statement and oracle family. The paired virtual residual/zero lens keeps its separate historical proof interface.",
+    "adapted_run_proofs": [
+      "firstMessage_toVerifier_pure delegates SendSingleWitness.oracleVerifier_toVerifier_run",
+      "completedFirstChallenge_perfectCompleteness unfolds canonical RandomQuery",
+      "linear-combination run and verifier proofs unfold canonical RandomQuery"
+    ]
+  },
+  "existing_public_header_comparison_normalization": "RandomQuery.Historical names denote the original paired interface in the shared downstream adapter.",
+  "unused_historical_witness_aliases_retired": [
+    "Spartan.Spec.Witness.AfterFirstMessage",
+    "Spartan.Spec.Witness.AfterFirstChallenge",
+    "Spartan.Spec.Witness.AfterFirstSumcheck",
+    "Spartan.Spec.Witness.AfterSendEvalClaim",
+    "Spartan.Spec.Witness.AfterLinearCombination",
+    "Spartan.Spec.Witness.AfterSecondSumcheck"
+  ]
+}

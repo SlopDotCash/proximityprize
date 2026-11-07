@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeOracleLift
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeChallenge
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeEmpty
@@ -130,8 +131,8 @@ theorem optionLift_rbrKnowledgeSoundness [Inhabited Stmt₂]
     (V : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}
     {err : pSpec₂.ChallengeIdx → ℝ≥0}
-    (h : V.rbrKnowledgeSoundness init impl rel₂ rel₃ err) :
-    (V.optionLift).rbrKnowledgeSoundness init impl (optionRel rel₂) rel₃ err := by
+    (h : V.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ err) :
+    (V.optionLift).rbrKnowledgeSoundnessAveraged init impl (optionRel rel₂) rel₃ err := by
   obtain ⟨WitMid, E, kSF, hBound⟩ := h
   refine ⟨WitMid,
     { extractIn := fun s? w => E.extractIn (s?.getD default) w
@@ -208,9 +209,9 @@ theorem failingDet_optionized_rbrKnowledgeSoundness [Inhabited Stmt₂]
     {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)}
     {err₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     [∀ i, SampleableType (pSpec₁.Challenge i)]
-    (h₁ : Verifier.rbrKnowledgeSoundness init impl rel₁ rel₂
+    (h₁ : Verifier.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂
       (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) err₁) :
-    Verifier.rbrKnowledgeSoundness init impl rel₁ (optionRel rel₂)
+    Verifier.rbrKnowledgeSoundnessAveraged init impl rel₁ (optionRel rel₂)
       (⟨fun s tr => pure (verify? s tr)⟩ : Verifier oSpec Stmt₁ (Option Stmt₂) pSpec₁) err₁ := by
   obtain ⟨WitMid, E, kSF, hBound⟩ := h₁
   refine ⟨WitMid, E,
@@ -273,12 +274,12 @@ theorem append_rbrKnowledgeSoundness_failingDet_subsingleton
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : Verifier.rbrKnowledgeSoundness init impl rel₁ rel₂
+    (h₁ : Verifier.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂
       (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) err₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ err₂) :
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ err₂) :
     (Verifier.append
         (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁)
-        V₂).rbrKnowledgeSoundness init impl rel₁ rel₃
+        V₂).rbrKnowledgeSoundnessAveraged init impl rel₁ rel₃
       (Sum.elim err₁ err₂ ∘ ChallengeIdx.sumEquiv.symm) := by
   rw [append_failingDet_eq_optionized]
   exact append_rbrKnowledgeSoundness_keystone_subsingleton_unconditional
@@ -422,12 +423,12 @@ theorem append_rbrKnowledgeSoundness_failingDet_subsingleton
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂) :
-      (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).rbrKnowledgeSoundness
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂) :
+      (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).rbrKnowledgeSoundnessAveraged
         init impl rel₁ rel₃
         (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) := by
-  unfold OracleVerifier.rbrKnowledgeSoundness at h₁ h₂ ⊢
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged at h₁ h₂ ⊢
   rw [OracleReduction.oracleVerifier_append_toVerifier, hVerify]
   rw [hVerify] at h₁
   exact Verifier.append_rbrKnowledgeSoundness_failingDet_subsingleton verify? V₂.toVerifier
@@ -525,12 +526,12 @@ theorem append_rbrKnowledgeSoundness_failingDet_subsingleton_challenge
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P)
-    (h₁ : Verifier.rbrKnowledgeSoundness init impl rel₁ rel₂
+    (h₁ : Verifier.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂
       (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) err₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ err₂) :
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ err₂) :
     (Verifier.append
         (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁)
-        V₂).rbrKnowledgeSoundness init impl rel₁ rel₃
+        V₂).rbrKnowledgeSoundnessAveraged init impl rel₁ rel₃
       (Sum.elim err₁ err₂ ∘ ChallengeIdx.sumEquiv.symm) := by
   rw [append_failingDet_eq_optionized]
   exact append_rbrKnowledgeSoundness_keystone_subsingleton_challenge
@@ -586,12 +587,12 @@ theorem append_rbrKnowledgeSoundness_failingDet_subsingleton_challenge
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P)
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂) :
-      (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).rbrKnowledgeSoundness
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂) :
+      (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).rbrKnowledgeSoundnessAveraged
         init impl rel₁ rel₃
         (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) := by
-  unfold OracleVerifier.rbrKnowledgeSoundness at h₁ h₂ ⊢
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged at h₁ h₂ ⊢
   rw [OracleReduction.oracleVerifier_append_toVerifier, hVerify]
   rw [hVerify] at h₁
   exact Verifier.append_rbrKnowledgeSoundness_failingDet_subsingleton_challenge verify?
@@ -662,12 +663,12 @@ theorem append_rbrKnowledgeSoundness_failingDet_empty
     {err₁ : pSpec₁.ChallengeIdx → ℝ≥0} {err₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (hInit : ∃ s, s ∈ support init)
     (hNEW₂ : Nonempty Wit₂)
-    (h₁ : Verifier.rbrKnowledgeSoundness init impl rel₁ rel₂
+    (h₁ : Verifier.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂
       (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) err₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ err₂) :
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ err₂) :
     (Verifier.append
         (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁)
-        V₂).rbrKnowledgeSoundness init impl rel₁ rel₃
+        V₂).rbrKnowledgeSoundnessAveraged init impl rel₁ rel₃
       (Sum.elim err₁ err₂ ∘ ChallengeIdx.sumEquiv.symm) := by
   rw [append_failingDet_eq_optionized]
   exact append_rbrKnowledgeSoundness_keystone_empty
@@ -718,12 +719,12 @@ theorem append_rbrKnowledgeSoundness_failingDet_empty
     (hVerify : V₁.toVerifier = ⟨fun p tr => OptionT.mk (pure (verify? p tr))⟩)
     (hInit : ∃ s, s ∈ support init)
     (hNEW₂ : Nonempty Wit₂)
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂) :
-      (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).rbrKnowledgeSoundness
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂) :
+      (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).rbrKnowledgeSoundnessAveraged
         init impl rel₁ rel₃
         (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) := by
-  unfold OracleVerifier.rbrKnowledgeSoundness at h₁ h₂ ⊢
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged at h₁ h₂ ⊢
   rw [OracleReduction.oracleVerifier_append_toVerifier, hVerify]
   rw [hVerify] at h₁
   exact Verifier.append_rbrKnowledgeSoundness_failingDet_empty verify? V₂.toVerifier

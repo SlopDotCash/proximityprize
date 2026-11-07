@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.RingSwitching.Prelude
 import ArkLib.ProofSystem.RingSwitching.Spec
 import ProximityPrize.Extensions.OracleReduction.Basic
@@ -1135,7 +1136,7 @@ soundness content beyond exhibiting the extractor and knowledge-state function. 
 capstone; it holds in every real instantiation (e.g. `binaryTowerProfile` builds from a field
 `K`). -/
 theorem batchingOracleVerifier_rbrKnowledgeSoundness [IsDomain L] [IsDomain K] :
-    OracleVerifier.rbrKnowledgeSoundness
+    OracleVerifier.rbrKnowledgeSoundnessAveraged
     (verifier := oracleVerifier κ L K P ℓ ℓ' h_l (aOStmtIn:=aOStmtIn))
     (init := init) (impl := impl)
     (relIn := batchingInputRelation κ L K P ℓ ℓ' h_l aOStmtIn)

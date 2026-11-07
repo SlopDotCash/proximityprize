@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Spartan.TightSeamBridge
 import ArkLib.ProofSystem.Spartan.FinalCheckWithClaimLeaf
 
@@ -124,7 +125,7 @@ the conjoined carried second sum-check output relation to the tight final relati
 The transport `tightFinalRelOut ⊆ transported₂ ∩ binding` is `transported₂_of_direct` plus the
 binding pass-through. -/
 theorem finalCheckTight_rbrKnowledgeSoundness :
-    (finalCheckTight (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (finalCheckTight (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       ((secondSumcheckWithTargetRbrRelOut (R := R) pp oSpec)
         ∩ {y | y.1 ∈ bindingAtSecondOut (R := R) pp})
       (tightFinalRelOut (R := R) pp) 0 :=

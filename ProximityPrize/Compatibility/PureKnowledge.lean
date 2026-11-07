@@ -3,6 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RbrGame
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Security.RoundByRound
 import ArkLib.OracleReduction.Security.RbrGame
 import ArkLib.ToVCVio.Lemmas
@@ -47,7 +49,7 @@ theorem rbrKnowledgeSoundness_of_pure_oneRound
     (ext : StmtIn → pSpec.FullTranscript → WitOut → WitIn)
     (relIn : Set (StmtIn × WitIn)) (relOut : Set (StmtOut × WitOut))
     (hExt : ∀ stmt tr wOut, (verify stmt tr, wOut) ∈ relOut → (stmt, ext stmt tr wOut) ∈ relIn) :
-    Verifier.rbrKnowledgeSoundness init impl relIn relOut
+    Verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut
       (⟨fun stmt tr => pure (verify stmt tr)⟩ : Verifier oSpec StmtIn StmtOut pSpec) 0 := by
   refine ⟨fun _ => WitIn,
     { extractIn := fun _ w => w
@@ -103,7 +105,7 @@ theorem rbrKnowledgeSoundness_of_pure_zeroRound
     (ext : StmtIn → pSpec.FullTranscript → WitOut → WitIn)
     (relIn : Set (StmtIn × WitIn)) (relOut : Set (StmtOut × WitOut))
     (hExt : ∀ stmt tr wOut, (verify stmt tr, wOut) ∈ relOut → (stmt, ext stmt tr wOut) ∈ relIn) :
-    Verifier.rbrKnowledgeSoundness init impl relIn relOut
+    Verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut
       (⟨fun stmt tr => pure (verify stmt tr)⟩ : Verifier oSpec StmtIn StmtOut pSpec) 0 := by
   refine ⟨fun _ => WitIn,
     { extractIn := fun _ w => w
@@ -192,7 +194,7 @@ theorem rbrKnowledgeSoundness_zeroRound_pure
     {relIn : Set (StmtIn × Unit)} {relOut : Set (StmtOut × Unit)}
     (hdoom : ∀ stmtIn, (v stmtIn, ()) ∈ relOut → (stmtIn, ()) ∈ relIn) :
     (⟨fun p _tr => pure (v p)⟩ :
-      Verifier oSpec StmtIn StmtOut !p[]).rbrKnowledgeSoundness init impl relIn relOut 0 :=
+      Verifier oSpec StmtIn StmtOut !p[]).rbrKnowledgeSoundnessAveraged init impl relIn relOut 0 :=
   ⟨fun _ => Unit, zeroRoundPureExtractor, zeroRoundPureKSF init impl v hdoom,
     fun _ _ _ i => Fin.elim0 i.1⟩
 
@@ -250,7 +252,7 @@ theorem rbrKnowledgeSoundness_singleMessage_pure
     {relIn : Set (StmtIn × Unit)} {relOut : Set (StmtOut × Unit)}
     (hdoom : ∀ stmtIn msg, (v stmtIn msg, ()) ∈ relOut → (stmtIn, ()) ∈ relIn) :
     (⟨fun p tr => pure (v p (tr.messages ⟨0, rfl⟩))⟩ :
-      Verifier oSpec StmtIn StmtOut ⟨!v[.P_to_V], !v[M]⟩).rbrKnowledgeSoundness init impl
+      Verifier oSpec StmtIn StmtOut ⟨!v[.P_to_V], !v[M]⟩).rbrKnowledgeSoundnessAveraged init impl
       relIn relOut 0 := by
   refine ⟨fun _ => Unit, singleMessagePureExtractor,
     singleMessagePureKSF init impl v hdoom, ?_⟩
@@ -319,7 +321,7 @@ theorem rbrKnowledgeSoundness_singleChallenge_pure
     (hflip : ∀ stmtIn, (stmtIn, ()) ∉ relIn →
       probEvent (fun c : C => (v stmtIn c, ()) ∈ relOut) ($ᵗ C) ≤ err) :
     (⟨fun p tr => pure (v p (tr.challenges ⟨0, rfl⟩))⟩ :
-      Verifier oSpec StmtIn StmtOut ⟨!v[.V_to_P], !v[C]⟩).rbrKnowledgeSoundness init impl
+      Verifier oSpec StmtIn StmtOut ⟨!v[.V_to_P], !v[C]⟩).rbrKnowledgeSoundnessAveraged init impl
       relIn relOut (fun _ => err) := by
   refine ⟨fun _ => Unit, singleChallengePureExtractor,
     singleChallengePureKSF init impl v relIn relOut, ?_⟩

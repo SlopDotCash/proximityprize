@@ -10,11 +10,10 @@ import ArkLib.OracleReduction.LiftContext.Coherence
 /-!
 # `LiftContextCoherent` for the Spartan `firstChallenge` lift (issue #114, design note #433)
 
-The Spartan first sum-check is obtained by lifting the generic `RandomQuery` oracle reduction onto
-the *virtual* zero-check polynomial `𝒢` via `firstChallengeOracleLens`. Transferring the proven
-`RandomQuery` completeness through that `liftContext` requires the framework coherence side condition
-`OracleVerifier.LiftContextCoherent` (design note #433): the lens' virtual-oracle reconstruction
-`simOStmt` must, under the honest oracle, agree with the inner verifier's honest oracle answers.
+The historical first-challenge lens `firstChallengeOracleLens` projects the padded R1CS context
+to the virtual zero-check polynomial `𝒢` and the zero polynomial. Its coherence condition
+`OracleVerifier.LiftContextCoherent` (design note #433) identifies the virtual-oracle
+reconstruction `simOStmt` with the honest answers of the paired-oracle random-query verifier.
 
 `firstChallenge_liftContextCoherent` discharges that obligation. It is assembled from the generic
 builder `liftContextCoherent_of`, whose three inputs are:
@@ -46,9 +45,9 @@ verifier's honest oracle answers — the #433 framework obligation for transferr
 completeness through the first sum-check `liftContext`. -/
 @[reducible] noncomputable def firstChallenge_liftContextCoherent :
     OracleVerifier.LiftContextCoherent (firstChallengeOracleLens R pp oSpec)
-      (RandomQuery.oracleReduction oSpec (MvPolynomial (Fin pp.ℓ_m) R)).verifier :=
+      (RandomQuery.Historical.oracleReduction oSpec (MvPolynomial (Fin pp.ℓ_m) R)).verifier :=
   liftContextCoherent_of (firstChallengeOracleLens R pp oSpec)
-    (RandomQuery.oracleReduction oSpec (MvPolynomial (Fin pp.ℓ_m) R)).verifier
+    (RandomQuery.Historical.oracleReduction oSpec (MvPolynomial (Fin pp.ℓ_m) R)).verifier
     -- hproj: the non-oracle projection is `Unit`
     (fun _ _ => rfl)
     -- hfaith: strip the message summand, then the keystone faithfulness / zero-oracle answer

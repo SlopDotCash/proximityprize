@@ -995,7 +995,7 @@ This is **not** a generalisation of `distFromCode`: because `possibleDistsToCode
 singleton code `C = {w}` it is `⊤` (`distToCode_singleton_self`) whereas `Δ₀(w, {w}) = 0`.
 The genuine generic distance to a code, which does include `w`, is `distToCodeIncl`.
 -/
-noncomputable def distToCode [LinearOrder α] [Zero α]
+noncomputable def distToCode [LinearOrder α]
                              (w : ι → F) (C : Set (ι → F))
                              (δf : (ι → F) → (ι → F) → α)
                              (h : (possibleDistsToCode w C δf).Finite) : WithTop α :=
@@ -1004,7 +1004,7 @@ noncomputable def distToCode [LinearOrder α] [Zero α]
 
 end
 
-lemma distToCode_of_nonempty {α : Type*} [LinearOrder α] [Zero α]
+lemma distToCode_of_nonempty {α : Type*} [LinearOrder α]
     {ι F : Type*}
                              {w : ι → F} {C : Set (ι → F)}
                              {δf : (ι → F) → (ι → F) → α}

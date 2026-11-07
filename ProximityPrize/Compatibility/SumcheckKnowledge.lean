@@ -3,6 +3,7 @@ Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Sumcheck.Spec.SingleRound
 
 /-!
@@ -24,7 +25,7 @@ def RoundKnowledge (R : Type) [CommSemiring R] [DecidableEq R] [SampleableType R
     [Fintype R] (deg : ℕ) {m : ℕ} (D : Fin m ↪ R) (n : ℕ)
     {ι : Type} (oSpec : OracleSpec ι) {σ : Type}
     (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp)) : Prop :=
-  ∀ i : Fin n, (SingleRound.oracleVerifier R n deg D oSpec i).rbrKnowledgeSoundness init impl
+  ∀ i : Fin n, (SingleRound.oracleVerifier R n deg D oSpec i).rbrKnowledgeSoundnessAveraged init impl
     (relationRound R n deg D i.castSucc) (relationRound R n deg D i.succ)
     (fun _ => (deg : ℝ≥0) / Fintype.card R)
 

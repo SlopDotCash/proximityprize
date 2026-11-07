@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.RunUnroll
 import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
 
@@ -248,8 +249,8 @@ theorem rbrKnowledgeSoundness_collapseState_iff
     (impl : QueryImpl oSpec (StateT σ ProbComp)) (s₀ : σ)
     (hso : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s) :
-    Verifier.rbrKnowledgeSoundness (pure s₀) impl relIn relOut verifier rbrKnowledgeError
-      ↔ Verifier.rbrKnowledgeSoundness (pure ()) (collapseState impl s₀) relIn relOut
+    Verifier.rbrKnowledgeSoundnessAveraged (pure s₀) impl relIn relOut verifier rbrKnowledgeError
+      ↔ Verifier.rbrKnowledgeSoundnessAveraged (pure ()) (collapseState impl s₀) relIn relOut
           verifier rbrKnowledgeError := by
   constructor
   · rintro ⟨WitMid, extractor, kSF, hbound⟩
@@ -318,8 +319,8 @@ theorem rbrSoundness_collapseState_iff
     (impl : QueryImpl oSpec (StateT σ ProbComp)) (s₀ : σ)
     (hso : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s) :
-    Verifier.rbrSoundness (pure s₀) impl langIn langOut verifier rbrSoundnessError
-      ↔ Verifier.rbrSoundness (pure ()) (collapseState impl s₀) langIn langOut
+    Verifier.rbrSoundnessAveraged (pure s₀) impl langIn langOut verifier rbrSoundnessError
+      ↔ Verifier.rbrSoundnessAveraged (pure ()) (collapseState impl s₀) langIn langOut
           verifier rbrSoundnessError := by
   constructor
   · rintro ⟨sF, hbound⟩

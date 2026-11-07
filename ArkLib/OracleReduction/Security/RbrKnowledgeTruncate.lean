@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
 
 /-!
@@ -87,10 +88,10 @@ theorem rbrKnowledgeSoundness_relOut_any_of_one_le_error
     {relIn : Set (StmtIn × WitIn)} {relOut : Set (StmtOut × WitOut)}
     {V : Verifier oSpec StmtIn StmtOut pSpec}
     {err : pSpec.ChallengeIdx → ℝ≥0}
-    (hKS : V.rbrKnowledgeSoundness init impl relIn relOut err)
+    (hKS : V.rbrKnowledgeSoundnessAveraged init impl relIn relOut err)
     (j : pSpec.ChallengeIdx) (hj : 1 ≤ err j)
     (relOut' : Set (StmtOut × WitOut)) :
-    V.rbrKnowledgeSoundness init impl relIn relOut' err := by
+    V.rbrKnowledgeSoundnessAveraged init impl relIn relOut' err := by
   obtain ⟨WitMid, E, kSF, hbound⟩ := hKS
   refine ⟨WitMid, E, kSF.truncateAfter j relOut', ?_⟩
   intro stmtIn witIn prover i
@@ -134,11 +135,11 @@ theorem rbrKnowledgeSoundness_relOut_any_of_one_le_error
     {relOut : Set ((Stmt₂ × ∀ i, OStmt₂ i) × Wit₂)}
     {V : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec}
     {err : pSpec.ChallengeIdx → ℝ≥0}
-    (hKS : V.rbrKnowledgeSoundness init impl relIn relOut err)
+    (hKS : V.rbrKnowledgeSoundnessAveraged init impl relIn relOut err)
     (j : pSpec.ChallengeIdx) (hj : 1 ≤ err j)
     (relOut' : Set ((Stmt₂ × ∀ i, OStmt₂ i) × Wit₂)) :
-    V.rbrKnowledgeSoundness init impl relIn relOut' err := by
-  unfold OracleVerifier.rbrKnowledgeSoundness at hKS ⊢
+    V.rbrKnowledgeSoundnessAveraged init impl relIn relOut' err := by
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged at hKS ⊢
   exact Verifier.rbrKnowledgeSoundness_relOut_any_of_one_le_error hKS j hj relOut'
 
 end OracleVerifier

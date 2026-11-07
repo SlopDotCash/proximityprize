@@ -6,20 +6,10 @@ Authors: ArkLib Contributors
 import ArkLib.ProofSystem.Sumcheck.Spec.OracleCompletenessThreaded
 import ArkLib.ProofSystem.Sumcheck.Spec.SingleRoundCohWired
 
-/-! # Multi-round sum-check oracle perfect completeness — UNCONDITIONAL (issue #13)
+/-! # Compatibility for multi-round oracle sum-check completeness
 
-`Sumcheck.Spec.oracleReduction_perfectCompleteness` (`OracleCompletenessThreaded.lean`) proves the
-multi-round oracle-level perfect completeness via the genuine, bridge-FREE `seqCompose` threaded
-keystone (no `toReduction = reduction` equation is used), conditional only on the per-round
-oracle-routing lens coherence `[coh : ∀ i, LiftContextCoherent (sumcheckOracleLens i) Simple.verifier]`
-plus the standard data facts `hInit`/`hImplSupp`.
-
-That `coh` is now a THEOREM: `coh_proven_inst` (`SingleRoundCohWired.lean`) supplies it from the
-proven `CubeFiber` (`SingleRoundFaithful.coh_proven`). Feeding it discharges the last residual, so
-the multi-round sum-check oracle perfect completeness is unconditional modulo only the honest data
-facts. It does not go through the bridge route of `oracleReduction_perfectCompleteness_uncond`.
-That route was once believed to rest on a false bridge; under canonical message-reading verifiers
-the bridge holds (`oracleReductionToReductionResidual_holds`, `OracleCompletenessUncond.lean`). -/
+The canonical theorem proves perfect completeness for the full oracle protocol. This wrapper
+keeps the initialization and support parameters used by existing downstream calls. -/
 
 open OracleComp OracleSpec ProtocolSpec
 namespace Sumcheck.Spec
@@ -28,19 +18,15 @@ variable {R : Type} [CommSemiring R] [DecidableEq R] [SampleableType R] [Fintype
   {n : ℕ} {deg : ℕ} {m : ℕ} {D : Fin m ↪ R} {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
-/-- **Multi-round sum-check ORACLE perfect completeness, UNCONDITIONAL.** The per-round lens
-coherence `coh` of `oracleReduction_perfectCompleteness` is discharged by the proven `CubeFiber`
-(`SingleRound.coh_proven_inst`). No verifier-fusion / `toReduction = reduction` bridge anywhere —
-the completeness is assembled by the genuine `seqCompose` threaded keystone. -/
+/-- Oracle sum-check completeness with the historical data parameters. -/
 theorem oracleReduction_perfectCompleteness_unconditional
-    (hInit : NeverFail init)
-    (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
+    (_hInit : NeverFail init)
+    (_hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
         = support (liftM q : OracleComp oSpec β)) :
     (oracleReduction R deg D n oSpec).perfectCompleteness init impl
       (relationRound R n deg D 0) (relationRound R n deg D (Fin.last n)) :=
-  oracleReduction_perfectCompleteness
-    (coh := fun i => SingleRound.coh_proven_inst i) hInit hImplSupp
+  Sumcheck.Spec.oracleReduction_perfectCompleteness R deg D n oSpec
 
 end
 end Sumcheck.Spec

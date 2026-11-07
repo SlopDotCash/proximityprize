@@ -5,6 +5,7 @@ Shared declarations come from the canonical ArkLib modules.
 Checked-in source owns later API ports. Generate separate review candidates with:
 scripts/integration/extract_downstream_extensions.py --output-dir <directory>.
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Component.SendWitness
 
 /-
@@ -155,7 +156,7 @@ theorem reduction_isStatHVZK_of_witness_eq
   directly from the transcript (round 0), and the knowledge state function tracks membership in
   `relIn`. -/
 theorem reduction_rbr_knowledge_soundness :
-    (reduction oSpec Statement Witness).verifier.rbrKnowledgeSoundness
+    (reduction oSpec Statement Witness).verifier.rbrKnowledgeSoundnessAveraged
       init impl relIn (toRelOut relIn) 0 := by
   -- Construct the round-by-round extractor: WitMid = fun _ => Witness
   refine ⟨fun _ => Witness, {
@@ -316,10 +317,10 @@ theorem oracleReduction_isStatHVZK_of_witness_eq
   The protocol `oraclePSpec Witness` is `ProverOnly` (single P_to_V round), so `ChallengeIdx` is
   empty and the RBR knowledge-soundness condition is vacuously true. -/
 theorem oracleReduction_rbr_knowledge_soundness :
-    (oracleReduction oSpec Statement OStatement Witness).verifier.rbrKnowledgeSoundness
+    (oracleReduction oSpec Statement OStatement Witness).verifier.rbrKnowledgeSoundnessAveraged
       init impl oRelIn (toORelOut oRelIn) 0 := by
   -- The oracle verifier's rbrKnowledgeSoundness reduces to the underlying Verifier's
-  simp only [OracleReduction.verifier, OracleVerifier.rbrKnowledgeSoundness]
+  simp only [OracleReduction.verifier, OracleVerifier.rbrKnowledgeSoundnessAveraged]
   -- Construct the round-by-round extractor: WitMid = fun _ => Witness
   refine ⟨fun _ => Witness, {
     extractIn := fun _ wit => wit

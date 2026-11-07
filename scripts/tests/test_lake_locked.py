@@ -25,6 +25,10 @@ def eventually(predicate, timeout=20):
     raise AssertionError("Timed out waiting for test process state")
 
 
+@unittest.skipUnless(
+    hasattr(os, "killpg") and hasattr(signal, "SIGSTOP"),
+    "lake-locked test requires POSIX process groups (os.killpg) and signal.SIGSTOP",
+)
 class WaitingCheckoutHeartbeat(unittest.TestCase):
     def test_waiting_checkout_stays_owned_and_serialized(self):
         with tempfile.TemporaryDirectory(prefix="lake-lock-test-") as tmp:
@@ -52,20 +56,20 @@ except FileExistsError:
 while not (root / (role + ".release")).exists():
     time.sleep(0.1)
 active.rmdir()
-''')
+''', encoding="utf-8")
             fake_lake.chmod(0o755)
             slots = root / "slots"
             occupied = [slots / "slot-1", slots / "slot-2"]
             for slot in occupied:
                 slot.mkdir(parents=True)
-                (slot / "owner").write_text(f"{os.getpid()} test holder\n")
+                (slot / "owner").write_text(f"{os.getpid()} test holder\n", encoding="utf-8")
             stop_holder = threading.Event()
 
             def refresh_holder():
                 while not stop_holder.is_set():
                     for slot in occupied:
                         pending = slot / "heartbeat.test"
-                        pending.write_text(str(int(time.time())))
+                        pending.write_text(str(int(time.time())), encoding="utf-8")
                         pending.replace(slot / "heartbeat")
                     stop_holder.wait(0.2)
 
@@ -99,16 +103,16 @@ active.rmdir()
             try:
                 first = launch("first")
                 eventually(lambda: (lock / "owner").exists())
-                self.assertEqual(int((lock / "owner").read_text().split()[0]), first.pid)
-                initial_heartbeat = int((lock / "heartbeat").read_text())
+                self.assertEqual(int((lock / "owner").read_text(encoding="utf-8").split()[0]), first.pid)
+                initial_heartbeat = int((lock / "heartbeat").read_text(encoding="utf-8"))
                 # Wait longer than the stale threshold while every machine slot is occupied.
                 time.sleep(4)
                 self.assertIsNone(first.poll())
                 self.assertFalse((root / "first.started").exists())
-                eventually(lambda: int((lock / "heartbeat").read_text()) > initial_heartbeat)
+                eventually(lambda: int((lock / "heartbeat").read_text(encoding="utf-8")) > initial_heartbeat)
                 second = launch("second")
                 time.sleep(1)
-                self.assertEqual(int((lock / "owner").read_text().split()[0]), first.pid)
+                self.assertEqual(int((lock / "owner").read_text(encoding="utf-8").split()[0]), first.pid)
                 stop_holder.set()
                 holder.join()
                 for slot in occupied:
@@ -118,7 +122,7 @@ active.rmdir()
                 os.killpg(first.pid, signal.SIGSTOP)
                 time.sleep(7)
                 self.assertFalse((root / "second.started").exists())
-                self.assertEqual(int((lock / "owner").read_text().split()[0]), first.pid)
+                self.assertEqual(int((lock / "owner").read_text(encoding="utf-8").split()[0]), first.pid)
                 os.killpg(first.pid, signal.SIGCONT)
                 (root / "first.release").touch()
                 self.assertEqual(first.wait(timeout=15), 0)

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
 import ArkLib.ProofSystem.Spartan.FirstSumcheckReduction
 import ArkLib.ProofSystem.Spartan.SecondSumcheckReduction
@@ -455,9 +456,7 @@ noncomputable def finalExpectedClaimValue
   let z := R1CS.𝕫 x (oStmt (.inr (.inr 0)))
   let zEval : R := MvPolynomial.eval r_y (MvPolynomial.MLE (z ∘ finFunctionFinEquiv))
   let matrixEval (idx : R1CS.MatrixIdx) : R :=
-    MvPolynomial.eval r_y
-      ((oStmt (.inr (.inl idx))).toMLE
-        ⸨(MvPolynomial.C ∘ r_x : Fin pp.ℓ_m → MvPolynomial (Fin pp.ℓ_n) R)⸩)
+    MvPolynomial.eval r_y (MvPolynomial.eval (MvPolynomial.C ∘ r_x) (oStmt (.inr (.inl idx))).toMLE)
   (r .A * matrixEval .A + r .B * matrixEval .B + r .C * matrixEval .C) * zEval
 
 omit [IsDomain R] [Fintype R] [SampleableType R] in
@@ -467,11 +466,9 @@ theorem secondSumCheckVirtualPolynomial_eval_eq_finalExpectedClaimValue
     (stmt : FinalStatement R pp)
     (oStmt : ∀ i, FinalOracleStatement R pp i) :
     MvPolynomial.eval stmt.1 (secondSumCheckVirtualPolynomial R pp stmt.2 oStmt) =
-      finalExpectedClaimValue R pp stmt oStmt := by
-  classical
-  simp [secondSumCheckVirtualPolynomial, finalExpectedClaimValue, MvPolynomial.eval_add,
-    MvPolynomial.eval_mul, MvPolynomial.eval_C]
-  ring
+      finalExpectedClaimValue R pp stmt oStmt :=
+  Algebra.secondVirtual_eval (fun i => oStmt (.inr (.inl i)))
+    (R1CS.𝕫 stmt.2.2.2.2 (oStmt (.inr (.inr 0)))) stmt.2.2.1 stmt.2.1 stmt.1
 
 /-- **NAMED RESIDUAL — second-sum-check terminal endpoint.** The value handed to the final
 target-carrying `CheckClaim` is the evaluation of Spartan's second sum-check virtual polynomial at
@@ -482,8 +479,7 @@ def secondSumcheckTerminalEndpointResidual : Prop :=
       finalExpectedClaimValue R pp stmt oStmt
 
 omit [IsDomain R] [Fintype R] [SampleableType R] in
-/-- The second-sum-check terminal endpoint residual is discharged by expanding the polynomial
-definition and evaluating products/sums. -/
+/-- The canonical second-virtual-polynomial identity discharges the historical endpoint. -/
 theorem secondSumcheckTerminalEndpointResidual_holds :
     secondSumcheckTerminalEndpointResidual R pp := by
   intro stmt oStmt
@@ -864,8 +860,7 @@ theorem r1csMleEncodingResidual_holds : r1csMleEncodingResidual R pp := by
 
 omit [IsDomain R] [Fintype R] [SampleableType R] in
 /-- Evaluating `Matrix.toMLE` at an arbitrary row point and a Boolean column point recovers the
-row-MLE of the selected matrix column. This is the column-side bridge used by the second Spartan
-sum-check cube-sum identity. -/
+row-MLE of the selected matrix column. -/
 theorem matrix_toMLE_eval_row_boolColumn
     (M : Matrix (Fin (2 ^ pp.ℓ_m)) (Fin (2 ^ pp.ℓ_n)) R)
     (r_x : Fin pp.ℓ_m → R) (yBits : Fin pp.ℓ_n → Fin 2) :
@@ -877,20 +872,10 @@ theorem matrix_toMLE_eval_row_boolColumn
       MvPolynomial.eval r_x
         (MvPolynomial.MLE
           (fun xBits : Fin pp.ℓ_m → Fin 2 =>
-            M (finFunctionFinEquiv xBits) (finFunctionFinEquiv yBits))) := by
-  classical
-  rw [Matrix.toMLE, MvPolynomial.MLE']
-  rw [MvPolynomial.MLE_eval_eq_sum_eqTilde]
-  rw [MvPolynomial.MLE_eval_eq_sum_eqTilde]
-  simp [MvPolynomial.MLE', MvPolynomial.eqTilde, MvPolynomial.eval_mul,
-    Function.comp_apply, MvPolynomial.MLE_eval_zeroOne]
-  apply Finset.sum_congr rfl
-  intro x _
-  congr 1
-  exact MvPolynomial.MLE'_eval_zeroOne yBits (M (finFunctionFinEquiv x))
+            M (finFunctionFinEquiv xBits) (finFunctionFinEquiv yBits))) :=
+  Matrix.toMLE_rowSlice_eval_zeroOne M r_x yBits
 
 omit [IsDomain R] [Fintype R] [SampleableType R] in
-set_option backward.isDefEq.respectTransparency false in
 /-- **Second sum-check input claim threading.** The Boolean-cube sum of Spartan's second
 sum-check virtual polynomial equals the random linear combination of the first sum-check
 evaluation claims computed from the matrix/witness oracles. -/
@@ -904,71 +889,10 @@ theorem secondSumCheckVirtualPolynomial_hypercubeSum_eq_evalClaimValue
       ∑ idx : R1CS.MatrixIdx,
         stmt.1 idx *
           evalClaimValue R pp stmt.2 (fun i => oStmt (.inr i)) idx := by
-  classical
-  let r : R1CS.MatrixIdx → R := stmt.1
-  let r_x : Fin pp.ℓ_m → R := stmt.2.1
-  let x : Statement.AfterFirstMessage R pp := stmt.2.2.2
-  let z := R1CS.𝕫 x (oStmt (.inr (.inr 0)))
-  let Mat : R1CS.MatrixIdx → Matrix (Fin (2 ^ pp.ℓ_m)) (Fin (2 ^ pp.ℓ_n)) R :=
-    fun idx => oStmt (.inr (.inl idx))
-  have htarget :
-      (∑ idx ∈ (Finset.univ : Finset R1CS.MatrixIdx),
-          r idx * MvPolynomial.eval r_x
-            (MvPolynomial.MLE ((Matrix.mulVec (Mat idx) z) ∘ finFunctionFinEquiv)))
-        =
-        ∑ j : Fin (2 ^ pp.ℓ_n),
-          z j * (∑ idx ∈ (Finset.univ : Finset R1CS.MatrixIdx),
-            r idx *
-              MvPolynomial.eval r_x
-                (MvPolynomial.MLE
-                  (fun xBits : Fin pp.ℓ_m → Fin 2 =>
-                    Mat idx (finFunctionFinEquiv xBits) j))) :=
-    Spartan.Scratch114.secondSumcheck_target_eq_cube_sum
-      (R := R) (s := (Finset.univ : Finset R1CS.MatrixIdx))
-      (Mat := Mat) (z := z) (r_x := r_x) (coeff := r)
-  have hclaim :
-      (∑ idx : R1CS.MatrixIdx,
-          stmt.1 idx *
-            evalClaimValue R pp stmt.2 (fun i => oStmt (.inr i)) idx)
-        =
-        ∑ idx ∈ (Finset.univ : Finset R1CS.MatrixIdx),
-          r idx * MvPolynomial.eval r_x
-            (MvPolynomial.MLE ((Matrix.mulVec (Mat idx) z) ∘ finFunctionFinEquiv)) := by
-    simp [evalClaimValue, r, r_x, x, z, Mat, PublicParams.toSizeR1CS]
-  rw [hclaim, htarget]
-  refine Fintype.sum_equiv (finFunctionFinEquiv (m := 2) (n := pp.ℓ_n))
-    (fun yBits : Fin pp.ℓ_n → Fin 2 =>
-      MvPolynomial.eval (yBits : Fin pp.ℓ_n → R)
-        (secondSumCheckVirtualPolynomial R pp stmt oStmt))
-    (fun yEnum : Fin (2 ^ pp.ℓ_n) =>
-      z yEnum * (∑ idx ∈ (Finset.univ : Finset R1CS.MatrixIdx),
-        r idx *
-          MvPolynomial.eval r_x
-            (MvPolynomial.MLE
-              (fun xBits : Fin pp.ℓ_m → Fin 2 =>
-                Mat idx (finFunctionFinEquiv xBits) yEnum))))
-    ?_
-  intro yBits
-  simp only [secondSumCheckVirtualPolynomial, MvPolynomial.eval_add, MvPolynomial.eval_mul,
-    MvPolynomial.eval_C]
-  let matrixEval (idx : R1CS.MatrixIdx) :=
-    MvPolynomial.eval (yBits : Fin pp.ℓ_n → R)
-      (MvPolynomial.eval (MvPolynomial.C ∘ r_x) (Mat idx).toMLE)
-  let zEval := MvPolynomial.eval (yBits : Fin pp.ℓ_n → R)
-    (MvPolynomial.MLE (z ∘ finFunctionFinEquiv))
-  change r .A * matrixEval .A * zEval + r .B * matrixEval .B * zEval +
-    r .C * matrixEval .C * zEval = _
-  dsimp only [matrixEval, zEval]
-  rw [matrix_toMLE_eval_row_boolColumn (R := R) pp (Mat .A) r_x yBits,
-    matrix_toMLE_eval_row_boolColumn (R := R) pp (Mat .B) r_x yBits,
-    matrix_toMLE_eval_row_boolColumn (R := R) pp (Mat .C) r_x yBits,
-    MvPolynomial.MLE_eval_zeroOne]
-  simp only [Function.comp_apply]
   rw [matrixIdx_sum]
-  ring
+  exact Algebra.secondVirtual_cubeSum_eq (fun i => oStmt (.inr (.inl i)))
+    (R1CS.𝕫 stmt.2.2.2 (oStmt (.inr (.inr 0)))) stmt.2.1 stmt.1
 
-omit [IsDomain R] [Fintype R] [SampleableType R] in
-set_option backward.isDefEq.respectTransparency false in
 /-- Stored-claim form of `secondSumCheckVirtualPolynomial_hypercubeSum_eq_evalClaimValue`: if the
 bundled eval-claim oracle contains the honest `evalClaimValue`, the second sum-check's initial
 cube-sum equals the random linear combination of that stored oracle. -/
@@ -1287,7 +1211,7 @@ def composedRbrKnowledgeSoundnessStatement
       (FinalStatement R pp) (FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0) : Prop :=
-  Rc.verifier.rbrKnowledgeSoundness init impl
+  Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
     (spartanRelIn R pp) (finalCheckRelOut R pp) rbrKnowledgeError
 
 -- **No `composedRbrKnowledgeSoundness_holds` here.**  As with completeness above, an earlier
@@ -1310,7 +1234,7 @@ def composedRbrKnowledgeSoundnessWithClaimStatement
       (FinalClaimStatement R pp) (FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0) : Prop :=
-  Rc.verifier.rbrKnowledgeSoundness init impl
+  Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
     (spartanRelIn R pp) (finalCheckWithClaimRelOut R pp) rbrKnowledgeError
 
 /-- Stronger target-carrying RBR knowledge-soundness statement where extracted terminal witnesses
@@ -1323,7 +1247,7 @@ def composedRbrKnowledgeSoundnessWithClaimValueRelStatement
       (FinalClaimStatement R pp) (FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0) : Prop :=
-  Rc.verifier.rbrKnowledgeSoundness init impl
+  Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
     (spartanRelIn R pp) (finalCheckWithClaimValueRelIn R pp) rbrKnowledgeError
 
 /-- Target-carrying RBR knowledge-soundness statement whose terminal output relation is stated
@@ -1336,7 +1260,7 @@ def composedRbrKnowledgeSoundnessWithClaimSecondSumcheckEvalStatement
       (FinalClaimStatement R pp) (FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0) : Prop :=
-  Rc.verifier.rbrKnowledgeSoundness init impl
+  Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
     (spartanRelIn R pp) (finalCheckWithClaimSecondSumcheckEvalRelOut R pp) rbrKnowledgeError
 
 omit [IsDomain R] [Fintype R] [SampleableType R] in
@@ -1416,7 +1340,7 @@ theorem composedRbrKnowledgeSoundnessWithClaimValueRelStatement_of_broadStatemen
       rbrKnowledgeError := by
   unfold composedRbrKnowledgeSoundnessWithClaimStatement at hStatement
   unfold composedRbrKnowledgeSoundnessWithClaimValueRelStatement
-  unfold OracleVerifier.rbrKnowledgeSoundness Verifier.rbrKnowledgeSoundness at hStatement ⊢
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged Verifier.rbrKnowledgeSoundnessAveraged at hStatement ⊢
   rcases hStatement with ⟨WitMid, extractor, kSF, hProb⟩
   let kSFValue :
       Rc.verifier.toVerifier.KnowledgeStateFunction init impl
@@ -1593,7 +1517,7 @@ theorem composedRbrKnowledgeSoundnessStatement_of_rbrKnowledgeSoundness
       (FinalStatement R pp) (FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0)
-    (hks : Rc.verifier.rbrKnowledgeSoundness init impl
+    (hks : Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
       (spartanRelIn R pp) (finalCheckRelOut R pp) rbrKnowledgeError) :
     composedRbrKnowledgeSoundnessStatement R pp oSpec Rc init impl rbrKnowledgeError :=
   hks
@@ -1609,7 +1533,7 @@ theorem composedRbrKnowledgeSoundnessWithClaimStatement_of_rbrKnowledgeSoundness
       (FinalClaimStatement R pp) (FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0)
-    (hks : Rc.verifier.rbrKnowledgeSoundness init impl
+    (hks : Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
       (spartanRelIn R pp) (finalCheckWithClaimRelOut R pp) rbrKnowledgeError) :
     composedRbrKnowledgeSoundnessWithClaimStatement R pp oSpec Rc init impl rbrKnowledgeError :=
   hks

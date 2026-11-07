@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.SpartanLinearCombination
 import ArkLib.ProofSystem.Spartan.ShortPhaseRbrKnowledgeLeaves
 import ArkLib.ToMathlib.LinearFormKernelCard
@@ -150,11 +151,11 @@ relation `relF`, with per-round error `1/|R|` — the bound Spartan itself assig
 predicates and conjoin onto this leaf at unchanged error via
 `Verifier.rbrKnowledgeSoundness_conjoin`. -/
 theorem linearCombination_rbrKnowledgeSoundness_claimBound :
-    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (sendEvalClaimClaimsCorrectRel (R := R) pp)
       (prependRLCTargetRbrRelF (R := R) pp oSpec)
       (fun _ => ((Fintype.card R : ℝ≥0))⁻¹) := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [linearCombination_toVerifier_closed]
   refine Verifier.rbrKnowledgeSoundness_singleChallenge_pure
     (C := LinearCombinationChallenge R)

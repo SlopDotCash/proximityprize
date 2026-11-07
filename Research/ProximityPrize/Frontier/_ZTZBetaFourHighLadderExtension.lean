@@ -7,6 +7,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZaman
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26PolyFieldCeiling
 import Mathlib.NumberTheory.LucasPrimality
 import Mathlib.Tactic.NormNum.Prime
+import Research.ProximityPrize.Support.BinaryPower
 
 /-!
 # Z-lane — the concrete β = 4 Thorner–Zaman ladder at `n ∈ {2048, 4096}` + its δ* ceilings (#466)
@@ -28,8 +29,8 @@ sieved deterministically by the same Miller–Rabin engine as
 `scripts/probes/probe_ztz_beta4_ladder.py` (base set exact far above `2⁴⁹`), biased toward
 high 2-adic valuation so every odd cofactor `c ≤ 2309` (instant `norm_num`); each prime
 certified by Mathlib's `lucas_primality` with uniform witness `g = 3` in the two-factor shape
-`p − 1 = 2^e·c`; `binaryPow`/`binaryPowAux`/`lucasTwoFactor` copied verbatim (with provenance)
-from `Frontier/_ZTZBetaFourLadderExtension.lean`.  The ceiling wiring (parameters `μ = 2`,
+`p − 1 = 2^e·c`; the certificates use the shared `binaryPow` and copy `lucasTwoFactor` from
+`Frontier/_ZTZBetaFourLadderExtension.lean`.  The ceiling wiring (parameters `μ = 2`,
 `r = 2`, `m = n/4`; budget `12·(4 log 2)/(4·log₂n·log 2) = 48/{44,48} < 12`) mirrors
 `Frontier/_ZTZBetaFourCeilingWiring.lean`.
 
@@ -58,53 +59,7 @@ set_option maxHeartbeats 1000000
 
 open ArkLib.ProximityGap.KKH26
 
-/-! ## Kernel-cheap exponentiation (provenance: `Frontier/_ZTZBetaFourLadderExtension.lean`,
-itself a verbatim copy from `Frontier/_ZTZBetaThreeLadderExtension.lean` /
-`Frontier/_W16TZPrizeScaleP30.lean` / `Frontier/_PrizeShapePrimeP30.lean`) -/
-
-/-- Structurally recursive fuel wrapper for kernel-cheap square-and-multiply
-exponentiation. -/
-private def binaryPowAux {M : Type*} [Monoid M] (a : M) (n : ℕ) : ℕ → M
-  | 0 => 1
-  | fuel + 1 =>
-      if n = 0 then 1
-      else if n % 2 = 0 then
-        binaryPowAux (a * a) (n / 2) fuel
-      else
-        a * binaryPowAux (a * a) (n / 2) fuel
-
-/-- Kernel-cheap square-and-multiply exponentiation. -/
-private def binaryPow {M : Type*} [Monoid M] (a : M) (n : ℕ) : M :=
-  binaryPowAux a n (n + 1)
-
-private theorem binaryPowAux_eq_pow {M : Type*} [Monoid M] (a : M) (n fuel : ℕ)
-    (hnfuel : n < fuel) : binaryPowAux a n fuel = a ^ n := by
-  induction fuel generalizing a n with
-  | zero => omega
-  | succ fuel ih =>
-      rw [binaryPowAux]
-      split_ifs with h0 heven
-      · subst n
-        simp
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul]
-        have hdvd : 2 ∣ n := (Nat.dvd_iff_mod_eq_zero).2 heven
-        have htwo : 2 * (n / 2) = n := Nat.mul_div_cancel' hdvd
-        congr 1
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul, ← pow_succ']
-        have hnmod : n % 2 = 1 := by omega
-        have hdecomp := Nat.mod_add_div n 2
-        congr 1
-        omega
-
-private theorem binaryPow_eq_pow {M : Type*} [Monoid M] (a : M) (n : ℕ) :
-    binaryPow a n = a ^ n := by
-  exact binaryPowAux_eq_pow a n (n + 1) (by omega)
+open ArkLib.ProximityGap.BinaryPower (binaryPow_eq_pow)
 
 /-! ## The two-factor Lucas certificate
 (provenance: `Frontier/_ZTZBetaFourLadderExtension.lean`) -/

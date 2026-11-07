@@ -7,6 +7,13 @@ this project belong to `SlopDotCash/proximityprize`.
 
 ## Source ownership
 
+The November synchronization pins `31ff7ddf`, including the completed upstream Spartan and
+Plonk protocols, measured extraction, and updated coding-theory APIs. It retains the
+coefficient-universe adaptation in `SplitFold`. Upstream now supplies the bivariate universe
+generalization and the Plonk wiring permutation. The intake ledger records the previous
+implementations and their dispositions in
+[`scripts/integration/nov07-upstream-intake.json`](../../scripts/integration/nov07-upstream-intake.json).
+
 The [canonical inventory](../../scripts/arklib-upstream.json) records the source revision and
 upstream modules re-exported by `ArkLib.lean`.
 Those source files, Lean's module-system conventions, and the upstream toolchain and dependency
@@ -20,6 +27,10 @@ implementation. Preserve existing behavior and record the affected declarations,
 downstream provenance, and reviewed content hash in the inventory's `downstream_adaptations`.
 The source checker accepts only those exact reviewed contents. Remove discharged debt from
 the admission baselines only after the kernel audit confirms the improvement.
+
+The upstream kernel baseline lists five solicited declarations. The source census pins the four
+written proof holes underlying them to the exact upstream blobs. Upstream also proved the tuple
+identities that previously had byte-pinned `True` stubs.
 
 The [higher-universe polynomial client](../../ArkLibTest/Compatibility/PolynomialUniverses.lean)
 instantiates the reviewed SplitFold APIs and `Bivariate.degreeX_le_natWeightedDegree` at
@@ -38,6 +49,22 @@ Research remains a separate classic Lean library. The dependency direction is ca
 ArkLib, then extensions, then Research. A canonical module must not import downstream code.
 Run the surface generators after staging added or removed Lean files; do not edit generated
 umbrellas or library-glob blocks by hand.
+
+The Research arithmetic certificates share the verified square-and-multiply implementation in
+[`Support/BinaryPower.lean`](../../Research/ProximityPrize/Support/BinaryPower.lean). Certificate
+statements continue to use ordinary monoid powers. The W16 rung generator imports the shared proof.
+
+At this pin, `rbrSoundness` and `rbrKnowledgeSoundness` use the fixed-prefix games. Downstream
+proofs of the distinct prover-averaged games use the explicit `Averaged` contracts and their
+compatibility modules. The [security migration](../../scripts/integration/nov07-rbr-migration.json)
+records the original contracts and caller changes. The canonical fixed-prefix results can feed
+the historical averaged results through the proved implications in that layer.
+
+The full oracle sum-check completeness theorem now belongs to `Sumcheck.Spec.General`.
+Existing downstream calls with initialization and support arguments delegate to it. The
+polynomial-pinned result still carries its stronger endpoint relation in the downstream layer.
+The classic `eval_on_Z` and `pg_eval_on_Z` argument orders both delegate to `Trivariate.evalAtZ`,
+and `ReedSolomon.codewordToPoly` delegates to the canonical interpolation map.
 
 `python3 scripts/integration/check_consolidation.py` verifies the inventory against the pinned
 Git tree, checks every canonical source blob, rejects imports from canonical modules into
@@ -111,8 +138,8 @@ no-folding-consistency and no-bad-event hypotheses.
 
 The flagship kernel audit pins native query execution and chronological folding separately,
 alongside the explicitly historical counterexample and terminal-fold result. The
-[pin migration record](../../scripts/integration/flagship-native-query-pins.json) tracks all
-replacements; the audit now checks 57 declarations without dropping any unaffected entry.
+[pin migration record](../../scripts/integration/flagship-native-query-pins.json) tracks those
+replacements. The current list includes 60 declarations, including the three G139 results.
 
 The canonical `disagreement_fold_subset_fiberwiseDisagreement` statement now formally requires
 `Fact (β 0 = 1)` because its quotient-fiber set uses that normalized basis. The previous general

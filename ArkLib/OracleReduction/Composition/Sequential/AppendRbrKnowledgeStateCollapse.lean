@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgePhase2ReconcileProof
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrSoundnessPhase2Proof
 import ArkLib.OracleReduction.StateCollapse
@@ -54,9 +55,9 @@ theorem append_rbrKnowledgeSoundness_keystone_collapse
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : V₁.rbrKnowledgeSoundness (pure s₀) impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness (pure s₀) impl rel₂ rel₃ rbrKnowledgeError₂) :
-      (V₁.append V₂).rbrKnowledgeSoundness (pure s₀) impl rel₁ rel₃
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged (pure s₀) impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged (pure s₀) impl rel₂ rel₃ rbrKnowledgeError₂) :
+      (V₁.append V₂).rbrKnowledgeSoundnessAveraged (pure s₀) impl rel₁ rel₃
         (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) := by
   rw [rbrKnowledgeSoundness_collapseState_iff _ _ _ _ _ _ hso] at h₁ h₂ ⊢
   exact append_rbrKnowledgeSoundness_keystone_subsingleton_unconditional
@@ -82,8 +83,8 @@ theorem appendRbrKnowledgeSoundnessResidual_of_message_collapse
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : V₁.rbrKnowledgeSoundness (pure s₀) impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness (pure s₀) impl rel₂ rel₃ rbrKnowledgeError₂) :
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged (pure s₀) impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged (pure s₀) impl rel₂ rel₃ rbrKnowledgeError₂) :
     appendRbrKnowledgeSoundnessResidual V₁ V₂ h₁ h₂ :=
   append_rbrKnowledgeSoundness_keystone_collapse hso V₁ V₂ verify hVerify hNE₂ hNEW₂
     hn hDir hDir₂ h₁ h₂
@@ -105,9 +106,9 @@ theorem append_rbrSoundness_keystone_collapse
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : V₁.rbrSoundness (pure s₀) impl lang₁ lang₂ rbrSoundnessError₁)
-    (h₂ : V₂.rbrSoundness (pure s₀) impl lang₂ lang₃ rbrSoundnessError₂) :
-      (V₁.append V₂).rbrSoundness (pure s₀) impl lang₁ lang₃
+    (h₁ : V₁.rbrSoundnessAveraged (pure s₀) impl lang₁ lang₂ rbrSoundnessError₁)
+    (h₂ : V₂.rbrSoundnessAveraged (pure s₀) impl lang₂ lang₃ rbrSoundnessError₂) :
+      (V₁.append V₂).rbrSoundnessAveraged (pure s₀) impl lang₁ lang₃
         (Sum.elim rbrSoundnessError₁ rbrSoundnessError₂ ∘ ChallengeIdx.sumEquiv.symm) := by
   rw [rbrSoundness_collapseState_iff _ _ _ _ _ _ hso] at h₁ h₂ ⊢
   exact append_rbrSoundness_keystone_subsingleton_unconditional
@@ -130,8 +131,8 @@ theorem appendRbrSoundnessResidual_of_message_collapse
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : V₁.rbrSoundness (pure s₀) impl lang₁ lang₂ rbrSoundnessError₁)
-    (h₂ : V₂.rbrSoundness (pure s₀) impl lang₂ lang₃ rbrSoundnessError₂) :
+    (h₁ : V₁.rbrSoundnessAveraged (pure s₀) impl lang₁ lang₂ rbrSoundnessError₁)
+    (h₂ : V₂.rbrSoundnessAveraged (pure s₀) impl lang₂ lang₃ rbrSoundnessError₂) :
     appendRbrSoundnessResidual (init := pure s₀) (impl := impl) V₁ V₂ h₁ h₂ :=
   append_rbrSoundness_keystone_collapse hso V₁ V₂ verify hVerify hNE hn hDir hDir₂ h₁ h₂
 

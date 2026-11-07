@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.SumcheckKnowledge
 import ArkLib.OracleReduction.LiftContext.HonestKnowledgeLens
 import ArkLib.ProofSystem.Spartan.FirstSumcheckReduction
@@ -91,11 +92,11 @@ theorem firstSumcheck_rbrKnowledgeSoundness_honest
     (rbrKnowledgeError : (Sumcheck.Spec.pSpec R 3 pp.ℓ_m).ChallengeIdx → ℝ≥0)
     (h_inner :
       (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier
-        |>.rbrKnowledgeSoundness init impl
+        |>.rbrKnowledgeSoundnessAveraged init impl
         (Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (0 : Fin (pp.ℓ_m + 1)))
         (Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (Fin.last pp.ℓ_m))
         rbrKnowledgeError) :
-    (firstSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (firstSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstSumcheckRbrRelIn pp oSpec)
       (firstSumcheckRbrRelOut pp oSpec)
       rbrKnowledgeError := by
@@ -130,7 +131,7 @@ theorem firstSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds [Inha
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
     :
-    (firstSumcheckReduction (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (firstSumcheckReduction (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstSumcheckRbrRelIn (R := R) pp oSpec)
       (firstSumcheckRbrRelOut (R := R) pp oSpec)
       (fun _ => (3 : ℝ≥0) / (Fintype.card R)) :=
@@ -149,11 +150,11 @@ theorem secondSumcheck_rbrKnowledgeSoundness_honest
     (rbrKnowledgeError : (Sumcheck.Spec.pSpec R 2 pp.ℓ_n).ChallengeIdx → ℝ≥0)
     (h_inner :
       (Sumcheck.Spec.oracleReduction R 2 (boolEmbedding R) pp.ℓ_n oSpec).verifier
-        |>.rbrKnowledgeSoundness init impl
+        |>.rbrKnowledgeSoundnessAveraged init impl
         (Sumcheck.Spec.relationRound R pp.ℓ_n 2 (boolEmbedding R) (0 : Fin (pp.ℓ_n + 1)))
         (Sumcheck.Spec.relationRound R pp.ℓ_n 2 (boolEmbedding R) (Fin.last pp.ℓ_n))
         rbrKnowledgeError) :
-    (secondSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (secondSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (secondSumcheckRbrRelIn pp oSpec)
       (secondSumcheckRbrRelOut pp oSpec)
       rbrKnowledgeError := by
@@ -189,7 +190,7 @@ theorem secondSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds [Inh
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
     :
-    (secondSumcheckReduction (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (secondSumcheckReduction (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (secondSumcheckRbrRelIn (R := R) pp oSpec)
       (secondSumcheckRbrRelOut (R := R) pp oSpec)
       (fun _ => (2 : ℝ≥0) / (Fintype.card R)) :=

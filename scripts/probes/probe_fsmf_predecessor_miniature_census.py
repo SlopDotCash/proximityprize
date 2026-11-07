@@ -297,11 +297,34 @@ class Census:
 # witness-level census (lower bound; used as cross-check)
 # ----------------------------------------------------------------------
 
-def witness_census(p, xs, t, lines, cores, u0, u1):
-    """lines: list of (a_poly, r_poly); cores: list of index sets."""
+def witness_census(p, xs, t, lines, cores, u0, u1, *, k):
+    """Count nonjoint degree-<k pencil witnesses over the given prime-field domain."""
     from collections import defaultdict
+    if not 1 <= k <= len(xs) or len(u0) != len(xs) or len(u1) != len(xs):
+        raise ValueError("require degree bound 1 <= k <= n and two length-n rows")
+    if len(lines) != len(cores):
+        raise ValueError("each pencil needs its actual joint core")
+    if len({x % p for x in xs}) != len(xs):
+        raise ValueError("the evaluation domain must be injective")
+    cores = [set(core) for core in cores]
+
+    def jointly_explained(support):
+        if len(support) <= k:
+            return True
+        for row in (u0, u1):
+            polynomial = interpolate([(xs[i], row[i]) for i in support[:k]], p)
+            if any(peval(polynomial, xs[i], p) != row[i] % p for i in support):
+                return False
+        return True
+
     per_line_gamma = [defaultdict(list) for _ in lines]
     for li, (a, r) in enumerate(lines):
+        if len(trim(a, p)) > k or len(trim(r, p)) > k:
+            raise ValueError("pencil polynomials must have degree below k")
+        actual_core = {i for i, x in enumerate(xs)
+                       if peval(a, x, p) == u0[i] % p and peval(r, x, p) == u1[i] % p}
+        if set(cores[li]) != actual_core:
+            raise ValueError("supplied joint core does not match the pencil and rows")
         for i, x in enumerate(xs):
             if i in cores[li]:
                 continue
@@ -314,7 +337,12 @@ def witness_census(p, xs, t, lines, cores, u0, u1):
     for li, (a, r) in enumerate(lines):
         for g, fresh in per_line_gamma[li].items():
             if len(cores[li]) + len(fresh) >= t:
-                bad.add(g)
+                # On k core points, r is the unique possible degree-<k
+                # explanation of u1; any fresh point disagrees with it.
+                # Smaller cores need the actual joint-explanation check.
+                support = sorted(set(cores[li]) | set(fresh))
+                if len(cores[li]) >= k or not jointly_explained(support):
+                    bad.add(g)
     return bad, per_line_gamma
 
 
@@ -437,7 +465,7 @@ def build_config_B():
 def part_b():
     xs, u0, u1, lines, cores = build_config_B()
     eng = Census(P4, N4, K4, T4, xs)
-    wit, _ = witness_census(P4, xs, T4, lines, cores, u0, u1)
+    wit, _ = witness_census(P4, xs, T4, lines, cores, u0, u1, k=K4)
     print(f"[B] witness-level badCount = {len(wit)} (predicted 58)")
     bad, listing = eng.full_census(u0, u1, "B:two one-fresh pencils m=4")
     assert wit <= set(bad), "census missed a witnessed bad gamma"
@@ -572,7 +600,7 @@ def build_config_C():
 def part_c():
     xs, u0, u1, lines, cores = build_config_C()
     eng = Census(P4, N4, K4, T4, xs)
-    wit, _ = witness_census(P4, xs, T4, lines, cores, u0, u1)
+    wit, _ = witness_census(P4, xs, T4, lines, cores, u0, u1, k=K4)
     print(f"[C] witness-level badCount = {len(wit)}")
     bad, listing = eng.full_census(u0, u1, "C:three-line 35/35/34 m=4")
     assert wit <= set(bad)

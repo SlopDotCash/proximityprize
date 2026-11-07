@@ -5,6 +5,7 @@ Shared declarations come from the canonical ArkLib modules.
 Checked-in source owns later API ports. Generate separate review candidates with:
 scripts/integration/extract_downstream_extensions.py --output-dir <directory>.
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.Append
 
 /-
@@ -451,9 +452,9 @@ def appendRbrSoundnessResidual {lang₁ : Set Stmt₁} {lang₂ : Set Stmt₂} {
     (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     {rbrSoundnessError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrSoundnessError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
-    (h₁ : V₁.rbrSoundness init impl lang₁ lang₂ rbrSoundnessError₁)
-    (h₂ : V₂.rbrSoundness init impl lang₂ lang₃ rbrSoundnessError₂) : Prop :=
-  (V₁.append V₂).rbrSoundness init impl lang₁ lang₃
+    (h₁ : V₁.rbrSoundnessAveraged init impl lang₁ lang₂ rbrSoundnessError₁)
+    (h₂ : V₂.rbrSoundnessAveraged init impl lang₂ lang₃ rbrSoundnessError₂) : Prop :=
+  (V₁.append V₂).rbrSoundnessAveraged init impl lang₁ lang₃
     (Sum.elim rbrSoundnessError₁ rbrSoundnessError₂ ∘ ChallengeIdx.sumEquiv.symm)
 
 /-- **NAMED RESIDUAL (deep) + DOCUMENTED STATEMENT GAP (missing side conditions).**
@@ -478,9 +479,9 @@ def appendRbrKnowledgeSoundnessResidual
     (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     {rbrKnowledgeError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂) : Prop :=
-  (V₁.append V₂).rbrKnowledgeSoundness init impl rel₁ rel₃
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂) : Prop :=
+  (V₁.append V₂).rbrKnowledgeSoundnessAveraged init impl rel₁ rel₃
     (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm)
 
 end Verifier
@@ -579,9 +580,9 @@ def appendRbrSoundnessResidual (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stm
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {rbrSoundnessError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrSoundnessError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
-    (h₁ : V₁.rbrSoundness init impl lang₁ lang₂ rbrSoundnessError₁)
-    (h₂ : V₂.rbrSoundness init impl lang₂ lang₃ rbrSoundnessError₂) : Prop :=
-  (V₁.append V₂).rbrSoundness init impl lang₁ lang₃
+    (h₁ : V₁.rbrSoundnessAveraged init impl lang₁ lang₂ rbrSoundnessError₁)
+    (h₂ : V₂.rbrSoundnessAveraged init impl lang₂ lang₃ rbrSoundnessError₂) : Prop :=
+  (V₁.append V₂).rbrSoundnessAveraged init impl lang₁ lang₃
     (Sum.elim rbrSoundnessError₁ rbrSoundnessError₂ ∘ ChallengeIdx.sumEquiv.symm)
 
 def appendRbrKnowledgeSoundnessResidual
@@ -590,9 +591,9 @@ def appendRbrKnowledgeSoundnessResidual
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {rbrKnowledgeError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂) : Prop :=
-  (V₁.append V₂).rbrKnowledgeSoundness init impl rel₁ rel₃
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂) : Prop :=
+  (V₁.append V₂).rbrKnowledgeSoundnessAveraged init impl rel₁ rel₃
     (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm)
 
 end OracleVerifier

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.CheckingVerifier
 import ArkLib.ProofSystem.Whir.ThresholdKSF
 import ArkLib.OracleReduction.FullPredKSF
@@ -136,7 +137,7 @@ theorem rbrKnowledgeSoundness_of_flipBounds (verifier : Verifier oSpec StmtIn St
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec.getChallenge i) _
               return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ (ε i : ℝ≥0∞)) :
-    verifier.rbrKnowledgeSoundness init impl relIn relOut ε :=
+    verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut ε :=
   -- consolidation (#301 dedup): this is `FullPredKSF.rbrKnowledgeSoundness_of_salvageBound`
   -- (the shared multi-flip home) with the flip-bound arguments reordered; the local
   -- `predKSF` shape is preserved for consumers, the proof is no longer duplicated.

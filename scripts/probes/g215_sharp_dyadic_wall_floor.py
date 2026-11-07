@@ -16,11 +16,22 @@ No field data is needed: G215 is the pure-N partition floor wired onto the
 CORE object via the mass quantisation S_gamma = n*k_gamma (G88) and the
 class-count cap card <= n/2 (G206).  This probe checks the closed-form
 constants and the tight witness at the extremal (flat) partition.
+
+Certificate checks raise explicitly, so they stay active under ``python -O`` /
+``PYTHONOPTIMIZE``.
 """
+
+
+def require(condition, detail):
+    """Certificate checks must survive python -O and PYTHONOPTIMIZE."""
+    if not condition:
+        raise AssertionError(detail)
+
 
 def sumsq_flat(m):
     # flat minimiser [1, 2, 2, ..., 2]: one 1 and (m-1) twos, sum = 2m-1 = n-1
     return 1 * 1 + (m - 1) * (2 * 2)
+
 
 def main():
     all_ok = True
@@ -28,21 +39,21 @@ def main():
         n = 2 * m
         # 1. flat witness attains the sharp tail floor n^2*(2n-3)?  (per-class k^2 form)
         flat = sumsq_flat(m)                 # = sum k^2
-        assert flat == 2 * n - 3, (n, flat, 2 * n - 3)
+        require(flat == 2 * n - 3, (n, flat, 2 * n - 3))
         tail_sharp = n * n * (2 * n - 3)     # = n^2 * sum k^2 at the floor
-        assert n * n * flat == tail_sharp
+        require(n * n * flat == tail_sharp, (n, n * n * flat, tail_sharp))
         # 2. tail-level sharp > Cauchy-Schwarz for even n>=4
         cs_tail = 2 * n * (n - 1) ** 2
         if n >= 4:
-            assert cs_tail < tail_sharp, (n, cs_tail, tail_sharp)
+            require(cs_tail < tail_sharp, (n, cs_tail, tail_sharp))
         # 3. wall-level cross contribution: n(2n-3) (sharp) vs 2(n-1)^2 (CS)
         wall_sharp_cross = n * (2 * n - 3)
         wall_cs_cross = 2 * (n - 1) ** 2
         if n >= 4:
-            assert wall_cs_cross < wall_sharp_cross, (n, wall_cs_cross, wall_sharp_cross)
+            require(wall_cs_cross < wall_sharp_cross, (n, wall_cs_cross, wall_sharp_cross))
         # consistency: tail/n = wall cross (the Parseval /n division)
-        assert tail_sharp % n == 0
-        assert tail_sharp // n == wall_sharp_cross
+        require(tail_sharp % n == 0, (n, tail_sharp))
+        require(tail_sharp // n == wall_sharp_cross, (n, tail_sharp // n, wall_sharp_cross))
     print("G215 sharp dyadic wall floor: ALL constant/witness/gap checks PASS "
           "for n=2m, m in [2,199].")
     # spot table

@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Sumcheck.Spec.General
 import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
 import ArkLib.ProofSystem.Logup.Sumcheck.SumcheckBridge
@@ -107,14 +108,14 @@ theorem oracleVerifier_rbrSoundness
     (lang : (i : Fin (n + 1)) → Set (StatementRound R n i × (∀ j, OracleStatement R n deg j)))
     (rbrSoundnessError : ∀ _ : Fin n, (SingleRound.pSpec R deg).ChallengeIdx → ℝ≥0)
     (hRound : ∀ i : Fin n,
-      (SingleRound.oracleVerifier R n deg D oSpec i).rbrSoundness init impl
+      (SingleRound.oracleVerifier R n deg D oSpec i).rbrSoundnessAveraged init impl
         (lang i.castSucc) (lang i.succ) (rbrSoundnessError i))
     (hSeqCompose :
-      (oracleVerifier R deg D n oSpec).rbrSoundness init impl (lang 0) (lang (Fin.last n))
+      (oracleVerifier R deg D n oSpec).rbrSoundnessAveraged init impl (lang 0) (lang (Fin.last n))
         (fun combinedIdx =>
           letI ij := ProtocolSpec.seqComposeChallengeIdxToSigma combinedIdx
           rbrSoundnessError ij.1 ij.2)) :
-    (oracleVerifier R deg D n oSpec).rbrSoundness init impl (lang 0) (lang (Fin.last n))
+    (oracleVerifier R deg D n oSpec).rbrSoundnessAveraged init impl (lang 0) (lang (Fin.last n))
       (fun combinedIdx =>
         letI ij := ProtocolSpec.seqComposeChallengeIdxToSigma combinedIdx
         rbrSoundnessError ij.1 ij.2) :=
@@ -166,17 +167,17 @@ theorem logupConcreteSumcheckOracleReduction_rbrSoundness [Fact ((-1 : F) ≠ 1)
         ℝ≥0)
     (hRound : ∀ i : Fin n,
       (Sumcheck.Spec.SingleRound.oracleVerifier F n (logupSumcheckDegree M params)
-          (signDomain F (Fact.out : (-1 : F) ≠ 1)) oSpec i).rbrSoundness init impl
+          (signDomain F (Fact.out : (-1 : F) ≠ 1)) oSpec i).rbrSoundnessAveraged init impl
         (lang i.castSucc) (lang i.succ) (rbrSoundnessError i))
     (hSeqCompose :
       (logupConcreteSumcheckOracleReduction oSpec F n M params
-          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundness init impl
+          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundnessAveraged init impl
         (lang 0) (lang (Fin.last n))
         (fun combinedIdx =>
           letI ij := ProtocolSpec.seqComposeChallengeIdxToSigma combinedIdx
           rbrSoundnessError ij.1 ij.2)) :
     (logupConcreteSumcheckOracleReduction oSpec F n M params
-        (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundness init impl
+        (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundnessAveraged init impl
       (lang 0) (lang (Fin.last n))
       (fun combinedIdx =>
         letI ij := ProtocolSpec.seqComposeChallengeIdxToSigma combinedIdx

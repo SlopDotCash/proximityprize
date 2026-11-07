@@ -81,10 +81,9 @@ section divisibility
 open ReedSolomon
 
 /-- The polynomial corresponding to a codeword has degree at most k-1. -/
-lemma codewordToPoly_degree_le (hk : k + 1 ≤ n) (p : code ωs k) :
-    (codewordToPoly p).natDegree ≤ k - 1 := by
-  simpa only [codewordToPoly, toPolynomial_def, Function.Embedding.toFun_eq_coe] using
-    (toPolynomial_degree_le (ωs := ωs) hk p)
+lemma codewordToPoly_degree_le (_hk : k + 1 ≤ n) (p : code ωs k) :
+    (codewordToPoly p).natDegree ≤ k - 1 :=
+  toPolynomial_degree_le p
 
 end divisibility
 

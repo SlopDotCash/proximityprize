@@ -208,7 +208,7 @@ lemma powAlgHom_mem_degreeLT (q : MvPolynomial (Fin m) F)
 
 /-- **Left inverse on degreewise-linear polynomials.** For `q ∈ restrictDegree (Fin m) F 1`,
 re-extending its univariate `powAlgHom` image recovers `q`. Together with
-`powAlgHom_is_right_inverse_to_linearMvExtension`, this makes `linearMvExtension` a bijection
+`powAlgHom_linearMvExtension`, this makes `linearMvExtension` a bijection
 between `degreeLT (2^m)` and the degreewise-linear `m`-variate polynomials. -/
 lemma linearMvExtension_powAlgHom {F : Type*} [CommRing F] {m : ℕ} (q : MvPolynomial (Fin m) F)
     (hq : q ∈ MvPolynomial.restrictDegree (Fin m) F 1) :
@@ -218,10 +218,10 @@ lemma linearMvExtension_powAlgHom {F : Type*} [CommRing F] {m : ℕ} (q : MvPoly
   have hL_mem : L ∈ MvPolynomial.restrictDegree (Fin m) F 1 := by
     rw [MvPolynomial.mem_restrictDegree_iff_degreeOf_le]
     intro i
-    exact linearMvExtension_degreeOf_lt (p := ⟨powAlgHom q, powAlgHom_mem_degreeLT q hq⟩)
+    exact degreeOf_linearMvExtension_le (p := ⟨powAlgHom q, powAlgHom_mem_degreeLT q hq⟩)
   have hpow : powAlgHom (L - q) = 0 := by
     have hr : powAlgHom L = powAlgHom q := by
-      have := powAlgHom_is_right_inverse_to_linearMvExtension
+      have := powAlgHom_linearMvExtension
         (⟨powAlgHom q, powAlgHom_mem_degreeLT q hq⟩ : Polynomial.degreeLT F (2 ^ m))
       simpa [hL] using this
     rw [map_sub, hr, sub_self]

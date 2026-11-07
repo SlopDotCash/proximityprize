@@ -36,7 +36,7 @@ def compare_text(name: str, expected: str, actual_path: Path) -> list[str]:
         return []
     return [
         f"{actual_path.relative_to(REPO_ROOT)} is out of date; regenerate it with "
-        f"`python3 ./scripts/kb/{name}`."
+        f"`uv run --no-project --python 3.12 python ./scripts/kb/{name}`."
     ]
 
 
@@ -44,7 +44,7 @@ def expected_citations(keys: list[str]) -> dict[str, object]:
     """Build the expected Lean citation payload."""
 
     payload = extract_citations(DEFAULT_LEAN_ROOTS, keys)
-    payload["reference_source"] = str(DEFAULT_REFERENCES_JSON.relative_to(REPO_ROOT))
+    payload["reference_source"] = DEFAULT_REFERENCES_JSON.relative_to(REPO_ROOT).as_posix()
     return payload
 
 
@@ -56,7 +56,7 @@ def compare_payload(name: str, expected: dict[str, object], actual_path: Path) -
         return []
     return [
         f"{actual_path.relative_to(REPO_ROOT)} is out of date; regenerate it with "
-        f"`python3 ./scripts/kb/{name}`."
+        f"`uv run --no-project --python 3.12 python ./scripts/kb/{name}`."
     ]
 
 
@@ -64,7 +64,7 @@ def refresh_untracked_catalog(path: Path, content: str) -> None:
     """Materialize a local catalog only when it is intentionally untracked."""
 
     tracked = subprocess.run(
-        ["git", "ls-files", "--error-unmatch", "--", str(path.relative_to(REPO_ROOT))],
+        ["git", "ls-files", "--error-unmatch", "--", path.relative_to(REPO_ROOT).as_posix()],
         cwd=REPO_ROOT, capture_output=True, check=False,
     )
     if tracked.returncode == 0:

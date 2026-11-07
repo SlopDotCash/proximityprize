@@ -14,8 +14,7 @@ must inhabit the sum-check oracle-statement type `R⦃≤ deg⦄[X Fin n]`. This
 required degree bounds:
 
 * `toMLE_evalC_mem_restrictDegree` — fixing the row variables of `Matrix.toMLE` at a point (via `C`)
-  leaves a polynomial that is multilinear (degree ≤ 1) in the column variables. The engine is
-  `toMLE_evalC_eq_sum`, the explicit `C`-scaled column-MLE decomposition of the partial evaluation.
+  leaves a polynomial that is multilinear (degree ≤ 1) in the column variables.
 * `secondSCVP_mem_restrictDegree` — the second sum-check virtual polynomial `ℳ(Y)` has degree ≤ 2
   in each variable (a product of two multilinear factors).
 -/
@@ -53,16 +52,8 @@ theorem toMLE_evalC_eq_sum {m n : ℕ} (M : Matrix (Fin (2 ^ m)) (Fin (2 ^ n)) R
 /-- **The row-fixed matrix MLE is multilinear in the column variables (degree ≤ 1).** -/
 theorem toMLE_evalC_mem_restrictDegree {m n : ℕ} (M : Matrix (Fin (2 ^ m)) (Fin (2 ^ n)) R)
     (r_x : Fin m → R) :
-    eval ((C : R →+* MvPolynomial (Fin n) R) ∘ r_x) M.toMLE ∈ R⦃≤ 1⦄[X Fin n] := by
-  classical
-  rw [toMLE_evalC_eq_sum, mem_restrictDegree_iff_degreeOf_le]
-  intro j
-  refine le_trans (degreeOf_sum_le j _ _) (Finset.sup_le fun xBits _ => ?_)
-  refine le_trans (degreeOf_mul_le j _ _) ?_
-  rw [degreeOf_C]
-  have h1 : degreeOf j (MLE' (M (finFunctionFinEquiv xBits))) ≤ 1 :=
-    (mem_restrictDegree_iff_degreeOf_le _ _).mp (MLE_mem_restrictDegree _) j
-  omega
+    eval ((C : R →+* MvPolynomial (Fin n) R) ∘ r_x) M.toMLE ∈ R⦃≤ 1⦄[X Fin n] :=
+  (mem_restrictDegree_iff_degreeOf_le _ _).mpr (Matrix.toMLE_rowSlice_degreeOf M r_x)
 
 variable [IsDomain R] [Fintype R] (pp : Spartan.PublicParams)
 
@@ -74,33 +65,10 @@ omit [IsDomain R] [Fintype R] in
 theorem secondSCVP_mem_restrictDegree
     (stmt : Statement.AfterLinearCombination R pp)
     (oStmt : ∀ i, OracleStatement.AfterLinearCombination R pp i) :
-    secondSumCheckVirtualPolynomial R pp stmt oStmt ∈ R⦃≤ 2⦄[X Fin pp.ℓ_n] := by
-  classical
-  rw [mem_restrictDegree_iff_degreeOf_le]
-  intro j
-  have hM : ∀ idx : R1CS.MatrixIdx,
-      degreeOf j (eval (fun i => (C : R →+* MvPolynomial (Fin pp.ℓ_n) R) (stmt.2.1 i))
-        (oStmt (.inr (.inl idx))).toMLE) ≤ 1 :=
-    fun idx => (mem_restrictDegree_iff_degreeOf_le _ _).mp
-      (toMLE_evalC_mem_restrictDegree _ stmt.2.1) j
-  simp only [secondSumCheckVirtualPolynomial, Function.comp_def, Fin.cast_eq_self]
-  refine le_trans (degreeOf_add_le j _ _)
-    (max_le (le_trans (degreeOf_add_le j _ _) (max_le ?_ ?_)) ?_)
-  · refine le_trans (degreeOf_mul_le j _ _)
-      (le_trans (add_le_add (degreeOf_mul_le j _ _) le_rfl) ?_)
-    rw [degreeOf_C]
-    exact Nat.add_le_add (Nat.add_le_add (le_refl 0) (hM .A))
-      ((mem_restrictDegree_iff_degreeOf_le _ _).mp (MLE_mem_restrictDegree _) j)
-  · refine le_trans (degreeOf_mul_le j _ _)
-      (le_trans (add_le_add (degreeOf_mul_le j _ _) le_rfl) ?_)
-    rw [degreeOf_C]
-    exact Nat.add_le_add (Nat.add_le_add (le_refl 0) (hM .B))
-      ((mem_restrictDegree_iff_degreeOf_le _ _).mp (MLE_mem_restrictDegree _) j)
-  · refine le_trans (degreeOf_mul_le j _ _)
-      (le_trans (add_le_add (degreeOf_mul_le j _ _) le_rfl) ?_)
-    rw [degreeOf_C]
-    exact Nat.add_le_add (Nat.add_le_add (le_refl 0) (hM .C))
-      ((mem_restrictDegree_iff_degreeOf_le _ _).mp (MLE_mem_restrictDegree _) j)
+    secondSumCheckVirtualPolynomial R pp stmt oStmt ∈ R⦃≤ 2⦄[X Fin pp.ℓ_n] :=
+  (mem_restrictDegree_iff_degreeOf_le _ _).mpr
+    (Algebra.secondVirtual_degree_le_two (fun i => oStmt (.inr (.inl i)))
+      (R1CS.𝕫 stmt.2.2.2 (oStmt (.inr (.inr 0)))) stmt.2.1 stmt.1)
 
 #print axioms toMLE_evalC_mem_restrictDegree
 #print axioms secondSCVP_mem_restrictDegree

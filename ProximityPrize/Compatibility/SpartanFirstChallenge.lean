@@ -8,10 +8,9 @@ import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
 /-!
 # The completed downstream first-challenge phase
 
-Canonical `oracleReduction.firstChallenge` retains its inherited admitted definition and its
-original witness interface. This concrete downstream phase starts after the first message,
-where the remaining witness is `Unit`. It uses the completed query program and carries the
-input oracle family through the canonical output materialization interface.
+The padded proof chain starts after its witness message, so the remaining witness is `Unit`.
+This stage delegates the canonical random-query program on the retained statement and oracle
+family.
 -/
 
 namespace Spartan.Spec
@@ -20,7 +19,7 @@ variable (R : Type) [CommRing R] [IsDomain R] [Fintype R] (pp : PublicParams)
   {ι : Type} (oSpec : OracleSpec ι)
 
 /-- Completed first-challenge implementation for the downstream post-message `Unit` witness. -/
-def oracleReduction.completedFirstChallenge :
+noncomputable def oracleReduction.completedFirstChallenge :
     OracleReduction oSpec
       (Statement.AfterFirstMessage R pp) (OracleStatement.AfterFirstMessage R pp) Unit
       (Statement.AfterFirstChallenge R pp) (OracleStatement.AfterFirstChallenge R pp) Unit

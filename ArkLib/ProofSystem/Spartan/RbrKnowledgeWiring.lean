@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.SpartanSendEvalClaim
 import ProximityPrize.Compatibility.SpartanLinearCombination
 import ProximityPrize.Compatibility.SpartanFirstChallenge
@@ -73,17 +74,17 @@ theorem composedRbrKnowledgeSoundnessStatement_of_nonsumcheck_leaves_of_sumcheck
       ProtocolSpec 1).ChallengeIdx → ℝ≥0}
     {err₆ : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0}
     {err₈ : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0}
-    (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (spartanRelIn R pp) relB err₁)
-    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relB (firstSumcheckRbrRelIn (R := R) pp oSpec) err₂)
-    (h₄ : (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₄ : (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstSumcheckRbrRelOut (R := R) pp oSpec) relE err₄)
-    (h₅ : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness
+    (h₅ : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged
       init impl relE relF err₅)
-    (h₆ : (prependRLCTargetKSWiring (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₆ : (prependRLCTargetKSWiring (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relF (secondSumcheckRbrRelIn (R := R) pp oSpec) err₆)
-    (h₈ : (finalCheck R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₈ : (finalCheck R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (secondSumcheckRbrRelOut (R := R) pp oSpec) (finalCheckRelOut R pp) err₈)
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×
@@ -148,15 +149,15 @@ theorem composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves_of_sumchec
     {err₅ : (⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ :
       ProtocolSpec 1).ChallengeIdx → ℝ≥0}
     {err₆ : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0}
-    (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (spartanRelIn R pp) relB err₁)
-    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relB (firstSumcheckRbrRelIn (R := R) pp oSpec) err₂)
-    (h₄ : (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₄ : (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstSumcheckRbrRelOut (R := R) pp oSpec) relE err₄)
-    (h₅ : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness
+    (h₅ : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged
       init impl relE relF err₅)
-    (h₆ : (prependRLCTargetKSWiring (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₆ : (prependRLCTargetKSWiring (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relF (secondSumcheckRbrRelIn (R := R) pp oSpec) err₆)
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×
@@ -172,7 +173,7 @@ theorem composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves_of_sumchec
     (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
     (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
     :
-    (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (spartanRelIn R pp) (secondSumcheckRbrRelOut (R := R) pp oSpec)
       (composedRbrError pp err₁ err₂ (fun _ => (3 : ℝ≥0) / (Fintype.card R))
         err₄ err₅ err₆ (fun _ => (2 : ℝ≥0) / (Fintype.card R))

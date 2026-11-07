@@ -33,8 +33,10 @@ ALLOWED_AXIOMS = {"propext", "Classical.choice", "Quot.sound"}
 DEFAULT_MANIFEST = Path(__file__).resolve().parent / "proximity_prize_cleanroom_targets.txt"
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-DEP_RE = re.compile(r"'([^']+)' depends on axioms: \[([^\]]*)\]")
-NODEP_RE = re.compile(r"'([^']+)' does not depend on any axioms")
+# Lean prints `#print axioms foo'` as `'foo'' depends on ...`: a name may end in
+# primes, so take the shortest same-line name before the closing quote.
+DEP_RE = re.compile(r"(?<!\S)'([^\n]+?)' depends on axioms: \[([^\]]*)\]")
+NODEP_RE = re.compile(r"(?<!\S)'([^\n]+?)' does not depend on any axioms")
 
 RESIDUAL_PATTERNS = [
     re.compile(r"\b[A-Za-z0-9_.']*[Rr]esidual[A-Za-z0-9_.']*\b"),
@@ -107,7 +109,7 @@ def missing_local_modules(entries: list[Entry], root: Path = REPO_ROOT) -> list[
 
 
 def run_lean(src: str, timeout: int) -> tuple[int, str]:
-    with tempfile.NamedTemporaryFile("w", suffix=".lean", delete=False) as tf:
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".lean", delete=False) as tf:
         tf.write(src)
         tmp = Path(tf.name)
     try:
@@ -115,6 +117,7 @@ def run_lean(src: str, timeout: int) -> tuple[int, str]:
             ["lake", "env", "lean", str(tmp)],
             capture_output=True,
             text=True,
+            encoding="utf-8",
             timeout=timeout,
         )
         return proc.returncode, proc.stdout + proc.stderr
@@ -126,9 +129,11 @@ def parse_axioms(output: str) -> dict[str, set[str]]:
     reported: dict[str, set[str]] = {}
     for match in DEP_RE.finditer(output):
         axioms = {item.strip() for item in match.group(2).split(",") if item.strip()}
-        reported[match.group(1)] = axioms
+        # Retain every observed dependency when imported diagnostics repeat a
+        # report; a clean line must not overwrite a forbidden dependency.
+        reported.setdefault(match.group(1), set()).update(axioms)
     for match in NODEP_RE.finditer(output):
-        reported[match.group(1)] = set()
+        reported.setdefault(match.group(1), set())
     return reported
 
 
@@ -241,13 +246,14 @@ def conclusion_boundary(signature: str) -> int | None:
 
 
 def in_conclusion_position(live: str, position: int) -> bool:
-    """Reject an occurrence nested in an arrow premise or binder type of the result.
+    """Reject premises, binder types, and weakened logical result positions.
 
     `live` is the quote-masked result text. Walking outward from `position`
     through each enclosing bracket group, the occurrence is a premise if an arrow
     follows it at that level, and a binder type if a `:` precedes it at that
     level with no `,`, `=>` or `↦` in between. For example `True ∧ (P → True)`
-    and `∀ (h : P), True` do not certify `P`.
+    and `∀ (h : P), True` do not certify `P`. Nor do a disjunction or a
+    relation mentioning `P`, such as `True ∨ P` or the tautology `P ↔ P`.
     """
     brackets = {"(": ")", "{": "}", "[": "]", "⦃": "⦄", "⟨": "⟩"}
     owner: list[int] = []
@@ -269,6 +275,27 @@ def in_conclusion_position(live: str, position: int) -> bool:
     while True:
         direct = [index for index, gid in enumerate(owner) if gid == group]
         if any(index > anchor and live.startswith("→", index) for index in direct):
+            return False
+        # A preceding arrow or quantifier comma starts a new body. A later
+        # quantifier comma puts the remaining text in a different body (as in
+        # `P ∧ ∀ n, Q n ∨ R n`), not in the connective containing this P.
+        start = max((index for index in direct if index < anchor
+                     and live[index] in "→,"), default=-1)
+        end = min((index for index in direct if index > anchor
+                   and live[index] == ","), default=len(live))
+        scope = [index for index in direct if start < index < end]
+        if any(live[index] in "∨↔" for index in scope):
+            return False
+        # Equality binds more tightly than conjunction. An equality in another
+        # conjunct, e.g. `0 = 0 ∧ P`, must not hide a real prize conclusion.
+        left = max((index for index in scope if index < anchor
+                    and live[index] == "∧"), default=start)
+        right = min((index for index in scope if index > anchor
+                     and live[index] == "∧"), default=end)
+        if any(live[index] == "≠" or (live[index] == "="
+               and (index == 0 or live[index - 1] != ":")
+               and not live.startswith("=>", index))
+               for index in scope if left < index < right):
             return False
         for index in reversed([index for index in direct if index < anchor]):
             if live[index] == "," or live.startswith("=>", index) or live[index] == "↦":

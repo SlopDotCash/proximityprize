@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib
 import Research.ProximityPrize.Frontier._PrizeShapePrimeP30
 import Research.ProximityPrize.Frontier._PrizeShapePrimeP30Second
+import Research.ProximityPrize.Support.BinaryPower
 
 /-!
 # Rung-two reduction accidents: cyclic packets and the full projective `S₄` classifier
@@ -411,44 +412,7 @@ theorem not_tripleEqual_of_neg_three_notMem {H : Finset F}
 
 /-! ## Kernel-cheap certificate at the first production prime -/
 
-private def binaryPowAux {M : Type*} [Monoid M] (a : M) (n : ℕ) : ℕ → M
-  | 0 => 1
-  | fuel + 1 =>
-      if n = 0 then 1
-      else if n % 2 = 0 then binaryPowAux (a * a) (n / 2) fuel
-      else a * binaryPowAux (a * a) (n / 2) fuel
-
-private def binaryPow {M : Type*} [Monoid M] (a : M) (n : ℕ) : M :=
-  binaryPowAux a n (n + 1)
-
-private theorem binaryPowAux_eq_pow {M : Type*} [Monoid M] (a : M) (n fuel : ℕ)
-    (hnfuel : n < fuel) : binaryPowAux a n fuel = a ^ n := by
-  induction fuel generalizing a n with
-  | zero => omega
-  | succ fuel ih =>
-      rw [binaryPowAux]
-      split_ifs with h0 heven
-      · subst n
-        simp
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul]
-        have hdvd : 2 ∣ n := (Nat.dvd_iff_mod_eq_zero).2 heven
-        have htwo : 2 * (n / 2) = n := Nat.mul_div_cancel' hdvd
-        congr 1
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul, ← pow_succ']
-        have hnmod : n % 2 = 1 := by omega
-        have hdecomp := Nat.mod_add_div n 2
-        congr 1
-        omega
-
-private theorem binaryPow_eq_pow {M : Type*} [Monoid M] (a : M) (n : ℕ) :
-    binaryPow a n = a ^ n := by
-  exact binaryPowAux_eq_pow a n (n + 1) (by omega)
+open ArkLib.ProximityGap.BinaryPower (binaryPow_eq_pow)
 
 /-- Prime-independent form of the production certificates below: if `-3` is not an `N`-th root
 of unity and every support element is one, no supported accident is triple-equal. -/

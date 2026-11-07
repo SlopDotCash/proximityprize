@@ -27,6 +27,10 @@ inductive ArithmeticCostKind
   | add | sub | mul | inv | eq | coefficientRead | nodeRead | valueRead | metadata
   deriving DecidableEq, Repr
 
+instance : Fintype ArithmeticCostKind where
+  elems := {.add, .sub, .mul, .inv, .eq, .coefficientRead, .nodeRead, .valueRead, .metadata}
+  complete kind := by cases kind <;> simp
+
 /-- A vector of arithmetic instruction counts. -/
 abbrev ArithmeticCost := ArithmeticCostKind → ℕ
 
@@ -83,6 +87,11 @@ def arithmeticAnswer {F : Type} [Zero F] [Add F] [Sub F] [Mul F] [Inv F] [Decida
   | .nodeRead a i => ⟨a[i]?.getD 0, rfl⟩
   | .valueRead a i => ⟨a[i]?.getD 0, rfl⟩
   | .metadata => ()
+
+/-- Every certified arithmetic response is the handler's answer. -/
+theorem eq_arithmeticAnswer {F : Type} [Zero F] [Add F] [Sub F] [Mul F] [Inv F] [DecidableEq F]
+    (op : ArithmeticOp F) (u : (ArithmeticSpec F).Range op) : u = arithmeticAnswer op := by
+  cases op <;> first | rfl | exact Subtype.ext u.property
 
 /-- Execute arithmetic instructions while recording every requested operation. -/
 def arithmeticMeasured {F : Type} [Zero F] [Add F] [Sub F] [Mul F] [Inv F] [DecidableEq F] :
