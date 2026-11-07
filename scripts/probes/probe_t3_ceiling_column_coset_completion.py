@@ -6,7 +6,8 @@ Object.  Fix a prime ``p = 1 (mod n)``, an element ``g`` of exact order ``n``, t
 pencil ``(u0, u1) = (x^a, x^b)`` the ceiling (``t = 3``) bad scalars are the ``gamma`` for which
 ``x^a + gamma*x^b`` agrees with an affine word on some triple ``T`` while ``(x^a, x^b)`` is not
 jointly affine on ``T``.  With the collinearity determinants ``D_e(T)`` that is
-``gamma = -D_a(T)/D_b(T)``, dilating ``T`` sends ``gamma`` to ``gamma * g``, and the pencil is
+``gamma = -D_a(T)/D_b(T)`` for ``D_b(T) != 0``. Dilating ``T`` by ``g`` sends ``gamma``
+to ``gamma * g^(a-b)``, and the bad set is
 invariant under ``gamma -> gamma * zeta`` for ``zeta`` in the order-``m`` subgroup with
 ``m = m(a) = n / gcd((b-a) mod n, n)``, so the bad set is a union of cosets of that subgroup:
 
@@ -31,11 +32,10 @@ supplies the missing factor:
 * the two undescribable saturation sets are exactly (complete set) intersected with
   (zero-membership set): ``173`` at ``n = 256`` out of ``220`` complete and ``188`` zero-carrying
   cells, and ``442`` at ``n = 512`` out of ``501`` and ``444`` -- the published tallies;
-* the ``65537`` exceptions are NOT excluded by counting (``(p-1)/m < C(n-1,2)`` there with room
-  to spare), while over the prize-scale Proth prime ``21*2^128+1`` NO cell is complete and the
-  reason IS counting: ``(p-1)/m >= (p-1)/n > C(n-1,2)``, so the ``65537`` saturation is a
-  small-prime cap artifact -- the discipline ``Research/ProximityPrize/AGENTS.md`` (G84/SYZ53)
-  makes mandatory.
+* at ``65537``, some incomplete cells have ``(p-1)/m <= C(n-1,2)``, so the shape bound
+  does not explain every exception. Over the prize-scale Proth prime ``21*2^128+1``,
+  counting excludes completeness at every tested cell since
+  ``(p-1)/m >= (p-1)/n > C(n-1,2)``.
 
 Reproduced first, before any new claim: the merged ``(x^3, x^2)`` ceiling tables of
 ``scripts/probes/probe_order16_weight13_spectrum.py`` (PR #264) and
@@ -332,7 +332,7 @@ def main():
           f"vectors differ over the two primes; the complete-cell counts are "
           f"{[len(fermat_data[n][2]) for n in PRIZE_RUNGS]} at {FERMAT} against "
           f"[0, 0, 0] at {PRIZE_LABEL}. The {FERMAT} saturation and p-1 plateau are cap "
-          f"artifacts of the small quotient group F_p^*/mu_n of order (p-1)/m, not a property "
+          f"artifacts of the small quotient group F_p^*/mu_m of order (p-1)/m, not a property "
           f"of the pencils, which are the same objects at both primes", flush=True)
     print(f"PASS: exact coset completion of the column b = n-1 over {FERMAT} at all "
           f"{sum(RUNGS)} cells -- count = m*cosets + epsilon with m = n/gcd(b-a,n) recomputed "
@@ -347,4 +347,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if not __debug__:
+        raise SystemExit("Run without Python optimization to enable the certificate checks.")
     main()
