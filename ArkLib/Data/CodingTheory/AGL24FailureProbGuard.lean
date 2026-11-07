@@ -38,9 +38,9 @@ side conditions:
   distribution assigns zero mass to this tuple. This particular point mass is
   outside the assembly's scope.
 
-The distribution bridge that `AGL24.conditional_failure_bound`'s hypothesis actually
-needs — from the uniform-over-tuples bound to the embedding-mapped evaluation PMF —
-is tracked in PR #338 and deliberately out of scope here.
+The uniform embedding instance uses the distribution bridge in
+`ArkLib.Data.CodingTheory.AGL24EmbeddingDischarge`. The examples here describe
+why arbitrary distributions still need the stated side conditions.
 -/
 
 open Finset

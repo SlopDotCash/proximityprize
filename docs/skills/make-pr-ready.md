@@ -232,6 +232,8 @@ merge-ready.
   uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py
   ```
 
+  Review the derived diff for stale paths, dangling keys, and missing entries.
+
 - `kb/lint.py` does **not** verify that every cited key has a BibTeX entry. Check for dangling
   keys yourself: grep each `[KEY]` used in docstrings against `blueprint/src/references.bib` and
   add any missing entry (then regenerate). A key can be "present-looking" but actually a different

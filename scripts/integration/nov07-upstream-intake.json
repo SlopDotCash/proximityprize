@@ -93,13 +93,25 @@
     }
   },
   "initial_november_upstream": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
-  "latest_downstream_base": "96823568e0ba387b4d974d5dce46073762626358",
+  "latest_downstream_base": "d6231bb7ff3233e9272774dd5702b814b8c64e9b",
   "downstream_hachi_factor_swap": {
     "downstream_commit": "8f2d555e5c446c97544f31917b5b99209c71c916",
     "declaration": "ArkLib.Lattices.CyclotomicModulus.no_selfReciprocal_factor",
     "canonical_source": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/Field.lean",
     "disposition": "Canonical ArkLib already proves the factor swap for every exponent. The downstream proof and its private helpers remain in Git history; the live source uses the canonical theorem."
   },
+  "downstream_contributions": [
+    {
+      "downstream_commit": "9a6b877c89389dc2a31e33f8664858289e05eaec",
+      "source": "ArkLib/Data/CodingTheory/AGL24EmbeddingDischarge.lean",
+      "disposition": "Keep the uniform embedding transfer and conditional failure bound in ArkLibExtensions. Use the downstream PMF compatibility API and preserve the contributor and license notice from downstream main."
+    },
+    {
+      "downstream_commit": "54486c82403171b390871f8dcf54154942b97356",
+      "source": "Research/ProximityPrize/Frontier/_TwoPowerCyclotomicTrace.lean",
+      "disposition": "Keep the distinct complex trace, Gram matrix, and NT2-to-bad-prime results in Research. The file and its contributor and license notice match downstream main byte for byte."
+    }
+  ],
   "additional_duplicate_implementations": [
     {
       "source": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
