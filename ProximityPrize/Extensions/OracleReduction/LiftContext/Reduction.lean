@@ -376,16 +376,14 @@ lemma mem_support_loggingOracle_run_fst
   rwa [loggingOracle.fst_map_run_simulateQ] at hxFst
 
 set_option maxHeartbeats 200000 in
-theorem Verifier.liftContext_probEvent_le_of_not_mem
+private theorem Verifier.liftContext_probEvent_le_of_liftSound
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
     (lens : Statement.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut)
     (V : Verifier oSpec InnerStmtIn InnerStmtOut pSpec)
-    (outerLangIn : Set OuterStmtIn) (outerLangOut : Set OuterStmtOut)
-    (innerLangIn : Set InnerStmtIn) (innerLangOut : Set InnerStmtOut)
-    [lensSound : lens.IsSound outerLangIn outerLangOut innerLangIn innerLangOut
-      (V.compatStatement lens)]
+    (outerLangOut : Set OuterStmtOut) (innerLangOut : Set InnerStmtOut)
     (outerStmtIn : OuterStmtIn) (transcript : FullTranscript pSpec)
-    (hOuter : outerStmtIn ∉ outerLangIn) :
+    (hLiftSound : ∀ innerStmtOut, V.compatStatement lens outerStmtIn innerStmtOut →
+      innerStmtOut ∉ innerLangOut → lens.lift outerStmtIn innerStmtOut ∉ outerLangOut) :
     probEvent (fun x ↦ x ∈ outerLangOut) (OptionT.mk do
       let __do_lift ← init
       (simulateQ impl (run outerStmtIn transcript (liftContext lens V))).run' __do_lift) ≤
@@ -429,7 +427,47 @@ theorem Verifier.liftContext_probEvent_le_of_not_mem
   have hCompat : V.compatStatement lens outerStmtIn x :=
     ⟨transcript, hxRun⟩
   contrapose! hOut
-  exact lensSound.lift_sound outerStmtIn x hOuter hCompat hOut
+  exact hLiftSound x hCompat hOut
+
+/-- The historical output-preservation law bounds acceptance after context lifting for every
+input. A compatible output outside the inner language must lift to an output outside the outer
+language, even when the outer input belongs to its input language. -/
+theorem Verifier.liftContext_probEvent_le
+    {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
+    (lens : Statement.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut)
+    (V : Verifier oSpec InnerStmtIn InnerStmtOut pSpec)
+    (outerLangOut : Set OuterStmtOut) (innerLangOut : Set InnerStmtOut)
+    (outerStmtIn : OuterStmtIn) (transcript : FullTranscript pSpec)
+    (hLiftSound : ∀ outerStmtIn innerStmtOut, V.compatStatement lens outerStmtIn innerStmtOut →
+      innerStmtOut ∉ innerLangOut → lens.lift outerStmtIn innerStmtOut ∉ outerLangOut) :
+    probEvent (fun x ↦ x ∈ outerLangOut) (OptionT.mk do
+      let __do_lift ← init
+      (simulateQ impl (run outerStmtIn transcript (liftContext lens V))).run' __do_lift) ≤
+      probEvent (fun x ↦ x ∈ innerLangOut) (OptionT.mk do
+        let __do_lift ← init
+        (simulateQ impl (run (lens.proj outerStmtIn) transcript V)).run' __do_lift) :=
+  liftContext_probEvent_le_of_liftSound lens V outerLangOut innerLangOut outerStmtIn transcript
+    (hLiftSound outerStmtIn)
+
+/-- The canonical lens soundness law bounds acceptance after context lifting for invalid inputs. -/
+theorem Verifier.liftContext_probEvent_le_of_not_mem
+    {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
+    (lens : Statement.Lens OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut)
+    (V : Verifier oSpec InnerStmtIn InnerStmtOut pSpec)
+    (outerLangIn : Set OuterStmtIn) (outerLangOut : Set OuterStmtOut)
+    (innerLangIn : Set InnerStmtIn) (innerLangOut : Set InnerStmtOut)
+    [lensSound : lens.IsSound outerLangIn outerLangOut innerLangIn innerLangOut
+      (V.compatStatement lens)]
+    (outerStmtIn : OuterStmtIn) (transcript : FullTranscript pSpec)
+    (hOuter : outerStmtIn ∉ outerLangIn) :
+    probEvent (fun x ↦ x ∈ outerLangOut) (OptionT.mk do
+      let __do_lift ← init
+      (simulateQ impl (run outerStmtIn transcript (liftContext lens V))).run' __do_lift) ≤
+      probEvent (fun x ↦ x ∈ innerLangOut) (OptionT.mk do
+        let __do_lift ← init
+        (simulateQ impl (run (lens.proj outerStmtIn) transcript V)).run' __do_lift) :=
+  liftContext_probEvent_le_of_liftSound lens V outerLangOut innerLangOut outerStmtIn transcript
+    (fun innerStmtOut => lensSound.lift_sound outerStmtIn innerStmtOut hOuter)
 
 section Theorems
 
