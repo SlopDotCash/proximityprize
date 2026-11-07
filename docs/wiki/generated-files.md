@@ -6,6 +6,7 @@ Edit the source of truth, not the output.
 | --- | --- | --- | --- |
 | `CLAUDE.md` | compatibility symlink | No | Edit `AGENTS.md` |
 | `ArkLib.lean` | generated Proximity Prize umbrella imports | No | `./scripts/update-lib.sh` or `./scripts/check-imports.sh` |
+| `Research/ProximityPrize/All.lean` | generated research umbrella imports | No | `python3 scripts/update-research-lib.py` or `./scripts/check-imports.sh` |
 | `.lake/` | build artifacts and cache | No | `lake build`, `lake exe cache get` |
 | `blueprint/web/`, `blueprint/print/` | generated blueprint output | No | `leanblueprint web`, `leanblueprint pdf`, or `./scripts/build-web.sh` |
 | `blueprint/src/print.pdf` | generated blueprint PDF inside source tree | No | `leanblueprint pdf` |
@@ -25,6 +26,13 @@ Edit the source of truth, not the output.
   `_FSMC...`, `_P1RateQuarterSharedFreshTripleRefuted`, and
   `_P1RateQuarterCommonFactorConcreteLocatorAttempt`) remain direct-check lanes rather than CI
   umbrella imports. The script still fails fast if untracked Lean files would be skipped.
+- `python3 scripts/update-research-lib.py` imports tracked modules under
+  `Research/ProximityPrize/`, except `All.lean`, the workbench root, the scratch
+  checker, and the four direct-check lanes also omitted from `ArkLib.lean`. It
+  fails fast if untracked `Research/ProximityPrize/**/*.lean` files would be
+  skipped. `./scripts/check-imports.sh` runs both generators and restores the
+  committed umbrellas when either is stale or the research generator refuses
+  untracked files.
 - Generated site and blueprint output are for review and deployment, not authoring.
 - If a path looks derived, confirm its source of truth before editing it.
 

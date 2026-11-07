@@ -137,3 +137,5 @@ baseline without rerunning that baseline in the same job. This supports
 - In this standalone repository, `lint-style.sh` targets the Proximity Prize cone; unrelated
   ArkLib sources are retained as substrate/history but are outside the maintained default target.
 - New `ArkLib/**/*.lean` files must be staged before `update-lib.sh` or `check-imports.sh`
+- New `Research/ProximityPrize/**/*.lean` files must be staged before
+  `update-research-lib.py` or `check-imports.sh`; untracked files are an error, not an omission
