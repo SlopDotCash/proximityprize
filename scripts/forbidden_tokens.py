@@ -5,7 +5,9 @@ By default, scans every .lean file under ArkLib/ and Research/. If one or more p
 provided, scans only those Lean files/directories. Fails if live
 (non-comment) code contains (`axiom` text inside a string literal is data):
   - `native_decide` / `bv_decide` (kernel-bypassing decision procedures), the
-    equivalent `decide +native` / `decide (native := true)` forms and `bv_check`, or
+    equivalent `decide +native` / `decide (native := true)` forms and `bv_check`,
+    or direct use of the compiler-trust axioms they rely on (`Lean.ofReduceBool`,
+    `Lean.ofReduceNat`, `Lean.trustCompiler`), or
   - an `unsafe` declaration modifier, live `unsafeCast`, or `implemented_by`
     attribute (repository policy: block unsafe decls, unsafeCast, and
     evaluator-diverging `implemented_by`; this is a fast precheck, not a claim
@@ -13,6 +15,10 @@ provided, scans only those Lean files/directories. Fails if live
   - a metaprogram that adds kernel declarations (`run_cmd` / `run_elab` /
     `run_meta`, `addDecl`, `addAndCompile`, `axiomDecl`), which can declare an
     axiom without the `axiom` keyword, or
+  - a `#exit` command. Lean stops elaborating the file there, so nothing after
+    it is checked or even declared, while text-based gates still read it: the
+    residual census counts an unelaborated `theorem foo_holds : FooResidual`
+    after `#exit` as a discharge, or
   - a custom `axiom` declaration whose name is not an allowlisted, documented
     residual (see scripts/residual_axioms.txt), with any modifiers (including
     `public`/`meta` in `module` files) and with the name on a later line or
@@ -66,14 +72,29 @@ import re
 import sys
 from pathlib import Path
 
-TOKEN_RE = re.compile(r"\b(native_decide|bv_decide|unsafeCast|implemented_by)\b")
+# `Lean.ofReduceBool` / `Lean.ofReduceNat` applied directly as terms add the same
+# compiler-trust axioms (`Lean.ofReduceBool`, `Lean.trustCompiler`) as
+# `native_decide`, without any tactic spelling.
+TOKEN_RE = re.compile(
+    r"\b(native_decide|bv_decide|unsafeCast|implemented_by"
+    r"|ofReduceBool|ofReduceNat|trustCompiler)\b"
+)
 # Meta code can add a kernel declaration without the `axiom` keyword, e.g.
 # `run_cmd liftCoreM <| addDecl (.axiomDecl { name := `w, type := mkConst ``False, .. })`.
 # ArkLib/Research proofs never need to add declarations from metaprograms.
+# `run_tac` (tactic) and `by_elab` (term) run the same inline metaprograms inside a
+# proof and can close a goal with `sorryAx` built from a string name, which no
+# `sorry` token reveals.
 META_DECL_RE = re.compile(
-    r"(?<![\w.'])(run_cmd|run_elab|run_meta)\b"
+    r"(?<![\w.'])(run_cmd|run_elab|run_meta|run_tac|by_elab)\b"
     r"|\b(add(?:Decl\w*|AndCompile)|axiomDecl)\b"
 )
+# `#exit` ends elaboration of the file: later text is never checked or declared,
+# but text-based gates (residual_census.py, sorry_census.py) still read it. `#` is
+# not an identifier character and Lean's tokenizer takes the longest token with
+# no boundary check, so `rfl#exit` and `#exit_foo` also start a real `#exit`;
+# match the bare text.
+EXIT_RE = re.compile(r"#exit")
 # `native_decide` is a synonym for `decide +native`; both forms, the config form
 # `decide (native := true)` / `(config := { native := true })` and `bv_check`
 # prove the goal by native evaluation and add a compiler-trust axiom. Matched
@@ -85,16 +106,14 @@ NATIVE_FORM_RE = re.compile(
     r"|\bbv_check\b"
 )
 # Lean declaration-modifier `unsafe` (not aesop's `(add unsafe …)` tactic hint).
-# Allow the same modifiers before or after `unsafe` (Lean accepts e.g.
-# `unsafe nonrec def`), then require a declaration keyword so
-# `aesop (add unsafe …)` and `attribute [aesop unsafe 50%]` stay allowed.
-UNSAFE_DECL_RE = re.compile(
-    r"(?m)^[ \t]*(?:@\[[^\]]*\]\s*)*"
-    r"(?:(?:public|protected|private|scoped|noncomputable|partial|nonrec|meta|local)\s+)*"
-    r"unsafe\s+"
-    r"(?:(?:public|protected|private|scoped|noncomputable|partial|nonrec|meta|local)\s+)*"
-    r"(?:theorem|lemma|def|abbrev|opaque|constant|axiom|instance|structure|inductive|class|example)\b"
-)
+# `unsafe` is matched as a keyword wherever it appears, like the `axiom`
+# check below: Lean's command parser does not care about line breaks, so a
+# line-anchored match missed `open Foo in unsafe def …`, `set_option … in
+# unsafe def …`, `omit […] in unsafe def …`, `mutual unsafe def …` and
+# mid-line `… unsafe def …` forms. Allow the same modifiers after `unsafe`
+# (Lean accepts e.g. `unsafe nonrec def`), then require a declaration
+# keyword so `aesop (add unsafe …)` and `attribute [aesop unsafe 50%]`
+# stay allowed.
 
 
 # --- Lean identifier characters ---------------------------------------------
@@ -124,6 +143,14 @@ _COMP = "(?:[" + ID_FIRST + "][" + ID_REST + "]*|«[^»]*»)"
 _ID_START = "(?<![" + ID_REST + ".«])"
 # Not followed by an identifier character: the preceding token ends here.
 _ID_END = "(?![" + ID_REST + "])"
+# Lean declaration-modifier `unsafe`, matched as a keyword (see the comment
+# where the old line-anchored form lived). Defined here because it needs
+# `_ID_START` / `_ID_END` above.
+UNSAFE_DECL_RE = re.compile(
+    _ID_START + r"unsafe" + _ID_END + r"\s+"
+    r"(?:(?:public|protected|private|scoped|noncomputable|partial|nonrec|meta|local)\s+)*"
+    r"(?:theorem|lemma|def|abbrev|opaque|constant|axiom|instance|structure|inductive|class|example)\b"
+)
 # Capture the declared axiom name so it can be checked against the residual
 # allowlist. The name may be namespaced/contain primes; we keep the simple
 # token as written at the declaration site.
@@ -423,12 +450,18 @@ def axiom_hits(code: str, res: LexResult) -> list[tuple[int, str]]:
             if outside_quoted(m.start(), res.quoted)]
 
 
+def exit_hits(code: str, res: LexResult) -> list[int]:
+    """Offsets of live `#exit` commands."""
+    return [m.start() for m in EXIT_RE.finditer(code) if outside_quoted(m.start(), res.quoted)]
+
+
 def command_view(text: str, res: LexResult) -> tuple:
-    """What the checks see under one lexing: axiom, declaration and placebo hits."""
+    """What the checks see under one lexing: axiom, declaration, placebo and `#exit` hits."""
     code = code_text(text, res)
     return (axiom_hits(code, res),
             [(m.start(), m.group(1), m.group(2)) for m in declaration_heads(code, res)],
-            find_true_placebos(text, res))
+            find_true_placebos(text, res),
+            exit_hits(code, res))
 
 
 def comment_mask(text: str) -> list[bool]:
@@ -806,6 +839,13 @@ def main() -> int:
                     f"(adds a kernel declaration, e.g. an axiom, without an `axiom` "
                     f"keyword; state residuals as `def ...Residual : Prop`)"
                 )
+        for off in exit_hits(live_text, lexed):
+            line = text.count("\n", 0, off) + 1
+            failures.append(
+                f"{path}:{line}: forbidden `#exit` (Lean stops checking the file here, "
+                f"but text-based gates such as the residual census still read what "
+                f"follows; delete the unchecked tail or move it to a scratch file)"
+            )
         scopes = TrueScopes(live_text, lexed.quoted)
         for m in UNSAFE_DECL_RE.finditer(live_text):
             if not outside_quoted(m.start(), lexed.quoted):
@@ -897,6 +937,7 @@ def main() -> int:
         print("\n".join(allowed_hits))
     print(
         "forbidden-token precheck: clean (no native_decide / bv_decide / "
+        "ofReduceBool / ofReduceNat / trustCompiler / "
         "unsafe declaration / unsafeCast / implemented_by / "
         "undocumented custom axiom / vacuous `: True` placebo; "
         f"{len(allowed_hits)} allowlisted residual axiom(s))"
