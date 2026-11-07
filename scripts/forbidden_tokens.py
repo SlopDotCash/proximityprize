@@ -4,10 +4,12 @@
 By default, scans every .lean file under ArkLib/ and Research/. If one or more paths are
 provided, scans only those Lean files/directories. Fails if live
 (non-comment) code contains (`axiom` text inside a string literal is data):
-  - `native_decide` / `bv_decide` (kernel-bypassing decision procedures), the
-    equivalent `decide +native` / `decide (native := true)` forms and `bv_check`,
-    or direct use of the compiler-trust axioms they rely on (`Lean.ofReduceBool`,
-    `Lean.ofReduceNat`, `Lean.trustCompiler`), or
+  - `native_decide` / `bv_decide` (kernel-bypassing decision procedures),
+    `bv_check`, and `decide` configurations that enable native evaluation or
+    whose native flag cannot be established as disabled. Use `-native` or a
+    constructor spelling such as `.false` to disable it explicitly. The scan
+    also rejects direct use of `Lean.ofReduceBool`, `Lean.ofReduceNat`,
+    `Lean.trustCompiler`, `Lean.reduceBool`, and `Lean.reduceNat`, or
   - an `unsafe` declaration modifier, live `unsafeCast`, or `implemented_by`
     attribute (repository policy: block unsafe decls, unsafeCast, and
     evaluator-diverging `implemented_by`; this is a fast precheck, not a claim
@@ -23,6 +25,8 @@ provided, scans only those Lean files/directories. Fails if live
     residual (see scripts/residual_axioms.txt), with any modifiers (including
     `public`/`meta` in `module` files) and with the name on a later line or
     after a comment, or
+  - an `axiom` keyword followed by an antiquotation (`axiom $n` in a syntax
+    quotation), which lets a macro declare an axiom under any name, or
   - a second declaration of an allowlisted residual name. The allowlist stores
     simple names, so an entry matches an `axiom` declared inside any namespace;
     without this rule a clone such as
@@ -88,12 +92,10 @@ import sys
 import tomllib
 from pathlib import Path
 
-# `Lean.ofReduceBool` / `Lean.ofReduceNat` applied directly as terms add the same
-# compiler-trust axioms (`Lean.ofReduceBool`, `Lean.trustCompiler`) as
-# `native_decide`, without any tactic spelling.
+# Native reduction primitives can be called directly without a tactic spelling.
 TOKEN_RE = re.compile(
     r"\b(native_decide|bv_decide|unsafeCast|implemented_by"
-    r"|ofReduceBool|ofReduceNat|trustCompiler)\b"
+    r"|ofReduceBool|ofReduceNat|trustCompiler|reduceBool|reduceNat)\b"
 )
 # Meta code can add a kernel declaration without the `axiom` keyword, e.g.
 # `run_cmd liftCoreM <| addDecl (.axiomDecl { name := `w, type := mkConst ``False, .. })`.
@@ -111,16 +113,6 @@ META_DECL_RE = re.compile(
 # no boundary check, so `rfl#exit` and `#exit_foo` also start a real `#exit`;
 # match the bare text.
 EXIT_RE = re.compile(r"#exit")
-# `native_decide` is a synonym for `decide +native`; both forms, the config form
-# `decide (native := true)` / `(config := { native := true })` and `bv_check`
-# prove the goal by native evaluation and add a compiler-trust axiom. Matched
-# against comment/string-blanked code, so a comment between the parts does not
-# hide the form.
-NATIVE_FORM_RE = re.compile(
-    r"\bdecide(?:\s*(?:[+-]\w+|\([^)]*\)))*?\s*"
-    r"(?:\+native\b|\([^)]*\bnative\s*:=\s*true\b[^)]*\))"
-    r"|\bbv_check\b"
-)
 # Lean declaration-modifier `unsafe` (not aesop's `(add unsafe …)` tactic hint).
 # `unsafe` is matched as a keyword wherever it appears, like the `axiom`
 # check below: Lean's command parser does not care about line breaks, so a
@@ -167,6 +159,248 @@ UNSAFE_DECL_RE = re.compile(
     r"(?:(?:public|protected|private|scoped|noncomputable|partial|nonrec|meta|local)\s+)*"
     r"(?:theorem|lemma|def|abbrev|opaque|constant|axiom|instance|structure|inductive|class|example)\b"
 )
+
+_ID_FIRST_RE = re.compile("[" + ID_FIRST + "]")
+# `native_decide` is `decide +native` (`Init/Tactics.lean`, `DecideConfig.native`).
+# `elabConfig` elaborates each optConfig item and evaluates the term, so
+# `(native := (true))` and `(native := flag)` are not the two-character word
+# `true`. A `[^)]*` scan also stops at the first nested `)`, which drops a
+# later `+native`. Items apply left to right; `(config := {…})` replaces the
+# config (a fresh literal's omitted `native` is the default `false`), while
+# `{cfg with …}` / `{..cfg}` keep `native` unless this literal sets it.
+_DECIDE_RE = re.compile(_ID_START + r"\.?decide" + _ID_END)
+_BV_CHECK_RE = re.compile(_ID_START + r"\.?bv_check" + _ID_END)
+_CFG_OPEN = {"(": ")", "{": "}", "[": "]", "⟨": "⟩"}
+_CFG_CLOSE = {close: open_ for open_, close in _CFG_OPEN.items()}
+
+
+def _skip_ws(text: str, i: int, end: int) -> int:
+    while i < end and text[i].isspace():
+        i += 1
+    return i
+
+
+def _read_ident(text: str, i: int, end: int) -> tuple[str | None, int]:
+    if i >= end:
+        return None, i
+    if text[i] == "«":
+        j = text.find("»", i + 1, end)
+        if j < 0:
+            return None, i
+        return text[i : j + 1], j + 1
+    if _ID_FIRST_RE.fullmatch(text[i]) is None:
+        return None, i
+    j = i + 1
+    while j < end and _ID_REST_RE.fullmatch(text[j]):
+        j += 1
+    return text[i:j], j
+
+
+def _bare_name(name: str) -> str:
+    if name.startswith("«") and name.endswith("»"):
+        return name[1:-1]
+    return name
+
+
+def _match_bracket(text: str, open_i: int, end: int) -> int | None:
+    close_for = _CFG_OPEN.get(text[open_i])
+    if close_for is None:
+        return None
+    depth = 0
+    i = open_i
+    while i < end:
+        if text[i] == "«":
+            j = text.find("»", i + 1, end)
+            if j < 0:
+                return None
+            i = j + 1
+            continue
+        ch = text[i]
+        if ch in _CFG_OPEN:
+            depth += 1
+        elif ch in _CFG_CLOSE:
+            depth -= 1
+            if depth == 0 and ch == close_for:
+                return i
+            if depth < 0:
+                return None
+        i += 1
+    return None
+
+
+def _term_end(text: str, i: int, end: int) -> int:
+    """End of a config term: a top-level comma or closing bracket, or `end`."""
+    depth = 0
+    while i < end:
+        if text[i] == "«":
+            j = text.find("»", i + 1, end)
+            if j < 0:
+                return end
+            i = j + 1
+            continue
+        ch = text[i]
+        if ch in _CFG_OPEN:
+            depth += 1
+        elif ch in _CFG_CLOSE:
+            if depth == 0:
+                return i
+            depth -= 1
+        elif depth == 0 and ch == ",":
+            return i
+        i += 1
+    return end
+
+
+def _as_bool(text: str, start: int, end: int) -> bool | None:
+    """A Bool constructor independent of namespace lookup, with parentheses."""
+    i = _skip_ws(text, start, end)
+    if i >= end:
+        return None
+    if text[i] == "(":
+        close = _match_bracket(text, i, end)
+        if close is None or _skip_ws(text, close + 1, end) != end:
+            return None
+        return _as_bool(text, i + 1, close)
+    # An unqualified name can resolve to a definition in the current
+    # namespace. These two constructor spellings do not use that lookup.
+    value = text[i:end].rstrip()
+    if value in {".false", "_root_.Bool.false"}:
+        return False
+    if value in {".true", "_root_.Bool.true"}:
+        return True
+    return None
+
+
+def _struct_native(text: str, start: int, end: int) -> bool | None:
+    """`native` in a structure literal. None means the value is not visible.
+
+    An explicit literal wins over `{cfg with …}` / `{..cfg}`. A missing field on
+    a fresh literal is the default `false`.
+    """
+    explicit: bool | None = None
+    saw_explicit = False
+    unknown = False
+    inherited = False
+    i = start
+    while True:
+        i = _skip_ws(text, i, end)
+        if i >= end:
+            break
+        if text.startswith("..", i):
+            inherited = True
+            i = _term_end(text, i + 2, end)
+            if i < end and text[i] == ",":
+                i += 1
+            continue
+        name, j = _read_ident(text, i, end)
+        if name is None:
+            return None
+        j = _skip_ws(text, j, end)
+        if (
+            j + 4 <= end
+            and text.startswith("with", j)
+            and (j + 4 == end or _ID_REST_RE.fullmatch(text[j + 4]) is None)
+        ):
+            inherited = True
+            i = j + 4
+            continue
+        if text.startswith(":=", j):
+            val_end = _term_end(text, j + 2, end)
+            if _bare_name(name) == "native":
+                saw_explicit = True
+                explicit = _as_bool(text, j + 2, val_end)
+                unknown = explicit is None
+            i = val_end
+            if i < end and text[i] == ",":
+                i += 1
+            continue
+        return None
+    if unknown:
+        return None
+    if saw_explicit:
+        return explicit
+    if inherited:
+        return None
+    return False
+
+
+def _config_native(text: str, start: int, end: int) -> bool | None:
+    """Native bit of a `(config := term)` value, or None if it is not a literal."""
+    i = _skip_ws(text, start, end)
+    while i < end and text[i] == "(":
+        close = _match_bracket(text, i, end)
+        if close is None or _skip_ws(text, close + 1, end) != end:
+            return None
+        start, end = i + 1, close
+        i = _skip_ws(text, start, end)
+    if i >= end or text[i] != "{":
+        return None
+    close = _match_bracket(text, i, end)
+    if close is None or _skip_ws(text, close + 1, end) != end:
+        return None
+    return _struct_native(text, i + 1, close)
+
+
+def _decide_native(text: str, i: int) -> tuple[bool, int]:
+    """Whether the optConfig at `i` leaves `DecideConfig.native` true, and where it ends.
+
+    Unknown values fail closed: `elabConfig` evaluates the term, and only a
+    verified false constructor is known to disable native evaluation. `(config := {…})` replaces earlier items.
+    """
+    enabled = False
+    end = len(text)
+    while True:
+        i = _skip_ws(text, i, end)
+        if i >= end:
+            return enabled, i
+        if (
+            text[i] in "+-"
+            and i + 1 < end
+            and not text[i + 1].isspace()
+            and (_ID_FIRST_RE.fullmatch(text[i + 1]) is not None or text[i + 1] == "«")
+        ):
+            name, j = _read_ident(text, i + 1, end)
+            if name is None:
+                return enabled, i
+            if _bare_name(name) == "native":
+                enabled = text[i] == "+"
+            i = j
+            continue
+        if text[i] == "(":
+            j = _skip_ws(text, i + 1, end)
+            name, k = _read_ident(text, j, end)
+            k2 = _skip_ws(text, k, end)
+            if name is not None and text.startswith(":=", k2):
+                close = _match_bracket(text, i, end)
+                if close is None:
+                    return enabled, i
+                bare = _bare_name(name)
+                if bare == "native":
+                    flag = _as_bool(text, k2 + 2, close)
+                    enabled = True if flag is None else flag
+                elif bare == "config":
+                    flag = _config_native(text, k2 + 2, close)
+                    enabled = True if flag is None else flag
+                i = close + 1
+                continue
+        return enabled, i
+
+
+def native_eval_hits(live: str, quoted: list[tuple[int, int]]) -> list[tuple[int, str]]:
+    """`(offset, form)` for `bv_check` and `decide` configs that enable `native`."""
+    hits: list[tuple[int, str]] = []
+    for m in _BV_CHECK_RE.finditer(live):
+        if outside_quoted(m.start(), quoted):
+            hits.append((m.start(), "bv_check"))
+    for m in _DECIDE_RE.finditer(live):
+        if not outside_quoted(m.start(), quoted):
+            continue
+        enabled, stop = _decide_native(live, m.end())
+        if enabled:
+            hits.append((m.start(), " ".join(live[m.start() : stop].split())))
+    return hits
+
+
 # Capture the declared axiom name so it can be checked against the residual
 # allowlist. The name may be namespaced/contain primes; we keep the simple
 # token as written at the declaration site.
@@ -185,6 +419,13 @@ _NAME = _COMP + r"(?:\." + _COMP + r")*"
 # `\s*` also spans newlines and blanked comments: `axiom\n  foo`,
 # `axiom/- c -/foo`, `axiom/- c\n-/foo` and `axiom«foo»` are all seen.
 AXIOM_RE = re.compile(_ID_START + r"axiom" + _ID_END + r"\s*(" + _NAME + r")")
+# A syntax quotation can splice the declared name in with an antiquotation:
+# `macro "launder " n:ident : command => `(axiom $n : False)` followed by
+# `launder w` declares the axiom `w`, and `$(mkIdent `w)` does the same without
+# a macro argument. `AXIOM_RE` needs a literal name after the keyword, so a live
+# `axiom` keyword followed by `$` is rejected on its own: the real name is only
+# known after elaboration, so it can never be matched against the allowlist.
+AXIOM_ANTIQUOT_RE = re.compile(_ID_START + r"axiom" + _ID_END + r"\s*\$")
 # Text inside a guillemet-quoted identifier (`«an axiom counterfeit'»`) is part
 # of a name, not a command, so an `axiom` match that starts inside one is not a
 # declaration. Quoted-identifier spans come from `lex_lean`, which also lexes
@@ -524,6 +765,12 @@ def axiom_hits(code: str, res: LexResult) -> list[tuple[int, str]]:
             if outside_quoted(m.start(), res.quoted)]
 
 
+def antiquoted_axiom_hits(code: str, res: LexResult) -> list[int]:
+    """Live `axiom $…` heads in syntax quotations: the name comes from elaboration."""
+    return [m.start() for m in AXIOM_ANTIQUOT_RE.finditer(code)
+            if outside_quoted(m.start(), res.quoted)]
+
+
 def exit_hits(code: str, res: LexResult) -> list[int]:
     """Offsets of live `#exit` commands."""
     return [m.start() for m in EXIT_RE.finditer(code) if outside_quoted(m.start(), res.quoted)]
@@ -535,7 +782,8 @@ def command_view(text: str, res: LexResult) -> tuple:
     return (axiom_hits(code, res),
             [(m.start(), m.group(1), m.group(2)) for m in declaration_heads(code, res)],
             find_true_placebos(text, res),
-            exit_hits(code, res))
+            exit_hits(code, res),
+            antiquoted_axiom_hits(code, res))
 
 
 def comment_mask(text: str) -> list[bool]:
@@ -635,6 +883,45 @@ def top_level_colon(header: str) -> int | None:
                 last_colon = i
         i += 1
     return last_colon
+
+
+_OPAQUE_HEADER_TOKEN_RE = re.compile(
+    r":=|[(){}\[\]⟨⟩⦃⦄]|#[A-Za-z_]\w*|"
+    + _ID_START
+    + r"(?:(?P<complex>let\s+rec|by)|"
+    + r"(?P<binding>let|letI|let_fun|let_λ|let_delayed|let_tmp|have|haveI)|"
+    + r"(?P<command>example|instance|structure|class|inductive|namespace|section|end))"
+    + _ID_END
+)
+_OPAQUE_BRACKETS = {**_BRACKET_OPEN, "⦃": "⦄"}
+_OPAQUE_CLOSERS = set(_OPAQUE_BRACKETS.values())
+
+
+def opaque_has_body(
+    live_text: str, start: int, limit: int, quoted: list[tuple[int, int]]
+) -> bool:
+    """Find a body assignment before the next command, excluding type bindings."""
+    brackets: list[str] = []
+    bindings = 0
+    for match in _OPAQUE_HEADER_TOKEN_RE.finditer(live_text, start, limit):
+        if not outside_quoted(match.start(), quoted):
+            continue
+        token = match.group()
+        if token in _OPAQUE_BRACKETS:
+            brackets.append(_OPAQUE_BRACKETS[token])
+        elif token in _OPAQUE_CLOSERS:
+            if not brackets or brackets.pop() != token:
+                return False
+        elif not brackets:
+            if token.startswith("#") or match.lastgroup in {"complex", "command"}:
+                return False
+            if match.lastgroup == "binding":
+                bindings += 1
+            elif token == ":=":
+                if not bindings:
+                    return True
+                bindings -= 1
+    return False
 
 
 def declaration_header_end(live_text: str, start: int, next_decl_start: int | None) -> int:
@@ -899,12 +1186,9 @@ def main() -> int:
             if not mask[m.start()]:
                 line = text.count("\n", 0, m.start()) + 1
                 failures.append(f"{path}:{line}: forbidden token {m.group(1)}")
-        for m in NATIVE_FORM_RE.finditer(live_text):
-            if not outside_quoted(m.start(), lexed.quoted):
-                continue
-            line = text.count("\n", 0, m.start()) + 1
-            form = " ".join(m.group(0).split())
-            failures.append(f"{path}:{line}: forbidden native evaluation `{form}`")
+        for offset, form in native_eval_hits(live_text, lexed.quoted):
+            line = text.count("\n", 0, offset) + 1
+            failures.append(f"{path}:{line}: forbidden native evaluation configuration `{form}`")
         for m in META_DECL_RE.finditer(text):
             if not mask[m.start()]:
                 line = text.count("\n", 0, m.start()) + 1
@@ -945,12 +1229,13 @@ def main() -> int:
             next_decl_start = decls[decl_index + 1].start() if decl_index + 1 < len(decls) else None
             if kind in OPAQUE_KINDS:
                 limit = next_decl_start if next_decl_start is not None else len(live_text)
-                if live_text.find(":=", dm.end(), limit) == -1:
+                if not opaque_has_body(live_text, dm.end(), limit, lexed.quoted):
                     line = text.count("\n", 0, dm.start()) + 1
                     failures.append(
                         f"{path}:{line}: bodyless {kind} declaration {name} introduces an "
                         f"unproven inhabitant of its statement type (axiom-equivalent "
-                        f"laundering); provide a real ':=' proof/definition, or state the "
+                        f"laundering); provide a real ':=' proof/definition and parenthesize a "
+                        f"complex result type, or state the "
                         f"obligation as an explicit Prop or a tracked sorry"
                     )
                 continue
@@ -983,6 +1268,14 @@ def main() -> int:
                     f"(add to scripts/residual_axioms.txt only if it is a documented, "
                     f"tracked residual)"
                 )
+
+        for am_start in antiquoted_axiom_hits(live_text, lexed):
+            idx = live_text.count("\n", 0, am_start) + 1
+            failures.append(
+                f"{path}:{idx}: forbidden custom axiom declaration with an antiquoted "
+                f"name (`axiom $…` in a syntax quotation lets a macro or elaborator "
+                f"declare an axiom whose name the allowlist never sees)"
+            )
 
         for line_no, name in find_true_placebos(text, lexed):
             failures.append(
@@ -1032,7 +1325,7 @@ def main() -> int:
         print("\n".join(allowed_hits))
     print(
         "forbidden-token precheck: clean (no native_decide / bv_decide / "
-        "ofReduceBool / ofReduceNat / trustCompiler / "
+        "ofReduceBool / ofReduceNat / trustCompiler / reduceBool / reduceNat / "
         "unsafe declaration / unsafeCast / implemented_by / "
         "undocumented custom axiom / vacuous `: True` placebo / "
         "kernel-skip or proof-as-sorry debug option; "
