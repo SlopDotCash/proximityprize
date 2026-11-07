@@ -489,11 +489,15 @@ theorem rbrSoundness_implies_soundness_of_marginal
 
 No implication from (straightline) knowledge soundness to plain soundness is stated here. The
 earlier vacuity obstruction (extractor failures being discarded) no longer applies: the canonical
-game scores an extraction failure as bad. The remaining obstruction is a witness/language
+game scores an extraction failure as bad. Two obstructions remain. The first is a witness/language
 mismatch: the knowledge game's bad event tests the prover's *own* output witness
 (`(stmtOut, witOut) ∈ relOut`), whereas the soundness event only tests
 `stmtOut ∈ relOut.language`, so an accepting soundness run need not trigger the knowledge bad
-event. An honest variant would assume
+event. The second is output-witness-type rigidity: `soundness` quantifies over provers with an
+arbitrary output witness type, while the knowledge game fixes `WitOut` to the relation's type (its
+private input type `Aux` is already arbitrary). Transporting a prover therefore needs a
+`Prover.deWitness`-style adapter with a non-failing output, since a failing output would lower the
+adapted prover's accept probability. An honest variant would assume `[Nonempty WitOut]` and
 `∀ stmtOut witOut, stmtOut ∈ relOut.language → (stmtOut, witOut) ∈ relOut`
 (e.g. accept/reject output relations with a trivial witness); it is not proved in this file. -/
 

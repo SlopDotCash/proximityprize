@@ -344,8 +344,21 @@ run induction + output assembly remain). Once `Prover.append_run` is available, 
    except w.p. `completenessError₁` (by `h₁`), and conditioned on it the phase-2 output is in `rel₃`
    except w.p. `completenessError₂` (by `h₂`);
 3. union bound ⇒ total error `completenessError₁ + completenessError₂`.
-The genuinely-deep dependency is therefore *only* `Prover.append_run`; the probabilistic step is the
-standard two-stage success-probability union bound. -/
+
+**Scope caveat (shared oracle state).** Step 1 is not a pure rewrite: `(R₁.append R₂).run`
+schedules `P₁, P₂, V₁, V₂`, whereas `R₁.run >>= R₂.run` schedules `P₁, V₁, P₂, V₂` (see the note
+at the end of the `Execution` section). Swapping `V₁` past `P₂` needs a commutation property of
+the shared-oracle implementation, so this residual is **not** true for arbitrary stateful `impl`.
+Countermodel: let `σ := Bool`, `init := pure false`, phase-1 prover outputs `false` and `V₁` outputs
+the current shared bit; the phase-2 prover sets the bit to `true` and returns its input statement,
+and `V₂` is the identity. Both phases are perfectly complete on their own, but in the composite the
+prover outputs `false` while the verifier outputs `true` (an informal countermodel, not a checked
+Lean regression). The in-tree discharges
+(`Reduction.append_completeness_total`, `Reduction.append_perfectCompleteness_total`, …) accordingly
+carry explicit side conditions on `impl` (state preservation, never-failing and a state-independent
+response law for the error-ful case; a lossless `init` plus support faithfulness `hImplSupp` and,
+on the challenge leg, state preservation for the perfect case). The prover-side message-seam run
+factoring `Prover.append_run_msg` is proved unconditionally. -/
 def reductionAppendCompletenessResidual
     (R₁ : Reduction oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁)
     (R₂ : Reduction oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂)
@@ -3026,7 +3039,17 @@ We need justification to be able to swap the first verifier with the second prov
 true if we interpret / maps this oracle computation (a priori a term of the free monad) into a
 commutative monad (such as `Id`, i.e. all oracle queries are answered deterministically, `PMF`, i.e.
 all oracle queries are answered probabilistically, `Option`, `ReaderT ρ`, `Set`, `WriterT` into a
-commutative monoid, etc.). -/
+commutative monoid, etc.).
+
+For a state-mutating shared oracle (`StateT σ ProbComp`) the swap genuinely fails. Countermodel:
+`σ := Bool`, `init := pure false`; the phase-1 prover outputs `false` and `V₁` outputs the current
+shared bit; the phase-2 prover sets the bit to `true` and returns its input statement; `V₂` is the
+identity. Each phase is perfectly complete on its own (`V₁` runs before the bit is set), but in the
+composite schedule `P₁, P₂, V₁, V₂` the prover outputs `false` and the verifier outputs `true`. This
+informal countermodel (not a checked Lean regression; one oracle that returns the current bit and
+sets it to `true` serves both the phase-2 prover and `V₁`) refutes unqualified composition in the
+arbitrary shared-state model only; the conditional wrappers
+and the restricted state-preserving / message-seam discharges are unaffected. -/
 
 
 

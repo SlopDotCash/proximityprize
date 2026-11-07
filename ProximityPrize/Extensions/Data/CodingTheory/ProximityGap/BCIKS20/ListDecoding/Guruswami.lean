@@ -502,7 +502,17 @@ makes the strict bivariate gap `numVars > numConstraints` dominate the extra `Z`
 introduces, giving `#box > #constraints`. -/
 
 open GuruswamiSudan in
-/-- The bivariate degree cap used for Claim 5.4: the proximity-gap degree bound with `ρ=(k+1)/n`. -/
+/-- The bivariate degree cap used for the Claim 5.4 construction box:
+`proximity_gap_degree_bound (k + 1) n m`.
+
+**Rate offset (audit PG-329).**  `proximity_gap_degree_bound K n m = ⌊(m + ½)·√((K+1)/n)·n⌋₊`
+already adds one to its first argument, so this cap is `⌊(m + ½)·√((k+2)/n)·n⌋₊`, i.e. it uses
+rate `(k+2)/n`, not the rate `(k+1)/n` of the target bound `D_X ((k+1)/n) n m` and of the
+`Q_D_YZ` bound.  The offset is inherited from the in-library Guruswami–Sudan counting
+convention (`numVars_gt_numConstraints (k + 1) n m` pairs `weigthBoundIndices (k + 1)` with
+`proximity_gap_degree_bound (k + 1)`), which `card_gsBox_gt_constraints` reuses.  Consequently
+`gsDpg` is in general *not* `⌊D_X ((k+1)/n) n m⌋₊` (e.g. `n = 4, m = 1, k = 2`: `gsDpg = 6`
+while `D_X = 1.5·√12 ≈ 5.196`). -/
 noncomputable def gsDpg (n m k : ℕ) : ℕ := proximity_gap_degree_bound (k + 1) n m
 
 /-- The `Z`-budget of the box: large enough that the `Z`-degree introduced by shifting (`≤ Dpg`)
@@ -1045,7 +1055,13 @@ lemma D_YZ_le_of_ZdegLE {Q : F[Z][X][Y]} {d e : ℕ}
 
 /-- The original degree-budget interface also permits multiplicity zero. Positive multiplicities
 reuse the canonical construction; the zero branch retains the earlier GS-box witness under the
-explicit degree bounds. This preserves callers without adding a positivity assumption. -/
+explicit degree bounds. This preserves callers without adding a positivity assumption.
+
+`hDx` is not a mere non-integrality condition: `gsDpg` uses the offset rate `(k+2)/n` (see `gsDpg`),
+so `hDx` also fails when the offset pushes the cap past `D_X` (e.g. `n = 4, m = 1, k = 2`).
+`hYZ` is unsatisfiable when `1 ≤ m`, `1 ≤ k` and `k + 1 ≤ n` (`gsBox_hYZ_budget_unsatisfiable`), so
+in that regime callers should use the canonical `modified_guruswami_has_a_solution`, which does
+not take these hypotheses; `hYZ` can only be met outside it, such as at the degenerate `m = 0`. -/
 theorem Compatibility.modified_guruswami_has_a_solution_of_degree_bounds {m n k : ℕ} (hn : 0 < n) (hk : 0 < k)
     {ωs : Fin n ↪ F} {u₀ u₁ : Fin n → F}
     (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
@@ -1094,6 +1110,99 @@ theorem Compatibility.modified_guruswami_has_a_solution_of_degree_bounds {m n k 
         D_YZ_le_of_ZdegLE hYdeg hZdeg
       calc (D_YZ Q : ℝ) ≤ ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) := by exact_mod_cast hbound
         _ ≤ n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)) := hYZ
+
+open GuruswamiSudan in
+/-- **The `hYZ` box budget of `modified_guruswami_has_a_solution` is unsatisfiable in the
+positive-multiplicity regime** `1 ≤ m`, `1 ≤ k`, `k + 1 ≤ n` (audit PG-329).
+
+Write `D = gsDpg n m k`, `B = numConstraints n m = n·m(m+1)/2` (so `gsZCap = B·D`) and
+`b = √((k+1)/n) ≤ 1`.  The floor bound `(D+1)² > (m+½)²(k+2)n` gives
+`((D+1)·b)² > (m+½)²(k+2)(k+1) ≥ (2m+1)²`, hence `D·b > 2m + 1 - b ≥ 2m`.  Then
+`hYZ` would force `6·b·D·B ≤ n(m+½)³`, i.e. `3·(D·b)·m(m+1) ≤ (m+½)³`, while the left side
+exceeds `6m²(m+1) ≥ (m+½)³`.  (Concrete instance: `n = 4, m = 1, k = 2` has `gsDpg = 6`,
+`gsZCap = 24`, and `hYZ` would ask `30 ≤ (27/2)/(6√(3/4)) ≈ 2.598`.)
+
+This is not a logical inconsistency: `Compatibility.modified_guruswami_has_a_solution_of_degree_bounds`
+remains a valid conditional theorem, but its `hYZ` premise cannot be met for these parameters.
+The canonical `modified_guruswami_has_a_solution` needs no such budget. -/
+theorem gsBox_hYZ_budget_unsatisfiable {m n k : ℕ} (hm : 1 ≤ m) (hk : 1 ≤ k) (hn : k + 1 ≤ n) :
+    ¬ (((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
+      n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n))) := by
+  intro hYZ
+  have hn0 : n ≠ 0 := by omega
+  have hnR : (0 : ℝ) < n := by exact_mod_cast Nat.pos_of_ne_zero hn0
+  have hmR : (1 : ℝ) ≤ m := by exact_mod_cast hm
+  have hkR : (1 : ℝ) ≤ k := by exact_mod_cast hk
+  have hknR : (k : ℝ) + 1 ≤ n := by exact_mod_cast hn
+  set D := gsDpg n m k with hDdef
+  have hD0 : (0 : ℝ) ≤ D := Nat.cast_nonneg D
+  -- the floor lower bound for the (offset-rate) cap
+  have hsq : ((D : ℝ) + 1) ^ 2 > (m + 1 / 2) ^ 2 * ((k : ℝ) + 2) * n := by
+    have h := proximity_gap_degree_bound_sq_gt (k := k + 1) (m := m) hn0
+    rw [hDdef, gsDpg]
+    push_cast at h ⊢
+    linarith
+  -- the Z-cap: `2 · gsZCap = n · m(m+1) · D`
+  have hZ : (gsZCap n m k : ℝ) * 2 = n * (m * (m + 1)) * D := by
+    have h2 : (constraintIndices m).card * 2 = m * (m + 1) := by
+      rw [card_constraintIndices]
+      exact Nat.div_mul_cancel (Nat.even_mul_succ_self m).two_dvd
+    have h : gsZCap n m k * 2 = n * (m * (m + 1)) * D := by
+      rw [gsZCap, numConstraints, ← h2, ← hDdef]
+      ring
+    exact_mod_cast h
+  -- `b = √((k+1)/n)`
+  set b : ℝ := Real.sqrt (((k : ℝ) + 1) / n) with hbdef
+  have hq0 : (0 : ℝ) < ((k : ℝ) + 1) / n := by positivity
+  have hb0 : 0 < b := Real.sqrt_pos.mpr hq0
+  have hbsq : b ^ 2 = ((k : ℝ) + 1) / n := Real.sq_sqrt hq0.le
+  have hb1 : b ≤ 1 := by
+    rw [hbdef, Real.sqrt_le_one]
+    exact (div_le_one hnR).mpr hknR
+  -- `(D+1)·b > 2m+1`
+  have hDb1 : ((D : ℝ) + 1) * b > 2 * m + 1 := by
+    have hpow : (2 * (m : ℝ) + 1) ^ 2 < (((D : ℝ) + 1) * b) ^ 2 := by
+      rw [mul_pow, hbsq]
+      have h1 : ((D : ℝ) + 1) ^ 2 * (((k : ℝ) + 1) / n) >
+          (m + 1 / 2) ^ 2 * ((k : ℝ) + 2) * n * (((k : ℝ) + 1) / n) :=
+        mul_lt_mul_of_pos_right hsq hq0
+      have h2 : (m + 1 / 2 : ℝ) ^ 2 * ((k : ℝ) + 2) * n * (((k : ℝ) + 1) / n) =
+          (m + 1 / 2 : ℝ) ^ 2 * (((k : ℝ) + 2) * ((k : ℝ) + 1)) := by
+        field_simp
+      have h3 : (2 * (m : ℝ) + 1) ^ 2 ≤ (m + 1 / 2 : ℝ) ^ 2 * (((k : ℝ) + 2) * ((k : ℝ) + 1)) := by
+        have h4 : (4 : ℝ) ≤ ((k : ℝ) + 2) * ((k : ℝ) + 1) := by nlinarith
+        have hfour : (2 * (m : ℝ) + 1) ^ 2 = (m + 1 / 2 : ℝ) ^ 2 * 4 := by ring
+        rw [hfour]
+        exact mul_le_mul_of_nonneg_left h4 (by positivity)
+      linarith
+    exact lt_of_pow_lt_pow_left₀ 2 (by positivity) hpow
+  have hDb : (D : ℝ) * b > 2 * m := by
+    have hexp : ((D : ℝ) + 1) * b = D * b + b := by ring
+    linarith
+  -- unpack `hYZ`
+  have hRHS : (n : ℝ) * ((m : ℝ) + 1 / 2) ^ 3 / (6 * b) =
+      (↑n * (↑m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)) : ℝ) := by
+    rw [hbdef]
+    push_cast
+    ring_nf
+  rw [← hRHS] at hYZ
+  push_cast at hYZ
+  have h6b : (0 : ℝ) < 6 * b := by positivity
+  have hmul := (le_div_iff₀ h6b).1 hYZ
+  have hm2 : (0 : ℝ) < m * (m + 1) := by positivity
+  have hZb : (gsZCap n m k : ℝ) * (6 * b) = 3 * (n * (m * (m + 1)) * (D * b)) := by
+    linear_combination (3 * b) * hZ
+  have hgt : (n : ℝ) * (m * (m + 1)) * (2 * m) < n * (m * (m + 1)) * (D * b) :=
+    mul_lt_mul_of_pos_left hDb (by positivity)
+  have hD6 : (0 : ℝ) ≤ D * (6 * b) := by positivity
+  have hcub : ((m : ℝ) + 1 / 2) ^ 3 ≤ 6 * m ^ 2 * (m + 1) := by
+    have ht : (0 : ℝ) ≤ m - 1 := by linarith
+    nlinarith [mul_nonneg ht ht, mul_nonneg (mul_nonneg ht ht) ht]
+  have hcubn := mul_le_mul_of_nonneg_left hcub hnR.le
+  have hsplit : ((D : ℝ) + gsZCap n m k) * (6 * b) = D * (6 * b) + gsZCap n m k * (6 * b) := by
+    ring
+  have hthree : 3 * ((n : ℝ) * (m * (m + 1)) * (2 * m)) = n * (6 * m ^ 2 * (m + 1)) := by ring
+  linarith
 
 end ModifiedGuruswamiHelpers
 

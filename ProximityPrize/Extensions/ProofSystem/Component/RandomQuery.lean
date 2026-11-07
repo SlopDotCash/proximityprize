@@ -28,7 +28,10 @@ of the same type. The relation is `a = b`.
      prover.
    - The verifier does not do any checks.
    - The output relation is that `a` and `b` are equal at that query.
-   - We also support a variant where it's `a.query q = r` where `r` is the response, discarding `b`.
+   - A variant where the output is `a.query q = r` for the response `r`, discarding `b`
+     ("random query and reduce claim"), is **not implemented**: its sketch at the end of this
+     file (`RandomQueryAndReduceClaim`) is entirely commented out. Only the plain random-query
+     reduction above is defined and analyzed.
 -/
 
 open OracleSpec OracleComp OracleQuery OracleInterface ProtocolSpec

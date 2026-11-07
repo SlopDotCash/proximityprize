@@ -86,7 +86,9 @@ Appendix A.4 of [BCIKS20].
 
 **Honesty note (the §5 frontier).** This lemma asserts ONLY the weight upper bound
 `Λ(β) ≤ (2t+1)·d_R·D`, which is satisfied vacuously by `β = 0` — and that is exactly
-the witness used here (`fun _ => ⟨0, by simp⟩`). It is therefore a true but
+the witness used here (`fun _ => ⟨0, by simp⟩`). The witness does NOT determine `β` below:
+`β` is `(β_regular …).choose`, an unspecified element satisfying only this (non-unique) weight
+bound, so one cannot conclude `β R t = 0` or `α t = 0` from this proof. It is therefore a true but
 *under-specified* statement: the `β` it produces is NOT the genuine recursive
 Hensel-lift numerator of [BCIKS20] (A.1), and carries no functional relation to
 `R`/`x₀`. The genuine numerator additionally satisfies the lift identity

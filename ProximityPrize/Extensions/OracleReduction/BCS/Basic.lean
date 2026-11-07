@@ -823,7 +823,7 @@ theorem BCSPhaseRealizationFrontier.ofOpeningLogBridge {StmtMid WitMid : Type}
     BCSPhaseRealizationFrontier phases :=
   ⟨hInteraction, hBridge hLog⟩
 
-/-- **Proof-carrying compiled phases** (issue #342, the API-level repair): a
+/-- **Proof-carrying compiled phases** (issue #342, a partial API-level repair): a
 `BCSCompiledPhases` together with *proofs* of its two realization payloads.  The base
 structure keeps its `Prop` payload fields (the eventual generic compiler must be able to
 *state* the obligations before constructing the proofs, and their final shape depends on

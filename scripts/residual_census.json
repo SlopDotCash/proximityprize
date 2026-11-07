@@ -5437,7 +5437,7 @@
    "name": "reductionAppendCompletenessResidual",
    "fq_name": "Reduction.reductionAppendCompletenessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 349,
+   "line": 362,
    "providers": [
     {
      "name": "Reduction.reductionAppendCompletenessResidual_holds",
@@ -5525,7 +5525,7 @@
    "name": "reductionAppendPerfectCompletenessResidual",
    "fq_name": "Reduction.reductionAppendPerfectCompletenessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 368,
+   "line": 381,
    "providers": [
     {
      "name": "Reduction.reductionAppendPerfectCompletenessResidual_of_message",
@@ -5688,7 +5688,7 @@
    "name": "appendSoundnessResidual",
    "fq_name": "Verifier.appendSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 405,
+   "line": 418,
    "providers": [
     {
      "name": "Verifier.append_soundness_challenge_residual",
@@ -5777,7 +5777,7 @@
    "name": "appendKnowledgeSoundnessResidual",
    "fq_name": "Verifier.appendKnowledgeSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 423,
+   "line": 436,
    "providers": [],
    "status": "open"
   },
@@ -5785,7 +5785,7 @@
    "name": "appendRbrSoundnessResidual",
    "fq_name": "Verifier.appendRbrSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 436,
+   "line": 449,
    "providers": [
     {
      "name": "Verifier.appendRbrSoundnessResidual_of_message_collapse",
@@ -5847,7 +5847,7 @@
    "name": "appendRbrKnowledgeSoundnessResidual",
    "fq_name": "Verifier.appendRbrKnowledgeSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 463,
+   "line": 476,
    "providers": [
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_of_message_collapse",
@@ -5992,7 +5992,7 @@
    "name": "appendCompletenessResidual",
    "fq_name": "OracleReduction.appendCompletenessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 499,
+   "line": 512,
    "providers": [
     {
      "name": "OracleReduction.appendCompletenessResidual_holds",
@@ -6053,7 +6053,7 @@
    "name": "appendPerfectCompletenessResidual",
    "fq_name": "OracleReduction.appendPerfectCompletenessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 520,
+   "line": 533,
    "providers": [
     {
      "name": "OracleReduction.appendPerfectCompletenessResidual_holds",
@@ -6125,7 +6125,7 @@
    "name": "appendSoundnessResidual",
    "fq_name": "OracleVerifier.appendSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 546,
+   "line": 559,
    "providers": [
     {
      "name": "OracleVerifier.appendSoundnessResidual_msg",
@@ -6260,7 +6260,7 @@
    "name": "appendKnowledgeSoundnessResidual",
    "fq_name": "OracleVerifier.appendKnowledgeSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 555,
+   "line": 568,
    "providers": [
     {
      "name": "OracleVerifier.appendKnowledgeSoundnessResidual_of_plain",
@@ -6290,7 +6290,7 @@
    "name": "appendRbrSoundnessResidual",
    "fq_name": "OracleVerifier.appendRbrSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 564,
+   "line": 577,
    "providers": [
     {
      "name": "OracleVerifier.appendRbrSoundnessResidual_msg_subsingleton",
@@ -6326,7 +6326,7 @@
    "name": "appendRbrKnowledgeSoundnessResidual",
    "fq_name": "OracleVerifier.appendRbrKnowledgeSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 574,
+   "line": 587,
    "providers": [
     {
      "name": "OracleVerifier.appendRbrKnowledgeSoundnessResidual_msg_subsingleton",
@@ -6363,7 +6363,7 @@
    "name": "appendRunRightResidual",
    "fq_name": "Prover.appendRunRightResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 2908,
+   "line": 2921,
    "providers": [
     {
      "name": "Prover.appendRunRightResidual_holds_empty",
@@ -6388,7 +6388,7 @@
      "name": "Prover.appendRunRightResidual_of_append_run",
      "kind": "theorem",
      "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-     "line": 2931,
+     "line": 2944,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hRun"
@@ -6407,7 +6407,7 @@
      "name": "Prover.appendRunRightResidual_holds_msg",
      "kind": "theorem",
      "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-     "line": 2966,
+     "line": 2979,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -6428,7 +6428,7 @@
      "name": "Prover.appendRunRightResidual_iff_append_run",
      "kind": "theorem",
      "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-     "line": 2991,
+     "line": 3004,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,

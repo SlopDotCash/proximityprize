@@ -42,11 +42,15 @@ The file also states the paper-shaped versions of:
 - `mds_johnson_lambda_le` — ABF26 Corollary 3.3:
   for any MDS code `C` of rate `ρ` and `η > 0`, `|Λ(C, 1 - √ρ - η)| ≤ 1/(2·η·ρ)`.
 
-Both are admitted as external results (T3.2 has an existing in-tree proof via
-`johnson_bound` / `johnson_bound_alphabet_free` in `JohnsonBound/Basic.lean` that
-needs porting from the absolute-distance form to ABF26's `Lambda` form; C3.3
-follows from L2.6 + T3.2, but uses the asymptotic Johnson radius which crosses
-ArkLib's existing rate/distance bridge).
+**Current status (neither is an external admit any more).**
+`johnson_bound_lambda_le_ell` and `mds_johnson_lambda_le` are proved theorems of the canonical
+module `ArkLib/Data/CodingTheory/JohnsonBound/Family.lean`, with no `sorry`; this file keeps the
+supporting development. In the regime where the Johnson radicand is negative, the canonical T3.2
+proof uses the `q`-ary Plotkin bound `plotkin_card_le_ell`.
+
+(Historical: both were once recorded here as admitted external results — T3.2 via porting
+`johnson_bound` / `johnson_bound_alphabet_free` from `JohnsonBound/Basic.lean` to the `Lambda`
+form, C3.3 via L2.6 + T3.2.)
 
 ## References
 
@@ -1266,9 +1270,9 @@ private lemma mds_core_ineq
   exact div_nonneg (by linarith [hF, hST]) (le_of_lt hQ)
 /-! ## q-ary Plotkin average-distance development (frontier helper)
 
-The docstring of `johnson_bound_lambda_le_ell` (T3.2) identifies the **q-ary Plotkin
-average-distance upper bound** as the only nontrivial gap blocking the ABF26 §3.1
-Johnson family theorems:
+An earlier version of the docstring of `johnson_bound_lambda_le_ell` (T3.2) identified the
+**q-ary Plotkin average-distance upper bound** as the only nontrivial gap blocking the ABF26 §3.1
+Johnson family theorems (historical: T3.2 and C3.3 are now proved in the canonical module):
 
   `d(B') ≤ (1 - 1/q) · n · M / (M - 1)`     where `M = |B'|`, `q = |F|`,
 
@@ -1289,10 +1293,10 @@ The pipeline:
 * `plotkin_d_le` — combined with `d_eq_sum` (`2·C₂(M)·d(B) = ∑_i (disagreements)`):
   the q-ary Plotkin bound `d(B) ≤ (1-1/q)·n·M/(M-1)`.
 
-This closes the math wall documented in T3.2.  (The *final* assembly of C3.3 below
-additionally needs the `Lambda`/`closeCodewordsRel` → `Finset (Fin n → F)` transport
-and the second-moment / Plotkin real-analysis algebra; that bridge is left as the
-remaining `sorry`.) -/
+This supplies the Plotkin ingredient.  (An earlier version said the *final* assembly of C3.3,
+which additionally needs the `Lambda`/`closeCodewordsRel` → `Finset (Fin n → F)` transport and
+the second-moment / Plotkin real-analysis algebra, was left as a remaining `sorry`; that is no
+longer the case — the canonical `mds_johnson_lambda_le` is proved with no `sorry`.) -/
 namespace MdsPlotkin
 
 open JohnsonBound Finset Fintype

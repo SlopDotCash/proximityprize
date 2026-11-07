@@ -5,8 +5,8 @@ names, but the old files were re-added right afterwards and both copies were the
 parallel: sixteen pairs of independently compiled implementations, identical apart from their
 imports (repository audit 2026-10-28, finding L06). The upstream-ArkLib integration
 consolidated them from the live dependency graph; the chosen owner and compatibility path for
-every pair are recorded in `scripts/integration/duplex-clone-consolidation.json` (for most
-pairs the paper-numbered `Lemma5*` module owns the implementation and the semantic name is
+every pair are recorded in `scripts/integration/duplex-clone-consolidation.json` (for every
+pair the paper-numbered `Lemma5*` module owns the implementation and the semantic name is
 the wrapper). This test fails if a compatibility path regains declarations, stops
 re-exporting exactly its recorded owner, or if an owner degenerates into a wrapper.
 """
