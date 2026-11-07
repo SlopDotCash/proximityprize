@@ -31,7 +31,7 @@ jobs:
           use-mathlib-cache: false
       - name: Restore geometry dependencies
         id: dependencies
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: .lake
           key: sponsor-geometry-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
@@ -64,7 +64,7 @@ jobs:
         run: bash scripts/ci-stop-lean.sh
       - name: Preserve geometry dependencies
         if: always() && !cancelled() && steps.stop-lean.outcome == 'success' && steps.dependencies.outputs.cache-primary-key != ''
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: .lake
           key: ${{ steps.dependencies.outputs.cache-primary-key }}

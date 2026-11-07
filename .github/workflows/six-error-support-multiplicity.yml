@@ -27,7 +27,7 @@ jobs:
           lint: false
           use-github-cache: false
           use-mathlib-cache: false
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v6
         with:
           path: .lake
           key: six-error-support-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.run_id }}

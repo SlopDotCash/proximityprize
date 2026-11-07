@@ -47,7 +47,7 @@ jobs:
           lint: false
           use-github-cache: false
           use-mathlib-cache: false
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v6
         with:
           path: .lake
           key: udr-floor-${{ runner.os }}-${{ github.run_id }}
