@@ -628,9 +628,10 @@ def negation_targets(negated: str, fuel: int = 16) -> list[str]:
     first, *rest = [s[a + 1 : b] for a, b in zip([-1] + cuts, cuts + [len(s)])]
     heads = _refuted_by_not(first, fuel)
     for conjunct in rest:
-        c = strip_forall_prefix(conjunct)
+        c = conjunct.strip()
         while c.startswith("(") and _closes_at_end(c):
-            c = strip_forall_prefix(c[1:-1])
+            c = c[1:-1].strip()
+        # A universal conjunct may be vacuous on an empty binder type.
         if c.startswith("¬"):
             heads += negation_targets(c[1:], fuel - 1)
     return heads

@@ -14,6 +14,7 @@ NOT_REFUTATIONS = [
     ("¬ (FooResidual ∧ False)", "fun h => h.2"),
     ("¬ (FooResidual → False)", "fun h => h trivial"),
     ("¬ FooResidual → False", "fun h => h trivial"),
+    ("¬ FooResidual -> False", "fun h => h trivial"),
     ("¬ FooResidual ∨ True", "Or.inr trivial"),
     ("¬ (FooResidual ↔ False)", "fun h => h.1 trivial"),
     ("¬ FooResidual = False", "fun h => cast h trivial"),
@@ -121,6 +122,14 @@ class NegationTargetTests(unittest.TestCase):
                     "def BarResidual : Prop := False\n\n"
                     f"theorem t : {statement} := {proof}\n")
                 self.assertEqual(got, {"FooResidual": "refuted", "BarResidual": "refuted"})
+
+    def test_vacuous_universal_conjunct_does_not_refute(self):
+        got = self.statuses(
+            "def FooResidual : Prop := True\n"
+            "def BarResidual : Prop := False\n"
+            "theorem t : ¬ BarResidual ∧ (∀ x : Empty, ¬ FooResidual) :=\n"
+            "  ⟨id, fun x => x.elim⟩\n")
+        self.assertEqual(got, {"FooResidual": "open", "BarResidual": "refuted"})
 
     def test_relation_and_binder_shapes(self):
         for negated, want in [
