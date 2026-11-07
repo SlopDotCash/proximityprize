@@ -28,8 +28,10 @@ A token is classified as:
          elaborates. A computed or inherited value for `all` is treated
          conservatively unless a later item turns it off. Use `-all` or
          `(all := .false)` to explicitly select the non-collecting mode.
-         This source check does not classify a bare `apply?`, which can
-         still admit a goal when it only finds incomplete suggestions.
+         `apply?` in tactic position can also admit an incomplete suggestion
+         with `all` disabled. Use an explicit proof or a closing `exact?` in
+         place of `apply?`. The source scan recognizes ordinary tactic entry
+         forms and is not a parser for user-defined tactic syntax.
   doc  — inside a docstring `/-- ... -/`, block comment `/- ... -/`,
          line comment `-- ...`, raw-string literal, or the literal
          (non-splice) text of a string (includes prose words containing 'admit')
@@ -561,9 +563,104 @@ def _config_may_enable_all(text: str, mask: list[bool], i: int) -> bool:
         i = close + 1
 
 
+# Search tactics share their names with valid term identifiers. Restrict the
+# bare apply? policy to tactic starts, not references such as `exact apply?`.
+_PROOF_BY_RE = re.compile(r"(?<![\w.'])\bby\b")
+_TACTIC_WRAPPER = (
+    r"all_goals|any_goals|focus|try|repeat1'|repeat'|repeat|"
+    r"with_reducible_and_instances|with_reducible|with_unfolding_all|"
+    r"with_unfolding_none|classical|unhygienic|show_term"
+)
+_TACTIC_LEAD_RE = re.compile(
+    rf"(?:[({{·]\s*|\.\s+|(?:{_TACTIC_WRAPPER})\s+)*"
+)
+_TACTIC_ALT_RE = re.compile(r"(?:first|solve)\b")
+_TACTIC_CASE_RE = re.compile(r"(?:case'?|next)\b[^\n]*=>\s*")
+_TACTIC_MATCH_RE = re.compile(r"match\b[^\n]*\bwith\b")
+_TACTIC_SCOPE_RE = re.compile(r"set_option\s+\S+\s+.+?\s+in\b\s*")
+_TACTIC_BODY_RE = re.compile(rf"(?:{_TACTIC_WRAPPER}|first|solve|[{{(·.]|\|)")
+
+
+def _tactic_prefix(prefix: str) -> bool:
+    tail = prefix.lstrip()
+    while True:
+        lead = _TACTIC_LEAD_RE.match(tail)
+        tail = tail[lead.end():]
+        scope = _TACTIC_SCOPE_RE.match(tail)
+        if not scope:
+            break
+        tail = tail[scope.end():]
+    if not tail or _TACTIC_CASE_RE.fullmatch(tail):
+        return True
+    if _TACTIC_MATCH_RE.match(tail) and tail.rstrip().endswith("=>"):
+        return True
+    if _TACTIC_ALT_RE.match(tail) and tail.rstrip().endswith("|"):
+        return True
+    # A separator inside a term (e.g. `exact (let x := y; apply?)`)
+    # is not a tactic separator.
+    if not tail.rstrip().endswith((";", "<;>")):
+        return False
+    if re.search(r"\blet\b", tail) and not tail.startswith("let "):
+        return False
+    brackets: list[str] = []
+    for ch in tail:
+        if ch in _OPEN_BRACKETS:
+            brackets.append(_OPEN_BRACKETS[ch])
+        elif brackets and ch == brackets[-1]:
+            brackets.pop()
+    return not brackets
+
+
+def _apply_tactic_position(code: str, start: int) -> bool:
+    """Recognize ordinary inline and indented tactic sequence entries."""
+    line_start = code.rfind("\n", 0, start) + 1
+    prefix = code[line_start:start]
+    if any(_tactic_prefix(prefix[m.end():]) for m in _PROOF_BY_RE.finditer(prefix)):
+        return True
+    indent = len(prefix) - len(prefix.lstrip())
+    alternative = prefix.lstrip().startswith("|")
+    match_branch = alternative and "=>" in prefix
+    if alternative:
+        prefix = prefix.lstrip()[1:]
+        if match_branch:
+            prefix = prefix.rsplit("=>", 1)[1]
+    if not _tactic_prefix(prefix):
+        return False
+    line_end = line_start - 1
+    while line_end >= 0:
+        line_start = code.rfind("\n", 0, line_end) + 1
+        line = code[line_start:line_end]
+        line_end = line_start - 1
+        body = line.strip()
+        if not body:
+            continue
+        parent_indent = len(line) - len(line.lstrip())
+        if parent_indent > indent:
+            continue
+        opener = _TACTIC_MATCH_RE if match_branch else _TACTIC_ALT_RE
+        if opener.match(body):
+            alternative = False
+        if parent_indent == indent:
+            continue
+        for match in _PROOF_BY_RE.finditer(line):
+            rest = line[match.end():]
+            first_tactic = match.end() + len(rest) - len(rest.lstrip())
+            if not alternative and (not rest.strip() or first_tactic <= indent
+                                    or _TACTIC_BODY_RE.fullmatch(rest.strip())):
+                return True
+        if body.startswith("|") and body.endswith("=>"):
+            alternative = match_branch = True
+        elif not (_TACTIC_BODY_RE.fullmatch(body) or _TACTIC_CASE_RE.fullmatch(body)
+                  or _TACTIC_SCOPE_RE.fullmatch(body) or _TACTIC_MATCH_RE.fullmatch(body)):
+            return False
+        indent = parent_indent
+    return False
+
+
 def library_search_admit_tokens(text: str, mask: list[bool]) -> list[tuple[int, str]]:
-    """Live `exact?` / `apply?` with an admitting or unknown `all` option."""
+    """Live collection-mode `exact?` and potentially admitting `apply?` tactics."""
     quoted = _quoted_spans(text, mask)
+    code: str | None = None
     hits: list[tuple[int, str]] = []
     for match in _LIBSEARCH_RE.finditer(text):
         start = match.start()
@@ -578,8 +675,18 @@ def library_search_admit_tokens(text: str, mask: list[bool]) -> list[tuple[int, 
         # `exact?%` is a term elaborator. It logs an error instead of admitting silently.
         if match.group(0) == "exact?" and end < len(text) and text[end] == "%":
             continue
-        if _config_may_enable_all(text, mask, end):
-            hits.append((start, match.group(0)))
+        tactic = match.group(0)
+        if tactic == "apply?":
+            if code is None:
+                live = [" " if masked and ch != "\n" else ch for ch, masked in zip(text, mask)]
+                for left, right in quoted:
+                    live[left:right] = ["\n" if ch == "\n" else " " for ch in live[left:right]]
+                code = "".join(live)
+            admitting = _apply_tactic_position(code, start)
+        else:
+            admitting = _config_may_enable_all(text, mask, end)
+        if admitting:
+            hits.append((start, tactic))
     return hits
 
 

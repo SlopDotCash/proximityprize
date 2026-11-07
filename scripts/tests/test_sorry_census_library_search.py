@@ -10,9 +10,11 @@ Checked in separate files, each ending in `#print axioms t`:
   `(config := { all := true })`, `+grind +all`, `(all := false) +all`,
   `(config := { grind := true }) +all`, a comment or newline before `+all`,
   and `{ cfg with all := true }` — exit 0, `'t' depends on axioms: [sorryAx]`.
-* On a goal the tactic can close, bare `exact?` / `apply?`, `+all -all`, `(all := .false)`,
+* Bare `exact?` on a goal it can close, plus `exact? +all -all`, `(all := .false)`,
   `(config := { grind := true })`, `+all (config := { grind := true })`,
   and `(config := { all := true }) -all` — exit 0, axioms `[propext]`.
+* Bare `apply?` and `apply? -all` against the partial `NeedsFalse.intro`
+  suggestion below elaborate with `sorryAx`, even though collection is off.
 * `exact? + all` (space before the name) — exit 1, not a silent proof.
 """
 from pathlib import Path
@@ -95,9 +97,6 @@ CLEAN = """\
 theorem exact_plain : (1 : Nat) = 1 := by
   exact?
 
-theorem apply_plain : (1 : Nat) = 1 := by
-  apply?
-
 theorem exact_cancel : (1 : Nat) = 1 := by
   exact? +all -all
 
@@ -132,6 +131,20 @@ def apply? : Nat := 0
 def exact? : Nat := 1
 example : Nat := apply?
 example : Nat := exact?
+example : Nat :=
+  apply?
+example : Nat := by exact apply?
+example : Nat := by
+  exact
+    apply?
+example : Nat := by
+  exact (let x := (); apply?)
+example : Nat := by
+  exact (fun _ : Unit => apply?) ()
+def apply?? : Nat := 2
+def qualifiedApply : Nat := Foo.apply?
+def quotedApply : Nat := «apply?»
+def nameApply := `apply?
 
 def «exact? +all» : Nat := 2
 def «apply? (all := true)» : Nat := 3
@@ -151,7 +164,9 @@ theorem qualified : Nat := Foo.exact? +all
 /-- exact? (config := { all := true }) -/
 
 def msg := "exact? +all"
+def msgApply := "by apply? -all"
 def raw := r#"apply? (all := true)"#
+def rawApply := r#"{by apply?}"#
 
 theorem bare_then_other : (1 : Nat) = 1 := by
   exact?
@@ -199,6 +214,54 @@ class LibrarySearchAdmit(unittest.TestCase):
 
     def test_closing_search_and_lookalikes_are_not_holes(self) -> None:
         self.assertEqual(self.census(CLEAN), [])
+
+    def test_apply_can_admit_incomplete_suggestions_with_collection_off(self) -> None:
+        # Elaborates independently with `sorryAx` on pinned Lean 4.30.0-rc2.
+        for options in ("", " -all"):
+            with self.subTest(options=options):
+                source = f"""\
+import Lean.Elab.Tactic.LibrarySearch
+
+inductive NeedsFalse : Prop where
+  | intro : False → NeedsFalse
+
+theorem incomplete : NeedsFalse := by
+  apply?{options}
+
+#print axioms incomplete
+"""
+                self.assertEqual(
+                    [(row["decl"], row["token"]) for row in self.census(source)],
+                    [("theorem incomplete", "apply?")],
+                )
+
+    def test_apply_in_tactic_sequences_is_rejected(self) -> None:
+        for body in (
+            "by apply?",
+            "by /- comment -/ apply? -all",
+            "by { apply? -all }",
+            "by {\n  apply? -all\n}",
+            "by all_goals apply? -all",
+            "by\n  all_goals\n    apply?",
+            "by set_option maxHeartbeats 200000 in apply? -all",
+            "by set_option maxHeartbeats 200000 in all_goals apply? -all",
+            "by\n  set_option maxHeartbeats 200000 in\n    apply?",
+            "by let _ := (); apply? -all",
+            "by match true with | true => apply?",
+            "by\n  match true with\n  | true => apply?",
+            "by\n  match true with\n    | true => apply?",
+            "by\n  match true with\n  | true =>\n    apply?",
+            "by\n  constructor <;> apply?",
+            "by\n  constructor; apply?",
+            "by\n  first | apply? -all | trivial",
+            "by\n  first\n  | apply? -all\n  | trivial",
+            "by\n  case next => apply?",
+            "by\n  case next =>\n    apply?",
+            "by\n  · apply?",
+        ):
+            with self.subTest(body=body):
+                source = f"theorem test : True := {body}\n"
+                self.assertEqual([row["token"] for row in self.census(source)], ["apply?"])
 
     def test_search_config_does_not_assume_opaque_or_shadowable_values(self) -> None:
         for config in (
