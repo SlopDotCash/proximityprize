@@ -75,10 +75,12 @@ premise cannot be discharged at `deg = 0`.
   treated as a theorem to prove.
 - DuplexSponge has genuine progress beyond the historical blanket description:
   `ConsistencyPaperCascade.lean` supplies the 5.12 and 5.16 honest-paper providers,
-  and `ForkPaperFork.lean` supplies the 5.14 provider. (The paper-numbered
-  `DuplexSponge/Security/Lemma5*.lean` paths are import-only compatibility wrappers
-  that re-export these semantic-name modules; they no longer hold separately
-  compiled copies.)
+  and `ForkPaperFork.lean` supplies the 5.14 provider. (Each of the sixteen duplicated
+  module pairs now has one implementation owner, recorded in
+  `scripts/integration/duplex-clone-consolidation.json`: the paper-numbered
+  `DuplexSponge/Security/Lemma5*.lean` module holds the code, and its semantic-name
+  path, including the two named here, is an import-only compatibility wrapper. The
+  pairs no longer hold separately compiled copies.)
   `Reduction.lean` also supplies `lemma5_8EagerPaperResidual_holds`
   and unconditional honest-birthday/Claim 5.21 bounds, under its finite,
   decidable and sampleable type instances. Because those instances (for example

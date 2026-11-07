@@ -268,7 +268,9 @@ The key facts are:
 
 Coordinate convention: upstream's canonical columns recover the packed right factor;
 canonical rows recover the left evaluation-point factor. The historical helper identifiers
-below retain their names, while their types use these authoritative coordinate operations.
+below retain their names, while their types use these authoritative coordinate operations, so
+docstrings of those helpers may keep the historical word *row* or *column* for a coordinate; the
+`P.decomposeRows`/`P.decomposeColumns` named in a statement are what it means.
 The verifier's canonical column check therefore agrees with polynomial evaluation: the live
 `performCheckOriginalEvaluation` reads `P.decomposeColumns` (the right `φ₁`/`t'` factor), and
 the identity is proved as `performCheckOriginalEvaluation_packMLE_iff` (via
@@ -790,10 +792,11 @@ lemma eqTilde_comm {ℓ_ : ℕ} (r r' : Fin ℓ_ → L₀) : eqTilde r r' = eqTi
   exact eqPolynomial_symm r r'
 
 omit [CharP L₀ 2] [Fintype K₀] [DecidableEq K₀] in
-/-- **DP24 §2.5 `A_MLE` final-evaluation identity (defect #10, column form).** The multilinear
+/-- **DP24 §2.5 `A_MLE` final-evaluation identity (defect #10, left-factor form).** The multilinear
 extension `A_MLE` of `compute_A_func` — the sumcheck multiplier `(RingSwitching_SumcheckMultParam
 …).multpoly` — evaluated at the (arbitrary, non-Boolean) sumcheck challenges equals the verifier's
-`compute_final_eq_value`, which reads the **column** components of the final eq-tensor
+`compute_final_eq_value`, which reads the canonical **row** components (`P.decomposeRows`, the left
+`φ₀` factor) of the final eq-tensor
 `e := eq̃(φ₀ ∘ r_suffix, φ₁ ∘ challenges)`.
 
 Term-by-term derivation: the LHS expands by `MLE_eval_eq_sum_eqTilde` into a sum over the Boolean

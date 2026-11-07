@@ -1,0 +1,768 @@
+{
+ "method": "Per-file check of the old 4.30 audit-fix diff (audit-fixes worktree vs 4451cab28) against cw-fixes-435. Used because the per-batch briefs for 37 ported batches were lost.",
+ "files_compared": 923,
+ "fully_surviving": 749,
+ "partial_70_to_99_not_individually_reviewed": [
+  "ArkLib/Data/CodingTheory/GMMDS/LovettMergeBranch.lean",
+  "ArkLib/Data/CodingTheory/GuruswamiSudan/GSCurveTuple.lean",
+  "ArkLib/Data/CodingTheory/InterleavedFinOneEq.lean",
+  "ArkLib/Data/CodingTheory/ListDecoding/Bounds/General.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StructuredWeightInduction.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreementDegenerate.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CrossCellShkredovBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/DeviationSupSplit.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/E2VanishWidthFourFullCount.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Jo26ObstructionRowCount.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MCAFiniteTable.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MCAStepFunction.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/PrizeEquivalence.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/TwoBranchSmoothDomainRefutation.lean",
+  "ArkLib/OracleReduction/Composition/Sequential/AppendSoundnessMsgProof.lean",
+  "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Basic.lean",
+  "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaSalted.lean",
+  "ArkLib/OracleReduction/LiftContext/Coherence.lean",
+  "ArkLib/OracleReduction/ProbOneBindCompose.lean",
+  "ArkLib/ProofSystem/BatchedFri/QueryRoundProbability.lean",
+  "ArkLib/ProofSystem/BatchedFri/QuerySoundnessSmallField.lean",
+  "ArkLib/ProofSystem/Binius/FRIBinius/CoreInteractionPhase.lean",
+  "ArkLib/ProofSystem/Logup/LogupGrandSumIdentity.lean",
+  "ArkLib/ProofSystem/Logup/Security/Completeness.lean",
+  "ArkLib/ProofSystem/Logup/Security/LogupCompletenessWired.lean",
+  "ArkLib/ProofSystem/Logup/Security/LogupSoundnessClose.lean",
+  "ArkLib/ProofSystem/Logup/Security/LogupSoundnessUncond.lean",
+  "ArkLib/ProofSystem/Logup/Security/RbrToSoundBridge.lean",
+  "ArkLib/ProofSystem/Plonk/Composition.lean",
+  "ArkLib/ProofSystem/Spartan/ComposedCompleteness.lean",
+  "ArkLib/ProofSystem/Spartan/FirstSumcheckComplete.lean",
+  "ArkLib/ProofSystem/Spartan/SpartanSumcheckUnconditional.lean",
+  "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
+  "ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean",
+  "ArkLib/ProofSystem/Stir/RbrFrontDoor.lean",
+  "ArkLib/ProofSystem/Sumcheck/Spec/SingleRoundFaithful.lean",
+  "ArkLib/ProofSystem/ToyProblem/Metrics.lean",
+  "ArkLib/ToMathlib/BetaInputSupply.lean",
+  "ArkLib/ToMathlib/IngredientCBridge.lean",
+  "ArkLib/ToMathlib/KoalaBearAttackInstance.lean",
+  "ArkLib/ToMathlib/SpartanBricks.lean",
+  "ArkLib/ToVCVio/LazyPermMarginal.lean",
+  "Research/ProximityPrize/DOSSIER.md",
+  "Research/ProximityPrize/Frontier/_R325BinomialRecurrenceReturnBound.lean",
+  "Research/ProximityPrize/Frontier/_SYZ26LiftingTest.lean",
+  "Research/ProximityPrize/MCALatticeExact.lean",
+  "docs/kb/papers/LS18.md",
+  "docs/wiki/generated-files.md",
+  "docs/wiki/proximity-prize-leaderboard.md",
+  "docs/wiki/quickstart.md",
+  "docs/wiki/residual-census.md",
+  "scripts/README.md",
+  "scripts/forbidden_tokens.py",
+  "scripts/residual_axioms.txt",
+  "scripts/residual_census.py",
+  "scripts/tests/test_forbidden_tokens_axiom_heads.py",
+  "scripts/tests/test_residual_census_audit.py"
+ ],
+ "reviewed_below_70": [
+  {
+   "path": "ArkLib/Data/CodingTheory/BerlekampWelch/Sorries.lean",
+   "verdict": "open",
+   "note": "Prose only. The pinned module header still reads 'All the sorries Berlekamp-Welch decoder relies upon', but the file has no sorry and linsolve is proved. There is no extension twin, and prose-only pinned edits are not allowed.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/JohnsonBound/Family.lean",
+   "verdict": "repaired",
+   "note": "Pinned header is correct: johnson_bound_lambda_le_ell and mds_johnson_lambda_le are proved. The stale 'admitted' and 'remaining sorry' prose lived in the extension twin and was rewritten there. The old claim that T3.2 is refuted does not apply at 4.35, so it was not ported.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean",
+   "verdict": "preserved",
+   "note": "The conditional hAHIV docstring and its residual are in the extension twin.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean",
+   "verdict": "repaired",
+   "note": "Per-decoded-family BetaCurveInput statements were already in the twin. Added the missing hInput note and closed-endpoint caveat to the twin module docstring. The 'at most ε' defect text no longer exists in either file.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineSpaces.lean",
+   "verdict": "preserved",
+   "note": "All four per-decoded-family hypotheses are in the twin. Only the longFile bump was lost, which the 423-line twin does not need.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean",
+   "verdict": "obsolete",
+   "note": "Checked current code: the false axiom is gone. Upstream proves large_agreement_set_on_curve_implies_correlated_agreement' with hdeg_pos, and no sorry remains in the file. WeightedAgreementDegenerate keeps the refutation of the old form.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Guruswami.lean",
+   "verdict": "repaired",
+   "note": "Upstream proves modified_guruswami_has_a_solution without the hYZ budget, and D_YZ_triMonomial is in the twin. Lost items restored in the twin: the gsDpg rate-offset docstring, the hDx/hYZ caveats, and gsBox_hYZ_budget_unsatisfiable, which wave1 said was present but was not. Its proof was reworked for 4.35 and passes lean-check. The D_YZ_triMonomial_Y_Z100 instance was not restored.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ReedSolomonGap.lean",
+   "verdict": "preserved",
+   "note": "The per-decoded-family hypothesis is in the twin.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreement.lean",
+   "verdict": "obsolete",
+   "note": "Checked current code: all four axioms are now proved theorems with 0 < deg, errorBound (1 - α) tied to α, field-parameter sampling, and affine sampling from affineSubspaceAtOrigin. No sorry. The unproved Prop surfaces are not needed.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/DG25/MainResults.lean",
+   "verdict": "open",
+   "note": "Prose only. Proof comment at line 1283 still says `(1) = Pr{ r_last }[ r_last ∈ R* ]`; only ≤ holds by event inclusion. The proof itself is unaffected. No twin hosts this comment, and it can only change by a prose-only pinned edit.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/Folding.lean",
+   "verdict": "preserved",
+   "note": "The per-decoded-family hypothesis is in the twin.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/Lattices/CyclotomicRing/NormBounds/LyubashevskySeiler.lean",
+   "verdict": "open",
+   "note": "Prose only. Pinned header still calls this 'one of the two unproven lemmas' although isUnit_of_l1Norm_le is proved, and the overview still says Euclidean norm while the theorem takes an l1 hypothesis (the theorem docstring is accurate). No twin.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/Lattices/CyclotomicRing/NormBounds/MicciancioYoung.lean",
+   "verdict": "open",
+   "note": "Twin docstring repaired. Pinned line 24 still says 'one of the two unproven lemmas' although scalarVecMul_mul_l2NormSq_le is proved; this is a prose-only pinned defect.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/Lattices/CyclotomicRing/Subfield.lean",
+   "verdict": "obsolete",
+   "note": "Upstream's 'Proof status' section says the layer has no sorry and that no_selfReciprocal_factor and Lemma 6 are proved.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/Field.lean",
+   "verdict": "obsolete",
+   "note": "Checked current code: no_selfReciprocal_factor is an upstream theorem proved through not_associated_reverse_self, with no sorry. The old route's helper lemmas are not needed.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/Polynomial/RationalFunctions.lean",
+   "verdict": "repaired",
+   "note": "The defective docstring is in the twin. Added the note that the witness does not determine β.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/Polynomial/Trivariate.lean",
+   "verdict": "obsolete",
+   "note": "Upstream D_YZ is the semantic degreeYZ projection with axis regression examples, so the transposed index is gone.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/OracleReduction/BCS/Basic.lean",
+   "verdict": "repaired",
+   "note": "Caller-defined-obligation caveats and ofTrivialPayloads were already in the twin. Changed the remaining 'the API-level repair' to 'a partial API-level repair'.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/OracleReduction/Basic.lean",
+   "verdict": "repaired",
+   "note": "The false conceptual overview was in the twin. Replaced it with the reading guide, updated to the 4.35 outputOracle field. Pinned docs are accurate.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/OracleReduction/Composition/Parallel/Basic.lean",
+   "verdict": "obsolete",
+   "note": "Upstream header now marks the module '(TODO)' and the file has no declarations.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
+   "verdict": "repaired",
+   "note": "The residuals are in the twin. Restored both shared-state scope caveats with the Bool countermodel. Cited names exist.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/OracleReduction/Composition/Sequential/General.lean",
+   "verdict": "repaired",
+   "note": "Upstream proves guarded soundness and knowledge soundness, and its header discloses the admitted RBR contracts. The twin's completeness front doors are identity aliases: corrected the twin header and added checkpoint docstrings.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/OracleReduction/Equiv.lean",
+   "verdict": "open",
+   "note": "Prose only. Pinned header still says 'We define observational equivalence' and IOR equivalence, but only ProtocolSpec.Equiv exists and the Relation.equiv and Prover.ObsEquiv sketches are commented out. No twin.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/OracleReduction/Security/Basic.lean",
+   "verdict": "preserved",
+   "note": "Upstream knowledgeSoundnessWith keeps extraction failure as none and scores it bad. The regression Verifier.id_not_knowledgeSoundness_empty_relIn is in the twin.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/OracleReduction/Security/Rewinding.lean",
+   "verdict": "repaired",
+   "note": "The module-level memoryless note was already in the twin. Restored the per-declaration oracle-model and oracle-cost caveats there.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/OracleReduction/Security/RoundByRound.lean",
+   "verdict": "obsolete",
+   "note": "Upstream proves rbrKnowledgeSoundnessOneShot_implies_rbrKnowledgeSoundness, so the 'no implication' note would be false. The fresh-init limitation is documented on the toFun_full fields upstream.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/BatchedFri/Security.lean",
+   "verdict": "preserved",
+   "note": "friDegree, the full-rate repair and the nonvacuity lemmas including exists_not_fri_query_soundness are in the twin with the audit note.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/BatchedFri/Spec/General.lean",
+   "verdict": "obsolete",
+   "note": "Upstream retired batchedFRIOracleLens and liftedFRI for the explicit batching round, so the routing helpers have no target; Coherence.lean records L69. The inputRelation scope comment is in the twin, rewritten for the current δ-sensitive relation.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/BatchedFri/Spec/SingleRound.lean",
+   "verdict": "obsolete",
+   "note": "Upstream docstring says the prover sends no message in this round.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Basic.lean",
+   "verdict": "preserved",
+   "note": "Pinned roundRelation is the genuine RoundRelated relation with completed-block bad events. The relaxed-scope notes and roundRelationProp_of_lt are in the twin's legacy layer.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Code.lean",
+   "verdict": "preserved",
+   "note": "The 'not a decoder' docstring on extractUDRCodeword is in the twin, reworded.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/CoreInteractionPhase.lean",
+   "verdict": "obsolete",
+   "note": "Pinned RBR now uses the genuine RoundRelated relations, so the universal-relation caveat does not apply to it.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Prelude.lean",
+   "verdict": "preserved",
+   "note": "The twin docstring of iterated_fold_eq_matrix_form cites the proved single_point_localized_fold_matrix_form_eq_iterated_fold.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/QueryPhase.lean",
+   "verdict": "open",
+   "note": "Prose only. The 'trivial relation' comment is gone, but pinned QueryPhase/Soundness.lean:417 says queryRbrExtractor can invoke extractMlp directly, while the extractor only transports Unit. No code effect; correcting it needs a prose-only pinned edit.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/ReductionLogic.lean",
+   "verdict": "obsolete",
+   "note": "FinalSumcheckStepLogicCompleteResidual is gone, finalSumcheckStep_is_logic_complete is live, and the stale note no longer exists.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/Lift.lean",
+   "verdict": "repaired",
+   "note": "The helpers are in the twin. Added the packed-row scope note and the two representative-only docstrings.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Steps/Commit.lean",
+   "verdict": "preserved",
+   "note": "The relaxed-semantics note is on the twin's Historical namespace. The canonical state uses HasIncrementalBadEvent.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Steps/Fold.lean",
+   "verdict": "obsolete",
+   "note": "Checked current code: both axioms are gone. Upstream proves toFun_full and foldOracleVerifier_rbrKnowledgeSoundness with a redesigned state, with no sorry in the file, so the conditional bridge is not needed.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Steps/Relay.lean",
+   "verdict": "obsolete",
+   "note": "Pinned relay relations are the genuine ones; the note applied only to the old universal relation.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Component/RandomQuery.lean",
+   "verdict": "open",
+   "note": "Twin header repaired. Pinned line 22 still says 'We also support a variant', while RandomQueryAndReduceClaim is fully commented out; this is a prose-only pinned defect.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Fri/Spec/Soundness.lean",
+   "verdict": "repaired",
+   "note": "Upstream proves Fri.Spec.soundness and rbr_soundness at its own errors. The identity aliases remain in the twin, so their overclaiming docstrings were rewritten there. The old text was adapted because seqCompose_soundness is now proved and these aliases do not call it.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Spartan/Basic.lean",
+   "verdict": "preserved",
+   "note": "The compatibility-module text is gone upstream. The tuple docstrings are held by the existing downstream_adaptations entry.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Stir/MainThm.lean",
+   "verdict": "preserved",
+   "note": "Upstream h_smooth_lt fixes the direction. rate_lt_one, the nonvacuity lemmas and FieldSizeCondition are in the twin.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Sumcheck/Impl/Basic.lean",
+   "verdict": "obsolete",
+   "note": "Upstream replaced the placeholder with a real module doc.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Sumcheck/Spec/General.lean",
+   "verdict": "obsolete",
+   "note": "Upstream SingleRound.oracleVerifier reads the prover message, so the direct-input-checker scope note would be false.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRound.lean",
+   "verdict": "repaired",
+   "note": "Pinned verifier reads the message and oracleVerifier_eq_verifier is proved, so the scope section and SingleRoundVerifierScope are obsolete. Twin docs fixed: the General.lean pointer and the n-1-i lens exponent.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/ToyProblem/Definitions.lean",
+   "verdict": "preserved",
+   "note": "Existential-encoding docs and lemmas are in the twin.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/ProofSystem/ToyProblem/Spec/General.lean",
+   "verdict": "preserved",
+   "note": "Docs are in the twin.",
+   "set": "pinned"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/GMMDS/LovettMergeSubstitution.lean",
+   "verdict": "preserved",
+   "note": "Clash fix kept under the 4.35 name mergeVecSameDimension (public-fqn-consolidation.json); docstring explains the rename from mergeVec; no mergeVecFixedDim left in Lean sources.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/PointwiseAgreement.lean",
+   "verdict": "preserved",
+   "note": "PG-013: the identity wrapper is deleted here too, no importers remain, and TruncReadingOn stays in LocalSeriesProducer.lean.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/ProximityGenerators.lean",
+   "verdict": "open",
+   "note": "PG-201: the old fix added a full-column-rank conjunct to IsMDSGenerator, but the definition now lives in pinned ProximityGenerator/Basic.lean and is still rank-free. The module cannot be edited. The audit alternative (document the weaker meaning) is done, but only as a caveat in this shim, not on the definition.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessMsg.lean",
+   "verdict": "preserved",
+   "note": "hImplSupp scope caveat is in the 4.35 header, reworded to cover all theorems in the file; old proof outline left with the proof.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessReductionDischarge.lean",
+   "verdict": "preserved",
+   "note": "FQN clash resolved by renaming the 0<n theorem to _of_nonempty_right rather than deleting it; total _holds is only in AppendPerfectCompletenessTotal.lean and the header says so.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeStateFunction.lean",
+   "verdict": "obsolete",
+   "note": "The stale missing-brick and blocker comments sat in the hand-written toFun_next body; 4.35 delegates to appendGuarded, and grep finds neither phrase and no sorry in this file.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/CacheProvenance.lean",
+   "verdict": "preserved",
+   "note": "Dedup holds in reverse: this file is an import shim over Lemma58CacheProvenance, which owns the code with no back-import. The old edit only renamed a Lemma* file reference, and owner references still resolve under 4.35 naming.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Correspondence.lean",
+   "verdict": "preserved",
+   "note": "Dedup holds in reverse: this file is an import shim over Lemma58Correspondence, which owns the code with no back-import. The old edit only renamed a Lemma* file reference, and owner references still resolve under 4.35 naming.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/EagerFalse.lean",
+   "verdict": "preserved",
+   "note": "Dedup holds in reverse: this file is an import shim over Lemma58EagerFalse, which owns the code with no back-import. The old edit only renamed a Lemma* file reference, and owner references still resolve under 4.35 naming.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/ForkFalse.lean",
+   "verdict": "preserved",
+   "note": "Dedup holds in reverse: this file is an import shim over Lemma514ForkFalse, which owns the code with no back-import. The old edit only renamed a Lemma* file reference, and owner references still resolve under 4.35 naming.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/ForkPaper.lean",
+   "verdict": "preserved",
+   "note": "Dedup holds in reverse: this file is an import shim over Lemma514Paper, which owns the code with no back-import. The old edit only renamed a Lemma* file reference, and owner references still resolve under 4.35 naming.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/ForkPaperFork.lean",
+   "verdict": "preserved",
+   "note": "Dedup holds in reverse: this file is an import shim over Lemma514PaperFork, which owns the code with no back-import. The old edit only renamed a Lemma* file reference, and owner references still resolve under 4.35 naming.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/HashHalf.lean",
+   "verdict": "preserved",
+   "note": "Dedup holds in reverse: this file is an import shim over Lemma516HashHalf, which owns the code with no back-import. The old edit only renamed a Lemma* file reference, and owner references still resolve under 4.35 naming.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Reduction.lean",
+   "verdict": "preserved",
+   "note": "Dedup holds in reverse: this file is an import shim over Lemma58Reduction, which owns the code with no back-import. The old edit only renamed a Lemma* file reference, and owner references still resolve under 4.35 naming.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/HonestConsistencyPaper.lean",
+   "verdict": "preserved",
+   "note": "Import shim over owner Lemma512HonestPaper; the old doc edits live in the owner, see that entry.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512HonestPaper.lean",
+   "verdict": "preserved",
+   "note": "Owner holds both prose fixes: all three residuals discharged, and raw vs selected-anchor inverse exclusion. Cited theorems exist in Lemma512PaperCascade and Lemma514PaperFork. Old file was a shim; direction reversed by duplex-clone-consolidation.json.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512Paper.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with ConsistencyPaper.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references. Unrelated: its doc cites `EPaper.lean`, which does not exist under that name; pre-existing, unchanged by the audit.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512PaperCascade.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with ConsistencyPaperCascade.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma514ForkFalse.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with ForkFalse.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma514Paper.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with ForkPaper.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma514PaperFork.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with ForkPaperFork.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma516HashHalf.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with HashHalf.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma516Paper.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with HashPaper.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma516TimePFalse.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with TimePFalse.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58CacheProvenance.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with CacheProvenance.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Correspondence.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with Correspondence.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58EagerFalse.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with EagerFalse.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Extraction.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with Extraction.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Flag.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with Flag.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Freshness.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with Freshness.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Reduction.lean",
+   "verdict": "preserved",
+   "note": "Lost lines are the old wrapper header. 4.35 keeps the single copy here with Reduction.lean as the shim (no cycle), so the dedup intent holds. Audit deltas against this body were only import paths and filename references.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/StateRestorationTransport.lean",
+   "verdict": "preserved",
+   "note": "Header, runCollapse scope note and end note all say the canonical KS transfer is closed via verifyQueryLog.snd and that re-derivation is unsafe. The 4.35 wording is reorganised and the proof is present.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/OracleReduction/Security/ImplicationsCore.lean",
+   "verdict": "repaired",
+   "note": "Vacuity fix holds: canonical knowledgeSoundnessWith scores extractor failure as bad, the regression lives in Extensions Basic, and the old conditional name is retired per native-security-migration.json. The closing note had dropped the witness-type rigidity obstruction; re-added as comment in 4.35 terms (Aux arbitrary, WitOut fixed).",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidSucc.lean",
+   "verdict": "obsolete",
+   "note": "Old note concerned end-folding, where snoc was false. 4.35 projects by fixPrefix, so snoc is correct and proved via fixPrefix_initial_succ; pinned Relations.lean uses snoc consistently. lean-check OK, axioms clean.",
+   "set": "restA"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/BridgeAndAppendResiduals.lean",
+   "verdict": "obsolete",
+   "note": "canonical verifier now reads the prover message; hPerRound is proved (SingleRound.oracleReduction_toReduction_eq_reduction, line 210); the \"false\" warnings would now be wrong, docstrings already say it holds and record the retired verifier.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/LogupCompletenessEmptyOracle.lean",
+   "verdict": "obsolete",
+   "note": "canonical verifier now reads the prover message; docstring correctly says hPerRound holds.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/LogupCompletenessUncond.lean",
+   "verdict": "obsolete",
+   "note": "canonical verifier now reads the prover message; docstring correctly says hPerRound holds and keeps the retired-verifier history.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/LogupInitImplFacts.lean",
+   "verdict": "obsolete",
+   "note": "canonical verifier now reads the prover message; docstring correctly cites the proof of hPerRound.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/LogupResidualDischarge.lean",
+   "verdict": "obsolete",
+   "note": "Sumcheck dischargers retired (sumcheck-message-semantics-retirements.json); only outerSoundnessResidual_holds remains, with its side conditions explicit, and the module doc disclaims the retired completion.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/OuterRun.lean",
+   "verdict": "preserved",
+   "note": "Duplication-debt note present in other words; the stale \"not in umbrella build\" clause was correctly replaced: ArkLib.lean publicly imports ToyProblem.Spec.General.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/SumcheckComposedRejection.lean",
+   "verdict": "obsolete",
+   "note": "Rejection theorems retired; file is a compatibility stub. No zero-error claim to scope.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/SumcheckRejectionCore.lean",
+   "verdict": "obsolete",
+   "note": "verifier_run_failure_of_badSum retired; module doc states no zero-error completion follows.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessLift.lean",
+   "verdict": "preserved",
+   "note": "Current-status paragraph present; reworded for the retired pointwise route. All cited decls exist; sumcheckSoundnessResidual_holds_wired does take hProj and hInnerRbr.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessPointwise.lean",
+   "verdict": "obsolete",
+   "note": "sumcheckSoundnessResidual_pointwise retired; file is a compatibility stub.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/RingSwitching/Prelude.lean",
+   "verdict": "repaired",
+   "note": "Rows/columns swapped in canonical API and the old notes were re-expressed, but the A_MLE_eval_eq_compute_final_eq_value docstring still said compute_final_eq_value reads column components; the definition reads P.decomposeRows. Fixed it and added a header sentence on historical row/column wording in helper docstrings. Variable-0 convention note is obsolete: getSumcheckRoundPoly keeps variable 0 and fixFirstVariablesOfMQP now fixes the first variables, so the old mismatch and counterexample are gone. Boolean-domain status preserved.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeSoundness.lean",
+   "verdict": "preserved",
+   "note": "Scope notes present; correctly downgraded from \"unconditional\" to conditional on hRound2/hRound3 after the zero-flip retirement. Budget note preserved.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Spartan/ComposedTightRbrKnowledge.lean",
+   "verdict": "preserved",
+   "note": "#329 continuation note present, with the added conditional caveat.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Spartan/FirstSumcheckReduction.lean",
+   "verdict": "preserved",
+   "note": "Query-cost notes present; input-checker sentence correctly rewritten to message-reading round verifiers (Simple.oracleVerifier queries message at D plus the challenge).",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Spartan/SecondSumcheckReduction.lean",
+   "verdict": "preserved",
+   "note": "Same as first sum-check.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Stir/BlockRbrBudgets.lean",
+   "verdict": "preserved",
+   "note": "Refutation stated as argument only, not mechanized; the phantom name appears nowhere in the tree.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Stir/ErrorAccumulation.lean",
+   "verdict": "obsolete",
+   "note": "The sibling-plumbing paragraph with the stale RBRSoundness.lean:185 citation was rewritten; the current NOT IN THIS FILE section has neither defect, and its paths exist.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Sumcheck/Spec/OracleRbrSoundness.lean",
+   "verdict": "preserved",
+   "note": "Scope note present with the same content; the identity-front-door phrasing became \"returns hSeqCompose unchanged\". Append/Security.lean still has the sorry it cites.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Sumcheck/Spec/SeqComposeRbrSoundness.lean",
+   "verdict": "preserved",
+   "note": "Header now titled conditional assembly and keeps explicit hAppend, hRound and hMeasure; endpoint renamed oracleVerifier_rbrSoundness_of_round_append.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Sumcheck/Spec/SimpleRoundCoherent.lean",
+   "verdict": "obsolete",
+   "note": "canonical verifier now reads the prover message; hSimpleBridge is Simple.oracleReduction_eq_reduction. Docstrings correct; routing-is-not-the-bridge distinction kept.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRoundBridge.lean",
+   "verdict": "obsolete",
+   "note": "canonical verifier now reads the prover message; (star) holds and docstring says so, with a History section on the retired verifier.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRoundCohWired.lean",
+   "verdict": "obsolete",
+   "note": "canonical verifier now reads the prover message; hSimpleBridge premise holds; docstring correct.",
+   "set": "restB"
+  },
+  {
+   "path": "ArkLib/ToMathlib/OracleCompEvalDistBindComm.lean",
+   "verdict": "obsolete",
+   "note": "SPMF.bind_comm owner retired with the SPMF interpreter (SPMFBindComm.lean says so); the duplicate proof no longer exists.",
+   "set": "restB"
+  },
+  {
+   "path": "blueprint/src/lattices/hachi_subfield.tex",
+   "verdict": "preserved",
+   "note": "No-sorry/no-axiom status and axiom history present; the proof sketch uses not_associated_reverse_self, which exists. All \\lean refs exist.",
+   "set": "restB"
+  },
+  {
+   "path": "blueprint/src/oracle_reductions/composition.tex",
+   "verdict": "preserved",
+   "note": "Rewritten upstream, then amended in wave 2: Admitted labels, a restricted-RBR remark, the shared-oracle schedule caveat and residual projectors as conditional interfaces. All 40 \\lean refs and named restricted theorems exist.",
+   "set": "restB"
+  },
+  {
+   "path": "blueprint/src/oracle_reductions/defs.tex",
+   "verdict": "preserved",
+   "note": "Knowledge-soundness definition states extractor failure is bad, with the vacuity caveat. The implications prose was replaced upstream by guarded-verifier theorems, so the old \"two named transport residuals\" text is obsolete. \\lean refs exist (ProtocolSpec.Type is the structure field «Type»).",
+   "set": "restB"
+  },
+  {
+   "path": "blueprint/src/oracle_reductions/fiat_shamir.tex",
+   "verdict": "obsolete",
+   "note": "Upstream #1362 rewrite removed the DuplexSponge audit passage with the file names; no such names remain in the tex. \\lean refs exist (fsChallengeOracle and deriveTranscriptFS are aliases).",
+   "set": "restB"
+  },
+  {
+   "path": "blueprint/src/proof_systems/stir.tex",
+   "verdict": "obsolete",
+   "note": "Upstream #1291 withdrew the Section 5 theorems; they are now labelled unformalized targets with no \\lean link, so the front-door caveats have nothing to qualify. The rate defect is fixed in Lean: ParamConditions.h_smooth_lt is degree < card.",
+   "set": "restB"
+  },
+  {
+   "path": "blueprint/src/proof_systems/whir.tex",
+   "verdict": "obsolete",
+   "note": "The prose that overclaimed is gone; thm:whir_rbr_soundness has a commented-out \\lean and no leanok, and scope notes live in RBRSoundness.lean and WhirBricksConstruction.lean. Its TODO \"not currently formalized\" understates the existing Prop but makes no false claim.",
+   "set": "restB"
+  },
+  {
+   "path": "docs/kb/papers/JM24.md",
+   "verdict": "preserved",
+   "note": "Stale \"incomplete proofs\" entry replaced; no AGM security theorem claim and the audit note are present. ArkLib/AGM has no sorry.",
+   "set": "restB"
+  },
+  {
+   "path": "docs/kb/papers/Mic07.md",
+   "verdict": "preserved",
+   "note": "Proved-status and power-of-two pin present in other words.",
+   "set": "restB"
+  },
+  {
+   "path": "docs/kb/papers/NOZ26.md",
+   "verdict": "preserved",
+   "note": "Lines 222-224 state the proved inputs, the X^{2^a}+1 restriction and the l1 hypothesis.",
+   "set": "restB"
+  },
+  {
+   "path": "docs/wiki/issue-2-quality-audit.md",
+   "verdict": "repaired",
+   "note": "Axiom history correctly updated for 4.35 (none remain; residual_axioms.txt is comments only). But it said Lemma5* paths are wrappers of the semantic-name modules, and in 4.35 the direction is reversed in all 16 pairs. Fixed, citing duplex-clone-consolidation.json. Dated upstream-pin sections left as is.",
+   "set": "restB"
+  },
+  {
+   "path": "scripts/tests/test_duplex_sponge_compat_wrappers.py",
+   "verdict": "repaired",
+   "note": "Guard intent preserved and rewritten around the manifest; 6 tests pass. Only docstring fix: \"for most pairs\" to \"for every pair\", since all 16 owners are Lemma5*.",
+   "set": "restB"
+  },
+  {
+   "path": "scripts/validate.sh",
+   "verdict": "preserved",
+   "note": "Comment wording differs; it still builds axiom_audit.py --print-modules before the audit.",
+   "set": "restB"
+  }
+ ]
+}

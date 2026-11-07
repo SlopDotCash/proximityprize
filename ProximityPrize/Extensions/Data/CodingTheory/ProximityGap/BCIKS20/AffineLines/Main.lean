@@ -42,6 +42,18 @@ residual is refuted at the square-root endpoint in small fields
 four points, `deg = 1`, `δ = 1/2`), and off the endpoint it is vacuous.  So these front doors add
 nothing over the strict ones except at `δ = 1 - √ρ`, and there only in parameter regimes where the
 residual is actually discharged.  Endpoint claims should go through a genuinely stronger, guarded
+premise (e.g. `BoundaryCardLatticeData`, which forces a large field) rather than the bare residual. Their `hInput` hypotheses
+supply a `KeystoneStrictResidual.BetaCurveInput*` bundle for every received line `u` in the regime
+and every decoded family `P` on its good set (the bundles are per decoded family since the audit-L72
+repair); see `KeystoneStrictResidual` for the obstructions those bundles still carry.
+
+**Closed-endpoint caveat.**  Every non-strict front door here that takes the bare
+`BoundaryCardResidual (k := 1)` (`hBoundaryCard`) is a sound conditional theorem, but that
+residual is refuted at the square-root endpoint in small fields
+(`BoundaryCardResidualAffineLineRefutation.not_boundaryCardResidual_affineLine`: `F = ZMod 5`,
+four points, `deg = 1`, `δ = 1/2`), and off the endpoint it is vacuous.  So these front doors add
+nothing over the strict ones except at `δ = 1 - √ρ`, and there only in parameter regimes where the
+residual is actually discharged.  Endpoint claims should go through a genuinely stronger, guarded
 premise (e.g. `BoundaryCardLatticeData`, which forces a large field) rather than the bare residual.
 -/
 

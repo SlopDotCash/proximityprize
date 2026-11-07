@@ -144,7 +144,10 @@ arbitrary additive oracle cost model and asks that every invocation of the extra
 public interface satisfy the same expected-cost bound.
 
 This is to model the expected runtime of straightline/rewinding extractors in
-Definition 3.6 & 3.8 of CO25
+Definition 3.6 & 3.8 of CO25. Scope: the `CostModel` charges oracle operations only (pure local
+computation is free), so this is an expected **oracle-cost** bound, not a bound on arbitrary local
+running time; the expectation is over the raw memoryless (fresh-uniform-answer) semantics of
+`OracleComp` (see the module docstring).
 -/
 def RewindingNARG.expectedCostBound
     [OracleSpec.UniformAnswerMeasure oSpec]
@@ -173,7 +176,11 @@ variable {ι : Type} {oSpec : OracleSpec ι}
 
 The paper's size bound `|x| ≤ n` is represented here by an arbitrary set `admissible`, so the same
 definition can be reused for statement-size bounds or any other well-formedness predicate on
-instances. -/
+instances.
+
+The probability is that of the raw `OracleComp oSpec`, i.e. every oracle query receives an
+independent fresh uniform answer (memoryless oracle); no random-function cache or
+ideal-permutation interpreter is applied. See the module docstring. -/
 def failureProbability
     (admissible : Set Statement)
     (verifier : NonInteractiveVerifier Message oSpec Statement Bool)
@@ -190,7 +197,12 @@ def failureProbability
 
 This runs the malicious prover once to obtain the target statement and proof, records the prover's
 and verifier's shared-oracle query logs for that accepting attempt, and then invokes the rewinding
-extractor with black-box access to the prover itself. -/
+extractor with black-box access to the prover itself.
+
+The game is a raw `OracleComp oSpec`: when measured with `Pr[…]`, the prover's, verifier's and
+extractor's queries all receive independent fresh uniform answers. No shared random-function cache
+is threaded across these three calls, so a repeated query (e.g. the verifier re-querying a key the
+prover already queried) need not return the same answer. -/
 def rewindingKnowledgeSoundnessGame
     (verifier : NonInteractiveVerifier Message oSpec Statement Bool)
     (extractor : Extractor.RewindingNARG oSpec Statement Witness Message)
@@ -214,11 +226,19 @@ resource quantification explicitly:
 - `queryBound` formalizes the `t`-query restriction on malicious provers
 - `knowledgeError` may depend on that query bound and on a certified failure bound
 - `timeBound` is the ArkLib rendering of the paper's expected-time clause, phrased through an
-  abstract additive oracle cost model
+  abstract additive oracle cost model; it bounds expected **oracle cost**, not arbitrary local
+  running time (pure local computation is free in a `CostModel`)
 
 The parameters hidden in the paper notation, such as the security parameter, statement size, or an
 external runtime accounting for the malicious prover, can be absorbed into `admissible`,
-`knowledgeError`, and `timeBound`. -/
+`knowledgeError`, and `timeBound`.
+
+**Oracle model.** This is a *memoryless-oracle* notion: the extraction game and the failure
+probability are measured on raw `OracleComp oSpec`, where every query is answered by a fresh
+independent uniform sample (see the module docstring). It does not by itself express knowledge
+soundness in the cached random-oracle model or the ideal-permutation model; a ROM claim requires a
+version parameterized by the intended oracle interpreter or an explicit interpretation bridge,
+neither of which is provided here. -/
 def rewindingKnowledgeSoundness
     (admissible : Set Statement)
     (relation : Set (Statement × Witness))
@@ -255,7 +275,8 @@ variable {oSpec : ℕ → OracleSpec ι}
   [∀ secParam, OracleSpec.UniformAnswerMeasure (oSpec secParam)]
   {Statement Witness Message : ℕ → Type}
 
-/-- CO25 Definition 3.7 with the security parameter `λ` made explicit as an external index. -/
+/-- CO25 Definition 3.7 with the security parameter `λ` made explicit as an external index
+(memoryless-oracle semantics, as for `failureProbability`). -/
 def failureProbabilityFamily
     (admissible : (secParam : ℕ) → Set (Statement secParam))
     (verifier :
@@ -269,7 +290,9 @@ def failureProbabilityFamily
 /-- CO25 Definition 3.8 with the security parameter `λ` made explicit as an external index.
 
 This is a wrapper over the fixed-`λ` notion `rewindingKnowledgeSoundness`, intended to expose the
-paper's `(λ, t, n, ...)` quantification pattern without rewriting the underlying local semantics.
+paper's `(λ, t, n, ...)` quantification pattern without rewriting the underlying local semantics;
+in particular it inherits the memoryless-oracle semantics and the oracle-cost time clause described
+in the module docstring.
 -/
 def rewindingKnowledgeSoundnessFamily
     (admissible : (secParam : ℕ) → Set (Statement secParam))
