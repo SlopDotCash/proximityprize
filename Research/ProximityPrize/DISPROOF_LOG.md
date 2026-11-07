@@ -54558,7 +54558,7 @@ Evidence class: Lean proof certificate; all declarations use only `propext`,
 
 ---
 
-### [agl24-rim-failure-prob-boundary-instances] Boundary-instance attacks on the Lemma 3.1 interface predicate are no-route: parameter-region where it fails is unreachable by consumers
+### [agl24-rim-failure-prob-boundary-instances] Two boundary instances outside the Lemma 3.1 assembly
 
 Date: 2026-11-01. Target: the [AGL24] §3 "Lemma 3.1 interface"
 `AGL24.RIMFullRankFailureProbResidual` in `ArkLib/Data/CodingTheory/AGL24UnionBound.lean`.
@@ -54578,12 +54578,11 @@ instances of the interface predicate:
   distribution on it gives the deficit set measure `1`
   (`toOuterMeasure_deficit_complete_family_pure_eq_one`).
 
-Route consequence, recorded per the review of PR #334: these are NO-ROUTE instances.
-Neither shape is reachable by a consumer — every provider and consumer requires a WPC
-family (`WpcIndex`, both providers carry `hwpc`). The all-zero tuple also has mass
-zero under every evaluation-embedding-mapped PMF, since embeddings `Fin 2 ↪ ZMod 2`
-take two distinct values. Neither example falls under the `hres` hypothesis of
-`conditional_failure_bound`. Consequently such boundary facts delimit the predicate without refuting the
+Each example violates the predicate when the proposed upper bound is below `1`.
+The empty family violates the WPC hypothesis. The complete two-slot family meets WPC,
+but the all-zero tuple has mass zero under every evaluation-embedding-mapped PMF,
+since embeddings `Fin 2 ↪ ZMod 2` take two distinct values. Neither example falls
+under the `hres` hypothesis of `conditional_failure_bound`. Consequently such boundary facts delimit the predicate without refuting the
 interface, and exact counterexample-style submissions at non-WPC families or
 non-injective masses are a dead end recorded here for anti-repeat. The real referencing
 gap — the bridge from the uniform-over-tuples bound to the embedding-mapped evaluation
@@ -54641,6 +54640,7 @@ The four public declarations print their complete axiom dependencies; only
 `propext`, `Classical.choice` and `Quot.sound` are permitted. No new axiom or
 named residual is introduced. This is a degree-only classification, not a
 production counterexample or a closure of #164.
+
 ### [164-unrestricted-fiber-count-residual-refuted] Scalar quantification loses the instance
 
 Date: 2026-10-13. Target: `ProximityGap.Frontier.FrobeniusEnergyDescent.FiberCountResidual`
