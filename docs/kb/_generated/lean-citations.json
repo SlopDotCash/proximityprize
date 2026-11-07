@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 1383,
+    "files_with_citations": 1384,
     "keys_cited": 83,
-    "total_citation_edges": 1800
+    "total_citation_edges": 1801
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -274,6 +274,9 @@
       "AGL24"
     ],
     "ArkLib/Data/CodingTheory/AGL24ExtensionLift.lean": [
+      "AGL24"
+    ],
+    "ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean": [
       "AGL24"
     ],
     "ArkLib/Data/CodingTheory/AGL24FrankDescent.lean": [
@@ -5092,6 +5095,7 @@
       "ArkLib/Data/CodingTheory/AGL24DualZeroPatternPinned.lean",
       "ArkLib/Data/CodingTheory/AGL24EvalToSymbolic.lean",
       "ArkLib/Data/CodingTheory/AGL24ExtensionLift.lean",
+      "ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean",
       "ArkLib/Data/CodingTheory/AGL24FrankDescent.lean",
       "ArkLib/Data/CodingTheory/AGL24FrankInterface.lean",
       "ArkLib/Data/CodingTheory/AGL24FrankUncrossingStep.lean",
