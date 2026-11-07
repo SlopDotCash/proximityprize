@@ -4,6 +4,9 @@ from pathlib import Path
 import re
 from forbidden_tokens import comment_mask
 
+# `«Research»` is Lean's escaped spelling of the same root component.
+RESEARCH_MODULE = re.compile(r'(?:Research|«Research»)(?:\.|$)')
+
 
 def research_imports(text: str) -> list[tuple[int, str]]:
     if "Research" not in text:
@@ -16,7 +19,7 @@ def research_imports(text: str) -> list[tuple[int, str]]:
         match = re.match(r'\s*(?:(?:public|meta)\s+)*import\s+(?:all\s+)?(.+)', line)
         if match:
             found.extend((number, module) for module in match[1].split()
-                         if module == 'Research' or module.startswith('Research.'))
+                         if RESEARCH_MODULE.match(module))
     return found
 
 
