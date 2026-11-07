@@ -63,6 +63,8 @@ the historical averaged results through the proved implications in that layer.
 The full oracle sum-check completeness theorem now belongs to `Sumcheck.Spec.General`.
 Existing downstream calls with initialization and support arguments delegate to it. The
 polynomial-pinned result still carries its stronger endpoint relation in the downstream layer.
+The classic `eval_on_Z` and `pg_eval_on_Z` argument orders both delegate to `Trivariate.evalAtZ`,
+and `ReedSolomon.codewordToPoly` delegates to the canonical interpolation map.
 
 `python3 scripts/integration/check_consolidation.py` verifies the inventory against the pinned
 Git tree, checks every canonical source blob, rejects imports from canonical modules into
@@ -136,8 +138,8 @@ no-folding-consistency and no-bad-event hypotheses.
 
 The flagship kernel audit pins native query execution and chronological folding separately,
 alongside the explicitly historical counterexample and terminal-fold result. The
-[pin migration record](../../scripts/integration/flagship-native-query-pins.json) tracks all
-replacements; the audit now checks 57 declarations without dropping any unaffected entry.
+[pin migration record](../../scripts/integration/flagship-native-query-pins.json) tracks those
+replacements. The current list includes 60 declarations, including the three G139 results.
 
 The canonical `disagreement_fold_subset_fiberwiseDisagreement` statement now formally requires
 `Fact (β 0 = 1)` because its quotient-fiber set uses that normalized basis. The previous general

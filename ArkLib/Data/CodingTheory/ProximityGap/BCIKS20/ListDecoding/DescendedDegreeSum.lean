@@ -269,7 +269,7 @@ theorem pg_exists_R_descended_of_Q_eval_zero
       (irreducible_factorization_of_gs_solution h_gs).choose_spec.choose_spec.choose
       (irreducible_factorization_of_gs_solution h_gs).choose_spec.choose_spec.choose_spec.choose
       (Pz (k := k) (ωs := ωs) (δ := δ) (u₀ := u₀) (u₁ := u₁) z.2)
-      hfact (by simpa [pg_eval_on_Z] using hQ) hC
+      hfact (by simpa [pg_eval_on_Z, Trivariate.evalAtZ_eq_map_map_evalRingHom] using hQ) hC
   refine ⟨(irreducible_factorization_of_gs_solution h_gs).choose_spec.choose.getD j 1, ?_,
     (irreducible_factorization_of_gs_solution h_gs).choose_spec.choose_spec.choose.getD j 0, ?_⟩
   · have hmem :
@@ -278,7 +278,7 @@ theorem pg_exists_R_descended_of_Q_eval_zero
       rw [List.getD_eq_getElem _ 1 (Finset.mem_range.mp hj)]
       exact List.getElem_mem (Finset.mem_range.mp hj)
     exact (mem_pg_RsetDescended_iff_mem_list (k := k) h_gs _).mpr hmem
-  · simpa [pg_eval_on_Z] using hjz
+  · simpa [pg_eval_on_Z, Trivariate.evalAtZ_eq_map_map_evalRingHom] using hjz
 
 /-! ## P-generic H-extraction (for the Frobenius-twisted root)
 
@@ -309,7 +309,7 @@ theorem pg_exists_H_of_R_eval_zero_generic (x₀ : F)
     have hr : fZ r = x₀ := by simp [fZ, r]
     have hcommZ : ((pg_eval_on_Z (F := F) R z.1).eval P).eval x₀ = fZ ((R.eval q).eval r) := by
       have h := Polynomial.map_mapRingHom_eval_map_eval (f := fZ) (p := R) (q := q) r
-      simpa [pg_eval_on_Z, fZ, hqmap, hr] using h
+      simpa [pg_eval_on_Z, Trivariate.evalAtZ_eq_map_map_evalRingHom, fZ, hqmap, hr] using h
     have hfz0 : fZ ((R.eval q).eval r) = 0 := by
       calc fZ ((R.eval q).eval r) = ((pg_eval_on_Z (F := F) R z.1).eval P).eval x₀ := by
             simp [hcommZ]

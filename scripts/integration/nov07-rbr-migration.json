@@ -675,6 +675,8 @@
     "ArkLib/ProofSystem/Sumcheck/Spec/RbrKnowledgeSoundnessOracle.lean": {
       "before_sha256": "ed577a0bc1f2993559118b69547528acf267603d8b57d59b639a696b27db57da",
       "after_sha256": "7dc1b7db3800ca47b2025d3b4b51a8503d31714f8d140e3dca103cd30fef8f66",
+      "followup_after_sha256": "ff7726ac6f744c388c7565601445f960a9c2bd101c2916b2230137fa9d2e11db",
+      "followup": "Rewrite through the ported lift-context and sequential verifier equalities.",
       "renames": {
         "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
       },
@@ -844,6 +846,8 @@
     "ProximityPrize/Extensions/OracleReduction/LiftContext/OracleReduction.lean": {
       "before_sha256": "aa5f318255fb7edae55ab8d1ddabf0ad20fc5011ca2fad6b6d0ebda2fbddd352",
       "after_sha256": "b4fbeb04bc55675344f01ac9d78688850bc6e21013d0f51627ff3e71a20bedf3",
+      "followup_after_sha256": "efbc6f6673d8c895648d95ff42a50666b17d3615a8117165b86948665df10b63",
+      "followup": "Use the verifier-level averaged lift-context bridge and import its owning reduction extension.",
       "renames": {
         "rbrSoundness": "rbrSoundnessAveraged",
         "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"

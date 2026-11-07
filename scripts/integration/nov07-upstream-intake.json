@@ -60,6 +60,13 @@
       ],
       "log_sha256": "caeb17c9126a74a71934be0a8483a42bb64e2a05347c0ef7739c5ecb502d8d1e",
       "source_sha256": "ddf924420a1fe55f54f663fcbaed2f158c8bb5cecc99ba34734b28001b53a69f"
+    },
+    "whole_module_validation": {
+      "scope": "The current Research module, using the checked shared binary-power implementation and the existing G139 bridge artifacts.",
+      "exit_code": 0,
+      "source_sha256": "56d3b59d6a903c162141833f6b55c1f7b8e7d6f8be64535d8540c6a38b6cdb3d",
+      "log_sha256": "158cfadb9d00df2c470df9efbeb21e6e294f28c8a809ba1ef71b638d04d1ed7f",
+      "flagship_axiom_reports": 3
     }
   },
   "arithmetic_power_consolidation": {

@@ -908,7 +908,7 @@ theorem pg_exists_H_of_R_eval_zero (δ : ℚ) (x₀ : F)
     -- rewrite the left-hand evaluation using `map_mapRingHom_eval_map_eval`
     have hcommZ : ((pg_eval_on_Z (F := F) R z.1).eval P).eval x₀ = fZ ((R.eval q).eval r) := by
       have h := Polynomial.map_mapRingHom_eval_map_eval (f := fZ) (p := R) (q := q) r
-      simpa [pg_eval_on_Z, fZ, hqmap, hr] using h
+      simpa [pg_eval_on_Z, Trivariate.evalAtZ_eq_map_map_evalRingHom, fZ, hqmap, hr] using h
     have hfz0 : fZ ((R.eval q).eval r) = 0 := by
       -- combine `hx` and `hcommZ`
       calc
@@ -996,7 +996,7 @@ theorem pg_exists_R_of_Q_eval_zero (δ : ℚ)
   let evZ' : F[Z][X][Y] →+* Polynomial (Polynomial F) := Polynomial.mapRingHom evZ
   let φ : F[Z][X][Y] →+* F[X] := (Polynomial.evalRingHom P).comp evZ'
   have hφQ : φ Q = 0 := by
-    simpa [φ, evZ', evZ, pg_eval_on_Z] using hQ'
+    simpa [φ, evZ', evZ, pg_eval_on_Z, Trivariate.evalAtZ_eq_map_map_evalRingHom] using hQ'
   -- Use associated product of normalizedFactors
   have hassoc : Associated ((UniqueFactorizationMonoid.normalizedFactors Q).prod) Q :=
     UniqueFactorizationMonoid.prod_normalizedFactors (a := Q) h_gs.Q_ne_0
@@ -1026,7 +1026,7 @@ theorem pg_exists_R_of_Q_eval_zero (δ : ℚ)
     dsimp [pg_Rset]
     exact (Multiset.mem_toFinset).2 hRmem
   · -- show (pg_eval_on_Z R z.1).eval P = 0
-    simpa [φ, evZ', evZ, pg_eval_on_Z] using hR0
+    simpa [φ, evZ', evZ, pg_eval_on_Z, Trivariate.evalAtZ_eq_map_map_evalRingHom] using hR0
 
 omit [DecidableEq (RatFunc F)] in
 theorem pg_exists_pair_for_z (δ : ℚ) (x₀ : F)
