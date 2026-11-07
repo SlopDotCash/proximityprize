@@ -36,18 +36,19 @@ proof-source gate and a locked package build of their leaf before direct, explic
 to classic downstream modules. `--axioms` runs the canonical kernel-level axiom
 regression sweep. Upstream-inherited proof debt is recorded explicitly; a successful
 integration check does not constitute closure of an open research theorem.
-The ten inherited `True` theorem stubs in `ArkLib/Data/Fin/Tuple/Lemmas.lean`
-are byte-pinned in [`scripts/upstream-source-policy.json`](../../scripts/upstream-source-policy.json),
-including the upstream Git revision and declaration names. They establish no tuple
-identities. A file hash change or a copied declaration invalidates the exception;
-native evaluation and custom axioms have no exception in this baseline.
+ArkLib proved the ten previously inherited tuple placeholder theorems. The pinned
+[`scripts/upstream-source-policy.json`](../../scripts/upstream-source-policy.json) records
+an empty placeholder exception list. The source precheck also rejects proof-as-sorry
+and kernel-skip debug options in live Lean source or `lakefile.toml`.
+Run `uv run --no-project --python 3.12 python scripts/forbidden_tokens.py` for the
+full source precheck. Pass files or directories to check a focused scope.
 
 Inherited sorry entries normally require the exact upstream file. A reviewed
 `downstream_adaptations` entry may fill another declaration in that file while retaining an
 unchanged admitted constructor. Such a retained hole additionally needs its original full name,
 exact stripped-command hash, reviewed current file hash, and pinned upstream Git blob. Each
 census token must remain inside that exact command; new or changed admitted commands,
-copied declarations, and tokens outside the unchanged command remain errors. This narrow rule does not relax the whole-file `True`-stub exceptions.
+copied declarations, and tokens outside the unchanged command remain errors.
 
 Stage new source paths, run `scripts/update-lib.sh` and
 `scripts/update-research-lib.py`, and commit the generated module surfaces.
@@ -440,19 +441,17 @@ the default build.
   Pages/OIDC permission. It uploads timing artifacts consumed by the trusted
   [`../../.github/workflows/build-timing-report.yml`](../../.github/workflows/build-timing-report.yml)
   workflow, which renders the report and posts it on the PR.
-- The downstream source precheck rejects kernel-skip and proof-as-sorry debug options in
-  Lean source and in `lakefile.toml`. Python 3.11 or newer is required to parse the Lake
-  configuration. Pass explicit paths to `python3 scripts/forbidden_tokens.py` for focused
-  checks. Stale allowlist warnings are reported on the default full-tree scan.
 - [`../../.github/workflows/interaction.yml`](../../.github/workflows/interaction.yml)
   provides focused compilation and zero-warning checks for typed Interaction production and
   acceptance modules. It also runs on feature-base stacked PRs. Its read-only job restores,
   but never saves, the dependency and build caches and does not retain checkout credentials. Passing
   this check does not waive the full validation/axiom gate for the eventual `main` target.
-- The validation wrapper enforces the issue #47 verification gates: a fast precheck rejecting
-  `native_decide`/`bv_decide`/custom `axiom` declarations in live source
-  (`scripts/forbidden_tokens.py`, which main CI also runs as a separate early step), a
-  comment-stripped sorry census requiring zero live holes
+- The validation wrapper enforces the issue #47 verification gates. Main CI also runs
+  `scripts/forbidden_tokens.py` as an early precheck. It rejects `native_decide`,
+  `bv_decide`, undocumented custom axioms, and options such as `debug.skipKernelTC`
+  that skip checking or admit proofs in live Lean source or `lakefile.toml`.
+  Parsing the Lake configuration requires Python 3.11 or newer. The wrapper also runs a
+  comment-stripped sorry census that rejects holes beyond the pinned upstream baseline
   (`scripts/sorry_census.py --fail-on-holes`), and a `#print axioms` sweep over the pinned
   flagship list (`scripts/axiom_audit.py` reading `scripts/flagship_axioms.txt`) that must stay
   within `propext`, `Classical.choice`, `Quot.sound`. Renaming or deleting a pinned flagship
@@ -460,10 +459,10 @@ the default build.
   outside the ProximityGap umbrella, the audit's modules
   (`python3 ./scripts/axiom_audit.py --print-modules`: the flagship modules and the modules of
   the residual axioms pinned in `scripts/residual_axioms.txt`) are built before it runs. The same
-  audit lists, from Lean's environment metadata, every axiom declared in an `ArkLib`/`Research`
-  module of that import closure and fails unless each is a pinned residual declared in its pinned
-  module; this covers every name form and axioms added without the `axiom` keyword, but only
-  inside that closure.
+  audit uses Lean's environment metadata to list every axiom declared in an `ArkLib`,
+  `ProximityPrize`, or `Research` module in that import closure. Each must be a residual
+  declared in its pinned module. This covers axioms added without the `axiom` keyword
+  within the audited import closure.
 - The declaration scanner restricts leading indentation to the current line, so
   large masked block comments do not cause repeated scans of all following blank lines.
 - The forbidden-token precheck rejects every custom `axiom` *except* the
@@ -615,6 +614,16 @@ certifies nothing. A file that prints no `#print axioms` line still receives
 only gate 1; nothing audits the transitive axioms it never reports.
 
 ## Retained probe dependencies
+
+Run the finite monomial-pencil census probes under `scripts/probes/` with standard Python
+and leave `PYTHONOPTIMIZE` unset. Their entry points reject optimized execution so the
+certificate checks remain active.
+
+The SYZ72 middle-band probe samples 20,000 support pairs at each of 15 selected primes and
+checks all 28 legal third supports per draw. Run
+`python3 scripts/probes/probe_syz72_middle_band_sweep.py` to reproduce the sample or pass
+`--trials` to choose a different positive draw count. Zero-hit rows apply to the sampled
+supports.
 
 Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
 

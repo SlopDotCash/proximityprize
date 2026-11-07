@@ -93,7 +93,7 @@
     }
   },
   "initial_november_upstream": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
-  "latest_downstream_base": "d6231bb7ff3233e9272774dd5702b814b8c64e9b",
+  "latest_downstream_base": "04bca190a5a33d156c14d872fa06ed7f544f7e7b",
   "downstream_hachi_factor_swap": {
     "downstream_commit": "8f2d555e5c446c97544f31917b5b99209c71c916",
     "declaration": "ArkLib.Lattices.CyclotomicModulus.no_selfReciprocal_factor",
