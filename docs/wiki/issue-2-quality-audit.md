@@ -29,7 +29,6 @@ below is not silently declared complete by that migration.
 | `Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreement.lean` | `weighted_correlated_agreement_for_parameterized_curves`, its primed variant, `weighted_correlated_agreement_over_affine_spaces`, its primed variant |
 | `Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean` | `large_agreement_set_on_curve_implies_correlated_agreement` and its primed variant |
 | `ProofSystem/Binius/BinaryBasefold/Steps/Fold.lean` | `foldKnowledgeStateFunction_toFun_full`, `foldOracleVerifier_rbrKnowledgeSoundness` |
-| `Data/Lattices/CyclotomicRing/Subfield/Field.lean` | `no_selfReciprocal_factor` |
 
 These entries are proof debt, not standard Lean foundational axioms. Downstream
 results depending on them remain conditional on their truth.
