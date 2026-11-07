@@ -69,8 +69,9 @@ theorem symbolicFullRank_of_classical_imports {k : ℕ}
       WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t + 1))) e →
       ∀ i, (e i).Nonempty) :
     SymbolicFullRankResidual (ι := ι) F k := by
-  refine symbolicFullRank_of_pinning ?_ hnonempty
-  intro t ht e hne hwpc
+  refine symbolicFullRank_of_pinning ?_
+  intro t ht e _ hwpc
+  have hne := hnonempty e hwpc
   -- Frank: the orientation with root and crossing supply.
   obtain ⟨O, r, hroot, hcross⟩ := hfrank ht e hne hwpc
   -- Brick 20: the generic zero pattern.

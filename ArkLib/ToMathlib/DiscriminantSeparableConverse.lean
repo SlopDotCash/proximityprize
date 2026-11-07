@@ -42,16 +42,17 @@ separable factors; the inseparable `R(X, Y^{p^f})` descent remains the deep S4�
 
 * `Univariate.discriminant_mul_leadingCoeff_pow_eq` /
   `Univariate.discriminant_eq_neg_one_pow_mul_discr` — the **sign/normalization bridge** for
-  the custom `Univariate.discriminant f := lc(f)⁻¹ · resultant f f'` of
-  `ArkLib/Data/Polynomial/Prelims.lean` (a pinned upstream module, left byte-for-byte).  That
-  value is **not** the conventional discriminant: it omits the sign `(-1)^(n(n-1)/2)` and, when
-  `deg f' < n - 1` (characteristic dividing `n`), it uses the default-size resultant, which
+  the historical `Univariate.discriminant f := lc(f)⁻¹ · resultant f f'`, retained here
+  after pinned ArkLib switched to `Polynomial.discr`. This formula omits the sign
+  `(-1)^(n(n-1)/2)` and uses the default-size resultant. When `deg f' < n - 1`
+  (characteristic dividing `n`), that resultant
   differs from the size-`(n-1)` one by a power of `lc(f)`.  For `0 < deg f` with
   `n := natDegree f`, `discriminant f · lc(f)^((n-1) - deg f') = (-1)^(n(n-1)/2) · discr f`;
   in particular `discriminant f = (-1)^(n(n-1)/2) · discr f` when `deg f' = n - 1`.  E.g. over
   `ℚ`, `discriminant (X² - 1) = -4` while `discr (X² - 1) = 4` (checked below).  The
-  separability equivalence `Univariate.separable_iff_discr_eq_zero` is unaffected (the
-  discrepancy is a unit); consumers wanting the conventional value should use `Polynomial.discr`.
+  discrepancy is a unit in positive degree, so nonvanishing is unaffected. For the
+  conventional discriminant and its separability criterion on nonzero polynomials, use
+  `Polynomial.discr` and `Univariate.separable_iff_discr_ne_zero`.
 
 Axiom-clean: `[propext, Classical.choice, Quot.sound]`.
 -/
@@ -121,6 +122,11 @@ end Polynomial
 namespace Univariate
 
 open Polynomial
+
+/-- The historical default-size resultant normalization, without the degree-dependent sign, from
+`ArkLib/Data/Polynomial/Prelims.lean` (Katerina Hristova and Ilia Vlasov). -/
+noncomputable def discriminant {F : Type} [Field F] [Inhabited F] (f : F[X]) : F :=
+  1 / f.leadingCoeff * Polynomial.resultant f (Polynomial.derivative f)
 
 /-- **Normalization bridge for the custom `Univariate.discriminant`.**  For `0 < deg f`, the
 custom value `lc(f)⁻¹ · resultant f f'` (default resultant sizes) relates to Mathlib's
