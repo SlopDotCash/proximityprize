@@ -129,16 +129,16 @@ summary, which follows the addenda.
 ## Summary
 
 - **Total strict residuals (`ArkLib/` and `ProximityPrize/`):** 90
-- **Open:** 45
+- **Open:** 44
 - **Instance-only:** 9
 - **Discharged (syntactic candidates):** 23
-- **Refuted:** 13
+- **Refuted:** 14
 - **Residual-like near misses:** 42 (listed below and in `scripts/residual_census.json`)
 
 | top-level directory | total | open | instance-only | discharged | refuted |
 |---|---:|---:|---:|---:|---:|
 | `(root)` | 2 | 1 | 0 | 1 | 0 |
-| `Data` | 24 | 9 | 3 | 0 | 12 |
+| `Data` | 24 | 8 | 3 | 0 | 13 |
 | `OracleReduction` | 39 | 25 | 3 | 11 | 0 |
 | `ProofSystem` | 14 | 10 | 2 | 2 | 0 |
 | `ToMathlib` | 11 | 0 | 1 | 9 | 1 |
@@ -147,7 +147,6 @@ summary, which follows the addenda.
 
 - `AGL24.FrankUncrossingResidual` — `ArkLib/Data/CodingTheory/AGL24FrankDescent.lean:264`
 - `AGL24.FrankOrientationResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:42` — conditional providers only (residual deps: `FrankUncrossingResidual`; extra assumptions: `hfrank`, `hres`)
-- `AGL24.GMMDSResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:54` — conditional providers only (extra assumptions: `hbridge`, `hdual`, `hfield`, `hgm`, `hk`, `hlovett`, `hminor`, `hprim`, `hstep`, `hstep1`, `hstep2`)
 - `AGL24.SymbolicFullRankResidual` — `ArkLib/Data/CodingTheory/AGL24SymbolicRank.lean:45` — conditional providers only (residual deps: `FrankOrientationResidual`, `GMMDSResidual`, `SymbolicFullRankResidual`; extra assumptions: `h`, `h'`, `hdual`, `hfield`, `hfrank`, `hgm`, `hgmmds`, `hk`, `hminor`, `hrc`, `hwitness`; instance assumptions: `[Algebra F F']`, `[Field F']`, `[Finite F]`, `[Fintype F]`, `[Nonempty ι]`)
 - `AGL24.RIMFullRankFailureProbResidual` — `ArkLib/Data/CodingTheory/AGL24UnionBound.lean:88` — conditional providers only (residual deps: `SymbolicFullRankResidual`; extra assumptions: `hfrank`, `hgm`, `hsym`, `ht`, `hwpc`; instance assumptions: `[Nonempty ι]`)
 - `CodingTheory.randomLinearLambdaLowerFirstMomentResidual` — `ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean:143` — conditional providers only (extra assumptions: `h`, `hG`)
@@ -255,6 +254,7 @@ drift.
 
 ## Refuted Residuals
 
+- `AGL24.GMMDSResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:54` — refuted by `not_gmmdsResidual_fin3_zmod2` (ProximityPrize/Extensions/Data/CodingTheory/AGL24GMMDSRefutation.lean:22) at `ι := (Fin 3)`, `F := (ZMod 2)`
 - `ProximityGap.CurveCommonAgreementResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CoeffExtractionResidual.lean:43` — refuted by `ProximityGap.StrictCanonicalCoeffPolysRefutation.not_curveCommonAgreementResidual` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CanonicalCoeffExtractionRefutation.lean:530) at `k := 1`, `deg := 2`, `domain := domain7`, `δ := (3 / 7 : ℝ≥0)`
 - `ProximityGap.RSCurveListSizeResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/ListSizeResidual.lean:50` — refuted by `ProximityGap.RSCurveListSizeRefutation.not_rsCurveListSizeResidual` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/ListSizeResidualRefutation.lean:154) at `k := 1`, `deg := 1`, `domain := domain`, `δ := (1 : ℝ≥0) / 2`, `e := 2`
 - `BCIKS20.HenselNumerator.FaaDiBrunoSuccSumZeroResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:2542` — refuted by `BCIKS20.HenselNumerator.Witness.faaDiBrunoSuccSumZeroResidual_false` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2OrderZeroRefutationWitness.lean:175) at `H := myH`, `x₀ := (0 : ℚ)`, `R := myR`, `hHyp := myHyp`

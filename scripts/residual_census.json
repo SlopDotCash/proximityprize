@@ -24,10 +24,10 @@
  },
  "summary": {
   "total": 90,
-  "open": 45,
+  "open": 44,
   "instance_only": 9,
   "discharged": 23,
-  "refuted": 13,
+  "refuted": 14,
   "by_top_dir": {
    "(root)": {
     "total": 2,
@@ -38,10 +38,10 @@
    },
    "Data": {
     "total": 24,
-    "open": 9,
+    "open": 8,
     "instance_only": 3,
     "discharged": 0,
-    "refuted": 12
+    "refuted": 13
    },
    "OracleReduction": {
     "total": 39,
@@ -234,7 +234,26 @@
      "verdict": "conditional"
     }
    ],
-   "status": "open"
+   "refutations": [
+    {
+     "name": "not_gmmdsResidual_fin3_zmod2",
+     "kind": "theorem",
+     "file": "ProximityPrize/Extensions/Data/CodingTheory/AGL24GMMDSRefutation.lean",
+     "line": 22,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "ι := (Fin 3)",
+      "F := (ZMod 2)"
+     ],
+     "verdict": "unconditional"
+    }
+   ],
+   "status": "refuted"
   },
   {
    "name": "SymbolicFullRankResidual",

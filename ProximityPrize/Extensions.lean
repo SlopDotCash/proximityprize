@@ -5,6 +5,8 @@ import ProximityPrize.Extensions.Commitments.Functional.Hachi.InnerOuter.Correct
 import ProximityPrize.Extensions.Commitments.Functional.Hachi.InnerOuter.Security
 import ProximityPrize.Extensions.Data.Classes.FunEquiv
 import ProximityPrize.Extensions.Data.Classes.Slice
+import ProximityPrize.Extensions.Data.CodingTheory.AGL24FailureProbGuard
+import ProximityPrize.Extensions.Data.CodingTheory.AGL24GMMDSRefutation
 import ProximityPrize.Extensions.Data.CodingTheory.Basic.Distance
 import ProximityPrize.Extensions.Data.CodingTheory.Basic.LinearCode
 import ProximityPrize.Extensions.Data.CodingTheory.Basic.RelativeDistance
