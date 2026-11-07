@@ -235,7 +235,7 @@ theorem gs_existence_curve {n L : ℕ} (k m : ℕ) (ωs : Fin n ↪ F) (f : Fin 
       GuruswamiSudan.Conditions k m (gs_degree_bound k n m)
         (liftedDomain ωs) (curveFold f) Q := by
   classical
-  exact GuruswamiSudan.gs_existence (m := m) k n (liftedDomain ωs) (curveFold f) hk hn hm
+  exact GuruswamiSudan.gs_existence (m := m) k n (liftedDomain ωs) (curveFold f) hk hm
 
 open Polynomial.Bivariate in
 /-- **`K = F(Z)`-level divisibility for the curve fold (ℓ-ary S1 at the generic level).**
