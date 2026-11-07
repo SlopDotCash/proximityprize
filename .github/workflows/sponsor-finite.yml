@@ -33,7 +33,7 @@ jobs:
         run: |
           python3 scripts/probes/probe_incidence_full_scale_cores.py
           python3 scripts/probes/probe_sponsor_finite_audit.py
-      - uses: leanprover/lean-action@v1.6.0
+      - uses: leanprover/lean-action@v1.7.0
         with:
           auto-config: false
           build: false
@@ -43,7 +43,7 @@ jobs:
           use-mathlib-cache: false
       - name: Restore checked dependency build
         id: dependencies
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: |
             .lake
@@ -111,7 +111,7 @@ jobs:
         run: bash scripts/ci-stop-lean.sh
       - name: Preserve completed build artifacts
         if: always() && !cancelled() && steps.stop-lean.outcome == 'success' && steps.dependencies.outputs.cache-primary-key != ''
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: |
             .lake

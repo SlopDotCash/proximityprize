@@ -29,6 +29,7 @@ Edit the source of truth, not the output.
 
 | Path | What it is | Edit directly? | Source of truth / refresh path |
 | --- | --- | --- | --- |
+| `CLAUDE.md` | compatibility symlink | No | Edit `AGENTS.md` |
 | `ArkLib.lean`, `ProximityPrize.lean`, `ProximityPrize/Extensions.lean`, generated Lake ownership block | canonical and classic production module surfaces | No | `./scripts/update-lib.sh`; verify with `./scripts/check-imports.sh` |
 | `Research/ProximityPrize/All.lean` | research import surface | No | `python3 scripts/update-research-lib.py` |
 | `scripts/residual_census.json`, `docs/wiki/residual-census.md` | strict production residual classification and source locations | No | `python3 scripts/residual_census.py --wiki-out docs/wiki/residual-census.md`; scans `ArkLib/` and `ProximityPrize/`, preserving historical campaign addenda |

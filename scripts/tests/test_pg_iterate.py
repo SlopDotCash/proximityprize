@@ -11,6 +11,8 @@ SCRIPT = Path(__file__).resolve().parents[1] / "pg-iterate.sh"
 class PgIterateDiagnostics(unittest.TestCase):
     def run_wrapper(self, output, status=0):
         with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "errors-sorryAx.lean"
+            source.write_text("def fixture : Nat := 0\n", encoding="utf-8")
             fake_lake = Path(directory) / "lake"
             fake_lake.write_text('#!/bin/sh\nprintf "%s\\n" "$@" > "$ITERATION_TEST_ARGS"\n'
                                  'printf "%s\\n" "$ITERATION_TEST_OUTPUT"\n'
@@ -19,15 +21,15 @@ class PgIterateDiagnostics(unittest.TestCase):
             env = dict(os.environ, PATH=directory + os.pathsep + os.environ["PATH"],
                        ITERATION_TEST_OUTPUT=output, ITERATION_TEST_STATUS=str(status),
                        ITERATION_TEST_ARGS=str(Path(directory) / "arguments"))
-            result = subprocess.run(["bash", str(SCRIPT), "/tmp/errors-sorryAx.lean"],
+            result = subprocess.run(["bash", str(SCRIPT), str(source)],
                                     env=env, text=True, capture_output=True)
             result.invoked_arguments = (Path(directory) / "arguments").read_text().splitlines()
             return result
 
     def test_uses_project_autoimplicit_policy(self):
         result = self.run_wrapper("checked")
-        self.assertEqual(result.invoked_arguments,
-                         ["env", "lean", "-DautoImplicit=false", "/tmp/errors-sorryAx.lean"])
+        self.assertEqual(result.invoked_arguments[:-1], ["env", "lean", "-DautoImplicit=false"])
+        self.assertEqual(Path(result.invoked_arguments[-1]).name, "errors-sorryAx.lean")
 
     def test_filenames_and_benign_text_do_not_mean_failure(self):
         result = self.run_wrapper(

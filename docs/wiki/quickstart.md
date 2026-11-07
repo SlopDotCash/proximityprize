@@ -19,10 +19,10 @@ On a cold checkout, fetch the cache before building. For repeated research proof
 iteration, use `scripts/pg-warm.sh` once and `scripts/pg-iterate.sh <file.lean>`.
 The warm-up script prints the full build log on failure and preserves the build exit status;
 successful runs show only the final two build lines. The iteration wrapper trusts the compiler
-exit status for errors, then checks actual admission warnings and `sorryAx` in printed axiom
-reports. Words such as `errors` or `sorry` in filenames or benign messages do not mean failure.
-It does not generate axiom reports automatically; the project build and kernel audit remain
-required for final verification.
+exit status for errors and checks actual admission warnings, printed axiom dependencies,
+and the repository's forbidden-token policy. Words such as `errors` or `sorry` in filenames
+or benign messages do not cause failure. The project build and kernel audit provide the
+declaration-level checks that single-file iteration cannot generate automatically.
 
 `scripts/validate.sh` combines the canonical upstream compile-time acceptance,
 runtime, style, warning, and probability-retirement checks with downstream Python
@@ -107,10 +107,13 @@ For a convenient routine check, run:
 ./scripts/validate.sh
 ```
 
+CI runs the validation wrapper on every pull request. Deleting a gate input
+or moving it into a documentation path still runs the same checks.
+
 On a cold clone, fetch precompiled dependencies first:
 
 ```bash
-lake exe cache get
+./scripts/lake-locked.sh exe cache get
 ./scripts/validate.sh
 ```
 
@@ -127,15 +130,18 @@ ArkLib declaration types and bodies, without a baseline exception. See
 ./scripts/validate.sh
 ```
 
-### Added, renamed, or deleted files under `ArkLib/`
+### Added, renamed, or deleted files under `ArkLib/` or `Research/ProximityPrize/`
 
 ```bash
 git add path/to/newfile.lean
 ./scripts/validate.sh
 ```
 
-`./scripts/update-lib.sh` only considers tracked files, and fails fast if untracked
-`ArkLib/**/*.lean` files are present.
+`./scripts/update-lib.sh` only considers tracked files, and now fails fast if untracked
+`ArkLib/**/*.lean` files are present. `python3 scripts/update-research-lib.py` does the
+same for `Research/ProximityPrize/**/*.lean`: an untracked research module is an error,
+so `./scripts/check-imports.sh` cannot report a fresh `All.lean` while that module is
+absent from the default build. Stage the file before regenerating the umbrella.
 
 ### Compile-time acceptance tests
 
@@ -473,3 +479,35 @@ image/version. Reports show both wall time and CPU work (`user + sys`). Movement
 changed compilation work or runner speed; wall-only movement more often indicates scheduling or I/O
 contention. These diagnostics improve attribution, but one hosted-runner sample is still not a
 performance verdict. Per-file rows are leads to remeasure, not blocking regression claims.
+
+### Fast-iteration exit status
+
+`pg-warm.sh` stops when its substrate build fails and prints the ready message
+only on success. `pg-iterate.sh` propagates a nonzero Lean exit status even
+when the process emits no diagnostic text. A successful file with no
+`#print axioms` output is still a successful type check; absence of that
+output does not itself perform an axiom audit.
+
+`pg-iterate.sh` also runs CI gate 1 (`scripts/forbidden_tokens.py`) on the same
+file and audits every reported axiom set against `{propext, Classical.choice,
+Quot.sound}` plus the documented residuals of `scripts/residual_axioms.txt`. It
+exits 1 when gate 1 rejects the file and 2 when a reported axiom is unapproved,
+so ✅ now means both checks passed rather than only that Lean elaborated the
+file. A reported list that opens without closing is exit 2: an unreadable audit
+certifies nothing. A file that prints no `#print axioms` line still receives
+only gate 1; nothing audits the transitive axioms it never reports.
+
+## Retained probe dependencies
+
+Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
+
+The R387 Z3 probe uses exit 0 only for all searched branches returning unsat, exit 1 for a checked MCA counterexample, and exit 2 for unresolved results (including timeout). An unresolved exit is not a proof of either outcome.
+
+The R387 MILP probe uses the same unresolved exit 2. Exit 0 means the numerical solver reported every requested branch infeasible; it is not an independently verified infeasibility certificate, and a subset of pivots does not cover all directions. Exit 1 indicates a checked MCA witness.
+
+G87V’s default census uses batches of at most 4,096 rows and retains one modular row basis per field instead of the full census matrix. It still enumerates every support/sign pattern. Run `python3 -m unittest discover -s scripts/tests -p test_g87v_streaming.py` to compare streamed summaries with materialized small cases. This storage change does not remove the combinatorial runtime cost.
+
+The transfer skeptic probe scans its stage C maximum in batches of at most 32,768 coset representatives, also capping phase matrices at four million entries. Stages A/B retain their full arrays. The calculation remains floating point and still visits every coset. Run `python3 -m unittest discover -s scripts/tests -p test_transfer_streaming.py` for comparisons with materialized sums on small fields.
+Stale build-lock reclamation also checks the recorded local owner PID with `kill -0`. A live or paused owner keeps its checkout lock and machine slot even when its heartbeat is delayed. The timeout still bounds checkout-lock waiting. PID reuse can conservatively delay reclamation; inspect the recorded owner before manual cleanup. The isolated lock regression pauses an owner beyond the stale threshold and checks that another build cannot enter.
+
+The Python regression discovery also compiles and runs the exact-jump C++ optimizer test. A C++20-capable `c++` compiler must be on PATH. The test uses a temporary output directory and compares the optimizer with exhaustive assignments in 1875 small cases; it does not run the large research searches.

@@ -406,6 +406,7 @@ globs = [
   "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.Pigeonhole",
   "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.SudanY2",
   "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.UniqueDecoding",
+  "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.CurvesDegenerate",
   "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.DivWeightLeMonicRefuted",
   "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.EndToEnd",
   "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.FaaDiBrunoBijectionPieces",

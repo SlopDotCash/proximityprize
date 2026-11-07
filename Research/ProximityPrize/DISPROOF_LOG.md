@@ -18242,9 +18242,9 @@ Liu–Zhou Thm 115). So `{η_b:b∈F_p^*}` (over the `p−1=kn` indices) takes o
 each repeated `n` times. EXACT probe confirms: `p=73,n=8` → 9 distinct, all mult 8; `p=257,n=16` →
 16 distinct, all mult 16; `p=3457,n=27` → 128 distinct, all mult 27.
 
-* **Obstruction 1 (REFUTED, `exceedance_count_dvd_fiberSize` + `degenerate_not_simple`).** Since
-  every fiber has exactly `n` indices, `N(t)` is ALWAYS a multiple of `n` (= `n·#{cosets above t}`),
-  so it is *never 1*: the configuration is `n`-fold atomic = maximally NON-simple. A determinantal
+* **Obstruction 1 (REFUTED, `exceedanceCount_eq_fiberSize_mul_card` + `degenerate_not_simple`).**
+  Since every fiber has exactly `n` indices, `N(t)` ALWAYS equals `n·#{cosets above t}`, so it is
+  *never 1*: the configuration is `n`-fold atomic = maximally NON-simple. A determinantal
   point process with a Christoffel–Darboux *projection* kernel is a.s. SIMPLE (HKPV), its kernel
   vanishing on the diagonal — that vanishing IS the repulsion. An `n`-fold-degenerate atom has
   `ρ_2`-on-diagonal `~n²` (opposite sign to a DPP's 0). The DPP/log-rigidity hypothesis is false by
@@ -43509,9 +43509,9 @@ Liu–Zhou Thm 115). So `{η_b:b∈F_p^*}` (over the `p−1=kn` indices) takes o
 each repeated `n` times. EXACT probe confirms: `p=73,n=8` → 9 distinct, all mult 8; `p=257,n=16` →
 16 distinct, all mult 16; `p=3457,n=27` → 128 distinct, all mult 27.
 
-* **Obstruction 1 (REFUTED, `exceedance_count_dvd_fiberSize` + `degenerate_not_simple`).** Since
-  every fiber has exactly `n` indices, `N(t)` is ALWAYS a multiple of `n` (= `n·#{cosets above t}`),
-  so it is *never 1*: the configuration is `n`-fold atomic = maximally NON-simple. A determinantal
+* **Obstruction 1 (REFUTED, `exceedanceCount_eq_fiberSize_mul_card` + `degenerate_not_simple`).**
+  Since every fiber has exactly `n` indices, `N(t)` ALWAYS equals `n·#{cosets above t}`, so it is
+  *never 1*: the configuration is `n`-fold atomic = maximally NON-simple. A determinantal
   point process with a Christoffel–Darboux *projection* kernel is a.s. SIMPLE (HKPV), its kernel
   vanishing on the diagonal — that vanishing IS the repulsion. An `n`-fold-degenerate atom has
   `ρ_2`-on-diagonal `~n²` (opposite sign to a DPP's 0). The DPP/log-rigidity hypothesis is false by
@@ -54440,6 +54440,28 @@ The production threshold and the completion contract in #164 remain open.
 Reproduce with `python3 scripts/probes/probe_antipodal_subgroup_obstructions.py`.
 The output records both fields, the sparse-head witness, all five residual
 roots, their nonzero odd-part values, and the complete factorization coefficients.
+
+**Lean verification upgrade, 2026-11-05.**
+[`_DyadicNonCosetCountCertificate.lean`](Frontier/_DyadicNonCosetCountCertificate.lean)
+formalizes the five-root construction over any field with a primitive 32nd root.
+`residual_factorization` and `isRoot_iff_mem` identify the complete root set.
+`rootSet_card`, `oddPoly_eval_ne_zero`, and `no_complete_dyadic_coset` prove its size,
+isolation, and exclusion of complete nontrivial dyadic root cosets.
+`not_isolatedNonCosetCountResidual` refutes the recorded cap at `k = 3`.
+`production_generator_certificate` places the roots in `mu_(2^29)` from an explicit
+primitive order-`2^30` generator hypothesis. No concrete sponsor-field endpoint is added.
+The original high-head/low-tail decoded family and the production threshold remain open.
+
+Reproduce with:
+
+```
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsoSparsityMasonStothers
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_DyadicNonCosetCountCertificate.lean
+```
+
+The five printed axiom audits cover factorization, isolation, coset exclusion, residual
+refutation, and the generator corollary. They must contain only `propext`,
+`Classical.choice`, and `Quot.sound`.
 ---
 
 ### [164-isolated-noncoset-residual-refuted] Five isolated roots beat the `k + 1` cap at `k = 3`
@@ -54501,3 +54523,46 @@ scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountResi
 
 Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
 `Classical.choice` and `Quot.sound`.
+
+---
+
+### [164-isolated-noncoset-sharp-bound] The degree-only cap is exactly `2k - 1`
+
+Date: 2026-11-06. Target:
+`IsoSparsityMasonStothers.IsolatedNonCosetCountResidual`, on the antipodal
+isolated-root path. The earlier rational certificate refutes the recorded cap at
+`k = 3`; this result classifies its rational instances for every `k`.
+
+[`_IsolatedNonCosetSharpBound.lean`](Frontier/_IsolatedNonCosetSharpBound.lean)
+proves `isolated_roots_card_le`: over any field, if `deg A, deg O < k`, every
+finite set of roots of `A² - X O²` at which `O` is nonzero has at most `2k - 1`
+elements. Nonvanishing of `O` at a selected root makes `O` nonzero; the odd degree
+of `X O²` prevents its cancellation with the even-degree square `A²`.
+
+`exists_sharp_isolated_roots` attains this bound over `ℚ` for every positive `k`.
+Split `Q(T) = product_{i=1}^{2k-1}(T-i)` as `A(T²) - T O(T²)` using the existing
+`Polynomial.splitNth` API. The distinct squares `1², ..., (2k-1)²` are roots of
+`A² - X O²`. At each positive lift `i`, `Q(i) = 0` but `Q(-i) ≠ 0`, which proves
+`O(i²) ≠ 0`. Both halves have degree below `k`.
+At `k = 3`, this gives the common negatives of the earlier rational witnesses;
+the five-root example itself is existing work.
+
+Consequently `isolatedNonCosetCountResidual_rat_iff` proves
+`IsolatedNonCosetCountResidual ℚ k ↔ k ≤ 2`. In particular, no degree-only
+universal replacement bound smaller than `2k - 1` can hold at a positive `k`.
+The original residual is unchanged. This does not impose a halved-subgroup
+domain or realize the high-head/low-tail decoded family. Those structural
+restrictions, the Kelley/BGK input and the production threshold remain open.
+
+Reproduce with the pinned toolchain:
+
+```sh
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsoSparsityMasonStothers ArkLib.Data.Polynomial.SplitFold
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IsolatedNonCosetSharpBound.lean
+./scripts/validate.sh
+```
+
+The four public declarations print their complete axiom dependencies; only
+`propext`, `Classical.choice` and `Quot.sound` are permitted. No new axiom or
+named residual is introduced. This is a degree-only classification, not a
+production counterexample or a closure of #164.

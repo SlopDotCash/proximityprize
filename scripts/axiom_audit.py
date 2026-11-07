@@ -26,13 +26,15 @@ from pathlib import Path
 ALLOWED = {"propext", "Classical.choice", "Quot.sound"}
 MANIFEST = Path(__file__).resolve().parent / "flagship_axioms.txt"
 
-DEP_RE = re.compile(r"'([^']+)' depends on axioms: \[([^\]]*)\]")
-NODEP_RE = re.compile(r"'([^']+)' does not depend on any axioms")
+# Lean prints `#print axioms foo'` as `'foo'' depends on ...`: a name may end in
+# primes, so take the shortest same-line name before the closing quote.
+DEP_RE = re.compile(r"(?<!\S)'([^\n]+?)' depends on axioms: \[([^\]]*)\]")
+NODEP_RE = re.compile(r"(?<!\S)'([^\n]+?)' does not depend on any axioms")
 
 
 def main() -> int:
     entries: list[tuple[str, str]] = []
-    for raw in MANIFEST.read_text().splitlines():
+    for raw in MANIFEST.read_text(encoding="utf-8").splitlines():
         line = raw.strip()
         if not line or line.startswith("#"):
             continue
@@ -48,7 +50,7 @@ def main() -> int:
 
     # Scratch file OUTSIDE the repo: an autosync daemon commits anything that
     # appears in the working tree, including short-lived temp files.
-    with tempfile.NamedTemporaryFile("w", suffix=".lean", delete=False) as tf:
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".lean", delete=False) as tf:
         tf.write(src)
         tmp = Path(tf.name)
     try:
@@ -56,6 +58,7 @@ def main() -> int:
             ["lake", "env", "lean", str(tmp)],
             capture_output=True,
             text=True,
+            encoding="utf-8",
             timeout=1800,
         )
     finally:
@@ -69,9 +72,11 @@ def main() -> int:
     reported: dict[str, set[str]] = {}
     for m in DEP_RE.finditer(out):
         axioms = {a.strip() for a in m.group(2).split(",") if a.strip()}
-        reported[m.group(1)] = axioms
+        # Imported diagnostics can repeat a declaration's report. No later
+        # report, including a no-dependency line, may erase a forbidden axiom.
+        reported.setdefault(m.group(1), set()).update(axioms)
     for m in NODEP_RE.finditer(out):
-        reported[m.group(1)] = set()
+        reported.setdefault(m.group(1), set())
 
     failures: list[str] = []
     for _, decl in entries:
