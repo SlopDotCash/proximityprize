@@ -93,5 +93,11 @@
     }
   },
   "initial_november_upstream": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
-  "latest_downstream_base": "7dc4f7cbbe6435ae62c7fcafef0b548ced9bdb96"
+  "latest_downstream_base": "96823568e0ba387b4d974d5dce46073762626358",
+  "downstream_hachi_factor_swap": {
+    "downstream_commit": "8f2d555e5c446c97544f31917b5b99209c71c916",
+    "declaration": "ArkLib.Lattices.CyclotomicModulus.no_selfReciprocal_factor",
+    "canonical_source": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/Field.lean",
+    "disposition": "Canonical ArkLib already proves the factor swap for every exponent. The downstream proof and its private helpers remain in Git history; the live source uses the canonical theorem."
+  }
 }

@@ -493,3 +493,29 @@ set, and whole codeword membership for an arbitrary number of factors before ins
 production finite set. The full-scale incidence construction keeps all fifty-five public
 contracts and its original kernel certificate while using these private symbolic proofs; see
 [the locator migration audit](../../scripts/integration/incidence-full-scale-symbolic-migration.json).
+
+## Historical benchmark replay
+
+The October transfer review records a separate benchmark checkout pinned to
+`ed2b68c4a330d76dc4ab6693eec81b685b493270` and Lean 4.32.2. Its recorded fresh kernel
+replays cover 38,274 declarations for the upper submission and 108,676 for the lower submission.
+These counts describe the archived benchmark dependency closures. [October transfer review](https://github.com/SlopDotCash/proximityprize/blob/e36fe8a90889ddbc1eea94b76370911b0195c92c/docs/wiki/upstream-proof-transfer.md#L1067-L1085)
+
+Use the historical integration's detached worktree to reproduce the reference checks. The
+wrapper selects the reference's own toolchain and uses the shared build lock for candidate
+builds. Keep its Lake artifacts in that worktree.
+
+```sh
+git fetch https://github.com/SlopDotCash/proximityprize e36fe8a90889ddbc1eea94b76370911b0195c92c
+git worktree add --detach ../proximity-prize-reference-216 e36fe8a90889ddbc1eea94b76370911b0195c92c
+cd ../proximity-prize-reference-216
+git submodule update --init external/proximity-prize
+./scripts/proximity-prize-reference.sh cache
+./scripts/proximity-prize-reference.sh upper
+./scripts/proximity-prize-reference.sh replay-upper
+./scripts/proximity-prize-reference.sh lower
+./scripts/proximity-prize-reference.sh replay-lower
+```
+
+The same archived tree contains the immutable upstream PR manifests and their read-only
+fetch helper. [October upstream inventories](https://github.com/SlopDotCash/proximityprize/tree/e36fe8a90889ddbc1eea94b76370911b0195c92c/docs/upstream) · [Reference helper](https://github.com/SlopDotCash/proximityprize/blob/e36fe8a90889ddbc1eea94b76370911b0195c92c/scripts/arklib-reference.py)

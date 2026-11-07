@@ -51,7 +51,6 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 /-- The double-coefficient of a `Z`-specialization is the inner-`Z` coefficient evaluated at `z`. -/
 theorem eval_on_Z_coeff_coeff (Q : F[Z][X][Y]) (z : F) (j i : ℕ) :
     ((eval_on_Z Q z).coeff j).coeff i = ((Q.coeff j).coeff i).eval z := by
-  unfold Trivariate.eval_on_Z
   rw [eval_on_Z_eq, Polynomial.coeff_map, Polynomial.coe_mapRingHom, Polynomial.coeff_map,
     Polynomial.coe_evalRingHom]
 

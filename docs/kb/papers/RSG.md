@@ -3,6 +3,7 @@ kind: paper
 bibkey: RSG
 title: "Ring switching, generalized"
 bib_source: blueprint/src/references.bib
+source_metadata: ../sources/RSG/metadata.yml
 canonical_url: https://github.com/leanEthereum/leanVM-b/blob/main/misc/ring-switching-generalized.pdf
 status: seeded
 related_concepts:
@@ -43,3 +44,8 @@ read "The idea comes from Lev Soukhanov, `[[alloc]init]`."
 
 - [Public note](https://github.com/leanEthereum/leanVM-b/blob/main/misc/ring-switching-generalized.pdf).
 - [Bibliography](../../../blueprint/src/references.bib), key `RSG`.
+
+## Native transfer provenance
+
+The Lean algebra transfer used ArkLib PR #1256 at `475b3d56f2120cd4eaa6b449ff8974886fa71fdd`.
+The linked Lean modules and concrete clients cover the algebra described above. [ArkLib PR #1256](https://github.com/Verified-zkEVM/ArkLib/pull/1256)

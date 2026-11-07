@@ -338,7 +338,7 @@ def _config_may_enable_all(text: str, mask: list[bool], i: int) -> bool:
 
 # Search tactics share their names with valid term identifiers. Restrict the
 # bare apply? policy to tactic starts, not references such as `exact apply?`.
-_PROOF_BY_RE = re.compile(r"(?<![\w.'])\bby\b")
+_TACTIC_START_RE = re.compile(r"(?<![\w.'])\bby\b|`\(\s*(?:tactic|tacticSeq)\s*\|")
 _TACTIC_WRAPPER = (
     r"all_goals|any_goals|focus|try|repeat1'|repeat'|repeat|"
     r"with_reducible_and_instances|with_reducible|with_unfolding_all|"
@@ -385,10 +385,10 @@ def _tactic_prefix(prefix: str) -> bool:
 
 
 def _apply_tactic_position(code: str, start: int) -> bool:
-    """Recognize ordinary inline and indented tactic sequence entries."""
+    """Recognize inline and indented entries in proofs and tactic quotations."""
     line_start = code.rfind("\n", 0, start) + 1
     prefix = code[line_start:start]
-    if any(_tactic_prefix(prefix[m.end():]) for m in _PROOF_BY_RE.finditer(prefix)):
+    if any(_tactic_prefix(prefix[m.end():]) for m in _TACTIC_START_RE.finditer(prefix)):
         return True
     indent = len(prefix) - len(prefix.lstrip())
     alternative = prefix.lstrip().startswith("|")
@@ -415,7 +415,7 @@ def _apply_tactic_position(code: str, start: int) -> bool:
             alternative = False
         if parent_indent == indent:
             continue
-        for match in _PROOF_BY_RE.finditer(line):
+        for match in _TACTIC_START_RE.finditer(line):
             rest = line[match.end():]
             first_tactic = match.end() + len(rest) - len(rest.lstrip())
             if not alternative and (not rest.strip() or first_tactic <= indent
