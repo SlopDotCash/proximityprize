@@ -16,7 +16,8 @@ and the bad ratio of the pencil is ``-N_a / N_b``.  The two published identities
     N_2 = den          (so h_0 == 1)         y z * N_(n-1) = den   (so h_(n-3) == 1/(y z))
 
 force the bad ratio of the pencil ``{a, b} = {2, n-1}`` to be the SINGLE MONOMIAL ``-y z``,
-which is why its bad set is ``mu_n`` and its count is ``n`` independently of ``p``.
+For ``n = 2^k`` with ``k >= 3``, dilation multiplies this ratio by a generator
+of ``mu_n``, so the bad set is ``mu_n`` and its count is ``n`` for every eligible prime.
 
 Claim (this probe).  That pair is ISOLATED.  Work in the group ring
 ``A_n = Z[y, z] / <y^n - 1, z^n - 1>`` and call two rows equivalent when

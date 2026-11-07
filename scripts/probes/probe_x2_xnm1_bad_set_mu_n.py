@@ -17,7 +17,7 @@ Claim (this probe).  For ``n = 2^k``, ``k >= 3``, and EVERY prime ``p = 1 (mod n
 
 * the exact group-ring identity ``y*z * N_(n-1) - (1-y)(1-z)(y-z) = 0`` in
   ``Z[y,z] / <y^n - 1, z^n - 1>``, where ``N_e = (y-z) + y^e (z-1) + z^e (1-y)``,
-  so ``h_(n-3)(1,y,z) = 1/(y z)`` for all ``y, z`` in every ``mu_n``;
+  so ``h_(n-3)(1,y,z) = 1/(y z)`` for pairwise distinct ``1, y, z`` in ``mu_n``;
 * together with ``h_0 = N_2 / ((1-y)(1-z)(y-z)) == 1`` this pins the pencil
   ``(x^2, x^(n-1))`` to the ratio set ``{-y z}``, which lies in ``mu_n`` (``n`` even),
   and since ``gcd(3-n, n) = 1`` the dilation orbit is all of ``mu_n``;
@@ -30,7 +30,7 @@ Claim (this probe).  For ``n = 2^k``, ``k >= 3``, and EVERY prime ``p = 1 (mod n
   ceiling stack used as the merged anchor of this probe;
 * inside the column ``b = n - 1`` at ``p = 65537`` the value ``n`` is attained by exactly
   one pencil, namely ``a = 2``, both at ``n = 64`` and at ``n = 128`` (the column minimum
-  ``1`` is the degenerate ``a = 0, 1`` and the column maximum is ``30784`` at ``n = 64``
+  ``1`` occurs at ``a = 0, 1, n - 1`` and the column maximum is ``30784`` at ``n = 64``
   and the absolute ceiling ``65537`` at ``n = 128``).
 
 Engine and anchors.  The bad-scalar counts run through the published shape/coset
