@@ -37,8 +37,11 @@ built on the landed `L`-ary GS supply (`curve_fold_decoded_divides_specializatio
 * `exists_curve_cell_production_total` — composed with the landed `exists_gs_curve_chain`:
   the interpolant, its `Conditions`, and the integer representative are produced; the sole
   remaining input is the degenerate-set budget, which stays **parametrized** (conditional
-  on a budget for the produced `Q₀`) because the `L`-ary Z-degree-bounded interpolant
-  (the `gs_existence_over_ratfunc_zDegree_card` analogue) is not in-tree yet.
+  on a budget for the produced `Q₀`).  The `L`-ary Z-degree-bounded interpolant producer
+  does exist in-tree — `GuruswamiSudan.OverRatFunc.ZDegree.Curve.gs_existence_zDegree_curve_card`
+  (`ArkLib/Data/CodingTheory/GuruswamiSudan/GSInterpolantZDegreeCurve.lean`) — and is composed
+  with this capstone downstream in `Hab25CurveNumericCount.lean`; this file simply keeps the
+  budget as a parameter.
 
 Axiom-clean: `[propext, Classical.choice, Quot.sound]`.
 -/
@@ -388,8 +391,9 @@ landed `L`-ary chain `exists_gs_curve_chain` (S2 interpolation for the generic c
 degenerate-set budget stays **parametrized**: the conclusion exposes the produced
 interpolant (with its `Conditions` and representative identity) and, conditionally on any
 budget `T` valid for it, the full cell decomposition.  The `L`-ary Z-degree-bounded
-interpolant (the `gs_existence_over_ratfunc_zDegree_card` analogue) is the recognized
-producer of that budget and is not in-tree yet. -/
+interpolant producer `GuruswamiSudan.OverRatFunc.ZDegree.Curve.gs_existence_zDegree_curve_card`
+(in `ArkLib/Data/CodingTheory/GuruswamiSudan/GSInterpolantZDegreeCurve.lean`) supplies such a
+budget; the composition is carried out in `Hab25CurveNumericCount.lean`. -/
 theorem exists_curve_cell_production_total {n k m L : ℕ} [NeZero n] (domain : Fin n ↪ F₀)
     (u : WordStack F₀ (Fin L) (Fin n)) (δ : ℝ≥0)
     (hk2 : 2 ≤ k) (hkn : k + 1 ≤ n) (hm : 1 ≤ m)

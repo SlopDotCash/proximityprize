@@ -46,8 +46,12 @@ theorem proximity_gap_RSCodes_johnson_of_betaRec [SampleableType F] {k t : ℕ} 
             (((1 : ℕ) : ENNReal) * (errorBound δ' deg domain : ENNReal)) →
         (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ' →
         δ' < 1 - ReedSolomon.sqrtRate deg domain →
-        ArkLib.KeystoneStrictResidual.BetaCurveInput
-          (k := 1) (deg := deg) (domain := domain) (δ := δ') u)
+        ∀ P : F → Polynomial F,
+          (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ',
+            (P z).natDegree < deg ∧
+              δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ') →
+          ArkLib.KeystoneStrictResidual.BetaCurveInput
+            (k := 1) (deg := deg) (domain := domain) (δ := δ') u P)
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hε : errorBound δ deg domain < 1) :
     δ_ε_proximityGap

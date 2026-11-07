@@ -11,20 +11,36 @@ import ArkLib.Commitments.Functional.Transparent
 /-!
 # A concrete BCS end-to-end instance with the transparent commitment scheme (issue #62)
 
-This file constructs **one** concrete nontrivial protocol compiled end-to-end through the BCS API
+This file constructs **one** concrete protocol assembled end-to-end through the BCS API
 (`ArkLib.OracleReduction.BCS`) with a concrete commitment/opening scheme (the transparent commitment
 scheme of `ArkLib.Commitments.Functional.Transparent`), and instantiates **both** BCS keystones on it:
 
 * perfect completeness, via `OracleReduction.BCSTransform_perfectCompleteness`, and
 * (plain) soundness, via `OracleReduction.BCSCompiledPhases.toReduction_soundness_of_append_msg`.
 
+**Scope: a public-opening composition smoke test, not a compiled-oracle example.**  The phases are
+supplied by hand (the generic compiler is deferred, see `ArkLib.OracleReduction.BCS`), and in this
+instance the commitment sent during the interaction phase is never used by any verifier: the public
+input is already the full opening statement `(cm, q, y)`, the interaction verifier ignores the sent
+message and returns its input unchanged, and the opening verifier is transcript-independent,
+computing `decide (O.answer cm q = y)` from that original input.  Changing the prover's interaction
+message therefore cannot change the verdict.  The realization obligations recorded below
+(`interactionRealizesOracleMessages`, `openingRealizesQueryLog`) are true equations about this
+honest construction, but neither relates a source oracle verifier's query log to the opening, nor
+records that a verifier queries the transmitted message.  The headline results are valid
+completeness/soundness statements for the public predicate `O.answer cm q = y` and are useful as
+composition tests of the BCS keystones; they are not evidence of a nontrivial compiled-oracle
+end-to-end BCS instance.
+
 ## The protocol
 
-The source interactive protocol is the minimal genuinely-oracle one: a single prover-to-verifier
-message of type `Data`, which the verifier treats as an oracle (via `[OracleInterface Data]`) and
-queries at a point. Compiling through BCS replaces that oracle message by a commitment to it; for the
-transparent scheme the commitment *is* the data and the opening phase is the verifier re-evaluating
-the oracle locally.
+The *intended* source interactive protocol is the minimal oracle one: a single prover-to-verifier
+message of type `Data`, which a source verifier would treat as an oracle (via
+`[OracleInterface Data]`) and query at a point. No such source `OracleReduction` is constructed
+here; only its protocol spec `srcPSpec` is used to shape the two hand-written phases. For the
+transparent scheme the commitment *is* the data and the opening phase re-evaluates the oracle
+locally on the commitment carried in the (public) opening statement, not on the transmitted
+message (see the scope note above).
 
 * `srcPSpec := ⟨!v[.P_to_V], !v[Data]⟩` — one prover oracle message of type `Data`.
 * `CommitmentType _ := Data` — transparent commitment = data.
@@ -36,7 +52,7 @@ opening proof. The **interaction phase** is over `srcPSpec.renameMessage Commitm
 to be a single-message "commit and forward" reduction that sends the commitment (= data) and passes
 the opening statement/witness through to the opening phase.
 
-Neither keystone is vacuous here: the input/middle languages and the output relations are honest
+Neither keystone has vacuous hypotheses or conclusions here: the input/middle languages and the output relations are honest
 sets (`relMid`/`langMid` is "the claimed response is the honest oracle answer on the committed
 data", `relOut`/`langOut` is `acceptRejectRel` / `{true}`), so completeness is a real
 probability-one statement and soundness a real `≤ ε` statement against arbitrary malicious provers.
@@ -155,7 +171,10 @@ def interactionProver :
     nomatch h
   output := fun st => pure st
 
-/-- The interaction-phase verifier: return the input statement unchanged. -/
+/-- The interaction-phase verifier: return the input statement unchanged.
+
+Note that it ignores the transcript, so the commitment sent by the prover does not influence the
+statement handed to the opening phase (see the module-level scope note). -/
 def interactionVerifier :
     Verifier oSpec (OpeningStmt (Data := Data)) (OpeningStmt (Data := Data))
       ((srcPSpec (Data := Data)).renameMessage (CommitmentType (Data := Data))) where
@@ -497,7 +516,10 @@ instance instSampleableBCSTransform :
 
 
 /-- Concrete realization obligation for the transparent interaction phase: the prover's unique
-message is the source commitment and the phase forwards the original statement/witness pair. -/
+message is the source commitment and the phase forwards the original statement/witness pair.
+
+This is an equation about the honest prover only; it does not say that any verifier uses the
+transmitted message (the interaction verifier ignores it). -/
 def interactionRealizesOracleMessages : Prop :=
   ∀ (stmt : OpeningStmt (Data := Data)) (wit : OpeningWit (Data := Data)),
     (interactionProver (oSpec := oSpec) (Data := Data)).sendMessage
@@ -511,7 +533,11 @@ theorem interactionRealizesOracleMessages_holds :
   rfl
 
 /-- Concrete realization obligation for the transparent opening phase: the verifier accepts exactly
-when the claimed response matches the transparent oracle answer at the queried point. -/
+when the claimed response matches the transparent oracle answer at the queried point.
+
+The equation holds for *every* transcript `tr`: the opening verifier is transcript-independent and
+reads `cm` from the public opening statement.  Despite its name, this proposition does not relate
+any source verifier's query log to the opening requests. -/
 def openingRealizesQueryLog : Prop :=
   ∀ (cm : Data) (q : O.Query) (y : O.Response q)
     (tr : ((srcPSpec (Data := Data)).BCSOpeningPhase (pSpecCom (Data := Data))
@@ -550,7 +576,10 @@ theorem phases_realizationFrontier :
 
 /-- The transparent end-to-end phases in **proof-carrying** form (issue #342): the semantic
 realization payloads (`interactionRealizesOracleMessages` / `openingRealizesQueryLog`) come
-packaged with their proofs, so no consumer can treat them as unconstrained payload data. -/
+packaged with their proofs.  This only certifies that these particular, caller-chosen
+propositions hold; the `BCSCompiledPhasesLawful` interface does not fix what they mean (choosing
+both as `True` would also inhabit it), so this packaging adds no compiled-oracle content beyond
+the two equations above. -/
 def phasesLawful :
     OracleReduction.BCSCompiledPhasesLawful (oSpec := oSpec) (pSpec := srcPSpec (Data := Data))
       (pSpecCom := pSpecCom (Data := Data))

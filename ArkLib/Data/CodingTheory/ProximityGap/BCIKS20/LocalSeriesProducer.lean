@@ -72,6 +72,11 @@ and the §5 Claim-5.9 base-rational reading `htrunc`, here named `TruncReadingOn
   conditions on the whole good set (the landed `LocalSeriesDatumOn` interface demands its
   cargo at every good `z`).  Restricting the §5 argument to the large cell — or migrating
   the interface to a sub-good-set — is the remaining BCIKS20 Steps-5–7 content, not claimed.
+* `TruncReadingOn` inherits the PG-319 variable conflation of `LocalSeriesDatumOn.htrunc`:
+  it truncates in the domain variable `X` at the seed-curve length `n < k + 2`, which forces
+  `(P z).coeff (k + 1) = 0` at every good seed
+  (`FaithfulCurveExtraction.LocalSeriesDatumOn.coeff_succ_eq_zero`).  It is therefore not a
+  faithful statement of Claim 5.9 for decoded degrees above `k + 1`.
 -/
 
 set_option linter.style.longLine false
@@ -471,7 +476,15 @@ structure RawGSCargo {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
 
 /-- A producer for raw Guruswami-Sudan cargo in the reduced large-good-set branch of issue #304.
 The small-good-set branch is handled separately by interpolation, so this producer is only asked
-to build cargo when `k + 1 < |RS_goodCoeffsCurve|`. -/
+to build cargo when `k + 1 < |RS_goodCoeffsCurve|`.
+
+**Caveat (2026-10-28 audit, PG-319).**  The cargo feeds `LocalSeriesDatumOn`, whose `htrunc`
+shape (here `TruncReadingOn`) truncates in the domain variable `X` at the seed-curve length
+`n < k + 2`; any such datum forces `(P z).coeff (k + 1) = 0` at every good seed
+(`FaithfulCurveExtraction.LocalSeriesDatumOn.coeff_succ_eq_zero`).  Since the hypotheses
+allow decoded polynomials of degree up to `deg - 1`, this producer cannot exist once
+`deg > k + 1` and some admissible decoded family has a nonzero `X^(k+1)` coefficient at a good
+seed; the downstream front doors are valid implications, not discharges. -/
 def RawGSCargoLargeProducer {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} : Type :=
   ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
     Pr_{

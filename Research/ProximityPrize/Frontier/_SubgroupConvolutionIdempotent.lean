@@ -6,13 +6,15 @@ Authors: ArkLib Contributors
 import Mathlib
 
 /-!
-# Subgroup multiplicative-convolution idempotent — the ℓ-adic/Katz–Mellin monodromy NO-GO (#407/#444)
+# Subgroup multiplicative-convolution idempotent — count identity motivating a Katz–Mellin no-go heuristic (#407/#444)
 
-**Negative guardrail (exotic-math sweep).** This file proves the route *"use Katz's big-monodromy
-/ Tannakian–Mellin theory on the convolution powers of the subgroup indicator `1_G` to force a
-square-root cancellation of the dyadic Gauss periods"* is **structurally vacuous**: the
-multiplicative-convolution powers of a finite subgroup's indicator do not GROW, they are a fixed
-PROJECTOR (idempotent up to a scalar). It does **not** close the prize — the open `L^∞`
+**Negative guardrail (exotic-math sweep), heuristic only.** This file proves an exact *count
+identity*: the multiplicative-convolution powers of a finite subgroup's indicator do not GROW, they
+are a fixed PROJECTOR (idempotent up to a scalar). This is offered as **heuristic motivation** that
+the route *"use Katz's big-monodromy / Tannakian–Mellin theory on the convolution powers of the
+subgroup indicator `1_G` to force a square-root cancellation of the dyadic Gauss periods"* has
+nothing to grip; nothing here formalizes sheaves, monodromy groups, or Gauss/Kloosterman families,
+so the monodromy conclusions below are **not theorems**. It does **not** close the prize — the open `L^∞`
 `√(log)` core (the BGK/Paley wall) survives untouched. See #407, #444, and the exotic sweep.
 
 ## The math
@@ -27,18 +29,19 @@ the first `r−1` coordinates are free and the last is forced `x_r = (x₁⋯x_{
 product of subgroup elements with `z` stays in `H` by closure), so the fibre has exactly `n^{r-1}`
 points; if `z ∉ H` the fibre is empty (a product of `H`-elements can never leave `H`).
 
-**Why this is a no-go for monodromy.** Katz's big-monodromy / Tannakian–Mellin machinery extracts
+**Why this suggests a no-go for monodromy (heuristic, not formalized).** Katz's big-monodromy / Tannakian–Mellin machinery extracts
 square-root cancellation from a family whose convolution powers exhibit `f^r/r!`-type generic-rank
 GROWTH (the geometric monodromy group then fills out a large classical group). Here the convolution
 object is a PROJECTOR: its "rank" (the support `H`, and the scalar `n^{r-1}`) is **constant in `r`**
-— no growth. The geometric monodromy is the smallest torus `GL(1)^f`, and Katz big-monodromy cannot
-apply to a subgroup indicator. So the Mellin/monodromy route produces nothing; the cancellation
-question remains the open BGK `L^∞` core.
+— no growth. Heuristically, one expects the relevant geometric monodromy to be small (a torus) and
+Katz big-monodromy to have nothing to apply to; this expectation is **not proved here** (no sheaf or
+monodromy object is formalized). The cancellation question remains the open BGK `L^∞` core.
 
 ## Honesty (project §6)
 
-This is a **NEGATIVE** brick: it establishes that the Mellin-monodromy route is *vacuous* (constant
-rank ⇒ no big monodromy ⇒ no √-cancellation theorem). It does **NOT** prove `M(n) ≤ C√(n log q)`;
+This is a **NEGATIVE heuristic** brick: the Lean content is only the count identity
+`#{v ∈ Hʳ : ∏v = z} = |H|^{r-1}·1_H(z)` and its support. The inference "constant rank ⇒ no big
+monodromy ⇒ no √-cancellation theorem" is informal motivation, not a formalized no-go. It does **NOT** prove `M(n) ≤ C√(n log q)`;
 that `L^∞` factor is the open BGK/Paley-conjecture core. All theorems below are exact combinatorial
 count identities, `sorry`-free and axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
 
@@ -146,7 +149,8 @@ theorem convCount_eq_pow_mul_indicator (H : Subgroup G) [Fintype H] {r : ℕ} (h
 /-- **Rank/support is constant in `r` (the no-growth core).** The support of the `r`-fold
 convolution power — the set of `z` with nonzero fibre — is exactly `H`, *independent of `r ≥ 1`*.
 Big-monodromy needs the convolution support/generic rank to GROW with `r`; here it is frozen at
-`H`, so the geometric monodromy is the minimal torus and Katz's theorem is inapplicable. -/
+`H`. (Informally this is why we do not expect big monodromy here; no monodromy statement is
+formalized.) -/
 theorem convCount_support_eq (H : Subgroup G) [Fintype H] {r : ℕ} (hr : 1 ≤ r) :
     {z : G | convCount H r z ≠ 0} = (H : Set G) := by
   classical

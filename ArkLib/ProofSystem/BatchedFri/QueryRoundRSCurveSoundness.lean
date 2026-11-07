@@ -12,6 +12,11 @@ import ArkLib.ProofSystem.BatchedFri.QueryRoundSoundness
 `QueryRoundProbability.lean` and `Security.lean` expose the query-level Batched FRI subdomain
 Reed-Solomon polynomial-curve routes.  This companion module lifts those routes to the
 full-domain Claim 8.3 surfaces without growing the near-cap query-round and security files.
+
+All Reed–Solomon codes, rates and radii here are taken at the batched FRI input degree
+`friDegree s d = 2 ^ (∑ i, s i) * d` (audit finding L70: they used to use degree `2 ^ n` on the
+`2 ^ n`-point domain, i.e. the full word space with `δ_fri = 1 - α_fri ≤ 0`).  The statements remain
+conditional on the BCIKS20 residuals and probability triggers carried as hypotheses.
 -/
 
 namespace Fri
@@ -40,21 +45,21 @@ def friRSCurveProbabilityInputs
   let α_fri : ℝ≥0 :=
     let ρ_sqrt :=
       ReedSolomon.sqrtRate
-        (2 ^ n)
+        (friDegree s d)
         (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
     ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))
   let δ_fri : ℝ≥0 := 1 - α_fri
   ProximityGap.StrictCoeffPolysResidual
-      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
       (domain := rsDomain) (δ := δ_fri) ∧
     ProximityGap.BoundaryProbabilityResidual
-      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
       (domain := rsDomain) (δ := δ_fri) ∧
-    δ_fri ≤ 1 - ReedSolomon.sqrtRate (2 ^ n) rsDomain ∧
+    δ_fri ≤ 1 - ReedSolomon.sqrtRate (friDegree s d) rsDomain ∧
     Pr_{let r ← $ᵖ 𝔽}[
       δᵣ(∑ i : Fin (t + 1), (r ^ (i : ℕ)) • u i,
-        (ReedSolomon.code rsDomain (2 ^ n)).carrier) ≤ δ_fri] >
-      t * ProximityGap.errorBound δ_fri (2 ^ n) rsDomain
+        (ReedSolomon.code rsDomain (friDegree s d)).carrier) ≤ δ_fri] >
+      t * ProximityGap.errorBound δ_fri (friDegree s d) rsDomain
 
 /-- Probability-route Claim 8.3 query-lift specialized to the Batched FRI subdomain
 Reed-Solomon polynomial-curve correlated-agreement theorem. -/
@@ -68,22 +73,22 @@ theorem friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingS
     (h_agreement :
       correlated_agreement_density
         (Fₛ (fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)))
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤
       (let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
-    (h_rs : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
-    friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3 := by
+    (h_rs : friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
+    friSoundnessQueryLift (n := n) (s := s) (d := d) (ω := ω) f m_ge_3 := by
   let rsDomain : ω.subdomain 0 ↪ 𝔽 := ⟨fun x => x, by simp⟩
   let u : Code.WordStack 𝔽 (Fin t.succ) (ω.subdomain 0) :=
     fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)
   let α_fri : ℝ≥0 :=
     let ρ_sqrt :=
       ReedSolomon.sqrtRate
-        (2 ^ n)
+        (friDegree s d)
         (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
     ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))
   let δ_fri : ℝ≥0 := 1 - α_fri
@@ -91,21 +96,21 @@ theorem friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingS
   rcases h_rs with ⟨hStrictCoeff, hBoundary, hδ, h_prob⟩
   have hStrictCoeff' :
       ProximityGap.StrictCoeffPolysResidual
-        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
         (domain := rsDomain) (δ := δ_fri) := by
     simpa [rsDomain, α_fri, δ_fri] using hStrictCoeff
   have hBoundary' :
       ProximityGap.BoundaryProbabilityResidual
-        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
         (domain := rsDomain) (δ := δ_fri) := by
     simpa [rsDomain, α_fri, δ_fri] using hBoundary
-  have hδ' : δ_fri ≤ 1 - ReedSolomon.sqrtRate (2 ^ n) rsDomain := by
+  have hδ' : δ_fri ≤ 1 - ReedSolomon.sqrtRate (friDegree s d) rsDomain := by
     simpa [rsDomain, α_fri, δ_fri] using hδ
   have h_prob' :
       Pr_{let r ← $ᵖ 𝔽}[
         δᵣ(∑ i : Fin (t + 1), (r ^ (i : ℕ)) • u i,
-          (ReedSolomon.code rsDomain (2 ^ n)).carrier) ≤ δ_fri] >
-        t * ProximityGap.errorBound δ_fri (2 ^ n) rsDomain := by
+          (ReedSolomon.code rsDomain (friDegree s d)).carrier) ≤ δ_fri] >
+        t * ProximityGap.errorBound δ_fri (friDegree s d) rsDomain := by
     simpa [rsDomain, u, α_fri, δ_fri] using h_prob
   unfold friSoundnessQueryLift
   exact
@@ -132,14 +137,14 @@ theorem fri_soundness_canonicalIndependent_of_queryRoundProbabilityBoundAndCanon
     (h_agreement :
       correlated_agreement_density
         (Fₛ (fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)))
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤
       (let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
-    (h_rs : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
+    (h_rs : friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     fri_soundness_canonicalIndependent (n := n) (s := s) (d := d) (ω := ω) (l := l)
       (domain_size_cond := domain_size_cond) f m_ge_3 := by
   exact
@@ -162,28 +167,28 @@ theorem fri_jointAgreement_of_queryRoundProbabilityBoundAndCanonicalBatchingSeam
     (h_agreement :
       correlated_agreement_density
         (Fₛ (fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)))
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤
       (let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
-    (h_rs : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
+    (h_rs : friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     Code.jointAgreement
       (F := 𝔽)
       (κ := Fin t.succ)
       (ι := ω)
-      (C := (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω ↪ 𝔽) (2 ^ n)).carrier)
+      (C := (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω ↪ 𝔽) (friDegree s d)).carrier)
       (δ :=
         let ρ_sqrt :=
           ReedSolomon.sqrtRate
-            (2 ^ n)
+            (friDegree s d)
             (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
         let α : ℝ≥0 := (ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0))))
         1 - α)
       (W := f) := by
-  change friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3
+  change friSoundnessQueryLift (n := n) (s := s) (d := d) (ω := ω) f m_ge_3
   exact
     friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
       (n := n) (s := s) (d := d) (ω := ω)
@@ -201,41 +206,41 @@ def friRSCurveDensityInputs {t : ℕ}
   let α_fri : ℝ≥0 :=
     let ρ_sqrt :=
       ReedSolomon.sqrtRate
-        (2 ^ n)
+        (friDegree s d)
         (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
     ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))
   let δ_fri : ℝ≥0 := 1 - α_fri
   ProximityGap.StrictCoeffPolysResidual
-      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
       (domain := rsDomain) (δ := δ_fri) ∧
     ProximityGap.BoundaryProbabilityResidual
-      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
       (domain := rsDomain) (δ := δ_fri) ∧
-    δ_fri ≤ 1 - ReedSolomon.sqrtRate (2 ^ n) rsDomain ∧
+    δ_fri ≤ 1 - ReedSolomon.sqrtRate (friDegree s d) rsDomain ∧
     Pr_{let r ← $ᵖ 𝔽}[
       δᵣ(∑ i : Fin (t + 1), (r ^ (i : ℕ)) • u i,
-        (ReedSolomon.code rsDomain (2 ^ n)).carrier) ≤ δ_fri] >
-      t * ProximityGap.errorBound δ_fri (2 ^ n) rsDomain
+        (ReedSolomon.code rsDomain (friDegree s d)).carrier) ≤ δ_fri] >
+      t * ProximityGap.errorBound δ_fri (friDegree s d) rsDomain
 
 /-- The RS-curve probability-route input package is definitionally the density-route package. -/
 theorem friRSCurveDensityInputs_of_probabilityInputs
     {t : ℕ} (f : Fin t.succ → (ω → 𝔽)) (m : ℕ)
-    (h : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
-    friRSCurveDensityInputs (n := n) (ω := ω) f m := by
+    (h : friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
+    friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m := by
   simpa [friRSCurveProbabilityInputs, friRSCurveDensityInputs] using h
 
 /-- The RS-curve density-route input package is definitionally the probability-route package. -/
 theorem friRSCurveProbabilityInputs_of_densityInputs
     {t : ℕ} (f : Fin t.succ → (ω → 𝔽)) (m : ℕ)
-    (h : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
-    friRSCurveProbabilityInputs (n := n) (ω := ω) f m := by
+    (h : friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
+    friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m := by
   simpa [friRSCurveProbabilityInputs, friRSCurveDensityInputs] using h
 
 /-- The probability and density RS-curve input packages carry the same fixed-radius data. -/
 theorem friRSCurveProbabilityInputs_iff_densityInputs
     {t : ℕ} (f : Fin t.succ → (ω → 𝔽)) (m : ℕ) :
-    friRSCurveProbabilityInputs (n := n) (ω := ω) f m ↔
-      friRSCurveDensityInputs (n := n) (ω := ω) f m := by
+    friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m ↔
+      friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m := by
   constructor
   · exact friRSCurveDensityInputs_of_probabilityInputs (n := n) (ω := ω) f m
   · exact friRSCurveProbabilityInputs_of_densityInputs (n := n) (ω := ω) f m
@@ -243,17 +248,17 @@ theorem friRSCurveProbabilityInputs_iff_densityInputs
 /-- Project the strict coefficient-polynomial residual from probability-route RS-curve inputs. -/
 theorem friRSCurveProbabilityInputs.strictCoeff
     {t : ℕ} (f : Fin t.succ → (ω → 𝔽)) (m : ℕ)
-    (h : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
+    (h : friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     let rsDomain : ω.subdomain 0 ↪ 𝔽 := ⟨fun x => x, by simp⟩
     let α_fri : ℝ≥0 :=
       let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
       ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))
     let δ_fri : ℝ≥0 := 1 - α_fri
     ProximityGap.StrictCoeffPolysResidual
-      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
       (domain := rsDomain) (δ := δ_fri) := by
   dsimp
   dsimp [friRSCurveProbabilityInputs] at h
@@ -262,17 +267,17 @@ theorem friRSCurveProbabilityInputs.strictCoeff
 /-- Project the boundary-probability residual from probability-route RS-curve inputs. -/
 theorem friRSCurveProbabilityInputs.boundaryProbability
     {t : ℕ} (f : Fin t.succ → (ω → 𝔽)) (m : ℕ)
-    (h : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
+    (h : friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     let rsDomain : ω.subdomain 0 ↪ 𝔽 := ⟨fun x => x, by simp⟩
     let α_fri : ℝ≥0 :=
       let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
       ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))
     let δ_fri : ℝ≥0 := 1 - α_fri
     ProximityGap.BoundaryProbabilityResidual
-      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
       (domain := rsDomain) (δ := δ_fri) := by
   dsimp
   dsimp [friRSCurveProbabilityInputs] at h
@@ -281,16 +286,16 @@ theorem friRSCurveProbabilityInputs.boundaryProbability
 /-- Project the square-root-radius side condition from probability-route RS-curve inputs. -/
 theorem friRSCurveProbabilityInputs.sqrtRadius
     {t : ℕ} (f : Fin t.succ → (ω → 𝔽)) (m : ℕ)
-    (h : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
+    (h : friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     let rsDomain : ω.subdomain 0 ↪ 𝔽 := ⟨fun x => x, by simp⟩
     let α_fri : ℝ≥0 :=
       let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
       ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))
     let δ_fri : ℝ≥0 := 1 - α_fri
-    δ_fri ≤ 1 - ReedSolomon.sqrtRate (2 ^ n) rsDomain := by
+    δ_fri ≤ 1 - ReedSolomon.sqrtRate (friDegree s d) rsDomain := by
   dsimp
   dsimp [friRSCurveProbabilityInputs] at h
   exact h.2.2.1
@@ -298,21 +303,21 @@ theorem friRSCurveProbabilityInputs.sqrtRadius
 /-- Project the polynomial-curve probability trigger from probability-route RS-curve inputs. -/
 theorem friRSCurveProbabilityInputs.curveProbability
     {t : ℕ} (f : Fin t.succ → (ω → 𝔽)) (m : ℕ)
-    (h : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
+    (h : friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     let rsDomain : ω.subdomain 0 ↪ 𝔽 := ⟨fun x => x, by simp⟩
     let u : Code.WordStack 𝔽 (Fin t.succ) (ω.subdomain 0) :=
       fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)
     let α_fri : ℝ≥0 :=
       let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
       ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))
     let δ_fri : ℝ≥0 := 1 - α_fri
     Pr_{let r ← $ᵖ 𝔽}[
       δᵣ(∑ i : Fin (t + 1), (r ^ (i : ℕ)) • u i,
-        (ReedSolomon.code rsDomain (2 ^ n)).carrier) ≤ δ_fri] >
-      t * ProximityGap.errorBound δ_fri (2 ^ n) rsDomain := by
+        (ReedSolomon.code rsDomain (friDegree s d)).carrier) ≤ δ_fri] >
+      t * ProximityGap.errorBound δ_fri (friDegree s d) rsDomain := by
   dsimp
   dsimp [friRSCurveProbabilityInputs] at h
   exact h.2.2.2
@@ -320,17 +325,17 @@ theorem friRSCurveProbabilityInputs.curveProbability
 /-- Project the strict coefficient-polynomial residual from density-route RS-curve inputs. -/
 theorem friRSCurveDensityInputs.strictCoeff
     {t : ℕ} (f : Fin t.succ → (ω → 𝔽)) (m : ℕ)
-    (h : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
+    (h : friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     let rsDomain : ω.subdomain 0 ↪ 𝔽 := ⟨fun x => x, by simp⟩
     let α_fri : ℝ≥0 :=
       let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
       ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))
     let δ_fri : ℝ≥0 := 1 - α_fri
     ProximityGap.StrictCoeffPolysResidual
-      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
       (domain := rsDomain) (δ := δ_fri) := by
   exact friRSCurveProbabilityInputs.strictCoeff (n := n) (ω := ω) f m
     (friRSCurveProbabilityInputs_of_densityInputs (n := n) (ω := ω) f m h)
@@ -338,17 +343,17 @@ theorem friRSCurveDensityInputs.strictCoeff
 /-- Project the boundary-probability residual from density-route RS-curve inputs. -/
 theorem friRSCurveDensityInputs.boundaryProbability
     {t : ℕ} (f : Fin t.succ → (ω → 𝔽)) (m : ℕ)
-    (h : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
+    (h : friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     let rsDomain : ω.subdomain 0 ↪ 𝔽 := ⟨fun x => x, by simp⟩
     let α_fri : ℝ≥0 :=
       let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
       ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))
     let δ_fri : ℝ≥0 := 1 - α_fri
     ProximityGap.BoundaryProbabilityResidual
-      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+      (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
       (domain := rsDomain) (δ := δ_fri) := by
   exact friRSCurveProbabilityInputs.boundaryProbability (n := n) (ω := ω) f m
     (friRSCurveProbabilityInputs_of_densityInputs (n := n) (ω := ω) f m h)
@@ -356,37 +361,37 @@ theorem friRSCurveDensityInputs.boundaryProbability
 /-- Project the square-root-radius side condition from density-route RS-curve inputs. -/
 theorem friRSCurveDensityInputs.sqrtRadius
     {t : ℕ} (f : Fin t.succ → (ω → 𝔽)) (m : ℕ)
-    (h : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
+    (h : friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     let rsDomain : ω.subdomain 0 ↪ 𝔽 := ⟨fun x => x, by simp⟩
     let α_fri : ℝ≥0 :=
       let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
       ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))
     let δ_fri : ℝ≥0 := 1 - α_fri
-    δ_fri ≤ 1 - ReedSolomon.sqrtRate (2 ^ n) rsDomain := by
+    δ_fri ≤ 1 - ReedSolomon.sqrtRate (friDegree s d) rsDomain := by
   exact friRSCurveProbabilityInputs.sqrtRadius (n := n) (ω := ω) f m
     (friRSCurveProbabilityInputs_of_densityInputs (n := n) (ω := ω) f m h)
 
 /-- Project the polynomial-curve probability trigger from density-route RS-curve inputs. -/
 theorem friRSCurveDensityInputs.curveProbability
     {t : ℕ} (f : Fin t.succ → (ω → 𝔽)) (m : ℕ)
-    (h : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
+    (h : friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     let rsDomain : ω.subdomain 0 ↪ 𝔽 := ⟨fun x => x, by simp⟩
     let u : Code.WordStack 𝔽 (Fin t.succ) (ω.subdomain 0) :=
       fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)
     let α_fri : ℝ≥0 :=
       let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
       ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))
     let δ_fri : ℝ≥0 := 1 - α_fri
     Pr_{let r ← $ᵖ 𝔽}[
       δᵣ(∑ i : Fin (t + 1), (r ^ (i : ℕ)) • u i,
-        (ReedSolomon.code rsDomain (2 ^ n)).carrier) ≤ δ_fri] >
-      t * ProximityGap.errorBound δ_fri (2 ^ n) rsDomain := by
+        (ReedSolomon.code rsDomain (friDegree s d)).carrier) ≤ δ_fri] >
+      t * ProximityGap.errorBound δ_fri (friDegree s d) rsDomain := by
   exact friRSCurveProbabilityInputs.curveProbability (n := n) (ω := ω) f m
     (friRSCurveProbabilityInputs_of_densityInputs (n := n) (ω := ω) f m h)
 
@@ -402,22 +407,22 @@ theorem friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamA
     (h_agreement :
       correlated_agreement_density
         (Fₛ (fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)))
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤
       (let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
-    (h_rs : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
-    friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3 := by
+    (h_rs : friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
+    friSoundnessQueryLift (n := n) (s := s) (d := d) (ω := ω) f m_ge_3 := by
   let rsDomain : ω.subdomain 0 ↪ 𝔽 := ⟨fun x => x, by simp⟩
   let u : Code.WordStack 𝔽 (Fin t.succ) (ω.subdomain 0) :=
     fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)
   let α_fri : ℝ≥0 :=
     let ρ_sqrt :=
       ReedSolomon.sqrtRate
-        (2 ^ n)
+        (friDegree s d)
         (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
     ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))
   let δ_fri : ℝ≥0 := 1 - α_fri
@@ -425,21 +430,21 @@ theorem friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamA
   rcases h_rs with ⟨hStrictCoeff, hBoundary, hδ, h_prob⟩
   have hStrictCoeff' :
       ProximityGap.StrictCoeffPolysResidual
-        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
         (domain := rsDomain) (δ := δ_fri) := by
     simpa [rsDomain, α_fri, δ_fri] using hStrictCoeff
   have hBoundary' :
       ProximityGap.BoundaryProbabilityResidual
-        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
         (domain := rsDomain) (δ := δ_fri) := by
     simpa [rsDomain, α_fri, δ_fri] using hBoundary
-  have hδ' : δ_fri ≤ 1 - ReedSolomon.sqrtRate (2 ^ n) rsDomain := by
+  have hδ' : δ_fri ≤ 1 - ReedSolomon.sqrtRate (friDegree s d) rsDomain := by
     simpa [rsDomain, α_fri, δ_fri] using hδ
   have h_prob' :
       Pr_{let r ← $ᵖ 𝔽}[
         δᵣ(∑ i : Fin (t + 1), (r ^ (i : ℕ)) • u i,
-          (ReedSolomon.code rsDomain (2 ^ n)).carrier) ≤ δ_fri] >
-        t * ProximityGap.errorBound δ_fri (2 ^ n) rsDomain := by
+          (ReedSolomon.code rsDomain (friDegree s d)).carrier) ≤ δ_fri] >
+        t * ProximityGap.errorBound δ_fri (friDegree s d) rsDomain := by
     simpa [rsDomain, u, α_fri, δ_fri] using h_prob
   unfold friSoundnessQueryLift
   exact
@@ -467,14 +472,14 @@ theorem fri_soundness_canonicalIndependent_of_queryRoundDensityBoundAndCanonical
     (h_agreement :
       correlated_agreement_density
         (Fₛ (fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)))
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤
       (let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
-    (h_rs : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
+    (h_rs : friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     fri_soundness_canonicalIndependent (n := n) (s := s) (d := d) (ω := ω) (l := l)
       (domain_size_cond := domain_size_cond) f m_ge_3 := by
   exact
@@ -497,28 +502,28 @@ theorem fri_jointAgreement_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndR
     (h_agreement :
       correlated_agreement_density
         (Fₛ (fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)))
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤
       (let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
-    (h_rs : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
+    (h_rs : friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     Code.jointAgreement
       (F := 𝔽)
       (κ := Fin t.succ)
       (ι := ω)
-      (C := (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω ↪ 𝔽) (2 ^ n)).carrier)
+      (C := (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω ↪ 𝔽) (friDegree s d)).carrier)
       (δ :=
         let ρ_sqrt :=
           ReedSolomon.sqrtRate
-            (2 ^ n)
+            (friDegree s d)
             (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
         let α : ℝ≥0 := (ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0))))
         1 - α)
       (W := f) := by
-  change friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3
+  change friSoundnessQueryLift (n := n) (s := s) (d := d) (ω := ω) f m_ge_3
   exact
     friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve
       (n := n) (s := s) (d := d) (ω := ω)
@@ -536,15 +541,15 @@ theorem friSoundnessQueryLift_densityRSCurve_of_probabilityInputs
     (h_agreement :
       correlated_agreement_density
         (Fₛ (fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)))
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤
       (let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
-    (h_rs : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
-    friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3 :=
+    (h_rs : friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
+    friSoundnessQueryLift (n := n) (s := s) (d := d) (ω := ω) f m_ge_3 :=
   friSoundnessQueryLift_of_queryRoundDensityBoundAndCanonicalBatchingSeamAndRSCurve
     (n := n) (s := s) (d := d) (ω := ω)
     f m_ge_3 G δ_query queries l domain_size_cond h_agreement
@@ -562,15 +567,15 @@ theorem friSoundnessQueryLift_probabilityRSCurve_of_densityInputs
     (h_agreement :
       correlated_agreement_density
         (Fₛ (fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)))
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤
       (let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
-    (h_rs : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
-    friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3 :=
+    (h_rs : friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
+    friSoundnessQueryLift (n := n) (s := s) (d := d) (ω := ω) f m_ge_3 :=
   friSoundnessQueryLift_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
     (n := n) (s := s) (d := d) (ω := ω)
     f m_ge_3 G δ_query queries l domain_size_cond h_agreement
@@ -589,14 +594,14 @@ theorem fri_soundness_canonicalIndependent_densityRSCurve_of_probabilityInputs
     (h_agreement :
       correlated_agreement_density
         (Fₛ (fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)))
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤
       (let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
-    (h_rs : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
+    (h_rs : friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     fri_soundness_canonicalIndependent (n := n) (s := s) (d := d) (ω := ω) (l := l)
       (domain_size_cond := domain_size_cond) f m_ge_3 := by
   exact
@@ -620,14 +625,14 @@ theorem fri_soundness_canonicalIndependent_probabilityRSCurve_of_densityInputs
     (h_agreement :
       correlated_agreement_density
         (Fₛ (fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)))
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤
       (let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
-    (h_rs : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
+    (h_rs : friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     fri_soundness_canonicalIndependent (n := n) (s := s) (d := d) (ω := ω) (l := l)
       (domain_size_cond := domain_size_cond) f m_ge_3 := by
   exact
@@ -650,28 +655,28 @@ theorem fri_jointAgreement_densityRSCurve_of_probabilityInputs
     (h_agreement :
       correlated_agreement_density
         (Fₛ (fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)))
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤
       (let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
-    (h_rs : friRSCurveProbabilityInputs (n := n) (ω := ω) f m) :
+    (h_rs : friRSCurveProbabilityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     Code.jointAgreement
       (F := 𝔽)
       (κ := Fin t.succ)
       (ι := ω)
-      (C := (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω ↪ 𝔽) (2 ^ n)).carrier)
+      (C := (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω ↪ 𝔽) (friDegree s d)).carrier)
       (δ :=
         let ρ_sqrt :=
           ReedSolomon.sqrtRate
-            (2 ^ n)
+            (friDegree s d)
             (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
         let α : ℝ≥0 := (ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0))))
         1 - α)
       (W := f) := by
-  change friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3
+  change friSoundnessQueryLift (n := n) (s := s) (d := d) (ω := ω) f m_ge_3
   exact
     friSoundnessQueryLift_densityRSCurve_of_probabilityInputs
       (n := n) (s := s) (d := d) (ω := ω)
@@ -689,28 +694,28 @@ theorem fri_jointAgreement_probabilityRSCurve_of_densityInputs
     (h_agreement :
       correlated_agreement_density
         (Fₛ (fun i x => f i ((subdomainZeroEquiv (n := n) (ω := ω)) x)))
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤
       (let ρ_sqrt :=
         ReedSolomon.sqrtRate
-          (2 ^ n)
+          (friDegree s d)
           (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
        ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0)))))
-    (h_rs : friRSCurveDensityInputs (n := n) (ω := ω) f m) :
+    (h_rs : friRSCurveDensityInputs (n := n) (s := s) (d := d) (ω := ω) f m) :
     Code.jointAgreement
       (F := 𝔽)
       (κ := Fin t.succ)
       (ι := ω)
-      (C := (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω ↪ 𝔽) (2 ^ n)).carrier)
+      (C := (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω ↪ 𝔽) (friDegree s d)).carrier)
       (δ :=
         let ρ_sqrt :=
           ReedSolomon.sqrtRate
-            (2 ^ n)
+            (friDegree s d)
             (⟨fun x => x, by simp⟩ : ω ↪ 𝔽)
         let α : ℝ≥0 := (ρ_sqrt * (1 + 1 / (2 * (m : ℝ≥0))))
         1 - α)
       (W := f) := by
-  change friSoundnessQueryLift (n := n) (ω := ω) f m_ge_3
+  change friSoundnessQueryLift (n := n) (s := s) (d := d) (ω := ω) f m_ge_3
   exact
     friSoundnessQueryLift_probabilityRSCurve_of_densityInputs
       (n := n) (s := s) (d := d) (ω := ω)

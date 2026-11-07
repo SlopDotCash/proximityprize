@@ -53,10 +53,8 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 theorem directionSupportSet_translatedDirectionWord_card_eq_four
     (dom : Fin 16 ↪ F) (u1 : Fin 16 → F) (r : F[X])
     (hcore : (directionAgreement dom u1 r).card = 12) :
-    (directionSupportSet (translatedDirectionWord dom u1 r)).card = 4 := by
-  rw [directionSupportSet_translatedDirectionWord,
-    Finset.card_sdiff_of_subset (Finset.subset_univ _),
-    Finset.card_univ, Fintype.card_fin, hcore]
+    (directionSupportSet (translatedDirectionWord dom u1 r)).card = 4 :=
+  directionSupportSet_translatedDirectionWord_card_eq_sub dom u1 r hcore
 
 theorem three_le_directionFreshTraceSubtype_of_trace_le_six
     {dom : Fin 16 ↪ F} {delta : NNReal}
@@ -66,18 +64,8 @@ theorem three_le_directionFreshTraceSubtype_of_trace_le_six
       ⌈(1 - delta) * (Fintype.card (Fin 16) : NNReal)⌉₊ = 9)
     (r : F[X]) {gamma : F} (hgamma : gamma ∈ family.G)
     (htrace : (directionCoreTrace family r gamma).card ≤ 6) :
-    3 ≤ (directionFreshTraceSubtype family r gamma).card := by
-  let A := fullAgreement dom (u 0) (u 1) gamma (family.q gamma)
-  let D := directionAgreement dom (u 1) r
-  have hA : 9 ≤ A.card := by
-    have hlarge := family.threshold_le gamma hgamma
-    simpa only [hthreshold, A] using hlarge
-  have hsplit := Finset.card_sdiff_add_card_inter A D
-  have hfresh := directionFreshTraceSubtype_card family r gamma
-  change (directionFreshTraceSubtype family r gamma).card = (A \ D).card at hfresh
-  change (A ∩ D).card ≤ 6 at htrace
-  rw [hfresh]
-  omega
+    3 ≤ (directionFreshTraceSubtype family r gamma).card :=
+  sub_le_directionFreshTraceSubtype_of_trace_le family hthreshold r hgamma htrace
 
 theorem translatedInterceptWord_injective_of_trace_le_six
     {dom : Fin 16 ↪ F} {delta : NNReal}
@@ -92,31 +80,9 @@ theorem translatedInterceptWord_injective_of_trace_le_six
     (hbetaTrace : (directionCoreTrace family r beta).card ≤ 6)
     (hword : translatedInterceptWord family r gamma =
       translatedInterceptWord family r beta) :
-    gamma = beta := by
-  by_contra hne
-  let A := directionFreshTraceSubtype family r gamma
-  let B := directionFreshTraceSubtype family r beta
-  have hdisj : Disjoint A B := by
-    simpa only [A, B] using
-      directionFreshTraceSubtype_disjoint_of_word_eq_of_ne
-        family r hne hword
-  have hA : 3 ≤ A.card := by
-    simpa only [A] using
-      three_le_directionFreshTraceSubtype_of_trace_le_six
-        family hthreshold r hgamma hgammaTrace
-  have hB : 3 ≤ B.card := by
-    simpa only [B] using
-      three_le_directionFreshTraceSubtype_of_trace_le_six
-        family hthreshold r hbeta hbetaTrace
-  have hU : Fintype.card
-      {i : Fin 16 // i ∉ directionAgreement dom (u 1) r} = 4 := by
-    rw [Fintype.card_subtype_compl]
-    simp only [Fintype.card_coe, Fintype.card_fin, hcore]
-  have hunion : (A ∪ B).card ≤ 4 := by
-    have hle := Finset.card_le_univ (A ∪ B)
-    simpa only [Finset.card_univ, hU] using hle
-  rw [Finset.card_union_of_disjoint hdisj] at hunion
-  omega
+    gamma = beta :=
+  translatedInterceptWord_injective_of_trace_le family hthreshold r hcore (by norm_num)
+    hgamma hbeta hgammaTrace hbetaTrace hword
 
 theorem translatedWordFiber_card_le_four
     {dom : Fin 16 ↪ F} {delta : NNReal}
@@ -125,43 +91,8 @@ theorem translatedWordFiber_card_le_four
     (r : F[X]) (hr : r.natDegree < 4)
     (hcore : (directionAgreement dom (u 1) r).card = 12)
     (c : Fin 16 → F) :
-    (translatedWordFiber family r c).card ≤ 4 := by
-  let Gc := translatedWordFiber family r c
-  let H := {i : Fin 16 // i ∉ directionAgreement dom (u 1) r}
-  let pick : {gamma : F // gamma ∈ Gc} → H := fun gamma ↦
-    Classical.choose (directionFreshTraceSubtype_nonempty family r hr
-      (Finset.mem_filter.mp gamma.2).1)
-  have hpickMem : ∀ gamma : {gamma : F // gamma ∈ Gc},
-      pick gamma ∈ directionFreshTraceSubtype family r gamma.1 := by
-    intro gamma
-    exact Classical.choose_spec
-      (directionFreshTraceSubtype_nonempty family r hr
-        (Finset.mem_filter.mp gamma.2).1)
-  have hinj : Function.Injective pick := by
-    intro gamma beta hpick
-    apply Subtype.ext
-    have hgammaWord := (Finset.mem_filter.mp gamma.2).2
-    have hbetaWord := (Finset.mem_filter.mp beta.2).2
-    have hgammaFresh := hpickMem gamma
-    have hbetaFresh : pick gamma ∈
-        directionFreshTraceSubtype family r beta.1 := by
-      simpa only [hpick] using hpickMem beta
-    have hgammaFull : (pick gamma).1 ∈
-        fullAgreement dom (u 0) (u 1) gamma.1 (family.q gamma.1) := by
-      simpa only [directionFreshTraceSubtype, Finset.mem_filter,
-        Finset.mem_univ, true_and] using hgammaFresh
-    have hbetaFull : (pick gamma).1 ∈
-        fullAgreement dom (u 0) (u 1) beta.1 (family.q beta.1) := by
-      simpa only [directionFreshTraceSubtype, Finset.mem_filter,
-        Finset.mem_univ, true_and] using hbetaFresh
-    exact gamma_eq_of_translatedInterceptWord_eq_of_common_fresh
-      family r (hgammaWord.trans hbetaWord.symm)
-        hgammaFull hbetaFull (pick gamma).2
-  have hcard := Fintype.card_le_of_injective pick hinj
-  have hH : Fintype.card H = 4 := by
-    rw [Fintype.card_subtype_compl]
-    simp only [Fintype.card_coe, Fintype.card_fin, hcore]
-  simpa only [Gc, H, Fintype.card_coe, hH] using hcard
+    (translatedWordFiber family r c).card ≤ 4 :=
+  translatedWordFiber_card_le_sub family r hr hcore c
 
 theorem five_le_directionCoreTrace_of_core_twelve
     {dom : Fin 16 ↪ F} {delta : NNReal}
@@ -171,11 +102,8 @@ theorem five_le_directionCoreTrace_of_core_twelve
       ⌈(1 - delta) * (Fintype.card (Fin 16) : NNReal)⌉₊ = 9)
     (r : F[X]) (hcore : (directionAgreement dom (u 1) r).card = 12)
     {gamma : F} (hgamma : gamma ∈ family.G) :
-    5 ≤ (directionCoreTrace family r gamma).card := by
-  have hbudget := nine_add_direction_core_card_le_sixteen_add_trace_card
-    family (by norm_num) (by rw [hthreshold]) r hgamma
-  rw [hcore] at hbudget
-  omega
+    5 ≤ (directionCoreTrace family r gamma).card :=
+  sub_le_directionCoreTrace_of_core family hthreshold r hcore hgamma
 
 theorem directionCoreTrace_card_le_six_of_unsafeCodeword_ne
     {dom : Fin 16 ↪ F} {delta : NNReal}
@@ -333,17 +261,14 @@ theorem zeroAgreementStratum_six_card_le_three_of_support_four_of_not_safe
   rw [hWcard, hambient] at hpacking
   simpa only [I, Fintype.card_coe] using (show Fintype.card I ≤ 3 by omega)
 
-noncomputable def traceFiveScalars
+/-- Scalars whose translated intercept has a five-coordinate fixed trace (the shared
+`traceScalars` stratum at `k = 5`; the six-trace stratum `traceSixScalars` is reused from the
+core-thirteen file). -/
+noncomputable abbrev traceFiveScalars
     {dom : Fin 16 ↪ F} {delta : NNReal}
     {u : WordStack F (Fin 2) (Fin 16)}
     (family : BadScalarRichPointFamily dom 4 delta u) (r : F[X]) : Finset F :=
-  family.G.filter fun gamma ↦ (directionCoreTrace family r gamma).card = 5
-
-noncomputable def traceSixScalars
-    {dom : Fin 16 ↪ F} {delta : NNReal}
-    {u : WordStack F (Fin 2) (Fin 16)}
-    (family : BadScalarRichPointFamily dom 4 delta u) (r : F[X]) : Finset F :=
-  family.G.filter fun gamma ↦ (directionCoreTrace family r gamma).card = 6
+  traceScalars family r 5
 
 theorem traceFiveScalars_card_le_four
     {dom : Fin 16 ↪ F} {delta : NNReal}

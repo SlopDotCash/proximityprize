@@ -77,6 +77,7 @@ theorem mca_rsc_pair_holds
   have hcFpos : 0 < Fintype.card F := Fintype.card_pos
   have hcFR : (0 : ℝ) < (Fintype.card F : ℝ) := by exact_mod_cast hcFpos
   unfold mca_rsc
+  intro _
   apply hasMutualCorrAgreement_genRSC_pair_of_epsMCACurve_le φ m exp hexp
   · -- `0 ≤ B* = (1 + ρ)/2`
     rw [hrate]

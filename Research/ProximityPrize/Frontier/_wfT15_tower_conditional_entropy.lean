@@ -51,8 +51,10 @@ re-derived W4 with `g*` playing the role of the union constant. The route theref
 
 ### Kill 2 — THE RARE-EVENT SET CARRYING `M` IS INVISIBLE TO THE (AVERAGE) ENTROPY (F0)
 
-`M(n)` is realized on a **vanishing fraction** of `b` (measured: `≈ 7/2·10⁶ = 2.3·10⁻⁶` of coset
-reps at `n = 256, β = 4`). Deleting that near-max set changes the Shannon entropy of the value
+`M(n)` is realized on a **vanishing fraction** of `b` (measured: `7` of `2·10⁶` sampled coset
+reps at `n = 256, β = 4`, i.e. `7/(2·10⁶) = 3.5·10⁻⁶`; an earlier `2.3·10⁻⁶` was an arithmetic
+slip — of the full `m = (4294968833−1)/256 = 16 777 222` cosets only a sample was probed).
+Deleting that near-max set changes the Shannon entropy of the value
 distribution by `< 4·10⁻⁵` bits (measured) — i.e. the prize signal `M` carries **essentially zero
 Shannon-entropy mass**. We prove the abstract reason: removing a probability-`ε` event from a
 distribution changes its Shannon entropy by at most `H_b(ε) + ε·log₂(support)`, an `O(ε log)`
@@ -173,7 +175,8 @@ noncomputable def entropyPerturbBound (ε : ℝ) (supportLog : ℝ) : ℝ :=
 /-- **Rare-event entropy insensitivity (the F0 core).** Deleting a probability-`ε` event from a
 distribution over a support of (log-)size `supportLog` perturbs its Shannon entropy by an amount
 that → 0 as `ε → 0`: the bound `entropyPerturbBound ε supportLog → 0` as `ε → 0⁺` for fixed
-support. Hence the near-max set (probability `ε ≈ 2.3·10⁻⁶`, measured) — which carries the ENTIRE
+support. Hence the near-max set (probability `ε ≈ 7/(2·10⁶) = 3.5·10⁻⁶`, measured) — which
+carries the ENTIRE
 prize sup `M(n)` — is invisible to the (conditional) Shannon entropy: removing it leaves the entropy
 essentially unchanged (`< 4·10⁻⁵` bits, measured) while removing all of `M`. Therefore no
 conditional-Shannon-entropy functional of the value distribution can see, let alone bound, `M(n)`.

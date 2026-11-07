@@ -1,5 +1,15 @@
 # #466 R329 (Fable): kernel/lattice quotient order = |Res|/p — saturation becomes integer arithmetic
 
+> **Later status (linked 2026-10-28, audit T48).** `BinomialBadPrimeLaw`, named below as the next
+> open target, has since been refuted.
+> `Research/ProximityPrize/Frontier/_W12BinomialBadPrimeRefuted.lean` proves it unsatisfiable at
+> every prime of the `n = 32` census window `[2^20, 2^22]` and the `n = 64` window `[2^24, 2^26]`.
+> The argument uses the exact binomial resultant closed forms and is all-integer. R346
+> (`deltastar-466-r346-n64-binomial-law-refutation-2026-07-09.md`) had already found an `n = 64`
+> failure. So "verified by the R321/R322 census" below does not describe a valid binomial witness.
+> The quotient-index identity `[K_p : L_{P_d}]·p = |Res|` (items 1–4) and its conditional analytic
+> socket remain valid. The saturation route simply cannot be fed through this law.
+
 Date: 2026-07-09 · Lane file: `Frontier/_R329KernelQuotientOrder.lean`
 (depends on r323; validated after the r323 olean lands)
 

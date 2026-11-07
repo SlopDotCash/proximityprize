@@ -14,24 +14,32 @@ coefficient is, by direct evaluation of the subgroup-indicator DFT,
 ```
         𝓕 1_{μ_d} 0 = d,         hence  ‖𝓕 1_{μ_d} 0‖ = d.
 ```
-What was MISSING on the concrete object: the explicit DC / off-DC SPECTRAL GAP — the statement that
-the off-DC peak is a `√(N/d)`-factor SMALLER than the DC coefficient.  This is the honest reason the
-prize is about the *off-DC* maximum and not the (trivially huge) all-frequency maximum: the DC term
-dominates by a square-root-of-thickness factor.
+*Correction (audit 2026-10-28, R-217).* An earlier version of this header described the result
+below as a DC / off-DC *spectral gap*: "the off-DC peak is a `√(N/d)`-factor SMALLER than the DC
+coefficient", with the DC term dominating. That reverses the factor. What is proved is the upper
+bound `M ≤ √((N − d)/d) · ‖DC‖`, and for `N ≫ d` the factor `√((N − d)/d)` is much **larger** than
+`1`; the bound therefore does not show that the off-DC peak is below the DC coefficient, and there
+is no strict spectral separation on this model. Equality with DC is in fact common: for `N = 8`,
+`d = 2` the subgroup is `{0, 4}` and at the nonzero frequency `k = 2` the unnormalized coefficient
+is `2`, exactly the DC value (the bound only gives `≤ 2√3`).
 
 Combining `M² ≤ N·d − d²` (the off-DC ceiling) with `‖𝓕 1_{μ_d} 0‖² = d²`:
 ```
         M²  ≤  N·d − d²  =  ((N − d)/d) · d²  =  ((N − d)/d) · ‖𝓕 1_{μ_d} 0‖²,
 ```
-i.e. `M ≤ √((N − d)/d) · ‖𝓕 1_{μ_d} 0‖ = √(N/d − 1) · ‖DC‖`.  In the prize regime `N = q ≈ d^β`
-the gap factor is `√(N/d − 1) ≈ √(q/n) = n^{(β−1)/2}`: the off-DC peak is polynomially below the DC
-coefficient, which is exactly why CORE localizes on the off-DC frequencies.
+i.e. `M ≤ √((N − d)/d) · ‖𝓕 1_{μ_d} 0‖ = √(N/d − 1) · ‖DC‖`, a loose upper fence.
+
+*Carrier scope.* The object here is the indicator of the **additive** subgroup of order `d` of
+`ZMod N`, under the hypothesis `d ∣ N`. The prize subgroup is the **multiplicative** `μ_n ⊆ 𝔽_q^×`
+with `n ∣ q − 1`; these results do not instantiate a gap for those multiplicative periods. Any
+claim that the off-DC peak of the intended multiplicative periods lies strictly below DC needs a
+genuine estimate for that object.
 
 * `subgroupIndicator_dc_value`   : `𝓕 1_{μ_d} 0 = d`.
 * `subgroupIndicator_dc_norm`    : `‖𝓕 1_{μ_d} 0‖ = d`.
-* `offDC_peak_sq_le_gap_mul_dc_sq` : `M² ≤ ((N − d)/d) · ‖𝓕 1_{μ_d} 0‖²` (the DC/off-DC gap).
+* `offDC_peak_sq_le_gap_mul_dc_sq` : `M² ≤ ((N − d)/d) · ‖𝓕 1_{μ_d} 0‖²` (an upper fence).
 
-NOTE on scope: this is a structural SEPARATION between the DC coefficient and the off-DC peak — an
+NOTE on scope: this is NOT a separation between the DC coefficient and the off-DC peak — it is an
 upper bound on the off-DC peak in terms of the DC coefficient, NOT the open CORE bound (which asks
 for `M ≤ C·√(n·log(p/n))`, a `√(N/d)`-times STRONGER ceiling than the `√((N−d)/d)·d` recorded here).
 The gap factor `√((N − d)/d)` is the trivial completion gap, recorded as the upper fence — NOT a
@@ -65,13 +73,14 @@ theorem subgroupIndicator_dc_norm {d : ℕ} (hd : d ∣ N) :
     ‖(𝓕 (subgroupIndicator (N := N) d)) 0‖ = (d : ℝ) := by
   rw [subgroupIndicator_dc_value hd, Complex.norm_natCast]
 
-/-- **The DC / off-DC spectral gap.**  For any off-DC frequency `k₀ ≠ 0`, the squared magnitude is
-at most `((N − d)/d)` times the squared DC magnitude:
+/-- **The DC / off-DC upper fence.**  For any off-DC frequency `k₀ ≠ 0` of the additive-subgroup
+indicator (`d ∣ N`), the squared magnitude is at most `((N − d)/d)` times the squared DC magnitude:
 ```
         ‖𝓕 1_{μ_d} k₀‖²  ≤  ((N − d)/d) · ‖𝓕 1_{μ_d} 0‖².
 ```
-Hence `M(μ_n) ≤ √(N/d − 1) · ‖DC‖`: the off-DC peak is a `√(N/d)`-factor below the DC coefficient.
-This is the trivial completion gap (`√((N−d)/d)`), recorded as the upper fence, NOT a CORE bound. -/
+Hence `M ≤ √(N/d − 1) · ‖DC‖`. For `N ≫ d` this factor exceeds `1`, so the statement does NOT say
+the off-DC peak is below the DC coefficient (an earlier docstring claimed a `√(N/d)`-factor
+separation; R-217). This is the trivial completion fence, NOT a CORE bound. -/
 theorem offDC_peak_sq_le_gap_mul_dc_sq {d : ℕ} (hd : d ∣ N)
     {k₀ : ZMod N} (hk₀ : k₀ ∈ (univ.erase (0 : ZMod N))) (hd0 : 0 < d) :
     ‖(𝓕 (subgroupIndicator (N := N) d)) k₀‖ ^ 2
@@ -88,10 +97,10 @@ theorem offDC_peak_sq_le_gap_mul_dc_sq {d : ℕ} (hd : d ∣ N)
   exact hceil
 
 
-/-- **The DC / off-DC spectral gap (norm form).**  Taking square roots in
+/-- **The DC / off-DC upper fence (norm form).**  Taking square roots in
 `offDC_peak_sq_le_gap_mul_dc_sq`, every off-DC coefficient is at most
-`√((N-d)/d)` times the DC magnitude.  This is still the trivial completion gap,
-not a CORE bound. -/
+`√((N-d)/d)` times the DC magnitude (a factor `> 1` once `N > 2d`, so no separation).  This is
+still the trivial completion fence, not a CORE bound. -/
 theorem offDC_peak_le_sqrt_gap_mul_dc {d : ℕ} (hd : d ∣ N)
     {k₀ : ZMod N} (hk₀ : k₀ ∈ (univ.erase (0 : ZMod N))) (hd0 : 0 < d) :
     ‖(𝓕 (subgroupIndicator (N := N) d)) k₀‖

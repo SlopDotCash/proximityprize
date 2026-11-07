@@ -14,9 +14,11 @@ import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
 The complete δ* pin (`SmallSubgroupDeltaStarPin.smallSubgroup_deltaStar_pin`) is gated on
 the named all-pairs hypothesis `SmallSubgroupGoodList` — the open beyond-Johnson interleaved
 list bound for the canonical small-subgroup RS code.  This file proves the strongest δ*
-statement that needs NO such bridge: a fully **unconditional δ\* LOWER bound** for the
+statement that needs NO such bridge: a **δ\* LOWER bound free of conjectural input** for the
 small-subgroup (and in fact ANY) Reed–Solomon code, valid in the unique-decoding quarter
-window `δ < d/(4n)`.
+window `δ < d/(4n)`. It still keeps an explicit **security-budget hypothesis** (`hbudget`):
+the proven numerator divided by `q` must be `≤ ε*`. This is a field-size condition, not a
+conjecture, but it cannot be dropped (see the coverage map below).
 
 ## What is proven here (axiom-clean, unconditional)
 
@@ -47,10 +49,17 @@ literature input.  We make this explicit on the small-subgroup RS code:
 
 ## The coverage map: which stacks are covered, which need the open bridge
 
-* **Covered unconditionally (this file).**  ALL stacks `(u₀, u₁)`, at every `δ < d/(4n)`.
-  Above this radius the interleaved unique-decoding argument fails (the list can have ≥ 2
-  members) and the bound is genuinely vacuous — but the LOWER bound on δ* it produces is
-  real: `δ* ≥ d/(4n)` for the small-subgroup RS code, with zero conjectural input.
+* **Covered without conjectural input (this file).**  ALL stacks `(u₀, u₁)`, at every
+  `δ < d/(4n)`. Above this radius the interleaved unique-decoding argument fails (the list can
+  have ≥ 2 members) and the bound is vacuous. The LOWER bound on δ* it produces is real but
+  **budget-conditional**: each radius `δ` in the quarter window with
+  `(1 + (n − (2t − n)))/q ≤ ε*` (`t = ⌈(1−δ)n⌉₊`, hypothesis `hbudget`) satisfies
+  `δ ≤ δ*(rsCode dom k, ε*)`. If the budget holds throughout the window, this gives
+  `δ* ≥ d/(4n)`. The budget is necessary. For any proper linear code take `u₀ = 0` and
+  `u₁ ∉ C`: at `γ = 0` the full coordinate set witnesses closeness but cannot jointly explain
+  `u₁`, so `ε_mca ≥ 1/q` at every radius. With `ε* = 0` (or any `ε* < 1/q`) the good-radius set
+  is empty and `δ* = 0`, not `d/(4n)`. For a production budget a sufficiently large `q`
+  discharges `hbudget`, but that field-size condition is part of the claim.
 
 * **Needs the open all-pairs bridge (`SmallSubgroupGoodList`).**  Pushing the lower bound
   past `d/(4n)` toward the Johnson radius `1−√ρ` and beyond requires an interleaved list
@@ -59,8 +68,9 @@ literature input.  We make this explicit on the small-subgroup RS code:
   obstruction (the cubic/power word), not the all-pairs list; bridging single-word supply
   to all-pairs interleaved lists is exactly issue #334 core A / [ABF26] §5.
 
-So the honest split is: the quarter window is unconditional and uniform over stacks; the
-window `(d/(4n), …)` is where the named hypothesis is load-bearing.
+So the honest split is: the quarter window needs no conjectural input and is uniform over
+stacks, given the explicit field-size budget `hbudget`; the window `(d/(4n), …)` is where the
+named hypothesis is load-bearing.
 
 ## References
 
@@ -174,8 +184,11 @@ theorem rsCode_deltaStar_ge_quarter (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k)
 /-- **The small-subgroup specialisation.**  The unconditional δ\* lower bound on the
 2-power NTT evaluation domain `dom : Fin n ↪ ZMod p` (the small-subgroup setting of
 `smallSubgroup_deltaStar_pin`).  This is the companion that needs NEITHER the deep-band
-budget NOR `SmallSubgroupGoodList`: it pins `δ*(rsCode dom k, ε*) ≥ d/(4n)` for the explicit
-small-subgroup RS code outright. -/
+budget NOR `SmallSubgroupGoodList`. It still needs the security budget `hbudget`
+(quarter-window numerator over `p` at most `ε*`). Under that hypothesis it gives
+`δ ≤ δ*(rsCode dom k, ε*)` for the supplied quarter-window radius `δ`. It is not an
+outright `δ* ≥ d/(4n)`: without the budget the claim fails, since `ε_mca ≥ 1/p` at every
+radius for any proper linear code, so `ε* = 0` gives `δ* = 0`. -/
 theorem smallSubgroup_deltaStar_ge_quarter {p : ℕ} [Fact p.Prime]
     (dom : Fin n ↪ ZMod p) {k : ℕ} (hk : 1 ≤ k) {δ : ℝ≥0} (hδ1 : δ ≤ 1)
     (hδ : 4 * δ * (Fintype.card (Fin n) : ℝ≥0) + ((k - 1 : ℕ) : ℝ≥0)

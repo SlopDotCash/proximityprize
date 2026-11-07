@@ -3,71 +3,91 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import Mathlib.Analysis.Convex.Mul
+import Mathlib.Analysis.Normed.Module.Convex
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Research.ProximityPrize.Frontier._wf6F1_gaussian_step_telescope
 
 /-!
-# B9: the period law's convex-order target is the matched Gaussian, and it is EXTREMAL (#444, lane wf-B9)
+# B9: Gaussian even-moment bounds versus convex order (#444, lane wf-B9)
+
+**Audit correction (2026-10-28, finding R-343).**  Earlier versions of this file claimed that
+convex-order domination by the matched Gaussian is *equivalent* to the Wick even-moment bound, that
+the matched Gaussian is the *unique convex-order-maximal* target, and that this *rules out* the
+"explicit dominating distribution" strategy.  All three claims are false and have been withdrawn:
+
+* Even-moment domination is NECESSARY for convex-order domination (each `x ↦ x^{2r}` is convex) but
+  NOT sufficient, even for symmetric laws with the same mean and variance.  Convex even test
+  functions are not nonnegative combinations of the monomials `x^{2r}`.  Classical example: `X`
+  uniform on `{-1, 1}` and `Z ~ N(0,1)` satisfy `E X^{2r} = 1 ≤ (2r-1)‼ = E Z^{2r}` for every `r`,
+  yet `E|X| = 1 > E|Z|` (strict Jensen: `E|Z| < √(E Z²) = 1`).  A kernel-checked finite analogue is
+  `evenMomentLE_not_convexOrderLE` below (convex test `|x|`).
+* Convex order forces EQUAL MEANS (`x ↦ x` and `x ↦ -x` are both convex; `FinConvexOrderLE.mean_eq`).
+  The actual punctured period law (uniform over the `p - 1` nonzero frequencies `b`) has mean
+  `(1/(p-1)) · ∑_{b≠0} η_b = -n/(p-1) = -1/m`, because `∑_{b≠0} e_p(b x) = -1` for every `x ≠ 0`.
+  So it is not convex-order dominated by the centred `N(0,n)` at all, independently of moments.
+  Nor is the period law symmetric about `0` merely because its values are real.
+* The theorems here only rewrite scalar inequalities by a positive normaliser and compose pointwise
+  sequence bounds; they define no period measure and no convex-order predicate on it.  They cannot
+  prove extremality or exclude any proof route.  Moreover, a stronger sufficient condition can still
+  be an easier proof route: implication strength alone is not a methodological no-go.
+
+What remains valid and is kept: the Wick normalisation (`wickMoment`), its positivity, the scalar
+equivalence `M r ≤ (2r-1)‼ n^r ↔ wickMoment M n r ≤ 1`, pointwise transitivity of moment bounds,
+and the Gaussian step-law telescope (`prize_of_matchedGaussian_stepLaw`, which proves the scalar
+Wick bound for any nonnegative sequence obeying the sub-Gaussian step law; it does not by itself
+supply that hypothesis for the actual period moments, nor a convex-order statement).
 
 ## The lead and the question
 
 The nonprincipal period `η_b = ∑_{x∈μ_n} e_p(b·x)` is a sum of `n` roots of unity; empirically
 `η_b/√n → N(0,1)` (white-noise spacing, kurtosis ≤ 3, sub-Gaussian).  Lane B9 asks: is the LIMITING
 law (or a provable DOMINATING law) a SPECIFIC explicit measure `ν` whose Wick-normalised even moments
-`m_r(ν) := E_ν[X^{2r}] / ((2r-1)‼ · n^r)` are provably log-convex/log-concave and `≤ 1`, so that a
-convex-order domination `η-law ≤_cx ν` would close W1/W3 at once?
+`m_r(ν) := E_ν[X^{2r}] / ((2r-1)‼ · n^r)` are provably log-convex/log-concave and `≤ 1`?  (The
+original framing as a convex-order domination `η-law ≤_cx ν` is not available: see the audit
+correction above — the punctured period law has mean `-1/m`, and even moments do not test convex
+order.  The usable question is the moment-level one.)
 
-## What the probes established (axiom-honest numerics, prize scale)
+## What the probes recorded (finite numerics only)
 
 `scripts/probes/probe_wf8B9*.py` (exact rational Bessel/random-walk moments + exact `cos`-period
-sums over `F_p`, `n = 4..128`, `β = 4..5.5`, depth `r` to `~ln q`) measured THREE decisive facts:
+sums over `F_p`, `n = 4..128`, `β = 4..5.5`, depth `r` to `~ln q`) recorded the following finite
+measurements.  They are calibration, not theorems, and finite moment checks do not repair any of the
+identifications corrected above.
 
-1. **The EXACT char-0 finite-`n` period law** (`= n`-step uniform-phase random walk on the circle,
-   the Kloosterman-path law, with even moments `A_r = (r!)²·[x^r] I₀(2√x)^n`) has Wick-normalised
-   moments that are `≤ 1`, **LOG-CONCAVE** (`m_r² ≥ m_{r-1}·m_{r+1}`), and a step-ratio
-   `R(r) = m_{r+1}/m_r` that is `≤ 1` and ANTITONE — for ALL `n = 4..128`.  (NB: antitone `R` is
-   log-CONCAVITY of `m`, correcting the "log-convex" label in the W3 brief; the verified content is
-   exactly W3-anti = `R` antitone.)  This is precisely the char-0 bound `E_r ≤ (2r-1)‼ n^r` that
-   `DyadicEnergyK1.zeroSumCount_le_doubleFactorial_dyadic` PROVES.
+1. **The `n`-step independent uniform-phase random walk** (moments `A_r = (r!)²·[x^r] I₀(2√x)^n`)
+   has Wick-normalised moments that are `≤ 1`, log-concave, with antitone step ratio, for the
+   measured `n = 4..128`.  **This is NOT the char-0 dyadic period carrier** (correction, R-343 /
+   R-169): for `μ_n` with `n` even, antipodal relations `x + (-x) = 0` hold in characteristic `0`,
+   and the char-0 dyadic additive energy at `r = 2` is `3n² - 3n`, whereas the random walk gives
+   `A_2 = 2n² - n`.  The char-0 bound `E_r ≤ (2r-1)‼ n^r` proved in
+   `DyadicEnergyK1.zeroSumCount_le_doubleFactorial_dyadic` concerns the actual char-0 zero-sum
+   counts, not the random-walk moments.
 
-2. **Convex-order domination of the char-`p` law by the char-0 random-walk law is FALSE.**  The
-   char-`p` Wick-normalised moments `m_r^{charp}` are far larger than `m_r^{char0}` (e.g. `n=64`,
-   `r=8`: `0.48` vs `0.016`, a factor `~30`).  The char-0 random-walk / Bessel law is far too
-   thin-tailed to dominate the char-`p` periods.  So no explicit "thinner" candidate
-   (Bessel/Kesten-McKay/free-convolution) dominates `η` in convex order.
+2. **Moment comparison with the random walk.**  The measured char-`p` Wick-normalised moments are
+   far larger than the random-walk ones (e.g. `n=64`, `r=8`: `0.48` vs `0.016`).  Since convex order
+   implies even-moment domination (`FinConvexOrderLE.evenMomentLE`), this does show the random-walk
+   law cannot convex-dominate a law with those moments.
 
-3. **The char-`p` law IS dominated by the MATCHED GAUSSIAN `N(0,n)` at prize scale.**  `m_r^{charp} ≤ 1`
-   for all measured `r` once `q` is at prize depth: `n=32,64` already `≤ 1.000` at `β=4`; the lone
-   `m_r > 1` reading (`n=16, β=4, p=65537`: `m_5 = 1.507`) is a **small-`q` artifact** — pushing
-   `β → 5..5.5` collapses `max_r m_r` to `0.995..1.000` (the Gaussian Wick ceiling).
+3. **Moment comparison with `N(0,n)`.**  The measured `m_r^{charp} ≤ 1` for all measured `r` at the
+   larger tested depths (`n=32,64` at `β=4`; `n=16, β=4, p=65537` gives `m_5 = 1.507 > 1`, which
+   falls to `0.995..1.000` at `β = 5..5.5`).  This is a finite moment observation; it is not a
+   convex-order domination (wrong mean, and moments do not test convex order).
 
 ## The rigorous content (this file, axiom-clean)
 
-Putting (1)–(3) together yields a complete characterisation of the convex-order programme, with NO
-residual "reduced-to-another-open-thing":
-
-* **`convexOrder_gaussian_iff_wick`** — for a symmetric period law, convex-order domination by the
-  matched Gaussian `N(0,n)` is **EQUIVALENT** to the Wick even-moment bound `m_r ≤ 1` for all `r`
-  (because `x ↦ x^{2r}` are convex and `E_{N(0,n)}[X^{2r}] = (2r-1)‼·n^r`).  I.e. the convex-order
-  domination is *literally* the prize, not a new lever.  (Proven here as a moment statement: the
-  even-moment family is the convex-order test family for symmetric laws.)
-
-* **`gaussian_is_extremal_wickBounded`** (THE OBSTRUCTION) — every explicit symmetric measure `ν`
-  with `m_r(ν) ≤ 1` for all `r` is itself convex-order-DOMINATED by `N(0,n)`; hence demanding
-  `η ≤_cx ν` is a *strictly stronger* (harder-to-prove) requirement than `η ≤_cx N(0,n)`.  Therefore
-  the matched Gaussian is the UNIQUE convex-order-MAXIMAL Wick-bounded symmetric target: **no explicit
-  `ν` gives a sufficient condition that is easier than the prize itself**.  This rules out the "find
-  a provable dominating distribution" strategy as a shortcut — a rigorous obstruction to the B9 lead.
-
-* **`prize_of_matchedGaussian_stepLaw`** — the productive residue: the *only* explicit measure whose
-  domination both implies the prize AND is the minimal target is the matched Gaussian, and the
-  Gaussian's defining per-step law `M(r+1) = (2r+1)·n·M(r)` (as an `≤`, the SUB-Gaussian step) is
-  exactly the F1 telescope hypothesis.  So B9 hands W3 back its own crux in canonical form: the
-  period law must be shown sub-Gaussian step-wise; there is no thinner intermediary.
-
-Net: B9 is CLOSED as an OBSTRUCTION to the "explicit dominating distribution" shortcut, with the
-matched-Gaussian characterisation pinned exactly, plus the char-0 random-walk law identified and its
-log-concavity/`≤1` recorded (the char-0 face is PROVEN in `DyadicEnergyK1`).
+* **`gaussianMoment_bound_iff_wickMoment_le_one`** — the scalar normalisation equivalence
+  `(∀ r, M r ≤ (2r-1)‼ n^r) ↔ (∀ r, wickMoment M n r ≤ 1)`.  Nothing more.
+* **`gaussianMoment_bound_of_pointwise_le`** — pointwise transitivity: `M ≤ νM ≤ gaussianMoment`
+  gives `M ≤ gaussianMoment`.  No extremality or route exclusion follows.
+* **`prize_of_matchedGaussian_stepLaw`** — the F1 telescope in Wick form: a nonnegative sequence
+  with `M 0 ≤ 1` and the sub-Gaussian step law `M(r+1) ≤ (2r+1)·n·M(r)` satisfies
+  `wickMoment M n r ≤ 1` for all `r`.  The step law for the actual period moments is the open input.
+* **Finite laws and convex order** — `finExpect`, `finMean`, `FinConvexOrderLE`, `FinEvenMomentLE`;
+  `FinConvexOrderLE.evenMomentLE` (convex order ⟹ even-moment domination),
+  `FinConvexOrderLE.mean_eq` (convex order ⟹ equal means), `not_finConvexOrderLE_of_mean_ne`, and
+  the counterexample `evenMomentLE_not_convexOrderLE` (even-moment domination for all `r` without
+  convex order).
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/

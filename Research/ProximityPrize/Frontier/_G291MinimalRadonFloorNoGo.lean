@@ -7,6 +7,9 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.LinearAlgebra.Matrix.Notation
+import Mathlib.LinearAlgebra.Matrix.Nondegenerate
+import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.LinearCombination
@@ -19,27 +22,30 @@ import Mathlib.Tactic.Ring
 G289 shows the bounded-degree canonical-feature no-gos are dimension-forced (Cover counting) and
 gate-independent, but its only kernel-checked witness is a *specific* five-cell linear positive
 circuit plus the gate-flip transfer. This file supplies the missing **theorem-level deep-floor
-content**: the census positive circuit is a **minimal positive Radon circuit**, sitting exactly at
-the pigeonhole floor `N = d + 1` for the canonical linear feature dimension `d = log₂ n = 4`, and it
-is **r-uniform**: its support genuinely spans both ranks `r ∈ {5,6}`, so the no-go is not a
-per-rank artifact and cannot be compressed to a smaller cell family.
+content**: the census positive circuit is a **minimal positive circuit** of five vectors in `ℚ⁴`
+(feature dimension `d = log₂ n = 4`, support size `d + 1 = 5`), and its support contains cells of
+both rank labels `5` and `6`. "r-uniform" in this file means exactly that mixing of the two finite
+labels `5/6`; it is not a theorem over all `r`.
 
 ## What is genuinely new beyond G289
 
 G289 exhibits one positive circuit (existence of a dependence). G291 proves that circuit is
-**minimal**: no proper sub-support carries a nonzero linear dependence, because every `d`-subset of
-the signed feature vectors is linearly independent. A strictly-positive dependence whose support is
-a minimal dependent set is, by definition, a *positive circuit* (a positive Radon partition). Hence
-the CORE no-go is pinned at the Radon floor: with only `d = 4` canonical Ramanujan coordinates,
-`d + 1 = 5` sponsor-faithful cells already force a positive circuit, and not one cell fewer. This is
-exactly the "deep-floor / primitive-census" invariant: the no-go is a pigeonhole certificate of
-minimal support, carrying no arithmetic content about the gate beyond dimension counting, consistent
-with and sharpening G289's gate-independence.
+**minimal**: every 4-element subfamily of the five signed feature vectors is linearly independent
+(`census_deleteOne_independent`), so no proper sub-support carries a nonzero linear dependence and
+every nonzero dependence of the five vectors has full support. A strictly-positive dependence whose
+support is a minimal dependent set is a *positive circuit*. For these five specific cells, then,
+the positive circuit uses all five cells and no four of them carry any dependence. This does NOT
+assert that every family of `d + 1` cells forces a positive circuit (a dependence of `d + 1`
+vectors in `ℚ^d` always exists but need not be positive).
 
-The abstract minimality lemma is general (any `d`-dimensional family whose `d`-subsets are
-independent), and the concrete consumer instantiates it on the exact G289 census data, adding the
-r-uniformity witness. Nothing here weakens a goal, restates an open Prop, or fits a fixed depth: the
-minimal-support/Radon-floor statement is `r`-uniform and dimension-parametrized.
+The abstract minimality lemma (`full_support_of_nonzero_dependence`) holds for any `n` vectors in
+`ℚ^m` that satisfy `DeleteOneIndependent`; it takes delete-one independence as a hypothesis and does
+not by itself conclude `support = m + 1`. The generic criterion
+`deleteOneIndependent_of_minor_det_ne_zero` reduces delete-one independence of `m + 1` vectors in
+`ℚ^m` to nonvanishing of the `m + 1` square minors; the concrete census instance is then five exact
+`4 × 4` determinant checks. In the concrete instance the family rank is `4`, equal to the ambient
+dimension; in general a circuit-size floor is governed by the family rank, not the ambient
+dimension.
 
 CORE remains open / on-BGK.
 -/
@@ -86,6 +92,28 @@ theorem full_support_of_nonzero_dependence {n m : ℕ}
     ∀ k, c k ≠ 0 := by
   intro k hk
   exact hnz (minimal_support_of_deleteOne_independent v hindep c hdep k hk i₀)
+
+/-- The square minor obtained from `m + 1` vectors in `ℚ^m` by deleting vector `k`: its column `t`
+is the vector `v (k.succAbove t)`. -/
+def deleteMinor {m : ℕ} (v : Fin (m + 1) → Fin m → ℚ) (k : Fin (m + 1)) :
+    Matrix (Fin m) (Fin m) ℚ :=
+  Matrix.of fun j t => v (k.succAbove t) j
+
+/-- **Generic elimination criterion.** If every delete-one square minor of `m + 1` vectors in
+`ℚ^m` has nonzero determinant, the family is `DeleteOneIndependent`. (A dependence supported off
+`k` is a kernel vector of the `k`-th minor, hence zero.) -/
+theorem deleteOneIndependent_of_minor_det_ne_zero {m : ℕ} (v : Fin (m + 1) → Fin m → ℚ)
+    (hdet : ∀ k, (deleteMinor v k).det ≠ 0) : DeleteOneIndependent v := by
+  intro k c hk hdep i
+  have hsub : (fun t => c (k.succAbove t)) = 0 := by
+    apply Matrix.eq_zero_of_mulVec_eq_zero (hdet k)
+    funext j
+    have h := hdep j
+    rw [Fin.sum_univ_succAbove _ k, hk, zero_mul, zero_add] at h
+    simpa [deleteMinor, Matrix.mulVec, dotProduct, mul_comm] using h
+  rcases Fin.eq_self_or_eq_succAbove k i with rfl | ⟨t, rfl⟩
+  · exact hk
+  · exact congrFun hsub t
 
 /-! ## Reused separation obstruction (positive circuit ⇒ no strict separator) -/
 
@@ -176,223 +204,24 @@ theorem circuit_r_uniform :
   · norm_num [circuitWeight]
   · norm_num [rank]
 
-/-- **Minimality of the census circuit (Radon floor): every 4-subset is independent.** For each
-deletable index `k`, the four remaining signed feature vectors in `ℚ⁴` are linearly independent, so
-the only coefficient vector supported off `k` that annihilates all four coordinates is zero. The
-independence is discharged by explicit exact Cramer certificates: for each deleted `k` and each
-target coordinate `t ≠ k`, an integer linear combination of the four coordinate identities equals
-`det_k · c_t`, with `det_k ≠ 0` the (nonzero) `4×4` minor determinant. Hence `signedFeat` satisfies
-`DeleteOneIndependent`, so by `full_support_of_nonzero_dependence` any nonzero dependence among the
-five census vectors has full support: the positive Farkas circuit is **minimal**, a positive Radon
-partition at the floor `d + 1 = 5`. -/
-theorem census_deleteOne_independent : DeleteOneIndependent signedFeat := by
-  intro k c hk hdep i
-  have h0 := hdep 0
-  have h1 := hdep 1
-  have h2 := hdep 2
-  have h3 := hdep 3
-  simp only [signedFeat, gate, rawFeat, Fin.sum_univ_five,
-    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-    Matrix.cons_val_two, Matrix.cons_val_three, Matrix.cons_val_four,
-    Matrix.tail_cons] at h0 h1 h2 h3
-  fin_cases k
-  -- k = 0
-  · have hk' : c 0 = 0 := hk
-    have z1 : c 1 = 0 := by
-      have key : (730734727560518232029790208 : ℚ) * c 1 = 0 := by
-        linear_combination (1382906631683320756568064) * h0
-          + (-307739059981346054471680) * h1
-          + (-122972876675310475935744) * h2
-          + (78359048461337669795840) * h3
-          - (-278740673481041176598287482880) * hk'
-      have hd : (730734727560518232029790208 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z2 : c 2 = 0 := by
-      have key : (730734727560518232029790208 : ℚ) * c 2 = 0 := by
-        linear_combination (825847919611365818368) * h0
-          + (-176541857858476048384) * h1
-          + (-77324196576545472512) * h2
-          + (48635472303061204992) * h3
-          - (-175453972857296563292078080) * hk'
-      have hd : (730734727560518232029790208 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z3 : c 3 = 0 := by
-      have key : (730734727560518232029790208 : ℚ) * c 3 = 0 := by
-        linear_combination (1569394308534089285632) * h0
-          + (-344585062216400109568) * h1
-          + (-138944134032480796672) * h2
-          + (85393238655281135616) * h3
-          - (-329613206738866719520980992) * hk'
-      have hd : (730734727560518232029790208 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z4 : c 4 = 0 := by
-      have key : (730734727560518232029790208 : ℚ) * c 4 = 0 := by
-        linear_combination (1772107448944567517184) * h0
-          + (-384298800735411240960) * h1
-          + (-148768785733863342080) * h2
-          + (93960413367175217152) * h3
-          - (-362417354135845230209925120) * hk'
-      have hd : (730734727560518232029790208 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    fin_cases i <;> assumption
-  -- k = 1
-  · have hk' : c 1 = 0 := hk
-    have z0 : c 0 = 0 := by
-      have key : (-278740673481041176598287482880 : ℚ) * c 0 = 0 := by
-        linear_combination (1382906631683320756568064) * h0
-          + (-307739059981346054471680) * h1
-          + (-122972876675310475935744) * h2
-          + (78359048461337669795840) * h3
-          - (730734727560518232029790208) * hk'
-      have hd : (-278740673481041176598287482880 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z2 : c 2 = 0 := by
-      have key : (-278740673481041176598287482880 : ℚ) * c 2 = 0 := by
-        linear_combination (17022671627607478108160) * h0
-          + (-6547717166808577474560) * h1
-          + (-31038809832696709120) * h2
-          + (262368886826228449280) * h3
-          - (175453972857296563292078080) * hk'
-      have hd : (-278740673481041176598287482880 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z3 : c 3 = 0 := by
-      have key : (-278740673481041176598287482880 : ℚ) * c 3 = 0 := by
-        linear_combination (25139441549201378902016) * h0
-          + (-7369276267363528867840) * h1
-          + (-2468888720290236071936) * h2
-          + (2772016041456944742400) * h3
-          - (329613206738866719520980992) * hk'
-      have hd : (-278740673481041176598287482880 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z4 : c 4 = 0 := by
-      have key : (-278740673481041176598287482880 : ℚ) * c 4 = 0 := by
-        linear_combination (9895435921246192926720) * h0
-          + (-6035390383689390489600) * h1
-          + (-4241748680911209103360) * h2
-          + (3021739668523086970880) * h3
-          - (362417354135845230209925120) * hk'
-      have hd : (-278740673481041176598287482880 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    fin_cases i <;> assumption
-  -- k = 2
-  · have hk' : c 2 = 0 := hk
-    have z0 : c 0 = 0 := by
-      have key : (175453972857296563292078080 : ℚ) * c 0 = 0 := by
-        linear_combination (-825847919611365818368) * h0
-          + (176541857858476048384) * h1
-          + (77324196576545472512) * h2
-          + (-48635472303061204992) * h3
-          - (-730734727560518232029790208) * hk'
-      have hd : (175453972857296563292078080 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z1 : c 1 = 0 := by
-      have key : (175453972857296563292078080 : ℚ) * c 1 = 0 := by
-        linear_combination (17022671627607478108160) * h0
-          + (-6547717166808577474560) * h1
-          + (-31038809832696709120) * h2
-          + (262368886826228449280) * h3
-          - (-278740673481041176598287482880) * hk'
-      have hd : (175453972857296563292078080 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z3 : c 3 = 0 := by
-      have key : (175453972857296563292078080 : ℚ) * c 3 = 0 := by
-        linear_combination (4305372704421183488) * h0
-          + (-3104122707222462464) * h1
-          + (1517344159333613568) * h2
-          + (-1434598590039195648) * h3
-          - (-329613206738866719520980992) * hk'
-      have hd : (175453972857296563292078080 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z4 : c 4 = 0 := by
-      have key : (175453972857296563292078080 : ℚ) * c 4 = 0 := by
-        linear_combination (15904094693826232320) * h0
-          + (-4714321359171747840) * h1
-          + (2629622169736314880) * h2
-          + (-1560910313439887360) * h3
-          - (-362417354135845230209925120) * hk'
-      have hd : (175453972857296563292078080 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    fin_cases i <;> assumption
-  -- k = 3
-  · have hk' : c 3 = 0 := hk
-    have z0 : c 0 = 0 := by
-      have key : (-329613206738866719520980992 : ℚ) * c 0 = 0 := by
-        linear_combination (1569394308534089285632) * h0
-          + (-344585062216400109568) * h1
-          + (-138944134032480796672) * h2
-          + (85393238655281135616) * h3
-          - (730734727560518232029790208) * hk'
-      have hd : (-329613206738866719520980992 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z1 : c 1 = 0 := by
-      have key : (-329613206738866719520980992 : ℚ) * c 1 = 0 := by
-        linear_combination (-25139441549201378902016) * h0
-          + (7369276267363528867840) * h1
-          + (2468888720290236071936) * h2
-          + (-2772016041456944742400) * h3
-          - (278740673481041176598287482880) * hk'
-      have hd : (-329613206738866719520980992 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z2 : c 2 = 0 := by
-      have key : (-329613206738866719520980992 : ℚ) * c 2 = 0 := by
-        linear_combination (4305372704421183488) * h0
-          + (-3104122707222462464) * h1
-          + (1517344159333613568) * h2
-          + (-1434598590039195648) * h3
-          - (175453972857296563292078080) * hk'
-      have hd : (-329613206738866719520980992 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z4 : c 4 = 0 := by
-      have key : (-329613206738866719520980992 : ℚ) * c 4 = 0 := by
-        linear_combination (-20984750634288807936) * h0
-          + (2444599203680747520) * h1
-          + (-1805865864302428160) * h2
-          + (-30929886145937408) * h3
-          - (362417354135845230209925120) * hk'
-      have hd : (-329613206738866719520980992 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    fin_cases i <;> assumption
-  -- k = 4
-  · have hk' : c 4 = 0 := hk
-    have z0 : c 0 = 0 := by
-      have key : (362417354135845230209925120 : ℚ) * c 0 = 0 := by
-        linear_combination (-1772107448944567517184) * h0
-          + (384298800735411240960) * h1
-          + (148768785733863342080) * h2
-          + (-93960413367175217152) * h3
-          - (-730734727560518232029790208) * hk'
-      have hd : (362417354135845230209925120 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z1 : c 1 = 0 := by
-      have key : (362417354135845230209925120 : ℚ) * c 1 = 0 := by
-        linear_combination (9895435921246192926720) * h0
-          + (-6035390383689390489600) * h1
-          + (-4241748680911209103360) * h2
-          + (3021739668523086970880) * h3
-          - (-278740673481041176598287482880) * hk'
-      have hd : (362417354135845230209925120 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z2 : c 2 = 0 := by
-      have key : (362417354135845230209925120 : ℚ) * c 2 = 0 := by
-        linear_combination (-15904094693826232320) * h0
-          + (4714321359171747840) * h1
-          + (-2629622169736314880) * h2
-          + (1560910313439887360) * h3
-          - (-175453972857296563292078080) * hk'
-      have hd : (362417354135845230209925120 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    have z3 : c 3 = 0 := by
-      have key : (362417354135845230209925120 : ℚ) * c 3 = 0 := by
-        linear_combination (-20984750634288807936) * h0
-          + (2444599203680747520) * h1
-          + (-1805865864302428160) * h2
-          + (-30929886145937408) * h3
-          - (-329613206738866719520980992) * hk'
-      have hd : (362417354135845230209925120 : ℚ) ≠ 0 := by norm_num
-      exact (mul_eq_zero.mp key).resolve_left hd
-    fin_cases i <;> assumption
+/-- **The five delete-one `4 × 4` minors of the census family are nonsingular** (exact rational
+determinant checks). -/
+theorem census_minor_det_ne_zero (k : Fin 5) : (deleteMinor signedFeat k).det ≠ 0 := by
+  fin_cases k <;>
+    simp [deleteMinor, Matrix.det_succ_row_zero, Fin.sum_univ_succ, signedFeat, gate, rawFeat,
+      Fin.succAbove, Fin.castSucc, Fin.succ, Fin.castAdd, Fin.castLE] <;>
+    norm_num
 
-/-! ## The census no-go is a minimal, r-uniform positive Radon circuit -/
+/-- **Minimality of the census circuit: every 4-subset is independent.** For each deletable index
+`k`, the four remaining signed feature vectors in `ℚ⁴` are linearly independent, so the only
+coefficient vector supported off `k` that annihilates all four coordinates is zero. This is the
+generic criterion `deleteOneIndependent_of_minor_det_ne_zero` applied to the five exact minor checks
+`census_minor_det_ne_zero`. Hence, by `full_support_of_nonzero_dependence`, any nonzero dependence
+among the five census vectors has full support: the positive Farkas circuit is **minimal**. -/
+theorem census_deleteOne_independent : DeleteOneIndependent signedFeat :=
+  deleteOneIndependent_of_minor_det_ne_zero signedFeat census_minor_det_ne_zero
+
+/-! ## The census no-go is a minimal positive circuit with mixed rank labels `5/6` -/
 
 /-- The census signed features admit a strictly-positive dependence: `circuitWeight` is positive on
 every cell and annihilates all four coordinates. -/

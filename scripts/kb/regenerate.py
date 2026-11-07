@@ -18,36 +18,11 @@ from common import (
 from extract_declarations import extract_declarations
 from extract_lean_citations import extract_citations
 from find_dedup_candidates import build_report
-from scaffold_paper import (
-    PAPERS_DIR,
-    SOURCES_DIR,
-    build_metadata_template,
-    build_paper_template,
-)
+# Missing-paper/metadata scaffolding is delegated to the shared helper so that the
+# input and overwrite guards live in one place (`scaffold_paper.write_if_allowed`);
+# its default is non-overwriting, matching the previous inline loop here.
+from scaffold_paper import scaffold_missing
 from sync_from_bib import build_payload
-
-
-def scaffold_missing(cited_keys, entries):
-    """Scaffold paper pages / source metadata for cited keys that lack them.
-
-    Existing files are never touched; returns the list of paths written.
-    """
-    written = []
-    for key in cited_keys:
-        entry = entries.get(key)
-        if entry is None:
-            continue
-        paper_path = PAPERS_DIR / f"{key}.md"
-        metadata_path = SOURCES_DIR / key / "metadata.yml"
-        if not paper_path.exists():
-            paper_path.parent.mkdir(parents=True, exist_ok=True)
-            paper_path.write_text(build_paper_template(key, entry), encoding="utf-8")
-            written.append(paper_path)
-        if not metadata_path.exists():
-            metadata_path.parent.mkdir(parents=True, exist_ok=True)
-            metadata_path.write_text(build_metadata_template(key, entry), encoding="utf-8")
-            written.append(metadata_path)
-    return written
 
 
 def parse_args() -> argparse.Namespace:

@@ -19,8 +19,13 @@ both sides of its final disposition:
    `β_regular`'s proof would change **nothing**: `β R t` is determined by the statement alone.
    And the statement underdetermines it — this file proves, kernel-clean, that the defining
    predicate `betaRegularSpec` admits **two distinct witnesses** (`0` and `mk X = betaRec … 0`),
-   so no theorem of the form `β R t = betaRec … t` (route (a) of `BetaIdentify`) can exist:
-   `not_betaRegularSpec_forces_betaRec` exhibits the failure of the uniqueness route at `t = 0`.
+   so the predicate cannot *force* `b = betaRec … t`: `not_betaRegularSpec_forces_betaRec` proves
+   `¬ ∀ b, betaRegularSpec … b → b = betaRec … 0`, i.e. the uniqueness route (route (a) of
+   `BetaIdentify`) fails at `t = 0`. This is an interface/uniqueness limitation: it shows that
+   `β R t = betaRec … t` cannot be derived from the specification alone. It is **not** a proof
+   that no theorem about the particular `Exists.choose` value can exist — the negated universal
+   statement above is different from a statement about one fixed chosen witness, and this file
+   proves nothing about which witness `Exists.choose` picks.
    Pinning the value therefore requires *strengthening the statement* of the existence lemma, and
    the pinned statement needs `x₀ : F`, `hHyp : Hypotheses x₀ R H`, and the Hasse numerators
    `Bcoeff` — data the legacy signature `β (R : F[X][X][Y]) (t : ℕ)` structurally lacks.  This is
@@ -133,14 +138,16 @@ theorem mk_X_ne_zero (H : F[X][Y]) (hH2 : 1 < H.natDegree) :
 /-! ## The underdetermination certificate (route (a) is dead, kernel-proven)
 
 Two distinct elements satisfy the legacy defining predicate at every index `t`.  Hence the
-predicate does not determine its witness, and — since `Exists.choose` depends only on the
-proposition — **no** choice of proof for `β_regular` can make `β R t` provably equal to any
-particular element (in particular not to `betaRec … t`). -/
+predicate does not determine its witness, so `β R t` cannot be identified with a particular
+element (in particular `betaRec … t`) by appeal to the predicate. Separately, since
+`Exists.choose` depends only on the proposition (proof irrelevance), changing the *proof* of
+`β_regular` does not change `β R t`. (Neither fact shows that an equation about the particular
+chosen value is unprovable; they rule out the uniqueness and proof-replacement routes.) -/
 
 /-- **The legacy `β_regular` specification is underdetermined**: at every index `t`, both `0` and
 `mk X ≠ 0` satisfy it.  This is the kernel-proven form of the `BetaIdentify` route-(a) blockage:
-the weight inequality pins nothing, so the opaque `β R t` cannot be identified with any specific
-element. -/
+the weight inequality pins nothing, so the specification alone cannot identify the opaque
+`β R t` with a specific element. -/
 theorem betaRegularSpec_two_witnesses (R : F[X][X][Y]) (H : F[X][Y]) (hH : 0 < H.natDegree)
     (hH2 : 1 < H.natDegree) (hdR : 0 < Bivariate.natDegreeY R) (D t : ℕ) :
     ∃ b₁ b₂ : 𝒪 H, b₁ ≠ b₂ ∧ betaRegularSpec R H hH D t b₁ ∧ betaRegularSpec R H hH D t b₂ :=
@@ -160,11 +167,13 @@ theorem betaRegularSpec_betaRec_zero (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
 
 /-- **The uniqueness route to the drop-in is refuted, kernel-clean.**  There is no derivation
 `betaRegularSpec b → b = betaRec … t` already at `t = 0`: the predicate is satisfied by `0`, while
-`betaRec … 0 = mk X ≠ 0`.  Consequently the legacy `β R t` (an `Exists.choose` whose proposition is
-exactly this predicate) can never be proven equal to `betaRec … t`; the in-place `L13` drop-in is
-**mathematically impossible** without strengthening the statement — which requires the data
-`(x₀, hHyp, Bcoeff)` absent from the legacy signature.  The executed resolution is `β_strong`
-(`dropIn_bridge` below). -/
+`betaRec … 0 = mk X ≠ 0`.  Consequently an equation `β R t = betaRec … t` for the legacy `β R t`
+(an `Exists.choose` whose proposition is exactly this predicate) cannot be derived from the
+predicate, and the in-place `L13` drop-in (changing only the proof of `β_regular`) cannot pin
+the value, by proof irrelevance. Pinning it requires strengthening the statement — which needs
+the data `(x₀, hHyp, Bcoeff)` absent from the legacy signature.  (This does not assert that no
+statement about the particular chosen witness is provable.)  The executed resolution is
+`β_strong` (`dropIn_bridge` below). -/
 theorem not_betaRegularSpec_forces_betaRec (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
     [Fact (Irreducible H)] [Fact (0 < H.natDegree)] (hHyp : Hypotheses x₀ R H)
     (Bcoeff : (i₁ : ℕ) → {m : ℕ} → Nat.Partition m → 𝒪 H)

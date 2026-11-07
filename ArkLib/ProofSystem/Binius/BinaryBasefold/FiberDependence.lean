@@ -7,9 +7,10 @@ Authors: ArkLib Contributors
 import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Prelude
 
 /-!
-# Issue #317/#313: fiber composition and fiber dependence of the iterated fold
+# Issue #317/#313: fiber composition for the iterated fold
 
-The two structural bricks for the honest (per-fiber) disagreement-set layer:
+**Scope of this file.** It proves one structural brick for the honest (per-fiber)
+disagreement-set layer (plus the helper `getBit_zero_fin_two`):
 
 * `qMap_total_fiber_succ_decompose` — **fiber composition**: the `(n+1)`-step fiber point of
   `y` at the bit-decomposed index `b·2ⁿ + k` is the `n`-step fiber point (at index `k`) of the
@@ -17,14 +18,14 @@ The two structural bricks for the honest (per-fiber) disagreement-set layer:
   basis coordinates by `qMap_total_fiber_repr_coeff` plus the low/high bit decompositions
   `getBit_low_of_add_mul_two_pow` / `getBit_high_of_add_mul_two_pow`.
 
-* `iterated_fold_eq_of_eq_on_fiber` — **fiber dependence**: `iterated_fold f r y` depends only
-  on the values of `f` on the `2 ^ steps`-point fiber of `y`.  Proof: induction on `steps`,
-  peeling the last fold (`iterated_fold_last`, whose `fold_legacy` butterfly reads only the two
-  single-step fiber points) and threading the fiber composition.
-
-These discharge the witness-extraction half of the case-1 incremental argument: the
-contrapositive of fiber dependence extracts, from a folded disagreement at `y`, a fiber point of
-`y` where the sources disagree.
+**Fiber dependence is not in this file.** Earlier versions of this docstring advertised a
+theorem `iterated_fold_eq_of_eq_on_fiber` (`iterated_fold f r y` depends only on the values of
+`f` on the `2 ^ steps`-point fiber of `y`); no declaration with that name exists. A fiber
+dependence result under a different name is `iterated_fold_eq_of_fiberEvaluations_eq`
+(`Soundness/PreTensorMetric.lean`): if `f` and `g` have equal `fiberEvaluations` at `y`, their
+iterated folds agree at `y`. Its contrapositive is what extracts, from a folded disagreement at
+`y`, a fiber point of `y` where the sources disagree (the witness-extraction half of the case-1
+incremental argument).
 
 No `sorry`; axiom audit at the bottom.
 -/

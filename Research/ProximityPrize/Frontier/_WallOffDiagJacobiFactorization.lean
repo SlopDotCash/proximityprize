@@ -7,6 +7,7 @@ import Mathlib.NumberTheory.GaussSum
 import Mathlib.NumberTheory.JacobiSum.Basic
 import Mathlib.Data.ZMod.Basic
 import ArkLib.Data.CodingTheory.ProximityGap.ConstantIndexGaussSumBound
+import Research.ProximityPrize.Frontier._JacKatzBoundedConductorFamily
 
 /-!
 # WALL ATTACK `[offdiag-gauss-phase]` — the Jacobi factorization of the off-diagonal
@@ -39,8 +40,9 @@ The product character `χ^k·χ^{-(k+δ)} = χ^{-δ}` is **INDEPENDENT of `k`**,
 
 This is the off-diagonal autocorrelation written WITHOUT the Euler product: a single common Gauss
 factor `g(χ^{-δ})` (norm `√q`, one off-diagonal order) times a sum of `m` **Jacobi sums of FIXED
-product `χ^{-δ}`**, each of norm `‖J‖ = √q` (since for nontrivial `χ^k, χ^{-(k+δ)}, χ^{-δ}` one has
-`J = g·g/g`, norm `√q·√q/√q = √q`).
+product `χ^{-δ}`**.  A term has norm `‖J‖ = √q` only when `χ^k`, `χ^{-(k+δ)}` and `χ^{-δ}` are all
+nontrivial (then `J = g·g/g`, norm `√q·√q/√q = √q`); terms with a trivial character are different,
+e.g. the `k = 0` term is `J(1, (χ^δ)⁻¹) = −1` (Mathlib `jacobiSum_one_nontrivial`), of norm `1`.
 
 ## What this file PROVES (axiom-clean: `propext, Classical.choice, Quot.sound`, no `sorryAx`)
 
@@ -59,7 +61,9 @@ factorization itself:
    has a SINGLE common Gauss sum, NOT an Euler product of `m` independent ones).
 
 3. `norm_jacobiSum_eq_sqrt` (★) — `‖jacobiSum(χ, φ)‖ = √q` for nontrivial `χ, φ, χφ` (from
-   `J = g(χ)g(φ)/g(χφ)`, all norms `√q`).  Each Jacobi term in the sum has modulus EXACTLY `√q`.
+   `J = g(χ)g(φ)/g(χφ)`, all norms `√q`; delegates to `JacKatz.norm_jacobiSum_eq_sqrt`).  This
+   applies to a Jacobi term in the sum only when both of its characters are nontrivial; it fails
+   e.g. at `k = 0` (trivial `χ^0`, `J = −1`, norm `1`).
 
 4. `autocorr_factored_sum` (★) — the **headline factorization**: the full off-diagonal
    autocorrelation, written as the common Gauss factor times the Jacobi family sum.
@@ -68,25 +72,27 @@ factorization itself:
    `‖Γ(δ)‖ ≤ √q · ∑_k ‖J_k‖ = √q · m · √q = m·q` — the trivial per-term ceiling, RECOVERED through
    the Jacobi route (each of `m` terms has modulus `√q·√q = q`).  This MATCHES, not beats, the prior.
 
-6. `autocorr_jacobi_subGaussian_of_jacobiCancellation` — the SUFFICIENCY bridge: the prize-shape
-   bound `‖Γ(δ)‖ ≤ √q·√(m·q·log m)` holds IFF the Jacobi family sum `∑_k (unit_k)·J_k` enjoys
-   square-root-plus-log cancellation `‖∑_k (unit_k)·J_k‖ ≤ √(m·q·log m)`.  This is the EXACT residual,
-   stated on the Jacobi family (NOT on `η`, NOT on the Euler product) — the new, strictly-more-tractable
-   equivalent the task asks for.
+6. `autocorr_jacobi_subGaussian_of_jacobiCancellation` — the SUFFICIENCY bridge (only this
+   direction is proved): if the Jacobi family sum `∑_k (unit_k)·J_k` enjoys square-root-plus-log
+   cancellation `‖∑_k (unit_k)·J_k‖ ≤ √(m·q·log m)`, then `‖Γ(δ)‖ ≤ √q·√(m·q·log m)`.  (Since
+   `‖Γ(δ)‖ = √q·‖∑_k (unit_k)·J_k‖` by the factorization, the converse is a trivial division by
+   `√q`; the Jacobi-family residual is thus a rescaling of the autocorrelation bound, not a
+   strictly more tractable object.)
 
 ## The HONEST verdict (the exact residual)
 
 The Jacobi factorization is EXACT and Euler-free: `Γ(δ) = g(χ^{-δ})·Σ_k (unit_k)·J(χ^k,χ^{-(k+δ)})`.
-It does NOT by itself beat the trivial `m·q` (each Jacobi term has modulus `√q`, `m` of them, common
-factor `√q`).  But it RELOCATES the wall to a sharper object: the cancellation in the **fixed-product
-Jacobi family** `{J(χ^k, χ^{-(k+δ)}) : k}` — a one-parameter family of `m` Jacobi sums all of norm `√q`
-and all of product character `χ^{-δ}`.  This is a single CHARACTER-SUM family (`J(α,β) = ∑_x α(x)β(1−x)`),
+It does NOT by itself beat the trivial `m·q` (each Jacobi term has modulus at most `√q`, `m` of them,
+common factor `√q`).  But it RELOCATES the wall to a sharper object: the cancellation in the **fixed-product
+Jacobi family** `{J(χ^k, χ^{-(k+δ)}) : k}` — a one-parameter family of `m` Jacobi sums, all of product
+character `χ^{-δ}` and of norm `√q` except where a character is trivial (e.g. `k = 0`, norm `1`).  This is a single CHARACTER-SUM family (`J(α,β) = ∑_x α(x)β(1−x)`),
 NOT a product over primes `ℓ|m`; the sub-Gaussian cancellation it must enjoy is the Katz/Deligne
 equidistribution of the fixed-product Jacobi family = the BGK/Paley wall, but now on a SINGLE
-sum-over-`k` with a clean Gauss-sum structure, one order down and Euler-free.  NOT a closure; a
-strictly-more-tractable, phase-aware, non-tensor equivalent + the trivial-ceiling recovery.
+sum-over-`k` with a clean Gauss-sum structure, Euler-free.  NOT a closure; an exact rescaling of
+the autocorrelation bound onto the Jacobi family (phase-aware, non-tensor) + the trivial-ceiling
+recovery.  It is not claimed to be more tractable.
 
-Build: `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WALL_1_scratch.lean`
+Build: `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_WallOffDiagJacobiFactorization.lean`
 -/
 
 set_option autoImplicit false
@@ -158,25 +164,20 @@ theorem autocorrSummand_jacobi_factor {χa χb : MulChar F ℂ} {ψ : AddChar F 
         = χb (-1) * (gaussSum χa ψ * gaussSum χb⁻¹ ψ) by ring, ← hjac]
   ring
 
-/-! ## Part 2 — the Jacobi norm `√q` (each term in the family is `√q`). -/
+/-! ## Part 2 — the Jacobi norm `√q` (for terms whose characters are all nontrivial). -/
 
 /-- **★ `‖jacobiSum(χ, φ)‖ = √q` for nontrivial `χ, φ, χφ`.**  From `J = g(χ)·g(φ)/g(χφ)`
 (`jacobiSum_eq_gaussSum_mul_gaussSum_div_gaussSum`), all three Gauss sums have norm `√q`
-(`norm_gaussSum_eq_sqrt`), so `‖J‖ = √q·√q/√q = √q`.  Thus every Jacobi sum in the fixed-product
-family `{J(χ^k, χ^{-(k+δ)})}` has modulus EXACTLY `√q`. -/
+(`norm_gaussSum_eq_sqrt`), so `‖J‖ = √q·√q/√q = √q`.  Thus a Jacobi sum in the fixed-product
+family `{J(χ^k, χ^{-(k+δ)})}` has modulus EXACTLY `√q` whenever both of its characters and their
+product are nontrivial (NOT at `k = 0`, where `J(1, (χ^δ)⁻¹) = −1`).  The proof delegates to the
+shared `JacKatz.norm_jacobiSum_eq_sqrt`; the extra `_hcard` hypothesis is kept only for signature
+stability and is not needed. -/
 theorem norm_jacobiSum_eq_sqrt {χ φ : MulChar F ℂ} {ψ : AddChar F ℂ}
     (hχ : χ ≠ 1) (hφ : φ ≠ 1) (hχφ : χ * φ ≠ 1) (hψ : ψ.IsPrimitive)
-    (hcard : (Fintype.card F : ℂ) ≠ 0) :
-    ‖jacobiSum χ φ‖ = Real.sqrt (Fintype.card F : ℝ) := by
-  rw [jacobiSum_eq_gaussSum_mul_gaussSum_div_gaussSum hcard hχφ hψ]
-  rw [norm_div, norm_mul, norm_gaussSum_eq_sqrt hχ hψ, norm_gaussSum_eq_sqrt hφ hψ,
-    norm_gaussSum_eq_sqrt hχφ hψ]
-  -- (√q · √q) / √q = √q
-  have hq : 0 < (Fintype.card F : ℝ) := by
-    have : 0 < Fintype.card F := Fintype.card_pos
-    exact_mod_cast this
-  have hsq : Real.sqrt (Fintype.card F : ℝ) ≠ 0 := by positivity
-  rw [mul_div_assoc, div_self hsq, mul_one]
+    (_hcard : (Fintype.card F : ℂ) ≠ 0) :
+    ‖jacobiSum χ φ‖ = Real.sqrt (Fintype.card F : ℝ) :=
+  ArkLib.ProximityGap.Frontier.JacKatz.norm_jacobiSum_eq_sqrt hχ hφ hχφ hψ
 
 /-! ## Part 3 — the headline factorization of the full autocorrelation.
 
@@ -194,7 +195,8 @@ family sum.**  Define the lag-`δ` autocorrelation over a finite index set `K` o
 > `Γ_K(δ) = gaussSum((χ^δ)⁻¹, ψ) · ∑_{k∈K} χ^{k+δ}(-1)·jacobiSum(χ^k, (χ^{k+δ})⁻¹)`.
 
 The right factor is the **fixed-product Jacobi family sum** — a sum of `|K|` Jacobi sums each of
-product character `(χ^δ)⁻¹`, each (Part 2) of modulus `√q`.  This is the autocorrelation written
+product character `(χ^δ)⁻¹`, each (Part 2) of modulus `√q` when its characters are nontrivial
+(otherwise smaller, e.g. `1` at `k = 0`).  This is the autocorrelation written
 WITHOUT the Euler product: one common Gauss sum × one character-sum-family sum. -/
 theorem autocorr_factored_sum (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (δ : ℕ) (K : Finset ℕ)
     (hoff : ∀ k ∈ K, (χ ^ k) * (χ ^ (k + δ))⁻¹ ≠ 1) :
@@ -212,8 +214,8 @@ theorem autocorr_factored_sum (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (δ : �
 
 /-- **The trivial `m·q` ceiling, RECOVERED through the Jacobi factorization.**  Bounding the
 factored autocorrelation by the triangle inequality: the common factor has norm `≤ √q`
-(`hgnorm`), and each of the `|K|` Jacobi terms has modulus `‖χ^{k+δ}(-1)·J‖ = 1·√q = √q` (units ×
-`√q`).  So `‖Γ_K(δ)‖ ≤ √q · |K|·√q = |K|·q`.  For `K = range m` this is the trivial `m·q` — the same
+(`hgnorm`), and each of the `|K|` Jacobi terms has modulus `‖χ^{k+δ}(-1)·J‖ ≤ √q` (hypothesis
+`htermnorm`; equality when the characters are nontrivial).  So `‖Γ_K(δ)‖ ≤ √q · |K|·√q = |K|·q`.  For `K = range m` this is the trivial `m·q` — the same
 ceiling the per-term `m`-terms-of-modulus-`q` bound gives.  The Jacobi route does NOT by itself beat
 it; the gain must come from cancellation IN the Jacobi family sum (Part 5). -/
 theorem autocorr_jacobi_triangle_bound (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (δ : ℕ) (K : Finset ℕ)
@@ -240,11 +242,12 @@ asserts the fixed-product Jacobi family sum enjoys square-root-plus-log cancella
 
 > `‖∑_{k∈K} χ^{k+δ}(-1)·J(χ^k, (χ^{k+δ})⁻¹)‖ ≤ √(C · |K| · q · log |K|)`.
 
-Since each of the `|K|` terms has modulus `√q`, the trivial bound is `|K|·√q = √(|K|²·q)`; this
+Since each of the `|K|` terms has modulus at most `√q`, the trivial bound is `|K|·√q = √(|K|²·q)`; this
 residual asks for the `√(|K| log |K|)` cancellation — the `√(|K|)→√log` contraction.  It is a
 statement about a SINGLE character-sum family (the Jacobi sums of fixed product `(χ^δ)⁻¹`), NOT a
-product over primes `ℓ | m` (the Euler product, REFUTED).  This is the strictly-more-tractable,
-Euler-free, phase-aware equivalent of the wall. -/
+product over primes `ℓ | m` (the Euler product, REFUTED).  By the factorization it is an exact
+rescaling (by `√q`) of the autocorrelation bound, Euler-free and phase-aware; it is not claimed to
+be more tractable. -/
 def JacobiFamilyCancellation (C : ℝ) (χ : MulChar F ℂ) (δ : ℕ) (K : Finset ℕ) : Prop :=
   ‖∑ k ∈ K, (χ ^ (k + δ)) (-1) * jacobiSum (χ ^ k) (χ ^ (k + δ))⁻¹‖
     ≤ Real.sqrt (C * (K.card : ℝ) * (Fintype.card F : ℝ) * Real.log (K.card : ℝ))

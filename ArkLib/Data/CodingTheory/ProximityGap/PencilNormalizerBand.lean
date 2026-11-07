@@ -16,8 +16,8 @@ found (exactly, at `(q,n) = (41,10), (113,16), (257,16)`):
 
 * a **spike band**: the torus-normalizer pencils `x ↦ c/x` (`c ∈ H`) and `x ↦ −x` sit at
   `t₂ ∈ {(n−2)/2, n/2}`;
-* a **noise band**: every other pencil has tiny `t₂` (conjecturally `O(n²/q + 1)`, a
-  Weil-type statement);
+* a **noise band**: every other pencil has tiny `t₂` (conjecturally `O(n²/q + 1)` over prime
+  fields / without subfield concentration, a Weil-type statement; see the scope caveat below);
 * a **spectral gap** between the bands that random domains fill in.
 
 This file proves the **elementary half** unconditionally, in ordered-pair form
@@ -42,6 +42,15 @@ the named open surface `PencilNoiseBand`, with the gap statement
 (`c ≠ 0`) inside that surface are exactly the `|μ_n ∩ (c − μ_n)|` additive-energy quantity
 of the #232 open core — the pencil noise band *is* the same open mathematics, reached from
 the M3 moments channel.
+
+**Scope caveat for the `O(n²/q + 1)` scale.** The interface allows arbitrary finite fields and
+root orders, and over general fields that scale is false without a subfield exclusion: in
+`F_{r³}` (`r` an odd prime power) take `μ_n = μ_{r−1} = F_r^×`, `n = r − 1`, and `c = 1`.  The
+ordered off-diagonal pairs `x + y = 1` in `F_r^×` number `r − 3 = n − 2` (only `x = 0, 1, 1/2` are
+excluded), while `n²/q + 1 = (r−1)²/r³ + 1 → 1`.  So the analytic conjecture should be read over
+prime fields (e.g. the dyadic production setting), or with an explicit subfield /
+nonconcentration hypothesis.  `PencilNoiseBand F n B` itself is a parameterized `Prop` (e.g.
+`B = n` is a satisfiable coarse input) and the consumer below is correct for any `B`.
 
 Everything outside `PencilNoiseBand` is axiom-clean; no `sorry`.
 
@@ -245,9 +254,11 @@ theorem moebius_pair_count_le (a b : F) (hab : a ^ 2 ≠ b) (D : Finset F) :
 /-- **The pencil noise band (named open surface, Weil tier).** The conjecture that over the
 smooth subgroup `μ_n ⊆ F_q` every *non-normalizer* pencil sits in a noise band of width
 `B`: Möbius pencils with `a ≠ 0`, and additive pencils `x + y = c` with `c ≠ 0`. The probes
-measure `B = O(n²/q + 1)` (spectral gap at `n = 16`: nothing at `t₂ ∈ {4,5,6}`); a proof
-needs Weil-type bounds for character sums of rational functions against subgroup cosets
-(not in Mathlib). The additive case is exactly the `|μ_n ∩ (c − μ_n)|` additive-energy
+measure `B = O(n²/q + 1)` at prime `q` (spectral gap at `n = 16`: nothing at `t₂ ∈ {4,5,6}`); a
+proof needs Weil-type bounds for character sums of rational functions against subgroup cosets
+(not in Mathlib). That scale needs `F` prime or a subfield/nonconcentration exclusion: for
+`μ_{r−1} = F_r^× ⊆ F_{r³}` the additive pencil `x + y = 1` has `n − 2` ordered pairs (module
+docstring). The additive case is exactly the `|μ_n ∩ (c − μ_n)|` additive-energy
 quantity of the #232 open core. -/
 def PencilNoiseBand (F : Type*) [Field F] [Fintype F] [DecidableEq F]
     (n : ℕ) (B : ℕ) : Prop :=

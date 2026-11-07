@@ -22,17 +22,26 @@ evaluation domain (smoothness is not even required), any dimension:
 
     `mcaDeltaStar (RS[F, dom, k], ε*) = j / n`   for every `ε* ∈ [j/q, (j+1)/q)`,
 
-  whenever `3(j−1) + k ≤ n` (and `j+2+k ≤ n`, `j+1 ≤ q` for the spike data).
+  whenever `j ≥ 1`, `3(j−1) + k ≤ n`, `j + 1 + k ≤ n` and `j + 1 ≤ q`.
 
-**Reach at production parameters.**  With `ε* = 2^{−128}` fixed, a field of size `q`
-puts `ε*` in the band window of `j = ⌊q·2^{−128}⌋`.  For rate-`1/2` codes with
-`k ≤ 2^{40}` the distance condition `3(j−1) + k ≤ n` holds for all
-`q ≲ 2^{128}·n/3` — i.e. **for every production-shaped instance with
-`|F| ≲ 2^{168}`, δ* is now a closed-form theorem at the literal target threshold**.
-The production family splits at `q ≈ n·2^{128}`: below, the ladder pins δ* exactly
-(this file); above, `ε*·q` exceeds the staircase's reach and the Johnson/window
-regime takes over — that frontier is the campaign's remaining open core, bracketed
-by the δ* sandwich (`MCADeltaStarSandwich.lean`).
+**Reach at the literal target `ε* = 2^{−128}`.**  A field of size `q` puts `ε*` in the band
+window `[j/q, (j+1)/q)` exactly for `j = ⌊q·2^{−128}⌋`.  The theorem then applies precisely
+when, for this `j`,
+
+* `j ≥ 1`, i.e. `q ≥ 2^{128}` (smaller fields are **not** covered at this target);
+* `3(j−1) + k ≤ n` and `j + 1 + k ≤ n` (`j + 1 ≤ q` is then automatic).
+
+For rate `1/2` (`n` even, `k = n/2`, `n ≥ 6`) the first condition reads `j ≤ ⌊n/6⌋ + 1` and
+implies the second, so the covered fields are exactly
+
+  `2^{128} ≤ q < 2^{128}·(⌊n/6⌋ + 2)`,
+
+an upper limit of about `2^{128}·n/6` (not `n/3`).  For example `k = 2^{40}`, `n = 2^{41}`
+gives about `2^{166.4}`; smaller `n` give proportionally smaller limits, so there is no
+single field-size bound (such as `2^{168}`) below which every rate-`1/2` instance is covered.
+In general the ladder's reach ends near `q ≈ 2^{128}·(n−k)/3`; beyond it `ε*·q` exceeds the
+staircase's reach and the Johnson/window regime takes over — that frontier is the campaign's
+remaining open core, bracketed by the δ* sandwich (`MCADeltaStarSandwich.lean`).
 -/
 
 open Finset Polynomial
@@ -88,8 +97,9 @@ threshold `ε* ∈ [j/|F|, (j+1)/|F|)`:
 
   `mcaDeltaStar (RS[F, dom, k]) ε* = j / n`.
 
-At `ε* = 2^{−128}` this pins δ* in closed form for every production-shaped instance
-with `|F| ≲ n·2^{128}` — smoothness of the domain is not required. -/
+At `ε* = 2^{−128}` this pins δ* in closed form exactly when `j = ⌊|F|·2^{−128}⌋` meets the
+hypotheses: `|F| ≥ 2^{128}` and `3(j−1) + k ≤ n`, `j + 1 + k ≤ n` (for rate `1/2`:
+`2^{128} ≤ |F| < 2^{128}·(⌊n/6⌋ + 2)`).  Smoothness of the domain is not required. -/
 theorem mcaDeltaStar_rs_eq_granularity (dom : Fin n ↪ F) {k j : ℕ}
     (hj1 : 1 ≤ j) (hd3 : 3 * (j - 1) + k ≤ n) (hdj : j + 1 + k ≤ n)
     (hjF : j + 1 ≤ Fintype.card F) {εstar : ℝ≥0∞}

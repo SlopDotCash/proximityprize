@@ -129,15 +129,13 @@ theorem subsetDifferenceMultiplicity_eq_subsetSumCrossCorrelation
         (ArkLib.ProximityGap.Frontier.BGKLateNewtonTwoColourPhysicalBridge.labelSubsetFiber_eq_valueSubsetFiber
           G r (t + s)).trans
         (ArkLib.ProximityGap.Frontier.BGKLateNewtonTwoColourPhysicalBridge.valueSubsetFiber_eq_subsetSumCount
-          G r (t + s)) using 1
-      congr 1]
+          G r (t + s)) using 1]
   rw [show phaseFiberCount (labelSum (r - 1)) s = subsetSumCount G (r - 1) s by
       convert
         (ArkLib.ProximityGap.Frontier.BGKLateNewtonTwoColourPhysicalBridge.labelSubsetFiber_eq_valueSubsetFiber
           G (r - 1) s).trans
         (ArkLib.ProximityGap.Frontier.BGKLateNewtonTwoColourPhysicalBridge.valueSubsetFiber_eq_subsetSumCount
-          G (r - 1) s) using 1
-      congr 1]
+          G (r - 1) s) using 1]
 
 end DifferenceConvolution
 

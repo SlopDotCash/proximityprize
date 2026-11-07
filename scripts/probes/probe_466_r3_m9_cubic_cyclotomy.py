@@ -4,8 +4,10 @@
 
 Structure at m=9 (u=3): exactly three H-cosets, so DIST triples carry label
 multiset {0,1,2}, whose sum is 0 mod 3 => DIST(d) is SUPPORTED on d in {0,3,6},
-with exactly 6*9 = 54 ordered triples per support point (before zero-index
-exclusions).  Counting then gives E_DIST <= 3*(54 q^{3/2})^2 = 8748 q^3
+with 6*9 = 54 ordered triples per support point before zero-index
+exclusions and exactly 36 after excluding j = 0 (residue-0 class {3,6}, classes 1,2 of size
+3: 3! * 2*3*3 = 108 ordered triples, split evenly over the three support points; enforced
+below).  Counting with the pre-exclusion 54 still gives E_DIST <= 3*(54 q^{3/2})^2 = 8748 q^3
 = 12 * 9^3 * q^3 unconditionally -- checked here numerically, and the sharp
 constant C_D(9) = sup_q E_DIST/(9^3 q^3) is measured.
 
@@ -13,7 +15,11 @@ Cyclotomy tests (chi = lambda canonical, order 9; p == 1 mod 9; 4p = L^2+27M^2,
 L == 1 mod 3):
   (a) is E_DIST an integer?  is it a function of p alone (primitive-root
       independent)?  least-squares regression of E_DIST against monomials
-      {p^3, p^2, p^2 L, p L^2, p M^2, p, ...} -- exact fit iff residual ~ 0.
+      {p^3, p^2, p^2 L, p M^2, p, 1}.  The basis is chosen linearly independent:
+      p L^2 = 4 p^2 - 27 p M^2 is dropped (it lies in the span), as is the old duplicate
+      column p^2 M^2 / p = p M^2 (audit 2026-10-28, L103).  The fit is FLOATING-POINT least
+      squares: a small residual suggests a closed form, while a large residual is evidence
+      against one in this span, not a proof that no exact closed form exists.
       Also the Galois-averaged energy over the six order-9 characters.
   (b) does DIST(d) collapse to Jacobi-sum monomials?  test |DIST(d)|/q^{3/2}
       profile and constancy of DIST(d)/(q * J3(d)) across d and p.
@@ -104,8 +110,8 @@ def main():
         # support + count structure
         for d in range(9):
             if d in (0, 3, 6):
-                if cnt[d] != 54 - (6 if d == 0 else 6):  # zero-exclusions: count them honestly below
-                    pass
+                if cnt[d] != 36:  # zero-index-excluded ordered triples per support point
+                    cnt_ok = False
             else:
                 if cnt[d] != 0 or abs(D[d]) > 1e-6 * p ** 1.5:
                     supp_ok = False
@@ -164,17 +170,19 @@ def main():
         resid = max(abs(sum(coef[i] * A[r][i] for i in range(n)) - b[r]) / max(abs(b[r]), 1)
                     for r in range(len(A)))
         return coef, resid
+    # Linearly independent basis: p*L^2 = 4p^2 - 27p*M^2 is in the span and is omitted.
     monos = [lambda p, L, M: p ** 3, lambda p, L, M: p ** 2, lambda p, L, M: p ** 2 * L,
-             lambda p, L, M: p * L ** 2, lambda p, L, M: p * M ** 2, lambda p, L, M: p ** 2 * M ** 2 / p,
-             lambda p, L, M: p, lambda p, L, M: 1.0]
-    names = ["p^3", "p^2", "p^2*L", "p*L^2", "p*M^2", "p*M^2(b)", "p", "1"]
+             lambda p, L, M: p * M ** 2, lambda p, L, M: p, lambda p, L, M: 1.0]
+    names = ["p^3", "p^2", "p^2*L", "p*M^2", "p", "1"]
     coef, resid = regress(avg_rows, monos, names)
     print(f"\nLSQ fit of E_avg on {names}: max rel residual = {resid:.4e}")
     print("  coefficients:", ", ".join(f"{n}={c:.4f}" for n, c in zip(names, coef)))
-    print(f"  verdict: {'EXACT closed form plausible' if resid < 1e-6 else 'NO exact closed form in these monomials (refuted at this basis)'}")
+    print(f"  verdict (floating-point fit, not a certificate): "
+          f"{'closed form in this span plausible' if resid < 1e-6 else 'no fit in this span at float tolerance (evidence, not a proof of no exact closed form)'}")
 
     print(f"\nsupport structure DIST(d)=0 for d not in {{0,3,6}}: {'CONFIRMED' if supp_ok else 'VIOLATED'}")
-    print(f"total DIST triple count <= 162 per instance: {'CONFIRMED' if cnt_ok else 'VIOLATED'}")
+    print(f"per-support zero-excluded count = 36 and total DIST triple count <= 162: "
+          f"{'CONFIRMED' if cnt_ok else 'VIOLATED'}")
     print(f"sharp constant over probed primes: C_D(9) = sup E_DIST/(9^3 q^3) = {maxC:.5f} (counting bound: 12)")
     if not supp_ok or not cnt_ok:
         sys.exit(1)

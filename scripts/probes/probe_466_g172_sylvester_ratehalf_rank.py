@@ -5,7 +5,12 @@ Fixes v2:
   - CONSTRUCTIVE cover builder that guarantees interior band + genuine 3-support
     (nonempty pairwise-private overlaps AB, AC, BC) so we get real samples.
   - Symbolic check of C1: bAC+bBC < degWAB, expressed via mAB,mAC,mBC,t,k.
-  - MASSIVE field-flip sweep of the exact Sylvester matrix rank across primes.
+  - field-flip sweep of the exact Sylvester matrix rank across primes, using ONE fixed
+    integer labeling per cover (so a flip is a characteristic effect on a fixed integer matrix).
+  - covers are genuine: the union of A,B,C is exactly [n].
+SCOPE: all results are finite samples (seeded covers, five primes). Agreement of ranks across
+the sampled primes is evidence, not a proof of field-independence; symbolic hypotheses/minors
+are required before using field-independent or universal verdicts.
 
 Degrees:  deg W_AB = mAB - t,  deg W_AC = mAC - t,  deg W_BC = mBC - t.
 Budgets:  bXY = k - 1 - mXY   (per-pair in-budget cofactor degree cap).
@@ -71,7 +76,12 @@ def sylv_kernel(WAB,WAC,WBC,bAC,bBC,p):
 
 def construct_cover(n,s,seed):
     """Build 3 s-subsets of [n] with a controlled triple overlap t and genuine
-    private pairwise overlaps. Return sets A,B,C or None."""
+    private pairwise overlaps, whose UNION IS ALL OF [n] (a genuine ambient cover).
+    Return sets A,B,C or None.
+
+    The union size is 3s - 2t - abp - acp - bcp, so ``bcp`` is solved for to make it
+    exactly ``n`` (an earlier version only required union <= n and could return e.g. three
+    19-subsets of [28] covering only 27 points, which is not an ambient cover)."""
     rng=random.Random(seed)
     pts=list(range(n))
     # pick triple core T, and private pairwise chunks, sized to keep |X|=s
@@ -80,12 +90,14 @@ def construct_cover(n,s,seed):
         t=rng.randint(1, max(1,s//3))
         abp=rng.randint(1, max(1,s//3))
         acp=rng.randint(1, max(1,s//3))
-        bcp=rng.randint(1, max(1,s//3))
+        # union size = 3s - 2t - abp - acp - bcp; force it to equal n exactly
+        bcp=3*s-n-2*t-abp-acp
+        if bcp<1: continue
         # A = T + AB' + AC' + privA  => privA = s - t - abp - acp
         pa=s-t-abp-acp; pb=s-t-abp-bcp; pc=s-t-acp-bcp
         if pa<0 or pb<0 or pc<0: continue
         need=t+abp+acp+bcp+pa+pb+pc
-        if need>n: continue
+        if need!=n: continue
         pool=rng.sample(pts,need)
         it=iter(pool)
         T=[next(it) for _ in range(t)]
@@ -97,6 +109,7 @@ def construct_cover(n,s,seed):
         PC=[next(it) for _ in range(pc)]
         A=set(T+AB+AC+PA); B=set(T+AB+BC+PB); C=set(T+AC+BC+PC)
         if len(A)==s and len(B)==s and len(C)==s:
+            assert A|B|C==set(pts)
             return A,B,C
     return None
 
@@ -126,13 +139,15 @@ def main():
                 if not c1: total_c1_fail+=1
                 # exact Sylvester rank per prime (fixed combinatorics, roots = distinct field elts)
                 kds={}
-                for p in primes:
-                    rng=random.Random(seed*1000+7)
-                    # skip ONLY primes too small to host n distinct labels; keep the
-                    # cover and evaluate over the remaining (larger) primes.
-                    if p-1 < n: continue
-                    labels=rng.sample(range(1,p),n)
-                    # relabel using full index set [n]
+                # ONE fixed integer labeling for all primes: labels are distinct integers in
+                # [1, pmin) where pmin is the smallest prime used, so they stay distinct mod every
+                # prime used. A kernel-dimension change across primes is then a change in the
+                # rank of the reduction of ONE fixed integer matrix (not a relabeling artifact).
+                used=[p for p in primes if p-1>=n]
+                if not used: continue
+                rng=random.Random(seed*1000+7)
+                labels=rng.sample(range(1,min(used)),n)
+                for p in used:
                     lab={x:labels[x] for x in range(n)}
                     WAB=build([lab[x] for x in (A&B)-(A&B&C)],p)
                     WAC=build([lab[x] for x in (A&C)-(A&B&C)],p)
@@ -142,11 +157,11 @@ def main():
                 if any(v>0 for v in kds.values()): total_ker_pos+=1
                 if len(set(kds.values()))>1:
                     flips.append((n,k,s,seed,mAB,mAC,mBC,t,bAC,bBC,degWAB,dict(kds)))
-    print(f"valid rate-1/2 3-support covers tested: {valid}")
+    print(f"valid rate-1/2 3-support ambient covers (union = [n]) tested: {valid}")
     print(f"C1 (bAC+bBC < degWAB, Fable summed-budget) FAILURES: {total_c1_fail}")
     print(f"  C1 margin histogram (degWAB-(bAC+bBC)): {dict(sorted(c1_margin_hist.items()))}")
     print(f"SylvesterInjective FALSE (positive kernel) instances: {total_ker_pos}")
-    print(f"FIELD-FLIP instances (kernel dim varies across primes): {len(flips)}")
+    print(f"FIELD-FLIP instances (kernel dim of one fixed integer labeling varies across sampled primes): {len(flips)}")
     for f in flips[:20]: print("  FLIP",f)
 
 if __name__=="__main__":

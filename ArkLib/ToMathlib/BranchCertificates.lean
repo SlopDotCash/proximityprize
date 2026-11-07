@@ -16,8 +16,10 @@ polynomials in `F[X]`, built by substituting the surface's centre fold
 
 * `branchCert G w x₀ := G.eval v` — the **branch-separation certificate**: its value at `z` is
   exactly `G(z, w(x₀,z))` (`branchCert_eval`, via the substitution-composition bridge
-  `evalEval_eval_eval`).  `branchCert ≠ 0` is the honest global branch-assignment fact (the
-  surface's centre fold does not lie in the complementary factor `G`).
+  `evalEval_eval_eval`).  `branchCert ≠ 0` states that the surface's centre fold does not lie
+  in the complementary factor `G`.  **This is refuted for `2 ≤ H.natDegree`**
+  (`BranchSeparationUnsat.branchCert_eq_zero`, F7): a rational centre fold rooting `H · G`
+  cannot lie on an irreducible `H` of degree `≥ 2`, so it lies in `G` and `branchCert = 0`.
 * `xiCert hH ξ w x₀ := (canonicalRepOf𝒪 hH ξ).eval v` — the **`ξ`-regularity certificate**:
   for monic `H` its value at `z` is exactly `π_z(ξ)` at the decoded root
   (`xiCert_eval_monic`, via `mk_canonicalRepOf𝒪` + `π_z_mk` + the bridge).  `xiCert ≠ 0` is
@@ -38,6 +40,13 @@ nonvanishing locus of `disc · branchCert · xiCert`, from purely global hypothe
 
 **No per-place hypothesis remains.**  Every input is a single named finite fact about the
 global GS objects `(R, H, G, w, Ppoly)`.
+
+**Scope caveat.**  The conditional proof is valid, but the hypothesis bundle has no
+instantiation with `2 ≤ H.natDegree`: `hbr` is refuted there by
+`BranchSeparationUnsat.branchCert_eq_zero` (F7), and the legacy `hrepG` is refuted there by the
+F6 finding (`GenuinePpolyConverter`).  The capstone can be non-vacuous only for linear `H`;
+higher-degree consumers must take the pointwise branch data of
+`DecodedProximateRoot.mpFin_of_decoded` instead of global rational branch separation.
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
@@ -103,7 +112,11 @@ theorem mem_nonvanishingLocus {d : F[X]} {z : F} :
 /-- **THE GLOBAL CAPSTONE: Claim 5.8′ from purely global data.**
 `gammaGenuine = trunc k gammaGenuine`, with the matching set constructed as the joint
 nonvanishing locus of `disc · branchCert · xiCert`.  Every hypothesis is a single named
-finite fact about the global GS objects; no per-place input remains. -/
+finite fact about the global GS objects; no per-place input remains.
+
+Caveat: for `2 ≤ H.natDegree` the bundle is unsatisfiable — `hbr` is refuted by
+`BranchSeparationUnsat.branchCert_eq_zero` (F7) and `hrepG` by F6 — so this theorem can be
+non-vacuous only for linear `H`. -/
 theorem gammaGenuine_eq_trunc_global {x₀ : F} {R : F[X][X][Y]}
     (hHyp : Hypotheses x₀ R H)
     (hξ : ξ x₀ R H hHyp ≠ 0)

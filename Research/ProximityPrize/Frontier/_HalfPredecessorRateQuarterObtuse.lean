@@ -284,35 +284,6 @@ theorem card_le_two_mul_of_pair_inter_le_succ
   apply card_le_two_mul_of_pair_inter_le_of_two_mul_cap_le
     family hn hthreshold (s := k + 1) (by omega) hpair
 
-/-- A rate-quarter family is already bounded by the domain size unless it
-contains a concrete exceptional pair with agreement intersection at least
-`k+2`.  This is the exact residual left by the obtuse-vector argument. -/
-theorem card_le_two_mul_or_exists_large_pair
-    {dom : ι ↪ F} {k h : ℕ} {delta : ℝ≥0}
-    {u : WordStack F (Fin 2) ι}
-    (family : BadScalarRichPointFamily dom k delta u)
-    (hn : Fintype.card ι = 2 * h)
-    (hthreshold :
-      ⌈(1 - delta) * (Fintype.card ι : ℝ≥0)⌉₊ = h + 1)
-    (hrate : 2 * k ≤ h) :
-    family.G.card ≤ 2 * h ∨
-      ∃ gamma ∈ family.G, ∃ beta ∈ family.G, gamma ≠ beta ∧
-        k + 2 ≤
-          (fullAgreement dom (u 0) (u 1) gamma (family.q gamma) ∩
-            fullAgreement dom (u 0) (u 1) beta (family.q beta)).card := by
-  by_cases hex :
-      ∃ gamma ∈ family.G, ∃ beta ∈ family.G, gamma ≠ beta ∧
-        k + 2 ≤
-          (fullAgreement dom (u 0) (u 1) gamma (family.q gamma) ∩
-            fullAgreement dom (u 0) (u 1) beta (family.q beta)).card
-  · exact Or.inr hex
-  · apply Or.inl
-    apply card_le_two_mul_of_pair_inter_le_succ family hn hthreshold hrate
-    intro gamma hgamma beta hbeta hne
-    by_contra hnot
-    apply hex
-    exact ⟨gamma, hgamma, beta, hbeta, hne, by omega⟩
-
 /-- The strongest rate-independent endpoint localization: a family larger
 than the domain forces a pair intersection of size at least
 `floor(h/2)+2`. -/
@@ -342,6 +313,28 @@ theorem card_le_two_mul_or_exists_pair_core_ge_half_add_two
     apply hex
     exact ⟨gamma, hgamma, beta, hbeta, hne, by omega⟩
 
+/-- A rate-quarter family is already bounded by the domain size unless it
+contains a concrete exceptional pair with agreement intersection at least
+`k+2`.  This is the exact residual left by the obtuse-vector argument; it is a direct
+corollary of the rate-free `floor(h/2)+2` theorem, since `2k ≤ h` gives `k+2 ≤ h/2+2`. -/
+theorem card_le_two_mul_or_exists_large_pair
+    {dom : ι ↪ F} {k h : ℕ} {delta : ℝ≥0}
+    {u : WordStack F (Fin 2) ι}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hn : Fintype.card ι = 2 * h)
+    (hthreshold :
+      ⌈(1 - delta) * (Fintype.card ι : ℝ≥0)⌉₊ = h + 1)
+    (hrate : 2 * k ≤ h) :
+    family.G.card ≤ 2 * h ∨
+      ∃ gamma ∈ family.G, ∃ beta ∈ family.G, gamma ≠ beta ∧
+        k + 2 ≤
+          (fullAgreement dom (u 0) (u 1) gamma (family.q gamma) ∩
+            fullAgreement dom (u 0) (u 1) beta (family.q beta)).card := by
+  rcases card_le_two_mul_or_exists_pair_core_ge_half_add_two family hn hthreshold with
+      hcard | ⟨gamma, hgamma, beta, hbeta, hne, hcore⟩
+  · exact Or.inl hcard
+  · exact Or.inr ⟨gamma, hgamma, beta, hbeta, hne, by omega⟩
+
 /-- Two units of rate slack make the first exceptional band `k+2`
 harmless. -/
 theorem card_le_two_mul_of_pair_inter_le_k_add_two_of_rate_slack
@@ -360,7 +353,8 @@ theorem card_le_two_mul_of_pair_inter_le_k_add_two_of_rate_slack
     family hn hthreshold (s := k + 2) (by omega) hpair
 
 /-- Away from rate saturation, a family larger than the domain forces a pair
-core at least `k+3`, not merely `k+2`. -/
+core at least `k+3`, not merely `k+2`.  This is a direct corollary of the rate-free
+`floor(h/2)+2` theorem, since `2k+2 ≤ h` gives `k+3 ≤ h/2+2`. -/
 theorem card_le_two_mul_or_exists_pair_core_ge_k_add_three_of_rate_slack
     {dom : ι ↪ F} {k h : ℕ} {delta : ℝ≥0}
     {u : WordStack F (Fin 2) ι}
@@ -374,19 +368,10 @@ theorem card_le_two_mul_or_exists_pair_core_ge_k_add_three_of_rate_slack
         k + 3 ≤
           (fullAgreement dom (u 0) (u 1) gamma (family.q gamma) ∩
             fullAgreement dom (u 0) (u 1) beta (family.q beta)).card := by
-  by_cases hex :
-      ∃ gamma ∈ family.G, ∃ beta ∈ family.G, gamma ≠ beta ∧
-        k + 3 ≤
-          (fullAgreement dom (u 0) (u 1) gamma (family.q gamma) ∩
-            fullAgreement dom (u 0) (u 1) beta (family.q beta)).card
-  · exact Or.inr hex
-  · apply Or.inl
-    apply card_le_two_mul_of_pair_inter_le_k_add_two_of_rate_slack
-      family hn hthreshold hrate
-    intro gamma hgamma beta hbeta hne
-    by_contra hnot
-    apply hex
-    exact ⟨gamma, hgamma, beta, hbeta, hne, by omega⟩
+  rcases card_le_two_mul_or_exists_pair_core_ge_half_add_two family hn hthreshold with
+      hcard | ⟨gamma, hgamma, beta, hbeta, hne, hcore⟩
+  · exact Or.inl hcard
+  · exact Or.inr ⟨gamma, hgamma, beta, hbeta, hne, by omega⟩
 
 /-- **Obtuse-vector rate-quarter branch.**  At the half predecessor, the
 successor direction cap bounds the selected bad-scalar family by the domain

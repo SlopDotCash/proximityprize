@@ -18,7 +18,8 @@ h0 : (P z).coeff 0 = (((map C v₀) + (C X) * (map C v₁)).eval (C z)).coeff 0
 — the BCIKS20 §6.2 / Appendix A.5.2 **base-point agreement**: the two competitors (the
 decoded `P z` and the representative specialisation) reduce, mod the power-series variable,
 to the same value at the expansion centre.  This file isolates what is *provable* about
-`h0` from the in-tree GS cargo and names the irreducible remainder.
+`h0` from the in-tree GS cargo and names the remaining inputs (sufficient conditions whose
+strength relative to `h0` is discussed under "Honest residuals").
 
 ## The mathematical content
 
@@ -44,8 +45,9 @@ the centre.  Three facts organise the frontier:
    `a₀ = α₀(z)`.
 
 3. **What pins the two base roots EQUAL.**  Not derivable from the divisibilities alone
-   (a separable centre fiber has many distinct roots); the two honest sources, both
-   formalized here as producers with named non-goal-shaped hypotheses:
+   (a separable centre fiber has many distinct roots); two sufficient sources, both
+   formalized here as producers whose named hypotheses are not syntactically `h0` (see the
+   caveat under "Honest residuals" on their logical strength):
 
    * **(i) the uniqueness route** (App A.5.2: the base point is the *unique* relevant root
      of the centre fiber): if `baseSpec (Q z)` has at most one root in a class `S z`
@@ -54,6 +56,8 @@ the centre.  Three facts organise the frontier:
      (`coeff_zero_eq_of_dvd_of_uniqueRootOn`, family form `h0_supply_of_uniqueRootOn`).
      The linear-fiber witness — the centre fiber is (a unit times) a single linear factor,
      the unique-decoding sub-case — is proved closed (`uniqueRootOn_of_eq_C_mul_X_sub_C`).
+     With the class chosen freely this route is *equivalent* to the agreement
+     (`exists_uniqueRootOn_class_iff`, via the singleton class).
 
    * **(ii) the graph route** (§6.2 curve geometry: both competitors pass through the graph
      point over the centre): if the evaluation domain hits the centre (`domain i₀ = 0`) and
@@ -66,20 +70,29 @@ the centre.  Three facts organise the frontier:
 ## Wiring (the deliverables)
 
 * `interpolantInput_of_uniqueRootOn` / `interpolantInput_of_centre_agreement` — full
-  `HenselMatchingPolySupply.InterpolantInput` with the `h0` field replaced by the weaker
-  honest sources (route (i) resp. (ii)); all other fields passed through.
+  `HenselMatchingPolySupply.InterpolantInput` with the `h0` field replaced by the route-(i)
+  resp. route-(ii) source (sufficient conditions, not automatically weaker ones; see below);
+  all other fields passed through.
 * `henselDatum_of_uniqueRootOn` / `henselDatum_of_centre_agreement` — the compositions to
   `HPzBridge.HenselDatum` (ready for `HPzBridge.hPz_of_henselDatum`).
 
 ## Honest residuals
 
-Neither route's named hypothesis is goal-shaped.  Route (i)'s `UniqueRootOn (baseSpec (Q z))
-(S z)` is a property of the interpolant's centre fiber *alone* (plus the two class
-memberships) — the BCIKS20 count/distance fact that the centre is uncorrupted enough to pin a
-unique base root; no in-tree lemma supplies it yet (production lane: the §5 centre-fiber
-counting).  Route (ii)'s agreement facts relate each competitor separately to the *word*
-(the §5 agreement-set cargo: `0` lies in both agreement sets), never the competitors to each
-other.  `h0` itself — a competitor-competitor identity — is DERIVED.
+Neither route's named hypothesis is syntactically `h0`.  Route (i)'s `UniqueRootOn
+(baseSpec (Q z)) (S z)` mentions the interpolant's centre fiber and a class `S z` rather than
+the pair of competitors — intended as the BCIKS20 count/distance fact that the centre is
+uncorrupted enough to pin a unique base root; no in-tree lemma supplies it yet (production
+lane: the §5 centre-fiber counting).  Mentioning a third object does **not** make it weaker
+than `h0`: with `S z` chosen freely, the route-(i) cargo (both memberships + `UniqueRootOn`)
+exists exactly when `h0` holds — the singleton class `{(P z).coeff 0}` works as soon as the two
+base values agree (`exists_uniqueRootOn_class_iff`) — while for an independently fixed class
+`UniqueRootOn` can be strictly stronger than the equality of the two known roots (a centre
+fiber with two distinct roots in `S z` violates it even when `h0` holds).  So the class,
+membership and uniqueness cargo must be produced and justified separately; route (i) is a
+valid sufficient condition, not an automatically weaker residual.  Route (ii)'s agreement facts
+relate each competitor separately to the *word* (the §5 agreement-set cargo: `0` lies in both
+agreement sets), never the competitors to each other.  `h0` itself — a competitor-competitor
+identity — is derived from either route.
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
@@ -150,13 +163,15 @@ theorem isRoot_constantCoeff_map_of_isRoot {f : Polynomial (PowerSeries F)} {p :
 
 /-! ## Route (i): the base root is unique in the relevant class -/
 
-/-- **The honest uniqueness source (route (i)).**  `f₀` has at most one root in the class
+/-- **The uniqueness source (route (i)).**  `f₀` has at most one root in the class
 `S`.  Instantiated at `f₀ := baseSpec (Q z)` and `S z :=` the class containing both
 competitors' base values, this is the BCIKS20 App A.5.2 *pinned base point*: the centre
 fiber of the GS interpolant determines a unique relevant root (unique decoding at the
-uncorrupted expansion centre — a count/distance fact).  No in-tree lemma supplies it yet;
-it is a property of the interpolant's centre fiber alone, NOT of the pair of competitors,
-hence strictly below the `h0` goal. -/
+uncorrupted expansion centre — a count/distance fact).  No in-tree lemma supplies it yet.
+It mentions the centre fiber and a class rather than the pair of competitors, but that does
+not place it below the `h0` goal: for a freely chosen class it is equivalent to `h0` given
+the divisibilities (`exists_uniqueRootOn_class_iff`), and for an independently fixed class
+it can be strictly stronger. -/
 def UniqueRootOn (f₀ : Polynomial F) (S : Set F) : Prop :=
   ∀ a ∈ S, ∀ b ∈ S, f₀.IsRoot a → f₀.IsRoot b → a = b
 
@@ -186,6 +201,30 @@ theorem coeff_zero_eq_of_dvd_of_uniqueRootOn {Q : F[X][Y]} {v w : F[X]} {S : Set
     (huniq : UniqueRootOn (baseSpec Q) S) :
     v.coeff 0 = w.coeff 0 :=
   huniq _ hvS _ hwS (isRoot_baseSpec_of_dvd hv) (isRoot_baseSpec_of_dvd hw)
+
+/-- Every polynomial has at most one root in a singleton class. -/
+theorem uniqueRootOn_singleton (f₀ : Polynomial F) (a : F) : UniqueRootOn f₀ {a} := by
+  intro x hx y hy _ _
+  rw [Set.mem_singleton_iff] at hx hy
+  rw [hx, hy]
+
+/-- **Route (i) with a free class is equivalent to the order-0 agreement.**  Given both
+matching-factor divisibilities, a class `S` containing both base values on which the centre
+fiber has at most one root exists iff the two base values agree: forward by
+`coeff_zero_eq_of_dvd_of_uniqueRootOn`, backward with the singleton class `{v.coeff 0}`
+(`uniqueRootOn_singleton`).  So the uniqueness cargo is not automatically weaker than `h0`;
+only an independently justified choice of class can give it content of its own. -/
+theorem exists_uniqueRootOn_class_iff {Q : F[X][Y]} {v w : F[X]}
+    (hv : (Polynomial.X - Polynomial.C v) ∣ Q)
+    (hw : (Polynomial.X - Polynomial.C w) ∣ Q) :
+    (∃ S : Set F, v.coeff 0 ∈ S ∧ w.coeff 0 ∈ S ∧ UniqueRootOn (baseSpec Q) S)
+      ↔ v.coeff 0 = w.coeff 0 := by
+  constructor
+  · rintro ⟨S, hvS, hwS, huniq⟩
+    exact coeff_zero_eq_of_dvd_of_uniqueRootOn hv hw hvS hwS huniq
+  · intro h
+    exact ⟨{v.coeff 0}, Set.mem_singleton _, Set.mem_singleton_iff.mpr h.symm,
+      uniqueRootOn_singleton _ _⟩
 
 /-! ## Route (ii): the centre is a common graph point -/
 
@@ -430,6 +469,8 @@ end ArkLib
 #print axioms ArkLib.OrderZeroAgreementSupply.UniqueRootOn
 #print axioms ArkLib.OrderZeroAgreementSupply.uniqueRootOn_of_eq_C_mul_X_sub_C
 #print axioms ArkLib.OrderZeroAgreementSupply.coeff_zero_eq_of_dvd_of_uniqueRootOn
+#print axioms ArkLib.OrderZeroAgreementSupply.uniqueRootOn_singleton
+#print axioms ArkLib.OrderZeroAgreementSupply.exists_uniqueRootOn_class_iff
 #print axioms ArkLib.OrderZeroAgreementSupply.coeff_zero_eq_of_eval_zero_eq
 #print axioms ArkLib.OrderZeroAgreementSupply.lift_eval_coeff_zero
 #print axioms ArkLib.OrderZeroAgreementSupply.h0_supply_of_uniqueRootOn

@@ -11,8 +11,9 @@ import ArkLib.ToMathlib.CurveFamilyHensel
 
 ## Why this file exists
 
-`OffcentreKeystone.Section5StrictDataOffcentreFin` is the satisfiable off-centre per-`P` §5
-bundle — γ-free, `hsubst`-free, with `htailDeg` derivable from `hrep` — but its `hPz` field still
+`OffcentreKeystone.Section5StrictDataOffcentreFin` is the off-centre per-`P` §5 bundle (legacy at
+`d_H ≥ 2`: its `hrep` field is F6-Ω-empty there,
+`LocalSeriesCorrected.section5DataOffcentreFin_natDegree_eq_one`) — γ-free, `hsubst`-free, with `htailDeg` derivable from `hrep` — but its `hPz` field still
 carries the **transposed** linear-representative conclusion
 
 ```
@@ -62,13 +63,17 @@ representative) **with the faithful curve-family `hPz`**:
 
 ## The honest remaining frontier after this file
 
-The strict-Johnson §5 keystone for the canonical coefficients reduces to exactly the per-word
-data: the GS factor bundle, the Prop-5.5 local representative (`hrep`/`hdegX`), the per-point
-matching geometry (`mpPoint`), the §6 discriminant counting (`hdisc`/`hcover`/`hbig`), and —
-new on this surface — the faithful curve data `(n, c)` with the per-`z` curve-Hensel root datum
-(`CurveHenselDatum`), whose own production lanes are
-`CurveHenselDatumProducers.curveHenselDatum_of_matchesGraph` (GS interpolant route) and
-`curveHenselDatum_of_truncatedLocalRoot` (analytic route at the constructed local series).
+The producers below ask for the per-word data: the GS factor bundle, the Prop-5.5 local
+representative (`hrep`/`hdegX`), the per-point matching geometry (`mpPoint`), the §6
+discriminant counting (`hdisc`/`hcover`/`hbig`), and — new on this surface — the faithful curve
+data `(n, c)` with the per-`z` curve-Hensel root datum (`CurveHenselDatum`), whose own
+production lanes are `CurveHenselDatumProducers.curveHenselDatum_of_matchesGraph` (GS interpolant
+route) and `curveHenselDatum_of_truncatedLocalRoot` (analytic route at the constructed local
+series).  Note the actual data dependencies: the extraction consumers and the keystone front
+doors use only `x₀`, the curve data `(n, c)` and `hPz`, and the producer derives `hPz` from the
+supplied curve-Hensel datum alone.  The GS/matching/weight/tail/representative inputs are
+carried but not used to build `c` or `hPz`, so this file is conditional assembly around the
+curve-Hensel datum, not a derivation of it from the §5/§6 machinery.
 No transposed representative is consumed anywhere on the extraction path.
 
 ## References
@@ -107,9 +112,13 @@ transposed linear-representative `hPz` (refuted for non-affine decoded families 
 `FaithfulCurveExtraction.no_linRep_of_nonaffine`) is replaced by the faithful per-`z`
 curve-family identity `P z = ∑_{t<n} (z − x₀)^t • c_t` with `n < k + 2` — exactly the input
 shape of `FaithfulCurveExtraction.curveCoeffPolys_of_curveFamily`.  The machinery fields
-(`mpFin`/`hcardFin`/`htailDeg`/`hrep`/`hdegX`) are the unchanged §5/§6/App-A production context:
-they feed the *construction* of the curve coefficients `c` (the base-rational readings of the
-truncated local series), not the extraction interface. -/
+(`mpFin`/`hcardFin`/`htailDeg`/`hrep`/`hdegX`, together with the GS/matching data) are the
+unchanged §5/§6/App-A production context, but nothing here connects them to `c`: the curve
+coefficients `c` are an independent field, every consumer in this file reads only
+`x₀`/`n`/`hn`/`c`/`hPz`, and the producer `section5DataOffcentreFaithful_of_producers` takes `c`
+as a separate input and derives `hPz` from an independently supplied curve-Hensel datum.
+Constructing `c` from the machinery (the base-rational readings of the truncated local series)
+is not done in this file. -/
 structure Section5StrictDataOffcentreFaithful {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (u : WordStack F (Fin (k + 1)) ι) (P : F → Polynomial F) : Type where
   /-- centre / curve data of [BCIKS20] §5. -/
@@ -138,6 +147,10 @@ structure Section5StrictDataOffcentreFaithful {k deg : ℕ} {domain : ι ↪ F} 
   htailDeg : ∀ t, T < t → BetaToCurveCoeffPolys.αFromBeta x₀ R H hHyp Bcoeff t = 0
   /-- the Prop-5.5 polynomial representative of the **local** Hensel series. -/
   Ppoly : F[X][Y]
+  /-- the Prop-5.5 local representative identity. This field is unsatisfiable whenever
+  `2 ≤ H.natDegree`, for every `Bcoeff`
+  (`LocalSeriesCorrected.not_hrep_gammaLocal_of_two_le_natDegree`); every inhabitant of this
+  structure has `d_H = 1` (`LocalSeriesCorrected.section5DataOffcentreFaithful_natDegree_eq_one`). -/
   hrep : polyToPowerSeries𝕃 H Ppoly = BetaToCurveCoeffPolys.gammaLocal x₀ R H hHyp Bcoeff
   hdegX : Polynomial.Bivariate.degreeX Ppoly ≤ 1
   /-- the number of curve coefficients (at most `k + 1`). -/
@@ -290,7 +303,11 @@ from: the GS factor bundle, the Prop-5.5 local representative (`hrep` against `g
 per-point matching data, the finite-range cardinality bound, the curve data `(n, hn, c)`, and the
 per-`z` curve-Hensel root datum — with the truncation index fixed at `T := Ppoly.natDegree`,
 `htailDeg` **derived** from `hrep`, and the faithful `hPz` **derived** from the curve-Hensel
-datum by Hensel uniqueness.  No transposed linear representative appears in the `hPz` lane. -/
+datum by Hensel uniqueness.  No transposed linear representative appears in the `hPz` lane.
+
+The `hrep` input is unsatisfiable whenever `2 ≤ H.natDegree`, for every `Bcoeff`
+(`LocalSeriesCorrected.not_hrep_gammaLocal_of_two_le_natDegree`); every inhabitant of the produced
+structure has `d_H = 1` (`LocalSeriesCorrected.section5DataOffcentreFaithful_natDegree_eq_one`). -/
 noncomputable def section5DataOffcentreFaithful_of_producers
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}

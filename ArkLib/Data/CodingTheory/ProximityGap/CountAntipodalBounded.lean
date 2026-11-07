@@ -17,9 +17,12 @@ char-`p`-realizable `BoundedHalfBasisIndep`:
 > `∑_k m_k ζ^k = 0` ⟹ `∀ i, m(castAdd i) = m(natAdd i)` (lower count = antipodal count).
 
 This is the bounded char-`p` analog of `debruijn_prime_power_weighted`'s forward direction at `p = 2`.
-Composed with the (characteristic-independent) multiset-transport of `count_antipodal`, it makes
-`BoundedHalfBasisIndep` ⟹ the char-`p` Wick energy ladder for all `r`. The prize is then exactly that
-one named hypothesis at prize support — open = BGK.
+Composed with the (characteristic-independent) multiset-transport of `count_antipodal`, it gives a
+conditional route `BoundedHalfBasisIndep ζ N C` ⟹ char-`p` Wick energy bounds for those `r` whose
+multiplicities stay `≤ C`; a fixed `C` does not cover all `r`. The premise is **not** an open prize
+core: it is false in the prize regime (`not_boundedHalfBasisIndep_of_card_lt`, which needs
+`(C+1)^N ≤ |F|`, and the explicit `not_boundedHalfBasisIndep_zmod65537` at `n = 16`, `p = 65537`,
+`C = 4`; see `DISPROOF_LOG.md`). The theorem below remains a valid conditional implication.
 
 Issue #407.
 -/

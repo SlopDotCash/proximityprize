@@ -59,14 +59,17 @@ The fourth moment does **not** beat Johnson unconditionally. Both `S₁^2 ≤ n 
 are Cauchy–Schwarz, and chaining them gives `(n·S₂)^2 ≤ n^3·S₄` *always*
 (`squaredJohnson_le_fourthChain`): the `S₄`-only fourth-moment cap is never tighter than the
 squared second-moment cap — on the Johnson-extremal equidistant configuration `S₂^2 = n S₄` both
-steps are equalities and the chain is exactly the Johnson bound squared. The fourth moment yields a
-strictly better list cap **iff** the code structure supplies a *direct combinatorial* upper bound
-`Q` on the total w-restricted quadruple agreement `S₄` that lies strictly below the Chebyshev floor
-`S₂^2/n` (`fourth_moment_strict_improvement_of_quadruple`). This is the genuine, honest content: a
-verified higher-moment inequality with an explicit improved threshold under a stated, *satisfiable*
-structural hypothesis. It localizes exactly why "no known technique" handles the open interior:
-beating Johnson requires a quadruple-agreement bound below the Chebyshev floor, which for explicit
-smooth-domain RS is precisely the unknown.
+steps are equalities and the chain is exactly the Johnson bound squared. An upper bound `Q ≥ S₄`
+strictly below the Chebyshev floor `S₂^2/n` is **impossible**, not an open structural route:
+`fourth_moment_cannot_beat_johnson_from_S4` proves that those premises imply `False`, because
+Cauchy–Schwarz always gives `S₄ ≥ S₂^2/n`. (No theorem
+`fourth_moment_strict_improvement_of_quadruple` exists.)
+
+Scope of the no-go: the comparison uses the *actual* `S₂` and `S₄` of the same matching profile.
+It does **not** show that fourth-moment structural information cannot improve on a bound obtained
+by replacing `S₂` with a coarser code-wide Johnson estimate (e.g. bounding `S₂` via pairwise
+agreement `≤ k − 1`); whether such a route beats Johnson for explicit smooth-domain RS is not
+decided here.
 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
@@ -263,11 +266,10 @@ theorem (not an open hypothesis).** The would-be "structural improvement" hypoth
 two chained Cauchy–Schwarz steps `(n·S₂)^2 ≤ n^3·S₄ ≤ n^3·Q`. Hence no upper bound `Q` on `S₄` can
 ever push the fourth-moment list cap `n^3·Q` strictly below the squared Johnson cap `(n·S₂)^2`.
 
-This is the honest, verified content of the angle: the fourth moment, applied to the *same* matching
-profile `m` that the second moment uses, is **mathematically unable** to improve the threshold —
-any improvement must change the quantity being bounded (a `Q` controlling `S₄` directly *cannot*
-beat the Chebyshev floor `S₂^2/n`). The hypotheses below are deliberately presented to show they are
-unsatisfiable; we return `False`, certifying the no-go. -/
+This is the verified content of the angle: compared against the *actual* `S₂` of the same matching
+profile `m`, a bound `Q` on `S₄` *cannot* beat the Chebyshev floor `S₂^2/n`. The hypotheses below
+are deliberately presented to show they are unsatisfiable; we return `False`, certifying the no-go.
+It does not compare against a coarser code-wide Johnson estimate standing in for `S₂`. -/
 theorem fourth_moment_cannot_beat_johnson_from_S4
     (L : Finset (ι → F)) (w : ι → F) (Q : ℕ)
     (hQ : (∑ i, (matchCount L w i) ^ 4) ≤ Q)
@@ -286,8 +288,9 @@ the *only* room the fourth moment offers is to bound the target sum `S₁` by so
 *specific* fourth-moment profile. We record the one inequality that survives and is satisfiable: for
 any list and any pointwise matching cap `m i ≤ t`, the list size obeys `(|L|·a)^4 ≤ n^4 · t^4`,
 i.e. `|L|·a ≤ n·t`. This is the *pointwise* (degenerate) consequence — it is the honest, non-vacuous
-endpoint of the `S₄` route, and it is exactly the trivial coverage bound, confirming that the fourth
-moment adds no asymptotic power over the union/coverage bound in the gap. -/
+endpoint of the pointwise-cap `S₄` route, and it is exactly the trivial coverage bound: with only a
+pointwise cap the fourth moment adds nothing over coverage (other structural inputs are not ruled
+out by this file). -/
 theorem fourth_moment_pointwise_endpoint
     (L : Finset (ι → F)) (w : ι → F) (a t : ℕ)
     (hclose : ∀ c ∈ L, a ≤ agree c w)

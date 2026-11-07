@@ -22,8 +22,8 @@ Lane wf-W6 (`_wf7W6_shortvector_spur.lean`) reduces the prize char-`p` transfer 
 uniform over prize primes `p ≍ n^β`, where `L_p = ker(ev_h : ℤ[ζ_n] ↠ 𝔽_p)` is the **index-`p`
 sublattice** of the cyclotomic trace lattice (`n = 2^m`, `d = φ(n) = n/2`, `det L_p = p`).
 
-That file proves only the **first-minimum gap** `spur_zero_of_below_lambda1`
-(`φ(n)·2r < λ₁(L_p)² ⟹ Spur = 0`) and states, explicitly, that the gap is **insufficient** at the
+That file only *names* the **first-minimum gap** (`φ(n)·2r < λ₁(L_p)² ⟹ Spur = 0`, not
+formalised there: its `spur_eq_zero_of_le_zero` is just `Spur ≤ 0 ⟹ Spur = 0`) and states, explicitly, that the gap is **insufficient** at the
 prize depth `r* ≈ ln(q)/2` (the pre-screen shows `φ(n)·2r* > λ₁²` once `n ≥ 16`), so:
 
 > *"the open crux genuinely needs the full **counting** (second-moment-of-counts) version of
@@ -31,7 +31,7 @@ prize depth `r* ≈ ln(q)/2` (the pre-screen shows `φ(n)·2r* > λ₁²` once `
 
 This file lands that counting version: the classical **successive-minima point-count** inequality,
 abstracted to its load-bearing combinatorial core, instantiated to bound `Spur_r(p)` by a product
-over the successive minima of `L_p`. It **strictly generalises** `spur_zero_of_below_lambda1`: when
+over the successive minima of `L_p`. It generalises the (informal) first-minimum gap: when
 the radius drops below `λ₁` the product collapses to `0`, recovering the gap as a corollary.
 
 ## The mechanism (classical geometry of numbers, no field, no analysis)
@@ -76,7 +76,7 @@ Subtracting the origin gives the **nonzero** point-count bound, which dominates 
   injection into the box.
 * `spurCount_le_prod` — `Spur_r(p) ≤ ∏_i (2 k_i + 1)`: the named `(S-W6)` count, now bounded by an
   EXPLICIT product over the successive-minima ranges (the missing counting frame).
-* `spur_zero_of_all_ranges_zero` — recovers `spur_zero_of_below_lambda1` as a corollary: if every
+* `spur_zero_of_all_ranges_zero` — recovers the first-minimum gap as a corollary: if every
   range `k_i = 0` (radius below every minimum, in particular below `λ₁`), the product is `1`, the
   nonzero count is `0`, so `Spur = 0`. The first-minimum gap is the `∀ i, k_i = 0` slice.
 * `energy_bound_of_prod_le` — composes with the char-`0` ceiling: if the product (minus origin)
@@ -173,7 +173,7 @@ theorem spurCount_le_prod {d : ℕ} (L : LatticeBallData d) (Spur : ℕ)
 /-- **The first-minimum gap as a corollary (`k ≡ 0` slice).** If every successive-minimum range is
 `0` — the radius is below every `λ_i`, in particular below `λ₁` — then the box is a single point
 (the origin), the product is `1`, and the **nonzero** spurious count is `0`. This recovers
-`_wf7W6.spur_zero_of_below_lambda1` (`φ(n)·2r < λ₁² ⟹ Spur = 0`) as the degenerate case of the
+the first-minimum gap (`φ(n)·2r < λ₁² ⟹ Spur = 0`, informal in `_wf7W6`) as the degenerate case of the
 quantitative point-count. -/
 theorem spur_zero_of_all_ranges_zero {d : ℕ} (L : LatticeBallData d) (Spur : ℕ)
     (hk : ∀ i, L.k i = 0)

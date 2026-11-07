@@ -21,8 +21,15 @@ be a root of `c^{p^k}·X² − c·c^{p^k}·X + c`.  This covers **every** `n` fo
 of `p` mod `n` (the inert-type regimes), strictly generalizing `n ∣ p+1` (the `k = 1` case).
 
 The split case `n ∣ p−1` is *never* of this form (`p ≡ 1 ⟹ p^k ≡ 1 ≢ −1 mod n` for `n > 2`), so
-it remains the unique open Stepanov regime — the dichotomy is exhaustive: inert-type
-(`n ∣ p^k+1`) solved, split (`n ∣ p−1`) the wall.  Issue #389.
+it is not covered by this file; in the prime-field production regime (`μ_n ⊂ F_p`, i.e.
+`n ∣ p−1`) it is the open Stepanov regime.
+
+**Not an exhaustive dichotomy (audit 2026-10-28, PG-074).** "Inert-type (`n ∣ p^k+1` for some
+`k`) or split (`n ∣ p−1`)" does **not** cover every `μ_n` in every finite field of characteristic
+`p`. Counterexample: `n = 8`, `p = 3`. The powers of `3` modulo `8` alternate `3, 1`, so `−1 ≡ 7`
+is never a power of `3` (`eight_not_dvd_three_pow_add_one`), and `8 ∤ 3 − 1`; yet `μ_8 ⊂ F_9`
+exists. Such regimes, where Frobenius acts nontrivially on `μ_n` but no power of it acts as
+inversion, are outside both branches. Issue #389.
 -/
 
 open Finset Polynomial
@@ -87,8 +94,24 @@ theorem additiveEnergy_le_of_dvd_pow_succ {G : Finset F} {n k : ℕ} (hn : 1 ≤
   additiveEnergy_le_of_repCount_le_two
     (fun c hc0 => repCount_le_two_of_dvd_pow_succ hn ndvd hGmem hc0)
 
+/-- The powers of `3` modulo `8` are `1` or `3`. -/
+theorem three_pow_mod_eight (k : ℕ) : 3 ^ k % 8 = 1 ∨ 3 ^ k % 8 = 3 := by
+  induction k with
+  | zero => left; rfl
+  | succ k ih =>
+    rw [pow_succ, Nat.mul_mod]
+    rcases ih with h | h <;> rw [h] <;> norm_num
+
+/-- **The inert/split split is not exhaustive (PG-074).** For `n = 8`, `p = 3`, no power `3^k`
+satisfies `8 ∣ 3^k + 1`, and `8 ∤ 3 − 1`; yet `F_9` contains `μ_8`. So `μ_8 ⊂ F_9` lies outside
+both the inert-type regime of this file and the split regime `n ∣ p − 1`. -/
+theorem eight_not_dvd_three_pow_add_one (k : ℕ) : ¬ 8 ∣ 3 ^ k + 1 ∧ ¬ 8 ∣ 3 - 1 := by
+  refine ⟨fun h => ?_, by decide⟩
+  rcases three_pow_mod_eight k with h' | h' <;> omega
+
 end ArkLib.ProximityGap.AdditiveEnergyRepBound
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
 #print axioms ArkLib.ProximityGap.AdditiveEnergyRepBound.repCount_le_two_of_dvd_pow_succ
 #print axioms ArkLib.ProximityGap.AdditiveEnergyRepBound.additiveEnergy_le_of_dvd_pow_succ
+#print axioms ArkLib.ProximityGap.AdditiveEnergyRepBound.eight_not_dvd_three_pow_add_one

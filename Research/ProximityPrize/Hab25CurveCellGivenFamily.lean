@@ -230,6 +230,16 @@ theorem exists_heavy_factor_cell_of_given_family {n k m L : ℕ} [NeZero n]
       (Multiset.mem_toFinset.mp hRmem),
     Ecell (some R), hsubG _, hRcount, hRdvd⟩
 
+/-- **Share floor ⇒ size bound.**  If a subcell `E` carries the heavy share
+`G.card ≤ T + f·E.card` and `G` clears the numeric margin `T + f·N < G.card`, then
+`N < E.card`.  This is how the share-floor-guarded size hypotheses of the given-family
+capstones below are discharged from a numeric condition on `G`. -/
+theorem lt_card_of_share_floor {G E : Finset F₀} {T f N : ℕ}
+    (hshare : G.card ≤ T + f * E.card) (hmargin : T + f * N < G.card) :
+    N < E.card := by
+  have h : f * N < f * E.card := by omega
+  exact Nat.lt_of_mul_lt_mul_left h
+
 /-- **Given-family heavy cell + global branch ⇒ strict coefficient-polynomial share.**
 This is the direct SK4-to-SK1 weld: SK4 supplies one heavy factor cell for the given
 decode family `P`; if the selected factor carries the global `branchOfCurveTuple` divisor
@@ -237,7 +247,15 @@ and the selected cell has the fold-agreement mass required by SK1, then that sha
 carries the coefficient-polynomial family demanded by the Prop-5.5/share surface.
 
 The theorem deliberately keeps the branch construction, heavy-coordinate supplier, and
-degenerate-budget producer as hypotheses. -/
+degenerate-budget producer as hypotheses.
+
+**Size hypotheses (audit fix 2026-10).**  The cell-size inputs (`hEbig`, and `hbranchBig`
+where present) are required only of subcells `E ⊆ G` that already carry the SK4 heavy share
+`G.card ≤ T + #factors(Q₀)·E.card`.  An earlier version quantified over *every* `E ⊆ G`
+satisfying the per-`γ` divisibility premise; that premise holds vacuously for `E = ∅`, which
+made the hypotheses unsatisfiable (they forced `max (L-1) k < 0`).  With the share floor, `E = ∅`
+is excluded by `hbig : T < G.card`, and the size inputs follow from a numeric margin on `G` via
+`lt_card_of_share_floor`. -/
 theorem strict_coeffPolys_of_given_family_heavy_global_branch {n k m L : ℕ} [NeZero n]
     (domain : Fin n ↪ F₀)
     (u : WordStack F₀ (Fin L) (Fin n)) (δ : ℝ≥0) (T : ℕ)
@@ -269,6 +287,7 @@ theorem strict_coeffPolys_of_given_family_heavy_global_branch {n k m L : ℕ} [N
           Q₀.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 ∧
             (Polynomial.X - Polynomial.C (P γ)) ∣
               R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ))) →
+        G.card ≤ T + (UniqueFactorizationMonoid.factors Q₀).toFinset.card * E.card →
         max (L - 1) k < E.card)
     (hagree : ∀ R ∈ (UniqueFactorizationMonoid.factors Q₀).toFinset,
       ∀ E : Finset F₀, E ⊆ G →
@@ -310,7 +329,7 @@ theorem strict_coeffPolys_of_given_family_heavy_global_branch {n k m L : ℕ} [N
       (domain := domain) (u := u) hRirr hwdvd hLk hB G' P
       (fun γ hγ => (hRdvd γ hγ).2) (Tset R) hwdeg
       (fun _t => G') (fun _t _ht => subset_rfl)
-      (fun _t _ht => hEbig R hRmem G' hG'sub hRdvd)
+      (fun _t _ht => hEbig R hRmem G' hG'sub hRdvd hcount)
       (fun t ht z hz => hagree R hRmem G' hG'sub hRdvd t ht z hz)
   exact ⟨G', hG'sub, hcount, B, hBdeg, hBmatch⟩
 
@@ -319,7 +338,15 @@ This packages the next layer above `strict_coeffPolys_of_given_family_heavy_glob
 once SK4 chooses the heavy factor cell, a `CoordinateUpgrade` on that selected cell supplies
 both the global `branchOfCurveTuple` divisor (via `global_branch_of_coordinate_upgrade`) and
 the fold-section agreement shape (via `foldSectionAt_eval`).  The remaining hypotheses are
-exactly the numeric size/budget conditions needed for those two steps. -/
+exactly the numeric size/budget conditions needed for those two steps.
+
+**Size hypotheses (audit fix 2026-10).**  The cell-size inputs (`hEbig`, and `hbranchBig`
+where present) are required only of subcells `E ⊆ G` that already carry the SK4 heavy share
+`G.card ≤ T + #factors(Q₀)·E.card`.  An earlier version quantified over *every* `E ⊆ G`
+satisfying the per-`γ` divisibility premise; that premise holds vacuously for `E = ∅`, which
+made the hypotheses unsatisfiable (they forced `max (L-1) k < 0`).  With the share floor, `E = ∅`
+is excluded by `hbig : T < G.card`, and the size inputs follow from a numeric margin on `G` via
+`lt_card_of_share_floor`. -/
 theorem strict_coeffPolys_of_given_family_coordinate_upgrade {n k m L : ℕ} [NeZero n]
     (domain : Fin n ↪ F₀)
     (u : WordStack F₀ (Fin L) (Fin n)) (δ : ℝ≥0) (T : ℕ)
@@ -350,6 +377,7 @@ theorem strict_coeffPolys_of_given_family_coordinate_upgrade {n k m L : ℕ} [Ne
           Q₀.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 ∧
             (Polynomial.X - Polynomial.C (P γ)) ∣
               R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ))) →
+        G.card ≤ T + (UniqueFactorizationMonoid.factors Q₀).toFinset.card * E.card →
         BR R + R.natDegree * (L - 1) < E.card)
     (hEbig : ∀ R ∈ (UniqueFactorizationMonoid.factors Q₀).toFinset,
       ∀ E : Finset F₀, E ⊆ G →
@@ -357,6 +385,7 @@ theorem strict_coeffPolys_of_given_family_coordinate_upgrade {n k m L : ℕ} [Ne
           Q₀.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 ∧
             (Polynomial.X - Polynomial.C (P γ)) ∣
               R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ))) →
+        G.card ≤ T + (UniqueFactorizationMonoid.factors Q₀).toFinset.card * E.card →
         max (L - 1) k < E.card)
     (hUpgrade : ∀ R ∈ (UniqueFactorizationMonoid.factors Q₀).toFinset,
       ∀ E : Finset F₀, E ⊆ G →
@@ -387,7 +416,7 @@ theorem strict_coeffPolys_of_given_family_coordinate_upgrade {n k m L : ℕ} [Ne
   have hwdvd : (Polynomial.X - Polynomial.C w) ∣ R := by
     simpa [w] using global_branch_of_coordinate_upgrade hk hL R (hRB R hRmem) G' P
       (Tset R) (hTcard R hRmem) hdegP (fun γ hγ => (hRdvd γ hγ).2) hupg
-      (hbranchBig R hRmem G' hG'sub hRdvd)
+      (hbranchBig R hRmem G' hG'sub hRdvd hcount)
   have hB : ∀ i, (w.coeff i).natDegree ≤ L - 1 := by
     intro i
     have h := branchOfCurveTuple_coeff_natDegree_lt hL
@@ -411,7 +440,7 @@ theorem strict_coeffPolys_of_given_family_coordinate_upgrade {n k m L : ℕ} [Ne
       (domain := domain) (u := u) hRirr hwdvd hLk hB G' P
       (fun γ hγ => (hRdvd γ hγ).2) (Tset R) hwdeg
       (fun _t => G') (fun _t _ht => subset_rfl)
-      (fun _t _ht => hEbig R hRmem G' hG'sub hRdvd)
+      (fun _t _ht => hEbig R hRmem G' hG'sub hRdvd hcount)
       (fun t ht z hz => hagree t ht z hz)
   exact ⟨G', hG'sub, hcount, B, hBdeg, hBmatch⟩
 
@@ -419,7 +448,15 @@ theorem strict_coeffPolys_of_given_family_coordinate_upgrade {n k m L : ℕ} [Ne
 This is the `deg(B j) < L` variant of
 `strict_coeffPolys_of_given_family_coordinate_upgrade`.  It follows the same SK4 selected
 heavy cell, but invokes `strict_coeffPolys_of_cell_degree_lt_L`, so the coefficient
-polynomials are bounded by the fold length instead of the decoded RS degree. -/
+polynomials are bounded by the fold length instead of the decoded RS degree.
+
+**Size hypotheses (audit fix 2026-10).**  The cell-size inputs (`hEbig`, and `hbranchBig`
+where present) are required only of subcells `E ⊆ G` that already carry the SK4 heavy share
+`G.card ≤ T + #factors(Q₀)·E.card`.  An earlier version quantified over *every* `E ⊆ G`
+satisfying the per-`γ` divisibility premise; that premise holds vacuously for `E = ∅`, which
+made the hypotheses unsatisfiable (they forced `max (L-1) k < 0`).  With the share floor, `E = ∅`
+is excluded by `hbig : T < G.card`, and the size inputs follow from a numeric margin on `G` via
+`lt_card_of_share_floor`. -/
 theorem strict_coeffPolys_of_given_family_coordinate_upgrade_degree_lt_L {n k m L : ℕ}
     [NeZero n]
     (domain : Fin n ↪ F₀)
@@ -451,6 +488,7 @@ theorem strict_coeffPolys_of_given_family_coordinate_upgrade_degree_lt_L {n k m 
           Q₀.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 ∧
             (Polynomial.X - Polynomial.C (P γ)) ∣
               R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ))) →
+        G.card ≤ T + (UniqueFactorizationMonoid.factors Q₀).toFinset.card * E.card →
         BR R + R.natDegree * (L - 1) < E.card)
     (hEbig : ∀ R ∈ (UniqueFactorizationMonoid.factors Q₀).toFinset,
       ∀ E : Finset F₀, E ⊆ G →
@@ -458,6 +496,7 @@ theorem strict_coeffPolys_of_given_family_coordinate_upgrade_degree_lt_L {n k m 
           Q₀.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 ∧
             (Polynomial.X - Polynomial.C (P γ)) ∣
               R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ))) →
+        G.card ≤ T + (UniqueFactorizationMonoid.factors Q₀).toFinset.card * E.card →
         max (L - 1) k < E.card)
     (hUpgrade : ∀ R ∈ (UniqueFactorizationMonoid.factors Q₀).toFinset,
       ∀ E : Finset F₀, E ⊆ G →
@@ -488,7 +527,7 @@ theorem strict_coeffPolys_of_given_family_coordinate_upgrade_degree_lt_L {n k m 
   have hwdvd : (Polynomial.X - Polynomial.C w) ∣ R := by
     simpa [w] using global_branch_of_coordinate_upgrade hk hL R (hRB R hRmem) G' P
       (Tset R) (hTcard R hRmem) hdegP (fun γ hγ => (hRdvd γ hγ).2) hupg
-      (hbranchBig R hRmem G' hG'sub hRdvd)
+      (hbranchBig R hRmem G' hG'sub hRdvd hcount)
   have hB : ∀ i, (w.coeff i).natDegree ≤ L - 1 := by
     intro i
     have h := branchOfCurveTuple_coeff_natDegree_lt hL
@@ -513,7 +552,7 @@ theorem strict_coeffPolys_of_given_family_coordinate_upgrade_degree_lt_L {n k m 
       (fun γ hγ => (hRdvd γ hγ).2) (Tset R) hwdeg
       (fun _t => G') (fun _t _ht => subset_rfl)
       (fun _t _ht => by
-        have hcell := hEbig R hRmem G' hG'sub hRdvd
+        have hcell := hEbig R hRmem G' hG'sub hRdvd hcount
         have hLcell : L - 1 < G'.card :=
           lt_of_le_of_lt (Nat.le_max_left (L - 1) k) hcell
         simpa [max_self] using hLcell)
@@ -529,6 +568,8 @@ open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in
 #print axioms exists_heavy_factor_cell_mem
 open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in
 #print axioms exists_heavy_factor_cell_of_given_family
+open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in
+#print axioms lt_card_of_share_floor
 open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in
 #print axioms strict_coeffPolys_of_given_family_heavy_global_branch
 open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in

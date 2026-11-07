@@ -32,36 +32,30 @@ moves (Lovett §1, arXiv:1803.02523 pp. 3–5):
    Reed–Solomon dual `dotForm.orthogonal (ReedSolomon.code φ k)`, each supported on the
    prescribed edge set — exactly `GMMDSDualZeroPatternTheorem`'s output shape.
 
-This file **isolates each of these three moves as one named `Prop`** and proves that their
-conjunction (under Lovett's Theorem 1.7) *is* `LovettToGZPDualBridge`, axiom-clean.  This
-sharpens the project's residual ledger: the previously monolithic `LovettToGZPDualBridge`
-residual is now reduced to the three precisely-stated literature moves, each of which is a
-faithful (and satisfiable — see the module-doc note below) forward implication, so none is
-vacuous or false.
+This file isolates these moves as **two** named `Prop`s — `GZPToLovettSystem` (step 1) and
+`LovettSystemToDualSpan` (steps 2+3 combined) — and proves that their conjunction (under
+Lovett's Theorem 1.7) yields `LovettToGZPDualBridge`, axiom-clean. The composition is valid,
+but the encoded moves are **not** faithful literature statements, and an earlier version of
+this docstring overstated them as "faithful and satisfiable":
 
-## Why the three residuals are satisfiable (non-vacuity)
+* `GZPLovettCorrespondence` links `V` to `(e, δ)` only through dimension bookkeeping
+  (`n = card ι`, `m ≤ k`) and edge-support consistency; it carries **no** zero-pattern
+  polynomial data. Step 1 (`gzpToLovettSystem_holds`) deliberately chooses the empty system
+  `m = 0`, for which Lovett independence is vacuous. So step 1 is proved, but it transfers no
+  Lovett content to step 2.
+* `LovettSystemToDualSpan` keeps the full **unpinned** edge-supported dual-span conclusion for
+  every such `V`, i.e. the same target as `AGL24.GMMDSDualZeroPatternTheorem`, which is
+  **refuted** for `k < card ι` (`AGL24.not_gmmDsDualZeroPatternTheorem`, the 13th catch:
+  `δ ≡ 0` makes the copy index empty). Consequently `LovettSystemToDualSpan` is itself false for
+  `1 ≤ k < card ι` (`AGL24.not_lovettSystemToDualSpan`, `AGL24PinnedConnector.lean`).
+* The "non-vacuity" arguments formerly given here (existential conclusions;
+  `lovettSystemToDualSpan_of_goal`, which derives step 2 from the goal) prove neither truth nor
+  satisfiability: an existential conclusion can be false, and a goal-implies-residual lemma
+  supplies no inhabitant when the goal is unproved — here, refuted.
 
-Each named `Prop` is the natural forward implication asserted by the GM-MDS literature; none
-asserts an impossible conclusion:
-
-* `GZPToLovettSystem` asserts the *existence* of a `V*(k)` system for each GZP.  This is
-  Lovett's Definition 1.4 correspondence; it is now **proved** (`gzpToLovettSystem_holds`, for
-  `1 ≤ k`) via the empty base system (`m = 0 ≤ k`, Cor 1.8's empty-`Sᵢ` normalization) with
-  edge-support forced by `GZPCondition` (`gzp_edge_support`).  (Its row count is `m ≤ k`, the
-  faithful `V*(k)` ceiling — **not** the copied-vertex count `∑ⱼ δⱼ`, which is step 2's dual-row
-  count; the old `m = ∑ⱼ δⱼ` pin was unsatisfiable, see `isVStar_card_le`.)
-* `LovettSystemToNonsingularEval` consumes Lovett's independence (a genuine, non-trivial
-  hypothesis discharged by `lovettThm17_of_steps`) and the existence of a `V*(k)` system,
-  and concludes the *existence* of an evaluation embedding with a nonsingular generator —
-  the Schwartz–Zippel output, which exists whenever the field is large enough.  The
-  conclusion is an existential, hence satisfiable.
-* `NonsingularEvalToDualSpan` concludes the dual-span existence from a nonsingular
-  evaluated generator; this is the linear-algebra fact that a full-rank generator's
-  parity rows span the dual, again an existential conclusion.
-
-Because each conclusion is existential (or an inhabited shape) and each hypothesis is a
-genuine mathematical statement, the conjunction is faithful to the literature and the
-overall reduction is *not* a relabelling that smuggles in `False`.
+The genuine Lovett Theorem 1.7 (`lovettThm17_unconditional`) is unaffected; what is defective
+is only this encoded correspondence/dual-span boundary. The dimensionally pinned target is
+`AGL24.GMMDSDualZeroPatternTheoremPinned`.
 
 Issue #389.
 -/
@@ -122,8 +116,10 @@ This is the combined Schwartz–Zippel + dual-repackaging move (paper p.3): the 
 independence of *the supplied system* makes the generator minors not identically zero,
 Schwartz–Zippel specializes the formal points `a₁,…,aₙ` to distinct field elements keeping the
 minors nonzero, and the resulting nonsingular evaluated generator's parity rows span the dual.
-It is stated per-GZP and consumes the *specific* `V*(k)` system produced by step 1, so step 1
-genuinely feeds step 2 (the system is not a free existential). -/
+It is stated per-GZP and quantifies over every corresponding `V*(k)` system; since
+`GZPLovettCorrespondence` carries no zero-pattern data (the empty system qualifies), step 1
+feeds step 2 no Lovett content. **As stated this is FALSE** for `1 ≤ k < card ι`
+(`AGL24.not_lovettSystemToDualSpan`): its conclusion is the unpinned dual-span target. -/
 def LovettSystemToDualSpan (ι : Type*) [Fintype ι] [DecidableEq ι] [Nonempty ι]
     (F : Type*) [Field F] (k : ℕ) : Prop :=
   (∀ m : ℕ, LovettThm17 (F := F) m) →
@@ -140,8 +136,8 @@ correspondence) together with step 2 (the Schwartz–Zippel + dual-repackaging m
 the single named import step `LovettToGZPDualBridge`.  Axiom-clean.
 
 This proves the residual decomposition: `LovettToGZPDualBridge` follows from the two named
-literature moves, sharpening the ledger from one monolithic residual to two faithful
-(satisfiable) forward implications. -/
+moves. (Valid conditional; `hstep2` is refuted for `1 ≤ k < card ι`, see the module
+docstring.) -/
 theorem lovettToGZPDualBridge_of_steps {n k : ℕ}
     (hstep1 : GZPToLovettSystem ι k)
     (hstep2 : LovettSystemToDualSpan ι F k) :
@@ -152,8 +148,8 @@ theorem lovettToGZPDualBridge_of_steps {n k : ℕ}
 
 /-- **End-to-end via the three steps.**  The two named GM-MDS moves plus Lovett's Theorem 1.7
 (in every coordinate dimension) discharge the AGL24 dual-zero-pattern boundary.  Axiom-clean.
-This is the explicit statement that *the entire mathematical content of the bridge is the two
-named moves* `GZPToLovettSystem` and `LovettSystemToDualSpan`. -/
+The conclusion is the unpinned target, refuted for `k < card ι`
+(`AGL24.not_gmmDsDualZeroPatternTheorem`); kept as a historical conditional. -/
 theorem gmmDsDualZeroPatternTheorem_of_lovett_via_steps {n k : ℕ}
     (hstep1 : GZPToLovettSystem ι k)
     (hstep2 : LovettSystemToDualSpan ι F k)
@@ -171,11 +167,11 @@ theorem gmmDsResidual_of_lovett_via_steps {n k : ℕ}
   gmmDsResidual_of_lovett
     (lovettToGZPDualBridge_of_steps (n := n) hstep1 hstep2) hlovett
 
-/-- **Tightness of the step-2 residual (non-vacuity check).**  The combined Schwartz–Zippel +
-dual-repackaging residual `LovettSystemToDualSpan` is *no stronger than the goal itself*: the
-AGL24 dual-zero-pattern boundary trivially supplies it (forgetting the `V*(k)` system and
-Lovett's hypothesis).  Hence `LovettSystemToDualSpan` is satisfiable whenever the goal is, so
-the decomposition does not smuggle in an impossible (`False`) obligation.  Axiom-clean. -/
+/-- **The step-2 residual is no stronger than the goal.**  The (unpinned) AGL24
+dual-zero-pattern boundary trivially supplies `LovettSystemToDualSpan` (forgetting the `V*(k)`
+system and Lovett's hypothesis).  Axiom-clean. This is a goal-conditional implication only; it
+does not show satisfiability, and the goal is refuted for `k < card ι`
+(`AGL24.not_gmmDsDualZeroPatternTheorem`). -/
 theorem lovettSystemToDualSpan_of_goal {k : ℕ}
     (hgoal : AGL24.GMMDSDualZeroPatternTheorem (ι := ι) (F := F) k) :
     LovettSystemToDualSpan ι F k := by
@@ -183,11 +179,10 @@ theorem lovettSystemToDualSpan_of_goal {k : ℕ}
   exact hgoal e δ hgzp
 
 omit [Nonempty ι] in
-/-- **Tightness of the step-1 residual (non-vacuity check).**  `GZPToLovettSystem` is a pure
-existence-of-correspondence statement.  Once *any* `V*(k)` system with the pinned dimensions
-and the edge-support consistency exists for each GZP, step 1 holds; the conclusion is an
-existential, so step 1 cannot be `False` on shape grounds.  This lemma records the trivial
-forwarding: if a correspondence witness is provided uniformly, step 1 holds.  Axiom-clean. -/
+/-- **Step 1 from a uniform witness.**  `GZPToLovettSystem` is a pure
+existence-of-correspondence statement; this lemma records the trivial forwarding: if a
+correspondence witness is provided uniformly, step 1 holds. (Step 1 is in fact proved,
+`gzpToLovettSystem_holds`.)  Axiom-clean. -/
 theorem gzpToLovettSystem_of_witness {k : ℕ}
     (hwit : ∀ {t : ℕ}, ∀ e : ι → Finset (Fin (t + 1)), ∀ δ : Fin (t + 1) → ℕ,
       AGL24.GZPCondition e δ k →
@@ -313,10 +308,9 @@ multiplicity system corresponding to it: take `n = Fintype.card ι` coordinates 
 row system (`m = 0 ≤ k`, `IsVStar` vacuously), with edge-support consistency forced by
 `GZPCondition` (`gzp_edge_support`).  Purely combinatorial, field-independent, axiom-clean.
 
-The empty system is the honest base witness: it is *not* a degenerate escape that the predicate
-was supposed to forbid — Lovett's normalization (Cor 1.8) explicitly allows empty sets `Sᵢ`, and
-the load-bearing content (the dual span over the prescribed edges) lives in step 2, whose
-conclusion uses the copied-vertex index `GZPCopyIdx δ` directly, not `m`. -/
+Caveat: the empty system carries no zero-pattern data, so this witness makes Lovett's
+independence for the supplied `V` vacuous; all load-bearing content (the dual span over the
+prescribed edges) sits in step 2, whose unpinned form is refuted for `1 ≤ k < card ι`. -/
 theorem gzpToLovettSystem_holds {k : ℕ} (hk : 1 ≤ k) :
     GZPToLovettSystem ι k := by
   intro t e δ hgzp
@@ -327,7 +321,8 @@ omit [Nonempty ι] in
 /-- **Step 1 is satisfiable (non-vacuity, the constructive direction).**  The repaired
 `GZPLovettCorrespondence` predicate is inhabited for every GZP with `1 ≤ k`: the witness from
 `gzpToLovettSystem_holds`.  So the relaxation to `m ≤ k` is *not* vacuous in the other
-direction either — it is genuinely satisfiable, unlike the old `m = ∑ⱼ δⱼ` pin. -/
+direction either — it is satisfiable, unlike the old `m = ∑ⱼ δⱼ` pin (though only by a system
+carrying no zero-pattern data). -/
 theorem gzpLovettCorrespondence_satisfiable {t : ℕ} {e : ι → Finset (Fin (t + 1))}
     {δ : Fin (t + 1) → ℕ} {k : ℕ} (hk : 1 ≤ k) (hgzp : AGL24.GZPCondition e δ k) :
     ∃ (n m : ℕ) (V : Fin m → (Fin n → ℕ)), GZPLovettCorrespondence e δ n m V k :=

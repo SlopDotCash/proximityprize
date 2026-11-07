@@ -27,24 +27,35 @@ The two existing §5 keystone surfaces each carry a *constructibility* defect:
    centred `hsubst` field is satisfiable only at `x₀ = 0`
    (`SubstFieldCaveat.hasSubst_shiftSeries_iff_eq_zero`).
 
-2. **The off-centre bundles quantify `hPz` over an unconstrained `P`.**
+2. **The off-centre bundles quantified `hPz` over an unconstrained `P`** (historical; repaired
+   for audit L72).
    `KeystoneStrictResidual.BetaCurveInputOffcentre`/`…OffcentreFin` are γ-free (they use the
-   `betaRec`-built `gammaLocal`), but their `hPz` field quantifies over **all**
+   `betaRec`-built `gammaLocal`), but their `hPz` field used to quantify over **all**
    `P : F → Polynomial F` with no decoded-family constraint.  Once the good set is nonempty and
    the linear-representative premise is satisfiable (which `hrep`/`hdegX` guarantee — the §5
-   construction *produces* such a representative), the conclusion `∀ z ∈ good, P z = …` must hold
-   for *every* `P` simultaneously, which is absurd: the bundle is **unsatisfiable** exactly in the
-   regime it is meant to serve.  The satisfiable shape is the per-`P` one used by
+   construction *produces* such a representative), the conclusion `∀ z ∈ good, P z = …` had to
+   hold for *every* `P` simultaneously, which is absurd: the bundle was **empty** exactly in the
+   regime it is meant to serve.  The repaired shape is the per-`P` one used by
    `Section5StrictDataFin`, where `P` is a structure parameter supplied *with* its decoded-family
-   hypothesis by the residual's quantifier order (`∀ u … ∀ P, hP → bundle`).
+   hypothesis by the residual's quantifier order (`∀ u … ∀ P, hP → bundle`); all four
+   `KeystoneStrictResidual.BetaCurveInput*` bundles now take this shape, and
+   `KeystoneStrictResidual.BetaCurveInputOffcentreFin.not_uniform_hPz` records the old
+   contradiction.  (The per-`P` shape removes only this contradiction; it does not by itself make
+   any of these bundles inhabited.)
 
 This file provides the missing combination — **off-centre AND per-`P`**:
 
 * `Section5StrictDataOffcentreFin u P` — the γ-free, `hsubst`-free, per-`P` §5 extraction
-  datum.  Every field is honestly satisfiable: `hrep` is stated against
-  `BetaToCurveCoeffPolys.gammaLocal` (the `betaRec`-built local series — genuine mathematics,
-  no opaque choice anywhere), and `hPz` is per-`P` with the Taylor-shift recentering of the
-  off-centre keystone.
+  datum.  Every field is stated against genuine objects: `hrep` is stated against
+  `BetaToCurveCoeffPolys.gammaLocal` (the `betaRec`-built local series — no opaque choice
+  anywhere), and `hPz` is per-`P` with the Taylor-shift recentering of the off-centre keystone.
+  **Satisfiability is restricted to branch degree one:** by the F6-Ω obstruction
+  (`LocalSeriesCorrected.not_hrep_gammaLocal_of_two_le_natDegree`,
+  `section5DataOffcentreFin_false_of_two_le_natDegree`,
+  `section5DataOffcentreFin_natDegree_eq_one`), the ground-line `hrep` field is unsatisfiable
+  whenever `2 ≤ H.natDegree` (the order-0 local coefficient is `T/W`, off the ground line), so
+  every inhabitant of this bundle has `H.natDegree = 1`. Per-`P` quantification and Taylor
+  shifting are genuine improvements but do not remove this separate condition.
 * `htailDeg_of_offcentre_representative` — the off-centre `htailDeg` producer.  Strictly simpler
   than the centred `TailDegProducer.htailDeg_of_polynomial_representative`: since `hrep` is
   directly against `gammaLocal = mk (αFromBeta …)`, no `hsubst`/`hγ` collapse is needed — the
@@ -150,17 +161,21 @@ end TailDeg
 * no `hγ` (the legacy-`γ` identification, undischargeable);
 * `hrep` stated against the `betaRec`-built local series `gammaLocal`;
 * `hPz` in the off-centre Taylor-shift shape, **per-`P`** (the structure parameter), so the
-  bundle is satisfiable — unlike the `∀ P`-quantified `BetaCurveInputOffcentreFin.hPz`. -/
+  bundle is not refuted by the `P := 0` / `P := 1` argument that emptied the old `∀ P`-quantified
+  `BetaCurveInputOffcentreFin.hPz` (now also per-`P`; see
+  `KeystoneStrictResidual.BetaCurveInputOffcentreFin.not_uniform_hPz`). -/
 
 section Bundle
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **The off-centre per-`P` §5 extraction datum** — the satisfiable, γ-free, `hsubst`-free
-counterpart of `HcardDischarge.Section5StrictDataFin`.  All series-level fields are stated
-against the `betaRec`-built `gammaLocal`; the per-`z` bridge `hPz` carries the off-centre
-Taylor-shift recentering and is per-`P` (the structure parameter). -/
+/-- **The off-centre per-`P` §5 extraction datum** — the γ-free, `hsubst`-free counterpart of
+`HcardDischarge.Section5StrictDataFin`.  All series-level fields are stated against the
+`betaRec`-built `gammaLocal`; the per-`z` bridge `hPz` carries the off-centre Taylor-shift
+recentering and is per-`P` (the structure parameter).  This type is empty whenever
+`2 ≤ H.natDegree` (F6-Ω: `LocalSeriesCorrected.section5DataOffcentreFin_natDegree_eq_one`), so
+it can only be inhabited in branch degree one. -/
 structure Section5StrictDataOffcentreFin {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (u : WordStack F (Fin (k + 1)) ι) (P : F → Polynomial F) : Type where
   /-- centre / curve data of [BCIKS20] §5. -/
@@ -358,15 +373,20 @@ theorem hPz_offcentre_of_henselDatum {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ
 
 /-! ## Part 6 — the producer assembly -/
 
-/-- **The off-centre producer assembly** (the satisfiable analogue of
-`KeystoneAssembly.section5DataFin_of_producers`).  Builds the off-centre per-`P` bundle from:
+/-- **The off-centre producer assembly** (the off-centre analogue of
+`KeystoneAssembly.section5DataFin_of_producers`; its `hrep` input is satisfiable only in branch
+degree one, by F6-Ω).  Builds the off-centre per-`P` bundle from:
 the GS factor bundle, the Prop-5.5 local representative (`hrep` against `gammaLocal`), the
 per-point matching data, the finite-range cardinality bound, and the per-`z` Hensel data — with
 the truncation index fixed at `T := Ppoly.natDegree` and `htailDeg` **derived** from `hrep`.
 
 Compare the centred assembly's hypothesis list: the `hβ` numerator residual, the `hγ`
-substitution form, and the `hsubst` validity are all **gone** — none was satisfiable as stated
-(the first two name the opaque legacy `β`/`γ`; the third forces `x₀ = 0`). -/
+substitution form, and the `hsubst` validity are all **gone**.  None of them is dischargeable in
+general as stated: the first two name the opaque legacy `β`/`γ`, for which no general
+identification is available (this does not prove that no special instance has a witness), and
+the third forces `x₀ = 0`, so it is satisfiable only in the centred regime.  The replacement
+`hrep` field carries its own restriction: it is unsatisfiable when `2 ≤ H.natDegree` (F6-Ω,
+`LocalSeriesCorrected.section5DataOffcentreFin_natDegree_eq_one`). -/
 noncomputable def section5DataOffcentreFin_of_producers {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
     {x₀ : F} (b : GSFactorData.Bundle (F := F) x₀)

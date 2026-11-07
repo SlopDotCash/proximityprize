@@ -19,11 +19,13 @@ genuinely-independent sub-verifier obligations into a single conjunction:
 * an embedded **sumcheck** obligation (`sumcheckVerifier` / `sumcheckOracleReduction`,
   a `liftContext` of the generic `Sumcheck.Spec` reduction).
 
-The module docstrings of those files explain that the two halves are blocked by
-*different* upstream walls (no in-tree outer-LogUp verifier soundness theorem vs. no
-plain `Sumcheck.Spec` soundness/completeness theorem + the lens conditions), and that
-the outer completeness half is "in principle closable in-tree" while the sumcheck half
-is not.
+When this split was introduced the two halves had *different* missing inputs (an outer
+LogUp verifier theorem vs. a plain lifted sumcheck theorem). Both now have restricted
+dischargers: `Security/LogupResidualDischarge.lean` proves the soundness residuals named
+here, and `Security/SumcheckCompletenessUncond.lean` / `Security/LogupCompletenessWired.lean`
+prove the completeness ones, each under explicit side conditions on the parameters and the
+shared-oracle implementation (see those files). None of these residuals is proved for
+arbitrary parameters and implementations.
 
 Bundling them as one `Prop` means a future agent who discharges *only* the outer half
 (or only the sumcheck half) cannot plug it in. This file therefore **shrinks the
@@ -42,7 +44,8 @@ each half separately and re-deriving the top-level reductions from the split hal
 No new mathematics and no new axioms: the bridges are definitional and the reductions
 chain the existing `logup_soundness_of_residual` / `logup_completeness_of_residual`.
 The point is to make the two walls **independently dischargeable** so they can be ground
-brick-by-brick.
+brick-by-brick. The `_iff` bridges are equivalences: they prove neither side, so they are
+not providers of the residuals they relate.
 -/
 
 open scoped NNReal
@@ -79,7 +82,9 @@ def SumcheckSoundnessResidual (sumcheckSoundnessError : ℝ≥0) : Prop :=
   (sumcheckVerifier oSpec F n M params).soundness init impl
     (midLanguage F n M params) outputRelation.language sumcheckSoundnessError
 
-/-- `SubPhaseSoundnessResidual` is **definitionally** the conjunction of its two halves. -/
+/-- `SubPhaseSoundnessResidual` is **definitionally** the conjunction of its two halves.
+This equivalence (`Iff.rfl`) proves neither side; the restricted dischargers are in
+`Security/LogupResidualDischarge.lean`. -/
 theorem subPhaseSoundnessResidual_iff_split (sumcheckSoundnessError : ℝ≥0) :
     SubPhaseSoundnessResidual oSpec F n M params init impl sumcheckSoundnessError ↔
       OuterSoundnessResidual oSpec F n M params init impl ∧
@@ -102,9 +107,11 @@ theorem logup_soundness_of_split (sumcheckSoundnessError : ℝ≥0)
   logup_soundness_of_residual oSpec F n M params init impl sumcheckSoundnessError
     ⟨hOuter, hSumcheck⟩ hAppendSoundness
 
-/-- The **append-composition** soundness brick still exposed by
-`OracleVerifier.append_soundness`. Keeping it separately named makes the remaining #13 wall
-three-way rather than hiding composition inside an anonymous hypothesis. -/
+/-- The **append-composition** soundness brick exposed by `OracleVerifier.append_soundness`.
+Keeping it separately named makes the #13 soundness surface three-way rather than hiding
+composition inside an anonymous hypothesis. `appendSoundnessResidual_holds`
+(`Security/LogupResidualDischarge.lean`) proves it under the side conditions listed there; it is
+not proved for arbitrary parameters and implementations. -/
 def AppendSoundnessResidual (sumcheckSoundnessError : ℝ≥0) : Prop :=
   (logupVerifier oSpec F n M params).soundness init impl
     (inputRelation F n M).language outputRelation.language
@@ -118,7 +125,7 @@ def LogupSoundnessBrickResidual (sumcheckSoundnessError : ℝ≥0) : Prop :=
       AppendSoundnessResidual oSpec F n M params init impl sumcheckSoundnessError
 
 /-- The fully split soundness residual is exactly the original bundled subphase residual plus the
-named append-composition residual. -/
+named append-composition residual. This equivalence proves neither side. -/
 theorem logupSoundnessBrickResidual_iff_subPhase_append
     (sumcheckSoundnessError : ℝ≥0) :
     LogupSoundnessBrickResidual oSpec F n M params init impl sumcheckSoundnessError ↔
@@ -158,8 +165,8 @@ theorem logup_soundness_of_subPhase_append (sumcheckSoundnessError : ℝ≥0)
 
 /-- The **outer** half of `SubPhaseCompletenessResidual`: the outer phase is complete with
 the pole-rejection error `logupCompletenessError`. The first conjunct of
-`SubPhaseCompletenessResidual`; per the `Completeness.lean` docstring this is the
-in-principle in-tree-closable half (its failure event is the proven `probEvent_pole_le`). -/
+`SubPhaseCompletenessResidual`; `outerCompletenessResidual_of_neverFail` below proves it under
+`NeverFail init` (its failure event is the proven `probEvent_pole_le`). -/
 def OuterCompletenessResidual : Prop :=
   (outerOracleReduction oSpec F n M params).completeness init impl
     (inputRelation F n M) (midRelation F n M params) (logupCompletenessError F n)
@@ -170,7 +177,10 @@ def SumcheckCompletenessResidual : Prop :=
   (sumcheckOracleReduction oSpec F n M params).completeness init impl
     (midRelation F n M params) outputRelation 0
 
-/-- `SubPhaseCompletenessResidual` is **definitionally** the conjunction of its two halves. -/
+/-- `SubPhaseCompletenessResidual` is **definitionally** the conjunction of its two halves.
+This equivalence (`Iff.rfl`) proves neither side; `subPhaseCompletenessResidual_unconditional`
+(`Security/SumcheckCompletenessUncond.lean`) proves the residual under `NeverFail init` and a
+support condition on `impl`. -/
 theorem subPhaseCompletenessResidual_iff_split :
     SubPhaseCompletenessResidual oSpec F n M params init impl ↔
       OuterCompletenessResidual oSpec F n M params init impl ∧
@@ -209,7 +219,10 @@ def LogupCompletenessBrickResidual : Prop :=
       AppendCompletenessResidual oSpec F n M params init impl hOuter hSumcheck
 
 /-- The fully split completeness residual is exactly the original bundled subphase residual plus
-the dependent append-composition residual indexed by that bundled proof's two projections. -/
+the dependent append-composition residual indexed by that bundled proof's two projections. This
+equivalence proves neither side; `logupCompletenessBrickResidual_holds`
+(`Security/LogupCompletenessWired.lean`) proves the residual under the side conditions listed
+there. -/
 theorem logupCompletenessBrickResidual_iff_subPhase_append :
     LogupCompletenessBrickResidual oSpec F n M params init impl ↔
       ∃ hSub : SubPhaseCompletenessResidual oSpec F n M params init impl,
@@ -246,8 +259,8 @@ theorem logup_completeness_of_subPhase_append
 the conclusion of the fully-proven `outerOracleReduction_completeness` (the honest outer LogUp oracle
 reduction is complete with error `logupCompletenessError`, established end-to-end in
 `Security/OuterCompleteness.lean` via the pole bound `card_poleSet_le` / `probEvent_pole_le` and the
-per-state agreement `outer_perState_agree`). Under the standard completeness assumption
-`NeverFail init` it therefore holds unconditionally — removing the outer half of the LogUp
+per-state agreement `outer_perState_agree`). It therefore holds under the standard completeness
+assumption `NeverFail init`, with no further hypothesis — removing the outer half of the LogUp
 completeness residual surface (issue #13 acceptance "remove or shrink the residuals"). -/
 theorem outerCompletenessResidual_of_neverFail (hInit : NeverFail init) :
     OuterCompletenessResidual oSpec F n M params init impl :=
@@ -256,7 +269,7 @@ theorem outerCompletenessResidual_of_neverFail (hInit : NeverFail init) :
 /-- **LogUp completeness from the sumcheck + append halves alone.** With the outer half discharged by
 `outerCompletenessResidual_of_neverFail`, the full completeness reduction needs only the embedded
 sumcheck completeness (`SumcheckCompletenessResidual`) and the append-composition completeness brick
-— the two remaining completeness obligations of LogUp Protocol 2. -/
+as hypotheses. Both now have restricted dischargers (see the module docstring). -/
 theorem logup_completeness_of_sumcheck_append (hInit : NeverFail init)
     (hSumcheck : SumcheckCompletenessResidual oSpec F n M params init impl)
     (hAppend :

@@ -34,6 +34,20 @@ Laurent polynomial is controlled by the **Newton-polytope volume / monomial coun
 subgroup exponent `d`. For the linear form `∑ ε_i x_i`, that envelope is the binomial
 `B_toric = C(2r, r) ≤ 4^r` — **independent of `d`, of `n`, and of `p`**.
 
+## Correction (audit 2026-10-28, CW-B18-15): the toric envelope is WEAKER than trivial at `β = 4`
+
+An earlier version called `C(2r,r)·p^{r−1}` "non-vacuous" and "the `K^r` envelope the prize needs",
+and read the large margin `spur/p^{r−1} ≪ C(2r,r)` in the table below as evidence.  That is wrong.
+Trivially `spur_r(p) ≤ E_r^{charp} ≤ n^{2r}` (there are only `n^{2r}` tuples), and for `p ≥ n^4`,
+`r ≥ 2` one has `n^{2r} ≤ p^{r−1} ≤ C(2r,r)·p^{r−1}` (`trivial_le_toric_envelope_of_beta_four`,
+proven below).  So at prize scale the toric envelope is implied by the trivial count and is VACUOUS;
+the "enormous margin" only reflects that `p^{r−1}` is large.  Recomputing `C(2r,r)·p^{r−1}/n^{2r}`
+for the table rows gives `≈ 2055, 1.12, 20030, 0.093` — only the `n = 64, β = 3.0` row is below the
+trivial bound.  See also `_wfA04_weil_envelope_vacuity.lean` (the envelope dominates the char-0 main
+term at the prize regime).  Further caveat: `V_r ⊆ μ_n^{2r}` is a FINITE set of points, so the
+"Betti number of `V_r`" reading of Adolphson–Sperber is heuristic.  The removed lemma
+`toricBetti_dfree` was `toricBetti r = toricBetti r := rfl` and carried no content.
+
 ## What is PROVEN here (axiom-clean, no `p > 2^n` hypothesis)
 
 This file formalizes the **envelope dichotomy** as unconditional `ℕ`-arithmetic:
@@ -41,16 +55,16 @@ This file formalizes the **envelope dichotomy** as unconditional `ℕ`-arithmeti
 1. `toricBetti r := C(2r,r)`, `fermatBetti d r := ((d−1)^{2r}+(d−1))/d`; the toric envelope is
    `B_toric · p^{r−1}`, the Fermat envelope is `B_Fermat · p^{r−1}`.
 2. `toricBetti_le_four_pow` — `C(2r,r) ≤ 4^r` (the `d`-FREE, `n`-FREE bound). PROVEN.
-3. `toricBetti_dfree` — `toricBetti` literally has no `d` argument: the envelope constant is
-   independent of the residue degree (stated as a `∀ d`, the value is constant). PROVEN.
+3. `trivial_le_toric_envelope_of_beta_four` — for `n ≥ 1`, `p ≥ n^4`, `r ≥ 2`, the trivial count
+   `n^{2r}` is `≤ C(2r,r)·p^{r−1}`: the toric envelope is vacuous at `β ≥ 4`. PROVEN.
 4. `fermatBetti_ge_toric_of_large_degree` — once `d ≥ 5` (true at prize, `d ~ 2^{90}`) the
-   Fermat Betti DOMINATES the toric Betti for `r ≥ 1`: the Fermat envelope is strictly larger,
-   so the toric route is the binding (non-vacuous) one. PROVEN.
+   Fermat Betti DOMINATES the toric Betti for `r ≥ 1`: the Fermat envelope is larger still.
+   (Both are weaker than the trivial count at `β ≥ 4`; see the correction.) PROVEN.
 5. `spur_le_toric_envelope_of_betti` — the reduction `THE consumer`: if the measured toric
    Betti law `SpurToricBounded` holds (the named open input, verified by
    `probe_wfS6_toric_config_betti.py` at prize-adjacent primes up to `p = n^4`), then
-   `spur_r(p) ≤ C(2r,r) · p^{r−1}`, an absolute-`K^r` envelope feeding the char-0 consumer.
-   PROVEN modulo the named `Prop`.
+   `spur_r(p) ≤ C(2r,r) · p^{r−1}`, an absolute-`K^r·p^{r−1}` envelope.  PROVEN modulo the named
+   `Prop` — but at `β ≥ 4` the conclusion is weaker than the trivial `spur ≤ n^{2r}`.
 
 ## The named open input and its honest scope
 
@@ -66,8 +80,9 @@ nearest the prize scale:
 | 32 | 3 | 1036993(n^4.0)| 11520  | 0.0001       | 20      | ✓           |
 | 64 | 2 | 259201(n^3.0) | 3072   | 0.012        | 6       | ✓           |
 
-The toric envelope holds with **enormous margin** (`spur/p^{r−1} ≪ C(2r,r)`) at every measured
-prize-scale point, and the constant is `d`-free. **Honest scope:** this is a MEASURED law, not a
+The toric envelope holds at every measured point, but this is uninformative: `C(2r,r)·p^{r−1}`
+exceeds the trivial `n^{2r}` in three of the four rows (see the correction), so the "margin"
+reflects the size of `p^{r−1}`, not cancellation. **Honest scope:** this is a MEASURED law, not a
 proof of the Adolphson–Sperber bound for THIS specific variety at ALL structured primes — the
 genuine AG content (that the toric total Betti of `V_r` is `≤ C(2r,r)` uniformly, i.e. that no
 exceptional structured prime makes `V_r` acquire extra `F_p`-rational components beyond the
@@ -97,16 +112,22 @@ def toricBetti (r : ℕ) : ℕ := Nat.choose (2 * r) r
 of `∑ c_i X_i^d = 0 ⊂ P^{2r−1}`, `((d−1)^{2r} + (d−1))/d`. This is what blows up at prize `d`. -/
 def fermatBetti (d r : ℕ) : ℕ := ((d - 1) ^ (2 * r) + (d - 1)) / d
 
-/-- **The toric envelope is `d`-FREE.** `toricBetti` does not depend on the residue degree
-`d = ord_n(p)`: for any two degrees the envelope constant is identical. This is the entire S6
-point — the AG bound on the CORRECT (toric, hyperplane) variety is independent of the subgroup
-exponent that made the Fermat completion vacuous. -/
-theorem toricBetti_dfree (r : ℕ) : ∀ d₁ d₂ : ℕ, toricBetti r = toricBetti r := by
-  intro d₁ d₂; rfl
+/-- **The central binomial is positive**: `C(2r,r) ≥ 1` (nonempty middle). -/
+theorem toricBetti_pos (r : ℕ) : 0 < toricBetti r := Nat.choose_pos (by omega)
+
+/-- **The toric envelope is weaker than the trivial count at `β ≥ 4`.** For `n ≥ 1`, `p ≥ n^4` and
+`r ≥ 2`: `n^{2r} ≤ C(2r,r)·p^{r−1}`.  Since trivially `spur_r(p) ≤ n^{2r}`, the toric envelope
+`spur_r(p) ≤ C(2r,r)·p^{r−1}` carries no information in the prize regime (CW-B18-15). -/
+theorem trivial_le_toric_envelope_of_beta_four (n p r : ℕ) (hn : 1 ≤ n) (hp : n ^ 4 ≤ p)
+    (hr : 2 ≤ r) : n ^ (2 * r) ≤ toricBetti r * p ^ (r - 1) := by
+  calc n ^ (2 * r) ≤ n ^ (4 * (r - 1)) := Nat.pow_le_pow_right hn (by omega)
+    _ = (n ^ 4) ^ (r - 1) := by rw [pow_mul]
+    _ ≤ p ^ (r - 1) := Nat.pow_le_pow_left hp _
+    _ ≤ toricBetti r * p ^ (r - 1) := Nat.le_mul_of_pos_left _ (toricBetti_pos r)
 
 /-- **The toric Betti is `≤ 4^r`** (Stirling / central-binomial bound `C(2r,r) ≤ 4^r`).
 So the toric Weil envelope `C(2r,r)·p^{r−1} ≤ 4^r·p^{r−1}` is geometric in `r` with the
-ABSOLUTE base `4`, exactly the `K^r` shape the prize needs (`K` independent of `n`, `p`). -/
+ABSOLUTE base `4` (but the factor `p^{r−1}` makes it vacuous at `β ≥ 4`; see the correction). -/
 theorem toricBetti_le_four_pow (r : ℕ) : toricBetti r ≤ 4 ^ r := by
   unfold toricBetti
   -- Use the clean integer bound C(2r,r) ≤ ∑_k C(2r,k) = 2^{2r} = 4^r.
@@ -117,12 +138,9 @@ theorem toricBetti_le_four_pow (r : ℕ) : toricBetti r ≤ 4 ^ r := by
     _ = 2 ^ (2 * r) := by rw [Nat.sum_range_choose]
     _ = 4 ^ r := by rw [pow_mul]; norm_num
 
-/-- **The central binomial is monotone**: a helper recording `C(2r,r) ≥ 1` (nonempty middle). -/
-theorem toricBetti_pos (r : ℕ) : 0 < toricBetti r := Nat.choose_pos (by omega)
-
 /-- **The Fermat envelope dominates the toric one at prize-scale residue degree.**
 For `d ≥ 6` (the prize has `d ~ n^3 ~ 2^{90} ≫ 6`) and `r ≥ 1`, `fermatBetti d r ≥ toricBetti r`,
-so the Fermat Weil envelope is the LOOSE (vacuous) one and the toric envelope is what binds.
+so the Fermat Weil envelope is looser still (the toric one is itself vacuous at `β ≥ 4`).
 Proof spine: `toricBetti r ≤ 4^r`, `4^r · d ≤ ((d−1)^2)^r = (d−1)^{2r}` (since `(d−1)^2 ≥ 4d`
 for `d ≥ 6`, and `d^r ≥ d` for `r ≥ 1`), hence `toricBetti r · d ≤ (d−1)^{2r} ≤ (d−1)^{2r}+(d−1)`,
 and dividing by `d` gives the claim. -/
@@ -160,8 +178,9 @@ def SpurToricBounded (spur : ℕ → ℕ → ℕ) (p : ℕ) : Prop :=
 
 /-- **Main reduction (axiom-clean): the toric Betti law gives an `K^r·p^{r−1}` spur bound with
 `K = 4` ABSOLUTE.** From `SpurToricBounded` and `toricBetti r ≤ 4^r`, the spurious mass is
-`≤ 4^r · p^{r−1}` — the geometric-in-`r`, `d`-free, `n`-free envelope the prize needs. This is
-the precise S6 deliverable: the AG bound on the CORRECT (toric) variety is NOT vacuous. -/
+`≤ 4^r · p^{r−1}` — geometric in `r` with `d`-free, `n`-free base.  NOTE (CW-B18-15): at `p ≥ n^4`,
+`r ≥ 2` this is weaker than the trivial `spur ≤ n^{2r}` (`trivial_le_toric_envelope_of_beta_four`),
+so it is NOT a useful prize-scale bound. -/
 theorem spur_le_const_envelope_of_toric (spur : ℕ → ℕ → ℕ) (p r : ℕ) (hr : 1 ≤ r)
     (h : SpurToricBounded spur p) :
     spur r p ≤ 4 ^ r * p ^ (r - 1) := by
@@ -191,7 +210,7 @@ theorem energy_charp_eq_char0_of_no_spur (spur : ℕ → ℕ → ℕ) (Echarp Ec
 
 end ArkLib.ProximityGap.wfS6ToricConfigBetti
 
-#print axioms ArkLib.ProximityGap.wfS6ToricConfigBetti.toricBetti_dfree
+#print axioms ArkLib.ProximityGap.wfS6ToricConfigBetti.trivial_le_toric_envelope_of_beta_four
 #print axioms ArkLib.ProximityGap.wfS6ToricConfigBetti.toricBetti_le_four_pow
 #print axioms ArkLib.ProximityGap.wfS6ToricConfigBetti.fermatBetti_ge_toric_of_large_degree
 #print axioms ArkLib.ProximityGap.wfS6ToricConfigBetti.spur_le_const_envelope_of_toric

@@ -16,19 +16,26 @@ in ready-to-paste Lean form:
       (by rw [← binaryPow_eq_pow]; decide)
       (by rw [← binaryPow_eq_pow]; decide)
 
-Determinism: Miller-Rabin with the fixed witness set proven correct for all
-n < 3.3 * 10^24 (Sorenson-Webster), so all primality decisions below ~2^80 are exact.
+Determinism: Miller-Rabin with the first twelve prime bases 2..37 is proven correct for all
+n < 318665857834031151167461 (~3.19e23, about 2^78; Sorenson-Webster 2015, Thm 1.1: that
+number is the least strong pseudoprime to all twelve bases).  The larger 3.317e24 bound
+belongs to the thirteen-base set 2..41.  `is_prime` refuses inputs at or above the twelve-base
+bound, so every decision it returns is exact; the default windows stay below 2^38.
 """
 
 import sys
 
-# Deterministic Miller-Rabin: this witness set is correct for all n < 3.317e24.
+# Deterministic Miller-Rabin: the first twelve prime bases are correct for all
+# n < _MR12_DET_LIMIT (Sorenson-Webster psi_12; NOT the 13-base bound 3.317e24).
 _MR_WITNESSES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37]
+_MR12_DET_LIMIT = 318665857834031151167461
 
 
 def is_prime(n: int) -> bool:
     if n < 2:
         return False
+    if n >= _MR12_DET_LIMIT:
+        raise ValueError(f"12-base Miller-Rabin is only proven exact below {_MR12_DET_LIMIT}")
     for p in (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37):
         if n % p == 0:
             return n == p

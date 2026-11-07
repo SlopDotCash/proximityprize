@@ -228,10 +228,24 @@ pair + DIST rungs m ≥ 12; P1 `SwarmResidual`; W15 strip sliver / Λ ≤ 2 (emp
   axiom-clean, while the explicit finite-field witness remains computational evidence. The open
   gate is the lift to a genuine over-budget MCA stack; `UniformSylvesterInjective`, `ι ≤ 1`, and
   production δ* remain open.
+- **SYZ72 (2026-10-30) strengthens the first middle-band witness check.**
+  A floor-attained constant syzygy also passes the PR #5 rank test. The strengthened certificate
+  pins `δ₁ = 7 = max + 1` by recovering the cofactors, ruling out constant syzygies, and
+  checking nonvanishing on the leftover `T`. It confirms the recorded `F_41`, `μ_20` witness.
+  The sweep covers 15 selected primes up to `2147484041 = 2³¹ + 393`, with 20,000 sampled
+  support pairs and 28 legal third supports per draw. It finds witnesses at `p = 41, 61, 101`
+  and finds none in the samples at the other 12 primes. The probe separately replays a
+  certified `F_181` witness that the sample missed. A structured scan checks 20,720
+  progression-based configurations per field at three primes and finds no witnesses there.
+  See `DISPROOF_LOG.md` `[SYZ72-middle-band-sampled-search]`. The remaining occupancy cases,
+  `ι ≤ 1`, the over-budget lift and production δ* remain open.
 - **All-depth cyclic energy floor (PR #7): exact lower bound.**
   `REnergyCyclicFloorAllDepth.lean` lifts the depth-three cyclic-orbit floor to every depth at least
-  three. It supplies a stronger reusable lower floor, not an upper energy bound, characteristic
-  transfer, capacity theorem, or CORE closure.
+  three. It is stronger than the adjacent-swap floor but weaker than the permutation floor
+  `_LowerBoundPermMatchingFloor.rEnergy_ge_perm` (`|G|.descFactorial r * r! ≤ rEnergy G r`) except
+  for tiny supports (`|G| ≤ 5` at depth three, `|G| ≤ 4` at depth four, including the depth-four
+  floor of `REnergyFourCyclicFloor.lean`); prefer `rEnergy_ge_perm` as the reusable lower floor.
+  It is not an upper energy bound, characteristic transfer, capacity theorem, or CORE closure.
 - **G330 spectrum boundary (ported ArkLib PR #541): exact collision certificate.**
   `_G330SpectrumExactBoundary.lean` proves the order-eight weight-{1,3} spectrum has `40` values at
   every prime `p ≡ 1 (mod 8)`, `p ≠ 17`; the exceptional collision prime is exactly `17`. The full

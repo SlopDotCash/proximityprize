@@ -36,13 +36,22 @@ most one coordinate, whereas the boundary floor `⌊(1 - √ρ)·4⌋ = 2` force
 to have cardinality at least two.  The good-coefficient set is nonempty (the parameter `z = 0`
 yields the zero codeword), so the bare residual's hypothesis is met yet its conclusion is false.
 
-**Consequence.**  The boundary hypothesis of `RS_correlatedAgreement_affineLines` is *unsatisfiable*
-at the exact square-root endpoint for these parameters.  Since the strict-radius companion
+**Consequence.**  The boundary hypothesis of `RS_correlatedAgreement_affineLines` is
+*unsatisfiable* at the exact square-root endpoint for these parameters (`F = ZMod 5`, `n = 4`,
+`deg = 1`, `δ = 1/2`).  (Off the endpoint, `δ ≠ 1 - √ρ`, the bare residual is vacuously true, so
+it only ever constrains the endpoint.)  Since the strict-radius companion
 `RS_correlatedAgreement_affineLines_strict` (`δ < 1 - √ρ`) needs no boundary residual at all, the
 only content the non-strict keystone adds over its strict form is the single endpoint
-`δ = 1 - √ρ` — and that endpoint is gated behind a residual that is provably false.  Boundary work
-at `k = 1` must therefore keep a genuinely stronger threshold/cardinality hypothesis (the
-large-field-guarded `BoundaryCardLatticeData` route), exactly as at `k = 2`.
+`δ = 1 - √ρ` — and for these parameters that endpoint is gated behind a residual that is provably
+false.  The keystone remains a logically sound conditional theorem, but its endpoint conclusion is
+only available where the residual can actually be discharged.  Boundary work at `k = 1` must
+therefore keep a genuinely stronger threshold/cardinality hypothesis, exactly as at `k = 2`: e.g.
+the `BoundaryCardLatticeData` route, whose cardinality clause `(n + 1)·k ≤ |good set| ≤ |F|`
+forces a large field: it fails whenever `|F| < (n + 1)·k` and some good set is nonempty
+(`BoundaryCardLatticeData.not_of_field_card_lt_of_pos`; the `k = 2` instance of this witness is
+`BoundaryCardResidualRefutation.not_boundaryCardLatticeData`).  It is a sufficient assumption,
+not a discharged one, so any endpoint claim must be scoped to a parameter regime where that data
+is actually established.
 -/
 
 namespace ArkLib

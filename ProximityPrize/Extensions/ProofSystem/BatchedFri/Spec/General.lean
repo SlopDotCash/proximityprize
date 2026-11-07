@@ -56,14 +56,15 @@ variable (dom_size_cond : (2 ^ (∑ i, (s i).1)) * d ≤ 2 ^ n)
 variable (l m : ℕ)
 variable {ω : SmoothCosetFftDomain n F}
 
--- DEFINITION COMPLETED (2026-06-04): whole-protocol batched-FRI input relation. The protocol input
--- is a batch of `m + 1` purported codewords on the full evaluation domain `ω`, each committed to a
--- low-degree witness polynomial (degree `< 2 ^ (∑ s) * d`). Following [BCIKS20 §8]/[FRI1216] this
--- is the batched proximity relation: each oracle is the honest evaluation of its witness polynomial
--- AND
--- is within relative Hamming distance `δ` of the Reed–Solomon code on `ω` of degree `2 ^ (∑ s) * d`
--- (`δᵣ(fⱼ, RS) ≤ δ`). The witness/agreement half is exactly `BatchingRound.inputRelation`; the δ-
--- proximity half is the soundness target the batching+FRI reduction tests.
+-- Whole-protocol batched-FRI input relation (canonical `BatchedFri.Spec.inputRelation`, an
+-- abbreviation of `BatchingRound.inputRelation`). The protocol input is a batch of `m + 1`
+-- purported codewords on the full evaluation domain `ω`, each paired with a witness polynomial of
+-- degree `< 2 ^ (∑ s) * d`. SCOPE: the relation asks for ONE common set of evaluation points of
+-- relative size at least `1 - δ` on which every oracle agrees with its own witness polynomial
+-- (correlated agreement with the witnesses). It is not the per-word statement "each `fⱼ` is
+-- individually within relative Hamming distance `δ` of the Reed–Solomon code" (`δᵣ(fⱼ, RS) ≤ δ`),
+-- and only at `δ = 0` does it force every oracle to be the exact evaluation of its witness. The
+-- code below (`batchCode`) is the full-domain code those witnesses evaluate into.
 
 /-- The full-domain Reed–Solomon code on `ω` of degree `2 ^ (∑ s) * d`, the batched FRI degree
   bound; uses the `Subtype.val` embedding of `ω.toFinset` into `F`. -/

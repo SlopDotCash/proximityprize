@@ -17,6 +17,14 @@ threshold joint set carries three distinct bad scalars) and showed the shared-fr
 realizable at the P1 inequality shape.  This file kernel-checks the predicted lift: on the
 literal smooth domain `μ_{2^30} ⊂ F_P` the residual is **false**.
 
+**Status: alternative certificate.**  This power-domain refutation (three scalars, order-`2^30`
+power domains and the canonical domain only) is subsumed by
+`P1RateQuarterSharedFreshTripleRefuted.not_sharedFreshTripleFree`
+(`_P1RateQuarterSharedFreshTripleRefuted.lean`), which refutes `SharedFreshTripleFree dom` for
+**every** injective P1 domain `dom : Fin N ↪ F`, with a family of `480,946,859` shared-fresh
+scalars.  Consumers should cite that all-domain theorem; this file is kept only as an
+independent, generator-symbolic witness.
+
 The certificate is purely generator-symbolic.  With `ω = g^(2^26)` of order `16`
 (`y = x^(2^26)` folds `μ_{2^30}` onto `μ_16`) and residue classes `t = e mod 16` of the power
 enumeration `e ↦ g^e`:
@@ -33,7 +41,8 @@ enumeration `e ↦ g^e`:
   `J`-part anchor of `S_j`;
 * the fresh coordinate `i = 5` (residue `5`) lies in every `S_j` and outside `J`.
 
-**Consequence (honest):** the fixed-witness charge branch is dead at the canonical P1 domain.
+**Consequence (honest):** the fixed-witness charge branch is dead at the canonical P1 domain
+(and, by the all-domain refutation above, at every injective P1 domain).
 `badFamily_card_le_N_of_sharedFreshTripleFree` can never be instantiated there: three bad
 scalars *can* share one fresh coordinate outside a threshold joint set.  The lane successor is
 counting arguments that tolerate shared triples — e.g. bounding the number of fresh
@@ -409,7 +418,8 @@ theorem sharedFreshTripleFree_refuted (g : F) (hg : orderOf g = 2 ^ 30) (hg0 : g
 
 /-- **The residual is false at the canonical P1 predecessor domain.**  The fixed-witness
 charge branch (`badFamily_card_le_N_of_sharedFreshTripleFree`) is therefore dead at the
-canonical domain: its hypothesis can never be discharged. -/
+canonical domain: its hypothesis can never be discharged.  (Superseded by the all-domain
+`P1RateQuarterSharedFreshTripleRefuted.not_sharedFreshTripleFree`.) -/
 theorem sharedFreshTripleFree_canonicalDomain_refuted :
     ¬ SharedFreshTripleFree
       ArkLib.ProximityGap.Frontier.P1RateQuarterCanonicalCodeBridge.canonicalDomain :=

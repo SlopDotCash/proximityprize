@@ -10,7 +10,8 @@ variance m·q, modes asymptotically independent, so
     K(m, q, chi) := sup_a ‖Ŝ(a)‖² / (m·q)  ~  max of m Exp(1)  ~  log m + Gumbel,
 
 INDEPENDENT of q (the sup is over m modes, not q/m residues).  Prediction:
-K = Theta(log m) — FullDFTFlat with an ABSOLUTE K is expected FALSE.
+K = Theta(log m) — FullDFTFlat with an ABSOLUTE K is expected FALSE.  (This is a heuristic
+prediction; the finite measurements below are evidence for it, not a proof.)
 
 Consumer tolerance (R302 reduction, C = (K³+9K+18)² = Theta(K⁶) = Theta(B³)
 for B = K²): absolute C ⟺ bounded B; B = A·log m ⟹ C ~ 9A³·log³m
@@ -132,8 +133,11 @@ def main():
     print(f"  fit K_med = {c:.3f}·m^{d:.3f}          (log-resid sd {res2:.3f})")
     print(f"  Gumbel prediction: b ≈ 1 (K ~ log m + O(1));"
           f" power exponent d ≈ (log-slope of log log m) — small d mimics log.")
-    print(f"  VERDICT: K grows with m ⇒ FullDFTFlat with ABSOLUTE K is "
-          f"{'REFUTED (growth measured)' if ys[-1] > ys[0] + 1.0 else 'not refuted at this range'}")
+    # Audit 2026-10-28 (L103): finite growth of the sampled median between two endpoints is
+    # evidence against an absolute K, not a refutation: any finite maximum is consistent with
+    # some (larger) absolute constant.  Refuting "K = O(1)" needs an unbounded family.
+    print(f"  VERDICT (finite evidence only): K_med "
+          f"{'grows over this m-range (consistent with K = Theta(log m); NOT a refutation of an absolute K)' if ys[-1] > ys[0] + 1.0 else 'shows no clear growth at this range'}")
 
     # (S3) fixed-m q-scan
     print("\n(S3) fixed m, K vs q (k = 1):")

@@ -21,6 +21,17 @@ only consumes the two child quarter-MGF inequalities
 This file names that direct residual and proves the raw dyadic prize-tower
 consumer from it.  The remaining open analytic target is therefore the direct
 large-index child-MGF law, matching the R206/R213 sampled evidence.
+
+**Scope (audit R-002/R-053 extension, 2026-10-28).**
+`LargeIndexChildQuarterMGFLaw` is a name for the existing normalized-square
+quarter-MGF predicate `DyadicQuarterMGFBound s (rawChild^2/σ^2)`, and
+`childQuarterMGF_of_largeIndexChildQuarterMGFLaw` merely unfolds it: these are
+interface aliases, not a proved large-index analytic law.  The cardinality
+premise `_hcard` is unused; note that applied to the full field carrier it is
+unsatisfiable (`R216GaussPeriodDilationOneChildSqMGF.card_ne_dyadicTowerIndex_prizeTop`),
+and on the raw nonzero carrier it holds at production only at depth `30`
+(`R204PrizeTowerLargeIndex.productionQ_sub_one_eq_dyadicTowerIndex_thirty`).
+The normalized-square (versus raw) formulation is the useful distinction kept.
 -/
 
 open Finset

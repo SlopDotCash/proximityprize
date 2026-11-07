@@ -7,8 +7,12 @@ SylvesterInjective residual to one open geometric input: the mu-basis IMBALANCE 
     iota = floor((a+b+c)/2) - delta_1 <= 1
 for the reduced pairwise-coprime band triple (W_AB, W_AC, W_BC) of reduced degrees (a,b,c),
 delta_1 <= delta_2 the two minimal syzygy PRODUCT-degrees (delta_1 + delta_2 = a+b+c).
-SYZ45 refuted the pure-algebra hope: (4,4,4) admits iota=2 via a constant syzygy, but ONLY
-for triples that are NOT band-realizable.
+SYZ45 refuted the pure-algebra hope: (4,4,4) admits iota=2 via a constant syzygy.  Such
+iota=2 triples are NOT confined to non-band-realizable configurations: SYZ45 [D] (audit
+finding L127) gives an exact band-realizable one -- F_41, the proper subgroup mu_20, n=20,
+k=10, cores of size 14, pair overlaps 9 = k-1, full cover, locators X^4-1, X^4-16, X^4-10 --
+with delta_1 = 4 and iota = 2.  So iota <= 1 in the balanced interior does NOT follow from
+properness/full-cover band geometry alone.
 
 SYZ47 pins the sharpest UNCONDITIONAL partial provable from the band's "triangle" structure.
 
@@ -160,7 +164,8 @@ def test_floor_and_coverage():
     print(f"    hard balanced interior (max < floor(S/2)-1)     : {interior} configs "
           f"({100.0*interior/max(1,tested):.1f}%), of which iota>=2 = {interior_iota2}")
     print(f"    => delta_1 >= max(a,b,c) is UNCONDITIONAL on band triangle; iota<=1 proven on the")
-    print(f"       covered strip; interior stays open (empirically iota<=1 but not proven here).\n")
+    print(f"       covered strip only.  Interior: no iota>=2 in THIS sample, but band geometry")
+    print(f"       alone does NOT force iota<=1 there (exact iota=2 band witness: SYZ45 [D]).\n")
     return floor_viol
 
 # ---------- [2] structured (coset/AP) vs random overlap windows, matched sizes ----------
@@ -217,4 +222,5 @@ if __name__ == "__main__":
     test_structured_vs_random()
     print(f"SYZ47 verdict: delta_1 >= max(a,b,c) holds unconditionally on band triangle "
           f"(0 violations, {v} floor breaks); iota<=1 PROVEN on max>=floor(S/2)-1 strip; "
-          f"balanced interior remains the open kernel.")
+          f"in the balanced interior iota<=1 is NOT implied by band geometry alone (SYZ45 [D] "
+          f"exact iota=2 witness on mu_20 < F_41^*); it needs additional justified hypotheses.")

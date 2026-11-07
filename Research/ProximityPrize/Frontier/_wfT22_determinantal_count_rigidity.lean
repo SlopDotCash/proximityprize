@@ -10,7 +10,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.MomentCountSupBound
 
 /-!
 # T22 (G5-2): determinantal repulsion → log-rigidity of the period exceedance COUNT — REFUTED
-   (primary REFUTED at the spectrum level; surviving sup-deduction REDUCES-TO-WALL F1)
+   (multiset DPP model REFUTED; coset-level process untouched; surviving sup-deduction REDUCES-TO-WALL F1)
 
 **Candidate (architect G5-2).** Model the normalized non-principal eigenvalue multiset
 `X_n = {η_b/√n : b ∈ F_p^*}` of the generalized-Paley Cayley matrix `C = Cay(F_p, μ_n)` as a
@@ -20,8 +20,11 @@ claim the exceedance count `N(t) = #{b≠0 : η_b > t√n}` obeys determinantal 
 `E[N(t)] ≤ m·e^{−t²/2}`, forcing `t_max ≤ √(2 log m)(1+o(1))`, i.e. `M(n) ≤ √(2 n log(p/n))`.
 The proposed NEW open statement: the Paley eigenvalue process is determinantal with log-rigidity.
 
-**Verdict: REFUTED.** The determinantal hypothesis is *provably false at the level of the
-algebraic spectrum* (it does not merely "fail to hold" — the structure it requires is absent). The
+**Verdict: REFUTED for the multiset model.** A determinantal model of the multiset
+`{η_b/√n : b ∈ F_p^*}` (each value repeated `n` times) is impossible: that configuration is not
+simple. *Scope caveat (audit CW-B18-23):* this says nothing about the process over the
+`(p−1)/n` DISTINCT coset values `η_i`, which is the natural object for the candidate; whether
+that simple configuration admits a determinantal/log-rigid description is not addressed here. The
 only half of the argument that touches the prize sup-bound is the sub-Gaussian MEAN estimate, which
 for the deterministic period family is certified only through the energy moments `E_r` via Markov —
 i.e. it is the existing in-tree `MomentCountSupBound.forall_le_of_sum_pow_lt` route, fence **F1**.
@@ -46,8 +49,8 @@ over `b∈F_p^*` is the *maximally NON-simple* object: every atom has multiplici
 `n = 2^{30}`. Consequently the level-set count `N(t) = #{b : η_b/√n > t}` is ALWAYS a multiple of
 `n` — it is `n × #{cosets with η_i > t√n}`. A point configuration whose every point has multiplicity
 `n` admits no repulsion (`ρ_2` on the diagonal is `~ n²`, the opposite sign of a DPP's `0`). The
-determinantal hypothesis with log-variance rigidity is therefore *false by construction* of the
-spectrum, not "likely to fail". Formalized below as
+determinantal hypothesis with log-variance rigidity fails for the multiset over all `b`.
+The argument leaves the process indexed by cosets open. Formalized below as
 `exceedanceCount_eq_fiberSize_mul_card`, `exceedance_count_dvd_fiberSize`, and
 `degenerate_not_simple`.
 
@@ -69,6 +72,8 @@ Axiom target: `[propext, Classical.choice, Quot.sound]`. Issue #444, candidate T
 -/
 
 open Finset
+
+set_option linter.unusedSectionVars false
 
 namespace ProximityGap.Frontier.WfT22DeterminantalCountRigidity
 
@@ -153,7 +158,8 @@ theorem degenerate_not_simple
 
 /-! ### Obstruction 2 — the surviving sup-deduction depends ONLY on the energy moment (fence F1) -/
 
-/-- The energy-Markov count bound for `a_b = (η_b/√n)²`, from `MomentCountSupBound`. -/
+/-- A nonnegative family's `r`-th power sum below `T^r` bounds every value by `T`.
+This applies `MomentCountSupBound` to `a_b = (η_b / √n)²`. -/
 theorem forall_le_of_sum_pow_lt (a : ι → ℝ) (ha : ∀ i, 0 ≤ a i) (T : ℝ) (hT : 0 < T) (r : ℕ)
     (hbound : ∑ b, (a b) ^ r < T ^ r) : ∀ b, a b ≤ T :=
   ArkLib.ProximityGap.MomentCountSupBound.forall_le_of_sum_pow_lt a ha T hT r hbound
@@ -191,7 +197,8 @@ the cyclotomic-coset map with uniform fiber size `n ≥ 2`:
 
 * **(REFUTED, Obstruction 1)** every exceedance count is a multiple of `n`, so it is never `1`; the
   configuration is `n`-fold atomic, violating the simplicity that any Christoffel–Darboux DPP
-  requires — the determinantal log-rigidity hypothesis is false at the spectrum level.
+  requires — the determinantal log-rigidity hypothesis is false for the multiset over all `b`
+  (the process over the distinct coset values is not addressed).
 * **(REDUCES-TO-WALL F1, Obstruction 2)** the only half of the argument that bounds the prize sup is
   the energy-Markov count `forall_le_of_sum_pow_lt`; the rigidity variance `V` is a free parameter
   that never enters the bound.

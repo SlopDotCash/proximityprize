@@ -27,9 +27,15 @@ is a sharp trichotomy:
 
 2. **`m = 1`, `r` even (s-steps): structural halving.**
    `fold_β(X^r, X^{r−1}) = (Z^{r/2}, β·Z^{r/2−1})` (`kkh26_fold_s_step_r_even`) — a β-scaled
-   KKH26 stack at `(s/2, 1, r/2)` (the scaling is census-neutral by
-   `MCAEquivariance.prob_mcaEvent_smul_right`). The construction-class supply drops
-   `2^r·C(s/2,r) → 2^{r/2}·C(s/4,r/2)` per s-step.
+   KKH26 stack at `(s/2, 1, r/2)`. For a **nonzero** challenge `β ≠ 0` the scaling is
+   census-neutral (multiplication invariance, `MCAEquivariance.prob_mcaEvent_smul_right`,
+   needs a unit scalar). The zero challenge `β = 0` must be accounted for separately: the
+   folded direction is identically `0`, and for a linear code every matching witness is
+   then jointly explained by its matching codeword together with the zero codeword, so the
+   MCA event is impossible at every scalar and the folded bad count is `0` (independently
+   of the unfolded census). A probability statement over uniform `β` therefore averages
+   the census over `β ≠ 0` and contributes `0` from `β = 0`. For `β ≠ 0` the
+   construction-class supply drops `2^r·C(s/2,r) → 2^{r/2}·C(s/4,r/2)` per s-step.
 
 3. **`m = 1`, `r` odd (s-steps): total collapse.**
    Both rows fold to multiples of *one* monomial, and the whole folded line is the pencil
@@ -146,8 +152,10 @@ theorem kkh26_inner_group_fold_invariant [DecidableEq F] {s m : ℕ} (g : F) (hm
 
 /-- **The s-step halving (word level).** At the bottom of the m-tower (`m = 1`) with even
 `r`, the KKH26 stack folds to the **β-scaled** KKH26 stack of `(s/2, 1, r/2)`:
-`fold_β(X^r) = Z^{r/2}` and `fold_β(X^{r−1}) = β·Z^{r/2−1}`. (The β-scaling of the direction
-row is census-neutral by `MCAEquivariance.prob_mcaEvent_smul_right`.) -/
+`fold_β(X^r) = Z^{r/2}` and `fold_β(X^{r−1}) = β·Z^{r/2−1}`. The identity holds for every
+`β`, including `β = 0`. (The β-scaling of the direction row is census-neutral only for
+`β ≠ 0`, by `MCAEquivariance.prob_mcaEvent_smul_right`; at `β = 0` the folded direction is
+zero and the MCA bad count is `0`, which must be accounted for separately.) -/
 theorem kkh26_fold_s_step_r_even {r : ℕ} (hr : 2 ∣ r) (hr2 : 2 ≤ r) (h2 : (2 : F) ≠ 0)
     (β : F) {x : F} (hx : x ≠ 0) :
     foldAt (fun t => t ^ r) β x = (x ^ 2) ^ (r / 2) ∧

@@ -9,22 +9,28 @@ import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionBound
 # CS25 #82, deliverable 2 (b): the off-support weight budget for ball intersections
 
 The triangle cutoff `jointCoverCount_eq_zero_of_lt` records only that `B(0,δ) ∩ B(e,δ)` is *empty*
-once `wt(e) > 2r` (`r = ⌊δ·n⌋`).  This file proves the quantitative refinement that drives the
-ball-intersection **decay** in `wt(e)`: every `w` in the intersection has its weight *off* the
-support of `e` budgeted by
+once `wt(e) > 2r` (`r = ⌊δ·n⌋`).  This file proves a quantitative off-support constraint: every
+`w` in the intersection has its weight *off* the support of `e` budgeted by
 
   `2 · offWt(w) + wt(e) ≤ 2r`,    `offWt(w) := #{i : e i = 0 ∧ w i ≠ 0}`.
 
 As `wt(e)` grows toward `2r`, the off-support budget `(2r − wt(e))/2` shrinks to `0`, forcing `w` to
-live almost entirely on `supp(e)`.  This is the structural mechanism behind the CS25 second-moment
-off-diagonal estimate (see `CS25BallIntersectionWeightInvariant` for the weight collapse).
+live almost entirely on `supp(e)`.  **Caveat:** this constraint alone does *not* give monotone
+decay of `I(e)` in `wt(e)`. The resulting envelope `q^{wt(e)}·V_{n−wt(e)}(⌊(2r−wt(e))/2⌋)` leaves
+the on-support coordinates unconstrained, and the factor `q^{wt(e)}` can grow faster than the
+off-support ball shrinks: over `𝔽_5` with `n = 2`, `r = 1`, the envelope is `5` at `wt(e) = 1` and
+`25` (the whole space) at `wt(e) = 2`, while the true intersections are `5` (for `e = (1,0)`) and
+`2` (for `e = (1,1)`). A useful quantitative decay bound must also keep the two ball constraints
+on `supp(e)`; that is not done here (see `CS25BallIntersectionWeightInvariant` for the weight
+collapse used by the CS25 second-moment off-diagonal analysis).
 
 ## Main results
 
 * `two_mul_offSupport_add_hammingNorm_le` — pointwise `2·offWt(w)+wt(e) ≤ wt(w)+Δ₀(w,e)`.
 * `offSupport_budget_of_mem_jointCover` — its specialization to joint-cover members: `≤ 2r`.
 * `jointCoverCount_le_offSupport_card` — the resulting `jointCoverCount` upper bound by the
-  off-support–budgeted set, the entry point to the explicit `q^{wt e}·V_{n−wt e}` decay bound.
+  off-support–budgeted set, the entry point to the explicit `q^{wt e}·V_{n−wt e}` envelope
+  (`jointCoverCount_le_ballVolume_mul`), which is valid but not monotone decreasing in `wt e`.
 -/
 
 set_option linter.style.longLine false
@@ -134,8 +140,10 @@ theorem offSupport_budget_of_mem_jointCover (δ : ℝ≥0) (e w : ι → F)
 
 /-- **Joint cover bounded by the off-support–budgeted set.** The `δ`-ball intersection
 `I(e) = jointCoverCount δ 0 e` is at most the number of words whose weight off `supp(e)` is at most
-`(2r − wt(e))/2`.  This isolates the decay: the bounding set's size is `q^{wt(e)} · V_{n−wt(e)}(B')`
-(`B' = (2r − wt(e))/2`), so it shrinks as `wt(e) → 2r`. -/
+`(2r − wt(e))/2`.  The bounding set's size is `q^{wt(e)} · V_{n−wt(e)}(B')`
+(`B' = (2r − wt(e))/2`). Only the off-support factor shrinks as `wt(e) → 2r`; the on-support factor
+`q^{wt(e)}` grows, so the bounding set need not shrink (over `𝔽_5`, `n = 2`, `r = 1` it has size
+`5` at `wt(e) = 1` and `25` at `wt(e) = 2`). -/
 theorem jointCoverCount_le_offSupport_card (δ : ℝ≥0) (e : ι → F) :
     jointCoverCount δ 0 e
       ≤ (univ.filter (fun w : ι → F =>
@@ -151,7 +159,7 @@ theorem jointCoverCount_le_offSupport_card (δ : ℝ≥0) (e : ι → F) :
   have := offSupport_budget_of_mem_jointCover δ e w hw0 hwe
   omega
 
-/-- **Explicit ball-intersection decay bound.** The `δ`-ball intersection
+/-- **Explicit ball-intersection envelope (not a decay bound).** The `δ`-ball intersection
 `I(e) = jointCoverCount δ 0 e`
 of `B(0,δ)` with `B(e,δ)` is bounded by a Hamming ball of radius `B' = (2r − wt(e))/2` in the
 `n − wt(e)` coordinates *off* `supp(e)`, times `q^{wt(e)}` for the unconstrained on-support
@@ -159,10 +167,16 @@ coordinates:
 
   `I(e) ≤ V_{n − wt(e)}(⌊(2r − wt(e))/2⌋) · q^{wt(e)}`,    `r = ⌊δ·n⌋`,  `q = |F|`.
 
-This is the quantitative ball-intersection decay: as `wt(e) → 2r` the radius `B' → 0`, so the ball
-factor collapses to `1` and `I(e) ≤ q^{wt(e)}`.  Combined with the weight-enumerator collapse
-(`CS25BallIntersectionWeightInvariant.sum_jointCoverCount_eq_weight_enumerator`) and the MDS weight
-enumerator `A_d` bound, this bounds the CS25 second-moment off-diagonal `∑_{e ≠ 0} I(e)`. -/
+As `wt(e) → 2r` the radius `B' → 0`, so the ball factor collapses to `1` and `I(e) ≤ q^{wt(e)}`.
+This is **not** a monotone decay in `wt(e)`: a factor whose radius tends to `0` does not make the
+whole product decrease, since `q^{wt(e)}` grows. Over `𝔽_5` with `n = 2`, `r = 1` the envelope is
+`5` at `wt(e) = 1` and `25` (the whole ambient space) at `wt(e) = 2`, whereas the true
+intersections are `5` (`e = (1,0)`: all `(t,0)`) and `2` (`e = (1,1)`: only `(1,0), (0,1)`).
+Combining it with the weight-enumerator collapse
+(`CS25BallIntersectionWeightInvariant.sum_jointCoverCount_eq_weight_enumerator`) and an MDS weight
+enumerator `A_d` bound gives *an* upper bound on the CS25 second-moment off-diagonal
+`∑_{e ≠ 0} I(e)`, but not a sharp one; a sharp off-diagonal estimate must also retain the two
+ball constraints on `supp(e)`. -/
 theorem jointCoverCount_le_ballVolume_mul (δ : ℝ≥0) (e : ι → F) :
     jointCoverCount δ 0 e
       ≤ (univ.filter (fun x : {i // e i = 0} → F =>

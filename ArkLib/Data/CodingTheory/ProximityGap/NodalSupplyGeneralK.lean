@@ -20,19 +20,34 @@ bound on `X^{k+1} − X·P + γ`, so `w` is in every capped class), and a
 multiplicative at every rate — Vieta pins only `e_{k+1} = ±γ`, while
 `e_1, …, e_k` are exactly the `k` degrees of freedom of a degree-`<k` codeword.
 
-On a multiplicative subgroup `μ_n` every `(k+1)`-tuple with the pinned product
-extends, so the supply is `≈ n^k/(k+1)!` cores — **independently of `q`**.  This
-is the first-principles refutation, at EVERY rate, of every `q`-conditional or
-subexponential form of `SubJohnsonSupplyResidual` at `m = 0`: the multiplicative
-collinearity never touches the additive structure the Frobenius witness needed
-nor the field-size room the monomial witness needed.
+**What is proved here** is only the inclusion (`nodalK_supply_ge`): the number of
+`(k+1)`-subsets of the domain whose point-product equals `(−1)^{k+1}γ` is at most the
+number of explainable `(k+1)`-cores.  No lower bound on that product-fibre count is
+proved in this file.
+
+**Heuristic count (not proved here).** On a multiplicative subgroup `μ_n`, a nonempty
+product fibre needs the signed target `(−1)^{k+1}γ` to lie in `μ_n` itself (every
+product of elements of `μ_n` lies in `μ_n`; otherwise the fibre is empty — PG193).
+Granting that coset guard, one chooses `k` distinct points and the last point is forced;
+it must also be distinct from the first `k`.  For **fixed** `k` and `n → ∞` this
+suggests `≈ n^k/(k+1)!` cores, independently of `q`, but the quantitative count with
+the distinctness and coset guards is not formalized.
+
+**Not uniform in the rate.** The factorial is essential when `k` grows with `n`: the
+ceiling below gives at most `C(n,k)/(k+1) ≤ 2^n` cores, far below `n^k` once
+`k = Θ(n)`, and at `k = n − 1` there is exactly one `(k+1)`-subset in total.  So the
+`n^k` order is fixed-`k` language only.  In particular this file does not prove a
+refutation, at every rate, of the `q`-conditional or subexponential forms of
+`SubJohnsonSupplyResidual` at `m = 0`; that would need the quantitative product-fibre
+count above (with its guards) at the relevant growing `k`.
 
 The matching ceiling is the moment–supply identity (`moment_identity_base`:
 `Σ_c C(a_c, k) = C(n, k)` identically) consumed at `j = k`: any word with
 agreements `≤ k+1` has `(k+1)`-core count `E` with `E · (k+1) ≤ C(n, k)`
-(`nodalK_supply_ceiling`).  Together with the floor: **the `(k, 0)` capped
-supply is `Θ(n^k)` at EVERY rate, on every `μ_n`, at EVERY field size** — the
-exact-order sub-Johnson supply value at the bottom of the band.
+(`nodalK_supply_ceiling`).  The proved content is therefore the two-sided sandwich
+`#{product fibre} ≤ E ≤ C(n,k)/(k+1)`; a `Θ(n^k)` statement holds only for fixed `k`
+and only after a separate lower bound on the product fibre (in-subgroup signed target,
+distinct points) is proved.
 -/
 
 open Finset Polynomial
@@ -212,8 +227,9 @@ theorem nodalK_explainableOn (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) {γ : 
 
 open Classical in
 /-- **The supply floor (all rates)**: every product-`((−1)^{k+1}γ)` `(k+1)`-subset
-is an explainable core. On `μ_n` every `(k+1)`-tuple with the pinned product
-extends, so the count is `Θ(n^k)` — at every field size. -/
+is an explainable core.  This is an inclusion only: it does not bound the size of the
+product fibre.  On `μ_n` that fibre is empty unless `(−1)^{k+1}γ ∈ μ_n`, and its
+heuristic `≈ n^k/(k+1)!` size (fixed `k`, distinct points) is not proved here. -/
 theorem nodalK_supply_ge (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) {γ : F}
     (h0 : ∀ i, dom i ≠ 0) :
     ((((Finset.univ : Finset (Fin n)).powersetCard (k + 1)).filter

@@ -46,9 +46,12 @@ is strictly `< n` in every case (sharper than the trivial cap).
   direction. The `μ_n`-incidence of a sparse direction is at most the span of its reduced
   support `(reduce).natDegree − (reduce).natTrailingDegree`. By the proven incidence-invariance
   under mod-`n` reduction (`munRoot_sparse_iff_reduce`), this is the genuinely usable cap.
-* `gcd_natDegree_le_span` : the UNIFICATION. The abstract `deg gcd(X^n-1, g)` incidence bound (the
-  exact distinct-root count) is itself `≤ g.natDegree − g.natTrailingDegree`, so the span dominates
-  the gcd face: a single gcd-free cap subsumes both. Via the coprimality `IsCoprime (X^n-1) X`.
+* `gcd_natDegree_le_span` : the UNIFICATION. The abstract `deg gcd(X^n-1, g)` incidence bound is
+  itself `≤ g.natDegree − g.natTrailingDegree`, so the span dominates the gcd face: a single
+  gcd-free cap subsumes both. Via the coprimality `IsCoprime (X^n-1) X`. (`deg gcd` is an upper
+  bound on the distinct `μ_n`-root count of `g` in `F`; it equals that count only when `X^n - 1`
+  is squarefree and splits over `F`, which these generic declarations do not assume — e.g. over
+  `F₂`, `n = 2`, `g = (X - 1)²` has `deg gcd = 2` but one root.)
 
 ## Honest scope
 This is the support-span polynomial-method **incidence count** sharpening for the sparse strata. The
@@ -201,10 +204,15 @@ theorem sparse_munRoot_card_eq_zero_of_reduce_span_eq_zero {n : ℕ} (S : Finset
   exact Nat.eq_zero_of_le_zero hle
 
 /-- **The `deg gcd(X^n - 1, g)` incidence bound is itself dominated by the support span.** For any
-`g ≠ 0` and `0 < n`, `deg gcd(X^n - 1, g) ≤ g.natDegree - g.natTrailingDegree`. So the exact
-distinct-`μ_n`-root count (`= deg gcd`, the tighter bound used by `munRoot_card_le_gcd_natDegree`)
-is never larger than the cheaper gcd-free support span, UNIFYING the two incidence faces: the span
-is a sufficient (simpler) cap on the gcd bound. Mechanism: `gcd(X^n-1, g)` divides `g = X^t · h`
+`g ≠ 0` and `0 < n`, `deg gcd(X^n - 1, g) ≤ g.natDegree - g.natTrailingDegree`. So the gcd
+incidence bound (the tighter bound used by `munRoot_card_le_gcd_natDegree`) is never larger than the
+cheaper gcd-free support span, UNIFYING the two incidence faces: the span is a sufficient (simpler)
+cap on the gcd bound. In this generic setting (arbitrary field `F`, arbitrary `n`) `deg gcd` is only
+an UPPER bound on the number of distinct `μ_n`-roots of `g` in `F`, not that count itself: over
+`F₂` with `n = 2`, `g = X² - 1 = (X - 1)²` has `deg gcd = 2` but one distinct root, and with
+`n = 3`, `g = X³ - 1` has `deg gcd = 3` but one root in `F₂`. Equality needs `X^n - 1` squarefree
+(`(n : F) ≠ 0`) and split over `F` (`F` containing a primitive `n`-th root), as in full
+primitive-root domains. Mechanism: `gcd(X^n-1, g)` divides `g = X^t · h`
 (`t = natTrailingDegree`), and it is coprime to `X^t` (it divides `X^n - 1`, which is coprime to `X`
 via the Bezout witness `X · X^{n-1} - (X^n - 1) = 1`), so it divides `h` of degree
 `natDegree g - t`.

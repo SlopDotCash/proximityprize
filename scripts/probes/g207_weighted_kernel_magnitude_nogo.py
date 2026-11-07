@@ -77,7 +77,21 @@ def cell(p, n, rs=(5, 6)):
         Cr = math.comb(n, r) * math.comb(n, r - 1)
         C12 = sum(W[t] * R[t] for t in range(p))
         A = p * C12 - n * n * Cr
-        QR = sum((p * R[t] - n * n * Cr) ** 2 for t in range(p))
+        # Centering: R has total mass Cr, so the mean of p*R[t] over the p
+        # residues is Cr (NOT n^2*Cr).  An earlier revision centered at n^2*Cr,
+        # which inflates QR by exactly p*((n^2-1)*Cr)^2 (audit finding L102).
+        assert sum(R) == Cr
+        cen = [p * R[t] - Cr for t in range(p)]
+        assert sum(cen) == 0
+        QR = sum(c * c for c in cen)
+        # Independent variance identity: QR = p^3*sum R^2 - p^2*Cr^2 ... scaled:
+        # sum (pR-Cr)^2 = p^2*sum R^2 - 2p*Cr*Cr + p*Cr^2 = p^2*sum R^2 - p*Cr^2.
+        assert QR == p * p * sum(x * x for x in R) - p * Cr * Cr
+        # The W side is centered at n^2 = mean of p*W[t] (total mass n^2).
+        assert sum(W) == n * n
+        # Covariance identity: A = sum_t (pW-n^2)(pR-Cr) / p.
+        cov = sum((p * W[t] - n * n) * cen[t] for t in range(p))
+        assert cov == p * A
         out[r] = (A, QW, QR)
     return inj, out
 
@@ -101,7 +115,9 @@ for p in (449, 41, 113, 73):
     show(p)
 
 def M2exact(p, out, r):
-    # exact rational M_r^2 = rho_r^2 * q = A_r^2 * q^3 / (Q_W * Q_R)
+    # exact rational M_r^2 = rho_r^2 * q = A_r^2 * q^3 / (Q_W * Q_R),
+    # with Q_W = sum (qW - n^2)^2 and Q_R = sum (qR - Cr)^2 (both centered at
+    # their true means).
     A, QW, QR = out[r]
     return Fraction(A * A * p ** 3, QW * QR)
 

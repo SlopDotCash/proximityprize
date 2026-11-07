@@ -30,12 +30,21 @@ sponge state under permutation queries starting from a given state $s$.
    - The output state of a step matches the input state of the next step
      ($s_{\mathrm{out},\iota-1} = s_{\mathrm{in},\iota}$), and
    - The capacity segments are non-trivially modified
-     ($\mathrm{cap}(s_{\mathrm{in},\iota}) \neq \mathrm{cap}(s_{\mathrm{out},\iota})$)
-     to prevent trivial cyclic/identity loops.
+     ($\mathrm{cap}(s_{\mathrm{in},\iota}) \neq \mathrm{cap}(s_{\mathrm{out},\iota})$).
+     This per-step guard only excludes capacity-preserving (in particular identity) single
+     transitions; it does **not** make chains acyclic: a two-cycle $a \to b \to a$ with
+     $\mathrm{cap}(a) \neq \mathrm{cap}(b)$ satisfies it at every step. Chain length is bounded
+     separately (by $L_V(i)$ in the family, and by the scan's fuel in `linearScanForwards`).
 
-2. **The Lookahead Family $S_{\mathrm{LA}}$**: This is the family of maximal lookahead chains of
-   length at most $L_V(i)$ (the number of permutation calls allocated to round $i$). Maximality
-   ensures that no chain in the family is a prefix/sub-chain of another.
+2. **The Lookahead Family $S_{\mathrm{LA}}$**: In the paper this is the family of maximal
+   lookahead chains of length at most $L_V(i)$ (the number of permutation calls allocated to
+   round $i$). The Lean structure `LookaheadSequenceFamily` records only two necessary conditions
+   on a *supplied* finite family — a pairwise non-containment (antichain-like) condition between
+   its members and the length bound. It does **not** require the family to be exhaustive (contain
+   every admissible maximal chain) nor its members to be maximal against admissible extensions
+   outside the family: the empty family always satisfies it (`LookaheadSequenceFamily.empty`),
+   and so does a singleton containing a proper, still-extendable prefix within budget. It is
+   therefore not a characterisation of $S_{\mathrm{LA}}$.
 
 3. **Extraction & Sampling (Step 2)**: The lookahead extraction procedure $\mathsf{LookAhead}$
    dispatches on the size of the family $S_{\mathrm{LA}}$:
@@ -50,10 +59,23 @@ sponge state under permutation queries starting from a given state $s$.
 ## Algorithmic Optimization
 
 While the paper defines $S_{\mathrm{LA}}$ as a static mathematical family, this module implements a
-linear forward scan (`linearScanForwards`) starting at the state $s$ to efficiently extract the
+linear forward scan (`linearScanForwards`) starting at the state $s$, intended to extract the
 unique maximal sequence. If at any point multiple forward candidates are found, the scan immediately
-aborts with `.forkErr`, which is a paper-faithful optimization since a scan-time fork coincides with
-the bad event $E_{\mathrm{fork},p}$.
+aborts with `.forkErr`; a capacity-preserving unique successor also yields `.forkErr`.
+
+**Status (unproved refinement).** No theorem in this module relates the scan's results or its error
+branches to the paper's exhaustive maximal family (and `LookaheadSequenceFamily` is too weak to
+serve as that specification, see above). The claim that the scan is a *paper-faithful*
+optimisation — that `.forkErr` coincides with $|S_{\mathrm{LA}}| > 1$ / the bad event
+$E_{\mathrm{fork},p}$, that `.done none` coincides with $S_{\mathrm{LA}} = \emptyset$, and that
+`.done (some seq)` returns the unique maximal chain — is an intended design goal, not a proved
+result; the zero-budget, absent-chain, fork and repeated-state cases are not covered by any
+refinement theorem. In particular, treating a capacity-preserving successor as an error (rather
+than as the end of the chain) is a modelling choice whose agreement with the paper is unverified.
+What *is* proved: every returned sequence is a valid `LookaheadSequence` (by construction), and
+its length is at most the fuel $L_V(i)$ (`linearScanForwards_seq_length_le`), so sampling is
+length-correct. Duplicate-pair traces are permitted by the trace model
+(`TraceDataStructures`) and are treated as multiple matches, i.e. a fork.
 -/
 
 open OracleComp OracleSpec ProtocolSpec
@@ -81,7 +103,8 @@ $((s_{\mathrm{in},\iota}, s_{\mathrm{out},\iota}))_{\iota=0}^{m-1}$ such that:
   $\iota \geq 1$, and
 - The capacity segment changes at each transition:
   $\mathrm{cap}(s_{\mathrm{in},\iota}) \neq \mathrm{cap}(s_{\mathrm{out},\iota})$,
-  guaranteeing that the chain does not contain trivial loops. -/
+  which excludes capacity-preserving single steps (including self-loops) but not multi-step
+  cycles such as $a \to b \to a$ with $\mathrm{cap}(a) \neq \mathrm{cap}(b)$. -/
 structure LookaheadSequence
     {T_P : Type}
     [LawfulTraceTable T_P (CanonicalSpongeState U) (CanonicalSpongeState U)]
@@ -98,7 +121,8 @@ structure LookaheadSequence
     pair ∈ TraceTableOps.entries (V := CanonicalSpongeState U) trΔp
   /-- `s_{out,ι-1} = s_{in,ι}` — LookAhead §5.3 Step 1(c) consecutive linkage. -/
   outputState_eq_next_inputState : List.IsChain (fun a b => a.2 = b.1) pairs
-  /-- `cap(s_{in,ι}) ≠ cap(s_{out,ι})` — LookAhead §5.3 Step 1(d) no-loop guard. -/
+  /-- `cap(s_{in,ι}) ≠ cap(s_{out,ι})` — LookAhead §5.3 Step 1(d) per-step capacity-change
+  guard (excludes self-loops; does not exclude multi-step cycles). -/
   capacitySegment_inputState_ne_outputState : ∀ pair ∈ pairs,
     pair.1.capacitySegment ≠ pair.2.capacitySegment
 
@@ -124,13 +148,19 @@ lemma LookaheadSequence.inputState_length_eq_outputState_length
   simp [LookaheadSequence.inputState, LookaheadSequence.outputState]
 
 /-- A family of look-ahead sequences (CO25, Equation 13), parameterized by a black-box
-permutation table `tr_∇.p`, an initial state $s$, and a challenge round index $i$.
-The family $S_{\mathrm{LA}}(\mathrm{tr}_{\nabla}.p, s, i)$ is a finite set of lookahead sequences
-satisfying:
-- **Maximality**: No sequence in the family is a strict subset of another, ensuring each represents
-  a maximal path.
+permutation table `tr_∇.p`, an initial state $s$, and a challenge round index $i$: a supplied
+finite set of lookahead sequences satisfying
+- **Internal non-containment**: no two distinct members are contained in one another (in the
+  unordered list-membership sense of the two fields below). This is an antichain condition
+  *within* the family only; it does not say members are maximal against admissible extensions
+  that are absent from the family.
 - **Length Bound**: The length of any sequence in the family is at most $L_V(i)$, the verifier's
-  permutation query bound for challenge round $i$. -/
+  permutation query bound for challenge round $i$.
+
+**Scope.** This is a necessary-condition interface, not the paper's exhaustive maximal family
+$S_{\mathrm{LA}}$: nothing forces every admissible maximal chain to be a member, so the empty family
+(`LookaheadSequenceFamily.empty`) and non-maximal singletons satisfy it. Any argument that needs
+"the" family must add an exhaustiveness/maximality hypothesis. -/
 structure LookaheadSequenceFamily
     (trΔp : T_P)
     (state : CanonicalSpongeState U) (i : pSpec.ChallengeIdx) where
@@ -143,10 +173,22 @@ structure LookaheadSequenceFamily
   /-- `m_k ≤ L_V(i)` — LookAhead §5.3 Step 1(a) length bound. -/
   length_le_numPermQueriesChallenge : ∀ s ∈ seqFamily, s.inputState.length ≤ pSpec.Lᵥᵢ i
 
-/-- The maximal lookahead sequence family $S_{\mathrm{LA}}(\mathrm{tr}_{\nabla}.p, s, i)$
-produced by the LookAhead extraction procedure (CO25, Section 5.3, Step 1). This is the dual
-structure to the backtracking sequence family $S_{\mathrm{BT}}(\mathrm{tr}, s)$ defined in
-`Backtrack.lean`. -/
+/-- The empty family satisfies the `LookaheadSequenceFamily` interface for every table, state
+and round, even when nonempty admissible chains exist. This records that the interface does not
+encode exhaustiveness of $S_{\mathrm{LA}}$. -/
+def LookaheadSequenceFamily.empty
+    (trΔp : T_P)
+    (state : CanonicalSpongeState U) (i : pSpec.ChallengeIdx) :
+    LookaheadSequenceFamily (pSpec := pSpec) trΔp state i where
+  seqFamily := ∅
+  maximality := by simp
+  length_le_numPermQueriesChallenge := by simp
+
+/-- Name for the lookahead family interface at $S_{\mathrm{LA}}(\mathrm{tr}_{\nabla}.p, s, i)$
+(CO25, Section 5.3, Step 1), dual to the backtracking family $S_{\mathrm{BT}}(\mathrm{tr}, s)$ in
+`Backtrack.lean`. A term of this type is *a* family meeting the necessary conditions of
+`LookaheadSequenceFamily`, not the canonical exhaustive family, and no theorem connects it to
+`lookAhead`. -/
 abbrev S_LA
     (trΔp : T_P)
     (state : CanonicalSpongeState U) (i : pSpec.ChallengeIdx) :=
@@ -364,10 +406,11 @@ private lemma successor_singleton_mem_entries
 /-! ### Optimized Linear Forwards Scan (CO25, Section 5.3, Algorithm 2)
 
 Algorithm 2 in the paper is specified via an exhaustive enumeration of the maximal sequence family
-followed by a filtering step. However, as noted in the text (line 1107), "the search stops if it
-encounters two conflicting chains". We optimize this by performing a single linear forward scan.
-Finding multiple successors at any step indicates a fork (corresponding to the event
-$E_{\mathrm{fork},p}$), allowing us to abort immediately and return an error. -/
+followed by a filtering step, and the text notes that the search stops on two conflicting chains.
+This module instead performs a single linear forward scan: finding multiple successors at any step
+is treated as a fork (intended to correspond to $E_{\mathrm{fork},p}$) and aborts with an error.
+The equivalence of this scan with the enumerate-then-filter specification is **not proved** here
+(see the module docstring's status note). -/
 
 
 /-- The result of a linear forward scan. Represents either a detected branch/fork (`forkErr`)
@@ -474,11 +517,16 @@ private def linearLookAhead
 - `state`: The initial permutation state $s \in \Sigma^{r+c}$.
 - `i`: The challenge round index.
 
-### Returns
-- `ExperimentOutput.err`: If multiple conflicting maximal lookahead sequences exist.
-- `ExperimentOutput.noResult`: If no lookahead sequences are found starting at $s$.
-- `ExperimentOutput.some \hat{\rho}_i`: If a unique maximal sequence is found; the missing rate
-  blocks are completed via uniform sampling and the resulting challenge vector is returned. -/
+### Returns (as implemented by the forward scan)
+- `ExperimentOutput.err`: if, within $L_V(i)$ steps from $s$, some visited state has two or more
+  table successors (including duplicate entries), or a unique successor that preserves the
+  capacity segment.
+- `ExperimentOutput.noResult`: if $s$ has no table successor (or $L_V(i) = 0$).
+- `ExperimentOutput.some \hat{\rho}_i`: otherwise, from the scanned chain (truncated at $L_V(i)$
+  steps); the missing rate blocks are completed via uniform sampling.
+
+That these branches coincide with $|S_{\mathrm{LA}}| > 1$, $S_{\mathrm{LA}} = \emptyset$ and the
+unique-maximal-chain case of the paper's Algorithm 2 is not proved in this module. -/
 def lookAhead
     (trΔp : T_P)
     (state : CanonicalSpongeState U) (i : pSpec.ChallengeIdx) :

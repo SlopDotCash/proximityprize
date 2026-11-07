@@ -54,12 +54,22 @@ the existential bundle* of `irreducible_factorization_of_gs_solution`:
                                        hypothesis that makes `pg_Rset` nonempty for the §5 argument.
 
 The **descent correspondence** `∀ r ∈ pg_RsetDescended, ∃ g ∈ pg_Rset, …` and the
-**coincidence** `pg_RsetDescended = pg_Rset` under separability are provided as the *honest bridges*
-(`pg_RsetDescended_descent_correspondence`, `pg_RsetDescended_eq_pg_Rset_of_*`): the per-member
+**coincidence** `pg_RsetDescended = pg_Rset` are *not* derived here: the per-member
 `g = C u · expand (qᵐ) r` descent datum lives *inside* the proof of
-`irreducible_factorization_of_gs_solution` and is **not** recoverable from its `.choose_spec`, so the
-correspondence is taken as an input where it cannot be re-derived (this is the same honesty that
-forced `hfactor` to be a hypothesis in the first place).
+`irreducible_factorization_of_gs_solution` and is **not** recoverable from its `.choose_spec`, so
+both are taken as explicit inputs (this is the same honesty that forced `hfactor` to be a
+hypothesis in the first place).  `pg_RsetDescended_descent_correspondence` and
+`pg_RsetDescended_eq_pg_Rset_of_coincide` simply return their identical hypotheses; they do not
+prove any characteristic/separability bridge.
+
+**Separability or characteristic `0` alone does not give the coincidence** (audit PG-330).  The raw
+`pg_Rset` still contains the `Y`-degree-`0` content factors of `Q`, whereas every descended member
+has positive `Y`-degree.  For example `Q = X·(Y - 1)` is separable over the fraction field (in any
+characteristic) and has the raw content factor `X`, which is never a descended member; such a `Q`
+occurs as an actual `ModifiedGuruswami` solution (over `F₅`, `n = 2`, `k = 1`, `m = 1`, rows
+`u₀ = 1`, `u₁ = 0`; a hand computation from the audit, not a Lean-checked witness).  The coincidence additionally needs `Q` to have no `Y`-degree-`0` normalized
+factors (content-free) and the descended representatives to agree with the normalized ones (a
+normalization/association condition), besides all descent exponents being `1`.
 
 ## Adequacy of the descended set for the §5 (Hensel / ClaimA2) chain
 
@@ -91,8 +101,9 @@ while making the `hfactor` obligation definitionally true.
 constructed by `Claim57ResidualsDescended.ofInTree` from the same per-field discharges used by
 `Claim57Residuals.ofInTree2` (the avoidance argument `exists_good_x₀_X_shape_ne` restated over the
 descended finite set).  The bridge `Claim57Residuals.ofDescended` converts a
-`Claim57ResidualsDescended` back into a full `Claim57Residuals` under the coincidence hypothesis
-`pg_RsetDescended = pg_Rset` (the separable / characteristic-`0` case), so the issue-#8 owner can
+`Claim57ResidualsDescended` back into a full `Claim57Residuals` under the explicit coincidence
+hypothesis `pg_RsetDescended = pg_Rset` (which needs, beyond separability with trivial descent,
+that `Q` be content-free and the representatives agree up to normalization), so the issue-#8 owner can
 adopt the descended bundle incrementally without disrupting existing `Claim57Residuals` consumers.
 
 No `sorry`/`axiom`/`native_decide`.
@@ -343,8 +354,9 @@ theorem pg_RsetDescended_nonempty
 The per-member descent datum `g = C u · expand nn r` (relating a `pg_Rset` member `g` to its
 descended root `r`) lives *inside* the proof of `irreducible_factorization_of_gs_solution` and is not
 exposed by its `.choose_spec`.  Recovering it from the bundle alone is exactly the obstruction that
-made `hfactor` unprovable.  We therefore take the correspondence as an honest input where it cannot be
-re-derived, and prove the coincidence in the separable case from it. -/
+made `hfactor` unprovable.  We therefore take the correspondence and the coincidence as honest
+inputs; the two declarations below return those inputs unchanged and do not derive the coincidence
+from separability (which would be false in general: content factors, see the module docstring). -/
 
 omit [DecidableEq (RatFunc F)] [Finite F] in
 /-- **Descent correspondence (honest bridge).**  Given the per-member descent witness — for each
@@ -353,7 +365,8 @@ descended root `r` a normalized factor `g ∈ pg_Rset` and exponent/unit data wi
 
 The hypothesis `hcorr` is the descent datum produced by `eq512_factor_descent` internally; it is
 supplied here rather than re-derived because the `.choose_spec` of `irreducible_factorization_of_gs_solution`
-does not expose the per-member `g`/`u`/`a`.  This is the honest record of the F10 divergence. -/
+does not expose the per-member `g`/`u`/`a`.  The theorem is the identity on `hcorr` (it proves
+nothing beyond its hypothesis); it is the honest record of the F10 divergence. -/
 theorem pg_RsetDescended_descent_correspondence
     (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
     (hcorr : ∀ r : F[Z][X][Y],
@@ -375,12 +388,16 @@ theorem pg_RsetDescended_descent_correspondence
   hcorr
 
 omit [DecidableEq (RatFunc F)] [Finite F] in
-/-- **Coincidence in the separable case (honest bridge).**  When the two factor families agree as
-finite sets — the situation in characteristic `0`, or whenever every normalized factor of `Q` is
-separable with descent exponent `1`, so the descent is the identity — `pg_RsetDescended = pg_Rset`.
-Supplied as a hypothesis-gated bridge: `hcoincide` is the separability/characteristic side condition
-under which the descent collapses, and the conclusion is the set equality the owner uses in
-`Claim57Residuals.ofDescended`. -/
+/-- **Coincidence (honest bridge; identity on its hypothesis).**  The conclusion
+`pg_RsetDescended = pg_Rset` is exactly the hypothesis `hcoincide`; nothing is derived.
+
+Separability or characteristic `0` alone does **not** imply this set equality (audit PG-330):
+`pg_Rset` keeps the `Y`-degree-`0` content factors of `Q` (e.g. the factor `X` of
+`Q = X·(Y - 1)`, which is separable over the fraction field), while every descended member has
+positive `Y`-degree.  The coincidence requires, in addition to every positive-degree normalized
+factor being separable with descent exponent `1`, that `Q` have no `Y`-degree-`0` normalized
+factors and that the descended representatives agree with the normalized ones.  `hcoincide` is
+the set equality the owner uses in `Claim57Residuals.ofDescended`. -/
 theorem pg_RsetDescended_eq_pg_Rset_of_coincide
     (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
     (hcoincide : pg_RsetDescended (m := m) (n := n) (k := k) (ωs := ωs) (Q := Q)
@@ -581,8 +598,9 @@ noncomputable def Claim57ResidualsDescended.ofInTree [Fintype F] (δ : ℚ)
 
 /-! ## Incremental adoption bridge — `Claim57Residuals.ofDescended`
 
-Under the coincidence hypothesis `pg_RsetDescended = pg_Rset` (the separable / characteristic-`0`
-case), a `Claim57ResidualsDescended` bundle yields a full `Claim57Residuals` bundle: the `hx0`/`hsep`
+Under the explicit coincidence hypothesis `pg_RsetDescended = pg_Rset` (not implied by
+separability or characteristic `0` alone: it also needs `Q` content-free and the representatives
+to agree up to normalization), a `Claim57ResidualsDescended` bundle yields a full `Claim57Residuals` bundle: the `hx0`/`hsep`
 fields transport along the set equality, the Johnson/largeness fields are identical, and `hfactor`
 becomes the now-trivial `pg_RsetDescended_hfactor` (rewritten along the coincidence).  This lets the
 issue-#8 owner adopt the descended bundle while still satisfying existing `Claim57Residuals`

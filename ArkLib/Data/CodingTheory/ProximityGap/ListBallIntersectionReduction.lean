@@ -11,8 +11,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.ListAroundBallIntersectionKernel
 `ListAroundBallIntersectionKernel.lean` proves the second-moment identity
 `∑_w |listAround(w,r)|² = ∑_{c,c' ∈ C} |B(c,r) ∩ B(c',r)|`.  This file turns that identity into an
 **actual upper bound on the worst-case list size** `|Λ(C,δ)| = max_w |listAround(w,r)|`, and splits the
-right-hand side into the (trivially bounded) **diagonal** and the **off-diagonal** that is the genuine
-open kernel of the Proximity Prize.
+right-hand side into the explicit **diagonal** and the **off-diagonal**.  The resulting inequality
+is a *coarse* bound: as explained below, its diagonal alone already exceeds the prize budget, so it
+is not a reduction of the Proximity Prize to the off-diagonal.
 
 The clean chain:
 
@@ -26,12 +27,17 @@ The clean chain:
   `|listAround(w₀,r)|² ≤ ∑_c |B(c,r)| + ∑_c ∑_{c'≠c} |B(c,r) ∩ B(c',r)|`.
 
 The diagonal `∑_c |B(c,r)|` is just `|C|` times the (codeword-independent) Hamming ball volume
-`V(r)` — large but *explicit* and harmless.  **Everything hard about the prize is in the off-diagonal**
-`∑_{c ≠ c'} |B(c,r) ∩ B(c',r)|`: for Reed–Solomon (an MDS code) this equals
+`V(r)` — explicit, but **not harmless**: it is nonnegative and retained in the bound, and for a
+Reed–Solomon code of dimension `k ≥ 2` it is already `|C| = q^k ≥ q²` at `r = 0` (and only grows
+with `r`).  So for any `ε* < 1` the right-hand side exceeds `ε*²·q²` *regardless of the
+off-diagonal*, and no off-diagonal bound, however strong, makes this raw inequality yield
+`listSize ≤ ε*·q` in those regimes.
+The off-diagonal `∑_{c ≠ c'} |B(c,r) ∩ B(c',r)|` for Reed–Solomon (an MDS code) equals
 `|C| · ∑_{w ≥ d} A_w · I(w,r)`, the weight-enumerator `A_w` weighted by the ball-intersection volumes
-`I(w,r) = |B(0,r) ∩ B(e,r)|` (`wt e = w`).  A *sharp* upper bound on this off-diagonal sum, beating
-`ε*²·q²`, is exactly the open kernel that pins `δ*` past the Johnson radius (the CS25/ABF26 research
-content).  This file localizes the open problem to that one machine-checked quantity.
+`I(w,r) = |B(0,r) ∩ B(e,r)|` (`wt e = w`).  A useful prize reduction would need a normalization or
+localization of the second moment (or a different treatment of the diagonal), together with the
+separate list-to-MCA dictionary; neither is provided here, and no theorem in this file proves an
+equivalence between the off-diagonal sum and the prize threshold.
 
 All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 -/
@@ -70,13 +76,15 @@ theorem sum_ball_inter_diag_offdiag (C : Finset (Fin n → F)) (r : ℕ) :
   rw [← Finset.add_sum_erase C (fun c' => (hammingBall c r ∩ hammingBall c' r).card) hc,
       Finset.inter_self]
 
-/-- **HEADLINE — the list-size reduction.**  For every received word `w₀` and radius `r`,
+/-- **HEADLINE — coarse list-size bound.**  For every received word `w₀` and radius `r`,
 `|listAround(w₀,r)|² ≤ ∑_c |B(c,r)| + ∑_c ∑_{c' ≠ c} |B(c,r) ∩ B(c',r)|`.
 
-The first (diagonal) term is `|C|·V(r)`, large but explicit and harmless.  The second (off-diagonal)
-term is the genuine open kernel: for Reed–Solomon it is `|C|·∑_{w} A_w · I(w,r)` (weight enumerator ×
-ball-intersection volumes), and a sharp upper bound on it — below `ε*²·q²` — is exactly what pins `δ*`
-past the Johnson radius.  This inequality reduces the worst-case list size to that one quantity. -/
+The first (diagonal) term is `|C|·V(r)`; it is explicit but not negligible: for Reed–Solomon of
+dimension `k ≥ 2` it is at least `q^k ≥ q²`, so for `ε* < 1` it alone exceeds `ε*²·q²` and this raw
+bound cannot certify `listSize ≤ ε*·q` however small the off-diagonal is.  The second (off-diagonal)
+term is, for Reed–Solomon, `|C|·∑_{w} A_w · I(w,r)` (weight enumerator × ball-intersection volumes).
+A prize-relevant reduction would require normalizing/localizing the diagonal and the separate
+list-to-MCA dictionary; this theorem is only the coarse second-moment inequality. -/
 theorem listSize_sq_le_diag_add_offdiag (C : Finset (Fin n → F)) (r : ℕ) (w₀ : Fin n → F) :
     (listAround C w₀ r).card ^ 2
       ≤ (∑ c ∈ C, (hammingBall c r).card)

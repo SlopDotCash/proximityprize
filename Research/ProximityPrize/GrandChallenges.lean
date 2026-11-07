@@ -60,7 +60,7 @@ threshold" content lives on the `1/n`-lattice. Two complementary lattice encodin
   this `GrandChallenges` namespace (`mcaLatticeSet`/`listLatticeSet`,
   `mcaLatticeThreshold`/`listLatticeThreshold`). Its `listLatticeThreshold` is the object
   the downstream LD-threshold bracket files
-  (`GrandChallengeLDThreshold{,Elias,JohnsonSq,HalfDist}.lean`) bound.
+  (`LDThreshold{,Elias,JohnsonSq,HalfDist}.lean`) bound.
 * `GrandChallengesLattice.lean` (plural) — `Fin (n+1)`-indexed lattice threshold in its own
   `GrandChallengesLattice` namespace, plus the step-function bridge that lets the one-sided
   witnesses (`MCALowerWitness`/`MCAUpperWitness`, `ContinuousListLowerWitness`/`ContinuousListUpperWitness`)

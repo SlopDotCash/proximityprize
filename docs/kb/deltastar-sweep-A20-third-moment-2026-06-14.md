@@ -2,8 +2,22 @@
 
 - **Date:** 2026-06-14
 - **Actionable:** A20 (merged 232-T06 / 334-T05 / 334-T13 / 357-T10), type `numerical-probe`.
-- **Status:** **PARTIAL** (decisive on the route's feasibility; route quantitatively dead at
-  prize scale). No closure of δ*.
+- **Status:** **PARTIAL** (scalar prize arithmetic only; NOT a method-wide exclusion of the
+  third-moment route — see the 2026-10-28 audit correction below). No closure of δ*.
+
+> **Audit correction (2026-10-28, R-333).** For independent uniformly chosen codewords of degree
+> `< k` (`k ≥ 1`), each evaluation is uniform in `F_q` at every point, so
+> `Pr[p₁(x)=p₂(x)=p₃(x)] = 1/q²` and `E[T] = n/q²` EXACTLY for EVERY domain of size `n`. The
+> uniform common-root mean therefore carries no smooth-vs-random signal; the sign-fluctuating
+> `E[T]` differences in the tables below are on the scale of that common mean and cannot be an
+> exact domain deviation of it (they need a stated sampling/conditioning definition, e.g. finite
+> sampling of triples). `M1` depends on the code size `q^k` and the ball volume, not on `n` alone.
+> The Lean aggregation lemma gives only `total < N·ε*` with no bound on the number/weight `N` of
+> contributing triples (there are `q^{3k}` codeword triples), and the final route theorem is the
+> transitivity consequence of the entered hypothesis `DerandRouteCarrier` (separation at most the
+> single per-triple scalar), which is not derived from actual RS quantities. No
+> third-moment-to-worst-case stability theorem is proved. The "quantitatively dead" verdicts
+> below are superseded by this conditional reading.
 - **Artifacts:**
   - probe `scripts/probes/sweep_A20_third_moment.py` (exact full-`u` moments + triple-coincidence
     distribution + scaling ladder; all exact cross-checks pass).
@@ -83,8 +97,10 @@ smooth-vs-random `E[T]` separation tracks `n/q²` (`sep/(n/q²)` stays `O(1)`, s
 **Conclusion.** The 3rd-moment derandomization route is the *correct place* to look for
 domain-dependence (M1/M2 provably blind), but its signal is `Θ(1/q²)` and is **quantitatively dead
 at prize scale** (`≤ 2^{-256}·n ≪ ε* = 2^{-128}`). It does **not** yield a worst-case δ* gap for
-explicit smooth-domain RS at the prize prime. This **closes the derandomization/moment route by an
-honest size argument** — it does not close δ* (which remains the open BGK/Gauss-period wall;
+explicit smooth-domain RS at the prize prime. *(Superseded, see the audit correction above: the
+uniform mean `E[T] = n/q²` is domain-independent, and the route exclusion is only conditional on
+the entered `DerandRouteCarrier` hypothesis; it does not close the derandomization/moment route.)*
+It does not close δ* (which remains the open BGK/Gauss-period wall;
 unaffected, since that wall is a *fixed-q, single-frequency* character-sum statement, not a
 moment-of-list-size statement).
 

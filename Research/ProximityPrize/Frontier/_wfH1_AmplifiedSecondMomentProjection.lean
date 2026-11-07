@@ -18,10 +18,14 @@ coefficients of a single `η_b` are flat). This file goes one level deeper, to t
 method actually operates at: the **amplified SECOND moment over the spectral family**
 `{η_b : b ∈ F_p^*}`, with a genuine **dilation–Hecke amplifier** `A_x(b) = Σ_l x_l η_{l b}`
 (the operators `T_l : η_b ↦ η_{lb}` are the only natural "Hecke" operators on the spectral
-index `b`). The IS method bounds the worst `b` via the amplified second moment
-`Q(x) = Σ_{b≠0} |A_x(b)|² |η_b|²`, expanded by the pre-trace formula into a quadratic form
-`Q(x) = Σ_{l,l'} x_l \overline{x_{l'}} K(l'/l)` in the **pre-trace kernel**
+index `b`). This file analyzes the **unweighted** amplified second moment
+`Q(x) = Σ_b |A_x(b)|²` (sum over all `b ∈ F_p`), which expands exactly into the quadratic form
+`Q(x) = Σ_{l,l'} x_l \overline{x_{l'}} K(l'/l)` with the **pre-trace kernel**
 `K(t) = Σ_b η_b \overline{η_{t b}}`.
+
+*Scope caveat (audit 2026-10-28).* The weighted IS form `Σ_{b≠0} |A_x(b)|² |η_b|²` does NOT expand
+into this kernel: it expands to `Σ_{l,l'} x_l \overline{x_{l'}} Σ_b η_{lb} \overline{η_{l'b}} |η_b|²`,
+a fourth-order kernel that is not analyzed here.  The no-go below concerns the unweighted form only.
 
 ## The exact structure (verified, `probe_wfH1_kernel_structure.py`, exact integer arithmetic)
 
@@ -32,9 +36,10 @@ identity (no error term, no `√q` Weil loss):
 
 because `μ_n` is a **subgroup**: the multiplicative self-correlation
 `r(t) := #{(x,y) ∈ μ_n² : x·y⁻¹ = t}` is `|μ_n| = n` when `t ∈ μ_n` and `0` otherwise. So the
-IS pre-trace kernel is `q·n` times the **indicator of the subgroup** — a *scaled orthogonal
-projection* onto the `m = (p−1)/n` multiplicative characters trivial on `μ_n` (the AVERAGING /
-Parseval eigenspace), with the FLAT eigenvalue `q·n²` on that eigenspace and `0` everywhere else.
+pre-trace kernel is `q·n` times the **indicator of the subgroup**.  Convolution with
+`q·n·1_{μ_n}` equals `q·n²·P`, where `P` is the orthogonal projection onto `μ_n`-coset-constant
+vectors (equivalently the `m = (p−1)/n` multiplicative characters trivial on `μ_n`): the FLAT
+eigenvalue is `q·n·|μ_n| = q·n²` on that eigenspace and `0` everywhere else.
 
 ## Why this is the death of IS amplification (the genuine mathematical content)
 
@@ -42,14 +47,15 @@ In the real IS method the gain comes from a Hecke kernel whose diagonal carries 
 *eigenvalue variation* and whose off-diagonal is a *Diophantine* count one can save on. Here
 there is **nothing to save**: the kernel is a flat projection. The amplified quadratic form
 `Q(x) = ⟨x, K x⟩` is therefore **maximized exactly on the projection's range** (the averaging
-direction) and is `≤ q·n·‖x‖²` for *every* amplifier `x` — the amplification "gain"
-`Q(x)/‖x‖²` is capped at the constant `q·n` and is achieved by the *flat* averaging amplifier,
+direction) and is `≤ q·n²·‖x‖²` for *every* amplifier `x` — the amplification "gain"
+`Q(x)/‖x‖²` is capped at the constant `q·n²` and is achieved by the *flat* averaging amplifier,
 never by a shape that isolates the worst `b`. So amplification certifies only the RMS / Parseval
 scale `√n` (Johnson), never the `L^∞` prize factor `√(n·log(p/n))`. The "Hecke eigenvalues"
 `λ_l(b) = η_{lb}/η_b` carry the same flat `|Gauss-sum|` modulus and provide no variation to amplify.
 
-`M(μ_n)` is therefore **NOT** a genuine amplifiable automorphic/Hecke sup-norm; the IS route
-`REDUCES-TO-FENCE` (flat spectrum, now at the second-moment level). The `√log` excess remains
+Informally, `M(μ_n)` therefore does not behave like an amplifiable automorphic/Hecke sup-norm for
+the unweighted dilation amplifier (flat spectrum, at the second-moment level); the weighted IS form
+is not covered. The `√log` excess remains
 the open BGK/Paley wall, untouched by amplification.
 
 ## What is proven here (axiom-clean)
@@ -128,9 +134,9 @@ theorem subgroup_self_correlation (H : Subgroup G) [DecidablePred (· ∈ H)] (t
 
 /-! ## 2. The abstract projection-ceiling no-go for the amplified second moment.
 
-We model the IS amplified second moment as a quadratic form `Q(x) = c · ‖P x‖²` where `P` is the
-(self-adjoint idempotent) projection onto the averaging eigenspace and `c = q·n` is the flat
-eigenvalue (the verified kernel `K = c·P`). The point: no amplifier `x` makes `Q(x)/‖x‖²` exceed
+We model the unweighted amplified second moment as a quadratic form `Q(x) = c · ‖P x‖²` where `P`
+is the (self-adjoint idempotent) projection onto the averaging eigenspace and `c = q·n²` is the flat
+eigenvalue (convolution with `K = q·n·1_{μ_n}` equals `q·n²·P`). The point: no amplifier `x` makes `Q(x)/‖x‖²` exceed
 `c`, and the maximum is attained on the range of `P` — the averaging direction. We phrase it over
 `ℝ` with the abstract data `(Q, normSq, projNormSq, c)`, the only structure used being
 `projNormSq ≤ normSq` (a projection is a contraction) and `Q = c · projNormSq`. -/
@@ -142,7 +148,7 @@ structure FlatProjectionForm where
   normSq : ℝ
   /-- projected energy `‖P x‖²` (nonneg), where `P` projects onto the averaging eigenspace. -/
   projNormSq : ℝ
-  /-- the flat kernel eigenvalue `c = q·n` (nonneg). -/
+  /-- the flat kernel eigenvalue (for the Gauss-period kernel, `c = q·n²`; nonneg). -/
   c : ℝ
   /-- the amplified second moment `Q(x) = c · ‖P x‖²`. -/
   Q : ℝ
@@ -151,13 +157,13 @@ structure FlatProjectionForm where
   c_nonneg : 0 ≤ c
   /-- `P` is a contraction (orthogonal projection): `‖P x‖² ≤ ‖x‖²`. -/
   proj_contraction : projNormSq ≤ normSq
-  /-- the verified kernel identity `K = c·P` gives `Q = c · ‖P x‖²`. -/
+  /-- the kernel identity (convolution with `K` is `c·P`) gives `Q = c · ‖P x‖²`. -/
   Q_eq : Q = c * projNormSq
 
 /--
 **The amplification ceiling (no shape gain).** For the flat-projection kernel, the amplified
 second moment is at most `c · ‖x‖²` for *every* amplifier — the "gain" `Q/‖x‖²` is capped at the
-constant flat eigenvalue `c = q·n`. No reshaping of the amplifier beats this; the bound is the
+constant flat eigenvalue `c` (`= q·n²` for the Gauss-period kernel). No reshaping of the amplifier beats this; the bound is the
 Parseval/RMS value. -/
 theorem amplified_form_le_scale (F : FlatProjectionForm) :
     F.Q ≤ F.c * F.normSq := by
@@ -167,9 +173,8 @@ theorem amplified_form_le_scale (F : FlatProjectionForm) :
 /--
 **Amplification gain is capped by the flat eigenvalue (ratio form, no shape gain).**
 For any amplifier with positive energy, the amplified second moment per unit energy `Q/‖x‖²`
-never exceeds `c`. The certified sup bound is the flat eigenvalue `c = q·n`, i.e. the RMS /
-Parseval scale `√n` (Johnson). The `L^∞` prize factor `√(log)` lies strictly above and is
-invisible to amplification. -/
+never exceeds `c` (`= q·n²` for the Gauss-period kernel), i.e. only the RMS / Parseval scale
+(informally `√n`, Johnson) is certified for the unweighted form. -/
 theorem amplification_gain_capped (F : FlatProjectionForm) (hpos : 0 < F.normSq) :
     F.Q / F.normSq ≤ F.c := by
   rw [div_le_iff₀ hpos]

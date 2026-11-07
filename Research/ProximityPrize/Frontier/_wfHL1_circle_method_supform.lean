@@ -37,11 +37,15 @@ The circle-method Fourier inversion of the relation count is the raw-moment iden
 `∑_{b∈F} η_b^{2r} = q·N₀(μ_n, 2r)` (`subgroup_gaussSum_rawMoment`), `N₀(G,2r)=E_r(G)` the `r`-fold
 additive energy. The **major arc** `b=0` gives `η_0^{2r} = n^{2r}` (`major_arc_value`); the
 **minor arcs** `b≠0` carry the deviation. Positivity of `|η_b|^{2r}` gives the induced SUP bound
-`M^{2r} ≤ q·E_r` (`sup_le_total_pow`), i.e. `M ≤ (q·E_r)^{1/2r}`. By the moment no-go
-(`MomentMethodNoGo.moment_bound_ge_card`) this is `≥ n` for **every** order `r` — the route can
-never even reach the trivial `n`, let alone the floor `√(n log m)`. Exact-integer probe at `β=4`:
-the moment optimum `min_r (q·E_r)^{1/2r}` **OVERSHOOTS** the floor (`/floor = 1.54, 1.82` at
-`n=16,32`), and the bounded-`K` Wick transfer is DEAD past depth onset (fence **F12**).
+`M^{2r} ≤ q·E_r` (`sup_le_total_pow`), i.e. `M ≤ (q·E_r)^{1/2r}`.  This *uncentered* total
+includes the major-arc term `n^{2r}`, so by the moment no-go (`MomentMethodNoGo.moment_bound_ge_card`)
+it is trivially `≥ n` for every `r`.  That says only that the uncentered total-moment bound cannot
+beat `n`; it is NOT a verdict on the circle method.  The minor-arc form, which this file also
+proves (`circle_major_minor_pow`, and `sup_le_minor_total_pow` below), is
+`M^{2r} ≤ q·E_r − n^{2r} = ∑_{b≠0} |η_b|^{2r}`, and it is not bounded below by `n`.  Exact-integer
+probe at `β=4`: the moment optimum overshoots the floor only by `1.54, 1.82` at `n=16,32`, so the
+minor-arc moment bound is informative; whether it can reach the floor is the (open) moment question
+of fence **F12** (the bounded-`K` Wick transfer is dead past depth onset), not settled here.
 
 ### (iii) The Weyl/Vinogradov SAVING mechanism is INAPPLICABLE to a multiplicative subgroup.
 Classical minor-arc savings (Weyl differencing, Vinogradov's mean value, the smooth-modulus
@@ -137,29 +141,39 @@ theorem circle_major_minor_pow {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : 
 `|η_b| ≤ M` for all `b` and `m` the number of minor-arc frequencies, `M^{2r} ≤` (any frequency's
 `2r`-th power) `≤` the total `∑_b |η_b|^{2r} = q·E_r`. We package the structural step: if a single
 nonnegative term is `≤` a finite sum of nonnegative terms, it is `≤` the sum. The circle method
-gains nothing beyond this: the minor-arc total IS the energy. -/
+gains nothing beyond the (minor-arc) energy moment. -/
 theorem sup_le_total_pow {ι : Type*} [Fintype ι] (t : ι → ℝ) (b₀ : ι)
     (ht : ∀ b, 0 ≤ t b) :
     t b₀ ≤ ∑ b, t b :=
   Finset.single_le_sum (fun b _ => ht b) (Finset.mem_univ b₀)
 
-/-- **The circle method's induced SUP estimate is the dead moment optimum (fence F1/F12).**
-The only sup bound the major/minor decomposition yields is `M^{2r} ≤ q·E_r`, i.e.
-`M ≤ (q·E_r)^{1/2r}`; with `E_r = ∑_s (c s)²` the additive energy (`c s` = #`r`-tuples summing to
-`s`, total `∑_s c s = n^r`), the moment no-go forces `(q·E_r)^{1/2r} ≥ n` for **every** order `r`.
-So the circle method cannot certify `M < n` (let alone `M ≲ √(n log m)`): its sole sup handle is
-the additive-energy moment, which is conjugate to the wall and bounded below by the trivial `n`. -/
+/-- **The minor-arc (centered) sup bound.** If `b₀` is not the major-arc index `z`, then
+`t b₀ ≤ ∑_b t b − t z`.  With `t b = |η_b|^{2r}` and `z = 0` this is
+`M^{2r} ≤ q·E_r − n^{2r} = ∑_{b≠0} |η_b|^{2r}` (cf. `circle_major_minor_pow`), the form of the
+circle-method sup bound that is NOT trivially `≥ n`. -/
+theorem sup_le_minor_total_pow {ι : Type*} [Fintype ι] [DecidableEq ι] (t : ι → ℝ) (z b₀ : ι)
+    (hb₀ : b₀ ≠ z) (ht : ∀ b, 0 ≤ t b) :
+    t b₀ ≤ ∑ b, t b - t z := by
+  rw [← Finset.sum_erase_eq_sub (Finset.mem_univ z)]
+  exact Finset.single_le_sum (fun b _ => ht b) (Finset.mem_erase.mpr ⟨hb₀, Finset.mem_univ b₀⟩)
+
+/-- **The UNCENTERED total-moment bound is `≥ n` (trivially).** With `E_r = ∑_s (c s)²` the
+additive energy (`c s` = #`r`-tuples summing to `s`, total `∑_s c s = n^r`), the moment no-go gives
+`(q·E_r)^{1/2r} ≥ n` for every order `r`.  This is because `q·E_r` contains the major-arc term
+`n^{2r}`; it shows only that the uncentered bound `M ≤ (q·E_r)^{1/2r}` cannot beat `n`.  The
+minor-arc bound `M^{2r} ≤ q·E_r − n^{2r}` (`sup_le_minor_total_pow`) is not covered. -/
 theorem circle_sup_bound_ge_card {σ : Type*} [Fintype σ] (c : σ → ℝ) (n r : ℕ) (hr : 0 < r)
     (hcount : ∑ s, c s = (n : ℝ) ^ r) :
     (n : ℝ) ≤ ((Fintype.card σ : ℝ) * ∑ s, (c s) ^ 2) ^ ((((2 * r : ℕ) : ℝ))⁻¹) :=
   moment_bound_ge_card c n r hr hcount
 
-/-- **Lane verdict as a single implication: the circle method cannot beat `n` on the SUP.**
-Contrapositive of the moment no-go: if the circle method's induced sup estimate `(q·E_r)^{1/2r}`
-were `< n`, that is impossible — for every order `r` it is `≥ n`. The minor-arc handle is the
-energy moment (handle (ii)), the van der Corput square is the 2nd moment (handle (i)), and the
-Weyl/Vinogradov saving mechanism needs interval/polynomial structure `μ_n` lacks (handle (iii));
-none escapes fence F1/F12. -/
+/-- **The uncentered total-moment estimate cannot be `< n`.**  Contrapositive of
+`circle_sup_bound_ge_card`: `(q·E_r)^{1/2r} < n` is impossible.  This concerns only the uncentered
+total (which includes the major arc `n^{2r}`); it does NOT show that the circle method cannot beat
+`n` on the sup — the minor-arc form `sup_le_minor_total_pow` is not addressed.  Informally, the
+minor-arc handle is still an energy moment (handle (ii)), the van der Corput square is the 2nd
+moment (handle (i)), and the Weyl/Vinogradov saving needs interval/polynomial structure `μ_n`
+lacks (handle (iii)). -/
 theorem circle_method_sup_dead {σ : Type*} [Fintype σ] (c : σ → ℝ) (n r : ℕ) (hr : 0 < r)
     (hcount : ∑ s, c s = (n : ℝ) ^ r)
     (hbound : ((Fintype.card σ : ℝ) * ∑ s, (c s) ^ 2) ^ ((((2 * r : ℕ) : ℝ))⁻¹) < (n : ℝ)) :
@@ -173,7 +187,10 @@ phase is linear, no degree reduction occurs. Diagonal `n`, off-diagonal `(n−1)
 terms nonnegative — the positive-definite second moment, phase-blind. We record the off-diagonal
 growth abstractly (the autocorrelation of a size-`n` set has total `n²` = `n × diagonal n`). -/
 
-/-- **Weyl-differencing off-diagonal GROWS as `(n−1)·diagonal`.** For the van der Corput square
+/-- **Ring identity `n·d − d = (n−1)·d` (notation only; audit CW-B18-19).** The Lean statement is
+this one-line identity in `ℝ` (closed by `ring`); it does not formalize the autocorrelation
+profile, the van der Corput square, or any growth statement below, which are prose motivation.
+Intended reading, with `d` the diagonal: for the van der Corput square
 `|η_b|² = ∑_h A_n(h)e_p(bh)`, the autocorrelation profile `A_n` of a size-`n` set has diagonal
 `A_n(0) = n` and total mass `∑_h A_n(h) = n²` (the `n²` ordered pairs). Hence the off-diagonal total
 is `n² − n = (n−1)·n = (n−1)·diagonal`: the differenced object is dominated by a `(n−1)`-fold
@@ -189,6 +206,7 @@ end ProximityGap.Frontier.CircleMethodSupForm
 #print axioms ProximityGap.Frontier.CircleMethodSupForm.major_arc_value
 #print axioms ProximityGap.Frontier.CircleMethodSupForm.circle_major_minor_pow
 #print axioms ProximityGap.Frontier.CircleMethodSupForm.sup_le_total_pow
+#print axioms ProximityGap.Frontier.CircleMethodSupForm.sup_le_minor_total_pow
 #print axioms ProximityGap.Frontier.CircleMethodSupForm.circle_sup_bound_ge_card
 #print axioms ProximityGap.Frontier.CircleMethodSupForm.circle_method_sup_dead
 #print axioms ProximityGap.Frontier.CircleMethodSupForm.weyl_offdiag_growing

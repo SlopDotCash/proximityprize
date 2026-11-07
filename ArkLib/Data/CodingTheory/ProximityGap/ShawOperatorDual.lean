@@ -13,10 +13,22 @@ is **exactly computable** — no unknown:
 
 > **`shawError_subgroup_eq`** — `𝒮(H; s₀, s₁) = |H| · Σ_{ψ ∈ H^⊥ ∩ s₁^⊥, ψ ≠ 0} ψ(s₀)`.
 
-So the Shaw operator IS the dual-code character sum restricted to `s₁^⊥`. The prize ball `S = ⋃ balls`
-replaces `[ψ∈H^⊥]` by the Krawtchouk factor `K_{δn}(ψ)` (Fourier transform of the Hamming ball); the
-open prize core is precisely the prize-regime bound on that Krawtchouk-weighted dual-MDS sum — which
-this exact form isolates with no remaining residual. Axiom-clean.
+So, for an additive subgroup `H`, the Shaw operator IS the dual-code character sum restricted to
+`s₁^⊥`. Axiom-clean.
+
+**What this does NOT give (audit 2026-10-28, PG-076).** The prize agreement set is a *union* of
+Hamming balls `S = ⋃_{c∈C} B(c, δn)`. Replacing `[ψ∈H^⊥]` by the Krawtchouk factor `K_{δn}(ψ)`
+(the Fourier transform of a Hamming ball) gives `|C|·[ψ∈C^⊥]·K_{δn}(ψ)`, the Fourier transform of
+the *convolution* `1_C * 1_B` of the code indicator with a ball indicator; that convolution counts
+nearby codewords with multiplicity. It equals
+the union indicator `1_S` only when the relevant balls are disjoint (unique-decoding radius), or
+after a separate multiplicity correction. Example: the binary length-2 repetition code
+`C = {00, 11}` at radius 1 has union of balls equal to all of `F_2^2`, but `1_C * 1_B` has total
+mass `2·3 = 6` (the words `01`, `10` are covered twice); at the nontrivial dual character `11` the
+union transform is `0` while the convolution transform is `2·(1 − 1 − 1) = −2`. So above unique
+decoding the Krawtchouk-weighted dual sum cannot directly replace the overlapping-union Shaw
+operator; indicator coverage and list multiplicity must be kept separate. No in-tree theorem here
+identifies the prize-ball Shaw operator with a Krawtchouk-weighted dual sum.
 -/
 set_option linter.style.longLine false
 

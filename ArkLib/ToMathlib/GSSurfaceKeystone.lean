@@ -26,16 +26,46 @@ The section-factor route, fully composed.  Working directly at the **section div
   `htrunc_sectionH` follow.
 * **Stage C** — the explicit section root: `H̃′(T − C v) = T − C v` and the branch value at
   every place is just `v(z)` (`rootSection`); plus the global `ξ ≠ 0`.
-* **Stage D** — `GSSurfaceData`, the per-`(u, P)` bundle of **GS-construction-level facts
-  only** (no Hensel, quotient-ring, or function-field content), the producer
+* **Stage D** — `GSSurfaceData`, the per-`(u, P)` producer bundle, the producer
   `curveFamilyData_of_gsSurfaceData`, and **the keystone front door**
   `correlatedAgreement_affine_curves_of_GS_surface`: `δ_ε_correlatedAgreementCurves` at every
   `δ < 1 − √ρ` from a per-`(u, P)` `GSSurfaceData` producer.
 
-Together with `FaithfulFrontierWitness` (non-vacuity: the bundle is satisfiable with good set
-`univ`) this closes the faithful-surface programme of #304: every analytic core on the route —
-section factor, base rationality, `ξ`-order, readings, truncation, extraction, keystone — is
-proven, and the remaining interface is exactly the §5/§6 GS-construction package.
+## What remains open (the producer payload)
+
+The keystone is a **conditional** theorem: the bundle `GSSurfaceData` is *not* a package of
+generic GS-interpolant degree/order facts.  Its fields are
+
+* `hsepR : R.Separable` and `hsep : (evalX (C x₀) R).Separable` — **ring-level** separability
+  over `F[Z][X]` resp. `F[Z]` (a Bézout identity with the derivative), strictly stronger than
+  separability over `F(Z)` or `discr ≠ 0`.  Along a monic linear section it forces the
+  derivative at the section to be a *unit* of `F[Z]` (`SectionXiUnit`), which is why the
+  `ξ`-order obligation trivializes; it fails e.g. for the slice `T·(T − Z)` (nonzero
+  discriminant, but `P′(0) = −Z` is not a unit), and in general at any slice with two
+  sections of non-unit difference (`SliceSeparabilityBoundary`).  Honest good-centre supply
+  (`GSSurfaceRadicalSupply`) currently yields only `F(Z)`-separability;
+* `hdegc` — degree bounds on `sectionCurveCoeff`, a quotient/function-field-derived object;
+* `htail` — tail vanishing of the `(A.1)` coefficients `αFromBeta`;
+* `hdvdP` — divisibility of the matching polynomial built through `coeffHom_loc x₀` and
+  `π_hat_z`, at the **plain** series coercion `↑(P z)`;
+* `hcong` — congruence of `↑(P z)` to the Hensel root `βHensel` modulo `X`.
+
+These are substantial analytic assumptions (Hensel-, quotient-ring- and function-field-
+derived), and no producer of them for honest variable-discriminant GS surfaces is
+constructed here.  Moreover `hdvdP`/`hcong` use the **wrong local coordinate** for the
+matching lane (issue #304 coordinate debt): `coeffHom_loc x₀` recentres the domain variable
+at `x₀`, so the matching lane's decoded root is `↑(taylor x₀ (P z))`, not `↑(P z)` (e.g. for
+`Y − X` and `P = X` recentred at `x₀ = 1`, the root is `X + 1` and the plain root gives
+`−1 ≠ 0`).  The plain-coordinate fields are therefore fillable from matching-lane output
+only for recentring-compatible families; the Taylor-corrected interface is
+`GSSurfaceTaylorRepair.correlatedAgreement_affine_curves_of_GS_surface_taylor`, which feeds
+this bundle at the shifted family `taylor s ∘ P` and transports the curve identity back.
+
+`FaithfulFrontierWitness` inhabits the companion frontier bundle `FaithfulFrontierData` at
+constant-separated data (`R = T² − T`, good set `univ`), illustrating the satisfiable
+constant-separated sector of the strong separability interface; it is not a producer for
+honest variable-discriminant GS data, and the generic GS-to-Hensel production of
+`GSSurfaceData` is **not** internally discharged by this file.
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
@@ -279,9 +309,16 @@ variable [Fintype F] [DecidableEq F]
 GS-construction level — the specialized surface is separable, the section divisor `T − v(Z)`
 divides it, the `(A.1)` tail vanishes from `n` on, the explicit section curve coefficients have
 degree `< n`, and the per-place GS cargo (matching-factor divisibility at the decoded value +
-the order-`0` congruence) holds at the section root.  No quotient-ring, function-field, or
-Hensel-internal data appears: every field is a statement about `R`, `v`, and the decoded family
-`P` itself. -/
+the order-`0` congruence) holds at the section root.
+
+This bundle is **not** free of quotient-ring, function-field, or Hensel-internal data: `hdegc`
+bounds the quotient/function-field-derived `sectionCurveCoeff`, `htail` is tail vanishing of
+`αFromBeta`, `hdvdP` is divisibility after the `coeffHom_loc`/`π_hat_z` mappings, and `hcong`
+is congruence to the `βHensel` root.  `hsepR`/`hsep` are ring-level separability over `F[Z]`
+(strictly stronger than `F(Z)`-separability; it forces unit branch separations).  `hdvdP` and
+`hcong` are stated at the plain coercion `↑(P z)`, whereas the matching polynomial is
+recentred at `x₀` and its decoded root is `↑(taylor x₀ (P z))`; the matching lane fills them
+only via the shifted family of `GSSurfaceTaylorRepair`.  See the module docstring. -/
 structure GSSurfaceData {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (u : WordStack F (Fin (k + 1)) ι) (P : F → Polynomial F) : Type where
   /-- the expansion centre. -/
@@ -340,8 +377,12 @@ noncomputable def curveFamilyData_of_gsSurfaceData {k deg : ℕ} {domain : ι �
 
 /-- **THE KEYSTONE, GS-surface interface (strict square-root radius)**: correlated agreement
 for affine curves in the Johnson regime, from per-`(u, P)` GS-construction-level inputs only —
-the bundle of facts BCIKS20 §5/§6 establishes about the Guruswami–Sudan interpolant and the
-decoded family.  All Hensel/quotient-ring/function-field content is internal and PROVEN. -/
+a producer of `GSSurfaceData`.  The *consumption* of the bundle (section factor, `ξ`-unit
+reading, truncation, extraction) is proven; the bundle itself carries ring-level separability
+and Hensel/quotient-ring/function-field-derived payload (`hdegc`, `htail`, `hdvdP`, `hcong`)
+that is **not** produced here for honest GS surfaces, and its plain-coordinate per-place
+fields differ from the matching lane's Taylor-recentred output (use
+`correlatedAgreement_affine_curves_of_GS_surface_taylor`).  See the module docstring. -/
 theorem correlatedAgreement_affine_curves_of_GS_surface
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)

@@ -29,9 +29,10 @@ Edit the source of truth, not the output.
 
 | Path | What it is | Edit directly? | Source of truth / refresh path |
 | --- | --- | --- | --- |
+| `CLAUDE.md` | compatibility symlink | No | Edit `AGENTS.md` |
 | `ArkLib.lean`, `ProximityPrize.lean`, `ProximityPrize/Extensions.lean`, generated Lake ownership block | canonical and classic production module surfaces | No | `./scripts/update-lib.sh`; verify with `./scripts/check-imports.sh` |
 | `Research/ProximityPrize/All.lean` | research import surface | No | `python3 scripts/update-research-lib.py` |
-| `scripts/residual_census.json`, `docs/wiki/residual-census.md` | strict production residual classification and source locations | No | `python3 scripts/residual_census.py --wiki-out docs/wiki/residual-census.md`; scans `ArkLib/` and `ProximityPrize/`, preserving historical campaign addenda |
+| `scripts/residual_census.json`, `docs/wiki/residual-census.md` | syntactic strict production residual inventory of `ArkLib/` and `ProximityPrize/` with source locations (heuristic labels, not a verified completion ledger) | Only the `> **Campaign addendum` blocks of the wiki page, which regeneration carries forward | `python3 scripts/residual_census.py --wiki-out docs/wiki/residual-census.md` |
 | `.lake/` | build artifacts and cache | No | `./scripts/lake-locked.sh build`, `./scripts/lake-locked.sh exe cache get` |
 | `blueprint/lean_decls` | referenced Lean declarations | No | official Lean blueprint post-parse callback over `blueprint/src/`; `leanblueprint web` refreshes it in CI |
 | `blueprint/web/`, `blueprint/print/` | generated blueprint output | No | `leanblueprint web`, `leanblueprint pdf`, or `./scripts/build-web.sh` |
@@ -115,3 +116,80 @@ Before rerendering, quarantine each retired module's `declaration-data-{module}.
 merges those per-module index and backreference files independently of its current import/database
 closure. Preserve current module/core data. Overlay site assembly can retain removed pages, so
 check its copy too. Do not patch rendered HTML or trace data.
+
+## Local knowledge-base catalogs
+
+`declarations.json` and `dedup-report.md` are ignored local outputs. On a fresh
+checkout, `python3 scripts/kb/check_generated.py` materializes both from the current
+Lean sources before checking and linting the knowledge base. Tracked bibliography
+and citation exports still require committed updates. If either catalog is tracked
+(on an older branch), the checker continues to reject stale contents.
+
+The KB workflow checks both tracked changes and newly scaffolded paper/source
+files with `git status --porcelain --untracked-files=all`. A plain `git diff` misses
+new paper stubs and can incorrectly pass after regeneration. Ignored local catalogs
+are intentionally excluded from this commitment check.
+
+## Research evidence retention
+
+The standalone campaign retains `scripts/probes/`, `_nubs_research/`,
+`_research_357/`, `_research_ll/`, and `scratchpad/` as research evidence.
+The pre-migration cleanup proposal in issue #2 is not authorization to treat
+unreferenced probes as disposable. Neither absence from CI nor a missing filename
+mention establishes that an experiment's conclusions were distilled elsewhere.
+
+Run `python3 scripts/kb/audit_probe_retention.py --output /tmp/probe-retention.json`
+from a clean snapshot with every tracked file present (use a fresh worktree if
+local deletions are pending). The command reads working-tree contents and fails
+if a tracked file is missing; it does not reconstruct deleted files from Git.
+It produces a tracked-file inventory with byte counts, SHA-256 fingerprints, and direct
+filename-reference pointers from the current tree. It does not run the probes or
+certify their mathematical claims. All entries have an explicit retain disposition;
+manual claim-level review is required before any future deletion. Keep this large
+inventory local and regenerate it when reviewing a proposed removal.
+
+### Retained archives with superseded wording
+
+Retained `_out_*.txt` archives are kept byte-for-byte, because their SHA-256
+fingerprints are pinned by the retention receipts in `docs/kb/audits/`. Some archive
+prose has since been corrected in the producer and the receipt. Cite the receipt,
+not the archive's own summary lines, for these (2026-10-28 audit, T48/T45):
+
+- `scripts/probes/_out_g94_jacobi_cocycle_metric.txt`: the introduction calls
+  `gamma2_norm` "the smallest chaining gauge value". It is the cost of the chosen
+  greedy nets at the least legal rescaling, an upper bound on the infimum over
+  admissible nets (`docs/kb/audits/g94-greedy-cost-correction-2026-09-06.md`).
+- `scripts/probes/_out_326_overdet_incidence_max_stronger_decoupling.txt`: the final
+  summary says the tight-chain margins grow "quadratically"; they grow cubically
+  (`docs/kb/audits/probe-retention-incidence-archives-2026-09-06.md`).
+- `scripts/probes/_out_324_dyadic_wall_floor_depth4.txt`: the header claims a
+  "UNIVERSAL" floor and strict improvement over depth three at every `m ≥ 2`. The
+  replay covers the finite range `m = 2..199`, and at `m = 2` both maxima equal `9`,
+  so strict improvement starts at `m = 3`
+  (`docs/kb/audits/probe-retention-dyadic-floors-2026-09-06.md`).
+- `scripts/probes/_out_466r10_transfer_skeptic.txt`: section (B) treats the
+  primitive-generator shift as the dyadic tower step and reads one mixed-moment
+  equality as an independence test. Both readings are superseded
+  (`docs/kb/audits/probe-retention-transfer-2026-09-06.md`).
+- `scripts/probes/_out_w11_c3_kill_n16.txt`: the two stage verdicts and the summary
+  header ("C=3 KILLED", "C=3 KILL SUMMARY") divide a certified spread lower bound by
+  a searched monomial lower bound. That ratio is only a comparison with the searched
+  baseline; no monomial upper bound is proved, so C=3 is unresolved at these cells.
+  The producer now prints "spread exceeds 3x searched baseline; C=3 unresolved"
+  (`docs/kb/audits/w11-search-verdict-correction-2026-09-06.md`; 2026-10-28 audit,
+  T127).
+- `scripts/probes/_out_g92_n32.txt` and `scripts/probes/_out_g92_n16.txt`: the
+  "C=3 VIOLATED (in evidence)", "C=2 violated" and "[C=3 VERDICT]" lines are the same
+  ratio of two search lower bounds. The n=32 C=3 claim is retracted in-tree:
+  `Research/ProximityPrize/Frontier/_G101FMonomialBaselineGrowth.lean` certifies a
+  monomial baseline of at least 8 at n=32, a=11, so the best ratio known there is
+  23/8. In the n=16, k=2, q=65617, a=5 row the winning "spread" `x^0+1*x^4` is the
+  `x^4` monomial class modulo the code (worstBad is invariant under codeword
+  translation and scaling), so its count 48 shows the searched monomial baseline 37
+  is incomplete. The producer `probe_g92_spread_excess_c3.py` now drops such
+  translates from the spread class and reports search separations as "C unresolved"
+  (2026-10-28 audit, T127).
+
+Exit codes recorded in dated receipts describe those historical runs, not fresh
+audit replays. A receipt whose recorded source hash differs from the current file
+certifies only that historical source.

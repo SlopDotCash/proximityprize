@@ -530,7 +530,7 @@ theorem listPrizeLatticeResolved_of_adjacent_witnesses
 list-decoding prize predicate in the `Fin (n+1)` lattice representation.
 
 This is pure representation glue: downstream files such as
-`GrandChallengeLDThresholdElias.lean` prove exact values for
+`LDThresholdElias.lean` prove exact values for
 `GrandChallenges.listLatticeThreshold`, while the prize-facing predicate here is stated using
 `listThreshold`. -/
 theorem listPrizeLatticeResolved_of_canonical_listLatticeThreshold_eq
@@ -917,7 +917,7 @@ theorem listPrizeLatticeResolved_of_lambda_elias_frontier
 list-decoding lattice prize directly.
 
 This packages the canonical `Finset ℕ` exact-threshold theorem from
-`GrandChallengeLDThresholdElias.lean` through the prize-facing `Fin (n+1)` representation:
+`LDThresholdElias.lean` through the prize-facing `Fin (n+1)` representation:
 for each prize rate, a squared Johnson certificate at `τ r` and an Elias-volume failure
 certificate at `(τ r).val + 1` determine the exact threshold. -/
 theorem listPrizeLatticeResolved_of_johnson_sq_and_elias_next

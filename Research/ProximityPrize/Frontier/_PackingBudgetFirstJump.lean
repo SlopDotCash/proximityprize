@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.PackingEnvelope
 import Research.ProximityPrize.KKH26RegimeSplit
-import Research.ProximityPrize.MCAUDR2Bound
+import Research.ProximityPrize.MCAUDRBound
 import ArkLib.Data.CodingTheory.ProximityGap.MCAListBracketInterpolation
 import Research.ProximityPrize.MCALatticeExact
 
@@ -453,8 +453,8 @@ theorem mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
     have hbudget_good' : ((Fintype.card (Fin n) : ℕ) : ℝ≥0∞) /
         (Fintype.card (ZMod p) : ℝ≥0∞) ≤ ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by
       simpa [Fintype.card_fin, ZMod.card] using hbudget_good
-    refine le_trans (ProximityGap.UDR2.epsMCA_rs_udr2_le dom 2 (by simp; omega)
-      δprev ?_ ?_ ?_) hbudget_good'
+    refine le_trans (ProximityGap.UDRwire.epsMCA_rs_udr_le_full dom 2 (by simp; omega)
+      δprev ?_ ?_) hbudget_good'
     · rw [hprev_ratio]
       have hwudr : w ≤ Code.uniqueDecodingRadius
           (ReedSolomon.code dom 2 : Set (Fin n → ZMod p)) := by
@@ -464,13 +464,6 @@ theorem mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
       have hdist := (Code.dist_le_UDR_iff_relDist_le_relUDR
         (ReedSolomon.code dom 2 : Set (Fin n → ZMod p)) w).1 hwudr
       simpa [Fintype.card_fin] using hdist
-    · have hceil : ⌈(1 - δprev) * (Fintype.card (Fin n) : ℝ≥0)⌉₊ = a := by
-        dsimp only [δprev]
-        simpa [Fintype.card_fin] using
-          (ProximityGap.ceil_one_sub_one_sub_div (ι := Fin n) a ha_card)
-      rw [hceil, Fintype.card_fin]
-      dsimp only [a]
-      omega
     · have hceil : ⌈(1 - δprev) * (Fintype.card (Fin n) : ℝ≥0)⌉₊ = a := by
         dsimp only [δprev]
         simpa [Fintype.card_fin] using

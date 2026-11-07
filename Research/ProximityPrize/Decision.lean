@@ -9,6 +9,7 @@ import Research.ProximityPrize.RadiusOneExact
 import Research.ProximityPrize.MCAEndpointLower
 import Research.ProximityPrize.MCAEndpointUpper
 import Research.ProximityPrize.SubsetSumRadiusOne
+import Research.ProximityPrize.PrizeRateBounds
 
 /-!
 # Decision of the formalized §1 Grand MCA Prize at both field-size extremes
@@ -136,37 +137,6 @@ theorem epsMCA_one_bracket (domain : ι ↪ F) (k : ℕ) (hk : k ≤ Fintype.car
     epsMCA (F := F) (A := F) (ReedSolomon.code domain k : Set (ι → F)) 1 ≤
       (2 ^ (Fintype.card ι) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) :=
   ⟨epsMCA_one_ge domain k hk, epsMCA_le_two_pow_card_div (ReedSolomon.code domain k) 1⟩
-
-/-- Every prize rate is `≤ 1/2`. -/
-private lemma prizeRates_le_half (j : Fin 4) : prizeRates j ≤ 1 / 2 := by
-  unfold prizeRates
-  have h2 : (2 : ℝ≥0) ^ (1 : ℕ) ≤ 2 ^ (j.val + 1) :=
-    pow_le_pow_right₀ one_le_two (by omega)
-  rw [pow_one] at h2
-  exact div_le_div_of_nonneg_left (by norm_num) (by norm_num) h2
-
-/-- For `n ≥ 2`, every prize-rate degree satisfies `k_j + 1 ≤ n`. -/
-private lemma prizeRate_floor_add_one_le (j : Fin 4) (hn : 2 ≤ Fintype.card ι) :
-    ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ + 1 ≤ Fintype.card ι := by
-  set k := ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ with hk_def
-  have h2 : (2 : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by exact_mod_cast hn
-  have hkr : (k : ℝ≥0) ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) := by
-    rw [hk_def]
-    refine le_trans (Nat.floor_le (by positivity)) ?_
-    gcongr
-    exact prizeRates_le_half j
-  have hcast : ((k + 1 : ℕ) : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by
-    push_cast
-    calc (k : ℝ≥0) + 1
-        ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) + 1 := by gcongr
-      _ ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) + (1 / 2) * (Fintype.card ι : ℝ≥0) := by
-          gcongr
-          calc (1 : ℝ≥0) = (1 / 2) * 2 := by norm_num
-            _ ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) := by gcongr
-      _ = (Fintype.card ι : ℝ≥0) := by
-          rw [← add_mul]
-          norm_num
-  exact_mod_cast hcast
 
 /-- **Domain-sensitive small-field decision via subset sums.**
 For any prize-rate index `j`, let

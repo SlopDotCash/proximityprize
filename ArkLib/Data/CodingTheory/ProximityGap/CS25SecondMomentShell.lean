@@ -20,9 +20,14 @@ This file composes the linear identity `∑_w (closeCount)² = |𝒞|·∑_{v∈
 `ballInterCount(r,v) ≤ #{x : |x| ≤ r ∧ |v| ≤ |x|+r}` (`ballInterCount_le_shell`) into the sharp
 second-moment bound whose inner term depends only on `|v|` (a Hamming shell `|v|−r ≤ |x| ≤ r`).
 Grouping codewords by weight and feeding the MDS weight-enumerator count `A_w ≤ C(n,w)·q^{w−(n−k)}`
-(`rs_near_codeword_count_le`) turns this into the `∑_w A_w · shell(w)` estimate whose leading-order
-covered-fraction condition `H_2^q(2δ) − H_2^q(δ) + δ ≤ ρ` **does** hold near capacity — the correct
-analytic path for the remaining band (`√`-deviation) arithmetic.
+(`rs_near_codeword_count_le`) is intended to turn this into a `∑_w A_w · shell(w)` estimate whose
+leading-order covered-fraction condition `H_2^q(2δ) − H_2^q(δ) + δ ≤ ρ` holds near capacity. That
+grouping, the enumerator estimate and the asymptotic analysis are **not** carried out here; this
+file proves only the shell inequality below.
+
+The shell term is nonincreasing in `|v|` but only weakly: for `|v| ≤ r` the shell is the whole ball
+`B(0,r)`, so the per-pair term equals `V`. The bound is strictly below `|𝒞|·|𝒞|·V` exactly when
+some codeword has weight `> r`.
 -/
 
 open scoped BigOperators
@@ -34,9 +39,10 @@ variable {F : Type*} [Fintype F] [DecidableEq F] [AddCommGroup F]
 
 /-- **Sharp distance-dependent second moment.**  `∑_w (closeCount 𝒞 r w)² ≤ |𝒞| · ∑_{v∈𝒞} (shell of
 `v`)`, where the shell `#{x : |x| ≤ r ∧ |v| ≤ |x|+r}` depends only on the codeword weight `|v|` and
-thins to a sphere as `|v| → 2r`.  Strictly sharper than the loss-of-distance `ballInterCount ≤ V`
-bound of `sum_closeCount_sq_le`; this is the foundation of the MDS-weight covered-fraction estimate
-for the CS25 `ε_ca = 1` breakdown. -/
+thins to a sphere as `|v| → 2r`.  Never weaker than the loss-of-distance `ballInterCount ≤ V`
+bound of `sum_closeCount_sq_le`, and strictly sharper only when some `v ∈ 𝒞` has `|v| > r` (for
+`|v| ≤ r` the shell is the whole ball); intended as the input to the (not yet formalized)
+MDS-weight covered-fraction estimate for the CS25 `ε_ca = 1` breakdown. -/
 theorem sum_closeCount_sq_le_shell (𝒞 : Finset (ι → F)) (r : ℕ)
     (hsub : ∀ a ∈ 𝒞, ∀ b ∈ 𝒞, a - b ∈ 𝒞)
     (hadd : ∀ a ∈ 𝒞, ∀ b ∈ 𝒞, a + b ∈ 𝒞) :

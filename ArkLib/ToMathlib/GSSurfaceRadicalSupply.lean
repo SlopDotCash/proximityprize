@@ -45,7 +45,7 @@ demands a **unit** derivative-resultant — strictly stronger than `discr ≠ 0`
   boundary (`branchCert_eq_zero` forces `H.natDegree = 1`) this is exactly the regime in
   which the composed capstones are non-vacuously instantiable.
 
-## The good-centre (Route A1) counting legs
+## The good-centre (Route A1) counting and avoidance legs
 
 The centre slice is the **middle-`X`** specialization `evalX (C x₀) Q₀ =
 Q₀.map (evalRingHom (C x₀))`.  At any centre where the `Y`-leading coefficient survives:
@@ -65,12 +65,28 @@ Q₀.map (evalRingHom (C x₀))`.  At any centre where the `Y`-leading coefficie
   `Separable` is exactly the unit-resultant condition of
   `integerRepCentreSupply_of_resultant_isUnit` — see Lemma 2′, not derivable from
   `discr ≠ 0`);
-* `radical_rep_good_centre_charZero` — the char-0 capstone for the **squarefree part**:
-  for any integer representative `W₀` of `radical Q` of a GS interpolant with a decoded
-  linear factor, `W₀.discr ≠ 0` holds unconditionally
-  (`integer_rep_discr_ne_zero` + `separable_map_radical`), so the good-centre count above
-  fires and produces a centre with degree preservation, `discr (slice) ≠ 0`, and
-  `F(Z)`-separability of the slice;
+* `exists_eval_C_ne_zero_of_infinite` / `exists_good_centre_slice_fracSeparable_of_infinite`
+  — the **infinite-field avoidance** counterpart of the count: over an infinite field a
+  nonzero `P ∈ F[Z][X]` survives `X ↦ C x₀` at some `x₀`, so positive `Y`-degree plus
+  `discr_Y Q₀ ≠ 0` already give a good centre, with no `Z`-witnesses and no budget;
+* `radical_integerRep_natDegree_pos` — an integer representative `W₀` of `radical Q` has
+  positive `Y`-degree once `Q` has a decoded linear factor (no characteristic hypothesis);
+* `radical_rep_good_centre_of_witnesses` — the **finite-field** good-centre leg for the
+  **squarefree part**, in any characteristic: the explicit `Z`-witnesses
+  (`W₀.leadingCoeff|_{Z:=z₁} ≠ 0`, `W₀.discr|_{Z:=z₂} ≠ 0`) and the field-size budget feed
+  the count above.  The discriminant witness is a genuine hypothesis: in positive
+  characteristic `radical Q` need not be separable over the imperfect field `Frac(K[X])`,
+  so `W₀.discr ≠ 0` is not automatic, and over a finite field even a nonzero `W₀.discr`
+  can vanish under every specialization `Z := z`;
+* `radical_rep_good_centre_charZero` — the **characteristic-zero** capstone for the
+  squarefree part: `W₀.discr ≠ 0` holds unconditionally (`separable_map_radical` over the
+  perfect field `Frac(K[X])` + `integer_rep_discr_ne_zero`), and a characteristic-zero
+  field is infinite, so the avoidance leg produces a centre with degree preservation,
+  `discr (slice) ≠ 0`, and `F(Z)`-separability of the slice — no witnesses, no budget, no
+  finiteness assumption.  (An earlier revision stated this name under
+  `[CharZero F] [Fintype F]`, which no field satisfies (`CharZero.infinite`), and proved it
+  from the finite count without using the characteristic; that finite-field content is now
+  `radical_rep_good_centre_of_witnesses`);
 * `surface_dvd_radical_integerRep` — the documented radical-replacement bridge for the
   lane: the decoded surface factor transfers to the integer representative of the
   squarefree part (`radical_linearFactor_dvd_iff` + `surface_dvd_integerRep`).
@@ -380,7 +396,80 @@ theorem exists_good_centre_slice_fracSeparable [Fintype F] [DecidableEq F]
   exact ⟨x₀, hdeq, hdne,
     slice_separable_map_of_discr_ne_zero (by rw [hdeq]; exact hdeg) hdne⟩
 
-/-! ## §5 — the char-0 radical (squarefree-part) capstone and the lane bridge -/
+/-- **Infinite-field avoidance for the middle-`X` evaluation** (the infinite-field
+counterpart of the counting leg `ProximityGap.c56_evalC_bad_set_card_le`): over an infinite
+field every nonzero `P ∈ F[Z][X]` survives the evaluation `X ↦ C x₀` at some centre
+`x₀ ∈ F`.  Pick a nonzero `X`-coefficient `P.coeff i ∈ F[Z]` and a non-root `z` of it; the
+`Z`-specialization `P|_{Z:=z} ∈ F[X]` is then nonzero, and any non-root `x₀` of it works,
+since `(P.eval (C x₀)).eval z = P|_{Z:=z}.eval x₀`.  No witness or field-size budget is
+needed. -/
+theorem exists_eval_C_ne_zero_of_infinite [Infinite F] {P : F[X][X]} (hP : P ≠ 0) :
+    ∃ x₀ : F, P.eval (Polynomial.C x₀) ≠ 0 := by
+  -- a nonzero `X`-coefficient of `P`, and a non-root `z` of it
+  obtain ⟨i, hi⟩ : ∃ i, P.coeff i ≠ 0 := by
+    by_contra hall
+    refine hP (Polynomial.ext fun i => ?_)
+    rw [Polynomial.coeff_zero]
+    by_contra hi
+    exact hall ⟨i, hi⟩
+  obtain ⟨z, hz⟩ : ∃ z : F, (P.coeff i).eval z ≠ 0 := by
+    by_contra hall
+    refine hi (Polynomial.zero_of_eval_zero _ fun z => ?_)
+    by_contra hz
+    exact hall ⟨z, hz⟩
+  -- the `Z`-specialization `P|_{Z:=z}` is nonzero: its `i`-th coefficient survives
+  set g : F[X] := P.map (Polynomial.evalRingHom z) with hg
+  have hg0 : g ≠ 0 := by
+    intro h0
+    apply hz
+    have h1 := congrArg (fun q : F[X] => q.coeff i) h0
+    simpa only [hg, Polynomial.coeff_map, Polynomial.coe_evalRingHom,
+      Polynomial.coeff_zero] using h1
+  obtain ⟨x₀, hx₀⟩ : ∃ x₀ : F, g.eval x₀ ≠ 0 := by
+    by_contra hall
+    refine hg0 (Polynomial.zero_of_eval_zero _ fun x => ?_)
+    by_contra hx
+    exact hall ⟨x, hx⟩
+  -- naturality of `eval` under the `Z`-evaluation: `(P.eval (C x₀)).eval z = g.eval x₀`
+  have hnat : (Polynomial.evalRingHom z) (P.eval (Polynomial.C x₀)) = g.eval x₀ := by
+    have hev : P.eval (Polynomial.C x₀)
+        = P.eval₂ (RingHom.id (Polynomial F)) (Polynomial.C x₀) := (Polynomial.eval₂_id).symm
+    rw [hev, Polynomial.hom_eval₂ P (RingHom.id (Polynomial F)) (Polynomial.evalRingHom z)
+      (Polynomial.C x₀)]
+    have hcx : (Polynomial.evalRingHom z) (Polynomial.C x₀) = x₀ := by simp
+    rw [hcx, RingHom.comp_id, hg, Polynomial.eval_map]
+  refine ⟨x₀, fun h0 => hx₀ ?_⟩
+  rw [← hnat, h0, map_zero]
+
+/-- **The good-centre slice capstone over an infinite field**: if `Q₀` has positive
+`Y`-degree and nonzero `Y`-discriminant, some centre `x₀` preserves the slice `Y`-degree,
+keeps `discr (slice) ≠ 0`, and makes the slice separable over `F(Z)` — with no `Z`-witnesses
+and no field-size budget (`exists_eval_C_ne_zero_of_infinite` applied to
+`Q₀.leadingCoeff * Q₀.discr`).  This is the avoidance counterpart of the finite count
+`exists_good_centre_slice_fracSeparable`. -/
+theorem exists_good_centre_slice_fracSeparable_of_infinite [Infinite F]
+    {Q₀ : F[X][X][Y]} (hdeg : 0 < Q₀.natDegree) (hdisc : Q₀.discr ≠ 0) :
+    ∃ x₀ : F, (Bivariate.evalX (Polynomial.C x₀) Q₀).natDegree = Q₀.natDegree ∧
+      (Bivariate.evalX (Polynomial.C x₀) Q₀).discr ≠ 0 ∧
+      ((Bivariate.evalX (Polynomial.C x₀) Q₀).map
+        (algebraMap F[X] (RatFunc F))).Separable := by
+  have hQ₀ : Q₀ ≠ 0 := by
+    intro h0
+    rw [h0, Polynomial.natDegree_zero] at hdeg
+    exact absurd hdeg (lt_irrefl 0)
+  have hlc : Q₀.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hQ₀
+  obtain ⟨x₀, hx₀⟩ := exists_eval_C_ne_zero_of_infinite (mul_ne_zero hlc hdisc)
+  rw [Polynomial.eval_mul] at hx₀
+  have hlcx : Q₀.leadingCoeff.eval (Polynomial.C x₀) ≠ 0 := left_ne_zero_of_mul hx₀
+  have hdx : Q₀.discr.eval (Polynomial.C x₀) ≠ 0 := right_ne_zero_of_mul hx₀
+  have hdeq := slice_natDegree_eq_of_leadingCoeff_eval_ne hlcx
+  have hdne : (Bivariate.evalX (Polynomial.C x₀) Q₀).discr ≠ 0 := by
+    rw [slice_discr_eq_of_leadingCoeff_eval_ne hdeg hlcx]
+    exact hdx
+  exact ⟨x₀, hdeq, hdne,
+    slice_separable_map_of_discr_ne_zero (by rw [hdeq]; exact hdeg) hdne⟩
+
+/-! ## §5 — the radical (squarefree-part) good-centre capstones and the lane bridge -/
 
 /-- **The decoded surface transfers to the integer representative of the squarefree
 part** — the radical-replacement bridge for the lane: the K-level decoded factor
@@ -397,37 +486,18 @@ theorem surface_dvd_radical_integerRep {Q : (RatFunc F)[X][Y]} (hQ0 : Q ≠ 0)
   GSSurfaceSupply.surface_dvd_integerRep hrep hw
     ((GuruswamiSudan.OverRatFunc.radical_linearFactor_dvd_iff hQ0 p).mpr hdvdK)
 
-/-- **The char-0 good-centre capstone for the squarefree part** (the X-shape sibling of
-`radical_rep_good_specialization_charZero`): for any integer representative `(e, W₀)` of
-`radical Q` of a nonzero GS interpolant with a decoded linear factor, `W₀.discr ≠ 0` holds
-*unconditionally* (`separable_map_radical` + `integer_rep_discr_ne_zero`), so under the
-explicit bad-centre budget there is a centre `x₀` with the slice `Y`-degree preserved (and
-positive), `discr (slice) ≠ 0`, and the slice separable over `F(Z)`.
-
-Together with `surface_dvd_radical_integerRep` (the surface) and
-`integerRepCentreSupply_of_separable_slice` (Node A modulo the `F[Z]`-level upgrade), this
-is the deepest honest Route-A1 supply for the radical lane: what separates it from the full
-`IntegerRepCentreSupply x₀ W₀` is *exactly* the `F(Z)`-vs-`F[Z]` separability gap (the
-unit-resultant condition of Lemma 2′). -/
-theorem radical_rep_good_centre_charZero [CharZero F] [Fintype F] [DecidableEq F]
-    {Q : (RatFunc F)[X][Y]} (hQ0 : Q ≠ 0)
+/-- **The integer representative of the squarefree part has positive `Y`-degree** once the
+interpolant has a decoded linear factor: `natDegree_radical_pos_of_linearFactor_dvd` gives
+`0 < deg_Y (radical Q)`, and the representative equation `hrep` (an injective coefficient
+map on the left, a nonzero constant multiple on the right) transports it to `W₀`.  No
+characteristic or finiteness hypothesis is used. -/
+theorem radical_integerRep_natDegree_pos {Q : (RatFunc F)[X][Y]} (hQ0 : Q ≠ 0)
     {e : F[X]} {W₀ : F[X][X][Y]} (he : e ≠ 0)
     (hrep : W₀.map (Polynomial.mapRingHom (algebraMap F[X] (RatFunc F))) =
       Polynomial.C (Polynomial.C (algebraMap F[X] (RatFunc F) e)) * radical Q)
     {p : (RatFunc F)[X]}
-    (hdvd : (Polynomial.X - Polynomial.C p) ∣ Q)
-    (z₁ z₂ : F)
-    (hlcz : W₀.leadingCoeff.map (Polynomial.evalRingHom z₁) ≠ 0)
-    (hdz : W₀.discr.map (Polynomial.evalRingHom z₂) ≠ 0)
-    (hcard : (W₀.leadingCoeff.map (Polynomial.evalRingHom z₁)).natDegree
-        + (W₀.discr.map (Polynomial.evalRingHom z₂)).natDegree < Fintype.card F) :
-    ∃ x₀ : F, (Bivariate.evalX (Polynomial.C x₀) W₀).natDegree = W₀.natDegree ∧
-      0 < (Bivariate.evalX (Polynomial.C x₀) W₀).natDegree ∧
-      (Bivariate.evalX (Polynomial.C x₀) W₀).discr ≠ 0 ∧
-      ((Bivariate.evalX (Polynomial.C x₀) W₀).map
-        (algebraMap F[X] (RatFunc F))).Separable := by
-  -- positive `Y`-degree of `W₀`, transferred from the squarefree part (as in
-  -- `radical_rep_good_specialization_charZero`)
+    (hdvd : (Polynomial.X - Polynomial.C p) ∣ Q) :
+    0 < W₀.natDegree := by
   have hWdeg : 0 < (radical Q : (RatFunc F)[X][Y]).natDegree :=
     GuruswamiSudan.OverRatFunc.natDegree_radical_pos_of_linearFactor_dvd hQ0 hdvd
   have hrad0 : (radical Q : (RatFunc F)[X][Y]) ≠ 0 := radical_ne_zero
@@ -447,11 +517,100 @@ theorem radical_rep_good_centre_charZero [CharZero F] [Fintype F] [DecidableEq F
   have h3 : (W₀.map (Polynomial.mapRingHom (algebraMap F[X] (RatFunc F)))).natDegree =
       (radical Q : (RatFunc F)[X][Y]).natDegree := by
     rw [hrep, Polynomial.natDegree_mul hcc hrad0, Polynomial.natDegree_C, zero_add]
-  have hdeg : 0 < W₀.natDegree := by
-    rw [← h1, h3]; exact hWdeg
+  rw [← h1, h3]
+  exact hWdeg
+
+/-- **The finite-field good-centre leg for the squarefree part** (any characteristic): for
+any integer representative `(e, W₀)` of `radical Q` of a nonzero GS interpolant with a
+decoded linear factor, `W₀` has positive `Y`-degree (`radical_integerRep_natDegree_pos`), so
+the explicit bad-centre count `exists_good_centre_slice_fracSeparable` applies: given
+`Z`-witnesses `z₁, z₂` with `W₀.leadingCoeff|_{Z:=z₁} ≠ 0` and `W₀.discr|_{Z:=z₂} ≠ 0` and
+the field-size budget, there is a centre `x₀` with the slice `Y`-degree preserved (and
+positive), `discr (slice) ≠ 0`, and the slice separable over `F(Z)`.
+
+The discriminant witness `hdz` is a genuine hypothesis, not a consequence of the radical
+structure: in positive characteristic `radical Q` need not be separable over the imperfect
+field `Frac(K[X])` (then `W₀.discr = 0`), and over a finite field even a nonzero `W₀.discr`
+can vanish under every specialization `Z := z`.  When `deg_Y Q < char F`, the nonvanishing
+`W₀.discr ≠ 0` itself follows from `separable_map_radical_of_natDegree_lt_ringChar` and
+`integer_rep_discr_ne_zero` (the route of `radical_rep_good_specialization_largeChar` in
+`GSLargeCharSeparable`), but a witness `z₂` is still needed for this count.  For the
+characteristic-zero (hence infinite-field) regime see `radical_rep_good_centre_charZero`.
+
+Together with `surface_dvd_radical_integerRep` (the surface) and
+`integerRepCentreSupply_of_separable_slice` (Node A modulo the `F[Z]`-level upgrade), this
+is the deepest honest Route-A1 supply for the radical lane: what separates it from the full
+`IntegerRepCentreSupply x₀ W₀` is *exactly* the `F(Z)`-vs-`F[Z]` separability gap (the
+unit-resultant condition of Lemma 2′). -/
+theorem radical_rep_good_centre_of_witnesses [Fintype F] [DecidableEq F]
+    {Q : (RatFunc F)[X][Y]} (hQ0 : Q ≠ 0)
+    {e : F[X]} {W₀ : F[X][X][Y]} (he : e ≠ 0)
+    (hrep : W₀.map (Polynomial.mapRingHom (algebraMap F[X] (RatFunc F))) =
+      Polynomial.C (Polynomial.C (algebraMap F[X] (RatFunc F) e)) * radical Q)
+    {p : (RatFunc F)[X]}
+    (hdvd : (Polynomial.X - Polynomial.C p) ∣ Q)
+    (z₁ z₂ : F)
+    (hlcz : W₀.leadingCoeff.map (Polynomial.evalRingHom z₁) ≠ 0)
+    (hdz : W₀.discr.map (Polynomial.evalRingHom z₂) ≠ 0)
+    (hcard : (W₀.leadingCoeff.map (Polynomial.evalRingHom z₁)).natDegree
+        + (W₀.discr.map (Polynomial.evalRingHom z₂)).natDegree < Fintype.card F) :
+    ∃ x₀ : F, (Bivariate.evalX (Polynomial.C x₀) W₀).natDegree = W₀.natDegree ∧
+      0 < (Bivariate.evalX (Polynomial.C x₀) W₀).natDegree ∧
+      (Bivariate.evalX (Polynomial.C x₀) W₀).discr ≠ 0 ∧
+      ((Bivariate.evalX (Polynomial.C x₀) W₀).map
+        (algebraMap F[X] (RatFunc F))).Separable := by
+  have hdeg : 0 < W₀.natDegree := radical_integerRep_natDegree_pos hQ0 he hrep hdvd
   obtain ⟨x₀, hdeq, hdne, hsep⟩ :=
     exists_good_centre_slice_fracSeparable hdeg z₁ z₂ hlcz hdz hcard
   exact ⟨x₀, hdeq, by rw [hdeq]; exact hdeg, hdne, hsep⟩
+
+/-- **The characteristic-zero good-centre capstone for the squarefree part** (the X-shape
+sibling of `radical_rep_good_specialization_charZero`): over a field of characteristic
+zero, for any integer representative `(e, W₀)` of `radical Q` of a nonzero GS interpolant
+with a decoded linear factor, `W₀.discr ≠ 0` holds *unconditionally*
+(`separable_map_radical` over the perfect field `Frac(K[X])` + `integer_rep_discr_ne_zero`).
+A characteristic-zero field is infinite (`CharZero.infinite`), so the avoidance leg
+`exists_good_centre_slice_fracSeparable_of_infinite` produces a centre `x₀` with the slice
+`Y`-degree preserved (and positive), `discr (slice) ≠ 0`, and the slice separable over
+`F(Z)` — with no `Z`-witnesses, no field-size budget and no finiteness assumption.
+
+An earlier revision stated this name under `[CharZero F] [Fintype F]`: no field satisfies
+both, so that statement supplied no centre for any field, and its proof used the finite
+count with explicit witnesses rather than the characteristic.  That finite-field content is
+now `radical_rep_good_centre_of_witnesses`.  As there, what separates this conclusion from
+the full `IntegerRepCentreSupply x₀ W₀` is the `F(Z)`-vs-`F[Z]` separability gap of the
+slice. -/
+theorem radical_rep_good_centre_charZero [CharZero F]
+    {Q : (RatFunc F)[X][Y]} (hQ0 : Q ≠ 0)
+    {e : F[X]} {W₀ : F[X][X][Y]} (he : e ≠ 0)
+    (hrep : W₀.map (Polynomial.mapRingHom (algebraMap F[X] (RatFunc F))) =
+      Polynomial.C (Polynomial.C (algebraMap F[X] (RatFunc F) e)) * radical Q)
+    {p : (RatFunc F)[X]}
+    (hdvd : (Polynomial.X - Polynomial.C p) ∣ Q) :
+    ∃ x₀ : F, (Bivariate.evalX (Polynomial.C x₀) W₀).natDegree = W₀.natDegree ∧
+      0 < (Bivariate.evalX (Polynomial.C x₀) W₀).natDegree ∧
+      (Bivariate.evalX (Polynomial.C x₀) W₀).discr ≠ 0 ∧
+      ((Bivariate.evalX (Polynomial.C x₀) W₀).map
+        (algebraMap F[X] (RatFunc F))).Separable := by
+  have hdeg : 0 < W₀.natDegree := radical_integerRep_natDegree_pos hQ0 he hrep hdvd
+  -- characteristic zero: `Frac(K[X])` is perfect, so the squarefree part is separable there
+  haveI : CharZero (RatFunc F) :=
+    charZero_of_injective_algebraMap (algebraMap F (RatFunc F)).injective
+  haveI : CharZero ((RatFunc F)[X]) :=
+    charZero_of_injective_algebraMap
+      (Polynomial.C_injective : Function.Injective (Polynomial.C (R := RatFunc F)))
+  haveI : CharZero (FractionRing ((RatFunc F)[X])) :=
+    charZero_of_injective_algebraMap
+      (IsFractionRing.injective ((RatFunc F)[X]) (FractionRing ((RatFunc F)[X])))
+  have hsep : ((radical Q : (RatFunc F)[X][Y]).map
+      (algebraMap (RatFunc F)[X] (FractionRing ((RatFunc F)[X])))).Separable :=
+    GuruswamiSudan.OverRatFunc.separable_map_radical Q
+  -- hence the integer representative has nonzero `Y`-discriminant, with no witness
+  have hdisc : W₀.discr ≠ 0 :=
+    GuruswamiSudan.OverRatFunc.integer_rep_discr_ne_zero he hrep hdeg hsep
+  -- infinite-field avoidance (`F` is infinite in characteristic zero)
+  obtain ⟨x₀, hdeq, hdne, hsepx⟩ := exists_good_centre_slice_fracSeparable_of_infinite hdeg hdisc
+  exact ⟨x₀, hdeq, by rw [hdeq]; exact hdeg, hdne, hsepx⟩
 
 /-! ## §6 — Node B producers (`SurfaceSeparabilitySupply`) -/
 
@@ -524,7 +683,11 @@ end ArkLib
 #print axioms ArkLib.GSSurfaceRadicalSupply.exists_good_centre_slice_discr_ne_zero
 #print axioms ArkLib.GSSurfaceRadicalSupply.slice_separable_map_of_discr_ne_zero
 #print axioms ArkLib.GSSurfaceRadicalSupply.exists_good_centre_slice_fracSeparable
+#print axioms ArkLib.GSSurfaceRadicalSupply.exists_eval_C_ne_zero_of_infinite
+#print axioms ArkLib.GSSurfaceRadicalSupply.exists_good_centre_slice_fracSeparable_of_infinite
 #print axioms ArkLib.GSSurfaceRadicalSupply.surface_dvd_radical_integerRep
+#print axioms ArkLib.GSSurfaceRadicalSupply.radical_integerRep_natDegree_pos
+#print axioms ArkLib.GSSurfaceRadicalSupply.radical_rep_good_centre_of_witnesses
 #print axioms ArkLib.GSSurfaceRadicalSupply.radical_rep_good_centre_charZero
 #print axioms ArkLib.GSSurfaceRadicalSupply.surfaceSeparabilitySupply_of_linear
 #print axioms ArkLib.GSSurfaceRadicalSupply.surfaceSeparabilitySupply_of_prod_surfaces

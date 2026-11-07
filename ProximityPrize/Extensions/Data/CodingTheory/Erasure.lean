@@ -18,10 +18,20 @@ import ProximityPrize.Extensions.Data.CodingTheory.Basic.Distance
 /-!
 # Erasure correction for codes over a finite alphabet
 
-A generic erasure-correction predicate `SupportsErasureCorrection C ecor`
-asserting that a deterministic algorithm exists that recovers any codeword
-`u ∈ C` from a partial observation `f : ι → Option F` with strictly fewer
-than `δ_min(C) · |ι|` erasures, and returns `⊥` otherwise.
+* `HasErasureDecoder C` — the *functional* erasure-correction predicate: some
+  function (not necessarily computable, let alone efficient) recovers any
+  codeword `u ∈ C` from a partial observation `f : ι → Option F` with strictly
+  fewer than `minDist C` erasures, and returns `none` otherwise.
+* `SupportsErasureCorrection C ecor` — the ABF26 Definition 6.4 shape, which
+  carries a correction-time parameter `ecor`. **The parameter is inert**: no
+  algorithm or cost semantics is modelled, so `SupportsErasureCorrection C e`
+  is definitionally `HasErasureDecoder C` for every `e`
+  (`supportsErasureCorrection_iff`). Do not read any value of `ecor` as a
+  certified running time.
+* `hasErasureDecoder` — every set `C` has a functional erasure decoder (classical
+  choice of the unique agreeing codeword, uniqueness from the canonical
+  `eq_of_consistent_with_erased`). This is decoder *existence* only; it is not
+  the efficient-decoding content of [GRS25].
 
 Lives in `Data/CodingTheory/` rather than at the protocol layer (where the
 ABF26 toy problem originally introduced it) because the predicate is generic
@@ -33,7 +43,7 @@ oracles consumes the same shape.
 This predicate is paper-tagged to ABF26 D6.4 (Arnon-Boneh-Fenzi 2026, §6.2);
 the corresponding "every additive code can be erasure decoded in polynomial
 time" lemma is L6.5 in the same paper (citing GRS25 = Guruswami-Rudra-Sudan,
-*Essential Coding Theory*).
+*Essential Coding Theory*). Only its functional (existence) part is formalized.
 -/
 
 namespace CodingTheory
@@ -42,27 +52,23 @@ open Code
 
 variable {ι F : Type*} [Fintype ι]
 
-/-- **ABF26 Definition 6.4** (erasure-correction predicate).
+/-- **Functional erasure decoder** (the correctness part of ABF26 Definition 6.4).
 
-A code `C ⊆ (ι → F)` supports **erasure correction with correction
-time `ecor`** if there exists a deterministic algorithm `E_C` that, on
-any input `f : ι → Option F`:
+A code `C ⊆ (ι → F)` has an erasure decoder if there is a function
+`E_C : (ι → Option F) → Option (ι → F)` that, on any input `f`:
 
-  (i)  if `f` has strictly fewer than `δ_min(C) · |ι|` erasures and
-       there exists a (necessarily unique) codeword `u ∈ C` agreeing
-       with `f` off the erasures, then `E_C(f) = some u`;
-  (ii) otherwise `E_C(f) = none`.
+  (i)  if `f` has strictly fewer than `minDist C` erasures and there exists a
+       (necessarily unique) codeword `u ∈ C` agreeing with `f` off the
+       erasures, returns `some u`;
+  (ii) otherwise returns `none`.
 
-Clause (ii) — easy to miss in a quick port from the paper — is what
-makes the predicate non-vacuous: without it,
-`E := fun _ ↦ some <arbitrary>` satisfies the recovery clause for any
-`f` whose preconditions fail, hollowing the definition out.
+Clause (ii) — easy to miss in a quick port from the paper — is what makes the
+predicate non-vacuous: without it, `E := fun _ ↦ some <arbitrary>` satisfies
+the recovery clause for any `f` whose preconditions fail.
 
-The running-time bound `ecor` is carried as a numeric parameter for
-downstream complexity bookkeeping (e.g. ABF26 L6.5's
-`O((s · n)^3)` cost claim) but is not encoded operationally here. -/
-def SupportsErasureCorrection [DecidableEq F]
-    (C : Set (ι → F)) (_ecor : ℕ) : Prop :=
+Nothing here constrains *how* `E_C` computes: this predicate says nothing about
+running time or even computability. -/
+def HasErasureDecoder [DecidableEq F] (C : Set (ι → F)) : Prop :=
   ∃ E : (ι → Option F) → Option (ι → F),
     ∀ (f : ι → Option F),
       -- (i) recovery clause
@@ -73,5 +79,56 @@ def SupportsErasureCorrection [DecidableEq F]
       (¬ (∃ u ∈ C, (∀ i, f i = some (u i) ∨ f i = none) ∧
             (Finset.univ.filter (fun i ↦ f i = none)).card < Code.minDist C) →
         E f = none)
+
+/-- **ABF26 Definition 6.4** (erasure-correction predicate), paper shape.
+
+The paper says `C` supports erasure correction *with correction time `ecor`*.
+Only the functional content is formalized: the time bound `_ecor` is an
+**inert** parameter (no algorithm/cost semantics is modelled), so this is
+definitionally `HasErasureDecoder C` for every value of `_ecor`
+(`supportsErasureCorrection_iff`). In particular instances at `ecor = 0`,
+`ecor = 1`, or any other value are interchangeable, and no theorem stated with
+this predicate certifies a running time. -/
+def SupportsErasureCorrection [DecidableEq F]
+    (C : Set (ι → F)) (_ecor : ℕ) : Prop :=
+  HasErasureDecoder C
+
+/-- The correction-time parameter of `SupportsErasureCorrection` is inert. -/
+theorem supportsErasureCorrection_iff [DecidableEq F] (C : Set (ι → F)) (ecor : ℕ) :
+    SupportsErasureCorrection C ecor ↔ HasErasureDecoder C :=
+  Iff.rfl
+
+/-- **Every code has a functional erasure decoder.** When fewer than `minDist C`
+symbols are erased the agreeing codeword is unique
+(`eq_of_consistent_with_erased`), so the classical decoder returning that
+witness (and `none` when there is none) satisfies both clauses. No additivity
+is needed, and no efficiency is claimed: the decoder is defined by
+`Classical.choose`. -/
+theorem hasErasureDecoder [DecidableEq F] (C : Set (ι → F)) : HasErasureDecoder C := by
+  classical
+  let good : (ι → Option F) → (ι → F) → Prop :=
+    fun f u ↦ u ∈ C ∧ (∀ i, f i = some (u i) ∨ f i = none) ∧
+      (Finset.univ.filter (fun i ↦ f i = none)).card < Code.minDist C
+  let E : (ι → Option F) → Option (ι → F) :=
+    fun f ↦ if h : ∃ u, good f u then some h.choose else none
+  refine ⟨E, fun f ↦ ⟨?_, ?_⟩⟩
+  · intro u huC hagree hsmall
+    have hex : ∃ u, good f u := ⟨u, huC, hagree, hsmall⟩
+    change E f = some u
+    rw [show E f = some hex.choose from dite_eq_left_of_eq_true (eq_true hex)]
+    obtain ⟨hcC, hca, _⟩ := hex.choose_spec
+    exact congrArg some (eq_of_consistent_with_erased hcC huC hca hagree hsmall)
+  · intro hno
+    have : ¬ ∃ u, good f u := by
+      rintro ⟨u, huC, hagree, hsmall⟩
+      exact hno ⟨u, huC, hagree, hsmall⟩
+    change E f = none
+    exact dite_eq_right_of_eq_false (eq_false this)
+
+/-- Paper-shape corollary: `SupportsErasureCorrection C ecor` holds for **every**
+`ecor` — a direct witness that the parameter carries no runtime content. -/
+theorem supportsErasureCorrection [DecidableEq F] (C : Set (ι → F)) (ecor : ℕ) :
+    SupportsErasureCorrection C ecor :=
+  hasErasureDecoder C
 
 end CodingTheory

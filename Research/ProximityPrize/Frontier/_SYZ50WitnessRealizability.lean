@@ -32,7 +32,9 @@ actual over-budget stack.  The band Venn model (SYZ27/28/37/G172) forces, at rat
 **Question A — is `{balanced interior} ∩ {band-realizable, rate 1/2}` empty?**  **NO — it is
 NONEMPTY.**  Exhaustive integer enumeration (`k ≤ 40`) finds **65 982** balanced-interior
 band-realizable profiles; the smallest is `n = 14`, `k = 7`, `(a,b,c) = (4,4,4)`, `t = 2`
-(cores of size `s = a+b+t = 10`, radius `δ = 4/14 = 2/7 ∈ (1/4,1/3)`, interior band).  **So the
+(cores of size `s = a+b+t = 10`, radius `δ = 4/14 = 2/7 ∈ (1/4,1/3)`, i.e. the `2n/3 < s < 3n/4`
+core band — but **below** the
+Johnson radius `1 − √(1/2) ≈ 0.293`, so outside the decisive strip `(Johnson, 1/3)`).  **So the
 counting/Venn overflow is *not* a global closing argument**: the balanced interior does meet the
 realizable polytope at rate `1/2`.
 
@@ -43,6 +45,9 @@ disjointness then needs `a+b+c+t = 12+1 = 13 ≤ 12` — **impossible**.  The `�
 the band budget demands.  It is a domain-membership artifact of the whole-subgroup, **one domain
 point short** of band-realizability: the general balanced law is `n ≥ 3d + 1`
 (`balanced_profile_needs_domain`), and `μ_{3d}` (here `μ₁₂`, `d = 4`) misses it by exactly `1`.
+Scope: this verdict is for the whole-subgroup domain `n = 12` only.  The same three disjoint root
+sets also lie in `μ₁₂ ⊂ 𝔽₃₇^× = μ₃₆`, and at `n = 36, k = 18` the profile passes the `Realizable`
+relaxation with `t = 13` (`mu12_profile_realizable_n36`) — though not `StrictBandCores`.
 
 **Question C — do band-realizable configs carry *fresh* on-domain `ι = 2` witnesses?**  **YES.**
 Over `μ₁₄ ⊂ 𝔽₂₉` the `(4,4,4)`, `t = 2` config yields **357** genuine constant-syzygy level-set
@@ -57,8 +62,9 @@ over-budget stack (the SYZ42 syndrome-configuration existence) is the unchanged 
 ## Honest verdict
 
 The polytope intersection is **nonempty**, so `ι ≤ 1` at rate `1/2` is **not** closed by a
-pure counting/overflow argument.  What *is* newly pinned: the SYZ49 `μ₁₂` witness is **not**
-band-realizable (it is a whole-subgroup artifact, `n = 3d` short of the band's `n ≥ 3d + 1`),
+pure counting/overflow argument.  What *is* newly pinned: on its whole-subgroup domain `n = 12` the
+SYZ49 `μ₁₂` witness is **not** band-realizable (`n = 3d` short of the band's `n ≥ 3d + 1`; on a
+larger domain such as `μ₃₆` the profile does pass the `Realizable` relaxation),
 and the genuine gate is neither domain-membership (SYZ48/49) nor Venn-counting (this file) but
 the **over-budget-stack lift** (SYZ42 existence core / SYZ28 pencil yield).  CORE remains OPEN /
 ON-BGK — with the shield now correctly located one level deeper than SYZ49 left it.
@@ -84,6 +90,12 @@ pairwise-exclusive overlap regions), triple-region size `t`, half-length `k` (do
 * **disjointness** `a + b + c + t ≤ 2k` (all four regions are disjoint domain subsets);
 * **budget cap** `max(a,b,c) + 1 + t ≤ k`, i.e. `max(a,b,c) ≤ k − 1 − t` (SYZ37);
 * **interior slack** `2k + 1 ≤ (a + b + c) + 2t`, i.e. `a+b+c ≥ 2(k−1−t)+3` (G172).
+
+These are only **necessary** conditions (a relaxation): they do not guarantee three integer
+cores in the strict band `2n/3 < |core| < 3n/4`.  `StrictBandCores` (§4b) adds the private
+coordinate ownership, and `realizable_not_strictBandCores` shows the gap (audit finding L129).
+Negative results about `Realizable` (such as `syz49_mu12_witness_not_realizable`) transfer to
+strict-band cores; positive ones need `StrictBandCores`.
 
 Subtraction-free `ℕ` phrasing so `omega` can drive everything. -/
 def Realizable (a b c t k : ℕ) : Prop :=
@@ -116,8 +128,9 @@ theorem balanced_profile_needs_domain {d t k : ℕ} (h : Realizable d d d t k) :
 /-- **The SYZ49 `μ₁₂` witness is band-non-realizable.**  At the prize domain size `n = 12`
 (`k = 6`) no triple-region size `t` makes the balanced `(4,4,4)` profile band-realizable:
 `balanced_profile_needs_domain` would require `3·4 + 1 = 13 ≤ 12`, false.  So the explicit
-on-domain `ι = 2` witness of SYZ49 — living on the *whole* subgroup `μ₁₂ = μ_{3·4}` — is a
-domain-membership artifact, **not** the overlap geometry of any band stack. -/
+on-domain `ι = 2` witness of SYZ49 — living on the *whole* subgroup `μ₁₂ = μ_{3·4}` — is not the
+overlap geometry of any band stack **on the domain `n = 12`**.  The statement fixes `k = 6`; it says
+nothing about larger domains containing the same root sets (cf. `mu12_profile_realizable_n36`). -/
 theorem syz49_mu12_witness_not_realizable : ¬ ∃ t : ℕ, Realizable 4 4 4 t 6 := by
   rintro ⟨t, h⟩
   have := balanced_profile_needs_domain h; omega
@@ -145,6 +158,46 @@ theorem balanced_interior_meets_realizable :
     ∃ a b c t k : ℕ, Realizable a b c t k ∧ BalancedInterior a b c :=
   ⟨4, 4, 4, 2, 7, witness_realizable_n14, witness_balanced_interior⟩
 
+/-! ## 4b. Strict-band core ownership: `Realizable` is only a relaxation -/
+
+/-- **Strict-band cores with private ownership.**  With pair regions `S_AB, S_AC, S_BC` of sizes
+`a, b, c`, triple region `T` of size `t`, and private (single-core) regions of sizes
+`pA, pB, pC`, the cores `S_AB ∪ S_AC ∪ T ∪ P_A`, `S_AB ∪ S_BC ∪ T ∪ P_B`,
+`S_AC ∪ S_BC ∪ T ∪ P_C` all fit in the `n = 2k` domain and lie in the strict interior band
+`2n/3 < s < 3n/4`, i.e. `4k + 1 ≤ 3s` and `4s + 1 ≤ 6k`. -/
+def StrictBandCores (a b c t k : ℕ) : Prop :=
+  Realizable a b c t k ∧ ∃ pA pB pC : ℕ,
+    a + b + c + t + pA + pB + pC ≤ 2 * k ∧
+    4 * k + 1 ≤ 3 * (a + b + t + pA) ∧ 4 * (a + b + t + pA) + 1 ≤ 6 * k ∧
+    4 * k + 1 ≤ 3 * (a + c + t + pB) ∧ 4 * (a + c + t + pB) + 1 ≤ 6 * k ∧
+    4 * k + 1 ≤ 3 * (b + c + t + pC) ∧ 4 * (b + c + t + pC) + 1 ≤ 6 * k
+
+/-- **The relaxation is strictly weaker (audit finding L129).**  `(a,b,c,t,k) = (4,5,5,3,9)`
+passes `Realizable`, but at `n = 18` each core needs at least `13` coordinates: the prescribed
+regions give cores of sizes `12, 12, 13` and occupy `17` coordinates, leaving one coordinate for
+the two private points that are needed. -/
+theorem realizable_not_strictBandCores :
+    Realizable 4 5 5 3 9 ∧ ¬ StrictBandCores 4 5 5 3 9 := by
+  refine ⟨by refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩ <;> decide, ?_⟩
+  rintro ⟨_, pA, pB, pC, hdom, hA, _, hB, _, hC, _⟩
+  omega
+
+/-- **The `n = 14` witness profile has genuine strict-band cores** (no private coordinates:
+all three cores have size `10`, and `28 < 30`, `40 < 42`). -/
+theorem strictBandCores_n14 : StrictBandCores 4 4 4 2 7 :=
+  ⟨witness_realizable_n14, 0, 0, 0, by decide⟩
+
+/-- **The `n = 12` verdict is domain-specific (audit CW-B13-12).**  The SYZ49 root sets lie in
+`μ₁₂ ⊂ 𝔽₃₇^× = μ₃₆`; at `n = 36` (`k = 18`) the balanced `(4,4,4)` profile with `t = 13` passes
+`Realizable` (`25 ≤ 36`, `4+1+13 = 18 ≤ 18`, `37 ≤ 12+26`).  It does not, however, admit strict-band
+cores with private ownership (each core would need `≥ 25` points, i.e. `≥ 4` private points apiece,
+exceeding the `11` free coordinates). -/
+theorem mu12_profile_realizable_n36 :
+    Realizable 4 4 4 13 18 ∧ ¬ StrictBandCores 4 4 4 13 18 := by
+  refine ⟨by refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩ <;> decide, ?_⟩
+  rintro ⟨_, pA, pB, pC, hdom, hA, _, hB, _, hC, _⟩
+  omega
+
 /-! ## 5. Question D — the pencil-yield lift ceiling on the realizable witness -/
 
 /-- **Lift ceiling ≤ budget on the `n = 14` realizable witness.**  Each core hosts its two
@@ -165,3 +218,6 @@ end ArkLib.ProximityGap.SYZ50
 #print axioms ArkLib.ProximityGap.SYZ50.witness_balanced_interior
 #print axioms ArkLib.ProximityGap.SYZ50.balanced_interior_meets_realizable
 #print axioms ArkLib.ProximityGap.SYZ50.lift_ceiling_le_budget
+#print axioms ArkLib.ProximityGap.SYZ50.realizable_not_strictBandCores
+#print axioms ArkLib.ProximityGap.SYZ50.strictBandCores_n14
+#print axioms ArkLib.ProximityGap.SYZ50.mu12_profile_realizable_n36

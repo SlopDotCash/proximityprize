@@ -9,8 +9,22 @@ per (n, q, a) cell, where worst_* is the worst-offset bad-scalar count
 x^j + c*x^j' vs the best a-far monomial direction x^j.
 
 History: windowed SumsetExtremal REFUTED (466-r1-windowed-extremal-spread-beats);
-C = 2 REFUTED in evidence (466b-p5-referee: >= 21 vs 9 at n=16,k=4,a=7).
-Live constant: C = 3.  A measured in-window ratio > 3 kills C = 3.
+C = 2 search separation (466b-p5-referee: >= 21 vs searched 9 at n=16,k=4,a=7).
+Live constant: C = 3.
+
+Verdict discipline (2026-10-28 audit, T127): both worst_spread and worst_mono
+are SEARCH LOWER BOUNDS.  Dividing two lower bounds does not lower-bound the
+ratio of the true maxima, so a measured ratio > C is only a separation from the
+searched baseline; it refutes C only together with a proved UPPER bound on the
+worst monomial count at that cell.  The verdict strings therefore say
+"C unresolved".  (The archived n=32 "C=3 VIOLATED" lines were retracted by
+G101F: certified monoBaseline >= 8 at n=32,a=11, so the best ratio is 23/8.)
+
+Canonicalization (T127): worstBad is invariant under adding a codeword to the
+direction and under nonzero scaling (worstBad_add_codeword / worstBad_smul in
+Frontier/_G92SpreadExcessProbe.lean).  A pair x^j + c*x^j' with j < k <= j' is
+therefore the monomial class x^j' modulo RS_k, not a two-frequency direction;
+such pairs are excluded from the spread class (see canonical_direction).
 
 Conventions (identical to probe_466b_p5_referee.py / Frontier/_SpreadExcessLaw.lean):
   - domain = mu_n in F_q (q prime, n | q-1), RS_k = degree-<k evaluations;
@@ -43,6 +57,37 @@ os.environ.setdefault("OPENBLAS_NUM_THREADS", "4")
 os.environ.setdefault("MKL_NUM_THREADS", "4")
 
 import numpy as np
+
+
+def canonical_direction(j: int, jp: int, c: int, k: int):
+    """Class of the direction x^j + c*x^jp (j < jp, c != 0) modulo RS_k and scaling.
+
+    Returns ("code", None) when both exponents are < k (the direction is a
+    codeword), ("mono", jp) when only j < k (subtract the codeword x^j and scale
+    by 1/c), and ("spread", (j, jp, c)) for a genuine two-frequency direction.
+    """
+    if not 0 <= j < jp:
+        raise ValueError("expected 0 <= j < jp")
+    if c == 0:
+        raise ValueError("expected a nonzero second coefficient")
+    if jp < k:
+        return ("code", None)
+    if j < k:
+        return ("mono", jp)
+    return ("spread", (j, jp, c))
+
+
+def separation_flag(ratio: float) -> str:
+    """Verdict text for a spread/monomial ratio of two search lower bounds.
+
+    A ratio above C separates the spread witness from the searched monomial
+    baseline only; without a monomial upper bound it does not refute C.
+    """
+    if ratio > 3:
+        return "spread exceeds 3x searched baseline; C=3 unresolved"
+    if ratio > 2:
+        return "spread exceeds 2x searched baseline; C=2 unresolved"
+    return ""
 
 
 def is_prime(m: int) -> bool:
@@ -434,11 +479,20 @@ def run_cell(amb, a, rng, budget, n_spread_search, forced_pairs, cvals,
           f"{ {j: mono_pk[j]['agreemax'] for j in elig_m} }", flush=True)
 
     # census: spreads (all pairs x cvals) -- agreemax only, cheap
+    # Only genuine two-frequency directions enter the spread class; pairs with
+    # one exponent < k are monomial classes modulo RS_k (canonical_direction).
     spread_am = {}
+    n_mono_class = 0
     for (j, jp) in itertools.combinations(range(n), 2):
         for c in cvals:
+            kind, _ = canonical_direction(j, jp, c, k)
+            if kind != "spread":
+                n_mono_class += kind == "mono"
+                continue
             u1 = (amb.mono(j) + c * amb.mono(jp)) % q
             spread_am[(j, jp, c)] = amb.agreemax_only(u1)
+    print(f"  canonicalized {n_mono_class} pair directions to monomial classes "
+          f"mod RS_{k} (excluded from the spread class)", flush=True)
     elig_s = {key: am for key, am in spread_am.items() if am < a}
     am_hist = {}
     for am in elig_s.values():
@@ -514,8 +568,7 @@ def run_cell(amb, a, rng, budget, n_spread_search, forced_pairs, cvals,
             ver = f"per-gamma({len(sample)}/{len(bl)})"
 
     ratio = smax / mmax if mmax else float("inf")
-    flag = "*** C=3 VIOLATED (in evidence) ***" if ratio > 3 else \
-        ("C=2 violated" if ratio > 2 else "")
+    flag = separation_flag(ratio)
     stag = "-" if skey is None else f"x^{skey[0]}+{skey[2]}*x^{skey[1]}"
     print(f"  [VERDICT] n={n} k={k} q={q} a={a}: worst_spread(lb) = {smax} "
           f"({stag}), worst_mono(lb) = {mmax}"
@@ -621,9 +674,11 @@ def main():
               f"[{r['ver']}]")
         if r["ratio"] > 3:
             viol.append(r)
-    print(f"\n[C=3 VERDICT] cells with ratio > 3: {len(viol)}")
+    print(f"\n[C=3 SEARCH SUMMARY] cells where spread exceeds 3x searched "
+          f"baseline: {len(viol)} (C=3 unresolved: baselines are search lower "
+          f"bounds, no monomial upper bound)")
     for r in viol:
-        print(f"  VIOLATION: n={r['n']} k={r['k']} q={r['q']} a={r['a']} "
+        print(f"  SEPARATION (search only): n={r['n']} k={r['k']} q={r['q']} a={r['a']} "
               f"spread={r['spread']} mono={r['mono']} ratio={r['ratio']:.3f} "
               f"witness u0={r['spread_wit']}")
     print(f"[total {time.time()-t0:.0f}s]", flush=True)

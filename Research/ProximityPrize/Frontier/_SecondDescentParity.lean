@@ -28,7 +28,13 @@ This is `secondDescentSplit` below (a ring identity, any commutative ring). The 
 shares `v = u²`, so `(A² − u O²)(−u) = EVEN(v) − u·ODD(v)`; a level-2 **core** point has
 `ODD(v) = 0`, a level-2 **isolated** point has `ODD(v) ≠ 0`.
 
-## The head-parity dichotomy (the OBSTRUCTION, measured exact, PROVEN structurally)
+## The head-parity dichotomy (the OBSTRUCTION; measured/informal — NOT formalized)
+
+Only two trivial ring identities are formalized for this section
+(`secondDescent_headEven_odd_drops`: `2·(Ae·0) − Oe² − X·Oo² = −Oe² − X·Oo²`, and
+`secondDescent_head_reinjection`: `(x − y) + y = x` for `x = 2·Ae·Ao`). No degree statement, no
+"only halving case" claim, and no `v₂(gcd(a,b)) − 1` level count is formalized; the degree
+assertions below are informal/measured.
 
 Write `A = HEAD − E`, `HEAD = u^{a/2} + γ·u^{b/2}`, `deg E < k/2`. The odd part of `A` is
 `Ao = HEADo − Eo`, where `HEADo` is the odd part of the head.
@@ -37,7 +43,8 @@ Write `A = HEAD − E`, `HEAD = u^{a/2} + γ·u^{b/2}`, `deg E < k/2`. The odd p
   `2·Ae·Ao = −2·Ae·Eo` then has degree `deg Ae + deg Eo ≈ (a/2)/2 + (deg E)/2 ≈ a/4`
   *whenever `Eo ≠ 0`* (E has an odd part) — the head **re-injects** degree `≈ a/4`.  Only if
   *also* `Eo = 0` (E even) does `2·Ae·Ao = 0` and `deg ODD = deg(odd part of O²) ≈ deg O` — the
-  genuine halving.  (`secondDescent_headEven_odd_drops`: if `Ao = 0` then `ODD = −Oe² − v·Oo²`.)
+  genuine halving.  (Formalized only as the identity `secondDescent_headEven_odd_drops`: substituting
+`Ao = 0` gives `ODD = −Oe² − v·Oo²`; the degree consequence is informal.)
 * **Head-odd sub-case** (`a/2` or `b/2` odd): `HEADo ≠ 0`, so `Ao` carries a degree-`≈ a/4` term
   and `2·Ae·Ao` has degree `≈ deg Ae + deg Ao ≈ a/2`.  The √ obstructs: `deg ODD ≈ deg A`, no
   halving.  A quadratic-character twist does **not** restore a polynomial descent — it only
@@ -46,8 +53,8 @@ Write `A = HEAD − E`, `HEAD = u^{a/2} + γ·u^{b/2}`, `deg E < k/2`. The odd p
 
 ## What the descent DOES and DOES NOT buy (honest scope; the verdict)
 
-**Does:** the head exponents halve `(a, b) ↦ (a/2, b/2)` **as long as both stay even**, i.e. for
-exactly `v₂(gcd(a,b)) − 1` levels — a `2`-adic count tied to `n = 2^μ`, **not** `log₂ k`.  The
+**Does (informal, not formalized here):** the head exponents halve `(a, b) ↦ (a/2, b/2)` **as long
+as both stay even**, i.e. for `v₂(gcd(a,b)) − 1` levels — a `2`-adic count tied to `n = 2^μ`, **not** `log₂ k`.  The
 clean head-even-and-`E`-even descent terminates with `O` a constant and `iso = 0` (base case).
 
 **Does NOT:** make `deg O` halve in general.  The codeword tail `E` generically has an odd part,
@@ -111,19 +118,18 @@ theorem secondDescentSplit_neg (Ae Ao Oe Oo : F[X]) (u : F) :
 
 /-! ## The head-parity dichotomy -/
 
-/-- **Head-even drop (the only halving case).**  When `A` has *no odd part* (`Ao = 0`, i.e. the
-head exponents `a/2, b/2` are both even AND the tail `E` is even), the cross term `2·Ae·Ao`
-vanishes and the second-descent odd polynomial is `ODD = −Oe² − X·Oo²` — degree `≈ deg O`, the
-genuine halving.  This is the *only* configuration in which `deg ODD` is governed by `O` (small)
-rather than by the head `A` (≈ `a/4`). -/
+/-- **Head-even substitution identity.**  A ring identity only: substituting `Ao = 0` into
+`ODD = 2·Ae·Ao − Oe² − X·Oo²` gives `ODD = −Oe² − X·Oo²`. Informally, `Ao = 0` is the head-even,
+tail-even case, where `deg ODD` is then governed by `O` rather than by the head; that degree claim
+(and the claim that this is the only halving case) is NOT formalized. -/
 theorem secondDescent_headEven_odd_drops (Ae Oe Oo : F[X]) :
     (2 * (Ae * (0 : F[X])) - Oe ^ 2 - X * Oo ^ 2) = - Oe ^ 2 - X * Oo ^ 2 := by
   ring
 
-/-- **Head re-injection (the obstruction).**  With a nonzero odd part `Ao ≠ 0`, the odd polynomial
-carries the head term `2·Ae·Ao`.  We record the structural fact that `ODD + Oe² + X·Oo² = 2·Ae·Ao`
-— so `deg ODD` is controlled by `deg(Ae·Ao) ≈ deg A` exactly when `Ae·Ao ≠ 0`.  (The measured
-`deg ODD = a/4` whenever the codeword tail `E` has an odd part.) -/
+/-- **Head re-injection identity.**  A ring identity only (`(x − y) + y = x`):
+`ODD + Oe² + X·Oo² = 2·Ae·Ao`. Informally, when `Ae·Ao ≠ 0` the head term tends to control
+`deg ODD` (measured `deg ODD = a/4` whenever the codeword tail `E` has an odd part); no degree
+statement is formalized here. -/
 theorem secondDescent_head_reinjection (Ae Ao Oe Oo : F[X]) :
     (2 * (Ae * Ao) - Oe ^ 2 - X * Oo ^ 2) + (Oe ^ 2 + X * Oo ^ 2) = 2 * (Ae * Ao) := by
   ring
@@ -161,7 +167,7 @@ def SecondDescentStuckResidual (F : Type*) [Field F] (k : ℕ) : Prop :=
       (∀ x ∈ s, (A ^ 2 - X * O ^ 2).IsRoot x ∧ O.eval x ≠ 0) →
         s.card ≤ k + 1
 
-/-- Documentation anchor: the second descent peels `v₂(gcd(a,b)) − 1` head-even levels, then stalls
+/-- Documentation-only placeholder (`Unit`, no mathematical content): the second descent informally peels `v₂(gcd(a,b)) − 1` head-even levels, then stalls
 at the head-odd level. Its recorded unrestricted root-count residual is false. The intended
 decoded-family count still needs a correctly restricted statement and proof. -/
 def secondDescentNote : Unit := ()

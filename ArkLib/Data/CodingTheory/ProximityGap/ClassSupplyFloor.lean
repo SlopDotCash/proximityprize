@@ -23,6 +23,15 @@ mechanism as the reusable floor:
 > `ExplainableCoreSupply dom k m B` obeys `C(s, k+m+1) ≤ B` for every class
 > size `s ≤ n` realizable by a word in the quantified family.
 
+**For the uncapped predicate this floor is subsumed (audit 2026-10-28, PG-079).**
+`ExplainableCoreSupply` quantifies over every word, codewords included, so the
+case `s = n` (a constant word, itself a codeword) already gives the exact
+maximum: `ExplainableCoreSupply dom k m B ↔ C(n, k+m+1) ≤ B`
+(`ProximityGap.Ownership.explainableCoreSupply_iff`).  Every sub-binomial
+uncapped instance is refuted outright, and class sizes `s < n` add nothing
+there.  The class-structure floor is informative only for capped / far-word
+predicates.
+
 For the **capped** residual (`SubJohnsonSupplyResidual`) the relevant class size
 is `s = 2k+m+1` and above, up to the cap: the ±1-valued character words realize
 `s ≈ n/2` while staying capped (probe-verified; the cap certification of a
@@ -76,9 +85,11 @@ theorem class_supply_floor (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (m : ℕ
 open Classical in
 /-- **The supply floor from class structure**: any `B` for the (uncapped)
 `ExplainableCoreSupply` dominates `C(s, k+m+1)` at every class size `s ≤ n` —
-witnessed by the indicator-style word constant on an `s`-subset.  (For the
-*capped* residual the same floor applies through any capped class word — the
-character family realizes `s ≈ n/2` capped, per the probes.) -/
+witnessed by the indicator-style word constant on an `s`-subset.  For this
+uncapped predicate the strongest case `s = n` is already the exact maximum
+(`ProximityGap.Ownership.explainableCoreSupply_iff`).  (For the *capped*
+residual the same floor mechanism applies through any capped class word — the
+character family realizes `s ≈ n/2` capped, per the probes; not proved here.) -/
 theorem explainableCoreSupply_class_floor (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k)
     (m : ℕ) {B : ℕ} (hB : ExplainableCoreSupply dom k m B) {s : ℕ} (hs : s ≤ n) :
     s.choose (k + m + 1) ≤ B := by

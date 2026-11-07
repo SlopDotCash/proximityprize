@@ -1,5 +1,22 @@
 # #466 R393 — the ideal-lattice/Ring-SIS frame: the prize wall as an ℓ∞-SVP statement
 
+> **Correction (2026-10-28 audit, T48; repeats R-166).** The unrestricted `ℓ∞` premise in this note
+> is impossible at production parameters.
+> - **Why.** An index-`q` additive evaluation kernel in `m` coordinates contains a nonzero ternary
+>   (`{−1,0,1}`) vector whenever `2^m > q`. Two of the `2^m` Boolean-cube vectors have equal images,
+>   and their difference lies in the kernel. At `m = 2^29` and `q ≤ 2^160` this holds for every
+>   `g`. So "no nonzero kernel vector with `ℓ∞ ≤ 2r`" is false for every `r ≥ 1`, and
+>   `λ₁^{ℓ∞} > 2r` cannot be a production analytic input. (A complete small collision is recorded
+>   in the audit evidence `kb33-fold-and-lattice-check.json`.)
+> - **The heuristic is not a proof.** The Gaussian heuristic for the Euclidean shortest length
+>   below does not prove the unrestricted `ℓ∞` assertion.
+> - **What is not refuted.** The sparse / low-total-mass (`ℓ1 ≤ 2r`) counterpart is a different
+>   statement and is not refuted by this argument. The companion
+>   `deltastar-466-r364-ideal-lattice-sparse-svp-dictionary-2026-07-09.md` correctly observes that
+>   short vectors are unavoidable and that sparsity is the remaining restriction; read the two notes
+>   together, with R364's sparse form as the live one.
+> - **DC allowance.** Raw collision-mass sub-Wick claims must keep the DC allowance (cross T103).
+
 ## The synthesis (creative frame; formal anchor landed)
 
 A realized vanishing relation is a nonzero `z ∈ ℤ^m`, `ℓ∞(z) ≤ 2r`, with

@@ -20,8 +20,11 @@ Two faces of the prize floor `M = max_{b≠0}|η_b| ≤ √(2e·n·log p)` have 
   the Gaussian/Wick value for `r ≤ t`.
 * **The energy face** (`_OpenCoreMonotoneReduction`, `DCSubtractedMoment`, the `W_r`-excess memory):
   the `2r`-th moment of `η_b` is the additive energy `E_r(μ_n) = #{x₁+⋯+x_r = y₁+⋯+y_r}`, and the
-  open core is `E_r ≤ (2r−1)‼·n^r = Wick_r` at the saddle depth `r ≈ log p`. The char-0 part is the
-  Lam–Leung antipodal-matching count `E_r^{char0} = (2r−1)‼·n^r` EXACTLY; the open content is the
+  open core is `E_r ≤ (2r−1)‼·n^r = Wick_r` at the saddle depth `r ≈ log p`. The char-0 part obeys
+  the Lam–Leung antipodal-matching ceiling `E_r^{char0} ≤ (2r−1)‼·n^r` — an inequality, NOT an
+  equality: for 2-power `n` exact enumeration gives `E_2^{char0} = 3n²−3n`,
+  `E_3^{char0} = 15n³−45n²+40n`, `E_4^{char0} = 105n⁴−630n³+1435n²−1155n`, all strictly below Wick
+  (audit CW-B15-02); the open content is the
   char-`p` **excess** `W_r = E_r − E_r^{char0}`, an ONSET-THRESHOLD (memory
   `issue444-Wr-excess-onset-threshold-not-birthday`): `W_r = 0` for small `r`, becoming positive only
   past an onset depth `r₀(n)`.
@@ -31,13 +34,14 @@ relations of the dilated set `{b·x_k}`.** The energy `E_r` is a count of `2r`-t
 relations `Σ_{i} ε_i z_{k_i} ≡ 0 (mod p)` with `ε_i ∈ {±1}` and `z_k = b·x_k`. Among these:
 
 * the **trivial / diagonal** relations (each `+z` paired with an equal `−z`) are the
-  perfect-matchings counted in char 0; there are exactly `(2r−1)‼·n^r` of them = `E_r^{char0} = Wick_r`;
+  perfect-matching relations counted in char 0; there are at most `(2r−1)‼·n^r` of them, so
+  `E_r^{char0} ≤ Wick_r` (strictly, for `r ≥ 2`: matchings overlap when indices repeat);
 * a **nontrivial** relation is a `±1`-vanishing sum that is NOT a diagonal matching — this is exactly a
   short relation of `2^μ`-th roots mod `p`, and contributes to the excess `W_r`.
 
 So the structural hypothesis **"the dilated set `{b·x_k}` is `t`-wise additively independent"** —
 meaning *no nontrivial `±1`-relation of length `≤ t`* — is EXACTLY `W_r = 0` for all `2r ≤ t`, hence
-`E_r = E_r^{char0} = Wick_r` for `r ≤ t/2`. This is the statement that unifies the independence and
+`E_r = E_r^{char0} ≤ Wick_r` for `r ≤ t/2`. This is the statement that unifies the independence and
 energy faces under a single name: `NoShortRelation`.
 
 ## What this file BUILDS (axiom-clean)
@@ -61,20 +65,32 @@ We also relate this to the product-moment framework: `noShortRelation_iff_excess
 additive-independence statement is precisely the excess-vanishing statement, so T7's `NoShortRelation`
 and the energy face's `W_r = 0` are definitionally the same Prop.
 
-## The NAMED OPEN INPUT (honest)
+## The NAMED INPUT — REFUTED at prize scale (audit CW-B15-02 / R-113)
 
-`NoShortRelation t` for `t = 2·⌈log p⌉` of the dilated `2^μ`-th roots `{b·x_k}` is the BGK/BCHKS-1.12
-wall under a structural name. It says: no nontrivial `±1`-relation
+**Correction.** Under the intended semantics (`relCount r = E_r(μ_n)` over `F_p`,
+`diagCount r = E_r^{char0} ≤ Wick_r`), `NoShortRelation (2·⌈log p⌉)` is **false** at prize scale,
+not open.  It forces `E_r ≤ Wick_r` for all `r ≤ ⌈log p⌉`, but the DC (Parseval, `b = 0`) floor
+`E_r ≥ n^{2r}/p` contradicts this already at `r = 6` with `n = 2^30`, `p ≈ 2^158`:
+`n^{12}/p ≈ 2^202 > Wick_6 = 10395·2^180 ≈ 2^193.3` (and at `r = 110`, `2^6442` vs `≈ 2^3997.8`).
+So `W_6 > 0` and the excess is positive at saddle depth; see `_NoExcessOnsetThreshold` (R-113)
+and `_G261WickCeilingExceedsDCFloor`.  The meaningful prize object is the **DC-subtracted** moment
+`Σ_{b≠0}|η_b|^{2r}` (`DCSubtractedMoment`), not raw `E_r`.  The Lean statements below are about
+free real functions and remain correct as implications; only the claim that their hypothesis is
+a live open input at saddle depth is withdrawn.
+
+Original (superseded) framing: `NoShortRelation t` for `t = 2·⌈log p⌉` of the dilated `2^μ`-th
+roots `{b·x_k}` was presented as the BGK/BCHKS-1.12 wall under a structural name. It says: no nontrivial `±1`-relation
 `Σ ε_i x_{k_i} ≡ 0 (mod p)` of length `≤ 2 log p` among the `n`-th roots of unity. Equivalently the
 onset threshold `r₀(n)` of the excess `W_r` exceeds the saddle depth `⌈log p⌉` (memory
 `issue444-Wr-excess-onset-threshold-not-birthday`). Pairwise (`t = 2`) is machine-true; the deep case
-`t ≈ 2 log p` at `n = 2^30`, `p ≈ n·2^128` is open. **We name it; we do not discharge it.** Feeding a
-vacuous discharge would be the one forbidden move.
+`t ≈ 2 log p` at `n = 2^30`, `p ≈ n·2^128` was claimed open; per the correction above it is refuted
+by the DC floor, so every consumer of `wick_energy_of_tIndep_to_saddle` at prize scale is vacuous.
 
 ## Honest scope
 
-The reduction machinery (split → no-short-relation → char-0 ceiling → Wick) is the prize-TRUE direction,
-fully proven. The single input `NoShortRelation (2·⌈log p⌉)` is the open core, identical to the
+The reduction machinery (split → no-short-relation → char-0 ceiling → Wick) is fully proven as an
+implication. The single input `NoShortRelation (2·⌈log p⌉)` is unsatisfiable at prize scale (see the
+correction above); it was formerly described as the open core, identical to the
 `DCSubtractedMoment`/`_CharZeroMGFBesselBound` wall and to the `TIndepBound` open input of
 `_PhasePairwiseToSubGaussian`, now exhibited as ONE combinatorial Prop unifying the independence and
 energy faces. LANDED abstract framework + REDUCED bridge. Issue #444.
@@ -132,9 +148,10 @@ that unifies:
 * the **energy face** — it is exactly `W_r = 0` for `2r ≤ t`, the onset threshold `r₀(n) > t/2` of the
   `W_r`-excess (memory `issue444-Wr-excess-onset-threshold-not-birthday`).
 
-**This is the genuine open content.** Pairwise (`t = 2`, so `r = 1`) is machine-true (`W_1 = 0`,
-Parseval); the deep case `t = 2⌈log p⌉` at the prize scale `n = 2^30`, `p ≈ n·2^128` is the
-BGK/BCHKS-1.12 wall. We name it; we do NOT discharge it. -/
+**Status.** Pairwise (`t = 2`, so `r = 1`) is machine-true (`W_1 = 0`, Parseval); the deep case
+`t = 2⌈log p⌉` at the prize scale `n = 2^30`, `p ≈ n·2^128` is **refuted** under the intended
+semantics by the DC floor `E_r ≥ n^{2r}/p` (already `W_6 > 0`; audit CW-B15-02 / R-113), so it is
+not the BGK/BCHKS-1.12 wall — that wall concerns the DC-subtracted moment. -/
 def NoShortRelation (t : ℕ) : Prop := ∀ r : ℕ, 2 * r ≤ t → excess r = 0
 
 /-- **`NoShortRelation` is exactly the excess-vanishing statement** (the unification, stated as an
@@ -166,7 +183,7 @@ theorem energy_eq_diag_of_noShortRelation
 `r ≤ t/2`. Given:
 * `hsplit` — the energy split `E_r = E_r^{char0} + W_r`;
 * `hchar0` — the **in-tree PROVEN** char-0 ceiling `E_r^{char0} ≤ (2r−1)‼·n^r = Wick r` (Lam–Leung
-  antipodal matchings of distinct values, `c_r = (2r−1)‼` EXACT — the prize handle marked "char-0:
+  antipodal matchings; an upper bound, strict for `r ≥ 2` — the prize handle marked "char-0:
   `E_r^{char0} ≤ (2r−1)‼·n^r` PROVEN");
 * `hns` — the named open `NoShortRelation excess t` (no nontrivial `≤t`-term `±1`-relation),
 
@@ -197,8 +214,9 @@ E_r ≤ Wick r      at EVERY saddle depth r ≤ R = ⌈log p⌉,
 ```
 which is exactly (indeed more than) the single-depth char-`p` Wick input that
 `_MomentSaddleValue.prize_floor_amgm_sqrt_e` turns into `M ≤ √(e·n·log p)` — the explicit-constant
-floor. So the **entire floor follows from `NoShortRelation` at depth `2⌈log p⌉`**, the one named open
-input, which is simultaneously the `W_r`-onset-threshold and the deep `TIndepBound` of the phases. -/
+floor. **Caveat (CW-B15-02):** under the intended semantics the hypothesis
+`NoShortRelation excess (2R)` is false at prize scale (DC floor gives `W_6 > 0`), so this
+implication is vacuous there and does not route the floor through a live open input. -/
 theorem wick_energy_of_tIndep_to_saddle
     (Wick : ℕ → ℝ) (R : ℕ)
     (hsplit : IsEnergySplit relCount diagCount excess)

@@ -9,8 +9,10 @@ development at its profile; here each branch is extended by one agreement-vector
 the extra derivative variable R₂ (weight ≈ w, degree cap s₂) — a SHAPE ASSUMPTION, not a
 theorem.  The output says whether porting the geometry is worth it, nothing more.
 
-Interpolation gate: EXACT (hd_general_rank.node_rank at d = 2, line setting), so the radius
-side of every row is sound; only the seed side is heuristic.
+Interpolation gate: EXACT over F_P, P = 2^31 - 1 (hd_general_rank.node_rank at d = 2, line
+setting); only the seed side is heuristic.  The search over the agreement a bisects, which
+assumes a monotonicity that is not proved (and fails for the d = 1 ledger, audit L105), so a
+reported a passes both gates but is not proved to be the least such a.
 
 GRID WARNING (measured 2026-09-06): the ledger's slack at n = 2^18 is ~2^40, so the
 budget-optimal (m, L) sit in the hundreds (the m <= 16 grid below only fits the razor-thin
@@ -28,6 +30,7 @@ from itertools import permutations
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from hd_general_rank import node_rank, dim_space  # noqa: E402
+from hd1_line_ledger import least_passing  # noqa: E402
 
 
 def mixed4(a, b, c, d):
@@ -104,27 +107,25 @@ def main():
                     if s1p > s1:
                         continue
                     for L in (120, 169, 220, 300):
-                        lo, hi = w + 2, n
-                        # bisect the least certified a
+                        # Search for a small passing a.  The joint predicate is NOT proved
+                        # monotone in a (the d=1 ledger is not; audit L105), so at these
+                        # ranges least_passing bisects: the result passes both gates but is
+                        # not proved least, and an endpoint failure skips the family.
                         def ok(a):
                             c, _ = certify(n, w, a, m, s1, s1p, L, budget)
                             return c
-                        if not ok(hi):
+                        a, proved = least_passing(ok, w + 2, n)
+                        if a is None:
                             continue
-                        while lo < hi:
-                            mid = (lo + hi) // 2
-                            if ok(mid):
-                                hi = mid
-                            else:
-                                lo = mid + 1
-                        a = lo
                         if best is None or a < best[0]:
                             best = (a, m, s1, s1p, L)
                             print(f"  n=2^{nexp}: a={a} delta={1 - a / n:.5f} "
-                                  f"(m={m} s1={s1} s1'={s1p} L={L})", flush=True)
+                                  f"(m={m} s1={s1} s1'={s1p} L={L})"
+                                  f"{'' if proved else ' [bisection candidate]'}", flush=True)
         if best:
             a, m, s1, s1p, L = best
-            print(f"  BEST n=2^{nexp}: delta={1 - a / n:.5f} (d=1 row was 0.30896)", flush=True)
+            print(f"  BEST n=2^{nexp}: delta={1 - a / n:.5f} (d=1 row was 0.30896; heuristic "
+                  f"seed side, not proved optimal over a)", flush=True)
 
 
 if __name__ == "__main__":

@@ -31,14 +31,23 @@ far-line incidence is bounded by the number of distinct codeword values at `i₀
   `farIncidence C δ u₀ u₁  ≤  #{ c i₀ : c ∈ C }`.
 
 This is precisely the "agreement set forces `γ` uniquely per value = an injection `γ ↦ value`"
-sub-case requested. It is the honest *positive* counterpart to the file header's negative
-fact: the incidence is bounded by the value-count **exactly when** a common pivot coordinate
-exists. The B1 readout value-count `= n` then plugs in directly (the top-direction coordinate),
-turning the open object into the single sharp geometric `Prop`
-`CommonPivotCoordinate` named below.
+sub-case requested. It is a *positive* counterpart to the `B1IncidenceBridge.lean` header's
+negative fact: a common pivot coordinate is **sufficient** for the incidence to be bounded by
+the value count at that pivot. It is **not necessary**: over `F₅`, with the constant code on
+coordinates `{0,1,2}`, `u₀ i = i²`, `u₁ i = i` and `δ = 1/3`, the three close scalars
+`−1, −2, −3` are witnessed (uniquely) by the pairs `{0,1}`, `{0,2}`, `{1,2}`, which share no
+coordinate, yet the incidence is `3 ≤ 5` = the codeword value count at every coordinate (and
+`u₁` is `δ`-far from the constant code). So the theorems below prove only the implication
+"common pivot ⟹ incidence ≤ value count", not an equivalence. The B1 readout value-count
+`= n` then plugs in directly (the top-direction coordinate), reducing the open object, on the
+common-pivot sub-case, to the explicit geometric `Prop` `CommonPivotCoordinate` named below.
 
 Nothing here is conditional on an unproved lemma: the injection and the card bound are
-unconditional consequences of the common-pivot hypothesis, which is a fully explicit `Prop`.
+unconditional consequences of the common-pivot hypothesis (together with the covering
+hypothesis `hcover`), which are fully explicit `Prop`s. Note that the proof of the injection
+uses only `u₁ i₀ ≠ 0` from `CommonPivotCoordinate` and the pivot-containing witnesses supplied
+by `hcover`; the existential half of `CommonPivotCoordinate` and the hypothesis `hCv` are not
+used by the proof (interface simplification tracked under audit finding PG-008).
 -/
 
 open Finset
@@ -53,12 +62,14 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 
-/-- **The (necessary-and-here-sufficient) geometric hypothesis.**  There is a *fixed*
-coordinate `i₀` with `u₁ i₀ ≠ 0` such that **every** bad scalar's witness agreement set
-contains `i₀`.  This is exactly the structural condition under which `γ` is uniquely
-recoverable from the witness codeword value at `i₀` — i.e. the only condition needed to turn
-the value count into an incidence bound (the file header shows that, without a common pivot,
-the implication genuinely fails). -/
+/-- **A sufficient (not necessary) geometric hypothesis.**  There is a *fixed*
+coordinate `i₀` with `u₁ i₀ ≠ 0` such that every bad scalar admits *some* witness agreement
+set containing `i₀`.  This is a structural condition under which `γ` is uniquely
+recoverable from the witness codeword value at `i₀`, which suffices to turn the value count
+at `i₀` into an incidence bound.  It is not necessary for such a bound: the module docstring
+gives an `F₅` example with no common pivot in which the incidence (`3`) is still at most the
+value count (`5`).  (The `9, 13, 89` vs `8, 12, 16` witnesses of `B1IncidenceBridge.lean`
+show only that the value count does not bound the incidence in full generality.) -/
 def CommonPivotCoordinate (C : Set (ι → A)) (δ : ℝ≥0) (u₀ u₁ : ι → A) (i₀ : ι) : Prop :=
   u₁ i₀ ≠ 0 ∧
     ∀ γ : F, (∃ S : Finset ι, (S.card : ℝ≥0) ≥ (1 - δ) * Fintype.card ι ∧
@@ -119,9 +130,9 @@ open Classical in
 /-- **THE BRIDGE, as a clean `Prop` on the field's value-count.**  Under
 `CommonPivotCoordinate` with a finite codeword listing `Cv ⊆ C` covering all bad witnesses,
 the far-line incidence is at most the value-count at the pivot — and in particular at most the
-size of the listing `Cv`.  This is the honest positive form of the open object: incidence is
-bounded by a *value count*, exactly the implication the file header says fails without a common
-pivot. -/
+size of the listing `Cv`.  This is a positive (sufficient-condition) form of the open object:
+incidence is bounded by a *value count* whenever a common pivot exists.  It does not claim the
+bound fails without a common pivot; it can hold without one (see the module docstring). -/
 theorem farIncidence_le_listing_card
     (C : Set (ι → A)) (δ : ℝ≥0) (u₀ u₁ : ι → A) (i₀ : ι)
     (hpiv : CommonPivotCoordinate (F := F) C δ u₀ u₁ i₀)

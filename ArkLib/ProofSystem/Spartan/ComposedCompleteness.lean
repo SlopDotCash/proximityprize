@@ -21,9 +21,10 @@ import ArkLib.ProofSystem.Spartan.FirstSumcheckBridgeFree
 import ArkLib.ProofSystem.Spartan.SecondSumcheckBridgeFree
 
 /-!
-# #114 Spartan composed perfect completeness — frontier work (worktree-only; candidate for landing).
+# #114 Spartan composed perfect completeness — seam keystones and the leaf-parametric assembly
 
-All declarations are axiom-clean (`[propext, Classical.choice, Quot.sound]`), zero `sorry`:
+(This file is in the main tree; its earlier "worktree-only" label is historical.) All
+declarations are axiom-clean (`[propext, Classical.choice, Quot.sound]`), zero `sorry`:
 
 1. `Reduction.challenge_hStage2Bridge_perfect_114` — discharges the last per-phase bridge
    (`hStage2Bridge`, perfect case) of the challenge-seam append completeness.
@@ -42,8 +43,18 @@ All declarations are axiom-clean (`[propext, Classical.choice, Quot.sound]`), ze
    composed-completeness residual, from the leaf PCs.
 8. `Spartan.Spec.Bricks.composedCompletenessStatement_of_five_leaves` — sharpened: `firstMessage`
    (SendSingleWitness) + both sum-checks (bridge-free) discharged; **five** named leaf obligations
-   remain (`firstChallenge` [in-tree proof exists, module build-broken], `sendEvalClaim`,
-   `linearCombination`, `prependRLCTarget`-honest-target [the genuine gap], `finalCheck`).
+   remain as hypotheses of *this* wrapper (`firstChallenge`, `sendEvalClaim`,
+   `linearCombination`, `prependRLCTarget` into the honest-target relation, `finalCheck`).
+
+**Current status.** All five leaves are discharged in `ComposedCompletenessFinal.lean`
+(`composedCompletenessStatement_proven`), leaving only the standard honest-implementation side
+conditions. In particular the implementation obstacles once recorded here are stale:
+`FirstChallengeComplete.lean` is consumed there (`completedFirstChallenge_perfectCompleteness`,
+re-pointed as `completedFirstChallenge_perfectCompleteness_consumer`), and the
+RLC adapter `prependRLCTarget` (`Composition.lean`) emits the honest weighted claim sum
+`∑ idx, r idx * v idx` in both prover and verifier (not target `0`), with the inclusion into
+`secondSumcheckRelInBF` proved as `prependRLCTarget_perfectCompleteness_secondSumcheckRelInBF`.
+The `h₆` input of the wrapper below is still a genuine hypothesis *of that wrapper*.
 -/
 
 open OracleComp OracleSpec ProtocolSpec OptionTStateT
@@ -728,13 +739,16 @@ obligations are taken as named hypotheses, with the intermediate relations pinne
 concrete in-tree chain (`firstMessageRelOut` → `firstSumcheckRelInBF` →
 `firstSumcheckRelOutBF` → … → `secondSumcheckRelInBF` → `secondSumcheckRelOutBF`):
 
-* `h₂` — first-challenge completeness at the bridge-free first-sumcheck input relation;
+* `h₂` — first-challenge completeness at the bridge-free first-sumcheck input relation,
+  supplied by `completedFirstChallenge_perfectCompleteness_consumer`;
 * `h₄`/`h₅` — evaluation-claim and linear-combination completeness at their seam relations;
-* `h₆` — `prependRLCTarget` into `secondSumcheckRelInBF`: **the honest-target obligation**. The
-  existence-only adapter emits target `0`, while `secondSumcheckRelInBF` pins the target to the
-  honest linear-combination value, so this hypothesis demands the honest-target adapter (or a
-  `relF` strengthening) — the known genuine remaining gap of #114's completeness layer;
-* `h₈` — `finalCheck` (`CheckClaim` completeness into `finalCheckRelOut`). -/
+* `h₆` — completeness of the honest weighted-claim adapter into `secondSumcheckRelInBF`,
+  supplied by `prependRLCTarget_perfectCompleteness_secondSumcheckRelInBF`;
+* `h₈` — `finalCheck` (`CheckClaim` completeness into `finalCheckRelOut`).
+
+All five are discharged together in
+`ComposedCompletenessFinal.composedCompletenessStatement_proven`; in this theorem they remain
+explicit hypotheses. -/
 theorem composedCompletenessStatement_of_five_leaves
     (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)
     (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).perfectCompleteness init impl

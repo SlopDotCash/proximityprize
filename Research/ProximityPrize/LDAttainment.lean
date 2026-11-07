@@ -47,7 +47,7 @@ radius `1 - √ρ` or near capacity `1 - ρ`); that supremum exists but — by t
 file — is not a maximum, so an attained-maximum formalization is refutable for reasons
 orthogonal to the deep open question.  The faithful quantitative reformulation (the
 `sSup`-based threshold, with the Johnson-side lower bound and the capacity-side upper
-bound) is the subject of `GrandChallengeLDThreshold.lean`.
+bound) is the subject of `LDThreshold.lean`.
 
 The analogous resolution for the Grand MCA Challenge (whose `ε_mca` is a step function
 of `δ` for the same reason) is in `GrandChallengeCollapse.lean`

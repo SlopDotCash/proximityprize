@@ -48,12 +48,13 @@ only to match the residual's interface.
 
 * The campaign rate-quarter shape (`n = 16, k = 4, a = 9`) satisfies NEITHER regime:
   `(2a − n)² = 4 < 48 = n(k − 1)` and `3a = 27 < 36 = 2n + k`
-  (`campaign_shape_not_covered`).  There the probe
-  (`probe_466_w15_multibase_ladder.py`) certifies `Λ = 1` empirically, but the proof must
-  use the SUPPORT-side agreements that the offset collapse discards — the window between
-  the Johnson line (`a² > nk`) and the doubled-Johnson margin is the remaining open
-  content of `LargeZeroSafeLineListBudgeted`, left as the honest named residual it already
-  is.  Nothing open is silently discharged.
+  (`campaign_shape_not_covered`).  There `L = 1` is in fact FALSE
+  (`_W15WindowTwoReference.campaign_rateQuarter_L_one_refuted`, a two-block line with
+  `Λ = 2`; the earlier probe `probe_466_w15_multibase_ladder.py` only sampled `Λ = 1` lines,
+  and `_W15MultiBlockRefuter` reports an empirical ceiling of `2`), so `L_near ≥ 2` there
+  (audit CW-B15-03).  A budget `L ≥ 2` in the window between the Johnson line (`a² > nk`)
+  and the doubled-Johnson margin remains open content of `LargeZeroSafeLineListBudgeted`.
+  Nothing open is silently discharged.
 * Non-vacuity: at `n = 16, k = 4, a = 12` both regimes hold (`L = 1`, and the general
   form gives `L = 16`); gates below.
 * Asymptotically the margin reads `α > (1 + √ρ)/2` (`a = αn`, `k = ρn`) versus Johnson
@@ -286,10 +287,11 @@ theorem discharge_regimes_nonvacuous :
 
 /-- **Honesty: the campaign rate-quarter shape is NOT covered.**  At
 `n = 16, k = 4, a = 9` (above Johnson: `a² = 81 > 64 = nk`) BOTH regimes fail:
-`3a = 27 < 36 = 2n + k` and `(2a − n)² = 4 < 48 = n(k − 1)`.  There the probe certifies
-`Λ = 1` empirically, but the proof must use the support-side agreements that the offset
-collapse discards: the window between Johnson and the doubled-Johnson margin is the
-remaining open content of `LargeZeroSafeLineListBudgeted`. -/
+`3a = 27 < 36 = 2n + k` and `(2a − n)² = 4 < 48 = n(k − 1)`.  There `L = 1` is refuted
+(`_W15WindowTwoReference.campaign_rateQuarter_L_one_refuted`; empirical ceiling `2`), so
+any budget at this shape needs `L ≥ 2`; such a budget in the window between Johnson and
+the doubled-Johnson margin is the remaining open content of
+`LargeZeroSafeLineListBudgeted`. -/
 theorem campaign_shape_not_covered :
     (9 : ℕ) * 9 > 16 * 4 ∧ ¬ (2 * 16 + 4 ≤ 3 * 9) ∧
       ¬ (16 * (4 - 1) < (2 * 9 - 16) ^ 2) := by norm_num

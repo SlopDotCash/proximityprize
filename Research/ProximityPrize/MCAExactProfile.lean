@@ -7,12 +7,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.MCAEquivariance
 import Research.ProximityPrize.MCAPlateauWindow
 
 /-!
-# Round 2 (#357): the first complete exact `ε_mca` profile — and the full threshold curve
+# Round 2 (#357): a complete exact `ε_mca` profile — and the full threshold curve
 
 R1 (`MCADeltaStarExactPoint`) pinned one exact δ* value. This file completes the picture for
 the same smooth-domain code `rsC = RS[F₅, ⟨2⟩, 2]`: **the exact value of `ε_mca` at every
-radius**, and consequently **the entire threshold curve `ε* ↦ δ*(ε*)`** — the first code
-(any family, any proof format) whose MCA error profile is known exactly everywhere.
+radius**, and consequently **the entire threshold curve `ε* ↦ δ*(ε*)`**. (Exact profiles of
+trivial codes are immediate — e.g. the full space `C = univ` has `ε_mca ≡ 0` — so the point here
+is a proper, nontrivial Reed–Solomon code; we make no priority claim beyond the in-tree campaign.)
 
 The profile is the two-step staircase
 
@@ -36,8 +37,10 @@ The threshold curve (`mcaDeltaStar` at every target `ε*`):
   | `[1/5, 4/5)`    | `1/4` (R1's point, now for the whole band of targets) |
   | `≥ 4/5`         | `1` (every radius is good) |
 
-Structurally: the staircase has exactly two jumps, at the granularity radius `1/n` and at
-`0`; the threshold curve is the (left-continuous) generalized inverse of the staircase. At
+Structurally: the staircase `δ ↦ ε_mca(rsC, δ)` has exactly one jump, from `1/5` to `4/5` at the
+granularity radius `1/n = 1/4` (there is no jump at `0`: `ε_mca(rsC, 0) = 1/5`). The threshold
+curve `ε* ↦ δ*` has two jumps, at `ε* = 1/5` and `ε* = 4/5`; it is the (left-continuous)
+generalized inverse of the staircase. At
 this scale the entire MCA landscape of the code is now a theorem. The R1 methodology plus
 the window bound suffices — no computation beyond the four `decide` witnesses already
 landed. The analogous profile for larger rungs (`n = 8`: more bands between granularity and
@@ -106,7 +109,7 @@ theorem epsMCA_rs_eq_four_fifth_of_ge {δ : ℝ≥0} (hδ : 1/4 ≤ δ) :
 /-! ## The complete profile -/
 
 open Classical in
-/-- **The first complete exact MCA-error profile of any code:** the two-step staircase.
+/-- **The complete exact MCA-error profile of `rsC`:** the two-step (one-jump) staircase.
 `ε_mca(rsC, ·)` jumps from `1/5` to `4/5` exactly at the granularity radius `1/4 = 1/n`. -/
 theorem epsMCA_rs_profile (δ : ℝ≥0) :
     epsMCA (F := F5) (A := F5) (rsC : Set (Fin 4 → F5)) δ

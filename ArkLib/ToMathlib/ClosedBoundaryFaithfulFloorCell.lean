@@ -46,8 +46,11 @@ CurveFamilyProducer k deg domain δ''                      (the faithful §5 pro
 * `CurveFamilyProducer` / `FaithfulFrontierProducer` — the named per-`(u, P, δ)` producer
   interfaces (exactly the `hInput` shapes of the faithful front doors).
 * `errorBound_pos_of_lt_sqrtBoundary` — strict radii have genuinely positive `errorBound`
-  (via `DivergenceOfSets.errorBound_ge_const`), so the corrected boundary export is never
-  vacuous, unlike the refuted `errorBound (1 − √ρ) = 0` shape.
+  (via `DivergenceOfSets.errorBound_ge_const`), so the corrected boundary export never has the
+  refuted `errorBound (1 − √ρ) = 0` shape.  Positivity is **not** the same as informativeness:
+  the exported statement's premise is `Pr[…] > k·ε`, so it says something only when
+  `k·ε < 1` (curve arity `k`); for `ε ≥ 1` (with `k ≥ 1`) the premise is unsatisfiable and
+  the export is vacuous.
 * `correlatedAgreementCurves_boundary_of_curveFamilyProducer_cell` — **the core composite**: a
   faithful producer at a single cell radius `δ'' ≤ δ' < 1 − √ρ`, floors matched
   `⌊δ''·n⌋ = ⌊δ'·n⌋ = ⌊δ·n⌋`, yields the closed-boundary keystone statement at `δ` with
@@ -83,10 +86,16 @@ the O76 witness point (`ZMod 5`, `n = 4`, `deg = 2`, `k = 1`, non-lattice `deg·
 producer at the cell radius `δ'' = 1/4` is inhabited (vacuously — the Johnson-side hypothesis
 `(1 − ρ)/2 < 1/4` fails *exactly* there, the same caveat as `RemainingCoreWitness`), the
 lattice guard is discharged by the kernel-checked non-lattice fact `boundary_floor_lt`, and
-the assembly fires end-to-end, certifying that no hypothesis of this file is unsatisfiable.
-The exported boundary statement at the witness (`ε = errorBound (7/25)`) is the
-probe-verified content of `scripts/probes/probe_boundary_threshold_floorcell.py`
-(390,625-stack census, 0 violations).
+the assembly fires end-to-end, certifying that the hypotheses of this file are simultaneously
+satisfiable at this toy instance.  The exported boundary statement at the witness
+(`ε = errorBound (7/25)`) is the probe-verified content of
+`scripts/probes/probe_boundary_threshold_floorcell.py` (390,625-stack census, 0 violations).
+**It is a vacuous probability bound, however:** with `ρ = 1/2`, `errorBound (7/25)` is
+`deg²/((2m)^7·|F|) = 4/(5·(2m)^7)` with `m = min(1 − √(1/2) − 7/25, √(1/2)/20) < 1/20`, so
+`ε > 8·10⁶`, and the premise `Pr[…] > k·ε` is impossible for `k ≥ 1`.  The witness therefore
+checks satisfiability of the hypothesis spine and the same-floor transport, not nontrivial
+high-probability extraction (which needs `k·ε < 1`, a large-`q` phenomenon).  This is distinct
+from the separately refuted zero-endpoint budget.
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
@@ -159,10 +168,12 @@ noncomputable def CurveFamilyProducer.ofFrontier {k deg : ℕ} {domain : ι ↪ 
 /-! ## Strict radii have genuinely positive `errorBound` -/
 
 omit [DecidableEq F] in
-/-- **Strict radii are never vacuous**: below the Johnson boundary, `errorBound` is at least
-`n/q > 0` (`DivergenceOfSets.errorBound_ge_const`).  This is the quantitative content of the
-corrected boundary export `ε = errorBound δ' > 0`, in contrast with the refuted boundary shape
-`errorBound (1 − √ρ) = 0` (`BoundaryDischarge.errorBound_eq_zero_at_boundary`). -/
+/-- **Strict radii have positive `errorBound`**: below the Johnson boundary, `errorBound` is at
+least `n/q > 0` (`DivergenceOfSets.errorBound_ge_const`).  This is the quantitative content of
+the corrected boundary export `ε = errorBound δ' > 0`, in contrast with the refuted boundary
+shape `errorBound (1 − √ρ) = 0` (`BoundaryDischarge.errorBound_eq_zero_at_boundary`).  Note that
+`ε > 0` does not by itself make the exported probability bound informative: that requires
+`k·ε < 1` for curve arity `k`. -/
 theorem errorBound_pos_of_lt_sqrtBoundary {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (hdeg : 0 < deg) (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain) :
     0 < errorBound δ deg domain := by
@@ -267,7 +278,8 @@ the two post-O76/O79 leaves:
   boundary-specific named residual.
 
 The non-lattice branch exports `ε = errorBound δ' > 0`; the lattice branch exports
-`ε = (n+1)/|F| > 0`.  Neither is the refuted vacuous `errorBound (1 − √ρ) = 0` shape. -/
+`ε = (n+1)/|F| > 0`.  Neither is the refuted vacuous `errorBound (1 − √ρ) = 0` shape; whether
+either export is informative depends on `k·ε < 1`, which positivity does not guarantee. -/
 theorem correlatedAgreementCurves_closedBoundary_assembly
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] (hk : 0 < k)
     (hδeq : δ = 1 - ReedSolomon.sqrtRate deg domain)
@@ -339,7 +351,9 @@ At the O76 witness (`ι = Fin 4`, `F = ZMod 5`, `deg = 2`, `k = 1`, non-lattice 
 non-lattice fact `boundary_floor_lt`.  The full hypothesis spine of the closed-boundary
 assembly is therefore simultaneously satisfiable, and its unconditional export at the witness
 is the probe-verified boundary statement (`ε = errorBound (7/25)`,
-390,625-stack census, 0 violations). -/
+390,625-stack census, 0 violations).  That export is vacuous as a probability bound
+(`ε = 4/(5·(2m)^7) > 8·10⁶` with `m < 1/20`, so `Pr[…] > k·ε` cannot hold for `k ≥ 1`); the
+witness exercises satisfiability and transport, not nontrivial high-probability extraction. -/
 
 namespace ClosedBoundaryFaithfulFloorCellWitness
 

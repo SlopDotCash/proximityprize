@@ -11,7 +11,16 @@ import Mathlib
 
 The open analytic core of #232 is the Weil bound `|∑_{x∈F} χ(x)ψ(f(x))| ≤ C√q` for a multiplicative
 character `χ` and additive `ψ` (this would make the Round-9 twisted-sum pieces unconditional; it
-recovers the **Johnson** radius). Its elementary (Stepanov) proof bounds the number of "good" rational
+recovers the **Johnson** radius). That bound is only true under nondegeneracy hypotheses, which are
+part of the statement: the sum must be nondegenerate — `ψ` nontrivial with `f` not of Artin–Schreier
+form `h^p − h + c` (e.g. `p ∤ deg f`), or else `χ` nontrivial (and, for multiplicative parts of the
+form `χ(g(x))`, `g` not a constant times an `ord(χ)`-th power) — and the constant `C` depends on the
+degrees/conductor (classically `C = deg f` up to `±1`, plus the number of distinct zeros of `g`).
+Without them it fails: for trivial `χ, ψ` the full sum is of order `q`, and over `F_p` with
+`f = X^p − X` (which vanishes pointwise) even a nontrivial `ψ` gives `ψ(f(x)) = 1`, so with trivial
+`χ` there is no cancellation. This file proves NO such analytic bound: its formal statements only
+concern finite-field power maps, univariate jets/Hasse-derivative evaluation and root counts. The
+Weil bound's elementary (Stepanov) proof bounds the number of "good" rational
 points by an auxiliary polynomial `Ψ` vanishing to high order. `HasseMultiplicityBridge.lean` /
 `StepanovHasseInterface.lean` supply the **counting** layer (order-`M` vanishing ⟹ `|V|·M ≤ deg Ψ`,
 via Hasse derivatives) and the Frobenius splitting `X^q − X = ∏_{a}(X − C a)`. This file supplies the
@@ -43,10 +52,13 @@ auxiliary. This is the *seed*; the remaining **wall** (proved nowhere, Mathlib l
 leading-term / Wronskian / `p`-th-power argument, the irreducible Stepanov non-vanishing kernel,
 characterized precisely in the section docstring.
 
-So #232's Weil core is now reduced to **exactly** that construction-specific non-vanishing: every
-other layer (counting, Frobenius split, character realization, auxiliary existence, non-vanishing
-seed) is machine-checked and axiom-clean. (And even the full Weil bound recovers Johnson, not the
-past-Johnson `δ*` prize.)
+So, of the Stepanov construction for #232's Weil core, the substrate layers (counting, Frobenius
+split, character realization, auxiliary existence, non-vanishing seed) are machine-checked and
+axiom-clean, and the construction-specific non-vanishing is the identified missing kernel. This is
+not yet a reduction of the classical Weil bound: the nondegeneracy hypotheses above (nontrivial
+characters, Artin–Schreier / power exclusions), the degree/conductor dependence of `C`, and the
+passage from point counts to the character-sum bound are not formalized or tracked here. (And
+even the full Weil bound recovers Johnson, not the past-Johnson `δ*` prize.)
 
 All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 

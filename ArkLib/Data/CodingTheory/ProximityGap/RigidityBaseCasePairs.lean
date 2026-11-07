@@ -10,17 +10,27 @@ import Mathlib.Tactic
 # Round 23 (Issue #232) — RIGIDITY BASE CASE: equal-sum pairs of `2N`-th roots are antipodal
 
 The first case of the rigidity pathway's open Step 2 (O46): over a characteristic-zero field, with
-the half-basis `{ζ^j : j < N}` linearly independent (`ζ^N = −1`; dischargeable in-tree at
-`N = 2^{m−1}` via the Round-12 cyclotomic machinery), **the `(w=2, t=1)` linear-window rigidity
-holds**: if two pairs of `2N`-th roots of unity have equal sums, then either the pairs coincide,
-or BOTH are antipodal (both sums zero):
+the half-basis `{ζ^j : j < N}` linearly independent **over `ℤ`** (`ζ^N = −1`; the hypothesis
+`hindep` has *integer* coefficients and is definitionally `Round29IteratedLift.HalfBasisIndepZ ζ N`,
+which `Round29IteratedLift.halfBasisIndepZ_of_primitiveRoot` discharges for a primitive `2^m`-th
+root with `N = 2^{m−1}`), **the `(w=2, t=1)` linear-window rigidity holds**: if two pairs of
+`2N`-th roots of unity have equal sums, then either the pairs coincide, or BOTH are antipodal
+(both sums zero):
 
   `a + b = c + d`,  `{a,b} ≠ {c,d}`   ⟹   `b = −a ∧ d = −c`.
 
 Encoding: a `2N`-th root is a signed half-basis element `(j, ε) ↦ ±ζ^j` (`ζ^{j+N} = −ζ^j`). The
 sum equation becomes an **integer-coefficient** vanishing combination on the independent half
-basis; independence + `Int.cast_injective` push every per-index equation into `ℤ`, where the sign
-case analysis is mechanical (`omega`).
+basis; integer independence pushes every per-index equation into `ℤ`, where the sign case
+analysis is mechanical.
+
+**Coefficient domain (audit PG-171).** An earlier version stated `hindep` with coefficients
+`g : Fin N → F` in the containing field. That is linear independence of the powers over `F`
+itself, which is impossible for `N ≥ 2` (take `g = (−ζ, 1, 0, …)`; see
+`Round29IteratedLift.fValued_hindep_unsatisfiable`), so every theorem here was vacuous. The
+hypothesis now quantifies over integer coefficients only, which is satisfiable (cyclotomic
+independence over `ℚ`, cf. `R12.linearIndependent_pow_primitiveRoot` with `K := ℚ` as used in
+`CensusClassificationCharZero`); the proofs only ever instantiated `hindep` at integer casts.
 
 **Pathway placement.** This is the floor of Step 2 (char-0 linear-window rigidity): at `w = 2` the
 only equal-`e₁` families in `μ_{2N}` are the `d = 2` lifts (antipodal pairs `X² − a` form), exactly
@@ -67,9 +77,10 @@ theorem sval_eq_sum (p : Fin N × Bool) :
     simp
   · intro h; exact absurd (Finset.mem_univ _) h
 
+omit [CharZero F] in
 /-- **The bridge to ℤ:** the equal-sum equation forces every integer coefficient to vanish. -/
 theorem gZ_eq_zero
-    (hindep : ∀ g : Fin N → F, (∑ j : Fin N, g j * ζ ^ (j : ℕ)) = 0 → ∀ j, g j = 0)
+    (hindep : ∀ g : Fin N → ℤ, (∑ j : Fin N, (g j : F) * ζ ^ (j : ℕ)) = 0 → ∀ j, g j = 0)
     {x y z w : Fin N × Bool}
     (hsum : sval ζ x + sval ζ y = sval ζ z + sval ζ w) :
     ∀ j, gZ x y z w j = 0 := by
@@ -88,12 +99,12 @@ theorem gZ_eq_zero
           push_cast
           ring
       _ = 0 := by rw [hsum]; ring
-  have := hindep (fun j => ((gZ x y z w j : ℤ) : F)) hF j
-  exact_mod_cast this
+  exact hindep (fun j => gZ x y z w j) hF j
 
+omit [CharZero F] in
 /-- `sval` is injective (given independence): distinct signed points have distinct values. -/
 theorem sval_injective
-    (hindep : ∀ g : Fin N → F, (∑ j : Fin N, g j * ζ ^ (j : ℕ)) = 0 → ∀ j, g j = 0)
+    (hindep : ∀ g : Fin N → ℤ, (∑ j : Fin N, (g j : F) * ζ ^ (j : ℕ)) = 0 → ∀ j, g j = 0)
     {p q : Fin N × Bool} (h : sval ζ p = sval ζ q) : p = q := by
   -- p + q' − q − q' form: use the 4-point bridge with y = w := q (x + y − z − w with x=p,y=q,z=q,w=q
   -- gives p − q = 0 pattern); simpler: direct 2-point version.
@@ -110,9 +121,9 @@ theorem sval_injective
       _ = 0 := by rw [h]; ring
   have hz : ∀ j, ((if p.1 = j then isgn p else 0 : ℤ) - (if q.1 = j then isgn q else 0)) = 0 := by
     intro j
-    have := hindep (fun j => (((if p.1 = j then isgn p else 0 : ℤ)
-        - (if q.1 = j then isgn q else 0) : ℤ) : F)) hF j
-    exact_mod_cast this
+    have := hindep (fun j => ((if p.1 = j then isgn p else 0 : ℤ)
+        - (if q.1 = j then isgn q else 0) : ℤ)) hF j
+    exact this
   -- read off at j = p.1
   have hp := hz p.1
   rw [if_pos rfl] at hp
@@ -125,11 +136,12 @@ theorem sval_injective
     rw [if_neg (fun h' => hpq h'.symm)] at hp
     rcases p with ⟨jp, (_|_)⟩ <;> simp_all [isgn]
 
+omit [CharZero F] in
 set_option maxHeartbeats 1000000 in
 /-- The key step: the coefficient at `x.1` alone forces `y = antipode x` (given signed-disjointness
 of `x` from `{z, w}`). Eight index-branches; each closes by integer sign arithmetic. -/
 theorem antipode_of_gZ
-    (hindep : ∀ g : Fin N → F, (∑ j : Fin N, g j * ζ ^ (j : ℕ)) = 0 → ∀ j, g j = 0)
+    (hindep : ∀ g : Fin N → ℤ, (∑ j : Fin N, (g j : F) * ζ ^ (j : ℕ)) = 0 → ∀ j, g j = 0)
     {x y z w : Fin N × Bool}
     (hsum : sval ζ x + sval ζ y = sval ζ z + sval ζ w)
     (hxz : x ≠ z) (hxw : x ≠ w) :
@@ -155,7 +167,7 @@ cancellation direction (a shared element forces the pairs to coincide, via `sval
 this is the full `(w=2, t=1)` linear-window rigidity: equal-sum pairs of `2N`-th roots are either
 identical or both antipodal. -/
 theorem pair_rigidity
-    (hindep : ∀ g : Fin N → F, (∑ j : Fin N, g j * ζ ^ (j : ℕ)) = 0 → ∀ j, g j = 0)
+    (hindep : ∀ g : Fin N → ℤ, (∑ j : Fin N, (g j : F) * ζ ^ (j : ℕ)) = 0 → ∀ j, g j = 0)
     {x y z w : Fin N × Bool}
     (hsum : sval ζ x + sval ζ y = sval ζ z + sval ζ w)
     (hxz : x ≠ z) (hxw : x ≠ w) :

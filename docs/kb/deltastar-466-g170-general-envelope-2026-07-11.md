@@ -7,6 +7,15 @@ Probes: `scripts/probes/probe_466_g170_envelope_partition.py` (exact general-D c
 `scripts/probes/probe_466_g170_incremental_prefix_nogo.py` (incremental-prefix no-go)
 Branch: `research/proximity-prize`
 
+## Scope note (audit 2026-10)
+
+Probe-side "field-independent" deficiency values mean agreement at the sampled primes
+(`{101, 1009, 65537, 10⁶+3}`; the envelope probe uses only `65537`), not a proof; the
+dimension-count upper bound below is the only field-independent statement. The probes' nullity
+helper previously returned 0 on an empty overlap system (losing the unknown count); it now takes
+the column count explicitly (the recorded dense-core results are unaffected). For `D > 7` the
+prefix-ordering search is a heuristic and its failures are reported as unknown.
+
 ## The question
 
 SYZ33 assembled the rate-1/2 strip theorem as a case split whose ONLY open analytic residual is

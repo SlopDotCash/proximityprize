@@ -4,21 +4,22 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.InterleavedListSize
+import ArkLib.Data.CodingTheory.InterleavedLambdaGe
 
 /-!
 # Unary interleaving preserves the list size exactly (#232)
 
 `InterleavedListSize` proves `Lambda (interleavedCodeSet (Fin 1) C) δ ≤ Lambda C δ` (the `m = 1`
-case of the product bound). This file proves the matching lower bound, hence the **equality**
+case of the product bound). This file records the matching lower bound, hence the **equality**
 
   `Lambda_interleaved_fin_one_eq` — `Lambda (interleavedCodeSet (Fin 1) C) δ = Lambda C δ`.
 
-The lower bound embeds each base codeword `c` as the unary matrix `φ c = (fun i _ => c i)`; this is
-injective, lands in the interleaved code (its single column is `c`), and preserves relative Hamming
-distance (a unary matrix differs from another in a row iff the underlying base words differ there),
-so it injects each base point list into the interleaved point list. The distance-preservation step
-is handled at the `Prop` level (filter-set equality), sidestepping the `DecidableEq`-instance
-transport.
+The lower bound is the `m = 1` instance of the arity-general `Lambda_interleaved_ge`
+(`InterleavedLambdaGe.lean`), which embeds each base codeword `c` as the diagonal matrix
+`φ c = (fun i _ => c i)`: this is injective, lands in the interleaved code, and preserves relative
+Hamming distance, so it injects each base point list into the interleaved point list.
+`Lambda_interleaved_fin_one_ge` is kept as a compatibility name for that instance rather than a
+second copy of the injection proof.
 
 This completes the interleaved list-size API at `m = 1`, and is the bridge needed to propagate a
 base-code list-size *lower* bound (e.g. the capacity-exponent overflow) into the faithful lattice,
@@ -34,49 +35,12 @@ namespace InterleavedCode.ListSize
 
 variable {ι F : Type} [Fintype ι]
 
-/-- **Unary interleaving does not shrink the list size.** Embedding base codewords as unary matrices
-injects each base point list into the interleaved point list, so `Lambda C δ ≤ Lambda (C^⋈ Fin 1) δ`. -/
+/-- **Unary interleaving does not shrink the list size.** `Lambda C δ ≤ Lambda (C^⋈ Fin 1) δ`:
+the `m = 1` instance of `Lambda_interleaved_ge`. -/
 theorem Lambda_interleaved_fin_one_ge [Fintype F] [Nonempty ι] [DecidableEq F]
     (C : Set (ι → F)) (δ : ℝ) :
-    ListDecodable.Lambda C δ ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin 1) C) δ := by
-  classical
-  refine iSup_le fun g => ?_
-  set G : Matrix ι (Fin 1) F := fun i _ => g i with hG
-  set φ : (ι → F) → Matrix ι (Fin 1) F := fun c => fun i _ => c i with hφ
-  have hmaps : Set.MapsTo φ (ListDecodable.closeCodewordsRel C g δ)
-      (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin 1) C) G δ) := by
-    intro c hc
-    obtain ⟨hcC, hcball⟩ := hc
-    refine ⟨?_, ?_⟩
-    · intro k
-      have hcol : (φ c).transpose k = c := by funext i; rfl
-      rw [hcol]; exact hcC
-    · unfold ListDecodable.relHammingBall at hcball ⊢
-      change _ ≤ δ at hcball ⊢
-      -- reduce to the (instance-uniform) distance equality inside the `convert` goal
-      convert hcball using 3
-      unfold Code.relHammingDist
-      congr 1
-      unfold hammingDist
-      congr 1
-      congr 1
-      ext i
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, hφ, hG, ne_eq,
-        funext_iff, Fin.forall_fin_one]
-  have hinj : Set.InjOn φ (ListDecodable.closeCodewordsRel C g δ) := by
-    intro a _ b _ hab
-    funext i
-    have := congrFun (congrFun hab i) 0
-    simpa [hφ] using this
-  calc ((ListDecodable.closeCodewordsRel C g δ).ncard : ℕ∞)
-      = (ListDecodable.closeCodewordsRel C g δ).encard := (Set.toFinite _).cast_ncard_eq
-    _ ≤ (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin 1) C) G δ).encard :=
-        Set.encard_le_encard_of_injOn hmaps hinj
-    _ = ((ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin 1) C) G δ).ncard : ℕ∞) :=
-        ((Set.toFinite _).cast_ncard_eq).symm
-    _ ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin 1) C) δ :=
-        le_iSup
-          (fun f => ((ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin 1) C) f δ).ncard : ℕ∞)) G
+    ListDecodable.Lambda C δ ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin 1) C) δ :=
+  Lambda_interleaved_ge (m := 1) C δ
 
 /-- **Unary interleaving preserves the list size exactly.** -/
 theorem Lambda_interleaved_fin_one_eq [Fintype F] [Nonempty ι] [DecidableEq F]

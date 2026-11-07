@@ -47,19 +47,22 @@ domains, thousands of band triples), and the exact **law**
 
 holds with **0 mismatches**.  So union-generation is *exactly* a univariate μ-basis question, and it
 is **false as a universal band statement**: the band admits Koszul counterexamples (smallest robust
-family: `n=10, k=6`, cores of size `7`).  Generation holds robustly only in the tight sub-band where
-every budget `k − m_XY ≤ 0` (rate `≤ 1/2` with maximal overlaps): then all `r_XY = 0` are forced
-and rigidity is automatic (`generation_of_saturated_overlaps`).
+family: `n=10, k=6`, cores of size `7`).  The only regime where the cofactor budgets force
+`r_XY = 0` outright is the *saturated* one, every budget `k − m_XY ≤ 0`, i.e. `m_XY ≥ k`.  That
+regime lies **outside** the stated band (which fixes `m_XY ≤ k − 1`), so inside the band no
+sub-band of automatic generation is established here.  `saturated_cofactor_zero` records only the
+vacuous degree-window fact (a polynomial with `natDegree + m < k` and `k ≤ m` is `0`); no
+generation theorem for saturated overlaps is formalized.
 
 ## Status (honest)
 
 **Partial / structural + refutation of the naive gate.**  The cocycle identity, the degree-drop
 factorization, the `V_T`-cancellation, the Koszul syzygy and its in-budget criterion, and the
-saturated-overlap generation case are proved axiom-clean.  The reduction *equates* union-generation
+vacuous saturated degree-window fact are proved axiom-clean.  The reduction *equates* union-generation
 with the vanishing of the in-budget syzygy module (probe-exact); the μ-basis literature
 (Cox–Sederberg–Chen: the syzygy module of a coprime univariate triple is free of rank `2` with
 generator degrees summing to the total degree) is the classical tool for the residual, which for the
-prescribed Vandermonde/roots-of-unity `W`-configuration remains open beyond the saturated sub-band.
+prescribed Vandermonde/roots-of-unity `W`-configuration remains open throughout the band.
 -/
 
 set_option autoImplicit false
@@ -166,15 +169,13 @@ theorem koszul_in_budget (mAB mAC t k : ℕ)
     (mAC - t ≤ (k - 1) - mAB) ∧ (mAB - t ≤ (k - 1) - mAC) := by
   omega
 
-/-! ## 5. The saturated sub-band: generation is automatic (rate `≤ 1/2`) -/
+/-! ## 5. The saturated regime (outside the band): the vacuous degree window -/
 
-/-- **Saturated-overlap generation.**  If every per-pair budget is nonpositive (`k ≤ m_XY` for the
-pair whose factor would carry a cofactor), the cofactors `s_XY` are forced to be `0` — a nonzero
-`deg < k − m_XY` polynomial cannot exist when `k ≤ m_XY`.  Then every pairwise mismatch `q_XY`
-vanishes and the local polynomials glue: generation is automatic.  This is the tight sub-band (rate
-`≤ 1/2` with maximal overlaps) where the syzygy budgets vanish; here SYZ35's gate closes
-unconditionally.  Formalized as: a polynomial of `natDegree < k − m` with `k ≤ m` is `0` (vacuous
-degree window). -/
+/-- **Saturated degree window (vacuous).**  If a per-pair budget is nonpositive (`k ≤ m_XY`), a
+cofactor `s_XY` of `natDegree < k − m_XY` is forced to be `0`.  This saturated regime `m_XY ≥ k`
+lies **outside** the band of this file (which fixes `m_XY ≤ k − 1`, cf. `koszul_in_budget`), so it
+does not give a generation result for any band triple; no gluing / generation theorem is proved
+here.  Formalized as: a polynomial with `natDegree + m < k` and `k ≤ m` is `0`. -/
 theorem saturated_cofactor_zero (s : K[X]) (k m : ℕ) (hkm : k ≤ m)
     (hdeg : s ≠ 0 → s.natDegree + m < k) : s = 0 := by
   by_contra h

@@ -19,9 +19,19 @@ element, and every radius in the second granularity band (`1 ≤ δ·n < 2`):
 With R1's `epsMCA_eq_inv_card_of_small_radius` (`= 1/|F|` on `δ·n < 1`), the first **two
 steps of the MCA staircase are now exact theorems for every distance-`≥ 4` linear code** —
 in particular for the production-scale Reed–Solomon codes of the prize statement. The
-staircase opens *linearly* (the spike values `1/q, 2/q`), and the discovered trichotomy
-shows the linear opening is conditional on distance: at `d = 3` the second step jumps to
-`n/q`, at `d = 2` it does not jump at all.
+staircase opens *linearly* (the spike values `1/q, 2/q`) for distance `≥ 4`.
+
+Below distance `4` nothing is proved here.  The band-2 probe trichotomy recorded in
+`MCABandTwoCollapse` (`d = 3`: the second step jumps to `n/q`; `d = 2`: no jump) was
+observed for Reed–Solomon (MDS) instances parametrized by `n − k`; it is an RS/MDS-family
+observation, not a consequence of minimum distance alone.  For general linear codes the
+minimum distance does not determine the low-distance behaviour: over `F₅`, `n = 4`, the
+code `span(1,1,0,0)` has distance `2`, yet the double-spike stack `u₀ = e₂`,
+`u₁ = e₃ − e₂` at `δ = 1/4` has the two bad scalars `0` and `1` (each line point agrees
+with `0` off one position, and no joint explanation exists because every codeword vanishes
+at positions `2, 3`), so `ε_mca ≥ 2/5` at the first jump rather than the sub-granularity
+value `1/5`.  (This does not affect the distance-`≥ 4` theorem or the double-spike
+construction below.)
 
 **The lower construction** (`mcaEvent` at `γ = 0` and `γ = 1`). Take distinct positions
 `i₁ ≠ i₂` and the double-spike stack `u₀ := single i₁ a`, `u₁ := single i₂ a − single i₁ a`:

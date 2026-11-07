@@ -16,42 +16,46 @@ Main soundness statement for Protocol 2 of `paper.txt`.
 ## Proof architecture and the named residual
 
 `logupVerifier` is *definitionally* the sequential composition
-`OracleVerifier.append outerVerifier sumcheckVerifier` (see `logupVerifier_eq_append`). Soundness
-therefore follows from `OracleVerifier.append_soundness` (the generic sequential-composition
-probability lemma, whose `AppendCoherent` side condition for `outerVerifier` is the in-tree
-`instOuterVerifierAppendCoherent`), supplying:
+`OracleVerifier.append outerVerifier sumcheckVerifier` (see `logupVerifier_eq_append`), so its
+soundness splits into a composition step and two sub-verifier facts:
 
 * outer-phase soundness for `outerVerifier`, with intermediate language `midLanguage` and error
   `outerSoundnessError` (the two LogUp algebraic-check terms), and
 * embedded-sumcheck soundness for `sumcheckVerifier`, with error `sumcheckSoundnessError`.
 
-These two sub-verifier soundness facts are collected into the named residual
-`subPhaseSoundness`, and the top-level `logup_soundness` is reduced to it through
-`OracleVerifier.append_soundness` in `logup_soundness_of_residual` (no `sorry`). For callers that
-can discharge only one side at a time, `Security/SubPhaseSplit.lean` exposes the same residual as
-the independent halves `OuterSoundnessResidual` and `SumcheckSoundnessResidual`. The error
-reconciliation `outerSoundnessError + sumcheckSoundnessError = logupSoundnessError …` holds by
-`rfl` because `logupSoundnessError` is *defined* as that sum.
+The two sub-verifier facts are collected into the named residual `SubPhaseSoundnessResidual`;
+`Security/SubPhaseSplit.lean` names its halves `OuterSoundnessResidual` and
+`SumcheckSoundnessResidual`. The error reconciliation
+`outerSoundnessError + sumcheckSoundnessError = logupSoundnessError …` holds by `rfl` because
+`logupSoundnessError` is *defined* as that sum.
 
-## What blocks `subPhaseSoundness`
+`logup_soundness_of_residual` below is a legacy interface, not a composition proof: its
+`hAppendSoundness` hypothesis is literally its conclusion, and `OracleVerifier.append_soundness`
+returns that hypothesis unchanged, so the theorem holds by `hAppendSoundness` alone.
 
-Both sub-facts are blocked by missing upstream security lemmas introduced *outside*
-`ArkLib/ProofSystem/Logup/**`, which this development is not permitted to modify:
+## Current status: restricted dischargers, no unconditional theorem
 
-* No outer LogUp verifier soundness theorem for `outerVerifier` exists in-tree (the algebraic
-  pole/grand-sum checks of Protocol 2).
-* The embedded sumcheck soundness for `sumcheckVerifier` is a `liftContext` of
-  `Sumcheck.Spec.oracleVerifier`. The generic sumcheck development currently provides single-round
-  completeness and round-by-round knowledge-soundness infrastructure, but no full plain soundness
-  theorem for `Sumcheck.Spec.oracleVerifier` at the shape needed here, and the lift also requires
-  the `logupSumcheckContextLens` / `logupSumcheckOracleLens` soundness conditions.
-* `OracleVerifier.append_soundness` currently exposes the sequential-composition soundness theorem
-  as an explicit `hAppendSoundness` hypothesis. This keeps the obstruction as a named residual
-  interface instead of hiding it behind `sorryAx`.
+The outer half, the sumcheck half and the composed headline all have conditional theorems now:
 
-Hence this residual remains explicit, with a split front door in `Security/SubPhaseSplit.lean` for
-the outer and sumcheck halves. The final output language is `Set.univ` (`outputRelation_language`),
-so this is a nontrivial acceptance-probability bound, not a vacuous language inclusion.
+* `outerVerifier_soundness_mid` and the end-to-end headline `logup_soundness_end_to_end` in
+  `Security/OuterMaliciousSoundness.lean`;
+* `outerSoundnessResidual_holds`, `sumcheckSoundnessResidual_holds_pointwise`,
+  `subPhaseSoundnessResidual_holds`, `appendSoundnessResidual_holds` and
+  `logupSoundnessBrickResidual_holds` in `Security/LogupResidualDischarge.lean`.
+
+Each holds only under explicit side conditions. The outer half assumes `2 ^ n < Fintype.card F`
+and `n ≤ params.numGroups`; the sumcheck half assumes `0 < n` and `[oSpec.Fintype]`,
+`[oSpec.Inhabited]`; the bundled and end-to-end results assume all of these; and every one assumes
+state-preserving, never-failing and value-blind shared-oracle implementations (`himplSP`,
+`himplNF`, `himplVB`). The sumcheck half concerns the in-tree oracle verifier `sumcheckVerifier`
+as encoded here, not other sumcheck verifier implementations. So `SubPhaseSoundnessResidual` is
+discharged on that regime only: no theorem proves it for arbitrary `F`, `n`, `params`, `init` and
+`impl`. The definitional equivalences of `Security/SubPhaseSplit.lean`
+(`subPhaseSoundnessResidual_iff_split` and its siblings) prove neither side, so they are not
+providers of these residuals.
+
+The final output language is `Set.univ` (`outputRelation_language`), so these soundness
+statements are nontrivial acceptance-probability bounds, not vacuous language inclusions.
 -/
 
 open scoped NNReal
@@ -102,19 +106,18 @@ theorem logupVerifier_eq_append :
         (sumcheckVerifier oSpec F n M params) := rfl
 
 /-- The two sub-phase soundness obligations of the LogUp composition, stated as a single named
-`Prop` residual (not proved here).
+`Prop` residual (not proved in this file).
 
 * The outer phase (`outerVerifier`) is sound with intermediate language `midLanguage` and error
   `outerSoundnessError F n M params`.
 * The embedded sumcheck (`sumcheckVerifier`) is sound with error `sumcheckSoundnessError`.
 
-WALL (upstream security/composition gaps, outside `ArkLib/ProofSystem/Logup/**`, not modifiable
-here): no in-tree outer LogUp soundness theorem; no full plain `Sumcheck.Spec` soundness theorem at
-the lifted shape; and `OracleVerifier.append_soundness` carries the append-soundness theorem as an
-explicit hypothesis. See the module docstring.
-
-This is therefore kept as an explicit named residual `Prop` (no `sorry`); the main theorem
-`logup_soundness_of_residual` consumes it. -/
+Status: `subPhaseSoundnessResidual_holds` (`Security/LogupResidualDischarge.lean`) proves this
+residual under the side conditions listed in the module docstring (`0 < n`,
+`2 ^ n < Fintype.card F`, `n ≤ params.numGroups`, finite and inhabited `oSpec`, and
+state-preserving, never-failing, value-blind implementations). No theorem proves it for arbitrary
+parameters and implementations, and the equivalence `subPhaseSoundnessResidual_iff_split` is a
+definitional repackaging, not a proof of it. -/
 def SubPhaseSoundnessResidual (sumcheckSoundnessError : ℝ≥0) : Prop :=
     (outerVerifier oSpec F n M params).soundness init impl
         (inputRelation F n M).language (midLanguage F n M params)
@@ -122,14 +125,14 @@ def SubPhaseSoundnessResidual (sumcheckSoundnessError : ℝ≥0) : Prop :=
       (sumcheckVerifier oSpec F n M params).soundness init impl
         (midLanguage F n M params) outputRelation.language sumcheckSoundnessError
 
-/-- Main ArkLib soundness theorem for LogUp Protocol 2, **reduced to the named residual**
-`SubPhaseSoundnessResidual` through the genuine sequential-composition soundness interface
-`OracleVerifier.append_soundness` (whose append theorem is an explicit residual hypothesis; see the
-module docstring).
-
-The soundness error `logupSoundnessError F n M params s = outerSoundnessError F n M params + s`
-is exactly the `soundnessError₁ + soundnessError₂` produced by `append_soundness`. This reduction's
-own body contains no `sorry`. -/
+/-- **Legacy interface, not a composition proof.** The conclusion is LogUp Protocol 2 soundness
+with error `logupSoundnessError F n M params s = outerSoundnessError F n M params + s` (exactly the
+`soundnessError₁ + soundnessError₂` shape of `append_soundness`), but the hypothesis
+`hAppendSoundness` is literally that conclusion: the body forwards it through
+`OracleVerifier.append_soundness`, whose generic interface returns its residual hypothesis
+unchanged, so the sub-phase argument `h` is not needed and the theorem proves no composition fact.
+For the restricted end-to-end soundness theorem see `logup_soundness_end_to_end`
+(`Security/OuterMaliciousSoundness.lean`) and its side conditions. -/
 theorem logup_soundness_of_residual (sumcheckSoundnessError : ℝ≥0)
     (h : SubPhaseSoundnessResidual oSpec F n M params init impl sumcheckSoundnessError)
     (hAppendSoundness :

@@ -9,10 +9,13 @@ import ArkLib.Data.CodingTheory.ListDecoding.CZ25UniqueDecodingSlice
 /-!
 # Guruswami-Wang kernel reduced to {interpolation + multiplicity-vanishing} (GW ASSEMBLY, #93/#94)
 
-The headline: CZ25CoordFiberCap (verbatim in-tree) reduced to EXACTLY {GWInterpExists (BRICK-I) +
-GWAgreeForcesDirection (BRICK-V)} -- the affine pinning (BRICK-W, proven), the design budget, and
-the arithmetic collapse all discharged. The celebrated GW |L|>1 capacity kernel is now conditional
-on the two named analytic obligations, no longer fully open.
+Original headline (as first written): CZ25CoordFiberCap reduced to {GWInterpExists (BRICK-I) +
+GWAgreeForcesDirection (BRICK-V)} plus the wired BRICK-W/BRICK-L conclusions. **Audit status
+(see the "Audit corrections" section below): this reduction is NOT a genuine conditional proof of
+the GW kernel.** Two of its inputs are unsatisfiable as stated (`GWDirectionFinrankLe`, refuted by
+`GWDirectionScopedWiring.gwDirectionFinrankLe_refuted`; `GWAffineFiberCharge`, refuted on empty
+close lists by `GWFiberChargeRepair.gwAffineFiberCharge_false_of_empty_close_list` /
+`gwAffineFiberCharge_refuted_concrete`), and the headline proof uses only `hL` and `hτ`.
 -/
 
 /-!
@@ -56,41 +59,70 @@ design budget caps the total direction mass.  Precisely, the GW proof factors as
 * **BRICK-W (direction space affine, dim ≤ s − 1).** `A` has `F`-dimension `≤ s − 1`, by the
   proven GK16 folded-Wronskian engine (`foldedWronskian_ne_zero_of_linearIndependent`): a dim-`s`
   solution space would give `s` independent solutions whose folded Wronskian is nonzero,
-  contradicting the functional equation forcing it to vanish.  Lane `GWBrickW` proves it; enters
-  here as the named conclusion `GWDirectionFinrankLe` (its *output*).
+  contradicting the functional equation forcing it to vanish.  The proven lane bounds only the
+  single designated solution submodule; it enters here as `GWDirectionFinrankLe`, which
+  over-scopes it to *every* submodule `A ≤ C` and is therefore false for codes of dimension
+  `≥ s` (`GWDirectionScopedWiring.gwDirectionFinrankLe_refuted`).
 
 * **BRICK-L (the affine-flat charge).** Each fiber `{c ∈ L : c i = f i}`, recentred at the
-  base `c₀`, is an affine flat: its cardinality is `≤ 1 + #{independent recentred diffs vanishing
-  at i}`, and those independent diffs land in `A ⊓ ker eval_i`.  Summing, the design budget
-  (`sum_card_vanishing_le_design`, **proven in-tree**) gives
-  `∑_i #fiber_i ≤ n + dim(A)·τ(r₀)·n ≤ ((|L| − 1)·τ(r₀) + 1)·n` (using `dim A ≤ |L| − 1`).  Lane
-  `GWBrickL` proves the affine-flat *per-coordinate* charge; enters here as `GWAffineFiberCharge`
-  (its *output*).
+  base `c₀`, lies in an affine flat with direction in `A ⊓ ker eval_i`.  The step "its
+  cardinality is `≤ 1 + #{independent recentred diffs vanishing at i}`" is **false in general**:
+  an affine flat of dimension `d` over `F_q` has `q^d` points, not `d + 1` (over `F₃` a
+  dimension-1 line has 3 points but only one independent direction).  It holds when the fibre is
+  a singleton or empty (the sub-Johnson / unique-decoding slice) and is exactly the documented
+  `q^{dim}` vs `dim + 1` obstruction past Johnson.  *If* that charge held, the design budget
+  (`sum_card_vanishing_le_design`, **proven in-tree**) would give
+  `∑_i #fiber_i ≤ n + dim(A)·τ(r₀)·n ≤ ((|L| − 1)·τ(r₀) + 1)·n` (using `dim A ≤ |L| − 1`, which
+  needs a nonempty list).  No lane proves this charge; it enters here as the assumed
+  `GWAffineFiberCharge`, which as stated is moreover unsatisfiable on empty close lists (see
+  the audit corrections below).
 
 ## What this file delivers
 
-The conditional headline:
+The implication (see the audit corrections: its hypotheses are unsatisfiable for genuine codes):
 
-  `cz25CoordFiberCap_of_interp_and_multiplicity` : `{BRICK-I, BRICK-V}` + the (orchestrator-wired) conclusions of `{BRICK-W, BRICK-L}`
-      ⇒ `CZ25CoordFiberCap` (general `|L| > 1`).
+  `cz25CoordFiberCap_of_interp_and_multiplicity` :
+      `{BRICK-I, BRICK-V}` + assumed `{BRICK-W, BRICK-L}` ⇒ `CZ25CoordFiberCap` (general `|L| > 1`).
 
-The composition discharges **everything except** the two analytic bricks `{I, V}`:
+What is genuinely proven in-tree around it:
 
 * the design budget `∑_i dim(A ⊓ ker eval_i) ≤ dim(A)·τ(r₀)·n` (**in-tree, proven**,
   `sum_card_vanishing_le_design` / `sum_finrank_span_filter_diffs_le_design_…`);
 * the recentred-span ≤ code containment and the span/kernel bridges (**in-tree, proven**);
-* the `dim A ≤ |L| − 1` charge and the `+ n` base-point accounting (**proven here**);
-* the affine-flat per-coordinate fiber bound (BRICK-L conclusion, named; proven in lane from
-  BRICK-W);
+* the arithmetic collapse `cz25CoordFiberCap_of_affineFiberCharge` (**proven here**);
 * the `|L| ≤ 1` trivial slice (**in-tree, proven**, `cz25CoordFiberCap_of_ncard_le_one`).
+
+Not proven: the affine-flat per-coordinate fibre charge (assumed as `GWAffineFiberCharge`, false
+as stated on empty lists and false past Johnson in its cardinality form).
 
 **Honesty / non-vacuity.** `{BRICK-I, BRICK-V}` are genuinely *weaker* than `CZ25CoordFiberCap`:
 BRICK-I asserts existence of *one* polynomial for *one* `f`; BRICK-V asserts each close codeword's
-recentred difference lies in *one* direction submodule.  Neither mentions the coordinate agreement
-table, the candidate-list cardinality, or any real inequality — the cap is *derived* by composition
-with the in-tree design budget, not restated.  This file is `sorry`/`axiom`/`native_decide`-free;
-the only admitted inputs are the named Props `{BRICK-I, BRICK-V}` plus the orchestrator-wired
-`{BRICK-W, BRICK-L}` conclusions.
+recentred difference lies in *one* direction submodule.  As currently defined they encode no
+multiplicity/degree interpolation and no small solution space: both are discharged trivially
+(constant pair `(1, 0)`; `A := C`), see the non-vacuity examples below.  This file is
+`sorry`/`axiom`/`native_decide`-free; the only admitted inputs are the named Props
+`{BRICK-I, BRICK-V}` plus the assumed `{BRICK-W, BRICK-L}` conclusions.
+
+## Audit corrections (2026-10-28)
+
+* The cap is **not** derived from `{BRICK-I, BRICK-V}`: the headline proof of
+  `cz25CoordFiberCap_of_interp_and_multiplicity` builds an unused `_chain` from `hI, hV, hW` and
+  concludes solely from `hL` (plus `hτ`) via `cz25CoordFiberCap_of_affineFiberCharge`.  All of
+  the content sits in the assumed `GWAffineFiberCharge`.
+* `GWDirectionFinrankLe` (∀ submodules `A ≤ C`, `finrank A ≤ s − 1`) is false for every code of
+  dimension `≥ s` (`GWDirectionScopedWiring.gwDirectionFinrankLe_refuted`); the proven BRICK-W
+  lane bounds only one designated solution submodule.
+* `GWAffineFiberCharge` quantifies **every** received word and demands
+  `(finrank A : ℝ) ≤ |close list| − 1`; any empty close list makes the right side `−1`, so it is
+  unsatisfiable for every design admitting a far word
+  (`GWFiberChargeRepair.gwAffineFiberCharge_false_of_empty_close_list`,
+  `gwAffineFiberCharge_refuted_concrete`).  `CZ25CoordFiberCap` has no such obstruction.  The
+  corrected leaf with an explicit empty-list branch is `GWFiberChargeRepair.GWFiberCardCharge`
+  (`cz25CoordFiberCap_of_fiberCardCharge`), which still does not consume a direction produced by
+  BRICK-I/V.
+* Hence the headline below is a logically valid implication whose hypothesis set is
+  unsatisfiable for genuine codes; it is not a conditional reduction of the GW kernel to
+  `{BRICK-I, BRICK-V}`.
 
 ## References
 
@@ -159,10 +191,16 @@ def GWAgreeForcesDirection
 
 /-- **BRICK-W conclusion (direction space affine, dim ≤ s − 1) — orchestrator-wired Prop.**
 
-The GW direction submodule `A` produced by BRICK-V has `F`-dimension `≤ s − 1`.  Lane `GWBrickW`
-*proves* this from the proven GK16 folded-Wronskian engine
-(`foldedWronskian_ne_zero_of_linearIndependent`); here it enters as a named hypothesis, stated
-*per* solution submodule `A ≤ C`. -/
+Intended content: the GW direction submodule `A` produced by BRICK-V has `F`-dimension `≤ s − 1`.
+Lane `GWBrickW` proves such a bound (via the GK16 folded-Wronskian engine
+`foldedWronskian_ne_zero_of_linearIndependent`) **only for the single designated solution
+submodule**, not for this Prop.
+
+**Refuted as stated.**  This Prop quantifies over *every* submodule `A ≤ C`; taking `A := C`
+forces `finrank C ≤ s − 1`, so it is false for every code of dimension `≥ s`
+(`GWDirectionScopedWiring.gwDirectionFinrankLe_refuted`).  Use the scoped replacements
+`GWDirectionScopedWiring.GWAgreeForcesDirectionScoped` and
+`GWDirectionScopedWiring.cz25CoordFiberCap_of_interp_and_multiplicity_scoped` instead. -/
 def GWDirectionFinrankLe
     (s : ℕ) (C : Submodule F (ι → Fin s → F)) : Prop :=
   ∀ A : Submodule F (ι → Fin s → F), A ≤ C → Module.finrank F A ≤ s - 1
@@ -178,11 +216,20 @@ that the affine-flat cap holds:
 for the canonical close-list finset `Lset`.  This is exactly what the design budget
 (`sum_card_vanishing_le_design`, **proven in-tree**) yields once each fiber is recognised as an
 affine flat of direction `A ⊓ ker eval_i` (the `+1` is the per-coordinate base point, the
-`dim A · τ(r₀)·n` is the design budget).  Lane `GWBrickL` proves it from BRICK-W; here it enters as
-a named hypothesis carrying its conclusion in cap-ready form.
+`dim A · τ(r₀)·n` is the design budget) — *provided* each fibre's cardinality is at most
+`1 + dim(A ⊓ ker eval_i)`, which fails for genuine affine flats over `F_q` (`q^d` points).  No
+lane proves this Prop; here it is an assumed hypothesis carrying its conclusion in cap-ready form.
 
 We deliberately expose `dim A ≤ |Lset| − 1` so the assembly can collapse `(dim A)·τ + 1` to
-`(|Lset| − 1)·τ + 1` using `τ(r₀) ≥ 0` (genuine designs), matching `CZ25CoordFiberCap` exactly. -/
+`(|Lset| − 1)·τ + 1` using `τ(r₀) ≥ 0` (genuine designs), matching `CZ25CoordFiberCap` exactly.
+
+**Caveat — unsatisfiable as stated.**  The second conjunct, read in `ℝ`, is
+`(finrank A : ℝ) ≤ |Lset| − 1`; for any `f` with an empty close list this is `finrank A ≤ −1`,
+impossible.  So this Prop is false for every design admitting a far received word
+(`GWFiberChargeRepair.gwAffineFiberCharge_false_of_empty_close_list`, concrete instance
+`gwAffineFiberCharge_refuted_concrete`; e.g. the zero code with `τ ≡ 0`, `η = 1`, radius `0`, and
+a nonzero received word).  Empty lists must be handled separately (or the charge placed under a
+nonempty-list / base-codeword premise), as in `GWFiberChargeRepair.GWFiberCardCharge`. -/
 def GWAffineFiberCharge
     (s : ℕ) (τ : ℕ → ℝ) (C : Submodule F (ι → Fin s → F))
     (_h : IsSubspaceDesign s τ C) (η : ℝ) (_hη : 0 < η) : Prop :=
@@ -269,29 +316,31 @@ example
 
 /-! ### The headline conditional assembly -/
 
-/-- **HEADLINE: `CZ25CoordFiberCap` from exactly `{BRICK-I, BRICK-V}` (+ wired `{W, L}`).**
+/-- **Original headline: `CZ25CoordFiberCap` from `{BRICK-I, BRICK-V}` (+ assumed `{W, L}`).**
 
-The full GW kernel reduced from FULLY-OPEN to CONDITIONAL on the two analytic bricks
-`{BRICK-I, BRICK-V}`, with `{BRICK-W, BRICK-L}` discharged by their (orchestrator-wired)
-conclusions.  Given:
+**Audit status:** a logically valid implication, but *not* a conditional reduction of the GW kernel.
+The proof concludes from `hL` and `hτ` alone (the `_chain` built from `hI, hV, hW` is unused), and
+two hypotheses are unsatisfiable for genuine codes: `hW` (refuted by
+`GWDirectionScopedWiring.gwDirectionFinrankLe_refuted` for every code of dimension `≥ s`) and `hL`
+(refuted on any empty close list by
+`GWFiberChargeRepair.gwAffineFiberCharge_false_of_empty_close_list`).  Inputs:
 
-* `hI : GWInterpExists …`   (BRICK-I, analytic, named);
-* `hV : GWAgreeForcesDirection …`  (BRICK-V, analytic, named);
-* `hW : GWDirectionFinrankLe …`  (BRICK-W conclusion, proven in lane `GWBrickW`);
-* `hL : GWAffineFiberCharge …`   (BRICK-L conclusion, proven in lane `GWBrickL`);
+* `hI : GWInterpExists …`   (BRICK-I, named; trivially satisfiable as currently defined);
+* `hV : GWAgreeForcesDirection …`  (BRICK-V, named; trivially satisfiable with `A := C`);
+* `hW : GWDirectionFinrankLe …`  (over-scoped BRICK-W; false for codes of dimension `≥ s`);
+* `hL : GWAffineFiberCharge …`   (assumed BRICK-L charge; false whenever a close list is empty);
 * `hτ : 0 ≤ τ(r₀)`  (nonnegativity of the design profile, supplied with the design);
 
 the affine-flat coordinate-fiber cap `CZ25CoordFiberCap` holds.
 
-**The composition.**  BRICK-I gives a nonzero interpolant `Q`.  BRICK-V feeds `Q` into the
-multiplicity argument, producing a direction submodule `A ≤ C` containing every recentred
-difference.  BRICK-W bounds `dim A ≤ s − 1`.  BRICK-L recognises each fiber as an affine flat of
-direction `A ⊓ ker eval_i` and, via the in-tree design budget, yields the cap
-`coordAgreeSum ≤ (dim A·τ(r₀) + 1)·n` with `dim A ≤ |Lset| − 1`; the arithmetic collapse
-`cz25CoordFiberCap_of_affineFiberCharge` upgrades it to the `((|Lset| − 1)·τ(r₀) + 1)·n` form.
+**The intended composition (not what the proof does).**  BRICK-I gives a nonzero interpolant `Q`;
+BRICK-V would produce a direction submodule `A ≤ C` containing every recentred difference;
+BRICK-W would bound `dim A ≤ s − 1`; BRICK-L would charge each fibre to `A ⊓ ker eval_i`.  The
+actual proof ignores the produced direction and applies the arithmetic collapse
+`cz25CoordFiberCap_of_affineFiberCharge` to the assumed charge `hL` directly.
 
-`sorry`/`axiom`-free; the *only* admitted inputs are `{hI, hV, hW, hL}`, of which `{hW, hL}` are the
-wired brick conclusions and `{hI, hV}` are the irreducible analytic core. -/
+`sorry`/`axiom`-free.  All substantive content is in the (unsatisfiable-as-stated) `hL`; see the
+module's "Audit corrections" section and `GWFiberChargeRepair` for the corrected leaf. -/
 theorem cz25CoordFiberCap_of_interp_and_multiplicity
     (s : ℕ) (τ : ℕ → ℝ) (C : Submodule F (ι → Fin s → F))
     (h : IsSubspaceDesign s τ C) (η : ℝ) (hη : 0 < η)
@@ -301,9 +350,8 @@ theorem cz25CoordFiberCap_of_interp_and_multiplicity
     (hW : GWDirectionFinrankLe s C)
     (hL : GWAffineFiberCharge s τ C h η hη) :
     CZ25CoordFiberCap s τ C h η hη := by
-  -- BRICK-I/V/W feed BRICK-L's charge `hL`; the cap follows by the arithmetic collapse.
-  -- We exercise `{hI, hV, hW}` to certify they are the genuine source of the charge `hL`, then
-  -- discharge the cap purely from `hL` and `hτ`.
+  -- The cap follows from `hL` and `hτ` alone by the arithmetic collapse. The `_chain` below
+  -- merely type-checks that `{hI, hV, hW}` compose; it is unused and does NOT derive `hL`.
   classical
   -- Record the analytic chain `{I → V → W}` is consumable (non-degenerate regime witness).
   have _chain : ∀ f c₀ : ι → Fin s → F, 0 ≤ 1 - τ (Nat.floor (1 / η)) - η →

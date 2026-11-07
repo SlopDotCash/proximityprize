@@ -95,6 +95,7 @@ class SpectralEvaluator:
 
     def threshold(self, omega, lo=None, hi=None):
         """omega: iterable of (S, J) integer pairs.  Least A with dim > n*rank_bound."""
+        omega = tuple(dict.fromkeys(omega))
         d, n, k, m, w = self.d, self.n, self.k, self.m, self.w
         cells = [(S, J, int(self.mult[S, J])) for (S, J) in omega
                  if S <= self.smax and J <= self.jmax and self.mult[S, J] > 0]
@@ -249,7 +250,9 @@ class GatedEvaluator(SpectralEvaluator):
 def verify_exact_int(d, n, k, m, omega, A):
     """All-integer re-verification of a certificate: dim > n * sum_blocks min(rows, cols)
     with Python bignums throughout (no float64 anywhere).  Returns (ok, dim, n*rank_bound).
-    This is the auditable form of a counting certificate at (d, n, k, m, Omega, A)."""
+    This is the auditable form of a counting certificate at (d, n, k, m, Omega, A).
+    Omega denotes a set: repeated cells never add copies of the same monomials."""
+    omega = tuple(dict.fromkeys(omega))
     w = k - 1
     assert m <= w
     D = m * A
@@ -329,6 +332,7 @@ def line_feasible_int(d, n, k, m, omega, A, L):
     (g1, g2) = (b0 + sum bs + l0, a - sum (j+1) bs).  Sound: rank <= sum min(rows, cols).
     rows_line(g1, g2) = sum_{g1' <= g1} rows_LD(g1', g2); cols gain the l0-multiplicity
     [g1 - S <= L] * (min(b0max(a), g1 - S) + 1).  All Python bignums."""
+    omega = tuple(dict.fromkeys(omega))
     w = k - 1
     assert m <= w
     D = m * A

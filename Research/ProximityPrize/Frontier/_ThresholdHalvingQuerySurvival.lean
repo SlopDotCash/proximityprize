@@ -33,8 +33,11 @@ The statement factors into two layers that live in two different mathematical re
    per-query miss probabilities `∏ᵢ pMiss i` is the measure-theoretic *independence* content
    (`Pr[⋂ᵢ Mᵢ] = ∏ᵢ Pr[Mᵢ]` for independent events `Mᵢ`). The FRI-specific probability space and
    the independence of the `q` query draws are **not** in this tree, so this step is carried as one
-   explicit named `Prop` (`QueryIndependenceFactorization`), never silently discharged and never
-   vacuous (it is a genuine non-trivial product inequality on reals).
+   explicit named `Prop` (`QueryIndependenceFactorization`).  Caveat (audit CW-B15-06): there is
+   no probability space here — `survival` and `pMiss` are free reals, and
+   `QueryIndependenceFactorization survival pMiss` is literally the `hfactor` hypothesis
+   `survival ≤ ∏ pMiss` of `querySoundness_of_prod_bound` under a new name; it encodes no
+   independence content by itself.
 
 Chaining (2) then (1) discharges the named `QuerySoundnessBound` into the proven combinatorial core.
 
@@ -46,7 +49,7 @@ Chaining (2) then (1) discharges the named `QuerySoundnessBound` into the proven
 | `prod_miss_le_pow_univ` (the `Fin q` specialization, `#univ = q`) | **PROVEN** |
 | `querySoundness_of_prod_bound` (product bound ⟹ `QuerySoundnessBound`) | **PROVEN** |
 | `QueryIndependenceFactorization` (`survival ≤ ∏ pMiss`, the measure step) | **NAMED** |
-| `querySoundnessBound_of_independence` (independence + core ⟹ `QuerySoundnessBound`) | **DERIVED** |
+| `querySoundnessBound_of_independence` (restates `querySoundness_of_prod_bound`) | **DERIVED** |
 
 The genuinely-open input has been *shrunk* from "the whole `(1 − δ/2)^q` survival tail" to the
 single measure-theoretic independence factorization `survival ≤ ∏ pMiss` — the deterministic power
@@ -56,9 +59,12 @@ bound is now a theorem.
 
 This is the **LOSSY (≈ 2× query) above-Johnson route**, NOT the grand zero-loss `δ*` (the open BGK
 wall). Everything proven rests only on Mathlib's ordered-semiring product monotonicity; the axiom
-audit at the bottom must be `⊆ {propext, Classical.choice, Quot.sound}` (no `sorryAx`). The single
-named `QueryIndependenceFactorization` is a genuine non-trivial real inequality (the FRI query
-independence), never replaced by a vacuous/trivially-true Prop and never silently discharged.
+audit at the bottom must be `⊆ {propext, Classical.choice, Quot.sound}` (no `sorryAx`). The
+named `QueryIndependenceFactorization` is an inequality on free reals equal to the `hfactor`
+premise; the FRI query-independence argument that would justify it is not formalized.  Note also
+that `QuerySoundnessBound`, `ThresholdHalvingSZ.QueryAmpTail` and the second summand of
+`PerRoundFRIError` are one and the same inequality `x ≤ (1 − h)^q`; `QuerySoundnessBound` now
+delegates to `QueryAmpTail`.
 -/
 
 namespace ProximityGap.ThresholdHalvingQuerySurvival
@@ -118,8 +124,10 @@ space and the mutual independence of the `q` query draws are not in this tree, s
 as one explicit named `Prop`. It is a genuine non-trivial inequality on reals (it relates a joint
 survival probability to a product of marginals), not a vacuous carrier. -/
 
-/-- Named **query-independence factorization residual** (NOT proven here — the measure-theoretic
-independence content). `QueryIndependenceFactorization survival pMiss` is meant to hold exactly when
+/-- Named **query-independence factorization residual** (NOT proven here). Definitionally this is
+just the `hfactor` premise of `querySoundness_of_prod_bound` on free reals — no probability space
+or independence is modelled (audit CW-B15-06). `QueryIndependenceFactorization survival pMiss` is
+meant to hold exactly when
 the joint all-`q`-queries-miss (survival) probability `survival` is dominated by the product of the
 per-query miss probabilities `∏ᵢ pMiss i`. For genuinely *independent* query draws this is an
 equality (`Pr[⋂ Mᵢ] = ∏ Pr[Mᵢ]`); the FRI-specific independence proof is not in this tree, so we
@@ -138,9 +146,9 @@ independence residual `QueryIndependenceFactorization survival pMiss` (the joint
 is dominated by the product of marginals), the named `QuerySoundnessBound survival halfRadius q`
 holds — i.e. `survival ≤ (1 − halfRadius)^q`.
 
-The probabilistic content lives entirely in the named `QueryIndependenceFactorization`; the power
-bound `∏ ≤ (1 − halfRadius)^q` is the proven combinatorial core. We never discharge the
-independence residual ourselves. -/
+This is `querySoundness_of_prod_bound` restated with `hfactor` renamed; it adds no content. The
+power bound `∏ ≤ (1 − halfRadius)^q` is the proven combinatorial core. We never discharge the
+factorization premise ourselves. -/
 theorem querySoundnessBound_of_independence {q : ℕ} {survival halfRadius : ℝ} (pMiss : Fin q → ℝ)
     (h0 : ∀ i, 0 ≤ pMiss i) (hc : ∀ i, pMiss i ≤ 1 - halfRadius)
     (hindep : QueryIndependenceFactorization survival pMiss) :

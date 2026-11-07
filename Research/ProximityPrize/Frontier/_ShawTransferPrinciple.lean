@@ -27,12 +27,19 @@ for a perfect matching `σ`), and each antipodal cell injects into the transvers
 The **Shaw Transfer Principle** is the statement that this pairing residual is **`p`-stable under
 reduction mod 𝔭** — i.e. it pushes forward along the reduction ring hom `σ : ℤ[ζ] → 𝔽_p` — **outside
 a bounded bad-prime set**, and conversely that every char-`p` zero-sum tuple is the reduction of a
-char-`0` zero-sum tuple (the lift). Precisely, for a ring hom `σ : F →+* K` and a node set `G ⊆ F`:
+char-`0` zero-sum tuple (the lift). Precisely, for a ring hom `σ : F →+* K` from a commutative ring
+`F` (e.g. `F = ℤ[ζ]`) to a field `K` (e.g. `K = 𝔽_p`) and a node set `G ⊆ F`:
+
+(Audit correction CW-B14-02: an earlier version required `F` to be a *field*.  A ring hom out of a
+field is injective and preserves the characteristic, so it cannot model `ℤ[ζ] → 𝔽_p`, and
+`ShawPStable` was automatic (`shawPStable_of_field`).  The source is now an arbitrary commutative
+ring; no reduction hom is instantiated in this file.)
 
 > **(Shaw Transfer)** If
 >   **(p-stability)** `σ` is INJECTIVE on `G` — distinct nodes stay distinct mod 𝔭 (this is the
 >     "outside the bad-prime set" condition: two `2^μ`-th roots `x ≠ y` collide mod 𝔭 iff 𝔭 divides
->     `Norm(x−y)`, a finite set of primes, vacuous for the prize prime `p ≈ n·2^128 ≫ 2^n ≥ |Norm|`),
+>     `Norm(x−y)`, a finite set of primes; for `2^μ`-th roots these norms are powers of `2`, so odd
+>     primes are good — note the earlier "`p ≫ 2^n`" justification was false at `n = 2^30`),
 >   and **(char-0 pairing)** every char-0 zero-sum tuple of `G` is antipodally paired (`H`, the proven
 >     Lam–Leung input), and **(lift)** every char-`p` zero-sum tuple of `σ(G)` is the σ-image of a
 >     char-0 zero-sum tuple of `G` (`ShawLiftsToCharZero`, the NAMED analytic residual),
@@ -48,21 +55,26 @@ that the pushed-forward pairing is still a valid antipodal matching of DISTINCT 
 
 The naive char-`p` bound `E_r ≤ Wick` is **FALSE** at the prize scale (the DC term forces
 `E_r ≥ |G|^{2r}/q > Wick` when `n ≥ 64`, `r ≈ log q`); see `_ShawMatchingInjection`'s preamble and
-`PairingResidualFailsAtPrize`. The Shaw Transfer Principle does NOT contradict this: it isolates the
-**exact** missing input as the LIFT `ShawLiftsToCharZero`. The lift FAILS precisely when there are
-genuine char-`p` "wraparound" solutions — short `±1`-relations of `2^μ`-th roots vanishing mod `p`
+`PairingResidualFailsAtPrize`. The Shaw Transfer Principle does NOT contradict this: it isolates a
+sufficient missing input, the LIFT `ShawLiftsToCharZero`, which must therefore also FAIL at that
+scale. The lift fails when there are genuine char-`p` "wraparound" solutions — short `±1`-relations
+of `2^μ`-th roots vanishing mod `p`
 that have NO char-0 antecedent. So:
 
-* `ShawLiftsToCharZero` holds  ⟺  no genuine wraparound  ⟺  `E_r(𝔽_p) ≤ Wick`  ⟺  the prize bound.
-* In char 0 (and the regime `n ≲ √p` where no `2ln q`-term root relation can vanish) the lift is
-  FREE and the transfer reproduces the exact char-0 bound (`shawTransfer_charZero`).
+* Proved here: `ShawLiftsToCharZero` (with p-stability and char-0 pairing) ⟹ every char-`p`
+  zero-sum tuple is paired ⟹ `E_r(σ(G)) ≤ Wick`.  The converse directions (no wraparound ⟹ lift,
+  Wick bound ⟹ lift) are **not** proved, and no equivalence with the prize bound is claimed.
+* For `σ = id` the lift is FREE and the transfer is the same-field identity, reproducing the
+  char-0 matching bound (`shawTransfer_charZero`).  There is **no** "`n ≲ √p` ⟹ no wraparound"
+  regime: `μ₁₆ ⊂ 𝔽₂₅₇` (`16 ≤ √257`) already has the unpaired zero-sum tuple `(1,1,2,−4)`
+  (see `_ShawMatchingInjection`, audit CW-B14-03).
 
-So the principle is a faithful re-statement: it neither over- nor under-claims. The genuine analytic
-content — that the lift holds at the prize prime `p ≈ n·2^128`, `n = 2^30` — is the Konyagin–
-Shparlinski / di Benedetto / BGK wall, here named once as `ShawLiftsToCharZero`. This is the SAME
-wall as `WrapInjectsIntoSlack G r 0` of `_ShawMatchingInjection`; this file gives the
-naturality-driven *form* of that wall (push char-0 pairing forward along the reduction hom) and the
-precise reduction of the energy bound to it.
+So the file proves one implication (lift ⟹ Wick-bound at the reduced node set); since the Wick
+bound itself fails at the prize scale, so does the lift there, and this route cannot by itself
+deliver the prize bound — any prize argument must control the wraparound excess rather than assume
+it away.  `ShawLiftsToCharZero` is closely related to `WrapInjectsIntoSlack G r 0` of
+`_ShawMatchingInjection`; this file gives the naturality-driven *form* of that condition (push
+char-0 pairing forward along a reduction hom).
 
 ## Contents
 
@@ -75,7 +87,8 @@ precise reduction of the energy bound to it.
 * `shawTransfer` — the headline energy transfer: under the three inputs, `E_r(σ(G)) ≤ (2r−1)‼·|G|^r`.
   PROVEN (conditional on `ShawLiftsToCharZero`).
 * `shawTransfer_charZero` — the lift is FREE in char 0 (`2^k`-th roots), recovering the exact char-0
-  bound; closes the loop showing the principle is a strict generalization.
+  bound (a same-field identity re-proving `zeroSumCount_le_pairings`; not a char-`p` result).
+* `shawPStable_of_field` — for a field source p-stability is automatic (why `F` is a ring).
 
 ## References
 * `SpecS3.dividedDifferencePow_map` (the crown-jewel naturality, the transfer mechanism);
@@ -107,7 +120,7 @@ commuting with `σ`). -/
 
 section Push
 
-variable {F K : Type*} [Field F] [Field K] [DecidableEq F] [DecidableEq K]
+variable {F K : Type*} [CommRing F] [Field K] [DecidableEq F] [DecidableEq K]
 
 /-- **p-stability predicate.** `σ` is `p`-stable on `G` when it is injective on `G`: distinct nodes
 stay distinct under reduction. For the prize this is "𝔭 outside the bad-prime set", i.e. 𝔭 does not
@@ -120,6 +133,14 @@ transports verbatim. -/
 theorem shawPStable_card_image (σ : F →+* K) {G : Finset F} (hσ : ShawPStable σ G) :
     (G.image σ).card = G.card :=
   Finset.card_image_of_injOn hσ
+
+omit [DecidableEq K] in
+/-- **For a field source, p-stability is automatic (audit CW-B14-02).**  A ring hom out of a field
+is injective, so `ShawPStable` carries no content there; it is only meaningful for a genuine
+reduction such as `ℤ[ζ] →+* 𝔽_p`. -/
+theorem shawPStable_of_field {L : Type*} [Field L] (σ : L →+* K) (G : Finset L) :
+    ShawPStable σ G :=
+  σ.injective.injOn
 
 /-- **Naturality push of one paired tuple (the transfer core).** If `c : Fin (2r) → F` is a zero-sum
 tuple valued in `G`, antipodally paired by the matching `σ_match`, and `σ` is `p`-stable on `G`, then
@@ -155,7 +176,7 @@ the precise wall. -/
 
 section Residual
 
-variable {F K : Type*} [Field F] [Field K] [DecidableEq F] [DecidableEq K]
+variable {F K : Type*} [CommRing F] [Field K] [DecidableEq F] [DecidableEq K]
 
 /-- **The named char-`p` LIFT residual (the open analytic input).**
 `ShawLiftsToCharZero σ G r` asserts: every zero-sum `2r`-tuple `d` of the reduced node set `σ(G)` is
@@ -163,10 +184,10 @@ the σ-image of a zero-sum `2r`-tuple `c` of `G` (i.e. `d = σ ∘ c`). This is 
 wraparound" condition: every char-`p` solution lifts to a char-0 solution. Combined with the char-0
 pairing (`H`) and `p`-stability, it forces every char-`p` zero-sum tuple to be antipodally paired.
 
-⚠️ This is the SINGLE genuine open input — the same Konyagin–Shparlinski / di Benedetto / BGK wall as
-`WrapInjectsIntoSlack G r 0`. It is FALSE for the raw `E_r ≤ Wick` at the prize scale (where the DC
-term forces genuine wraparound), and TRUE in char 0 / the `n ≲ √p` regime (no short root relation can
-vanish). The deep content is whether it holds for the prize prime `p ≈ n·2^128`, `n = 2^30`. -/
+⚠️ Named open input, closely related to `WrapInjectsIntoSlack G r 0` of `_ShawMatchingInjection`.
+It must FAIL wherever `E_r ≤ Wick` fails (e.g. at the prize scale, where the DC term forces genuine
+wraparound), and it can fail even for small `n ≤ √p` (`μ₁₆ ⊂ 𝔽₂₅₇`, tuple `(1,1,2,−4)`).  It holds
+trivially for `σ = id`. -/
 def ShawLiftsToCharZero (σ : F →+* K) (G : Finset F) (r : ℕ) : Prop :=
   ∀ d : Fin (2 * r) → K, (∀ i, d i ∈ G.image σ) → (∑ i, d i = 0) →
     ∃ c : Fin (2 * r) → F, (∀ i, c i ∈ G) ∧ (∑ i, c i = 0) ∧ (∀ i, d i = σ (c i))
@@ -181,7 +202,7 @@ composition: lift a char-`p` tuple to char-0, pair it there (char-0 `H`), push t
 
 section Transfer
 
-variable {F K : Type*} [Field F] [Field K] [DecidableEq F] [DecidableEq K]
+variable {F K : Type*} [CommRing F] [Field K] [DecidableEq F] [DecidableEq K]
 
 /-- **The Shaw Transfer of the pairing residual (the skeleton).** Given:
 * **(p-stability)** `σ` injective on `G` (`hσ : ShawPStable σ G`) — distinct nodes stay distinct;
@@ -223,7 +244,7 @@ The reduction of `E_r(𝔽_p) ≤ Wick` to the three inputs. We feed the transfe
 
 section Energy
 
-variable {F K : Type*} [Field F] [Field K] [DecidableEq F] [DecidableEq K]
+variable {F K : Type*} [CommRing F] [Field K] [DecidableEq F] [DecidableEq K]
 
 /-- **THE SHAW TRANSFER PRINCIPLE (energy headline).** Given the three named inputs
 * `hσ : ShawPStable σ G` (p-stability — distinct nodes stay distinct mod 𝔭, outside the bad-prime set),
@@ -279,11 +300,9 @@ end Energy
 
 /-! ## Part 5 — the lift is FREE in char 0 (closing the loop).
 
-The principle is a strict generalization of the char-0 bound: in char 0 (and the `n ≲ √p` regime)
-the lift `ShawLiftsToCharZero` is FREE for the identity reduction `σ = id`, so the transfer
-reproduces the exact char-0 Lam–Leung bound. Combined with `_ShawMatchingInjection`'s
-`wrapInjectsIntoSlack_zero_of_charZero`, this confirms the transfer neither over- nor under-claims:
-the open residual vanishes EXACTLY where the char-0 proof applies. -/
+For the identity `σ = id` (a same-field identity, not a reduction) the lift `ShawLiftsToCharZero`
+is FREE, so the transfer reproduces the char-0 matching bound `zeroSumCount_le_pairings` — nothing
+new.  This is the only instance in the file; no genuine reduction `ℤ[ζ] → 𝔽_p` is constructed. -/
 
 section CharZero
 
@@ -310,8 +329,8 @@ theorem shawPStable_id (G : Finset L) : ShawPStable (RingHom.id L) G :=
 /-- **Char-0 recovery: the transfer reproduces the exact char-0 bound.** In char 0 with `σ = id`,
 p-stability and the lift are both free, so `shawTransfer` collapses to the char-0 matching bound
 `E_r(G) ≤ (2r−1)‼·|G|^r` from the char-0 pairing residual `H` alone. This shows the Shaw Transfer
-Principle strictly generalizes (and reduces to) the proven char-0 Lam–Leung bound: it adds the
-reduction hom `σ` and the lift residual, both of which are vacuous in char 0. -/
+Principle specializes to the matching bound at `σ = id`; this re-proves `zeroSumCount_le_pairings`
+in the transfer's packaging and is not new content. -/
 theorem shawTransfer_charZero (G : Finset L) {r : ℕ}
     (H : ∀ c : Fin (2 * r) → L, (∀ i, c i ∈ G) → (∑ i, c i = 0) →
         ∃ σ_match : Equiv.Perm (Fin (2 * r)), IsPairing σ_match ∧ ∀ i, c (σ_match i) = - c i) :
@@ -326,6 +345,7 @@ end ArkLib.ProximityGap.Frontier.ShawTransfer
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.Frontier.ShawTransfer.pushPairing
 #print axioms ArkLib.ProximityGap.Frontier.ShawTransfer.shawPStable_card_image
+#print axioms ArkLib.ProximityGap.Frontier.ShawTransfer.shawPStable_of_field
 #print axioms ArkLib.ProximityGap.Frontier.ShawTransfer.shawCharPPairing_of_lift
 #print axioms ArkLib.ProximityGap.Frontier.ShawTransfer.shawTransfer
 #print axioms ArkLib.ProximityGap.Frontier.ShawTransfer.shawTransfer_wick

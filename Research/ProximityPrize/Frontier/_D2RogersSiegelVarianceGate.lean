@@ -30,7 +30,12 @@ set_option autoImplicit false
 namespace ArkLib.ProximityGap.Frontier.D2RogersSiegelVarianceGate
 
 /-- A uniform bound on an auxiliary sample statistic transfers to every prize prime only through a
-pointwise coupling `pull : P → Ω` and comparison `primeStat p ≤ sampleStat (pull p)`. -/
+pointwise coupling `pull : P → Ω` and comparison `primeStat p ≤ sampleStat (pull p)`.
+
+This is the canonical generic pointwise-transfer lemma (plain `le_trans` composition); the D5
+random-operator gate's `deterministic_bound_of_pointwise_domination`
+(`_D5RandomOperatorChainingTransferGate.lean`) is an application-labelled alias of it, not
+independent proof progress. -/
 theorem uniform_prime_bound_of_pointwise_coupling
     {P Ω : Type*} (primeStat : P → ℝ) (sampleStat : Ω → ℝ) (pull : P → Ω) (B : ℝ)
     (hcompare : ∀ p, primeStat p ≤ sampleStat (pull p))
@@ -54,9 +59,10 @@ theorem no_good_prime_of_pointwise_lower_coupling
 /-- **No-coupling countermodel.**  A bounded auxiliary sample statistic is compatible with an
 arbitrarily bad prime statistic.  Hence a Rogers/Siegel random-lattice moment bound, by itself,
 cannot decide the prime-indexed good-prime sliver; a coupling/comparison hypothesis is
-load-bearing. -/
+load-bearing.  This generic constant `B−1`/`B+1` countermodel is reused by the D5 gate's
+`bounded_random_model_does_not_bound_fixed_instance`. -/
 theorem uncoupled_sample_bound_does_not_bound_primes
-    {P Ω : Type*} [Nonempty P] (B : ℝ) :
+    {P : Type*} {Ω : Sort*} [Nonempty P] (B : ℝ) :
     ∃ (sampleStat : Ω → ℝ) (primeStat : P → ℝ),
       (∀ ω, sampleStat ω ≤ B) ∧ (∃ p, B < primeStat p) := by
   refine ⟨fun _ => B - 1, fun _ => B + 1, ?_, ?_⟩

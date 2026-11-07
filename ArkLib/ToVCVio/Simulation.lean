@@ -350,24 +350,16 @@ lemma probFailure_challengeQueryImpl_run {n : ℕ} {pSpec : ProtocolSpec n} {σ 
   simp only [StateT.run, liftM, ChallengeIdx, Challenge, ofPFunctor_toPFunctor,
     OracleComp.prFail_eq_zero]
 
-/-- **Generic Safety Preservation Lemma for Stateful Implementations**
+/-- **Generic Safety Lemma for Stateful Implementations (total `ProbComp`)**
 
-If an oracle implementation is safe and support-faithful, then simulation preserves safety
-from the specification level to the implementation level.
+The simulated stateful computation never fails: `Pr[⊥ | (simulateQ impl oa).run s] = 0`.
 
-This is a key building block for completeness proofs: it shows that if the spec says
-"this computation never fails" and the implementation only returns valid values
-(support-faithful), then running the simulated implementation also never fails.
-
-**Parameters:**
-- `impl`: The stateful oracle implementation
-- `hImplSafe`: Each query implementation is safe (never fails)
-- `hImplSupp`: The implementation is support-faithful (only returns valid values)
-- `oa`: The oracle computation at the spec level
-- `s`: The current state
-- `h_oa`: The spec computation is safe
-
-**Conclusion:** The simulated computation is also safe. -/
+This holds with **no** safety or support hypothesis on `impl` and no hypothesis on `oa`: the
+result is a total `ProbComp` (`HasEvalPMF`), whose failure probability is always `0`. (Earlier
+versions of this docstring listed parameters `hImplSafe`, `hImplSupp` and `h_oa`; the theorem
+takes none of them.) Genuine safety/support assumptions matter only for the `OptionT` forms,
+where failure is the `none` mass — see e.g. `simulateQ_preserves_safety_stateful_run'_mk` and
+the other `…_mk` lemmas below, which do carry `hImplSupp`. -/
 theorem simulateQ_preserves_safety_stateful
     {oSpec : OracleSpec ι} [OracleSpec.UniformAnswerMeasure oSpec] {σ : Type}
     (impl : QueryImpl oSpec (StateT σ ProbComp))
@@ -375,16 +367,13 @@ theorem simulateQ_preserves_safety_stateful
     probFailure ((simulateQ impl oa).run s) = 0 := by
   simp only [OracleComp.prFail_eq_zero]
 
-/-- **Reverse Safety Preservation for Stateful Implementations**
+/-- **Reverse Safety for Stateful Implementations (total `ProbComp`)**
 
-If the simulated stateful computation is safe and the implementation has the same support
-vec the specification, then the original specification computation is safe.
-
-This is the reverse direction of `simulateQ_preserves_safety_stateful`.
-
-**Note**: This requires support **equality** rather than just subset (⊆) because we need
-to extract witnesses: if a result is valid in the spec, we need to know that the implementation
-can actually produce it (surjectivity).
+`Pr[⊥ | oa] = 0` for any `oa : OracleComp oSpec α`. It is stated as the reverse direction of
+`simulateQ_preserves_safety_stateful`, but takes no hypothesis at all: `OracleComp` evaluation is
+total (`HasEvalPMF`), so its failure probability is always `0`. (An earlier version claimed it
+needs support *equality* of the implementation; that applies only to the `OptionT` `none`-mass
+analogues below, not to this total statement.)
 -/
 lemma neverFails_of_simulateQ_stateful
     {oSpec : OracleSpec ι} [OracleSpec.UniformAnswerMeasure oSpec]
@@ -395,16 +384,15 @@ lemma neverFails_of_simulateQ_stateful
 /-- **Stateful Safety Biconditional**
 
 For stateful oracle implementations, the simulated computation is safe if and only if
-the specification computation is safe. This requires:
-1. The implementation itself never fails (hImplSafe).
-2. The implementation has the same support vec the specification (hImplSupp).
+the specification computation is safe. This takes **no** `hImplSafe`/`hImplSupp` hypotheses
+(earlier versions of this docstring said it did): both sides are total `ProbComp` /
+`OracleComp` computations, whose failure probability is always `0`, so both sides are trivially
+true. The support-faithfulness hypotheses matter only for the `OptionT` (`none`-mass) analogues
+later in this file.
 
 This is the stateful version of `probFailure_simulateQ_iff` and is useful for
 simplifying completeness proofs where you need to establish equivalence between
 simulated and specification safety.
-
-**Note**: Unlike `simulateQ_preserves_safety_stateful` which only requires support subset (⊆),
-this biconditional requires support **equality** (=) to enable the reverse direction.
 -/
 @[simp]
 theorem probFailure_simulateQ_iff_stateful
@@ -431,12 +419,11 @@ theorem probFailure_simulateQ_iff_stateful_run'
     probFailure ((simulateQ impl oa).run' s) = 0 ↔ probFailure (oa) = 0 := by
   simp only [OracleComp.prFail_eq_zero]
 
-/-- **Safety Preservation Lemma for Stateless Implementations**
+/-- **Safety Lemma for Stateless Implementations (total `ProbComp`)**
 
-If an oracle implementation is safe and support-faithful, then simulation preserves safety
-from the specification level to the implementation level (stateless version).
-
-This is the stateless counterpart to `simulateQ_preserves_safety_stateful`.
+`Pr[⊥ | simulateQ so oa] = 0`, with no hypothesis on `so` or `oa`: the simulated computation is a
+total `ProbComp`, whose failure probability is always `0`. This is the stateless counterpart to
+`simulateQ_preserves_safety_stateful`.
 -/
 theorem simulateQ_preserves_safety
     {oSpec : OracleSpec ι} [OracleSpec.UniformAnswerMeasure oSpec]
@@ -446,10 +433,10 @@ theorem simulateQ_preserves_safety
   simp only [OracleComp.prFail_eq_zero]
 
 /--
-Safety preservation: A simulated protocol is safe if and only if the original
-protocol is safe. This requires:
-1. The implementation itself never fails (h_so).
-2. The implementation doesn't return "illegal" values outside the spec (h_supp).
+Safety preservation: A simulated protocol is safe if and only if the original protocol is safe.
+No hypotheses are needed (earlier versions of this docstring listed `h_so` / `h_supp`): both
+sides are total computations with failure probability `0`. The `OptionT` analogues are where
+safety/support assumptions are genuinely required.
 -/
 @[simp]
 lemma probFailure_simulateQ_iff (so : QueryImpl spec ProbComp) (oa : OracleComp spec α) :

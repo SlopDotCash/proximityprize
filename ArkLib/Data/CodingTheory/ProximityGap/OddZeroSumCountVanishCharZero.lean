@@ -33,12 +33,16 @@ even is necessary — for ODD `r` no zero-sum tuple exists and the count is `0`.
 
 ## Why this is prize-relevant (honest scope)
 
-The whole ODD-order `zeroSumCount` is EXACTLY `0` over ℂ: NO odd-order zero-sum-residual
-in char 0 (the entire odd-grade content is the diagonal). So the signed odd-period-power sums
-`∑_{ψ≠0} η_ψ^r = q·0 − n^r = −n^r` are pinned to their diagonal value over ℂ, and the nontrivial
-signed cancellation that is the open BGK wall appears ONLY at the deep orders `r ≈ log q` over the
-*finite field* `F_q`, where the `F_q`-reduction creates the zero-sum coincidences char 0 forbids.
-This LOCATES the entire odd-order prize content squarely in the finite-field reduction.
+The whole ODD-order `zeroSumCount` is EXACTLY `0` over ℂ: there are no odd-order zero-sum tuples
+of `2^k`-th roots of unity in characteristic `0`.  This is a characteristic-zero combinatorial
+baseline only.  It does **not** specialize the finite-field period identity
+`∑_{ψ≠0} η_ψ^r = q·zeroSumCount S r − |S|^r` to `ℂ`: that identity is proved for a finite field
+`F_q` via finite additive-character orthogonality, and `ℂ` has no finite cardinality `q` nor such
+a character sum.  Over `F_q` the count `zeroSumCount S r` for `S = μ_n ⊆ F_q` can be nonzero for
+odd `r`, because reduction mod `p` can create zero-sum coincidences that characteristic `0`
+forbids.  Relating the `ℂ` count to the `F_q` count would need a separate reduction argument with
+its own hypotheses (e.g. a valid integral model and good-prime conditions), which is not provided
+here.  The open BGK cancellation is a statement about the finite-field side.
 
 NON-MOMENT (an exact additive-tuple count over ℂ; no `|·|`), an EXTEND that bridges the in-tree
 dyadic odd-moment law into the `zeroSumCount` tuple vocabulary. NOT a CORE bound — `CORE M(μ_n) ≤

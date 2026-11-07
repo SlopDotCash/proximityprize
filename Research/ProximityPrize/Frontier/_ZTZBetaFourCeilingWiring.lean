@@ -7,7 +7,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.KKH26PolyFieldCeiling
 import Research.ProximityPrize.Frontier._ZTZBetaFourLadderExtension
 
 /-!
-# Unconditional [KKH26] δ* ceilings at `n ∈ {128, 256, 512, 1024}`, β = 4 (#466/#334)
+# Unconditional degree-0 [KKH26] δ* ceilings at `n ∈ {128, 256, 512, 1024}`, β = 4 (#466/#334)
 
 `Frontier/KKH26ConcreteCeilingN8.lean` discharges the [KKH26] `δ*` ceiling end-to-end at the
 smallest smooth domain (order `8`, `β = 3`).  This file **scales that end-to-end pin to the
@@ -30,6 +30,14 @@ budget closes the same way as the `n = 8` template: `|collisionPairs 2 2| = 12` 
 supply for every rung.  Axiom-clean (`propext, Classical.choice, Quot.sound`), no `native_decide`,
 no `axiom`, no `sorry`.
 
+**Degree-0 caveat.**  These ceilings are for the degree-0 (constant, `k = 1`) evaluation
+code `evalCode g n 0` (`μ = 2`, `r = 2`), not a prize-rate code.  The ceiling itself does not need
+the Thorner–Zaman window: `KKH26WitnessSpread.kkh26_mcaDeltaStar_le` gives the same bound for any
+prime `p > (2^2)^(2^1) = 16` with an element of order `n` (packaged as
+`KKH26.kkh26_mcaDeltaStar_le_degreeZero` in `_ZTZBetaFourPrizeScaleLadder.lean`).  The window
+supply adds only the placement `n^β ≤ p ≤ 2·n^β`.  The per-instance proofs here are near-copies of
+one another and of the siblings; they are kept as concrete instances.
+
 ## References
 * [KKH26] D. Krachun, S. Kazanin, U. Haböck, *Failure of proximity gaps close to capacity*,
   ePrint 2026/782 (Lemma 2, Theorem 1).  Issues #334 / #466.
@@ -43,7 +51,7 @@ namespace ArkLib.ProximityGap.KKH26
 
 /-! ### `n = 128 = 2²·32`, β = 4 -/
 
-/-- **Unconditional [KKH26] δ* ceiling at order 128, β = 4.**  A prime `p ≡ 1 (mod 128)` with
+/-- **Unconditional degree-0 [KKH26] δ* ceiling at order 128, β = 4** (constant code, `μ = r = 2`).  A prime `p ≡ 1 (mod 128)` with
 `128⁴ ≤ p ≤ 2·128⁴` and an order-128 smooth domain `⟨g⟩` pin
 `mcaDeltaStar(evalCode g 128 0, ε*) ≤ 1/2` for `ε* < 4/p`.  End-to-end via
 `tzPrimeSupply_128_four` + `kkh26_mcaDeltaStar_le_of_TZ`. -/
@@ -79,7 +87,7 @@ theorem kkh26_mcaDeltaStar_le_concrete_n128 :
 
 /-! ### `n = 256 = 2²·64`, β = 4 -/
 
-/-- **Unconditional [KKH26] δ* ceiling at order 256, β = 4.**  A prime `p ≡ 1 (mod 256)` with
+/-- **Unconditional degree-0 [KKH26] δ* ceiling at order 256, β = 4** (constant code, `μ = r = 2`).  A prime `p ≡ 1 (mod 256)` with
 `256⁴ ≤ p ≤ 2·256⁴` and an order-256 smooth domain `⟨g⟩` pin
 `mcaDeltaStar(evalCode g 256 0, ε*) ≤ 1/2` for `ε* < 4/p`.  End-to-end via
 `tzPrimeSupply_256_four` + `kkh26_mcaDeltaStar_le_of_TZ`. -/
@@ -115,7 +123,7 @@ theorem kkh26_mcaDeltaStar_le_concrete_n256 :
 
 /-! ### `n = 512 = 2²·128`, β = 4 -/
 
-/-- **Unconditional [KKH26] δ* ceiling at order 512, β = 4.**  A prime `p ≡ 1 (mod 512)` with
+/-- **Unconditional degree-0 [KKH26] δ* ceiling at order 512, β = 4** (constant code, `μ = r = 2`).  A prime `p ≡ 1 (mod 512)` with
 `512⁴ ≤ p ≤ 2·512⁴` and an order-512 smooth domain `⟨g⟩` pin
 `mcaDeltaStar(evalCode g 512 0, ε*) ≤ 1/2` for `ε* < 4/p`.  End-to-end via
 `tzPrimeSupply_512_four` + `kkh26_mcaDeltaStar_le_of_TZ`. -/
@@ -151,7 +159,7 @@ theorem kkh26_mcaDeltaStar_le_concrete_n512 :
 
 /-! ### `n = 1024 = 2²·256`, β = 4 -/
 
-/-- **Unconditional [KKH26] δ* ceiling at order 1024, β = 4.**  A prime `p ≡ 1 (mod 1024)` with
+/-- **Unconditional degree-0 [KKH26] δ* ceiling at order 1024, β = 4** (constant code, `μ = r = 2`).  A prime `p ≡ 1 (mod 1024)` with
 `1024⁴ ≤ p ≤ 2·1024⁴` and an order-1024 smooth domain `⟨g⟩` pin
 `mcaDeltaStar(evalCode g 1024 0, ε*) ≤ 1/2` for `ε* < 4/p`.  End-to-end via
 `tzPrimeSupply_1024_four` + `kkh26_mcaDeltaStar_le_of_TZ`. -/

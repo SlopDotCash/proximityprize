@@ -15,7 +15,12 @@ import Research.ProximityPrize.Collapse
 `GrandChallengeCollapse.lean` reduced the formal §1 Grand-MCA-Challenge prize predicate
 `GrandChallenges.continuousMcaPrize` to four **radius-one** bounds `ε_mca(RS, 1) ≤ ε*`
 (`mcaPrize_iff_forall_epsMCA_one`). This file **computes the radius-one MCA error**
-`ε_mca(C, 1)` tightly enough to *decide* that predicate in every field-size regime.
+`ε_mca(C, 1)` up to the two-sided bracket `1/|F| ≤ ε_mca(RS, 1) ≤ C(n, k+1)/|F|`. This
+decides the predicate in the two extreme field-size regimes (`|F| < 2^128`, and
+`C(n, ⌊ρⱼ·n⌋+1)/|F| ≤ 2^{-128}` at every prize rate) but **not** in the intermediate window
+`2^128 ≤ |F| < 2^128·C(n, k+1)`; closing that window needs the exact value
+(`RadiusOneExact.epsMCA_one_eq_choose_div`, under `q > C(C(n,k+1),2)`) or the second-moment
+lower bound of `MCASecondMoment`, neither of which is proved in this file.
 
 At radius `δ = 1` the witness-size clause of `mcaEvent` is vacuous (`(1-1)·n = 0`), so
 `mcaEvent C 1 u₀ u₁ γ` says exactly: there is a set `S` carrying a codeword on the line
@@ -38,10 +43,12 @@ At radius `δ = 1` the witness-size clause of `mcaEvent` is vacuous (`(1-1)·n =
   `2 ≤ |ι|`, the formal MCA prize **fails** (the rate-`1/2` RS code is a proper subset, so
   `ε_mca(·, 1) ≥ 1/|F| > ε*`).
 
-Together with `not_listDecodingPrize` from `GrandChallengeCollapse.lean`, these decide the
+Together with `not_listDecodingPrize` from `GrandChallengeCollapse.lean`, these bracket the
 formal §1 prize predicates: the value of `ε_mca(RS, 1)` is pinned between `1/|F|` and
-`C(n, k+1)/|F|`, and the prize is provable iff the field is large enough that
-`C(n, k+1)/|F| ≤ ε* = 2^{-128}`.
+`C(n, k+1)/|F|`, so the prize holds when `C(n, k+1)/|F| ≤ ε* = 2^{-128}` (at every prize rate)
+and fails when `|F| < 2^128`. The converse "only if" direction (prize ⇒ `C(n, k+1)/|F| ≤ ε*`)
+is **not** proved here; it requires the matching lower bound from `RadiusOneExact` /
+`MCASecondMoment`.
 
 ## References
 
@@ -330,7 +337,12 @@ theorem exists_goodSubset_of_mcaEvent (domain : ι ↪ F) {k : ℕ} {u₀ u₁ :
 
 /-- **Step 6 (counting / per-stack bound).** For a fixed stack `(u₀, u₁)`, the `mcaEvent`
 probability at radius `1` over an RS code with injective domain is at most
-`choose n (k+1) / |F|`: the bad `γ`-set injects into the `(k+1)`-subsets of `ι`. -/
+`choose n (k+1) / |F|`: the bad `γ`-set injects into the `(k+1)`-subsets of `ι`.
+
+This is the `δ = 1` case of the general-radius window bound
+`MCAPlateauWindow.mcaEvent_prob_le_choose_div` (there `⌈(1-1)·n⌉ = 0`, so
+`max 0 (k+1) = k+1`). It is kept as a separate proof here because `MCAPlateauWindow` imports
+this file (delegation would create an import cycle). -/
 theorem mcaEvent_prob_le (domain : ι ↪ F) (k : ℕ) (u₀ u₁ : ι → F) :
     Pr_{ let γ ←$ᵖ F }[ mcaEvent (ReedSolomon.code domain k : Set (ι → F)) 1 u₀ u₁ γ ] ≤
       (Nat.choose (Fintype.card ι) (k + 1) : ENNReal) / (Fintype.card F : ENNReal) := by
@@ -420,7 +432,9 @@ theorem rsCode_ne_univ (domain : ι ↪ F) {k : ℕ} (_hk : 0 < k) (hkn : k < Fi
 
 /-- **COROLLARY 1 (`mcaPrize_of_large_field`).** If at every prize rate the counting bound
 `choose n (⌊ρⱼ·n⌋ + 1) / |F|` is at most `ε*`, then the formal §1 MCA prize predicate holds.
-This is true whenever `|F|` is large relative to `n` (e.g. `|F| ≥ 2^128`). -/
+This is true whenever `|F|` is large relative to `n`, namely
+`|F| ≥ 2^128 · C(n, ⌊ρⱼ·n⌋+1)` for every prize rate `ρⱼ` (`|F| ≥ 2^128` alone does **not**
+suffice). -/
 theorem mcaPrize_of_large_field (domain : ι ↪ F)
     (hbound : ∀ j : Fin 4,
       (Nat.choose (Fintype.card ι) (⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ + 1) : ENNReal)

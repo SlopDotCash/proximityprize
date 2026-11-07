@@ -30,8 +30,8 @@ The named levers it unifies (all `obstruction`-scoped exports already proven ups
 * **G4 — roughness side-condition** (`roughness_does_not_add_bad_primes_export`): a roughness
   predicate can only *shrink* the fixed bad-prime set `{p ∣ N}`, never enlarge it; roughness is
   not the driver (door-(ii)/bad-prime face).
-* **cumulant-sign route** (`cumulant_sign_route_refuted`): a negative 4th cumulant with positive
-  8th refutes the cumulant-sign monotonicity lever (door-(i) moment face).
+* **cumulant-sign route** (`cumulant_sign_route_refuted`): a positive 8th cumulant `κ 4 > 0`
+  violates the all-nonpositive cumulant envelope (a scalar instance; no period law is mentioned).
 
 **Scope.** This is a *consolidation* of the classical-side refutation budget — it re-uses the
 upstream proven obstruction exports verbatim (no mathematics is changed) and packages them as one
@@ -58,7 +58,7 @@ axiom-clean named-lever obstructions of the classical side of the tetrachotomy:
 * `(G3)` the cyclotomy coefficient-root route is loose: for the given `C > 0` there is an `m ≥ 2`
   whose `fujiwaraAtTwo` exceeds `C · prizeScale n m` for all `n > 0`;
 * `(G4)` roughness cannot enlarge the bad-prime set: `{p ∣ N ∧ rough p} ⊆ {p ∣ N}`;
-* `(cumulant)` the cumulant-sign monotonicity lever is refuted by a `κ₂ < 0 < κ₄` countermodel.
+* `(cumulant)` a cumulant sequence with `κ 4 > 0` fails the envelope `∀ r ≥ 2, κ r ≤ 0`.
 
 Each conjunct is the *verbatim* upstream proven export — this theorem only collects them, giving the
 no-fifth-door tetrachotomy's named classical-side refutations a single citation point. -/
@@ -66,7 +66,7 @@ theorem namedLeverRefutationBudget
     (c n L : ℝ) (hn : 0 < n) (hc : 0 ≤ c) (hL : c ^ 2 < L)
     (C : ℝ) (hC : 0 < C)
     (N : ℕ) (rough : ℕ → Prop)
-    {κ : ℕ → ℝ} (h4 : κ 2 < 0) (h8 : 0 < κ 4) :
+    {κ : ℕ → ℝ} (h8 : 0 < κ 4) :
     -- (G2) resonance certificate strictly below the BGK floor
     (c * Real.sqrt n < Real.sqrt (n * L)) ∧
     -- (G3) cyclotomy coefficient route loose by a divergent factor
@@ -80,7 +80,7 @@ theorem namedLeverRefutationBudget
   · exact resonance_ceiling_below_prize_floor c n L hn hc hL
   · exact coeff_route_loose_export C hC
   · exact roughness_does_not_add_bad_primes_export N rough
-  · exact cumulant_sign_route_refuted h4 h8
+  · exact cumulant_sign_route_refuted h8
 
 /-- **Resonance lever stays below the prize FLOOR too**, not just below BGK, in the sub-unit regime
 `c ≤ 1`.  When the measured resonance constant `c ≤ 1`, the resonance certificate `c·√n ≤ √n =

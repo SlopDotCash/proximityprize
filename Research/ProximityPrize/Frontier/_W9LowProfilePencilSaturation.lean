@@ -58,9 +58,12 @@ under the numeric side conditions.  The saturating stratum is `t = |R| ≤ k−1
   `s ≥ a − k + 1` — exactly the mid band.  The very-large-zero branch
   (`k + s ≤ a`, `_R2B_LargeZeroWitnessSplit`) is untouched: its unconditional
   threshold-choose budget stands, as do the sparse-support rate-quarter caps
-  (`s ≤ 4` files).  Combined, the safe branch is now CLASSIFIED: binomially budgeted for
-  `s ≤ a − k`, field-saturated (hence unusable as a `lineBadScalars` budget) for
-  `s ≥ a − k + 1`.
+  (`s ≤ 4` files).  Combined: binomially budgeted for `s ≤ a − k`; in the mid band
+  `s ≥ a − k + 1` the saturating construction is only BUILT at the single support size
+  `s = n − a` (`exists_pencil_configuration` fixes `|S| = n − a`, `|W| = 1`), which suffices
+  to make every budgeted safe-branch residual force `B ≥ |F|`.  Field saturation at the
+  other mid-band supports (e.g. `(n,k,a) = (16,4,9)`, `s = 6`, which would need `|W| ≥ 2`)
+  is NOT constructed here, so this is not a per-`s` classification of the mid band.
 * The construction does NOT refute the direct `mcaEvent` form of the weld's `hlow` (in
   `mcaDeltaStar_ge_of_farLineListBudgeted` itself): the pair `(0, e)` jointly explains the
   witness `S ∪ R` for every pencil scalar, so those scalars are NOT `mcaEvent`s.  Probe

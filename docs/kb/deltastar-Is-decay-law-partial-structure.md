@@ -1,5 +1,19 @@
 # The remaining open piece, isolated precisely: the decay law I(s,n,k) — partial structure (#407)
 
+> **Scope correction (2026-10-28 audit, T48).** Read the claims below as finite evidence, with
+> these qualifications:
+> - The polynomial "laws" are fits. "EXACT cubic" for `k = 2` fits four values (`n = 16, 20, 24, 32`),
+>   `~n⁴` for `k = 4` fits three, and "degree ≈ k+1" is a pattern, not a derivation. None of them is
+>   a proved formula; "(all p-INDEPENDENT, proven)" is withdrawn.
+> - The values are computed for `n`-th roots of unity in characteristic zero. Transferring them to
+>   `F_q` needs a characteristic-transfer hypothesis. Newton's identities convert power sums into
+>   elementary symmetric functions only when the relevant indices are invertible in the field, and
+>   symmetric-function vanishing constraints can acquire extra solutions modulo `p`.
+> - The far-line incidence object is not the MCA `δ*`. See the later correction
+>   `farline-incidence-is-plotkin-proxy-not-mca-deltastar.md`, which also keeps `δ*` as an
+>   interval. Three increasing rows at fixed `k = 2` and growing `n` also vary the rate, so they
+>   do not settle a fixed-rate "floor direction".
+
 The prize δ* (via the validated far-line incidence object) is now reduced to ONE clean combinatorial object:
 the over-determined incidence decay law `I(s,n,k)`. Pinning it pins δ* exactly (and the Θ(1/log n) floor
 correction). Partial structure established by the engine (all p-INDEPENDENT, proven):

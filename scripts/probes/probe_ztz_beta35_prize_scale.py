@@ -13,11 +13,16 @@ Provenance: mirrors scripts/probes/probe_ztz_beta4_prize_scale.py (β = 4, [2^12
 
 _MR_BASES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
 _EXTRA_BASES = tuple(range(41, 200, 4))
+_MR12_DET_LIMIT = 318665857834031151167461  # least strong pseudoprime to bases 2..37
 
 
 def is_prime_exact_small(n: int) -> bool:
+    """Exact for n < 318665857834031151167461 (12-base deterministic Miller-Rabin, Sorenson-
+    Webster Thm 1.1; 3.3e24 is the 13-base bound); refuses larger inputs."""
     if n < 2:
         return False
+    if n >= _MR12_DET_LIMIT:
+        raise ValueError(f"12-base Miller-Rabin is only proven exact below {_MR12_DET_LIMIT}")
     for p in _MR_BASES:
         if n % p == 0:
             return n == p

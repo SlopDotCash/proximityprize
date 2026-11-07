@@ -11,29 +11,33 @@ import Research.ProximityPrize.Frontier._SYZ68GeneratorGapParity
 /-!
 # SYZ69 — the **parity-corrected two-class classification** of the μ-basis generator gap
 
-## Context: four unconditional inputs, one crisp classification
+## Context: four inputs, one crisp classification
 
 The μ-basis lane has, as of SYZ68, four ingredients that together pin the shape of the generator
 gap `g = δ₂ − δ₁` on a realizable interior band triple `(W_AB, W_AC, W_BC)` over `μ_n`:
 
-* **degree-sum law** (SYZ44 `degree_sum_of_hilbert`, made *unconditional* by SYZ61→SYZ65):
+* **degree-sum law** (SYZ44 `degree_sum_of_hilbert`; SYZ64/SYZ65 discharge its inputs for the
+  windowed syzygy-kernel dimension `windowKD` at the μ-basis degrees `n₁, n₂` they select, see
+  SYZ65 `degree_sum_unconditional`; this file takes the law as a hypothesis on `δ₁, δ₂`):
   `δ₁ + δ₂ = a + b + c =: S`;
 * **the floor** (SYZ47 `syzygy_product_degree_ge_max`): `δ₁ ≥ max(a,b,c)`;
 * **parity** (SYZ68 `gap_parity`): `g ≡ S (mod 2)` — zero field content, forced by the degree-sum;
-* **the empty-middle census** (SYZ55 cofactor census / SYZ59 product-convention dichotomy): every
-  *realizable* witness sits **outside** the middle band `max(a,b,c) < δ₁ ≤ ⌊S/2⌋ − 2`.
+* **the empty-middle hypothesis** (SYZ55 cofactor census / SYZ59 product-convention dichotomy):
+  the witness sits **outside** the middle band `max(a,b,c) < δ₁ ≤ ⌊S/2⌋ − 2`.  This is a
+  HYPOTHESIS, not a census fact: SYZ71's band-realizable `μ₂₀ ⊂ 𝔽₄₁` probe witness occupies
+  `middleBand 6 6 6 7` (linear-cofactor syzygy, no constant syzygy), so it fails in general.
 
 This file assembles them into the single **two-class law**, in the honest conditionality each piece
 supports:
 
-> **Two-class law (conditional on the empty-middle census `¬ middleBand`).**  Every realizable
+> **Two-class law (conditional on the empty-middle hypothesis `¬ middleBand`).**  Every realizable
 > interior band triple is *either*
 > * **near-balance** — `ι ≤ 1` (SYZ45 imbalance ≤ 1), equivalently, per SYZ68 parity: even `S ⇒
 >   g ≤ 2`, odd `S ⇒ g ∈ {1,3}`; *or*
 > * **floor-attained** — `δ₁ = max(a,b,c)`, the **constant-syzygy family**, with `g = S − 2·max`
 >   (balanced `a=b=c=d ⇒ g = d`).
 
-The **two-class law itself is a theorem** (given the census input `¬ middleBand`); this file proves
+The **two-class law itself is a theorem** (given the hypothesis `¬ middleBand`); this file proves
 it (`two_class_law`, `two_class_law_gap`) and packages it end-to-end from SYZ44's Hilbert–Burch
 structural inputs (`classification_of_hilbert`).
 
@@ -44,7 +48,8 @@ language** (`middleBand_iff_imbalance_ge_two`, `middle_gap_ge_four`, `middle_gap
 `open_exclusion_gap_form`): the middle is exactly the parity-allowed gaps
 `{ g : 4 ≤ g ≤ S − 2·max, g ≡ S (mod 2) }` (even `S`: `g ∈ {4,6,…}`; odd `S`: `g ∈ {5,7,…}`), i.e.
 the open geometric claim is precisely *"no realizable interior triple has `ι ≥ 2` strictly above the
-floor"*.
+floor"* — which, without further hypotheses, is contradicted by SYZ71's `n = 20` middle occupant
+(probe evidence; `(6,6,6)`, `δ₁ = 7`).
 
 ## The parity correction and why it matters
 
@@ -58,8 +63,8 @@ statement is the per-parity `g ≤ 2` (even) — recorded here as the corrected 
 ## Scope honesty
 
 Combinatorial classification only.  All theorems here are pure `ℕ` / `decide`, axiom-clean, and
-consume only the (now-unconditional) degree-sum law, the SYZ47 floor hypothesis, SYZ68 parity, and
-the SYZ59 empty-middle census input.  The file does **not** prove that a realizable triple actually
+consume only the degree-sum law (as a hypothesis on `δ₁, δ₂`), the SYZ47 floor hypothesis, SYZ68 parity, and
+the SYZ59 empty-middle hypothesis `¬ middleBand`.  The file does **not** prove that a realizable triple actually
 lands outside the middle band (that is the open geometric residual, restated minimally).  `ι ≤ 1`
 closes SYZ44 `uniformSylvester` only at rate `1/2`; production δ* still needs SYZ18 supports,
 `hrank` realizability, strip-radius transport, and the MCAThresholdLedger BGK lower bound.  **CORE
@@ -94,10 +99,10 @@ theorem balanced_floor_attained_gap
     δ₂ - δ₁ = d := by
   omega
 
-/-! ## 2. The two-class law (conditional on the empty-middle census `¬ middleBand`) -/
+/-! ## 2. The two-class law (conditional on the empty-middle hypothesis `¬ middleBand`) -/
 
 /-- **The two-class law (imbalance form).**  Under the degree-sum law, `δ₁ ≤ δ₂`, the SYZ47 floor,
-and the empty-middle census input `¬ middleBand` (SYZ55/SYZ59), every realizable interior band triple
+and the empty-middle hypothesis `¬ middleBand` (SYZ55/SYZ59), every realizable interior band triple
 is **either** floor-attained (`δ₁ = max`, constant-syzygy family) **or** near-balance
 (`ι ≤ 1`).  This is exactly SYZ59's `empty_middle_dichotomy`, recorded here as the top-level
 classification. -/
@@ -207,8 +212,8 @@ theorem middle_gap_parity
 it avoids every parity-allowed middle gap, i.e. when it is **not** the case that
 `4 ≤ g ∧ g ≡ S (mod 2) ∧ δ₁ > max`.  This is the single open geometric obligation, restated with the
 SYZ68 parity built in: an interior triple is either floor-attained or near-balance **unless** it
-carries a parity-consistent gap `≥ 4` above the floor — the case the empty-middle census asserts is
-unrealizable. -/
+carries a parity-consistent gap `≥ 4` above the floor — the case the empty-middle hypothesis
+excludes (SYZ71's `n = 20` probe witness shows it can be realized). -/
 theorem open_exclusion_gap_form
     (a b c δ₁ δ₂ : ℕ)
     (hsum : δ₁ + δ₂ = a + b + c) (hle : δ₁ ≤ δ₂)
@@ -223,10 +228,15 @@ theorem open_exclusion_gap_form
 /-! ## 5. Packaged end-to-end from SYZ44's Hilbert–Burch structural inputs -/
 
 /-- **Packaged two-class classification (from Hilbert inputs).**  From SYZ44's two structural inputs
-(`RankNullity`, `TwoRamp`) — both now *unconditional* via SYZ61→SYZ65 — plus `δ₁ ≤ δ₂`, the SYZ47
-floor, and the empty-middle census `¬ middleBand`, conclude the two-class law: every realizable
+(`RankNullity`, `TwoRamp`), taken here as hypotheses for an arbitrary `hilb` and arbitrary
+`δ₁, δ₂` — plus `δ₁ ≤ δ₂`, the SYZ47
+floor, and the empty-middle hypothesis `¬ middleBand`, conclude the two-class law: every realizable
 interior band triple is floor-attained or near-balance.  End-to-end from Hilbert–Burch structure to
-the parity-corrected classification. -/
+the parity-corrected classification.  Scope: this theorem is not instantiated here at SYZ64's
+`windowKD` or at the SYZ64/SYZ65 μ-basis degrees; SYZ64 `twoRamp_windowKD` / SYZ65
+`rankNullity_windowKD` discharge the inputs only for that specific Hilbert function and those
+existentially selected degrees, so linking `δ₁, δ₂` to a given band triple's μ-basis remains the
+caller's obligation. -/
 theorem classification_of_hilbert
     (hilb : ℕ → ℕ) (a b c δ₁ δ₂ D₀ : ℕ)
     (hRankNull : SYZ44.RankNullity hilb a b c D₀)
@@ -239,19 +249,19 @@ theorem classification_of_hilbert
     SYZ44.degree_sum_of_hilbert hilb a b c δ₁ δ₂ D₀ hRankNull hTwoRamp
   exact two_class_law a b c δ₁ δ₂ hsum hle hfloor hno_middle
 
-/-! ## 6. Finite census: the two-class law holds on the SYZ59 realizable witnesses -/
+/-! ## 6. The two-class law on the SYZ59 hand-entered constant-syzygy examples -/
 
-/-- **Every realizable census witness is in the floor-attained class with gap `= d`.**  On the SYZ59
-`productCensus` (balanced interior witnesses `d ∈ {3,4,5}`), every entry is floor-attained
-(`δ₁ = max`) and hence in the constant-syzygy class with gap `= S − 2·max = d` — the second class of
-the two-class law, non-vacuously realized.  (No census witness is near-balance: the realizable
-balanced interior is *entirely* the floor-attained class.) -/
-theorem census_two_class :
-    ∀ e ∈ SYZ59.productCensus,
+/-- **The SYZ59 constant-syzygy examples are floor-attained.**  On the hand-entered list
+`SYZ59.constSyzygyExamples` (balanced rows `d ∈ {3,4,5}`, typed with `δ₁ = max`), every entry is
+floor-attained and outside the middle band — true by construction of the rows.  This is NOT a
+census of realizable triples and does not show the realizable balanced interior is floor-attained:
+SYZ71's `μ₂₀ ⊂ 𝔽₄₁` probe witness occupies `middleBand 6 6 6 7`. -/
+theorem constSyzygyExamples_two_class :
+    ∀ e ∈ SYZ59.constSyzygyExamples,
       e.2.2.2 = max e.1 (max e.2.1 e.2.2.1) ∧
       ¬ SYZ59.middleBand e.1 e.2.1 e.2.2.1 e.2.2.2 := by
   intro e he
-  exact ⟨SYZ59.realizable_floor_attained e he, SYZ59.realizable_no_middle e he⟩
+  exact ⟨SYZ59.constSyzygyExamples_floor_attained e he, SYZ59.constSyzygyExamples_no_middle e he⟩
 
 end ArkLib.ProximityGap.SYZ69
 
@@ -268,4 +278,4 @@ end ArkLib.ProximityGap.SYZ69
 #print axioms ArkLib.ProximityGap.SYZ69.middle_gap_parity
 #print axioms ArkLib.ProximityGap.SYZ69.open_exclusion_gap_form
 #print axioms ArkLib.ProximityGap.SYZ69.classification_of_hilbert
-#print axioms ArkLib.ProximityGap.SYZ69.census_two_class
+#print axioms ArkLib.ProximityGap.SYZ69.constSyzygyExamples_two_class

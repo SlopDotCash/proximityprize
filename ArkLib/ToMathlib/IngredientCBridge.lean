@@ -30,10 +30,15 @@ The §5 geometry produces a `Finset` `matchingSet` of *geometric matching points
 proximate root polynomial `P_z`).  The **converse bridge** asserts that for every matching point,
 `π_z z (root z) β = 0`, i.e. the point lands in `S_β β`.  This is the substantive content of L14.
 
-Because the *real* `β` — the BCIKS20 Appendix A.4 recursive Hensel-lift numerator (ingredient D /
-L13) — is **not yet built** (the in-tree `β` is the trivial `β = 0` witness, which makes the bridge
-vacuous), we cannot yet *prove* `π_z z (root z) β = 0` from first principles.  We therefore
-**isolate that requirement as an explicit hypothesis** `P β` and prove the entire bridge *from* it.
+When this file was written, the *real* `β` — the BCIKS20 Appendix A.4 recursive Hensel-lift
+numerator (ingredient D / L13) — was not yet built (only the trivial `β = 0` witness existed,
+which makes the bridge vacuous). **Current status:** the recursion numerator now exists in tree
+(`ArkLib.betaRec` in `BetaRecursion.lean`; the Hensel-side `βHensel` in
+`BCIKS20/HenselNumerator.lean`), and `BetaMatchingVanishes.lean` connects `betaRec` to this
+bridge through its `MatchingPoint` interface. The per-point vanishing `π_z z (root z) β = 0` is
+still **not** proved from first principles for the real `β` (that interface is equivalent to it),
+so this file keeps the requirement as an **explicit hypothesis** `P β` and proves the entire
+bridge *from* it; the bridge remains conditional.
 
 ## The isolated property `P`
 
@@ -54,19 +59,23 @@ the property the real `β` of L13 must carry (App-A §5.2.6: `π_z(γ) = P_z` by
 * `ArkLib.IngredientC.matchingSet_subset_S_β_of_P` — `P β → ↑matchingSet ⊆ S_β β`.
 * `ArkLib.IngredientC.embedding_eq_zero_of_matchingSet_large` — **the deliverable**: given `P β`
   (the per-point specialization vanishing) and `#matchingSet > Λ·d`, conclude `embedding β = 0`.
-* `ArkLib.IngredientC.pi_z_eq_zero_of_specialization_eq` — a Hensel-uniqueness powered helper
-  (`hensel_root_unique`): `π_z z root β = 0` follows once the specialization of `β` is exhibited as
-  *the* lifted root of the matching polynomial congruent mod `X` to the §5 approximation — i.e.
-  uniqueness pins the matching polynomial at `z` equal to the specialization of `β`.  This is the
-  shape L13's real β-construction will discharge `P` through.
+* `ArkLib.IngredientC.pi_z_eq_zero_of_eq_zero` and
+  `ArkLib.IngredientC.specialization_eq_proximate_root_of_hensel` — the two per-point helpers. The
+  second is Hensel-uniqueness powered (`hensel_root_unique`): the power-series specialization of
+  `β` and the proximate root `P_z`, both roots of the matching polynomial congruent mod `X` to the
+  §5 approximation, are equal. It proves only that equality `aβ = aP`; the coefficient-extraction
+  step from it to `π_z z root β = 0` is *not* in this file (it needs the real `β`). This is the
+  shape through which a real β-construction would discharge `P`.
 
 ## What remains for L13 (ingredient D) to supply
 
-L13 must produce a concrete `β : 𝒪 H` (the App-A (A.1) recursion numerator) together with a
-matching `Finset` for which `P β` holds and `#matchingSet > weight_Λ_over_𝒪 hH β D * H.natDegree`.
-The weight side (`Λ·d` bound) is L9/L10/L13; the `P β` side is L14, whose final per-point step is
-`pi_z_eq_zero_of_specialization_eq` fed by `hensel_root_unique` once `β_rec` is in hand.  Both are
-purely about the real `β`; this file consumes them as the single hypothesis `P β` (no `sorry`).
+A concrete `β : 𝒪 H` (the App-A (A.1) recursion numerator) is now available (`betaRec`, see
+above). What remains is a matching `Finset` for which `P β` holds and
+`#matchingSet > weight_Λ_over_𝒪 hH β D * H.natDegree`. The weight side (`Λ·d` bound) is
+L9/L10/L13; the `P β` side is L14, whose final per-point step is
+`specialization_eq_proximate_root_of_hensel` (fed by `hensel_root_unique`) plus the missing
+coefficient extraction, landing through `pi_z_eq_zero_of_eq_zero`. Both are purely about the real
+`β`; this file consumes them as the single hypothesis `P β` (no `sorry`).
 
 Everything here is kernel-clean.
 -/
@@ -99,8 +108,9 @@ matching point.  This is the *exact* requirement of ingredient C, stated as a cl
 (no `sorry`): it is the strongest possible "`matchingSet ⊆ S_β β`" — a concrete witnessing section
 for each point's `S_β`-membership existential.
 
-`L13`'s real β-construction will discharge `MatchingVanishes` via Hensel uniqueness
-(`pi_z_eq_zero_of_specialization_eq` below). -/
+A real β-construction would discharge `MatchingVanishes` via Hensel uniqueness
+(`specialization_eq_proximate_root_of_hensel` and `pi_z_eq_zero_of_eq_zero` below, plus the
+coefficient-extraction step not proved here). -/
 def MatchingVanishes {H : F[X][Y]} (matchingSet : Finset F)
     (root : (z : F) → rationalRoot (H_tilde' H) z) (β : 𝒪 H) : Prop :=
   ∀ z ∈ matchingSet, (π_z z (root z)) β = 0

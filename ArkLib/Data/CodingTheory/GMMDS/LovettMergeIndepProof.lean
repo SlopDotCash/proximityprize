@@ -353,6 +353,46 @@ theorem lovettThm17_unconditional {n : ℕ} : LovettThm17 F n :=
 theorem lovettPrimitiveCase_unconditional {n : ℕ} : LovettPrimitiveCase F n :=
   lovettPrimitiveCase_of_mergeIndep lovettMergeIndep
 
+/-! ## Refutation of the legacy witness-bearing residuals
+
+The older residual interfaces `MergeBranchImpossible` (`LovettLemma25.lean`), its alias
+`MergeContradiction` (`LovettMergeBranch.lean`), and `LovettWitnessExists`
+(`LovettLemma2456.lean`) demand the structured witness `(1,…,1,0)` from the
+minimal-counterexample induction hypotheses alone, without any premise that the current system is
+itself dependent.  Since Theorem 1.7 is now proved unconditionally, those induction hypotheses are
+always satisfiable, and the demanded witness is simply false on small independent systems.  The
+theorems below record this; the live route uses the corrected `LovettMergeIndep` instead. -/
+
+/-- **`MergeBranchImpossible` is false.**  The zero-vector system `mcV = [(0,0)]` over `Fin 2`
+(`LovettMergeReduction.lean`) is primitive and `V*(1)`, has the merge candidate `(i, j) = (0, 0)`,
+and all three induction hypotheses hold by `lovettThm17_unconditional`; yet it contains no
+`oneVec 2 = (1,0)`. -/
+theorem not_mergeBranchImpossible : ¬ MergeBranchImpossible F := by
+  intro h
+  have hlast : lastCoord 2 (by norm_num) = (1 : Fin 2) := by decide +kernel
+  obtain ⟨i₀, hi₀⟩ := h mcV 1 le_rfl (by norm_num) mcV_isVStar mcV_primitive
+    (fun V' k' _ hk' hV' => lovettThm17_unconditional (F := F) V' k' hk' hV')
+    (fun V' _ hV' => lovettThm17_unconditional (F := F) V' 1 le_rfl hV')
+    (fun V' _ _ hV' => lovettThm17_unconditional (F := F) V' 1 le_rfl hV')
+    0 0 (by norm_num) (by simp [mcV]) (by rw [hlast]; simp [mcV])
+  have h0 := congrFun hi₀ 0
+  simp [mcV, oneVec] at h0
+
+/-- **`MergeContradiction` is false** (it is definitionally `MergeBranchImpossible`). -/
+theorem not_mergeContradiction : ¬ MergeContradiction F :=
+  not_mergeBranchImpossible
+
+/-- **`LovettWitnessExists` is false.**  The empty-dimension system `emptyV` over `Fin 0`
+(`LovettMergeReduction.lean`) is primitive and `V*(1)`, all induction hypotheses hold by
+`lovettThm17_unconditional`, yet `LovettWitness F emptyV 1` demands `1 ≤ 0`.  (The `n = 2`
+zero-vector system `mcV` also refutes it.) -/
+theorem not_lovettWitnessExists : ¬ LovettWitnessExists F := by
+  intro h
+  exact not_lovettWitness_emptyV (F := F) <| h emptyV 1 le_rfl emptyV_isVStar emptyV_primitive
+    (fun _ _ hn' _ _ => absurd hn' (Nat.not_lt_zero _))
+    (fun V' _ hV' => lovettThm17_unconditional (F := F) V' 1 le_rfl hV')
+    (fun V' _ _ hV' => lovettThm17_unconditional (F := F) V' 1 le_rfl hV')
+
 end ArkLib.GMMDS
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
@@ -362,3 +402,6 @@ end ArkLib.GMMDS
 #print axioms ArkLib.GMMDS.substVar_g_eq_zero
 #print axioms ArkLib.GMMDS.lovettMergeIndep
 #print axioms ArkLib.GMMDS.lovettThm17_unconditional
+#print axioms ArkLib.GMMDS.not_mergeBranchImpossible
+#print axioms ArkLib.GMMDS.not_mergeContradiction
+#print axioms ArkLib.GMMDS.not_lovettWitnessExists

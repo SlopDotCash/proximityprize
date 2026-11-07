@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Factorization.Basic
+import Mathlib.Data.Nat.Squarefree
 import Mathlib.Data.Set.Finite.Basic
 import Mathlib.Order.Interval.Set.Infinite
 
@@ -37,14 +38,25 @@ is far ABOVE the window, so it excludes no window prime — the good-prime suppl
 finer *structure* of the in-window K-bad set (census: `probe_466_d4_structure.py`), not just
 finiteness of the crude bad set.
 
-## Census verdict — the `n^{7/8}` route is REFUTED (lane F2)
+## Census verdict — a finite count, scoped to budgets below `92` (lane F2)
 
 The point of finiteness was a hoped-for *divisor structure theorem* (analogous to the width-four
 canonical resultant, `CanonicalWidthFourBadPrimeSet.lean`): if the in-window depth-4 K-bad set were
 contained in the prime factors of ONE small norm-height integer, a Thorner-Zaman window would
-outrun it and the `n^{7/8}` bilinear route would get free depth-4 good-prime supply.  The census
-`scripts/probes/probe_466_d4_structure.py` (exhaustive `n = 32`, all 13,319 window primes;
-anchor `W₄(65537,16) = +4480`) **REFUTES** this.  Of the 92 in-window K-bad primes:
+outrun it and the `n^{7/8}` bilinear route would get free depth-4 good-prime supply.
+
+**What the census can and cannot refute (audit correction R-334).**  Every finite set `B` of
+primes is collected by the single integer `H = ∏ B`, whose prime support is exactly `B`.  So the
+budget predicate `D4GoodSupplyBudget B m` below is EQUIVALENT to `B.card ≤ m` on prime sets
+(`d4GoodSupplyBudget_iff_card_le`, proved here).  A census count of `92` therefore refutes
+exactly the budgets `m < 92` at `n = 32`; it does NOT refute a budget `m ≥ 92`, any other
+invariant, or a stated `O(φ(n)·n)` comparison (at `n = 32`, `φ(32)·32 = 512 ≥ 92`).  A genuine
+asymptotic no-go would need a stated uniform height / prime-support bound `m(n)` along a stated
+family of `n` and a proof that the bad set exceeds it; no such numerical bound or family
+quantifier is formalized here.
+
+The census `scripts/probes/probe_466_d4_structure.py` (exhaustive `n = 32`, all 13,319 window
+primes; anchor `W₄(65537,16) = +4480`) records the following about the 92 in-window K-bad primes:
 
 * `0` are generalized-Fermat `p = b^{2^s}+1`;
 * `0` have high 2-adic valuation (`v₂(p−1) ≥ 13`); the `v₂` histogram is
@@ -52,13 +64,15 @@ anchor `W₄(65537,16) = +4480`) **REFUTES** this.  Of the 92 in-window K-bad pr
 * the odd cofactor `(p−1)/2^{v₂}` is generic, frequently a single large prime;
 * they span the WHOLE window `β = log_n p ∈ [4.005, 4.394]`, up to the top edge.
 
-Clean generic countermodels (`p ≡ 1 mod 32`, `p−1 = 2⁵·(large prime)`, minimal structure, yet
-K-bad): `p = 1391393 = 2⁵·43481` (43481 prime), `p = 2089889 = 2⁵·65309` (65309 prime, `β=4.20`),
-`p = 1524449 = 2⁵·47639` (47639 prime), `p = 4102753 = 2⁵·3·42737` (`β=4.394`, top of window).
-No fixed small integer collects these — there is NO depth-4 divisor structure theorem.  Hence the
-`n^{7/8}` route's `T4 = O(n⁴)` free good-prime supply **does not exist**; the depth-4 K-badness is
-an arithmetically-generic positive-density phenomenon.  (The `n^{8/9}` depth-3 route is unaffected:
-depth 3 has NO in-window K-bad prime.)
+Generic-looking examples (`p ≡ 1 mod 32`, `p−1 = 2⁵·(large prime)`, minimal 2-adic structure,
+yet K-bad): `p = 1391393`, `p − 1 = 2⁵·43481` (43481 prime); `p = 2089889`, `p − 1 = 2⁵·65309`
+(65309 prime, `β=4.20`); `p = 1524449`, `p − 1 = 2⁵·47639` (47639 prime); `p = 4102753`,
+`p − 1 = 2⁵·3·42737` (`β=4.394`, top of window).
+These valuation/cofactor facts do NOT exclude a common defining integer (the product of the 92
+primes is one), and they do not imply positive asymptotic density, the impossibility of a refined
+structure theorem, or the absence of a future good-prime supply.  What the census establishes is
+the finite statement: at `n = 32`, any budget `m < 92` fails for the in-window K-bad set.
+(The `n^{8/9}` depth-3 route is unaffected: depth 3 has NO in-window K-bad prime.)
 
 ## What is PROVEN here (axiom-clean)
 
@@ -69,15 +83,16 @@ depth 3 has NO in-window K-bad prime.)
 * `d4Bad_card_le_of_dvd_normHeightInteger` — the census-as-divisibility-gate form: if every
   D4-bad prime divides one fixed nonzero norm-height integer `H`, the D4-bad set has at most
   `H.primeFactors.card` elements.
-* `card_le_of_d4GoodSupplyBudget` — the route's supply hypothesis at budget `m` forces the
-  in-window K-bad set to have `≤ m` elements.  This is the exact lever the census DEFEATS: at
-  `n = 32` the in-window K-bad set already has `92` generic elements with no shared small
-  divisor, so no sub-window budget `m` can hold — `D4GoodSupplyBudget` is a named hypothesis the
-  numerics REFUTE, not a theorem.
+* `card_le_of_d4GoodSupplyBudget` — the supply hypothesis at budget `m` forces the in-window
+  K-bad set to have `≤ m` elements.
+* `d4GoodSupplyBudget_of_card_le` / `d4GoodSupplyBudget_iff_card_le` — the converse (witness
+  `H = ∏ B`), so on prime sets the budget is exactly `B.card ≤ m`.  Combined with the `n = 32`
+  census count `92` (external numerics, not formalized here), the budget fails exactly for
+  `m < 92`.
 
 `D4NormHeightInclusion` and `D4GoodSupplyBudget` are deliberately-named hypotheses (the
-algebraic-number-theory norm bound, resp. the refuted divisor-structure supply); neither is
-asserted true here — per the project's residual convention.
+algebraic-number-theory norm bound, resp. the divisor-structure supply); neither is asserted true
+here — per the project's residual convention.
 -/
 
 set_option autoImplicit false
@@ -132,26 +147,45 @@ theorem d4Bad_card_le_of_dvd_normHeightInteger
     exact Nat.mem_primeFactors.mpr ⟨hprime p (hBadSub hpBad), hBadDvd p hpBad, hH⟩
   exact Finset.card_le_card hsub
 
-/-- The **D4 good-supply budget** at cardinality `m` (the refuted route hypothesis): the in-window
-depth-4 K-bad set `B` is contained in the prime factors of a single fixed nonzero norm-height
-integer `H` with at most `m` prime divisors.  For the width-four canonical resultant lane `m` is
-`O(φ(n)·n)` (`log₂` of the resultant), so a Thorner-Zaman window of larger supply beats it.  The
-`n^{7/8}` bilinear route needed the analogous *small*-`m` bound at depth 4.
+/-- The **D4 good-supply budget** at cardinality `m`: the in-window depth-4 K-bad set `B` is
+contained in the prime factors of a single fixed nonzero integer `H` with at most `m` prime
+divisors.  For the width-four canonical resultant lane `m` is `O(φ(n)·n)` (`log₂` of the
+resultant), so a Thorner-Zaman window of larger supply beats it.  The `n^{7/8}` bilinear route
+needed an analogous *small*-`m` bound at depth 4.
 
-**Census verdict: this is FALSE at prize-relevant scale** — the exhaustive `n = 32` scan exhibits
-`92` in-window K-bad primes that are arithmetically generic (minimal `v₂`, prime odd cofactors,
-spread across the window), so no fixed small `H` collects them.  This `Prop` is a named
-hypothesis, not a theorem; downstream MUST NOT assume it. -/
+**Scope.** As stated, this predicate places no height bound on `H`: on a set of primes it is
+equivalent to `B.card ≤ m` (`d4GoodSupplyBudget_iff_card_le`, witness `H = ∏ B`).  The
+exhaustive `n = 32` scan exhibits `92` in-window K-bad primes, so the budget fails exactly for
+`m < 92` at `n = 32`; it holds for every `m ≥ 92`.  A meaningful asymptotic test needs a stated
+height / prime-support bound `m(n)` along a stated family of `n`, which is not formalized here.
+This `Prop` is a named hypothesis, not a theorem. -/
 def D4GoodSupplyBudget (B : Finset ℕ) (m : ℕ) : Prop :=
   ∃ H : ℕ, H ≠ 0 ∧ H.primeFactors.card ≤ m ∧ (∀ p ∈ B, p ∣ H)
 
-/-- If the (refuted) good-supply budget holds at `m`, the in-window K-bad set has `≤ m` elements.
-This is the lever the census defeats: at `n = 32` the K-bad set already has `92` generic elements,
-so `D4GoodSupplyBudget B m` fails for every sub-window `m`. -/
+/-- If the good-supply budget holds at `m`, the in-window K-bad set has `≤ m` elements.
+At `n = 32` the K-bad set has `92` elements (external census), so `D4GoodSupplyBudget B m` fails
+for every `m < 92`; nothing here refutes a budget `m ≥ 92`. -/
 theorem card_le_of_d4GoodSupplyBudget {B : Finset ℕ} {m : ℕ}
     (hprime : ∀ p ∈ B, p.Prime) (h : D4GoodSupplyBudget B m) : B.card ≤ m := by
   obtain ⟨H, hH, hcard, hdvd⟩ := h
   exact (d4Bad_card_le_of_dvd_normHeightInteger B B hH hprime (le_refl B) hdvd).trans hcard
+
+/-- **Converse: every finite prime set is collected by its product.**  If `B.card ≤ m` for a set
+`B` of primes, then `D4GoodSupplyBudget B m` holds with witness `H = ∏ B` (whose prime support is
+exactly `B`).  So the budget predicate carries no information beyond the cardinality of `B`. -/
+theorem d4GoodSupplyBudget_of_card_le {B : Finset ℕ} {m : ℕ}
+    (hprime : ∀ p ∈ B, p.Prime) (h : B.card ≤ m) : D4GoodSupplyBudget B m := by
+  refine ⟨∏ p ∈ B, p, ?_, ?_, ?_⟩
+  · exact Finset.prod_ne_zero_iff.mpr (fun p hp => (hprime p hp).ne_zero)
+  · rw [Nat.primeFactors_prod hprime]
+    exact h
+  · intro p hp
+    exact Finset.dvd_prod_of_mem _ hp
+
+/-- On a set of primes, the D4 good-supply budget at `m` is exactly `B.card ≤ m`. -/
+theorem d4GoodSupplyBudget_iff_card_le {B : Finset ℕ} {m : ℕ}
+    (hprime : ∀ p ∈ B, p.Prime) : D4GoodSupplyBudget B m ↔ B.card ≤ m :=
+  ⟨card_le_of_d4GoodSupplyBudget hprime, d4GoodSupplyBudget_of_card_le hprime⟩
 
 end ArkLib.ProximityGap.Frontier.D4NormHeightFinite
 
@@ -162,5 +196,7 @@ namespace ArkLib.ProximityGap.Frontier.D4NormHeightFinite
 #print axioms finite_setOf_le_d4NormHeightBound
 #print axioms d4Bad_card_le_of_dvd_normHeightInteger
 #print axioms card_le_of_d4GoodSupplyBudget
+#print axioms d4GoodSupplyBudget_of_card_le
+#print axioms d4GoodSupplyBudget_iff_card_le
 
 end ArkLib.ProximityGap.Frontier.D4NormHeightFinite

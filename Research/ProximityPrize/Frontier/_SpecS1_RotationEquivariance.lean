@@ -18,9 +18,9 @@ REFUTED as a δ* pin (see `_BchksF1_CompleteHomogeneousFloor` §`CompleteHomogen
 and more fundamentally `#distinct h_r` is EXPONENTIAL while the actual bad-scalar count at δ* is `~n`,
 so the spectrum is exponentially loose for `#bad`. The lemmas below are kept as honest substrate
 (correct algebra of `h_r`, useful e.g. for the good-prime / cyclotomic-collision counting), NOT as a
-lower bound on δ*. The bound it lands is the ORBIT form `#distinct h_r ≤ C(s,k+1)/gcd(s,r)` — itself
-EXPONENTIAL (`k+1 = ρs`), consistent with (not contradicting) the s=32 refutation of the `poly(n)=n`
-form.
+lower bound on δ*. The bound it lands is the hypothesis-guarded ORBIT form
+`#distinct h_r ≤ #orbits · o` (see the free-action caveat in (2): the advertised specialization
+`C(s,k+1)/gcd(s,r)` is FALSE in general) — itself EXPONENTIAL (`k+1 = ρs`).
 
 The object: `h_r` = the complete-homogeneous symmetric polynomial of degree `r` in the `(k+1)` nodes
 `R ⊆ μ_s` (the `s`-th roots of unity), via the SchurLagrangeBridge forced-`γ = −h_{a−k}/h_{b−k}`.
@@ -37,29 +37,31 @@ raw monomial degree `b`, so `dividedDifferencePow s v b = h_{b−(#s−1)}(v_s)`
 The exponent `b − (#s − 1)` is exactly the homogeneous degree `r = b − k` (with `k = #s − 1`),
 confirming `h_r(ζ·R) = ζ^r · h_r(R)`. Transported to the `schurH` surrogate via the bridge.
 
-## (2) Count bound via the FREE rotation action [PROVEN abstract lemma + REDUCED instance]
+## (2) Count bound via a rotation action [PROVEN abstract lemma + hypothesis-guarded instance]
 
 Equivariance ⟹ the spectrum (image of the degree-`r` map over `(k+1)`-subsets) is closed under
-multiplication by `ζ^r`. The rotation `R ↦ ζ·R` is a FREE action on `(k+1)`-subsets of `μ_s` (no
-`(k+1)`-subset with `0 < k+1 < s` is fixed by a nontrivial rotation), so by the orbit-counting law
-`OrbitCountCrossingLaw.card_eq_orbitCount_mul_size` the subsets split into orbits of constant size
-`t = ord(ζ)`, and an equivariant value-map takes at most `o = ord(ζ^r) = t/gcd(t,r)` distinct values
-per orbit. We land the ABSTRACT lemma
+multiplication by `ζ^r`. **Caveat: the rotation `R ↦ ζ·R` is NOT a free action on `(k+1)`-subsets
+of `μ_s` in general** — e.g. `{1,−1} ⊆ μ_4` is fixed by rotation by `−1`. Orbits therefore need not
+have constant size `s`, and the specialization `#distinct h_r ≤ C(s,k+1)/gcd(s,r)` is FALSE: for
+`s = 4`, `k+1 = 2`, `r = 2`, `h_2 = x²+xy+y²` takes the 4 distinct values `i, −i, 1, −1` on the 6
+pairs, while `C(4,2)/gcd(4,2) = 3`. A correct concrete count needs a Burnside / fixed-point
+correction (not formalized here). What is formalized is only the hypothesis-guarded orbit count:
+an equivariant value-map takes at most `o` distinct values per orbit (twist order `o`). We land the
+ABSTRACT lemma
 
   *an equivariant map `f : X → V` (`f(σ x) = τ · f(x)`, `σ` a permutation of `X` whose orbits all
   have size `t`, `τ` a unit of multiplicative order dividing `o` with `o ≤ t`) has
   `#(f '' X) ≤ #orbits · o`*
 
-and reduce the concrete `#distinct h_r ≤ C(s,k+1)/gcd(s,r)` to the (separately-tracked) free-action
-hypothesis on `(k+1)`-subsets.
+whose hypotheses (representative map + twist membership) must be supplied explicitly; the Lean
+theorems are correct as stated, but they do NOT yield `C(s,k+1)/gcd(s,r)`.
 
 ## Honest scope
 
-This is the **lead provable lever**, NOT the full F1 closure. The orbit bound
-`C(s,k+1)/gcd(s,r)` is a real, provable upper bound on the distinct-spectrum count — close to but
-not identical to the target `n·C(s+r−1,r)`. The equivariance (part 1) is fully axiom-clean; the
-count bound (part 2) is the abstract free-action lemma landed axiom-clean, with the concrete
-free-action hypothesis on `μ_s` named precisely as the remaining input.
+This is substrate, NOT the F1 closure. The expression `C(s,k+1)/gcd(s,r)` is NOT a valid upper
+bound on the distinct-spectrum count (counterexample above: the rotation action has fixed points).
+The equivariance (part 1) is fully axiom-clean; the count bound (part 2) is the abstract
+hypothesis-guarded orbit lemma `#image ≤ #representatives · o`, landed axiom-clean.
 -/
 
 set_option autoImplicit false
@@ -134,20 +136,20 @@ theorem schurH_smul {s : Finset ι} {v : ι → F}
       ← dividedDifferencePow_eq_schurH hvs hs b]
   exact dividedDifferencePow_smul s v ζ hζ hb
 
-/-! ## Part 2 — the abstract free-action count bound
+/-! ## Part 2 — the abstract orbit-cover count bound
 
 The equivariance `f(σ x) = τ · f(x)` means: within a single `σ`-orbit `{x, σx, σ²x, …}`, the
 `f`-values are `{f(x), τ·f(x), τ²·f(x), …}` — at most `o = ord(τ)` distinct values. So the total
 distinct-value count is `≤ #orbits · o`. We encode this as a clean Finset cover bound. The two
-abstract inputs (named as hypotheses, both DISCHARGED for the rotation action on `μ_s` in the
-instance below) are: a representative map `rep` whose image is the orbit reps, and the per-element
+abstract inputs (named as hypotheses; the instance below derives the twist-membership from a
+supplied rotation realization, but `rep` and the realization remain inputs) are: a representative map `rep` whose image is the orbit reps, and the per-element
 twist-membership `f x ∈ {τ^j · f (rep x) : j < o}`. -/
 
 section AbstractCount
 
 variable {ι₀ V : Type*} [DecidableEq ι₀] [DecidableEq V] [CommMonoid V]
 
-/-- **Abstract equivariant-image count bound (the free-action lever).** Let `X : Finset ι₀` be the
+/-- **Abstract equivariant-image count bound (orbit-cover form; no freeness needed).** Let `X : Finset ι₀` be the
 ground set (the `(k+1)`-subsets), `rep : ι₀ → ι₀` an orbit-representative map, `f : ι₀ → V` the
 value map (the spectrum `h_r`), `τ : V` the twist (here `ζ^r`), and `o : ℕ` the twist order. If every
 element's value is a twist-power of its representative's value — `f x ∈ {τ^j · f (rep x) : j < o}` —
@@ -157,7 +159,8 @@ then the number of distinct values is at most `#orbits · o` where `#orbits = #(
 
 Pure Finset covering: `X.image f ⊆ ⋃_{u ∈ X.image rep} {τ^j · f u : j < o}`, then
 `Finset.card_biUnion_le` + `Finset.card_image_le`. This is the abstract content of "an equivariant
-map under a free cyclic action of order `o` (the twist order) takes `≤ #orbits · o` distinct values".
+map whose values on each orbit are `o` twist-powers takes `≤ #orbits · o` distinct values" (orbits
+need not have equal size).
 -/
 theorem equivariant_image_card_le
     (X : Finset ι₀) (rep : ι₀ → ι₀) (f : ι₀ → V) (τ : V) (o : ℕ)
@@ -187,20 +190,21 @@ theorem equivariant_image_card_le
 
 end AbstractCount
 
-/-! ## Part 3 — the concrete spectrum count bound (REDUCED to the free-action hypothesis)
+/-! ## Part 3 — the concrete spectrum count bound (orbit-cover form, hypothesis-guarded)
 
 We assemble Parts 1+2 into the concrete `#distinct h_r ≤ #orbits · o` bound for the rotation action
 `R ↦ ζ·R` on `(k+1)`-subsets of `μ_s`. The two concrete inputs — the orbit-representative map and
 the per-subset twist-membership — are exactly what `schurH_smul` (Part 1, PROVEN) supplies once the
-node-set rotation is set up. The free-action hypothesis (every nontrivial rotation moves every
-`(k+1)`-subset, `0 < k+1 < s`) is named precisely; with it, `#orbits = C(s,k+1)/t` and `o = t/gcd(t,r)`
-give the target `C(s,k+1)/gcd(s,r)` form. -/
+node-set rotation is set up. NOTE: a "free action" hypothesis (every nontrivial rotation moves every
+`(k+1)`-subset) is FALSE on `μ_s` in general (`{1,−1} ⊆ μ_4` is fixed by `−1`), so the
+`C(s,k+1)/gcd(s,r)` specialization does not follow and is in fact false (`s=4, k+1=2, r=2`: 4 > 3).
+The theorems below only give `#image ≤ #(X.image rep) · o`. -/
 
 section ConcreteCount
 
 variable {ι₀ V : Type*} [DecidableEq ι₀] [DecidableEq V] [CommMonoid V]
 
-/-- **Spectrum count bound from a free rotation action (the lead provable lever, REDUCED).**
+/-- **Spectrum count bound from a rotation-equivariance hypothesis (orbit-cover form).**
 GIVEN the ground set `X` of `(k+1)`-subsets, the orbit-representative map `rep`, the spectrum map
 `f = h_r`, the twist `τ = ζ^r`, its order `o`, and the EQUIVARIANCE-derived hypothesis
 `htwist : ∀ R ∈ X, ∃ j < o, h_r(R) = (ζ^r)^j · h_r(rep R)` (each subset's spectrum value is a
@@ -209,9 +213,9 @@ twist-power of its representative's — a direct consequence of `schurH_smul` on
 
   `#(spectrum) ≤ #orbits · o`,
 
-i.e. `#{distinct h_r(R)} ≤ #(X.image rep) · o`. This is the orbit count bound; specialized to the
-free cyclic rotation of order `s` with twist order `o = s/gcd(s,r)` and `#orbits = C(s,k+1)/s`, it
-gives `#distinct h_r ≤ C(s,k+1)/gcd(s,r)`. -/
+i.e. `#{distinct h_r(R)} ≤ #(X.image rep) · o`. This is the orbit count bound. It does NOT
+specialize to `C(s,k+1)/gcd(s,r)`: the rotation action on subsets of `μ_s` has fixed points, so
+`#orbits ≠ C(s,k+1)/s` in general (and that bound is false, `s=4, k+1=2, r=2`). -/
 theorem spectrum_card_le_of_rotation_equivariance
     (X : Finset ι₀) (rep : ι₀ → ι₀) (f : ι₀ → V) (τ : V) (o : ℕ)
     (htwist : ∀ R ∈ X, ∃ j < o, f R = τ ^ j * f (rep R)) :
@@ -278,8 +282,8 @@ equivariance) with Part 2 (`equivariant_image_card_le`, the orbit cover count). 
 the distinct complete-homogeneous spectrum count `#{schurH s R b : R ∈ X}` by `#orbits · o`, with
 the ONLY inputs being the rotation-realization hypotheses on the node-value family `X` (each subset
 is `ζ^(pow R)·rep R` pointwise, `pow R < o`) — NO free `htwist` black box. This is the lead provable
-lever in fully-assembled form: an axiom-clean reduction of the spectrum count to the free-rotation
-realization. -/
+lever in fully-assembled form: an axiom-clean reduction of the spectrum count to a supplied rotation
+realization (which need NOT be free, and does not yield `C(s,k+1)/gcd(s,r)`). -/
 
 /-- **CAPSTONE — spectrum count `≤ #orbits · o` from rotation-realization (axiom-clean).**
 For a family `X : Finset (ι → F)` of node-value functions on `s` (the `(k+1)`-subsets of `μ_s`),
@@ -291,10 +295,9 @@ node map (injective on `s`), the number of DISTINCT degree-`r` complete-homogene
   `#{schurH s R b : R ∈ X} ≤ #(X.image rep) · o`.
 
 The twist-membership is supplied by `schurH_twist_membership` (a consequence of the PROVEN
-`schurH_smul`, NOT an assumption); the cover count by `equivariant_image_card_le`. Specialized to
-the free cyclic rotation of `μ_s` (orbit size `s`, twist order `o = s/gcd(s,r)`,
-`#orbits = C(s,k+1)/s`) this gives the target `#distinct h_r ≤ C(s,k+1)/gcd(s,r)`. The remaining
-named input is the concrete free-rotation realization on `μ_s`. -/
+`schurH_smul`, NOT an assumption); the cover count by `equivariant_image_card_le`. The rotation
+action on `μ_s` is not free, so this does NOT give `#distinct h_r ≤ C(s,k+1)/gcd(s,r)` (false in
+general); the realization data `rep`/`pow` must be supplied explicitly. -/
 theorem spectrum_card_le_of_rotation_realization
     [DecidableEq F] [DecidableEq (ι → F)] {s : Finset ι}
     (X : Finset (ι → F)) (rep : (ι → F) → (ι → F)) (pow : (ι → F) → ℕ)

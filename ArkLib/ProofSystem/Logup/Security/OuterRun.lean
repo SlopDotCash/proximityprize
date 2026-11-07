@@ -24,9 +24,13 @@ honest prover's run, the only failure mode of the outer phase is the pole event 
 
 The `simulateQ`-over-`OptionT` transport lemmas (`pure`/`failure`/`guard`/`forIn` and the
 `forIn`-of-guards collapse) are re-derived here. Canonical copies exist in
-`ToyProblem/Spec/General.lean`, but that module is currently unbuildable (issue #35), and the
-`Binius/BinaryBasefold/QueryPhase.lean` precedent likewise re-derives them locally for
-self-containment.
+`ToyProblem/Spec/General.lean`. When this was written that module was recorded as unbuildable
+(issue #35); that note is historical and is not a statement about the current tree, where
+`ToyProblem/Spec/General.lean` is a canonical module of the default `ArkLib` umbrella build. The
+local copies here (like the `Binius/BinaryBasefold/QueryPhase.lean` precedent, which also
+re-derives them) are therefore duplication debt, not evidence of a current build failure: the
+common `simulateQ`/`OptionT` simulation lemmas should be consolidated into one shared module
+where the import boundary permits.
 -/
 
 open scoped NNReal ENNReal

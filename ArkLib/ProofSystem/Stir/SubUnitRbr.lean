@@ -25,8 +25,10 @@ bridge hypothesis, and no vacuity**.
 identity fold, ONE challenge-derived point per binding check) is degenerate relative to
 paper-STIR — and in it, the checking verifier's soundness analysis does not need the
 BCIKS20 proximity gap at all.  The proximity gap is needed only when folding genuinely
-reduces degree (paper-STIR; the #304 `UnifiedProducer` lane remains the route for the
-Johnson-regime CA core and the L5.4 budgets, which require the `t`-repetition wire model).
+reduces degree (paper-STIR). The #304 `UnifiedProducer` is only a conditional count-triggered
+interface, false in general inside the Johnson window (the counterexample in
+`UnifiedExtractionTarget`); the Johnson-regime CA core needs probability-triggered producers, and
+the L5.4 budgets require the `t`-repetition wire model.
 
 Contents:
 1. **`ThresholdKSF.predKSF` / `ThresholdKSF.rbrKnowledgeSoundness_of_flipBounds`** — the
@@ -54,9 +56,8 @@ Contents:
    challenges: `(|F|−1)/|F|`).
 4. **The discharge**: `stirEpsStar` (the genuine budget), `stirCheckingRbrSoundness_genuine`
    (T1), `stirCheckingCABridge_genuine` (T2 — the named open bridge of #301, a fortiori),
-   `stirCheckingIOP_isSecureWithGap_genuine` (the first hypothesis-free `IsSecureWithGap`
-   for the assembled STIR IOPP at a non-vacuous budget), and
-   `stir_main_of_checkingIOP_genuine` (Theorem 5.1 with the soundness leg proven).
+   `stirCheckingIOP_isSecureWithGap_genuine` and `stir_main_of_checkingIOP_genuine`
+   (packaging results that take fixed-prefix soundness at the same budget).
 
 HONESTY NOTES:
 * `stirEpsStar` is the model's TRUE security level: the switch prover (send the codeword
@@ -921,36 +922,36 @@ theorem stirCheckingRbrSoundness_genuine :
 rbr soundness residual holds outright (`stirCheckingRbrSoundness_genuine`), the implication
 from the correlated-agreement residuals is true a fortiori.  In the degenerate single-domain
 identity-fold wire model, the protocol-level soundness needs NO proximity-gap input: the
-proximity gap is only needed when folding genuinely reduces degree (paper-STIR; the #304
-`UnifiedProducer` lane). -/
+proximity gap is only needed when folding genuinely reduces degree (paper-STIR). The #304
+`UnifiedProducer` is a conditional count-triggered interface that is false in general inside the
+Johnson window (counterexample in `UnifiedExtractionTarget`); the Johnson-regime CA core needs
+probability-triggered producers. -/
 theorem stirCheckingCABridge_genuine (e ProxGapBound : Fin (M + 1) → ℝ≥0) :
     stirCheckingCABridge M φ deg δ (stirEpsStar (F := F) (ι := ι) M δ) e ProxGapBound :=
   fun _ _ => stirCheckingRbrSoundness_genuine M φ deg δ
 
-/-- **The first hypothesis-free `IsSecureWithGap` for the assembled STIR checking IOPP at a
-non-vacuous budget**: perfect completeness (landed) + the genuine rbr soundness (T1). -/
-theorem stirCheckingIOP_isSecureWithGap_genuine :
+/-- Secure-with-gap packaging at the genuine budget given a fixed-prefix bound. -/
+theorem stirCheckingIOP_isSecureWithGap_genuine
+    (hSound : stirCheckingRbrSoundnessFixedPrefix M φ deg δ
+      (stirEpsStar (F := F) (ι := ι) M δ)) :
     IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ)
       (stirEpsStar (F := F) (ι := ι) M δ) (stirCheckingIOP M φ deg) :=
-  stirCheckingIOP_isSecureWithGap M φ deg δ _
-    (stirCheckingRbrSoundness_genuine M φ deg δ)
+  stirCheckingIOP_isSecureWithGap M φ deg δ _ hSound
 
 
 /-- **Theorem 5.1 through the checking IOPP at the GENUINE budget** (#301): `stir_main`
-discharged with the soundness leg PROVEN (no CA residuals, no bridge hypothesis, no vacuity)
-— the caller supplies only the statement's own free-parameter legs (`hε`/`hM`/`hLen`/`hQin`/
-`hQpf` and the field/degree constraints).  HONESTY: the `hε` leg pins `secpar` to the genuine
-security of the single-query wire model (`ε⋆ ≤ 2^{-secpar}`); real `secpar` requires the
-`t`-repetition wire model (the budget is essentially tight by the switch-prover attack). -/
+given fixed-prefix soundness and the statement's free-parameter constraints. The `hε` leg pins
+`secpar` to the genuine security of the single-query wire model (`ε⋆ ≤ 2^{-secpar}`). The
+`t`-repetition wire model is needed for larger security parameters. -/
 theorem stir_main_of_checkingIOP_genuine
     {M : ℕ} (secpar : ℕ)
     {φ : ι ↪ F} {degree : ℕ} [hsmooth : Smooth φ]
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / LinearCode.rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
+    (hSound : stirCheckingRbrSoundnessFixedPrefix M φ degree δ
+      (stirEpsStar (F := F) (ι := ι) M δ))
     (hε : ∀ i, stirEpsStar (F := F) (ι := ι) M δ i ≤ (1 : ℚ≥0) / (2 ^ secpar))
     (hM : ∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
     (hLen : ∃ cₖ : ℕ → ℝ, proofLen ≤ (Fintype.card ι) + (cₖ k) * (Real.log degree))
@@ -962,7 +963,7 @@ theorem stir_main_of_checkingIOP_genuine
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_secure_vectorIOP secpar hk hkGe δ hδub hF
     (stirEpsStar (F := F) (ι := ι) M δ) (stirCheckingIOP M φ degree)
-    (stirCheckingIOP_isSecureWithGap_genuine M φ degree δ)
+    (stirCheckingIOP_isSecureWithGap_genuine M φ degree δ hSound)
     hε hM hLen hQin hQpf
 
 end Weld

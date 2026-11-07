@@ -57,18 +57,18 @@ noncomputable def collinearExtensions (G : Finset Point) (onLine : Line → Poin
     (P : Finset Point) : Finset (Finset Point) :=
   (collinearTriples G onLine).filter fun T => P ⊆ T
 
-/-- Pair uniqueness and a four-point line cap leave at most two ways to extend a
-pair to a collinear triple. -/
-theorem collinearExtensions_card_le_two
+/-- Under a `B`-point line cap, a fixed pair has at most `B-2`
+collinear triple extensions. -/
+theorem collinearExtensions_card_le_lineCap_sub_two
     (G : Finset Point) (onLine : Line → Point → Prop)
-    (determinedLine : Point → Point → Line)
+    (determinedLine : Point → Point → Line) (B : ℕ)
     (hpairOn : ∀ x ∈ G, ∀ y ∈ G, x ≠ y →
       onLine (determinedLine x y) x ∧ onLine (determinedLine x y) y)
     (hpairUnique : ∀ ell x y, x ≠ y → onLine ell x → onLine ell y →
       ell = determinedLine x y)
-    (hlineFour : ∀ ell, (linePoints G onLine ell).card ≤ 4)
+    (hlineCap : ∀ ell, (linePoints G onLine ell).card ≤ B)
     (P : Finset Point) (hP : P ∈ G.powersetCard 2) :
-    (collinearExtensions G onLine P).card ≤ 2 := by
+    (collinearExtensions G onLine P).card ≤ B - 2 := by
   have hPsub : P ⊆ G := (Finset.mem_powersetCard.mp hP).1
   have hPcard : P.card = 2 := (Finset.mem_powersetCard.mp hP).2
   obtain ⟨x, y, hxy, rfl⟩ := Finset.card_eq_two.mp hPcard
@@ -83,20 +83,23 @@ theorem collinearExtensions_card_le_two
     rcases hz with rfl | rfl
     · exact Finset.mem_filter.mpr ⟨hxG, hxyOn.1⟩
     · exact Finset.mem_filter.mpr ⟨hyG, hxyOn.2⟩
-  have hdiffCard : (Lpts \ ({x, y} : Finset Point)).card ≤ 2 := by
+  have hdiffCard : (Lpts \ ({x, y} : Finset Point)).card ≤ B - 2 := by
     rw [Finset.card_sdiff_of_subset hpairSub]
-    have hline := hlineFour ell
-    change Lpts.card ≤ 4 at hline
+    have hline := hlineCap ell
+    change Lpts.card ≤ B at hline
     rw [hPcard]
     omega
-  let f : Finset Point → Finset Point := fun T => T \ ({x, y} : Finset Point)
+  let f : Finset Point → Finset Point := fun T =>
+    T \ ({x, y} : Finset Point)
   have hmaps : Set.MapsTo f
       (↑(collinearExtensions G onLine {x, y}))
       (↑((Lpts \ ({x, y} : Finset Point)).powersetCard 1)) := by
     intro T hT
     have hText : T ∈ collinearExtensions G onLine {x, y} := hT
-    have hTcol : T ∈ collinearTriples G onLine := (Finset.mem_filter.mp hText).1
-    have hpairT : ({x, y} : Finset Point) ⊆ T := (Finset.mem_filter.mp hText).2
+    have hTcol : T ∈ collinearTriples G onLine :=
+      (Finset.mem_filter.mp hText).1
+    have hpairT : ({x, y} : Finset Point) ⊆ T :=
+      (Finset.mem_filter.mp hText).2
     obtain ⟨hTG, hTcard, ell', hTline⟩ :=
       (mem_collinearTriples_iff G onLine T).mp hTcol
     have hxT : x ∈ T := hpairT (by simp)
@@ -105,13 +108,14 @@ theorem collinearExtensions_card_le_two
       exact hpairUnique ell' x y hxy (hTline x hxT) (hTline y hyT)
     have hTsubL : T ⊆ Lpts := by
       intro z hz
-      exact Finset.mem_filter.mpr ⟨hTG hz, by simpa only [hell] using hTline z hz⟩
+      exact Finset.mem_filter.mpr
+        ⟨hTG hz, by simpa only [hell] using hTline z hz⟩
     change f T ∈ (Lpts \ ({x, y} : Finset Point)).powersetCard 1
     rw [Finset.mem_powersetCard]
     refine ⟨Finset.sdiff_subset_sdiff hTsubL (by rfl), ?_⟩
-    rw [Finset.card_sdiff_of_subset hpairT, hTcard]
-    rw [hPcard]
-  have hinj : Set.InjOn f (↑(collinearExtensions G onLine {x, y})) := by
+    rw [Finset.card_sdiff_of_subset hpairT, hTcard, hPcard]
+  have hinj : Set.InjOn f
+      (↑(collinearExtensions G onLine {x, y})) := by
     intro T hT S hS heq
     have hTpair : ({x, y} : Finset Point) ⊆ T :=
       (Finset.mem_filter.mp hT).2
@@ -119,7 +123,8 @@ theorem collinearExtensions_card_le_two
       (Finset.mem_filter.mp hS).2
     change T \ ({x, y} : Finset Point) = S \ {x, y} at heq
     calc
-      T = {x, y} ∪ (T \ {x, y}) := (Finset.union_sdiff_of_subset hTpair).symm
+      T = {x, y} ∪ (T \ {x, y}) :=
+        (Finset.union_sdiff_of_subset hTpair).symm
       _ = {x, y} ∪ (S \ {x, y}) := by rw [heq]
       _ = S := Finset.union_sdiff_of_subset hSpair
   calc
@@ -128,7 +133,22 @@ theorem collinearExtensions_card_le_two
       Finset.card_le_card_of_injOn f hmaps hinj
     _ = (Lpts \ ({x, y} : Finset Point)).card := by
       rw [Finset.card_powersetCard, Nat.choose_one_right]
-    _ ≤ 2 := hdiffCard
+    _ ≤ B - 2 := hdiffCard
+
+/-- Pair uniqueness and a four-point line cap leave at most two ways to extend a
+pair to a collinear triple. -/
+theorem collinearExtensions_card_le_two
+    (G : Finset Point) (onLine : Line → Point → Prop)
+    (determinedLine : Point → Point → Line)
+    (hpairOn : ∀ x ∈ G, ∀ y ∈ G, x ≠ y →
+      onLine (determinedLine x y) x ∧ onLine (determinedLine x y) y)
+    (hpairUnique : ∀ ell x y, x ≠ y → onLine ell x → onLine ell y →
+      ell = determinedLine x y)
+    (hlineFour : ∀ ell, (linePoints G onLine ell).card ≤ 4)
+    (P : Finset Point) (hP : P ∈ G.powersetCard 2) :
+    (collinearExtensions G onLine P).card ≤ 2 :=
+  collinearExtensions_card_le_lineCap_sub_two G onLine determinedLine 4
+    hpairOn hpairUnique hlineFour P hP
 
 /-- A three-subset has exactly three two-subsets, even when the ambient set is
 larger. -/
@@ -364,6 +384,7 @@ theorem sum_choose_incidence_eq_sum_commonCoordinates_card
 
 end ArkLib.ProximityGap.Frontier.HalfPredecessorThirdMomentUpper
 
+#print axioms ArkLib.ProximityGap.Frontier.HalfPredecessorThirdMomentUpper.collinearExtensions_card_le_lineCap_sub_two
 #print axioms ArkLib.ProximityGap.Frontier.HalfPredecessorThirdMomentUpper.collinearExtensions_card_le_two
 #print axioms ArkLib.ProximityGap.Frontier.HalfPredecessorThirdMomentUpper.three_mul_collinearTriples_card_le_two_mul_choose_two
 #print axioms ArkLib.ProximityGap.Frontier.HalfPredecessorThirdMomentUpper.weightedTripleSum_upper

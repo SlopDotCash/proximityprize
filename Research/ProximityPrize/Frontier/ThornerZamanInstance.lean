@@ -21,12 +21,19 @@ This is an honest, axiom-clean discharge of the named hypothesis for a concrete 
 the route that the `kkh26_mcaDeltaStar_le_of_TZ` consumer needs, demonstrated end-to-end on a real
 instance (the asymptotic `n^{β−1−o(1)}` supply is the [TZ24] analytic statement that remains
 the open input for general `n`).
+
+**Witness lists are lower bounds, not counts.** Each theorem certifies `TZPrimeSupply n β s` by
+exhibiting `s` explicit primes in the window; these are arbitrary sub-lists (capped at twenty),
+not the full set. The exact window counts are larger — e.g. for `β = 2` and
+`n = 8, 16, 32, 64, 128, 256` they are `4, 6, 8, 16, 23, 51`, for `(n, β) = (8, 3)` it is `18`,
+and for `(64, 4)` it is `30801` — so the sequence of certified `s` values carries no information
+about the `n^{β−1}` growth rate of the [TZ24] supply.
 -/
 
 namespace ArkLib.ProximityGap.KKH26
 
 /-- **Concrete discharge of `TZPrimeSupply` for `n = 16, β = 2`.**  The window `[16², 2·16²] =
-[256, 512]` contains the six primes `257, 337, 353, 401, 433, 449`, all `≡ 1 (mod 16)`. -/
+[256, 512]` contains (at least) the six primes `257, 337, 353, 401, 433, 449`, all `≡ 1 (mod 16)`. -/
 theorem tzPrimeSupply_16_two : TZPrimeSupply 16 (2 : ℝ) 6 := by
   refine ⟨?_⟩
   have hpow : ((16 : ℕ) : ℝ) ^ (2 : ℝ) = 256 := by
@@ -40,7 +47,7 @@ theorem tzPrimeSupply_16_two : TZPrimeSupply 16 (2 : ℝ) 6 := by
   calc (6 : ℕ) = ({257, 337, 353, 401, 433, 449} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 16 (2 : ℝ)).card := Finset.card_le_card hsub
 
-/-- **Concrete discharge for `n = 8, β = 2`.**  The window `[64, 128]` contains the four primes
+/-- **Concrete discharge for `n = 8, β = 2`.**  The window `[64, 128]` contains (at least) the four primes
 `73, 89, 97, 113`, all `≡ 1 (mod 8)`. -/
 theorem tzPrimeSupply_8_two : TZPrimeSupply 8 (2 : ℝ) 4 := by
   refine ⟨?_⟩
@@ -55,9 +62,8 @@ theorem tzPrimeSupply_8_two : TZPrimeSupply 8 (2 : ℝ) 4 := by
   calc (4 : ℕ) = ({73, 89, 97, 113} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 8 (2 : ℝ)).card := Finset.card_le_card hsub
 
-/-- **Concrete discharge for `n = 32, β = 2`.**  The window `[1024, 2048]` contains the six primes
-`1153, 1217, 1249, 1409, 1601, 1697`, all `≡ 1 (mod 32)`.  (The supply grows `4, 6, 6` across
-`n = 8, 16, 32` — the `n^{β−1}`-type growth of the [TZ24] window.) -/
+/-- **Concrete discharge for `n = 32, β = 2`.**  The window `[1024, 2048]` contains (at least) the six primes
+`1153, 1217, 1249, 1409, 1601, 1697`, all `≡ 1 (mod 32)`. -/
 theorem tzPrimeSupply_32_two : TZPrimeSupply 32 (2 : ℝ) 6 := by
   refine ⟨?_⟩
   have hpow : ((32 : ℕ) : ℝ) ^ (2 : ℝ) = 1024 := by
@@ -71,7 +77,7 @@ theorem tzPrimeSupply_32_two : TZPrimeSupply 32 (2 : ℝ) 6 := by
   calc (6 : ℕ) = ({1153, 1217, 1249, 1409, 1601, 1697} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 32 (2 : ℝ)).card := Finset.card_le_card hsub
 
-/-- **Concrete discharge for `n = 64, β = 2`.**  The window `[4096, 8192]` contains the
+/-- **Concrete discharge for `n = 64, β = 2`.**  The window `[4096, 8192]` contains (at least) the
 eight primes `4289, 4481, 4673, 4801, 4993, 5441, 5569, 5953`, all `≡ 1 (mod 64)`. -/
 theorem tzPrimeSupply_64_two : TZPrimeSupply 64 (2 : ℝ) 8 := by
   refine ⟨?_⟩
@@ -89,7 +95,7 @@ theorem tzPrimeSupply_64_two : TZPrimeSupply 64 (2 : ℝ) 8 := by
     _ ≤ (tzWindow 64 (2 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 8, β = 3`** — in the faithful unconditional regime `β > 12/5`
-of [TZ24].  The window `[512, 1024]` contains the eight primes `521, 569, 577, 593, 601, 617, 641,
+of [TZ24].  The window `[512, 1024]` contains (at least) the eight primes `521, 569, 577, 593, 601, 617, 641,
 673`, all `≡ 1 (mod 8)`. -/
 theorem tzPrimeSupply_8_three : TZPrimeSupply 8 (3 : ℝ) 8 := by
   refine ⟨?_⟩
@@ -106,10 +112,8 @@ theorem tzPrimeSupply_8_three : TZPrimeSupply 8 (3 : ℝ) 8 := by
     _ ≤ (tzWindow 8 (3 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 128, β = 2`.**  The window `[128², 2·128²] = [16384, 32768]`
-contains the ten primes `17921, 18049, 18433, 19073, 19457, 19841, 20353, 21121, 21377, 22273`, all
-`≡ 1 (mod 128)`.  (The supply ladder is now `4, 6, 6, 8, 10` across
-`n = 8, 16, 32, 64, 128` — the `n^{β−1}`-type growth of the [TZ24] window, extending the
-concrete ceiling toward larger `s`.) -/
+contains (at least) the ten primes `17921, 18049, 18433, 19073, 19457, 19841, 20353, 21121, 21377, 22273`, all
+`≡ 1 (mod 128)`. -/
 theorem tzPrimeSupply_128_two : TZPrimeSupply 128 (2 : ℝ) 10 := by
   refine ⟨?_⟩
   have hpow : ((128 : ℕ) : ℝ) ^ (2 : ℝ) = 16384 := by
@@ -127,8 +131,8 @@ theorem tzPrimeSupply_128_two : TZPrimeSupply 128 (2 : ℝ) 10 := by
     _ ≤ (tzWindow 128 (2 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 256, β = 2`.**  The window `[256², 2·256²] = [65536, 131072]`
-contains the ten primes `65537, 67073, 70657, 70913, 75521, 76289, 76801, 77569, 78593, 79873`, all
-`≡ 1 (mod 256)`.  Supply ladder `4, 6, 6, 8, 10, 10` across `n = 8, 16, 32, 64, 128, 256`. -/
+contains (at least) the ten primes `65537, 67073, 70657, 70913, 75521, 76289, 76801, 77569, 78593, 79873`, all
+`≡ 1 (mod 256)`. -/
 theorem tzPrimeSupply_256_two : TZPrimeSupply 256 (2 : ℝ) 10 := by
   refine ⟨?_⟩
   have hpow : ((256 : ℕ) : ℝ) ^ (2 : ℝ) = 65536 := by
@@ -146,7 +150,7 @@ theorem tzPrimeSupply_256_two : TZPrimeSupply 256 (2 : ℝ) 10 := by
     _ ≤ (tzWindow 256 (2 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 512, β = 2`.**  The window `[512², 2·512²] =
-`[262144, 524288]` contains the twenty primes listed below, all `≡ 1 (mod 512)`.  This extends
+`[262144, 524288]` contains (at least) the twenty primes listed below, all `≡ 1 (mod 512)`.  This extends
 the explicit β=2 supply ladder to the same smooth-domain rung as the concrete width-four
 refuter `ZMod 262657`. -/
 theorem tzPrimeSupply_512_two : TZPrimeSupply 512 (2 : ℝ) 20 := by
@@ -169,7 +173,7 @@ theorem tzPrimeSupply_512_two : TZPrimeSupply 512 (2 : ℝ) 20 := by
     _ ≤ (tzWindow 512 (2 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 1024, β = 2`.**  The window `[1024², 2·1024²] =
-`[1048576, 2097152]` contains the twenty primes listed below, all `≡ 1 (mod 1024)`.  This keeps
+`[1048576, 2097152]` contains (at least) the twenty primes listed below, all `≡ 1 (mod 1024)`.  This keeps
 the explicit β=2 supply ladder aligned with the `n = 1024` concrete width-four refuter. -/
 theorem tzPrimeSupply_1024_two : TZPrimeSupply 1024 (2 : ℝ) 20 := by
   refine ⟨?_⟩
@@ -191,7 +195,7 @@ theorem tzPrimeSupply_1024_two : TZPrimeSupply 1024 (2 : ℝ) 20 := by
     _ ≤ (tzWindow 1024 (2 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 2048, β = 2`.**  The window `[2048², 2·2048²] =
-`[4194304, 8388608]` contains the twenty primes listed below, all `≡ 1 (mod 2048)`.  This extends
+`[4194304, 8388608]` contains (at least) the twenty primes listed below, all `≡ 1 (mod 2048)`.  This extends
 the explicit β=2 supply ladder to the same rung as the concrete `ZMod 4206593` width-four
 refuter. -/
 theorem tzPrimeSupply_2048_two : TZPrimeSupply 2048 (2 : ℝ) 20 := by
@@ -214,7 +218,7 @@ theorem tzPrimeSupply_2048_two : TZPrimeSupply 2048 (2 : ℝ) 20 := by
     _ ≤ (tzWindow 2048 (2 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 4096, β = 2`.**  The window `[4096², 2·4096²] =
-`[16777216, 33554432]` contains the twenty primes listed below, all `≡ 1 (mod 4096)`. -/
+`[16777216, 33554432]` contains (at least) the twenty primes listed below, all `≡ 1 (mod 4096)`. -/
 theorem tzPrimeSupply_4096_two : TZPrimeSupply 4096 (2 : ℝ) 20 := by
   refine ⟨?_⟩
   have hpow : ((4096 : ℕ) : ℝ) ^ (2 : ℝ) = 16777216 := by
@@ -235,7 +239,7 @@ theorem tzPrimeSupply_4096_two : TZPrimeSupply 4096 (2 : ℝ) 20 := by
     _ ≤ (tzWindow 4096 (2 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 8192, β = 2`.**  The window `[8192², 2·8192²] =
-`[67108864, 134217728]` contains the twenty primes listed below, all `≡ 1 (mod 8192)`. -/
+`[67108864, 134217728]` contains (at least) the twenty primes listed below, all `≡ 1 (mod 8192)`. -/
 theorem tzPrimeSupply_8192_two : TZPrimeSupply 8192 (2 : ℝ) 20 := by
   refine ⟨?_⟩
   have hpow : ((8192 : ℕ) : ℝ) ^ (2 : ℝ) = 67108864 := by
@@ -377,7 +381,7 @@ private theorem tzPrime_1082982401 : Nat.Prime 1082982401 := by
   prime_checkpoint
 
 /-- **Concrete discharge for `n = 16384, β = 2`.**  The window `[16384², 2·16384²] =
-`[268435456, 536870912]` contains the twenty primes listed below, all `≡ 1 (mod 16384)`. -/
+`[268435456, 536870912]` contains (at least) the twenty primes listed below, all `≡ 1 (mod 16384)`. -/
 theorem tzPrimeSupply_16384_two : TZPrimeSupply 16384 (2 : ℝ) 20 := by
   refine ⟨?_⟩
   have hpow : ((16384 : ℕ) : ℝ) ^ (2 : ℝ) = 268435456 := by
@@ -421,7 +425,7 @@ theorem tzPrimeSupply_16384_two : TZPrimeSupply 16384 (2 : ℝ) 20 := by
     _ ≤ (tzWindow 16384 (2 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 32768, β = 2`.**  The window `[32768², 2·32768²] =
-`[1073741824, 2147483648]` contains the twenty primes listed below, all `≡ 1 (mod 32768)`. -/
+`[1073741824, 2147483648]` contains (at least) the twenty primes listed below, all `≡ 1 (mod 32768)`. -/
 theorem tzPrimeSupply_32768_two : TZPrimeSupply 32768 (2 : ℝ) 20 := by
   refine ⟨?_⟩
   have hpow : ((32768 : ℕ) : ℝ) ^ (2 : ℝ) = 1073741824 := by
@@ -465,7 +469,7 @@ theorem tzPrimeSupply_32768_two : TZPrimeSupply 32768 (2 : ℝ) 20 := by
     _ ≤ (tzWindow 32768 (2 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 16, β = 3`** — in the faithful unconditional regime
-`β > 12/5` of [TZ24].  The window `[16³, 2·16³] = [4096, 8192]` contains the ten primes
+`β > 12/5` of [TZ24].  The window `[16³, 2·16³] = [4096, 8192]` contains (at least) the ten primes
 `4129, 4177, 4241, 4273, 4289, 4337, 4481, 4513, 4561, 4657`, all `≡ 1 (mod 16)`. -/
 theorem tzPrimeSupply_16_three : TZPrimeSupply 16 (3 : ℝ) 10 := by
   refine ⟨?_⟩
@@ -484,7 +488,7 @@ theorem tzPrimeSupply_16_three : TZPrimeSupply 16 (3 : ℝ) 10 := by
     _ ≤ (tzWindow 16 (3 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 32, β = 3`** — another faithful `β > 12/5` row.  The window
-`[32³, 2·32³] = [32768, 65536]` contains the twelve primes `32801, 32833, 32993, 33377, 33409,
+`[32³, 2·32³] = [32768, 65536]` contains (at least) the twelve primes `32801, 32833, 32993, 33377, 33409,
 33569, 33601, 33857, 33889, 34273, 34337, 34369`, all `≡ 1 (mod 32)`. -/
 theorem tzPrimeSupply_32_three : TZPrimeSupply 32 (3 : ℝ) 12 := by
   refine ⟨?_⟩
@@ -504,7 +508,7 @@ theorem tzPrimeSupply_32_three : TZPrimeSupply 32 (3 : ℝ) 12 := by
     _ ≤ (tzWindow 32 (3 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 64, β = 3`.**  The window `[64³, 2·64³] =
-`[262144, 524288]` contains the twenty primes listed below, all `≡ 1 (mod 64)`.  This extends
+`[262144, 524288]` contains (at least) the twenty primes listed below, all `≡ 1 (mod 64)`.  This extends
 the faithful `β > 12/5` concrete ladder one smooth-domain rung past the `n = 32` row used by the
 current canonical finite-exception bridge. -/
 theorem tzPrimeSupply_64_three : TZPrimeSupply 64 (3 : ℝ) 20 := by
@@ -528,7 +532,7 @@ theorem tzPrimeSupply_64_three : TZPrimeSupply 64 (3 : ℝ) 20 := by
 
 /-- **Concrete discharge for `n = 8, β = 4`** — deep in the faithful unconditional regime
 `β > 12/5` of [TZ24] (the highest exponent in the concrete ladder).  The window
-`[8⁴, 2·8⁴] = [4096, 8192]` contains the eight primes
+`[8⁴, 2·8⁴] = [4096, 8192]` contains (at least) the eight primes
 `4129, 4153, 4177, 4201, 4217, 4241, 4273, 4289`, all `≡ 1 (mod 8)`. -/
 theorem tzPrimeSupply_8_four : TZPrimeSupply 8 (4 : ℝ) 8 := by
   refine ⟨?_⟩
@@ -546,7 +550,7 @@ theorem tzPrimeSupply_8_four : TZPrimeSupply 8 (4 : ℝ) 8 := by
     _ ≤ (tzWindow 8 (4 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 16, β = 4`** — the highest `(n, β)` in the concrete ladder.
-The window `[16⁴, 2·16⁴] = [65536, 131072]` contains the ten primes
+The window `[16⁴, 2·16⁴] = [65536, 131072]` contains (at least) the ten primes
 `65537, 65617, 65633, 65713, 65729, 65761, 65777, 65809, 65921, 66161`, all
 `≡ 1 (mod 16)`.  (Demonstrates the concrete `TZPrimeSupply` route scales to `β = 4`, well
 above [TZ24]'s `β > 12/5` faithfulness threshold; the asymptotic supply for general `n`
@@ -568,7 +572,7 @@ theorem tzPrimeSupply_16_four : TZPrimeSupply 16 (4 : ℝ) 10 := by
     _ ≤ (tzWindow 16 (4 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 32, β = 4`.**  The window
-`[32⁴, 2·32⁴] = [1048576, 2097152]` contains the sixteen primes
+`[32⁴, 2·32⁴] = [1048576, 2097152]` contains (at least) the sixteen primes
 `1048609, 1048897, 1049057, 1049089,
 1049281, 1049473, 1049537, 1049569, 1049857, 1049953, 1050241, 1050337, 1050593, 1050817,
 1050913, 1050977`, all `≡ 1 (mod 32)`.  This extends the concrete high-exponent
@@ -593,7 +597,7 @@ theorem tzPrimeSupply_32_four : TZPrimeSupply 32 (4 : ℝ) 16 := by
     _ ≤ (tzWindow 32 (4 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 64, β = 4`.**  The window
-`[64⁴, 2·64⁴] = [16777216, 33554432]` contains the sixteen primes listed below, all
+`[64⁴, 2·64⁴] = [16777216, 33554432]` contains (at least) the sixteen primes listed below, all
 `≡ 1 (mod 64)`.  This pushes the concrete high-exponent TZ ladder beyond the current exact
 `n = 32` finite-exception row. -/
 theorem tzPrimeSupply_64_four : TZPrimeSupply 64 (4 : ℝ) 16 := by
@@ -616,7 +620,7 @@ theorem tzPrimeSupply_64_four : TZPrimeSupply 64 (4 : ℝ) 16 := by
     _ ≤ (tzWindow 64 (4 : ℝ)).card := Finset.card_le_card hsub
 
 /-- **Concrete discharge for `n = 8, β = 5`** — completes the `β = 2, 3, 4, 5` tower for
-the modulus `n = 8`.  The window `[8⁵, 2·8⁵] = [32768, 65536]` contains the eight primes
+the modulus `n = 8`.  The window `[8⁵, 2·8⁵] = [32768, 65536]` contains (at least) the eight primes
 `32801, 32833, 32969, 32993, 33049, 33073, 33113, 33161`, all `≡ 1 (mod 8)`. -/
 theorem tzPrimeSupply_8_five : TZPrimeSupply 8 (5 : ℝ) 8 := by
   refine ⟨?_⟩

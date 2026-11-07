@@ -24,10 +24,18 @@ satisfies:
 
 These are the induction-step identities of the tower-fiber exhaustiveness theorem
 (DISPROOF_LOG O54): for `S ⊆ μ_{2^m}` with `e₁(S) = ⋯ = e_t(S) = 0`, Newton's identities
-convert to power sums, the `t = 1` antipodal theorem gives `S = s⁻¹(T)`, and the
+convert to power sums, the `t = 1` antipodal theorem gives `S = s⁻¹(T)` (that step is
+proved only in characteristic zero / under cyclotomic linear independence, cf.
+`ArkLib.CyclotomicPatterns.natDegree_minpoly_rat_two_pow`; it is **false** over general finite
+2-power domains — e.g. `F₁₇ˣ` is a smooth 16-point domain and `{1, 2, 14}` sums to zero with no
+antipodal pair — and it is not proved in this file), and the
 identities here hand `T ⊆ μ_{2^(m−1)}` the vanishing conditions at depth `⌊t/2⌋` — so the
 `t`-fiber descends the squaring tower and equals the coset-union family
-`(s^L)⁻¹(U)`, `L = ⌊log₂ t⌋ + 1`, with exact count `C(n/2^L, w/2^L)`.
+`(s^L)⁻¹(U)`, `L = ⌊log₂ t⌋ + 1`, with exact count `C(n/2^L, w/2^L)` (in that
+characteristic-zero setting).
+
+The lemmas in this file themselves hold over any field (characteristic `≠ 2` where stated) and
+assume a set already of the form `sqrtPairs T y`; they do not prove the antipodal step.
 -/
 
 namespace ArkLib.SqrtPairs

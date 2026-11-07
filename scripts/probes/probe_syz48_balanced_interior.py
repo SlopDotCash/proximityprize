@@ -22,28 +22,46 @@ reconciliation:
   * LEVEL-SET / ROOT-COUNT BOUND: P has <= max(b,c) roots.  For W_AB (a roots) to
     divide P we need a <= max(b,c).  On the balanced interior a ~ b ~ c so this is
     SATISFIABLE -- counting gives NO contradiction (the honest full circle).
-  * So over a LARGE / algebraically-closed field the iota>=2 configuration IS
-    band-realizable: pick disjoint W_AC, W_BC, form P = alpha*W_AC + beta*W_BC, and
-    (generically, when P splits) take W_AB = a squarefree degree-a factor of P.  Its
-    roots are new algebraic points, generically distinct/disjoint from the others.
-  * THE RESCUE is the DOMAIN.  Over the prize domain the roots of W_AB must be
-    EVALUATION-DOMAIN points (in mu_n).  The roots of P = alpha*W_AC + beta*W_BC for
-    W_AC, W_BC vanishing polys of disjoint mu_n-subsets are NOT generally in mu_n.
+  * Over an ALGEBRAICALLY CLOSED field the iota>=2 configuration exists as an
+    algebraic syzygy: pick disjoint W_AC, W_BC, form P = alpha*W_AC + beta*W_BC, and
+    (when P is squarefree and coprime to W_AC, W_BC) take W_AB = P.  Its roots are new
+    algebraic points.  This needs a code domain containing those roots (an extension
+    field / algebraic closure with a stated new evaluation domain).
+  * A FINITE PRIME FIELD F_p, however large, is NOT an algebraic closure.  Over F_p the
+    roots of P are evaluation points only when P SPLITS into distinct linear factors
+    over F_p.  When P has a nonsplit factor, its "missing" roots are not other F_p
+    coordinates at all: this is NONSPLITTING, not "escape to other base-field points".
+    In experiments [1]-[3] the domains mu_(p-1) are all of F_p^*, so the only F_p point
+    outside the domain is 0; every root "leaving mu_n" there is a nonsplit (non-F_p) root.
 
-This probe measures, over mu_n domains:
+This probe measures, over mu_n domains (both mu_(p-1) = F_p^* and proper subgroups):
   [1] LEVEL-SET SIZES: for disjoint mu_n-subsets A,C and B,C giving W_AC,W_BC, and a
       scalar c0, how many roots does W_BC - c0*W_AC have IN mu_n?  (constant-ratio
-      level set on the domain).  Confirms the <= max(b,c) count AND how much smaller
-      the IN-DOMAIN level set is.
-  [2] DOMAIN-ESCAPE of combination roots: over mu_n, sample alpha,beta and count what
-      fraction of the max(b,c) roots of alpha*W_AC + beta*W_BC land back in mu_n.  If
-      generically ~0 land in mu_n, the iota>=2 witness cannot be assembled on-domain:
-      the domain is LOAD-BEARING.
-  [3] direct balanced-interior iota check on band-realizable mu_n triples: 0
-      violations expected (re-confirming SYZ45/47), now with the WHY (escape).
-  [4] LARGE-FIELD (algebraic-closure surrogate, big prime, arbitrary root sets) check
-      that balanced-interior iota=2 IS realizable when roots may be ANY field points
-      -- decisive that the domain restriction, not the degree profile, is the lever.
+      level set on the domain).  Confirms the valid nonzero-polynomial root bound
+      <= max(b,c) and records how much smaller the IN-DOMAIN level set typically is.
+  [2] ROOT LOCATION of a random combination alpha*W_AC + beta*W_BC, separated into
+      (i) distinct roots in mu_n, (ii) distinct roots at F_p points OFF the domain
+      (genuine escape to other base-field coordinates; only 0 is available when
+      mu_n = F_p^*), and (iii) degree not accounted for by distinct F_p roots
+      (nonsplitting over F_p), plus the fraction of combinations that split into
+      distinct F_p roots.  These are statistics of RANDOM alpha,beta and random sets:
+      typicality, NOT a universal obstruction.  A universal "on-domain iota>=2 cannot
+      be assembled" claim is FALSE: SYZ49 exhibits an on-domain constant-syzygy witness
+      over mu_12 in F_37, and the audit fixture L127 (repository review 2026-10-28)
+      gives a full-cover proper-band mu_20 in F_41 configuration with iota = 2.
+  [3] balanced-interior iota check on RANDOM disjoint mu_n root triples (equal
+      degrees; these are random samples, not band-realizable cores): 0 violations in
+      the sample is again typicality, not a proof.
+  [4] PRIME-FIELD arbitrary root sets (F_p with p large; NOT an algebraic-closure
+      surrogate): count (a) algebraic constant-syzygy configurations with W_AB = P
+      squarefree and coprime (nonsplit P allowed: a polynomial/syzygy fact), and
+      separately (b) those where P splits into d distinct F_p roots, i.e. an actual
+      F_p-point realization with evaluation domain all of F_p.  Only (b) realizes the
+      configuration on F_p points.
+
+The exact Hilbert-function / gcd / root-count computations are exact finite-field
+arithmetic; neither they nor the root bound supply a splitting/realizability bridge.
+No published theorem or dyadic-prize instance is refuted or confirmed by this probe.
 """
 import random
 from itertools import combinations
@@ -193,9 +211,61 @@ def gcd_deg(p, q, mod):
     return len(a) - 1 if a else -1
 
 
+def poly_trim(p, mod):
+    p = [x % mod for x in p]
+    while p and p[-1] == 0:
+        p = p[:-1]
+    return p
+
+
+def poly_rem(a, m, mod):
+    """remainder of a modulo the nonzero polynomial m over F_mod."""
+    a = poly_trim(a, mod)
+    m = poly_trim(m, mod)
+    inv = pow(m[-1], mod - 2, mod)
+    while len(a) >= len(m) and a:
+        f = (a[-1] * inv) % mod
+        sh = len(a) - len(m)
+        for i in range(len(m)):
+            a[sh + i] = (a[sh + i] - f * m[i]) % mod
+        a = poly_trim(a, mod)
+    return a
+
+
+def x_pow_mod(e, m, mod):
+    """X^e modulo m over F_mod (square-and-multiply)."""
+    result = poly_rem([1], m, mod)
+    base = poly_rem([0, 1], m, mod)
+    while e:
+        if e & 1:
+            result = poly_rem(poly_mul(result, base, mod), m, mod) if result and base else []
+        e >>= 1
+        if e:
+            base = poly_rem(poly_mul(base, base, mod), m, mod) if base else []
+    return result
+
+
+def fp_root_count(p, mod):
+    """number of DISTINCT roots of the nonzero polynomial p in the prime field F_mod.
+
+    Exact: deg gcd(p, X^mod - X), since X^mod - X is the product of all (X - x), x in F_mod.
+    """
+    p = poly_trim(p, mod)
+    if len(p) <= 1:
+        return 0
+    h = poly_add(x_pow_mod(mod, p, mod), [0, mod - 1], mod)
+    return gcd_deg(p, h, mod)
+
+
+def splits_squarefree(p, mod):
+    """p is a product of distinct linear factors over F_mod (all roots are F_mod points)."""
+    p = poly_trim(p, mod)
+    return len(p) >= 2 and fp_root_count(p, mod) == len(p) - 1
+
+
 # ---------------------------------------------------------------------------
 def experiment_1_2(mod, n, trials=3000, seed=1):
-    """level-set sizes + domain-escape of combination roots over mu_n."""
+    """level-set sizes + root location (domain / off-domain F_p / nonsplit) over mu_n."""
     rng = random.Random(seed)
     dom = mu_domain(n, mod)
     if len(dom) < 12:
@@ -203,13 +273,14 @@ def experiment_1_2(mod, n, trials=3000, seed=1):
     levelset_sizes = []           # in-domain roots of W_BC - c0*W_AC
     levelset_max_possible = []    # max(b,c)
     escape_in_domain = []         # in-domain roots of alpha*W_AC + beta*W_BC
+    off_domain_fp = []            # distinct F_p roots of the combination OUTSIDE mu_n
+    nonsplit_deg = []             # degree not accounted for by distinct F_p roots
+    split_count = 0               # combinations splitting into distinct F_p roots
     combo_deg = []
     for _ in range(trials):
         pts = rng.sample(dom, 12)
-        A = pts[0:4]; B = pts[4:8]; C = pts[8:12]
-        WAC = from_roots(A + C, mod)   # deg b := 8? -- use small overlap model:
-        # model: W_AC vanishes on the (A,C)-overlap; use disjoint small sets
-        # reduced degrees b,c ~ 4; use A as AC-only, B as BC-only roots
+        A = pts[0:4]; B = pts[4:8]
+        # model: reduced degrees b = c = 4; A are the AC-only roots, B the BC-only roots
         WAC = from_roots(A, mod)       # deg 4
         WBC = from_roots(B, mod)       # deg 4
         b = 4; c = 4
@@ -222,23 +293,37 @@ def experiment_1_2(mod, n, trials=3000, seed=1):
         # trim
         while combo and combo[-1] % mod == 0:
             combo = combo[:-1]
-        combo_deg.append(len(combo) - 1)
-        escape_in_domain.append(count_roots_in(combo, dom, mod))
+        deg = len(combo) - 1
+        combo_deg.append(deg)
+        in_dom = count_roots_in(combo, dom, mod)
+        in_field = fp_root_count(combo, mod)
+        escape_in_domain.append(in_dom)
+        off_domain_fp.append(in_field - in_dom)
+        nonsplit_deg.append(deg - in_field)
+        if deg >= 1 and in_field == deg:
+            split_count += 1
     return {
         "mod": mod, "n": n, "domain_size": len(dom), "trials": trials,
+        "domain_is_all_units": len(dom) == mod - 1,
+        "off_domain_fp_mean": sum(off_domain_fp) / len(off_domain_fp),
+        "off_domain_fp_trials": sum(1 for e in off_domain_fp if e > 0),
+        "nonsplit_deg_mean": sum(nonsplit_deg) / len(nonsplit_deg),
+        "nonsplit_trials": sum(1 for e in nonsplit_deg if e > 0),
+        "split_squarefree_trials": split_count,
         "levelset_mean": sum(levelset_sizes) / len(levelset_sizes),
         "levelset_max": max(levelset_sizes),
         "levelset_bound": max(levelset_max_possible),
         "levelset_over_bound": sum(1 for s, m in zip(levelset_sizes, levelset_max_possible) if s > m),
         "escape_mean_in_domain": sum(escape_in_domain) / len(escape_in_domain),
         "escape_max_in_domain": max(escape_in_domain),
-        "escape_all_left_domain": sum(1 for e in escape_in_domain if e == 0),
+        "no_root_in_domain": sum(1 for e in escape_in_domain if e == 0),
         "combo_deg_mean": sum(combo_deg) / len(combo_deg),
     }
 
 
 def experiment_3(mod, n, trials=1500, seed=7):
-    """balanced-interior iota on band-realizable mu_n triples: 0 violations expected."""
+    """balanced-interior iota on RANDOM disjoint mu_n root triples (sampled typicality only;
+    these are not band-realizable cores, and on-domain iota=2 witnesses do exist: SYZ49, L127)."""
     rng = random.Random(seed)
     dom = mu_domain(n, mod)
     if len(dom) < 18:
@@ -267,19 +352,23 @@ def experiment_3(mod, n, trials=1500, seed=7):
             "iota_ge_2_violations": viol, "max_iota_on_interior": max_iota}
 
 
-def experiment_4(mod, trials=400, seed=11):
-    """LARGE-FIELD arbitrary-root-set: is balanced-interior iota=2 realizable?
+def experiment_4(mod, trials=400, seed=11, keep_examples=3):
+    """PRIME-FIELD arbitrary root sets: algebraic iota=2 syzygies vs F_p-point realizations.
 
     Construct exactly the SYZ45 mechanism at a BALANCED profile: pick disjoint
     root sets for W_AC (deg d), W_BC (deg d), scalars alpha,beta; form the degree-d
     combination P = alpha*W_AC + beta*W_BC; when P is squarefree and coprime to
     W_AC,W_BC, set W_AB = P.  Then alpha*W_AC + beta*W_BC - W_AB = 0 is a constant
     syzygy of product-degree d => delta_1 <= d => iota >= floor(3d/2)-d = floor(d/2) >= 2
-    for d>=4.  Roots of W_AB = roots of P are ARBITRARY field points (not a domain).
+    for d>=4.  That is a polynomial/syzygy fact.  W_AB is the vanishing polynomial of d
+    F_p evaluation points ONLY when P splits into d distinct linear factors over F_p, so
+    the F_p-point realization count additionally requires splits_squarefree(P).
     """
     rng = random.Random(seed)
-    realized = 0
+    realized = 0          # algebraic configurations (nonsplit P allowed)
+    split_realized = 0    # of those, P splits into d distinct F_p roots
     attempts = 0
+    examples = []
     for _ in range(trials):
         d = rng.choice([4, 5, 6])
         allpts = rng.sample(range(1, mod), 2 * d)
@@ -307,31 +396,49 @@ def experiment_4(mod, trials=400, seed=11):
         S = a + b + c
         if max(a, b, c) < (S // 2) - 1 and iota >= 2:
             realized += 1
-    return {"mod": mod, "attempts": attempts, "balanced_interior_iota_ge_2_realized": realized}
+            n_fp = fp_root_count(P, mod)
+            if n_fp == d:
+                split_realized += 1
+            if len(examples) < keep_examples:
+                examples.append({"d": d, "P": list(P), "iota": iota,
+                                 "distinct_fp_roots": n_fp, "splits": n_fp == d})
+    return {"mod": mod, "attempts": attempts,
+            "algebraic_iota_ge_2_configurations": realized,
+            "split_fp_point_realizations": split_realized,
+            "examples": examples}
 
 
 if __name__ == "__main__":
     print("=" * 78)
-    print("SYZ48 balanced-interior: level sets, domain-escape, load-bearing mu_n")
+    print("SYZ48 balanced-interior: level sets, root location (domain / F_p / nonsplit)")
     print("=" * 78)
 
-    print("\n[1+2] level-set sizes and domain-escape over mu_n domains")
+    # mu_(p-1) = F_p^* (only 0 lies off-domain in F_p) and proper subgroups mu_n < F_p^*
+    DOMAINS = [(61, 60), (241, 240), (337, 336), (1009, 1008), (41, 20), (241, 60), (1009, 336)]
+    print("\n[1+2] level-set sizes and combination-root location over mu_n domains")
     print("-" * 78)
-    for mod, n in [(61, 60), (241, 240), (337, 336), (1009, 1008)]:
+    for mod, n in DOMAINS:
         r = experiment_1_2(mod, n)
         if r is None:
             continue
-        print(f"  F_{mod} on mu_{n} (|dom|={r['domain_size']}), {r['trials']} trials:")
+        kind = "= F_p^*" if r["domain_is_all_units"] else "proper subgroup of F_p^*"
+        print(f"  F_{mod} on mu_{n} {kind} (|dom|={r['domain_size']}), {r['trials']} trials:")
         print(f"    level-set (W_BC - c0*W_AC roots IN mu_n): mean={r['levelset_mean']:.3f} "
               f"max={r['levelset_max']} (algebraic bound max(b,c)={r['levelset_bound']}, "
               f"over-bound={r['levelset_over_bound']})")
         print(f"    combination alpha*W_AC+beta*W_BC (deg mean {r['combo_deg_mean']:.2f}): "
-              f"roots IN mu_n mean={r['escape_mean_in_domain']:.4f} max={r['escape_max_in_domain']}; "
-              f"trials where ALL roots left mu_n: {r['escape_all_left_domain']}/{r['trials']}")
+              f"distinct roots IN mu_n mean={r['escape_mean_in_domain']:.4f} "
+              f"max={r['escape_max_in_domain']}; no root in mu_n: "
+              f"{r['no_root_in_domain']}/{r['trials']}")
+        print(f"      F_p roots OFF the domain (genuine base-field escape): mean="
+              f"{r['off_domain_fp_mean']:.4f}, trials={r['off_domain_fp_trials']}/{r['trials']}")
+        print(f"      degree NOT in distinct F_p roots (nonsplitting over F_p): mean="
+              f"{r['nonsplit_deg_mean']:.4f}, trials={r['nonsplit_trials']}/{r['trials']}; "
+              f"split into distinct F_p roots: {r['split_squarefree_trials']}/{r['trials']}")
 
-    print("\n[3] balanced-interior iota on band-realizable mu_n triples (0 violations expected)")
+    print("\n[3] balanced-interior iota on RANDOM disjoint mu_n root triples (sampled only)")
     print("-" * 78)
-    for mod, n in [(61, 60), (241, 240), (337, 336), (1009, 1008)]:
+    for mod, n in DOMAINS:
         r = experiment_3(mod, n)
         if r is None:
             continue
@@ -340,20 +447,30 @@ if __name__ == "__main__":
               f"iota>=2 violations={r['iota_ge_2_violations']}, "
               f"max iota on interior={r['max_iota_on_interior']}")
 
-    print("\n[4] LARGE-FIELD arbitrary root sets: is balanced-interior iota=2 realizable?")
+    print("\n[4] PRIME-FIELD arbitrary root sets: algebraic iota>=2 syzygies vs split realizations")
     print("-" * 78)
     for mod in [10007, 100003, 1000003]:
         r = experiment_4(mod)
         print(f"  F_{mod}: coprime-squarefree attempts={r['attempts']}, "
-              f"balanced-interior iota>=2 REALIZED={r['balanced_interior_iota_ge_2_realized']}")
+              f"algebraic balanced-interior iota>=2 syzygies (nonsplit W_AB allowed)="
+              f"{r['algebraic_iota_ge_2_configurations']}, of which W_AB SPLITS into d "
+              f"distinct F_p points={r['split_fp_point_realizations']}")
+        for ex in r["examples"][:1]:
+            print(f"    first accepted trial: d={ex['d']} P={ex['P']} iota={ex['iota']} "
+                  f"distinct F_p roots={ex['distinct_fp_roots']} splits={ex['splits']}")
 
     print("\n" + "=" * 78)
-    print("READING:")
-    print("  [1] in-domain level sets are <= max(b,c) (algebraic root-count bound) AND")
-    print("      typically far smaller -- the constant-ratio locus barely meets mu_n.")
-    print("  [2] combination roots ESCAPE mu_n: the a domain-points needed for W_AB's")
-    print("      roots are not available => on-domain iota>=2 cannot be assembled.")
-    print("  [3] 0 balanced-interior violations on mu_n (re-confirms SYZ45/47).")
-    print("  [4] over a large field with ARBITRARY root sets the SAME balanced profile")
-    print("      REALIZES iota>=2 => the mu_n DOMAIN, not the degree profile, is the lever.")
+    print("READING (random-sample statistics; no universal no-go is claimed):")
+    print("  [1] in-domain level sets obey the valid root bound <= max(b,c) and are")
+    print("      typically much smaller for random scalars.")
+    print("  [2] combination roots that are not in mu_n are, when mu_n = F_p^*, NONSPLIT")
+    print("      (not F_p points at all, except possibly 0); on proper subgroups some land")
+    print("      on F_p points off the domain.  This is typicality of random alpha,beta,")
+    print("      NOT an obstruction: on-domain iota=2 witnesses exist (SYZ49 mu_12 in F_37;")
+    print("      audit fixture L127, full-cover proper-band mu_20 in F_41).")
+    print("  [3] 0 balanced-interior violations among RANDOM mu_n triples (typicality only).")
+    print("  [4] the balanced profile carries algebraic iota>=2 syzygies freely; an F_p-point")
+    print("      realization needs W_AB to split, which only a minority of trials do.")
+    print("      A prime field is not an algebraic closure; realizing the nonsplit cases")
+    print("      needs an extension field with a stated new evaluation domain.")
     print("=" * 78)

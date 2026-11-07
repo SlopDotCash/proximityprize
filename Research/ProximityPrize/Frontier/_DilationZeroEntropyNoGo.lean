@@ -8,27 +8,35 @@ import Mathlib.Data.ZMod.Basic
 import Mathlib.GroupTheory.OrderOfElement
 
 /-!
-# Zero-entropy no-go: the μ_n dilation is a single n-cycle, so no ergodic tool can bound the house (#444)
+# Zero-entropy no-go: the μ_n dilation is a single n-cycle, so mixing decay does not apply (#444)
 
-**The no-go.** A recurring "fresh" idea for the prize sup-norm `house = M(μ_n) = max_{b≠0}|η_b|` is to apply
-an **ergodic / mixing / spectral-gap / dynamical** decay estimate to the **dilation dynamics** `x ↦ h·x` on the
-2-power subgroup `μ_n` (`h` a generator). This file records the clean structural reason that route is
-**permanently dead**, in the style of the in-tree `_TowerDescentNoSaving` / `_DecouplingTowerNoSaving` no-gos.
+**The (scoped) no-go.** A recurring "fresh" idea for the prize sup-norm
+`house = M(μ_n) = max_{b≠0}|η_b|` is to apply a **mixing / decay-of-correlations** estimate to the
+**dilation dynamics** `x ↦ h·x` on the 2-power subgroup `μ_n` (`h` a generator). This file records
+the structural reason that *this specific* argument cannot work, in the style of the in-tree
+`_TowerDescentNoSaving` / `_DecouplingTowerNoSaving` no-gos.
 
-In additive coordinates `μ_n ≅ ZMod n` (dilation by a generator ≅ the shift `x ↦ x+1`), the dilation map is a
-**single `n`-cycle**: its `k`-th iterate is `x ↦ x + k`, which is the identity iff `n ∣ k`, so it has order
-**exactly `n`**. A finite-order measure-preserving map has **purely discrete spectrum** (here: the `n` `n`-th
-roots of unity) and **zero entropy** — there is no mixing, no spectral gap, and no decay of correlations beyond
-the hard period `n`. Every ergodic/dynamical decay theorem (mixing rates, spectral-gap bounds, Erdős–Turán–
-Koksma discrepancy via a mixing dynamics, decay-of-correlations chaining) **requires** positive entropy or a
-continuous/Lebesgue spectral component, which this system provably lacks. Hence **no ergodic/dynamical tool can
-produce the `√log m` cancellation** the house needs — the dynamical-domain attack class is structurally void.
+In additive coordinates `μ_n ≅ ZMod n` (dilation by a generator ≅ the shift `x ↦ x+1`), the dilation
+map is a **single `n`-cycle**: its `k`-th iterate is `x ↦ x + k`, which is the identity iff `n ∣ k`,
+so it has order **exactly `n`**. A finite-order measure-preserving map has purely discrete spectrum
+(here: the `n` `n`-th roots of unity) and zero entropy, so it is not mixing and has no decay of
+correlations beyond the hard period `n`: a genuine mixing-rate or decay-of-correlations bound for
+this particular finite dilation map is unavailable.
 
-This complements the archimedean no-go map: the wall is the *phase* equidistribution of the `m=(p−1)/n` Gauss
-sums (a `0`-dimensional, zero-entropy, rationally-structured object), not a decay/mixing phenomenon.
+**Scope (audit R-033, 2026-10-28).** This does **not** exclude every ergodic or dynamical tool, nor
+auxiliary dynamics built on other spaces. Discrete-spectrum dynamics still supports exact
+cancellation: for a nonconstant character of the `n`-cycle, the sum over one complete orbit is
+zero by the geometric-series identity, despite zero entropy and periodicity. No theorem here
+connects general ergodic/discrepancy tool classes to the house or proves their insufficiency; the
+broader judgement that dynamical methods are unpromising for the house is an **unproved strategy
+judgement**, not a consequence of the lemmas below.
 
-**What this file proves (axiom-clean).** The load-bearing finite fact: the shift on `ZMod n` has `k`-th iterate
-`+k` and order exactly `n` (a single `n`-cycle). The dynamical no-go is the docstring interpretation. Issue #444.
+Heuristically, the wall is the *phase* equidistribution of the `m=(p−1)/n` Gauss sums rather than a
+decay/mixing phenomenon (an interpretation, not proved here).
+
+**What this file proves (axiom-clean).** The finite fact: the shift on `ZMod n` has `k`-th iterate
+`+k` and returns to the identity exactly when `n ∣ k` (a single `n`-cycle). The mixing no-go above
+is the docstring interpretation of that fact for this one map. Issue #444.
 -/
 
 namespace ProximityGap.Frontier.DilationZeroEntropy
@@ -49,8 +57,9 @@ theorem dilation_iterate (n : ℕ) (k : ℕ) (x : ZMod n) :
       push_cast; ring
 
 /-- **Single `n`-cycle / zero entropy.** The dilation's `k`-th iterate is the identity **iff `n ∣ k`** — so the
-dilation has order exactly `n` (a single `n`-cycle, purely discrete spectrum). For `n ≥ 1` no nonzero iterate
-below `n` is the identity, so there is no mixing/decay mechanism: the ergodic/dynamical attack class is void. -/
+dilation has order exactly `n` (a single `n`-cycle, purely discrete spectrum). For `n ≥ 1` no
+nonzero iterate below `n` is the identity, so this map has no mixing/decay mechanism (this does not
+by itself exclude other dynamical or exact-cancellation arguments). -/
 theorem dilation_iterate_eq_id_iff (n : ℕ) (k : ℕ) :
     (dilation n)^[k] = id ↔ (n : ℕ) ∣ k := by
   constructor
@@ -65,7 +74,8 @@ theorem dilation_iterate_eq_id_iff (n : ℕ) (k : ℕ) :
     rw [this, add_zero]
 
 /-- **No sub-period return.** For `0 < k < n`, the dilation's `k`-th iterate is NOT the identity: the orbit has
-full period `n` (zero entropy, discrete spectrum) — the structural reason ergodic/mixing decay cannot apply. -/
+full period `n` (zero entropy, discrete spectrum) — the structural reason mixing decay for this
+finite dilation map cannot apply. -/
 theorem dilation_no_subperiod (n : ℕ) (k : ℕ) (hk0 : 0 < k) (hkn : k < n) :
     (dilation n)^[k] ≠ id := by
   intro h

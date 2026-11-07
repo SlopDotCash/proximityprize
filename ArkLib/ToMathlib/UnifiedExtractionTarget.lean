@@ -7,7 +7,7 @@ import ArkLib.ToMathlib.FaithfulCurveExtraction
 import ArkLib.ToMathlib.BoundaryHalfState
 
 /-!
-# Issue #304 — the unified extraction target: BOTH cores from ONE producer
+# Issue #304 — the count-triggered unified extraction interface (conditional reductions)
 
 The two named open cores of #304 — `StrictCoeffPolysResidual` (the strict-Johnson branch) and
 the boundary half (through the O76/O79/O86 quantization split, whose surviving leaves are
@@ -17,27 +17,51 @@ only in their trigger (probability / probability+count / count).  And the faithf
 extraction (`FaithfulCurveExtraction.hcoeffPoly_witness_of_curveFamilyData`) produces that
 `∃ B` from a `CurveFamilyData`.
 
-This file states the convergence as theorems:
+This file states the convergence as **conditional** theorems:
 
-* `UnifiedProducer` — the single production target: per word-stack and decoded family
-  (count-triggered, the weakest trigger any consumer supplies), a `CurveFamilyData`.
+* `UnifiedProducer` — a single count-triggered production *interface*: per word-stack and
+  decoded family with `k < |good|`, a `CurveFamilyData`.  It is the weakest trigger any
+  consumer supplies, which makes it the *strongest* producer statement, and it is **false in
+  general** (see "Honest status" below).
 * `latticeCoeffPolyExtraction_of_producer` — the lattice leaf from the producer.
 * `strictCoeffPolysLargeResidual_of_producer` — the cell-radius leaf from the producer
   (instantiated at the cell radius).
-* `strictCoeffPolysResidual_of_producer` — the strict-Johnson core from the producer
-  (the probability trigger is discarded; the count trigger is supplied by the consumer's own
-  `k + 1 < |good|`... NOTE: `StrictCoeffPolysResidual` carries no count hypothesis, so the
-  producer is consumed with the trigger weakened to `0 ≤ |good|` — i.e. this consumer needs
-  the *untriggered* producer; stated separately as `strictCoeffPolysResidual_of_producer'`
-  from the untriggered form).
-* `correlatedAgreementCurves_johnsonClosed_of_producer` — **the closed-boundary keystone**
+* `correlatedAgreementCurves_johnsonClosed_of_producer` — the closed-boundary keystone
   (the Johnson-endpoint dichotomy of `BoundaryHalfState`) from the count-triggered producer
-  alone: both dichotomy leaves discharged by the same object.
+  at the two fixed radii it consumes (the boundary cell radius and `δ` itself).
+* `no_affine_values_zmod5` — the kernel-checked arithmetic core of the counterexample below.
 
-**The disposition**: after this file, issue #304's remaining mathematical content is exactly
-the production of `CurveFamilyData` per word-stack — the object the assembled GS matching lane
-(S10-converse → Claim-5.7+branch pigeonholes → per-z proximate roots → truncation → converter
-→ extraction) terminates in.  Both cores, strict and boundary, consume it verbatim.
+`StrictCoeffPolysResidual` carries no count hypothesis, so it is **not** derived here from the
+count-triggered producer; it has its own probability-triggered faithful interface
+(`FaithfulCurveExtraction.strictCoeffPolysResidual_of_curveFamilyData`).
+
+## Honest status: the bare count-only producer is false inside the Johnson window
+
+`UnifiedProducer` drops the high-probability trigger retained by the faithful producer
+interfaces of `FaithfulCurveExtraction` (`Pr[…] > k · errorBound δ`), and `k < |good|` cannot
+replace it in general.  Counterexample (exact enumeration, source-derived translation;
+the arithmetic contradiction is `no_affine_values_zmod5`): `F = 𝔽₅`, domain `(0, 1, 2)`,
+`deg = 1` (the constant code, rate `1/3`), `k = 1`, `δ = 7/20`, stack `u₀ = (0,0,1)`,
+`u₁ = (0,1,2)`.  The words `u₀ + z·u₁` for `z = 0,…,4` are `(0,0,1), (0,1,3), (0,2,0),
+(0,3,2), (0,4,4)`; exactly `z ∈ {0, 2, 4}` are within `δ` of a constant (the constants
+`0, 0, 4`, at distance `1/3`), so `|good| = 3 > k`.  The radius lies strictly inside the
+Johnson window: `(1 − ρ)/2 = 1/3 < 7/20 < 1 − √(1/3)`.  But `CurveFamilyData` forces
+`n < k + 2 = 2` curve coefficients, so the constant coefficient of the decoded family would
+be an affine function `B` of `z` with `B 0 = B 2 = 0`, `B 4 = 4` — impossible over `𝔽₅`.
+Hence `UnifiedProducer 1 1 domain (7/20)` is **false** there, and every theorem below that
+assumes it is a valid implication from a false premise in such regimes.
+
+What this does **not** refute: the original high-probability BCIKS20 statement, the
+probability-triggered faithful producers, or the instantiated producers of the
+closed-boundary consumer at its own fixed radii (the counterexample is not at a closed
+Johnson boundary).  Known true instances: `UnifiedProducerWindowGlue.unifiedProducer_of_window`
+proves `UnifiedProducer` on the unique-decoding window
+`(k+1)·n + deg ≤ (k+2)·(n − ⌊δ·n⌋)` (the counterexample violates it: `7 > 6`).  A genuine
+production target outside that window must restore the probability / radius / parameter
+triggers each consumer actually supplies (or prove a justified larger count threshold, such
+as the lattice leaf's `(n+1)·k < |good|`, which the counterexample does not meet); the bare
+count-only producer is **not** equivalent to the original mathematical task, and future
+target strengthenings should be checked against the counterexample above.
 
 ## References
 * [BCIKS20] §5–§6; the O76/O79/O86 boundary split; issue #304.
@@ -58,8 +82,15 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 -- These historical finite-field statements use the uniform finite sampler.
 private noncomputable local instance : SampleableType F := SampleableType.ofFintype F
 
-/-- **The unified production target**: per word-stack and per decoded family, with the count
-trigger (the weakest any consumer supplies), a faithful `CurveFamilyData`. -/
+/-- **The count-triggered unified production interface**: per word-stack and per decoded
+family, with the count trigger `k < |good|` (the weakest any consumer supplies), a faithful
+`CurveFamilyData`.
+
+**Not a viable unconditional target**: this all-input count-only form is false in general,
+even strictly inside the Johnson window (`F = 𝔽₅`, `deg = 1`, `k = 1`, `δ = 7/20`; see the
+module docstring and `no_affine_values_zmod5`).  It is proved on the unique-decoding window
+(`UnifiedProducerWindowGlue.unifiedProducer_of_window`); outside it, consumers must be fed
+producers carrying their actual probability / radius / parameter triggers. -/
 def UnifiedProducer (k deg : ℕ) (domain : ι ↪ F) (δ : ℝ≥0) : Prop :=
   ∀ u : WordStack F (Fin (k + 1)) ι,
     k < (RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ).card →
@@ -106,11 +137,15 @@ theorem strictCoeffPolysLargeResidual_of_producer {k deg : ℕ} {domain : ι ↪
 
 /-! ## The closed-boundary keystone -/
 
-/-- **The closed-boundary Johnson-endpoint keystone from the single producer.**  Both leaves
+/-- **The closed-boundary Johnson-endpoint keystone from the count-triggered producer
+(conditional).**  Both leaves
 of the `BoundaryHalfState` dichotomy — the cell-radius `StrictCoeffPolysLargeResidual` and the
 lattice `LatticeCoeffPolyExtraction` — are discharged by the same count-triggered
 `CurveFamilyData` production (at the cell radius and at `δ` respectively).  The explicit
-positive error is the dichotomy's `max (errorBound (⌊δ·n⌋/n)) ((n+1)/|F|)`. -/
+positive error is the dichotomy's `max (errorBound (⌊δ·n⌋/n)) ((n+1)/|F|)`.  The hypotheses
+are count-only producers at these two fixed radii; such producers are false in general (see
+`UnifiedProducer`), so this is a reduction, not evidence that the hypotheses are inhabited
+beyond the proved unique-decoding window. -/
 theorem correlatedAgreementCurves_johnsonClosed_of_producer
     {k deg : ℕ} [NeZero deg] {domain : ι ↪ F} {δ : ℝ≥0}
     (hk : 0 < k)
@@ -129,6 +164,29 @@ theorem correlatedAgreementCurves_johnsonClosed_of_producer
     (fun _ => strictCoeffPolysLargeResidual_of_producer hprodCell)
     (fun _ => latticeCoeffPolyExtraction_of_producer hprodδ)
 
+/-! ## The counterexample's arithmetic core (kernel-checked)
+
+The decoded constants of the `𝔽₅` counterexample in the module docstring take the values
+`0, 0, 4` at `z = 0, 2, 4`; no polynomial of degree `< 2` (what `CurveFamilyData` with `k = 1`
+forces for each coefficient, via `FaithfulCurveExtraction.hcoeffPoly_witness_of_curveFamilyData`)
+interpolates them.  The full translation of the enumerated instance into a refutation of the
+Lean `UnifiedProducer` declaration remains source-derived. -/
+
+private instance fact_prime_five : Fact (Nat.Prime 5) := ⟨by decide⟩
+
+/-- No polynomial of degree `< 2` over `𝔽₅` takes the values `0, 0, 4` at `0, 2, 4`. -/
+theorem no_affine_values_zmod5 (B : (ZMod 5)[X]) (hdeg : B.natDegree < 2)
+    (h0 : B.eval 0 = 0) (h2 : B.eval 2 = 0) (h4 : B.eval 4 = 4) : False := by
+  have hlin (x : ZMod 5) : B.eval x = B.coeff 0 + B.coeff 1 * x := by
+    rw [Polynomial.eval_eq_sum_range' hdeg]
+    simp [Finset.sum_range_succ]
+  have hc0 : B.coeff 0 = 0 := by simpa [hlin] using h0
+  have hc1 : B.coeff 1 = 0 := by
+    have h : B.coeff 1 * (2 : ZMod 5) = 0 := by simpa [hlin, hc0] using h2
+    exact (mul_eq_zero.mp h).resolve_right (by decide)
+  have h : (0 : ZMod 5) = 4 := by simpa [hlin, hc0, hc1] using h4
+  exact (by decide : (0 : ZMod 5) ≠ 4) h
+
 end UnifiedExtractionTarget
 
 end ArkLib
@@ -139,3 +197,4 @@ end ArkLib
 #print axioms ArkLib.UnifiedExtractionTarget.latticeCoeffPolyExtraction_of_producer
 #print axioms ArkLib.UnifiedExtractionTarget.strictCoeffPolysLargeResidual_of_producer
 #print axioms ArkLib.UnifiedExtractionTarget.correlatedAgreementCurves_johnsonClosed_of_producer
+#print axioms ArkLib.UnifiedExtractionTarget.no_affine_values_zmod5

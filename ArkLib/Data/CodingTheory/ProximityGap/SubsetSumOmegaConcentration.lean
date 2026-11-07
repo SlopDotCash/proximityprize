@@ -56,14 +56,17 @@ so `ω⁴ = 1`, `⟨ω⟩ = {1, ω, −1, −ω}`). The clean engine:
 * It generalizes (the engine is stated for all `j`): closure under a primitive `2^r`-th root of unity
   `ω_r` vanishes every power sum `p_j` with `2^r ∤ j`, hence `p_1, …, p_{2^r−1} = 0`, hence
   `e_1, …, e_{2^r−1} = 0`. So killing the first `t` symmetric functions needs `r = ⌈log₂(t+1)⌉`.
-* It is **NOT** a prize counterexample, and this file is honest about *why* (the genuine wall): the
-  `⟨ω_r⟩`-orbits have size `2^r`, so a transversal has only `n/2^r` elements and the concentrated
-  count is `C(n/2^r, s)`. Reaching the **deep interior** (agreement `≈ √(kn)`, near the Johnson radius)
-  forces `2^r ≈ t ≈ √(kn) − k`, i.e. `r ≈ m`, which **collapses** the transversal to `n/2^r = O(1)`
-  elements and the count to a *constant*. The root-of-unity depth needed to pin `t` symmetric
-  functions eats the subgroup geometrically. This is the precise, structural reason the construction
-  concentrates near *capacity* (constant `t`) but cannot pin `δ*` in the deep interior — and it
-  matches ABF26's "no known technique past Johnson for explicit RS".
+* It is **NOT** a prize counterexample. Heuristic reason (an informal parameter count, **not** a
+  theorem of this file): the `⟨ω_r⟩`-orbits have size `2^r`, so a transversal has only `n/2^r`
+  elements and the concentrated count is `C(n/2^r, s)`. In a **fixed positive-rate** regime
+  (`k/n` bounded below), reaching the deep interior (agreement `≈ √(kn)`, near the Johnson radius)
+  via this mechanism needs `2^r ≈ t ≈ √(kn) − k = Θ(n)`, so the transversal has `n/2^r = O(1)`
+  elements and this particular count stays bounded. The rate restriction matters: for `k = 1`,
+  `n = 4d²`, agreement `a = d` (strictly inside the Johnson gap, `a² < kn`) and depth
+  `t = d − 1`, the `μ_d`-coset transversal of `μ_n` has `n/d = 4d` elements, growing with `d`.
+  Nothing here proves that power-sum symmetry is *necessary* for deep concentration, so this is a
+  limitation of the sufficient mechanism, not a general no-go; it is consistent with ABF26's
+  "no known technique past Johnson for explicit RS".
 
 All headline results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 
@@ -383,7 +386,8 @@ theorem cosetClosure_image_eq (hωd : ω ^ d = 1) (hω0 : ω ≠ 0) (P : Finset 
   Finset.eq_of_subset_of_card_le (cosetClosure_image_subset hωd P)
     (le_of_eq (Finset.card_image_of_injective _ (fun _ _ h => mul_left_cancel₀ hω0 h)).symm)
 
-/-- **The general depth-collapse engine.** For `ω` with `ω^d = 1`, `ω ≠ 0`, and any exponent `j` with
+/-- **The general power-sum vanishing engine** (the mechanism behind the informal depth-collapse
+heuristic; it proves no collapse itself). For `ω` with `ω^d = 1`, `ω ≠ 0`, and any exponent `j` with
 `ω^j ≠ 1`, the `j`-th power sum of `cosetClosure ω d P` vanishes. -/
 theorem cosetClosure_psum_eq_zero (hωd : ω ^ d = 1) (hω0 : ω ≠ 0) {j : ℕ} (hωj : ω ^ j ≠ 1)
     (P : Finset F) : ∑ x ∈ cosetClosure ω d P, x ^ j = 0 :=
@@ -393,11 +397,14 @@ theorem cosetClosure_psum_eq_zero (hωd : ω ^ d = 1) (hω0 : ω ≠ 0) {j : ℕ
 (hence, in large-enough characteristic, `e_1 = … = e_{d−1} = 0` by Newton's identities): a
 `cosetClosure` lands in the single joint fiber `(e_1,…,e_{d−1}) = 0`.
 
-**The depth-collapse, now a theorem.** Over the smooth `2^k`-domain `G` the only available roots of
-unity have 2-power order, so killing the first `t` symmetric functions forces `d = 2^r ≥ t+1`, orbits
-of size `2^r`, and a transversal of only `n/2^r` elements — the concentrated count `C(n/2^r, s)`
-collapses to `O(1)` as `t → √(kn) − k` (the deep interior). That is precisely why single-target
-symmetry concentration is **capacity-only** and cannot pin `δ*` past the gap interior. -/
+**What is proved vs. the depth-collapse heuristic.** This theorem proves only the sufficient
+power-sum mechanism: the listed power sums vanish. It contains no code dimension, rate, list count,
+quantitative depth, or necessity statement. The informal reading: over the smooth `2^k`-domain `G`
+the available roots of unity have 2-power order, so killing the first `t` power sums *by this
+mechanism* uses `d = 2^r ≥ t+1`, orbits of size `2^r`, and a transversal of `n/2^r` elements, giving
+the count `C(n/2^r, s)`. Only in a fixed positive-rate regime does `t ≈ √(kn) − k` force
+`n/2^r = O(1)`; for vanishing rate (e.g. `k = 1`, `n = 4d²`, `t = d − 1`) the transversal has `4d`
+elements and does not collapse. No general no-go for deep-interior concentration follows. -/
 theorem cosetClosure_psum_eq_zero_of_lt (hωd : ω ^ d = 1) (hω0 : ω ≠ 0)
     (hprim : ∀ i, 0 < i → i < d → ω ^ i ≠ 1) (P : Finset F) {j : ℕ} (hj0 : 0 < j) (hjd : j < d) :
     ∑ x ∈ cosetClosure ω d P, x ^ j = 0 :=

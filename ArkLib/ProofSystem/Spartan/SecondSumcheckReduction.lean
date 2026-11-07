@@ -28,6 +28,14 @@ Inner univariate queries to `M` at a point are answered by querying the matrix o
 `(r_x, point)` (the matrix oracle interface is the bivariate matrix-MLE evaluation) and reconstructing
 `Z(point)` from the public input plus witness oracle (Boolean-cube fold). The degree bound
 `secondSCVP_mem_restrictDegree` packages `M` as the `R[<=2][X Fin l_n]` oracle.
+
+**Query cost and scope.** `secondSumcheckEvalFromOracles` is a correct reference reconstruction,
+not a constant-cost oracle read. Each evaluation makes three matrix queries and folds over all
+`2 ^ l_n` Boolean column indices, making a witness query for every non-public column (`2 ^ l_w`
+witness queries per evaluation). The lifted `Sumcheck.Spec.oracleReduction` round verifiers read
+only the prover messages (three message queries per Boolean round) and make no query to `M`
+themselves. The reconstruction cost is paid on every query that reaches `M`, for example a final
+evaluation check. A succinct-verifier claim must account for that cost.
 -/
 
 open MvPolynomial Matrix
@@ -59,7 +67,11 @@ noncomputable def secondSumcheckStmtLens :
                secondSCVP_mem_restrictDegree pp stmt oStmt⟩⟩
   toFunB := fun ⟨⟨_t, stmt⟩, oStmt⟩ ⟨⟨_t', r_y⟩, _innerO⟩ => ⟨(r_y, stmt), oStmt⟩
 
-/-- Faithful reconstruction of `M.eval point` from the matrix/witness oracles (`simOStmt` core). -/
+/-- Faithful reconstruction of `M.eval point` from the matrix/witness oracles (`simOStmt` core).
+
+Query cost: three matrix queries, plus a fold over all `2 ^ ℓ_n` Boolean column indices that makes
+one witness query per non-public column (`2 ^ ℓ_w` witness queries). The witness contraction
+`Z(point)` is recomputed from every witness entry on every call. -/
 noncomputable def secondSumcheckEvalFromOracles
     (stmt : Statement.AfterLinearCombination R pp) (point : Fin pp.ℓ_n → R) :
     OracleComp (oSpec + [OracleStatement.AfterLinearCombination R pp]ₒ) R := do

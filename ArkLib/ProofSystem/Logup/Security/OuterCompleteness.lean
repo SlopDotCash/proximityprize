@@ -167,9 +167,11 @@ helpers, V→P batching).  This lemma peels its full `runToRound (Fin.last 4)` i
 prover step (`processRound 0` on the seeded input state — the round-0 multiplicity message)
 followed by the continuation `continueFromTo 1 → last` that folds the remaining three rounds.
 
-It is the structural front door for the still-open prover-run marginal calculation inside
-`OuterCompletenessRunFactsResidual`: with the run in this `bind` form, the round-1 `x` challenge
-is exposed at the seam so its uniform marginal can be transported to the table-pole event.
+It is the structural front door for the prover-run marginal calculation inside
+`OuterCompletenessRunFactsResidual` (open when this lemma was written; now completed — see
+`outer_completenessRunFactsResidual` below): with the run in this `bind` form, the round-1 `x`
+challenge is exposed at the seam so its uniform marginal can be transported to the table-pole
+event.
 
 Proof: the symmetric form of the generic `processRound_zero_continueFromTo_eq_runToRound_last`
 (`OracleReduction/Execution.lean`), instantiated at this protocol.  Note this is the *only*
@@ -611,15 +613,16 @@ theorem outerVerifier_run_reject_eq_none
 
 set_option maxHeartbeats 3200000 in
 set_option backward.isDefEq.respectTransparency false in
-/-- **Per-state pole bound for the simulated outer run.**
+/-- **Per-(initial-state) pole bound for the simulated outer run** (proved; the accept-zero step
+once marked pending is closed in the proof below).
 
 Discharges the `hPole` obligation of `probFailure_outerCompletenessRunComp_le_of_perStateNone`: the
 simulated reduction run returns `none` with probability at most `logupCompletenessError`.  Peels the
 never-failing prover head (`optionT_lift_bind_run` + `outerProver_run_closed_form`), marginalises the
 round-1 `x`-challenge (`probEvent_run'_simulateQ_addLift_getChallenge_bind`), and bounds the resulting
 weighted sum by the verifier rejection event via `probEvent_outerVerify_reject_challenge_le`.  The
-per-`c` split: on accept the run never fails; on reject the failure probability
-is trivially `≤ 1`. -/
+per-`c` split: on accept the run never fails (accept-zero, proved); on reject the failure
+probability is trivially `≤ 1`. -/
 theorem outer_perState_none_le
     (stmtIn : StmtIn F n M × (∀ i, OStmtIn F n M i))
     (witIn : WitIn F n M params)
@@ -767,8 +770,10 @@ theorem outer_perState_agree
 run fails (returns `⊥`) with probability at most `logupCompletenessError`.  This discharges the
 `hFailure` half of `OuterCompletenessRunFactsResidual` end-to-end: the run-level plumbing of
 `probFailure_outerCompletenessRunComp_le_of_perStateNone` is fed the per-(initial-state) pole bound
-`outer_perState_none_le` (whose accept-zero step is now closed). The remaining content of the outer
-completeness residual is purely the complement-zero (`hComplZero`) per-state agreement fact. -/
+`outer_perState_none_le` (whose accept-zero step is now closed). The other half of the outer
+completeness residual, the complement-zero (`hComplZero`) per-state agreement fact, is supplied by
+`outer_perState_agree`; both halves are assembled in `outer_completenessRunFactsResidual` below,
+so nothing of the outer run-facts residual remains open. -/
 theorem outer_completenessRun_failure_le
     (stmtIn : StmtIn F n M × (∀ i, OStmtIn F n M i))
     (witIn : WitIn F n M params) :
@@ -806,8 +811,10 @@ theorem outerCompletenessRunResidual_proved :
 /-- **LogUp completeness residual shrunk to the embedded sumcheck alone.** The `SubPhaseCompletenessResidual`
 of LogUp Protocol 2 (#13) is a conjunction `outer-completeness ∧ sumcheck-completeness`.  The first
 conjunct is now a *theorem* (`outerOracleReduction_completeness`), so under `NeverFail init` the whole
-residual reduces to just the embedded sumcheck completeness — the only remaining (upstream) blocker on
-the completeness side. -/
+residual reduces to just the embedded sumcheck completeness — the only remaining *input of this
+theorem*, kept as a distinct explicit hypothesis. (That input is itself supplied elsewhere, by
+`sumcheckCompletenessResidual_unconditional` under `hImplSupp`; see
+`LogupCompletenessFinal.lean`.) -/
 theorem subPhaseCompletenessResidual_of_sumcheck (hInit : NeverFail init)
     (hSum : (sumcheckOracleReduction oSpec F n M params).completeness init impl
       (midRelation F n M params) outputRelation 0) :

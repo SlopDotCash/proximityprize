@@ -20,9 +20,16 @@ and each difference is a scalar multiple of the overlap's monic quadratic
 `c₁₂·m₁₂ + c₂₃·m₂₃ + c₃₁·m₃₁ = 0`; if the three overlap-quadratics are
 linearly independent, all `cᵢⱼ = 0`, forcing `q₁ = q₂ = q₃`
 (`three_class_collapse`).  Geometrically: three size-6 agreement sets in
-`μ₁₆` (forced pairwise overlap ≥ 2, since `3·6 > 16`) with independent
-overlap-quadratics cannot carry three distinct classes — at most two
-size-6 classes coexist.
+`μ₁₆` that **pairwise** overlap in at least two points, with independent
+overlap-quadratics, cannot carry three distinct classes.
+
+The pairwise-overlap hypothesis is **not** forced by counting: `3·6 > 16`
+only forces some point to be repeated somewhere.  For example
+`A = {0,…,5}`, `B = {6,…,11}`, `C = {10,…,15}` have size 6, yet
+`A ∩ B = A ∩ C = ∅` and `|B ∩ C| = 2`.  The theorem therefore applies only
+to configurations where each of the three pairs is separately known to
+share two distinct points (the hypotheses `hab₁, hv₁a, …` below); it does
+not show that at most two size-6 classes coexist in general.
 -/
 
 open Polynomial

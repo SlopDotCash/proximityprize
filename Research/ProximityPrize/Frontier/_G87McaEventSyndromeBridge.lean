@@ -71,13 +71,19 @@ agreement threshold `t`.  For a stack `(u₀, u₁)` and a scalar `γ` that is *
 
 ## Honest scope
 
-This makes G86 bite on the concrete gate: the wall hypothesis (`≤ 2^30` bad scalars
-per stack — budget far above `64`) can now only fail through **syzygy configurations**:
-stacks whose bad-scalar witness functionals are forced into a nontrivial linear
-dependence, in blocks of at most `63` independent witnesses.  What this file does NOT
-do: it does not exclude syzygy configurations (that is the remaining mathematical
-content between here and the literal gate hypothesis), it does not bound the *number*
-of bad scalars unconditionally, and it uses the code's dimension only through the
+The production corollary is a **pure dimension count**: all `r·(t−k)` witness functionals
+lie in the annihilator of one nonzero vector, a space of dimension `2(n−k) − 1`, so for
+`r ≥ 64` they are linearly dependent by pigeonhole, for *every* stack — whatever the
+witnesses are, and whatever the row functionals `ℓ` are (they are an arbitrary basis
+choice).  The scalar family `γ : Fin r → ZMod P` is not required to be injective, so the
+corollary already fires on `64` copies of a single bad scalar.  Consequently "the stack
+admits a syzygy" carries **no structural restriction** on how the wall hypothesis
+(`≤ 2^30` bad scalars per stack) could fail: every over-`63` family is a syzygy
+configuration by counting alone.  The genuine content of this file is the bridge itself
+(`syndrome_dichotomy`, witness extraction, the concrete syndrome space and its dimension).
+What this file does NOT do: it does not exclude or constrain syzygy configurations (that is
+the remaining mathematical content between here and the literal gate hypothesis), it does
+not bound the *number* of bad scalars, and it uses the code's dimension only through the
 one-sided bound `finrank ≤ 2^29` (proved here via the degree-`< 2^29` polynomial
 parametrization; the opposite Vandermonde inequality is never needed — a smaller code
 only shrinks the generic budget further).  CORE remains OPEN.
@@ -533,8 +539,9 @@ with `r ≥ 64` bad scalars (each firing `mcaEvent`) yields witness functionals 
 pair, (b) are linearly independent within each witness block, and (c) globally admit an
 **explicit nontrivial syzygy** — because the generic disjunct of the G86 dichotomy is
 numerically impossible: `64·(t−k) + 1 ≥ 64·(2^24+1) + 1 = 2^30 + 65 > 2(n−k)` for every
-`k ≤ 2^29`.  Equivalently, the wall hypothesis (budget `2^30`) can only fail through
-syzygy configurations: independent-block planting is capped at `63` scalars. -/
+`k ≤ 2^29`.  This is pigeonhole dimension counting, valid for every stack; `γ` need not be
+injective (repeating one bad scalar `64` times already triggers it), so the conclusion
+places no structural restriction on stacks violating the wall hypothesis. -/
 theorem wall_syzygy_of_sixtyFour_bad_scalars
     {r : ℕ} (hr : 64 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)
     (hbad : ∀ i, mcaEvent
@@ -560,7 +567,8 @@ theorem wall_syzygy_of_sixtyFour_bad_scalars
 
 /-- Equivalent impossibility form: the witness functionals of `64` bad scalars at the
 gate shape can **never** be linearly independent (their count over-spends the syndrome
-budget: independent planting is capped at `63`). -/
+budget: independent planting is capped at `63`).  Pure dimension counting; `γ` need not be
+injective. -/
 theorem wall_not_linearIndependent_of_sixtyFour_bad_scalars
     {r : ℕ} (hr : 64 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)
     (hbad : ∀ i, mcaEvent

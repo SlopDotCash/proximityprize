@@ -12,6 +12,15 @@ algebraic property of squarefree pairwise-coprime triples, and NOT provable by a
 symbolic-determinant factorization.** The hoped-for "resultant factors into root-differences ⇒
 squarefreeness forces non-degeneracy ⇒ `ι ≤ 1`" route is **refuted**.
 
+> **Correction (2026-10-28 audit, finding L127).** The "geometric fact" verdict and finding [C]
+> rest on random samples only, and the proposed implication is **false**: over `𝔽₄₁`, the proper
+> subgroup `μ₂₀ = ⟨2⟩`, `n=20`, `k=10`, the locators `X⁴−1, X⁴−16, X⁴−10` realize a full-cover
+> interior-band triple (cores 14, pair overlaps `9 = k−1`, `t = 5`, budget 4, degrees `(4,4,4)`)
+> with a constant syzygy, so `δ₁ = 4` and `ι = 2`. The probe now replays this exactly (test_D).
+> What remains proved is SYZ47's triangle bound `δ₁ ≥ max(a,b,c)`, giving `ι ≤ 1` only on the
+> covered strip `max ≥ ⌊S/2⌋−1`; the balanced interior needs further justified hypotheses. This is
+> an exact finite-field geometry refutation, not a prize bad-scalar counterexample.
+
 ## The three findings
 
 **[A] `ι ≤ 1` is FALSE for arbitrary squarefree pairwise-coprime triples at band degree profiles.**

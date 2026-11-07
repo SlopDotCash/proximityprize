@@ -1,5 +1,22 @@
 # di Benedetto beat — FINAL honest status (#444): a CONDITIONAL closeness improvement, not unconditional
 
+> **Further correction (2026-10-28 audit, T48; see R-260).** The retraction of unconditionality
+> below is right, but the table still needs three repairs.
+> - **Field factor.** The table drops the field factor. The conditional bound is
+>   `|H|^{65/72}·p^{1/72}`, and `23/24` is its total exponent only after substituting `p = |H|^4`.
+>   If the bound is written as `n^{23/24}·p^{1/72}`, as in
+>   `Research/ProximityPrize/Frontier/_AvT3a_DiBenedettoBeatAssembly.lean`, it is nontrivial only for
+>   `n > p^{1/3}`, not `p^{1/7}`.
+> - **Hypothesis range.** The published Theorem 3.1 (arXiv:2003.06165) is stated for
+>   `p^{1/4} < H < p^{1/2}`, with bound `H^{2689/2880}·p^{1/72}` up to a `p^{o(1)}` loss. The thresholds
+>   in the table (`p^{0.2094}`, `p^{1/5}`, `p^{1/7}`) all lie below `p^{1/4}`, outside that range.
+>   They are formal nontriviality points of the expressions, not established bounds, and "nontrivial
+>   at beta=5" is not established. Any near-Sidon strengthening needs its own derivation.
+> - **Characteristic transfer.** `RepTwo` / `RepThree` and the exact finite-field energies need their
+>   actual transfer hypotheses. "EXACT and p-invariant" describes selected primes. Recorded thin
+>   cells refute the universal equalities: `μ₃₂ ⊆ F₃₂₉₉₃` has `E_2 = 3744`, and `n = 64`,
+>   `p = 17318209` has `E_2 = 13632` (T91).
+
 CORRECTION to the earlier "will become unconditional" claim. Verified by exact F_p computation (2 agents).
 
 ## What is PROVEN (axiom-clean, in-tree)

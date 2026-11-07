@@ -13,9 +13,22 @@ The face-(iv) line–ball incidence engine (`HighMultiplicityBadCount.lean`) red
 line bad-scalar count to the *multiplicity profile* of the ratio sequence `i ↦ −e₀ i / e₁ i`, and
 its `highMult_empty_of_lt` lever vanishes the bad set once the demanded agreement exceeds the
 **maximum value-multiplicity** of that ratio.  This file supplies the elementary algebraic bound
-on that multiplicity: when the ratio is a genuine *rational function* `P/Q` of bounded degree —
-the case for Reed–Solomon / generalized-RS error lines, whose coordinates are low-degree
-polynomials evaluated on the domain — every value is attained at most `max(deg P, deg Q)` times.
+on that multiplicity in its **cross-multiplied** form: for polynomials `P, Q` with
+`P − c·Q ≠ 0`, the level set `{x : P(x) = c·Q(x)}` has at most `max(deg P, deg Q)` points.
+
+**Scope of the rational-function reading (audit PG-060).**  The theorems count the
+cross-multiplied level set `P(x) = c·Q(x)`, not the value set of a rational function.  The two
+agree only away from the zeros of `Q`: at a point with `Q(x) = 0` the rational function `P/Q` has
+a pole (or a common zero of `P` and `Q`), so it has no value there in the usual partial
+interpretation, and Lean's total division gives `P(x)/Q(x) = P(x)/0 = 0`.  Example: `P = X`,
+`Q = X²`, `c = 1`: `P − c·Q = X − X² ≠ 0` and the cross-multiplied set contains `x = 0`, yet
+`P(0)/Q(0) = 0/0 = 0 ≠ 1`.  Statements or applications phrased in terms of the values of `P/Q`
+must therefore add the restriction `Q(x) ≠ 0` (on that subset the level sets coincide, and the
+bound below still applies to it).  Likewise, applying the bound to the ratio `−e₀ i / e₁ i` of an
+error line requires an explicit hypothesis that the error rows `e₀, e₁` are evaluations of
+bounded-degree polynomials `P, Q` on the domain; error words `u − c` of a received word are not
+low-degree in general, so this is an extra representative hypothesis, not automatic for
+Reed–Solomon / generalized-RS lines.
 
 This is the structure side of the H-EXT inverse direction (see `Research/ProximityPrize/DISPROOF_LOG.md` O159): a value
 attained with anomalously high multiplicity forces the level set `{x : P(x) = c·Q(x)}` to be large,
@@ -42,9 +55,11 @@ namespace ArkLib.ProximityGap.RatioMultiplicity
 
 variable {F : Type*} [Field F] [DecidableEq F]
 
-/-- **Ratio value-multiplicity ≤ degree of `P − c·Q`.**  The coordinates where the rational
-function `P/Q` takes the value `c` — equivalently the roots of `P − c·Q` — number at most
-`(P − c·Q).natDegree`, over any finite set `S`, provided `P − c·Q ≠ 0`. -/
+/-- **Ratio value-multiplicity ≤ degree of `P − c·Q`.**  The points of a finite set `S` on the
+cross-multiplied level set `P(x) = c·Q(x)` — the roots of `P − c·Q` in `S` — number at most
+`(P − c·Q).natDegree`, provided `P − c·Q ≠ 0`.  Away from the zeros of `Q` these are exactly
+the points where the rational function `P/Q` takes the value `c`; at zeros of `Q` the two notions
+differ (see the module docstring), so a rational-value reading needs `Q(x) ≠ 0`. -/
 theorem value_mult_le_natDegree (P Q : F[X]) (c : F) (h : P - C c * Q ≠ 0) (S : Finset F) :
     (S.filter (fun x => P.eval x = c * Q.eval x)).card ≤ (P - C c * Q).natDegree := by
   have hsub : (S.filter (fun x => P.eval x = c * Q.eval x)).val ⊆ (P - C c * Q).roots := by
@@ -56,9 +71,10 @@ theorem value_mult_le_natDegree (P Q : F[X]) (c : F) (h : P - C c * Q ≠ 0) (S 
     rw [Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_C, hx.2, sub_self]
   exact Polynomial.card_le_degree_of_subset_roots hsub
 
-/-- **Ratio value-multiplicity ≤ max(deg P, deg Q).**  The clean, symmetric degree bound: a
-rational function `P/Q` with `deg P, deg Q ≤ d` attains any value `c` at most `d` times on a finite
-set (unless it is identically `c`). -/
+/-- **Ratio value-multiplicity ≤ max(deg P, deg Q).**  The clean, symmetric degree bound: for
+`deg P, deg Q ≤ d` and `P − c·Q ≠ 0`, the cross-multiplied level set `P(x) = c·Q(x)` has at most
+`d` points of a finite set.  (Read as a statement about values of the rational function `P/Q`, it
+applies on the points with `Q(x) ≠ 0`, where the two level sets coincide.) -/
 theorem value_mult_le_max (P Q : F[X]) (c : F) (h : P - C c * Q ≠ 0) (S : Finset F) :
     (S.filter (fun x => P.eval x = c * Q.eval x)).card ≤ max P.natDegree Q.natDegree := by
   refine (value_mult_le_natDegree P Q c h S).trans ?_
@@ -66,11 +82,12 @@ theorem value_mult_le_max (P Q : F[X]) (c : F) (h : P - C c * Q ≠ 0) (S : Fins
   gcongr
   exact Polynomial.natDegree_C_mul_le c Q
 
-/-- **The inverse/structure form (H-EXT local step).**  If the value `c` is attained by `P/Q` on
-more than `max(deg P, deg Q)` points of `S`, then `P − c·Q` must be the zero polynomial — i.e.
-`P = c·Q` identically.  Anomalously high ratio-multiplicity forces algebraic degeneracy: the only
-way a bounded-degree rational function over-attains a value is for the numerator and denominator to
-collude.  This is the local certificate the smooth-domain supply census needs — every
+/-- **The inverse/structure form (H-EXT local step).**  If the cross-multiplied level set
+`P(x) = c·Q(x)` has more than `max(deg P, deg Q)` points of `S`, then `P − c·Q` must be the zero
+polynomial — i.e. `P = c·Q` identically.  Anomalously high multiplicity of this level set forces
+algebraic degeneracy (numerator and denominator collude).  For the rational-value reading of
+`P/Q`, restrict `S` to points with `Q(x) ≠ 0` first.
+This is the local certificate the smooth-domain supply census needs — every
 high-multiplicity ratio comes from a structured (degenerate) family. -/
 theorem highValue_forces_collusion (P Q : F[X]) (c : F) (S : Finset F)
     (hlarge : max P.natDegree Q.natDegree

@@ -31,7 +31,14 @@ subgroup of size `n = 2^μ`), rate `ρ := k/n` ∈ {1/2, 1/4, 1/8, 1/16}, `|F| <
   (`mca_good_set_downward_closed`), so δ* is a genuine supremum.
 - **"Pinning δ*"** means: produce *matching* brackets — `ε_mca(C, δ*) ≤ ε*` and
   `ε_mca(C, δ) > ε*` for all `δ > δ*` — as two axiom-clean `mcaDeltaStar` bracket
-  instantiations that **meet** (the issue's acceptance criterion).
+  instantiations that **meet** (the issue's acceptance criterion). *(Correction, 2026-10-28
+  audit PG-027: with the in-tree `ε_mca`, goodness **at** the threshold plus badness at every
+  larger radius is attainable only at `δ* = 1` (`MCAStepFunction.eq_one_of_band_premises`),
+  and without the cap `δ ≤ 1` never (`MCAStepFunction.not_good_and_bad_above`), because the
+  agreement-floor cells are open on the right. Interior pins therefore take the form
+  "every radius below `δ*` is good and `δ*` is bad" (`mcaDeltaStar_eq_of_jump`,
+  `mcaDeltaStar_eq_of_good_below_of_bad_above`); any `δ* < 1` is itself a bad radius
+  (`MCAStepFunction.lt_epsMCA_mcaDeltaStar_of_lt_one`).)*
 - **The window.** Both edges are held by formalized literature: the Johnson radius
   `1 − √ρ` from below (BCGM25 / Hab25 / BCHKS25, full MCA) and
   `1 − ρ − Θ_ρ(1/log n)` from above (KKH26 / Kambiré); the at-capacity conjectures are
@@ -43,8 +50,15 @@ subgroup of size `n = 2^μ`), rate `ρ := k/n` ∈ {1/2, 1/4, 1/8, 1/16}, `|F| <
 - Radius quantization: `ε_mca` sees δ only through the agreement floor `⌈(1−δ)n⌉`, so
   `ε_mca` is a step function and δ*(ε*) is its generalized inverse; the window question is
   literally "where are the jumps of the production-scale staircase between Johnson and
-  capacity, and what are the step heights?" (c39, c45). `MCAFiniteTable.lean` collapses any
-  δ* determination to ≤ n+1 finite floor checks.
+  capacity, and what are the step heights?" (c39, c45). `MCAFiniteTable.lean` reduces any
+  δ* determination to the n+1 floor values `V_t = ε_mca(C, 1 − t/n)`: δ* is one of the
+  canonical radii `1 − t/n` (`exists_mcaDeltaStar_eq_floorRadius`), pinned by a good/bad
+  pair of adjacent floors (`MCAStepFunction.mcaDeltaStar_eq_of_floor_values`) or by a good
+  table below a bad boundary (`mcaDeltaStar_eq_of_good_floor_table`). *(Correction,
+  2026-10-28 audit PG-027: the file's original attained-endpoint assembly
+  `mcaDeltaStar_eq_of_finite_floor_table` only applies at δ₀ = 1, by
+  `eq_one_of_finite_floor_table_premises`; the floor values themselves remain to be
+  determined per code.)*
 - Companion quantity: the interleaved list-decoding threshold; the LD⇔MCA dictionary
   (§2.6) makes the two problems share one ledger.
 
@@ -467,8 +481,11 @@ objects, one equivalence, and one reformulation:
 = 1 − a_c/n at the true census crossing, machine-checked end-to-end except (i) census-band
 sup-extremality (≡ the wall, item 5), (ii) the true subset-sum count at s ∈ [128, 256]
 (TZ/lacunary-gated), (iii) the beyond-Johnson floor. If the char-0 forecasts hold, the
-answer reads **δ* = capacity − c(ρ) with c(ρ) ≈ 2/s\* a constant** — sharper than the
-published capacity − Θ(1/log n) (c72, census-programme.md).
+answer reads **δ* = capacity − c(ρ) with c(ρ) ≈ 2/s\* a constant** (c72, census-programme.md).
+*Correction (2026-10-28 audit, T48):* this was originally called "sharper than" the published
+capacity − Θ(1/log n), which reverses the comparison. For fixed c(ρ) > 0 the Θ(1/log n) gap is
+eventually smaller, so capacity − Θ(1/log n) is eventually the larger radius. A constant-gap
+answer would be a smaller threshold, and it remains a conditional forecast.
 
 The 26-item program (c162, id 4682186937 — the full-comment review that became the second
 half of the campaign) finished at **19 of 26 decided** (c277), with the consolidated
@@ -631,7 +648,12 @@ production regime (`C(n,k+1)² > q`).
 The #371 → #389 successor isolated the entire remaining δ* question to ONE
 statement: a per-word bound on the explainable `(k+m+1)`-core count over a smooth
 multiplicative domain `μ_n ⊂ F_p` (`SmoothDomainTwoRegimeLaw`, the production form;
-`ExplainableCoreSupply` / `SubJohnsonSupplyResidual`, the abstract forms). The
+`ExplainableCoreSupply` / `SubJohnsonSupplyResidual`, the abstract forms).
+*(Correction, 2026-10-28 audit PG-308: the named `SmoothDomainTwoRegimeLaw 2` and
+`CappedSupplyTwoRegimeLaw 2` are refuted in Lean by
+`TwoBranchSmoothDomainRefutation.lean` — `μ₃₂ ⊆ 𝔽₆₅₅₃₇`, `k = 14`, `m = 1`, word `X^16`,
+`≥ 70 > 64` cores via the coset supply `EsymmFiber.rootsOfUnity_dyadic_supply` — so that
+specific law is not a valid target; a replacement must include the coset term.)* The
 fleet attacked it from two independent directions, and **both reduce to the same
 open subgroup-rigidity input** — a `poly(n)`-field transfer of a sum-product /
 vanishing-sum bound on `μ_n`. This is the precise current location of the wall.

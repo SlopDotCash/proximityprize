@@ -63,6 +63,16 @@ vanishing).  This file discharges each from in-tree theorems.
   by Brick T).  No sharp Claim-5.9 budget anywhere; `hvan`, `hw`, `hcard`, `htailP` all
   discharged.
 
+**Branch-degree qualification (F6-Ω).**  The apex's conclusion is the ground-line
+`hrep : polyToPowerSeries𝕃 H Ppoly = gammaLocal …`, which is kernel-proved unsatisfiable
+whenever `2 ≤ H.natDegree` (`LocalSeriesCorrected.not_hrep_gammaLocal_of_two_le_natDegree`:
+the order-0 coefficient `α₀ = T/W` is off the ground line).  So the hypotheses of the apex are
+jointly unsatisfiable in that regime.  The coefficient-clearing, line-readout and graded-budget
+bridges are valid in their own right, and the `d_H = 1` lane is not obstructed.  The
+`d_H ≥ 2` regime needs the T-aware route (`LocalSeriesCorrected`).  Separately, the apex takes
+a total root family `root : (z : F) → rationalRoot (H_tilde' H) z` over every `z`, not only the
+counting set `T`.
+
 ## References
 
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
@@ -411,9 +421,12 @@ theorem hrep_line_of_perz_data (hHyp : Hypotheses x₀ R H)
 /-- **The apex pair (existential form).**  The bundle's terminal per-`P` field pair
 `(Ppoly, hrep, hdegX)` (plus the truncation bound `natDegree < k`) **exists** for monic `H`,
 produced from the decoded line words and the per-`z` matching data, with `hdegX` and the tail
-by construction.  This is the wired, satisfiable replacement for the refuted sharp-Claim-5.9
-lane: every capstone residual except `htailα` (Brick T at the section divisor) and the single
-counting inequality (Brick C) is fully discharged from in-tree theorems. -/
+by construction.  This is the wired replacement for the refuted sharp-Claim-5.9 lane as an
+implication: every capstone residual except `htailα` (Brick T at the section divisor) and the
+single counting inequality (Brick C) is discharged from in-tree theorems.  It is NOT
+satisfiable at `2 ≤ H.natDegree`: the conclusion's `hrep` is F6-Ω-refuted there
+(`LocalSeriesCorrected.hrep_gammaLocal_unsat_of_two_le_natDegree`), so the hypotheses are
+jointly unsatisfiable in that regime. -/
 theorem exists_representative_pair_line_of_perz_data (hHyp : Hypotheses x₀ R H)
     {D : ℕ} (hD : Bivariate.totalDegree H ≤ D) (hH : 0 < H.natDegree)
     (hmonic : H.Monic) (hd2 : 2 ≤ Bivariate.natDegreeY R)

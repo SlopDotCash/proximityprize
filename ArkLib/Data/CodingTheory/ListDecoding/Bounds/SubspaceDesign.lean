@@ -97,7 +97,8 @@ rate `ρ`. For any `η > 0` with `1/η < s`:
   `|Λ(C, 1 - ρ·s/(s - 1/η + 1) - η)| ≤ (s·(1-ρ) + 1 - 1/η) / (η·(s + 1 - 1/η))`
 
 When `η ≥ √(3/s)`, the bound simplifies to `|Λ(C, 1 - ρ - η)| ≤ 1/η`. Derives from
-T3.4 + T2.18 (FRS is τ-subspace-design). Admitted as an external result.
+T3.4 + T2.18 (FRS is τ-subspace-design). Kept as an external, unproved statement (a `Prop`;
+no `sorry` and no axiom).
 
 **Admissibility guard.** ABF26 Definition 2.15 only defines `FRS[F, L, k, s, ω]` for an
 `(L, s)`-admissible `ω` (Definition 2.14), i.e. the `s·n` folded evaluation points `x·ωⁱ` are
@@ -115,17 +116,19 @@ statement from its own hypotheses, so none of them uses the guard.
 capacity list-decodability result via subspace designs — NOT the disproven up-to-capacity
 conjecture for plain Reed-Solomon proximity gaps / DEEP-FRI list-decodability (those are
 FALSE per eprint.iacr.org/2025/2046 and live elsewhere). Folded RS attains capacity by the
-subspace-design argument (arXiv 2601.10047). It is unformalized: mathlib has no folded-RS /
-subspace-design / list-decoding API, so the `sorry` is a ground-up formalization task, not
-a port, and follows once T3.4 + T2.18 are formalized.
+subspace-design argument (arXiv 2601.10047). Its proof is unformalized: mathlib has no
+folded-RS / subspace-design / list-decoding API, so proving this statement is a ground-up
+formalization task, not a port, and follows once T3.4 + T2.18 are formalized. (There is no
+`sorry` here: the declaration below is a `Prop` definition — the statement — with no proof
+attached; it is an external residual, not an admitted theorem.)
 See `research/formal/arklib-proof-research-2026-06.md`.
 
 **HONEST REDUCTION AVAILABLE.** The corollary's *own* content (τ-substitution + bound
 algebra + floor/real reconciliation) is fully proven, `sorry`-free and axiom-clean, in
 `frs_list_decoding_capacity_cz25_of_residuals` (above), which derives this exact
 conclusion from T2.18, the general T3.4, and `hηnat : 1/η = ⌊1/η⌋` as explicit
-hypotheses. The bare `sorry` below remains only because the *unhypothesized* in-tree
-statement cannot supply those two external admits; it is the documented spec, and any
+hypotheses. The unhypothesized statement below remains an unproved `Prop` (not a `sorry`) only
+because it cannot supply those two external inputs itself; it is the documented spec, and any
 caller with the residuals in hand should route through `_of_residuals` instead. -/
 def frs_list_decoding_capacity_cz25
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
@@ -252,7 +255,13 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_T218_prop
   frs_list_decoding_capacity_cz25_of_coordFiberCap_T218
     domain k s ω hs_pos η hη_pos hη_lt_s hT218 hCap hηnat
 
-/-- Prop-level C3.5 endpoint from coordinate-fiber cap plus the injective GK16 FRS bridge. -/
+/-- Prop-level C3.5 endpoint from coordinate-fiber cap plus the injective GK16 FRS bridge.
+
+**Legacy, vacuous interface.** `hEinj` (injectivity of `frsEvalOnPoints` on all of `F[X]`) is
+unsatisfiable by `ReedSolomon.Folded.frsEvalOnPoints_not_injective`, and `hω_sep` over
+arbitrary-degree families is false over every finite field. Callers should use the admissible
+variants (`frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible_prop` /
+`frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible_eta_eq_one_div_nat_prop`). -/
 theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_injective_prop
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -319,7 +328,13 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_T218_eta_eq_one_div_nat
     domain k s ω hs_pos η hm hη hms hT218 hCap
 
 /-- Prop-level C3.5 endpoint from coordinate-fiber cap plus the injective GK16 FRS bridge, using
-the reciprocal-natural slack convention `η = 1 / m` to discharge the floor side condition. -/
+the reciprocal-natural slack convention `η = 1 / m` to discharge the floor side condition.
+
+**Legacy, vacuous interface.** `hEinj` (injectivity of `frsEvalOnPoints` on all of `F[X]`) is
+unsatisfiable by `ReedSolomon.Folded.frsEvalOnPoints_not_injective`, and `hω_sep` over
+arbitrary-degree families is false over every finite field. Callers should use the admissible
+variants (`frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible_prop` /
+`frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible_eta_eq_one_div_nat_prop`). -/
 theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_injective_eta_eq_one_div_nat_prop
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {F : Type} [Field F] [Fintype F] [DecidableEq F]

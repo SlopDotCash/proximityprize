@@ -293,8 +293,12 @@ theorem correlatedAgreement_affine_spaces_johnson_of_betaRec [SampleableType F] 
             (((1 : ℕ) : ENNReal) * (errorBound δ' deg domain : ENNReal)) →
         (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ' →
         δ' < 1 - ReedSolomon.sqrtRate deg domain →
-        ArkLib.KeystoneStrictResidual.BetaCurveInput
-          (k := 1) (deg := deg) (domain := domain) (δ := δ') u)
+        ∀ P : F → Polynomial F,
+          (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ',
+            (P z).natDegree < deg ∧
+              δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ') →
+          ArkLib.KeystoneStrictResidual.BetaCurveInput
+            (k := 1) (deg := deg) (domain := domain) (δ := δ') u P)
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hRS : deg + 1 ≤ Fintype.card ι)
     (hε : errorBound δ deg domain < 1) :
@@ -323,8 +327,12 @@ theorem correlatedAgreement_affine_spaces_johnson_of_betaRec_strict_boundary [Sa
             (((1 : ℕ) : ENNReal) * (errorBound δ' deg domain : ENNReal)) →
         (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ' →
         δ' < 1 - ReedSolomon.sqrtRate deg domain →
-        ArkLib.KeystoneStrictResidual.BetaCurveInput
-          (k := 1) (deg := deg) (domain := domain) (δ := δ') u)
+        ∀ P : F → Polynomial F,
+          (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ',
+            (P z).natDegree < deg ∧
+              δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ') →
+          ArkLib.KeystoneStrictResidual.BetaCurveInput
+            (k := 1) (deg := deg) (domain := domain) (δ := δ') u P)
     (hBoundaryStrict :
       ProximityGap.StrictCoeffPolysResidual (k := 1) (deg := deg)
         (domain := domain) (δ := δ))
@@ -351,8 +359,12 @@ theorem correlatedAgreement_affine_spaces_johnson_of_betaRecFin [SampleableType 
             (((1 : ℕ) : ENNReal) * (errorBound δ' deg domain : ENNReal)) →
         (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ' →
         δ' < 1 - ReedSolomon.sqrtRate deg domain →
-        ArkLib.KeystoneStrictResidual.BetaCurveInputFin
-          (k := 1) (deg := deg) (domain := domain) (δ := δ') u)
+        ∀ P : F → Polynomial F,
+          (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ',
+            (P z).natDegree < deg ∧
+              δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ') →
+          ArkLib.KeystoneStrictResidual.BetaCurveInputFin
+            (k := 1) (deg := deg) (domain := domain) (δ := δ') u P)
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hRS : deg + 1 ≤ Fintype.card ι)
     (hε : errorBound δ deg domain < 1) :
@@ -378,8 +390,12 @@ theorem correlatedAgreement_affine_spaces_johnson_of_betaRecFin_strict_boundary 
             (((1 : ℕ) : ENNReal) * (errorBound δ' deg domain : ENNReal)) →
         (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ' →
         δ' < 1 - ReedSolomon.sqrtRate deg domain →
-        ArkLib.KeystoneStrictResidual.BetaCurveInputFin
-          (k := 1) (deg := deg) (domain := domain) (δ := δ') u)
+        ∀ P : F → Polynomial F,
+          (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ',
+            (P z).natDegree < deg ∧
+              δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ') →
+          ArkLib.KeystoneStrictResidual.BetaCurveInputFin
+            (k := 1) (deg := deg) (domain := domain) (δ := δ') u P)
     (hBoundaryStrict :
       ProximityGap.StrictCoeffPolysResidual (k := 1) (deg := deg)
         (domain := domain) (δ := δ))

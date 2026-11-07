@@ -20,9 +20,11 @@ keystones already on `main`:
   the appended reduction is complete with error `e₁ + e₂`, given the message-seam direction facts and
   the honest-implementation side conditions (`hInit` + the `himplSP/himplNF/himplVB` triple).
 
-* `OracleReduction.appendToReductionResidual_proof` (`AppendToVerifierKeystone.lean`) — the
+* `OracleReduction.appendToReductionResidual_proof` (`AppendOracleAdapters.lean`) — the
   **unconditional** verifier-fusion bridge `(R₁.append R₂).toReduction =
-  R₁.toReduction.append R₂.toReduction`.
+  R₁.toReduction.append R₂.toReduction`, for every pair of oracle reductions (via
+  `oracleVerifier_append_toVerifier`; the former `AppendCoherent` side instance no longer exists
+  in the current API).
 
 ## The oracle-vs-plain situation (resolved, not faked)
 
@@ -46,20 +48,25 @@ non-perfect analogue here.
 * `OracleReduction.append_completeness_msg_proof` — the **general** oracle-level non-perfect
   message-seam append completeness keystone (the error-bearing analogue of the in-tree
   `append_perfectCompleteness_msg_proof`), with the verifier-fusion bridge discharged *internally*
-  via `appendToReductionResidual_proof`. New, reusable.
+  via `appendToReductionResidual_proof`; it takes the message-seam direction facts and the
+  honest-implementation side conditions. New, reusable.
 
 * `Logup.appendCompletenessResidual_wired` — the LogUp `AppendCompletenessResidual` discharged from
-  that keystone, taking the **two genuine remaining inputs** as explicit, consumer-supplied
-  hypotheses: the embedded-sumcheck completeness (`hSumcheck`, blocked upstream by the missing
-  generic `Sumcheck.Spec` completeness) and the honest-implementation side conditions
-  (`hInit`/`himplSP`/`himplNF`/`himplVB`, vacuous when `oSpec = []ₒ`, supplied by every honest
-  interactive implementation). The message-seam direction facts are structural
+  that keystone, taking as explicit, consumer-supplied hypotheses the embedded-sumcheck
+  completeness `hSumcheck` and the honest-implementation side conditions
+  (`hInit`/`himplSP`/`himplNF`/`himplVB`). These side conditions are vacuous when `oSpec = []ₒ`,
+  but they are genuine restrictions in general: `himplSP` (the implementation preserves its state)
+  and `himplVB` (the query-answer distribution does not depend on the state) need not hold for an
+  arbitrary stateful interactive implementation. The message-seam direction facts are structural
   (discharged from `0 < n` by `LogupSoundnessMsgSeam.lean`).
 
 * `Logup.logup_completeness_wired` — the **end-to-end** LogUp completeness, with the outer half
   discharged in-tree by `outerCompletenessResidual_of_neverFail` and the append half discharged by
-  `appendCompletenessResidual_wired`. The **only** remaining input is the embedded-sumcheck
-  completeness `hSumcheck`.
+  `appendCompletenessResidual_wired`. Its remaining inputs are `hSumcheck` and the side conditions.
+  `hSumcheck` is **not** missing in tree: `sumcheckCompletenessResidual_unconditional`
+  (`SumcheckCompletenessUncond.lean`) supplies it from `hInit` and `hImplSupp`, as used by
+  `logupCompletenessBrickResidual_holds` below and by `logup_completeness_final`
+  (`LogupCompletenessFinal.lean`).
 
 This strictly improves on `LogupCompletenessClose.lean`: there, the `AppendCompletenessResidual`
 remained an explicit hypothesis (its historical "perfect special case" discharge was vacuous —
@@ -231,10 +238,11 @@ theorem appendCompletenessResidual_wired
 The full LogUp oracle reduction is complete with error `logupCompletenessError F n`. The **outer**
 pole-rejection half is the in-tree proven `outerCompletenessResidual_of_neverFail`; the
 **append-composition** half is discharged here by `appendCompletenessResidual_wired` (general non-zero
-error, via the proven non-perfect keystone). The **only** remaining input is the embedded-sumcheck
-completeness `hSumcheck` (blocked upstream by the missing generic `Sumcheck.Spec` completeness + lens
-`IsComplete` instance) plus the honest-implementation side conditions every interactive
-implementation satisfies.
+error, via the proven non-perfect keystone). The remaining inputs are the embedded-sumcheck
+completeness `hSumcheck` (supplied in tree by `sumcheckCompletenessResidual_unconditional` under
+`hImplSupp`; see `logup_completeness_final`) and the honest-implementation side conditions, which
+are restrictions (state preservation, state-independent answer distribution) rather than facts
+about every stateful interactive implementation.
 
 This carries the genuine non-zero error end-to-end (the historical perfect-special-case variant
 hypothesized the impossible `logupCompletenessError F n = 0` and has been deleted). -/

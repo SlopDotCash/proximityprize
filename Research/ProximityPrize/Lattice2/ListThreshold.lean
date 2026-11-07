@@ -13,6 +13,14 @@ The exact mirror of the MCA development for the maximised list size `Λ(C^⋈m, 
 `listSatisfies`, `listThreshold` with its existence/uniqueness API, the
 `listThresholdLattice_bracketed_*` lemmas and adjacency. Part 3 of the
 `GrandChallengesLattice` split; see the `GrandChallengesLattice.lean` umbrella.
+
+**Parallel encoding.**  The `Fin (n+1)`-indexed `listSatisfies`/`listThreshold` here (and the
+MCA analogues `mcaSatisfies`/`mcaThreshold` in `Lattice2/Core.lean`) duplicate the canonical
+`ℕ`-indexed `GrandChallenges.listLatticeSet`/`listLatticeThreshold` (resp.
+`mcaLatticeSet`/`mcaLatticeThreshold`) of `Lattice.lean`.  They agree by the bridge lemmas
+`listThreshold_val_eq_listLatticeThreshold` (below) and `mcaThreshold_val_eq_mcaLatticeThreshold`
+(`Lattice2/Core.lean`); new results should be stated against the canonical `ℕ`-indexed API and
+transported through these bridges rather than re-proved in both encodings.
 -/
 
 set_option linter.unusedFintypeInType false

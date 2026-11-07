@@ -10,11 +10,14 @@ import Research.ProximityPrize.Frontier._BSG_DRC2
 
 ## What this file delivers (axiom-clean, no `sorry`)
 
-The whole BSG ladder currently reduces `BSGCore` to the residual `DRCKernel` (in `_BSG_DRC2`),
-which is **energy-stripped**: it consumes an *arbitrary* graph `G ⊆ A ×ˢ A` whose left-neighbourhood
-at one vertex is large. That arbitrariness is exactly the hole the Sidon countermodel
-(`bareDRCExtract_false_1_1_1`) exploits — a Sidon set with the *complete* graph satisfies the
-cardinality conditions yet has no small-doubling refinement.
+The older BSG ladder reduces `BSGCore` to the residual `DRCKernel` (in `_BSG_DRC2`), which is
+**energy-stripped**: it consumes an *arbitrary* graph `G ⊆ A ×ˢ A` whose left-neighbourhood at one
+vertex is large. That arbitrariness is exactly the hole the Sidon countermodel exploits — a Sidon
+set with the *complete* graph satisfies the cardinality conditions yet has no small-doubling
+refinement. The obstruction is not limited to the small constants of
+`bareDRCExtract_false_1_1_1`: `DRCKernel`, `BareDRC`, `BareDRCExtract` and `DRCRefinedReps` are all
+**false for every choice of constants** (`drcKernel_false` etc. in
+`_BSG_EX_BareDRCExtractFalse.lean`).
 
 This file re-introduces the energy coupling that the abstraction discarded, **without editing any
 existing file**. We state a strictly **smaller-but-energy-coupled** residual `DRCKernelEnergy`:
@@ -34,18 +37,22 @@ We prove two things:
    density (`popGraph_edge_dense`, `popGraph_cherry_rich`) and the averaging core
    (`exists_large_left_neighborhood`) to `DRCKernelEnergy`, supplying the energy hypothesis verbatim.
 
-2. **Satisfiability / countermodel check** (`sidon_not_refutes_kernelEnergy`): the Sidon instance
+2. **Countermodel check (one instance)** (`sidon_not_refutes_kernelEnergy`): the Sidon instance
    that refutes the energy-stripped `BareDRCExtract` **cannot be replayed** against
    `DRCKernelEnergy`, because at `(A = {0,1,3} ⊆ ZMod 7, K = 1)` the energy hypothesis
    `#A ^ 3 ≤ K * E[A]` is **false** (`27 ≤ 15` is false). So re-coupling to the energy hypothesis
-   provably excludes the canonical obstruction by construction. (And `DRCKernelEnergy` is not
-   vacuously unsatisfiable: it is *implied by* the energy-free `DRCKernel`, which the literature
-   asserts at absolute constants — see `kernelEnergy_of_kernel`.)
+   excludes that particular `K = 1` instance. This does **not** prove `DRCKernelEnergy` true or
+   satisfiable: excluding one countermodel says nothing about the universal statement. Nor does
+   `kernelEnergy_of_kernel` help: it only proves `DRCKernel → DRCKernelEnergy`, and its antecedent
+   `DRCKernel` is false for every choice of constants (`drcKernel_false`), so the implication
+   provides no witness. `DRCKernelEnergy` is not a literature theorem as stated; whether it holds
+   for some constants is open.
 
 ## Status
 
-`REDUCES-FURTHER` — `BSGCore` reduced to the strictly-smaller, **energy-coupled** `DRCKernelEnergy`;
-the canonical Sidon countermodel is machine-checked to *not* apply to it.
+`REDUCES-FURTHER` (conditional) — `BSGCore` is reduced to the **energy-coupled** `DRCKernelEnergy`
+(for `2 ≤ C₁`, `1 ≤ C₂`); the canonical `K = 1` Sidon countermodel is machine-checked to *not*
+apply to it. `DRCKernelEnergy` itself remains an open hypothesis.
 
 ## References
 
@@ -80,9 +87,11 @@ def DRCKernelEnergy (C₁ C₂ c : ℕ) : Prop :=
         C₁ * K * #A' ≥ #A ∧ #(A' - A') ≤ C₂ * K ^ c * #A'
 
 /-- **The energy-free kernel implies the energy-coupled one.** `DRCKernelEnergy` is *weaker* (more
-hypotheses to discharge), so it follows from the abstract `DRCKernel`. This certifies
-`DRCKernelEnergy` is **satisfiable** (not vacuously false): any model of the literature's `DRCKernel`
-is a model of `DRCKernelEnergy`. -/
+hypotheses to discharge), so it follows from the abstract `DRCKernel`.
+
+This does **not** certify that `DRCKernelEnergy` is satisfiable: `DRCKernel` is false for every
+choice of constants (`drcKernel_false` in `_BSG_EX_BareDRCExtractFalse.lean`), so this implication
+has a false antecedent and supplies no witness of `DRCKernelEnergy`. -/
 theorem kernelEnergy_of_kernel {C₁ C₂ c : ℕ} (h : DRCKernel C₁ C₂ c) :
     DRCKernelEnergy C₁ C₂ c := by
   intro α _ _ A K b hK hA _hcard _hE hbA hbig
@@ -133,7 +142,7 @@ theorem bsgCore_of_kernelEnergy {C₁ C₂ c : ℕ} (hC₁ : 2 ≤ C₁) (hC₂ 
       calc (1 : ℕ) = 1 * 1 := by ring
         _ ≤ C₂ * K ^ c := Nat.mul_le_mul hC₂ hKc
 
-/-! ## Satisfiability / countermodel check: the Sidon instance does NOT refute `DRCKernelEnergy`
+/-! ## Countermodel check: the `K = 1` Sidon instance does NOT refute `DRCKernelEnergy`
 
 The Sidon set `A = {0,1,3} ⊆ ZMod 7` with the *complete* graph and `K = 1` refutes the
 energy-**stripped** residuals. We certify it cannot be replayed against the energy-**coupled**
@@ -153,7 +162,8 @@ def sidonA : Finset (ZMod 7) := {0, 1, 3}
 `DRCKernelEnergy` is **false**: `#sidonA ^ 3 = 27 > 15 = 1 * E[sidonA]`. Hence the canonical Sidon
 obstruction — which refutes the energy-stripped `BareDRCExtract` (`bareDRCExtract_false_1_1_1`) —
 **cannot be instantiated** against the energy-coupled `DRCKernelEnergy`: re-coupling to the energy
-hypothesis excludes it by construction. -/
+hypothesis excludes this instance. (It is a check on one instance, not a proof of
+`DRCKernelEnergy`.) -/
 theorem sidon_not_refutes_kernelEnergy :
     ¬ (#sidonA ^ 3 ≤ 1 * E[sidonA]) := by
   rw [card_sidonA, addEnergy_sidonA]; decide

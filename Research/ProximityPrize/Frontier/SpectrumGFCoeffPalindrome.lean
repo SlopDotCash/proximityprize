@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier.Sweep_A50_SpectrumGeneratingFunction
+import Research.ProximityPrize.Frontier._SubsetSumSpectrumClosedForm
 import Mathlib.Tactic
 
 /-!
@@ -24,6 +25,13 @@ Note on scope of the closed form: the cutoff `min(r, 2m−r)` makes the closed f
 `x^r`-coefficient only on the support `r ≤ 2m`; for `r > 2m` the *raw* closed form is NOT the GF
 coefficient (at even `r > 2m` the `k=0` term survives), so the palindrome is stated and proved on
 its valid domain `r ≤ 2m`. This boundary was confirmed by probe BEFORE formalizing.
+
+**Single implementation (audit R-142, 2026-10-28).** `spectrumCoeff` is now a compatibility alias
+of the canonical raw helper `SubsetSumSpectrum.spectrumCountRaw` (`_SubsetSumSpectrumClosedForm`),
+and `spectrumCoeff_palindrome` reuses the single proof `spectrumCountRaw_palindrome`.  The guarded
+zero-outside-domain count interface is `SubsetSumSpectrum.spectrumCount` (audit R-138).  No GF
+coefficient identification theorem is proved here; the coefficient reading is the header claim of
+`Sweep_A50_SpectrumGeneratingFunction`.
 
 **Mechanism (the summation set is literally identical, no cancellation).** Two facts collapse it:
 (1) parity: `2m − r ≡ r (mod 2)` since `2m` is even, so the residue filter `k ≡ r (2)` is the SAME
@@ -46,11 +54,20 @@ namespace ArkLib.ProximityGap.EvenOddDescent
 
 open Finset
 
-/-- **The char-0 subset-sum spectrum coefficient** (the `x^r`-coefficient of `spectrumGF`):
-`N_r = ∑_{k ≤ min(r, 2m−r),  k ≡ r (mod 2)} C(m,k)·2^k`, as a natural number. -/
-def spectrumCoeff (m r : ℕ) : ℕ :=
-  ∑ k ∈ (range (min r (2 * m - r) + 1)).filter (fun k => k % 2 = r % 2),
-    m.choose k * 2 ^ k
+/-- **The char-0 subset-sum spectrum coefficient** (claimed `x^r`-coefficient of `spectrumGF` on
+`r ≤ 2m`): `N_r = ∑_{k ≤ min(r, 2m−r),  k ≡ r (mod 2)} C(m,k)·2^k`, as a natural number.
+Compatibility alias of the canonical raw helper
+`ProximityGap.Frontier.SubsetSumSpectrum.spectrumCountRaw` (same contract: meaningful only for
+`r ≤ 2m`). -/
+abbrev spectrumCoeff (m r : ℕ) : ℕ :=
+  ProximityGap.Frontier.SubsetSumSpectrum.spectrumCountRaw m r
+
+/-- The alias unfolds to the explicit filtered sum. -/
+theorem spectrumCoeff_eq_sum (m r : ℕ) :
+    spectrumCoeff m r =
+      ∑ k ∈ (range (min r (2 * m - r) + 1)).filter (fun k => k % 2 = r % 2),
+        m.choose k * 2 ^ k :=
+  rfl
 
 /-- `2m − r` has the same parity as `r` (since `2m` is even). The parity-filter half of the
 palindrome mechanism. -/
@@ -67,19 +84,11 @@ theorem min_reflect_symm (m r : ℕ) :
 spectrum, made coefficient-explicit).** For every `r ≤ 2m`,
 `spectrumCoeff m r = spectrumCoeff m (2m − r)`. The two sums range over the SAME filtered `Finset`
 (same parity predicate by `reflect_mod_two_eq`, same cutoff by `min_reflect_symm`) with the SAME
-summand — a pure reindex-free equality of `Finset` sums, no cancellation. -/
+summand — a pure reindex-free equality of `Finset` sums, no cancellation.  The proof is the
+single canonical one, `SubsetSumSpectrum.spectrumCountRaw_palindrome`. -/
 theorem spectrumCoeff_palindrome (m r : ℕ) (hr : r ≤ 2 * m) :
-    spectrumCoeff m r = spectrumCoeff m (2 * m - r) := by
-  unfold spectrumCoeff
-  have hpar : (2 * m - r) % 2 = r % 2 := reflect_mod_two_eq m r hr
-  have hmin : min (2 * m - r) (2 * m - (2 * m - r)) = min r (2 * m - r) := min_reflect_symm m r
-  -- Rewrite the reflected side's range cutoff and parity filter to match the original.
-  rw [hmin]
-  refine Finset.sum_congr ?_ (fun k _ => rfl)
-  -- The two filter predicates `k % 2 = r % 2` and `k % 2 = (2m−r) % 2` are equal.
-  apply Finset.filter_congr
-  intro k _
-  rw [hpar]
+    spectrumCoeff m r = spectrumCoeff m (2 * m - r) :=
+  ProximityGap.Frontier.SubsetSumSpectrum.spectrumCountRaw_palindrome m r hr
 
 /-- **Self-palindrome at the center.** At the central depth `r = m` (`2m − r = m`) the reflection
 is its own fixed point — recorded for completeness. -/

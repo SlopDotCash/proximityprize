@@ -15,8 +15,9 @@ the prize wall
   `M(n) = max_{b ≠ 0} |η_b|`,  `η_b = ∑_{x ∈ μ_n} e_p(b x)`,  `μ_n = ` order-`n = 2^μ` subgroup,
 
 does not produce a sub-`√q` bound: the relevant Terwilliger algebra has dimension **growing
-linearly in the number of vertices `p`**, so its irreducible modules are not thin/bounded and
-the adjacency operator cannot be confined to a small block.
+linearly in the number of vertices `p`** (in fact `Θ(p²/n)` on the measured closed form). This is
+the *dimension* obstruction only: `dim T = Σ dᵢ²` over the irreducible modules does not by itself
+decide whether the modules are thin (audit CW-B18-23); thinness is not proved here.
 
 ## The route (manifesto route 5b)
 
@@ -77,9 +78,11 @@ dimension** `D_max`: the eigenvalue of `A` is confined to a block of size `D_max
 operator-norm certificate it yields is the trivial `√p` unless `D_max` is bounded. We formalize
 the clean quantitative obstruction:
 
-* `terwDim n p = m·(p+1)+1` (the measured closed form, `m = (p−1)/n`).
+* `terwDim n p = m·(p+1)+1` (the measured closed form, `m = (p−1)/n`). **Caveat:** `terwDim` is a
+  definition fitted to the probe outputs, not derived from the algebra; every lemma below is about
+  this closed form, and its identification with the true `dim T` rests on the probe table.
 * `terwDim` is **`≥ p`** for all valid `(n, p)` with `m ≥ 1` (so it is at least the vertex count) —
-  hence NOT `polylog(p)`; the modules cannot all be thin.
+  hence NOT `polylog(p)`. (This does not show that the modules are non-thin.)
 * The **dimension ratio** `terwDim n p / hammingTerwDim (log₂ p)` (Terwilliger dim of the prize
   scheme vs. the same-size Hamming scheme) **diverges** — the prize scheme is `p²/n` against the
   Hamming `(log₂ p)³/6`. We pin the gap `terwDim ≥ p` while `hammingTerwDim d = (d+1)(d+2)(d+3)/6`,
@@ -98,9 +101,10 @@ not a thin-module operator-norm output.
 ## What this is NOT
 
 It is not a refutation of the prize bound (the period IS `√`-controlled empirically). It is a
-precise no-go for the Terwilliger operator-norm *method*: the relevant subconstituent algebra is
-`Θ(p²/n)`-dimensional, its modules are not thin, so the tridiagonal/Krawtchouk eigenvalue
-mechanism degenerates to `√p` — vacuous at `β = 4` where the target is `√(n log p)`.
+heuristic no-go for the Terwilliger operator-norm *method*: the relevant subconstituent algebra is
+measured to be `Θ(p²/n)`-dimensional (the closed form is fitted, not derived), which suggests — but
+the Lean does not prove — that the modules are not thin and that the tridiagonal/Krawtchouk
+eigenvalue mechanism degenerates to `√p`, vacuous at `β = 4` where the target is `√(n log p)`.
 
 Probes: `scripts/probes/rust/probe_wfA14_terwilliger_dim.rs` (full closure: Bose–Mesner dim,
 Terwilliger dim by exact modular rank, Hamming reference), `probe_wfA14_terw_fast.rs` (incremental
@@ -120,8 +124,9 @@ def cosetCount (n p : ℕ) : ℕ := (p - 1) / n
 
 /-- **The measured Terwilliger dimension** of the cyclotomic scheme `Cay(F_p, μ_n)` relative to a
 base vertex, in the non-degenerate range: `dim T = m·(p+1) + 1` with `m = (p−1)/n`. This closed
-form matches every exact computation (see the table in the module docstring; verified by exact
-modular rank in `probe_wfA14_terw_fast.rs`). It is `Θ(p²/n)`. -/
+form is **defined by fiat** to match every exact computation (see the table in the module
+docstring; verified by exact modular rank in `probe_wfA14_terw_fast.rs`); it is not derived from
+the Terwilliger algebra in Lean. It is `Θ(p²/n)`. -/
 def terwDim (n p : ℕ) : ℕ := cosetCount n p * (p + 1) + 1
 
 /-- **The Hamming-scheme Terwilliger dimension** `H(d, 2)` on `V = 2^d` vertices:
@@ -131,7 +136,8 @@ def hammingTerwDim (d : ℕ) : ℕ := (d + 1) * (d + 2) * (d + 3) / 6
 
 /-- The prize Terwilliger dimension is **at least the vertex count `p`** whenever there is at
 least one nonprincipal relation (`m ≥ 1`, i.e. `μ_n` is a *proper* subgroup, always the prize
-case `n < p − 1`). Hence it is not `polylog(p)`: the modules cannot all be thin. -/
+case `n < p − 1`). Hence it is not `polylog(p)`. (A dimension count alone does not decide module
+thinness.) -/
 theorem terwDim_ge_card (n p : ℕ) (hm : 1 ≤ cosetCount n p) : p ≤ terwDim n p := by
   unfold terwDim
   have hmul : 1 * (p + 1) ≤ cosetCount n p * (p + 1) :=
@@ -161,8 +167,8 @@ prize Terwilliger algebra is over `8×` larger than the Hamming one:
 
   `terwDim 4 53 = 703`   while   `hammingTerwDim 6 = 84`,   and `703 > 8 · 84 = 672`.
 
-This is the regime separation: Hamming `Θ((log V)³)` (thin, method works) vs. cyclotomic
-`Θ(V²/n)` (not thin, method degenerates to `√p`). -/
+This is the dimension separation: Hamming `Θ((log V)³)` (thin, method works) vs. cyclotomic
+`Θ(V²/n)` (fitted closed form; thinness not decided here). -/
 theorem dimGap_witness :
     terwDim 4 53 = 703 ∧ hammingTerwDim 6 = 84 ∧ 8 * hammingTerwDim 6 < terwDim 4 53 := by
   refine ⟨?_, ?_, ?_⟩
@@ -171,11 +177,11 @@ theorem dimGap_witness :
   · decide
 
 /-- **The asymptotic gap, lower-bounded.** For every `p` with `m = (p−1)/n ≥ 1`, the prize
-Terwilliger dimension exceeds the Hamming dimension of the same-size scheme `H(d,2)` as soon as
+Terwilliger dimension is at least (`≤`, not strictly greater than) the Hamming dimension of the same-size scheme `H(d,2)` as soon as
 `p ≥ (d+1)(d+2)(d+3)/6`, i.e. once the vertex count clears the (cubic-in-`d`) Hamming dimension.
 Since `p = 2^d` makes `(d+1)(d+2)(d+3)/6 = O(d³) = O((log p)³) ≪ p`, this holds for all large `p`:
 the prize scheme is asymptotically the larger-dimensional algebra by a polynomial factor. -/
-theorem terwDim_gt_hamming_of_card_ge (n p d : ℕ) (hm : 1 ≤ cosetCount n p)
+theorem terwDim_ge_hamming_of_card_ge (n p d : ℕ) (hm : 1 ≤ cosetCount n p)
     (hpd : hammingTerwDim d ≤ p) : hammingTerwDim d ≤ terwDim n p :=
   le_trans hpd (terwDim_ge_card n p hm)
 

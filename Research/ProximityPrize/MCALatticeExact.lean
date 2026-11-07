@@ -24,8 +24,23 @@ Those two lattice indices are **consecutive**, so any threshold sandwiched in
 
   `2¹²⁸ · C(n, k+2) ≤ q < 2¹²⁸ · |Σ_{k+1}(L)|`,
 
-the faithful MCA lattice threshold equals `n - k - 2` exactly — unconditionally
-(`mcaThreshold_eq_capacityPredPred_unconditional`).
+the faithful MCA lattice threshold equals `n - k - 2` exactly, with no external-paper
+hypotheses (`mcaThreshold_eq_capacityPredPred_unconditional`); the field band itself is a
+hypothesis.
+
+**Scope of the band (R-324).**  Because `|Σ_{k+1}(L)| ≤ C(n, k+1) ≤ C(n, k+2)` once
+`n ≥ 2k + 3`, the band is **empty in the whole low-rate regime** (`k + 1 < n/2`, including
+rate `1/4` and `1/2` production instances): `lt_two_mul_add_three_of_fieldBand` proves the
+band forces `n < 2k + 3`.  The band can be nonempty only at high rate.  A compatible instance:
+`k = n - 2` (`n ≥ 2`), where `C(n, k+2) = 1` and the `n` sums `(∑ L) - Lᵢ` are distinct, so
+`|Σ_{n-1}| = n` and the band is `2¹²⁸ ≤ q < n · 2¹²⁸`, which contains primes by Bertrand's
+postulate; there the theorem gives threshold `0` (this instance is a paper example, not
+formalized here).  A low-rate exact pin needs a different lower certificate.
+
+**Lattice maximum versus real supremum.**  The result pins the maximal good point of the
+`1/n` LATTICE (`mcaThreshold`, and its radius `mcaLatticePoint`).  It is not automatically the
+operational supremum of good real radii: a bad lattice boundary point can still be that real
+supremum without being good.
 
 The reusable arithmetic helper `latticeIndexOf_one_sub_div_val`
 (`⌊(1 - j/n)·n⌋ = n - j`) and `ceil_one_sub_one_sub_div` (`⌈(1-(1-j/n))·n⌉ = j`) pin the
@@ -94,7 +109,10 @@ used** — both ends come from the unconditional plateau/window/subset-sum theor
 `MCAPlateauWindow.lean`, and the two bracketing lattice indices `n-k-2`, `n-k-1` are
 consecutive.
 
-`hlo` is the window numeric at agreement level `k+2`: `C(n, k+2)/q ≤ ε*`. -/
+`hlo` is the window numeric at agreement level `k+2`: `C(n, k+2)/q ≤ ε*`.  The band
+(`hlo` with `hsmall`) is unsatisfiable when `n ≥ 2k + 3`
+(`lt_two_mul_add_three_of_fieldBand`), so this theorem applies only at high rate; the value
+pinned is the maximal good lattice index, not necessarily the real-radius supremum. -/
 theorem mcaThreshold_eq_capacityPredPred_unconditional (domain : ι ↪ F) {k : ℕ}
     (hk2 : k + 2 ≤ Fintype.card ι)
     (hlo : ((Fintype.card ι).choose (k + 2) : ENNReal) / (Fintype.card F : ENNReal) ≤
@@ -144,8 +162,9 @@ theorem mcaThreshold_eq_capacityPredPred_unconditional (domain : ι ↪ F) {k : 
   omega
 
 /-- **Radius form of the unconditional exact threshold.** The faithful maximal good radius
-`δ*` (the lattice point at the threshold index) equals `(n-k-2)/n` in the band — the value a
-protocol-soundness caller consumes directly. -/
+`δ*` (the lattice point at the threshold index) equals `(n-k-2)/n` in the band.  The band is
+nonempty only at high rate (`lt_two_mul_add_three_of_fieldBand`), and this is the maximal good
+lattice radius, not automatically the supremum of good real radii. -/
 theorem mcaThreshold_latticePoint_eq_capacityPredPred_unconditional (domain : ι ↪ F) {k : ℕ}
     (hk2 : k + 2 ≤ Fintype.card ι)
     (hlo : ((Fintype.card ι).choose (k + 2) : ENNReal) / (Fintype.card F : ENNReal) ≤
@@ -158,3 +177,28 @@ theorem mcaThreshold_latticePoint_eq_capacityPredPred_unconditional (domain : ι
       ((Fintype.card ι - k - 2 : ℕ) : ℝ≥0) / (Fintype.card ι : ℝ≥0) := by
   unfold mcaLatticePoint
   rw [mcaThreshold_eq_capacityPredPred_unconditional domain hk2 hlo hsmall hne]
+
+/-! ## Scope of the field band -/
+
+/-- **The field band forces high rate: `n < 2k + 3`.**  Since `ε* = 2⁻¹²⁸`, the hypothesis
+`hlo` of `mcaThreshold_eq_capacityPredPred_unconditional` says `2¹²⁸ · C(n, k+2) ≤ q`; together
+with `hsmall` (`q < 2¹²⁸ · |Σ_{k+1}|`) and `|Σ_{k+1}| ≤ C(n, k+1)` this is impossible whenever
+`n ≥ 2k + 3`, because then `C(n, k+1) ≤ C(n, k+2)`.  So the exact theorem has **no instance**
+in the low-rate regime `k + 1 < n/2` (in particular none at rate `1/4` or `1/2`). -/
+theorem lt_two_mul_add_three_of_fieldBand (domain : ι ↪ F) {k : ℕ}
+    (hband : 2 ^ (128 : ℕ) * (Fintype.card ι).choose (k + 2) ≤ Fintype.card F)
+    (hsmall : Fintype.card F < 2 ^ (128 : ℕ) * (subsetSumsKplus1 domain k).card) :
+    Fintype.card ι < 2 * k + 3 := by
+  classical
+  by_contra hn
+  push_neg at hn
+  have hSig : (subsetSumsKplus1 domain k).card ≤ (Fintype.card ι).choose (k + 1) := by
+    unfold subsetSumsKplus1
+    refine (Finset.card_image_le).trans ?_
+    rw [Finset.card_powersetCard, Finset.card_univ]
+  have hch : (Fintype.card ι).choose (k + 1) ≤ (Fintype.card ι).choose (k + 2) := by
+    rcases Nat.lt_or_ge (2 * k + 3) (Fintype.card ι) with h | h
+    · exact Nat.choose_le_succ_of_lt_half_left (by omega)
+    · exact (Nat.choose_symm_of_eq_add (by omega)).le
+  have := Nat.mul_le_mul_left (2 ^ (128 : ℕ)) (hSig.trans hch)
+  omega

@@ -1,5 +1,20 @@
 # Direct sup-norm data at prize thinness β=4 (supports "all primes at β≥4")
 
+> **Correction (2026-10-28 audit, T48).**
+> - **No "all primes" claim follows.** The table is a finite measurement (`n ≤ 32`, sampled primes).
+>   "Holds for EVERY prime at β=4", "the conjecture is TRUE at the prize thinness" and "ALL primes at
+>   β≥4" are not established. Recorded thin exceptions exist: at `n = 64`, `p = 17318209`
+>   (`p > n⁴`), the additive energy is `E_2 = 13632`, above both the char-0 value `12096` and the
+>   Wick value `12288` (T91 / G173; the same cell is recorded as a transfer-false norm-divisor
+>   witness in `Research/ProximityPrize/Frontier/_wfS7_galois_spread.lean`). The measurements stay
+>   as history.
+> - **The norm paragraph overreaches.** The minimum nonzero norm of a short non-antipodal sum is `2`
+>   (for example `N(1 − ζ) = 2`), but a minimum controls neither the maximum nor a typical value. It
+>   does not show that actual short norms are uniformly small. Nor does it make every norm
+>   upper-bound route impossible: a valid nonzero norm upper bound **below** `p` would still rule out
+>   `p`-divisibility for the sums it covers. Whether such a bound is usable is a question of actual
+>   parameters and heights, not something this probe settles.
+
 Probe (prize-faithful: proper μ_n, p≡1 mod n, p≈n^4 so β=4, multi-prime, never n=q-1; /tmp/prize-research/
 almostall*.py). Computed M(n)=max_{b≠0}|Σ_{x∈μ_n}e_p(bx)| / √(2n log m), m=(p-1)/n:
 

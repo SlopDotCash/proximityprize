@@ -143,7 +143,7 @@ theorem uniform_separation_impossible {𝕜 : Type*} [Field 𝕜] [LinearOrder �
 
 We certify the impossibility at the prize point with explicit rationals (lower/upper proxies):
 - distinct periods `m = (p−1)/n ≈ n^3 = 2^{90}`; at least `half = m/2` lie in window width
-  `W ≈ 2.83·√n ≈ 2.83·2^{15} ≈ 92682` (Chebyshev, RMS `= √n = 2^{15}`).
+  `W = 2√2·√n = 2√2·2^{15} ≈ 92681.9`, rounded up to `92682` (Chebyshev, RMS `= √n = 2^{15}`).
 - The claimed separation floor at `A = 0` is `s = 1/√n = 2^{−15} ≈ 3.05·10^{−5}`.
 - The pigeonhole product `(half−1)·s` already at the modest count `half = 2^{40}` is
   `≈ 2^{40}·2^{−15} = 2^{25} ≈ 3.36·10^7`, VASTLY exceeding `W ≈ 92682`.
@@ -154,7 +154,8 @@ inside the Parseval window. We use `half = 2^{40}` as a generous lower proxy for
 /-- Window half is generous lower proxy `2^{40}` for the true `m/2 ≈ 2^{89}` periods in-window. -/
 def cntProxy : ℕ := 2^40
 
-/-- Parseval window width upper proxy `W = 92682 > 2.83·√n` at `n = 2^30` (`√n = 2^{15} = 32768`). -/
+/-- Parseval window width upper proxy `W = 92682 ≥ 2√2·√n ≈ 92681.9` at `n = 2^30`
+(`√n = 2^{15} = 32768`). Note `W < 2.83·√n = 92733`; the earlier "`> 2.83·√n`" was false. -/
 def windowW : ℚ := 92682
 
 /-- Claimed separation floor at `A = 0`: `s = 1/√n = 1/32768` (upper proxy `1/32768`). -/

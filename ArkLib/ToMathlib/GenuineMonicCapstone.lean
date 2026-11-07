@@ -24,7 +24,7 @@ identification on the two remaining production fronts:
     cardinality bound, at the signed family.
 
 * **The bundle capstone with genuine-object inputs.**
-  `section5DataOffcentreFin_of_producers_genuineMonic` builds the satisfiable per-`P` off-centre
+  `section5DataOffcentreFin_of_producers_genuineMonic` builds the per-`P` off-centre
   bundle `Section5StrictDataOffcentreFin` from producers whose series-level hypotheses are
   stated against **`gammaGenuine` directly**: the Prop-5.5 representative
   `hrep : polyToPowerSeries𝕃 H Ppoly = gammaGenuine …`, and the per-`z` Hensel data
@@ -33,6 +33,12 @@ identification on the two remaining production fronts:
   (`gradedConcreteFin_of_disc`).  No recursion-capsule object (`betaRec`, `gammaLocal`,
   `αFromBeta`) appears in the hypothesis list except through the per-point matching data
   `mpPoint` (whose `betaRec` readings ARE the `βHensel` numerator readings, by the bridge).
+  **Legacy at `d_H ≥ 2` (F6):** the ground-line `hrep` against `gammaGenuine` is
+  kernel-proved unsatisfiable whenever `2 ≤ H.natDegree`
+  (`GenuinePpolyConverter.not_hrepG_of_two_le_natDegree`; at this capstone
+  `LocalSeriesCorrected.hrep_genuineMonic_unsat_of_two_le_natDegree`), so the capstone is a
+  valid conditional implication that is vacuous there; only the `d_H = 1` lane is not
+  obstructed.
 
 With this capstone, the strict-Johnson §5 keystone for monic GS factors reduces to exactly:
 1. the GS factor bundle (`b`, monic `H`, `2 ≤ d_R`, the paper grading `hR`);
@@ -239,8 +245,9 @@ open OffcentreKeystone BetaToCurveCoeffPolys
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **The genuine-monic capstone.**  The satisfiable per-`P` off-centre §5 bundle
-`Section5StrictDataOffcentreFin`, from producers whose series-level hypotheses are stated
+/-- **The genuine-monic capstone.**  The per-`P` off-centre §5 bundle
+`Section5StrictDataOffcentreFin` (legacy at `d_H ≥ 2`: its `hrep` input below is F6-empty
+whenever `2 ≤ b.H.natDegree`, `GenuinePpolyConverter.not_hrepG_of_two_le_natDegree`), from producers whose series-level hypotheses are stated
 against the **genuine Hensel root `gammaGenuine`** (monic case):
 
 * `hrep : polyToPowerSeries𝕃 b.H Ppoly = gammaGenuine x₀ b.R b.H b.hHyp` — the genuine

@@ -1,5 +1,15 @@
 # #444 live-frontier sweep (6-agent workflow + adversarial verify) — 2026-06-15
 
+> **Scope note (2026-10-28 audit, T48; cross T111).** Two inferences below are stronger than the
+> data.
+> - **No uniform no-collapse certificate.** "T2 cross-prime 0/64 survive" is a sample at a few
+>   primes. It shows the observed char-p points were not structural at those primes, but it is not
+>   a uniform no-collapse certificate.
+> - **No universal recurrence.** The law `1 − g(r,n) ≈ r/n` is a fit to finite normalized-moment
+>   data and does not establish a universal recurrence or its behaviour at `r* ~ 120`.
+>
+> The cleanup itself (the earlier `d = 32` refutation was false) stands.
+
 0 closures; 1 cleanup overturning a committed false-refutation; 9 fresh dead-ledger entries.
 Comment: lalalune/ArkLib#444 issuecomment-4705637815. Probes pushed `de40196bf`.
 

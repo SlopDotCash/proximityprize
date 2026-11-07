@@ -11,8 +11,9 @@ import Research.ProximityPrize.MCAJohnsonCount
 The deployed-prize obligation `InteriorCeiling` ("`ε_mca(C, δ) ≤ ε*` for every `δ` below the
 near-capacity KKH26 jump") decomposes into three radius sub-regimes (dossier §13):
 
-* **(I) `[0, half-Johnson]`** — provable via the single-common-center decoder bridge
-  (`rs_epsMCA_le_johnson_ceil_of_hwit`);
+* **(I) `[0, half-Johnson]`** — conditionally reduced to the single-common-center hypothesis of
+  `rs_epsMCA_le_johnson_ceil_of_hwit` (an explicit, unproven hypothesis; its original line-close
+  form is refuted, see `MCAJohnsonCount.lean`);
 * **(II) `(half-Johnson, Johnson]`** — the single-center route is *machine-refuted* here
   (`244HwitRefutation`), but the band is still **below Johnson**, where the BCIKS20 / proximity-gap
   correlated-agreement theorem caps the pencil's line-close count by the RS Johnson list size — a

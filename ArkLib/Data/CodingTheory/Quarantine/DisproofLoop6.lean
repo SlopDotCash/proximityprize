@@ -15,8 +15,14 @@ conjecture `epsMCAgs ≤ (1/q)·(2^m)^{c₁}/(ρ^{c₂}·η^{c₃})` therefore a
 parameters `m, ρ, η`, that the **bad-γ count is bounded by a constant `C = (2^m)^{c₁}/(ρ^{c₂}η^{c₃})`
 independent of the field size `q`**.
 
-**Disproof angle O3 (Frobenius).** Take the inputs `u₀, u₁` over the prime subfield `F_p` and the
-RS code Frobenius-stable (true for RS over a smooth domain stable under `x ↦ x^p`). Then the
+**Disproof angle O3 (Frobenius).** Take the inputs `u₀, u₁` over the prime subfield `F_p` and
+*assume* the RS code is stable under coordinatewise Frobenius. This is a genuine hypothesis, **not**
+automatic: stability of the evaluation domain as a set under `x ↦ x^p` only makes coordinatewise
+Frobenius act on evaluations by `f ↦ f^{(p)}(X^p)` (coefficients Frobenius-twisted), raising the
+degree by a factor `p`, so it can leave the low-degree code. For example, over `F₉` with the smooth
+domain `F₉ˣ` (all eight nonzero elements) and the degree-`< 2` RS code, the codeword evaluating `X`
+maps pointwise to the evaluation of `X³`, which is not the evaluation of any
+degree-`< 2` polynomial on eight distinct points (root bound). Under the stability assumption, the
 Frobenius map `φ : x ↦ x^p` sends a bad scalar to a bad scalar: applying `φ` to all coordinate
 values preserves Hamming distance to the (stable) code, and `(u₀ + γ·u₁)^φ = u₀ + γ^p·u₁` when
 `u₀, u₁` are `φ`-fixed. So the **bad set is closed under `φ`** — a union of Frobenius orbits. A bad
@@ -29,15 +35,20 @@ This file proves, sorry-free and axiom-clean, the two solid halves:
 * the **Frobenius-orbit lower bound** (`frobenius_orbit_subset`, `frobenius_orbit_card_le`): a
   `φ`-closed set containing a degree-`d` element has cardinality `≥ d`;
 * the **incompatibility** (`const_badcount_forbids_high_degree`): a constant bad-count bound forces
-  every bad scalar to have degree `≤ C`, i.e. to lie in the bounded subfield `F_{p^{⌊C⌋}}`.
+  every bad scalar to have degree `≤ C` over `F_p` (a numeric orbit-length bound). Note that degree
+  `≤ ⌊C⌋` does **not** mean membership in the single subfield `F_{p^{⌊C⌋}}` — subfield inclusion
+  needs divisibility of degrees (an element of `F_{p²} \ F_p` is not in `F_{p³}`); a common
+  subfield containing all elements of degree `≤ D` is `F_{p^{lcm(1,…,D)}}`.
 
 **Disproof of the disproof (why O3 does not close the prize).** The missing — and genuinely open —
 link is *realizability*: exhibiting a Frobenius-stable `(u₀,u₁)` with a **high-degree** bad scalar
 *at prize radius* `δ ≤ 1−ρ−η`. The proximity-gap theorem (BCIKS20, proven below the Johnson radius)
 constrains the bad set to be either ≤ a small bound or essentially all of `F`; a lone high-degree
 Frobenius orbit sitting in the gap is exactly the unestablished beyond-Johnson case. So O3 yields a
-hard **necessary structural condition** the conjecture must satisfy — *all bad scalars live in a
-bounded-degree subfield* — but not a disproof. See `Research/ProximityPrize/DISPROOF_LOG.md` (O3).
+hard **necessary structural condition** the conjecture must satisfy (under the Frobenius-stability
+and `F_p`-input assumptions) — *all bad scalars have bounded degree over `F_p`*, hence lie in the
+bounded subfield `F_{p^{lcm(1,…,⌊C⌋)}}` — but not a disproof.
+See `Research/ProximityPrize/DISPROOF_LOG.md` (O3).
 -/
 
 namespace ArkLib.ProximityGap.DisproofLoop6
@@ -82,11 +93,13 @@ theorem frobenius_orbit_card_le {p : ℕ} {S : Finset F}
     _ ≤ S.card := Finset.card_le_card (frobenius_orbit_subset hclosed hy d)
 
 /-- **A constant bad-count bound forbids high-degree bad scalars.** Suppose the MCA bad set `S`
-(`φ`-closed, as O3 establishes when the inputs are over `F_p`) has cardinality bounded by a constant
-`C` (the conjecture's claim, since `epsMCA = #S/q ≤ C/q`). Then any bad scalar `y ∈ S` whose first
-`d` Frobenius iterates are distinct satisfies `d ≤ C`: every bad scalar has degree `≤ C` over `F_p`,
-i.e. lies in the bounded subfield `F_{p^{⌊C⌋}}`. A growing `d` (high-degree bad scalar) is therefore
-*incompatible* with the conjecture — which is exactly why realizing one would disprove it. -/
+(`φ`-closed, as O3 argues when the inputs are over `F_p` *and* the code is assumed
+coordinatewise-Frobenius-stable; the theorem takes closure as the explicit hypothesis `hclosed`)
+has cardinality bounded by a constant `C` (the conjecture's claim, since `epsMCA = #S/q ≤ C/q`). Then any bad scalar `y ∈ S` whose first
+`d` Frobenius iterates are distinct satisfies `d ≤ C`: every bad scalar has degree `≤ C` over `F_p`
+(the theorem proves only this numeric bound; degree `≤ ⌊C⌋` places `y` in `F_{p^{lcm(1,…,⌊C⌋)}}`,
+not in `F_{p^{⌊C⌋}}`, since subfield inclusion requires degree divisibility). A growing `d`
+(high-degree bad scalar) is therefore *incompatible* with the conjecture — which is exactly why realizing one would disprove it. -/
 theorem const_badcount_forbids_high_degree
     {p : ℕ} {S : Finset F} {C : ℝ}
     (hclosed : ∀ x ∈ S, x ^ p ∈ S)

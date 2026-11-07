@@ -52,15 +52,20 @@ push past half-Johnson?
 Full support unlocks the codeword *pinning* (each codeword witnesses ≤ 1 line point for
 `δ < 1/2`), but the list-collapse consumer `epsMCA_le_of_uniform_badCount_full_support` additionally
 needs a **uniform** bound `L` on `lineWitnessCodewords` over *all* stacks (`hlist`).  That is
-**unsatisfiable** past trivial radius: a both-codewords stack `(c₀, c₁)` has every line point
-`c₀ + γ·c₁` a codeword, so `lineWitnessCodewords` is the whole code (`= q`), even though it fires
+**unsatisfiable** past trivial radius: a both-codewords stack `(c₀, c₁)` with `c₁ ≠ 0` has every
+line point `c₀ + γ·c₁` a codeword, so `lineWitnessCodewords` contains these `q` distinct
+codewords (it is the whole code exactly when `C` is that line, e.g. in dimension one; a
+higher-dimensional `C` can contribute more), even though it fires
 **zero** bad scalars (it is joint-close, hence MCA-good).  The right object is the *per-line-point*
 classical Johnson list (finite below `1 − √ρ` via `JohnsonList.johnson_list_bound_div` with
 `b = n − d = k − 1`), but the union over the `q` line points is what the existing collapse bounds,
 and that union explodes exactly at full Johnson.  Bridging "per-point Johnson list (small) + full
 support pinning" to a bad-count bound that survives the union is a NEW collapse, not supplied by the
 Sidon energy chain — this is the honest residual, recorded as the named `Prop`
-`PerPointJohnsonCollapse` below, NOT a `sorry`.
+`PerPointJohnsonCollapse` below, NOT a `sorry`.  Its antecedents (the witness floor `t` for `δ`
+and a per-point list bound `PerPointListBound C t Lpt`) are explicit, so a caller must still
+supply the list theorem; the line-union obstruction above is the historical correction to the
+uniform-list route (audit finding PG-102).
 
 `probe_sidon_largep_johnson.py` (prize rate `n=16, k=2, ρ=1/8`, large `p`): worst MCA bad-count is
 `0` across the *entire* window `[0.323, 0.646)`, exploding only at/past `1−√ρ`.  So the half-Johnson
@@ -150,31 +155,48 @@ theorem genericFullSupport_pinning
 
 /-! ## Part 3 — the honest residual: the per-point-Johnson collapse the Sidon chain does NOT give -/
 
+/-- **Per-point list bound at agreement floor `t`.**  Every single word `w` has at most `Lpt`
+codewords of `C` agreeing with it on at least `t` coordinates (the classical list size bounded by
+`JohnsonList.johnson_list_bound_div`).  Antecedent of `PerPointJohnsonCollapse`. -/
+def PerPointListBound (C : Set (ι → A)) (t Lpt : ℕ) : Prop :=
+  open Classical in
+  ∀ w : ι → A,
+    (Finset.univ.filter (fun c : ι → A =>
+      c ∈ C ∧ t ≤ (Finset.univ.filter (fun i => c i = w i)).card)).card ≤ Lpt
+
 /-- **The honest residual `Prop` (named, NOT a `sorry`).**  Closing `δ* ≥ 1 − √ρ` (full Johnson)
 for the small subgroup via full support requires a collapse of the *per-line-point* classical
 Johnson list to an MCA bad-count bound that survives the union over the `q` line points.  The
 existing list-collapse consumer needs a uniform bound on `lineWitnessCodewords` over **all**
 stacks, which is broken by both-codewords stacks (`lineWitnessCodewords = q`, but `0` bad scalars).
 The genuine object is the per-point Johnson list `n²/(a² − n(k−1))` (finite below full Johnson),
-bridged through full-support pinning to the bad count.  We state this as the open obligation:
+bridged through full-support pinning to the bad count.  We state this as the open obligation
+`PerPointJohnsonCollapse C δ t Lpt ε*`: if `t` is a witness floor for `δ` (every agreement set
+of relative size `≥ 1 − δ` has at least `t` coordinates) and the per-point list bound
+`PerPointListBound C t Lpt` holds (every single word has at most `Lpt` codewords agreeing with it
+on `≥ t` coordinates — the object `JohnsonList.johnson_list_bound_div` bounds below full
+Johnson), then `ε_mca(C, δ) ≤ ε*`.  This is the **new collapse** the Sidon energy chain does NOT
+supply.  Neither antecedent mentions the stack's support: full-support pinning is the intended
+proof route, not a hypothesis of the contract, because `ε_mca` ranges over all stacks.  The
+budget `ε*` is a free parameter; a genuine discharge must take it compatible with `Lpt` (the
+uniform-list route loses `n/t`, see `epsMCA_le_of_uniform_badCount_full_support`).  Recording the
+contract as a hypothesis (project modularity convention) keeps the contribution honest. -/
+def PerPointJohnsonCollapse (C : Set (ι → A)) (δ : ℝ≥0) (t Lpt : ℕ) (εstar : ℝ≥0∞) : Prop :=
+  (∀ {S : Finset ι}, (1 - δ) * Fintype.card ι ≤ (S.card : ℝ≥0) → t ≤ S.card) →
+    PerPointListBound C t Lpt →
+    ProximityGap.epsMCA (F := F) (A := A) C δ ≤ εstar
 
-`PerPointJohnsonCollapse C δ ε*` : a per-line-point Johnson list bound at radius `δ` yields the
-MCA bound `ε_mca(C, δ) ≤ ε*`.  This is the **new collapse** the Sidon energy chain does NOT supply;
-recording it as a hypothesis (project modularity convention) keeps the contribution honest. -/
-def PerPointJohnsonCollapse (C : Set (ι → A)) (δ : ℝ≥0) (εstar : ℝ≥0∞) : Prop :=
-  -- per-line-point classical Johnson list is `≤ Lpt` at radius `δ` (finite below `1−√ρ`) ⟹
-  -- full-support `μ_n` stacks have MCA error `≤ ε*`.  Left as a named obligation: the union-over-γ
-  -- bridge that the pair-alphabet cap handles only up to half-Johnson.
-  ∀ (_Lpt : ℕ), ProximityGap.epsMCA (F := F) (A := A) C δ ≤ εstar
-
-/-- **What the residual buys when discharged.**  Trivial consumer: if `PerPointJohnsonCollapse`
-holds, then the MCA error clears the budget.  (Records the contract; the antecedent is the open
+/-- **What the residual buys when discharged.**  Consumer: if `PerPointJohnsonCollapse` holds and
+its two antecedents (witness floor `t` for `δ`, per-point list bound `Lpt`) are supplied, then the
+MCA error clears the budget.  (Records the contract; the collapse itself is the open
 new-collapse, NOT a `sorry`.) -/
 theorem epsMCA_le_of_perPointJohnsonCollapse
-    (C : Set (ι → A)) (δ : ℝ≥0) (εstar : ℝ≥0∞)
-    (h : PerPointJohnsonCollapse (F := F) (A := A) C δ εstar) :
+    (C : Set (ι → A)) (δ : ℝ≥0) (t Lpt : ℕ) (εstar : ℝ≥0∞)
+    (h : PerPointJohnsonCollapse (F := F) (A := A) C δ t Lpt εstar)
+    (hfloor : ∀ {S : Finset ι}, (1 - δ) * Fintype.card ι ≤ (S.card : ℝ≥0) → t ≤ S.card)
+    (hlist : PerPointListBound C t Lpt) :
     ProximityGap.epsMCA (F := F) (A := A) C δ ≤ εstar :=
-  h 0
+  h hfloor hlist
 
 end ArkLib.ProximityGap.WF5SidonFullSupport
 

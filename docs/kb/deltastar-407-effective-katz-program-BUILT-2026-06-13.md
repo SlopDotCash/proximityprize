@@ -1,8 +1,20 @@
 # BUILT: the effective-Katz reduction layer (Lean, axiom-clean) + conductor program (2026-06-13)
 
-The Katz/Rojas-León research (arXiv:2207.12439) makes the prize core a THEOREM as q→∞ (Gauss-sum joint
-independence, monodromy = GL(1)^f, only Hasse-Davenport relations). The prize = the EFFECTIVE version at
-fixed large q. This builds the Lean reduction layer for that program.
+> **Correction (2026-10-28 audit, T48 / PG-107).** The cited Katz / Rojas-León result does **not**
+> make the prize core a theorem as `q → ∞`. [Rojas-León, Theorem 1](https://arxiv.org/html/2207.12439v3)
+> fixes the dimension, the character and monomial data and the twists over a base field, and proves
+> torus equidistribution over extension fields as the extension degree grows (under independence
+> hypotheses). It gives no bound that is uniform in a growing moment depth `r`, a growing character
+> family, and the maximum over all frequencies, and those are exactly what the prize needs. The
+> "THEOREM as q→∞" and "PROVEN asymptotically" phrases below are therefore withdrawn. The Lean
+> consumer (`EffectiveConductorBound` ⟹ single-frequency bound ⟹ `WorstCaseIncompleteSumBound`) is a
+> valid conditional statement and is unaffected. Its hypothesis is DC-subtracted (`q·E_r − n^(2r)`),
+> as it should be.
+
+The Katz/Rojas-León research (arXiv:2207.12439) was read here as making the prize core a THEOREM as
+q→∞ (Gauss-sum joint independence, monodromy = GL(1)^f, only Hasse-Davenport relations) — see the
+correction above: that source fixes the data and grows the extension degree. The prize = the EFFECTIVE
+version at fixed large q. This builds the Lean reduction layer for that program.
 
 ## BUILT (Lean, axiom-clean — `KatzEffectiveGaussSum.lean`, [propext,Classical.choice,Quot.sound])
 - `EffectiveConductorBound G r K` : the Deligne/Weil discrepancy hypothesis — the cumulant deviates from
@@ -25,6 +37,8 @@ K=O(1) — which Katz large-monodromy (full GL(1)^f, only HD) predicts asymptoti
 
 ## Honest status
 BUILT & axiom-clean: the effective-Katz reduction (conductor bound ⟹ δ* floor). The conductor base K is
-carried as the explicit open Prop, NOT discharged. PROVEN asymptotically (Katz/Rojas-León, q→∞); the
-effective K=O(1) at fixed q is the étale-cohomology estimate = the recognized open core, now in clean
-geometric form (sheaf conductor) rather than additive-combinatorial BGK. No fabrication.
+carried as the explicit open Prop, NOT discharged. (Withdrawn 2026-10-28: "PROVEN asymptotically
+(Katz/Rojas-León, q→∞)" — the source covers fixed data over growing extension degree, not the needed
+uniformity in depth, character family and frequency maximum.) The effective K=O(1) at fixed q is an
+étale-cohomology-type estimate that is not established by the cited source; the measured `K ≈ 1.28`
+above is finite numerical evidence. No fabrication.

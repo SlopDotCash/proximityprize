@@ -41,9 +41,9 @@ r)` prefactor.  Achieving `m`-independence is exactly the GGR11 list-recovery /
 column-pruning recursion: of the `m` columns, only `r` "pivot" columns carry
 independent list freedom (a budget/covering argument over the `b`-bounded
 agreement deficits), and the joint list embeds into the product of the per-pivot
-lists.  ArkLib presently has **no list-recovery primitive and no column-pruning /
-iterated-projection lemma**, so this step is a genuine external-paper wall, not a
-missing local proof.
+lists.  This file does not carry out that step; it is proved for finite base point
+lists in `ArkLib.ToMathlib.GGR11TreeConstruction`, which builds on the interfaces
+below.
 
 We therefore name precisely that wall — the per-received-word form of (★) — as
 `GGR11PerWordBound`, and prove that it implies (★) for the maximised `Lambda`.
@@ -51,9 +51,13 @@ This converts the live `sorry` into a single, auditable named hypothesis.
 
 ## Edge cases discharged unconditionally
 
-`lambda_le_ggr11` itself (in `InterleavedCode.lean`) already closes the
-infinite-list case `Λ(C, δ) = ⊤` completely (the RHS is then `⊤`).  Here we also
-record `lambda_le_ggr11_of_perWordBound`, the finite-regime reduction.
+When `Λ(C, δ) = ⊤` and `r > 0` the RHS of (★) is `⊤`, so the bound is automatic
+(`ggr11_perWordBound_of_Lambda_top`, `lambda_le_ggr11_of_Lambda_top`).  Caveat: the
+legacy `ListDecodable.Lambda` used here measures each point list with `Set.ncard`, so
+an *infinite* point list contributes `0`, not `⊤`.  `Λ(C, δ) = ⊤` therefore means
+"the finite point-list sizes are unbounded"; it is **not** a faithful characterisation
+of an infinite close list (see the finiteness caveat on `ListDecodable.Lambda`).  Here
+we also record `lambda_le_ggr11_of_perWordBound`, the finite-regime reduction.
 
 ## The closed-form combinatorics is now in-tree (NEW)
 
@@ -65,24 +69,33 @@ GGR11 §3 splits into two parts:
   has at most **one** Blue out-edge (Lemma 3.4) and at most `|Λ(C,δ)|` Red
   out-edges; every root→leaf path has at most `b` Blue edges (Lemma 3.4) and at
   most `r` Red edges (Lemma 3.5).  This is the list-recovery / erasure-decoding
-  content that has **no in-tree analogue**.
+  content.  It is not proved in this file; it is proved for finite point lists
+  (in particular over any finite field) in `ArkLib.ToMathlib.GGR11TreeConstruction`
+  (`ggr11_treeStructure_of_budgets`, `lambda_le_ggr11_holds_of_finite`).
 
 * **(Leaf counting.)** A tree with those per-node and per-path budgets has at
   most `(b+r choose r)·|Λ(C,δ)|^r` leaves (Theorem 3.6), via the recursion
   `t(b,r) ≤ t(b-1,r) + L·t(b,r-1)`, base `t(b,0) = 1`.
 
 We now prove the **second** part fully (`ggr11_tree_count_le`, no `sorry`/`axiom`),
-and refactor the residual so that it names *only the first part* — the existence
-of a leaf-count function satisfying the GGR11 budget recursion that dominates the
-actual close set (`GGR11TreeStructure`).  The chain
+and restate the residual as `GGR11TreeStructure`: the existence of a *numerical*
+leaf-count function `t : ℕ → ℕ → ℕ∞` satisfying the GGR11 budget recursion that
+dominates the actual close set.  The chain
 
-  `GGR11TreeFrontier ↔ GGR11TreeStructure → GGR11PerWordBound → lambda_le_ggr11`
+  `GGR11TreeFrontier ↔ GGR11TreeStructure ↔ GGR11PerWordBound → lambda_le_ggr11`
 
-is then fully proven (`perWordBound_of_treeStructure`,
-`perWordBound_of_treeFrontier`, `lambda_le_ggr11_of_perWordBound`).  This shrinks
-the named external surface from "the whole §3 recursion incl. the closed-form
-`choose` bound" down to "the Erase-Decode tree exists with the stated Blue/Red
-budgets", with the per-word witness data named explicitly.
+is fully proven (`perWordBound_of_treeStructure`, `perWordBound_of_treeFrontier`,
+`lambda_le_ggr11_of_perWordBound` here; the reverse `treeStructure_of_perWordBound` /
+`treeStructure_iff_perWordBound` in `ArkLib.ToMathlib.GGR11Divergence`).
+
+**Honesty note.** `GGR11TreeStructure` / `GGR11TreeWitness` carry no tree data
+(no nodes, edges, erasure sets or decoder): `t` is an arbitrary numerical function.
+The reverse implication `treeStructure_of_perWordBound` (`GGR11Divergence`; take
+`t b' r' := (b'+r' choose r')·Λ^{r'}`, which satisfies the recursion by Pascal's rule)
+shows the numerical frontier is **logically equivalent** to `GGR11PerWordBound`, not a
+strictly smaller obligation.  It is a convenient interface for the counting lemma,
+not an encoding of the Erase-Decode construction; the actual construction lives in
+`ArkLib.ToMathlib.GGR11TreeConstruction`.
 -/
 
 open ListDecodable Code InterleavedCode
@@ -98,13 +111,15 @@ interleaved codewords `δ`-close to `f` is at most `(b+r choose r) · |Λ(C,δ)|
 with `r` (and `b`) the GGR11 exponent/prefactor — **independent of `m`**.
 
 This is exactly the content GGR11 §3 establishes by the list-recovery /
-column-pruning recursion described in the module docstring.  It is stated as an
-`encard` bound so that it is meaningful over an arbitrary (possibly infinite)
-field `F`, with no `Fintype F` assumption: when a per-column list is infinite the
-hypothesis is vacuously informative on the `⊤` side, and the genuine content is
-the finite case.
+column-pruning recursion described in the module docstring.  The left-hand side is
+an `encard`, so an infinite interleaved close list counts as `⊤`.  The right-hand side,
+however, uses the legacy `ncard`-based `ListDecodable.Lambda C δ`, in which an infinite
+base point list contributes `0`; the statement is therefore a faithful rendering of (★)
+only when the base point lists are finite (e.g. over a finite field).  The genuine
+content is the finite case.
 
-We do **not** prove this here: it is the named external obstruction. -/
+We do **not** prove this here; it is proved for finite base point lists in
+`ArkLib.ToMathlib.GGR11TreeConstruction` (`ggr11_perWordBound_of_budgets`). -/
 def GGR11PerWordBound (C : Set (ι → F)) (δ : ℝ) (m b r : ℕ) : Prop :=
   ∀ f : Matrix ι (Fin m) F,
     (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) f δ).encard
@@ -184,7 +199,7 @@ theorem ggr11_tree_count_le
               rw [e1, e2]
               ring
 
-/-! ### The refined residual: only the Erase-Decode tree existence -/
+/-! ### The numerical leaf-count frontier (equivalent to the per-word bound) -/
 
 /-- **The GGR11 residual, refined to tree existence only.**
 
@@ -193,11 +208,15 @@ For a fixed received interleaved word `f`, there exists a leaf-count function
 obeys the GGR11 Erase-Decode budget recursion with Red branching factor
 `L = Λ(C,δ)` (cf. `ggr11_tree_count_le`).
 
-This is **strictly smaller** than `GGR11PerWordBound`: it names only the existence
-of the Erase-Decode tree with the Blue/Red budgets of GGR11 Lemmas 3.3–3.5 (the
-list-recovery / erasure-decoding content with no in-tree analogue), and **drops**
-the closed-form `(b+r choose r)·L^r` combinatorics, which is now the proved lemma
-`ggr11_tree_count_le`. -/
+Despite the name, this is a purely **numerical** frontier: `t` is an arbitrary
+function with no nodes, edges, erasure sets or decoder attached, and nothing ties it
+to an actual Erase-Decode tree.  It is **logically equivalent** to
+`GGR11PerWordBound` (`perWordBound_of_treeStructure`; converse
+`treeStructure_of_perWordBound` in `ArkLib.ToMathlib.GGR11Divergence`),
+so it is not a strictly smaller obligation; it merely factors the closed-form
+`(b+r choose r)·L^r` combinatorics out into the proved lemma `ggr11_tree_count_le`.
+The genuine GGR11 Lemmas 3.3–3.5 construction producing such a `t` for finite point
+lists is `ArkLib.ToMathlib.GGR11TreeConstruction.ggr11_treeStructure_of_budgets`. -/
 def GGR11TreeStructure (C : Set (ι → F)) (δ : ℝ) (m b r : ℕ) : Prop :=
   ∀ f : Matrix ι (Fin m) F,
     ∃ t : ℕ → ℕ → ℕ∞,
@@ -206,11 +225,13 @@ def GGR11TreeStructure (C : Set (ι → F)) (δ : ℝ) (m b r : ℕ) : Prop :=
       (∀ r', t 0 (r' + 1) ≤ (ListDecodable.Lambda C δ) * t 0 r') ∧
       (∀ b' r', t (b' + 1) (r' + 1) ≤ t b' (r' + 1) + (ListDecodable.Lambda C δ) * t (b' + 1) r')
 
-/-- Named per-received-word witness for the GGR11 Erase-Decode tree residual.
+/-- Named per-received-word witness for the GGR11 numerical leaf-count frontier.
 
-This is the non-anonymous form of one `f`-instance of `GGR11TreeStructure`: a leaf-count
-function plus the Blue/Red budget inequalities that feed `ggr11_tree_count_le`.  Naming it
-separates the future tree-construction work from the already-proved closed-form counting lemma. -/
+This is the non-anonymous form of one `f`-instance of `GGR11TreeStructure`: a numerical
+leaf-count function plus the Blue/Red budget inequalities that feed `ggr11_tree_count_le`.
+It contains no tree data; see `EraseDecodeTree` (`ArkLib.ToMathlib.GGR11EraseDecodeTree`)
+for an actual tree datatype and `ArkLib.ToMathlib.GGR11TreeConstruction` for the
+construction. -/
 structure GGR11TreeWitness (C : Set (ι → F)) (δ : ℝ) (m b r : ℕ)
     (f : Matrix ι (Fin m) F) where
   leafCount : ℕ → ℕ → ℕ∞
@@ -223,8 +244,9 @@ structure GGR11TreeWitness (C : Set (ι → F)) (δ : ℝ) (m b r : ℕ)
       leafCount (b' + 1) (r' + 1) ≤
         leafCount b' (r' + 1) + (ListDecodable.Lambda C δ) * leafCount (b' + 1) r'
 
-/-- Granular frontier for the remaining GGR11 construction: every received word has a named
-Erase-Decode tree witness satisfying the Blue/Red budget recursion. -/
+/-- Granular numerical frontier: every received word has a named leaf-count witness satisfying
+the Blue/Red budget recursion.  Equivalent to `GGR11TreeStructure` and hence to
+`GGR11PerWordBound`. -/
 def GGR11TreeFrontier (C : Set (ι → F)) (δ : ℝ) (m b r : ℕ) : Prop :=
   ∀ f : Matrix ι (Fin m) F, Nonempty (GGR11TreeWitness C δ m b r f)
 
@@ -305,7 +327,8 @@ meets all the Blue/Red budgets), which dominates the close set because
 `Λ(C,δ)^m ≤ Λ(C,δ)^r = t b r`.  This shows `GGR11TreeStructure` is **not
 vacuous** and is consistent with the in-tree elementary product bound; it is the
 complementary `m > r` regime (where `t b' r' := Λ^{r'}` no longer dominates) that
-needs the genuine GGR11 erasure-decoding construction. -/
+needs the genuine GGR11 erasure-decoding construction (proved for finite point lists in
+`ArkLib.ToMathlib.GGR11TreeConstruction`). -/
 theorem ggr11_treeStructure_of_le_exp [Fintype F] [Nonempty ι]
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
     (hmr : m ≤ r) (hL : 1 ≤ ListDecodable.Lambda C δ) :
@@ -331,16 +354,20 @@ frontier, not just the anonymous `GGR11TreeStructure`.  This exposes the per-rec
 consistency sub-case, by routing `ggr11_treeStructure_of_le_exp` through `frontier_of_treeStructure`.
 
 As with `ggr11_treeStructure_of_le_exp`, this is the consistency sub-case `m ≤ r`; the genuine
-GGR11 content is the complementary finite `m > r` Erase-Decode construction, which remains external. -/
+GGR11 content is the complementary finite `m > r` Erase-Decode construction, which is not proved in
+this file but in `ArkLib.ToMathlib.GGR11TreeConstruction` (for finite point lists). -/
 theorem ggr11_treeFrontier_of_le_exp [Fintype F] [Nonempty ι]
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
     (hmr : m ≤ r) (hL : 1 ≤ ListDecodable.Lambda C δ) :
     GGR11TreeFrontier C δ m b r :=
   frontier_of_treeStructure (ggr11_treeStructure_of_le_exp hmr hL)
 
-/-- If the base list size is infinite and the GGR11 exponent is positive, the per-word residual is
-automatic: the RHS is `⊤`. This discharges the infinite-list edge case and leaves only the finite
-list-recovery recursion as genuine external content. -/
+/-- If `ListDecodable.Lambda C δ = ⊤` and the GGR11 exponent is positive, the per-word residual is
+automatic: the RHS is `⊤`.
+
+Caveat: `ListDecodable.Lambda` is `ncard`-based, so `Lambda C δ = ⊤` means the *finite*
+point-list sizes are unbounded; an actual infinite point list contributes `0` and is **not**
+covered by this branch.  This is therefore not a treatment of infinite close lists. -/
 theorem ggr11_perWordBound_of_Lambda_top
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
     (hr : 0 < r) (hL : ListDecodable.Lambda C δ = ⊤) :
@@ -398,9 +425,11 @@ theorem lambda_le_ggr11_of_le_exp [Fintype F] [Nonempty ι]
       ≤ ((b + r).choose r : ℕ∞) * (ListDecodable.Lambda C δ) ^ r :=
   lambda_le_ggr11_of_perWordBound (ggr11_perWordBound_of_le_exp hmr hL)
 
-/-- Generic end-to-end infinite-list regime: if the base list size is infinite and the
+/-- Generic end-to-end `Lambda = ⊤` regime: if `ListDecodable.Lambda C δ = ⊤` and the
 Red budget is positive, the right-hand side is `⊤`, so the GGR11 list-size conclusion is
-automatic. -/
+automatic.  As for `ggr11_perWordBound_of_Lambda_top`, `Lambda = ⊤` here means unbounded
+finite point-list sizes (the legacy `ncard`-based `Lambda` sends an infinite point list to
+`0`), not the presence of an infinite close list. -/
 theorem lambda_le_ggr11_of_Lambda_top
     {C : Set (ι → F)} {δ : ℝ} {m b r : ℕ}
     (hr : 0 < r) (hL : ListDecodable.Lambda C δ = ⊤) :

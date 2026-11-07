@@ -307,8 +307,10 @@ theorem mcaEvent_prob_le_choose_div (domain : ι ↪ F) (k : ℕ) (δ : ℝ≥0)
 
   `ε_mca(RS[F, domain, k], δ) ≤ C(n, max(⌈(1-δ)·n⌉, k+1)) / q`, unconditionally.
 
-At `δ = 1` this is the radius-one bound `C(n, k+1)/q`; for `⌈(1-δ)n⌉ > n - k - 1` it
-strictly sharpens the radius-one + monotonicity bound, and it always sharpens the
+At `δ = 1` this is the radius-one bound `C(n, k+1)/q`. It strictly sharpens the radius-one +
+monotonicity bound exactly when `C(n, max(⌈(1-δ)n⌉, k+1)) < C(n, k+1)`, i.e. when
+`⌈(1-δ)n⌉ > max(k + 1, n - k - 1)` (for rate above `1/2`, `⌈(1-δ)n⌉ ≤ k + 1` gives equality;
+e.g. `n = 4`, `k = 2`, `δ ∈ [1/2, 3/4)` yields `C(4,3) = C(4,k+1)`). It never exceeds the
 `2^n/q` pinning bound (`epsMCA_le_two_pow_card_div`). -/
 theorem epsMCA_le_choose_div (domain : ι ↪ F) (k : ℕ) (δ : ℝ≥0) :
     epsMCA (F := F) (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ ≤
@@ -424,7 +426,11 @@ This is the arithmetic-facing form of
 `mcaPrizeLatticeResolved_of_lowerWitnesses_and_spike_adjacent`: the lower witnesses are
 instantiated from the unconditional canonical-witness window bound, so an ABF26 certificate file
 only has to provide, at each of the four prize rates, the lower binomial/count inequality, the
-spike admissibility inequalities, and the one-step lattice adjacency check. -/
+spike admissibility inequalities, and the one-step lattice adjacency check.
+
+As explained at `MCAPrizeChooseSpikeFrontier`, these hypotheses are jointly satisfiable only when
+every `⌊δ_lo j·n⌋ = 0` (with `t j = 2` and `2¹²⁸ ≤ q < 2¹²⁹`), so the conclusion is only ever the
+trivial index-zero resolution. -/
 theorem mcaPrizeLatticeResolved_of_chooseBounds_and_spike_adjacent
     (domain : ι ↪ F)
     (δ_lo δ_hi : Fin 4 → ℝ≥0) (t : Fin 4 → ℕ)
@@ -473,9 +479,17 @@ theorem mcaPrizeLatticeResolved_of_chooseBounds_and_spike_adjacent
 The fields are exactly the arithmetic-facing inputs consumed by
 `mcaPrizeLatticeResolved_of_chooseBounds_and_spike_adjacent`: per-rate lower radii with the
 canonical-window binomial/count upper bound, per-rate spike radii and spike sizes, and the one-step
-lattice adjacency check.  The hard work remains proving these fields for the prize rates; this
-structure only makes the route reusable and prevents downstream files from repeating the long
-hypothesis list. -/
+lattice adjacency check.  This structure only makes the route reusable and prevents downstream
+files from repeating the long hypothesis list.
+
+**Satisfiability caveat (audit CW-B22-04).** The fields are jointly satisfiable only in the
+trivial index-zero case. With `i = ⌊δ_lo·n⌋`, `epsStar = 2⁻¹²⁸`, `choose_bound` and `spike_gt`
+give `C(n, max(⌈(1-δ_lo)n⌉, k+1)) ≤ q·epsStar < t ≤ n - k` (by `t_le_n`). Any binomial
+`C(n, m)` with `1 ≤ m < n` is at least `n > n - k`, so the max must equal `n`; `k + 1 = n`
+would force `t ≤ 1`, so `⌈(1-δ_lo)n⌉ = n`, i.e. `i = 0`. Then `adjacent` gives `⌊δ_hi·n⌋ = 1`
+and `spike_radius` forces `t = 2`, so `1 ≤ q/2¹²⁸ < 2`. Hence this route can only certify a
+resolution with every selected threshold at lattice index `0`, over fields of size
+`2¹²⁸ ≤ q < 2¹²⁹`; it is not a route to a nontrivial prize resolution. -/
 structure MCAPrizeChooseSpikeFrontier (domain : ι ↪ F) where
   δ_lo : Fin 4 → ℝ≥0
   δ_hi : Fin 4 → ℝ≥0

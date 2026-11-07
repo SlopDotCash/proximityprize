@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SchurLagrangeBridge
 import Research.ProximityPrize.Frontier.Issue407SaturatedIncidence
+import Research.ProximityPrize.Frontier._CompleteHomogeneousReadout
 
 /-!
 # B1: the `x^k` far-direction divided-difference ratio form (#407, B-count lane)
@@ -45,12 +46,19 @@ established:
   PERFECTLY balanced of size `C(n,k+1)/n` (the `Z_n` action on `(k+1)`-subsets is free).
 * **Full ratio-vector** `(h_0,…,h_{n-1-k})(R)` is INJECTIVE in `R` (count `= C(n,k+1)`).
 * **Bottom direction `a = k`** (`h_0`): the ratio is constant `= 1`.
-* **The intermediate counts are NOT a function of `gcd(n,a-k)` alone** (refuted:
-  `n=16`, `d=4` gives `713`, `d=8` gives `428` — both gcd-positive, values differ), so there
-  is no clean single-direction closed form except at the two boundaries `a=k` (`=1`) and
-  `a=n-1` (`=n`).
+* **Intermediate directions: no gcd-only refutation is recorded.** An earlier draft claimed the
+  intermediate counts are not a function of `gcd(n,a-k)` alone, citing `n=16`, `d=4 ↦ 713` and
+  `d=8 ↦ 428`. That comparison does **not** refute a gcd-only law: `gcd(16,4) = 4` and
+  `gcd(16,8) = 8` are different inputs, so unequal outputs are compatible with a function of the
+  gcd. The claim is retracted; a valid refutation would need two directions with the **same**
+  `gcd(n,a-k)` and unequal counts. (Nor is a gcd-only law asserted.) The only clean
+  single-direction closed forms recorded here are at the boundaries `a=k` (`=1`) and `a=n-1`
+  (`=n`).
 
-These are recorded as `Prop`s; no theorem here claims to prove the count law.
+These are empirical observations; this file declares no `Prop` for them and no theorem here
+proves a count law. (The top-direction count `= n` is proved elsewhere, on the canonical `μ_n`
+domain, in `B1TopDirectionCountLaw.lean` / `B1CountLawUnconditional.lean`; see the end of this
+file.)
 
 NUMERIC ANCHOR connecting to `δ*`: at the binding scale `size = k+1` (deepest `r = n-k-1`),
 `max_far_incidence` equals exactly `n` at the threshold (`n=8,k=2`: `inc=8`; `n=12,k=3`:
@@ -61,6 +69,7 @@ namespace ProximityGap.Frontier.B1XkIncidenceForm
 
 open Finset
 open ProximityGap.SchurLagrange
+open ProximityGap.Frontier.CompleteHomogeneousReadout (completeHomReadout)
 
 variable {F ι : Type*} [Field F] [DecidableEq F] [DecidableEq ι]
 
@@ -94,10 +103,9 @@ theorem dividedDifferencePow_smul (s : Finset ι) (v : ι → F) (b : ℕ) {c : 
   refine Finset.sum_congr rfl (fun i hi => ?_)
   exact dividedDifferencePow_smul_term s v b i hi hc
 
-/-- Local complete-homogeneous readout `h_j(R) = λ_R(x^{|R|-1+j})` (= `dividedDifferencePow` at
-shifted exponent), self-contained to avoid the absent Frontier scaffold. -/
-noncomputable def completeHomReadout (s : Finset ι) (v : ι → F) (j : ℕ) : F :=
-  dividedDifferencePow s v (#s - 1 + j)
+/-! The complete-homogeneous readout `h_j(R) = λ_R(x^{|R|-1+j})` used below is the shared
+adapter definition `ProximityGap.Frontier.CompleteHomogeneousReadout.completeHomReadout`
+(`_CompleteHomogeneousReadout.lean`); an earlier local duplicate has been removed. -/
 
 /-- **Readout covariance.** Globally scaling every node by `c ≠ 0` multiplies the
 complete-homogeneous readout `h_j` by `c^j`: `h_j(c • v) = c^j h_j(v)`.
@@ -124,16 +132,21 @@ stated**: over generic injective `v` the count is `C(n,k+1)`, not `n`; the value
 requires the roots-of-unity hypothesis `v i ^ n = 1`.  The corrected, *proved* statements live in
 `ProximityGap.B1CountLaw` (`B1TopDirectionCountLaw.lean`), built on the covariance lemmas above:
 
-* `topDirectionReadout_eq` — the closed form `dividedDifferencePow R v (n-1) = (-1)^{#R-1}·(∏ v_i)⁻¹`
-  (Lagrange partition-of-unity at `x = 0`; char-independent, no roots of unity);
-* `topReadouts_card_le` — the distinct top-direction readout count is `≤ n` (unconditional, via
-  `subsetProducts_subset_nthRoots`);
-* `topReadouts_card_eq_n_of_surjects` — `= n` exactly, conditional on the elementary residual
-  `SubsetProductSurjectsMu` (the `(k+1)`-subset sums surject onto `ℤ/n`), verified incl. prize `n=32`.
+* `topDirectionReadout_eq` — the closed form
+  `dividedDifferencePow R v (n-1) = (-1)^{#R-1}·(∏ v_i)⁻¹`, which **requires** every node to be an
+  `n`-th root of unity (`v i ^ n = 1`). The root-free ingredient is the Lagrange partition of unity
+  at `x = 0` (`sum_prod_others_eq`), which gives the reciprocal readout; identifying `X^{n-1}`
+  with `1/X` on the nodes uses exactly `v i ^ n = 1`. Without it the formula is false (singleton
+  node `2` over `ℚ`, `n = 3`: the left side is `4`, the right side `1/2`);
+* `topReadouts_card_le` — the distinct top-direction readout count is `≤ n` (under the same
+  root hypothesis, via `subsetProducts_subset_nthRoots`);
+* `topReadouts_card_eq_n_of_surjects` — `= n` exactly, conditional on `SubsetProductSurjectsMu`
+  (the `(k+1)`-subset sums surject onto `ℤ/n`); that `Prop` is discharged for the canonical domain
+  in `B1CountLawUnconditional.lean` (`topReadouts_card_eq_n_unconditional`).
 
-That residual is additive combinatorics in `(ℤ/n,+)` — structurally DISTINCT from the C1
-character-sum wall (no cancellation, no field needed).  (The intermediate-direction count is NOT a
-function of `gcd(n,a−k)` alone: `n=16`, `d=4 → 713` vs `d=8 → 428`, refuted numerically.) -/
+The surjectivity input is additive combinatorics in `(ℤ/n,+)` — structurally distinct from the C1
+character-sum wall. (No gcd-only refutation for intermediate directions is recorded: the earlier
+`n=16`, `d=4 → 713` vs `d=8 → 428` comparison used different gcds and is retracted.) -/
 
 end ProximityGap.Frontier.B1XkIncidenceForm
 

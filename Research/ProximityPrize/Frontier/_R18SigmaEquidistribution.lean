@@ -422,7 +422,14 @@ theorem wickAwayAtWithConstant_two_of_gchi
     (hSig_of_regime hψ G hm hn hreg)
 
 /-- If the three-input R18 constant is at most `1`, the `Gχ` route proves the exact R15
-away-Wick `r = 2` target. -/
+away-Wick `r = 2` target.
+
+**Applicability caveat (audit CW-B10-02).**  This consumer is generic in `X`, but every
+`ChiDecompositionOff` provider proved in-tree has the `chiFamily χ` shape (`|X| = m − 1`), and for
+`X = chiFamily χ` the gate `hC` is unsatisfiable for every admissible `Cw`
+(`R19ExplicitCharacterRung.not_chiFamily_constant_gate_of_fourthMomentTwistBound`; for `Cw ≥ 1/2`,
+`not_chiFamily_constant_gate_of_half_le`).  No instance with a decomposition family thin enough to
+meet the gate is currently known. -/
 theorem wickForIncidenceAwayAt_two_of_gchi_of_constant_le_one
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
@@ -722,7 +729,14 @@ theorem wickAwayAtWithConstant_two_of_gchi_quarticWeil
     hq1 hnq hreg
 
 /-- If the fully discharged quartic-Weil R18 constant is at most `1`, the route proves the exact
-R15 away-Wick `r = 2` target. -/
+R15 away-Wick `r = 2` target.
+
+**Applicability caveat (audit CW-B10-02).**  This consumer is generic in `X`, but every
+`ChiDecompositionOff` provider proved in-tree has the `chiFamily χ` shape (`|X| = m − 1`), and for
+`X = chiFamily χ` the gate `hC` is unsatisfiable for every admissible `Cw`
+(`R19ExplicitCharacterRung.not_chiFamily_constant_gate_of_fourthMomentTwistBound`; for `Cw ≥ 1/2`,
+`not_chiFamily_constant_gate_of_half_le`).  No instance with a decomposition family thin enough to
+meet the gate is currently known. -/
 theorem wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_constant_le_one
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)

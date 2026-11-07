@@ -29,8 +29,16 @@ its reach, exactly as in the even case:
 * **`cubic_coset_bound_not_tight`** (machine-checked refutation) — the matching upper bound
   `n/3` is **false in small characteristic**: on `μ_{12} = F₁₃^×` the zero-sum-`3`-subset count
   is `16`, far above `n/3 = 4`.  The excess are char-`13` coincidences (sums vanishing `mod 13`
-  but not in char `0`), present only below the Sidon/resultant threshold `n² < p`.  Above it —
-  where every prize field lives — the coset bound is tight.  Issue #389.
+  but not in char `0`).
+
+* **`cubic_excess_above_square_threshold`** (machine-checked) — the condition `n² < p` does
+  **NOT** remove these coincidences.  At `p = 6481 > 48² = 2304`, `μ_48 ⊂ F_{6481}` contains the
+  zero-sum triple `{1, 79, 6401}`, which is not a cube coset (its cubes `1, 483, 6480` are not
+  all equal).  Exhaustive enumeration (Python, not a Lean receipt) of the `17,296` 3-subsets of
+  that `μ_48` gives `64` zero-sum triples versus `48/3 = 16` cube cosets.  So tightness of the
+  coset bound `n/3` is not a consequence of `n² < p`; it needs a genuine resultant-avoidance
+  condition (`p` dividing no nonzero norm of a char-`0`-nonvanishing 3-term sum), which this file
+  does not establish for prize fields.  Issue #389.
 -/
 
 open Finset
@@ -172,11 +180,23 @@ theorem mu12_F13_zeroSum_triples_eq_sixteen :
 
 /-- **The cubic coset bound `n/3` is NOT tight in small characteristic.**  At `μ_{12} ⊂ F₁₃` the
 proven lower bound `n/3 = 4` is far from the actual zero-sum-`3`-count `16`; the excess are
-char-`13` coincidences, absent above the Sidon threshold `n² < p` where prize fields live. -/
+char-`13` coincidences.  Such coincidences are NOT excluded merely by `n² < p`: see
+`cubic_excess_above_square_threshold`. -/
 theorem cubic_coset_bound_not_tight :
     (4 : ℕ) < (((Finset.univ : Finset (Fin 12)).powersetCard 3).filter
         (fun T => ∑ i ∈ T, dom12 i = 0)).card := by
   rw [mu12_F13_zeroSum_triples_eq_sixteen]; norm_num
+
+/-- **`n² < p` does not force cubic-coset tightness.**  In `F_{6481}` (`6481 > 48² = 2304`) the
+elements `1, 79, 6401` are `48`-th roots of unity summing to `0`, yet `{1, 79, 6401}` is not a
+cube coset `{a, ωa, ω²a}` (`ω³ = 1`), since `1³ ≠ 79³` (a coset has all cubes equal to `a³`).  So a
+zero-sum `3`-subset of `μ_48` outside the coset construction survives above the square
+threshold. -/
+theorem cubic_excess_above_square_threshold :
+    48 ^ 2 < 6481 ∧ (1 : ZMod 6481) + 79 + 6401 = 0 ∧ (1 : ZMod 6481) ^ 48 = 1 ∧
+      (79 : ZMod 6481) ^ 48 = 1 ∧ (6401 : ZMod 6481) ^ 48 = 1 ∧
+      (1 : ZMod 6481) ^ 3 ≠ (79 : ZMod 6481) ^ 3 := by
+  refine ⟨by norm_num, by decide, by decide, by decide, by decide, by decide⟩
 
 end CubicSmallChar
 
@@ -187,3 +207,4 @@ end ProximityGap.PairRank
 #print axioms ProximityGap.PairRank.cubicCosetSupply_ge
 #print axioms ProximityGap.PairRank.cubicSupply_mu6_ge_two
 #print axioms ProximityGap.PairRank.cubic_coset_bound_not_tight
+#print axioms ProximityGap.PairRank.cubic_excess_above_square_threshold

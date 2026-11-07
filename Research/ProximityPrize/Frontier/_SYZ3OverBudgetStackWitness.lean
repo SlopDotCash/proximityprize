@@ -6,6 +6,7 @@ Authors: ArkLib Contributors, Mikhail Izhutkin (mashingaan, @mashingaan)
 
 import ProximityPrize.Compatibility.EvaluationCodeDimension
 import Research.ProximityPrize.Frontier._PrizeShapeRateHalfBracket
+import Research.ProximityPrize.Frontier._SYZ2PredecessorCapRefutationCore
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
 import Research.ProximityPrize.Support.BinaryPower
 
@@ -76,8 +77,10 @@ Refuting one candidate *cap* says nothing about `δ*` itself.
 The channel theorems (`pencilScalar`, `mcaEvent_pencil`, `rsCode_eq_of_agree_on_card_le`)
 are restated verbatim from `Frontier/_SYZ2PredecessorCapRefutationCore.lean` (SYZ2),
 and the kernel-cheap `binaryPow` from `Frontier/_PrizeShapePrimeP30.lean`, both with
-attribution, because those originals are `private` or not yet in the shared olean
-cache.
+attribution (historically those originals were `private` or not in the shared olean
+cache).  SYZ2 is now imported so that its own residual Prop is discharged
+(`syz2_overBudgetDegenerateStackExists`) and its reduction is used
+(`firstPrime_predecessor_cap_refuted_via_syz2`).
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
@@ -756,9 +759,10 @@ theorem badScalar_count_over_budget :
 /-! ### The SYZ2 residual, discharged, and the refutation -/
 
 /-- **The SYZ2 residual** (`OverBudgetDegenerateStackExists` of
-`Frontier/_SYZ2PredecessorCapRefutationCore.lean`, restated verbatim): there exists a
-stack whose `mcaEvent`-bad-scalar count at the `31/64`-predecessor radius strictly
-exceeds the `2^30` budget. -/
+`Frontier/_SYZ2PredecessorCapRefutationCore.lean`, restated verbatim; kept as a local name for
+API stability): there exists a stack whose `mcaEvent`-bad-scalar count at the
+`31/64`-predecessor radius strictly exceeds the `2^30` budget.  `syz2_overBudgetDegenerateStackExists`
+discharges SYZ2's own declaration. -/
 def OverBudgetDegenerateStackExists : Prop :=
   ∃ u : WordStack (ZMod P) (Fin 2) (Fin (2 ^ 30)),
     2 ^ 30 < (Finset.univ.filter fun γ : ZMod P =>
@@ -778,6 +782,24 @@ theorem overBudget_degenerate_stack_exists : OverBudgetDegenerateStackExists := 
   have := badScalar_count_over_budget
   rw [prodCode] at this
   exact this
+
+/-- **SYZ2's own residual, discharged.**  The `OverBudgetDegenerateStackExists` declared in
+`Frontier/_SYZ2PredecessorCapRefutationCore.lean` (identical body to the local restatement
+above) holds, via the explicit three-subset stack. -/
+theorem syz2_overBudgetDegenerateStackExists :
+    ArkLib.ProximityGap.Frontier.SYZ2PredecessorCapRefutationCore.OverBudgetDegenerateStackExists :=
+  overBudget_degenerate_stack_exists
+
+/-- **`¬hcount` through SYZ2's reduction.**  SYZ2's
+`firstPrime_predecessor_cap_refuted_of_overBudget_stack` applied to the discharged residual. -/
+theorem firstPrime_predecessor_cap_refuted_via_syz2 :
+    ¬ (∀ u : WordStack (ZMod P) (Fin 2) (Fin (2 ^ 30)),
+      (Finset.univ.filter fun γ : ZMod P =>
+        mcaEvent (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))
+          (predecessorRadius (2 ^ 30) (31 * 2 ^ 24))
+          (u 0) (u 1) γ).card ≤ 2 ^ 30) :=
+  ArkLib.ProximityGap.Frontier.SYZ2PredecessorCapRefutationCore.firstPrime_predecessor_cap_refuted_of_overBudget_stack
+    syz2_overBudgetDegenerateStackExists
 
 /-- **The `hcount` cap is FALSE** — machine-checked: the literal hypothesis of
 `firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count`
@@ -900,3 +922,5 @@ end ArkLib.ProximityGap.Frontier.SYZ3OverBudgetStackWitness
 #print axioms ArkLib.ProximityGap.Frontier.SYZ3OverBudgetStackWitness.badScalar_count_over_budget
 #print axioms ArkLib.ProximityGap.Frontier.SYZ3OverBudgetStackWitness.overBudget_degenerate_stack_exists
 #print axioms ArkLib.ProximityGap.Frontier.SYZ3OverBudgetStackWitness.firstPrime_predecessor_cap_refuted
+#print axioms ArkLib.ProximityGap.Frontier.SYZ3OverBudgetStackWitness.syz2_overBudgetDegenerateStackExists
+#print axioms ArkLib.ProximityGap.Frontier.SYZ3OverBudgetStackWitness.firstPrime_predecessor_cap_refuted_via_syz2

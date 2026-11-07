@@ -6,6 +6,7 @@ Authors: ArkLib Contributors (wf-C1)
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Data.Nat.Log
 import Mathlib.Analysis.MeanInequalities
+import Research.ProximityPrize.Frontier._AlmostAllPrimesWick
 
 /-!
 # Effective-Chebotarev ceiling on the bad-prize-prime count (#444, lane wf-C1)
@@ -93,21 +94,9 @@ open scoped BigOperators
 /-- **`2^{#distinct primes} ≤ N`.**  The distinct prime factors of a positive `N` each are `≥ 2`
 and their product divides `N`; hence `2 ^ (N.primeFactors).card ≤ N`. -/
 theorem two_pow_card_primeFactors_le {N : ℕ} (hN : N ≠ 0) :
-    2 ^ N.primeFactors.card ≤ N := by
-  have hdvd : ∏ p ∈ N.primeFactors, p ∣ N := Nat.prod_primeFactors_dvd N
-  have hle : ∏ _p ∈ N.primeFactors, 2 ≤ ∏ p ∈ N.primeFactors, p := by
-    apply Finset.prod_le_prod₀
-    · intro i _; exact Nat.zero_le 2
-    · intro p hp
-      exact (Nat.prime_of_mem_primeFactors hp).two_le
-  have hprodpos : 0 < ∏ p ∈ N.primeFactors, p := by
-    apply Finset.prod_pos
-    intro p hp; exact (Nat.prime_of_mem_primeFactors hp).pos
-  calc 2 ^ N.primeFactors.card
-        = ∏ _p ∈ N.primeFactors, 2 := by
-          rw [Finset.prod_const]
-    _ ≤ ∏ p ∈ N.primeFactors, p := hle
-    _ ≤ N := Nat.le_of_dvd (Nat.pos_of_ne_zero hN) hdvd
+    2 ^ N.primeFactors.card ≤ N :=
+  -- thin wrapper over the canonical copy in `_AlmostAllPrimesWick`
+  ArkLib.ProximityGap.Frontier.AlmostAllPrimesWick.two_pow_card_primeFactors_le (Nat.one_le_iff_ne_zero.mpr hN)
 
 /-- **Per-norm prime-divisor bound (`log₂` ceiling).**  A nonzero `N : ℕ` has at most `log₂ N`
 distinct prime factors.  This is the exact "a cyclotomic norm of bounded house has boundedly-many

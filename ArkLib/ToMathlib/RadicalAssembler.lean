@@ -60,6 +60,13 @@ all), the radical certificate *divides* the fiber certificate
 (`radical_cofactor_dvd_cofactor` / `cert_radical_dvd_cert_fiber`), so the assembler's
 original `hbig` transfers monotonically (`hbig_radical_of_hbig_fiber`): the radical route
 never worsens the §6 counting.
+
+**Scope caveat (F7).**  Moving the branch certificate to the radical cofactor does not escape
+the `BranchSeparationUnsat` obstruction: the centre fold is prime and divides
+`radical (evalX (C x₀) R) = H · (radical … /ₘ H)`; it cannot divide an irreducible `H` with
+`2 ≤ H.natDegree`, so it divides the radical cofactor and the radical branch certificate is
+identically zero there.  The radical assemblers therefore can be non-vacuous only for linear
+`H`, exactly like the non-radical ones.
 -/
 
 set_option linter.style.longLine false

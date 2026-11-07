@@ -68,7 +68,9 @@ structure PerPairFactorData (domain : ι₀ ↪ F₀) (k : ℕ) (δ : ℝ≥0)
       (fun γ : F₀ =>
         mcaEvent (ReedSolomon.code domain k : Set (ι₀ → F₀)) δ (u 0) (u 1) γ)
     ⊆ Index.biUnion Efactor
-  /-- the per-factor dichotomy: light, or an improving pair -/
+  /-- the per-factor dichotomy: light, or an improving pair. Since `d₀ d₁` are existentially
+  free, this is equivalent to `(Efactor ij).card ≤ max T n` (audit CW-B19-04;
+  `small_or_improvingPair_iff_card_le` in `Hab25CellDichotomyWiring`). -/
   hdichotomy : ∀ ij ∈ Index,
     (Efactor ij).card ≤ T ∨
     ∃ d₀ d₁ : ι₀ → F₀, ∀ z ∈ Efactor ij,

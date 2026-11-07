@@ -10,22 +10,28 @@ import ArkLib.Data.CodingTheory.ProximityGap.RSDistinctness
 
 The strict-Johnson BCIKS20 proximity gap needs, at each line parameter `z`, that the degree-`<(k+1)`
 interpolant of the close codeword is unique (`hunique` in the §6 wiring
-`Claim57JointAgreementWiring.lean`).  This looks like a unique-decoding statement, but it is required
+`BCIKS20/ListDecoding/JointAgreementWiring.lean`).  This looks like a unique-decoding statement, but it is required
 *above* the unique-decoding radius `(1−ρ)/2`, where two codewords can be `δ`-close to the same word.
 
-The resolution (BCIKS20 Claim 5.11): uniqueness above the UDR is purchased not by the `2e < n−k`
-unique-decoding inequality, but by the **Guruswami–Sudan curve matching domain**.  Each `δ`-close
-degree-`<(k+1)` interpolant `P` is a `Y`-factor of the specialized GS interpolant, so it agrees with
-the *shared* curve value `g` on a matching domain `D` whose size exceeds `k` (from the GS counting
-bundle).  Since the curve value `g` is the same for every close interpolant, any two of them agree on
-all of `D` — `≥ k+1` points — and so coincide by Reed–Solomon distinctness.
+**General per-parameter uniqueness is false in that regime.** Example: degree `< 2` polynomials
+evaluated on `10` distinct points of `F₁₁`, received word five `0`s followed by five `1`s. The
+constants `0` and `1` are both at relative distance `1/2 < 1 − √(2/10)` (strictly inside the
+Johnson radius) and agree at no coordinate, so they share no two-point domain; the nonzero
+multiplicity-one graph interpolant `Y(Y−1)` vanishes on this word, so graph-factor divisibility
+alone does not eliminate either candidate (audit 2026-10-28, PG-029; source-level, not a Lean
+theorem). Above the unique-decoding radius the close interpolants form a *list*, and `hunique`
+is a genuine hypothesis restricting `(u₀, u₁)`, not a consequence of the GS machinery.
 
-`degreeLT_eq_of_match_common_on_domain` is exactly this collapse engine: it consumes the
-curve-matching data (`P = g` and `P' = g` on `D`, `|D| ≥ k+1`) and produces `P = P'`.  Crucially it
-does **not** mention the unique-decoding radius, so it operates in the full strict-Johnson list
-regime.  The matching-domain construction (`P = g` on a large `D`) is the curve/multiplicity content
-supplied by the GS machinery (`Q_graph_factor_dvd_of_radius` + the §5 counting), discharging the
-`hQz_ne` non-degeneracy by `EvalOnZNonzero.card_badZ_le`.
+What this file proves is only the **branch-local collapse step** (in the spirit of BCIKS20
+Claim 5.11): two degree-`<(k+1)` polynomials that both match the *same* function `g` on the *same*
+domain `D` with `|D| ≥ k+1` are equal, by Reed–Solomon distinctness. That step does not mention the
+unique-decoding radius, but its hypotheses — a common `g` and a common large matching domain for
+the two interpolants — are exactly what fails for distinct list members. No in-tree producer
+currently constructs such a common domain for every close interpolant
+(`Q_graph_factor_dvd_of_radius` and the §5 counting give branch-local capture data, not universal
+decoder uniqueness), so this
+lemma does **not** discharge `hunique`; a precise producer with adequate branch restrictions would
+be needed first.
 -/
 
 set_option linter.style.longLine false
@@ -41,10 +47,10 @@ variable {F : Type} [Field F] {ι : Type} (domain : ι ↪ F)
 If two degree-`<(k+1)` interpolants `P, P'` both match a common curve-value function `g : ι → F` on a
 matching domain `D` of size `≥ k+1`, then `P = P'`.
 
-This holds with no unique-decoding hypothesis: the `≥ k+1` shared evaluation points come from the GS
-curve matching domain (`P = g` and `P' = g` on `D`), not from `2e < n−k`.  Hence it gives
-per-parameter interpolant uniqueness throughout the strict-Johnson list regime, where the
-correlated-agreement unique-decoding radius is exceeded. -/
+This holds with no unique-decoding hypothesis, but only because the common domain `D` and common
+function `g` are *assumed*. It does not give per-parameter interpolant uniqueness in the
+strict-Johnson list regime, where distinct close interpolants exist and need not share any
+matching domain (see the module docstring). -/
 theorem degreeLT_eq_of_match_common_on_domain {k : ℕ}
     {P P' : F[X]} (hP : P ∈ Polynomial.degreeLT F (k + 1))
     (hP' : P' ∈ Polynomial.degreeLT F (k + 1))

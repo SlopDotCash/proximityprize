@@ -18,10 +18,18 @@ point of its off-part:
 * `class_member_gamma_pinned` — `γ·Φ(x) = −(R₀−r)(x)` at every off-point;
 * `class_offpart_ratio_constant` — multi-point off-parts force the
   cross-multiplied ratio constancy (a stack constraint, division-free);
-* `cross_class_collision_pencil` — equal scalars realized in two classes
-  at points `x, y` put both points on the zero set of the rank-2 pencil
+* `cross_class_collision_pencil` — if the same scalar `γ` is realized in
+  two classes with witnesses `S₁`, `S₂`, then every point of the
+  **intersection** `S₁ ∩ S₂` lies on the zero set of the rank-2 pencil
   `Ψ = (R₀−r₁)·(R₁−q₂) − (R₀−r₂)·(R₁−q₁)` — the collision locus of the
   two candidate maps (expanding: `R₀·Δq − R₁·Δr + (r₁q₂ − r₂q₁)`).
+  Points of `S₁ ∪ S₂` outside the intersection are **not** controlled:
+  over `F_5` on domain `{0, 1}` take `γ = 0`, `R₀ = X`, `R₁ = 1`,
+  `q₁ = q₂ = 0`, `A₁ = A₂ = ∅`, `h₁ = h₂ = 1`, `r₁ = 0`, `r₂ = 1`,
+  `S₁ = {0}`, `S₂ = {1}`, `g₁ = g₂ = 1`; both class identities hold and
+  both `A`'s are maximal, yet `Ψ = X·1 − (X−1)·1 = 1` vanishes at neither
+  witness point.  A union / total off-part root count would need extra
+  pointwise equations linking both classes at each point.
 
 Probe match: the pencil's rotating cross-points and the 2-block's
 `γ_x = −f(x)` table are exactly images of these candidate maps.
@@ -92,8 +100,11 @@ theorem class_offpart_ratio_constant {γ : F} {g : F[X]}
   linear_combination -hpj
 
 /-- **The cross-class collision pencil**: if scalars of two classes
-coincide (`γ` realized in both), then at every off-point of each witness
-the rank-2 pencil `Ψ = (R₀−r₁)·(R₁−q₂) − (R₀−r₂)·(R₁−q₁)` vanishes. -/
+coincide (`γ` realized in both), then at every point of the intersection
+`S₁ ∩ S₂` of the two witnesses the rank-2 pencil
+`Ψ = (R₀−r₁)·(R₁−q₂) − (R₀−r₂)·(R₁−q₁)` vanishes.  The intersection
+hypothesis is essential: points of only one witness need not be zeros of
+`Ψ` (see the `F_5` example in the module docstring). -/
 theorem cross_class_collision_pencil {γ : F} {g₁ g₂ h₁ h₂ r₁ r₂ q₁ q₂ : F[X]}
     {A₁ A₂ S₁ S₂ : Finset (Fin n)}
     (hA₁ : ∀ i, i ∈ A₁ ↔ R₁.eval (dom i) = q₁.eval (dom i))

@@ -2,9 +2,11 @@
 Issue #304 — the satisfiable-bundle assembler: `Section5StrictDataFinOn.ofProducersOn`
 and the full producer assemblies wiring every landed supplier.
 
-Part 0 inlines the landed `ArkLib.ToMathlib.BCIKS20StrictDataFinOn.lean` verbatim (its
-source is on `main` but its `.olean` is not yet built, so the scratch re-elaborates it).
-Part 1 is new: the producer-side assembly of the satisfiable bundle.
+(Historical note: an earlier scratch version had a "Part 0" inlining
+`ArkLib.ToMathlib.BCIKS20StrictDataFinOn.lean` verbatim because its `.olean` was not yet built.
+That copy is gone: this file now imports `ArkLib.ToMathlib.BCIKS20StrictDataFinOn` directly and
+contains no inlined Part 0.)
+"Part 1" is the content of this file: the producer-side assembly of the satisfiable bundle.
 
 ## Supplier map (everything landed, axiom-clean)
 

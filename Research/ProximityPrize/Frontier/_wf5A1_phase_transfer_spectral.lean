@@ -6,7 +6,7 @@ Authors: ArkLib Contributors (wf-A1)
 import Mathlib
 
 /-!
-# Lane A1 — the phase-aware dyadic-transfer spectral-radius reduction, and its refutation
+# Lane A1 — the phase-aware dyadic-transfer spectral-radius reduction, and probe data against it
 
 Issue lalalune/ArkLib#444 (Ethereum Proximity Prize, thin 2-power Gauss-period wall).
 
@@ -28,8 +28,11 @@ spectral radius of the transfer operator `T` in the "RS-restricted sector" by
 
 This file proves the deterministic telescope (the part that IS true and Lean-
 provable), states the exact sufficient lemma the strategy reduces to (a
-geometric-mean threshold), and records the machine-checkable REFUTATION of that
-lemma from the measured data.
+geometric-mean threshold), and records measured probe data showing that the
+lemma's hypothesis fails for the measured worst-frequency ratios.  The recorded
+data are typed-in rationals, not Lean objects derived from any Gauss period, and
+violating the hypothesis of a *sufficient* lemma refutes nothing in Lean: the
+evidence that the route fails is numerical.
 
 ## What this file contributes (axiom-clean)
 
@@ -39,10 +42,12 @@ lemma from the measured data.
    mean of ratios is ≤ √2, the telescope yields the dyadic √-law `M(2^L) ≤
    M(1)·2^(L/2)` (= `√n · M(1)`).  This is the precise inequality lane A1 reduces
    the prize bound to.
-4. `geomeanThresholdRefuted` : the measured countermodel.  The per-level ratios
-   `[ρ₀,…]` at `p = 67073, n = 256` have geometric mean `1.5 > √2`, so the
-   sufficient lemma's hypothesis is FALSE worst-case.  We package the measured
-   ratio product as a rational lower bound and prove it exceeds `(√2)^N`.
+4. `measuredRatios_prod_exceeds_sqrt2_pow` : recorded probe data (arithmetic
+   check only).  The per-level ratios measured at `p = 67073, n = 256` have
+   geometric mean `≈ 1.5 > √2`; we type in rational lower bounds and check that
+   their product exceeds `(√2)^6`.  This is a numerical sanity check of the
+   measurement, not a Lean refutation: the statement is a bare existential that
+   is trivially satisfiable (e.g. `ρ ≡ 2`) and is not tied to any Gauss period.
 
 No `sorry`, no `axiom`, no `native_decide`.
 
@@ -122,7 +127,10 @@ theorem sqrtLaw_of_geomean_le {M ρ : ℕ → ℝ} {N : ℕ}
   refine ht.trans ?_
   exact mul_le_mul_of_nonneg_left hprod hM0
 
-/-! ## 3. The refutation of the sufficient lemma's hypothesis -/
+/-! ## 3. Recorded probe data: the measured ratios violate the sufficient lemma's hypothesis
+
+Everything in this section is an arithmetic check on hard-coded rationals copied
+from a probe; nothing here is derived from a Gauss-period object. -/
 
 /--
 Measured per-level worst-frequency ratios at `p = 67073`, `n = 2^8 = 256`,
@@ -150,9 +158,11 @@ noncomputable def measuredRatioFun : ℕ → ℝ
 /--
 The measured product of six per-level ratios EXCEEDS `(√2)^6 = 8`.
 Lower-bound product `= (19·16·11·15·12·15)/10^6 = 9.0288 > 8`.
-This refutes the hypothesis `∏ρ ≤ (√2)^N` of `sqrtLaw_of_geomean_le` at `N = 6`:
-the geometric mean of the worst-frequency ratios is `> √2`, so the phase-aware
-worst-frequency telescope CANNOT deliver the dyadic √-law.
+So the *measured* ratios (as recorded) violate the hypothesis `∏ρ ≤ (√2)^N` of
+`sqrtLaw_of_geomean_le` at `N = 6`.  This is numerical evidence that the
+worst-frequency telescope does not deliver the dyadic √-law; it is not a Lean
+proof of that (the rationals are typed in, and failing a sufficient condition does
+not refute the conclusion).
 -/
 theorem measuredProd_gt_sqrt2_pow_six :
     (Real.sqrt 2) ^ 6 < (measuredProd : ℝ) := by
@@ -168,13 +178,14 @@ theorem measuredProd_gt_sqrt2_pow_six :
   norm_num
 
 /--
-**Refutation packaged for the descent form.**  There is a nonnegative ratio
-sequence `ρ` (the measured worst-frequency ratios) and `N = 6` for which
-`(√2)^N < ∏ρ`, i.e. the geometric-mean threshold that `sqrtLaw_of_geomean_le`
-needs is FALSE.  Hence the prize bound does NOT follow from the phase-aware
-worst-frequency spectral radius being `≤ √2` — because that radius is `> √2`.
+**Recorded probe data, packaged for the descent form (not a refutation).**  The
+hard-coded step function `measuredRatioFun` (rational lower bounds of the measured
+worst-frequency ratios) is nonnegative and its first six values have product
+`> (√2)^6`.  As a bare existential this is trivially satisfiable (`ρ ≡ 2` also
+works) and carries no Gauss-period content; it only certifies the arithmetic of
+the recorded measurement.  (Formerly named `geomeanThresholdRefuted`.)
 -/
-theorem geomeanThresholdRefuted :
+theorem measuredRatios_prod_exceeds_sqrt2_pow :
     ∃ (ρ : ℕ → ℝ) (N : ℕ),
       (∀ i, i < N → 0 ≤ ρ i) ∧ (Real.sqrt 2) ^ N < ∏ i ∈ range N, ρ i := by
   -- explicit piecewise ratio sequence (measured worst-frequency ratios, rational lower bounds)
@@ -207,4 +218,4 @@ end ProximityGap.Frontier.PhaseTransferSpectral
 #print axioms ProximityGap.Frontier.PhaseTransferSpectral.telescope
 #print axioms ProximityGap.Frontier.PhaseTransferSpectral.sqrtLaw_of_geomean_le
 #print axioms ProximityGap.Frontier.PhaseTransferSpectral.measuredProd_gt_sqrt2_pow_six
-#print axioms ProximityGap.Frontier.PhaseTransferSpectral.geomeanThresholdRefuted
+#print axioms ProximityGap.Frontier.PhaseTransferSpectral.measuredRatios_prod_exceeds_sqrt2_pow

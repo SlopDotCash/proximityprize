@@ -1,5 +1,20 @@
 # Direct char-p sup-norm assault (10 angles + adversarial verify) — outcome
 
+> **Correction (2026-10-28 audit, T48; cross T47/T87/T91).**
+> - **Wrong regime label.** `n = 64`, `p = 65537` is not a `β = 4` in-band cell. Since
+>   `65537 < 64³`, `β = log_n p ≈ 2.67 < 3`, as the same paragraph's violation row already says. The
+>   "at β=4 the bound holds robustly" sentence therefore cites no `β = 4` evidence.
+> - **No universal thinness separation.** "Violations only at β<3" and "a proof MUST use β≥4" are
+>   finite observations. The recorded thin cell `n = 64`, `p = 17318209` (`β ≈ 4.008`) has
+>   `E_2 = 13632`, so `p·E_2 − n⁴ > p·3n²` and `a_2 > 1` there (T91; G173). The `r = 2` base needs
+>   the Sidon hypothesis, which fails in that cell.
+> - **Not equivalences.** One supremum estimate is not equivalent to a family of moment bounds. The
+>   moment bounds `a_r ≤ 1` (`r ≤ log m`) imply the supremum bound, but a supremum bound gives only
+>   `∑_{b≠0} ‖η_b‖^(2r) ≤ (p − 1)·M^(2r)`, not `a_r ≤ 1`. So "⟺" and "the whole prize is the single inductive step
+>   `c_r ≤ 1`" overstate a one-way sufficient condition. That condition also does not by itself
+>   supply the MCA bridge. "Undecidable on reachable n" and "eliminates" are likewise statements
+>   about the tested inequalities, not about all possible closed forms or methods.
+
 Target: PROVE M(n)=max_{b≠0}|Σ_{x∈μ_n}e_p(bx)| ≤ C√(n log m) at depth r≈log m (= BCHKS 1.12 = p^{1/4}
 Bourgain Problem 5). Every angle tasked to create a full/partial/conditional/almost-all bound; adversarially
 verified prize-faithfully. OUTCOME: no unconditional prize bound (expected — recognized open wall), but three

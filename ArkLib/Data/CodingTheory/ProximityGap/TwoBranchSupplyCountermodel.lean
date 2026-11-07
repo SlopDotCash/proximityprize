@@ -401,11 +401,16 @@ destroys the cap; (iii) whether `t_k(n) = o(n²)` at fixed cap is Erdős's
 open $100 problem (Brass–Moser–Pach, Conjecture 12) — the free-domain supply
 wall IS that problem.  Production engine words moreover live on SMOOTH
 MULTIPLICATIVE domains, where SS's arithmetic-progression mechanism (and the
-subfield/Frobenius/GAP-grid mechanisms) have no room: the production-relevant
-open target is `SmoothDomainTwoRegimeLaw` below.
+subfield/Frobenius/GAP-grid mechanisms) have no room; the proposed restriction
+to them is `SmoothDomainTwoRegimeLaw` below — but that restriction does not
+repair the law (see the status line).
 
-Status: open at probe/production scales (adversarially calibrated
-`C₀ ≤ 1.91`, `probe_two_regime_adversarial.py`); asymptotically false for
+Status: **REFUTED at `C₀ = 2`** — `cappedSupplyTwoRegimeLaw_two_false` in
+`TwoBranchSmoothDomainRefutation.lean` (prime field `𝔽₆₅₅₃₇`, smooth domain
+`μ₃₂`, `k = 14`, `m = 1`, word `X^16`: at least `70 > 64` explainable cores, via
+the multiplicative coset supply `EsymmFiber.rootsOfUnity_dyadic_supply`).  The
+adversarial probe calibration `C₀ ≤ 1.91` (`probe_two_regime_adversarial.py`)
+is empirical only and has no universal force; also asymptotically false for
 free domains by [SS13]-transport. -/
 def CappedSupplyTwoRegimeLaw (C₀ : ℕ) : Prop :=
   ∀ (p : ℕ) [Fact p.Prime],
@@ -418,14 +423,19 @@ def CappedSupplyTwoRegimeLaw (C₀ : ℕ) : Prop :=
       ≤ C₀ * (n + n.choose (k + m + 1) / p ^ (m + 1))
 
 open Classical in
-/-- **THE PRODUCTION-RELEVANT OPEN TARGET (the μ_n two-regime law)**: the
-capped supply law on SMOOTH MULTIPLICATIVE domains over prime fields — the
-domains the deep-band engine actually uses.  Every known superlinear
-mechanism requires additive structure the multiplicative group `μ_n` lacks:
-subfields (excluded: prime `q`), Frobenius `𝔽_p`-lines (excluded: prime `q`),
-GAP/grid rows (additive), and the [SS13] tuples (arithmetic progressions —
-`μ_n` carries only the mean count of long APs).  Status: open; this is the
-sharpest production form of the sub-Johnson supply wall. -/
+/-- **The proposed μ_n two-regime law (REFUTED at `C₀ = 2`)**: the capped
+supply law on SMOOTH MULTIPLICATIVE domains over prime fields — the domains the
+deep-band engine actually uses.  It was proposed on the grounds that every
+superlinear mechanism needs additive structure `μ_n` lacks (subfields,
+Frobenius `𝔽_p`-lines, GAP/grid rows, [SS13] arithmetic progressions).  That
+list omitted the multiplicative coset supply of
+`EsymmFiber.rootsOfUnity_dyadic_supply` (unions of `μ_d`-cosets), which already
+beats the bound: `smoothDomainTwoRegimeLaw_two_false` in
+`TwoBranchSmoothDomainRefutation.lean` refutes this Prop at `C₀ = 2` on
+`μ₃₂ ⊆ 𝔽₆₅₅₃₇` (`k = 14`, `m = 1`, word `X^16`, strictly interior).  Status:
+not an open target in this form; any replacement smooth-domain supply law must
+include the coset supply family as an explicit term.  (This concerns the named
+universal `Prop`, not a particular production threshold such as `n = 2^30`.) -/
 def SmoothDomainTwoRegimeLaw (C₀ : ℕ) : Prop :=
   ∀ (p : ℕ) [Fact p.Prime],
     ∀ (n : ℕ) [NeZero n], ∀ (γ : ZMod p), orderOf γ = n →

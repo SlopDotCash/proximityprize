@@ -1,5 +1,18 @@
 # Root-number residual attack — RESULT: an EXACT new reduction + the correct conditional (subconvexity, NOT GRH), 2026-06-15
 
+> **Correction (2026-10-28 audit, T48).**
+> - **An identity is not an equivalence.** The shift-autocorrelation identity for `|A(h)|` is
+>   useful. But "prize-flatness residual ⟺ bounding the short multiplicative sum" and "the prize IS
+>   the Paley Graph Conjecture" promote it to an equivalence with the additive spectral maximum
+>   `M(n)`. That would need a bound covering all Fourier phases and coefficients in the transform,
+>   which is not supplied. A proposed shifted-character estimate should be stated as a hypothesis,
+>   and its implication to `M(n)` proved, before it is called an established conditional
+>   implication.
+> - **Correlation does not show irrelevance.** A measured Pearson correlation of `0` between
+>   `arg ε(χ)` and `|L(1/2, χ)|` cannot prove that GRH is logically irrelevant. "Proven irrelevant" is
+>   withdrawn; GRH is simply not the hypothesis this route uses.
+> - The conjugate-symmetry correction (correction 1 below) stands.
+
 Attacked the named residual (effective fixed-q equidistribution of the root-number phase sequence) from
 10 directions + an all-other sweep. NO unconditional path (wall re-confirmed), but a genuine clean output.
 

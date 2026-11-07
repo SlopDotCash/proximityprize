@@ -1259,13 +1259,25 @@ theorem βHensel_weight_bound_at_of_anchored (x₀ : F) (R : F[X][X][Y])
 
 /-! ## The capstone composition: (P1) conditional only on the per-cell B-budgets -/
 
-/-- **The (P1) weight bound, conditional ONLY on the per-cell B-coefficient budgets.**
+/-- **The (P1) weight bound, conditional ONLY on the per-cell B-coefficient budgets of the
+live cells.**
 Composes the entire rebased apparatus: the proven `ClaimA2.weight_ξ_bound` supplies the
-ξ-budget; the per-cell budget hypothesis supplies `nB` with the rebased reduced need;
-`rebasedSuccTermBound_of_B_budget` (the threaded per-term theorem) discharges every cell;
-`βHensel_weight_bound_rebased` (the assembled induction) closes the invariant; and the
-in-tree `βHensel_weight_bound_of_structured_weight_rebased` collapses it into the loose
-Claim-A.2 target `(2t+1)·d_R·D` consumed by the kill-target/Claim-5.10 chain. -/
+ξ-budget; vanished cells (`d_R < σλ`) are discharged by `B_coeff_eq_zero_of_natDegreeY_lt`
+(the whole term is `0`); for live cells (`σλ ≤ d_R`) the per-cell budget hypothesis supplies
+`nB` with the rebased reduced need and `rebasedSuccTermBound_of_B_budget` (the threaded
+per-term theorem) discharges the cell; `βHensel_weight_bound_rebased` (the assembled induction)
+closes the invariant; and the in-tree `βHensel_weight_bound_of_structured_weight_rebased`
+collapses it into the loose Claim-A.2 target `(2t+1)·d_R·D` consumed by the
+kill-target/Claim-5.10 chain.
+
+**Why `hbudget` is restricted to live cells (audit PG-332).**  An earlier version quantified the
+numerical budget over *every* order and surviving partition.  That premise is unsatisfiable:
+with `L = (d_R − 1)·(D − d_H + 1)`, `k = L + 1`, `i1 = 0` and the all-ones partition of `L + 2`
+(which survives, `σλ = L + 2`), the budget would need
+`nB + (L + 1)·(D + 1 − d_H) + … ≤ L`, impossible since `D + 1 − d_H ≥ 1`.  Such cells have
+`σλ > d_R`, so their coefficient vanishes and need no budget.  Restricting to `σλ ≤ d_R` removes
+this contradiction; it does not by itself supply the remaining live-cell budgets, which stay an
+explicit input. -/
 theorem βHensel_weight_bound_of_cell_budgets (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H) (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -1275,6 +1287,7 @@ theorem βHensel_weight_bound_of_cell_budgets (x₀ : F) (R : F[X][X][Y])
     (hD_Rx0 : D ≥ Bivariate.totalDegree (Bivariate.evalX (Polynomial.C x₀) R))
     (hbudget : ∀ (k i1 : ℕ), i1 ∈ Finset.range (k + 2) →
       ∀ lam : Nat.Partition (k + 1 - i1), (k + 1) ∉ lam.parts →
+      sigmaLambda lam ≤ Bivariate.natDegreeY R →
       ∃ nB : ℕ,
         weight_Λ_over_𝒪 hH (B_coeff H x₀ R i1 lam) D ≤ WithBot.some nB ∧
         nB + (sigmaLambda lam - 1) * (D + 1 - Bivariate.natDegreeY H)
@@ -1290,9 +1303,21 @@ theorem βHensel_weight_bound_of_cell_budgets (x₀ : F) (R : F[X][X][Y])
     ClaimA2.weight_ξ_bound x₀ hH hHyp hdR2 hDH hD_Rx0
   have hcore := βHensel_weight_bound_rebased x₀ R hHyp hH hDH
     (fun k hIH i1 hi1 lam hlam => by
-      obtain ⟨nB, hB, hred⟩ := hbudget k i1 hi1 lam hlam
-      exact rebasedSuccTermBound_of_B_budget x₀ R hHyp hH hDH k hIH i1 hi1 lam hlam
-        hξ hB hred) t
+      by_cases hzero : Bivariate.natDegreeY R < sigmaLambda lam
+      · -- the vanished cell: `B = 0` kills the whole term
+        rw [B_coeff_eq_zero_of_natDegreeY_lt x₀ R i1 lam hzero]
+        have hterm : W𝒪 H ^ (i1 + deltaSave i1 - 1) *
+            ClaimA2.ξ x₀ R H hHyp ^ (2 * i1 + sigmaLambda lam - 2) * 0 *
+            partitionProd lam
+              (fun l => if _h : l < k + 1 then βHensel H x₀ R hHyp l else 0) = 0 :=
+          (congrArg (fun z : 𝒪 H => z *
+            partitionProd lam (fun l => if _h : l < k + 1 then βHensel H x₀ R hHyp l else 0))
+              (mul_zero _)).trans (zero_mul _)
+        rw [hterm, weight_Λ_over_𝒪_zero]
+        exact bot_le
+      · obtain ⟨nB, hB, hred⟩ := hbudget k i1 hi1 lam hlam (not_lt.mp hzero)
+        exact rebasedSuccTermBound_of_B_budget x₀ R hHyp hH hDH k hIH i1 hi1 lam hlam
+          hξ hB hred) t
   unfold structuredBoundRebased at hcore
   exact hcore
 

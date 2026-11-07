@@ -19,9 +19,16 @@ into a single per-level descent inequality (the remaining open input).
 Numerics (`probe_gauss_period_{parallelogram,bstar}.py`, `p ≈ n^4`, `n = 8,16,32`): at `b*` the two
 coset periods are `cos = 1.0000` aligned EXACTLY — because for `4 ∣ n`, `−1 = ζ^{n/2} ∈ μ_{n/2}`, each
 coset is negation-symmetric, so `A, B` are **real for every `b`** (`η_b(μ_n)` is a real Gaussian
-period); the alignment is just *same sign* at `b*` (NOT `A = B`: `n=8`, `A=−3.70 ≠ B=−3.86`).  Maxima
-balanced (`M_untw ≈ M_tw`).  So `‖η_{b*}(μ_n)‖ = A_{b*}+B_{b*}` and the √2-descent reduces to the real
-two-term inequality `A_{b*}+B_{b*} ≤ √2·M_{n/2}·(1+log-corr)`.
+period); the observed alignment is just *same sign* at `b*` (NOT `A = B`: `n=8`,
+`A=−3.70 ≠ B=−3.86`).  Maxima balanced (`M_untw ≈ M_tw`).  For real `A, B` one always has
+`‖η_b(μ_n)‖ = |A + B|`, and when `A, B` have the same sign this equals `|A| + |B|` (in the
+`n = 8` example both are negative, so `‖η_{b*}‖ = |A + B| = 7.56`, whereas `A + B < 0`).  So the
+√2-descent reduces to the real two-term inequality
+`|A_{b*}| + |B_{b*}| ≤ √2·M_{n/2}·(1+log-corr)` — *given* the same-sign observation.  The file
+proves the parallelogram identity, the twisted-difference and disjoint-sum identities, and the
+reality of periods over negation-closed sets (`period_conj_eq_of_neg_closed`,
+`period_im_zero_of_neg_closed`); none of these needs or yields a sign condition, and the
+same-sign/phase alignment at a maximizer is **not** proved here.
 -/
 open Finset
 
@@ -40,8 +47,9 @@ law gives the EXACT recursion
 
 Taking `max_b` and using that `A, B` are values of the level-`(n/2)` subgroup period, this reduces
 the prize bound `max_b‖η_b(μ_n)‖ ≲ √(n·log(q/n))` to a **per-level descent**: at the level-`n`
-maximizer `b*` the two cosets are *aligned* (`cos = 1.0000` exactly — `A, B` real for `4 ∣ n`, same
-sign at `b*`; not `A = B`) so `‖η_{b*}(μ_n)‖ = A_{b*}+B_{b*}`, and the √2-descent needs the
+maximizer `b*` the two cosets are numerically observed to be *aligned* (`cos = 1.0000` — `A, B`
+real for `4 ∣ n`, same sign at `b*`; not `A = B`) so `‖η_{b*}(μ_n)‖ = |A_{b*}+B_{b*}|
+= |A_{b*}| + |B_{b*}|` (absolute values needed: both can be negative), and the √2-descent needs the
 *sub-maximality* of `‖A‖ = ‖η_{b*}(μ_{n/2})‖` (with its same-sign partner `B`) relative to the level-`(n/2)` max — the structural (open) core, now stated as one
 recursive inequality rather than a depth-`log q` moment estimate. This lemma is the exact, reusable
 backbone; the descent inequality is the single remaining (open) input. -/

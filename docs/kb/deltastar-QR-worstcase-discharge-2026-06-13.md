@@ -30,7 +30,11 @@ The mechanism is the *classical quadratic Gauss-sum magnitude* `‖τ‖² = p` 
 in-tree `gaussSum_normSq`): `η_b(QR) = (χ(b)·τ − 1)/2` (in-tree `eta_QR_eq`), and the triangle
 inequality with `‖χ(b)‖=1`, `‖τ‖=√p` gives `‖η_b‖ ≤ (√p+1)/2`. No BGK, no Weil-for-thin-subgroups,
 no additive-energy sum-product, no moment method — index 2 is the ONE case where √-cancellation is
-classical (the Gauss sum is evaluated exactly). So `hits_a_wall = false`, and the proof's
+classical (the Gauss sum is evaluated exactly). *(Superseded 2026-10-28, audit T48: index 2 is not
+the only classical square-root case. The companion
+`deltastar-constant-index-sqrt-cancellation-2026-06-13.md` / `ConstantIndexGaussSumBound.lean`
+generalizes it to every fixed index `m ≥ 2`, with primitive `ψ`, via the classical Gauss-sum
+magnitude.)* So `hits_a_wall = false`, and the proof's
 correctness is independent of `p`, the regime, or the prime.
 
 ## Honest scope

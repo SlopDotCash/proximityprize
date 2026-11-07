@@ -10,30 +10,49 @@ import ArkLib.ToMathlib.MatchingExtractor
 /-!
 # Matching Geometry and Finite-Range Pointwise Supply
 
-This module formalizes the construction of the matching point family (`mpFin`) for the
-finite-range proximity gap bundle `BetaCurveInputFin`. We extract the per-place geometry
-independent of the truncation index $t$, showing that a single coordinate place geometry
-serves every index in the range $[k, T]$.
+This module formalizes the assembly of the matching point family (`mpFin`) for the
+finite-range proximity gap bundle `BetaCurveInputFin` from supplied per-place data. We extract
+the per-place data independent of the truncation index $t$, showing that a single coordinate
+place geometry serves every index in the range $[k, T]$ (see **Scope** below for what the
+structures do and do not enforce).
 
 ## Mathematical Context
 
 Let $F$ be a field and $H \in F[X][Y]$ be an irreducible polynomial defining the algebraic curve.
-For each matching place $z \in F$ and specialization root, the local geometry of the Hensel lift
-is captured by the `PlaceGeometry` structure. This packages:
-1. The matching polynomial $f_z(Y) \in F[[X]][Y]$.
-2. The specialized power series $a_\beta = \pi_z(\gamma)$ and the proximate root $a_P = P_z$.
-3. The common root approximation $a_0 = \alpha_0$.
-4. Pointwise root memberships and congruences modulo $X$.
-5. Separability of the matching polynomial.
+For each matching place $z \in F$ and specialization root, the `PlaceGeometry` structure has the
+*shape* of the local geometry of the Hensel lift.  It packages (intended readings in parentheses):
+1. A polynomial $f \in F[[X]][Y]$ (the matching polynomial $f_z$).
+2. Power series $a_\beta$, $a_P$ (the specialization $\pi_z(\gamma)$ and the proximate root
+   $P_z$).
+3. A power series $a_0$ (the common root approximation $\alpha_0$).
+4. Root memberships and congruences modulo $X$ for the supplied series.
+5. Separability of the supplied polynomial.
+
+**Scope.**  None of the intended readings is enforced: `PlaceGeometry z` has no field or equality
+tying $f$, $a_\beta$, $a_P$, $a_0$ to $R$, to $\gamma$, to the place $z$ (which the structure does
+not even use) or to a decoded polynomial; likewise `BridgeData` fixes nothing about `w`, `x`, `a`,
+`e` beyond `w, x ≠ 0` and the coefficient reading `hαβ` (the identifications `w = π_z(W)`,
+`x = π_z(ξ)`, `a = t + 1`, `e = e_t` are intended readings only).  For instance `f := X` with all
+three series `0` is a `PlaceGeometry` at every `z`, and with `w = x := 1`, `a = e := 0` its
+`BridgeData` exists exactly when `π_z z root (betaRec … t) = 0`.  So the matching points built here
+are the same abstract `BetaMatchingVanishes.MatchingPoint` interface, which is equivalent to its
+scalar conclusion (`BetaMatchingVanishes.MatchingPoint.nonempty_iff_pi_z_eq_zero`).  The conditional
+Hensel arguments below are valid, but these structures are not by themselves actual decoder
+geometry.  The links are pinned only in production constructors such as
+`placeGeometry_of_localSeries` (`PlaceGeometryFromLocalSeries.lean`: `f` the specialized surface,
+$a_\beta$ the constructed local series, $a_0$ its constant term) together with the bridge data
+used by `matchingPoint_of_localSeries` (`w := 1`, `x := π_z(ξ)`, `a := t + 1`, `e := 2t − 1`,
+from the proved identity `coeff_localSeries_mul`); the remaining inputs of such constructors must
+be judged on their own.
 
 We show that:
-* Under the separability condition, the derivative $f_z'(a_0)$ is a unit. This discharges
-  the unit-derivative obligation of the matching point family from the algebraic properties
-  of the curve.
+* Under the separability condition, the derivative $f'(a_0)$ is a unit. This discharges
+  the unit-derivative field of the matching point from separability of the supplied polynomial
+  (plus the root and congruence facts).
 * A single place geometry configuration can be reused at every index $t \in [k, T]$ in the
   finite range, requiring only the pointwise specialized coefficient readings (`BridgeData`)
   to vary with $t$.
-* If the root membership is supplied as factor divisibility $(Y - a_P) \mid f_z$ (e.g. from
+* If the root membership is supplied as factor divisibility $(Y - a_P) \mid f$ (e.g. from
   the Guruswami-Sudan factor), it is converted to the root membership condition.
 
 ## Key Formalizations
@@ -72,15 +91,21 @@ variable {x₀ : F} {R : F[X][X][Y]} {H : F[X][Y]}
 
 /-! ### Coordinate Place Geometry -/
 
-/-- Packages the $t$-uniform matching-place geometry at a single coordinate $z$. -/
+/-- Packages $t$-uniform data in the shape of the matching-place geometry at a coordinate $z$.
+
+The fields are unconstrained (the index $z$ is not used by any field): the docstrings below give
+intended readings only.  Production constructors such as `placeGeometry_of_localSeries` pin the
+data to the actual objects. -/
 structure PlaceGeometry (z : F) : Type where
-  /-- The matching polynomial $f_z \in (F[[X]])[Y]$. -/
+  /-- Intended reading: the matching polynomial $f_z \in (F[[X]])[Y]$.  Unconstrained here. -/
   f : Polynomial (PowerSeries F)
-  /-- The power-series specialisation $a_\beta = \pi_z(\gamma)$ at $z$. -/
+  /-- Intended reading: the power-series specialisation $a_\beta = \pi_z(\gamma)$ at $z$.
+  Unconstrained here. -/
   aβ : PowerSeries F
-  /-- The proximate-root power series $a_P = P_z$. -/
+  /-- Intended reading: the proximate-root power series $a_P = P_z$.  Unconstrained here. -/
   aP : PowerSeries F
-  /-- The common degree-0 simple approximation $a_0 = \alpha_0 \pmod X$. -/
+  /-- Intended reading: the common degree-0 simple approximation $a_0 = \alpha_0 \pmod X$.
+  Unconstrained here. -/
   a₀ : PowerSeries F
   /-- Proof that $a_\beta$ is a root of $f$. -/
   haβ_root : f.IsRoot aβ
@@ -101,30 +126,38 @@ theorem PlaceGeometry.hderiv {z : F} (g : PlaceGeometry (F := F) z) :
 
 /-! ### Pointwise Specialized Bridging Facts -/
 
-/-- Packages the specialized coefficient readings at the truncation index $t$ and coordinate $z$. -/
+/-- Packages specialized coefficient readings at the truncation index $t$ and coordinate $z$.
+
+Only `w, x ≠ 0` and the stated readings are required: the identifications of `w`, `x`, `a`, `e`
+with $\pi_z(W)$, $\pi_z(\xi)$, $t + 1$, $e_t$ are intended readings, not fields, and with `aβ`
+unconstrained the reading `hαβ` is itself an assumption about `betaRec`. -/
 structure BridgeData (t : ℕ) (z : F) (root : rationalRoot (H_tilde' H) z)
     (aβ aP : PowerSeries F) : Type where
-  /-- The $\pi_z$-specialised $\alpha_t$-identity exponents. -/
+  /-- The base of the $W$-power in the reading (intended: $w = \pi_z(W)$; unconstrained). -/
   w : F
-  /-- The $\pi_z$-specialised $\alpha_t$-identity exponent base for $\xi$. -/
+  /-- The base of the $\xi$-power in the reading (intended: $x = \pi_z(\xi)$; unconstrained). -/
   x : F
-  /-- The $W$-power exponent ($a = t + 1$). -/
+  /-- The $W$-power exponent (intended: $a = t + 1$; unconstrained). -/
   a : ℕ
-  /-- The $\xi$-power exponent ($e = e_t$). -/
+  /-- The $\xi$-power exponent (intended: $e = e_t$; unconstrained). -/
   e : ℕ
   /-- The $\pi_z$-specialised $\alpha_t$-identity coefficient reading. -/
   hαβ : PowerSeries.coeff t aβ =
     (π_z z root) (betaRec x₀ R H hHyp Bcoeff t) / (w ^ a * x ^ e)
-  /-- Proof that $w = \pi_z(W) \neq 0$. -/
+  /-- Proof that $w \neq 0$. -/
   hw : w ≠ 0
-  /-- Proof that $x = \pi_z(\xi) \neq 0$. -/
+  /-- Proof that $x \neq 0$. -/
   hx : x ≠ 0
-  /-- Proof that the proximate root vanishes at index $t$. -/
+  /-- Proof that $a_P$ vanishes at index $t$. -/
   haP_coeff : PowerSeries.coeff t aP = 0
 
 /-! ### Pointwise Matching Point Constructor -/
 
-/-- Constructs a `MatchingPoint` instance by combining place geometry and bridging data. -/
+/-- Constructs a `MatchingPoint` instance by combining place geometry and bridging data.
+
+The result is the abstract `MatchingPoint` interface (equivalent to its scalar conclusion); it is
+actual decoder geometry only when `g` and `bd` come from a pinned constructor such as
+`placeGeometry_of_localSeries`. -/
 def mkMatchingPoint_of_graph_vanishing {t : ℕ} {z : F} {root : rationalRoot (H_tilde' H) z}
     (g : PlaceGeometry (F := F) z)
     (bd : BridgeData (x₀ := x₀) (R := R) (H := H) (hHyp := hHyp) (Bcoeff := Bcoeff)

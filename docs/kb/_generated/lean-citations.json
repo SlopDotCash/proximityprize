@@ -276,6 +276,9 @@
     "ArkLib/Data/CodingTheory/AGL24ExtensionLift.lean": [
       "AGL24"
     ],
+    "ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean": [
+      "AGL24"
+    ],
     "ArkLib/Data/CodingTheory/AGL24FrankDescent.lean": [
       "AGL24"
     ],
@@ -3631,6 +3634,9 @@
       "NOZ26",
       "NS24"
     ],
+    "ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean": [
+      "KZG10"
+    ],
     "ProximityPrize/Extensions/Data/CodingTheory/Basic/LinearCode.lean": [
       "BCGM25"
     ],
@@ -3748,12 +3754,6 @@
     ],
     "ProximityPrize/Extensions/ProofSystem/BatchedFri/Security.lean": [
       "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/General.lean": [
-      "FRI1216"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/SingleRound.lean": [
-      "FRI1216"
     ],
     "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/General.lean": [
       "DP24"
@@ -5092,6 +5092,7 @@
       "ArkLib/Data/CodingTheory/AGL24DualZeroPatternPinned.lean",
       "ArkLib/Data/CodingTheory/AGL24EvalToSymbolic.lean",
       "ArkLib/Data/CodingTheory/AGL24ExtensionLift.lean",
+      "ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean",
       "ArkLib/Data/CodingTheory/AGL24FrankDescent.lean",
       "ArkLib/Data/CodingTheory/AGL24FrankInterface.lean",
       "ArkLib/Data/CodingTheory/AGL24FrankUncrossingStep.lean",
@@ -5981,8 +5982,6 @@
     "FRI1216": [
       "ArkLib/Data/Polynomial/CosetChunks.lean",
       "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
-      "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/General.lean",
-      "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/SingleRound.lean",
       "ProximityPrize/Extensions/ProofSystem/Fri/Spec/SingleRound.lean"
     ],
     "GCXK25": [
@@ -6314,7 +6313,8 @@
       "ArkLib/Data/CodingTheory/ReedSolomon/Multiplicity.lean"
     ],
     "KZG10": [
-      "ArkLib/Commitments/Functional/KZG/Basic.lean"
+      "ArkLib/Commitments/Functional/KZG/Basic.lean",
+      "ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean"
     ],
     "KZG10TR": [
       "ArkLib/Commitments/Functional/KZG/Binding.lean"

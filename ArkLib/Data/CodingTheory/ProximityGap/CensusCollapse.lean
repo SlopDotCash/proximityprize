@@ -6,16 +6,21 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.CosetStrip
 
 /-!
-# The conditional census collapse: `a ≡ 0 (mod 4)` rows reduce to the `a = 4` row
+# The conditional census collapse: the `a = 8` row reduces to the `a = 4` row
 
-Campaign #357. The strip step (`strip_coset`) iterates: under the (named, probe-true)
-*contains-a-coset* obligation, every qualifying exponent set strips down to a qualifying
-core of size `< 6` — same census value at every prime simultaneously, size preserved
-mod 4:
+Campaign #357. One application of the strip step (`strip_coset`): under the (named,
+probe-true) size-8 *contains-a-coset* obligation, every qualifying exponent set of size
+EXACTLY 8 strips to a qualifying set of size 4, with the same census value at every prime
+simultaneously:
 
-> **`census_collapse_of_containsCoset`** — given `ContainsCosetHyp m`, every qualifying
-> `A` has a qualifying core `A'` with `|A'| < 6`, `|A'| ≡ |A| (mod 4)`, and
-> `∑_{i∈A} g^i = ∑_{i∈A'} g^i` for every `(p, g)`.
+> **`census8_collapse_of_containsCoset`** — given `ContainsCosetHyp8 m` (and `2 ≤ m`),
+> every qualifying `A ⊆ range (2^m)` with `|A| = 8` has a qualifying `A' ⊆ range (2^m)`
+> with `|A'| = 4` and `∑_{i∈A} g^i = ∑_{i∈A'} g^i` for every prime `p` and primitive
+> `2^m`-th root `g ∈ ZMod p`.
+
+This is the only collapse proved here.  An earlier, larger form — every qualifying set of any
+size `a ≡ 0 (mod 4)` stripping to a core of size `< 6` — is FALSE (see the counterexamples
+below), and no declaration of that form exists.
 
 The obligation is restricted to sets of size EXACTLY 8: the C sweeps refute every
 larger form — coset-free balanced 9-sets exist (one orbit at n=16, eleven at n=32),

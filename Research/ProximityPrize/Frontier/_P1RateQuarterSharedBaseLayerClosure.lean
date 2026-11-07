@@ -223,9 +223,11 @@ theorem saturatedBinaryPlotkin_slack :
   norm_num [saturatedBinaryDistance, N, predecessorThreshold]
 
 /-- Even after halving the matching budget using balance, constant-weight Johnson remains below
-its positive-denominator crossover. -/
-theorem balancedBinary_constantWeightJohnson_denominator_zero :
-    240473429 ^ 2 - 480946858 * 134217727 = 0 := by
+its positive-denominator crossover: the Johnson denominator `a² − n·λ` is strictly negative
+(its exact integer value is `−6724124033533725`), stated as a strict inequality to avoid
+`ℕ` truncated subtraction. -/
+theorem balancedBinary_constantWeightJohnson_denominator_neg :
+    240473429 ^ 2 < 480946858 * 134217727 := by
   norm_num
 
 /-! ## Two-rider aligned-plus-vote matching -/
@@ -360,11 +362,11 @@ theorem minimalCarrier_lowRider_johnson_boundary :
       predecessorThreshold, k]
 
 /-- Thus no positive Johnson denominator exists for the three-rider stratum even in the most
-favorable carrier `|B|=T`. -/
-theorem threeRider_insideJohnson_gap_zero :
-    threeRiderAlignment ^ 2 - predecessorThreshold * (k - 1) = 0 := by
-  have h := minimalCarrier_lowRider_johnson_boundary.2.1
-  omega
+favorable carrier `|B|=T`: the denominator `a² − T·(k−1)` is strictly negative (stated as a strict
+inequality to avoid `ℕ` truncated subtraction). -/
+theorem threeRider_insideJohnson_denominator_neg :
+    threeRiderAlignment ^ 2 < predecessorThreshold * (k - 1) := by
+  norm_num [threeRiderAlignment, predecessorThreshold, k]
 
 /-- **Shared-base heavy-layer arithmetic closure.**  For `2 ≤ M ≤ 108`, if `M` aligned
 cores of size `tenRiderAlignment` satisfy the inside-`B` exact-diagonal Johnson inequality,
@@ -504,7 +506,7 @@ end ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure
 #print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.balanced_binary_matching_card_eq_two_inter
 #print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.balancedBinary_inter_card_le_134217727
 #print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.balancedBinary_sharp_distance_value
-#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.balancedBinary_constantWeightJohnson_denominator_zero
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.balancedBinary_constantWeightJohnson_denominator_neg
 #print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.threeNonbase_capacity_forces_fourRiderAlignment
 #print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.threeNonbase_capacity_exact_crossover
 #print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.twoNonbase_capacity_exact_crossover

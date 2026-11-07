@@ -41,7 +41,7 @@ how strong, against the open #304 residual
   `DiscriminantBadSet`) only ever certifies `disc ≠ 0` *generically*, away from a finite
   bad set of centres — for the GS integer representative the `Y`-discriminant is a honest
   nonconstant polynomial (it vanishes at the bad centres), so the supply is **false** for
-  any such `Q₀`.  The contrapositive specialization tests:
+  any such monic `Q₀` (for non-monic `Q₀` use the specialization tests below).  The contrapositive specialization tests:
 * `Polynomial.not_separable_of_map_not_separable` (any inseparable specialization refutes,
   from Mathlib's `Separable.map`) and `Polynomial.not_separable_of_discr_map_eq_zero` (a
   single field specialization with vanishing discriminant refutes, via the in-tree
@@ -74,12 +74,21 @@ cofactor evaluated **along the decoded surface** to be a unit of `F[Z][X]`, i.e.
 (`cofactor_eval_eq_const_of_supply`) a nonzero **constant** `c ∈ F`.  So for GS-shaped
 `Q₀`:
 
-* satisfiable iff the `Y`-discriminant data is globally unit-like — `Q₀` splits into
-  surfaces whose pairwise differences are units and whose cofactor values are constants;
+* **necessary conditions (proved)**: along every decoded surface factor the cofactor value
+  is a nonzero constant (`isUnit_cofactor_eval_of_supply`, `cofactor_eval_eq_const_of_supply`),
+  and for **monic** positive-degree `Q₀` the `Y`-discriminant is a unit
+  (`Polynomial.Separable.isUnit_discr`);
+* **one sufficient example (proved)**: a product of two surfaces with unit difference is
+  separable (`surfaceSeparabilitySupply_of_split_surfaces`).  No classification is proved,
+  and full splitting into polynomial surfaces is **not** necessary: over `F₃`,
+  `Q₀ = Y·(Y² + 1) = Y³ + Y` (independent of `Z`, `X`) has derivative `3Y² + 1 = 1`, so it
+  is separable over `F₃[Z][X]`, while `Y² + 1` has no root in `F₃` and so does not split
+  into polynomial surfaces;
 * **refuted** the moment any specialization `(z, x) ↦` field has a repeated `Y`-root
   (Brick 1/2 contrapositives) — which is exactly the situation the §5 bad-centre counting
   manages.  `SurfaceSeparabilitySupply` as stated is therefore *not derivable* from the
-  in-tree GS chain and is genuinely false outside the unit-discriminant regime; the
+  in-tree GS chain and is genuinely false whenever some field specialization has a
+  repeated `Y`-root (for monic `Q₀`: outside the unit-discriminant regime); the
   consumers should be (and, by `GSSurfaceMappedSeparability`, already are) re-based on the
   per-place residue currency.
 

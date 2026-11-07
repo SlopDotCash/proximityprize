@@ -13,28 +13,35 @@ The far-line incidence decomposes (wf-D5 / wf-D6) as
   `I = z + S·O`,  `z = [α=0 ∈ B] ∈ {0,1}` (the `α=0` in-code coincidence),  `O` = `#`free orbits,
 
 and `_wf3D6_overdet_johnson_lock.lean` runs the budget-crossing arithmetic (`I ≤ n ⟺ O ≤ 2`, etc.)
-taking **`z ≤ 1` and the decomposition as hypotheses**.  This file **derives** that decomposition
-and the `z ≤ 1` bound from the free-action partition: split the bad set `B` at the distinguished
-fixed point `x₀` (the `α = 0` scalar), count the fixed part as the indicator `[x₀ ∈ B] ≤ 1`, and
-the remaining `B \ {x₀}` by the free-action orbit-count identity (`OrbitCountFreeActionWeld`).
+taking **`z ≤ 1` and the decomposition as hypotheses**.  This file derives that decomposition
+and the `z ≤ 1` bound from a **constant-fibre representative map**: split the bad set `B` at
+the distinguished point `x₀` (the `α = 0` scalar), count the fixed part as the indicator
+`[x₀ ∈ B] ≤ 1` (unconditional), and count the remaining `B \ {x₀}` by the orbit-count identity
+of `OrbitCountFreeActionWeld`, which assumes a map `rep` on `B \ {x₀}` all of whose fibres have
+exactly `|G|` elements (`hfib`).
 
-After this, `I = z + S·O` is an **exact in-tree identity** with `z ≤ 1` a theorem — the wf-D6
-hypotheses `hz : z ≤ 1` and the `z + half·O` shape are sourced from structure, not supplied.
+No `MulAction` and no freeness proof is taken: `G` enters only through `Fintype.card G` in
+`hfib`.  So the identity `I = z + S·O` holds with `z ≤ 1` a theorem **given** `hmap`/`hfib`;
+producing `hfib` from an actual free action of `G` on the nonzero bad scalars of a concrete
+stack is a separate obligation that this file does not discharge.
 
 ## What is formalized here (axiom-clean, no `sorry`)
 
 * `fixedPart_card_le_one` — the `α=0` coincidence contributes at most one:
   `(B.filter (· = x₀)).card ≤ 1` (a Finset filter to a single value has card `≤ 1`).
 * `card_eq_fixed_add_free` — the split: `|B| = [x₀∈B] + |B \ {x₀}|`, the fixed point peeled off.
-* `card_eq_fixedIndicator_add_orbitCount` — the **welded `I = z + S·O` identity**: with `B \ {x₀}`
-  a free `G`-orbit partition (constant fibre size `|G|`), `|B| = z + (#free orbits)·|G|` where
-  `z = (B.filter (· = x₀)).card ≤ 1`.  Discharges the wf-D6 decomposition + `hz` from freeness.
+* `card_eq_fixedIndicator_add_orbitCount` — the **welded `I = z + S·O` identity**: given a
+  representative map on `B \ {x₀}` with every fibre of size `|G|` (hypothesis `hfib`, the
+  shape a free `G`-action would give), `|B| = z + (#fibres)·|G|` where
+  `z = (B.filter (· = x₀)).card ≤ 1`.  Discharges the wf-D6 decomposition + `hz` from `hfib`,
+  not from a formalized action.
 
 ## Honest scope
 
-Structural derivation of the `I = z + S·O` decomposition's *shape* and the `z ≤ 1` bound from the
-free-action partition off the `α=0` fixed point.  It does **NOT** bound the free-orbit count `O`
-(`= BGK` at the window interior, refuted as `O(1)` at `n=8`) — the genuine wall.  Probe
+Structural derivation of the `I = z + S·O` decomposition's *shape* and the `z ≤ 1` bound from a
+supplied constant-fibre partition off the `α=0` point (no action or freeness is formalized).
+It does **NOT** bound the free-orbit count `O` (`= BGK` at the window interior, refuted as
+`O(1)` at `n=8`) — the genuine wall.  Probe
 `scripts/probes/probe_orbit_freeaction_weld.py` confirms the split exactly in the prize regime
 (`(a,b)=(2,4)`: `z=0`, `O=1`, `S=4`; `(a,b)=(6,1)`: `z=1`, `O=24`, `S=8`; `n=2^a`, `n∣p−1`,
 `p≫n³`, NEVER `n=q−1`).  CORE (`M(μ_n) ≤ C·√(n·log(p/n))`) stays OPEN.
@@ -70,13 +77,14 @@ theorem card_eq_fixed_add_free (B : Finset β) (x₀ : β) :
 
 /-- **The welded `I = z + S·O` identity.**  Splitting the bad set `B` at the `α=0` fixed point `x₀`,
 the fixed part contributes `z = |{a∈B : a=x₀}| ≤ 1` and the free-orbit part `B' = {a∈B : a≠x₀}`
-contributes `(#free orbits)·|G|` via the free-action orbit-count identity
+contributes `(#fibres of rep)·|G|` via the constant-fibre orbit-count identity
 (`card_eq_orbitCount_mul_card_group`).  Hence
 
-  `|B| = z + (#free orbits)·|G|`,  `z ≤ 1`,
+  `|B| = z + (#fibres of rep)·|G|`,  `z ≤ 1`,
 
-the exact decomposition wf-D6 takes as a hypothesis, now derived from the free action.  `rep` is the
-orbit-representative map on `B'` (each fibre a full free `G`-orbit of size `|G|`). -/
+the exact decomposition wf-D6 takes as a hypothesis, now derived from the constant-fibre
+hypothesis `hfib`.  `rep` is a representative map on `B'` whose fibres all have `|G|` elements
+(as the orbits of a free `G`-action would); no action or freeness is assumed or proved here. -/
 theorem card_eq_fixedIndicator_add_orbitCount
     {G : Type*} [Group G] [Fintype G]
     (B : Finset β) (x₀ : β) (rep : β → β)

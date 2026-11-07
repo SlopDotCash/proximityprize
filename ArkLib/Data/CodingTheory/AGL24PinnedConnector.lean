@@ -8,6 +8,7 @@ import ArkLib.Data.CodingTheory.AGL24DualZeroPatternPinned
 import ArkLib.Data.CodingTheory.GMMDS.LovettDualSpanConnector
 import ArkLib.Data.CodingTheory.GMMDS.LovettSymbolicMinorDischarge
 import ArkLib.Data.CodingTheory.GMMDS.LovettMergeIndepProof
+import ArkLib.Data.CodingTheory.GMMDS.LovettRIMKernelTrivial
 
 /-!
 # [AGL24] Theorem A.2 (pinned form): the Lovett-route connector for the *non-vacuous* target
@@ -22,10 +23,12 @@ named pieces of the GM-MDS chain:
 
 1. **Lovett's Theorem 1.7, unconditional** (`lovettThm17_unconditional`, fully proven in
    `LovettMergeIndepProof.lean`) — the algebraic core, now an in-tree theorem, not an assumption;
-2. **the ring-change transfer** `RIMKernelTrivialFromLovett` (the genuine, recognized #389 open
-   core: Lovett's `pFamUnion`-independence over `MvPolynomial (Fin n) F` ⟹ the RIM's trivial
-   kernel over `MvPolynomial ι F`) — which discharges `SymbolicMinorFromLovett` (the encoding
-   move) via the *proven* `symbolicMinorFromLovett_of_ringChange`;
+2. **the ring-change transfer** `RIMKernelTrivialFromLovett` (intended: Lovett's
+   `pFamUnion`-independence over `MvPolynomial (Fin n) F` ⟹ the RIM's trivial kernel over
+   `MvPolynomial ι F`) — which discharges `SymbolicMinorFromLovett` (the encoding move) via the
+   *proven* `symbolicMinorFromLovett_of_ringChange`. **This hypothesis is refuted as stated**
+   for every `1 ≤ k` (`ArkLib.GMMDS.not_rimKernelTrivialFromLovett`, the 14th false-residual
+   catch: a bare `GZPCondition` admits the row-free family `e ≡ ∅`);
 3. **the Schwartz–Zippel specialization** (`exists_embedding_det_eval_ne_zero`, fully proven in
    `SchwartzZippelMinorSpecialization.lean`, built on `ToMathlib/MvPolynomial/SchwartzZippelExists`)
    — a nonzero symbolic minor over a large field becomes a nonsingular **evaluated** minor at
@@ -45,23 +48,32 @@ with Lovett's Theorem 1.7 and the Schwartz–Zippel layer **discharged internall
 hypotheses).  Composing with `symbolicFullRank_of_classical_imports_pinned` (the capstone) then
 yields `SymbolicFullRankResidual` from the same three residuals plus Frank's orientation residual.
 
-## The honest residual ledger after this file
+## The residual ledger after this file (status-corrected)
 
-The pinned target is reduced to **exactly the two genuinely-missing GM-MDS matrix moves** plus
-the field-size regime:
+The pinned target is reduced to two named GM-MDS matrix moves plus the field-size regime:
 
-* `RIMKernelTrivialFromLovett` — the **single named open core** (the ring-change transfer; the
-  recognized hard #389 GM-MDS algebra of AGL24 Appendix A; *not circular*, *not vacuous* — its
-  conclusion is satisfiable from the symbolic-full-rank interface on a WPC witness, see
-  `rimKernelTrivial_conclusion_of_symbolicFullRank_wpc`);
+* `RIMKernelTrivialFromLovett` — the ring-change transfer. *Not circular*, but **FALSE as
+  stated** for every `1 ≤ k` (`ArkLib.GMMDS.not_rimKernelTrivialFromLovett`). Its conclusion
+  follows from the symbolic-full-rank interface on a WPC witness
+  (`rimKernelTrivial_conclusion_of_symbolicFullRank_wpc`), but that is a different, WPC-guarded
+  statement and does not make the bare-GZP residual satisfiable. Hence the two connector
+  theorems below are valid conditionals that are **vacuous for `1 ≤ k`** (`hrc` cannot be
+  supplied); the corrected residual is `ArkLib.GMMDS.RIMKernelTrivialFromLovettWPC`, which this
+  connector does not yet consume;
 * `DualRowsFromNonsingularEvalPinned` — the **dimensionally faithful dual repackaging** (kernel
   of the nonsingular evaluated generator spans the dual, with the pin guaranteeing the copy index
   matches the dual's finrank, `gzpCopyIdx_card_eq_dual_finrank`);
-* `FieldLargeForMinor` — the explicit `|F| > deg + C(|ι|,2)` regime.
+* `FieldLargeForMinor` — the explicit `|F| > deg + C(|ι|,2)` regime. The pinned target is
+  **not** an unconditional statement over arbitrarily small fields: an evaluation embedding with
+  nonsingular minors needs enough field elements (or a field extension), and dimensional
+  consistency of the pinned conclusion does not prove its truth.
 
-The **vacuity defect is gone**: this connector targets the *pinned* boundary, so the `δ ≡ 0`
-countermodel that refuted the unpinned chain cannot arise (the pin `∑ⱼ δⱼ = card ι − k > 0` forces
-the copy index nonempty whenever `k < card ι`).
+The *dimensional* `δ ≡ 0` defect of the unpinned chain is gone at the target: the pin
+`∑ⱼ δⱼ = card ι − k > 0` forces the copy index nonempty whenever `k < card ι`. But the
+ring-change hypothesis `hrc` still inherits the missing-WPC defect (row-free families), so the
+connector as a whole is not yet a non-vacuous reduction. Separately, the former global premise
+"every WPC family has nonempty edges" (false for every `k`) has been removed from the capstone;
+empty edges are now handled by `AGL24.symbolicFullRankResidual_of_nonempty_edges`.
 
 Issue #354 / #389.
 -/
@@ -92,8 +104,9 @@ The proof runs the genuine path for each pinned `(e, δ)`:
 
 Unlike `gmmDsDualZeroPatternTheorem_via_connector` (which targeted the *unpinned*, refutable
 boundary and threaded the unpinned, `False` `DualRowsFromNonsingularEval`), this consumes the
-pin and the dimensionally faithful pinned dual residual, so it is not over-stated. Axiom-clean
-modulo the two named residuals `hrc`/`hdual` and the field regime `hfield`. -/
+pin and the dimensionally faithful pinned dual residual, so its *conclusion* is not over-stated.
+Axiom-clean modulo the two named residuals `hrc`/`hdual` and the field regime `hfield`.
+**Vacuous for `1 ≤ k`:** `hrc` is refuted (`ArkLib.GMMDS.not_rimKernelTrivialFromLovett`). -/
 theorem gmmDsDualZeroPatternTheoremPinned_via_lovett {k : ℕ}
     (hrc : ArkLib.GMMDS.RIMKernelTrivialFromLovett ι F k)
     (hdual : ArkLib.GMMDS.DualRowsFromNonsingularEvalPinned ι F k)
@@ -125,52 +138,56 @@ proven in-tree.
 This routes `gmmDsDualZeroPatternTheoremPinned_via_lovett` through the capstone
 `symbolicFullRank_of_classical_imports_pinned`: every `δ` the assembly feeds is
 orientation-derived, hence satisfies the pin (`gzp_of_orientation_delta_sum`), so the pinned
-target is all that is needed.  Axiom-clean modulo the four named residuals. -/
+target is all that is needed.  Axiom-clean modulo the four named residuals. **Vacuous for
+`1 ≤ k`:** `hrc` is refuted (`ArkLib.GMMDS.not_rimKernelTrivialFromLovett`). (The former
+nonempty-edge premise, false for every `k`, is no longer required.) -/
 theorem symbolicFullRank_via_lovett_pinned [DecidableEq F] {k : ℕ}
     (hfrank : FrankOrientationResidual ι k)
     (hrc : ArkLib.GMMDS.RIMKernelTrivialFromLovett ι F k)
     (hdual : ArkLib.GMMDS.DualRowsFromNonsingularEvalPinned ι F k)
-    (hfield : ArkLib.GMMDS.FieldLargeForMinor ι F k)
-    (hnonempty : ∀ {t : ℕ}, ∀ e : ι → Finset (Fin (t + 1)),
-      WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t + 1))) e →
-      ∀ i, (e i).Nonempty) :
+    (hfield : ArkLib.GMMDS.FieldLargeForMinor ι F k) :
     SymbolicFullRankResidual (ι := ι) F k :=
   symbolicFullRank_of_classical_imports_pinned hfrank
-    (gmmDsDualZeroPatternTheoremPinned_via_lovett hrc hdual hfield) hnonempty
+    (gmmDsDualZeroPatternTheoremPinned_via_lovett hrc hdual hfield)
 
-/-! ## Honesty: the three residuals are not `False`, and the genuinely-hard one is named
+/-! ## Status of the three residuals (corrected)
 
-The decomposition `RIMKernelTrivialFromLovett ∧ DualRowsFromNonsingularEvalPinned ∧
-FieldLargeForMinor ⟹ GMMDSDualZeroPatternTheoremPinned` introduces no impossible obligation:
+An earlier version of this section asserted that the decomposition
+`RIMKernelTrivialFromLovett ∧ DualRowsFromNonsingularEvalPinned ∧ FieldLargeForMinor ⟹
+GMMDSDualZeroPatternTheoremPinned` "introduces no impossible obligation" and that the three
+residuals are "none refuted". That is wrong for the first one:
 
-* the **vacuity defect that killed the unpinned chain is absent** — this connector targets the
-  *pinned* boundary, where `∑ⱼ δⱼ = card ι − k > 0` (for `k < card ι`) forces the copy index
-  nonempty, so the `δ ≡ 0` countermodel (the 12th/13th catches) cannot arise;
+* `RIMKernelTrivialFromLovett` is **refuted** for every `1 ≤ k`
+  (`ArkLib.GMMDS.not_rimKernelTrivialFromLovett`; the concrete instance
+  `rimKernelTrivialFromLovett_refuted` is the 14th catch). `ringChangeCore_conclusion_satisfiable`
+  below only re-derives the conclusion under the stronger WPC + symbolic-full-rank premises; it
+  does not make the residual satisfiable;
 * the **pinned dual residual's conclusion is dimensionally consistent** under the pin
-  (`pinnedDual_dimension_consistent` below, re-exporting `gzpCopyIdx_card_eq_dual_finrank`): the
-  copy index `GZPCopyIdx δ` has exactly the Reed–Solomon dual's finrank, so a spanning family is
-  feasible (it must be a basis) — the necessary condition the *unpinned*
-  `DualRowsFromNonsingularEval` violated;
-* the **ring-change core's conclusion is satisfiable** from the symbolic-full-rank interface on a
-  WPC witness (`ArkLib.GMMDS.rimKernelTrivial_conclusion_of_symbolicFullRank_wpc`), so
-  `RIMKernelTrivialFromLovett` is the recognized hard #389 GM-MDS algebra, not a vacuous or
-  circular obligation.
+  (`pinnedDual_dimension_consistent` below): the copy index `GZPCopyIdx δ` has exactly the
+  Reed–Solomon dual's finrank. This is a necessary condition only; it does not prove
+  `DualRowsFromNonsingularEvalPinned` true;
+* `FieldLargeForMinor` is an explicit field-size regime, not a theorem over all fields.
 
-**Correction (field-size regime).** `FieldLargeForMinor ι F k` bounds the minor degree by `|F|`
-uniformly over every vertex count `t`, but a nonzero minor's degree grows with `t`.
-`ArkLib.GMMDS.not_fieldLargeForMinor` proves `¬ FieldLargeForMinor ι F k` for every finite
-field `F` and `2 ≤ k ≤ |ι|`, so `gmmDsDualZeroPatternTheoremPinned_via_lovett` and
-`symbolicFullRank_via_lovett_pinned` are vacuous there.
+The field-size regime `FieldLargeForMinor ι F k` bounds the minor degree by `|F|`
+uniformly over every vertex count `t`. The degree grows with `t` for a nonzero minor.
+`ArkLib.GMMDS.not_fieldLargeForMinor` refutes this uniform premise over finite fields when
+`2 ≤ k ≤ |ι|`. The ring-change premise already fails for every `k ≥ 1`, independently of
+the field size. A per-instance field-size bound and a nondegenerate ring-change premise
+such as `RIMKernelTrivialFromLovettWPC` are needed for this approach.
 
-**Correction (ring-change core).** The third bullet above shows only that the *conclusion* is
-reachable on a WPC witness. The residual as stated is false:
-`ArkLib.GMMDS.not_rimKernelTrivialFromLovett` refutes `RIMKernelTrivialFromLovett ι F k` for
-every `ι`, `F` and `k ≥ 1` (empty edges, `δ ≡ 0`, `t = 1`). So the pinned route is vacuous for
-every `k ≥ 1`, independently of the field-size regime.
+`not_lovettSystemToDualSpan` below refutes the step-2 bridge to the unpinned target for
+`1 ≤ k < card ι`. -/
 
-So this file does not reduce the pinned target to a satisfiable ledger: the ring-change premise
-needs a nondegeneracy hypothesis (as in `RIMKernelTrivialFromLovettWPC`) and the field-size
-regime must be stated per instance before the localization holds. -/
+omit [Fintype F] in
+/-- **`LovettSystemToDualSpan` is FALSE** for `1 ≤ k < card ι`: with the proved step 1
+(`gzpToLovettSystem_holds`) and the unconditional Lovett theorem it would yield the unpinned
+`GMMDSDualZeroPatternTheorem`, refuted by `not_gmmDsDualZeroPatternTheorem`. Axiom-clean. -/
+theorem not_lovettSystemToDualSpan {k : ℕ} (hk1 : 1 ≤ k) (hk : k < Fintype.card ι) :
+    ¬ ArkLib.GMMDS.LovettSystemToDualSpan ι F k := fun h =>
+  not_gmmDsDualZeroPatternTheorem (F := F) hk
+    (ArkLib.GMMDS.gmmDsDualZeroPatternTheorem_of_lovett_via_steps (n := 0)
+      (ArkLib.GMMDS.gzpToLovettSystem_holds hk1) h
+      (fun _ => ArkLib.GMMDS.lovettThm17_unconditional))
 
 omit [Nonempty ι] [Fintype F] in
 /-- **The pinned dual residual's conclusion is dimensionally consistent.** Under the pin
@@ -186,12 +203,12 @@ theorem pinnedDual_dimension_consistent {t : ℕ} {δ : Fin (t + 1) → ℕ} {k 
   ArkLib.GMMDS.gzpCopyIdx_card_eq_dual_finrank φ hk hpin
 
 omit [DecidableEq ι] [Nonempty ι] [Fintype F] in
-/-- **The ring-change core's conclusion is satisfiable.** `RIMKernelTrivialFromLovett`'s
-conclusion (the RIM has trivial polynomial kernel) is reachable from the symbolic-full-rank
-interface `SymbolicFullRankResidual` on a `WeaklyPartitionConnected` witness — the regime where
-the proven `exists_nonzero_poly_minor` machinery applies. So the named open core is *not* `False`
-and *not* circular; it is the genuine GM-MDS ring-change algebra (#389), the single hard
-mathematical residual the pinned target reduces to. (Re-exported from
+/-- **The ring-change conclusion under WPC.** `RIMKernelTrivialFromLovett`'s conclusion (the
+RIM has trivial polynomial kernel) follows from the symbolic-full-rank interface
+`SymbolicFullRankResidual` on a `WeaklyPartitionConnected` witness. Despite the historical name,
+this does **not** show `RIMKernelTrivialFromLovett` is satisfiable — that residual is refuted
+(`ArkLib.GMMDS.not_rimKernelTrivialFromLovett`); this lemma is the WPC-guarded statement
+`RIMKernelTrivialFromLovettWPC` in disguise. (Re-exported from
 `ArkLib.GMMDS.rimKernelTrivial_conclusion_of_symbolicFullRank_wpc`.) Axiom-clean. -/
 theorem ringChangeCore_conclusion_satisfiable {k : ℕ}
     (hsym : SymbolicFullRankResidual (ι := ι) F k)
@@ -209,3 +226,4 @@ end AGL24
 #print axioms AGL24.symbolicFullRank_via_lovett_pinned
 #print axioms AGL24.pinnedDual_dimension_consistent
 #print axioms AGL24.ringChangeCore_conclusion_satisfiable
+#print axioms AGL24.not_lovettSystemToDualSpan

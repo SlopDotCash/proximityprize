@@ -22,9 +22,12 @@ hypotheses:
   event on the intermediate pair;
 * `hTot` — the appended game never *samples* a failure.
 
-This file discharges all three, reducing the completeness append for a message seam to its already-
-proven completeness components plus the honest-implementation side conditions. The bridges are the
-*completeness* analogues of the soundness append's `evalDist_run'_challengeSeam_left/right`
+This file does **not** itself discharge the three: it supplies the two run-level bricks below, which
+the discharges consume. The three discharges, reducing the completeness append for a message seam to
+its already-proven completeness components plus the honest-implementation side conditions, are in
+`AppendCompletenessMsgKeystone.lean` (`appendStage1Bridge`, `appendStage2Bridge`, and the assembled
+`append_completeness_msg`) and `AppendSeamBridges3.lean` (`append_game_neverFail`). The bridges are
+the *completeness* analogues of the soundness append's `evalDist_run'_challengeSeam_left/right`
 (`AppendSoundnessSeamTransfer.lean`): the stage-`i` body run under the combined oracle, projected to
 its `OptionT.run`, is exactly `liftM` of `Rᵢ.run`'s own-oracle `OptionT.run`, which the proven
 challenge-seam transfer reconciles distributionally with `gameOf Rᵢ`.
@@ -38,13 +41,14 @@ challenge-seam transfer reconciles distributionally with `gameOf Rᵢ`.
   the completeness append — the completeness analogues of the soundness append's
   `evalDist_run'_challengeSeam_left/right` (`AppendSoundnessSeamTransfer.lean`).
 
-## What remains (NOT yet in this file)
+## The next layer (not in this file; now proved elsewhere)
 
 The per-phase `evalDist` bridges (`appendStage1Bridge`/`appendStage2Bridge` discharging
 `hStage1Bridge`/`hStage2Bridge`), `append_game_neverFail` (`hTot`), and the assembled
-`append_completeness_msg` are the *next* layer: they compose the two `run_eq_liftM` bricks above with
-the proven challenge-seam `evalDist` transfers and `append_completeness_msg_via_seamFactor`. They are
-not written here yet; this file currently provides only the two run-level bricks they consume.
+`append_completeness_msg` compose the two `run_eq_liftM` bricks above with the proven
+challenge-seam `evalDist` transfers and `append_completeness_msg_via_seamFactor`. They are not in
+this file, which provides only the two run-level bricks; they are proved in
+`AppendCompletenessMsgKeystone.lean` and `AppendSeamBridges3.lean` (see above).
 -/
 
 open OracleComp OracleSpec ProtocolSpec OptionTStateT
@@ -61,8 +65,11 @@ variable {ι : Type} {oSpec : OracleSpec ι}
 
 /-! ### `OptionT`/`OracleComp` lift-commutation helpers across the challenge seam
 
-These are local re-derivations of the seam-lift helpers (the working-tree `AppendSeamBridges.lean`
-copies fail to compile in helper lemmas downstream of these, so we re-prove the parts we need here).
+These are local re-derivations of the seam-lift helpers. They were written because, in a historical
+working tree, the `AppendSeamBridges.lean` copies failed to compile in helper lemmas downstream of
+these. That is not the current state: `AppendSeamBridges.lean` builds in the current tree, so these
+copies are duplication left over from that episode (a candidate for consolidation where imports
+permit), not evidence of a present compilation failure.
 They reduce both lift routes to the common `simulateQ (fun t => liftM (query t))` normal form. -/
 
 /-- **`(liftM g).run = liftM g.run` across the `pSpec₁` challenge seam.** -/
@@ -153,7 +160,8 @@ private theorem hcoh_right' {α : Type} (oa : OptionT (OracleComp oSpec) α) :
 plain `OracleComp` via `OptionT.run`, is exactly the `liftM` of `(R₁.run stmt wit).run` (over
 `pSpec₁`'s own challenge oracle). Mirrors `AppendSeamBridges.appendStage₁_run_eq_liftM`, with the
 final verify-leg coherence supplied by `OracleReduction.hcoh` (a stable `simulateQ_compose`-based
-brick) instead of the broken-in-tree `monadLift_run_eq_double_liftM_left`. -/
+brick) instead of `monadLift_run_eq_double_liftM_left` (which was broken only in a historical
+working tree; it builds in the current tree). -/
 theorem appendStage₁_run_eq_liftM
     (R₁ : Reduction oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁)
     (R₂ : Reduction oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂)

@@ -8,18 +8,30 @@ import ArkLib.Data.CodingTheory.ProximityGap.GranularityLadderRS
 /-!
 # The Welch–Berlekamp absorption lemma (#371, H-RC stage i)
 
-The first brick of the WB-pencil programme: a received word is within distance `w`
-of the Reed–Solomon code **iff** the Welch–Berlekamp relation is solvable —
+The first brick of the WB-pencil programme: a received word within distance `w`
+of the Reed–Solomon code makes the Welch–Berlekamp relation solvable —
 a nonzero `ℓ` of degree ≤ w and an `R` of degree ≤ w+k−1 with
 
   `ℓ(xᵢ)·yᵢ = R(xᵢ)` at EVERY domain point.
 
-Forward: take `ℓ = ∏_{i ∈ E}(X − xᵢ)` over the disagreement set and `R = ℓ·P`; the
-error positions are absorbed by the vanishing of `ℓ`.  Backward: off the ≤ w roots
-of `ℓ`, division recovers a degree-< k explanation... the backward direction needs
-the root/agreement count and is the consumer's (`WBPencilBound`) business; this file
-proves the forward (absorption) direction, which is what the pencil bound consumes:
-**every bad scalar yields a WB solution**, linearly in `(ℓ, R)` along the γ-line.
+Forward (proved here): take `ℓ = ∏_{i ∈ E}(X − xᵢ)` over the disagreement set and
+`R = ℓ·P`; the error positions are absorbed by the vanishing of `ℓ`.
+
+**The converse is false in general**: without a divisibility hypothesis, solvability
+does not imply closeness.  Over `F₇` with domain
+`(1, 2, 3, 4)`, `k = 1`, `w = 2` and `y = (1, 4, 5, 2) = 1/x`, the pair `ℓ = X`, `R = 1`
+witnesses `WBSolvable` (`deg ℓ = 1 ≤ 2`, `deg R = 0 ≤ 2`, `ℓ(xᵢ)·yᵢ = 1`), yet the four
+`yᵢ` are distinct, so every constant codeword agrees with `y` at most once and lies at
+distance `≥ 3 > w`.  Here `R/ℓ` is a rational function, not a polynomial: recovering a
+degree-`< k` explanation from a WB solution needs `ℓ ∣ R` (then `R/ℓ` agrees with `y` off
+the `≤ w` roots of `ℓ`), which this file does not assume or prove.  The unique-decoding
+guard `2w < n − k + 1` alone does not rescue the converse (it only makes every solution
+divisible *when* `y` is already close): the same `y = 1/x` on domain `(1, 2, 3)` with
+`k = 1`, `w = 1` is solvable via `ℓ = X`, `R = 1` yet at distance `2 > w`.  This file
+proves only the forward (absorption) direction, which is what the pencil bound consumes:
+**every bad scalar yields a WB solution**, linearly in `(ℓ, R)` along the γ-line.  (In-tree
+consumers — `WBPencilBound`, `WBPencilBelowUDR`, `MobiusMCASymmetry` — use `WBSolvable` only
+as a hypothesis or via the forward direction; none derives closeness from solvability.)
 -/
 
 open Finset Polynomial

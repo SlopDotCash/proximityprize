@@ -18,9 +18,14 @@ on the `r`-th additive energy `E_r(G)` directly into a per-frequency bound.
 **The named DC-included input (`GaussianEnergyBound`):** `E_r(μ_n) ≤ (2r-1)‼·n^r` — the
 **real-Gaussian** energy bound. This is PROVEN in characteristic 0 (Lam–Leung: every vanishing sum of `2^μ`-th roots of
 unity decomposes into negation pairs `{ζ^c, ζ^{c+n/2}}`; union bound over the `(2r-1)‼` perfect
-matchings of the `2r` exponents, each contributing `n^r`). It transfers to `F_q` whenever char-`p` is
-safe, i.e. `q > (2r)^{φ(n)} = (2r)^{n/2}` (then no nonzero `2r`-term `±1` cyclotomic integer `α`,
-`|N(α)| ≤ (2r)^{φ(n)}`, vanishes mod `p`). See
+matchings of the `2r` exponents, each contributing `n^r`). It transfers to a finite field `F_q` of
+characteristic `p` (any `q = p^s`) when the **characteristic** is safe, i.e.
+`p > (2r)^{φ(n)} = (2r)^{n/2}` (then no nonzero `2r`-term `±1` cyclotomic integer `α`,
+`|N(α)| ≤ (2r)^{φ(n)}`, vanishes mod `p`). The condition is on `p`, not on the field size `q`:
+passing to an extension `F_{p^s}` keeps every relation that already vanishes mod `p`. For example
+(audit PG-075) with `n = 8`, `r = 2`, the order-8 subgroup of `F_17` has energy `264 > 3·8² = 192`,
+and the same subgroup inside `F_{17²}` keeps energy `264` although `17² = 289 > 4^4 = 256`. This
+transfer is prose only: the theorems below take `GaussianEnergyBound` as an explicit hypothesis. See
 `docs/references/proximity-gap-paley-spectrum/README.md` and `memory issue389-gauss-sum-reformulation`.
 
 **Prize-depth correction:** `GaussianEnergyBound` includes the DC frequency `b=0`. At the prize saddle
@@ -51,7 +56,8 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 /-- **The real-Gaussian energy bound** at order `r` (the prize per-frequency input): the `r`-th
 additive energy of the smooth domain `G` is bounded by the `2r`-th moment of a real Gaussian of
 variance `|G|`, `E_r(G) ≤ (2r-1)‼·|G|^r`. PROVEN char-0 (Lam–Leung + union bound over the `(2r-1)‼`
-matchings); holds in `F_q` when char-`p` safe (`q > (2r)^{|G|/2}`). -/
+matchings); expected to hold in a finite field of characteristic `p` when the characteristic `p`
+itself (not the field size `q = p^s`) exceeds `(2r)^{|G|/2}` — a prose transfer, not proved here. -/
 def GaussianEnergyBound (G : Finset F) (r : ℕ) : Prop :=
   (rEnergy G r : ℝ) ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
 

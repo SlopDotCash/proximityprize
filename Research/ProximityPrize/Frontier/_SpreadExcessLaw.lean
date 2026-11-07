@@ -13,8 +13,10 @@ Successor to the REFUTED windowed `SumsetExtremal` (DISPROOF_LOG tag
 `466-r1-windowed-extremal-spread-beats`; note
 `docs/kb/deltastar-466-p5-replication-2026-07-01.md`): in the prize window, 2-Fourier-component
 (spread) directions strictly beat every monomial direction's worst-offset bad-scalar count.
-The surviving replacement is the **bounded spread-excess law**: the spread advantage is a
-bounded constant `C ≤ 2`, not an order-of-growth phenomenon.
+The surviving replacement is the **bounded spread-excess law**: the conjecture that the spread
+advantage is a bounded constant, not an order-of-growth phenomenon. (Originally proposed with
+`C = 2`; `C = 2` is now REFUTED in evidence — ratio `≥ 21/9` at n=16, k=4, a=7 — and the live
+conjectured constant is `C = 3`; see `SpreadExcessLaw`.)
 
 ## What is PROVEN here (axiom-clean)
 
@@ -43,11 +45,12 @@ locked coordinates (extra zeros of `u₁ − I_p(u₁)` beyond the `k` interpola
 
 ## What is CONJECTURED here (honest label — NOT proven)
 
-`SpreadExcessLaw C` (`C = 2` intended): for far 2-component directions in the window
+`SpreadExcessLaw C` (originally `C = 2`, refuted in evidence; live constant `C = 3`): for far
+2-component directions in the window
 (`k + 2 ≤ a`, `a² ≤ n·k`), the worst-offset bad-scalar count is at most `C` times the worst
 monomial-direction count.  Measured ratios (symmetric effort, exact counts, witnesses
-brute-verified, ≥ 2 primes per scale): n=8 boundary 4/3; n=16 values in
-`scripts/probes/_out_466_spread_excess.txt`.  Refuting it (ratio growing with `n` or `q`) would
+brute-verified, ≥ 2 primes per scale): n=8 boundary 4/3; n=16, k=4, a=7 ratio `≥ 21/9 ≈ 2.33`
+(P5 referee audit); further n=16 values in `scripts/probes/_out_466_spread_excess.txt`.  Refuting it (ratio growing with `n` or `q`) would
 also be decisive — see the kill condition in the lane brief.
 
 What is missing for a proof: a bound on the number of pencils a worst-offset stack can
@@ -151,7 +154,9 @@ theorem bad_card_le_of_pencil_cover (a : ℕ) (u₀ u₁ : Fin n → F)
 
 /-! ## The conjecture (HONEST LABEL: open, not proven; refutable by probe) -/
 
-/-- A direction that is `a`-far from the code (not `a`-close to any codeword); the
+/-- A direction that is `a`-far from the code (not `a`-close to any codeword). (Duplicate: this is
+the same predicate as `ProximityGap.Ownership.AgreementFarDirection` in `_SecondWitnessFloor.lean`,
+up to the `∀ c ∈ S` binder form; not unified because neither file imports the other.) The
 non-degeneracy condition for bad-scalar counting (a direction `a`-close to the code has all
 `q` scalars bad — the below-window degeneracy repaired by `SumsetExtremalityGuard`). -/
 def FarDirection (dom : Fin n ↪ F) (k a : ℕ) (u₁ : Fin n → F) : Prop :=
@@ -159,7 +164,12 @@ def FarDirection (dom : Fin n ↪ F) (k a : ℕ) (u₁ : Fin n → F) : Prop :=
 
 open Classical in
 /-- The bad scalars of the stack `(u₀, u₁)` at agreement level `a`: scalars `γ` for which
-some codeword agrees with `w_γ = u₀ + γ·u₁` on at least `a` coordinates. -/
+some codeword agrees with `w_γ = u₀ + γ·u₁` on at least `a` coordinates.
+
+Duplicate: this is a verbatim local copy of the substrate
+`ProximityGap.Ownership.lineBadScalars` (`ArkLib/Data/CodingTheory/ProximityGap/LineListReduction.lean`),
+kept only because this file does not import that module and downstream proofs unfold this local
+name; new code should use the substrate definition. -/
 noncomputable def lineBadScalars (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
     Finset F :=
   (Finset.univ : Finset F).filter
@@ -187,8 +197,9 @@ noncomputable def monoBaseline (dom : Fin n ↪ F) (k a : ℕ) : ℕ :=
     (fun jm : Fin n => worstBad dom k a (monoDir dom (jm : ℕ)))
 
 /-- **CONJECTURE (the bounded spread-excess law) — OPEN, NOT PROVEN.**
-For window-interior agreement (`k + 2 ≤ a`, `a² ≤ n·k`, i.e. at or above the Johnson boundary
-`δ ≤ 1 − √ρ` — the levels where direction discrimination has content per round-1 (D)), the
+For window-interior agreement (`k + 2 ≤ a`, `a² ≤ n·k`; since `a/n ≤ √(k/n) = √ρ`, this is
+`δ = 1 − a/n ≥ 1 − √ρ`, i.e. at or beyond the Johnson radius — the levels where direction
+discrimination has content per round-1 (D)), the
 worst-offset bad-scalar count of any `a`-far 2-component direction is at most `C` times the
 monomial baseline.
 

@@ -18,10 +18,12 @@ This file (lane `wf-LB2`) carries out the **DIRECT route at `d = 16`** — not s
 The companion probes `scripts/probes/probe_wfLB2_resultant_d16.py`,
 `probe_wfLB2_d16_allsizes.py`, `probe_wfLB2_threshold.py` compute, exhaustively and exactly:
 
-  * **The primitive gap variety `V_16^prim` is empty in EVERY characteristic.**  No
-    antipodal-free, char-0-nonzero config `Y ⊆ μ_16` has *all* odd power sums `p_a(Y) ≡ 0`
+  * **The primitive gap variety `V_16^prim` is reported empty in every characteristic scanned.**
+    No antipodal-free, char-0-nonzero config `Y ⊆ μ_16` has *all* odd power sums `p_a(Y) ≡ 0`
     over any `F_p` (the "FULL odd-descent" / genuine-Q1-obstruction count is `0` across all
-    primes scanned, `p ≤ 2^24`, and over `ℂ` by Lam–Leung).  So Q1 holds at `d = 16`.
+    primes scanned, `p ≤ 2^24`, and over `ℂ` by Lam–Leung).  This emptiness is NOT proved in
+    this file: it is the stated hypothesis `V16PrimEmptyCharP` (see §3).  (The probe scripts named
+    above are not present in the current tree.)
 
   * **The `p₁ = 0` ENTRY slice has an explicit, finite bad-reduction prime set.**  The
     antipodal-free, char-0-nonzero configs with merely `p₁(Y) ≡ 0 (mod p)` exist for exactly
@@ -30,7 +32,8 @@ The companion probes `scripts/probes/probe_wfLB2_resultant_d16.py`,
 
   * **`881 < 16⁴` (the prize floor).**  The prize regime has `p = n^β`, `β ≥ 4`, `n = 16`, so
     `p ≥ 16⁴ = 65536 ≫ 881`.  Every `p₁`-entry artifact is gone by a `74×` margin, and the
-    genuine `V_16^prim` is empty regardless.  **Hence Q1 holds at `d = 16` at prize scale.**
+    genuine `V_16^prim` is (by the probe, not by a Lean proof) empty regardless.  Hence Q1 at `d = 16`
+    at prize scale is reduced to the stated hypothesis `V16PrimEmptyCharP p`.
 
 **What this file proves axiom-clean (char-free / arithmetic):**
 
@@ -45,14 +48,16 @@ The companion probes `scripts/probes/probe_wfLB2_resultant_d16.py`,
    threshold `881` is strictly below the prize floor `16⁴ = 65536`, so no prize-scale prime
    `p ≡ 1 (mod 16)` (`p ≥ 16⁴`) is a bad-reduction prime for the `p₁`-entry slice.
 
-3. `q1_d16_prize_clean` — the packaged increment: combining (1)+(2) with the probe's
-   `V_16^prim = ∅` finding, Q1 holds at `d = 16` for every prize-scale prime.  The char-p
-   emptiness of `V_16^prim` (the genuine obstruction) is the **named probe-verified hypothesis**
-   `V16PrimEmptyCharP` (machine-checked exhaustively `p ≤ 2^24`, char-0 by Lam–Leung); naming it
-   is the project's modularity convention, NOT a hidden `sorry`.
+3. `q1_d16_prize_clean` — a CONDITIONAL packaging: for `p ≥ 16⁴`, `881 < p` together with the
+   hypothesis `V16PrimEmptyCharP p` (returned unchanged).  The char-p emptiness of `V_16^prim`
+   (the genuine obstruction) is the **stated, unproved hypothesis** `V16PrimEmptyCharP`, which
+   now encodes the actual emptiness statement over `ZMod p` (audit 2026-10-28, CW-B18-09: an
+   earlier version defined it as `881 < p → True`, which is trivially true, so the "Q1 holds at
+   `d = 16`" claim was vacuous).  The literal `881` is the probe's output, not derived in Lean;
+   nothing in this file certifies the prime list `{17, …, 881}`.
 
-**Honest scope (`tag: proven-per-fixed-d` for the arithmetic gate; the `V_16^prim = ∅` char-p
-emptiness is `tag: proven-per-fixed-(d,p)` by exhaustive enumeration, char-0 by Lam–Leung).**
+**Honest scope (`tag: proven-per-fixed-d` for the arithmetic gate `881 < 16⁴` only; the
+`V_16^prim = ∅` char-p emptiness is an unproved hypothesis here, reported by an exhaustive probe).**
 This is a concrete *increment* on Chai–Fan Q1 at the last clean dyadic level — NOT a closure of
 the prize: Q1/Q2 gate only the Action–Orbit (non-BGK) lane, and the open core (BGK wall) is
 untouched.  Axiom-clean (`propext, Classical.choice, Quot.sound`).  Issue #407.
@@ -67,8 +72,8 @@ namespace ProximityGap.Frontier.Q1DirectD16
 The genuine `V_16^prim` obstruction would be an antipodal-free config whose locator is even
 (all odd coefficients vanish).  We restate the char-free fact that an even locator forces
 antipodality — so a *primitive* (non-antipodal) point CANNOT have an even locator.  The probe
-confirms no char-p config achieves the full odd-descent, i.e. `V_16^prim = ∅` in every
-characteristic; this lemma is the char-free half that makes "full odd-descent ⟹ antipodal"
+reports no char-p config achieves the full odd-descent for the scanned primes (stated as the
+hypothesis `V16PrimEmptyCharP`, not proved here); this lemma is the char-free half that makes "full odd-descent ⟹ antipodal"
 rigorous. -/
 
 variable {F : Type*} [Field F] [DecidableEq F]
@@ -92,8 +97,8 @@ If the locator `σ_Y = ∏_{y∈Y}(X − y)` of a finite config `Y` has *all* od
 i.e. every odd elementary symmetric function of `Y` vanishes, the complete odd-descent — then
 `Y` is antipodal: `Y.image (-·) = Y`.  Hence any **primitive** (non-antipodal) point of the gap
 variety canNOT satisfy the full odd-descent.  This is the exact property the direct-route probe
-checks of the genuine `V_16^prim` obstruction at `d = 16` and finds NO char-p config achieves —
-so `V_16^prim` is empty in every characteristic.  (`wf-LB`'s route (i) tried to obtain this from
+checks of the genuine `V_16^prim` obstruction at `d = 16` and reports NO char-p config achieves
+(for the scanned primes; the emptiness itself is the unproved hypothesis `V16PrimEmptyCharP`).  (`wf-LB`'s route (i) tried to obtain this from
 `x₁ = 0` alone; that is impossible char-free.) -/
 theorem oddSymmetricVanishing_imp_antipodal_d16 (Y : Finset F)
     (hOddCoeff : ∀ i : ℕ, Odd i → (∏ y ∈ Y, (X - C y)).coeff i = 0) :
@@ -147,31 +152,33 @@ theorem prize_prime_above_badReduction {p : ℕ} (hp : prizeFloorD16 ≤ p) :
     badReductionThresholdD16 < p :=
   lt_of_lt_of_le q1_d16_badReduction_threshold_below_prize hp
 
-/-! ## 3. The packaged increment: Q1 holds at `d = 16` for prize-scale primes.
+/-! ## 3. The conditional packaging: Q1 at `d = 16` for prize-scale primes, given `V16PrimEmptyCharP`.
 
 The genuine `V_16^prim` emptiness in char-`p` (the real obstruction — all odd power sums
-vanishing) is the named, probe-verified hypothesis `V16PrimEmptyCharP`.  Combined with the
-char-free antipodality lemma and the arithmetic gate, Q1 holds at `d = 16` at prize scale. -/
+vanishing) is the stated, unproved hypothesis `V16PrimEmptyCharP`.  Combined with the
+char-free antipodality lemma and the arithmetic gate, Q1 at `d = 16` at prize scale is reduced to it. -/
 
-/-- **Named probe-verified hypothesis (modularity convention, NOT a `sorry`).**
-`V16PrimEmptyCharP p` asserts the genuine primitive gap variety is empty over `F_p`: there is no
-antipodal-free, char-0-nonzero config `Y ⊆ μ_16` with *all* odd power sums vanishing mod `p`.
-Machine-checked exhaustively for all `p ≡ 1 (mod 16)`, `p ≤ 2^24`
-(`probe_wfLB2_threshold.py`: FULL-Vprim count `= 0` at every prime), and over `ℂ` by Lam–Leung.
-By `oddSymmetricVanishing_imp_antipodal_d16` such a config would have an even locator hence be
-antipodal — contradicting primitivity — which is the structural reason the count is identically
-`0`. -/
+/-- **Stated (unproved) hypothesis: the primitive gap variety at `d = 16` is empty over `ZMod p`.**
+`V16PrimEmptyCharP p` asserts there is no nonempty, antipodal-free config `Y ⊆ μ_16(ZMod p)` whose
+odd power sums `p_a(Y) = Σ_{y∈Y} y^a` all vanish (`a` odd; since `y^16 = 1` it suffices to take
+`a < 16`).  The probe reported this count `= 0` for all `p ≡ 1 (mod 16)`, `p ≤ 2^24` (probe script
+not present in the current tree).  Expected proof route (not formalized): antipodal-free forces
+`|Y| ≤ 8`, so for `p > 8` Newton's identities turn vanishing odd power sums into vanishing odd
+elementary symmetric functions; the locator is then even or odd, hence `Y = −Y`
+(`oddSymmetricVanishing_imp_antipodal_d16`, or `0 ∈ Y` in the odd case), contradicting
+`Y` nonempty and antipodal-free.  Audit 2026-10-28 (CW-B18-09): this replaces a former vacuous
+definition `881 < p → True`. -/
 def V16PrimEmptyCharP (p : ℕ) : Prop :=
-  -- abstract placeholder Prop, witnessed by the exhaustive probe; the content is the count = 0.
-  badReductionThresholdD16 < p → True
+  ∀ Y : Finset (ZMod p), Y.Nonempty → (∀ y ∈ Y, y ^ 16 = 1) → (∀ y ∈ Y, -y ∉ Y) →
+    ¬ ∀ a : ℕ, Odd a → a < 16 → ∑ y ∈ Y, y ^ a = 0
 
-/-- **Q1 holds at `d = 16` for every prize-scale prime** (`proven-per-fixed-d` for the gate;
-`V16PrimEmptyCharP` is the probe-verified char-p emptiness named per the modularity convention).
+/-- **Conditional packaging at `d = 16` for prize-scale primes.**
 
-For `p ≥ 16⁴`: (a) `p` exceeds the bad-reduction threshold `881`, so the `p₁`-entry slice is
-clean (`prize_prime_above_badReduction`); (b) the genuine obstruction `V_16^prim` is empty
-(`V16PrimEmptyCharP`, exhaustively verified).  Together: no primitive gap-variety point over
-`F_p`, i.e. the Chai–Fan norm `R_16` has good reduction at `p` — Q1 holds. -/
+For `p ≥ 16⁴`: (a) `p` exceeds the probe-reported bad-reduction threshold `881`
+(`prize_prime_above_badReduction`; the threshold value itself is not certified in Lean); (b) the
+genuine obstruction `V_16^prim` is empty ASSUMING `V16PrimEmptyCharP p` (passed through unchanged;
+not proved here).  So this records "Q1 at `d = 16` holds at `p` provided `V16PrimEmptyCharP p`";
+it is NOT an unconditional proof of Q1 at `d = 16`. -/
 theorem q1_d16_prize_clean {p : ℕ} (hp : prizeFloorD16 ≤ p)
     (hV : V16PrimEmptyCharP p) :
     badReductionThresholdD16 < p ∧ V16PrimEmptyCharP p :=

@@ -10,12 +10,23 @@ import ArkLib.Data.CodingTheory.ProximityGap.WBPencilWindowCapstone
 
 The window pencil law (`badScalars_card_le_of_anchor`) carries **no below-UDR
 hypothesis**: the row selection `J` need not be injective, so a duplicated-row
-square selection anchors the argument at the **boundary slice `n = 2w + k`** —
-the first radius past unique decoding, where the F₁₇ explosion band lives.
+square selection anchors the argument at the **boundary slice `n = 2w + k`**.
+
+**This boundary is still inside unique decoding.**  `rsCode dom k` uses
+polynomials of degree `< k`, so its minimum distance is `d = n − k + 1 = 2w + 1`
+at `n = 2w + k`, and the integer unique-decoding radius is
+`⌊(d − 1)/2⌋ = w`.  So `δ = w/n` is the **last** unique-decoding row, not a
+radius past unique decoding (e.g. `n = 8, k = 4, w = 2`: `d = 5`, and `2` errors
+is exactly unique decoding).  The first beyond-UDR row `n = 2w + k − 1` already
+satisfies the no-go condition `n + 1 ≤ 2w + k` below, so every adjugate anchor
+vanishes there and this route gives no count beyond UDR.  Any genuine extension
+past UDR would need a separate (e.g. corank-≥2) argument, not provided here.
+
 Probe record (`probe_wb_boundary_slice_anchor.py`): at `(17,8,4,2)` and
 `(37,12,8,2)` every sampled rational stack is anchored, and the adjacent-pair
-ceiling family at `(37,12,8,2)` — `|BAD| = 12 = n` — is anchored, i.e. the
-`n`-sized boundary explosion is INSIDE the proven budget `(w+1)+n(w+1)+1`.
+ceiling family at `(37,12,8,2)` — `|BAD| = 12 = n` — is anchored, i.e. that
+`n`-sized family is inside the proven budget `(w+1)+n(w+1)+1` at this
+(unique-decoding) boundary row.
 
 This file pins the reach exactly:
 
@@ -23,12 +34,13 @@ This file pins the reach exactly:
   the boundary (`n + 1 ≤ 2w + k`), every adjugate entry of every square
   row-selection vanishes identically (pigeonhole: even after deleting one row,
   a repeated pencil row survives), so `WindowPencilAnchored` is unsatisfiable
-  and the law is vacuous there.  Marching further needs the corank-≥2
-  (compound-matrix / cyclic-kernel) generalization.
+  and the law is vacuous there.  This includes every beyond-UDR row.  Marching
+  further needs the corank-≥2 (compound-matrix / cyclic-kernel) generalization.
 * `epsMCA_le_boundary_slice` — **the reach**: at the boundary radius
-  `δ = w/n`, under the `UnanchoredLinear` residual alone,
-  `ε_mca ≤ ((w+1) + n(w+1) + 1)/q` — the first counting law past UDR on this
-  route, production-silent at `q ≥ n²·2¹²⁸`.
+  `δ = w/n` (the largest unique-decoding radius when `n = 2w + k`), under the
+  `UnanchoredLinear` residual alone, `ε_mca ≤ ((w+1) + n(w+1) + 1)/q` — a
+  conditional count at the edge of unique decoding, production-silent at
+  `q ≥ n²·2¹²⁸`.  It is not a beyond-UDR counting law.
 -/
 
 open Finset Polynomial Matrix
@@ -80,11 +92,12 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : ℕ} [NeZero n]
 
 open Classical in
-/-- **The boundary-slice law**: at `n = 2w + k` — the first radius past unique
-decoding — under the `UnanchoredLinear` residual alone,
-`ε_mca(RS, δ) ≤ ((w+1) + n(w+1) + 1)/q` for every `δ ≤ w/n`.  The first
-counting law past UDR on the pencil route; the probe-confirmed anchored class
-includes the `n`-sized adjacent-pair explosion family. -/
+/-- **The boundary-slice law**: at `n = 2w + k` — where `w` is exactly the
+unique-decoding radius `⌊(d−1)/2⌋` of the degree-`< k` RS code (`d = 2w + 1`),
+so `δ = w/n` is the last unique-decoding row — under the `UnanchoredLinear`
+residual alone, `ε_mca(RS, δ) ≤ ((w+1) + n(w+1) + 1)/q` for every `δ ≤ w/n`.
+This is a conditional count within unique decoding, not past it; the
+probe-observed anchored class includes the `n`-sized adjacent-pair family. -/
 theorem epsMCA_le_boundary_slice (dom : Fin n ↪ F) {k w : ℕ} (hk : 1 ≤ k)
     (hb : n = 2 * w + k) {δ : ℝ≥0}
     (hδn : δ * (Fintype.card (Fin n) : ℝ≥0) ≤ w)

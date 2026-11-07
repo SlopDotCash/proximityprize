@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.DeepBandMomentInstance
 
 /-!
-# B5 — the deep-band second-moment saturation law (#389, boundary regime n ≈ √p)
+# B5 — the deep-band second-moment saturation law (#389)
 
 This file proves the **B5 brick** as a single clean law plus its non-vacuity witness,
 building only on the in-tree second-moment substrate
@@ -16,9 +16,14 @@ building only on the in-tree second-moment substrate
 
 ## What B5 asserts
 
-> For the boundary regime `n ≈ √p`, the deep-band second-moment saturation shows
-> **every band radius admits a stack with `≥ V / L²` distinct bad scalars**, where
-> `V` is the moment budget and `L` controls coherent-core overlap.
+> Whenever the moment budget clears for `(L, V)`, the deep-band second-moment
+> saturation shows **every band radius admits a stack with `≥ V / L²` distinct bad
+> scalars**, where `V` is the moment budget and `L` controls coherent-core overlap.
+
+(The law itself carries no regime restriction beyond its budget hypothesis.  The only
+unconditional instance in this file is the **near-full-field** witness `n = 128`,
+`q = 131` — `n/q = 128/131`, `n² = 16384 > 125·q` — **not** the thin boundary regime
+`n ≈ √q`; no thin-family instance is supplied here.)
 
 The mechanism (proven in the substrate, recapped here):
 
@@ -48,12 +53,12 @@ The mechanism (proven in the substrate, recapped here):
   binomial inequality in.
 
 * `B5_deepBand_saturation_unconditional` — the **non-vacuity witness** at the
-  boundary point `RS[F₁₃₁, {0,…,127}, k = 2]`, band `m = 1` (radius `δ = 31/32`,
-  one granularity step below capacity `63/64`), `(M, L, V) = (8, 1050, 79 591 252)`:
-  a concrete stack carries **`≥ 73` distinct certified bad scalars**
-  (`73 / 131 ≈ 0.557` of the field — a *constant* fraction, the saturation the
-  probe `probe_pair_coherence_rank.py` measures as median `#values = q`).  No
-  hypotheses.
+  near-full-field point `RS[F₁₃₁, {0,…,127}, k = 2]` (`n/q = 128/131`), band `m = 1`
+  (radius `δ = 31/32`, one granularity step below capacity `63/64`),
+  `(M, L, V) = (8, 1050, 79 591 252)`: a concrete stack carries **`≥ 73` distinct
+  certified bad scalars** (`73 / 131 ≈ 0.557` of the field).  No hypotheses.  This is a
+  single useful example; since `73/131 < n/q = 128/131`, it does **not** separate a
+  constant share from `O(n)/q`, and it says nothing about the thin regime `n ≈ √q`.
 
 Issue #389.
 -/
@@ -158,24 +163,24 @@ theorem B5_deepBand_saturation_binomial (dom : Fin n ↪ F) {k m : ℕ}
 
 end ProximityGap.PairRank
 
-/-! ## The non-vacuity witness at the boundary regime n ≈ √p -/
+/-! ## The non-vacuity witness (near-full-field instance `n = 128`, `q = 131`) -/
 
 namespace ProximityGap.PairRank
 
 open ProximityGap.SpikeFloor ProximityGap ProximityGap.Ownership
 
 open Classical in
-/-- **B5 — the saturation is non-vacuous at the boundary regime.**  At the
-boundary point `RS[F₁₃₁, {0,…,127}, k = 2]`, band depth `m = 1` (radius
+/-- **B5 — the saturation is non-vacuous (one near-full-field instance).**  At the
+point `RS[F₁₃₁, {0,…,127}, k = 2]` (`n/q = 128/131`, far from the thin regime
+`n ≈ √q`), band depth `m = 1` (radius
 `δ = 31/32`, one granularity step **below** the capacity radius `63/64`),
 generator width `M = 8`, and moment parameters `(L, V) = (1050, 79 591 252)`,
 the law fires with **no hypotheses**: some stack carries at least
 
   `⌈V / L²⌉ = ⌈79 591 252 / 1050²⌉ = 73`
 
-distinct certified bad scalars — a *constant fraction* `73 / 131 ≈ 0.557` of the
-field, matching the probe's median `#values = q`.  (`72·L² = 79 380 000 < V`
-strictly, so the count exceeds `72`.)
+distinct certified bad scalars — `73 / 131 ≈ 0.557` of the field (still below
+`n/q = 128/131`).  (`72·L² = 79 380 000 < V` strictly, so the count exceeds `72`.)
 
 The budget is exactly `budget_instance` (the single binomial inequality
 `P²·131⁵ + (D + P)·131⁷ + V·131⁸ ≤ 2L·P·131⁷` with `P = C(128,4) = 10 668 000`,
@@ -219,11 +224,11 @@ theorem B5_deepBand_saturation_unconditional :
   have : b * 1102500 ≤ 72 * 1102500 := Nat.mul_le_mul_right _ hb72
   omega
 
-/-- **B5 — the saturation value is a constant fraction of the field.**  At the
-boundary witness, `⌈V / L²⌉ = 73` (since `72·L² < V`) and `73 / q = 73 / 131
-≈ 0.557`: a *constant* share of all scalars are certified bad one step below
-capacity (not `O(n)/q`, the silent regime of the per-word supply wall this issue
-tracks). -/
+/-- **B5 — the saturation count exceeds `72`.**  At the near-full-field witness
+(`n = 128`, `q = 131`), `⌈V / L²⌉ = 73` (since `72·L² < V`) and `73 / q = 73 / 131
+≈ 0.557` of all scalars are certified bad one step below capacity.  Since
+`73/131 < n/q = 128/131`, this single instance does **not** separate a constant share
+from `O(n)/q`; a genuinely thin (`n ≈ √q`) family would be needed for that. -/
 theorem B5_saturation_exceeds_72 : 72 * 1050 ^ 2 < 79591252 := by norm_num
 
 end ProximityGap.PairRank

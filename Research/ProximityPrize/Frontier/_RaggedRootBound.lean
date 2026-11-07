@@ -10,8 +10,11 @@ import ArkLib.Data.CodingTheory.ProximityGap.FactorizationRigidity
 /-!
 # Ragged-root structure: the QUANTITATIVE complement of factorization rigidity (#407)
 
-`FactorizationRigidity` proves the *qualitative* dichotomy
-`∏_{x∈S}(X−x)` is `g`-sparse (a polynomial in `Xᵍ`) ⟺ `S` is a `μ_g`-coset-union.
+`FactorizationRigidity` proves the *qualitative* relation between "`∏_{x∈S}(X−x)` is `g`-sparse
+(a polynomial in `Xᵍ`)" and "`S` is a `μ_g`-coset-union": sparse ⟹ root set closed under `μ_g`,
+and, conversely, a multiset-union of full `μ_g`-cosets has a `g`-sparse generating polynomial
+when a primitive `g`-th root of unity exists (`prod_cosets_eq_expand`).  The unqualified `⟺` is
+false without such hypotheses (over `𝔽₂`, `g = 2`: `S = {1}`, `X − 1 ∉ 𝔽₂[X²]`).
 The R-thin reduction asks for the *quantitative* complement: how large can the **ragged**
 (non-coset) part of a root set of a sparse polynomial be?
 

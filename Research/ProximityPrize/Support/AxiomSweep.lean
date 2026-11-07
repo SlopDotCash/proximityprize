@@ -24,7 +24,7 @@ import Research.ProximityPrize.Hab25Core
 #print axioms ProximityGap.L46GS.epsMCA_eq_epsCA_below_udr_rs
 -- L4.6 unconditional sharp form
 #print axioms ProximityGap.epsMCA_le_max_epsCA_card_div_udr
--- L6.12 list-decoding soundness lower bound
-#print axioms ToyProblem.simplified_iop_soundness_listDecoding_lb
+-- L6.12 list-decoding soundness lower bound (canonical violating-instance attack)
+#print axioms ToyProblem.exists_winningSetFor_ncard_ge_of_lambda_lt_card
 -- BKR06 linearized-support chain
 #print axioms BKR06.subspacePoly_isQLinearized

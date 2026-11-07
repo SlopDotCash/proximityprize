@@ -35,9 +35,11 @@ smooth-domain Reed–Solomon codes. The main results:
    `Θ(n·H(ρ)/log q)` bands at production parameters.
 5. **Two-sided band brackets and the reduction of the remaining question.** Between the
    failure zone and the Johnson radius, the bad count is bracketed by an attainable
-   lower construction and a packing upper bound, and the residual gap is reduced — by
-   an exact fiber-structure theorem — to the classical sub-Johnson list-size question
-   for Reed–Solomon codes.
+   lower construction and a packing upper bound, and the residual gap is expressed — by
+   an exact fiber-structure theorem — through counts of codewords close to points of a
+   line (line-union lists). These are related to, but not the same as, the classical
+   point-centred sub-Johnson list sizes for Reed–Solomon codes; no two-way reduction
+   between the two is proved (see §6).
 
 The positive side (that MCA *holds* above Johnson at radii outside the failure zone)
 remains the open conjecture; our results pin exactly where any proof of it must live.
@@ -232,11 +234,18 @@ but historically the first unconditional multi-scalar deep-band bound.
 
 **The wall, isolated.** Improving the supply *below Johnson agreement* for arbitrary
 off-code words is quantitatively the classical sub-Johnson list-size question for
-Reed–Solomon codes (analysis logged in `Research/ProximityPrize/DISPROOF_LOG.md`, 2026-06-12). Every other
-component of the deep-band question is proven. Equivalently: the open content of the
-MCA threshold conjecture between Johnson and the failure zone is *exactly* the open
-content of sub-Johnson list decoding — a coupling long believed, here machine-checked
-as a two-way reduction with explicit constants.
+Reed–Solomon codes (analysis logged in `Research/ProximityPrize/DISPROOF_LOG.md`, 2026-06-12).
+This is a heuristic correspondence, not a proved equivalence. The machine-checked
+incidence bounds (for example `LineCodewordIncidence.line_list_incidence_le`) control
+bad scalars by a *line-union* list — codewords close to some point of the whole line —
+not by the list around a single received word, and an ordinary point-centred list
+bound does not bound the line-union list: for the constant code on `3` coordinates
+over `F₇` with agreement `2`, every point-centred list has at most `1` member while the
+line `u = (0,0,1)`, `v = (1,2,3)` has a line-union list of size `3`. The MCA event's
+no-joint-agreement clause is also absent from these counts. So the open content of the
+MCA threshold conjecture between Johnson and the failure zone is *not* shown here to
+coincide with the open content of sub-Johnson list decoding; a reduction in either
+direction with explicit constants remains to be proved.
 
 ## 7. The proven landscape
 

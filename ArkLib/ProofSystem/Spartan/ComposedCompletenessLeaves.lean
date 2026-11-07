@@ -427,9 +427,9 @@ variable {R : Type} [CommRing R] [IsDomain R] [Fintype R] [DecidableEq R]
   (pp : Spartan.PublicParams)
   {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 
-/-- The 0-round `finalCheck` run collapses to `pure`: the prover is deterministic and the
-verifier's `finalPredicate` queries are eliminated by the honest `simOracle2` (its result is
-discarded by `CheckClaim`'s `let _ ←`). -/
+/-- The 0-round `finalCheck` run collapses to `pure`: the prover is deterministic and canonical
+`CheckClaim.oracleVerifier` is a pure pass-through that never executes `finalPredicate` (it takes
+no predicate and never rejects). -/
 theorem finalCheck_run (stmt : FinalStatement R pp) (oStmt : ∀ i, FinalOracleStatement R pp i) :
     (finalCheck R pp oSpec).toReduction.run (stmt, oStmt) () =
       (pure (((default : (!p[] : ProtocolSpec 0).FullTranscript), (stmt, oStmt), ()),
@@ -438,7 +438,7 @@ theorem finalCheck_run (stmt : FinalStatement R pp) (oStmt : ∀ i, FinalOracleS
 
 /-- **`finalCheck` is perfectly complete** (0-round; the output relation is full). The relation-
 freeness on the output side matches `finalCheckRelOut = Set.univ`-style consumers: the only content
-is totality (the predicate's queries are simulated honestly and its result discarded) and
+is totality (the pass-through verifier never runs a predicate and never rejects) and
 prover/verifier statement agreement. -/
 theorem finalCheck_perfectCompleteness {σ : Type} {init : ProbComp σ}
     {impl : QueryImpl oSpec (StateT σ ProbComp)}

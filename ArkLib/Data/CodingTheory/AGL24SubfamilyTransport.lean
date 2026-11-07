@@ -20,11 +20,18 @@ hypergraph of the *subfamily*. This brick proves the edge layer of that transpor
   the preimage of the original edge *intersected with `J`* (the exact restricted-edge shape
   Lemma 2.3's weak-partition-connectivity speaks about).
 
-The remaining transport layer — `WeaklyPartitionConnected` across the order isomorphism
-`Fin |J| ≃o J` (Finpartition pullback + touched-cell count preservation) — is the catalogued
-next unit; with it, `exists_wpc_subset_of_bad_list` (Lemma 2.3) feeds
-`RIM_eval_not_injective` (Lemma 2.8) directly, completing the deterministic chain
-bad-list ⟹ rank-deficit that the Theorem 1.1 union bound consumes.
+The file also contains the not-all-equal supply `subfamily_not_all_equal` and the
+weak-partition-connectivity transport layer, which is **proved here** (it was originally
+catalogued as the next missing unit):
+
+* `weaklyPartitionConnected_preimage` — `WeaklyPartitionConnected` transports from the
+  `J`-restricted edge family to its `σ`-preimage on `Fin (t+1)` for any injective `σ` with image
+  `J` (via the Finpartition pushforward `Finpartition.pushforward` and touched-cell count
+  preservation).
+
+With it, `exists_wpc_subset_of_bad_list` (Lemma 2.3) feeds `RIM_eval_not_injective` (Lemma 2.8);
+the composed deterministic chain bad-list ⟹ rank-deficit that the Theorem 1.1 union bound consumes
+is `bad_list_gives_wpc_rank_deficit` in `AGL24DeterministicChain.lean`.
 -/
 
 open Finset

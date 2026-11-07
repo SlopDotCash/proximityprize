@@ -57,11 +57,13 @@ theorem P2_closed_of_residual (x₀ : F) (R : F[X][X][Y])
 
 /-- **P2 closed for monic `H` — fully proven, no residual hypothesis.**
 
-For monic `H` (`H.leadingCoeff = 1`, the WLOG case for the BCIKS20 minimal-polynomial reduction)
-the restricted Faà-di-Bruno match `RestrictedFaaDiBrunoMatch` is a *theorem*
-(`restrictedFaaDiBrunoMatch_of_monic`, axiom-clean), so the full P2 closed goal — assembled-series
-root + the order-by-order lift identity — holds unconditionally. This discharges the headline
-BCIKS20 Appendix A.4 obligation in the monic regime with no `axiom`, no `sorry`, no residual. -/
+For monic `H` (`H.leadingCoeff = 1` in `F[X][Y]`) the restricted Faà-di-Bruno match
+`RestrictedFaaDiBrunoMatch` is a *theorem* (`restrictedFaaDiBrunoMatch_of_monic`, axiom-clean), so
+the full P2 closed goal — assembled-series root + the order-by-order lift identity — holds with no
+residual hypothesis. This discharges the BCIKS20 Appendix A.4 obligation in the monic subcase only:
+an irreducible factor monic over `F(Z)[Y]` need not have a monic representative in `F[Z][Y]`
+(e.g. `Z·Y + 1`), and no normalization/transport theorem from the non-monic factor setting to this
+case is proved in-tree. -/
 theorem P2_closed_of_leadingCoeff_one (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H) (hlc : H.leadingCoeff = 1) :
     (Polynomial.eval (βHenselAssembled H x₀ R hHyp) (Q x₀ R H) = 0)

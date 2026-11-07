@@ -11,7 +11,9 @@ For each target modulus n in {16, 32, 64} we find primes p with
         g^((p-1)/c)  != 1 (mod p).
 
 Primality is decided by deterministic Miller-Rabin (exact well below 2^64:
-witness set {2,3,5,7,11,13,17,19,23,29,31,37} is a proof for n < 3.3e24).
+witness set {2,3,5,7,11,13,17,19,23,29,31,37} is a proof for
+n < 318665857834031151167461 ~ 3.19e23, Sorenson-Webster 2015 Thm 1.1; the 3.317e24 bound
+needs the thirteenth base 41).  `is_prime` refuses inputs outside that range.
 
 Emits paste-ready Lean `lucasTwoFactor c e g` certificate data plus the
 Finset literal for each rung.  Deterministic; no randomness.
@@ -22,13 +24,17 @@ Windows:
   n = 64 -> [2^30, 2^31] = [1073741824, 2147483648]
 """
 
-# Deterministic Miller-Rabin witnesses: a proof of primality for all n < 3.3e24.
+# Deterministic Miller-Rabin witnesses: a proof of primality for all n < _MR12_DET_LIMIT
+# (the twelve-base bound; 3.317e24 is the thirteen-base bound).
 _MR_WITNESSES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37]
+_MR12_DET_LIMIT = 318665857834031151167461
 
 
 def is_prime(n: int) -> bool:
     if n < 2:
         return False
+    if n >= _MR12_DET_LIMIT:
+        raise ValueError(f"12-base Miller-Rabin is only proven exact below {_MR12_DET_LIMIT}")
     for p in (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37):
         if n % p == 0:
             return n == p

@@ -187,9 +187,12 @@ The in-tree residual `Fri.fri_query_soundness` reduces, via the proved
 and are isolated below as explicit named `Prop` hypotheses — they are NOT proved
 and NOT axiomatized in shared code.
 
-`assembleClaim82` shows precisely how the proved query-round acceptance probability
-plugs into the frontier: it is hypothesis-clean (it *takes* R1 and R2 as arguments
-rather than asserting them), so it carries no hidden soundness debt. -/
+`assembleClaim82` is a logical skeleton only: it *takes* R1 and R2 as arguments rather
+than asserting them, so it carries no hidden soundness debt, but its proof is just
+`bridge.bridge wiring.derives_density`. The proved acceptance probability is packaged in
+the `acceptance_available` field and is **not used** to derive anything, so this theorem
+does not wire the query-round probability bound into the frontier; that coupling remains
+part of the open residual R2 (`derives_density`). -/
 
 section Wiring
 
@@ -231,11 +234,13 @@ structure QueryRoundReductionWiring
   -- coding bridge consumes from the end-to-end soundness analysis.
   derives_density : densityLEα
 
-/-- Assembly skeleton for Claim 8.2: given the proved query-round acceptance
-probability (packaged in `QueryRoundReductionWiring.acceptance_available`) and the
-two named residuals R1/R2, conclude `Code.jointAgreement`. This is hypothesis-clean
-(R1, R2 are arguments), exposing exactly where the proved math meets the open
-substrate — no `sorry`, no axiom. -/
+/-- Assembly skeleton for Claim 8.2: from the two named residuals R1/R2, conclude
+`Code.jointAgreement`. This is hypothesis-clean (R1, R2 are arguments; no `sorry`, no
+axiom), but the conclusion follows from `bridge.bridge` applied to the assumed
+`wiring.derives_density` alone: the packaged acceptance probability
+(`QueryRoundReductionWiring.acceptance_available`) and the parameters `G`, `t`, `δ` play no
+role in the proof. It is therefore an explicitly conditional skeleton, not protocol
+probability wiring. -/
 theorem assembleClaim82
     {κ ι : Type} [Fintype ι] [DecidableEq ι] [Nonempty ι]
     (C : Set (ι → 𝔽)) (α δ : ℝ≥0) (W : κ → ι → 𝔽)
@@ -259,8 +264,10 @@ all Mathlib-only (Parts A–C, no ArkLib import):
 `queryAcceptProb G t` is *defeq* to the in-tree
 `Pr_{ let q ← PMF.uniformOfFintype (Fin t → ι) }[∀ j, q j ∈ G]` via
 `ProbabilityTheory.Pr_eq_tsum_indicator` (one `rw`), so these transfer directly
-to the FRI cone's notation. Part D (the `Code.jointAgreement` wiring) additionally
-imports `ArkLib.Data.CodingTheory.InterleavedCode`.
+to the FRI cone's notation. Part D (the `Code.jointAgreement` wiring) does **not** import
+`ArkLib.Data.CodingTheory.InterleavedCode`: the whole file imports only `Mathlib`, and Part D
+uses a local mirror of `jointAgreement` (see the note at its definition) rather than the in-tree
+declaration.
 
 These promote the in-tree *ratio* lemmas (`Fri.QueryRound.queryRound_acceptance_le_of_density`,
 `Fri.queryRoundDensityBound`) to the PMF probability the `OracleReduction.run`

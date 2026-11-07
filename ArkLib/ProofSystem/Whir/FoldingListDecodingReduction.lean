@@ -10,8 +10,11 @@ import ArkLib.ProofSystem.Whir.Folding
 
 `Fold.folding_listdecoding_if_genMutualCorrAgreement` (`Whir/Folding.lean`, ABF26
 Theorem 4.20) is a statement-only `def : Prop`: the probabilistic list-decoding
-equivalence of the `k`-fold fold, with failure probability strictly below the summed
-per-round `errStar` budget `∑ i, errStar i`.
+equivalence of the `k`-fold fold, with failure probability at most the summed per-round
+`errStar` budget `∑ i, errStar i`. (The paper's strict `<` is not encoded: the MCA
+hypothesis only gives `≤ errStar` and admits `errStar = 0`, under which a strict bound is
+unsatisfiable; the strict form is kept separately as
+`folding_listdecoding_lt_of_round_events`, with an explicit strictness hypothesis.)
 
 This file **discharges that capstone given exactly the per-round event data** that the
 single-step lemmas (L4.21–L4.23, proven in `Folding.lean` as implications) are designed
@@ -23,25 +26,26 @@ to produce. Concretely, `folding_listdecoding_of_round_events` consumes:
   the level-`k` Hamming list, some round's bad event fired (this is the deterministic
   k-fold composite of the L4.22 forward inclusions with the L4.23 reverse-failure
   events);
-* `h_le` / `h_lt` — the per-round probability bounds: every round's bad event has
-  probability `≤ errStar i`, and at least one round is strictly below its budget
-  (the strictness the paper's `<` conclusion requires; the MCA hypothesis `params.h i`
-  is what delivers these bounds via the L4.21 bridge
-  `folding_preserves_listdecoding_base_of_mca_bridge`).
+* `h_le` — the per-round probability bounds: every round's bad event has
+  probability `≤ errStar i` (the MCA hypothesis `params.h i` is what delivers these bounds
+  via the L4.21 bridge `folding_preserves_listdecoding_base_of_mca_bridge`).
 
 The capstone then follows from the proven union-bound backbone
-`Pr_le_finset_sum_of_implies` plus a strict finite-sum comparison in `ℝ≥0∞`
-(`sum_lt_sum_of_le_of_lt_of_ne_top` below, using that probabilities are `≤ 1`, hence
-finite).
+`Pr_le_finset_sum_of_implies` and a finite-sum comparison. The paper-shaped strict variant
+additionally assumes `h_lt` (some round strictly below its budget) and uses the strict
+finite-sum comparison in `ℝ≥0∞` (`sum_lt_sum_of_le_of_lt_of_ne_top` below, using that
+probabilities are `≤ 1`, hence finite).
 
 **Honest scope.** This is a *reduction*, not a closure: exhibiting the per-round events
-`Q` and discharging `h_imp`/`h_le`/`h_lt` from `params.h` is the remaining ABF26 §4
+`Q` and discharging `h_imp`/`h_le` from `params.h` is the remaining ABF26 §4
 inductive content (the per-level block-list data `S_i, φ_i, C_i` and the
 reverse-inclusion → `proximityCondition` bridge are not derivable from the loose
 `indexPowT` data — see the documented statement repairs on L4.21/4.22 in `Folding.lean`).
 What this file removes from the open surface is the entire probabilistic accounting
 layer: union bound, strictness bookkeeping, and the exact existential/`max`-free shape
-of the Theorem 4.20 conclusion.
+of the Theorem 4.20 conclusion. Note also that `GenMutualCorrParams` does not pin its
+generator codes/embeddings to the folding chain of the input code, so the capstone `Prop`
+is an interface, not a faithful encoding of ABF26 Theorem 4.20 (see its docstring).
 
 Axiom-clean: `[propext, Classical.choice, Quot.sound]` (see `#print axioms` at EOF).
 -/
@@ -82,14 +86,65 @@ omit [Pow ι ℕ] in
 
 Given per-round bad events `Q f i αs` with (i) the telescoping implication — end-to-end
 list mismatch forces some round's event — and (ii) per-round probability bounds
-`Pr[Q f i] ≤ errStar i` with strictness at some round, the Theorem 4.20 capstone
+`Pr[Q f i] ≤ errStar i`, the (non-strict) Theorem 4.20 capstone
 `folding_listdecoding_if_genMutualCorrAgreement` HOLDS.
 
 The proof is the union bound `Pr_le_finset_sum_of_implies` (proven in `Folding.lean`)
-followed by the strict finite-sum comparison (probabilities are `≤ 1`, hence finite).
-The open ABF26 §4 content lives entirely in the three named hypotheses; see the module
+followed by the termwise finite-sum comparison.
+The open ABF26 §4 content lives entirely in the named hypotheses; see the module
 docstring. -/
 theorem folding_listdecoding_of_round_events
+    [Fintype F] {S : Finset ι} {φ : ι ↪ F} [Fintype ι] [DecidableEq ι] [Smooth φ] {k m : ℕ}
+    {S' : Finset (indexPowT S φ 0)} {φ' : (indexPowT S φ 0) ↪ F}
+    [∀ i : ℕ, Fintype (indexPowT S φ i)] [DecidableEq (indexPowT S φ 0)] [Smooth φ']
+    [h : ∀ {f : (indexPowT S φ 0) → F}, DecidableBlockDisagreement 0 k f S' φ']
+    [∀ i : ℕ, Neg (indexPowT S φ i)]
+    {C : Set ((indexPowT S φ 0) → F)} (hcode : C = smoothCode φ' m) (hLe : k ≤ m)
+    {δ : ℝ≥0}
+    {params : GenMutualCorrParams S φ k}
+    (Q : ((indexPowT S φ 0) → F) → Fin (k + 1) → (Fin k → F) → Prop)
+    -- telescoping: an end-to-end list mismatch forces some round's bad event
+    (h_imp :
+      let _ : ∀ j : Fin (k + 1), Fintype (indexPowT S φ j) := params.inst1
+      let _ : ∀ j : Fin (k + 1), Nonempty (indexPowT S φ j) := params.inst2
+      ∀ (f : (indexPowT S φ 0) → F),
+      (0 < δ ∧ δ < 1 - Finset.univ.sup
+        (fun j => params.BStar j (params.Gen_α j).C (params.Gen_α j).parℓ)) →
+      ∀ αs : Fin k → F,
+        fold_k_set (Λᵣ(0, k, f, S', C, hcode, δ)) αs hLe
+          ≠ closeCodewordsRel ((params.Gen_α ⟨k, Nat.lt_succ_self k⟩).C)
+              (fold_k f αs hLe) δ →
+        ∃ i : Fin (k + 1), Q f i αs)
+    -- per-round budget: every round's bad event is within its `errStar` budget
+    (h_le :
+      let _ : ∀ j : Fin (k + 1), Fintype (indexPowT S φ j) := params.inst1
+      let _ : ∀ j : Fin (k + 1), Nonempty (indexPowT S φ j) := params.inst2
+      ∀ (f : (indexPowT S φ 0) → F),
+      (0 < δ ∧ δ < 1 - Finset.univ.sup
+        (fun j => params.BStar j (params.Gen_α j).C (params.Gen_α j).parℓ)) →
+      ∀ i : Fin (k + 1),
+        Pr_{let αs ←$ᵖ (Fin k → F)}[Q f i αs]
+          ≤ params.errStar i (params.Gen_α i).C (params.Gen_α i).parℓ δ) :
+    folding_listdecoding_if_genMutualCorrAgreement (S' := S') (φ' := φ')
+      hcode hLe (δ := δ) (params := params) := by
+  unfold folding_listdecoding_if_genMutualCorrAgreement
+  intro _inst1 _inst2 f hδ
+  classical
+  -- union bound over the `k + 1` rounds (`Pr_le_finset_sum_of_implies`, proven)
+  refine le_trans (Pr_le_finset_sum_of_implies ($ᵖ (Fin k → F)) _ (Q f) Finset.univ ?_) ?_
+  · intro αs hP
+    obtain ⟨i, hi⟩ := h_imp f hδ αs hP
+    exact ⟨i, Finset.mem_univ i, hi⟩
+  · exact Finset.sum_le_sum fun i _ => h_le f hδ i
+
+omit [Pow ι ℕ] in
+/-- **Paper-shaped strict form of ABF26 Theorem 4.20 from per-round event data.**
+
+With the additional hypothesis that some round is strictly below its budget (`h_lt`), the
+end-to-end failure probability is *strictly* below `∑ i, errStar i`. This keeps the paper's
+`<` available explicitly; it is stated directly rather than through the capstone `Prop`,
+which encodes the non-strict `≤` (see `folding_listdecoding_if_genMutualCorrAgreement`). -/
+theorem folding_listdecoding_lt_of_round_events
     [Fintype F] {S : Finset ι} {φ : ι ↪ F} [Fintype ι] [DecidableEq ι] [Smooth φ] {k m : ℕ}
     {S' : Finset (indexPowT S φ 0)} {φ' : (indexPowT S φ 0) ↪ F}
     [∀ i : ℕ, Fintype (indexPowT S φ i)] [DecidableEq (indexPowT S φ 0)] [Smooth φ']
@@ -131,9 +186,16 @@ theorem folding_listdecoding_of_round_events
       ∃ i : Fin (k + 1),
         Pr_{let αs ←$ᵖ (Fin k → F)}[Q f i αs]
           < params.errStar i (params.Gen_α i).C (params.Gen_α i).parℓ δ) :
-    folding_listdecoding_if_genMutualCorrAgreement (S' := S') (φ' := φ')
-      hcode hLe (δ := δ) (params := params) := by
-  unfold folding_listdecoding_if_genMutualCorrAgreement
+    let _ : ∀ j : Fin (k + 1), Fintype (indexPowT S φ j) := params.inst1
+    let _ : ∀ j : Fin (k + 1), Nonempty (indexPowT S φ j) := params.inst2
+    ∀ (f : (indexPowT S φ 0) → F),
+      (0 < δ ∧ δ < 1 - Finset.univ.sup
+        (fun j => params.BStar j (params.Gen_α j).C (params.Gen_α j).parℓ)) →
+      Pr_{let αs ←$ᵖ (Fin k → F)}[
+          fold_k_set (Λᵣ(0, k, f, S', C, hcode, δ)) αs hLe
+            ≠ closeCodewordsRel ((params.Gen_α ⟨k, Nat.lt_succ_self k⟩).C)
+                (fold_k f αs hLe) δ ] <
+        ∑ i : Fin (k + 1), params.errStar i (params.Gen_α i).C (params.Gen_α i).parℓ δ := by
   intro _inst1 _inst2 f hδ
   classical
   -- union bound over the `k + 1` rounds (`Pr_le_finset_sum_of_implies`, proven)
@@ -164,8 +226,9 @@ theorem folding_listdecoding_of_round_events
 
 omit [Pow ι ℕ] in
 /-- All-strict corollary: if **every** round's bad event is strictly below its budget,
-the Theorem 4.20 capstone holds (specializes `folding_listdecoding_of_round_events`;
-the witness round for strictness is round `0`). -/
+the (non-strict) Theorem 4.20 capstone holds (specializes
+`folding_listdecoding_of_round_events` via `le_of_lt`; for the strict end-to-end bound use
+`folding_listdecoding_lt_of_round_events`). -/
 theorem folding_listdecoding_of_round_events_strict
     [Fintype F] {S : Finset ι} {φ : ι ↪ F} [Fintype ι] [DecidableEq ι] [Smooth φ] {k m : ℕ}
     {S' : Finset (indexPowT S φ 0)} {φ' : (indexPowT S φ 0) ↪ F}
@@ -200,11 +263,11 @@ theorem folding_listdecoding_of_round_events_strict
       hcode hLe (δ := δ) (params := params) :=
   folding_listdecoding_of_round_events hcode hLe Q h_imp
     (fun f hδ i => (h_lt f hδ i).le)
-    (fun f hδ => ⟨0, h_lt f hδ 0⟩)
 
 end Fold
 
 /-! ## Axiom audit — all kernel-clean. -/
 #print axioms Fold.sum_lt_sum_of_le_of_lt_of_ne_top
 #print axioms Fold.folding_listdecoding_of_round_events
+#print axioms Fold.folding_listdecoding_lt_of_round_events
 #print axioms Fold.folding_listdecoding_of_round_events_strict

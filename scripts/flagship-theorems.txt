@@ -29,7 +29,8 @@ ArkLib/Data/CodingTheory/BerlekampWelch/BerlekampWelch.lean  BerlekampWelch.deco
 # ── Johnson bound ──────────────────────────────────────────────────────
 ArkLib/Data/CodingTheory/JohnsonBound/Basic.lean  JohnsonBound.johnson_condition_weak_implies_strong
 
-# ── Hensel existence (flagship theorem) ────────────────────────────────
+# ── Scalar-coefficient power-series root existence (constant embedding `C c`;
+#    not general Hensel lifting, see HenselSeriesCoeff; audit L75) ─────────
 ArkLib/Data/Polynomial/HenselExistence.lean  ProximityPrize.HenselExistence.exists_powerSeries_root
 
 # ── Guruswami-Sudan list-size bound ────────────────────────────────────

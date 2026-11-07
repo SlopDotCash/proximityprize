@@ -20,33 +20,73 @@ below is not silently declared complete by that migration.
   the live issue #2 §3.1, preserving their historical ArkLib #470 provenance.
   This implements the explicitly permitted documented-external-assumption route;
   none of these axioms is proved by registration. The flagship axiom audit still
-  rejects custom axioms in its theorem dependency closures.
+  rejects custom axioms in its theorem dependency closures. None of the nine
+  remains an axiom in the Lean 4.35 integration tree; the next section records
+  what replaced each one.
 
-## Registered external assumptions
+## Former registered external assumptions
 
-| Source under `ArkLib/` | Explicit unproved assumptions |
+`scripts/residual_axioms.txt` pins no live axiom, and the tree declares no custom
+`axiom`. The table records the canonical replacements and the removed Binius
+declaration. The replacement theorems' `#print axioms` reports use only
+`propext`, `Classical.choice` and `Quot.sound` on the Lean 4.35 integration tree.
+
+| Source under `ArkLib/` | Former axioms, now theorems |
 |---|---|
 | `Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreement.lean` | `weighted_correlated_agreement_for_parameterized_curves`, its primed variant, `weighted_correlated_agreement_over_affine_spaces`, its primed variant |
 | `Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean` | `large_agreement_set_on_curve_implies_correlated_agreement` and its primed variant |
-| `ProofSystem/Binius/BinaryBasefold/Steps/Fold.lean` | `foldKnowledgeStateFunction_toFun_full`, `foldOracleVerifier_rbrKnowledgeSoundness` |
+| `ProofSystem/Binius/BinaryBasefold/Steps/Fold.lean` | `foldOracleVerifier_rbrKnowledgeSoundness` (the former `foldKnowledgeStateFunction_toFun_full` no longer exists as a declaration) |
 | `Data/Lattices/CyclotomicRing/Subfield/Field.lean` | `no_selfReciprocal_factor` |
 
-These entries are proof debt, not standard Lean foundational axioms. Downstream
-results depending on them remain conditional on their truth.
+The five BCIKS20 statements did not become theorems unchanged. Their former axiom
+forms were false, and the proved theorems differ from them:
+
+- As first stated, without a positive-rate guard, the four weighted-agreement axioms
+  failed at `deg = 0`, where every threshold that divides by `sqrtRate` is `0` under
+  Lean's `x / 0 = 0`. A `0 < sqrtRate` guard was added in October, but the two
+  affine-space axioms stayed false even with it: they sampled from the translated
+  affine hull `u 0 +ᵥ affineSpan F {u 1, …}` (one point for one direction) rather
+  than `u 0 + span {u 1, …}`. The proved theorems take `0 < deg` and sample from
+  `Affine.affineSubspaceAtOrigin (u 0) (Fin.tail u)`. The curve variants evaluate
+  `errorBound` at `1 - α` rather than at a free distance parameter.
+- The Johnson-regime axiom `large_agreement_set_on_curve_implies_correlated_agreement'`
+  had no positive-rate guard, and its threshold divides by `Real.rpow 0 (3/2) = 0` at
+  `deg = 0`. The proved theorem takes `0 < deg` and `deg ≤ n`.
+
+`Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreementDegenerate.lean` keeps the
+false forms as `Prop`s and refutes them, using only `propext`, `Classical.choice` and
+`Quot.sound`, so they cannot be reinstated. At zero rate, `not_unguardedCurve` and
+`not_unguardedCurvePrimed` refute the weighted curve axioms as first stated and
+`not_unguardedJohnsonCurves` the Johnson-regime axiom. At rate `1/2` over
+`ZMod 1000003`, `not_affineHullSpaces` and `not_affineHullSpacesPrimed` refute the
+guarded affine-hull axioms. These refute the old statements only; the replacement
+results are established by their own proofs. The audit fixture that derived `False`
+from the old primed curve axiom no longer elaborates: the theorem's `0 < deg`
+premise cannot be discharged at `deg = 0`.
 
 ## Remaining proof and refactor work
 
 - The strict [residual census](residual-census.md) classifies syntactic residual
-  declarations; it does not certify every named `Prop` or structure hypothesis.
-  A fresh run on the audited tree confirms 117 strict declarations: 69 open, 47 discharged,
-  one refuted. A refuted statement must not be treated as a theorem to prove.
+  declarations under `ArkLib/` only; it does not certify every named `Prop` or structure
+  hypothesis, and its `discharged` label marks a candidate provider, not a verified proof.
+  A run on the tree audited for this page reported 117 strict declarations: 69 open,
+  47 discharged, one refuted. That is a dated tool classification, not a current or certified
+  total; the wiki page's generated summary is the current one. A refuted statement must not be
+  treated as a theorem to prove.
 - DuplexSponge has genuine progress beyond the historical blanket description:
   `ConsistencyPaperCascade.lean` supplies the 5.12 and 5.16 honest-paper providers,
-  and `Lemma514PaperFork.lean` supplies the 5.14 provider.
-  `Lemma58Reduction.lean` also supplies `lemma5_8EagerPaperResidual_holds`
+  and `ForkPaperFork.lean` supplies the 5.14 provider. (Each of the sixteen duplicated
+  module pairs now has one implementation owner, recorded in
+  `scripts/integration/duplex-clone-consolidation.json`: the paper-numbered
+  `DuplexSponge/Security/Lemma5*.lean` module holds the code, and its semantic-name
+  path, including the two named here, is an import-only compatibility wrapper. The
+  pairs no longer hold separately compiled copies.)
+  `Reduction.lean` also supplies `lemma5_8EagerPaperResidual_holds`
   and unconditional honest-birthday/Claim 5.21 bounds, under its finite,
-  decidable and sampleable type instances. The checked-in census already marks
-  this residual discharged. `KeyLemmaSalted.lean` records the historical unsalted
+  decidable and sampleable type instances. Because those instances (for example
+  `[Fintype StmtIn]`) are not among the residual's own, the census classifier hardened
+  on 2026-10-28 treats this as a conditional provider, not a uniform discharge.
+  `KeyLemmaSalted.lean` records the historical unsalted
   Hyb01/Hyb34 switches as refuted by endpoint log-shape mismatch and introduces
   the salted successor `Hyb01StepResidualS`. A distribution/TV switch does not
   follow merely from the event-probability bound. A fresh

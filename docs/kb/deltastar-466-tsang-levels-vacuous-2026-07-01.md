@@ -1,5 +1,16 @@
 # #466 L4(A): Tsang/Selberg level-splitting is VACUOUS — the wraparound term has nothing to split (2026-07-01)
 
+> **Scope note (2026-10-28 audit, T48; cross T87).** The integer-lift level split can be a valid
+> diagnostic, but two limits apply.
+> - **Finite cells.** Level-0 dominance is observed in small cells (`n = 8, 16`, `r ≤ 6`). It does not
+>   exclude every signed or weighted level argument, so "Do NOT re-attempt … signed levels,
+>   level-weighted moments" is stronger than the data.
+> - **Wrong carrier for cyclotomic relations.** Levels are defined by integer representatives
+>   (`k = (Σ_Z x − Σ_Z y)/p`). Integer-representative equality is not a replacement for an arbitrary
+>   cyclotomic relation definition: the canonical integer-lift energy differs from the cyclotomic
+>   energy even for `μ₈ ⊆ F₁₇` (see the correction in
+>   `deltastar-gate-as-equidistribution-defect-2026-06-13.md`).
+
 **Verdict: KILL, sharper than pre-registered.** DISPROOF tag `466-r4-tsang-levels-vacuous`.
 Probe `scripts/probes/probe_466_tsang_levels.py` → `_out_466_tsang_levels.txt` (deterministic,
 no RNG; independently re-run 2026-07-02, byte-identical numerics).

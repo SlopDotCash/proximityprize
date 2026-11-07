@@ -12,8 +12,9 @@ import Research.ProximityPrize.Frontier._MomentOptimizedSupNorm
 
 After 11 rounds of no-go cartography the surviving open surface is EXACTLY ONE object, the
 analytic BGK/Paley **wall**.  This file is the *assembly* of the already-landed in-tree bricks
-into one capstone Prop that localizes the entire open prize to `WallHolds`, with every other
-link a cited in-tree theorem — **no new mathematics, no laundering.**
+into one capstone statement conditional on `WallHolds` plus a named incidence glue, with every
+other link a cited in-tree theorem — **no new mathematics, no laundering.**  (It does NOT localize
+the prize to `WallHolds`: the glue is unsatisfiable at prize parameters, see below.)
 
 ## The one Prop (stated with the EXACT in-tree objects)
 
@@ -59,8 +60,16 @@ that object, exactly the "wall".
 
 **So the capstone honestly certifies:** the wall `WallHolds` discharges the *analytic* half (the
 char-sum bound) axiom-clean; the residual `M → δ*` glue is one further named object
-(`RealizedIncidenceBudget`) that the wall does not by itself supply.  The prize is localized to
-`WallHolds ∧ RealizedIncidenceBudget`, with `WallHolds` the wall and every step a real theorem.
+(`RealizedIncidenceBudget`) that the wall does not by itself supply.
+
+**Consequence of the glue that must be kept in view.**  Since
+`charSumIncidenceBudget G B = ⌈|G| + q·B⌉ ≥ q·B`, the budget conjunct of `RealizedIncidenceBudget`
+(`budget/q ≤ ε*`) forces `ε* ≥ B`.  In `wall_capstone_optimized`, `B = √(2e·|G|·(log q + 1))` with
+`q ≥ e`, so for nonempty `G` the glue can hold only when `ε* ≥ √(2e) ≈ 2.33` — an uninformative
+regime (`ε* > 1`).  Hence `WallHolds ∧ RealizedIncidenceBudget` CANNOT hold at prize parameters,
+and the prize is **not** localized to that conjunction.  Moreover, in `wall_capstone` the `δ*`
+conjunct of the conclusion uses only `hB` and `hglue`; `hwall` feeds only the moment-bound
+conjunct.
 
 Issue #466 (lane K, capstone assembly).
 -/
@@ -159,16 +168,17 @@ theorem deltaStar_floor_of_charSumBound_of_budget
   `charSum_of_wallHolds` (here `B` is passed as the optimized sup-norm, `hB`); and
 * the NAMED glue `RealizedIncidenceBudget` (the `M → δ*` incidence input the wall does not supply).
 
-Every step is a real in-tree theorem.  The prize is localized to `WallHolds ∧
-RealizedIncidenceBudget`; the analytic wall `WallHolds` is the one open Prop, and the residual glue
-is explicitly named, not discharged.  This is the campaign's machine-checked cartographic
-certificate.
+Every step is a real in-tree theorem.  The residual glue is explicitly named, not discharged; note
+that it forces `ε* ≥ B` (since `charSumIncidenceBudget G B ≥ q·B`), so this capstone does NOT
+localize the prize to `WallHolds ∧ RealizedIncidenceBudget` (that conjunction is unsatisfiable at
+prize parameters for nonzero `B`).
 
 The conclusion is a **conjunction** so that `WallHolds` is genuinely load-bearing, not a passenger:
 the capstone certifies BOTH
 * (analytic payload of the wall) the per-frequency moment bound `‖η_b‖^{2r} ≤ q·Wick_r` for every
   rung `r` and every `b ≠ 0` — this is `charSum_of_wallHolds`, the sole consumer of `hwall`; AND
-* (δ*-floor) `δ ≤ mcaDeltaStar C ε*` from the char-sum bound `B` and the named glue.
+* (δ*-floor) `δ ≤ mcaDeltaStar C ε*` from the char-sum bound `B` and the named glue (this
+  conjunct does not use `hwall`).
 
 The optimized companion theorem below removes the original round-12 `B` parameter by importing
 `_MomentOptimizedSupNorm.lean`, which proves the elementary moment-order optimization
@@ -197,7 +207,9 @@ itself supplies the closed-form sup-norm parameter
 remaining δ*-side input is the explicitly named `RealizedIncidenceBudget` at that concrete `B`.
 
 The result is still conditional on the incidence glue, and does not close the prize.  It removes
-only the bookkeeping parameter that round 12 left open. -/
+only the bookkeeping parameter that round 12 left open.  Because the glue forces `ε* ≥ B` and here
+`B = √(2e·|G|·(log q + 1)) ≥ √(2e) ≈ 2.33` for nonempty `G` (using `q ≥ e`), the hypothesis
+`hglue` is satisfiable only for `ε* ≥ √(2e)`, where the `δ*` conclusion is uninformative. -/
 theorem wall_capstone_optimized
     {F : Type} [Field F] [Fintype F] [DecidableEq F]
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]

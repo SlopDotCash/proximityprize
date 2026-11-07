@@ -8,12 +8,28 @@ THE DECISIVE QUESTION.  SYZ25 exhibited a rigidity-deficient (d>0) over-budget c
 but its cores have size k+1 = 4 (MINIMAL cores).  SYZ24's "d=0 for every over-budget
 family" verdict was ALSO measured only on minimal (size-(k+1)) star/nested cores.
 
-The STRIP is different.  A bad scalar's witness/core S is an AGREEMENT set: for radius
-delta in the strip (Johnson ~ 0.293, 1/3) at rate 1/2, |S| = t >= (1-delta) n, so strip
-cores have size  s >= t-1 ~ 2n/3  (NOT k+1 = n/2+1).  Two strip cores overlap
+The STRIP question.  A bad scalar's WITNESS S is a scalar agreement set: for radius delta
+in the strip (Johnson ~ 0.293, 1/3) at rate 1/2, |S| >= t >= (1-delta) n.  That does NOT make
+the joint codeword-pair CORE large (audit 2026-10-28, finding L121): a scalar codeword
+explains ONE linear combination u0 + gamma*u1 on S, while a joint core must explain BOTH rows
+separately, so "|S| >= t  ==>  joint core s >= t-1" is false in general.  Exact
+counterexample in the strict rate-1/2 strip: F_17, domain mu_16, k=8, delta=5/16 (t=11),
+u1 = eval(X^8), u0 = -u1.  At gamma=1 the line is the zero codeword on all 16 points, every
+11-point witness is explained (only by the zero codeword), and the full set is nonjoint, so
+gamma=1 is bad; yet every pencil pair through such a witness has v0 = -v1 and its joint core
+needs v1 = X^8, which holds on <= 8 points (< t-1 = 10).  (Only that one exceptional bad
+scalar: no over-budget or prize counterexample is claimed.)
+
+So the scans below cover only the LARGE-JOINT-CORE sub-case: families whose cores have size
+s >= s_min.  IF cores have size s >= t-1 ~ 2n/3 (NOT k+1 = n/2+1), two cores overlap
     |Ci ∩ Cj| >= 2s - n >= 2(2n/3) - n = n/3,
 which is < k = n/2, so the SYZ25 sufficient condition (incremental->=k overlap, S1) is
-NOT automatically forced.  Hence d>0 might survive.  THIS PROBE DECIDES.
+NOT automatically forced, and d>0 might survive.  The probe measures that sub-case.  Any
+conclusion about ALL strip events or ALL contributing pencils needs a separate, proved
+reduction from arbitrary strip events to large joint cores under the exact global
+hypotheses; none is supplied here.  The local-to-global rigidity and finite rank results
+remain valid for their stated large-core inputs.  (Diagnostic test-oracle scope, T62;
+crosslink L120.)
 
 Steps:
  (1) EXISTENCE.  For k=n/2, sweep the core-size lower bound s_min from k+1 up to n-1.
@@ -201,9 +217,12 @@ if __name__=="__main__":
     print("(4) DECISIVE: critical core-size threshold for FIELD-INDEPENDENT deficiency.")
     print("    A d>0 cover 'lifts' only if its deficiency is a genuine matroid invariant")
     print("    (survives over the huge prize field), NOT a small-characteristic accident.")
-    print("    Claim: field-indep d>0 needs core size <= ceil(2n/3) (delta >= 1/3), i.e. the")
-    print("    strip's EXCLUDED top edge; the OPEN strip interior (delta<1/3, core>2n/3) is")
-    print("    deficiency-free => generation forced => strip budget safe.  STRIP TRUE-mechanism.")
+    print("    Question: in this random search, does field-indep d>0 need core size")
+    print("    <= ceil(2n/3) (delta >= 1/3, the strip's EXCLUDED top edge)?  Scope: this")
+    print("    concerns LARGE JOINT CORES only.  A strip event's scalar witness |S|>=t does")
+    print("    NOT give a joint core >= t-1 (L121: F_17, k=8, delta=5/16, u0=-u1=-X^8 has a")
+    print("    bad scalar whose pencil cores are all <= 8 < 10), so no answer here shows")
+    print("    the strip budget is safe without a proved reduction to large cores.")
     print("="*78)
     LARGE=[101,1009,65537,1000003]
     def field_indep_dpos(n,k,cores,seedp):

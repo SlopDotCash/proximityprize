@@ -13,6 +13,10 @@ Questions:
   Q3. Singleton-block scaling: M singleton blocks with distinct constants (s = a-1
       shared support votes): how large can Lambda get in the window? (informs the
       residual's true value; the M=2 refuter alone kills L=1).
+      NOTE (audit 2026-10-28, L103): the loop needs M >= a and M + (a-1) <= n, i.e.
+      a <= M <= n-a+1; at the only selected shape (n=16, a=9) that is range(9, 9),
+      EMPTY, so Q3 tests no singleton-block construction there and is reported as
+      UNTESTED (its "best" is not a measured value).
 
 Deterministic.  Exit 0 iff Q2's construction verifies (Lambda >= 2, safe, large-zero).
 """
@@ -119,6 +123,7 @@ def main():
     # any gamma (u1=0), total agreement 1 + (a-1) = a.
     print("\nsingleton-block scaling (M blocks, s = a-1 support):")
     best = 0
+    tested = 0
     for M in range(a, n - (a - 1) + 1):  # need z = M >= a and M + (a-1) <= n
         consts = rng.permutation(q)[:M]
         u1m = np.zeros(n, dtype=int)
@@ -129,9 +134,15 @@ def main():
         if M + a - 1 < n:
             u0m[M + a - 1:] = rng.integers(0, q, size=n - M - a + 1)
         lzm, safem, lamm, badm = analyze(q, n, k, a, CW, u0m, u1m, f"  M={M}")
+        tested += 1
         if lzm and safem:
             best = max(best, lamm)
-    print(f"\nbest safe large-zero Lambda seen in window constructions: {best}")
+    if tested == 0:
+        print(f"\nQ3 UNTESTED at (n,a)=({n},{a}): no M with a <= M <= n-a+1; "
+              f"no singleton-block construction was evaluated")
+    else:
+        print(f"\nbest safe large-zero Lambda seen in {tested} singleton-block "
+              f"constructions: {best}")
 
     if ok:
         print("\nRESULT: two-block refuter VERIFIED — L_near = 1 is FALSE at the "

@@ -20,6 +20,21 @@ through two words it identifies the §6 close-parameter set with the §5 affine-
 set, via `coeffs_of_close_proximity_curve_finMapTwoWords_eq_close_proximity`, after the
 two helper word-stack identities `wordStack_fin_two_eq_finMapTwoWords` and
 `lineWordStack_eq_finMapTwoWords` reconcile the BCKHS25 line stack with the §5 bridge stack.
+
+## Scope of the Claim-5.11 counting inputs
+
+The affine-line capstones below take the Claim-5.11 counting package (`hcounting`, or the
+`hsection5` bundle) only for lines whose close-parameter probability exceeds
+`errorBound`, i.e. only in the large-probability branch where the package is consumed.
+An unconditional version quantified over *every* line and every GS interpolant cannot be
+supplied: at an empty close set (`#close = 0`) the strict counting inequalities
+`B + t ≤ #close` and `⌈δ n⌉ * #close < (n - k) * t` force `t = 0` and then `0 < 0`, and the
+complement variant has right-hand side `(n - k) * (#close - B) = 0`.  Such empty-close
+`ModifiedGuruswami` instances exist inside the strict Johnson radius (e.g. `F = 𝔽₅`, `n = 4`,
+`k = 1`, `m = 1`, domain `0,1,2,3`, `u₀ = X²`, `u₁ = 0`, `δ = 1/4`, `Q = Y - X²`; audit
+finding PG-337).  Under the probability premise the close set is nonempty (the probability
+is strictly positive), which removes this empty-close obstruction; it does not by itself
+discharge the counting package, which remains a caller obligation.
 -/
 
 -- This bridge exposes paper-aligned theorem names that exceed the style line limit.
@@ -605,7 +620,9 @@ theorem RS_jointAgreement_finMapTwoWords_of_prob_gt_strict_johnson_and_exists_na
 
 /-- Strict square-root-radius degree-one correlated-agreement capstone in the
 native §5 affine-line language, with Claim-5.11 supplied in its nat-ceil
-counting form for every affine line.
+counting form for every affine line whose close-parameter probability exceeds
+`errorBound` (the large-probability branch; see the module docstring for why an
+unconditional all-lines package is unsatisfiable at empty close sets).
 
 This is the strict-radius analogue of the `PzFamily` capstone below, but it
 uses only the selected-domain coefficient-polynomial bridge; callers no longer
@@ -618,8 +635,12 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting [Samp
     (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
     (hYZ : ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
       n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)))
-    (hcounting : ∀ (u₀ u₁ : Fin n → F) {Q : F[Z][X][Y]}
-      (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
+    (hcounting : ∀ (u₀ u₁ : Fin n → F),
+      Pr_{
+        let z ← $ᵖ F}[δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • Code.finMapTwoWords u₀ u₁ t,
+          ReedSolomon.code ωs (k + 1)) ≤ (δ : ℝ≥0)] >
+        (((1 : ℕ) : ENNReal) * (errorBound (δ : ℝ≥0) (k + 1) ωs : ENNReal)) →
+      ∀ {Q : F[Z][X][Y]} (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
       ∃ (x₀ : F) (_hres : Claim57Residuals (F := F) k (δ : ℚ) x₀ h_gs) (D t : ℕ),
         (coeffs_of_close_proximity (F := F) k ωs (δ : ℚ) u₀ u₁).card - 1 ≤
           (2 * k + 1)
@@ -643,15 +664,16 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting [Samp
       (C := ReedSolomon.code ωs (k + 1)) (δ := (δ : ℝ≥0))
       (ε := errorBound (δ : ℝ≥0) (k + 1) ωs) := by
   classical
-  refine correlatedAgreement_affine_curves_of_uniform_strict_coeff_polys
+  refine correlatedAgreement_affine_curves_of_strict_coeff_polys
     (k := 1) (deg := k + 1) (domain := ωs) (δ := (δ : ℝ≥0)) hδ ?_
-  intro u P hP
+  intro _hk u hprob _hJ P hP
   have h_u_eq := wordStack_fin_two_eq_finMapTwoWords (F := F) (n := n) u
-  rw [h_u_eq] at hP ⊢
+  rw [h_u_eq] at hprob hP ⊢
   obtain ⟨Q, h_gs⟩ :=
     Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
       (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u 0) (u₁ := u 1) hDx hYZ
-  obtain ⟨x₀, hres, D, t, hcover, hthreshold, hsmall⟩ := hcounting (u 0) (u 1) h_gs
+  obtain ⟨x₀, hres, D, t, hcover, hthreshold, hsmall⟩ :=
+    hcounting (u 0) (u 1) hprob h_gs
   letI := hres
   obtain ⟨Dtop, hDtop_card, hsubset⟩ :=
     exists_points_with_close_subset_matching_set_of_natCeil_delta_nonmatching_bound
@@ -672,8 +694,12 @@ theorem correlatedAgreement_affine_lines_of_strict_gsInterpolant_johnson_countin
     (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
     (hYZ : ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
       n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)))
-    (hsection5 : ∀ (u₀ u₁ : Fin n → F) {Q : F[Z][X][Y]}
-      (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
+    (hsection5 : ∀ (u₀ u₁ : Fin n → F),
+      Pr_{
+        let z ← $ᵖ F}[δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • Code.finMapTwoWords u₀ u₁ t,
+          ReedSolomon.code ωs (k + 1)) ≤ (δ : ℝ≥0)] >
+        (((1 : ℕ) : ENNReal) * (errorBound (δ : ℝ≥0) (k + 1) ωs : ENNReal)) →
+      ∀ {Q : F[Z][X][Y]} (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
       ∃ (x₀ : F) (D t : ℕ)
         (hx0 : ∀ R : F[Z][X][Y],
           R ∈ pg_Rset (m := m) (n := n) (k := k) (ωs := ωs) (Q := Q)
@@ -724,9 +750,9 @@ theorem correlatedAgreement_affine_lines_of_strict_gsInterpolant_johnson_countin
   classical
   refine correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting
     (F := F) (n := n) (m := m) (k := k) hk (ωs := ωs) δ hδ hDx hYZ ?_ hunique
-  intro u₀ u₁ Q h_gs
+  intro u₀ u₁ hprob Q h_gs
   obtain ⟨x₀, D, t, hx0, hsep, hJohnson, hlarge, hfactor, hcount⟩ :=
-    hsection5 u₀ u₁ h_gs
+    hsection5 u₀ u₁ hprob h_gs
   let hres : Claim57Residuals (F := F) (m := m) (n := n) (Q := Q)
       (ωs := ωs) (u₀ := u₀) (u₁ := u₁) k (δ : ℚ) x₀ h_gs :=
     claim57Residuals_of_gsInterpolant (F := F) (m := m) (n := n) (k := k)
@@ -827,8 +853,12 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_and_b
     (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
     (hYZ : ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
       n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)))
-    (hcounting : ∀ (u₀ u₁ : Fin n → F) {Q : F[Z][X][Y]}
-      (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
+    (hcounting : ∀ (u₀ u₁ : Fin n → F),
+      Pr_{
+        let z ← $ᵖ F}[δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • Code.finMapTwoWords u₀ u₁ t,
+          ReedSolomon.code ωs (k + 1)) ≤ (δ : ℝ≥0)] >
+        (((1 : ℕ) : ENNReal) * (errorBound (δ : ℝ≥0) (k + 1) ωs : ENNReal)) →
+      ∀ {Q : F[Z][X][Y]} (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
       ∃ (x₀ : F) (_hres : Claim57Residuals (F := F) k (δ : ℚ) x₀ h_gs) (D t : ℕ),
         (coeffs_of_close_proximity (F := F) k ωs (δ : ℚ) u₀ u₁).card - 1 ≤
           (2 * k + 1)
@@ -857,16 +887,16 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_and_b
       (C := ReedSolomon.code ωs (k + 1)) (δ := (δ : ℝ≥0))
       (ε := errorBound (δ : ℝ≥0) (k + 1) ωs) := by
   classical
-  refine correlatedAgreement_affine_curves_of_uniform_strict_coeff_polys_and_boundary_card
+  refine correlatedAgreement_affine_curves_of_strict_coeff_polys_and_boundary_card
     (k := 1) (deg := k + 1) (domain := ωs) (δ := (δ : ℝ≥0)) hδ ?_ ?_
-  · intro u P hP
+  · intro _hk u hprob _hJ _hsqrt P hP
     have h_u_eq := wordStack_fin_two_eq_finMapTwoWords (F := F) (n := n) u
-    rw [h_u_eq] at hP ⊢
+    rw [h_u_eq] at hprob hP ⊢
     obtain ⟨Q, h_gs⟩ :=
       Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
         (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u 0) (u₁ := u 1) hDx hYZ
     obtain ⟨x₀, hres, D, t, hcover, hthreshold, hsmall⟩ :=
-      hcounting (u 0) (u 1) h_gs
+      hcounting (u 0) (u 1) hprob h_gs
     letI := hres
     obtain ⟨Dtop, hDtop_card, hsubset⟩ :=
       exists_points_with_close_subset_matching_set_of_natCeil_delta_nonmatching_bound
@@ -899,8 +929,12 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_canon
     (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
     (hYZ : ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
       n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)))
-    (hcounting : ∀ (u₀ u₁ : Fin n → F) {Q : F[Z][X][Y]}
-      (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
+    (hcounting : ∀ (u₀ u₁ : Fin n → F),
+      Pr_{
+        let z ← $ᵖ F}[δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • Code.finMapTwoWords u₀ u₁ t,
+          ReedSolomon.code ωs (k + 1)) ≤ (δ : ℝ≥0)] >
+        (((1 : ℕ) : ENNReal) * (errorBound (δ : ℝ≥0) (k + 1) ωs : ENNReal)) →
+      ∀ {Q : F[Z][X][Y]} (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
       ∃ (x₀ : F) (_hres : Claim57Residuals (F := F) k (δ : ℚ) x₀ h_gs) (D t : ℕ),
         (coeffs_of_close_proximity (F := F) k ωs (δ : ℚ) u₀ u₁).card - 1 ≤
           (2 * k + 1)
@@ -929,16 +963,16 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_canon
       (C := ReedSolomon.code ωs (k + 1)) (δ := (δ : ℝ≥0))
       (ε := errorBound (δ : ℝ≥0) (k + 1) ωs) := by
   classical
-  refine correlatedAgreement_affine_curves_of_uniform_strict_canonical_coeff_polys_and_boundary_card
+  refine correlatedAgreement_affine_curves_of_strict_canonical_coeff_polys_and_boundary_card
     (k := 1) (deg := k + 1) (domain := ωs) (δ := (δ : ℝ≥0)) hδ ?_ ?_
-  · intro u
+  · intro _hk u hprob _hJ _hsqrt
     have h_u_eq := wordStack_fin_two_eq_finMapTwoWords (F := F) (n := n) u
-    rw [h_u_eq]
+    rw [h_u_eq] at hprob ⊢
     obtain ⟨Q, h_gs⟩ :=
       Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
         (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u 0) (u₁ := u 1) hDx hYZ
     obtain ⟨x₀, hres, D, t, hcover, hthreshold, hsmall⟩ :=
-      hcounting (u 0) (u 1) h_gs
+      hcounting (u 0) (u 1) hprob h_gs
     letI := hres
     obtain ⟨Dtop, hDtop_card, hsubset⟩ :=
       exists_points_with_close_subset_matching_set_of_natCeil_delta_nonmatching_bound
@@ -973,8 +1007,12 @@ theorem section5_strict_canonical_coeff_polys_for_RS_goodCoeffsCurve_finMapTwoWo
     (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
     (hYZ : ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
       n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)))
-    (hcounting : ∀ (u₀ u₁ : Fin n → F) {Q : F[Z][X][Y]}
-      (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
+    (hcounting : ∀ (u₀ u₁ : Fin n → F),
+      Pr_{
+        let z ← $ᵖ F}[δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • Code.finMapTwoWords u₀ u₁ t,
+          ReedSolomon.code ωs (k + 1)) ≤ (δ : ℝ≥0)] >
+        (((1 : ℕ) : ENNReal) * (errorBound (δ : ℝ≥0) (k + 1) ωs : ENNReal)) →
+      ∀ {Q : F[Z][X][Y]} (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
       ∃ (x₀ : F) (_hres : Claim57Residuals (F := F) k (δ : ℚ) x₀ h_gs) (D : ℕ),
         (coeffs_of_close_proximity (F := F) k ωs (δ : ℚ) u₀ u₁).card - 1 ≤
           (2 * k + 1)
@@ -1023,13 +1061,14 @@ theorem section5_strict_canonical_coeff_polys_for_RS_goodCoeffsCurve_finMapTwoWo
               u (δ : ℝ≥0),
             P z = P₀ z := by
   classical
-  intro u _hprob _hJ _hsqrt
+  intro u hprob _hJ _hsqrt
   have h_u_eq := wordStack_fin_two_eq_finMapTwoWords (F := F) (n := n) u
-  rw [h_u_eq]
+  rw [h_u_eq] at hprob ⊢
   obtain ⟨Q, h_gs⟩ :=
     Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
       (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u 0) (u₁ := u 1) hDx hYZ
-  obtain ⟨x₀, hres, D, hcover, hthreshold, hsmall⟩ := hcounting (u 0) (u 1) h_gs
+  obtain ⟨x₀, hres, D, hcover, hthreshold, hsmall⟩ :=
+    hcounting (u 0) (u 1) hprob h_gs
   letI := hres
   obtain ⟨Dtop, hDtop_card, hsubset⟩ :=
     exists_points_with_close_subset_matching_set_claim511_complement
@@ -1053,8 +1092,12 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_cou
     (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
     (hYZ : ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
       n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)))
-    (hcounting : ∀ (u₀ u₁ : Fin n → F) {Q : F[Z][X][Y]}
-      (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
+    (hcounting : ∀ (u₀ u₁ : Fin n → F),
+      Pr_{
+        let z ← $ᵖ F}[δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • Code.finMapTwoWords u₀ u₁ t,
+          ReedSolomon.code ωs (k + 1)) ≤ (δ : ℝ≥0)] >
+        (((1 : ℕ) : ENNReal) * (errorBound (δ : ℝ≥0) (k + 1) ωs : ENNReal)) →
+      ∀ {Q : F[Z][X][Y]} (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
       ∃ (x₀ : F) (_hres : Claim57Residuals (F := F) k (δ : ℚ) x₀ h_gs) (D : ℕ),
         (coeffs_of_close_proximity (F := F) k ωs (δ : ℚ) u₀ u₁).card - 1 ≤
           (2 * k + 1)
@@ -1088,24 +1131,13 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_cou
       (C := ReedSolomon.code ωs (k + 1)) (δ := (δ : ℝ≥0))
       (ε := errorBound (δ : ℝ≥0) (k + 1) ωs) := by
   classical
-  refine correlatedAgreement_affine_curves_of_uniform_strict_canonical_coeff_polys_and_boundary_card
+  refine correlatedAgreement_affine_curves_of_strict_canonical_coeff_polys_and_boundary_card
     (k := 1) (deg := k + 1) (domain := ωs) (δ := (δ : ℝ≥0)) hδ ?_ ?_
-  · intro u
-    have h_u_eq := wordStack_fin_two_eq_finMapTwoWords (F := F) (n := n) u
-    rw [h_u_eq]
-    obtain ⟨Q, h_gs⟩ :=
-      Compatibility.modified_guruswami_has_a_solution_of_degree_bounds (F := F) (m := m) (n := n) (k := k)
-        (Nat.pos_of_neZero n) hk (ωs := ωs) (u₀ := u 0) (u₁ := u 1) hDx hYZ
-    obtain ⟨x₀, hres, D, hcover, hthreshold, hsmall⟩ := hcounting (u 0) (u 1) h_gs
-    letI := hres
-    obtain ⟨Dtop, hDtop_card, hsubset⟩ :=
-      exists_points_with_close_subset_matching_set_claim511_complement
-        (F := F) (m := m) (n := n) (k := k) (Q := Q) (δ := (δ : ℚ)) (x₀ := x₀)
-        h_gs (D := D) hcover hthreshold hsmall
-    exact PzFamily_exists_canonical_coeff_polys_goodCoeffsCurve_finMapTwoWords_of_selected_domain
-      (F := F) (n := n) (m := m) (k := k) (ωs := ωs) (Q := Q)
-      δ (u 0) (u 1) h_gs Dtop hDtop_card hsubset
-      (hunique (u 0) (u 1) h_gs)
+  · intro _hk u hprob hJ hsqrt
+    exact
+      section5_strict_canonical_coeff_polys_for_RS_goodCoeffsCurve_finMapTwoWords_of_natCeil_complement_counting
+        (F := F) (n := n) (m := m) (k := k) hk (ωs := ωs) δ hDx hYZ hcounting
+        hunique u hprob hJ hsqrt
   · intro _hk u hδeq hcard
     have h_u_eq := wordStack_fin_two_eq_finMapTwoWords (F := F) (n := n) u
     have hcard_close :
@@ -1129,8 +1161,12 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_cou
     (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
     (hYZ : ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
       n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)))
-    (hcounting : ∀ (u₀ u₁ : Fin n → F) {Q : F[Z][X][Y]}
-      (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
+    (hcounting : ∀ (u₀ u₁ : Fin n → F),
+      Pr_{
+        let z ← $ᵖ F}[δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • Code.finMapTwoWords u₀ u₁ t,
+          ReedSolomon.code ωs (k + 1)) ≤ (δ : ℝ≥0)] >
+        (((1 : ℕ) : ENNReal) * (errorBound (δ : ℝ≥0) (k + 1) ωs : ENNReal)) →
+      ∀ {Q : F[Z][X][Y]} (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
       ∃ (x₀ : F) (_hres : Claim57Residuals (F := F) k (δ : ℚ) x₀ h_gs) (D : ℕ),
         (coeffs_of_close_proximity (F := F) k ωs (δ : ℚ) u₀ u₁).card - 1 ≤
           (2 * k + 1)
@@ -1198,8 +1234,12 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_cou
     (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
     (hYZ : ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
       n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)))
-    (hcounting : ∀ (u₀ u₁ : Fin n → F) {Q : F[Z][X][Y]}
-      (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
+    (hcounting : ∀ (u₀ u₁ : Fin n → F),
+      Pr_{
+        let z ← $ᵖ F}[δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • Code.finMapTwoWords u₀ u₁ t,
+          ReedSolomon.code ωs (k + 1)) ≤ (δ : ℝ≥0)] >
+        (((1 : ℕ) : ENNReal) * (errorBound (δ : ℝ≥0) (k + 1) ωs : ENNReal)) →
+      ∀ {Q : F[Z][X][Y]} (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
       ∃ (x₀ : F) (_hres : Claim57Residuals (F := F) k (δ : ℚ) x₀ h_gs) (D : ℕ),
         (coeffs_of_close_proximity (F := F) k ωs (δ : ℚ) u₀ u₁).card - 1 ≤
           (2 * k + 1)
@@ -1252,8 +1292,12 @@ theorem correlatedAgreement_affine_lines_of_strict_gsInterpolant_johnson_complem
     (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
     (hYZ : ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
       n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)))
-    (hsection5 : ∀ (u₀ u₁ : Fin n → F) {Q : F[Z][X][Y]}
-      (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
+    (hsection5 : ∀ (u₀ u₁ : Fin n → F),
+      Pr_{
+        let z ← $ᵖ F}[δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • Code.finMapTwoWords u₀ u₁ t,
+          ReedSolomon.code ωs (k + 1)) ≤ (δ : ℝ≥0)] >
+        (((1 : ℕ) : ENNReal) * (errorBound (δ : ℝ≥0) (k + 1) ωs : ENNReal)) →
+      ∀ {Q : F[Z][X][Y]} (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
       ∃ (x₀ : F) (D : ℕ)
         (hx0 : ∀ R : F[Z][X][Y],
           R ∈ pg_Rset (m := m) (n := n) (k := k) (ωs := ωs) (Q := Q)
@@ -1309,9 +1353,9 @@ theorem correlatedAgreement_affine_lines_of_strict_gsInterpolant_johnson_complem
   classical
   refine correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_strict
     (F := F) (n := n) (m := m) (k := k) hk (ωs := ωs) δ hδ hDx hYZ ?_ hunique
-  intro u₀ u₁ Q h_gs
+  intro u₀ u₁ hprob Q h_gs
   obtain ⟨x₀, D, hx0, hsep, hJohnson, hlarge, hfactor, hcount⟩ :=
-    hsection5 u₀ u₁ h_gs
+    hsection5 u₀ u₁ hprob h_gs
   let hres : Claim57Residuals (F := F) (m := m) (n := n) (Q := Q)
       (ωs := ωs) (u₀ := u₀) (u₁ := u₁) k (δ : ℚ) x₀ h_gs :=
     claim57Residuals_of_gsInterpolant (F := F) (m := m) (n := n) (k := k)
@@ -1337,8 +1381,12 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_cou
     (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
     (hYZ : ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
       n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)))
-    (hcounting : ∀ (u₀ u₁ : Fin n → F) {Q : F[Z][X][Y]}
-      (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
+    (hcounting : ∀ (u₀ u₁ : Fin n → F),
+      Pr_{
+        let z ← $ᵖ F}[δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • Code.finMapTwoWords u₀ u₁ t,
+          ReedSolomon.code ωs (k + 1)) ≤ (δ : ℝ≥0)] >
+        (((1 : ℕ) : ENNReal) * (errorBound (δ : ℝ≥0) (k + 1) ωs : ENNReal)) →
+      ∀ {Q : F[Z][X][Y]} (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
       ∃ (x₀ : F) (_hres : Claim57Residuals (F := F) k (δ : ℚ) x₀ h_gs) (D : ℕ),
         (coeffs_of_close_proximity (F := F) k ωs (δ : ℚ) u₀ u₁).card - 1 ≤
           (2 * k + 1)
@@ -1393,8 +1441,12 @@ theorem RS_correlatedAgreement_affineLines_of_strict_exists_natCeil_complement_c
     (hDx : ((gsDpg n m k : ℕ) : ℝ) < D_X ((k + 1) / (n : ℚ)) n m)
     (hYZ : ((gsDpg n m k + gsZCap n m k : ℕ) : ℝ) ≤
       n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n)))
-    (hcounting : ∀ (u₀ u₁ : Fin n → F) {Q : F[Z][X][Y]}
-      (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
+    (hcounting : ∀ (u₀ u₁ : Fin n → F),
+      Pr_{
+        let z ← $ᵖ F}[δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • Code.finMapTwoWords u₀ u₁ t,
+          ReedSolomon.code ωs (k + 1)) ≤ (δ : ℝ≥0)] >
+        (((1 : ℕ) : ENNReal) * (errorBound (δ : ℝ≥0) (k + 1) ωs : ENNReal)) →
+      ∀ {Q : F[Z][X][Y]} (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁),
       ∃ (x₀ : F) (_hres : Claim57Residuals (F := F) k (δ : ℚ) x₀ h_gs) (D : ℕ),
         (coeffs_of_close_proximity (F := F) k ωs (δ : ℚ) u₀ u₁).card - 1 ≤
           (2 * k + 1)

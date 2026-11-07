@@ -10,9 +10,19 @@ import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyKernel
 
 The open BGK core (#232, `AdditiveEnergyKernel.lean`) is the *magnitude* of
 `M = bgkCount n = #{u ∈ μ_n : −(1+u) ∈ μ_n}`, the additive-energy / `μ_n ∩ (μ_n − 1)`
-count of the smooth multiplicative subgroup. `M = 0` in char 0 (coprimality), `M ≥ 1`
-iff `char ∣ 2ⁿ − 1` (Mersenne/Fermat obstruction), `6 ∣ M` generically (S₃). The
-*upper* magnitude was the open Bourgain/sum-product piece.
+count of the smooth multiplicative subgroup. `M = 0` in char 0 (coprimality), `6 ∣ M` generically
+(S₃). For even `n` the exact criterion for `M ≥ 1` is the **common-root / resultant** criterion,
+not a single Mersenne divisibility: `u` is a BGK solution iff it is a common root of `Xⁿ − 1` and
+`(X+1)ⁿ − 1` (`mem_bgk_iff_common_root`); `M = 0` whenever those two polynomials are coprime
+(`bgkCount_eq_zero_of_coprime`); and, when `μ_n` has a primitive `n`-th root (so `Xⁿ − 1` splits),
+`Res(Xⁿ−1, (X+1)ⁿ−1) = 0` iff some `γ ∈ μ_n` has `(γ − 1)ⁿ = 1`
+(`resultant_X_pow_sub_one_eq_zero_iff`). The Mersenne condition `char ∣ 2ⁿ − 1` (i.e. `2ⁿ = 1`)
+is only the **sufficient special case** `u = 1` (`one_mem_bgk_iff`); what it decides exactly is the
+*parity* of `M` (`odd_bgkCount_iff`: `Odd M ↔ 2ⁿ = 1`). It is not necessary for `M ≥ 1`: in `F₉₇`
+with `n = 32` (`μ₃₂ = ⟨28⟩`), `u = 18` and `−(1+u) = 78` both lie in `μ₃₂` and `M = 12`, yet
+`2³² ≡ 35 (mod 97)` (`bgkCount_pos_F97_not_mersenne` below records the positivity and the
+non-Mersenne fact; `M = 12` is from exact enumeration). The *upper* magnitude was the open
+Bourgain/sum-product piece.
 
 This file pins the **exact unconditional ceiling**:
 
@@ -24,13 +34,18 @@ This file pins the **exact unconditional ceiling**:
   `M = n − 1` (the densest realizable instance, e.g. `n = 16, p = 17`).
 
 **Numerical context (exact probes `scripts/probes/wf407_T232-03-bgk_*.py`).**
-`M = deg gcd(Xⁿ−1, (X+1)ⁿ−1)` over `F_p` (separable, `p` odd), `= #{(x,y)∈μ_n² : x+y = c}`
-for any `c ≠ 0` (Fermat-curve fiber count). The bad primes are *exactly* the prime divisors of
-`Res(Xⁿ−1,(X+1)ⁿ−1)`; for the deployable density `n ∣ p−1` they are all *small* (`p ≲ n·2^O(1)`),
-and at genuine prize scale `p ≈ n·2^128` every tested instance gives `M = 0`. The magnitude is thus
-trapped in `[0, n−1]` with the worst case at maximal density `p = n + 1`; it carries **no analytic
-√-cancellation content** — it is a pure arithmetic gcd/resultant divisibility (the
-Mersenne/Fermat/cyclotomic-factor wall), not the Paley/Gauss-period wall.
+`M = deg gcd(Xⁿ−1, (X+1)ⁿ−1)` over `F_p` (separable, `p` odd, `n` even, `μ_n` split). `M` equals
+the pair-sum fiber count `#{(x,y)∈μ_n² : x+y = c}` at `c = −1`, and by multiplicative invariance
+the fiber count is constant on each coset `c·μ_n` (so also at `c = 1` when `−1 ∈ μ_n`). It is
+**not** the same for every nonzero `c`: for `μ₃₂ ⊆ F₉₇` the counts are `12` at `c = 1`, `9` at
+`c = 2` and `10` at `c = 4` (exact enumeration). The bad primes (where `M ≥ 1`) are the prime
+divisors of `Res(Xⁿ−1,(X+1)ⁿ−1)` for which the common root lies in the deployed `μ_n` (as in the
+resultant criterion above). Empirically, for the deployable density `n ∣ p−1` the bad primes found
+were all *small* (`p ≲ n·2^O(1)`), and at prize scale `p ≈ n·2^128` every tested instance gave
+`M = 0`; these are finite-sample observations, not a proved universal bound on bad primes. The
+magnitude is trapped in `[0, n−1]` (proved below) with the worst case at maximal density
+`p = n + 1`; it is an arithmetic gcd/resultant quantity (the Mersenne/Fermat/cyclotomic-factor
+wall), not the Paley/Gauss-period wall.
 
 This ceiling is a clean magnitude bound, not a closure of the prize: it bounds `M` two-sidedly
 `0 ≤ M ≤ n−1` but the prize core lives in the *Gauss-period / list* face, not in `M` (the additive-
@@ -104,8 +119,24 @@ theorem bgkCount_two_pow_le {k : ℕ}
   have h := bgkCount_le_card_sub_one (n := 2 ^ k) (Nat.two_pow_pos k) hneg
   rwa [hcard] at h
 
+section F97Witness
+
+local instance fact_prime_97 : Fact (Nat.Prime 97) := ⟨by norm_num⟩
+
+/-- **The Mersenne condition is not necessary for `M ≥ 1`.** Over `F₉₇` with `n = 32`, the BGK
+count is positive (witness `u = 18`, `−(1+u) = 78`, both 32nd roots of unity), while
+`2³² ≠ 1` in `F₉₇` (`2³² ≡ 35`), i.e. `97 ∤ 2³² − 1`. (Exact enumeration gives `M = 12`.) -/
+theorem bgkCount_pos_F97_not_mersenne :
+    0 < bgkCount (F := ZMod 97) 32 ∧ (2 : ZMod 97) ^ 32 ≠ 1 := by
+  refine ⟨Finset.card_pos.mpr ⟨18, ?_⟩, by decide⟩
+  rw [Finset.mem_filter, mem_nthRootsFinset (by norm_num), mem_nthRootsFinset (by norm_num)]
+  exact ⟨by decide, by decide⟩
+
+end F97Witness
+
 end ArkLib.ProximityGap.AdditiveEnergyKernel
 
 #print axioms ArkLib.ProximityGap.AdditiveEnergyKernel.bgkCount_le_card_sub_one
 #print axioms ArkLib.ProximityGap.AdditiveEnergyKernel.neg_one_not_mem_bgk
 #print axioms ArkLib.ProximityGap.AdditiveEnergyKernel.bgkCount_two_pow_le
+#print axioms ArkLib.ProximityGap.AdditiveEnergyKernel.bgkCount_pos_F97_not_mersenne

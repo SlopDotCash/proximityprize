@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._BGKLateNewtonSignedCovariance
+import Research.ProximityPrize.Frontier._BGKLateNewtonTwoColourPhysicalBridge
 
 /-!
 # The late Newton `C12` term as a translate/intersection correlation
@@ -54,49 +55,12 @@ section ExactReduction
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-/-- Number of members of a finite phase family in one fibre, copied locally so this scratch lane
-does not require an olean for the sibling two-colour scratch module. -/
-noncomputable def phaseFiberCount {X : Type*} [Fintype X]
-    (phi : X -> F) (t : F) : Nat :=
-  (Finset.univ.filter fun x => phi x = t).card
-
-/-- Cross collisions are the fibrewise inner product of two physical histograms. -/
-theorem phaseCrossCollisionCount_eq_fiberInner
-    {X Y : Type*} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y]
-    (phi : X -> F) (chi : Y -> F) :
-    phaseCrossCollisionCount phi chi =
-      ∑ t : F, phaseFiberCount phi t * phaseFiberCount chi t := by
-  classical
-  unfold phaseCrossCollisionCount phaseFiberCount
-  calc
-    (∑ x : X, ∑ y : Y, if phi x = chi y then 1 else 0) =
-        ((Finset.univ ×ˢ Finset.univ).filter
-          (fun p : X × Y => phi p.1 = chi p.2)).card := by
-      rw [Finset.card_filter, Finset.sum_product]
-    _ = ∑ t : F,
-        ((Finset.univ.filter fun x : X => phi x = t) ×ˢ
-          (Finset.univ.filter fun y : Y => chi y = t)).card := by
-      rw [← Finset.card_biUnion]
-      · congr 1
-        ext p
-        simp only [Finset.mem_filter, Finset.mem_product, Finset.mem_univ, true_and,
-          Finset.mem_biUnion]
-        constructor
-        · intro h
-          exact ⟨phi p.1, rfl, h.symm⟩
-        · rintro ⟨t, hphi, hchi⟩
-          exact hphi.trans hchi.symm
-      · intro a _ha b _hb hab
-        apply Finset.disjoint_left.mpr
-        intro p hp hq
-        simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and] at hp hq
-        exact hab (hp.1.symm.trans hq.1)
-    _ = ∑ t : F,
-        (Finset.univ.filter fun x : X => phi x = t).card *
-          (Finset.univ.filter fun y : Y => chi y = t).card := by
-      apply Finset.sum_congr rfl
-      intro t _ht
-      rw [Finset.card_product]
+/-! The fibre histogram `phaseFiberCount` and the fibrewise cross-collision identity
+`phaseCrossCollisionCount_eq_fiberInner` are the canonical declarations of
+`BGKLateNewtonTwoColourPhysicalBridge`; they are re-exported here (rather than re-declared) so
+that downstream users opening this namespace keep resolving them. -/
+export ArkLib.ProximityGap.Frontier.BGKLateNewtonTwoColourPhysicalBridge
+  (phaseFiberCount phaseCrossCollisionCount_eq_fiberInner)
 
 /-- Every phase family deposits exactly one unit of fibre mass per source point. -/
 theorem sum_phaseFiberCount {X : Type*} [Fintype X] [DecidableEq X]

@@ -27,9 +27,20 @@ bounds `M(R) ≤ ‖R‖₂`.  In squared (ℕ-friendly) form:
 
 For the KKH26 collision polynomials (coefficients in `{−2..2}`, window `< h`) this gives
 `|Res|² ≤ 4^{h−1}·(4h)^h` — at `μ = 6`: `≤ 2^{286}`, against the old route's
-`(2^{192})² = 2^{384}` — **below `P²` for every μ = 6 literal-budget prime**: the gap that
-upgrades the conditional `n = 64` pins of `Mu6ConditionalPin.lean` to unconditional
-(consumer wiring follows in a separate file).
+`(2^{192})² = 2^{384}`.  So the envelope clears a prime `P` exactly when `2^{286} < P²`, i.e.
+`P > 2^{143}`.  This does **not** cover every `μ = 6` literal-budget band (corrected 2026-10-28
+audit, PG-238):
+
+* rung `r = 2`, band `P ∈ [1008·2^{128}, 1984·2^{128})`: entirely below `2^{139}`, so
+  `P² < 2^{286}` and the envelope does not clear it (`mu6_r2_band_sq_lt_landau_envelope`);
+* rung `r = 3`, band `[13888·2^{128}, 39680·2^{128})`: straddles `2^{143} = 32768·2^{128}`, so only
+  part of it is cleared;
+* rungs `r ≥ 4` (bands starting at `≥ 158844·2^{128}`): entirely above `2^{143}`, cleared
+  (`landau_envelope_lt_sq_of_ge_mu6_r4_band`).
+
+The consumer `SharpThresholdDischarge.lean` uses the envelope at one prime in the `r = 5` band.
+Clearing the `r = 2` (and lower `r = 3`) bands would need a smaller, `r`-dependent resultant
+envelope or a different route; no failure of such refined pins is claimed here.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
@@ -254,8 +265,34 @@ theorem natAbs_resultant_cyclotomic_sq_le {m : ℕ} (hm : 1 ≤ m) (R : Polynomi
         mul_le_mul_of_nonneg_left hle (by positivity)
   exact_mod_cast hchain
 
+/-! ## Which `μ = 6` literal-budget bands the envelope clears (PG-238)
+
+At `μ = 6` (`h = 2^5 = 32`) the KKH26 collision envelope is `4^{h−1}·(4h)^h = 2^{286}`. -/
+
+/-- The `μ = 6` collision envelope equals `2^{286}`. -/
+theorem mu6_landau_envelope_eq : 4 ^ (2 ^ 5 - 1) * (4 * 2 ^ 5) ^ 2 ^ 5 = 2 ^ 286 := by
+  rw [show (4 : ℕ) ^ (2 ^ 5 - 1) = 2 ^ 62 by norm_num,
+    show ((4 : ℕ) * 2 ^ 5) ^ 2 ^ 5 = 2 ^ 224 by norm_num, ← pow_add]
+
+/-- **The envelope does not clear the `r = 2` band.**  Every `P` below the band's upper end
+`1984·2^{128}` has `P² < 4^{31}·128^{32} = 2^{286}`, so the generic Landau envelope cannot show
+`|Res|² < P²` there. -/
+theorem mu6_r2_band_sq_lt_landau_envelope {P : ℕ} (hP : P < 1984 * 2 ^ 128) :
+    P ^ 2 < 4 ^ (2 ^ 5 - 1) * (4 * 2 ^ 5) ^ 2 ^ 5 := by
+  calc P ^ 2 < (1984 * 2 ^ 128) ^ 2 := Nat.pow_lt_pow_left hP (by norm_num)
+    _ ≤ 4 ^ (2 ^ 5 - 1) * (4 * 2 ^ 5) ^ 2 ^ 5 := by norm_num
+
+/-- **The envelope clears every band from `r = 4` on.**  Every `P ≥ 158844·2^{128}` (the lower
+end of the `r = 4` band; the bands for `r = 5..13` start higher) has `2^{286} < P²`. -/
+theorem landau_envelope_lt_sq_of_ge_mu6_r4_band {P : ℕ} (hP : 158844 * 2 ^ 128 ≤ P) :
+    4 ^ (2 ^ 5 - 1) * (4 * 2 ^ 5) ^ 2 ^ 5 < P ^ 2 := by
+  calc 4 ^ (2 ^ 5 - 1) * (4 * 2 ^ 5) ^ 2 ^ 5 < (158844 * 2 ^ 128) ^ 2 := by norm_num
+    _ ≤ P ^ 2 := Nat.pow_le_pow_left hP 2
+
 end ArkLib.ProximityGap.SharpResultantBound
 
 /-! ## Axiom audit — kernel-clean. -/
 #print axioms ArkLib.ProximityGap.SharpResultantBound.mahlerMeasure_eq_prod_roots
 #print axioms ArkLib.ProximityGap.SharpResultantBound.natAbs_resultant_cyclotomic_sq_le
+#print axioms ArkLib.ProximityGap.SharpResultantBound.mu6_r2_band_sq_lt_landau_envelope
+#print axioms ArkLib.ProximityGap.SharpResultantBound.landau_envelope_lt_sq_of_ge_mu6_r4_band

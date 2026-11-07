@@ -1,8 +1,47 @@
 # Issue #317: Binius Residual Scratchpad
 
-Status: active scratchpad for discharging Binius residual propositions.
+Status: **historical scratchpad** (last substantive update 2026-06-11). The inventory,
+progress log, and build receipts below are pinned to the pre-consolidation tree of that date and
+are not authoritative for the current tree; several module paths they cite no longer exist.
+For current open residuals use [`residual-census.md`](residual-census.md).
 
-Issue: <https://github.com/lalalune/ArkLib/issues/317>
+Issue: #317 in this repository (`SlopDotCash/proximityprize`). The historical issue link
+pointed at a different fork and is not an authority for current status.
+
+## Current navigation (verified against the source tree, 2026-10-29)
+
+The Soundness modules were consolidated after this scratchpad was written. The old paths
+`Soundness/Proposition421.lean`, `Soundness/PreTensorFiber.lean`,
+`Soundness/Prop421Case1Discharge.lean`, and `Soundness/Prop421Case2Assembly.lean` (and the other
+`PreTensor*.lean` files listed in the progress log) do not exist; do not try to build them.
+Current locations, all under `ArkLib/ProofSystem/Binius/BinaryBasefold/`:
+
+- Proposition 4.21 case 1 (fiberwise close): `Soundness/Case1.lean`
+  (`prop_4_21_case_1_fiberwise_close`). The `Prop421Case1FiberwiseCloseResidual` name survives
+  only in that module's prose.
+- Proposition 4.21 case 2 (fiberwise far): `Soundness/SoundnessCase2Probability.lean`
+  (`prop421Case2_probability_bound`, `prop_4_21_case_2_fiberwise_far`), with
+  `Soundness/SoundnessCase2Assembly.lean` and `Soundness/SoundnessCase2FarLift.lean` holding the
+  bridge-parameterized forms. `Soundness/SoundnessCase2Discharge.lean` only records that the
+  former `Prop421Case2FiberwiseFarResidual` class was retired.
+- Lemma 4.22 joint proximity: `Soundness/Lift.lean`
+  (`preTensorCombine_jointProximityNat_of_fiberwiseClose`); the contrapositive
+  `not_jointProximityNat_of_not_fiberwiseClose` is in `Soundness/PreTensorMaps.lean`.
+- Incremental Proposition 4.21.2 statements: the downstream extension
+  `ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/Incremental.lean`.
+- Query-phase preliminaries and suffix alignment: `Soundness/QueryPhasePrelims.lean`,
+  `Soundness/SuffixFiberAlignment.lean`. No `PreviousSuffixFiberAlignmentResidual`,
+  `ExtractMLPCorrectnessResidual`, or `FinalSumcheckStepLogicCompleteResidual` declaration is
+  present in the current tree; `ExtractMLPCorrectness.lean` keeps the corrected
+  `extractMLP_zero_eq_some_revIndexMLP_iff`.
+- Fold-matrix determinant: the destination-indexed `foldMatrix_det_ne_zero` is in the canonical
+  `Prelude/Folding.lean`; `FoldDetSplit.lean` and `FoldDetDischarge.lean` still contain real
+  recursive `foldMatrixNat_det_ne_zero` proofs (the two developments overlap). This note does not claim a fresh elaboration of those files.
+
+Check current status with the locked recipe from [`quickstart.md`](quickstart.md), e.g.
+`./scripts/lake-locked.sh build ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Case1`
+(never a bare `lake build`). The `lake build` / `lake env lean -j1 -M4096` lines in the progress
+log below are historical receipts, not current instructions.
 
 ## Source Trail
 
@@ -21,10 +60,10 @@ Issue: <https://github.com/lalalune/ArkLib/issues/317>
   [`../kb/audits/issue-33-binius-branch-harvest-2026-06-06.md`](../kb/audits/issue-33-binius-branch-harvest-2026-06-06.md).
   Stale Binius branches are useful for intent but should not be merged wholesale.
 
-## Local Residual Inventory
+## Local Residual Inventory (historical, 2026-06-11)
 
 The issue body names the Binius proof-system residuals that should become in-tree theorems or
-honest smaller residuals. Current local residual surfaces are:
+honest smaller residuals. The local residual surfaces at the time of writing were:
 
 - `Prop421Case1FiberwiseCloseResidual` and `Prop421Case2FiberwiseFarResidual` in
   `ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/Proposition421.lean`; both have in-tree
@@ -44,7 +83,7 @@ No live `FoldMatrixDetNeZeroResidual`, `FoldPreservesBBFCodeMembershipResidual`,
 `PreTensorCombineMultilinearResidual`, `FoldPreTensorCombineAffineSplitResidual`,
 or `PreTensorCombineJointProximityResidual` class remains in the current working tree.
 
-## Progress Log
+## Progress Log (historical receipts, 2026-06-10/11)
 
 - `FoldMatrixDetNeZeroResidual`: already has in-tree discharge modules
   `FoldDetSplit.lean` and `FoldDetDischarge.lean`. The old residual class is gone; consumers now
@@ -116,7 +155,7 @@ or `PreTensorCombineJointProximityResidual` class remains in the current working
   - `lake env lean -j1 -M4096 ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/PreTensorDistance.lean`
   - `lake build ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Incremental:olean`
 
-## Open Math/Definition Notes
+## Open Math/Definition Notes (historical, 2026-06-11)
 
 - `Prop4212Case1Residual` and `Prop4212Case2Residual` have been removed from
   `Soundness/Incremental.lean`. Their content is now direct theorem surface:
@@ -148,7 +187,9 @@ or `PreTensorCombineJointProximityResidual` class remains in the current working
 
 ## Working Heuristics
 
-- Prefer targeted `lake env lean <file>` and `lake build <module>:olean` over repo-wide rebuilds.
+- Prefer targeted checks over repo-wide rebuilds, using the serialized wrappers from
+  [`quickstart.md`](quickstart.md): `./scripts/lake-locked.sh build <Module>` (never a bare
+  `lake build` or `lake exe cache get` while other agents may be building).
 - Do not hand-edit generated `ArkLib.lean`.
 - Treat DP24 Proposition 4.21 / Lemma 4.22 and DG25 Theorems 3.1/3.6 as the external math map,
   but discharge anything already expressible from local definitions as Lean lemmas.

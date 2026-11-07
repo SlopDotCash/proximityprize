@@ -43,7 +43,10 @@ hypotheses.
   the false universal `GWDirectionFinrankLe` with the satisfiable scoped form. The arithmetic
   collapse (`cz25CoordFiberCap_of_affineFiberCharge`) and the BRICK-L charge are reused verbatim
   from `GWKernelReduction.lean`; only the `hW` leg is corrected. This keeps the kernel genuinely
-  conditional on satisfiable analytic obligations rather than on an unsatisfiable one.
+  conditional on satisfiable analytic obligations rather than on an unsatisfiable one *for the
+  `hW` leg only*: the reused `hL : GWAffineFiberCharge` is itself unsatisfiable on empty close
+  lists (`GWFiberChargeRepair.gwAffineFiberCharge_false_of_empty_close_list`), and the headline
+  proof discards the scoped direction chain, concluding from `hL` alone.
 
 ## Honesty note (gap localization)
 
@@ -177,8 +180,16 @@ into the multiplicity argument, producing the direction submodule `A ≤ C` with
 `finrank A ≤ s − 1` bound on **that** `A` (no false universal claim); BRICK-L's affine-flat charge
 plus the arithmetic collapse `cz25CoordFiberCap_of_affineFiberCharge` yield `CZ25CoordFiberCap`.
 
-`sorry`/`axiom`-free; the only admitted inputs are `{hI, hV, hL, hτ}`, all *satisfiable* (unlike
-the original `hW`). -/
+`sorry`/`axiom`-free.  **Audit correction (2026-10-28):** the inputs are *not* all satisfiable.
+`hL : GWAffineFiberCharge` quantifies every received word and requires
+`(finrank A : ℝ) ≤ |close list| − 1`, which is impossible whenever a close list is empty
+(`GWFiberChargeRepair.gwAffineFiberCharge_false_of_empty_close_list`,
+`gwAffineFiberCharge_refuted_concrete`).  Moreover the proof builds the scoped direction `_chain`
+from `hI, hV` and then discards it, concluding solely from `hL` and `hτ`; the produced direction
+`A` is never consumed.  So this is a valid implication from an unsatisfiable hypothesis set, not a
+conditional reduction of the GW kernel.  The corrected leaf (explicit empty-list branch) is
+`GWFiberChargeRepair.GWFiberCardCharge`; a genuine reduction must also consume the produced
+direction in the charge proof. -/
 theorem cz25CoordFiberCap_of_interp_and_multiplicity_scoped
     (s : ℕ) (τ : ℕ → ℝ) (C : Submodule F (ι → Fin s → F))
     (h : IsSubspaceDesign s τ C) (η : ℝ) (hη : 0 < η)

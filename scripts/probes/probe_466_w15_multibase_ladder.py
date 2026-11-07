@@ -8,8 +8,17 @@ W15 (`_W15LargeZeroMcaEventFloor.lean`) proved the unconditional floor `B_near >
       exceed the candidate unconditional ceiling  count <= Lambda * |supp|
       (Lambda = # line-appearing codewords at threshold a, supp = direction support)?
   Q2. Do multi-base ladders (M disjoint (a-1)-anchors in Z with M distinct constant base
-      codewords) beat the single-base floor n - a, and by how much?  Theory predicts the
-      constant-base family is capped at M <= (a-1)/(k-1) bases (safety), hence O(n) total.
+      codewords) beat the single-base floor n - a, and by how much?  Safety caps the
+      constant-base family at M <= (a-1)/(k-1) bases, so the constant-base mechanism alone
+      contributes at most ~ (a/k) * n scalars (other codewords may add more; this is a
+      heuristic, not a proved bound).  Any O(n) conclusion needs an explicit fixed bound on
+      a/k.  Without it the family is superlinear:
+      with k = 2, a = M+1, n = 2M^2, q > M^3 + M, `multibase_line(q, n, a, M)` is safe and
+      large-zero and has bad_count >= M^3 = (n/2)^(3/2) (constant codeword j agrees on its
+      M-block plus support point t at gamma = j + M(t+1); no affine explainer exists).  The
+      k = 2 family is outside the fixed-rate prize regime, so it does not refute the guarded
+      fixed-rate target; it does refute an unguarded "always O(n)" reading.  Section Q2b
+      replays (M, q) = (3, 37), (4, 73).
   Q3. Randomized search over safe large-zero lines for counts that look superlinear
       (count > C * n for C beyond the constant-base cap).
 
@@ -172,13 +181,33 @@ def main() -> int:
             report("random", 0, u0r % q, u1r % q)
         print(f"    -> best safe large-zero count at this shape: {best} "
               f"(n = {n}, n-a = {n - a}, cap-guess ((a-1)//(k-1))*n = {((a-1)//(k-1)) * n})")
+
+    # Q2b: superlinear constant-base family (unbounded a/k): k=2, a=M+1, n=2M^2, q>M^3+M.
+    print()
+    print("Q2b: constant-base family with growing a/k (k=2, a=M+1, n=2M^2) -- bad_count >= M^3")
+    superlinear_ok = True
+    for (M, q) in ((3, 37), (4, 73)):
+        k2, a2, n2 = 2, M + 1, 2 * M * M
+        assert q > M ** 3 + M
+        CW2 = all_codewords(q, n2, k2)
+        u0s, u1s = multibase_line(q, n2, a2, M)
+        lz, safe, bad, lam, s = line_stats(q, n2, k2, a2, CW2, u0s, u1s)
+        lower = M ** 3
+        ok = lz and safe and bad >= lower and bad <= lam * s
+        superlinear_ok = superlinear_ok and ok
+        print(f"    M={M} q={q} n={n2} k={k2} a={a2}: large_zero={lz} safe={safe} "
+              f"bad={bad} (>= M^3 = {lower}; n = {n2}) Lambda={lam} supp={s} "
+              f"Lam*sup={lam * s} {'OK' if ok else '**UNEXPECTED**'}")
+        if bad > lam * s:
+            ceiling_violations += 1
     print()
     if ceiling_violations:
         print(f"RESULT: {ceiling_violations} violations of count <= Lambda*|supp| — "
               f"candidate ceiling REFUTED")
         return 1
-    print("RESULT: no violation of count <= Lambda*|supp| anywhere; "
-          "constant multi-base stays O(n) as predicted")
+    print("RESULT: no violation of count <= Lambda*|supp| anywhere (finite sample); an O(n) "
+          "reading of the constant multi-base family needs a fixed a/k bound "
+          f"(Q2b superlinear k=2 family confirmed: {superlinear_ok})")
     return 0
 
 

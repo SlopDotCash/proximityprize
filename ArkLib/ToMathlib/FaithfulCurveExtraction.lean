@@ -47,7 +47,13 @@ coefficients — `P z = ∑_{t<n} (z − x₀)^t • c_t` with `c_t ∈ F[X]` of
 
 The matching/weight/truncation machinery (ingredient C, L9/L10, the graded collapse, the genuine
 `gammaGenuine` chain) is unaffected — it feeds the *production* of the curve-family datum; what
-changes is only the final extraction interface, which is now both satisfiable and faithful.
+changes is only the final extraction interface, which is now faithful to Prop. 5.5 and no longer
+refuted by `no_linRep_of_nonaffine`.  No producer of `CurveFamilyData` is proved here: the
+front doors take the full per-stack, radius-triggered production hypothesis as an input.
+
+The legacy transposed bundles (`Section5StrictData`, `Section5StrictDataFin`, `BetaCurveInput*`,
+`Section5StrictDataOffcentreFin`) are retained only as restricted/historical interfaces for
+codeword-affine decoded families; general consumers should route through `CurveFamilyData`.
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon Codes*,

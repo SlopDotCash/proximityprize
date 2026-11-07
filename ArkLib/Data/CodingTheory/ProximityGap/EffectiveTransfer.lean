@@ -47,8 +47,13 @@ characteristic-zero fiber for all `p` above the explicit threshold
 whenever the subset itself lifts (which it does for `n ∣ p − 1`, the cyclic case — the
 lift plumbing is the in-tree O42/O53 bijection and is not duplicated here).
 
-The threshold is the one recorded in O49 and is necessary: the `p = 17, n = 16` extra
-solutions (O47 data) live below it.
+The threshold is the one recorded in O49 and is **sufficient, not necessary**: the
+`p = 17, n = 16` extra solutions (O47 data) live below it, which shows that *some* bound is
+needed for some `w`, but a counterexample below a sufficient bound does not make that bound
+necessary.  Transfer can hold well below it: for `n = 16`, `w = 2`, `p = 17` the threshold is
+`2^8 = 256`, yet a two-element root subset has `e₁ = 0` iff it is an antipodal pair, both in
+characteristic zero and after the compatible reduction to `F_17`.  Read it as a uniform
+sufficient fence; below it transfer is non-uniform and must be checked case by case.
 
 Every theorem is fully proved and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 -/

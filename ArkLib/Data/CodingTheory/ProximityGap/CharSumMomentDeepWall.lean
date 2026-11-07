@@ -8,9 +8,10 @@ import ArkLib.Data.CodingTheory.ProximityGap.EnergyCharacterTransport
 /-!
 # The high-moment transport `B ≤ (q·E_r)^{1/2r}` and the DEEP-MOMENT WALL (Issue #389, TECHNIQUE 6)
 
-This file is the honest, quantified, machine-checked statement of *exactly how far the moment method
-reaches* on the open analytic core of the proximity prize, and *exactly where it stops* — the
-deep-moment / `L^∞` wall flagged in the issue.
+This file machine-checks the single-term moment-to-sup arrow and the arithmetic equivalence the
+moment method runs on, and records (as heuristic and empirical prose, not as theorems) where the
+method appears to stop on the open analytic core of the proximity prize — the deep-moment / `L^∞`
+wall flagged in the issue.
 
 ## The object
 
@@ -28,53 +29,65 @@ the single largest term, the **moment transport**:
 > `charSum_le_of_moment` :  if `∑_b ‖η_b‖^{2r} ≤ q·E_r` and `B = ‖η_{b₀}‖` with `b₀ ≠ 0`, then
 > `B^{2r} ≤ q·E_r`, i.e. **`B ≤ (q·E_r)^{1/(2r)}` for every `r ≥ 1`.**
 
-This is the **only** rigorous arrow from the moments to the sup, and it is exact. Everything the
-moment/`L^{2r}` method can ever say about `B` is `B ≤ (q·E_r)^{1/2r}`, optimized over `r`.
+This single-term arrow is exact as an inequality, but it is **not** the only or the strongest
+rigorous arrow, and on its own it is never better than the trivial bound. The raw moment
+`∑_b ‖η_b‖^{2r}` includes the principal frequency `b = 0`, where `η_0 = n`; hence
+`q·E_r ≥ n^{2r}` and `(q·E_r)^{1/2r} ≥ n` always. A strictly stronger valid arrow already in tree is
+`GaussPeriodCosetReduction.cosetReduced_eta_pow_le`, which subtracts the principal mode and divides
+by the orbit size: `‖η_{b₀}‖^{2r} ≤ (q·E_r − n^{2r})/n` for `b₀ ≠ 0` (all `r`; the all-order
+Parseval identity is `SubgroupGaussSumMoment.subgroup_gaussSum_moment`).
 
-## Where the saving WOULD come from — and why it is out of reach (the wall)
+## Where a saving would have to come from (heuristic, not proved here)
 
-With the char-0 value `E_r(μ_n) ≍ c^r·r!·n^r` (verified empirically; `μ_n` is essentially Sidon so
-the `2r`-fold energy is dominated by the `r!` permutation/diagonal solutions, up to a constant^r),
+Heuristically one models the **principal-mode-subtracted** moment `q·E_r − n^{2r}` by a
+"char-0" size `≍ q·c^r·r!·n^r`. The raw `E_r` cannot have that size once `n^r > q·c^r·r!`, because
+`E_r ≥ n^{2r}/q`; any such model therefore concerns the DC-subtracted quantity (cf. PG-006). Under
+that model,
 
-  `(q·E_r)^{1/2r} ≍ q^{1/2r}·(r!)^{1/2r}·√(c·n) ≍ q^{1/2r}·√(r/e)·√(c·n).`
+  `(q·c^r·r!·n^r)^{1/2r} ≍ q^{1/2r}·√(r/e)·√(c·n),`
 
-Choosing the optimal `r ≍ log q` makes `q^{1/2r} ≍ O(1)` and yields exactly `B ≲ √(n·log q)` — the
-conjectured bound. **So the moment method, run to its optimal depth `r ≍ log q`, gives the prize.**
+and choosing `r ≍ log q` makes `q^{1/2r} ≍ O(1)`, giving `B ≲ √(n·log q)`, the conjectured bound.
+This is a heuristic consequence of an unproved model, not a theorem of this file.
 
-The obstruction is that `E_r(μ_n)` is at its char-0 value `≍ c^r r! n^r` **only for `p > τ_r ≍
-n^{(r+3)/2}`** (the empirical threshold law, `RootsOfUnityAdditiveEnergyExact` is the `r=2` anchor).
-Equivalently the char-0 moment value is *provably valid only* for
+## The empirical depth cap (unproved) and its correct fixed-regime exponent
+
+The deep-moment obstruction recorded here is an **empirical** observation, not a proved law: in
+numerical exploration the (DC-subtracted) energy of `μ_n` appeared to match its char-0 value only
+for `p > τ_r ≍ n^{(r+3)/2}` (`RootsOfUnityAdditiveEnergyExact` is an exact `r = 2` anchor; no
+general threshold law is proved in this file). If that empirical law were taken as the reliable
+range, it would cap
 
   `r ≤ r_max := 2·log_n(p) − 3.`
 
-In the prize regime `p ~ n^5` this caps `r ≤ r_max = 7`, while the optimum needs `r ≍ log q ≍
-a·log_n p = 5a`. The ratio of needed-to-available depth is
+In the regime `p ≈ n^5` this is the **fixed** depth `r_max = 7`, while the heuristic optimum needs
+`r ≍ log q ≍ 5·log n`, which grows with `n`. Because `r_max` is fixed, the `−3` cannot be dropped
+from the exponent: at `r = 7` the modelled bound is
 
-  `r_opt / r_max ≍ (log q)/(2 log_n p) = (log n)/2 = a/2`  —  **half the number of tower levels.**
+  `(p·c^7·7!·n^7)^{1/14} ≍ (n^{12})^{1/14} = n^{6/7}`
 
-At the deepest *reliable* moment `r = r_max ≍ 2 log_n p`, the bound degrades to
+(the coset reduction's extra `/n` improves this to `n^{11/14}` under the same model). So, under
+the unproved empirical cap, the moment method at the capped depth gives `B ≲ n^{6/7}` (resp.
+`n^{11/14}`) in the regime `p ≈ n^5`, strictly worse than `√n`. (An earlier version of this
+docstring claimed `n^{3/4+o(1)}`; that figure silently used `r = 2·log_n p = 10`, beyond the cap.)
+This is consistent with the literature: no published method reaches `n < p^{1/4}`; the best
+explicit saving is `n^{1−31/2880}` for `n > p^{1/4}` only.
 
-  `(q·E_{r_max})^{1/2 r_max} ≍ q^{1/2 r_max}·√(r_max·n) ≍ n^{1/4}·√(log_n p · n) ≍ n^{3/4}·√(log_n p),`
+`moment_bound_beats_target_iff` below records the exact arithmetic equivalence the method runs on:
+`(q·E_r)^{1/2r} ≤ T ↔ q·E_r ≤ T^{2r}`. The file proves the single-term arrow and this equivalence;
+it does **not** prove the empirical cap, the char-0 model, or any bound on `E_r`, and it does not
+cross the wall — that is the open problem of controlling the DC-subtracted deep moments
+(`r ≍ log q`) at `p ~ n^5`, equivalently a square-root-cancellation bound on the `(p−1)/n`
+Gauss-sum phases `χ̄(b)τ(χ)`, `χ ∈ μ_n^⊥`.
 
-since `q^{1/2 r_max} = p^{1/(4 log_n p − 6)} ≍ p^{1/(4 log_n p)} = n^{1/4}`. **The best the moment
-method can *prove* in the prize regime is `B ≲ n^{3/4+o(1)}`** — strictly worse than `√n`, and far
-from `√(n·log(q/n))`. This is exactly consistent with the literature: no published method reaches
-`n < p^{1/4}`; the best explicit saving is `n^{1−31/2880}` for `n > p^{1/4}` only.
+## Tower structure (recorded, negative, scope-limited)
 
-`provable_moment_wall` below packages this: at the reliable depth `r`, the moment transport yields a
-bound of size `(q·E_r)^{1/2r}`, and we record that this exceeds `√(n·log q)` precisely because `r`
-cannot reach `log q` while keeping the char-0 moment value (the hypothesis `q ≤ E_r^{?}` fails for
-small `r`). The file proves the *arrow* rigorously and states the *gap* honestly; it does **not**
-cross the wall — crossing it is exactly the open problem of validating the deep moments
-(`r ≍ log q`) at `p ~ n^5`, equivalently a square-root-cancellation bound on the `(p−1)/n` Gauss-sum
-phases `χ̄(b)τ(χ)`, `χ ∈ μ_n^⊥`.
-
-## A genuinely new structural observation (TECHNIQUE 6, recorded, negative)
-
-The `2`-power tower `μ_2 < μ_4 < … < μ_{2^a}` does **not** lower the deep moments: empirically
-`E_r(μ_{2^a}) ≥ r!·n^r` with a ratio that *grows* in `r` (the antipodal `−1 ∈ μ_{2^a}` adds
-solutions, it does not remove them). So squaring/folding offers no shortcut through the moments — the
-`a/2` tower-depth gap above is irreducible by the tower structure alone. The wall is genuine.
+The `2`-power tower `μ_2 < μ_4 < … < μ_{2^a}` was observed not to lower the deep moments in small
+numerical samples (the antipodal `−1 ∈ μ_{2^a}` adds solutions). An unrestricted lower bound
+`E_r ≥ r!·n^r` is **false**: the generic bound `E_r ≤ n^{2r}` already rules it out once
+`r! > n^r`, and concretely for the proper `μ_4 = {1, 16, 241, 256} ⊆ 𝔽_257` at `r = 4` one has
+`E_4 = 4900 < 24·4^4 = 6144`. The valid elementary lower bound counts only the permutation
+solutions with pairwise distinct entries: `E_r ≥ r!·n(n−1)⋯(n−r+1)` for `r ≤ n`. The tower
+observation is therefore only heuristic evidence that folding offers no shortcut.
 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #389.
@@ -105,8 +118,10 @@ theorem term_le_moment (ψ : AddChar F ℂ) (G : Finset F) (b₀ : F) (r : ℕ) 
 
 /-- **The moment transport `B^{2r} ≤ q·E_r` (the engine of the moment method).** If the worst-case
 character sum `B` is attained at some `b₀` (`B = ‖η_{b₀}‖`) and the `2r`-th Parseval moment is the
-prize quantity `∑_b ‖η_b‖^{2r} = q·E_r`, then `B^{2r} ≤ q·E_r`. Hence `B ≤ (q·E_r)^{1/2r}` — the
-*only* rigorous arrow from the moments to the `L^∞` worst case. Taking the `2r`-th moment value
+prize quantity `∑_b ‖η_b‖^{2r} = q·E_r`, then `B^{2r} ≤ q·E_r`. Hence `B ≤ (q·E_r)^{1/2r}`. This
+is the crudest moment-to-sup arrow: since the `b = 0` term alone is `n^{2r}`, its right side is
+`≥ n^{2r}`; the stronger `GaussPeriodCosetReduction.cosetReduced_eta_pow_le` subtracts that
+principal term and divides by `n`. Taking the `2r`-th moment value
 `M_{2r}` as a hypothesis keeps this axiom-clean and exactly matches the in-tree `r = 2` identity
 `subgroup_gaussSum_fourthMoment` (`M_4 = q·E(G)`). -/
 theorem charSum_le_of_moment (ψ : AddChar F ℂ) (G : Finset F) (b₀ : F) (r : ℕ)
@@ -116,8 +131,9 @@ theorem charSum_le_of_moment (ψ : AddChar F ℂ) (G : Finset F) (b₀ : F) (r :
 
 /-- **Divided form: `B ≤ (q·E_r)^{1/(2r)}`.** With `r ≥ 1` and a nonnegative moment value `M`, the
 worst-case character sum is at most the `(2r)`-th root of the `2r`-th moment. This is the bound the
-moment method optimizes over `r`; the prize asks for the optimum at `r ≍ log q`, where
-`M = q·E_r ≍ q·c^r r! n^r` gives `(q·E_r)^{1/2r} ≍ √(n log q)`. -/
+moment method optimizes over `r`. With the raw moment `M = q·E_r ≥ n^{2r}` this root is always
+`≥ n` (trivial); the heuristic `√(n log q)` at `r ≍ log q` needs the principal-mode-subtracted
+moment `q·E_r − n^{2r}` to have char-0 size `≍ q·c^r r! n^r`, which is not proved here. -/
 theorem charSum_le_root_moment (ψ : AddChar F ℂ) (G : Finset F) (b₀ : F) {r : ℕ} (hr : 1 ≤ r)
     {M : ℝ} (hM : ∑ b : F, ‖eta ψ G b‖ ^ (2 * r) = M) :
     ‖eta ψ G b₀‖ ≤ M ^ ((1 : ℝ) / (2 * r)) := by
@@ -137,12 +153,13 @@ theorem charSum_le_root_moment (ψ : AddChar F ℂ) (G : Finset F) (b₀ : F) {r
 /-- **The wall, quantified (rigorous, clean arithmetic).** Fix the reliable depth `r ≥ 1`. The moment
 transport gives `B ≤ (q·E_r)^{1/2r}`. For a target value `T ≥ 0`, the moment bound *beats the target*,
 `(q·E_r)^{1/2r} ≤ T`, **iff** `q·E_r ≤ T^{2r}`. This is the exact equivalence the moment method runs
-on. With the char-0 value `E_r ≍ c^r·r!·n^r` and target `T = √(n·log(q/n))` (so `T^{2r} =
-(n·log(q/n))^r`), the inequality `q·E_r ≤ T^{2r}` reads `q·c^r r! n^r ≤ (n·log(q/n))^r`, i.e.
-`q ≤ (log(q/n))^r / (c^r r!)` — satisfiable only for `r ≳ log q`. Hence the moment bound beats the
-target **only at depth `r ≳ log q`**, which exceeds the reliable cap `r ≤ 2 log_n p` in the prize
-regime `p ~ n^5`. The arithmetic is proven here; the number-theoretic inputs (the value of `E_r` and
-the validity threshold `r ≤ 2 log_n p`) are the open content, deliberately *not* supplied. -/
+on. Heuristically, with a modelled char-0 value `c^r·r!·n^r` (for the raw `E_r` this model is
+inconsistent once `n^r > q·c^r·r!`, since `q·E_r ≥ n^{2r}`; it must be read for the
+principal-mode-subtracted moment) and target `T = √(n·log(q/n))`, the inequality reads
+`q·c^r r! n^r ≤ (n·log(q/n))^r`, i.e. `q ≤ (log(q/n))^r / (c^r r!)` — satisfiable only for
+`r ≳ log q`. That exceeds the fixed depth `r_max = 7` given by the *empirical, unproved* cap
+`r ≤ 2 log_n p − 3` in the regime `p ≈ n^5`. Only the equivalence below is proven here; the value
+of `E_r`, the char-0 model and the empirical cap are deliberately *not* supplied. -/
 theorem moment_bound_beats_target_iff
     {qEr T : ℝ} (r : ℕ) (hr : 1 ≤ r) (hqEr : 0 ≤ qEr) (hT : 0 ≤ T) :
     (qEr) ^ ((1 : ℝ) / (2 * r)) ≤ T ↔ qEr ≤ T ^ (2 * r) := by

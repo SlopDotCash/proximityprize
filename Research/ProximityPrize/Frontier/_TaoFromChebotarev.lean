@@ -55,7 +55,8 @@ This file performs the *standard Tao reduction*, isolating Chebotarev as the sol
   distinct nodes `ζ^{r_i} = stdAddChar (ri i)`. Mathlib's `Matrix.det_vandermonde_ne_zero_iff` then
   gives `det = ∏_{i<i'} (ζ^{r_{i'}} − ζ^{r_i}) ≠ 0` directly from injectivity (the nodes are distinct
   by `ZMod.injective_stdAddChar`). This is genuinely general-`n`. We also expose the underlying kernel
-  as a named `Prop` `StandardVandermondeNonzeroModP` with its proof `standardVandermondeNonzeroModP_holds`.
+  as a named `Prop` `StandardVandermondeNonzeroComplex` with its proof
+  `standardVandermondeNonzeroComplex_holds`.
 
   **Boundary:** this is ONLY the equal-spacing exponent slice. The deep content of Chebotarev's
   theorem is precisely that *arbitrary* distinct exponents `c_j` (generalized Vandermonde, where the
@@ -92,8 +93,10 @@ namespace ProximityGap.Frontier.TaoFromChebotarev
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-- **Chebotarev's minor-nonvanishing theorem for the prime DFT matrix (NAMED OPEN INPUT — only the
-`n = 1` case is proven, as `chebotarev_one`).**
+/-- **Chebotarev's minor-nonvanishing theorem for the prime DFT matrix (NAMED OPEN INPUT — the
+`n = 1` and `n = 2` cases are proven, as `chebotarev_one` / `chebotarev_two`, and the equal-spacing
+exponent slice for every `n` as `chebotarev_minor_equalExponents`; the general-exponent case is
+open).**
 
 > For `p` prime, *every minor of the `p × p` DFT matrix is nonzero*.
 
@@ -106,7 +109,7 @@ Vandermonde matrix in the `p`-th roots of unity is invertible. It is a deep
 Galois/cyclotomic-irreducibility fact, **not present in Mathlib**, and *false* for composite order
 (which is exactly why Tao's additive uncertainty principle is prime-only). Per the #407 honesty
 contract it is a named `Prop` (carries no axioms); we never prove the general case nor `sorry` it.
-The smallest case (`n = 1`) IS discharged below (`chebotarev_one`). -/
+The cases `n = 1`, `n = 2` and the equal-spacing slice ARE discharged below. -/
 def ChebotarevMinorNonvanishing (p : ℕ) [Fact p.Prime] : Prop :=
   ∀ (n : ℕ) (ri ci : Fin n → ZMod p), Function.Injective ri → Function.Injective ci →
     (Matrix.of fun (i j : Fin n) => (stdAddChar (-(ci j * ri i)) : ℂ)).det ≠ 0
@@ -163,13 +166,16 @@ theorem chebotarev_two (ri ci : Fin 2 → ZMod p)
   rw [hABeq, sub_self] at hfac
   exact hne hfac.symm
 
-/-- **The standard (equal-spacing) Vandermonde determinant is nonzero mod `p` for distinct nodes
-(NAMED — but PROVEN below, `chebotarev_equalExponents`).** For distinct `r_i : ZMod p`, the
+/-- **The standard (equal-spacing) Vandermonde determinant over `ℂ` is nonzero for distinct nodes
+(NAMED — but PROVEN below, `chebotarev_equalExponents`).** This is a statement about a complex
+determinant of `stdAddChar` powers; it involves no reduction modulo `p` (only the node indices live
+in `ZMod p`), and was formerly misnamed `StandardVandermondeNonzeroModP` (audit CW-B15-09). For
+distinct `r_i : ZMod p`, the
 determinant of the matrix `((ζ^{r_i})^{c_j})` with consecutive exponents `c_j = j` is nonzero. This
 is the elementary number-theoretic kernel of Chebotarev's theorem (the equal-spacing exponent
 slice), discharged directly from Mathlib's `Matrix.det_vandermonde` (since the nodes `ζ^{r_i}` are
 distinct). The *general*-exponent case is the deep part of Chebotarev's theorem and remains open. -/
-def StandardVandermondeNonzeroModP (p : ℕ) [Fact p.Prime] : Prop :=
+def StandardVandermondeNonzeroComplex (p : ℕ) [Fact p.Prime] : Prop :=
   ∀ (n : ℕ) (ri : Fin n → ZMod p), Function.Injective ri →
     (Matrix.of fun (i j : Fin n) => (stdAddChar (ri i) : ℂ) ^ (j : ℕ)).det ≠ 0
 
@@ -182,7 +188,7 @@ theorem injective_stdAddChar_comp {n : ℕ} (ri : Fin n → ZMod p) (hri : Funct
 /-- **The equal-spacing Vandermonde kernel is PROVEN.** Directly from Mathlib's
 `Matrix.det_vandermonde_ne_zero_iff`: the determinant of the Vandermonde matrix in the distinct
 nodes `ζ^{r_i}` is `∏_{i<i'} (ζ^{r_{i'}} − ζ^{r_i}) ≠ 0`. -/
-theorem standardVandermondeNonzeroModP_holds : StandardVandermondeNonzeroModP p := by
+theorem standardVandermondeNonzeroComplex_holds : StandardVandermondeNonzeroComplex p := by
   intro n ri hri
   -- the matrix `i j ↦ (stdAddChar (ri i))^j` IS `Matrix.vandermonde (fun i => stdAddChar (ri i))`.
   have hmat : (Matrix.of fun (i j : Fin n) => (stdAddChar (ri i) : ℂ) ^ (j : ℕ))
@@ -222,7 +228,7 @@ theorem chebotarev_equalExponents {n : ℕ} (ri : Fin n → ZMod p)
       = Matrix.of fun (i j : Fin n) => (stdAddChar (ri i) : ℂ) ^ (j : ℕ) := by
     ext i j; exact hentry i j
   rw [hmat]
-  exact standardVandermondeNonzeroModP_holds n ri hri
+  exact standardVandermondeNonzeroComplex_holds n ri hri
 
 /-- The consecutive column selection `ci = fun j => -(↑(j : ℕ) : ZMod p)` is **injective when
 `n ≤ p`** (the nats `0, 1, …, n−1` are distinct mod `p`). This is exactly the hypothesis needed for
@@ -361,7 +367,7 @@ end ProximityGap.Frontier.TaoFromChebotarev
 axioms; the PROVEN content below consumes / discharges it. -/
 #print axioms ProximityGap.Frontier.TaoFromChebotarev.chebotarev_one
 #print axioms ProximityGap.Frontier.TaoFromChebotarev.chebotarev_two
-#print axioms ProximityGap.Frontier.TaoFromChebotarev.standardVandermondeNonzeroModP_holds
+#print axioms ProximityGap.Frontier.TaoFromChebotarev.standardVandermondeNonzeroComplex_holds
 #print axioms ProximityGap.Frontier.TaoFromChebotarev.chebotarev_equalExponents
 #print axioms ProximityGap.Frontier.TaoFromChebotarev.injective_consecutive_cols
 #print axioms ProximityGap.Frontier.TaoFromChebotarev.chebotarev_minor_equalExponents

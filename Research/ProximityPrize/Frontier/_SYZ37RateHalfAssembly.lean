@@ -48,6 +48,12 @@ this residual is **degree-forced and domain-independent**:
     (`μ_n`) domains, `n ∈ {10,…,20}`, thousands of interior-band triples: `sat = 0` (none
     saturated), `genFAILS = 0`, `inbudget_syz > 0 : 0`, `unbalanced_μ-basis : 0`.  The `μ_n` domain
     does **not** unbalance the μ-basis — so there are *no* unbalanced instances to lift-test.
+    **Correction (2026-10-28 audit, L125):** the `unbalanced_μ-basis : 0` count was an artifact of
+    counting `X·h` as a second generator; the corrected probe finds 27 unbalanced instances.  The
+    sampled "generation holds" reading is not universal either: over `𝔽₁₇`, `μ₁₆`, `k = 8` the
+    interior-band triple recorded in `scripts/tests/test_syz_mu_basis_probes.py` has μ-basis
+    degrees `(0, 3)`, in-budget syzygy dimension `1` and generation deficiency `1` (an exact
+    geometric deficiency only, not a bad-scalar or prize refutation).
   * A separate stress test over **14 908 uniformly-random pairwise-coprime triples** with rate-`1/2`
     band degree profiles found **0** with a nonzero in-budget syzygy: the vanishing depends only on
     the degree profile + coprimality, not on the Vandermonde/roots structure.

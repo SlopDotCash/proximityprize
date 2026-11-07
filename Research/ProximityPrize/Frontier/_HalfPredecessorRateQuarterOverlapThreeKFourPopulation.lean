@@ -44,18 +44,6 @@ attribute [local instance] Classical.propDecidable
 variable {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I]
 variable [Field F] [Fintype F] [DecidableEq F]
 
-theorem eval_domainRootProduct_eq_zero_iff_mem
-    (dom : I ↪ F) (S : Finset I) (i : I) :
-    (domainRootProduct dom S).eval (dom i) = 0 ↔ i ∈ S := by
-  rw [domainRootProduct, eval_prod, Finset.prod_eq_zero_iff]
-  constructor
-  · rintro ⟨j, hj, hzero⟩
-    simp only [eval_sub, eval_X, eval_C] at hzero
-    have hij : i = j := dom.injective (sub_eq_zero.mp hzero)
-    exact hij ▸ hj
-  · intro hi
-    exact ⟨i, hi, by simp⟩
-
 def CubicLocatorCompatible (dom : I ↪ F)
     (C0 S T : Finset I) : Prop :=
   ∃ a b c : F, a ≠ 0 ∧ b ≠ 0 ∧
@@ -317,6 +305,132 @@ theorem first_petal_card_eq_five
     exact Finset.inter_subset_left
   rw [Finset.card_sdiff_of_subset hsub, hcore1, hinter]
 
+/-- Every selected point lies on one of the two reference lines or off both. -/
+theorem G_subset_pointsOn_union_offBothPoints
+    {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
+    (family : BadScalarRichPointFamily dom 4 delta u)
+    (line1 line2 : LineParameter F) :
+    family.G ⊆
+      (pointsOn family line1 ∪ pointsOn family line2) ∪
+        offBothPoints family line1 line2 := by
+  intro gamma hgamma
+  by_cases hfirst :
+      family.q gamma = line1.1 + C gamma * line1.2
+  · exact Finset.mem_union_left _ (Finset.mem_union_left _
+      ((mem_pointsOn_iff family line1 gamma).mpr ⟨hgamma, hfirst⟩))
+  by_cases hsecond :
+      family.q gamma = line2.1 + C gamma * line2.2
+  · exact Finset.mem_union_left _ (Finset.mem_union_right _
+      ((mem_pointsOn_iff family line2 gamma).mpr ⟨hgamma, hsecond⟩))
+  · exact Finset.mem_union_right _
+      (Finset.mem_filter.mpr ⟨hgamma, hfirst, hsecond⟩)
+
+/-- Cardinality form of `G_subset_pointsOn_union_offBothPoints`. -/
+theorem card_G_le_pointsOn_union_add_offBothPoints
+    {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
+    (family : BadScalarRichPointFamily dom 4 delta u)
+    (line1 line2 : LineParameter F) :
+    family.G.card ≤
+      (pointsOn family line1 ∪ pointsOn family line2).card +
+        (offBothPoints family line1 line2).card :=
+  (Finset.card_le_card (G_subset_pointsOn_union_offBothPoints family line1 line2)).trans
+    (Finset.card_union_le _ _)
+
+/-- Off both reference lines, the first root block determines the selected
+point: equal first blocks force equal second blocks (cubic-locator uniqueness),
+hence equal full agreement sets, and the secant through two distinct such points
+would then have a nine-point core, contradicting the core cap. -/
+theorem firstRootBlockAt_injOn_of_relevant_core_cap
+    {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
+    (family : BadScalarRichPointFamily dom 4 delta u)
+    (hn : Fintype.card I = 16)
+    (hthreshold : 9 ≤
+      ⌈(1 - delta) * (Fintype.card I : NNReal)⌉₊)
+    (line1 line2 : LineParameter F)
+    (hline1 : line1 ∈ lineParameters family)
+    (hline2 : line2 ∈ lineParameters family)
+    (hcore1 :
+      (jointCore dom (u 0) (u 1) line1.1 line1.2).card = 8)
+    (hcore2 :
+      (jointCore dom (u 0) (u 1) line2.1 line2.2).card = 8)
+    (hinter :
+      (commonCoreBlock dom (u 0) (u 1) line1 line2).card = 3)
+    (hcoreCap : ∀ line ∈ lineParameters family,
+      (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ 8) :
+    Set.InjOn (firstRootBlockAt family line1)
+      (offBothPoints family line1 line2 : Set F) := by
+  let C0 := commonCoreBlock dom (u 0) (u 1) line1 line2
+  let R := jointCore dom (u 0) (u 1) line2.1 line2.2 \ C0
+  have hRcard : R.card = 5 := by
+    simpa only [R, C0] using
+      second_petal_card_eq_five (dom := dom) (u 0) (u 1)
+        line1 line2 hcore2 hinter
+  have hdisj : Disjoint C0 R := by
+    rw [Finset.disjoint_left]
+    intro i hiC hiR
+    exact (Finset.mem_sdiff.mp hiR).2 hiC
+  intro gamma hgamma beta hbeta hfirstEq
+  have hgammaData := kfourOffPointData family hn hthreshold line1 line2
+    hline1 hline2 hcore1 hcore2 hinter (by simpa using hgamma)
+  have hbetaData := kfourOffPointData family hn hthreshold line1 line2
+    hline1 hline2 hcore1 hcore2 hinter (by simpa using hbeta)
+  have hsecondEq : secondRootBlockAt family line2 gamma =
+      secondRootBlockAt family line2 beta := by
+    apply cubicLocatorCompatible_right_unique
+      dom C0 R (firstRootBlockAt family line1 gamma)
+        (secondRootBlockAt family line2 gamma)
+        (secondRootBlockAt family line2 beta)
+        hdisj hRcard
+    · simpa only [R, C0] using hgammaData.second_subset
+    · exact hgammaData.second_card
+    · simpa only [R, C0] using hbetaData.second_subset
+    · exact hbetaData.second_card
+    · exact hgammaData.compatible
+    · simpa only [hfirstEq] using hbetaData.compatible
+  have hagreementEq :
+      fullAgreement dom (u 0) (u 1) gamma (family.q gamma) =
+        fullAgreement dom (u 0) (u 1) beta (family.q beta) := by
+    calc
+      fullAgreement dom (u 0) (u 1) gamma (family.q gamma) =
+          ((firstRootBlockAt family line1 gamma ∪
+            secondRootBlockAt family line2 gamma) ∪
+              (Finset.univ \
+                (jointCore dom (u 0) (u 1) line1.1 line1.2 ∪
+                  jointCore dom (u 0) (u 1) line2.1 line2.2))) :=
+        hgammaData.agreement_partition
+      _ = ((firstRootBlockAt family line1 beta ∪
+            secondRootBlockAt family line2 beta) ∪
+              (Finset.univ \
+                (jointCore dom (u 0) (u 1) line1.1 line1.2 ∪
+                  jointCore dom (u 0) (u 1) line2.1 line2.2))) := by
+        rw [hfirstEq, hsecondEq]
+      _ = fullAgreement dom (u 0) (u 1) beta (family.q beta) :=
+        hbetaData.agreement_partition.symm
+  by_contra hne
+  let sec := secantParameter family gamma beta
+  have hsec : sec ∈ lineParameters family :=
+    secantParameter_mem_lineParameters family
+      hgammaData.gamma_mem hbetaData.gamma_mem hne
+  have hgammaOn := first_point_mem_pointsOn_secant
+    family (beta := beta) hgammaData.gamma_mem
+  have hbetaOn := second_point_mem_pointsOn_secant
+    family (gamma := gamma) hbetaData.gamma_mem hne
+  have hgammaEq := (mem_pointsOn_iff family sec gamma).mp hgammaOn |>.2
+  have hbetaEq := (mem_pointsOn_iff family sec beta).mp hbetaOn |>.2
+  have hintersection :
+      fullAgreement dom (u 0) (u 1) gamma (family.q gamma) ∩
+          fullAgreement dom (u 0) (u 1) beta (family.q beta) =
+        jointCore dom (u 0) (u 1) sec.1 sec.2 := by
+    simpa only [hgammaEq, hbetaEq] using
+      (fullAgreement_inter_eq_jointCore
+        dom (u 0) (u 1) sec.1 sec.2 hne)
+  have hcoreNine :
+      (jointCore dom (u 0) (u 1) sec.1 sec.2).card = 9 := by
+    rw [← hintersection, hagreementEq, Finset.inter_self]
+    exact hbetaData.agreement_card
+  have hle := hcoreCap sec hsec
+  omega
+
 theorem offBothPoints_card_le_ten_of_relevant_core_cap
     {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
     (family : BadScalarRichPointFamily dom 4 delta u)
@@ -359,71 +473,8 @@ theorem offBothPoints_card_le_ten_of_relevant_core_cap
       hline1 hline2 hcore1 hcore2 hinter (by simpa using hgamma)
     rw [Finset.mem_coe, Finset.mem_powersetCard]
     exact ⟨by simpa only [L, C0] using hdata.first_subset, hdata.first_card⟩
-  have hinj : Set.InjOn
-      (firstRootBlockAt family line1)
-      (offBothPoints family line1 line2 : Set F) := by
-    intro gamma hgamma beta hbeta hfirstEq
-    have hgammaData := kfourOffPointData family hn hthreshold line1 line2
-      hline1 hline2 hcore1 hcore2 hinter (by simpa using hgamma)
-    have hbetaData := kfourOffPointData family hn hthreshold line1 line2
-      hline1 hline2 hcore1 hcore2 hinter (by simpa using hbeta)
-    have hsecondEq : secondRootBlockAt family line2 gamma =
-        secondRootBlockAt family line2 beta := by
-      apply cubicLocatorCompatible_right_unique
-        dom C0 R (firstRootBlockAt family line1 gamma)
-          (secondRootBlockAt family line2 gamma)
-          (secondRootBlockAt family line2 beta)
-          hdisj hRcard
-      · simpa only [R, C0] using hgammaData.second_subset
-      · exact hgammaData.second_card
-      · simpa only [R, C0] using hbetaData.second_subset
-      · exact hbetaData.second_card
-      · exact hgammaData.compatible
-      · simpa only [hfirstEq] using hbetaData.compatible
-    have hagreementEq :
-        fullAgreement dom (u 0) (u 1) gamma (family.q gamma) =
-          fullAgreement dom (u 0) (u 1) beta (family.q beta) := by
-      calc
-        fullAgreement dom (u 0) (u 1) gamma (family.q gamma) =
-            ((firstRootBlockAt family line1 gamma ∪
-              secondRootBlockAt family line2 gamma) ∪
-                (Finset.univ \
-                  (jointCore dom (u 0) (u 1) line1.1 line1.2 ∪
-                    jointCore dom (u 0) (u 1) line2.1 line2.2))) :=
-          hgammaData.agreement_partition
-        _ = ((firstRootBlockAt family line1 beta ∪
-              secondRootBlockAt family line2 beta) ∪
-                (Finset.univ \
-                  (jointCore dom (u 0) (u 1) line1.1 line1.2 ∪
-                    jointCore dom (u 0) (u 1) line2.1 line2.2))) := by
-          rw [hfirstEq, hsecondEq]
-        _ = fullAgreement dom (u 0) (u 1) beta (family.q beta) :=
-          hbetaData.agreement_partition.symm
-    by_contra hne
-    have hgammaNeBeta : gamma ≠ beta := hne
-    let sec := secantParameter family gamma beta
-    have hsec : sec ∈ lineParameters family :=
-      secantParameter_mem_lineParameters family
-        hgammaData.gamma_mem hbetaData.gamma_mem hgammaNeBeta
-    have hgammaOn := first_point_mem_pointsOn_secant
-      family (beta := beta) hgammaData.gamma_mem
-    have hbetaOn := second_point_mem_pointsOn_secant
-      family (gamma := gamma) hbetaData.gamma_mem hgammaNeBeta
-    have hgammaEq := (mem_pointsOn_iff family sec gamma).mp hgammaOn |>.2
-    have hbetaEq := (mem_pointsOn_iff family sec beta).mp hbetaOn |>.2
-    have hintersection :
-        fullAgreement dom (u 0) (u 1) gamma (family.q gamma) ∩
-            fullAgreement dom (u 0) (u 1) beta (family.q beta) =
-          jointCore dom (u 0) (u 1) sec.1 sec.2 := by
-      simpa only [hgammaEq, hbetaEq] using
-        (fullAgreement_inter_eq_jointCore
-          dom (u 0) (u 1) sec.1 sec.2 hgammaNeBeta)
-    have hcoreNine :
-        (jointCore dom (u 0) (u 1) sec.1 sec.2).card = 9 := by
-      rw [← hintersection, hagreementEq, Finset.inter_self]
-      exact hbetaData.agreement_card
-    have hle := hcoreCap sec hsec
-    omega
+  have hinj := firstRootBlockAt_injOn_of_relevant_core_cap
+    family hn hthreshold line1 line2 hline1 hline2 hcore1 hcore2 hinter hcoreCap
   have hcard := Finset.card_le_card_of_injOn
     (firstRootBlockAt family line1) hmaps hinj
   rw [Finset.card_powersetCard, hLcard] at hcard
@@ -473,29 +524,14 @@ theorem card_le_sixteen_of_equal_slope_overlap_three_core_cap
     offBothPoints_card_le_ten_of_relevant_core_cap
       family hn hthreshold line1 line2 hline1 hline2 hcore1 hcore2
         hinter hcoreCap
-  have hcover : family.G ⊆
-      (pointsOn family line1 ∪ pointsOn family line2) ∪
-        offBothPoints family line1 line2 := by
-    intro gamma hgamma
-    by_cases hfirst :
-        family.q gamma = line1.1 + C gamma * line1.2
-    · exact Finset.mem_union_left _ (Finset.mem_union_left _
-        ((mem_pointsOn_iff family line1 gamma).mpr ⟨hgamma, hfirst⟩))
-    by_cases hsecond :
-        family.q gamma = line2.1 + C gamma * line2.2
-    · exact Finset.mem_union_left _ (Finset.mem_union_right _
-        ((mem_pointsOn_iff family line2 gamma).mpr ⟨hgamma, hsecond⟩))
-    · exact Finset.mem_union_right _
-        (Finset.mem_filter.mpr ⟨hgamma, hfirst, hsecond⟩)
-  have hcoverCard := Finset.card_le_card hcover
+  have hall := card_G_le_pointsOn_union_add_offBothPoints family line1 line2
   have hlines := Finset.card_union_le
     (pointsOn family line1) (pointsOn family line2)
-  have hall := Finset.card_union_le
-    (pointsOn family line1 ∪ pointsOn family line2)
-    (offBothPoints family line1 line2)
   omega
 
 #print axioms cubicLocatorCompatible_right_unique
+#print axioms G_subset_pointsOn_union_offBothPoints
+#print axioms firstRootBlockAt_injOn_of_relevant_core_cap
 #print axioms offBothPoints_card_le_ten_of_relevant_core_cap
 #print axioms card_le_sixteen_of_equal_slope_overlap_three_core_cap
 

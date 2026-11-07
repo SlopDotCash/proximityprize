@@ -59,6 +59,10 @@ proofs of the distinct prover-averaged games use the explicit `Averaged` contrac
 compatibility modules. The [security migration](../../scripts/integration/nov07-rbr-migration.json)
 records the original contracts and caller changes. The canonical fixed-prefix results can feed
 the historical averaged results through the proved implications in that layer.
+The downstream `VectorIOP.IsSecureWithGapAveraged` package pairs completeness with an averaged
+bound. WHIR's placeholder and small-field packages and STIR's repetition result use that package.
+The checked WHIR assembly and STIR wrappers that conclude the canonical security contract take
+fixed-prefix evidence at their respective budgets.
 
 The full oracle sum-check completeness theorem now belongs to `Sumcheck.Spec.General`.
 Existing downstream calls with initialization and support arguments delegate to it. The
@@ -156,7 +160,21 @@ equal evaluation vectors and therefore equal folded values. The original UDR-clo
 from the stronger arbitrary-function result; global disagreement alone is insufficient
 ([proof audit](../../scripts/integration/binius-fold-locality-migration.json)).
 
+The [GKR circuit model](../../ProximityPrize/Extensions/ProofSystem/GKR/Circuit.lean) and
+[polynomial line restriction](../../ProximityPrize/Extensions/Data/MvPolynomial/LineRestriction.lean)
+preserve the foundations imported in [PR #216](https://github.com/SlopDotCash/proximityprize/pull/216)
+from the upstream GKR development. The degree bounds reuse the integrated polynomial APIs.
+These modules cover layered evaluation, ordered wiring predicates, and the restriction of a
+multilinear polynomial to a univariate line.
+
 ## Compatibility APIs
+
+The downstream [randomized state restoration](../../ProximityPrize/Extensions/Interaction/Oracle/Security/StateRestorationRandomized.lean)
+and [native Sumcheck soundness](../../ProximityPrize/Extensions/ProofSystem/Sumcheck/Interaction/StateRestorationSoundness.lean)
+modules port the corresponding sources from [PR #216 at `e36fe8a90`](https://github.com/SlopDotCash/proximityprize/tree/e36fe8a90889ddbc1eea94b76370911b0195c92c).
+The restoration proofs use VCVio's logged random-oracle execution to account for interleaved
+private sampling and fresh queries. The Sumcheck client uses a Unit witness to certify ordinary
+soundness for the native verifier, with both expected and bounded query formulations.
 
 | Development | Canonical API | Retained downstream surface |
 | --- | --- | --- |
@@ -326,6 +344,24 @@ contributions use explicitly named `CanonicalBatchingSeam` interfaces. The
 [tail migration record](../../scripts/integration/batched-fri-tail-migration.json) includes the
 checked two-input countermodel. The shared `Verifier.reduction_run_run_nf` now delegates to
 canonical execution through `ProximityPrize.Compatibility.ReductionRunNormalForm`.
+
+## Concrete-group KZG hardness hypotheses
+
+The downstream trapdoor-recovery module uses `Classical.choice` to recover the exponent from
+the public verifier SRS leg. The concrete-game adversaries use that recovery under `pure`,
+so they make zero oracle queries and win with probability one. The t-SDH attack requires
+`g₂ ≠ 1`. The ARSDH attack also requires `g₁ ≠ 1` and `D + 2 ≤ p`.
+[Trapdoor recovery](../../ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteTrapdoor.lean) ·
+[Concrete-game refutations](../../ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean)
+
+In the canonical binding reductions, pairing nondegeneracy forces `g₂ ≠ 1`, and function
+binding already assumes `g₁ ≠ 1` and `n + 2 ≤ p`. The concrete-group hardness hypotheses
+are therefore unsatisfiable for an error below one at those parameters. At error one or
+above, a success-probability bound follows from the ordinary upper bound of one. The
+formal results concern unrestricted concrete-group functions. Efficient adversaries and
+generic-group encodings require separate hardness arguments.
+[Evaluation binding](../../ArkLib/Commitments/Functional/KZG/Binding.lean) ·
+[Function binding](../../ArkLib/Commitments/Functional/KZG/FunctionBinding/Basic.lean)
 
 ## Integrating another upstream snapshot
 

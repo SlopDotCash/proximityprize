@@ -28,8 +28,16 @@ There is NO cancellation, completion, anti-concentration, or moment-saving here 
 `DCMomentSupBound.eta_pow_le_dc`. Its content is solely that the open object the prize must
 control IS
 the DC-subtracted `S_r` (not the DC-included `E_r`): a sup bound and an `S_r` bound are mutually
-forcing up to the `(q−1)` vs `q` count and the `^{2r}` power, so neither phrasing smuggles in a
-strictly easier object than the other.
+forcing up to the `(q−1)` vs `q` count, the `^{2r}` power, **and a constant-scale loss** (see the
+scope note below), so neither phrasing smuggles in a strictly easier object than the other at the
+level of constant-scale comparison.
+
+**Scope (audit R-001 extension, 2026-10-28).**  Substituting the advertised floor
+`K = √e·√(2r·|G|)` gives `S_r ≤ (q−1)·(e·2r·|G|)^r`, which exceeds the *sufficient* budget
+`q·(2r·|G|)^r` of `_DCCorrectSupCapstone` by a factor of about `e^r`.  After taking `2r`-th roots
+at logarithmic depth this is only a constant-factor (`√e`) comparison; it does **not** prove that
+the exact original Wick budget `S_r ≤ q·(2r·|G|)^r` is necessary, nor erase the quantitative gap
+between the two premises.
 
 **Honest status.** This is a trivial counting bound, NOT progress on CORE. It establishes
 only that the
@@ -39,7 +47,7 @@ NECESSITY companion to the audit-recommended DC-correct sufficiency capstone. Th
 floor `K = √e·
 √(2r·|G|)` instantiation gives `S_r ≤ (q−1)·(e·2r·|G|)^r`, the DC-subtracted moment ceiling
 the prize
-forces. No CORE / cancellation / completion / anti-concentration / moment-saving / capacity claim;
+forces — weaker by an `e^r` factor than the sufficient budget `q·(2r·|G|)^r`. No CORE / cancellation / completion / anti-concentration / moment-saving / capacity claim;
 prize CORE stays OPEN.
 
 Issue #444 / #407.
@@ -61,8 +69,8 @@ DC-subtracted moment `S_r = q·E_r − |G|^{2r}` is forced below `(q−1)·K^{2r
 terms `‖η_b‖^{2r} ≤ K^{2r}` (the sup dominates every member), so the sum obeys the `Σ ≤
 #·max` ceiling.
 This is the converse of the `single_le_sum` worst-term floor: a sup bound and a DC-subtracted-moment
-bound are mutually forcing, so neither phrasing of the open core is strictly easier than the
-other. -/
+bound are mutually forcing up to constant-scale losses (an `e^r` factor at the prize floor, see the
+header), not with the exact original Wick budget. -/
 theorem dcSubtractedMoment_le_of_worstPeriod_le [Nontrivial F] {ψ : AddChar F ℂ}
     (hψ : ψ.IsPrimitive) (G : Finset F) (r : ℕ) {K : ℝ}
     (hsup : worstPeriod ψ G ≤ K) :
