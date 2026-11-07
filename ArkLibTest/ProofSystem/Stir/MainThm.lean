@@ -7,6 +7,7 @@ Authors: ArkLib Contributors
 import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.Analysis.Complex.ExponentialBounds
 import ArkLib.ProofSystem.Stir.MainThm
+import ProximityPrize.Extensions.ProofSystem.Stir.MainThm
 
 /-!
 # STIR Section 5 parameter and relation regressions
@@ -356,5 +357,16 @@ theorem log_inv_rate_pos {F : Type} [Field F] {ι : Type} [Fintype ι] [Nonempty
   have hd : (0 : ℝ) < degree := by exact_mod_cast hdeg
   rw [one_div, inv_div, lt_div_iff₀ hd]
   simpa using (by exact_mod_cast hlt : (degree : ℝ) < Fintype.card ι)
+
+/-- Even with no transitions, the last-round error bound is still required. -/
+theorem final_bound_of_zero_transition_soundness
+    (ε_fold ε_fin : ℝ≥0) (ε_out ε_shift : Fin 0 → ℝ≥0)
+    (h : stir_rbr_soundness domains (P := params) (Dist := dist)
+      (Codes := codes) (hParams := conditions) (s := 0)
+      delta_zero_lt (fun hj => absurd (Fin.fin_one_eq_zero _) hj)
+      ε_fold ε_out ε_shift ε_fin) :
+    ε_fin ≤ (1 - dist.δ (Fin.last 0)) ^ (params.repeatParam (Fin.last 0)) := by
+  obtain ⟨n, spec, hcount, π, hsecure, hfold, hrest⟩ := h
+  exact hrest.2
 
 end ArkLibTest.StirMainThm
