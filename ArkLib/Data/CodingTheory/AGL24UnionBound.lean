@@ -84,7 +84,19 @@ probability that the evaluated reduced intersection matrix fails full column ran
 `bound`. The §3 proof (certificates, online matrix sequences, the symmetry classes of
 Remark 2.9) discharges this with
 `bound = C(n,r)·(t^r·2^{(t−1)k}·(q−n)⁻¹)^r`, `r = ⌊εn/2⌋`; downstream consumers (the
-Theorem 1.1 assembly) take it as a hypothesis in exactly this shape. -/
+Theorem 1.1 assembly) take it as a hypothesis in exactly this shape.
+
+The Lean form is a plug-in predicate in `D`, `e` and `bound`.
+The providers `rimFailureProb_of_symbolic` and `rimFailureProb_of_rootedOutCut_and_dualZeroPattern`
+use uniform tuples, a WPC family and a Schwartz–Zippel bound. Two boundary facts in
+`ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean` (`AGL24.rimRankDeficitSet_empty_family`,
+`AGL24.zero_eval_mem_rimRankDeficitSet_complete_family`) give examples where the deficit
+set has full measure: an empty family under uniform tuples and a WPC family under
+a point mass at a noninjective tuple.
+
+The embedding-based `conditional_failure_bound` assumes the predicate for WPC
+families and the pushforward of a PMF on evaluation embeddings. The distribution
+bridge to that assembly is PR #338. -/
 def RIMFullRankFailureProbResidual (D : PMF (ι → F)) {t k : ℕ}
     (e : ι → Finset (Fin (t + 1))) (bound : ENNReal) : Prop :=
   D.toOuterMeasure (RIMRankDeficitSet (F := F) (k := k) e) ≤ bound
