@@ -145,6 +145,12 @@ of any nontrivial subgroup. Adding those two restrictions alone therefore does n
 statement. The certificate does not realize the original high-head/low-tail decoded family;
 any surviving production count must state and use those further restrictions.
 
+`_DyadicNonCosetCountCertificate.lean` formalizes this obstruction over every field with a
+primitive 32nd root. It proves the complete five-element root set, nonzero odd-part values,
+and exclusion of every complete nontrivial dyadic root coset. Its
+`production_generator_certificate` places the roots in `mu_(2^29)` under an explicit primitive
+order-`2^30` generator hypothesis. It does not instantiate either concrete sponsor field.
+
 The intended future input bounds the isolated roots of a suitably restricted
 `O(k)`-sparse `P` on `μ_{n/2}` by `k + 1`. Naming the obligation and proving
 it elsewhere (the `*_holds` / `*_of_*` convention) is the project's modularity convention; this is **not** discharged
