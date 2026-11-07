@@ -2596,6 +2596,7 @@ globs = [
   "ArkLib.ToMathlib.LineDecodingCoverageProof",
   "ArkLib.ToMathlib.LinearCentreCertificates",
   "ArkLib.ToMathlib.LinearFormKernelCard",
+  "ArkLib.ToMathlib.LinearProjection",
   "ArkLib.ToMathlib.LinearizedHomogeneous",
   "ArkLib.ToMathlib.LinearizedKernel",
   "ArkLib.ToMathlib.LinearizedPattern",
