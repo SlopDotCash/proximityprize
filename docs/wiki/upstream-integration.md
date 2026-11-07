@@ -7,7 +7,7 @@ this project belong to `SlopDotCash/proximityprize`.
 
 ## Source ownership
 
-The November synchronization pins `db91471f`, including the completed upstream Spartan and
+The November synchronization pins `31ff7ddf`, including the completed upstream Spartan and
 Plonk protocols, measured extraction, and updated coding-theory APIs. It retains the
 coefficient-universe adaptation in `SplitFold`. Upstream now supplies the bivariate universe
 generalization and the Plonk wiring permutation. The intake ledger records the previous

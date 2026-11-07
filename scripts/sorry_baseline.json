@@ -1,7 +1,7 @@
 {
   "note": "Live source holes from upstream’s solicited problem set (#1352). The pinned Git revision and exact file hashes bind each declaration. The kernel baseline separately records all solicited declarations, including transitive taint.",
   "repository": "https://github.com/Verified-zkEVM/ArkLib",
-  "revision": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
+  "revision": "31ff7ddf9bc209ffaeab516359cd17f47d9bd6f1",
   "issue": "https://github.com/Verified-zkEVM/ArkLib/issues/1352",
   "holes": [
     {

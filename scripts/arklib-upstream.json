@@ -1,6 +1,6 @@
 {
   "repository": "https://github.com/Verified-zkEVM/ArkLib",
-  "revision": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
+  "revision": "31ff7ddf9bc209ffaeab516359cd17f47d9bd6f1",
   "files": [
     "ArkLib/AGM/Basic.lean",
     "ArkLib/Commitments/Functional/Basic.lean",
@@ -1158,8 +1158,8 @@
   "downstream_adaptations": [
     {
       "path": "ArkLib/Data/Polynomial/SplitFold.lean",
-      "upstream_blob": "09ddc831001781f424f62d9e0c90516c73dec630",
-      "sha256": "d288d220a4ff49dbcfce1d2cd9350ab81c258267d3ea323a80efddd37de641db",
+      "upstream_blob": "1ba6fc91fb7617561b4c155f2fc7f49dab16677e",
+      "sha256": "651af473556b42f816ffc57255c2fcf9b4a267a3f1afc258a604e47a47dd4f70",
       "declarations": [
         "Polynomial.splitNth",
         "Polynomial.splitNth_coeff",
@@ -1177,7 +1177,7 @@
         "Polynomial.polyFold_two_eval"
       ],
       "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
-      "reason": "Generalize the coefficient universe without duplicating the upstream split/fold implementation. The port keeps the revised uniqueness proof and drops the unnecessary NeZero instance on splitNth_eval_comp_pow."
+      "reason": "Generalize the coefficient universe without duplicating the upstream split/fold implementation, retaining the upstream proofs and zero-arity folding cases."
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "old_upstream": "78835bdb3a4d24ea9dd2977db4c46029eb8de5db",
-  "new_upstream": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
+  "new_upstream": "31ff7ddf9bc209ffaeab516359cd17f47d9bd6f1",
   "downstream_base": "85be740aed919904456ebe6c1b8bce1cd2b133ac",
   "superseded": [
     {
@@ -91,5 +91,7 @@
       "docs/kb/_generated/declarations.json": "Local generated declaration catalog.",
       "docs/kb/_generated/dedup-report.md": "Local generated review aid."
     }
-  }
+  },
+  "initial_november_upstream": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
+  "latest_downstream_base": "a9a1b7d3657f55d2b85140223e9560f5168c4f29"
 }
