@@ -1891,7 +1891,7 @@
    "name": "SubJohnsonListResidual",
    "fq_name": "ProximityGap.Ownership.SubJohnsonListResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/SubJohnsonListSupply.lean",
-   "line": 76,
+   "line": 68,
    "providers": [],
    "status": "open"
   },
