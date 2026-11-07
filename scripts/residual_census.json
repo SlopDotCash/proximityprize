@@ -300,7 +300,7 @@
      "name": "ArkLib.GMMDS.symbolicFullRank_lovett_free",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/GMMDS/SymbolicFullRankLovettFree.lean",
-     "line": 86,
+     "line": 93,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hdual",
@@ -3260,7 +3260,9 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "positional := 0"
+     ]
     }
    ],
    "status": "discharged"
