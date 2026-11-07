@@ -33,10 +33,9 @@ closed-form mechanism apply.  Computed exhaustively:
 * the certificate of that class is UNIQUE: ``N_(n-1) = y^(n-1) z^(n-1) * N_2``, no other
   ``(i, j, c)`` relates the two rows, so the closed form has exactly one monomial
   normalisation;
-* hence among the ``C(n-2, 2)`` unordered pencils of nonzero rows, exactly ONE has a
-  monomial bad ratio.  Every other pencil's ratio is a genuine two-row quotient, which is
-  why its count depends on ``p`` (the merged ``n = 16`` exception table) instead of
-  collapsing to ``n``.
+* at each tested ``n >= 4``, exactly one of the ``C(n-2, 2)`` unordered pencils
+  has a signed-monomial bad ratio in this group-ring sense.  The census below
+  separately checks that selected neighbouring pencils have counts that vary with ``p``.
 
 Semantic bridge, computed and not assumed.  At real primes the unique pair does what the
 classification says it must: the bad set of ``(x^2, x^(n-1))`` is SET-equal to ``mu_n``
@@ -348,7 +347,7 @@ def main():
           f"exceptions exactly the merged table, and 464 at p={FERMAT} and at the "
           f"prize-scale prime {PRIZE_K}*2^128+1", flush=True)
 
-    # 4. Semantic bridge: the unique pair is SET-equal to mu_n; the others move with p.
+    # 4. Semantic bridge: set equality for this pair and counts for selected neighbours.
     bridge = []
     for n in BRIDGE_RUNGS:
         found = []
@@ -413,4 +412,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if not __debug__:
+        raise SystemExit("Run without Python optimization to enable the certificate checks.")
     main()
