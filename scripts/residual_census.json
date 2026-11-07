@@ -5,9 +5,9 @@
  ],
  "summary": {
   "total": 90,
-  "open": 42,
+  "open": 41,
   "discharged": 35,
-  "refuted": 13,
+  "refuted": 14,
   "by_top_dir": {
    "(root)": {
     "total": 2,
@@ -17,9 +17,9 @@
    },
    "Data": {
     "total": 24,
-    "open": 9,
+    "open": 8,
     "discharged": 3,
-    "refuted": 12
+    "refuted": 13
    },
    "OracleReduction": {
     "total": 39,
@@ -174,7 +174,18 @@
      "specialised_arguments": []
     }
    ],
-   "status": "open"
+   "refutations": [
+    {
+     "name": "not_gmmdsResidual_fin3_zmod2",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean",
+     "line": 96,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "refuted"
   },
   {
    "name": "SymbolicFullRankResidual",
@@ -326,7 +337,7 @@
    "name": "RIMFullRankFailureProbResidual",
    "fq_name": "AGL24.RIMFullRankFailureProbResidual",
    "file": "ArkLib/Data/CodingTheory/AGL24UnionBound.lean",
-   "line": 88,
+   "line": 100,
    "providers": [
     {
      "name": "AGL24.rimFailureProb_of_rootedOutCut_and_dualZeroPattern",
@@ -487,7 +498,7 @@
      "name": "CodingTheory.randomLinearLambdaLowerFirstMomentResidual_of_exists_event",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean",
-     "line": 246,
+     "line": 230,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hG"
@@ -501,7 +512,7 @@
      "name": "CodingTheory.randomLinearLambdaLowerFirstMomentResidual_of_combinatorialWitness",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean",
-     "line": 477,
+     "line": 461,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "h"
@@ -1340,13 +1351,13 @@
    "name": "appendRbrSoundnessPhase2Residual",
    "fq_name": "Verifier.appendRbrSoundnessPhase2Residual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKeystone.lean",
-   "line": 295,
+   "line": 296,
    "providers": [
     {
      "name": "Verifier.appendRbrSoundnessPhase2_doomed_subsingleton",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrSoundnessPhase2Proof.lean",
-     "line": 476,
+     "line": 477,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -1367,7 +1378,7 @@
    "name": "appendRbrKnowledgeSoundnessPerRoundResidual",
    "fq_name": "Verifier.appendRbrKnowledgeSoundnessPerRoundResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeSoundness.lean",
-   "line": 59,
+   "line": 60,
    "providers": [
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessPerRoundResidual_msg_subsingleton",
@@ -1394,7 +1405,7 @@
      "name": "Verifier.appendRbrKnowledgeSoundnessPerRound",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeSoundness.lean",
-     "line": 394,
+     "line": 395,
      "conditional_on_residuals": [
       "appendRbrKnowledgeSoundnessPhase2Residual"
      ],
@@ -1416,13 +1427,13 @@
    "name": "appendRbrKnowledgeSoundnessPhase2Residual",
    "fq_name": "Verifier.appendRbrKnowledgeSoundnessPhase2Residual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeSoundness.lean",
-   "line": 339,
+   "line": 340,
    "providers": [
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessPhase2_subsingleton_challenge",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeChallenge.lean",
-     "line": 370,
+     "line": 371,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hBound₂",
@@ -1442,7 +1453,7 @@
      "name": "Verifier.appendRbrKnowledgeSoundnessPhase2_subsingleton",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeSoundness.lean",
-     "line": 633,
+     "line": 634,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hBound₂",
@@ -2073,7 +2084,7 @@
      "name": "Logup.issue13_sumcheckSoundnessResidual_projClosed",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/LogupProtocol2Status.lean",
-     "line": 215,
+     "line": 216,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hError",
@@ -2091,7 +2102,7 @@
      "name": "Logup.sumcheckSoundnessResidual_holds_of_rbr",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/RbrToSoundBridge.lean",
-     "line": 263,
+     "line": 264,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hError",
@@ -2108,7 +2119,7 @@
      "name": "Logup.sumcheckSoundnessResidual_proved",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/SumcheckSoundness.lean",
-     "line": 44,
+     "line": 45,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hError",
@@ -2125,7 +2136,7 @@
      "name": "Logup.sumcheckSoundnessResidual_holds",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessLift.lean",
-     "line": 194,
+     "line": 195,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInnerRbr",
@@ -2141,7 +2152,7 @@
      "name": "Logup.sumcheckSoundnessResidual_holds_projClosed",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessProjClosed.lean",
-     "line": 115,
+     "line": 116,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hError",
@@ -2159,7 +2170,7 @@
      "name": "Logup.sumcheckSoundnessResidual_holds_wired",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessWired.lean",
-     "line": 93,
+     "line": 94,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hError",
@@ -2479,13 +2490,13 @@
    "name": "stirCheckingRbrSoundnessResidual",
    "fq_name": "StirIOP.MultiRound.stirCheckingRbrSoundnessResidual",
    "file": "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
-   "line": 977,
+   "line": 978,
    "providers": [
     {
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_CA",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
-     "line": 1006,
+     "line": 1007,
      "conditional_on_residuals": [
       "StrictCoeffPolysResidual"
      ],
@@ -2503,7 +2514,7 @@
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_card_le",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
-     "line": 1081,
+     "line": 1082,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hBridge",
@@ -2519,7 +2530,7 @@
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_card_le_e7",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
-     "line": 1095,
+     "line": 1096,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hBridge",
@@ -2534,7 +2545,7 @@
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_large",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
-     "line": 1108,
+     "line": 1109,
      "conditional_on_residuals": [
       "StrictCoeffPolysLargeResidual"
      ],
@@ -2551,7 +2562,7 @@
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_one_le_first",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
-     "line": 1131,
+     "line": 1132,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "h1"
@@ -2565,7 +2576,7 @@
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_small_field",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
-     "line": 1211,
+     "line": 1212,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hq",
@@ -2581,7 +2592,7 @@
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_mono",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/RbrBudgetMono.lean",
-     "line": 47,
+     "line": 48,
      "conditional_on_residuals": [
       "stirCheckingRbrSoundnessResidual"
      ],
@@ -2598,7 +2609,7 @@
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_epsStar_le",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/RbrBudgetMono.lean",
-     "line": 92,
+     "line": 93,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hle"
@@ -2612,7 +2623,7 @@
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_genuine",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/SubUnitRbr.lean",
-     "line": 862,
+     "line": 863,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -2627,13 +2638,13 @@
    "name": "stirMultiRoundRbrSoundnessResidual",
    "fq_name": "StirIOP.MultiRound.stirMultiRoundRbrSoundnessResidual",
    "file": "ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean",
-   "line": 164,
+   "line": 165,
    "providers": [
     {
      "name": "StirIOP.MultiRound.stirMultiRoundRbrSoundness_mono",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/RbrBudgetMono.lean",
-     "line": 57,
+     "line": 58,
      "conditional_on_residuals": [
       "stirMultiRoundRbrSoundnessResidual"
      ],
@@ -2650,7 +2661,7 @@
      "name": "StirIOP.MultiRound.stirMultiRoundRbrSoundness_of_indicator_le",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/RbrBudgetMono.lean",
-     "line": 104,
+     "line": 105,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hle"
@@ -2664,7 +2675,7 @@
      "name": "StirIOP.MultiRound.stirMultiRoundRbrSoundness_indicator",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/ShellRbrIndicator.lean",
-     "line": 57,
+     "line": 58,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -2813,13 +2824,13 @@
    "name": "secondSumcheckTerminalEndpointResidual",
    "fq_name": "Spartan.Spec.Bricks.secondSumcheckTerminalEndpointResidual",
    "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-   "line": 479,
+   "line": 476,
    "providers": [
     {
      "name": "Spartan.Spec.Bricks.secondSumcheckTerminalEndpointResidual_holds",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-     "line": 487,
+     "line": 483,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -2831,7 +2842,7 @@
      "name": "Spartan.Spec.Bricks.secondSumcheckTerminalEndpointResidual_of_finalCheckWithClaimValueRelResidual",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-     "line": 709,
+     "line": 705,
      "conditional_on_residuals": [
       "finalCheckWithClaimValueRelResidual"
      ],
@@ -2850,13 +2861,13 @@
    "name": "finalCheckWithClaimValueRelResidual",
    "fq_name": "Spartan.Spec.Bricks.finalCheckWithClaimValueRelResidual",
    "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-   "line": 683,
+   "line": 679,
    "providers": [
     {
      "name": "Spartan.Spec.Bricks.finalCheckWithClaimValueRelResidual_holds",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-     "line": 691,
+     "line": 687,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -2868,7 +2879,7 @@
      "name": "Spartan.Spec.Bricks.finalCheckWithClaimValueRelResidual_of_secondSumcheckTerminalEndpointResidual",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-     "line": 699,
+     "line": 695,
      "conditional_on_residuals": [
       "secondSumcheckTerminalEndpointResidual"
      ],
@@ -2884,7 +2895,7 @@
      "name": "Spartan.Spec.Bricks.finalCheckWithClaimValueRelResidual_iff_secondSumcheckTerminalEndpointResidual",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-     "line": 721,
+     "line": 717,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -2899,13 +2910,13 @@
    "name": "secondSumcheckResidual",
    "fq_name": "Spartan.Spec.Bricks.secondSumcheckResidual",
    "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-   "line": 773,
+   "line": 769,
    "providers": [
     {
      "name": "Spartan.Spec.Bricks.secondSumcheckResidual_holds",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-     "line": 779,
+     "line": 775,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -2920,13 +2931,13 @@
    "name": "firstSumcheckResidual",
    "fq_name": "Spartan.Spec.Bricks.firstSumcheckResidual",
    "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-   "line": 785,
+   "line": 781,
    "providers": [
     {
      "name": "Spartan.Spec.Bricks.firstSumcheckResidual_holds",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-     "line": 791,
+     "line": 787,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -2941,13 +2952,13 @@
    "name": "r1csMleEncodingResidual",
    "fq_name": "Spartan.Spec.Bricks.r1csMleEncodingResidual",
    "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-   "line": 845,
+   "line": 841,
    "providers": [
     {
      "name": "Spartan.Spec.Bricks.r1csMleEncodingResidual_holds",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-     "line": 861,
+     "line": 857,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -2962,13 +2973,13 @@
    "name": "composedPIOPResidual",
    "fq_name": "Spartan.Spec.Bricks.composedPIOPResidual",
    "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-   "line": 1045,
+   "line": 969,
    "providers": [
     {
      "name": "Spartan.Spec.Bricks.composedPIOPResidual_holds_proof",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Spartan/Composition.lean",
-     "line": 391,
+     "line": 390,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -2980,7 +2991,7 @@
      "name": "Spartan.Spec.Bricks.composedPIOPResidual_of_reduction",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-     "line": 1061,
+     "line": 985,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -2995,13 +3006,13 @@
    "name": "composedPIOPWithClaimResidual",
    "fq_name": "Spartan.Spec.Bricks.composedPIOPWithClaimResidual",
    "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-   "line": 1074,
+   "line": 998,
    "providers": [
     {
      "name": "Spartan.Spec.Bricks.composedPIOPWithClaimResidual_holds_proof",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Spartan/Composition.lean",
-     "line": 396,
+     "line": 395,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -3013,7 +3024,7 @@
      "name": "Spartan.Spec.Bricks.composedPIOPWithClaimResidual_of_reduction",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-     "line": 1086,
+     "line": 1010,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -3188,7 +3199,7 @@
      "name": "ArkLib.CurveHenselSupply.strictCoeffPolysResidual_of_gsCurveInput",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/CurveHenselSupply.lean",
-     "line": 684,
+     "line": 679,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -3875,7 +3886,7 @@
    "name": "reductionAppendCompletenessResidual",
    "fq_name": "Reduction.reductionAppendCompletenessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 349,
+   "line": 350,
    "providers": [
     {
      "name": "Reduction.reductionAppendCompletenessResidual_holds",
@@ -3898,7 +3909,7 @@
      "name": "Reduction.reductionAppendCompletenessResidual_msg",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischarges.lean",
-     "line": 60,
+     "line": 61,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -3917,7 +3928,7 @@
      "name": "Reduction.reductionAppendCompletenessResidual_total_pos",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischargesSeams.lean",
-     "line": 148,
+     "line": 149,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInit",
@@ -3938,7 +3949,7 @@
    "name": "reductionAppendPerfectCompletenessResidual",
    "fq_name": "Reduction.reductionAppendPerfectCompletenessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 368,
+   "line": 369,
    "providers": [
     {
      "name": "Reduction.reductionAppendPerfectCompletenessResidual_of_message",
@@ -4037,7 +4048,7 @@
    "name": "appendSoundnessResidual",
    "fq_name": "Verifier.appendSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 405,
+   "line": 406,
    "providers": [
     {
      "name": "Verifier.append_soundness_challenge_residual",
@@ -4101,7 +4112,7 @@
    "name": "appendKnowledgeSoundnessResidual",
    "fq_name": "Verifier.appendKnowledgeSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 423,
+   "line": 424,
    "providers": [],
    "status": "open"
   },
@@ -4109,13 +4120,13 @@
    "name": "appendRbrSoundnessResidual",
    "fq_name": "Verifier.appendRbrSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 436,
+   "line": 437,
    "providers": [
     {
      "name": "Verifier.appendRbrSoundnessResidual_of_message_collapse",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeStateCollapse.lean",
-     "line": 119,
+     "line": 120,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4134,7 +4145,7 @@
      "name": "Verifier.appendRbrSoundnessResidual_msg_subsingleton",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrSoundnessPhase2Proof.lean",
-     "line": 632,
+     "line": 633,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4157,13 +4168,13 @@
    "name": "appendRbrKnowledgeSoundnessResidual",
    "fq_name": "Verifier.appendRbrKnowledgeSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 463,
+   "line": 464,
    "providers": [
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_of_message_collapse",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeStateCollapse.lean",
-     "line": 71,
+     "line": 72,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4183,7 +4194,7 @@
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_msg_subsingleton",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischarges.lean",
-     "line": 99,
+     "line": 100,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4204,7 +4215,7 @@
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_challenge_subsingleton",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischargesSeams.lean",
-     "line": 57,
+     "line": 58,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4225,7 +4236,7 @@
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_failingDet_subsingleton",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischargesSeams.lean",
-     "line": 86,
+     "line": 87,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4244,7 +4255,7 @@
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_failingDet_empty",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischargesSeams.lean",
-     "line": 111,
+     "line": 112,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInit",
@@ -4262,7 +4273,7 @@
    "name": "appendCompletenessResidual",
    "fq_name": "OracleReduction.appendCompletenessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 499,
+   "line": 500,
    "providers": [
     {
      "name": "OracleReduction.appendCompletenessResidual_holds",
@@ -4307,7 +4318,7 @@
    "name": "appendPerfectCompletenessResidual",
    "fq_name": "OracleReduction.appendPerfectCompletenessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 520,
+   "line": 521,
    "providers": [
     {
      "name": "OracleReduction.appendPerfectCompletenessResidual_holds",
@@ -4330,7 +4341,7 @@
      "name": "OracleReduction.appendPerfectCompletenessResidual_msg",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischarges.lean",
-     "line": 144,
+     "line": 145,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4351,7 +4362,7 @@
    "name": "appendSoundnessResidual",
    "fq_name": "OracleVerifier.appendSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 546,
+   "line": 547,
    "providers": [
     {
      "name": "OracleVerifier.appendSoundnessResidual_msg",
@@ -4443,7 +4454,7 @@
    "name": "appendKnowledgeSoundnessResidual",
    "fq_name": "OracleVerifier.appendKnowledgeSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 555,
+   "line": 556,
    "providers": [
     {
      "name": "OracleVerifier.appendKnowledgeSoundnessResidual_of_plain",
@@ -4468,13 +4479,13 @@
    "name": "appendRbrSoundnessResidual",
    "fq_name": "OracleVerifier.appendRbrSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 564,
+   "line": 565,
    "providers": [
     {
      "name": "OracleVerifier.appendRbrSoundnessResidual_msg_subsingleton",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrSoundnessOracleLift.lean",
-     "line": 91,
+     "line": 92,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4497,13 +4508,13 @@
    "name": "appendRbrKnowledgeSoundnessResidual",
    "fq_name": "OracleVerifier.appendRbrKnowledgeSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 574,
+   "line": 575,
    "providers": [
     {
      "name": "OracleVerifier.appendRbrKnowledgeSoundnessResidual_msg_subsingleton",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeOracleLift.lean",
-     "line": 94,
+     "line": 95,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4527,7 +4538,7 @@
    "name": "appendRunRightResidual",
    "fq_name": "Prover.appendRunRightResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 2908,
+   "line": 2909,
    "providers": [
     {
      "name": "Prover.appendRunRightResidual_holds_empty",
@@ -4545,7 +4556,7 @@
      "name": "Prover.appendRunRightResidual_of_append_run",
      "kind": "theorem",
      "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-     "line": 2931,
+     "line": 2932,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hRun"
@@ -4559,7 +4570,7 @@
      "name": "Prover.appendRunRightResidual_holds_msg",
      "kind": "theorem",
      "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-     "line": 2966,
+     "line": 2967,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4575,7 +4586,7 @@
      "name": "Prover.appendRunRightResidual_iff_append_run",
      "kind": "theorem",
      "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-     "line": 2991,
+     "line": 2992,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -5137,7 +5148,7 @@
    "fq_name": "RingSwitching.BatchingPhase.batchingReduction_perfectCompleteness_residual",
    "kind": "def",
    "file": "ArkLib/ProofSystem/RingSwitching/BatchingPhase.lean",
-   "line": 511,
+   "line": 512,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5145,7 +5156,7 @@
    "fq_name": "RingSwitching.SumcheckPhase.iteratedSumcheckOracleReduction_perfectCompleteness_residual",
    "kind": "def",
    "file": "ArkLib/ProofSystem/RingSwitching/SumcheckPhase.lean",
-   "line": 220,
+   "line": 221,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5193,7 +5204,7 @@
    "fq_name": "StirIOP.MultiRound.stirCheckingRbrSoundnessResidualT",
    "kind": "def",
    "file": "ArkLib/ProofSystem/Stir/MultiRoundSpecT.lean",
-   "line": 358,
+   "line": 359,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5337,7 +5348,7 @@
    "fq_name": "Spartan.Spec.r1csResidualAt",
    "kind": "def",
    "file": "ProximityPrize/Extensions/ProofSystem/Spartan/Basic.lean",
-   "line": 522,
+   "line": 503,
    "reason": "name does not end in `Residual`"
   }
  ]

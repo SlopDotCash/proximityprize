@@ -178,6 +178,7 @@ globs = [
   "ArkLib.Data.CodingTheory.AGL24DualZeroPatternPinned",
   "ArkLib.Data.CodingTheory.AGL24EvalToSymbolic",
   "ArkLib.Data.CodingTheory.AGL24ExtensionLift",
+  "ArkLib.Data.CodingTheory.AGL24FailureProbGuard",
   "ArkLib.Data.CodingTheory.AGL24FrankDescent",
   "ArkLib.Data.CodingTheory.AGL24FrankInterface",
   "ArkLib.Data.CodingTheory.AGL24FrankUncrossingStep",

@@ -17960,14 +17960,15 @@ adelic-equilibrium support radius `R_eq = √(log(p/n))` "provided the local mas
 Conditional `M(n) ≤ C√(n log(p/n))`.
 
 **Verdict: REDUCES-TO-WALL (F0).** The House `= max over conjugates = M(n)/√n` is the wall. A `W_p`
-bound (any finite p) on the empirical conjugate measure does NOT bound the House (sup of support)
-from above — the sup is `W_p`-discontinuous. Reduction map (machine-checked, axiom-clean
+bound (any finite p) on the empirical conjugate measure does not bound the House
+uniformly in the atom count — the sup is `W_p`-discontinuous. Reduction map (machine-checked, axiom-clean
 `Frontier/_wfTT09_adelic_equidist_house_nogo.lean`): moving ONE atom (mass 1/φ) from bulk radius
-`R₀` out to `R` raises House by `R−R₀` (`house_jump_eq`) but contributes only `(R−R₀)·φ^{-1/2}` to
-`W₂` (`W2_contribution_vanishes`). Hence `house_unbounded_under_Wp_rate`: for ANY fixed rate ε>0
-and ANY target House H there is a config meeting the rate (`(R−R₀)φ^{-1/2} ≤ ε`) with House ≥ H —
-a `W₂`-rate places NO finite ceiling on the House. The `√log` excess is the rare-event tail F0 says
-2nd-order/bulk statistics cannot see.
+`R₀` out to `R` raises House by `R−R₀` (`house_jump_eq`) but its normalized transport cost is
+`(R−R₀)^p/φ`, whose p-th root is `(R−R₀)·φ^{-1/p}` for every positive p
+(`Wp_contribution_vanishes`). Hence `house_unbounded_under_Wp_rate`: for any positive
+finite p, fixed tolerance ε>0, and target House H, a large enough φ gives an outlier
+of radius at least H within that tolerance. A tolerance ε(φ) that varies with the
+atom count instead caps the displacement by ε(φ)·φ^(1/p) in this model.
 
 **Circularity (F0/F1) + blindness (F3).** `R_eq = House − W₂-err` (`R_eq_assertion_is_circular`), so
 asserting `R_eq = √(log(p/n))` IS the prize conclusion, not an input. The proposed input `h(u_b) =
@@ -43227,14 +43228,15 @@ adelic-equilibrium support radius `R_eq = √(log(p/n))` "provided the local mas
 Conditional `M(n) ≤ C√(n log(p/n))`.
 
 **Verdict: REDUCES-TO-WALL (F0).** The House `= max over conjugates = M(n)/√n` is the wall. A `W_p`
-bound (any finite p) on the empirical conjugate measure does NOT bound the House (sup of support)
-from above — the sup is `W_p`-discontinuous. Reduction map (machine-checked, axiom-clean
+bound (any finite p) on the empirical conjugate measure does not bound the House
+uniformly in the atom count — the sup is `W_p`-discontinuous. Reduction map (machine-checked, axiom-clean
 `Frontier/_wfTT09_adelic_equidist_house_nogo.lean`): moving ONE atom (mass 1/φ) from bulk radius
-`R₀` out to `R` raises House by `R−R₀` (`house_jump_eq`) but contributes only `(R−R₀)·φ^{-1/2}` to
-`W₂` (`W2_contribution_vanishes`). Hence `house_unbounded_under_Wp_rate`: for ANY fixed rate ε>0
-and ANY target House H there is a config meeting the rate (`(R−R₀)φ^{-1/2} ≤ ε`) with House ≥ H —
-a `W₂`-rate places NO finite ceiling on the House. The `√log` excess is the rare-event tail F0 says
-2nd-order/bulk statistics cannot see.
+`R₀` out to `R` raises House by `R−R₀` (`house_jump_eq`) but its normalized transport cost is
+`(R−R₀)^p/φ`, whose p-th root is `(R−R₀)·φ^{-1/p}` for every positive p
+(`Wp_contribution_vanishes`). Hence `house_unbounded_under_Wp_rate`: for any positive
+finite p, fixed tolerance ε>0, and target House H, a large enough φ gives an outlier
+of radius at least H within that tolerance. A tolerance ε(φ) that varies with the
+atom count instead caps the displacement by ε(φ)·φ^(1/p) in this model.
 
 **Circularity (F0/F1) + blindness (F3).** `R_eq = House − W₂-err` (`R_eq_assertion_is_circular`), so
 asserting `R_eq = √(log(p/n))` IS the prize conclusion, not an input. The proposed input `h(u_b) =
@@ -54540,6 +54542,78 @@ scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountResi
 Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
 `Classical.choice` and `Quot.sound`.
 
+### [164-isolated-count-positive-characteristic] Positive characteristic does not repair the unrestricted isolated count residual
+
+Date: 2026-10-30. Target:
+`ProximityGap.Frontier.AntipodalEvenOddDescent.IsolatedCountResidual`, declared in
+`Frontier/_AntipodalEvenOddDescent.lean`. This extends the rational witness in
+`Frontier/_IsolatedCountResidualRefuted.lean` to positive characteristic and general
+fields; it does not claim production Delta Star closure.
+
+`Frontier/_IsolatedCountPositiveCharacteristic.lean` verifies that for the interpolant
+`E(u) = -u²/6 + 7u/6` and `O = 1` at `k = 1`, the three elements `0, 1, 2` are isolated
+roots of `E(X²) - X·O(X²)` whenever `2` and `3` are nonzero in `F`. The set `{0, 1, 2}`
+has cardinality 3, contradicting the claimed cap `k + 1 = 2`.
+
+The theorem `not_isolatedCountResidual_of_char_gt_three` specializes this to every field
+of prime characteristic `p > 3` (which includes both sponsor fields), while
+`not_isolatedCountResidual_of_char_zero` covers characteristic zero. Therefore merely
+restricting the unrestricted residual to positive characteristic cannot repair it.
+The intended halved-subgroup domain restriction and degree/head bounds on `E` remain
+outside this statement and are not refuted.
+
+Reproduction:
+
+```
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IsolatedCountPositiveCharacteristic.lean
+scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountPositiveCharacteristic
+```
+
+Evidence class: Lean proof certificate; all declarations use only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+---
+
+### [agl24-rim-failure-prob-boundary-instances] Two boundary instances outside the Lemma 3.1 assembly
+
+Date: 2026-11-01. Target: the [AGL24] §3 "Lemma 3.1 interface"
+`AGL24.RIMFullRankFailureProbResidual` in `ArkLib/Data/CodingTheory/AGL24UnionBound.lean`.
+This is a route-map note prompted by the review of PR #334; it is neither a closure nor a
+refutation claim, and the recorded census status of the residual remains
+open-with-conditional-providers.
+
+`ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean` kernel-checks two boundary
+instances of the interface predicate:
+
+- at the empty one-slot family the reduced intersection matrix has no rows, the deficit
+  set is everything, and its outer measure under the uniform tuple distribution is
+  `1` (`rimRankDeficitSet_empty_family`, `toOuterMeasure_deficit_empty_family_eq_one`);
+- at the complete two-slot family, which is genuinely 2-weakly-partition-connected
+  (`wpc_two_complete_family`), the all-zero evaluation is a deficit point with kernel
+  witness `(0, 1)` (`zero_eval_mem_rimRankDeficitSet_complete_family`), so a point-mass
+  distribution on it gives the deficit set measure `1`
+  (`toOuterMeasure_deficit_complete_family_pure_eq_one`).
+
+Each example violates the predicate when the proposed upper bound is below `1`.
+The empty family violates the WPC hypothesis. The complete two-slot family meets WPC,
+but the all-zero tuple has mass zero under every evaluation-embedding-mapped PMF,
+since embeddings `Fin 2 ↪ ZMod 2` take two distinct values. Neither example falls
+under the `hres` hypothesis of `conditional_failure_bound`. Consequently such boundary facts delimit the predicate without refuting the
+interface, and exact counterexample-style submissions at non-WPC families or
+non-injective masses are a dead end recorded here for anti-repeat. The real referencing
+gap — the bridge from the uniform-over-tuples bound to the embedding-mapped evaluation
+PMF that `conditional_failure_bound` consumes — is PR #338.
+
+Reproduction at the final PR commit:
+
+```
+scripts/pg-iterate.sh ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean
+scripts/lake-locked.sh build ArkLib.Data.CodingTheory.AGL24FailureProbGuard
+```
+
+Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
+`Classical.choice` and `Quot.sound`. Full repository and hosted gates must be reported
+separately.
 ---
 
 ### [164-isolated-noncoset-sharp-bound] The degree-only cap is exactly `2k - 1`
@@ -54582,3 +54656,28 @@ The four public declarations print their complete axiom dependencies; only
 `propext`, `Classical.choice` and `Quot.sound` are permitted. No new axiom or
 named residual is introduced. This is a degree-only classification, not a
 production counterexample or a closure of #164.
+
+### [164-unrestricted-fiber-count-residual-refuted] Scalar quantification loses the instance
+
+Date: 2026-10-13. Target: `ProximityGap.Frontier.FrobeniusEnergyDescent.FiberCountResidual`
+in `Frontier/_FrobeniusEnergyDescent.lean`, a named input to the historical tower-descent route.
+
+The declared proposition quantifies over arbitrary real `Ep`, `EC`, `W`, and `Wick` and asserts
+`Ep = EC + W` and `EC ≤ Wick` imply `W ≤ Wick - EC`. The positive values
+`Ep = 2`, `EC = W = Wick = 1` satisfy both premises and violate the conclusion.
+`not_fiberCountResidual` refutes this exact formulation; adding nonnegativity alone cannot fix it.
+
+The pointwise successor `FiberCountResidualAt EC W Wick` records the fiber allowance for specified
+values. `open_core_iff_fiberCountResidualAt` proves it is equivalent to `Ep ≤ Wick` under the
+exact split, and `open_core_of_fiberCountResidualAt` consumes only that instance bound. The old
+definition and consumer remain available for compatibility, explicitly identified as having a
+false universal antecedent.
+
+Scope: this is a statement-level refutation and an algebraic interface repair, not a new bound
+for actual subgroup collisions. The scalar raw-energy target must not be confused with the
+DC-subtracted production target. `_R317DeepShadowCollisionHeadroom.lean` gives the existing exact
+production headroom with the additional `n^(2r)` term. No arithmetic fiber estimate, production
+counterexample, or closure of #164 is claimed.
+
+Reproduce with `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_FrobeniusEnergyDescent.lean`.
+The three added theorems print their axioms for inspection.
