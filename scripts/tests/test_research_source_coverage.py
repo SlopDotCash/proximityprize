@@ -88,8 +88,10 @@ class ResearchCoverage(unittest.TestCase):
         self.assertEqual(boundary.research_imports(
             'import «Research».A\nimport «Research».«B»\n'
             'import ArkLib.Basic «Research»\nimport «Research.C»\n'
-            'import «ResearchD».E\n'),
-            [(1, '«Research».A'), (2, '«Research».«B»'), (3, '«Research»')])
+            'import «ResearchD».E\nimport all «Research».C\n'
+            'meta import «Research».D\nimport Foo.«Research».Bar\n'),
+            [(1, '«Research».A'), (2, '«Research».«B»'), (3, '«Research»'),
+             (6, '«Research».C'), (7, '«Research».D')])
 
     def test_boundary_ignores_nested_comments(self):
         self.assertEqual(boundary.research_imports(
