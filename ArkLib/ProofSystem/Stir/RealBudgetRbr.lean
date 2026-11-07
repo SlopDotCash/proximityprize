@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.FullPredKSF
 import ArkLib.ProofSystem.Stir.CheckedFinalBlock
 import ArkLib.ProofSystem.Whir.SubUnitRbr
@@ -538,7 +539,7 @@ concentrated on the repetition challenge `C_fin` with value
 `(1−δ)·|ι|·⌈|F|/|ι|⌉/|F|` (= `1−δ` exactly when `|ι| ∣ |F|`). -/
 theorem stirFinalVectorVerifierChecked_toVerifier_rbrKnowledgeSoundness {σ : Type}
     (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) (δ : ℝ≥0) :
-    (stirFinalVectorVerifierChecked (ι := ι) (F := F)).toVerifier.rbrKnowledgeSoundness
+    (stirFinalVectorVerifierChecked (ι := ι) (F := F)).toVerifier.rbrKnowledgeSoundnessAveraged
       init impl (stirSpotRelIn ι F δ)
       (Set.univ : Set ((((F × F) × ∀ i, VOStmt ι F i)) × Unit))
       (fun i => if i = ⟨1, stirFinalVSpec_dir_one⟩ then stirSpotBudget ι F δ else 0) := by
@@ -679,7 +680,7 @@ open scoped Classical in
 `stirFinalVectorVerifierChecked` at the real spot-check budget. -/
 theorem stirFinalVectorVerifierChecked_rbrKnowledgeSoundness {σ : Type}
     (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) (δ : ℝ≥0) :
-    OracleVerifier.rbrKnowledgeSoundness init impl (stirSpotRelIn ι F δ)
+    OracleVerifier.rbrKnowledgeSoundnessAveraged init impl (stirSpotRelIn ι F δ)
       (Set.univ : Set ((((F × F) × ∀ i, VOStmt ι F i)) × Unit))
       (stirFinalVectorVerifierChecked (ι := ι) (F := F))
       (fun i => if i = ⟨1, stirFinalVSpec_dir_one⟩ then stirSpotBudget ι F δ else 0) :=
@@ -692,7 +693,7 @@ RBR knowledge sound at budget exactly `1 − δ` on the repetition challenge. -/
 theorem stirFinalVectorVerifierChecked_rbrKnowledgeSoundness_of_dvd {σ : Type}
     (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) (δ : ℝ≥0)
     (hdvd : Fintype.card ι ∣ Fintype.card F) :
-    OracleVerifier.rbrKnowledgeSoundness init impl (stirSpotRelIn ι F δ)
+    OracleVerifier.rbrKnowledgeSoundnessAveraged init impl (stirSpotRelIn ι F δ)
       (Set.univ : Set ((((F × F) × ∀ i, VOStmt ι F i)) × Unit))
       (stirFinalVectorVerifierChecked (ι := ι) (F := F))
       (fun i => if i = ⟨1, stirFinalVSpec_dir_one⟩ then 1 - δ else 0) := by

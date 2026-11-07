@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Spartan.TightConjoinedSecondLeaf
 import ArkLib.ProofSystem.Spartan.SecondSumcheckRelIn
 
@@ -86,7 +87,7 @@ variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ Pro
 /-- **Leaf `h₆`, restated at the `h₇` seam**: the carried honest RLC-target adapter is perfectly
 rbr knowledge-sound from `tightRelF` to the conjoined carried second sum-check input relation. -/
 theorem prependRLCTargetWithTarget_rbrKnowledgeSoundness_leaf' :
-    (prependRLCTargetWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (prependRLCTargetWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (tightRelF (R := R) pp)
       (secondSumcheckWithTargetRbrRelIn (R := R) pp oSpec
         ∩ {x | x.1 ∈ bindingAtSecondIn (R := R) pp}) 0 := by

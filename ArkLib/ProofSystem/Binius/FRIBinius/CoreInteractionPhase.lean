@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.CoreInteractionPhase
 import ArkLib.ProofSystem.Binius.BinaryBasefold.ExtractMLPCorrectness
 import ArkLib.ProofSystem.Binius.BinaryBasefold.FinalRelation
@@ -1100,19 +1101,19 @@ noncomputable def finalSumcheckKnowledgeStateFunction_native {σ : Type} (init :
 theorem finalSumcheckOracleVerifier_rbrKnowledgeSoundness_native {σ : Type}
     (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
     (finalSumcheckVerifier κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
-      (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl
+      (𝓑 := 𝓑)).rbrKnowledgeSoundnessAveraged init impl
       (relIn := roundRelation K β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
         (𝓑 := 𝓑) (multpoly := (RingSwitching_SumcheckMultParam κ L K
           (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) (Fin.last ℓ'))
       (relOut := BinaryBasefold.finalSumcheckRelOut K β (ϑ:=ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
       (rbrKnowledgeError := finalSumcheckKnowledgeError L) := by
   classical
-  have hWith := Verifier.rbrKnowledgeSoundnessWorstCaseWith_of_isEmpty_challengeIdx
+  have hWith := Verifier.rbrKnowledgeSoundnessWith_of_isEmpty_challengeIdx
     (rbrKnowledgeError := finalSumcheckKnowledgeError L)
     (finalSumcheckRbrExtractor_native κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate)
     (finalSumcheckKnowledgeStateFunction_native κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑) init impl)
-  exact Verifier.rbrKnowledgeSoundnessWorstCase_implies_rbrKnowledgeSoundness init impl
-    ((Verifier.rbrKnowledgeSoundnessWorstCase_iff_exists_with init impl _ _ _ _).mpr
+  exact Verifier.rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged init impl
+    ((Verifier.rbrKnowledgeSoundness_iff_exists_with init impl _ _ _ _).mpr
       ⟨_, _, _, hWith⟩)
 
 end FinalSumcheckStep
@@ -1205,7 +1206,7 @@ theorem coreInteractionOracleVerifier_rbrKnowledgeSoundness
     (hAppendRbrKnowledgeSoundness :
       (coreInteractionOracleVerifier κ (L := L) (K := K) (β := β) (ℓ := ℓ) (ℓ' := ℓ')
         (h_l := h_l) (𝓡 := 𝓡) (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-          (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl
+          (𝓑 := 𝓑)).rbrKnowledgeSoundnessAveraged init impl
         (OStmtIn := BinaryBasefold.OracleStatement K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ 0)
         (OStmtOut := BinaryBasefold.OracleStatement K β
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (Fin.last ℓ'))
@@ -1220,7 +1221,7 @@ theorem coreInteractionOracleVerifier_rbrKnowledgeSoundness
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate))) :
     (coreInteractionOracleVerifier κ (L := L) (K := K) (β := β) (ℓ := ℓ) (ℓ' := ℓ')
       (h_l := h_l) (𝓡 := 𝓡) (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl
+        (𝓑 := 𝓑)).rbrKnowledgeSoundnessAveraged init impl
       (OStmtIn := BinaryBasefold.OracleStatement K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ 0)
       (OStmtOut := BinaryBasefold.OracleStatement K β
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (Fin.last ℓ'))

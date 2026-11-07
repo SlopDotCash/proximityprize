@@ -3,6 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.Execution
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
 
 /-!
@@ -225,7 +227,7 @@ theorem rbrSoundness_of_knowledgeFlip
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn'
               let challenge ← liftComp (pSpec.getChallenge i) (oSpec + [pSpec.Challenge]ₒ)
               return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ rbrError i) :
-    verifier.rbrSoundness init impl relIn.language relOut.language rbrError := by
+    verifier.rbrSoundnessAveraged init impl relIn.language relOut.language rbrError := by
   refine ⟨KnowledgeStateFunction.toStateFunction init impl kSF, ?_⟩
   intro stmtIn _ WitIn' WitOut' witIn' prover i
   exact le_trans
@@ -264,7 +266,7 @@ theorem oracleVerifier_rbrSoundness_of_knowledgeFlip
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn'
               let challenge ← liftComp (pSpec.getChallenge i) (oSpec + [pSpec.Challenge]ₒ)
               return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ rbrError i) :
-    V.rbrSoundness init impl relIn.language relOut.language rbrError :=
+    V.rbrSoundnessAveraged init impl relIn.language relOut.language rbrError :=
   rbrSoundness_of_knowledgeFlip kSF rbrError hKnowFlip
 
 end Verifier.RoundByRound

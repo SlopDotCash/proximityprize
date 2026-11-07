@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao, Chung Thai Nguyen
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.OracleReduction.Cast
 import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
 
@@ -369,9 +370,9 @@ theorem castInOut_rbrKnowledgeSoundness
     -- 5. Relation HEqs (Must be HEq because OStmt types change)
     (h_relIn : HEq relIn₁ relIn₂)
     (h_relOut : HEq relOut₁ relOut₂)
-    (hRbrKs : V.rbrKnowledgeSoundness init impl relIn₁ relOut₁ ε) :
+    (hRbrKs : V.rbrKnowledgeSoundnessAveraged init impl relIn₁ relOut₁ ε) :
     -- 6. Result using destination instance Oₛᵢ₂
-    OracleVerifier.rbrKnowledgeSoundness (ι := ι) (oSpec := oSpec) (StmtIn := StmtIn₂)
+    OracleVerifier.rbrKnowledgeSoundnessAveraged (ι := ι) (oSpec := oSpec) (StmtIn := StmtIn₂)
       (ιₛᵢ := ιₛᵢ₂) (OStmtIn := OStmtIn₂) (StmtOut := StmtOut₂) (ιₛₒ := ιₛₒ₂)
       (OStmtOut := OStmtOut₂) (n := n) (pSpec := pSpec) (WitIn := WitIn₂) (WitOut := WitOut₂)
       (Oₛᵢ := Oₛᵢ₂) (init := init) (impl := impl) (relIn := relIn₂) (relOut := relOut₂)
@@ -427,8 +428,8 @@ theorem castOutSimple_rbrKnowledgeSoundness
     (h_Oₛₒ : HEq Oₛₒ₁ Oₛₒ₂)
     (ε : pSpec.ChallengeIdx → ℝ≥0)
     (h_rel : relOut₁ = cast (by subst_vars; rfl) relOut₂)
-    (hRbrKs : V.rbrKnowledgeSoundness init impl relIn relOut₁ ε) :
-    (V.castOutSimple h_stmt h_ostmt h_Oₛₒ).rbrKnowledgeSoundness init impl relIn relOut₂ ε := by
+    (hRbrKs : V.rbrKnowledgeSoundnessAveraged init impl relIn relOut₁ ε) :
+    (V.castOutSimple h_stmt h_ostmt h_Oₛₒ).rbrKnowledgeSoundnessAveraged init impl relIn relOut₂ ε := by
   subst_vars
   exact hRbrKs
 

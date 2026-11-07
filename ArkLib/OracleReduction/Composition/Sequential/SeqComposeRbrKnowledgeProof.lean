@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
 import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
@@ -245,9 +246,9 @@ theorem seqCompose_rbrKnowledgeSoundness_failingDet
     (hValid : ∀ i, ∃ h : 0 < n i, (pSpec i).dir ⟨0, h⟩ = .P_to_V)
     (hNEW : ∀ i, Nonempty (Wit i))
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
-    (h : ∀ i, (V i).rbrKnowledgeSoundness init impl (rel i.castSucc) (rel i.succ)
+    (h : ∀ i, (V i).rbrKnowledgeSoundnessAveraged init impl (rel i.castSucc) (rel i.succ)
       (rbrKnowledgeError i)) :
-    (Verifier.seqCompose Stmt V).rbrKnowledgeSoundness init impl (rel 0) (rel (Fin.last m))
+    (Verifier.seqCompose Stmt V).rbrKnowledgeSoundnessAveraged init impl (rel 0) (rel (Fin.last m))
       (fun combinedIdx =>
         letI ij := seqComposeChallengeIdxToSigma combinedIdx
         rbrKnowledgeError ij.1 ij.2) := by
@@ -263,7 +264,7 @@ theorem seqCompose_rbrKnowledgeSoundness_failingDet
     rw [hzero]
     have hrel : rel (Fin.last 0) = rel 0 := by congr 1
     rw [hrel]
-    exact Verifier.id_rbrKnowledgeSoundness init impl
+    exact Verifier.id_rbrKnowledgeSoundnessAveraged init impl
   | succ m ih =>
     -- unfold the seqCompose into a binary append of the head with the tail's seqCompose,
     -- and expose the head's failing-deterministic shape
@@ -360,14 +361,14 @@ theorem seqCompose_rbrKnowledgeSoundness_failingDet
     (hValid : ∀ i, ∃ h : 0 < n i, (pSpec i).dir ⟨0, h⟩ = .P_to_V)
     (hNEW : ∀ i, Nonempty (Wit i))
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
-    (h : ∀ i, (V i).rbrKnowledgeSoundness init impl (rel i.castSucc) (rel i.succ)
+    (h : ∀ i, (V i).rbrKnowledgeSoundnessAveraged init impl (rel i.castSucc) (rel i.succ)
       (rbrKnowledgeError i)) :
-    (OracleVerifier.seqCompose Stmt OStmt V).rbrKnowledgeSoundness
+    (OracleVerifier.seqCompose Stmt OStmt V).rbrKnowledgeSoundnessAveraged
       init impl (rel 0) (rel (Fin.last m))
       (fun combinedIdx =>
         letI ij := seqComposeChallengeIdxToSigma combinedIdx
         rbrKnowledgeError ij.1 ij.2) := by
-  show (OracleVerifier.seqCompose Stmt OStmt V).toVerifier.rbrKnowledgeSoundness
+  show (OracleVerifier.seqCompose Stmt OStmt V).toVerifier.rbrKnowledgeSoundnessAveraged
     init impl (rel 0) (rel (Fin.last m)) _
   rw [seqCompose_toVerifier_of_binary_for_rbrKnowledge
     (binaryVerifierFusionForRbrKnowledge_holds oSpec) Stmt OStmt Oₛ Oₘ V]

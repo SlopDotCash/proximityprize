@@ -50,6 +50,16 @@ ArkLib, then extensions, then Research. A canonical module must not import downs
 Run the surface generators after staging added or removed Lean files; do not edit generated
 umbrellas or library-glob blocks by hand.
 
+At this pin, `rbrSoundness` and `rbrKnowledgeSoundness` use the fixed-prefix games. Downstream
+proofs of the distinct prover-averaged games use the explicit `Averaged` contracts and their
+compatibility modules. The [security migration](../../scripts/integration/nov07-rbr-migration.json)
+records the original contracts and caller changes. The canonical fixed-prefix results can feed
+the historical averaged results through the proved implications in that layer.
+
+The full oracle sum-check completeness theorem now belongs to `Sumcheck.Spec.General`.
+Existing downstream calls with initialization and support arguments delegate to it. The
+polynomial-pinned result still carries its stronger endpoint relation in the downstream layer.
+
 `python3 scripts/integration/check_consolidation.py` verifies the inventory against the pinned
 Git tree, checks every canonical source blob, rejects imports from canonical modules into
 downstream or test code, and checks the local import graph for missing modules and cycles.

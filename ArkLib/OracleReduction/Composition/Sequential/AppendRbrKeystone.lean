@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.AppendSoundnessProof
 import ArkLib.OracleReduction.Composition.Sequential.AppendSoundnessSeamTransfer
 import ArkLib.OracleReduction.Composition.Sequential.SeamDecompositionRun
@@ -349,7 +350,7 @@ theorem append_rbrSoundness_keystone
     (hInit : ∃ s, s ∈ support init) (hNE : Nonempty Stmt₂)
     (hPhase2 : appendRbrSoundnessPhase2Residual (init := init) (impl := impl) V₁ V₂ S₁ S₂
       verify hVerify hInit (rbrSoundnessError₂ := rbrSoundnessError₂)) :
-      (V₁.append V₂).rbrSoundness init impl lang₁ lang₃
+      (V₁.append V₂).rbrSoundnessAveraged init impl lang₁ lang₃
         (Sum.elim rbrSoundnessError₁ rbrSoundnessError₂ ∘ ChallengeIdx.sumEquiv.symm) := by
   refine ⟨StateFunction.append init impl V₁ V₂ S₁ S₂ verify hVerify, ?_⟩
   intro stmtIn hStmtIn WitIn WitOut witIn prover i
@@ -499,7 +500,7 @@ theorem append_rbrKnowledgeSoundness_keystone
               let challenge ← liftComp ((pSpec₁ ++ₚ pSpec₂).getChallenge i) _
               return (transcript, challenge, proveQueryLog))).run' (← init)) ≤
           (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) i) :
-      (V₁.append V₂).rbrKnowledgeSoundness init impl rel₁ rel₃
+      (V₁.append V₂).rbrKnowledgeSoundnessAveraged init impl rel₁ rel₃
         (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) :=
   ⟨_, Extractor.RoundByRound.append E₁ E₂ verify, kSF, hBound⟩
 

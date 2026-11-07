@@ -157,20 +157,20 @@ says which implementations are executable, and lists the work in progress and pl
 
 ## Build and check
 
-Prerequisites: [elan](https://github.com/leanprover/elan), which installs the Lean toolchain named
-in [`lean-toolchain`](lean-toolchain), and Python 3 for the validation scripts.
+Use [elan](https://github.com/leanprover/elan) to install the pinned Lean toolchain and
+[uv](https://docs.astral.sh/uv/) to run the Python validation tools.
 
 1. Clone the repository and enter it.
 2. Fetch the precompiled Mathlib cache:
 
    ```bash
-   lake exe cache get
+   ./scripts/lake-locked.sh exe cache get
    ```
 
 3. Build the library:
 
    ```bash
-   lake build
+   ./scripts/lake-locked.sh build
    ```
 
 4. Run the full local validation, which is what CI runs:
@@ -179,8 +179,8 @@ in [`lean-toolchain`](lean-toolchain), and Python 3 for the validation scripts.
    ./scripts/validate.sh
    ```
 
-   It builds the library and the acceptance tests, fails on any warning other than an admitted
-   proof, and runs the source-policy gate and the compiled runtime checks.
+   It builds all four libraries and the acceptance tests, checks the canonical and test
+   warning budgets, and runs the source-policy and compiled runtime checks.
 
 [`docs/wiki/quickstart.md`](docs/wiki/quickstart.md) explains each check and which one to run for
 which change.

@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.FullPredKSF
 
 /-!
@@ -63,7 +64,7 @@ theorem rbrKnowledgeSoundness_of_flipBound_via_salvageBounds
                 prover.runWithLogToRound c.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec.getChallenge c) _
               return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ (ε : ℝ≥0∞)) :
-    verifier.rbrKnowledgeSoundness init impl relIn relOut
+    verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut
       (fun i => if i = c then ε else 0) := by
   classical
   -- the obligations, stated in beta-reduced form (definitional unfolding does the rest)
@@ -132,9 +133,9 @@ theorem rbrKnowledgeSoundness_mono (verifier : Verifier oSpec StmtIn StmtOut pSp
     {WitIn : Type}
     (relIn : Set (StmtIn × WitIn)) (relOut : Set (StmtOut × WitOut))
     {ε ε' : pSpec.ChallengeIdx → ℝ≥0}
-    (h : verifier.rbrKnowledgeSoundness init impl relIn relOut ε)
+    (h : verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut ε)
     (hle : ∀ i, ε i ≤ ε' i) :
-    verifier.rbrKnowledgeSoundness init impl relIn relOut ε' := by
+    verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut ε' := by
   obtain ⟨WitMid, ext, kSF, hbound⟩ := h
   exact ⟨WitMid, ext, kSF, fun stmtIn witIn prover i =>
     le_trans (hbound stmtIn witIn prover i) (by exact_mod_cast hle i)⟩

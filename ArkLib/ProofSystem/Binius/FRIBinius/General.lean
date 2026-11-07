@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.QueryPhase
 import ArkLib.ProofSystem.Binius.FRIBinius.CoreInteractionPhase
 import ArkLib.ProofSystem.RingSwitching.BatchingPhase
@@ -264,7 +265,7 @@ open FRIBinius.CoreInteractionPhase in
 theorem fullOracleVerifier_rbrKnowledgeSoundness
     (hAppendRbrKnowledgeSoundness :
       (fullOracleVerifier κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions
-        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl (Oₛₒ := fun i : Empty => nomatch i)
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)).rbrKnowledgeSoundnessAveraged init impl (Oₛₒ := fun i : Empty => nomatch i)
         (relIn := BatchingPhase.batchingInputRelation κ L K (P := ringSwitchingProfile κ L K β)
           ℓ ℓ' h_l (BinaryBasefoldAbstractOStmtIn (β := β)
             (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)))
@@ -272,7 +273,7 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness
         (rbrKnowledgeError := fullRbrKnowledgeError κ L K β ℓ' 𝓡 ϑ γ_repetitions
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate))) :
   (fullOracleVerifier κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions
-    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl (Oₛₒ := fun i : Empty => nomatch i)
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)).rbrKnowledgeSoundnessAveraged init impl (Oₛₒ := fun i : Empty => nomatch i)
     (relIn := BatchingPhase.batchingInputRelation κ L K (P := ringSwitchingProfile κ L K β)
       ℓ ℓ' h_l (BinaryBasefoldAbstractOStmtIn (β := β)
         (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)))
@@ -608,7 +609,7 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [Subsingleton σ]
       = ⟨fun p tr => OptionT.mk (pure (verify? p tr))⟩)
     (hBatchingCoreRbrKnowledgeSoundness :
       (batchingCoreVerifier κ (L := L) (K := K) (𝓑 := 𝓑) (β := β) (ℓ := ℓ) (ℓ' := ℓ')
-        (h_l := h_l) (𝓡 := 𝓡) (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).rbrKnowledgeSoundness
+        (h_l := h_l) (𝓡 := 𝓡) (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).rbrKnowledgeSoundnessAveraged
         (init := init) (impl := impl)
         (relIn := BatchingPhase.batchingInputRelation κ L K (P := ringSwitchingProfile κ L K β)
           ℓ ℓ' h_l (BinaryBasefoldAbstractOStmtIn (β := β)
@@ -617,7 +618,7 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [Subsingleton σ]
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
         (rbrKnowledgeError := batchingCoreRbrKnowledgeError κ L K β ℓ' 𝓡 ϑ h_ℓ_add_R_rate)) :
     (fullOracleVerifier κ L K β ℓ ℓ' 𝓡 ϑ γ_repetitions
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl (Oₛₒ := fun i : Empty => nomatch i)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)).rbrKnowledgeSoundnessAveraged init impl (Oₛₒ := fun i : Empty => nomatch i)
       (relIn := BatchingPhase.batchingInputRelation κ L K (P := ringSwitchingProfile κ L K β)
         ℓ ℓ' h_l (BinaryBasefoldAbstractOStmtIn (β := β)
           (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)))

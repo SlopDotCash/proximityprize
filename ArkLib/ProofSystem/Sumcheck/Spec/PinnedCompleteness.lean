@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Sumcheck.Spec.OracleCompletenessUncondCorrect
 import ArkLib.ProofSystem.Spartan.SumcheckPhaseRbr
+import ArkLib.OracleReduction.Composition.Sequential.SeqComposeOracleCompleteness
 
 /-! # Oracle-pinned multi-round sum-check perfect completeness (issue #329, task K)
 
@@ -220,8 +221,7 @@ section Composed
 
 variable [Fintype R] [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 
--- As in `OracleCompletenessThreaded.lean`: the `@`-applied keystone elaborates a large dependent
--- `seqCompose` `toReduction` bridge, so we raise the heartbeat limit.
+-- The `@`-applied keystone elaborates the dependent `seqCompose` conversion.
 set_option maxHeartbeats 1000000 in
 set_option linter.unusedFintypeInType false in
 /-- **Composed multi-round sum-check perfect completeness, pinned (issue #329, task K).**
@@ -231,9 +231,8 @@ For every fixed polynomial `P`, the full sum-check oracle reduction is perfectly
 the carried polynomial oracle* in addition to the terminal sum-check claim.  Assembled through
 the relation-generic n-ary keystone `OracleReduction.seqCompose_perfectCompleteness_threaded`
 instantiated at `rel := relationRoundPinned P`, from the per-round pinned completeness
-`SingleRound.oracleReduction_perfectCompleteness_pinned` — exactly the assembly of the plain
-`oracleReduction_perfectCompleteness` (`OracleCompletenessThreaded.lean`) along the enriched
-relation family. -/
+`SingleRound.oracleReduction_perfectCompleteness_pinned`. The enriched relation preserves
+the same polynomial at both endpoints. -/
 theorem oracleReduction_perfectCompleteness_pinned
     (P : R⦃≤ deg⦄[X Fin n])
     [coh : ∀ i, OracleVerifier.LiftContextCoherent (SingleRound.sumcheckOracleLens R n deg D oSpec i)

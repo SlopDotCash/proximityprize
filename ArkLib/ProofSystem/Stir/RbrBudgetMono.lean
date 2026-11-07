@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.SubUnitRbr
 import ArkLib.ProofSystem.Stir.MultiRoundSpecT
 import ArkLib.ProofSystem.Stir.RepWire
@@ -48,8 +49,8 @@ theorem stirCheckingRbrSoundness_mono
     {ε ε' : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0}
     (h : stirCheckingRbrSoundnessResidual M φ deg δ ε) (hle : ∀ i, ε i ≤ ε' i) :
     stirCheckingRbrSoundnessResidual M φ deg δ ε' := by
-  unfold stirCheckingRbrSoundnessResidual OracleProof.rbrKnowledgeSoundness
-    OracleVerifier.rbrKnowledgeSoundness at h ⊢
+  unfold stirCheckingRbrSoundnessResidual OracleProof.rbrKnowledgeSoundnessAveraged
+    OracleVerifier.rbrKnowledgeSoundnessAveraged at h ⊢
   exact ThresholdKSF.rbrKnowledgeSoundness_mono _ _ _ _ _ h hle
 
 /-- **Budget monotonicity for the shell-verifier soundness surface**: the named residual
@@ -68,8 +69,8 @@ theorem stirCheckingRbrSoundnessT_mono (t : ℕ)
     {ε ε' : ((stirMultiVSpecT M ι t).toProtocolSpec F).ChallengeIdx → ℝ≥0}
     (h : stirCheckingRbrSoundnessResidualT M φ deg t δ ε) (hle : ∀ i, ε i ≤ ε' i) :
     stirCheckingRbrSoundnessResidualT M φ deg t δ ε' := by
-  unfold stirCheckingRbrSoundnessResidualT OracleProof.rbrKnowledgeSoundness
-    OracleVerifier.rbrKnowledgeSoundness Verifier.rbrKnowledgeSoundness at h ⊢
+  unfold stirCheckingRbrSoundnessResidualT OracleProof.rbrKnowledgeSoundnessAveraged
+    OracleVerifier.rbrKnowledgeSoundnessAveraged Verifier.rbrKnowledgeSoundnessAveraged at h ⊢
   obtain ⟨WitMid, ext, kSF, hbound⟩ := h
   exact ⟨WitMid, ext, kSF, fun stmtIn witIn prover i =>
     le_trans (hbound stmtIn witIn prover i) (by exact_mod_cast hle i)⟩
@@ -80,8 +81,8 @@ theorem stirCheckingRepRbrSoundnessStatement_mono (t : ℕ)
     {ε ε' : ((stirMultiVSpecRep M ι t).toProtocolSpec F).ChallengeIdx → ℝ≥0}
     (h : stirCheckingRepRbrSoundnessStatement M φ deg δ t ε) (hle : ∀ i, ε i ≤ ε' i) :
     stirCheckingRepRbrSoundnessStatement M φ deg δ t ε' := by
-  unfold stirCheckingRepRbrSoundnessStatement OracleProof.rbrKnowledgeSoundness
-    OracleVerifier.rbrKnowledgeSoundness at h ⊢
+  unfold stirCheckingRepRbrSoundnessStatement OracleProof.rbrKnowledgeSoundnessAveraged
+    OracleVerifier.rbrKnowledgeSoundnessAveraged at h ⊢
   exact ThresholdKSF.rbrKnowledgeSoundness_mono (pure ()) isEmptyElim
     ((stirCheckingIOPRep M φ deg t).toOracleVerifier.toVerifier
       (Oₛₒ := fun i : Empty => nomatch i))
@@ -94,8 +95,8 @@ theorem stirCheckingRbrSoundness_of_epsStar_le
     (hle : ∀ i, stirEpsStar (F := F) (ι := ι) M δ i ≤ ε i) :
     stirCheckingRbrSoundnessResidual M φ deg δ ε := by
   have h := stirCheckingRbrSoundness_genuine M φ deg δ
-  unfold stirCheckingRbrSoundnessResidual OracleProof.rbrKnowledgeSoundness
-    OracleVerifier.rbrKnowledgeSoundness at h ⊢
+  unfold stirCheckingRbrSoundnessResidual OracleProof.rbrKnowledgeSoundnessAveraged
+    OracleVerifier.rbrKnowledgeSoundnessAveraged at h ⊢
   exact ThresholdKSF.rbrKnowledgeSoundness_mono _ _ _ _ _ h hle
 
 /-- **The shell verifier is sound at every budget dominating the indicator** (#347): the
@@ -106,8 +107,8 @@ theorem stirMultiRoundRbrSoundness_of_indicator_le
     (hle : ∀ i, (if i = foldChalIdx (F := F) (ι := ι) M then 1 else 0) ≤ ε i) :
     stirMultiRoundRbrSoundnessResidual M φ deg δ ε := by
   have hg := stirMultiRoundRbrSoundness_indicator (F := F) (ι := ι) M φ deg δ
-  unfold stirMultiRoundRbrSoundnessResidual OracleProof.rbrKnowledgeSoundness
-    OracleVerifier.rbrKnowledgeSoundness Verifier.rbrKnowledgeSoundness at hg ⊢
+  unfold stirMultiRoundRbrSoundnessResidual OracleProof.rbrKnowledgeSoundnessAveraged
+    OracleVerifier.rbrKnowledgeSoundnessAveraged Verifier.rbrKnowledgeSoundnessAveraged at hg ⊢
   obtain ⟨WitMid, ext, kSF, hbound⟩ := hg
   exact ⟨WitMid, ext, kSF, fun stmtIn witIn prover i =>
     le_trans (hbound stmtIn witIn prover i) (by exact_mod_cast hle i)⟩

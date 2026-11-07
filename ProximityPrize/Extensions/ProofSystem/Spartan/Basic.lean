@@ -14,6 +14,7 @@ Authors: Quang Dao
 -/
 
 import ArkLib.ProofSystem.ConstraintSystem.R1CS
+import ProximityPrize.Extensions.ProofSystem.Component.RandomQuery
 import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
 import ProximityPrize.Extensions.ProofSystem.Component.SendWitness
 import ArkLib.ProofSystem.Sumcheck.Spec.General
@@ -167,6 +168,7 @@ def zeroCheckVirtualPolynomial (x : Statement.AfterFirstMessage R pp)
     MvPolynomial (Fin pp.ℓ_m) R :=
   Algebra.residualMLE (fun i => oracles (.inl i)) (R1CS.𝕫 x (oracles (.inr 0)))
 
+omit [IsDomain R] [Fintype R] in
 /-- Expand the residual interpolant over the original integer row index. -/
 theorem zeroCheckVirtualPolynomial_eq_sum (x : Statement.AfterFirstMessage R pp)
     (oracles : ∀ i, OracleStatement.AfterFirstMessage R pp i) :
@@ -180,6 +182,7 @@ theorem zeroCheckVirtualPolynomial_eq_sum (x : Statement.AfterFirstMessage R pp)
   refine Fintype.sum_equiv finFunctionFinEquiv _ _ ?_
   intro row
   simp only [Function.comp_apply, Equiv.symm_apply_apply, Algebra.residualTable]
+  rfl
 
 /-- The canonical second sumcheck polynomial in the historical scalar-claim context. -/
 def secondSumCheckVirtualPolynomial (stmt : Statement.AfterLinearCombination R pp)
@@ -188,6 +191,7 @@ def secondSumCheckVirtualPolynomial (stmt : Statement.AfterLinearCombination R p
   Algebra.secondVirtual (fun i => oracles (.inr (.inl i)))
     (R1CS.𝕫 stmt.2.2.2 (oracles (.inr (.inr 0)))) stmt.2.1 stmt.1
 
+omit [IsDomain R] [Fintype R] in
 /-- Distribute the shared assignment factor as used by the historical sumcheck proofs. -/
 theorem secondSumCheckVirtualPolynomial_eq_terms (stmt : Statement.AfterLinearCombination R pp)
     (oracles : ∀ i, OracleStatement.AfterLinearCombination R pp i) :
@@ -197,19 +201,19 @@ theorem secondSumCheckVirtualPolynomial_eq_terms (stmt : Statement.AfterLinearCo
       let z := R1CS.𝕫 stmt.2.2.2 (oracles (.inr (.inr 0)))
       let zMLE : MvPolynomial (Fin pp.ℓ_n) R := MLE (z ∘ finFunctionFinEquiv)
       let matrixEval (idx : R1CS.MatrixIdx) : MvPolynomial (Fin pp.ℓ_n) R :=
-        (oracles (.inr (.inl idx))).toMLE
-          ⟨(C ∘ r_x : Fin pp.ℓ_m → MvPolynomial (Fin pp.ℓ_n) R)⟩
+        eval (C ∘ r_x) (oracles (.inr (.inl idx))).toMLE
       C (r .A) * matrixEval .A * zMLE +
         C (r .B) * matrixEval .B * zMLE +
         C (r .C) * matrixEval .C * zMLE := by
   simp only [secondSumCheckVirtualPolynomial, Algebra.secondVirtual, MLE', add_mul]
+  rfl
 
-/-! ### `firstChallenge` via `RandomQuery` + `OracleLens`
+/-! ### The virtual-polynomial lens for the first challenge
 
-We lift the `RandomQuery` oracle reduction onto the *virtual* zero-check polynomial `𝒢`.
-`RandomQuery` tests two oracles `(o₀, o₁)` for equality at a random query; here we instantiate
-`o₀ := 𝒢` (the zero-check polynomial built from the R1CS matrix/witness oracles) and `o₁ := 0`,
-so the random-query test is exactly "is `𝒢 = 0` at the sampled point `τ`?".
+The executable stage samples a query with canonical `RandomQuery` and forwards the padded R1CS
+context. The historical lens projects that context to `(𝒢, 0)`, where `𝒢` is the zero-check
+polynomial built from the R1CS matrix and witness oracles. Agreement at the sampled point `τ` is
+the relation `𝒢(τ) = 0`.
 
 The routing data:
 - `projStmt`/`liftStmt`: the inner input statement is `Unit`; the outer output statement is
@@ -301,10 +305,10 @@ RandomQuery oracles `(𝒢, 0)`, and lifts back to `((τ, 𝕩), A, B, C, 𝕨)`
 noncomputable def firstChallengeStmtLens :
     OracleStatement.Lens
       (Statement.AfterFirstMessage R pp) (Statement.AfterFirstChallenge R pp)
-      (RandomQuery.StmtIn) (RandomQuery.StmtOut (MvPolynomial (Fin pp.ℓ_m) R))
+      (RandomQuery.Historical.StmtIn) (RandomQuery.Historical.StmtOut (MvPolynomial (Fin pp.ℓ_m) R))
       (OracleStatement.AfterFirstMessage R pp) (OracleStatement.AfterFirstChallenge R pp)
-      (RandomQuery.OStmtIn (MvPolynomial (Fin pp.ℓ_m) R))
-      (RandomQuery.OStmtOut (MvPolynomial (Fin pp.ℓ_m) R)) :=
+      (RandomQuery.Historical.OStmtIn (MvPolynomial (Fin pp.ℓ_m) R))
+      (RandomQuery.Historical.OStmtOut (MvPolynomial (Fin pp.ℓ_m) R)) :=
   { toFunA := fun ⟨𝕩, oStmt⟩ =>
       ⟨(), fun j => match j with
         | 0 => zeroCheckVirtualPolynomial R pp 𝕩 oStmt
@@ -316,11 +320,11 @@ the zero polynomial) into Spartan's `firstChallenge` context. -/
 noncomputable def firstChallengeOracleLens :
     OracleStatement.OracleLens oSpec
       (Statement.AfterFirstMessage R pp) (Statement.AfterFirstChallenge R pp)
-      (RandomQuery.StmtIn) (RandomQuery.StmtOut (MvPolynomial (Fin pp.ℓ_m) R))
+      (RandomQuery.Historical.StmtIn) (RandomQuery.Historical.StmtOut (MvPolynomial (Fin pp.ℓ_m) R))
       (OracleStatement.AfterFirstMessage R pp) (OracleStatement.AfterFirstChallenge R pp)
-      (RandomQuery.OStmtIn (MvPolynomial (Fin pp.ℓ_m) R))
-      (RandomQuery.OStmtOut (MvPolynomial (Fin pp.ℓ_m) R))
-      (RandomQuery.pSpec (MvPolynomial (Fin pp.ℓ_m) R)) where
+      (RandomQuery.Historical.OStmtIn (MvPolynomial (Fin pp.ℓ_m) R))
+      (RandomQuery.Historical.OStmtOut (MvPolynomial (Fin pp.ℓ_m) R))
+      (RandomQuery.Historical.pSpec (MvPolynomial (Fin pp.ℓ_m) R)) where
   toLens := firstChallengeStmtLens R pp
   projStmt := fun _ => ()
   liftStmt := fun 𝕩 q => (q, 𝕩)
@@ -339,44 +343,33 @@ noncomputable def firstChallengeOracleLens :
 noncomputable def firstChallengeContextLens :
     OracleContext.Lens
       (Statement.AfterFirstMessage R pp) (Statement.AfterFirstChallenge R pp)
-      (RandomQuery.StmtIn) (RandomQuery.StmtOut (MvPolynomial (Fin pp.ℓ_m) R))
+      (RandomQuery.Historical.StmtIn) (RandomQuery.Historical.StmtOut (MvPolynomial (Fin pp.ℓ_m) R))
       (OracleStatement.AfterFirstMessage R pp) (OracleStatement.AfterFirstChallenge R pp)
-      (RandomQuery.OStmtIn (MvPolynomial (Fin pp.ℓ_m) R))
-      (RandomQuery.OStmtOut (MvPolynomial (Fin pp.ℓ_m) R))
-      Unit Unit RandomQuery.WitIn RandomQuery.WitOut where
+      (RandomQuery.Historical.OStmtIn (MvPolynomial (Fin pp.ℓ_m) R))
+      (RandomQuery.Historical.OStmtOut (MvPolynomial (Fin pp.ℓ_m) R))
+      Unit Unit RandomQuery.Historical.WitIn RandomQuery.Historical.WitOut where
   stmt := firstChallengeStmtLens R pp
   wit := ⟨fun _ => (), fun _ _ => ()⟩
 
-/-- Direct prover for the first-challenge phase. It is behaviorally the `RandomQuery` lift through
-`firstChallengeContextLens`: receive the verifier's random point and record it in the output
-statement, carrying the oracle family through unchanged. -/
+/-- The canonical random-query prover on the padded statement and oracle family. -/
 def firstChallengeProver :
     OracleProver oSpec
       (Statement.AfterFirstMessage R pp) (OracleStatement.AfterFirstMessage R pp) Unit
       (Statement.AfterFirstChallenge R pp) (OracleStatement.AfterFirstChallenge R pp) Unit
-      ⟨!v[.V_to_P], !v[FirstChallenge R pp]⟩ where
-  PrvState
-  | 0 => Statement.AfterFirstMessage R pp ×
-      (∀ i, OracleStatement.AfterFirstMessage R pp i)
-  | 1 => (Statement.AfterFirstMessage R pp ×
-      (∀ i, OracleStatement.AfterFirstMessage R pp i)) × FirstChallenge R pp
-  input := fun x => x.1
-  sendMessage | ⟨0, h⟩ => nomatch h
-  receiveChallenge | ⟨0, _⟩ => fun st => pure fun q => (st, q)
-  output := fun ⟨st, q⟩ => pure (((q, st.1), st.2), ())
+      ⟨!v[.V_to_P], !v[FirstChallenge R pp]⟩ :=
+  RandomQuery.oracleProver oSpec
+    (Statement.AfterFirstMessage R pp) (OracleStatement.AfterFirstMessage R pp)
+    (FirstChallenge R pp)
 
-/-- Direct verifier for the first-challenge phase: return the sampled point paired with the input
-statement, and route all output oracle statements from the input. -/
+/-- The canonical random-query verifier on the padded statement and oracle family. -/
 def firstChallengeVerifier :
     OracleVerifier oSpec
       (Statement.AfterFirstMessage R pp) (OracleStatement.AfterFirstMessage R pp)
       (Statement.AfterFirstChallenge R pp) (OracleStatement.AfterFirstChallenge R pp)
-      ⟨!v[.V_to_P], !v[FirstChallenge R pp]⟩ where
-  verify := fun stmt chal => pure (chal ⟨0, rfl⟩, stmt)
-  outputOracle := .inl {
-    embed := Function.Embedding.inl
-    hEq := fun _ => rfl
-    outputInterface_heq := fun _ => HEq.rfl }
+      ⟨!v[.V_to_P], !v[FirstChallenge R pp]⟩ :=
+  RandomQuery.oracleVerifier oSpec
+    (Statement.AfterFirstMessage R pp) (OracleStatement.AfterFirstMessage R pp)
+    (FirstChallenge R pp)
 
 /-- The bundled evaluation-claim message `(v_A, v_B, v_C)`, of type
   `∀ i, EvalClaim R i`. Its oracle interface is the indexed-product interface `instProdForall`
@@ -473,30 +466,20 @@ def linearCombinationProver :
     OracleProver oSpec
       (Statement.AfterSendEvalClaim R pp) (OracleStatement.AfterSendEvalClaim R pp) Unit
       (Statement.AfterLinearCombination R pp) (OracleStatement.AfterLinearCombination R pp) Unit
-      ⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ where
-  PrvState
-  | 0 => (Statement.AfterSendEvalClaim R pp × (∀ i, OracleStatement.AfterSendEvalClaim R pp i)) × Unit
-  | 1 => (Statement.AfterSendEvalClaim R pp × (∀ i, OracleStatement.AfterSendEvalClaim R pp i))
-            × (LinearCombinationChallenge R)
-  input := fun x => x
-  sendMessage | ⟨0, h⟩ => nomatch h
-  receiveChallenge | ⟨0, _⟩ => fun st => pure fun r => (st.1, r)
-  output := fun ⟨⟨stmt, oStmt⟩, r⟩ => pure (((r, stmt), oStmt), ())
+      ⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ :=
+  RandomQuery.oracleProver oSpec
+    (Statement.AfterSendEvalClaim R pp) (OracleStatement.AfterSendEvalClaim R pp)
+    (LinearCombinationChallenge R)
 
-/-- The oracle verifier for `linearCombination`: returns the linear-combination challenge and
-identity-routes every oracle, mirroring `RandomQuery.oracleVerifier`. -/
+/-- The canonical random-query verifier on the padded scalar-claim context. -/
 def linearCombinationVerifier :
     OracleVerifier oSpec
       (Statement.AfterSendEvalClaim R pp) (OracleStatement.AfterSendEvalClaim R pp)
       (Statement.AfterLinearCombination R pp) (OracleStatement.AfterLinearCombination R pp)
-      ⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ where
-  verify := fun stmt chal => do
-    let r : LinearCombinationChallenge R := chal ⟨0, rfl⟩
-    pure (r, stmt)
-  outputOracle := .inl {
-    embed := Function.Embedding.inl
-    hEq := fun _ => rfl
-    outputInterface_heq := fun _ => HEq.rfl }
+      ⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ :=
+  RandomQuery.oracleVerifier oSpec
+    (Statement.AfterSendEvalClaim R pp) (OracleStatement.AfterSendEvalClaim R pp)
+    (LinearCombinationChallenge R)
 
 end Construction
 
@@ -544,6 +527,7 @@ theorem zeroCheckVirtualPolynomial_eval_boolPoint
     (MLE _) = _
   rw [MLE_eval_zeroOne]
   simp only [Function.comp_apply, Equiv.apply_symm_apply, Algebra.residualTable, r1csResidualAt]
+  rfl
 
 omit [Fintype R] in
 /-- **R1CS relation ⟺ zero-check polynomial vanishes on the boolean cube.** The R1CS relation for

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
 import ArkLib.ProofSystem.Sumcheck.Spec.General
 import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
@@ -75,8 +76,8 @@ theorem Verifier.rbrSoundness_mono_langOut
     {V : Verifier oSpec StmtIn StmtOut pSpec}
     {err : pSpec.ChallengeIdx → ℝ≥0}
     (hsub : langOut' ⊆ langOut)
-    (h : V.rbrSoundness init impl langIn langOut err) :
-    V.rbrSoundness init impl langIn langOut' err := by
+    (h : V.rbrSoundnessAveraged init impl langIn langOut err) :
+    V.rbrSoundnessAveraged init impl langIn langOut' err := by
   obtain ⟨stF, hbound⟩ := h
   refine ⟨⟨stF.toFun, stF.toFun_empty, stF.toFun_next, fun stmt tr hneg => ?_⟩, hbound⟩
   have h0 := stF.toFun_full stmt tr hneg
@@ -150,13 +151,13 @@ theorem OracleVerifier.liftContext_rbrSoundness_pullback
     [coh : OracleVerifier.LiftContextCoherent lens V]
     (hOut : outerLangOut ⊆
       lens.toLens.transportedLangOut innerLangOut (V.toVerifier.compatStatement lens.toLens))
-    (h : V.rbrSoundness init impl innerLangIn innerLangOut rbrSoundnessError) :
-    (V.liftContextLegacy lens).rbrSoundness init impl
+    (h : V.rbrSoundnessAveraged init impl innerLangIn innerLangOut rbrSoundnessError) :
+    (V.liftContextLegacy lens).rbrSoundnessAveraged init impl
       (lens.toLens.proj ⁻¹' innerLangIn) outerLangOut rbrSoundnessError := by
   have h1 := V.liftContextLegacy_rbr_soundness (lens := lens)
     (lensSound := lens.toLens.pullbackIsSound innerLangIn innerLangOut
       (V.toVerifier.compatStatement lens.toLens)) h
-  unfold OracleVerifier.rbrSoundness at h1 ⊢
+  unfold OracleVerifier.rbrSoundnessAveraged at h1 ⊢
   exact Verifier.rbrSoundness_mono_langOut hOut h1
 
 end LiftContextPullback

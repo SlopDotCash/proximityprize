@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeStateFunction
 
 /-!
@@ -810,8 +811,8 @@ theorem append_rbrKnowledgeSoundness_keystone_unconditional
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
     (hInit : ∃ s, s ∈ support init)
     (hNE₂ : Nonempty Stmt₂) (hNEW₂ : Nonempty Wit₂)
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂)
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂)
     -- The single remaining seam-crossing residual (phase 2), quantified over the inner extractors /
     -- knowledge state functions destructured from `h₁` / `h₂`.
     (hPhase2 : ∀ {WitMid₁ : Fin (m+1)→Type} {WitMid₂ : Fin (n+1)→Type}
@@ -821,7 +822,7 @@ theorem append_rbrKnowledgeSoundness_keystone_unconditional
       (kSF₂ : V₂.KnowledgeStateFunction init impl rel₂ rel₃ E₂),
       appendRbrKnowledgeSoundnessPhase2Residual (init := init) (impl := impl) V₁ V₂ kSF₁ kSF₂
         verify hVerify hInit (rbrKnowledgeError₂ := rbrKnowledgeError₂)) :
-      (V₁.append V₂).rbrKnowledgeSoundness init impl rel₁ rel₃
+      (V₁.append V₂).rbrKnowledgeSoundnessAveraged init impl rel₁ rel₃
         (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) := by
   obtain ⟨WitMid₁, E₁, kSF₁, hBound₁⟩ := h₁
   obtain ⟨WitMid₂, E₂, kSF₂, _hBound₂⟩ := h₂
@@ -858,8 +859,8 @@ theorem append_rbrKnowledgeSoundness_keystone_subsingleton [Subsingleton σ]
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂)
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂)
     -- The single remaining inner seam reconciliation (the phase-2 analogue of the proven phase-1
     -- witness-event correspondence), quantified over the inner extractors / knowledge state functions.
     (hReconcile : ∀ {WitMid₁ : Fin (m+1)→Type} {WitMid₂ : Fin (n+1)→Type}
@@ -869,7 +870,7 @@ theorem append_rbrKnowledgeSoundness_keystone_subsingleton [Subsingleton σ]
       (kSF₂ : V₂.KnowledgeStateFunction init impl rel₂ rel₃ E₂),
       appendRbrKnowledgePhase2SeamReconcile (init := init) (impl := impl) V₁ V₂ kSF₁ kSF₂
         verify hVerify hInit) :
-      (V₁.append V₂).rbrKnowledgeSoundness init impl rel₁ rel₃
+      (V₁.append V₂).rbrKnowledgeSoundnessAveraged init impl rel₁ rel₃
         (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) := by
   obtain ⟨WitMid₁, E₁, kSF₁, hBound₁⟩ := h₁
   obtain ⟨WitMid₂, E₂, kSF₂, hBound₂⟩ := h₂

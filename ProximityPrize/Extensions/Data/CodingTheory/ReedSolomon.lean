@@ -190,10 +190,10 @@ theorem dist_eq' {ι : Type*} [Fintype ι] {F : Type*} {n : ℕ} {α : ι ↪ F}
 /-- Generalized unique decoding radius for RS code with arbitrary finite index type `ι`. -/
 theorem uniqueDecodingRadius_RS_eq' {ι : Type*} [Fintype ι]
     {F : Type*} {n : ℕ} {α : ι ↪ F} [Field F] [DecidableEq F] [NeZero n]
-    (h : n ≤ Fintype.card ι) :
+    (_h : n ≤ Fintype.card ι) :
     Code.uniqueDecodingRadius (ι := ι) (F := F) (C := ReedSolomon.code α n) =
     (Fintype.card ι - n) / 2 :=
-  uniqueDecodingRadius_RS_eq h
+  uniqueDecodingRadius_RS_eq
 
 open NNReal in
 /-- Generalized relative unique decoding radius for RS code with arbitrary finite index type `ι`. -/

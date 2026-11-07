@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Logup.Security.SumcheckLensProjSound
 import ArkLib.ProofSystem.Logup.Security.MarginalBridgeProof
 
@@ -118,7 +119,7 @@ theorem sumcheckSoundnessResidual_holds_projClosed
     (hError : sumcheckSoundnessError = ∑ i, rbrSoundnessError i)
     (hInnerRbr :
       (logupConcreteSumcheckOracleReduction oSpec F n M params
-          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundness init impl
+          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundnessAveraged init impl
         (logupSumcheckInputLanguage F n M params (Fact.out : (-1 : F) ≠ 1))
         (Set.univ) rbrSoundnessError)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),

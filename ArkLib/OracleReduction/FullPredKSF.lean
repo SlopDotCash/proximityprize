@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Whir.ThresholdKSF
 
 /-!
@@ -79,7 +80,7 @@ theorem rbrKnowledgeSoundness_of_salvageBound (verifier : Verifier oSpec StmtIn 
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec.getChallenge i) _
               return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ (ε i : ℝ≥0∞)) :
-    verifier.rbrKnowledgeSoundness init impl relIn relOut ε := by
+    verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut ε := by
   classical
   refine ⟨fun _ => Unit, ThresholdKSF.unitExtractor,
     fullPredKSF init impl verifier relIn relOut pred hEmpty hConcatMsg hFull, ?_⟩

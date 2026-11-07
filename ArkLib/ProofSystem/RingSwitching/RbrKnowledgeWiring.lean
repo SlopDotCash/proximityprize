@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.RingSwitching.SumcheckDeterminism
 import ArkLib.ProofSystem.RingSwitching.WiringInstances
 import ArkLib.OracleReduction.Composition.Sequential.SeqComposeRbrKnowledgeProof
@@ -57,7 +58,7 @@ keystone at the per-round failing-determinism witnesses and per-round bounds. -/
 theorem sumcheckLoop_rbrKnowledgeSoundness [IsDomain L] [Subsingleton σ]
     [Inhabited (∀ j, aOStmtIn.OStmtIn j)]
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail init = 0) :
-    (sumcheckLoopOracleVerifier κ L K P ℓ ℓ' aOStmtIn).rbrKnowledgeSoundness init impl
+    (sumcheckLoopOracleVerifier κ L K P ℓ ℓ' aOStmtIn).rbrKnowledgeSoundnessAveraged init impl
       (sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn 0)
       (sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn (Fin.last ℓ'))
       (fun combinedIdx =>
@@ -111,7 +112,7 @@ the `hCoreInteractionAppendRbrKnowledgeSoundness` residual of
 theorem coreInteraction_rbrKnowledgeSoundness_wired [Subsingleton σ]
     [Inhabited (∀ j, aOStmtIn.OStmtIn j)]
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail init = 0) :
-    (coreInteractionOracleVerifier κ L K P ℓ ℓ' h_l aOStmtIn).rbrKnowledgeSoundness
+    (coreInteractionOracleVerifier κ L K P ℓ ℓ' h_l aOStmtIn).rbrKnowledgeSoundnessAveraged
       (init := init) (impl := impl)
       (relIn := sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn 0)
       (relOut := aOStmtIn.toRelInput)

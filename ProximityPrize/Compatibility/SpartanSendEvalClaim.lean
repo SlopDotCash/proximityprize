@@ -8,9 +8,9 @@ import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
 /-!
 # The completed downstream evaluation-claim phase
 
-The canonical admitted constructor retains its original witness interface. This completed phase
-follows the first sum-check, consumes a `Unit` witness, and materializes each canonical scalar claim
-from the completed prover's bundled evaluation-claim message.
+This stage follows the padded first sumcheck and consumes a `Unit` witness. It exposes the three
+components of the bundled claim message as scalar output oracles for the downstream proof chain.
+The canonical Spartan evaluation stage retains its claims in the public statement.
 -/
 
 namespace Spartan.Spec

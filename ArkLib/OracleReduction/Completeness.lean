@@ -3,6 +3,8 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.Execution
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.Data.Probability.Notation
 import ProximityPrize.Compatibility.UniformProbability
 import ProximityPrize.Extensions.OracleReduction.Security.Basic
@@ -602,7 +604,7 @@ theorem unroll_rbrKnowledgeSoundness
             let challenge ← liftComp (pSpec.getChallenge i) _
             return (transcript, challenge, proveQueryLog))).run s) ≤
       rbrKnowledgeError i)) :
-    (verifier.rbrKnowledgeSoundness init impl relIn relOut rbrKnowledgeError) := by
+    (verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut rbrKnowledgeError) := by
   -- Provide the witnesses from hypotheses
   use WitMid, extractor, kSF
   intro stmtIn witIn prover i

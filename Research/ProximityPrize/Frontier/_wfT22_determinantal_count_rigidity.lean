@@ -181,7 +181,7 @@ theorem forall_le_of_sum_pow_lt (a : ι → ℝ) (ha : ∀ i, 0 ≤ a i) (T : �
     omega
   intro b
   by_contra hb
-  push_neg at hb
+  push Not at hb
   have hbs : b ∈ s := Finset.mem_filter.mpr ⟨Finset.mem_univ b, hb⟩
   have : 0 < s.card := Finset.card_pos.mpr ⟨b, hbs⟩
   omega

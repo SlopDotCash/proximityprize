@@ -102,7 +102,8 @@ def has_unconditional_gate(workflow: str, job: str, command: str) -> bool:
     if start is None:
         return False
     body = yaml_block(job_lines, start)
-    if any(line.startswith("    if:") for line in body):
+    if any(line.startswith("    if:") and line != "    if: ${{ always() && !cancelled() }}"
+           for line in body):
         return False
     for index, line in enumerate(body):
         if not line.startswith("      - "):

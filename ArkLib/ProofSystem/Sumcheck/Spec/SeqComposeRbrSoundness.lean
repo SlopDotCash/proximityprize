@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
 import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.ProofSystem.Sumcheck.Spec.OracleRbrSoundness
@@ -163,11 +164,11 @@ theorem seqCompose_rbrSoundness_of_append {m : ℕ}
         (V₁ : Verifier oSpec S₁ S₂ p₁) (V₂ : Verifier oSpec S₂ S₃ p₂)
         {l₁ : Set S₁} {l₂ : Set S₂} {l₃ : Set S₃}
         {e₁ : p₁.ChallengeIdx → ℝ≥0} {e₂ : p₂.ChallengeIdx → ℝ≥0},
-        V₁.rbrSoundness init impl l₁ l₂ e₁ → V₂.rbrSoundness init impl l₂ l₃ e₂ →
-        (V₁.append V₂).rbrSoundness init impl l₁ l₃
+        V₁.rbrSoundnessAveraged init impl l₁ l₂ e₁ → V₂.rbrSoundnessAveraged init impl l₂ l₃ e₂ →
+        (V₁.append V₂).rbrSoundnessAveraged init impl l₁ l₃
           (Sum.elim e₁ e₂ ∘ ChallengeIdx.sumEquiv.symm))
-    (h : ∀ i, (V i).rbrSoundness init impl (lang i.castSucc) (lang i.succ) (rbrSoundnessError i)) :
-    (Verifier.seqCompose Stmt V).rbrSoundness init impl (lang 0) (lang (Fin.last m))
+    (h : ∀ i, (V i).rbrSoundnessAveraged init impl (lang i.castSucc) (lang i.succ) (rbrSoundnessError i)) :
+    (Verifier.seqCompose Stmt V).rbrSoundnessAveraged init impl (lang 0) (lang (Fin.last m))
       (fun combinedIdx =>
         letI ij := seqComposeChallengeIdxToSigma combinedIdx
         rbrSoundnessError ij.1 ij.2) := by
@@ -184,7 +185,7 @@ theorem seqCompose_rbrSoundness_of_append {m : ℕ}
     have hlang : lang (Fin.last 0) = lang 0 := by
       congr 1
     rw [hlang]
-    exact Verifier.id_rbrSoundness init impl
+    exact Verifier.id_rbrSoundnessAveraged init impl
   | succ m ih =>
     -- unfold the seqCompose into a binary append of the head with the tail's seqCompose
     rw [Verifier.seqCompose_succ]
@@ -268,7 +269,7 @@ theorem rbrKnowledgeSoundness_imp_rbrSoundness
               let challenge ← liftComp (pSpec.getChallenge i) _
               return (transcript, challenge))).run' (← init)) ≤
           rbrKnowledgeError i) :
-    verifier.rbrSoundness init impl relIn.language relOut.language rbrKnowledgeError := by
+    verifier.rbrSoundnessAveraged init impl relIn.language relOut.language rbrKnowledgeError := by
   refine ⟨kSF.toStateFunction, ?_⟩
   intro stmtIn hStmtIn W₁ W₂ witIn prover i
   exact hMeasure stmtIn hStmtIn W₁ W₂ witIn prover i
@@ -375,7 +376,7 @@ theorem oracleVerifier_seqCompose_rbrSoundness
     (lang : (i : Fin (n + 1)) → Set (StatementRound R n i × (∀ j, OracleStatement R n deg j)))
     (rbrSoundnessError : ∀ _ : Fin n, (SingleRound.pSpec R deg).ChallengeIdx → ℝ≥0)
     (hRound : ∀ i : Fin n,
-      (SingleRound.oracleVerifier R n deg D oSpec i).rbrSoundness init impl
+      (SingleRound.oracleVerifier R n deg D oSpec i).rbrSoundnessAveraged init impl
         (lang i.castSucc) (lang i.succ) (rbrSoundnessError i))
     (hAppend : ∀ {S₁ S₂ S₃ : Type} {k₁ k₂ : ℕ}
         {p₁ : ProtocolSpec k₁} {p₂ : ProtocolSpec k₂}
@@ -383,15 +384,15 @@ theorem oracleVerifier_seqCompose_rbrSoundness
         (V₁ : Verifier oSpec S₁ S₂ p₁) (V₂ : Verifier oSpec S₂ S₃ p₂)
         {l₁ : Set S₁} {l₂ : Set S₂} {l₃ : Set S₃}
         {e₁ : p₁.ChallengeIdx → ℝ≥0} {e₂ : p₂.ChallengeIdx → ℝ≥0},
-        V₁.rbrSoundness init impl l₁ l₂ e₁ → V₂.rbrSoundness init impl l₂ l₃ e₂ →
-        (V₁.append V₂).rbrSoundness init impl l₁ l₃
+        V₁.rbrSoundnessAveraged init impl l₁ l₂ e₁ → V₂.rbrSoundnessAveraged init impl l₂ l₃ e₂ →
+        (V₁.append V₂).rbrSoundnessAveraged init impl l₁ l₃
           (Sum.elim e₁ e₂ ∘ ChallengeIdx.sumEquiv.symm)) :
-    (oracleVerifier R deg D n oSpec).rbrSoundness init impl (lang 0) (lang (Fin.last n))
+    (oracleVerifier R deg D n oSpec).rbrSoundnessAveraged init impl (lang 0) (lang (Fin.last n))
       (fun combinedIdx =>
         letI ij := ProtocolSpec.seqComposeChallengeIdxToSigma combinedIdx
         rbrSoundnessError ij.1 ij.2) := by
   -- Unfold the oracle-level RBR soundness to the underlying `toVerifier` RBR soundness.
-  show (oracleVerifier R deg D n oSpec).toVerifier.rbrSoundness init impl
+  show (oracleVerifier R deg D n oSpec).toVerifier.rbrSoundnessAveraged init impl
     (lang 0) (lang (Fin.last n)) _
   -- Verifier fusion: `(OracleVerifier.seqCompose …).toVerifier = Verifier.seqCompose …`.
   have hfusion :
@@ -426,7 +427,7 @@ theorem oracleVerifier_rbrSoundness_of_round_append
     (lang : (i : Fin (n + 1)) → Set (StatementRound R n i × (∀ j, OracleStatement R n deg j)))
     (rbrSoundnessError : ∀ _ : Fin n, (SingleRound.pSpec R deg).ChallengeIdx → ℝ≥0)
     (hRound : ∀ i : Fin n,
-      (SingleRound.oracleVerifier R n deg D oSpec i).rbrSoundness init impl
+      (SingleRound.oracleVerifier R n deg D oSpec i).rbrSoundnessAveraged init impl
         (lang i.castSucc) (lang i.succ) (rbrSoundnessError i))
     (hAppend : ∀ {S₁ S₂ S₃ : Type} {k₁ k₂ : ℕ}
         {p₁ : ProtocolSpec k₁} {p₂ : ProtocolSpec k₂}
@@ -434,10 +435,10 @@ theorem oracleVerifier_rbrSoundness_of_round_append
         (V₁ : Verifier oSpec S₁ S₂ p₁) (V₂ : Verifier oSpec S₂ S₃ p₂)
         {l₁ : Set S₁} {l₂ : Set S₂} {l₃ : Set S₃}
         {e₁ : p₁.ChallengeIdx → ℝ≥0} {e₂ : p₂.ChallengeIdx → ℝ≥0},
-        V₁.rbrSoundness init impl l₁ l₂ e₁ → V₂.rbrSoundness init impl l₂ l₃ e₂ →
-        (V₁.append V₂).rbrSoundness init impl l₁ l₃
+        V₁.rbrSoundnessAveraged init impl l₁ l₂ e₁ → V₂.rbrSoundnessAveraged init impl l₂ l₃ e₂ →
+        (V₁.append V₂).rbrSoundnessAveraged init impl l₁ l₃
           (Sum.elim e₁ e₂ ∘ ChallengeIdx.sumEquiv.symm)) :
-    (oracleVerifier R deg D n oSpec).rbrSoundness init impl (lang 0) (lang (Fin.last n))
+    (oracleVerifier R deg D n oSpec).rbrSoundnessAveraged init impl (lang 0) (lang (Fin.last n))
       (fun combinedIdx =>
         letI ij := ProtocolSpec.seqComposeChallengeIdxToSigma combinedIdx
         rbrSoundnessError ij.1 ij.2) :=

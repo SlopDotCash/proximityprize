@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.SpartanSendEvalClaim
 import ProximityPrize.Compatibility.SpartanLinearCombination
 import ProximityPrize.Compatibility.SpartanFirstChallenge
@@ -213,11 +214,11 @@ variable (init) (impl)
 theorem firstMessage_rbrKnowledgeSoundness_pushforward
     (relOut : Set ((Statement.AfterFirstMessage R pp ×
       ∀ i, OracleStatement.AfterFirstMessage R pp i) × Unit)) :
-    (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (Verifier.pureKSPushforward (firstMessageVerify pp oSpec) relOut :
         Set ((Statement R pp × ∀ i, OracleStatement R pp i) × Witness R pp))
       relOut 0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [firstMessageVerify_spec (R := R) pp oSpec]
   exact Verifier.rbrKnowledgeSoundness_of_pure_oneRound init impl _ (fun _ tr _ => tr 0) _ _
     (fun stmt tr wOut h => ⟨tr, wOut, h⟩)
@@ -226,12 +227,12 @@ theorem firstMessage_rbrKnowledgeSoundness_pushforward
 theorem firstChallenge_rbrKnowledgeSoundness_pushforward
     (relOut : Set ((Statement.AfterFirstChallenge R pp ×
       ∀ i, OracleStatement.AfterFirstChallenge R pp i) × Unit)) :
-    (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (Verifier.pureKSPushforward (firstChallengeVerify pp oSpec) relOut :
         Set ((Statement.AfterFirstMessage R pp ×
           ∀ i, OracleStatement.AfterFirstMessage R pp i) × Unit))
       relOut 0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [firstChallengeVerify_spec (R := R) pp oSpec]
   exact Verifier.rbrKnowledgeSoundness_of_pure_oneRound init impl _ (fun _ _ _ => ()) _ _
     (fun stmt tr wOut h => ⟨tr, wOut, h⟩)
@@ -240,12 +241,12 @@ theorem firstChallenge_rbrKnowledgeSoundness_pushforward
 theorem sendEvalClaim_rbrKnowledgeSoundness_pushforward
     (relOut : Set ((Statement.AfterSendEvalClaim R pp ×
       ∀ i, OracleStatement.AfterSendEvalClaim R pp i) × Unit)) :
-    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (Verifier.pureKSPushforward (sendEvalClaimVerify pp oSpec) relOut :
         Set ((Statement.AfterFirstSumcheck R pp ×
           ∀ i, OracleStatement.AfterFirstSumcheck R pp i) × Unit))
       relOut 0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [sendEvalClaimVerify_spec (R := R) pp oSpec]
   exact Verifier.rbrKnowledgeSoundness_of_pure_oneRound init impl _ (fun _ _ _ => ()) _ _
     (fun stmt tr wOut h => ⟨tr, wOut, h⟩)
@@ -255,13 +256,13 @@ theorem sendEvalClaim_rbrKnowledgeSoundness_pushforward
 theorem sendEvalClaim_rbrKnowledgeSoundness_carry
     (relIn : Set ((Statement.AfterFirstSumcheck R pp ×
       ∀ i, OracleStatement.AfterFirstSumcheck R pp i) × Unit)) :
-    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relIn
       (Verifier.pureKSCarry (sendEvalClaimVerify pp oSpec) relIn :
         Set ((Statement.AfterSendEvalClaim R pp ×
           ∀ i, OracleStatement.AfterSendEvalClaim R pp i) × Unit))
       0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [sendEvalClaimVerify_spec (R := R) pp oSpec]
   exact Verifier.rbrKnowledgeSoundness_of_pure_oneRound init impl _ (fun _ _ _ => ()) _ _
     (fun stmt tr wOut h => by
@@ -272,12 +273,12 @@ theorem sendEvalClaim_rbrKnowledgeSoundness_carry
 theorem linearCombination_rbrKnowledgeSoundness_pushforward
     (relOut : Set ((Statement.AfterLinearCombination R pp ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i) × Unit)) :
-    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (Verifier.pureKSPushforward (linearCombinationVerify pp oSpec) relOut :
         Set ((Statement.AfterSendEvalClaim R pp ×
           ∀ i, OracleStatement.AfterSendEvalClaim R pp i) × Unit))
       relOut 0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [linearCombinationVerify_spec (R := R) pp oSpec]
   exact Verifier.rbrKnowledgeSoundness_of_pure_oneRound init impl _ (fun _ _ _ => ()) _ _
     (fun stmt tr wOut h => ⟨tr, wOut, h⟩)
@@ -286,13 +287,13 @@ theorem linearCombination_rbrKnowledgeSoundness_pushforward
 theorem linearCombination_rbrKnowledgeSoundness_carry
     (relIn : Set ((Statement.AfterSendEvalClaim R pp ×
       ∀ i, OracleStatement.AfterSendEvalClaim R pp i) × Unit)) :
-    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       relIn
       (Verifier.pureKSCarry (linearCombinationVerify pp oSpec) relIn :
         Set ((Statement.AfterLinearCombination R pp ×
           ∀ i, OracleStatement.AfterLinearCombination R pp i) × Unit))
       0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [linearCombinationVerify_spec (R := R) pp oSpec]
   exact Verifier.rbrKnowledgeSoundness_of_pure_oneRound init impl _ (fun _ _ _ => ()) _ _
     (fun stmt tr wOut h => h stmt tr rfl ())
@@ -301,12 +302,12 @@ theorem linearCombination_rbrKnowledgeSoundness_carry
 theorem prependRLCTarget_rbrKnowledgeSoundness_pushforward
     (relOut : Set (((R × Statement.AfterLinearCombination R pp) ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i) × Unit)) :
-    (prependRLCTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (prependRLCTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (Verifier.pureKSPushforward (prependRLCVerify pp) relOut :
         Set ((Statement.AfterLinearCombination R pp ×
           ∀ i, OracleStatement.AfterLinearCombination R pp i) × Unit))
       relOut 0 := by
-  unfold OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged
   rw [prependRLCVerify_spec (R := R) pp oSpec]
   exact Verifier.rbrKnowledgeSoundness_of_pure_zeroRound init impl _ (fun _ _ _ => ()) _ _
     (fun stmt tr wOut h => ⟨tr, wOut, h⟩)
@@ -315,47 +316,47 @@ theorem prependRLCTarget_rbrKnowledgeSoundness_pushforward
 
 /-- **Leaf `h₁`** (`firstMessage`): pushforward chain instance. -/
 theorem firstMessage_rbrKnowledgeSoundness_leaf :
-    (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstMessageKSRelIn pp oSpec) (firstChallengeKSRelIn pp oSpec) 0 :=
   firstMessage_rbrKnowledgeSoundness_pushforward pp oSpec init impl _
 
 /-- **Leaf `h₂`** (`firstChallenge`): ends exactly at the pinned `firstSumcheckRbrRelIn`. -/
 theorem firstChallenge_rbrKnowledgeSoundness_leaf :
-    (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstChallengeKSRelIn pp oSpec) (firstSumcheckRbrRelIn (R := R) pp oSpec) 0 :=
   firstChallenge_rbrKnowledgeSoundness_pushforward pp oSpec init impl _
 
 /-- **Leaf `h₄`, carry form** (`sendEvalClaim`): starts exactly at the pinned
 `firstSumcheckRbrRelOut`. -/
 theorem sendEvalClaim_rbrKnowledgeSoundness_leaf_carry :
-    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstSumcheckRbrRelOut (R := R) pp oSpec) (sendEvalClaimKSRelOut pp oSpec) 0 :=
   sendEvalClaim_rbrKnowledgeSoundness_carry pp oSpec init impl _
 
 /-- **Leaf `h₄`, pushforward form** (`sendEvalClaim`): ends exactly at
 `linearCombinationKSRelIn`. -/
 theorem sendEvalClaim_rbrKnowledgeSoundness_leaf_pushforward :
-    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (sendEvalClaimKSRelIn pp oSpec) (linearCombinationKSRelIn pp oSpec) 0 :=
   sendEvalClaim_rbrKnowledgeSoundness_pushforward pp oSpec init impl _
 
 /-- **Leaf `h₅`, pushforward form** (`linearCombination`). -/
 theorem linearCombination_rbrKnowledgeSoundness_leaf_pushforward :
-    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (linearCombinationKSRelIn pp oSpec) (prependRLCKSRelIn pp oSpec) 0 :=
   linearCombination_rbrKnowledgeSoundness_pushforward pp oSpec init impl _
 
 /-- **Leaf `h₅`, carry form** (`linearCombination`): continues the carry chain from
 `sendEvalClaimKSRelOut`. -/
 theorem linearCombination_rbrKnowledgeSoundness_leaf_carry :
-    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (sendEvalClaimKSRelOut pp oSpec) (linearCombinationKSRelOut pp oSpec) 0 :=
   linearCombination_rbrKnowledgeSoundness_carry pp oSpec init impl _
 
 /-- **Leaf `h₆`** (`prependRLCTarget`): ends exactly at the pinned
 `secondSumcheckRbrRelIn`. -/
 theorem prependRLCTarget_rbrKnowledgeSoundness_leaf :
-    (prependRLCTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (prependRLCTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (prependRLCKSRelIn pp oSpec) (secondSumcheckRbrRelIn (R := R) pp oSpec) 0 :=
   prependRLCTarget_rbrKnowledgeSoundness_pushforward pp oSpec init impl _
 
@@ -372,7 +373,7 @@ theorem composedPIOP_Rc_rbrKnowledgeSoundness_of_rlcSeamBridge_of_sumcheck_round
       ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]
     {err₅ : (⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ :
       ProtocolSpec 1).ChallengeIdx → ℝ≥0}
-    (hSeam : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness
+    (hSeam : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundnessAveraged
       init impl (sendEvalClaimKSRelOut pp oSpec) (prependRLCKSRelIn pp oSpec) err₅)
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×
@@ -388,7 +389,7 @@ theorem composedPIOP_Rc_rbrKnowledgeSoundness_of_rlcSeamBridge_of_sumcheck_round
     (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
     (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
     :
-    (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstMessageKSRelIn pp oSpec) (secondSumcheckRbrRelOut (R := R) pp oSpec)
       (composedRbrError pp 0 0 (fun _ => (3 : ℝ≥0) / (Fintype.card R)) 0 err₅ 0
         (fun _ => (2 : ℝ≥0) / (Fintype.card R)) 0) := by

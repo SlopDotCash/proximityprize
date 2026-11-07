@@ -65,7 +65,7 @@ lemma code_zero {w : Fin 1 → ZMod 3} (hw : w ∈ ReedSolomon.code dom 0) : w =
 
 /-- At `deg = 0` the rate is `0`, so the guard `0 < ρ` excludes this case. -/
 lemma rate_zero_deg : ρ (ReedSolomon.code dom 0) = 0 := by
-  simp [ReedSolomon.rateOfLinearCode_eq_min_div]
+  simp [LinearCode.rate, LinearCode.dim]
 
 /-- `u 0 = 0` and `u 1 = 1`. -/
 def u : Fin 2 → Fin 1 → ZMod 3 := ![fun _ => 0, fun _ => 1]
@@ -81,7 +81,7 @@ lemma zero_mem_close :
     ReedSolomon.toFinset, ReedSolomon.RScodeSet, Set.coe_toFinset]
   have h := Code.relDistFromCode_le_relDist_to_mem (0 : Fin 1 → ZMod 3)
     (C := (ReedSolomon.code dom 0 : Set (Fin 1 → ZMod 3))) 0 (Submodule.zero_mem _)
-  simpa [Code.relHammingDist] using h
+  exact h.trans (by simp [Code.relHammingDist, ← ENNReal.coe_nnratCast])
 
 /-- The unguarded statement is false: it is refuted at `deg = 0`. -/
 theorem not_unguardedJohnsonCurve : ¬ UnguardedJohnsonCurve := by

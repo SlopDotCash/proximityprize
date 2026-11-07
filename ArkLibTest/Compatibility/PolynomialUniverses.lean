@@ -12,9 +12,9 @@ import Mathlib.Algebra.Field.ULift
 /-!
 # Higher-universe clients of canonical polynomial APIs
 
-The reviewed SplitFold and bivariate weighted-degree adaptations generalize the coefficient
-universe. These clients use `ULift.{1} ℚ : Type 1`, so restricting either API back to `Type`
-breaks elaboration. Every proof calls the canonical API directly.
+The SplitFold adaptation and the upstream bivariate weighted-degree theorem allow arbitrary
+coefficient universes. These clients use `ULift.{1} ℚ : Type 1`, so restricting either API to
+`Type` breaks elaboration. Every proof calls the canonical API directly.
 
 The source and reviewed adaptations are recorded in `scripts/arklib-upstream.json`.
 -/

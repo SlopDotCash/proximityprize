@@ -25,6 +25,7 @@ This file provides:
    concrete (always-accepting) WHIR `VectorIOP`, concentrating the entire RBR budget on the final
    randomness challenge round, and the corresponding `whirVectorIOP_isSecureWithGap` package.
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Whir.Protocol
 import ArkLib.ProofSystem.Whir.ProtocolCompleteness
 import ArkLib.OracleReduction.Completeness
@@ -108,7 +109,7 @@ theorem rbrKnowledgeSoundness_indicator (verifier : Verifier oSpec StmtIn StmtOu
     (hConcat : ∀ (m : Fin n), m.val ≤ c.1.val →
       ∀ stmtIn (tr : Transcript m.castSucc pSpec) (msg : pSpec.Type m),
         pred m.succ stmtIn (tr.concat msg) → pred m.castSucc stmtIn tr) :
-    verifier.rbrKnowledgeSoundness init impl relIn relOut
+    verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut
       (fun i => if i = c then 1 else 0) := by
   classical
   refine ⟨fun _ => Unit, unitExtractor,
@@ -155,7 +156,7 @@ theorem rbrKnowledgeSoundness_of_flipBound (verifier : Verifier oSpec StmtIn Stm
                 prover.runWithLogToRound c.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec.getChallenge c) _
               return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ (ε : ℝ≥0∞)) :
-    verifier.rbrKnowledgeSoundness init impl relIn relOut
+    verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut
       (fun i => if i = c then ε else 0) := by
   classical
   refine ⟨fun _ => Unit, unitExtractor,
@@ -343,8 +344,8 @@ randomness challenge round — every other challenge round has *zero* flip proba
 theorem whirVectorIOP_rbrKnowledgeSoundness_indicator (δ : ℝ≥0) :
     whirVectorIOP_rbrKnowledgeSoundness P d δ
       (fun i => if i = finalRandomnessChallengeIdx P d then 1 else 0) (m0 := m0) := by
-  unfold whirVectorIOP_rbrKnowledgeSoundness OracleProof.rbrKnowledgeSoundness
-    OracleVerifier.rbrKnowledgeSoundness
+  unfold whirVectorIOP_rbrKnowledgeSoundness OracleProof.rbrKnowledgeSoundnessAveraged
+    OracleVerifier.rbrKnowledgeSoundnessAveraged
   exact ThresholdKSF.rbrKnowledgeSoundness_indicator (pure ()) isEmptyElim
     ((OracleProof.toOracleVerifier (whirVectorIOP P d)).toVerifier
       (Oₛₒ := fun i : Empty => nomatch i))
@@ -363,8 +364,8 @@ theorem whirVectorIOP_rbrKnowledgeSoundness_indicator_folded
     (ne : ∀ i : Fin (M + 1), Nonempty (ιs i)) (δ : ℝ≥0) :
     whirVectorIOP_rbrKnowledgeSoundness P d δ
       (fun i => if i = finalRandomnessChallengeIdx P d then 1 else 0) (m0 := m0) := by
-  unfold whirVectorIOP_rbrKnowledgeSoundness OracleProof.rbrKnowledgeSoundness
-    OracleVerifier.rbrKnowledgeSoundness
+  unfold whirVectorIOP_rbrKnowledgeSoundness OracleProof.rbrKnowledgeSoundnessAveraged
+    OracleVerifier.rbrKnowledgeSoundnessAveraged
   exact ThresholdKSF.rbrKnowledgeSoundness_indicator (pure ()) isEmptyElim
     ((OracleProof.toOracleVerifier (whirVectorIOP P d)).toVerifier
       (Oₛₒ := fun i : Empty => nomatch i))

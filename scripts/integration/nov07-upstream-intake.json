@@ -41,5 +41,24 @@
       "sha256": "ccff72f4a7c23fef3bac9a98087232da5af37bc643ed665d6e9ae0e5628c7964",
       "reason": "Canonical Sumcheck.Spec.oracleReduction_perfectCompleteness proves the same conclusion without the old per-round coherence and support premises. The distinct single-round compatibility wrapper stays live."
     }
-  ]
+  ],
+  "downstream_prime_port": {
+    "source": "Research/ProximityPrize/Frontier/_G139ArithmeticCertificate.lean",
+    "source_sha256": "ddf924420a1fe55f54f663fcbaed2f158c8bb5cecc99ba34734b28001b53a69f",
+    "declarations": [
+      "prime_1370701",
+      "prime_1052698369"
+    ],
+    "reason": "Replace kernel-deep trial division by Lucas certificates using the existing modular exponentiation proof.",
+    "focused_validation": {
+      "scope": "Two primality lemmas and their square-and-multiply support, with the same Mathlib imports as the Research owner.",
+      "exit_code": 0,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "log_sha256": "caeb17c9126a74a71934be0a8483a42bb64e2a05347c0ef7739c5ecb502d8d1e"
+    }
+  }
 }

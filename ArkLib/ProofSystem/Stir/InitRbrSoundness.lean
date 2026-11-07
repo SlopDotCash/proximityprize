@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.BlockCompleteness
 import ProximityPrize.Extensions.ProofSystem.Component.SendWitness
 
@@ -68,9 +69,9 @@ forwarded unchanged), and the proximity relations `stirOStmtRel` ignore the stat
 the knowledge state function "the input (statement, oracle) pair is in the input relation"
 survives every round, the trivial `Unit` extractor works, and the per-challenge error is `0`. -/
 theorem stirInitVerifier_rbrKnowledgeSoundness (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
-    (stirInitVerifier (ι := ι) (F := F)).rbrKnowledgeSoundness init impl
+    (stirInitVerifier (ι := ι) (F := F)).rbrKnowledgeSoundnessAveraged init impl
       (stirOStmtRel Unit φ deg δ) (stirOStmtRel F φ deg δ) 0 := by
-  simp only [OracleVerifier.rbrKnowledgeSoundness]
+  simp only [OracleVerifier.rbrKnowledgeSoundnessAveraged]
   refine ⟨fun _ => Unit, {
     extractIn := fun _ _ => ()
     extractMid := fun _ _ _ _ => ()
@@ -107,7 +108,7 @@ theorem stirInitVerifier_rbrKnowledgeSoundness (φ : ι ↪ F) (deg : ℕ) (δ :
 set_option linter.unusedSectionVars false in
 /-- RBR knowledge soundness of the initial block, phrased on `stirInitReduction`'s verifier. -/
 theorem stirInitReduction_rbrKnowledgeSoundness (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
-    (stirInitReduction (ι := ι) (F := F)).verifier.rbrKnowledgeSoundness init impl
+    (stirInitReduction (ι := ι) (F := F)).verifier.rbrKnowledgeSoundnessAveraged init impl
       (stirOStmtRel Unit φ deg δ) (stirOStmtRel F φ deg δ) 0 :=
   stirInitVerifier_rbrKnowledgeSoundness init impl φ deg δ
 

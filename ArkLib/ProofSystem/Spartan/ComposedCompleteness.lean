@@ -728,9 +728,8 @@ obligations are taken as named hypotheses, with the intermediate relations pinne
 concrete in-tree chain (`firstMessageRelOut` → `firstSumcheckRelInBF` →
 `firstSumcheckRelOutBF` → … → `secondSumcheckRelInBF` → `secondSumcheckRelOutBF`):
 
-* `h₂` — `firstChallenge` (an in-tree proof `firstChallenge_perfectCompleteness` exists but its
-  module `FirstChallengeComplete.lean` is currently build-broken on `main`, pre-existing);
-* `h₄`/`h₅` — `sendEvalClaim` / `linearCombination` (pure forwarding phases, unproven);
+* `h₂` — first-challenge completeness at the bridge-free first-sumcheck input relation;
+* `h₄`/`h₅` — evaluation-claim and linear-combination completeness at their seam relations;
 * `h₆` — `prependRLCTarget` into `secondSumcheckRelInBF`: **the honest-target obligation**. The
   existence-only adapter emits target `0`, while `secondSumcheckRelInBF` pins the target to the
   honest linear-combination value, so this hypothesis demands the honest-target adapter (or a

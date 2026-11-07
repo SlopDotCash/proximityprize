@@ -1,3 +1,4 @@
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ToMathlib.WhirBricksConstruction
 
 open MvPolynomial
@@ -59,7 +60,7 @@ def whirVectorIOP_rbrKnowledgeSoundness {F : Type} [Field F] [Fintype F] [Decida
     [Nonempty (ιs 0)] (δ : ℝ≥0)
     (εRbr : (whirPaperTranscriptVectorSpec P d).ChallengeIdx → ℝ≥0) :
     Prop :=
-  OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+  OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
     (whirRelation m0 (P.φ 0) δ)
       (OracleProof.toOracleVerifier (whirVectorIOP P d)) εRbr
 

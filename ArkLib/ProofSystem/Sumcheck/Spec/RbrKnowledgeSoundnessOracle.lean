@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
 import ArkLib.ProofSystem.Sumcheck.Spec.General
 import ArkLib.OracleReduction.Composition.Sequential.SeqComposeRbrKnowledgeProof
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
@@ -98,14 +99,14 @@ The premise is explicit because the canonical message-checking Simple bound is a
 upstream open proof. This preserves the completed transfer independently of that obligation. -/
 theorem oracleVerifier_rbrKnowledgeSoundness_indexed_of_simple
     [Fintype R] (i : Fin n)
-    (hSimple : (Simple.oracleVerifier R deg D oSpec).rbrKnowledgeSoundness init impl
+    (hSimple : (Simple.oracleVerifier R deg D oSpec).rbrKnowledgeSoundnessAveraged init impl
       (Simple.inputRelation R deg D) (Simple.outputRelation R deg)
       (fun _ => (deg : ℝ≥0) / (Fintype.card R))) :
-    (oracleVerifier R n deg D oSpec i).rbrKnowledgeSoundness init impl
+    (oracleVerifier R n deg D oSpec i).rbrKnowledgeSoundnessAveraged init impl
       (relationRound R n deg D i.castSucc) (relationRound R n deg D i.succ)
       (fun _ => (deg : ℝ≥0) / (Fintype.card R)) := by
   letI : Inhabited (Simple.StmtOut R) := ⟨(0, 0)⟩
-  exact OracleVerifier.liftContext_rbr_knowledgeSoundness
+  exact OracleVerifier.liftContext_rbrKnowledgeSoundnessAveraged
     (stmtLens := oStmtExecutableLens R n deg D i)
     (witLens := Witness.InvLens.trivial)
     (Simple.oracleVerifier R deg D oSpec) (liftContextOutput R n deg D oSpec i)
@@ -119,10 +120,10 @@ canonical per-round knowledge bounds. This construction does not discharge those
 theorem oracleVerifier_rbrKnowledgeSoundness_failingDet_of_round
     [Fintype R] [Inhabited R] [Subsingleton σ]
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail init = 0)
-    (hRound : ∀ i : Fin n, (SingleRound.oracleVerifier R n deg D oSpec i).rbrKnowledgeSoundness
+    (hRound : ∀ i : Fin n, (SingleRound.oracleVerifier R n deg D oSpec i).rbrKnowledgeSoundnessAveraged
       init impl (relationRound R n deg D i.castSucc) (relationRound R n deg D i.succ)
       (fun _ => (deg : ℝ≥0) / (Fintype.card R))) :
-    (oracleVerifier R deg D n oSpec).rbrKnowledgeSoundness init impl
+    (oracleVerifier R deg D n oSpec).rbrKnowledgeSoundnessAveraged init impl
       (relationRound R n deg D 0) (relationRound R n deg D (Fin.last n))
       (fun _ => (deg : ℝ≥0) / (Fintype.card R)) := by
   letI : ∀ j : Fin (n + 1), Inhabited (StatementRound R n j × ∀ k, OracleStatement R n deg k) :=

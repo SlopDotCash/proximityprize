@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Logup.Security.SubPhaseSplit
 import ArkLib.ProofSystem.Logup.Sumcheck.SumcheckLiftCoherent
 
@@ -166,9 +167,9 @@ theorem sumcheckVerifier_rbrSoundness
     (hProj : SumcheckLensProjSound oSpec F n M params innerLangIn)
     (hInnerRbr :
       (logupConcreteSumcheckOracleReduction oSpec F n M params
-          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundness init impl
+          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundnessAveraged init impl
         innerLangIn (Set.univ) rbrSoundnessError) :
-    (sumcheckVerifier oSpec F n M params).rbrSoundness init impl
+    (sumcheckVerifier oSpec F n M params).rbrSoundnessAveraged init impl
       (midLanguage F n M params) outputRelation.language rbrSoundnessError := by
   have := logupSumcheck_liftContextCoherent oSpec F n M params
   have := sumcheckLensSound oSpec F n M params innerLangIn hProj
@@ -199,10 +200,10 @@ theorem sumcheckSoundnessResidual_holds
     (hProj : SumcheckLensProjSound oSpec F n M params innerLangIn)
     (hInnerRbr :
       (logupConcreteSumcheckOracleReduction oSpec F n M params
-          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundness init impl
+          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundnessAveraged init impl
         innerLangIn (Set.univ) rbrSoundnessError)
     (hRbrToSound :
-      (sumcheckVerifier oSpec F n M params).rbrSoundness init impl
+      (sumcheckVerifier oSpec F n M params).rbrSoundnessAveraged init impl
           (midLanguage F n M params) outputRelation.language rbrSoundnessError →
         (sumcheckVerifier oSpec F n M params).soundness init impl
           (midLanguage F n M params) outputRelation.language sumcheckSoundnessError) :

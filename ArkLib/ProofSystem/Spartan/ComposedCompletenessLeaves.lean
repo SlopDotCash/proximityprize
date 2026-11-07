@@ -78,6 +78,7 @@ theorem completedLinearCombination_perfectCompleteness_of
   rintro ⟨stmt, oStmt⟩ ⟨⟩ hRelIn z hz
   simp only [oracleReduction.completedLinearCombination, OracleReduction.toReduction, Reduction.run,
     Prover.run_of_verifier_first, linearCombinationProver, linearCombinationVerifier,
+    RandomQuery.oracleProver, RandomQuery.oracleVerifier,
     OracleVerifier.toVerifier, Verifier.run] at hz
   simp only [OptionT.run_bind, OptionT.run_mk, OptionT.run_pure, OptionT.run_monadLift,
     simulateQ_pure, pure_bind, map_pure, liftM_pure,

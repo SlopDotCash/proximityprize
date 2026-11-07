@@ -392,18 +392,21 @@ uv tool install --python 3.12 leanblueprint
 
 ## CI Mapping
 
-Main CI sets `LEAN_NUM_THREADS=1` for its whole build job. Research import closures were
+Main CI sets `LEAN_NUM_THREADS=1` for each Lean build job. Research import closures were
 measured at roughly 6.4 GiB per compiler process during integration, so per-CPU parallelism
 does not fit the 16 GB runner. The pinned Lean runtime otherwise
 [defaults Lake's task pool to the hardware concurrency](https://github.com/leanprover/lean4/blob/v4.35.0/src/runtime/object.cpp#L1037-L1052).
-This worker limit applies to the initial build and the validation wrapper; the checkout and
+This worker limit applies to the prebuilds, default build, and validation wrapper. The checkout and
 machine locks separately limit simultaneous Lake invocations. All four libraries remain in
 the default build.
 
 - [`../../.github/workflows/ci.yml`](../../.github/workflows/ci.yml)
   runs the timing-enabled main build on PRs, merge groups, pushes to `main`, and a nightly
-  schedule. It builds incrementally from the latest `main` build (see
-  [Build Cache](#build-cache)), times the library build, the native build, and the
+  schedule. It prebuilds canonical `ArkLib`, then `ArkLibExtensions` and `ProximityPrizeExtensions`,
+  on separate runners so a cold build can finish within each job's time budget. The final job
+  requires both prebuilds and the Blueprint render to succeed before it runs the full default
+  build, including `ResearchProximityPrize`. It builds incrementally from the latest `main`
+  build (see [Build Cache](#build-cache)), times the library phases, the native build, and the
   `./scripts/validate.sh` path, runs the
   source trust inventory plus axiom-sweep fixture matrix and library regression baseline
   (all axiom verdicts enforcing). A separate read-only job renders the blueprint without Lean
@@ -469,10 +472,12 @@ rebuilds the modules it changed and everything that imports them, and nothing el
 each module's messages in its trace, so warnings from modules it does not rebuild are replayed and
 the warning budgets still see them.
 
-Only `main` saves caches. Pull request and merge-queue runs restore them and discard their own
-build, so untrusted code never publishes an artifact another run loads, and the repository's 10 GB
-cache budget holds `main` builds only. For the same reason a push to `main` waits for the running
-`main` build instead of cancelling it.
+Only `main` saves cross-run Lean caches. Each successful prebuild transfers its completed
+`.lake/packages` and `.lake/build` to the next job in the same workflow run. The handoff omits
+regenerated setup files and verifies the archive checksum, checkout SHA, run identity, runner
+platform, and dependency inputs before restoring it. Pull request and merge-queue builds never
+publish caches another run can load. A push to `main` waits for the running `main` build so it
+can save its caches.
 
 The nightly scheduled run, and a manual run with `clean_build` set, skips the build cache and
 builds from scratch. That keeps an absolute build-time trend and checks that nothing passes only
@@ -498,10 +503,12 @@ bash scripts/build_timing_report.sh run test_path /tmp/build-timing/results.json
 bash scripts/build_timing_report.sh render /tmp/build-timing/results.jsonl
 ```
 
-Read the rows in that order, because they share one tree and each leaves it warmer:
+Read the rows in that order, because each phase leaves the build state warmer:
 
-- `library_build` is `lake build` on whatever the build cache left: the changed modules and their
-  importers, or everything when no cache was restored.
+- `library_build` in CI sums the measured wall and CPU time of the canonical prebuild, extensions
+  prebuild, and full default `lake build`. Runner setup, queueing, and artifact transfer are outside
+  the measurement. The combined log includes all three phases for per-module attribution.
+  The local recipe measures one default `lake build` against the current artifacts.
 - `native_build` carries the `.c.o` chain that the compiled executables link — currently
   `toyproblem-runtime`, `hachi-runtime`, `sumcheck-runtime`, `fri-extractor-runtime`, and `lint-style`.
   It is the row that swings on `.lake` cache state, so a dependency bump shows its cost here. **Adding a compiled executable to

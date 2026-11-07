@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeChallengeBody
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgePhase2ReconcileProof
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeSeamZero
@@ -541,9 +542,9 @@ theorem append_rbrKnowledgeSoundness_keystone_subsingleton_challenge [Subsinglet
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P)
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂) :
-      (V₁.append V₂).rbrKnowledgeSoundness init impl rel₁ rel₃
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂) :
+      (V₁.append V₂).rbrKnowledgeSoundnessAveraged init impl rel₁ rel₃
         (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) := by
   obtain ⟨WitMid₁, E₁, kSF₁, hBound₁⟩ := h₁
   obtain ⟨WitMid₂, E₂, kSF₂, hBound₂⟩ := h₂

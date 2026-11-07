@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.RingSwitching.Prelude
 import ArkLib.ProofSystem.RingSwitching.Spec
 import ArkLib.ProofSystem.Sumcheck.Structured.RoundLemmas
@@ -881,7 +882,7 @@ lemma iteratedSumcheck_doom_escape_probability_bound [Fintype L] [DecidableEq L]
   exact prEvent_le_one _
 
 theorem iteratedSumcheckOracleVerifier_rbrKnowledgeSoundness [IsDomain L] (i : Fin ℓ') :
-    (iteratedSumcheckOracleVerifier κ L K P ℓ ℓ' aOStmtIn i).rbrKnowledgeSoundness init impl
+    (iteratedSumcheckOracleVerifier κ L K P ℓ ℓ' aOStmtIn i).rbrKnowledgeSoundnessAveraged init impl
       (relIn := sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn i.castSucc)
       (relOut := sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn i.succ)
       (fun j => roundKnowledgeError L ℓ' i) := by
@@ -1312,7 +1313,7 @@ noncomputable def finalSumcheckKnowledgeStateFunction [IsDomain L] [IsDomain K] 
 theorem finalSumcheckOracleVerifier_rbrKnowledgeSoundness [Fintype L] [IsDomain L] [IsDomain K]
     {σ : Type}
     (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
-    (finalSumcheckVerifier κ L K P ℓ ℓ' h_l aOStmtIn).rbrKnowledgeSoundness init impl
+    (finalSumcheckVerifier κ L K P ℓ ℓ' h_l aOStmtIn).rbrKnowledgeSoundnessAveraged init impl
       (relIn := sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn (Fin.last ℓ'))
       (relOut := aOStmtIn.toRelInput)
       (rbrKnowledgeError := fun _ => finalSumcheckRbrKnowledgeError (L := L)) := by
@@ -1423,7 +1424,7 @@ def coreInteractionRbrKnowledgeError (j : (pSpecCoreInteraction L ℓ').Challeng
 /-- RBR knowledge soundness for large-field reduction (Sumcheck ++ FinalSum) -/
 theorem coreInteraction_rbrKnowledgeSoundness [IsDomain L] [IsDomain K]
     (hAppendRbrKnowledgeSoundness :
-      (coreInteractionOracleVerifier κ L K P ℓ ℓ' h_l aOStmtIn).rbrKnowledgeSoundness
+      (coreInteractionOracleVerifier κ L K P ℓ ℓ' h_l aOStmtIn).rbrKnowledgeSoundnessAveraged
         (StmtIn := Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ P) 0)
         (OStmtIn := aOStmtIn.OStmtIn)
         (StmtOut := MLPEvalStatement L ℓ')
@@ -1435,7 +1436,7 @@ theorem coreInteraction_rbrKnowledgeSoundness [IsDomain L] [IsDomain K]
         (relIn := sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn 0)
         (relOut := aOStmtIn.toRelInput)
         (rbrKnowledgeError := coreInteractionRbrKnowledgeError (L := L) (ℓ' := ℓ'))) :
-  OracleVerifier.rbrKnowledgeSoundness
+  OracleVerifier.rbrKnowledgeSoundnessAveraged
     (verifier := coreInteractionOracleVerifier κ L K P ℓ ℓ' h_l aOStmtIn)
     (StmtIn := Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ P) 0)
     (OStmtIn := aOStmtIn.OStmtIn)

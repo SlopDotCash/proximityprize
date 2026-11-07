@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Whir.RBRSoundnessCheckedBridge
 
 /-!
@@ -152,7 +153,7 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr_unitFold
         ε_fin ≤ (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)))
     (d' : ℕ)
     (hSum : (∑ i, P.foldingParam i) = 1)
-    (hSound : OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+    (hSound : OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
       (whirRelation m_0 (P.φ 0) (h.δ 0))
       (paperTranscriptOracleVerifier P d' (whirVerifyChecked P d'))
       (fun _ =>

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
 import ArkLib.ProofSystem.Spartan.FirstSumcheckReduction
 import ArkLib.ProofSystem.Spartan.SecondSumcheckReduction
@@ -1281,7 +1282,7 @@ def composedRbrKnowledgeSoundnessStatement
       (FinalStatement R pp) (FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0) : Prop :=
-  Rc.verifier.rbrKnowledgeSoundness init impl
+  Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
     (spartanRelIn R pp) (finalCheckRelOut R pp) rbrKnowledgeError
 
 -- **No `composedRbrKnowledgeSoundness_holds` here.**  As with completeness above, an earlier
@@ -1301,7 +1302,7 @@ def composedRbrKnowledgeSoundnessWithClaimStatement
       (FinalClaimStatement R pp) (FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0) : Prop :=
-  Rc.verifier.rbrKnowledgeSoundness init impl
+  Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
     (spartanRelIn R pp) (finalCheckWithClaimRelOut R pp) rbrKnowledgeError
 
 /-- Stronger target-carrying RBR knowledge-soundness statement where extracted terminal witnesses
@@ -1314,7 +1315,7 @@ def composedRbrKnowledgeSoundnessWithClaimValueRelStatement
       (FinalClaimStatement R pp) (FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0) : Prop :=
-  Rc.verifier.rbrKnowledgeSoundness init impl
+  Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
     (spartanRelIn R pp) (finalCheckWithClaimValueRelIn R pp) rbrKnowledgeError
 
 /-- Target-carrying RBR knowledge-soundness statement whose terminal output relation is stated
@@ -1327,7 +1328,7 @@ def composedRbrKnowledgeSoundnessWithClaimSecondSumcheckEvalStatement
       (FinalClaimStatement R pp) (FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0) : Prop :=
-  Rc.verifier.rbrKnowledgeSoundness init impl
+  Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
     (spartanRelIn R pp) (finalCheckWithClaimSecondSumcheckEvalRelOut R pp) rbrKnowledgeError
 
 omit [IsDomain R] [Fintype R] [SampleableType R] in
@@ -1407,7 +1408,7 @@ theorem composedRbrKnowledgeSoundnessWithClaimValueRelStatement_of_broadStatemen
       rbrKnowledgeError := by
   unfold composedRbrKnowledgeSoundnessWithClaimStatement at hStatement
   unfold composedRbrKnowledgeSoundnessWithClaimValueRelStatement
-  unfold OracleVerifier.rbrKnowledgeSoundness Verifier.rbrKnowledgeSoundness at hStatement ⊢
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged Verifier.rbrKnowledgeSoundnessAveraged at hStatement ⊢
   rcases hStatement with ⟨WitMid, extractor, kSF, hProb⟩
   let kSFValue :
       Rc.verifier.toVerifier.KnowledgeStateFunction init impl
@@ -1581,7 +1582,7 @@ theorem composedRbrKnowledgeSoundnessStatement_of_rbrKnowledgeSoundness
       (FinalStatement R pp) (FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0)
-    (hks : Rc.verifier.rbrKnowledgeSoundness init impl
+    (hks : Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
       (spartanRelIn R pp) (finalCheckRelOut R pp) rbrKnowledgeError) :
     composedRbrKnowledgeSoundnessStatement R pp oSpec Rc init impl rbrKnowledgeError :=
   hks
@@ -1597,7 +1598,7 @@ theorem composedRbrKnowledgeSoundnessWithClaimStatement_of_rbrKnowledgeSoundness
       (FinalClaimStatement R pp) (FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0)
-    (hks : Rc.verifier.rbrKnowledgeSoundness init impl
+    (hks : Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
       (spartanRelIn R pp) (finalCheckWithClaimRelOut R pp) rbrKnowledgeError) :
     composedRbrKnowledgeSoundnessWithClaimStatement R pp oSpec Rc init impl rbrKnowledgeError :=
   hks

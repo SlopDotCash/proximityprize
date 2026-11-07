@@ -66,6 +66,7 @@ remaining work; no fabrication here.
 The shared `SchwartzZippelCore` module owns the polynomial evaluation and uniform-marginal
 salvage lemmas. This module adds the comap variant and the checked-verifier clients.
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Whir.ThresholdKSF
 import ArkLib.ProofSystem.Whir.CheckedVerifier
 import ArkLib.ProofSystem.Whir.SchwartzZippelCore
@@ -631,11 +632,11 @@ theorem whirChecked_rbrKnowledgeSoundness_of_flipBound (δ ε : ℝ≥0)
                   (finalRandomnessChallengeIdx P d)) _
               return (transcript, challenge, proveQueryLog))).run'
             (← (pure () : ProbComp Unit))) ≤ (ε : ℝ≥0∞)) :
-    OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+    OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
       (whirRelation m0 (P.φ 0) δ)
       (paperTranscriptOracleVerifier P d (whirVerifyChecked P d))
       (fun i => if i = finalRandomnessChallengeIdx P d then ε else 0) := by
-  unfold OracleProof.rbrKnowledgeSoundness OracleVerifier.rbrKnowledgeSoundness
+  unfold OracleProof.rbrKnowledgeSoundnessAveraged OracleVerifier.rbrKnowledgeSoundnessAveraged
   exact ThresholdKSF.rbrKnowledgeSoundness_of_flipBound (pure ()) isEmptyElim
     ((paperTranscriptOracleVerifier P d (whirVerifyChecked P d)).toVerifier
       (Oₛₒ := fun i : Empty => nomatch i))
@@ -657,7 +658,7 @@ budget at the threshold cannot drop below `1` through the threshold shell — se
 `ThresholdKSFFacts.predFalse_propagates` and `whirChainClosePred_false_of_far`. -/
 theorem whirChecked_rbrKnowledgeSoundness_smallField (δ : ℝ≥0) (L : ℕ)
     (hL : Fintype.card F ≤ L) :
-    OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+    OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
       (whirRelation m0 (P.φ 0) δ)
       (paperTranscriptOracleVerifier P d (whirVerifyChecked P d))
       (fun i => if i = finalRandomnessChallengeIdx P d
@@ -695,8 +696,8 @@ theorem whirVectorIOP_rbrKnowledgeSoundness_smallField (δ : ℝ≥0) (L : ℕ)
   have hone : (1 : ℝ≥0∞) ≤ (((L : ℝ≥0) / (Fintype.card F : ℝ≥0) : ℝ≥0) : ℝ≥0∞) := by
     rw [← ENNReal.coe_one, ENNReal.coe_le_coe, one_le_div hcard]
     exact_mod_cast hL
-  unfold whirVectorIOP_rbrKnowledgeSoundness OracleProof.rbrKnowledgeSoundness
-    OracleVerifier.rbrKnowledgeSoundness
+  unfold whirVectorIOP_rbrKnowledgeSoundness OracleProof.rbrKnowledgeSoundnessAveraged
+    OracleVerifier.rbrKnowledgeSoundnessAveraged
   exact ThresholdKSF.rbrKnowledgeSoundness_of_flipBound (pure ()) isEmptyElim
     ((OracleProof.toOracleVerifier (whirVectorIOP P d)).toVerifier
       (Oₛₒ := fun i : Empty => nomatch i))

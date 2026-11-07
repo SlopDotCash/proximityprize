@@ -30,5 +30,133 @@
     "lexical_header_comparison": "passed",
     "canonical_blob_comparison": "passed",
     "lean_validation": "pending"
-  }
+  },
+  "security_predicate_names": {
+    "legacy_owner": "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound",
+    "upstream_rename_revision": "2befd24ba5433ebbfdfdedd6a1e9275f7ffd4950",
+    "retirement_revision": "2f8942cc0",
+    "mapping": {
+      "rbrSoundness": "rbrSoundnessAveraged",
+      "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged",
+      "rbrKnowledgeSoundnessWith": "rbrKnowledgeSoundnessAveragedWith",
+      "rbrSoundnessWorstCase": "rbrSoundness",
+      "rbrKnowledgeSoundnessWorstCase": "rbrKnowledgeSoundness",
+      "rbrKnowledgeSoundnessWorstCaseWith": "rbrKnowledgeSoundnessWith",
+      "id_rbrKnowledgeSoundness": "id_rbrKnowledgeSoundnessAveraged"
+    },
+    "changed_active_token_counts": {
+      "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeSoundness.lean": {
+        "rbrKnowledgeSoundness": 35
+      },
+      "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeWithClaimFinal.lean": {
+        "rbrKnowledgeSoundness": 3
+      },
+      "ArkLib/ProofSystem/Spartan/ComposedTightRbrKnowledge.lean": {
+        "rbrKnowledgeSoundness": 13
+      },
+      "ArkLib/ProofSystem/Spartan/FinalCheckRbrKnowledgeLeaf.lean": {
+        "rbrKnowledgeSoundness": 3,
+        "id_rbrKnowledgeSoundness": 1
+      },
+      "ArkLib/ProofSystem/Spartan/FinalCheckWithClaimLeaf.lean": {
+        "rbrKnowledgeSoundness": 5
+      },
+      "ArkLib/ProofSystem/Spartan/FirstSumcheckComplete.lean": {
+        "rbrSoundness": 2,
+        "rbrKnowledgeSoundness": 2
+      },
+      "ArkLib/ProofSystem/Spartan/FirstSumcheckWithTarget.lean": {
+        "rbrKnowledgeSoundness": 3
+      },
+      "ArkLib/ProofSystem/Spartan/LinearCombinationTightLeaf.lean": {
+        "rbrKnowledgeSoundness": 2
+      },
+      "ArkLib/ProofSystem/Spartan/RLCKernelBound.lean": {
+        "rbrKnowledgeSoundness": 2
+      },
+      "ArkLib/ProofSystem/Spartan/RbrKnowledgeWiring.lean": {
+        "rbrKnowledgeSoundness": 12
+      },
+      "ArkLib/ProofSystem/Spartan/SecondSumcheckComplete.lean": {
+        "rbrSoundness": 2
+      },
+      "ArkLib/ProofSystem/Spartan/SecondSumcheckWithTarget.lean": {
+        "rbrKnowledgeSoundness": 3
+      },
+      "ArkLib/ProofSystem/Spartan/ShortPhaseKnowledgeLeaves.lean": {
+        "rbrKnowledgeSoundness": 23
+      },
+      "ArkLib/ProofSystem/Spartan/ShortPhaseRbrKnowledgeLeaves.lean": {
+        "rbrKnowledgeSoundness": 10
+      },
+      "ArkLib/ProofSystem/Spartan/SpartanRBRProof.lean": {
+        "rbrKnowledgeSoundness": 1
+      },
+      "ArkLib/ProofSystem/Spartan/SpartanRBRWithClaimProof.lean": {
+        "rbrKnowledgeSoundness": 1
+      },
+      "ArkLib/ProofSystem/Spartan/SumcheckKnowledgeLeaves.lean": {
+        "rbrKnowledgeSoundness": 6
+      },
+      "ArkLib/ProofSystem/Spartan/SumcheckPhaseRbr.lean": {
+        "rbrSoundness": 5
+      },
+      "ArkLib/ProofSystem/Spartan/TightApexPure.lean": {
+        "rbrKnowledgeSoundness": 2
+      },
+      "ArkLib/ProofSystem/Spartan/TightComposedFull.lean": {
+        "rbrKnowledgeSoundness": 29
+      },
+      "ArkLib/ProofSystem/Spartan/TightConjoinedSecondLeaf.lean": {
+        "rbrKnowledgeSoundness": 2
+      },
+      "ArkLib/ProofSystem/Spartan/TightFinalLeaf.lean": {
+        "rbrKnowledgeSoundness": 1
+      },
+      "ArkLib/ProofSystem/Spartan/TightFinalTrivial.lean": {
+        "rbrKnowledgeSoundness": 1
+      },
+      "ArkLib/ProofSystem/Spartan/TightMidLeaves.lean": {
+        "rbrKnowledgeSoundness": 6
+      },
+      "ArkLib/ProofSystem/Spartan/TightSeamBridge.lean": {
+        "rbrKnowledgeSoundness": 1
+      },
+      "ArkLib/ToMathlib/SpartanBricks.lean": {
+        "rbrKnowledgeSoundness": 8
+      }
+    },
+    "semantic_contract": "Historical Spartan security statements keep the prover-averaged predicate and its original premises. Canonical Spartan.Security uses fixed-prefix predicates."
+  },
+  "canonical_random_query": {
+    "execution": [
+      "Spartan.Spec.firstChallengeProver",
+      "Spartan.Spec.firstChallengeVerifier",
+      "Spartan.Spec.linearCombinationProver",
+      "Spartan.Spec.linearCombinationVerifier"
+    ],
+    "proof_lens_owner": "RandomQuery.Historical",
+    "preserved_pair_view": [
+      "Spartan.Spec.firstChallengeStmtLens",
+      "Spartan.Spec.firstChallengeOracleLens",
+      "Spartan.Spec.firstChallengeContextLens",
+      "Spartan.Spec.firstChallenge_liftContextCoherent",
+      "Spartan.Spec.firstChallengeLensComplete"
+    ],
+    "interface": "Both executable stages sample their existing challenge types and preserve the padded statement and oracle family. The paired virtual residual/zero lens keeps its separate historical proof interface.",
+    "adapted_run_proofs": [
+      "firstMessage_toVerifier_pure delegates SendSingleWitness.oracleVerifier_toVerifier_run",
+      "completedFirstChallenge_perfectCompleteness unfolds canonical RandomQuery",
+      "linear-combination run and verifier proofs unfold canonical RandomQuery"
+    ]
+  },
+  "existing_public_header_comparison_normalization": "RandomQuery.Historical names denote the original paired interface in the shared downstream adapter.",
+  "unused_historical_witness_aliases_retired": [
+    "Spartan.Spec.Witness.AfterFirstMessage",
+    "Spartan.Spec.Witness.AfterFirstChallenge",
+    "Spartan.Spec.Witness.AfterFirstSumcheck",
+    "Spartan.Spec.Witness.AfterSendEvalClaim",
+    "Spartan.Spec.Witness.AfterLinearCombination",
+    "Spartan.Spec.Witness.AfterSecondSumcheck"
+  ]
 }

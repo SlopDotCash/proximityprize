@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.RingSwitching.Spec
 import ArkLib.ProofSystem.RingSwitching.BatchingPhase
 import ArkLib.ProofSystem.RingSwitching.SumcheckPhase
@@ -198,7 +199,7 @@ sumcheck phases until the separate DP24/Schwartz-Zippel root-count residual is p
 theorem fullOracleVerifier_rbrKnowledgeSoundness [IsDomain L] [IsDomain K]
     (hCoreInteractionAppendRbrKnowledgeSoundness :
       (SumcheckPhase.coreInteractionOracleVerifier κ L K P ℓ ℓ' h_l
-        mlIOPCS.toAbstractOStmtIn).rbrKnowledgeSoundness
+        mlIOPCS.toAbstractOStmtIn).rbrKnowledgeSoundnessAveraged
         (StmtIn := Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ P) 0)
         (OStmtIn := mlIOPCS.toAbstractOStmtIn.OStmtIn)
         (StmtOut := MLPEvalStatement L ℓ')
@@ -211,21 +212,21 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness [IsDomain L] [IsDomain K]
         (relOut := mlIOPCS.toAbstractOStmtIn.toRelInput)
         (rbrKnowledgeError := SumcheckPhase.coreInteractionRbrKnowledgeError (L:=L) (ℓ':=ℓ')))
     (hBatchingCoreAppendRbrKnowledgeSoundness :
-      (batchingCoreVerifier κ L K P ℓ ℓ' h_l mlIOPCS).rbrKnowledgeSoundness
+      (batchingCoreVerifier κ L K P ℓ ℓ' h_l mlIOPCS).rbrKnowledgeSoundnessAveraged
         (init := init)
         (impl := impl)
         (relIn := fullInputRelation κ L K P ℓ ℓ' h_l mlIOPCS)
         (relOut := mlIOPCS.toRelInput)
         (rbrKnowledgeError := batchingCoreRbrKnowledgeError κ L K P ℓ'))
     (hFullAppendRbrKnowledgeSoundness :
-      (fullOracleVerifier κ L K P ℓ ℓ' h_l mlIOPCS).rbrKnowledgeSoundness
+      (fullOracleVerifier κ L K P ℓ ℓ' h_l mlIOPCS).rbrKnowledgeSoundnessAveraged
         (Oₛₒ := fun i : Empty => nomatch i)
         (init := init)
         (impl := impl)
         (relIn := fullInputRelation κ L K P ℓ ℓ' h_l mlIOPCS)
         (relOut := fullOutputRelation)
         (rbrKnowledgeError := fun i => fullRbrKnowledgeError κ L K P ℓ' mlIOPCS i)) :
-  OracleVerifier.rbrKnowledgeSoundness (Oₛₒ := fun i : Empty => nomatch i)
+  OracleVerifier.rbrKnowledgeSoundnessAveraged (Oₛₒ := fun i : Empty => nomatch i)
     (verifier := fullOracleVerifier κ L K P ℓ ℓ' h_l mlIOPCS)
     (init := init)
     (impl := impl)

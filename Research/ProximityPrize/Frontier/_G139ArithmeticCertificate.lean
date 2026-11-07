@@ -78,7 +78,42 @@ private theorem binaryPow_eq_pow {M : Type*} [Monoid M] (a : M) (n : ℕ) :
 
 /-! ## The recursive prime-factor certificates -/
 
-private theorem prime_1052698369 : Nat.Prime 1052698369 := by norm_num
+/-- The large factor in the next certificate has a short Lucas certificate of its own. -/
+private theorem prime_1370701 : Nat.Prime 1370701 := by
+  let Q : ℕ := 1370701
+  have hmain : (2 : ZMod Q) ^ (Q - 1) = 1 := by
+    rw [← binaryPow_eq_pow]
+    decide
+  refine lucas_primality Q 2 hmain ?_
+  intro q hq hdvd
+  rw [show Q - 1 = 2 * (2 * (3 * (3 * (5 * (5 * 1523))))) from by norm_num] at hdvd
+  simp only [Nat.Prime.dvd_mul hq,
+    Nat.prime_dvd_prime_iff_eq hq Nat.prime_two,
+    Nat.prime_dvd_prime_iff_eq hq Nat.prime_three,
+    Nat.prime_dvd_prime_iff_eq hq (by norm_num : Nat.Prime 5),
+    Nat.prime_dvd_prime_iff_eq hq (by norm_num : Nat.Prime 1523)] at hdvd
+  rcases hdvd with rfl | rfl | rfl | rfl | rfl | rfl | rfl
+  all_goals rw [← binaryPow_eq_pow]; decide
+
+private theorem prime_1052698369 : Nat.Prime 1052698369 := by
+  let Q : ℕ := 1052698369
+  have hmain : (11 : ZMod Q) ^ (Q - 1) = 1 := by
+    rw [← binaryPow_eq_pow]
+    decide
+  refine lucas_primality Q 11 hmain ?_
+  intro q hq hdvd
+  rw [show Q - 1 = 2 ^ 8 * (3 * 1370701) from by norm_num] at hdvd
+  rcases (Nat.Prime.dvd_mul hq).mp hdvd with htwo | hodd
+  · have heq : q = 2 :=
+      (Nat.prime_dvd_prime_iff_eq hq Nat.prime_two).mp (hq.dvd_of_dvd_pow htwo)
+    subst q
+    rw [← binaryPow_eq_pow]
+    decide
+  · simp only [Nat.Prime.dvd_mul hq,
+      Nat.prime_dvd_prime_iff_eq hq Nat.prime_three,
+      Nat.prime_dvd_prime_iff_eq hq prime_1370701] at hodd
+    rcases hodd with rfl | rfl
+    all_goals rw [← binaryPow_eq_pow]; decide
 
 private theorem prime_15132351674065319 : Nat.Prime 15132351674065319 := by
   let Q : ℕ := 15132351674065319

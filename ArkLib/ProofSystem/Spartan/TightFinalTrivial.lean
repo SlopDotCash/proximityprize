@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Spartan.TightFinalLeaf
 import ArkLib.ProofSystem.Spartan.TightSecondBinding
 import ProximityPrize.Compatibility.CheckClaimPassThrough
@@ -48,7 +49,7 @@ variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ Pro
 /-- **Leaf `h₈` at the pure terminal check** — identical transport and `hdoom` as
 `finalCheckTight_rbrKnowledgeSoundness` (the transport is predicate-generic). -/
 theorem finalCheckPure_rbrKnowledgeSoundness :
-    (finalCheckPure (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (finalCheckPure (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       ((secondSumcheckWithTargetRbrRelOut (R := R) pp oSpec)
         ∩ {y | y.1 ∈ bindingAtSecondOut (R := R) pp})
       (tightFinalRelOut (R := R) pp) 0 :=

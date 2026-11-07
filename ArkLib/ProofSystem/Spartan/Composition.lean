@@ -32,10 +32,9 @@ and the target-carrying variant adds a trailing `prependClaim` to land in
 
 ## Phase interfaces and canonical output materialization
 
-The downstream completed first-challenge, evaluation-claim and linear-combination phases consume
-`Unit` witnesses after the first message. Their explicit `completed*` constructors reuse the
-completed prover and verifier programs. The inherited canonical admitted constructors retain their
-original interfaces and are not claimed complete by this assembly.
+The historical first-challenge, evaluation-claim and linear-combination phases consume `Unit`
+witnesses after the first message. The two sampling stages delegate canonical `RandomQuery`.
+The evaluation-claim stage retains the scalar-oracle interface used by this padded proof chain.
 
 Canonical append materializes both embedded and virtual output oracles. In particular,
 `completedSendEvalClaim` exposes each scalar claim through its bundled message's indexed query

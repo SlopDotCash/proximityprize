@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeSoundness
 import ArkLib.OracleReduction.Composition.Sequential.AppendRightPartialProjections
 
@@ -360,9 +361,9 @@ theorem append_rbrKnowledgeSoundness_keystone_subsingleton_unconditional [Subsin
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂) :
-      (V₁.append V₂).rbrKnowledgeSoundness init impl rel₁ rel₃
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂) :
+      (V₁.append V₂).rbrKnowledgeSoundnessAveraged init impl rel₁ rel₃
         (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) :=
   append_rbrKnowledgeSoundness_keystone_subsingleton V₁ V₂ verify hVerify hInit hInitNF
     hNE₂ hNEW₂ hn hDir hDir₂ h₁ h₂

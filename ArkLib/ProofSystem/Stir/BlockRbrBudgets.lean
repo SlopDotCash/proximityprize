@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.InitRbrSoundness
 import ArkLib.ProofSystem.Stir.Round3Completeness
 import ProximityPrize.Extensions.ProofSystem.Stir.Combine
@@ -101,7 +102,7 @@ set_option linter.unusedSectionVars false in
 unit budget sits on the unique challenge round `C_fin`. This does not establish a zero budget;
 the conditional counterexample design is recorded in §3. -/
 theorem stirFinalVerifier_rbrKnowledgeSoundness_indicator (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
-    (stirFinalVerifier (ι := ι) (F := F)).rbrKnowledgeSoundness init impl
+    (stirFinalVerifier (ι := ι) (F := F)).rbrKnowledgeSoundnessAveraged init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel (F × F) φ deg δ)
       (fun i => if i = ⟨1, pSpecFinal_dir_one⟩ then 1 else 0) := by
   refine ThresholdKSF.rbrKnowledgeSoundness_indicator init impl
@@ -119,7 +120,7 @@ challenge.**  The flip probability at the out-sample challenge round `C_out` is 
 the state function is constant there (neither challenge round touches the oracle). -/
 theorem stirRound3Verifier'_rbrKnowledgeSoundness_indicator_shift
     (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
-    (stirRound3Verifier' φ deg).rbrKnowledgeSoundness init impl
+    (stirRound3Verifier' φ deg).rbrKnowledgeSoundnessAveraged init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel F φ deg δ)
       (fun i => if i = ⟨2, pSpec3_dir_two⟩ then 1 else 0) := by
   refine ThresholdKSF.rbrKnowledgeSoundness_indicator init impl
@@ -139,7 +140,7 @@ either challenge round of the 3-slot block, but (absent a checking verifier) at 
 round must carry it. -/
 theorem stirRound3Verifier'_rbrKnowledgeSoundness_indicator_out
     (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
-    (stirRound3Verifier' φ deg).rbrKnowledgeSoundness init impl
+    (stirRound3Verifier' φ deg).rbrKnowledgeSoundnessAveraged init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel F φ deg δ)
       (fun i => if i = ⟨1, pSpec3_dir_one⟩ then 1 else 0) := by
   refine ThresholdKSF.rbrKnowledgeSoundness_indicator init impl
@@ -154,7 +155,7 @@ theorem stirRound3Verifier'_rbrKnowledgeSoundness_indicator_out
 set_option linter.unusedSectionVars false in
 /-- Reduction-level packaging of the final-block indicator budget. -/
 theorem stirFinalReduction_rbrKnowledgeSoundness_indicator (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
-    (stirFinalReduction (ι := ι) (F := F)).verifier.rbrKnowledgeSoundness init impl
+    (stirFinalReduction (ι := ι) (F := F)).verifier.rbrKnowledgeSoundnessAveraged init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel (F × F) φ deg δ)
       (fun i => if i = ⟨1, pSpecFinal_dir_one⟩ then 1 else 0) :=
   stirFinalVerifier_rbrKnowledgeSoundness_indicator init impl φ deg δ
@@ -163,7 +164,7 @@ set_option linter.unusedSectionVars false in
 /-- Reduction-level packaging of the 3-slot-block indicator budget (shift placement). -/
 theorem stirRound3Reduction'_rbrKnowledgeSoundness_indicator_shift
     (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
-    (stirRound3Reduction' φ deg).verifier.rbrKnowledgeSoundness init impl
+    (stirRound3Reduction' φ deg).verifier.rbrKnowledgeSoundnessAveraged init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel F φ deg δ)
       (fun i => if i = ⟨2, pSpec3_dir_two⟩ then 1 else 0) :=
   stirRound3Verifier'_rbrKnowledgeSoundness_indicator_shift init impl φ deg δ
@@ -183,7 +184,7 @@ check-free verifier supports *no* nonvacuous zero-error output guarantee: `∅` 
 available, and (for the STIR final block) `stirOStmtRel` is refuted below. -/
 theorem _root_.Verifier.rbrKnowledgeSoundness_empty_relOut
     (verifier : Verifier oSpec StmtIn StmtOut pSpec) (relIn : Set (StmtIn × Unit)) :
-    verifier.rbrKnowledgeSoundness init' impl' relIn
+    verifier.rbrKnowledgeSoundnessAveraged init' impl' relIn
       (∅ : Set (StmtOut × WitOut)) 0 := by
   refine ⟨fun _ => Unit, ThresholdKSF.unitExtractor, {
     toFun := fun m stmtIn _ _ => m = 0 ∧ (stmtIn, ()) ∈ relIn
@@ -209,7 +210,7 @@ set_option linter.unusedSectionVars false in
 is definitionally the input statement.  This is the (nonvacuous) zero-error content of the
 final relay verifier; the oracle-proximity relation pair is exactly what fails (§3). -/
 theorem stirFinalVerifier_rbrKnowledgeSoundness_pending (P : Set F) :
-    (stirFinalVerifier (ι := ι) (F := F)).rbrKnowledgeSoundness init impl
+    (stirFinalVerifier (ι := ι) (F := F)).rbrKnowledgeSoundnessAveraged init impl
       {x : (F × ∀ i, OStmt ι F i) × Unit | x.1.1 ∈ P}
       {x : ((F × F) × ∀ i, OStmt ι F i) × Unit | x.1.1.1 ∈ P} 0 := by
   refine ⟨fun _ => Unit, ThresholdKSF.unitExtractor, {

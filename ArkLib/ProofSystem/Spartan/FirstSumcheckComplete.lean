@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ProximityPrize.Compatibility.SumcheckKnowledge
 import ArkLib.ProofSystem.Spartan.FirstSumcheckReduction
 import ArkLib.ProofSystem.Spartan.FirstSumcheckRelComplete
@@ -166,9 +167,9 @@ theorem firstSumcheck_rbrSoundness
       ∀ i, Sumcheck.Spec.OracleStatement R pp.ℓ_m 3 i))
     (rbrSoundnessError : (Sumcheck.Spec.pSpec R 3 pp.ℓ_m).ChallengeIdx → ℝ≥0)
     (h_inner :
-      (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier.rbrSoundness
+      (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier.rbrSoundnessAveraged
         init impl innerLangIn innerLangOut rbrSoundnessError) :
-    (firstSumcheckReduction pp oSpec).verifier.rbrSoundness init impl
+    (firstSumcheckReduction pp oSpec).verifier.rbrSoundnessAveraged init impl
       ((firstSumcheckOracleLens pp oSpec).toLens.proj ⁻¹' innerLangIn)
       ((firstSumcheckOracleLens pp oSpec).toLens.transportedLangOut innerLangOut
         ((Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R)
@@ -210,13 +211,13 @@ theorem firstSumcheck_rbrKnowledgeSoundness_honest_of_round
     (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
     :
-    (firstSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (firstSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       (firstSumcheckHonestRelIn (R := R) pp oSpec)
       (firstSumcheckHonestRelOut (R := R) pp oSpec)
       (fun _ => (3 : ℝ≥0) / (Fintype.card R)) := by
   have := firstSumcheckCoherent (R := R) pp oSpec
   change (OracleVerifier.liftContextLegacy (firstSumcheckOracleLens pp oSpec)
-    (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier).rbrKnowledgeSoundness
+    (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier).rbrKnowledgeSoundnessAveraged
       init impl
       (firstSumcheckHonestRelIn (R := R) pp oSpec)
       (firstSumcheckHonestRelOut (R := R) pp oSpec)

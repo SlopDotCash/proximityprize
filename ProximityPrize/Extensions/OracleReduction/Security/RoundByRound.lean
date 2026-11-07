@@ -33,14 +33,6 @@ variable {ι : Type} {oSpec : OracleSpec ι}
   [∀ i, SampleableType (pSpec.Challenge i)]
   {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
 
-namespace Extractor
-
-namespace RoundByRoundOneShot
-
-end RoundByRoundOneShot
-
-end Extractor
-
 namespace Verifier
 
 section RoundByRound
@@ -364,23 +356,6 @@ theorem exists_challenge_flip_of_full {langIn : Set StmtIn} {langOut : Set StmtO
 
 end StateFunction
 
-/-- Coercion to the underlying function of a state function -/
-instance {langIn : Set StmtIn} {langOut : Set StmtOut}
-    {verifier : Verifier oSpec StmtIn StmtOut pSpec} :
-    CoeFun (verifier.StateFunction init impl langIn langOut)
-    (fun _ => (m : Fin (n + 1)) → StmtIn → Transcript m pSpec → Prop) := ⟨fun f => f.toFun⟩
-
-instance {langIn : Set StmtIn} {langOut : Set StmtOut}
-    {verifier : Verifier oSpec StmtIn StmtOut pSpec} :
-    CoeFun (KnowledgeStateFunctionOneShot init impl langIn langOut verifier)
-    (fun _ => (m : Fin (n + 1)) → StmtIn → Transcript m pSpec → Prop) := ⟨fun f => f.toFun⟩
-
-instance {relIn : Set (StmtIn × WitIn)} {relOut : Set (StmtOut × WitOut)}
-    {verifier : Verifier oSpec StmtIn StmtOut pSpec} {WitMid : Fin (n + 1) → Type}
-    {extractor : Extractor.RoundByRound oSpec StmtIn WitIn WitOut pSpec WitMid} :
-    CoeFun (verifier.KnowledgeStateFunction init impl relIn relOut extractor)
-    (fun _ => (m : Fin (n + 1)) → StmtIn → Transcript m pSpec → WitMid m → Prop) :=
-      ⟨fun f => f.toFun⟩
 
 end RoundByRound
 

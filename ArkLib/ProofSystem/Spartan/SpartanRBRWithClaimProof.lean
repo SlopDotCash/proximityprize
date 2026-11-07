@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ToMathlib.SpartanBricks
 
 /-!
@@ -41,7 +42,7 @@ theorem spartan_rbr_knowledge_soundness_with_claim
       (Bricks.FinalClaimStatement R pp) (Bricks.FinalOracleStatement R pp) Unit pSpecC)
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (rbrKnowledgeError : pSpecC.ChallengeIdx → ℝ≥0)
-    (hks : Rc.verifier.rbrKnowledgeSoundness init impl
+    (hks : Rc.verifier.rbrKnowledgeSoundnessAveraged init impl
       (Bricks.spartanRelIn R pp) (Bricks.finalCheckWithClaimRelOut R pp) rbrKnowledgeError) :
     Bricks.composedRbrKnowledgeSoundnessWithClaimStatement R pp oSpec Rc init impl
       rbrKnowledgeError :=
