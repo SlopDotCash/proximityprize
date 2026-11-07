@@ -180,6 +180,11 @@ The restoration proofs use VCVio's logged random-oracle execution to account for
 private sampling and fresh queries. The Sumcheck client uses a Unit witness to certify ordinary
 soundness for the native verifier, with both expected and bounded query formulations.
 
+The [historical STIR specifications](../../ArkLib/ProofSystem/Stir/PaperStatements.lean)
+from the same PR retain the strict soundness relation, uniform constants, and a protocol chosen
+before the distance and list-size bounds. These proposition definitions carry no verifier-query
+count or proof of the paper's concrete protocol.
+
 | Development | Canonical API | Retained downstream surface |
 | --- | --- | --- |
 | Algebraic group representations | `AGM.GroupRepresentation` uses one coefficient per finite basis index | `ProximityPrize.Compatibility.AGM.ListRepresentation` retains the list model and completed handle simulator; explicit length-aware bridges connect the representations |
