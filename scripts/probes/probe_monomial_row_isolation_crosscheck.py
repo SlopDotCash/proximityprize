@@ -7,18 +7,18 @@ of distinct nonzero rows related by a monomial is ``{2, n-1}`` (certificate
 ``y z * N_(n-1) = N_2``).  This script re-derives the same integers with algorithms that
 share no code with that route.
 
-* ROUTE A (complete grid classification over F_p).  Rows are evaluated at every one of the
+* ROUTE A (grid classification of unsigned monomials over F_p).  Rows are evaluated at every one of the
   ``n^2`` points of ``mu_n x mu_n`` with modular arithmetic -- no group ring, no term
   algebra, no fingerprint.  For an unordered pair ``{a,b}`` the identity
-  ``N_a = c * y^i z^j * N_b`` on the grid forces ZERO SETS to be equal (a monomial never
+  ``N_a = y^i z^j * N_b`` on the grid forces ZERO SETS to be equal (a monomial never
   vanishes), which is tested first as an exact bitmask; when the zero sets agree, ``(i,j)``
   is pinned from two points where ``N_b != 0`` by solving a 2x2 system modulo ``n`` whose
   determinant is coprime to ``n``, and the candidate is then verified at EVERY grid point.
   Completeness: if an identity exists, every admissible pinning pair yields it, so a
   failure to verify is a proof of non-existence AT THE FUNCTION LEVEL; and because the
   ``n^2`` grid points against the ``n^2`` monomials form a Kronecker Vandermonde matrix
-  with nonzero determinant when ``n | p - 1``, the function level and the group-ring level
-  agree here.  The count of related pairs must be exactly one, ``{2, n-1}``, at every cell.
+  with nonzero determinant when ``n | p - 1``, the grid tests the identity over the
+  field.  Exactly one pair, ``{2, n-1}``, is related by an unsigned monomial at each cell.
 * ROUTE B (literal triples).  For every triple of distinct points of ``mu_n`` the raw
   collinearity determinants ``D_e(T)`` are computed by 2x2 elimination on the actual field
   values, and the bad-scalar set ``{-D_a(T)/D_b(T) : D_b(T) != 0}`` is collected literally
@@ -35,9 +35,7 @@ share no code with that route.
   are recomputed as literal negated triple sums over ``mu_8`` and ``mu_16`` (the semantics
   of the merged PR #267 probe), with no determinant and no ``h`` row anywhere.
 
-Stdlib only, deterministic, integer arithmetic only.  It checks the same objects as the
-main probe at the same parameters and agrees on every integer printed there; it adds no
-claim of its own.  Same scope limits: the ``t = 3`` ceiling monomial-pencil census on
+Stdlib only, deterministic, integer arithmetic only.  It reproduces the main probe’s certificates and counts at the parameters specified below.  Same scope limits: the ``t = 3`` ceiling monomial-pencil census on
 smooth domains ``mu_n`` in prime fields -- no ``t >= 4``, no global maximum, no production
 regime, no ``delta*``, no prize statement.
 """
@@ -150,10 +148,9 @@ def grid_rows(n, p):
 
 
 def grid_classify(n, p):
-    """Complete signed-monomial classification of the rows, by grid arithmetic only.
+    """Classify identities of the form ``N_a = y^i z^j * N_b`` over the field.
 
-    For even n the sign is absorbed (``-1 = g^(n/2)`` is a monomial value), so searching
-    monomials ``y^i z^j`` covers ``c = +-1``.  Every pair of rows gets a conclusive answer:
+    Every pair of rows gets a conclusive answer for this form:
 
     * different zero sets -- no identity (a monomial never vanishes);
     * equal zero sets and ``N_a/N_b`` outside ``mu_n`` at the anchor point -- no identity;

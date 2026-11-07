@@ -405,8 +405,8 @@ def main():
     print(f"bridge vector sha256 {vector_sha} over {len(bridge)} cells", flush=True)
     print(f"PASS: exact isolation -- of the C(n-2,2) unordered pencils of nonzero "
           f"h-rows, exactly ONE, the pair (x^2, x^(n-1)), has a monomial bad-scalar "
-          f"ratio, at every one of the {len(SCAN)} scanned moduli n in [{SCAN[0]}, "
-          f"{SCAN[-1]}] and every one of the {len(RUNGS)} two-power rungs "
+          f"ratio at each scanned n >= 4 (there are no pairs at n = 3), "
+          f"including every one of the {len(RUNGS)} two-power rungs "
           f"{RUNGS[0]}..{RUNGS[-1]}; no t>=4, global-maximum, production-regime, "
           f"delta* or prize claim", flush=True)
     print(f"elapsed {time.time() - start:.1f}s", flush=True)
