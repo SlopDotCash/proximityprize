@@ -34,15 +34,9 @@ theorem lowDegree_zeros_card_mul_le {p : MvPolynomial (Fin s) F} {d : ℕ}
     (Finset.univ.filter (fun x : Fin s → F => eval x p = 0)).card * Fintype.card F
       ≤ d * (Fintype.card F) ^ s := by
   classical
-  have hFpos : 0 < Fintype.card F := Fintype.card_pos
-  have hsz := schwartz_zippel_counting p hp0 (fun _ => (Finset.univ : Finset F))
-    d (Fintype.card F) hdeg hFpos (fun i => by simp)
-  have hpi : (Fintype.piFinset (fun _ : Fin s => (Finset.univ : Finset F)))
-      = (Finset.univ : Finset (Fin s → F)) := by ext x; simp
-  have hprod : (∏ _i : Fin s, (Finset.univ : Finset F).card) = (Fintype.card F) ^ s := by
-    simp [Finset.card_univ]
-  rw [hpi, hprod] at hsz
-  exact hsz
+  simpa only [Fintype.piFinset_univ, Finset.card_univ, Finset.prod_const, Fintype.card_fin] using
+    schwartz_zippel_counting p hp0 (fun _ => Finset.univ) d (Fintype.card F) hdeg
+      (fun _ => by simp)
 
 /-- **Low-degree agreement bound (count form).**  Two distinct polynomials over `Fin s` of total
 degree `≤ d` agree at at most `d · |F|^{s-1}` points. -/

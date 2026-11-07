@@ -144,12 +144,12 @@ theorem linearCombinationWithTarget_perfectCompleteness_of
   rintro ⟨stmt, oStmt⟩ ⟨⟩ hRelIn z hz
   simp only [linearCombinationWithTarget, OracleReduction.toReduction, Reduction.run,
     Prover.run_of_verifier_first, linearCombinationWithTargetProver,
-    linearCombinationWithTargetVerifier, OracleVerifier.toVerifier, Verifier.run] at hz
+    linearCombinationWithTargetVerifier, RandomQuery.oracleProver, RandomQuery.oracleVerifier,
+    OracleVerifier.toVerifier, Verifier.run] at hz
   simp only [OptionT.run_bind, OptionT.run_mk, OptionT.run_pure, OptionT.run_monadLift,
     simulateQ_pure, pure_bind, map_pure, liftM_pure,
     Option.elimM, Option.getM_some, Option.map_some] at hz
-  simp_all [tightLinearCombinationRelOutOf, linearCombinationVerifier, RandomQuery.oracleVerifier,
-    OracleVerifier.materializeOutput,
+  simp_all [tightLinearCombinationRelOutOf, OracleVerifier.materializeOutput,
     OracleVerifier.materializeOutputOracle, FullTranscript.messages]
   obtain ⟨q, _, rfl⟩ := hz
   exact ⟨_, q, stmt.1, stmt.2.1, stmt.2.2.1, stmt.2.2.2, oStmt, ⟨(), rfl⟩, hRelIn⟩

@@ -34,8 +34,8 @@ theorem split_recombination (n : ℕ) [NeZero n] (f : Polynomial (ULift.{1} ℚ)
     f = ∑ i : Fin n, X ^ i.val * eval₂ C (X ^ n) (splitNth f n i) :=
   eq_sum_splitNth n f
 
-/-- The field-level folding formula also accepts higher-universe coefficients. -/
-theorem fold_recombination (n : ℕ) [NeZero n]
+/-- The field-level folding formula accepts higher-universe coefficients at every arity. -/
+theorem fold_recombination (n : ℕ)
     (u : Fin n → Polynomial (ULift.{1} ℚ)) (r : ULift.{1} ℚ) :
     FoldingPolynomial.polyFold (∑ i, X ^ i.val * (u i).comp (X ^ n)) n r =
       ∑ i, r ^ i.val • u i :=

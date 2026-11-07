@@ -164,7 +164,7 @@ theorem card_filter_mleZero_mul_card_le (hSigns : (-1 : F) ≠ 1)
   classical
   have hcount := schwartz_zippel_counting (kernelMLEPoly values)
     (kernelMLEPoly_ne_zero hSigns hu) (fun _ => (Finset.univ : Finset F)) n (Fintype.card F)
-    (kernelMLEPoly_totalDegree_le values) Fintype.card_pos
+    (kernelMLEPoly_totalDegree_le values)
     (fun _ => le_of_eq (Finset.card_univ).symm)
   rw [Fintype.piFinset_univ] at hcount
   have hfilter : (Finset.univ.filter fun z : Fin n → F =>
@@ -230,7 +230,7 @@ theorem card_filter_affineZero_mul_card_le (S₀ : F) (c : Fin K → F)
       rw [MvPolynomial.totalDegree_C, zero_add]
       exact le_of_eq (MvPolynomial.totalDegree_X k)
   have hcount := schwartz_zippel_counting P hPne
-    (fun _ => (Finset.univ : Finset F)) 1 (Fintype.card F) hPdeg Fintype.card_pos
+    (fun _ => (Finset.univ : Finset F)) 1 (Fintype.card F) hPdeg
     (fun _ => le_of_eq (Finset.card_univ).symm)
   rw [Fintype.piFinset_univ] at hcount
   have hfilter : (Finset.univ.filter fun lams : Fin K → F =>
