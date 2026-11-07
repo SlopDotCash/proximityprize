@@ -54388,7 +54388,8 @@ scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curve
 `refuted` (none of its `curveCommonAgreementResidual_of_*` adapters is a concrete provider).
 ## [164-antipodal-subgroup-obstructions] 2026-10-13
 
-Hardyzyt. Exact arithmetic certificates; no new Lean theorem.
+Original result: Hardyzyt's exact arithmetic certificates. The Lean follow-on below formalizes
+the first construction only.
 
 [The probe](../../scripts/probes/probe_antipodal_subgroup_obstructions.py) checks two distinct
 obstructions in the actual sponsor fields from `_PrizeShapePrimeP30.lean` and
@@ -54412,6 +54413,21 @@ Thus the two head exponents are even, at least `k`, and below `n`, while the
 tail has degree one below `k`. This refutes the documented inference at the
 literal field, length and degree parameters. It does not refute the proved
 unique-lift identity or establish agreement at the production decoding radius.
+
+**Lean follow-on.** Lucas formalized this mixed-coset witness in
+[`_AntipodalMixedCosetCounterexample.lean`](Frontier/_AntipodalMixedCosetCounterexample.lean).
+`agreement_eval` exposes the original polynomial, `head_exponents`, `coefficients_ne_zero`,
+and `tail_degree` certify its head/tail restrictions, and `roots_and_antipodes`,
+`domain_membership`, and `opposite_cosets` certify the two isolated roots and their cosets.
+`not_isolated_roots_in_one_coset` rules out containment of all isolated on-domain roots in any
+translate of `{u | u^(2^29) = 1}`. The unconditional `first_field_not_confined` and
+`second_field_not_confined` instantiate the existing certified sponsor primes and generators.
+The construction remains Hardyzyt's; this follow-on upgrades its verification to Lean.
+It introduces no axioms or residual assumptions and certifies only two isolated agreement
+points, not a production-radius counterexample or a decoding threshold.
+
+Verify the formalization with
+`scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_AntipodalMixedCosetCounterexample.lean`.
 
 **Subgroup membership and no full subcoset do not repair the recorded count.**
 Set `t = g^(n/32)` and take the five lifts `t^i`, `0<=i<=4`. Split
