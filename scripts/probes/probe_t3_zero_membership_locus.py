@@ -20,7 +20,7 @@ The single bit ``[0 bad]`` is the object here, and two exact routes meet on it.
   values ``r^3`` are affine on ``T``, i.e. ``T`` is the full root set of a monic cubic
   ``X^3 - b*X - a`` whose ``X^2`` coefficient is ``0``, so Vieta gives ``r1 + r2 + r3 = 0``.
   Dilating ``T`` by an element of ``mu_n`` preserves vanishing of the sum, hence
-  ``0 bad  <=>  there exist DISTINCT a, b in mu_n with 1 + a + b = 0``.
+  ``0 bad  <=>  there exist pairwise distinct 1, a, b in mu_n with 1 + a + b = 0``.
 * Divisibility route.  With ``R_n = Res(X^n - 1, (X+1)^n - 1)``, and ``p = 1 (mod n)`` so
   ``X^n - 1`` splits into ``n`` distinct linear factors over ``F_p``,
   ``R_n = prod_{a in mu_n} ((a+1)^n - 1)`` evaluated in ``F_p``; so a vanishing sum exists,
@@ -449,4 +449,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if not __debug__:
+        raise SystemExit("Run without Python optimization to enable the certificate checks.")
     main()

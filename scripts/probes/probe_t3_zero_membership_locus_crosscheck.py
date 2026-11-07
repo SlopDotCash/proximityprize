@@ -2,12 +2,12 @@
 """Independent recomputation of the zero-membership loci of (x^3, x^2) at t = 3.
 
 This file shares no helper, no engine and no algebraic route with
-``probe_t3_zero_membership_locus.py``.  Every conclusion of the primary probe is reached here
-through a different derivation, and the two sets of integers are compared literally.
+``probe_t3_zero_membership_locus.py``.  This probe derives the four complete loci
+independently and compares the merged anchors and selected n = 64 cells with the primary probe.
 
 * RESULTANT, three routes.  The primary probe takes ``R_n`` as the determinant of the
   ``n x n`` circulant of multiplication by ``(X+1)^n - 1`` in ``Z[X]/(X^n - 1)``.  Here it is
-  recomputed (a) as the ``(2n-1) x (2n-1)`` Sylvester matrix determinant of the two
+  recomputed (a) as the ``(2n) x (2n)`` Sylvester matrix determinant of the two
   polynomials, and (b) as the product over ``d | n`` of the norm of ``(X+1)^n - 1`` in the
   cyclotomic ring ``Z[X]/(Phi_d)`` -- a different factorisation of ``X^n - 1`` into
   ``phi(d) x phi(d)`` multiplication determinants.
@@ -356,7 +356,7 @@ def main():
         quoted = {8: PRIMARY_R8, 16: PRIMARY_R16}.get(n)
         if quoted is not None:
             assert sylvester == quoted, (n, sylvester)
-        print("RESULTANT n=%d: the (2n-1)x(2n-1) Sylvester determinant gives %d bits and "
+        print("RESULTANT n=%d: the (2n)x(2n) Sylvester determinant gives %d bits and "
               "the cyclotomic-norm product over the %d divisors of %d gives the same "
               "integer%s; both are independent of the primary probe's circulant route"
               % (n, abs(sylvester).bit_length(),
@@ -463,7 +463,7 @@ def main():
               "bad -- a third route, independent of the determinant of a circulant and of "
               "the direct enumeration" % (k, witness))
 
-    print("PASS: crosscheck reproduces every integer of the primary probe by different "
+    print("PASS: crosscheck reproduces the four complete loci and selected census counts by different "
           "routes -- R_n from the Sylvester matrix and from cyclotomic norms, its complete "
           "factorization from Pollard-rho, v_p(R_n) as a polynomial-gcd degree, 0-membership "
           "from literal C(n,3) determinant enumeration at every candidate prime of every "
@@ -476,4 +476,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if not __debug__:
+        raise SystemExit("Run without Python optimization to enable the certificate checks.")
     main()
